@@ -23,8 +23,8 @@
  *    classes: SiCertificateVerifier
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-06-01 15:50:53 $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  Update Date:      $Date: 2001-09-26 14:30:24 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -57,29 +57,29 @@ SiCertificateVerifier::~SiCertificateVerifier()
 }
 
 
-SI_E_Condition SiCertificateVerifier::addTrustedCertificateFile(const char *fileName, int fileType)
+OFCondition SiCertificateVerifier::addTrustedCertificateFile(const char *fileName, int fileType)
 {
   /* fileType should be X509_FILETYPE_PEM or X509_FILETYPE_ASN1 */
   X509_LOOKUP *x509_lookup = X509_STORE_add_lookup(x509store, X509_LOOKUP_file());
   if (x509_lookup == NULL) return SI_EC_OpenSSLFailure;
   if (! X509_LOOKUP_load_file(x509_lookup, fileName, fileType)) return SI_EC_CannotRead;
-  return SI_EC_Normal;
+  return EC_Normal;
 }
 
 
-SI_E_Condition SiCertificateVerifier::addTrustedCertificateDir(const char *pathName, int fileType)
+OFCondition SiCertificateVerifier::addTrustedCertificateDir(const char *pathName, int fileType)
 {
   /* fileType should be X509_FILETYPE_PEM or X509_FILETYPE_ASN1 */
   X509_LOOKUP *x509_lookup = X509_STORE_add_lookup(x509store, X509_LOOKUP_hash_dir());
   if (x509_lookup == NULL) return SI_EC_OpenSSLFailure;
   if (! X509_LOOKUP_add_dir(x509_lookup, pathName, fileType)) return SI_EC_CannotRead;
-  return SI_EC_Normal;
+  return EC_Normal;
 }
 
 
-SI_E_Condition SiCertificateVerifier::addCertificateRevocationList(const char *fileName, int fileType)
+OFCondition SiCertificateVerifier::addCertificateRevocationList(const char *fileName, int fileType)
 {
-  SI_E_Condition result = SI_EC_CannotRead;  
+  OFCondition result = SI_EC_CannotRead;  
   X509_CRL *x509crl = NULL;
   if (fileName)
   {
@@ -94,14 +94,14 @@ SI_E_Condition SiCertificateVerifier::addCertificateRevocationList(const char *f
           if (x509crl) 
           {
             X509_STORE_add_crl(x509store, x509crl);
-            result = SI_EC_Normal;
+            result = EC_Normal;
           }
         } else {
           x509crl = PEM_read_bio_X509_CRL(in, NULL, NULL, NULL);
           if (x509crl) 
           {
             X509_STORE_add_crl(x509store, x509crl);
-            result = SI_EC_Normal;
+            result = EC_Normal;
           }
         }
       }
@@ -112,7 +112,7 @@ SI_E_Condition SiCertificateVerifier::addCertificateRevocationList(const char *f
 }
 
 
-SI_E_Condition SiCertificateVerifier::verifyCertificate(SiCertificate& certificate)
+OFCondition SiCertificateVerifier::verifyCertificate(SiCertificate& certificate)
 {
   errorCode = 0;
   X509 *rawcert = certificate.getRawCertificate();
@@ -123,7 +123,7 @@ SI_E_Condition SiCertificateVerifier::verifyCertificate(SiCertificate& certifica
   int ok = X509_verify_cert(&ctx); /* returns nonzero if successful */
   errorCode = X509_STORE_CTX_get_error(&ctx);
   X509_STORE_CTX_cleanup(&ctx);
-  if (ok) return SI_EC_Normal; else return SI_EC_VerificationFailed_NoTrust;
+  if (ok) return EC_Normal; else return SI_EC_VerificationFailed_NoTrust;
 }
 
 
@@ -141,7 +141,10 @@ const int sicertvf_cc_dummy_to_keep_linker_from_moaning = 0;
 
 /*
  *  $Log: sicertvf.cc,v $
- *  Revision 1.2  2001-06-01 15:50:53  meichel
+ *  Revision 1.3  2001-09-26 14:30:24  meichel
+ *  Adapted dcmsign to class OFCondition
+ *
+ *  Revision 1.2  2001/06/01 15:50:53  meichel
  *  Updated copyright header
  *
  *  Revision 1.1  2001/01/25 15:11:47  meichel

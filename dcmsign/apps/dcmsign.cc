@@ -22,8 +22,8 @@
  *  Purpose: Create and Verify DICOM Digital Signatures
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-06-01 15:50:45 $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  Update Date:      $Date: 2001-09-26 14:30:16 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -367,7 +367,7 @@ static int do_sign(
   OFBool opt_listEnforce,
   OFBool opt_revision)
 {
-  SI_E_Condition sicond = SI_EC_Normal;
+  OFCondition sicond = EC_Normal;
   DcmSignature signer;
   signer.attach(dataset);
   /* we must insert the revision UID _before_ creating the signature.
@@ -376,16 +376,16 @@ static int do_sign(
   if (opt_revision) 
   {
     sicond = signer.insertRevision();
-    if (sicond != SI_EC_Normal) 
+    if (sicond != EC_Normal) 
     {
-      CERR << "Error: " << siErrorConditionToString(sicond) << ": while inserting revision UID" << endl;
+      CERR << "Error: " << sicond.text() << ": while inserting revision UID" << endl;
       return 1;
     }
   }
   sicond = signer.createSignature(key, cert, *opt_mac, *opt_profile, EXS_LittleEndianExplicit, opt_listEnforce, opt_tagList);
-  if (sicond != SI_EC_Normal) 
+  if (sicond != EC_Normal) 
   {
-    CERR << "Error: " << siErrorConditionToString(sicond) << ": while creating signature in main dataset" << endl;
+    CERR << "Error: " << sicond.text() << ": while creating signature in main dataset" << endl;
     return 1;
   }      
   return 0;
@@ -473,7 +473,7 @@ static int do_sign_item(
   OFBool opt_listEnforce,
   OFBool opt_revision)
 {
-  SI_E_Condition sicond = SI_EC_Normal;
+  OFCondition sicond = EC_Normal;
   DcmSignature signer;
   DcmItem *sigItem = locateItemforSignatureCreation(*dataset, opt_location);
   if (sigItem == NULL) return 1;
@@ -485,18 +485,18 @@ static int do_sign_item(
   {
     signer.attach(dataset);
     sicond = signer.insertRevision();
-    if (sicond != SI_EC_Normal) 
+    if (sicond != EC_Normal) 
     {
-      CERR << "Error: " << siErrorConditionToString(sicond) << ": while inserting revision UID" << endl;
+      CERR << "Error: " << sicond.text() << ": while inserting revision UID" << endl;
       return 1;
     }
   }
   signer.detach();
   signer.attach(sigItem);
   sicond = signer.createSignature(key, cert, *opt_mac, *opt_profile, EXS_LittleEndianExplicit, opt_listEnforce, opt_tagList);
-  if (sicond != SI_EC_Normal) 
+  if (sicond != EC_Normal) 
   {
-    CERR << "Error: " << siErrorConditionToString(sicond) << ": while creating signature in item '" << opt_location << "'" << endl;
+    CERR << "Error: " << sicond.text() << ": while creating signature in item '" << opt_location << "'" << endl;
     return 1;
   }
   signer.detach();
@@ -512,7 +512,7 @@ static int do_verify(
   DcmItem *dataset,
   OFBool opt_verbose)
 {
-  SI_E_Condition sicond = SI_EC_Normal;
+  OFCondition sicond = EC_Normal;
   DcmStack stack;
   DcmSignature signer;
   OFString aString;
@@ -533,24 +533,24 @@ static int do_verify(
     numSignatures = signer.numberOfSignatures();
     for (l=0; l<numSignatures; l++)
     {
-      if (SI_EC_Normal == signer.selectSignature(l))
+      if (EC_Normal == signer.selectSignature(l))
       {
         ++counter;
         COUT <<   "Signature #" << counter << " UID=";
-        if (SI_EC_Normal == signer.getCurrentSignatureUID(aString)) COUT << aString.c_str() << endl; else COUT << "(unknown)" << endl;
+        if (EC_Normal == signer.getCurrentSignatureUID(aString)) COUT << aString.c_str() << endl; else COUT << "(unknown)" << endl;
         printSignatureItemPosition(stack, aString);
         COUT <<   "  Location                    : " << aString.c_str() << endl;
         if (opt_verbose)
         {
           COUT << "  MAC ID                      : ";
-          if (SI_EC_Normal == signer.getCurrentMacID(macID)) COUT << macID << endl; else COUT << "(unknown)" << endl;
+          if (EC_Normal == signer.getCurrentMacID(macID)) COUT << macID << endl; else COUT << "(unknown)" << endl;
           COUT << "  MAC algorithm               : ";
-          if (SI_EC_Normal == signer.getCurrentMacName(aString)) COUT << aString.c_str() << endl; else COUT << "(unknown)" << endl;
+          if (EC_Normal == signer.getCurrentMacName(aString)) COUT << aString.c_str() << endl; else COUT << "(unknown)" << endl;
           COUT << "  MAC calculation xfer syntax : ";
-          if (SI_EC_Normal == signer.getCurrentMacXferSyntaxName(aString)) COUT << aString.c_str() << endl; else COUT << "(unknown)" << endl;
+          if (EC_Normal == signer.getCurrentMacXferSyntaxName(aString)) COUT << aString.c_str() << endl; else COUT << "(unknown)" << endl;
           // data elements signed 
           COUT << "  Data elements signed        : ";
-          if (SI_EC_Normal == signer.getCurrentDataElementsSigned(at))
+          if (EC_Normal == signer.getCurrentDataElementsSigned(at))
           {
             COUT << endl;
             unsigned long atVM = at.getVM();
@@ -567,7 +567,7 @@ static int do_verify(
           } else COUT << "all elements" << endl;
 
           COUT << "  Signature date/time         : ";
-          if (SI_EC_Normal == signer.getCurrentSignatureDateTime(aString)) COUT << aString.c_str() << endl; else COUT << "(unknown)" << endl;
+          if (EC_Normal == signer.getCurrentSignatureDateTime(aString)) COUT << aString.c_str() << endl; else COUT << "(unknown)" << endl;
           COUT << "  Certificate of signer       : ";
           SiCertificate *cert = signer.getCurrentCertificate();
           if ((cert == NULL)||(cert->getKeyType()==EKT_none)) COUT << "none" << endl; else
@@ -604,16 +604,14 @@ static int do_verify(
         }
         COUT << "  Verification : ";
         sicond = signer.verifyCurrent();
-        switch (sicond)
+        if (sicond.good())
         {
-          case SI_EC_Normal:
-            COUT << "OK" << endl << endl;
-            break;
-          default: 
-            corrupt_counter++;
-            COUT << siErrorConditionToString(sicond) << endl << endl;
-            break;
-        }
+          COUT << "OK" << endl << endl;
+          break;
+        } else {
+          corrupt_counter++;
+          COUT << sicond.text() << endl << endl;
+	}
       }
     }
     signer.detach();
@@ -635,7 +633,7 @@ static int do_remove_all(
   OFBool opt_revision,
   OFBool opt_verbose)
 {
-  SI_E_Condition sicond = SI_EC_Normal;
+  OFCondition sicond = EC_Normal;
   DcmSignature signer;
   int counter = 0;  
   OFString aString;
@@ -647,17 +645,17 @@ static int do_remove_all(
     while (signer.numberOfSignatures() > 0)
     {
       ++counter;
-      if (SI_EC_Normal == signer.selectSignature(0))
+      if (EC_Normal == signer.selectSignature(0))
       {
         COUT <<   "Signature #" << counter << " UID=";
-        if (SI_EC_Normal == signer.getCurrentSignatureUID(aString)) COUT << aString.c_str() << endl; else COUT << "(unknown)" << endl;
+        if (EC_Normal == signer.getCurrentSignatureUID(aString)) COUT << aString.c_str() << endl; else COUT << "(unknown)" << endl;
         printSignatureItemPosition(stack, aString);
         COUT <<   "  Location                    : " << aString.c_str() << endl;
       }
       sicond = signer.removeSignature(0);
-      if (sicond != SI_EC_Normal) 
+      if (sicond != EC_Normal) 
       {
-        CERR << "Error: " << siErrorConditionToString(sicond) << ": while removing signature" << endl;
+        CERR << "Error: " << sicond.text() << ": while removing signature" << endl;
         return 1;
       }
     }
@@ -669,9 +667,9 @@ static int do_remove_all(
   {
     signer.attach(dataset);
     sicond = signer.insertRevision();
-    if (sicond != SI_EC_Normal) 
+    if (sicond != EC_Normal) 
     {
-      CERR << "Error: " << siErrorConditionToString(sicond) << ": while inserting revision UID" << endl;
+      CERR << "Error: " << sicond.text() << ": while inserting revision UID" << endl;
       return 1;
     }
   }
@@ -691,7 +689,7 @@ static int do_remove(
   const char *opt_location,
   OFBool opt_revision)
 {
-  SI_E_Condition sicond = SI_EC_Normal;
+  OFCondition sicond = EC_Normal;
   DcmSignature signer;
   OFString aString;
   DcmStack stack;
@@ -704,9 +702,9 @@ static int do_remove(
     cardSQ = signer.numberOfSignatures();
     for (i=0; i<cardSQ; i++)
     {
-      if (SI_EC_Normal == signer.selectSignature(i))
+      if (EC_Normal == signer.selectSignature(i))
       {
-        if (SI_EC_Normal == signer.getCurrentSignatureUID(aString)) 
+        if (EC_Normal == signer.getCurrentSignatureUID(aString)) 
         {
           if (aString == opt_location)
           {
@@ -715,9 +713,9 @@ static int do_remove(
             COUT <<   "  Location                    : " << aString.c_str() << endl;
 
             sicond = signer.removeSignature(i);
-            if (sicond != SI_EC_Normal) 
+            if (sicond != EC_Normal) 
             {
-              CERR << "Error: " << siErrorConditionToString(sicond) << ": while removing signature" << endl;
+              CERR << "Error: " << sicond.text() << ": while removing signature" << endl;
               return 1;
             } else {
               if (opt_revision) 
@@ -725,9 +723,9 @@ static int do_remove(
                 signer.detach();
                 signer.attach(dataset);
                 sicond = signer.insertRevision();
-                if (sicond != SI_EC_Normal) 
+                if (sicond != EC_Normal) 
                 {
-                  CERR << "Error: " << siErrorConditionToString(sicond) << ": while inserting revision UID" << endl;
+                  CERR << "Error: " << sicond.text() << ": while inserting revision UID" << endl;
                   return 1;
                 }
               }
@@ -1069,7 +1067,7 @@ int main(int argc, char *argv[])
   }
   DcmFileFormat *fileformat = NULL;
   DcmDataset * dataset = NULL;
-  E_Condition error = EC_Normal;
+  OFCondition sicond = EC_Normal;
 
   if (opt_iDataset)
   {
@@ -1080,7 +1078,7 @@ int main(int argc, char *argv[])
       return 1;
     }
     dataset->transferInit();
-    error = dataset -> read(inf, opt_ixfer, EGL_noChange);
+    sicond = dataset -> read(inf, opt_ixfer, EGL_noChange);
     dataset->transferEnd();
   }
   else
@@ -1092,28 +1090,27 @@ int main(int argc, char *argv[])
       return 1;
     }
     fileformat->transferInit();
-    error = fileformat -> read(inf, opt_ixfer, EGL_noChange);
+    sicond = fileformat -> read(inf, opt_ixfer, EGL_noChange);
     fileformat->transferEnd();
   }
 
-  if (error != EC_Normal) 
+  if (sicond != EC_Normal) 
   {
-    CERR << "Error: " << dcmErrorConditionToString(error) << ": reading file: " <<  opt_ifname << endl;
+    CERR << "Error: " << sicond.text() << ": reading file: " <<  opt_ifname << endl;
     return 1;
   }
   if (fileformat) dataset = fileformat -> getDataset();
   if (!fileformat && !opt_oDataset) fileformat = new DcmFileFormat(dataset);
 
-  SI_E_Condition sicond = SI_EC_Normal;
   SiCertificate cert;
   SiPrivateKey key;
     
   if (opt_certfile)
   {
     sicond = cert.loadCertificate(opt_certfile, opt_keyFileFormat);
-    if (sicond != SI_EC_Normal) 
+    if (sicond != EC_Normal) 
     {
-      CERR << "Error: " << siErrorConditionToString(sicond) << ": while loading certificate file '" << opt_certfile << "'" << endl;
+      CERR << "Error: " << sicond.text() << ": while loading certificate file '" << opt_certfile << "'" << endl;
       return 1;
     }      
   }
@@ -1122,9 +1119,9 @@ int main(int argc, char *argv[])
   {
     if (opt_passwd) key.setPrivateKeyPasswd(opt_passwd);
     sicond = key.loadPrivateKey(opt_keyfile, opt_keyFileFormat);
-    if (sicond != SI_EC_Normal) 
+    if (sicond != EC_Normal) 
     {
-      CERR << "Error: " << siErrorConditionToString(sicond) << ": while loading private key file '" << opt_keyfile << "'" << endl;
+      CERR << "Error: " << sicond.text() << ": while loading private key file '" << opt_keyfile << "'" << endl;
       return 1;
     }      
   }
@@ -1183,16 +1180,16 @@ int main(int argc, char *argv[])
     if (opt_oDataset)
     {
       dataset->transferInit();
-      error = dataset->write(outf, opt_oxfer, opt_oenctype, opt_oglenc, EPD_withoutPadding);
+      sicond = dataset->write(outf, opt_oxfer, opt_oenctype, opt_oglenc, EPD_withoutPadding);
       dataset->transferEnd();
     } else {
       fileformat->transferInit();
-      error = fileformat->write(outf, opt_oxfer, opt_oenctype, opt_oglenc, opt_opadenc, (Uint32) opt_filepad, (Uint32) opt_itempad);
+      sicond = fileformat->write(outf, opt_oxfer, opt_oenctype, opt_oglenc, opt_opadenc, (Uint32) opt_filepad, (Uint32) opt_itempad);
       fileformat->transferEnd();
     }
-    if (error != EC_Normal) 
+    if (sicond != EC_Normal) 
     {
-      CERR << "Error: " << dcmErrorConditionToString(error) << ": writing file: " <<  opt_ofname << endl;
+      CERR << "Error: " << sicond.text() << ": writing file: " <<  opt_ofname << endl;
       return 1;
     }
   }
@@ -1218,7 +1215,10 @@ int main(int, char *[])
 
 /*
  *  $Log: dcmsign.cc,v $
- *  Revision 1.6  2001-06-01 15:50:45  meichel
+ *  Revision 1.7  2001-09-26 14:30:16  meichel
+ *  Adapted dcmsign to class OFCondition
+ *
+ *  Revision 1.6  2001/06/01 15:50:45  meichel
  *  Updated copyright header
  *
  *  Revision 1.5  2001/05/25 10:08:56  meichel

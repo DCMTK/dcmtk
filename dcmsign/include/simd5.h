@@ -23,8 +23,8 @@
  *    classes: SiMD5
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-06-01 15:50:49 $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  Update Date:      $Date: 2001-09-26 14:30:20 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -59,14 +59,14 @@ public:
   /** initializes the MAC algorithm.
    *  @return status code
    */
-  virtual SI_E_Condition initialize();
+  virtual OFCondition initialize();
   
   /** feeds data into the MAC algorithm
    *  @param data pointer to raw data to be fed into the MAC, must not be NULL
    *  @param length number of bytes in raw data array
    *  @return status code
    */
-  virtual SI_E_Condition digest(const unsigned char *data, unsigned long length);
+  virtual OFCondition digest(const unsigned char *data, unsigned long length);
   
   /** finalizes the MAC and writes it to the given output array,
    *  which must be at least getSize() bytes large.
@@ -75,7 +75,7 @@ public:
    *  @param result pointer to array of getSize() bytes into which the MAC is written
    *  @return status code
    */
-  virtual SI_E_Condition finalize(unsigned char *result);
+  virtual OFCondition finalize(unsigned char *result);
 
   /** returns the size of a MAC in bytes.
    *  @return block size for this MAC algorithm
@@ -109,7 +109,10 @@ private:
 
 /*
  *  $Log: simd5.h,v $
- *  Revision 1.2  2001-06-01 15:50:49  meichel
+ *  Revision 1.3  2001-09-26 14:30:20  meichel
+ *  Adapted dcmsign to class OFCondition
+ *
+ *  Revision 1.2  2001/06/01 15:50:49  meichel
  *  Updated copyright header
  *
  *  Revision 1.1  2000/11/07 16:48:56  meichel

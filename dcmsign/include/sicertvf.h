@@ -23,8 +23,8 @@
  *    classes: SiCertificateVerifier
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-06-01 15:50:47 $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  Update Date:      $Date: 2001-09-26 14:30:19 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -61,7 +61,7 @@ public:
    *  @param filetype file format: X509_FILETYPE_PEM or X509_FILETYPE_ASN1
    *  @return SI_EC_Normal if successful, an error code otherwise
    */  
-  SI_E_Condition addTrustedCertificateFile(const char *fileName, int fileType);
+  OFCondition addTrustedCertificateFile(const char *fileName, int fileType);
 
   /** loads all files as certificates from the specified directory and adds them
    *  to the pool of trusted certificates.
@@ -69,7 +69,7 @@ public:
    *  @param filetype file format: X509_FILETYPE_PEM or X509_FILETYPE_ASN1
    *  @return SI_EC_Normal if successful, an error code otherwise
    */
-  SI_E_Condition addTrustedCertificateDir(const char *pathName, int fileType);
+  OFCondition addTrustedCertificateDir(const char *pathName, int fileType);
 
   /** loads a certificate revocation list (CRL) in X.509 format from a file and 
    *  adds it to the pool of trusted certificates and CRLs.
@@ -77,7 +77,7 @@ public:
    *  @param filetype file format: X509_FILETYPE_PEM or X509_FILETYPE_ASN1
    *  @return SI_EC_Normal if successful, an error code otherwise
    */  
-  SI_E_Condition addCertificateRevocationList(const char *fileName, int fileType);
+  OFCondition addCertificateRevocationList(const char *fileName, int fileType);
 
   /** verifies a certificate against the known trusted CA certificates
    *  and certificate revocation lists. Returns a status flag and stores
@@ -86,7 +86,7 @@ public:
    *  @return SI_EC_Normal if successful, an error code otherwise.
    *     If the certificate could not be verified, returns SI_EC_VerificationFailed_NoTrust.
    */
-  SI_E_Condition verifyCertificate(SiCertificate& certificate);
+  OFCondition verifyCertificate(SiCertificate& certificate);
 
   /** returns an error string containing a textual description of the result
    *  of the last call to verifyCertificate() if that call returned 
@@ -116,7 +116,10 @@ private:
 
 /*
  *  $Log: sicertvf.h,v $
- *  Revision 1.2  2001-06-01 15:50:47  meichel
+ *  Revision 1.3  2001-09-26 14:30:19  meichel
+ *  Adapted dcmsign to class OFCondition
+ *
+ *  Revision 1.2  2001/06/01 15:50:47  meichel
  *  Updated copyright header
  *
  *  Revision 1.1  2001/01/25 15:11:43  meichel

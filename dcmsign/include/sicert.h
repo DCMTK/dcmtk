@@ -23,8 +23,8 @@
  *    classes: SiCertificate
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-06-01 15:50:47 $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  Update Date:      $Date: 2001-09-26 14:30:19 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -64,21 +64,21 @@ public:
    *  @param filetype file format: X509_FILETYPE_PEM or X509_FILETYPE_ASN1
    *  @return status code
    */
-  SI_E_Condition loadCertificate(const char *filename, int filetype);
+  OFCondition loadCertificate(const char *filename, int filetype);
 
   /** reads an X.509 certificate from an item of the Digital Signatures Sequence
    *  and checks the certificate type information in the item.
    *  @param item item of the DigitalSignatureSQ from which the certificate is read
    *  @return status code
    */
-  E_Condition read(DcmItem& item);
+  OFCondition read(DcmItem& item);
 
   /** writes the current X.509 certificate into an item of the Digital Signatures Sequence
    *  and creates the certificate type information in the item.
    *  @param item item of the DigitalSignatureSQ to which the certificate is written
-   *  @return dcmdata E_Condition status code
+   *  @return dcmdata OFCondition status code
    */
-  E_Condition write(DcmItem& item);
+  OFCondition write(DcmItem& item);
   
   /** returns the type of public key stored in this certificate
    */
@@ -157,7 +157,10 @@ private:
 
 /*
  *  $Log: sicert.h,v $
- *  Revision 1.2  2001-06-01 15:50:47  meichel
+ *  Revision 1.3  2001-09-26 14:30:19  meichel
+ *  Adapted dcmsign to class OFCondition
+ *
+ *  Revision 1.2  2001/06/01 15:50:47  meichel
  *  Updated copyright header
  *
  *  Revision 1.1  2000/11/07 16:48:53  meichel

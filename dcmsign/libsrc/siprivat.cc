@@ -23,8 +23,8 @@
  *    classes: SiPrivateKey
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-06-01 15:50:54 $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  Update Date:      $Date: 2001-09-26 14:30:25 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -97,9 +97,9 @@ void SiPrivateKey::setPrivateKeyPasswdFromConsole()
 }
 
 
-SI_E_Condition SiPrivateKey::loadPrivateKey(const char *filename, int filetype)
+OFCondition SiPrivateKey::loadPrivateKey(const char *filename, int filetype)
 {
-  SI_E_Condition result = SI_EC_CannotRead;  
+  OFCondition result = SI_EC_CannotRead;  
   if (pkey) EVP_PKEY_free(pkey);
   pkey = NULL;
   if (filename)
@@ -113,12 +113,12 @@ SI_E_Condition SiPrivateKey::loadPrivateKey(const char *filename, int filetype)
         {
           // ASN.1/DER encoded keys are never encrypted, thus no callback here.
           pkey = d2i_PrivateKey_bio(in, NULL);
-          if (pkey) result = SI_EC_Normal;
+          if (pkey) result = EC_Normal;
         } else {
           if (usePrivateKeyPassword)
             pkey = PEM_read_bio_PrivateKey(in, NULL, SiPrivateKey_passwordCallback, &privateKeyPasswd);
             else pkey = PEM_read_bio_PrivateKey(in, NULL, NULL, NULL);  // read password from console
-          if (pkey) result = SI_EC_Normal;
+          if (pkey) result = EC_Normal;
         }
       }
       BIO_free(in);
@@ -192,7 +192,10 @@ const int siprivat_cc_dummy_to_keep_linker_from_moaning = 0;
 
 /*
  *  $Log: siprivat.cc,v $
- *  Revision 1.3  2001-06-01 15:50:54  meichel
+ *  Revision 1.4  2001-09-26 14:30:25  meichel
+ *  Adapted dcmsign to class OFCondition
+ *
+ *  Revision 1.3  2001/06/01 15:50:54  meichel
  *  Updated copyright header
  *
  *  Revision 1.2  2000/11/14 13:54:20  meichel

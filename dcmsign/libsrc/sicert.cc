@@ -23,8 +23,8 @@
  *    classes: SiCertificate
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-06-01 15:50:53 $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  Update Date:      $Date: 2001-09-26 14:30:24 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -115,9 +115,9 @@ SiAlgorithm *SiCertificate::createAlgorithmForPublicKey()
   return NULL;
 }
 
-SI_E_Condition SiCertificate::loadCertificate(const char *filename, int filetype)
+OFCondition SiCertificate::loadCertificate(const char *filename, int filetype)
 {
-  SI_E_Condition result = SI_EC_CannotRead;  
+  OFCondition result = SI_EC_CannotRead;  
   if (x509) X509_free(x509);	
   x509 = NULL;
   if (filename)
@@ -130,10 +130,10 @@ SI_E_Condition SiCertificate::loadCertificate(const char *filename, int filetype
         if (filetype == X509_FILETYPE_ASN1)
         {
           x509 = d2i_X509_bio(in, NULL);
-          if (x509) result = SI_EC_Normal;
+          if (x509) result = EC_Normal;
         } else {
           x509 = PEM_read_bio_X509(in, NULL, NULL, NULL);
-          if (x509) result = SI_EC_Normal;
+          if (x509) result = EC_Normal;
         }
       }
       BIO_free(in);
@@ -143,9 +143,9 @@ SI_E_Condition SiCertificate::loadCertificate(const char *filename, int filetype
 }
 
 
-E_Condition SiCertificate::read(DcmItem& item)
+OFCondition SiCertificate::read(DcmItem& item)
 {
-  E_Condition result = EC_Normal;
+  OFCondition result = EC_Normal;
   OFString aString;
   DcmStack stack;
   if (EC_Normal == (result = item.search(DCM_CertificateType, stack, ESM_fromHere, OFFalse)))
@@ -174,11 +174,11 @@ E_Condition SiCertificate::read(DcmItem& item)
   return result;
 }
 
-E_Condition SiCertificate::write(DcmItem& item)
+OFCondition SiCertificate::write(DcmItem& item)
 {
   if (x509 == NULL) return EC_IllegalCall;
 
-  E_Condition result = EC_Normal;
+  OFCondition result = EC_Normal;
   DcmElement *elem = new DcmCodeString(DCM_CertificateType);
   if (elem)
   {
@@ -306,7 +306,10 @@ const int sicert_cc_dummy_to_keep_linker_from_moaning = 0;
 
 /*
  *  $Log: sicert.cc,v $
- *  Revision 1.4  2001-06-01 15:50:53  meichel
+ *  Revision 1.5  2001-09-26 14:30:24  meichel
+ *  Adapted dcmsign to class OFCondition
+ *
+ *  Revision 1.4  2001/06/01 15:50:53  meichel
  *  Updated copyright header
  *
  *  Revision 1.3  2001/01/25 15:11:47  meichel

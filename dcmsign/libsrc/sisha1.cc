@@ -23,8 +23,8 @@
  *    classes: SiSHA1
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-06-01 15:50:55 $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  Update Date:      $Date: 2001-09-26 14:30:26 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -36,6 +36,7 @@
 #ifdef WITH_OPENSSL
 
 #include "sisha1.h"
+#include "dcerror.h"
 
 BEGIN_EXTERN_C
 #include <stdlib.h> /* for NULL */
@@ -59,25 +60,25 @@ unsigned long SiSHA1::getSize() const
   return SHA_DIGEST_LENGTH;
 }
 
-SI_E_Condition SiSHA1::initialize()
+OFCondition SiSHA1::initialize()
 {
   SHA1_Init(ctx);
-  return SI_EC_Normal;
+  return EC_Normal;
 }
 
-SI_E_Condition SiSHA1::digest(const unsigned char *data, unsigned long length)
+OFCondition SiSHA1::digest(const unsigned char *data, unsigned long length)
 {
-  if (length == 0) return SI_EC_Normal;
-  if ((data == NULL)||(ctx == NULL)) return SI_EC_IllegalCall;
+  if (length == 0) return EC_Normal;
+  if ((data == NULL)||(ctx == NULL)) return EC_IllegalCall;
   SHA1_Update(ctx, data, length);
-  return SI_EC_Normal;
+  return EC_Normal;
 }
 
-SI_E_Condition SiSHA1::finalize(unsigned char *result)
+OFCondition SiSHA1::finalize(unsigned char *result)
 {
-  if ((result == NULL)||(ctx == NULL)) return SI_EC_IllegalCall;
+  if ((result == NULL)||(ctx == NULL)) return EC_IllegalCall;
   SHA1_Final(result, ctx);
-  return SI_EC_Normal;  
+  return EC_Normal;  
 }
 
 E_MACType SiSHA1::macType() const
@@ -98,7 +99,10 @@ const int sisha1_cc_dummy_to_keep_linker_from_moaning = 0;
 
 /*
  *  $Log: sisha1.cc,v $
- *  Revision 1.2  2001-06-01 15:50:55  meichel
+ *  Revision 1.3  2001-09-26 14:30:26  meichel
+ *  Adapted dcmsign to class OFCondition
+ *
+ *  Revision 1.2  2001/06/01 15:50:55  meichel
  *  Updated copyright header
  *
  *  Revision 1.1  2000/11/07 16:49:08  meichel

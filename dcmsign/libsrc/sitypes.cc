@@ -23,8 +23,8 @@
  *    consts, typedefs and enums for dcmsign
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-06-01 15:50:56 $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  Update Date:      $Date: 2001-09-26 14:30:27 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -36,71 +36,41 @@
 #ifdef WITH_OPENSSL
 
 #include "sitypes.h"
+#include "dcerror.h" /* for OFM_dcmsign */
 
-const char *siErrorConditionToString(SI_E_Condition cond) 
-{
-  switch (cond)
-  {
-    case SI_EC_Normal:
-      return "no error";
-      /* break; */
-    case SI_EC_InitializationFailed:
-      return "object initialization failed";
-      /* break; */
-    case SI_EC_IllegalCall:
-      return "invalid parameter passed";
-      /* break; */
-    case SI_EC_OpenSSLFailure:
-      return "an OpenSSL call has failed";
-      /* break; */
-    case SI_EC_CannotRead:
-      return "file cannot be read";
-      /* break; */
-    case SI_EC_MemoryExhausted:
-      return "unable to allocate memory";
-      /* break; */
-    case SI_EC_DcmDataFailure:
-      return "a dcmdata call has failed";
-      /* break; */
-    case SI_EC_WrongTransferSyntax:
-      return "unable to use the selected transfer syntax for MAC computation";
-      /* break; */
-    case SI_EC_MacIDsExhausted:
-      return "no more MAC ID numbers available";
-      /* break; */
-    case SI_EC_CertificateDoesNotMatchPrivateKey:
-      return "certificate and private key do not match";
-      /* break; */
-    case SI_EC_MacDoesNotMatchProfile:
-      return "MAC algorithm not allowed for the selected security profile";
-      /* break; */
-    case SI_EC_AlgorithmDoesNotMatchProfile:
-      return "signature algorithm not allowed for the selected security profile";
-      /* break; */
-    case SI_EC_TransferSyntaxDoesNotMatchProfile:
-      return "transfer syntax not allowed for the selected security profile";
-      /* break; */
-    case SI_EC_VerificationFailed_NoCertificate:
-      return "signature verification failed: certificate is missing or unreadable";
-      /* break; */
-    case SI_EC_VerificationFailed_NoMAC:
-      return "signature verification failed: MAC parameters not be found or incomplete";
-      /* break; */
-    case SI_EC_VerificationFailed_NoSignature:
-      return "signature verification failed: signature item incomplete";
-      /* break; */
-    case SI_EC_VerificationFailed_UnsupportedMACAlgorithm:
-      return "signature verification failed: the MAC algorithm not supported";
-      /* break; */
-    case SI_EC_VerificationFailed_Corrupted:
-      return "signature verification failed: signature is invalid (document corrupted)";
-      /* break; */
-    case SI_EC_VerificationFailed_NoTrust:
-      return "signature verification failed: certificate issued by unknown CA";
-      /* break; */
-  }
-  return "unknown dcmsign error";
-}
+const OFConditionConst SI_ECC_InitializationFailed(                       OFM_dcmsign,  1, OF_error, "object initialization failed");
+const OFConditionConst SI_ECC_OpenSSLFailure(                             OFM_dcmsign,  2, OF_error, "an OpenSSL call has failed");
+const OFConditionConst SI_ECC_CannotRead(                                 OFM_dcmsign,  3, OF_error, "file cannot be read");
+const OFConditionConst SI_ECC_WrongTransferSyntax(                        OFM_dcmsign,  4, OF_error, "unable to use the selected transfer syntax for MAC computation");
+const OFConditionConst SI_ECC_MacIDsExhausted(                            OFM_dcmsign,  5, OF_error, "no more MAC ID numbers available");
+const OFConditionConst SI_ECC_CertificateDoesNotMatchPrivateKey(          OFM_dcmsign,  6, OF_error, "certificate and private key do not match");
+const OFConditionConst SI_ECC_MacDoesNotMatchProfile(                     OFM_dcmsign,  7, OF_error, "MAC algorithm not allowed for the selected security profile");
+const OFConditionConst SI_ECC_AlgorithmDoesNotMatchProfile(               OFM_dcmsign,  8, OF_error, "signature algorithm not allowed for the selected security profile");
+const OFConditionConst SI_ECC_TransferSyntaxDoesNotMatchProfile(          OFM_dcmsign,  9, OF_error, "transfer syntax not allowed for the selected security profile");
+const OFConditionConst SI_ECC_VerificationFailed_NoCertificate(           OFM_dcmsign, 10, OF_error, "signature verification failed: certificate is missing or unreadable");
+const OFConditionConst SI_ECC_VerificationFailed_NoMAC(                   OFM_dcmsign, 11, OF_error, "signature verification failed: MAC parameters not be found or incomplete");
+const OFConditionConst SI_ECC_VerificationFailed_NoSignature(             OFM_dcmsign, 12, OF_error, "signature verification failed: signature item incomplete");
+const OFConditionConst SI_ECC_VerificationFailed_UnsupportedMACAlgorithm( OFM_dcmsign, 13, OF_error, "signature verification failed: the MAC algorithm not supported");
+const OFConditionConst SI_ECC_VerificationFailed_Corrupted(               OFM_dcmsign, 14, OF_error, "signature verification failed: signature is invalid (document corrupted)");
+const OFConditionConst SI_ECC_VerificationFailed_NoTrust(                 OFM_dcmsign, 16, OF_error, "signature verification failed: certificate issued by unknown CA");
+
+const OFCondition SI_EC_InitializationFailed(                       SI_ECC_InitializationFailed);
+const OFCondition SI_EC_OpenSSLFailure(                             SI_ECC_OpenSSLFailure);
+const OFCondition SI_EC_CannotRead(                                 SI_ECC_CannotRead);
+const OFCondition SI_EC_WrongTransferSyntax(                        SI_ECC_WrongTransferSyntax);
+const OFCondition SI_EC_MacIDsExhausted(                            SI_ECC_MacIDsExhausted);
+const OFCondition SI_EC_CertificateDoesNotMatchPrivateKey(          SI_ECC_CertificateDoesNotMatchPrivateKey);
+const OFCondition SI_EC_MacDoesNotMatchProfile(                     SI_ECC_MacDoesNotMatchProfile);
+const OFCondition SI_EC_AlgorithmDoesNotMatchProfile(               SI_ECC_AlgorithmDoesNotMatchProfile);
+const OFCondition SI_EC_TransferSyntaxDoesNotMatchProfile(          SI_ECC_TransferSyntaxDoesNotMatchProfile);
+const OFCondition SI_EC_VerificationFailed_NoCertificate(           SI_ECC_VerificationFailed_NoCertificate);
+const OFCondition SI_EC_VerificationFailed_NoMAC(                   SI_ECC_VerificationFailed_NoMAC);
+const OFCondition SI_EC_VerificationFailed_NoSignature(             SI_ECC_VerificationFailed_NoSignature);
+const OFCondition SI_EC_VerificationFailed_UnsupportedMACAlgorithm( SI_ECC_VerificationFailed_UnsupportedMACAlgorithm);
+const OFCondition SI_EC_VerificationFailed_Corrupted(               SI_ECC_VerificationFailed_Corrupted);
+const OFCondition SI_EC_VerificationFailed_NoTrust(                 SI_ECC_VerificationFailed_NoTrust);
+
+
 
 #else /* WITH_OPENSSL */
 
@@ -110,7 +80,10 @@ const int sitypes_cc_dummy_to_keep_linker_from_moaning = 0;
 
 /*
  *  $Log: sitypes.cc,v $
- *  Revision 1.3  2001-06-01 15:50:56  meichel
+ *  Revision 1.4  2001-09-26 14:30:27  meichel
+ *  Adapted dcmsign to class OFCondition
+ *
+ *  Revision 1.3  2001/06/01 15:50:56  meichel
  *  Updated copyright header
  *
  *  Revision 1.2  2001/01/25 15:11:48  meichel

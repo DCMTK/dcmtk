@@ -23,8 +23,8 @@
  *    classes: SiRSA
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-06-01 15:50:55 $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  Update Date:      $Date: 2001-09-26 14:30:26 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -56,7 +56,7 @@ SiRSA::~SiRSA()
 }
 
 
-SI_E_Condition SiRSA::sign(
+OFCondition SiRSA::sign(
     const unsigned char *inputHash, 
     unsigned long inputHashSize,
     E_MACType inputHashAlgorithm,
@@ -82,11 +82,11 @@ SI_E_Condition SiRSA::sign(
     int error = RSA_sign(openSSLmac, (unsigned char *)inputHash, (unsigned int)inputHashSize, outputSignature, &sigLen, rsa);
     outputSignatureSize = sigLen;    
     if (error < 0) return SI_EC_OpenSSLFailure;
-    return SI_EC_Normal;    
+    return EC_Normal;    
 }
 
 
-SI_E_Condition SiRSA::verify(
+OFCondition SiRSA::verify(
     const unsigned char *inputHash, 
     unsigned long inputHashSize,
     E_MACType inputHashAlgorithm,
@@ -114,7 +114,7 @@ SI_E_Condition SiRSA::verify(
     // we have to cast away const on inputSignature yet because of OpenSSL limitations
     int error = RSA_verify(openSSLmac, (unsigned char *)inputHash, (unsigned int)inputHashSize, (unsigned char *)inputSignature, (unsigned int)inputSignatureSize, rsa);
     if (error < 0) return SI_EC_OpenSSLFailure; else if (error > 0) verified = OFTrue;
-    return SI_EC_Normal;
+    return EC_Normal;
 }
 
 unsigned long SiRSA::getSize() const
@@ -137,7 +137,10 @@ const int sirsa_cc_dummy_to_keep_linker_from_moaning = 0;
 
 /*
  *  $Log: sirsa.cc,v $
- *  Revision 1.3  2001-06-01 15:50:55  meichel
+ *  Revision 1.4  2001-09-26 14:30:26  meichel
+ *  Adapted dcmsign to class OFCondition
+ *
+ *  Revision 1.3  2001/06/01 15:50:55  meichel
  *  Updated copyright header
  *
  *  Revision 1.2  2000/11/07 18:07:09  joergr

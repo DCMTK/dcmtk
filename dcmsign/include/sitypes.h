@@ -23,8 +23,8 @@
  *    consts, typedefs and enums for dcmsign
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-06-01 15:50:51 $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  Update Date:      $Date: 2001-09-26 14:30:23 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -39,7 +39,7 @@
 #ifdef WITH_OPENSSL
 
 #include "oftypes.h"
-#include "dctypes.h"
+#include "ofcond.h"
 
 // DICOM defined terms for MAC algorithms, certificate and timestamp types
 #define SI_DEFTERMS_RIPEMD160 "RIPEMD160"
@@ -97,83 +97,66 @@ enum E_MACType
 };
 
 
-/** dcmsign error condition
+/*
+ * specific error conditions for module dcmsign
  */
-enum SI_E_Condition
-{
-    /// no error
-    SI_EC_Normal,
-    
-    /// object initialization failed
-    SI_EC_InitializationFailed,
-    
-    /// invalid parameter passed
-    SI_EC_IllegalCall,
-    
-    /// an OpenSSL call has failed
-    SI_EC_OpenSSLFailure,
-    
-    /// file cannot be read
-    SI_EC_CannotRead,
-    
-    /// unable to allocate memory
-    SI_EC_MemoryExhausted,
-    
-    /// a dcmdata call has failed
-    SI_EC_DcmDataFailure,
  
-    /// unable to use the selected transfer syntax for MAC computation
-    SI_EC_WrongTransferSyntax,
-    
-    /// no more MAC ID numbers available
-    SI_EC_MacIDsExhausted,
-    
-    /// certificate and private key do not match
-    SI_EC_CertificateDoesNotMatchPrivateKey,
-    
-    /// MAC algorithm not allowed for the current security profile
-    SI_EC_MacDoesNotMatchProfile,
-    
-    /// Signature algorithm not allowed for the current security profile
-    SI_EC_AlgorithmDoesNotMatchProfile,
+/// object initialization failed
+extern const OFCondition SI_EC_InitializationFailed;
 
-    /// Transfer syntax not allowed for the current security profile
-    SI_EC_TransferSyntaxDoesNotMatchProfile,
+/// an OpenSSL call has failed
+extern const OFCondition SI_EC_OpenSSLFailure;
 
-    /** signature verification failed because the certificate is missing
-     *  or cannot be read (e.g. unsupported format)
-     */
-    SI_EC_VerificationFailed_NoCertificate,
+/// file cannot be read
+extern const OFCondition SI_EC_CannotRead;
 
-    /// signature verification failed because the corresponding MAC parameters item could not be found or is incomplete
-    SI_EC_VerificationFailed_NoMAC,
+/// unable to use the selected transfer syntax for MAC computation
+extern const OFCondition SI_EC_WrongTransferSyntax;
 
-    /// signature verification failed because the corresponding signature item is incomplete
-    SI_EC_VerificationFailed_NoSignature,
+/// no more MAC ID numbers available
+extern const OFCondition SI_EC_MacIDsExhausted;
 
-    /// signature verification failed because the MAC algorithm is not supported
-    SI_EC_VerificationFailed_UnsupportedMACAlgorithm,
+/// certificate and private key do not match
+extern const OFCondition SI_EC_CertificateDoesNotMatchPrivateKey;
 
-    /// signature verification failed because the signature is invalid (document corrupted)
-    SI_EC_VerificationFailed_Corrupted,
+/// MAC algorithm not allowed for the current security profile
+extern const OFCondition SI_EC_MacDoesNotMatchProfile;
 
-    /// signature verification failed because the certificate was issued by an untrusted (unknown) CA
-    SI_EC_VerificationFailed_NoTrust
-        
-};
+/// Signature algorithm not allowed for the current security profile
+extern const OFCondition SI_EC_AlgorithmDoesNotMatchProfile;
 
-/** returns a string text for each dcmsign error condition
- *  @param cond error condition
- *  @return textual description
+/// Transfer syntax not allowed for the current security profile
+extern const OFCondition SI_EC_TransferSyntaxDoesNotMatchProfile;
+
+/** signature verification failed because the certificate is missing
+ *  or cannot be read (e.g. unsupported format)
  */
-const char *siErrorConditionToString(SI_E_Condition cond);
+extern const OFCondition SI_EC_VerificationFailed_NoCertificate;
+
+/// signature verification failed because the corresponding MAC parameters item could not be found or is incomplete
+extern const OFCondition SI_EC_VerificationFailed_NoMAC;
+
+/// signature verification failed because the corresponding signature item is incomplete
+extern const OFCondition SI_EC_VerificationFailed_NoSignature;
+
+/// signature verification failed because the MAC algorithm is not supported
+extern const OFCondition SI_EC_VerificationFailed_UnsupportedMACAlgorithm;
+
+/// signature verification failed because the signature is invalid (document corrupted)
+extern const OFCondition SI_EC_VerificationFailed_Corrupted;
+
+/// signature verification failed because the certificate was issued by an untrusted (unknown) CA
+extern const OFCondition SI_EC_VerificationFailed_NoTrust;
 
 #endif
 #endif
 
 /*
  *  $Log: sitypes.h,v $
- *  Revision 1.3  2001-06-01 15:50:51  meichel
+ *  Revision 1.4  2001-09-26 14:30:23  meichel
+ *  Adapted dcmsign to class OFCondition
+ *
+ *  Revision 1.3  2001/06/01 15:50:51  meichel
  *  Updated copyright header
  *
  *  Revision 1.2  2001/01/25 15:11:44  meichel

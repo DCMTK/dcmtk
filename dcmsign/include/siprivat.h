@@ -23,8 +23,8 @@
  *    classes: SiPrivateKey
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-06-01 15:50:50 $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  Update Date:      $Date: 2001-09-26 14:30:21 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -78,7 +78,7 @@ public:
    *  @param filetype file format: X509_FILETYPE_PEM or X509_FILETYPE_ASN1
    *  @return status code
    */
-  SI_E_Condition loadPrivateKey(const char *filename, int filetype);
+  OFCondition loadPrivateKey(const char *filename, int filetype);
 
   /** returns the type of public key stored in this certificate
    */
@@ -121,7 +121,10 @@ private:
 
 /*
  *  $Log: siprivat.h,v $
- *  Revision 1.2  2001-06-01 15:50:50  meichel
+ *  Revision 1.3  2001-09-26 14:30:21  meichel
+ *  Adapted dcmsign to class OFCondition
+ *
+ *  Revision 1.2  2001/06/01 15:50:50  meichel
  *  Updated copyright header
  *
  *  Revision 1.1  2000/11/07 16:48:57  meichel

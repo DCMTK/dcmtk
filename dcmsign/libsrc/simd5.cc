@@ -23,8 +23,8 @@
  *    classes: SiMD5
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-06-01 15:50:54 $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  Update Date:      $Date: 2001-09-26 14:30:25 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -36,6 +36,7 @@
 #ifdef WITH_OPENSSL
 
 #include "simd5.h"
+#include "dcerror.h"
 
 BEGIN_EXTERN_C
 #include <stdlib.h> /* for NULL */
@@ -59,25 +60,25 @@ unsigned long SiMD5::getSize() const
   return MD5_DIGEST_LENGTH;
 }
 
-SI_E_Condition SiMD5::initialize()
+OFCondition SiMD5::initialize()
 {
   MD5_Init(ctx);
-  return SI_EC_Normal;
+  return EC_Normal;
 }
 
-SI_E_Condition SiMD5::digest(const unsigned char *data, unsigned long length)
+OFCondition SiMD5::digest(const unsigned char *data, unsigned long length)
 {
-  if (length == 0) return SI_EC_Normal;
-  if ((data == NULL)||(ctx == NULL)) return SI_EC_IllegalCall;
+  if (length == 0) return EC_Normal;
+  if ((data == NULL)||(ctx == NULL)) return EC_IllegalCall;
   MD5_Update(ctx, data, length);
-  return SI_EC_Normal;
+  return EC_Normal;
 }
 
-SI_E_Condition SiMD5::finalize(unsigned char *result)
+OFCondition SiMD5::finalize(unsigned char *result)
 {
-  if ((result == NULL)||(ctx == NULL)) return SI_EC_IllegalCall;
+  if ((result == NULL)||(ctx == NULL)) return EC_IllegalCall;
   MD5_Final(result, ctx);
-  return SI_EC_Normal;  
+  return EC_Normal;  
 }
 
 E_MACType SiMD5::macType() const
@@ -99,7 +100,10 @@ const int simd5_cc_dummy_to_keep_linker_from_moaning = 0;
 
 /*
  *  $Log: simd5.cc,v $
- *  Revision 1.2  2001-06-01 15:50:54  meichel
+ *  Revision 1.3  2001-09-26 14:30:25  meichel
+ *  Adapted dcmsign to class OFCondition
+ *
+ *  Revision 1.2  2001/06/01 15:50:54  meichel
  *  Updated copyright header
  *
  *  Revision 1.1  2000/11/07 16:49:05  meichel

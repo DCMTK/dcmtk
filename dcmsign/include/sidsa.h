@@ -23,8 +23,8 @@
  *    classes: SiDSA
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-06-01 15:50:48 $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  Update Date:      $Date: 2001-09-26 14:30:20 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -70,7 +70,7 @@ public:
    *  @param outputSignatureSize returns the number of bytes written to outputSignature.
    *  @return SI_EC_Normal if successful, errorcode otherwise.
    */
-  virtual SI_E_Condition sign(
+  virtual OFCondition sign(
     const unsigned char *inputHash, 
     unsigned long inputHashSize,
     E_MACType inputHashAlgorithm,
@@ -86,7 +86,7 @@ public:
    *  @param verified returns whether the signature was successfully verified
    *  @return SI_EC_Normal if successful, errorcode otherwise.
    */
-  virtual SI_E_Condition verify(
+  virtual OFCondition verify(
     const unsigned char *inputHash, 
     unsigned long inputHashSize,
     E_MACType inputHashAlgorithm,
@@ -126,7 +126,10 @@ private:
 
 /*
  *  $Log: sidsa.h,v $
- *  Revision 1.2  2001-06-01 15:50:48  meichel
+ *  Revision 1.3  2001-09-26 14:30:20  meichel
+ *  Adapted dcmsign to class OFCondition
+ *
+ *  Revision 1.2  2001/06/01 15:50:48  meichel
  *  Updated copyright header
  *
  *  Revision 1.1  2000/11/07 16:48:54  meichel

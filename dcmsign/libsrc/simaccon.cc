@@ -23,8 +23,8 @@
  *    classes: SiMACConstructor
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-06-01 15:50:54 $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  Update Date:      $Date: 2001-09-26 14:30:25 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -61,9 +61,9 @@ void SiMACConstructor::setDumpFile(FILE *f)
 }
 
 
-SI_E_Condition SiMACConstructor::flushBuffer(SiMAC& mac)
+OFCondition SiMACConstructor::flushBuffer(SiMAC& mac)
 {
-  SI_E_Condition result = SI_EC_Normal;
+  OFCondition result = EC_Normal;
   void *bufptr = NULL;
   Uint32 bufLen = 0;
   stream.GetBuffer(bufptr, bufLen);
@@ -76,20 +76,18 @@ SI_E_Condition SiMACConstructor::flushBuffer(SiMAC& mac)
 }
 
 
-SI_E_Condition SiMACConstructor::encodeElement(DcmElement *element, SiMAC& mac, E_TransferSyntax oxfer)
+OFCondition SiMACConstructor::encodeElement(DcmElement *element, SiMAC& mac, E_TransferSyntax oxfer)
 {
-  if (element == NULL) return SI_EC_IllegalCall;
-  SI_E_Condition result = SI_EC_Normal;
-  E_Condition cond = EC_Normal;
+  if (element == NULL) return EC_IllegalCall;
+  OFCondition result = EC_Normal;
   OFBool last = OFFalse;
   while (!last) 
   {
-    cond = element->writeSignatureFormat(stream, oxfer, EET_ExplicitLength);
-    if (cond == EC_StreamNotifyClient) result = flushBuffer(mac); 
+    result = element->writeSignatureFormat(stream, oxfer, EET_ExplicitLength);
+    if (result == EC_StreamNotifyClient) result = flushBuffer(mac); 
     else 
     {
       last=OFTrue;
-      if (EC_Normal != cond) result = SI_EC_DcmDataFailure;
     }
   }    
   return result;
@@ -112,7 +110,7 @@ OFBool SiMACConstructor::inTagList(const DcmElement *element, DcmAttributeTag *t
 }
 
 
-SI_E_Condition SiMACConstructor::encodeDataset(
+OFCondition SiMACConstructor::encodeDataset(
   DcmItem& item, 
   SiMAC& mac, 
   E_TransferSyntax oxfer,
@@ -121,22 +119,22 @@ SI_E_Condition SiMACConstructor::encodeDataset(
 {
   tagListOut.clear();
   if (! item.canWriteXfer(oxfer, EXS_Unknown)) return SI_EC_WrongTransferSyntax;  
-  SI_E_Condition result = SI_EC_Normal;
+  OFCondition result = EC_Normal;
   item.transferInit();
   unsigned long numElements = item.card();
   DcmElement *element;
   for (unsigned long i=0; i < numElements; i++)
   {
     element = item.getElement(i);    
-    if ((SI_EC_Normal == result) && (inTagList(element, tagListIn))) 
+    if ((EC_Normal == result) && (inTagList(element, tagListIn))) 
     {
       // if the element is signable, we should encode it
       if (element->getTag().isSignable())
       {
         result = encodeElement(element, mac, oxfer);
-        if (SI_EC_Normal == result)
+        if (EC_Normal == result)
         {
-          if (EC_Normal != tagListOut.putTagVal(element->getTag(), tagListOut.getVM())) result = SI_EC_DcmDataFailure;
+          result = tagListOut.putTagVal(element->getTag(), tagListOut.getVM());
         }
       }
     }
@@ -156,7 +154,10 @@ const int simaccon_cc_dummy_to_keep_linker_from_moaning = 0;
 
 /*
  *  $Log: simaccon.cc,v $
- *  Revision 1.3  2001-06-01 15:50:54  meichel
+ *  Revision 1.4  2001-09-26 14:30:25  meichel
+ *  Adapted dcmsign to class OFCondition
+ *
+ *  Revision 1.3  2001/06/01 15:50:54  meichel
  *  Updated copyright header
  *
  *  Revision 1.2  2000/11/07 18:07:08  joergr

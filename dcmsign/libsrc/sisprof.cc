@@ -23,8 +23,8 @@
  *    classes: SiSecurityProfile
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-06-01 15:50:56 $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  Update Date:      $Date: 2001-09-26 14:30:26 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -53,9 +53,9 @@ OFBool SiSecurityProfile::isAllowableAlgorithm(const SiAlgorithm& algo) const
 }
 
 
-SI_E_Condition SiSecurityProfile::updateAttributeList(DcmItem &item, DcmAttributeTag& tagList)
+OFCondition SiSecurityProfile::updateAttributeList(DcmItem &item, DcmAttributeTag& tagList)
 {
-  SI_E_Condition result = SI_EC_Normal;
+  OFCondition result = EC_Normal;
   unsigned long card = item.card();
   if (card == 0)
   {
@@ -65,7 +65,7 @@ SI_E_Condition SiSecurityProfile::updateAttributeList(DcmItem &item, DcmAttribut
   }
   unsigned long maxArray = 2*card;
   Uint16 *array = new Uint16[maxArray];
-  if (array == NULL) return SI_EC_MemoryExhausted;
+  if (array == NULL) return EC_MemoryExhausted;
   unsigned long i=0;  
   for (i=0; i<maxArray; i++) array[i]=0;
   DcmElement *elem = NULL;
@@ -101,7 +101,7 @@ SI_E_Condition SiSecurityProfile::updateAttributeList(DcmItem &item, DcmAttribut
   tagList.clear();
   if (j > 0)
   {
-    if (EC_Normal != tagList.putUint16Array(array, j>>1)) result = SI_EC_DcmDataFailure;
+    result = tagList.putUint16Array(array, j>>1);
   }
   return result;
 }
@@ -176,7 +176,10 @@ const int sisprof_cc_dummy_to_keep_linker_from_moaning = 0;
 
 /*
  *  $Log: sisprof.cc,v $
- *  Revision 1.2  2001-06-01 15:50:56  meichel
+ *  Revision 1.3  2001-09-26 14:30:26  meichel
+ *  Adapted dcmsign to class OFCondition
+ *
+ *  Revision 1.2  2001/06/01 15:50:56  meichel
  *  Updated copyright header
  *
  *  Revision 1.1  2000/11/07 16:49:08  meichel

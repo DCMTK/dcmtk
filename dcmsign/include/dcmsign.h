@@ -23,8 +23,8 @@
  *    classes: DcmSignature
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-06-01 15:50:46 $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  Update Date:      $Date: 2001-09-26 14:30:18 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -109,7 +109,7 @@ public:
    *    for the digital signature.
    *  @return status code
    */
-  SI_E_Condition createSignature(
+  OFCondition createSignature(
     SiPrivateKey& key, 
     SiCertificate& cert, 
     SiMAC& mac,
@@ -128,27 +128,27 @@ public:
    *  @param i index, must be < numberOfSignatures().
    *  @return status code
    */
-  SI_E_Condition removeSignature(unsigned long i);
+  OFCondition removeSignature(unsigned long i);
 
   /** selects one of the digital signatures from the attached dataset for reading.
    *  @param i index, must be < numberOfSignatures()
    *  @return status code
    */
-  SI_E_Condition selectSignature(unsigned long i);
+  OFCondition selectSignature(unsigned long i);
   
   /** verifies the current signature.
    *  Current signature must be selected with selectSignature().
    *  @return SI_EC_Normal if signature is complete and valid, an error code
    *    describing the type of verification failure otherwise.
    */
-  SI_E_Condition verifyCurrent();
+  OFCondition verifyCurrent();
 
   /** returns the MAC ID of the current signature.
    *  Current signature must be selected with selectSignature().
    *  @param macID MAC ID returned in this parameter upon success
    *  @return status code
    */
-  SI_E_Condition getCurrentMacID(Uint16& macID);
+  OFCondition getCurrentMacID(Uint16& macID);
 
   /** returns the MAC Calculation Transfer Syntax of the current signature.
    *  If the transfer syntax is well-known, the UID is replaced by the
@@ -157,28 +157,28 @@ public:
    *  @param str transfer syntax name or UID returned in this parameter upon success
    *  @return status code
    */
-  SI_E_Condition getCurrentMacXferSyntaxName(OFString& str);
+  OFCondition getCurrentMacXferSyntaxName(OFString& str);
 
   /** returns the MAC Algorithm Name of the current signature.
    *  Current signature must be selected with selectSignature().
    *  @param str MAC algorithm name returned in this parameter upon success
    *  @return status code
    */
-  SI_E_Condition getCurrentMacName(OFString& str);
+  OFCondition getCurrentMacName(OFString& str);
 
   /** returns the Digital Signature UID of the current signature.
    *  Current signature must be selected with selectSignature().
    *  @param str signature UID returned in this parameter upon success
    *  @return status code
    */
-  SI_E_Condition getCurrentSignatureUID(OFString& str);
+  OFCondition getCurrentSignatureUID(OFString& str);
 
   /** returns the Signature Date/Time of the current signature.
    *  Current signature must be selected with selectSignature().
    *  @param str signature date/time returned in this parameter upon success
    *  @return status code
    */
-  SI_E_Condition getCurrentSignatureDateTime(OFString& str);
+  OFCondition getCurrentSignatureDateTime(OFString& str);
 
   /** returns the Data Elements Signed attribute of the current signature if present.
    *  Current signature must be selected with selectSignature().
@@ -188,7 +188,7 @@ public:
    *  @param desig data elements signed returned in this parameter upon success
    *  @return status code
    */
-  SI_E_Condition getCurrentDataElementsSigned(DcmAttributeTag& desig);
+  OFCondition getCurrentDataElementsSigned(DcmAttributeTag& desig);
 
   /** returns the certificate of the current signature if present.
    *  Current signature must be selected with selectSignature().
@@ -204,7 +204,7 @@ public:
    *  embedded in sequence items.
    *  @return status code
    */
-  SI_E_Condition insertRevision();
+  OFCondition insertRevision();
 
   /** dump all data that is fed into the MAC algorithm into the given file,
    *  which must be opened and closed by caller.
@@ -247,7 +247,7 @@ private:
    *  @param newID upon successful return, new number is passed in this parameter
    *  @return status code
    */
-  SI_E_Condition allocateMACID(Uint16& newID);
+  OFCondition allocateMACID(Uint16& newID);
   
   /** searches a given item for the DCM_MACIDnumber element and returns
    *  its value if present, otherwise returns 0.
@@ -289,7 +289,10 @@ private:
 
 /*
  *  $Log: dcmsign.h,v $
- *  Revision 1.2  2001-06-01 15:50:46  meichel
+ *  Revision 1.3  2001-09-26 14:30:18  meichel
+ *  Adapted dcmsign to class OFCondition
+ *
+ *  Revision 1.2  2001/06/01 15:50:46  meichel
  *  Updated copyright header
  *
  *  Revision 1.1  2000/11/07 16:48:51  meichel
