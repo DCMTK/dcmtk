@@ -21,10 +21,10 @@
  *
  *  Purpose: Verification Service Class User (C-ECHO operation)
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2004-02-25 12:18:06 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2004-04-06 18:12:26 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/apps/echoscu.cc,v $
- *  CVS/RCS Revision: $Revision: 1.33 $
+ *  CVS/RCS Revision: $Revision: 1.34 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -68,8 +68,8 @@ static char rcsid[] = "$dcmtk: " OFFIS_CONSOLE_APPLICATION " v"
   OFFIS_DCMTK_VERSION " " OFFIS_DCMTK_RELEASEDATE " $";
 
 /* default application titles */
-#define APPLICATIONTITLE        "ECHOSCU"
-#define PEERAPPLICATIONTITLE    "ANY-SCP"
+#define APPLICATIONTITLE     "ECHOSCU"
+#define PEERAPPLICATIONTITLE "ANY-SCP"
 
 static OFBool opt_verbose = OFFalse;
 static OFBool opt_debug = OFFalse;
@@ -104,7 +104,14 @@ static const char* transferSyntaxes[] = {
       UID_JPEGProcess28TransferSyntax,
       UID_JPEGProcess29TransferSyntax,
       UID_JPEGProcess14SV1TransferSyntax,
-      UID_RLELossless};
+      UID_RLELosslessTransferSyntax,
+      UID_JPEGLSLosslessTransferSyntax,
+      UID_JPEGLSLossyTransferSyntax,
+      UID_DeflatedExplicitVRLittleEndianTransferSyntax,
+      UID_JPEG2000LosslessOnlyTransferSyntax,
+      UID_JPEG2000TransferSyntax,
+      UID_MPEG2MainProfileAtMainLevelTransferSyntax
+};
 
 // ********************************************
 
@@ -761,7 +768,11 @@ cecho(T_ASC_Association * assoc, unsigned long num_repeat)
 /*
 ** CVS Log
 ** $Log: echoscu.cc,v $
-** Revision 1.33  2004-02-25 12:18:06  meichel
+** Revision 1.34  2004-04-06 18:12:26  joergr
+** Added missing suffix "TransferSyntax" to some transfer syntax constants.
+** Added six more transfer syntaxes to the --propose-ts option.
+**
+** Revision 1.33  2004/02/25 12:18:06  meichel
 ** Added a few dummy macros allowing for future private extensions
 **
 ** Revision 1.32  2002/12/13 15:42:43  meichel
