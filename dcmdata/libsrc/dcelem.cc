@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2001, OFFIS
+ *  Copyright (C) 1994-2002, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,10 +21,10 @@
  *
  *  Purpose: class DcmElement
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-11-16 15:55:02 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2002-04-25 10:15:09 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcelem.cc,v $
- *  CVS/RCS Revision: $Revision: 1.37 $
+ *  CVS/RCS Revision: $Revision: 1.38 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -45,6 +45,8 @@ END_EXTERN_C
 #endif
 
 #include <string.h>
+
+#include "ofstd.h"
 
 #include "dcelem.h"
 #include "dcobject.h"
@@ -348,10 +350,30 @@ OFCondition DcmElement::getString(char * &/*val*/)
 
 OFCondition 
 DcmElement::getOFStringArray(
-    OFString & /*val*/,
-    OFBool /*normalize*/)
+    OFString &value,
+    OFBool normalize)
 {
-    errorFlag = EC_IllegalCall;
+    /* this is a general implementation which is only used when the derived
+       VR class does not reimplement it
+     */
+    OFString string;
+    unsigned long i = 0;
+    const unsigned long count = getVM();
+    /* iterate over all values and convert them to a character string */
+    while ((i < count) && (errorFlag = getOFString(string, i, normalize)).good())
+    {
+        /* intialize result string */
+        if (i == 0)
+        {
+            /* reserve number of bytes expected */
+            value.reserve((unsigned int)getLength());
+            value.clear();
+        } else
+            value += '\\';
+        /* append current value to the result string */
+        value += string;
+        i++;
+    }
     return errorFlag;
 }
 
@@ -1100,11 +1122,77 @@ OFCondition DcmElement::writeSignatureFormat(DcmStream & outStream,
 
 // ********************************
 
+void DcmElement::writeXMLStartTag(ostream &out,
+                                  const size_t /*flags*/,
+                                  const char *attrText)
+{
+    OFString xmlString;
+    DcmVR vr(Tag.getVR());
+    /* write standardized XML start tag for all element types */
+    out << "<element";
+    /* attribute tag = (gggg,eeee) */
+    out << " tag=\"";
+    out.width(4);
+    out.fill('0');
+    out << hex << Tag.getGTag() << ",";
+    out.width(4);
+    out.fill('0');
+    out << hex << Tag.getETag() << "\"" << dec;
+    /* value representation = VR */
+    out << " vr=\"" << vr.getVRName() << "\"";
+    /* value multiplicity = 1..n */
+    out << " vm=\"" << getVM() << "\"";
+    /* value length in bytes = 0..max */
+    out << " len=\"" << Length << "\"";
+    /* tag name (if known) */
+    out << " name=\"" << OFStandard::convertToMarkupString(Tag.getTagName(), xmlString) << "\"";
+    /* value loaded = no (or absent)*/
+    if (!valueLoaded())
+        out << " loaded=\"no\"";
+    /* write additional attributes (if any) */
+    if ((attrText != NULL) && (strlen(attrText) > 0))
+        out << " " << attrText;
+    out << ">";
+}
+
+void DcmElement::writeXMLEndTag(ostream &out,
+                                const size_t /*flags*/)
+{
+    /* write standardized XML end tag for all element types */
+    out << "</element>" << endl;
+}
+
+// ********************************
+
+OFCondition DcmElement::writeXML(ostream &out,
+                                 const size_t flags)
+{
+    /* XML start tag: <element tag="gggg,eeee" vr="XX" ...> */
+    writeXMLStartTag(out, flags);
+    /* write element value (if loaded) */
+    if (valueLoaded())
+    {
+        OFString value, xmlString; 
+        if (getOFStringArray(value).good())
+            out << OFStandard::convertToMarkupString(value, xmlString);
+    }
+    /* XML end tag: </element> */
+    writeXMLEndTag(out, flags);
+    /* always report success */
+    return EC_Normal;
+}
+
+// ********************************
+
 
 /*
 ** CVS/RCS Log:
 ** $Log: dcelem.cc,v $
-** Revision 1.37  2001-11-16 15:55:02  meichel
+** Revision 1.38  2002-04-25 10:15:09  joergr
+** Added/modified getOFStringArray() implementation.
+** Added support for XML output of DICOM objects.
+**
+** Revision 1.37  2001/11/16 15:55:02  meichel
 ** Adapted digital signature code to final text of supplement 41.
 **
 ** Revision 1.36  2001/11/01 14:55:36  wilkens
