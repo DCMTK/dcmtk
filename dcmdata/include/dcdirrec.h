@@ -9,10 +9,10 @@
 ** Interface of class DcmDirectoryRecord
 **
 **
-** Last Update:		$Author: hewett $
-** Update Date:		$Date: 1997-05-09 13:12:02 $
+** Last Update:		$Author: andreas $
+** Update Date:		$Date: 1997-05-16 08:31:21 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcdirrec.h,v $
-** CVS/RCS Revision:	$Revision: 1.6 $
+** CVS/RCS Revision:	$Revision: 1.7 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -122,12 +122,12 @@ public:
 
     virtual E_Condition read(DcmStream & inStream,
 			     const E_TransferSyntax xfer,
-			     const E_GrpLenEncoding gltype = EGL_withoutGL,
+			     const E_GrpLenEncoding glenc = EGL_noChange,
 			     const Uint32 maxReadLength = DCM_MaxReadLength);
+
     virtual E_Condition write(DcmStream & outStream,
 			      const E_TransferSyntax oxfer,
-			      const E_EncodingType enctype = EET_UndefinedLength,
-			      const E_GrpLenEncoding gltype = EGL_withoutGL);
+			      const E_EncodingType enctype = EET_UndefinedLength);
 
     virtual E_Condition verify(const BOOL autocorrect = FALSE);
     virtual E_Condition search(const DcmTag &tag, 		    // in
@@ -171,7 +171,15 @@ public:
 /*
 ** CVS/RCS Log:
 ** $Log: dcdirrec.h,v $
-** Revision 1.6  1997-05-09 13:12:02  hewett
+** Revision 1.7  1997-05-16 08:31:21  andreas
+** - Revised handling of GroupLength elements and support of
+**   DataSetTrailingPadding elements. The enumeratio E_GrpLenEncoding
+**   got additional enumeration values (for a description see dctypes.h).
+**   addGroupLength and removeGroupLength methods are replaced by
+**   computeGroupLengthAndPadding. To support Padding, the parameters of
+**   element and sequence write functions changed.
+**
+** Revision 1.6  1997/05/09 13:12:02  hewett
 ** Added a member variable and associated get/set methods to DcmDirectoryRecord
 ** to allow the origin of a directory record to be noted.
 **

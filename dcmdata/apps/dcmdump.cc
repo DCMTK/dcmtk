@@ -10,9 +10,9 @@
 **
 **
 ** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1997-04-18 08:04:47 $
+** Update Date:		$Date: 1997-05-16 08:31:04 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/apps/dcmdump.cc,v $
-** CVS/RCS Revision:	$Revision: 1.9 $
+** CVS/RCS Revision:	$Revision: 1.10 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -327,7 +327,7 @@ static int dumpFile(ostream & out,
 	dfile = new DcmFileFormat();
 
     dfile->transferInit();
-    dfile->read(myin, xfer, EGL_withGL );
+    dfile->read(myin, xfer, EGL_noChange);
     dfile->transferEnd();
 
     if (dfile->error() != EC_Normal) {
@@ -397,7 +397,15 @@ static int dumpFile(ostream & out,
 /*
 ** CVS/RCS Log:
 ** $Log: dcmdump.cc,v $
-** Revision 1.9  1997-04-18 08:04:47  andreas
+** Revision 1.10  1997-05-16 08:31:04  andreas
+** - Revised handling of GroupLength elements and support of
+**   DataSetTrailingPadding elements. The enumeratio E_GrpLenEncoding
+**   got additional enumeration values (for a description see dctypes.h).
+**   addGroupLength and removeGroupLength methods are replaced by
+**   computeGroupLengthAndPadding. To support Padding, the parameters of
+**   element and sequence write functions changed.
+**
+** Revision 1.9  1997/04/18 08:04:47  andreas
 ** - Minor corrections: correct some warnings of the SUN-C++ Compiler
 **   concerning the assignments of wrong types and inline compiler
 **   errors

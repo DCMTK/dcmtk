@@ -51,9 +51,9 @@
 **
 **
 ** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1997-04-18 08:06:56 $
+** Update Date:		$Date: 1997-05-16 08:31:06 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/apps/dump2dcm.cc,v $
-** CVS/RCS Revision:	$Revision: 1.9 $
+** CVS/RCS Revision:	$Revision: 1.10 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -100,25 +100,28 @@ usage()
 	   "usage: dump2dcm [options] dumpfile-in dcmfile-out\n"
 	   "options are:\n"
            "  read options: \n"
-           "    +ln   maximum line length n (default 4096)\n"
+           "    +ln     maximum line length n (default 4096)\n"
            "  create options:\n"
-	   "    +f    write fileformat (default)\n"
-	   "    -f    write dataset\n"
+	   "    +f      write fileformat (default)\n"
+	   "    -f      write dataset\n"
 	   "  group length encoding:\n" 
-	   "    +g    write with group lengths (default)\n"
-	   "    -g    write without group lengths\n"
+	   "    +g      write with group lengths\n"
+	   "    -g      write without group lengths (default)\n"
 	   "  length encoding in sequences and items:\n"
-	   "    +e    write with explicit lengths (default)\n"
-	   "    -e    write with undefined lengths\n"
+	   "    +e      write with explicit lengths (default)\n"
+	   "    -e      write with undefined lengths\n"
+	   "  padding for fileformat\n"
+	   "    -p      no padding (default)\n"
+	   "    +p n m  pad file x*n bytes and items y*m bytes\n"
 	   "  output transfer syntax:\n"
-	   "    +ti   write with little-endian implicit transfer syntax (default)\n"
-	   "    +te   write with little-endian explicit transfer syntax\n"
-	   "    +tb   write with big-endian explicit transfer syntax\n"
+	   "    +ti     write with little-endian implicit transfer syntax (default)\n"
+	   "    +te     write with little-endian explicit transfer syntax\n"
+	   "    +tb     write with big-endian explicit transfer syntax\n"
 	   "  other test/debug options:\n"
-	   "    -u    disable generation of unknown VR (UN)\n"
-	   "    +V    verbose mode, print actions\n"
-	   "    +v    validate input data (currently almost useless)\n"
-	   "    +dn   set debug level to n (n=1..9)\n";
+	   "    -u      disable generation of unknown VR (UN)\n"
+	   "    +V      verbose mode, print actions\n"
+	   "    +v      validate input data (currently almost useless)\n"
+	   "    +dn     set debug level to n (n=1..9)\n";
 }
 
 
@@ -640,7 +643,10 @@ int main(int argc, char *argv[])
     DcmDataset * dataset = NULL;
     E_TransferSyntax xfer = EXS_LittleEndianImplicit;
     E_EncodingType enctype = EET_ExplicitLength;
-    E_GrpLenEncoding ogltype = EGL_withGL;
+    E_GrpLenEncoding oglenc = EGL_withoutGL;
+    E_PaddingEncoding opadenc = EPD_withoutPadding;
+    Uint32 padlen = 0;
+    Uint32 subPadlen = 0;
     BOOL verifymode = FALSE;
     BOOL verbosemode = FALSE;
     BOOL createFileFormat = TRUE;
@@ -665,9 +671,35 @@ int main(int argc, char *argv[])
 		break;
 	    case 'g':
 		if (arg[0] == '-') {
-		    ogltype = EGL_withoutGL;
+		    oglenc = EGL_withoutGL;
 		} else {
-		    ogltype = EGL_withGL;
+		    oglenc = EGL_withGL;
+		}
+		break;
+	    case 'p':
+		if (arg[0] == '-' && arg[2] == '\0')
+		    opadenc = EPD_withoutPadding;
+		else if (arg[0] == '+' && arg[2] == '\0')
+		{
+		    opadenc = EPD_withPadding;
+		    if (sscanf(argv[++i], "%ld", &padlen) != 1)
+		    {
+			cerr << "wrong parameter option +p n m\n";
+			usage();
+			return 1;
+		    }
+		    if (sscanf(argv[++i], "%ld", &subPadlen) != 1)
+		    {
+			cerr << "wrong parameter option +p n m\n";
+			usage();
+			return 1;
+		    }
+		}
+		else
+		{
+		    cerr << "wrong parameter option +p n m\n";
+		    usage();
+		    return 1;
 		}
 		break;
 	    case 'e':
@@ -697,7 +729,7 @@ int main(int argc, char *argv[])
 		if (arg[0] == '-' && arg[2] == '\0') {
 		    dcmEnableUnknownVRGeneration = FALSE;
 		} else {
-		    fprintf(stderr, "unknown option: %s\n", arg);
+		    cerr << "unknown option: " << arg << endl;
 		    return 1;
 		}
 		break;
@@ -742,6 +774,12 @@ int main(int argc, char *argv[])
 	    usage();
 	    return 1;
 	}
+    }
+
+    if (!createFileFormat && opadenc != EPD_withoutPadding)
+    {
+	cerr << "Padding is not allowed in datasets\n";
+	return 1;
     }
 
     if ( ifname == NULL ) {
@@ -809,8 +847,10 @@ int main(int argc, char *argv[])
     if (readDumpFile(metaheader, dataset, dumpfile, ifname, maxLineLength))
     {
 	if (metaheader)
-	    metaheader -> removeGroupLengthElements();
-	dataset -> removeGroupLengthElements();
+	    metaheader -> computeGroupLengthAndPadding(EGL_withoutGL, 
+						       EPD_withoutPadding);
+ 	dataset -> computeGroupLengthAndPadding(EGL_withoutGL,
+  						EPD_withoutPadding);
 	if (verifymode)
 	{
 	    if (verbosemode)
@@ -836,12 +876,13 @@ int main(int argc, char *argv[])
 	if (fileformat)
 	{
 	    fileformat -> transferInit();
-	    l_error = fileformat -> write(oStream, xfer, enctype, ogltype);
+	    l_error = fileformat -> write(oStream, xfer, enctype, oglenc, 
+					  opadenc, padlen, subPadlen);
 	}
 	else if (dataset)
 	{
 	    dataset -> transferInit();
-	    l_error = dataset -> write(oStream, xfer, enctype, ogltype);
+	    l_error = dataset -> write(oStream, xfer, enctype, oglenc, EPD_withoutPadding);
 	}
 
 	if (l_error == EC_Normal)
@@ -862,7 +903,15 @@ int main(int argc, char *argv[])
 /*
 ** CVS/RCS Log:
 ** $Log: dump2dcm.cc,v $
-** Revision 1.9  1997-04-18 08:06:56  andreas
+** Revision 1.10  1997-05-16 08:31:06  andreas
+** - Revised handling of GroupLength elements and support of
+**   DataSetTrailingPadding elements. The enumeratio E_GrpLenEncoding
+**   got additional enumeration values (for a description see dctypes.h).
+**   addGroupLength and removeGroupLength methods are replaced by
+**   computeGroupLengthAndPadding. To support Padding, the parameters of
+**   element and sequence write functions changed.
+**
+** Revision 1.9  1997/04/18 08:06:56  andreas
 ** - Minor corrections: correct some warnings of the SUN-C++ Compiler
 **   concerning the assignments of wrong types and inline compiler
 **   errors

@@ -8,7 +8,7 @@ SYNOPSIS
 
 SUMMARY
 
-The dump2dcm utility converts an ASCII dumpfile to a dicom file.  The
+The dump2dcm utility converts an ASCII dumpfile to a dicom file.  
 The dumpfile has the same format as the output of dcmdump.  Thus
 it is possible to capture the output of dcmdump into a file,
 modify some attributes and create a new dicom file.  However,
@@ -21,24 +21,27 @@ USAGE
 
 options are:
   read options: 
-    +ln   maximum line length n (default 4096)
+    +ln     maximum line length n (default 4096)
   create options:
-    +f    write fileformat (default)
-    -f    write dataset
+    +f      write fileformat (default)
+    -f      write dataset
   group length encoding:
-    +g    write with group lengths (default)
-    -g    write without group lengths
+    +g      write with group lengths (default)
+    -g      write without group lengths
   length encoding in sequences and items:
-    +e    write with explicit lengths (default)
-    -e    write with undefined lengths
+    +e      write with explicit lengths (default)
+    -e      write with undefined lengths
+  padding for fileformat
+    -p      no padding (default)
+    +p n m  pad file x*n bytes and items y*m bytes
   output transfer syntax:
-    +ti   write with little-endian implicit transfer syntax (default)
-    +te   write with little-endian explicit transfer syntax
-    +tb   write with big-endian explicit transfer syntax
+    +ti     write with little-endian implicit transfer syntax (default)
+    +te     write with little-endian explicit transfer syntax
+    +tb     write with big-endian explicit transfer syntax
   other test/debug options:
-    +V    verbose mode, print actions
-    +v    validate input data (currently almost useless)
-    +dn   set debug level to n (n=1..9)
+    +V      verbose mode, print actions
+    +v      validate input data (currently almost useless)
+    +dn     set debug level to n (n=1..9)
 
 DUMPFILE DESCRIPTION
 

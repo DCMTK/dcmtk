@@ -8,10 +8,10 @@
 ** Convert a dicom dataset to a dicom file encoding
 **
 **
-** Last Update:		$Author: hewett $
-** Update Date:		$Date: 1997-03-27 15:47:25 $
+** Last Update:		$Author: andreas $
+** Update Date:		$Date: 1997-05-16 08:31:06 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/apps/Attic/ds2file.cc,v $
-** CVS/RCS Revision:	$Revision: 1.6 $
+** CVS/RCS Revision:	$Revision: 1.7 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -46,11 +46,16 @@ usage()
 	   "    -te   input is little-endian explicit transfer syntax\n"
 	   "    -tb   input is big-endian explicit transfer syntax\n"
 	   "  group length encoding:\n" 
-	   "    +g    write with group lengths (default)\n"
+	   "    +g    write with group lengths\n"
+	   "    +g=   recalculate group lengths (default)\n"
 	   "    -g    write without group lengths\n"
 	   "  length encoding in sequences and items:\n"
 	   "    +e    write with explicit lengths (default)\n"
 	   "    -e    write with undefined lengths\n"
+	   "  padding for fileformat\n"
+	   "    -p      no padding\n"
+	   "    -p=     do not change padding (default)\n"
+	   "    +p n m  pad file x*n bytes and items y*m bytes\n"
 	   "  output transfer syntax:\n"
 	   "    +t=   write with same transfer syntax as input (default)\n"
 	   "    +ti   write with little-endian implicit transfer syntax\n"
@@ -124,7 +129,10 @@ int main(int argc, char *argv[])
     char*            ifname = (char*)NULL;
     char*            ofname = (char*)NULL;
     E_EncodingType   enctype = EET_ExplicitLength;
-    E_GrpLenEncoding ogltype = EGL_withGL;
+    E_GrpLenEncoding oglenc = EGL_recalcGL;
+    E_PaddingEncoding opadenc = EPD_noChange;
+    Uint32 padlen = 0;
+    Uint32 subPadlen = 0;
     E_TransferSyntax xfer_in = EXS_LittleEndianImplicit;
     E_TransferSyntax xfer_out = EXS_Unknown;
     BOOL verifymode = FALSE;
@@ -141,10 +149,45 @@ int main(int argc, char *argv[])
 	    }
 	    switch (arg[1]) {
 	    case 'g':
-		if (arg[0] == '-') {
-		    ogltype = EGL_withoutGL;
-		} else {
-		    ogltype = EGL_withGL;
+		if (arg[0] == '+' && arg[2] == '\0')
+		    oglenc = EGL_withGL;
+		else if (arg[0] == '+' && arg[2] == '=' && arg[3] == '\0')
+		    oglenc = EGL_recalcGL;
+		else if (arg[0] == '-' && arg[2] == '\0')
+		    oglenc = EGL_withoutGL;
+		else 
+		{
+		    fprintf(stderr, "unknown option: %s\n", arg);
+		    usage();
+		    return 1;
+		}
+		break;
+	    case 'p':
+		if (arg[0] == '-' && arg[2] == '\0')
+		    opadenc = EPD_withoutPadding;
+		else if (arg[0] == '-' && arg[2] == '=' && arg[3] == '\0')
+		    opadenc = EPD_noChange;
+		else if (arg[0] == '+' && arg[2] == '\0')
+		{
+		    opadenc = EPD_withPadding;
+		    if (sscanf(argv[++i], "%ld", &padlen) != 1)
+		    {
+			fprintf(stderr, "wrong parameter option +p n m\n");
+			usage();
+			return 1;
+		    }
+		    if (sscanf(argv[++i], "%ld", &subPadlen) != 1)
+		    {
+			fprintf(stderr, "wrong parameter option +p n m\n");
+			usage();
+			return 1;
+		    }
+		}
+		else
+		{
+		    fprintf(stderr, "wrong parameter option +p n m\n");
+		    usage();
+		    return 1;
 		}
 		break;
 	    case 'e':
@@ -240,9 +283,9 @@ int main(int argc, char *argv[])
     }
 
     DcmDataset dcmds;
-	dcmds.transferInit();
-    dcmds.read(inf, xfer_in, EGL_withGL );
-	dcmds.transferEnd();
+    dcmds.transferInit();
+    dcmds.read(inf, xfer_in, EGL_noChange );
+    dcmds.transferEnd();
 
     if (dcmds.error() != EC_Normal) {
 	fprintf(stderr, "Error: %s: reading dataset: %s\n", 
@@ -276,8 +319,8 @@ int main(int argc, char *argv[])
     }
 
     dcmff.transferInit();
-	dcmff.write( outf, xfer_out, enctype, ogltype );
-	dcmff.transferEnd();
+    dcmff.write(outf, xfer_out, enctype, oglenc, opadenc, padlen, subPadlen);
+    dcmff.transferEnd();
 
     if (dcmff.error() != EC_Normal) {
 	fprintf(stderr, "Error: %s: writing file: %s\n", 
@@ -292,7 +335,15 @@ int main(int argc, char *argv[])
 /*
 ** CVS/RCS Log:
 ** $Log: ds2file.cc,v $
-** Revision 1.6  1997-03-27 15:47:25  hewett
+** Revision 1.7  1997-05-16 08:31:06  andreas
+** - Revised handling of GroupLength elements and support of
+**   DataSetTrailingPadding elements. The enumeratio E_GrpLenEncoding
+**   got additional enumeration values (for a description see dctypes.h).
+**   addGroupLength and removeGroupLength methods are replaced by
+**   computeGroupLengthAndPadding. To support Padding, the parameters of
+**   element and sequence write functions changed.
+**
+** Revision 1.6  1997/03/27 15:47:25  hewett
 ** Added command line switche to allow generation of UN to be
 ** disabled (it is enabled by default).
 **

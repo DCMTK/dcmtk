@@ -34,10 +34,10 @@
 ** Author: 	Andrew Hewett
 **		Kuratorium OFFIS e.V., Oldenburg, Germany
 **
-** Last Update:		$Author: hewett $
-** Update Date:		$Date: 1997-03-27 16:11:27 $
+** Last Update:		$Author: andreas $
+** Update Date:		$Date: 1997-05-16 08:31:34 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/apps/storescp.cc,v $
-** CVS/RCS Revision:	$Revision: 1.7 $
+** CVS/RCS Revision:	$Revision: 1.8 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -606,7 +606,7 @@ storeSCPCallback(
 
 		E_TransferSyntax xfer = EXS_Unknown;
 		E_EncodingType enctype = EET_ExplicitLength;
-		E_GrpLenEncoding ogltype = EGL_withGL;
+		E_GrpLenEncoding ogltype = EGL_recalcGL;
 
 		if (xfer == EXS_Unknown) {
 		    /* use the same as the input */
@@ -699,7 +699,15 @@ storeSCP(T_ASC_Association * assoc, T_DIMSE_Message * msg,
 /*
 ** CVS Log
 ** $Log: storescp.cc,v $
-** Revision 1.7  1997-03-27 16:11:27  hewett
+** Revision 1.8  1997-05-16 08:31:34  andreas
+** - Revised handling of GroupLength elements and support of
+**   DataSetTrailingPadding elements. The enumeratio E_GrpLenEncoding
+**   got additional enumeration values (for a description see dctypes.h).
+**   addGroupLength and removeGroupLength methods are replaced by
+**   computeGroupLengthAndPadding. To support Padding, the parameters of
+**   element and sequence write functions changed.
+**
+** Revision 1.7  1997/03/27 16:11:27  hewett
 ** Added command line switches allowing generation of UN to
 ** be disabled (it is enabled by default).
 **

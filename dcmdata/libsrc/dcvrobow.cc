@@ -11,9 +11,9 @@
 **
 **
 ** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1997-04-18 08:17:20 $
+** Update Date:		$Date: 1997-05-16 08:31:28 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcvrobow.cc,v $
-** CVS/RCS Revision:	$Revision: 1.11 $
+** CVS/RCS Revision:	$Revision: 1.12 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -372,8 +372,7 @@ E_Condition DcmOtherByteOtherWord::verify(const BOOL autocorrect)
 
 E_Condition DcmOtherByteOtherWord::write(DcmStream & outStream,
 					 const E_TransferSyntax oxfer,
-					 const E_EncodingType enctype,
-					 const E_GrpLenEncoding gltype)
+					 const E_EncodingType enctype)
 {
 
     if (fTransferState == ERW_notInitialized)
@@ -382,7 +381,7 @@ E_Condition DcmOtherByteOtherWord::write(DcmStream & outStream,
     {
 	if (fTransferState == ERW_init)
 	    this -> alignValue();
-	errorFlag = DcmElement::write(outStream, oxfer, enctype, gltype);
+	errorFlag = DcmElement::write(outStream, oxfer, enctype);
     }
     return errorFlag;
 }
@@ -392,7 +391,15 @@ E_Condition DcmOtherByteOtherWord::write(DcmStream & outStream,
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrobow.cc,v $
-** Revision 1.11  1997-04-18 08:17:20  andreas
+** Revision 1.12  1997-05-16 08:31:28  andreas
+** - Revised handling of GroupLength elements and support of
+**   DataSetTrailingPadding elements. The enumeratio E_GrpLenEncoding
+**   got additional enumeration values (for a description see dctypes.h).
+**   addGroupLength and removeGroupLength methods are replaced by
+**   computeGroupLengthAndPadding. To support Padding, the parameters of
+**   element and sequence write functions changed.
+**
+** Revision 1.11  1997/04/18 08:17:20  andreas
 ** - The put/get-methods for all VRs did not conform to the C++-Standard
 **   draft. Some Compilers (e.g. SUN-C++ Compiler, Metroworks
 **   CodeWarrier, etc.) create many warnings concerning the hiding of

@@ -36,9 +36,9 @@
 ** Created:	03/96
 **
 ** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1997-04-18 08:40:14 $
+** Update Date:		$Date: 1997-05-16 08:31:33 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/apps/movescu.cc,v $
-** CVS/RCS Revision:	$Revision: 1.10 $
+** CVS/RCS Revision:	$Revision: 1.11 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -746,7 +746,7 @@ static void storeSCPCallback(
 
 		E_TransferSyntax xfer = EXS_Unknown;
 		E_EncodingType enctype = EET_ExplicitLength;
-		E_GrpLenEncoding ogltype = EGL_withGL;
+		E_GrpLenEncoding ogltype = EGL_recalcGL;
 
 		if (xfer == EXS_Unknown) {
 		    /* use the same as the input */
@@ -1058,7 +1058,15 @@ cmove(T_ASC_Association * assoc, const char *fname)
 ** CVS Log
 **
 ** $Log: movescu.cc,v $
-** Revision 1.10  1997-04-18 08:40:14  andreas
+** Revision 1.11  1997-05-16 08:31:33  andreas
+** - Revised handling of GroupLength elements and support of
+**   DataSetTrailingPadding elements. The enumeratio E_GrpLenEncoding
+**   got additional enumeration values (for a description see dctypes.h).
+**   addGroupLength and removeGroupLength methods are replaced by
+**   computeGroupLengthAndPadding. To support Padding, the parameters of
+**   element and sequence write functions changed.
+**
+** Revision 1.10  1997/04/18 08:40:14  andreas
 ** - The put/get-methods for all VRs did not conform to the C++-Standard
 **   draft. Some Compilers (e.g. SUN-C++ Compiler, Metroworks
 **   CodeWarrier, etc.) create many warnings concerning the hiding of

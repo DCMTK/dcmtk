@@ -10,10 +10,10 @@
 ** Implementation of class DcmDicomDir
 **
 **
-** Last Update:		$Author: hewett $
-** Update Date:		$Date: 1997-05-09 13:15:44 $
+** Last Update:		$Author: andreas $
+** Update Date:		$Date: 1997-05-16 08:31:27 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcdicdir.cc,v $
-** CVS/RCS Revision:	$Revision: 1.13 $
+** CVS/RCS Revision:	$Revision: 1.14 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -803,7 +803,7 @@ Edebug(());
 E_Condition DcmDicomDir::convertTreeToLinear(Uint32 beginOfDataSet,
 					     E_TransferSyntax oxfer,
 					     E_EncodingType enctype,
-					     E_GrpLenEncoding gltype,
+					     E_GrpLenEncoding glenc,
 					     DcmSequenceOfItems &unresRecs )
 {
 Bdebug((1, "dcdicdir:DcmDicomDir::convertTreeToLinear(beginOfDataSet=%ld)",
@@ -853,12 +853,10 @@ debug(( 2, "copy pointer of MRDR no %ld of %ld to localDirRecSeq:",
 	localDirRecSeq.insert( this->getMRDRSequence().getItem(j-1), 0 );
     }
 
-    if (gltype == EGL_withGL) {
-	// add group lengths before computing byte offsets
-	dset.addGroupLengthElements(oxfer, enctype);
-    }
+    // compute group lengths before computing byte offsets
+    dset.computeGroupLengthAndPadding(glenc, EPD_noChange, oxfer, enctype);
 
-    // konvertiere im Fehlerfall ein zweites Mal:
+    // convert maximum twice
     if (    convertAllPointer( dset, beginOfDataSet, oxfer, enctype )
 	 == EC_InvalidVR )
 	if (	convertAllPointer( dset, beginOfDataSet, oxfer, enctype )
@@ -1109,10 +1107,10 @@ Edebug(());
 
 E_Condition DcmDicomDir::write(const E_TransferSyntax oxfer,
 			       const E_EncodingType enctype,
-			       const E_GrpLenEncoding gltype)
+			       const E_GrpLenEncoding glenc)
 {
-    Bdebug((1, "DcmDicomDir::write(oxfer=%d,enctype=%d,gltype=%d)",
-	    oxfer, enctype, gltype ));
+    Bdebug((1, "DcmDicomDir::write(oxfer=%d,enctype=%d,lpenc=%d)",
+	    oxfer, enctype, glenc ));
 
     if ( oxfer != DICOMDIR_DEFAULT_TRANSFERSYNTAX )
 	cerr << "Error: DcmDicomDir::write(): wrong TransferSyntax used"
@@ -1171,10 +1169,11 @@ E_Condition DcmDicomDir::write(const E_TransferSyntax oxfer,
 
     // in schreibbares Format umwandeln
     errorFlag = convertTreeToLinear(bODset, outxfer, 
-				    enctype, gltype, localUnresRecs);
+				    enctype, glenc, localUnresRecs);
 
     dset.transferInit();
-    dset.write(outStream, outxfer, enctype, gltype);
+    // do not calculate GroupLength and Padding twice!
+    dset.write(outStream, outxfer, enctype, EGL_noChange);
     dset.transferEnd();
 
     outStream.Close();
@@ -1431,7 +1430,15 @@ Edebug(());
 /*
 ** CVS/RCS Log:
 ** $Log: dcdicdir.cc,v $
-** Revision 1.13  1997-05-09 13:15:44  hewett
+** Revision 1.14  1997-05-16 08:31:27  andreas
+** - Revised handling of GroupLength elements and support of
+**   DataSetTrailingPadding elements. The enumeratio E_GrpLenEncoding
+**   got additional enumeration values (for a description see dctypes.h).
+**   addGroupLength and removeGroupLength methods are replaced by
+**   computeGroupLengthAndPadding. To support Padding, the parameters of
+**   element and sequence write functions changed.
+**
+** Revision 1.13  1997/05/09 13:15:44  hewett
 ** Fixed bug related to renaming of temporary files accross file system
 ** boundaries (the rename() system call fails).  The temporary file used
 ** diring creation of a DICOMDIR is now created in the same file system

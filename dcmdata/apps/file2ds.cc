@@ -8,10 +8,10 @@
 ** Convert a dicom file to a dicom dataset
 **
 **
-** Last Update:		$Author: hewett $
-** Update Date:		$Date: 1997-03-27 15:47:26 $
+** Last Update:		$Author: andreas $
+** Update Date:		$Date: 1997-05-16 08:31:07 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/apps/Attic/file2ds.cc,v $
-** CVS/RCS Revision:	$Revision: 1.6 $
+** CVS/RCS Revision:	$Revision: 1.7 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -40,7 +40,8 @@ usage()
 	   "usage: file2ds [options] dcm-file dcm-dataset\n"
 	   "options are:\n"
 	   "  group length encoding:\n" 
-	   "    +g    write with group lengths (default)\n"
+	   "    +g    write with group lengths\n"
+	   "    +g=   recalculate existing group lengths (default)\n"
 	   "    -g    write without group lengths\n"
 	   "  length encoding in sequences and items:\n"
 	   "    +e    write with explicit lengths (default)\n"
@@ -118,8 +119,8 @@ int main(int argc, char *argv[])
 
     char*            ifname = (char*)NULL;
     char*            ofname = (char*)NULL;
-    E_EncodingType   enctype = EET_ExplicitLength;
-    E_GrpLenEncoding ogltype = EGL_withGL;
+    E_EncodingType enctype = EET_ExplicitLength;
+    E_GrpLenEncoding oglenc = EGL_recalcGL;
     E_TransferSyntax xfer_out = EXS_Unknown;
     BOOL verifymode = FALSE;
     BOOL verbosemode = FALSE;
@@ -135,10 +136,17 @@ int main(int argc, char *argv[])
 	    }
 	    switch (arg[1]) {
 	    case 'g':
-		if (arg[0] == '-') {
-		    ogltype = EGL_withoutGL;
-		} else {
-		    ogltype = EGL_withGL;
+		if (arg[0] == '+' && arg[2] == '\0')
+		    oglenc = EGL_withGL;
+		else if (arg[0] == '+' && arg[2] == '=' && arg[3] == '\0')
+		    oglenc = EGL_recalcGL;
+		else if (arg[0] == '-' && arg[2] == '\0')
+		    oglenc = EGL_withoutGL;
+		else 
+		{
+		    fprintf(stderr, "unknown option: %s\n", arg);
+		    usage();
+		    return 1;
 		}
 		break;
 	    case 'e':
@@ -267,9 +275,9 @@ int main(int argc, char *argv[])
 	xfer_out = dset->getOriginalXfer();
     }
 
-	dset->transferInit();
-    dset->write( outf, xfer_out, enctype, ogltype );
-	dset->transferEnd();
+    dset->transferInit();
+    dset->write(outf, xfer_out, enctype, oglenc, EPD_withoutPadding);
+    dset->transferEnd();
 
     if (dset->error() != EC_Normal) {
 	fprintf(stderr, "Error: %s: writing dataset: %s\n", 
@@ -286,7 +294,15 @@ int main(int argc, char *argv[])
 /*
 ** CVS/RCS Log:
 ** $Log: file2ds.cc,v $
-** Revision 1.6  1997-03-27 15:47:26  hewett
+** Revision 1.7  1997-05-16 08:31:07  andreas
+** - Revised handling of GroupLength elements and support of
+**   DataSetTrailingPadding elements. The enumeratio E_GrpLenEncoding
+**   got additional enumeration values (for a description see dctypes.h).
+**   addGroupLength and removeGroupLength methods are replaced by
+**   computeGroupLengthAndPadding. To support Padding, the parameters of
+**   element and sequence write functions changed.
+**
+** Revision 1.6  1997/03/27 15:47:26  hewett
 ** Added command line switche to allow generation of UN to be
 ** disabled (it is enabled by default).
 **

@@ -16,7 +16,8 @@ USAGE
 usage: file2ds [options] dcm-file dcm-dataset
 options are:
   group length encoding:
-    +g    write with group lengths (default)
+    +g    write with group lengths 
+    +g=   recalculate existing group lengths (default)
     -g    write without group lengths
   length encoding in sequences and items:
     +e    write with explicit lengths (default)

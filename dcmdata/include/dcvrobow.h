@@ -10,9 +10,9 @@
 ** Interface of class DcmOtherByteOtherWord
 **
 ** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1997-04-18 08:13:31 $
+** Update Date:		$Date: 1997-05-16 08:31:20 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcvrobow.h,v $
-** CVS/RCS Revision:	$Revision: 1.6 $
+** CVS/RCS Revision:	$Revision: 1.7 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -49,8 +49,9 @@ public:
 
     virtual E_Condition write(DcmStream & outStream,
 			      const E_TransferSyntax oxfer,
-			      const E_EncodingType enctype = EET_UndefinedLength,
-			      const E_GrpLenEncoding gltype = EGL_withoutGL);
+			      const E_EncodingType enctype 
+			      = EET_UndefinedLength);
+
 
     virtual E_Condition putUint8Array(const Uint8 * byteValue,
 				      const unsigned long length);    
@@ -72,7 +73,15 @@ public:
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrobow.h,v $
-** Revision 1.6  1997-04-18 08:13:31  andreas
+** Revision 1.7  1997-05-16 08:31:20  andreas
+** - Revised handling of GroupLength elements and support of
+**   DataSetTrailingPadding elements. The enumeratio E_GrpLenEncoding
+**   got additional enumeration values (for a description see dctypes.h).
+**   addGroupLength and removeGroupLength methods are replaced by
+**   computeGroupLengthAndPadding. To support Padding, the parameters of
+**   element and sequence write functions changed.
+**
+** Revision 1.6  1997/04/18 08:13:31  andreas
 ** - The put/get-methods for all VRs did not conform to the C++-Standard
 **   draft. Some Compilers (e.g. SUN-C++ Compiler, Metroworks
 **   CodeWarrier, etc.) create many warnings concerning the hiding of

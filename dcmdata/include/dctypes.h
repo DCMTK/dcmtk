@@ -9,8 +9,8 @@
  * This file contains global type definitions
  *
  *
- * Last Update:   $Author: hewett $
- * Revision:      $Revision: 1.4 $
+ * Last Update:   $Author: andreas $
+ * Revision:      $Revision: 1.5 $
  * Status:	  $State: Exp $
  *
  */
@@ -60,9 +60,17 @@ typedef enum {
 
 
 typedef enum {
-    EGL_withoutGL = 0,
-    EGL_withGL = 1
+    EGL_noChange = 0,  // no change of GL values, WARNING: DO NOT USE FOR WRITE
+    EGL_withoutGL = 1, // remove group length tags
+    EGL_withGL = 2,    // add group length tags for every group
+    EGL_recalcGL = 3   // recalculate values for existing group length tags
 } E_GrpLenEncoding;
+
+typedef enum {
+    EPD_noChange = 0,        // no change of padding tags
+    EPD_withoutPadding = 1,  // remove all padding tags
+    EPD_withPadding = 2      // add padding tags
+} E_PaddingEncoding;
 
 
 typedef enum {
@@ -85,4 +93,5 @@ const Uint32 DCM_UndefinedLength = 0xffffffff;
 
 
 #endif /* !DCTYPES_H */
+
 

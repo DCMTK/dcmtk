@@ -10,10 +10,10 @@
 ** Interface of class DcmDicomDir
 **
 **
-** Last Update:		$Author: hewett $
-** Update Date:		$Date: 1997-04-24 12:08:28 $
+** Last Update:		$Author: andreas $
+** Update Date:		$Date: 1997-05-16 08:31:19 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcdicdir.h,v $
-** CVS/RCS Revision:	$Revision: 1.4 $
+** CVS/RCS Revision:	$Revision: 1.5 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -110,7 +110,7 @@ class DcmDicomDir
     E_Condition convertTreeToLinear( Uint32 beginOfFileSet,         // in
                                      E_TransferSyntax oxfer,        // in
                                      E_EncodingType enctype,        // in
-				     E_GrpLenEncoding gltype,       // in
+				     E_GrpLenEncoding glenc,        // in
                                      DcmSequenceOfItems &unresRecs);// inout
 
 public:
@@ -132,7 +132,7 @@ public:
                                             = DICOMDIR_DEFAULT_TRANSFERSYNTAX,
                                       const E_EncodingType enctype
                                             = EET_UndefinedLength,
-                                      const E_GrpLenEncoding gltype
+                                      const E_GrpLenEncoding glenc
                                             = EGL_withoutGL );
 // PENDING: DICOM-konform, aber unvollstaendig
     virtual E_Condition         verify( BOOL autocorrect = FALSE );
@@ -143,7 +143,15 @@ public:
 /*
 ** CVS/RCS Log:
 ** $Log: dcdicdir.h,v $
-** Revision 1.4  1997-04-24 12:08:28  hewett
+** Revision 1.5  1997-05-16 08:31:19  andreas
+** - Revised handling of GroupLength elements and support of
+**   DataSetTrailingPadding elements. The enumeratio E_GrpLenEncoding
+**   got additional enumeration values (for a description see dctypes.h).
+**   addGroupLength and removeGroupLength methods are replaced by
+**   computeGroupLengthAndPadding. To support Padding, the parameters of
+**   element and sequence write functions changed.
+**
+** Revision 1.4  1997/04/24 12:08:28  hewett
 ** Fixed DICOMDIR generation bug affecting inclusion of Group Length
 ** attributes (file offsets were not being computed correctly).
 **

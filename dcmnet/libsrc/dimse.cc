@@ -56,10 +56,10 @@
 **
 **	Module Prefix: DIMSE_
 **
-** Last Update:		$Author: hewett $
-** Update Date:		$Date: 1997-02-06 12:21:14 $
+** Last Update:		$Author: andreas $
+** Update Date:		$Date: 1997-05-16 08:31:37 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/libsrc/dimse.cc,v $
-** CVS/RCS Revision:	$Revision: 1.5 $
+** CVS/RCS Revision:	$Revision: 1.6 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -518,7 +518,8 @@ sendDcmDataset(T_ASC_Association * assoc, DcmDataset * obj,
     }
 
     while (!last) {
-    	econd = obj->write(outBuf, xferSyntax, EET_ExplicitLength, EGL_withGL);
+    	econd = obj->write(outBuf, xferSyntax, EET_ExplicitLength, 
+			   EGL_recalcGL, EPD_withoutPadding);
 	if (econd == EC_Normal) {
 	    last = TRUE;	/* all contents have been written */
 	} else if (econd == EC_StreamNotifyClient) {
@@ -680,7 +681,7 @@ DIMSE_sendMessage(T_ASC_Association *assoc,
 	return cond;
 
     cond = DIMSE_buildCmdObject(msg, &cmdObj);
-    
+
     if (SUCCESS(cond) && statusDetail != NULL) {
         /* move the status detail to the command */
         DcmElement* e;
@@ -1201,7 +1202,15 @@ void DIMSE_warning(T_ASC_Association *assoc,
 /*
 ** CVS Log
 ** $Log: dimse.cc,v $
-** Revision 1.5  1997-02-06 12:21:14  hewett
+** Revision 1.6  1997-05-16 08:31:37  andreas
+** - Revised handling of GroupLength elements and support of
+**   DataSetTrailingPadding elements. The enumeratio E_GrpLenEncoding
+**   got additional enumeration values (for a description see dctypes.h).
+**   addGroupLength and removeGroupLength methods are replaced by
+**   computeGroupLengthAndPadding. To support Padding, the parameters of
+**   element and sequence write functions changed.
+**
+** Revision 1.5  1997/02/06 12:21:14  hewett
 ** Updated for Macintosh CodeWarrior 11.  Corrected for incompatibilities
 ** in the timeval structure between unix.h and winsock.h
 **

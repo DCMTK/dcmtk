@@ -8,10 +8,10 @@
 ** Convert dicom file encoding
 **
 **
-** Last Update:		$Author: hewett $
-** Update Date:		$Date: 1997-03-27 15:47:23 $
+** Last Update:		$Author: andreas $
+** Update Date:		$Date: 1997-05-16 08:31:04 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/apps/dcmconv.cc,v $
-** CVS/RCS Revision:	$Revision: 1.7 $
+** CVS/RCS Revision:	$Revision: 1.8 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -46,23 +46,27 @@ usage()
 	   "usage: dcmconv [options] dcmfile-in dcmfile-out\n"
 	   "options are:\n"
 	   "  group length encoding:\n" 
-	   "    +g    write with group lengths (default)\n"
-	   "    -g    write without group lengths\n"
+	   "    +g      write with group lengths\n"
+	   "    +g=     recalculate group lengths (default)\n"
+	   "    -g      write without group lengths\n"
 	   "  length encoding in sequences and items:\n"
-	   "    +e    write with explicit lengths (default)\n"
-	   "    -e    write with undefined lengths\n"
+	   "    +e      write with explicit lengths (default)\n"
+	   "    -e      write with undefined lengths\n"
+	   "  padding (only applicable for file format)\n"
+	   "    -p      no padding (default)\n"
+	   "    +p n m  pad file x*n bytes and items y*m bytes\n"
 	   "  output transfer syntax:\n"
-	   "    +t=   write with same transfer syntax as input (default)\n"
-	   "    +ti   write with little-endian implicit transfer syntax\n"
-	   "    +te   write with little-endian explicit transfer syntax\n"
-	   "    +tb   write with big-endian explicit transfer syntax\n"
+	   "    +t=     write with same transfer syntax as input (default)\n"
+	   "    +ti     write with little-endian implicit transfer syntax\n"
+	   "    +te     write with little-endian explicit transfer syntax\n"
+	   "    +tb     write with big-endian explicit transfer syntax\n"
 	   "  other test/debug options:\n"
-	   "    -u    disable generation of unknown VR (UN)\n"
-	   "    +V    verbose mode, print actions\n"
-	   "    +l    force load of all input data into memory\n"
-	   "    +v    validate input data (currently almost useless)\n"
-	   "    +c    copy all input data before writing output\n"
-	   "    +dn   set debug level to n (n=1..9)\n");
+	   "    -u      disable generation of unknown VR (UN)\n"
+	   "    +V      verbose mode, print actions\n"
+	   "    +l      force load of all input data into memory\n"
+	   "    +v      validate input data (currently almost useless)\n"
+	   "    +c      copy all input data before writing output\n"
+	   "    +dn     set debug level to n (n=1..9)\n");
 }
 
 // ********************************************
@@ -127,7 +131,10 @@ int main(int argc, char *argv[])
     const char*	ofname = NULL;
     E_TransferSyntax xfer = EXS_Unknown;
     E_EncodingType enctype = EET_ExplicitLength;
-    E_GrpLenEncoding ogltype = EGL_withGL;
+    E_GrpLenEncoding oglenc = EGL_recalcGL;
+    E_PaddingEncoding opadenc = EPD_noChange;
+    Uint32 padlen = 0;
+    Uint32 subPadlen = 0;
     BOOL copymode = FALSE;
     BOOL loadmode = FALSE;
     BOOL verifymode = FALSE;
@@ -144,10 +151,45 @@ int main(int argc, char *argv[])
 	    }
 	    switch (arg[1]) {
 	    case 'g':
-		if (arg[0] == '-') {
-		    ogltype = EGL_withoutGL;
-		} else {
-		    ogltype = EGL_withGL;
+		if (arg[0] == '+' && arg[2] == '\0')
+		    oglenc = EGL_withGL;
+		else if (arg[0] == '+' && arg[2] == '=' && arg[3] == '\0')
+		    oglenc = EGL_recalcGL;
+		else if (arg[0] == '-' && arg[2] == '\0')
+		    oglenc = EGL_withoutGL;
+		else 
+		{
+		    fprintf(stderr, "unknown option: %s\n", arg);
+		    usage();
+		    return 1;
+		}
+		break;
+	    case 'p':
+		if (arg[0] == '-' && arg[2] == '\0')
+		    opadenc = EPD_withoutPadding;
+		else if (arg[0] == '-' && arg[2] == '=' && arg[3] == '\0')
+		    opadenc = EPD_noChange;
+		else if (arg[0] == '+' && arg[2] == '\0')
+		{
+		    opadenc = EPD_withPadding;
+		    if (sscanf(argv[++i], "%ld", &padlen) != 1)
+		    {
+			fprintf(stderr, "wrong parameter option +p n m\n");
+			usage();
+			return 1;
+		    }
+		    if (sscanf(argv[++i], "%ld", &subPadlen) != 1)
+		    {
+			fprintf(stderr, "wrong parameter option +p n m\n");
+			usage();
+			return 1;
+		    }
+		}
+		else
+		{
+		    fprintf(stderr, "wrong parameter option +p n m\n");
+		    usage();
+		    return 1;
 		}
 		break;
 	    case 'e':
@@ -162,6 +204,7 @@ int main(int argc, char *argv[])
 		    loadmode = TRUE;
 		} else {
 		    fprintf(stderr, "unknown option: %s\n", arg);
+		    usage();
 		    return 1;
 		}
 		break;
@@ -181,6 +224,7 @@ int main(int argc, char *argv[])
 		    break;
 		default:
 		    fprintf(stderr, "unknown option: %s\n", arg);
+		    usage();
 		    return 1;
 		}
 		break;
@@ -189,6 +233,7 @@ int main(int argc, char *argv[])
 		    dcmEnableUnknownVRGeneration = FALSE;
 		} else {
 		    fprintf(stderr, "unknown option: %s\n", arg);
+		    usage();
 		    return 1;
 		}
 		break;
@@ -197,6 +242,7 @@ int main(int argc, char *argv[])
 		    verifymode = TRUE;
 		} else {
 		    fprintf(stderr, "unknown option: %s\n", arg);
+		    usage();
 		    return 1;
 		}
 		break;
@@ -205,6 +251,7 @@ int main(int argc, char *argv[])
 		    copymode = TRUE;
 		} else {
 		    fprintf(stderr, "unknown option: %s\n", arg);
+		    usage();
 		    return 1;
 		}
 		break;
@@ -213,17 +260,20 @@ int main(int argc, char *argv[])
 		    verbosemode = TRUE;
 		} else {
 		    fprintf(stderr, "unknown option: %s\n", arg);
+		    usage();
 		    return 1;
 		}
 		break;
 	    case 'd':
 		if (sscanf(arg+2, "%d", &localDebugLevel) != 1) {
 		    fprintf(stderr, "unknown option: %s\n", arg);
+		    usage();
 		    return 1;
 		}
 		break;
 	    default:
 		fprintf(stderr, "unknown option: %s\n", arg);
+		usage();
 		return 1;
 	    }
 	} else if ( ifname == NULL ) {
@@ -266,7 +316,7 @@ int main(int argc, char *argv[])
 
     DcmFileFormat *dcmff = new DcmFileFormat();
     dcmff->transferInit();
-    dcmff->read(inf, EXS_Unknown, EGL_withGL );
+    dcmff->read(inf, EXS_Unknown, EGL_noChange );
     dcmff->transferEnd();
 
     if (dcmff->error() != EC_Normal) {
@@ -328,7 +378,7 @@ int main(int argc, char *argv[])
     }
 
     ff->transferInit();
-    ff->write( outf, xfer, enctype, ogltype );
+    ff->write( outf, xfer, enctype, oglenc, opadenc, padlen, subPadlen );
     ff->transferEnd();
 
     if (verifymode) {
@@ -347,7 +397,15 @@ int main(int argc, char *argv[])
 /*
 ** CVS/RCS Log:
 ** $Log: dcmconv.cc,v $
-** Revision 1.7  1997-03-27 15:47:23  hewett
+** Revision 1.8  1997-05-16 08:31:04  andreas
+** - Revised handling of GroupLength elements and support of
+**   DataSetTrailingPadding elements. The enumeratio E_GrpLenEncoding
+**   got additional enumeration values (for a description see dctypes.h).
+**   addGroupLength and removeGroupLength methods are replaced by
+**   computeGroupLengthAndPadding. To support Padding, the parameters of
+**   element and sequence write functions changed.
+**
+** Revision 1.7  1997/03/27 15:47:23  hewett
 ** Added command line switche to allow generation of UN to be
 ** disabled (it is enabled by default).
 **

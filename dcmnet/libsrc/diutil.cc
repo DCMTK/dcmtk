@@ -57,10 +57,10 @@
 ** Module Prefix: DU_
 **
 **
-** Last Update:		$Author: hewett $
-** Update Date:		$Date: 1997-05-13 14:38:02 $
+** Last Update:		$Author: andreas $
+** Update Date:		$Date: 1997-05-16 08:31:38 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/libsrc/diutil.cc,v $
-** CVS/RCS Revision:	$Revision: 1.5 $
+** CVS/RCS Revision:	$Revision: 1.6 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -370,7 +370,7 @@ DU_findSOPClassAndInstanceInFile(const char *fname,
         return FALSE;
 
     DcmFileFormat ff;
-    ff.read(istrm, EXS_Unknown, EGL_withGL );
+    ff.read(istrm, EXS_Unknown, EGL_noChange );
 
     /* look in the meta-header first */
     BOOLEAN found = DU_findSOPClassAndInstanceInDataSet(
@@ -556,7 +556,15 @@ DU_cgetStatusString(Uint16 statusCode)
 /*
 ** CVS Log
 ** $Log: diutil.cc,v $
-** Revision 1.5  1997-05-13 14:38:02  hewett
+** Revision 1.6  1997-05-16 08:31:38  andreas
+** - Revised handling of GroupLength elements and support of
+**   DataSetTrailingPadding elements. The enumeratio E_GrpLenEncoding
+**   got additional enumeration values (for a description see dctypes.h).
+**   addGroupLength and removeGroupLength methods are replaced by
+**   computeGroupLengthAndPadding. To support Padding, the parameters of
+**   element and sequence write functions changed.
+**
+** Revision 1.5  1997/05/13 14:38:02  hewett
 ** Added UIDs for the draft supplements 12 (PET), 13 (Queue Management),
 ** 15 (Visible Light), 17 (Modality Performed Procedure Step), 22 (User
 ** Preference LUT) and 24 (Print Storage).

@@ -10,10 +10,10 @@
 ** CD-R Image Interchange Profile (Supplement 19).
 **
 **
-** Last Update:		$Author: hewett $
-** Update Date:		$Date: 1997-05-09 13:18:52 $
+** Last Update:		$Author: andreas $
+** Update Date:		$Date: 1997-05-16 08:31:05 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/apps/dcmgpdir.cc,v $
-** CVS/RCS Revision:	$Revision: 1.9 $
+** CVS/RCS Revision:	$Revision: 1.10 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -563,7 +563,7 @@ dcmFindStringInFile(const char* fname, const DcmTagKey& xtag,
     DcmFileFormat ff;
 
     ff.transferInit();
-    ff.read(myin, EXS_Unknown, EGL_withGL );
+    ff.read(myin, EXS_Unknown, EGL_noChange);
     ff.transferEnd();
 
     if (ff.error() != EC_Normal) {
@@ -1699,7 +1699,7 @@ addToDir(DcmDirectoryRecord* rootRec, const char* ifname)
     DcmFileFormat ff;
 
     ff.transferInit();
-    ff.read(myin, EXS_Unknown, EGL_withGL );
+    ff.read(myin, EXS_Unknown, EGL_noChange );
     ff.transferEnd();
 
     if (ff.error() != EC_Normal) {
@@ -1972,7 +1972,7 @@ checkFileCanBeUsed(const char* fname)
     DcmFileFormat ff;
 
     ff.transferInit();
-    ff.read(myin, EXS_Unknown, EGL_withGL );
+    ff.read(myin, EXS_Unknown, EGL_noChange );
     ff.transferEnd();
 
     if (ff.error() != EC_Normal) {
@@ -2317,7 +2317,15 @@ expandFileNames(StrList& fileNames, StrList& expandedNames)
 /*
 ** CVS/RCS Log:
 ** $Log: dcmgpdir.cc,v $
-** Revision 1.9  1997-05-09 13:18:52  hewett
+** Revision 1.10  1997-05-16 08:31:05  andreas
+** - Revised handling of GroupLength elements and support of
+**   DataSetTrailingPadding elements. The enumeratio E_GrpLenEncoding
+**   got additional enumeration values (for a description see dctypes.h).
+**   addGroupLength and removeGroupLength methods are replaced by
+**   computeGroupLengthAndPadding. To support Padding, the parameters of
+**   element and sequence write functions changed.
+**
+** Revision 1.9  1997/05/09 13:18:52  hewett
 ** Added improved error/warning messages and backup of existing DICOMDIR
 ** file (the backup file has the suffix .BAK and is removed if the new
 ** DICOMDIR file is sucessfully created).

@@ -7,10 +7,10 @@
 ** Purpose:
 ** Convert DICOM Images to PPM or PGM using the dcmimage library. 
 **
-** Last Update:		$Author: meichel $
-** Update Date:		$Date: 1997-05-13 13:49:42 $
+** Last Update:		$Author: andreas $
+** Update Date:		$Date: 1997-05-16 08:33:02 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/apps/dcm2pnm.cc,v $
-** CVS/RCS Revision:	$Revision: 1.1 $
+** CVS/RCS Revision:	$Revision: 1.2 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -627,7 +627,7 @@ int main(int argc, char *argv[])
   else  dfile = new DcmFileFormat();
  
   dfile->transferInit();
-  dfile->read(myin, opt_transferSyntax, EGL_withoutGL );
+  dfile->read(myin, opt_transferSyntax, EGL_withoutGL);
   dfile->transferEnd();
  
   if (dfile->error() != EC_Normal)
@@ -1043,7 +1043,15 @@ int main(int argc, char *argv[])
 /*
 ** CVS/RCS Log:
 ** $Log: dcm2pnm.cc,v $
-** Revision 1.1  1997-05-13 13:49:42  meichel
+** Revision 1.2  1997-05-16 08:33:02  andreas
+** - Revised handling of GroupLength elements and support of
+**   DataSetTrailingPadding elements. The enumeratio E_GrpLenEncoding
+**   got additional enumeration values (for a description see dctypes.h).
+**   addGroupLength and removeGroupLength methods are replaced by
+**   computeGroupLengthAndPadding. To support Padding, the parameters of
+**   element and sequence write functions changed.
+**
+** Revision 1.1  1997/05/13 13:49:42  meichel
 ** Added new application dcm2pnm.
 ** dcm2pnm allows to convert DICOM images to the widely used
 ** PPM/PGM general purpose image format. dcm2pnm gives access to most
