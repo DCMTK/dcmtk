@@ -23,6 +23,8 @@ install-include: include-install
 
 install-support:
 
+libsrc-all:
+
 
 include-install: 
 	./mkinstalldirs $(includedir)
