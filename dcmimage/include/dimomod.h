@@ -38,38 +38,38 @@ class DiMonoModality : public DiObjectCounter
     DiMonoModality(const DiDocument *, DiInputPixel *);
     virtual ~DiMonoModality();
     
-	inline EP_Representation getRepresentation() const
-		{ return Representation; }
+    inline EP_Representation getRepresentation() const
+        { return Representation; }
 
-	inline double getMinValue() const
-		{ return MinValue; }
-	inline double getMaxValue() const
-		{ return MaxValue; }
-	inline double getRescaleIntercept() const
-		{ return RescaleIntercept; }
-	inline double getRescaleSlope() const
-		{ return RescaleSlope; }
-	inline const DiLookupTable *getTableData() const
-		{ return TableData; }
+    inline double getMinValue() const
+        { return MinValue; }
+    inline double getMaxValue() const
+        { return MaxValue; }
+    inline double getRescaleIntercept() const
+        { return RescaleIntercept; }
+    inline double getRescaleSlope() const
+        { return RescaleSlope; }
+    inline const DiLookupTable *getTableData() const
+        { return TableData; }
 
-	inline int hasLookupTable() const
-		{ return LookupTable; }
-	inline int hasRescaling() const
-		{ return Rescaling; }
+    inline int hasLookupTable() const
+        { return LookupTable; }
+    inline int hasRescaling() const
+        { return Rescaling; }
 
  private:
- 	EP_Representation Representation;
-	
-	double MinValue;
-	double MaxValue;
-	
-	double RescaleIntercept;
- 	double RescaleSlope;
-	
-	int LookupTable;
-	int Rescaling;
-	
-	DiLookupTable *TableData;
+    EP_Representation Representation;
+    
+    double MinValue;
+    double MaxValue;
+    
+    double RescaleIntercept;
+    double RescaleSlope;
+    
+    int LookupTable;
+    int Rescaling;
+    
+    DiLookupTable *TableData;
 };
 
 

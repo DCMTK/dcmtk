@@ -50,15 +50,15 @@ public:
     
     DcmObject *search(const DcmTagKey &, DcmObject * = NULL) const;
     int search(const DcmTagKey &, DcmStack &) const;
-	
+    
     unsigned long getVM(const DcmTagKey &) const;
-	
+    
     unsigned long getValue(const DcmTagKey &, Uint16 &, const unsigned long = 0, DcmObject * = NULL) const;
     unsigned long getValue(const DcmTagKey &, Sint16 &, const unsigned long = 0) const;
     unsigned long getValue(const DcmTagKey &, Uint32 &, const unsigned long = 0) const;
     unsigned long getValue(const DcmTagKey &, Sint32 &, const unsigned long = 0) const;
     unsigned long getValue(const DcmTagKey &, double &, const unsigned long = 0) const;
-	
+    
     unsigned long getValue(const DcmTagKey &, const Uint16 *&, DcmObject * = NULL) const;
     unsigned long getValue(const DcmTagKey &, const char *&) const;
 
@@ -70,7 +70,7 @@ protected:
 private:
     DcmObject *Object;
     E_TransferSyntax Xfer;
-	
+    
     int DeleteObject;
 };
 

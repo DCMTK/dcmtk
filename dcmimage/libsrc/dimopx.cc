@@ -23,33 +23,33 @@
 
 DiMonoPixel::DiMonoPixel(const unsigned long count)
   : Modality(NULL),
-	Count(count)
+    Count(count)
 {
 }
 
 
 DiMonoPixel::DiMonoPixel(const DiInputPixel *pixel, DiMonoModality *modality)
   : Modality(modality),
-	Count(0)
+    Count(0)
 {
-	if (pixel != NULL)
-		Count = pixel->getCount();
+    if (pixel != NULL)
+        Count = pixel->getCount();
 }
 
 
 DiMonoPixel::DiMonoPixel(const DiColorPixel *pixel)
   : Modality(NULL),
-	Count(pixel->getCount())
+    Count(pixel->getCount())
 {
 }
 
 
 DiMonoPixel::DiMonoPixel(const DiMonoPixel *pixel, const unsigned long count)
   : Modality(pixel->Modality),
-	Count(count)
+    Count(count)
 {
-	if (Modality != NULL)
-		Modality->addReference();
+    if (Modality != NULL)
+        Modality->addReference();
 }
 
 
@@ -59,6 +59,6 @@ DiMonoPixel::DiMonoPixel(const DiMonoPixel *pixel, const unsigned long count)
 
 DiMonoPixel::~DiMonoPixel()
 {
-	if (Modality != NULL)
-		Modality->removeReference();
+    if (Modality != NULL)
+        Modality->removeReference();
 }

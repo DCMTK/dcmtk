@@ -45,7 +45,7 @@ DiMono2Image::DiMono2Image(const DiMonoImage *image, const Uint16 columns, const
 
 
 DiMono2Image::DiMono2Image(const DiMonoImage *image, const Uint16 left, const Uint16 top, const Uint16 columns,
-	const Uint16 rows)
+    const Uint16 rows)
   : DiMonoImage(image, left, top, columns, rows)
 {
 }
@@ -65,27 +65,27 @@ DiMono2Image::~DiMono2Image()
 
 void *DiMono2Image::getOutputData(const unsigned long frame, const int bits, const int)
 {
-	return DiMonoImage::getData(frame, bits, 0, maxval(bits)); 
+    return DiMonoImage::getData(frame, bits, 0, maxval(bits)); 
 }
 
 
 DiImage *DiMono2Image::scale(const unsigned long width, const unsigned long height, const int interpolate) const
 {
-	DiImage *image = new DiMono2Image(this, (Uint16)width, (Uint16)height, interpolate);
-	return image;
+    DiImage *image = new DiMono2Image(this, (Uint16)width, (Uint16)height, interpolate);
+    return image;
 }
 
 
 DiImage *DiMono2Image::clip(const unsigned long left, const unsigned long top, const unsigned long width,
-	const unsigned long height) const
+    const unsigned long height) const
 {
-	DiImage *image = new DiMono2Image(this, (Uint16)left, (Uint16)top, (Uint16)width, (Uint16)height);
-	return image;
+    DiImage *image = new DiMono2Image(this, (Uint16)left, (Uint16)top, (Uint16)width, (Uint16)height);
+    return image;
 }
 
 
 DiImage *DiMono2Image::makeMonochrome(const double, const double, const double) const
 {
-	DiImage *image = new DiMono2Image(this, (Uint16)Columns, (Uint16)Rows);
-	return image;
+    DiImage *image = new DiMono2Image(this, (Uint16)Columns, (Uint16)Rows);
+    return image;
 }

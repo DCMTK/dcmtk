@@ -4,7 +4,7 @@
 **
 **  author   : Joerg Riesmeier
 **  created  : 20.12.96
-**  modified : 10.02.97
+**  modified : 13.03.98
 **
 *********************************************************************/
 
@@ -35,24 +35,24 @@ class DiColorPixel;
 class DiColorPixel 
 {
  public:
-    DiColorPixel(const DiDocument *, const DiInputPixel *, const Uint16, EI_Status &);
+    DiColorPixel(const DiDocument *, const DiInputPixel *, const Uint16, EI_Status &, const Uint16 = 0);
     virtual ~DiColorPixel();
     
-	virtual EP_Representation getRepresentation() const = 0;
+    virtual EP_Representation getRepresentation() const = 0;
     virtual void *getData() const = 0;
-	virtual void *createDIB(const Uint16, const Uint16, const unsigned long, Sint16) const = 0;
-	
-	inline unsigned long getCount() const
-		{ return Count; };
+    virtual void *createDIB(const Uint16, const Uint16, const unsigned long, Sint16) const = 0;
+    
+    inline unsigned long getCount() const
+        { return Count; };
 
  protected:
-	DiColorPixel(const DiMonoPixel *);
-	DiColorPixel(const DiColorPixel *, const unsigned long);
+    DiColorPixel(const DiMonoPixel *);
+    DiColorPixel(const DiColorPixel *, const unsigned long);
 
-	int PlanarConfiguration;
+    int PlanarConfiguration;
 
  private:
- 	unsigned long Count;
+    unsigned long Count;
 };
 
 

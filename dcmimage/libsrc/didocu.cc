@@ -27,10 +27,10 @@ DiDocument::DiDocument(const char *filename)
     if (stream.Fail()) 
     {
         cerr << "ERROR: can't open file '" << filename << "' !" << endl;
-	Object = NULL;
+    Object = NULL;
     } 
     else
-	Init(stream);
+    Init(stream);
 }
 
 
@@ -40,10 +40,10 @@ DiDocument::DiDocument(DcmStream &stream)
     if (stream.Fail()) 
     {
         cerr << "ERROR: invalid file stream !" << endl;
-	Object = NULL;
+    Object = NULL;
     } 
     else
-	Init(stream);
+    Init(stream);
 }
 
 
@@ -61,18 +61,18 @@ void DiDocument::Init(DcmStream &stream)
     Object = dfile;
     if (dfile != NULL)
     {
-	dfile->transferInit();
-	if (dfile->read(stream) != EC_Normal)
-	{
-	    cerr << "ERROR: can't read DICOM stream !" << endl;
-	    delete dfile;
-	    Object = NULL;
-	}
-	else
-	{
-	    dfile->transferEnd();
-	    Xfer =  dfile->getDataset()->getOriginalXfer();
-	}
+    dfile->transferInit();
+    if (dfile->read(stream) != EC_Normal)
+    {
+        cerr << "ERROR: can't read DICOM stream !" << endl;
+        delete dfile;
+        Object = NULL;
+    }
+    else
+    {
+        dfile->transferEnd();
+        Xfer =  dfile->getDataset()->getOriginalXfer();
+    }
     }
 }
 
@@ -83,8 +83,8 @@ void DiDocument::Init(DcmStream &stream)
 
 DiDocument::~DiDocument()
 {
-	if (DeleteObject)
-    	delete Object;
+    if (DeleteObject)
+        delete Object;
 }
 
 
@@ -94,10 +94,10 @@ DcmObject *DiDocument::search(const DcmTagKey &tag, DcmObject *obj) const
 {
     DcmStack stack;
     if (obj == NULL)
-	obj = Object;
+    obj = Object;
     if ((obj != NULL) && (obj->search(tag, stack) == EC_Normal) && 
-	(stack.top()->getLength(Xfer) > 0))
-	return stack.top();
+    (stack.top()->getLength(Xfer) > 0))
+    return stack.top();
     return NULL;
 }
 
@@ -107,11 +107,11 @@ DcmObject *DiDocument::search(const DcmTagKey &tag, DcmObject *obj) const
 int DiDocument::search(const DcmTagKey &tag, DcmStack & pstack) const
 {
     if (pstack.empty())
-	pstack.push(Object);
+    pstack.push(Object);
     DcmObject * obj = pstack.top();
     if ((obj != NULL) && (obj->search(tag, pstack) == EC_Normal) && 
-	(pstack.top()->getLength(Xfer) > 0))
-	return 1;
+    (pstack.top()->getLength(Xfer) > 0))
+    return 1;
     return 0;
 }
 
@@ -123,19 +123,19 @@ unsigned long DiDocument::getVM(const DcmTagKey &tag) const
 {
     DcmObject *searchedObj = search(tag);
     if (searchedObj != NULL)
-		return searchedObj->getVM();
+        return searchedObj->getVM();
     return 0;
 }
 
 
 unsigned long DiDocument::getValue(const DcmTagKey &tag, Uint16 &returnVal, const unsigned long pos, DcmObject *item)
-	const 
+    const 
 {
     DcmObject *searchedObj = search(tag, item);
     if (searchedObj != NULL)
     {
-    	((DcmElement *)searchedObj)->getUint16(returnVal, pos);
-		return searchedObj->getVM();
+        ((DcmElement *)searchedObj)->getUint16(returnVal, pos);
+        return searchedObj->getVM();
     }
     return 0;
 }
@@ -146,8 +146,8 @@ unsigned long DiDocument::getValue(const DcmTagKey &tag, Sint16 &returnVal, cons
     DcmObject *searchedObj = search(tag);
     if (searchedObj != NULL)
     {
-    	((DcmElement *)searchedObj)->getSint16(returnVal, pos);
-		return searchedObj->getVM();
+        ((DcmElement *)searchedObj)->getSint16(returnVal, pos);
+        return searchedObj->getVM();
     }
     return 0;
 }
@@ -158,8 +158,8 @@ unsigned long DiDocument::getValue(const DcmTagKey &tag, Uint32 &returnVal, cons
     DcmObject *searchedObj = search(tag);
     if (searchedObj != NULL)
     {
-    	((DcmElement *)searchedObj)->getUint32(returnVal, pos);
-		return searchedObj->getVM();
+        ((DcmElement *)searchedObj)->getUint32(returnVal, pos);
+        return searchedObj->getVM();
     }
     return 0;
 }
@@ -194,12 +194,12 @@ unsigned long DiDocument::getValue(const DcmTagKey &tag, const Uint16 *&returnVa
     DcmObject *searchedObj = search(tag, item);
     if (searchedObj != NULL)
     {
-	Uint16 *val;	
-	((DcmElement *)searchedObj)->getUint16Array(val);
-	returnVal = val;
+    Uint16 *val;    
+    ((DcmElement *)searchedObj)->getUint16Array(val);
+    returnVal = val;
         if (searchedObj->getVR() == EVR_OW)
-	    return searchedObj->getLength(Xfer) / sizeof(Uint16);
-	return searchedObj->getVM();
+        return searchedObj->getLength(Xfer) / sizeof(Uint16);
+    return searchedObj->getVM();
     }
     return 0;
 }
@@ -210,10 +210,10 @@ unsigned long DiDocument::getValue(const DcmTagKey &tag, const char *&returnVal)
     DcmObject *searchedObj = search(tag);
     if (searchedObj != NULL)
     {
-		char *val;
-	    ((DcmElement *)searchedObj)->getString(val);
-		returnVal = val;
-	    return searchedObj->getVM();
+        char *val;
+        ((DcmElement *)searchedObj)->getString(val);
+        returnVal = val;
+        return searchedObj->getVM();
     }
     return 0;
 }
@@ -222,9 +222,9 @@ unsigned long DiDocument::getValue(const DcmTagKey &tag, const char *&returnVal)
 unsigned long DiDocument::getSequence(const DcmTagKey &tag, DcmSequenceOfItems *&seq) const
 {
     DcmObject *obj = search(tag);
-	if ((obj != NULL) && (obj->ident() == EVR_SQ))
-		return (seq = (DcmSequenceOfItems *)obj)->card();
-	return 0;
+    if ((obj != NULL) && (obj->ident() == EVR_SQ))
+        return (seq = (DcmSequenceOfItems *)obj)->card();
+    return 0;
 }
 
 

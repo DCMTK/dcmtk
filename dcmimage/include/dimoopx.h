@@ -39,18 +39,18 @@ class DiMonoOutputPixel
     DiMonoOutputPixel(const DiMonoPixel *, const unsigned long);
     virtual ~DiMonoOutputPixel();
     
-	virtual EP_Representation getRepresentation() const = 0;
+    virtual EP_Representation getRepresentation() const = 0;
     virtual void *getData() const = 0;
-	virtual size_t getItemSize() const = 0;
+    virtual size_t getItemSize() const = 0;
 
-	virtual int writePPM(ostream &) const = 0;
-	virtual int writePPM(FILE *) const = 0;
-	
-	inline unsigned long getCount() const
-		{ return Count; }
+    virtual int writePPM(ostream &) const = 0;
+    virtual int writePPM(FILE *) const = 0;
+    
+    inline unsigned long getCount() const
+        { return Count; }
 
  private:
- 	unsigned long Count;
+    unsigned long Count;
 };
 
 

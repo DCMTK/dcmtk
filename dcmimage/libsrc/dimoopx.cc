@@ -22,8 +22,8 @@
 DiMonoOutputPixel::DiMonoOutputPixel(const DiMonoPixel *pixel, const unsigned long frames)
   : Count(0)
 {
-	if (pixel != NULL)
-		Count = pixel->getCount() / frames;
+    if (pixel != NULL)
+        Count = pixel->getCount() / frames;
 }
 
 

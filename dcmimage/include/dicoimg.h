@@ -39,33 +39,33 @@ class DiColorImage : public DiImage {
     DiColorImage(const DiMonoImage *);
     virtual ~DiColorImage();
 
-	void *getOutputData(const unsigned long, const int, const int = 0);
-	void *getOutputPlane(const int) const;
-	void deleteOutputData();
-	
-	DiImage *scale(const unsigned long, const unsigned long, const int) const;
-	DiImage *clip(const unsigned long, const unsigned long, const unsigned long, const unsigned long) const;
+    void *getOutputData(const unsigned long, const int, const int = 0);
+    void *getOutputPlane(const int) const;
+    void deleteOutputData();
+    
+    DiImage *scale(const unsigned long, const unsigned long, const int) const;
+    DiImage *clip(const unsigned long, const unsigned long, const unsigned long, const unsigned long) const;
 
-	DiImage *makeMonochrome(const double, const double, const double) const;
-	const DiColorPixel *getInterData() const
-		{ return InterData; }
+    DiImage *makeMonochrome(const double, const double, const double) const;
+    const DiColorPixel *getInterData() const
+        { return InterData; }
 
-	void *createDIB(const unsigned long);
+    void *createDIB(const unsigned long);
 
-	int writePPM(ostream &, const unsigned long, const int); 
-	int writePPM(FILE *, const unsigned long, const int); 
-	int writeRawPPM(FILE *, const unsigned long, const int); 
+    int writePPM(ostream &, const unsigned long, const int); 
+    int writePPM(FILE *, const unsigned long, const int); 
+    int writeRawPPM(FILE *, const unsigned long, const int); 
 
  protected:
     DiColorImage(const DiColorImage *, const Uint16, const Uint16, const int = 0);
     DiColorImage(const DiColorImage *, const Uint16, const Uint16, const Uint16, const Uint16);
 
-	void checkInterData();
+    void checkInterData();
 
- 	DiColorPixel *InterData;
+    DiColorPixel *InterData;
 
  private:
-	DiColorOutputPixel *OutputData;
+    DiColorOutputPixel *OutputData;
  };
 
 

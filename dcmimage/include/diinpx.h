@@ -28,18 +28,18 @@ class DiInputPixel
     DiInputPixel();
     virtual ~DiInputPixel();
     
-	virtual int determineMinMax() = 0;
-	
-	virtual EP_Representation getRepresentation() const = 0;
+    virtual int determineMinMax() = 0;
+    
+    virtual EP_Representation getRepresentation() const = 0;
     virtual void *getData() const = 0;
-	virtual double getMinValue() const = 0;
-	virtual double getMaxValue() const = 0;
-	
-	inline unsigned long getCount() const
-		{ return Count; };
-	
+    virtual double getMinValue() const = 0;
+    virtual double getMaxValue() const = 0;
+    
+    inline unsigned long getCount() const
+        { return Count; };
+    
  protected:
- 	unsigned long Count;
+    unsigned long Count;
 };
 
 

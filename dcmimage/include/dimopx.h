@@ -38,25 +38,25 @@ class DiMonoPixel
     DiMonoPixel(const DiInputPixel *, DiMonoModality *);
     virtual ~DiMonoPixel();
     
-	virtual EP_Representation getRepresentation() const = 0;
+    virtual EP_Representation getRepresentation() const = 0;
     virtual void *getData() const = 0;
 
-	virtual int getMinMaxValues(double &, double &) const = 0;
+    virtual int getMinMaxValues(double &, double &) const = 0;
 
-	virtual int getMinMaxWindow(const int, double &, double &) = 0;
-	virtual int getHistogramWindow(const double, double &, double &) = 0;
-	
-	inline unsigned long getCount() const
-		{ return Count; };
+    virtual int getMinMaxWindow(const int, double &, double &) = 0;
+    virtual int getHistogramWindow(const double, double &, double &) = 0;
+    
+    inline unsigned long getCount() const
+        { return Count; };
 
  protected:
     DiMonoPixel(const DiColorPixel *);
     DiMonoPixel(const DiMonoPixel *, const unsigned long);
-	
-	DiMonoModality *Modality;
+    
+    DiMonoModality *Modality;
 
  private:
- 	unsigned long Count;
+    unsigned long Count;
 };
 
 
