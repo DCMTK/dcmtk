@@ -21,10 +21,10 @@
  *
  *  Purpose: class DcmDateTime
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-09-25 17:19:56 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2001-10-01 15:04:44 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcvrdt.cc,v $
- *  CVS/RCS Revision: $Revision: 1.11 $
+ *  CVS/RCS Revision: $Revision: 1.12 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -34,6 +34,8 @@
 #include "osconfig.h"    /* make sure OS specific configuration is included first */
 
 #include "dcvrdt.h"
+#include "dcvrda.h"
+#include "dcvrtm.h"
 #include "dcdebug.h"
 #include "ofstring.h"
 
@@ -97,10 +99,189 @@ DcmDateTime::getOFStringArray(
 // ********************************
 
 
+OFCondition
+DcmDateTime::getCurrentDateTime(
+    OFString &dicomDateTime,
+    const OFBool seconds,
+    const OFBool fraction,
+    const OFBool timeZone)
+{
+    OFCondition l_error = EC_IllegalCall;
+    time_t tt = time(NULL);
+#if defined(_REENTRANT) && !defined(_WIN32) && !defined(__CYGWIN__)
+    // use localtime_r instead of localtime
+    struct tm ltBuf;
+    struct tm *lt = &ltBuf;
+    localtime_r(&tt, lt);
+#else
+    struct tm *lt = localtime(&tt);
+#endif
+    if (lt != NULL)
+    {
+        char buf[64];
+        /* format: YYYYMMDD */
+        sprintf(buf, "%04d%02d%02d", 1900 + lt->tm_year, lt->tm_mon + 1, lt->tm_mday);
+        /* format: HHMM */
+        sprintf(strchr(buf, 0), "%02d%02d", lt->tm_hour, lt->tm_min);
+        if (seconds)
+        {
+            /* format: SS */
+            sprintf(strchr(buf, 0), "%02d", lt->tm_sec);
+            if (fraction)
+            {
+                timeval c_time;
+                if (gettimeofday(&c_time, NULL) == 0)
+                    /* format: .FFFFFF */
+                    sprintf(strchr(buf, 0), ".%06li", c_time.tv_usec);
+                else
+                    /* format: .FFFFFF */
+                    strcat(buf, ".000000");
+            }
+        }
+        if (timeZone)
+        {
+            tt = time(NULL);
+#if defined(_REENTRANT) && !defined(_WIN32) && !defined(__CYGWIN__)
+            // use gmtime_r instead of gmtime
+            struct tm gtBuf;
+            struct tm *gt = &gtBuf;
+            gmtime_r(&tt, gt);
+#else
+            struct tm *gt = gmtime(&tt);
+#endif
+            if (gt != NULL)
+            {
+                char zoneSign = '+';
+                int zoneMin = (lt->tm_hour - gt->tm_hour) * 60 + (lt->tm_min - gt->tm_min);
+                if (zoneMin < 0)
+                {
+                    zoneMin = -zoneMin;
+                    zoneSign = '-';
+                }
+                /* format: CHHMM */
+                sprintf(strchr(buf, 0), "%c%02d%02d", zoneSign, zoneMin / 60, zoneMin % 60);
+            } else {
+                /* format: CHHMM */
+                strcat(buf, "+0000");
+            }            
+        }
+        /* copy to resulting string */
+        dicomDateTime = buf;
+        /* no error, since at least YYYYMMDDHHMM valid */
+        l_error = EC_Normal;
+    } else {
+        /* format: YYYYMMDDHHMM */
+        dicomDateTime = "190001010000";
+        if (seconds)
+        {
+            /* format: SS */
+            dicomDateTime += "00";
+            if (fraction)
+            {
+                /* format: .FFFFFF */
+                dicomDateTime += ".000000";
+            }
+        }
+        if (timeZone)
+        {
+            /* format: CHHMM */
+            dicomDateTime += "+0000";
+        }
+    }
+    return l_error;
+}
+
+
+OFCondition
+DcmDateTime::setCurrentDateTime(
+    const OFBool seconds,
+    const OFBool fraction,
+    const OFBool timeZone)
+{
+    OFString dicomDateTime;
+    OFCondition l_error = getCurrentDateTime(dicomDateTime, seconds, fraction, timeZone);
+    if (l_error == EC_Normal)
+        l_error = putString(dicomDateTime.c_str());
+    return l_error;
+}
+
+
+// ********************************
+
+
+OFCondition
+DcmDateTime::getISOFormattedDateTime(
+    OFString &formattedDateTime,
+    const unsigned long pos,
+    const OFBool seconds,
+    const OFBool fraction,
+    const OFBool timeZone,
+    const OFBool createMissingPart)
+{
+    OFString dicomDateTime;
+    OFCondition l_error = getOFString(dicomDateTime, pos);
+    if (l_error == EC_Normal)
+        l_error = getISOFormattedDateTimeFromString(dicomDateTime, formattedDateTime, seconds, fraction, timeZone, createMissingPart);
+    else
+        formattedDateTime.clear();
+    return l_error;
+}
+
+
+OFCondition
+DcmDateTime::getISOFormattedDateTimeFromString(
+    const OFString &dicomDateTime,
+    OFString &formattedDateTime,
+    const OFBool seconds,
+    const OFBool fraction,
+    const OFBool timeZone,
+    const OFBool createMissingPart)
+{
+    OFCondition l_error = EC_IllegalCall;
+    const size_t length = dicomDateTime.length();
+    formattedDateTime.clear();
+    /* minimum DT format: YYYYMMDD */
+    if (length >= 8)
+    {
+        OFString timeString;
+        /* get formatted date: YYYY-MM-DD, ignore return value (status) */
+        DcmDate::getISOFormattedDateFromString(dicomDateTime.substr(0, 8), formattedDateTime);
+        /* get formatted time: HH:MM[:SS[.FFFFFF]], ignore return value (status) */
+        const size_t posSign = dicomDateTime.find_first_of("+-", 8);
+        OFString dicomTime = (posSign != OFString_npos) ? dicomDateTime.substr(8, posSign - 8) : dicomDateTime.substr(8);
+        DcmTime::getISOFormattedTimeFromString(dicomTime, timeString, seconds, fraction, createMissingPart);
+        /* add time string with separator */
+        formattedDateTime += " ";
+        formattedDateTime += timeString;
+        /* add optional time zone: [+/-HH:MM] */
+        if (timeZone)
+        {
+            /* check whether optional time zone is present: &ZZZZ */
+            if ((posSign != OFString_npos) && (length >= posSign + 5))
+            {
+                formattedDateTime += " ";
+                formattedDateTime += dicomDateTime[posSign];
+                formattedDateTime += dicomDateTime.substr(posSign + 1, 2);
+                formattedDateTime += ":";
+                formattedDateTime += dicomDateTime.substr(posSign + 3, 2);
+            } else if (createMissingPart)
+                formattedDateTime += " +00:00";
+        }
+        l_error = EC_Normal;
+    } else
+        formattedDateTime = dicomDateTime;
+    return l_error;
+}
+
+
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrdt.cc,v $
-** Revision 1.11  2001-09-25 17:19:56  meichel
+** Revision 1.12  2001-10-01 15:04:44  joergr
+** Introduced new general purpose functions to get/set person names, date, time
+** and date/time.
+**
+** Revision 1.11  2001/09/25 17:19:56  meichel
 ** Adapted dcmdata to class OFCondition
 **
 ** Revision 1.10  2001/06/01 15:49:16  meichel

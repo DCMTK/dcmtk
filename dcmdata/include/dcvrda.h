@@ -21,10 +21,10 @@
  *
  *  Purpose: Interface of class DcmDate
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-06-01 15:48:49 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2001-10-01 15:01:38 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcvrda.h,v $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -52,6 +52,53 @@ class DcmDate : public DcmByteString
     DcmDate &operator=(const DcmDate &obj) { DcmByteString::operator=(obj); return *this; }
 
     virtual DcmEVR ident() const { return EVR_DA; }
+
+	/** set the element value to the current system date.
+	 *  The DICOM DA format supported by this function is "YYYYMMDD". If the current
+	 *  system date is unavailable the date is set to "19000101" and an error code is
+	 *  returned.
+	 *  @return EC_Normal upon success, an error code otherwise
+	 */
+    OFCondition setCurrentDate();
+	
+	/** get the current element value in ISO date format.
+	 *  The ISO date format supported by this function is "YYYY-MM-DD". Please note
+	 *  that the element value is expected to be in valid DICOM DA format ("YYYYMMDD" or
+	 *  "YYYY.MM.DD"). If this function fails the result variable 'formattedDate' is
+	 *  cleared automatically.
+	 *  @param formattedDate reference to string variable where the result is stored
+	 *  @param pos index of the element component in case of value multiplicity (0..vm-1)
+	 *  @return EC_Normal upon success, an error code otherwise
+	 */
+    OFCondition getISOFormattedDate(
+        OFString &formattedDate,
+        const unsigned long pos = 0);
+                                    
+    /* --- static helper functions --- */
+
+	/** get the current system date.
+	 *  The DICOM DA format supported by this function is "YYYYMMDD". If the current
+	 *  system date is unavailable the date is set to "19000101" and an error code is
+	 *  returned.
+	 *  @param dicomDate reference to string variable where the result is stored
+	 *  @return EC_Normal upon success, an error code otherwise
+	 */
+    static OFCondition getCurrentDate(
+        OFString &dicomDate);
+
+	/** get the specified DICOM date value in ISO format.
+	 *  The ISO date format supported by this function is "YYYY-MM-DD". Please note
+	 *  that the specified value is expected to be in valid DICOM DA format ("YYYYMMDD"
+	 *  or "YYYY.MM.DD"). If this function fails the result variable 'formattedDate' is
+	 *  cleared automatically.
+	 *  @param dicomDate string value in DICOM DA format to be converted to ISO format
+	 *  @param formattedDate reference to string variable where the result is stored
+	 *  @return EC_Normal upon success, an error code otherwise
+	 */
+    static OFCondition getISOFormattedDateFromString(
+        const OFString &dicomDate,
+        OFString &formattedDate);
+
 };
 
 
@@ -60,7 +107,11 @@ class DcmDate : public DcmByteString
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrda.h,v $
-** Revision 1.7  2001-06-01 15:48:49  meichel
+** Revision 1.8  2001-10-01 15:01:38  joergr
+** Introduced new general purpose functions to get/set person names, date, time
+** and date/time.
+**
+** Revision 1.7  2001/06/01 15:48:49  meichel
 ** Updated copyright header
 **
 ** Revision 1.6  2000/03/08 16:26:22  meichel

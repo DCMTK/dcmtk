@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DSRTypes
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-09-26 13:04:14 $
- *  CVS/RCS Revision: $Revision: 1.18 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2001-10-01 15:06:54 $
+ *  CVS/RCS Revision: $Revision: 1.19 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -694,6 +694,8 @@ class DSRTypes
     /** convert DICOM person name to readable format.
      *  The format "<prefix> <first_name> <middle_name> <last_name>, <suffix>" is used for the
      *  readable format.
+     *  Please note that only the first component group (characters before the first '=') of
+     *  the DICOM person name is used - see DcmPersonName::getNameComponents() for details.
      ** @param  dicomPersonName     person name in DICOM PN format (ln^fn^mn^p^s)
      *  @param  readablePersonName  reference to variable where the resulting string is stored
      ** @return reference to resulting string (might be empty)
@@ -705,6 +707,8 @@ class DSRTypes
      *  The tags <prefix>, <first>, <middle>, <last> and <suffix> are used for the XML format
      *  of a person name.  The string is automatically converted to the markup notation (see
      *  convertToMarkupString()).  Two tags are separated by a newline.
+     *  Please note that only the first component group (characters before the first '=') of
+     *  the DICOM person name is used - see DcmPersonName::getNameComponents() for details.
      ** @param  dicomPersonName  person name in DICOM PN format (ln^fn^mn^p^s)
      *  @param  xmlPersonName    reference to variable where the resulting string is stored
      *  @param  writeEmptyValue  optional flag indicating whether an empty value should be written
@@ -1055,7 +1059,11 @@ class DSRTypes
 /*
  *  CVS/RCS Log:
  *  $Log: dsrtypes.h,v $
- *  Revision 1.18  2001-09-26 13:04:14  meichel
+ *  Revision 1.19  2001-10-01 15:06:54  joergr
+ *  Introduced new general purpose functions to get/set person names, date, time
+ *  and date/time.
+ *
+ *  Revision 1.18  2001/09/26 13:04:14  meichel
  *  Adapted dcmsr to class OFCondition
  *
  *  Revision 1.17  2001/06/20 15:03:00  joergr

@@ -21,10 +21,10 @@
  *
  *  Purpose: class DcmTime
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-09-25 17:20:01 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2001-10-01 15:04:45 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcvrtm.cc,v $
- *  CVS/RCS Revision: $Revision: 1.11 $
+ *  CVS/RCS Revision: $Revision: 1.12 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -33,6 +33,12 @@
 
 #include "dcvrtm.h"
 #include "dcdebug.h"
+
+BEGIN_EXTERN_C
+#ifdef HAVE_TIME_H
+#include <time.h>
+#endif
+END_EXTERN_C
 
 
 // ********************************
@@ -72,7 +78,7 @@ DcmTime::getOFString(
 {
     OFCondition l_error = DcmByteString::getOFString(str, pos, normalize);
     if (l_error == EC_Normal && normalize)
-	normalizeString(str, !MULTIPART, !DELETE_LEADING, DELETE_TRAILING);
+    	normalizeString(str, !MULTIPART, !DELETE_LEADING, DELETE_TRAILING);
     return l_error;
 }
 
@@ -85,7 +91,7 @@ DcmTime::getOFStringArray(
 {
     OFCondition l_error = DcmByteString::getOFStringArray(str, normalize);
     if (l_error == EC_Normal && normalize)
-	normalizeString(str, !MULTIPART, !DELETE_LEADING, DELETE_TRAILING);
+	    normalizeString(str, !MULTIPART, !DELETE_LEADING, DELETE_TRAILING);
     return l_error;
 }
 
@@ -93,11 +99,158 @@ DcmTime::getOFStringArray(
 // ********************************
 
 
+OFCondition
+DcmTime::getCurrentTime(
+    OFString &dicomTime,
+    const OFBool seconds,
+    const OFBool fraction)
+{
+    OFCondition l_error = EC_IllegalCall;
+    time_t tt = time(NULL);
+#if defined(_REENTRANT) && !defined(_WIN32) && !defined(__CYGWIN__)
+    // use localtime_r instead of localtime
+    struct tm ltBuf;
+    struct tm *lt = &ltBuf;
+    localtime_r(&tt, lt);
+#else
+    struct tm *lt = localtime(&tt);
+#endif
+    if (lt != NULL)
+    {
+        char buf[32];
+        /* format: HHMM */
+        sprintf(buf, "%02d%02d", lt->tm_hour, lt->tm_min);
+        if (seconds)
+        {
+            /* format: SS */
+            sprintf(strchr(buf, 0), "%02d", lt->tm_sec);
+            if (fraction)
+            {
+                timeval c_time;
+                if (gettimeofday(&c_time, NULL) == 0)
+                    /* format: .FFFFFF */
+                    sprintf(strchr(buf, 0), ".%06li", c_time.tv_usec);
+                else
+                    /* format: .FFFFFF */
+                    strcat(buf, ".000000");
+            }
+        }
+        dicomTime = buf;
+        /* no error, since at least HHMM valid */
+        l_error = EC_Normal;
+    } else {
+        /* format: HHMM */
+        dicomTime = "0000";
+        if (seconds)
+        {
+            /* format: SS */
+            dicomTime += "00";
+            if (fraction)
+                /* format: .FFFFFF */
+                dicomTime = ".000000";
+        }
+    }
+    return l_error;
+}
+
+
+OFCondition
+DcmTime::setCurrentTime(
+    const OFBool seconds,
+    const OFBool fraction)
+{
+    OFString dicomTime;
+    OFCondition l_error = getCurrentTime(dicomTime, seconds, fraction);
+    if (l_error == EC_Normal)
+        l_error = putString(dicomTime.c_str());
+    return l_error;
+}
+	
+                                  
+// ********************************
+
+
+OFCondition
+DcmTime::getISOFormattedTime(
+    OFString &formattedTime,
+    const unsigned long pos,
+    const OFBool seconds,
+    const OFBool fraction,
+    const OFBool createMissingPart)
+{
+    OFString dicomTime;
+    OFCondition l_error = getOFString(dicomTime, pos);
+    if (l_error == EC_Normal)
+        l_error = getISOFormattedTimeFromString(dicomTime, formattedTime, seconds, fraction, createMissingPart);
+    else
+        formattedTime.clear();
+    return l_error;
+}
+
+
+OFCondition
+DcmTime::getISOFormattedTimeFromString(
+    const OFString &dicomTime,
+    OFString &formattedTime,
+    const OFBool seconds,
+    const OFBool fraction,
+    const OFBool createMissingPart)
+{
+    formattedTime.clear();
+    const size_t length = dicomTime.length();
+    OFString hourStr, minStr, secStr, fracStr;
+    /* hours */
+    if (length >= 2)
+        hourStr = dicomTime.substr(0, 2);
+    else
+        hourStr = "00";
+    /* minutes */
+    if (length >= 4)
+        minStr = dicomTime.substr(2, 2);
+    else
+        minStr = "00";
+    /* seconds */        
+    if (length >= 6)
+        secStr = dicomTime.substr(4, 2);
+    else if (createMissingPart)
+        secStr = "00";
+    /* fractional seconds */
+    if ((length >= 8) && (dicomTime[6] == '.'))
+    {
+        if (length < 13)
+        {
+            fracStr = dicomTime.substr(7);
+            fracStr.append(13 - length, '0');
+        } else 
+            fracStr = dicomTime.substr(7, 6);
+    } else if (createMissingPart)
+        fracStr = "000000";
+    /* concatenate time components */
+    formattedTime = hourStr;
+    formattedTime += ":";
+    formattedTime += minStr;
+    if (seconds && (secStr.length() > 0))
+    {
+        formattedTime += ":";
+        formattedTime += secStr;
+        if (fraction && (fracStr.length() > 0))
+        {
+            formattedTime += ".";
+            formattedTime += fracStr;
+        }
+    }
+    return EC_Normal;
+}
+
 
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrtm.cc,v $
-** Revision 1.11  2001-09-25 17:20:01  meichel
+** Revision 1.12  2001-10-01 15:04:45  joergr
+** Introduced new general purpose functions to get/set person names, date, time
+** and date/time.
+**
+** Revision 1.11  2001/09/25 17:20:01  meichel
 ** Adapted dcmdata to class OFCondition
 **
 ** Revision 1.10  2001/06/01 15:49:21  meichel

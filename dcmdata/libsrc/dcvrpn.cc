@@ -21,10 +21,10 @@
  *
  *  Purpose: class DcmPersonName
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-09-25 17:19:59 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2001-10-01 15:04:44 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcvrpn.cc,v $
- *  CVS/RCS Revision: $Revision: 1.11 $
+ *  CVS/RCS Revision: $Revision: 1.12 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -72,11 +72,10 @@ DcmPersonName::getOFString(
 {
     OFCondition l_error = DcmCharString::getOFString(str, pos, normalize);
     if (l_error == EC_Normal && normalize)
-	normalizeString(str, !MULTIPART, !DELETE_LEADING, DELETE_TRAILING);
+	    normalizeString(str, !MULTIPART, !DELETE_LEADING, DELETE_TRAILING);
     return l_error;
 }
 
-// ********************************
 
 OFCondition 
 DcmPersonName::getOFStringArray(
@@ -85,7 +84,7 @@ DcmPersonName::getOFStringArray(
 {
     OFCondition l_error = DcmCharString::getOFStringArray(str, normalize);
     if (l_error == EC_Normal && normalize)
-	normalizeString(str, MULTIPART, !DELETE_LEADING, DELETE_TRAILING);
+	    normalizeString(str, MULTIPART, !DELETE_LEADING, DELETE_TRAILING);
     return l_error;
 }
 
@@ -93,10 +92,200 @@ DcmPersonName::getOFStringArray(
 // ********************************
 
 
+OFCondition
+DcmPersonName::getNameComponents(
+    OFString &lastName,
+    OFString &firstName,
+    OFString &middleName,
+    OFString &namePrefix,
+    OFString &nameSuffix,
+    const unsigned long pos,
+    const unsigned int componentGroup)
+{
+    OFString dicomName;
+    OFCondition l_error = getOFString(dicomName, pos);
+    if (l_error == EC_Normal)
+        l_error = getNameComponentsFromString(dicomName, lastName, firstName, middleName, namePrefix, nameSuffix, componentGroup);
+    else
+    {
+        lastName.clear();
+        firstName.clear();
+        middleName.clear();
+        namePrefix.clear();
+        nameSuffix.clear();
+    }
+    return l_error;
+}
+
+
+OFCondition
+DcmPersonName::getNameComponentsFromString(
+    const OFString &dicomName,
+    OFString &lastName,
+    OFString &firstName,
+    OFString &middleName,
+    OFString &namePrefix,
+    OFString &nameSuffix,
+    const unsigned int componentGroup)
+{
+    OFCondition l_error = EC_IllegalCall;
+    /* initialize all name components */
+    lastName.clear();
+    firstName.clear();
+    middleName.clear();
+    namePrefix.clear();
+    nameSuffix.clear();
+    if (dicomName.length() > 0)
+    {
+        /* Excerpt from DICOM part 5:
+           "For the purpose of writing names in ideographic characters and in
+            phonetic characters, up to 3 groups of components may be used.
+        */
+        if (componentGroup < 3)
+        {
+            OFString name;
+            // find component group (0..2)
+            const size_t posA = dicomName.find('=');
+            if (posA != OFString_npos)
+            {
+                if (componentGroup > 0)
+                {
+                    const size_t posB = dicomName.find('=', posA + 1);
+                    if (posB != OFString_npos)
+                    {
+                        if (componentGroup == 1)
+                            name = dicomName.substr(posA + 1, posB - posA - 1);
+                        else /* componentGroup == 2 */
+                            name = dicomName.substr(posB + 1);
+                    } else if (componentGroup == 1)
+                        name = dicomName.substr(posA + 1);
+                } else /* componentGroup == 0 */
+                    name = dicomName.substr(0, posA);
+            } else if (componentGroup == 0)
+                name = dicomName;                
+            /* check whether component group is valid (= non-empty) */
+            if (name.length() > 0)
+            {
+                /* find caret separators */
+                /* (tbd: add more sophisticated heuristics for comma and space separated names) */
+                const size_t pos1 = name.find('^');
+                if (pos1 != OFString_npos)
+                {
+                    const size_t pos2 = name.find('^', pos1 + 1);
+                    lastName = name.substr(0, pos1);
+                    if (pos2 != OFString_npos)
+                    {
+                        const size_t pos3 = name.find('^', pos2 + 1);
+                        firstName = name.substr(pos1 + 1, pos2 - pos1 - 1);
+                        if (pos3 != OFString_npos)
+                        {
+                            const size_t pos4 = name.find('^', pos3 + 1);
+                            middleName = name.substr(pos2 + 1, pos3 - pos2 - 1);
+                            if (pos4 != OFString_npos)
+                            {
+                                namePrefix = name.substr(pos3 + 1, pos4 - pos3 - 1);
+                                nameSuffix = name.substr(pos4 + 1);
+                            } else
+                                namePrefix = name.substr(pos3 + 1);
+                        } else
+                            middleName = name.substr(pos2 + 1);
+                    } else
+                        firstName = name.substr(pos1 + 1);
+                } else
+                    lastName = name;
+            }
+            l_error = EC_Normal;
+        }
+    } else
+        l_error = EC_Normal;
+    return l_error;
+}
+
+
+// ********************************
+
+
+OFCondition
+DcmPersonName::getFormattedName(
+    OFString &formattedName,
+    const unsigned long pos,
+    const unsigned int componentGroup)
+{
+    OFString dicomName;
+    OFCondition l_error = getOFString(dicomName, pos);
+    if (l_error == EC_Normal)
+        l_error = getFormattedNameFromString(dicomName, formattedName, componentGroup);
+    else
+        formattedName.clear();
+    return l_error;
+}
+
+
+OFCondition
+DcmPersonName::getFormattedNameFromString(
+    const OFString &dicomName,
+    OFString &formattedName,
+    const unsigned int componentGroup)
+{
+    OFString lastName, firstName, middleName, namePrefix, nameSuffix;
+    OFCondition l_error = getNameComponentsFromString(dicomName, lastName, firstName, middleName, namePrefix, nameSuffix, componentGroup);
+    if (l_error == EC_Normal)
+        l_error = getFormattedNameFromComponents(lastName, firstName, middleName, namePrefix, nameSuffix, formattedName);
+    else
+        formattedName.clear();
+    return l_error;
+}
+
+
+OFCondition
+DcmPersonName::getFormattedNameFromComponents(
+    const OFString &lastName,
+    const OFString &firstName,
+    const OFString &middleName,
+    const OFString &namePrefix,
+    const OFString &nameSuffix,
+    OFString &formattedName)
+{
+    formattedName.clear();
+    /* concatenate name components */
+    if (namePrefix.length() > 0)
+        formattedName += namePrefix;
+    if (firstName.length() > 0)
+    {
+        if (formattedName.length() > 0)
+            formattedName += ' ';
+        formattedName += firstName;
+    }
+    if (middleName.length() > 0)
+    {
+        if (formattedName.length() > 0)
+            formattedName += ' ';
+        formattedName += middleName;
+    }
+    if (lastName.length() > 0)
+    {
+        if (formattedName.length() > 0)
+            formattedName += ' ';
+        formattedName += lastName;
+    }
+    if (nameSuffix.length() > 0)
+    {
+        if (formattedName.length() > 0)
+            formattedName += ", ";
+        formattedName += nameSuffix;
+    }
+    return EC_Normal;
+}
+
+
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrpn.cc,v $
-** Revision 1.11  2001-09-25 17:19:59  meichel
+** Revision 1.12  2001-10-01 15:04:44  joergr
+** Introduced new general purpose functions to get/set person names, date, time
+** and date/time.
+**
+** Revision 1.11  2001/09/25 17:19:59  meichel
 ** Adapted dcmdata to class OFCondition
 **
 ** Revision 1.10  2001/06/01 15:49:19  meichel

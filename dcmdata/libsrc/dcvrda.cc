@@ -21,10 +21,10 @@
  *
  *  Purpose: class DcmDate
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-06-01 15:49:15 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2001-10-01 15:04:43 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcvrda.cc,v $
- *  CVS/RCS Revision: $Revision: 1.8 $
+ *  CVS/RCS Revision: $Revision: 1.9 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -35,6 +35,12 @@
 
 #include "dcvrda.h"
 #include "dcdebug.h"
+
+BEGIN_EXTERN_C
+#ifdef HAVE_TIME_H
+#include <time.h>
+#endif
+END_EXTERN_C
 
 
 // ********************************
@@ -67,10 +73,109 @@ DcmDate::~DcmDate()
 // ********************************
 
 
+OFCondition
+DcmDate::getCurrentDate(OFString &dicomDate)
+{
+    OFCondition l_error = EC_IllegalCall;
+    time_t tt = time(NULL);
+#if defined(_REENTRANT) && !defined(_WIN32) && !defined(__CYGWIN__)
+    // use localtime_r instead of localtime
+    struct tm ltBuf;
+    struct tm *lt = &ltBuf;
+    localtime_r(&tt, lt);
+#else
+    struct tm *lt = localtime(&tt);
+#endif
+    if (lt != NULL)
+    {
+        char buf[32];
+        /* format: YYYYMMDD */
+        sprintf(buf, "%04d%02d%02d", 1900 + lt->tm_year, lt->tm_mon + 1, lt->tm_mday);
+        dicomDate = buf;
+        l_error = EC_Normal;
+    } else {
+        /* format: YYYYMMDD */
+        dicomDate = "19000101";
+    }
+    return l_error;
+}
+
+
+OFCondition
+DcmDate::setCurrentDate()
+{
+    OFString dicomDate;
+    OFCondition l_error = getCurrentDate(dicomDate);
+    if (l_error == EC_Normal)
+        l_error = putString(dicomDate.c_str());
+    return l_error;
+}
+	
+                                  
+// ********************************
+
+
+OFCondition
+DcmDate::getISOFormattedDate(
+    OFString &formattedDate,
+    const unsigned long pos)
+{
+    OFString dicomDate;
+    OFCondition l_error = getOFString(dicomDate, pos);
+    if (l_error == EC_Normal)
+        l_error = getISOFormattedDateFromString(dicomDate, formattedDate);
+    else
+        formattedDate.clear();
+    return l_error;
+}
+
+
+OFCondition
+DcmDate::getISOFormattedDateFromString(
+    const OFString &dicomDate,
+    OFString &formattedDate)
+{
+    OFCondition l_error = EC_IllegalCall;
+    const size_t length = dicomDate.length();
+    /* fixed length (8 or 10 bytes) required by DICOM part 5 */
+    if (length == 8)
+    {
+        /* year: YYYY */
+        formattedDate = dicomDate.substr(0, 4);
+        formattedDate += '-';
+        /* month: MM */
+        formattedDate += dicomDate.substr(4, 2);
+        formattedDate += '-';
+        /* day: DD */
+        formattedDate += dicomDate.substr(6, 2);
+        l_error = EC_Normal;
+    }
+    /* old prior V3.0 version of VR=DA: YYYY.MM.DD */
+    else if ((length == 10) && (dicomDate[4] == '.') && (dicomDate[7] == '.'))
+    {
+        /* year: YYYY */
+        formattedDate = dicomDate.substr(0, 4);
+        formattedDate += '-';
+        /* month: MM, skip '.' */
+        formattedDate += dicomDate.substr(5, 2);
+        formattedDate += '-';
+        /* day: DD, skip '.' */
+        formattedDate += dicomDate.substr(8, 2);
+        l_error = EC_Normal;
+    } else
+        formattedDate = dicomDate;
+    return l_error;
+}
+
+
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrda.cc,v $
-** Revision 1.8  2001-06-01 15:49:15  meichel
+** Revision 1.9  2001-10-01 15:04:43  joergr
+** Introduced new general purpose functions to get/set person names, date, time
+** and date/time.
+**
+** Revision 1.8  2001/06/01 15:49:15  meichel
 ** Updated copyright header
 **
 ** Revision 1.7  2000/03/08 16:26:46  meichel

@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DSRTypes
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-09-26 13:04:28 $
- *  CVS/RCS Revision: $Revision: 1.19 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2001-10-01 15:11:37 $
+ *  CVS/RCS Revision: $Revision: 1.20 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -50,12 +50,6 @@
 #include "dsrwavtn.h"
 #include "dsrcontn.h"
 #include "dsrreftn.h"
-
-BEGIN_EXTERN_C
-#ifdef HAVE_TIME_H
-#include <time.h>
-#endif
-END_EXTERN_C
 
 #include <ctype.h>
 
@@ -606,7 +600,7 @@ OFCondition DSRTypes::addElementToDataset(OFCondition &result,
     if (result == EC_Normal)
     {
         if (delem != NULL)
-            dataset.insert(delem);
+            result = dataset.insert(delem, OFTrue /* replaceOld */);
         else
             result = EC_MemoryExhausted;
     }
@@ -698,17 +692,7 @@ OFCondition DSRTypes::getStringValueFromDataset(DcmItem &dataset,
                                                 const DcmTagKey &tagKey,
                                                 OFString &stringValue)
 {
-    DcmStack stack;
-    OFCondition result = dataset.search(tagKey, stack, ESM_fromHere, OFFalse /* searchIntoSub */);
-    if (result == EC_Normal)
-    {
-        DcmElement *delem = (DcmElement *)stack.top();
-        if (delem != NULL)
-            result = delem->getOFString(stringValue, 0);
-    }
-    if (result != EC_Normal)
-        stringValue.clear();
-    return result;
+    return dataset.findAndGetOFString(tagKey, stringValue, 0, OFFalse /* searchIntoSub */);
 }
 
 
@@ -716,68 +700,7 @@ OFCondition DSRTypes::putStringValueToDataset(DcmItem &dataset,
                                               const DcmTagKey &tagKey,
                                               const OFString &stringValue)
 {
-    OFCondition result = EC_Normal;
-    DcmTag tag(tagKey);
-    DcmElement *elem = NULL;
-    switch(tag.getEVR())
-    {
-        case EVR_AE:
-            elem = new DcmApplicationEntity(tag);
-            break;
-        case EVR_AS:
-            elem = new DcmAgeString(tag);
-            break;
-        case EVR_CS:
-            elem = new DcmCodeString(tag);
-            break;
-        case EVR_DA:
-            elem = new DcmDate(tag);
-            break;
-        case EVR_DS:
-            elem = new DcmDecimalString(tag);
-            break;
-        case EVR_DT:
-            elem = new DcmDateTime(tag);
-            break;
-        case EVR_IS:
-            elem = new DcmIntegerString(tag);
-            break;
-        case EVR_TM:
-            elem = new DcmTime(tag);
-            break;
-        case EVR_UI:
-            elem = new DcmUniqueIdentifier(tag);
-            break;
-        case EVR_LO:
-            elem = new DcmLongString(tag);
-            break;
-        case EVR_LT:
-            elem = new DcmLongText(tag);
-            break;
-        case EVR_UT:
-            elem = new DcmUnlimitedText(tag);
-            break;
-        case EVR_PN:
-            elem = new DcmPersonName(tag);
-            break;
-        case EVR_SH:
-            elem = new DcmShortString(tag);
-            break;
-        case EVR_ST:
-            elem = new DcmShortText(tag);
-            break;
-        default:
-            result = EC_IllegalCall;
-            break;
-    }
-    if (elem != NULL)
-    {
-        result = elem->putString(stringValue.c_str());
-        if (result == EC_Normal)
-            dataset.insert(elem, OFTrue /* replaceOld */);
-    } else if (result == EC_Normal)
-        result = EC_MemoryExhausted;
-    return result;
+    return dataset.putAndInsertString(tagKey, stringValue.c_str(), OFTrue /* replaceOld */);
 }
 
 
@@ -909,46 +832,21 @@ OFCondition DSRTypes::getAndCheckStringValueFromDataset(DcmItem &dataset,
 
 const OFString &DSRTypes::currentDate(OFString &dateString)
 {
-    time_t tt = time(NULL);
-    struct tm *ts = localtime(&tt);
-    if (ts)
-    {
-        char buf[32];
-        sprintf(buf, "%04d%02d%02d", 1900 + ts->tm_year, ts->tm_mon + 1, ts->tm_mday);
-        dateString = buf;
-    } else
-        dateString = "19000101";
+    DcmDate::getCurrentDate(dateString);
     return dateString;
 }
 
 
 const OFString &DSRTypes::currentTime(OFString &timeString)
 {
-    time_t tt = time(NULL);
-    struct tm *ts = localtime(&tt);
-    if (ts)
-    {
-        char buf[32];
-        sprintf(buf, "%02d%02d%02d", ts->tm_hour, ts->tm_min, ts->tm_sec);
-        timeString = buf;
-    } else
-        timeString = "000000";
+    DcmTime::getCurrentTime(timeString, OFTrue /*seconds*/, OFFalse /*fraction*/);
     return timeString;
 }
 
 
 const OFString &DSRTypes::currentDateTime(OFString &dateTimeString)
 {
-    time_t tt = time(NULL);
-    struct tm *ts = localtime(&tt);
-    if (ts)
-    {
-        char buf[32];
-        sprintf(buf, "%04d%02d%02d%02d%02d%02d", 1900 + ts->tm_year, ts->tm_mon + 1, ts->tm_mday,
-            ts->tm_hour, ts->tm_min, ts->tm_sec);
-        dateTimeString = buf;
-    } else
-        dateTimeString = "19000101000000";
+    DcmDateTime::getCurrentDateTime(dateTimeString, OFTrue /*seconds*/, OFFalse /*fraction*/, OFFalse /*timeZone*/);
     return dateTimeString;
 }
 
@@ -956,16 +854,7 @@ const OFString &DSRTypes::currentDateTime(OFString &dateTimeString)
 const OFString &DSRTypes::dicomToReadableDate(const OFString &dicomDate,
                                               OFString &readableDate)
 {
-    /* fixed length required by DICOM part 5 */
-    if (dicomDate.length() == 8)
-    {
-        readableDate = dicomDate.substr(0, 4);
-        readableDate += '-';
-        readableDate += dicomDate.substr(4, 2);
-        readableDate += '-';
-        readableDate += dicomDate.substr(6, 2);
-    } else
-        readableDate = dicomDate;
+    DcmDate::getISOFormattedDateFromString(dicomDate, readableDate);
     return readableDate;
 }
 
@@ -973,21 +862,7 @@ const OFString &DSRTypes::dicomToReadableDate(const OFString &dicomDate,
 const OFString &DSRTypes::dicomToReadableTime(const OFString &dicomTime,
                                               OFString &readableTime)
 {
-    /* cut off optional fraction part */
-    OFString tempStr = dicomTime.substr(0, 4);
-    /* fill with trailing '0' */
-    tempStr.append(4 - tempStr.length(), '0');
-    /* hours */
-    readableTime = tempStr.substr(0, 2);
-    /* minutes */
-    readableTime += ':';
-    readableTime += tempStr.substr(2, 2);
-    /* optional seconds */
-    if (dicomTime.length() >= 6)
-    {
-        readableTime += ':';
-        readableTime += dicomTime.substr(4, 2);
-    }
+    DcmTime::getISOFormattedTimeFromString(dicomTime, readableTime, OFTrue /*seconds*/, OFFalse /*fraction*/, OFFalse /* createMissingPart */);
     return readableTime;
 }
 
@@ -995,13 +870,7 @@ const OFString &DSRTypes::dicomToReadableTime(const OFString &dicomTime,
 const OFString &DSRTypes::dicomToReadableDateTime(const OFString &dicomDateTime,
                                                   OFString &readableDateTime)
 {
-    OFString tempStr = dicomDateTime.substr(0, 8);
-    dicomToReadableDate(tempStr, readableDateTime);
-    OFString timeStr;
-    tempStr = dicomDateTime.substr(8);
-    dicomToReadableTime(tempStr, timeStr);
-    readableDateTime += ", ";
-    readableDateTime += timeStr;
+    DcmDateTime::getISOFormattedDateTimeFromString(dicomDateTime, readableDateTime, OFTrue /*seconds*/, OFFalse /*fraction*/, OFTrue /*timeZone*/, OFFalse /* createMissingPart */);
     return readableDateTime;
 }
 
@@ -1009,63 +878,7 @@ const OFString &DSRTypes::dicomToReadableDateTime(const OFString &dicomDateTime,
 const OFString &DSRTypes::dicomToReadablePersonName(const OFString &dicomPersonName,
                                                     OFString &readablePersonName)
 {
-    readablePersonName.clear();
-    const size_t pos1 = dicomPersonName.find('^');
-    if (pos1 != OFString_npos)
-    {
-        const size_t pos2 = dicomPersonName.find('^', pos1 + 1);
-        OFString str1 = dicomPersonName.substr(0, pos1);
-        OFString str2, str3, str4, str5;
-        if (pos2 != OFString_npos)
-        {
-            const size_t pos3 = dicomPersonName.find('^', pos2 + 1);
-            str2 = dicomPersonName.substr(pos1 + 1, pos2 - pos1 - 1);
-            if (pos3 != OFString_npos)
-            {
-                const size_t pos4 = dicomPersonName.find('^', pos3 + 1);
-                str3 = dicomPersonName.substr(pos2 + 1, pos3 - pos2 - 1);
-                if (pos4 != OFString_npos)
-                {
-                    str4 = dicomPersonName.substr(pos3 + 1, pos4 - pos3 - 1);
-                    str5 = dicomPersonName.substr(pos4 + 1);
-                } else
-                    str4 = dicomPersonName.substr(pos3 + 1);
-            } else
-                str3 = dicomPersonName.substr(pos2 + 1);
-        } else
-            str2 = dicomPersonName.substr(pos1 + 1);
-        /* prefix */
-        if (str4.length() > 0)
-            readablePersonName += str4;
-        /* first name */
-        if (str2.length() > 0)
-        {
-            if (readablePersonName.length() > 0)
-                readablePersonName += ' ';
-            readablePersonName += str2;
-        }
-        /* middle name */
-        if (str3.length() > 0)
-        {
-            if (readablePersonName.length() > 0)
-                readablePersonName += ' ';
-            readablePersonName += str3;
-        }
-        /* last name */
-        if (str1.length() > 0)
-        {
-            if (readablePersonName.length() > 0)
-                readablePersonName += ' ';
-            readablePersonName += str1;
-        }
-        /* suffix */
-        if (str5.length() > 0)
-        {
-            if (readablePersonName.length() > 0)
-                readablePersonName += ", ";
-            readablePersonName += str5;
-        }
-    } else
+    if (DcmPersonName::getFormattedNameFromString(dicomPersonName, readablePersonName, 0 /*componentGroup*/) != EC_Normal)
         readablePersonName = dicomPersonName;
     return readablePersonName;
 }
@@ -1075,34 +888,12 @@ const OFString &DSRTypes::dicomToXMLPersonName(const OFString &dicomPersonName,
                                                OFString &xmlPersonName,
                                                const OFBool writeEmptyValue)
 {
-    xmlPersonName.clear();
-    const size_t pos1 = dicomPersonName.find('^');
-    if (pos1 != OFString_npos)
+    OFString str1, str2, str3, str4, str5;
+    if (DcmPersonName::getNameComponentsFromString(dicomPersonName, str1, str2, str3, str4, str5, 0 /*componentGroup*/) == EC_Normal)
     {
-        const size_t pos2 = dicomPersonName.find('^', pos1 + 1);
-        OFString str1 = dicomPersonName.substr(0, pos1);
-        OFString str2, str3, str4, str5;
-        if (pos2 != OFString_npos)
-        {
-            const size_t pos3 = dicomPersonName.find('^', pos2 + 1);
-            str2 = dicomPersonName.substr(pos1 + 1, pos2 - pos1 - 1);
-            if (pos3 != OFString_npos)
-            {
-                const size_t pos4 = dicomPersonName.find('^', pos3 + 1);
-                str3 = dicomPersonName.substr(pos2 + 1, pos3 - pos2 - 1);
-                if (pos4 != OFString_npos)
-                {
-                    str4 = dicomPersonName.substr(pos3 + 1, pos4 - pos3 - 1);
-                    str5 = dicomPersonName.substr(pos4 + 1);
-                } else
-                    str4 = dicomPersonName.substr(pos3 + 1);
-            } else
-                str3 = dicomPersonName.substr(pos2 + 1);
-        } else
-            str2 = dicomPersonName.substr(pos1 + 1);
-
         OFBool newLine = OFFalse;
         OFString xmlString;
+        xmlPersonName.clear();
         /* prefix */
         if (writeEmptyValue || (str4.length() > 0))
         {
@@ -1417,9 +1208,10 @@ void DSRTypes::printInvalidContentItemMessage(OFConsole *stream,
             message += action;
         else
             message += "Processing";
-        message += " invalid/incomplete content item ";
+        message += " invalid/incomplete content item";
         if (node != NULL)
         {
+            message += " ";
             message += valueTypeToDefinedTerm(node->getValueType());
 #ifdef DEBUG
             message += " #";
@@ -1444,19 +1236,20 @@ void DSRTypes::printContentItemErrorMessage(OFConsole *stream,
             message += action;
         else
             message += "Processing";
-        message += " content item ";
+        message += " content item";
         if (node != NULL)
         {
+            message += " ";
             message += valueTypeToDefinedTerm(node->getValueType());
 #ifdef DEBUG
             message += " #";
             char string[20];
             message += numberToString(node->getNodeID(), string);
 #endif
-            message += " (";
-            message += result.text();
-            message += ")";
         }
+        message += " (";
+        message += result.text();
+        message += ")";
         printErrorMessage(stream, message.c_str());
     }
 }
@@ -1563,10 +1356,15 @@ OFCondition DSRTypes::appendStream(ostream &mainStream,
     return result;
 }
 
+
 /*
  *  CVS/RCS Log:
  *  $Log: dsrtypes.cc,v $
- *  Revision 1.19  2001-09-26 13:04:28  meichel
+ *  Revision 1.20  2001-10-01 15:11:37  joergr
+ *  Introduced new general purpose functions to get/set person names, date, time
+ *  and date/time.
+ *
+ *  Revision 1.19  2001/09/26 13:04:28  meichel
  *  Adapted dcmsr to class OFCondition
  *
  *  Revision 1.18  2001/06/20 15:05:22  joergr
