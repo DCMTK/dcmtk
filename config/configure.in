@@ -138,7 +138,7 @@ AC_TYPE_SIGNAL
 AC_FUNC_WAIT3
 AC_CHECK_FUNCS(gethostname gethostid socket sysinfo)
 AC_CHECK_FUNCS(strchr strstr strtoul itoa)
-AC_CHECK_FUNCS(memcpy)
+AC_CHECK_FUNCS(memcpy memset memmove memcmp bcopy bcmp)
 AC_CHECK_FUNCS(getpid mktemp tempnam tmpnam getenv)
 AC_CHECK_FUNCS(stat)
 AC_CHECK_FUNCS(malloc_debug)

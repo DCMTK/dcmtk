@@ -76,6 +76,12 @@
 /* Define if you have the access function.  */
 #undef HAVE_ACCESS
 
+/* Define if you have the bcmp function.  */
+#undef HAVE_BCMP
+
+/* Define if you have the bcopy function.  */
+#undef HAVE_BCOPY
+
 /* Define if you have the bind function.  */
 #undef HAVE_BIND
 
@@ -145,8 +151,17 @@
 /* Define if you have the malloc_debug function.  */
 #undef HAVE_MALLOC_DEBUG
 
+/* Define if you have the memcmp function.  */
+#undef HAVE_MEMCMP
+
 /* Define if you have the memcpy function.  */
 #undef HAVE_MEMCPY
+
+/* Define if you have the memmove function.  */
+#undef HAVE_MEMMOVE
+
+/* Define if you have the memset function.  */
+#undef HAVE_MEMSET
 
 /* Define if you have the mktemp function.  */
 #undef HAVE_MKTEMP
