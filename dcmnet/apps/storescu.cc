@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2002, OFFIS
+ *  Copyright (C) 1994-2003, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,10 +21,10 @@
  *
  *  Purpose: Storage Service Class User (C-STORE operation)
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2003-07-03 15:43:37 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2003-08-11 18:31:15 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/apps/storescu.cc,v $
- *  CVS/RCS Revision: $Revision: 1.56 $
+ *  CVS/RCS Revision: $Revision: 1.57 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -38,6 +38,7 @@
 #define INCLUDE_CSTRING
 #define INCLUDE_CERRNO
 #define INCLUDE_CSTDARG
+#define INCLUDE_CCTYPE
 #include "ofstdinc.h"
 
 BEGIN_EXTERN_C
@@ -1462,7 +1463,10 @@ cstore(T_ASC_Association * assoc, const OFString& fname)
 /*
 ** CVS Log
 ** $Log: storescu.cc,v $
-** Revision 1.56  2003-07-03 15:43:37  meichel
+** Revision 1.57  2003-08-11 18:31:15  joergr
+** Included "ctype" header file required for gcc 3.2.3 on Debian Linux.
+**
+** Revision 1.56  2003/07/03 15:43:37  meichel
 ** Adapted for use of OFListConstIterator, needed for compiling with HAVE_STL.
 **
 ** Revision 1.55  2003/06/11 15:47:10  meichel

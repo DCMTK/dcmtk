@@ -22,10 +22,10 @@
  *  Purpose: 
  *    class DcmAssociationConfigurationFile
  * 
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2003-06-18 11:53:42 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2003-08-11 18:31:46 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/libsrc/dcasccff.cc,v $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -37,6 +37,10 @@
 #include "dcasccfg.h" /* for class DcmAssociationConfiguration */
 #include "dcerror.h"  /* for EC_IllegalCall */
 #include "ofconfig.h" /* for class OFConfigFile */
+
+#define INCLUDE_CCTYPE
+#include "ofstdinc.h"
+
 
 /* config file keys for the association configuration */
 
@@ -494,7 +498,10 @@ OFCondition DcmAssociationConfigurationFile::parseProfiles(
 /*
  * CVS/RCS Log
  * $Log: dcasccff.cc,v $
- * Revision 1.2  2003-06-18 11:53:42  meichel
+ * Revision 1.3  2003-08-11 18:31:46  joergr
+ * Included "ctype" header file required for gcc 3.2.3 on Debian Linux.
+ *
+ * Revision 1.2  2003/06/18 11:53:42  meichel
  * Fixed bug in association configuration file parser
  *
  * Revision 1.1  2003/06/10 14:30:15  meichel

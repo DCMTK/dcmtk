@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2002, OFFIS
+ *  Copyright (C) 1994-2003, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,10 +21,10 @@
  *
  *  Purpose: Storage Service Class Provider (C-STORE operation)
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2003-06-11 15:46:24 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2003-08-11 18:31:15 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/apps/storescp.cc,v $
- *  CVS/RCS Revision: $Revision: 1.64 $
+ *  CVS/RCS Revision: $Revision: 1.65 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -36,6 +36,7 @@
 #define INCLUDE_CSTDLIB
 #define INCLUDE_CSTRING
 #define INCLUDE_CSTDARG
+#define INCLUDE_CCTYPE
 #include "ofstdinc.h"
 
 BEGIN_EXTERN_C
@@ -2257,7 +2258,10 @@ static OFCondition acceptUnknownContextsWithPreferredTransferSyntaxes(
 /*
 ** CVS Log
 ** $Log: storescp.cc,v $
-** Revision 1.64  2003-06-11 15:46:24  meichel
+** Revision 1.65  2003-08-11 18:31:15  joergr
+** Included "ctype" header file required for gcc 3.2.3 on Debian Linux.
+**
+** Revision 1.64  2003/06/11 15:46:24  meichel
 ** Added support for configuration file based association negotiation
 **   profiles
 **
