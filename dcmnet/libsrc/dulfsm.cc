@@ -46,9 +46,9 @@
 ** Author, Date:	Stephen M. Moore, 15-Apr-93
 ** Intent:		Define tables and provide functions that implement
 **			the DICOM Upper Layer (DUL) finite state machine.
-** Last Update:		$Author: meichel $, $Date: 2001-10-12 10:18:38 $
+** Last Update:		$Author: wilkens $, $Date: 2001-11-01 13:46:35 $
 ** Source File:		$RCSfile: dulfsm.cc,v $
-** Revision:		$Revision: 1.40 $
+** Revision:		$Revision: 1.41 $
 ** Status:		$State: Exp $
 */
 
@@ -715,21 +715,30 @@ PRV_StateMachine(PRIVATE_NETWORKKEY ** network,
     FSM_ENTRY
         * entry;
 
+    /* check if the given event is valid, if not return an error */
     if (event < 0 || event >= DUL_NUMBER_OF_EVENTS)
     {
       char buf1[256];
       sprintf(buf1, "DUL Finite State Machine Error: Bad event, state %d event %d", state, event);
       return makeDcmnetCondition(DULC_FSMERROR, OF_error, buf1);
     }
+
+    /* check if the given state is valid, if not return an error */
     if (state < 1 || state > DUL_NUMBER_OF_STATES)
     {
       char buf1[256];
       sprintf(buf1, "DUL Finite State Machine Error: Bad state, state %d event %d", state, event);
       return makeDcmnetCondition(DULC_FSMERROR, OF_error, buf1);
     }
+
+    /* depending on the given event and state, determine the state table's entry (the state */
+    /* table implements the state transition table of DICOM's Upper Layer State Machine which */
+    /* in turn implements the DICOM upper layer protocol) (see DICOM standard (year 2000) part */
+    /* 8, section 9) (or the corresponding section in a later version of the standard) */
     entry = &StateTable[event][state - 1];
 
 #ifdef DEBUG
+    /* dump information if required */
     if (debug) {
         DEBUG_DEVICE.width(2);
             DEBUG_DEVICE << "DUL  FSM Table: State: " << state << " Event: " << event
@@ -738,6 +747,8 @@ PRV_StateMachine(PRIVATE_NETWORKKEY ** network,
     }
 #endif
 
+    /* if the state table's entry specifies an action function, execute this function and return */
+    /* it's result value. If there is no action function defined, return a corresponding error. */
     if (entry->actionFunction != NULL)
         return entry->actionFunction(network, association, entry->nextState, params);
     else
@@ -1320,9 +1331,16 @@ DT_1_SendPData(PRIVATE_NETWORKKEY ** /*network*/,
     DUL_PDVLIST
         * pdvList;
 
+    /* Remember that params used to be a variable of type DUL_PDVLIST * and restore this variable */
     pdvList = (DUL_PDVLIST *) params;
+
+    /* send the data which is contained in pdvList over the network */
     cond = sendPDataTCP(association, pdvList);
+
+    /* and go to the next specified state */
     (*association)->protocolState = nextState;
+
+    /* return return value */
     return cond;
 }
 
@@ -1363,57 +1381,106 @@ DT_2_IndicatePData(PRIVATE_NETWORKKEY ** /*network*/,
     unsigned char
        *p;
 
+    /* determine the finite state machine's next state */
     (*association)->protocolState = nextState;
 
+    /* read PDU body information from the incoming socket stream. In case the incoming */
+    /* PDU's header information has not yet been read, also read this information. */
     OFCondition cond = readPDUBody(association, DUL_BLOCK, 0,
                        (*association)->fragmentBuffer,
                        (*association)->fragmentBufferLength,
                        &pduType, &pduReserved, &pduLength);
+
+    /* return error if there was one */
     if (cond.bad())
         return cond;
 
-    length = pduLength;
-    pdvCount = 0;
-    p = (*association)->fragmentBuffer;
-    while (length > 0) {
-        EXTRACT_LONG_BIG(p, pdvLength);
-        p += 4 + pdvLength;
-        length -= 4 + pdvLength;
-        pdvCount++;
+    /* count the amount of PDVs in the current PDU */
+    length = pduLength;                     //set length to the PDU's length
+    pdvCount = 0;                           //set counter variable to 0
+    p = (*association)->fragmentBuffer;     //set p to the buffer which contains the PDU's PDVs
+    while (length > 0) {                    //as long as length is greater than 0
+        EXTRACT_LONG_BIG(p, pdvLength);     //determine the length of the current PDV (the PDV p points to)
+        p += 4 + pdvLength;                 //move p so that it points to the next PDV (move p 4 bytes over the length field plus the amount of bytes which is captured in the PDV's length field (over presentation context.Id, message information header and data fragment))
+        length -= 4 + pdvLength;            //update length (i.e. determine the length of the buffer which has not been evaluated yet.)
+        pdvCount++;                         //increase counter by one, since we've found another PDV
     }
+
+    /* if after having counted the PDVs the length variable does not equal */
+    /* 0, the PDV lenghts did not add up correctly. Something is fishy. */
     if (length != 0)
     {
        char buf[256];
        sprintf(buf, "PDV lengths don't add up correctly: %d PDVs. This probably indicates a malformed P-DATA PDU. PDU type is %02x.", (int)pdvCount, (unsigned int) pduType);
        return makeDcmnetCondition(DULC_ILLEGALPDU, OF_error, buf);
     }
+
+    /* let the the association indicate how many PDVs are contained in the PDU */
     (*association)->pdvCount = (int)pdvCount;
+
+    /* if at least one PDV is contained in the PDU, the association's pdvIndex has to be set to 0 */
     if (pdvCount > 0)
         (*association)->pdvIndex = 0;
     else
+    {
+        /* if there is no PDV contained in the PDU, the association's pdvIndex has to be set to -1 */
         (*association)->pdvIndex = -1;
 
-    {
-        unsigned char u;
-        p = (*association)->fragmentBuffer;
-        (*association)->pdvPointer = p;
-        EXTRACT_LONG_BIG(p, pdvLength);
-        (*association)->currentPDV.fragmentLength = pdvLength - 2;
-        (*association)->currentPDV.presentationContextID = p[4];
-
-        u = p[5];
-        if (u & 2)
-            (*association)->currentPDV.lastPDV = OFTrue;
-        else
-            (*association)->currentPDV.lastPDV = OFFalse;
-
-        if (u & 1)
-            (*association)->currentPDV.pdvType = DUL_COMMANDPDV;
-        else
-            (*association)->currentPDV.pdvType = DUL_DATASETPDV;
-
-        (*association)->currentPDV.data = p + 6;
+        /* bugfix by wilkens 01/10/12: return error if PDU does not contain any PDVs: */
+        /* Additionally, it is not allowed to have a PDU that does not contain any PDVs. */
+        /* Hence, return an error (see DICOM standard (year 2000) part 8, section 9.3.1, */
+        /* figure 9-2) (or the corresponding section in a later version of the standard) */
+       char buf[256];
+       sprintf(buf, "PDU without any PDVs encountered. In DT_2_IndicatePData.  This probably indicates a  malformed P DATA PDU." );
+       return makeDcmnetCondition(DULC_ILLEGALPDU, OF_error, buf);
     }
+
+    /* at this point we need to set the association's currentPDV variable so that it contains the data */
+    /* of the next unprocessed PDV (currentPDV shall always contain the next unprocessed PDV's data.) */
+
+    /* set the fragment buffer (the buffer which contains all PDVs of the current PDU) to a local variable */
+    p = (*association)->fragmentBuffer;
+
+    /* The variable (*association)->pdvPointer always points to the buffer */
+    /* address where the information of the PDV which is represented by the */
+    /* association's currentPDV variable can be found. Set this variable. */
+    (*association)->pdvPointer = p;
+
+    /* determine the value in the PDV length field of the next (unprocessed) PDV */
+    EXTRACT_LONG_BIG(p, pdvLength);
+
+    /* set the data fragment length in the association's currentPDV.fragmentLength variable */
+    /* (we start now overwriting all the entries in (*association)->currentPDV). The actual */
+    /* length of the data fragment of the next (unprocessed) PDV equals the above determined */
+    /* length minus 1 byte (for the presentation context ID) and minus another byte (for the */
+    /* message control header). */
+    (*association)->currentPDV.fragmentLength = pdvLength - 2;
+
+    /* set the presentation context ID value in the association's currentPDV.presentationContextID */
+    /* variable. This value is 1 byte wide and contained in the 5th byte of p (the first four bytes */
+    /* contain the PDV length value, the fifth byte the presentation context ID value) */
+    (*association)->currentPDV.presentationContextID = p[4];
+
+    /* now determine if the next (unprocessed) PDV contains the last fragment of a data set or DIMSE */
+    /* command and if the next (unprocessed) PDV is a data set PDV or command PDV. This information */
+    /* is captured in the 6th byte of p: */
+    unsigned char u = p[5];
+    if (u & 2)
+        (*association)->currentPDV.lastPDV = OFTrue;            //if bit 1 of the message control header is 1, this fragment does contain the last fragment of a data set or command
+    else
+        (*association)->currentPDV.lastPDV = OFFalse;           //if bit 1 of the message control header is 0, this fragment does not contain the last fragment of a data set or command
+
+    if (u & 1)
+        (*association)->currentPDV.pdvType = DUL_COMMANDPDV;    //if bit 0 of the message control header is 1, this is a command PDV
+    else
+        (*association)->currentPDV.pdvType = DUL_DATASETPDV;    //if bit 0 of the message control header is 0, this is a data set PDV
+
+    /* now assign the data fragment of the next (unprocessed) PDV to the association's */
+    /* currentPDV.data variable. The fragment starts 6 bytes to the right of the address */
+    /* p currently points to. */
+    (*association)->currentPDV.data = p + 6;
+
+    /* return ok */
     return DUL_PDATAPDUARRIVED;
 }
 
@@ -2690,14 +2757,19 @@ sendPDataTCP(PRIVATE_ASSOCIATIONKEY ** association,
     DUL_DATAPDU dataPDU;
     OFBool firstTrip;
 
+    /* assign the amount of PDVs in the array and the PDV array itself to local variables */
     count = pdvList->count;
     pdv = pdvList->pdv;
     
-    // The name "maxPDV" is misleading. This field contains the maxPDU size which is max PDV size +6
-    // or max PDV data field + 12.
+    /* determine the maximum size (length) of a PDU which can be sent over the network. */
+    /* Note that the name "maxPDV" here is misleading. This field contains the maxPDU */
+    /* size which is max PDV size +6 or max PDV data field + 12. */
     maxLength = (*association)->maxPDV;
+
+    /* send the error indicator variable to ok */
     OFCondition cond = EC_Normal;
 
+    /* adjust maxLength (maximum length of a PDU) */
     if (maxLength == 0) maxLength = ASC_MAXIMUMPDUSIZE - 12;
     else if (maxLength < 14)
     {
@@ -2707,25 +2779,42 @@ sendPDataTCP(PRIVATE_ASSOCIATIONKEY ** association,
     } 
     else maxLength -= 12;
 
+    /* start a loop iterate over all PDVs in the given */
+    /* list and send every PDVs data over the network */
     while (cond.good() && count-- > 0)
     {
+        /* determine length of PDV */
         length = pdv->fragmentLength;
+        /* determine data to be set */
         p = (unsigned char *) pdv->data;
+        /* because the current PDV's length can be greater than maxLength, we need */
+        /* to start another loop so that we are able to send data gradually. So, */
+        /* as long as this is the first iteration or length is greater than 0 and */
+        /* at the same time no error occured, do the following */
         firstTrip = OFTrue;
         while ((firstTrip || (length > 0)) && (cond.good())) {
+            /* indicate that the first iteration has been executed */
             firstTrip = OFFalse;
+            /* determine the length of the data fragment that will be sent */
             pdvLength = (length <= maxLength) ? length : maxLength;
+            /* determine if the following fragment will be the last fragment to send */
             localLast = ((pdvLength == length) && pdv->lastPDV);
+            /* construct a data PDU */
             cond = constructDataPDU(p, pdvLength, pdv->pdvType,
                            pdv->presentationContextID, localLast, &dataPDU);
+            /* send the constructed PDU over the network */
             cond = writeDataPDU(association, &dataPDU);
 
+            /* adjust the pointer to the data, so that he points to data which still has to be sent */
             p += pdvLength;
+            /* adjust the length of the fragment which still has to be sent */
             length -= pdvLength;
         }
+        /* advance to the next PDV */
         pdv++;
 
     }
+    /* return corresponding result value */
     return cond;
 }
 
@@ -2759,13 +2848,20 @@ writeDataPDU(PRIVATE_ASSOCIATIONKEY ** association,
     int
         nbytes;
 
+    /* construct a stream variable that will contain PDU head information */
+    /* (in detail, this variable will contain PDU type, PDU reserved field, */
+    /* PDU length, PDV length, presentation context ID, message control header) */
+    /* (note that our representation of a PDU can only contain one PDV.) */
     OFCondition cond = streamDataPDUHead(pdu, head, sizeof(head), &length);
     if (cond.bad()) return cond;
 
+    /* send the PDU head information (see above) */
     do
     {
       nbytes = (*association)->connection ? (*association)->connection->write((char*)head, size_t(length)) : 0;
     } while (nbytes == -1 && errno == EINTR);
+
+    /* if not all head information was sent, return an error */
     if ((unsigned long) nbytes != length)
     {
         char buf1[256];
@@ -2773,11 +2869,14 @@ writeDataPDU(PRIVATE_ASSOCIATIONKEY ** association,
         return makeDcmnetCondition(DULC_TCPIOERROR, OF_error, buf1);
     }
 
+    /* send the PDU's PDV data (note that our representation of a PDU can only contain one PDV.) */
     do
     {
       nbytes = (*association)->connection ? (*association)->connection->write((char*)pdu->presentationDataValue.data, 
         size_t(pdu->presentationDataValue.length - 2)) : 0;
     } while (nbytes == -1 && errno == EINTR);
+
+        /* if not all head information was sent, return an error */
     if ((unsigned long) nbytes != pdu->presentationDataValue.length - 2)
     {
         char buf2[256];
@@ -2785,6 +2884,7 @@ writeDataPDU(PRIVATE_ASSOCIATIONKEY ** association,
         return makeDcmnetCondition(DULC_TCPIOERROR, OF_error, buf2);
     }
 
+    /* return ok */
     return EC_Normal;
 }
 
@@ -2894,18 +2994,24 @@ PRV_NextPDUType(PRIVATE_ASSOCIATIONKEY ** association, DUL_BLOCKOPTIONS block,
 {
     OFCondition cond = EC_Normal;
 
+    /* if the association does not contain PDU header information, do something */
     if ((*association)->inputPDU == NO_PDU) {
+        /* try to receive a PDU header on the network */
         cond = readPDUHead(association, (*association)->pduHead,
                            sizeof((*association)->pduHead),
                            block, timeout, &(*association)->nextPDUType,
                            &(*association)->nextPDUReserved,
                            &(*association)->nextPDULength);
+        /* if receiving was not successful, return this error */
         if (cond.bad())
             return cond;
+        /* indicate that the association does contain PDU header information */
         (*association)->inputPDU = PDU_HEAD;
     }
+    /* determine PDU type and assign it to reference parameter */
     *pduType = (*association)->nextPDUType;
 
+    /* return ok */
     return EC_Normal;
 }
 
@@ -3002,19 +3108,31 @@ readPDUHead(PRIVATE_ASSOCIATIONKEY ** association,
             unsigned char *PDUType, unsigned char *PDUReserved,
             unsigned long *PDULength)
 {
+    /* initialize return value */
     OFCondition cond = EC_Normal;
+
+    /* if the association does not already contain PDU header */
+    /* information, we need to try to receive a PDU on the network */
     if ((*association)->inputPDU == NO_PDU)
     {
+        /* try to receive data */
         cond = readPDUHeadTCP(association, buffer, maxLength, block, timeout,
              &(*association)->nextPDUType, &(*association)->nextPDUReserved, &(*association)->nextPDULength);
     }
+    /* if everything was ok */
     if (cond.good()) {
+        /* indicate that the association does contain PDU header information */
         (*association)->inputPDU = PDU_HEAD;
+        /* determine PDU type and the PDU's value in the reserved field and */
+        /* in the PDU length field and assign it to reference parameter */
         *PDUType = (*association)->nextPDUType;
         *PDUReserved = (*association)->nextPDUReserved;
         *PDULength = (*association)->nextPDULength;
 
-        /* bugfix - thanks to B. Gorissen, Philips Medical Systems */
+        /* check if the value in the length field of the PDU shows a legal value; */
+        /* there is a maximum lenght for PDUs which shall be sent over the network. */
+        /* the lenght of this PDU must not be greater than the specified maximum length. */
+        /* (bugfix - thanks to B. Gorissen, Philips Medical Systems) */
         if ((*PDUType == DUL_TYPEDATA) && (*PDULength > (*association)->maxPDVInput))
         {
           char buf1[256];
@@ -3022,6 +3140,8 @@ readPDUHead(PRIVATE_ASSOCIATIONKEY ** association,
           cond = makeDcmnetCondition(DULC_ILLEGALPDULENGTH, OF_error, buf1);
         }
     }
+
+    /* return result value */
     return cond;
 }
 
@@ -3059,10 +3179,17 @@ readPDUBody(PRIVATE_ASSOCIATIONKEY ** association,
 {
     OFCondition cond = EC_Normal;
 
+    /* read PDU body information */
     cond = readPDUBodyTCP(association, block, timeout, buffer, maxLength,
                               pduType, pduReserved, pduLength);
 
+    /* indicate that the association does not contain PDU information any more */
+    /* (in detail we indicate that the association can be used to store new PDU */
+    /* information, since the current PDU's information is available through */
+    /* the variables pduType, pduReserved, pduLength, and buffer now. */
     (*association)->inputPDU = NO_PDU;
+
+    /* return return value */
     return cond;
 }
 
@@ -3111,17 +3238,26 @@ readPDUHeadTCP(PRIVATE_ASSOCIATIONKEY ** association,
     unsigned long
         idx;
 
+    /* check if the buffer is too small to capture the PDU head we are about to receive */
     if (maxLength < 6)
     {
         return makeDcmnetCondition(DULC_CODINGERROR, OF_error, "Coding Error in DUL routine: buffer too small in readPDUTCPHead");
     }
 
+    /* (for non-blocking reading) if the timeout refers to */
+    /* the default timeout, set timeout correspondingly */
     if (timeout == PRV_DEFAULTTIMEOUT)
         timeout = (*association)->timeout;
+
+    /* try to receive PDU header (6 bytes) over the network, mind blocking */
+    /* options; in the end, buffer will contain the 6 bytes that were read. */
     OFCondition cond = defragmentTCP((*association)->connection, block, (*association)->timerStart, timeout, buffer, 6, &length);
+
+    /* if receiving was not successful, return the corresponding error value */
     if (cond.bad()) return cond;
 
 #ifdef DEBUG
+    /* dump some information if required */
     if (debug) {
         DEBUG_DEVICE << "Read PDU HEAD TCP: ";
         DEBUG_DEVICE.width(2); DEBUG_DEVICE.fill('0');
@@ -3133,12 +3269,19 @@ readPDUHeadTCP(PRIVATE_ASSOCIATIONKEY ** association,
     }
 #endif
 
+    /* determine PDU type (captured in byte 0 of buffer) and assign it to reference parameter */
     *type = *buffer++;
+
+    /* determine value in the PDU header's reserved field (captured */
+    /* in byte 1 of buffer) and assign it to reference parameter */
     *reserved = *buffer++;
 
+    /* check if the PDU which was received shows a legal PDU type */
     for (idx = found = 0; !found && idx < sizeof(legalPDUTypes); idx++) {
         found = (*type == legalPDUTypes[idx]);
     }
+
+    /* if the PDU's type was not legal, return a corresponding message */
     if (!found)
     {
         char buf[256];
@@ -3146,17 +3289,22 @@ readPDUHeadTCP(PRIVATE_ASSOCIATIONKEY ** association,
         return makeDcmnetCondition(DULC_UNRECOGNIZEDPDUTYPE, OF_error, buf);
     }
 
+    /* determine the value in the PDU length field of the PDU */
+    /* which was received and assign it to reference parameter */
     EXTRACT_LONG_BIG(buffer, length);
     buffer += 4;
     *pduLength = length;
 
 #ifdef DEBUG
+    /* dump some information if required */
     if (debug) {
             DEBUG_DEVICE << "Read PDU HEAD TCP: type: " << hex << (*type)
             << ", length: " << dec << (*pduLength)
             << " (" << hex << (unsigned int)*pduLength << ")" << dec << endl;
         }
 #endif
+
+    /* return ok */
     return EC_Normal;
 }
 
@@ -3197,31 +3345,44 @@ readPDUBodyTCP(PRIVATE_ASSOCIATIONKEY ** association,
     unsigned long
         length;
 
+    /* check if the association does not already contain PDU head information. */
     if ((*association)->inputPDU == NO_PDU) {
+        /* If it does not, we need to try to receive PDU head information over the network */
         cond = readPDUHead(association, (*association)->pduHead,
                            sizeof((*association)->pduHead),
                            block, timeout, &(*association)->nextPDUType,
                            &(*association)->nextPDUReserved,
                            &(*association)->nextPDULength);
+        /* return error if there was one */
         if (cond.bad())
             return cond;
     }
+    /* determine PDU type and its values in the reserved field and in the PDU length field */
     *pduType = (*association)->nextPDUType;
     *pduReserved = (*association)->nextPDUReserved;
     *pduLength = (*association)->nextPDULength;
 
+    /* (for non-blocking reading) if the timeout refers to */
+    /* the default timeout, set timeout correspondingly */
     if (timeout == PRV_DEFAULTTIMEOUT)
         timeout = (*association)->timeout;
 
     /* bugfix by meichel 97/04/28: test if PDU fits into buffer */
     if (*pduLength > maxLength)
     {
+      /* if it doesn't, set error indicator variable */
       cond = DUL_ILLEGALPDULENGTH;
     } else {
+      /* if it does, read the current PDU's PDVs from the incoming socket stream. (Note that the */
+      /* PDVs of the current PDU are (*association)->nextPDULength bytes long. Hence, in detail */
+      /* we want to try to receive (*association)->nextPDULength bytes of data on the network) */
+      /* The information that was received will be available through the buffer variable. */
       cond = defragmentTCP((*association)->connection,
                          block, (*association)->timerStart, timeout,
                          buffer, (*association)->nextPDULength, &length);
     }
+
+    /* return result value */
     return cond;
 }
 
@@ -3260,30 +3421,55 @@ defragmentTCP(DcmTransportConnection *connection, DUL_BLOCKOPTIONS block, time_t
     unsigned char *b;
     int bytesRead;
 
+    /* assign buffer to local variable */
     b = (unsigned char *) p;
+
+    /* if reference parameter is a valid pointer, initialize its value */
     if (rtnLen != NULL)
         *rtnLen = 0;
 
+    /* if there is no network connection, return an error */
     if (connection == NULL) return DUL_NULLKEY;
 
+    /* if DUL_NOBLOCK is specified as a blocking option, we only want to wait a certain */
+    /* time for receiving data over the network. If no data was received during that time, */
+    /* DUL_READTIMEOUT shall be returned. Note that if DUL_BLOCK is specified the application */
+    /* will not stop waiting until data is actually received over the network. */
     if (block == DUL_NOBLOCK) {
+        /* figure out how long we want to wait: if timerStart equals 0 we want to wait exactly */
+        /* timeout seconds starting from the call to select(...) within the below called function; */
+        /* if timerStart does not equal 0 we want to substract the time which has already passed */
+        /* after the timer was started from timeout and wait the resulting amount of seconds */
+        /* starting from the call to select(...) within the below called function. */
         int timeToWait;
         if (timerStart == 0)
             timeToWait = timeout;
         else
             timeToWait = timeout - (int) (time(NULL) - timerStart);
+
+        /* go ahead and see if within timeout seconds data will be received over the network. */
+        /* if not, return DUL_READTIMEOUT, if yes, stay in this function. */
         if (!connection->networkDataAvailable(timeToWait)) return DUL_READTIMEOUT;
     }
+
+    /* start a loop: since we want to receive l bytes of data over the network, */
+    /* we won't stop waiting for data until we actually did receive l bytes. */
     while (l > 0) {
+        /* receive data from the network connection; wait until */
+        /* we actually did receive data or an error occured */
         do {
           bytesRead = connection->read((char*)b, size_t(l));
         } while (bytesRead == -1 && errno == EINTR);
+
+        /* if we actually received data, move the buffer pointer to its own end, update the variable */
+        /* that determines the end of the first loop, and update the reference parameter return variable */
         if (bytesRead > 0) {
             b += bytesRead;
             l -= (unsigned long) bytesRead;
             if (rtnLen != NULL)
                 *rtnLen += (unsigned long) bytesRead;
         } else {
+            /* in case we did not receive data, an error must have occured; return a corresponding result value */
             return DUL_NETWORKCLOSED;
         }
     }
@@ -3592,7 +3778,12 @@ destroyUserInformationLists(DUL_USERINFO * userInfo)
 /*
 ** CVS Log
 ** $Log: dulfsm.cc,v $
-** Revision 1.40  2001-10-12 10:18:38  meichel
+** Revision 1.41  2001-11-01 13:46:35  wilkens
+** Added lots of comments.
+** Fixed a bug in DT_2_IndicatePData(...): return error if a received PDU does
+** not contain any PDVs.
+**
+** Revision 1.40  2001/10/12 10:18:38  meichel
 ** Replaced the CONDITION types, constants and functions in the dcmnet module
 **   by an OFCondition based implementation which eliminates the global condition
 **   stack.  This is a major change, caveat emptor!
