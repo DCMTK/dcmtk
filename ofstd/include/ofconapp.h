@@ -22,9 +22,9 @@
  *  Purpose: Handle console applications (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-09-23 14:56:55 $
+ *  Update Date:      $Date: 2002-11-26 12:55:02 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/include/Attic/ofconapp.h,v $
- *  CVS/RCS Revision: $Revision: 1.14 $
+ *  CVS/RCS Revision: $Revision: 1.15 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -81,11 +81,11 @@ class OFConsoleApplication
      *  if the command line has only one argument, namely "--help" or the specified shortcut,
      *  (in all cases) the usage is printed (see printUsage).
      *
-     ** @param  cmd       application name
+     ** @param  cmd       reference to the OFCommandLine object
      *  @param  argCount  number of arguments (argc)
      *  @param  argValue  pointer to argument array (argv[])
      *  @param  flags     flags to be used for parsing (e.g. OFCommandLine::ExpandWildcards)
-     *  @param  startPos  first argument to be parsed (default: 1, omit program name)
+     *  @param  startPos  first argument to be parsed (default: 1, i.e. omit program name)
      *
      ** @return status of parsing process, true if successful, false otherwise
      */
@@ -98,16 +98,18 @@ class OFConsoleApplication
     /** print header of console application (consisting of identifier, name and description)
      *
      ** @param  hostInfo  print host information as reported by 'config.guess' if OFTrue
+     *  @param  stdError  print to standard error stream if OFTrue (default: standard output)
      */
-    void printHeader(const OFBool hostInfo = OFFalse);
+    void printHeader(const OFBool hostInfo = OFFalse,
+                     const OFBool stdError = OFFalse);
 
-    /** print usage (syntax of command line options)
+    /** print usage (syntax of command line options) to standard output stream
      *
      ** @param  cmd   reference to command line class (default: object used for parsing)
      */
     void printUsage(const OFCommandLine *cmd = NULL);
 
-    /** print error message (incl. header) and exit with error code
+    /** print error message (incl. header) to standard error stream and exit with error code
      *
      ** @param  str   error message to be printed
      *  @param  code  error code to be returned (exit)
@@ -115,13 +117,13 @@ class OFConsoleApplication
     void printError(const char *str,
     				const int code = 1);
 
-    /** print warning message (w/o header)
+    /** print warning message (w/o header) to standard error stream
      *
      ** @param  str  warning message to be printed
      */
     void printWarning(const char *str);
 
-    /** print message (w/o header)
+    /** print message (w/o header) to standard error stream.
      *
      ** @param  str  message to be printed
      */
@@ -149,7 +151,8 @@ class OFConsoleApplication
     void checkParam(const OFCommandLine::E_ParamValueStatus status,
                     OFCommandLine *cmd = NULL);
 
-    /** check dependence between sub and base option
+    /** check dependence between sub and base option and report an error if required.
+     *  Message format: "error: " + subOpt + " only allowed with " + baseOpt
      *
      ** @param  subOpt     option to be checked
      *  @param  baseOpt    base option required for sub option
@@ -159,7 +162,8 @@ class OFConsoleApplication
                          const char *baseOpt,
                          OFBool condition);
 
-    /** check conflict between two options
+    /** check conflict between two options and report an error if required.
+     *  Message format: "error: " + firstOpt + " not allowed with " + secondOpt
      *
      ** @param  firstOpt   first option to be checked
      *  @param  secondOpt  second option to be checked
@@ -200,7 +204,11 @@ class OFConsoleApplication
  *
  * CVS/RCS Log:
  * $Log: ofconapp.h,v $
- * Revision 1.14  2002-09-23 14:56:55  joergr
+ * Revision 1.15  2002-11-26 12:55:02  joergr
+ * Changed syntax usage output for command line applications from stderr to
+ * stdout.
+ *
+ * Revision 1.14  2002/09/23 14:56:55  joergr
  * Prepared code for future support of 'config.guess' host identifiers.
  *
  * Revision 1.13  2002/04/16 13:36:02  joergr

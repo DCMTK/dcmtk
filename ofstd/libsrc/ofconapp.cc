@@ -22,9 +22,9 @@
  *  Purpose: Handle console applications (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-09-24 15:29:17 $
+ *  Update Date:      $Date: 2002-11-26 12:57:07 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/libsrc/ofconapp.cc,v $
- *  CVS/RCS Revision: $Revision: 1.18 $
+ *  CVS/RCS Revision: $Revision: 1.19 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -66,7 +66,7 @@ OFBool OFConsoleApplication::parseCommandLine(OFCommandLine &cmd,
                                               const int flags,
                                               const int startPos)
 {
-    CmdLine = &cmd;                                                     // store reference to cmdline object
+    CmdLine = &cmd;                           // store reference to cmdline object
     OFCommandLine::E_ParseStatus status = cmd.parseLine(argCount, argValue, flags, startPos);
     OFBool result = OFFalse;
     switch (status)
@@ -93,18 +93,25 @@ OFBool OFConsoleApplication::parseCommandLine(OFCommandLine &cmd,
 }
 
 
-void OFConsoleApplication::printHeader(const OFBool hostInfo)
+void OFConsoleApplication::printHeader(const OFBool hostInfo,
+                                       const OFBool stdError)
 {
-    ostream &Output = ofConsole.lockCerr();
+    /* lock output stream */
+    ostream *output = (stdError) ? &ofConsole.lockCerr() : &ofConsole.lockCout();
     if (!Identification.empty())
-        Output << Identification << endl << endl;
-    Output << Name;
+        (*output) << Identification << endl << endl;
+    (*output) << Name;
     if (!Description.empty())
-        Output << ": " << Description;
-    Output << endl;
+        (*output) << ": " << Description;
+    (*output) << endl;
+    /* print optional host information */
     if (hostInfo)
-        Output << endl << "Host type: " << CANONICAL_HOST_TYPE << endl;
-    ofConsole.unlockCerr();
+        (*output) << endl << "Host type: " << CANONICAL_HOST_TYPE << endl;
+    /* release output stream */
+    if (stdError)
+        ofConsole.unlockCerr();
+    else
+        ofConsole.unlockCout();
 }
 
 
@@ -113,22 +120,23 @@ void OFConsoleApplication::printUsage(const OFCommandLine *cmd)
     if (cmd == NULL)
         cmd = CmdLine;
     printHeader();
-    ostream &Output = ofConsole.lockCerr();
-    Output << "usage: " << Name;
+    ostream &output = ofConsole.lockCout();
+    output << "usage: " << Name;
     if (cmd != NULL)
     {
         OFString str;
         cmd->getSyntaxString(str);
-        Output << str << endl;
+        output << str << endl;
         cmd->getParamString(str);
         if (str.length() > 0)
-            Output << endl << str;
+            output << endl << str;
         cmd->getOptionString(str);
         if (str.length() > 0)
-            Output << endl << str;
+            output << endl << str;
     }
-    Output << endl;
-    ofConsole.unlockCerr();
+    output << endl;
+    ofConsole.unlockCout();
+    /* exit code: no error */
     exit(0);
 }
 
@@ -138,7 +146,7 @@ void OFConsoleApplication::printError(const char *str,
 {
     if (!QuietMode)
     {
-        printHeader();
+        printHeader(OFFalse /*hostInfo*/, OFTrue /*stdError*/);
         ofConsole.lockCerr() << "error: " << str << endl;
         ofConsole.unlockCerr();
     }
@@ -234,7 +242,11 @@ void OFConsoleApplication::checkConflict(const char *firstOpt,
  *
  * CVS/RCS Log:
  * $Log: ofconapp.cc,v $
- * Revision 1.18  2002-09-24 15:29:17  joergr
+ * Revision 1.19  2002-11-26 12:57:07  joergr
+ * Changed syntax usage output for command line applications from stderr to
+ * stdout.
+ *
+ * Revision 1.18  2002/09/24 15:29:17  joergr
  * Optionally print command line application header with "host type" (as
  * reported by 'config.guess').
  *
