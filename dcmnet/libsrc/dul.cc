@@ -54,9 +54,9 @@
 ** Author, Date:        Stephen M. Moore, 14-Apr-93
 ** Intent:              This module contains the public entry points for the
 **                      DICOM Upper Layer (DUL) protocol package.
-** Last Update:         $Author: wilkens $, $Date: 2004-05-17 14:39:14 $
+** Last Update:         $Author: meichel $, $Date: 2004-07-28 08:15:19 $
 ** Source File:         $RCSfile: dul.cc,v $
-** Revision:            $Revision: 1.63 $
+** Revision:            $Revision: 1.64 $
 ** Status:              $State: Exp $
 */
 
@@ -1522,7 +1522,7 @@ receiveTransportConnectionTCP(PRIVATE_NETWORKKEY ** network,
             nfound = select((*network)->networkSpecific.TCP.listenSocket + 1,
                             &fdset, NULL, NULL, &timeout_val);
 #endif
-            if (nfound != 0) {
+            if (nfound > 0) {
                 if (FD_ISSET((*network)->networkSpecific.TCP.listenSocket, &fdset))
                     connected++;
             }
@@ -1549,7 +1549,7 @@ receiveTransportConnectionTCP(PRIVATE_NETWORKKEY ** network,
                 nfound = select((*network)->networkSpecific.TCP.listenSocket + 1,
                                 &fdset, NULL, NULL, &timeout_val);
 #endif
-                if (nfound != 0) {
+                if (nfound > 0) {
                     if (FD_ISSET((*network)->networkSpecific.TCP.listenSocket,
                                  &fdset))
                         connected++;
@@ -2423,7 +2423,11 @@ void DUL_DumpConnectionParameters(DUL_ASSOCIATIONKEY *association, ostream& outs
 /*
 ** CVS Log
 ** $Log: dul.cc,v $
-** Revision 1.63  2004-05-17 14:39:14  wilkens
+** Revision 1.64  2004-07-28 08:15:19  meichel
+** Fixed bug in DUL that could cause an application to block when waiting
+**   for an association if a select() was interrupted by a signal.
+**
+** Revision 1.63  2004/05/17 14:39:14  wilkens
 ** Fixed problem reported by valgrind: passing uninitialized variable sockarg.
 **
 ** Revision 1.62  2004/02/25 12:31:17  meichel
