@@ -4,7 +4,7 @@
 **
 **   User: meichel
 **   Host: caesar
-**   Date: 2004-11-1012:48:31
+**   Date: 2004-11-1617:10:28
 **   Prog: /home/meichel/dicom/dcmtk/dcmdata/libsrc/mkdictbi
 **
 ** From: /home/meichel/dicom/dcmtk/dcmdata/libsrc/dicom.dic
@@ -15,7 +15,7 @@
 #include "dcdict.h"
 #include "dcdicent.h"
 
-const char* dcmBuiltinDictBuildDate = "2004-11-1012:48:31";
+const char* dcmBuiltinDictBuildDate = "2004-11-1617:10:28";
 
 struct DBI_SimpleEntry {
     Uint16 group;
@@ -66,15 +66,15 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x0000, 0x0200, 0x0000, 0x0200,
-      EVR_AE, "ACR_NEMA_Initiator", 1, 1, "ACR/NEMA2",
+      EVR_LO, "ACR_NEMA_Initiator", 1, 1, "ACR/NEMA2",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x0000, 0x0300, 0x0000, 0x0300,
-      EVR_AE, "ACR_NEMA_Receiver", 1, 1, "ACR/NEMA2",
+      EVR_LO, "ACR_NEMA_Receiver", 1, 1, "ACR/NEMA2",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x0000, 0x0400, 0x0000, 0x0400,
-      EVR_AE, "ACR_NEMA_FindLocation", 1, 1, "ACR/NEMA2",
+      EVR_LO, "ACR_NEMA_FindLocation", 1, 1, "ACR/NEMA2",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x0000, 0x0600, 0x0000, 0x0600,
@@ -158,31 +158,31 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x0000, 0x4000, 0x0000, 0x4000,
-      EVR_AT, "ACR_NEMA_DialogReceiver", 1, 1, "ACR/NEMA2",
+      EVR_LO, "ACR_NEMA_DialogReceiver", 1, 1, "ACR/NEMA2",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x0000, 0x4010, 0x0000, 0x4010,
-      EVR_AT, "ACR_NEMA_TerminalType", 1, 1, "ACR/NEMA2",
+      EVR_LO, "ACR_NEMA_TerminalType", 1, 1, "ACR/NEMA2",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x0000, 0x5010, 0x0000, 0x5010,
-      EVR_SH, "ACR_NEMA_MessageSetID", 1, 1, "ACR/NEMA2",
+      EVR_LO, "ACR_NEMA_MessageSetID", 1, 1, "ACR/NEMA2",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x0000, 0x5020, 0x0000, 0x5020,
-      EVR_SH, "ACR_NEMA_EndMessageSet", 1, 1, "ACR/NEMA2",
+      EVR_LO, "ACR_NEMA_EndMessageSet", 1, 1, "ACR/NEMA2",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x0000, 0x5110, 0x0000, 0x5110,
-      EVR_AT, "ACR_NEMA_DisplayFormat", 1, 1, "ACR/NEMA2",
+      EVR_LO, "ACR_NEMA_DisplayFormat", 1, 1, "ACR/NEMA2",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x0000, 0x5120, 0x0000, 0x5120,
-      EVR_AT, "ACR_NEMA_PagePositionID", 1, 1, "ACR/NEMA2",
+      EVR_LO, "ACR_NEMA_PagePositionID", 1, 1, "ACR/NEMA2",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x0000, 0x5130, 0x0000, 0x5130,
-      EVR_CS, "ACR_NEMA_TextFormatID", 1, 1, "ACR/NEMA2",
+      EVR_LO, "ACR_NEMA_TextFormatID", 1, 1, "ACR/NEMA2",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x0000, 0x5140, 0x0000, 0x5140,
@@ -202,11 +202,11 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x0000, 0x5180, 0x0000, 0x5180,
-      EVR_CS, "ACR_NEMA_OldMagnificationType", 1, 1, "ACR/NEMA2",
+      EVR_LO, "ACR_NEMA_MagnificationType", 1, 1, "ACR/NEMA2",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x0000, 0x5190, 0x0000, 0x5190,
-      EVR_CS, "ACR_NEMA_Erase", 1, 1, "ACR/NEMA2",
+      EVR_LO, "ACR_NEMA_Erase", 1, -1, "ACR/NEMA2",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x0000, 0x51a0, 0x0000, 0x51a0,
@@ -398,7 +398,7 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x0008, 0x0010, 0x0008, 0x0010,
-      EVR_CS, "ACR_NEMA_RecognitionCode", 1, 1, "ACR/NEMA2",
+      EVR_LO, "ACR_NEMA_RecognitionCode", 1, 1, "ACR/NEMA2",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x0008, 0x0012, 0x0008, 0x0012,
@@ -486,7 +486,7 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x0008, 0x0041, 0x0008, 0x0041,
-      EVR_LT, "ACR_NEMA_DataSetSubtype", 1, 1, "ACR/NEMA2",
+      EVR_LO, "ACR_NEMA_DataSetSubtype", 1, 1, "ACR/NEMA2",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x0008, 0x0042, 0x0008, 0x0042,
@@ -634,7 +634,7 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x0008, 0x1000, 0x0008, 0x1000,
-      EVR_AE, "ACR_NEMA_NetworkID", 1, 1, "ACR/NEMA2",
+      EVR_LO, "ACR_NEMA_NetworkID", 1, 1, "ACR/NEMA2",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x0008, 0x1010, 0x0008, 0x1010,
@@ -5397,7 +5397,7 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS RA GEN" }
   , { 0x0019, 0x0020, 0x0019, 0x0020,
-      EVR_SL, "SystemCalibFactorPlaneA", 1, 1, "DICOM",
+      EVR_SS, "SystemCalibFactorPlaneA", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS RA PLANE A" }
   , { 0x0019, 0x0020, 0x0019, 0x0020,
@@ -5729,7 +5729,7 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS RA GEN" }
   , { 0x0019, 0x0030, 0x0019, 0x0030,
-      EVR_UL, "MaximumFrameSizeNIU", 1, 1, "DICOM",
+      EVR_US, "MaximumFrameSizeNIU", 1, 1, "DICOM",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       "SIEMENS RA PLANE A" }
   , { 0x0019, 0x0030, 0x0019, 0x0030,
@@ -8870,11 +8870,11 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x0020, 0x0070, 0x0020, 0x0070,
-      EVR_LT, "ACR_NEMA_ImageGeometryType", 1, 1, "ACR/NEMA2",
+      EVR_LO, "ACR_NEMA_ImageGeometryType", 1, 1, "ACR/NEMA2",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x0020, 0x0080, 0x0020, 0x0080,
-      EVR_CS, "ACR_NEMA_MaskingImage", 1, -1, "ACR/NEMA2",
+      EVR_LO, "ACR_NEMA_MaskingImage", 1, -1, "ACR/NEMA2",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x0020, 0x0100, 0x0020, 0x0100,
@@ -8918,7 +8918,7 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x0020, 0x1020, 0x0020, 0x1020,
-      EVR_CS, "ACR_NEMA_Reference", 1, -1, "ACR/NEMA2",
+      EVR_LO, "ACR_NEMA_Reference", 1, -1, "ACR/NEMA2",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x0020, 0x1040, 0x0020, 0x1040,
@@ -8958,11 +8958,11 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x0020, 0x3401, 0x0020, 0x3401,
-      EVR_CS, "ACR_NEMA_ModifyingDeviceID", 1, 1, "ACR/NEMA2",
+      EVR_LO, "ACR_NEMA_ModifyingDeviceID", 1, 1, "ACR/NEMA2",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x0020, 0x3402, 0x0020, 0x3402,
-      EVR_CS, "ACR_NEMA_ModifiedImageID", 1, 1, "ACR/NEMA2",
+      EVR_LO, "ACR_NEMA_ModifiedImageID", 1, 1, "ACR/NEMA2",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x0020, 0x3403, 0x0020, 0x3403,
@@ -8978,7 +8978,7 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x0020, 0x3406, 0x0020, 0x3406,
-      EVR_LT, "ACR_NEMA_ModifiedImageDescription", 1, 1, "ACR/NEMA2",
+      EVR_LO, "ACR_NEMA_ModifiedImageDescription", 1, 1, "ACR/NEMA2",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x0020, 0x4000, 0x0020, 0x4000,
@@ -8990,7 +8990,7 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x0020, 0x5002, 0x0020, 0x5002,
-      EVR_CS, "ACR_NEMA_OriginalImageIdentificationNomenclature", 1, -1, "ACR/NEMA2",
+      EVR_LO, "ACR_NEMA_OriginalImageIdentificationNomenclature", 1, -1, "ACR/NEMA2",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x0020, 0x9056, 0x0020, 0x9056,
@@ -10846,7 +10846,7 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x0028, 0x0050, 0x0028, 0x0050,
-      EVR_LT, "ACR_NEMA_ManipulatedImage", 1, -1, "ACR/NEMA2",
+      EVR_LO, "ACR_NEMA_ManipulatedImage", 1, -1, "ACR/NEMA2",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified,
       NULL }
   , { 0x0028, 0x0051, 0x0028, 0x0051,
@@ -18568,7 +18568,7 @@ static const DBI_SimpleEntry simpleBuiltinDict[] = {
       DcmDictRange_Even, DcmDictRange_Unspecified,
       NULL }
   , { 0x0020, 0x3100, 0x0020, 0x31ff,
-      EVR_CS, "ACR_NEMA_SourceImageID", 1, -1, "ACR/NEMA2",
+      EVR_LO, "ACR_NEMA_SourceImageID", 1, -1, "ACR/NEMA2",
       DcmDictRange_Unspecified, DcmDictRange_Even,
       NULL }
   , { 0x6000, 0x0110, 0x60ff, 0x0110,

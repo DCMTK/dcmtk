@@ -4,7 +4,7 @@
 **
 **   User: meichel
 **   Host: caesar
-**   Date: 2004-11-1012:50:39
+**   Date: 2004-11-1617:07:53
 **   Prog: /home/meichel/dicom/dcmtk/dcmdata/libsrc/mkdeftag
 **
 ** From: /home/meichel/dicom/dcmtk/dcmdata/libsrc/dicom.dic
@@ -17,7 +17,7 @@
 
 #include "dctagkey.h"
 
-#define DCM_DICT_DEFTAG_BUILD_DATE "2004-11-1012:50:39"
+#define DCM_DICT_DEFTAG_BUILD_DATE "2004-11-1617:07:53"
 
 
 /*
@@ -67,7 +67,7 @@
 #define DCM_ACR_NEMA_AddGrayScale                DcmTagKey(0x0000, 0x5150)
 #define DCM_ACR_NEMA_Borders                     DcmTagKey(0x0000, 0x5160)
 #define DCM_ACR_NEMA_Copies                      DcmTagKey(0x0000, 0x5170)
-#define DCM_ACR_NEMA_OldMagnificationType        DcmTagKey(0x0000, 0x5180)
+#define DCM_ACR_NEMA_MagnificationType           DcmTagKey(0x0000, 0x5180)
 #define DCM_ACR_NEMA_Erase                       DcmTagKey(0x0000, 0x5190)
 #define DCM_ACR_NEMA_Print                       DcmTagKey(0x0000, 0x51a0)
 #define DCM_ACR_NEMA_Overlays                    DcmTagKey(0x0000, 0x51b0)

@@ -22,9 +22,9 @@
 #  This is the global DICOM data dictionary for the dcmtk class library.
 #
 #  Last Update:      $Author: meichel $
-#  Update Date:      $Date: 2004-11-10 12:13:26 $
+#  Update Date:      $Date: 2004-11-16 16:13:27 $
 #  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/Attic/dicom.dic,v $
-#  CVS/RCS Revision: $Revision: 1.51 $
+#  CVS/RCS Revision: $Revision: 1.52 $
 #  Status:           $State: Exp $
 #
 #  This dictionary contains
@@ -2222,31 +2222,31 @@
 #
 (0000,0001)	UL	ACR_NEMA_CommandGroupLengthToEnd	1	ACR/NEMA2
 (0000,0010)	CS	ACR_NEMA_CommandRecognitionCode	1	ACR/NEMA2
-(0000,0200)	AE	ACR_NEMA_Initiator	1	ACR/NEMA2
-(0000,0300)	AE	ACR_NEMA_Receiver	1	ACR/NEMA2
-(0000,0400)	AE	ACR_NEMA_FindLocation	1	ACR/NEMA2
+(0000,0200)	LO	ACR_NEMA_Initiator	1	ACR/NEMA2
+(0000,0300)	LO	ACR_NEMA_Receiver	1	ACR/NEMA2
+(0000,0400)	LO	ACR_NEMA_FindLocation	1	ACR/NEMA2
 (0000,0850)	US	ACR_NEMA_NumberOfMatches	1	ACR/NEMA2
 (0000,0860)	US	ACR_NEMA_ResponseSequenceNumber	1	ACR/NEMA2
-(0000,4000)	AT	ACR_NEMA_DialogReceiver	1	ACR/NEMA2
-(0000,4010)	AT	ACR_NEMA_TerminalType	1	ACR/NEMA2
-(0000,5010)	SH	ACR_NEMA_MessageSetID	1	ACR/NEMA2
-(0000,5020)	SH	ACR_NEMA_EndMessageSet	1	ACR/NEMA2
-(0000,5110)	AT	ACR_NEMA_DisplayFormat	1	ACR/NEMA2
-(0000,5120)	AT	ACR_NEMA_PagePositionID	1	ACR/NEMA2
-(0000,5130)	CS	ACR_NEMA_TextFormatID	1	ACR/NEMA2
+(0000,4000)	LO	ACR_NEMA_DialogReceiver	1	ACR/NEMA2
+(0000,4010)	LO	ACR_NEMA_TerminalType	1	ACR/NEMA2
+(0000,5010)	LO	ACR_NEMA_MessageSetID	1	ACR/NEMA2
+(0000,5020)	LO	ACR_NEMA_EndMessageSet	1	ACR/NEMA2
+(0000,5110)	LO	ACR_NEMA_DisplayFormat	1	ACR/NEMA2
+(0000,5120)	LO	ACR_NEMA_PagePositionID	1	ACR/NEMA2
+(0000,5130)	LO	ACR_NEMA_TextFormatID	1	ACR/NEMA2
 (0000,5140)	CS	ACR_NEMA_NormalReverse	1	ACR/NEMA2
 (0000,5150)	CS	ACR_NEMA_AddGrayScale	1	ACR/NEMA2
 (0000,5160)	CS	ACR_NEMA_Borders	1	ACR/NEMA2
 (0000,5170)	IS	ACR_NEMA_Copies	1	ACR/NEMA2
-(0000,5180)	CS	ACR_NEMA_OldMagnificationType	1	ACR/NEMA2
-(0000,5190)	CS	ACR_NEMA_Erase	1	ACR/NEMA2
+(0000,5180)	LO	ACR_NEMA_MagnificationType	1	ACR/NEMA2
+(0000,5190)	LO	ACR_NEMA_Erase	1-n	ACR/NEMA2
 (0000,51A0)	CS	ACR_NEMA_Print	1	ACR/NEMA2
 (0000,51B0)	US	ACR_NEMA_Overlays	1-n	ACR/NEMA2
 (0008,0001)	UL	ACR_NEMA_IdentifyingGroupLengthToEnd	1	ACR/NEMA2
-(0008,0010)	CS	ACR_NEMA_RecognitionCode	1	ACR/NEMA2
+(0008,0010)	LO	ACR_NEMA_RecognitionCode	1	ACR/NEMA2
 (0008,0040)	US	ACR_NEMA_OldDataSetType	1	ACR/NEMA2
-(0008,0041)	LT	ACR_NEMA_DataSetSubtype	1	ACR/NEMA2
-(0008,1000)	AE	ACR_NEMA_NetworkID	1	ACR/NEMA2
+(0008,0041)	LO	ACR_NEMA_DataSetSubtype	1	ACR/NEMA2
+(0008,1000)	LO	ACR_NEMA_NetworkID	1	ACR/NEMA2
 (0008,4000)	LT	ACR_NEMA_IdentifyingComments	1-n	ACR/NEMA2
 (0010,1050)	LT	ACR_NEMA_InsurancePlanIdentification	1-n	ACR/NEMA2
 (0018,1240)	IS	ACR_NEMA_UpperLowerPixelValues	1-n	ACR/NEMA2
@@ -2256,24 +2256,24 @@
 (0020,0030)	DS	ACR_NEMA_ImagePosition	3	ACR/NEMA2
 (0020,0035)	DS	ACR_NEMA_ImageOrientation	6	ACR/NEMA2
 (0020,0050)	DS	ACR_NEMA_Location	1	ACR/NEMA2
-(0020,0070)	LT	ACR_NEMA_ImageGeometryType	1	ACR/NEMA2
-(0020,0080)	CS	ACR_NEMA_MaskingImage	1-n	ACR/NEMA2
+(0020,0070)	LO	ACR_NEMA_ImageGeometryType	1	ACR/NEMA2
+(0020,0080)	LO	ACR_NEMA_MaskingImage	1-n	ACR/NEMA2
 (0020,1001)	IS	ACR_NEMA_AcquisitionsInSeries	1	ACR/NEMA2
 (0020,1003)	IS	ACR_NEMA_ImagesInSeries	1	ACR/NEMA2
 (0020,1005)	IS	ACR_NEMA_ImagesInStudy	1	ACR/NEMA2
-(0020,1020)	CS	ACR_NEMA_Reference	1-n	ACR/NEMA2
-(0020,3100-31FF)	CS	ACR_NEMA_SourceImageID	1-n	ACR/NEMA2
-(0020,3401)	CS	ACR_NEMA_ModifyingDeviceID	1	ACR/NEMA2
-(0020,3402)	CS	ACR_NEMA_ModifiedImageID	1	ACR/NEMA2
+(0020,1020)	LO	ACR_NEMA_Reference	1-n	ACR/NEMA2
+(0020,3100-31FF)	LO	ACR_NEMA_SourceImageID	1-n	ACR/NEMA2
+(0020,3401)	LO	ACR_NEMA_ModifyingDeviceID	1	ACR/NEMA2
+(0020,3402)	LO	ACR_NEMA_ModifiedImageID	1	ACR/NEMA2
 (0020,3403)	DA	ACR_NEMA_ModifiedImageDate	1	ACR/NEMA2
 (0020,3404)	LO	ACR_NEMA_ModifyingDeviceManufacturer	1	ACR/NEMA2
 (0020,3405)	TM	ACR_NEMA_ModifiedImageTime	1	ACR/NEMA2
-(0020,3406)	LT	ACR_NEMA_ModifiedImageDescription	1	ACR/NEMA2
+(0020,3406)	LO	ACR_NEMA_ModifiedImageDescription	1	ACR/NEMA2
 (0020,5000)	AT	ACR_NEMA_OriginalImageIdentification	1-n	ACR/NEMA2
-(0020,5002)	CS	ACR_NEMA_OriginalImageIdentificationNomenclature	1-n	ACR/NEMA2
+(0020,5002)	LO	ACR_NEMA_OriginalImageIdentificationNomenclature	1-n	ACR/NEMA2
 (0028,0005)	US	ACR_NEMA_ImageDimensions	1	ACR/NEMA2
 (0028,0040)	CS	ACR_NEMA_ImageFormat	1	ACR/NEMA2
-(0028,0050)	LT	ACR_NEMA_ManipulatedImage	1-n	ACR/NEMA2
+(0028,0050)	LO	ACR_NEMA_ManipulatedImage	1-n	ACR/NEMA2
 (0028,0060)	CS	ACR_NEMA_CompressionCode	1	ACR/NEMA2
 (0028,0104)	xs	ACR_NEMA_SmallestValidPixelValue	1	ACR/NEMA2
 (0028,0105)	xs	ACR_NEMA_LargestValidPixelValue	1	ACR/NEMA2

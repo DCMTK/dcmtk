@@ -21,9 +21,9 @@
 #  Purpose:
 #  This is the private tag DICOM data dictionary for the dcmtk class library.
 #
-#  Last Update:      $Author: wilkens $
-#  Update Date:      $Date: 2004-03-25 09:54:15 $
-#  CVS/RCS Revision: $Revision: 1.9 $
+#  Last Update:      $Author: meichel $
+#  Update Date:      $Date: 2004-11-16 16:13:27 $
+#  CVS/RCS Revision: $Revision: 1.10 $
 #  Status:           $State: Exp $
 #
 #
@@ -1897,7 +1897,7 @@
 (0019,"SIEMENS RA PLANE A",1d)	SS	Internal	1
 (0019,"SIEMENS RA PLANE A",1e)	SS	Internal	1
 (0019,"SIEMENS RA PLANE A",1f)	SS	Internal	1-n
-(0019,"SIEMENS RA PLANE A",20)	SL	SystemCalibFactorPlaneA	1
+(0019,"SIEMENS RA PLANE A",20)	SS	SystemCalibFactorPlaneA	1
 (0019,"SIEMENS RA PLANE A",22)	SS	XRayParameterSetNo	1
 (0019,"SIEMENS RA PLANE A",24)	SS	XRaySystem	1
 (0019,"SIEMENS RA PLANE A",26)	US	Unknown	1
@@ -1905,7 +1905,7 @@
 (0019,"SIEMENS RA PLANE A",2a)	SS	AcquisitionDelay	1
 (0019,"SIEMENS RA PLANE A",2c)	US	Unknown	1
 (0019,"SIEMENS RA PLANE A",2e)	SS	MaxFramesLimit	1
-(0019,"SIEMENS RA PLANE A",30)	UL	MaximumFrameSizeNIU	1
+(0019,"SIEMENS RA PLANE A",30)	US	MaximumFrameSizeNIU	1
 (0019,"SIEMENS RA PLANE A",32)	SS	SubtractedFilterType	1
 (0019,"SIEMENS RA PLANE A",34)	SS	FilterFactorNative	1
 (0019,"SIEMENS RA PLANE A",36)	SS	AnatomicBackgroundFactor	1
