@@ -10,7 +10,7 @@
  *
  *
  * Last Update:   $Author: andreas $
- * Revision:	  $Revision: 1.3 $
+ * Revision:	  $Revision: 1.4 $
  * Status:	  $State: Exp $
  *
  */
@@ -368,49 +368,49 @@ E_Condition DcmImagePixelModule::writeImageIntoDataset( DcmDataset &dset )
 
 E_Condition DcmImagePixelModule::writeImageAsPGM(FILE * outFile )
 {
-	Bdebug((3, "dcimapix:DcmImagePixelModule::writeImageAsPGM()" ));
+    Bdebug((3, "dcimapix:DcmImagePixelModule::writeImageAsPGM()" ));
 
     E_Condition l_error = EC_Normal;
     if ( allDataValid == TRUE )
     {
-		if (SamplesPerPixel != 1)
+	if (SamplesPerPixel != 1)
+	{
+	    cerr << "Unsupported SamplesPerPixel = " << SamplesPerPixel
+		 << endl;
+	    l_error = EC_IllegalCall;
+	}
+	else
+	{
+	    if (   PhotometricInterpretation == EPI_Monochrome1
+		   || PhotometricInterpretation == EPI_Monochrome2
+		)
+	    {
+		if (HighBit+1-BitsStored != 0)
 		{
-			cerr << "Unsupported SamplesPerPixel = " << SamplesPerPixel
-				<< endl;
-			l_error = EC_IllegalCall;
+		    cerr << "Unsupported - data not packed in low part of word"
+			 << endl;
+		    l_error = EC_IllegalCall;
 		}
 		else
 		{
-			if (   PhotometricInterpretation == EPI_Monochrome1
-				|| PhotometricInterpretation == EPI_Monochrome2
-				)
-			{
-				if (HighBit+1-BitsStored != 0)
-				{
-					cerr << "Unsupported - data not packed in low part of word"
-						<< endl;
-					l_error = EC_IllegalCall;
-				}
-				else
-				{
-					Uint32 maxval = ( 1 << BitsStored ) - 1;
-					fprintf(outFile, "P5\n%u %u\n%lu\n", Columns, Rows, maxval);
-					fwrite(PixelData->getBytes(), 
-						   (size_t)PixelData->getLength(), 1, outFile);
-				}
-			}
-			else
-			{
-				cerr << "Unsupported PhotometricInterpretation = "
-					<< PhotometricInterpretation
-						<< endl;
-				l_error = EC_IllegalCall;
-			}
+		    Uint32 maxval = ( 1 << BitsStored ) - 1;
+		    fprintf(outFile, "P5\n%u %u\n%lu\n", Columns, Rows, (unsigned long)maxval);
+		    fwrite(PixelData->getBytes(), 
+			   (size_t)PixelData->getLength(), 1, outFile);
 		}
+	    }
+	    else
+	    {
+		cerr << "Unsupported PhotometricInterpretation = "
+		     << PhotometricInterpretation
+		     << endl;
+		l_error = EC_IllegalCall;
+	    }
 	}
-	Edebug(());
+    }
+    Edebug(());
 
-	return l_error;
+    return l_error;
 }
 
 

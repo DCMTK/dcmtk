@@ -10,7 +10,7 @@
 **
 **
 ** Last Update:   $Author: andreas $
-** Revision:      $Revision: 1.6 $
+** Revision:      $Revision: 1.7 $
 ** Status:	  $State: Exp $
 **
 */
@@ -257,7 +257,7 @@ void DcmObject::printInfoLine(const int level, const DcmTag &tag,
     {
 	sprintf(output, "(%4.4x,%4.4x) %-5.5s %-38s #%6lu,%3lu",
 		tag.getGTag(), tag.getETag(), vr.getVRName(), info,
-		length, getVM());
+		(unsigned long)length, getVM());
 	cout << output << "  " << tag.getTagName() << endl;
     }
     else
@@ -265,7 +265,7 @@ void DcmObject::printInfoLine(const int level, const DcmTag &tag,
 	sprintf(output, "(%4.4x,%4.4x) %-5.5s ",
 		tag.getGTag(), tag.getETag(), vr.getVRName());
 	cout << output << info;
-	sprintf(output, " #%6lu,%3lu", length, getVM());
+	sprintf(output, " #%6lu,%3lu", (unsigned long)length, getVM());
 	cout << output << "  " << tag.getTagName() << endl;
     }
 }

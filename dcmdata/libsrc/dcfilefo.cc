@@ -9,10 +9,10 @@
 ** Purpose:
 ** Implementation of class DcmFileFormat
 **
-** Last Update:		$Author: hewett $
-** Update Date:		$Date: 1996-03-11 14:48:04 $
+** Last Update:		$Author: andreas $
+** Update Date:		$Date: 1996-04-12 13:17:22 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcfilefo.cc,v $
-** CVS/RCS Revision:	$Revision: 1.4 $
+** CVS/RCS Revision:	$Revision: 1.5 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -24,7 +24,7 @@
 
 #include <stdlib.h>
 #include <stdio.h>
-#include <memory.h>
+//#include <memory.h>
 #include <time.h>
 #include <iostream.h>
 
@@ -662,7 +662,10 @@ DcmDataset* DcmFileFormat::getDataset()
 /*
 ** CVS/RCS Log:
 ** $Log: dcfilefo.cc,v $
-** Revision 1.4  1996-03-11 14:48:04  hewett
+** Revision 1.5  1996-04-12 13:17:22  andreas
+** Minor changes to support DEC ALPHA and DEC MIPS
+**
+** Revision 1.4  1996/03/11 14:48:04  hewett
 ** When creating a DICOM file, if a SOP Class UID is present in the
 ** data set then it will be used.  Otherwise, a private UID will now be used
 ** in the meta header attribute MediaStorageSOPClass UID.  Previously this

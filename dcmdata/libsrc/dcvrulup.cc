@@ -9,10 +9,10 @@
 ** Purpose:
 ** Implementation of class DcmUnsignedLongOffset
 **
-** Last Update:		$Author: hewett $
-** Update Date:		$Date: 1996-03-11 13:09:44 $
+** Last Update:		$Author: andreas $
+** Update Date:		$Date: 1996-04-12 13:17:23 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcvrulup.cc,v $
-** CVS/RCS Revision:	$Revision: 1.5 $
+** CVS/RCS Revision:	$Revision: 1.6 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -93,32 +93,32 @@ DcmEVR DcmUnsignedLongOffset::ident() const
 
 void DcmUnsignedLongOffset::print(const int level)
 {
-	if (valueLoaded())
+    if (valueLoaded())
+    {
+	Uint32 * uintVals =  this -> get();
+
+	if (!uintVals)
+	    printInfoLine( level, "(no value available)" );
+	else
 	{
-		Uint32 * uintVals =  this -> get();
+	    char *ch_words;
+	    char *tmp = ch_words = new char[Length*14/sizeof(Uint32)+4];
 
-		if (!uintVals)
-			printInfoLine( level, "(no value available)" );
-		else
-		{
-			char *ch_words;
-			char *tmp = ch_words = new char[Length*14/sizeof(Uint32)+4];
-
-			for (unsigned long i=0; i<( Length/sizeof(Uint32) ); i++ )
-			{
-				sprintf( tmp, "$%lu\\", *uintVals );
-				tmp += strlen(tmp);
-				uintVals++;
-			}
-			if ( Length > 0 )
-				tmp--;
-			*tmp = '\0';
-			printInfoLine(level, ch_words);
-			delete ch_words;
-		}
+	    for (unsigned long i=0; i<( Length/sizeof(Uint32) ); i++ )
+	    {
+		sprintf( tmp, "$%lu\\", (unsigned long)(*uintVals));
+		tmp += strlen(tmp);
+		uintVals++;
+	    }
+	    if ( Length > 0 )
+		tmp--;
+	    *tmp = '\0';
+	    printInfoLine(level, ch_words);
+	    delete ch_words;
+	}
     }
     else
-		printInfoLine( level, "(not loaded)" );
+	printInfoLine( level, "(not loaded)" );
 }
 
 
@@ -174,7 +174,10 @@ E_Condition DcmUnsignedLongOffset::verify(const BOOL autocorrect)
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrulup.cc,v $
-** Revision 1.5  1996-03-11 13:09:44  hewett
+** Revision 1.6  1996-04-12 13:17:23  andreas
+** Minor changes to support DEC ALPHA and DEC MIPS
+**
+** Revision 1.5  1996/03/11 13:09:44  hewett
 ** Corrected ambiguous use of this->get(0).
 **
 ** Revision 1.4  1996/01/09 11:06:50  andreas

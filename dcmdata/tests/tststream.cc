@@ -10,9 +10,9 @@
 ** 
 ** 
 ** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1996-01-05 13:31:40 $
+** Update Date:		$Date: 1996-04-12 13:19:12 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/tests/Attic/tststream.cc,v $
-** CVS/RCS Revision:	$Revision: 1.3 $
+** CVS/RCS Revision:	$Revision: 1.4 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -213,9 +213,9 @@ void ReadTest(DcmStream * stream, FILE * inFile, BOOL putback)
 void WriteToFile(DcmBufferStream * stream, FILE * outFile)
 {
     void * bufptr;
-    unsigned long length;
+    Uint32 length;
     stream -> GetBuffer(bufptr, length);
-    fwrite(bufptr, 1, length, outFile);
+    fwrite(bufptr, 1, (size_t)length, outFile);
 }
 
 void WriteTest(DcmStream * stream, FILE * outFile)
@@ -490,7 +490,10 @@ int main(int argc, char * argv[])
 /*
 ** CVS/RCS Log:
 ** $Log: tststream.cc,v $
-** Revision 1.3  1996-01-05 13:31:40  andreas
+** Revision 1.4  1996-04-12 13:19:12  andreas
+** Minor changes to support DEC ALPHA and DEC MIPS
+**
+** Revision 1.3  1996/01/05 13:31:40  andreas
 ** - new streaming facilities and test routines for blocks and buffers
 ** - unique read/write methods for block and file transfer
 ** - more cleanups

@@ -9,9 +9,9 @@
 **
 **
 ** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1996-01-05 13:31:37 $
+** Update Date:		$Date: 1996-04-12 13:19:12 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/tests/Attic/tstblock.cc,v $
-** CVS/RCS Revision:	$Revision: 1.5 $
+** CVS/RCS Revision:	$Revision: 1.6 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -152,7 +152,7 @@ E_Condition writeObject( DcmDataset& dset,
     long packetlen = blockSize;
     E_Condition econd = EC_Normal;
     E_TransferSyntax oxfer = xfer;
-    unsigned long readlen;
+    Uint32 readlen;
     unsigned long byteswritten = 0;
 
     FILE* f = NULL;
@@ -203,7 +203,7 @@ E_Condition writeObject( DcmDataset& dset,
 	if (readlen)
 	{
 	    int writelen = fwrite(getBuf, sizeof(char), readlen, f);
-	    if (writelen != (long)readlen) {
+	    if (writelen != (int)readlen) {
 		perror("fwrite");
 		delete buffer;
 		return EC_InvalidStream;
@@ -388,7 +388,10 @@ int main(int argc, char *argv[])
 /*
 **
 ** $Log: tstblock.cc,v $
-** Revision 1.5  1996-01-05 13:31:37  andreas
+** Revision 1.6  1996-04-12 13:19:12  andreas
+** Minor changes to support DEC ALPHA and DEC MIPS
+**
+** Revision 1.5  1996/01/05 13:31:37  andreas
 ** - new streaming facilities and test routines for blocks and buffers
 ** - unique read/write methods for block and file transfer
 ** - more cleanups
