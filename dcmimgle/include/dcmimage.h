@@ -22,9 +22,9 @@
  *  Purpose: Provides main interface to the "DICOM image toolkit"
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-11-09 16:25:13 $
+ *  Update Date:      $Date: 2001-11-19 12:54:29 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/dcmimage.h,v $
- *  CVS/RCS Revision: $Revision: 1.36 $
+ *  CVS/RCS Revision: $Revision: 1.37 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -75,7 +75,8 @@ class DicomImage
      *
      ** @param  filename  the DICOM file
      *  @param  flags     configuration flags (see diutils.h, CIF_MayDetachPixelData is set automatically)
-     *  @param  fstart    first frame to be processed (optional, 0 = 1st frame)
+     *  @param  fstart    first frame to be processed (optional, 0 = 1st frame), all subsequent use
+     *                    of parameters labeled 'frame' in this class refers to this start frame.
      *  @param  fcount    number of frames (optional, 0 = all frames)
      */
     DicomImage(const char *filename,
@@ -87,8 +88,9 @@ class DicomImage
      *
      ** @param  stream  open DICOM file stream
      *  @param  flags   configuration flags (see diutils.h, CIF_MayDetachPixelData is set automatically)
-     *  @param  fstart  first frame to be processed (optional, 0 = 1st frame)
-     *  @param  fcount  number of frames (optional, 0 = 1st frame)
+     *  @param  fstart  first frame to be processed (optional, 0 = 1st frame), all subsequent use
+     *                  of parameters labeled 'frame' in this class refers to this start frame.
+     *  @param  fcount  number of frames (optional, 0 = all frames)
      */
     DicomImage(DcmFileStream &stream,
                const unsigned long flags = 0,
@@ -98,11 +100,13 @@ class DicomImage
 #ifndef STARVIEW
     /** constructor, use a given DcmObject
      *
-     ** @param  object  pointer to DICOM data structures (do not delete while referenced, not deleted within dcmimage)
+     ** @param  object  pointer to DICOM data structures
+     *                  (do not delete while referenced, not deleted within dcmimage)
      *  @param  xfer    transfer syntax
      *  @param  flags   configuration flags (see diutils.h)
-     *  @param  fstart  first frame to be processed (optional, 0 = 1st frame)
-     *  @param  fcount  number of frames (optional, 0 = 1st frame)
+     *  @param  fstart  first frame to be processed (optional, 0 = 1st frame), all subsequent use
+     *                  of parameters labeled 'frame' in this class refers to this start frame.
+     *  @param  fcount  number of frames (optional, 0 = all frames)
      */
     DicomImage(DcmObject *object,
                const E_TransferSyntax xfer,
@@ -112,13 +116,15 @@ class DicomImage
 
     /** constructor, use a given DcmObject with specified rescale/slope
      *
-     ** @param  object     pointer to DICOM data structures (do not delete while referenced, not deleted within dcmimage)
+     ** @param  object     pointer to DICOM data structures
+     *                     (do not delete while referenced, not deleted within dcmimage)
      *  @param  xfer       transfer syntax
      *  @param  slope      rescale slope (modality transformation)
      *  @param  intercept  rescale intercept (modality transformation)
      *  @param  flags      configuration flags (see diutils.h)
-     *  @param  fstart     first frame to be processed (optional, 0 = 1st frame)
-     *  @param  fcount     number of frames (optional, 0 = 1st frame)
+     *  @param  fstart     first frame to be processed (optional, 0 = 1st frame), all subsequent use
+     *                     of parameters labeled 'frame' in this class refers to this start frame.
+     *  @param  fcount     number of frames (optional, 0 = all frames)
      */
     DicomImage(DcmObject *object,
                const E_TransferSyntax xfer,
@@ -130,13 +136,15 @@ class DicomImage
 
     /** constructor, use a given DcmObject with specified modality LUT
      *
-     ** @param  object      pointer to DICOM data structures (do not delete while referenced, not deleted within dcmimage)
+     ** @param  object      pointer to DICOM data structures
+     *                      (do not delete while referenced, not deleted within dcmimage)
      *  @param  xfer        transfer syntax
      *  @param  data        dataset element containing modality LUT data
      *  @param  descriptor  dataset element containing modality LUT descriptor
      *  @param  flags       configuration flags (see diutils.h)
-     *  @param  fstart      first frame to be processed (optional, 0 = 1st frame)
-     *  @param  fcount      number of frames (optional, 0 = 1st frame)
+     *  @param  fstart      first frame to be processed (optional, 0 = 1st frame), all subsequent use
+     *                      of parameters labeled 'frame' in this class refers to this start frame.
+     *  @param  fcount      number of frames (optional, 0 = all frames)
      */
     DicomImage(DcmObject *object,
                E_TransferSyntax xfer,
@@ -171,7 +179,7 @@ class DicomImage
      */
     static const char *getString(const EP_Interpretation interpret);
 
-    /** get status information
+    /** get current status information
      *
      ** @return status code
      */
@@ -181,7 +189,10 @@ class DicomImage
             Image->getStatus() : ImageStatus;
     }
 
-    /** get number of frames
+    /** get number of frames.
+     *  Please note that this function does not return the number of frames stored in the
+     *  DICOM file/dataset. It rather refers to the number of frames processed by this class
+     *  (see constructors for details).
      *
      ** @return number of frames
      */
@@ -191,7 +202,9 @@ class DicomImage
             Image->getNumberOfFrames() : 0;
     }
 
-    /** get index of first frame
+    /** get index of first frame.
+     *  This functions returns the index of the first frame processed by this class (see
+     *  constructors for details).
      *
      ** @return index of first frame (0..n-1)
      */
@@ -202,7 +215,7 @@ class DicomImage
     }
 
     /** get index of representative frame.
-     *  This attribute is optionally stored in the dataset (type 3).
+     *  This attribute is optionally stored in the DICOM dataset (type 3).
      *
      ** @return index of representative frame (0..n-1)
      */
@@ -244,7 +257,9 @@ class DicomImage
 
     /** get minimum and maximum pixel values.
      *  the resulting pixel values are stored in 'double' variables to avoid problems
-     *  with different number ranges, limited to monochrome images
+     *  with different number ranges, limited to monochrome images.
+     *  Please note that the min/max values refer to the full pixel data (i.e. including
+     *  all possible present frames as specified in the constructor of this class).
      *
      ** @param  min   minimum pixel value (reference parameter)
      *  @param  max   maximum pixel value (reference parameter)
@@ -505,6 +520,8 @@ class DicomImage
 
     /** set automatically calculated minimum/maximum window.
      *  possibly active VOI LUT is implicitly disabled.
+     *  Please note that the min/max values refer to the full pixel data (i.e. including
+     *  all possible present frames as specified in the constructor of this class).
      *
      ** @param  idx  ignore global min/max values if true (1)
      *
@@ -542,6 +559,7 @@ class DicomImage
      *  @param  top     y-coordinate of the top left-hand corner of the ROI (starting from 0)
      *  @param  width   width in pixels of the rectangular ROI (minimum: 1)
      *  @param  height  height in pixels of the rectangular ROI (minimum: 1)
+     *  @param  frame   index of the frame to be used for calculation (default: 0 = first)
      *
      ** @return true if sucessful (1 = window has changed,
      *                             2 = new window is the same as previous one),
@@ -550,10 +568,11 @@ class DicomImage
     inline int setRoiWindow(const unsigned long left,
                             const unsigned long top,
                             const unsigned long width,
-                            const unsigned long height)
+                            const unsigned long height,
+                            const unsigned long frame = 0)
     {
         return ((Image != NULL) && (Image->getMonoImagePtr() != NULL)) ?
-            Image->getMonoImagePtr()->setRoiWindow(left, top, width, height) : 0;
+            Image->getMonoImagePtr()->setRoiWindow(left, top, width, height, frame) : 0;
     }
 
     /** set specified window (given by index to window width/center sequence stored in image file).
@@ -1070,7 +1089,7 @@ class DicomImage
      *  @param  left    returns x coordinate of plane's origin
      *  @param  top     returns y coordinate of plane's origin
      *  @param  mode    returns display mode (see 'diutils.h')
-     *  @param  frame   index of frame used for output, default: 0
+     *  @param  frame   index of frame used for output (default: 0 = first)
      *  @param  bits    number of bits (stored) in the resulting array, default: 8, range: 1..16
      *                  Used to mask the values for foreground and background color.  The resulting
      *                  array is always padded to 8 or 16 bits with 1, 8 or 16 bits allocated
@@ -1108,7 +1127,7 @@ class DicomImage
      ** @param  plane   number (0..15) or group number (0x60nn) of overlay plane
      *  @param  width   returns width of overlay plane (in pixels)
      *  @param  height  returns height of overlay plane (in pixels)
-     *  @param  frame   index of frame used for output, default: 0
+     *  @param  frame   index of frame used for output (default: 0 = first)
      *  @param  bits    number of bits (stored) in the resulting array, default: 8, range: 1..16
      *                  Used to mask the values for foreground and background color.  The resulting
      *                  array is always padded to 8 or 16 bits with 1, 8 or 16 bits allocated
@@ -1615,7 +1634,10 @@ class DicomImage
  *
  * CVS/RCS Log:
  * $Log: dcmimage.h,v $
- * Revision 1.36  2001-11-09 16:25:13  joergr
+ * Revision 1.37  2001-11-19 12:54:29  joergr
+ * Added parameter 'frame' to setRoiWindow().
+ *
+ * Revision 1.36  2001/11/09 16:25:13  joergr
  * Added support for Window BMP file format.
  * Enhanced and renamed createTrueColorDIB() method.
  *

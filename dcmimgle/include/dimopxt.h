@@ -22,9 +22,9 @@
  *  Purpose: DicomMonochromePixelTemplate (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-09-28 13:09:30 $
+ *  Update Date:      $Date: 2001-11-19 12:56:27 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/dimopxt.h,v $
- *  CVS/RCS Revision: $Revision: 1.17 $
+ *  CVS/RCS Revision: $Revision: 1.18 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -195,6 +195,7 @@ class DiMonoPixelTemplate
      *  @param  height     height in pixels of the rectangular ROI (minimum: 1)
      *  @param  columns    number of columns (width) of the associated image
      *  @param  rows       number of rows (height) of the associated image
+     *  @param  frame      index of the frame to be used for the calculation
      *  @param  voiCenter  reference to storage area for window center value
      *  @param  voiWidth   reference to storage area for window width value
      *
@@ -206,13 +207,14 @@ class DiMonoPixelTemplate
                              const unsigned long height,
                              const unsigned long columns,
                              const unsigned long rows,
+                             const unsigned long frame,
                              double &voiCenter,
                              double &voiWidth)
     {
         int result = 0;
         if ((Data != NULL) && (left < columns) && (top < rows))
         {
-            register T *p = Data + (top * columns) + left;
+            register T *p = Data + (columns * rows * frame) + (top * columns) + left;
             const unsigned long right = (left + width < columns) ? left + width : columns;
             const unsigned long bottom = (top + height < rows) ? top + height : rows;
             const unsigned long skip_x = left + (columns - right);
@@ -426,7 +428,10 @@ class DiMonoPixelTemplate
  *
  * CVS/RCS Log:
  * $Log: dimopxt.h,v $
- * Revision 1.17  2001-09-28 13:09:30  joergr
+ * Revision 1.18  2001-11-19 12:56:27  joergr
+ * Added parameter 'frame' to setRoiWindow().
+ *
+ * Revision 1.17  2001/09/28 13:09:30  joergr
  * Added method setRoiWindow() which automatically calculates a min-max VOI
  * window for a specified rectangular region of the image.
  * Made min-max window calculation consistent with latest release of the DICOM

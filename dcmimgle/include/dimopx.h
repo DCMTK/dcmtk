@@ -22,9 +22,9 @@
  *  Purpose: DicomMonochromePixel (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-09-28 13:07:43 $
+ *  Update Date:      $Date: 2001-11-19 12:56:15 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/dimopx.h,v $
- *  CVS/RCS Revision: $Revision: 1.13 $
+ *  CVS/RCS Revision: $Revision: 1.14 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -128,6 +128,7 @@ class DiMonoPixel
      *  @param  height     height in pixels of the rectangular ROI (minimum: 1)
      *  @param  columns    number of columns (width) of the associated image
      *  @param  rows       number of rows (height) of the associated image
+     *  @param  frame      index of the frame to be used for the calculation
      *  @param  voiCenter  reference to storage area for window center value
      *  @param  voiWidth   reference to storage area for window width value
      *
@@ -139,6 +140,7 @@ class DiMonoPixel
                              const unsigned long height,
                              const unsigned long columns,
                              const unsigned long rows,
+                             const unsigned long frame,
                              double &voiCenter,
                              double &voiWidth) = 0;
 
@@ -251,7 +253,10 @@ class DiMonoPixel
  *
  * CVS/RCS Log:
  * $Log: dimopx.h,v $
- * Revision 1.13  2001-09-28 13:07:43  joergr
+ * Revision 1.14  2001-11-19 12:56:15  joergr
+ * Added parameter 'frame' to setRoiWindow().
+ *
+ * Revision 1.13  2001/09/28 13:07:43  joergr
  * Added method setRoiWindow() which automatically calculates a min-max VOI
  * window for a specified rectangular region of the image.
  *

@@ -22,9 +22,9 @@
  *  Purpose: DicomMonochromeImage (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-11-09 16:29:37 $
+ *  Update Date:      $Date: 2001-11-19 12:57:42 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/libsrc/dimoimg.cc,v $
- *  CVS/RCS Revision: $Revision: 1.43 $
+ *  CVS/RCS Revision: $Revision: 1.44 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1045,13 +1045,14 @@ int DiMonoImage::setMinMaxWindow(const int idx)
 int DiMonoImage::setRoiWindow(const unsigned long left,
                               const unsigned long top,
                               const unsigned long width,
-                              const unsigned long height)
+                              const unsigned long height,
+                              const unsigned long frame)
 {
-    if (InterData != NULL)
+    if ((InterData != NULL) && (frame < NumberOfFrames))
     {
         double voiCenter;
         double voiWidth;
-        if (InterData->getRoiWindow(left, top, width, height, Columns, Rows, voiCenter, voiWidth))
+        if (InterData->getRoiWindow(left, top, width, height, Columns, Rows, frame, voiCenter, voiWidth))
             return setWindow(voiCenter, voiWidth, "ROI Window");
     }
     return 0;
@@ -1976,7 +1977,10 @@ int DiMonoImage::writeBMP(FILE *stream,
  *
  * CVS/RCS Log:
  * $Log: dimoimg.cc,v $
- * Revision 1.43  2001-11-09 16:29:37  joergr
+ * Revision 1.44  2001-11-19 12:57:42  joergr
+ * Added parameter 'frame' to setRoiWindow().
+ *
+ * Revision 1.43  2001/11/09 16:29:37  joergr
  * Added support for Windows BMP file format.
  * Enhanced and renamed createTrueColorDIB() method.
  *

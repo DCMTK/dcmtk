@@ -22,9 +22,9 @@
  *  Purpose: DicomMonochromeImage (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-11-09 16:27:34 $
+ *  Update Date:      $Date: 2001-11-19 12:55:54 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/dimoimg.h,v $
- *  CVS/RCS Revision: $Revision: 1.31 $
+ *  CVS/RCS Revision: $Revision: 1.32 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -209,6 +209,7 @@ class DiMonoImage
      *  @param  top     y-coordinate of the top left-hand corner of the ROI (starting from 0)
      *  @param  width   width in pixels of the rectangular ROI (minimum: 1)
      *  @param  height  height in pixels of the rectangular ROI (minimum: 1)
+     *  @param  frame   index of the frame to be used for the calculation
      *
      ** @return true if sucessful (1 = window has changed,
      *                             2 = new window is the same as previous one),
@@ -217,7 +218,8 @@ class DiMonoImage
     int setRoiWindow(const unsigned long left,
                      const unsigned long top,
                      const unsigned long width,
-                     const unsigned long height);
+                     const unsigned long height,
+                     const unsigned long frame);
 
     /** set automatically calculated histogram window.
      *  possibly active VOI LUT is implicitly disabled.
@@ -1094,7 +1096,10 @@ class DiMonoImage
  *
  * CVS/RCS Log:
  * $Log: dimoimg.h,v $
- * Revision 1.31  2001-11-09 16:27:34  joergr
+ * Revision 1.32  2001-11-19 12:55:54  joergr
+ * Added parameter 'frame' to setRoiWindow().
+ *
+ * Revision 1.31  2001/11/09 16:27:34  joergr
  * Added support for Window BMP file format.
  * Enhanced and renamed createTrueColorDIB() method.
  *
