@@ -1,6 +1,38 @@
 DCMTK FAQ - Frequently Asked Questions
 
 ----
+1997.09.16
+
+Q: The INSTALL file says that DCMTK can be compiled using the Cygnus 
+   GNU-Win32 development environment for Windows95/NT.  However, Step 2 
+   of the install instructions does not work because the configure script 
+   fails completely (it reports "permission denied" problems and generates
+   strange files in all the sub-directories).
+
+A: You need to make sure that your PATH environment variable is set up
+   so that the GNU-Win32 tools directory will be searched before the 
+   standard windows locations (e.g. \WINNT\..) when when executing a 
+   program.  The main problem is that the DCMTK configure scripts use
+   the Unix-like "find" program whereas Windows has its own, incompatible,
+   "find" program.  Unless you arrange otherwise, the wrong "find" program
+   will be used.
+
+----
+1997.09.16
+
+Q: I've compiled DCMTK using the Cygnus GNU-Win32 development environment
+   for Windows95/NT but some of the programs behave strangely.
+
+A: At the time of writing the Cygnus GNU-Win32 development environment is
+   beta code and may not correctly emulate all Unix features.  In particular,
+   we know that the imagectn application does not currently work because
+   of problems with file locking.  We have not done any extensive testing in
+   this environment but thought that it might be very useful to easily and
+   cheaply use the storescu and storescp program on Windows95/NT.
+   If this version is interesting for you or if you find any other problems 
+   please let us know.  
+
+----
 1997.09.12
 
 Q: All of the programs print the message 
