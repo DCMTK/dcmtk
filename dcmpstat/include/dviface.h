@@ -23,8 +23,8 @@
  *    classes: DVInterface
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-04-29 15:25:37 $
- *  CVS/RCS Revision: $Revision: 1.35 $
+ *  Update Date:      $Date: 1999-05-05 14:25:26 $
+ *  CVS/RCS Revision: $Revision: 1.36 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -109,9 +109,10 @@ class DVInterface
      *  @param studyUID study instance UID of the presentation state
      *  @param seriesUID series instance UID of the presentation state
      *  @param instanceUID SOP instance UID of the presentation state
+     *  @param changeStatus if true the pstate and image file is marked 'reviewed' (not new)
      *  @return EC_Normal upon success, an error code otherwise.
      */
-    E_Condition loadPState(const char *studyUID, const char *seriesUID, const char *instanceUID);
+    E_Condition loadPState(const char *studyUID, const char *seriesUID, const char *instanceUID, OFBool changeStatus = OFFalse);
 
     /** loads a presentation state and an image (which need not be contained in the database)
      *  and attaches the image to the presentation state (if specified, otherwise the current
@@ -1164,7 +1165,11 @@ private:
 /*
  *  CVS/RCS Log:
  *  $Log: dviface.h,v $
- *  Revision 1.35  1999-04-29 15:25:37  joergr
+ *  Revision 1.36  1999-05-05 14:25:26  joergr
+ *  Added optional parameter to method loadPState (from database) to change
+ *  instance reviewed flag for pstate and image.
+ *
+ *  Revision 1.35  1999/04/29 15:25:37  joergr
  *  Added PresentationLabel to index file.
  *
  *  Revision 1.34  1999/04/27 11:23:16  joergr
