@@ -22,9 +22,9 @@
  *  Purpose: DicomFlipTemplate (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-01-20 14:59:05 $
+ *  Update Date:      $Date: 1999-02-03 17:01:16 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/diflipt.h,v $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -202,9 +202,6 @@ class DiFlipTemplate
         register T *q;
         register T t;
         T *r;
-#ifdef DEBUG
- OFTimer timer;
-#endif
         for (int j = 0; j < Planes; j++)
         {
             r = data[j];
@@ -224,9 +221,6 @@ class DiFlipTemplate
                 }
             }
         }
-#ifdef DEBUG
- cerr << "time for flipHorz: " << timer.getDiff() << " s" << endl; 
-#endif
     }
 
     inline void flipVert(T *data[])
@@ -296,7 +290,10 @@ class DiFlipTemplate
  *
  * CVS/RCS Log:
  * $Log: diflipt.h,v $
- * Revision 1.3  1999-01-20 14:59:05  joergr
+ * Revision 1.4  1999-02-03 17:01:16  joergr
+ * Removed some debug code.
+ *
+ * Revision 1.3  1999/01/20 14:59:05  joergr
  * Added debug code to measure time of some routines.
  *
  * Revision 1.2  1998/12/16 16:27:54  joergr
