@@ -23,8 +23,8 @@
  *    classes: DSRTypes
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-10-26 14:22:09 $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  Update Date:      $Date: 2000-11-01 16:18:34 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -95,27 +95,53 @@ class DSRTypes
 
     ///internal: content item is rendered fully inside the annex
     static const size_t HF_currentlyInsideAnnex;
-    
+
     /// internal: create footnote references
     static const size_t HF_createFootnoteReferences;
 
     /// external: never expand child nodes inline
-    static const size_t HF_neverExpandChildsInline;
+    static const size_t HF_neverExpandChildrenInline;
 
-    /// external: render concept name codes (otherwise only the code meaning)
+    /// external: render codes even if they appear inline
+    static const size_t HF_renderInlineCodes;
+
+    /// external: render concept name codes (default: code meaning only)
     static const size_t HF_renderConceptNameCodes;
+
+    /// external: render the code of the numeric measurement unit
+    static const size_t HF_renderNumericUnitCodes;
+
+    /// external: use patient information as document title (default: document type)
+    static const size_t HF_renderPatientTitle;
+
+    /// external: render no general document information (header)
+    static const size_t HF_renderNoDocumentHeader;
 
     /// external: render dcmtk/dcmsr comment at the end of the document
     static const size_t HF_renderDcmtkFootnote;
-    
-    /// shortcut: render the full data of all content items
+
+    /// external: render the full data of all content items
     static const size_t HF_renderFullData;
+
+    /// external: copy Cascading Style Sheet (CSS) content to HTML file
+    static const size_t HF_copyStyleSheetContent;
 
     /// shortcut: render all codes
     static const size_t HF_renderAllCodes;
 
     /// shortcut: filter all flags that are only used internally
     static const size_t HF_internalUseOnly;
+    //@}
+
+
+    /** @name writeXML() flags.
+     *  These flags can be combined and passed to the writeXML() methods.
+     *  The 'shortcut' flags can be used for common cobinations.
+     */
+    //@{
+
+    /// write all tags even if their value is empty
+    static const size_t XF_writeEmptyTags;
     //@}
 
 
@@ -320,6 +346,42 @@ class DSRTypes
         VF_last = VF_Verified
     };
 
+    /** Specific character set
+     */
+    enum E_CharacterSet
+    {
+        /// internal type used to indicate an error
+        CS_invalid,
+        /// internal type used to indicate an unknown value type (defined term)
+        CS_unknown = CS_invalid,
+        /// ISO 646 (ISO-IR 6): ASCII
+        CS_ASCII,
+        /// ISO-IR 100: Latin alphabet No. 1
+        CS_Latin1,
+        /// ISO-IR 101: Latin alphabet No. 2
+        CS_Latin2,
+        /// ISO-IR 109: Latin alphabet No. 3
+        CS_Latin3,
+        /// ISO-IR 110: Latin alphabet No. 4
+        CS_Latin4,
+        /// ISO-IR 148: Latin alphabet No. 5
+        CS_Latin5,
+        /// ISO-IR 144: Cyrillic
+        CS_Cyrillic,
+        /// ISO-IR 127: Arabic
+        CS_Arabic,
+        /// ISO-IR 126: Greek
+        CS_Greek,
+        /// ISO-IR 138: Hebrew
+        CS_Hebrew,
+        /// ISO-IR 166: Thai
+        CS_Thai,
+        /// ISO-IR 13: Japanese (Katakana/Romaji)
+        CS_Japanese,
+        /// internal type used to mark the last entry
+        CS_last = CS_Japanese
+    };
+
     /** Add node mode
      */
     enum E_AddMode
@@ -418,6 +480,26 @@ class DSRTypes
      */
     static const char *verificationFlagToEnumeratedValue(const E_VerificationFlag verificationFlag);
 
+    /** convert character set to DICOM defined term
+     ** @param  characterSet  character set to be converted
+     ** @return defined term if successful, empty string otherwise (never NULL)
+     */
+    static const char *characterSetToDefinedTerm(const E_CharacterSet characterSet);
+
+    /** convert character set to HTML name.
+     *  This HTML (IANA) name is used to specify the character set in an HTML document.
+     ** @param  characterSet  character set to be converted
+     ** @return HTML name if successful, empty string otherwise (never NULL)
+     */
+    static const char *characterSetToHTMLName(const E_CharacterSet characterSet);
+
+    /** convert character set to XML name.
+     *  This XML name is used to specify the character set in an XML document.
+     ** @param  characterSet  character set to be converted
+     ** @return XML name if successful, empty string otherwise (never NULL)
+     */
+    static const char *characterSetToXMLName(const E_CharacterSet characterSet);
+
     /** convert SOP class UID to SR document type
      ** @param  sopClassUID  SOP class UID to be converted
      ** @return SR document type if successful, DT_invalid otherwise
@@ -426,13 +508,13 @@ class DSRTypes
 
     /** convert DICOM defined term to relationship type
      ** @param  definedTerm  defined term to be converted
-     ** @return relationship type if successful, RT_invalid otherwise
+     ** @return relationship type if successful, RT_invalid/unknown otherwise
      */
     static E_RelationshipType definedTermToRelationshipType(const OFString &definedTerm);
 
     /** convert DICOM defined term to value type
      ** @param  definedTerm  defined term to be converted
-     ** @return value type if successful, VT_invalid otherwise
+     ** @return value type if successful, VT_invalid/unknown otherwise
      */
     static E_ValueType definedTermToValueType(const OFString &definedTerm);
 
@@ -465,6 +547,12 @@ class DSRTypes
      ** @return verification flag type if successful, VF_invalid otherwise
      */
     static E_VerificationFlag enumeratedValueToVerificationFlag(const OFString &enumeratedValue);
+
+    /** convert DICOM defined term to character set
+     ** @param  definedTerm  defined term to be converted
+     ** @return character set if successful, CS_invalid/unknown otherwise
+     */
+    static E_CharacterSet definedTermToCharacterSet(const OFString &definedTerm);
 
 
   // --- misc helper functions ---
@@ -511,12 +599,36 @@ class DSRTypes
      */
     static size_t stringToNumber(const char *string);
 
+    /** convert character string to print string.
+     *  This method is used to convert character strings for text "print" output.  Newline characters
+     *  '\n' are replaced by "\\n", return characters '\r' by "\\r", etc.
+     ** @param  sourceString  source string to be converted
+     *  @param  printString   reference to character string where the result should be stored
+     ** @return reference to resulting 'printString' (might be empty if 'sourceString' was empty)
+     */
+    static const OFString &convertToPrintString(const OFString &sourceString,
+                                                OFString &printString);
+
+    /** convert character string to HTML/XML mnenonic string.
+     *  Characters with special meaning for HTML/XML (e.g. '<' and '&') are replace by the
+     *  corresponding mnenonics (e.g. "&lt;" and "&amp;").
+     ** @param  sourceString    source string to be converted
+     *  @param  markupString    reference to character string where the result should be stored
+     *  @param  newlineAllowed  optional flag indicating whether newlines are allowed or not.
+     *                          If they are allowed the text "<br>" is used, "&para;" otherwise.
+     *                          The following combinations are accepted: LF, CR, LF CR, CF LF.
+     ** @return reference to resulting 'markupString' (might be empty if 'sourceString' was empty)
+     */
+    static const OFString &convertToMarkupString(const OFString &sourceString,
+                                                 OFString &markupString,
+                                                 const OFBool newlineAllowed = OFFalse);
+
     /** check string for valid UID format.
      *  The string should be non-empty and consist only of interger numbers separated by "." where
      *  the first and the last character of the string are always figures (0..9). Example: 1 or 1.2.3.
      *  Please note that this test is not as strict as specified for value representation UI in the
      *  DICOM standard (e.g. regarding even length padding or leading '0' for the numbers).
-     ** @param  string  character string to be checked 
+     ** @param  string  character string to be checked
      ** @result OFTrue if 'string' conforms to UID format, OFFalse otherwise
      */
     static OFBool checkForValidUIDFormat(const OFString &string);
@@ -580,6 +692,22 @@ class DSRTypes
      */
     static const OFString &getStringValueFromElement(const DcmElement &delem,
                                                      OFString &stringValue);
+
+    /** get string value from element and convert to "print" format
+     ** @param  delem        reference to DICOM element from which the string value should be retrieved
+     *  @param  stringValue  reference to character string where the result should be stored
+     ** @return reference character string if successful, empty string otherwise
+     */
+    static const OFString &getPrintStringFromElement(const DcmElement &delem,
+                                                     OFString &stringValue);
+
+    /** get string value from element and convert to HTML/XML
+     ** @param  delem        reference to DICOM element from which the string value should be retrieved
+     *  @param  stringValue  reference to character string where the result should be stored
+     ** @return reference character string if successful, empty string otherwise
+     */
+    static const OFString &getMarkupStringFromElement(const DcmElement &delem,
+                                                      OFString &stringValue);
 
     /** get string value from dataset
      ** @param  dataset      reference to DICOM dataset from which the string should be retrieved.
@@ -704,6 +832,32 @@ class DSRTypes
                                              const E_Condition result,
                                              const DSRDocumentTreeNode *node);
 
+    /** write string value to XML output stream.
+     *  The output looks like this: "<" tagName ">" stringValue "</" tagName ">"
+     ** @param  stream           output stream to which the XML document is written
+     *  @param  stringValue      string value to be written
+     *  @param  tagName          name of the XML tag used to surround the string value
+     *  @param  writeEmptyValue  optional flag indicating whether an empty value should be written
+     ** @return OFTrue if tag/value has been written, OFFalse otherwise
+     */
+    static OFBool writeStringValueToXML(ostream &stream,
+                                        const OFString &stringValue,
+                                        const OFString &tagName,
+                                        const OFBool writeEmptyValue = OFFalse);
+
+    /** write string value from DICOM element to XML output stream.
+     *  The output looks like this: "<" tagName ">" stringValue "</" tagName ">"
+     ** @param  stream           output stream to which the XML document is written
+     *  @param  delem            reference to DICOM element from which the value is retrieved
+     *  @param  tagName          name of the XML tag used to surround the string value
+     *  @param  writeEmptyValue  optional flag indicating whether an empty value should be written
+     ** @return OFTrue if tag/value has been written, OFFalse otherwise
+     */
+    static OFBool writeStringFromElementToXML(ostream &stream,
+                                              DcmElement &delem,
+                                              const OFString &tagName,
+                                              const OFBool writeEmptyValue = OFFalse);
+
     /** create an HTML annex entry with hyperlinks.
      *  A reference text is added to the main document and a new annex entry to the document annex
      *  with HTML hyperlinks between both.  Example for a reference: '[for details see Annex 1]'
@@ -752,7 +906,13 @@ class DSRTypes
 /*
  *  CVS/RCS Log:
  *  $Log: dsrtypes.h,v $
- *  Revision 1.5  2000-10-26 14:22:09  joergr
+ *  Revision 1.6  2000-11-01 16:18:34  joergr
+ *  Added support for conversion to XML.
+ *  Added support for Cascading Style Sheet (CSS) used optionally for HTML
+ *  rendering.
+ *  Enhanced support for specific character sets.
+ *
+ *  Revision 1.5  2000/10/26 14:22:09  joergr
  *  Added support for "Comprehensive SR".
  *  Added support for TCOORD content item.
  *  Added new flag specifying whether to add a "dcmtk" footnote to the rendered
