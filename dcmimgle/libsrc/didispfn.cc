@@ -21,10 +21,10 @@
  *
  *  Purpose: DicomDisplayFunction (Source)
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-02-09 14:22:31 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 1999-02-11 16:50:34 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/libsrc/didispfn.cc,v $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -36,14 +36,17 @@
 #include "ofbmanip.h"
 
 #include "didispfn.h"
-#include "displine.h"
+#include "displint.h"
 
 #include <fstream.h>
 
-//BEGIN_EXTERN_C
+BEGIN_EXTERN_C
 #ifdef HAVE_CTYPE_H
  #include <ctype.h>
 #endif
+END_EXTERN_C
+
+//BEGIN_EXTERN_C
  #include <math.h>
 //END_EXTERN_C
 
@@ -65,7 +68,6 @@ DiDisplayFunction::DiDisplayFunction(const char *filename)
   : Valid(0),
     ValueCount(0),
     MaxDDLValue(0),
-    MaxOutValue(0),
     JNDMin(0),
     JNDMax(0),
     DDLValue(NULL),
@@ -74,23 +76,20 @@ DiDisplayFunction::DiDisplayFunction(const char *filename)
     GSDFSpline(NULL)
 {
     OFBitmanipTemplate<DiBartenLUT *>::zeroMem(BartenLUT, MAX_NUMBER_OF_TABLES);
-    if (readConfigFile(filename) && createSortedTable(DDLValue, LumValue) && interpolateValues())
+    if (readConfigFile(filename))
     {
-        if (MaxOutValue == 0)
-            MaxOutValue = MaxDDLValue;
-        Valid = calculateGSDF() && calculateGSDFSpline() && calculateJNDBoundaries();
+        if (createSortedTable(DDLValue, LumValue) && interpolateValues())
+            Valid = calculateGSDF() && calculateGSDFSpline() && calculateJNDBoundaries();
     }
 }
 
 
 DiDisplayFunction::DiDisplayFunction(const double *lum_tab,             // UNTESTED !!
                                      const Uint16 count,
-                                     const Uint16 max,
-                                     const Uint16 out)
+                                     const Uint16 max)
   : Valid(0),
     ValueCount(count),
     MaxDDLValue(max),
-    MaxOutValue((out == 0) ? max : out),
     JNDMin(0),
     JNDMax(0),
     DDLValue(NULL),
@@ -120,12 +119,10 @@ DiDisplayFunction::DiDisplayFunction(const double *lum_tab,             // UNTES
 DiDisplayFunction::DiDisplayFunction(const Uint16 *ddl_tab,             // UNTESTED !!
                                      const double *lum_tab,
                                      const Uint16 count,
-                                     const Uint16 max,
-                                     const Uint16 out)
+                                     const Uint16 max)
   : Valid(0),
     ValueCount(count),
     MaxDDLValue(max),
-    MaxOutValue((out == 0) ? max : out),
     JNDMin(0),
     JNDMax(0),
     DDLValue(NULL),
@@ -150,6 +147,7 @@ DiDisplayFunction::~DiDisplayFunction()
     delete[] DDLValue;
     delete[] LumValue;
     delete[] GSDFValue;
+    delete[] GSDFSpline;
     register unsigned int i;
     for (i = 0; i < MAX_NUMBER_OF_TABLES; i++)
         delete BartenLUT[i];
@@ -175,7 +173,7 @@ const DiBartenLUT *DiDisplayFunction::getBartenLUT(const int bits,
         if (BartenLUT[idx] == NULL)                             // first calculation of this LUT
         {
 			if (count <= MAX_TABLE_ENTRY_COUNT)
-				BartenLUT[idx] = new DiBartenLUT(count, DDLValue, LumValue, ValueCount, GSDFValue, GSDFSpline, GSDFCount, JNDMin, JNDMax);
+				BartenLUT[idx] = new DiBartenLUT(count, MaxDDLValue, DDLValue, LumValue, ValueCount, GSDFValue, GSDFSpline, GSDFCount, JNDMin, JNDMax);
         }
         return BartenLUT[idx];
     }
@@ -217,13 +215,13 @@ int DiDisplayFunction::readConfigFile(const char *filename)
 {
     if ((filename != NULL) && (strlen(filename) > 0))
     {
-        ifstream file(filename);
+        ifstream file(filename, ios::in|ios::nocreate);
         if (file)
         {
             char c;
             while (file.get(c))
             {
-                if (c == '#')
+                if (c == '#')                                               // comment character
                 {
                     while (file.get(c) && (c != '\n') && (c != '\r'));      // skip comments
                 } 
@@ -233,8 +231,8 @@ int DiDisplayFunction::readConfigFile(const char *filename)
                     if (MaxDDLValue == 0)                                   // read maxvalue
                     {
                         char str[4];
-                        file >> str;
-                        if (strcmp(str, "max") == 0)
+                        file.get(str, sizeof(str));
+                        if (strcmp(str, "max") == 0)                        // check for key word: max
                         {
                             file >> MaxDDLValue;
                             if (MaxDDLValue > 0)
@@ -253,23 +251,7 @@ int DiDisplayFunction::readConfigFile(const char *filename)
                                 cerr << "ERROR: missing keyword 'max' for maximum DDL value in DISPLAY file !" << endl;
                             return 0;                                       // abort
                         }
-                    }
-/*
-                    else if ((MaxOutValue == 0) && (c == 'o'))              // read outvalue: optional
-                    {
-                        char str[4];
-                        file >> str;
-                        if (strcmp(str, "out") == 0)
-                            file >> MaxOutValue;
-                        else
-                        {
-                            if (DicomImageClass::DebugLevel >= DicomImageClass::DL_Errors)
-                                cerr << "ERROR: error while parsing 'out' entry in DISPLAY file !" << endl;
-                            return 0;                                       // abort
-                        }
-                    }
-*/
-                    else {
+                    } else {
                         if (ValueCount <= MaxDDLValue)
                         {
                             file >> DDLValue[ValueCount];                   // read DDL value
@@ -296,12 +278,17 @@ int DiDisplayFunction::readConfigFile(const char *filename)
                     }
                 }
             }
-            return ((MaxDDLValue > 0) && (ValueCount > 0) && (DDLValue != NULL) && (LumValue != NULL));
+            if ((MaxDDLValue > 0) && (ValueCount > 0))
+                return ((DDLValue != NULL) && (LumValue != NULL));
+            else {
+                if (DicomImageClass::DebugLevel >= DicomImageClass::DL_Warnings)
+                    cerr << "WARNING: invalid DISPLAY file ... ignoring !" << endl;
+            }
         } else {
             if (DicomImageClass::DebugLevel >= DicomImageClass::DL_Warnings)
                 cerr << "WARNING: can't open DISPLAY file ... ignoring !" << endl;
         }
-    }    
+    }
     return 0;
 }
 
@@ -356,11 +343,11 @@ int DiDisplayFunction::createSortedTable(const Uint16 *ddl_tab,
 
 int DiDisplayFunction::interpolateValues()
 {
-    if (ValueCount <= MaxDDLValue)                                      // interpolation not necessary
+    if (ValueCount <= MaxDDLValue)                                        // interpolation necessary ?
     {
         int status = 0;
         double *spline = new double[ValueCount];
-        if ((spline != NULL) && (CubicSplineFunction(DDLValue, LumValue, ValueCount, spline, 1.0e30, 1.0e30)))
+        if ((spline != NULL) && (CubicSpline<Uint16, double>::Function(DDLValue, LumValue, ValueCount, spline)))
         {
             const Uint16 count = ValueCount;
             Uint16 *old_ddl = DDLValue;
@@ -371,9 +358,9 @@ int DiDisplayFunction::interpolateValues()
             if ((DDLValue != NULL) && (LumValue != NULL))
             {
                 register Uint16 i;
-                for (i = 0; i < ValueCount; i++)                        // set all DDL values, from 0 to max
+                for (i = 0; i < ValueCount; i++)                          // set all DDL values, from 0 to max
                     DDLValue[i] = i;
-                status = CubicSplineInterpolation(old_ddl, old_lum, spline, count, DDLValue, LumValue, ValueCount);
+                status = CubicSpline<Uint16, double>::Interpolation(old_ddl, old_lum, spline, count, DDLValue, LumValue, ValueCount);
             }
             delete[] old_ddl;
             delete[] old_lum;
@@ -437,7 +424,7 @@ int DiDisplayFunction::calculateGSDFSpline()
             register unsigned int *p = jidx;
             for (i = 1; i <= GSDFCount; i++)
                 *(p++) = i;
-            status = CubicSplineFunction(jidx, GSDFValue, GSDFCount, GSDFSpline, 1.0e30, 1.0e30);
+            status = CubicSpline<unsigned int, double>::Function(jidx, GSDFValue, GSDFCount, GSDFSpline);
         }
         delete[] jidx;
     }
@@ -490,7 +477,14 @@ double DiDisplayFunction::getJNDIndex(const double lum) const
  *
  * CVS/RCS Log:
  * $Log: didispfn.cc,v $
- * Revision 1.3  1999-02-09 14:22:31  meichel
+ * Revision 1.4  1999-02-11 16:50:34  joergr
+ * Removed unused parameter / member variable.
+ * Renamed file to indicate the use of templates. Moved global functions for
+ * cubic spline interpolation to static methods of a separate template class.
+ * Added mode ios::nocreate when opening file streams for reading to avoid
+ * implicit creation of non-existing files.
+ *
+ * Revision 1.3  1999/02/09 14:22:31  meichel
  * Removed explicit template parameters from template function calls,
  *   required for Sun CC 4.2
  *
