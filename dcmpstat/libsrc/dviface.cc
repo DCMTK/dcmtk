@@ -22,14 +22,13 @@
  *  Purpose: DVPresentationState
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-02-18 18:48:01 $
- *  CVS/RCS Revision: $Revision: 1.36 $
+ *  Update Date:      $Date: 1999-02-19 09:48:27 $
+ *  CVS/RCS Revision: $Revision: 1.37 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
  *
  */
-
 
 
 #include "osconfig.h"    /* make sure OS specific configuration is included first */
@@ -114,7 +113,7 @@ DVInterface::DVInterface(const char *config_file)
 , idxRec()
 , idxRecPos(-1)
 {
-    clearIndexRecord();
+    clearIndexRecord(idxRec, idxRecPos);
     if (config_file)
     {
         FILE *cfgfile = fopen(config_file, "rb");
@@ -166,7 +165,7 @@ E_Condition DVInterface::loadImage(const char *studyUID,
                                    const char *seriesUID,
                                    const char *instanceUID)
 {
-    if (lockDatabase())
+    if (lockDatabase() == EC_Normal)
     {
         const char *filename = getFilename(studyUID, seriesUID, instanceUID);
         if (filename != NULL)
@@ -572,8 +571,9 @@ OFBool DVInterface::newInstancesReceived()
 
 void DVInterface::clearIndexCache()
 {
+cerr << "IDX: clearing index cache ... " << endl;
     idxCache.clear();
-    clearIndexRecord();
+    clearIndexRecord(idxRec, idxRecPos);
 }
 
 
@@ -583,7 +583,7 @@ OFBool DVInterface::createIndexCache()
     {
         if (idxCache.empty())
         {
-cerr << "creating index cache ... " << endl;
+cerr << "IDX: creating index cache ... " << endl;
             int counter = 0;
             DB_IdxInitLoop(pHandle, &counter);
             IdxRecord record;
@@ -617,10 +617,11 @@ cerr << "creating index cache ... " << endl;
 }
 
 
-void DVInterface::clearIndexRecord()
+void DVInterface::clearIndexRecord(IdxRecord &record,
+                                   int &recpos)
 {
-    OFBitmanipTemplate<Uint8>::zeroMem((Uint8 *)&idxRec, sizeof(idxRec));
-    idxRecPos = -1;
+    OFBitmanipTemplate<Uint8>::zeroMem((Uint8 *)&record, sizeof(idxRec));
+    recpos = -1;
 }
 
 
@@ -815,95 +816,114 @@ const char *DVInterface::getStudyDate()
     return idxRec.StudyDate;
 }
 
+
 const char *DVInterface::getStudyTime()
 {
     return idxRec.StudyTime;
 }
+
 
 const char *DVInterface::getReferringPhysiciansName()
 {
     return idxRec.ReferringPhysiciansName;
 }
 
+
 const char *DVInterface::getAccessionNumber()
 {
     return idxRec.AccessionNumber;
 }
+
 
 const char *DVInterface::getNameOfPhysiciansReadingStudy()
 {
     return idxRec.NameOfPhysiciansReadingStudy;
 }
 
+
 const char *DVInterface::getPatientName()
 {
     return idxRec.PatientsName;
 }
+
 
 const char *DVInterface::getPatientID()
 {
     return idxRec.PatientID;
 }
 
+
 const char *DVInterface::getPatientBirthDate()
 {
     return idxRec.PatientsBirthDate;
 }
+
 
 const char *DVInterface::getPatientSex()
 {
     return idxRec.PatientsSex;
 }
 
+
 const char *DVInterface::getPatientBirthTime()
 {
     return idxRec.PatientsBirthTime;
 }
+
 
 const char *DVInterface::getOtherPatientNames()
 {
     return idxRec.OtherPatientNames;
 }
 
+
 const char *DVInterface::getOtherPatientID()
 {
     return idxRec.OtherPatientIDs;
 }
+
 
 const char *DVInterface::getEthnicGroup()
 {
     return idxRec.EthnicGroup;
 }
 
+
 const char *DVInterface::getSeriesDescription()
 { 
     return idxRec.SeriesDescription;
 }
+
 
 const char *DVInterface::getSeriesNumber()
 {
     return idxRec.SeriesNumber;
 }
 
+
 const char *DVInterface::getSeriesDate()
 {
     return idxRec.SeriesDate;
 }
+
 
 const char *DVInterface::getSeriesTime()
 {
     return idxRec.SeriesTime;
 }
 
+
 const char *DVInterface::getSeriesPerformingPhysiciansName()
 {
     return idxRec.PerformingPhysiciansName;
 }
 
+
 const char *DVInterface::getSeriesProtocolName()
 {
     return idxRec.ProtocolName;
 }
+
 
 const char *DVInterface::getSeriesOperatorsName()
 {
@@ -920,6 +940,12 @@ const char *DVInterface::getModality()
 const char *DVInterface::getImageNumber()
 {
     return idxRec.ImageNumber;
+}
+
+
+const char *DVInterface::getFilename()
+{
+    return idxRec.filename;
 }
 
 
@@ -946,14 +972,15 @@ E_Condition DVInterface::instanceReviewed(const char *studyUID,
                 {
                     if (series->List.isElem(instanceUID))
                     {
-                        int pos;
                         IdxRecord record;
-                        if (readIndexRecord(series->List.getPos(), record, &pos))
+                        int recpos;
+                        clearIndexRecord(record, recpos);
+                        if (readIndexRecord(series->List.getPos(), record, &recpos))
                         {
                             if (lockExclusive() == EC_Normal)
                             {
                                 record.hstat = DVIF_objectIsNotNew;
-                                lseek(pHandle->pidx, (long)(SIZEOF_STUDYDESC + pos * SIZEOF_IDXRECORD), SEEK_SET);
+                                lseek(pHandle->pidx, (long)(SIZEOF_STUDYDESC + recpos * SIZEOF_IDXRECORD), SEEK_SET);
                                 write(pHandle->pidx, (char *)&record, SIZEOF_IDXRECORD);
                                 lseek(pHandle->pidx, 0L, SEEK_SET);
                             }
@@ -1621,7 +1648,11 @@ void DVInterface::cleanChildren()
 /*
  *  CVS/RCS Log:
  *  $Log: dviface.cc,v $
- *  Revision 1.36  1999-02-18 18:48:01  joergr
+ *  Revision 1.37  1999-02-19 09:48:27  joergr
+ *  Added method getFilename() to get filename of currently selected instance.
+ *  Modified implementation of instanceReviewed.
+ *
+ *  Revision 1.36  1999/02/18 18:48:01  joergr
  *  Re-implemented methods to access index file (delete methods are still
  *  missing).
  *  Removed parameter 'deletefile' from delete methods. This parameter is
