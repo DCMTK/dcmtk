@@ -22,8 +22,8 @@
  *  Purpose: DVPresentationState
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-11-20 13:22:41 $
- *  CVS/RCS Revision: $Revision: 1.120 $
+ *  Update Date:      $Date: 2000-12-08 12:46:35 $
+ *  CVS/RCS Revision: $Revision: 1.121 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -54,13 +54,18 @@ END_EXTERN_C
 #include "diutil.h"      /* for DU_getStringDOElement */
 #include "dvpssp.h"      /* for class DVPSStoredPrint */
 #include "dvpshlp.h"     /* for class DVPSHelper */
-#include "dsrdoc.h"      /* for class DSRDocument */
 #include "dcmimage.h"    /* for class DicomImage */
 #include <stdio.h>
 #include <ctype.h>       /* for toupper() */
 #include <iostream.h>
 #include <fstream.h>
 #include <math.h>        /* for pow() */
+
+#ifdef WITH_DCMSR
+#include "dsrdoc.h"      /* for class DSRDocument */
+#else
+class DSRDocument {};    /* dummy class */
+#endif
 
 BEGIN_EXTERN_C
 #ifdef HAVE_SYS_TYPES_H
@@ -188,8 +193,10 @@ DVInterface::DVInterface(const char *config_file, OFBool useLog)
 
     if (pPrint) pPrint->setLog(logstream, verboseMode, debugMode);
     if (pState) pState->setLog(logstream, verboseMode, debugMode);
+#ifdef WITH_DCMSR
     if (pReport && debugMode)
         pReport->setLogStream(logstream);
+#endif
 
     referenceTime = (unsigned long)time(NULL);
     /* initialize printJobIdentifier with a string comprising the current time */
@@ -550,6 +557,7 @@ E_Condition DVInterface::loadStructuredReport(const char *studyUID,
 E_Condition DVInterface::loadStructuredReport(const char *filename)
 {
     E_Condition status = EC_IllegalCall;
+#ifdef WITH_DCMSR
     DcmFileFormat *fileformat = NULL;
     DSRDocument *newReport = new DSRDocument();
     if (newReport == NULL)
@@ -583,6 +591,9 @@ E_Condition DVInterface::loadStructuredReport(const char *filename)
     if (status != EC_Normal)
         delete newReport;
     delete fileformat;
+#else
+    writeLogMessage(DVPSM_error, "DCMPSTAT", "Load structured report from file failed: not compiled with DCMSR support.");
+#endif
     return status;
 }
 
@@ -590,6 +601,7 @@ E_Condition DVInterface::loadStructuredReport(const char *filename)
 E_Condition DVInterface::loadSRTemplate(const char *reportID)
 {
   E_Condition result = EC_IllegalCall;
+#ifdef WITH_DCMSR
   if (reportID)
   {
      const char *srfile = getReportFilename(reportID);
@@ -613,6 +625,9 @@ E_Condition DVInterface::loadSRTemplate(const char *reportID)
          writeLogMessage(DVPSM_error, "DCMPSTAT", "Load structured reporting 'template' from file failed");
      }
   }
+#else
+    writeLogMessage(DVPSM_error, "DCMPSTAT", "Load structured reporting 'template' from file failed: not compiled with DCMSR support.");
+#endif
   return result;
 }
 
@@ -753,6 +768,7 @@ E_Condition DVInterface::saveCurrentImage(const char *filename, OFBool explicitV
 
 E_Condition DVInterface::saveStructuredReport()
 {
+#ifdef WITH_DCMSR
     // release database lock since we are using the DB module directly
     releaseDatabase();
 
@@ -800,6 +816,10 @@ E_Condition DVInterface::saveStructuredReport()
     DB_destroyHandle(&handle);
     COND_PopCondition(OFTrue); // clear condition stack
     return result;
+#else
+    writeLogMessage(DVPSM_error, "DCMPSTAT", "Save structured report to database failed: not compiled with DCMSR support.");
+    return EC_IllegalCall;
+#endif
 }
 
 
@@ -809,6 +829,7 @@ E_Condition DVInterface::saveStructuredReport(const char *filename, OFBool expli
     if (filename==NULL) return EC_IllegalCall;
 
     E_Condition status = EC_IllegalCall;
+#ifdef WITH_DCMSR
     DcmFileFormat *fileformat = new DcmFileFormat();
     DcmDataset *dataset = NULL;
     if (fileformat) dataset=fileformat->getDataset();
@@ -825,6 +846,9 @@ E_Condition DVInterface::saveStructuredReport(const char *filename, OFBool expli
     }
 
     delete fileformat;
+#else
+    writeLogMessage(DVPSM_error, "DCMPSTAT", "Save structured report to file failed: not compiled with DCMSR support.");
+#endif
     return status;
 }
 
@@ -3924,8 +3948,10 @@ void DVInterface::setLog(OFConsole *stream, OFBool verbMode, OFBool dbgMode)
 {
   DVConfiguration::setLog(stream, verbMode, dbgMode);
   if (pPrint) pPrint->setLog(stream, verbMode, dbgMode);
+#ifdef WITH_DCMSR
   if (pReport && dbgMode)
       pReport->setLogStream(stream);
+#endif
 }
 
 void DVInterface::setLogFilter(DVPSLogMessageLevel level)
@@ -4141,7 +4167,11 @@ OFBool DVInterface::verifyUserPassword(const char *userID, const char *passwd)
 /*
  *  CVS/RCS Log:
  *  $Log: dviface.cc,v $
- *  Revision 1.120  2000-11-20 13:22:41  joergr
+ *  Revision 1.121  2000-12-08 12:46:35  joergr
+ *  Separated module dcmsr from dcmpstat (use #define WITH_DCMSR to re-include
+ *  it - probably also requires modification of makefiles).
+ *
+ *  Revision 1.120  2000/11/20 13:22:41  joergr
  *  Fixed minor bugs (string related memory problems when used with JNI).
  *
  *  Revision 1.119  2000/11/14 16:35:21  joergr

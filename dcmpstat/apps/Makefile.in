@@ -32,11 +32,6 @@ dcmimgleinc=-I$(dcmimgledir)/include -I$(includedir)/dcmimgle
 dcmimglelibdir=-L$(dcmimgledir)/libsrc
 dcmimglelib=-ldcmimgle
 
-dcmsrdir=$(top_srcdir)/../dcmsr
-dcmsrinc=-I$(dcmsrdir)/include -I$(includedir)/dcmsr
-dcmsrlibdir=-L$(dcmsrdir)/libsrc
-dcmsrlib=-ldcmsr
-
 dcmpstatdir=$(top_srcdir)/../dcmpstat
 dcmpstatinc=-I$(dcmpstatdir)/include -I$(includedir)/dcmpstat
 dcmpstatlibdir=-L$(dcmpstatdir)/libsrc
@@ -53,10 +48,10 @@ dcmtlslibdir=-L$(dcmtlsdir)/libsrc
 dcmtlslib=-ldcmtls
 
 LOCALINCLUDES=$(dcmpstatinc) $(ofstdinc) $(dcmnetinc) $(dcmdatainc) $(dcmimgleinc) $(imagectninc) \
-   $(dcmtlsinc) $(dcmsrinc)
+   $(dcmtlsinc)
 LIBDIRS = -L$(top_srcdir)/libsrc $(dcmpstatlibdir) $(imagectnlibdir) $(dcmnetlibdir) \
-  $(dcmtlslibdir) $(dcmdatalibdir) $(ofstdlibdir) $(dcmimglelibdir) $(dcmsrlibdir) -L$(libdir)
-LOCALLIBS = $(dcmpstatlib) $(dcmsrlib) $(dcmimglelib) $(imagectnlib) $(dcmnetlib) $(dcmdatalib) $(ofstdlib) $(OPENSSLLIBS) -lm
+  $(dcmtlslibdir) $(dcmdatalibdir) $(ofstdlibdir) $(dcmimglelibdir) -L$(libdir)
+LOCALLIBS = $(dcmpstatlib) $(dcmimglelib) $(imagectnlib) $(dcmnetlib) $(dcmdatalib) $(ofstdlib) $(OPENSSLLIBS) -lm
 
 objs= dcmpsmk.o dcmp2pgm.o dcmmklut.o dcmmkcrv.o dcmpssnd.o dcmpsrcv.o \
       dcmpsprt.o dcmprscu.o dcmprscp.o vrscan.o dcmpschk.o

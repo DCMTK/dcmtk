@@ -51,17 +51,7 @@ dviface.o: dviface.cc ../../config/include/osconfig.h \
  ../../dcmimgle/include/diciefn.h ../../dcmimgle/include/dicielut.h \
  ../../dcmnet/include/diutil.h ../include/dvpssp.h \
  ../include/dvpspll.h ../include/dvpsibl.h ../include/dvpsabl.h \
- ../include/dvpspr.h ../include/dvpshlp.h ../../dcmsr/include/dsrdoc.h \
- ../../dcmsr/include/dsrdoctr.h ../../dcmsr/include/dsrtree.h \
- ../../dcmsr/include/dsrtypes.h ../../dcmsr/include/dsrtncsr.h \
- ../../dcmsr/include/dsrdoctn.h ../../dcmsr/include/dsrcodvl.h \
- ../../dcmsr/include/dsrcitem.h ../../dcmsr/include/dsrnumvl.h \
- ../../dcmsr/include/dsrscovl.h ../../dcmsr/include/dsrscogr.h \
- ../../dcmsr/include/dsrtlist.h ../../dcmsr/include/dsrtcovl.h \
- ../../dcmsr/include/dsrtcodt.h ../../dcmsr/include/dsrtcosp.h \
- ../../dcmsr/include/dsrtcoto.h ../../dcmsr/include/dsrcomvl.h \
- ../../dcmsr/include/dsrimgvl.h ../../dcmsr/include/dsrimgfr.h \
- ../../dcmsr/include/dsrwavvl.h ../../dcmsr/include/dsrwavch.h \
+ ../include/dvpspr.h ../include/dvpshlp.h \
  ../../dcmimgle/include/dcmimage.h ../../dcmimgle/include/dimoimg.h \
  ../../dcmimgle/include/diimage.h ../../dcmimgle/include/diovlay.h \
  ../../dcmimgle/include/diobjcou.h ../../dcmimgle/include/diovdat.h \
