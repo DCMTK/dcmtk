@@ -34,10 +34,10 @@
 ** Author: Andrew Hewett
 **		Kuratorium OFFIS e.V., Oldenburg, Germany
 **
-** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1997-08-05 07:36:21 $
+** Last Update:		$Author: meichel $
+** Update Date:		$Date: 1997-09-12 13:21:50 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/apps/storescp.cc,v $
-** CVS/RCS Revision:	$Revision: 1.15 $
+** CVS/RCS Revision:	$Revision: 1.16 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -548,16 +548,16 @@ int main(int argc, char *argv[])
      }
   }
 
-  if ( opt_port == 0 )
-  {
-    fprintf(stderr, "missing port number\n");
-    return 1;
-  }
-    
   if (opt_helpString)
   {
     usage();
     return 0;
+  }
+
+  if ( opt_port == 0 )
+  {
+    fprintf(stderr, "missing port number\n");
+    return 1;
   }
 
   DUL_Debug(opt_debug);
@@ -1084,7 +1084,10 @@ static CONDITION storeSCP(
 /*
 ** CVS Log
 ** $Log: storescp.cc,v $
-** Revision 1.15  1997-08-05 07:36:21  andreas
+** Revision 1.16  1997-09-12 13:21:50  meichel
+** Command line option '-h' in storescp now works correctly.
+**
+** Revision 1.15  1997/08/05 07:36:21  andreas
 ** - Corrected error in DUL finite state machine
 **   SCPs shall close sockets after the SCU have closed the socket in
 **   a normal association release. Therfore, an ARTIM timer is described
