@@ -22,9 +22,9 @@
  *  Purpose: DicomGSDFunction (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-07-03 13:51:00 $
+ *  Update Date:      $Date: 2002-07-05 10:39:03 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/libsrc/digsdfn.cc,v $
- *  CVS/RCS Revision: $Revision: 1.17 $
+ *  CVS/RCS Revision: $Revision: 1.18 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -172,7 +172,7 @@ DiDisplayLUT *DiGSDFunction::getDisplayLUT(unsigned long count)
             {
                 /* create new GSDF LUT */
                 lut = new DiGSDFLUT(count, MaxDDLValue, DDLValue, tmp_tab, ValueCount, GSDFValue,
-                    GSDFSpline, GSDFCount, JNDMin, JNDMax, -AmbientLight /*do not add*/, Illumination);
+                    GSDFSpline, GSDFCount, JNDMin, JNDMax, AmbientLight, Illumination);
                 /* delete temporary table */
                 delete[] tmp_tab;
             }
@@ -374,7 +374,10 @@ double DiGSDFunction::getJNDIndex(const double lum)
  *
  * CVS/RCS Log:
  * $Log: digsdfn.cc,v $
- * Revision 1.17  2002-07-03 13:51:00  joergr
+ * Revision 1.18  2002-07-05 10:39:03  joergr
+ * Fixed sign bug.
+ *
+ * Revision 1.17  2002/07/03 13:51:00  joergr
  * Fixed inconsistencies regarding the handling of ambient light.
  *
  * Revision 1.16  2002/07/02 16:24:37  joergr
