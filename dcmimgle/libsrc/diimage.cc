@@ -22,9 +22,9 @@
  *  Purpose: DicomImage (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-11-09 16:29:04 $
+ *  Update Date:      $Date: 2001-11-13 18:01:41 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/libsrc/diimage.cc,v $
- *  CVS/RCS Revision: $Revision: 1.15 $
+ *  CVS/RCS Revision: $Revision: 1.16 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -669,7 +669,7 @@ int DiImage::writeBMP(FILE *stream,
             result = 1;
         }
         /* delete pixel data */
-        delete data;
+        delete (char *)data;                 // type cast necessary to avoid compiler warnings using gcc >2.95
     }
     return result;
 }
@@ -679,7 +679,10 @@ int DiImage::writeBMP(FILE *stream,
  *
  * CVS/RCS Log:
  * $Log: diimage.cc,v $
- * Revision 1.15  2001-11-09 16:29:04  joergr
+ * Revision 1.16  2001-11-13 18:01:41  joergr
+ * Added type cast to delete a void pointer to keep gcc 2.95 compiler quiet.
+ *
+ * Revision 1.15  2001/11/09 16:29:04  joergr
  * Added support for Windows BMP file format.
  *
  * Revision 1.14  2001/09/28 13:14:22  joergr
