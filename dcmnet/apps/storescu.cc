@@ -53,9 +53,9 @@
 **
 **
 ** Last Update:		$Author: hewett $
-** Update Date:		$Date: 1996-04-22 09:56:20 $
+** Update Date:		$Date: 1996-04-25 16:19:18 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/apps/storescu.cc,v $
-** CVS/RCS Revision:	$Revision: 1.2 $
+** CVS/RCS Revision:	$Revision: 1.3 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -539,7 +539,7 @@ storeSCU(T_ASC_Association * assoc, const char *fname)
 	return DIMSE_NOVALIDPRESENTATIONCONTEXTID;
     }
 
-    bzero(&req, sizeof(req));
+    bzero((char*)&req, sizeof(req));
     req.MessageID = msgId;
     strcpy(req.AffectedSOPClassUID, sopClass);
     strcpy(req.AffectedSOPInstanceUID, sopInstance);
@@ -589,7 +589,10 @@ cstore(T_ASC_Association * assoc, const char *fname)
 /*
 ** CVS Log
 ** $Log: storescu.cc,v $
-** Revision 1.2  1996-04-22 09:56:20  hewett
+** Revision 1.3  1996-04-25 16:19:18  hewett
+** Added char* parameter casts to bzero() calls.
+**
+** Revision 1.2  1996/04/22 09:56:20  hewett
 ** Delete unused application conditions.
 **
 ** Revision 1.1.1.1  1996/03/26 18:38:44  hewett

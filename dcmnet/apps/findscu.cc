@@ -7,9 +7,9 @@
 ** Created:	03/96
 **
 ** Last Update:		$Author: hewett $
-** Update Date:		$Date: 1996-04-22 09:58:16 $
+** Update Date:		$Date: 1996-04-25 16:19:17 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/apps/findscu.cc,v $
-** CVS/RCS Revision:	$Revision: 1.1 $
+** CVS/RCS Revision:	$Revision: 1.2 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -510,10 +510,10 @@ substituteOverrideKeys(DcmDataset *dset)
 static void
 progressCallback(
 	/* in */
-	void *callbackData, 
-	T_DIMSE_C_FindRQ *request, 	/* original find request */
+	void */*callbackData*/, 
+	T_DIMSE_C_FindRQ */*request*/, 	/* original find request */
 	int responseCount, 
-	T_DIMSE_C_FindRSP *response,	/* pending response received */
+	T_DIMSE_C_FindRSP */*response*/,	/* pending response received */
 	DcmDataset *responseIdentifiers /* pending response identifiers */
 	)
 {
@@ -563,7 +563,7 @@ findSCU(T_ASC_Association * assoc, const char *fname)
 	return DIMSE_NOVALIDPRESENTATIONCONTEXTID;
     }
 
-    bzero(&req, sizeof(req));
+    bzero((char*)&req, sizeof(req));
     req.MessageID = msgId;
     strcpy(req.AffectedSOPClassUID, abstractSyntax);
     req.DataSetType = DIMSE_DATASET_PRESENT;
@@ -623,7 +623,10 @@ cfind(T_ASC_Association * assoc, const char *fname)
 /*
 ** CVS Log
 ** $Log: findscu.cc,v $
-** Revision 1.1  1996-04-22 09:58:16  hewett
+** Revision 1.2  1996-04-25 16:19:17  hewett
+** Added char* parameter casts to bzero() calls.
+**
+** Revision 1.1  1996/04/22 09:58:16  hewett
 ** Initial release.
 **
 **
