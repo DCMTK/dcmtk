@@ -22,9 +22,9 @@
  *  Purpose: Provides main interface to the "DICOM image toolkit"
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-09-28 13:00:55 $
+ *  Update Date:      $Date: 2001-11-09 16:25:13 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/dcmimage.h,v $
- *  CVS/RCS Revision: $Revision: 1.35 $
+ *  CVS/RCS Revision: $Revision: 1.36 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -388,7 +388,8 @@ class DicomImage
      */
     inline void deleteOutputData() const
     {
-        if (Image != NULL) Image->deleteOutputData();
+        if (Image != NULL)
+            Image->deleteOutputData();
     }
 
   // --- misc
@@ -520,7 +521,8 @@ class DicomImage
     /** set automatically calculated histogram window.
      *  possibly active VOI LUT is implicitly disabled.
      *
-     ** @param  thresh  threshhold value specifying percentage of histogram border which shall be ignored (defaut: 5%).
+     ** @param  thresh  threshhold value specifying percentage of histogram border which
+     *                  shall be ignored (defaut: 5%).
      *
      ** @return true if successful, false otherwise
      */
@@ -1353,34 +1355,57 @@ class DicomImage
                                       const double green = 0.587,
                                       const double blue = 0.114) const;
 
-    /** create true color (24 bit) bitmap for MS Windows.
-     *  memory is not handled internally - must be deleted from calling program.
+    /** create true color (24/32 bit) or palette (8 bit) bitmap for MS Windows.
+     *  8 bit images require an appropriate color palette (256 entries, values: 0 to 255) and are only
+     *  applicable to monochrome images, the beginning of a each line starts on a 32-bit address;
+     *  24 bit images store 24 bits per pixel (RGB) and do align each line to a 32-bit address; 32 bit
+     *  images store 32 bits per pixel (RGB), but only use the upper 24 bits. The sample order for color
+     *  images is (i.e. reverse): Blue, Green, Red.
+     *  The memory buffer can be allocated both externally (from the calling program) and internally
+     *  (inside this class/module). If the 'data' parameter is not NULL and the 'size' parameter, which 
+     *  describes the size (in bytes) of the allocated buffer, is suffiently large, the bitmap is stored
+     *  in this buffer. Otherwise (i.e. 'data' is NULL) the memory is allocated internally. Please note
+     *  that in both cases the memory is not handled internally after this method has finished and,
+     *  therefore, must be deleted from the calling program.
      *  This method does not work if original YCbCr color model is retained (see CIF_KeepYCbCrColorModel).
      *
-     ** @param  frame  index of frame to be converted (default: first frame)
+     ** @param  data        untyped pointer memory buffer (set to NULL if not allocated externally)
+     *  @param  size        size of the memory buffer in bytes (if 0 'data' is set to NULL)
+     *  @param  frame       index of frame to be converted (default: 0 = first frame)
+     *  @param  bits        number of bits per pixel used for the output bitmap (8, 24 or 32, default: 24)
+     *  @param  upsideDown  flag indicating whether the first line stored is the top-most (default: 0) or
+     *                      the bottom-most of the source image (as required by the BMP file format)
      *
-     ** @return pointer to memory buffer containing the bitmap data (NULL if an error occurred)
+     ** @return number of bytes allocated by the bitmap, or 0 if an error occured
      */
-    void *createTrueColorDIB(const unsigned long frame = 0)
+    unsigned long createWindowsDIB(void *&data,
+                                   const unsigned long size,
+                                   const unsigned long frame = 0,
+                                   const int bits = 24,
+                                   const int upsideDown = 0)
     {
         return (Image != NULL) ?
-            Image->createDIB(frame) : NULL;
+            Image->createDIB(data, size, frame, bits, upsideDown) : 0;
     }
 
-    /** create true color (32 bit) bitmap for Java (AWT default format).
+    /** create true color (32 bit) or palette (8 bit) bitmap for Java (AWT default format).
+     *  32 bit images allocate 32 bits per pixel (RGB), but only use the upper 24 bits. The sample
+     *  order for color images is: Red, Green, Blue.
      *  Memory is not handled internally - must be deleted from calling program.
      *  This method does not work if original YCbCr color model is retained (see CIF_KeepYCbCrColorModel).
      *
-     ** @param  frame  index of frame to be converted (default: first frame)
-     *  @param  bits   number of bits per pixel used for the output bitmap (default: 32)
+     ** @param  data   resulting pointer to bitmap data (set to NULL if an error occurred)
+     *  @param  frame  index of frame to be converted (default: 0 = first frame)
+     *  @param  bits   number of bits per pixel used for the output bitmap (8 or 32, default: 32)
      *
-     ** @return pointer to memory buffer containing the bitmap data (NULL if an error occurred)
+     ** @return number of bytes allocated by the bitmap, or 0 if an error occured
      */
-    void *createJavaAWTBitmap(const unsigned long frame = 0,
-                              const int bits = 32)
+    unsigned long createJavaAWTBitmap(void *&data,
+                                      const unsigned long frame = 0,
+                                      const int bits = 32)
     {
         return (Image != NULL) ?
-            Image->createAWTBitmap(frame, bits) : NULL;
+            Image->createAWTBitmap(data, frame, bits) : 0;
     }
 
     /** create 12 bit packed (monochrome) bitmap for DICOM printers.
@@ -1417,7 +1442,7 @@ class DicomImage
      *  pixel data is written in ASCII format.
      *  This method does not work if original YCbCr color model is retained (see CIF_KeepYCbCrColorModel).
      *
-     ** @param  filename  name of output file
+     ** @param  filename  name of output file (%d is replaced by frame number if present)
      *  @param  bits      number of bits used for output of pixel data
      *                    (default: full resolution, max: 32;
      *                     MI_PastelColor = -1 for true color pastel mode, EXPERIMENTAL)
@@ -1465,7 +1490,7 @@ class DicomImage
      *  pixel data is written in binary format.
      *  This method does not work if original YCbCr color model is retained (see CIF_KeepYCbCrColorModel).
      *
-     ** @param  filename  name of output file
+     ** @param  filename  name of output file (%d is replaced by frame number if present)
      *  @param  bits      number of bits used for output of pixel data
      *                    (default: full resolution, max: 8;
      *                     MI_PastelColor = -1 for true color pastel mode, EXPERIMENTAL)
@@ -1481,7 +1506,7 @@ class DicomImage
      *  pixel data is written in binary format.
      *  This method does not work if original YCbCr color model is retained (see CIF_KeepYCbCrColorModel).
      *
-     ** @param  stream  open C output stream
+     ** @param  stream  open C output stream (%d is replaced by frame number if present)
      *  @param  bits    number of bits used for output of pixel data
      *                  (default: full resolution, max: 8;
      *                   MI_PastelColor = -1 for true color pastel mode, EXPERIMENTAL)
@@ -1492,6 +1517,36 @@ class DicomImage
     int writeRawPPM(FILE *stream,
                     const int bits = 0,
                     const unsigned long frame = 0);
+
+    /** write pixel data to BMP file (specified by open C stream).
+     *  pixel data is written in palette or truecolor mode.
+     *  This method does not work if original YCbCr color model is retained (see CIF_KeepYCbCrColorModel).
+     *
+     ** @param  stream  open C output stream
+     *  @param  bits    number of bits used for output of pixel data
+     *                  (8 or 24, default (0): 8 for monochrome and 24 for color images)
+     *  @param  frame   index of frame used for output (default: first frame = 0)
+     *
+     ** @return true if successful, false otherwise
+     */
+    int writeBMP(FILE *stream,
+                 const int bits = 0,
+                 const unsigned long frame = 0);
+
+    /** write pixel data to BMP file (specified by filename).
+     *  pixel data is written in palette or truecolor mode.
+     *  This method does not work if original YCbCr color model is retained (see CIF_KeepYCbCrColorModel).
+     *
+     ** @param  filename  name of output file (%d is replaced by frame number if present)
+     *  @param  bits      number of bits used for output of pixel data
+     *                    (8 or 24, default (0): 8 for monochrome and 24 for color images)
+     *  @param  frame     index of frame used for output (default: first frame = 0)
+     *
+     ** @return true if successful, false otherwise
+     */
+    int writeBMP(const char *filename,
+                 const int bits = 0,
+                 const unsigned long frame = 0);
 
 
  protected:
@@ -1560,7 +1615,11 @@ class DicomImage
  *
  * CVS/RCS Log:
  * $Log: dcmimage.h,v $
- * Revision 1.35  2001-09-28 13:00:55  joergr
+ * Revision 1.36  2001-11-09 16:25:13  joergr
+ * Added support for Window BMP file format.
+ * Enhanced and renamed createTrueColorDIB() method.
+ *
+ * Revision 1.35  2001/09/28 13:00:55  joergr
  * Changed default behaviour of setMinMaxWindow().
  * Added routines to get the currently active Polarity and PresentationLUTShape.
  * Added method setRoiWindow() which automatically calculates a min-max VOI

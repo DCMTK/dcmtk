@@ -22,9 +22,9 @@
  *  Purpose: DicomMonochromeImage (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-09-28 13:06:10 $
+ *  Update Date:      $Date: 2001-11-09 16:27:34 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/dimoimg.h,v $
- *  CVS/RCS Revision: $Revision: 1.30 $
+ *  CVS/RCS Revision: $Revision: 1.31 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -532,7 +532,7 @@ class DiMonoImage
                               const int bits,
                               const int planar = 0) = 0;
 
-    /** get pixel data of specified plane .
+    /** get pixel data of specified plane.
      *  (memory is handled internally)
      *
      ** @param  dummy  (not used)
@@ -635,25 +635,35 @@ class DiMonoImage
         return InterData;
     }
 
-    /** create true color (24 bit) bitmap for MS Windows.
+    /** create true color (24/32 bit) or palette (8 bit) bitmap for MS Windows.
      *  memory is not handled internally - must be deleted from calling program.
      *
-     ** @param  frame  index of frame to be converted
+     ** @param  data        untyped pointer memory buffer (set to NULL if not allocated externally)
+     *  @param  size        size of the memory buffer in bytes (if 0 'data' is set to NULL)
+     *  @param  frame       index of frame to be converted (starting from 0)
+     *  @param  bits        number of bits per pixel used for the output bitmap (8, 24 or 32)
+     *  @param  upsideDown  specifies the order of lines in the images (0 = top-down, bottom-up otherwise)
      *
-     ** @return pointer to memory buffer containing the bitmap data (NULL if an error occurred)
+     ** @return number of bytes allocated by the bitmap, or 0 if an error occured
      */
-    void *createDIB(const unsigned long frame);
+    unsigned long createDIB(void *&data,
+                            const unsigned long size,
+                            const unsigned long frame,
+                            const int bits,
+                            const int upsideDown);
 
-    /** create true color (32 bit) bitmap for Java (AWT default format).
+    /** create true color (32 bit) or palette (8 bit) bitmap for Java (AWT default format).
      *  Memory is not handled internally - must be deleted from calling program.
      *
-     ** @param  frame  index of frame to be converted (default: first frame)
-     *  @param  bits   number of bits per pixel used for the output bitmap (default: 32)
+     ** @param  data   resulting pointer to bitmap data (set to NULL if an error occurred)
+     *  @param  frame  index of frame to be converted (starting from 0)
+     *  @param  bits   number of bits per pixel used for the output bitmap (8 or 32)
      *
-     ** @return pointer to memory buffer containing the bitmap data (NULL if an error occurred)
+     ** @return number of bytes allocated by the bitmap, or 0 if an error occured
      */
-    void *createAWTBitmap(const unsigned long frame,
-                          const int bits);
+    unsigned long createAWTBitmap(void *&data,
+                                  const unsigned long frame,
+                                  const int bits);
 
     /** create packed bitmap (e.g. 12/16 bit -> 12/12 bit for DICOM printers).
      *  Memory is not handled internally - must be deleted from calling program.
@@ -709,7 +719,7 @@ class DiMonoImage
                  const unsigned long frame,
                  const int bits);
 
-    /** write pixel data to raw PPM file.
+    /** write pixel data to raw PPM file
      *
      ** @param  stream  open C output stream
      *  @param  frame   index of frame used for output
@@ -720,6 +730,18 @@ class DiMonoImage
     int writeRawPPM(FILE *stream,
                     const unsigned long frame,
                     const int bits);
+
+    /** write pixel data to BMP file
+     *
+     ** @param  stream  open C output stream
+     *  @param  frame   index of frame used for output (default: first frame = 0)
+     *  @param  bits    number of bits used for output of pixel data (8 or 24, 0=default means 8)
+     *
+     ** @return true if successful, false otherwise
+     */
+    int writeBMP(FILE *stream,
+                 const unsigned long frame,
+                 const int bits);
 
 
  protected:
@@ -1072,7 +1094,11 @@ class DiMonoImage
  *
  * CVS/RCS Log:
  * $Log: dimoimg.h,v $
- * Revision 1.30  2001-09-28 13:06:10  joergr
+ * Revision 1.31  2001-11-09 16:27:34  joergr
+ * Added support for Window BMP file format.
+ * Enhanced and renamed createTrueColorDIB() method.
+ *
+ * Revision 1.30  2001/09/28 13:06:10  joergr
  * Added routines to get the currently active Polarity and PresentationLUTShape.
  * Added method setRoiWindow() which automatically calculates a min-max VOI
  * window for a specified rectangular region of the image.
