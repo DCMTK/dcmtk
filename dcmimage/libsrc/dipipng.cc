@@ -21,9 +21,9 @@
  *
  *  Purpose: Implements PNG interface for plugable image formats
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-12-17 16:34:57 $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2004-01-21 12:57:32 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -41,7 +41,11 @@
 #include "dcuid.h"      /* for dcmtk version */
 
 BEGIN_EXTERN_C
+#ifdef HAVE_LIBPNG_PNG_H
+#include <libpng/png.h>
+#else
 #include <png.h>
+#endif
 END_EXTERN_C
 
 
@@ -70,8 +74,6 @@ int DiPNGPlugin::write(
     void *data = image->getOutputData(frame, 8 /*bits*/, 0 /*planar*/);
     if (data != NULL)
     {
-      OFBool isMono = (image->getInternalColorModel() == EPI_Monochrome1) || (image->getInternalColorModel() == EPI_Monochrome2);
-
       png_struct        *png_ptr = NULL;
       png_info  *info_ptr = NULL;
       png_byte  *pix_ptr = NULL;
@@ -110,10 +112,11 @@ int DiPNGPlugin::write(
         return 0;
       }
 
-      if( isMono ) {
+      if((image->getInternalColorModel() == EPI_Monochrome1) || (image->getInternalColorModel() == EPI_Monochrome2))
+      {
         color_type = PNG_COLOR_TYPE_GRAY;
         bpp        = 1;
-      }else {
+      } else {
         color_type = PNG_COLOR_TYPE_RGB;
         bpp        = 3;
       }
@@ -231,7 +234,11 @@ int dipipng_cc_dummy_to_keep_linker_from_moaning = 0;
 /*
  * CVS/RCS Log:
  * $Log: dipipng.cc,v $
- * Revision 1.2  2003-12-17 16:34:57  joergr
+ * Revision 1.3  2004-01-21 12:57:32  meichel
+ * Adapted PNG export plugin to new configure test, fixed issue with local
+ *   variable that could be clobbered by longjmp().
+ *
+ * Revision 1.2  2003/12/17 16:34:57  joergr
  * Adapted type casts to new-style typecast operators defined in ofcast.h.
  *
  * Revision 1.1  2003/02/11 13:18:38  meichel
