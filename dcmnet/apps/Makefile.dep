@@ -19,7 +19,9 @@ echoscu.o: echoscu.cc ../../config/include/osconfig.h \
  ../../dcmdata/include/dcfilefo.h ../../dcmdata/include/dcsequen.h \
  ../../dcmdata/include/dcdebug.h ../../dcmdata/include/dcdict.h \
  ../../dcmdata/include/dchashdi.h ../../dcmdata/include/cmdlnarg.h \
- ../../ofstd/include/ofconapp.h ../../ofstd/include/ofcmdln.h
+ ../../ofstd/include/ofconapp.h ../../ofstd/include/ofcmdln.h \
+ ../../dcmtls/include/tlstrans.h ../include/dcmtrans.h \
+ ../include/dcmlayer.h ../../dcmtls/include/tlslayer.h
 findscu.o: findscu.cc ../../config/include/osconfig.h \
  ../../config/include/cfunix.h ../../ofstd/include/ofstdinc.h \
  ../include/dimse.h ../include/dicom.h ../include/cond.h \
