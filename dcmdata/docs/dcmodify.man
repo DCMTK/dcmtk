@@ -16,26 +16,30 @@ dcmodify [options] [dcmfile-in...]
 
 \b dcmodify is a tool that allows to modify, insert and delete tags in DICOM
 files.  The special cases sequences, items and tags with a value multiplicity
-> 1 are also supported.  Generally, there are two modes of operation: command
-line and batch mode.  In command line mode the file names have to be
-specified directly as parameter \e dcmfile-in (wildcards allowed).  In batch
-mode a text file has to be specified where each line represents a command
-describing a particular modification on a file.  Please note that the batch
-mode is an exclusive option which cannot be combined with other modification
-options.
+> 1 are also supported.
 
-\b dcmodify only accepts a single option from \e -i, \e -ii, \e -m, \e -mi,
-\e -ma, \e -e and \e -ea on the command line.  In case multiple modifications
-are to be performed on a particular DICOM file, \b dcmodify has to be called
-multiple times or to be used in batch mode.  Please note that \b dcmodify
-does not check whether given values are of the right value representation (VR).
-Usually, an error message is printed but generally the user should take care
-of the right VR usage.
+In case multiple modifications are to be performed, \b dcmodify does the
+modifications in the same order as they appear on commandline. Please note that
+\b dcmodify does not check whether given values are of the right value
+representation (VR). Usually, an error message is printed but generally the user
+should take care of the right VR usage.
+
+\b dcmodify is able to work on so called tag paths to describe tags in
+sequences. The syntax is
+
+    {sequence[item-no].}*element
+
+where sequence is a sequence tag like (0008,1111) or a dictionary name for a
+tag. Item-no describes the item number to access (counting from zero).
+Element defines the target tag to work on. You also can specify either the
+tag directly as (0010,0010) or through the dictionary name PatientsName. The *
+denotes, that you can repeat sequence statements to access deeper levels in
+dicom files. For examples take a look in the EXAMPLES-section.
 
 \section parameters PARAMETERS
 
 \verbatim
-dcmfile-in  DICOM input filename to be modified
+dcmfile-in  DICOM input filename(s) to be modified
 \endverbatim
 
 \section options OPTIONS
@@ -53,124 +57,81 @@ dcmfile-in  DICOM input filename to be modified
 
   -v   --verbose
          verbose mode, print verbose output
+
+  -ie  --ignore-errors
+         continue with file, if modify error occurs
+
 \endverbatim
 
 \subsection insert_mode_options insert-mode options
 \verbatim
-  -i   --insert-tag  "xxxx,xxxx=value"
-         insert (and overwrite) given tag at 1. Level denoted by
-         gggg,eeee=value
-
-  -ii  --insert-item-tag  "xxxx,xxxx[n].yyyy,yyyy=value"
-         insert (and overwrite) tag in sequence denoted by
-         gggg,eeee[n]=value, n specifies item-nr(starts with 0).
-         This kind of path can repeated for deeper-level-access
+  -i   --insert-tag  "tag-path=value"
+         insert (or overwrite) tag
 \endverbatim
 
 \subsection modify_mode_options modify-mode options
 \verbatim
-  -m   --modify-tag  "xxxx,xxxx=value"
-         modify given tag at 1.Level denoted by gggg,eeee=value
+  -m   --modify-tag  "tag-path=value"
+         modify tag
 
-  -mi  --modify-item-tag  "xxxx,xxxx[n].yyyy,yyyy=value"
-         modify tag in sequence denoted by gggg,eeee[n]=value;
-         n specifies item-nr (starts with 0).
-         Can repeated for deeper-level-access
-
-  -ma  --modify-all-tags  "xxxx,xxxx=value"
-         modify ALL existing tags matching gggg,eeee in file
+  -ma  --modify-all-tags  "tag=value"
+         modify ALL matching tags in file
 \endverbatim
 
 \subsection erase_mode_options erase-mode options
 \verbatim
-  -e   --erase-tag  "xxxx,xxxx"
-         erase given tag at 1.Level denoted by gggg,eeee
+  -e   --erase-tag  "tag-path"
+         erase tag
 
-  -ei  --erase-item-tag  "xxxx,xxxx[n].yyyy,yyyy=value"
-         erases tag in sequences denoted by gggg,eeee[n]=value;
-         n specifies item-nr (starts with 0).
-         Can repeated for deeper-level-access
-
-  -ea  --erase-all-tags  "xxxx,xxxx"
-         erase ALL exisiting tags matching gggg,eeee in file
-\endverbatim
-
-\subsection batch_mode_options batch-mode options
-\verbatim
-  -b   --batch-mode   batch-file
-         processes batch-file, that contains commandos for
-         modifying/inserting tags.
-         One line consists of: filename commando tag value
+  -ea  --erase-all-tags  "tag"
+         erase ALL matching tags in file
 \endverbatim
 
 \section examples EXAMPLES
 
 \verbatim
 -i  --insert-tag:
-      dcmodify -i "0010,0010=A Name" file.dcm
-      Inserts the patients name tag into file.dcm at 1. level.
+
+      dcmodify -i "(0010,0010)=A Name" file.dcm
+      Inserts the PatientsName tag into file.dcm at 1. level.
       If tag already exists, -i will overwrite it!
       If you want to insert an element with value multiplicity > 1
-      (e.g. 4) you can do this with: dcmodify -i "0018,1310=1\2\3\4"
+      (e.g. 4) you can do this with: dcmodify -i "0018,1310=1\\2\\3\\4"
 
--ii --insert-item-tag:
-      dcmodify -ii "0008,1111[2].0010,0010=A Name" file.dcm
-      Inserts in sequence denoted by 0008,1111 in the third(!)
-      item the tag 0010,0010 with value "A Name".
-      As you see, count of items starts with 0!
-      If tag already exists, -i will overwrite it!
-      You can describe a longer tag path than above
-      with e.g:
-      "0008,1111[2].0008,1140[0].0010,0010=A Name"
+      dcmodify -i "(0008,1111)[0].PatientsName=Another Name" *.dcm
+      Inserts PatientsName tag into the first item of sequence
+      (0008,1111). Note that the use of wildcards for files is
+      possible. You can specify longer tag paths, too.
+      (e.g. (0008,1111)[0].(0008,1111)[1].(0010,0010)=A Third One")
 
 -m  --modify-tag:
-      dcmodify -m "0010,0010=A Name" file.dcm
-      Changes tag 0010,0010 on 1. level to "A Name"
+      dcmodify -m "(0010,0010)=A Name" file.dcm
+      Changes tag 0010,0010 on 1. level to "A Name".
 
--mi --modify-item-tag:
-      dcmodify -mi "0008,1111[2].0010,0010=A Name" file.dcm
-      same as -ii, but does only change existing tag to "A Name"
+      This option also allows longer tag paths as demonstrated above
+      for -i.
 
 -ma --modify-all-tags:
-      dcmodify -ma "0010,0010=A Name" file.dcm
-      Does the same as -m but works on all(!) levels.
-      Therefore it searches the whole dataset including
-      sequences for 0010,0010 and changes all matching tags
-      to "A Name"
+      dcmodify -ma "(0010,0010)=New Name" file.dcm
+      Does the same as -m but works on all matching tags found in
+      file.dcm. Therefore it searches the whole dataset including
+      sequences for tag (0010,0010) and changes them to "New Name"
 
 -e  --erase-tag:
-      dcmodify -e "0010,0010" *.dcm
-      Erases tag 0010,0010 in all *.dcm files at 1. level.
+      dcmodify -e "(0010,0010)" *.dcm
+      Erases tag (0010,0010) in all *.dcm files at 1. level.
       Note: You also can erase whole sequences by using this
-      option with a sequence tag, but up to now its not
+      option with a sequence tag, but in this version it's not
       possible to delete a single item in a sequence.
 
+      This option also allows longer tag paths as demonstrated
+      above for -i.
+
 -ea --erase-all-tags:
-      dcmodify -ea "0010,0010" *.dcm
-      Same as -e, but searches also in sequences and items, so
+      dcmodify -ea "(0010,0010)" *.dcm
+      Same as -e, but also searches in sequences and items, so
       with this commando you could "anonymize" your files e.g.
 
--ei --erase-item-tag:
-      dcmodify -ei 0008,1111[0].0010,0010
-      Erases tag 0010,0010 only in item denoted by
-      008,1111[0]. Other tag occurences are not affected.
-
--b  --batch-mode:
-      dcmodify -b batchfile
-      The following two lines could be an example for
-      "batchfile":
-          dump.dcm m 0010,0010=Doe^John
-          file.dcm i 0018,1310=1\\2\\3\\4
-          file.dcm ii 0008,1111[2].0010,0010=A Name
-      1. column denotes a file, wildcards are NOT supported.
-      2. column denotes, what to do; all modify-options are
-          allowed (i,ii,m,mi,ma,e,ea) exclusive b.
-      3. column denotes the tag/-path and value split by '='
-      - A row starting with a hash ('#') is ignored and
-        treated as a comment.
-      - Please use only one space between columns and use
-        only '=' to split column 3 into tag and value
-      - do not surround values with '"' or similar.
 \endverbatim
 
 \section command_line COMMAND LINE
