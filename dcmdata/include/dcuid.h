@@ -24,9 +24,9 @@
  *  routines for finding and creating UIDs.
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2004-04-06 18:02:25 $
+ *  Update Date:      $Date: 2004-04-14 11:49:28 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcuid.h,v $
- *  CVS/RCS Revision: $Revision: 1.62 $
+ *  CVS/RCS Revision: $Revision: 1.63 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -481,7 +481,10 @@ unsigned long dcmGuessModalityBytes(const char *sopClassUID);
 /*
 ** CVS/RCS Log:
 ** $Log: dcuid.h,v $
-** Revision 1.62  2004-04-06 18:02:25  joergr
+** Revision 1.63  2004-04-14 11:49:28  joergr
+** Replaced non-Unix newline characters.
+**
+** Revision 1.62  2004/04/06 18:02:25  joergr
 ** Updated data dictionary, UIDs and transfer syntaxes for the latest Final Text
 ** Supplements (42 and 47) and Correction Proposals (CP 25).
 ** Added missing suffix "TransferSyntax" to some transfer syntax constants.

@@ -23,9 +23,9 @@
  *          Defines a template list class with interfaces similar to the C++ Standard
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-08-07 11:44:55 $
+ *  Update Date:      $Date: 2004-04-14 11:44:48 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/include/Attic/oflist.h,v $
- *  CVS/RCS Revision: $Revision: 1.20 $
+ *  CVS/RCS Revision: $Revision: 1.21 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -555,7 +555,10 @@ void OF_ListRemoveIf(OFList<T>& c, Predicate pred)
 /*
 ** CVS/RCS Log:
 ** $Log: oflist.h,v $
-** Revision 1.20  2003-08-07 11:44:55  joergr
+** Revision 1.21  2004-04-14 11:44:48  joergr
+** Replaced non-Unix newline characters.
+**
+** Revision 1.20  2003/08/07 11:44:55  joergr
 ** Slightly modified header comments to conform to doxygen syntax.
 **
 ** Revision 1.19  2003/07/11 13:46:14  joergr
