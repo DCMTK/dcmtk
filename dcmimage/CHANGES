@@ -1,10 +1,15 @@
 
-**** Unreleased Changes from 97.09.12 (eichelberg)
+**** Changes from 97.09.18 (eichelberg)
+
+- Minor type conflicts (e.g. long passed as int) solved.
+  Affects: dcmimage/apps/dcm2pnm.cc
+
+**** Changes from 97.09.12 (eichelberg)
 
 - dcxfer.h now included in dcmimage.h (as should be).
   Affects: dcmimage/include/dcmimage.h
 
-**** Unreleased Changes from 97.07.28 (barth)
+**** Changes from 97.07.28 (barth)
 
 - Support for pixel representations (class DcmPixelData)
   Affects: dcmimage/apps/dcm2pnm.cc
@@ -27,7 +32,7 @@
   Affects: dcmimage/libsrc/didocu.cc
 
 
-**** Unreleased Changes from 97.07.21 (barth)
+**** Changes from 97.07.21 (barth)
 
 - new PixelData and OverlayData classes
   Affects: dcmimage/apps/Makefile.dep
@@ -40,12 +45,12 @@
            dcmimage/libsrc/Makefile.dep
            dcmimage/libsrc/Makefile.in
 
-**** Unreleased Changes from 97.06.17 (eichelberg)
+**** Changes from 97.06.17 (eichelberg)
 
 - all debug messages now go to stderr (instead of stdout).
   Affects: dcmimage/include/diinpxt.h
 
-**** Unreleased Changes from 97.06.01 (riesmeier)
+**** Changes from 97.06.01 (riesmeier)
 
 - cleaned up setWindow() methods. Only one with default parameters remains.
 - Added overlay mode EMO_Default. This is identical to EMO_Replace for "G"
@@ -58,14 +63,14 @@
            dcmimage/include/dcmimage.h
            dcmimage/libsrc/diovlpln.cc
 
-**** Unreleased Changes from 97.05.29 (eichelberg)
+**** Changes from 97.05.29 (eichelberg)
 
 - All dcmtk applications now contain a version string
   which is displayed with the command line options ("usage" message)
   and which can be queried in the binary with the "ident" command.
   Affects: dcmimage/apps/dcm2pnm.cc
 
-**** Unreleased Changes from 97.05.28 (eichelberg)
+**** Changes from 97.05.28 (eichelberg)
 
 - Changed dcm2pnm options for MinMax VOI window computation
   to match functionality of the toolkit.
@@ -74,7 +79,7 @@
   Affects: dcmimage/apps/dcm2pnm.cc
            dcmimage/docs/dcm2pnm.txt
 
-**** Unreleased Changes from 97.05.26 (riesmeier)
+**** Changes from 97.05.26 (riesmeier)
 
 - new method DicomImage::setWindow() allows to disable VOI windowing
 - new method DiDocument::getVM()
@@ -96,20 +101,20 @@
            dcmimage/libsrc/dimoimg.cc
            dcmimage/libsrc/diovlay.cc
 
-**** Unreleased Changes from 97.05.23 (eichelberg)
+**** Changes from 97.05.23 (eichelberg)
 
 - Corrected typo introduced by last update causing a
   parse error in dcmimage.cc
   Affects: dcmimage/libsrc/dcmimage.cc
 
-**** Unreleased Changes from 97.05.22 (hewett)
+**** Changes from 97.05.22 (hewett)
 
 - Modified the test for presence of a data dictionary to use the
   method DcmDataDictionary::isDictionaryLoaded().
   Affects: dcmimage/apps/dcm2pnm.cc 
 	   dcmimage/libsrc/dcmimage.cc
 
-**** Unreleased Changes from 97.05.16 (barth)
+**** Changes from 97.05.16 (barth)
 
 - Revised handling of GroupLength elements and support of 
   DataSetTrailingPadding elements. The enumeratio E_GrpLenEncoding
@@ -119,7 +124,7 @@
   element and sequence write functions changed.
   Affects: dcmimage/apps/dcm2pnm.cc
 
-**** Unreleased Changes from 97.05.13 (eichelberg)
+**** Changes from 97.05.13 (eichelberg)
 
 - Added new application dcm2pnm.
   dcm2pnm allows to convert DICOM images to the widely used
@@ -141,7 +146,7 @@
   Affects: dcmimage/include/dcmimage.h
            dcmimage/libsrc/dcmimage.cc
 
-**** Unreleased Changes from 97.05.12 (barth)
+**** Changes from 97.05.12 (barth)
 
 - Include function getFloat64 into DcmDecimalString and getSint32 into
   DcmIntegerString. Remove derived classes for this purpose in the dcmimage
@@ -150,7 +155,7 @@
            dcmimage/include/diintstr.h
   Affects: dcmimage/libsrc/didocu.cc
 
-**** Unreleased Changes from 97.05.06 (eichelberg)
+**** Changes from 97.05.06 (eichelberg)
 
 - Removed files contained both in libsrc/ and apps/.
   Removed: dcmimage/libsrc/dcm2mono.cc

@@ -7,10 +7,10 @@
 ** Purpose:
 ** Convert DICOM Images to PPM or PGM using the dcmimage library. 
 **
-** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1997-07-28 16:10:29 $
+** Last Update:		$Author: meichel $
+** Update Date:		$Date: 1997-09-18 08:12:58 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/apps/dcm2pnm.cc,v $
-** CVS/RCS Revision:	$Revision: 1.7 $
+** CVS/RCS Revision:	$Revision: 1.8 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -612,7 +612,7 @@ int main(int argc, char *argv[])
       DCM_DICT_ENVIRONMENT_VARIABLE);
   }
     
-  SetDebugLevel(( opt_debugMode ));
+  SetDebugLevel(( (int)opt_debugMode ));
 
   if (opt_debugMode > 0)
   {
@@ -810,7 +810,7 @@ int main(int argc, char *argv[])
       
   }
   di->hideAllOverlays();
-  for (unsigned long k=0; k<16; k++)
+  for (unsigned int k=0; k<16; k++)
   {
     if (opt_Overlay[k])
     {
@@ -818,18 +818,18 @@ int main(int argc, char *argv[])
       {
         if (opt_debugMode > 0)
         {
-          fprintf(stderr, "activating overlay plane %lu\n", k+1);
+          fprintf(stderr, "activating overlay plane %u\n", k+1);
         }
         if (opt_OverlayMode)
         {
           if (! di->showOverlay(k, overlayMode, opt_foregroundDensity, opt_thresholdDensity))
           {
-            fprintf(stderr,"dcm2pnm: warning: cannot display overlay plane %lu\n",k+1);
+            fprintf(stderr,"dcm2pnm: warning: cannot display overlay plane %u\n",k+1);
           }
         } else {
           if (! di->showOverlay(k)) /* use default values */
           {
-            fprintf(stderr,"dcm2pnm: warning: cannot display overlay plane %lu\n",k+1);
+            fprintf(stderr,"dcm2pnm: warning: cannot display overlay plane %u\n",k+1);
           }
         }
       }
@@ -1062,7 +1062,10 @@ int main(int argc, char *argv[])
 /*
 ** CVS/RCS Log:
 ** $Log: dcm2pnm.cc,v $
-** Revision 1.7  1997-07-28 16:10:29  andreas
+** Revision 1.8  1997-09-18 08:12:58  meichel
+** Minor type conflicts (e.g. long passed as int) solved.
+**
+** Revision 1.7  1997/07/28 16:10:29  andreas
 ** - Support for pixel representations (class DcmPixelData)
 **
 ** Revision 1.6  1997/05/29 17:06:31  meichel
