@@ -22,9 +22,9 @@
  *  Purpose: List the contents of a dicom structured reporting file
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-04-16 13:49:53 $
+ *  Update Date:      $Date: 2002-07-22 14:20:27 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmsr/apps/dsrdump.cc,v $
- *  CVS/RCS Revision: $Revision: 1.14 $
+ *  CVS/RCS Revision: $Revision: 1.15 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -155,6 +155,7 @@ int main(int argc, char *argv[])
     cmd.addGroup("output options:");
       cmd.addSubGroup("printing:");
         cmd.addOption("--print-filename",       "+Pf", "print header with filename for each document");
+        cmd.addOption("--no-document-header",   "-Ph", "do not print general document information");
         cmd.addOption("--number-nested-items",  "+Pn", "print position string in front of each line");
         cmd.addOption("--indent-nested-items",  "-Pn", "indent nested items by spaces (default)");
         cmd.addOption("--print-long-values",    "+Pl", "print long item values completely");
@@ -211,6 +212,8 @@ int main(int argc, char *argv[])
 
         if (cmd.findOption("--print-filename"))
             opt_printFilename = OFTrue;
+        if (cmd.findOption("--no-document-header"))
+            opt_printFlags |= DSRTypes::PF_printNoDocumentHeader;
 
         cmd.beginOptionBlock();
         if (cmd.findOption("--number-nested-items"))
@@ -268,7 +271,11 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dsrdump.cc,v $
- * Revision 1.14  2002-04-16 13:49:53  joergr
+ * Revision 1.15  2002-07-22 14:20:27  joergr
+ * Added new command line option to suppress the output of general document
+ * information.
+ *
+ * Revision 1.14  2002/04/16 13:49:53  joergr
  * Added configurable support for C++ ANSI standard includes (e.g. streams).
  * Thanks to Andreas Barth <Andreas.Barth@bruker-biospin.de> for his
  * contribution.

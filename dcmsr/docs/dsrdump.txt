@@ -13,8 +13,7 @@ SUMMARY
 The dsrdump utility dumps the contents of a DICOM Structured Reporting (SR)
 document (file format or raw data set) to stdout in textual form.  The output
 of the document content follows the format proposed in David Clunie's book
-"DICOM Structured Reporting" (which follows the format proposed in earlier
-versions of DICOM Supplement 23).
+"DICOM Structured Reporting".
 
 If dsrdump reads a raw data set (DICOM data without a file format meta-header)
 it will attempt to guess the transfer syntax by examining the first few bytes
@@ -52,6 +51,7 @@ parsing options:
 output options:
   printing:
     +Pf  --print-filename       print header with filename for each document
+    -Ph  --no-document-header   do not print general document information
     +Pn  --number-nested-items  print position string in front of each line
     -Pn  --indent-nested-items  indent nested items by spaces (default)
     +Pl  --print-long-values    print long item values completely
