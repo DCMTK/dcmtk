@@ -23,8 +23,8 @@
  *    classes: DVPSStoredPrint
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-06-19 16:29:08 $
- *  CVS/RCS Revision: $Revision: 1.33 $
+ *  Update Date:      $Date: 2000-06-20 14:50:09 $
+ *  CVS/RCS Revision: $Revision: 1.34 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1622,7 +1622,8 @@ E_Condition DVPSStoredPrint::printSCUdelete(DVPSPrintMessageHandler& printHandle
 E_Condition DVPSStoredPrint::printSCUsetBasicImageBox(
     DVPSPrintMessageHandler& printHandler,
     size_t idx,
-    DicomImage& image)
+    DicomImage& image,
+    OFBool useMonochrome1)
 {
   DcmDataset dataset;
   DcmItem *ditem = NULL;
@@ -1641,7 +1642,7 @@ E_Condition DVPSStoredPrint::printSCUsetBasicImageBox(
   /* any presentation LUT to render on SCU side? */
   if (! renderPresentationLUTinSCP)
   {
-        /* look for referenced Presentation LUT in image box */
+    /* look for referenced Presentation LUT in image box */
     const char *imageplutuid = imageBoxContentList.getReferencedPresentationLUTInstanceUID(idx);
     char *filmplutuid = NULL;
     if (EC_Normal != referencedPresentationLUTInstanceUID.getString(filmplutuid)) filmplutuid=NULL;
@@ -1670,8 +1671,8 @@ E_Condition DVPSStoredPrint::printSCUsetBasicImageBox(
         }
         image.setPresentationLutShape(ESP_Identity);
       }
-    } else image.setPresentationLutShape(ESP_Identity); // default
-  } else image.setPresentationLutShape(ESP_Identity); // default
+    } /* else image.setPresentationLutShape(ESP_Identity); -- this does not make sense for MONO1 HG images */
+  } /* else image.setPresentationLutShape(ESP_Identity); -- this does not make sense for MONO1 HG images */
   
   E_Condition result = imageBoxContentList.prepareBasicImageBox(idx, dataset);
   if (EC_Normal == result)
@@ -1683,7 +1684,13 @@ E_Condition DVPSStoredPrint::printSCUsetBasicImageBox(
       if (dseq)
       {
         if (EC_Normal==result) result = DVPSHelper::putUint16Value(ditem, DCM_SamplesPerPixel, 1);
-        if (EC_Normal==result) result = DVPSHelper::putStringValue(ditem, DCM_PhotometricInterpretation, "MONOCHROME2");
+        if (useMonochrome1)
+        {
+          image.setPolarity(EPP_Reverse);
+          if (EC_Normal==result) result = DVPSHelper::putStringValue(ditem, DCM_PhotometricInterpretation, "MONOCHROME1");
+        } else {
+          if (EC_Normal==result) result = DVPSHelper::putStringValue(ditem, DCM_PhotometricInterpretation, "MONOCHROME2");
+        }
         if (EC_Normal==result) result = DVPSHelper::putUint16Value(ditem, DCM_PixelRepresentation, 0);
         if (EC_Normal==result) result = DVPSHelper::putUint16Value(ditem, DCM_Rows, (Uint16)height);
         if (EC_Normal==result) result = DVPSHelper::putUint16Value(ditem, DCM_Columns, (Uint16)width);
@@ -3407,7 +3414,10 @@ void DVPSStoredPrint::overridePresentationLUTSettings(
 
 /*
  *  $Log: dvpssp.cc,v $
- *  Revision 1.33  2000-06-19 16:29:08  meichel
+ *  Revision 1.34  2000-06-20 14:50:09  meichel
+ *  Added monochrome1 printing mode.
+ *
+ *  Revision 1.33  2000/06/19 16:29:08  meichel
  *  Added options for session printing and LIN OD to print tools, fixed
  *    pixel aspect ratio related bug.
  *

@@ -22,9 +22,9 @@
  *  Purpose: Presentation State Viewer - Print Spooler
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-06-19 16:29:05 $
+ *  Update Date:      $Date: 2000-06-20 14:50:05 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmpstat/apps/dcmprscu.cc,v $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -92,6 +92,7 @@ static OFBool           opt_dumpMode        = OFFalse;
 static OFBool           opt_spoolMode       = OFFalse;             /* default: file print mode */
 static OFBool           opt_noPrint         = OFFalse;
 static OFBool           opt_sessionPrint    = OFFalse;             /* Basic Film Session N-ACTION? */
+static OFBool           opt_Monochrome1     = OFFalse;             /* send images in MONOCHROME 1? */
 static const char *     opt_cfgName         = NULL;                /* config file name */
 static const char *     opt_printer         = NULL;                /* printer name */
 
@@ -281,7 +282,7 @@ static E_Condition spoolStoredPrintFile(const char *filename, DVInterface &dvi)
             if (dcmimage && (EIS_Normal == dcmimage->getStatus()))
             {
               // N-SET basic image box
-              if (EC_Normal != (result = stprint.printSCUsetBasicImageBox(printHandler, currentImage, *dcmimage)))
+              if (EC_Normal != (result = stprint.printSCUsetBasicImageBox(printHandler, currentImage, *dcmimage, opt_Monochrome1)))
               {
                 *logstream << "spooler: printer communication failed, unable to transmit basic grayscale image box." << endl;
               }
@@ -660,6 +661,7 @@ int main(int argc, char *argv[])
      cmd.addOption("--dump",        "+d",    "dump all DIMSE messages to stdout");
      cmd.addOption("--noprint",              "do not create print-out (no n-action-rq)");
      cmd.addOption("--session-print",        "send film session n-action rq (instead of film box)");
+     cmd.addOption("--monochrome1",          "transmit basic grayscale images in MONOCHROME1");
 
     cmd.addGroup("mode options:");
      cmd.addOption("--print",       "+p",    "printer mode, print file(s) and terminate (default)");
@@ -696,6 +698,7 @@ int main(int argc, char *argv[])
       if (cmd.findOption("--dump"))    opt_dumpMode = OFTrue;
       if (cmd.findOption("--noprint")) opt_noPrint = OFTrue;
       if (cmd.findOption("--session-print")) opt_sessionPrint = OFTrue;
+      if (cmd.findOption("--monochrome1")) opt_Monochrome1 = OFTrue;
 
       cmd.beginOptionBlock();
       if (cmd.findOption("--print"))   opt_spoolMode = OFFalse;
@@ -987,7 +990,10 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmprscu.cc,v $
- * Revision 1.2  2000-06-19 16:29:05  meichel
+ * Revision 1.3  2000-06-20 14:50:05  meichel
+ * Added monochrome1 printing mode.
+ *
+ * Revision 1.2  2000/06/19 16:29:05  meichel
  * Added options for session printing and LIN OD to print tools, fixed
  *   pixel aspect ratio related bug.
  *

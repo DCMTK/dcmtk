@@ -23,8 +23,8 @@
  *    classes: DVPSStoredPrint
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-06-19 16:29:07 $
- *  CVS/RCS Revision: $Revision: 1.28 $
+ *  Update Date:      $Date: 2000-06-20 14:50:08 $
+ *  CVS/RCS Revision: $Revision: 1.29 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -661,12 +661,15 @@ class DVPSStoredPrint
    *  @param idx index of the image reference from which the Image Box settings are taken,
    *     must be < getNumberOfImages().
    *  @param image DICOM image to be printed
+   *  @param useMonochrome1 if true, the image is transmitted in MONOCHROME1 photometric interpretation.
+   *    Default is false, image is transmitted in MONOCHROME2 in this case.
    *  @return EC_Normal upon success, an error code otherwise.
    */
   E_Condition printSCUsetBasicImageBox(
     DVPSPrintMessageHandler& printHandler,
     size_t idx,
-    DicomImage& image);
+    DicomImage& image,
+    OFBool useMonochrome1=OFFalse);
 
   /** Transmits a DICOM annotation to the printer (Basic Annotation Box N-SET).
    *  @param printHandler print communication handler, association must be open.
@@ -1091,7 +1094,10 @@ class DVPSStoredPrint
 
 /*
  *  $Log: dvpssp.h,v $
- *  Revision 1.28  2000-06-19 16:29:07  meichel
+ *  Revision 1.29  2000-06-20 14:50:08  meichel
+ *  Added monochrome1 printing mode.
+ *
+ *  Revision 1.28  2000/06/19 16:29:07  meichel
  *  Added options for session printing and LIN OD to print tools, fixed
  *    pixel aspect ratio related bug.
  *
