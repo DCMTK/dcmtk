@@ -23,8 +23,8 @@
  *    classes: DSRReferencedSamplePositionList
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-09-26 13:04:12 $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  Update Date:      $Date: 2003-06-03 10:16:44 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -58,19 +58,19 @@ class DSRReferencedSamplePositionList
     DSRReferencedSamplePositionList();
 
     /** copy constructor
-     ** @param  list  list to be copied
+     ** @param  lst  list to be copied
      */
-    DSRReferencedSamplePositionList(const DSRReferencedSamplePositionList &list);
+    DSRReferencedSamplePositionList(const DSRReferencedSamplePositionList &lst);
 
     /** destructor
      */
     virtual ~DSRReferencedSamplePositionList();
 
     /** assignment operator
-     ** @param  list  list to be copied
-     ** @return reference to this list after 'list' has been copied
+     ** @param  lst  list to be copied
+     ** @return reference to this list after 'lst' has been copied
      */
-    DSRReferencedSamplePositionList &operator=(const DSRReferencedSamplePositionList &list);
+    DSRReferencedSamplePositionList &operator=(const DSRReferencedSamplePositionList &lst);
 
     /** print list of referenced sample positions.
      *  The output of a typical list looks like this: 1,2,3 or 1,... if shortened.
@@ -107,7 +107,10 @@ class DSRReferencedSamplePositionList
 /*
  *  CVS/RCS Log:
  *  $Log: dsrtcosp.h,v $
- *  Revision 1.5  2001-09-26 13:04:12  meichel
+ *  Revision 1.6  2003-06-03 10:16:44  meichel
+ *  Renamed local variables to avoid name clashes with STL
+ *
+ *  Revision 1.5  2001/09/26 13:04:12  meichel
  *  Adapted dcmsr to class OFCondition
  *
  *  Revision 1.4  2001/06/01 15:51:04  meichel

@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DSRWaveformChannelList
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-10-10 15:30:07 $
- *  CVS/RCS Revision: $Revision: 1.9 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2003-06-03 10:16:46 $
+ *  CVS/RCS Revision: $Revision: 1.10 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -47,8 +47,8 @@ DSRWaveformChannelList::DSRWaveformChannelList()
 }
 
 
-DSRWaveformChannelList::DSRWaveformChannelList(const DSRWaveformChannelList &list)
-  : DSRListOfItems<DSRWaveformChannelItem>(list)
+DSRWaveformChannelList::DSRWaveformChannelList(const DSRWaveformChannelList &lst)
+  : DSRListOfItems<DSRWaveformChannelItem>(lst)
 {
 }
 
@@ -58,9 +58,9 @@ DSRWaveformChannelList::~DSRWaveformChannelList()
 }
 
 
-DSRWaveformChannelList &DSRWaveformChannelList::operator=(const DSRWaveformChannelList &list)
+DSRWaveformChannelList &DSRWaveformChannelList::operator=(const DSRWaveformChannelList &lst)
 {
-    DSRListOfItems<DSRWaveformChannelItem>::operator=(list);
+    DSRListOfItems<DSRWaveformChannelItem>::operator=(lst);
     return *this;
 }
 
@@ -169,7 +169,10 @@ void DSRWaveformChannelList::addItem(const Uint16 multiplexGroupNumber,
 /*
  *  CVS/RCS Log:
  *  $Log: dsrwavch.cc,v $
- *  Revision 1.9  2001-10-10 15:30:07  joergr
+ *  Revision 1.10  2003-06-03 10:16:46  meichel
+ *  Renamed local variables to avoid name clashes with STL
+ *
+ *  Revision 1.9  2001/10/10 15:30:07  joergr
  *  Additonal adjustments for new OFCondition class.
  *
  *  Revision 1.8  2001/09/26 13:04:30  meichel

@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DSRReferencedDatetimeList
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-10-10 15:30:02 $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2003-06-03 10:16:46 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -47,8 +47,8 @@ DSRReferencedDatetimeList::DSRReferencedDatetimeList()
 }
 
 
-DSRReferencedDatetimeList::DSRReferencedDatetimeList(const DSRReferencedDatetimeList &list)
-  : DSRListOfItems<OFString>(list)
+DSRReferencedDatetimeList::DSRReferencedDatetimeList(const DSRReferencedDatetimeList &lst)
+  : DSRListOfItems<OFString>(lst)
 {
 }
 
@@ -58,9 +58,9 @@ DSRReferencedDatetimeList::~DSRReferencedDatetimeList()
 }
 
 
-DSRReferencedDatetimeList &DSRReferencedDatetimeList::operator=(const DSRReferencedDatetimeList &list)
+DSRReferencedDatetimeList &DSRReferencedDatetimeList::operator=(const DSRReferencedDatetimeList &lst)
 {
-    DSRListOfItems<OFString>::operator=(list);
+    DSRListOfItems<OFString>::operator=(lst);
     return *this;
 }
 
@@ -138,7 +138,10 @@ OFCondition DSRReferencedDatetimeList::write(DcmItem &dataset,
 /*
  *  CVS/RCS Log:
  *  $Log: dsrtcodt.cc,v $
- *  Revision 1.5  2001-10-10 15:30:02  joergr
+ *  Revision 1.6  2003-06-03 10:16:46  meichel
+ *  Renamed local variables to avoid name clashes with STL
+ *
+ *  Revision 1.5  2001/10/10 15:30:02  joergr
  *  Additonal adjustments for new OFCondition class.
  *
  *  Revision 1.4  2001/09/26 13:04:25  meichel

@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DSRGraphicDataList
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-10-10 15:30:00 $
- *  CVS/RCS Revision: $Revision: 1.8 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2003-06-03 10:16:46 $
+ *  CVS/RCS Revision: $Revision: 1.9 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -47,8 +47,8 @@ DSRGraphicDataList::DSRGraphicDataList()
 }
 
 
-DSRGraphicDataList::DSRGraphicDataList(const DSRGraphicDataList &list)
-  : DSRListOfItems<DSRGraphicDataItem>(list)
+DSRGraphicDataList::DSRGraphicDataList(const DSRGraphicDataList &lst)
+  : DSRListOfItems<DSRGraphicDataItem>(lst)
 {
 }
 
@@ -58,9 +58,9 @@ DSRGraphicDataList::~DSRGraphicDataList()
 }
 
 
-DSRGraphicDataList &DSRGraphicDataList::operator=(const DSRGraphicDataList &list)
+DSRGraphicDataList &DSRGraphicDataList::operator=(const DSRGraphicDataList &lst)
 {
-    DSRListOfItems<DSRGraphicDataItem>::operator=(list);
+    DSRListOfItems<DSRGraphicDataItem>::operator=(lst);
     return *this;
 }
 
@@ -169,7 +169,10 @@ void DSRGraphicDataList::addItem(const Float32 column,
 /*
  *  CVS/RCS Log:
  *  $Log: dsrscogr.cc,v $
- *  Revision 1.8  2001-10-10 15:30:00  joergr
+ *  Revision 1.9  2003-06-03 10:16:46  meichel
+ *  Renamed local variables to avoid name clashes with STL
+ *
+ *  Revision 1.8  2001/10/10 15:30:00  joergr
  *  Additonal adjustments for new OFCondition class.
  *
  *  Revision 1.7  2001/09/26 13:04:24  meichel

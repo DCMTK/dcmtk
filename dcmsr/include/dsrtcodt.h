@@ -23,8 +23,8 @@
  *    classes: DSRReferencedDatetimeList
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-09-26 13:04:11 $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  Update Date:      $Date: 2003-06-03 10:16:44 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -60,19 +60,19 @@ class DSRReferencedDatetimeList
     DSRReferencedDatetimeList();
 
     /** copy constructor
-     ** @param  list  list to be copied
+     ** @param  lst  list to be copied
      */
-    DSRReferencedDatetimeList(const DSRReferencedDatetimeList &list);
+    DSRReferencedDatetimeList(const DSRReferencedDatetimeList &lst);
 
     /** destructor
      */
     virtual ~DSRReferencedDatetimeList();
 
     /** assignment operator
-     ** @param  list  list to be copied
-     ** @return reference to this list after 'list' has been copied
+     ** @param  lst  list to be copied
+     ** @return reference to this list after 'lst' has been copied
      */
-    DSRReferencedDatetimeList &operator=(const DSRReferencedDatetimeList &list);
+    DSRReferencedDatetimeList &operator=(const DSRReferencedDatetimeList &lst);
 
     /** print list of referenced datetime.
      *  The output of a typical list looks like this: 20001010120000, ...
@@ -109,7 +109,10 @@ class DSRReferencedDatetimeList
 /*
  *  CVS/RCS Log:
  *  $Log: dsrtcodt.h,v $
- *  Revision 1.5  2001-09-26 13:04:11  meichel
+ *  Revision 1.6  2003-06-03 10:16:44  meichel
+ *  Renamed local variables to avoid name clashes with STL
+ *
+ *  Revision 1.5  2001/09/26 13:04:11  meichel
  *  Adapted dcmsr to class OFCondition
  *
  *  Revision 1.4  2001/06/01 15:51:04  meichel

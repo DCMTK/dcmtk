@@ -23,8 +23,8 @@
  *    classes: DSRWaveformChannelItem, DSRWaveformChannelList
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-09-26 13:04:15 $
- *  CVS/RCS Revision: $Revision: 1.8 $
+ *  Update Date:      $Date: 2003-06-03 10:16:44 $
+ *  CVS/RCS Revision: $Revision: 1.9 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -93,19 +93,19 @@ class DSRWaveformChannelList
     DSRWaveformChannelList();
 
     /** copy constructor
-     ** @param  list  list to be copied
+     ** @param  lst  list to be copied
      */
-    DSRWaveformChannelList(const DSRWaveformChannelList &list);
+    DSRWaveformChannelList(const DSRWaveformChannelList &lst);
 
     /** destructor
      */
     virtual ~DSRWaveformChannelList();
 
     /** assignment operator
-     ** @param  list  list to be copied
-     ** @return reference to this list after 'list' has been copied
+     ** @param  lst  list to be copied
+     ** @return reference to this list after 'lst' has been copied
      */
-    DSRWaveformChannelList &operator=(const DSRWaveformChannelList &list);
+    DSRWaveformChannelList &operator=(const DSRWaveformChannelList &lst);
 
     /** print list of waveform channels.
      *  The output of a typical list looks like this: 1/2,3/4,5/6
@@ -169,7 +169,10 @@ class DSRWaveformChannelList
 /*
  *  CVS/RCS Log:
  *  $Log: dsrwavch.h,v $
- *  Revision 1.8  2001-09-26 13:04:15  meichel
+ *  Revision 1.9  2003-06-03 10:16:44  meichel
+ *  Renamed local variables to avoid name clashes with STL
+ *
+ *  Revision 1.8  2001/09/26 13:04:15  meichel
  *  Adapted dcmsr to class OFCondition
  *
  *  Revision 1.7  2001/05/07 16:13:24  joergr

@@ -23,8 +23,8 @@
  *    classes: DSRGraphicDataItem, DSRGraphicDataList
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-09-26 13:04:10 $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  Update Date:      $Date: 2003-06-03 10:16:44 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -93,19 +93,19 @@ class DSRGraphicDataList
     DSRGraphicDataList();
 
     /** copy constructor
-     ** @param  list  list to be copied
+     ** @param  lst  list to be copied
      */
-    DSRGraphicDataList(const DSRGraphicDataList &list);
+    DSRGraphicDataList(const DSRGraphicDataList &lst);
 
     /** destructor
      */
     virtual ~DSRGraphicDataList();
 
     /** assignment operator
-     ** @param  list  list to be copied
-     ** @return reference to this list after 'list' has been copied
+     ** @param  lst  list to be copied
+     ** @return reference to this list after 'lst' has been copied
      */
-    DSRGraphicDataList &operator=(const DSRGraphicDataList &list);
+    DSRGraphicDataList &operator=(const DSRGraphicDataList &lst);
 
     /** print list of graphic data.
      *  The output of a typical list looks like this: 0/0,127/127,255/255
@@ -167,7 +167,10 @@ class DSRGraphicDataList
 /*
  *  CVS/RCS Log:
  *  $Log: dsrscogr.h,v $
- *  Revision 1.7  2001-09-26 13:04:10  meichel
+ *  Revision 1.8  2003-06-03 10:16:44  meichel
+ *  Renamed local variables to avoid name clashes with STL
+ *
+ *  Revision 1.7  2001/09/26 13:04:10  meichel
  *  Adapted dcmsr to class OFCondition
  *
  *  Revision 1.6  2001/05/07 16:13:24  joergr

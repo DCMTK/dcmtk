@@ -23,8 +23,8 @@
  *    classes: DSRImageFrameList
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-09-26 13:04:08 $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  Update Date:      $Date: 2003-06-03 10:16:44 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -58,19 +58,19 @@ class DSRImageFrameList
     DSRImageFrameList();
 
     /** copy constructor
-     ** @param  list  list to be copied
+     ** @param  lst  list to be copied
      */
-    DSRImageFrameList(const DSRImageFrameList &list);
+    DSRImageFrameList(const DSRImageFrameList &lst);
 
     /** destructor
      */
     virtual ~DSRImageFrameList();
 
     /** assignment operator
-     ** @param  list  list to be copied
-     ** @return reference to this list after 'list' has been copied
+     ** @param  lst  list to be copied
+     ** @return reference to this list after 'lst' has been copied
      */
-    DSRImageFrameList &operator=(const DSRImageFrameList &list);
+    DSRImageFrameList &operator=(const DSRImageFrameList &lst);
 
     /** print list of referenced frame numbers.
      *  The output of a typical list looks like this: 1,2,3 or 1,... if shortened.
@@ -107,7 +107,10 @@ class DSRImageFrameList
 /*
  *  CVS/RCS Log:
  *  $Log: dsrimgfr.h,v $
- *  Revision 1.6  2001-09-26 13:04:08  meichel
+ *  Revision 1.7  2003-06-03 10:16:44  meichel
+ *  Renamed local variables to avoid name clashes with STL
+ *
+ *  Revision 1.6  2001/09/26 13:04:08  meichel
  *  Adapted dcmsr to class OFCondition
  *
  *  Revision 1.5  2001/06/01 15:51:01  meichel

@@ -23,8 +23,8 @@
  *    classes: DSRImageFrameList
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-11-27 14:36:18 $
- *  CVS/RCS Revision: $Revision: 1.8 $
+ *  Update Date:      $Date: 2003-06-03 10:16:46 $
+ *  CVS/RCS Revision: $Revision: 1.9 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -48,8 +48,8 @@ DSRImageFrameList::DSRImageFrameList()
 }
 
 
-DSRImageFrameList::DSRImageFrameList(const DSRImageFrameList &list)
-  : DSRListOfItems<Sint32>(list)
+DSRImageFrameList::DSRImageFrameList(const DSRImageFrameList &lst)
+  : DSRListOfItems<Sint32>(lst)
 {
 }
 
@@ -59,9 +59,9 @@ DSRImageFrameList::~DSRImageFrameList()
 }
 
 
-DSRImageFrameList &DSRImageFrameList::operator=(const DSRImageFrameList &list)
+DSRImageFrameList &DSRImageFrameList::operator=(const DSRImageFrameList &lst)
 {
-    DSRListOfItems<Sint32>::operator=(list);
+    DSRListOfItems<Sint32>::operator=(lst);
     return *this;
 }
 
@@ -145,7 +145,10 @@ OFCondition DSRImageFrameList::write(DcmItem &dataset,
 /*
  *  CVS/RCS Log:
  *  $Log: dsrimgfr.cc,v $
- *  Revision 1.8  2002-11-27 14:36:18  meichel
+ *  Revision 1.9  2003-06-03 10:16:46  meichel
+ *  Renamed local variables to avoid name clashes with STL
+ *
+ *  Revision 1.8  2002/11/27 14:36:18  meichel
  *  Adapted module dcmsr to use of new header file ofstdinc.h
  *
  *  Revision 1.7  2002/08/20 12:53:56  meichel

@@ -23,8 +23,8 @@
  *    classes: DSRReferencedTimeOffsetList
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-12-04 10:42:16 $
- *  CVS/RCS Revision: $Revision: 1.8 $
+ *  Update Date:      $Date: 2003-06-03 10:16:46 $
+ *  CVS/RCS Revision: $Revision: 1.9 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -49,8 +49,8 @@ DSRReferencedTimeOffsetList::DSRReferencedTimeOffsetList()
 }
 
 
-DSRReferencedTimeOffsetList::DSRReferencedTimeOffsetList(const DSRReferencedTimeOffsetList &list)
-  : DSRListOfItems<Float64>(list)
+DSRReferencedTimeOffsetList::DSRReferencedTimeOffsetList(const DSRReferencedTimeOffsetList &lst)
+  : DSRListOfItems<Float64>(lst)
 {
 }
 
@@ -60,9 +60,9 @@ DSRReferencedTimeOffsetList::~DSRReferencedTimeOffsetList()
 }
 
 
-DSRReferencedTimeOffsetList &DSRReferencedTimeOffsetList::operator=(const DSRReferencedTimeOffsetList &list)
+DSRReferencedTimeOffsetList &DSRReferencedTimeOffsetList::operator=(const DSRReferencedTimeOffsetList &lst)
 {
-    DSRListOfItems<Float64>::operator=(list);
+    DSRListOfItems<Float64>::operator=(lst);
     return *this;
 }
 
@@ -143,7 +143,10 @@ OFCondition DSRReferencedTimeOffsetList::write(DcmItem &dataset,
 /*
  *  CVS/RCS Log:
  *  $Log: dsrtcoto.cc,v $
- *  Revision 1.8  2002-12-04 10:42:16  meichel
+ *  Revision 1.9  2003-06-03 10:16:46  meichel
+ *  Renamed local variables to avoid name clashes with STL
+ *
+ *  Revision 1.8  2002/12/04 10:42:16  meichel
  *  Changed toolkit to use OFStandard::ftoa instead of sprintf for all
  *    double to string conversions that are supposed to be locale independent
  *

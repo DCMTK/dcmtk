@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DSRReferencedSamplePositionList
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-10-10 15:30:03 $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2003-06-03 10:16:46 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -47,8 +47,8 @@ DSRReferencedSamplePositionList::DSRReferencedSamplePositionList()
 }
 
 
-DSRReferencedSamplePositionList::DSRReferencedSamplePositionList(const DSRReferencedSamplePositionList &list)
-  : DSRListOfItems<Uint32>(list)
+DSRReferencedSamplePositionList::DSRReferencedSamplePositionList(const DSRReferencedSamplePositionList &lst)
+  : DSRListOfItems<Uint32>(lst)
 {
 }
 
@@ -58,9 +58,9 @@ DSRReferencedSamplePositionList::~DSRReferencedSamplePositionList()
 }
 
 
-DSRReferencedSamplePositionList &DSRReferencedSamplePositionList::operator=(const DSRReferencedSamplePositionList &list)
+DSRReferencedSamplePositionList &DSRReferencedSamplePositionList::operator=(const DSRReferencedSamplePositionList &lst)
 {
-    DSRListOfItems<Uint32>::operator=(list);
+    DSRListOfItems<Uint32>::operator=(lst);
     return *this;
 }
 
@@ -135,7 +135,10 @@ OFCondition DSRReferencedSamplePositionList::write(DcmItem &dataset,
 /*
  *  CVS/RCS Log:
  *  $Log: dsrtcosp.cc,v $
- *  Revision 1.5  2001-10-10 15:30:03  joergr
+ *  Revision 1.6  2003-06-03 10:16:46  meichel
+ *  Renamed local variables to avoid name clashes with STL
+ *
+ *  Revision 1.5  2001/10/10 15:30:03  joergr
  *  Additonal adjustments for new OFCondition class.
  *
  *  Revision 1.4  2001/09/26 13:04:25  meichel

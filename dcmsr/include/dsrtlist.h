@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DSRListOfItems
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-10-10 15:27:41 $
- *  CVS/RCS Revision: $Revision: 1.8 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2003-06-03 10:16:44 $
+ *  CVS/RCS Revision: $Revision: 1.9 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -65,10 +65,10 @@ class DSRListOfItems
     }
 
     /** copy constructor
-     ** @param  list  list to be copied
+     ** @param  lst  list to be copied
      */
-    DSRListOfItems(const DSRListOfItems<T> &list)
-      : OFList<T>(list)
+    DSRListOfItems(const DSRListOfItems<T> &lst)
+      : OFList<T>(lst)
     {
     }
 
@@ -79,15 +79,15 @@ class DSRListOfItems
     }
 
     /** assignment operator
-     ** @param  list  list to be copied
-     ** @return reference to this list after 'list' has been copied
+     ** @param  lst  list to be copied
+     ** @return reference to this list after 'lst' has been copied
      */
-    inline DSRListOfItems<T> &operator=(const DSRListOfItems<T> &list)
+    inline DSRListOfItems<T> &operator=(const DSRListOfItems<T> &lst)
     {
         /* class OFList has no overloaded assignment operator */
         OFList<T>::clear();
-        const OFListIterator(T) endPos = list.end();
-        OFListIterator(T) iterator = list.begin();
+        const OFListIterator(T) endPos = lst.end();
+        OFListIterator(T) iterator = lst.begin();
         while (iterator != endPos)
         {
             OFList<T>::push_back(*iterator);
@@ -270,7 +270,10 @@ class DSRListOfItems
 /*
  *  CVS/RCS Log:
  *  $Log: dsrtlist.h,v $
- *  Revision 1.8  2001-10-10 15:27:41  joergr
+ *  Revision 1.9  2003-06-03 10:16:44  meichel
+ *  Renamed local variables to avoid name clashes with STL
+ *
+ *  Revision 1.8  2001/10/10 15:27:41  joergr
  *  Additonal adjustments for new OFCondition class.
  *
  *  Revision 1.7  2001/09/26 13:04:13  meichel
