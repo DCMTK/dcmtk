@@ -21,9 +21,9 @@
  *
  *  Purpose: Create sample structured reports using the dcmsr API
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-09-26 13:19:11 $
- *  CVS/RCS Revision: $Revision: 1.13 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2001-09-28 14:15:01 $
+ *  CVS/RCS Revision: $Revision: 1.14 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -63,39 +63,39 @@ int main(int argc, char *argv[])
 {
     if (argc < 2)
     {
-        cout << "mkreport: Create DICOM SR documents" << endl;
-        cout << "----------------------------------------------------" << endl;
-        cout << "ki = IHE Year 2 key image note (empty)" << endl;
-        cout << "si = IHE Year 2 simple image report (empty)" << endl;
-        cout << "fk = Fake report, C. Iulius Caesar: De bello Gallico" << endl;
-        cout << "lp = Valid comprehensive report with loop/cycle" << endl;
-        cout << endl;
-        cout << "01 = Consultation report (text only)" << endl;
-        cout << "02 = Same as 01 but with NUM and PNAME items" << endl;
-        cout << "03 = Very short report (text only)" << endl;
-        cout << "04 = Text report with several sections (history)" << endl;
-        cout << "05 = Text report with several blocks (discharge)" << endl;
-        cout << "06 = Radiology report with image reference (dentist)" << endl;
-        cout << "07 = Same as 06 with image/pstate reference" << endl;
-        cout << "08 = Same as 06 with composite (pstate) reference" << endl;
-        cout << endl;
-        cout << "09 = RSNA '95: Picker, CT, #3" << endl;
-        cout << "10 = RSNA '95: Picker, MR, #4" << endl;
-        cout << "11 = RSNA '95: Kodak, CR, #8" << endl;
-        cout << "12 = RSNA '95: Acuson, US, #11" << endl;
-        cout << "13 = RSNA '95: GE, CT, #17" << endl;
-        cout << "14 = RSNA '95: GE, MR, #21" << endl;
-        cout << "15 = RSNA '95: Siemens, MR, #26" << endl;
-        cout << "16 = RSNA '95: Siemens, DS, #29" << endl;
-        cout << "17 = RSNA '95: Siemens, DR, #31" << endl;
-        cout << "18 = RSNA '95: Fuji, CR, #32" << endl;
-        cout << "19 = RSNA '95: ATL, US, #36" << endl;
-        cout << "----------------------------------------------------" << endl;
+        COUT << "mkreport: Create DICOM SR documents" << endl;
+        COUT << "----------------------------------------------------" << endl;
+        COUT << "ki = IHE Year 2 key image note (empty)" << endl;
+        COUT << "si = IHE Year 2 simple image report (empty)" << endl;
+        COUT << "fk = Fake report, C. Iulius Caesar: De bello Gallico" << endl;
+        COUT << "lp = Valid comprehensive report with loop/cycle" << endl;
+        COUT << endl;
+        COUT << "01 = Consultation report (text only)" << endl;
+        COUT << "02 = Same as 01 but with NUM and PNAME items" << endl;
+        COUT << "03 = Very short report (text only)" << endl;
+        COUT << "04 = Text report with several sections (history)" << endl;
+        COUT << "05 = Text report with several blocks (discharge)" << endl;
+        COUT << "06 = Radiology report with image reference (dentist)" << endl;
+        COUT << "07 = Same as 06 with image/pstate reference" << endl;
+        COUT << "08 = Same as 06 with composite (pstate) reference" << endl;
+        COUT << endl;
+        COUT << "09 = RSNA '95: Picker, CT, #3" << endl;
+        COUT << "10 = RSNA '95: Picker, MR, #4" << endl;
+        COUT << "11 = RSNA '95: Kodak, CR, #8" << endl;
+        COUT << "12 = RSNA '95: Acuson, US, #11" << endl;
+        COUT << "13 = RSNA '95: GE, CT, #17" << endl;
+        COUT << "14 = RSNA '95: GE, MR, #21" << endl;
+        COUT << "15 = RSNA '95: Siemens, MR, #26" << endl;
+        COUT << "16 = RSNA '95: Siemens, DS, #29" << endl;
+        COUT << "17 = RSNA '95: Siemens, DR, #31" << endl;
+        COUT << "18 = RSNA '95: Fuji, CR, #32" << endl;
+        COUT << "19 = RSNA '95: ATL, US, #36" << endl;
+        COUT << "----------------------------------------------------" << endl;
     } else {
         /* make sure data dictionary is loaded */
         if (!dcmDataDict.isDictionaryLoaded())
         {
-            cerr << "Warning: no data dictionary loaded, "
+            CERR << "Warning: no data dictionary loaded, "
                  << "check environment variable: "
                  << DCM_DICT_ENVIRONMENT_VARIABLE << endl;
         }
@@ -1098,15 +1098,15 @@ int main(int argc, char *argv[])
 
                 } else {
                     writeFile = OFFalse;
-                    cerr << "WARNING: unknown document identifier \"" << argv[i] << "\" ... ignoring" << endl;
+                    CERR << "WARNING: unknown document identifier \"" << argv[i] << "\" ... ignoring" << endl;
                 }
 
                 if (writeFile)
                 {
-                    cout << OFString(79, '-') << endl;
-                    cout << "mkreport: report" << argv[i] << ".dcm" << endl << endl;
-                    doc->print(cout, DSRTypes::PF_shortenLongItemValues);
-                    cout << endl;
+                    COUT << OFString(79, '-') << endl;
+                    COUT << "mkreport: report" << argv[i] << ".dcm" << endl << endl;
+                    doc->print(COUT, DSRTypes::PF_shortenLongItemValues);
+                    COUT << endl;
 
                     DcmFileFormat *fileformat = new DcmFileFormat();
                     DcmDataset *dataset = NULL;
@@ -1121,7 +1121,7 @@ int main(int argc, char *argv[])
                             filename += ".dcm";
                             saveFileFormat(filename.c_str(), fileformat);
                         } else
-                            cerr << "ERROR: could not write SR document into dataset" << endl;
+                            CERR << "ERROR: could not write SR document into dataset" << endl;
                     }
                 }
             }
@@ -1135,7 +1135,10 @@ int main(int argc, char *argv[])
 /*
  *  CVS/RCS Log:
  *  $Log: mkreport.cc,v $
- *  Revision 1.13  2001-09-26 13:19:11  meichel
+ *  Revision 1.14  2001-09-28 14:15:01  joergr
+ *  Replaced "cerr" by "CERR". Replaced "cout" by "COUT".
+ *
+ *  Revision 1.13  2001/09/26 13:19:11  meichel
  *  Adapted dcmsr to class OFCondition
  *
  *  Revision 1.12  2001/09/26 13:04:34  meichel
