@@ -23,8 +23,8 @@
  *    classes: DSRTreeNodeCursor
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-10-16 12:09:55 $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  Update Date:      $Date: 2000-10-26 14:35:39 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -274,7 +274,8 @@ size_t DSRTreeNodeCursor::gotoNode(const size_t searchID)
 }
 
 
-size_t DSRTreeNodeCursor::gotoNode(const OFString &position)
+size_t DSRTreeNodeCursor::gotoNode(const OFString &position,
+                                   const char separator)
 {
     size_t nodeID = 0;
     if (position.length() > 0)
@@ -293,7 +294,7 @@ size_t DSRTreeNodeCursor::gotoNode(const OFString &position)
                 if (nodeID > 0)
                 {
                     /* search for next separator */
-                    posEnd = position.find('.', posStart);
+                    posEnd = position.find(separator, posStart);
                     /* is last segment? */
                     if (posEnd == OFString_npos)
                         goCount = DSRTypes::stringToNumber(position.substr(posStart).c_str());
@@ -334,7 +335,8 @@ size_t DSRTreeNodeCursor::getLevel() const
 }
 
 
-const OFString &DSRTreeNodeCursor::getPosition(OFString &position) const
+const OFString &DSRTreeNodeCursor::getPosition(OFString &position,
+                                               const char separator) const
 {
     position.clear();
     if (Position > 0)
@@ -345,12 +347,12 @@ const OFString &DSRTreeNodeCursor::getPosition(OFString &position) const
         while (iterator != endPos)
         {
             if (position.length() > 0)
-                position += '.';
+                position += separator;
             position += DSRTypes::numberToString(*iterator, string);
             iterator++;
         }
         if (position.length() > 0)
-            position += '.';
+            position += separator;
         position += DSRTypes::numberToString(Position, string);
     }
     return position;
@@ -369,7 +371,10 @@ const DSRTreeNode *DSRTreeNodeCursor::getParentNode()
 /*
  *  CVS/RCS Log:
  *  $Log: dsrtncsr.cc,v $
- *  Revision 1.2  2000-10-16 12:09:55  joergr
+ *  Revision 1.3  2000-10-26 14:35:39  joergr
+ *  Generalized routine to get and search for position strings ("1.2.3").
+ *
+ *  Revision 1.2  2000/10/16 12:09:55  joergr
  *  Added new options: number nested items instead of indenting them, print SOP
  *  instance UID of referenced composite objects.
  *
