@@ -22,9 +22,9 @@
  *  Purpose: export display curves to a text file
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-02-23 16:54:30 $
+ *  Update Date:      $Date: 1999-04-28 14:43:13 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/apps/Attic/dcmgsdf.cc,v $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -51,9 +51,13 @@ int main(int argc, char *argv[])
 
 
 /*
+ *
  * CVS/RCS Log:
  * $Log: dcmgsdf.cc,v $
- * Revision 1.1  1999-02-23 16:54:30  joergr
+ * Revision 1.2  1999-04-28 14:43:13  joergr
+ * Changed comments/formatting.
+ *
+ * Revision 1.1  1999/02/23 16:54:30  joergr
  * Added tool to export display curves to a text file.
  *
  *
