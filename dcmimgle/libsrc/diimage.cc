@@ -22,8 +22,8 @@
  *  Purpose: DicomImage (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2004-02-06 11:09:21 $
- *  CVS/RCS Revision: $Revision: 1.27 $
+ *  Update Date:      $Date: 2004-03-16 08:18:54 $
+ *  CVS/RCS Revision: $Revision: 1.28 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -491,7 +491,8 @@ void DiImage::checkPixelExtension()
 void DiImage::convertPixelData(/*const*/ DcmPixelData *pixel,
                                const int spp /*samplePerPixel*/)
 {
-    if ((pixel->getVR() == EVR_OW) || ((pixel->getVR() == EVR_OB) && (BitsAllocated <= 8)))
+    /* check for valid/supported pixel data encoding */
+    if ((pixel->getVR() == EVR_OW) || ((pixel->getVR() == EVR_OB) && (BitsAllocated <= 16)))
     {
         const unsigned long start = FirstFrame * OFstatic_cast(unsigned long, Rows) *
             OFstatic_cast(unsigned long, Columns) * OFstatic_cast(unsigned long, spp);
@@ -515,6 +516,21 @@ void DiImage::convertPixelData(/*const*/ DcmPixelData *pixel,
                 InputData = new DiInputPixelTemplate<Uint8, Sint8>(pixel, BitsAllocated, BitsStored, HighBit, start, count);
             else
                 InputData  = new DiInputPixelTemplate<Uint8, Uint8>(pixel, BitsAllocated, BitsStored, HighBit, start, count);
+        }
+        // allow non-standard encoding of pixel data
+        else if ((pixel->getVR() == EVR_OB) && (BitsAllocated <= 16))
+        {
+            // report a warning message on this standard violation
+            if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Warnings))
+            {
+                ofConsole.lockCerr() << "WARNING: invalid value for 'BitsAllocated' (" << BitsAllocated
+                                     << "), > 8 for OB encoded 'PixelData' !" << endl;
+                ofConsole.unlockCerr();
+            }
+            if (hasSignedRepresentation)
+                InputData = new DiInputPixelTemplate<Uint8, Sint16>(pixel, BitsAllocated, BitsStored, HighBit, start, count);
+            else
+                InputData  = new DiInputPixelTemplate<Uint8, Uint16>(pixel, BitsAllocated, BitsStored, HighBit, start, count);
         }
         else if (BitsStored <= bitsof(Uint8))
         {
@@ -574,7 +590,7 @@ void DiImage::convertPixelData(/*const*/ DcmPixelData *pixel,
         if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Errors))
         {
             ofConsole.lockCerr() << "ERROR: 'PixelData' has an other value representation than OB "
-                                 << "(with 'BitsAllocated' <= 8) or OW !" << endl;
+                                 << "(with 'BitsAllocated' <= 16) or OW !" << endl;
             ofConsole.unlockCerr();
         }
     }
@@ -842,7 +858,11 @@ int DiImage::writeBMP(FILE *stream,
  *
  * CVS/RCS Log:
  * $Log: diimage.cc,v $
- * Revision 1.27  2004-02-06 11:09:21  joergr
+ * Revision 1.28  2004-03-16 08:18:54  joergr
+ * Added support for non-standard encoding of pixel data (OB with BitsAllocated
+ * > 8 and <= 16).
+ *
+ * Revision 1.27  2004/02/06 11:09:21  joergr
  * Fixed inconsistency in re-calculation of PixelSpacing and ImagerPixelSpacing
  * when scaling images.
  *
