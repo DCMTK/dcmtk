@@ -22,9 +22,9 @@
  *  Purpose: DicomMonochromeModality (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-03-24 17:20:12 $
+ *  Update Date:      $Date: 1999-04-28 17:03:47 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/dimomod.h,v $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -126,7 +126,7 @@ class DiMonoModality
     
     inline const char *getExplanation() const
     {
-        return (TableData != NULL) ? TableData->getExplanation() : NULL;
+        return (TableData != NULL) ? TableData->getExplanation() : (const char *)NULL;
     }
 
     inline int hasLookupTable() const
@@ -183,7 +183,11 @@ class DiMonoModality
  *
  * CVS/RCS Log:
  * $Log: dimomod.h,v $
- * Revision 1.6  1999-03-24 17:20:12  joergr
+ * Revision 1.7  1999-04-28 17:03:47  joergr
+ * Added type casts to NULL pointers returned as 'const char *' to avoid
+ * compiler warnings reported by gcc 2.7.2.1 (Linux).
+ *
+ * Revision 1.6  1999/03/24 17:20:12  joergr
  * Added/Modified comments and formatting.
  *
  * Revision 1.5  1999/02/03 17:30:00  joergr

@@ -22,9 +22,9 @@
  *  Purpose: DicomMonochromePixel (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-03-24 17:20:15 $
+ *  Update Date:      $Date: 1999-04-28 17:03:48 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/dimopx.h,v $
- *  CVS/RCS Revision: $Revision: 1.6 $ 
+ *  CVS/RCS Revision: $Revision: 1.7 $ 
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -107,7 +107,7 @@ class DiMonoPixel
     
     inline const char *getModalityLutExplanation() const
     {
-        return (Modality != NULL) ? Modality->getExplanation() : NULL;
+        return (Modality != NULL) ? Modality->getExplanation() : (const char *)NULL;
     }
 
     inline int isPotentiallySigned() const
@@ -142,7 +142,11 @@ class DiMonoPixel
  *
  * CVS/RCS Log:
  * $Log: dimopx.h,v $
- * Revision 1.6  1999-03-24 17:20:15  joergr
+ * Revision 1.7  1999-04-28 17:03:48  joergr
+ * Added type casts to NULL pointers returned as 'const char *' to avoid
+ * compiler warnings reported by gcc 2.7.2.1 (Linux).
+ *
+ * Revision 1.6  1999/03/24 17:20:15  joergr
  * Added/Modified comments and formatting.
  *
  * Revision 1.5  1999/02/03 17:33:18  joergr

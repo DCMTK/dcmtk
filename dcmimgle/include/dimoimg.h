@@ -22,9 +22,9 @@
  *  Purpose: DicomMonochromeImage (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-04-28 14:49:54 $
+ *  Update Date:      $Date: 1999-04-28 17:03:47 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/dimoimg.h,v $
- *  CVS/RCS Revision: $Revision: 1.16 $
+ *  CVS/RCS Revision: $Revision: 1.17 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -141,7 +141,7 @@ class DiMonoImage
 
     inline const char *getModalityLutExplanation() const
     {
-        return (InterData != NULL) ? InterData->getModalityLutExplanation() : NULL;
+        return (InterData != NULL) ? InterData->getModalityLutExplanation() : (const char *)NULL;
     }
 
     int setPresentationLutShape(const ES_PresentationLut shape);
@@ -152,7 +152,7 @@ class DiMonoImage
 
     inline const char *getPresentationLutExplanation() const
     {
-        return (PresLutData != NULL) ? PresLutData->getExplanation() : NULL;
+        return (PresLutData != NULL) ? PresLutData->getExplanation() : (const char *)NULL;
     }
 
     int addOverlay(const unsigned int group,
@@ -169,7 +169,7 @@ class DiMonoImage
 
     inline DiOverlay *getOverlayPtr(const unsigned int idx)
     {
-        return (idx < 2) ? Overlays[idx] : NULL;
+        return (idx < 2) ? Overlays[idx] : (DiOverlay *)NULL;
     }
 
     inline DiMonoImage *getMonoImagePtr()
@@ -316,7 +316,11 @@ class DiMonoImage
  *
  * CVS/RCS Log:
  * $Log: dimoimg.h,v $
- * Revision 1.16  1999-04-28 14:49:54  joergr
+ * Revision 1.17  1999-04-28 17:03:47  joergr
+ * Added type casts to NULL pointers returned as 'const char *' to avoid
+ * compiler warnings reported by gcc 2.7.2.1 (Linux).
+ *
+ * Revision 1.16  1999/04/28 14:49:54  joergr
  * Added experimental support to create grayscale images with more than 256
  * shades of gray to be displayed on a consumer monitor (use pastel colors).
  *
