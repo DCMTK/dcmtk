@@ -23,8 +23,8 @@
  *    classes: SiCertificate
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-11-07 16:49:03 $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  Update Date:      $Date: 2000-11-08 11:20:58 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -257,6 +257,7 @@ void SiCertificate::getCertValidityNotBefore(OFString& str)
     if (certValidNotBeforeBIO)
     {
       ASN1_UTCTIME_print(certValidNotBeforeBIO, X509_get_notBefore(x509));
+      BIO_write(certValidNotBeforeBIO,"\0",1);
       BIO_get_mem_data(certValidNotBeforeBIO, (char *)(&bufptr));
       if (bufptr) str = bufptr;
       BIO_free(certValidNotBeforeBIO);
@@ -274,6 +275,7 @@ void SiCertificate::getCertValidityNotAfter(OFString& str)
     if (certValidNotAfterBIO)
     {
       ASN1_UTCTIME_print(certValidNotAfterBIO, X509_get_notAfter(x509));
+      BIO_write(certValidNotAfterBIO,"\0",1);
       BIO_get_mem_data(certValidNotAfterBIO, (char *)(&bufptr));
       if (bufptr) str = bufptr;
       BIO_free(certValidNotAfterBIO);
@@ -330,7 +332,11 @@ const int sicert_cc_dummy_to_keep_linker_from_moaning = 0;
 
 /*
  *  $Log: sicert.cc,v $
- *  Revision 1.1  2000-11-07 16:49:03  meichel
+ *  Revision 1.2  2000-11-08 11:20:58  meichel
+ *  Fixed trailing garbage characters problem in extracting validity
+ *    information from a X.509 certificate.
+ *
+ *  Revision 1.1  2000/11/07 16:49:03  meichel
  *  Initial release of dcmsign module for DICOM Digital Signatures
  *
  *
