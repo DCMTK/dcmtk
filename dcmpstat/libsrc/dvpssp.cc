@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DVPSStoredPrint
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-03-03 14:14:05 $
- *  CVS/RCS Revision: $Revision: 1.22 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2000-03-07 16:24:01 $
+ *  CVS/RCS Revision: $Revision: 1.23 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -698,7 +698,7 @@ E_Condition DVPSStoredPrint::write(DcmItem &dset, OFBool writeRequestedImageSize
   if (EC_Normal == result) result = presentationLUTList.write(dset);
  
   // write imageBoxContentList
-  if (EC_Normal == result) result = imageBoxContentList.write(dset, writeRequestedImageSize, writeImageBoxes);
+  if (EC_Normal == result) result = imageBoxContentList.write(dset, writeRequestedImageSize, (size_t)writeImageBoxes);
 
   // write annotationContentList
   if (EC_Normal == result) result = annotationContentList.write(dset);
@@ -710,7 +710,7 @@ E_Condition DVPSStoredPrint::write(DcmItem &dset, OFBool writeRequestedImageSize
     if (EC_Normal == result) result = DVPSHelper::addReferencedUIDItem(*dseq, UID_BasicFilmSessionSOPClass);
     if (EC_Normal == result) result = DVPSHelper::addReferencedUIDItem(*dseq, UID_BasicFilmBoxSOPClass);
     if (EC_Normal == result) result = DVPSHelper::addReferencedUIDItem(*dseq, UID_BasicGrayscaleImageBoxSOPClass);
-    if (EC_Normal == result) result = imageBoxContentList.addImageSOPClasses(*dseq, writeImageBoxes);
+    if (EC_Normal == result) result = imageBoxContentList.addImageSOPClasses(*dseq, (size_t)writeImageBoxes);
     if ((result == EC_Normal)&&(presentationLUTList.size() > 0))
     {
       result = DVPSHelper::addReferencedUIDItem(*dseq, UID_PresentationLUTSOPClass);
@@ -1092,7 +1092,7 @@ E_Condition DVPSStoredPrint::deleteSpooledImages()
   {
   	deleteImageBoxes = currentNumCols * currentNumRows;
     if (deleteImageBoxes > imageBoxContentList.size()) deleteImageBoxes = imageBoxContentList.size();
-    result = imageBoxContentList.deleteMultipleImages(deleteImageBoxes);
+    result = imageBoxContentList.deleteMultipleImages((size_t)deleteImageBoxes);
   }
   if (EC_Normal != configurationInformation.getString(c)) c = NULL;
   presentationLUTList.cleanup(c, imageBoxContentList);
@@ -1377,7 +1377,7 @@ E_Condition DVPSStoredPrint::printSCUcreateBasicFilmBox(DVPSPrintMessageHandler&
       if (EC_Normal == attributeListOut->search(DCM_ReferencedImageBoxSequence, stack, ESM_fromHere, OFFalse))
       {
         seq=(DcmSequenceOfItems *)stack.top();
-        numItems = seq->card();
+        numItems = (size_t)seq->card();
         if (numItems > imageBoxContentList.size()) numItems = imageBoxContentList.size();
         for (i=0; i<numItems; i++)
         {
@@ -1400,7 +1400,7 @@ E_Condition DVPSStoredPrint::printSCUcreateBasicFilmBox(DVPSPrintMessageHandler&
       if (EC_Normal == attributeListOut->search(DCM_ReferencedBasicAnnotationBoxSequence, stack, ESM_fromHere, OFFalse))
       {
         seq=(DcmSequenceOfItems *)stack.top();
-        numItems = seq->card();
+        numItems = (size_t)seq->card();
         if (numItems > annotationContentList.size()) numItems = annotationContentList.size();
         for (i=0; i<numItems; i++)
         {
@@ -1727,7 +1727,10 @@ void DVPSStoredPrint::deleteAnnotations()
 
 /*
  *  $Log: dvpssp.cc,v $
- *  Revision 1.22  2000-03-03 14:14:05  meichel
+ *  Revision 1.23  2000-03-07 16:24:01  joergr
+ *  Added explicit type casts to make Sun CC 2.0.1 happy.
+ *
+ *  Revision 1.22  2000/03/03 14:14:05  meichel
  *  Implemented library support for redirecting error messages into memory
  *    instead of printing them to stdout/stderr for GUI applications.
  *
