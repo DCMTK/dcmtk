@@ -56,17 +56,15 @@
 ** This is the place to declare compatability routines
 ** which can be missing on some systems.  
 **
-** Base Reference System is SUNOS 4.1.3
-**
 ** This include file is automatically included by dicom.h 
 **
 ** Module Prefix: none 
 ** 
 **
 ** Last Update:		$Author: hewett $
-** Update Date:		$Date: 1996-03-26 18:38:45 $
+** Update Date:		$Date: 1996-04-25 16:05:44 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/include/Attic/dcompat.h,v $
-** CVS/RCS Revision:	$Revision: 1.1 $
+** CVS/RCS Revision:	$Revision: 1.2 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -78,7 +76,52 @@
 
 #include "osconfig.h"    /* make sure OS specific configuration is included first */
 
-#ifndef HAVE_FLOCK
+#ifdef HAVE_SYS_TIME_H
+#include <sys/time.h>
+#endif
+#ifdef HAVE_SYS_TYPES_H
+#include <sys/types.h>
+#endif
+#ifdef HAVE_SYS_SOCKET_H
+#ifndef _SYS_SOCKET_H_
+#define _SYS_SOCKET_H_
+/* some systems don't protect sys/socket.h (e.g. DEC Ultrix) */
+#include <sys/socket.h>
+#endif
+#endif
+#ifdef HAVE_NETINET_IN_H
+#include <netinet/in.h>
+#endif
+#ifdef HAVE_ARPA_INET_H
+#include <arpa/inet.h>
+#endif
+#ifdef HAVE_NETDB_H
+#include <netdb.h>
+#endif
+#ifdef HAVE_SYS_WAIT_H
+#include <sys/wait.h>
+#endif
+#ifdef HAVE_SYS_RESOURCE_H
+#include <sys/resource.h>
+#endif
+#ifdef HAVE_SYS_PARAM_H
+#include <sys/param.h>
+#endif
+
+#ifdef __cplusplus
+#define BEGIN_EXTERN_C extern "C" {
+#define END_EXTERN_C };
+#else
+#define BEGIN_EXTERN_C 
+#define END_EXTERN_C
+#endif
+
+#ifndef HAVE_PROTOTYPE_FLOCK
+#ifdef HAVE_FLOCK
+BEGIN_EXTERN_C
+int flock(int fd, int operation);
+END_EXTERN_C
+#else
 /*
  * Simulate the flock function calls 
  * using the facilities of fcntl(2)
@@ -92,26 +135,162 @@
 int flock(int fd, int operation);
 
 #endif /* !HAVE_FLOCK */
+#endif
 
 #ifndef HAVE_PROTOTYPE_BZERO
+#ifdef HAVE_BZERO
+BEGIN_EXTERN_C
+void bzero(char* s, int len);
+END_EXTERN_C
+#else
 #ifndef bzero
 #define bzero(p,len) memset((void*)(p), 0, (len));
+#endif
 #endif
 #endif
 
 #ifndef HAVE_PROTOTYPE_GETHOSTNAME
 #ifdef HAVE_GETHOSTNAME
 /* gethostname is in the libraries but we have no prototype */
-#ifdef __cplusplus
-extern "C" {
-#endif
+BEGIN_EXTERN_C
 int gethostname(char* name, int namelen);
-#ifdef __cplusplus
-};
-#endif
+END_EXTERN_C
 #else
 /* define gethostname ourselves */
 int gethostname(char* name, int namelen);
+#endif
+#endif
+
+#ifndef HAVE_PROTOTYPE_GETHOSTBYNAME
+#ifdef HAVE_GETHOSTBYNAME
+/* it is in the libraries but we have no prototype */
+BEGIN_EXTERN_C
+struct hostent *gethostbyname(const char* name);
+END_EXTERN_C
+#else
+/* don't know how to emulate */
+#endif
+#endif
+
+#ifndef HAVE_PROTOTYPE_GETSOCKOPT
+#ifdef HAVE_GETSOCKOPT
+/* it is in the libraries but we have no prototype */
+BEGIN_EXTERN_C
+int getsockopt(int s, int level, int optname, char *optval, int *optlen);
+END_EXTERN_C
+#else
+/* don't know how to emulate */
+#endif
+#endif
+
+#ifndef HAVE_PROTOTYPE_SETSOCKOPT
+#ifdef HAVE_SETSOCKOPT
+/* it is in the libraries but we have no prototype */
+BEGIN_EXTERN_C
+int setsockopt(int s, int level, int optname, const char *optval, int optlen);
+END_EXTERN_C
+#else
+/* don't know how to emulate */
+#endif
+#endif
+
+#ifndef HAVE_PROTOTYPE_LISTEN
+#ifdef HAVE_LISTEN
+/* it is in the libraries but we have no prototype */
+BEGIN_EXTERN_C
+int listen(int s, int backlog);
+END_EXTERN_C
+#else
+/* don't know how to emulate */
+#endif
+#endif
+
+#ifndef HAVE_PROTOTYPE_SOCKET
+#ifdef HAVE_SOCKET
+/* it is in the libraries but we have no prototype */
+BEGIN_EXTERN_C
+int socket(int domain, int type, int protocol);
+END_EXTERN_C
+#else
+/* don't know how to emulate */
+#endif
+#endif
+
+#ifndef HAVE_PROTOTYPE_CONNECT
+#ifdef HAVE_CONNECT
+/* it is in the libraries but we have no prototype */
+BEGIN_EXTERN_C
+int connect(int s, struct sockaddr *name, int namelen);
+END_EXTERN_C
+#else
+/* don't know how to emulate */
+#endif
+#endif
+
+#ifndef HAVE_PROTOTYPE_SELECT
+#ifdef HAVE_SELECT
+/* it is in the libraries but we have no prototype */
+BEGIN_EXTERN_C
+int select(int nfds, fd_set *readfds, fd_set *writefds,
+	   fd_set *exceptfds, struct timeval *timeout);
+END_EXTERN_C
+#else
+/* don't know how to emulate */
+#endif
+#endif
+
+#ifndef HAVE_PROTOTYPE_BIND
+#ifdef HAVE_BIND
+/* it is in the libraries but we have no prototype */
+BEGIN_EXTERN_C
+int bind(int s, const struct sockaddr *name, int namelen);
+END_EXTERN_C
+#else
+/* don't know how to emulate */
+#endif
+#endif
+
+#ifndef HAVE_PROTOTYPE_ACCEPT
+#ifdef HAVE_ACCEPT
+/* it is in the libraries but we have no prototype */
+BEGIN_EXTERN_C
+int accept(int s, struct sockaddr *addr, int *addrlen);
+END_EXTERN_C
+#else
+/* don't know how to emulate */
+#endif
+#endif
+
+#ifndef HAVE_PROTOTYPE_GETSOCKNAME
+#ifdef HAVE_GETSOCKNAME
+/* it is in the libraries but we have no prototype */
+BEGIN_EXTERN_C
+int getsockname(int s, struct sockaddr *name, int *namelen);
+END_EXTERN_C
+#else
+/* don't know how to emulate */
+#endif
+#endif
+
+#ifndef HAVE_PROTOTYPE_WAITPID
+#ifdef HAVE_WAITPID
+/* it is in the libraries but we have no prototype */
+BEGIN_EXTERN_C
+int waitpid(pid_t pid, int *statusp, int options);
+END_EXTERN_C
+#else
+/* don't know how to emulate */
+#endif
+#endif
+
+#ifndef HAVE_PROTOTYPE_WAIT3
+#ifdef HAVE_WAIT3
+/* it is in the libraries but we have no prototype */
+BEGIN_EXTERN_C
+int wait3(int *statusp, int options, struct rusage *rusage);
+END_EXTERN_C
+#else
+/* don't know how to emulate */
 #endif
 #endif
 
@@ -152,18 +331,16 @@ char *strerror(int e);
 char *tempnam(char *dir, char *pfx);
 #endif
 
-#ifndef HAVE_STRDUP
-char *strdup(char* s);
-#endif
-
-
 #endif /* DCOMPAT_H */
 
 /*
 ** CVS Log
 ** $Log: dcompat.h,v $
-** Revision 1.1  1996-03-26 18:38:45  hewett
-** Initial revision
+** Revision 1.2  1996-04-25 16:05:44  hewett
+** Added prototypes for some network functions if not available on system.
+**
+** Revision 1.1.1.1  1996/03/26 18:38:45  hewett
+** Initial Release.
 **
 **
 */
