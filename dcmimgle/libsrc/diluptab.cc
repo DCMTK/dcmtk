@@ -22,9 +22,9 @@
  *  Purpose: DicomLookupTable (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1998-12-22 13:29:16 $
+ *  Update Date:      $Date: 1999-02-03 17:40:08 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/libsrc/diluptab.cc,v $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -33,7 +33,6 @@
 
 
 #include "osconfig.h"
-#include "dctypes.h"
 #include "dcdeftag.h"
 #include "dcsequen.h"
 #include "dcitem.h"
@@ -51,15 +50,7 @@ DiLookupTable::DiLookupTable(const DiDocument *docu,
                              const DcmTagKey &data,
                              const DcmTagKey &explanation,
                              EI_Status *status)
-  : Count(0),
-    FirstEntry(0),
-    Bits(0),
-    MinValue(0),
-    MaxValue(0),
-    Valid(0),
-    Explanation(),
-    Data(NULL),
-    DataBuffer(NULL)
+  : DiBaseLUT()
 {
     if (docu != NULL)
         Init(docu, NULL, descriptor, data, explanation, status);
@@ -73,15 +64,7 @@ DiLookupTable::DiLookupTable(const DiDocument *docu,
                              const DcmTagKey &explanation,
                              const unsigned long pos,
                              unsigned long *card)
-  : Count(0),
-    FirstEntry(0),
-    Bits(0),
-    MinValue(0),
-    MaxValue(0),
-    Valid(0),
-    Explanation(),
-    Data(NULL),
-    DataBuffer(NULL)
+  : DiBaseLUT()
 {
     if (docu != NULL)
     {
@@ -103,15 +86,7 @@ DiLookupTable::DiLookupTable(const DcmUnsignedShort &data,
                              const DcmLongString *explanation,
                              const signed long first,
                              EI_Status *status)
-  : Count(0),
-    FirstEntry(0),
-    Bits(0),
-    MinValue(0),
-    MaxValue(0),
-    Valid(0),
-    Explanation(),
-    Data(NULL),
-    DataBuffer(NULL)
+  : DiBaseLUT()
 {
     Uint16 us = 0;
     int ok = (DiDocument::getElemValue((const DcmElement *)&descriptor, us, 0) > 0);
@@ -140,7 +115,6 @@ DiLookupTable::DiLookupTable(const DcmUnsignedShort &data,
 
 DiLookupTable::~DiLookupTable()
 {
-    delete[] DataBuffer;
 }
 
 
@@ -213,7 +187,7 @@ void DiLookupTable::checkTable(const int ok,
                 Count = count;
             }
         }
-        MinValue = (Uint16)maxval(MAX_TABLE_ENTRY_SIZE);                      // set minimum to maximum value
+        MinValue = (Uint16)DicomImageClass::maxval(MAX_TABLE_ENTRY_SIZE);     // set minimum to maximum value
         register const Uint16 *p = Data;
         register Uint16 value;
         if (DataBuffer != NULL)                                               // LUT entries have been copied 8 -> 16 bits
@@ -244,7 +218,7 @@ void DiLookupTable::checkTable(const int ok,
             else
                 checkBits(bits, MAX_TABLE_ENTRY_SIZE, MIN_TABLE_ENTRY_SIZE);
         }
-        Uint16 mask = (Uint16)maxval(Bits);                                   // mask lo-byte (8) or full word (16)
+        Uint16 mask = (Uint16)DicomImageClass::maxval(Bits);                  // mask lo-byte (8) or full word (16)
         if ((MinValue & mask != MinValue) || (MaxValue & mask != MaxValue))
         {                                                                     // mask table entries and copy them to new LUT
             MinValue &= mask;
@@ -312,7 +286,13 @@ void DiLookupTable::checkBits(const Uint16 bits,
  *
  * CVS/RCS Log:
  * $Log: diluptab.cc,v $
- * Revision 1.4  1998-12-22 13:29:16  joergr
+ * Revision 1.5  1999-02-03 17:40:08  joergr
+ * Added base class for look-up tables (moved main functionality of class
+ * DiLookupTable to DiBaseLUT).
+ * Moved global functions maxval() and determineRepresentation() to class
+ * DicomImageClass (as static methods).
+ *
+ * Revision 1.4  1998/12/22 13:29:16  joergr
  * Changed parameter type.
  *
  * Revision 1.3  1998/12/16 16:11:54  joergr
