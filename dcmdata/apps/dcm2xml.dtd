@@ -8,7 +8,7 @@
 <!ATTLIST data-set xfer NMTOKEN #REQUIRED >
 <!ATTLIST data-set name CDATA #IMPLIED >
 
-<!ELEMENT element ( #PCDATA ) >
+<!ELEMENT element ( CDATA ) >
 <!ATTLIST element binary ( yes | no | hidden | base64 ) "no" >
 <!ATTLIST element len NMTOKEN #REQUIRED >
 <!ATTLIST element loaded ( yes | no ) "yes" >
@@ -28,7 +28,7 @@
 <!ATTLIST item card NMTOKEN #REQUIRED >
 <!ATTLIST item len NMTOKEN #IMPLIED >
 
-<!ELEMENT pixel-item ( #PCDATA ) >
+<!ELEMENT pixel-item ( CDATA ) >
 <!ATTLIST pixel-item binary ( yes | hidden | base64 ) "yes" >
 <!ATTLIST pixel-item len NMTOKEN #REQUIRED >
 <!ATTLIST pixel-item loaded ( yes | no ) "yes" >
