@@ -21,10 +21,10 @@
  *
  *  Purpose: Convert dicom file encoding
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-09-25 17:20:59 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2001-11-09 15:50:52 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/apps/dcmconv.cc,v $
- *  CVS/RCS Revision: $Revision: 1.31 $
+ *  CVS/RCS Revision: $Revision: 1.32 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -225,8 +225,8 @@ int main(int argc, char *argv[])
       if (cmd.findOption("--padding-create")) 
       {
           if (opt_oDataset) app.printError("--padding-create not allowed with --write-dataset");
-          app.checkValue(cmd.getValue(opt_filepad, 0));
-          app.checkValue(cmd.getValue(opt_itempad, 0));
+          app.checkValue(cmd.getValueAndCheckMin(opt_filepad, 0));
+          app.checkValue(cmd.getValueAndCheckMin(opt_itempad, 0));
           opt_opadenc = EPD_withPadding;
       }
       cmd.endOptionBlock();
@@ -386,7 +386,11 @@ int main(int argc, char *argv[])
 /*
 ** CVS/RCS Log:
 ** $Log: dcmconv.cc,v $
-** Revision 1.31  2001-09-25 17:20:59  meichel
+** Revision 1.32  2001-11-09 15:50:52  joergr
+** Renamed some of the getValue/getParam methods to avoid ambiguities reported
+** by certain compilers.
+**
+** Revision 1.31  2001/09/25 17:20:59  meichel
 ** Adapted dcmdata to class OFCondition
 **
 ** Revision 1.30  2001/06/01 15:48:27  meichel

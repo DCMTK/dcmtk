@@ -21,10 +21,10 @@
  *
  *  Purpose: create a Dicom FileFormat or DataSet from an ASCII-dump
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-09-25 17:21:01 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2001-11-09 15:50:53 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/apps/dump2dcm.cc,v $
- *  CVS/RCS Revision: $Revision: 1.36 $
+ *  CVS/RCS Revision: $Revision: 1.37 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -794,7 +794,7 @@ int main(int argc, char *argv[])
 
       if (cmd.findOption("--line"))
       {
-          app.checkValue(cmd.getValue(opt_linelength, 80));
+          app.checkValue(cmd.getValueAndCheckMin(opt_linelength, 80));
       }
 
       cmd.beginOptionBlock();
@@ -843,8 +843,8 @@ int main(int argc, char *argv[])
       if (cmd.findOption("--padding-create"))
       {
           if (!createFileFormat) app.printError("--padding-create not allowed with --write-dataset");
-          app.checkValue(cmd.getValue(opt_filepad, 0));
-          app.checkValue(cmd.getValue(opt_itempad, 0));
+          app.checkValue(cmd.getValueAndCheckMin(opt_filepad, 0));
+          app.checkValue(cmd.getValueAndCheckMin(opt_itempad, 0));
           opadenc = EPD_withPadding;
       }
       cmd.endOptionBlock();
@@ -955,7 +955,11 @@ int main(int argc, char *argv[])
 /*
 ** CVS/RCS Log:
 ** $Log: dump2dcm.cc,v $
-** Revision 1.36  2001-09-25 17:21:01  meichel
+** Revision 1.37  2001-11-09 15:50:53  joergr
+** Renamed some of the getValue/getParam methods to avoid ambiguities reported
+** by certain compilers.
+**
+** Revision 1.36  2001/09/25 17:21:01  meichel
 ** Adapted dcmdata to class OFCondition
 **
 ** Revision 1.35  2001/06/01 15:48:30  meichel

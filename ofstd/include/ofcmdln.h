@@ -21,10 +21,10 @@
  *
  *  Purpose: Handle command line arguments (Header)
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-08-23 16:05:52 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2001-11-09 15:46:42 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/include/Attic/ofcmdln.h,v $
- *  CVS/RCS Revision: $Revision: 1.27 $
+ *  CVS/RCS Revision: $Revision: 1.28 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -537,7 +537,7 @@ class OFCommandLine
     E_ParamValueStatus getParam(const int pos,
                                 OFCmdSignedInt &value);
 
-    /** get value of specified parameter as signed integer.
+    /** get value of specified parameter as signed integer and checks for given boundary
      *
      ** @param  pos    position of parameter (1..n)
      *  @param  value  reference to variable where the value should be stored
@@ -546,12 +546,12 @@ class OFCommandLine
      *
      ** @return status of get/conversion, PVS_Normal if successful (use getStatusString for error string)
      */
-    E_ParamValueStatus getParam(const int pos,
-                                OFCmdSignedInt &value,
-                                const OFCmdSignedInt low,
-                                const OFBool incl = OFTrue);
+    E_ParamValueStatus getParamAndCheckMin(const int pos,
+                                           OFCmdSignedInt &value,
+                                           const OFCmdSignedInt low,
+                                           const OFBool incl = OFTrue);
 
-    /** gets value of specified parameter as signed integer.
+    /** gets value of specified parameter as signed integer and checks for given boundaries
      *
      ** @param  pos    position of parameter (1..n)
      *  @param  value  reference to variable where the value should be stored
@@ -560,10 +560,10 @@ class OFCommandLine
      *
      ** @return status of get/conversion, PVS_Normal if successful (use getStatusString for error string)
      */
-    E_ParamValueStatus getParam(const int pos,
-                                OFCmdSignedInt &value,
-                                const OFCmdSignedInt low,
-                                const OFCmdSignedInt high);
+    E_ParamValueStatus getParamAndCheckMinMax(const int pos,
+                                              OFCmdSignedInt &value,
+                                              const OFCmdSignedInt low,
+                                              const OFCmdSignedInt high);
 
     /** gets value of specified parameter as unsigned integer.
      *  NB: If command line argument specifies a negative value the result depends on the
@@ -577,7 +577,7 @@ class OFCommandLine
     E_ParamValueStatus getParam(const int pos,
                                 OFCmdUnsignedInt &value);
 
-    /** gets value of specified parameter as unsigned integer.
+    /** gets value of specified parameter as unsigned integer and checks for given boundary.
      *  NB: If command line argument specifies a negative value the result depends on the
      *  signed->unsigned conversion implemented in sscanf() !!
      *
@@ -588,12 +588,12 @@ class OFCommandLine
      *
      ** @return status of get/conversion, PVS_Normal if successful (use getStatusString for error string)
      */
-    E_ParamValueStatus getParam(const int pos,
-                                OFCmdUnsignedInt &value,
-                                const OFCmdUnsignedInt low,
-                                const OFBool incl = OFTrue);
+    E_ParamValueStatus getParamAndCheckMin(const int pos,
+                                           OFCmdUnsignedInt &value,
+                                           const OFCmdUnsignedInt low,
+                                           const OFBool incl = OFTrue);
 
-    /** gets value of specified parameter as unsigned integer.
+    /** gets value of specified parameter as unsigned integer and checks for given boundaries.
      *  NB: If command line argument specifies a negative value the result depends on the
      *  signed->unsigned conversion implemented in sscanf() !!
      *
@@ -604,10 +604,10 @@ class OFCommandLine
      *
      ** @return status of get/conversion, PVS_Normal if successful (use getStatusString for error string)
      */
-    E_ParamValueStatus getParam(const int pos,
-                                OFCmdUnsignedInt &value,
-                                const OFCmdUnsignedInt low,
-                                const OFCmdUnsignedInt high);
+    E_ParamValueStatus getParamAndCheckMinMax(const int pos,
+                                              OFCmdUnsignedInt &value,
+                                              const OFCmdUnsignedInt low,
+                                              const OFCmdUnsignedInt high);
 
     /** gets value of specified parameter as floating point.
      *
@@ -619,7 +619,7 @@ class OFCommandLine
     E_ParamValueStatus getParam(const int pos,
                                 OFCmdFloat &value);
 
-    /** gets value of specified parameter as floating point.
+    /** gets value of specified parameter as floating point and checks for given boundary
      *
      ** @param  pos    position of parameter (1..n)
      *  @param  value  reference to variable where the value should be stored
@@ -628,12 +628,12 @@ class OFCommandLine
      *
      ** @return status of get/conversion, PVS_Normal if successful (use getStatusString for error string)
      */
-    E_ParamValueStatus getParam(const int pos,
-                                OFCmdFloat &value,
-                                const OFCmdFloat low,
-                                const OFBool incl = OFTrue);
+    E_ParamValueStatus getParamAndCheckMin(const int pos,
+                                           OFCmdFloat &value,
+                                           const OFCmdFloat low,
+                                           const OFBool incl = OFTrue);
 
-    /** gets value of specified parameter as floating point.
+    /** gets value of specified parameter as floating point and checks for given boundaries
      *
      ** @param  pos    position of parameter (1..n)
      *  @param  value  reference to variable where the value should be stored
@@ -642,10 +642,10 @@ class OFCommandLine
      *
      ** @return status of get/conversion, PVS_Normal if successful (use getStatusString for error string)
      */
-    E_ParamValueStatus getParam(const int pos,
-                                OFCmdFloat &value,
-                                const OFCmdFloat low,
-                                const OFCmdFloat high);
+    E_ParamValueStatus getParamAndCheckMinMax(const int pos,
+                                              OFCmdFloat &value,
+                                              const OFCmdFloat low,
+                                              const OFCmdFloat high);
 
     /** gets value of specified parameter as C string.
      *
@@ -725,7 +725,7 @@ class OFCommandLine
      */
     E_ValueStatus getValue(OFCmdSignedInt &value);
 
-    /** returns current argument as a signed integer value
+    /** returns current argument as a signed integer value and checks for given boundary
      *
      ** @param  value  reference to signed integer variable where the value should be stored
      *  @param  low    minimum boundary for value (used for range check)
@@ -733,11 +733,11 @@ class OFCommandLine
      *
      ** @return status of get/conversion, VS_Normal if successful (use getStatusString for error string)
      */
-    E_ValueStatus getValue(OFCmdSignedInt &value,
-                           const OFCmdSignedInt low,
-                           const OFBool incl = OFTrue);
+    E_ValueStatus getValueAndCheckMin(OFCmdSignedInt &value,
+                                      const OFCmdSignedInt low,
+                                      const OFBool incl = OFTrue);
 
-    /** returns current argument as a signed integer value
+    /** returns current argument as a signed integer value and checks for given boundaries
      *
      ** @param  value  reference to signed integer variable where the value should be stored
      *  @param  low    minimum boundary for value (used for range check, boundary included)
@@ -745,9 +745,9 @@ class OFCommandLine
      *
      ** @return status of get/conversion, VS_Normal if successful (use getStatusString for error string)
      */
-    E_ValueStatus getValue(OFCmdSignedInt &value,
-                           const OFCmdSignedInt low,
-                           const OFCmdSignedInt high);
+    E_ValueStatus getValueAndCheckMinMax(OFCmdSignedInt &value,
+                                         const OFCmdSignedInt low,
+                                         const OFCmdSignedInt high);
 
     /** returns current argument as an unsigned integer value
      *
@@ -757,7 +757,7 @@ class OFCommandLine
      */
     E_ValueStatus getValue(OFCmdUnsignedInt &value);
 
-    /** returns current argument as an unsigned integer value
+    /** returns current argument as an unsigned integer value and checks for given boundary
      *
      ** @param  value  reference to unsigned integer variable where the value should be stored
      *  @param  low    minimum boundary for value (used for range check)
@@ -765,11 +765,11 @@ class OFCommandLine
      *
      ** @return status of get/conversion, VS_Normal if successful (use getStatusString for error string)
      */
-    E_ValueStatus getValue(OFCmdUnsignedInt &value,
-                           const OFCmdUnsignedInt low,
-                           const OFBool incl = OFTrue);
+    E_ValueStatus getValueAndCheckMin(OFCmdUnsignedInt &value,
+                                      const OFCmdUnsignedInt low,
+                                      const OFBool incl = OFTrue);
 
-    /** returns current argument as an unsigned integer value
+    /** returns current argument as an unsigned integer value and checks for given boundaries
      *
      ** @param  value  reference to unsigned integer variable where the value should be stored
      *  @param  low    minimum boundary for value (used for range check, boundary included)
@@ -777,9 +777,9 @@ class OFCommandLine
      *
      ** @return status of get/conversion, VS_Normal if successful (use getStatusString for error string)
      */
-    E_ValueStatus getValue(OFCmdUnsignedInt &value,
-                           const OFCmdUnsignedInt low,
-                           const OFCmdUnsignedInt high);
+    E_ValueStatus getValueAndCheckMinMax(OFCmdUnsignedInt &value,
+                                         const OFCmdUnsignedInt low,
+                                         const OFCmdUnsignedInt high);
 
     /** returns current argument as a floating point value
      *
@@ -789,7 +789,7 @@ class OFCommandLine
      */
     E_ValueStatus getValue(OFCmdFloat &value);
 
-    /** returns current argument as a floating point value
+    /** returns current argument as a floating point value and checks for given boundary
      *
      ** @param  value  reference to floating point variable where the value should be stored
      *  @param  low    minimum boundary for value (used for range check)
@@ -797,11 +797,11 @@ class OFCommandLine
      *
      ** @return status of get/conversion, VS_Normal if successful (use getStatusString for error string)
      */
-    E_ValueStatus getValue(OFCmdFloat &value,
-                           const OFCmdFloat low,
-                           const OFBool incl = OFTrue);
+    E_ValueStatus getValueAndCheckMin(OFCmdFloat &value,
+                                      const OFCmdFloat low,
+                                      const OFBool incl = OFTrue);
 
-    /** returns current argument as a floating point value
+    /** returns current argument as a floating point value and checks for given boundaries
      *
      ** @param  value  reference to floating point variable where the value should be stored
      *  @param  low    minimum boundary for value (used for range check, boundary included)
@@ -809,9 +809,9 @@ class OFCommandLine
      *
      ** @return status of get/conversion, VS_Normal if successful (use getStatusString for error string)
      */
-    E_ValueStatus getValue(OFCmdFloat &value,
-                           const OFCmdFloat low,
-                           const OFCmdFloat high);
+    E_ValueStatus getValueAndCheckMinMax(OFCmdFloat &value,
+                                         const OFCmdFloat low,
+                                         const OFCmdFloat high);
 
     /** returns current argument as a C string
      *
@@ -1009,7 +1009,11 @@ private:
  *
  * CVS/RCS Log:
  * $Log: ofcmdln.h,v $
- * Revision 1.27  2001-08-23 16:05:52  meichel
+ * Revision 1.28  2001-11-09 15:46:42  joergr
+ * Renamed some of the getValue/getParam methods to avoid ambiguities reported
+ * by certain compilers.
+ *
+ * Revision 1.27  2001/08/23 16:05:52  meichel
  * Added private undefined copy assignment operators to avoid gcc warnings
  *
  * Revision 1.26  2001/06/01 15:51:32  meichel

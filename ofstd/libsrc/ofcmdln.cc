@@ -21,10 +21,10 @@
  *
  *  Purpose: Template class for command line arguments (Source)
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-06-01 15:51:37 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2001-11-09 15:47:03 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/libsrc/ofcmdln.cc,v $
- *  CVS/RCS Revision: $Revision: 1.27 $
+ *  CVS/RCS Revision: $Revision: 1.28 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -355,10 +355,10 @@ OFCommandLine::E_ParamValueStatus OFCommandLine::getParam(const int pos,
 }
 
 
-OFCommandLine::E_ParamValueStatus OFCommandLine::getParam(const int pos,
-                                                          OFCmdSignedInt &value,
-                                                          const OFCmdSignedInt low,
-                                                          const OFBool incl)
+OFCommandLine::E_ParamValueStatus OFCommandLine::getParamAndCheckMin(const int pos,
+                                                                     OFCmdSignedInt &value,
+                                                                     const OFCmdSignedInt low,
+                                                                     const OFBool incl)
 {
     E_ParamValueStatus status = getParam(pos, value);
     if (status == PVS_Normal)
@@ -370,10 +370,10 @@ OFCommandLine::E_ParamValueStatus OFCommandLine::getParam(const int pos,
 }
 
 
-OFCommandLine::E_ParamValueStatus OFCommandLine::getParam(const int pos,
-                                                          OFCmdSignedInt &value,
-                                                          const OFCmdSignedInt low,
-                                                          const OFCmdSignedInt high)
+OFCommandLine::E_ParamValueStatus OFCommandLine::getParamAndCheckMinMax(const int pos,
+                                                                        OFCmdSignedInt &value,
+                                                                        const OFCmdSignedInt low,
+                                                                        const OFCmdSignedInt high)
 {
     E_ParamValueStatus status = getParam(pos, value);
     if (status == PVS_Normal)
@@ -400,10 +400,10 @@ OFCommandLine::E_ParamValueStatus OFCommandLine::getParam(const int pos,
 }
 
 
-OFCommandLine::E_ParamValueStatus OFCommandLine::getParam(const int pos,
-                                                          OFCmdUnsignedInt &value,
-                                                          const OFCmdUnsignedInt low,
-                                                          const OFBool incl)
+OFCommandLine::E_ParamValueStatus OFCommandLine::getParamAndCheckMin(const int pos,
+                                                                     OFCmdUnsignedInt &value,
+                                                                     const OFCmdUnsignedInt low,
+                                                                     const OFBool incl)
 {
     E_ParamValueStatus status = getParam(pos, value);
     if (status == PVS_Normal)
@@ -415,10 +415,10 @@ OFCommandLine::E_ParamValueStatus OFCommandLine::getParam(const int pos,
 }
 
 
-OFCommandLine::E_ParamValueStatus OFCommandLine::getParam(const int pos,
-                                                          OFCmdUnsignedInt &value,
-                                                          const OFCmdUnsignedInt low,
-                                                          const OFCmdUnsignedInt high)
+OFCommandLine::E_ParamValueStatus OFCommandLine::getParamAndCheckMinMax(const int pos,
+                                                                        OFCmdUnsignedInt &value,
+                                                                        const OFCmdUnsignedInt low,
+                                                                        const OFCmdUnsignedInt high)
 {
     E_ParamValueStatus status = getParam(pos, value);
     if (status == PVS_Normal)
@@ -445,10 +445,10 @@ OFCommandLine::E_ParamValueStatus OFCommandLine::getParam(const int pos,
 }
 
 
-OFCommandLine::E_ParamValueStatus OFCommandLine::getParam(const int pos,
-                                                          OFCmdFloat &value,
-                                                          const OFCmdFloat low,
-                                                          const OFBool incl)
+OFCommandLine::E_ParamValueStatus OFCommandLine::getParamAndCheckMin(const int pos,
+                                                                     OFCmdFloat &value,
+                                                                     const OFCmdFloat low,
+                                                                     const OFBool incl)
 {
     E_ParamValueStatus status = getParam(pos, value);
     if (status == PVS_Normal)
@@ -460,10 +460,10 @@ OFCommandLine::E_ParamValueStatus OFCommandLine::getParam(const int pos,
 }
 
 
-OFCommandLine::E_ParamValueStatus OFCommandLine::getParam(const int pos,
-                                                          OFCmdFloat &value,
-                                                          const OFCmdFloat low,
-                                                          const OFCmdFloat high)
+OFCommandLine::E_ParamValueStatus OFCommandLine::getParamAndCheckMinMax(const int pos,
+                                                                        OFCmdFloat &value,
+                                                                        const OFCmdFloat low,
+                                                                        const OFCmdFloat high)
 {
     E_ParamValueStatus status = getParam(pos, value);
     if (status == PVS_Normal)
@@ -604,9 +604,9 @@ OFCommandLine::E_ValueStatus OFCommandLine::getValue(OFCmdSignedInt &value)
 }
 
 
-OFCommandLine::E_ValueStatus OFCommandLine::getValue(OFCmdSignedInt &value,
-                                                     const OFCmdSignedInt low,
-                                                     const OFBool incl)
+OFCommandLine::E_ValueStatus OFCommandLine::getValueAndCheckMin(OFCmdSignedInt &value,
+                                                                const OFCmdSignedInt low,
+                                                                const OFBool incl)
 {
     E_ValueStatus status = getValue(value);
     if (status == VS_Normal)
@@ -618,9 +618,9 @@ OFCommandLine::E_ValueStatus OFCommandLine::getValue(OFCmdSignedInt &value,
 }
 
 
-OFCommandLine::E_ValueStatus OFCommandLine::getValue(OFCmdSignedInt &value,
-                                                     const OFCmdSignedInt low,
-                                                     const OFCmdSignedInt high)
+OFCommandLine::E_ValueStatus OFCommandLine::getValueAndCheckMinMax(OFCmdSignedInt &value,
+                                                                   const OFCmdSignedInt low,
+                                                                   const OFCmdSignedInt high)
 {
     E_ValueStatus status = getValue(value);
     if (status == VS_Normal)
@@ -646,9 +646,9 @@ OFCommandLine::E_ValueStatus OFCommandLine::getValue(OFCmdUnsignedInt &value)
 }
 
 
-OFCommandLine::E_ValueStatus OFCommandLine::getValue(OFCmdUnsignedInt &value,
-                                                     const OFCmdUnsignedInt low,
-                                                     const OFBool incl)
+OFCommandLine::E_ValueStatus OFCommandLine::getValueAndCheckMin(OFCmdUnsignedInt &value,
+                                                                const OFCmdUnsignedInt low,
+                                                                const OFBool incl)
 {
     E_ValueStatus status = getValue(value);
     if (status == VS_Normal)
@@ -660,9 +660,9 @@ OFCommandLine::E_ValueStatus OFCommandLine::getValue(OFCmdUnsignedInt &value,
 }
 
 
-OFCommandLine::E_ValueStatus OFCommandLine::getValue(OFCmdUnsignedInt &value,
-                                                     const OFCmdUnsignedInt low,
-                                                     const OFCmdUnsignedInt high)
+OFCommandLine::E_ValueStatus OFCommandLine::getValueAndCheckMinMax(OFCmdUnsignedInt &value,
+                                                                   const OFCmdUnsignedInt low,
+                                                                   const OFCmdUnsignedInt high)
 {
     E_ValueStatus status = getValue(value);
     if (status == VS_Normal)
@@ -688,9 +688,9 @@ OFCommandLine::E_ValueStatus OFCommandLine::getValue(OFCmdFloat &value)
 }
 
 
-OFCommandLine::E_ValueStatus OFCommandLine::getValue(OFCmdFloat &value,
-                                                     const OFCmdFloat low,
-                                                     const OFBool incl)
+OFCommandLine::E_ValueStatus OFCommandLine::getValueAndCheckMin(OFCmdFloat &value,
+                                                                const OFCmdFloat low,
+                                                                const OFBool incl)
 {
     E_ValueStatus status = getValue(value);
     if (status == VS_Normal)
@@ -702,9 +702,9 @@ OFCommandLine::E_ValueStatus OFCommandLine::getValue(OFCmdFloat &value,
 }
 
 
-OFCommandLine::E_ValueStatus OFCommandLine::getValue(OFCmdFloat &value,
-                                                     const OFCmdFloat low,
-                                                     const OFCmdFloat high)
+OFCommandLine::E_ValueStatus OFCommandLine::getValueAndCheckMinMax(OFCmdFloat &value,
+                                                                   const OFCmdFloat low,
+                                                                   const OFCmdFloat high)
 {
     E_ValueStatus status = getValue(value);
     if (status == VS_Normal)
@@ -1236,7 +1236,11 @@ void OFCommandLine::getStatusString(const E_ValueStatus status,
  *
  * CVS/RCS Log:
  * $Log: ofcmdln.cc,v $
- * Revision 1.27  2001-06-01 15:51:37  meichel
+ * Revision 1.28  2001-11-09 15:47:03  joergr
+ * Renamed some of the getValue/getParam methods to avoid ambiguities reported
+ * by certain compilers.
+ *
+ * Revision 1.27  2001/06/01 15:51:37  meichel
  * Updated copyright header
  *
  * Revision 1.26  2000/06/02 12:39:56  joergr
