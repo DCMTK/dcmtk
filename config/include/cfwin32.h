@@ -212,6 +212,12 @@
 /* Define if you have the strerror function.  */
 #define HAVE_STRERROR 1
 
+/* Define if you have the strlcat function.  */
+#undef HAVE_STRLCAT
+
+/* Define if you have the strlcpy function.  */
+#undef HAVE_STRLCPY
+
 /* Define if you have the strstr function.  */
 #define HAVE_STRSTR 1
 
