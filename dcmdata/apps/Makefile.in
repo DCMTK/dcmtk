@@ -16,9 +16,9 @@ include $(configdir)/@common_makefile@
 LIBDIRS = -L$(top_srcdir)/libsrc -L$(libdir)
 LOCALLIBS = -ldcmdata
 
-objs= dcmconv.o dcimapix.o dcm2ppm.o dcmdump.o dcmutils.o ds2file.o file2ds.o mknldir.o ppm2dcm.o
+objs= dcmconv.o dcimapix.o dcm2ppm.o dcmdump.o dcmutils.o ds2file.o dump2dcm.o file2ds.o mknldir.o ppm2dcm.o
 
-progs= dcmconv dcm2ppm dcmdump ds2file file2ds mknldir ppm2dcm
+progs= dcmconv dcm2ppm dcmdump ds2file dump2dcm file2ds mknldir ppm2dcm
 
 all: $(progs)
 
@@ -32,6 +32,9 @@ dcmdump: dcmdump.o
 	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ $@.o $(LOCALLIBS) $(LIBS)  
 
 ds2file: ds2file.o 
+	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ $@.o $(LOCALLIBS) $(LIBS)  
+
+dump2dcm: dump2dcm.o 
 	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ $@.o $(LOCALLIBS) $(LIBS)  
 
 file2ds: file2ds.o 
@@ -49,7 +52,6 @@ install: all
 	for prog in $(progs); do \
 		$(INSTALL_PROGRAM) $$prog $(bindir); strip $(bindir)/$$prog ;\
 	done
-	
 
 clean:
 	rm -f $(objs) $(progs) $(TRASH)
