@@ -1,0 +1,129 @@
+
+ANNOUNCEMENT
+
+Version 3.5.2 of the OFFIS DCMTK (DICOM ToolKit) software is now available
+for public release.  This release includes the following main changes 
+over the previous version (Version 3.5.1):
+
+- Better ISO C++ compliance. If available, the standard header
+  files such as <iostream> and <cmath> are used instead of the
+  traditional <iostream.h> and <math.h> headers. 
+  Visual C++ users are strongly advised to read the platform
+  notes in the INSTALL file concerning iostream issues.
+
+- DCMTK 3.5.2 builds correctly with GCC 3.2 and Visual C++ .NET
+
+- Various enhancements in the configure system which now works
+  correctly without manual interaction on more platforms: Irix,
+  HP/UX 10 and MacOS X 10.2 now build "out of the box".
+
+- Support for encoding/decoding RLE compressed DICOM images has been 
+  added. The new tools dcmcrle and dcmdrle allow to convert between 
+  uncompressed and RLE compressed transfer syntaxes.
+
+- Support for zlib compressed (deflated) DICOM objects has been added.
+  Conversion between uncompressed and deflated transfer syntaxes 
+  is offered by dcmconv. 
+
+- The new application dcmscale allows to scale DICOM images.
+
+- The new application dcm2xml converts DICOM objects to XML.
+
+- The new application dcmquant converts any DICOM color image into
+  a palette color image. The underlying quantization classes are useful
+  for creating palette color icons from color images.
+
+- The Worklist CTN has been replaced by a completely new implementation 
+  (module dcmwlm) that supports a larger set of keys, fixes various 
+  issues with the old implementation and has a well-defined backend that 
+  facilitates adaptation to databases etc.
+
+- Most command line tools now support a command line option "--version" 
+  which prints the host platform and the name and version number of 
+  external libraries.
+
+- Echoscu now supports C-ECHO over TLS (Security Enhancements One).
+
+- Added support for new value representation Other Float String (OF).
+
+- New layout for dcmdump tool, improves readability.
+
+- Conversion between floating point numbers and ASCII strings (e.g. in
+  DICOM DS data elements) is now performed in a locale independent manner,
+  making sure that DCMTK works correctly in a non-Posix locale.
+
+- Complete re-design of the DICOM I/O stream classes, required for
+  zlib support. Critical API change. Programmers are advised to adapt
+  their applications to the new DcmFileFormat loadFile() and saveFile()
+  methods which encapsulate the new stream architecture.
+
+- Support for private tag data dictionaries has been added. This can be
+  activated in configure using the --with-private-tags option. By default,
+  no private tag dictionary is installed.
+
+- Unknown undefined length attributes are now converted into SQ instead of UN.
+
+- Improved behaviour when reading elements with illegal odd tag length. 
+
+- Many network tools now have a command line option --timeout for 
+  controlling the connection request timeout.
+
+- A-ASSOCIATE user information sub items are now always sent in ascending
+  order to avoid problems with certain other DICOM toolkits.
+
+- Added experimental "promiscuous" mode to storescp. In this mode,
+  activated by the --promiscuous command line option, all presentation
+  contexts not known not to be Storage SOP Classes are accepted.
+
+- Added --max-send-pdu option to storescu that allows to 
+  restrict the size of outgoing P-DATA PDUs.
+
+- Added support for the Numeric Value Qualifier Code Sequence 
+  (introduced with CP 260) to dcmsr module.
+
+- Added support for the Current Requested Procedure Evidence Sequence 
+  and the Pertinent Other Evidence Sequence to the dcmsr module.
+
+- Dcmmkdir tool supports more application profiles.
+
+- Algorithm for creation of unique identifiers has been improved on
+  Win32 platforms where gethostid() is not available.
+
+- The DICOM data dictionary has been re-worked based on the latest 
+  supplements and correction proposals, as usual.
+
+- Many bug fixes and minor improvements as usual - See the CHANGES.352
+  file for more details.
+
+
+Many people have contributed to this new release of DCMTK, appearing here 
+in alphabetical order. Thank you very much for your support!
+
+  Stefan Allers <stefan.allers@gmx.de>
+  Andreas Barth <Andreas.Barth@bruker-biospin.de>
+  Judit Verestoy <JVerestoy@tomtec.de>
+  Jesper Bojesen <jbb@medical-insight.com>
+  Rada Hussein <R.Hussein@DKFZ-Heidelberg.de>
+  Bernd Kuemmerlen <bkuemmer@mevis.de>
+  David Lappen <dlappen@digitalams.com>
+  Arnaud Masson <arnaud.masson@iodp.com>
+  Markus Mertens <markus.mertens@uni-muenster.de>
+  Gilles Mével <Gilles.Mevel@etiam.com>
+  Sebastian Meyer <meyer@mevis.de>
+  Dimitri Papadopoulos-Orfanos <papadopo@shfj.cea.fr>
+  Tom Probasco <dimatics@attbi.com>
+  Costea-B. Razvan <cbrazvan@laitek.com>
+  Rainer Thieme <rainer.thieme@siemens.com>
+  Karl Tomaschek <karl.tomaschek@wienkom.at>
+  Ben Wright <ben@ami-online.com>
+
+OFFIS staff who have worked on this release are:
+  Marco Eichelberg <eichelberg@offis.de>
+  Joerg Riesmeier <riesmeier@offis.de>
+  Thomas Wilkens <thomas.wilkens@offis.de>
+  
+The DCMTK software can be downloaded via:
+  http://dicom.offis.de/dcmtk/
+
+
+Kuratorium OFFIS e.V., Oldenburg, Germany, 2002-12-23
