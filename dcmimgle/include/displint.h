@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2001, OFFIS
+ *  Copyright (C) 1996-2002, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,12 +21,12 @@
  *
  *  Purpose: DiCubicSpline Function/Interpolation (Header/Implementation)
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-06-01 15:49:51 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2002-07-18 12:30:59 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/displint.h,v $
- *  CVS/RCS Revision: $Revision: 1.15 $
+ *  CVS/RCS Revision: $Revision: 1.16 $
  *  Status:           $State: Exp $
- * 
+ *
  *  CVS/RCS Log at end of file
  *
  */
@@ -39,14 +39,14 @@
 
 
 // SunCC 4.x does not support default values for template types :-/
-#define _T3 double
+#define T3_ double
 
 
 /*------------------*
  *  template class  *
  *------------------*/
 
-/** Template class for cubic spline interpolation 
+/** Template class for cubic spline interpolation
  */
 template <class T1, class T2 /*, class T3 = double*/>
 class DiCubicSpline
@@ -55,9 +55,9 @@ class DiCubicSpline
  public:
 
     /** calculate spline function for given points.
-     *  T1 = type of x coordinates
-     *  T2 = type of y coordinates
-     * _T3 = type of y coordinates of the spline function
+     *  T1  = type of x coordinates
+     *  T2  = type of y coordinates
+     *  T3_ = type of y coordinates of the spline function
      *
      ** @param  x    array with x coordinates of given points
      *  @param  y    array with y coordinates of given points
@@ -71,38 +71,38 @@ class DiCubicSpline
     static int Function(const T1 *x,
                         const T2 *y,
                         const unsigned int n,
-                        _T3 *y2,
-                        const _T3 yp1 = 1.0e30,
-                        const _T3 ypn = 1.0e30)
+                        T3_ *y2,
+                        const T3_ yp1 = 1.0e30,
+                        const T3_ ypn = 1.0e30)
     {
         if ((x != NULL) && (y != NULL) && (n > 0) && (y2 != NULL))
         {
-            _T3 *u = new _T3[n];                              // temporary vector
+            T3_ *u = new T3_[n];                              // temporary vector
             if (u != NULL)
             {
                 register unsigned int i;
-                _T3 p, qn, sig, un;
+                T3_ p, qn, sig, un;
                 if (yp1 > 0.99e30)                          // ignore value for first derivative at point 1
                     y2[0] = u[0] = 0.0;
                 else
                 {
                     y2[0] = -0.5;
-                    u[0] = (3.0 / ((_T3)x[1] - (_T3)x[0])) * (((_T3)y[1] - (_T3)y[0]) / ((_T3)x[1] - (_T3)x[0]) - yp1);
+                    u[0] = (3.0 / ((T3_)x[1] - (T3_)x[0])) * (((T3_)y[1] - (T3_)y[0]) / ((T3_)x[1] - (T3_)x[0]) - yp1);
                 }
                 for (i = 1; i < n - 1; i++)
                 {
-                    sig = ((_T3)x[i] - (_T3)x[i - 1]) / ((_T3)x[i + 1] - (_T3)x[i - 1]);
+                    sig = ((T3_)x[i] - (T3_)x[i - 1]) / ((T3_)x[i + 1] - (T3_)x[i - 1]);
                     p = sig * y2[i - 1] + 2.0;
                     y2[i] = (sig - 1.0) / p;
-                    u[i] = ((_T3)y[i + 1] - (_T3)y[i]) / ((_T3)x[i + 1] - (_T3)x[i]) - ((_T3)y[i] - (_T3)y[i - 1]) / ((_T3)x[i] - (_T3)x[i - 1]);
-                    u[i] = (6.0 * u[i] / ((_T3)x[i + 1] - (_T3)x[i - 1]) - sig * u[i - 1]) / p;
+                    u[i] = ((T3_)y[i + 1] - (T3_)y[i]) / ((T3_)x[i + 1] - (T3_)x[i]) - ((T3_)y[i] - (T3_)y[i - 1]) / ((T3_)x[i] - (T3_)x[i - 1]);
+                    u[i] = (6.0 * u[i] / ((T3_)x[i + 1] - (T3_)x[i - 1]) - sig * u[i - 1]) / p;
                 }
                 if (ypn > 0.99e30)                          // ignore value for first derivative at point 1
                     qn = un = 0.0;
                 else
                 {
                     qn = 0.5;
-                    un = (3.0 / ((_T3)x[n - 1] - (_T3)x[n - 2])) * (ypn - ((_T3)y[n - 1] - (_T3)y[n - 2]) / ((_T3)x[n - 1] - (_T3)x[n - 2]));
+                    un = (3.0 / ((T3_)x[n - 1] - (T3_)x[n - 2])) * (ypn - ((T3_)y[n - 1] - (T3_)y[n - 2]) / ((T3_)x[n - 1] - (T3_)x[n - 2]));
                 }
                 y2[n - 1] = (un - qn * u[n - 2]) / (qn * y2[n - 2] + 1.0);
                 for (i = n - 1; i > 0; i--)
@@ -116,9 +116,9 @@ class DiCubicSpline
 
 
     /** perform cubic spline interpolation for given points.
-     *  T1 = type of x coordinates
-     *  T2 = type of y coordinates
-     * _T3 = type of y coordinates of the spline function
+     *  T1  = type of x coordinates
+     *  T2  = type of y coordinates
+     *  T3_ = type of y coordinates of the spline function
      *
      ** @param  xa   array with x coordinates of given points
      *  @param  ya   array with y coordinates of given points
@@ -132,10 +132,10 @@ class DiCubicSpline
      */
     static int Interpolation(const T1 *xa,
                              const T2 *ya,
-                             const _T3 *y2a,
+                             const T3_ *y2a,
                              const unsigned int na,
                              const T1 *x,
-                             T2 *y,             
+                             T2 *y,
                              const unsigned int n)
     {
         if ((xa != NULL) && (ya != NULL) && (y2a != NULL) && (na > 0) && (x != NULL) && (y != NULL) && (n > 0))
@@ -143,7 +143,7 @@ class DiCubicSpline
             register unsigned int k, i;
             register unsigned int klo = 0;
             register unsigned int khi = na - 1;
-            _T3 h, b, a;
+            T3_ h, b, a;
             for (i = 0; i < n; i++)
             {
                 if ((xa[klo] > x[i]) || (xa[khi] < x[i]))       // optimization
@@ -163,65 +163,18 @@ class DiCubicSpline
                     y[i] = ya[khi];
                 else
                 {
-                    h = (_T3)xa[khi] - (_T3)xa[klo];
+                    h = (T3_)xa[khi] - (T3_)xa[klo];
                     if (h == 0.0)                               // bad xa input, values must be distinct !
                         return 0;
-                    a = ((_T3)xa[khi] - (_T3)x[i]) / h;
-                    b = ((_T3)x[i] - (_T3)xa[klo]) / h;
-                    y[i] = (T2)(a * (_T3)ya[klo] + b * (_T3)ya[khi] + ((a * a * a - a) * y2a[klo] + (b * b * b - b) * y2a[khi]) * (h * h) / 6.0);
-                }    
+                    a = ((T3_)xa[khi] - (T3_)x[i]) / h;
+                    b = ((T3_)x[i] - (T3_)xa[klo]) / h;
+                    y[i] = (T2)(a * (T3_)ya[klo] + b * (T3_)ya[khi] + ((a * a * a - a) * y2a[klo] + (b * b * b - b) * y2a[khi]) * (h * h) / 6.0);
+                }
             }
             return 1;
         }
         return 0;
     }
-    
-/*
-    static int Function2D(const T1 *x1a,
-                          const T1 *x2a,
-                          const T1 **ya,
-                          const unsigned int m,
-                          const unsigned int n,
-                          T2 **y2a)
-    {
-        register unsigned int j;
-        for (j = 0; j < m; j++)
-            Function(x2a, ya[j], n, y2a[j]);
-        return 1;
-    }
-    
-    
-    static int Interpolation2D(const T1 *x1a,
-                               const T1 *x2a,
-                               const T1 *ya,
-                               const T2 **y2a,
-                               const unsigned int m,
-                               const unsigned int n,
-                               const T1 *x1,
-                               const T1 *x2,
-                               const T1 **y)
-    {
-        int result = 0;
-        T2 *ytmp = new T2[m];
-        T2 *yytmp = new T2[m];
-        if ((ytmp != NULL) && (yytmp != NULL))
-        {
-            register unsigned int i;
-            register unsigned int j;
-            for (i = 0; i < n; i++)
-            {
-                for (j = 0; j < m; j++)
-                    Interpolation(x2a, ya[j], y2a[j], n, x2, &yytmp[j]);
-                Function(x1a, yytmp, m, ytmp);
-                Interpolation(x1a, yytmp, ytmp, m, x1, y[i]);
-            }
-            result = 1;
-        }
-        delete[] ytmp;
-        delete[] yytmp;
-        return result;
-    }
-*/
 };
 
 
@@ -232,7 +185,10 @@ class DiCubicSpline
  *
  * CVS/RCS Log:
  * $Log: displint.h,v $
- * Revision 1.15  2001-06-01 15:49:51  meichel
+ * Revision 1.16  2002-07-18 12:30:59  joergr
+ * Removed unused code.
+ *
+ * Revision 1.15  2001/06/01 15:49:51  meichel
  * Updated copyright header
  *
  * Revision 1.14  2000/03/08 16:24:24  meichel
@@ -242,7 +198,7 @@ class DiCubicSpline
  * Replaced 'delete' statements by 'delete[]' for objects created with 'new[]'.
  *
  * Revision 1.12  1999/10/21 08:29:42  joergr
- * Renamed template type definition from 'T3' to '_T3' to avoid naming
+ * Renamed template type definition from 'T3' to 'T3_' to avoid naming
  * conflicts.
  *
  * Revision 1.11  1999/10/20 18:38:50  joergr
