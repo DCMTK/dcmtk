@@ -10,9 +10,9 @@
 ** routines for finding and creating UIDs.
 **
 ** Last Update:		$Author: hewett $
-** Update Date:		$Date: 1996-09-03 13:01:09 $
+** Update Date:		$Date: 1996-09-24 16:01:28 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcuid.h,v $
-** CVS/RCS Revision:	$Revision: 1.7 $
+** CVS/RCS Revision:	$Revision: 1.8 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -44,6 +44,16 @@ const char* dcmFindNameOfUID(const char* uid);
 
 const char * dcmFindUIDFromName(const char * name);
 
+
+/*
+** The global variable dcmStorageSOPClassUIDs is an array of 
+** string pointers containing the UIDs of all known Storage SOP
+** Classes.  The global variable numberOfDcmStorageStopClassUIDs
+** defines the size of the array.
+*/
+
+extern const char* dcmStorageSOPClassUIDs[];
+extern const int numberOfDcmStorageSOPClassUIDs;
 
 /*		
 ** char* generateUniqueIdentifer(char* uid)
@@ -82,10 +92,11 @@ char* dcmGenerateUniqueIdentifer(char* uid, const char* prefix=NULL);
 **/
 
 /* NOTE: Implementation version name may not be longer than 16 chars */
-#define OFFIS_DTK_IMPLEMENTATION_VERSION_NAME	"OFFIS-DCMTK-310"
+#define OFFIS_DTK_IMPLEMENTATION_VERSION_NAME	"OFFIS-DCMTK-311"
 
-#define OFFIS_UID_ROOT			"1.2.276.0.7230010.3"
-#define OFFIS_IMPLEMENTATION_CLASS_UID	OFFIS_UID_ROOT ".1.2"
+#define OFFIS_UID_ROOT		       "1.2.276.0.7230010.3"
+#define OFFIS_DCMTK_VERSION	       "3.1.1"
+#define OFFIS_IMPLEMENTATION_CLASS_UID OFFIS_UID_ROOT ".0." OFFIS_DCMTK_VERSION
 
 /* 
 ** Each site should define its own SITE_UID_ROOT
@@ -212,12 +223,24 @@ char* dcmGenerateUniqueIdentifer(char* uid, const char* prefix=NULL);
 
 #define UID_FINDModalityWorklistInformationModel		"1.2.840.10008.5.1.4.31"
 
+#define UID_RTImageStorage		"1.2.840.10008.5.1.4.1.1.481.1"
+#define UID_RTDoseStorage		"1.2.840.10008.5.1.4.1.1.481.2"
+#define UID_RTStructureSetStorage	"1.2.840.10008.5.1.4.1.1.481.3"
+#define UID_RTTreatmentRecordStorage	"1.2.840.10008.5.1.4.1.1.481.4"
+#define UID_RTPlanStorage		"1.2.840.10008.5.1.4.1.1.481.5"
+
 #endif /* DCUID_H */
 
 /*
 ** CVS/RCS Log:
 ** $Log: dcuid.h,v $
-** Revision 1.7  1996-09-03 13:01:09  hewett
+** Revision 1.8  1996-09-24 16:01:28  hewett
+** Added SOP Class UIDs for Radiotherapy Objects.
+** Added a separate table of Storage SOP Class UIDs (usefull during
+** association negotiation).
+** Updated Implementation Version to 3.1.1
+**
+** Revision 1.7  1996/09/03 13:01:09  hewett
 ** Updated version name to reflect release 3.1.0.
 **
 ** Revision 1.6  1996/05/31 09:56:33  hewett
