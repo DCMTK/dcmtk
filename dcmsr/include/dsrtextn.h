@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2001, OFFIS
+ *  Copyright (C) 2000-2003, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,8 +23,8 @@
  *    classes: DSRTextTreeNode
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-11-09 16:10:53 $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  Update Date:      $Date: 2003-08-07 12:53:57 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -53,14 +53,14 @@ class DSRTextTreeNode
 {
 
   public:
- 
-    /** constructor.
+
+    /** constructor
      ** @param  relationshipType  type of relationship to the parent tree node.
      *                            Should not be RT_invalid or RT_isRoot.
      */
     DSRTextTreeNode(const E_RelationshipType relationshipType);
 
-    /** constructor.
+    /** constructor
      ** @param  relationshipType  type of relationship to the parent tree node.
      *                            Should not be RT_invalid or RT_isRoot.
      *  @param  stringValue       initial string value to be set
@@ -76,7 +76,7 @@ class DSRTextTreeNode
      *  Please note that the content item might become invalid afterwards.
      */
     virtual void clear();
-    
+
     /** check whether the content item is valid.
      *  The content item is valid if the two base classes and the concept name are valid.
      ** @return OFTrue if tree node is valid, OFFalse otherwise
@@ -116,13 +116,13 @@ class DSRTextTreeNode
      *  node to the current one (without really adding the node).
      ** @param  documentType      type of document to which the content item belongs.
      *                            The document type has an impact on the relationship
-     *                            contraints. 
+     *                            contraints.
      *  @param  relationshipType  relationship type of the new node with regard to the
      *                            current one
      *  @param  valueType         value type of node to be checked/added
      *  @param  byReference       optional flag indicating whether the node/relationship
-     *                            should be added by-value (default) or by-reference
-     *                            (only for Comprehensive SR and Mammography CAD SR)
+     *                            should be added by-value (default) or by-reference.
+     *                            (only for Comprehensive SR, Mammography and Chest CAD SR)
      ** @return OFTrue if specified node can be added, OFFalse otherwise
      */
     virtual OFBool canAddNode(const E_DocumentType documentType,
@@ -131,7 +131,7 @@ class DSRTextTreeNode
                               const OFBool byReference = OFFalse) const;
 
 
-  protected:    
+  protected:
 
     /** read content item (value) from dataset
      ** @param  dataset    DICOM dataset from which the content item should be read
@@ -148,6 +148,14 @@ class DSRTextTreeNode
      */
     virtual OFCondition writeContentItem(DcmItem &dataset,
                                          OFConsole *logStream) const;
+
+    /** read content item specific XML data
+     ** @param  doc     document containing the XML file content
+     *  @param  cursor  cursor pointing to the starting node
+     ** @return status, EC_Normal if successful, an error code otherwise
+     */
+    virtual OFCondition readXMLContentItem(const DSRXMLDocument &doc,
+                                           DSRXMLCursor cursor);
 
     /** render content item (value) in HTML format
      ** @param  docStream     output stream to which the main HTML document is written
@@ -168,7 +176,7 @@ class DSRTextTreeNode
 
 
   private:
-    
+
  // --- declaration of default/copy constructor and assignment operator
 
     DSRTextTreeNode();
@@ -183,7 +191,10 @@ class DSRTextTreeNode
 /*
  *  CVS/RCS Log:
  *  $Log: dsrtextn.h,v $
- *  Revision 1.7  2001-11-09 16:10:53  joergr
+ *  Revision 1.8  2003-08-07 12:53:57  joergr
+ *  Added readXML functionality. Added support for Chest CAD SR.
+ *
+ *  Revision 1.7  2001/11/09 16:10:53  joergr
  *  Added preliminary support for Mammography CAD SR.
  *
  *  Revision 1.6  2001/09/26 13:04:13  meichel
