@@ -22,9 +22,9 @@
  *  Purpose: DicomPaletteImage (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-01-25 17:49:04 $
+ *  Update Date:      $Date: 2002-06-26 16:30:43 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/libsrc/dipalimg.cc,v $
- *  CVS/RCS Revision: $Revision: 1.15 $
+ *  CVS/RCS Revision: $Revision: 1.16 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -57,23 +57,35 @@ DiPaletteImage::DiPaletteImage(const DiDocument *docu,
         if (BitsStored <= MAX_TABLE_ENTRY_SIZE)
         {
             DiLookupTable *palette[3];
+            /* wrong palette attribute tags used */
             if (Document->getFlags() & CIF_WrongPaletteAttributeTags)
             {
                 palette[0] = new DiLookupTable(Document, DcmTagKey(0x0028, 0x1111), DcmTagKey(0x0028, 0x1211),
-                    DcmTagKey(0,0), &ImageStatus);
+                    DcmTagKey(0,0) /*explanation*/, &ImageStatus);
                 palette[1] = new DiLookupTable(Document, DcmTagKey(0x0028, 0x1112), DcmTagKey(0x0028, 0x1212),
-                    DcmTagKey(0,0), &ImageStatus);
+                    DcmTagKey(0,0) /*explanation*/, &ImageStatus);
                 palette[2] = new DiLookupTable(Document, DcmTagKey(0x0028, 0x1113), DcmTagKey(0x0028, 0x1213),
-                    DcmTagKey(0,0), &ImageStatus);
-            }
-            else
-            {
+                    DcmTagKey(0,0) /*explanation*/, &ImageStatus);
+            } else {
+                const Uint16 *dummy = NULL;
+                /* check for (non-empty) segmented palette */
+                if ((Document->getValue(DCM_SegmentedRedPaletteColorLookupTableData, dummy) > 0) ||
+                    (Document->getValue(DCM_SegmentedGreenPaletteColorLookupTableData, dummy) > 0) ||
+                    (Document->getValue(DCM_SegmentedBluePaletteColorLookupTableData, dummy) > 0))
+                {
+                    if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Warnings))
+                    {
+                        ofConsole.lockCerr() << "WARNING: segmented palettes not yet supported ... ignoring!" << endl;
+                        ofConsole.unlockCerr();
+                    }
+                }
+                /* read data from non-segmented palettes (if present) */
                 palette[0] = new DiLookupTable(Document, DCM_RedPaletteColorLookupTableDescriptor,
-                    DCM_RedPaletteColorLookupTableData, DcmTagKey(0,0), &ImageStatus);
+                    DCM_RedPaletteColorLookupTableData, DcmTagKey(0,0) /*explanation*/, &ImageStatus);
                 palette[1] = new DiLookupTable(Document, DCM_GreenPaletteColorLookupTableDescriptor,
-                    DCM_GreenPaletteColorLookupTableData, DcmTagKey(0,0), &ImageStatus);
+                    DCM_GreenPaletteColorLookupTableData, DcmTagKey(0,0) /*explanation*/, &ImageStatus);
                 palette[2] = new DiLookupTable(Document, DCM_BluePaletteColorLookupTableDescriptor,
-                    DCM_BluePaletteColorLookupTableData, DcmTagKey(0,0), &ImageStatus);
+                    DCM_BluePaletteColorLookupTableData, DcmTagKey(0,0) /*explanation*/, &ImageStatus);
             }
             if ((ImageStatus == EIS_Normal) && (palette[0] != NULL) && (palette[1] != NULL) && (palette[2] != NULL))
             {
@@ -161,7 +173,10 @@ DiPaletteImage::~DiPaletteImage()
  *
  * CVS/RCS Log:
  * $Log: dipalimg.cc,v $
- * Revision 1.15  2002-01-25 17:49:04  joergr
+ * Revision 1.16  2002-06-26 16:30:43  joergr
+ * Corrected decoding of multi-frame, planar images.
+ *
+ * Revision 1.15  2002/01/25 17:49:04  joergr
  * Fixed bug with unusual number of entries in the palette color look-up tables.
  *
  * Revision 1.14  2001/06/01 15:49:35  meichel

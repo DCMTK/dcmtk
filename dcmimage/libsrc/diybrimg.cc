@@ -22,9 +22,9 @@
  *  Purpose: DicomYBRImage (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-09-28 13:56:35 $
+ *  Update Date:      $Date: 2002-06-26 16:30:43 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/libsrc/diybrimg.cc,v $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -50,25 +50,27 @@ DiYBRImage::DiYBRImage(const DiDocument *docu, const EI_Status status)
 {
     if ((Document != NULL) && (InputData != NULL) && (ImageStatus == EIS_Normal))
     {
+        /* number of pixels per plane */
+        const unsigned long planeSize = (unsigned long)Columns * (unsigned long)Rows;
         switch (InputData->getRepresentation())
         {
             case EPR_Uint8:
-                InterData = new DiYBRPixelTemplate<Uint8, Uint8>(Document, InputData, ImageStatus, BitsPerSample, RGBColorModel);
+                InterData = new DiYBRPixelTemplate<Uint8, Uint8>(Document, InputData, ImageStatus, planeSize, BitsPerSample, RGBColorModel);
                 break;
             case EPR_Sint8:
-                InterData = new DiYBRPixelTemplate<Sint8, Uint8>(Document, InputData, ImageStatus, BitsPerSample, RGBColorModel);
+                InterData = new DiYBRPixelTemplate<Sint8, Uint8>(Document, InputData, ImageStatus, planeSize, BitsPerSample, RGBColorModel);
                 break;
             case EPR_Uint16:
-                InterData = new DiYBRPixelTemplate<Uint16, Uint16>(Document, InputData, ImageStatus, BitsPerSample, RGBColorModel);
+                InterData = new DiYBRPixelTemplate<Uint16, Uint16>(Document, InputData, ImageStatus, planeSize, BitsPerSample, RGBColorModel);
                 break;
             case EPR_Sint16:
-                InterData = new DiYBRPixelTemplate<Sint16, Uint16>(Document, InputData, ImageStatus, BitsPerSample, RGBColorModel);
+                InterData = new DiYBRPixelTemplate<Sint16, Uint16>(Document, InputData, ImageStatus, planeSize, BitsPerSample, RGBColorModel);
                 break;
             case EPR_Uint32:
-                InterData = new DiYBRPixelTemplate<Uint32, Uint32>(Document, InputData, ImageStatus, BitsPerSample, RGBColorModel);
+                InterData = new DiYBRPixelTemplate<Uint32, Uint32>(Document, InputData, ImageStatus, planeSize, BitsPerSample, RGBColorModel);
                 break;
             case EPR_Sint32:
-                InterData = new DiYBRPixelTemplate<Sint32, Uint32>(Document, InputData, ImageStatus, BitsPerSample, RGBColorModel);
+                InterData = new DiYBRPixelTemplate<Sint32, Uint32>(Document, InputData, ImageStatus, planeSize, BitsPerSample, RGBColorModel);
                 break;
         }
         deleteInputData();
@@ -90,7 +92,10 @@ DiYBRImage::~DiYBRImage()
 **
 ** CVS/RCS Log:
 ** $Log: diybrimg.cc,v $
-** Revision 1.6  2001-09-28 13:56:35  joergr
+** Revision 1.7  2002-06-26 16:30:43  joergr
+** Corrected decoding of multi-frame, planar images.
+**
+** Revision 1.6  2001/09/28 13:56:35  joergr
 ** Added new flag (CIF_KeepYCbCrColorModel) which avoids conversion of YCbCr
 ** color models to RGB.
 **
