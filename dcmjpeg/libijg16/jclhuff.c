@@ -28,7 +28,7 @@
  */
 
 typedef struct {
-  INT32 put_buffer;		/* current bit-accumulation buffer */
+  IJG_INT32 put_buffer;		/* current bit-accumulation buffer */
   int put_bits;			/* # of bits now in it */
 } savable_state;
 
@@ -244,14 +244,14 @@ emit_bits (working_state * state, unsigned int code, int size)
 /* Emit some bits; return TRUE if successful, FALSE if must suspend */
 {
   /* This routine is heavily used, so it's worth coding tightly. */
-  register INT32 put_buffer = (INT32) code;
+  register IJG_INT32 put_buffer = (IJG_INT32) code;
   register int put_bits = state->cur.put_bits;
 
   /* if size is 0, caller used an invalid Huffman table entry */
   if (size == 0)
     ERREXIT(state->cinfo, JERR_HUFF_MISSING_CODE);
 
-  put_buffer &= (((INT32) 1)<<size) - 1; /* mask off any extra bits in code */
+  put_buffer &= (((IJG_INT32) 1)<<size) - 1; /* mask off any extra bits in code */
   
   put_bits += size;		/* new number of bits in buffer */
   

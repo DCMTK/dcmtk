@@ -20,10 +20,10 @@
 #define PREDICTOR1	Ra
 #define PREDICTOR2	Rb
 #define PREDICTOR3	Rc
-#define PREDICTOR4	(int) ((INT32) Ra + (INT32) Rb - (INT32) Rc)
-#define PREDICTOR5	(int) ((INT32) Ra + RIGHT_SHIFT((INT32) Rb - (INT32) Rc, 1))
-#define PREDICTOR6	(int) ((INT32) Rb + RIGHT_SHIFT((INT32) Ra - (INT32) Rc, 1))
-#define PREDICTOR7	(int) RIGHT_SHIFT((INT32) Ra + (INT32) Rb, 1)
+#define PREDICTOR4	(int) ((IJG_INT32) Ra + (IJG_INT32) Rb - (IJG_INT32) Rc)
+#define PREDICTOR5	(int) ((IJG_INT32) Ra + RIGHT_SHIFT((IJG_INT32) Rb - (IJG_INT32) Rc, 1))
+#define PREDICTOR6	(int) ((IJG_INT32) Rb + RIGHT_SHIFT((IJG_INT32) Ra - (IJG_INT32) Rc, 1))
+#define PREDICTOR7	(int) RIGHT_SHIFT((IJG_INT32) Ra + (IJG_INT32) Rb, 1)
 
 
 typedef JMETHOD(void, predict_difference_method_ptr,

@@ -67,7 +67,7 @@
  * they are represented to better-than-integral precision.  These outputs
  * require BITS_IN_JSAMPLE + PASS1_BITS + 3 bits; this fits in a 16-bit word
  * with the recommended scaling.  (For 12-bit sample data, the intermediate
- * array is INT32 anyway.)
+ * array is IJG_INT32 anyway.)
  *
  * To avoid overflow of the 32-bit intermediate results in pass 2, we must
  * have BITS_IN_JSAMPLE + CONST_BITS + PASS1_BITS <= 26.  Error analysis
@@ -90,18 +90,18 @@
  */
 
 #if CONST_BITS == 13
-#define FIX_0_298631336  ((INT32)  2446)	/* FIX(0.298631336) */
-#define FIX_0_390180644  ((INT32)  3196)	/* FIX(0.390180644) */
-#define FIX_0_541196100  ((INT32)  4433)	/* FIX(0.541196100) */
-#define FIX_0_765366865  ((INT32)  6270)	/* FIX(0.765366865) */
-#define FIX_0_899976223  ((INT32)  7373)	/* FIX(0.899976223) */
-#define FIX_1_175875602  ((INT32)  9633)	/* FIX(1.175875602) */
-#define FIX_1_501321110  ((INT32)  12299)	/* FIX(1.501321110) */
-#define FIX_1_847759065  ((INT32)  15137)	/* FIX(1.847759065) */
-#define FIX_1_961570560  ((INT32)  16069)	/* FIX(1.961570560) */
-#define FIX_2_053119869  ((INT32)  16819)	/* FIX(2.053119869) */
-#define FIX_2_562915447  ((INT32)  20995)	/* FIX(2.562915447) */
-#define FIX_3_072711026  ((INT32)  25172)	/* FIX(3.072711026) */
+#define FIX_0_298631336  ((IJG_INT32)  2446)	/* FIX(0.298631336) */
+#define FIX_0_390180644  ((IJG_INT32)  3196)	/* FIX(0.390180644) */
+#define FIX_0_541196100  ((IJG_INT32)  4433)	/* FIX(0.541196100) */
+#define FIX_0_765366865  ((IJG_INT32)  6270)	/* FIX(0.765366865) */
+#define FIX_0_899976223  ((IJG_INT32)  7373)	/* FIX(0.899976223) */
+#define FIX_1_175875602  ((IJG_INT32)  9633)	/* FIX(1.175875602) */
+#define FIX_1_501321110  ((IJG_INT32)  12299)	/* FIX(1.501321110) */
+#define FIX_1_847759065  ((IJG_INT32)  15137)	/* FIX(1.847759065) */
+#define FIX_1_961570560  ((IJG_INT32)  16069)	/* FIX(1.961570560) */
+#define FIX_2_053119869  ((IJG_INT32)  16819)	/* FIX(2.053119869) */
+#define FIX_2_562915447  ((IJG_INT32)  20995)	/* FIX(2.562915447) */
+#define FIX_3_072711026  ((IJG_INT32)  25172)	/* FIX(3.072711026) */
 #else
 #define FIX_0_298631336  FIX(0.298631336)
 #define FIX_0_390180644  FIX(0.390180644)
@@ -118,7 +118,7 @@
 #endif
 
 
-/* Multiply an INT32 variable by an INT32 constant to yield an INT32 result.
+/* Multiply an IJG_INT32 variable by an IJG_INT32 constant to yield an IJG_INT32 result.
  * For 8-bit samples with the recommended scaling, all the variable
  * and constant values involved are no more than 16 bits wide, so a
  * 16x16->32 bit multiply can be used instead of a full 32x32 multiply.
@@ -139,9 +139,9 @@
 GLOBAL(void)
 jpeg_fdct_islow (DCTELEM * data)
 {
-  INT32 tmp0, tmp1, tmp2, tmp3, tmp4, tmp5, tmp6, tmp7;
-  INT32 tmp10, tmp11, tmp12, tmp13;
-  INT32 z1, z2, z3, z4, z5;
+  IJG_INT32 tmp0, tmp1, tmp2, tmp3, tmp4, tmp5, tmp6, tmp7;
+  IJG_INT32 tmp10, tmp11, tmp12, tmp13;
+  IJG_INT32 z1, z2, z3, z4, z5;
   DCTELEM *dataptr;
   int ctr;
   SHIFT_TEMPS

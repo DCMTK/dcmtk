@@ -78,7 +78,7 @@ jpeg_make_c_derived_tbl (j_compress_ptr cinfo, boolean isDC, int tblno,
      * it must still fit in si bits, since no code is allowed to be all ones.
      * BUG FIX 2001-09-03: Comparison must be >, not >=
      */
-    if (((INT32) code) > (((INT32) 1) << si))
+    if (((IJG_INT32) code) > (((IJG_INT32) 1) << si))
       ERREXIT(cinfo, JERR_BAD_HUFF_TABLE);
     code <<= 1;
     si++;

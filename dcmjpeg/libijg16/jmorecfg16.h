@@ -189,11 +189,8 @@ typedef unsigned int UINT16;
 typedef short INT16;
 #endif
 
-/* INT32 must hold at least signed 32-bit values. */
-
-#ifndef XMD_H			/* X11/xmd.h correctly defines INT32 */
-typedef long INT32;
-#endif
+/* IJG_INT32 must hold at least signed 32-bit values. */
+typedef long IJG_INT32;
 
 /* Datatype used for image dimensions.  The JPEG standard only supports
  * images up to 64K*64K due to 16-bit fields in SOF markers.  Therefore

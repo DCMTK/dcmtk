@@ -236,16 +236,16 @@ struct jpeg_color_quantizer {
  * shift" instructions that shift in copies of the sign bit.  But some
  * C compilers implement >> with an unsigned shift.  For these machines you
  * must define RIGHT_SHIFT_IS_UNSIGNED.
- * RIGHT_SHIFT provides a proper signed right shift of an INT32 quantity.
+ * RIGHT_SHIFT provides a proper signed right shift of an IJG_INT32 quantity.
  * It is only applied with constant shift counts.  SHIFT_TEMPS must be
  * included in the variables of any routine using RIGHT_SHIFT.
  */
 
 #ifdef RIGHT_SHIFT_IS_UNSIGNED
-#define SHIFT_TEMPS	INT32 shift_temp;
+#define SHIFT_TEMPS	IJG_INT32 shift_temp;
 #define RIGHT_SHIFT(x,shft)  \
 	((shift_temp = (x)) < 0 ? \
-	 (shift_temp >> (shft)) | ((~((INT32) 0)) << (32-(shft))) : \
+	 (shift_temp >> (shft)) | ((~((IJG_INT32) 0)) << (32-(shft))) : \
 	 (shift_temp >> (shft)))
 #else
 #define SHIFT_TEMPS

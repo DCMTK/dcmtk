@@ -19,7 +19,7 @@ typedef struct {
   struct jpeg_color_converter pub; /* public fields */
 
   /* Private state for RGB->YCC conversion */
-  INT32 * rgb_ycc_tab;		/* => table for RGB to YCbCr conversion */
+  IJG_INT32 * rgb_ycc_tab;		/* => table for RGB to YCbCr conversion */
 } my_color_converter;
 
 typedef my_color_converter * my_cconvert_ptr;
@@ -58,7 +58,7 @@ typedef my_color_converter * my_cconvert_ptr;
 /*
  * SCALEBITS has been changed from 16 to 15 in this particular file.
  * The problem is that for 16-bit images SCALEBITS=16 leads to an
- * INT32 integer overflow in rgb_ycc_start().
+ * IJG_INT32 integer overflow in rgb_ycc_start().
  * SCALEBITS=15 avoids the overflow at the expense of precision
  * and possibly a slight increase in CPU time.
  * WARNING: This modification has not really been tested since
@@ -67,9 +67,9 @@ typedef my_color_converter * my_cconvert_ptr;
  * RGB to YCC in lossless mode.
  */ 
 #define SCALEBITS	15	
-#define CBCR_OFFSET	((INT32) CENTERJSAMPLE << SCALEBITS)
-#define ONE_HALF	((INT32) 1 << (SCALEBITS-1))
-#define FIX(x)		((INT32) ((x) * (1L<<SCALEBITS) + 0.5))
+#define CBCR_OFFSET	((IJG_INT32) CENTERJSAMPLE << SCALEBITS)
+#define ONE_HALF	((IJG_INT32) 1 << (SCALEBITS-1))
+#define FIX(x)		((IJG_INT32) ((x) * (1L<<SCALEBITS) + 0.5))
 
 /* We allocate one big table and divide it up into eight parts, instead of
  * doing eight alloc_small requests.  This lets us use a single table base
@@ -97,13 +97,13 @@ METHODDEF(void)
 rgb_ycc_start (j_compress_ptr cinfo)
 {
   my_cconvert_ptr cconvert = (my_cconvert_ptr) cinfo->cconvert;
-  INT32 * rgb_ycc_tab;
-  INT32 i;
+  IJG_INT32 * rgb_ycc_tab;
+  IJG_INT32 i;
 
   /* Allocate and fill in the conversion tables. */
-  cconvert->rgb_ycc_tab = rgb_ycc_tab = (INT32 *)
+  cconvert->rgb_ycc_tab = rgb_ycc_tab = (IJG_INT32 *)
     (*cinfo->mem->alloc_small) ((j_common_ptr) cinfo, JPOOL_IMAGE,
-				(TABLE_SIZE * SIZEOF(INT32)));
+				(TABLE_SIZE * SIZEOF(IJG_INT32)));
 
   for (i = 0; i <= MAXJSAMPLE; i++) {
     rgb_ycc_tab[i+R_Y_OFF] = FIX(0.29900) * i;
@@ -144,7 +144,7 @@ rgb_ycc_convert (j_compress_ptr cinfo,
 {
   my_cconvert_ptr cconvert = (my_cconvert_ptr) cinfo->cconvert;
   register int r, g, b;
-  register INT32 * ctab = cconvert->rgb_ycc_tab;
+  register IJG_INT32 * ctab = cconvert->rgb_ycc_tab;
   register JSAMPROW inptr;
   register JSAMPROW outptr0, outptr1, outptr2;
   register JDIMENSION col;
@@ -200,7 +200,7 @@ rgb_gray_convert (j_compress_ptr cinfo,
 {
   my_cconvert_ptr cconvert = (my_cconvert_ptr) cinfo->cconvert;
   register int r, g, b;
-  register INT32 * ctab = cconvert->rgb_ycc_tab;
+  register IJG_INT32 * ctab = cconvert->rgb_ycc_tab;
   register JSAMPROW inptr;
   register JSAMPROW outptr;
   register JDIMENSION col;
@@ -239,7 +239,7 @@ cmyk_ycck_convert (j_compress_ptr cinfo,
 {
   my_cconvert_ptr cconvert = (my_cconvert_ptr) cinfo->cconvert;
   register int r, g, b;
-  register INT32 * ctab = cconvert->rgb_ycc_tab;
+  register IJG_INT32 * ctab = cconvert->rgb_ycc_tab;
   register JSAMPROW inptr;
   register JSAMPROW outptr0, outptr1, outptr2, outptr3;
   register JDIMENSION col;

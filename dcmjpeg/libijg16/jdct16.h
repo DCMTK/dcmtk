@@ -16,7 +16,7 @@
 /*
  * A forward DCT routine is given a pointer to a work area of type DCTELEM[];
  * the DCT is to be performed in-place in that buffer.  Type DCTELEM is int
- * for 8-bit samples, INT32 for 12-bit samples.  (NOTE: Floating-point DCT
+ * for 8-bit samples, IJG_INT32 for 12-bit samples.  (NOTE: Floating-point DCT
  * implementations use an array of type FAST_FLOAT, instead.)
  * The DCT inputs are expected to be signed (range +-CENTERJSAMPLE).
  * The DCT outputs are returned scaled up by a factor of 8; they therefore
@@ -29,7 +29,7 @@
 #if BITS_IN_JSAMPLE == 8
 typedef int DCTELEM;		/* 16 or 32 bits is fine */
 #else
-typedef INT32 DCTELEM;		/* must have 32 bits */
+typedef IJG_INT32 DCTELEM;		/* must have 32 bits */
 #endif
 
 typedef JMETHOD(void, forward_DCT_method_ptr, (DCTELEM * data));
@@ -58,7 +58,7 @@ typedef MULTIPLIER ISLOW_MULT_TYPE; /* short or int, whichever is faster */
 typedef MULTIPLIER IFAST_MULT_TYPE; /* 16 bits is OK, use short if faster */
 #define IFAST_SCALE_BITS  2	/* fractional bits in scale factors */
 #else
-typedef INT32 IFAST_MULT_TYPE;	/* need 32 bits for scaled quantizers */
+typedef IJG_INT32 IFAST_MULT_TYPE;	/* need 32 bits for scaled quantizers */
 #define IFAST_SCALE_BITS  13	/* fractional bits in scale factors */
 #endif
 typedef FAST_FLOAT FLOAT_MULT_TYPE; /* preferred floating type */
@@ -122,13 +122,13 @@ EXTERN(void) jpeg_idct_1x1
  * Macros for handling fixed-point arithmetic; these are used by many
  * but not all of the DCT/IDCT modules.
  *
- * All values are expected to be of type INT32.
+ * All values are expected to be of type IJG_INT32.
  * Fractional constants are scaled left by CONST_BITS bits.
  * CONST_BITS is defined within each module using these macros,
  * and may differ from one module to the next.
  */
 
-#define ONE	((INT32) 1)
+#define ONE	((IJG_INT32) 1)
 #define CONST_SCALE (ONE << CONST_BITS)
 
 /* Convert a positive real constant to an integer scaled by CONST_SCALE.
@@ -136,16 +136,16 @@ EXTERN(void) jpeg_idct_1x1
  * thus causing a lot of useless floating-point operations at run time.
  */
 
-#define FIX(x)	((INT32) ((x) * CONST_SCALE + 0.5))
+#define FIX(x)	((IJG_INT32) ((x) * CONST_SCALE + 0.5))
 
-/* Descale and correctly round an INT32 value that's scaled by N bits.
+/* Descale and correctly round an IJG_INT32 value that's scaled by N bits.
  * We assume RIGHT_SHIFT rounds towards minus infinity, so adding
  * the fudge factor is correct for either sign of X.
  */
 
 #define DESCALE(x,n)  RIGHT_SHIFT((x) + (ONE << ((n)-1)), n)
 
-/* Multiply an INT32 variable by an INT32 constant to yield an INT32 result.
+/* Multiply an IJG_INT32 variable by an IJG_INT32 constant to yield an IJG_INT32 result.
  * This macro is used only when the two inputs will actually be no more than
  * 16 bits wide, so that a 16x16->32 bit multiply can be used instead of a
  * full 32x32 multiply.  This provides a useful speedup on many machines.
@@ -158,7 +158,7 @@ EXTERN(void) jpeg_idct_1x1
 #define MULTIPLY16C16(var,const)  (((INT16) (var)) * ((INT16) (const)))
 #endif
 #ifdef SHORTxLCONST_32		/* known to work with Microsoft C 6.0 */
-#define MULTIPLY16C16(var,const)  (((INT16) (var)) * ((INT32) (const)))
+#define MULTIPLY16C16(var,const)  (((INT16) (var)) * ((IJG_INT32) (const)))
 #endif
 
 #ifndef MULTIPLY16C16		/* default definition */

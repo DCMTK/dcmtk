@@ -480,7 +480,7 @@ decompress_smooth_data (j_decompress_ptr cinfo, JSAMPIMAGE output_buf)
   JBLOCK workspace;
   int *coef_bits;
   JQUANT_TBL *quanttbl;
-  INT32 Q00,Q01,Q02,Q10,Q11,Q20, num;
+  IJG_INT32 Q00,Q01,Q02,Q10,Q11,Q20, num;
   int DC1,DC2,DC3,DC4,DC5,DC6,DC7,DC8,DC9;
   int Al, pred;
 
