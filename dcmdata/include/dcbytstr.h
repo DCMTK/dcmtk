@@ -9,10 +9,10 @@
 ** Purpose:
 ** Interface of class DcmByteString
 **
-** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1996-01-29 13:38:11 $
+** Last Update:		$Author: hewett $
+** Update Date:		$Date: 1996-03-12 15:26:52 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcbytstr.h,v $
-** CVS/RCS Revision:	$Revision: 1.5 $
+** CVS/RCS Revision:	$Revision: 1.6 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -74,8 +74,7 @@ public:
     virtual E_Condition put(const char *byteStringValue);
 
     virtual E_Condition get(char * & byteStringValue);
-    virtual E_Condition get(unsigned char * & byteStringValue);
-    char * get();
+    char * get(void);
 
     virtual E_Condition clear();
     virtual E_Condition verify(const BOOL autocorrect = FALSE);
@@ -87,7 +86,10 @@ public:
 /*
 ** CVS/RCS Log:
 ** $Log: dcbytstr.h,v $
-** Revision 1.5  1996-01-29 13:38:11  andreas
+** Revision 1.6  1996-03-12 15:26:52  hewett
+** Removed get method for unsigned char*
+**
+** Revision 1.5  1996/01/29 13:38:11  andreas
 ** - new put method for every VR to put value as a string
 ** - better and unique print methods
 **
