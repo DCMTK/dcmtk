@@ -46,9 +46,9 @@
 ** Author, Date:	Stephen M. Moore, 15-Apr-93
 ** Intent:		Define tables and provide functions that implement
 **			the DICOM Upper Layer (DUL) finite state machine.
-** Last Update:		$Author: meichel $, $Date: 1997-05-05 10:30:16 $
+** Last Update:		$Author: meichel $, $Date: 1997-07-01 15:26:10 $
 ** Source File:		$RCSfile: dulfsm.cc,v $
-** Revision:		$Revision: 1.9 $
+** Revision:		$Revision: 1.10 $
 ** Status:		$State: Exp $
 */
 
@@ -2458,13 +2458,15 @@ sendAssociationRQTCP(PRIVATE_NETWORKKEY ** /*network*/,
     }
 #endif
 
+    do {
 #ifdef HAVE_WINSOCK_H
-    nbytes = send((*association)->networkSpecific.TCP.socket, (char*)b,
+      nbytes = send((*association)->networkSpecific.TCP.socket, (char*)b,
 		   associateRequest.length + 6, 0);
 #else
-    nbytes = write((*association)->networkSpecific.TCP.socket, (char*)b,
+      nbytes = write((*association)->networkSpecific.TCP.socket, (char*)b,
 		   associateRequest.length + 6);
 #endif
+    } while (nbytes == -1 && errno == EINTR);
     if ((unsigned long) nbytes != associateRequest.length + 6) {
 	return COND_PushCondition(DUL_TCPIOERROR, DUL_Message(DUL_TCPIOERROR),
 				  strerror(errno), "requestAssociationTCP");
@@ -2554,13 +2556,15 @@ sendAssociationACTCP(PRIVATE_NETWORKKEY ** /*network*/,
     }
 #endif
 
+    do {
 #ifdef HAVE_WINSOCK_H
-    nbytes = send((*association)->networkSpecific.TCP.socket, (char*)b,
+      nbytes = send((*association)->networkSpecific.TCP.socket, (char*)b,
 		   associateReply.length + 6, 0);
 #else
-    nbytes = write((*association)->networkSpecific.TCP.socket, (char*)b,
+      nbytes = write((*association)->networkSpecific.TCP.socket, (char*)b,
 		   associateReply.length + 6);
 #endif
+    } while (nbytes == -1 && errno == EINTR);
     if ((unsigned long) nbytes != associateReply.length + 6) {
 	return COND_PushCondition(DUL_TCPIOERROR, DUL_Message(DUL_TCPIOERROR),
 				  strerror(errno), "ReplyAssociationTCP");
@@ -2628,13 +2632,15 @@ sendAssociationRJTCP(PRIVATE_NETWORKKEY ** /*network*/,
     cond = streamRejectReleaseAbortPDU(&pdu, b, pdu.length + 6, &length);
 
     if (cond == DUL_NORMAL) {
+        do {
 #ifdef HAVE_WINSOCK_H
- 	nbytes = send((*association)->networkSpecific.TCP.socket, (char*)b,
+ 	  nbytes = send((*association)->networkSpecific.TCP.socket, (char*)b,
 		       pdu.length + 6, 0);
 #else
- 	nbytes = write((*association)->networkSpecific.TCP.socket, (char*)b,
+ 	  nbytes = write((*association)->networkSpecific.TCP.socket, (char*)b,
 		       pdu.length + 6);
 #endif
+        } while (nbytes == -1 && errno == EINTR);
 	if ((unsigned long) nbytes != pdu.length + 6) {
 	    cond = COND_PushCondition(DUL_TCPIOERROR, strerror(errno),
 				      "sendAssociationRJTCP");
@@ -2699,13 +2705,15 @@ sendAbortTCP(DUL_ABORTITEMS * abortItems,
     }
     cond = streamRejectReleaseAbortPDU(&pdu, b, pdu.length + 6, &length);
     if (cond == DUL_NORMAL) {
+        do {
 #ifdef HAVE_WINSOCK_H
-	nbytes = send((*association)->networkSpecific.TCP.socket, (char*)b,
+  	  nbytes = send((*association)->networkSpecific.TCP.socket, (char*)b,
 		       pdu.length + 6, 0);
 #else
-	nbytes = write((*association)->networkSpecific.TCP.socket, (char*)b,
+	  nbytes = write((*association)->networkSpecific.TCP.socket, (char*)b,
 		       pdu.length + 6);
 #endif
+        } while (nbytes == -1 && errno == EINTR);
 	if ((unsigned long) nbytes != pdu.length + 6) {
 	    cond = COND_PushCondition(DUL_TCPIOERROR, strerror(errno),
 				      "sendAbortTCP");
@@ -2770,13 +2778,15 @@ sendReleaseRQTCP(PRIVATE_ASSOCIATIONKEY ** association)
     }
     cond = streamRejectReleaseAbortPDU(&pdu, b, pdu.length + 6, &length);
     if (cond == DUL_NORMAL) {
+        do {
 #ifdef HAVE_WINSOCK_H
-	nbytes = send((*association)->networkSpecific.TCP.socket, (char*)b,
+	  nbytes = send((*association)->networkSpecific.TCP.socket, (char*)b,
 		       pdu.length + 6, 0);
 #else
-	nbytes = write((*association)->networkSpecific.TCP.socket, (char*)b,
+	  nbytes = write((*association)->networkSpecific.TCP.socket, (char*)b,
 		       pdu.length + 6);
 #endif
+        } while (nbytes == -1 && errno == EINTR);
 	if ((unsigned long) nbytes != pdu.length + 6) {
 	    cond = COND_PushCondition(DUL_TCPIOERROR, strerror(errno),
 				      "sendReleaseRQTCP");
@@ -2841,13 +2851,15 @@ sendReleaseRPTCP(PRIVATE_ASSOCIATIONKEY ** association)
     }
     cond = streamRejectReleaseAbortPDU(&pdu, b, pdu.length + 6, &length);
     if (cond == DUL_NORMAL) {
+        do {
 #ifdef HAVE_WINSOCK_H
-	nbytes = send((*association)->networkSpecific.TCP.socket, (char*)b,
+	  nbytes = send((*association)->networkSpecific.TCP.socket, (char*)b,
 		       pdu.length + 6, 0);
 #else
-	nbytes = write((*association)->networkSpecific.TCP.socket, (char*)b,
+	  nbytes = write((*association)->networkSpecific.TCP.socket, (char*)b,
 		       pdu.length + 6);
 #endif
+        } while (nbytes == -1 && errno == EINTR);
 	if ((unsigned long) nbytes != pdu.length + 6) {
 	    cond = COND_PushCondition(DUL_TCPIOERROR, strerror(errno),
 				      "sendReleaseRPTCP");
@@ -2974,26 +2986,30 @@ writeDataPDU(PRIVATE_ASSOCIATIONKEY ** association,
 			   pdu->presentationDataValue.length - 2);
 	}
 #endif
+        do {
 #ifdef HAVE_WINSOCK_H
-	nbytes = send((*association)->networkSpecific.TCP.socket, 
+	  nbytes = send((*association)->networkSpecific.TCP.socket, 
 		       (char*)head, length, 0);
 #else
-	nbytes = write((*association)->networkSpecific.TCP.socket, 
+	  nbytes = write((*association)->networkSpecific.TCP.socket, 
 		       (char*)head, length);
 #endif
+        } while (nbytes == -1 && errno == EINTR);
 	if ((unsigned long) nbytes != length)
 	    return COND_PushCondition(DUL_TCPIOERROR,
 			       DUL_Message(DUL_TCPIOERROR), strerror(errno),
 				      "writeDataPDU");
+        do {
 #ifdef HAVE_WINSOCK_H
-	nbytes = send((*association)->networkSpecific.TCP.socket,
+	  nbytes = send((*association)->networkSpecific.TCP.socket,
 		       (char*)pdu->presentationDataValue.data,
 		       pdu->presentationDataValue.length - 2, 0);
 #else
-	nbytes = write((*association)->networkSpecific.TCP.socket,
+	  nbytes = write((*association)->networkSpecific.TCP.socket,
 		       (char*)pdu->presentationDataValue.data,
 		       pdu->presentationDataValue.length - 2);
 #endif
+        } while (nbytes == -1 && errno == EINTR);
 	if ((unsigned long) nbytes != pdu->presentationDataValue.length - 2)
 	    return COND_PushCondition(DUL_TCPIOERROR,
 			       DUL_Message(DUL_TCPIOERROR), strerror(errno),
@@ -3559,11 +3575,13 @@ defragmentTCP(int sock, DUL_BLOCKOPTIONS block, time_t timerStart,
 	    return DUL_READTIMEOUT;
     }
     while (l > 0) {
+        do {
 #ifdef HAVE_WINSOCK_H
-	bytesRead = recv(sock, (char*)b, l, 0);
+	  bytesRead = recv(sock, (char*)b, l, 0);
 #else
-	bytesRead = read(sock, (char*)b, l);
+	  bytesRead = read(sock, (char*)b, l);
 #endif
+        } while (bytesRead == -1 && errno == EINTR);
 	if (bytesRead > 0) {
 	    b += bytesRead;
 	    l -= (unsigned long) bytesRead;
@@ -4052,7 +4070,12 @@ DULPRV_translateAssocReq(unsigned char *buffer,
 /*
 ** CVS Log
 ** $Log: dulfsm.cc,v $
-** Revision 1.9  1997-05-05 10:30:16  meichel
+** Revision 1.10  1997-07-01 15:26:10  meichel
+** Fixed bug in DICOM Upper Layer module - software interrupts
+** (e.g. SIGUSR1) caused the upper layer to return error codes
+** when a blocked read() or write() operation to a socket was interrupted.
+**
+** Revision 1.9  1997/05/05 10:30:16  meichel
 ** Fixed bugs related to association negotiation in the DICOM upper layer module.
 ** Added application tests/assctest.cc to examine handling of large A-ASSOCIATE
 ** PDUs. See CHANGES file for details.
