@@ -1,3 +1,10 @@
+**** Changes from 1999.03.04 (riesmeier)
+
+- Barten LUT is now be re-created when ambient light value has changed.
+  Affects: dcmimgle/include/dibarlut.h
+           dcmimgle/libsrc/dibarlut.cc
+           dcmimgle/libsrc/didispfn.cc
+
 **** Changes from 1999.03.03 (riesmeier)
 
 - Added support to specify ambient light value (re: Barten transformation).
