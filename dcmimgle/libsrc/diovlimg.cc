@@ -22,9 +22,9 @@
  *  Purpose: DicomOverlayImage (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1998-12-14 17:40:31 $
+ *  Update Date:      $Date: 1999-02-03 17:43:22 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/libsrc/diovlimg.cc,v $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -44,7 +44,8 @@
  *  constructors  *
  *----------------*/
 
-DiOverlayImage::DiOverlayImage(const DiDocument *docu, const EI_Status status)
+DiOverlayImage::DiOverlayImage(const DiDocument *docu,
+                               const EI_Status status)
   : DiMono2Image(docu, status, 0)
 {
     if (Document != NULL)
@@ -71,8 +72,7 @@ DiOverlayImage::DiOverlayImage(const DiDocument *docu, const EI_Status status)
             }
             if ((Rows > 0) && (Columns > 0))
             {
-                InterData = new DiMonoPixelTemplate<Uint8>((unsigned long)Rows * (unsigned long)Columns *
-                    NumberOfFrames);
+                InterData = new DiMonoPixelTemplate<Uint8>((unsigned long)Rows * (unsigned long)Columns * NumberOfFrames);
                 if (InterData == NULL)
                 {
                     ImageStatus = EIS_MemoryFailure;
@@ -112,20 +112,23 @@ DiOverlayImage::~DiOverlayImage()
 
 
 /*
-**
-** CVS/RCS Log:
-** $Log: diovlimg.cc,v $
-** Revision 1.2  1998-12-14 17:40:31  joergr
-** Added methods to add and remove additional overlay planes (still untested).
-**
-** Revision 1.1  1998/11/27 16:20:53  joergr
-** Added copyright message.
-** Introduced global debug level for dcmimage module to control error output.
-** Renamed variable 'Status' to 'ImageStatus' because of possible conflicts
-** with X windows systems.
-**
-** Revision 1.3  1998/05/11 14:52:35  joergr
-** Added CVS/RCS header to each file.
-**
-**
-*/
+ *
+ * CVS/RCS Log:
+ * $Log: diovlimg.cc,v $
+ * Revision 1.3  1999-02-03 17:43:22  joergr
+ * Corrected some typos and formatting.
+ *
+ * Revision 1.2  1998/12/14 17:40:31  joergr
+ * Added methods to add and remove additional overlay planes (still untested).
+ *
+ * Revision 1.1  1998/11/27 16:20:53  joergr
+ * Added copyright message.
+ * Introduced global debug level for dcmimage module to control error output.
+ * Renamed variable 'Status' to 'ImageStatus' because of possible conflicts
+ * with X windows systems.
+ *
+ * Revision 1.3  1998/05/11 14:52:35  joergr
+ * Added CVS/RCS header to each file.
+ *
+ *
+ */
