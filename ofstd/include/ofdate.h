@@ -22,9 +22,9 @@
  *  Purpose: Class for date functions
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-04-11 12:12:23 $
+ *  Update Date:      $Date: 2002-04-15 09:38:58 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/include/Attic/ofdate.h,v $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -37,7 +37,13 @@
 
 #include "osconfig.h"
 
-#include "ofstring.h"   /* for class OFString */
+BEGIN_EXTERN_C
+#ifdef HAVE_SYS_TYPES_H
+# include <sys/types.h>    /* for struct time_t */
+#endif
+END_EXTERN_C
+
+#include "ofstring.h"      /* for class OFString */
 
 
 /*---------------------*
@@ -258,7 +264,10 @@ ostream& operator<<(ostream& stream, const OFDate &date);
  *
  * CVS/RCS Log:
  * $Log: ofdate.h,v $
- * Revision 1.1  2002-04-11 12:12:23  joergr
+ * Revision 1.2  2002-04-15 09:38:58  joergr
+ * Added "include <sys/types.h>" for struct time_t (required for MSVC).
+ *
+ * Revision 1.1  2002/04/11 12:12:23  joergr
  * Introduced new standard classes providing date and time functions.
  *
  *
