@@ -23,8 +23,8 @@
  *    classes: DSRTypes
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-10-01 15:06:54 $
- *  CVS/RCS Revision: $Revision: 1.19 $
+ *  Update Date:      $Date: 2001-10-02 12:05:46 $
+ *  CVS/RCS Revision: $Revision: 1.20 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -65,6 +65,48 @@
  *-----------------------*/
 
 class DSRDocumentTreeNode;
+
+
+/*-----------------------*
+ *  contant definitions  *
+ *-----------------------*/
+
+/** @name specific error conditions for module dcmsr.
+ *  These error codes can be used in addition to the general purpose
+ *  codes defined in module dcmdata.
+ */
+//@{
+
+/// error: the document type (SOP class UID) is unknown or not supported
+extern const OFCondition SR_EC_UnknownDocumentType;
+
+/// error: the document status is invalid
+extern const OFCondition SR_EC_InvalidDocument;
+
+/// error: the document tree is invalid (corrupted structure)
+extern const OFCondition SR_EC_InvalidDocumentTree;
+
+/// error: a mandatory attribute is missing
+extern const OFCondition SR_EC_MandatoryAttributeMissing;
+
+/// error: a value is invalid according to the standard
+extern const OFCondition SR_EC_InvalidValue;
+
+/// error: a value is not supported by this implementation
+extern const OFCondition SR_EC_UnsupportedValue;
+
+/// error: an unknown value type is used
+extern const OFCondition SR_EC_UnknownValueType;
+
+/// error: an unknown relationship type is used
+extern const OFCondition SR_EC_UnknownRelationshipType;
+
+/// error: the by-value relationship between two content items is not allowed
+extern const OFCondition SR_EC_InvalidByValueRelationship;
+
+/// error: the by-reference relationship between two content items is not allowed
+extern const OFCondition SR_EC_InvalidByReferenceRelationship;
+//@}
 
 
 /*---------------------*
@@ -1059,7 +1101,11 @@ class DSRTypes
 /*
  *  CVS/RCS Log:
  *  $Log: dsrtypes.h,v $
- *  Revision 1.19  2001-10-01 15:06:54  joergr
+ *  Revision 1.20  2001-10-02 12:05:46  joergr
+ *  Adapted module "dcmsr" to the new class OFCondition. Introduced module
+ *  specific error codes.
+ *
+ *  Revision 1.19  2001/10/01 15:06:54  joergr
  *  Introduced new general purpose functions to get/set person names, date, time
  *  and date/time.
  *

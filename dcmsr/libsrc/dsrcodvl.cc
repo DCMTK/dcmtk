@@ -23,8 +23,8 @@
  *    classes: DSRCodedEntryValue
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-09-28 14:09:26 $
- *  CVS/RCS Revision: $Revision: 1.8 $
+ *  Update Date:      $Date: 2001-10-02 12:07:06 $
+ *  CVS/RCS Revision: $Revision: 1.9 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -221,7 +221,7 @@ OFCondition DSRCodedEntryValue::readSequence(DcmItem &dataset,
             /* read Code */
             result = readItem(*ditem, logStream, DcmTag(tagKey).getTagName());
         } else
-            result = EC_CorruptedData;
+            result = SR_EC_InvalidDocumentTree;
     }
     return result;
 }
@@ -345,7 +345,7 @@ OFCondition DSRCodedEntryValue::setCode(const OFString &codeValue,
         if (CodingSchemeDesignator == OFFIS_CODING_SCHEME_DESIGNATOR)
             PrivateCodingSchemeCreatorUID = OFFIS_PRIVATE_CODING_SCHEME_CREATOR_UID;
     } else
-        result = EC_IllegalCall;
+        result = SR_EC_InvalidValue;
     return result;
 }
 
@@ -362,7 +362,11 @@ OFBool DSRCodedEntryValue::checkCode(const OFString &codeValue,
 /*
  *  CVS/RCS Log:
  *  $Log: dsrcodvl.cc,v $
- *  Revision 1.8  2001-09-28 14:09:26  joergr
+ *  Revision 1.9  2001-10-02 12:07:06  joergr
+ *  Adapted module "dcmsr" to the new class OFCondition. Introduced module
+ *  specific error codes.
+ *
+ *  Revision 1.8  2001/09/28 14:09:26  joergr
  *  Check return value of DcmItem::insert() statements to avoid memory leaks
  *  when insert procedure failes.
  *

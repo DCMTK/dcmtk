@@ -23,8 +23,8 @@
  *    classes: DSRNumericMeasurementValue
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-09-28 14:11:09 $
- *  CVS/RCS Revision: $Revision: 1.10 $
+ *  Update Date:      $Date: 2001-10-02 12:07:10 $
+ *  CVS/RCS Revision: $Revision: 1.11 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -167,7 +167,7 @@ OFCondition DSRNumericMeasurementValue::readSequence(DcmItem &dataset,
             if (ditem != NULL)
                 result = readItem(*ditem, logStream);
             else
-                result = EC_CorruptedData;
+                result = SR_EC_InvalidDocumentTree;
         }
     }
     return result;
@@ -309,7 +309,11 @@ OFBool DSRNumericMeasurementValue::checkMeasurementUnit(const DSRCodedEntryValue
 /*
  *  CVS/RCS Log:
  *  $Log: dsrnumvl.cc,v $
- *  Revision 1.10  2001-09-28 14:11:09  joergr
+ *  Revision 1.11  2001-10-02 12:07:10  joergr
+ *  Adapted module "dcmsr" to the new class OFCondition. Introduced module
+ *  specific error codes.
+ *
+ *  Revision 1.10  2001/09/28 14:11:09  joergr
  *  Check return value of DcmItem::insert() statements to avoid memory leaks
  *  when insert procedure failes.
  *

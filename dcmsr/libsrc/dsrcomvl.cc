@@ -23,8 +23,8 @@
  *    classes: DSRCompositeReferenceValue
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-09-28 14:09:51 $
- *  CVS/RCS Revision: $Revision: 1.9 $
+ *  Update Date:      $Date: 2001-10-02 12:07:07 $
+ *  CVS/RCS Revision: $Revision: 1.10 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -166,7 +166,7 @@ OFCondition DSRCompositeReferenceValue::readSequence(DcmItem &dataset,
         if (ditem != NULL)
             result = readItem(*ditem, logStream);
         else
-            result = EC_CorruptedData;
+            result = SR_EC_InvalidDocumentTree;
     }
     return result;
 }
@@ -287,7 +287,11 @@ OFBool DSRCompositeReferenceValue::checkSOPInstanceUID(const OFString &sopInstan
 /*
  *  CVS/RCS Log:
  *  $Log: dsrcomvl.cc,v $
- *  Revision 1.9  2001-09-28 14:09:51  joergr
+ *  Revision 1.10  2001-10-02 12:07:07  joergr
+ *  Adapted module "dcmsr" to the new class OFCondition. Introduced module
+ *  specific error codes.
+ *
+ *  Revision 1.9  2001/09/28 14:09:51  joergr
  *  Check return value of DcmItem::insert() statements to avoid memory leaks
  *  when insert procedure failes.
  *

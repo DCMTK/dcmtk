@@ -23,8 +23,8 @@
  *    classes: DSRDocumentTreeNode
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-09-28 14:10:29 $
- *  CVS/RCS Revision: $Revision: 1.16 $
+ *  Update Date:      $Date: 2001-10-02 12:07:08 $
+ *  CVS/RCS Revision: $Revision: 1.17 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -150,7 +150,7 @@ OFCondition DSRDocumentTreeNode::writeXML(ostream &stream,
             if (node != NULL)
                 result = node->writeXML(stream, flags, logStream);
             else
-                result = EC_IllegalCall;
+                result = SR_EC_InvalidDocumentTree;
         } while ((result == EC_Normal) && (cursor.gotoNext()));
     }
     return result;
@@ -411,9 +411,10 @@ OFCondition DSRDocumentTreeNode::createAndAppendNewNode(DSRDocumentTreeNode *&pr
                                                         const E_ValueType valueType,
                                                         const OFBool checkConstraints)
 {
-    OFCondition result = EC_CorruptedData;
+    OFCondition result = EC_Normal;
     /* do not check by-reference relationships here, will be done later (after complete reading) */
-    if ((valueType == VT_byReference) || !checkConstraints || !isConstraintCheckingSupported(documentType) ||
+    if (((valueType == VT_byReference) && (relationshipType != RT_unknown)) || 
+        !checkConstraints || !isConstraintCheckingSupported(documentType) ||
         canAddNode(documentType, relationshipType, valueType))
     {
         DSRDocumentTreeNode *node = createDocumentTreeNode(relationshipType, valueType);
@@ -430,8 +431,19 @@ OFCondition DSRDocumentTreeNode::createAndAppendNewNode(DSRDocumentTreeNode *&pr
             }
             /* store new node for the next time */
             previousNode = node;
-            result = EC_Normal;
+        } else {
+            if (valueType == VT_unknown)
+                result = SR_EC_UnknownValueType;
+            else
+                result = EC_MemoryExhausted;
         }
+    } else {
+        if (valueType == VT_unknown)
+            result = SR_EC_UnknownValueType;
+        else if (relationshipType == RT_unknown)
+            result = SR_EC_UnknownRelationshipType;
+        else
+            result = SR_EC_InvalidByValueRelationship;
     }
     return result;
 }
@@ -536,7 +548,7 @@ OFCondition DSRDocumentTreeNode::readContentSequence(DcmItem &dataset,
                         }
                     }
                 } else
-                    result = EC_CorruptedData;
+                    result = SR_EC_InvalidDocumentTree;
                 i++;
             }
             /* skipping complete sub-tree if flag is set */
@@ -600,7 +612,7 @@ OFCondition DSRDocumentTreeNode::writeContentSequence(DcmItem &dataset,
                     } else
                         result = EC_MemoryExhausted;
                 } else
-                    result = EC_IllegalCall;
+                    result = SR_EC_InvalidDocumentTree;
             } while ((result == EC_Normal) && (cursor.gotoNext()));
             if (result == EC_Normal)
                 result = dataset.insert(dseq, OFTrue /* replaceOld */);
@@ -759,7 +771,7 @@ OFCondition DSRDocumentTreeNode::renderHTMLChildNodes(ostream &docStream,
                         docStream << "</p>" << endl;
                 }
             } else
-                result = EC_IllegalCall;
+                result = SR_EC_InvalidDocumentTree;
         } while ((result == EC_Normal) && (cursor.gotoNext()));
         /* close last open paragraph (if any) */
         if (paragraphFlag)
@@ -813,7 +825,11 @@ const OFString &DSRDocumentTreeNode::getRelationshipText(const E_RelationshipTyp
 /*
  *  CVS/RCS Log:
  *  $Log: dsrdoctn.cc,v $
- *  Revision 1.16  2001-09-28 14:10:29  joergr
+ *  Revision 1.17  2001-10-02 12:07:08  joergr
+ *  Adapted module "dcmsr" to the new class OFCondition. Introduced module
+ *  specific error codes.
+ *
+ *  Revision 1.16  2001/09/28 14:10:29  joergr
  *  Check return value of DcmItem::insert() statements to avoid memory leaks
  *  when insert procedure failes.
  *

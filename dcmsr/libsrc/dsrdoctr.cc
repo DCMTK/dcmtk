@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DSRDocumentTree
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-09-26 13:04:20 $
- *  CVS/RCS Revision: $Revision: 1.13 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2001-10-02 12:07:09 $
+ *  CVS/RCS Revision: $Revision: 1.14 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -106,7 +106,7 @@ OFCondition DSRDocumentTree::print(ostream &stream,
                 result = node->print(stream, flags);
                 stream << ">" << endl;
             } else
-                result = EC_IllegalCall;
+                result = SR_EC_InvalidDocumentTree;
         } while ((result == EC_Normal) && (cursor.iterate()));
     }
     return result;
@@ -146,19 +146,19 @@ OFCondition DSRDocumentTree::read(DcmItem &dataset,
                         /* check and update by-reference relationships (if applicable) */
                         checkByReferenceRelationships(OFFalse /* updateString */,  OFTrue /* updateNodeID */);
                     } else
-                        result = EC_IllegalCall;
+                        result = SR_EC_InvalidDocumentTree;
                 } else
                     result = EC_MemoryExhausted;
             } else {
                 printErrorMessage(LogStream, "Root content item should always be a CONTAINER");
-                result = EC_CorruptedData;
+                result = SR_EC_InvalidDocumentTree;
             }
         } else {
             printErrorMessage(LogStream, "ValueType attribute for root content item is missing");
-            result = EC_CorruptedData;
+            result = SR_EC_MandatoryAttributeMissing;
         }
     } else
-        result = EC_IllegalCall;
+        result = SR_EC_UnsupportedValue;
     return result;
 }
 
@@ -166,7 +166,7 @@ OFCondition DSRDocumentTree::read(DcmItem &dataset,
 OFCondition DSRDocumentTree::write(DcmItem &dataset,
                                    DcmStack *markedItems)
 {
-    OFCondition result = EC_CorruptedData;
+    OFCondition result = SR_EC_InvalidDocumentTree;
     /* check whether root node has correct relationship and value type */
     if (isValid())
     {
@@ -186,7 +186,7 @@ OFCondition DSRDocumentTree::write(DcmItem &dataset,
 OFCondition DSRDocumentTree::writeXML(ostream &stream,
                                       const size_t flags)
 {
-    OFCondition result = EC_CorruptedData;
+    OFCondition result = SR_EC_InvalidDocumentTree;
     /* check whether root node has correct relationship and value type */
     if (isValid())
     {
@@ -208,7 +208,7 @@ OFCondition DSRDocumentTree::renderHTML(ostream &docStream,
                                         ostream &annexStream,
                                         const size_t flags)
 {
-    OFCondition result = EC_CorruptedData;
+    OFCondition result = SR_EC_InvalidDocumentTree;
     /* check whether root node has correct relationship and value type */
     if (isValid())
     {
@@ -228,7 +228,7 @@ OFCondition DSRDocumentTree::renderHTML(ostream &docStream,
 
 OFCondition DSRDocumentTree::changeDocumentType(const E_DocumentType documentType)
 {
-    OFCondition result = EC_IllegalCall;
+    OFCondition result = SR_EC_UnsupportedValue;
     if (isDocumentTypeSupported(documentType))
     {
         /* clear object */
@@ -487,7 +487,7 @@ OFCondition DSRDocumentTree::checkByReferenceRelationships(const OFBool updateSt
                                 printWarningMessage(LogStream, "Target content item of by-reference relationship does not exist");
                         }
                     } else
-                        result = EC_IllegalCall;
+                        result = SR_EC_InvalidDocumentTree;
                 } while ((result == EC_Normal) && (cursor.iterate()));
             }
         }
@@ -499,7 +499,11 @@ OFCondition DSRDocumentTree::checkByReferenceRelationships(const OFBool updateSt
 /*
  *  CVS/RCS Log:
  *  $Log: dsrdoctr.cc,v $
- *  Revision 1.13  2001-09-26 13:04:20  meichel
+ *  Revision 1.14  2001-10-02 12:07:09  joergr
+ *  Adapted module "dcmsr" to the new class OFCondition. Introduced module
+ *  specific error codes.
+ *
+ *  Revision 1.13  2001/09/26 13:04:20  meichel
  *  Adapted dcmsr to class OFCondition
  *
  *  Revision 1.12  2001/06/20 15:05:48  joergr

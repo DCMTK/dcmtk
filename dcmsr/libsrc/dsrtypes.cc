@@ -23,8 +23,8 @@
  *    classes: DSRTypes
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-10-01 15:11:37 $
- *  CVS/RCS Revision: $Revision: 1.20 $
+ *  Update Date:      $Date: 2001-10-02 12:07:11 $
+ *  CVS/RCS Revision: $Revision: 1.21 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -182,6 +182,30 @@ struct S_CharacterSetNameMap
 /*---------------------------------*
  *  constant definitions (part 2)  *
  *---------------------------------*/
+
+// conditions
+const OFConditionConst ECC_UnknownDocumentType            (OFM_dcmsr,  1, OF_error, "Unknown Document Type");
+const OFConditionConst ECC_InvalidDocument                (OFM_dcmsr,  2, OF_error, "Invalid Document");
+const OFConditionConst ECC_InvalidDocumentTree            (OFM_dcmsr,  3, OF_error, "Invalid Document Tree");
+const OFConditionConst ECC_MandatoryAttributeMissing      (OFM_dcmsr,  4, OF_error, "Mandatory Attribute missing");
+const OFConditionConst ECC_InvalidValue                   (OFM_dcmsr,  5, OF_error, "Invalid Value");
+const OFConditionConst ECC_UnsupportedValue               (OFM_dcmsr,  6, OF_error, "Unsupported Value");
+const OFConditionConst ECC_UnknownValueType               (OFM_dcmsr,  7, OF_error, "Unknown Value Type");
+const OFConditionConst ECC_UnknownRelationshipType        (OFM_dcmsr,  8, OF_error, "Unknown Relationship Type");
+const OFConditionConst ECC_InvalidByValueRelationship     (OFM_dcmsr,  9, OF_error, "Invalid by-value Relationship");
+const OFConditionConst ECC_InvalidByReferenceRelationship (OFM_dcmsr, 10, OF_error, "Invalid by-reference Relationship");
+
+const OFCondition SR_EC_UnknownDocumentType               (ECC_UnknownDocumentType);
+const OFCondition SR_EC_InvalidDocument                   (ECC_InvalidDocument);
+const OFCondition SR_EC_InvalidDocumentTree               (ECC_InvalidDocumentTree);
+const OFCondition SR_EC_MandatoryAttributeMissing         (ECC_MandatoryAttributeMissing);
+const OFCondition SR_EC_InvalidValue                      (ECC_InvalidValue);
+const OFCondition SR_EC_UnsupportedValue                  (ECC_UnsupportedValue);
+const OFCondition SR_EC_UnknownValueType                  (ECC_UnknownValueType);
+const OFCondition SR_EC_UnknownRelationshipType           (ECC_UnknownRelationshipType);
+const OFCondition SR_EC_InvalidByValueRelationship        (ECC_InvalidByValueRelationship);
+const OFCondition SR_EC_InvalidByReferenceRelationship    (ECC_InvalidByReferenceRelationship);
+
 
 static const S_DocumentTypeNameMap DocumentTypeNameMap[] =
 {
@@ -1360,7 +1384,11 @@ OFCondition DSRTypes::appendStream(ostream &mainStream,
 /*
  *  CVS/RCS Log:
  *  $Log: dsrtypes.cc,v $
- *  Revision 1.20  2001-10-01 15:11:37  joergr
+ *  Revision 1.21  2001-10-02 12:07:11  joergr
+ *  Adapted module "dcmsr" to the new class OFCondition. Introduced module
+ *  specific error codes.
+ *
+ *  Revision 1.20  2001/10/01 15:11:37  joergr
  *  Introduced new general purpose functions to get/set person names, date, time
  *  and date/time.
  *

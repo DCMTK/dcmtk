@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DSRByReferenceTreeNode
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-09-26 13:04:23 $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2001-10-02 12:07:10 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -127,7 +127,7 @@ OFCondition DSRByReferenceTreeNode::readContentItem(DcmItem &dataset,
 OFCondition DSRByReferenceTreeNode::writeContentItem(DcmItem &dataset,
                                                      OFConsole * /* logStream */) const
 {
-    OFCondition result = EC_IllegalCall;
+    OFCondition result = SR_EC_InvalidValue;
     /* only write references with valid format */
     if (checkForValidUIDFormat(ReferencedContentItem))
     {
@@ -196,7 +196,11 @@ OFBool DSRByReferenceTreeNode::canAddNode(const E_DocumentType /* documentType *
 /*
  *  CVS/RCS Log:
  *  $Log: dsrreftn.cc,v $
- *  Revision 1.5  2001-09-26 13:04:23  meichel
+ *  Revision 1.6  2001-10-02 12:07:10  joergr
+ *  Adapted module "dcmsr" to the new class OFCondition. Introduced module
+ *  specific error codes.
+ *
+ *  Revision 1.5  2001/09/26 13:04:23  meichel
  *  Adapted dcmsr to class OFCondition
  *
  *  Revision 1.4  2001/06/01 15:51:09  meichel

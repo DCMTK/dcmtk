@@ -23,8 +23,8 @@
  *    classes: DSRDocument
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-09-28 14:14:14 $
- *  CVS/RCS Revision: $Revision: 1.28 $
+ *  Update Date:      $Date: 2001-10-02 12:07:07 $
+ *  CVS/RCS Revision: $Revision: 1.29 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -150,7 +150,7 @@ OFBool DSRDocument::isFinalized()
 OFCondition DSRDocument::print(ostream &stream,
                                const size_t flags)
 {
-    OFCondition result = EC_CorruptedData;
+    OFCondition result = SR_EC_InvalidDocument;
     if (isValid())
     {
         OFString string;
@@ -247,12 +247,12 @@ OFCondition DSRDocument::checkDatasetForReading(DcmItem &dataset)
         if (documentType == DT_invalid)
         {
             printErrorMessage(LogStream, "SOP Class UID does not match one of the known SR document classes");
-            result = EC_IllegalCall;
+            result = SR_EC_UnknownDocumentType;
         }
         else if (!isDocumentTypeSupported(documentType))
         {
             printErrorMessage(LogStream, "Unsupported SOP Class UID (not yet implemented)");
-            result = EC_IllegalCall;
+            result = SR_EC_UnsupportedValue;
         }
     }
     /* check modality */
@@ -268,7 +268,7 @@ OFCondition DSRDocument::checkDatasetForReading(DcmItem &dataset)
                 message += "' for ";
                 message += documentTypeToReadableName(documentType);
                 printErrorMessage(LogStream, message.c_str());
-                result = EC_IllegalCall;
+                result = SR_EC_InvalidValue;
             }
         }
     }
@@ -445,7 +445,7 @@ OFCondition DSRDocument::write(DcmItem &dataset,
         if (result == EC_Normal)
             result = DocumentTree.write(dataset, markedItems);
     } else
-        result = EC_CorruptedData;
+        result = SR_EC_InvalidDocument;
     return result;
 }
 
@@ -453,7 +453,7 @@ OFCondition DSRDocument::write(DcmItem &dataset,
 OFCondition DSRDocument::writeXML(ostream &stream,
                                   const size_t flags)
 {
-    OFCondition result = EC_CorruptedData;
+    OFCondition result = SR_EC_InvalidDocument;
     /* only write valid documents */
     if (isValid())
     {
@@ -632,7 +632,7 @@ OFCondition DSRDocument::renderHTML(ostream &stream,
                                     const size_t flags,
                                     const char *styleSheet)
 {
-    OFCondition result = EC_CorruptedData;
+    OFCondition result = SR_EC_InvalidDocument;
     /* only render valid documents */
     if (isValid())
     {
@@ -964,7 +964,7 @@ OFCondition DSRDocument::getVerifyingObserver(const size_t idx,
             if (result == EC_Normal)
             {
                 if ((dateTime.length() == 0) || (observerName.length() == 0) || (organization.length() == 0))
-                    result = EC_CorruptedData;
+                    result = SR_EC_InvalidValue;
             }
         }
     }
@@ -1089,7 +1089,7 @@ OFCondition DSRDocument::getPredecessorDocument(const size_t idx,
             if ((studyInstanceUID.length() == 0) || (seriesInstanceUID.length() == 0) ||
                 (sopClassUID.length() == 0) || (sopInstanceUID.length() == 0))
             {
-                result = EC_CorruptedData;
+                result = SR_EC_InvalidValue;
             }
         }
     }
@@ -1814,7 +1814,11 @@ void DSRDocument::updateAttributes(const OFBool updateAll)
 /*
  *  CVS/RCS Log:
  *  $Log: dsrdoc.cc,v $
- *  Revision 1.28  2001-09-28 14:14:14  joergr
+ *  Revision 1.29  2001-10-02 12:07:07  joergr
+ *  Adapted module "dcmsr" to the new class OFCondition. Introduced module
+ *  specific error codes.
+ *
+ *  Revision 1.28  2001/09/28 14:14:14  joergr
  *  Added check whether ios::nocreate exists.
  *
  *  Revision 1.27  2001/09/26 13:04:19  meichel
