@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2001, OFFIS
+ *  Copyright (C) 1996-2002, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,10 +21,10 @@
  *
  *  Purpose: DicomLookupTable (Source)
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-06-01 15:49:56 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2002-06-26 16:12:01 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/libsrc/diluptab.cc,v $
- *  CVS/RCS Revision: $Revision: 1.24 $
+ *  CVS/RCS Revision: $Revision: 1.25 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -75,6 +75,7 @@ DiLookupTable::DiLookupTable(const DiDocument *docu,
     {
         DcmSequenceOfItems *seq = NULL;
         const unsigned long count = docu->getSequence(sequence, seq);
+        /* store number of items in the option return variable */
         if (card != NULL)
             *card = count;
         if ((seq != NULL) && (pos < count))
@@ -175,7 +176,7 @@ void DiLookupTable::Init(const DiDocument *docu,
         unsigned long count = docu->getValue(data, Data, obj);
         OriginalData = (void *)Data;                                         // store pointer to original data
         if (explanation != DcmTagKey(0, 0))
-            docu->getValue(explanation, Explanation);                        // explanation (free form text)
+            docu->getValue(explanation, Explanation, 0 /*vm pos*/, obj);     // explanation (free form text)
         checkTable(count, us, status);
     } else {
         if (status != NULL)
@@ -594,7 +595,11 @@ OFBool DiLookupTable::operator==(const DiLookupTable &lut)
  *
  * CVS/RCS Log:
  * $Log: diluptab.cc,v $
- * Revision 1.24  2001-06-01 15:49:56  meichel
+ * Revision 1.25  2002-06-26 16:12:01  joergr
+ * Added new methods to get the explanation string of stored VOI windows and
+ * LUTs (not only of the currently selected VOI transformation).
+ *
+ * Revision 1.24  2001/06/01 15:49:56  meichel
  * Updated copyright header
  *
  * Revision 1.23  2000/07/07 13:44:11  joergr
