@@ -23,8 +23,8 @@
  *    classes: DVPSImageBoxContent_PList
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-06-14 11:28:14 $
- *  CVS/RCS Revision: $Revision: 1.18 $
+ *  Update Date:      $Date: 2000-07-04 15:58:02 $
+ *  CVS/RCS Revision: $Revision: 1.19 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -82,14 +82,21 @@ public:
    *  the DICOM dataset.
    *  @param dset the DICOM dataset to which the ImageBoxContentSequence is written
    *  @param writeRequestedImageSize if false, the Requested Image Size attributes are not written,
-   *    e. g. because they are not supported by the target printer.
+   *    e.g. because they are not supported by the target printer.
    *  @param numItems the number of items (from the beginning of the list) to be written.
    *    Default: all items are written.
    *  @param ignoreEmptyImages if true, all image boxes without image box position are ignored
    *    when writing.
+   *  @param writeReferencedPLUTSQ if false, the Referenced Presentation LUT Sequence is not written,
+   *    e.g. because a "general" presentation LUT is used instead of those referenced by the image boxes.
    *  @return EC_Normal if successful, an error code otherwise.
    */
-  E_Condition write(DcmItem &dset, OFBool writeRequestedImageSize, size_t numItems, OFBool ignoreEmptyImages);
+  E_Condition write(
+    DcmItem &dset,
+    OFBool writeRequestedImageSize,
+    size_t numItems,
+    OFBool ignoreEmptyImages,
+    OFBool writeReferencedPLUTSQ = OFTrue);
 
   /** reset the object to initial state.
    *  After this call, the object is in the same state as after
@@ -407,7 +414,11 @@ private:
 
 /*
  *  $Log: dvpsibl.h,v $
- *  Revision 1.18  2000-06-14 11:28:14  joergr
+ *  Revision 1.19  2000-07-04 15:58:02  joergr
+ *  Added support for overriding the presentation LUT settings made for the
+ *  image boxes.
+ *
+ *  Revision 1.18  2000/06/14 11:28:14  joergr
  *  Added methods to access the attributes Polarity and Requested Image Size.
  *
  *  Revision 1.17  2000/06/08 10:44:29  meichel

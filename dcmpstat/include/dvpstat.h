@@ -23,8 +23,8 @@
  *    classes: DVPresentationState
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-06-09 10:14:12 $
- *  CVS/RCS Revision: $Revision: 1.36 $
+ *  Update Date:      $Date: 2000-07-04 15:58:03 $
+ *  CVS/RCS Revision: $Revision: 1.37 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -301,6 +301,7 @@ public:
   /** resets the Presentation LUT to the default LUT shape
    *  which is DVPSP_identity for MONOCHROME2 images and DVPSP_inverse for MONOCHROME1.
    *  DVPSP_table can only be used if the presentation state
+   *  contains a lookup table, i.e. if havePresentationLookupTable() returns OFTrue.
    *  @return EC_Normal if successful, an error code otherwise.
    */
   E_Condition setDefaultPresentationLUTShape();
@@ -2151,7 +2152,11 @@ private:
 
 /*
  *  $Log: dvpstat.h,v $
- *  Revision 1.36  2000-06-09 10:14:12  joergr
+ *  Revision 1.37  2000-07-04 15:58:03  joergr
+ *  Added support for overriding the presentation LUT settings made for the
+ *  image boxes.
+ *
+ *  Revision 1.36  2000/06/09 10:14:12  joergr
  *  Added support for rendering inverse presentation LUT into print bitmaps.
  *
  *  Revision 1.35  2000/06/08 17:36:51  joergr

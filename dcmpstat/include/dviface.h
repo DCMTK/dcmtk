@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DVInterface
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-06-21 15:40:57 $
- *  CVS/RCS Revision: $Revision: 1.70 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2000-07-04 15:58:00 $
+ *  CVS/RCS Revision: $Revision: 1.71 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1169,16 +1169,27 @@ class DVInterface: public DVConfiguration
     E_Condition selectDisplayPresentationLUT(const char *lutID);
 
     /** if the Presentation State contains an active
-     *  Presentation LUT that was set with selectPrintPresentationLUT(),
+     *  Presentation LUT that was set with selectDisplayPresentationLUT(),
      *  return the corresponding LUT identifier.
      *  @return lutID if found, NULL or empty string otherwise.
      */
     const char *getDisplayPresentationLUTID();
 
-/*
-    E_Condition setPrintPresentationLUTShape();
-    E_Condition setPrintPresentationLookupTable();
-*/
+    /** sets the LUT with the given identifier in the Stored Print object
+     *  as current Presentation LUT. This LUT overrides the settings made
+     *  for the separate image boxes, it can be deactivated using the method
+     *  DVPSStoredPrint::setDefaultPresentationLUT().
+     *  @param lutID LUT identifier, as returned by getLUTID().
+     *  @return EC_Normal if successful, an error code otherwise.
+     */
+    E_Condition selectPrintPresentationLUT(const char *lutID);
+
+    /** if the Stored Print object contains an active
+     *  Presentation LUT that was set with selectPrintPresentationLUT(),
+     *  return the corresponding LUT identifier.
+     *  @return lutID if found, NULL or empty string otherwise.
+     */
+    const char *getPrintPresentationLUTID();
 
     /** start spooling of print job with current settings.
      *  @param deletePrintedImages if true, delete printed images from queue.
@@ -1595,6 +1606,10 @@ private:
      */
     OFString displayCurrentLUTID;
 
+     /** config file identifier of LUT currently selected as Print Presentation LUT
+     */
+    OFString printCurrentLUTID;
+
     /** printer medium type identifier, may be empty. VR=CS, VM=1
      */
     OFString printerMediumType;
@@ -1652,7 +1667,11 @@ private:
 /*
  *  CVS/RCS Log:
  *  $Log: dviface.h,v $
- *  Revision 1.70  2000-06-21 15:40:57  meichel
+ *  Revision 1.71  2000-07-04 15:58:00  joergr
+ *  Added support for overriding the presentation LUT settings made for the
+ *  image boxes.
+ *
+ *  Revision 1.70  2000/06/21 15:40:57  meichel
  *  Added DICOMscope support for calling the Presentation State Checker.
  *
  *  Revision 1.69  2000/06/09 10:13:54  joergr

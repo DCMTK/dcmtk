@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DVPSStoredPrint
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-06-20 14:50:08 $
- *  CVS/RCS Revision: $Revision: 1.29 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2000-07-04 15:58:03 $
+ *  CVS/RCS Revision: $Revision: 1.30 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -510,6 +510,35 @@ class DVPSStoredPrint
    */
   DVPSPresentationLUT *getImagePresentationLUT(size_t idx);
 
+  /** gets the "global" presentation LUT which overrides the settings for the image boxes.
+   *  If not available the presentation LUT of the image box is used.
+   *  @return pointer to presentation LUT, may be NULL.
+   */
+  DVPSPresentationLUT *getPresentationLUT();
+
+  /** resets the Presentation LUT to the default setting. i.e. the presentation LUT
+   *  which is specified separately for each image box is used.
+   *  @return EC_Normal if successful, an error code otherwise.
+   */
+  E_Condition setDefaultPresentationLUT();
+
+  /** sets the current Presentation LUT shape (overrides the image box settings).
+   *  Only DVPSP_identity and DVPSP_lin_od are allowed.
+   *  @param newType the new presentation LUT type.
+   *  @return EC_Normal if successful, an error code otherwise.
+   */
+  E_Condition setPresentationLUTShape(DVPSPresentationLUTType shape);
+ 
+  /** stores a presentation lookup table in the stored print object.
+   *  This method stores a presentation lookup table in the
+   *  stored print object and activates it. This LUT overrides the
+   *  settings made for the individual image boxes. If unsuccessful,
+   *  LUT is not set.
+   *  @param dset dataset from which the Presentation LUT SQ or Shape is read.
+   *  @return EC_Normal if successful, an error code otherwise.
+   */ 
+  E_Condition setPresentationLookupTable(DcmItem &dset);
+    
   /** writes the general study and series module attributes for a grayscale hardcopy image
    *  that is related to this stored print object to a DICOM dataset.
    *  Copies of the DICOM elements managed by this object are inserted into
@@ -1067,6 +1096,12 @@ class DVPSStoredPrint
    */
   OFString presentationLUTInstanceUID;
 
+  /// stores the "global" presentation LUT that overrides the image box LUTs (optional)
+  DVPSPresentationLUT globalPresentationLUT;
+
+  /// flag indicating whether the globalPresentationLUT is currently valid or not
+  OFBool globalPresentationLUTValid;
+
   /// transmit images in 12 bit for the current print job
   OFBool transmitImagesIn12Bit;
 
@@ -1094,7 +1129,11 @@ class DVPSStoredPrint
 
 /*
  *  $Log: dvpssp.h,v $
- *  Revision 1.29  2000-06-20 14:50:08  meichel
+ *  Revision 1.30  2000-07-04 15:58:03  joergr
+ *  Added support for overriding the presentation LUT settings made for the
+ *  image boxes.
+ *
+ *  Revision 1.29  2000/06/20 14:50:08  meichel
  *  Added monochrome1 printing mode.
  *
  *  Revision 1.28  2000/06/19 16:29:07  meichel

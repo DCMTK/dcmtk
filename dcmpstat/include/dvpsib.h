@@ -23,8 +23,8 @@
  *    classes: DVPSImageBoxContent
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-06-14 11:28:13 $
- *  CVS/RCS Revision: $Revision: 1.17 $
+ *  Update Date:      $Date: 2000-07-04 15:58:01 $
+ *  CVS/RCS Revision: $Revision: 1.18 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -87,10 +87,12 @@ public:
    *  the DICOM dataset.
    *  @param dset the the item of the ImageBoxContentSequence to which the data is written
    *  @param writeRequestedImageSize if false, the Requested Image Size attribute is not written,
-   *    e. g. because it is not supported by the target printer.
+   *    e.g. because it is not supported by the target printer.
+   *  @param writeReferencedPLUTSQ if false, the Referenced Presentation LUT Sequence is not written,
+   *    e.g. because a "general" presentation LUT is used instead of those referenced by the image boxes.
    *  @return EC_Normal if successful, an error code otherwise.
    */
-  E_Condition write(DcmItem &dset, OFBool writeRequestedImageSize);
+  E_Condition write(DcmItem &dset, OFBool writeRequestedImageSize, OFBool writeReferencedPLUTSQ = OFTrue);
 
   /** create default values for all missing type 1 elements.
    *  Called before a stored print object is written.
@@ -410,7 +412,11 @@ private:
 
 /*
  *  $Log: dvpsib.h,v $
- *  Revision 1.17  2000-06-14 11:28:13  joergr
+ *  Revision 1.18  2000-07-04 15:58:01  joergr
+ *  Added support for overriding the presentation LUT settings made for the
+ *  image boxes.
+ *
+ *  Revision 1.17  2000/06/14 11:28:13  joergr
  *  Added methods to access the attributes Polarity and Requested Image Size.
  *
  *  Revision 1.16  2000/06/08 10:44:29  meichel
