@@ -22,9 +22,9 @@
  *  Purpose: DicomMonochromeImage (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-03-24 17:20:09 $
+ *  Update Date:      $Date: 1999-04-28 14:49:54 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/dimoimg.h,v $
- *  CVS/RCS Revision: $Revision: 1.15 $
+ *  CVS/RCS Revision: $Revision: 1.16 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -180,6 +180,11 @@ class DiMonoImage
     int flip(const int, const int);
     int rotate(const int);
 
+    virtual int getBits(const int bits = 0) const
+    {
+        return (((bits < 1) || (bits > MAX_BITS)) && (bits != MI_PastelColor)) ? BitsPerSample : bits;
+    }
+    
     virtual void *getOutputData(const unsigned long frame,
                                 const int bits,
                                 const int planar = 0) = 0;
@@ -269,7 +274,8 @@ class DiMonoImage
     void *getData(void *buffer,
                   const unsigned long size,
                   const unsigned long frame,
-                  const int bits,
+                  int bits,
+                  const int planar,
                   const int negative);
 
     double WindowCenter;                            // center of current VOI-window
@@ -310,7 +316,11 @@ class DiMonoImage
  *
  * CVS/RCS Log:
  * $Log: dimoimg.h,v $
- * Revision 1.15  1999-03-24 17:20:09  joergr
+ * Revision 1.16  1999-04-28 14:49:54  joergr
+ * Added experimental support to create grayscale images with more than 256
+ * shades of gray to be displayed on a consumer monitor (use pastel colors).
+ *
+ * Revision 1.15  1999/03/24 17:20:09  joergr
  * Added/Modified comments and formatting.
  *
  * Revision 1.14  1999/03/22 08:51:39  joergr

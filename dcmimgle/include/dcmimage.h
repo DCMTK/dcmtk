@@ -22,9 +22,9 @@
  *  Purpose: Provides main interface to the "dicom image toolkit"
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-03-24 17:19:56 $
+ *  Update Date:      $Date: 1999-04-28 14:45:54 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/dcmimage.h,v $
- *  CVS/RCS Revision: $Revision: 1.15 $
+ *  CVS/RCS Revision: $Revision: 1.16 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -161,6 +161,7 @@ class DicomImage
     /** convert status code to status string
      *
      ** @param  status  code of current internal status
+     *
      ** @return pointer to status string
      */
     static const char *getString(const EI_Status status); 
@@ -168,11 +169,13 @@ class DicomImage
     /** convert photometric interpretation code to interpretation string
      *
      ** @param  interpret  code of image's photometric interpretation
+     *
      ** @return pointer to photometric interpretation string
      */
     static const char *getString(const EP_Interpretation interpret);
             
     /** get status information
+     *
      ** @return status code
      */
     inline EI_Status getStatus() const 
@@ -273,6 +276,7 @@ class DicomImage
      *  apply VOI/PLUT transformation and (visible) overlay planes
      *
      ** @param  bits    number of bits per sample (image depth)
+     *                  (MI_PastelColor = -1 for true color pastel mode, EXPERIMENTAL)
      *  @param  frame   number of frame to be rendered
      *  @param  planar  0 = color-by-pixel (R1G1B1...R2G2B2...R3G2B2...)
      *                  1 = color-by-plane (R1R2R3...G1G2G3...B1B2B3...)
@@ -293,6 +297,7 @@ class DicomImage
      ** @param  buffer  pointer to memory buffer (must already be allocated)
      *  @param  size    size of memory buffer (will be checked whether it is sufficient)
      *  @param  bits    number of bits per sample (image depth)
+     *                  (MI_PastelColor = -1 for true color pastel mode, EXPERIMENTAL)
      *  @param  frame   number of frame to be rendered
      *  @param  planar  0 = color-by-pixel (R1G1B1...R2G2B2...R3G2B2...)
      *                  1 = color-by-plane (R1R2R3...G1G2G3...B1B2B3...)
@@ -1162,7 +1167,9 @@ class DicomImage
      *  pixel data is written in ASCII format.
      *
      ** @param  filename  name of output file
-     *  @param  bits      number of bits used for output of pixel data (default: full resolution, max: 32)
+     *  @param  bits      number of bits used for output of pixel data
+     *                    (default: full resolution, max: 32;
+     *                     MI_PastelColor = -1 for true color pastel mode, EXPERIMENTAL)
      *  @param  frame     index of frame used for output (default: first frame)
      *
      ** @return true if successful, false otherwise
@@ -1175,7 +1182,9 @@ class DicomImage
      *  pixel data is written in ASCII format.
      *
      ** @param  stream  open C++ output stream
-     *  @param  bits    number of bits used for output of pixel data (default: full resolution, max: 32)
+     *  @param  bits    number of bits used for output of pixel data
+     *                  (default: full resolution, max: 32;
+     *                   MI_PastelColor = -1 for true color pastel mode, EXPERIMENTAL)
      *  @param  frame   index of frame used for output (default: first frame)
      *
      ** @return true if successful, false otherwise
@@ -1188,7 +1197,9 @@ class DicomImage
      *  pixel data is written in ASCII format.
      *
      ** @param  stream  open C output stream
-     *  @param  bits    number of bits used for output of pixel data (default: full resolution, max: 32)
+     *  @param  bits    number of bits used for output of pixel data
+     *                  (default: full resolution, max: 32;
+     *                   MI_PastelColor = -1 for true color pastel mode, EXPERIMENTAL)
      *  @param  frame   index of frame used for output (default: first frame)
      *
      ** @return true if successful, false otherwise
@@ -1201,7 +1212,9 @@ class DicomImage
      *  pixel data is written in binary format.
      *
      ** @param  filename  name of output file
-     *  @param  bits      number of bits used for output of pixel data (default: full resolution, max: 8)
+     *  @param  bits      number of bits used for output of pixel data
+     *                    (default: full resolution, max: 8;
+     *                     MI_PastelColor = -1 for true color pastel mode, EXPERIMENTAL)
      *  @param  frame     index of frame used for output (default: first frame)
      *
      ** @return true if successful, false otherwise
@@ -1214,7 +1227,9 @@ class DicomImage
      *  pixel data is written in binary format.
      *
      ** @param  stream  open C output stream
-     *  @param  bits    number of bits used for output of pixel data (default: full resolution, max: 8)
+     *  @param  bits    number of bits used for output of pixel data
+     *                  (default: full resolution, max: 8;
+     *                   MI_PastelColor = -1 for true color pastel mode, EXPERIMENTAL)
      *  @param  frame   index of frame used for output (default: first frame)
      *
      ** @return true if successful, false otherwise
@@ -1290,7 +1305,11 @@ class DicomImage
  *
  * CVS/RCS Log:
  * $Log: dcmimage.h,v $
- * Revision 1.15  1999-03-24 17:19:56  joergr
+ * Revision 1.16  1999-04-28 14:45:54  joergr
+ * Added experimental support to create grayscale images with more than 256
+ * shades of gray to be displayed on a consumer monitor (use pastel colors).
+ *
+ * Revision 1.15  1999/03/24 17:19:56  joergr
  * Added/Modified comments and formatting.
  *
  * Revision 1.14  1999/03/22 08:51:06  joergr

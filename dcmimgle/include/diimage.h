@@ -22,9 +22,9 @@
  *  Purpose: DicomImage (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-03-24 17:20:01 $
+ *  Update Date:      $Date: 1999-04-28 14:47:34 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/diimage.h,v $
- *  CVS/RCS Revision: $Revision: 1.11 $
+ *  CVS/RCS Revision: $Revision: 1.12 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -124,11 +124,11 @@ class DiImage
         return getPixelWidth() / getPixelHeight();
     }
 
-    inline int getBits(const int bits = 0) const
+    virtual int getBits(const int bits = 0) const
     {
         return ((bits < 1) || (bits > MAX_BITS)) ? BitsPerSample : bits;
     }
-    
+
     virtual void *getOutputData(const unsigned long frame,
                                 const int bits,
                                 const int planar) = 0;
@@ -258,7 +258,11 @@ class DiImage
  *
  * CVS/RCS Log:
  * $Log: diimage.h,v $
- * Revision 1.11  1999-03-24 17:20:01  joergr
+ * Revision 1.12  1999-04-28 14:47:34  joergr
+ * Added experimental support to create grayscale images with more than 256
+ * shades of gray to be displayed on a consumer monitor (use pastel colors).
+ *
+ * Revision 1.11  1999/03/24 17:20:01  joergr
  * Added/Modified comments and formatting.
  *
  * Revision 1.10  1999/02/08 12:38:12  joergr
