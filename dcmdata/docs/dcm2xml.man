@@ -36,7 +36,7 @@ xmlfile-out  XML output filename (default: stdout)
 
 \section options OPTIONS
 
-\subsection general_options general options:
+\subsection general_options general options
 \verbatim
   -h   --help
          print this help text and exit
@@ -48,7 +48,7 @@ xmlfile-out  XML output filename (default: stdout)
          debug mode, print debug information
 \endverbatim
 
-\subsection input_options input options:
+\subsection input_options input options
 \verbatim
 input file format:
 
@@ -81,7 +81,7 @@ long tag values:
          do not load very long values (default)
 \endverbatim
 
-\subsection output_options output options:
+\subsection output_options output options
 \verbatim
 XML structure:
 

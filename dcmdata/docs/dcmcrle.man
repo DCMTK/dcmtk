@@ -68,7 +68,7 @@ input transfer syntax (only with --read-dataset):
          read with implicit VR little endian TS
 \endverbatim
 
-\subsection encoding_options encapsulated pixel data encoding options:
+\subsection encoding_options encapsulated pixel data encoding options
 \verbatim
 pixel data fragmentation options:
 
@@ -102,7 +102,7 @@ SOP Instance UID options:
          always assign new UID
 \endverbatim
 
-\subsection output_options output options:
+\subsection output_options output options
 \verbatim
 post-1993 value representations:
 
