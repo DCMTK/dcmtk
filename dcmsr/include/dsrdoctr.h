@@ -23,8 +23,8 @@
  *    classes: DSRDocumentTree
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-01-18 15:53:34 $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  Update Date:      $Date: 2001-01-25 11:48:43 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -276,7 +276,7 @@ class DSRDocumentTree
     E_DocumentType DocumentType;
     /// output stream for error messages, NULL for no messages
     OFConsole *LogStream;
-    /// current content item.  Introduced to avoid the use of pointers.
+    /// current content item.  Introduced to avoid the external use of pointers.
     DSRContentItem CurrentContentItem;
 
 
@@ -294,7 +294,10 @@ class DSRDocumentTree
 /*
  *  CVS/RCS Log:
  *  $Log: dsrdoctr.h,v $
- *  Revision 1.6  2001-01-18 15:53:34  joergr
+ *  Revision 1.7  2001-01-25 11:48:43  joergr
+ *  Corrected typos / enhanced comments.
+ *
+ *  Revision 1.6  2001/01/18 15:53:34  joergr
  *  Added support for digital signatures.
  *
  *  Revision 1.5  2000/11/07 18:14:29  joergr

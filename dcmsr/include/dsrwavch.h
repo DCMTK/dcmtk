@@ -20,11 +20,11 @@
  *  Author: Joerg Riesmeier
  *
  *  Purpose:
- *    classes: DSRWaveformChannelList
+ *    classes: DSRWaveformChannelItem, DSRWaveformChannelList
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-11-06 11:21:26 $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  Update Date:      $Date: 2001-01-25 11:48:44 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -63,7 +63,7 @@ class DSRWaveformChannelItem
     }
 
     /** comparison operator
-     ** @param  item  item which which the (m,c) pair should be compared
+     ** @param  item  item with which the (m,c) pair should be compared
      ** @return OFTrue if both pairs are equal, OFFalse otherwise
      */
     inline OFBool operator==(const DSRWaveformChannelItem &item) const
@@ -169,7 +169,10 @@ class DSRWaveformChannelList
 /*
  *  CVS/RCS Log:
  *  $Log: dsrwavch.h,v $
- *  Revision 1.5  2000-11-06 11:21:26  joergr
+ *  Revision 1.6  2001-01-25 11:48:44  joergr
+ *  Corrected typos / enhanced comments.
+ *
+ *  Revision 1.5  2000/11/06 11:21:26  joergr
  *  Added parameter to print() method specifying the item separator character.
  *
  *  Revision 1.4  2000/11/01 16:22:57  joergr

@@ -20,11 +20,11 @@
  *  Author: Joerg Riesmeier
  *
  *  Purpose:
- *    classes: DSRGraphicDataList
+ *    classes: DSRGraphicDataItem, DSRGraphicDataList
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-11-06 11:31:04 $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  Update Date:      $Date: 2001-01-25 11:48:44 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -63,7 +63,7 @@ class DSRGraphicDataItem
     }
 
     /** comparison operator
-     ** @param  item  item which which the (column,row) pair should be compared
+     ** @param  item  item with which the (column,row) pair should be compared
      ** @return OFTrue if both pairs are equal, OFFalse otherwise
      */
     inline OFBool operator==(const DSRGraphicDataItem &item) const
@@ -167,7 +167,10 @@ class DSRGraphicDataList
 /*
  *  CVS/RCS Log:
  *  $Log: dsrscogr.h,v $
- *  Revision 1.4  2000-11-06 11:31:04  joergr
+ *  Revision 1.5  2001-01-25 11:48:44  joergr
+ *  Corrected typos / enhanced comments.
+ *
+ *  Revision 1.4  2000/11/06 11:31:04  joergr
  *  Added parameter to print() method specifying the item separator character.
  *
  *  Revision 1.3  2000/11/01 16:21:16  joergr

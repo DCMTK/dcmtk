@@ -23,8 +23,8 @@
  *    classes: DSRDocument
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-01-18 15:53:33 $
- *  CVS/RCS Revision: $Revision: 1.19 $
+ *  Update Date:      $Date: 2001-01-25 11:48:43 $
+ *  CVS/RCS Revision: $Revision: 1.20 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -107,9 +107,13 @@ class DSRDocument
      *  @param  signatures  optional flag indicating whether to read the digital signatures
      *                      from the dataset or not.  If OFTrue the MACParametersSequence and
      *                      the DigitalSignaturesSequence are read for the general document
-     *                      header and each content item.
-     *                      If not removed manually (with 'removeSignatures') the signatures are
-     *                      written back to the dataset when the method 'write' is called.
+     *                      header (equivilent to top-level content item) and each content item
+     *                      of the document tree.
+     *                      If not removed manually (with 'DSRDocumentTree::removeSignatures')
+     *                      the signatures are written back to the dataset when the method 'write'
+     *                      is called.
+     *                      Please note that the two signature sequences for any other sequence
+     *                      (e.g. VerifyingObserver or PredecessorDocuments) are never read.
      ** @return status, EC_Normal if successful, an error code otherwise
      */
     E_Condition read(DcmItem &dataset,
@@ -970,7 +974,10 @@ class DSRDocument
 /*
  *  CVS/RCS Log:
  *  $Log: dsrdoc.h,v $
- *  Revision 1.19  2001-01-18 15:53:33  joergr
+ *  Revision 1.20  2001-01-25 11:48:43  joergr
+ *  Corrected typos / enhanced comments.
+ *
+ *  Revision 1.19  2001/01/18 15:53:33  joergr
  *  Added support for digital signatures.
  *
  *  Revision 1.18  2000/12/08 13:42:40  joergr
