@@ -23,8 +23,8 @@
  *    classes: DSRTypes
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-04-01 14:59:13 $
- *  CVS/RCS Revision: $Revision: 1.30 $
+ *  Update Date:      $Date: 2003-04-17 18:57:38 $
+ *  CVS/RCS Revision: $Revision: 1.31 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -815,8 +815,8 @@ class DSRTypes
      *                           If they are allowed the text "<br>" is used, "&para;" otherwise.
      *                           The following combinations are accepted: LF, CR, LF CR, CF LF.
      *  @param  xmlMode          convert to XML markup string if OFTrue, HTML string otherwise.
-     *                           Newlines are always encoded as "&#182;" in XML mode, the flag
-     *                           'newlineAllowed' has no meaning in this case.
+     *                           LF and CR are encoded as "&#10;" and "&#13;" in XML mode, the
+     *                           flag 'newlineAllowed' has no meaning in this case.
      ** @return reference to resulting 'markupString' (might be empty if 'sourceString' was empty)
      */
     static const OFString &convertToMarkupString(const OFString &sourceString,
@@ -1123,7 +1123,10 @@ class DSRTypes
 /*
  *  CVS/RCS Log:
  *  $Log: dsrtypes.h,v $
- *  Revision 1.30  2003-04-01 14:59:13  joergr
+ *  Revision 1.31  2003-04-17 18:57:38  joergr
+ *  Replace LF and CR by &#10; and &#13; in XML mode instead of &#182; (para).
+ *
+ *  Revision 1.30  2003/04/01 14:59:13  joergr
  *  Added support for XML namespaces.
  *
  *  Revision 1.29  2002/08/02 12:38:32  joergr
