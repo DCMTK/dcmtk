@@ -22,9 +22,9 @@
  *  Purpose: Convert DICOM Images to PPM or PGM using the dcmimage library.
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-06-26 16:33:11 $
+ *  Update Date:      $Date: 2002-07-05 10:41:08 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/apps/dcm2pnm.cc,v $
- *  CVS/RCS Revision: $Revision: 1.63 $
+ *  CVS/RCS Revision: $Revision: 1.64 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -134,6 +134,9 @@ int main(int argc, char *argv[])
     ES_PresentationLut  opt_presShape = ESP_Default;
     OFString            opt_displayFile;
     int                 opt_displayFunction = 0;          /* default: GSDF */
+    OFCmdFloat          opt_ambientLight = -1;            /* default: not set */
+    OFCmdFloat          opt_illumination = -1;            /* default: not set */
+    DiDisplayFunction::E_DeviceType deviceType = DiDisplayFunction::EDT_Monitor;
 
 #ifdef WITH_LIBTIFF
     // TIFF parameters
@@ -206,7 +209,7 @@ int main(int argc, char *argv[])
       cmd.addOption("--frame",              "+F",   1, "[n]umber : integer",
                                                         "select specified frame (default: 1)");
       cmd.addOption("--frame-range",        "+Fr",  2, "[n]umber [c]ount : integer",
-                                                       "select c frames beginning with n");
+                                                       "select c frames beginning with frame n");
       cmd.addOption("--all-frames",         "+Fa",     "select all frames");
 
      cmd.addSubGroup("rotation:");
@@ -235,14 +238,14 @@ int main(int argc, char *argv[])
       cmd.addOption("--scale-y-size",       "+Syv", 1, "[n]umber : integer",
                                                        "scale y axis to n pixels, auto-compute x axis");
 #ifdef BUILD_DCM2PNM_AS_DCMJ2PNM
-     cmd.addSubGroup("color space conversion options (compressed images only):");
+     cmd.addSubGroup("color space conversion (compressed images only):");
       cmd.addOption("--conv-photometric",   "+cp",     "convert if YCbCr photom. interpr. (default)");
       cmd.addOption("--conv-lossy",         "+cl",     "convert YCbCr to RGB if lossy JPEG");
       cmd.addOption("--conv-always",        "+ca",     "always convert YCbCr to RGB");
       cmd.addOption("--conv-never",         "+cn",     "never convert color space");
 #endif
 
-     cmd.addSubGroup("VOI windowing options:");
+     cmd.addSubGroup("VOI windowing:");
       cmd.addOption("--no-windowing",       "-W",      "no VOI windowing (default)");
       cmd.addOption("--use-window",         "+Wi",  1, "[n]umber : integer",
                                                        "use the n-th VOI window from image file");
@@ -257,12 +260,12 @@ int main(int argc, char *argv[])
       cmd.addOption("--set-window",         "+Ww",  2, "[c]enter [w]idth : float",
                                                        "compute VOI window using center c and width w");
 
-     cmd.addSubGroup("presentation LUT transformation options:");
+     cmd.addSubGroup("presentation LUT transformation:");
       cmd.addOption("--identity-shape",     "+Pid",    "presentation LUT shape IDENTITY");
       cmd.addOption("--inverse-shape",      "+Piv",    "presentation LUT shape INVERSE");
       cmd.addOption("--lin-od-shape",       "+Pod",    "presentation LUT shape LIN OD");
 
-     cmd.addSubGroup("overlay options:");
+     cmd.addSubGroup("overlay:");
       cmd.addOption("--no-overlays",        "-O",      "do not display overlays");
       cmd.addOption("--display-overlay",    "+O" ,  1, "[n]umber : integer",
                                                        "display overlay n (0..16, 0=all, default: +O 0)");
@@ -275,10 +278,16 @@ int main(int argc, char *argv[])
       cmd.addOption("--set-threshold",      "+Ost", 1, "[d]ensity : float",
                                                        "set overlay threshold density (0..1, def: 0.5)");
 
-     cmd.addSubGroup("display LUT transformation options:");
-      cmd.addOption("--display-file",       "+D",   1, "[f]ilename : string",
+     cmd.addSubGroup("display LUT transformation:");
+      cmd.addOption("--monitor-file",       "+Dm",  1, "[f]ilename : string",
                                                        "calibrate output according to monitor\ncharacteristics defined in f");
-      cmd.addOption("--gsd-function",       "+Dg",     "use GSDF for calibration (def. if +D present)");
+      cmd.addOption("--printer-file",       "+Dp",  1, "[f]ilename : string",
+                                                       "calibrate output according to printer\ncharacteristics defined in f");
+      cmd.addOption("--ambient-light",      "+Da",  1, "[a]mbient light : float",
+                                                       "ambient light value (cd/m^2, default: file f)");
+      cmd.addOption("--illumination",       "+Di",  1, "[i]llumination : float",
+                                                       "illumination value (cd/m^2, default: file f)");
+      cmd.addOption("--gsd-function",       "+Dg",     "use GSDF for calibration (default for +Dm/+Dp)");
       cmd.addOption("--cielab-function",    "+Dc",     "use CIELAB function for calibration ");
 
      cmd.addSubGroup("compatibility options:");
@@ -337,6 +346,8 @@ int main(int argc, char *argv[])
         cmd.getParam(1, opt_ifname);
         cmd.getParam(2, opt_ofname);
 
+        /* general options */
+
         cmd.beginOptionBlock();
         if (cmd.findOption("--verbose"))
             opt_verboseMode = 2;
@@ -352,12 +363,16 @@ int main(int argc, char *argv[])
         if (cmd.findOption("--image-info"))
             opt_imageInfo = 1;
 
+        /* input options: input file format */
+
         cmd.beginOptionBlock();
         if (cmd.findOption("--read-dataset"))
             opt_readAsDataset = 1;
         if (cmd.findOption("--read-file"))
             opt_readAsDataset = 0;
         cmd.endOptionBlock();
+
+        /* input options: input transfer syntax */
 
         cmd.beginOptionBlock();
         if (cmd.findOption("--read-xfer-auto"))
@@ -370,10 +385,14 @@ int main(int argc, char *argv[])
             opt_transferSyntax = EXS_BigEndianExplicit;
         cmd.endOptionBlock();
 
+        /* image processing options: compatibility options */
+
         if (cmd.findOption("--accept-acr-nema"))
             opt_compatibilityMode |= CIF_AcrNemaCompatibility;
         if (cmd.findOption("--accept-palettes"))
             opt_compatibilityMode |= CIF_WrongPaletteAttributeTags;
+
+        /* image processing options: frame selection */
 
         cmd.beginOptionBlock();
         if (cmd.findOption("--frame"))
@@ -391,6 +410,8 @@ int main(int argc, char *argv[])
         }
         cmd.endOptionBlock();
 
+        /* image processing options: other transformations */
+
         if (cmd.findOption("--grayscale"))
             opt_convertToGrayscale = 1;
         if (cmd.findOption("--change-polarity"))
@@ -405,6 +426,8 @@ int main(int argc, char *argv[])
             opt_useClip = 1;
         }
 
+        /* image processing options: rotation */
+
         cmd.beginOptionBlock();
         if (cmd.findOption("--rotate-left"))
             opt_rotateDegree = 270;
@@ -414,6 +437,8 @@ int main(int argc, char *argv[])
             opt_rotateDegree = 180;
         cmd.endOptionBlock();
 
+        /* image processing options: flipping */
+
         cmd.beginOptionBlock();
         if (cmd.findOption("--flip-horizontally"))
             opt_flipType = 1;
@@ -422,6 +447,8 @@ int main(int argc, char *argv[])
         if (cmd.findOption("--flip-both-axes"))
             opt_flipType = 3;
         cmd.endOptionBlock();
+
+        /* image processing options: scaling */
 
         cmd.beginOptionBlock();
         if (cmd.findOption("--recognize-aspect"))
@@ -462,6 +489,8 @@ int main(int argc, char *argv[])
         }
         cmd.endOptionBlock();
 
+        /* image processing options: color space conversion */
+
 #ifdef BUILD_DCM2PNM_AS_DCMJ2PNM
         cmd.beginOptionBlock();
         if (cmd.findOption("--conv-photometric"))
@@ -474,6 +503,8 @@ int main(int argc, char *argv[])
             opt_decompCSconversion = EDC_never;
         cmd.endOptionBlock();
 #endif
+
+        /* image processing options: VOI windowing */
 
         cmd.beginOptionBlock();
         if (cmd.findOption("--no-windowing"))
@@ -513,6 +544,8 @@ int main(int argc, char *argv[])
         }
         cmd.endOptionBlock();
 
+        /* image processing options: presentation LUT transformation */
+
         cmd.beginOptionBlock();
         if (cmd.findOption("--identity-shape"))
             opt_presShape = ESP_Identity;
@@ -522,14 +555,34 @@ int main(int argc, char *argv[])
             opt_presShape = ESP_LinOD;
         cmd.endOptionBlock();
 
-        if (cmd.findOption("--display-file"))
+        /* image processing options: display LUT transformation */
+
+        cmd.beginOptionBlock();
+        if (cmd.findOption("--monitor-file"))
+        {
             app.checkValue(cmd.getValue(opt_displayFile));
+            deviceType = DiDisplayFunction::EDT_Monitor;
+        }
+        if (cmd.findOption("--printer-file"))
+        {
+            app.checkValue(cmd.getValue(opt_displayFile));
+            deviceType = DiDisplayFunction::EDT_Printer;
+        }
+        cmd.endOptionBlock();
+
+        if (cmd.findOption("--ambient-light"))
+            app.checkValue(cmd.getValueAndCheckMin(opt_ambientLight, 0));
+        if (cmd.findOption("--illumination"))
+            app.checkValue(cmd.getValueAndCheckMin(opt_illumination, 0));
+
         cmd.beginOptionBlock();
         if (cmd.findOption("--gsd-function"))
             opt_displayFunction = 0;
         if (cmd.findOption("--cielab-function"))
             opt_displayFunction = 1;
         cmd.endOptionBlock();
+
+        /* image processing options: overlay */
 
         cmd.beginOptionBlock();
         if (cmd.findOption("--no-overlays"))
@@ -575,6 +628,8 @@ int main(int argc, char *argv[])
         if (cmd.findOption("--set-threshold"))
             app.checkValue(cmd.getValueAndCheckMinMax(opt_thresholdDensity, 0.0, 1.0));
 
+        /* image processing options: TIFF options */
+
 #ifdef WITH_LIBTIFF
         cmd.beginOptionBlock();
         if (cmd.findOption("--compr-lzw")) opt_tiffCompression = E_tiffLZWCompression;
@@ -592,6 +647,8 @@ int main(int argc, char *argv[])
             app.checkValue(cmd.getValueAndCheckMinMax(opt_rowsPerStrip, 0, 65535));
 #endif
 
+        /* image processing options: JPEG options */
+
 #ifdef BUILD_DCM2PNM_AS_DCMJ2PNM
         if (cmd.findOption("--compr-quality"))
             app.checkValue(cmd.getValueAndCheckMinMax(opt_quality, 0, 100));
@@ -604,6 +661,8 @@ int main(int argc, char *argv[])
             opt_sampling = ESS_411;
         cmd.endOptionBlock();
 #endif
+
+        /* output options */
 
         cmd.beginOptionBlock();
         if (cmd.findOption("--no-output"))
@@ -719,11 +778,29 @@ int main(int argc, char *argv[])
     if (!opt_displayFile.empty())
     {
         if (opt_displayFunction == 1)
-            disp = new DiCIELABFunction(opt_displayFile.c_str());
+            disp = new DiCIELABFunction(opt_displayFile.c_str(), deviceType);
         else
-            disp = new DiGSDFunction(opt_displayFile.c_str());
-        if ((di != NULL) && (disp != NULL) && (disp->isValid()))
-            di->setDisplayFunction(disp);
+            disp = new DiGSDFunction(opt_displayFile.c_str(), deviceType);
+        if (disp != NULL)
+        {
+            if (opt_ambientLight >= 0)
+                disp->setAmbientLightValue(opt_ambientLight);
+            if (opt_illumination >= 0)
+                disp->setIlluminationValue(opt_illumination);
+            if ((di != NULL) && (disp->isValid()))
+            {
+                if (opt_verboseMode > 1)
+                {
+                    OUTPUT << "activating "
+                           << ((opt_displayFunction == 1) ? "CIELAB" : "GSDF")
+                           << " display function for "
+                           << ((deviceType == DiDisplayFunction::EDT_Monitor) ? "softcopy" : "hardcopy")
+                           << " devices." << endl;
+                }
+                if (!di->setDisplayFunction(disp))
+                    app.printWarning("cannot select display function");
+            }
+        }
     }
 
     if (opt_imageInfo)
@@ -1289,7 +1366,10 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcm2pnm.cc,v $
- * Revision 1.63  2002-06-26 16:33:11  joergr
+ * Revision 1.64  2002-07-05 10:41:08  joergr
+ * Added support for new printer characteristics file.
+ *
+ * Revision 1.63  2002/06/26 16:33:11  joergr
  * Added new methods to get the explanation string of stored VOI windows and
  * LUTs (not only of the currently selected VOI transformation).
  * Added configuration flag that enables the DicomImage class to take the

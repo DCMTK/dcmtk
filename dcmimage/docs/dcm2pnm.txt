@@ -49,7 +49,7 @@ image processing options:
     +F    --frame               [n]umber : integer
                                 select specified frame (default: 1)
     +Fr   --frame-range         [n]umber [c]ount : integer
-                                select c frames beginning with n
+                                select c frames beginning with frame n
     +Fa   --all-frames          select all frames
   rotation:
     +Rl   --rotate-left         rotate image left (-90 degrees)
@@ -74,7 +74,7 @@ image processing options:
                                 scale x axis to n pixels, auto-compute y axis
     +Syv  --scale-y-size        [n]umber : integer
                                 scale y axis to n pixels, auto-compute x axis
-  VOI windowing options:
+  VOI windowing:
     -W    --no-windowing        no VOI windowing (default)
     +Wi   --use-window          [n]umber : integer
                                 use the n-th VOI window from image file
@@ -91,11 +91,11 @@ image processing options:
                                 ignoring n percent
     +Ww   --set-window          [c]enter [w]idth : float
                                 compute VOI window using center c and width w
-  presentation LUT transformation options:
+  presentation LUT transformation:
     +Pid  --identity-shape      presentation LUT shape IDENTITY
     +Piv  --inverse-shape       presentation LUT shape INVERSE
     +Pod  --lin-od-shape        presentation LUT shape LIN OD
-  overlay options:
+  overlay:
     -O    --no-overlays         do not display overlays
     +O    --display-overlay     [n]umber : integer
                                 display overlay n (0..16, 0=all, default: +O 0)
@@ -109,11 +109,18 @@ image processing options:
                                 set overlay foreground density (0..1, def: 1)
     +Ost  --set-threshold       [d]ensity : float
                                 set overlay threshold density (0..1, def: 0.5)
-  display LUT transformation options:
-    +D    --display-file        [f]ilename : string
+  display LUT transformation:
+    +Dm   --monitor-file        [f]ilename : string
                                 calibrate output according to monitor
                                 characteristics defined in f
-    +Dg   --gsd-function        use GSDF for calibration (def. if +D present)
+    +Dp   --printer-file        [f]ilename : string
+                                calibrate output according to printer
+                                characteristics defined in f
+    +Da   --ambient-light       [a]mbient light : float
+                                ambient light value (cd/m^2, default: file f)
+    +Di   --illumination        [i]llumination : float
+                                illumination value (cd/m^2, default: file f)
+    +Dg   --gsd-function        use GSDF for calibration (default for +Dm/+Dp)
     +Dc   --cielab-function     use CIELAB function for calibration
   compatibility options:
     +Ma   --accept-acr-nema     accept ACR-NEMA images without photometric
@@ -154,6 +161,9 @@ and compiled with support for the external "libtiff" TIFF library.  The
 availability of the TIFF compression options depends on the libtiff
 configuration.  In particular, the patented LZW algorithm may not be
 available.
+
+Sample monitor and printer characteristics files are available in the folder
+dcmimgle/tests.
 
 
 ENVIRONMENT
