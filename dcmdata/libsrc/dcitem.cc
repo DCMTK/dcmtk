@@ -11,9 +11,9 @@
 **
 **
 ** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1996-01-05 13:27:37 $
+** Update Date:		$Date: 1996-01-09 11:06:46 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcitem.cc,v $
-** CVS/RCS Revision:	$Revision: 1.3 $
+** CVS/RCS Revision:	$Revision: 1.4 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -350,7 +350,7 @@ DcmEVR DcmItem::ident() const
 // ********************************
 
 
-void DcmItem::print( int level )
+void DcmItem::print(const int level)
 {
     char *info = new char[200];
     char *title = (char*)NULL;
@@ -650,7 +650,8 @@ E_Condition DcmItem::readTagAndLength(DcmStream & inStream,
     DcmTag newTag(groupTag, elementTag );
     nxtobj = newTag.getEVR();	    // VR aus Tag bestimmen
 
-    if (xferSyn.isExplicitVR())
+    if (xferSyn.isExplicitVR() && 
+	nxtobj != EVR_na) 	// Delimitation Items do not have a VR
     {
 	char vrstr[3];
 	vrstr[2] = '\0';
@@ -1356,7 +1357,7 @@ E_Condition DcmItem::clear()
 // ********************************
 
 
-E_Condition DcmItem::verify( BOOL autocorrect )
+E_Condition DcmItem::verify(const BOOL autocorrect )
 {
     Bdebug((3, "dcitem:DcmItem::verify(autocorrect=%d)", autocorrect ));
     debug(( 3, "Tag=(0x%4.4x,0x%4.4x) \"%s\" \"%s\"",
@@ -1650,7 +1651,12 @@ E_Condition DcmItem::loadAllDataIntoMemory(void)
 /*
 ** CVS/RCS Log:
 ** $Log: dcitem.cc,v $
-** Revision 1.3  1996-01-05 13:27:37  andreas
+** Revision 1.4  1996-01-09 11:06:46  andreas
+** New Support for Visual C++
+** Correct problems with inconsistent const declarations
+** Correct error in reading Item Delimitation Elements
+**
+** Revision 1.3  1996/01/05 13:27:37  andreas
 ** - changed to support new streaming facilities
 ** - unique read/write methods for file and block transfer
 ** - more cleanups

@@ -11,9 +11,9 @@
 **
 **
 ** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1996-01-05 13:27:39 $
+** Update Date:		$Date: 1996-01-09 11:06:47 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcmetinf.cc,v $
-** CVS/RCS Revision:	$Revision: 1.3 $
+** CVS/RCS Revision:	$Revision: 1.4 $
 ** Status:		$State: Exp $
 **
 */
@@ -93,7 +93,7 @@ DcmMetaInfo::~DcmMetaInfo()
 // ********************************
 
 
-void DcmMetaInfo::print( int level )
+void DcmMetaInfo::print(const int level)
 {
     int i;
     cout << endl;
@@ -542,7 +542,12 @@ E_Condition DcmMetaInfo::write(DcmStream & outStream,
 /*
 ** CVS/RCS Log:
 ** $Log: dcmetinf.cc,v $
-** Revision 1.3  1996-01-05 13:27:39  andreas
+** Revision 1.4  1996-01-09 11:06:47  andreas
+** New Support for Visual C++
+** Correct problems with inconsistent const declarations
+** Correct error in reading Item Delimitation Elements
+**
+** Revision 1.3  1996/01/05 13:27:39  andreas
 ** - changed to support new streaming facilities
 ** - unique read/write methods for file and block transfer
 ** - more cleanups

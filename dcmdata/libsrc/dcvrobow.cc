@@ -11,9 +11,9 @@
 **
 **
 ** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1996-01-05 13:27:51 $
+** Update Date:		$Date: 1996-01-09 11:06:50 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcvrobow.cc,v $
-** CVS/RCS Revision:	$Revision: 1.3 $
+** CVS/RCS Revision:	$Revision: 1.4 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -308,7 +308,7 @@ Uint16 * DcmOtherByteOtherWord::getWords(void)
 // ********************************
 
 
-E_Condition DcmOtherByteOtherWord::verify( BOOL autocorrect )
+E_Condition DcmOtherByteOtherWord::verify(const BOOL autocorrect)
 {
     errorFlag = EC_Normal;
     if (autocorrect)
@@ -341,7 +341,12 @@ E_Condition DcmOtherByteOtherWord::write(DcmStream & outStream,
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrobow.cc,v $
-** Revision 1.3  1996-01-05 13:27:51  andreas
+** Revision 1.4  1996-01-09 11:06:50  andreas
+** New Support for Visual C++
+** Correct problems with inconsistent const declarations
+** Correct error in reading Item Delimitation Elements
+**
+** Revision 1.3  1996/01/05 13:27:51  andreas
 ** - changed to support new streaming facilities
 ** - unique read/write methods for file and block transfer
 ** - more cleanups

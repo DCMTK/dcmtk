@@ -292,6 +292,10 @@ int DcmDictEntryPtrBSTSet::operator <= (DcmDictEntryPtrBSTSet& y)
 // CACM, Sept, 1986, p902.
 
 
+// special hack to make Visual C++ happy -- AB 960105 --
+struct _fake_node { _fake_node *lt, *rt, *par; };                  
+
+
 void DcmDictEntryPtrBSTSet::balance()
 {
   if (count <= 2) return; // don't bother -- 
@@ -299,7 +303,7 @@ void DcmDictEntryPtrBSTSet::balance()
 
   // make re-attaching the root easy via trickery
 
-  struct _fake_node { _fake_node *lt, *rt, *par; } fake_root;
+  _fake_node fake_root;
 
   fake_root.rt = (_fake_node*)root; 
   fake_root.par = 0;

@@ -9,9 +9,9 @@
 **	implements streaming classes for file and buffer input/output
 **
 ** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1996-01-05 13:27:42 $
+** Update Date:		$Date: 1996-01-09 11:06:49 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/Attic/dcstream.cc,v $
-** CVS/RCS Revision:	$Revision: 1.3 $
+** CVS/RCS Revision:	$Revision: 1.4 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -197,7 +197,7 @@ BOOL DcmFileStream::Putback(const Uint32 noBytes)
 
 	else if (fErrorCond == EC_Normal)
 	{
-	    if (fseek(fFile, -noBytes, SEEK_CUR))
+	    if (fseek(fFile, -Sint32(noBytes), SEEK_CUR))
 	    {	
 		fErrorCond = EC_InvalidStream;
 	    }
@@ -450,7 +450,7 @@ BOOL DcmBufferStream::EndOfStream(void)
 }
 
 
-void DcmBufferStream::FillBuffer(void * buffer, Uint32 length)
+void DcmBufferStream::FillBuffer(void * buffer, const Uint32 length)
 {
     if (fErrorCond == EC_StreamNotifyClient)
 	fErrorCond = EC_Normal;
@@ -719,7 +719,12 @@ DcmFileStreamConstructor::Copy(void)
 /*
 ** CVS/RCS Log:
 ** $Log: dcstream.cc,v $
-** Revision 1.3  1996-01-05 13:27:42  andreas
+** Revision 1.4  1996-01-09 11:06:49  andreas
+** New Support for Visual C++
+** Correct problems with inconsistent const declarations
+** Correct error in reading Item Delimitation Elements
+**
+** Revision 1.3  1996/01/05 13:27:42  andreas
 ** - changed to support new streaming facilities
 ** - unique read/write methods for file and block transfer
 ** - more cleanups

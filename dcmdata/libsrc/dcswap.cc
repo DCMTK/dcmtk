@@ -10,7 +10,7 @@
 **
 **
 ** Last Update:   $Author: andreas $
-** Revision:      $Revision: 1.3 $
+** Revision:      $Revision: 1.4 $
 ** Status:	  $State: Exp $
 **
 */
@@ -52,7 +52,7 @@ void swapBytes(void * value, const Uint32 byteLength,
 }
 
 
-const Uint16 swapShort(Uint16 toSwap)
+const Uint16 swapShort(const Uint16 toSwap)
 {
 	Uint8 * swapped = (Uint8 *)&toSwap;
 	Uint8 tmp = swapped[0];

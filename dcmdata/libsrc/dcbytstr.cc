@@ -10,9 +10,9 @@
 ** Implementation of class DcmByteString
 **
 ** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1996-01-05 13:27:32 $
+** Update Date:		$Date: 1996-01-09 11:06:42 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcbytstr.cc,v $
-** CVS/RCS Revision:	$Revision: 1.3 $
+** CVS/RCS Revision:	$Revision: 1.4 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -82,7 +82,7 @@ DcmByteString::~DcmByteString(void)
 // ********************************
 
 
-void DcmByteString::print(int level)
+void DcmByteString::print(const int level)
 {
     if (this -> valueLoaded())
     {
@@ -213,12 +213,15 @@ E_Condition DcmByteString::makeMachineByteString(void)
     errorFlag = EC_Normal;
     char * value = NULL;
     value = (char *)this -> getValue();
-    realLength = strlen(value);
+    if (value)
+    	realLength = strlen(value);
+    else
+    	realLength = 0;
 
     if (realLength && value)
     {
 	size_t i = 0;
-	for(i = strlen(value);
+	for(i = realLength;
 	    i > 0 && 
 		(value[i-1] == paddingChar || value[i-1] <= ' ');
 	    i--)
@@ -366,7 +369,12 @@ E_Condition DcmByteString::write(DcmStream & outStream,
 /*
 ** CVS/RCS Log:
 ** $Log: dcbytstr.cc,v $
-** Revision 1.3  1996-01-05 13:27:32  andreas
+** Revision 1.4  1996-01-09 11:06:42  andreas
+** New Support for Visual C++
+** Correct problems with inconsistent const declarations
+** Correct error in reading Item Delimitation Elements
+**
+** Revision 1.3  1996/01/05 13:27:32  andreas
 ** - changed to support new streaming facilities
 ** - unique read/write methods for file and block transfer
 ** - more cleanups

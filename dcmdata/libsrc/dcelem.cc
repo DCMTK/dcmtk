@@ -10,9 +10,9 @@
 ** Implementation of class DcmElement
 **
 ** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1996-01-05 14:00:24 $
+** Update Date:		$Date: 1996-01-09 11:06:45 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcelem.cc,v $
-** CVS/RCS Revision:	$Revision: 1.4 $
+** CVS/RCS Revision:	$Revision: 1.5 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -86,7 +86,7 @@ E_Condition DcmElement::clear(void)
 }
 
 
-DcmElement::DcmElement(const DcmTag &tag, Uint32 len)
+DcmElement::DcmElement(const DcmTag &tag, const Uint32 len)
     : DcmObject(tag, len)
 {
     Bdebug((6, "dcelem:DcmElement::DcmElement(DcmTag&,len=%ld)", len ));
@@ -783,7 +783,12 @@ E_Condition DcmElement::write(DcmStream & outStream,
 /*
 ** CVS/RCS Log:
 ** $Log: dcelem.cc,v $
-** Revision 1.4  1996-01-05 14:00:24  andreas
+** Revision 1.5  1996-01-09 11:06:45  andreas
+** New Support for Visual C++
+** Correct problems with inconsistent const declarations
+** Correct error in reading Item Delimitation Elements
+**
+** Revision 1.4  1996/01/05 14:00:24  andreas
 ** - add forgotten initialization for the byte order
 **
 ** Revision 1.3  1996/01/05 13:27:36  andreas

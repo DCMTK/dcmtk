@@ -11,9 +11,9 @@
 **
 **
 ** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1996-01-05 13:27:41 $
+** Update Date:		$Date: 1996-01-09 11:06:48 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcsequen.cc,v $
-** CVS/RCS Revision:	$Revision: 1.3 $
+** CVS/RCS Revision:	$Revision: 1.4 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -139,7 +139,7 @@ DcmSequenceOfItems::~DcmSequenceOfItems()
 // ********************************
 
 
-void DcmSequenceOfItems::print( int level )
+void DcmSequenceOfItems::print(const int level)
 {
     char *info = new char[200];
     char *title = (char*)NULL;
@@ -331,10 +331,12 @@ E_Condition DcmSequenceOfItems::readTagAndLength(DcmStream & inStream,
 	this->swapIfNecessary(gLocalByteOrder, iByteOrder, &valueLength, 4, 4);
 	length = valueLength;
 
+#ifndef NO_ANON_CLASS_COMP
 	debug((4, "Tag (0x%4.4x,0x%4.4x) \"%s\" [0x%8.8x] \"%s\"",
 	       newTag.getGTag(), newTag.getETag(),
 	       DcmVR(newTag.getVR()).getVRName(), valueLength, 
 	       newTag.getTagName()));
+#endif	       
 
 	tag = newTag;                  // Rueckgabewert: assignment-operator
     }
@@ -638,7 +640,7 @@ E_Condition DcmSequenceOfItems::insert(DcmItem* item,
 // ********************************
 
 
-DcmItem* DcmSequenceOfItems::getItem(unsigned long num )
+DcmItem* DcmSequenceOfItems::getItem(const unsigned long num)
 {
     errorFlag = EC_Normal;
     DcmItem *item;
@@ -652,7 +654,7 @@ DcmItem* DcmSequenceOfItems::getItem(unsigned long num )
 // ********************************
 
 
-DcmItem* DcmSequenceOfItems::remove( unsigned long num )
+DcmItem* DcmSequenceOfItems::remove(const unsigned long num)
 {
     Bdebug((3, "dcsequen:DcmSequenceOfItems::remove(num=%ld)", num ));
 
@@ -738,7 +740,7 @@ E_Condition DcmSequenceOfItems::clear()
 // ********************************
 
 
-E_Condition DcmSequenceOfItems::verify( BOOL autocorrect )
+E_Condition DcmSequenceOfItems::verify(const BOOL autocorrect)
 {
     Bdebug((3, "dcsequen:DcmSequenceOfItems::verify(autocorrect=%d)",
 	    autocorrect ));
@@ -776,9 +778,9 @@ E_Condition DcmSequenceOfItems::verify( BOOL autocorrect )
     //		     starte dann Sub-Suche
 
 
-E_Condition DcmSequenceOfItems::searchSubFromHere( const DcmTag &tag,
+E_Condition DcmSequenceOfItems::searchSubFromHere(const DcmTag &tag,
 						   DcmStack &resultStack,
-						   BOOL searchIntoSub )
+						   const BOOL searchIntoSub)
 {
     Bdebug((5, "dcsequen:DcmSequenceOfItems::searchSubFromHere(tag=(%4.4x,%4.4x),"
 	    "Stack&(%ld),sub=%d)", tag.getGTag(), tag.getETag(),
@@ -813,9 +815,11 @@ E_Condition DcmSequenceOfItems::searchSubFromHere( const DcmTag &tag,
                 }
             }
         } while ( l_error != EC_Normal && itemList->seek( ELP_next ) );
+#ifndef NO_ANON_CLASS_COMP
 	Vdebug((4, l_error==EC_Normal && tag==dO->getTag(), "Search-Tag=(%4.4x,%4.4x)"
 		" \"%s\" found!", tag.getGTag(), tag.getETag(),
-		DcmVR(tag.getVR()).getVRName() ));
+		DcmVR(tag.getVR()).getVRName() )); 
+#endif
 
     }
     Edebug(());
@@ -1034,7 +1038,12 @@ E_Condition DcmSequenceOfItems::loadAllDataIntoMemory()
 /*
 ** CVS/RCS Log:
 ** $Log: dcsequen.cc,v $
-** Revision 1.3  1996-01-05 13:27:41  andreas
+** Revision 1.4  1996-01-09 11:06:48  andreas
+** New Support for Visual C++
+** Correct problems with inconsistent const declarations
+** Correct error in reading Item Delimitation Elements
+**
+** Revision 1.3  1996/01/05 13:27:41  andreas
 ** - changed to support new streaming facilities
 ** - unique read/write methods for file and block transfer
 ** - more cleanups

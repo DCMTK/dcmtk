@@ -10,9 +10,9 @@
 ** 
 **
 ** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1996-01-05 13:27:34 $
+** Update Date:		$Date: 1996-01-09 11:06:44 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcdict.cc,v $
-** CVS/RCS Revision:	$Revision: 1.2 $
+** CVS/RCS Revision:	$Revision: 1.3 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -389,7 +389,7 @@ BOOL
 DcmDataDictionary::loadExternalDictionaries()
 {
     char* env = NULL;
-    int i, len;
+    int len;
     int sepCnt = 0;
     BOOL msgIfDictAbsent = TRUE;
     BOOL loadFailed = FALSE;
@@ -402,7 +402,7 @@ DcmDataDictionary::loadExternalDictionaries()
 
     if ((env != NULL) && (strlen(env) != 0)) {
 	len = strlen(env);
-	for (i=0; i<len; i++) {
+	for (int i=0; i<len; i++) {
 	    if (env[i] == ENVIRONMENT_PATH_SEPARATOR) {
 		sepCnt++;
 	    }
@@ -529,7 +529,12 @@ DcmDataDictionary::findEntry(const DcmTagKey& key)
 /*
 ** CVS/RCS Log:
 ** $Log: dcdict.cc,v $
-** Revision 1.2  1996-01-05 13:27:34  andreas
+** Revision 1.3  1996-01-09 11:06:44  andreas
+** New Support for Visual C++
+** Correct problems with inconsistent const declarations
+** Correct error in reading Item Delimitation Elements
+**
+** Revision 1.2  1996/01/05 13:27:34  andreas
 ** - changed to support new streaming facilities
 ** - unique read/write methods for file and block transfer
 ** - more cleanups

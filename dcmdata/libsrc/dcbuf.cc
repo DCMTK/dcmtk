@@ -10,16 +10,16 @@
 ** 
 ** 
 ** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1996-01-05 13:27:31 $
+** Update Date:		$Date: 1996-01-09 11:06:42 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/Attic/dcbuf.cc,v $
-** CVS/RCS Revision:	$Revision: 1.1 $
+** CVS/RCS Revision:	$Revision: 1.2 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
 ***/
 
 #include "osconfig.h"
-#include "string.h"
+#include <string.h>
 #include "dcbuf.h"
 #include "dcdefine.h"
 
@@ -450,7 +450,12 @@ Uint32 DcmMemoryBuffer::Write(const void * content,
 /*
 ** CVS/RCS Log:
 ** $Log: dcbuf.cc,v $
-** Revision 1.1  1996-01-05 13:27:31  andreas
+** Revision 1.2  1996-01-09 11:06:42  andreas
+** New Support for Visual C++
+** Correct problems with inconsistent const declarations
+** Correct error in reading Item Delimitation Elements
+**
+** Revision 1.1  1996/01/05 13:27:31  andreas
 ** - changed to support new streaming facilities
 ** - unique read/write methods for file and block transfer
 ** - more cleanups

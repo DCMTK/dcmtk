@@ -10,9 +10,9 @@
 **
 **
 ** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1996-01-05 13:27:35 $
+** Update Date:		$Date: 1996-01-09 11:06:44 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcdirrec.cc,v $
-** CVS/RCS Revision:	$Revision: 1.2 $
+** CVS/RCS Revision:	$Revision: 1.3 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -280,8 +280,8 @@ char* DcmDirectoryRecord::buildFileName(const char * origName,
 // ********************************
 
 
-E_Condition DcmDirectoryRecord::checkHierarchy(E_DirRecType upperRecord,
-											   E_DirRecType lowerRecord )
+E_Condition DcmDirectoryRecord::checkHierarchy(const E_DirRecType upperRecord,
+											   const E_DirRecType lowerRecord )
 {
     E_Condition l_error = EC_IllegalCall;
     switch ( upperRecord )
@@ -1078,7 +1078,7 @@ DcmEVR DcmDirectoryRecord::ident() const
 // ********************************
 
 
-void DcmDirectoryRecord::print( int level )
+void DcmDirectoryRecord::print(const int level )
 {
     int i;
     char *type = DRTypeNames[ DirRecordType ];
@@ -1174,7 +1174,7 @@ E_Condition DcmDirectoryRecord::write(DcmStream & outStream,
 // ********************************
 
 
-E_Condition DcmDirectoryRecord::verify( BOOL autocorrect )
+E_Condition DcmDirectoryRecord::verify(const BOOL autocorrect )
 {
     E_Condition err1, err2;
     errorFlag = EC_Normal;
@@ -1365,7 +1365,7 @@ unsigned long DcmDirectoryRecord::cardSub()
 
 
 E_Condition DcmDirectoryRecord::insertSub( DcmDirectoryRecord* dirRec,
-					   unsigned long where )
+					   const unsigned long where )
 {
 Bdebug((3, "dcdirrec:DcmDirectoryRecord::insertSub(DcmItem*,where=%ld)",
 	   where ));

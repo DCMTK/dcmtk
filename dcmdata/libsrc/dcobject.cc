@@ -10,7 +10,7 @@
 **
 **
 ** Last Update:   $Author: andreas $
-** Revision:      $Revision: 1.3 $
+** Revision:      $Revision: 1.4 $
 ** Status:	  $State: Exp $
 **
 */
@@ -234,7 +234,7 @@ E_Condition DcmObject::searchErrors( DcmStack &resultStack )
 // ***********************************************************
 
 
-void DcmObject::printInfoLine( int level, const char *info )
+void DcmObject::printInfoLine(const int level, const char *info )
 {
     printInfoLine( level, *Tag, Length, info );
 }
@@ -306,10 +306,12 @@ E_Condition DcmObject::writeTagAndLength(DcmStream & outStream,            // in
 	writtenBytes = 0;
     else
     {
+#ifndef NO_ANON_CLASS_COMP
 	debug(( 4, "Tag (0x%4.4x,0x%4.4x) \"%s\" [0x%8.8x] \"%s\"",
 		Tag->getGTag(), Tag->getETag(),
 		DcmVR(Tag->getVR()).getVRName(),
 		this -> getLength(), Tag->getTagName() ));
+#endif
 
 	l_error = this -> writeTag(outStream, *Tag, oxfer);
 	writtenBytes = 4;
