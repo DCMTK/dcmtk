@@ -9,10 +9,10 @@
 ** Purpose:
 ** Implementation of class DcmByteString
 **
-** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1997-08-29 08:32:53 $
+** Last Update:		$Author: hewett $
+** Update Date:		$Date: 1997-09-11 15:18:16 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcbytstr.cc,v $
-** CVS/RCS Revision:	$Revision: 1.16 $
+** CVS/RCS Revision:	$Revision: 1.17 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -132,10 +132,9 @@ DcmByteString::getLength(
 // ********************************
 
 E_Condition
-DcmByteString::getOFString(
-    OFString & str,
-    const unsigned long pos,
-    OFBool /*normalize*/) 
+DcmByteString::getOFString(OFString & str,
+			   const unsigned long pos,
+			   OFBool /*normalize*/)
 {
     errorFlag = EC_Normal;
     if (getVM() > pos)
@@ -324,6 +323,16 @@ DcmByteString::putString(const char * byteStringValue)
 
 // ********************************
 
+// sets the value of a complete (possibly multi-valued) string attribute.
+E_Condition 
+DcmByteString::putOFStringArray(const OFString& stringValue)
+{
+    return this -> putString(stringValue.c_str());
+}
+
+
+// ********************************
+
 E_Condition DcmByteString::verify(const OFBool autocorrect)
 {
     char * value = NULL;
@@ -488,7 +497,10 @@ normalizeString(
 /*
 ** CVS/RCS Log:
 ** $Log: dcbytstr.cc,v $
-** Revision 1.16  1997-08-29 08:32:53  andreas
+** Revision 1.17  1997-09-11 15:18:16  hewett
+** Added a putOFStringArray method.
+**
+** Revision 1.16  1997/08/29 08:32:53  andreas
 ** - Added methods getOFString and getOFStringArray for all
 **   string VRs. These methods are able to normalise the value, i. e.
 **   to remove leading and trailing spaces. This will be done only if
