@@ -22,9 +22,9 @@
  *  Purpose: DicomScaleTemplates (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-02-03 17:35:14 $
+ *  Update Date:      $Date: 1999-02-11 16:42:10 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/discalet.h,v $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -290,8 +290,8 @@ class DiScaleTemplate
     *   free scaling method without interpolation (necessary for overlays) ... it was a hard job ;-)
     */
 
-    inline void scalePixel(const T *src[],
-                           T *dest[])
+    void scalePixel(const T *src[],
+                    T *dest[])
     {
         const Uint16 xmin = (Dest_X < Src_X) ? Dest_X : Src_X;      // minimum width
         const Uint16 ymin = (Dest_Y < Src_Y) ? Dest_Y : Src_Y;      // minimum height
@@ -369,8 +369,8 @@ class DiScaleTemplate
     }
 
 
-    inline void interpolatePixel(const T *src[],
-                                 T *dest[])
+    void interpolatePixel(const T *src[],
+                          T *dest[])
     {
         if ((Src_X != Columns) || (Src_Y != Rows))
         {
@@ -548,7 +548,10 @@ class DiScaleTemplate
  *
  * CVS/RCS Log:
  * $Log: discalet.h,v $
- * Revision 1.4  1999-02-03 17:35:14  joergr
+ * Revision 1.5  1999-02-11 16:42:10  joergr
+ * Removed inline declarations from several methods.
+ *
+ * Revision 1.4  1999/02/03 17:35:14  joergr
  * Moved global functions maxval() and determineRepresentation() to class
  * DicomImageClass (as static methods).
  *
