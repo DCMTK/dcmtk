@@ -23,9 +23,9 @@
  *      Defines a template stack class with interfaces similar to the C++ Standard
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-12-03 15:09:09 $
+ *  Update Date:      $Date: 2002-07-10 11:50:40 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/include/Attic/ofstack.h,v $
- *  CVS/RCS Revision: $Revision: 1.12 $
+ *  CVS/RCS Revision: $Revision: 1.13 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -176,6 +176,11 @@ struct OFStackLink : public OFStackLinkBase
      */
     OFStackLink(const T & i) : OFStackLinkBase(), info(i)  { }
 
+    /// destructor
+    virtual ~OFStackLink()
+    {
+    }
+
 private:
  
     /// private undefined copy constructor 
@@ -278,7 +283,10 @@ private:
 /*
 ** CVS/RCS Log:
 ** $Log: ofstack.h,v $
-** Revision 1.12  2001-12-03 15:09:09  meichel
+** Revision 1.13  2002-07-10 11:50:40  meichel
+** Added vitual destructor to class OFStackLink
+**
+** Revision 1.12  2001/12/03 15:09:09  meichel
 ** Completed doc++ documentation
 **
 ** Revision 1.11  2001/07/03 14:35:01  meichel
