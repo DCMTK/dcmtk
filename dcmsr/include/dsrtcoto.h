@@ -23,8 +23,8 @@
  *    classes: DSRReferencedTimeOffsetList
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-11-01 16:20:24 $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  Update Date:      $Date: 2000-11-06 11:20:10 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -74,12 +74,14 @@ class DSRReferencedTimeOffsetList
 
     /** print list of referenced time offsets.
      *  The output of a typical list looks like this: 1,2.5 or 1,... if shortened.
-     ** @param  stream  output stream to which the list should be printed
-     *  @param  flags   flag used to customize the output (see DSRTypes::PF_xxx)
+     ** @param  stream     output stream to which the list should be printed
+     *  @param  flags      flag used to customize the output (see DSRTypes::PF_xxx)
+     *  @param  separator  character specifying the separator between the list items
      ** @return status, EC_Normal if successful, an error code otherwise
      */
     E_Condition print(ostream &stream,
-                      const size_t flags = 0) const;
+                      const size_t flags = 0,
+                      const char separator = ',') const;
 
     /** read list of referenced time offsets
      ** @param  dataset    DICOM dataset from which the list should be read
@@ -105,7 +107,10 @@ class DSRReferencedTimeOffsetList
 /*
  *  CVS/RCS Log:
  *  $Log: dsrtcoto.h,v $
- *  Revision 1.2  2000-11-01 16:20:24  joergr
+ *  Revision 1.3  2000-11-06 11:20:10  joergr
+ *  Added parameter to print() method specifying the item separator character.
+ *
+ *  Revision 1.2  2000/11/01 16:20:24  joergr
  *  Updated comments/formatting.
  *
  *  Revision 1.1  2000/10/26 14:23:25  joergr

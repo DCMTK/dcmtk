@@ -23,8 +23,8 @@
  *    classes: DSRWaveformChannelList
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-11-01 16:22:57 $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  Update Date:      $Date: 2000-11-06 11:21:26 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -109,12 +109,16 @@ class DSRWaveformChannelList
 
     /** print list of waveform channels.
      *  The output of a typical list looks like this: 1/2,3/4,5/6
-     ** @param  stream  output stream to which the list should be printed
-     *  @param  flags   flag used to customize the output (see DSRTypes::PF_xxx)
+     ** @param  stream         output stream to which the list should be printed
+     *  @param  flags          flag used to customize the output (see DSRTypes::PF_xxx)
+     *  @param  pairSeparator  character specifying the separator between the value pairs
+     *  @param  itemSeparator  character specifying the separator between the list items
      ** @return status, EC_Normal if successful, an error code otherwise
      */
     E_Condition print(ostream &stream,
-                      const size_t flags = 0) const;
+                      const size_t flags = 0,
+                      const char pairSeparator = '/',
+                      const char itemSeparator = ',') const;
 
     /** read list of waveform channels
      ** @param  dataset    DICOM dataset from which the list should be read
@@ -165,7 +169,10 @@ class DSRWaveformChannelList
 /*
  *  CVS/RCS Log:
  *  $Log: dsrwavch.h,v $
- *  Revision 1.4  2000-11-01 16:22:57  joergr
+ *  Revision 1.5  2000-11-06 11:21:26  joergr
+ *  Added parameter to print() method specifying the item separator character.
+ *
+ *  Revision 1.4  2000/11/01 16:22:57  joergr
  *  Updated comments/formatting.
  *
  *  Revision 1.3  2000/10/18 17:10:51  joergr
