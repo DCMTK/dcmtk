@@ -24,8 +24,8 @@ DCMTK contains the following sub-packages, each in its own sub-directory:
 
 Each sub-directory (except config) contains further sub-directories for
 application source code (apps), library source code (libsrc), library
-include files (include), documentation (docs) and optional test programs
-(tests).
+include files (include), configuration data (etc), documentation (docs)
+and test programs (tests).
 
 To build and install the DCMTK package see the \ref file_install "INSTALL"
 file.  For copyright information see the \ref file_copyright "COPYRIGHT" file.
