@@ -58,9 +58,9 @@
 **
 **
 ** Last Update:		$Author: hewett $
-** Update Date:		$Date: 1996-03-26 18:38:46 $
+** Update Date:		$Date: 1996-09-24 15:59:20 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/libsrc/diutil.cc,v $
-** CVS/RCS Revision:	$Revision: 1.1 $
+** CVS/RCS Revision:	$Revision: 1.2 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -112,24 +112,38 @@ typedef struct {
  * Private Globals
  */
 
+/*
+** The modalities table defines a short character code for each
+** Storage SOP Class for use in filenames.
+** It also gives a typical size for each SOP Instance.  This will
+** ususally be way out, but is useful in user interfaces to give an
+** idea of progress when receiving an image (C-STORE does not indicate 
+** the size of an image being transmitted).
+*/
 static DU_Modality modalities[] = {
     { UID_ComputedRadiographyImageStorage,        	"CR", 2 * 1024 * 1024 },
     { UID_CTImageStorage,                         	"CT", 2 * 512 * 512 },
     { UID_MRImageStorage,                         	"MR", 2 * 256 * 256 },
     { UID_NuclearMedicineImageStorage,            	"NM", 2 * 64 * 64 },
-    { UID_RETIRED_NuclearMedicineImageStorage,    	"NM", 2 * 64 * 64 },
+    { UID_RETIRED_NuclearMedicineImageStorage,    	"NMr", 2 * 64 * 64 },
     { UID_UltrasoundImageStorage,         		"US", 1 * 512 * 512 },
-    { UID_RETIRED_UltrasoundImageStorage,         	"US", 1 * 512 * 512 },
+    { UID_RETIRED_UltrasoundImageStorage,         	"USr", 1 * 512 * 512 },
     { UID_UltrasoundMultiframeImageStorage,      	"US", 1 * 512 * 512 },
-    { UID_RETIRED_UltrasoundMultiframeImageStorage,     "US", 1 * 512 * 512 },
+    { UID_RETIRED_UltrasoundMultiframeImageStorage,     "USr", 1 * 512 * 512 },
     { UID_XRayAngiographicImageStorage,             	"XA", 2 * 512 * 512 },
-    { UID_XRayAngiographicBiPlaneImageStorage,          "XA", 2 * 512 * 512 },
+    { UID_XRayAngiographicBiPlaneImageStorage,          "XB", 2 * 512 * 512 },
     { UID_XRayFluoroscopyImageStorage,           	"RF", 2 * 512 * 512 },
     { UID_SecondaryCaptureImageStorage,             	"SC", 2 * 512 * 512 },
-    { UID_StandaloneOverlayStorage,     		"OV", 512 * 64 },
+    { UID_StandaloneOverlayStorage,     		"OV", 512 * 512 },
     { UID_StandaloneCurveStorage,      			"CV", 4096 },
     { UID_StandaloneModalityLUTStorage,           	"ML", 4096*2 },
-    { UID_StandaloneVOILUTStorage,                	"VL", 4096*2 }
+    { UID_StandaloneVOILUTStorage,                	"VL", 4096*2 },
+    /* I've no idea how large the RadioTherapy objects typically are */
+    { UID_RTImageStorage,				"RI", 4096 },
+    { UID_RTDoseStorage,				"RD", 4096 },
+    { UID_RTStructureSetStorage,			"RS", 4096 },
+    { UID_RTTreatmentRecordStorage,			"RT", 4096 },
+    { UID_RTPlanStorage,				"RP", 4096 }
 };
 
 static char staticBuf[256];
@@ -526,8 +540,11 @@ DU_cgetStatusString(Uint16 statusCode)
 /*
 ** CVS Log
 ** $Log: diutil.cc,v $
-** Revision 1.1  1996-03-26 18:38:46  hewett
-** Initial revision
+** Revision 1.2  1996-09-24 15:59:20  hewett
+** Added Support for the SOP Class UIDs of Radiotherapy Objects.
+**
+** Revision 1.1.1.1  1996/03/26 18:38:46  hewett
+** Initial Release.
 **
 **
 */
