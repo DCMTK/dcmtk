@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DSRDocument
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-09-26 13:04:19 $
- *  CVS/RCS Revision: $Revision: 1.27 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2001-09-28 14:14:14 $
+ *  CVS/RCS Revision: $Revision: 1.28 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -220,7 +220,7 @@ OFCondition DSRDocument::print(ostream &stream,
         /* content date and time */
         if ((ContentDate.getLength() > 0) && (ContentTime.getLength() > 0))
         {
-            stream << "Content Date/Time  : " << getPrintStringFromElement(ContentDate, string) << ", ";
+            stream << "Content Date/Time  : " << getPrintStringFromElement(ContentDate, string) << " ";
             stream <<                            getPrintStringFromElement(ContentTime, string) << endl;
         }
         stream << endl;
@@ -679,10 +679,10 @@ OFCondition DSRDocument::renderHTML(ostream &stream,
                 if (newFlags & HF_copyStyleSheetContent)
                 {
                     /* copy content from CSS file */
-#ifdef NO_IOS_NOCREATE
-                    ifstream cssFile(styleSheet, ios::in);
-#else
+#ifdef HAVE_IOS_NOCREATE
                     ifstream cssFile(styleSheet, ios::in|ios::nocreate);
+#else
+                    ifstream cssFile(styleSheet, ios::in);
 #endif
                     if (cssFile)
                     {
@@ -833,7 +833,7 @@ OFCondition DSRDocument::renderHTML(ostream &stream,
                 /* content date and time */
                 stream << "<tr>" << endl;
                 stream << "<td><b>Content Date/Time:</b></td>" << endl;
-                stream << "<td>" << dicomToReadableDate(getStringValueFromElement(ContentDate, string), string2) << ", ";
+                stream << "<td>" << dicomToReadableDate(getStringValueFromElement(ContentDate, string), string2) << " ";
                 stream << dicomToReadableTime(getStringValueFromElement(ContentTime, string), string2) << "</td>" << endl;
                 stream << "</tr>" << endl;
             }
@@ -1814,7 +1814,10 @@ void DSRDocument::updateAttributes(const OFBool updateAll)
 /*
  *  CVS/RCS Log:
  *  $Log: dsrdoc.cc,v $
- *  Revision 1.27  2001-09-26 13:04:19  meichel
+ *  Revision 1.28  2001-09-28 14:14:14  joergr
+ *  Added check whether ios::nocreate exists.
+ *
+ *  Revision 1.27  2001/09/26 13:04:19  meichel
  *  Adapted dcmsr to class OFCondition
  *
  *  Revision 1.26  2001/06/20 15:03:45  joergr
