@@ -23,9 +23,9 @@
  *           arbitrary type.
  *
  *  Last Update:      $Author: wilkens $
- *  Update Date:      $Date: 2002-07-02 15:19:55 $
+ *  Update Date:      $Date: 2002-07-09 17:07:39 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/include/Attic/ofset.h,v $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -217,6 +217,15 @@ template <class T> class OFSet
     virtual void RemoveByIndex( unsigned int index ) = 0;
 
 
+      /** Tries to find a given object in the set. In case the specified object could
+       *  be found, a pointer to the corresponding element within the set is returned;
+       *  in case the specified object could not be found, NULL will be returned.
+       *  @param item Search pattern.
+       *  @return Pointer to the corresponding element within the set or NULL.
+       */
+    virtual T *Find( const T &item ) const = 0;
+
+
       /** Determines if a certain item is contained in the set.
        *  @param item - Item which shall be looked for.
        *  @return OFTrue, if item is contained in the set, OFFalse otherwise.
@@ -229,9 +238,8 @@ template <class T> class OFSet
 /*
 ** CVS/RCS Log:
 ** $Log: ofset.h,v $
-** Revision 1.1  2002-07-02 15:19:55  wilkens
-** Added container classes OFOrderedSet and OFUnorderedSet which
-** are based on the new abstract class OFSet.
+** Revision 1.2  2002-07-09 17:07:39  wilkens
+** Added some new functions to set classes.
 **
 **
 */

@@ -23,9 +23,9 @@
  *           of an arbitrary type.
  *
  *  Last Update:      $Author: wilkens $
- *  Update Date:      $Date: 2002-07-02 15:19:55 $
+ *  Update Date:      $Date: 2002-07-09 17:07:40 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/include/Attic/ofuoset.h,v $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -111,26 +111,19 @@ template <class T> class OFUnorderedSet : public OFSet<T>
         OFBool result = OFTrue;
 
         // make a copy of this
-        OFUnorderedSet<T> set1 = *this;
+        OFUnorderedSet<T> s = *this;
 
-        // make a copy of other
-        OFUnorderedSet<T> set2 = other;
-
-        // as long as result is OFTrue go through all items in set2 (from
-        // the last to the first item because then removing items in set2
-        // will go together with this loop construction)
-        for( unsigned int i=set2.num-1 ; i>=0 && result == OFTrue ; i-- )
+        // as long as result is OFTrue go through all items in other
+        for( unsigned int i=0 ; i<other.num && result == OFTrue ; i++ )
         {
-          // in case set1 contains the current item of set2
-          if( set1.Contains( *set2.items[i] ) )
+          // in case s contains the current item of other
+          if( s.Contains( *other.items[i] ) )
           {
-            // remove this item from both sets (for set2 make sure to remove items[i])
-            set1.Remove( *set2.items[i] );
-            delete set2.items[i];
-            set2.items[i] = NULL;
-            set2.num--;
+            // remove this item from s so that it will not be
+            // considered again in a later call to s.Contains()
+            s.Remove( *other.items[i] );
           }
-          // in case set1 doesn't contain the current item of set2 the result is OFFalse
+          // in case s doesn't contain the current item of other the result is OFFalse
           else
             result = OFFalse;
         }
@@ -182,7 +175,7 @@ template <class T> class OFUnorderedSet : public OFSet<T>
 
 
       /** Removes one item from the set.
-       *  @param item Item which shall be added to the set.
+       *  @param item Item which shall be removed from the set.
        */
     virtual void Remove( const T &item )
       {
@@ -247,6 +240,30 @@ template <class T> class OFUnorderedSet : public OFSet<T>
       }
 
 
+      /** Tries to find a given object in the set. In case the specified object could
+       *  be found, a pointer to the corresponding element within the set is returned;
+       *  in case the specified object could not be found, NULL will be returned.
+       *  @param item Search pattern.
+       *  @return Pointer to the corresponding element within the set or NULL.
+       */
+    virtual T *Find( const T &item ) const
+      {
+        unsigned int i;
+        OFBool itemFound = OFFalse;
+
+        for( i=0 ; i<num && !itemFound ; i++ )
+        {
+          if( *items[i] == item )
+            itemFound = OFTrue;
+        }
+
+        if( itemFound )
+          return( items[i-1] );
+        else
+          return( NULL );
+      }
+
+
       /** Determines if a certain item is contained in the set.
        *  @param item - Item which shall be looked for.
        *  @return OFTrue, if item is contained in the set, OFFalse otherwise.
@@ -281,26 +298,19 @@ template <class T> class OFUnorderedSet : public OFSet<T>
         OFBool result = OFTrue;
 
         // make a copy of this
-        OFUnorderedSet<T> set1 = *this;
+        OFUnorderedSet<T> s = *this;
 
-        // make a copy of other
-        OFUnorderedSet<T> set2 = other;
-
-        // as long as result is OFTrue go through all items in set2 (from
-        // the last to the first item because then removing items in set2
-        // will go together with this loop construction)
-        for( unsigned int i=set2.num-1 ; i>=0 && result == OFTrue ; i-- )
+        // as long as result is OFTrue go through all items in other
+        for( unsigned int i=0 ; i<other.num && result == OFTrue ; i++ )
         {
-          // in case set1 contains the current item of set2
-          if( set1.Contains( *set2.items[i] ) )
+          // in case s contains the current item of other
+          if( s.Contains( *other.items[i] ) )
           {
-            // remove this item from both sets (for set2 make sure to remove items[i])
-            set1.Remove( *set2.items[i] );
-            delete set2.items[i];
-            set2.items[i] = NULL;
-            set2.num--;
+            // remove this item from s so that it will not be
+            // considered again in a later call to s.Contains()
+            s.Remove( *other.items[i] );
           }
-          // in case set1 doesn't contain the current item of set2 the result is OFFalse
+          // in case s does not contain the current item of other the result is OFFalse
           else
             result = OFFalse;
         }
@@ -320,6 +330,118 @@ template <class T> class OFUnorderedSet : public OFSet<T>
       {
         return( other.IsSupersetOf( *this ) );
       }
+
+
+      /** Determines the union of the two sets this and other, i.e. the set
+       *  containing all items which can be found either in this or in other,
+       *  and returns the resulting new set.
+       *  @param other Second parameter for union.
+       *  @return New set.
+       */
+    OFUnorderedSet<T> Union( const OFUnorderedSet<T> &other ) const
+      {
+        // initialize result set
+        OFUnorderedSet<T> resultSet = *this;
+
+        // add other set to result set
+        resultSet.Add( other );
+
+        // return result set
+        return( resultSet );
+      }
+
+
+      /** Determines the intersection of the two sets this and other, i.e. the set
+       *  containing all items which can be found in both this and other, and
+       *  returns the resulting new set.
+       *  @param other Second parameter for intersection.
+       *  @return New set.
+       */
+    OFUnorderedSet<T> Intersection( const OFUnorderedSet<T> &other ) const
+      {
+        // initialize result set
+        OFUnorderedSet<T> resultSet;
+
+        // make a copy of other
+        OFUnorderedSet<T> s = other;
+
+        // go through all items in this
+        for( unsigned int i=0 ; i<num ; i++ )
+        {
+          // if s contains the current item
+          if( s.Contains( *items[i] ) )
+          {
+            // add the item to the result set
+            resultSet.Add( *items[i] );
+
+            // and remove the item from s so that it will not be
+            // considered again in a later call to s.Contains()
+            s.Remove( *items[i] );
+          }
+        }
+
+        // return result set
+        return( resultSet );
+      }
+
+
+      /** Determines the difference this - other, i.e. the set containing all
+       *  the items found in this but not in other, and returns the resulting
+       *  new set.
+       *  @param other Second parameter for difference.
+       *  @return New set.
+       */
+    OFUnorderedSet<T> Difference( const OFUnorderedSet<T> &other ) const
+      {
+        // initialize result set
+        OFUnorderedSet<T> resultSet;
+
+        // make a copy of other
+        OFUnorderedSet<T> s = other;
+
+        // go through all items in this
+        for( unsigned int i=0 ; i<num ; i++ )
+        {
+          // if s does not contain the current item
+          if( !s.Contains( *items[i] ) )
+          {
+            // add the item to the result set
+            resultSet.Add( *items[i] );
+          }
+          else
+          {
+            // else remove the item from s so that it will not be
+            // considered again in a later call to s.Contains()
+            s.Remove( *items[i] );
+          }
+        }
+
+        // return result set
+        return( resultSet );
+      }
+
+
+      /** Determines the symmetric difference of this and other, i.e. the set
+       *  containing all the items which can be found either in this or in other
+       *  but not in the intersection of this and other, and returns the resulting
+       *  new set.
+       *  @param other Second parameter for symmetric difference.
+       *  @return New set.
+       */
+    OFUnorderedSet<T> SymmetricDifference( const OFUnorderedSet<T> &other ) const
+      {
+        // determine s1 = this - other
+        OFUnorderedSet<T> s1 = (*this).Difference( other );
+
+        // determine s2 = other - this
+        OFUnorderedSet<T> s2 = other.Difference( *this );
+
+        // determine the union of s1 and s2
+        OFUnorderedSet<T> resultSet = s1.Union( s2 );
+
+        // return result set
+        return( resultSet );
+      }
 };
 
 #endif
@@ -327,9 +449,8 @@ template <class T> class OFUnorderedSet : public OFSet<T>
 /*
 ** CVS/RCS Log:
 ** $Log: ofuoset.h,v $
-** Revision 1.1  2002-07-02 15:19:55  wilkens
-** Added container classes OFOrderedSet and OFUnorderedSet which
-** are based on the new abstract class OFSet.
+** Revision 1.2  2002-07-09 17:07:40  wilkens
+** Added some new functions to set classes.
 **
 **
 */
