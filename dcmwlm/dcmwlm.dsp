@@ -1,12 +1,14 @@
 # Microsoft Developer Studio Project File - Name="dcmwlm" - Package Owner=<4>
-# Microsoft Developer Studio Generated Build File, Format Version 6.00
+# Microsoft Developer Studio Generated Build File, Format Version 5.00
 # ** NICHT BEARBEITEN **
 
 # TARGTYPE "Win32 (x86) Static Library" 0x0104
 
 CFG=dcmwlm - Win32 Debug
-!MESSAGE Dies ist kein gültiges Makefile. Zum Erstellen dieses Projekts mit NMAKE
-!MESSAGE verwenden Sie den Befehl "Makefile exportieren" und führen Sie den Befehl
+!MESSAGE Dies ist kein gültiges Makefile. Zum Erstellen dieses Projekts mit\
+ NMAKE
+!MESSAGE verwenden Sie den Befehl "Makefile exportieren" und führen Sie den\
+ Befehl
 !MESSAGE 
 !MESSAGE NMAKE /f "dcmwlm.mak".
 !MESSAGE 
@@ -17,16 +19,17 @@ CFG=dcmwlm - Win32 Debug
 !MESSAGE 
 !MESSAGE Für die Konfiguration stehen zur Auswahl:
 !MESSAGE 
-!MESSAGE "dcmwlm - Win32 Release" (basierend auf  "Win32 (x86) Static Library")
+!MESSAGE "dcmwlm - Win32 Release" (basierend auf\
+  "Win32 (x86) Static Library")
 !MESSAGE "dcmwlm - Win32 Debug" (basierend auf  "Win32 (x86) Static Library")
+!MESSAGE "dcmwlm - Win32 Release OpenSSL" (basierend auf\
+  "Win32 (x86) Static Library")
 !MESSAGE 
 
 # Begin Project
-# PROP AllowPerConfigDependencies 0
 # PROP Scc_ProjName ""
 # PROP Scc_LocalPath ""
 CPP=cl.exe
-RSC=rc.exe
 
 !IF  "$(CFG)" == "dcmwlm - Win32 Release"
 
@@ -40,10 +43,8 @@ RSC=rc.exe
 # PROP Output_Dir "Release"
 # PROP Intermediate_Dir "Release"
 # PROP Target_Dir ""
-# ADD BASE CPP /nologo /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_MBCS" /D "_LIB" /YX /FD /c
-# ADD CPP /nologo /MT /W3 /GX /O2 /I "include" /I "..\config\include" /I "..\ofstd\include" /I "..\dcmdata\include" /I "..\dcmnet\include" /I "..\..\zlib-1.1.4\include" /D "NDEBUG" /D "_WINDOWS" /D "WIN32" /D "_REENTRANT" /YX /FD /c
-# ADD BASE RSC /l 0x407 /d "NDEBUG"
-# ADD RSC /l 0x407 /d "NDEBUG"
+# ADD BASE CPP /nologo /W3 /GX /O2 /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /YX /FD /c
+# ADD CPP /nologo /MT /W3 /GX /O2 /I "include" /I "..\config\include" /I "..\ofstd\include" /I "..\dcmdata\include" /I "..\dcmnet\include" /I "..\..\..\zlib-1.1.4\include" /D "_WINDOWS" /D "WIN32" /D "NDEBUG" /D "_REENTRANT" /YX /FD /c
 BSC32=bscmake.exe
 # ADD BASE BSC32 /nologo
 # ADD BSC32 /nologo
@@ -63,10 +64,29 @@ LIB32=link.exe -lib
 # PROP Output_Dir "Debug"
 # PROP Intermediate_Dir "Debug"
 # PROP Target_Dir ""
-# ADD BASE CPP /nologo /W3 /Gm /GX /ZI /Od /D "WIN32" /D "_DEBUG" /D "_MBCS" /D "_LIB" /YX /FD /GZ /c
-# ADD CPP /nologo /MTd /W3 /Gm /GX /ZI /Od /I "include" /I "..\config\include" /I "..\ofstd\include" /I "..\dcmdata\include" /I "..\dcmnet\include" /I "..\..\zlib-1.1.4\include" /D "_DEBUG" /D "DEBUG" /D "_WINDOWS" /D "WIN32" /D "_REENTRANT" /YX /FD /GZ /c
-# ADD BASE RSC /l 0x407 /d "_DEBUG"
-# ADD RSC /l 0x407 /d "_DEBUG"
+# ADD BASE CPP /nologo /W3 /GX /Z7 /Od /D "WIN32" /D "_DEBUG" /D "_WINDOWS" /YX /FD /c
+# ADD CPP /nologo /MTd /W3 /GX /Z7 /Od /I "include" /I "..\config\include" /I "..\ofstd\include" /I "..\dcmdata\include" /I "..\dcmnet\include" /I "..\..\..\zlib-1.1.4\include" /D "_WINDOWS" /D "WIN32" /D "_DEBUG" /D "DEBUG" /D "_REENTRANT" /YX /FD /c
+BSC32=bscmake.exe
+# ADD BASE BSC32 /nologo
+# ADD BSC32 /nologo
+LIB32=link.exe -lib
+# ADD BASE LIB32 /nologo
+# ADD LIB32 /nologo
+
+!ELSEIF  "$(CFG)" == "dcmwlm - Win32 Release OpenSSL"
+
+# PROP BASE Use_MFC 0
+# PROP BASE Use_Debug_Libraries 0
+# PROP BASE Output_Dir "OpenSSL"
+# PROP BASE Intermediate_Dir "OpenSSL"
+# PROP BASE Target_Dir ""
+# PROP Use_MFC 0
+# PROP Use_Debug_Libraries 0
+# PROP Output_Dir "OpenSSL"
+# PROP Intermediate_Dir "OpenSSL"
+# PROP Target_Dir ""
+# ADD BASE CPP /nologo /MT /W3 /GX /O2 /I "include" /I "..\config\include" /I "..\ofstd\include" /I "..\dcmdata\include" /I "..\dcmnet\include" /I "..\..\..\zlib-1.1.4\include" /D "_WINDOWS" /D "WIN32" /D "NDEBUG" /D "_REENTRANT" /YX /FD /c
+# ADD CPP /nologo /MT /W3 /GX /O2 /I "include" /I "..\config\include" /I "..\ofstd\include" /I "..\dcmdata\include" /I "..\dcmnet\include" /I "..\..\..\zlib-1.1.4\include" /D "_WINDOWS" /D "WIN32" /D "NDEBUG" /D "_REENTRANT" /D "WITH_OPENSSL" /YX /FD /c
 BSC32=bscmake.exe
 # ADD BASE BSC32 /nologo
 # ADD BSC32 /nologo
@@ -80,9 +100,7 @@ LIB32=link.exe -lib
 
 # Name "dcmwlm - Win32 Release"
 # Name "dcmwlm - Win32 Debug"
-# Begin Group "Quellcodedateien"
-
-# PROP Default_Filter "cpp;c;cxx;rc;def;r;odl;idl;hpj;bat"
+# Name "dcmwlm - Win32 Release OpenSSL"
 # Begin Source File
 
 SOURCE=.\libsrc\wlds.cxx
@@ -99,30 +117,5 @@ SOURCE=.\libsrc\wlfsim.cxx
 
 SOURCE=.\libsrc\wlmactmg.cxx
 # End Source File
-# End Group
-# Begin Group "Header-Dateien"
-
-# PROP Default_Filter "h;hpp;hxx;hm;inl"
-# Begin Source File
-
-SOURCE=.\include\wlds.h
-# End Source File
-# Begin Source File
-
-SOURCE=.\include\wldsfs.h
-# End Source File
-# Begin Source File
-
-SOURCE=.\include\wlfsim.h
-# End Source File
-# Begin Source File
-
-SOURCE=.\include\wlmactmg.h
-# End Source File
-# Begin Source File
-
-SOURCE=.\include\wltypdef.h
-# End Source File
-# End Group
 # End Target
 # End Project
