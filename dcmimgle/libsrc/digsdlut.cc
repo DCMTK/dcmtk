@@ -22,9 +22,9 @@
  *  Purpose: DicomGSDFLUT (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-07-02 16:24:38 $
+ *  Update Date:      $Date: 2002-07-03 13:51:00 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/libsrc/digsdlut.cc,v $
- *  CVS/RCS Revision: $Revision: 1.10 $
+ *  CVS/RCS Revision: $Revision: 1.11 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -130,13 +130,14 @@ int DiGSDFLUT::createLUT(const Uint16 *ddl_tab,
                         if (DataBuffer != NULL)
                         {
                             r = gsdf;
+                            const double amb = getAmbientLightValue();
                             register Uint16 *q = DataBuffer;
                             register unsigned long j = 0;
                             for (i = Count; i != 0; i--, r++)
                             {
-                                while ((j + 1 < ddl_cnt) && (val_tab[j] < *r))  // search for closest index, assuming monotony
+                                while ((j + 1 < ddl_cnt) && (val_tab[j] + amb < *r))  // search for closest index, assuming monotony
                                     j++;
-                                if ((j > 0) && (fabs(val_tab[j - 1] - *r) < fabs(val_tab[j] - *r)))
+                                if ((j > 0) && (fabs(val_tab[j - 1] + amb - *r) < fabs(val_tab[j] + amb - *r)))
                                     j--;
                                 *(q++) = ddl_tab[j];
                             }
@@ -147,13 +148,13 @@ int DiGSDFLUT::createLUT(const Uint16 *ddl_tab,
                                 {
                                     for (i = 0; i < ddl_cnt; i++)
                                     {
-                                        (*stream) << ddl_tab[i];
+                                        (*stream) << ddl_tab[i];                           // DDL
                                         stream->setf(ios::fixed, ios::floatfield);
                                         if (mode)
-                                            (*stream) << "\t" << val_tab[i];
-                                        (*stream) << "\t" << gsdf[i];
+                                            (*stream) << "\t" << val_tab[i] + amb;         // CC
+                                        (*stream) << "\t" << gsdf[i];                      // GSDF
                                         if (mode)
-                                            (*stream) << "\t" << val_tab[Data[i]];
+                                            (*stream) << "\t" << val_tab[Data[i]] + amb;   // PSC
                                         (*stream) << endl;
                                     }
                                 } else {
@@ -184,7 +185,10 @@ int DiGSDFLUT::createLUT(const Uint16 *ddl_tab,
  *
  * CVS/RCS Log:
  * $Log: digsdlut.cc,v $
- * Revision 1.10  2002-07-02 16:24:38  joergr
+ * Revision 1.11  2002-07-03 13:51:00  joergr
+ * Fixed inconsistencies regarding the handling of ambient light.
+ *
+ * Revision 1.10  2002/07/02 16:24:38  joergr
  * Added support for hardcopy devices to the calibrated output routines.
  *
  * Revision 1.9  2001/06/01 15:49:55  meichel

@@ -22,9 +22,9 @@
  *  Purpose: DicomDisplayFunction (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-07-02 16:52:40 $
+ *  Update Date:      $Date: 2002-07-03 13:50:59 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/libsrc/didispfn.cc,v $
- *  CVS/RCS Revision: $Revision: 1.31 $
+ *  CVS/RCS Revision: $Revision: 1.32 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -184,7 +184,7 @@ DiDisplayFunction::~DiDisplayFunction()
 {
     delete[] DDLValue;
     delete[] LODValue;
-    register unsigned int i;
+    register int i;
     for (i = 0; i < MAX_NUMBER_OF_TABLES; i++)
         delete LookupTable[i];
 }
@@ -474,7 +474,7 @@ int DiDisplayFunction::createSortedTable(const Uint16 *ddl_tab,
                     }
                 }
             } else {
-                /* softcopy device: check for monotonous ascending luminance values*/
+                /* softcopy device: check for monotonous ascending luminance values */
                 while ((i < ValueCount) && (LODValue[i - 1] <= LODValue[i]))
                     i++;
                 if (i < ValueCount)
@@ -550,7 +550,8 @@ int DiDisplayFunction::calculateMinMax()
 
 
 double *DiDisplayFunction::convertODtoLumTable(const double *od_tab,
-                                               const unsigned long count)
+                                               const unsigned long count,
+                                               const OFBool useAmb)
 {
     double *lum_tab = NULL;
     if ((od_tab != NULL) && (count > 0))
@@ -561,17 +562,26 @@ double *DiDisplayFunction::convertODtoLumTable(const double *od_tab,
         {
             /* compute luminance values from optical density */
             register unsigned int i;
-            for (i = 0; i < count; i++)
-                lum_tab[i] = AmbientLight + Illumination * pow(10, -od_tab[i]);
+            if (useAmb)
+            {
+                for (i = 0; i < count; i++)
+                    lum_tab[i] = AmbientLight + Illumination * pow(10, -od_tab[i]);
+            } else {
+                /* ambient light is added later */
+                for (i = 0; i < count; i++)
+                    lum_tab[i] = Illumination * pow(10, -od_tab[i]);
+            }
         }
     }
     return lum_tab;
 }
 
 
-double DiDisplayFunction::convertODtoLum(const double value) const
+double DiDisplayFunction::convertODtoLum(const double value,
+                                         const OFBool useAmb) const
 {
-    return convertODtoLum(value, AmbientLight, Illumination);
+    return (useAmb) ? convertODtoLum(value, AmbientLight, Illumination) :
+                      convertODtoLum(value, 0, Illumination);
 }
 
 
@@ -588,7 +598,10 @@ double DiDisplayFunction::convertODtoLum(const double value,
  *
  * CVS/RCS Log:
  * $Log: didispfn.cc,v $
- * Revision 1.31  2002-07-02 16:52:40  joergr
+ * Revision 1.32  2002-07-03 13:50:59  joergr
+ * Fixed inconsistencies regarding the handling of ambient light.
+ *
+ * Revision 1.31  2002/07/02 16:52:40  joergr
  * Minor fixes to keep MSVC6 quiet.
  *
  * Revision 1.30  2002/07/02 16:24:37  joergr

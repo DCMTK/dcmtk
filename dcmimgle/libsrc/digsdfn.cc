@@ -22,9 +22,9 @@
  *  Purpose: DicomGSDFunction (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-07-02 16:24:37 $
+ *  Update Date:      $Date: 2002-07-03 13:51:00 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/libsrc/digsdfn.cc,v $
- *  CVS/RCS Revision: $Revision: 1.16 $
+ *  CVS/RCS Revision: $Revision: 1.17 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -171,8 +171,8 @@ DiDisplayLUT *DiGSDFunction::getDisplayLUT(unsigned long count)
             if (tmp_tab != NULL)
             {
                 /* create new GSDF LUT */
-                lut = new DiGSDFLUT(count, MaxDDLValue, DDLValue, tmp_tab, ValueCount,
-                    GSDFValue, GSDFSpline, GSDFCount, JNDMin, JNDMax, AmbientLight, Illumination);
+                lut = new DiGSDFLUT(count, MaxDDLValue, DDLValue, tmp_tab, ValueCount, GSDFValue,
+                    GSDFSpline, GSDFCount, JNDMin, JNDMax, -AmbientLight /*do not add*/, Illumination);
                 /* delete temporary table */
                 delete[] tmp_tab;
             }
@@ -201,16 +201,17 @@ int DiGSDFunction::writeCurveData(const char *filename,
                 file << "# Device driving levels  : " << ValueCount << endl;
                 file << "# Illumination  [cd/m^2] : " << Illumination << endl;
                 file << "# Ambient light [cd/m^2] : " << AmbientLight << endl;
-                file << "# Luminance     [cd/m^2] : " << convertODtoLum(MaxValue) << " - " << convertODtoLum(MinValue) << endl;
+                file << "# Luminance w/o [cd/m^2] : " << convertODtoLum(MaxValue, OFFalse /*useAmb*/) << " - "
+                                                      << convertODtoLum(MinValue, OFFalse /*useAmb*/) << endl;
                 file << "# Optical density   [OD] : " << MinValue << " - " << MaxValue << endl;
-                file << "# JND index range        : " << JNDMin << " - " << JNDMax << endl << endl;
+                file << "# Barten JND index range : " << JNDMin << " - " << JNDMax << endl << endl;
                 file << "# NB: values for CC, GSDF and PSC are always specified in cd/m^2" << endl << endl;
             } else {
                 file << "# Type of output device  : Monitor (softcopy)" << endl;
                 file << "# Device driving levels  : " << ValueCount << endl;
                 file << "# Ambient light [cd/m^2] : " << AmbientLight << endl;
-                file << "# Luminance     [cd/m^2] : " << (MinValue + AmbientLight) << " - " << (MaxValue + AmbientLight) << endl;
-                file << "# JND index range        : " << JNDMin << " - " << JNDMax << endl << endl;
+                file << "# Luminance w/o [cd/m^2] : " << MinValue << " - " << MaxValue << endl;
+                file << "# Barten JND index range : " << JNDMin << " - " << JNDMax << endl << endl;
             }
             if (mode)
                 file << "DDL\tCC\tGSDF\tPSC" << endl;
@@ -221,18 +222,18 @@ int DiGSDFunction::writeCurveData(const char *filename,
             if (DeviceType == EDT_Printer)
             {
                 /* printer: values are in optical density, first convert them to luminance */
-                double *tmp_tab = convertODtoLumTable(LODValue, ValueCount);
+                double *tmp_tab = convertODtoLumTable(LODValue, ValueCount, OFFalse /*useAmb*/);
                 if (tmp_tab != NULL)
                 {
-                    lut = new DiGSDFLUT(ValueCount, MaxDDLValue, DDLValue, tmp_tab, ValueCount,
-                        GSDFValue, GSDFSpline, GSDFCount, JNDMin, JNDMax, AmbientLight, Illumination, &file, mode);
+                    lut = new DiGSDFLUT(ValueCount, MaxDDLValue, DDLValue, tmp_tab, ValueCount, GSDFValue,
+                        GSDFSpline, GSDFCount, JNDMin, JNDMax, AmbientLight, Illumination, &file, mode);
                     /* delete temporary table */
                     delete[] tmp_tab;
                 }
             } else {
                 /* monitor: values are already in luminance */
-                lut = new DiGSDFLUT(ValueCount, MaxDDLValue, DDLValue, LODValue, ValueCount,
-                    GSDFValue, GSDFSpline, GSDFCount, JNDMin, JNDMax, AmbientLight, Illumination, &file, mode);
+                lut = new DiGSDFLUT(ValueCount, MaxDDLValue, DDLValue, LODValue, ValueCount, GSDFValue,
+                    GSDFSpline, GSDFCount, JNDMin, JNDMax, AmbientLight, Illumination, &file, mode);
             }
             int status = (lut != NULL) && (lut->isValid());
             delete lut;
@@ -373,7 +374,10 @@ double DiGSDFunction::getJNDIndex(const double lum)
  *
  * CVS/RCS Log:
  * $Log: digsdfn.cc,v $
- * Revision 1.16  2002-07-02 16:24:37  joergr
+ * Revision 1.17  2002-07-03 13:51:00  joergr
+ * Fixed inconsistencies regarding the handling of ambient light.
+ *
+ * Revision 1.16  2002/07/02 16:24:37  joergr
  * Added support for hardcopy devices to the calibrated output routines.
  *
  * Revision 1.15  2002/06/19 08:12:13  meichel

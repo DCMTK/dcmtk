@@ -22,9 +22,9 @@
  *  Purpose: export display curves to a text file
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-07-02 16:21:52 $
+ *  Update Date:      $Date: 2002-07-03 13:49:54 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/apps/dcmdspfn.cc,v $
- *  CVS/RCS Revision: $Revision: 1.9 $
+ *  CVS/RCS Revision: $Revision: 1.10 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -159,14 +159,15 @@ int main(int argc, char *argv[])
         }
         if (cmd.findOption("--od-range"))
         {
+            app.checkDependence("--od-range", "--illumination", opt_illum >= 0);
             OFCmdFloat minVal = 0;
             OFCmdFloat maxVal = 0;
             app.checkValue(cmd.getValueAndCheckMin(minVal, 0));
             app.checkValue(cmd.getValueAndCheckMin(maxVal, minVal, OFFalse));
             deviceType = DiDisplayFunction::EDT_Printer;
             /* convert given optical density to luminance */
-            opt_minVal = DiDisplayFunction::convertODtoLum(maxVal, opt_ambLight, opt_illum);
-            opt_maxVal = DiDisplayFunction::convertODtoLum(minVal, opt_ambLight, opt_illum);
+            opt_minVal = DiDisplayFunction::convertODtoLum(maxVal, 0 /*ambLight*/, opt_illum);
+            opt_maxVal = DiDisplayFunction::convertODtoLum(minVal, 0 /*ambLight*/, opt_illum);
         }
         cmd.endOptionBlock();
 
@@ -177,12 +178,18 @@ int main(int argc, char *argv[])
     }
 
     /* init verbose and debug mode */
-    if (opt_verboseMode < 1)
+    if (opt_verboseMode == 0)
         DicomImageClass::setDebugLevel(0);
-    else if (opt_debugMode > 0)
-        DicomImageClass::setDebugLevel(DicomImageClass::getDebugLevel() |
-                                       DicomImageClass::DL_DebugMessages |
-                                       DicomImageClass::DL_Informationals);
+    else {
+        DicomImageClass::setDebugLevel(DicomImageClass::DL_Errors |
+                                       DicomImageClass::DL_Warnings);
+        if (opt_verboseMode == 2)
+            DicomImageClass::setDebugLevel(DicomImageClass::getDebugLevel() |
+                                           DicomImageClass::DL_Informationals);
+        if (opt_debugMode > 0)
+            DicomImageClass::setDebugLevel(DicomImageClass::getDebugLevel() |
+                                           DicomImageClass::DL_DebugMessages);
+    }
 
     /* print syntax usage */
     if (cmd.getArgCount() == 0)
@@ -240,7 +247,7 @@ int main(int argc, char *argv[])
                 disp = new DiCIELABFunction(opt_minVal, opt_maxVal, opt_ddlCount);
             if ((disp != NULL) && disp->isValid())
             {
-                if (opt_ambLight > 0)
+                if (opt_ambLight >= 0)
                 {
                     if (opt_verboseMode > 1)
                         OUTPUT << "setting ambient light value ..." << endl;
@@ -266,7 +273,10 @@ int main(int argc, char *argv[])
  *
  * CVS/RCS Log:
  * $Log: dcmdspfn.cc,v $
- * Revision 1.9  2002-07-02 16:21:52  joergr
+ * Revision 1.10  2002-07-03 13:49:54  joergr
+ * Fixed inconsistencies regarding the handling of ambient light.
+ *
+ * Revision 1.9  2002/07/02 16:21:52  joergr
  * Added support for hardcopy devices to the calibrated output routines.
  *
  * Revision 1.8  2001/11/09 16:22:29  joergr

@@ -22,9 +22,9 @@
  *  Purpose: DicomCIELABFunction (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-07-02 16:24:36 $
+ *  Update Date:      $Date: 2002-07-03 13:50:58 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/libsrc/diciefn.cc,v $
- *  CVS/RCS Revision: $Revision: 1.13 $
+ *  CVS/RCS Revision: $Revision: 1.14 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -140,14 +140,15 @@ int DiCIELABFunction::writeCurveData(const char *filename,
                 file << "# Device driving levels  : " << ValueCount << endl;
                 file << "# Illumination  [cd/m^2] : " << Illumination << endl;
                 file << "# Ambient light [cd/m^2] : " << AmbientLight << endl;
-                file << "# Luminance     [cd/m^2] : " << convertODtoLum(MaxValue) << " - " << convertODtoLum(MinValue) << endl;
+                file << "# Luminance w/o [cd/m^2] : " << convertODtoLum(MaxValue, OFFalse /*useAmb*/) << " - "
+                                                      << convertODtoLum(MinValue, OFFalse /*useAmb*/) << endl;
                 file << "# Optical density   [OD] : " << MinValue << " - " << MaxValue << endl << endl;
                 file << "# NB: values for CC, CIELAB and PSC are always specified in cd/m^2" << endl << endl;
             } else {
                 file << "# Type of output device  : Monitor (softcopy)" << endl;
                 file << "# Device driving levels  : " << ValueCount << endl;
-                file << "# Ambient light [cd/m^2] : " << AmbientLight << endl << endl;
-                file << "# Luminance     [cd/m^2] : " << (MinValue + AmbientLight)<< " - " << (MaxValue + AmbientLight) << endl;
+                file << "# Ambient light [cd/m^2] : " << AmbientLight << endl;
+                file << "# Luminance w/o [cd/m^2] : " << MinValue << " - " << MaxValue << endl << endl;
             }
 
             if (mode)
@@ -159,18 +160,19 @@ int DiCIELABFunction::writeCurveData(const char *filename,
             if (DeviceType == EDT_Printer)
             {
                 /* printer: values are in optical density, first convert them to luminance */
-                double *tmp_tab = convertODtoLumTable(LODValue, ValueCount);
+                double *tmp_tab = convertODtoLumTable(LODValue, ValueCount, OFFalse /*useAmb*/);
                 if (tmp_tab != NULL)
                 {
                     lut = new DiCIELABLUT(ValueCount, MaxDDLValue, DDLValue, tmp_tab, ValueCount,
-                        convertODtoLum(MaxValue), convertODtoLum(MinValue), AmbientLight, &file, mode);
+                        convertODtoLum(MaxValue, OFFalse /*useAmb*/), convertODtoLum(MinValue, OFFalse /*useAmb*/),
+                        AmbientLight, &file, mode);
                     /* delete temporary table */
                     delete[] tmp_tab;
                 }
             } else {
                 /* monitor: values are already in luminance */
                 lut = new DiCIELABLUT(ValueCount, MaxDDLValue, DDLValue, LODValue, ValueCount,
-                    MinValue + AmbientLight, MaxValue + AmbientLight, AmbientLight, &file, mode);     // write curve data to file
+                    MinValue, MaxValue, AmbientLight, &file, mode);     // write curve data to file
             }
             int status = (lut != NULL) && (lut->isValid());
             delete lut;
@@ -192,12 +194,13 @@ DiDisplayLUT *DiCIELABFunction::getDisplayLUT(unsigned long count)
         if (DeviceType == EDT_Printer)
         {
             /* printer: values are in optical density, first convert them to luminance */
-            double *tmp_tab = convertODtoLumTable(LODValue, ValueCount);
+            double *tmp_tab = convertODtoLumTable(LODValue, ValueCount, OFFalse /*useAmb*/);
             if (tmp_tab != NULL)
             {
                 /* create new CIELAB LUT */
                 lut = new DiCIELABLUT(count, MaxDDLValue, DDLValue, tmp_tab, ValueCount,
-                    convertODtoLum(MaxValue), convertODtoLum(MinValue), AmbientLight);
+                    convertODtoLum(MaxValue, OFFalse /*useAmb*/), convertODtoLum(MinValue, OFFalse /*useAmb*/),
+                    AmbientLight);
                 /* delete temporary table */
                 delete[] tmp_tab;
             }
@@ -218,7 +221,10 @@ DiDisplayLUT *DiCIELABFunction::getDisplayLUT(unsigned long count)
  *
  * CVS/RCS Log:
  * $Log: diciefn.cc,v $
- * Revision 1.13  2002-07-02 16:24:36  joergr
+ * Revision 1.14  2002-07-03 13:50:58  joergr
+ * Fixed inconsistencies regarding the handling of ambient light.
+ *
+ * Revision 1.13  2002/07/02 16:24:36  joergr
  * Added support for hardcopy devices to the calibrated output routines.
  *
  * Revision 1.12  2002/04/16 13:53:31  joergr

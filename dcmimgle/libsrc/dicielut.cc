@@ -22,9 +22,9 @@
  *  Purpose: DicomCIELABLUT (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-07-02 16:24:36 $
+ *  Update Date:      $Date: 2002-07-03 13:50:59 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/libsrc/dicielut.cc,v $
- *  CVS/RCS Revision: $Revision: 1.12 $
+ *  CVS/RCS Revision: $Revision: 1.13 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -100,8 +100,9 @@ int DiCIELABLUT::createLUT(const Uint16 *ddl_tab,
             register unsigned long i;
             register double llin = 0;
             register double cub = 0;
-            const double min = val_min;
-            const double max = val_max;
+            const double amb = getAmbientLightValue();
+            const double min = val_min + amb;
+            const double max = val_max + amb;
             const double lmin = min / max;
             const double hmin = (lmin > 0.008856) ? 116.0 * pow(lmin, 1.0 / 3.0) - 16 : 903.3 * lmin;
             const double lfac = (100.0 - hmin) / ((double)(Count - 1) * 903.3);
@@ -122,9 +123,9 @@ int DiCIELABLUT::createLUT(const Uint16 *ddl_tab,
                 register unsigned long j = 0;
                 for (i = Count; i != 0; i--, r++)
                 {
-                    while ((j + 1 < ddl_cnt) && (val_tab[j] < *r))  // search for closest index, assuming monotony
+                    while ((j + 1 < ddl_cnt) && (val_tab[j] + amb < *r))  // search for closest index, assuming monotony
                         j++;
-                    if ((j > 0) && (fabs(val_tab[j - 1] - *r) < fabs(val_tab[j] - *r)))
+                    if ((j > 0) && (fabs(val_tab[j - 1] + amb - *r) < fabs(val_tab[j] + amb - *r)))
                         j--;
                     *(q++) = ddl_tab[j];
                 }
@@ -135,13 +136,13 @@ int DiCIELABLUT::createLUT(const Uint16 *ddl_tab,
                     {
                         for (i = 0; i < ddl_cnt; i++)
                         {
-                            (*stream) << ddl_tab[i];
+                            (*stream) << ddl_tab[i];                           // DDL
                             stream->setf(ios::fixed, ios::floatfield);
                             if (mode)
-                                (*stream) << "\t" << val_tab[i];
-                            (*stream) << "\t" << cielab[i];
+                                (*stream) << "\t" << val_tab[i] + amb;         // CC
+                            (*stream) << "\t" << cielab[i];                    // CIELAB
                             if (mode)
-                                (*stream) << "\t" << val_tab[Data[i]];
+                                (*stream) << "\t" << val_tab[Data[i]] + amb;   // PSC
                             (*stream) << endl;
                         }
                     } else {
@@ -165,7 +166,10 @@ int DiCIELABLUT::createLUT(const Uint16 *ddl_tab,
  *
  * CVS/RCS Log:
  * $Log: dicielut.cc,v $
- * Revision 1.12  2002-07-02 16:24:36  joergr
+ * Revision 1.13  2002-07-03 13:50:59  joergr
+ * Fixed inconsistencies regarding the handling of ambient light.
+ *
+ * Revision 1.12  2002/07/02 16:24:36  joergr
  * Added support for hardcopy devices to the calibrated output routines.
  *
  * Revision 1.11  2001/06/01 15:49:53  meichel

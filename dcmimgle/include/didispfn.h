@@ -22,9 +22,9 @@
  *  Purpose: DicomDisplayFunction (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-07-02 16:23:42 $
+ *  Update Date:      $Date: 2002-07-03 13:50:24 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/didispfn.h,v $
- *  CVS/RCS Revision: $Revision: 1.14 $
+ *  CVS/RCS Revision: $Revision: 1.15 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -228,11 +228,13 @@ class DiDisplayFunction
     /** convert the given OD value to luminance.
      *  This function uses the currently set ambient light and illumination values.
      *
-     ** @param  value  optical density value to be converted (>= 0)
+     ** @param  value   optical density value to be converted (>= 0)
+     *  @param  useAmb  use ambient light value if OFTrue
      *
      ** @return luminance value if successful, -1 otherwise
      */
-    double convertODtoLum(const double value) const;
+    double convertODtoLum(const double value,
+                          const OFBool useAmb = OFTrue) const;
 
     /** convert the given OD value to luminance.
      *  This function uses the specified ambient light and illumination values.
@@ -282,11 +284,13 @@ class DiDisplayFunction
      *
      ** @param  od_tab  pointer to array with optical density values
      *  @param  count   number of entries in the array
+     *  @param  useAmb  use ambient light value if OFTrue
      *
      ** @return pointer to luminance table if successful, NULL otherwise
      */
     double *convertODtoLumTable(const double *od_tab,
-                                const unsigned long count);
+                                const unsigned long count,
+                                const OFBool useAmb = OFTrue);
 
     /** interpolate monitor/printer characteristic curve by means of a cubic spline interpolation
      */
@@ -349,7 +353,10 @@ class DiDisplayFunction
  *
  * CVS/RCS Log:
  * $Log: didispfn.h,v $
- * Revision 1.14  2002-07-02 16:23:42  joergr
+ * Revision 1.15  2002-07-03 13:50:24  joergr
+ * Fixed inconsistencies regarding the handling of ambient light.
+ *
+ * Revision 1.14  2002/07/02 16:23:42  joergr
  * Added support for hardcopy devices to the calibrated output routines.
  *
  * Revision 1.13  2001/06/01 15:49:40  meichel
