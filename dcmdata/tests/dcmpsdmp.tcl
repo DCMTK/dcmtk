@@ -36,14 +36,14 @@ proc loadText {w name} {
             set sp1 [string first ")" $s]
             $w insert end [string range $s 0 $sp1] tag_tag
             set sp1 [expr int ($sp1 + 1)]
-            set sp2 [expr int ($sp1 + 6)]
+            set sp2 [expr int ($sp1 + 3)]
             $w insert end [string range $s $sp1 $sp2] tag_vr
             set sp3 [string last "#" $s]
             set sp1 [expr int ($sp2 + 1)]
             set sp2 [expr int ($sp3 - 1)]
             insertTagValue $w [string range $s $sp1 $sp2]
             set ss [string range $s $sp3 end]
-            set sp3 [string last "  " $ss]
+            set sp3 [string last " " $ss]
             set sp2 [expr int ($sp3)]
             $w insert end [string range $ss 0 $sp2] tag_len
             set sp1 [expr int ($sp3 + 1)]
