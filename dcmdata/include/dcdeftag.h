@@ -4,7 +4,7 @@
 **
 **   User: meichel
 **   Host: sulla
-**   Date: Thu Aug  6 17:56:25 1998
+**   Date: Mon Oct 26 13:34:33 1998
 **   Prog: /home/meichel/dicom/dcmtk/dcmdata/libsrc/mkdeftag
 **
 ** From: /home/meichel/dicom/dcmtk/dcmdata/libsrc/dicom.dic
@@ -16,12 +16,12 @@
 
 #include "dctagkey.h"
 
-#define DCM_DICT_DEFTAG_BUILD_DATE "Thu Aug  6 17:56:25 1998"
+#define DCM_DICT_DEFTAG_BUILD_DATE "Mon Oct 26 13:34:33 1998"
 
 
 /*
 ** Fixed Tags in ascending (gggg,eeee) order.
-** Number of entries: 1650
+** Number of entries: 1682
 ** Tags with a repeating component (repeating tags) are listed later.
 */
 #define DCM_CommandGroupLength                   DcmTagKey(0x0000, 0x0000)
@@ -455,6 +455,7 @@
 #define DCM_CenterOfCircularShutter              DcmTagKey(0x0018, 0x1610)
 #define DCM_RadiusOfCircularShutter              DcmTagKey(0x0018, 0x1612)
 #define DCM_VerticesOfThePolygonalShutter        DcmTagKey(0x0018, 0x1620)
+#define DCM_ShutterPresentationValue             DcmTagKey(0x0018, 0x1622)
 #define DCM_CollimatorShape                      DcmTagKey(0x0018, 0x1700)
 #define DCM_CollimatorLeftVerticalEdge           DcmTagKey(0x0018, 0x1702)
 #define DCM_CollimatorRightVerticalEdge          DcmTagKey(0x0018, 0x1704)
@@ -1087,6 +1088,37 @@
 #define DCM_HistogramBinWidth                    DcmTagKey(0x0060, 0x3008)
 #define DCM_HistogramExplanation                 DcmTagKey(0x0060, 0x3010)
 #define DCM_HistogramData                        DcmTagKey(0x0060, 0x3020)
+#define DCM_GraphicAnnotationSequence            DcmTagKey(0x0070, 0x0001)
+#define DCM_GraphicAnnotationLayer               DcmTagKey(0x0070, 0x0002)
+#define DCM_BoundingBoxAnnotationUnits           DcmTagKey(0x0070, 0x0003)
+#define DCM_AnchorPointAnnotationUnits           DcmTagKey(0x0070, 0x0004)
+#define DCM_GraphicAnnotationUnits               DcmTagKey(0x0070, 0x0005)
+#define DCM_UnformattedTextValue                 DcmTagKey(0x0070, 0x0006)
+#define DCM_TextObjectSequence                   DcmTagKey(0x0070, 0x0008)
+#define DCM_GraphicObjectSequence                DcmTagKey(0x0070, 0x0009)
+#define DCM_BoundingBoxTLHC                      DcmTagKey(0x0070, 0x0010)
+#define DCM_BoundingBoxBRHC                      DcmTagKey(0x0070, 0x0011)
+#define DCM_AnchorPoint                          DcmTagKey(0x0070, 0x0014)
+#define DCM_AnchorPointVisibility                DcmTagKey(0x0070, 0x0015)
+#define DCM_GraphicDimensions                    DcmTagKey(0x0070, 0x0020)
+#define DCM_NumberOfGraphicPoints                DcmTagKey(0x0070, 0x0021)
+#define DCM_GraphicData                          DcmTagKey(0x0070, 0x0022)
+#define DCM_GraphicType                          DcmTagKey(0x0070, 0x0023)
+#define DCM_GraphicFilled                        DcmTagKey(0x0070, 0x0024)
+#define DCM_ImageRotation                        DcmTagKey(0x0070, 0x0040)
+#define DCM_ImageHorizontalFlip                  DcmTagKey(0x0070, 0x0041)
+#define DCM_DisplayedAreaTLHC                    DcmTagKey(0x0070, 0x0050)
+#define DCM_DisplayedAreaBRHC                    DcmTagKey(0x0070, 0x0051)
+#define DCM_GraphicLayerSequence                 DcmTagKey(0x0070, 0x0060)
+#define DCM_GraphicLayer                         DcmTagKey(0x0070, 0x0061)
+#define DCM_GraphicLayerOrder                    DcmTagKey(0x0070, 0x0062)
+#define DCM_GraphicLayerRecommendedDisplayValue  DcmTagKey(0x0070, 0x0066)
+#define DCM_GraphicLayerDescription              DcmTagKey(0x0070, 0x0068)
+#define DCM_PresentationLabel                    DcmTagKey(0x0070, 0x0080)
+#define DCM_PresentationDescription              DcmTagKey(0x0070, 0x0081)
+#define DCM_PresentationCreationDate             DcmTagKey(0x0070, 0x0082)
+#define DCM_PresentationCreationTime             DcmTagKey(0x0070, 0x0083)
+#define DCM_PresentationCreatorsName             DcmTagKey(0x0070, 0x0084)
 #define DCM_StorageGroupLength                   DcmTagKey(0x0088, 0x0000)
 #define DCM_StorageMediaFilesetID                DcmTagKey(0x0088, 0x0130)
 #define DCM_StorageMediaFilesetUID               DcmTagKey(0x0088, 0x0140)
@@ -1677,7 +1709,7 @@
 
 /*
 ** Tags where the group/element can vary (repeating tags).
-** Number of entries: 81
+** Number of entries: 83
 */
 #define DCM_SourceImageID                        DcmTagKey(0x0020, 0x3100) /* (0x0020,0x3100-0x31ff) */
 #define DCM_CurveGroupLength                     DcmTagKey(0x5000, 0x0000) /* (0x5000-0x50ff,0x0000) */
@@ -1760,5 +1792,7 @@
 #define DCM_IllegalPrivateCreator                DcmTagKey(0x0001, 0x0010) /* (0x0001-o-0x0007,0x0010-u-0x00ff) */
 #define DCM_GenericGroupLength                   DcmTagKey(0x0000, 0x0000) /* (0x0000-u-0xffff,0x0000) */
 #define DCM_GenericGroupLengthToEnd              DcmTagKey(0x0000, 0x0001) /* (0x0000-u-0xffff,0x0001) */
+#define DCM_CurveActivationLayer                 DcmTagKey(0x5000, 0x1001) /* (0x5000-0x50ff,0x1001) */
+#define DCM_OverlayActivationLayer               DcmTagKey(0x6000, 0x1001) /* (0x6000-0x60ff,0x1001) */
 
 #endif /* !DCDEFTAG_H */

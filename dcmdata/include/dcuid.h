@@ -9,10 +9,10 @@
 ** Definitions of "well known" DICOM Unique Indentifiers,
 ** routines for finding and creating UIDs.
 **
-** Last Update:		$Author: hewett $
-** Update Date:		$Date: 1998-02-25 14:26:29 $
+** Last Update:		$Author: meichel $
+** Update Date:		$Date: 1998-10-26 13:02:49 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcuid.h,v $
-** CVS/RCS Revision:	$Revision: 1.25 $
+** CVS/RCS Revision:	$Revision: 1.26 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -313,13 +313,22 @@ char* dcmGenerateUniqueIdentifer(char* uid, const char* prefix=NULL);
 	/* Waveform IOD with AU Modality */
 #define UID_AudioWaveformStorage	"1.2.840.10008.5.1.4.1.1.9.1.2" 
 
+/* DRAFT Supplement 33 (Grayscale Softcopy Presentation State Storage) - frozen draft */
+#define UID_GrayscaleSoftcopyPresentationStateStorage "1.2.840.10008.5.1.4.1.1.11.1"
+
+/* DICOM 1998 edition */
+#define UID_PullStoredPrintManagementMetaSOPClass "1.2.840.10008.5.1.1.32"
 
 #endif /* DCUID_H */
 
 /*
 ** CVS/RCS Log:
 ** $Log: dcuid.h,v $
-** Revision 1.25  1998-02-25 14:26:29  hewett
+** Revision 1.26  1998-10-26 13:02:49  meichel
+** Updated data dictionary and UIDs for Grayscale Softcopy Presentation State
+** (Supplement 33 frozen draft).
+**
+** Revision 1.25  1998/02/25 14:26:29  hewett
 ** Updated status of supplements 17 & 22 to reflect their Final Text status
 ** Updated data dictionary and UID information to reflect changes in
 ** Supplement 24 (Stored Print Related SOP Classes).  Some data dictionary

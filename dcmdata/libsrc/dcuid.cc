@@ -9,10 +9,10 @@
 ** Definitions of "well known" DICOM Unique Indentifiers,
 ** routines for finding and created UIDs.
 **
-** Last Update:		$Author: hewett $
-** Update Date:		$Date: 1998-02-25 14:29:02 $
+** Last Update:		$Author: meichel $
+** Update Date:		$Date: 1998-10-26 13:02:53 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcuid.cc,v $
-** CVS/RCS Revision:	$Revision: 1.15 $
+** CVS/RCS Revision:	$Revision: 1.16 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -203,6 +203,8 @@ static UIDNameMap uidNameMap[] = {
     { UID_ECGWaveformStorage, "ECGWaveformStorage" },
     { UID_AudioWaveformStorage, "AudioWaveformStorage" },
 
+    { UID_GrayscaleSoftcopyPresentationStateStorage, "GrayscaleSoftcopyPresentationStateStorage" },
+    { UID_PullStoredPrintManagementMetaSOPClass, "PullStoredPrintManagementMetaSOPClass" },
 
     { NULL, NULL }
 };
@@ -263,6 +265,8 @@ const char* dcmStorageSOPClassUIDs[] = {
     UID_WaveformStorage, 
     UID_ECGWaveformStorage, 
     UID_AudioWaveformStorage, 
+
+    UID_GrayscaleSoftcopyPresentationStateStorage,
 
     NULL
 };
@@ -329,6 +333,8 @@ const char* dcmImageSOPClassUIDs[] = {
 //    UID_HardcopyColorImageStorage, 
 //    UID_StoredPrintStorage, 
 
+// Presentation states are not really images
+//     UID_GrayscaleSoftcopyPresentationStateStorage,
 
     NULL
 };
@@ -561,7 +567,11 @@ char* dcmGenerateUniqueIdentifer(char* uid, const char* prefix)
 /*
 ** CVS/RCS Log:
 ** $Log: dcuid.cc,v $
-** Revision 1.15  1998-02-25 14:29:02  hewett
+** Revision 1.16  1998-10-26 13:02:53  meichel
+** Updated data dictionary and UIDs for Grayscale Softcopy Presentation State
+** (Supplement 33 frozen draft).
+**
+** Revision 1.15  1998/02/25 14:29:02  hewett
 ** Updated data dictionary and UID information to reflect changes in
 ** Supplement 24 (Stored Print Related SOP Classes).  Some data dictionary
 ** attibutes and UIDs have changed between the Letter Ballot version and

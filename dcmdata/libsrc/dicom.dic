@@ -2,14 +2,14 @@
 # This is the global DICOM data dictionary for the dcm toolkit dcmdata
 # class library.
 #
-# Last update: $Date: 1998-08-06 16:04:20 $
+# Last update: $Date: 1998-10-26 13:02:55 $
 #
 # Status: The dictionary contains
 #   - the complete dictionary from the 1996 DICOM publication
 #     which already includes supplements 1-10
 #   - the final texts (if any) of supplement 11-14, 16-22, 24-28, 34
 #   - the letter ballot texts of supplement 32, 35-39
-#   - working drafts of supplement 15, 23, 29-30
+#   - working drafts of supplement 15, 23, 29-30, 33
 #
 # Each line represents an entry in the data dictionary.  Each line
 # has 5 fields (Tag, VR, Name, VM, Version).  Entries need not be
@@ -1899,7 +1899,48 @@
 #
 #---------------------------------------------------------------------------
 #
-# Supplement 33 is still unstable.
+# Supplement 33: Grayscale Softcopy Presentation State Storage
+# Frozen Draft for Demonstration - 04 September 1998 (Version 17)
+#
+
+# ReferencedFrameNumber is redefined here (VM now 1-n).
+(0008,1160)	IS	ReferencedFrameNumber	1-n	DICOM3
+
+(0018,1622)	US	ShutterPresentationValue	1	DICOM3
+(5000-50ff,1001)	CS	CurveActivationLayer	1	DICOM3
+(6000-60ff,1001)	CS	OverlayActivationLayer	1	DICOM3
+(0070,0001)	SQ	GraphicAnnotationSequence	1	DICOM3
+# GraphicLayer is used both for (0070,0002) and (0070,0061). Renaming here.
+(0070,0002)	CS	GraphicAnnotationLayer	1	DICOM3
+(0070,0003)	CS	BoundingBoxAnnotationUnits	1	DICOM3
+(0070,0004)	CS	AnchorPointAnnotationUnits	1	DICOM3
+(0070,0005)	CS	GraphicAnnotationUnits	1	DICOM3
+(0070,0006)	ST	UnformattedTextValue	1	DICOM3
+(0070,0008)	SQ	TextObjectSequence	1	DICOM3
+(0070,0009)	SQ	GraphicObjectSequence	1	DICOM3
+(0070,0010)	FL	BoundingBoxTLHC	2	DICOM3
+(0070,0011)	FL	BoundingBoxBRHC	2	DICOM3
+(0070,0014)	FL	AnchorPoint	2	DICOM3
+(0070,0015)	CS	AnchorPointVisibility	1	DICOM3
+(0070,0020)	US	GraphicDimensions	1	DICOM3
+(0070,0021)	US	NumberOfGraphicPoints	1	DICOM3
+(0070,0022)	FL	GraphicData	2-n	DICOM3
+(0070,0023)	CS	GraphicType	1	DICOM3
+(0070,0024)	CS	GraphicFilled	1	DICOM3
+(0070,0040)	IS	ImageRotation	1	DICOM3
+(0070,0041)	CS	ImageHorizontalFlip	1	DICOM3
+(0070,0050)	US	DisplayedAreaTLHC	2	DICOM3
+(0070,0051)	US	DisplayedAreaBRHC	2	DICOM3
+(0070,0060)	SQ	GraphicLayerSequence	1	DICOM3
+(0070,0061)	CS	GraphicLayer	1	DICOM3
+(0070,0062)	IS	GraphicLayerOrder	1	DICOM3
+(0070,0066)	US	GraphicLayerRecommendedDisplayValue	1-3	DICOM3
+(0070,0068)	LO	GraphicLayerDescription	1	DICOM3
+(0070,0080)	CS	PresentationLabel	1	DICOM3
+(0070,0081)	LO	PresentationDescription	1	DICOM3
+(0070,0082)	DA	PresentationCreationDate	1	DICOM3
+(0070,0083)	TM	PresentationCreationTime	1	DICOM3
+(0070,0084)	PN	PresentationCreatorsName	1	DICOM3
 #
 #---------------------------------------------------------------------------
 #
