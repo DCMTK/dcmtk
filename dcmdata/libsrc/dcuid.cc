@@ -23,10 +23,10 @@
  *  Definitions of "well known" DICOM Unique Indentifiers,
  *  routines for finding and creating UIDs.
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-12-09 13:03:22 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2002-12-09 13:14:07 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcuid.cc,v $
- *  CVS/RCS Revision: $Revision: 1.42 $
+ *  CVS/RCS Revision: $Revision: 1.43 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -295,10 +295,10 @@ const char* dcmStorageSOPClassUIDs[] = {
     UID_CardiacElectrophysiologyWaveformStorage,
     UID_ComprehensiveSR,
     UID_ComputedRadiographyImageStorage,
-/* disabled draft storage SOP classes to keep the number of storage transfer 
- * syntaxes <= 64.  If we have more than 64 storage transfer syntaxes, tools 
- * such as storescu will fail because they attempt to negotiate two 
- * presentation contexts for each SOP class, and there is a total limit of 
+/* disabled draft storage SOP classes to keep the number of storage transfer
+ * syntaxes <= 64.  If we have more than 64 storage transfer syntaxes, tools
+ * such as storescu will fail because they attempt to negotiate two
+ * presentation contexts for each SOP class, and there is a total limit of
  * 128 contexts for one association.
  *
     UID_DRAFT_SRAudioStorage,
@@ -334,10 +334,10 @@ const char* dcmStorageSOPClassUIDs[] = {
     UID_RETIRED_NuclearMedicineImageStorage,
     UID_RETIRED_UltrasoundImageStorage,
     UID_RETIRED_UltrasoundMultiframeImageStorage,
-/* disabled draft storage SOP classes to keep the number of storage transfer 
- * syntaxes <= 64.  If we have more than 64 storage transfer syntaxes, tools 
- * such as storescu will fail because they attempt to negotiate two 
- * presentation contexts for each SOP class, and there is a total limit of 
+/* disabled draft storage SOP classes to keep the number of storage transfer
+ * syntaxes <= 64.  If we have more than 64 storage transfer syntaxes, tools
+ * such as storescu will fail because they attempt to negotiate two
+ * presentation contexts for each SOP class, and there is a total limit of
  * 128 contexts for one association.
  *
     UID_RETIRED_VLImageStorage,
@@ -1007,13 +1007,13 @@ stripTrailing(char* s, char c)
 static void
 addUIDComponent(char* uid, const char* s)
 {
-    int left = maxUIDLen - strlen(uid);
+    int charsLeft = maxUIDLen - strlen(uid);
 
-    if (left > 0) {
+    if (charsLeft > 0) {
         /* copy into uid as much of the contents of s as possible */
         int slen = strlen(s);
-        int use = left;
-        if (slen < left) use = slen;
+        int use = charsLeft;
+        if (slen < charsLeft) use = slen;
             strncat(uid, s, use);
     }
 
@@ -1068,7 +1068,11 @@ char* dcmGenerateUniqueIdentifier(char* uid, const char* prefix)
 /*
 ** CVS/RCS Log:
 ** $Log: dcuid.cc,v $
-** Revision 1.42  2002-12-09 13:03:22  meichel
+** Revision 1.43  2002-12-09 13:14:07  joergr
+** Renamed parameter/local variable to avoid name clashes with global
+** declaration left and/or right (used for as iostream manipulators).
+**
+** Revision 1.42  2002/12/09 13:03:22  meichel
 ** Updated list of UIDs
 **
 ** Revision 1.41  2002/11/27 12:06:53  meichel
