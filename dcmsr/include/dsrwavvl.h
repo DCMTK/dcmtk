@@ -23,8 +23,8 @@
  *    classes: DSRWaveformReferenceValue
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-10-23 15:13:42 $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  Update Date:      $Date: 2000-10-26 14:22:23 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -200,7 +200,7 @@ class DSRWaveformReferenceValue
 
   private:
   
-    /// list of referenced waveform channels (conditional)
+    /// list of referenced waveform channels (associated DICOM VR=US, VM=2-2n, type 1C)
     DSRWaveformChannelList ChannelList;
 };
 
@@ -211,7 +211,10 @@ class DSRWaveformReferenceValue
 /*
  *  CVS/RCS Log:
  *  $Log: dsrwavvl.h,v $
- *  Revision 1.5  2000-10-23 15:13:42  joergr
+ *  Revision 1.6  2000-10-26 14:22:23  joergr
+ *  Updated comments.
+ *
+ *  Revision 1.5  2000/10/23 15:13:42  joergr
  *  Added/updated doc++ comments.
  *
  *  Revision 1.4  2000/10/20 10:15:43  joergr

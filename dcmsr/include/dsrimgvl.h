@@ -23,8 +23,8 @@
  *    classes: DSRImageReferenceValue
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-10-20 10:15:42 $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  Update Date:      $Date: 2000-10-26 14:18:27 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -258,7 +258,7 @@ class DSRImageReferenceValue
 
     /// composite reference value (SOP class/instance UID) to presentation state (optional)
     DSRCompositeReferenceValue PresentationState;
-    /// list of referenced frame numbers (conditional)
+    /// list of referenced frame numbers (associated DICOM VR=IS, VM=1-n, type 1C)
     DSRImageFrameList FrameList;
 };
 
@@ -269,7 +269,10 @@ class DSRImageReferenceValue
 /*
  *  CVS/RCS Log:
  *  $Log: dsrimgvl.h,v $
- *  Revision 1.4  2000-10-20 10:15:42  joergr
+ *  Revision 1.5  2000-10-26 14:18:27  joergr
+ *  Updated comments.
+ *
+ *  Revision 1.4  2000/10/20 10:15:42  joergr
  *  Renamed class DSRReferenceValue to DSRCompositeReferenceValue.
  *
  *  Revision 1.3  2000/10/18 17:04:23  joergr
