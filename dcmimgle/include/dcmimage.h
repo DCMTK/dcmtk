@@ -22,9 +22,9 @@
  *  Purpose: Provides main interface to the "DICOM image toolkit"
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-10-06 13:26:08 $
+ *  Update Date:      $Date: 1999-10-20 10:32:05 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/dcmimage.h,v $
- *  CVS/RCS Revision: $Revision: 1.24 $
+ *  CVS/RCS Revision: $Revision: 1.25 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -954,7 +954,7 @@ class DicomImage
     }
 
     /** create bitmap for specified overlay plane.
-     *  (8 bits per pixel with two values: fore and back)
+     *  (up to 16 bits per pixel with two values: fore and back)
      *
      ** @param  plane   number (0..15) or group number (0x60nn) of overlay plane
      *  @param  width   returns width of overlay plane (in pixels)
@@ -963,25 +963,27 @@ class DicomImage
      *  @param  top     returns y coordinate of plane's origin
      *  @param  mode    return display mode (see 'diutils.h')
      *  @param  frame   index of frame used for output, default: 0
+     *  @param  bits    number of bits (stored) in the resulting array, default: 8
      *  @param  fore    foreground color to be set in bitmap, default: 255
      *  @param  back    background color to be set in bitmap (transparent), default: 0
      *  @param  idx     index of overlay group (0 = dataset, 1 = additional, 2 = '1' plane hides '0' plane), default: 2
      *
      ** @return pointer to overlay plane data (internal memory buffer)
      */
-    inline const Uint8 *getOverlayData(const unsigned int plane,
-                                       unsigned int &left,
-                                       unsigned int &top,
-                                       unsigned int &width,
-                                       unsigned int &height,
-                                       EM_Overlay &mode,
-                                       const unsigned long frame = 0,
-                                       const Uint8 fore = 0xff,
-                                       const Uint8 back = 0x0,
-                                       const unsigned int idx = 2) const
+    inline const void *getOverlayData(const unsigned int plane,
+                                      unsigned int &left,
+                                      unsigned int &top,
+                                      unsigned int &width,
+                                      unsigned int &height,
+                                      EM_Overlay &mode,
+                                      const unsigned long frame = 0,
+                                      const int bits = 8,
+                                      const Uint16 fore = 0xff,
+                                      const Uint16 back = 0x0,
+                                      const unsigned int idx = 2) const
     {
         return ((Image != NULL) && (Image->getMonoImagePtr() != NULL)) ?
-            Image->getMonoImagePtr()->getOverlayData(frame, plane, left, top, width, height, mode, idx, fore, back) : (const Uint8 *)NULL;
+            Image->getMonoImagePtr()->getOverlayData(frame, plane, left, top, width, height, mode, idx, bits, fore, back) : NULL;
     }
     
     /** delete buffer for overlay plane data.
@@ -1377,7 +1379,10 @@ class DicomImage
  *
  * CVS/RCS Log:
  * $Log: dcmimage.h,v $
- * Revision 1.24  1999-10-06 13:26:08  joergr
+ * Revision 1.25  1999-10-20 10:32:05  joergr
+ * Enhanced method getOverlayData to support 12 bit data for print.
+ *
+ * Revision 1.24  1999/10/06 13:26:08  joergr
  * Corrected creation of PrintBitmap pixel data: VOI windows should be applied
  * before clipping to avoid that the region outside the image (border) is also
  * windowed (this requires a new method in dcmimgle to create a DicomImage

@@ -22,9 +22,9 @@
  *  Purpose: DicomOverlayPlane (Header) - Multiframe Overlays UNTESTED !
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-09-17 12:46:59 $
+ *  Update Date:      $Date: 1999-10-20 10:34:06 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/diovpln.h,v $
- *  CVS/RCS Revision: $Revision: 1.13 $
+ *  CVS/RCS Revision: $Revision: 1.14 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -365,7 +365,7 @@ class DiOverlayPlane
         return GroupNumber;
     }
 
-    /** get overlay plane data as an array of 8 bit values.
+    /** get overlay plane data as an array of 8/16 bit values.
      *  Overlay plane is clipped to the area specified by the four min/max coordinates.
      *  Memory isn't handled internally and must therefore be deleted from calling program.
      *
@@ -374,18 +374,20 @@ class DiOverlayPlane
      *  @param  ymin   y-coordinate of the top left hand corner
      *  @param  xmax   x-coordinate of the bottom right hand corner
      *  @param  ymax   y-coordinate of the bottom right hand corner
+     *  @param  bits   number of bits (stored) in the resulting array
      *  @param  fore   foreground color used for the plane (0x00-0xff)
      *  @param  back   transparent background color (0x00-0xff)
      *
      ** @return pointer to pixel data if successful, NULL otherwise
      */
-    Uint8 *getData(const unsigned long frame,
-                   const Uint16 xmin,
-                   const Uint16 ymin,
-                   const Uint16 xmax,
-                   const Uint16 ymax,
-                   const Uint8 fore,
-                   const Uint8 back);
+    void *getData(const unsigned long frame,
+                  const Uint16 xmin,
+                  const Uint16 ymin,
+                  const Uint16 xmax,
+                  const Uint16 ymax,
+                  const int bits,
+                  const Uint16 fore,
+                  const Uint16 back);
 
     /** reset internal 'cursor' to the beginning of the specified frame
      *
@@ -539,7 +541,10 @@ inline void DiOverlayPlane::setStart(const Uint16 x,
  *
  * CVS/RCS Log:
  * $Log: diovpln.h,v $
- * Revision 1.13  1999-09-17 12:46:59  joergr
+ * Revision 1.14  1999-10-20 10:34:06  joergr
+ * Enhanced method getOverlayData to support 12 bit data for print.
+ *
+ * Revision 1.13  1999/09/17 12:46:59  joergr
  * Added/changed/completed DOC++ style comments in the header files.
  *
  * Revision 1.12  1999/08/25 16:41:55  joergr

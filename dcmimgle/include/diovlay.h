@@ -22,9 +22,9 @@
  *  Purpose: DicomOverlay (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-09-17 12:46:05 $
+ *  Update Date:      $Date: 1999-10-20 10:34:04 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/diovlay.h,v $
- *  CVS/RCS Revision: $Revision: 1.15 $
+ *  CVS/RCS Revision: $Revision: 1.16 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -324,7 +324,7 @@ class DiOverlay
         return (convertToPlaneNumber(plane, AdditionalPlanes) > 1) && (!visible || Data->Planes[plane]->isVisible());
     }
 
-    /** get overlay plane data as an array of 8 bit values.
+    /** get overlay plane data as an array of 8/16 bit values.
      *  Memory isn't handled internally and must therefore be deleted from calling program.
      *
      ** @param  frame    number of frame
@@ -336,22 +336,24 @@ class DiOverlay
      *  @param  mode     get overlay plane mode
      *  @param  columns  width of the surrounding image
      *  @param  rows     height of the surrounding image
-     *  @param  fore     foreground color used for the plane (default: 0xff = white)
+     *  @param  bits    number of bits (stored) in the resulting array, default: 8
+     *  @param  fore     foreground color used for the plane (default: 0xff = white, for 8 bits)
      *  @param  back     transparent background color (default: 0x00 = black)
      *
      ** @return pointer to pixel data if successful, NULL otherwise
      */
-    Uint8 *getPlaneData(const unsigned long frame,
-                        unsigned int plane,
-                        unsigned int &left,
-                        unsigned int &top,
-                        unsigned int &width,
-                        unsigned int &height,
-                        EM_Overlay &mode,
-                        const Uint16 columns,
-                        const Uint16 rows,
-                        const Uint8 fore = 0xff,
-                        const Uint8 back = 0x0);
+    void *getPlaneData(const unsigned long frame,
+                       unsigned int plane,
+                       unsigned int &left,
+                       unsigned int &top,
+                       unsigned int &width,
+                       unsigned int &height,
+                       EM_Overlay &mode,
+                       const Uint16 columns,
+                       const Uint16 rows,
+                       const int bits = 8,
+                       const Uint16 fore = 0xff,
+                       const Uint16 back = 0x0);
 
     /// constant defining the maximum number of overlay planes (16)
     static const unsigned int MaxOverlayCount;
@@ -447,7 +449,10 @@ class DiOverlay
  *
  * CVS/RCS Log:
  * $Log: diovlay.h,v $
- * Revision 1.15  1999-09-17 12:46:05  joergr
+ * Revision 1.16  1999-10-20 10:34:04  joergr
+ * Enhanced method getOverlayData to support 12 bit data for print.
+ *
+ * Revision 1.15  1999/09/17 12:46:05  joergr
  * Added/changed/completed DOC++ style comments in the header files.
  * Splitted file diovlay.h into two files (one for each class).
  *

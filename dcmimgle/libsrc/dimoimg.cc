@@ -22,9 +22,9 @@
  *  Purpose: DicomMonochromeImage (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-10-06 13:45:56 $
+ *  Update Date:      $Date: 1999-10-20 10:35:54 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/libsrc/dimoimg.cc,v $
- *  CVS/RCS Revision: $Revision: 1.24 $
+ *  CVS/RCS Revision: $Revision: 1.25 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1324,21 +1324,22 @@ void *DiMonoImage::getData(void *buffer,
 
 
 /*
- *   create 8-bit (bi-level) bitmap with overlay 'plane' data
+ *   create 8/16-bit (bi-level) bitmap with overlay 'plane' data
  */
 
-const Uint8 *DiMonoImage::getOverlayData(const unsigned long frame,
-                                         const unsigned int plane,
-                                         unsigned int &left,
-                                         unsigned int &top,
-                                         unsigned int &width,
-                                         unsigned int &height,
-                                         EM_Overlay &mode,
-                                         const unsigned int idx,
-                                         const Uint8 fore,
-                                         const Uint8 back)
+const void *DiMonoImage::getOverlayData(const unsigned long frame,
+                                        const unsigned int plane,
+                                        unsigned int &left,
+                                        unsigned int &top,
+                                        unsigned int &width,
+                                        unsigned int &height,
+                                        EM_Overlay &mode,
+                                        const unsigned int idx,
+                                        const int bits,
+                                        const Uint16 fore,
+                                        const Uint16 back)
 {
-    if (ImageStatus == EIS_Normal)
+    if ((ImageStatus == EIS_Normal) && (bits > 0) && (bits <= 16))
     {
         int start = 1;                                              // default: additional overlay planes hide dataset planes
         int end = 0;
@@ -1349,8 +1350,8 @@ const Uint8 *DiMonoImage::getOverlayData(const unsigned long frame,
             if ((Overlays[i] != NULL) && (Overlays[i]->hasPlane(plane)))
             {
                 deleteOverlayData();
-                OverlayData = Overlays[i]->getPlaneData(frame, plane, left, top, width, height, mode, Columns, Rows, fore, back);
-                return (const Uint8 *)OverlayData;
+                OverlayData = Overlays[i]->getPlaneData(frame, plane, left, top, width, height, mode, Columns, Rows, bits, fore, back);
+                return (const void *)OverlayData;
             }
         }
     }
@@ -1612,7 +1613,10 @@ int DiMonoImage::writeRawPPM(FILE *stream,
  *
  * CVS/RCS Log:
  * $Log: dimoimg.cc,v $
- * Revision 1.24  1999-10-06 13:45:56  joergr
+ * Revision 1.25  1999-10-20 10:35:54  joergr
+ * Enhanced method getOverlayData to support 12 bit data for print.
+ *
+ * Revision 1.24  1999/10/06 13:45:56  joergr
  * Corrected creation of PrintBitmap pixel data: VOI windows should be applied
  * before clipping to avoid that the region outside the image (border) is also
  * windowed (this requires a new method in dcmimgle to create a DicomImage

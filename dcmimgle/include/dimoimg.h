@@ -22,9 +22,9 @@
  *  Purpose: DicomMonochromeImage (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-10-06 13:38:46 $
+ *  Update Date:      $Date: 1999-10-20 10:33:15 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/dimoimg.h,v $
- *  CVS/RCS Revision: $Revision: 1.22 $
+ *  CVS/RCS Revision: $Revision: 1.23 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -483,7 +483,7 @@ class DiMonoImage
     void deleteOutputData();
 
     /** create bitmap for specified overlay plane.
-     *  (8 bits per pixel with two values: fore and back)
+     *  (up to 16 bits per pixel with two values: fore and back)
      *
      ** @param  frame   index of frame used for output
      *  @param  plane   number (0..15) or group number (0x60nn) of overlay plane
@@ -493,12 +493,13 @@ class DiMonoImage
      *  @param  height  returns height of overlay plane (in pixels)
      *  @param  mode    return display mode (see 'diutils.h')
      *  @param  idx     index of overlay group (0 = dataset, 1 = additional, 2 = '1' plane hides '0' plane)
+     *  @param  bits    number of bits (stored) in the resulting array, default: 8
      *  @param  fore    foreground color to be set in bitmap, default: 255
      *  @param  back    background color to be set in bitmap (transparent), default: 0
      *
      ** @return pointer to overlay plane data (internal memory buffer)
      */
-    const Uint8 *getOverlayData(const unsigned long frame,
+    const void *getOverlayData(const unsigned long frame,
                                 const unsigned int plane,
                                 unsigned int &left,
                                 unsigned int &top,
@@ -506,8 +507,9 @@ class DiMonoImage
                                 unsigned int &height,
                                 EM_Overlay &mode,
                                 const unsigned int idx,
-                                const Uint8 fore = 0xff,
-                                const Uint8 back = 0x0);
+                                const int bits = 8,
+                                const Uint16 fore = 0xff,
+                                const Uint16 back = 0x0);
 
     /** delete buffer for overlay plane data.
      *  Save memory if data is no longer needed.
@@ -774,7 +776,7 @@ class DiMonoImage
     /// points to current output data (object)
     DiMonoOutputPixel *OutputData;
     /// points to current overlay plane data (pixel array)
-    Uint8 *OverlayData;
+    void *OverlayData;
 
  // --- declarations to avoid compiler warnings
 
@@ -790,7 +792,10 @@ class DiMonoImage
  *
  * CVS/RCS Log:
  * $Log: dimoimg.h,v $
- * Revision 1.22  1999-10-06 13:38:46  joergr
+ * Revision 1.23  1999-10-20 10:33:15  joergr
+ * Enhanced method getOverlayData to support 12 bit data for print.
+ *
+ * Revision 1.22  1999/10/06 13:38:46  joergr
  * Corrected creation of PrintBitmap pixel data: VOI windows should be applied
  * before clipping to avoid that the region outside the image (border) is also
  * windowed (this requires a new method in dcmimgle to create a DicomImage

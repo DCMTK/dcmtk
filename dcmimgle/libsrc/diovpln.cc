@@ -22,9 +22,9 @@
  *  Purpose: DicomOverlayPlane (Source) - Multiframe Overlays UNTESTED !
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-08-25 16:43:09 $
+ *  Update Date:      $Date: 1999-10-20 10:35:58 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/libsrc/diovpln.cc,v $
- *  CVS/RCS Revision: $Revision: 1.15 $
+ *  CVS/RCS Revision: $Revision: 1.16 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -278,36 +278,70 @@ DiOverlayPlane::~DiOverlayPlane()
 /********************************************************************/
 
 
-Uint8 *DiOverlayPlane::getData(const unsigned long frame,
-                               const Uint16 xmin,
-                               const Uint16 ymin,
-                               const Uint16 xmax,
-                               const Uint16 ymax,
-                               const Uint8 fore,
-                               const Uint8 back)
+void *DiOverlayPlane::getData(const unsigned long frame,
+                              const Uint16 xmin,
+                              const Uint16 ymin,
+                              const Uint16 xmax,
+                              const Uint16 ymax,
+                              const int bits,
+                              const Uint16 fore,
+                              const Uint16 back)
 {
     const unsigned long count = (unsigned long)(xmax - xmin) * (unsigned long)(ymax - ymin);
-    Uint8 *data = new Uint8[count];
-    if (data != NULL)
+    const Uint16 mask = DicomImageClass::maxval(bits);
+    if ((bits > 0) && (bits <= 8))
     {
-        OFBitmanipTemplate<Uint8>::setMem(data, back, count);
-        register Uint16 x;
-        register Uint16 y;
-        register Uint8 *q = data;
-        if (reset(frame + ImageFrameOrigin))
+        Uint8 *data = new Uint8[count];
+        if (data != NULL)
         {
-            for (y = ymin; y < ymax; y++)
+            const Uint8 fore8 = (Uint8)(fore & mask);
+            const Uint8 back8 = (Uint8)(back & mask);
+            OFBitmanipTemplate<Uint8>::setMem(data, back8, count);
+            register Uint16 x;
+            register Uint16 y;
+            register Uint8 *q = data;
+            if (reset(frame + ImageFrameOrigin))
             {
-                setStart(xmin, y);
-                for (x = xmin; x < xmax; x++, q++)
+                for (y = ymin; y < ymax; y++)
                 {
-                    if (getNextBit())
-                        *q = fore;                         // set pixel value (default: 0xff)
+                    setStart(xmin, y);
+                    for (x = xmin; x < xmax; x++, q++)
+                    {
+                        if (getNextBit())
+                            *q = fore8;                         // set pixel value (default: 0xff)
+                    }
                 }
             }
         }
+        return (void *)data;
     }
-    return data;
+    else if ((bits > 8) && (bits <= 16))
+    {
+        Uint16 *data = new Uint16[count];
+        if (data != NULL)
+        {
+            const Uint16 fore16 = fore & mask;
+            const Uint16 back16 = back & mask;
+            OFBitmanipTemplate<Uint16>::setMem(data, back16, count);
+            register Uint16 x;
+            register Uint16 y;
+            register Uint16 *q = data;
+            if (reset(frame + ImageFrameOrigin))
+            {
+                for (y = ymin; y < ymax; y++)
+                {
+                    setStart(xmin, y);
+                    for (x = xmin; x < xmax; x++, q++)
+                    {
+                        if (getNextBit())
+                            *q = fore16;                        // set pixel value (default: 0xff)
+                    }
+                }
+            }
+        }
+        return (void *)data;
+    }
+    return NULL;
 }
 
 
@@ -404,7 +438,10 @@ void DiOverlayPlane::setRotation(const int degree,
  *
  * CVS/RCS Log:
  * $Log: diovpln.cc,v $
- * Revision 1.15  1999-08-25 16:43:09  joergr
+ * Revision 1.16  1999-10-20 10:35:58  joergr
+ * Enhanced method getOverlayData to support 12 bit data for print.
+ *
+ * Revision 1.15  1999/08/25 16:43:09  joergr
  * Added new feature: Allow clipping region to be outside the image
  * (overlapping).
  *

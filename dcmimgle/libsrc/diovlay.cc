@@ -22,9 +22,9 @@
  *  Purpose: DicomOverlay (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-09-17 13:18:30 $
+ *  Update Date:      $Date: 1999-10-20 10:35:56 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/libsrc/diovlay.cc,v $
- *  CVS/RCS Revision: $Revision: 1.13 $
+ *  CVS/RCS Revision: $Revision: 1.14 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -527,17 +527,18 @@ int DiOverlay::removePlane(const unsigned int group)
 }
 
 
-Uint8 *DiOverlay::getPlaneData(const unsigned long frame,
-                               unsigned int plane,
-                               unsigned int &left,
-                               unsigned int &top,
-                               unsigned int &width,
-                               unsigned int &height,
-                               EM_Overlay &mode,                        
-                               const Uint16 columns,
-                               const Uint16 rows,
-                               const Uint8 fore,
-                               const Uint8 back)
+void *DiOverlay::getPlaneData(const unsigned long frame,
+                              unsigned int plane,
+                              unsigned int &left,
+                              unsigned int &top,
+                              unsigned int &width,
+                              unsigned int &height,
+                              EM_Overlay &mode,                        
+                              const Uint16 columns,
+                              const Uint16 rows,
+                              const int bits,
+                              const Uint16 fore,
+                              const Uint16 back)
 {
     if (convertToPlaneNumber(plane, AdditionalPlanes) > 1)                    // plane does exist
     {
@@ -553,7 +554,7 @@ Uint8 *DiOverlay::getPlaneData(const unsigned long frame,
             width = xmax - xmin;
             height = ymax - ymin;
             mode = op->getMode();
-            return op->getData(frame, xmin, ymin, xmax, ymax, fore, back);
+            return op->getData(frame, xmin, ymin, xmax, ymax, bits, fore, back);
         }
     }
     return NULL;
@@ -564,7 +565,10 @@ Uint8 *DiOverlay::getPlaneData(const unsigned long frame,
  *
  * CVS/RCS Log:
  * $Log: diovlay.cc,v $
- * Revision 1.13  1999-09-17 13:18:30  joergr
+ * Revision 1.14  1999-10-20 10:35:56  joergr
+ * Enhanced method getOverlayData to support 12 bit data for print.
+ *
+ * Revision 1.13  1999/09/17 13:18:30  joergr
  * Splitted file diovlay.h into two files (one for each class).
  * Enhanced efficiency of some "for" loops.
  *
