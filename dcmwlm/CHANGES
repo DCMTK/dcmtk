@@ -3,6 +3,9 @@ Changes between releases are documented here.
 
 **** Changes from 2002.06.10 (wilkens)
 
+- Some more corrections to keep gcc 2.95.3 quiet.
+  Affects: dcmwlm/libsrc/wlds.cc
+
 - Made some corrections to keep gcc 2.95.3 quiet.
   Affects: dcmwlm/apps/wldsdb.h
            dcmwlm/apps/wldsfs.cc
