@@ -11,9 +11,9 @@
 **
 ** 
 ** Last Update:		$Author: hewett $
-** Update Date:		$Date: 1997-09-11 15:39:18 $
+** Update Date:		$Date: 1997-10-01 11:53:57 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/libsrc/ofstring.cc,v $
-** CVS/RCS Revision:	$Revision: 1.4 $
+** CVS/RCS Revision:	$Revision: 1.5 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -461,7 +461,7 @@ OFString::compare (size_t pos1, size_t n1,
 size_t 
 OFString::find (const OFString& pattern, size_t pos) const
 {
-    if (pattern.size() == 0) {
+    if (size() == 0 || pattern.size() == 0 || pos == OFString_npos) {
 	return OFString_npos;
     }
     for (size_t i=pos; i<this->size(); i++) {
@@ -510,7 +510,7 @@ OFString::find (char pattern, size_t pos) const
 size_t 
 OFString::rfind (const OFString& pattern, size_t pos) const
 {
-    if (pattern.size() == 0) {
+    if (size() == 0 || pattern.size() == 0) {
 	return OFString_npos;
     }
     int above = ((this->size()-pattern.size()) < pos)?
@@ -558,7 +558,7 @@ OFString::rfind (char pattern, size_t pos) const
 size_t 
 OFString::find_first_of (const OFString& str, size_t pos) const
 {
-    if (str.size() == 0) {
+    if (size() == 0 || str.size() == 0 || pos == OFString_npos) {
 	return OFString_npos;
     }
     for (size_t i=pos; i<this->size(); i++) {
@@ -599,10 +599,13 @@ OFString::find_first_of (char s, size_t pos) const
 size_t 
 OFString::find_last_of (const OFString& str, size_t pos) const
 {
-    if (str.size() == 0) {
+    if (this->size() == 0 || str.size() == 0) {
 	return OFString_npos;
     }
-    for (size_t i=this->size()-1; i>=pos; i--) {
+    if (pos == OFString_npos || pos > this->size()) {
+	pos = this->size();
+    }
+    for (int i=(int)pos-1; i>=0; i--) {
 	for (size_t j=0; j<str.size(); j++) {
 	    if (this->at(i) == str[j]) {
 		return i;
@@ -640,7 +643,7 @@ OFString::find_last_of (char s, size_t pos) const
 size_t 
 OFString::find_first_not_of (const OFString& str, size_t pos) const
 {
-    if (str.size() == 0) {
+    if (this->size() == 0 || str.size() == 0 || pos == OFString_npos) {
 	return OFString_npos;
     }
     for (size_t i=pos; i<this->size(); i++) {
@@ -681,10 +684,13 @@ OFString::find_first_not_of (char s, size_t pos) const
 size_t 
 OFString::find_last_not_of (const OFString& str, size_t pos) const
 {
-    if (str.size() == 0) {
+    if (this->size() == 0 || str.size() == 0) {
 	return OFString_npos;
     }
-    for (size_t i=this->size()-1; i>=pos; i--) {
+    if (pos == OFString_npos) {
+	pos = this->size();
+    }
+    for (int i=(int)pos-1; i>=0; i--) {
 	for (size_t j=0; j<str.size(); j++) {
 	    if (this->at(i) != str[j]) {
 		return i;
@@ -973,7 +979,11 @@ OFBool operator>= (const OFString& lhs, char rhs)
 /*
 ** CVS/RCS Log:
 ** $Log: ofstring.cc,v $
-** Revision 1.4  1997-09-11 15:39:18  hewett
+** Revision 1.5  1997-10-01 11:53:57  hewett
+** Fixed segmentation fault for OFString's find_ methods when current
+** string is empty.
+**
+** Revision 1.4  1997/09/11 15:39:18  hewett
 ** Fixed OFString bug associated with the assign method
 ** when n == OFString_npos.  Since OFString_npos is represented
 ** by -1 the assign method  was reserving zero space for the string.
