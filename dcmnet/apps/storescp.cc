@@ -21,10 +21,10 @@
  *
  *  Purpose: Storage Service Class Provider (C-STORE operation)
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2004-04-06 18:11:24 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2004-04-07 09:42:34 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/apps/storescp.cc,v $
- *  CVS/RCS Revision: $Revision: 1.70 $
+ *  CVS/RCS Revision: $Revision: 1.71 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -142,13 +142,12 @@ const char *       opt_respondingaetitle = APPLICATIONTITLE;
 static OFBool      opt_secureConnection = OFFalse;    // default: no secure connection
 static OFString    opt_outputDirectory(".");          // default: output directory equals "."
 static const char *opt_sortConcerningStudies = NULL;  // default: no sorting
-static char *      lastStudyInstanceUID = NULL;
-static char *      subdirectoryPathAndName = NULL;
-static char **     outputFileNameArray = NULL;
-static int         outputFileNameArrayCnt = 0;
+OFString           lastStudyInstanceUID;
+OFString           subdirectoryPathAndName;
+OFList<OFString>   outputFileNameArray;
 static const char *opt_execOnReception = NULL;        // default: don't execute anything on reception
 static const char *opt_execOnEndOfStudy = NULL;       // default: don't execute anything on end of study
-static char *      lastStudySubdirectoryPathAndName = NULL;
+OFString           lastStudySubdirectoryPathAndName;
 static OFBool      opt_renameOnEndOfStudy = OFFalse;  // default: don't rename any files on end of study
 static long        opt_endOfStudyTimeout = -1;        // default: no end of study timeout
 static OFBool      endOfStudyThroughTimeoutEvent = OFFalse;
@@ -901,26 +900,6 @@ int main(int argc, char *argv[])
     return 1;
   }
 
-  // free memory if necessary
-  if( lastStudyInstanceUID )
-  {
-    delete lastStudyInstanceUID;
-    lastStudyInstanceUID = NULL;
-  }
-  if( subdirectoryPathAndName )
-  {
-    delete subdirectoryPathAndName;
-    subdirectoryPathAndName = NULL;
-  }
-  if( outputFileNameArrayCnt != 0 )
-  {
-    for( int n=0 ; n<outputFileNameArrayCnt ; n++ )
-      delete outputFileNameArray[n];
-    delete outputFileNameArray;
-    outputFileNameArray = NULL;
-    outputFileNameArrayCnt = 0;
-  }
-
 #ifdef HAVE_WINSOCK_H
   WSACleanup();
 #endif
@@ -972,7 +951,7 @@ static OFCondition acceptAssociation(T_ASC_Network *net, DcmAssociationConfigura
       // does not equal NULL), we have to consider that all objects for the current study have been received.
       // In such an "end-of-study" case, we might have to execute certain optional functions which were specified
       // by the user through command line options passed to storescp.
-      if( opt_endOfStudyTimeout != -1 && lastStudyInstanceUID != NULL )
+      if( opt_endOfStudyTimeout != -1 && ! lastStudyInstanceUID.empty() )
       {
         // indicate that the end-of-study-event occured through a timeout event.
         // This knowledge will be necessary in function renameOnEndOFStudy().
@@ -980,20 +959,17 @@ static OFCondition acceptAssociation(T_ASC_Network *net, DcmAssociationConfigura
 
         // before we actually execute those optional functions, we need to determine the path and name
         // of the subdirectory into which the DICOM files for the last study were written.
-        lastStudySubdirectoryPathAndName = new char[ strlen( subdirectoryPathAndName ) + 1 ];
-        strcpy( lastStudySubdirectoryPathAndName, subdirectoryPathAndName );
+        lastStudySubdirectoryPathAndName = subdirectoryPathAndName;
 
         // now we can finally handle end-of-study events which might have to be executed
         executeEndOfStudyEvents();
 
-        // also, we need to delete memory for lastStudyInstanceUID and set it to NULL to indicate
+        // also, we need to clear lastStudyInstanceUID to indicate
         // that the last study is not considered to be open any more.
-        delete lastStudyInstanceUID;
-        lastStudyInstanceUID = NULL;
+        lastStudyInstanceUID.clear();
 
-        // also, we need to free memory for subdirectoryPathAndName and set it to NULL
-        delete subdirectoryPathAndName;
-        subdirectoryPathAndName = NULL;
+        // also, we need to clear subdirectoryPathAndName
+        subdirectoryPathAndName.clear();
 
         // reset the endOfStudyThroughTimeoutEvent variable.
         endOfStudyThroughTimeoutEvent = OFFalse;
@@ -1341,7 +1317,7 @@ processCommands(T_ASC_Association * assoc)
       // does not equal NULL), we have to consider that all objects for the current study have been received.
       // In such an "end-of-study" case, we might have to execute certain optional functions which were specified
       // by the user through command line options passed to storescp.
-      if( opt_endOfStudyTimeout != -1 && lastStudyInstanceUID != NULL )
+      if( opt_endOfStudyTimeout != -1 && ! lastStudyInstanceUID.empty() )
       {
         // indicate that the end-of-study-event occured through a timeout event.
         // This knowledge will be necessary in function renameOnEndOFStudy().
@@ -1349,20 +1325,17 @@ processCommands(T_ASC_Association * assoc)
 
         // before we actually execute those optional functions, we need to determine the path and name
         // of the subdirectory into which the DICOM files for the last study were written.
-        lastStudySubdirectoryPathAndName = new char[ strlen( subdirectoryPathAndName ) + 1 ];
-        strcpy( lastStudySubdirectoryPathAndName, subdirectoryPathAndName );
+        lastStudySubdirectoryPathAndName = subdirectoryPathAndName;
 
         // now we can finally handle end-of-study events which might have to be executed
         executeEndOfStudyEvents();
 
-        // also, we need to delete memory for lastStudyInstanceUID and set it to NULL to indicate
+        // also, we need to clear lastStudyInstanceUID to indicate
         // that the last study is not considered to be open any more.
-        delete lastStudyInstanceUID;
-        lastStudyInstanceUID = NULL;
+        lastStudyInstanceUID.clear();
 
-        // also, we need to free memory for subdirectoryPathAndName and set it to NULL
-        delete subdirectoryPathAndName;
-        subdirectoryPathAndName = NULL;
+        // also, we need to clear subdirectoryPathAndName
+        subdirectoryPathAndName.clear();
 
         // reset the endOfStudyThroughTimeoutEvent variable.
         endOfStudyThroughTimeoutEvent = OFFalse;
@@ -1520,7 +1493,7 @@ storeSCPCallback(
     // is present and the options opt_bitPreserving and opt_ignore are not set.
     if ((imageDataSet)&&(*imageDataSet)&&(!opt_bitPreserving)&&(!opt_ignore))
     {
-      char *fileName = NULL;
+      OFString fileName;
 
       // in case option --sort-conc-studies is set, we need to perform some particular
       // steps to determine the actual name of the output file
@@ -1532,7 +1505,7 @@ storeSCPCallback(
         // happened, we want to create a new string that will contain a corresponding value for the
         // current study instance UID
         const char *tmpstr1 = NULL;
-        char *currentStudyInstanceUID;
+        OFString currentStudyInstanceUID;
         DcmTagKey studyInstanceUIDTagKey( DCM_StudyInstanceUID );
         OFCondition ec = (*imageDataSet)->findAndGetString( studyInstanceUIDTagKey, tmpstr1, OFFalse );
         if( ec != EC_Normal )
@@ -1541,132 +1514,83 @@ storeSCPCallback(
           rsp->DimseStatus = STATUS_STORE_Error_CannotUnderstand;
           return;
         }
-        if( tmpstr1 == NULL )
-        {
-          currentStudyInstanceUID = new char[1];
-          strcpy( currentStudyInstanceUID, "\0" );
-        }
-        else
-        {
-          currentStudyInstanceUID = new char[ strlen( tmpstr1 ) + 1 ];
-          strcpy( currentStudyInstanceUID, tmpstr1 );
-        }
+        if (tmpstr1) currentStudyInstanceUID = tmpstr1;
 
         // if this is the first DICOM object that was received or if the study instance UID in the
         // current DICOM object does not equal the last object's study instance UID we need to create
         // a new subdirectory in which the current DICOM object will be stored
-        if( lastStudyInstanceUID == NULL || strcmp( currentStudyInstanceUID, lastStudyInstanceUID ) != 0 )
+        if( lastStudyInstanceUID.empty() || lastStudyInstanceUID != currentStudyInstanceUID)
         {
-          // if lastStudyInstanceUID does not equal NULL, we have just completed receiving all objects for one
+          // if lastStudyInstanceUID is non-empty, we have just completed receiving all objects for one
           // study. In such a case, we need to set a certain indicator variable (lastStudySubdirectoryPathAndName),
           // so that we know that executeOnEndOfStudy() might have to be executed later. In detail, this indicator
           // variable will contain the path and name of the last study's subdirectory, so that we can still remember
           // this directory, when we execute executeOnEndOfStudy(). The memory that is allocated for this variable
-          // here will be freed after the execution of executeOnEndOfStudy(). Note that at this point we also need
-          // to free the memory for lastStudyInstanceUID, since a new value will be recalculated and set below.
-          if( lastStudyInstanceUID != NULL )
+          // here will be freed after the execution of executeOnEndOfStudy(). 
+          if( ! lastStudyInstanceUID.empty() )
           {
-            lastStudySubdirectoryPathAndName = new char[ strlen( subdirectoryPathAndName ) + 1 ];
-            strcpy( lastStudySubdirectoryPathAndName, subdirectoryPathAndName );
-            delete lastStudyInstanceUID;
+            lastStudySubdirectoryPathAndName = subdirectoryPathAndName;
           }
 
           // create the new lastStudyInstanceUID value according to the value in the current DICOM object
-          lastStudyInstanceUID = new char[ strlen( currentStudyInstanceUID ) + 1 ];
-          strcpy( lastStudyInstanceUID, currentStudyInstanceUID );
-
-          // free memory for subdirectoryPathAndName if some memory had been allocated earlier
-          if( subdirectoryPathAndName )
-            delete subdirectoryPathAndName;
+          lastStudyInstanceUID = currentStudyInstanceUID;
 
           // get the current time (needed for subdirectory name)
           OFDateTime dateTime;
           dateTime.setCurrentDateTime();
           // create a name for the new subdirectory. pattern: "[opt_sortConcerningStudies]_[YYYYMMDD]_[HHMMSSMMM]" (use current datetime)
-          char *subdirectoryName = new char[ strlen( opt_sortConcerningStudies ) + 1 + 8 + 1 + 9 + 1 ];
-          sprintf( subdirectoryName, "%s_%04u%02u%02u_%02u%02u%02u%03u", opt_sortConcerningStudies,
+          char buf[32];
+          sprintf(buf, "_%04u%02u%02u_%02u%02u%02u%03u", 
             dateTime.getDate().getYear(), dateTime.getDate().getMonth(), dateTime.getDate().getDay(),
-            dateTime.getTime().getHour(), dateTime.getTime().getMinute(), dateTime.getTime().getIntSecond(), dateTime.getTime().getMilliSecond());
+            dateTime.getTime().getHour(), dateTime.getTime().getMinute(), dateTime.getTime().getIntSecond(), dateTime.getTime().getMilliSecond());          
+          OFString subdirectoryName = opt_sortConcerningStudies;
+          subdirectoryName += buf;
 
           // create subdirectoryPathAndName (string with full path to new subdirectory)
-          char *tmpstr2 = cbdata->imageFileName;
-          char *tmpstr3 = strrchr( tmpstr2, PATH_SEPARATOR );
-          int position = tmpstr3 - tmpstr2;
-          subdirectoryPathAndName = new char[ strlen( tmpstr2 ) + strlen( subdirectoryName ) + 1 + 1 ];
-          OFStandard::strlcpy( subdirectoryPathAndName, tmpstr2, position+2 );
-          strcat( subdirectoryPathAndName, subdirectoryName );
-          delete subdirectoryName;
+          subdirectoryPathAndName = cbdata->imageFileName;
+          size_t position = subdirectoryPathAndName.rfind(PATH_SEPARATOR);
+          if (position != OFString_npos) subdirectoryPathAndName.erase(position+1);
+          subdirectoryPathAndName += subdirectoryName;
 
           // check if the subdirectory is already existent
           // if it is already existent dump a warning
           if( OFStandard::dirExists(subdirectoryPathAndName) )
           {
-            fprintf(stderr, "storescp: Warning: Subdirectory for studies already existent. (%s)\n", subdirectoryPathAndName );
+            fprintf(stderr, "storescp: Warning: Subdirectory for studies already existent. (%s)\n", subdirectoryPathAndName.c_str() );
           }
 
           // if it is not existent create it
 #ifdef HAVE_WINDOWS_H
-          if( _mkdir( subdirectoryPathAndName ) == -1 )
+          if( _mkdir( subdirectoryPathAndName.c_str() ) == -1 )
 #else
-          if( mkdir( subdirectoryPathAndName, S_IRWXU | S_IRWXG | S_IRWXO ) == -1 )
+          if( mkdir( subdirectoryPathAndName.c_str(), S_IRWXU | S_IRWXG | S_IRWXO ) == -1 )
 #endif
           {
-            fprintf(stderr, "storescp: Could not create subdirectory %s.\n", subdirectoryPathAndName );
+            fprintf(stderr, "storescp: Could not create subdirectory %s.\n", subdirectoryPathAndName.c_str() );
             rsp->DimseStatus = STATUS_STORE_Error_CannotUnderstand;
             return;
           }
         }
 
-        // free memory
-        delete currentStudyInstanceUID;
-
         // integrate subdirectory name into file name (note that cbdata->imageFileName currently contains both
         // path and file name; however, the path refers to the output directory captured in opt_outputDirectory)
-        char *tmpstr4 = cbdata->imageFileName;
-        char *tmpstr5 = strrchr( tmpstr4, PATH_SEPARATOR );
-        fileName = new char[ strlen( tmpstr4 ) + strlen( opt_sortConcerningStudies ) + 1 + 8 + 1 + 9 + 1 + 1 ];
-        strcpy( fileName, subdirectoryPathAndName );
-        strcat( fileName, tmpstr5 );
+        char *tmpstr5 = strrchr( cbdata->imageFileName, PATH_SEPARATOR );
+        fileName = subdirectoryPathAndName;
+        fileName += tmpstr5;
 
-        // update global variable outputFileNameArray and outputFileNameArrayCnt
+        // update global variable outputFileNameArray 
         // (might be used in executeOnReception() and renameOnEndOfStudy)
-        tmpstr5++;
-        if( outputFileNameArrayCnt == 0 )
-        {
-          outputFileNameArray = new char*[1];
-          outputFileNameArrayCnt = 1;
-        }
-        else  // this always means outputFileNameArrayCnt > 0
-        {
-          char **tmp = new char*[ outputFileNameArrayCnt + 1 ];
-          for( int n=0 ; n<outputFileNameArrayCnt ; n++ )
-            tmp[n] = outputFileNameArray[n];
-          delete outputFileNameArray;
-          outputFileNameArray = tmp;
-          outputFileNameArrayCnt++;
-        }
-        outputFileNameArray[outputFileNameArrayCnt-1] = new char[ strlen( tmpstr5 ) + 1 ];
-        strcpy( outputFileNameArray[outputFileNameArrayCnt-1], tmpstr5 );
+        outputFileNameArray.push_back(++tmpstr5);
       }
       // if option --sort-conc-studies is not set, the determination of the output file name is simple
       else
       {
-        fileName = new char[ strlen( cbdata->imageFileName ) + 1 ];
-        strcpy( fileName, cbdata->imageFileName );
+        fileName = cbdata->imageFileName;
 
-        // update global variables outputFileNameArray and outputFileNameArrayCnt
+        // update global variables outputFileNameArray 
         // (might be used in executeOnReception() and renameOnEndOfStudy)
-        char *tmpstr6 = strrchr( fileName, PATH_SEPARATOR );
-        tmpstr6++;
-        if( outputFileNameArrayCnt == 0 )
-        {
-          outputFileNameArray = new char*[1];
-          outputFileNameArrayCnt = 1;
-        }
-        else  // this always means outputFileNameArrayCnt == 1
-          delete outputFileNameArray[0];
-        outputFileNameArray[0] = new char[ strlen( tmpstr6 ) + 1 ];
-        strcpy( outputFileNameArray[0], tmpstr6 );
+        char *tmpstr6 = strrchr( fileName.c_str(), PATH_SEPARATOR );
+        outputFileNameArray.push_back(++tmpstr6);
       }
 
       // determine the transfer syntax which shall be used to write the information to the file
@@ -1674,12 +1598,12 @@ storeSCPCallback(
       if (xfer == EXS_Unknown) xfer = (*imageDataSet)->getOriginalXfer();
 
       // store file either with meta header or as pure dataset
-      OFCondition cond = cbdata->dcmff->saveFile(fileName, xfer, opt_sequenceType, opt_groupLength,
+      OFCondition cond = cbdata->dcmff->saveFile(fileName.c_str(), xfer, opt_sequenceType, opt_groupLength,
           opt_paddingType, OFstatic_cast(Uint32, opt_filepad),
           OFstatic_cast(Uint32, opt_itempad), !opt_useMetaheader);
       if (cond.bad())
       {
-        fprintf(stderr, "storescp: Cannot write image file: %s\n", fileName);
+        fprintf(stderr, "storescp: Cannot write image file: %s\n", fileName.c_str());
         rsp->DimseStatus = STATUS_STORE_Refused_OutOfResources;
       }
 
@@ -1690,7 +1614,7 @@ storeSCPCallback(
         // which SOP class and SOP instance ?
         if (! DU_findSOPClassAndInstanceInDataSet(*imageDataSet, sopClass, sopInstance, opt_correctUIDPadding))
         {
-           fprintf(stderr, "storescp: Bad image file: %s\n", fileName);
+           fprintf(stderr, "storescp: Bad image file: %s\n", fileName.c_str());
            rsp->DimseStatus = STATUS_STORE_Error_CannotUnderstand;
         }
         else if (strcmp(sopClass, req->AffectedSOPClassUID) != 0)
@@ -1703,8 +1627,6 @@ storeSCPCallback(
         }
       }
 
-      // free memory
-      delete fileName;
     }
 
     // in case opt_bitPreserving is set, do some other things
@@ -1713,16 +1635,7 @@ storeSCPCallback(
       // we need to set outputFileNameArray and outputFileNameArrayCnt to be
       // able to perform the placeholder substitution in executeOnReception()
       char *tmpstr7 = strrchr( cbdata->imageFileName, PATH_SEPARATOR );
-      tmpstr7++;
-      if( outputFileNameArrayCnt == 0 )
-      {
-        outputFileNameArray = new char*[1];
-        outputFileNameArrayCnt = 1;
-      }
-      else  // this always means outputFileNameArrayCnt == 1, since opt_bitPreserving cannot be used together with opt_sortConcerningStudies
-        delete outputFileNameArray[0];
-      outputFileNameArray[0] = new char[ strlen( tmpstr7 ) + 1 ];
-      strcpy( outputFileNameArray[0], tmpstr7 );
+      outputFileNameArray.push_back(++tmpstr7);
     }
   }
 
@@ -1867,23 +1780,17 @@ static void executeEndOfStudyEvents()
   // does not equal NULL (i.e. we received all objects that belong to one study, or - in
   // other words - it is the end of one study) we want to rename the output files that
   // belong to the last study. (Note that these files are captured in outputFileNameArray)
-  if( opt_renameOnEndOfStudy && lastStudySubdirectoryPathAndName != NULL )
+  if( opt_renameOnEndOfStudy && ! lastStudySubdirectoryPathAndName.empty() )
     renameOnEndOfStudy();
 
   // if option --exec-on-eostudy is set and variable lastStudySubdirectoryPathAndName does
   // not equal NULL (i.e. we received all objects that belong to one study, or - in other
   // words - it is the end of one study) we want to execute a certain command which was
   // passed to the application
-  if( opt_execOnEndOfStudy != NULL && lastStudySubdirectoryPathAndName != NULL )
+  if( opt_execOnEndOfStudy != NULL && ! lastStudySubdirectoryPathAndName.empty() )
     executeOnEndOfStudy();
 
-  // when we get to this point and lastStudySubdirectoryPathAndName does not equal NULL,
-  // we need to free the memory lastStudySubdirectoryPathAndName is pointing to.
-  if( lastStudySubdirectoryPathAndName != NULL )
-  {
-    delete lastStudySubdirectoryPathAndName;
-    lastStudySubdirectoryPathAndName = NULL;
-  }
+  lastStudySubdirectoryPathAndName.clear();
 }
 
 
@@ -1909,12 +1816,12 @@ static void executeOnReception()
     // perform substitution for placeholder #p; note that
     //  - in case option --sort-conc-studies is set, #p will be substituted by subdirectoryPathAndName
     //  - and in case option --sort-conc-studies is not set, #p will be substituted by opt_outputDirectory
-    OFString dir = (opt_sortConcerningStudies == NULL) ? OFString(opt_outputDirectory) : OFString(subdirectoryPathAndName);
+    OFString dir = (opt_sortConcerningStudies == NULL) ? OFString(opt_outputDirectory) : subdirectoryPathAndName;
     cmd = replaceChars( cmd, OFString(PATH_PLACEHOLDER), dir );
 
-    // perform substitution for placeholder #f; note that the variable outputFileNameArray[outputFileNameArrayCnt-1]
+    // perform substitution for placeholder #f; note that outputFileNameArray.back()
     // always contains the name of the file (without path) which was written last.
-    OFString outputFileName = outputFileNameArray[outputFileNameArrayCnt-1];
+    OFString outputFileName = outputFileNameArray.back();
     cmd = replaceChars( cmd, OFString(FILENAME_PLACEHOLDER), outputFileName );
   }
 
@@ -1945,8 +1852,10 @@ static void renameOnEndOfStudy()
      */
 {
   int counter = 1;
-  int arrayCnt;
 
+  OFListIterator(OFString) first = outputFileNameArray.begin();
+  OFListIterator(OFString) last = outputFileNameArray.end();
+  
   // before we deal with all the filenames which are included in the array, we need to distinguish
   // two different cases: If endOfStudyThroughTimeoutEvent is not true, the last filename in the array
   // refers to a file that belongs to a new study of which the first object was just received. (In this
@@ -1954,62 +1863,39 @@ static void renameOnEndOfStudy()
   // foolowing loop - not supposed to be deleted from the array. If endOfStudyThroughTimeoutEvent is true,
   // all filenames that are captured in the array, refer to files that belong to the same study. Hence,
   // all of these files shall be renamed and all of the filenames within the array shall be deleted.
-  if( !endOfStudyThroughTimeoutEvent )
-    arrayCnt = outputFileNameArrayCnt-1;
-  else
-    arrayCnt = outputFileNameArrayCnt;
+  if( ! endOfStudyThroughTimeoutEvent ) --last;
 
   // rename all files that belong to the last study
-  for( int i=0 ; i<arrayCnt ; i++ )
+  while (first != last)
   {
     // determine the new file name: The first two characters of the old file name make up the [modality-prefix].
     // The value for [consecutive-numbering] will be determined using the counter variable.
-    char *modalityId = new char[3];
-    OFStandard::strlcpy( modalityId, outputFileNameArray[i], 3 );
-    char *newFileName = new char[9];
+    char modalityId[3];
+    char newFileName[9];
+    OFStandard::strlcpy( modalityId, (*first).c_str(), 3 );
     sprintf( newFileName, "%s%06d", modalityId, counter );
-    delete modalityId;
 
     // create two strings containing path and file name for
     // the current filename and the future filename
-    char *oldPathAndFileName = new char[ strlen( lastStudySubdirectoryPathAndName ) + 1 + strlen( outputFileNameArray[i] ) + 1 ];
-    sprintf( oldPathAndFileName, "%s%c%s", lastStudySubdirectoryPathAndName, PATH_SEPARATOR, outputFileNameArray[i] );
-    char *newPathAndFileName = new char[ strlen( lastStudySubdirectoryPathAndName ) + 1 + strlen( newFileName ) + 1 ];
-    sprintf( newPathAndFileName, "%s%c%s", lastStudySubdirectoryPathAndName, PATH_SEPARATOR, newFileName );
-    delete newFileName;
+    OFString oldPathAndFileName;
+    oldPathAndFileName = lastStudySubdirectoryPathAndName;
+    oldPathAndFileName += PATH_SEPARATOR;
+    oldPathAndFileName += *first;
 
+    OFString newPathAndFileName;
+    newPathAndFileName = lastStudySubdirectoryPathAndName;
+    newPathAndFileName += PATH_SEPARATOR;
+    newPathAndFileName += newFileName;
+    
     // rename file
-    if( rename( oldPathAndFileName, newPathAndFileName ) != 0 )
-      fprintf( stderr, "storescp: Cannot rename file '%s' to '%s'.\n", oldPathAndFileName, newPathAndFileName );
+    if( rename( oldPathAndFileName.c_str(), newPathAndFileName.c_str() ) != 0 )
+      fprintf( stderr, "storescp: Cannot rename file '%s' to '%s'.\n", oldPathAndFileName.c_str(), newPathAndFileName.c_str() );
 
-    // free memory
-    delete oldPathAndFileName;
-    delete newPathAndFileName;
-    delete outputFileNameArray[i];
+    // remove entry from list
+    first = outputFileNameArray.erase(first);
 
     // increase counter
     counter++;
-  }
-
-  // At this point, we need to distinguish two cases again: endOfStudyThroughTimeoutEvent
-  // is not true, there should be exactly one element in outputFileNameArray: this element
-  // is outputFileNameArray[outputFileNameArrayCnt-1] and it already belongs to a new study.
-  // We need to update outputFileNameArray so that it contains only one array field in which
-  // the corresponding value is captured. If endOfStudyThroughTimeoutEvent is true, there are
-  // no elements left in the array, and the array itself needs to be deleted and set to NULL.
-  if( !endOfStudyThroughTimeoutEvent )
-  {
-    char **tmp = new char*[1];
-    tmp[0] = outputFileNameArray[outputFileNameArrayCnt-1];
-    delete outputFileNameArray;
-    outputFileNameArray = tmp;
-    outputFileNameArrayCnt = 1;
-  }
-  else
-  {
-    delete outputFileNameArray;
-    outputFileNameArray = NULL;
-    outputFileNameArrayCnt = 0;
   }
 }
 
@@ -2029,11 +1915,10 @@ static void executeOnEndOfStudy()
      */
 {
   OFString cmd = opt_execOnEndOfStudy;
-  OFString dir = lastStudySubdirectoryPathAndName;
 
   // perform substitution for placeholder #p; #p will be substituted by lastStudySubdirectoryPathAndName
-  cmd = replaceChars( cmd, OFString(PATH_PLACEHOLDER), dir );
-
+  cmd = replaceChars( cmd, OFString(PATH_PLACEHOLDER), lastStudySubdirectoryPathAndName );
+  
   // perform substitution for placeholder #a
   cmd = replaceChars( cmd, OFString(CALLING_AETITLE_PLACEHOLDER), callingaetitle );
 
@@ -2117,15 +2002,12 @@ static void executeCommand( const OFString &cmd )
   STARTUPINFO sinfo;
   OFBitmanipTemplate<char>::zeroMem((char *)&sinfo, sizeof(sinfo));
   sinfo.cb = sizeof(sinfo);
-  char *command = new char[ cmd.size() + 1 ];
-  strcpy( command, cmd.c_str() );
 
   // execute command (Attention: Do not pass DETACHED_PROCESS as sixth argument to the below
   // called function because in such a case the execution of batch-files is not going to work.)
-  if( !CreateProcess(NULL, command, NULL, NULL, 0, 0, NULL, NULL, &sinfo, &procinfo) )
+  if( !CreateProcess(NULL, cmd.c_str(), NULL, NULL, 0, 0, NULL, NULL, &sinfo, &procinfo) )
     fprintf( stderr, "storescp: Error while executing command '%s'.\n" , cmd.c_str() );
 
-  delete command;
 #endif
 }
 
@@ -2307,7 +2189,11 @@ static OFCondition acceptUnknownContextsWithPreferredTransferSyntaxes(
 /*
 ** CVS Log
 ** $Log: storescp.cc,v $
-** Revision 1.70  2004-04-06 18:11:24  joergr
+** Revision 1.71  2004-04-07 09:42:34  meichel
+** Updated sorting and command execution code in storescp to use OFString
+**   and OFList. This will hopefully fix the remaining memory leaks.
+**
+** Revision 1.70  2004/04/06 18:11:24  joergr
 ** Added missing suffix "TransferSyntax" to some transfer syntax constants.
 **
 ** Revision 1.69  2004/02/25 12:18:06  meichel
