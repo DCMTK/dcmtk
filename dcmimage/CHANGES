@@ -1,3 +1,13 @@
+**** Changes from 1999.03.02 (riesmeier)
+
+- Corrected bug: when determine minimum and maximum pixel value (external)
+  modality LUTs were ignored.
+  Affects: dcmimgle/include/dimoipxt.h
+  
+- Corrected bug in output routine of monochrome pixel data (wrong scaling when
+  Barten transformation and windowing are active).
+  Affects: dcmimgle/include/dimoopxt.h
+
 **** Changes from 1999.02.28 (riesmeier)
 
 - Corrected bug: the output bits for bitmaps shutters were inverted (this was
