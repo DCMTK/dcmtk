@@ -23,8 +23,8 @@
  *    classes: OFFilenameCreator
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-04-14 15:20:16 $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  Update Date:      $Date: 2000-10-10 12:01:07 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -90,9 +90,6 @@ OFBool OFFilenameCreator::makeFilename(unsigned int seed, const char *dir, const
   struct stat stat_buf;
   int stat_result = 0;
   unsigned tries = 0;
-#ifndef _REENTRANT
-  srand(seed);
-#endif
   do
   {
     // create filename
@@ -104,13 +101,7 @@ OFBool OFFilenameCreator::makeFilename(unsigned int seed, const char *dir, const
     }
     if (prefix) filename += prefix;
     addLongToString(creation_time, filename);
-#if defined(_REENTRANT) && !defined(_WIN32)
-    // rand_r is the MT-safe Posix replacement for rand().
-    // On Win32, rand_r is undefined but srand() and rand() ar MT-safe.
-    addLongToString(((rand_r(&seed) << 16) | rand_r(&seed)), filename);
-#else
-    addLongToString(((rand() << 16) | rand()), filename);
-#endif
+    addLongToString(((myrand_r(&seed) << 16) | myrand_r(&seed)), filename);
     if (postfix) filename += postfix;
     
     // check if filename exists
@@ -164,9 +155,21 @@ unsigned int OFFilenameCreator::hashString(const char *str)
   return result;
 }
 
+int OFFilenameCreator::myrand_r(unsigned int *seed)
+{
+  unsigned long val = (unsigned long) *seed;  
+  val = val * 1103515245 + 12345;
+  *seed = val %((unsigned long)0x80000000);
+  return (int) *seed;
+}
+
 /*
  *  $Log: offname.cc,v $
- *  Revision 1.5  2000-04-14 15:20:16  meichel
+ *  Revision 1.6  2000-10-10 12:01:07  meichel
+ *  Implemented thread safe random number generator, needed on systems
+ *    where threads but no Posix rand_r function are available.
+ *
+ *  Revision 1.5  2000/04/14 15:20:16  meichel
  *  If compiled on Unix platforms with -D_REENTRANT, OFFilenameCreator uses
  *    the reentrant Posix routine rand_r instead of rand and srand.
  *

@@ -23,8 +23,8 @@
  *    classes: OFFilenameCreator
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-03-08 16:36:01 $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  Update Date:      $Date: 2000-10-10 12:01:04 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -38,9 +38,8 @@
 #include "oftypes.h"
 #include "ofstring.h"
 
-/** A class for automatically creating filenames.
+/** A class for automatically creating unique pseudo-random filenames.
  */  
-
 class OFFilenameCreator
 {
 public:
@@ -71,18 +70,37 @@ public:
    */
   static unsigned int hashString(const char *str);
 
+  /** simple but thread safe random number generator. The interface is derived
+   *  from the Posix rand_r function. Uses a multiplicative congruential 
+   *  random-number generator with period 2**32 that returns successive 
+   *  pseudo-random numbers in the range of 0 to 0x7fffffff.
+   *  @param seed pointer to seed of random number generator, must not be NULL.
+   *  @return pseudo-random number in the range of 0 to 0x7fffffff.
+   */
+  static int myrand_r(unsigned int *seed);
+
 private:
-  // date/time of creation of this object
+
+  /// date/time of creation of this object
   unsigned long creation_time;
-  
-  static void addLongToString(unsigned long l, OFString &s);
+
+   /** appends the lower 32 bit of the given number to the given string.
+    *  Always appends exactly 8 digits (padded with leading zeroes).
+    *  @param l number to be appended to string
+    *  @param s string to be added to
+    */
+  static void addLongToString(unsigned long l, OFString& s);
 };
 
 #endif
 
 /*
  *  $Log: offname.h,v $
- *  Revision 1.3  2000-03-08 16:36:01  meichel
+ *  Revision 1.4  2000-10-10 12:01:04  meichel
+ *  Implemented thread safe random number generator, needed on systems
+ *    where threads but no Posix rand_r function are available.
+ *
+ *  Revision 1.3  2000/03/08 16:36:01  meichel
  *  Updated copyright header.
  *
  *  Revision 1.2  1999/03/22 09:00:50  joergr
