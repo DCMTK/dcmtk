@@ -21,10 +21,10 @@
  *
  *  Purpose: Presentation State Viewer - Network Receive Component (Store SCP)
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-11-13 14:20:31 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2000-11-14 13:24:34 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmpstat/apps/dcmpsrcv.cc,v $
- *  CVS/RCS Revision: $Revision: 1.26 $
+ *  CVS/RCS Revision: $Revision: 1.27 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -988,7 +988,7 @@ int main(int argc, char *argv[])
     unsigned short messagePort    = dvi.getMessagePort();   /* port number for IPC */
     OFBool keepMessagePortOpen    = dvi.getMessagePortKeepOpen(); 
     OFBool useTLS = dvi.getTargetUseTLS(opt_cfgID);
-
+    OFBool notifyTermination      = OFTrue;  // notify IPC server of application termination
 #ifdef WITH_OPENSSL
     /* TLS directory */
     const char *current = NULL;
@@ -1312,16 +1312,9 @@ int main(int argc, char *argv[])
           case assoc_terminate:
             finished2=OFTrue;
             finished1=OFTrue;
+            notifyTermination = OFFalse; // IPC server will probably already be down
             cond = ASC_dropNetwork(&net);
-            if (errorCond(cond, "Error dropping network:")) 
-            {
-              if (messageClient) 
-              {
-              	messageClient->notifyApplicationTerminates(DVPSIPCMessage::statusError);
-                delete messageClient;
-              }
-              return 1;
-            }
+            if (errorCond(cond, "Error dropping network:")) return 1;
             break;
           case assoc_success:
 #ifdef HAVE_FORK
@@ -1391,7 +1384,7 @@ int main(int argc, char *argv[])
             OFBitmanipTemplate<char>::zeroMem((char *)&sinfo, sizeof(sinfo));
             sinfo.cb = sizeof(sinfo);
             char commandline[4096];
-            sprintf(commandline, "%s %s", receiver_application, opt_cfgName);
+            sprintf(commandline, "%s %s %s", receiver_application, opt_cfgName, opt_cfgID);
 #ifdef DEBUG
             if (CreateProcess(NULL, commandline, NULL, NULL, 0, 0, NULL, NULL, &sinfo, &procinfo))
 #else
@@ -1441,7 +1434,7 @@ int main(int argc, char *argv[])
  
     // tell the IPC server that we're going to terminate.
     // We need to do this before we shutdown WinSock.
-    if (messageClient) 
+    if (messageClient && notifyTermination) 
     {
       messageClient->notifyApplicationTerminates(DVPSIPCMessage::statusOK);
       delete messageClient;
@@ -1481,7 +1474,12 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmpsrcv.cc,v $
- * Revision 1.26  2000-11-13 14:20:31  joergr
+ * Revision 1.27  2000-11-14 13:24:34  meichel
+ * Fixed two problems with dcmpsrcv which caused the application not to
+ *   terminate if the IPC server could not be found or not to start another
+ *   receiver when run on Win32 platforms.
+ *
+ * Revision 1.26  2000/11/13 14:20:31  joergr
  * Added missing #include.
  *
  * Revision 1.25  2000/11/10 16:21:13  meichel
