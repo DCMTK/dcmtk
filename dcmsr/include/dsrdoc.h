@@ -23,8 +23,8 @@
  *    classes: DSRDocument
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-11-10 18:10:20 $
- *  CVS/RCS Revision: $Revision: 1.11 $
+ *  Update Date:      $Date: 2000-11-13 10:26:21 $
+ *  CVS/RCS Revision: $Revision: 1.12 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -660,18 +660,24 @@ class DSRDocument
 
   // --- document management functions ---
 
-    /** create new study and series instance UIDs.
-     *  Please note that the SOP instance UID is not changed.
+    /** create new study.
+     *  After generating a new study instance UID the method createNewSeries() is called,
+     *  i.e. also a new series instance UID and SOP instance UID are generated.  This is
+     *  a requirement according to DICOM Supplement 23.
      */
-    void createNewStudyAndSeries();
+    void createNewStudy();
 
-    /** create a new series instance UID.
-     *  Please note that the study and SOP instance UIDs are not changed.
+    /** create a new series.
+     *  After generating a new series instance UID the method createNewSOPInstance() is
+     *  called, i.e. also a SOP instance UID is generated.  This is a requirement according
+     *  to DICOM Supplement 23.
      */
     void createNewSeries();
 
-    /** create a new series instance UID.
-     *  Please note that the SOP instance UIDs is not changed.
+    /** create a new series within a given study.
+     *  After generating a new series instance UID within the given study the method
+     *  createNewSOPInstance() is called, i.e. also a SOP instance UID is generated.
+     *  This is a requirement according to DICOM Supplement 23.
      ** @param  studyUID  study instance UID to be set (should be a valid UID)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
@@ -682,7 +688,9 @@ class DSRDocument
      *  This method is used internally for createNewDocument(), createRevisedVersion()
      *  and during object initialization.
      *  It could also be used explicitly from the calling application if a new UID should
-     *  be created (see DICOM standard for details).
+     *  be created (this is the case if the study instance UID or series instance UID has
+     *  changed as well as any other attribute within the SR Document General Module or
+     *  SR Document Content Module, see DICOM Supplement 23).
      *  This method also updates the other DICOM header attributes (calling updateAttributes()).
      */
     void createNewSOPInstance();    
@@ -911,7 +919,10 @@ class DSRDocument
 /*
  *  CVS/RCS Log:
  *  $Log: dsrdoc.h,v $
- *  Revision 1.11  2000-11-10 18:10:20  joergr
+ *  Revision 1.12  2000-11-13 10:26:21  joergr
+ *  Added output of optional observation datetime to rendered HTML page.
+ *
+ *  Revision 1.11  2000/11/10 18:10:20  joergr
  *  Corrected behaviour of createNewSOPInstance() and createRevisedDocument().
  *
  *  Revision 1.10  2000/11/10 17:44:49  joergr

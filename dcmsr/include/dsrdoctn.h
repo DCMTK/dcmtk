@@ -23,8 +23,8 @@
  *    classes: DSRDocumentTreeNode
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-11-07 18:14:28 $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  Update Date:      $Date: 2000-11-13 10:26:21 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -408,7 +408,8 @@ class DSRDocumentTreeNode
     E_Condition writeContentSequence(DcmItem &dataset,
                                      OFConsole *logStream) const;
 
-    /** render concept name in HTML format
+    /** render concept name in HTML format.
+     *  If the optional observation datetime field is valid (not empty) it is also rendered.
      ** @param  docStream    output stream to which the main HTML document is written
      *  @param  flags        flag used to customize the output (see DSRTypes::HF_xxx)
      *  @param  logStream    pointer to error/warning output stream (output disabled if NULL)
@@ -478,7 +479,10 @@ class DSRDocumentTreeNode
 /*
  *  CVS/RCS Log:
  *  $Log: dsrdoctn.h,v $
- *  Revision 1.6  2000-11-07 18:14:28  joergr
+ *  Revision 1.7  2000-11-13 10:26:21  joergr
+ *  Added output of optional observation datetime to rendered HTML page.
+ *
+ *  Revision 1.6  2000/11/07 18:14:28  joergr
  *  Enhanced support for by-reference relationships.
  *
  *  Revision 1.5  2000/11/01 16:23:19  joergr
