@@ -34,11 +34,11 @@ The DCMTK software can be compiled under a native Windows95/NT environment
     Windows NT 4.0 / Intel x86 / Microsoft Visual C++ 6.0
     Windows 2000   / Intel x86 / Microsoft Visual C++ 6.0
 
-The imagectn and wlistctn have been ported to Windows, but do not support
-multi-processing (i.e. multiple clients concurrently) under Windows. The
-Worklist WWW Scripts require an http server and a perl interpreter and have
-not been tested under Windows (file locking interaction with the wlistctn
-server may or may not work).
+The imagectn and wlistctn (now: wlmscpfs) have been ported to Windows, but do
+not support multi-processing (i.e. multiple clients concurrently) under
+Windows. The Worklist WWW Scripts require an http server and a perl interpreter
+and have not been tested under Windows (file locking interaction with the
+wlistctn/wlmscpfs server may or may not work).
 
 Unix (or lookalikes)
 --------------------
@@ -264,22 +264,22 @@ BUILDING (Win32)
 ================
 
 The toolkit also contains makefiles / project files for Windows NT and
-Windows 95/98/2000. Currently, only one configuration is supported:
+Windows 95/98/Me/2000/XP. Currently, only one configuration is supported:
 
-- Windows NT/9x/2000 with WINSOCK using the Microsoft Visual C++ Compiler
+- Windows NT/9x/Me/2000/XP with WINSOCK using the Microsoft Visual C++ Compiler
   Version 5.0 (project files can also be imported into Version 6.0 and .NET).
 
 Compile instructions:
 
-1. Rename the extensions of all .cc files into .cxx if not already done
-   (e.g. "ren *.cc *.cxx" with the COMMAND shell or if you have a UNIX
-   workstation station available use "config/changext cxx"). You must rename
-   files in the libsrc, apps and tests directories of all modules.
+1. Rename the extensions of all .cc files into .cxx if not already done (e.g.
+   "ren *.cc *.cxx" with the COMMAND shell or if you have a UNIX workstation
+   available use "config/changext cxx"). You must rename files in the libsrc,
+   apps and tests directories of all modules.
 2. Start the Microsoft Developer Studio (IDE).
 3. Open Workspace.. and select "dcmtk.dsw".
 4. If you want to use ANSI C++ iostreams when building DCMTK mark all projects,
-   select "Properties" from the context menu and add 'USE_STD_CXX_INCLUDES'
-   to the C++ preprocessor definitions section.
+   select "Properties" from the context menu and add 'USE_STD_CXX_INCLUDES' to
+   the C++ preprocessor definitions section.
 5. Select the appropriate target in the IDE: Release, Debug or Release OpenSSL.
 6. Choose one of the subprojects and build it. If you want to build all
    applications, mark all subprojects and select "build selection" from the
@@ -287,15 +287,16 @@ Compile instructions:
 
 Known problems:
 
-1. The imagectn and wlistctn cannot spark multiple processes. Every association
-   must be handled completely before a new association is possible.
-2. On Windows 95, imagectn always uses exclusive file locking
-   (the LockFileEx API call is available on Windows NT only).
-   This is no problem if only one single process exists.
-3. Most applications will only work if the computer has configured TCP/IP,
-   a network name and a TCP/IP address. If SLIP or PPP is used the
-   applications can only work if a connection to a provider exists (since
-   the internet addresses and names are given dynamically).
+1. The imagectn and wlmscpfs (formerly known as wlistctn) cannot spark multiple
+   processes. Every association must be handled completely before a new
+   association is possible.
+2. On Windows 95, imagectn always uses exclusive file locking (the LockFileEx
+   API call is available on Windows NT only). This is no problem if only one
+   single process exists.
+3. Most applications will only work if the computer has configured TCP/IP, a
+   network name and a TCP/IP address. If SLIP or PPP is used the applications
+   can only work if a connection to a provider exists (since the internet
+   addresses and names are given dynamically).
 
 
 HTML DOCUMENTATION
@@ -304,21 +305,20 @@ HTML DOCUMENTATION
 A few DCMTK modules have been documented with DOC++, a free source code
 documentation system similar to javadoc (see http://docpp.sourceforge.net/).
 Users who have doc++ installed can create a hypertext documentation for these
-modules with "make html" in the module subdirectories.  At the current time,
-dcmimgle, dcmjpeg, dcmpstat, dcmsign, dcmsr and dcmtls are fully documented,
-dcmdata and dcmimage are partially documented.  See FAQ entry: "Where is rest
-of the documentation?"
+modules with "make html" in the module subdirectories. At the current time,
+dcmimgle, dcmjpeg, dcmpstat, dcmsign, dcmsr, dcmtls and ofstd are completely
+documented, dcmdata, dcmimage and dcmwlm are partially documented. See FAQ
+entry: "Where is rest of the documentation?"
 
 
 COMPILE TIME FLAGS AND ENVIRONMENT VARIABLES
 ============================================
 
-The behaviour of several DCMTK tools and libraries can be modified by a 
-number of compile time flags (macros). Those macros which are not 
-automatically handled by the configure mechanism are documented in 
-config/docs/macros.txt
-There is also a number of environment variables which affect DCMTK's
-behaviour. These are documented in config/docs/envvars.txt
+The behaviour of several DCMTK tools and libraries can be modified by a number
+of compile time flags (macros). Those macros which are not automatically
+handled by the configure mechanism are documented in config/docs/macros.txt
+There is also a number of environment variables which affect DCMTK's behaviour.
+These are documented in config/docs/envvars.txt
 
 
 ---------
@@ -328,4 +328,4 @@ Have fun.
 Marco Eichelberg, Joerg Riesmeier
 Kuratorium OFFIS e.V., Oldenburg, Germany.
 
-Last revised: 2002-11-26 (Eichelberg).
+Last revised: 2002-12-05 (Riesmeier).
