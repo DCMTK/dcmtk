@@ -54,9 +54,9 @@
 ** Author, Date:	Stephen M. Moore, 14-Apr-93
 ** Intent:		This module contains the public entry points for the
 **			DICOM Upper Layer (DUL) protocol package.
-** Last Update:		$Author: meichel $, $Date: 2002-05-15 11:24:16 $
+** Last Update:		$Author: meichel $, $Date: 2002-05-24 14:36:14 $
 ** Source File:		$RCSfile: dul.cc,v $
-** Revision:		$Revision: 1.45 $
+** Revision:		$Revision: 1.46 $
 ** Status:		$State: Exp $
 */
 
@@ -288,7 +288,8 @@ DUL_InitializeNetwork(const char *mode,
     else
     {
       // initializeNetworkTCP has failed, destroy PRIVATE_NETWORKKEY structure
-      (void) DUL_DropNetwork(&((DUL_NETWORKKEY *) key));
+      PRIVATE_NETWORKKEY **pkey = &key;
+      (void) DUL_DropNetwork((DUL_NETWORKKEY **) pkey);
     }
 
     return cond;
@@ -2324,7 +2325,10 @@ void DUL_DumpConnectionParameters(DUL_ASSOCIATIONKEY *association, ostream& outs
 /*
 ** CVS Log
 ** $Log: dul.cc,v $
-** Revision 1.45  2002-05-15 11:24:16  meichel
+** Revision 1.46  2002-05-24 14:36:14  meichel
+** Fixed typecast problem reported by egcs and VC6
+**
+** Revision 1.45  2002/05/15 11:24:16  meichel
 ** Fixed problem with DICOM upper layer: If network initialization for
 **   an acceptor failed (e.g. because the listen port was already occupied),
 **   further calls to ASC_initializeNetwork() with different port numbers
