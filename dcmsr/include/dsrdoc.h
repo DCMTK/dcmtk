@@ -23,8 +23,8 @@
  *    classes: DSRDocument
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-10-16 11:59:04 $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  Update Date:      $Date: 2000-10-16 16:30:23 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -171,122 +171,127 @@ class DSRDocument
   // --- get DICOM string attributes (C string) ---
 
     /** get modality
-     ** @return point to string value (might be NULL)
+     ** @return pointer to string value (might be NULL)
      */
     const char *getModality() const;
 
     /** get SOP class UID
-     ** @return point to string value (might be NULL)
+     ** @return pointer to string value (might be NULL)
      */
     const char *getSOPClassUID() const;
 
     /** get study instance UID
-     ** @return point to string value (might be NULL)
+     ** @return pointer to string value (might be NULL)
      */
     const char *getStudyInstanceUID() const;
 
     /** get series instance UID
-     ** @return point to string value (might be NULL)
+     ** @return pointer to string value (might be NULL)
      */
     const char *getSeriesInstanceUID() const;
 
     /** get SOP instance UID
-     ** @return point to string value (might be NULL)
+     ** @return pointer to string value (might be NULL)
      */
     const char *getSOPInstanceUID() const;
 
     /** get instance creator UID
-     ** @return point to string value (might be NULL)
+     ** @return pointer to string value (might be NULL)
      */
     const char *getInstanceCreatorUID() const;
 
     /** get specific character set
-     ** @return point to string value (might be NULL)
+     ** @return pointer to string value (might be NULL)
      */
     const char *getSpecificCharacterSet() const;
 
     /** get patient's name
-     ** @return point to string value (might be NULL)
+     ** @return pointer to string value (might be NULL)
      */
     const char *getPatientsName() const;
 
     /** get patient's birth date
-     ** @return point to string value (might be NULL)
+     ** @return pointer to string value (might be NULL)
      */
     const char *getPatientsBirthDate() const;
 
     /** get patient's sex
-     ** @return point to string value (might be NULL)
+     ** @return pointer to string value (might be NULL)
      */
     const char *getPatientsSex() const;
 
     /** get referring physicians name
-     ** @return point to string value (might be NULL)
+     ** @return pointer to string value (might be NULL)
      */
     const char *getReferringPhysiciansName() const;
 
     /** get study description
-     ** @return point to string value (might be NULL)
+     ** @return pointer to string value (might be NULL)
      */
     const char *getStudyDescription() const;
 
+    /** get series description
+     ** @return pointer to string value (might be NULL)
+     */
+    const char *getSeriesDescription() const;
+
     /** get manufacturer
-     ** @return point to string value (might be NULL)
+     ** @return pointer to string value (might be NULL)
      */
     const char *getManufacturer() const;
 
     /** get study date
-     ** @return point to string value (might be NULL)
+     ** @return pointer to string value (might be NULL)
      */
     const char *getStudyDate() const;
 
     /** get study time
-     ** @return point to string value (might be NULL)
+     ** @return pointer to string value (might be NULL)
      */
     const char *getStudyTime() const;
 
     /** get instance creation date
-     ** @return point to string value (might be NULL)
+     ** @return pointer to string value (might be NULL)
      */
     const char *getInstanceCreationDate() const;
 
     /** get instance creation time
-     ** @return point to string value (might be NULL)
+     ** @return pointer to string value (might be NULL)
      */
     const char *getInstanceCreationTime() const;
 
     /** get content date
-     ** @return point to string value (might be NULL)
+     ** @return pointer to string value (might be NULL)
      */
     const char *getContentDate() const;
 
     /** get content time
-     ** @return point to string value (might be NULL)
+     ** @return pointer to string value (might be NULL)
      */
     const char *getContentTime() const;
 
     /** get study ID
-     ** @return point to string value (might be NULL)
+     ** @return pointer to string value (might be NULL)
      */
     const char *getStudyID() const;
 
     /** get patient ID
-     ** @return point to string value (might be NULL)
+     ** @return pointer to string value (might be NULL)
      */
     const char *getPatientID() const;
 
     /** get series number
-     ** @return point to string value (might be NULL)
+     ** @return pointer to string value (might be NULL)
      */
     const char *getSeriesNumber() const;
 
     /** get instance number
-     ** @return point to string value (might be NULL)
+     ** @return pointer to string value (might be NULL)
      */
     const char *getInstanceNumber() const;
 
     /** get accession number
-     ** @return point to string value (might be NULL)
+     ** @return pointer to string value (might be NULL)
      */
     const char *getAccessionNumber() const;
 
@@ -365,6 +370,12 @@ class DSRDocument
      */
     const OFString &getStudyDescription(OFString &string) const;
 
+    /** get series description
+     ** @param  string  reference to character string in which the value should be stored
+     ** @return character string (might empty)
+     */
+    const OFString &getSeriesDescription(OFString &string) const;
+
     /** get manufacturer
      ** @param  string  reference to character string in which the value should be stored
      ** @return character string (might empty)
@@ -440,73 +451,92 @@ class DSRDocument
 
   // --- set DICOM string attributes ---
 
-    /** set specific character set
+    /** set specific character set.
+     *  The passed string must be a valid DICOM Code String (CS).
      ** @param  string  character string specifying the value to be set
      ** @return status, EC_Normal if successful, an error code otherwise
      */
     E_Condition setSpecificCharacterSet(const OFString &string);
 
-    /** set patient's name
+    /** set patient's name.
+     *  The passed string must be a valid DICOM Person Name (PN).
      ** @param  string  character string specifying the value to be set
      ** @return status, EC_Normal if successful, an error code otherwise
      */
     E_Condition setPatientsName(const OFString &string);
 
-    /** set patient's birth date
+    /** set patient's birth date.
+     *  The passed string must be a valid DICOM Date (DA).
      ** @param  string  character string specifying the value to be set
      ** @return status, EC_Normal if successful, an error code otherwise
      */
     E_Condition setPatientsBirthDate(const OFString &string);
 
-    /** set patient's sex
+    /** set patient's sex.
+     *  The passed string must be a valid DICOM Code String (CS).
      ** @param  string  character string specifying the value to be set
      ** @return status, EC_Normal if successful, an error code otherwise
      */
     E_Condition setPatientsSex(const OFString &string);
 
-    /** set referring physicians name
+    /** set referring physicians name.
+     *  The passed string must be a valid DICOM Person Name (PN).
      ** @param  string  character string specifying the value to be set
      ** @return status, EC_Normal if successful, an error code otherwise
      */
     E_Condition setReferringPhysiciansName(const OFString &string);
 
-    /** set study description
+    /** set study description.
+     *  The passed string must be a valid DICOM Long String (LO).
      ** @param  string  character string specifying the value to be set
      ** @return status, EC_Normal if successful, an error code otherwise
      */
     E_Condition setStudyDescription(const OFString &string);
 
-    /** set manufacturer
+    /** set series description.
+     *  The passed string must be a valid DICOM Long String (LO).
+     ** @param  string  character string specifying the value to be set
+     ** @return status, EC_Normal if successful, an error code otherwise
+     */
+    E_Condition setSeriesDescription(const OFString &string);
+
+    /** set manufacturer.
+     *  The passed string must be a valid DICOM Long String (LO).
      ** @param  string  character string specifying the value to be set
      ** @return status, EC_Normal if successful, an error code otherwise
      */
     E_Condition setManufacturer(const OFString &string);
 
-    /** set study ID
+    /** set study ID.
+     *  The passed string must be a valid DICOM Short String (SH).
      ** @param  string  character string specifying the value to be set
      ** @return status, EC_Normal if successful, an error code otherwise
      */
     E_Condition setStudyID(const OFString &string);
 
-    /** set patient ID
+    /** set patient ID.
+     *  The passed string must be a valid DICOM Long String (LO).
      ** @param  string  character string specifying the value to be set
      ** @return status, EC_Normal if successful, an error code otherwise
      */
     E_Condition setPatientID(const OFString &string);
 
-    /** set series number
+    /** set series number.
+     *  The passed string must be a valid DICOM Short String (SH).
      ** @param  string  character string specifying the value to be set
      ** @return status, EC_Normal if successful, an error code otherwise
      */
     E_Condition setSeriesNumber(const OFString &string);
 
-    /** set instance number
+    /** set instance number.
+     *  The passed string must be a valid DICOM Integer String (IS).
      ** @param  string  character string specifying the value to be set
      ** @return status, EC_Normal if successful, an error code otherwise
      */
     E_Condition setInstanceNumber(const OFString &string);
 
-    /** set accession number
+    /** set accession number.
+     *  The passed string must be a valid DICOM Short String (SH).
      ** @param  string  character string specifying the value to be set
      ** @return status, EC_Normal if successful, an error code otherwise
      */
@@ -730,7 +760,11 @@ class DSRDocument
 /*
  *  CVS/RCS Log:
  *  $Log: dsrdoc.h,v $
- *  Revision 1.2  2000-10-16 11:59:04  joergr
+ *  Revision 1.3  2000-10-16 16:30:23  joergr
+ *  Added missing get/setSeriesDescription() methods.
+ *  Updated comments.
+ *
+ *  Revision 1.2  2000/10/16 11:59:04  joergr
  *  Made method creating a new SOP instance public. Added check for correct SOP
  *  instance UID and SOP class UID to validity check.
  *
