@@ -89,7 +89,7 @@ dcelem.o: dcelem.cc ../../config/include/osconfig.h \
  ../include/dcobject.h ../include/dcxfer.h ../include/dcvr.h \
  ../include/dcstream.h ../include/dctag.h ../include/dctagkey.h \
  ../include/dcdicent.h ../include/dclist.h ../include/dcstack.h \
- ../include/dcdefine.h ../include/dcdebug.h
+ ../include/dcdefine.h ../include/dcswap.h ../include/dcdebug.h
 dcentbst.o: dcentbst.cc ../../config/include/osconfig.h \
  ../include/dcentbst.h ../include/dcentset.h ../include/pix.h \
  ../include/dcentdef.h ../include/dcdicent.h ../include/dctagkey.h \
@@ -115,8 +115,8 @@ dcfilefo.o: dcfilefo.cc ../../config/include/osconfig.h \
  ../include/dcchrstr.h ../include/dcdebug.h ../include/dcdeftag.h \
  ../include/dcuid.h
 dcitem.o: dcitem.cc ../../config/include/osconfig.h ../include/dctk.h \
- ../include/dctypes.h ../include/dcswap.h ../include/dcstream.h \
- ../include/dcerror.h ../include/dcvr.h ../include/dcxfer.h \
+ ../include/dctypes.h ../include/dcswap.h ../include/dcerror.h \
+ ../include/dcxfer.h ../include/dcvr.h ../include/dcstream.h \
  ../include/dcuid.h ../include/dcvm.h ../include/dcdefine.h \
  ../include/dcdebug.h ../include/pix.h ../include/dctagkey.h \
  ../include/dctag.h ../include/dcdicent.h ../include/dcentdef.h \
@@ -165,7 +165,8 @@ dcpxitem.o: dcpxitem.cc ../../config/include/osconfig.h \
  ../include/dcerror.h ../include/dcelem.h ../include/dcobject.h \
  ../include/dcxfer.h ../include/dcvr.h ../include/dcstream.h \
  ../include/dctag.h ../include/dctagkey.h ../include/dcdicent.h \
- ../include/dclist.h ../include/dcstack.h ../include/dcdebug.h
+ ../include/dclist.h ../include/dcstack.h ../include/dcswap.h \
+ ../include/dcdebug.h
 dcsequen.o: dcsequen.cc ../../config/include/osconfig.h \
  ../include/dcsequen.h ../include/dcerror.h ../include/dctypes.h \
  ../include/dcobject.h ../include/dcxfer.h ../include/dcvr.h \
@@ -174,14 +175,16 @@ dcsequen.o: dcsequen.cc ../../config/include/osconfig.h \
  ../include/dcitem.h ../include/dcvrui.h ../include/dcbytstr.h \
  ../include/dcelem.h ../include/dcdirrec.h ../include/dcfilefo.h \
  ../include/dcmetinf.h ../include/dcdatset.h ../include/dcpxitem.h \
- ../include/dcvrobow.h ../include/dcdebug.h ../include/dcdeftag.h
+ ../include/dcvrobow.h ../include/dcswap.h ../include/dcdebug.h \
+ ../include/dcdeftag.h
 dcstack.o: dcstack.cc ../../config/include/osconfig.h \
  ../include/dcstack.h ../include/dctypes.h ../include/dcdebug.h
 dcstream.o: dcstream.cc ../../config/include/osconfig.h \
  ../include/dcstream.h ../include/dcerror.h ../include/dctypes.h \
  ../include/dcbuf.h ../include/dcdefine.h
 dcswap.o: dcswap.cc ../../config/include/osconfig.h \
- ../include/dcswap.h ../include/dctypes.h ../include/dcdebug.h
+ ../include/dcswap.h ../include/dctypes.h ../include/dcerror.h \
+ ../include/dcxfer.h ../include/dcvr.h
 dctag.o: dctag.cc ../../config/include/osconfig.h ../include/dcdict.h \
  ../include/dcdicent.h ../include/dctagkey.h ../include/dctypes.h \
  ../include/dcvr.h ../include/dcentbst.h ../include/dcentset.h \

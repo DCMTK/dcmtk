@@ -11,9 +11,9 @@
 **
 **
 ** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1997-07-03 15:10:03 $
+** Update Date:		$Date: 1997-07-07 07:52:29 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcpxitem.cc,v $
-** CVS/RCS Revision:	$Revision: 1.5 $
+** CVS/RCS Revision:	$Revision: 1.6 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -27,7 +27,7 @@
  *
  *
  * Last Update:   $Author: andreas $
- * Revision:      $Revision: 1.5 $
+ * Revision:      $Revision: 1.6 $
  * Status:	  $State: Exp $
  *
  */
@@ -42,6 +42,7 @@
 #include <iostream.h>
 
 #include "dcpxitem.h"
+#include "dcswap.h"
 #include "dcdebug.h"
 
 
@@ -52,7 +53,7 @@
 DcmPixelItem::DcmPixelItem(const DcmTag &tag, const Uint32 len)
 : DcmOtherByteOtherWord(tag, len)
 {
-	Tag -> setVR(EVR_OB);
+    Tag.setVR(EVR_OB);
 }
 
 
@@ -69,7 +70,7 @@ DcmPixelItem::DcmPixelItem(const DcmPixelItem & old)
              << endl;
     }
     else
-	Tag -> setVR(EVR_OB);
+	Tag.setVR(EVR_OB);
 }
 
 
@@ -91,7 +92,7 @@ E_Condition DcmPixelItem::writeTagAndLength(DcmStream & outStream,
 	writtenBytes = 0;
     else
     {
-	l_error = this -> writeTag(outStream, *Tag, oxfer);
+	l_error = this -> writeTag(outStream, Tag, oxfer);
 	writtenBytes = 4;
 
 	Uint32 valueLength = Length;
@@ -101,8 +102,7 @@ E_Condition DcmPixelItem::writeTagAndLength(DcmStream & outStream,
 	{
 	    return EC_IllegalCall;
 	}
-	this -> swapIfNecessary(oByteOrder, gLocalByteOrder, 
-				&valueLength, 4, 4);
+	swapIfNecessary(oByteOrder, gLocalByteOrder, &valueLength, 4, 4);
 	outStream.WriteBytes(&valueLength, 4); // 4 Byte Laenge
 	writtenBytes += 4;
     }
@@ -116,7 +116,11 @@ E_Condition DcmPixelItem::writeTagAndLength(DcmStream & outStream,
 /*
 ** CVS/RCS Log:
 ** $Log: dcpxitem.cc,v $
-** Revision 1.5  1997-07-03 15:10:03  andreas
+** Revision 1.6  1997-07-07 07:52:29  andreas
+** - Enhanced (faster) byte swapping routine. swapIfNecessary moved from
+**   a method in DcmObject to a general function.
+**
+** Revision 1.5  1997/07/03 15:10:03  andreas
 ** - removed debugging functions Bdebug() and Edebug() since
 **   they write a static array and are not very useful at all.
 **   Cdebug and Vdebug are merged since they have the same semantics.
