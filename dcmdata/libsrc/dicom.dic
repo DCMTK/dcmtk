@@ -1,5 +1,5 @@
 #
-#  Copyright (C) 1994-2003, OFFIS
+#  Copyright (C) 1994-2004, OFFIS
 #
 #  This software and supporting documentation were developed by
 #
@@ -18,22 +18,23 @@
 #
 #  Author:  Andrew Hewett, Marco Eichelberg
 #
-#  Purpose: 
+#  Purpose:
 #  This is the global DICOM data dictionary for the dcmtk class library.
 #
-#  Last Update:      $Author: wilkens $
-#  Update Date:      $Date: 2004-02-11 16:00:11 $
+#  Last Update:      $Author: joergr $
+#  Update Date:      $Date: 2004-04-06 18:10:33 $
 #  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/Attic/dicom.dic,v $
-#  CVS/RCS Revision: $Revision: 1.49 $
+#  CVS/RCS Revision: $Revision: 1.50 $
 #  Status:           $State: Exp $
 #
 #  This dictionary contains
-#   - the complete dictionary from the 2003 DICOM publication
-#     which includes supplements 1-25 (except 16 and 21 which are cancelled),
-#     27-41 (34 is cancelled), 44, (46 is cancelled), 48-55, 57, 59, 61-62, 
-#     65, 68-70 and CP packages 1-22 and 24;
-#   - supplements 58, 73 (final text)
-#   - supplements 26, 45, 66, 71, 80, 82 (final text) - none of these modifies the dictionary
+#   - the complete dictionary from the 2003 DICOM publication which includes
+#     supplements 1-25 (except 16 and 21 which are cancelled), 27-41 (34 is
+#     cancelled), 44, (46 is cancelled), 48-55, 57, 59, 61-62, 65, 68-70 and
+#     CP packages 1-19
+#   - supplements 42, 58, 73 and CP packages 20-22, 24-25 (final text)
+#   - supplements 26, 45, 47, 64, 66-67, 71-72, 80, 82, 84 and CP package 23
+#     (final text) - none of these modifies the dictionary
 #
 # Each line represents an entry in the data dictionary.  Each line
 # has 5 fields (Tag, VR, Name, VM, Version).  Entries need not be
@@ -41,8 +42,8 @@
 #
 # Entries may override existing entries.
 #
-# Each field must be separated by a single tab.  The tag values (gggg,eeee) 
-# must be in hexedecimal and must be surrounded by parentheses.  Repeating 
+# Each field must be separated by a single tab.  The tag values (gggg,eeee)
+# must be in hexedecimal and must be surrounded by parentheses.  Repeating
 # groups are represented by indicating the range (gggg-gggg,eeee).  By default
 # the repeating notation only represents even numbers.  A range where only
 # odd numbers are valid is represented using the notation (gggg-o-gggg,eeee).
@@ -755,8 +756,10 @@
 (0018,9182)	FD	GradientOutput	1	dicom2003
 (0018,9183)	CS	FlowCompensationDirection	1	dicom2003
 (0018,9184)	FD	TaggingDelay	1	dicom2003
-(0018,9195)	FD	ChemicalShiftsMinimumIntegrationLimit	1	dicom2003
-(0018,9196)	FD	ChemicalShiftsMaximumIntegrationLimit	1	dicom2003
+# Attribute (0018,9195) renamed and retired in CP 386 (03/2004), was ChemicalShiftsMinimumIntegrationLimit before
+(0018,9195)	FD	RETIRED_ChemicalShiftsMinimumIntegrationLimitInHz	1	dicom2003
+# Attribute (0018,9196) renamed and retired in CP 386 (03/2004), was ChemicalShiftsMaximumIntegrationLimit before
+(0018,9196)	FD	RETIRED_ChemicalShiftsMaximumIntegrationLimitInHz	1	dicom2003
 (0018,9197)	SQ	MRVelocityEncodingSequence	1	dicom2003
 (0018,9198)	CS	FirstOrderPhaseCorrection	1	dicom2003
 (0018,9199)	CS	WaterReferencedPhaseCorrection	1	dicom2003
@@ -882,13 +885,13 @@
 (0028,1199)	UI	PaletteColorLookupTableUID	1	dicom98
 # VR for (0028,1201) RedPaletteColorLookupTableData was "US or SS" with VM=1-n in DICOM93. Changed in DICOM96 (Supplement 5).
 # now it is defined as US 1-n or SS 1-n or OW 1
-(0028,1201)	OW	RedPaletteColorLookupTableData	1	dicom98 
+(0028,1201)	OW	RedPaletteColorLookupTableData	1	dicom98
 # VR for (0028,1202) GreenPaletteColorLookupTableData was "US or SS" with VM=1-n in DICOM93. Changed in DICOM96 (Supplement 5).
 # now it is defined as US 1-n or SS 1-n or OW 1
-(0028,1202)	OW	GreenPaletteColorLookupTableData	1	dicom98 
+(0028,1202)	OW	GreenPaletteColorLookupTableData	1	dicom98
 # VR for (0028,1203) BluePaletteColorLookupTableData was "US or SS" with VM=1-n in DICOM93. Changed in DICOM96 (Supplement 5).
 # now it is defined as US 1-n or SS 1-n or OW 1
-(0028,1203)	OW	BluePaletteColorLookupTableData	1	dicom98 
+(0028,1203)	OW	BluePaletteColorLookupTableData	1	dicom98
 (0028,1221)	OW	SegmentedRedPaletteColorLookupTableData	1	dicom98
 (0028,1222)	OW	SegmentedGreenPaletteColorLookupTableData	1	dicom98
 (0028,1223)	OW	SegmentedBluePaletteColorLookupTableData	1	dicom98
@@ -1096,7 +1099,8 @@
 (0040,1102)	ST	PersonsAddress	1	dicom2003
 (0040,1103)	LO	PersonsTelephoneNumbers	1-n	dicom2003
 (0040,1400)	LT	RequestedProcedureComments	1	dicom98
-(0040,2001)	LO	ReasonForTheImagingServiceRequest	1	dicom98
+# Attribute (0040,2001) retired in CP 409 (03/2004)
+(0040,2001)	LO	RETIRED_ReasonForTheImagingServiceRequest	1	dicom98
 # Attribute renamed in CP 241, name was IssueDateOfImagingServiceRequest before
 (0040,2004)	DA	IssueDateOfImagingServiceRequest	1	dicom2001
 # Attribute renamed in CP 241, name was IssueTimeOfImagingServiceRequest before
@@ -2052,8 +2056,8 @@
 (0020,0016)	IS	IntervalNumber	1	DICOM93
 (0020,0017)	IS	TimeSlotNumber	1	DICOM93
 (0020,0018)	IS	AngleNumber	1	DICOM93
-# Attribute (2040,0500) is retired by Correction Proposal 53. It is a duplicate of (2010,0510). 
-(2040,0500)	SQ	RETIRED_ReferencedImageBoxSequence	1	DICOM93 
+# Attribute (2040,0500) is retired by Correction Proposal 53. It is a duplicate of (2010,0510).
+(2040,0500)	SQ	RETIRED_ReferencedImageBoxSequence	1	DICOM93
 (6000-60ff,1100)	US	OverlayDescriptorGray	1	DICOM93
 (6000-60ff,1101)	US	OverlayDescriptorRed	1	DICOM93
 (6000-60ff,1102)	US	OverlayDescriptorGreen	1	DICOM93
@@ -2213,7 +2217,7 @@
 #
 #---------------------------------------------------------------------------
 #
-# CP Packets 20-22, 24
+# CP Packets 20-25
 #
 # CP 159: rename existing attribute
 (0018,0036)	SQ	InterventionSequence	1	CP20
@@ -2221,6 +2225,8 @@
 (0018,0039)	CS	RETIRED_TherapyDescription	1	CP20
 # CP 159: add new attribute
 (0018,003A)	ST	InterventionDescription	1	CP20
+# CP 309: add new attribute
+(0008,3001)	SQ	AlternateRepresentationSequence	1	CP25
 # CP 326: add new attributes
 (0040,0440)	SQ	ProtocolContextSequence	1	CP20
 (0040,0441)	SQ	ContentItemModifierSequence	1	CP20
@@ -2241,6 +2247,23 @@
 (0040,9210)	SH	LUTLabel	1	CP24
 # CP 379: change VR from SS to FD
 (0018,9218)	FD	TagSpacingSecondDimension	1	CP24
+# CP 386: add new attributes (retire old ones, see above)
+(0018,9083)	SQ	MetaboliteMapCodeSequence	1	CP25
+(0018,9295)	FD	ChemicalShiftsMinimumIntegrationLimitInPpm	1	CP25
+(0018,9296)	FD	ChemicalShiftsMaximumIntegrationLimitInPpm	1	CP25
+# CP 392: add new attribute
+(0028,6023)	CS	FrameOfInterestType	1-n	CP25
+# CP 409: add new attribute (retire old one, see above)
+(0040,100A)	SQ	ReasonForRequestedProcedureCodeSequence	1	CP25
+#
+#---------------------------------------------------------------------------
+#
+# Supplement 42: MPEG2 Transfer Syntax
+# Final Text, 25 March 2004
+#
+(003A,0300)	SQ	MultiplexedAudioChannelsDescriptionCodeSequence	1	supp42
+(003A,0301)	IS	ChannelIdentificationCode	1	supp42
+(003A,0302)	CS	ChannelMode	1	supp42
 #
 #---------------------------------------------------------------------------
 #
@@ -2316,7 +2339,6 @@
 (0070,031A)	UI	FiducialUID	1	supp73
 (0070,031C)	SQ	FiducialSetSequence	1	supp73
 (0070,031E)	SQ	FiducialSequence	1	supp73
-
 #
 # EOF
 #

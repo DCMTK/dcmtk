@@ -4,7 +4,7 @@
 **
 **   User: joergr
 **   Host: caesar
-**   Date: 2004-02-13 10:28:34
+**   Date: 2004-04-06 19:43:15
 **   Prog: /home/joergr/source/dcmtk/dcmdata/libsrc/mkdeftag
 **
 ** From: /home/joergr/source/dcmtk/dcmdata/libsrc/dicom.dic
@@ -17,12 +17,12 @@
 
 #include "dctagkey.h"
 
-#define DCM_DICT_DEFTAG_BUILD_DATE "2004-02-13 10:28:34"
+#define DCM_DICT_DEFTAG_BUILD_DATE "2004-04-06 19:43:15"
 
 
 /*
 ** Fixed Tags in ascending (gggg,eeee) order.
-** Number of entries: 2033
+** Number of entries: 2042
 ** Tags with a repeating component (repeating tags) are listed later.
 */
 #define DCM_CommandGroupLength                   DcmTagKey(0x0000, 0x0000)
@@ -225,6 +225,7 @@
 #define DCM_TransducerPositionModifierSequence   DcmTagKey(0x0008, 0x2242)
 #define DCM_TransducerOrientationSequence        DcmTagKey(0x0008, 0x2244)
 #define DCM_TransducerOrientationModifierSequence DcmTagKey(0x0008, 0x2246)
+#define DCM_AlternateRepresentationSequence      DcmTagKey(0x0008, 0x3001)
 #define DCM_ACR_NEMA_IdentifyingComments         DcmTagKey(0x0008, 0x4000)
 #define DCM_FrameType                            DcmTagKey(0x0008, 0x9007)
 #define DCM_ReferencedImageEvidenceSequence      DcmTagKey(0x0008, 0x9092)
@@ -688,6 +689,7 @@
 #define DCM_MetaboliteMapDescription             DcmTagKey(0x0018, 0x9080)
 #define DCM_PartialFourier                       DcmTagKey(0x0018, 0x9081)
 #define DCM_EffectiveEchoTime                    DcmTagKey(0x0018, 0x9082)
+#define DCM_MetaboliteMapCodeSequence            DcmTagKey(0x0018, 0x9083)
 #define DCM_ChemicalShiftSequence                DcmTagKey(0x0018, 0x9084)
 #define DCM_CardiacSignalSource                  DcmTagKey(0x0018, 0x9085)
 #define DCM_DiffusionBValue                      DcmTagKey(0x0018, 0x9087)
@@ -738,8 +740,8 @@
 #define DCM_GradientOutput                       DcmTagKey(0x0018, 0x9182)
 #define DCM_FlowCompensationDirection            DcmTagKey(0x0018, 0x9183)
 #define DCM_TaggingDelay                         DcmTagKey(0x0018, 0x9184)
-#define DCM_ChemicalShiftsMinimumIntegrationLimit DcmTagKey(0x0018, 0x9195)
-#define DCM_ChemicalShiftsMaximumIntegrationLimit DcmTagKey(0x0018, 0x9196)
+#define DCM_RETIRED_ChemicalShiftsMinimumIntegrationLimitInHz DcmTagKey(0x0018, 0x9195)
+#define DCM_RETIRED_ChemicalShiftsMaximumIntegrationLimitInHz DcmTagKey(0x0018, 0x9196)
 #define DCM_MRVelocityEncodingSequence           DcmTagKey(0x0018, 0x9197)
 #define DCM_FirstOrderPhaseCorrection            DcmTagKey(0x0018, 0x9198)
 #define DCM_WaterReferencedPhaseCorrection       DcmTagKey(0x0018, 0x9199)
@@ -758,6 +760,8 @@
 #define DCM_SpecificAbsorptionRateSequence       DcmTagKey(0x0018, 0x9239)
 #define DCM_RFEchoTrainLength                    DcmTagKey(0x0018, 0x9240)
 #define DCM_GradientEchoTrainLength              DcmTagKey(0x0018, 0x9241)
+#define DCM_ChemicalShiftsMinimumIntegrationLimitInPpm DcmTagKey(0x0018, 0x9295)
+#define DCM_ChemicalShiftsMaximumIntegrationLimitInPpm DcmTagKey(0x0018, 0x9296)
 #define DCM_CTAcquisitionTypeSequence            DcmTagKey(0x0018, 0x9301)
 #define DCM_AcquisitionType                      DcmTagKey(0x0018, 0x9302)
 #define DCM_TubeAngle                            DcmTagKey(0x0018, 0x9303)
@@ -998,6 +1002,7 @@
 #define DCM_RepresentativeFrameNumber            DcmTagKey(0x0028, 0x6010)
 #define DCM_FrameNumbersOfInterestFOI            DcmTagKey(0x0028, 0x6020)
 #define DCM_FramesOfInterestDescription          DcmTagKey(0x0028, 0x6022)
+#define DCM_FrameOfInterestType                  DcmTagKey(0x0028, 0x6023)
 #define DCM_RETIRED_MaskPointers                 DcmTagKey(0x0028, 0x6030)
 #define DCM_RWavePointer                         DcmTagKey(0x0028, 0x6040)
 #define DCM_MaskSubtractionSequence              DcmTagKey(0x0028, 0x6100)
@@ -1091,6 +1096,9 @@
 #define DCM_FilterHighFrequency                  DcmTagKey(0x003a, 0x0221)
 #define DCM_NotchFilterFrequency                 DcmTagKey(0x003a, 0x0222)
 #define DCM_NotchFilterBandwidth                 DcmTagKey(0x003a, 0x0223)
+#define DCM_MultiplexedAudioChannelsDescriptionCodeSequence DcmTagKey(0x003a, 0x0300)
+#define DCM_ChannelIdentificationCode            DcmTagKey(0x003a, 0x0301)
+#define DCM_ChannelMode                          DcmTagKey(0x003a, 0x0302)
 #define DCM_ModalityWorklistGroupLength          DcmTagKey(0x0040, 0x0000)
 #define DCM_ScheduledStationAETitle              DcmTagKey(0x0040, 0x0001)
 #define DCM_ScheduledProcedureStepStartDate      DcmTagKey(0x0040, 0x0002)
@@ -1172,13 +1180,14 @@
 #define DCM_FillerOrderNumberProcedure           DcmTagKey(0x0040, 0x1007)
 #define DCM_ConfidentialityCode                  DcmTagKey(0x0040, 0x1008)
 #define DCM_ReportingPriority                    DcmTagKey(0x0040, 0x1009)
+#define DCM_ReasonForRequestedProcedureCodeSequence DcmTagKey(0x0040, 0x100a)
 #define DCM_NamesOfIntendedRecipientsOfResults   DcmTagKey(0x0040, 0x1010)
 #define DCM_IntendedRecipientsOfResultsIdentificationSequence DcmTagKey(0x0040, 0x1011)
 #define DCM_PersonIdentificationCodeSequence     DcmTagKey(0x0040, 0x1101)
 #define DCM_PersonsAddress                       DcmTagKey(0x0040, 0x1102)
 #define DCM_PersonsTelephoneNumbers              DcmTagKey(0x0040, 0x1103)
 #define DCM_RequestedProcedureComments           DcmTagKey(0x0040, 0x1400)
-#define DCM_ReasonForTheImagingServiceRequest    DcmTagKey(0x0040, 0x2001)
+#define DCM_RETIRED_ReasonForTheImagingServiceRequest DcmTagKey(0x0040, 0x2001)
 #define DCM_IssueDateOfImagingServiceRequest     DcmTagKey(0x0040, 0x2004)
 #define DCM_IssueTimeOfImagingServiceRequest     DcmTagKey(0x0040, 0x2005)
 #define DCM_RETIRED_PlacerOrderNumberImagingServiceRequest DcmTagKey(0x0040, 0x2006)

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2001, OFFIS
+ *  Copyright (C) 1994-2004, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,10 +21,10 @@
  *
  *  Purpose: Handling of transfer syntaxes
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-08-27 16:55:41 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2004-04-06 18:01:50 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcxfer.h,v $
- *  CVS/RCS Revision: $Revision: 1.15 $
+ *  CVS/RCS Revision: $Revision: 1.16 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -72,7 +72,8 @@ typedef enum {
     EXS_JPEGLSLossy = 24,
     EXS_DeflatedLittleEndianExplicit = 25,
     EXS_JPEG2000LosslessOnly = 26,
-    EXS_JPEG2000 = 27    
+    EXS_JPEG2000 = 27,
+    EXS_MPEG2MainProfileAtMainLevel = 28
 } E_TransferSyntax;
 
 
@@ -134,27 +135,27 @@ public:
     inline E_ByteOrder getByteOrder() const { return byteOrder; }
     inline const char* getXferName() const { return xferName; }
     inline const char* getXferID() const { return xferID; }
-    inline OFBool isLittleEndian() const 
-    { 
-        return byteOrder == EBO_LittleEndian; 
+    inline OFBool isLittleEndian() const
+    {
+        return byteOrder == EBO_LittleEndian;
     }
     inline OFBool isBigEndian() const { return byteOrder == EBO_BigEndian; }
     inline OFBool isImplicitVR() const { return vrType == EVT_Implicit; }
     inline OFBool isExplicitVR() const { return vrType == EVT_Explicit; }
-    inline OFBool isEncapsulated() const 
-    { 
-        return encapsulated == EJE_Encapsulated; 
+    inline OFBool isEncapsulated() const
+    {
+        return encapsulated == EJE_Encapsulated;
     }
     inline OFBool isNotEncapsulated() const
-    { 
-        return encapsulated == EJE_NotEncapsulated; 
+    {
+        return encapsulated == EJE_NotEncapsulated;
     }
     inline Uint32 getJPEGProcess8Bit() const { return JPEGProcess8; }
     inline Uint32 getJPEGProcess12Bit() const { return JPEGProcess12;}
     inline E_StreamCompression getStreamCompression() const { return streamCompression;}
 
-    /* return the number of bytes needed to describe the tag, length, VR 
-    ** and any reserved fields for this transfer syntax when encoding the 
+    /* return the number of bytes needed to describe the tag, length, VR
+    ** and any reserved fields for this transfer syntax when encoding the
     ** specified VR.
     */
     Uint32 sizeofTagHeader(DcmEVR evr);
@@ -169,7 +170,11 @@ extern const E_ByteOrder gLocalByteOrder;
 /*
  * CVS/RCS Log:
  * $Log: dcxfer.h,v $
- * Revision 1.15  2002-08-27 16:55:41  meichel
+ * Revision 1.16  2004-04-06 18:01:50  joergr
+ * Updated data dictionary, UIDs and transfer syntaxes for the latest Final Text
+ * Supplements (42 and 47) and Correction Proposals (CP 25).
+ *
+ * Revision 1.15  2002/08/27 16:55:41  meichel
  * Initial release of new DICOM I/O stream classes that add support for stream
  *   compression (deflated little endian explicit VR transfer syntax)
  *
