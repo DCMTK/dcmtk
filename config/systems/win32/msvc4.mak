@@ -296,11 +296,9 @@ CLEAN :
 	-@erase "$(INTDIR)\dcdictzz.obj"
 	-@erase "$(INTDIR)\dcdirrec.obj"
 	-@erase "$(INTDIR)\dcelem.obj"
-	-@erase "$(INTDIR)\dcentbst.obj"
-	-@erase "$(INTDIR)\dcentlst.obj"
-	-@erase "$(INTDIR)\dcentset.obj"
 	-@erase "$(INTDIR)\dcerror.obj"
 	-@erase "$(INTDIR)\dcfilefo.obj"
+	-@erase "$(INTDIR)\dchashdi.obj"
 	-@erase "$(INTDIR)\dcitem.obj"
 	-@erase "$(INTDIR)\dclist.obj"
 	-@erase "$(INTDIR)\dcmetinf.obj"
@@ -399,11 +397,9 @@ LIB32_OBJS= \
 	"$(INTDIR)\dcdictzz.obj" \
 	"$(INTDIR)\dcdirrec.obj" \
 	"$(INTDIR)\dcelem.obj" \
-	"$(INTDIR)\dcentbst.obj" \
-	"$(INTDIR)\dcentlst.obj" \
-	"$(INTDIR)\dcentset.obj" \
 	"$(INTDIR)\dcerror.obj" \
 	"$(INTDIR)\dcfilefo.obj" \
+	"$(INTDIR)\dchashdi.obj" \
 	"$(INTDIR)\dcitem.obj" \
 	"$(INTDIR)\dclist.obj" \
 	"$(INTDIR)\dcmetinf.obj" \
@@ -483,11 +479,9 @@ CLEAN :
 	-@erase "$(INTDIR)\dcdictzz.obj"
 	-@erase "$(INTDIR)\dcdirrec.obj"
 	-@erase "$(INTDIR)\dcelem.obj"
-	-@erase "$(INTDIR)\dcentbst.obj"
-	-@erase "$(INTDIR)\dcentlst.obj"
-	-@erase "$(INTDIR)\dcentset.obj"
 	-@erase "$(INTDIR)\dcerror.obj"
 	-@erase "$(INTDIR)\dcfilefo.obj"
+	-@erase "$(INTDIR)\dchashdi.obj"
 	-@erase "$(INTDIR)\dcitem.obj"
 	-@erase "$(INTDIR)\dclist.obj"
 	-@erase "$(INTDIR)\dcmetinf.obj"
@@ -586,11 +580,9 @@ LIB32_OBJS= \
 	"$(INTDIR)\dcdictzz.obj" \
 	"$(INTDIR)\dcdirrec.obj" \
 	"$(INTDIR)\dcelem.obj" \
-	"$(INTDIR)\dcentbst.obj" \
-	"$(INTDIR)\dcentlst.obj" \
-	"$(INTDIR)\dcentset.obj" \
 	"$(INTDIR)\dcerror.obj" \
 	"$(INTDIR)\dcfilefo.obj" \
+	"$(INTDIR)\dchashdi.obj" \
 	"$(INTDIR)\dcitem.obj" \
 	"$(INTDIR)\dclist.obj" \
 	"$(INTDIR)\dcmetinf.obj" \
@@ -4406,9 +4398,6 @@ LIB32_OBJS= \
 # Begin Source File
 
 SOURCE=.\dcmdata\libsrc\cmdlnarg.cxx
-
-!IF  "$(CFG)" == "dcmdata - Win32 Release"
-
 DEP_CPP_CMDLN=\
 	".\config\include\cfmwerks.h"\
 	".\config\include\cfwin32.h"\
@@ -4419,30 +4408,12 @@ DEP_CPP_CMDLN=\
 "$(INTDIR)\cmdlnarg.obj" : $(SOURCE) $(DEP_CPP_CMDLN) "$(INTDIR)"
    $(CPP) $(CPP_PROJ) $(SOURCE)
 
-
-!ELSEIF  "$(CFG)" == "dcmdata - Win32 Debug"
-
-DEP_CPP_CMDLN=\
-	".\config\include\cfmwerks.h"\
-	".\config\include\cfwin32.h"\
-	".\config\include\osconfig.h"\
-	".\dcmdata\include\cmdlnarg.h"\
-	
-
-"$(INTDIR)\cmdlnarg.obj" : $(SOURCE) $(DEP_CPP_CMDLN) "$(INTDIR)"
-   $(CPP) $(CPP_PROJ) $(SOURCE)
-
-
-!ENDIF 
 
 # End Source File
 ################################################################################
 # Begin Source File
 
 SOURCE=.\dcmdata\libsrc\dcbuf.cxx
-
-!IF  "$(CFG)" == "dcmdata - Win32 Release"
-
 DEP_CPP_DCBUF=\
 	".\config\include\cfmwerks.h"\
 	".\config\include\cfwin32.h"\
@@ -4456,33 +4427,12 @@ DEP_CPP_DCBUF=\
 "$(INTDIR)\dcbuf.obj" : $(SOURCE) $(DEP_CPP_DCBUF) "$(INTDIR)"
    $(CPP) $(CPP_PROJ) $(SOURCE)
 
-
-!ELSEIF  "$(CFG)" == "dcmdata - Win32 Debug"
-
-DEP_CPP_DCBUF=\
-	".\config\include\cfmwerks.h"\
-	".\config\include\cfwin32.h"\
-	".\config\include\osconfig.h"\
-	".\dcmdata\include\dcbuf.h"\
-	".\dcmdata\include\dcdefine.h"\
-	".\dcmdata\include\dctypes.h"\
-	".\ofstd\include\oftypes.h"\
-	
-
-"$(INTDIR)\dcbuf.obj" : $(SOURCE) $(DEP_CPP_DCBUF) "$(INTDIR)"
-   $(CPP) $(CPP_PROJ) $(SOURCE)
-
-
-!ENDIF 
 
 # End Source File
 ################################################################################
 # Begin Source File
 
 SOURCE=.\dcmdata\libsrc\dcbytstr.cxx
-
-!IF  "$(CFG)" == "dcmdata - Win32 Release"
-
 DEP_CPP_DCBYT=\
 	".\config\include\cfmwerks.h"\
 	".\config\include\cfwin32.h"\
@@ -4501,50 +4451,19 @@ DEP_CPP_DCBYT=\
 	".\dcmdata\include\dctypes.h"\
 	".\dcmdata\include\dcvr.h"\
 	".\dcmdata\include\dcxfer.h"\
+	".\ofstd\include\ofstring.h"\
 	".\ofstd\include\oftypes.h"\
 	
 
 "$(INTDIR)\dcbytstr.obj" : $(SOURCE) $(DEP_CPP_DCBYT) "$(INTDIR)"
    $(CPP) $(CPP_PROJ) $(SOURCE)
 
-
-!ELSEIF  "$(CFG)" == "dcmdata - Win32 Debug"
-
-DEP_CPP_DCBYT=\
-	".\config\include\cfmwerks.h"\
-	".\config\include\cfwin32.h"\
-	".\config\include\osconfig.h"\
-	".\dcmdata\include\dcbytstr.h"\
-	".\dcmdata\include\dcdebug.h"\
-	".\dcmdata\include\dcdicent.h"\
-	".\dcmdata\include\dcelem.h"\
-	".\dcmdata\include\dcerror.h"\
-	".\dcmdata\include\dclist.h"\
-	".\dcmdata\include\dcobject.h"\
-	".\dcmdata\include\dcstack.h"\
-	".\dcmdata\include\dcstream.h"\
-	".\dcmdata\include\dctag.h"\
-	".\dcmdata\include\dctagkey.h"\
-	".\dcmdata\include\dctypes.h"\
-	".\dcmdata\include\dcvr.h"\
-	".\dcmdata\include\dcxfer.h"\
-	".\ofstd\include\oftypes.h"\
-	
-
-"$(INTDIR)\dcbytstr.obj" : $(SOURCE) $(DEP_CPP_DCBYT) "$(INTDIR)"
-   $(CPP) $(CPP_PROJ) $(SOURCE)
-
-
-!ENDIF 
 
 # End Source File
 ################################################################################
 # Begin Source File
 
 SOURCE=.\dcmdata\libsrc\dcchrstr.cxx
-
-!IF  "$(CFG)" == "dcmdata - Win32 Release"
-
 DEP_CPP_DCCHR=\
 	".\config\include\cfmwerks.h"\
 	".\config\include\cfwin32.h"\
@@ -4569,44 +4488,12 @@ DEP_CPP_DCCHR=\
 "$(INTDIR)\dcchrstr.obj" : $(SOURCE) $(DEP_CPP_DCCHR) "$(INTDIR)"
    $(CPP) $(CPP_PROJ) $(SOURCE)
 
-
-!ELSEIF  "$(CFG)" == "dcmdata - Win32 Debug"
-
-DEP_CPP_DCCHR=\
-	".\config\include\cfmwerks.h"\
-	".\config\include\cfwin32.h"\
-	".\config\include\osconfig.h"\
-	".\dcmdata\include\dcbytstr.h"\
-	".\dcmdata\include\dcchrstr.h"\
-	".\dcmdata\include\dcdicent.h"\
-	".\dcmdata\include\dcelem.h"\
-	".\dcmdata\include\dcerror.h"\
-	".\dcmdata\include\dclist.h"\
-	".\dcmdata\include\dcobject.h"\
-	".\dcmdata\include\dcstack.h"\
-	".\dcmdata\include\dcstream.h"\
-	".\dcmdata\include\dctag.h"\
-	".\dcmdata\include\dctagkey.h"\
-	".\dcmdata\include\dctypes.h"\
-	".\dcmdata\include\dcvr.h"\
-	".\dcmdata\include\dcxfer.h"\
-	".\ofstd\include\oftypes.h"\
-	
-
-"$(INTDIR)\dcchrstr.obj" : $(SOURCE) $(DEP_CPP_DCCHR) "$(INTDIR)"
-   $(CPP) $(CPP_PROJ) $(SOURCE)
-
-
-!ENDIF 
 
 # End Source File
 ################################################################################
 # Begin Source File
 
 SOURCE=.\dcmdata\libsrc\dcdatset.cxx
-
-!IF  "$(CFG)" == "dcmdata - Win32 Release"
-
 DEP_CPP_DCDAT=\
 	".\config\include\cfmwerks.h"\
 	".\config\include\cfwin32.h"\
@@ -4641,54 +4528,12 @@ DEP_CPP_DCDAT=\
 "$(INTDIR)\dcdatset.obj" : $(SOURCE) $(DEP_CPP_DCDAT) "$(INTDIR)"
    $(CPP) $(CPP_PROJ) $(SOURCE)
 
-
-!ELSEIF  "$(CFG)" == "dcmdata - Win32 Debug"
-
-DEP_CPP_DCDAT=\
-	".\config\include\cfmwerks.h"\
-	".\config\include\cfwin32.h"\
-	".\config\include\osconfig.h"\
-	".\dcmdata\include\dcbytstr.h"\
-	".\dcmdata\include\dcdatset.h"\
-	".\dcmdata\include\dcdebug.h"\
-	".\dcmdata\include\dcdeftag.h"\
-	".\dcmdata\include\dcdicent.h"\
-	".\dcmdata\include\dcelem.h"\
-	".\dcmdata\include\dcerror.h"\
-	".\dcmdata\include\dcitem.h"\
-	".\dcmdata\include\dclist.h"\
-	".\dcmdata\include\dcobject.h"\
-	".\dcmdata\include\dcpixel.h"\
-	".\dcmdata\include\dcstack.h"\
-	".\dcmdata\include\dcstream.h"\
-	".\dcmdata\include\dctag.h"\
-	".\dcmdata\include\dctagkey.h"\
-	".\dcmdata\include\dctypes.h"\
-	".\dcmdata\include\dcvr.h"\
-	".\dcmdata\include\dcvrobow.h"\
-	".\dcmdata\include\dcvrpobw.h"\
-	".\dcmdata\include\dcvrui.h"\
-	".\dcmdata\include\dcvrus.h"\
-	".\dcmdata\include\dcxfer.h"\
-	".\ofstd\include\oflist.h"\
-	".\ofstd\include\ofstack.h"\
-	".\ofstd\include\oftypes.h"\
-	
-
-"$(INTDIR)\dcdatset.obj" : $(SOURCE) $(DEP_CPP_DCDAT) "$(INTDIR)"
-   $(CPP) $(CPP_PROJ) $(SOURCE)
-
-
-!ENDIF 
 
 # End Source File
 ################################################################################
 # Begin Source File
 
 SOURCE=.\dcmdata\libsrc\dcdebug.cxx
-
-!IF  "$(CFG)" == "dcmdata - Win32 Release"
-
 DEP_CPP_DCDEB=\
 	".\config\include\cfmwerks.h"\
 	".\config\include\cfwin32.h"\
@@ -4699,30 +4544,12 @@ DEP_CPP_DCDEB=\
 "$(INTDIR)\dcdebug.obj" : $(SOURCE) $(DEP_CPP_DCDEB) "$(INTDIR)"
    $(CPP) $(CPP_PROJ) $(SOURCE)
 
-
-!ELSEIF  "$(CFG)" == "dcmdata - Win32 Debug"
-
-DEP_CPP_DCDEB=\
-	".\config\include\cfmwerks.h"\
-	".\config\include\cfwin32.h"\
-	".\config\include\osconfig.h"\
-	".\dcmdata\include\dcdebug.h"\
-	
-
-"$(INTDIR)\dcdebug.obj" : $(SOURCE) $(DEP_CPP_DCDEB) "$(INTDIR)"
-   $(CPP) $(CPP_PROJ) $(SOURCE)
-
-
-!ENDIF 
 
 # End Source File
 ################################################################################
 # Begin Source File
 
 SOURCE=.\dcmdata\libsrc\dcdicdir.cxx
-
-!IF  "$(CFG)" == "dcmdata - Win32 Release"
-
 DEP_CPP_DCDIC=\
 	".\config\include\cfmwerks.h"\
 	".\config\include\cfwin32.h"\
@@ -4739,12 +4566,9 @@ DEP_CPP_DCDIC=\
 	".\dcmdata\include\dcdict.h"\
 	".\dcmdata\include\dcdirrec.h"\
 	".\dcmdata\include\dcelem.h"\
-	".\dcmdata\include\dcentbst.h"\
-	".\dcmdata\include\dcentdef.h"\
-	".\dcmdata\include\dcentlst.h"\
-	".\dcmdata\include\dcentset.h"\
 	".\dcmdata\include\dcerror.h"\
 	".\dcmdata\include\dcfilefo.h"\
+	".\dcmdata\include\dchashdi.h"\
 	".\dcmdata\include\dcitem.h"\
 	".\dcmdata\include\dclist.h"\
 	".\dcmdata\include\dcmetinf.h"\
@@ -4788,7 +4612,6 @@ DEP_CPP_DCDIC=\
 	".\dcmdata\include\dcvrulup.h"\
 	".\dcmdata\include\dcvrus.h"\
 	".\dcmdata\include\dcxfer.h"\
-	".\dcmdata\include\pix.h"\
 	".\ofstd\include\oflist.h"\
 	".\ofstd\include\oftypes.h"\
 	
@@ -4796,93 +4619,12 @@ DEP_CPP_DCDIC=\
 "$(INTDIR)\dcdicdir.obj" : $(SOURCE) $(DEP_CPP_DCDIC) "$(INTDIR)"
    $(CPP) $(CPP_PROJ) $(SOURCE)
 
-
-!ELSEIF  "$(CFG)" == "dcmdata - Win32 Debug"
-
-DEP_CPP_DCDIC=\
-	".\config\include\cfmwerks.h"\
-	".\config\include\cfwin32.h"\
-	".\config\include\osconfig.h"\
-	".\dcmdata\include\cmdlnarg.h"\
-	".\dcmdata\include\dcbytstr.h"\
-	".\dcmdata\include\dcchrstr.h"\
-	".\dcmdata\include\dcdatset.h"\
-	".\dcmdata\include\dcdebug.h"\
-	".\dcmdata\include\dcdefine.h"\
-	".\dcmdata\include\dcdeftag.h"\
-	".\dcmdata\include\dcdicdir.h"\
-	".\dcmdata\include\dcdicent.h"\
-	".\dcmdata\include\dcdict.h"\
-	".\dcmdata\include\dcdirrec.h"\
-	".\dcmdata\include\dcelem.h"\
-	".\dcmdata\include\dcentbst.h"\
-	".\dcmdata\include\dcentdef.h"\
-	".\dcmdata\include\dcentlst.h"\
-	".\dcmdata\include\dcentset.h"\
-	".\dcmdata\include\dcerror.h"\
-	".\dcmdata\include\dcfilefo.h"\
-	".\dcmdata\include\dcitem.h"\
-	".\dcmdata\include\dclist.h"\
-	".\dcmdata\include\dcmetinf.h"\
-	".\dcmdata\include\dcobject.h"\
-	".\dcmdata\include\dcovlay.h"\
-	".\dcmdata\include\dcpixel.h"\
-	".\dcmdata\include\dcpixseq.h"\
-	".\dcmdata\include\dcsequen.h"\
-	".\dcmdata\include\dcstack.h"\
-	".\dcmdata\include\dcstream.h"\
-	".\dcmdata\include\dcswap.h"\
-	".\dcmdata\include\dctag.h"\
-	".\dcmdata\include\dctagkey.h"\
-	".\dcmdata\include\dctk.h"\
-	".\dcmdata\include\dctypes.h"\
-	".\dcmdata\include\dcuid.h"\
-	".\dcmdata\include\dcvm.h"\
-	".\dcmdata\include\dcvr.h"\
-	".\dcmdata\include\dcvrae.h"\
-	".\dcmdata\include\dcvras.h"\
-	".\dcmdata\include\dcvrat.h"\
-	".\dcmdata\include\dcvrcs.h"\
-	".\dcmdata\include\dcvrda.h"\
-	".\dcmdata\include\dcvrds.h"\
-	".\dcmdata\include\dcvrdt.h"\
-	".\dcmdata\include\dcvrfd.h"\
-	".\dcmdata\include\dcvrfl.h"\
-	".\dcmdata\include\dcvris.h"\
-	".\dcmdata\include\dcvrlo.h"\
-	".\dcmdata\include\dcvrlt.h"\
-	".\dcmdata\include\dcvrobow.h"\
-	".\dcmdata\include\dcvrpn.h"\
-	".\dcmdata\include\dcvrpobw.h"\
-	".\dcmdata\include\dcvrsh.h"\
-	".\dcmdata\include\dcvrsl.h"\
-	".\dcmdata\include\dcvrss.h"\
-	".\dcmdata\include\dcvrst.h"\
-	".\dcmdata\include\dcvrtm.h"\
-	".\dcmdata\include\dcvrui.h"\
-	".\dcmdata\include\dcvrul.h"\
-	".\dcmdata\include\dcvrulup.h"\
-	".\dcmdata\include\dcvrus.h"\
-	".\dcmdata\include\dcxfer.h"\
-	".\dcmdata\include\pix.h"\
-	".\ofstd\include\oflist.h"\
-	".\ofstd\include\oftypes.h"\
-	
-
-"$(INTDIR)\dcdicdir.obj" : $(SOURCE) $(DEP_CPP_DCDIC) "$(INTDIR)"
-   $(CPP) $(CPP_PROJ) $(SOURCE)
-
-
-!ENDIF 
 
 # End Source File
 ################################################################################
 # Begin Source File
 
 SOURCE=.\dcmdata\libsrc\dcdicent.cxx
-
-!IF  "$(CFG)" == "dcmdata - Win32 Release"
-
 DEP_CPP_DCDICE=\
 	".\config\include\cfmwerks.h"\
 	".\config\include\cfwin32.h"\
@@ -4897,34 +4639,12 @@ DEP_CPP_DCDICE=\
 "$(INTDIR)\dcdicent.obj" : $(SOURCE) $(DEP_CPP_DCDICE) "$(INTDIR)"
    $(CPP) $(CPP_PROJ) $(SOURCE)
 
-
-!ELSEIF  "$(CFG)" == "dcmdata - Win32 Debug"
-
-DEP_CPP_DCDICE=\
-	".\config\include\cfmwerks.h"\
-	".\config\include\cfwin32.h"\
-	".\config\include\osconfig.h"\
-	".\dcmdata\include\dcdicent.h"\
-	".\dcmdata\include\dctagkey.h"\
-	".\dcmdata\include\dctypes.h"\
-	".\dcmdata\include\dcvr.h"\
-	".\ofstd\include\oftypes.h"\
-	
-
-"$(INTDIR)\dcdicent.obj" : $(SOURCE) $(DEP_CPP_DCDICE) "$(INTDIR)"
-   $(CPP) $(CPP_PROJ) $(SOURCE)
-
-
-!ENDIF 
 
 # End Source File
 ################################################################################
 # Begin Source File
 
 SOURCE=.\dcmdata\libsrc\dcdict.cxx
-
-!IF  "$(CFG)" == "dcmdata - Win32 Release"
-
 DEP_CPP_DCDICT=\
 	".\config\include\cfmwerks.h"\
 	".\config\include\cfwin32.h"\
@@ -4932,109 +4652,46 @@ DEP_CPP_DCDICT=\
 	".\dcmdata\include\dcdefine.h"\
 	".\dcmdata\include\dcdicent.h"\
 	".\dcmdata\include\dcdict.h"\
-	".\dcmdata\include\dcentbst.h"\
-	".\dcmdata\include\dcentdef.h"\
-	".\dcmdata\include\dcentlst.h"\
-	".\dcmdata\include\dcentset.h"\
+	".\dcmdata\include\dchashdi.h"\
 	".\dcmdata\include\dctagkey.h"\
 	".\dcmdata\include\dctypes.h"\
 	".\dcmdata\include\dcvr.h"\
-	".\dcmdata\include\pix.h"\
+	".\ofstd\include\oflist.h"\
 	".\ofstd\include\oftypes.h"\
 	
 
 "$(INTDIR)\dcdict.obj" : $(SOURCE) $(DEP_CPP_DCDICT) "$(INTDIR)"
    $(CPP) $(CPP_PROJ) $(SOURCE)
 
-
-!ELSEIF  "$(CFG)" == "dcmdata - Win32 Debug"
-
-DEP_CPP_DCDICT=\
-	".\config\include\cfmwerks.h"\
-	".\config\include\cfwin32.h"\
-	".\config\include\osconfig.h"\
-	".\dcmdata\include\dcdefine.h"\
-	".\dcmdata\include\dcdicent.h"\
-	".\dcmdata\include\dcdict.h"\
-	".\dcmdata\include\dcentbst.h"\
-	".\dcmdata\include\dcentdef.h"\
-	".\dcmdata\include\dcentlst.h"\
-	".\dcmdata\include\dcentset.h"\
-	".\dcmdata\include\dctagkey.h"\
-	".\dcmdata\include\dctypes.h"\
-	".\dcmdata\include\dcvr.h"\
-	".\dcmdata\include\pix.h"\
-	".\ofstd\include\oftypes.h"\
-	
-
-"$(INTDIR)\dcdict.obj" : $(SOURCE) $(DEP_CPP_DCDICT) "$(INTDIR)"
-   $(CPP) $(CPP_PROJ) $(SOURCE)
-
-
-!ENDIF 
 
 # End Source File
 ################################################################################
 # Begin Source File
 
 SOURCE=.\dcmdata\libsrc\dcdictzz.cxx
-
-!IF  "$(CFG)" == "dcmdata - Win32 Release"
-
 DEP_CPP_DCDICTZ=\
 	".\config\include\cfmwerks.h"\
 	".\config\include\cfwin32.h"\
 	".\config\include\osconfig.h"\
 	".\dcmdata\include\dcdicent.h"\
 	".\dcmdata\include\dcdict.h"\
-	".\dcmdata\include\dcentbst.h"\
-	".\dcmdata\include\dcentdef.h"\
-	".\dcmdata\include\dcentlst.h"\
-	".\dcmdata\include\dcentset.h"\
+	".\dcmdata\include\dchashdi.h"\
 	".\dcmdata\include\dctagkey.h"\
 	".\dcmdata\include\dctypes.h"\
 	".\dcmdata\include\dcvr.h"\
-	".\dcmdata\include\pix.h"\
+	".\ofstd\include\oflist.h"\
 	".\ofstd\include\oftypes.h"\
 	
 
 "$(INTDIR)\dcdictzz.obj" : $(SOURCE) $(DEP_CPP_DCDICTZ) "$(INTDIR)"
    $(CPP) $(CPP_PROJ) $(SOURCE)
 
-
-!ELSEIF  "$(CFG)" == "dcmdata - Win32 Debug"
-
-DEP_CPP_DCDICTZ=\
-	".\config\include\cfmwerks.h"\
-	".\config\include\cfwin32.h"\
-	".\config\include\osconfig.h"\
-	".\dcmdata\include\dcdicent.h"\
-	".\dcmdata\include\dcdict.h"\
-	".\dcmdata\include\dcentbst.h"\
-	".\dcmdata\include\dcentdef.h"\
-	".\dcmdata\include\dcentlst.h"\
-	".\dcmdata\include\dcentset.h"\
-	".\dcmdata\include\dctagkey.h"\
-	".\dcmdata\include\dctypes.h"\
-	".\dcmdata\include\dcvr.h"\
-	".\dcmdata\include\pix.h"\
-	".\ofstd\include\oftypes.h"\
-	
-
-"$(INTDIR)\dcdictzz.obj" : $(SOURCE) $(DEP_CPP_DCDICTZ) "$(INTDIR)"
-   $(CPP) $(CPP_PROJ) $(SOURCE)
-
-
-!ENDIF 
 
 # End Source File
 ################################################################################
 # Begin Source File
 
 SOURCE=.\dcmdata\libsrc\dcdirrec.cxx
-
-!IF  "$(CFG)" == "dcmdata - Win32 Release"
-
 DEP_CPP_DCDIR=\
 	".\config\include\cfmwerks.h"\
 	".\config\include\cfwin32.h"\
@@ -5051,12 +4708,9 @@ DEP_CPP_DCDIR=\
 	".\dcmdata\include\dcdict.h"\
 	".\dcmdata\include\dcdirrec.h"\
 	".\dcmdata\include\dcelem.h"\
-	".\dcmdata\include\dcentbst.h"\
-	".\dcmdata\include\dcentdef.h"\
-	".\dcmdata\include\dcentlst.h"\
-	".\dcmdata\include\dcentset.h"\
 	".\dcmdata\include\dcerror.h"\
 	".\dcmdata\include\dcfilefo.h"\
+	".\dcmdata\include\dchashdi.h"\
 	".\dcmdata\include\dcitem.h"\
 	".\dcmdata\include\dclist.h"\
 	".\dcmdata\include\dcmetinf.h"\
@@ -5100,7 +4754,6 @@ DEP_CPP_DCDIR=\
 	".\dcmdata\include\dcvrulup.h"\
 	".\dcmdata\include\dcvrus.h"\
 	".\dcmdata\include\dcxfer.h"\
-	".\dcmdata\include\pix.h"\
 	".\ofstd\include\oflist.h"\
 	".\ofstd\include\oftypes.h"\
 	
@@ -5108,93 +4761,12 @@ DEP_CPP_DCDIR=\
 "$(INTDIR)\dcdirrec.obj" : $(SOURCE) $(DEP_CPP_DCDIR) "$(INTDIR)"
    $(CPP) $(CPP_PROJ) $(SOURCE)
 
-
-!ELSEIF  "$(CFG)" == "dcmdata - Win32 Debug"
-
-DEP_CPP_DCDIR=\
-	".\config\include\cfmwerks.h"\
-	".\config\include\cfwin32.h"\
-	".\config\include\osconfig.h"\
-	".\dcmdata\include\cmdlnarg.h"\
-	".\dcmdata\include\dcbytstr.h"\
-	".\dcmdata\include\dcchrstr.h"\
-	".\dcmdata\include\dcdatset.h"\
-	".\dcmdata\include\dcdebug.h"\
-	".\dcmdata\include\dcdefine.h"\
-	".\dcmdata\include\dcdeftag.h"\
-	".\dcmdata\include\dcdicdir.h"\
-	".\dcmdata\include\dcdicent.h"\
-	".\dcmdata\include\dcdict.h"\
-	".\dcmdata\include\dcdirrec.h"\
-	".\dcmdata\include\dcelem.h"\
-	".\dcmdata\include\dcentbst.h"\
-	".\dcmdata\include\dcentdef.h"\
-	".\dcmdata\include\dcentlst.h"\
-	".\dcmdata\include\dcentset.h"\
-	".\dcmdata\include\dcerror.h"\
-	".\dcmdata\include\dcfilefo.h"\
-	".\dcmdata\include\dcitem.h"\
-	".\dcmdata\include\dclist.h"\
-	".\dcmdata\include\dcmetinf.h"\
-	".\dcmdata\include\dcobject.h"\
-	".\dcmdata\include\dcovlay.h"\
-	".\dcmdata\include\dcpixel.h"\
-	".\dcmdata\include\dcpixseq.h"\
-	".\dcmdata\include\dcsequen.h"\
-	".\dcmdata\include\dcstack.h"\
-	".\dcmdata\include\dcstream.h"\
-	".\dcmdata\include\dcswap.h"\
-	".\dcmdata\include\dctag.h"\
-	".\dcmdata\include\dctagkey.h"\
-	".\dcmdata\include\dctk.h"\
-	".\dcmdata\include\dctypes.h"\
-	".\dcmdata\include\dcuid.h"\
-	".\dcmdata\include\dcvm.h"\
-	".\dcmdata\include\dcvr.h"\
-	".\dcmdata\include\dcvrae.h"\
-	".\dcmdata\include\dcvras.h"\
-	".\dcmdata\include\dcvrat.h"\
-	".\dcmdata\include\dcvrcs.h"\
-	".\dcmdata\include\dcvrda.h"\
-	".\dcmdata\include\dcvrds.h"\
-	".\dcmdata\include\dcvrdt.h"\
-	".\dcmdata\include\dcvrfd.h"\
-	".\dcmdata\include\dcvrfl.h"\
-	".\dcmdata\include\dcvris.h"\
-	".\dcmdata\include\dcvrlo.h"\
-	".\dcmdata\include\dcvrlt.h"\
-	".\dcmdata\include\dcvrobow.h"\
-	".\dcmdata\include\dcvrpn.h"\
-	".\dcmdata\include\dcvrpobw.h"\
-	".\dcmdata\include\dcvrsh.h"\
-	".\dcmdata\include\dcvrsl.h"\
-	".\dcmdata\include\dcvrss.h"\
-	".\dcmdata\include\dcvrst.h"\
-	".\dcmdata\include\dcvrtm.h"\
-	".\dcmdata\include\dcvrui.h"\
-	".\dcmdata\include\dcvrul.h"\
-	".\dcmdata\include\dcvrulup.h"\
-	".\dcmdata\include\dcvrus.h"\
-	".\dcmdata\include\dcxfer.h"\
-	".\dcmdata\include\pix.h"\
-	".\ofstd\include\oflist.h"\
-	".\ofstd\include\oftypes.h"\
-	
-
-"$(INTDIR)\dcdirrec.obj" : $(SOURCE) $(DEP_CPP_DCDIR) "$(INTDIR)"
-   $(CPP) $(CPP_PROJ) $(SOURCE)
-
-
-!ENDIF 
 
 # End Source File
 ################################################################################
 # Begin Source File
 
 SOURCE=.\dcmdata\libsrc\dcelem.cxx
-
-!IF  "$(CFG)" == "dcmdata - Win32 Release"
-
 DEP_CPP_DCELE=\
 	".\config\include\cfmwerks.h"\
 	".\config\include\cfwin32.h"\
@@ -5220,180 +4792,6 @@ DEP_CPP_DCELE=\
 "$(INTDIR)\dcelem.obj" : $(SOURCE) $(DEP_CPP_DCELE) "$(INTDIR)"
    $(CPP) $(CPP_PROJ) $(SOURCE)
 
-
-!ELSEIF  "$(CFG)" == "dcmdata - Win32 Debug"
-
-DEP_CPP_DCELE=\
-	".\config\include\cfmwerks.h"\
-	".\config\include\cfwin32.h"\
-	".\config\include\osconfig.h"\
-	".\dcmdata\include\dcdebug.h"\
-	".\dcmdata\include\dcdefine.h"\
-	".\dcmdata\include\dcdicent.h"\
-	".\dcmdata\include\dcelem.h"\
-	".\dcmdata\include\dcerror.h"\
-	".\dcmdata\include\dclist.h"\
-	".\dcmdata\include\dcobject.h"\
-	".\dcmdata\include\dcstack.h"\
-	".\dcmdata\include\dcstream.h"\
-	".\dcmdata\include\dcswap.h"\
-	".\dcmdata\include\dctag.h"\
-	".\dcmdata\include\dctagkey.h"\
-	".\dcmdata\include\dctypes.h"\
-	".\dcmdata\include\dcvr.h"\
-	".\dcmdata\include\dcxfer.h"\
-	".\ofstd\include\oftypes.h"\
-	
-
-"$(INTDIR)\dcelem.obj" : $(SOURCE) $(DEP_CPP_DCELE) "$(INTDIR)"
-   $(CPP) $(CPP_PROJ) $(SOURCE)
-
-
-!ENDIF 
-
-# End Source File
-################################################################################
-# Begin Source File
-
-SOURCE=.\dcmdata\libsrc\dcentbst.cxx
-
-!IF  "$(CFG)" == "dcmdata - Win32 Release"
-
-DEP_CPP_DCENT=\
-	".\config\include\cfmwerks.h"\
-	".\config\include\cfwin32.h"\
-	".\config\include\osconfig.h"\
-	".\dcmdata\include\dcdicent.h"\
-	".\dcmdata\include\dcentbst.h"\
-	".\dcmdata\include\dcentdef.h"\
-	".\dcmdata\include\dcentset.h"\
-	".\dcmdata\include\dctagkey.h"\
-	".\dcmdata\include\dctypes.h"\
-	".\dcmdata\include\dcvr.h"\
-	".\dcmdata\include\pix.h"\
-	".\ofstd\include\oftypes.h"\
-	
-
-"$(INTDIR)\dcentbst.obj" : $(SOURCE) $(DEP_CPP_DCENT) "$(INTDIR)"
-   $(CPP) $(CPP_PROJ) $(SOURCE)
-
-
-!ELSEIF  "$(CFG)" == "dcmdata - Win32 Debug"
-
-DEP_CPP_DCENT=\
-	".\config\include\cfmwerks.h"\
-	".\config\include\cfwin32.h"\
-	".\config\include\osconfig.h"\
-	".\dcmdata\include\dcdicent.h"\
-	".\dcmdata\include\dcentbst.h"\
-	".\dcmdata\include\dcentdef.h"\
-	".\dcmdata\include\dcentset.h"\
-	".\dcmdata\include\dctagkey.h"\
-	".\dcmdata\include\dctypes.h"\
-	".\dcmdata\include\dcvr.h"\
-	".\dcmdata\include\pix.h"\
-	".\ofstd\include\oftypes.h"\
-	
-
-"$(INTDIR)\dcentbst.obj" : $(SOURCE) $(DEP_CPP_DCENT) "$(INTDIR)"
-   $(CPP) $(CPP_PROJ) $(SOURCE)
-
-
-!ENDIF 
-
-# End Source File
-################################################################################
-# Begin Source File
-
-SOURCE=.\dcmdata\libsrc\dcentlst.cxx
-
-!IF  "$(CFG)" == "dcmdata - Win32 Release"
-
-DEP_CPP_DCENTL=\
-	".\config\include\cfmwerks.h"\
-	".\config\include\cfwin32.h"\
-	".\config\include\osconfig.h"\
-	".\dcmdata\include\dcdicent.h"\
-	".\dcmdata\include\dcentlst.h"\
-	".\dcmdata\include\dctagkey.h"\
-	".\dcmdata\include\dctypes.h"\
-	".\dcmdata\include\dcvr.h"\
-	".\dcmdata\include\pix.h"\
-	".\ofstd\include\oftypes.h"\
-	
-
-"$(INTDIR)\dcentlst.obj" : $(SOURCE) $(DEP_CPP_DCENTL) "$(INTDIR)"
-   $(CPP) $(CPP_PROJ) $(SOURCE)
-
-
-!ELSEIF  "$(CFG)" == "dcmdata - Win32 Debug"
-
-DEP_CPP_DCENTL=\
-	".\config\include\cfmwerks.h"\
-	".\config\include\cfwin32.h"\
-	".\config\include\osconfig.h"\
-	".\dcmdata\include\dcdicent.h"\
-	".\dcmdata\include\dcentlst.h"\
-	".\dcmdata\include\dctagkey.h"\
-	".\dcmdata\include\dctypes.h"\
-	".\dcmdata\include\dcvr.h"\
-	".\dcmdata\include\pix.h"\
-	".\ofstd\include\oftypes.h"\
-	
-
-"$(INTDIR)\dcentlst.obj" : $(SOURCE) $(DEP_CPP_DCENTL) "$(INTDIR)"
-   $(CPP) $(CPP_PROJ) $(SOURCE)
-
-
-!ENDIF 
-
-# End Source File
-################################################################################
-# Begin Source File
-
-SOURCE=.\dcmdata\libsrc\dcentset.cxx
-
-!IF  "$(CFG)" == "dcmdata - Win32 Release"
-
-DEP_CPP_DCENTS=\
-	".\config\include\cfmwerks.h"\
-	".\config\include\cfwin32.h"\
-	".\config\include\osconfig.h"\
-	".\dcmdata\include\dcdicent.h"\
-	".\dcmdata\include\dcentdef.h"\
-	".\dcmdata\include\dcentset.h"\
-	".\dcmdata\include\dctagkey.h"\
-	".\dcmdata\include\dctypes.h"\
-	".\dcmdata\include\dcvr.h"\
-	".\dcmdata\include\pix.h"\
-	".\ofstd\include\oftypes.h"\
-	
-
-"$(INTDIR)\dcentset.obj" : $(SOURCE) $(DEP_CPP_DCENTS) "$(INTDIR)"
-   $(CPP) $(CPP_PROJ) $(SOURCE)
-
-
-!ELSEIF  "$(CFG)" == "dcmdata - Win32 Debug"
-
-DEP_CPP_DCENTS=\
-	".\config\include\cfmwerks.h"\
-	".\config\include\cfwin32.h"\
-	".\config\include\osconfig.h"\
-	".\dcmdata\include\dcdicent.h"\
-	".\dcmdata\include\dcentdef.h"\
-	".\dcmdata\include\dcentset.h"\
-	".\dcmdata\include\dctagkey.h"\
-	".\dcmdata\include\dctypes.h"\
-	".\dcmdata\include\dcvr.h"\
-	".\dcmdata\include\pix.h"\
-	".\ofstd\include\oftypes.h"\
-	
-
-"$(INTDIR)\dcentset.obj" : $(SOURCE) $(DEP_CPP_DCENTS) "$(INTDIR)"
-   $(CPP) $(CPP_PROJ) $(SOURCE)
-
-
-!ENDIF 
 
 # End Source File
 ################################################################################
@@ -5434,9 +4832,6 @@ DEP_CPP_DCERR=\
 # Begin Source File
 
 SOURCE=.\dcmdata\libsrc\dcfilefo.cxx
-
-!IF  "$(CFG)" == "dcmdata - Win32 Release"
-
 DEP_CPP_DCFIL=\
 	".\config\include\cfmwerks.h"\
 	".\config\include\cfwin32.h"\
@@ -5475,58 +4870,12 @@ DEP_CPP_DCFIL=\
 "$(INTDIR)\dcfilefo.obj" : $(SOURCE) $(DEP_CPP_DCFIL) "$(INTDIR)"
    $(CPP) $(CPP_PROJ) $(SOURCE)
 
-
-!ELSEIF  "$(CFG)" == "dcmdata - Win32 Debug"
-
-DEP_CPP_DCFIL=\
-	".\config\include\cfmwerks.h"\
-	".\config\include\cfwin32.h"\
-	".\config\include\osconfig.h"\
-	".\dcmdata\include\dcbytstr.h"\
-	".\dcmdata\include\dcchrstr.h"\
-	".\dcmdata\include\dcdatset.h"\
-	".\dcmdata\include\dcdebug.h"\
-	".\dcmdata\include\dcdeftag.h"\
-	".\dcmdata\include\dcdicent.h"\
-	".\dcmdata\include\dcelem.h"\
-	".\dcmdata\include\dcerror.h"\
-	".\dcmdata\include\dcfilefo.h"\
-	".\dcmdata\include\dcitem.h"\
-	".\dcmdata\include\dclist.h"\
-	".\dcmdata\include\dcmetinf.h"\
-	".\dcmdata\include\dcobject.h"\
-	".\dcmdata\include\dcsequen.h"\
-	".\dcmdata\include\dcstack.h"\
-	".\dcmdata\include\dcstream.h"\
-	".\dcmdata\include\dctag.h"\
-	".\dcmdata\include\dctagkey.h"\
-	".\dcmdata\include\dctypes.h"\
-	".\dcmdata\include\dcuid.h"\
-	".\dcmdata\include\dcvr.h"\
-	".\dcmdata\include\dcvrae.h"\
-	".\dcmdata\include\dcvrobow.h"\
-	".\dcmdata\include\dcvrsh.h"\
-	".\dcmdata\include\dcvrui.h"\
-	".\dcmdata\include\dcvrul.h"\
-	".\dcmdata\include\dcvrus.h"\
-	".\dcmdata\include\dcxfer.h"\
-	".\ofstd\include\oftypes.h"\
-	
-
-"$(INTDIR)\dcfilefo.obj" : $(SOURCE) $(DEP_CPP_DCFIL) "$(INTDIR)"
-   $(CPP) $(CPP_PROJ) $(SOURCE)
-
-
-!ENDIF 
 
 # End Source File
 ################################################################################
 # Begin Source File
 
 SOURCE=.\dcmdata\libsrc\dcitem.cxx
-
-!IF  "$(CFG)" == "dcmdata - Win32 Release"
-
 DEP_CPP_DCITE=\
 	".\config\include\cfmwerks.h"\
 	".\config\include\cfwin32.h"\
@@ -5543,12 +4892,9 @@ DEP_CPP_DCITE=\
 	".\dcmdata\include\dcdict.h"\
 	".\dcmdata\include\dcdirrec.h"\
 	".\dcmdata\include\dcelem.h"\
-	".\dcmdata\include\dcentbst.h"\
-	".\dcmdata\include\dcentdef.h"\
-	".\dcmdata\include\dcentlst.h"\
-	".\dcmdata\include\dcentset.h"\
 	".\dcmdata\include\dcerror.h"\
 	".\dcmdata\include\dcfilefo.h"\
+	".\dcmdata\include\dchashdi.h"\
 	".\dcmdata\include\dcitem.h"\
 	".\dcmdata\include\dclist.h"\
 	".\dcmdata\include\dcmetinf.h"\
@@ -5592,101 +4938,20 @@ DEP_CPP_DCITE=\
 	".\dcmdata\include\dcvrulup.h"\
 	".\dcmdata\include\dcvrus.h"\
 	".\dcmdata\include\dcxfer.h"\
-	".\dcmdata\include\pix.h"\
 	".\ofstd\include\oflist.h"\
+	".\ofstd\include\ofstring.h"\
 	".\ofstd\include\oftypes.h"\
 	
 
 "$(INTDIR)\dcitem.obj" : $(SOURCE) $(DEP_CPP_DCITE) "$(INTDIR)"
    $(CPP) $(CPP_PROJ) $(SOURCE)
 
-
-!ELSEIF  "$(CFG)" == "dcmdata - Win32 Debug"
-
-DEP_CPP_DCITE=\
-	".\config\include\cfmwerks.h"\
-	".\config\include\cfwin32.h"\
-	".\config\include\osconfig.h"\
-	".\dcmdata\include\cmdlnarg.h"\
-	".\dcmdata\include\dcbytstr.h"\
-	".\dcmdata\include\dcchrstr.h"\
-	".\dcmdata\include\dcdatset.h"\
-	".\dcmdata\include\dcdebug.h"\
-	".\dcmdata\include\dcdefine.h"\
-	".\dcmdata\include\dcdeftag.h"\
-	".\dcmdata\include\dcdicdir.h"\
-	".\dcmdata\include\dcdicent.h"\
-	".\dcmdata\include\dcdict.h"\
-	".\dcmdata\include\dcdirrec.h"\
-	".\dcmdata\include\dcelem.h"\
-	".\dcmdata\include\dcentbst.h"\
-	".\dcmdata\include\dcentdef.h"\
-	".\dcmdata\include\dcentlst.h"\
-	".\dcmdata\include\dcentset.h"\
-	".\dcmdata\include\dcerror.h"\
-	".\dcmdata\include\dcfilefo.h"\
-	".\dcmdata\include\dcitem.h"\
-	".\dcmdata\include\dclist.h"\
-	".\dcmdata\include\dcmetinf.h"\
-	".\dcmdata\include\dcobject.h"\
-	".\dcmdata\include\dcovlay.h"\
-	".\dcmdata\include\dcpixel.h"\
-	".\dcmdata\include\dcpixseq.h"\
-	".\dcmdata\include\dcsequen.h"\
-	".\dcmdata\include\dcstack.h"\
-	".\dcmdata\include\dcstream.h"\
-	".\dcmdata\include\dcswap.h"\
-	".\dcmdata\include\dctag.h"\
-	".\dcmdata\include\dctagkey.h"\
-	".\dcmdata\include\dctk.h"\
-	".\dcmdata\include\dctypes.h"\
-	".\dcmdata\include\dcuid.h"\
-	".\dcmdata\include\dcvm.h"\
-	".\dcmdata\include\dcvr.h"\
-	".\dcmdata\include\dcvrae.h"\
-	".\dcmdata\include\dcvras.h"\
-	".\dcmdata\include\dcvrat.h"\
-	".\dcmdata\include\dcvrcs.h"\
-	".\dcmdata\include\dcvrda.h"\
-	".\dcmdata\include\dcvrds.h"\
-	".\dcmdata\include\dcvrdt.h"\
-	".\dcmdata\include\dcvrfd.h"\
-	".\dcmdata\include\dcvrfl.h"\
-	".\dcmdata\include\dcvris.h"\
-	".\dcmdata\include\dcvrlo.h"\
-	".\dcmdata\include\dcvrlt.h"\
-	".\dcmdata\include\dcvrobow.h"\
-	".\dcmdata\include\dcvrpn.h"\
-	".\dcmdata\include\dcvrpobw.h"\
-	".\dcmdata\include\dcvrsh.h"\
-	".\dcmdata\include\dcvrsl.h"\
-	".\dcmdata\include\dcvrss.h"\
-	".\dcmdata\include\dcvrst.h"\
-	".\dcmdata\include\dcvrtm.h"\
-	".\dcmdata\include\dcvrui.h"\
-	".\dcmdata\include\dcvrul.h"\
-	".\dcmdata\include\dcvrulup.h"\
-	".\dcmdata\include\dcvrus.h"\
-	".\dcmdata\include\dcxfer.h"\
-	".\dcmdata\include\pix.h"\
-	".\ofstd\include\oflist.h"\
-	".\ofstd\include\oftypes.h"\
-	
-
-"$(INTDIR)\dcitem.obj" : $(SOURCE) $(DEP_CPP_DCITE) "$(INTDIR)"
-   $(CPP) $(CPP_PROJ) $(SOURCE)
-
-
-!ENDIF 
 
 # End Source File
 ################################################################################
 # Begin Source File
 
 SOURCE=.\dcmdata\libsrc\dclist.cxx
-
-!IF  "$(CFG)" == "dcmdata - Win32 Release"
-
 DEP_CPP_DCLIS=\
 	".\config\include\cfmwerks.h"\
 	".\config\include\cfwin32.h"\
@@ -5701,34 +4966,12 @@ DEP_CPP_DCLIS=\
 "$(INTDIR)\dclist.obj" : $(SOURCE) $(DEP_CPP_DCLIS) "$(INTDIR)"
    $(CPP) $(CPP_PROJ) $(SOURCE)
 
-
-!ELSEIF  "$(CFG)" == "dcmdata - Win32 Debug"
-
-DEP_CPP_DCLIS=\
-	".\config\include\cfmwerks.h"\
-	".\config\include\cfwin32.h"\
-	".\config\include\osconfig.h"\
-	".\dcmdata\include\dcdebug.h"\
-	".\dcmdata\include\dcerror.h"\
-	".\dcmdata\include\dclist.h"\
-	".\dcmdata\include\dctypes.h"\
-	".\ofstd\include\oftypes.h"\
-	
-
-"$(INTDIR)\dclist.obj" : $(SOURCE) $(DEP_CPP_DCLIS) "$(INTDIR)"
-   $(CPP) $(CPP_PROJ) $(SOURCE)
-
-
-!ENDIF 
 
 # End Source File
 ################################################################################
 # Begin Source File
 
 SOURCE=.\dcmdata\libsrc\dcmetinf.cxx
-
-!IF  "$(CFG)" == "dcmdata - Win32 Release"
-
 DEP_CPP_DCMET=\
 	".\config\include\cfmwerks.h"\
 	".\config\include\cfwin32.h"\
@@ -5759,50 +5002,12 @@ DEP_CPP_DCMET=\
 "$(INTDIR)\dcmetinf.obj" : $(SOURCE) $(DEP_CPP_DCMET) "$(INTDIR)"
    $(CPP) $(CPP_PROJ) $(SOURCE)
 
-
-!ELSEIF  "$(CFG)" == "dcmdata - Win32 Debug"
-
-DEP_CPP_DCMET=\
-	".\config\include\cfmwerks.h"\
-	".\config\include\cfwin32.h"\
-	".\config\include\osconfig.h"\
-	".\dcmdata\include\dcbytstr.h"\
-	".\dcmdata\include\dcdebug.h"\
-	".\dcmdata\include\dcdefine.h"\
-	".\dcmdata\include\dcdeftag.h"\
-	".\dcmdata\include\dcdicent.h"\
-	".\dcmdata\include\dcelem.h"\
-	".\dcmdata\include\dcerror.h"\
-	".\dcmdata\include\dcitem.h"\
-	".\dcmdata\include\dclist.h"\
-	".\dcmdata\include\dcmetinf.h"\
-	".\dcmdata\include\dcobject.h"\
-	".\dcmdata\include\dcstack.h"\
-	".\dcmdata\include\dcstream.h"\
-	".\dcmdata\include\dctag.h"\
-	".\dcmdata\include\dctagkey.h"\
-	".\dcmdata\include\dctypes.h"\
-	".\dcmdata\include\dcvr.h"\
-	".\dcmdata\include\dcvrui.h"\
-	".\dcmdata\include\dcvrul.h"\
-	".\dcmdata\include\dcxfer.h"\
-	".\ofstd\include\oftypes.h"\
-	
-
-"$(INTDIR)\dcmetinf.obj" : $(SOURCE) $(DEP_CPP_DCMET) "$(INTDIR)"
-   $(CPP) $(CPP_PROJ) $(SOURCE)
-
-
-!ENDIF 
 
 # End Source File
 ################################################################################
 # Begin Source File
 
 SOURCE=.\dcmdata\libsrc\dcobject.cxx
-
-!IF  "$(CFG)" == "dcmdata - Win32 Release"
-
 DEP_CPP_DCOBJ=\
 	".\config\include\cfmwerks.h"\
 	".\config\include\cfwin32.h"\
@@ -5826,43 +5031,12 @@ DEP_CPP_DCOBJ=\
 "$(INTDIR)\dcobject.obj" : $(SOURCE) $(DEP_CPP_DCOBJ) "$(INTDIR)"
    $(CPP) $(CPP_PROJ) $(SOURCE)
 
-
-!ELSEIF  "$(CFG)" == "dcmdata - Win32 Debug"
-
-DEP_CPP_DCOBJ=\
-	".\config\include\cfmwerks.h"\
-	".\config\include\cfwin32.h"\
-	".\config\include\osconfig.h"\
-	".\dcmdata\include\dcdebug.h"\
-	".\dcmdata\include\dcdicent.h"\
-	".\dcmdata\include\dcerror.h"\
-	".\dcmdata\include\dclist.h"\
-	".\dcmdata\include\dcobject.h"\
-	".\dcmdata\include\dcstack.h"\
-	".\dcmdata\include\dcstream.h"\
-	".\dcmdata\include\dcswap.h"\
-	".\dcmdata\include\dctag.h"\
-	".\dcmdata\include\dctagkey.h"\
-	".\dcmdata\include\dctypes.h"\
-	".\dcmdata\include\dcvr.h"\
-	".\dcmdata\include\dcxfer.h"\
-	".\ofstd\include\oftypes.h"\
-	
-
-"$(INTDIR)\dcobject.obj" : $(SOURCE) $(DEP_CPP_DCOBJ) "$(INTDIR)"
-   $(CPP) $(CPP_PROJ) $(SOURCE)
-
-
-!ENDIF 
 
 # End Source File
 ################################################################################
 # Begin Source File
 
 SOURCE=.\dcmdata\libsrc\dcpixseq.cxx
-
-!IF  "$(CFG)" == "dcmdata - Win32 Release"
-
 DEP_CPP_DCPIX=\
 	".\config\include\cfmwerks.h"\
 	".\config\include\cfwin32.h"\
@@ -5894,51 +5068,12 @@ DEP_CPP_DCPIX=\
 "$(INTDIR)\dcpixseq.obj" : $(SOURCE) $(DEP_CPP_DCPIX) "$(INTDIR)"
    $(CPP) $(CPP_PROJ) $(SOURCE)
 
-
-!ELSEIF  "$(CFG)" == "dcmdata - Win32 Debug"
-
-DEP_CPP_DCPIX=\
-	".\config\include\cfmwerks.h"\
-	".\config\include\cfwin32.h"\
-	".\config\include\osconfig.h"\
-	".\dcmdata\include\dcbytstr.h"\
-	".\dcmdata\include\dcdebug.h"\
-	".\dcmdata\include\dcdeftag.h"\
-	".\dcmdata\include\dcdicent.h"\
-	".\dcmdata\include\dcelem.h"\
-	".\dcmdata\include\dcerror.h"\
-	".\dcmdata\include\dcitem.h"\
-	".\dcmdata\include\dclist.h"\
-	".\dcmdata\include\dcobject.h"\
-	".\dcmdata\include\dcpixseq.h"\
-	".\dcmdata\include\dcpxitem.h"\
-	".\dcmdata\include\dcsequen.h"\
-	".\dcmdata\include\dcstack.h"\
-	".\dcmdata\include\dcstream.h"\
-	".\dcmdata\include\dctag.h"\
-	".\dcmdata\include\dctagkey.h"\
-	".\dcmdata\include\dctypes.h"\
-	".\dcmdata\include\dcvr.h"\
-	".\dcmdata\include\dcvrobow.h"\
-	".\dcmdata\include\dcvrui.h"\
-	".\dcmdata\include\dcxfer.h"\
-	".\ofstd\include\oftypes.h"\
-	
-
-"$(INTDIR)\dcpixseq.obj" : $(SOURCE) $(DEP_CPP_DCPIX) "$(INTDIR)"
-   $(CPP) $(CPP_PROJ) $(SOURCE)
-
-
-!ENDIF 
 
 # End Source File
 ################################################################################
 # Begin Source File
 
 SOURCE=.\dcmdata\libsrc\dcpxitem.cxx
-
-!IF  "$(CFG)" == "dcmdata - Win32 Release"
-
 DEP_CPP_DCPXI=\
 	".\config\include\cfmwerks.h"\
 	".\config\include\cfwin32.h"\
@@ -5965,46 +5100,12 @@ DEP_CPP_DCPXI=\
 "$(INTDIR)\dcpxitem.obj" : $(SOURCE) $(DEP_CPP_DCPXI) "$(INTDIR)"
    $(CPP) $(CPP_PROJ) $(SOURCE)
 
-
-!ELSEIF  "$(CFG)" == "dcmdata - Win32 Debug"
-
-DEP_CPP_DCPXI=\
-	".\config\include\cfmwerks.h"\
-	".\config\include\cfwin32.h"\
-	".\config\include\osconfig.h"\
-	".\dcmdata\include\dcdebug.h"\
-	".\dcmdata\include\dcdicent.h"\
-	".\dcmdata\include\dcelem.h"\
-	".\dcmdata\include\dcerror.h"\
-	".\dcmdata\include\dclist.h"\
-	".\dcmdata\include\dcobject.h"\
-	".\dcmdata\include\dcpxitem.h"\
-	".\dcmdata\include\dcstack.h"\
-	".\dcmdata\include\dcstream.h"\
-	".\dcmdata\include\dcswap.h"\
-	".\dcmdata\include\dctag.h"\
-	".\dcmdata\include\dctagkey.h"\
-	".\dcmdata\include\dctypes.h"\
-	".\dcmdata\include\dcvr.h"\
-	".\dcmdata\include\dcvrobow.h"\
-	".\dcmdata\include\dcxfer.h"\
-	".\ofstd\include\oftypes.h"\
-	
-
-"$(INTDIR)\dcpxitem.obj" : $(SOURCE) $(DEP_CPP_DCPXI) "$(INTDIR)"
-   $(CPP) $(CPP_PROJ) $(SOURCE)
-
-
-!ENDIF 
 
 # End Source File
 ################################################################################
 # Begin Source File
 
 SOURCE=.\dcmdata\libsrc\dcsequen.cxx
-
-!IF  "$(CFG)" == "dcmdata - Win32 Release"
-
 DEP_CPP_DCSEQ=\
 	".\config\include\cfmwerks.h"\
 	".\config\include\cfwin32.h"\
@@ -6040,55 +5141,12 @@ DEP_CPP_DCSEQ=\
 "$(INTDIR)\dcsequen.obj" : $(SOURCE) $(DEP_CPP_DCSEQ) "$(INTDIR)"
    $(CPP) $(CPP_PROJ) $(SOURCE)
 
-
-!ELSEIF  "$(CFG)" == "dcmdata - Win32 Debug"
-
-DEP_CPP_DCSEQ=\
-	".\config\include\cfmwerks.h"\
-	".\config\include\cfwin32.h"\
-	".\config\include\osconfig.h"\
-	".\dcmdata\include\dcbytstr.h"\
-	".\dcmdata\include\dcdatset.h"\
-	".\dcmdata\include\dcdebug.h"\
-	".\dcmdata\include\dcdeftag.h"\
-	".\dcmdata\include\dcdicent.h"\
-	".\dcmdata\include\dcdirrec.h"\
-	".\dcmdata\include\dcelem.h"\
-	".\dcmdata\include\dcerror.h"\
-	".\dcmdata\include\dcfilefo.h"\
-	".\dcmdata\include\dcitem.h"\
-	".\dcmdata\include\dclist.h"\
-	".\dcmdata\include\dcmetinf.h"\
-	".\dcmdata\include\dcobject.h"\
-	".\dcmdata\include\dcpxitem.h"\
-	".\dcmdata\include\dcsequen.h"\
-	".\dcmdata\include\dcstack.h"\
-	".\dcmdata\include\dcstream.h"\
-	".\dcmdata\include\dcswap.h"\
-	".\dcmdata\include\dctag.h"\
-	".\dcmdata\include\dctagkey.h"\
-	".\dcmdata\include\dctypes.h"\
-	".\dcmdata\include\dcvr.h"\
-	".\dcmdata\include\dcvrobow.h"\
-	".\dcmdata\include\dcvrui.h"\
-	".\dcmdata\include\dcxfer.h"\
-	".\ofstd\include\oftypes.h"\
-	
-
-"$(INTDIR)\dcsequen.obj" : $(SOURCE) $(DEP_CPP_DCSEQ) "$(INTDIR)"
-   $(CPP) $(CPP_PROJ) $(SOURCE)
-
-
-!ENDIF 
 
 # End Source File
 ################################################################################
 # Begin Source File
 
 SOURCE=.\dcmdata\libsrc\dcstack.cxx
-
-!IF  "$(CFG)" == "dcmdata - Win32 Release"
-
 DEP_CPP_DCSTA=\
 	".\config\include\cfmwerks.h"\
 	".\config\include\cfwin32.h"\
@@ -6102,33 +5160,12 @@ DEP_CPP_DCSTA=\
 "$(INTDIR)\dcstack.obj" : $(SOURCE) $(DEP_CPP_DCSTA) "$(INTDIR)"
    $(CPP) $(CPP_PROJ) $(SOURCE)
 
-
-!ELSEIF  "$(CFG)" == "dcmdata - Win32 Debug"
-
-DEP_CPP_DCSTA=\
-	".\config\include\cfmwerks.h"\
-	".\config\include\cfwin32.h"\
-	".\config\include\osconfig.h"\
-	".\dcmdata\include\dcdebug.h"\
-	".\dcmdata\include\dcstack.h"\
-	".\dcmdata\include\dctypes.h"\
-	".\ofstd\include\oftypes.h"\
-	
-
-"$(INTDIR)\dcstack.obj" : $(SOURCE) $(DEP_CPP_DCSTA) "$(INTDIR)"
-   $(CPP) $(CPP_PROJ) $(SOURCE)
-
-
-!ENDIF 
 
 # End Source File
 ################################################################################
 # Begin Source File
 
 SOURCE=.\dcmdata\libsrc\dcstream.cxx
-
-!IF  "$(CFG)" == "dcmdata - Win32 Release"
-
 DEP_CPP_DCSTR=\
 	".\config\include\cfmwerks.h"\
 	".\config\include\cfwin32.h"\
@@ -6144,35 +5181,12 @@ DEP_CPP_DCSTR=\
 "$(INTDIR)\dcstream.obj" : $(SOURCE) $(DEP_CPP_DCSTR) "$(INTDIR)"
    $(CPP) $(CPP_PROJ) $(SOURCE)
 
-
-!ELSEIF  "$(CFG)" == "dcmdata - Win32 Debug"
-
-DEP_CPP_DCSTR=\
-	".\config\include\cfmwerks.h"\
-	".\config\include\cfwin32.h"\
-	".\config\include\osconfig.h"\
-	".\dcmdata\include\dcbuf.h"\
-	".\dcmdata\include\dcdefine.h"\
-	".\dcmdata\include\dcerror.h"\
-	".\dcmdata\include\dcstream.h"\
-	".\dcmdata\include\dctypes.h"\
-	".\ofstd\include\oftypes.h"\
-	
-
-"$(INTDIR)\dcstream.obj" : $(SOURCE) $(DEP_CPP_DCSTR) "$(INTDIR)"
-   $(CPP) $(CPP_PROJ) $(SOURCE)
-
-
-!ENDIF 
 
 # End Source File
 ################################################################################
 # Begin Source File
 
 SOURCE=.\dcmdata\libsrc\dcswap.cxx
-
-!IF  "$(CFG)" == "dcmdata - Win32 Release"
-
 DEP_CPP_DCSWA=\
 	".\config\include\cfmwerks.h"\
 	".\config\include\cfwin32.h"\
@@ -6188,35 +5202,12 @@ DEP_CPP_DCSWA=\
 "$(INTDIR)\dcswap.obj" : $(SOURCE) $(DEP_CPP_DCSWA) "$(INTDIR)"
    $(CPP) $(CPP_PROJ) $(SOURCE)
 
-
-!ELSEIF  "$(CFG)" == "dcmdata - Win32 Debug"
-
-DEP_CPP_DCSWA=\
-	".\config\include\cfmwerks.h"\
-	".\config\include\cfwin32.h"\
-	".\config\include\osconfig.h"\
-	".\dcmdata\include\dcerror.h"\
-	".\dcmdata\include\dcswap.h"\
-	".\dcmdata\include\dctypes.h"\
-	".\dcmdata\include\dcvr.h"\
-	".\dcmdata\include\dcxfer.h"\
-	".\ofstd\include\oftypes.h"\
-	
-
-"$(INTDIR)\dcswap.obj" : $(SOURCE) $(DEP_CPP_DCSWA) "$(INTDIR)"
-   $(CPP) $(CPP_PROJ) $(SOURCE)
-
-
-!ENDIF 
 
 # End Source File
 ################################################################################
 # Begin Source File
 
 SOURCE=.\dcmdata\libsrc\dctag.cxx
-
-!IF  "$(CFG)" == "dcmdata - Win32 Release"
-
 DEP_CPP_DCTAG=\
 	".\config\include\cfmwerks.h"\
 	".\config\include\cfwin32.h"\
@@ -6224,59 +5215,25 @@ DEP_CPP_DCTAG=\
 	".\dcmdata\include\dcdeftag.h"\
 	".\dcmdata\include\dcdicent.h"\
 	".\dcmdata\include\dcdict.h"\
-	".\dcmdata\include\dcentbst.h"\
-	".\dcmdata\include\dcentdef.h"\
-	".\dcmdata\include\dcentlst.h"\
-	".\dcmdata\include\dcentset.h"\
 	".\dcmdata\include\dcerror.h"\
+	".\dcmdata\include\dchashdi.h"\
 	".\dcmdata\include\dctag.h"\
 	".\dcmdata\include\dctagkey.h"\
 	".\dcmdata\include\dctypes.h"\
 	".\dcmdata\include\dcvr.h"\
-	".\dcmdata\include\pix.h"\
+	".\ofstd\include\oflist.h"\
 	".\ofstd\include\oftypes.h"\
 	
 
 "$(INTDIR)\dctag.obj" : $(SOURCE) $(DEP_CPP_DCTAG) "$(INTDIR)"
    $(CPP) $(CPP_PROJ) $(SOURCE)
 
-
-!ELSEIF  "$(CFG)" == "dcmdata - Win32 Debug"
-
-DEP_CPP_DCTAG=\
-	".\config\include\cfmwerks.h"\
-	".\config\include\cfwin32.h"\
-	".\config\include\osconfig.h"\
-	".\dcmdata\include\dcdeftag.h"\
-	".\dcmdata\include\dcdicent.h"\
-	".\dcmdata\include\dcdict.h"\
-	".\dcmdata\include\dcentbst.h"\
-	".\dcmdata\include\dcentdef.h"\
-	".\dcmdata\include\dcentlst.h"\
-	".\dcmdata\include\dcentset.h"\
-	".\dcmdata\include\dcerror.h"\
-	".\dcmdata\include\dctag.h"\
-	".\dcmdata\include\dctagkey.h"\
-	".\dcmdata\include\dctypes.h"\
-	".\dcmdata\include\dcvr.h"\
-	".\dcmdata\include\pix.h"\
-	".\ofstd\include\oftypes.h"\
-	
-
-"$(INTDIR)\dctag.obj" : $(SOURCE) $(DEP_CPP_DCTAG) "$(INTDIR)"
-   $(CPP) $(CPP_PROJ) $(SOURCE)
-
-
-!ENDIF 
 
 # End Source File
 ################################################################################
 # Begin Source File
 
 SOURCE=.\dcmdata\libsrc\dctagkey.cxx
-
-!IF  "$(CFG)" == "dcmdata - Win32 Release"
-
 DEP_CPP_DCTAGK=\
 	".\config\include\cfmwerks.h"\
 	".\config\include\cfwin32.h"\
@@ -6289,32 +5246,12 @@ DEP_CPP_DCTAGK=\
 "$(INTDIR)\dctagkey.obj" : $(SOURCE) $(DEP_CPP_DCTAGK) "$(INTDIR)"
    $(CPP) $(CPP_PROJ) $(SOURCE)
 
-
-!ELSEIF  "$(CFG)" == "dcmdata - Win32 Debug"
-
-DEP_CPP_DCTAGK=\
-	".\config\include\cfmwerks.h"\
-	".\config\include\cfwin32.h"\
-	".\config\include\osconfig.h"\
-	".\dcmdata\include\dctagkey.h"\
-	".\dcmdata\include\dctypes.h"\
-	".\ofstd\include\oftypes.h"\
-	
-
-"$(INTDIR)\dctagkey.obj" : $(SOURCE) $(DEP_CPP_DCTAGK) "$(INTDIR)"
-   $(CPP) $(CPP_PROJ) $(SOURCE)
-
-
-!ENDIF 
 
 # End Source File
 ################################################################################
 # Begin Source File
 
 SOURCE=.\dcmdata\libsrc\dcuid.cxx
-
-!IF  "$(CFG)" == "dcmdata - Win32 Release"
-
 DEP_CPP_DCUID=\
 	".\config\include\cfmwerks.h"\
 	".\config\include\cfwin32.h"\
@@ -6326,31 +5263,12 @@ DEP_CPP_DCUID=\
 "$(INTDIR)\dcuid.obj" : $(SOURCE) $(DEP_CPP_DCUID) "$(INTDIR)"
    $(CPP) $(CPP_PROJ) $(SOURCE)
 
-
-!ELSEIF  "$(CFG)" == "dcmdata - Win32 Debug"
-
-DEP_CPP_DCUID=\
-	".\config\include\cfmwerks.h"\
-	".\config\include\cfwin32.h"\
-	".\config\include\osconfig.h"\
-	".\dcmdata\include\dcuid.h"\
-	{$(INCLUDE)}"\sys\TYPES.H"\
-	
-
-"$(INTDIR)\dcuid.obj" : $(SOURCE) $(DEP_CPP_DCUID) "$(INTDIR)"
-   $(CPP) $(CPP_PROJ) $(SOURCE)
-
-
-!ENDIF 
 
 # End Source File
 ################################################################################
 # Begin Source File
 
 SOURCE=.\dcmdata\libsrc\dcutils.cxx
-
-!IF  "$(CFG)" == "dcmdata - Win32 Release"
-
 DEP_CPP_DCUTI=\
 	".\config\include\cfmwerks.h"\
 	".\config\include\cfwin32.h"\
@@ -6367,12 +5285,9 @@ DEP_CPP_DCUTI=\
 	".\dcmdata\include\dcdict.h"\
 	".\dcmdata\include\dcdirrec.h"\
 	".\dcmdata\include\dcelem.h"\
-	".\dcmdata\include\dcentbst.h"\
-	".\dcmdata\include\dcentdef.h"\
-	".\dcmdata\include\dcentlst.h"\
-	".\dcmdata\include\dcentset.h"\
 	".\dcmdata\include\dcerror.h"\
 	".\dcmdata\include\dcfilefo.h"\
+	".\dcmdata\include\dchashdi.h"\
 	".\dcmdata\include\dcitem.h"\
 	".\dcmdata\include\dclist.h"\
 	".\dcmdata\include\dcmetinf.h"\
@@ -6417,102 +5332,20 @@ DEP_CPP_DCUTI=\
 	".\dcmdata\include\dcvrulup.h"\
 	".\dcmdata\include\dcvrus.h"\
 	".\dcmdata\include\dcxfer.h"\
-	".\dcmdata\include\pix.h"\
 	".\ofstd\include\oflist.h"\
+	".\ofstd\include\ofstring.h"\
 	".\ofstd\include\oftypes.h"\
 	
 
 "$(INTDIR)\dcutils.obj" : $(SOURCE) $(DEP_CPP_DCUTI) "$(INTDIR)"
    $(CPP) $(CPP_PROJ) $(SOURCE)
 
-
-!ELSEIF  "$(CFG)" == "dcmdata - Win32 Debug"
-
-DEP_CPP_DCUTI=\
-	".\config\include\cfmwerks.h"\
-	".\config\include\cfwin32.h"\
-	".\config\include\osconfig.h"\
-	".\dcmdata\include\cmdlnarg.h"\
-	".\dcmdata\include\dcbytstr.h"\
-	".\dcmdata\include\dcchrstr.h"\
-	".\dcmdata\include\dcdatset.h"\
-	".\dcmdata\include\dcdebug.h"\
-	".\dcmdata\include\dcdefine.h"\
-	".\dcmdata\include\dcdeftag.h"\
-	".\dcmdata\include\dcdicdir.h"\
-	".\dcmdata\include\dcdicent.h"\
-	".\dcmdata\include\dcdict.h"\
-	".\dcmdata\include\dcdirrec.h"\
-	".\dcmdata\include\dcelem.h"\
-	".\dcmdata\include\dcentbst.h"\
-	".\dcmdata\include\dcentdef.h"\
-	".\dcmdata\include\dcentlst.h"\
-	".\dcmdata\include\dcentset.h"\
-	".\dcmdata\include\dcerror.h"\
-	".\dcmdata\include\dcfilefo.h"\
-	".\dcmdata\include\dcitem.h"\
-	".\dcmdata\include\dclist.h"\
-	".\dcmdata\include\dcmetinf.h"\
-	".\dcmdata\include\dcobject.h"\
-	".\dcmdata\include\dcovlay.h"\
-	".\dcmdata\include\dcpixel.h"\
-	".\dcmdata\include\dcpixseq.h"\
-	".\dcmdata\include\dcsequen.h"\
-	".\dcmdata\include\dcstack.h"\
-	".\dcmdata\include\dcstream.h"\
-	".\dcmdata\include\dcswap.h"\
-	".\dcmdata\include\dctag.h"\
-	".\dcmdata\include\dctagkey.h"\
-	".\dcmdata\include\dctk.h"\
-	".\dcmdata\include\dctypes.h"\
-	".\dcmdata\include\dcuid.h"\
-	".\dcmdata\include\dcutils.h"\
-	".\dcmdata\include\dcvm.h"\
-	".\dcmdata\include\dcvr.h"\
-	".\dcmdata\include\dcvrae.h"\
-	".\dcmdata\include\dcvras.h"\
-	".\dcmdata\include\dcvrat.h"\
-	".\dcmdata\include\dcvrcs.h"\
-	".\dcmdata\include\dcvrda.h"\
-	".\dcmdata\include\dcvrds.h"\
-	".\dcmdata\include\dcvrdt.h"\
-	".\dcmdata\include\dcvrfd.h"\
-	".\dcmdata\include\dcvrfl.h"\
-	".\dcmdata\include\dcvris.h"\
-	".\dcmdata\include\dcvrlo.h"\
-	".\dcmdata\include\dcvrlt.h"\
-	".\dcmdata\include\dcvrobow.h"\
-	".\dcmdata\include\dcvrpn.h"\
-	".\dcmdata\include\dcvrpobw.h"\
-	".\dcmdata\include\dcvrsh.h"\
-	".\dcmdata\include\dcvrsl.h"\
-	".\dcmdata\include\dcvrss.h"\
-	".\dcmdata\include\dcvrst.h"\
-	".\dcmdata\include\dcvrtm.h"\
-	".\dcmdata\include\dcvrui.h"\
-	".\dcmdata\include\dcvrul.h"\
-	".\dcmdata\include\dcvrulup.h"\
-	".\dcmdata\include\dcvrus.h"\
-	".\dcmdata\include\dcxfer.h"\
-	".\dcmdata\include\pix.h"\
-	".\ofstd\include\oflist.h"\
-	".\ofstd\include\oftypes.h"\
-	
-
-"$(INTDIR)\dcutils.obj" : $(SOURCE) $(DEP_CPP_DCUTI) "$(INTDIR)"
-   $(CPP) $(CPP_PROJ) $(SOURCE)
-
-
-!ENDIF 
 
 # End Source File
 ################################################################################
 # Begin Source File
 
 SOURCE=.\dcmdata\libsrc\dcvm.cxx
-
-!IF  "$(CFG)" == "dcmdata - Win32 Release"
-
 DEP_CPP_DCVM_=\
 	".\config\include\cfmwerks.h"\
 	".\config\include\cfwin32.h"\
@@ -6523,30 +5356,12 @@ DEP_CPP_DCVM_=\
 "$(INTDIR)\dcvm.obj" : $(SOURCE) $(DEP_CPP_DCVM_) "$(INTDIR)"
    $(CPP) $(CPP_PROJ) $(SOURCE)
 
-
-!ELSEIF  "$(CFG)" == "dcmdata - Win32 Debug"
-
-DEP_CPP_DCVM_=\
-	".\config\include\cfmwerks.h"\
-	".\config\include\cfwin32.h"\
-	".\config\include\osconfig.h"\
-	".\dcmdata\include\dcvm.h"\
-	
-
-"$(INTDIR)\dcvm.obj" : $(SOURCE) $(DEP_CPP_DCVM_) "$(INTDIR)"
-   $(CPP) $(CPP_PROJ) $(SOURCE)
-
-
-!ENDIF 
 
 # End Source File
 ################################################################################
 # Begin Source File
 
 SOURCE=.\dcmdata\libsrc\dcvr.cxx
-
-!IF  "$(CFG)" == "dcmdata - Win32 Release"
-
 DEP_CPP_DCVR_=\
 	".\config\include\cfmwerks.h"\
 	".\config\include\cfwin32.h"\
@@ -6559,96 +5374,27 @@ DEP_CPP_DCVR_=\
 "$(INTDIR)\dcvr.obj" : $(SOURCE) $(DEP_CPP_DCVR_) "$(INTDIR)"
    $(CPP) $(CPP_PROJ) $(SOURCE)
 
-
-!ELSEIF  "$(CFG)" == "dcmdata - Win32 Debug"
-
-DEP_CPP_DCVR_=\
-	".\config\include\cfmwerks.h"\
-	".\config\include\cfwin32.h"\
-	".\config\include\osconfig.h"\
-	".\dcmdata\include\dctypes.h"\
-	".\dcmdata\include\dcvr.h"\
-	".\ofstd\include\oftypes.h"\
-	
-
-"$(INTDIR)\dcvr.obj" : $(SOURCE) $(DEP_CPP_DCVR_) "$(INTDIR)"
-   $(CPP) $(CPP_PROJ) $(SOURCE)
-
-
-!ENDIF 
 
 # End Source File
 ################################################################################
 # Begin Source File
 
 SOURCE=.\dcmdata\libsrc\dcvrae.cxx
-
-!IF  "$(CFG)" == "dcmdata - Win32 Release"
-
-DEP_CPP_DCVRA=\
-	".\config\include\cfmwerks.h"\
-	".\config\include\cfwin32.h"\
-	".\config\include\osconfig.h"\
-	".\dcmdata\include\dcbytstr.h"\
-	".\dcmdata\include\dcdebug.h"\
-	".\dcmdata\include\dcdicent.h"\
-	".\dcmdata\include\dcelem.h"\
-	".\dcmdata\include\dcerror.h"\
-	".\dcmdata\include\dclist.h"\
-	".\dcmdata\include\dcobject.h"\
-	".\dcmdata\include\dcstack.h"\
-	".\dcmdata\include\dcstream.h"\
-	".\dcmdata\include\dctag.h"\
-	".\dcmdata\include\dctagkey.h"\
-	".\dcmdata\include\dctypes.h"\
-	".\dcmdata\include\dcvr.h"\
-	".\dcmdata\include\dcvrae.h"\
-	".\dcmdata\include\dcxfer.h"\
-	".\ofstd\include\oftypes.h"\
+NODEP_CPP_DCVRA=\
+	".\dcmdata\libsrc\dcdebug.h"\
+	".\dcmdata\libsrc\dcvrae.h"\
+	".\dcmdata\libsrc\osconfig.h"\
 	
 
-"$(INTDIR)\dcvrae.obj" : $(SOURCE) $(DEP_CPP_DCVRA) "$(INTDIR)"
+"$(INTDIR)\dcvrae.obj" : $(SOURCE) "$(INTDIR)"
    $(CPP) $(CPP_PROJ) $(SOURCE)
 
-
-!ELSEIF  "$(CFG)" == "dcmdata - Win32 Debug"
-
-DEP_CPP_DCVRA=\
-	".\config\include\cfmwerks.h"\
-	".\config\include\cfwin32.h"\
-	".\config\include\osconfig.h"\
-	".\dcmdata\include\dcbytstr.h"\
-	".\dcmdata\include\dcdebug.h"\
-	".\dcmdata\include\dcdicent.h"\
-	".\dcmdata\include\dcelem.h"\
-	".\dcmdata\include\dcerror.h"\
-	".\dcmdata\include\dclist.h"\
-	".\dcmdata\include\dcobject.h"\
-	".\dcmdata\include\dcstack.h"\
-	".\dcmdata\include\dcstream.h"\
-	".\dcmdata\include\dctag.h"\
-	".\dcmdata\include\dctagkey.h"\
-	".\dcmdata\include\dctypes.h"\
-	".\dcmdata\include\dcvr.h"\
-	".\dcmdata\include\dcvrae.h"\
-	".\dcmdata\include\dcxfer.h"\
-	".\ofstd\include\oftypes.h"\
-	
-
-"$(INTDIR)\dcvrae.obj" : $(SOURCE) $(DEP_CPP_DCVRA) "$(INTDIR)"
-   $(CPP) $(CPP_PROJ) $(SOURCE)
-
-
-!ENDIF 
 
 # End Source File
 ################################################################################
 # Begin Source File
 
 SOURCE=.\dcmdata\libsrc\dcvras.cxx
-
-!IF  "$(CFG)" == "dcmdata - Win32 Release"
-
 DEP_CPP_DCVRAS=\
 	".\config\include\cfmwerks.h"\
 	".\config\include\cfwin32.h"\
@@ -6674,45 +5420,12 @@ DEP_CPP_DCVRAS=\
 "$(INTDIR)\dcvras.obj" : $(SOURCE) $(DEP_CPP_DCVRAS) "$(INTDIR)"
    $(CPP) $(CPP_PROJ) $(SOURCE)
 
-
-!ELSEIF  "$(CFG)" == "dcmdata - Win32 Debug"
-
-DEP_CPP_DCVRAS=\
-	".\config\include\cfmwerks.h"\
-	".\config\include\cfwin32.h"\
-	".\config\include\osconfig.h"\
-	".\dcmdata\include\dcbytstr.h"\
-	".\dcmdata\include\dcdebug.h"\
-	".\dcmdata\include\dcdicent.h"\
-	".\dcmdata\include\dcelem.h"\
-	".\dcmdata\include\dcerror.h"\
-	".\dcmdata\include\dclist.h"\
-	".\dcmdata\include\dcobject.h"\
-	".\dcmdata\include\dcstack.h"\
-	".\dcmdata\include\dcstream.h"\
-	".\dcmdata\include\dctag.h"\
-	".\dcmdata\include\dctagkey.h"\
-	".\dcmdata\include\dctypes.h"\
-	".\dcmdata\include\dcvr.h"\
-	".\dcmdata\include\dcvras.h"\
-	".\dcmdata\include\dcxfer.h"\
-	".\ofstd\include\oftypes.h"\
-	
-
-"$(INTDIR)\dcvras.obj" : $(SOURCE) $(DEP_CPP_DCVRAS) "$(INTDIR)"
-   $(CPP) $(CPP_PROJ) $(SOURCE)
-
-
-!ENDIF 
 
 # End Source File
 ################################################################################
 # Begin Source File
 
 SOURCE=.\dcmdata\libsrc\dcvrat.cxx
-
-!IF  "$(CFG)" == "dcmdata - Win32 Release"
-
 DEP_CPP_DCVRAT=\
 	".\config\include\cfmwerks.h"\
 	".\config\include\cfwin32.h"\
@@ -6738,45 +5451,12 @@ DEP_CPP_DCVRAT=\
 "$(INTDIR)\dcvrat.obj" : $(SOURCE) $(DEP_CPP_DCVRAT) "$(INTDIR)"
    $(CPP) $(CPP_PROJ) $(SOURCE)
 
-
-!ELSEIF  "$(CFG)" == "dcmdata - Win32 Debug"
-
-DEP_CPP_DCVRAT=\
-	".\config\include\cfmwerks.h"\
-	".\config\include\cfwin32.h"\
-	".\config\include\osconfig.h"\
-	".\dcmdata\include\dcdebug.h"\
-	".\dcmdata\include\dcdicent.h"\
-	".\dcmdata\include\dcelem.h"\
-	".\dcmdata\include\dcerror.h"\
-	".\dcmdata\include\dclist.h"\
-	".\dcmdata\include\dcobject.h"\
-	".\dcmdata\include\dcstack.h"\
-	".\dcmdata\include\dcstream.h"\
-	".\dcmdata\include\dctag.h"\
-	".\dcmdata\include\dctagkey.h"\
-	".\dcmdata\include\dctypes.h"\
-	".\dcmdata\include\dcvm.h"\
-	".\dcmdata\include\dcvr.h"\
-	".\dcmdata\include\dcvrat.h"\
-	".\dcmdata\include\dcxfer.h"\
-	".\ofstd\include\oftypes.h"\
-	
-
-"$(INTDIR)\dcvrat.obj" : $(SOURCE) $(DEP_CPP_DCVRAT) "$(INTDIR)"
-   $(CPP) $(CPP_PROJ) $(SOURCE)
-
-
-!ENDIF 
 
 # End Source File
 ################################################################################
 # Begin Source File
 
 SOURCE=.\dcmdata\libsrc\dcvrcs.cxx
-
-!IF  "$(CFG)" == "dcmdata - Win32 Release"
-
 DEP_CPP_DCVRC=\
 	".\config\include\cfmwerks.h"\
 	".\config\include\cfwin32.h"\
@@ -6802,45 +5482,12 @@ DEP_CPP_DCVRC=\
 "$(INTDIR)\dcvrcs.obj" : $(SOURCE) $(DEP_CPP_DCVRC) "$(INTDIR)"
    $(CPP) $(CPP_PROJ) $(SOURCE)
 
-
-!ELSEIF  "$(CFG)" == "dcmdata - Win32 Debug"
-
-DEP_CPP_DCVRC=\
-	".\config\include\cfmwerks.h"\
-	".\config\include\cfwin32.h"\
-	".\config\include\osconfig.h"\
-	".\dcmdata\include\dcbytstr.h"\
-	".\dcmdata\include\dcdebug.h"\
-	".\dcmdata\include\dcdicent.h"\
-	".\dcmdata\include\dcelem.h"\
-	".\dcmdata\include\dcerror.h"\
-	".\dcmdata\include\dclist.h"\
-	".\dcmdata\include\dcobject.h"\
-	".\dcmdata\include\dcstack.h"\
-	".\dcmdata\include\dcstream.h"\
-	".\dcmdata\include\dctag.h"\
-	".\dcmdata\include\dctagkey.h"\
-	".\dcmdata\include\dctypes.h"\
-	".\dcmdata\include\dcvr.h"\
-	".\dcmdata\include\dcvrcs.h"\
-	".\dcmdata\include\dcxfer.h"\
-	".\ofstd\include\oftypes.h"\
-	
-
-"$(INTDIR)\dcvrcs.obj" : $(SOURCE) $(DEP_CPP_DCVRC) "$(INTDIR)"
-   $(CPP) $(CPP_PROJ) $(SOURCE)
-
-
-!ENDIF 
 
 # End Source File
 ################################################################################
 # Begin Source File
 
 SOURCE=.\dcmdata\libsrc\dcvrda.cxx
-
-!IF  "$(CFG)" == "dcmdata - Win32 Release"
-
 DEP_CPP_DCVRD=\
 	".\config\include\cfmwerks.h"\
 	".\config\include\cfwin32.h"\
@@ -6866,173 +5513,44 @@ DEP_CPP_DCVRD=\
 "$(INTDIR)\dcvrda.obj" : $(SOURCE) $(DEP_CPP_DCVRD) "$(INTDIR)"
    $(CPP) $(CPP_PROJ) $(SOURCE)
 
-
-!ELSEIF  "$(CFG)" == "dcmdata - Win32 Debug"
-
-DEP_CPP_DCVRD=\
-	".\config\include\cfmwerks.h"\
-	".\config\include\cfwin32.h"\
-	".\config\include\osconfig.h"\
-	".\dcmdata\include\dcbytstr.h"\
-	".\dcmdata\include\dcdebug.h"\
-	".\dcmdata\include\dcdicent.h"\
-	".\dcmdata\include\dcelem.h"\
-	".\dcmdata\include\dcerror.h"\
-	".\dcmdata\include\dclist.h"\
-	".\dcmdata\include\dcobject.h"\
-	".\dcmdata\include\dcstack.h"\
-	".\dcmdata\include\dcstream.h"\
-	".\dcmdata\include\dctag.h"\
-	".\dcmdata\include\dctagkey.h"\
-	".\dcmdata\include\dctypes.h"\
-	".\dcmdata\include\dcvr.h"\
-	".\dcmdata\include\dcvrda.h"\
-	".\dcmdata\include\dcxfer.h"\
-	".\ofstd\include\oftypes.h"\
-	
-
-"$(INTDIR)\dcvrda.obj" : $(SOURCE) $(DEP_CPP_DCVRD) "$(INTDIR)"
-   $(CPP) $(CPP_PROJ) $(SOURCE)
-
-
-!ENDIF 
 
 # End Source File
 ################################################################################
 # Begin Source File
 
 SOURCE=.\dcmdata\libsrc\dcvrds.cxx
-
-!IF  "$(CFG)" == "dcmdata - Win32 Release"
-
-DEP_CPP_DCVRDS=\
-	".\config\include\cfmwerks.h"\
-	".\config\include\cfwin32.h"\
-	".\config\include\osconfig.h"\
-	".\dcmdata\include\dcbytstr.h"\
-	".\dcmdata\include\dcdebug.h"\
-	".\dcmdata\include\dcdicent.h"\
-	".\dcmdata\include\dcelem.h"\
-	".\dcmdata\include\dcerror.h"\
-	".\dcmdata\include\dclist.h"\
-	".\dcmdata\include\dcobject.h"\
-	".\dcmdata\include\dcstack.h"\
-	".\dcmdata\include\dcstream.h"\
-	".\dcmdata\include\dctag.h"\
-	".\dcmdata\include\dctagkey.h"\
-	".\dcmdata\include\dctypes.h"\
-	".\dcmdata\include\dcvr.h"\
-	".\dcmdata\include\dcvrds.h"\
-	".\dcmdata\include\dcxfer.h"\
-	".\ofstd\include\oftypes.h"\
+NODEP_CPP_DCVRDS=\
+	".\dcmdata\libsrc\dcdebug.h"\
+	".\dcmdata\libsrc\dcvrds.h"\
+	".\dcmdata\libsrc\ofstring.h"\
+	".\dcmdata\libsrc\osconfig.h"\
 	
 
-"$(INTDIR)\dcvrds.obj" : $(SOURCE) $(DEP_CPP_DCVRDS) "$(INTDIR)"
+"$(INTDIR)\dcvrds.obj" : $(SOURCE) "$(INTDIR)"
    $(CPP) $(CPP_PROJ) $(SOURCE)
 
-
-!ELSEIF  "$(CFG)" == "dcmdata - Win32 Debug"
-
-DEP_CPP_DCVRDS=\
-	".\config\include\cfmwerks.h"\
-	".\config\include\cfwin32.h"\
-	".\config\include\osconfig.h"\
-	".\dcmdata\include\dcbytstr.h"\
-	".\dcmdata\include\dcdebug.h"\
-	".\dcmdata\include\dcdicent.h"\
-	".\dcmdata\include\dcelem.h"\
-	".\dcmdata\include\dcerror.h"\
-	".\dcmdata\include\dclist.h"\
-	".\dcmdata\include\dcobject.h"\
-	".\dcmdata\include\dcstack.h"\
-	".\dcmdata\include\dcstream.h"\
-	".\dcmdata\include\dctag.h"\
-	".\dcmdata\include\dctagkey.h"\
-	".\dcmdata\include\dctypes.h"\
-	".\dcmdata\include\dcvr.h"\
-	".\dcmdata\include\dcvrds.h"\
-	".\dcmdata\include\dcxfer.h"\
-	".\ofstd\include\oftypes.h"\
-	
-
-"$(INTDIR)\dcvrds.obj" : $(SOURCE) $(DEP_CPP_DCVRDS) "$(INTDIR)"
-   $(CPP) $(CPP_PROJ) $(SOURCE)
-
-
-!ENDIF 
 
 # End Source File
 ################################################################################
 # Begin Source File
 
 SOURCE=.\dcmdata\libsrc\dcvrdt.cxx
-
-!IF  "$(CFG)" == "dcmdata - Win32 Release"
-
-DEP_CPP_DCVRDT=\
-	".\config\include\cfmwerks.h"\
-	".\config\include\cfwin32.h"\
-	".\config\include\osconfig.h"\
-	".\dcmdata\include\dcbytstr.h"\
-	".\dcmdata\include\dcdebug.h"\
-	".\dcmdata\include\dcdicent.h"\
-	".\dcmdata\include\dcelem.h"\
-	".\dcmdata\include\dcerror.h"\
-	".\dcmdata\include\dclist.h"\
-	".\dcmdata\include\dcobject.h"\
-	".\dcmdata\include\dcstack.h"\
-	".\dcmdata\include\dcstream.h"\
-	".\dcmdata\include\dctag.h"\
-	".\dcmdata\include\dctagkey.h"\
-	".\dcmdata\include\dctypes.h"\
-	".\dcmdata\include\dcvr.h"\
-	".\dcmdata\include\dcvrdt.h"\
-	".\dcmdata\include\dcxfer.h"\
-	".\ofstd\include\oftypes.h"\
+NODEP_CPP_DCVRDT=\
+	".\dcmdata\libsrc\dcdebug.h"\
+	".\dcmdata\libsrc\dcvrdt.h"\
+	".\dcmdata\libsrc\ofstring.h"\
+	".\dcmdata\libsrc\osconfig.h"\
 	
 
-"$(INTDIR)\dcvrdt.obj" : $(SOURCE) $(DEP_CPP_DCVRDT) "$(INTDIR)"
+"$(INTDIR)\dcvrdt.obj" : $(SOURCE) "$(INTDIR)"
    $(CPP) $(CPP_PROJ) $(SOURCE)
 
-
-!ELSEIF  "$(CFG)" == "dcmdata - Win32 Debug"
-
-DEP_CPP_DCVRDT=\
-	".\config\include\cfmwerks.h"\
-	".\config\include\cfwin32.h"\
-	".\config\include\osconfig.h"\
-	".\dcmdata\include\dcbytstr.h"\
-	".\dcmdata\include\dcdebug.h"\
-	".\dcmdata\include\dcdicent.h"\
-	".\dcmdata\include\dcelem.h"\
-	".\dcmdata\include\dcerror.h"\
-	".\dcmdata\include\dclist.h"\
-	".\dcmdata\include\dcobject.h"\
-	".\dcmdata\include\dcstack.h"\
-	".\dcmdata\include\dcstream.h"\
-	".\dcmdata\include\dctag.h"\
-	".\dcmdata\include\dctagkey.h"\
-	".\dcmdata\include\dctypes.h"\
-	".\dcmdata\include\dcvr.h"\
-	".\dcmdata\include\dcvrdt.h"\
-	".\dcmdata\include\dcxfer.h"\
-	".\ofstd\include\oftypes.h"\
-	
-
-"$(INTDIR)\dcvrdt.obj" : $(SOURCE) $(DEP_CPP_DCVRDT) "$(INTDIR)"
-   $(CPP) $(CPP_PROJ) $(SOURCE)
-
-
-!ENDIF 
 
 # End Source File
 ################################################################################
 # Begin Source File
 
 SOURCE=.\dcmdata\libsrc\dcvrfd.cxx
-
-!IF  "$(CFG)" == "dcmdata - Win32 Release"
-
 DEP_CPP_DCVRF=\
 	".\config\include\cfmwerks.h"\
 	".\config\include\cfwin32.h"\
@@ -7058,45 +5576,12 @@ DEP_CPP_DCVRF=\
 "$(INTDIR)\dcvrfd.obj" : $(SOURCE) $(DEP_CPP_DCVRF) "$(INTDIR)"
    $(CPP) $(CPP_PROJ) $(SOURCE)
 
-
-!ELSEIF  "$(CFG)" == "dcmdata - Win32 Debug"
-
-DEP_CPP_DCVRF=\
-	".\config\include\cfmwerks.h"\
-	".\config\include\cfwin32.h"\
-	".\config\include\osconfig.h"\
-	".\dcmdata\include\dcdebug.h"\
-	".\dcmdata\include\dcdicent.h"\
-	".\dcmdata\include\dcelem.h"\
-	".\dcmdata\include\dcerror.h"\
-	".\dcmdata\include\dclist.h"\
-	".\dcmdata\include\dcobject.h"\
-	".\dcmdata\include\dcstack.h"\
-	".\dcmdata\include\dcstream.h"\
-	".\dcmdata\include\dctag.h"\
-	".\dcmdata\include\dctagkey.h"\
-	".\dcmdata\include\dctypes.h"\
-	".\dcmdata\include\dcvm.h"\
-	".\dcmdata\include\dcvr.h"\
-	".\dcmdata\include\dcvrfd.h"\
-	".\dcmdata\include\dcxfer.h"\
-	".\ofstd\include\oftypes.h"\
-	
-
-"$(INTDIR)\dcvrfd.obj" : $(SOURCE) $(DEP_CPP_DCVRF) "$(INTDIR)"
-   $(CPP) $(CPP_PROJ) $(SOURCE)
-
-
-!ENDIF 
 
 # End Source File
 ################################################################################
 # Begin Source File
 
 SOURCE=.\dcmdata\libsrc\dcvrfl.cxx
-
-!IF  "$(CFG)" == "dcmdata - Win32 Release"
-
 DEP_CPP_DCVRFL=\
 	".\config\include\cfmwerks.h"\
 	".\config\include\cfwin32.h"\
@@ -7122,109 +5607,28 @@ DEP_CPP_DCVRFL=\
 "$(INTDIR)\dcvrfl.obj" : $(SOURCE) $(DEP_CPP_DCVRFL) "$(INTDIR)"
    $(CPP) $(CPP_PROJ) $(SOURCE)
 
-
-!ELSEIF  "$(CFG)" == "dcmdata - Win32 Debug"
-
-DEP_CPP_DCVRFL=\
-	".\config\include\cfmwerks.h"\
-	".\config\include\cfwin32.h"\
-	".\config\include\osconfig.h"\
-	".\dcmdata\include\dcdebug.h"\
-	".\dcmdata\include\dcdicent.h"\
-	".\dcmdata\include\dcelem.h"\
-	".\dcmdata\include\dcerror.h"\
-	".\dcmdata\include\dclist.h"\
-	".\dcmdata\include\dcobject.h"\
-	".\dcmdata\include\dcstack.h"\
-	".\dcmdata\include\dcstream.h"\
-	".\dcmdata\include\dctag.h"\
-	".\dcmdata\include\dctagkey.h"\
-	".\dcmdata\include\dctypes.h"\
-	".\dcmdata\include\dcvm.h"\
-	".\dcmdata\include\dcvr.h"\
-	".\dcmdata\include\dcvrfl.h"\
-	".\dcmdata\include\dcxfer.h"\
-	".\ofstd\include\oftypes.h"\
-	
-
-"$(INTDIR)\dcvrfl.obj" : $(SOURCE) $(DEP_CPP_DCVRFL) "$(INTDIR)"
-   $(CPP) $(CPP_PROJ) $(SOURCE)
-
-
-!ENDIF 
 
 # End Source File
 ################################################################################
 # Begin Source File
 
 SOURCE=.\dcmdata\libsrc\dcvris.cxx
-
-!IF  "$(CFG)" == "dcmdata - Win32 Release"
-
-DEP_CPP_DCVRI=\
-	".\config\include\cfmwerks.h"\
-	".\config\include\cfwin32.h"\
-	".\config\include\osconfig.h"\
-	".\dcmdata\include\dcbytstr.h"\
-	".\dcmdata\include\dcdebug.h"\
-	".\dcmdata\include\dcdicent.h"\
-	".\dcmdata\include\dcelem.h"\
-	".\dcmdata\include\dcerror.h"\
-	".\dcmdata\include\dclist.h"\
-	".\dcmdata\include\dcobject.h"\
-	".\dcmdata\include\dcstack.h"\
-	".\dcmdata\include\dcstream.h"\
-	".\dcmdata\include\dctag.h"\
-	".\dcmdata\include\dctagkey.h"\
-	".\dcmdata\include\dctypes.h"\
-	".\dcmdata\include\dcvr.h"\
-	".\dcmdata\include\dcvris.h"\
-	".\dcmdata\include\dcxfer.h"\
-	".\ofstd\include\oftypes.h"\
+NODEP_CPP_DCVRI=\
+	".\dcmdata\libsrc\dcdebug.h"\
+	".\dcmdata\libsrc\dcvris.h"\
+	".\dcmdata\libsrc\ofstring.h"\
+	".\dcmdata\libsrc\osconfig.h"\
 	
 
-"$(INTDIR)\dcvris.obj" : $(SOURCE) $(DEP_CPP_DCVRI) "$(INTDIR)"
+"$(INTDIR)\dcvris.obj" : $(SOURCE) "$(INTDIR)"
    $(CPP) $(CPP_PROJ) $(SOURCE)
 
-
-!ELSEIF  "$(CFG)" == "dcmdata - Win32 Debug"
-
-DEP_CPP_DCVRI=\
-	".\config\include\cfmwerks.h"\
-	".\config\include\cfwin32.h"\
-	".\config\include\osconfig.h"\
-	".\dcmdata\include\dcbytstr.h"\
-	".\dcmdata\include\dcdebug.h"\
-	".\dcmdata\include\dcdicent.h"\
-	".\dcmdata\include\dcelem.h"\
-	".\dcmdata\include\dcerror.h"\
-	".\dcmdata\include\dclist.h"\
-	".\dcmdata\include\dcobject.h"\
-	".\dcmdata\include\dcstack.h"\
-	".\dcmdata\include\dcstream.h"\
-	".\dcmdata\include\dctag.h"\
-	".\dcmdata\include\dctagkey.h"\
-	".\dcmdata\include\dctypes.h"\
-	".\dcmdata\include\dcvr.h"\
-	".\dcmdata\include\dcvris.h"\
-	".\dcmdata\include\dcxfer.h"\
-	".\ofstd\include\oftypes.h"\
-	
-
-"$(INTDIR)\dcvris.obj" : $(SOURCE) $(DEP_CPP_DCVRI) "$(INTDIR)"
-   $(CPP) $(CPP_PROJ) $(SOURCE)
-
-
-!ENDIF 
 
 # End Source File
 ################################################################################
 # Begin Source File
 
 SOURCE=.\dcmdata\libsrc\dcvrlo.cxx
-
-!IF  "$(CFG)" == "dcmdata - Win32 Release"
-
 DEP_CPP_DCVRL=\
 	".\config\include\cfmwerks.h"\
 	".\config\include\cfwin32.h"\
@@ -7251,46 +5655,12 @@ DEP_CPP_DCVRL=\
 "$(INTDIR)\dcvrlo.obj" : $(SOURCE) $(DEP_CPP_DCVRL) "$(INTDIR)"
    $(CPP) $(CPP_PROJ) $(SOURCE)
 
-
-!ELSEIF  "$(CFG)" == "dcmdata - Win32 Debug"
-
-DEP_CPP_DCVRL=\
-	".\config\include\cfmwerks.h"\
-	".\config\include\cfwin32.h"\
-	".\config\include\osconfig.h"\
-	".\dcmdata\include\dcbytstr.h"\
-	".\dcmdata\include\dcchrstr.h"\
-	".\dcmdata\include\dcdebug.h"\
-	".\dcmdata\include\dcdicent.h"\
-	".\dcmdata\include\dcelem.h"\
-	".\dcmdata\include\dcerror.h"\
-	".\dcmdata\include\dclist.h"\
-	".\dcmdata\include\dcobject.h"\
-	".\dcmdata\include\dcstack.h"\
-	".\dcmdata\include\dcstream.h"\
-	".\dcmdata\include\dctag.h"\
-	".\dcmdata\include\dctagkey.h"\
-	".\dcmdata\include\dctypes.h"\
-	".\dcmdata\include\dcvr.h"\
-	".\dcmdata\include\dcvrlo.h"\
-	".\dcmdata\include\dcxfer.h"\
-	".\ofstd\include\oftypes.h"\
-	
-
-"$(INTDIR)\dcvrlo.obj" : $(SOURCE) $(DEP_CPP_DCVRL) "$(INTDIR)"
-   $(CPP) $(CPP_PROJ) $(SOURCE)
-
-
-!ENDIF 
 
 # End Source File
 ################################################################################
 # Begin Source File
 
 SOURCE=.\dcmdata\libsrc\dcvrlt.cxx
-
-!IF  "$(CFG)" == "dcmdata - Win32 Release"
-
 DEP_CPP_DCVRLT=\
 	".\config\include\cfmwerks.h"\
 	".\config\include\cfwin32.h"\
@@ -7317,46 +5687,12 @@ DEP_CPP_DCVRLT=\
 "$(INTDIR)\dcvrlt.obj" : $(SOURCE) $(DEP_CPP_DCVRLT) "$(INTDIR)"
    $(CPP) $(CPP_PROJ) $(SOURCE)
 
-
-!ELSEIF  "$(CFG)" == "dcmdata - Win32 Debug"
-
-DEP_CPP_DCVRLT=\
-	".\config\include\cfmwerks.h"\
-	".\config\include\cfwin32.h"\
-	".\config\include\osconfig.h"\
-	".\dcmdata\include\dcbytstr.h"\
-	".\dcmdata\include\dcchrstr.h"\
-	".\dcmdata\include\dcdebug.h"\
-	".\dcmdata\include\dcdicent.h"\
-	".\dcmdata\include\dcelem.h"\
-	".\dcmdata\include\dcerror.h"\
-	".\dcmdata\include\dclist.h"\
-	".\dcmdata\include\dcobject.h"\
-	".\dcmdata\include\dcstack.h"\
-	".\dcmdata\include\dcstream.h"\
-	".\dcmdata\include\dctag.h"\
-	".\dcmdata\include\dctagkey.h"\
-	".\dcmdata\include\dctypes.h"\
-	".\dcmdata\include\dcvr.h"\
-	".\dcmdata\include\dcvrlt.h"\
-	".\dcmdata\include\dcxfer.h"\
-	".\ofstd\include\oftypes.h"\
-	
-
-"$(INTDIR)\dcvrlt.obj" : $(SOURCE) $(DEP_CPP_DCVRLT) "$(INTDIR)"
-   $(CPP) $(CPP_PROJ) $(SOURCE)
-
-
-!ENDIF 
 
 # End Source File
 ################################################################################
 # Begin Source File
 
 SOURCE=.\dcmdata\libsrc\dcvrobow.cxx
-
-!IF  "$(CFG)" == "dcmdata - Win32 Release"
-
 DEP_CPP_DCVRO=\
 	".\config\include\cfmwerks.h"\
 	".\config\include\cfwin32.h"\
@@ -7384,113 +5720,26 @@ DEP_CPP_DCVRO=\
 "$(INTDIR)\dcvrobow.obj" : $(SOURCE) $(DEP_CPP_DCVRO) "$(INTDIR)"
    $(CPP) $(CPP_PROJ) $(SOURCE)
 
-
-!ELSEIF  "$(CFG)" == "dcmdata - Win32 Debug"
-
-DEP_CPP_DCVRO=\
-	".\config\include\cfmwerks.h"\
-	".\config\include\cfwin32.h"\
-	".\config\include\osconfig.h"\
-	".\dcmdata\include\dcdebug.h"\
-	".\dcmdata\include\dcdeftag.h"\
-	".\dcmdata\include\dcdicent.h"\
-	".\dcmdata\include\dcelem.h"\
-	".\dcmdata\include\dcerror.h"\
-	".\dcmdata\include\dclist.h"\
-	".\dcmdata\include\dcobject.h"\
-	".\dcmdata\include\dcstack.h"\
-	".\dcmdata\include\dcstream.h"\
-	".\dcmdata\include\dcswap.h"\
-	".\dcmdata\include\dctag.h"\
-	".\dcmdata\include\dctagkey.h"\
-	".\dcmdata\include\dctypes.h"\
-	".\dcmdata\include\dcvm.h"\
-	".\dcmdata\include\dcvr.h"\
-	".\dcmdata\include\dcvrobow.h"\
-	".\dcmdata\include\dcxfer.h"\
-	".\ofstd\include\oftypes.h"\
-	
-
-"$(INTDIR)\dcvrobow.obj" : $(SOURCE) $(DEP_CPP_DCVRO) "$(INTDIR)"
-   $(CPP) $(CPP_PROJ) $(SOURCE)
-
-
-!ENDIF 
 
 # End Source File
 ################################################################################
 # Begin Source File
 
 SOURCE=.\dcmdata\libsrc\dcvrpn.cxx
-
-!IF  "$(CFG)" == "dcmdata - Win32 Release"
-
-DEP_CPP_DCVRP=\
-	".\config\include\cfmwerks.h"\
-	".\config\include\cfwin32.h"\
-	".\config\include\osconfig.h"\
-	".\dcmdata\include\dcbytstr.h"\
-	".\dcmdata\include\dcchrstr.h"\
-	".\dcmdata\include\dcdebug.h"\
-	".\dcmdata\include\dcdicent.h"\
-	".\dcmdata\include\dcelem.h"\
-	".\dcmdata\include\dcerror.h"\
-	".\dcmdata\include\dclist.h"\
-	".\dcmdata\include\dcobject.h"\
-	".\dcmdata\include\dcstack.h"\
-	".\dcmdata\include\dcstream.h"\
-	".\dcmdata\include\dctag.h"\
-	".\dcmdata\include\dctagkey.h"\
-	".\dcmdata\include\dctypes.h"\
-	".\dcmdata\include\dcvr.h"\
-	".\dcmdata\include\dcvrpn.h"\
-	".\dcmdata\include\dcxfer.h"\
-	".\ofstd\include\oftypes.h"\
+NODEP_CPP_DCVRP=\
+	".\dcmdata\libsrc\dcdebug.h"\
+	".\dcmdata\libsrc\dcvrpn.h"\
 	
 
-"$(INTDIR)\dcvrpn.obj" : $(SOURCE) $(DEP_CPP_DCVRP) "$(INTDIR)"
+"$(INTDIR)\dcvrpn.obj" : $(SOURCE) "$(INTDIR)"
    $(CPP) $(CPP_PROJ) $(SOURCE)
 
-
-!ELSEIF  "$(CFG)" == "dcmdata - Win32 Debug"
-
-DEP_CPP_DCVRP=\
-	".\config\include\cfmwerks.h"\
-	".\config\include\cfwin32.h"\
-	".\config\include\osconfig.h"\
-	".\dcmdata\include\dcbytstr.h"\
-	".\dcmdata\include\dcchrstr.h"\
-	".\dcmdata\include\dcdebug.h"\
-	".\dcmdata\include\dcdicent.h"\
-	".\dcmdata\include\dcelem.h"\
-	".\dcmdata\include\dcerror.h"\
-	".\dcmdata\include\dclist.h"\
-	".\dcmdata\include\dcobject.h"\
-	".\dcmdata\include\dcstack.h"\
-	".\dcmdata\include\dcstream.h"\
-	".\dcmdata\include\dctag.h"\
-	".\dcmdata\include\dctagkey.h"\
-	".\dcmdata\include\dctypes.h"\
-	".\dcmdata\include\dcvr.h"\
-	".\dcmdata\include\dcvrpn.h"\
-	".\dcmdata\include\dcxfer.h"\
-	".\ofstd\include\oftypes.h"\
-	
-
-"$(INTDIR)\dcvrpn.obj" : $(SOURCE) $(DEP_CPP_DCVRP) "$(INTDIR)"
-   $(CPP) $(CPP_PROJ) $(SOURCE)
-
-
-!ENDIF 
 
 # End Source File
 ################################################################################
 # Begin Source File
 
 SOURCE=.\dcmdata\libsrc\dcvrsh.cxx
-
-!IF  "$(CFG)" == "dcmdata - Win32 Release"
-
 DEP_CPP_DCVRS=\
 	".\config\include\cfmwerks.h"\
 	".\config\include\cfwin32.h"\
@@ -7517,46 +5766,12 @@ DEP_CPP_DCVRS=\
 "$(INTDIR)\dcvrsh.obj" : $(SOURCE) $(DEP_CPP_DCVRS) "$(INTDIR)"
    $(CPP) $(CPP_PROJ) $(SOURCE)
 
-
-!ELSEIF  "$(CFG)" == "dcmdata - Win32 Debug"
-
-DEP_CPP_DCVRS=\
-	".\config\include\cfmwerks.h"\
-	".\config\include\cfwin32.h"\
-	".\config\include\osconfig.h"\
-	".\dcmdata\include\dcbytstr.h"\
-	".\dcmdata\include\dcchrstr.h"\
-	".\dcmdata\include\dcdebug.h"\
-	".\dcmdata\include\dcdicent.h"\
-	".\dcmdata\include\dcelem.h"\
-	".\dcmdata\include\dcerror.h"\
-	".\dcmdata\include\dclist.h"\
-	".\dcmdata\include\dcobject.h"\
-	".\dcmdata\include\dcstack.h"\
-	".\dcmdata\include\dcstream.h"\
-	".\dcmdata\include\dctag.h"\
-	".\dcmdata\include\dctagkey.h"\
-	".\dcmdata\include\dctypes.h"\
-	".\dcmdata\include\dcvr.h"\
-	".\dcmdata\include\dcvrsh.h"\
-	".\dcmdata\include\dcxfer.h"\
-	".\ofstd\include\oftypes.h"\
-	
-
-"$(INTDIR)\dcvrsh.obj" : $(SOURCE) $(DEP_CPP_DCVRS) "$(INTDIR)"
-   $(CPP) $(CPP_PROJ) $(SOURCE)
-
-
-!ENDIF 
 
 # End Source File
 ################################################################################
 # Begin Source File
 
 SOURCE=.\dcmdata\libsrc\dcvrsl.cxx
-
-!IF  "$(CFG)" == "dcmdata - Win32 Release"
-
 DEP_CPP_DCVRSL=\
 	".\config\include\cfmwerks.h"\
 	".\config\include\cfwin32.h"\
@@ -7582,45 +5797,12 @@ DEP_CPP_DCVRSL=\
 "$(INTDIR)\dcvrsl.obj" : $(SOURCE) $(DEP_CPP_DCVRSL) "$(INTDIR)"
    $(CPP) $(CPP_PROJ) $(SOURCE)
 
-
-!ELSEIF  "$(CFG)" == "dcmdata - Win32 Debug"
-
-DEP_CPP_DCVRSL=\
-	".\config\include\cfmwerks.h"\
-	".\config\include\cfwin32.h"\
-	".\config\include\osconfig.h"\
-	".\dcmdata\include\dcdebug.h"\
-	".\dcmdata\include\dcdicent.h"\
-	".\dcmdata\include\dcelem.h"\
-	".\dcmdata\include\dcerror.h"\
-	".\dcmdata\include\dclist.h"\
-	".\dcmdata\include\dcobject.h"\
-	".\dcmdata\include\dcstack.h"\
-	".\dcmdata\include\dcstream.h"\
-	".\dcmdata\include\dctag.h"\
-	".\dcmdata\include\dctagkey.h"\
-	".\dcmdata\include\dctypes.h"\
-	".\dcmdata\include\dcvm.h"\
-	".\dcmdata\include\dcvr.h"\
-	".\dcmdata\include\dcvrsl.h"\
-	".\dcmdata\include\dcxfer.h"\
-	".\ofstd\include\oftypes.h"\
-	
-
-"$(INTDIR)\dcvrsl.obj" : $(SOURCE) $(DEP_CPP_DCVRSL) "$(INTDIR)"
-   $(CPP) $(CPP_PROJ) $(SOURCE)
-
-
-!ENDIF 
 
 # End Source File
 ################################################################################
 # Begin Source File
 
 SOURCE=.\dcmdata\libsrc\dcvrss.cxx
-
-!IF  "$(CFG)" == "dcmdata - Win32 Release"
-
 DEP_CPP_DCVRSS=\
 	".\config\include\cfmwerks.h"\
 	".\config\include\cfwin32.h"\
@@ -7646,175 +5828,40 @@ DEP_CPP_DCVRSS=\
 "$(INTDIR)\dcvrss.obj" : $(SOURCE) $(DEP_CPP_DCVRSS) "$(INTDIR)"
    $(CPP) $(CPP_PROJ) $(SOURCE)
 
-
-!ELSEIF  "$(CFG)" == "dcmdata - Win32 Debug"
-
-DEP_CPP_DCVRSS=\
-	".\config\include\cfmwerks.h"\
-	".\config\include\cfwin32.h"\
-	".\config\include\osconfig.h"\
-	".\dcmdata\include\dcdebug.h"\
-	".\dcmdata\include\dcdicent.h"\
-	".\dcmdata\include\dcelem.h"\
-	".\dcmdata\include\dcerror.h"\
-	".\dcmdata\include\dclist.h"\
-	".\dcmdata\include\dcobject.h"\
-	".\dcmdata\include\dcstack.h"\
-	".\dcmdata\include\dcstream.h"\
-	".\dcmdata\include\dctag.h"\
-	".\dcmdata\include\dctagkey.h"\
-	".\dcmdata\include\dctypes.h"\
-	".\dcmdata\include\dcvm.h"\
-	".\dcmdata\include\dcvr.h"\
-	".\dcmdata\include\dcvrss.h"\
-	".\dcmdata\include\dcxfer.h"\
-	".\ofstd\include\oftypes.h"\
-	
-
-"$(INTDIR)\dcvrss.obj" : $(SOURCE) $(DEP_CPP_DCVRSS) "$(INTDIR)"
-   $(CPP) $(CPP_PROJ) $(SOURCE)
-
-
-!ENDIF 
 
 # End Source File
 ################################################################################
 # Begin Source File
 
 SOURCE=.\dcmdata\libsrc\dcvrst.cxx
-
-!IF  "$(CFG)" == "dcmdata - Win32 Release"
-
-DEP_CPP_DCVRST=\
-	".\config\include\cfmwerks.h"\
-	".\config\include\cfwin32.h"\
-	".\config\include\osconfig.h"\
-	".\dcmdata\include\dcbytstr.h"\
-	".\dcmdata\include\dcchrstr.h"\
-	".\dcmdata\include\dcdebug.h"\
-	".\dcmdata\include\dcdicent.h"\
-	".\dcmdata\include\dcelem.h"\
-	".\dcmdata\include\dcerror.h"\
-	".\dcmdata\include\dclist.h"\
-	".\dcmdata\include\dcobject.h"\
-	".\dcmdata\include\dcstack.h"\
-	".\dcmdata\include\dcstream.h"\
-	".\dcmdata\include\dctag.h"\
-	".\dcmdata\include\dctagkey.h"\
-	".\dcmdata\include\dctypes.h"\
-	".\dcmdata\include\dcvr.h"\
-	".\dcmdata\include\dcvrst.h"\
-	".\dcmdata\include\dcxfer.h"\
-	".\ofstd\include\oftypes.h"\
+NODEP_CPP_DCVRST=\
+	".\dcmdata\libsrc\dcdebug.h"\
+	".\dcmdata\libsrc\dcvrst.h"\
 	
 
-"$(INTDIR)\dcvrst.obj" : $(SOURCE) $(DEP_CPP_DCVRST) "$(INTDIR)"
+"$(INTDIR)\dcvrst.obj" : $(SOURCE) "$(INTDIR)"
    $(CPP) $(CPP_PROJ) $(SOURCE)
 
-
-!ELSEIF  "$(CFG)" == "dcmdata - Win32 Debug"
-
-DEP_CPP_DCVRST=\
-	".\config\include\cfmwerks.h"\
-	".\config\include\cfwin32.h"\
-	".\config\include\osconfig.h"\
-	".\dcmdata\include\dcbytstr.h"\
-	".\dcmdata\include\dcchrstr.h"\
-	".\dcmdata\include\dcdebug.h"\
-	".\dcmdata\include\dcdicent.h"\
-	".\dcmdata\include\dcelem.h"\
-	".\dcmdata\include\dcerror.h"\
-	".\dcmdata\include\dclist.h"\
-	".\dcmdata\include\dcobject.h"\
-	".\dcmdata\include\dcstack.h"\
-	".\dcmdata\include\dcstream.h"\
-	".\dcmdata\include\dctag.h"\
-	".\dcmdata\include\dctagkey.h"\
-	".\dcmdata\include\dctypes.h"\
-	".\dcmdata\include\dcvr.h"\
-	".\dcmdata\include\dcvrst.h"\
-	".\dcmdata\include\dcxfer.h"\
-	".\ofstd\include\oftypes.h"\
-	
-
-"$(INTDIR)\dcvrst.obj" : $(SOURCE) $(DEP_CPP_DCVRST) "$(INTDIR)"
-   $(CPP) $(CPP_PROJ) $(SOURCE)
-
-
-!ENDIF 
 
 # End Source File
 ################################################################################
 # Begin Source File
 
 SOURCE=.\dcmdata\libsrc\dcvrtm.cxx
-
-!IF  "$(CFG)" == "dcmdata - Win32 Release"
-
-DEP_CPP_DCVRT=\
-	".\config\include\cfmwerks.h"\
-	".\config\include\cfwin32.h"\
-	".\config\include\osconfig.h"\
-	".\dcmdata\include\dcbytstr.h"\
-	".\dcmdata\include\dcdebug.h"\
-	".\dcmdata\include\dcdicent.h"\
-	".\dcmdata\include\dcelem.h"\
-	".\dcmdata\include\dcerror.h"\
-	".\dcmdata\include\dclist.h"\
-	".\dcmdata\include\dcobject.h"\
-	".\dcmdata\include\dcstack.h"\
-	".\dcmdata\include\dcstream.h"\
-	".\dcmdata\include\dctag.h"\
-	".\dcmdata\include\dctagkey.h"\
-	".\dcmdata\include\dctypes.h"\
-	".\dcmdata\include\dcvr.h"\
-	".\dcmdata\include\dcvrtm.h"\
-	".\dcmdata\include\dcxfer.h"\
-	".\ofstd\include\oftypes.h"\
+NODEP_CPP_DCVRT=\
+	".\dcmdata\libsrc\dcdebug.h"\
+	".\dcmdata\libsrc\dcvrtm.h"\
 	
 
-"$(INTDIR)\dcvrtm.obj" : $(SOURCE) $(DEP_CPP_DCVRT) "$(INTDIR)"
+"$(INTDIR)\dcvrtm.obj" : $(SOURCE) "$(INTDIR)"
    $(CPP) $(CPP_PROJ) $(SOURCE)
 
-
-!ELSEIF  "$(CFG)" == "dcmdata - Win32 Debug"
-
-DEP_CPP_DCVRT=\
-	".\config\include\cfmwerks.h"\
-	".\config\include\cfwin32.h"\
-	".\config\include\osconfig.h"\
-	".\dcmdata\include\dcbytstr.h"\
-	".\dcmdata\include\dcdebug.h"\
-	".\dcmdata\include\dcdicent.h"\
-	".\dcmdata\include\dcelem.h"\
-	".\dcmdata\include\dcerror.h"\
-	".\dcmdata\include\dclist.h"\
-	".\dcmdata\include\dcobject.h"\
-	".\dcmdata\include\dcstack.h"\
-	".\dcmdata\include\dcstream.h"\
-	".\dcmdata\include\dctag.h"\
-	".\dcmdata\include\dctagkey.h"\
-	".\dcmdata\include\dctypes.h"\
-	".\dcmdata\include\dcvr.h"\
-	".\dcmdata\include\dcvrtm.h"\
-	".\dcmdata\include\dcxfer.h"\
-	".\ofstd\include\oftypes.h"\
-	
-
-"$(INTDIR)\dcvrtm.obj" : $(SOURCE) $(DEP_CPP_DCVRT) "$(INTDIR)"
-   $(CPP) $(CPP_PROJ) $(SOURCE)
-
-
-!ENDIF 
 
 # End Source File
 ################################################################################
 # Begin Source File
 
 SOURCE=.\dcmdata\libsrc\dcvrui.cxx
-
-!IF  "$(CFG)" == "dcmdata - Win32 Release"
-
 DEP_CPP_DCVRU=\
 	".\config\include\cfmwerks.h"\
 	".\config\include\cfwin32.h"\
@@ -7841,46 +5888,12 @@ DEP_CPP_DCVRU=\
 "$(INTDIR)\dcvrui.obj" : $(SOURCE) $(DEP_CPP_DCVRU) "$(INTDIR)"
    $(CPP) $(CPP_PROJ) $(SOURCE)
 
-
-!ELSEIF  "$(CFG)" == "dcmdata - Win32 Debug"
-
-DEP_CPP_DCVRU=\
-	".\config\include\cfmwerks.h"\
-	".\config\include\cfwin32.h"\
-	".\config\include\osconfig.h"\
-	".\dcmdata\include\dcbytstr.h"\
-	".\dcmdata\include\dcdebug.h"\
-	".\dcmdata\include\dcdicent.h"\
-	".\dcmdata\include\dcelem.h"\
-	".\dcmdata\include\dcerror.h"\
-	".\dcmdata\include\dclist.h"\
-	".\dcmdata\include\dcobject.h"\
-	".\dcmdata\include\dcstack.h"\
-	".\dcmdata\include\dcstream.h"\
-	".\dcmdata\include\dctag.h"\
-	".\dcmdata\include\dctagkey.h"\
-	".\dcmdata\include\dctypes.h"\
-	".\dcmdata\include\dcuid.h"\
-	".\dcmdata\include\dcvr.h"\
-	".\dcmdata\include\dcvrui.h"\
-	".\dcmdata\include\dcxfer.h"\
-	".\ofstd\include\oftypes.h"\
-	
-
-"$(INTDIR)\dcvrui.obj" : $(SOURCE) $(DEP_CPP_DCVRU) "$(INTDIR)"
-   $(CPP) $(CPP_PROJ) $(SOURCE)
-
-
-!ENDIF 
 
 # End Source File
 ################################################################################
 # Begin Source File
 
 SOURCE=.\dcmdata\libsrc\dcvrul.cxx
-
-!IF  "$(CFG)" == "dcmdata - Win32 Release"
-
 DEP_CPP_DCVRUL=\
 	".\config\include\cfmwerks.h"\
 	".\config\include\cfwin32.h"\
@@ -7906,45 +5919,12 @@ DEP_CPP_DCVRUL=\
 "$(INTDIR)\dcvrul.obj" : $(SOURCE) $(DEP_CPP_DCVRUL) "$(INTDIR)"
    $(CPP) $(CPP_PROJ) $(SOURCE)
 
-
-!ELSEIF  "$(CFG)" == "dcmdata - Win32 Debug"
-
-DEP_CPP_DCVRUL=\
-	".\config\include\cfmwerks.h"\
-	".\config\include\cfwin32.h"\
-	".\config\include\osconfig.h"\
-	".\dcmdata\include\dcdebug.h"\
-	".\dcmdata\include\dcdicent.h"\
-	".\dcmdata\include\dcelem.h"\
-	".\dcmdata\include\dcerror.h"\
-	".\dcmdata\include\dclist.h"\
-	".\dcmdata\include\dcobject.h"\
-	".\dcmdata\include\dcstack.h"\
-	".\dcmdata\include\dcstream.h"\
-	".\dcmdata\include\dctag.h"\
-	".\dcmdata\include\dctagkey.h"\
-	".\dcmdata\include\dctypes.h"\
-	".\dcmdata\include\dcvm.h"\
-	".\dcmdata\include\dcvr.h"\
-	".\dcmdata\include\dcvrul.h"\
-	".\dcmdata\include\dcxfer.h"\
-	".\ofstd\include\oftypes.h"\
-	
-
-"$(INTDIR)\dcvrul.obj" : $(SOURCE) $(DEP_CPP_DCVRUL) "$(INTDIR)"
-   $(CPP) $(CPP_PROJ) $(SOURCE)
-
-
-!ENDIF 
 
 # End Source File
 ################################################################################
 # Begin Source File
 
 SOURCE=.\dcmdata\libsrc\dcvrulup.cxx
-
-!IF  "$(CFG)" == "dcmdata - Win32 Release"
-
 DEP_CPP_DCVRULU=\
 	".\config\include\cfmwerks.h"\
 	".\config\include\cfwin32.h"\
@@ -7970,45 +5950,12 @@ DEP_CPP_DCVRULU=\
 "$(INTDIR)\dcvrulup.obj" : $(SOURCE) $(DEP_CPP_DCVRULU) "$(INTDIR)"
    $(CPP) $(CPP_PROJ) $(SOURCE)
 
-
-!ELSEIF  "$(CFG)" == "dcmdata - Win32 Debug"
-
-DEP_CPP_DCVRULU=\
-	".\config\include\cfmwerks.h"\
-	".\config\include\cfwin32.h"\
-	".\config\include\osconfig.h"\
-	".\dcmdata\include\dcdebug.h"\
-	".\dcmdata\include\dcdicent.h"\
-	".\dcmdata\include\dcelem.h"\
-	".\dcmdata\include\dcerror.h"\
-	".\dcmdata\include\dclist.h"\
-	".\dcmdata\include\dcobject.h"\
-	".\dcmdata\include\dcstack.h"\
-	".\dcmdata\include\dcstream.h"\
-	".\dcmdata\include\dctag.h"\
-	".\dcmdata\include\dctagkey.h"\
-	".\dcmdata\include\dctypes.h"\
-	".\dcmdata\include\dcvr.h"\
-	".\dcmdata\include\dcvrul.h"\
-	".\dcmdata\include\dcvrulup.h"\
-	".\dcmdata\include\dcxfer.h"\
-	".\ofstd\include\oftypes.h"\
-	
-
-"$(INTDIR)\dcvrulup.obj" : $(SOURCE) $(DEP_CPP_DCVRULU) "$(INTDIR)"
-   $(CPP) $(CPP_PROJ) $(SOURCE)
-
-
-!ENDIF 
 
 # End Source File
 ################################################################################
 # Begin Source File
 
 SOURCE=.\dcmdata\libsrc\dcvrus.cxx
-
-!IF  "$(CFG)" == "dcmdata - Win32 Release"
-
 DEP_CPP_DCVRUS=\
 	".\config\include\cfmwerks.h"\
 	".\config\include\cfwin32.h"\
@@ -8034,45 +5981,12 @@ DEP_CPP_DCVRUS=\
 "$(INTDIR)\dcvrus.obj" : $(SOURCE) $(DEP_CPP_DCVRUS) "$(INTDIR)"
    $(CPP) $(CPP_PROJ) $(SOURCE)
 
-
-!ELSEIF  "$(CFG)" == "dcmdata - Win32 Debug"
-
-DEP_CPP_DCVRUS=\
-	".\config\include\cfmwerks.h"\
-	".\config\include\cfwin32.h"\
-	".\config\include\osconfig.h"\
-	".\dcmdata\include\dcdebug.h"\
-	".\dcmdata\include\dcdicent.h"\
-	".\dcmdata\include\dcelem.h"\
-	".\dcmdata\include\dcerror.h"\
-	".\dcmdata\include\dclist.h"\
-	".\dcmdata\include\dcobject.h"\
-	".\dcmdata\include\dcstack.h"\
-	".\dcmdata\include\dcstream.h"\
-	".\dcmdata\include\dctag.h"\
-	".\dcmdata\include\dctagkey.h"\
-	".\dcmdata\include\dctypes.h"\
-	".\dcmdata\include\dcvm.h"\
-	".\dcmdata\include\dcvr.h"\
-	".\dcmdata\include\dcvrus.h"\
-	".\dcmdata\include\dcxfer.h"\
-	".\ofstd\include\oftypes.h"\
-	
-
-"$(INTDIR)\dcvrus.obj" : $(SOURCE) $(DEP_CPP_DCVRUS) "$(INTDIR)"
-   $(CPP) $(CPP_PROJ) $(SOURCE)
-
-
-!ENDIF 
 
 # End Source File
 ################################################################################
 # Begin Source File
 
 SOURCE=.\dcmdata\libsrc\dcxfer.cxx
-
-!IF  "$(CFG)" == "dcmdata - Win32 Release"
-
 DEP_CPP_DCXFE=\
 	".\config\include\cfmwerks.h"\
 	".\config\include\cfwin32.h"\
@@ -8088,35 +6002,12 @@ DEP_CPP_DCXFE=\
 "$(INTDIR)\dcxfer.obj" : $(SOURCE) $(DEP_CPP_DCXFE) "$(INTDIR)"
    $(CPP) $(CPP_PROJ) $(SOURCE)
 
-
-!ELSEIF  "$(CFG)" == "dcmdata - Win32 Debug"
-
-DEP_CPP_DCXFE=\
-	".\config\include\cfmwerks.h"\
-	".\config\include\cfwin32.h"\
-	".\config\include\osconfig.h"\
-	".\dcmdata\include\dcdebug.h"\
-	".\dcmdata\include\dctypes.h"\
-	".\dcmdata\include\dcuid.h"\
-	".\dcmdata\include\dcvr.h"\
-	".\dcmdata\include\dcxfer.h"\
-	".\ofstd\include\oftypes.h"\
-	
-
-"$(INTDIR)\dcxfer.obj" : $(SOURCE) $(DEP_CPP_DCXFE) "$(INTDIR)"
-   $(CPP) $(CPP_PROJ) $(SOURCE)
-
-
-!ENDIF 
 
 # End Source File
 ################################################################################
 # Begin Source File
 
 SOURCE=.\dcmdata\libsrc\dccodec.cxx
-
-!IF  "$(CFG)" == "dcmdata - Win32 Release"
-
 DEP_CPP_DCCOD=\
 	".\config\include\cfmwerks.h"\
 	".\config\include\cfwin32.h"\
@@ -8133,36 +6024,12 @@ DEP_CPP_DCCOD=\
 "$(INTDIR)\dccodec.obj" : $(SOURCE) $(DEP_CPP_DCCOD) "$(INTDIR)"
    $(CPP) $(CPP_PROJ) $(SOURCE)
 
-
-!ELSEIF  "$(CFG)" == "dcmdata - Win32 Debug"
-
-DEP_CPP_DCCOD=\
-	".\config\include\cfmwerks.h"\
-	".\config\include\cfwin32.h"\
-	".\config\include\osconfig.h"\
-	".\dcmdata\include\dccodec.h"\
-	".\dcmdata\include\dcerror.h"\
-	".\dcmdata\include\dctypes.h"\
-	".\dcmdata\include\dcvr.h"\
-	".\dcmdata\include\dcxfer.h"\
-	".\ofstd\include\oflist.h"\
-	".\ofstd\include\oftypes.h"\
-	
-
-"$(INTDIR)\dccodec.obj" : $(SOURCE) $(DEP_CPP_DCCOD) "$(INTDIR)"
-   $(CPP) $(CPP_PROJ) $(SOURCE)
-
-
-!ENDIF 
 
 # End Source File
 ################################################################################
 # Begin Source File
 
 SOURCE=.\dcmdata\libsrc\dcpixel.cxx
-
-!IF  "$(CFG)" == "dcmdata - Win32 Release"
-
 DEP_CPP_DCPIXE=\
 	".\config\include\cfmwerks.h"\
 	".\config\include\cfwin32.h"\
@@ -8195,52 +6062,12 @@ DEP_CPP_DCPIXE=\
 "$(INTDIR)\dcpixel.obj" : $(SOURCE) $(DEP_CPP_DCPIXE) "$(INTDIR)"
    $(CPP) $(CPP_PROJ) $(SOURCE)
 
-
-!ELSEIF  "$(CFG)" == "dcmdata - Win32 Debug"
-
-DEP_CPP_DCPIXE=\
-	".\config\include\cfmwerks.h"\
-	".\config\include\cfwin32.h"\
-	".\config\include\osconfig.h"\
-	".\dcmdata\include\dcbytstr.h"\
-	".\dcmdata\include\dccodec.h"\
-	".\dcmdata\include\dcdicent.h"\
-	".\dcmdata\include\dcelem.h"\
-	".\dcmdata\include\dcerror.h"\
-	".\dcmdata\include\dcitem.h"\
-	".\dcmdata\include\dclist.h"\
-	".\dcmdata\include\dcobject.h"\
-	".\dcmdata\include\dcpixel.h"\
-	".\dcmdata\include\dcpixseq.h"\
-	".\dcmdata\include\dcsequen.h"\
-	".\dcmdata\include\dcstack.h"\
-	".\dcmdata\include\dcstream.h"\
-	".\dcmdata\include\dctag.h"\
-	".\dcmdata\include\dctagkey.h"\
-	".\dcmdata\include\dctypes.h"\
-	".\dcmdata\include\dcvr.h"\
-	".\dcmdata\include\dcvrobow.h"\
-	".\dcmdata\include\dcvrpobw.h"\
-	".\dcmdata\include\dcvrui.h"\
-	".\dcmdata\include\dcxfer.h"\
-	".\ofstd\include\oflist.h"\
-	".\ofstd\include\oftypes.h"\
-	
-
-"$(INTDIR)\dcpixel.obj" : $(SOURCE) $(DEP_CPP_DCPIXE) "$(INTDIR)"
-   $(CPP) $(CPP_PROJ) $(SOURCE)
-
-
-!ENDIF 
 
 # End Source File
 ################################################################################
 # Begin Source File
 
 SOURCE=.\dcmdata\libsrc\dcvrpobw.cxx
-
-!IF  "$(CFG)" == "dcmdata - Win32 Release"
-
 DEP_CPP_DCVRPO=\
 	".\config\include\cfmwerks.h"\
 	".\config\include\cfwin32.h"\
@@ -8266,34 +6093,27 @@ DEP_CPP_DCVRPO=\
    $(CPP) $(CPP_PROJ) $(SOURCE)
 
 
-!ELSEIF  "$(CFG)" == "dcmdata - Win32 Debug"
+# End Source File
+################################################################################
+# Begin Source File
 
-DEP_CPP_DCVRPO=\
+SOURCE=.\dcmdata\libsrc\dchashdi.cxx
+DEP_CPP_DCHAS=\
 	".\config\include\cfmwerks.h"\
 	".\config\include\cfwin32.h"\
 	".\config\include\osconfig.h"\
 	".\dcmdata\include\dcdicent.h"\
-	".\dcmdata\include\dcelem.h"\
-	".\dcmdata\include\dcerror.h"\
-	".\dcmdata\include\dclist.h"\
-	".\dcmdata\include\dcobject.h"\
-	".\dcmdata\include\dcstack.h"\
-	".\dcmdata\include\dcstream.h"\
-	".\dcmdata\include\dctag.h"\
+	".\dcmdata\include\dchashdi.h"\
 	".\dcmdata\include\dctagkey.h"\
 	".\dcmdata\include\dctypes.h"\
 	".\dcmdata\include\dcvr.h"\
-	".\dcmdata\include\dcvrobow.h"\
-	".\dcmdata\include\dcvrpobw.h"\
-	".\dcmdata\include\dcxfer.h"\
+	".\ofstd\include\oflist.h"\
 	".\ofstd\include\oftypes.h"\
 	
 
-"$(INTDIR)\dcvrpobw.obj" : $(SOURCE) $(DEP_CPP_DCVRPO) "$(INTDIR)"
+"$(INTDIR)\dchashdi.obj" : $(SOURCE) $(DEP_CPP_DCHAS) "$(INTDIR)"
    $(CPP) $(CPP_PROJ) $(SOURCE)
 
-
-!ENDIF 
 
 # End Source File
 # End Target
@@ -8338,14 +6158,11 @@ DEP_CPP_MKDEF=\
 	".\dcmdata\include\cmdlnarg.h"\
 	".\dcmdata\include\dcdicent.h"\
 	".\dcmdata\include\dcdict.h"\
-	".\dcmdata\include\dcentbst.h"\
-	".\dcmdata\include\dcentdef.h"\
-	".\dcmdata\include\dcentlst.h"\
-	".\dcmdata\include\dcentset.h"\
+	".\dcmdata\include\dchashdi.h"\
 	".\dcmdata\include\dctagkey.h"\
 	".\dcmdata\include\dctypes.h"\
 	".\dcmdata\include\dcvr.h"\
-	".\dcmdata\include\pix.h"\
+	".\ofstd\include\oflist.h"\
 	".\ofstd\include\oftypes.h"\
 	
 
@@ -8414,14 +6231,11 @@ DEP_CPP_MKDIC=\
 	".\dcmdata\include\cmdlnarg.h"\
 	".\dcmdata\include\dcdicent.h"\
 	".\dcmdata\include\dcdict.h"\
-	".\dcmdata\include\dcentbst.h"\
-	".\dcmdata\include\dcentdef.h"\
-	".\dcmdata\include\dcentlst.h"\
-	".\dcmdata\include\dcentset.h"\
+	".\dcmdata\include\dchashdi.h"\
 	".\dcmdata\include\dctagkey.h"\
 	".\dcmdata\include\dctypes.h"\
 	".\dcmdata\include\dcvr.h"\
-	".\dcmdata\include\pix.h"\
+	".\ofstd\include\oflist.h"\
 	".\ofstd\include\oftypes.h"\
 	
 
@@ -8499,12 +6313,9 @@ DEP_CPP_DCMDU=\
 	".\dcmdata\include\dcdict.h"\
 	".\dcmdata\include\dcdirrec.h"\
 	".\dcmdata\include\dcelem.h"\
-	".\dcmdata\include\dcentbst.h"\
-	".\dcmdata\include\dcentdef.h"\
-	".\dcmdata\include\dcentlst.h"\
-	".\dcmdata\include\dcentset.h"\
 	".\dcmdata\include\dcerror.h"\
 	".\dcmdata\include\dcfilefo.h"\
+	".\dcmdata\include\dchashdi.h"\
 	".\dcmdata\include\dcitem.h"\
 	".\dcmdata\include\dclist.h"\
 	".\dcmdata\include\dcmetinf.h"\
@@ -8548,7 +6359,6 @@ DEP_CPP_DCMDU=\
 	".\dcmdata\include\dcvrulup.h"\
 	".\dcmdata\include\dcvrus.h"\
 	".\dcmdata\include\dcxfer.h"\
-	".\dcmdata\include\pix.h"\
 	".\ofstd\include\oflist.h"\
 	".\ofstd\include\oftypes.h"\
 	
@@ -8611,9 +6421,6 @@ DEP_CPP_DCMDU=\
 # Begin Source File
 
 SOURCE=.\dcmdata\apps\dcmconv.cxx
-
-!IF  "$(CFG)" == "dcmconv - Win32 Release"
-
 DEP_CPP_DCMCO=\
 	".\config\include\cfmwerks.h"\
 	".\config\include\cfwin32.h"\
@@ -8630,12 +6437,9 @@ DEP_CPP_DCMCO=\
 	".\dcmdata\include\dcdict.h"\
 	".\dcmdata\include\dcdirrec.h"\
 	".\dcmdata\include\dcelem.h"\
-	".\dcmdata\include\dcentbst.h"\
-	".\dcmdata\include\dcentdef.h"\
-	".\dcmdata\include\dcentlst.h"\
-	".\dcmdata\include\dcentset.h"\
 	".\dcmdata\include\dcerror.h"\
 	".\dcmdata\include\dcfilefo.h"\
+	".\dcmdata\include\dchashdi.h"\
 	".\dcmdata\include\dcitem.h"\
 	".\dcmdata\include\dclist.h"\
 	".\dcmdata\include\dcmetinf.h"\
@@ -8679,7 +6483,6 @@ DEP_CPP_DCMCO=\
 	".\dcmdata\include\dcvrulup.h"\
 	".\dcmdata\include\dcvrus.h"\
 	".\dcmdata\include\dcxfer.h"\
-	".\dcmdata\include\pix.h"\
 	".\ofstd\include\oflist.h"\
 	".\ofstd\include\oftypes.h"\
 	
@@ -8687,84 +6490,6 @@ DEP_CPP_DCMCO=\
 "$(INTDIR)\dcmconv.obj" : $(SOURCE) $(DEP_CPP_DCMCO) "$(INTDIR)"
    $(CPP) $(CPP_PROJ) $(SOURCE)
 
-
-!ELSEIF  "$(CFG)" == "dcmconv - Win32 Debug"
-
-DEP_CPP_DCMCO=\
-	".\config\include\cfmwerks.h"\
-	".\config\include\cfwin32.h"\
-	".\config\include\osconfig.h"\
-	".\dcmdata\include\cmdlnarg.h"\
-	".\dcmdata\include\dcbytstr.h"\
-	".\dcmdata\include\dcchrstr.h"\
-	".\dcmdata\include\dcdatset.h"\
-	".\dcmdata\include\dcdebug.h"\
-	".\dcmdata\include\dcdefine.h"\
-	".\dcmdata\include\dcdeftag.h"\
-	".\dcmdata\include\dcdicdir.h"\
-	".\dcmdata\include\dcdicent.h"\
-	".\dcmdata\include\dcdict.h"\
-	".\dcmdata\include\dcdirrec.h"\
-	".\dcmdata\include\dcelem.h"\
-	".\dcmdata\include\dcentbst.h"\
-	".\dcmdata\include\dcentdef.h"\
-	".\dcmdata\include\dcentlst.h"\
-	".\dcmdata\include\dcentset.h"\
-	".\dcmdata\include\dcerror.h"\
-	".\dcmdata\include\dcfilefo.h"\
-	".\dcmdata\include\dcitem.h"\
-	".\dcmdata\include\dclist.h"\
-	".\dcmdata\include\dcmetinf.h"\
-	".\dcmdata\include\dcobject.h"\
-	".\dcmdata\include\dcovlay.h"\
-	".\dcmdata\include\dcpixel.h"\
-	".\dcmdata\include\dcpixseq.h"\
-	".\dcmdata\include\dcsequen.h"\
-	".\dcmdata\include\dcstack.h"\
-	".\dcmdata\include\dcstream.h"\
-	".\dcmdata\include\dcswap.h"\
-	".\dcmdata\include\dctag.h"\
-	".\dcmdata\include\dctagkey.h"\
-	".\dcmdata\include\dctk.h"\
-	".\dcmdata\include\dctypes.h"\
-	".\dcmdata\include\dcuid.h"\
-	".\dcmdata\include\dcvm.h"\
-	".\dcmdata\include\dcvr.h"\
-	".\dcmdata\include\dcvrae.h"\
-	".\dcmdata\include\dcvras.h"\
-	".\dcmdata\include\dcvrat.h"\
-	".\dcmdata\include\dcvrcs.h"\
-	".\dcmdata\include\dcvrda.h"\
-	".\dcmdata\include\dcvrds.h"\
-	".\dcmdata\include\dcvrdt.h"\
-	".\dcmdata\include\dcvrfd.h"\
-	".\dcmdata\include\dcvrfl.h"\
-	".\dcmdata\include\dcvris.h"\
-	".\dcmdata\include\dcvrlo.h"\
-	".\dcmdata\include\dcvrlt.h"\
-	".\dcmdata\include\dcvrobow.h"\
-	".\dcmdata\include\dcvrpn.h"\
-	".\dcmdata\include\dcvrpobw.h"\
-	".\dcmdata\include\dcvrsh.h"\
-	".\dcmdata\include\dcvrsl.h"\
-	".\dcmdata\include\dcvrss.h"\
-	".\dcmdata\include\dcvrst.h"\
-	".\dcmdata\include\dcvrtm.h"\
-	".\dcmdata\include\dcvrui.h"\
-	".\dcmdata\include\dcvrul.h"\
-	".\dcmdata\include\dcvrulup.h"\
-	".\dcmdata\include\dcvrus.h"\
-	".\dcmdata\include\dcxfer.h"\
-	".\dcmdata\include\pix.h"\
-	".\ofstd\include\oflist.h"\
-	".\ofstd\include\oftypes.h"\
-	
-
-"$(INTDIR)\dcmconv.obj" : $(SOURCE) $(DEP_CPP_DCMCO) "$(INTDIR)"
-   $(CPP) $(CPP_PROJ) $(SOURCE)
-
-
-!ENDIF 
 
 # End Source File
 ################################################################################
@@ -8836,12 +6561,9 @@ DEP_CPP_DUMP2=\
 	".\dcmdata\include\dcdict.h"\
 	".\dcmdata\include\dcdirrec.h"\
 	".\dcmdata\include\dcelem.h"\
-	".\dcmdata\include\dcentbst.h"\
-	".\dcmdata\include\dcentdef.h"\
-	".\dcmdata\include\dcentlst.h"\
-	".\dcmdata\include\dcentset.h"\
 	".\dcmdata\include\dcerror.h"\
 	".\dcmdata\include\dcfilefo.h"\
+	".\dcmdata\include\dchashdi.h"\
 	".\dcmdata\include\dcitem.h"\
 	".\dcmdata\include\dclist.h"\
 	".\dcmdata\include\dcmetinf.h"\
@@ -8885,7 +6607,6 @@ DEP_CPP_DUMP2=\
 	".\dcmdata\include\dcvrulup.h"\
 	".\dcmdata\include\dcvrus.h"\
 	".\dcmdata\include\dcxfer.h"\
-	".\dcmdata\include\pix.h"\
 	".\ofstd\include\oflist.h"\
 	".\ofstd\include\oftypes.h"\
 	
@@ -9046,12 +6767,9 @@ DEP_CPP_DCMGP=\
 	".\dcmdata\include\dcdict.h"\
 	".\dcmdata\include\dcdirrec.h"\
 	".\dcmdata\include\dcelem.h"\
-	".\dcmdata\include\dcentbst.h"\
-	".\dcmdata\include\dcentdef.h"\
-	".\dcmdata\include\dcentlst.h"\
-	".\dcmdata\include\dcentset.h"\
 	".\dcmdata\include\dcerror.h"\
 	".\dcmdata\include\dcfilefo.h"\
+	".\dcmdata\include\dchashdi.h"\
 	".\dcmdata\include\dcitem.h"\
 	".\dcmdata\include\dclist.h"\
 	".\dcmdata\include\dcmetinf.h"\
@@ -9095,7 +6813,6 @@ DEP_CPP_DCMGP=\
 	".\dcmdata\include\dcvrulup.h"\
 	".\dcmdata\include\dcvrus.h"\
 	".\dcmdata\include\dcxfer.h"\
-	".\dcmdata\include\pix.h"\
 	".\ofstd\include\oflist.h"\
 	".\ofstd\include\oftypes.h"\
 	
@@ -9159,37 +6876,14 @@ BuildCmds= \
 
 SOURCE=.\dcmnet\libsrc\dimcancl.cxx
 DEP_CPP_DIMCA=\
-	".\config\include\cfmwerks.h"\
-	".\config\include\cfwin32.h"\
-	".\config\include\osconfig.h"\
-	".\dcmdata\include\dcbytstr.h"\
-	".\dcmdata\include\dcdatset.h"\
-	".\dcmdata\include\dcdicent.h"\
-	".\dcmdata\include\dcelem.h"\
-	".\dcmdata\include\dcerror.h"\
-	".\dcmdata\include\dcitem.h"\
-	".\dcmdata\include\dclist.h"\
-	".\dcmdata\include\dcobject.h"\
-	".\dcmdata\include\dcstack.h"\
-	".\dcmdata\include\dcstream.h"\
-	".\dcmdata\include\dctag.h"\
-	".\dcmdata\include\dctagkey.h"\
-	".\dcmdata\include\dctypes.h"\
-	".\dcmdata\include\dcuid.h"\
-	".\dcmdata\include\dcvr.h"\
-	".\dcmdata\include\dcvrui.h"\
-	".\dcmdata\include\dcxfer.h"\
-	".\dcmnet\include\assoc.h"\
-	".\dcmnet\include\cond.h"\
-	".\dcmnet\include\dcompat.h"\
-	".\dcmnet\include\dicom.h"\
-	".\dcmnet\include\dimse.h"\
-	".\dcmnet\include\diutil.h"\
-	".\dcmnet\include\dul.h"\
-	".\dcmnet\include\lst.h"\
 	".\dcmnet\libsrc\dimcond.h"\
-	".\ofstd\include\oftypes.h"\
-	{$(INCLUDE)}"\sys\TYPES.H"\
+	
+NODEP_CPP_DIMCA=\
+	".\dcmnet\libsrc\cond.h"\
+	".\dcmnet\libsrc\dicom.h"\
+	".\dcmnet\libsrc\dimse.h"\
+	".\dcmnet\libsrc\diutil.h"\
+	".\dcmnet\libsrc\osconfig.h"\
 	
 
 "$(INTDIR)\dimcancl.obj" : $(SOURCE) $(DEP_CPP_DIMCA) "$(INTDIR)"
@@ -9202,20 +6896,15 @@ DEP_CPP_DIMCA=\
 
 SOURCE=.\dcmnet\libsrc\assoc.cxx
 DEP_CPP_ASSOC=\
-	".\config\include\cfmwerks.h"\
-	".\config\include\cfwin32.h"\
-	".\config\include\osconfig.h"\
-	".\dcmdata\include\dctypes.h"\
-	".\dcmdata\include\dcuid.h"\
-	".\dcmnet\include\assoc.h"\
-	".\dcmnet\include\cond.h"\
-	".\dcmnet\include\dcompat.h"\
-	".\dcmnet\include\dicom.h"\
-	".\dcmnet\include\dul.h"\
-	".\dcmnet\include\lst.h"\
 	".\dcmnet\libsrc\asccond.h"\
-	".\ofstd\include\oftypes.h"\
 	{$(INCLUDE)}"\sys\TYPES.H"\
+	
+NODEP_CPP_ASSOC=\
+	".\dcmnet\libsrc\assoc.h"\
+	".\dcmnet\libsrc\cond.h"\
+	".\dcmnet\libsrc\dcuid.h"\
+	".\dcmnet\libsrc\dicom.h"\
+	".\dcmnet\libsrc\osconfig.h"\
 	
 
 "$(INTDIR)\assoc.obj" : $(SOURCE) $(DEP_CPP_ASSOC) "$(INTDIR)"
@@ -9227,20 +6916,13 @@ DEP_CPP_ASSOC=\
 # Begin Source File
 
 SOURCE=.\dcmnet\libsrc\cond.cxx
-DEP_CPP_COND_=\
-	".\config\include\cfmwerks.h"\
-	".\config\include\cfwin32.h"\
-	".\config\include\osconfig.h"\
-	".\dcmdata\include\dctypes.h"\
-	".\dcmdata\include\dcuid.h"\
-	".\dcmnet\include\cond.h"\
-	".\dcmnet\include\dcompat.h"\
-	".\dcmnet\include\dicom.h"\
-	".\ofstd\include\oftypes.h"\
-	{$(INCLUDE)}"\sys\TYPES.H"\
+NODEP_CPP_COND_=\
+	".\dcmnet\libsrc\cond.h"\
+	".\dcmnet\libsrc\dicom.h"\
+	".\dcmnet\libsrc\osconfig.h"\
 	
 
-"$(INTDIR)\cond.obj" : $(SOURCE) $(DEP_CPP_COND_) "$(INTDIR)"
+"$(INTDIR)\cond.obj" : $(SOURCE) "$(INTDIR)"
    $(CPP) $(CPP_PROJ) $(SOURCE)
 
 
@@ -9250,16 +6932,13 @@ DEP_CPP_COND_=\
 
 SOURCE=.\dcmnet\libsrc\dcompat.cxx
 DEP_CPP_DCOMP=\
-	".\config\include\cfmwerks.h"\
-	".\config\include\cfwin32.h"\
-	".\config\include\osconfig.h"\
-	".\dcmdata\include\dctypes.h"\
-	".\dcmdata\include\dcuid.h"\
-	".\dcmnet\include\dcompat.h"\
-	".\dcmnet\include\dicom.h"\
-	".\ofstd\include\oftypes.h"\
 	{$(INCLUDE)}"\sys\STAT.H"\
 	{$(INCLUDE)}"\sys\TYPES.H"\
+	
+NODEP_CPP_DCOMP=\
+	".\dcmnet\libsrc\dcompat.h"\
+	".\dcmnet\libsrc\dicom.h"\
+	".\dcmnet\libsrc\osconfig.h"\
 	
 
 "$(INTDIR)\dcompat.obj" : $(SOURCE) $(DEP_CPP_DCOMP) "$(INTDIR)"
@@ -9272,20 +6951,13 @@ DEP_CPP_DCOMP=\
 
 SOURCE=.\dcmnet\libsrc\asccond.cxx
 DEP_CPP_ASCCO=\
-	".\config\include\cfmwerks.h"\
-	".\config\include\cfwin32.h"\
-	".\config\include\osconfig.h"\
-	".\dcmdata\include\dctypes.h"\
-	".\dcmdata\include\dcuid.h"\
-	".\dcmnet\include\assoc.h"\
-	".\dcmnet\include\cond.h"\
-	".\dcmnet\include\dcompat.h"\
-	".\dcmnet\include\dicom.h"\
-	".\dcmnet\include\dul.h"\
-	".\dcmnet\include\lst.h"\
 	".\dcmnet\libsrc\asccond.h"\
-	".\ofstd\include\oftypes.h"\
-	{$(INCLUDE)}"\sys\TYPES.H"\
+	
+NODEP_CPP_ASCCO=\
+	".\dcmnet\libsrc\assoc.h"\
+	".\dcmnet\libsrc\cond.h"\
+	".\dcmnet\libsrc\dicom.h"\
+	".\dcmnet\libsrc\osconfig.h"\
 	
 
 "$(INTDIR)\asccond.obj" : $(SOURCE) $(DEP_CPP_ASCCO) "$(INTDIR)"
@@ -9298,38 +6970,14 @@ DEP_CPP_ASCCO=\
 
 SOURCE=.\dcmnet\libsrc\dimcmd.cxx
 DEP_CPP_DIMCM=\
-	".\config\include\cfmwerks.h"\
-	".\config\include\cfwin32.h"\
-	".\config\include\osconfig.h"\
-	".\dcmdata\include\dcbytstr.h"\
-	".\dcmdata\include\dcdatset.h"\
-	".\dcmdata\include\dcdeftag.h"\
-	".\dcmdata\include\dcdicent.h"\
-	".\dcmdata\include\dcelem.h"\
-	".\dcmdata\include\dcerror.h"\
-	".\dcmdata\include\dcitem.h"\
-	".\dcmdata\include\dclist.h"\
-	".\dcmdata\include\dcobject.h"\
-	".\dcmdata\include\dcstack.h"\
-	".\dcmdata\include\dcstream.h"\
-	".\dcmdata\include\dctag.h"\
-	".\dcmdata\include\dctagkey.h"\
-	".\dcmdata\include\dctypes.h"\
-	".\dcmdata\include\dcuid.h"\
-	".\dcmdata\include\dcvr.h"\
-	".\dcmdata\include\dcvrui.h"\
-	".\dcmdata\include\dcxfer.h"\
-	".\dcmnet\include\assoc.h"\
-	".\dcmnet\include\cond.h"\
-	".\dcmnet\include\dcompat.h"\
-	".\dcmnet\include\dicom.h"\
-	".\dcmnet\include\dimse.h"\
-	".\dcmnet\include\diutil.h"\
-	".\dcmnet\include\dul.h"\
-	".\dcmnet\include\lst.h"\
 	".\dcmnet\libsrc\dimcmd.h"\
-	".\ofstd\include\oftypes.h"\
-	{$(INCLUDE)}"\sys\TYPES.H"\
+	
+NODEP_CPP_DIMCM=\
+	".\dcmnet\libsrc\dcdatset.h"\
+	".\dcmnet\libsrc\dcdeftag.h"\
+	".\dcmnet\libsrc\dimse.h"\
+	".\dcmnet\libsrc\diutil.h"\
+	".\dcmnet\libsrc\osconfig.h"\
 	
 
 "$(INTDIR)\dimcmd.obj" : $(SOURCE) $(DEP_CPP_DIMCM) "$(INTDIR)"
@@ -9342,36 +6990,13 @@ DEP_CPP_DIMCM=\
 
 SOURCE=.\dcmnet\libsrc\dimcond.cxx
 DEP_CPP_DIMCO=\
-	".\config\include\cfmwerks.h"\
-	".\config\include\cfwin32.h"\
-	".\config\include\osconfig.h"\
-	".\dcmdata\include\dcbytstr.h"\
-	".\dcmdata\include\dcdatset.h"\
-	".\dcmdata\include\dcdicent.h"\
-	".\dcmdata\include\dcelem.h"\
-	".\dcmdata\include\dcerror.h"\
-	".\dcmdata\include\dcitem.h"\
-	".\dcmdata\include\dclist.h"\
-	".\dcmdata\include\dcobject.h"\
-	".\dcmdata\include\dcstack.h"\
-	".\dcmdata\include\dcstream.h"\
-	".\dcmdata\include\dctag.h"\
-	".\dcmdata\include\dctagkey.h"\
-	".\dcmdata\include\dctypes.h"\
-	".\dcmdata\include\dcuid.h"\
-	".\dcmdata\include\dcvr.h"\
-	".\dcmdata\include\dcvrui.h"\
-	".\dcmdata\include\dcxfer.h"\
-	".\dcmnet\include\assoc.h"\
-	".\dcmnet\include\cond.h"\
-	".\dcmnet\include\dcompat.h"\
-	".\dcmnet\include\dicom.h"\
-	".\dcmnet\include\dimse.h"\
-	".\dcmnet\include\dul.h"\
-	".\dcmnet\include\lst.h"\
 	".\dcmnet\libsrc\dimcond.h"\
-	".\ofstd\include\oftypes.h"\
-	{$(INCLUDE)}"\sys\TYPES.H"\
+	
+NODEP_CPP_DIMCO=\
+	".\dcmnet\libsrc\cond.h"\
+	".\dcmnet\libsrc\dicom.h"\
+	".\dcmnet\libsrc\dimse.h"\
+	".\dcmnet\libsrc\osconfig.h"\
 	
 
 "$(INTDIR)\dimcond.obj" : $(SOURCE) $(DEP_CPP_DIMCO) "$(INTDIR)"
@@ -9383,40 +7008,14 @@ DEP_CPP_DIMCO=\
 # Begin Source File
 
 SOURCE=.\dcmnet\libsrc\dimdump.cxx
-DEP_CPP_DIMDU=\
-	".\config\include\cfmwerks.h"\
-	".\config\include\cfwin32.h"\
-	".\config\include\osconfig.h"\
-	".\dcmdata\include\dcbytstr.h"\
-	".\dcmdata\include\dcdatset.h"\
-	".\dcmdata\include\dcdicent.h"\
-	".\dcmdata\include\dcelem.h"\
-	".\dcmdata\include\dcerror.h"\
-	".\dcmdata\include\dcitem.h"\
-	".\dcmdata\include\dclist.h"\
-	".\dcmdata\include\dcobject.h"\
-	".\dcmdata\include\dcstack.h"\
-	".\dcmdata\include\dcstream.h"\
-	".\dcmdata\include\dctag.h"\
-	".\dcmdata\include\dctagkey.h"\
-	".\dcmdata\include\dctypes.h"\
-	".\dcmdata\include\dcuid.h"\
-	".\dcmdata\include\dcvr.h"\
-	".\dcmdata\include\dcvrui.h"\
-	".\dcmdata\include\dcxfer.h"\
-	".\dcmnet\include\assoc.h"\
-	".\dcmnet\include\cond.h"\
-	".\dcmnet\include\dcompat.h"\
-	".\dcmnet\include\dicom.h"\
-	".\dcmnet\include\dimse.h"\
-	".\dcmnet\include\diutil.h"\
-	".\dcmnet\include\dul.h"\
-	".\dcmnet\include\lst.h"\
-	".\ofstd\include\oftypes.h"\
-	{$(INCLUDE)}"\sys\TYPES.H"\
+NODEP_CPP_DIMDU=\
+	".\dcmnet\libsrc\dcuid.h"\
+	".\dcmnet\libsrc\dimse.h"\
+	".\dcmnet\libsrc\diutil.h"\
+	".\dcmnet\libsrc\osconfig.h"\
 	
 
-"$(INTDIR)\dimdump.obj" : $(SOURCE) $(DEP_CPP_DIMDU) "$(INTDIR)"
+"$(INTDIR)\dimdump.obj" : $(SOURCE) "$(INTDIR)"
    $(CPP) $(CPP_PROJ) $(SOURCE)
 
 
@@ -9426,37 +7025,14 @@ DEP_CPP_DIMDU=\
 
 SOURCE=.\dcmnet\libsrc\dimecho.cxx
 DEP_CPP_DIMEC=\
-	".\config\include\cfmwerks.h"\
-	".\config\include\cfwin32.h"\
-	".\config\include\osconfig.h"\
-	".\dcmdata\include\dcbytstr.h"\
-	".\dcmdata\include\dcdatset.h"\
-	".\dcmdata\include\dcdicent.h"\
-	".\dcmdata\include\dcelem.h"\
-	".\dcmdata\include\dcerror.h"\
-	".\dcmdata\include\dcitem.h"\
-	".\dcmdata\include\dclist.h"\
-	".\dcmdata\include\dcobject.h"\
-	".\dcmdata\include\dcstack.h"\
-	".\dcmdata\include\dcstream.h"\
-	".\dcmdata\include\dctag.h"\
-	".\dcmdata\include\dctagkey.h"\
-	".\dcmdata\include\dctypes.h"\
-	".\dcmdata\include\dcuid.h"\
-	".\dcmdata\include\dcvr.h"\
-	".\dcmdata\include\dcvrui.h"\
-	".\dcmdata\include\dcxfer.h"\
-	".\dcmnet\include\assoc.h"\
-	".\dcmnet\include\cond.h"\
-	".\dcmnet\include\dcompat.h"\
-	".\dcmnet\include\dicom.h"\
-	".\dcmnet\include\dimse.h"\
-	".\dcmnet\include\diutil.h"\
-	".\dcmnet\include\dul.h"\
-	".\dcmnet\include\lst.h"\
 	".\dcmnet\libsrc\dimcond.h"\
-	".\ofstd\include\oftypes.h"\
-	{$(INCLUDE)}"\sys\TYPES.H"\
+	
+NODEP_CPP_DIMEC=\
+	".\dcmnet\libsrc\cond.h"\
+	".\dcmnet\libsrc\dicom.h"\
+	".\dcmnet\libsrc\dimse.h"\
+	".\dcmnet\libsrc\diutil.h"\
+	".\dcmnet\libsrc\osconfig.h"\
 	
 
 "$(INTDIR)\dimecho.obj" : $(SOURCE) $(DEP_CPP_DIMEC) "$(INTDIR)"
@@ -9469,37 +7045,14 @@ DEP_CPP_DIMEC=\
 
 SOURCE=.\dcmnet\libsrc\dimfind.cxx
 DEP_CPP_DIMFI=\
-	".\config\include\cfmwerks.h"\
-	".\config\include\cfwin32.h"\
-	".\config\include\osconfig.h"\
-	".\dcmdata\include\dcbytstr.h"\
-	".\dcmdata\include\dcdatset.h"\
-	".\dcmdata\include\dcdicent.h"\
-	".\dcmdata\include\dcelem.h"\
-	".\dcmdata\include\dcerror.h"\
-	".\dcmdata\include\dcitem.h"\
-	".\dcmdata\include\dclist.h"\
-	".\dcmdata\include\dcobject.h"\
-	".\dcmdata\include\dcstack.h"\
-	".\dcmdata\include\dcstream.h"\
-	".\dcmdata\include\dctag.h"\
-	".\dcmdata\include\dctagkey.h"\
-	".\dcmdata\include\dctypes.h"\
-	".\dcmdata\include\dcuid.h"\
-	".\dcmdata\include\dcvr.h"\
-	".\dcmdata\include\dcvrui.h"\
-	".\dcmdata\include\dcxfer.h"\
-	".\dcmnet\include\assoc.h"\
-	".\dcmnet\include\cond.h"\
-	".\dcmnet\include\dcompat.h"\
-	".\dcmnet\include\dicom.h"\
-	".\dcmnet\include\dimse.h"\
-	".\dcmnet\include\diutil.h"\
-	".\dcmnet\include\dul.h"\
-	".\dcmnet\include\lst.h"\
 	".\dcmnet\libsrc\dimcond.h"\
-	".\ofstd\include\oftypes.h"\
-	{$(INCLUDE)}"\sys\TYPES.H"\
+	
+NODEP_CPP_DIMFI=\
+	".\dcmnet\libsrc\cond.h"\
+	".\dcmnet\libsrc\dicom.h"\
+	".\dcmnet\libsrc\dimse.h"\
+	".\dcmnet\libsrc\diutil.h"\
+	".\dcmnet\libsrc\osconfig.h"\
 	
 
 "$(INTDIR)\dimfind.obj" : $(SOURCE) $(DEP_CPP_DIMFI) "$(INTDIR)"
@@ -9512,37 +7065,14 @@ DEP_CPP_DIMFI=\
 
 SOURCE=.\dcmnet\libsrc\dimmove.cxx
 DEP_CPP_DIMMO=\
-	".\config\include\cfmwerks.h"\
-	".\config\include\cfwin32.h"\
-	".\config\include\osconfig.h"\
-	".\dcmdata\include\dcbytstr.h"\
-	".\dcmdata\include\dcdatset.h"\
-	".\dcmdata\include\dcdicent.h"\
-	".\dcmdata\include\dcelem.h"\
-	".\dcmdata\include\dcerror.h"\
-	".\dcmdata\include\dcitem.h"\
-	".\dcmdata\include\dclist.h"\
-	".\dcmdata\include\dcobject.h"\
-	".\dcmdata\include\dcstack.h"\
-	".\dcmdata\include\dcstream.h"\
-	".\dcmdata\include\dctag.h"\
-	".\dcmdata\include\dctagkey.h"\
-	".\dcmdata\include\dctypes.h"\
-	".\dcmdata\include\dcuid.h"\
-	".\dcmdata\include\dcvr.h"\
-	".\dcmdata\include\dcvrui.h"\
-	".\dcmdata\include\dcxfer.h"\
-	".\dcmnet\include\assoc.h"\
-	".\dcmnet\include\cond.h"\
-	".\dcmnet\include\dcompat.h"\
-	".\dcmnet\include\dicom.h"\
-	".\dcmnet\include\dimse.h"\
-	".\dcmnet\include\diutil.h"\
-	".\dcmnet\include\dul.h"\
-	".\dcmnet\include\lst.h"\
 	".\dcmnet\libsrc\dimcond.h"\
-	".\ofstd\include\oftypes.h"\
-	{$(INCLUDE)}"\sys\TYPES.H"\
+	
+NODEP_CPP_DIMMO=\
+	".\dcmnet\libsrc\cond.h"\
+	".\dcmnet\libsrc\dicom.h"\
+	".\dcmnet\libsrc\dimse.h"\
+	".\dcmnet\libsrc\diutil.h"\
+	".\dcmnet\libsrc\osconfig.h"\
 	
 
 "$(INTDIR)\dimmove.obj" : $(SOURCE) $(DEP_CPP_DIMMO) "$(INTDIR)"
@@ -9555,84 +7085,16 @@ DEP_CPP_DIMMO=\
 
 SOURCE=.\dcmnet\libsrc\dimse.cxx
 DEP_CPP_DIMSE=\
-	".\config\include\cfmwerks.h"\
-	".\config\include\cfwin32.h"\
-	".\config\include\osconfig.h"\
-	".\dcmdata\include\cmdlnarg.h"\
-	".\dcmdata\include\dcbytstr.h"\
-	".\dcmdata\include\dcchrstr.h"\
-	".\dcmdata\include\dcdatset.h"\
-	".\dcmdata\include\dcdebug.h"\
-	".\dcmdata\include\dcdefine.h"\
-	".\dcmdata\include\dcdeftag.h"\
-	".\dcmdata\include\dcdicdir.h"\
-	".\dcmdata\include\dcdicent.h"\
-	".\dcmdata\include\dcdict.h"\
-	".\dcmdata\include\dcdirrec.h"\
-	".\dcmdata\include\dcelem.h"\
-	".\dcmdata\include\dcentbst.h"\
-	".\dcmdata\include\dcentdef.h"\
-	".\dcmdata\include\dcentlst.h"\
-	".\dcmdata\include\dcentset.h"\
-	".\dcmdata\include\dcerror.h"\
-	".\dcmdata\include\dcfilefo.h"\
-	".\dcmdata\include\dcitem.h"\
-	".\dcmdata\include\dclist.h"\
-	".\dcmdata\include\dcmetinf.h"\
-	".\dcmdata\include\dcobject.h"\
-	".\dcmdata\include\dcovlay.h"\
-	".\dcmdata\include\dcpixel.h"\
-	".\dcmdata\include\dcpixseq.h"\
-	".\dcmdata\include\dcsequen.h"\
-	".\dcmdata\include\dcstack.h"\
-	".\dcmdata\include\dcstream.h"\
-	".\dcmdata\include\dcswap.h"\
-	".\dcmdata\include\dctag.h"\
-	".\dcmdata\include\dctagkey.h"\
-	".\dcmdata\include\dctk.h"\
-	".\dcmdata\include\dctypes.h"\
-	".\dcmdata\include\dcuid.h"\
-	".\dcmdata\include\dcvm.h"\
-	".\dcmdata\include\dcvr.h"\
-	".\dcmdata\include\dcvrae.h"\
-	".\dcmdata\include\dcvras.h"\
-	".\dcmdata\include\dcvrat.h"\
-	".\dcmdata\include\dcvrcs.h"\
-	".\dcmdata\include\dcvrda.h"\
-	".\dcmdata\include\dcvrds.h"\
-	".\dcmdata\include\dcvrdt.h"\
-	".\dcmdata\include\dcvrfd.h"\
-	".\dcmdata\include\dcvrfl.h"\
-	".\dcmdata\include\dcvris.h"\
-	".\dcmdata\include\dcvrlo.h"\
-	".\dcmdata\include\dcvrlt.h"\
-	".\dcmdata\include\dcvrobow.h"\
-	".\dcmdata\include\dcvrpn.h"\
-	".\dcmdata\include\dcvrpobw.h"\
-	".\dcmdata\include\dcvrsh.h"\
-	".\dcmdata\include\dcvrsl.h"\
-	".\dcmdata\include\dcvrss.h"\
-	".\dcmdata\include\dcvrst.h"\
-	".\dcmdata\include\dcvrtm.h"\
-	".\dcmdata\include\dcvrui.h"\
-	".\dcmdata\include\dcvrul.h"\
-	".\dcmdata\include\dcvrulup.h"\
-	".\dcmdata\include\dcvrus.h"\
-	".\dcmdata\include\dcxfer.h"\
-	".\dcmdata\include\pix.h"\
-	".\dcmnet\include\assoc.h"\
-	".\dcmnet\include\cond.h"\
-	".\dcmnet\include\dcompat.h"\
-	".\dcmnet\include\dicom.h"\
-	".\dcmnet\include\dimse.h"\
-	".\dcmnet\include\diutil.h"\
-	".\dcmnet\include\dul.h"\
-	".\dcmnet\include\lst.h"\
 	".\dcmnet\libsrc\dimcmd.h"\
 	".\dcmnet\libsrc\dimcond.h"\
-	".\ofstd\include\oflist.h"\
-	".\ofstd\include\oftypes.h"\
-	{$(INCLUDE)}"\sys\TYPES.H"\
+	
+NODEP_CPP_DIMSE=\
+	".\dcmnet\libsrc\cond.h"\
+	".\dcmnet\libsrc\dctk.h"\
+	".\dcmnet\libsrc\dicom.h"\
+	".\dcmnet\libsrc\dimse.h"\
+	".\dcmnet\libsrc\diutil.h"\
+	".\dcmnet\libsrc\osconfig.h"\
 	
 
 "$(INTDIR)\dimse.obj" : $(SOURCE) $(DEP_CPP_DIMSE) "$(INTDIR)"
@@ -9645,37 +7107,14 @@ DEP_CPP_DIMSE=\
 
 SOURCE=.\dcmnet\libsrc\dimstore.cxx
 DEP_CPP_DIMST=\
-	".\config\include\cfmwerks.h"\
-	".\config\include\cfwin32.h"\
-	".\config\include\osconfig.h"\
-	".\dcmdata\include\dcbytstr.h"\
-	".\dcmdata\include\dcdatset.h"\
-	".\dcmdata\include\dcdicent.h"\
-	".\dcmdata\include\dcelem.h"\
-	".\dcmdata\include\dcerror.h"\
-	".\dcmdata\include\dcitem.h"\
-	".\dcmdata\include\dclist.h"\
-	".\dcmdata\include\dcobject.h"\
-	".\dcmdata\include\dcstack.h"\
-	".\dcmdata\include\dcstream.h"\
-	".\dcmdata\include\dctag.h"\
-	".\dcmdata\include\dctagkey.h"\
-	".\dcmdata\include\dctypes.h"\
-	".\dcmdata\include\dcuid.h"\
-	".\dcmdata\include\dcvr.h"\
-	".\dcmdata\include\dcvrui.h"\
-	".\dcmdata\include\dcxfer.h"\
-	".\dcmnet\include\assoc.h"\
-	".\dcmnet\include\cond.h"\
-	".\dcmnet\include\dcompat.h"\
-	".\dcmnet\include\dicom.h"\
-	".\dcmnet\include\dimse.h"\
-	".\dcmnet\include\diutil.h"\
-	".\dcmnet\include\dul.h"\
-	".\dcmnet\include\lst.h"\
 	".\dcmnet\libsrc\dimcond.h"\
-	".\ofstd\include\oftypes.h"\
-	{$(INCLUDE)}"\sys\TYPES.H"\
+	
+NODEP_CPP_DIMST=\
+	".\dcmnet\libsrc\cond.h"\
+	".\dcmnet\libsrc\dicom.h"\
+	".\dcmnet\libsrc\dimse.h"\
+	".\dcmnet\libsrc\diutil.h"\
+	".\dcmnet\libsrc\osconfig.h"\
 	
 
 "$(INTDIR)\dimstore.obj" : $(SOURCE) $(DEP_CPP_DIMST) "$(INTDIR)"
@@ -9691,41 +7130,17 @@ SOURCE=.\dcmnet\libsrc\diutil.cxx
 !IF  "$(CFG)" == "dcmnet - Win32 Release"
 
 DEP_CPP_DIUTI=\
-	".\config\include\cfmwerks.h"\
-	".\config\include\cfwin32.h"\
-	".\config\include\osconfig.h"\
-	".\dcmdata\include\dcbytstr.h"\
-	".\dcmdata\include\dcdatset.h"\
-	".\dcmdata\include\dcdeftag.h"\
-	".\dcmdata\include\dcdicent.h"\
-	".\dcmdata\include\dcelem.h"\
-	".\dcmdata\include\dcerror.h"\
-	".\dcmdata\include\dcfilefo.h"\
-	".\dcmdata\include\dcitem.h"\
-	".\dcmdata\include\dclist.h"\
-	".\dcmdata\include\dcmetinf.h"\
-	".\dcmdata\include\dcobject.h"\
-	".\dcmdata\include\dcsequen.h"\
-	".\dcmdata\include\dcstack.h"\
-	".\dcmdata\include\dcstream.h"\
-	".\dcmdata\include\dctag.h"\
-	".\dcmdata\include\dctagkey.h"\
-	".\dcmdata\include\dctypes.h"\
-	".\dcmdata\include\dcuid.h"\
-	".\dcmdata\include\dcvr.h"\
-	".\dcmdata\include\dcvrui.h"\
-	".\dcmdata\include\dcxfer.h"\
-	".\dcmnet\include\assoc.h"\
-	".\dcmnet\include\cond.h"\
-	".\dcmnet\include\dcompat.h"\
-	".\dcmnet\include\dicom.h"\
-	".\dcmnet\include\dimse.h"\
-	".\dcmnet\include\diutil.h"\
-	".\dcmnet\include\dul.h"\
-	".\dcmnet\include\lst.h"\
-	".\ofstd\include\oftypes.h"\
 	{$(INCLUDE)}"\sys\STAT.H"\
 	{$(INCLUDE)}"\sys\TYPES.H"\
+	
+NODEP_CPP_DIUTI=\
+	".\dcmnet\libsrc\dcdatset.h"\
+	".\dcmnet\libsrc\dcdeftag.h"\
+	".\dcmnet\libsrc\dcfilefo.h"\
+	".\dcmnet\libsrc\dcmetinf.h"\
+	".\dcmnet\libsrc\dcuid.h"\
+	".\dcmnet\libsrc\diutil.h"\
+	".\dcmnet\libsrc\osconfig.h"\
 	
 
 "$(INTDIR)\diutil.obj" : $(SOURCE) $(DEP_CPP_DIUTI) "$(INTDIR)"
@@ -9735,36 +7150,17 @@ DEP_CPP_DIUTI=\
 !ELSEIF  "$(CFG)" == "dcmnet - Win32 Debug"
 
 DEP_CPP_DIUTI=\
-	".\config\include\cfmwerks.h"\
-	".\config\include\cfwin32.h"\
-	".\config\include\osconfig.h"\
-	".\dcmdata\include\dcbytstr.h"\
-	".\dcmdata\include\dcdatset.h"\
-	".\dcmdata\include\dcdeftag.h"\
-	".\dcmdata\include\dcdicent.h"\
-	".\dcmdata\include\dcelem.h"\
-	".\dcmdata\include\dcerror.h"\
-	".\dcmdata\include\dcfilefo.h"\
-	".\dcmdata\include\dcitem.h"\
-	".\dcmdata\include\dclist.h"\
-	".\dcmdata\include\dcmetinf.h"\
-	".\dcmdata\include\dcobject.h"\
-	".\dcmdata\include\dcsequen.h"\
-	".\dcmdata\include\dcstack.h"\
-	".\dcmdata\include\dcstream.h"\
-	".\dcmdata\include\dctag.h"\
-	".\dcmdata\include\dctagkey.h"\
-	".\dcmdata\include\dctypes.h"\
-	".\dcmdata\include\dcuid.h"\
-	".\dcmdata\include\dcvr.h"\
-	".\dcmdata\include\dcvrui.h"\
-	".\dcmdata\include\dcxfer.h"\
-	".\dcmnet\include\dcompat.h"\
-	".\dcmnet\include\dicom.h"\
-	".\dcmnet\include\diutil.h"\
-	".\ofstd\include\oftypes.h"\
 	{$(INCLUDE)}"\sys\STAT.H"\
 	{$(INCLUDE)}"\sys\TYPES.H"\
+	
+NODEP_CPP_DIUTI=\
+	".\dcmnet\libsrc\dcdatset.h"\
+	".\dcmnet\libsrc\dcdeftag.h"\
+	".\dcmnet\libsrc\dcfilefo.h"\
+	".\dcmnet\libsrc\dcmetinf.h"\
+	".\dcmnet\libsrc\dcuid.h"\
+	".\dcmnet\libsrc\diutil.h"\
+	".\dcmnet\libsrc\osconfig.h"\
 	
 
 "$(INTDIR)\diutil.obj" : $(SOURCE) $(DEP_CPP_DIUTI) "$(INTDIR)"
@@ -9779,24 +7175,18 @@ DEP_CPP_DIUTI=\
 
 SOURCE=.\dcmnet\libsrc\dul.cxx
 DEP_CPP_DUL_C=\
-	".\config\include\cfmwerks.h"\
-	".\config\include\cfwin32.h"\
-	".\config\include\osconfig.h"\
-	".\dcmdata\include\dctypes.h"\
-	".\dcmdata\include\dcuid.h"\
-	".\dcmnet\include\cond.h"\
-	".\dcmnet\include\dcompat.h"\
-	".\dcmnet\include\dicom.h"\
-	".\dcmnet\include\dul.h"\
-	".\dcmnet\include\lst.h"\
 	".\dcmnet\libsrc\dulfsm.h"\
 	".\dcmnet\libsrc\dulpriv.h"\
 	".\dcmnet\libsrc\dulstruc.h"\
-	".\ofstd\include\oftypes.h"\
 	{$(INCLUDE)}"\sys\TYPES.H"\
 	
 NODEP_CPP_DUL_C=\
 	".\dcmnet\libsrc\blg.h"\
+	".\dcmnet\libsrc\cond.h"\
+	".\dcmnet\libsrc\dicom.h"\
+	".\dcmnet\libsrc\dul.h"\
+	".\dcmnet\libsrc\lst.h"\
+	".\dcmnet\libsrc\osconfig.h"\
 	
 
 "$(INTDIR)\dul.obj" : $(SOURCE) $(DEP_CPP_DUL_C) "$(INTDIR)"
@@ -9809,18 +7199,13 @@ NODEP_CPP_DUL_C=\
 
 SOURCE=.\dcmnet\libsrc\dulcond.cxx
 DEP_CPP_DULCO=\
-	".\config\include\cfmwerks.h"\
-	".\config\include\cfwin32.h"\
-	".\config\include\osconfig.h"\
-	".\dcmdata\include\dctypes.h"\
-	".\dcmdata\include\dcuid.h"\
-	".\dcmnet\include\dcompat.h"\
-	".\dcmnet\include\dicom.h"\
-	".\dcmnet\include\dul.h"\
-	".\dcmnet\include\lst.h"\
 	".\dcmnet\libsrc\dulstruc.h"\
-	".\ofstd\include\oftypes.h"\
-	{$(INCLUDE)}"\sys\TYPES.H"\
+	
+NODEP_CPP_DULCO=\
+	".\dcmnet\libsrc\dicom.h"\
+	".\dcmnet\libsrc\dul.h"\
+	".\dcmnet\libsrc\lst.h"\
+	".\dcmnet\libsrc\osconfig.h"\
 	
 
 "$(INTDIR)\dulcond.obj" : $(SOURCE) $(DEP_CPP_DULCO) "$(INTDIR)"
@@ -9833,20 +7218,15 @@ DEP_CPP_DULCO=\
 
 SOURCE=.\dcmnet\libsrc\dulconst.cxx
 DEP_CPP_DULCON=\
-	".\config\include\cfmwerks.h"\
-	".\config\include\cfwin32.h"\
-	".\config\include\osconfig.h"\
-	".\dcmdata\include\dctypes.h"\
-	".\dcmdata\include\dcuid.h"\
-	".\dcmnet\include\cond.h"\
-	".\dcmnet\include\dcompat.h"\
-	".\dcmnet\include\dicom.h"\
-	".\dcmnet\include\dul.h"\
-	".\dcmnet\include\lst.h"\
 	".\dcmnet\libsrc\dulpriv.h"\
 	".\dcmnet\libsrc\dulstruc.h"\
-	".\ofstd\include\oftypes.h"\
-	{$(INCLUDE)}"\sys\TYPES.H"\
+	
+NODEP_CPP_DULCON=\
+	".\dcmnet\libsrc\cond.h"\
+	".\dcmnet\libsrc\dicom.h"\
+	".\dcmnet\libsrc\dul.h"\
+	".\dcmnet\libsrc\lst.h"\
+	".\dcmnet\libsrc\osconfig.h"\
 	
 
 "$(INTDIR)\dulconst.obj" : $(SOURCE) $(DEP_CPP_DULCON) "$(INTDIR)"
@@ -9859,20 +7239,16 @@ DEP_CPP_DULCON=\
 
 SOURCE=.\dcmnet\libsrc\dulextra.cxx
 DEP_CPP_DULEX=\
-	".\config\include\cfmwerks.h"\
-	".\config\include\cfwin32.h"\
-	".\config\include\osconfig.h"\
-	".\dcmdata\include\dctypes.h"\
-	".\dcmdata\include\dcuid.h"\
-	".\dcmnet\include\cond.h"\
-	".\dcmnet\include\dcompat.h"\
-	".\dcmnet\include\dicom.h"\
-	".\dcmnet\include\dul.h"\
-	".\dcmnet\include\lst.h"\
 	".\dcmnet\libsrc\dulpriv.h"\
 	".\dcmnet\libsrc\dulstruc.h"\
-	".\ofstd\include\oftypes.h"\
 	{$(INCLUDE)}"\sys\TYPES.H"\
+	
+NODEP_CPP_DULEX=\
+	".\dcmnet\libsrc\cond.h"\
+	".\dcmnet\libsrc\dicom.h"\
+	".\dcmnet\libsrc\dul.h"\
+	".\dcmnet\libsrc\lst.h"\
+	".\dcmnet\libsrc\osconfig.h"\
 	
 
 "$(INTDIR)\dulextra.obj" : $(SOURCE) $(DEP_CPP_DULEX) "$(INTDIR)"
@@ -9885,24 +7261,18 @@ DEP_CPP_DULEX=\
 
 SOURCE=.\dcmnet\libsrc\dulfsm.cxx
 DEP_CPP_DULFS=\
-	".\config\include\cfmwerks.h"\
-	".\config\include\cfwin32.h"\
-	".\config\include\osconfig.h"\
-	".\dcmdata\include\dctypes.h"\
-	".\dcmdata\include\dcuid.h"\
-	".\dcmnet\include\cond.h"\
-	".\dcmnet\include\dcompat.h"\
-	".\dcmnet\include\dicom.h"\
-	".\dcmnet\include\dul.h"\
-	".\dcmnet\include\lst.h"\
 	".\dcmnet\libsrc\dulfsm.h"\
 	".\dcmnet\libsrc\dulpriv.h"\
 	".\dcmnet\libsrc\dulstruc.h"\
-	".\ofstd\include\oftypes.h"\
 	{$(INCLUDE)}"\sys\TYPES.H"\
 	
 NODEP_CPP_DULFS=\
 	".\dcmnet\libsrc\blg.h"\
+	".\dcmnet\libsrc\cond.h"\
+	".\dcmnet\libsrc\dicom.h"\
+	".\dcmnet\libsrc\dul.h"\
+	".\dcmnet\libsrc\lst.h"\
+	".\dcmnet\libsrc\osconfig.h"\
 	
 
 "$(INTDIR)\dulfsm.obj" : $(SOURCE) $(DEP_CPP_DULFS) "$(INTDIR)"
@@ -9915,20 +7285,15 @@ NODEP_CPP_DULFS=\
 
 SOURCE=.\dcmnet\libsrc\dulparse.cxx
 DEP_CPP_DULPA=\
-	".\config\include\cfmwerks.h"\
-	".\config\include\cfwin32.h"\
-	".\config\include\osconfig.h"\
-	".\dcmdata\include\dctypes.h"\
-	".\dcmdata\include\dcuid.h"\
-	".\dcmnet\include\cond.h"\
-	".\dcmnet\include\dcompat.h"\
-	".\dcmnet\include\dicom.h"\
-	".\dcmnet\include\dul.h"\
-	".\dcmnet\include\lst.h"\
 	".\dcmnet\libsrc\dulpriv.h"\
 	".\dcmnet\libsrc\dulstruc.h"\
-	".\ofstd\include\oftypes.h"\
-	{$(INCLUDE)}"\sys\TYPES.H"\
+	
+NODEP_CPP_DULPA=\
+	".\dcmnet\libsrc\cond.h"\
+	".\dcmnet\libsrc\dicom.h"\
+	".\dcmnet\libsrc\dul.h"\
+	".\dcmnet\libsrc\lst.h"\
+	".\dcmnet\libsrc\osconfig.h"\
 	
 
 "$(INTDIR)\dulparse.obj" : $(SOURCE) $(DEP_CPP_DULPA) "$(INTDIR)"
@@ -9941,21 +7306,16 @@ DEP_CPP_DULPA=\
 
 SOURCE=.\dcmnet\libsrc\dulpres.cxx
 DEP_CPP_DULPR=\
-	".\config\include\cfmwerks.h"\
-	".\config\include\cfwin32.h"\
-	".\config\include\osconfig.h"\
-	".\dcmdata\include\dctypes.h"\
-	".\dcmdata\include\dcuid.h"\
-	".\dcmnet\include\cond.h"\
-	".\dcmnet\include\dcompat.h"\
-	".\dcmnet\include\dicom.h"\
-	".\dcmnet\include\dul.h"\
-	".\dcmnet\include\lst.h"\
 	".\dcmnet\libsrc\dulfsm.h"\
 	".\dcmnet\libsrc\dulpriv.h"\
 	".\dcmnet\libsrc\dulstruc.h"\
-	".\ofstd\include\oftypes.h"\
-	{$(INCLUDE)}"\sys\TYPES.H"\
+	
+NODEP_CPP_DULPR=\
+	".\dcmnet\libsrc\cond.h"\
+	".\dcmnet\libsrc\dicom.h"\
+	".\dcmnet\libsrc\dul.h"\
+	".\dcmnet\libsrc\lst.h"\
+	".\dcmnet\libsrc\osconfig.h"\
 	
 
 "$(INTDIR)\dulpres.obj" : $(SOURCE) $(DEP_CPP_DULPR) "$(INTDIR)"
@@ -9968,17 +7328,12 @@ DEP_CPP_DULPR=\
 
 SOURCE=.\dcmnet\libsrc\lst.cxx
 DEP_CPP_LST_C=\
-	".\config\include\cfmwerks.h"\
-	".\config\include\cfwin32.h"\
-	".\config\include\osconfig.h"\
-	".\dcmdata\include\dctypes.h"\
-	".\dcmdata\include\dcuid.h"\
-	".\dcmnet\include\dcompat.h"\
-	".\dcmnet\include\dicom.h"\
-	".\dcmnet\include\lst.h"\
 	".\dcmnet\libsrc\lstpriv.h"\
-	".\ofstd\include\oftypes.h"\
-	{$(INCLUDE)}"\sys\TYPES.H"\
+	
+NODEP_CPP_LST_C=\
+	".\dcmnet\libsrc\dicom.h"\
+	".\dcmnet\libsrc\lst.h"\
+	".\dcmnet\libsrc\osconfig.h"\
 	
 
 "$(INTDIR)\lst.obj" : $(SOURCE) $(DEP_CPP_LST_C) "$(INTDIR)"
@@ -9991,17 +7346,12 @@ DEP_CPP_LST_C=\
 
 SOURCE=.\dcmnet\libsrc\lstcond.cxx
 DEP_CPP_LSTCO=\
-	".\config\include\cfmwerks.h"\
-	".\config\include\cfwin32.h"\
-	".\config\include\osconfig.h"\
-	".\dcmdata\include\dctypes.h"\
-	".\dcmdata\include\dcuid.h"\
-	".\dcmnet\include\dcompat.h"\
-	".\dcmnet\include\dicom.h"\
-	".\dcmnet\include\lst.h"\
 	".\dcmnet\libsrc\lstpriv.h"\
-	".\ofstd\include\oftypes.h"\
-	{$(INCLUDE)}"\sys\TYPES.H"\
+	
+NODEP_CPP_LSTCO=\
+	".\dcmnet\libsrc\dicom.h"\
+	".\dcmnet\libsrc\lst.h"\
+	".\dcmnet\libsrc\osconfig.h"\
 	
 
 "$(INTDIR)\lstcond.obj" : $(SOURCE) $(DEP_CPP_LSTCO) "$(INTDIR)"
@@ -10062,50 +7412,18 @@ DEP_CPP_LSTCO=\
 # Begin Source File
 
 SOURCE=.\dcmnet\apps\echoscu.cxx
-DEP_CPP_ECHOS=\
-	".\config\include\cfmwerks.h"\
-	".\config\include\cfwin32.h"\
-	".\config\include\osconfig.h"\
-	".\dcmdata\include\cmdlnarg.h"\
-	".\dcmdata\include\dcbytstr.h"\
-	".\dcmdata\include\dcdatset.h"\
-	".\dcmdata\include\dcdebug.h"\
-	".\dcmdata\include\dcdicent.h"\
-	".\dcmdata\include\dcdict.h"\
-	".\dcmdata\include\dcelem.h"\
-	".\dcmdata\include\dcentbst.h"\
-	".\dcmdata\include\dcentdef.h"\
-	".\dcmdata\include\dcentlst.h"\
-	".\dcmdata\include\dcentset.h"\
-	".\dcmdata\include\dcerror.h"\
-	".\dcmdata\include\dcfilefo.h"\
-	".\dcmdata\include\dcitem.h"\
-	".\dcmdata\include\dclist.h"\
-	".\dcmdata\include\dcobject.h"\
-	".\dcmdata\include\dcsequen.h"\
-	".\dcmdata\include\dcstack.h"\
-	".\dcmdata\include\dcstream.h"\
-	".\dcmdata\include\dctag.h"\
-	".\dcmdata\include\dctagkey.h"\
-	".\dcmdata\include\dctypes.h"\
-	".\dcmdata\include\dcuid.h"\
-	".\dcmdata\include\dcvr.h"\
-	".\dcmdata\include\dcvrui.h"\
-	".\dcmdata\include\dcxfer.h"\
-	".\dcmdata\include\pix.h"\
-	".\dcmnet\include\assoc.h"\
-	".\dcmnet\include\cond.h"\
-	".\dcmnet\include\dcompat.h"\
-	".\dcmnet\include\dicom.h"\
-	".\dcmnet\include\dimse.h"\
-	".\dcmnet\include\diutil.h"\
-	".\dcmnet\include\dul.h"\
-	".\dcmnet\include\lst.h"\
-	".\ofstd\include\oftypes.h"\
-	{$(INCLUDE)}"\sys\TYPES.H"\
+NODEP_CPP_ECHOS=\
+	".\dcmnet\apps\cmdlnarg.h"\
+	".\dcmnet\apps\dcdebug.h"\
+	".\dcmnet\apps\dcdict.h"\
+	".\dcmnet\apps\dcfilefo.h"\
+	".\dcmnet\apps\dcuid.h"\
+	".\dcmnet\apps\dimse.h"\
+	".\dcmnet\apps\diutil.h"\
+	".\dcmnet\apps\osconfig.h"\
 	
 
-"$(INTDIR)\echoscu.obj" : $(SOURCE) $(DEP_CPP_ECHOS) "$(INTDIR)"
+"$(INTDIR)\echoscu.obj" : $(SOURCE) "$(INTDIR)"
    $(CPP) $(CPP_PROJ) $(SOURCE)
 
 
@@ -10181,109 +7499,35 @@ DEP_CPP_ECHOS=\
 # Begin Source File
 
 SOURCE=.\dcmnet\apps\storescp.cxx
+NODEP_CPP_STORE=\
+	".\dcmnet\apps\cmdlnarg.h"\
+	".\dcmnet\apps\dcdebug.h"\
+	".\dcmnet\apps\dcdict.h"\
+	".\dcmnet\apps\dcfilefo.h"\
+	".\dcmnet\apps\dcuid.h"\
+	".\dcmnet\apps\dimse.h"\
+	".\dcmnet\apps\diutil.h"\
+	".\dcmnet\apps\osconfig.h"\
+	
 
 !IF  "$(CFG)" == "storescp - Win32 Release"
 
-DEP_CPP_STORE=\
-	".\config\include\cfmwerks.h"\
-	".\config\include\cfwin32.h"\
-	".\config\include\osconfig.h"\
-	".\dcmdata\include\cmdlnarg.h"\
-	".\dcmdata\include\dcbytstr.h"\
-	".\dcmdata\include\dcdatset.h"\
-	".\dcmdata\include\dcdebug.h"\
-	".\dcmdata\include\dcdicent.h"\
-	".\dcmdata\include\dcdict.h"\
-	".\dcmdata\include\dcelem.h"\
-	".\dcmdata\include\dcentbst.h"\
-	".\dcmdata\include\dcentdef.h"\
-	".\dcmdata\include\dcentlst.h"\
-	".\dcmdata\include\dcentset.h"\
-	".\dcmdata\include\dcerror.h"\
-	".\dcmdata\include\dcfilefo.h"\
-	".\dcmdata\include\dcitem.h"\
-	".\dcmdata\include\dclist.h"\
-	".\dcmdata\include\dcobject.h"\
-	".\dcmdata\include\dcsequen.h"\
-	".\dcmdata\include\dcstack.h"\
-	".\dcmdata\include\dcstream.h"\
-	".\dcmdata\include\dctag.h"\
-	".\dcmdata\include\dctagkey.h"\
-	".\dcmdata\include\dctypes.h"\
-	".\dcmdata\include\dcuid.h"\
-	".\dcmdata\include\dcvr.h"\
-	".\dcmdata\include\dcvrui.h"\
-	".\dcmdata\include\dcxfer.h"\
-	".\dcmdata\include\pix.h"\
-	".\dcmnet\include\assoc.h"\
-	".\dcmnet\include\cond.h"\
-	".\dcmnet\include\dcompat.h"\
-	".\dcmnet\include\dicom.h"\
-	".\dcmnet\include\dimse.h"\
-	".\dcmnet\include\diutil.h"\
-	".\dcmnet\include\dul.h"\
-	".\dcmnet\include\lst.h"\
-	".\ofstd\include\oftypes.h"\
-	{$(INCLUDE)}"\sys\TYPES.H"\
-	
 
-"$(INTDIR)\storescp.obj" : $(SOURCE) $(DEP_CPP_STORE) "$(INTDIR)"
+"$(INTDIR)\storescp.obj" : $(SOURCE) "$(INTDIR)"
    $(CPP) $(CPP_PROJ) $(SOURCE)
 
 
 !ELSEIF  "$(CFG)" == "storescp - Win32 Debug"
 
-DEP_CPP_STORE=\
-	".\config\include\cfmwerks.h"\
-	".\config\include\cfwin32.h"\
-	".\config\include\osconfig.h"\
-	".\dcmdata\include\cmdlnarg.h"\
-	".\dcmdata\include\dcbytstr.h"\
-	".\dcmdata\include\dcdatset.h"\
-	".\dcmdata\include\dcdebug.h"\
-	".\dcmdata\include\dcdicent.h"\
-	".\dcmdata\include\dcdict.h"\
-	".\dcmdata\include\dcelem.h"\
-	".\dcmdata\include\dcentbst.h"\
-	".\dcmdata\include\dcentdef.h"\
-	".\dcmdata\include\dcentlst.h"\
-	".\dcmdata\include\dcentset.h"\
-	".\dcmdata\include\dcerror.h"\
-	".\dcmdata\include\dcfilefo.h"\
-	".\dcmdata\include\dcitem.h"\
-	".\dcmdata\include\dclist.h"\
-	".\dcmdata\include\dcobject.h"\
-	".\dcmdata\include\dcsequen.h"\
-	".\dcmdata\include\dcstack.h"\
-	".\dcmdata\include\dcstream.h"\
-	".\dcmdata\include\dctag.h"\
-	".\dcmdata\include\dctagkey.h"\
-	".\dcmdata\include\dctypes.h"\
-	".\dcmdata\include\dcuid.h"\
-	".\dcmdata\include\dcvr.h"\
-	".\dcmdata\include\dcvrui.h"\
-	".\dcmdata\include\dcxfer.h"\
-	".\dcmdata\include\pix.h"\
-	".\dcmnet\include\assoc.h"\
-	".\dcmnet\include\cond.h"\
-	".\dcmnet\include\dcompat.h"\
-	".\dcmnet\include\dicom.h"\
-	".\dcmnet\include\dimse.h"\
-	".\dcmnet\include\diutil.h"\
-	".\dcmnet\include\dul.h"\
-	".\dcmnet\include\lst.h"\
-	".\ofstd\include\oftypes.h"\
-	{$(INCLUDE)}"\sys\TYPES.H"\
-	
 
 BuildCmds= \
 	$(CPP) $(CPP_PROJ) $(SOURCE) \
 	
 
-"$(INTDIR)\storescp.obj" : $(SOURCE) $(DEP_CPP_STORE) "$(INTDIR)"
+"$(INTDIR)\storescp.obj" : $(SOURCE) "$(INTDIR)"
    $(BuildCmds)
 
-"$(INTDIR)\storescp.sbr" : $(SOURCE) $(DEP_CPP_STORE) "$(INTDIR)"
+"$(INTDIR)\storescp.sbr" : $(SOURCE) "$(INTDIR)"
    $(BuildCmds)
 
 !ENDIF 
@@ -10371,12 +7615,9 @@ DEP_CPP_STORES=\
 	".\dcmdata\include\dcdicent.h"\
 	".\dcmdata\include\dcdict.h"\
 	".\dcmdata\include\dcelem.h"\
-	".\dcmdata\include\dcentbst.h"\
-	".\dcmdata\include\dcentdef.h"\
-	".\dcmdata\include\dcentlst.h"\
-	".\dcmdata\include\dcentset.h"\
 	".\dcmdata\include\dcerror.h"\
 	".\dcmdata\include\dcfilefo.h"\
+	".\dcmdata\include\dchashdi.h"\
 	".\dcmdata\include\dcitem.h"\
 	".\dcmdata\include\dclist.h"\
 	".\dcmdata\include\dcobject.h"\
@@ -10390,7 +7631,6 @@ DEP_CPP_STORES=\
 	".\dcmdata\include\dcvr.h"\
 	".\dcmdata\include\dcvrui.h"\
 	".\dcmdata\include\dcxfer.h"\
-	".\dcmdata\include\pix.h"\
 	".\dcmnet\include\assoc.h"\
 	".\dcmnet\include\cond.h"\
 	".\dcmnet\include\dcompat.h"\
@@ -10399,6 +7639,7 @@ DEP_CPP_STORES=\
 	".\dcmnet\include\diutil.h"\
 	".\dcmnet\include\dul.h"\
 	".\dcmnet\include\lst.h"\
+	".\ofstd\include\oflist.h"\
 	".\ofstd\include\oftypes.h"\
 	{$(INCLUDE)}"\sys\TYPES.H"\
 	
@@ -10490,12 +7731,9 @@ DEP_CPP_FINDS=\
 	".\dcmdata\include\dcdicent.h"\
 	".\dcmdata\include\dcdict.h"\
 	".\dcmdata\include\dcelem.h"\
-	".\dcmdata\include\dcentbst.h"\
-	".\dcmdata\include\dcentdef.h"\
-	".\dcmdata\include\dcentlst.h"\
-	".\dcmdata\include\dcentset.h"\
 	".\dcmdata\include\dcerror.h"\
 	".\dcmdata\include\dcfilefo.h"\
+	".\dcmdata\include\dchashdi.h"\
 	".\dcmdata\include\dcitem.h"\
 	".\dcmdata\include\dclist.h"\
 	".\dcmdata\include\dcobject.h"\
@@ -10509,7 +7747,6 @@ DEP_CPP_FINDS=\
 	".\dcmdata\include\dcvr.h"\
 	".\dcmdata\include\dcvrui.h"\
 	".\dcmdata\include\dcxfer.h"\
-	".\dcmdata\include\pix.h"\
 	".\dcmnet\include\assoc.h"\
 	".\dcmnet\include\cond.h"\
 	".\dcmnet\include\dcompat.h"\
@@ -10518,6 +7755,7 @@ DEP_CPP_FINDS=\
 	".\dcmnet\include\diutil.h"\
 	".\dcmnet\include\dul.h"\
 	".\dcmnet\include\lst.h"\
+	".\ofstd\include\oflist.h"\
 	".\ofstd\include\oftypes.h"\
 	{$(INCLUDE)}"\sys\TYPES.H"\
 	
@@ -10598,53 +7836,22 @@ DEP_CPP_FINDS=\
 # Begin Source File
 
 SOURCE=.\dcmnet\apps\movescu.cxx
-DEP_CPP_MOVES=\
-	".\config\include\cfmwerks.h"\
-	".\config\include\cfwin32.h"\
-	".\config\include\osconfig.h"\
-	".\dcmdata\include\cmdlnarg.h"\
-	".\dcmdata\include\dcbytstr.h"\
-	".\dcmdata\include\dcdatset.h"\
-	".\dcmdata\include\dcdebug.h"\
-	".\dcmdata\include\dcdicent.h"\
-	".\dcmdata\include\dcdict.h"\
-	".\dcmdata\include\dcelem.h"\
-	".\dcmdata\include\dcentbst.h"\
-	".\dcmdata\include\dcentdef.h"\
-	".\dcmdata\include\dcentlst.h"\
-	".\dcmdata\include\dcentset.h"\
-	".\dcmdata\include\dcerror.h"\
-	".\dcmdata\include\dcfilefo.h"\
-	".\dcmdata\include\dcitem.h"\
-	".\dcmdata\include\dclist.h"\
-	".\dcmdata\include\dcobject.h"\
-	".\dcmdata\include\dcsequen.h"\
-	".\dcmdata\include\dcstack.h"\
-	".\dcmdata\include\dcstream.h"\
-	".\dcmdata\include\dctag.h"\
-	".\dcmdata\include\dctagkey.h"\
-	".\dcmdata\include\dctypes.h"\
-	".\dcmdata\include\dcuid.h"\
-	".\dcmdata\include\dcvr.h"\
-	".\dcmdata\include\dcvrui.h"\
-	".\dcmdata\include\dcxfer.h"\
-	".\dcmdata\include\pix.h"\
-	".\dcmnet\include\assoc.h"\
-	".\dcmnet\include\cond.h"\
-	".\dcmnet\include\dcompat.h"\
-	".\dcmnet\include\dicom.h"\
-	".\dcmnet\include\dimse.h"\
-	".\dcmnet\include\diutil.h"\
-	".\dcmnet\include\dul.h"\
-	".\dcmnet\include\lst.h"\
-	".\ofstd\include\oftypes.h"\
-	{$(INCLUDE)}"\sys\TYPES.H"\
+NODEP_CPP_MOVES=\
+	".\dcmnet\apps\cmdlnarg.h"\
+	".\dcmnet\apps\dcdebug.h"\
+	".\dcmnet\apps\dcdict.h"\
+	".\dcmnet\apps\dcfilefo.h"\
+	".\dcmnet\apps\dcuid.h"\
+	".\dcmnet\apps\dicom.h"\
+	".\dcmnet\apps\dimse.h"\
+	".\dcmnet\apps\diutil.h"\
+	".\dcmnet\apps\osconfig.h"\
 	
 
 !IF  "$(CFG)" == "movescu - Win32 Release"
 
 
-"$(INTDIR)\movescu.obj" : $(SOURCE) $(DEP_CPP_MOVES) "$(INTDIR)"
+"$(INTDIR)\movescu.obj" : $(SOURCE) "$(INTDIR)"
    $(CPP) $(CPP_PROJ) $(SOURCE)
 
 
@@ -10655,10 +7862,10 @@ BuildCmds= \
 	$(CPP) $(CPP_PROJ) $(SOURCE) \
 	
 
-"$(INTDIR)\movescu.obj" : $(SOURCE) $(DEP_CPP_MOVES) "$(INTDIR)"
+"$(INTDIR)\movescu.obj" : $(SOURCE) "$(INTDIR)"
    $(BuildCmds)
 
-"$(INTDIR)\movescu.sbr" : $(SOURCE) $(DEP_CPP_MOVES) "$(INTDIR)"
+"$(INTDIR)\movescu.sbr" : $(SOURCE) "$(INTDIR)"
    $(BuildCmds)
 
 !ENDIF 
@@ -11137,12 +8344,9 @@ DEP_CPP_ASSCT=\
 	".\dcmdata\include\dcdicent.h"\
 	".\dcmdata\include\dcdict.h"\
 	".\dcmdata\include\dcelem.h"\
-	".\dcmdata\include\dcentbst.h"\
-	".\dcmdata\include\dcentdef.h"\
-	".\dcmdata\include\dcentlst.h"\
-	".\dcmdata\include\dcentset.h"\
 	".\dcmdata\include\dcerror.h"\
 	".\dcmdata\include\dcfilefo.h"\
+	".\dcmdata\include\dchashdi.h"\
 	".\dcmdata\include\dcitem.h"\
 	".\dcmdata\include\dclist.h"\
 	".\dcmdata\include\dcobject.h"\
@@ -11156,7 +8360,6 @@ DEP_CPP_ASSCT=\
 	".\dcmdata\include\dcvr.h"\
 	".\dcmdata\include\dcvrui.h"\
 	".\dcmdata\include\dcxfer.h"\
-	".\dcmdata\include\pix.h"\
 	".\dcmnet\include\assoc.h"\
 	".\dcmnet\include\cond.h"\
 	".\dcmnet\include\dcompat.h"\
@@ -11165,6 +8368,7 @@ DEP_CPP_ASSCT=\
 	".\dcmnet\include\diutil.h"\
 	".\dcmnet\include\dul.h"\
 	".\dcmnet\include\lst.h"\
+	".\ofstd\include\oflist.h"\
 	".\ofstd\include\oftypes.h"\
 	{$(INCLUDE)}"\sys\TYPES.H"\
 	
@@ -11270,43 +8474,29 @@ DEP_CPP_SCEST=\
 	".\config\include\cfmwerks.h"\
 	".\config\include\cfwin32.h"\
 	".\config\include\osconfig.h"\
-	".\dcmdata\include\dcbytstr.h"\
-	".\dcmdata\include\dcdatset.h"\
-	".\dcmdata\include\dcdicent.h"\
-	".\dcmdata\include\dcelem.h"\
-	".\dcmdata\include\dcerror.h"\
-	".\dcmdata\include\dcfilefo.h"\
-	".\dcmdata\include\dcitem.h"\
-	".\dcmdata\include\dclist.h"\
-	".\dcmdata\include\dcobject.h"\
-	".\dcmdata\include\dcsequen.h"\
-	".\dcmdata\include\dcstack.h"\
-	".\dcmdata\include\dcstream.h"\
-	".\dcmdata\include\dctag.h"\
-	".\dcmdata\include\dctagkey.h"\
 	".\dcmdata\include\dctypes.h"\
 	".\dcmdata\include\dcuid.h"\
-	".\dcmdata\include\dcvr.h"\
-	".\dcmdata\include\dcvrui.h"\
-	".\dcmdata\include\dcxfer.h"\
 	".\dcmnet\include\assoc.h"\
 	".\dcmnet\include\cond.h"\
 	".\dcmnet\include\dcompat.h"\
 	".\dcmnet\include\dicom.h"\
-	".\dcmnet\include\dimse.h"\
-	".\dcmnet\include\diutil.h"\
 	".\dcmnet\include\dul.h"\
 	".\dcmnet\include\lst.h"\
 	".\imagectn\apps\cnf.h"\
 	".\imagectn\apps\imagectn.h"\
 	".\imagectn\apps\sce.h"\
 	".\imagectn\apps\scestore.h"\
-	".\imagectn\include\imagedb.h"\
 	".\ofstd\include\oftypes.h"\
 	{$(INCLUDE)}"\sys\TYPES.H"\
 	
 NODEP_CPP_SCEST=\
+	".\imagectn\apps\dcfilefo.h"\
+	".\imagectn\apps\dicom.h"\
+	".\imagectn\apps\dimse.h"\
 	".\imagectn\apps\dispuser.h"\
+	".\imagectn\apps\diutil.h"\
+	".\imagectn\apps\imagedb.h"\
+	".\imagectn\apps\osconfig.h"\
 	
 
 "$(INTDIR)\scestore.obj" : $(SOURCE) $(DEP_CPP_SCEST) "$(INTDIR)"
@@ -11316,48 +8506,21 @@ NODEP_CPP_SCEST=\
 !ELSEIF  "$(CFG)" == "imagectn - Win32 Debug"
 
 DEP_CPP_SCEST=\
-	".\config\include\cfmwerks.h"\
-	".\config\include\cfwin32.h"\
-	".\config\include\osconfig.h"\
-	".\dcmdata\include\dcbytstr.h"\
-	".\dcmdata\include\dcdatset.h"\
-	".\dcmdata\include\dcdicent.h"\
-	".\dcmdata\include\dcelem.h"\
-	".\dcmdata\include\dcerror.h"\
-	".\dcmdata\include\dcfilefo.h"\
-	".\dcmdata\include\dcitem.h"\
-	".\dcmdata\include\dclist.h"\
-	".\dcmdata\include\dcobject.h"\
-	".\dcmdata\include\dcsequen.h"\
-	".\dcmdata\include\dcstack.h"\
-	".\dcmdata\include\dcstream.h"\
-	".\dcmdata\include\dctag.h"\
-	".\dcmdata\include\dctagkey.h"\
-	".\dcmdata\include\dctypes.h"\
-	".\dcmdata\include\dcuid.h"\
-	".\dcmdata\include\dcvr.h"\
-	".\dcmdata\include\dcvrui.h"\
-	".\dcmdata\include\dcxfer.h"\
-	".\dcmnet\include\assoc.h"\
-	".\dcmnet\include\cond.h"\
-	".\dcmnet\include\dcompat.h"\
-	".\dcmnet\include\dicom.h"\
-	".\dcmnet\include\dimse.h"\
-	".\dcmnet\include\diutil.h"\
-	".\dcmnet\include\dul.h"\
-	".\dcmnet\include\lst.h"\
 	".\imagectn\apps\cnf.h"\
 	".\imagectn\apps\imagectn.h"\
 	".\imagectn\apps\sce.h"\
 	".\imagectn\apps\scestore.h"\
-	".\imagectn\include\imagedb.h"\
-	".\ofstd\include\oftypes.h"\
-	{$(INCLUDE)}"\sys\TYPES.H"\
 	
 NODEP_CPP_SCEST=\
-	".\imagectn\apps\context"\
-	".\imagectn\apps\dbcond"\
+	".\imagectn\apps\assoc.h"\
+	".\imagectn\apps\cond.h"\
+	".\imagectn\apps\dcfilefo.h"\
+	".\imagectn\apps\dicom.h"\
+	".\imagectn\apps\dimse.h"\
 	".\imagectn\apps\dispuser.h"\
+	".\imagectn\apps\diutil.h"\
+	".\imagectn\apps\imagedb.h"\
+	".\imagectn\apps\osconfig.h"\
 	
 
 "$(INTDIR)\scestore.obj" : $(SOURCE) $(DEP_CPP_SCEST) "$(INTDIR)"
@@ -11371,6 +8534,9 @@ NODEP_CPP_SCEST=\
 # Begin Source File
 
 SOURCE=.\imagectn\apps\imagectn.cxx
+
+!IF  "$(CFG)" == "imagectn - Win32 Release"
+
 DEP_CPP_IMAGE=\
 	".\config\include\cfmwerks.h"\
 	".\config\include\cfwin32.h"\
@@ -11382,11 +8548,8 @@ DEP_CPP_IMAGE=\
 	".\dcmdata\include\dcdicent.h"\
 	".\dcmdata\include\dcdict.h"\
 	".\dcmdata\include\dcelem.h"\
-	".\dcmdata\include\dcentbst.h"\
-	".\dcmdata\include\dcentdef.h"\
-	".\dcmdata\include\dcentlst.h"\
-	".\dcmdata\include\dcentset.h"\
 	".\dcmdata\include\dcerror.h"\
+	".\dcmdata\include\dchashdi.h"\
 	".\dcmdata\include\dcitem.h"\
 	".\dcmdata\include\dclist.h"\
 	".\dcmdata\include\dcobject.h"\
@@ -11399,7 +8562,6 @@ DEP_CPP_IMAGE=\
 	".\dcmdata\include\dcvr.h"\
 	".\dcmdata\include\dcvrui.h"\
 	".\dcmdata\include\dcxfer.h"\
-	".\dcmdata\include\pix.h"\
 	".\dcmnet\include\assoc.h"\
 	".\dcmnet\include\cond.h"\
 	".\dcmnet\include\dcompat.h"\
@@ -11411,22 +8573,83 @@ DEP_CPP_IMAGE=\
 	".\imagectn\apps\imagectn.h"\
 	".\imagectn\apps\sce.h"\
 	".\imagectn\include\imagedb.h"\
+	".\ofstd\include\oflist.h"\
 	".\ofstd\include\oftypes.h"\
 	{$(INCLUDE)}"\sys\TYPES.H"\
 	
 NODEP_CPP_IMAGE=\
 	".\imagectn\apps\dispuser.h"\
+	".\imagectn\apps\osconfig.h"\
 	
 
 "$(INTDIR)\imagectn.obj" : $(SOURCE) $(DEP_CPP_IMAGE) "$(INTDIR)"
    $(CPP) $(CPP_PROJ) $(SOURCE)
 
 
+!ELSEIF  "$(CFG)" == "imagectn - Win32 Debug"
+
+DEP_CPP_IMAGE=\
+	".\config\include\cfmwerks.h"\
+	".\config\include\cfwin32.h"\
+	".\config\include\osconfig.h"\
+	".\dcmdata\include\cmdlnarg.h"\
+	".\dcmdata\include\dcbytstr.h"\
+	".\dcmdata\include\dcdatset.h"\
+	".\dcmdata\include\dcdebug.h"\
+	".\dcmdata\include\dcdicent.h"\
+	".\dcmdata\include\dcdict.h"\
+	".\dcmdata\include\dcelem.h"\
+	".\dcmdata\include\dcerror.h"\
+	".\dcmdata\include\dchashdi.h"\
+	".\dcmdata\include\dcitem.h"\
+	".\dcmdata\include\dclist.h"\
+	".\dcmdata\include\dcobject.h"\
+	".\dcmdata\include\dcstack.h"\
+	".\dcmdata\include\dcstream.h"\
+	".\dcmdata\include\dctag.h"\
+	".\dcmdata\include\dctagkey.h"\
+	".\dcmdata\include\dctypes.h"\
+	".\dcmdata\include\dcuid.h"\
+	".\dcmdata\include\dcvr.h"\
+	".\dcmdata\include\dcvrui.h"\
+	".\dcmdata\include\dcxfer.h"\
+	".\dcmnet\include\assoc.h"\
+	".\dcmnet\include\cond.h"\
+	".\dcmnet\include\dcompat.h"\
+	".\dcmnet\include\dicom.h"\
+	".\dcmnet\include\dimse.h"\
+	".\dcmnet\include\dul.h"\
+	".\dcmnet\include\lst.h"\
+	".\imagectn\apps\cnf.h"\
+	".\imagectn\apps\imagectn.h"\
+	".\imagectn\apps\sce.h"\
+	".\imagectn\include\imagedb.h"\
+	".\ofstd\include\oflist.h"\
+	".\ofstd\include\oftypes.h"\
+	{$(INCLUDE)}"\sys\TYPES.H"\
+	
+NODEP_CPP_IMAGE=\
+	".\imagectn\apps\assoc.h"\
+	".\imagectn\apps\cond.h"\
+	".\imagectn\apps\dicom.h"\
+	".\imagectn\apps\dispuser.h"\
+	".\imagectn\apps\osconfig.h"\
+	
+
+"$(INTDIR)\imagectn.obj" : $(SOURCE) $(DEP_CPP_IMAGE) "$(INTDIR)"
+   $(CPP) $(CPP_PROJ) $(SOURCE)
+
+
+!ENDIF 
+
 # End Source File
 ################################################################################
 # Begin Source File
 
 SOURCE=.\imagectn\apps\sce.cxx
+
+!IF  "$(CFG)" == "imagectn - Win32 Release"
+
 DEP_CPP_SCE_C=\
 	".\config\include\cfmwerks.h"\
 	".\config\include\cfwin32.h"\
@@ -11469,17 +8692,77 @@ DEP_CPP_SCE_C=\
 	
 NODEP_CPP_SCE_C=\
 	".\imagectn\apps\dispuser.h"\
+	".\imagectn\apps\osconfig.h"\
 	
 
 "$(INTDIR)\sce.obj" : $(SOURCE) $(DEP_CPP_SCE_C) "$(INTDIR)"
    $(CPP) $(CPP_PROJ) $(SOURCE)
 
 
+!ELSEIF  "$(CFG)" == "imagectn - Win32 Debug"
+
+DEP_CPP_SCE_C=\
+	".\config\include\cfmwerks.h"\
+	".\config\include\cfwin32.h"\
+	".\config\include\osconfig.h"\
+	".\dcmdata\include\dcbytstr.h"\
+	".\dcmdata\include\dcdatset.h"\
+	".\dcmdata\include\dcdicent.h"\
+	".\dcmdata\include\dcelem.h"\
+	".\dcmdata\include\dcerror.h"\
+	".\dcmdata\include\dcitem.h"\
+	".\dcmdata\include\dclist.h"\
+	".\dcmdata\include\dcobject.h"\
+	".\dcmdata\include\dcstack.h"\
+	".\dcmdata\include\dcstream.h"\
+	".\dcmdata\include\dctag.h"\
+	".\dcmdata\include\dctagkey.h"\
+	".\dcmdata\include\dctypes.h"\
+	".\dcmdata\include\dcuid.h"\
+	".\dcmdata\include\dcvr.h"\
+	".\dcmdata\include\dcvrui.h"\
+	".\dcmdata\include\dcxfer.h"\
+	".\dcmnet\include\assoc.h"\
+	".\dcmnet\include\cond.h"\
+	".\dcmnet\include\dcompat.h"\
+	".\dcmnet\include\dicom.h"\
+	".\dcmnet\include\dimse.h"\
+	".\dcmnet\include\diutil.h"\
+	".\dcmnet\include\dul.h"\
+	".\dcmnet\include\lst.h"\
+	".\imagectn\apps\cnf.h"\
+	".\imagectn\apps\imagectn.h"\
+	".\imagectn\apps\sce.h"\
+	".\imagectn\apps\sceecho.h"\
+	".\imagectn\apps\scefind.h"\
+	".\imagectn\apps\scemove.h"\
+	".\imagectn\apps\scestore.h"\
+	".\imagectn\include\imagedb.h"\
+	".\ofstd\include\oftypes.h"\
+	{$(INCLUDE)}"\sys\TYPES.H"\
+	
+NODEP_CPP_SCE_C=\
+	".\imagectn\apps\assoc.h"\
+	".\imagectn\apps\cond.h"\
+	".\imagectn\apps\dicom.h"\
+	".\imagectn\apps\dispuser.h"\
+	".\imagectn\apps\osconfig.h"\
+	
+
+"$(INTDIR)\sce.obj" : $(SOURCE) $(DEP_CPP_SCE_C) "$(INTDIR)"
+   $(CPP) $(CPP_PROJ) $(SOURCE)
+
+
+!ENDIF 
+
 # End Source File
 ################################################################################
 # Begin Source File
 
 SOURCE=.\imagectn\apps\sceecho.cxx
+
+!IF  "$(CFG)" == "imagectn - Win32 Release"
+
 DEP_CPP_SCEEC=\
 	".\config\include\cfmwerks.h"\
 	".\config\include\cfwin32.h"\
@@ -11514,16 +8797,71 @@ DEP_CPP_SCEEC=\
 	".\ofstd\include\oftypes.h"\
 	{$(INCLUDE)}"\sys\TYPES.H"\
 	
+NODEP_CPP_SCEEC=\
+	".\imagectn\apps\osconfig.h"\
+	
 
 "$(INTDIR)\sceecho.obj" : $(SOURCE) $(DEP_CPP_SCEEC) "$(INTDIR)"
    $(CPP) $(CPP_PROJ) $(SOURCE)
 
+
+!ELSEIF  "$(CFG)" == "imagectn - Win32 Debug"
+
+DEP_CPP_SCEEC=\
+	".\config\include\cfmwerks.h"\
+	".\config\include\cfwin32.h"\
+	".\config\include\osconfig.h"\
+	".\dcmdata\include\dcbytstr.h"\
+	".\dcmdata\include\dcdatset.h"\
+	".\dcmdata\include\dcdicent.h"\
+	".\dcmdata\include\dcelem.h"\
+	".\dcmdata\include\dcerror.h"\
+	".\dcmdata\include\dcitem.h"\
+	".\dcmdata\include\dclist.h"\
+	".\dcmdata\include\dcobject.h"\
+	".\dcmdata\include\dcstack.h"\
+	".\dcmdata\include\dcstream.h"\
+	".\dcmdata\include\dctag.h"\
+	".\dcmdata\include\dctagkey.h"\
+	".\dcmdata\include\dctypes.h"\
+	".\dcmdata\include\dcuid.h"\
+	".\dcmdata\include\dcvr.h"\
+	".\dcmdata\include\dcvrui.h"\
+	".\dcmdata\include\dcxfer.h"\
+	".\dcmnet\include\assoc.h"\
+	".\dcmnet\include\cond.h"\
+	".\dcmnet\include\dcompat.h"\
+	".\dcmnet\include\dicom.h"\
+	".\dcmnet\include\dimse.h"\
+	".\dcmnet\include\dul.h"\
+	".\dcmnet\include\lst.h"\
+	".\imagectn\apps\cnf.h"\
+	".\imagectn\apps\imagectn.h"\
+	".\imagectn\apps\sceecho.h"\
+	".\ofstd\include\oftypes.h"\
+	{$(INCLUDE)}"\sys\TYPES.H"\
+	
+NODEP_CPP_SCEEC=\
+	".\imagectn\apps\assoc.h"\
+	".\imagectn\apps\cond.h"\
+	".\imagectn\apps\dicom.h"\
+	".\imagectn\apps\osconfig.h"\
+	
+
+"$(INTDIR)\sceecho.obj" : $(SOURCE) $(DEP_CPP_SCEEC) "$(INTDIR)"
+   $(CPP) $(CPP_PROJ) $(SOURCE)
+
+
+!ENDIF 
 
 # End Source File
 ################################################################################
 # Begin Source File
 
 SOURCE=.\imagectn\apps\scefind.cxx
+
+!IF  "$(CFG)" == "imagectn - Win32 Release"
+
 DEP_CPP_SCEFI=\
 	".\config\include\cfmwerks.h"\
 	".\config\include\cfwin32.h"\
@@ -11564,17 +8902,75 @@ DEP_CPP_SCEFI=\
 	
 NODEP_CPP_SCEFI=\
 	".\imagectn\apps\dispuser.h"\
+	".\imagectn\apps\osconfig.h"\
 	
 
 "$(INTDIR)\scefind.obj" : $(SOURCE) $(DEP_CPP_SCEFI) "$(INTDIR)"
    $(CPP) $(CPP_PROJ) $(SOURCE)
 
 
+!ELSEIF  "$(CFG)" == "imagectn - Win32 Debug"
+
+DEP_CPP_SCEFI=\
+	".\config\include\cfmwerks.h"\
+	".\config\include\cfwin32.h"\
+	".\config\include\osconfig.h"\
+	".\dcmdata\include\dcbytstr.h"\
+	".\dcmdata\include\dcdatset.h"\
+	".\dcmdata\include\dcdeftag.h"\
+	".\dcmdata\include\dcdicent.h"\
+	".\dcmdata\include\dcelem.h"\
+	".\dcmdata\include\dcerror.h"\
+	".\dcmdata\include\dcitem.h"\
+	".\dcmdata\include\dclist.h"\
+	".\dcmdata\include\dcobject.h"\
+	".\dcmdata\include\dcstack.h"\
+	".\dcmdata\include\dcstream.h"\
+	".\dcmdata\include\dctag.h"\
+	".\dcmdata\include\dctagkey.h"\
+	".\dcmdata\include\dctypes.h"\
+	".\dcmdata\include\dcuid.h"\
+	".\dcmdata\include\dcvr.h"\
+	".\dcmdata\include\dcvrui.h"\
+	".\dcmdata\include\dcxfer.h"\
+	".\dcmnet\include\assoc.h"\
+	".\dcmnet\include\cond.h"\
+	".\dcmnet\include\dcompat.h"\
+	".\dcmnet\include\dicom.h"\
+	".\dcmnet\include\dimse.h"\
+	".\dcmnet\include\diutil.h"\
+	".\dcmnet\include\dul.h"\
+	".\dcmnet\include\lst.h"\
+	".\imagectn\apps\cnf.h"\
+	".\imagectn\apps\imagectn.h"\
+	".\imagectn\apps\sce.h"\
+	".\imagectn\apps\scefind.h"\
+	".\imagectn\include\imagedb.h"\
+	".\ofstd\include\oftypes.h"\
+	{$(INCLUDE)}"\sys\TYPES.H"\
+	
+NODEP_CPP_SCEFI=\
+	".\imagectn\apps\assoc.h"\
+	".\imagectn\apps\cond.h"\
+	".\imagectn\apps\dicom.h"\
+	".\imagectn\apps\dispuser.h"\
+	".\imagectn\apps\osconfig.h"\
+	
+
+"$(INTDIR)\scefind.obj" : $(SOURCE) $(DEP_CPP_SCEFI) "$(INTDIR)"
+   $(CPP) $(CPP_PROJ) $(SOURCE)
+
+
+!ENDIF 
+
 # End Source File
 ################################################################################
 # Begin Source File
 
 SOURCE=.\imagectn\apps\scemove.cxx
+
+!IF  "$(CFG)" == "imagectn - Win32 Release"
+
 DEP_CPP_SCEMO=\
 	".\config\include\cfmwerks.h"\
 	".\config\include\cfwin32.h"\
@@ -11615,11 +9011,66 @@ DEP_CPP_SCEMO=\
 	
 NODEP_CPP_SCEMO=\
 	".\imagectn\apps\dispuser.h"\
+	".\imagectn\apps\osconfig.h"\
 	
 
 "$(INTDIR)\scemove.obj" : $(SOURCE) $(DEP_CPP_SCEMO) "$(INTDIR)"
    $(CPP) $(CPP_PROJ) $(SOURCE)
 
+
+!ELSEIF  "$(CFG)" == "imagectn - Win32 Debug"
+
+DEP_CPP_SCEMO=\
+	".\config\include\cfmwerks.h"\
+	".\config\include\cfwin32.h"\
+	".\config\include\osconfig.h"\
+	".\dcmdata\include\dcbytstr.h"\
+	".\dcmdata\include\dcdatset.h"\
+	".\dcmdata\include\dcdeftag.h"\
+	".\dcmdata\include\dcdicent.h"\
+	".\dcmdata\include\dcelem.h"\
+	".\dcmdata\include\dcerror.h"\
+	".\dcmdata\include\dcitem.h"\
+	".\dcmdata\include\dclist.h"\
+	".\dcmdata\include\dcobject.h"\
+	".\dcmdata\include\dcstack.h"\
+	".\dcmdata\include\dcstream.h"\
+	".\dcmdata\include\dctag.h"\
+	".\dcmdata\include\dctagkey.h"\
+	".\dcmdata\include\dctypes.h"\
+	".\dcmdata\include\dcuid.h"\
+	".\dcmdata\include\dcvr.h"\
+	".\dcmdata\include\dcvrui.h"\
+	".\dcmdata\include\dcxfer.h"\
+	".\dcmnet\include\assoc.h"\
+	".\dcmnet\include\cond.h"\
+	".\dcmnet\include\dcompat.h"\
+	".\dcmnet\include\dicom.h"\
+	".\dcmnet\include\dimse.h"\
+	".\dcmnet\include\diutil.h"\
+	".\dcmnet\include\dul.h"\
+	".\dcmnet\include\lst.h"\
+	".\imagectn\apps\cnf.h"\
+	".\imagectn\apps\imagectn.h"\
+	".\imagectn\apps\sce.h"\
+	".\imagectn\apps\scemove.h"\
+	".\imagectn\include\imagedb.h"\
+	".\ofstd\include\oftypes.h"\
+	{$(INCLUDE)}"\sys\TYPES.H"\
+	
+NODEP_CPP_SCEMO=\
+	".\imagectn\apps\assoc.h"\
+	".\imagectn\apps\cond.h"\
+	".\imagectn\apps\dicom.h"\
+	".\imagectn\apps\dispuser.h"\
+	".\imagectn\apps\osconfig.h"\
+	
+
+"$(INTDIR)\scemove.obj" : $(SOURCE) $(DEP_CPP_SCEMO) "$(INTDIR)"
+   $(CPP) $(CPP_PROJ) $(SOURCE)
+
+
+!ENDIF 
 
 # End Source File
 ################################################################################
@@ -11810,11 +9261,8 @@ DEP_CPP_TI_CX=\
 	".\dcmdata\include\dcdicent.h"\
 	".\dcmdata\include\dcdict.h"\
 	".\dcmdata\include\dcelem.h"\
-	".\dcmdata\include\dcentbst.h"\
-	".\dcmdata\include\dcentdef.h"\
-	".\dcmdata\include\dcentlst.h"\
-	".\dcmdata\include\dcentset.h"\
 	".\dcmdata\include\dcerror.h"\
+	".\dcmdata\include\dchashdi.h"\
 	".\dcmdata\include\dcitem.h"\
 	".\dcmdata\include\dclist.h"\
 	".\dcmdata\include\dcobject.h"\
@@ -11827,7 +9275,6 @@ DEP_CPP_TI_CX=\
 	".\dcmdata\include\dcvr.h"\
 	".\dcmdata\include\dcvrui.h"\
 	".\dcmdata\include\dcxfer.h"\
-	".\dcmdata\include\pix.h"\
 	".\dcmnet\include\assoc.h"\
 	".\dcmnet\include\cond.h"\
 	".\dcmnet\include\dcompat.h"\
@@ -11842,6 +9289,7 @@ DEP_CPP_TI_CX=\
 	".\imagectn\apps\tiquery.h"\
 	".\imagectn\apps\tiui.h"\
 	".\imagectn\include\imagedb.h"\
+	".\ofstd\include\oflist.h"\
 	".\ofstd\include\oftypes.h"\
 	{$(INCLUDE)}"\sys\TYPES.H"\
 	
@@ -12116,11 +9564,8 @@ DEP_CPP_DBREG=\
 	".\dcmdata\include\dcdicent.h"\
 	".\dcmdata\include\dcdict.h"\
 	".\dcmdata\include\dcelem.h"\
-	".\dcmdata\include\dcentbst.h"\
-	".\dcmdata\include\dcentdef.h"\
-	".\dcmdata\include\dcentlst.h"\
-	".\dcmdata\include\dcentset.h"\
 	".\dcmdata\include\dcerror.h"\
+	".\dcmdata\include\dchashdi.h"\
 	".\dcmdata\include\dcitem.h"\
 	".\dcmdata\include\dclist.h"\
 	".\dcmdata\include\dcobject.h"\
@@ -12133,7 +9578,6 @@ DEP_CPP_DBREG=\
 	".\dcmdata\include\dcvr.h"\
 	".\dcmdata\include\dcvrui.h"\
 	".\dcmdata\include\dcxfer.h"\
-	".\dcmdata\include\pix.h"\
 	".\dcmnet\include\assoc.h"\
 	".\dcmnet\include\cond.h"\
 	".\dcmnet\include\dcompat.h"\
@@ -12143,6 +9587,7 @@ DEP_CPP_DBREG=\
 	".\dcmnet\include\dul.h"\
 	".\dcmnet\include\lst.h"\
 	".\imagectn\include\imagedb.h"\
+	".\ofstd\include\oflist.h"\
 	".\ofstd\include\oftypes.h"\
 	{$(INCLUDE)}"\sys\TYPES.H"\
 	
@@ -12270,15 +9715,12 @@ DEP_CPP_CNF_C=\
 # Begin Source File
 
 SOURCE=.\ofstd\libsrc\oflist.cxx
-DEP_CPP_OFLIS=\
-	".\config\include\cfmwerks.h"\
-	".\config\include\cfwin32.h"\
-	".\config\include\osconfig.h"\
-	".\ofstd\include\oflist.h"\
-	".\ofstd\include\oftypes.h"\
+NODEP_CPP_OFLIS=\
+	".\ofstd\libsrc\oflist.h"\
+	".\ofstd\libsrc\osconfig.h"\
 	
 
-"$(INTDIR)\oflist.obj" : $(SOURCE) $(DEP_CPP_OFLIS) "$(INTDIR)"
+"$(INTDIR)\oflist.obj" : $(SOURCE) "$(INTDIR)"
    $(CPP) $(CPP_PROJ) $(SOURCE)
 
 
@@ -12287,15 +9729,12 @@ DEP_CPP_OFLIS=\
 # Begin Source File
 
 SOURCE=.\ofstd\libsrc\ofstring.cxx
-DEP_CPP_OFSTR=\
-	".\config\include\cfmwerks.h"\
-	".\config\include\cfwin32.h"\
-	".\config\include\osconfig.h"\
-	".\ofstd\include\ofstring.h"\
-	".\ofstd\include\oftypes.h"\
+NODEP_CPP_OFSTR=\
+	".\ofstd\libsrc\ofstring.h"\
+	".\ofstd\libsrc\osconfig.h"\
 	
 
-"$(INTDIR)\ofstring.obj" : $(SOURCE) $(DEP_CPP_OFSTR) "$(INTDIR)"
+"$(INTDIR)\ofstring.obj" : $(SOURCE) "$(INTDIR)"
    $(CPP) $(CPP_PROJ) $(SOURCE)
 
 
