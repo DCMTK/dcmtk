@@ -22,9 +22,9 @@
  *  Purpose: Define alias for cout, cerr and clog
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-05-16 15:56:35 $
+ *  Update Date:      $Date: 2002-06-14 10:44:41 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/libsrc/ofconsol.cc,v $
- *  CVS/RCS Revision: $Revision: 1.8 $
+ *  CVS/RCS Revision: $Revision: 1.9 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -93,8 +93,9 @@ void OFConsole::join()
     // Mutexes must always be locked in the same order to avoid deadlocks.
     lockCout();
     joined = 1;
-    unlockCout();
   }
+
+  // now status is joined, so unlockCerr implicitly unlocks both mutexes
   unlockCerr();
   return;
 }
@@ -104,10 +105,10 @@ void OFConsole::split()
   lockCerr();
   if (joined)
   {
-    // changing the state of "joined" requires that both mutexes are locked.
-    // Mutexes must always be locked in the same order to avoid deadlocks.
-    lockCout();
+  	// since status is joined, lockCerr() has locked both mutexes
     joined = 0;
+
+    // now status is unjoined, we have to unlock both mutexes manually  	
     unlockCout();
   }
   unlockCerr();
@@ -150,7 +151,10 @@ OFConsoleInitializer ofConsoleInitializer;
  *
  * CVS/RCS Log:
  * $Log: ofconsol.cc,v $
- * Revision 1.8  2002-05-16 15:56:35  meichel
+ * Revision 1.9  2002-06-14 10:44:41  meichel
+ * Fixed bug in ofConsole join/split mutex locking behaviour
+ *
+ * Revision 1.8  2002/05/16 15:56:35  meichel
  * Changed ofConsole into singleton implementation that can safely
  *   be used prior to start of main, i.e. from global constructors
  *
