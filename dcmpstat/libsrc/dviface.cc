@@ -21,9 +21,9 @@
  *
  *  Purpose: DVPresentationState
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-01-15 17:27:17 $
- *  CVS/RCS Revision: $Revision: 1.12 $
+ *  Last Update:      $Author: vorwerk $
+ *  Update Date:      $Date: 1999-01-18 16:15:17 $
+ *  CVS/RCS Revision: $Revision: 1.13 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -646,10 +646,11 @@ OFBool DVInterface::isPresentationStateSeries()
   for (Uint32 i=0; i<num; i++){
 	  if (selectInstance(i)==EC_Normal) {
 		  if ((strcmp(getSeriesUID(),selectedSeries)==0) && (strcmp(getModality(),"PR")!=0))
-			  return OFTrue;
+			  return OFFalse;
 	  }
+else return OFFalse;
 	}
-  return OFFalse;
+  return OFTrue;
  
 }
 
@@ -1052,7 +1053,10 @@ E_Condition DVInterface::saveDICOMImage(
 /*
  *  CVS/RCS Log:
  *  $Log: dviface.cc,v $
- *  Revision 1.12  1999-01-15 17:27:17  meichel
+ *  Revision 1.13  1999-01-18 16:15:17  vorwerk
+ *  Bug in isPresentationstateSeries() corrected.
+ *
+ *  Revision 1.12  1999/01/15 17:27:17  meichel
  *  added DVInterface method resetPresentationState() which allows to reset a
  *    presentation state to the initial state (after loading).
  *
