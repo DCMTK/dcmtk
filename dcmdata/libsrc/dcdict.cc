@@ -1,23 +1,35 @@
 /*
-**
-** Author: Andrew Hewett        Created: 4.11.95
-** Kuratorium OFFIS e.V.
-**
-** Module: dcdict.cc
-**
-** Purpose:
-** Loadable DICOM data dictionary
-** 
-**
-** Last Update:         $Author: meichel $
-** Update Date:         $Date: 1998-07-28 15:52:37 $
-** Source File:         $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcdict.cc,v $
-** CVS/RCS Revision:    $Revision: 1.16 $
-** Status:              $State: Exp $
-**
-** CVS/RCS Log at end of file
-**
-*/
+ *
+ *  Copyright (C) 1994-99, OFFIS
+ *
+ *  This software and supporting documentation were developed by
+ *
+ *    Kuratorium OFFIS e.V.
+ *    Healthcare Information and Communication Systems
+ *    Escherweg 2
+ *    D-26121 Oldenburg, Germany
+ *
+ *  THIS SOFTWARE IS MADE AVAILABLE,  AS IS,  AND OFFIS MAKES NO  WARRANTY
+ *  REGARDING  THE  SOFTWARE,  ITS  PERFORMANCE,  ITS  MERCHANTABILITY  OR
+ *  FITNESS FOR ANY PARTICULAR USE, FREEDOM FROM ANY COMPUTER DISEASES  OR
+ *  ITS CONFORMITY TO ANY SPECIFICATION. THE ENTIRE RISK AS TO QUALITY AND
+ *  PERFORMANCE OF THE SOFTWARE IS WITH THE USER.
+ *
+ *  Module:  dcmdata
+ *
+ *  Author:  Andrew Hewett
+ *
+ *  Purpose: loadable DICOM data dictionary
+ *
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 1999-03-31 09:25:22 $
+ *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcdict.cc,v $
+ *  CVS/RCS Revision: $Revision: 1.17 $
+ *  Status:           $State: Exp $
+ *
+ *  CVS/RCS Log at end of file
+ *
+ */
 
 #include "osconfig.h"    /* make sure OS specific configuration is included first */
 
@@ -691,7 +703,10 @@ DcmDataDictionary::findEntry(const char *name)
 /*
 ** CVS/RCS Log:
 ** $Log: dcdict.cc,v $
-** Revision 1.16  1998-07-28 15:52:37  meichel
+** Revision 1.17  1999-03-31 09:25:22  meichel
+** Updated copyright header in module dcmdata
+**
+** Revision 1.16  1998/07/28 15:52:37  meichel
 ** Introduced new compilation flag PRINT_REPLACED_DICTIONARY_ENTRIES
 **   which causes the dictionary to display all duplicate entries.
 **
@@ -777,7 +792,6 @@ DcmDataDictionary::findEntry(const char *name)
 **
 ** Revision 1.1  1995/11/23 17:02:39  hewett
 ** Updated for loadable data dictionary.  Some cleanup (more to do).
-**
 **
 */
 

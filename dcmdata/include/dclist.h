@@ -1,17 +1,33 @@
 /*
- * 
- * Author: Gerd Ehlers      Created:  09.04.94
- *                          Modified: 02.12.95
  *
- * Module: dclist.h
+ *  Copyright (C) 1994-99, OFFIS
  *
- * Purpose:
- * This file contains a List-Definition
- * 
- * 
- * Last Update:   $Author: meichel $
- * Revision:      $Revision: 1.7 $
- * Status:        $State: Exp $
+ *  This software and supporting documentation were developed by
+ *
+ *    Kuratorium OFFIS e.V.
+ *    Healthcare Information and Communication Systems
+ *    Escherweg 2
+ *    D-26121 Oldenburg, Germany
+ *
+ *  THIS SOFTWARE IS MADE AVAILABLE,  AS IS,  AND OFFIS MAKES NO  WARRANTY
+ *  REGARDING  THE  SOFTWARE,  ITS  PERFORMANCE,  ITS  MERCHANTABILITY  OR
+ *  FITNESS FOR ANY PARTICULAR USE, FREEDOM FROM ANY COMPUTER DISEASES  OR
+ *  ITS CONFORMITY TO ANY SPECIFICATION. THE ENTIRE RISK AS TO QUALITY AND
+ *  PERFORMANCE OF THE SOFTWARE IS WITH THE USER.
+ *
+ *  Module:  dcmdata
+ *
+ *  Author:  Gerd Ehlers
+ *
+ *  Purpose: generic list class
+ *
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 1999-03-31 09:24:41 $
+ *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dclist.h,v $
+ *  CVS/RCS Revision: $Revision: 1.8 $
+ *  Status:           $State: Exp $
+ *
+ *  CVS/RCS Log at end of file
  *
  */
 
@@ -59,13 +75,9 @@ typedef enum
     ELP_next
 } E_ListPos;
 
-
-/*  class DcmList:
- *  Es werden nur Zeiger auf Elemente eingefuegt (unter der Voraussetzung
- *  das Element ist kein NULL-Zeiger).
- *  Ein Aufruf von DcmList::remove() loescht die Objekte nicht,
- *  aber beim Destruktoraufruf werden alle Objekte, die sich in der Liste
- *  befinden, geloescht.
+/* this class only manages pointers to elements.
+ * remove() does not delete the element pointed to.
+ * Upon destruction of the list, all elements pointed to are also deleted.
  */
 
 class DcmList {
@@ -96,6 +108,13 @@ public:
     inline OFBool valid(void) const { return actualNode != NULL; }
 };
 
-
 #endif  // DCLIST_H
 
+/*
+ * CVS/RCS Log:
+ * $Log: dclist.h,v $
+ * Revision 1.8  1999-03-31 09:24:41  meichel
+ * Updated copyright header in module dcmdata
+ *
+ *
+ */

@@ -1,23 +1,35 @@
 /*
-**
-** Author: Andrew Hewett	Created: 4.11.95
-** Kuratorium OFFIS e.V.
-**
-** Module: dcerror.h
-**
-** Purpose:
-** Error handling, codes and strings
-** 
-**
-** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1997-07-21 08:15:10 $
-** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcerror.h,v $
-** CVS/RCS Revision:	$Revision: 1.5 $
-** Status:		$State: Exp $
-**
-** CVS/RCS Log at end of file
-**
-*/
+ *
+ *  Copyright (C) 1994-99, OFFIS
+ *
+ *  This software and supporting documentation were developed by
+ *
+ *    Kuratorium OFFIS e.V.
+ *    Healthcare Information and Communication Systems
+ *    Escherweg 2
+ *    D-26121 Oldenburg, Germany
+ *
+ *  THIS SOFTWARE IS MADE AVAILABLE,  AS IS,  AND OFFIS MAKES NO  WARRANTY
+ *  REGARDING  THE  SOFTWARE,  ITS  PERFORMANCE,  ITS  MERCHANTABILITY  OR
+ *  FITNESS FOR ANY PARTICULAR USE, FREEDOM FROM ANY COMPUTER DISEASES  OR
+ *  ITS CONFORMITY TO ANY SPECIFICATION. THE ENTIRE RISK AS TO QUALITY AND
+ *  PERFORMANCE OF THE SOFTWARE IS WITH THE USER.
+ *
+ *  Module:  dcmdata
+ *
+ *  Author:  Andrew Hewett
+ *
+ *  Purpose: Error handling, codes and strings
+ *
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 1999-03-31 09:24:38 $
+ *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcerror.h,v $
+ *  CVS/RCS Revision: $Revision: 1.6 $
+ *  Status:           $State: Exp $
+ *
+ *  CVS/RCS Log at end of file
+ *
+ */
 
 #ifndef DCERROR_H
 #define DCERROR_H
@@ -28,7 +40,6 @@
 /*
 ** Enumerated Error Codes/Conditions
 */
-
 
 typedef enum {
     EC_Normal = 0,
@@ -71,7 +82,10 @@ dcmErrorConditionToString(E_Condition cond);
 /*
 ** CVS/RCS Log:
 ** $Log: dcerror.h,v $
-** Revision 1.5  1997-07-21 08:15:10  andreas
+** Revision 1.6  1999-03-31 09:24:38  meichel
+** Updated copyright header in module dcmdata
+**
+** Revision 1.5  1997/07/21 08:15:10  andreas
 ** - New environment for encapsulated pixel representations. DcmPixelData
 **   can contain different representations and uses codecs to convert
 **   between them. Codecs are derived from the DcmCodec class. New error
@@ -92,7 +106,6 @@ dcmErrorConditionToString(E_Condition cond);
 **
 ** Revision 1.1  1995/11/23 16:37:54  hewett
 ** Updated for loadable data dictionary + some cleanup (more to do).
-**
 **
 */
 

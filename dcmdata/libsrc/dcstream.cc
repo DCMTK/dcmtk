@@ -1,23 +1,35 @@
 /*
-** Author: Andreas Barth        Created:        12.11.95
-**                              Modified:       21.11.95
-** Kuratorium OFFIS e.V.
-**
-** Module: dcstream.cc
-**
-** Purpose:
-**      implements streaming classes for file and buffer input/output
-**
-** Last Update:         $Author: meichel $
-** Update Date:         $Date: 1998-10-20 08:20:21 $
-** Source File:         $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/Attic/dcstream.cc,v $
-** CVS/RCS Revision:    $Revision: 1.13 $
-** Status:              $State: Exp $
-**
-** CVS/RCS Log at end of file
-**
-*/
-
+ *
+ *  Copyright (C) 1994-99, OFFIS
+ *
+ *  This software and supporting documentation were developed by
+ *
+ *    Kuratorium OFFIS e.V.
+ *    Healthcare Information and Communication Systems
+ *    Escherweg 2
+ *    D-26121 Oldenburg, Germany
+ *
+ *  THIS SOFTWARE IS MADE AVAILABLE,  AS IS,  AND OFFIS MAKES NO  WARRANTY
+ *  REGARDING  THE  SOFTWARE,  ITS  PERFORMANCE,  ITS  MERCHANTABILITY  OR
+ *  FITNESS FOR ANY PARTICULAR USE, FREEDOM FROM ANY COMPUTER DISEASES  OR
+ *  ITS CONFORMITY TO ANY SPECIFICATION. THE ENTIRE RISK AS TO QUALITY AND
+ *  PERFORMANCE OF THE SOFTWARE IS WITH THE USER.
+ *
+ *  Module:  dcmdata
+ *
+ *  Author:  Andreas Barth
+ *
+ *  Purpose: streaming classes for file and buffer input/output
+ *
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 1999-03-31 09:25:40 $
+ *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/Attic/dcstream.cc,v $
+ *  CVS/RCS Revision: $Revision: 1.14 $
+ *  Status:           $State: Exp $
+ *
+ *  CVS/RCS Log at end of file
+ *
+ */
 
 #include "osconfig.h"
 
@@ -732,7 +744,10 @@ DcmFileStreamConstructor::Copy(void)
 /*
 ** CVS/RCS Log:
 ** $Log: dcstream.cc,v $
-** Revision 1.13  1998-10-20 08:20:21  meichel
+** Revision 1.14  1999-03-31 09:25:40  meichel
+** Updated copyright header in module dcmdata
+**
+** Revision 1.13  1998/10/20 08:20:21  meichel
 ** Closed some memory leaks in dcmdata and dcmnet libraries.
 **
 ** Revision 1.12  1998/07/15 15:52:08  joergr
@@ -784,11 +799,4 @@ DcmFileStreamConstructor::Copy(void)
 ** - unique read/write methods for file and block transfer
 ** - more cleanups
 **
-**
 */
-
-
-
-
-
-

@@ -1,20 +1,35 @@
 /*
- * 
- * Author: Gerd Ehlers      Created:  05-01-94
- *                          Modified: 02-07-95
  *
- * Module: dcxfer.cc
- * 
- * Purpose:
- * handling of transfer syntax
+ *  Copyright (C) 1994-99, OFFIS
  *
- * 
- * Last Update:   $Author: joergr $
- * Revision:      $Revision: 1.11 $
- * Status:        $State: Exp $
+ *  This software and supporting documentation were developed by
+ *
+ *    Kuratorium OFFIS e.V.
+ *    Healthcare Information and Communication Systems
+ *    Escherweg 2
+ *    D-26121 Oldenburg, Germany
+ *
+ *  THIS SOFTWARE IS MADE AVAILABLE,  AS IS,  AND OFFIS MAKES NO  WARRANTY
+ *  REGARDING  THE  SOFTWARE,  ITS  PERFORMANCE,  ITS  MERCHANTABILITY  OR
+ *  FITNESS FOR ANY PARTICULAR USE, FREEDOM FROM ANY COMPUTER DISEASES  OR
+ *  ITS CONFORMITY TO ANY SPECIFICATION. THE ENTIRE RISK AS TO QUALITY AND
+ *  PERFORMANCE OF THE SOFTWARE IS WITH THE USER.
+ *
+ *  Module:  dcmdata
+ *
+ *  Author:  Gerd Ehlers
+ *
+ *  Purpose: handling of transfer syntaxes
+ *
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 1999-03-31 09:26:05 $
+ *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcxfer.cc,v $
+ *  CVS/RCS Revision: $Revision: 1.12 $
+ *  Status:           $State: Exp $
+ *
+ *  CVS/RCS Log at end of file
  *
  */
-
 
 #include <string.h>
 
@@ -438,3 +453,12 @@ static E_ByteOrder FindMachineTransferSyntax()
 
 E_ByteOrder gLocalByteOrder = FindMachineTransferSyntax();
 
+
+/*
+ * CVS/RCS Log:
+ * $Log: dcxfer.cc,v $
+ * Revision 1.12  1999-03-31 09:26:05  meichel
+ * Updated copyright header in module dcmdata
+ *
+ *
+ */

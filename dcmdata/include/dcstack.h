@@ -1,17 +1,33 @@
 /*
- * 
- * Author: Gerd Ehlers      Created:  03-20-94
- *                          Modified: 02-07-95
  *
- * Module: dcstack.h
- * 
- * Purpose:
- * This file contains a Stack-Definition
- * 
- * 
- * Last Update:   $Author: joergr $
- * Revision:      $Revision: 1.6 $
- * Status:        $State: Exp $
+ *  Copyright (C) 1994-99, OFFIS
+ *
+ *  This software and supporting documentation were developed by
+ *
+ *    Kuratorium OFFIS e.V.
+ *    Healthcare Information and Communication Systems
+ *    Escherweg 2
+ *    D-26121 Oldenburg, Germany
+ *
+ *  THIS SOFTWARE IS MADE AVAILABLE,  AS IS,  AND OFFIS MAKES NO  WARRANTY
+ *  REGARDING  THE  SOFTWARE,  ITS  PERFORMANCE,  ITS  MERCHANTABILITY  OR
+ *  FITNESS FOR ANY PARTICULAR USE, FREEDOM FROM ANY COMPUTER DISEASES  OR
+ *  ITS CONFORMITY TO ANY SPECIFICATION. THE ENTIRE RISK AS TO QUALITY AND
+ *  PERFORMANCE OF THE SOFTWARE IS WITH THE USER.
+ *
+ *  Module:  dcmdata
+ *
+ *  Author:  Gerd Ehlers
+ *
+ *  Purpose: stack class
+ *
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 1999-03-31 09:24:47 $
+ *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcstack.h,v $
+ *  CVS/RCS Revision: $Revision: 1.7 $
+ *  Status:           $State: Exp $
+ *
+ *  CVS/RCS Log at end of file
  *
  */
 
@@ -42,13 +58,8 @@ public:
     DcmObject *value();
 };
 
-
-/*  class DcmStack:
- *  Es werden nur Zeiger auf Elemente eingefuegt (unter der Voraussetzung
- *  das Element ist kein NULL-Zeiger).
- *  Ein Aufruf von DcmList::clear() loescht nur den Stack, die verwalteten
- *  Objekte jedoch nicht.
- *  Beim Destruktoraufruf werden die verwalteten Objekte nicht geloescht.
+/*  only pointers to elements are managed on the stack.
+ *  clear() or destructor deletes the stack but not the elements pointed to.
  */
 
 class DcmStack {
@@ -76,3 +87,11 @@ public:
 
 #endif  // DCSTACK_H
 
+/*
+ * CVS/RCS Log:
+ * $Log: dcstack.h,v $
+ * Revision 1.7  1999-03-31 09:24:47  meichel
+ * Updated copyright header in module dcmdata
+ *
+ *
+ */

@@ -1,23 +1,35 @@
 /*
-**
-** Author: Andrew Hewett        Created: 4.11.95
-** Kuratorium OFFIS e.V.
-**
-** Module: dcdict.h
-**
-** Purpose:
-** Interface for loadable DICOM data dictionary
-** 
-**
-** Last Update:         $Author: joergr $
-** Update Date:         $Date: 1998-07-15 15:48:45 $
-** Source File:         $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcdict.h,v $
-** CVS/RCS Revision:    $Revision: 1.12 $
-** Status:              $State: Exp $
-**
-** CVS/RCS Log at end of file
-**
-*/
+ *
+ *  Copyright (C) 1994-99, OFFIS
+ *
+ *  This software and supporting documentation were developed by
+ *
+ *    Kuratorium OFFIS e.V.
+ *    Healthcare Information and Communication Systems
+ *    Escherweg 2
+ *    D-26121 Oldenburg, Germany
+ *
+ *  THIS SOFTWARE IS MADE AVAILABLE,  AS IS,  AND OFFIS MAKES NO  WARRANTY
+ *  REGARDING  THE  SOFTWARE,  ITS  PERFORMANCE,  ITS  MERCHANTABILITY  OR
+ *  FITNESS FOR ANY PARTICULAR USE, FREEDOM FROM ANY COMPUTER DISEASES  OR
+ *  ITS CONFORMITY TO ANY SPECIFICATION. THE ENTIRE RISK AS TO QUALITY AND
+ *  PERFORMANCE OF THE SOFTWARE IS WITH THE USER.
+ *
+ *  Module:  dcmdata
+ *
+ *  Author:  Andrew Hewett
+ *
+ *  Purpose: Interface for loadable DICOM data dictionary
+ *
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 1999-03-31 09:24:35 $
+ *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcdict.h,v $
+ *  CVS/RCS Revision: $Revision: 1.13 $
+ *  Status:           $State: Exp $
+ *
+ *  CVS/RCS Log at end of file
+ *
+ */
 
 #ifndef DCMDICT_H
 #define DCMDICT_H 1
@@ -156,7 +168,10 @@ extern DcmDataDictionary dcmDataDict;
 /*
 ** CVS/RCS Log:
 ** $Log: dcdict.h,v $
-** Revision 1.12  1998-07-15 15:48:45  joergr
+** Revision 1.13  1999-03-31 09:24:35  meichel
+** Updated copyright header in module dcmdata
+**
+** Revision 1.12  1998/07/15 15:48:45  joergr
 ** Removed several compiler warnings reported by gcc 2.8.1 with
 ** additional options, e.g. missing copy constructors and assignment
 ** operators, initialization of member variables in the body of a
@@ -208,7 +223,6 @@ extern DcmDataDictionary dcmDataDict;
 ** A linear list of repeating tags has been introduced with a subset ordering
 ** mechanism to ensure that dictionary searches locate the most precise
 ** dictionary entry.
-**
 **
 */
 

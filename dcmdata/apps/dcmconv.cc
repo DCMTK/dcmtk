@@ -1,23 +1,35 @@
 /*
-**
-** Author: Andrew Hewett    Created:  14-11-95
-**
-** Module: dcmconv.cc
-**
-** Purpose:
-** Convert dicom file encoding
-**
-**
-** Last Update:		$Author: meichel $
-** Update Date:		$Date: 1999-03-29 10:14:11 $
-** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/apps/dcmconv.cc,v $
-** CVS/RCS Revision:	$Revision: 1.18 $
-** Status:		$State: Exp $
-**
-** CVS/RCS Log at end of file
-**
-*/
-                        
+ *
+ *  Copyright (C) 1994-99, OFFIS
+ *
+ *  This software and supporting documentation were developed by
+ *
+ *    Kuratorium OFFIS e.V.
+ *    Healthcare Information and Communication Systems
+ *    Escherweg 2
+ *    D-26121 Oldenburg, Germany
+ *
+ *  THIS SOFTWARE IS MADE AVAILABLE,  AS IS,  AND OFFIS MAKES NO  WARRANTY
+ *  REGARDING  THE  SOFTWARE,  ITS  PERFORMANCE,  ITS  MERCHANTABILITY  OR
+ *  FITNESS FOR ANY PARTICULAR USE, FREEDOM FROM ANY COMPUTER DISEASES  OR
+ *  ITS CONFORMITY TO ANY SPECIFICATION. THE ENTIRE RISK AS TO QUALITY AND
+ *  PERFORMANCE OF THE SOFTWARE IS WITH THE USER.
+ *
+ *  Module:  dcmdata
+ *
+ *  Author:  Andrew Hewett
+ *
+ *  Purpose: Convert dicom file encoding
+ *
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 1999-03-31 09:24:18 $
+ *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/apps/dcmconv.cc,v $
+ *  CVS/RCS Revision: $Revision: 1.19 $
+ *  Status:           $State: Exp $
+ *
+ *  CVS/RCS Log at end of file
+ *
+ */                        
 
 #include "osconfig.h"    /* make sure OS specific configuration is included first */
 
@@ -353,11 +365,13 @@ int main(int argc, char *argv[])
     return 0;
 }
 
-
 /*
 ** CVS/RCS Log:
 ** $Log: dcmconv.cc,v $
-** Revision 1.18  1999-03-29 10:14:11  meichel
+** Revision 1.19  1999-03-31 09:24:18  meichel
+** Updated copyright header in module dcmdata
+**
+** Revision 1.18  1999/03/29 10:14:11  meichel
 ** Adapted command line options of dcmdata applications to new scheme.
 **
 ** Revision 1.17  1998/01/27 10:51:26  meichel
@@ -443,7 +457,6 @@ int main(int argc, char *argv[])
 **
 ** Revision 1.1  1995/11/23 17:10:30  hewett
 ** Updated for loadable data dictionary.
-**
 **
 */
 

@@ -1,22 +1,35 @@
 /*
-**
-** Author: Gerd Ehlers      Created:  04-16-94
-**         Andrew Hewett    29-10-95 - Adapted for Loadable Data Dictionary
-**
-** Module: dctag.cc
-**
-** Purpose:
-** Implementation of the class DcmTag
-**
-** Last Update:         $Author: joergr $
-** Update Date:         $Date: 1998-07-15 15:52:09 $
-** Source File:         $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dctag.cc,v $
-** CVS/RCS Revision:    $Revision: 1.5 $
-** Status:              $State: Exp $
-**
-** CVS/RCS Log at end of file
-**
-*/
+ *
+ *  Copyright (C) 1994-99, OFFIS
+ *
+ *  This software and supporting documentation were developed by
+ *
+ *    Kuratorium OFFIS e.V.
+ *    Healthcare Information and Communication Systems
+ *    Escherweg 2
+ *    D-26121 Oldenburg, Germany
+ *
+ *  THIS SOFTWARE IS MADE AVAILABLE,  AS IS,  AND OFFIS MAKES NO  WARRANTY
+ *  REGARDING  THE  SOFTWARE,  ITS  PERFORMANCE,  ITS  MERCHANTABILITY  OR
+ *  FITNESS FOR ANY PARTICULAR USE, FREEDOM FROM ANY COMPUTER DISEASES  OR
+ *  ITS CONFORMITY TO ANY SPECIFICATION. THE ENTIRE RISK AS TO QUALITY AND
+ *  PERFORMANCE OF THE SOFTWARE IS WITH THE USER.
+ *
+ *  Module:  dcmdata
+ *
+ *  Author:  Gerd Ehlers, Andrew Hewett
+ *
+ *  Purpose: class DcmTag
+ *
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 1999-03-31 09:25:41 $
+ *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dctag.cc,v $
+ *  CVS/RCS Revision: $Revision: 1.6 $
+ *  Status:           $State: Exp $
+ *
+ *  CVS/RCS Log at end of file
+ *
+ */
 
 #include "osconfig.h"    /* make sure OS specific configuration is included first */
 
@@ -25,7 +38,6 @@
 
 #include "dcdict.h"
 #include "dctag.h"
-
 #include "dcdeftag.h"
 
 
@@ -34,9 +46,6 @@
 DcmTag::DcmTag()
   : vr(EVR_UNKNOWN),
     dictRef(NULL),
-#ifdef DEBUG
-    testConstructDestruct(1),   // for debugging
-#endif
     errorFlag(EC_InvalidTag)
 {
 }
@@ -45,9 +54,6 @@ DcmTag::DcmTag(const DcmTagKey& akey)
   : DcmTagKey(akey),
     vr(EVR_UNKNOWN),
     dictRef(dcmDataDict.findEntry(akey)),
-#ifdef DEBUG
-    testConstructDestruct(1),   // for debugging
-#endif
     errorFlag(EC_InvalidTag)
 {
     if (dictRef != NULL) {
@@ -60,9 +66,6 @@ DcmTag::DcmTag(Uint16 g, Uint16 e)
   : DcmTagKey(g, e), 
     vr(EVR_UNKNOWN),
     dictRef(dcmDataDict.findEntry(DcmTagKey(g, e))),
-#ifdef DEBUG
-    testConstructDestruct(1),   // for debugging
-#endif
     errorFlag(EC_InvalidTag)
 {
     if (dictRef != NULL) {
@@ -75,9 +78,6 @@ DcmTag::DcmTag(Uint16 g, Uint16 e, const DcmVR& avr)
   : DcmTagKey(g, e),
     vr(avr),
     dictRef(dcmDataDict.findEntry(DcmTagKey(g, e))),
-#ifdef DEBUG
-    testConstructDestruct(1),   // for debugging
-#endif
     errorFlag(EC_InvalidTag)
 {
     if (dictRef != NULL)
@@ -88,9 +88,6 @@ DcmTag::DcmTag(const DcmTagKey& akey, const DcmVR& avr)
   : DcmTagKey(akey),
     vr(avr),
     dictRef(dcmDataDict.findEntry(akey)),
-#ifdef DEBUG
-    testConstructDestruct(1),   // for debugging
-#endif
     errorFlag(EC_InvalidTag)
 {
     if (dictRef != NULL)
@@ -101,9 +98,6 @@ DcmTag::DcmTag(const DcmTag& tag)
   : DcmTagKey(tag),
     vr(tag.vr),
     dictRef(tag.dictRef),
-#ifdef DEBUG
-    testConstructDestruct(1),   // for debugging
-#endif
     errorFlag(tag.errorFlag)
 {
 }
@@ -115,15 +109,6 @@ DcmTag::DcmTag(const DcmTag& tag)
 
 DcmTag::~DcmTag()
 {
-#ifdef DEBUG
-    if ( testConstructDestruct == 1 ) {                 // for debugging
-        testConstructDestruct = 2; // for debugging
-    } else {
-        cerr << "Error: ~DcmTag called more than once ("
-             << testConstructDestruct << ")" << endl;
-        testConstructDestruct++;
-    }
-#endif
 }
 
 
@@ -180,7 +165,10 @@ DcmVR DcmTag::setVR( const DcmVR& avr )    // nicht-eindeutige VR aufloesen
 /*
 ** CVS/RCS Log:
 ** $Log: dctag.cc,v $
-** Revision 1.5  1998-07-15 15:52:09  joergr
+** Revision 1.6  1999-03-31 09:25:41  meichel
+** Updated copyright header in module dcmdata
+**
+** Revision 1.5  1998/07/15 15:52:09  joergr
 ** Removed several compiler warnings reported by gcc 2.8.1 with
 ** additional options, e.g. missing copy constructors and assignment
 ** operators, initialization of member variables in the body of a
@@ -198,6 +186,5 @@ DcmVR DcmTag::setVR( const DcmVR& avr )    // nicht-eindeutige VR aufloesen
 **
 ** Revision 1.2  1995/11/23 17:02:54  hewett
 ** Updated for loadable data dictionary.  Some cleanup (more to do).
-**
 **
 */

@@ -1,23 +1,35 @@
 /*
-**
-** Author: Gerd Ehlers      01.05.94 -- First Creation
-**         Andreas Barth    07.12.95 -- new Stream class, unique value field
-** Kuratorium OFFIS e.V.
-**
-** Module: dcvrui.cc
-** 
-** Purpose:
-** Implementation of class DcmUniqueIdentifier
-**
-** Last Update:		$Author: meichel $
-** Update Date:		$Date: 1998-11-12 16:48:31 $
-** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcvrui.cc,v $
-** CVS/RCS Revision:	$Revision: 1.12 $
-** Status:		$State: Exp $
-**
-** CVS/RCS Log at end of file
-**
-*/
+ *
+ *  Copyright (C) 1994-99, OFFIS
+ *
+ *  This software and supporting documentation were developed by
+ *
+ *    Kuratorium OFFIS e.V.
+ *    Healthcare Information and Communication Systems
+ *    Escherweg 2
+ *    D-26121 Oldenburg, Germany
+ *
+ *  THIS SOFTWARE IS MADE AVAILABLE,  AS IS,  AND OFFIS MAKES NO  WARRANTY
+ *  REGARDING  THE  SOFTWARE,  ITS  PERFORMANCE,  ITS  MERCHANTABILITY  OR
+ *  FITNESS FOR ANY PARTICULAR USE, FREEDOM FROM ANY COMPUTER DISEASES  OR
+ *  ITS CONFORMITY TO ANY SPECIFICATION. THE ENTIRE RISK AS TO QUALITY AND
+ *  PERFORMANCE OF THE SOFTWARE IS WITH THE USER.
+ *
+ *  Module:  dcmdata
+ *
+ *  Author:  Gerd Ehlers, Andreas Barth
+ *
+ *  Purpose: class DcmUniqueIdentifier
+ *
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 1999-03-31 09:26:01 $
+ *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcvrui.cc,v $
+ *  CVS/RCS Revision: $Revision: 1.13 $
+ *  Status:           $State: Exp $
+ *
+ *  CVS/RCS Log at end of file
+ *
+ */
 
 #include <string.h>
 #include <ctype.h>
@@ -142,7 +154,10 @@ E_Condition DcmUniqueIdentifier::makeMachineByteString(void)
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrui.cc,v $
-** Revision 1.12  1998-11-12 16:48:31  meichel
+** Revision 1.13  1999-03-31 09:26:01  meichel
+** Updated copyright header in module dcmdata
+**
+** Revision 1.12  1998/11/12 16:48:31  meichel
 ** Implemented operator= for all classes derived from DcmObject.
 **
 ** Revision 1.11  1997/07/21 08:25:35  andreas
@@ -190,7 +205,6 @@ E_Condition DcmUniqueIdentifier::makeMachineByteString(void)
 ** Revision 1.4  1996/01/29 13:38:34  andreas
 ** - new put method for every VR to put value as a string
 ** - better and unique print methods
-**
 **
 */
 

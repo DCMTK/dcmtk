@@ -1,23 +1,35 @@
 /*
-**
-** Author: Gerd Ehlers      01.05.94 -- First Creation
-**         Andreas Barth    07.12.95 -- new Stream class, unique value field
-** Kuratorium OFFIS e.V.
-**
-** Module: dcvrsl.cc
-**
-** Purpose:
-** Implementation of class DcmSignedLong
-**
-** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1997-07-21 08:25:34 $
-** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcvrsl.cc,v $
-** CVS/RCS Revision:	$Revision: 1.11 $
-** Status:		$State: Exp $
-**
-** CVS/RCS Log at end of file
-**
-*/
+ *
+ *  Copyright (C) 1994-99, OFFIS
+ *
+ *  This software and supporting documentation were developed by
+ *
+ *    Kuratorium OFFIS e.V.
+ *    Healthcare Information and Communication Systems
+ *    Escherweg 2
+ *    D-26121 Oldenburg, Germany
+ *
+ *  THIS SOFTWARE IS MADE AVAILABLE,  AS IS,  AND OFFIS MAKES NO  WARRANTY
+ *  REGARDING  THE  SOFTWARE,  ITS  PERFORMANCE,  ITS  MERCHANTABILITY  OR
+ *  FITNESS FOR ANY PARTICULAR USE, FREEDOM FROM ANY COMPUTER DISEASES  OR
+ *  ITS CONFORMITY TO ANY SPECIFICATION. THE ENTIRE RISK AS TO QUALITY AND
+ *  PERFORMANCE OF THE SOFTWARE IS WITH THE USER.
+ *
+ *  Module:  dcmdata
+ *
+ *  Author:  Gerd Ehlers, Andreas Barth
+ *
+ *  Purpose: class DcmSignedLong
+ *
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 1999-03-31 09:25:58 $
+ *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcvrsl.cc,v $
+ *  CVS/RCS Revision: $Revision: 1.12 $
+ *  Status:           $State: Exp $
+ *
+ *  CVS/RCS Log at end of file
+ *
+ */
 
 #include <stdio.h>
 #include <string.h>
@@ -271,7 +283,10 @@ E_Condition DcmSignedLong::verify(const OFBool autocorrect )
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrsl.cc,v $
-** Revision 1.11  1997-07-21 08:25:34  andreas
+** Revision 1.12  1999-03-31 09:25:58  meichel
+** Updated copyright header in module dcmdata
+**
+** Revision 1.11  1997/07/21 08:25:34  andreas
 ** - Replace all boolean types (BOOLEAN, CTNBOOLEAN, DICOM_BOOL, BOOL)
 **   with one unique boolean type OFBool.
 **
@@ -319,8 +334,6 @@ E_Condition DcmSignedLong::verify(const OFBool autocorrect )
 ** - changed to support new streaming facilities
 ** - unique read/write methods for file and block transfer
 ** - more cleanups
-**
-**
 **
 */
 

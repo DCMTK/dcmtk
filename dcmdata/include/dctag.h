@@ -1,22 +1,35 @@
 /*
-**
-** Author: Gerd Ehlers      Created:  16-04-94
-**         Andrew Hewett    29-10-95 - Adapted for Loadable Data Dictionary
-**
-** Module: dctag.h
-**
-** Purpose:
-** Definition of the class DcmTag
-**
-** Last Update:         $Author: joergr $
-** Update Date:         $Date: 1998-07-15 15:48:54 $
-** Source File:         $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dctag.h,v $
-** CVS/RCS Revision:    $Revision: 1.9 $
-** Status:              $State: Exp $
-**
-** CVS/RCS Log at end of file
-**
-*/
+ *
+ *  Copyright (C) 1994-99, OFFIS
+ *
+ *  This software and supporting documentation were developed by
+ *
+ *    Kuratorium OFFIS e.V.
+ *    Healthcare Information and Communication Systems
+ *    Escherweg 2
+ *    D-26121 Oldenburg, Germany
+ *
+ *  THIS SOFTWARE IS MADE AVAILABLE,  AS IS,  AND OFFIS MAKES NO  WARRANTY
+ *  REGARDING  THE  SOFTWARE,  ITS  PERFORMANCE,  ITS  MERCHANTABILITY  OR
+ *  FITNESS FOR ANY PARTICULAR USE, FREEDOM FROM ANY COMPUTER DISEASES  OR
+ *  ITS CONFORMITY TO ANY SPECIFICATION. THE ENTIRE RISK AS TO QUALITY AND
+ *  PERFORMANCE OF THE SOFTWARE IS WITH THE USER.
+ *
+ *  Module:  dcmdata
+ *
+ *  Author:  Gerd Ehlers, Andrew Hewett
+ *
+ *  Purpose: Definition of the class DcmTag
+ *
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 1999-03-31 09:24:49 $
+ *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dctag.h,v $
+ *  CVS/RCS Revision: $Revision: 1.10 $
+ *  Status:           $State: Exp $
+ *
+ *  CVS/RCS Log at end of file
+ *
+ */
 
 #ifndef DCTAG_H
 #define DCTAG_H
@@ -38,11 +51,7 @@
 class DcmTag : public DcmTagKey {
 private:
     DcmVR vr;
-    const DcmDictEntry* dictRef;        /* reference to global data dictionary */
-        
-#ifdef DEBUG
-    int testConstructDestruct;          /* for debugging */
-#endif
+    const DcmDictEntry* dictRef;        /* reference to global data dictionary */        
     E_Condition errorFlag;              /* the current error code */
 
 public:
@@ -97,7 +106,10 @@ public:
 /*
 ** CVS/RCS Log:
 ** $Log: dctag.h,v $
-** Revision 1.9  1998-07-15 15:48:54  joergr
+** Revision 1.10  1999-03-31 09:24:49  meichel
+** Updated copyright header in module dcmdata
+**
+** Revision 1.9  1998/07/15 15:48:54  joergr
 ** Removed several compiler warnings reported by gcc 2.8.1 with
 ** additional options, e.g. missing copy constructors and assignment
 ** operators, initialization of member variables in the body of a
@@ -130,6 +142,5 @@ public:
 **
 ** Revision 1.2  1995/11/23 16:38:03  hewett
 ** Updated for loadable data dictionary + some cleanup (more to do).
-**
 **
 */

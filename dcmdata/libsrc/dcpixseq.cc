@@ -1,24 +1,35 @@
 /*
-**
-** Author: Gerd Ehlers      01.11.94 -- Created
-**         Andreas Barth    04.12.95 -- New Stream classes
-** Kuratorium OFFIS e.V.
-**
-** Module: dcpixseq.cc
-**
-** Purpose:
-** Implementation of class DcmPixelSequence
-**
-**
-** Last Update:         $Author: meichel $
-** Update Date:         $Date: 1998-11-12 16:48:18 $
-** Source File:         $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcpixseq.cc,v $
-** CVS/RCS Revision:    $Revision: 1.14 $
-** Status:              $State: Exp $
-**
-** CVS/RCS Log at end of file
-**
-*/
+ *
+ *  Copyright (C) 1994-99, OFFIS
+ *
+ *  This software and supporting documentation were developed by
+ *
+ *    Kuratorium OFFIS e.V.
+ *    Healthcare Information and Communication Systems
+ *    Escherweg 2
+ *    D-26121 Oldenburg, Germany
+ *
+ *  THIS SOFTWARE IS MADE AVAILABLE,  AS IS,  AND OFFIS MAKES NO  WARRANTY
+ *  REGARDING  THE  SOFTWARE,  ITS  PERFORMANCE,  ITS  MERCHANTABILITY  OR
+ *  FITNESS FOR ANY PARTICULAR USE, FREEDOM FROM ANY COMPUTER DISEASES  OR
+ *  ITS CONFORMITY TO ANY SPECIFICATION. THE ENTIRE RISK AS TO QUALITY AND
+ *  PERFORMANCE OF THE SOFTWARE IS WITH THE USER.
+ *
+ *  Module:  dcmdata
+ *
+ *  Author:  Gerd Ehlers, Andreas Barth
+ *
+ *  Purpose: class DcmPixelSequence
+ *
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 1999-03-31 09:25:36 $
+ *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcpixseq.cc,v $
+ *  CVS/RCS Revision: $Revision: 1.15 $
+ *  Status:           $State: Exp $
+ *
+ *  CVS/RCS Log at end of file
+ *
+ */
 
 #include "osconfig.h"    /* make sure OS specific configuration is included first */
 
@@ -278,7 +289,10 @@ E_Condition DcmPixelSequence::write(DcmStream & outStream,
 /*
 ** CVS/RCS Log:
 ** $Log: dcpixseq.cc,v $
-** Revision 1.14  1998-11-12 16:48:18  meichel
+** Revision 1.15  1999-03-31 09:25:36  meichel
+** Updated copyright header in module dcmdata
+**
+** Revision 1.14  1998/11/12 16:48:18  meichel
 ** Implemented operator= for all classes derived from DcmObject.
 **
 ** Revision 1.13  1998/07/15 15:52:05  joergr
@@ -343,6 +357,5 @@ E_Condition DcmPixelSequence::write(DcmStream & outStream,
 ** - changed to support new streaming facilities
 ** - unique read/write methods for file and block transfer
 ** - more cleanups
-**
 **
 */

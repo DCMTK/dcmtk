@@ -1,23 +1,35 @@
 /*
-**
-** Author: Gerd Ehlers      01.05.94 -- First Creation
-**         Andreas Barth    12.05.97 -- new Stream class, unique value field
-** Kuratorium OFFIS e.V.
-**
-** Module: dcvris.h
-**
-** Purpose:
-** Interface of class DcmIntegerString
-**
-** Last Update:		$Author: meichel $
-** Update Date:		$Date: 1998-11-12 16:47:50 $
-** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcvris.h,v $
-** CVS/RCS Revision:	$Revision: 1.7 $
-** Status:		$State: Exp $
-**
-** CVS/RCS Log at end of file
-**
-*/
+ *
+ *  Copyright (C) 1994-99, OFFIS
+ *
+ *  This software and supporting documentation were developed by
+ *
+ *    Kuratorium OFFIS e.V.
+ *    Healthcare Information and Communication Systems
+ *    Escherweg 2
+ *    D-26121 Oldenburg, Germany
+ *
+ *  THIS SOFTWARE IS MADE AVAILABLE,  AS IS,  AND OFFIS MAKES NO  WARRANTY
+ *  REGARDING  THE  SOFTWARE,  ITS  PERFORMANCE,  ITS  MERCHANTABILITY  OR
+ *  FITNESS FOR ANY PARTICULAR USE, FREEDOM FROM ANY COMPUTER DISEASES  OR
+ *  ITS CONFORMITY TO ANY SPECIFICATION. THE ENTIRE RISK AS TO QUALITY AND
+ *  PERFORMANCE OF THE SOFTWARE IS WITH THE USER.
+ *
+ *  Module:  dcmdata
+ *
+ *  Author:  Gerd Ehlers, Andreas Barth
+ *
+ *  Purpose: Interface of class DcmIntegerString
+ *
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 1999-03-31 09:25:01 $
+ *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcvris.h,v $
+ *  CVS/RCS Revision: $Revision: 1.8 $
+ *  Status:           $State: Exp $
+ *
+ *  CVS/RCS Log at end of file
+ *
+ */
 
 #ifndef DCVRIS_H
 #define DCVRIS_H
@@ -57,7 +69,10 @@ class DcmIntegerString : public DcmByteString
 /*
 ** CVS/RCS Log:
 ** $Log: dcvris.h,v $
-** Revision 1.7  1998-11-12 16:47:50  meichel
+** Revision 1.8  1999-03-31 09:25:01  meichel
+** Updated copyright header in module dcmdata
+**
+** Revision 1.7  1998/11/12 16:47:50  meichel
 ** Implemented operator= for all classes derived from DcmObject.
 **
 ** Revision 1.6  1997/09/11 15:13:14  hewett
@@ -92,8 +107,6 @@ class DcmIntegerString : public DcmByteString
 ** - changed to support new streaming facilities
 ** - more cleanups
 ** - merged read / write methods for block and file transfer
-**
-**
 **
 */
 

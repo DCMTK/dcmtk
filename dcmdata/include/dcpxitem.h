@@ -1,23 +1,35 @@
 /*
-**
-** Author: Gerd Ehlers	    01.11.94 -- Created
-**         Andreas Barth    04.12.95 -- New Stream classes
-** Kuratorium OFFIS e.V.
-**
-** Module: dcpxitem.h
-**
-** Purpose:
-** Interface of class DcmPixelItem
-**
-** Last Update:		$Author: meichel $
-** Update Date:		$Date: 1998-11-12 16:47:43 $
-** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcpxitem.h,v $
-** CVS/RCS Revision:	$Revision: 1.6 $
-** Status:		$State: Exp $
-**
-** CVS/RCS Log at end of file
-**
-*/
+ *
+ *  Copyright (C) 1994-99, OFFIS
+ *
+ *  This software and supporting documentation were developed by
+ *
+ *    Kuratorium OFFIS e.V.
+ *    Healthcare Information and Communication Systems
+ *    Escherweg 2
+ *    D-26121 Oldenburg, Germany
+ *
+ *  THIS SOFTWARE IS MADE AVAILABLE,  AS IS,  AND OFFIS MAKES NO  WARRANTY
+ *  REGARDING  THE  SOFTWARE,  ITS  PERFORMANCE,  ITS  MERCHANTABILITY  OR
+ *  FITNESS FOR ANY PARTICULAR USE, FREEDOM FROM ANY COMPUTER DISEASES  OR
+ *  ITS CONFORMITY TO ANY SPECIFICATION. THE ENTIRE RISK AS TO QUALITY AND
+ *  PERFORMANCE OF THE SOFTWARE IS WITH THE USER.
+ *
+ *  Module:  dcmdata
+ *
+ *  Author:  Gerd Ehlers, Andreas Barth
+ *
+ *  Purpose: Interface of class DcmPixelItem
+ *
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 1999-03-31 09:24:45 $
+ *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcpxitem.h,v $
+ *  CVS/RCS Revision: $Revision: 1.7 $
+ *  Status:           $State: Exp $
+ *
+ *  CVS/RCS Log at end of file
+ *
+ */
 
 #ifndef DCPXITEM_H
 #define DCPXITEM_H
@@ -60,7 +72,10 @@ class DcmPixelItem : public DcmOtherByteOtherWord
 /*
 ** CVS/RCS Log:
 ** $Log: dcpxitem.h,v $
-** Revision 1.6  1998-11-12 16:47:43  meichel
+** Revision 1.7  1999-03-31 09:24:45  meichel
+** Updated copyright header in module dcmdata
+**
+** Revision 1.6  1998/11/12 16:47:43  meichel
 ** Implemented operator= for all classes derived from DcmObject.
 **
 ** Revision 1.5  1997/05/22 16:57:10  andreas
@@ -75,6 +90,5 @@ class DcmPixelItem : public DcmOtherByteOtherWord
 ** - changed to support new streaming facilities
 ** - more cleanups
 ** - merged read / write methods for block and file transfer
-**
 **
 */

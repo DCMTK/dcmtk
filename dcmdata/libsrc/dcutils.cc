@@ -1,23 +1,37 @@
 /*
  *
- * Author: Gerd Ehlers		Created:  11-06-94
- *                              Modified: 02-15-95
+ *  Copyright (C) 1994-99, OFFIS
  *
- * Module: dcutils.cc
+ *  This software and supporting documentation were developed by
  *
- * Purpose:
- * Implementation of some routines for accessing DICOM datasets
+ *    Kuratorium OFFIS e.V.
+ *    Healthcare Information and Communication Systems
+ *    Escherweg 2
+ *    D-26121 Oldenburg, Germany
  *
+ *  THIS SOFTWARE IS MADE AVAILABLE,  AS IS,  AND OFFIS MAKES NO  WARRANTY
+ *  REGARDING  THE  SOFTWARE,  ITS  PERFORMANCE,  ITS  MERCHANTABILITY  OR
+ *  FITNESS FOR ANY PARTICULAR USE, FREEDOM FROM ANY COMPUTER DISEASES  OR
+ *  ITS CONFORMITY TO ANY SPECIFICATION. THE ENTIRE RISK AS TO QUALITY AND
+ *  PERFORMANCE OF THE SOFTWARE IS WITH THE USER.
  *
- * Last Update:   $Author: hewett $
- * Revision:	  $Revision: 1.5 $
- * Status:	  $State: Exp $
+ *  Module:  dcmdata
+ *
+ *  Author:  Gerd Ehlers
+ *
+ *  Purpose: Helper functions for accessing DICOM datasets
+ *
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 1999-03-31 09:25:44 $
+ *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/Attic/dcutils.cc,v $
+ *  CVS/RCS Revision: $Revision: 1.6 $
+ *  Status:           $State: Exp $
+ *
+ *  CVS/RCS Log at end of file
  *
  */
 
 #include "osconfig.h"    /* make sure OS specific configuration is included first */
-
-
 #include <stdlib.h>
 #include <ctype.h>
 #include "ofstring.h"
@@ -559,6 +573,11 @@ OFBool deleteAttribute( DcmItem *item, DcmObject *attribute )
 }
 
 
-// **********************************************
-
-
+/*
+ * CVS/RCS Log:
+ * $Log: dcutils.cc,v $
+ * Revision 1.6  1999-03-31 09:25:44  meichel
+ * Updated copyright header in module dcmdata
+ *
+ *
+ */

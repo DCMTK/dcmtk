@@ -1,24 +1,35 @@
 /*
-**
-** Author: Gerd Ehlers      26.04.94 -- Created
-**         Andreas Barth    02.12.95 -- Modified for new stream classes
-** Kuratorium OFFIS e.V.
-**
-** Module: dcdatset.h
-**
-** Purpose:
-** Interface of the class DcmDataset
-**
-**
-** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1997-07-21 08:14:38 $
-** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcdatset.h,v $
-** CVS/RCS Revision:	$Revision: 1.8 $
-** Status:		$State: Exp $
-**
-** CVS/RCS Log at end of file
-**
-*/
+ *
+ *  Copyright (C) 1994-99, OFFIS
+ *
+ *  This software and supporting documentation were developed by
+ *
+ *    Kuratorium OFFIS e.V.
+ *    Healthcare Information and Communication Systems
+ *    Escherweg 2
+ *    D-26121 Oldenburg, Germany
+ *
+ *  THIS SOFTWARE IS MADE AVAILABLE,  AS IS,  AND OFFIS MAKES NO  WARRANTY
+ *  REGARDING  THE  SOFTWARE,  ITS  PERFORMANCE,  ITS  MERCHANTABILITY  OR
+ *  FITNESS FOR ANY PARTICULAR USE, FREEDOM FROM ANY COMPUTER DISEASES  OR
+ *  ITS CONFORMITY TO ANY SPECIFICATION. THE ENTIRE RISK AS TO QUALITY AND
+ *  PERFORMANCE OF THE SOFTWARE IS WITH THE USER.
+ *
+ *  Module:  dcmdata
+ *
+ *  Author:  Gerd Ehlers, Andreas Barth
+ *
+ *  Purpose: Interface of the class DcmDataset
+ *
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 1999-03-31 09:24:32 $
+ *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcdatset.h,v $
+ *  CVS/RCS Revision: $Revision: 1.9 $
+ *  Status:           $State: Exp $
+ *
+ *  CVS/RCS Log at end of file
+ *
+ */
 
 #ifndef DCDATSET_H
 #define DCDATSET_H
@@ -108,7 +119,10 @@ public:
 /*
 ** CVS/RCS Log:
 ** $Log: dcdatset.h,v $
-** Revision 1.8  1997-07-21 08:14:38  andreas
+** Revision 1.9  1999-03-31 09:24:32  meichel
+** Updated copyright header in module dcmdata
+**
+** Revision 1.8  1997/07/21 08:14:38  andreas
 ** - New environment for encapsulated pixel representations. DcmPixelData
 **   can contain different representations and uses codecs to convert
 **   between them. Codecs are derived from the DcmCodec class. New error
@@ -152,6 +166,5 @@ public:
 ** - changed to support new streaming facilities
 ** - more cleanups
 ** - merged read / write methods for block and file transfer
-**
 **
 */

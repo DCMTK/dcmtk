@@ -1,19 +1,35 @@
 /*
-**
-** Author: Andreas Barth    17.07.95 -- Creation
-**                          27.11.95 -- only one swapping mechanism
-**
-** Module: dcswap.h
-**
-** Purpose:
-** ByteOrder functions
-**
-**
-** Last Update:   $Author: meichel $
-** Revision:      $Revision: 1.5 $
-** Status:	  $State: Exp $
-**
-*/
+ *
+ *  Copyright (C) 1994-99, OFFIS
+ *
+ *  This software and supporting documentation were developed by
+ *
+ *    Kuratorium OFFIS e.V.
+ *    Healthcare Information and Communication Systems
+ *    Escherweg 2
+ *    D-26121 Oldenburg, Germany
+ *
+ *  THIS SOFTWARE IS MADE AVAILABLE,  AS IS,  AND OFFIS MAKES NO  WARRANTY
+ *  REGARDING  THE  SOFTWARE,  ITS  PERFORMANCE,  ITS  MERCHANTABILITY  OR
+ *  FITNESS FOR ANY PARTICULAR USE, FREEDOM FROM ANY COMPUTER DISEASES  OR
+ *  ITS CONFORMITY TO ANY SPECIFICATION. THE ENTIRE RISK AS TO QUALITY AND
+ *  PERFORMANCE OF THE SOFTWARE IS WITH THE USER.
+ *
+ *  Module:  dcmdata
+ *
+ *  Author:  Andreas Barth
+ *
+ *  Purpose: byte order functions
+ *
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 1999-03-31 09:24:48 $
+ *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcswap.h,v $
+ *  CVS/RCS Revision: $Revision: 1.6 $
+ *  Status:           $State: Exp $
+ *
+ *  CVS/RCS Log at end of file
+ *
+ */
 
 #ifndef DCSWAP_H
 #define DCSWAP_H
@@ -59,4 +75,11 @@ inline void swap4Bytes(Uint8 * toSwap)
 
 #endif // DCSWAP_H
 
-
+/*
+ * CVS/RCS Log:
+ * $Log: dcswap.h,v $
+ * Revision 1.6  1999-03-31 09:24:48  meichel
+ * Updated copyright header in module dcmdata
+ *
+ *
+ */

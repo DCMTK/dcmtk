@@ -1,23 +1,35 @@
 /*
-**
-** Author: Andrew Hewett	Created: 4.11.95
-** Kuratorium OFFIS e.V.
-**
-** Module: dcerror.cc
-**
-** Purpose:
-** Error handling, codes and strings
-** 
-**
-** Last Update:		$Author: meichel $
-** Update Date:		$Date: 1997-10-01 08:44:12 $
-** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcerror.cc,v $
-** CVS/RCS Revision:	$Revision: 1.6 $
-** Status:		$State: Exp $
-**
-** CVS/RCS Log at end of file
-**
-*/
+ *
+ *  Copyright (C) 1994-99, OFFIS
+ *
+ *  This software and supporting documentation were developed by
+ *
+ *    Kuratorium OFFIS e.V.
+ *    Healthcare Information and Communication Systems
+ *    Escherweg 2
+ *    D-26121 Oldenburg, Germany
+ *
+ *  THIS SOFTWARE IS MADE AVAILABLE,  AS IS,  AND OFFIS MAKES NO  WARRANTY
+ *  REGARDING  THE  SOFTWARE,  ITS  PERFORMANCE,  ITS  MERCHANTABILITY  OR
+ *  FITNESS FOR ANY PARTICULAR USE, FREEDOM FROM ANY COMPUTER DISEASES  OR
+ *  ITS CONFORMITY TO ANY SPECIFICATION. THE ENTIRE RISK AS TO QUALITY AND
+ *  PERFORMANCE OF THE SOFTWARE IS WITH THE USER.
+ *
+ *  Module:  dcmdata
+ *
+ *  Author:  Andrew Hewett
+ *
+ *  Purpose: Error handling, codes and strings
+ *
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 1999-03-31 09:25:27 $
+ *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcerror.cc,v $
+ *  CVS/RCS Revision: $Revision: 1.7 $
+ *  Status:           $State: Exp $
+ *
+ *  CVS/RCS Log at end of file
+ *
+ */
 
 #include "osconfig.h"    /* make sure OS specific configuration is included first */
 
@@ -65,7 +77,10 @@ dcmErrorConditionToString(E_Condition cond)
 /*
 ** CVS/RCS Log:
 ** $Log: dcerror.cc,v $
-** Revision 1.6  1997-10-01 08:44:12  meichel
+** Revision 1.7  1999-03-31 09:25:27  meichel
+** Updated copyright header in module dcmdata
+**
+** Revision 1.6  1997/10/01 08:44:12  meichel
 ** Including <unistd.h> if available.
 **
 ** Revision 1.5  1997/07/21 08:17:41  andreas
@@ -89,7 +104,6 @@ dcmErrorConditionToString(E_Condition cond)
 **
 ** Revision 1.1  1995/11/23 17:02:44  hewett
 ** Updated for loadable data dictionary.  Some cleanup (more to do).
-**
 **
 */
 

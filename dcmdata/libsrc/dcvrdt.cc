@@ -1,23 +1,35 @@
 /*
-**
-** Author: Gerd Ehlers      01.05.94 -- First Creation
-**         Andreas Barth    04.12.95 -- new Stream class, unique value field
-** Kuratorium OFFIS e.V.
-**
-** Module: dcvrdt.cc
-**
-** Purpose:
-** Implementation of class DcmDateTime
-**
-** Last Update:		$Author: meichel $
-** Update Date:		$Date: 1998-11-12 16:48:24 $
-** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcvrdt.cc,v $
-** CVS/RCS Revision:	$Revision: 1.7 $
-** Status:		$State: Exp $
-**
-** CVS/RCS Log at end of file
-**
-*/
+ *
+ *  Copyright (C) 1994-99, OFFIS
+ *
+ *  This software and supporting documentation were developed by
+ *
+ *    Kuratorium OFFIS e.V.
+ *    Healthcare Information and Communication Systems
+ *    Escherweg 2
+ *    D-26121 Oldenburg, Germany
+ *
+ *  THIS SOFTWARE IS MADE AVAILABLE,  AS IS,  AND OFFIS MAKES NO  WARRANTY
+ *  REGARDING  THE  SOFTWARE,  ITS  PERFORMANCE,  ITS  MERCHANTABILITY  OR
+ *  FITNESS FOR ANY PARTICULAR USE, FREEDOM FROM ANY COMPUTER DISEASES  OR
+ *  ITS CONFORMITY TO ANY SPECIFICATION. THE ENTIRE RISK AS TO QUALITY AND
+ *  PERFORMANCE OF THE SOFTWARE IS WITH THE USER.
+ *
+ *  Module:  dcmdata
+ *
+ *  Author:  Gerd Ehlers, Andreas Barth
+ *
+ *  Purpose: class DcmDateTime
+ *
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 1999-03-31 09:25:50 $
+ *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcvrdt.cc,v $
+ *  CVS/RCS Revision: $Revision: 1.8 $
+ *  Status:           $State: Exp $
+ *
+ *  CVS/RCS Log at end of file
+ *
+ */
 
 #include "osconfig.h"    /* make sure OS specific configuration is included first */
 
@@ -88,7 +100,10 @@ DcmDateTime::getOFStringArray(
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrdt.cc,v $
-** Revision 1.7  1998-11-12 16:48:24  meichel
+** Revision 1.8  1999-03-31 09:25:50  meichel
+** Updated copyright header in module dcmdata
+**
+** Revision 1.7  1998/11/12 16:48:24  meichel
 ** Implemented operator= for all classes derived from DcmObject.
 **
 ** Revision 1.6  1997/08/29 13:11:45  andreas
@@ -123,7 +138,5 @@ DcmDateTime::getOFStringArray(
 ** - changed to support new streaming facilities
 ** - unique read/write methods for file and block transfer
 ** - more cleanups
-**
-**
 **
 */

@@ -1,24 +1,37 @@
 /*
-**
-** Author: Andrew Hewett        Created: 4.11.95
-** Kuratorium OFFIS e.V.
-**
-** Module: dcuid.h
-**
-** Purpose:
-** Definitions of "well known" DICOM Unique Indentifiers,
-** routines for finding and creating UIDs.
-**
-** Last Update:         $Author: meichel $
-** Update Date:         $Date: 1999-03-22 13:41:22 $
-** Source File:         $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcuid.h,v $
-** CVS/RCS Revision:    $Revision: 1.28 $
-** Status:              $State: Exp $
-**
-** CVS/RCS Log at end of file
-**
-*/
-
+ *
+ *  Copyright (C) 1994-99, OFFIS
+ *
+ *  This software and supporting documentation were developed by
+ *
+ *    Kuratorium OFFIS e.V.
+ *    Healthcare Information and Communication Systems
+ *    Escherweg 2
+ *    D-26121 Oldenburg, Germany
+ *
+ *  THIS SOFTWARE IS MADE AVAILABLE,  AS IS,  AND OFFIS MAKES NO  WARRANTY
+ *  REGARDING  THE  SOFTWARE,  ITS  PERFORMANCE,  ITS  MERCHANTABILITY  OR
+ *  FITNESS FOR ANY PARTICULAR USE, FREEDOM FROM ANY COMPUTER DISEASES  OR
+ *  ITS CONFORMITY TO ANY SPECIFICATION. THE ENTIRE RISK AS TO QUALITY AND
+ *  PERFORMANCE OF THE SOFTWARE IS WITH THE USER.
+ *
+ *  Module:  dcmdata
+ *
+ *  Author:  Andrew Hewett
+ *
+ *  Purpose: 
+ *  Definitions of "well known" DICOM Unique Indentifiers,
+ *  routines for finding and creating UIDs.
+ *
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 1999-03-31 09:24:52 $
+ *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcuid.h,v $
+ *  CVS/RCS Revision: $Revision: 1.29 $
+ *  Status:           $State: Exp $
+ *
+ *  CVS/RCS Log at end of file
+ *
+ */
 
 #ifndef DCUID_H
 #define DCUID_H
@@ -389,7 +402,10 @@ char* dcmGenerateUniqueIdentifer(char* uid, const char* prefix=NULL);
 /*
 ** CVS/RCS Log:
 ** $Log: dcuid.h,v $
-** Revision 1.28  1999-03-22 13:41:22  meichel
+** Revision 1.29  1999-03-31 09:24:52  meichel
+** Updated copyright header in module dcmdata
+**
+** Revision 1.28  1999/03/22 13:41:22  meichel
 ** Reworked UID list based on the 1998 DICOM edition and the latest
 **   supplement versions.
 **
@@ -500,6 +516,5 @@ char* dcmGenerateUniqueIdentifer(char* uid, const char* prefix=NULL);
 **
 ** Revision 1.1  1995/11/23 16:38:05  hewett
 ** Updated for loadable data dictionary + some cleanup (more to do).
-**
 **
 */

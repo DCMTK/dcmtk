@@ -1,23 +1,37 @@
 /*
-**
-** Author: Andrew Hewett        Created: 4.11.95
-**
-** Program: mkdictbi.cc
-**
-** Purpose:
-** Generate a builtin data dictionary which can be compiled into
-** the dcmdata library.  
-**
-** Last Update:         $Author: meichel $
-** Update Date:         $Date: 1999-03-22 15:45:48 $
-** Source File:         $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/mkdictbi.cc,v $
-** CVS/RCS Revision:    $Revision: 1.12 $
-** Status:              $State: Exp $
-**
-** CVS/RCS Log at end of file
-**
-*/
-
+ *
+ *  Copyright (C) 1994-99, OFFIS
+ *
+ *  This software and supporting documentation were developed by
+ *
+ *    Kuratorium OFFIS e.V.
+ *    Healthcare Information and Communication Systems
+ *    Escherweg 2
+ *    D-26121 Oldenburg, Germany
+ *
+ *  THIS SOFTWARE IS MADE AVAILABLE,  AS IS,  AND OFFIS MAKES NO  WARRANTY
+ *  REGARDING  THE  SOFTWARE,  ITS  PERFORMANCE,  ITS  MERCHANTABILITY  OR
+ *  FITNESS FOR ANY PARTICULAR USE, FREEDOM FROM ANY COMPUTER DISEASES  OR
+ *  ITS CONFORMITY TO ANY SPECIFICATION. THE ENTIRE RISK AS TO QUALITY AND
+ *  PERFORMANCE OF THE SOFTWARE IS WITH THE USER.
+ *
+ *  Module:  dcmdata
+ *
+ *  Author:  Andrew Hewett
+ *
+ *  Purpose: 
+ *  Generate a builtin data dictionary which can be compiled into
+ *  the dcmdata library.  
+ *
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 1999-03-31 09:26:09 $
+ *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/mkdictbi.cc,v $
+ *  CVS/RCS Revision: $Revision: 1.13 $
+ *  Status:           $State: Exp $
+ *
+ *  CVS/RCS Log at end of file
+ *
+ */
 
 #include "osconfig.h"    /* make sure OS specific configuration is included first */
 
@@ -334,7 +348,10 @@ main(int argc, char* argv[])
 /*
 ** CVS/RCS Log:
 ** $Log: mkdictbi.cc,v $
-** Revision 1.12  1999-03-22 15:45:48  meichel
+** Revision 1.13  1999-03-31 09:26:09  meichel
+** Updated copyright header in module dcmdata
+**
+** Revision 1.12  1999/03/22 15:45:48  meichel
 ** Implemented getUserName() on Win32 using the NetWkstaUserGetInfo() API.
 **
 ** Revision 1.11  1998/07/15 14:09:52  joergr
@@ -385,7 +402,6 @@ main(int argc, char* argv[])
 **
 ** Revision 1.1  1995/11/23 17:03:16  hewett
 ** Updated for loadable data dictionary.  Some cleanup (more to do).
-**
 **
 */
 

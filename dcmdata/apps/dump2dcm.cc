@@ -1,69 +1,83 @@
 /*
-**
-** Author: Andreas Barth   25.01.96 -- Created
-** Kuratorium OFFIS e.V.
-**
-** Module: dump2dcm.cc
-**
-** Purpose:
-** Program to create a Dicom FileFormat or DataSet from an ASCII-dump
-**
-** Input File Description:
-** The input file be an output of dcmdump. One element (Tag, VR, value) must 
-** be written into one line separated by arbitrary spaces or tab characters.
-** A # begins a comment that ends at the line end. Empty lines are allowed.
-** This parts of a line have the following syntax:
-** Tag:   (gggg,eeee)
-**        with gggg and eeee are 4 character hexadecimal values representing
-**        group- and element-tag. Spaces and Tabs can be anywhere in a Tag
-**        specification
-** VR:    Value Representation must be written as 2 characters as in Part 6
-**        of the DICOM 3.0 standard. No Spaces or Tabs are allowed between the
-**        two characters. If the VR can determined from the Tag, this part of
-**        a line is optional.
-** Value: There are several rules for writing values:
-**        1. US, SS, SL, UL, FD, FL are written as 
-**           decimal strings that can be read by scanf.
-**        2. OB, OW values are written as byte or word hexadecimal values
-**           separated by '\' character.  Alternatively, OB or OW values can
-**           be read from a separate file by writing the filename prefixed
-**           by a '=' character (e.g. =largepixeldata.dat).  The contents of
-**           the file will be read as is.  No byte swapping, or other conversions
-**           will be performed.  No checks will be made to ensure that the amount of
-**           data is reasonable in terms of other attributes such as Rows or Columns.
-**        3. UI is written as =Name in data dictionary or as 
-**           unique identifer string (see  5.) , e.g. [1.2.840.....]
-**        4. Strings without () <> [] spaces, tabs and # can be 
-**           written directly 
-**        5. Other strings with must be surrounded by [ ]. No 
-**           bracket structure is passed. The value ends at the last ] in
-**           the line. Anything after the ] is interpreted as comment.
-**        6. ( < are interpreted special and may not be used when writing
-**           an input file by hand as beginning characters of a string.
-**        Multiple Value are separated by \
-**        The sequence of lines must not be ordered but they can. 
-**        References in DICOM Directories are not supported.
-**        Semantic errors are not detected.
-**
-** Examples:
-**  (0008,0020) DA  [19921012]          #     8,  1  StudyDate
-**  (0008,0016) UI  =MRImageStorage     #    26,  1  SOPClassUID
-**  (0002,0012) UI  [1.2.276.0.7230010.100.1.1] 
-**  (0020,0032) DS  [0.0\0.0]           #     8,  2  ImagePositionPatient
-**  (0028,0010) US  256     
-**  (0002,0001) OB  01\00  
-**
-**
-**
-** Last Update:		$Author: meichel $
-** Update Date:		$Date: 1999-03-29 10:14:15 $
-** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/apps/dump2dcm.cc,v $
-** CVS/RCS Revision:	$Revision: 1.22 $
-** Status:		$State: Exp $
-**
-** CVS/RCS Log at end of file
-**
-*/
+ *
+ *  Copyright (C) 1994-99, OFFIS
+ *
+ *  This software and supporting documentation were developed by
+ *
+ *    Kuratorium OFFIS e.V.
+ *    Healthcare Information and Communication Systems
+ *    Escherweg 2
+ *    D-26121 Oldenburg, Germany
+ *
+ *  THIS SOFTWARE IS MADE AVAILABLE,  AS IS,  AND OFFIS MAKES NO  WARRANTY
+ *  REGARDING  THE  SOFTWARE,  ITS  PERFORMANCE,  ITS  MERCHANTABILITY  OR
+ *  FITNESS FOR ANY PARTICULAR USE, FREEDOM FROM ANY COMPUTER DISEASES  OR
+ *  ITS CONFORMITY TO ANY SPECIFICATION. THE ENTIRE RISK AS TO QUALITY AND
+ *  PERFORMANCE OF THE SOFTWARE IS WITH THE USER.
+ *
+ *  Module:  dcmdata
+ *
+ *  Author:  Andreas Barth
+ *
+ *  Purpose: create a Dicom FileFormat or DataSet from an ASCII-dump
+ *
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 1999-03-31 09:24:23 $
+ *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/apps/dump2dcm.cc,v $
+ *  CVS/RCS Revision: $Revision: 1.23 $
+ *  Status:           $State: Exp $
+ *
+ *  CVS/RCS Log at end of file
+ *
+ */
+
+/*
+ * Input File Description:
+ * The input file be an output of dcmdump. One element (Tag, VR, value) must 
+ * be written into one line separated by arbitrary spaces or tab characters.
+ * A # begins a comment that ends at the line end. Empty lines are allowed.
+ * This parts of a line have the following syntax:
+ * Tag:   (gggg,eeee)
+ *        with gggg and eeee are 4 character hexadecimal values representing
+ *        group- and element-tag. Spaces and Tabs can be anywhere in a Tag
+ *        specification
+ * VR:    Value Representation must be written as 2 characters as in Part 6
+ *        of the DICOM 3.0 standard. No Spaces or Tabs are allowed between the
+ *        two characters. If the VR can determined from the Tag, this part of
+ *        a line is optional.
+ * Value: There are several rules for writing values:
+ *        1. US, SS, SL, UL, FD, FL are written as 
+ *           decimal strings that can be read by scanf.
+ *        2. OB, OW values are written as byte or word hexadecimal values
+ *           separated by '\' character.  Alternatively, OB or OW values can
+ *           be read from a separate file by writing the filename prefixed
+ *           by a '=' character (e.g. =largepixeldata.dat).  The contents of
+ *           the file will be read as is.  No byte swapping, or other conversions
+ *           will be performed.  No checks will be made to ensure that the amount of
+ *           data is reasonable in terms of other attributes such as Rows or Columns.
+ *        3. UI is written as =Name in data dictionary or as 
+ *           unique identifer string (see  5.) , e.g. [1.2.840.....]
+ *        4. Strings without () <> [] spaces, tabs and # can be 
+ *           written directly 
+ *        5. Other strings with must be surrounded by [ ]. No 
+ *           bracket structure is passed. The value ends at the last ] in
+ *           the line. Anything after the ] is interpreted as comment.
+ *        6. ( < are interpreted special and may not be used when writing
+ *           an input file by hand as beginning characters of a string.
+ *        Multiple Value are separated by \
+ *        The sequence of lines must not be ordered but they can. 
+ *        References in DICOM Directories are not supported.
+ *        Semantic errors are not detected.
+ *
+ * Examples:
+ *  (0008,0020) DA  [19921012]          #     8,  1  StudyDate
+ *  (0008,0016) UI  =MRImageStorage     #    26,  1  SOPClassUID
+ *  (0002,0012) UI  [1.2.276.0.7230010.100.1.1] 
+ *  (0020,0032) DS  [0.0\0.0]           #     8,  2  ImagePositionPatient
+ *  (0028,0010) US  256     
+ *  (0002,0001) OB  01\00  
+ *
+ */
 
 #include "osconfig.h"
 #include <stdio.h>
@@ -918,7 +932,10 @@ int main(int argc, char *argv[])
 /*
 ** CVS/RCS Log:
 ** $Log: dump2dcm.cc,v $
-** Revision 1.22  1999-03-29 10:14:15  meichel
+** Revision 1.23  1999-03-31 09:24:23  meichel
+** Updated copyright header in module dcmdata
+**
+** Revision 1.22  1999/03/29 10:14:15  meichel
 ** Adapted command line options of dcmdata applications to new scheme.
 **
 ** Revision 1.21  1999/03/22 16:16:01  meichel

@@ -1,24 +1,35 @@
 /*
-**
-** Author: Andrew Hewett        Created: 4.11.95
-** Kuratorium OFFIS e.V.
-**
-** Module: dctagkey.h
-**
-** Purpose:
-** Basis class for dicom tags.  
-** 
-**
-** Last Update:         $Author: meichel $
-** Update Date:         $Date: 1999-03-17 11:08:54 $
-** Source File:         $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dctagkey.h,v $
-** CVS/RCS Revision:    $Revision: 1.4 $
-** Status:              $State: Exp $
-**
-** CVS/RCS Log at end of file
-**
-*/
-
+ *
+ *  Copyright (C) 1994-99, OFFIS
+ *
+ *  This software and supporting documentation were developed by
+ *
+ *    Kuratorium OFFIS e.V.
+ *    Healthcare Information and Communication Systems
+ *    Escherweg 2
+ *    D-26121 Oldenburg, Germany
+ *
+ *  THIS SOFTWARE IS MADE AVAILABLE,  AS IS,  AND OFFIS MAKES NO  WARRANTY
+ *  REGARDING  THE  SOFTWARE,  ITS  PERFORMANCE,  ITS  MERCHANTABILITY  OR
+ *  FITNESS FOR ANY PARTICULAR USE, FREEDOM FROM ANY COMPUTER DISEASES  OR
+ *  ITS CONFORMITY TO ANY SPECIFICATION. THE ENTIRE RISK AS TO QUALITY AND
+ *  PERFORMANCE OF THE SOFTWARE IS WITH THE USER.
+ *
+ *  Module:  dcmdata
+ *
+ *  Author:  Andrew Hewett
+ *
+ *  Purpose: Basis class for dicom tags.
+ *
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 1999-03-31 09:24:49 $
+ *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dctagkey.h,v $
+ *  CVS/RCS Revision: $Revision: 1.5 $
+ *  Status:           $State: Exp $
+ *
+ *  CVS/RCS Log at end of file
+ *
+ */
 
 #ifndef DCMTAGKEY_H
 #define DCMTAGKEY_H 1
@@ -245,7 +256,10 @@ DcmTagKey::operator >= (const DcmTagKey& key) const
 /*
 ** CVS/RCS Log:
 ** $Log: dctagkey.h,v $
-** Revision 1.4  1999-03-17 11:08:54  meichel
+** Revision 1.5  1999-03-31 09:24:49  meichel
+** Updated copyright header in module dcmdata
+**
+** Revision 1.4  1999/03/17 11:08:54  meichel
 ** added method DcmTagKey::toString()
 **
 ** Revision 1.3  1998/07/15 15:48:54  joergr
@@ -261,6 +275,5 @@ DcmTagKey::operator >= (const DcmTagKey& key) const
 **
 ** Revision 1.1  1995/11/23 16:38:04  hewett
 ** Updated for loadable data dictionary + some cleanup (more to do).
-**
 **
 */

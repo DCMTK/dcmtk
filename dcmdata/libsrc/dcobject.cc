@@ -1,25 +1,40 @@
 /*
-**
-** Author: Gerd Ehlers      27.03.94 -- Creation
-**         Andreas Barth    27.11.95 -- Support of new Stream class
-**
-** Module: dcobject.cc
-**
-** Purpose:
-** Implementation of the base class object
-**
-**
-** Last Update:   $Author: meichel $
-** Revision:      $Revision: 1.21 $
-** Status:        $State: Exp $
-**
-*/
-
+ *
+ *  Copyright (C) 1994-99, OFFIS
+ *
+ *  This software and supporting documentation were developed by
+ *
+ *    Kuratorium OFFIS e.V.
+ *    Healthcare Information and Communication Systems
+ *    Escherweg 2
+ *    D-26121 Oldenburg, Germany
+ *
+ *  THIS SOFTWARE IS MADE AVAILABLE,  AS IS,  AND OFFIS MAKES NO  WARRANTY
+ *  REGARDING  THE  SOFTWARE,  ITS  PERFORMANCE,  ITS  MERCHANTABILITY  OR
+ *  FITNESS FOR ANY PARTICULAR USE, FREEDOM FROM ANY COMPUTER DISEASES  OR
+ *  ITS CONFORMITY TO ANY SPECIFICATION. THE ENTIRE RISK AS TO QUALITY AND
+ *  PERFORMANCE OF THE SOFTWARE IS WITH THE USER.
+ *
+ *  Module:  dcmdata
+ *
+ *  Author:  Gerd Ehlers, Andreas Barth
+ *
+ *  Purpose: 
+ *  This file contains the interface to routines which provide
+ *  DICOM object encoding/decoding, search and lookup facilities.
+ *
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 1999-03-31 09:25:34 $
+ *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcobject.cc,v $
+ *  CVS/RCS Revision: $Revision: 1.22 $
+ *  Status:           $State: Exp $
+ *
+ *  CVS/RCS Log at end of file
+ *
+ */
 
 #include "osconfig.h"    /* make sure OS specific configuration is included first */
-
 #include <iostream.h>
-
 #include "dcobject.h"
 #include "dcvr.h"
 #include "dcxfer.h"
@@ -38,11 +53,7 @@ OFBool dcmEnableAutomaticInputDataCorrection = OFTrue;
 
 
 DcmObject::DcmObject(const DcmTag &tag, const Uint32 len)
-  :
-#ifdef DEBUG
-    testConstructDestruct(1),   // for debugging
-#endif
-    Tag(tag),    
+  : Tag(tag),    
     Length(len),
     fTransferState(ERW_init),
     errorFlag(EC_Normal),
@@ -55,11 +66,7 @@ DcmObject::DcmObject(const DcmTag &tag, const Uint32 len)
 
 
 DcmObject::DcmObject( const DcmObject& obj )
-  :
-#ifdef DEBUG
-    testConstructDestruct(1),   // for debugging
-#endif
-    Tag(obj.Tag),
+  : Tag(obj.Tag),
     Length(obj.Length),
     fTransferState(obj.fTransferState),
     errorFlag(obj.errorFlag),
@@ -73,19 +80,6 @@ DcmObject::DcmObject( const DcmObject& obj )
 
 DcmObject::~DcmObject()
 {
-#ifdef DEBUG
-  if ( testConstructDestruct == 1 )                   // for debugging
-    testConstructDestruct = 2; // for debugging
-  else
-    {
-      debug(1, ( "Error: ~DcmObject called more than once (%d)",
-              testConstructDestruct ));
-
-      cerr << "Error: ~DcmObject called more than once ("
-           << testConstructDestruct << ")" << endl;
-      testConstructDestruct++;
-    }
-#endif
 }
 
 
@@ -281,5 +275,11 @@ E_Condition DcmObject::writeTagAndLength(DcmStream & outStream,
 }
 
 
-// ********************************
-
+/*
+ * CVS/RCS Log:
+ * $Log: dcobject.cc,v $
+ * Revision 1.22  1999-03-31 09:25:34  meichel
+ * Updated copyright header in module dcmdata
+ *
+ *
+ */

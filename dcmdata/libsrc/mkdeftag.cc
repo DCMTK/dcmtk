@@ -1,21 +1,35 @@
 /*
-**
-** Author: Andrew Hewett        Created: 4.11.95
-**
-** Program: mkdeftag.cc
-**
-** Purpose:
-** Generate a C++ header defining symbolic names for DICOM Tags.
-**
-** Last Update:         $Author: meichel $
-** Update Date:         $Date: 1999-03-22 15:45:47 $
-** Source File:         $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/mkdeftag.cc,v $
-** CVS/RCS Revision:    $Revision: 1.10 $
-** Status:              $State: Exp $
-**
-** CVS/RCS Log at end of file
-**
-*/
+ *
+ *  Copyright (C) 1994-99, OFFIS
+ *
+ *  This software and supporting documentation were developed by
+ *
+ *    Kuratorium OFFIS e.V.
+ *    Healthcare Information and Communication Systems
+ *    Escherweg 2
+ *    D-26121 Oldenburg, Germany
+ *
+ *  THIS SOFTWARE IS MADE AVAILABLE,  AS IS,  AND OFFIS MAKES NO  WARRANTY
+ *  REGARDING  THE  SOFTWARE,  ITS  PERFORMANCE,  ITS  MERCHANTABILITY  OR
+ *  FITNESS FOR ANY PARTICULAR USE, FREEDOM FROM ANY COMPUTER DISEASES  OR
+ *  ITS CONFORMITY TO ANY SPECIFICATION. THE ENTIRE RISK AS TO QUALITY AND
+ *  PERFORMANCE OF THE SOFTWARE IS WITH THE USER.
+ *
+ *  Module:  dcmdata
+ *
+ *  Author:  Andrew Hewett
+ *
+ *  Purpose: Generate a C++ header defining symbolic names for DICOM Tags.
+ *
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 1999-03-31 09:26:08 $
+ *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/mkdeftag.cc,v $
+ *  CVS/RCS Revision: $Revision: 1.11 $
+ *  Status:           $State: Exp $
+ *
+ *  CVS/RCS Log at end of file
+ *
+ */
 
 #include "osconfig.h"    /* make sure OS specific configuration is included first */
 
@@ -337,7 +351,10 @@ int main(int argc, char* argv[])
 /*
 ** CVS/RCS Log:
 ** $Log: mkdeftag.cc,v $
-** Revision 1.10  1999-03-22 15:45:47  meichel
+** Revision 1.11  1999-03-31 09:26:08  meichel
+** Updated copyright header in module dcmdata
+**
+** Revision 1.10  1999/03/22 15:45:47  meichel
 ** Implemented getUserName() on Win32 using the NetWkstaUserGetInfo() API.
 **
 ** Revision 1.9  1998/07/28 15:53:04  meichel
@@ -382,6 +399,5 @@ int main(int argc, char* argv[])
 **
 ** Revision 1.1  1995/11/23 17:03:16  hewett
 ** Updated for loadable data dictionary.  Some cleanup (more to do).
-**
 **
 */

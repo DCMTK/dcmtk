@@ -1,38 +1,35 @@
 /*
-**
-** Author: Gerd Ehlers	    01.11.94 -- Created
-**         Andreas Barth    04.12.95 -- New Stream classes
-** Kuratorium OFFIS e.V.
-**
-** Module: dcpxitem.cc
-**
-** Purpose:
-** Implementation of class DcmPixelItem
-**
-**
-** Last Update:		$Author: meichel $
-** Update Date:		$Date: 1998-11-12 16:48:19 $
-** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcpxitem.cc,v $
-** CVS/RCS Revision:	$Revision: 1.7 $
-** Status:		$State: Exp $
-**
-** CVS/RCS Log at end of file
-**
-*/
-
-/*
  *
- * Author: Gerd Ehlers      Created:  11-01-94
- *                          Modified: 02-07-95
+ *  Copyright (C) 1994-99, OFFIS
  *
+ *  This software and supporting documentation were developed by
  *
- * Last Update:   $Author: meichel $
- * Revision:      $Revision: 1.7 $
- * Status:	  $State: Exp $
+ *    Kuratorium OFFIS e.V.
+ *    Healthcare Information and Communication Systems
+ *    Escherweg 2
+ *    D-26121 Oldenburg, Germany
+ *
+ *  THIS SOFTWARE IS MADE AVAILABLE,  AS IS,  AND OFFIS MAKES NO  WARRANTY
+ *  REGARDING  THE  SOFTWARE,  ITS  PERFORMANCE,  ITS  MERCHANTABILITY  OR
+ *  FITNESS FOR ANY PARTICULAR USE, FREEDOM FROM ANY COMPUTER DISEASES  OR
+ *  ITS CONFORMITY TO ANY SPECIFICATION. THE ENTIRE RISK AS TO QUALITY AND
+ *  PERFORMANCE OF THE SOFTWARE IS WITH THE USER.
+ *
+ *  Module:  dcmdata
+ *
+ *  Author:  Gerd Ehlers, Andreas Barth
+ *
+ *  Purpose: class DcmPixelItem
+ *
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 1999-03-31 09:25:37 $
+ *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcpxitem.cc,v $
+ *  CVS/RCS Revision: $Revision: 1.8 $
+ *  Status:           $State: Exp $
+ *
+ *  CVS/RCS Log at end of file
  *
  */
-
-
 
 #include "osconfig.h"    /* make sure OS specific configuration is included first */
 
@@ -44,8 +41,6 @@
 #include "dcpxitem.h"
 #include "dcswap.h"
 #include "dcdebug.h"
-
-
 
 // ********************************
 
@@ -108,13 +103,13 @@ E_Condition DcmPixelItem::writeTagAndLength(DcmStream & outStream,
     return l_error;
 }
 
-
-// ********************************
-
 /*
 ** CVS/RCS Log:
 ** $Log: dcpxitem.cc,v $
-** Revision 1.7  1998-11-12 16:48:19  meichel
+** Revision 1.8  1999-03-31 09:25:37  meichel
+** Updated copyright header in module dcmdata
+**
+** Revision 1.7  1998/11/12 16:48:19  meichel
 ** Implemented operator= for all classes derived from DcmObject.
 **
 ** Revision 1.6  1997/07/07 07:52:29  andreas
@@ -136,6 +131,5 @@ E_Condition DcmPixelItem::writeTagAndLength(DcmStream & outStream,
 ** - changed to support new streaming facilities
 ** - unique read/write methods for file and block transfer
 ** - more cleanups
-**
 **
 */

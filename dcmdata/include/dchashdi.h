@@ -1,23 +1,35 @@
 /*
-**
-** Author: Andrew Hewett        Created: 14.07.97
-** Kuratorium OFFIS e.V.
-**
-** Module: dchashdi.h
-**
-** Purpose:
-** Hashtable interface for DICOM data dictionary
-** 
-**
-** Last Update:         $Author: joergr $
-** Update Date:         $Date: 1998-07-15 15:48:48 $
-** Source File:         $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dchashdi.h,v $
-** CVS/RCS Revision:    $Revision: 1.6 $
-** Status:              $State: Exp $
-**
-** CVS/RCS Log at end of file
-**
-*/
+ *
+ *  Copyright (C) 1994-99, OFFIS
+ *
+ *  This software and supporting documentation were developed by
+ *
+ *    Kuratorium OFFIS e.V.
+ *    Healthcare Information and Communication Systems
+ *    Escherweg 2
+ *    D-26121 Oldenburg, Germany
+ *
+ *  THIS SOFTWARE IS MADE AVAILABLE,  AS IS,  AND OFFIS MAKES NO  WARRANTY
+ *  REGARDING  THE  SOFTWARE,  ITS  PERFORMANCE,  ITS  MERCHANTABILITY  OR
+ *  FITNESS FOR ANY PARTICULAR USE, FREEDOM FROM ANY COMPUTER DISEASES  OR
+ *  ITS CONFORMITY TO ANY SPECIFICATION. THE ENTIRE RISK AS TO QUALITY AND
+ *  PERFORMANCE OF THE SOFTWARE IS WITH THE USER.
+ *
+ *  Module:  dcmdata
+ *
+ *  Author:  Andrew Hewett
+ *
+ *  Purpose: Hash table interface for DICOM data dictionary
+ *
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 1999-03-31 09:24:39 $
+ *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dchashdi.h,v $
+ *  CVS/RCS Revision: $Revision: 1.7 $
+ *  Status:           $State: Exp $
+ *
+ *  CVS/RCS Log at end of file
+ *
+ */
 
 #ifndef DCHASHDI_H
 #define DCHASHDI_H
@@ -176,7 +188,10 @@ public:
 /*
 ** CVS/RCS Log:
 ** $Log: dchashdi.h,v $
-** Revision 1.6  1998-07-15 15:48:48  joergr
+** Revision 1.7  1999-03-31 09:24:39  meichel
+** Updated copyright header in module dcmdata
+**
+** Revision 1.6  1998/07/15 15:48:48  joergr
 ** Removed several compiler warnings reported by gcc 2.8.1 with
 ** additional options, e.g. missing copy constructors and assignment
 ** operators, initialization of member variables in the body of a
@@ -198,7 +213,6 @@ public:
 **
 ** Revision 1.1  1997/08/26 13:30:29  hewett
 ** Initial Version - Interface for hash table data structure for data dictionary.
-**
 **
 */
 

@@ -1,21 +1,35 @@
 /*
-**
-** Author: Andreas Barth
-** Kuratorium OFFIS e.V.
-**
-** Module: dcpixel.h
-**
-** Purpose:
-** Interface of class DcmPixelData
-**
-** Last Update:         $Author: meichel $
-** Update Date:         $Date: 1998-11-12 16:47:42 $
-** Source File:         $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcpixel.h,v $
-** CVS/RCS Revision:    $Revision: 1.4 $
-**
-** CVS/RCS Log at end of file
-**
-*/
+ *
+ *  Copyright (C) 1994-99, OFFIS
+ *
+ *  This software and supporting documentation were developed by
+ *
+ *    Kuratorium OFFIS e.V.
+ *    Healthcare Information and Communication Systems
+ *    Escherweg 2
+ *    D-26121 Oldenburg, Germany
+ *
+ *  THIS SOFTWARE IS MADE AVAILABLE,  AS IS,  AND OFFIS MAKES NO  WARRANTY
+ *  REGARDING  THE  SOFTWARE,  ITS  PERFORMANCE,  ITS  MERCHANTABILITY  OR
+ *  FITNESS FOR ANY PARTICULAR USE, FREEDOM FROM ANY COMPUTER DISEASES  OR
+ *  ITS CONFORMITY TO ANY SPECIFICATION. THE ENTIRE RISK AS TO QUALITY AND
+ *  PERFORMANCE OF THE SOFTWARE IS WITH THE USER.
+ *
+ *  Module:  dcmdata
+ *
+ *  Author:  Andreas Barth
+ *
+ *  Purpose: Interface of class DcmPixelData
+ *
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 1999-03-31 09:24:44 $
+ *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcpixel.h,v $
+ *  CVS/RCS Revision: $Revision: 1.5 $
+ *  Status:           $State: Exp $
+ *
+ *  CVS/RCS Log at end of file
+ *
+ */
 
 #ifndef DCPIXEL_H
 #define DCPIXEL_H
@@ -287,7 +301,10 @@ public:
 /*
 ** CVS/RCS Log:
 ** $Log: dcpixel.h,v $
-** Revision 1.4  1998-11-12 16:47:42  meichel
+** Revision 1.5  1999-03-31 09:24:44  meichel
+** Updated copyright header in module dcmdata
+**
+** Revision 1.4  1998/11/12 16:47:42  meichel
 ** Implemented operator= for all classes derived from DcmObject.
 **
 ** Revision 1.3  1998/07/15 15:48:50  joergr
@@ -307,7 +324,6 @@ public:
 **   between them. Codecs are derived from the DcmCodec class. New error
 **   codes are introduced for handling of representations. New internal
 **   value representation (only for ident()) for PixelData
-**
 ** 
 */
 

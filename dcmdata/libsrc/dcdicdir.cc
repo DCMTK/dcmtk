@@ -1,25 +1,35 @@
 /*
-**
-** Author: Gerd Ehlers      04.06.94 -- Created
-**                 Andreas Barth        30.11.95 -- Modified for new stream classes
-** 
-**
-** Module: dcdicdir.cc
-**
-** Purpose:
-** Implementation of class DcmDicomDir
-**
-**
-** Last Update:         $Author: meichel $
-** Update Date:         $Date: 1999-03-22 09:58:55 $
-** Source File:         $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcdicdir.cc,v $
-** CVS/RCS Revision:    $Revision: 1.22 $
-** Status:              $State: Exp $
-**
-** CVS/RCS Log at end of file
-**
-*/
-
+ *
+ *  Copyright (C) 1994-99, OFFIS
+ *
+ *  This software and supporting documentation were developed by
+ *
+ *    Kuratorium OFFIS e.V.
+ *    Healthcare Information and Communication Systems
+ *    Escherweg 2
+ *    D-26121 Oldenburg, Germany
+ *
+ *  THIS SOFTWARE IS MADE AVAILABLE,  AS IS,  AND OFFIS MAKES NO  WARRANTY
+ *  REGARDING  THE  SOFTWARE,  ITS  PERFORMANCE,  ITS  MERCHANTABILITY  OR
+ *  FITNESS FOR ANY PARTICULAR USE, FREEDOM FROM ANY COMPUTER DISEASES  OR
+ *  ITS CONFORMITY TO ANY SPECIFICATION. THE ENTIRE RISK AS TO QUALITY AND
+ *  PERFORMANCE OF THE SOFTWARE IS WITH THE USER.
+ *
+ *  Module:  dcmdata
+ *
+ *  Author:  Gerd Ehlers, Andreas Barth
+ *
+ *  Purpose: class DcmDicomDir
+ *
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 1999-03-31 09:25:20 $
+ *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcdicdir.cc,v $
+ *  CVS/RCS Revision: $Revision: 1.23 $
+ *  Status:           $State: Exp $
+ *
+ *  CVS/RCS Log at end of file
+ *
+ */
 
 #include "osconfig.h"    /* make sure OS specific configuration is included first */
 
@@ -1309,7 +1319,10 @@ Cdebug(1, refCounter[k].fileOffset==refMRDR->numberOfReferences,
 /*
 ** CVS/RCS Log:
 ** $Log: dcdicdir.cc,v $
-** Revision 1.22  1999-03-22 09:58:55  meichel
+** Revision 1.23  1999-03-31 09:25:20  meichel
+** Updated copyright header in module dcmdata
+**
+** Revision 1.22  1999/03/22 09:58:55  meichel
 ** Reworked data dictionary based on the 1998 DICOM edition and the latest
 **   supplement versions. Corrected dcmtk applications for minor changes
 **   in attribute name constants.
@@ -1425,6 +1438,5 @@ Cdebug(1, refCounter[k].fileOffset==refMRDR->numberOfReferences,
 ** - changed to support new streaming facilities
 ** - unique read/write methods for file and block transfer
 ** - more cleanups
-**
 **
 */

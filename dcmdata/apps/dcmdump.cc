@@ -1,22 +1,35 @@
 /*
-**
-** Author: Gerd Ehlers      Created:  16-04-94
-**
-** Module: dcmdump.cc
-**
-** Purpose:
-** List the contents of a dicom file to stdout
-**
-**
-** Last Update:		$Author: meichel $
-** Update Date:		$Date: 1999-03-29 10:14:12 $
-** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/apps/dcmdump.cc,v $
-** CVS/RCS Revision:	$Revision: 1.19 $
-** Status:		$State: Exp $
-**
-** CVS/RCS Log at end of file
-**
-*/
+ *
+ *  Copyright (C) 1994-99, OFFIS
+ *
+ *  This software and supporting documentation were developed by
+ *
+ *    Kuratorium OFFIS e.V.
+ *    Healthcare Information and Communication Systems
+ *    Escherweg 2
+ *    D-26121 Oldenburg, Germany
+ *
+ *  THIS SOFTWARE IS MADE AVAILABLE,  AS IS,  AND OFFIS MAKES NO  WARRANTY
+ *  REGARDING  THE  SOFTWARE,  ITS  PERFORMANCE,  ITS  MERCHANTABILITY  OR
+ *  FITNESS FOR ANY PARTICULAR USE, FREEDOM FROM ANY COMPUTER DISEASES  OR
+ *  ITS CONFORMITY TO ANY SPECIFICATION. THE ENTIRE RISK AS TO QUALITY AND
+ *  PERFORMANCE OF THE SOFTWARE IS WITH THE USER.
+ *
+ *  Module:  dcmdata
+ *
+ *  Author:  Gerd Ehlers
+ *
+ *  Purpose: List the contents of a dicom file
+ *
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 1999-03-31 09:24:19 $
+ *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/apps/dcmdump.cc,v $
+ *  CVS/RCS Revision: $Revision: 1.20 $
+ *  Status:           $State: Exp $
+ *
+ *  CVS/RCS Log at end of file
+ *
+ */
 
 #include "osconfig.h"    /* make sure OS specific configuration is included first */
 
@@ -361,7 +374,10 @@ static int dumpFile(ostream & out,
 /*
 ** CVS/RCS Log:
 ** $Log: dcmdump.cc,v $
-** Revision 1.19  1999-03-29 10:14:12  meichel
+** Revision 1.20  1999-03-31 09:24:19  meichel
+** Updated copyright header in module dcmdata
+**
+** Revision 1.19  1999/03/29 10:14:12  meichel
 ** Adapted command line options of dcmdata applications to new scheme.
 **
 ** Revision 1.18  1999/03/22 16:12:16  meichel
@@ -442,6 +458,5 @@ static int dumpFile(ostream & out,
 **
 ** Revision 1.2  1995/11/23 17:10:31  hewett
 ** Updated for loadable data dictionary.
-**
 **
 */

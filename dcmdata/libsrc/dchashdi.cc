@@ -1,29 +1,39 @@
 /*
-**
-** Author: Andrew Hewett        Created: 14.07.97
-** Kuratorium OFFIS e.V.
-**
-** Module: dchashdi.cc
-**
-** Purpose:
-** Hashtable implementation for DICOM data dictionary
-** 
-**
-** Last Update:         $Author: meichel $
-** Update Date:         $Date: 1999-03-22 09:58:32 $
-** Source File:         $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dchashdi.cc,v $
-** CVS/RCS Revision:    $Revision: 1.6 $
-** Status:              $State: Exp $
-**
-** CVS/RCS Log at end of file
-**
-*/
+ *
+ *  Copyright (C) 1994-99, OFFIS
+ *
+ *  This software and supporting documentation were developed by
+ *
+ *    Kuratorium OFFIS e.V.
+ *    Healthcare Information and Communication Systems
+ *    Escherweg 2
+ *    D-26121 Oldenburg, Germany
+ *
+ *  THIS SOFTWARE IS MADE AVAILABLE,  AS IS,  AND OFFIS MAKES NO  WARRANTY
+ *  REGARDING  THE  SOFTWARE,  ITS  PERFORMANCE,  ITS  MERCHANTABILITY  OR
+ *  FITNESS FOR ANY PARTICULAR USE, FREEDOM FROM ANY COMPUTER DISEASES  OR
+ *  ITS CONFORMITY TO ANY SPECIFICATION. THE ENTIRE RISK AS TO QUALITY AND
+ *  PERFORMANCE OF THE SOFTWARE IS WITH THE USER.
+ *
+ *  Module:  dcmdata
+ *
+ *  Author:  Andrew Hewett
+ *
+ *  Purpose: Hash table interface for DICOM data dictionary
+ *
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 1999-03-31 09:25:29 $
+ *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dchashdi.cc,v $
+ *  CVS/RCS Revision: $Revision: 1.7 $
+ *  Status:           $State: Exp $
+ *
+ *  CVS/RCS Log at end of file
+ *
+ */
 
 #include "osconfig.h"    /* make sure OS specific configuration is included first */
-
 #include <stdio.h>
 #include <assert.h>
-
 #include "dchashdi.h"
 
 /*
@@ -497,7 +507,10 @@ DcmHashDict::loadSummary(ostream& out)
 /*
 ** CVS/RCS Log:
 ** $Log: dchashdi.cc,v $
-** Revision 1.6  1999-03-22 09:58:32  meichel
+** Revision 1.7  1999-03-31 09:25:29  meichel
+** Updated copyright header in module dcmdata
+**
+** Revision 1.6  1999/03/22 09:58:32  meichel
 ** Fixed bug in data dictionary causing a segmentation fault
 **   if dictionary was cleared and a smaller version reloaded.
 **
@@ -523,6 +536,5 @@ DcmHashDict::loadSummary(ostream& out)
 **
 ** Revision 1.1  1997/08/26 13:35:02  hewett
 ** Initial Version - Implementation of hash table for data dictionary.
-**
 **
 */

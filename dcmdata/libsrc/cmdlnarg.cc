@@ -1,56 +1,38 @@
 /*
-**
-**  Copyright (C) 1996, OFFIS
-**
-**  This software and supporting documentation were developed by
-**
-**    Kuratorium OFFIS e.V.
-**    Forschungsbereich 2: Kommunikationssysteme
-**    Escherweg 2
-**    D-26121 Oldenburg, Germany
-**
-**  for CEN/TC251/WG4 as a contribution to the Computer Assisted Radiology
-**  (CAR) 1996 DICOM Demonstration.
-**
-**  THIS SOFTWARE IS MADE AVAILABLE,  AS IS,  AND OFFIS MAKES NO  WARRANTY
-**  REGARDING  THE  SOFTWARE,  ITS  PERFORMANCE,  ITS  MERCHANTABILITY  OR
-**  FITNESS FOR ANY PARTICULAR USE, FREEDOM FROM ANY COMPUTER DISEASES  OR
-**  ITS CONFORMITY TO ANY SPECIFICATION. THE ENTIRE RISK AS TO QUALITY AND
-**  PERFORMANCE OF THE SOFTWARE IS WITH THE USER.
-**
-**  Copyright of the software  and  supporting  documentation  is,  unless
-**  otherwise stated, owned by OFFIS, and free access is hereby granted as
-**  a license to  use  this  software,  copy  this  software  and  prepare
-**  derivative works based upon this software.  However, any  distribution
-**  of this software source code or supporting documentation or derivative
-**  works  (source code and  supporting documentation)  must  include  the
-**  three paragraphs of this copyright notice.
-**
-*/
-
-/*
-**
-** Author: Andrew Hewett      Created:  12-03-96
-**
-** Module: cmdlnarg.cc
-**
-** Purpose:
-** Provide a command line argument gathering routine
-** for OS environments which cannot pass arguments on the command line.
-**
-**
-** Last Update:		$Author: meichel $
-** Update Date:		$Date: 1999-03-17 11:09:21 $
-** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/cmdlnarg.cc,v $
-** CVS/RCS Revision:	$Revision: 1.3 $
-** Status:		$State: Exp $
-**
-** CVS/RCS Log at end of file
-**
-*/
+ *
+ *  Copyright (C) 1994-99, OFFIS
+ *
+ *  This software and supporting documentation were developed by
+ *
+ *    Kuratorium OFFIS e.V.
+ *    Healthcare Information and Communication Systems
+ *    Escherweg 2
+ *    D-26121 Oldenburg, Germany
+ *
+ *  THIS SOFTWARE IS MADE AVAILABLE,  AS IS,  AND OFFIS MAKES NO  WARRANTY
+ *  REGARDING  THE  SOFTWARE,  ITS  PERFORMANCE,  ITS  MERCHANTABILITY  OR
+ *  FITNESS FOR ANY PARTICULAR USE, FREEDOM FROM ANY COMPUTER DISEASES  OR
+ *  ITS CONFORMITY TO ANY SPECIFICATION. THE ENTIRE RISK AS TO QUALITY AND
+ *  PERFORMANCE OF THE SOFTWARE IS WITH THE USER.
+ *
+ *  Module:  dcmdata
+ *
+ *  Author:  Andrew Hewett
+ *
+ *  Purpose: Provide prototype of command line argument gathering routine
+ *  for OS environments which cannot pass arguments on the command line.
+ *
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 1999-03-31 09:25:14 $
+ *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/cmdlnarg.cc,v $
+ *  CVS/RCS Revision: $Revision: 1.4 $
+ *  Status:           $State: Exp $
+ *
+ *  CVS/RCS Log at end of file
+ *
+ */
 
 #include "osconfig.h"    /* make sure OS specific configuration is included first */
-
 #include "cmdlnarg.h"
 
 /*
@@ -155,7 +137,10 @@ void prepareCmdLineArgs(int& /* argc */, char** /* argv */,
 /*
 ** CVS/RCS Log:
 ** $Log: cmdlnarg.cc,v $
-** Revision 1.3  1999-03-17 11:09:21  meichel
+** Revision 1.4  1999-03-31 09:25:14  meichel
+** Updated copyright header in module dcmdata
+**
+** Revision 1.3  1999/03/17 11:09:21  meichel
 ** Added code to prepareCmdLineArgs() to redirect stderr, cout,
 **   cerr to stdout on Windows and make output unbuffered.
 **   This allows to redirect the output of DCMTK tools to file on Windows.
@@ -179,8 +164,6 @@ void prepareCmdLineArgs(int& /* argc */, char** /* argv */,
 ** Revision 1.1  1996/03/12 15:08:06  hewett
 ** Main program argc, argv handling for environments which do not make
 ** argc,argv available in main().
-**
-**
 **
 */
 

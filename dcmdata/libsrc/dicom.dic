@@ -1,19 +1,44 @@
 #
-# This is the global DICOM data dictionary for the dcm toolkit dcmdata
-# class library.
+#  Copyright (C) 1994-99, OFFIS
 #
-# Last update: $Date: 1999-03-22 09:59:01 $
+#  This software and supporting documentation were developed by
 #
-# Status: The dictionary contains
+#    Kuratorium OFFIS e.V.
+#    Healthcare Information and Communication Systems
+#    Escherweg 2
+#    D-26121 Oldenburg, Germany
+#
+#  THIS SOFTWARE IS MADE AVAILABLE,  AS IS,  AND OFFIS MAKES NO  WARRANTY
+#  REGARDING  THE  SOFTWARE,  ITS  PERFORMANCE,  ITS  MERCHANTABILITY  OR
+#  FITNESS FOR ANY PARTICULAR USE, FREEDOM FROM ANY COMPUTER DISEASES  OR
+#  ITS CONFORMITY TO ANY SPECIFICATION. THE ENTIRE RISK AS TO QUALITY AND
+#  PERFORMANCE OF THE SOFTWARE IS WITH THE USER.
+#
+#  Module:  dcmdata
+#
+#  Author:  Andrew Hewett, Marco Eichelberg
+#
+#  Purpose: 
+#  This is the global DICOM data dictionary for the dcm toolkit dcmdata
+#  class library.
+#
+#  Last Update:      $Author: meichel $
+#  Update Date:      $Date: 1999-03-31 09:26:07 $
+#  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/Attic/dicom.dic,v $
+#  CVS/RCS Revision: $Revision: 1.30 $
+#  Status:           $State: Exp $
+#
+#  The dictionary contains
 #   - the complete dictionary from the 1998 DICOM publication
 #     which already includes supplements 1-14, 17-20, 22, 24-25, 27-28
 #   - the final text of supplements 32, 35-38
 #   - working drafts of supplements 15, 23, 33 (experimental support only!)
 #
-# To be added when final texts become available:
+#  To be added when final texts become available:
 #   - Supplement 29 (Radiotherapy Treatment Records and Radiotherapy Media Extensions)
 #   - Supplement 30 (Waveform Interchange)
-##
+#
+#
 # Each line represents an entry in the data dictionary.  Each line
 # has 5 fields (Tag, VR, Name, VM, Version).  Entries need not be
 # in ascending tag order.

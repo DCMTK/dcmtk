@@ -1,23 +1,35 @@
 /*
-**
-** Author: Gerd Ehlers    04.06.94 -- Created
-**         Andreas Barth  30.11.95 -- modify to support new streams
-**
-** Module: dcdirrec.h
-**
-** Purpose:
-** Interface of class DcmDirectoryRecord
-**
-**
-** Last Update:         $Author: meichel $
-** Update Date:         $Date: 1999-03-22 14:10:57 $
-** Source File:         $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcdirrec.h,v $
-** CVS/RCS Revision:    $Revision: 1.11 $
-** Status:              $State: Exp $
-**
-** CVS/RCS Log at end of file
-**
-*/
+ *
+ *  Copyright (C) 1994-99, OFFIS
+ *
+ *  This software and supporting documentation were developed by
+ *
+ *    Kuratorium OFFIS e.V.
+ *    Healthcare Information and Communication Systems
+ *    Escherweg 2
+ *    D-26121 Oldenburg, Germany
+ *
+ *  THIS SOFTWARE IS MADE AVAILABLE,  AS IS,  AND OFFIS MAKES NO  WARRANTY
+ *  REGARDING  THE  SOFTWARE,  ITS  PERFORMANCE,  ITS  MERCHANTABILITY  OR
+ *  FITNESS FOR ANY PARTICULAR USE, FREEDOM FROM ANY COMPUTER DISEASES  OR
+ *  ITS CONFORMITY TO ANY SPECIFICATION. THE ENTIRE RISK AS TO QUALITY AND
+ *  PERFORMANCE OF THE SOFTWARE IS WITH THE USER.
+ *
+ *  Module:  dcmdata
+ *
+ *  Author:  Gerd Ehlers, Andreas Barth
+ *
+ *  Purpose: Interface of class DcmDirectoryRecord
+ *
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 1999-03-31 09:24:36 $
+ *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcdirrec.h,v $
+ *  CVS/RCS Revision: $Revision: 1.12 $
+ *  Status:           $State: Exp $
+ *
+ *  CVS/RCS Log at end of file
+ *
+ */
 
 #ifndef DCDIRREC_H
 #define DCDIRREC_H
@@ -174,7 +186,10 @@ public:
 /*
 ** CVS/RCS Log:
 ** $Log: dcdirrec.h,v $
-** Revision 1.11  1999-03-22 14:10:57  meichel
+** Revision 1.12  1999-03-31 09:24:36  meichel
+** Updated copyright header in module dcmdata
+**
+** Revision 1.11  1999/03/22 14:10:57  meichel
 ** Added support for Structured Reports to dcmgpdir.
 **   Added preliminary support for including sequences into a DICOMDIR.
 **
@@ -230,6 +245,5 @@ public:
 ** - changed to support new streaming facilities
 ** - more cleanups
 ** - merged read / write methods for block and file transfer
-**
 **
 */

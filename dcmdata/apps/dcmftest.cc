@@ -1,23 +1,35 @@
 /*
-**
-** Author: Andrew Hewett    02-04-97
-**         
-**
-** Module: dcmftest.cc
-**
-** Purpose:
-** Test if a file uses DICOM Part 10 format.
-**
-**
-** Last Update:		$Author: meichel $
-** Update Date:		$Date: 1999-03-29 10:14:13 $
-** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/apps/dcmftest.cc,v $
-** CVS/RCS Revision:	$Revision: 1.6 $
-** Status:		$State: Exp $
-**
-** CVS/RCS Log at end of file
-**
-*/
+ *
+ *  Copyright (C) 1994-99, OFFIS
+ *
+ *  This software and supporting documentation were developed by
+ *
+ *    Kuratorium OFFIS e.V.
+ *    Healthcare Information and Communication Systems
+ *    Escherweg 2
+ *    D-26121 Oldenburg, Germany
+ *
+ *  THIS SOFTWARE IS MADE AVAILABLE,  AS IS,  AND OFFIS MAKES NO  WARRANTY
+ *  REGARDING  THE  SOFTWARE,  ITS  PERFORMANCE,  ITS  MERCHANTABILITY  OR
+ *  FITNESS FOR ANY PARTICULAR USE, FREEDOM FROM ANY COMPUTER DISEASES  OR
+ *  ITS CONFORMITY TO ANY SPECIFICATION. THE ENTIRE RISK AS TO QUALITY AND
+ *  PERFORMANCE OF THE SOFTWARE IS WITH THE USER.
+ *
+ *  Module:  dcmdata
+ *
+ *  Author:  Andrew Hewett
+ *
+ *  Purpose: Test if a file uses DICOM Part 10 format.
+ *
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 1999-03-31 09:24:19 $
+ *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/apps/dcmftest.cc,v $
+ *  CVS/RCS Revision: $Revision: 1.7 $
+ *  Status:           $State: Exp $
+ *
+ *  CVS/RCS Log at end of file
+ *
+ */
 
 #include "osconfig.h"    /* make sure OS specific configuration is included first */
 
@@ -94,7 +106,10 @@ int main(int argc, char *argv[])
 /*
 ** CVS/RCS Log:
 ** $Log: dcmftest.cc,v $
-** Revision 1.6  1999-03-29 10:14:13  meichel
+** Revision 1.7  1999-03-31 09:24:19  meichel
+** Updated copyright header in module dcmdata
+**
+** Revision 1.6  1999/03/29 10:14:13  meichel
 ** Adapted command line options of dcmdata applications to new scheme.
 **
 ** Revision 1.5  1997/08/06 12:20:01  andreas

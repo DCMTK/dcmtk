@@ -1,23 +1,35 @@
 /*
-**
-** Author: Gerd Ehlers      27.04.94 -- First Creation
-**         Andreas Barth    04.12.95 -- new Stream class, unique value field
-** Kuratorium OFFIS e.V.
-**
-** Module: dcvrat.h
-**
-** Purpose:
-** Interface of class DcmAttributeTag
-**
-** Last Update:		$Author: meichel $
-** Update Date:		$Date: 1998-11-12 16:47:45 $
-** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcvrat.h,v $
-** CVS/RCS Revision:	$Revision: 1.10 $
-** Status:		$State: Exp $
-**
-** CVS/RCS Log at end of file
-**
-*/
+ *
+ *  Copyright (C) 1994-99, OFFIS
+ *
+ *  This software and supporting documentation were developed by
+ *
+ *    Kuratorium OFFIS e.V.
+ *    Healthcare Information and Communication Systems
+ *    Escherweg 2
+ *    D-26121 Oldenburg, Germany
+ *
+ *  THIS SOFTWARE IS MADE AVAILABLE,  AS IS,  AND OFFIS MAKES NO  WARRANTY
+ *  REGARDING  THE  SOFTWARE,  ITS  PERFORMANCE,  ITS  MERCHANTABILITY  OR
+ *  FITNESS FOR ANY PARTICULAR USE, FREEDOM FROM ANY COMPUTER DISEASES  OR
+ *  ITS CONFORMITY TO ANY SPECIFICATION. THE ENTIRE RISK AS TO QUALITY AND
+ *  PERFORMANCE OF THE SOFTWARE IS WITH THE USER.
+ *
+ *  Module:  dcmdata
+ *
+ *  Author:  Gerd Ehlers, Andreas Barth
+ *
+ *  Purpose: Interface of class DcmAttributeTag
+ *
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 1999-03-31 09:24:56 $
+ *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcvrat.h,v $
+ *  CVS/RCS Revision: $Revision: 1.11 $
+ *  Status:           $State: Exp $
+ *
+ *  CVS/RCS Log at end of file
+ *
+ */
 
 #ifndef DCVRAT_H
 #define DCVRAT_H
@@ -64,7 +76,10 @@ public:
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrat.h,v $
-** Revision 1.10  1998-11-12 16:47:45  meichel
+** Revision 1.11  1999-03-31 09:24:56  meichel
+** Updated copyright header in module dcmdata
+**
+** Revision 1.10  1998/11/12 16:47:45  meichel
 ** Implemented operator= for all classes derived from DcmObject.
 **
 ** Revision 1.9  1997/07/21 08:25:13  andreas
@@ -106,7 +121,5 @@ public:
 ** - changed to support new streaming facilities
 ** - more cleanups
 ** - merged read / write methods for block and file transfer
-**
-**
 **
 */

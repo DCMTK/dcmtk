@@ -1,23 +1,35 @@
 /*
-**
-** Author: Gerd Ehlers      04.06.94 -- Created
-**
-** Module: dcdirrec.cc
-**
-** Purpose:
-** Implementation of class DcmDirectoryRecord
-**
-**
-** Last Update:         $Author: meichel $
-** Update Date:         $Date: 1999-03-22 14:10:58 $
-** Source File:         $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcdirrec.cc,v $
-** CVS/RCS Revision:    $Revision: 1.25 $
-** Status:              $State: Exp $
-**
-** CVS/RCS Log at end of file
-**
-*/
-
+ *
+ *  Copyright (C) 1994-99, OFFIS
+ *
+ *  This software and supporting documentation were developed by
+ *
+ *    Kuratorium OFFIS e.V.
+ *    Healthcare Information and Communication Systems
+ *    Escherweg 2
+ *    D-26121 Oldenburg, Germany
+ *
+ *  THIS SOFTWARE IS MADE AVAILABLE,  AS IS,  AND OFFIS MAKES NO  WARRANTY
+ *  REGARDING  THE  SOFTWARE,  ITS  PERFORMANCE,  ITS  MERCHANTABILITY  OR
+ *  FITNESS FOR ANY PARTICULAR USE, FREEDOM FROM ANY COMPUTER DISEASES  OR
+ *  ITS CONFORMITY TO ANY SPECIFICATION. THE ENTIRE RISK AS TO QUALITY AND
+ *  PERFORMANCE OF THE SOFTWARE IS WITH THE USER.
+ *
+ *  Module:  dcmdata
+ *
+ *  Author:  Gerd Ehlers, Andreas Barth
+ *
+ *  Purpose: class DcmDirectoryRecord
+ *
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 1999-03-31 09:25:25 $
+ *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcdirrec.cc,v $
+ *  CVS/RCS Revision: $Revision: 1.26 $
+ *  Status:           $State: Exp $
+ *
+ *  CVS/RCS Log at end of file
+ *
+ */
 
 #include "osconfig.h"    /* make sure OS specific configuration is included first */
 
@@ -1201,7 +1213,6 @@ E_Condition DcmDirectoryRecord::searchErrors( DcmStack &resultStack )
 
 
 // ********************************
-// ********************************
 
 
 E_DirRecType DcmDirectoryRecord::getRecordType()
@@ -1280,8 +1291,6 @@ debug(2, ( "new Referenced File ID is  %s", mrdr->lookForReferencedFileID() ));
 
 
 // ********************************
-// ********************************
-
 
 unsigned long DcmDirectoryRecord::cardSub()
 {
@@ -1408,19 +1417,13 @@ debug(2, ( "DcmDirectoryRecord::deleteSubAndPurgeFile() now purging lower record
 }
 
 
-// ********************************
-
-
 E_Condition DcmDirectoryRecord::clearSub()
 {
     errorFlag = lowerLevelList->clear();
     return errorFlag;
 }
 
-// ********************************
-
-void 
-DcmDirectoryRecord::setRecordsOriginFile(const char* fname)
+void DcmDirectoryRecord::setRecordsOriginFile(const char* fname)
 {
     if (recordsOriginFile != NULL) {
         delete recordsOriginFile;
@@ -1439,5 +1442,11 @@ DcmDirectoryRecord::getRecordsOriginFile()
     return recordsOriginFile;
 }
 
-
-
+/*
+ * CVS/RCS Log:
+ * $Log: dcdirrec.cc,v $
+ * Revision 1.26  1999-03-31 09:25:25  meichel
+ * Updated copyright header in module dcmdata
+ *
+ *
+ */
