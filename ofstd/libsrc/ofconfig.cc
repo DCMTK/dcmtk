@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2002, OFFIS
+ *  Copyright (C) 1997-2003, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -15,16 +15,16 @@
  *  ITS CONFORMITY TO ANY SPECIFICATION. THE ENTIRE RISK AS TO QUALITY AND
  *  PERFORMANCE OF THE SOFTWARE IS WITH THE USER.
  *
- *  Module: dcmpstat
+ *  Module:  ofstd
  *
  *  Author: Marco Eichelberg
  *
  *  Purpose:
- *    classes: DVPSConfig
+ *    classes: OFConfigFileNode
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-12-09 13:27:11 $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2003-04-29 10:14:08 $
+ *  CVS/RCS Revision: $Revision: 1.1 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -32,74 +32,159 @@
  */
 
 #include "osconfig.h"    /* make sure OS specific configuration is included first */
-#include "dvpsconf.h"
-#include "ofstring.h"
+#include "ofconfig.h"
 
 #define INCLUDE_CSTRING
 #define INCLUDE_CCTYPE
 #include "ofstdinc.h"
 
-class DVPSConfigNode
-{
-private:
-  DVPSConfigNode *brother, *son;
-  OFString keyword;
-  OFString value;
-  long linenumber;
 
-  DVPSConfigNode();
-  DVPSConfigNode(const DVPSConfigNode& arg);
-  ~DVPSConfigNode();
-  DVPSConfigNode &operator=(const DVPSConfigNode& arg);
-
-friend class DVPSConfig;
-};
-
-DVPSConfigNode::DVPSConfigNode()
-: brother(NULL), son(NULL), keyword(), value(), linenumber(0)
+OFConfigFileNode::OFConfigFileNode(const char *keyword)
+: brother_(NULL)
+, son_(NULL)
+, keyword_(keyword)
+, value_()
 {
 }
 
-DVPSConfigNode::~DVPSConfigNode()
+OFConfigFileNode::~OFConfigFileNode()
 {
-  if (son) delete son;
-  if (brother) delete brother;
+  // recursively delete tree
+  delete son_;
+  delete brother_;
 }
 
-DVPSConfigCursor::DVPSConfigCursor(const DVPSConfigCursor& source)
+/* ------------------------------------------------------------------------- */
+
+OFConfigFileCursor::OFConfigFileCursor(const OFConfigFileCursor& source)
 {
-  for (int i=0; i<=DVPSConfig_MaxLevel; i++) ptr[i]=source.ptr[i];
+  for (int i=0; i<=OFConfigFile_MaxLevel; i++) ptr[i]=source.ptr[i];
 }
 
-DVPSConfigCursor& DVPSConfigCursor::operator=(const DVPSConfigCursor& source)
+OFConfigFileCursor& OFConfigFileCursor::operator=(const OFConfigFileCursor& source)
 {
-  for (int i=0; i<=DVPSConfig_MaxLevel; i++) ptr[i]=source.ptr[i];
+  if (this != &source)
+  { 
+    for (int i=0; i<=OFConfigFile_MaxLevel; i++) ptr[i]=source.ptr[i];
+  }
   return *this;
 }
 
-void DVPSConfigCursor::invalidate()
+void OFConfigFileCursor::clear()
 {
-  for (int i=0; i<= DVPSConfig_MaxLevel; i++) ptr[i]=NULL;
+  for (int i=0; i<= OFConfigFile_MaxLevel; i++) ptr[i]=NULL;
 }
 
-const char *DVPSConfig::get_keyword(unsigned int level)
+OFBool OFConfigFileCursor::section_valid(unsigned int level) const
 {
-  const char *result = NULL;
-  int valid=(level<=DVPSConfig_MaxLevel);
-  if ((valid)&&(section_valid(level)))
-    result = cursor.ptr[level]->keyword.c_str();
+  OFBool result=OFFalse;
+  if (level <= OFConfigFile_MaxLevel)
+  {
+    result = OFTrue;
+    for (unsigned int i = OFConfigFile_MaxLevel; i >= level; i--)
+      result = result && (ptr[i] != NULL);
+  }
   return result;
 }
 
-const char *DVPSConfig::get_value()
+void OFConfigFileCursor::set_section(
+    unsigned int level, 
+    const char *key,
+    OFConfigFileNode *anchor)
+{
+  int valid=(level<=OFConfigFile_MaxLevel);
+  if (valid)
+  {
+    if (level<OFConfigFile_MaxLevel) valid=section_valid(level+1); else valid=1;
+    if (valid)
+    {
+      first_section(level, anchor);
+      while ((section_valid(level))&&(! ptr[level]->match(key)))
+        next_section(level);
+    } else clear();
+  } else clear();
+}
+
+void OFConfigFileCursor::first_section(
+  unsigned int level,
+  OFConfigFileNode *anchor)
+{
+  int valid= (level<=OFConfigFile_MaxLevel);
+  if (valid)
+  {
+    if (level<OFConfigFile_MaxLevel) valid=section_valid(level+1); else valid=1;
+    if (valid)
+    {
+      if (level<OFConfigFile_MaxLevel) ptr[level] = ptr[level+1]->getSon();
+      else ptr[level] = anchor;
+      for (int i=level-1; i>=0; i--) ptr[i]=NULL;
+    } else clear();
+  } else clear();
+}
+
+void OFConfigFileCursor::next_section(unsigned int level)
+{
+  int valid= (level<=OFConfigFile_MaxLevel);
+  if (valid)
+  {
+    valid=section_valid(level);
+    if (valid)
+    {
+      ptr[level] = ptr[level]->getBrother();
+      for (int i=level-1; i>=0; i--) ptr[i]=NULL;
+    } else clear();
+  } else clear();
+}
+
+void OFConfigFileCursor::insert(
+  unsigned int level,
+  OFConfigFileNode *newnode,
+  OFConfigFileNode *& anchor)
+{
+  if (level==OFConfigFile_MaxLevel)
+  {
+    if (ptr[OFConfigFile_MaxLevel])
+      ptr[OFConfigFile_MaxLevel]->setBrother(newnode);
+      else anchor = newnode;
+    ptr[OFConfigFile_MaxLevel] = newnode;
+  } 
+  else 
+  {
+    if (ptr[level])
+    {
+      ptr[level]->setBrother(newnode);
+      ptr[level] = newnode;
+    } else {
+      if (ptr[level+1])
+      {
+        ptr[level+1]->setSon(newnode);
+        ptr[level] = newnode;
+      }
+    }
+  }
+  if (level > 0) for (int j=level-1; j>=0; j--) ptr[j]=NULL;
+}
+
+/* ------------------------------------------------------------------------- */
+
+const char *OFConfigFile::get_keyword(unsigned int level)
+{
+  const char *result = NULL;
+  int valid=(level<=OFConfigFile_MaxLevel);
+  if ((valid)&&(section_valid(level)))
+    result = cursor.getKeyword(level);
+  return result;
+}
+
+const char *OFConfigFile::get_value()
 {
   const char *result=NULL;
   int valid=section_valid(0);
-  if (valid) result=cursor.ptr[0]->value.c_str();
+  if (valid) result=cursor.getValue(0);
   return result;
 }
 
-OFBool DVPSConfig::get_bool_value(OFBool defaultvalue)
+OFBool OFConfigFile::get_bool_value(OFBool defaultvalue)
 {
   OFBool result = defaultvalue;
   const char *val = get_value();
@@ -128,85 +213,28 @@ OFBool DVPSConfig::get_bool_value(OFBool defaultvalue)
   return result;
 }
 
-OFBool DVPSConfig::section_valid(unsigned int level)
-{
-  int result=0;
-  if (level<=DVPSConfig_MaxLevel)
-  {
-    result = 1;
-    for (int i=DVPSConfig_MaxLevel; i>=(int)level; i--)
-      result = result && (cursor.ptr[i] != NULL);
-  }
-  if (result) return OFTrue; else return OFFalse;
-}
-
-void DVPSConfig::set_section(unsigned int level, const char *key)
-{
-  int valid=(level<=DVPSConfig_MaxLevel);
-  if (valid)
-  {
-    if (level<DVPSConfig_MaxLevel) valid=section_valid(level+1); else valid=1;
-    if (valid)
-    {
-      first_section(level);
-      while ((section_valid(level))&&(cursor.ptr[level]->keyword != key))
-        next_section(level);
-    } else cursor.invalidate();
-  } else cursor.invalidate();
-}
-
-void DVPSConfig::first_section(unsigned int level)
-{
-  int valid= (level<=DVPSConfig_MaxLevel);
-  if (valid)
-  {
-    if (level<DVPSConfig_MaxLevel) valid=section_valid(level+1); else valid=1;
-    if (valid)
-    {
-      if (level<DVPSConfig_MaxLevel) cursor.ptr[level] =
-        cursor.ptr[level+1]->son;
-      else cursor.ptr[level] = anchor;
-      for (int i=level-1; i>=0; i--) cursor.ptr[i]=NULL;
-    } else cursor.invalidate();
-  } else cursor.invalidate();
-}
-
-void DVPSConfig::next_section(unsigned int level)
-{
-  int valid= (level<=DVPSConfig_MaxLevel);
-  if (valid)
-  {
-    valid=section_valid(level);
-    if (valid)
-    {
-      cursor.ptr[level] = cursor.ptr[level]->brother;
-      for (int i=level-1; i>=0; i--) cursor.ptr[i]=NULL;
-    } else cursor.invalidate();
-  } else cursor.invalidate();
-}
-
-void DVPSConfig::save_cursor()
+void OFConfigFile::save_cursor()
 {
   stack.push(cursor);
 }
 
-void DVPSConfig::restore_cursor()
+void OFConfigFile::restore_cursor()
 {
   OFBool empty = stack.empty();
   if (!empty)
   {
     cursor = stack.top();
     stack.pop();
-  } else cursor.invalidate();
+  } else cursor.clear();
 }
 
-void DVPSConfig::select_section(const char *key1, const char *key2)
+void OFConfigFile::select_section(const char *key1, const char *key2)
 {
   if (key2) set_section(2,key2);
   if ((key1)&&(section_valid(2))) set_section(1,key1);
 }
 
-const char *DVPSConfig::get_entry(const char *key0)
+const char *OFConfigFile::get_entry(const char *key0)
 {
   const char *result=NULL;
   if (section_valid(1))
@@ -217,7 +245,7 @@ const char *DVPSConfig::get_entry(const char *key0)
   return result;
 }
 
-void DVPSConfig::store_char(char c)
+void OFConfigFile::store_char(char c)
 {
   if (bufptr == (size_t)bufsize)
   {
@@ -239,7 +267,7 @@ void DVPSConfig::store_char(char c)
   } else buffer[bufptr++] = c;
 }
 
-char DVPSConfig::read_char(FILE *infile)
+char OFConfigFile::read_char(FILE *infile)
 {
   char c;
   int done=0;
@@ -262,7 +290,6 @@ char DVPSConfig::read_char(FILE *infile)
     if(!handled) if ((c==10)||(c==13))
     {
       handled=1;
-      linenumber++;
       isnewline=1;
       if (c==13) crfound=1; else crfound=0;
       if (commentmode) commentmode=0; else
@@ -288,7 +315,7 @@ char DVPSConfig::read_char(FILE *infile)
   return c;
 }
 
-char DVPSConfig::read_keywordchar(FILE *infile)
+char OFConfigFile::read_keywordchar(FILE *infile)
 {
   char c=0;
   int done=0;
@@ -301,14 +328,13 @@ char DVPSConfig::read_keywordchar(FILE *infile)
   return c;
 }
 
-void DVPSConfig::read_entry(FILE *infile)
+void OFConfigFile::read_entry(FILE *infile)
 {
   char c;
   int done=0;
   int level=0;
   int valid=0;
   c = read_keywordchar(infile);
-  long newlinenumber=linenumber;
   if ((!feof(infile))&&(!ferror(infile)))
   {
     if (c=='[')
@@ -351,7 +377,7 @@ void DVPSConfig::read_entry(FILE *infile)
           } else done=1;
         }
       }
-      if (level>DVPSConfig_MaxLevel) level=DVPSConfig_MaxLevel;
+      if (level>OFConfigFile_MaxLevel) level=OFConfigFile_MaxLevel;
     }
     else
     { // this is a level 0 keyword
@@ -370,33 +396,8 @@ void DVPSConfig::read_entry(FILE *infile)
     } // keyword read
     // Store the keyword.
     store_char(0);
-    DVPSConfigNode *newnode = new DVPSConfigNode;
-    if (newnode)
-    {
-      newnode->keyword = buffer;
-      newnode->value = "";
-      newnode->linenumber = newlinenumber;
-      if (level==DVPSConfig_MaxLevel)
-      {
-        if (cursor.ptr[DVPSConfig_MaxLevel])
-          cursor.ptr[DVPSConfig_MaxLevel]->brother = newnode;
-          else anchor = newnode;
-        cursor.ptr[DVPSConfig_MaxLevel] = newnode;
-      } else {
-        if (cursor.ptr[level])
-        {
-          cursor.ptr[level]->brother = newnode;
-          cursor.ptr[level] = newnode;
-        } else {
-          if (cursor.ptr[level+1])
-          {
-            cursor.ptr[level+1]->son = newnode;
-            cursor.ptr[level] = newnode;
-          }
-        }
-      }
-      if (level>0) for (int j=level-1; j>=0; j--) cursor.ptr[j]=NULL;
-    } // new node stored
+    OFConfigFileNode *newnode = new OFConfigFileNode(buffer);
+    if (newnode) cursor.insert(level, newnode, anchor); // new node stored
     bufptr =0;
     // Read value field for level 0 keywords.
     if (level==0)
@@ -440,17 +441,16 @@ void DVPSConfig::read_entry(FILE *infile)
       // remove trailing linefeeds
       while ((bufptr>0)&&((buffer[bufptr-1]==10)||(buffer[bufptr-1]==0)))
         buffer[--bufptr]=0;
-      newnode->value = buffer;
+      newnode->setValue(buffer);
     }
     bufptr =0;
   } // something found
 }
 
-DVPSConfig::DVPSConfig(FILE *infile)
+OFConfigFile::OFConfigFile(FILE *infile)
 : stack()
 , cursor()
 , anchor(NULL)
-, linenumber(1)
 , isnewline(1)
 , crfound(0)
 , buffer(NULL)
@@ -460,35 +460,17 @@ DVPSConfig::DVPSConfig(FILE *infile)
   if (infile) while ((!feof(infile))&&(!ferror(infile))) read_entry(infile);
 }
 
-DVPSConfig::~DVPSConfig()
+OFConfigFile::~OFConfigFile()
 {
-  if (anchor) delete anchor;
-  if (buffer) delete[] buffer;
+  delete anchor;
+  delete[] buffer;
 }
 
 /*
- *  $Log: dvpsconf.cc,v $
- *  Revision 1.7  2002-12-09 13:27:11  joergr
- *  Renamed local variable to avoid name clash with global declaration "skipws".
- *
- *  Revision 1.6  2002/11/27 15:48:08  meichel
- *  Adapted module dcmpstat to use of new header file ofstdinc.h
- *
- *  Revision 1.5  2001/06/01 15:50:28  meichel
- *  Updated copyright header
- *
- *  Revision 1.4  2000/03/08 16:29:03  meichel
- *  Updated copyright header.
- *
- *  Revision 1.3  2000/02/02 14:39:35  joergr
- *  Replaced 'delete' statements by 'delete[]' for objects created with 'new[]'.
- *
- *  Revision 1.2  1999/04/30 16:40:48  meichel
- *  Minor code purifications to keep Sun CC 2.0.1 quiet
- *
- *  Revision 1.1  1999/01/15 17:26:33  meichel
- *  added configuration file facility (derived from dcmprint)
- *    and a sample config file.
+ *  $Log: ofconfig.cc,v $
+ *  Revision 1.1  2003-04-29 10:14:08  meichel
+ *  Moved configuration file parser from module dcmpstat to ofstd and renamed
+ *    class to OFConfigFile. Cleaned up implementation (no more friend declarations).
  *
  *
  */

@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DVInterface
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-04-16 14:02:02 $
- *  CVS/RCS Revision: $Revision: 1.87 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2003-04-29 10:13:56 $
+ *  CVS/RCS Revision: $Revision: 1.88 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -50,7 +50,6 @@
 
 
 class OFLogFile;
-class DVPSConfig;
 class DicomImage;
 class DiDisplayFunction;
 class DVPSStoredPrint;
@@ -1890,7 +1889,11 @@ private:
 /*
  *  CVS/RCS Log:
  *  $Log: dviface.h,v $
- *  Revision 1.87  2002-04-16 14:02:02  joergr
+ *  Revision 1.88  2003-04-29 10:13:56  meichel
+ *  Moved configuration file parser from module dcmpstat to ofstd and renamed
+ *    class to OFConfigFile. Cleaned up implementation (no more friend declarations).
+ *
+ *  Revision 1.87  2002/04/16 14:02:02  joergr
  *  Added configurable support for C++ ANSI standard includes (e.g. streams).
  *  Thanks to Andreas Barth <Andreas.Barth@bruker-biospin.de> for his
  *  contribution.

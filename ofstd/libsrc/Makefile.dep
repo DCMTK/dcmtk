@@ -1,55 +1,64 @@
 ofcmdln.o: ofcmdln.cc ../../config/include/osconfig.h \
- ../../config/include/cfunix.h ../include/ofcmdln.h \
- ../include/oftypes.h ../include/oflist.h ../include/ofstdinc.h \
- ../include/ofstring.h ../include/ofstream.h ../include/ofconsol.h \
- ../include/ofthread.h ../include/ofstd.h
+  ../../config/include/cfunix.h ../include/ofcmdln.h ../include/oftypes.h \
+  ../include/oflist.h ../include/ofstdinc.h ../include/ofstring.h \
+  ../include/ofstream.h ../include/ofconsol.h ../include/ofthread.h \
+  ../include/ofstd.h
 ofconapp.o: ofconapp.cc ../../config/include/osconfig.h \
- ../../config/include/cfunix.h ../include/ofconapp.h \
- ../include/oftypes.h ../include/ofcmdln.h ../include/oflist.h \
- ../include/ofstdinc.h ../include/ofstring.h ../include/ofstream.h \
- ../include/ofconsol.h ../include/ofthread.h
+  ../../config/include/cfunix.h ../include/ofconapp.h \
+  ../include/oftypes.h ../include/ofcmdln.h ../include/oflist.h \
+  ../include/ofstdinc.h ../include/ofstring.h ../include/ofstream.h \
+  ../include/ofconsol.h ../include/ofthread.h
 ofcond.o: ofcond.cc ../../config/include/osconfig.h \
- ../../config/include/cfunix.h ../include/ofcond.h \
- ../include/oftypes.h ../include/ofstring.h ../include/ofstdinc.h \
- ../include/ofstream.h
+  ../../config/include/cfunix.h ../include/ofcond.h ../include/oftypes.h \
+  ../include/ofstring.h ../include/ofstdinc.h ../include/ofstream.h
+ofconfig.o: ofconfig.cc ../../config/include/osconfig.h \
+  ../../config/include/cfunix.h ../include/ofconfig.h \
+  ../include/ofstring.h ../include/ofstdinc.h ../include/ofstream.h \
+  ../include/oftypes.h ../include/ofstack.h
 ofconsol.o: ofconsol.cc ../../config/include/osconfig.h \
- ../../config/include/cfunix.h ../include/ofconsol.h \
- ../include/ofstream.h ../include/ofthread.h ../include/oftypes.h \
- ../include/ofstdinc.h
+  ../../config/include/cfunix.h ../include/ofconsol.h \
+  ../include/ofstream.h ../include/ofthread.h ../include/oftypes.h \
+  ../include/ofstdinc.h
 ofcrc32.o: ofcrc32.cc ../../config/include/osconfig.h \
- ../../config/include/cfunix.h ../include/ofcrc32.h
+  ../../config/include/cfunix.h ../include/ofcrc32.h
 ofdate.o: ofdate.cc ../../config/include/osconfig.h \
- ../../config/include/cfunix.h ../include/ofdate.h \
- ../include/ofstring.h ../include/ofstdinc.h ../include/ofstream.h \
- ../include/oftypes.h
+  ../../config/include/cfunix.h ../include/ofdate.h ../include/ofstring.h \
+  ../include/ofstdinc.h ../include/ofstream.h ../include/oftypes.h
 ofdatime.o: ofdatime.cc ../../config/include/osconfig.h \
- ../../config/include/cfunix.h ../include/ofstdinc.h \
- ../include/ofdatime.h ../include/ofstring.h ../include/ofstream.h \
- ../include/oftypes.h ../include/ofdate.h ../include/oftime.h
+  ../../config/include/cfunix.h ../include/ofstdinc.h \
+  ../include/ofdatime.h ../include/ofstring.h ../include/ofstream.h \
+  ../include/oftypes.h ../include/ofdate.h ../include/oftime.h
 offname.o: offname.cc ../../config/include/osconfig.h \
- ../../config/include/cfunix.h ../include/offname.h \
- ../include/oftypes.h ../include/ofstring.h ../include/ofstdinc.h \
- ../include/ofstream.h
+  ../../config/include/cfunix.h ../include/offname.h ../include/oftypes.h \
+  ../include/ofstring.h ../include/ofstdinc.h ../include/ofstream.h
+ofipcerr.o: ofipcerr.cc ../../config/include/osconfig.h \
+  ../../config/include/cfunix.h ../include/ofipcerr.h ../include/ofcond.h \
+  ../include/oftypes.h ../include/ofstring.h ../include/ofstdinc.h \
+  ../include/ofstream.h
+ofipcmsg.o: ofipcmsg.cc ../../config/include/osconfig.h \
+  ../../config/include/cfunix.h ../include/ofipcmsg.h \
+  ../include/ofipcabs.h ../include/ofcond.h ../include/oftypes.h \
+  ../include/ofstring.h ../include/ofstdinc.h ../include/ofstream.h \
+  ../include/ofipcerr.h
 oflist.o: oflist.cc ../../config/include/osconfig.h \
- ../../config/include/cfunix.h ../include/oflist.h \
- ../include/oftypes.h ../include/ofstdinc.h
+  ../../config/include/cfunix.h ../include/oflist.h ../include/oftypes.h \
+  ../include/ofstdinc.h
 oflogfil.o: oflogfil.cc ../../config/include/osconfig.h \
- ../../config/include/cfunix.h ../include/oflogfil.h \
- ../include/ofthread.h ../include/oftypes.h ../include/ofstream.h \
- ../include/ofstdinc.h ../include/ofstring.h ../include/ofdatime.h \
- ../include/ofdate.h ../include/oftime.h
+  ../../config/include/cfunix.h ../include/oflogfil.h \
+  ../include/ofthread.h ../include/oftypes.h ../include/ofstream.h \
+  ../include/ofstdinc.h ../include/ofstring.h ../include/ofdatime.h \
+  ../include/ofdate.h ../include/oftime.h
 ofstd.o: ofstd.cc ../../config/include/osconfig.h \
- ../../config/include/cfunix.h ../include/ofstd.h \
- ../include/ofstring.h ../include/ofstdinc.h ../include/ofstream.h \
- ../include/oftypes.h
+  ../../config/include/cfunix.h ../include/ofstd.h ../include/ofstring.h \
+  ../include/ofstdinc.h ../include/ofstream.h ../include/oftypes.h
 ofstring.o: ofstring.cc ../../config/include/osconfig.h \
- ../../config/include/cfunix.h ../include/ofstring.h \
- ../include/ofstdinc.h ../include/ofstream.h ../include/oftypes.h
+  ../../config/include/cfunix.h ../include/ofstring.h \
+  ../include/ofstdinc.h ../include/ofstream.h ../include/oftypes.h
 ofthread.o: ofthread.cc ../../config/include/osconfig.h \
- ../../config/include/cfunix.h ../include/ofstdinc.h \
- ../include/ofthread.h ../include/oftypes.h ../include/ofconsol.h \
- ../include/ofstream.h ../include/ofstring.h
+  ../../config/include/cfunix.h ../include/ofstdinc.h \
+  ../include/ofthread.h ../include/oftypes.h ../include/ofconsol.h \
+  ../include/ofstream.h ../include/ofstring.h
 oftime.o: oftime.cc ../../config/include/osconfig.h \
- ../../config/include/cfunix.h ../include/ofstdinc.h \
- ../include/oftime.h ../include/ofstring.h ../include/ofstream.h \
- ../include/oftypes.h ../include/ofstd.h
+  ../../config/include/cfunix.h ../include/ofstdinc.h ../include/oftime.h \
+  ../include/ofstring.h ../include/ofstream.h ../include/oftypes.h \
+  ../include/ofstd.h

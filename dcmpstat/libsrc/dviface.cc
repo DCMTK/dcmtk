@@ -21,9 +21,9 @@
  *
  *  Purpose: DVPresentationState
  *
- *  Last Update:      $Author: wilkens $
- *  Update Date:      $Date: 2002-12-20 14:51:58 $
- *  CVS/RCS Revision: $Revision: 1.141 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2003-04-29 10:13:56 $
+ *  CVS/RCS Revision: $Revision: 1.142 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -36,7 +36,6 @@
 
 #include "dvpsdef.h"     /* for constants */
 #include "ofstring.h"    /* for class OFString */
-#include "dvpsconf.h"    /* for class DVPSConfig */
 #include "ofbmanip.h"    /* for OFBitmanipTemplate */
 #include "ofdatime.h"    /* for OFDateTime */
 #include "oflist.h"      /* for class OFList */
@@ -4300,7 +4299,11 @@ void DVInterface::disableImageAndPState()
 /*
  *  CVS/RCS Log:
  *  $Log: dviface.cc,v $
- *  Revision 1.141  2002-12-20 14:51:58  wilkens
+ *  Revision 1.142  2003-04-29 10:13:56  meichel
+ *  Moved configuration file parser from module dcmpstat to ofstd and renamed
+ *    class to OFConfigFile. Cleaned up implementation (no more friend declarations).
+ *
+ *  Revision 1.141  2002/12/20 14:51:58  wilkens
  *  Modified name clash resulting in a compiler error on Solaris 2.5.1 using
  *  compiler SC 2.0.1.
  *

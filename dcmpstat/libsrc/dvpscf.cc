@@ -22,8 +22,8 @@
  *  Purpose: DVConfiguration
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-11-29 13:16:33 $
- *  CVS/RCS Revision: $Revision: 1.41 $
+ *  Update Date:      $Date: 2003-04-29 10:13:56 $
+ *  CVS/RCS Revision: $Revision: 1.42 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -33,7 +33,7 @@
 
 #include "osconfig.h"    /* make sure OS specific configuration is included first */
 #include "dvpscf.h"      /* for DVConfiguration */
-#include "dvpsconf.h"    /* for class DVPSConfig */
+#include "ofconfig.h"    /* for class OFConfigFile */
 #include "ofconsol.h"    /* for OFConsole */
 #include "dvpsdef.h"     /* for constants */
 #include "ofstd.h"       /* for class OFStandard */
@@ -245,7 +245,7 @@ DVConfiguration::DVConfiguration(const char *config_file)
       FILE *cfgfile = fopen(config_file, "rb");
       if (cfgfile)
       {
-          pConfig = new DVPSConfig(cfgfile);
+          pConfig = new OFConfigFile(cfgfile);
           fclose(cfgfile);
       }
   }
@@ -1508,7 +1508,11 @@ const char *DVConfiguration::getUserCodeMeaning(const char *userID, OFString& va
 /*
  *  CVS/RCS Log:
  *  $Log: dvpscf.cc,v $
- *  Revision 1.41  2002-11-29 13:16:33  meichel
+ *  Revision 1.42  2003-04-29 10:13:56  meichel
+ *  Moved configuration file parser from module dcmpstat to ofstd and renamed
+ *    class to OFConfigFile. Cleaned up implementation (no more friend declarations).
+ *
+ *  Revision 1.41  2002/11/29 13:16:33  meichel
  *  Introduced new command line option --timeout for controlling the
  *    connection request timeout.
  *

@@ -23,8 +23,8 @@
  *    classes: DVConfiguration
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-11-29 13:16:31 $
- *  CVS/RCS Revision: $Revision: 1.30 $
+ *  Update Date:      $Date: 2003-04-29 10:13:56 $
+ *  CVS/RCS Revision: $Revision: 1.31 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -40,7 +40,7 @@
 #include "dctypes.h"    /* for Uint32 */
 #include "dvpstyp.h"    /* for DVPS enums */
 
-class DVPSConfig;
+class OFConfigFile;
 class OFConsole;
 
 /** Configuration class for the Softcopy Presentation State viewer.
@@ -1122,7 +1122,7 @@ private:
   /** pointer to the configuration file data if the configuration file was found.
    *  NULL otherwise.
    */
-  DVPSConfig *pConfig;
+  OFConfigFile *pConfig;
 
 };
 
@@ -1131,7 +1131,11 @@ private:
 /*
  *  CVS/RCS Log:
  *  $Log: dvpscf.h,v $
- *  Revision 1.30  2002-11-29 13:16:31  meichel
+ *  Revision 1.31  2003-04-29 10:13:56  meichel
+ *  Moved configuration file parser from module dcmpstat to ofstd and renamed
+ *    class to OFConfigFile. Cleaned up implementation (no more friend declarations).
+ *
+ *  Revision 1.30  2002/11/29 13:16:31  meichel
  *  Introduced new command line option --timeout for controlling the
  *    connection request timeout.
  *

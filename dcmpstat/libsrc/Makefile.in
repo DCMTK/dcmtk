@@ -33,7 +33,7 @@ objs =  dvpsal.o   dvpsgal.o  dvpsgr.o   dvpsovl.o  dvpsrs.o   dvpstx.o \
         dvpsall.o  dvpsgl.o   dvpsgrl.o  dvpsri.o   dvpsrsl.o  dvpstxl.o \
         dvpsga.o   dvpsgll.o  dvpsov.o   dvpsril.o  dvpstat.o  dviface.o \
         dvpscu.o   dvpscul.o  dvpsvl.o   dvpsvll.o  dvpsvw.o   dvpsvwl.o \
-        dvpsconf.o dvpsda.o   dvpsdal.o  dvpssv.o   dvpssvl.o  dvpspl.o  \
+        dvpsda.o   dvpsdal.o  dvpssv.o   dvpssvl.o  dvpspl.o  \
         dvpsib.o   dvpsibl.o  dvpssp.o   dvpspr.o   dvpscf.o   dvpshlp.o \
         dvpspll.o  dvpsab.o   dvpsabl.o  dvpsspl.o  dvpsprt.o  dvpsfs.o  \
         dvpsmsg.o  dvsighdl.o
