@@ -22,9 +22,9 @@
  *  Purpose: class DcmFileFormat
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-04-16 13:43:17 $
+ *  Update Date:      $Date: 2002-04-25 10:15:35 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcfilefo.cc,v $
- *  CVS/RCS Revision: $Revision: 1.27 $
+ *  CVS/RCS Revision: $Revision: 1.28 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -148,9 +148,32 @@ void DcmFileFormat::print(ostream & out, const OFBool showFullData,
     }
 }
 
-
 // ********************************
 
+OFCondition DcmFileFormat::writeXML(ostream &out,
+                                    const size_t flags)
+{
+    OFCondition result = EC_CorruptedData;
+    /* XML start tag for "fileformat" */
+    out << "<fileformat>" << endl;
+    if (!itemList->empty())
+    {
+        /* write content of all children */
+        DcmObject *dO;
+        itemList->seek(ELP_first);
+        do 
+        {
+            dO = itemList->get();
+            dO->writeXML(out, flags);
+        } while (itemList->seek(ELP_next));
+        result = EC_Normal;
+    }
+    /* XML end tag for "fileformat" */
+    out << "</fileformat>" << endl;
+    return result;
+}
+
+// ********************************
 
 OFCondition DcmFileFormat::checkValue(DcmMetaInfo * metainfo,
                                       DcmDataset * dataset,
@@ -833,7 +856,10 @@ DcmDataset* DcmFileFormat::getAndRemoveDataset()
 /*
 ** CVS/RCS Log:
 ** $Log: dcfilefo.cc,v $
-** Revision 1.27  2002-04-16 13:43:17  joergr
+** Revision 1.28  2002-04-25 10:15:35  joergr
+** Added support for XML output of DICOM objects.
+**
+** Revision 1.27  2002/04/16 13:43:17  joergr
 ** Added configurable support for C++ ANSI standard includes (e.g. streams).
 ** Thanks to Andreas Barth <Andreas.Barth@bruker-biospin.de> for his
 ** contribution.

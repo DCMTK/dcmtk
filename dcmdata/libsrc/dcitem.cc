@@ -22,9 +22,9 @@
  *  Purpose: class DcmItem
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-04-16 13:43:17 $
+ *  Update Date:      $Date: 2002-04-25 10:15:56 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcitem.cc,v $
- *  CVS/RCS Revision: $Revision: 1.66 $
+ *  CVS/RCS Revision: $Revision: 1.67 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -447,6 +447,39 @@ void DcmItem::print(ostream & out, const OFBool showFullData,
         printInfoLine(out, showFullData, level, delimItemTag,
                       0, "(ItemDelimitationItem for re-encoding)" );
     delete[] info;
+}
+
+
+// ********************************
+
+
+OFCondition DcmItem::writeXML(ostream &out,
+                              const size_t flags)
+{
+    /* XML start tag for "item" */
+    out << "<item";
+    /* cardinality (number of attributes) = 1..n */
+    out << " card=\"" << card() << "\"";
+    /* value length in bytes = 0..max (if not undefined) */
+    if (Length != DCM_UndefinedLength)
+        out << " len=\"" << Length << "\"";
+    out << ">" << endl;
+    /* write item content */
+    if (!elementList->empty())
+    {
+        /* write content of all children */
+        DcmObject *dO;
+        elementList->seek(ELP_first);
+        do 
+        {
+            dO = elementList->get();
+            dO->writeXML(out, flags);
+        } while (elementList->seek(ELP_next));
+    }
+    /* XML end tag for "item" */
+    out << "</item>" << endl;
+    /* always report success */
+    return EC_Normal;
 }
 
 
@@ -3048,7 +3081,10 @@ OFBool DcmItem::containsUnknownVR() const
 /*
 ** CVS/RCS Log:
 ** $Log: dcitem.cc,v $
-** Revision 1.66  2002-04-16 13:43:17  joergr
+** Revision 1.67  2002-04-25 10:15:56  joergr
+** Added support for XML output of DICOM objects.
+**
+** Revision 1.66  2002/04/16 13:43:17  joergr
 ** Added configurable support for C++ ANSI standard includes (e.g. streams).
 ** Thanks to Andreas Barth <Andreas.Barth@bruker-biospin.de> for his
 ** contribution.

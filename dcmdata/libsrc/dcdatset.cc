@@ -22,9 +22,9 @@
  *  Purpose: class DcmDataset
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-04-16 13:43:15 $
+ *  Update Date:      $Date: 2002-04-25 10:14:12 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcdatset.cc,v $
- *  CVS/RCS Revision: $Revision: 1.25 $
+ *  CVS/RCS Revision: $Revision: 1.26 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -39,13 +39,15 @@
 
 #include "ofstream.h"
 #include "ofstack.h"
+#include "ofstd.h"
+
 #include "dcdatset.h"
 #include "dcxfer.h"
 #include "dcvrus.h"
 #include "dcdebug.h"
-
 #include "dcpixel.h"
 #include "dcdeftag.h"
+
 
 
 // ********************************
@@ -130,6 +132,33 @@ void DcmDataset::print(ostream & out, const OFBool showFullData,
             dO->print(out, showFullData, level + 1, pixelFileName, pixelCounter);
         } while ( elementList->seek( ELP_next ) );
     }
+}
+
+// ********************************
+
+OFCondition DcmDataset::writeXML(ostream &out,
+                                 const size_t flags)
+{
+    OFString xmlString;
+    DcmXfer xfer(Xfer);
+    /* XML start tag for "dataset" */
+    out << "<dataset xfer=\"" << xfer.getXferID() << "\"";
+    out << " name=\"" << OFStandard::convertToMarkupString(xfer.getXferName(), xmlString) << "\">" << endl;
+    if (!elementList->empty())
+    {
+        /* write content of all children */
+        DcmObject *dO;
+        elementList->seek(ELP_first);
+        do 
+        {
+            dO = elementList->get();
+            dO->writeXML(out, flags);
+        } while (elementList->seek(ELP_next));
+    }
+    /* XML end tag for "dataset" */
+    out << "</dataset>" << endl;
+    /* always report success */
+    return EC_Normal;
 }
 
 // ********************************
@@ -496,7 +525,10 @@ DcmDataset::removeAllButOriginalRepresentations()
 /*
 ** CVS/RCS Log:
 ** $Log: dcdatset.cc,v $
-** Revision 1.25  2002-04-16 13:43:15  joergr
+** Revision 1.26  2002-04-25 10:14:12  joergr
+** Added support for XML output of DICOM objects.
+**
+** Revision 1.25  2002/04/16 13:43:15  joergr
 ** Added configurable support for C++ ANSI standard includes (e.g. streams).
 ** Thanks to Andreas Barth <Andreas.Barth@bruker-biospin.de> for his
 ** contribution.

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2001, OFFIS
+ *  Copyright (C) 1994-2002, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose: class DcmMetaInfo
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-04-16 13:43:18 $
+ *  Update Date:      $Date: 2002-04-25 10:17:19 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcmetinf.cc,v $
- *  CVS/RCS Revision: $Revision: 1.27 $
+ *  CVS/RCS Revision: $Revision: 1.28 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -47,6 +47,8 @@ END_EXTERN_C
 #include <string.h>
 
 #include "ofstream.h"
+#include "ofstd.h"
+
 #include "dcmetinf.h"
 #include "dcitem.h"
 #include "dcxfer.h"
@@ -86,7 +88,7 @@ DcmMetaInfo::DcmMetaInfo( const DcmMetaInfo &old )
         preambleUsed = old.preambleUsed;
         memcpy( filePreamble, old.filePreamble, 128 );
     } else {
-    	// wrong use of copy constructor
+        // wrong use of copy constructor
         setPreamble();
     }
 }
@@ -125,6 +127,35 @@ void DcmMetaInfo::print(ostream & out, const OFBool showFullData,
             dO->print(out, showFullData, level + 1, pixelFileName, pixelCounter);
         } while ( elementList->seek( ELP_next ) );
     }
+}
+
+
+// ********************************
+
+
+OFCondition DcmMetaInfo::writeXML(ostream &out,
+                                  const size_t flags)
+{
+    OFString xmlString;
+    DcmXfer xfer(Xfer);
+    /* XML start tag for "meta-header" */
+    out << "<meta-header xfer=\"" << xfer.getXferID() << "\"";
+    out << " name=\"" << OFStandard::convertToMarkupString(xfer.getXferName(), xmlString) << "\">" << endl;
+    if (!elementList->empty())
+    {
+        /* write content of all children */
+        DcmObject *dO;
+        elementList->seek(ELP_first);
+        do 
+        {
+            dO = elementList->get();
+            dO->writeXML(out, flags);
+        } while (elementList->seek(ELP_next));
+    }
+    /* XML end tag for "meta-header" */
+    out << "</meta-header>" << endl;
+    /* always report success */
+    return EC_Normal;
 }
 
 
@@ -579,7 +610,10 @@ OFCondition DcmMetaInfo::write(DcmStream & outStream,
 /*
 ** CVS/RCS Log:
 ** $Log: dcmetinf.cc,v $
-** Revision 1.27  2002-04-16 13:43:18  joergr
+** Revision 1.28  2002-04-25 10:17:19  joergr
+** Added support for XML output of DICOM objects.
+**
+** Revision 1.27  2002/04/16 13:43:18  joergr
 ** Added configurable support for C++ ANSI standard includes (e.g. streams).
 ** Thanks to Andreas Barth <Andreas.Barth@bruker-biospin.de> for his
 ** contribution.

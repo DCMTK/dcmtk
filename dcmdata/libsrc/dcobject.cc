@@ -24,9 +24,9 @@
  *  DICOM object encoding/decoding, search and lookup facilities.
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-04-16 13:43:19 $
+ *  Update Date:      $Date: 2002-04-25 10:17:19 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcobject.cc,v $
- *  CVS/RCS Revision: $Revision: 1.33 $
+ *  CVS/RCS Revision: $Revision: 1.34 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -149,6 +149,14 @@ OFCondition DcmObject::searchErrors( DcmStack &resultStack )
 
 // ********************************
 
+OFCondition DcmObject::writeXML(ostream & /*out*/,
+                                const size_t /*flags*/)
+{
+    return EC_IllegalCall;
+}
+
+// ********************************
+
 OFCondition DcmObject::loadFile(const char * /*fileName*/,
                                 const E_TransferSyntax /*readXfer*/,
                                 const E_GrpLenEncoding /*groupLength*/,
@@ -218,6 +226,7 @@ void DcmObject::printInfoLine(ostream & out, const OFBool showFullData,
 
 
 // ********************************
+
 
 OFCondition DcmObject::writeTag(DcmStream & outStream, const DcmTag & tag, 
                                 const E_TransferSyntax oxfer)
@@ -382,7 +391,10 @@ OFBool DcmObject::containsUnknownVR() const
 /*
  * CVS/RCS Log:
  * $Log: dcobject.cc,v $
- * Revision 1.33  2002-04-16 13:43:19  joergr
+ * Revision 1.34  2002-04-25 10:17:19  joergr
+ * Added support for XML output of DICOM objects.
+ *
+ * Revision 1.33  2002/04/16 13:43:19  joergr
  * Added configurable support for C++ ANSI standard includes (e.g. streams).
  * Thanks to Andreas Barth <Andreas.Barth@bruker-biospin.de> for his
  * contribution.
