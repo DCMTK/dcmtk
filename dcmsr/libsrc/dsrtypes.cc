@@ -23,8 +23,8 @@
  *    classes: DSRTypes
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-12-01 15:47:28 $
- *  CVS/RCS Revision: $Revision: 1.38 $
+ *  Update Date:      $Date: 2003-12-08 13:05:48 $
+ *  CVS/RCS Revision: $Revision: 1.39 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -859,7 +859,8 @@ OFCondition DSRTypes::getAndCheckElementFromDataset(DcmItem &dataset,
                                                     const char *moduleName)
 {
     OFCondition result = getElementFromDataset(dataset, delem);
-    checkElementValue(delem, vm, type, stream, result, moduleName);
+    if (!checkElementValue(delem, vm, type, stream, result, moduleName))
+        result = SR_EC_InvalidValue;
     return result;
 }
 
@@ -879,9 +880,12 @@ OFCondition DSRTypes::getAndCheckStringValueFromDataset(DcmItem &dataset,
         DcmElement *delem = OFstatic_cast(DcmElement *, stack.top());
         if (delem != NULL)
         {
-            checkElementValue(*delem, vm, type, stream, result, moduleName);
-            result = delem->getOFString(stringValue, 0);
-        }
+            if (checkElementValue(*delem, vm, type, stream, result, moduleName))
+                result = delem->getOFString(stringValue, 0);
+            else
+                result = SR_EC_InvalidValue;
+        } else
+            result = EC_CorruptedData;
     } else {
         if ((stream != NULL) && ((type == "1") || (type == "2")))
         {
@@ -1452,7 +1456,10 @@ OFCondition DSRTypes::appendStream(ostream &mainStream,
 /*
  *  CVS/RCS Log:
  *  $Log: dsrtypes.cc,v $
- *  Revision 1.38  2003-12-01 15:47:28  joergr
+ *  Revision 1.39  2003-12-08 13:05:48  joergr
+ *  Return more appropriate error codes in getAndCheckXXX() routines.
+ *
+ *  Revision 1.38  2003/12/01 15:47:28  joergr
  *  Changed XML encoding of by-reference relationships if flag
  *  XF_valueTypeAsAttribute is set.
  *
