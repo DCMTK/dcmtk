@@ -22,9 +22,9 @@
  *  Purpose: Hash table interface for DICOM data dictionary
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2003-06-02 17:03:58 $
+ *  Update Date:      $Date: 2003-06-03 10:26:17 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dchashdi.h,v $
- *  CVS/RCS Revision: $Revision: 1.13 $
+ *  CVS/RCS Revision: $Revision: 1.14 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -251,27 +251,27 @@ private:
     int hash(const DcmTagKey* k) const;
     
     /** inserts new entry into given list
-     *  @param list list to add to
+     *  @param lst list to add to
      *  @param e new element to add, will be deleted upon destruction of the hash table
      *  @return pointer to replaced element, if any
      */
-    DcmDictEntry* insertInList(DcmDictEntryList& list, DcmDictEntry* e);
+    DcmDictEntry* insertInList(DcmDictEntryList& lst, DcmDictEntry* e);
 
     /** removes the entry for the given tag and private creator
-     *  @param list list to remove from
+     *  @param lst list to remove from
      *  @param k tag key
      *  @param privCreator private creator name, may be NULL
      *  @return pointer to removed element, if any
      */
-    DcmDictEntry* removeInList(DcmDictEntryList& list, const DcmTagKey& k, const char *privCreator);
+    DcmDictEntry* removeInList(DcmDictEntryList& lst, const DcmTagKey& k, const char *privCreator);
 
     /** searcjes entry for the given tag and private creator
-     *  @param list list to search in
+     *  @param lst list to search in
      *  @param k tag key
      *  @param privCreator private creator name, may be NULL
      *  @return pointer to found element, NULL if not found
      */
-    DcmDictEntry* findInList(DcmDictEntryList& list, const DcmTagKey& k, const char *privCreator) const;
+    DcmDictEntry* findInList(DcmDictEntryList& lst, const DcmTagKey& k, const char *privCreator) const;
 
     /** array of (hash table size) pointers to DcmDictEntryList elements 
      *  implementing the different buckets of the hash table
@@ -297,7 +297,10 @@ private:
 /*
 ** CVS/RCS Log:
 ** $Log: dchashdi.h,v $
-** Revision 1.13  2003-06-02 17:03:58  meichel
+** Revision 1.14  2003-06-03 10:26:17  meichel
+** Renamed local variables to avoid name clashes with STL
+**
+** Revision 1.13  2003/06/02 17:03:58  meichel
 ** Added typedef needed by MSVC5 when compiling with STL support
 **
 ** Revision 1.12  2003/03/21 13:06:46  meichel
