@@ -22,8 +22,8 @@
  *  Purpose: DVPresentationState
  *
  *  Last Update:      $Author: vorwerk $
- *  Update Date:      $Date: 1999-01-11 10:10:18 $
- *  CVS/RCS Revision: $Revision: 1.8 $
+ *  Update Date:      $Date: 1999-01-12 17:00:29 $
+ *  CVS/RCS Revision: $Revision: 1.9 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -178,7 +178,7 @@ E_Condition DVInterface::lockDatabase()
 E_Condition DVInterface::unlockDatabase()
 {
  if (DB_unlock(phandle)==DB_ERROR) return EC_IllegalCall;
- DB_destroyHandle(&handle); 
+// DB_destroyHandle(&handle); 
  return EC_Normal;
 }
 
@@ -204,11 +204,13 @@ E_Condition DVInterface::selectStudy(Uint32 idx)
 {
   if (pStudyDesc==NULL) return EC_IllegalCall;
  if (phandle==NULL) return EC_IllegalCall;
-  if ((pStudyDesc[idx].StudySize!=0) || ( idx < (unsigned)(phandle -> maxStudiesAllowed)+1))
+ if ((pStudyDesc[idx].StudySize!=0) || ( idx < (unsigned)(phandle -> maxStudiesAllowed)+1)){
     strcpy(selectedStudy,pStudyDesc[idx].StudyInstanceUID);
+	cout << "selectedStudy" << selectedStudy << endl;
+	}
   else 
     return EC_IllegalCall;
-
+  strcpy(selectedStudy,"");
   return EC_Normal;
 }
 
@@ -356,18 +358,22 @@ DVInterface::getAnInstance(OFBool dvistatus,
   int j1 ;
   
   if (colser!=NULL)  (*colser)=0; 
-  DB_createHandle (IndexName, -1, -1, (DB_Handle **) &phandle) ;
+
   pStudyDesc = (StudyDescRecord *)malloc (SIZEOF_STUDYDESC) ;
   if (pStudyDesc == NULL) {
     fprintf(stderr, "DB_PrintIndexFile: out of memory\n");
     return OFTrue;
   }
   
-  DB_GetStudyDesc(phandle, pStudyDesc );
-  
+  if (DB_GetStudyDesc(phandle, pStudyDesc )==DB_ERROR){
+	  cerr << "study descriptor not available !" << endl;
+  return OFTrue;
+  ;
+  }
   for (i=0; i<phandle->maxStudiesAllowed; i++) {
     
-    if (pStudyDesc[i].NumberofRegistratedImages != 0 ) {    
+    if (pStudyDesc[i].NumberofRegistratedImages != 0 ) {
+	//	cerr << "Images in Study: " << i << endl;
     }
   }
   DB_IdxInitLoop (phandle, &j1) ;
@@ -380,13 +386,17 @@ DVInterface::getAnInstance(OFBool dvistatus,
     series=OFFalse;
     instance=OFFalse;    
     if (idxCounter!=NULL) (*idxCounter)++;
-   if (DB_IdxGetNext (phandle, &j1, anIdxRec) != DB_NORMAL) return OFTrue;
-     
+	if (DB_IdxGetNext (phandle, &j1, anIdxRec) != DB_NORMAL){ 
+		//cerr << "No instance found in this db !" << endl;
+	
+
+	   return OFTrue;
+	} // fi
     if (StudyUID!=NULL){
       if (strcmp(StudyUID, (*anIdxRec).StudyInstanceUID)==0) study=OFTrue;
       else
 	if (strcmp(StudyUID, "")==0) study=OFTrue;
-    }
+    } 
     else
       study=OFTrue;
 
@@ -425,11 +435,12 @@ DVInterface::getAnInstance(OFBool dvistatus,
 	  if (isNew!=NULL)  (*isNew)=OFFalse;
       }
       if ((sel==OFTrue)&&((*colser)==(selser))){
+		  cout << "Instance found !" << endl;
 	return OFFalse;
       }
     }
       
-  }
+  } // end of while
   
   return OFFalse;
 }
@@ -697,7 +708,10 @@ E_Condition DVInterface::saveFileFormat(const char *filename,
 /*
  *  CVS/RCS Log:
  *  $Log: dviface.cc,v $
- *  Revision 1.8  1999-01-11 10:10:18  vorwerk
+ *  Revision 1.9  1999-01-12 17:00:29  vorwerk
+ *  bug fixed in method getAnInstance
+ *
+ *  Revision 1.8  1999/01/11 10:10:18  vorwerk
  *  error handling for getNumberofStudies and selectStudy implemented.
  *
  *  Revision 1.7  1999/01/07 16:40:04  vorwerk
