@@ -43,6 +43,9 @@ using the instructions given below:
     Ultrix 4.4    / DECstation MIPS / Gnu gcc 2.7.2.3
     HP-UX 9.05    / HP PA 1.1       / Gnu gcc 2.7.2.1
     IBM AIX 3.2   / RS 6000         / IBM AIX XL C++ Compiler/6000 V1.0
+    IRIX 5.3      / SGI Indy        / Gnu gcc 2.7.2
+    IRIX 6.3      / SGI O2          / Gnu gcc 2.7.2
+    IRIX 6.3      / SGI O2          / SGI C++ (2.29 ?)
     WindowsNT 4.0 / Intel x86       / Cygnus GNU-Win32 b18 (Unix shell & dev tools)
 
 Please Note: Due to resource limitations it is not practical for us to 
