@@ -10,10 +10,10 @@
 ** Interface of class DcmItem
 **
 **
-** Last Update:		$Author: hewett $
-** Update Date:		$Date: 1996-03-28 18:52:30 $
+** Last Update:		$Author: andreas $
+** Update Date:		$Date: 1996-04-16 16:00:05 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcitem.h,v $
-** CVS/RCS Revision:	$Revision: 1.6 $
+** CVS/RCS Revision:	$Revision: 1.7 $
 ** Status:		$State: Exp $
 **
 */
@@ -159,7 +159,7 @@ public:
 //   other: an error
 
 E_Condition newDicomElement(DcmElement * & newElement,
-			    DcmTag & tag,
+			    const DcmTag & tag,
 			    const Uint32 length = 0);
 
 
@@ -168,7 +168,7 @@ E_Condition newDicomElement(DcmElement * & newElement,
 // creates a new DicomElement from a Tag. If differs from the above funtion in 
 // not returning a condition. 
  
-DcmElement * newDicomElement(DcmTag & tag,
+DcmElement * newDicomElement(const DcmTag & tag,
 			     const Uint32 length = 0);
 
 
@@ -177,7 +177,10 @@ DcmElement * newDicomElement(DcmTag & tag,
 /*
 ** CVS/RCS Log:
 ** $Log: dcitem.h,v $
-** Revision 1.6  1996-03-28 18:52:30  hewett
+** Revision 1.7  1996-04-16 16:00:05  andreas
+** - added const for Tag in newDicomElement
+**
+** Revision 1.6  1996/03/28 18:52:30  hewett
 ** Added 2 simple find&get methods (findString & findInt).
 **
 ** Revision 1.5  1996/01/29 13:38:12  andreas
