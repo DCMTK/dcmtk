@@ -9,10 +9,10 @@
 ** Purpose:
 ** Implementation of class DcmUniqueIdentifier
 **
-** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1996-08-05 08:46:23 $
+** Last Update:		$Author: hewett $
+** Update Date:		$Date: 1997-03-26 17:06:30 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcvrui.cc,v $
-** CVS/RCS Revision:	$Revision: 1.7 $
+** CVS/RCS Revision:	$Revision: 1.8 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -38,6 +38,8 @@ Bdebug((5, "dcvrui:DcmUniqueIdentifier::DcmUniqueIdentifier"
 
     paddingChar = '\0';
     maxLength = 64;
+    DcmVR avr(EVR_UI);
+    maxLength = avr.getMaxValueLength();
 Edebug(());
 
 }
@@ -54,6 +56,8 @@ Bdebug((5, "dcvrui:DcmUniqueIdentifier::DcmUniqueIdentifier"
 
     paddingChar = '\0';
     maxLength = 64;
+    DcmVR avr(EVR_UI);
+    maxLength = avr.getMaxValueLength();
 Edebug(());
 
 }
@@ -127,9 +131,8 @@ E_Condition DcmUniqueIdentifier::put(const char * value)
 E_Condition DcmUniqueIdentifier::makeMachineByteString(void)
 {
     char * value = (char *)this -> getValue();
-    if (value) {
+    if (value && dcmEnableAutomaticInputDataCorrection) {
     	int len = strlen(value);
-
 	/*
 	** Remove any leading, embedded, or trailing white space.
 	** This manipulation attempts to correct problems with 
@@ -155,7 +158,11 @@ E_Condition DcmUniqueIdentifier::makeMachineByteString(void)
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrui.cc,v $
-** Revision 1.7  1996-08-05 08:46:23  andreas
+** Revision 1.8  1997-03-26 17:06:30  hewett
+** Added global flag for disabling the automatic correction of small errors.
+** Such behaviour is undesirable when performing data validation.
+**
+** Revision 1.7  1996/08/05 08:46:23  andreas
 ** new print routine with additional parameters:
 **         - print into files
 **         - fix output length for elements

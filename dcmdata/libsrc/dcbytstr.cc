@@ -9,10 +9,10 @@
 ** Purpose:
 ** Implementation of class DcmByteString
 **
-** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1996-08-05 08:46:07 $
+** Last Update:		$Author: hewett $
+** Update Date:		$Date: 1997-03-26 17:05:51 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcbytstr.cc,v $
-** CVS/RCS Revision:	$Revision: 1.9 $
+** CVS/RCS Revision:	$Revision: 1.10 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -30,7 +30,6 @@
 #include "dcbytstr.h"
 #include "dcvr.h"
 #include "dcdebug.h"
-
 
 
 // ********************************
@@ -225,20 +224,21 @@ E_Condition DcmByteString::makeMachineByteString(void)
     else
     	realLength = 0;
 
-    /* 
-    ** This code removes extra padding chars at the end of
-    ** a ByteString.  Trailing padding can cause problems
-    ** when comparing strings.
-    */
-    if (realLength)
-    {
-	size_t i = 0;
-	for(i = realLength;
-	    i > 0 && (value[i-1] == paddingChar);
-	    i--)
-	    value[i-1] = '\0';
-
-	realLength = (Uint32)i;
+    if (dcmEnableAutomaticInputDataCorrection) {
+	/* 
+	** This code removes extra padding chars at the end of
+	** a ByteString.  Trailing padding can cause problems
+	** when comparing strings.
+	*/
+	if (realLength) {
+	    size_t i = 0;
+	    for(i = realLength;
+		i > 0 && (value[i-1] == paddingChar);
+		i--) {
+		value[i-1] = '\0';
+            }
+	    realLength = (Uint32)i;
+	}
     }
     fStringMode = DCM_MachineString;
     return errorFlag;
@@ -378,7 +378,11 @@ E_Condition DcmByteString::write(DcmStream & outStream,
 /*
 ** CVS/RCS Log:
 ** $Log: dcbytstr.cc,v $
-** Revision 1.9  1996-08-05 08:46:07  andreas
+** Revision 1.10  1997-03-26 17:05:51  hewett
+** Added global flag for disabling the automatic correction of small errors.
+** Such behaviour is undesirable when performing data validation.
+**
+** Revision 1.9  1996/08/05 08:46:07  andreas
 ** new print routine with additional parameters:
 **         - print into files
 **         - fix output length for elements

@@ -9,8 +9,8 @@
 ** This file contains the interface to routines which provide
 ** DICOM object encoding/decoding, search and lookup facilities.
 **
-** Last Update:   $Author: andreas $
-** Revision:      $Revision: 1.8 $
+** Last Update:   $Author: hewett $
+** Revision:      $Revision: 1.9 $
 ** Status:	  $State: Exp $
 **
 */
@@ -29,8 +29,7 @@
 #include "dcstack.h"
 
 
-// Undefined Length Identifier
-const Uint32 DCM_UndefinedLength = 0xffffffff;
+// Undefined Length Identifier now defined in dctypes.h
 
 // Maxinum number of read bytes for a Value Element
 const Uint32 DCM_MaxReadLength = 4096;	
@@ -41,6 +40,15 @@ const Uint32 DCM_TagInfoLength = 12;
 // Optimum Line Length if not all data printed
 const Uint32 DCM_OptPrintLineLength = 70;
 
+/*
+** Should automatic correction be applied to input data (e.g. stripping
+** of padding blanks, removal of blanks in UIDs, etc).
+*/
+extern BOOL dcmEnableAutomaticInputDataCorrection; /* default TRUE */
+
+/*
+** The base dicom object class
+*/
 
 class DcmObject 
 {

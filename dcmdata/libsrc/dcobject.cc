@@ -9,8 +9,8 @@
 ** Implementation of the base class object
 **
 **
-** Last Update:   $Author: andreas $
-** Revision:      $Revision: 1.11 $
+** Last Update:   $Author: hewett $
+** Revision:      $Revision: 1.12 $
 ** Status:	  $State: Exp $
 **
 */
@@ -25,6 +25,12 @@
 #include "dcxfer.h"
 #include "dcswap.h"
 #include "dcdebug.h"
+
+/*
+** Should automatic correction be applied to input data (e.g. stripping
+** of padding blanks, removal of blanks in UIDs, etc).
+*/
+BOOL dcmEnableAutomaticInputDataCorrection = TRUE;
 
 
 
