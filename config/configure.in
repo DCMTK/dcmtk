@@ -21,11 +21,22 @@ AC_PROG_CC
 AC_PROG_CPP
 AC_CHECK_PROGS(CXX, $CCC c++ cc++ g++ gcc CC cxx, gcc)
 
-
+pedantic=""
+if test -f /bin/uname ; then
+	os=`uname -s`
+	rev=`uname -r`
+	if test \( "$os" = SunOS \) ; then
+		case "$rev" in
+			# only use the -pedantic compiler option on 
+			# Solaris 2 machines.
+			2.3|2.4|2.5|2.6) pedantic="-pedantic" ;;
+		esac
+	fi
+fi
 if test "${CXXFLAGS}set" = set ; then
 	case "$CXX" in
-		c++|g++|gcc) CXXFLAGS='-g -Wall -pedantic' ;;
-		cc++) CXXFLAGS='-g -Wall' ;;
+		c++|g++|gcc) CXXFLAGS="-g -Wall $pedantic" ;;
+		cc++) CXXFLAGS="-g -Wall" ;;
 		CC) CXXFLAGS='-g' ;;
 	esac
 fi
