@@ -66,6 +66,9 @@ LUT creation options:
                          first input value mapped (-31768..65535, default: 0)
     -r   --random        [n]umber : integer
                          perform n randomly selected permutations on the LUT
+    -rs  --random-seed   [n]umber : unsigned integer
+                         initialise the random-number generator with n
+                         (default: 0, for reproduceable results)
     -o   --order         [n]umber : integer
                          use polynomial curve fitting algorithm with order n
                          (0..99, default: 5)

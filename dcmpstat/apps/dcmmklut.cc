@@ -25,9 +25,9 @@
  *    file.
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-06-09 10:22:25 $
+ *  Update Date:      $Date: 2000-07-04 16:09:22 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmpstat/apps/dcmmklut.cc,v $
- *  CVS/RCS Revision: $Revision: 1.16 $
+ *  CVS/RCS Revision: $Revision: 1.17 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -361,6 +361,8 @@ E_Condition convertInputLUT(const unsigned int numberOfBits,
         }
         if (numberOfEntries == inputEntries)
         {
+            if (opt_verbose)
+                CERR << "importing LUT data directly ..." << endl;
             for (unsigned long i = 0; i < numberOfEntries; i++)
                 outputData[i] = (Uint16)inputYData[i];
             result = EC_Normal;
@@ -461,6 +463,7 @@ void gammaLUT(const unsigned int numberOfBits,
 void mixingUpLUT(const unsigned long numberOfEntries,
                  const OFBool byteAlign,
                  const unsigned long randomCount,
+                 const unsigned int randomSeed,
                  Uint16 *outputData,
                  char * explanation)
 {
@@ -470,7 +473,7 @@ void mixingUpLUT(const unsigned long numberOfEntries,
             CERR << "mixing up LUT entries ..." << endl;
         if (explanation != NULL)
             strcat(explanation, ", mixed-up entries");
-        srand(0);  /* for reproduceable results */
+        srand(randomSeed);
         unsigned long i, i1, i2;
         const double factor = (double)(numberOfEntries - 1) / RAND_MAX;
         if (byteAlign)
@@ -656,6 +659,7 @@ int main(int argc, char *argv[])
     OFCmdUnsignedInt opt_entries = 256;
     OFCmdSignedInt opt_firstMapped = 0;
     OFCmdUnsignedInt opt_randomCount = 0;
+    OFCmdUnsignedInt opt_randomSeed = 0;             /* default: for reproduceable results */
     OFCmdUnsignedInt opt_order = 5;
     LUT_Type opt_lutType = LUT_VOI;
     OFBool opt_byteAlign = OFFalse;
@@ -691,17 +695,19 @@ int main(int argc, char *argv[])
        cmd.addOption("--text-file",    "+Ct", 1, "[f]ilename : string",
                                                  "read input data from text file");
       cmd.addSubGroup("LUT structure:");
-       cmd.addOption("--bits",         "-b", 1,  "[n]umber : integer",
+       cmd.addOption("--bits",         "-b",  1, "[n]umber : integer",
                                                  "create LUT with n bit values (8..16, default: 16)");
-       cmd.addOption("--entries",      "-e", 1,  "[n]umber : integer",
+       cmd.addOption("--entries",      "-e",  1, "[n]umber : integer",
                                                  "create LUT with n entries (1..65536, default: 256)");
-       cmd.addOption("--first-mapped", "-f", 1,  "[n]umber : integer",
+       cmd.addOption("--first-mapped", "-f",  1, "[n]umber : integer",
                                                  "first input value mapped (-31768..65535, default: 0)");
-       cmd.addOption("--random",       "-r", 1,  "[n]umber : integer",
+       cmd.addOption("--random",       "-r",  1, "[n]umber : unsigned integer",
                                                  "perform n randomly selected permutations on the LUT");
-       cmd.addOption("--order",        "-o", 1,  "[n]umber : integer",
+       cmd.addOption("--random-seed",  "-rs", 1, "[n]umber : unsigned integer",
+                                                 "initialise the random-number generator with n\n(default: 0, for reproduceable results)");
+       cmd.addOption("--order",        "-o",  1, "[n]umber : integer",
                                                  "use polynomial curve fitting algorithm with order n\n(0..99, default: 5)");
-       cmd.addOption("--explanation",  "-E", 1,  "[n]ame : string",
+       cmd.addOption("--explanation",  "-E",  1, "[n]ame : string",
                                                  "LUT explanation (default: automatically created)");
        cmd.addOption("--byte-align",   "-a",     "create byte-aligned LUT (implies -b 8)");
       cmd.addSubGroup("LUT data VR:");
@@ -768,6 +774,8 @@ int main(int argc, char *argv[])
             app.checkValue(cmd.getValue(opt_explanation));
         if (cmd.findOption("--random"))
             app.checkValue(cmd.getValue(opt_randomCount, 1, 99999));
+        if (cmd.findOption("--random-seed"))
+            app.checkValue(cmd.getValue(opt_randomSeed));
         if (cmd.findOption("--order"))
             app.checkValue(cmd.getValue(opt_order, 0, 99));
         if (cmd.findOption("--byte-align"))
@@ -872,7 +880,7 @@ int main(int argc, char *argv[])
             if (result == EC_Normal)
             {
                 if (opt_randomCount > 0)
-                    mixingUpLUT(opt_entries, opt_byteAlign, opt_randomCount, outputData, explStr);
+                    mixingUpLUT(opt_entries, opt_byteAlign, opt_randomCount, opt_randomSeed, outputData, explStr);
                 result = createLUT((unsigned int)opt_bits, opt_entries, opt_firstMapped, opt_byteAlign, opt_lutVR, *ditem,
                     outputData, explStr);
             }
@@ -995,7 +1003,11 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmmklut.cc,v $
- * Revision 1.16  2000-06-09 10:22:25  joergr
+ * Revision 1.17  2000-07-04 16:09:22  joergr
+ * Added new option to command line tool allowing to specify the 'seed' value
+ * for the random-number generator.
+ *
+ * Revision 1.16  2000/06/09 10:22:25  joergr
  * Added new commandline option allowing to mix-up the LUT entries based on
  * a random-number generator (useful to test correct implementation of LUTs).
  *
