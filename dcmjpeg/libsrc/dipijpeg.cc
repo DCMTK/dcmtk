@@ -22,9 +22,9 @@
  *  Purpose: Implements JPEG interface for plugable image formats
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-12-11 13:37:14 $
+ *  Update Date:      $Date: 2002-12-11 14:55:24 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmjpeg/libsrc/dipijpeg.cc,v $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -155,7 +155,7 @@ int DiJPEGPlugin::write(DiImage *image,
              * which is needed here because otherwise longjmp might clobber
              * the content of the variable 
              */
-            if (& isMono) /* nothing */ ;
+            if (& isMono) { /* nothing */ };
 
             /* code derived from "cjpeg.c" (IJG) and "djeijg8.cc" (DCMJPEG) */
             struct jpeg_compress_struct cinfo;
@@ -254,7 +254,10 @@ OFString DiJPEGPlugin::getLibraryVersionString()
  *
  * CVS/RCS Log:
  * $Log: dipijpeg.cc,v $
- * Revision 1.5  2002-12-11 13:37:14  meichel
+ * Revision 1.6  2002-12-11 14:55:24  meichel
+ * Further code correction to avoid warning on MSVC6.
+ *
+ * Revision 1.5  2002/12/11 13:37:14  meichel
  * Minor code correction fixing a warning re setjmp and variable
  *   register allocation issued by gcc 3.2 -Wuninitialized
  *
