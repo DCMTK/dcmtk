@@ -23,9 +23,9 @@
  *          Defines a template list class with interfaces similar to the C++ Standard
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-07-11 13:46:14 $
+ *  Update Date:      $Date: 2003-08-07 11:44:55 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/include/Attic/oflist.h,v $
- *  CVS/RCS Revision: $Revision: 1.19 $
+ *  CVS/RCS Revision: $Revision: 1.20 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -191,10 +191,12 @@ public:
      */
     OFIterator() : node(NULL)  { }
 
-    /// copy constructor
+    /** copy constructor
+     */
     OFIterator(const OFIterator<T>& x) : node(x.node) { };
 
-    /// copy assignment operator
+    /** copy assignment operator
+     */
     OFIterator<T>& operator=(const OFIterator<T>& x)
     {
         node = x.node;
@@ -316,10 +318,12 @@ private:
 
 public:
 
-    /// default constructor
+    /** default constructor
+     */
     OFList() : OFListBase() { }
 
-    /// copy constructor
+    /** copy constructor
+     */
     OFList(const OFList<T>& oldList):OFListBase()
     {
         copy(oldList);
@@ -551,7 +555,10 @@ void OF_ListRemoveIf(OFList<T>& c, Predicate pred)
 /*
 ** CVS/RCS Log:
 ** $Log: oflist.h,v $
-** Revision 1.19  2003-07-11 13:46:14  joergr
+** Revision 1.20  2003-08-07 11:44:55  joergr
+** Slightly modified header comments to conform to doxygen syntax.
+**
+** Revision 1.19  2003/07/11 13:46:14  joergr
 ** Added workaround to get rid of "implicit typename" warnings on gcc 3.x
 ** (introduced macro OFLIST_TYPENAME).
 **
@@ -626,5 +633,3 @@ void OF_ListRemoveIf(OFList<T>& c, Predicate pred)
 **
 **
 */
-
-

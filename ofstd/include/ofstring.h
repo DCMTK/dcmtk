@@ -21,10 +21,10 @@
  *
  *  Purpose: A simple string class
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2003-07-09 13:57:43 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2003-08-07 11:44:55 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/include/Attic/ofstring.h,v $
- *  CVS/RCS Revision: $Revision: 1.16 $
+ *  CVS/RCS Revision: $Revision: 1.17 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -100,7 +100,8 @@ public:
      * the class (see above).
      */
 
-    /// Default constructor. Constructs an empty string.
+    /** Default constructor. Constructs an empty string.
+     */
     OFString();
 
     /** Constructs a string from the given input string str. The effective
@@ -137,7 +138,8 @@ public:
      */
     OFString(size_t rep, char c);
 
-    /// destructor
+    /** destructor
+     */
     ~OFString();
 
     /** assigns the input string to the current string.
@@ -1082,7 +1084,10 @@ OFBool operator>= (const OFString& lhs, char rhs);
 /*
 ** CVS/RCS Log:
 ** $Log: ofstring.h,v $
-** Revision 1.16  2003-07-09 13:57:43  meichel
+** Revision 1.17  2003-08-07 11:44:55  joergr
+** Slightly modified header comments to conform to doxygen syntax.
+**
+** Revision 1.16  2003/07/09 13:57:43  meichel
 ** Adapted type casts to new-style typecast operators defined in ofcast.h
 **
 ** Revision 1.15  2003/07/04 13:31:51  meichel
