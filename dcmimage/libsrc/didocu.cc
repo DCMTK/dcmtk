@@ -4,7 +4,7 @@
 **
 **  author   : Joerg Riesmeier
 **  created  : 10.12.96
-**  modified : 18.04.97
+**  modified : 25.05.97
 **
 *********************************************************************/
 
@@ -95,6 +95,15 @@ DcmObject *DiDocument::search(const DcmTagKey &tag, DcmObject *obj) const
 
 
 /********************************************************************/
+
+
+unsigned long DiDocument::getVM(const DcmTagKey &tag) const 
+{
+    DcmObject *searchedObj = search(tag);
+    if (searchedObj != NULL)
+		return searchedObj->getVM();
+    return 0;
+}
 
 
 unsigned long DiDocument::getValue(const DcmTagKey &tag, Uint16 &returnVal, const unsigned long pos, DcmObject *item)

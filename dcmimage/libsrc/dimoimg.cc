@@ -4,7 +4,7 @@
 **
 **  author   : Joerg Riesmeier
 **  created  : 12.12.96
-**  modified : 15.02.97
+**  modified : 25.05.97
 **
 *********************************************************************/
 
@@ -202,16 +202,18 @@ DiMonoImage::DiMonoImage(const DiDocument *docu, const EI_Status status)
 				Status = EIS_InvalidImage;
 			else
 			{
-				const unsigned long count = (unsigned long)Columns * (unsigned long)Rows * NumberOfFrames;
+				unsigned long count = (unsigned long)Columns * (unsigned long)Rows * NumberOfFrames;
 			 	if ((InterData->getCount() != count) && ((InterData->getCount() >> 1) != ((count + 1) >> 1)))
 				{
 					cerr << "WARNING: computed (" << count << ") and stored (" << InterData->getCount() << ") ";
 					cerr << "pixel count differ !" << endl;
 				}
-				if (!setWindow())								// set valid starting window
-					setMinMaxWindow(0);
+				WindowCount = Document->getVM(DCM_WindowCenter);
+				count = Document->getVM(DCM_WindowWidth);
+				if (count < WindowCount)						// determine number of voi windows
+					WindowCount = count;
 				Overlays = new DiOverlay(Document, BitsAllocated);
-				showAllOverlays();
+				showAllOverlays();								// default: show all overlays with stored modes
 			}
 		}
 	}
@@ -396,8 +398,7 @@ DiMonoImage::~DiMonoImage()
 	delete InterData;
 	delete OutputData;
 	delete VoiLutData;
-	if (Overlays != NULL)									// important: 'Overlays' can be multiple referenced
-		Overlays->removeReference();
+	delete Overlays;
 }
 
 

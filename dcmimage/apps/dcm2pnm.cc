@@ -7,10 +7,10 @@
 ** Purpose:
 ** Convert DICOM Images to PPM or PGM using the dcmimage library. 
 **
-** Last Update:		$Author: hewett $
-** Update Date:		$Date: 1997-05-22 13:27:14 $
+** Last Update:		$Author: meichel $
+** Update Date:		$Date: 1997-05-28 08:02:14 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/apps/dcm2pnm.cc,v $
-** CVS/RCS Revision:	$Revision: 1.3 $
+** CVS/RCS Revision:	$Revision: 1.4 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -188,7 +188,6 @@ int main(int argc, char *argv[])
   char *           opt_ifname = NULL;
   char *           opt_ofname = NULL;
   
-  DicomImage *oldImages[10];	/* stack of images to be deleted later */
   SetDebugLevel(( 0 ));
 
   prepareCmdLineArgs(argc, argv, "dcm2pnm");
@@ -202,7 +201,6 @@ int main(int argc, char *argv[])
   int i, j;
   char *arg=NULL;
 
-  for (i=0; i<10; i++) oldImages[i]=NULL;
   for (i=0; i<16; i++) opt_Overlay[i]=2; /* default: display all overlays if present */
   for (i=1; i<argc; i++)
   {
@@ -775,10 +773,7 @@ int main(int argc, char *argv[])
      } 
      else
      {
-       i=0;
-       while ((i<10)&&(oldImages[i] != NULL)) i++;
-       if (oldImages[i] == NULL) oldImages[i]=di; 
-       /* we cannot delete the old image here, because something with overlays will go wrong... */ 
+       delete di; 
        di = newimage;
      }
   }
@@ -922,10 +917,7 @@ int main(int argc, char *argv[])
      } 
      else
      {
-       i=0;
-       while ((i<10)&&(oldImages[i] != NULL)) i++;
-       if (oldImages[i] == NULL) oldImages[i]=di; 
-       /* we cannot delete the old image here, because something with overlays will go wrong... */ 
+	   delete di;
        di = newimage;
      }
   }
@@ -988,14 +980,11 @@ int main(int argc, char *argv[])
     } 
     else
     {
-       i=0;
-       while ((i<10)&&(oldImages[i] != NULL)) i++;
-       if (oldImages[i] == NULL) oldImages[i]=di; 
-       /* we cannot delete the old image here, because something with overlays will go wrong... */ 
+       delete di; 
        di = newimage;
     }
   }
-  
+
   
   if (opt_debugMode > 0)
   {
@@ -1011,7 +1000,7 @@ int main(int argc, char *argv[])
       return 1;
     }
   }
-  
+
   /* finally create PPM/PGM file */
   switch (opt_fileType)
   {
@@ -1034,7 +1023,7 @@ int main(int argc, char *argv[])
   {
      fprintf(stderr, "cleaning up memory.\n");
   }
-  for (i=0; i<10; i++) if (oldImages[i]) delete oldImages[i];
+  delete di;
 
   return 0;
 }
@@ -1043,7 +1032,16 @@ int main(int argc, char *argv[])
 /*
 ** CVS/RCS Log:
 ** $Log: dcm2pnm.cc,v $
-** Revision 1.3  1997-05-22 13:27:14  hewett
+** Revision 1.4  1997-05-28 08:02:14  meichel
+** New method DicomImage::setWindow() allows to disable VOI windowing.
+** New method DiDocument::getVM().
+** Default mode for grayscale images changed from "setMinMaxWindow(0)"
+** to "no VOI windowing".
+** New class DiOverlayData introduced to solve a problem occuring when
+** images containing overlay planes were copied/scaled/clipped and the
+** originals deleted before the copy. Removed workaround in dcm2pnm for this bug.
+**
+** Revision 1.3  1997/05/22 13:27:14  hewett
 ** Modified the test for presence of a data dictionary to use the
 ** method DcmDataDictionary::isDictionaryLoaded().
 **

@@ -27,6 +27,8 @@ class DiObjectCounter
 	inline void removeReference()
 		{ if (--Counter == 0) delete this; }
 
+	unsigned long Counter;
+
  protected:
     DiObjectCounter() : Counter(1)
 		{ }
@@ -34,7 +36,6 @@ class DiObjectCounter
 		{ }
 	
  private:
-	unsigned long Counter;
 };
 
 

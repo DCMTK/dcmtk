@@ -4,7 +4,7 @@
 **
 **  author   : Joerg Riesmeier
 **  created  : 10.12.96
-**  modified : 13.02.97
+**  modified : 25.05.97
 **
 *********************************************************************/
 
@@ -46,6 +46,8 @@ class DiDocument : public DiObjectCounter
 		{ return Object != NULL; }
     
 	DcmObject *search(const DcmTagKey &, DcmObject * = NULL) const;
+	
+	unsigned long getVM(const DcmTagKey &) const;
 	
     unsigned long getValue(const DcmTagKey &, Uint16 &, const unsigned long = 0, DcmObject * = NULL) const;
     unsigned long getValue(const DcmTagKey &, Sint16 &, const unsigned long = 0) const;

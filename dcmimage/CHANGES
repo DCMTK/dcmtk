@@ -1,4 +1,26 @@
 
+**** Unreleased Changes from 97.05.26 (riesmeier)
+
+- new method DicomImage::setWindow() allows to disable VOI windowing
+- new method DiDocument::getVM()
+- default mode for grayscale images changed from "setMinMaxWindow(0)"
+  to "no VOI windowing".
+- new class DiOverlayData introduced to solve a problem occuring when
+  images containing overlay planes were copied/scaled/clipped and the
+  originals deleted before the copy.
+- removed workaround in dcm2pnm for the bug mentioned above.
+Affects: dcmimage/apps/Makefile.dep
+         dcmimage/apps/dcm2pnm.cc
+         dcmimage/include/dcmimage.h
+         dcmimage/include/didocu.h
+         dcmimage/include/diobjcou.h
+         dcmimage/include/diovlay.h
+         dcmimage/libsrc/Makefile.dep
+         dcmimage/libsrc/dcmimage.cc
+         dcmimage/libsrc/didocu.cc
+         dcmimage/libsrc/dimoimg.cc
+         dcmimage/libsrc/diovlay.cc
+
 **** Unreleased Changes from 97.05.23 (eichelberg)
 
 - Corrected typo introduced by last update causing a
