@@ -10,10 +10,10 @@
 ** Implementation of the class DcmItem
 **
 **
-** Last Update:		$Author: hewett $
-** Update Date:		$Date: 1996-03-28 18:52:39 $
+** Last Update:		$Author: andreas $
+** Update Date:		$Date: 1996-04-16 16:04:54 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcitem.cc,v $
-** CVS/RCS Revision:	$Revision: 1.9 $
+** CVS/RCS Revision:	$Revision: 1.10 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -1531,7 +1531,7 @@ E_Condition DcmItem::loadAllDataIntoMemory(void)
 //
 // Support functions
 
-DcmElement * newDicomElement(DcmTag & tag,
+DcmElement * newDicomElement(const DcmTag & tag,
 			     const Uint32 length)
 {
     DcmElement * newElement = NULL;
@@ -1542,7 +1542,7 @@ DcmElement * newDicomElement(DcmTag & tag,
 // ********************************
 
 E_Condition newDicomElement(DcmElement * & newElement,
-			    DcmTag & tag,
+			    const DcmTag & tag,
 			    const Uint32 length)
 {
     E_Condition l_error = EC_Normal;
@@ -1756,7 +1756,10 @@ DcmItem::findInt(const DcmTagKey& xtag,
 /*
 ** CVS/RCS Log:
 ** $Log: dcitem.cc,v $
-** Revision 1.9  1996-03-28 18:52:39  hewett
+** Revision 1.10  1996-04-16 16:04:54  andreas
+** - const tag Parameter in newDicomElement
+**
+** Revision 1.9  1996/03/28 18:52:39  hewett
 ** Added 2 simple find&get methods (findString & findInt).
 **
 ** Revision 1.8  1996/03/12 15:23:27  hewett
