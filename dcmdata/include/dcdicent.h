@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2003, OFFIS
+ *  Copyright (C) 1994-2004, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,10 +21,10 @@
  *
  *  Purpose: Interface for a dictionary entry in the loadable DICOM data dictionary
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2003-08-14 09:00:56 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2004-01-16 14:07:03 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcdicent.h,v $
- *  CVS/RCS Revision: $Revision: 1.18 $
+ *  CVS/RCS Revision: $Revision: 1.19 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -64,7 +64,7 @@ enum DcmDictRangeRestriction
 };
 
 
-/** each object of this class manages one entry of the 
+/** each object of this class manages one entry of the
  *  global DICOM data dictionary.
  */
 class DcmDictEntry: public DcmTagKey
@@ -82,10 +82,10 @@ public:
      *  @param doCopyStrings true if strings should be copied, false if only referenced
      *  @param pcreator private creator name, may be NULL (for standard tags)
      */
-    DcmDictEntry(Uint16 g, Uint16 e, DcmVR vr, 
+    DcmDictEntry(Uint16 g, Uint16 e, DcmVR vr,
         const char* nam, int vmMin, int vmMax,
-        const char* vers, OFBool doCopyStrings, 
-        const char* pcreator);        
+        const char* vers, OFBool doCopyStrings,
+        const char* pcreator);
 
     /** constructor for repeating tags
      *  @param g attribute tag group lower limit
@@ -102,12 +102,12 @@ public:
      */
     DcmDictEntry(Uint16 g, Uint16 e, Uint16 ug, Uint16 ue, DcmVR vr,
         const char* nam, int vmMin, int vmMax,
-        const char* vers, OFBool doCopyStrings, 
-        const char* pcreator);        
+        const char* vers, OFBool doCopyStrings,
+        const char* pcreator);
 
     /// copy constructor
     DcmDictEntry(const DcmDictEntry& e);
-    
+
     /// destructor
     ~DcmDictEntry();
 
@@ -115,8 +115,8 @@ public:
 
     /// returns VR object by value
     DcmVR getVR() const
-    { 
-        return valueRepresentation; 
+    {
+        return valueRepresentation;
     }
 
     /// returns VR code
@@ -149,7 +149,7 @@ public:
      */
     int privateCreatorMatch(const char *c) const
     {
-      return 
+      return
       (
         ((privateCreator == NULL) && (c == NULL)) ||
         (privateCreator && c && (0 == strcmp(privateCreator, c)))
@@ -335,7 +335,7 @@ public:
 
     /* set relations */
 
-    /** checks if this entry describes a true subset of tag range 
+    /** checks if this entry describes a true subset of tag range
      *  described by the given entry.
      *  @param e entry to compare with
      *  @return true if this object is subset of e
@@ -371,10 +371,10 @@ public:
 
 private:
 
-    /// private undefined copy assignment operator 
+    /// private undefined copy assignment operator
     DcmDictEntry &operator=(const DcmDictEntry &);
 
-    /** upper limit of repeating group and element (lower limit is inherited 
+    /** upper limit of repeating group and element (lower limit is inherited
      *   from DcmTagKey)
      */
     DcmTagKey upperKey;
@@ -409,10 +409,14 @@ private:
 
 #endif /* !DCDICENT_H */
 
+
 /*
 ** CVS/RCS Log:
 ** $Log: dcdicent.h,v $
-** Revision 1.18  2003-08-14 09:00:56  meichel
+** Revision 1.19  2004-01-16 14:07:03  joergr
+** Removed acknowledgements with e-mail addresses from CVS log.
+**
+** Revision 1.18  2003/08/14 09:00:56  meichel
 ** Adapted type casts to new-style typecast operators defined in ofcast.h
 **
 ** Revision 1.17  2002/11/27 12:07:21  meichel
@@ -423,8 +427,6 @@ private:
 **
 ** Revision 1.15  2002/04/16 13:41:44  joergr
 ** Added configurable support for C++ ANSI standard includes (e.g. streams).
-** Thanks to Andreas Barth <Andreas.Barth@bruker-biospin.de> for his
-** contribution.
 **
 ** Revision 1.14  2001/06/01 15:48:36  meichel
 ** Updated copyright header
@@ -466,10 +468,7 @@ private:
 ** Added preliminary support for the Macintosh environment (GUSI library).
 **
 ** Revision 1.4  1996/09/18 16:37:09  hewett
-** Added capability to search data dictionary by tag name.  The
-** source code for these changes was contributed by Larry V. Streepy,
-** Jr., Chief Technical Officer,  Healthcare Communications, Inc.,
-** (mailto:streepy@healthcare.com).
+** Added capability to search data dictionary by tag name.
 **
 ** Revision 1.3  1996/03/20 16:43:49  hewett
 ** Updated for revised data dictionary.  Repeating tags are now handled better.

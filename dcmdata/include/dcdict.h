@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2002, OFFIS
+ *  Copyright (C) 1994-2004, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,10 +21,9 @@
  *
  *  Purpose: Interface for loadable DICOM data dictionary
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-07-23 14:21:25 $
- *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcdict.h,v $
- *  CVS/RCS Revision: $Revision: 1.18 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2004-01-16 14:07:27 $
+ *  CVS/RCS Revision: $Revision: 1.19 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -48,7 +47,7 @@
 #define DCM_DICT_ENVIRONMENT_VARIABLE   "DCMDICTPATH"
 
 #ifndef DCM_DICT_DEFAULT_PATH
-/* 
+/*
 ** The default dictionary path is system dependent.  It should
 ** be defined in a configuration file included from "osconfig.h"
 */
@@ -92,25 +91,25 @@ public:
      *  either from file or from a built-in dictionary or both.
      */
     int numberOfEntries() const
-        { return numberOfNormalTagEntries() 
+        { return numberOfNormalTagEntries()
               + numberOfRepeatingTagEntries() - skeletonCount; }
 
     /** returns the number of skeleton entries. The skeleton is a collection
      *  of dictionary entries which are always present, even if neither internal
-     *  nor external dictionary have been loaded. It contains very basic 
+     *  nor external dictionary have been loaded. It contains very basic
      *  things like item delimitation and sequence delimitation.
      */
     int numberOfSkeletonEntries() const { return skeletonCount; }
 
     /** load a particular dictionary from file.
      *  @param fileName filename
-     *  @param errorIfAbsent causes the method to return false 
+     *  @param errorIfAbsent causes the method to return false
      *     if the file cannot be opened
      *  @return false if the file contains a parse error or if the file could
      *     not be opened and errorIfAbsent was set, true otherwise.
      */
     OFBool loadDictionary(const char* fileName, OFBool errorIfAbsent=OFTrue);
-    
+
     /** dictionary lookup for the given tag key and private creator name.
      *  First the normal tag dictionary is searched.  If not found
      *  then the repeating tag dictionary is searched.
@@ -130,16 +129,16 @@ public:
     /// deletes all dictionary entries
     void clear();
 
-    /** adds an entry to the dictionary.  Must be allocated via new.    
-     *  The entry becomes the property of the dictionary and will be   
+    /** adds an entry to the dictionary.  Must be allocated via new.
+     *  The entry becomes the property of the dictionary and will be
      *  deallocated (via delete) upon clear() or dictionary destruction.
-     *  If an equivalent entry already exists it will be replaced by   
-     *  the new entry and the old entry deallocated (via delete).      
+     *  If an equivalent entry already exists it will be replaced by
+     *  the new entry and the old entry deallocated (via delete).
      *  @param entry pointer to new entry
      */
     void addEntry(DcmDictEntry* entry);
 
-    /* Iterators to access the normal and the repeating entries */ 
+    /* Iterators to access the normal and the repeating entries */
 
     /// returns an iterator to the start of the normal (non-repeating) dictionary
     DcmHashDictIterator normalBegin() { return hashDict.begin(); }
@@ -156,9 +155,9 @@ public:
 private:
 
     /** private undefined assignment operator
-     */ 
+     */
     DcmDataDictionary &operator=(const DcmDataDictionary &);
-    
+
     /** private undefined copy constructor
      */
     DcmDataDictionary(const DcmDataDictionary &);
@@ -185,26 +184,26 @@ private:
     const DcmDictEntry* findEntry(const DcmDictEntry& entry) const;
 
     /** deletes the given entry from either dictionary
-     */    
+     */
     void deleteEntry(const DcmDictEntry& entry);
 
 
     /** dictionary of normal tags
      */
     DcmHashDict hashDict;
-    
+
     /** dictionary of repeating tags
      */
     DcmDictEntryList repDict;
-    
+
     /** the number of skeleton entries
      */
     int skeletonCount;
-    
+
     /** is a dictionary loaded (more than skeleton)
      */
     OFBool dictionaryLoaded;
-    
+
 };
 
 
@@ -222,7 +221,7 @@ public:
    *  @param loadExternal if true, the dictionary constructor calls loadExternalDictionaries().
    */
   GlobalDcmDataDictionary(OFBool loadBuiltin, OFBool loadExternal);
-  
+
   /** destructor
    */
   ~GlobalDcmDataDictionary();
@@ -232,26 +231,26 @@ public:
    *  @return const reference to dictionary
    */
   const DcmDataDictionary& rdlock();
-  
+
   /** acquires a write lock and returns a non-const reference
    *  to the dictionary.
    *  @return non-const reference to dictionary.
    */
   DcmDataDictionary& wrlock();
-  
+
   /** unlocks the read or write lock which must have been acquired previously.
    */
   void unlock();
 
   /** checks if a data dictionary has been loaded. This method acquires and
-   *  releases a read lock. It must not be called with another lock on the 
+   *  releases a read lock. It must not be called with another lock on the
    *  dictionary being held by the calling thread.
    *  @return OFTrue if dictionary has been loaded, OFFalse otherwise.
    */
   OFBool isDictionaryLoaded();
 
   /** erases the contents of the dictionary. This method acquires and
-   *  releases a write lock. It must not be called with another lock on the 
+   *  releases a write lock. It must not be called with another lock on the
    *  dictionary being held by the calling thread.  This method is intended
    *  as a help for debugging memory leaks.
    */
@@ -279,12 +278,12 @@ private:
 
 
 /** The Global DICOM Data Dictionary.
- *  Will be created before main() starts.  
+ *  Will be created before main() starts.
  *  Tries to load a builtin data dictionary (if compiled in).
  *  Tries to load data dictionaries from files specified by
  *  the DCMDICTPATH environment variable.  If this environment
  *  variable does not exist then a default file is loaded (if
- *  it exists).  
+ *  it exists).
  *  It is possible that no data dictionary gets loaded.  This
  *  is likely to cause unexpected behaviour in the dcmdata
  *  toolkit classes.
@@ -297,7 +296,10 @@ extern GlobalDcmDataDictionary dcmDataDict;
 /*
 ** CVS/RCS Log:
 ** $Log: dcdict.h,v $
-** Revision 1.18  2002-07-23 14:21:25  meichel
+** Revision 1.19  2004-01-16 14:07:27  joergr
+** Removed acknowledgements with e-mail addresses from CVS log.
+**
+** Revision 1.18  2002/07/23 14:21:25  meichel
 ** Added support for private tag data dictionaries to dcmdata
 **
 ** Revision 1.17  2002/02/27 14:21:20  meichel
@@ -351,10 +353,7 @@ extern GlobalDcmDataDictionary dcmDataDict;
 ** and ItemDelimitation tags).
 **
 ** Revision 1.7  1996/09/18 16:37:10  hewett
-** Added capability to search data dictionary by tag name.  The
-** source code for these changes was contributed by Larry V. Streepy,
-** Jr., Chief Technical Officer,  Healthcare Communications, Inc.,
-** (mailto:streepy@healthcare.com).
+** Added capability to search data dictionary by tag name.
 **
 ** Revision 1.6  1996/03/22 13:09:12  hewett
 ** Moved the definition of DCM_DICT_DEFAULT_PATH to the system

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2003, OFFIS
+ *  Copyright (C) 1994-2004, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,8 @@
  *  Purpose: Interface of class DcmPixelData
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-06-12 18:21:24 $
- *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcpixel.h,v $
- *  CVS/RCS Revision: $Revision: 1.23 $
+ *  Update Date:      $Date: 2004-01-16 14:06:20 $
+ *  CVS/RCS Revision: $Revision: 1.24 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -433,12 +432,15 @@ public:
 
 #endif
 
+
 /*
 ** CVS/RCS Log:
 ** $Log: dcpixel.h,v $
-** Revision 1.23  2003-06-12 18:21:24  joergr
+** Revision 1.24  2004-01-16 14:06:20  joergr
+** Removed acknowledgements with e-mail addresses from CVS log.
+**
+** Revision 1.23  2003/06/12 18:21:24  joergr
 ** Modified code to use const_iterators where appropriate (required for STL).
-** Thanks to Henning Meyer <Henning-Meyer@web.de> for the report.
 **
 ** Revision 1.22  2003/06/12 14:03:24  joergr
 ** Fixed inconsistent API documentation reported by Doxygen.
@@ -452,7 +454,6 @@ public:
 ** Revision 1.19  2003/04/01 12:35:12  joergr
 ** Added implementation of createUint8/16Array() methods to DcmPixelData.
 ** Required to work properly with chooseRepresentation() for pixel compression.
-** Thanks to Rick H. <rickh_2003@hotmail.com> for the original problem report.
 **
 ** Revision 1.18  2002/12/09 09:31:16  wilkens
 ** Modified/Added doc++ documentation.

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2003, OFFIS
+ *  Copyright (C) 2002-2004, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,10 +21,9 @@
  *
  *  Purpose: RLE compressor
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2003-08-14 09:00:56 $
- *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcrleenc.h,v $
- *  CVS/RCS Revision: $Revision: 1.9 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2004-01-16 14:06:20 $
+ *  CVS/RCS Revision: $Revision: 1.10 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -42,6 +41,7 @@
 
 #define DcmRLEEncoder_BLOCKSIZE 16384
 
+
 /** abstract class that defines an interface through which
  *  encoder classes (such as DcmRLEEncoder) may export their
  *  encoded data
@@ -58,7 +58,7 @@ public:
 
 
 /** this class implements an RLE compressor conforming to the DICOM standard.
- *  The class is loosely based on an implementation by Phil Norman <forrey@eh.org>
+ *  The class is loosely based on an implementation by Phil Norman.
  */
 class DcmRLEEncoder
 {
@@ -419,15 +419,18 @@ private:
 
 #endif
 
+
 /*
  * CVS/RCS Log
  * $Log: dcrleenc.h,v $
- * Revision 1.9  2003-08-14 09:00:56  meichel
+ * Revision 1.10  2004-01-16 14:06:20  joergr
+ * Removed acknowledgements with e-mail addresses from CVS log.
+ *
+ * Revision 1.9  2003/08/14 09:00:56  meichel
  * Adapted type casts to new-style typecast operators defined in ofcast.h
  *
  * Revision 1.8  2003/06/12 18:21:24  joergr
  * Modified code to use const_iterators where appropriate (required for STL).
- * Thanks to Henning Meyer <Henning-Meyer@web.de> for the report.
  *
  * Revision 1.7  2003/06/12 13:32:59  joergr
  * Fixed inconsistent API documentation reported by Doxygen.

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2002, OFFIS
+ *  Copyright (C) 1994-2004, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,8 @@
  *  Purpose: Print debug information
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-04-16 13:41:43 $
- *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcdebug.h,v $
- *  CVS/RCS Revision: $Revision: 1.10 $
+ *  Update Date:      $Date: 2004-01-16 14:06:32 $
+ *  CVS/RCS Revision: $Revision: 1.11 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -80,13 +79,15 @@ void debug_print(const char* text, ... );
 
 #endif // DCDEBUG_H
 
+
 /*
  * CVS/RCS Log:
  * $Log: dcdebug.h,v $
- * Revision 1.10  2002-04-16 13:41:43  joergr
+ * Revision 1.11  2004-01-16 14:06:32  joergr
+ * Removed acknowledgements with e-mail addresses from CVS log.
+ *
+ * Revision 1.10  2002/04/16 13:41:43  joergr
  * Added configurable support for C++ ANSI standard includes (e.g. streams).
- * Thanks to Andreas Barth <Andreas.Barth@bruker-biospin.de> for his
- * contribution.
  *
  * Revision 1.9  2001/06/01 15:48:35  meichel
  * Updated copyright header

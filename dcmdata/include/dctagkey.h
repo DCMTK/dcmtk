@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2003, OFFIS
+ *  Copyright (C) 1994-2004, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,10 +21,9 @@
  *
  *  Purpose: Basis class for dicom tags.
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2003-11-13 14:06:36 $
- *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dctagkey.h,v $
- *  CVS/RCS Revision: $Revision: 1.14 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2004-01-16 14:08:00 $
+ *  CVS/RCS Revision: $Revision: 1.15 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -89,7 +88,7 @@ public:
     friend ostream& operator<<(ostream& s, const DcmTagKey& k);
 
     OFString toString() const;
-    
+
     /** returns true if a data element with the given tag key can
      *  be digitally signed, false otherwise
      *  @return true if signable, false otherwise
@@ -104,83 +103,83 @@ public:
  */
 ostream& operator<<(ostream& s, const DcmTagKey& k);
 
-/* 
-** inline versions of functions 
+/*
+** inline versions of functions
 */
 
 /* Constructors */
 
-inline  
+inline
 DcmTagKey::DcmTagKey()
   : group(0xffff),
     element(0xffff)
-{ 
+{
 }
 
-inline 
-DcmTagKey::DcmTagKey(const DcmTagKey& key) 
+inline
+DcmTagKey::DcmTagKey(const DcmTagKey& key)
   : group(key.group),
     element(key.element)
-{ 
+{
 }
 
-inline 
-DcmTagKey::DcmTagKey(Uint16 g, Uint16 e) 
+inline
+DcmTagKey::DcmTagKey(Uint16 g, Uint16 e)
   : group(g),
     element(e)
-{ 
+{
 }
 
 /* access methods */
 
-inline void 
-DcmTagKey::set(const DcmTagKey& key)    
-{ 
-    group = key.group; 
-    element = key.element; 
+inline void
+DcmTagKey::set(const DcmTagKey& key)
+{
+    group = key.group;
+    element = key.element;
 }
 
-inline void 
-DcmTagKey::set(Uint16 g, Uint16 e)      
-{ 
-    group = g; 
-    element = e; 
+inline void
+DcmTagKey::set(Uint16 g, Uint16 e)
+{
+    group = g;
+    element = e;
 }
 
-inline void 
-DcmTagKey::setGroup(Uint16 g)           
-{ 
-    group = g; 
+inline void
+DcmTagKey::setGroup(Uint16 g)
+{
+    group = g;
 }
 
-inline void 
-DcmTagKey::setElement(Uint16 e)                 
-{ 
-    element = e; 
+inline void
+DcmTagKey::setElement(Uint16 e)
+{
+    element = e;
 }
 
-inline Uint16 
-DcmTagKey::getGroup() const             
-{ 
-    return group; 
+inline Uint16
+DcmTagKey::getGroup() const
+{
+    return group;
 }
 
-inline Uint16 
-DcmTagKey::getElement() const           
-{ 
-    return element; 
+inline Uint16
+DcmTagKey::getElement() const
+{
+    return element;
 }
 
-inline DcmTagKey& 
-DcmTagKey::operator=(const DcmTagKey& key) 
-{ 
-    set(key); 
+inline DcmTagKey&
+DcmTagKey::operator=(const DcmTagKey& key)
+{
+    set(key);
     return *this;
 }
 
 /* Simple Hash Function */
 
-inline Uint32 
+inline Uint32
 DcmTagKey::hash() const
 {
     // generate simple hash code
@@ -189,75 +188,75 @@ DcmTagKey::hash() const
 
 /* Comparisons */
 
-inline int 
+inline int
 DcmTagKey::groupLT(const DcmTagKey& key) const
 {
     return (getGroup() < key.getGroup());
 }
 
-inline int 
+inline int
 DcmTagKey::groupGT(const DcmTagKey& key) const
 {
     return (getGroup() > key.getGroup());
 }
 
-inline int 
+inline int
 DcmTagKey::groupEQ(const DcmTagKey& key) const
 {
     return getGroup() == key.getGroup();
 }
 
-inline int 
+inline int
 DcmTagKey::elementLT(const DcmTagKey& key) const
 {
     return (getElement() < key.getElement());
 }
 
-inline int 
+inline int
 DcmTagKey::elementGT(const DcmTagKey& key) const
 {
     return (getElement() > key.getElement());
 }
 
-inline int 
+inline int
 DcmTagKey::elementEQ(const DcmTagKey& key) const
 {
     return getElement() == key.getElement();
 }
 
-inline int 
+inline int
 DcmTagKey::operator == (const DcmTagKey& key) const
-{ 
+{
     return ( groupEQ(key) && elementEQ(key) );
 }
 
-inline int 
+inline int
 DcmTagKey::operator != (const DcmTagKey& key) const
-{ 
-    return !(*this == key); 
+{
+    return !(*this == key);
 }
 
-inline int 
+inline int
 DcmTagKey::operator < (const DcmTagKey& key) const
-{ 
+{
     return (groupLT(key) || (groupEQ(key) && elementLT(key)));
 }
 
-inline int 
+inline int
 DcmTagKey::operator > (const DcmTagKey& key) const
-{ 
+{
     return (groupGT(key) || (groupEQ(key) && elementGT(key)));
 }
 
-inline int 
+inline int
 DcmTagKey::operator <= (const DcmTagKey& key) const
-{ 
+{
     return (*this < key) || (*this == key);
 }
 
-inline int 
+inline int
 DcmTagKey::operator >= (const DcmTagKey& key) const
-{ 
+{
     return (*this > key) || (*this == key);
 }
 
@@ -267,7 +266,10 @@ DcmTagKey::operator >= (const DcmTagKey& key) const
 /*
 ** CVS/RCS Log:
 ** $Log: dctagkey.h,v $
-** Revision 1.14  2003-11-13 14:06:36  meichel
+** Revision 1.15  2004-01-16 14:08:00  joergr
+** Removed acknowledgements with e-mail addresses from CVS log.
+**
+** Revision 1.14  2003/11/13 14:06:36  meichel
 ** Fixed definition of DCM_UndefinedTagKey
 **
 ** Revision 1.13  2003/11/05 15:56:31  meichel
@@ -276,8 +278,6 @@ DcmTagKey::operator >= (const DcmTagKey& key) const
 **
 ** Revision 1.12  2002/04/16 13:41:44  joergr
 ** Added configurable support for C++ ANSI standard includes (e.g. streams).
-** Thanks to Andreas Barth <Andreas.Barth@bruker-biospin.de> for his
-** contribution.
 **
 ** Revision 1.11  2001/11/19 15:23:11  meichel
 ** Cleaned up signature code to avoid some gcc warnings.
