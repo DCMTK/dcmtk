@@ -22,8 +22,8 @@
  *  Purpose: Create sample structured reports using the dcmsr API
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-06-13 13:44:47 $
- *  CVS/RCS Revision: $Revision: 1.10 $
+ *  Update Date:      $Date: 2001-07-02 12:58:04 $
+ *  CVS/RCS Revision: $Revision: 1.11 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -569,7 +569,7 @@ int main(int argc, char *argv[])
 
                     doc->getTree().addContentItem(DSRTypes::RT_contains, DSRTypes::VT_Text);
                     doc->getTree().getCurrentContentItem().setConceptName(DSRCodedEntryValue("CODE_24", OFFIS_CODING_SCHEME_DESIGNATOR, "Hospital Course and Treatment"));
-                    doc->getTree().getCurrentContentItem().setStringValue("Initially, she was given cephalothin 2 gm IV q6h, and kanamycin 0.5 gm IM b.i.d. Over the next 2 days the patient's condition improved. Her pain decreased, and her temperature came down to normal int he morning and spiked to 101º in the evening. Repeat CBC showed Hb 7.8, Hct 23.5. The pregnancy test was negative. On the second night following the admission, her temperature spiked to 104º. The patient was started on antituberculosis treatment, consisting of isoniazid 300 mg/day, ethambutol 600 mg b.i.d., and rifampin 600 mg daily. She became afebrile on the sixth postoperative day and was discharged on July 15, 1999, in good condition. She will be seen in the office in one week.");
+                    doc->getTree().getCurrentContentItem().setStringValue("Initially, she was given cephalothin 2 gm IV q6h, and kanamycin 0.5 gm IM b.i.d. Over the next 2 days the patient's condition improved. Her pain decreased, and her temperature came down to normal int he morning and spiked to 101° in the evening. Repeat CBC showed Hb 7.8, Hct 23.5. The pregnancy test was negative. On the second night following the admission, her temperature spiked to 104º. The patient was started on antituberculosis treatment, consisting of isoniazid 300 mg/day, ethambutol 600 mg b.i.d., and rifampin 600 mg daily. She became afebrile on the sixth postoperative day and was discharged on July 15, 1999, in good condition. She will be seen in the office in one week.");
 
                     doc->getTree().addContentItem(DSRTypes::RT_contains, DSRTypes::VT_Text);
                     doc->getTree().getCurrentContentItem().setConceptName(DSRCodedEntryValue("CODE_25", OFFIS_CODING_SCHEME_DESIGNATOR, "Surgical Procedures"));
@@ -937,7 +937,7 @@ int main(int argc, char *argv[])
 
                     doc->getTree().addContentItem(DSRTypes::RT_contains, DSRTypes::VT_Text);
                     doc->getTree().getCurrentContentItem().setConceptName(DSRCodedEntryValue("RE.05", OFFIS_CODING_SCHEME_DESIGNATOR, "Finding"));
-                    doc->getTree().getCurrentContentItem().setStringValue("Visualization of a cervix carcinoma, almost completely permeating into the anterior and posterior labia and extending into the parametrium on the right side. No indication of bladder or rectal involvement. The pelvic wall is free. The tumor does not extend caudally to the vagina. In the vicinity of the left iliac vessel an approximately 1.5 cm round structure can be seen in today´s examination, most probably representing the left ovary. If this has been removed because of the ectopic pregnancy, then it is a pathologically enlarged lymph node. There is an ovarian cyst on the right with individual solid contents. Cervical carcinoma permeating into the anterior and posterior labia and extending into the parametrium on the right side.");
+                    doc->getTree().getCurrentContentItem().setStringValue("Visualization of a cervix carcinoma, almost completely permeating into the anterior and posterior labia and extending into the parametrium on the right side. No indication of bladder or rectal involvement. The pelvic wall is free. The tumor does not extend caudally to the vagina. In the vicinity of the left iliac vessel an approximately 1.5 cm round structure can be seen in today's examination, most probably representing the left ovary. If this has been removed because of the ectopic pregnancy, then it is a pathologically enlarged lymph node. There is an ovarian cyst on the right with individual solid contents. Cervical carcinoma permeating into the anterior and posterior labia and extending into the parametrium on the right side.");
 
                     doc->getTree().addContentItem(DSRTypes::RT_contains, DSRTypes::VT_Image);
                     doc->getTree().getCurrentContentItem().setConceptName(DSRCodedEntryValue("IR.02", OFFIS_CODING_SCHEME_DESIGNATOR, "Best illustration of finding"));
@@ -1136,7 +1136,10 @@ int main(int argc, char *argv[])
 /*
  *  CVS/RCS Log:
  *  $Log: mkreport.cc,v $
- *  Revision 1.10  2001-06-13 13:44:47  joergr
+ *  Revision 1.11  2001-07-02 12:58:04  joergr
+ *  Replaced non-standard characters in report "05" and "15".
+ *
+ *  Revision 1.10  2001/06/13 13:44:47  joergr
  *  Added check for data dictionary to command line tool.
  *
  *  Revision 1.9  2001/06/13 10:09:55  joergr
