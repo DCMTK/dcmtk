@@ -22,9 +22,9 @@
  *  Purpose: Commandline-Application to modify tags in DICOM-Files
  *
  *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2003-10-13 14:52:59 $
+ *  Update Date:      $Date: 2004-10-22 16:53:26 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/apps/dcmodify.cc,v $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -41,14 +41,27 @@ int main(int argc, char *argv[])
     int error_count=0;
     MdfConsoleEngine engine(argc,argv,OFFIS_CONSOLE_APPLICATION);
     error_count=engine.startProvidingService();
-    CERR << "There were " << error_count << " error(s)" << endl;
+    if (error_count > 0)
+	    CERR << "There were " << error_count << " error(s)" << endl;
     return(error_count);
 }
 
 /*
 ** CVS/RCS Log:
 ** $Log: dcmodify.cc,v $
-** Revision 1.4  2003-10-13 14:52:59  onken
+** Revision 1.5  2004-10-22 16:53:26  onken
+** - fixed ignore-errors-option
+** - major enhancements for supporting private tags
+** - removed '0 Errors' output
+** - modifications to groups 0000,0001,0002,0003,0005 and 0007 are blocked,
+**   removing tags with group 0001,0003,0005 and 0007 is still possible
+** - UID options:
+**   - generate new study, series and instance UIDs
+**   - When changing UIDs in dataset, related metaheader tags are updated
+**     automatically
+** - minor code improvements
+**
+** Revision 1.4  2003/10/13 14:52:59  onken
 ** error-message adapted to mdfconen.cc
 **
 ** Revision 1.3  2003/09/19 12:47:21  onken

@@ -19,12 +19,12 @@
  *
  *  Author:  Michael Onken
  *
- *  Purpose: Class for modifying DICOM-Files from comandline
+ *  Purpose: Class for modifying DICOM files from comandline
  *
  *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2004-04-19 14:45:07 $
+ *  Update Date:      $Date: 2004-10-22 16:53:26 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/apps/mdfconen.h,v $
- *  CVS/RCS Revision: $Revision: 1.8 $
+ *  CVS/RCS Revision: $Revision: 1.9 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -52,7 +52,7 @@ public :
     OFString path;
     OFString value;
 
-    /** Comparison-operator between Jobs
+    /** Comparison operator between Jobs
      */
     OFBool operator==(const MdfJob& j) const;
 
@@ -65,15 +65,15 @@ private :
 
 
 /** This class encapsulates data structures and operations for modifying
- *  Dicom-files from the commandline
+ *  Dicom files from the commandline
  */
 class MdfConsoleEngine
 {
 public:
 
     /** Constructor
-     *  @param argc Number of commandline-arguments
-     *  @param argv Array holding the Commandline-arguments
+     *  @param argc Number of commandline arguments
+     *  @param argv Array holding the commandline arguments
      *  @param appl_name Name of calling application, that instantiates
      *                   this class
      */
@@ -85,18 +85,18 @@ public:
     ~MdfConsoleEngine();
 
     /** This function looks at commandline options and decides what to do.
-     *  It evaluates option-values from commandline and prepares them for
+     *  It evaluates option values from commandline and prepares them for
      *  starting the corresponding private functions.
      *  @return Returns 0 if successful, another value if errors occurreds
      */
     int startProvidingService();
 
 protected:
-    ///helper class for console-applications
+    ///helper class for console applications
     OFConsoleApplication *app;
-    ///helper class for command-line-parsing
+    ///helper class for commandline parsing
     OFCommandLine *cmd;
-    ///ds_man holds DatasetManager, that is used for modify operations
+    ///ds_man holds dataset manager, that is used for modify operations
     MdfDatasetManager *ds_man;
     ///verbose mode
     OFBool verbose_option;
@@ -104,12 +104,15 @@ protected:
     OFBool debug_option;
     ///ignore errors option
     OFBool ignore_errors_option;
+	//if false, metaheader UIDs are not updated when related dataset UIDs change
+	OFBool update_metaheader_uids_option;
+
     ///list of jobs to be executed
     OFList<MdfJob> *jobs;
     ///list of files to be modified
     OFList<OFString> *files;
 
-    /** This function splits a modify-option (inclusive value) as
+    /** This function splits a modify option (inclusive value) as
      *  found on commandline into to parts (path and value)
      *  e.g. "(0010,0010)=value" into path "(0010,0010)" and "value"
      *  @param string to be splitted
@@ -120,13 +123,15 @@ protected:
                                  OFString &path,
                                  OFString &value);
 
-    /** Executes given modify-job
+    void checkJobs();
+
+    /** Executes given modify job
      *  @param job job to be executed
      *  @return returns 0 if no error occured, else the number of errors
      */
     int executeJob(const MdfJob &job);
 
-    /** Parses commandline options into corresponding file- and job-lists and
+    /** Parses commandline options into corresponding file- and job lists and
      *  enables debug/verbose mode. The joblist is built in order of modify
      *  options on commandline
      */
@@ -151,6 +156,18 @@ protected:
      */
     OFCondition restoreFile(const char *filename);
 
+    /** The function handles three strings, that are directly printed
+     *  after another. The whole message is then terminated by \n
+     *  @param condition message is printed, if condition is true
+     *  @param s1 first message string
+     *  @param s2 second message string
+     *  @param s2 third message string
+     */
+    void debugMsg(const OFBool &condition,
+                  const OFString &s1,
+                  const OFString &s2,
+                  const OFString &s3);
+
 private:
 
     /** private undefined assignment operator
@@ -168,7 +185,19 @@ private:
 /*
 ** CVS/RCS Log:
 ** $Log: mdfconen.h,v $
-** Revision 1.8  2004-04-19 14:45:07  onken
+** Revision 1.9  2004-10-22 16:53:26  onken
+** - fixed ignore-errors-option
+** - major enhancements for supporting private tags
+** - removed '0 Errors' output
+** - modifications to groups 0000,0001,0002,0003,0005 and 0007 are blocked,
+**   removing tags with group 0001,0003,0005 and 0007 is still possible
+** - UID options:
+**   - generate new study, series and instance UIDs
+**   - When changing UIDs in dataset, related metaheader tags are updated
+**     automatically
+** - minor code improvements
+**
+** Revision 1.8  2004/04/19 14:45:07  onken
 ** Restructured code to avoid default parameter values for "complex types" like
 ** OFString. Required for Sun CC 2.0.1.
 **

@@ -19,12 +19,12 @@
  *
  *  Author:  Michael Onken
  *
- *  Purpose: Class for modifying DICOM-Files and Datasets
+ *  Purpose: Class for modifying DICOM files
  *
  *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2004-05-14 12:08:36 $
+ *  Update Date:      $Date: 2004-10-22 16:53:26 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/apps/mdfdsman.h,v $
- *  CVS/RCS Revision: $Revision: 1.10 $
+ *  CVS/RCS Revision: $Revision: 1.11 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -40,10 +40,9 @@
 #include "ofcond.h"
 #include "oflist.h"
 #include "dcvrat.h"
-//#include "dcdebug.h"
 
 /** This class encapsulates data structures and operations for modifying
- *  Dicom-files. Therefore it allows the process of load->modify->save to
+ *  Dicom files. Therefore it allows the process of load->modify->save to
  *  provide this service.
  */
 class MdfDatasetManager
@@ -52,13 +51,13 @@ public:
     /** Constructor, initializes member-variables
      *  @param debug enables/disables debug-messages (off per default)
      */
-    MdfDatasetManager(const OFBool debug);
+    MdfDatasetManager(const OFBool debug=OFFalse);
 
     /** Destructor
      */
     ~MdfDatasetManager();
 
-    /** Loads a file into Datasetmanager
+    /** Loads a file into dataset manager
      *  @param file_name file to be loaded
      *  @return returns EC_normal if everything is ok, else an error
      */
@@ -69,100 +68,179 @@ public:
      *  @param value denotes new value of tag
      *  @param only_modify if true, only existing tags are processed. If false,
      *                     not existing tag is inserted
+     *  @param update_metaheader updates metaheader UIDs, if related UIDs in
+     *                           dataset are changed (default=true)
      *  @return returns EC_normal if everything is ok, else an error
      */
     OFCondition modifyOrInsertTag(OFString tag_path,
                                   const OFString &value,
-                                  const OFBool &only_modify);
+                                  const OFBool &only_modify,
+                                  const OFBool update_metaheader=OFTrue);
 
-    /** Modifies all matching tags in Dataset to a new value
+    /** Modifies all matching tags in dataset to a new value
      *  @param tag_path denotes, which tag to modify
      *  @param value denotes new value of tag
+     *  @param update_metaheader if true, metaheader uids are updated,
+     *         if related dataset uids are changed, (default=true)
      *  @param count returns holds the number of tags, that were affected
      *  @return returns EC_normal if everything is ok, else an error
      */
     OFCondition modifyAllTags(OFString tag_path,
                               const OFString &value,
+                              const OFBool update_metaheader,
                               int &count);
 
-    /** Deletes tag in Dataset
+    /** Deletes tag in dataset
      *  @param tag_path holds complete path to tag
-     *  @param all_tags If true, tag is deleted at all levels of Dataset,
+     *  @param all_tags If true, tag is deleted at all levels of dataset,
      *                  else only 1. level is accessed
      *  @return returns EC_normal if everything is ok, else an error
      */
     OFCondition deleteTag(OFString tag_path,
                           const OFBool &all_tags);
 
-    /** Saves current Dataset back to a file. Caution: After saving
+	/** Generates new 'Study Instance UID' and inserts it into the dataset.
+	 *  'Series Instance UID' and 'SOP Instance UID' are not affected.
+	 */
+    OFCondition generateNewStudyUID();
+
+	/** Generates new 'Series Instance UID' and inserts it into the dataset.
+	 *  'SOP Instance UID' is not affected.
+	 */
+    OFCondition generateNewSeriesUID();
+
+	/** Generates new 'SOP Instance UID' and inserts it into the dataset.
+	 *  The related metaheader tag ('Media Storage SOP Instance UID') is
+	 *  deleted from metaheader, so that it gets created correctly, if the file 
+	 *  is saved to disk.
+	 */
+    OFCondition generateNewInstanceUID();
+
+    /** Saves current dataset back to a file. Caution: After saving
      *  MdfDatasetManager keeps working on old filename.
      *  @param file filename to save to
      *  @return returns EC_normal if everything is ok, else an error
      */
     OFCondition saveFile(const char *file);
 
-    /** Saves current Dataset back to file using original filename
+    /** Saves current dataset back to file using original filename
      *  @return returns EC_normal if everything is ok, else an error
      */
     OFCondition saveFile();
 
-    /** Returns the Dataset, that this MdfDatasetManager handles.
+    /** Returns the dataset, that this MdfDatasetManager handles.
      *  You should use the returned object with care to avoid
-     *  sideeffects with other class-methods, that modify this object, too.
-     *  @return returns the Dataset, this MdfDatasetManager manages and NULL, if
-     *          no Dataset is loaded
+     *  sideeffects with other class methods, that modify this object, too.
+     *  @return returns the dataset, this MdfDatasetManager manages and NULL, if
+     *          no dataset is loaded
      */
     DcmDataset* getDataset();
 
 
     /** Returns the DcmFileFormat, that this MdfDatasetManager handles.
      *  You should use the returned object with care to avoid
-     *  sideeffects with other class-methods, that modify this object, too.
+     *  sideeffects with other class methods, that modify this object, too.
      *  @return returns the DcmFileFormat, this MdfDatasetManager manages and
      *          NULL, if no file is loaded
      */
     DcmFileFormat* getFileFormat();
 
-    /** Returns filename of the file, that's loaded actually.
+    /** Returns filename of the file, that's loaded currently.
      *  @return returns filename and "" if no file is loaded.
      */
     OFString getFilename();
 
-    /** The function handles three strings, that are directly printed
-     *  after another to CERR. The whole message is then terminated by \n
-     *  @param s1 first message string
-     *  @param s2 second message string
-     *  @param s2 third message string
-     */
-    static void debugMsg(const OFString &s1,
-                         const OFString &s2,
-                         const OFString &s3);
 
 protected:
 
     /** modifies element to a specific value
      *  @param elem element, that should be changed
      *  @param value the value, the element should be changed to
-     *  @return OFCondition, which returns an error-code if an error occurs
+     *  @return OFCondition, which returns an error code if an error occurs
      */
     OFCondition startModify(DcmElement *elem, const OFString &value);
 
-    /** inserts tag into item with a specific value
-     *  @param item - item, where tag is inserted
+    /** inserts tag into item with a specific value, overwrites existing tag
+     *  @param item item, where tag is inserted
      *  @param search_key specifies tag to be inserted
      *  @param value value that should be inserted in item
-     *  @return returns an error-code as OFCondition, if an error occurs
+     *  @return returns an error code as OFCondition, if an error occurs
      */
     OFCondition startInsert(DcmItem *item, DcmTagKey &search_key,
                             const OFString &value);
 
-    ///name of file, that is loaded actually
+    /** If key is the tag for SOPInstanceUID or SOPClassUID, then this function
+     *  removes the related MediaStorage UIDs from the metaheader. The
+     *  metaheader is then updated automagically when the file is saved back to
+     *  disk.
+     *  @param key tag to examine
+     */
+    void deleteRelatedMetaheaderTag(const DcmTagKey &key);
+
+    /** Checks whether group number is 0,1,2,3,5 or 7. Then an error is
+     *  returned, because these groups are illegal or shouldn't be modified
+     *  @param key tag, whose group should be examined
+     *  @return OFCondition with OF_ok if group is ok, else OF_error and
+     *          an error message are returned
+     */
+    OFCondition hasValidGroupNumber(const DcmTagKey &key);
+
+    /** Returns true, if given tag is a private tag (odd group number)
+     *  @param tag_key tag key, that should be tested
+     *  @return OFTrue if tag is private, else OFFalse
+     */
+    OFBool isPrivateTag(const DcmTagKey &tag_key);
+
+    /** Returns true, if given tag is a private reservation tag.
+     *  Thats is the case, if tag has the form gggg,00ee (10<ee<FF)
+     *  @param tag_key tag key, that should be tested
+     *  @return OFTrue if tag is a private reservation tag, else OFFalse
+     */
+    OFBool isPrivateReservationTag(const DcmTagKey &tag_key);
+
+    /** Returns true, if given tag is reserved in given item.
+     *  The private creator string is returned, too.
+     *  @param tag_key tag key, that should be checked
+     *  @param item this item is searched for the reservation
+     *  @param priv_creator OUT:private creator string of reservation, if found
+     *  @return OFTrue if tag has a matching reservation, else OFFalse
+     */
+    OFBool hasPrivateReservationContext(const DcmTagKey &tag_key,
+                                        DcmItem *item,
+                                        OFString &priv_creator);
+
+    /** Calculates from given private tag the reservation tag, that
+     *  would make a reservation for this private tag
+     *  @param tag_key tag key, whose reservation should be calculated
+     *  @return the tag key, that would reserve given private tag
+     */
+    DcmTagKey calcPrivateReservationTag(const DcmTagKey &tag_key);
+
+    /** Returns true, if given tag key can be found in dictionary
+     *  @param search_key tag to lookup
+     *  @return OFTrue if tag could be found, else OFFalse
+     */
+    OFBool isTagInDictionary(const DcmTagKey &search_key);
+
+    /** The function handles three strings, that are directly printed
+     *  after another. The whole message is then terminated by \n
+     *  @param condition message is printed, if condition is true
+     *  @param s1 first message string
+     *  @param s2 second message string
+     *  @param s2 third message string
+     */
+    void debugMsg(const OFBool &condition,
+                  const OFString &s1,
+                  const OFString &s2,
+                  const OFString &s3);
+
+    ///name of file, that is loaded currently
     OFString act_file;
     ///will hold file to modify
     DcmFileFormat *dfile;
     ///will hold dset, we want to modify
     DcmDataset *dset;
-    ///enable debug-messages
+    ///enable debug messages
     OFBool debug_option;
 
 private:
@@ -182,7 +260,19 @@ private:
 /*
 ** CVS/RCS Log:
 ** $Log: mdfdsman.h,v $
-** Revision 1.10  2004-05-14 12:08:36  onken
+** Revision 1.11  2004-10-22 16:53:26  onken
+** - fixed ignore-errors-option
+** - major enhancements for supporting private tags
+** - removed '0 Errors' output
+** - modifications to groups 0000,0001,0002,0003,0005 and 0007 are blocked,
+**   removing tags with group 0001,0003,0005 and 0007 is still possible
+** - UID options:
+**   - generate new study, series and instance UIDs
+**   - When changing UIDs in dataset, related metaheader tags are updated
+**     automatically
+** - minor code improvements
+**
+** Revision 1.10  2004/05/14 12:08:36  onken
 ** Additional documentation added.
 **
 ** Revision 1.9  2004/04/19 14:45:07  onken

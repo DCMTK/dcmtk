@@ -19,12 +19,12 @@
  *
  *  Author:  Michael Onken
  *
- *  Purpose: Class for modifying DICOM-Files from comandline
+ *  Purpose: Class for modifying DICOM files from comandline
  *
  *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2004-04-19 14:45:07 $
+ *  Update Date:      $Date: 2004-10-22 16:53:26 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/apps/mdfconen.cc,v $
- *  CVS/RCS Revision: $Revision: 1.10 $
+ *  CVS/RCS Revision: $Revision: 1.11 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -69,8 +69,8 @@ OFBool MdfJob::operator==(const MdfJob& j) const
 MdfConsoleEngine::MdfConsoleEngine(int argc, char *argv[],
                                    const char *application_name)
   : app(NULL), cmd(NULL), ds_man(NULL), verbose_option(OFFalse),
-    debug_option(OFFalse), ignore_errors_option(OFFalse), jobs(NULL),
-    files(NULL)
+    debug_option(OFFalse), ignore_errors_option(OFFalse),
+    update_metaheader_uids_option(OFTrue), jobs(NULL), files(NULL)
 // Date         : May 13th, 2003
 // Author       : Michael Onken
 // Task         : Constructor.
@@ -79,7 +79,7 @@ MdfConsoleEngine::MdfConsoleEngine(int argc, char *argv[],
 //                application_name - [in] name of calling application
 // Return Value : none
 {
-    //print application-header
+    //print application header
     char rcsid[200];
     sprintf( rcsid, "$dcmtk: %s v%s %s $", application_name,
              OFFIS_DCMTK_VERSION, OFFIS_DCMTK_RELEASEDATE );
@@ -93,7 +93,7 @@ MdfConsoleEngine::MdfConsoleEngine(int argc, char *argv[],
                   OFCmdParam::PM_MultiOptional);
 
     cmd->setOptionColumns(LONGCOL, SHORTCOL);
-    //add options to commandline-application
+    //add options to commandline application
     cmd->addGroup("general options:");
         cmd->addOption("--help", "-h", "print this help text and exit");
         cmd->addOption("--version", "print version information and exit", OFTrue /* exclusive */);
@@ -112,6 +112,12 @@ MdfConsoleEngine::MdfConsoleEngine(int argc, char *argv[],
         cmd->addOption("--erase-tag", "-e",1, "\"tag-path\"", "erase tag");
         cmd->addOption("--erase-all-tags", "-ea",1, "\"tag\"", "erase ALL matching tags in file");
 
+    cmd->addGroup("uid options:");
+        cmd->addOption("--generate-study-uid", "-gst", "generate new Study Instance UID");
+        cmd->addOption("--generate-series-uid", "-gse", "generate new Series Instance UID");
+        cmd->addOption("--generate-instance-uid", "-gin", "generate new SOP Instance UID");
+        cmd->addOption("--dont-update-metaheader-uids", "-dum", "don't update metaheader UIDs");
+
     //evaluate commandline
     prepareCmdLineArgs(argc, argv, application_name);
     if (app->parseCommandLine(*cmd, argc, argv, OFCommandLine::ExpandWildcards))
@@ -128,11 +134,11 @@ MdfConsoleEngine::MdfConsoleEngine(int argc, char *argv[],
         if (cmd->findOption("--version"))
         {
             app->printHeader(OFTrue /*print host identifier*/);
-            MdfDatasetManager::debugMsg("External libraries used: ","","");
+            debugMsg(OFTrue,"External libraries used: ","","");
 #ifdef WITH_ZLIB
-            MdfDatasetManager::debugMsg("ZLIB, Version ", zlibVersion(),"");
+            debugMsg(OFTrue,"ZLIB, Version ", zlibVersion(),"");
 #else
-            MdfDatasetManager::debugMsg(" none","","");
+            debugMsg(OFTrue," none","","");
             delete app, delete cmd;
             exit(0);
 #endif
@@ -149,14 +155,14 @@ MdfConsoleEngine::MdfConsoleEngine(int argc, char *argv[],
         //if no files are given: return with error message
         if (files->empty()==OFTrue)
         {
-            MdfDatasetManager::debugMsg("No dicom files given!","","");
+            debugMsg(OFTrue,"No dicom files given!","","");
             delete app, delete cmd;
             exit(1);
         }
 
         // make sure data dictionary is loaded
         if (!dcmDataDict.isDictionaryLoaded())
-            MdfDatasetManager::debugMsg("Warning: no data dictionary loaded, ",
+            debugMsg(OFTrue,"Warning: no data dictionary loaded, ",
                 "check environment variable: ", DCM_DICT_ENVIRONMENT_VARIABLE);
     }
 }
@@ -167,7 +173,7 @@ void MdfConsoleEngine::splitPathAndValue(const OFString &whole,
                                          OFString &value)
 // Date         : November, 26th, 2003
 // Author       : Michael Onken
-// Task         : This function splits a modify-option (inclusive value) as
+// Task         : This function splits a modify option (inclusive value) as
 //                found on commandline into two parts (path and value)
 //                e.g. "(0010,0010)=value" into path "(0010,0010)" and "value"
 //                if given string is "", path and value will be empty, too
@@ -189,7 +195,7 @@ void MdfConsoleEngine::splitPathAndValue(const OFString &whole,
 int MdfConsoleEngine::executeJob(const MdfJob &job)
 // Date         : December, 4th, 2003
 // Author       : Michael Onken
-// Task         : executes given modify-job
+// Task         : executes given modify job
 // Parameters   : job - [in] job to be executed
 // Return Value : Returns 0 if no error occured, else the number of errors
 {
@@ -197,34 +203,37 @@ int MdfConsoleEngine::executeJob(const MdfJob &job)
     int count=0; int error_count=0;
     if (verbose_option)
     {
-         MdfDatasetManager::debugMsg(OFString("Executing (option|path|value): ")
+         debugMsg(verbose_option, OFString("Executing (option|path|value): ")
             + job.option + "|" + job.path + "|" + job.value,"","");
     }
     //start modify operation based on job option
     if (job.option=="i")
-        result=ds_man->modifyOrInsertTag(job.path, job.value, OFFalse);
+        result=ds_man->modifyOrInsertTag(job.path, job.value, OFFalse, update_metaheader_uids_option);
     else if (job.option=="m")
-        result=ds_man->modifyOrInsertTag(job.path, job.value, OFTrue);
+        result=ds_man->modifyOrInsertTag(job.path, job.value, OFTrue, update_metaheader_uids_option);
     else if (job.option=="ma")
-        result=ds_man->modifyAllTags(job.path, job.value, count);
+        result=ds_man->modifyAllTags(job.path, job.value, update_metaheader_uids_option, count);
     else if (job.option=="e")
         result=ds_man->deleteTag(job.path, OFFalse);
     else if (job.option=="ea")
         result=ds_man->deleteTag(job.path, OFTrue);
+    else if (job.option=="gst")
+        result=ds_man->generateNewStudyUID();
+    else if (job.option=="gse")
+        result=ds_man->generateNewSeriesUID();
+    else if (job.option=="gin")
+        result=ds_man->generateNewInstanceUID();
+
     //no valid job option found:
     else
     {
         error_count++;
-        if (verbose_option)
-            MdfDatasetManager::debugMsg("error, no valid option: ", job.option,
-            "");
+        debugMsg(verbose_option, "error, no valid option: ", job.option, "");
     }
     //if modify operation failed
     if (result.bad() && error_count==0)
     {
-        if (verbose_option)
-            MdfDatasetManager::debugMsg("Error modifying tag: ", result.text(),
-            "");
+        debugMsg(verbose_option,"Error modifying tag: ", result.text(),"");
         error_count++;
     }
     return error_count;
@@ -235,7 +244,7 @@ void MdfConsoleEngine::parseCommandLine()
 // Date         : December, 4th, 2003
 // Author       : Michael Onken
 // Task         : parses commandline options into corresponding file- and
-//                job-lists and enables debug/verbose mode. The job-list is
+//                job lists and enables debug/verbose mode. The job list is
 //                built in order of modify options on commandline
 // Parameters   : none
 // Return Value : none
@@ -256,8 +265,10 @@ void MdfConsoleEngine::parseCommandLine()
                 verbose_option=OFTrue;
             else if (option_string=="--debug")
                 debug_option=OFTrue;
-            else if (option_string=="--ignore-errors-option")
+            else if (option_string=="--ignore-errors")
                 ignore_errors_option=OFTrue;
+            else if (option_string=="--dont-update-metaheader-uids")
+                update_metaheader_uids_option=OFFalse;
             //catch modify options
             else
             {
@@ -271,6 +282,12 @@ void MdfConsoleEngine::parseCommandLine()
                     aJob.option="ma";
                 if (option_string=="--erase-all-tags")
                     aJob.option="ea";
+                if (option_string=="--generate-study-uid")
+                    aJob.option="gst";
+                if (option_string=="--generate-series-uid")
+                    aJob.option="gse";
+                if (option_string=="--generate-instance-uid")
+                    aJob.option="gin";
                 //save to joblist
                 aJob.path=tag_path;
                 aJob.value=tag_value;
@@ -291,14 +308,15 @@ int MdfConsoleEngine::startProvidingService()
 // Return Value : Returns 0 if successful, another value if errors occurred
 {
     OFCondition result;
-    //return-value of this function
+    //return value of this function
     int errors=0;
     //just for better readability on console
-    MdfDatasetManager::debugMsg("\n","","");
+    debugMsg(OFTrue,"\n","","");
+    //parse command line into file and job list
     parseCommandLine();
     //iterators for job and file loops
-    OFListIterator(MdfJob) job_it;
-    OFListIterator(OFString) file_it;
+    OFIterator<MdfJob> job_it;
+    OFIterator<OFString> file_it;
     file_it=files->begin();
     //outer loop: iterate over all files
     for (unsigned int i=0; i<files->size(); i++)
@@ -321,13 +339,13 @@ int MdfConsoleEngine::startProvidingService()
                 result=ds_man->saveFile( (*file_it).c_str());
                 if (result.bad())
                 {
-                    MdfDatasetManager::debugMsg("error: couldnt save file: ",
+                    debugMsg(OFTrue, "error: couldn't save file: ",
                         result.text(),"");
                     errors++;
                     result=restoreFile((*file_it).c_str());
                     if (result.bad())
                     {
-                        MdfDatasetManager::debugMsg(
+                        debugMsg(OFTrue,
                             "error: couldnt restore file!","","");
                         errors++;
                     }
@@ -339,7 +357,7 @@ int MdfConsoleEngine::startProvidingService()
                 result=restoreFile((*file_it).c_str());
                 if (result.bad())
                 {
-                    MdfDatasetManager::debugMsg("error: couldnt restore file!",
+                    debugMsg(OFTrue, "error: couldnt restore file!",
                     "","");
                     errors++;
                 }
@@ -349,13 +367,11 @@ int MdfConsoleEngine::startProvidingService()
         else
         {
             errors++;
-            MdfDatasetManager::debugMsg("error: unable to load file ",*file_it,
+            debugMsg(OFTrue,"error: unable to load file ",*file_it,
             "\n");
         }
         file_it++;
-        if (verbose_option)
-            MdfDatasetManager::debugMsg("------------------------------------",
-            "","");
+        debugMsg(verbose_option, "------------------------------------","","");
     }
     return errors;
 }
@@ -373,9 +389,8 @@ OFCondition MdfConsoleEngine::loadFile(const char *filename)
     //free memory
     delete ds_man;
     ds_man = new MdfDatasetManager(debug_option);
-    if (verbose_option) MdfDatasetManager::debugMsg("Processing file: ",
-        filename,"");
-    //load file into DatasetManager
+    debugMsg(verbose_option,"Processing file: ", filename, "");
+    //load file into dataset manager
     result=ds_man->loadFile(filename);
     if (result.good())
         result=backupFile(filename);
@@ -393,7 +408,7 @@ OFCondition MdfConsoleEngine::backupFile(const char *file_name)
     int result;
     OFString backup = file_name;
     backup+=".bak";
-    //delete backup-file, if it already exists:
+    //delete backup file, if it already exists:
     if ( OFStandard::fileExists(backup.c_str()) )
     {
         int del_result = remove(backup.c_str());
@@ -403,12 +418,12 @@ OFCondition MdfConsoleEngine::backupFile(const char *file_name)
             "Couldn't delete previous backup file, unable to backup!\n");
         }
     }
-    //if backup-file could be removed:
+    //if backup file could be removed:
     if (backup_result.good())
     {
         //backup original file!
         result=rename(file_name,backup.c_str());
-        //set return-value
+        //set return value
         if (result!=0)
             backup_result=makeOFCondition(0,0,OF_error,"Unable to backup!\n");
     }
@@ -432,25 +447,47 @@ OFCondition MdfConsoleEngine::restoreFile(const char *filename)
         result=remove(filename);
         if (result!=0)
         {
-            MdfDatasetManager::debugMsg("Unable to delete original filename!",
-            "","");
+            debugMsg(OFTrue,
+                "Unable to delete original filename for restoring backup!",
+                "","");
             return EC_IllegalCall;
         }
     }
-    //and rename backup-file back to original file-name:
+    //and rename backup file back to original filename:
     result=rename(backup.c_str(),filename);
     //error renaming backup file
     if (result!=0)
     {
-        MdfDatasetManager::debugMsg("Error renaming backup file to original","","");
+        debugMsg(OFTrue,"Error renaming backup file to original","","");
         return EC_IllegalCall;
     }
-    //successful restored, throw out message:
-    else if (verbose_option)
-        MdfDatasetManager::debugMsg("Renamed backup file to original","","");
-
+    //successfully restored, throw out message:
+    else
+        debugMsg(verbose_option, "Renamed backup file to original", "", "");
     //you only get to this point, if restoring was completely successful
     return EC_Normal;
+}
+
+
+void MdfConsoleEngine::debugMsg(const OFBool &condition,
+                                const OFString &s1,
+                                const OFString &s2,
+                                const OFString &s3)
+// Date         : October, 15th, 2004
+// Author       : Michael Onken
+// Task         : The function handles three strings, that are directly printed
+//                after another. The whole message is then terminated by \n
+// Parameters   : condition - [in] message is printed, if condition is true
+//                s1 - [in] first message string
+//                s2 - [in] second message string
+//                s3 - [in] third message string
+// Return Value : none
+{
+    if (condition)
+    {
+        ofConsole.lockCerr() << s1 << s2 << s3 << endl;
+        ofConsole.unlockCerr();
+    }
 }
 
 
@@ -461,9 +498,6 @@ MdfConsoleEngine::~MdfConsoleEngine()
 // Parameters   : none
 // Return Value : none
 {
-    if (debug_option)
-        MdfDatasetManager::debugMsg("Deleting member variables from memory",
-        "","");
     delete app;
     delete cmd;
     delete files;
@@ -474,7 +508,19 @@ MdfConsoleEngine::~MdfConsoleEngine()
 /*
 ** CVS/RCS Log:
 ** $Log: mdfconen.cc,v $
-** Revision 1.10  2004-04-19 14:45:07  onken
+** Revision 1.11  2004-10-22 16:53:26  onken
+** - fixed ignore-errors-option
+** - major enhancements for supporting private tags
+** - removed '0 Errors' output
+** - modifications to groups 0000,0001,0002,0003,0005 and 0007 are blocked,
+**   removing tags with group 0001,0003,0005 and 0007 is still possible
+** - UID options:
+**   - generate new study, series and instance UIDs
+**   - When changing UIDs in dataset, related metaheader tags are updated
+**     automatically
+** - minor code improvements
+**
+** Revision 1.10  2004/04/19 14:45:07  onken
 ** Restructured code to avoid default parameter values for "complex types" like
 ** OFString. Required for Sun CC 2.0.1.
 **
