@@ -9,10 +9,10 @@
 ** Purpose:
 ** Implementation of class DcmElement
 **
-** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1997-08-29 08:32:54 $
+** Last Update:		$Author: hewett $
+** Update Date:		$Date: 1997-09-11 15:24:39 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcelem.cc,v $
-** CVS/RCS Revision:	$Revision: 1.20 $
+** CVS/RCS Revision:	$Revision: 1.21 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -533,6 +533,11 @@ E_Condition DcmElement::changeValue(const void * value,
     return errorFlag;
 }
 
+E_Condition DcmElement::putOFStringArray(const OFString& /* stringValue*/)
+{
+    errorFlag = EC_IllegalCall;
+    return errorFlag;
+}
 
 E_Condition DcmElement::putString(const char * /*val*/)
 {
@@ -822,7 +827,10 @@ E_Condition DcmElement::write(DcmStream & outStream,
 /*
 ** CVS/RCS Log:
 ** $Log: dcelem.cc,v $
-** Revision 1.20  1997-08-29 08:32:54  andreas
+** Revision 1.21  1997-09-11 15:24:39  hewett
+** Added a putOFStringArray method.
+**
+** Revision 1.20  1997/08/29 08:32:54  andreas
 ** - Added methods getOFString and getOFStringArray for all
 **   string VRs. These methods are able to normalise the value, i. e.
 **   to remove leading and trailing spaces. This will be done only if
