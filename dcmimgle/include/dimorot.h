@@ -22,9 +22,9 @@
  *  Purpose: DicomMonochromeRotateTemplate (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1998-11-27 14:57:48 $
+ *  Update Date:      $Date: 1998-12-14 17:26:26 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/dimorot.h,v $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -86,7 +86,7 @@ class DiMonoRotateTemplate
                     rotateRight(&pixel, &Data);
                 else if (degree == 180)
                     rotateTopDown(&pixel, &Data);
-                else  if (degree == 270)
+                else if (degree == 270)
                     rotateLeft(&pixel, &Data);
             }
         }
@@ -101,7 +101,10 @@ class DiMonoRotateTemplate
 **
 ** CVS/RCS Log:
 ** $Log: dimorot.h,v $
-** Revision 1.1  1998-11-27 14:57:48  joergr
+** Revision 1.2  1998-12-14 17:26:26  joergr
+** Corrected a typo.
+**
+** Revision 1.1  1998/11/27 14:57:48  joergr
 ** Added copyright message.
 ** Added methods and classes for flipping and rotating, changed for
 ** scaling and clipping.
