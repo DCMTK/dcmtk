@@ -22,9 +22,9 @@
  *  Purpose: DicomLookupTable (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-10-20 10:36:37 $
+ *  Update Date:      $Date: 1999-10-20 18:40:26 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/libsrc/diluptab.cc,v $
- *  CVS/RCS Revision: $Revision: 1.14 $
+ *  CVS/RCS Revision: $Revision: 1.15 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -342,7 +342,7 @@ int DiLookupTable::invertTable(const int flag)
             {
                 if (OriginalBitsAllocated == 8)
                 {
-                    if (Bits <= 8)                  // UNTESTED !!
+                    if (Bits <= 8)
                     {
                         register const Uint8 *p = (const Uint8 *)OriginalData;
                         register Uint8 *q = (Uint8 *)OriginalData;
@@ -455,7 +455,7 @@ int DiLookupTable::compareLUT(const DcmUnsignedShort &data,
                               const DcmUnsignedShort &descriptor)
 {
     int result = 1;
-    const DiBaseLUT *lut = new DiLookupTable(data, descriptor);
+    DiBaseLUT *lut = new DiLookupTable(data, descriptor);
     if (lut != NULL)
         result = compare(lut);
     delete lut;
@@ -473,7 +473,10 @@ OFBool DiLookupTable::operator==(const DiLookupTable &lut)
  *
  * CVS/RCS Log:
  * $Log: diluptab.cc,v $
- * Revision 1.14  1999-10-20 10:36:37  joergr
+ * Revision 1.15  1999-10-20 18:40:26  joergr
+ * Removed const from pointer declaration (problem reported by MSVC).
+ *
+ * Revision 1.14  1999/10/20 10:36:37  joergr
  * Enhanced method invertTable to distinguish between copy of LUT data and
  * original (referenced) LUT data.
  *
