@@ -35,11 +35,11 @@ The current release successfully compiles on the following systems:
     Windows XP     / Intel x86 / Microsoft Visual C++ 6.0 (Service Pack 4)
     Windows XP     / Intel x86 / Microsoft Visual C++ .NET 2003 (VS 7.1)
 
-The imagectn and wlistctn (now: wlmscpfs) have been ported to Windows, but do
-not support multi-processing (i.e. multiple clients concurrently) under
-Windows.  The worklist WWW scripts require an HTTP server and a Perl
-interpreter and have not been tested under Windows (file locking interaction
-with the wlistctn / wlmscpfs server may or may not work).
+The dcmqrscp and wlistctn tools have been ported to Windows, but do not support 
+multi-processing (i.e. multiple clients concurrently) under Windows.  The 
+worklist WWW scripts require an HTTP server and a Perl interpreter and have not 
+been tested under Windows (file locking interaction with the wlistctn / wlmscpfs 
+server may or may not work).
 
 Unix (or lookalikes)
 --------------------
@@ -409,10 +409,10 @@ Known problems:
    Visual C++ .NET (aka Visual Studio 7.x).  You need to create new files with
    CMake as described below.  We recommend to delete all ".dsp" and ".dsw"
    files before starting CMake.
-2. The imagectn and wlmscpfs (formerly known as wlistctn) cannot spark multiple
-   processes.  Every association must be handled completely before a new
-   association is possible.
-3. On Windows 95, imagectn always uses exclusive file locking (the LockFileEx
+2. The dcmqrscp and wlmscpfs tools cannot spark multiple processes.  Every 
+   association must be handled completely before a new association is 
+   possible.
+3. On Windows 95, dcmqrscp always uses exclusive file locking (the LockFileEx
    API call is available on Windows NT only).  This is no problem if only one
    single process exists.
 4. Most applications will only work if the computer has configured TCP/IP, a
