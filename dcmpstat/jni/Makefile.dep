@@ -270,7 +270,7 @@ DSRDocumentTree.o: DSRDocumentTree.cc J2Ci_jDSRDocumentTree.h \
  ../../dcmsr/include/dsrcomvl.h ../../dcmsr/include/dsrimgvl.h \
  ../../dcmsr/include/dsrimgfr.h ../../dcmsr/include/dsrwavvl.h \
  ../../dcmsr/include/dsrwavch.h
-DSRImageValue.o: DSRImageValue.cc J2Ci_jDSRSCoordValue.h jInterface.h \
+DSRImageValue.o: DSRImageValue.cc J2Ci_jDSRImageValue.h jInterface.h \
  /usr/include/errno.h ../../config/include/osconfig.h \
  ../include/dviface.h ../../dcmdata/include/dctk.h \
  ../../dcmdata/include/dctypes.h ../../ofstd/include/oftypes.h \

@@ -22,7 +22,7 @@ include $(configdir)/@common_makefile@
 #
 # Settings for Solaris 2.x with Sun CC 4.2 compiler
 #
-javainc=-I/usr/java1.2/include -I/usr/java1.2/include/solaris
+javainc=-I/usr/java1.3/include -I/usr/java1.3/include/solaris
 soflags=-G
 solibs=-lC
 
@@ -64,25 +64,32 @@ imagectninc=-I$(imagectndir)/include -I$(includedir)/imagectn
 imagectnlibdir=-L$(imagectndir)/libsrc
 imagectnlib=-limagedb
 
+dcmsigndir=$(top_srcdir)/../dcmsign
+dcmsigninc=-I$(dcmsigndir)/include -I$(includedir)/dcmsign
+dcmsignlibdir=-L$(dcmsigndir)/libsrc
+dcmsignlib=-ldcmsign
+
 dcmsrdir=$(top_srcdir)/../dcmsr
 dcmsrinc=-I$(dcmsrdir)/include -I$(includedir)/dcmsr
 dcmsrlibdir=-L$(dcmsrdir)/libsrc
 dcmsrlib=-ldcmsr
 
 LOCALINCLUDES=$(dcmpstatinc) $(ofstdinc) $(dcmnetinc) $(dcmdatainc) \
-              $(dcmimgleinc) $(imagectninc) $(dcmsrinc) $(javainc)
+			$(dcmimgleinc) $(imagectninc) $(dcmsigninc) $(dcmsrinc) \
+			$(javainc)
 LIBDIRS = -L$(top_srcdir)/libsrc $(dcmpstatlibdir) $(imagectnlibdir) \
-              $(dcmnetlibdir) $(dcmdatalibdir) $(ofstdlibdir) \
-              $(dcmimglelibdir) $(dcmsrlibdir) -L$(libdir)
-LOCALLIBS = $(dcmpstatlib) $(dcmimglelib) $(imagectnlib) $(dcmnetlib) \
-              $(dcmsrlib) $(dcmdatalib) $(ofstdlib) $(OPENSSLLIBS) $(solibs)
+			$(dcmnetlibdir) $(dcmdatalibdir) $(ofstdlibdir) \
+			$(dcmimglelibdir) $(dcmsignlibdir) $(dcmsrlibdir) -L$(libdir)
+LOCALLIBS = $(dcmpstatlib) $(dcmsrlib) $(dcmsignlib) $(dcmimglelib) \
+			$(imagectnlib) $(dcmnetlib) $(dcmdatalib) $(ofstdlib) \
+			$(OPENSSLLIBS) $(solibs)
 
 objs= DVInterface.o DVPSGraphicObject.o DVPresentationState.o \
-      DVPSCurve.o DVPSTextObject.o DVPSStoredPrint.o \
-      DSRCodeValue.o DSRCompositeValue.o DSRDocument.o \
-      DSRDocumentTree.o DSRImageValue.o DSRNumericValue.o \
-      DSRSCoordValue.o DSRTCoordValue.o DSRWaveformValue.o
-      
+	DVPSCurve.o DVPSTextObject.o DVPSStoredPrint.o \
+	DSRCodeValue.o DSRCompositeValue.o DSRDocument.o \
+	DSRDocumentTree.o DSRImageValue.o DSRNumericValue.o \
+	DSRSCoordValue.o DSRTCoordValue.o DSRWaveformValue.o
+
 
 progs= libjInterface.so
 
@@ -111,4 +118,3 @@ $(objs): config.h
 
 
 include $(DEP)
-
