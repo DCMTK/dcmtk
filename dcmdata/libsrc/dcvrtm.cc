@@ -22,9 +22,9 @@
  *  Purpose: class DcmTime
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-12-18 10:42:25 $
+ *  Update Date:      $Date: 2001-12-19 09:59:31 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcvrtm.cc,v $
- *  CVS/RCS Revision: $Revision: 1.16 $
+ *  CVS/RCS Revision: $Revision: 1.17 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -42,6 +42,13 @@ BEGIN_EXTERN_C
 #endif
 #ifdef HAVE_SYS_TIME_H
 #include <sys/time.h>      /* for struct timeval on Linux */
+#endif
+
+#ifndef HAVE_WINDOWS_H
+#ifndef HAVE_PROTOTYPE_GETTIMEOFDAY
+/* Ultrix has gettimeofday() but no prototype in the header files */
+int gettimeofday(struct timeval *tp, void *);
+#endif
 #endif
 END_EXTERN_C
 
@@ -280,7 +287,11 @@ DcmTime::getISOFormattedTimeFromString(
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrtm.cc,v $
-** Revision 1.16  2001-12-18 10:42:25  meichel
+** Revision 1.17  2001-12-19 09:59:31  meichel
+** Added prototype declaration for gettimeofday() for systems like Ultrix
+**   where the function is known but no prototype present in the system headers.
+**
+** Revision 1.16  2001/12/18 10:42:25  meichel
 ** Added typecasts to avoid warning on gcc 2.95.3 on OSF/1 (Alpha)
 **
 ** Revision 1.15  2001/11/01 16:16:01  meichel

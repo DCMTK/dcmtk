@@ -21,10 +21,10 @@
  *
  *  Purpose: Storage Service Class Provider (C-STORE operation)
  *
- *  Last Update:      $Author: wilkens $
- *  Update Date:      $Date: 2001-12-14 12:18:06 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2001-12-19 09:59:43 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/apps/storescp.cc,v $
- *  CVS/RCS Revision: $Revision: 1.49 $
+ *  CVS/RCS Revision: $Revision: 1.50 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -62,6 +62,13 @@ BEGIN_EXTERN_C
 #ifdef HAVE_SYS_TIME_H
 #include <sys/time.h>      /* for struct timeval on Linux */
 #endif
+
+#ifndef HAVE_WINDOWS_H
+#ifndef HAVE_PROTOTYPE_GETTIMEOFDAY
+/* Ultrix has gettimeofday() but no prototype in the header files */
+int gettimeofday(struct timeval *tp, void *);
+#endif
+#endif
 END_EXTERN_C
 
 #ifdef HAVE_GUSI_H
@@ -75,6 +82,7 @@ END_EXTERN_C
 #ifdef HAVE_WINDOWS_H
 #include <direct.h>        // for _mkdir()
 #endif
+
 
 #include "dimse.h"
 #include "diutil.h"
@@ -1946,7 +1954,11 @@ static void executeCommand( const OFString &cmd )
 /*
 ** CVS Log
 ** $Log: storescp.cc,v $
-** Revision 1.49  2001-12-14 12:18:06  wilkens
+** Revision 1.50  2001-12-19 09:59:43  meichel
+** Added prototype declaration for gettimeofday() for systems like Ultrix
+**   where the function is known but no prototype present in the system headers.
+**
+** Revision 1.49  2001/12/14 12:18:06  wilkens
 ** Fixed a bug in storescp that prevented the application from working correctly
 ** under Unix.
 **
