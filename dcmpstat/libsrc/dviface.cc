@@ -21,9 +21,9 @@
  *
  *  Purpose: DVPresentationState
  *
- *  Last Update:      $Author: vorwerk $
- *  Update Date:      $Date: 1999-01-14 16:19:46 $
- *  CVS/RCS Revision: $Revision: 1.10 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 1999-01-14 17:50:27 $
+ *  CVS/RCS Revision: $Revision: 1.11 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -136,14 +136,17 @@ E_Condition DVInterface::savePState(const char *filename)
     {
         if ((status = pState.write(*dataset)) == EC_Normal)
         {
-        	DcmFileFormat *fileformat = new DcmFileFormat(dataset);
-        	if (fileformat != NULL)
-                status = saveFileFormat(filename, fileformat);
-            else
-                status = EC_MemoryExhausted;
-        }
-    } else
-        status = EC_MemoryExhausted;
+          DcmFileFormat *fileformat = new DcmFileFormat(dataset);
+          if (fileformat != NULL) 
+          {
+            status = saveFileFormat(filename, fileformat);
+            delete fileformat;
+          } else {
+            status = EC_MemoryExhausted;
+            delete dataset;
+          }
+        } else delete dataset;
+    } else status = EC_MemoryExhausted;
     return status;
 }
 
@@ -710,13 +713,141 @@ E_Condition DVInterface::saveFileFormat(const char *filename,
     return stream.GetError();
 }
 
+E_Condition DVInterface::putStringValue(DcmItem *item, DcmTagKey tag, const char *value)
+{
+    E_Condition result = EC_Normal;
+    DcmTag localTag(tag);
+    if (item)
+    {
+        DcmElement *elem = NULL;
+        switch(localTag.getEVR())
+        {
+          case EVR_AE: elem = new DcmApplicationEntity(localTag); break;
+          case EVR_AS: elem = new DcmAgeString(localTag); break;
+          case EVR_CS: elem = new DcmCodeString(localTag); break;
+          case EVR_DA: elem = new DcmDate(localTag); break;
+          case EVR_DS: elem = new DcmDecimalString(localTag); break;
+          case EVR_DT: elem = new DcmDateTime(localTag); break;
+          case EVR_IS: elem = new DcmIntegerString(localTag); break;
+          case EVR_TM: elem = new DcmTime(localTag); break;
+          case EVR_UI: elem = new DcmUniqueIdentifier(localTag); break;
+          case EVR_LO: elem = new DcmLongString(localTag); break;
+          case EVR_LT: elem = new DcmLongText(localTag); break;
+          case EVR_PN: elem = new DcmPersonName(localTag); break;
+          case EVR_SH: elem = new DcmShortString(localTag); break;
+          case EVR_ST: elem = new DcmShortText(localTag); break;
+          default: result=EC_IllegalCall; break;
+        }
+        if (elem)
+        {
+          if (value) result = elem->putString(value);
+        } else if (result==EC_Normal) result = EC_MemoryExhausted;
+        if (EC_Normal==result) item->insert(elem, OFTrue);
+    } else result = EC_IllegalCall;
+    return result;
+}
+
+E_Condition DVInterface::putUint16Value(DcmItem *item, DcmTagKey tag, Uint16 value)
+{
+    E_Condition result = EC_Normal;
+    DcmTag localTag(tag);
+    if (item)
+    {
+        DcmElement *elem = new DcmUnsignedShort(localTag);
+        if (elem) result = elem->putUint16(value); else result=EC_MemoryExhausted;
+        if (EC_Normal==result) item->insert(elem, OFTrue);
+    } else result = EC_IllegalCall;
+    return result;
+}
+
+E_Condition DVInterface::saveDICOMImage(
+  const char *filename, 
+  const void *pixelData,
+  unsigned long width,
+  unsigned long height,
+  double aspectRatio)
+{
+    if ((width<1)||(width > 0xFFFF)) return EC_IllegalCall;
+    if ((height<1)||(height > 0xFFFF)) return EC_IllegalCall;
+    if (pixelData == NULL) return EC_IllegalCall;
+    if (filename == NULL) return EC_IllegalCall;
+    if (aspectRatio == 0.0) return EC_IllegalCall;
+    
+    Uint16 columns = (Uint16) width;
+    Uint16 rows = (Uint16) height;
+    E_Condition status = EC_Normal;
+    DcmDataset *dataset = new DcmDataset();
+    char newuid[70];
+    
+    if (dataset)
+    {
+      if (EC_Normal==status) status = putStringValue(dataset, DCM_PatientName);
+      if (EC_Normal==status) status = putStringValue(dataset, DCM_PatientID);
+      if (EC_Normal==status) status = putStringValue(dataset, DCM_PatientBirthDate);
+      if (EC_Normal==status) status = putStringValue(dataset, DCM_PatientSex);
+      if (EC_Normal==status) status = putStringValue(dataset, DCM_StudyDate);
+      if (EC_Normal==status) status = putStringValue(dataset, DCM_StudyTime);
+      if (EC_Normal==status) status = putStringValue(dataset, DCM_ReferringPhysiciansName);
+      if (EC_Normal==status) status = putStringValue(dataset, DCM_StudyID);
+      if (EC_Normal==status) status = putStringValue(dataset, DCM_AccessionNumber);
+      if (EC_Normal==status) status = putStringValue(dataset, DCM_SeriesNumber);
+      if (EC_Normal==status) status = putStringValue(dataset, DCM_ImageNumber);
+      if (EC_Normal==status) status = putStringValue(dataset, DCM_PatientOrientation);
+      if (EC_Normal==status) status = putStringValue(dataset, DCM_SOPClassUID, UID_SecondaryCaptureImageStorage);
+      if (EC_Normal==status) status = putStringValue(dataset, DCM_Modality, "OT");
+      if (EC_Normal==status) status = putStringValue(dataset, DCM_ConversionType, "WSD");
+      if (EC_Normal==status) status = putStringValue(dataset, DCM_PhotometricInterpretation, "MONOCHROME2");
+      dcmGenerateUniqueIdentifer(newuid);
+      if (EC_Normal==status) status = putStringValue(dataset, DCM_SOPInstanceUID, newuid);
+      dcmGenerateUniqueIdentifer(newuid);
+      if (EC_Normal==status) status = putStringValue(dataset, DCM_SeriesInstanceUID, newuid);
+      dcmGenerateUniqueIdentifer(newuid);
+      if (EC_Normal==status) status = putStringValue(dataset, DCM_StudyInstanceUID, newuid);
+      if (EC_Normal==status) status = putUint16Value(dataset, DCM_SamplesPerPixel, 1);
+      if (EC_Normal==status) status = putUint16Value(dataset, DCM_Rows, rows);
+      if (EC_Normal==status) status = putUint16Value(dataset, DCM_Columns, columns);
+      if (EC_Normal==status) status = putUint16Value(dataset, DCM_BitsAllocated, 8);
+      if (EC_Normal==status) status = putUint16Value(dataset, DCM_BitsStored, 8);
+      if (EC_Normal==status) status = putUint16Value(dataset, DCM_HighBit, 7);
+      if (EC_Normal==status) status = putUint16Value(dataset, DCM_PixelRepresentation, 0);
+      if ((EC_Normal==status)&&(aspectRatio != 1.0))
+      {
+        sprintf(newuid, "%ld\\%ld", 1000L, (long)(aspectRatio*1000.0));
+        status = putStringValue(dataset, DCM_PixelAspectRatio, newuid);
+      }
+      DcmPolymorphOBOW *pxData = new DcmPolymorphOBOW(DCM_PixelData);
+      if (pxData)
+      {
+        status = pxData->putUint8Array((Uint8 *)pixelData, (unsigned long)(width*height));
+        if (EC_Normal==status) status = dataset->insert(pxData); else delete pxData;
+      } else status = EC_MemoryExhausted;
+ 
+      if (EC_Normal == status)
+      {
+          DcmFileFormat *fileformat = new DcmFileFormat(dataset);
+          if (fileformat) 
+          {
+            status = saveFileFormat(filename, fileformat);
+            delete fileformat;
+          } else {
+            status = EC_MemoryExhausted;
+            delete dataset;
+          }
+      } else delete dataset;
+    } else status = EC_MemoryExhausted;
+    return status;
+}
+
 
 /*
  *  CVS/RCS Log:
  *  $Log: dviface.cc,v $
- *  Revision 1.10  1999-01-14 16:19:46  vorwerk
+ *  Revision 1.11  1999-01-14 17:50:27  meichel
+ *  added new method saveDICOMImage() to class DVInterface.
+ *    Allows to store a bitmap as a DICOM image.
+ *
+ *  Revision 1.10  1999/01/14 16:19:46  vorwerk
  *  getNumberOfSeries bug corrected. Error handling in deletion and reviewed methods added.
- *  CVS---------------------------------------------------------------------
  *
  *  Revision 1.8  1999/01/11 10:10:18  vorwerk
  *  error handling for getNumberofStudies and selectStudy implemented.

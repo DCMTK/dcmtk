@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DVInterface
  *
- *  Last Update:      $Author: vorwerk $
- *  Update Date:      $Date: 1999-01-04 13:27:16 $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 1999-01-14 17:50:30 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -82,6 +82,12 @@ class DVInterface
     
     /* returns a reference to the current presentation state. */
     DVPresentationState& getCurrentPState();
+    
+    /** UNIMPLEMENTED - resets the presentation state object to the status
+     *  it had immediately after the last successful operation of "loadImage" or "loadPState".
+     *  @return EC_Normal upon success, an error code otherwise.
+     */
+    E_Condition resetPresentationState();
     
     /* here follow the Browser interface methods */
     
@@ -217,6 +223,24 @@ class DVInterface
     const char *getTargetDescription(const char *targetID);
     
 
+    /** saves a monochrome bitmap as a DICOM Secondary Capture image.
+     *  The bitmap must use one byte per pixel, left to right, top to bottom
+     *  order of the pixels. 0 is interpreted as black, 255 as white.
+     *  @param filename the file name or path under which the image is saved.
+     *  @param pixelData a pointer to the image data. Must contain at least
+     *    width*height bytes of data.
+     *  @param width the width of the image, must be <= 0xFFFF
+     *  @param height the height of the image, must be <= 0xFFFF
+     *  @aspectRatio the pixel aspect ratio as width/height. If omitted, a pixel
+     *    aspect ratio of 1/1 is assumed.
+     *  @return EC_Normal upon success, an error code otherwise.
+     */
+    E_Condition saveDICOMImage(
+      const char *filename, 
+      const void *pixelData,
+      unsigned long width,
+      unsigned long height,
+      double aspectRatio=1.0);
 
 
 protected:
@@ -235,6 +259,27 @@ private:
     /** private undefined assignment operator
      */
     DVInterface& operator=(const DVInterface&);
+
+    /** helper function that inserts a new element into a DICOM dataset.
+     *  A new DICOM element of the type determined by the tag is created.
+     *  The string value (if any) is assigned and the element is inserted
+     *  into the dataset. Only tags corresponding to string VRs may be passed.
+     *  @param item the dataset into which the new element is inserted
+     *  @param tag the tag key of the new DICOM element, must have string VR.
+     *  @param value the value to be inserted. If omitted, an empty element is created.
+     *  @return EC_Normal upon success, an error code otherwise.
+     */
+    static E_Condition putStringValue(DcmItem *item, DcmTagKey tag, const char *value=NULL);
+
+    /** helper function that inserts a new element into a DICOM dataset.
+     *  A new DICOM element of type "US" is created, the value is assigned 
+     *  and the element is inserted into the dataset. 
+     *  @param item the dataset into which the new element is inserted
+     *  @param tag the tag key of the new DICOM element, must have "US" VR.
+     *  @param value the value to be inserted.
+     *  @return EC_Normal upon success, an error code otherwise.
+     */
+    static E_Condition putUint16Value(DcmItem *item, DcmTagKey tag, Uint16 value);
 
     /* member variables */
     DVPresentationState pState;
@@ -282,7 +327,11 @@ private:
 
 /*
  *  $Log: dviface.h,v $
- *  Revision 1.6  1999-01-04 13:27:16  vorwerk
+ *  Revision 1.7  1999-01-14 17:50:30  meichel
+ *  added new method saveDICOMImage() to class DVInterface.
+ *    Allows to store a bitmap as a DICOM image.
+ *
+ *  Revision 1.6  1999/01/04 13:27:16  vorwerk
  *  line inserted
  *
  *  Revision 1.5  1999/01/04 13:02:26  vorwerk
