@@ -8,9 +8,9 @@
 ** Generate a C++ header defining symbolic names for DICOM Tags.
 **
 ** Last Update:         $Author: meichel $
-** Update Date:         $Date: 1998-07-28 15:53:04 $
+** Update Date:         $Date: 1999-03-22 15:45:47 $
 ** Source File:         $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/mkdeftag.cc,v $
-** CVS/RCS Revision:    $Revision: 1.9 $
+** CVS/RCS Revision:    $Revision: 1.10 $
 ** Status:              $State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -167,7 +167,30 @@ getUserName(char* userString, int maxLen)
     if (s == NULL) s = "<no-utmp-entry>";
     return strncpy(userString, s, maxLen);
 }
+
+#elif WIN32
+
+#include <windows.h>
+#include <lm.h>
+
+static char*
+getUserName(char* userString, int maxLen)
+{
+    char* s = NULL;
+
+    WKSTA_USER_INFO_0 *userinfo;
+    if (NetWkstaUserGetInfo(NULL, 0, (LPBYTE*)&userinfo) == NERR_Success){
+        LPTSTR lptstr = userinfo->wkui0_username;
+        // Convert the Unicode full name to ANSI.
+        WideCharToMultiByte( CP_ACP, 0, (WCHAR*)lptstr, -1,
+            userString, maxLen, NULL, NULL );
+    } else {
+        strncpy(userString, "<no-user-information-available>", maxLen);
+    }
+    return userString;
+}
 #else
+
 static char*
 getUserName(char* userString, int maxLen)
 {
@@ -210,6 +233,13 @@ int main(int argc, char* argv[])
 #ifdef HAVE_GUSI_H
     GUSISetup(GUSIwithSIOUXSockets);
     GUSISetup(GUSIwithInternetSockets);
+#endif
+
+#ifdef HAVE_WINSOCK_H
+    WSAData winSockData;
+    /* we need at least version 1.1 */
+    WORD winSockVersionNeeded = MAKEWORD( 1, 1 );
+    WSAStartup(winSockVersionNeeded, &winSockData);
 #endif
 
     prepareCmdLineArgs(argc, argv, "mkdeftag");
@@ -307,7 +337,10 @@ int main(int argc, char* argv[])
 /*
 ** CVS/RCS Log:
 ** $Log: mkdeftag.cc,v $
-** Revision 1.9  1998-07-28 15:53:04  meichel
+** Revision 1.10  1999-03-22 15:45:47  meichel
+** Implemented getUserName() on Win32 using the NetWkstaUserGetInfo() API.
+**
+** Revision 1.9  1998/07/28 15:53:04  meichel
 ** Corrected typo in mkdeftag.
 **
 ** Revision 1.8  1998/07/15 14:08:49  joergr
