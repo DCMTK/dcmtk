@@ -81,9 +81,9 @@ storescp.o: storescp.cc ../../config/include/osconfig.h \
  ../../dcmdata/include/dcsequen.h ../../dcmdata/include/dcdebug.h \
  ../../dcmdata/include/dcdict.h ../../dcmdata/include/dchashdi.h \
  ../../dcmdata/include/cmdlnarg.h ../../ofstd/include/ofconapp.h \
- ../../ofstd/include/ofcmdln.h ../../dcmtls/include/tlstrans.h \
- ../include/dcmtrans.h ../include/dcmlayer.h \
- ../../dcmtls/include/tlslayer.h
+ ../../ofstd/include/ofcmdln.h ../../ofstd/include/ofstd.h \
+ ../../ofstd/include/ofdatime.h ../../ofstd/include/ofdate.h \
+ ../../ofstd/include/oftime.h ../../dcmdata/include/dcdeftag.h
 storescu.o: storescu.cc ../../config/include/osconfig.h \
  ../../ofstd/include/ofstring.h ../../ofstd/include/oftypes.h \
  ../include/dimse.h ../include/dicom.h ../include/cond.h \
@@ -105,6 +105,4 @@ storescu.o: storescu.cc ../../config/include/osconfig.h \
  ../../dcmdata/include/dcdebug.h ../../dcmdata/include/dcdict.h \
  ../../dcmdata/include/dchashdi.h ../../dcmdata/include/dcdeftag.h \
  ../../dcmdata/include/cmdlnarg.h ../../ofstd/include/ofconapp.h \
- ../../ofstd/include/ofcmdln.h ../../dcmtls/include/tlstrans.h \
- ../include/dcmtrans.h ../include/dcmlayer.h \
- ../../dcmtls/include/tlslayer.h
+ ../../ofstd/include/ofcmdln.h
