@@ -9,10 +9,10 @@
 ** Implementation of class DcmDirectoryRecord
 **
 **
-** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1996-01-29 13:38:25 $
+** Last Update:		$Author: hewett $
+** Update Date:		$Date: 1996-03-11 13:08:03 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcdirrec.cc,v $
-** CVS/RCS Revision:	$Revision: 1.4 $
+** CVS/RCS Revision:	$Revision: 1.5 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -265,7 +265,7 @@ char* DcmDirectoryRecord::buildFileName(const char * origName,
 		{
 			if ( lastchar != '\\' )       // eliminiert doppelte '\\'
 			{
-				*to++ = PATH_SEPERATOR;
+				*to++ = PATH_SEPARATOR;
 			}
 		}
 		else
