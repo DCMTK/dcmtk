@@ -1,3 +1,6 @@
+ofcndvar.o: ofcndvar.cc ../../config/include/osconfig.h \
+ ../include/oftypes.h ../include/ofthread.h ../include/ofconsol.h \
+ ../include/ofstream.h ../include/ofstring.h
 tlist.o: tlist.cc ../../config/include/osconfig.h \
  ../include/ofstream.h ../include/oflist.h ../include/oftypes.h \
  ../include/ofalgo.h ../include/ofconsol.h ../include/ofthread.h
@@ -8,12 +11,16 @@ tofdatim.o: tofdatim.cc ../../config/include/osconfig.h \
 tofstd.o: tofstd.cc ../../config/include/osconfig.h ../include/ofstd.h \
  ../include/ofstring.h ../include/ofstream.h ../include/oftypes.h \
  ../include/ofconsol.h ../include/ofthread.h
+tstatof.o: tstatof.cc ../../config/include/osconfig.h \
+ ../include/ofstd.h ../include/ofstring.h ../include/ofstream.h \
+ ../include/oftypes.h ../include/ofconsol.h ../include/ofthread.h
 tstlist.o: tstlist.cc ../../config/include/osconfig.h \
  ../include/ofstream.h ../include/ofalgo.h ../include/oftypes.h \
  ../include/oflist.h ../include/ofconsol.h ../include/ofthread.h
 tstring.o: tstring.cc ../include/ofstring.h \
  ../../config/include/osconfig.h ../include/ofstream.h \
- ../include/oftypes.h ../include/ofconsol.h ../include/ofthread.h
+ ../include/oftypes.h ../include/ofconsol.h ../include/ofthread.h \
+ ../include/ofstd.h
 tststack.o: tststack.cc ../../config/include/osconfig.h \
  ../include/ofstream.h ../include/ofstack.h ../include/oftypes.h \
  ../include/ofconsol.h ../include/ofthread.h
