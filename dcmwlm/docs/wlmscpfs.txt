@@ -51,6 +51,9 @@ network options:
     +xe   --prefer-little        prefer explicit VR little endian TS
     +xb   --prefer-big           prefer explicit VR big endian TS
     +xi   --implicit             accept implicit VR little endian TS only
+  network host access control (tcp wrapper) options:
+    -ac   --access-full          accept connections from any host (default)
+    +ac   --access-control       enforce host access control rules
   other network options:
           --refuse               refuse association
           --reject               reject association if no implement. class UID
@@ -126,6 +129,16 @@ TransferSyntax over LittleEndianExplicitTransferSyntax (and vice versa). This
 behaviour can be changed with the --prefer options (see above).
 
 The wlmscpfs application does not support extended negotiation.
+
+
+ACCESS CONTROL
+
+When compiled on Unix platforms with TCP wrapper support, host-based access 
+control can be enabled with the --access-control command line option. In 
+this case the access control rules defined in the system's host access 
+control tables for "wlmscpfs" are enforced. The default locations of the 
+host access control tables are /etc/hosts.allow and /etc/hosts.deny.
+Further details are described in hosts_access(5).
 
 
 ENVIRONMENT

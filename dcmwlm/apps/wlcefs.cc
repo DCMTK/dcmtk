@@ -22,10 +22,10 @@
  *  Purpose: Class representing a console engine for basic worklist
  *           management service class providers based on the file system.
  *
- *  Last Update:      $Author: wilkens $
- *  Update Date:      $Date: 2003-02-17 12:02:00 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2003-06-10 13:54:35 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmwlm/apps/wlcefs.cc,v $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -130,6 +130,13 @@ WlmConsoleEngineFileSystem::WlmConsoleEngineFileSystem( int argc, char *argv[], 
       cmd->addOption("--prefer-little",         "+xe",       "prefer explicit VR little endian TS");
       cmd->addOption("--prefer-big",            "+xb",       "prefer explicit VR big endian TS");
       cmd->addOption("--implicit",              "+xi",       "accept implicit VR little endian TS only");
+
+#ifdef WITH_TCPWRAPPER
+    cmd->addSubGroup("network host access control (tcp wrapper) options:");
+      cmd->addOption("--access-full",            "-ac",       "accept connections from any host (default)");
+      cmd->addOption("--access-control",         "+ac",       "enforce host access control rules");
+#endif
+
     cmd->addSubGroup("other network options:");
       cmd->addOption("--refuse",                             "refuse association");
       cmd->addOption("--reject",                             "reject association if no implement. class UID");
@@ -206,6 +213,12 @@ WlmConsoleEngineFileSystem::WlmConsoleEngineFileSystem( int argc, char *argv[], 
     if( cmd->findOption("--prefer-big") )      opt_networkTransferSyntax = EXS_BigEndianExplicit;
     if( cmd->findOption("--implicit") )        opt_networkTransferSyntax = EXS_LittleEndianImplicit;
     cmd->endOptionBlock();
+#ifdef WITH_TCPWRAPPER
+    cmd->beginOptionBlock();
+    if (cmd->findOption("--access-full")) dcmTCPWrapperDaemonName.set(NULL);
+    if (cmd->findOption("--access-control")) dcmTCPWrapperDaemonName.set(applicationName);
+    cmd->endOptionBlock();
+#endif
     if( cmd->findOption("--refuse") ) opt_refuseAssociation = OFTrue;
     if( cmd->findOption("--reject") ) opt_rejectWithoutImplementationUID = OFTrue;
     if( cmd->findOption("--no-fail") ) opt_failInvalidQuery = OFFalse;
@@ -345,7 +358,10 @@ void WlmConsoleEngineFileSystem::DumpMessage( const char *message )
 /*
 ** CVS Log
 ** $Log: wlcefs.cc,v $
-** Revision 1.5  2003-02-17 12:02:00  wilkens
+** Revision 1.6  2003-06-10 13:54:35  meichel
+** Added support for TCP wrappers based host access control
+**
+** Revision 1.5  2003/02/17 12:02:00  wilkens
 ** Made some minor modifications to be able to modify a special variant of the
 ** worklist SCP implementation (wlmscpki).
 **
