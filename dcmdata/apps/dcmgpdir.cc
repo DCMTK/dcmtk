@@ -11,9 +11,9 @@
 **
 **
 ** Last Update:		$Author: hewett $
-** Update Date:		$Date: 1997-03-27 15:47:24 $
+** Update Date:		$Date: 1997-03-27 18:17:25 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/apps/dcmgpdir.cc,v $
-** CVS/RCS Revision:	$Revision: 1.2 $
+** CVS/RCS Revision:	$Revision: 1.3 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -81,7 +81,8 @@ usage()
 "    +R[<desc-file>]    add a file set descriptor file ID (e.g. README)\n"
 "                       (default: add nothing)\n"
 "    +C<char-set>       add a specific character set for descriptor\n"
-"                       (default: if descriptor file presend add \"" << scsfsdf << "\")\n"
+"                       (default: if descriptor file presend add \"" 
+	 << scsfsdf << "\")\n"
 "    -w                 do not write out dicomdir (default: do write)\n"
 "  other test/debug options:\n"
 "    -u    disable generation of unknown VR (UN)\n"
@@ -119,6 +120,8 @@ basename(char* path)
     char* s = strrchr(path, PATH_SEPARATOR);
     if (s == NULL) {
 	s = path;
+    } else if (s[0] == '/') {
+	s++;
     }
     return s;
 }
@@ -398,6 +401,55 @@ dcmCopyString(DcmItem* sink, const DcmTagKey& xtag, DcmItem* source)
     return dcmInsertString(sink, xtag, dcmFindString(source, xtag));
 }
 
+static BOOL 
+dcmCopyOptString(DcmItem* sink, const DcmTagKey& xtag, DcmItem* source)
+{
+    BOOL ok = TRUE;
+    if (dcmTagExists(source, xtag)) {
+	ok = dcmInsertString(sink, xtag, dcmFindString(source, xtag));
+    }
+    return ok;
+}
+
+static BOOL 
+dcmCopyOptSequence(DcmItem* sink, const DcmTagKey& xtag, DcmItem* source)
+{
+    BOOL ok = TRUE;
+    DcmTag tag(xtag);
+
+    if (tag.getEVR() != EVR_SQ) {
+	cerr << progname << ": internal error: dcmCopyOptSequence: " 
+	     << xtag << " not SQ" << endl;
+	abort();
+    }
+
+    if (dcmTagExists(source, xtag)) {
+	DcmSequenceOfItems *sq = NULL;
+	DcmStack stack;
+	E_Condition ec = EC_Normal;
+    
+	ec = source->search(xtag, stack, ESM_fromHere, FALSE);
+
+	sq = (DcmSequenceOfItems*) stack.top();
+	if (ec == EC_Normal && sq != NULL) {
+	    // make a copy of sq
+	    DcmSequenceOfItems *sqcopy = new DcmSequenceOfItems(*sq); 
+
+	    // insert sqcopy into the sink
+	    ec = sink->insert(sqcopy, TRUE);
+	    if (ec != EC_Normal) {
+		cerr << progname << 
+		    ": error: dcmInsertSequence: cannot insert element" 
+		     << endl;
+		ok = FALSE;
+	    }
+	} else {
+	    ok = FALSE;
+	}
+    }
+    return ok;
+}
+
 /*
 ** Filename manipulation
 */
@@ -446,6 +498,51 @@ int dicomFilenameComponentCount(const char* fname)
 }
 
 /*
+** Check help functions
+*/
+
+static BOOL
+cmp(const char* s1, const char* s2)
+{
+    if (s1 == NULL || s2 == NULL) {
+	return FALSE;
+    }
+    return (strcmp(s1,s2) == 0)?(TRUE):(FALSE);
+}
+
+static BOOL
+checkExists(DcmItem* d, const DcmTagKey& key, const char* fname)
+{
+    if (!dcmTagExists(d, key)) {
+	DcmTag tag(key);
+	cerr << progname << 
+	    ": error: required attribute " << tag.getTagName() 
+	     << " " << key << " missing in file: "
+	     << fname << endl;
+	return FALSE;
+    }
+    return TRUE;
+}
+
+static BOOL
+checkExistsWithValue(DcmItem* d, const DcmTagKey& key, const char* fname)
+{
+    if (!checkExists(d, key, fname)) {
+	return FALSE;
+    }
+    const char* s = NULL;
+    if ((s = dcmFindString(d, key)) == NULL) {
+	DcmTag tag(key);
+	cerr << progname << 
+	    ": error: required attribute " << tag.getTagName() 
+	     << " " << key << " has no value in file: "
+	     << fname << endl;
+	return FALSE;
+    }
+    return TRUE;
+}
+
+/*
 ** Sanity Checks
 */
 
@@ -463,15 +560,15 @@ static BOOL checkImage(const char* fname, DcmFileFormat *ff)
     if (ff == NULL) return FALSE;
 
     DcmMetaInfo *m = ff->getMetaInfo();
-    if (m == NULL) {
+    if (m == NULL || m->card() == 0) {
 	cerr << progname << 
 	    ": error: file not part 10 format (no meta-header): "
 	     << fname << endl;
 	return FALSE;
     }
 
-    DcmDataset *ds = ff->getDataset();
-    if (ds == NULL) {
+    DcmDataset *d = ff->getDataset();
+    if (d == NULL) {
 	cerr << progname << 
 	    ": error: file contains no data (no dataset): "
 	     << fname << endl;
@@ -497,12 +594,11 @@ static BOOL checkImage(const char* fname, DcmFileFormat *ff)
     */
     found = FALSE;
     for (int i=0; i<numberOfDcmStorageSOPClassUIDs && !found; i++) {
-	found = (strcmp(mediaSOPClassUID, dcmStorageSOPClassUIDs[i]) == 0);
+	found = cmp(mediaSOPClassUID, dcmStorageSOPClassUIDs[i]);
     }
     /* a detached patient mgmt sop class is also ok */
     if (!found) {
-	found = (strcmp(mediaSOPClassUID, 
-		       UID_DetachedPatientManagementSOPClass) == 0);
+	found = cmp(mediaSOPClassUID, UID_DetachedPatientManagementSOPClass);
     }
     if (!found) {
 	cerr << progname << 
@@ -521,12 +617,45 @@ static BOOL checkImage(const char* fname, DcmFileFormat *ff)
 	     << fname << endl;
 	return FALSE;
     }
-    found = strcmp(transferSyntax, UID_LittleEndianExplicitTransferSyntax)==0;
+    found = cmp(transferSyntax, UID_LittleEndianExplicitTransferSyntax);
     if (!found) {
 	cerr << progname << 
 	    ": error: LittleEndianExplicitTransferSyntax expected: "
 	     << fname << endl;
 	return FALSE;
+    }
+
+    /*
+    ** are mandatory attributes for DICOMDIR available and valued?
+    */
+    if (!checkExistsWithValue(d, DCM_PatientID, fname)) return FALSE;
+    if (!checkExists(d, DCM_PatientName, fname)) return FALSE;
+    if (!checkExistsWithValue(d, DCM_StudyDate, fname)) return FALSE;
+    if (!checkExistsWithValue(d, DCM_StudyTime, fname)) return FALSE;
+    if (!checkExists(d, DCM_StudyDescription, fname)) return FALSE;
+    if (!checkExistsWithValue(d, DCM_StudyInstanceUID, fname)) return FALSE;
+    if (!checkExistsWithValue(d, DCM_StudyID, fname)) return FALSE;
+    if (!checkExists(d, DCM_AccessionNumber, fname)) return FALSE;
+    if (!checkExistsWithValue(d, DCM_Modality, fname)) return FALSE;
+    if (!checkExistsWithValue(d, DCM_SeriesInstanceUID, fname)) return FALSE;
+    if (!checkExistsWithValue(d, DCM_SeriesNumber, fname)) return FALSE;
+    if (!checkExistsWithValue(d, DCM_PatientID, fname)) return FALSE;
+
+    if (cmp(mediaSOPClassUID, UID_StandaloneOverlayStorage)) {
+	/* an overlay */
+	if (!checkExistsWithValue(d, DCM_OverlayNumber, fname)) return FALSE;
+    } else if (cmp(mediaSOPClassUID, UID_StandaloneModalityLUTStorage)) {
+	/* a modality lut */
+	if (!checkExistsWithValue(d, DCM_LUTNumber, fname)) return FALSE;
+    } else if (cmp(mediaSOPClassUID, UID_StandaloneVOILUTStorage)) {
+	/* a voi lut */
+	if (!checkExistsWithValue(d, DCM_LUTNumber, fname)) return FALSE;
+    } else if (cmp(mediaSOPClassUID, UID_StandaloneCurveStorage)) {
+	/* a curve */
+	if (!checkExistsWithValue(d, DCM_CurveNumber, fname)) return FALSE;
+    } else {
+	/* it can only be an image */ 
+	if (!checkExistsWithValue(d, DCM_ImageNumber, fname)) return FALSE;
     }
 
     return TRUE;
@@ -542,7 +671,7 @@ DcmDirectoryRecord* buildPatientRecord(const char* fname, DcmItem* d)
 	return NULL;
     }
     
-    dcmCopyString(rec, DCM_SpecificCharacterSet, d);
+    dcmCopyOptString(rec, DCM_SpecificCharacterSet, d);
     dcmCopyString(rec, DCM_PatientID, d);
     dcmCopyString(rec, DCM_PatientName, d);
 
@@ -558,7 +687,7 @@ DcmDirectoryRecord* buildStudyRecord(const char* fname, DcmItem* d)
 	return NULL;
     }
     
-    dcmCopyString(rec, DCM_SpecificCharacterSet, d);
+    dcmCopyOptString(rec, DCM_SpecificCharacterSet, d);
     dcmCopyString(rec, DCM_StudyDate, d);
     dcmCopyString(rec, DCM_StudyTime, d);
     dcmCopyString(rec, DCM_StudyDescription, d);
@@ -578,7 +707,7 @@ DcmDirectoryRecord* buildSeriesRecord(const char* fname, DcmItem* d)
 	return NULL;
     }
     
-    dcmCopyString(rec, DCM_SpecificCharacterSet, d);
+    dcmCopyOptString(rec, DCM_SpecificCharacterSet, d);
     dcmCopyString(rec, DCM_Modality, d);
     dcmCopyString(rec, DCM_SeriesInstanceUID, d);
     dcmCopyString(rec, DCM_SeriesNumber, d);
@@ -595,8 +724,11 @@ DcmDirectoryRecord* buildImageRecord(const char* fname, DcmItem* d)
 	return NULL;
     }
     
-    dcmCopyString(rec, DCM_SpecificCharacterSet, d);
+    dcmCopyOptString(rec, DCM_SpecificCharacterSet, d);
     dcmCopyString(rec, DCM_ImageNumber, d);
+    /* addition type 1C keys specified by STD-GEN-CD profile */
+    dcmCopyOptString(rec, DCM_ImageType, d);
+    dcmCopyOptSequence(rec, DCM_ReferencedImageSequence, d);
 
     return rec;
 }
@@ -610,7 +742,7 @@ DcmDirectoryRecord* buildOverlayRecord(const char* fname, DcmItem* d)
 	return NULL;
     }
     
-    dcmCopyString(rec, DCM_SpecificCharacterSet, d);
+    dcmCopyOptString(rec, DCM_SpecificCharacterSet, d);
     dcmCopyString(rec, DCM_OverlayNumber, d);
 
     return rec;
@@ -625,7 +757,7 @@ DcmDirectoryRecord* buildModalityLutRecord(const char* fname, DcmItem* d)
 	return NULL;
     }
     
-    dcmCopyString(rec, DCM_SpecificCharacterSet, d);
+    dcmCopyOptString(rec, DCM_SpecificCharacterSet, d);
     dcmCopyString(rec, DCM_LUTNumber, d);
 
     return rec;
@@ -640,7 +772,7 @@ DcmDirectoryRecord* buildVoiLutRecord(const char* fname, DcmItem* d)
 	return NULL;
     }
     
-    dcmCopyString(rec, DCM_SpecificCharacterSet, d);
+    dcmCopyOptString(rec, DCM_SpecificCharacterSet, d);
     dcmCopyString(rec, DCM_LUTNumber, d);
 
     return rec;
@@ -655,19 +787,10 @@ DcmDirectoryRecord* buildCurveRecord(const char* fname, DcmItem* d)
 	return NULL;
     }
     
-    dcmCopyString(rec, DCM_SpecificCharacterSet, d);
+    dcmCopyOptString(rec, DCM_SpecificCharacterSet, d);
     dcmCopyString(rec, DCM_CurveNumber, d);
 
     return rec;
-}
-
-static BOOL
-cmp(const char* s1, const char* s2)
-{
-    if (s1 == NULL || s2 == NULL) {
-	return FALSE;
-    }
-    return (strcmp(s1,s2) == 0)?(TRUE):(FALSE);
 }
 
 static BOOL
@@ -1034,7 +1157,10 @@ createDicomdirFromFiles(char* fileNames[], int numberOfFileNames)
 /*
 ** CVS/RCS Log:
 ** $Log: dcmgpdir.cc,v $
-** Revision 1.2  1997-03-27 15:47:24  hewett
+** Revision 1.3  1997-03-27 18:17:25  hewett
+** Added checks for attributes required in input files.
+**
+** Revision 1.2  1997/03/27 15:47:24  hewett
 ** Added command line switche to allow generation of UN to be
 ** disabled (it is enabled by default).
 **
