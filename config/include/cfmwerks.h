@@ -3,7 +3,7 @@
 ** on the Apple Macintosh. Created by hand.
 ** 
 ** Created: Andrew Hewett, 4.11.95
-** Modified: Andrew Hewett, 17.09.96
+** Modified: Andrew Hewett, 27.01.97
 */
 
 #ifndef CFMWERKS_H
@@ -15,11 +15,18 @@
 /* Compiling for Macintosh */
 #ifndef macintosh
 #define macintosh 1
-#endif
+#endif /* macintosh */
 
 /* This set of defines assume that the GUSI socket library is available */
-#define HAVE_GUSI_H 1	/* use the GUSI include file */
+/* use the GUSI include file */
+#define HAVE_GUSI_H 1 
 
+/* Alternativly we can use a Windows Socket library */
+/* 
+** However, the Windows Socket library on the Mac distributed with CW 11 
+** is very (very) unstable (last tried: 27.01.97)
+*/
+#undef HAVE_WINSOCK_H
 
 //
 // This set of #defines have been adapted for the Metrowerks C++ environment
@@ -91,7 +98,19 @@
 #define HAVE_ACCEPT 1
 
 /* Define if you have the access function.  */
+#ifdef HAVE_GUSI_H
 #define HAVE_ACCESS 1
+#else /* HAVE_GUSI_H */
+/*
+** Metrowerks CodeWarrior 11 no longer has an access() function
+*/
+#if __MWERKS__ >= 0x1100
+#undef HAVE_ACCESS
+#else /* __MWERKS__ >= 0x1100 */
+/* at least CodeWarrior 6 and 10 have access() */
+#define HAVE_ACCESS 1
+#endif /* __MWERKS__ >= 0x1100 */
+#endif /* HAVE_GUSI_H */
 
 /* Define if you have the bind function.  */
 #define HAVE_BIND 1
@@ -124,6 +143,8 @@
 #define HAVE_GETHOSTBYNAME 1
 
 /* Define if you have the gethostid function.  */
+/* CW 6.0 and 10.0 do not have an implementation of gethostid().
+*/
 #undef HAVE_GETHOSTID
 
 /* Define if you have the gethostname function.  */
@@ -258,6 +279,8 @@
 /* Define if you have the <ndir.h> header file.  */
 #undef HAVE_NDIR_H
 
+#ifdef HAVE_GUSI_H
+
 /* Define if you have the <netdb.h> header file.  */
 #define HAVE_NETDB_H 1
 
@@ -266,6 +289,19 @@
 
 /* Define if you have the <stat.h> header file.  */
 #undef HAVE_STAT_H /* GUSI define sys/stat.h with different values */
+
+#elif HAVE_WINSOCK_H
+
+/* Define if you have the <netdb.h> header file.  */
+#undef HAVE_NETDB_H
+
+/* Define if you have the <netinet/in.h> header file.  */
+#undef HAVE_NETINET_IN_H
+
+/* Define if you have the <stat.h> header file.  */
+#define HAVE_STAT_H 1
+
+#endif /* HAVE_WINSOCK_H */
 
 /* Define if you have the <stdarg.h> header file.  */
 #define HAVE_STDARG_H 1
@@ -279,8 +315,17 @@
 /* Define if you have the <sys/dir.h> header file.  */
 #undef HAVE_SYS_DIR_H
 
+#ifdef HAVE_GUSI_H
+
 /* Define if you have the <sys/errno.h> header file.  */
 #define HAVE_SYS_ERRNO_H 1
+
+#elif HAVE_WINSOCK_H
+
+/* Define if you have the <sys/errno.h> header file.  */
+#undef HAVE_SYS_ERRNO_H
+
+#endif /* HAVE_WINSOCK_H */
 
 /* Define if you have the <sys/file.h> header file.  */
 #undef HAVE_SYS_FILE_H
@@ -306,6 +351,8 @@
 /* Define if you have the <sys/shm.h> header file.  */
 #undef HAVE_SYS_SHM_H
 
+#ifdef HAVE_GUSI_H
+
 /* Define if you have the <sys/socket.h> header file.  */
 #define HAVE_SYS_SOCKET_H 1
 
@@ -318,17 +365,45 @@
 /* Define if you have the <sys/types.h> header file.  */
 #define HAVE_SYS_TYPES_H 1
 
+#elif HAVE_WINSOCK_H
+
+/* Define if you have the <sys/socket.h> header file.  */
+#undef HAVE_SYS_SOCKET_H
+
+/* Define if you have the <sys/stat.h> header file.  */
+#undef HAVE_SYS_STAT_H
+
+/* Define if you have the <sys/time.h> header file.  */
+#undef HAVE_SYS_TIME_H
+
+/* Define if you have the <sys/types.h> header file.  */
+#undef HAVE_SYS_TYPES_H
+
+#endif /* HAVE_WINSOCK_H */
+
 /* Define if you have the <sys/utsname.h> header file.  */
 #undef HAVE_SYS_UTSNAME_H
 
 /* Define if you have the <time.h> header file.  */
 #define HAVE_TIME_H 1
 
+#ifdef HAVE_GUSI_H
+
 /* Define if you have the <unistd.h> header file.  */
 #define HAVE_UNISTD_H 1
 
 /* Define if you have the <unix.h> header file.  */
 #define HAVE_UNIX_H 1
+
+#elif HAVE_WINSOCK_H
+
+/* Define if you have the <unistd.h> header file.  */
+#undef HAVE_UNISTD_H /* the CodeWarrior version conflicts with definitions in winsock.h */
+
+/* Define if you have the <unix.h> header file.  */
+#define HAVE_UNIX_H 1   /* the CodeWarrior version conflicts with definitions in winsock.h */
+
+#endif /* HAVE_WINSOCK_H */
 
 /* Define if you have the iostream library (-liostream).  */
 #undef HAVE_LIBIOSTREAM
@@ -372,7 +447,17 @@
 #define HAVE_PROTOTYPE_GETHOSTBYNAME 1
 
 /* Define if your system has a prototype for gethostid */
+/* CW 6.0 & 10.0 do not have an implementation of gethostid().
+** However CW 10 defines a prototype !!
+** I don't know how the versions of CW between 6 and 10 will react.
+** The __MWERKS__ symbol has a value of 0x0710 for Version 7.1 and a value of 0x0001
+** for versions earlier than 7.1
+*/
+#if __MWERKS__ >= 0x1000
+#define HAVE_PROTOTYPE_GETHOSTID 1
+#else /* __MWERKS__ >= 0x1000 */
 #undef HAVE_PROTOTYPE_GETHOSTID
+#endif /* __MWERKS__ >= 0x1000 */
 
 /* Define if your system has a prototype for gethostname */
 #define HAVE_PROTOTYPE_GETHOSTNAME 1
