@@ -8,7 +8,7 @@
 <!ATTLIST data-set xfer NMTOKEN #REQUIRED >
 <!ATTLIST data-set name CDATA #IMPLIED >
 
-<!ELEMENT element ( CDATA ) >
+<!ELEMENT element ( #PCDATA ) >
 <!ATTLIST element binary ( yes | no | hidden | base64 ) "no" >
 <!ATTLIST element len NMTOKEN #REQUIRED >
 <!ATTLIST element loaded ( yes | no ) "yes" >
