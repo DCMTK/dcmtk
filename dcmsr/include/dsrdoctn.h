@@ -23,8 +23,8 @@
  *    classes: DSRDocumentTreeNode
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-10-30 17:53:02 $
- *  CVS/RCS Revision: $Revision: 1.18 $
+ *  Update Date:      $Date: 2003-12-16 15:57:51 $
+ *  CVS/RCS Revision: $Revision: 1.19 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -320,8 +320,9 @@ class DSRDocumentTreeNode
      *  (and its children).  According to the DICOM standard it is "required if a template
      *  was used to define the content of this Item, and the template consists of a single
      *  CONTAINER with nested content, and it is the outermost invocation of a set of
-     *  nested templates that start with the same CONTAINER."  The identification is valid
-     *  if both values are either present (non-empty) or absent (empty).
+     *  nested templates that start with the same CONTAINER."  However, this condition is
+     *  currently not checked.  The identification is valid if both values are either present
+     *  (non-empty) or absent (empty).
      ** @param  templateIdentifier  identifier of the template (might be empty)
      *  @param  mappingResource     mapping resource that defines the template (might be empty)
      ** @return status, EC_Normal if successful, an error code otherwise
@@ -616,7 +617,11 @@ class DSRDocumentTreeNode
 /*
  *  CVS/RCS Log:
  *  $Log: dsrdoctn.h,v $
- *  Revision 1.18  2003-10-30 17:53:02  joergr
+ *  Revision 1.19  2003-12-16 15:57:51  joergr
+ *  Added note that the condition for the Content Template Sequence is currently
+ *  not checked.
+ *
+ *  Revision 1.18  2003/10/30 17:53:02  joergr
  *  Added full support for the ContentTemplateSequence (read/write, get/set
  *  template identification). Template constraints are not checked yet.
  *

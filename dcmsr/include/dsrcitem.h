@@ -23,8 +23,8 @@
  *    classes: DSRContentItem
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-10-30 17:54:09 $
- *  CVS/RCS Revision: $Revision: 1.16 $
+ *  Update Date:      $Date: 2003-12-16 15:57:51 $
+ *  CVS/RCS Revision: $Revision: 1.17 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -375,8 +375,9 @@ class DSRContentItem
      *  (and its children).  According to the DICOM standard is is "required if a template
      *  was used to define the content of this Item, and the template consists of a single
      *  CONTAINER with nested content, and it is the outermost invocation of a set of
-     *  nested templates that start with the same CONTAINER."  The identification is valid
-     *  if both values are either present (non-empty) or absent (empty).
+     *  nested templates that start with the same CONTAINER."  However, this condition is
+     *  currently not checked.  The identification is valid if both values are either present
+     *  (non-empty) or absent (empty).
      *  Applicable to all content items (by-value only, optional attribute).
      ** @param  templateIdentifier  identifier of the template (might be empty)
      *  @param  mappingResource     mapping resource that defines the template (might be empty)
@@ -448,7 +449,11 @@ class DSRContentItem
 /*
  *  CVS/RCS Log:
  *  $Log: dsrcitem.h,v $
- *  Revision 1.16  2003-10-30 17:54:09  joergr
+ *  Revision 1.17  2003-12-16 15:57:51  joergr
+ *  Added note that the condition for the Content Template Sequence is currently
+ *  not checked.
+ *
+ *  Revision 1.16  2003/10/30 17:54:09  joergr
  *  Added full support for the ContentTemplateSequence (read/write, get/set
  *  template identification). Template constraints are not checked yet.
  *
