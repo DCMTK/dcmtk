@@ -1,6 +1,11 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2002.06.05 (wilkens)
+
+- Changed call to readdir() so that readdir_r() is called instead.
+  Affects: dcmwlm/apps/wldsfs.cc
+
 **** Changes from 2002.05.08 (wilkens)
 
 - Added documentation files for wlmscpki, wlmscpfs and wlmscpdb.
