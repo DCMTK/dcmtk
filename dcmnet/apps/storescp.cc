@@ -22,9 +22,9 @@
  *  Purpose: Storage Service Class Provider (C-STORE operation)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-12-06 14:11:11 $
+ *  Update Date:      $Date: 2001-12-11 14:11:49 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/apps/storescp.cc,v $
- *  CVS/RCS Revision: $Revision: 1.45 $
+ *  CVS/RCS Revision: $Revision: 1.46 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -82,6 +82,7 @@ END_EXTERN_C
 #include "dcdict.h"
 #include "cmdlnarg.h"
 #include "ofconapp.h"
+#include "ofstd.h"
 #include "dcuid.h"    /* for dcmtk version name */
 #include "dicom.h"    /* for DICOM_APPLICATION_ACCEPTOR */
 #include "dcdeftag.h" // for DCM_StudyInstanceUID
@@ -273,7 +274,7 @@ int main(int argc, char *argv[])
                                                              "execute command c after having received and\nprocessed all C-STORE-Request messages that\nbelong to one study" );
     cmd.addOption(  "--rename-on-eostudy",      "-rns",      "(only w/ -ss) Having received and processed\nall C-STORE-Request messages that belong to\none study, rename output files according to\na certain pattern" );
     cmd.addOption(  "--eostudy-timeout",        "-tos",  1,  "[t]imeout: integer (only w/ -ss, -xcs or -rns)",
-                                                             "specifies a timeout value for end-of-study\ndetermination" );
+                                                             "specifies a timeout of t seconds for\nend-of-study determination" );
 
 #ifdef WITH_OPENSSL
   cmd.addGroup("transport layer security (TLS) options:");
@@ -817,7 +818,7 @@ acceptAssociation(T_ASC_Network * net)
   if( opt_endOfStudyTimeout == -1 )
     cond = ASC_receiveAssociation(net, &assoc, opt_maxPDU, NULL, NULL, opt_secureConnection);
   else
-    cond = ASC_receiveAssociation(net, &assoc, opt_maxPDU, NULL, NULL, opt_secureConnection, DUL_NOBLOCK, opt_endOfStudyTimeout);
+    cond = ASC_receiveAssociation(net, &assoc, opt_maxPDU, NULL, NULL, opt_secureConnection, DUL_NOBLOCK, (int)opt_endOfStudyTimeout);
 
   // if some kind of error occured, take care of it
   if (cond.bad())
@@ -1118,7 +1119,7 @@ processCommands(T_ASC_Association * assoc)
   while( cond == EC_Normal || cond == DIMSE_NODATAAVAILABLE )
   {
     // receive a DIMSE command over the network
-    cond = DIMSE_receiveCommand(assoc, DIMSE_NONBLOCKING, opt_endOfStudyTimeout, &presID, &msg, &statusDetail);
+    cond = DIMSE_receiveCommand(assoc, DIMSE_NONBLOCKING, (int)opt_endOfStudyTimeout, &presID, &msg, &statusDetail);
 
     // check what kind of error occurred. If no data was
     // received, check if certain other conditions are met
@@ -1229,7 +1230,7 @@ storeSCPCallback(
     void *callbackData,
     T_DIMSE_StoreProgress *progress,
     T_DIMSE_C_StoreRQ *req,
-    char *imageFileName, DcmDataset **imageDataSet,
+    char * /*imageFileName*/, DcmDataset **imageDataSet,
     T_DIMSE_C_StoreRSP *rsp,
     DcmDataset **statusDetail)
     /*
@@ -1387,7 +1388,7 @@ storeSCPCallback(
           int hour = tVal->tm_hour;
           int min = tVal->tm_min;
           int sec = tVal->tm_sec;
-          int millisec = tv.tv_usec / 1000;
+          int millisec = (int)(tv.tv_usec / 1000);
 #endif
           // create a name for the new subdirectory. pattern: "[opt_sortConcerningStudies]_[YYYYMMDD]_[HHMMSSMMM]" (use current datetime)
           char *subdirectoryName = new char[ strlen( opt_sortConcerningStudies ) + 1 + 8 + 1 + 9 + 1 ];
@@ -1397,9 +1398,9 @@ storeSCPCallback(
           char *tmpstr2 = cbdata->imageFileName;
           char *tmpstr3 = strrchr( tmpstr2, PATH_SEPARATOR );
           int position = tmpstr3 - tmpstr2;
-          subdirectoryPathAndName = new char[ strlen( tmpstr2 ) + strlen( subdirectoryName ) + 1 + 1 ];
-          strncpy( subdirectoryPathAndName, tmpstr2, position+1 );
-          subdirectoryPathAndName[position+1] = '\0';
+          const int maxLen = strlen( tmpstr2 ) + strlen( subdirectoryName ) + 1 + 1;
+          subdirectoryPathAndName = new char[ maxLen ];
+          OFStandard::strlcpy( subdirectoryPathAndName, tmpstr2, maxLen );
           strcat( subdirectoryPathAndName, subdirectoryName );
           delete subdirectoryName;
 
@@ -1728,13 +1729,13 @@ static void executeOnReception()
   OFString ph1 = PATH_PLACEHOLDER;
   OFString ph2 = FILENAME_PLACEHOLDER;
 
-  // perform substitution for placeholder %p; note that
-  //  - in case option --sort-conc-studies is set, %p will be substituted by subdirectoryPathAndName
-  //  - and in case option --sort-conc-studies is not set, %p will be substituted by opt_outputDirectory
-  OFString dir = opt_sortConcerningStudies == NULL ? opt_outputDirectory : subdirectoryPathAndName;
+  // perform substitution for placeholder #p; note that
+  //  - in case option --sort-conc-studies is set, #p will be substituted by subdirectoryPathAndName
+  //  - and in case option --sort-conc-studies is not set, #p will be substituted by opt_outputDirectory
+  OFString dir = (opt_sortConcerningStudies == NULL) ? OFString(opt_outputDirectory) : OFString(subdirectoryPathAndName);
   OFString expcmd1 = replaceChars( rawcmd, ph1, dir );
 
-  // perform substitution for placeholder %f; note that the variable outputFileNameArray[outputFileNameArrayCnt-1]
+  // perform substitution for placeholder #f; note that the variable outputFileNameArray[outputFileNameArrayCnt-1]
   // always contains the name of the file (without path) which was written last.
   OFString outputFileName = outputFileNameArray[outputFileNameArrayCnt-1];
   OFString expcmd2 = replaceChars( expcmd1, ph2, outputFileName );
@@ -1780,8 +1781,7 @@ static void renameOnEndOfStudy()
     // determine the new file name: The first two characters of the old file name make up the [modality-prefix].
     // The value for [consecutive-numbering] will be determined using the counter variable.
     char *modalityId = new char[3];
-    strncpy( modalityId, outputFileNameArray[i], 2 );
-    modalityId[2] = '\0';
+    OFStandard::strlcpy( modalityId, outputFileNameArray[i], 3 );
     char *newFileName = new char[9];
     sprintf( newFileName, "%s%06d", modalityId, counter );
     delete modalityId;
@@ -1848,7 +1848,7 @@ static void executeOnEndOfStudy()
   OFString ph = PATH_PLACEHOLDER;
   OFString dir = lastStudySubdirectoryPathAndName;
 
-  // perform substitution for placeholder %p; %p will be substituted by lastStudySubdirectoryPathAndName
+  // perform substitution for placeholder #p; #p will be substituted by lastStudySubdirectoryPathAndName
   OFString expcmd = replaceChars( rawcmd, ph, dir );
 
   // Execute command in a new process
@@ -1941,7 +1941,12 @@ static void executeCommand( const OFString &cmd )
 /*
 ** CVS Log
 ** $Log: storescp.cc,v $
-** Revision 1.45  2001-12-06 14:11:11  joergr
+** Revision 1.46  2001-12-11 14:11:49  joergr
+** Replaced occurrences of strncpy by more secure strlcpy (see ofstd.h).
+** Added type cast to keep old Sun compilers quiet.
+** Modified description of command line option -tos.
+**
+** Revision 1.45  2001/12/06 14:11:11  joergr
 ** Made description and layout of command line options more consistent.
 **
 ** Revision 1.44  2001/11/30 10:01:34  wilkens
