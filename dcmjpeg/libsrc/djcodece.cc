@@ -21,10 +21,10 @@
  *
  *  Purpose: abstract codec class for JPEG encoders.
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-12-20 10:41:50 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2002-01-08 10:30:13 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmjpeg/libsrc/djcodece.cc,v $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -530,7 +530,7 @@ OFCondition DJCodecEncoder::newInstance(DcmItem *dataset) const
     DcmElement *elem = new DcmUniqueIdentifier(DCM_SOPInstanceUID);
     if (elem)
     {
-      if (EC_Normal == (result = elem->putString(dcmGenerateUniqueIdentifer(new_uid))))
+      if (EC_Normal == (result = elem->putString(dcmGenerateUniqueIdentifier(new_uid))))
         dataset->insert(elem, OFTrue); // replace SOP Instance UID
         else delete elem;
     } else result = EC_MemoryExhausted;
@@ -1220,13 +1220,13 @@ OFCondition DJCodecEncoder::convertToSecondaryCapture(DcmItem *dataset)
   if (result.good()) result = dataset->putAndInsertString(DCM_SOPClassUID, UID_SecondaryCaptureImageStorage);
 
   // SOP Instance UID - only insert if missing.
-  dcmGenerateUniqueIdentifer(buf);
+  dcmGenerateUniqueIdentifier(buf);
   if (result.good()) result = insertStringIfMissing(dataset, DCM_SOPInstanceUID, buf);
 
   // Type 1 attributes - insert with value if missing
-  dcmGenerateUniqueIdentifer(buf);
+  dcmGenerateUniqueIdentifier(buf, SITE_STUDY_UID_ROOT);
   if (result.good()) result = insertStringIfMissing(dataset, DCM_StudyInstanceUID, buf);
-  dcmGenerateUniqueIdentifer(buf);
+  dcmGenerateUniqueIdentifier(buf, SITE_SERIES_UID_ROOT);
   if (result.good()) result = insertStringIfMissing(dataset, DCM_SeriesInstanceUID, buf);
   if (result.good()) result = insertStringIfMissing(dataset, DCM_ConversionType, "WSD");
   if (result.good()) result = insertStringIfMissing(dataset, DCM_Modality, "OT");
@@ -1251,7 +1251,13 @@ OFCondition DJCodecEncoder::convertToSecondaryCapture(DcmItem *dataset)
 /*
  * CVS/RCS Log
  * $Log: djcodece.cc,v $
- * Revision 1.4  2001-12-20 10:41:50  meichel
+ * Revision 1.5  2002-01-08 10:30:13  joergr
+ * Corrected spelling of function dcmGenerateUniqueIdentifier().
+ * Changed prefix of UIDs created for series and studies (now using constants
+ * SITE_SERIES_UID_ROOT and SITE_STUDY_UID_ROOT which are supposed to be used
+ * in these cases).
+ *
+ * Revision 1.4  2001/12/20 10:41:50  meichel
  * Fixed warnings reported by Sun CC 2.0.1
  *
  * Revision 1.3  2001/11/28 13:48:16  joergr

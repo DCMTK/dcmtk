@@ -23,8 +23,8 @@
  *    classes: DSRDocument
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-11-09 16:14:55 $
- *  CVS/RCS Revision: $Revision: 1.31 $
+ *  Update Date:      $Date: 2002-01-08 10:26:49 $
+ *  CVS/RCS Revision: $Revision: 1.32 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1781,7 +1781,7 @@ void DSRDocument::updateAttributes(const OFBool updateAll)
         /* create new SOP instance UID if required */
         if (SOPInstanceUID.getLength() == 0)
         {
-            SOPInstanceUID.putString(dcmGenerateUniqueIdentifer(uid));
+            SOPInstanceUID.putString(dcmGenerateUniqueIdentifier(uid, SITE_INSTANCE_UID_ROOT));
             OFString string;
             /* set instance creation date to current date */
             InstanceCreationDate.putString(currentDate(string).c_str());
@@ -1792,10 +1792,10 @@ void DSRDocument::updateAttributes(const OFBool updateAll)
         }
         /* create new study instance UID if required */
         if (StudyInstanceUID.getLength() == 0)
-            StudyInstanceUID.putString(dcmGenerateUniqueIdentifer(uid));
+            StudyInstanceUID.putString(dcmGenerateUniqueIdentifier(uid, SITE_STUDY_UID_ROOT));
         /* create new series instance UID if required */
         if (SeriesInstanceUID.getLength() == 0)
-            SeriesInstanceUID.putString(dcmGenerateUniqueIdentifer(uid));
+            SeriesInstanceUID.putString(dcmGenerateUniqueIdentifier(uid, SITE_SERIES_UID_ROOT));
 
         /* check and set content date if required */
         if (ContentDate.getLength() == 0)
@@ -1818,7 +1818,13 @@ void DSRDocument::updateAttributes(const OFBool updateAll)
 /*
  *  CVS/RCS Log:
  *  $Log: dsrdoc.cc,v $
- *  Revision 1.31  2001-11-09 16:14:55  joergr
+ *  Revision 1.32  2002-01-08 10:26:49  joergr
+ *  Corrected spelling of function dcmGenerateUniqueIdentifier().
+ *  Changed prefix of UIDs created for series and studies (now using constants
+ *  SITE_SERIES_UID_ROOT and SITE_STUDY_UID_ROOT which are supposed to be used
+ *  in these cases).
+ *
+ *  Revision 1.31  2001/11/09 16:14:55  joergr
  *  Added new command line option allowing to encode codes as XML attributes
  *  (instead of tags).
  *
