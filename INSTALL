@@ -124,7 +124,7 @@ One", i.e. DICOM network transmission "tunneled" through a secure TLSv1
 transport connection.  DCMTK relies on the OpenSSL toolkit (www.openssl.org)
 for the underlying cryptographic routines and the TLS protocol
 
-implementation.  This release of DCMTK is known to compile with all 
+implementation.  This release of DCMTK is known to compile with all
 0.9.6x OpenSSL releases.  Due to security considerations we recommend that
 DCMTK should be compiled with OpenSSL 0.9.6g or 0.9.6h. DCMTK has not
 yet been tested with OpenSSL 0.9.7.
@@ -135,39 +135,39 @@ of DCMTK, and the OpenSSL support must be switched on explicitly.  By
 default, DCMTK compiles without OpenSSL support and disables all security
 enhancements.
 
-To enable OpenSSL support when compiling for Windows, select the target 
-"Win32 Release OpenSSL" in the Visual C++ workspace.  You may have to 
-adapt the include paths, which expect OpenSSL in a directory named 
-openssl-0.9.6g on the same directory level as the DCMTK root directory. 
-To enable OpenSSL support when compiling for Unix, see description for 
-Step 2 below.  We recommend that you also read the documentation in 
+To enable OpenSSL support when compiling for Windows, select the target
+"Win32 Release OpenSSL" in the Visual C++ workspace.  You may have to
+adapt the include paths, which expect OpenSSL in a directory named
+openssl-0.9.6g on the same directory level as the DCMTK root directory.
+To enable OpenSSL support when compiling for Unix, see description for
+Step 2 below.  We recommend that you also read the documentation in
 dcmtk/dcmtls/docs about using TLS with DCMTK.
 
 
 ZLIB SUPPORT
 ============
 
-Starting with release 3.5.2, DCMTK supports the "Deflated Explicit VR 
-Little Endian" Transfer Syntax, i.e. ZIP-compressed network transmission 
-and media storage.  DCMTK relies on the ZLIB toolkit (www.zlib.org) for 
-the underlying compression routines.  Due to security considerations, we 
+Starting with release 3.5.2, DCMTK supports the "Deflated Explicit VR
+Little Endian" Transfer Syntax, i.e. ZIP-compressed network transmission
+and media storage.  DCMTK relies on the ZLIB toolkit (www.zlib.org) for
+the underlying compression routines.  Due to security considerations, we
 recommend that DCMTK should only be used with ZLIB 1.1.4 or newer.
 
-On Unix platforms, if support for zlib compression is desired, a 
-compiled version of the zlib library and include files must be available 
-during compilation of DCMTK, and the ZLIB support must be switched on 
-explicitly. DCMTK compiles without ZLIB support and disables ZLIB 
+On Unix platforms, if support for zlib compression is desired, a
+compiled version of the zlib library and include files must be available
+during compilation of DCMTK, and the ZLIB support must be switched on
+explicitly. DCMTK compiles without ZLIB support and disables ZLIB
 compression by default.
 
-On Windows, the Visual C++ project files provided as part of the toolkit 
-expect a directory named "zlib-1.1.4" to be present in the same 
-directory where the DCMTK root directory (dcmtk) also resides. Include 
-files are expected in zlib-1.1.4/include. A debug version of the library 
-is expected in zlib-1.1.4/debug/zlib.lib, a release version in 
-zlib-1.1.4/release/zlib.lib. The debug version must be compiled for the 
-multithread debug version of the runtime (/MTd)", the release version 
-must be compiled for the non-debug multithread runtime (/MT). A 
-precompiled version of the library can be downloaded from 
+On Windows, the Visual C++ project files provided as part of the toolkit
+expect a directory named "zlib-1.1.4" to be present in the same
+directory where the DCMTK root directory (dcmtk) also resides. Include
+files are expected in zlib-1.1.4/include. A debug version of the library
+is expected in zlib-1.1.4/debug/zlib.lib, a release version in
+zlib-1.1.4/release/zlib.lib. The debug version must be compiled for the
+multithread debug version of the runtime (/MTd)", the release version
+must be compiled for the non-debug multithread runtime (/MT). A
+precompiled version of the library can be downloaded from
 http://dicom.offis.de/dcmtk/
 
 
@@ -179,20 +179,20 @@ to TIFF.  DCMTK relies on the libtiff toolkit (www.libtiff.org) for this
 purpose.  This release of DCMTK is known to compile with the current
 libtiff release 3.5.7, although older releases may work as well.
 
-On Unix platforms, if support for TIFF export is desired, a compiled 
-version of the libtiff libraries and include files must be available 
-during compilation of DCMTK, and the libtiff support must be switched on 
+On Unix platforms, if support for TIFF export is desired, a compiled
+version of the libtiff libraries and include files must be available
+during compilation of DCMTK, and the libtiff support must be switched on
 explicitly.  By default, DCMTK compiles without libtiff support.
 
-On Windows, the Visual C++ project files provided as part of the toolkit 
-expect a directory named "tiff-3.5.7" to be present in the same 
-directory where the DCMTK root directory (dcmtk) also resides. Include 
-files are expected in tiff-3.5.7/include. A debug version of the library 
-is expected in tiff-3.5.7/debug/libtiff.lib, a release version in 
-tiff-3.5.7/release/libtiff.lib. The debug version must be compiled for 
-the multithread debug version of the runtime (/MTd)", the release 
-version must be compiled for the non-debug multithread runtime (/MT). 
-A precompiled version of the library can be downloaded from 
+On Windows, the Visual C++ project files provided as part of the toolkit
+expect a directory named "tiff-3.5.7" to be present in the same
+directory where the DCMTK root directory (dcmtk) also resides. Include
+files are expected in tiff-3.5.7/include. A debug version of the library
+is expected in tiff-3.5.7/debug/libtiff.lib, a release version in
+tiff-3.5.7/release/libtiff.lib. The debug version must be compiled for
+the multithread debug version of the runtime (/MTd)", the release
+version must be compiled for the non-debug multithread runtime (/MT).
+A precompiled version of the library can be downloaded from
 http://dicom.offis.de/dcmtk/
 
 
@@ -204,23 +204,23 @@ to PNG.  DCMTK relies on the libpng toolkit (www.libpng.org) for this
 purpose.  This release of DCMTK is known to compile with the current
 libpng release 1.2.5, although older releases may work as well.
 
-On Unix platforms, if support for PNG export is desired, a compiled 
-version of the libpng libraries and include files must be available 
-during compilation of DCMTK, and the libpng support must be switched on 
+On Unix platforms, if support for PNG export is desired, a compiled
+version of the libpng libraries and include files must be available
+during compilation of DCMTK, and the libpng support must be switched on
 explicitly.  By default, DCMTK compiles without libpng support.
 It should be noted that libpng requires zlib. The configure script
 will disable libpng support even though --with-libpng is specified if
 --with-zlib is not specified as well.
 
-On Windows, the Visual C++ project files provided as part of the toolkit 
-expect a directory named "libpng-1.2.5" to be present in the same 
-directory where the DCMTK root directory (dcmtk) also resides. Include 
-files are expected in libpng-1.2.5/include. A debug version of the library 
-is expected in libpng-1.2.5/debug/libpng.lib, a release version in 
-libpng-1.2.5/release/libpng.lib. The debug version must be compiled for 
-the multithread debug version of the runtime (/MTd)", the release 
-version must be compiled for the non-debug multithread runtime (/MT). 
-A precompiled version of the library can be downloaded from 
+On Windows, the Visual C++ project files provided as part of the toolkit
+expect a directory named "libpng-1.2.5" to be present in the same
+directory where the DCMTK root directory (dcmtk) also resides. Include
+files are expected in libpng-1.2.5/include. A debug version of the library
+is expected in libpng-1.2.5/debug/libpng.lib, a release version in
+libpng-1.2.5/release/libpng.lib. The debug version must be compiled for
+the multithread debug version of the runtime (/MTd)", the release
+version must be compiled for the non-debug multithread runtime (/MT).
+A precompiled version of the library can be downloaded from
 http://dicom.offis.de/dcmtk/
 
 
@@ -237,26 +237,26 @@ of the libxml libraries and include files must be available during compilation
 of DCMTK, and the libxml support must be switched on explicitly.  By default,
 DCMTK compiles without libxml support.
 
-On Windows, the Visual C++ project files provided as part of the toolkit 
-expect a directory named ...
+On Windows, the Visual C++ project files provided as part of the toolkit
+expect a directory named [...] ### to be continued ###
 
 
 TCP WRAPPER (LIBWRAP) SUPPORT
 =============================
 
-Starting with release 3.5.3, DCMTK supports Wietse Venema's TCP wrappers 
-library (libwrap) which is freely available for most Unix platforms and 
-part of the default installation of most recent Linux distributions. 
-This library allows to enforce host-based access control via the 
-/etc/hosts_deny and /etc/hosts_allow configuration files. See 
-hosts_access(5) for details.  This release of DCMTK is known to compile 
-with the current TCP wrappers release 7.6, although older releases may 
+Starting with release 3.5.3, DCMTK supports Wietse Venema's TCP wrappers
+library (libwrap) which is freely available for most Unix platforms and
+part of the default installation of most recent Linux distributions.
+This library allows to enforce host-based access control via the
+/etc/hosts_deny and /etc/hosts_allow configuration files. See
+hosts_access(5) for details.  This release of DCMTK is known to compile
+with the current TCP wrappers release 7.6, although older releases may
 work as well.  The TCP wrappers library is available for download from
 ftp://ftp.porcupine.org/pub/security/tcp_wrappers_7.6.tar.gz
 
-On Unix platforms, if support for TCP wrappers is desired, a compiled 
-version of the libwrap library and include file (tcpd.h) must be available 
-during compilation of DCMTK, and the libwrap support must be switched on 
+On Unix platforms, if support for TCP wrappers is desired, a compiled
+version of the libwrap library and include file (tcpd.h) must be available
+during compilation of DCMTK, and the libwrap support must be switched on
 explicitly.  By default, DCMTK compiles without libwrap support.
 
 On Windows, TCP wrappers are currently not supported.
@@ -295,29 +295,30 @@ configure.  E.g., if you wish to install underneath your home directory in
 
     ./configure --prefix=$HOME/dicom
 
-Step 2 is also the place where support for OpenSSL, libtiff and zlib can 
-be enabled. Use the --with-openssl switch to enable OpenSSL support. 
-The --with-opensslinc option allows to specify the directory in which 
-OpenSSL is installed.  This is usually the directory that has been used 
-as --prefix when compiling OpenSSL. For example, if you wish to enable 
-the security enhancements, and OpenSSL is installed in 
+Step 2 is also the place where support for OpenSSL, libtiff and zlib can
+be enabled. Use the --with-openssl switch to enable OpenSSL support.
+The --with-opensslinc option allows to specify the directory in which
+OpenSSL is installed.  This is usually the directory that has been used
+as --prefix when compiling OpenSSL.  For example, if you wish to enable
+the security enhancements, and OpenSSL is installed in
 /usr/local/apps/openssl-0.9.6h, then you should start configure as:
 
     ./configure --with-openssl --with-opensslinc=/usr/local/apps/openssl-0.9.6h
 
-Configure will assume that the OpenSSL include files are installed in 
-/usr/local/apps/openssl-0.9.6h/include and will expect the library in 
-/usr/local/apps/openssl-0.9.6h/lib. Appropriate options will be passed 
+Configure will assume that the OpenSSL include files are installed in
+/usr/local/apps/openssl-0.9.6h/include and will expect the library in
+/usr/local/apps/openssl-0.9.6h/lib. Appropriate options will be passed
 to the compiler and the linker.
 
-Support for libtiff, libpng, libxml and libwrap can be enabled in a similar way:
+Support for libtiff, libpng, libxml and libwrap can be enabled in a similar
+way:
 
     ./configure --with-libtiff --with-libtiffinc=/usr/local/apps/libtiff-3.5.7
                 --with-libpng --with-libpnginc=/usr/local/apps/libpng-1.2.5
                 --with-libxml --with-libxmlinc=/usr/local/apps/libxml-2.5.5
                 --with-libwrap --with-libwrapinc=/usr/local/apps/tcp_wrappers-7.6
 
-Different configure options can be combined in any order. configure --help
+Different configure options can be combined in any order.  configure --help
 will print a list of all existing configure options.  Useful configure
 options are:
 
@@ -387,7 +388,7 @@ Compile instructions:
 
 1. Rename the extensions of all .cc files into .cxx if not already done (e.g.
    "ren *.cc *.cxx" with the COMMAND shell or if you have a UNIX workstation
-   available use "config/changext cxx"). You must rename files in the libsrc,
+   available use "config/changext cxx").  You must rename files in the libsrc,
    apps and tests directories of all modules.
 2. Start the Microsoft Developer Studio (IDE).
 3. Open Workspace.. and select "dcmtk.dsw".
@@ -401,50 +402,55 @@ Compile instructions:
 Known problems:
 
 1. The imagectn and wlmscpfs (formerly known as wlistctn) cannot spark multiple
-   processes. Every association must be handled completely before a new
+   processes.  Every association must be handled completely before a new
    association is possible.
 2. On Windows 95, imagectn always uses exclusive file locking (the LockFileEx
-   API call is available on Windows NT only). This is no problem if only one
+   API call is available on Windows NT only).  This is no problem if only one
    single process exists.
 3. Most applications will only work if the computer has configured TCP/IP, a
-   network name and a TCP/IP address. If SLIP or PPP is used the applications
+   network name and a TCP/IP address.  If SLIP or PPP is used the applications
    can only work if a connection to a provider exists (since the internet
    addresses and names are given dynamically).
-4. Visual C++ contains two different implementations of iostreams which 
-   should never be mixed within one application because this may cause 
-   nasal daemons, i.e. application errors that are hard to find.
-   The old, now deprecated implementation uses the traditional cfront 
-   header files <iostream.h> etc.  The new implementation uses 
-   <iostream> etc. as defined in ANSI/ISO C++. DCMTK can be configured 
-   to use either of the two interfaces. Currently, the old interface is 
-   used for Visual C++ 5.0 and the new interface is used for Visual C++ 
-   6.0 and .NET. This behaviour can be changed in 
-   config/include/cfwin32.h where the symbol USE_STD_CXX_INCLUDES is 
-   declared depending on the compiler version.
+4. Visual C++ contains two different implementations of iostreams which should
+   never be mixed within one application because this may cause nasal daemons,
+   i.e. application errors that are hard to find.  The old, now deprecated
+   implementation uses the traditional cfront header files <iostream.h> etc.
+   The new implementation uses <iostream> etc. as defined in ANSI/ISO C++.
+   DCMTK can be configured to use either of the two interfaces.  Currently, the
+   old interface is used for Visual C++ 5.0 and the new interface is used for
+   Visual C++ 6.0 and .NET.  This behaviour can be changed in config/include/
+   cfwin32.h where the symbol USE_STD_CXX_INCLUDES is declared depending on the
+   compiler version.
 
-   NOTE: Previous releases of DCMTK (3.5.1 and older) used the old 
-   interface when compiled with Visual C++ 6.0.  When updating software
-   that uses DCMTK as a library, make sure that the use of the iostream
-   library is consistent throughout the complete application!
+   NOTE: Previous releases of DCMTK (3.5.1 and older) used the old interface
+         when compiled with Visual C++ 6.0.  When updating software that uses
+         DCMTK as a library, make sure that the use of the iostream library is
+         consistent throughout the complete application!
 
 
 HTML DOCUMENTATION
 ==================
 
-A few DCMTK modules have been documented with DOC++, a free source code
+Some DCMTK modules have been documented with DOC++, a free source code
 documentation system similar to javadoc (see http://docpp.sourceforge.net/).
 Users who have doc++ installed can create a hypertext documentation for these
-modules with "make html" in the module subdirectories. At the current time,
+modules with "make html" in the module subdirectories.  At the current time,
 dcmimgle, dcmjpeg, dcmpstat, dcmsign, dcmsr, dcmtls and ofstd are completely
-documented, dcmdata, dcmimage and dcmwlm are partially documented. See FAQ
+documented, dcmdata, dcmimage and dcmwlm are partially documented.  See FAQ
 entry: "Where is rest of the documentation?"
+
+Starting with release 3.5.3, DCMTK also provides a configuration file for
+Doxygen (see http://www.doxygen.org/).  Users who have Doxygen installed can
+create a hypertext documentation with "doxygen doxygen.cfg" in the doxygen
+subdirectory.  Other output formats (e.g. LaTeX) can be enabled manually by
+changing the configuration file.
 
 
 COMPILE TIME FLAGS AND ENVIRONMENT VARIABLES
 ============================================
 
 The behaviour of several DCMTK tools and libraries can be modified by a number
-of compile time flags (macros). Those macros which are not automatically
+of compile time flags (macros).  Those macros which are not automatically
 handled by the configure mechanism are documented in config/docs/macros.txt
 There is also a number of environment variables which affect DCMTK's behaviour.
 These are documented in config/docs/envvars.txt
@@ -457,4 +463,4 @@ Have fun.
 Marco Eichelberg, Joerg Riesmeier, Thomas Wilkens
 Kuratorium OFFIS e.V., Oldenburg, Germany.
 
-Last revised: 2002-12-16 (Eichelberg).
+Last revised: 2003-06-12 (Riesmeier).
