@@ -21,10 +21,10 @@
  *
  *  Purpose: Interface of class DcmItem
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-05-20 09:01:58 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2003-06-02 16:58:12 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcitem.h,v $
- *  CVS/RCS Revision: $Revision: 1.42 $
+ *  CVS/RCS Revision: $Revision: 1.43 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -853,7 +853,7 @@ DcmElement *newDicomElement(const DcmTag &tag,
 
 // Function: nextUp
 // pop Object from stack and get next Object in top of stack
-OFCondition nextUp(DcmStack &stack);
+OFCondition nextUp(DcmStack &st);
 
 
 #endif // DCITEM_H
@@ -862,7 +862,10 @@ OFCondition nextUp(DcmStack &stack);
 /*
 ** CVS/RCS Log:
 ** $Log: dcitem.h,v $
-** Revision 1.42  2003-05-20 09:01:58  joergr
+** Revision 1.43  2003-06-02 16:58:12  meichel
+** Renamed local variables to avoid name clashes with STL
+**
+** Revision 1.42  2003/05/20 09:01:58  joergr
 ** Added new helper methods: findAndGetElement(), findAndGetUint32Array(),
 ** FindAndGetSint32Array(), findAndGetFloat64Array(), findAndDeleteElement().
 ** Enhanced findAndGetSequenceItem() and findOrCreateSequenceItem() by checking

@@ -22,9 +22,9 @@
  *  Purpose: Hash table interface for DICOM data dictionary
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2003-03-21 13:08:04 $
+ *  Update Date:      $Date: 2003-06-02 16:58:01 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dchashdi.cc,v $
- *  CVS/RCS Revision: $Revision: 1.17 $
+ *  CVS/RCS Revision: $Revision: 1.18 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -407,9 +407,9 @@ DcmHashDict::hash(const DcmTagKey* k) const
 }
 
 DcmDictEntry*  
-DcmHashDict::insertInList(DcmDictEntryList& list, DcmDictEntry* e)
+DcmHashDict::insertInList(DcmDictEntryList& l, DcmDictEntry* e)
 {
-    return list.insertAndReplace(e);
+    return l.insertAndReplace(e);
 }
 
 void
@@ -441,9 +441,9 @@ DcmHashDict::put(DcmDictEntry* e)
     highestBucket = (highestBucket>idx)?(highestBucket):(idx);
 }
 
-DcmDictEntry *DcmHashDict::findInList(DcmDictEntryList& list, const DcmTagKey& k, const char *privCreator) const
+DcmDictEntry *DcmHashDict::findInList(DcmDictEntryList& l, const DcmTagKey& k, const char *privCreator) const
 {
-    return list.find(k, privCreator);
+    return l.find(k, privCreator);
 }
 
 const DcmDictEntry* 
@@ -469,10 +469,10 @@ DcmHashDict::get(const DcmTagKey& k, const char *privCreator) const
 }
 
 DcmDictEntry*
-DcmHashDict::removeInList(DcmDictEntryList& list, const DcmTagKey& k, const char *privCreator)
+DcmHashDict::removeInList(DcmDictEntryList& l, const DcmTagKey& k, const char *privCreator)
 {
-    DcmDictEntry* entry = findInList(list, k, privCreator);
-    list.remove(entry); // does not delete entry
+    DcmDictEntry* entry = findInList(l, k, privCreator);
+    l.remove(entry); // does not delete entry
     return entry;
 }
 
@@ -536,7 +536,10 @@ DcmHashDict::loadSummary(ostream& out)
 /*
 ** CVS/RCS Log:
 ** $Log: dchashdi.cc,v $
-** Revision 1.17  2003-03-21 13:08:04  meichel
+** Revision 1.18  2003-06-02 16:58:01  meichel
+** Renamed local variables to avoid name clashes with STL
+**
+** Revision 1.17  2003/03/21 13:08:04  meichel
 ** Minor code purifications for warnings reported by MSVC in Level 4
 **
 ** Revision 1.16  2002/11/27 12:06:47  meichel
