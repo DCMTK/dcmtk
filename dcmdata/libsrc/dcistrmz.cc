@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2002, OFFIS
+ *  Copyright (C) 2002-2004, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,10 +21,10 @@
  *
  *  Purpose: zlib compression filter for input streams
  *
- *  Last Update:      $Author: wilkens $
- *  Update Date:      $Date: 2002-12-20 14:55:34 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2004-04-07 12:19:14 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcistrmz.cc,v $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -138,7 +138,7 @@ Uint32 DcmZLibInputFilter::avail() const
 Uint32 DcmZLibInputFilter::read(void *buf, Uint32 buflen)
 {
   if (status_.bad() || (current_ == NULL) || (buf == NULL)) return 0;
-  unsigned char *target = (unsigned char *)buf;
+  unsigned char *target = OFstatic_cast(unsigned char *, buf);
   Uint32 offset = 0;
   Uint32 availBytes = 0;
   Uint32 result = 0;
@@ -155,7 +155,7 @@ Uint32 DcmZLibInputFilter::read(void *buf, Uint32 buflen)
       if (offset + availBytes > DCMZLIBINPUTFILTER_BUFSIZE) availBytes = DCMZLIBINPUTFILTER_BUFSIZE - offset;
       if (availBytes > buflen) availBytes = buflen;
 
-      if (availBytes) memcpy(target, outputBuf_ + offset, (size_t)availBytes);
+      if (availBytes) memcpy(target, outputBuf_ + offset, OFstatic_cast(size_t, availBytes));
       target += availBytes;
       result += availBytes;
       buflen -= availBytes;
@@ -290,8 +290,8 @@ Uint32 DcmZLibInputFilter::decompress(const void *buf, Uint32 buflen)
 {
   Uint32 result = 0;
 
-  zstream_->next_out = (Bytef *)buf;
-  zstream_->avail_out = (uInt)buflen;
+  zstream_->next_out = OFstatic_cast(Bytef *, OFconst_cast(void *, buf));
+  zstream_->avail_out = OFstatic_cast(uInt, buflen);
   int astatus;
 
   // decompress from inputBufStart_ to end of data or end of buffer, whatever comes first
@@ -300,8 +300,8 @@ Uint32 DcmZLibInputFilter::decompress(const void *buf, Uint32 buflen)
 
   if (numBytes || buflen)
   {
-    zstream_->next_in = (Bytef *)(inputBuf_ + inputBufStart_);
-    zstream_->avail_in = (uInt) numBytes;
+    zstream_->next_in = OFstatic_cast(Bytef *, inputBuf_ + inputBufStart_);
+    zstream_->avail_in = OFstatic_cast(uInt, numBytes);
     astatus = inflate(zstream_, 0);
 
     if (astatus == Z_OK || astatus == Z_BUF_ERROR) { /* everything OK */ }
@@ -335,8 +335,8 @@ Uint32 DcmZLibInputFilter::decompress(const void *buf, Uint32 buflen)
     }
 
     // adjust counters
-    inputBufStart_ += numBytes - (Uint32)(zstream_->avail_in);
-    inputBufCount_ -= numBytes - (Uint32)(zstream_->avail_in);
+    inputBufStart_ += numBytes - OFstatic_cast(Uint32, zstream_->avail_in);
+    inputBufCount_ -= numBytes - OFstatic_cast(Uint32, zstream_->avail_in);
 
     if (inputBufStart_ == DCMZLIBINPUTFILTER_BUFSIZE)
     {
@@ -346,8 +346,8 @@ Uint32 DcmZLibInputFilter::decompress(const void *buf, Uint32 buflen)
       // now flush to end of data
       if (inputBufCount_ && (zstream_->avail_out > 0))
       {
-        zstream_->next_in = (Bytef *)inputBuf_;
-        zstream_->avail_in = (uInt) inputBufCount_;
+        zstream_->next_in = OFstatic_cast(Bytef *, inputBuf_);
+        zstream_->avail_in = OFstatic_cast(uInt, inputBufCount_);
         astatus = inflate(zstream_, 0);
 
         if (astatus == Z_OK || astatus == Z_BUF_ERROR) { /* everything OK */ }
@@ -381,8 +381,8 @@ Uint32 DcmZLibInputFilter::decompress(const void *buf, Uint32 buflen)
         }
 
         // adjust counters
-        inputBufStart_ += inputBufCount_ - (Uint32)(zstream_->avail_in);
-        inputBufCount_ = (Uint32)(zstream_->avail_in);
+        inputBufStart_ += inputBufCount_ - OFstatic_cast(Uint32, zstream_->avail_in);
+        inputBufCount_ = OFstatic_cast(Uint32, zstream_->avail_in);
 
       }
     }
@@ -391,7 +391,7 @@ Uint32 DcmZLibInputFilter::decompress(const void *buf, Uint32 buflen)
     if (inputBufCount_ == 0) inputBufStart_ = 0;
 
     // compute result
-    result = buflen - (Uint32)(zstream_->avail_out);
+    result = buflen - OFstatic_cast(Uint32, zstream_->avail_out);
   }
   return result;
 }
@@ -422,7 +422,7 @@ void DcmZLibInputFilter::fillOutputBuffer()
 
 #else  /* WITH_ZLIB */
 
-/* make sure that the object file is not completely empty if compiled 
+/* make sure that the object file is not completely empty if compiled
  * without zlib because some linkers might fail otherwise.
  */
 void dcistrmz_dummy_function()
@@ -436,7 +436,10 @@ void dcistrmz_dummy_function()
 /*
  * CVS/RCS Log:
  * $Log: dcistrmz.cc,v $
- * Revision 1.4  2002-12-20 14:55:34  wilkens
+ * Revision 1.5  2004-04-07 12:19:14  joergr
+ * Adapted type casts to new-style typecast operators defined in ofcast.h.
+ *
+ * Revision 1.4  2002/12/20 14:55:34  wilkens
  * Inserted three casts in order to get rid of compiler warning on Solaris 2.5.1
  * using compiler SC 2.0.1.
  *
