@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2001-2003, OFFIS
+ *  Copyright (C) 2001-2004, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -92,9 +92,9 @@
  *
  *  Purpose: Class for various helper functions
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2003-10-22 15:04:40 $
- *  CVS/RCS Revision: $Revision: 1.25 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2004-01-16 10:33:57 $
+ *  CVS/RCS Revision: $Revision: 1.26 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -523,7 +523,7 @@ const OFString &OFStandard::convertToMarkupString(const OFString &sourceString,
     /* start with empty string */
     markupString.clear();
     /* avoid to resize the string too often */
-    markupString.resize(strlen(str));
+    markupString.reserve(strlen(str));
     /* replace HTML/XML reserved characters */
     while (*str != 0)
     {
@@ -1577,7 +1577,11 @@ unsigned int OFStandard::my_sleep(unsigned int seconds)
 
 /*
  *  $Log: ofstd.cc,v $
- *  Revision 1.25  2003-10-22 15:04:40  meichel
+ *  Revision 1.26  2004-01-16 10:33:57  joergr
+ *  Replaced OFString::resize() by ..reserve() in convertToMarkupString()
+ *  because of STL problems with Metrowerks CodeWarrior 8.3 compiler.
+ *
+ *  Revision 1.25  2003/10/22 15:04:40  meichel
  *  Added private implementation of isinf on platforms that have finite()
  *    and isnan() but not isinf(), such as Solaris 2.5.1.
  *
