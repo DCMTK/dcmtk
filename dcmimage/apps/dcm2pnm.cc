@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2002, OFFIS
+ *  Copyright (C) 1996-2003, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,10 +21,10 @@
  *
  *  Purpose: Convert DICOM Images to PPM or PGM using the dcmimage library.
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2003-02-11 14:53:58 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2003-02-12 11:33:27 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/apps/dcm2pnm.cc,v $
- *  CVS/RCS Revision: $Revision: 1.72 $
+ *  CVS/RCS Revision: $Revision: 1.73 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -69,11 +69,11 @@
 #endif
 
 #ifdef WITH_LIBPNG
-# include "dipipng.h"     /* for dcmimage PNG plugin */
+# include "dipipng.h"      /* for dcmimage PNG plugin */
 #endif
 
 #ifdef WITH_ZLIB
-#include <zlib.h>         /* for zlibVersion() */
+# include <zlib.h>         /* for zlibVersion() */
 #endif
 
 #include "ofstream.h"
@@ -105,6 +105,25 @@ static char rcsid[] = "$dcmtk: " OFFIS_CONSOLE_APPLICATION " v"
 #define LONGCOL 20
 
 #define OUTPUT CERR
+
+
+/* output file types */
+enum E_FileType
+{
+    EFT_RawPNM,
+    EFT_8bitPNM,
+    EFT_16bitPNM,
+    EFT_NbitPNM,
+    EFT_BMP,
+    EFT_8bitBMP,
+    EFT_24bitBMP,
+    EFT_JPEG,
+    EFT_TIFF,
+    EFT_PNG
+#ifdef PASTEL_COLOR_OUTPUT
+   ,EFT_PastelPNM
+#endif
+};
 
 
 // ********************************************
@@ -159,7 +178,7 @@ int main(int argc, char *argv[])
 
 #ifdef WITH_LIBPNG
     // TIFF parameters
-    DiPNGInterlace	opt_interlace = E_pngInterlaceAdam7;
+    DiPNGInterlace      opt_interlace = E_pngInterlaceAdam7;
     DiPNGMetainfo       opt_metainfo  = E_pngFileMetainfo;
 #endif
 
@@ -182,9 +201,8 @@ int main(int argc, char *argv[])
     int                 opt_imageInfo = 0;                /* default: no info */
     int                 opt_debugMode = 0;                /* default: no debug */
     int                 opt_suppressOutput = 0;           /* default: create output */
-    int                 opt_fileType = 0;                 /* default: 8-bit PGM/PPM */
+    E_FileType          opt_fileType = EFT_RawPNM;        /* default: 8-bit PGM/PPM */
                                                           /* (binary for file output and ASCII for stdout) */
-                        /* 2=8-bit-ASCII, 3=16-bit-ASCII, 4=n-bit-ASCII, 5=pastel color */
     OFCmdUnsignedInt    opt_fileBits = 0;                 /* default: 0 */
     const char *        opt_ifname = NULL;
     const char *        opt_ofname = NULL;
@@ -757,37 +775,37 @@ int main(int argc, char *argv[])
         if (cmd.findOption("--no-output"))
             opt_suppressOutput = 1;
         if (cmd.findOption("--write-raw-pnm"))
-            opt_fileType = 1;
+            opt_fileType = EFT_RawPNM;
         if (cmd.findOption("--write-8-bit-pnm"))
-            opt_fileType = 2;
+            opt_fileType = EFT_8bitPNM;
         if (cmd.findOption("--write-16-bit-pnm"))
-            opt_fileType = 3;
+            opt_fileType = EFT_16bitPNM;
         if (cmd.findOption("--write-n-bit-pnm"))
         {
-            opt_fileType = 4;
+            opt_fileType = EFT_NbitPNM;
             app.checkValue(cmd.getValueAndCheckMinMax(opt_fileBits, 1, 32));
         }
         if (cmd.findOption("--write-bmp"))
-            opt_fileType = 5;
+            opt_fileType = EFT_BMP;
         if (cmd.findOption("--write-8-bit-bmp"))
-            opt_fileType = 6;
+            opt_fileType = EFT_8bitBMP;
         if (cmd.findOption("--write-24-bit-bmp"))
-            opt_fileType = 7;
+            opt_fileType = EFT_24bitBMP;
 #ifdef BUILD_DCM2PNM_AS_DCMJ2PNM
         if (cmd.findOption("--write-jpeg"))
-            opt_fileType = 8;
+            opt_fileType = EFT_JPEG;
 #endif
 #ifdef WITH_LIBTIFF
         if (cmd.findOption("--write-tiff"))
-            opt_fileType = 9;
+            opt_fileType = EFT_TIFF;
 #endif
 #ifdef WITH_LIBPNG
         if (cmd.findOption("--write-png"))
-            opt_fileType = 10;
+            opt_fileType = EFT_PNG;
 #endif
 #ifdef PASTEL_COLOR_OUTPUT
         if (cmd.findOption("--write-pastel-pnm"))
-            opt_fileType = 99;
+            opt_fileType = EFT_PastelPNM;
 #endif
         cmd.endOptionBlock();
     }
@@ -1297,16 +1315,19 @@ int main(int argc, char *argv[])
         /* determine default file extension */
         switch (opt_fileType)
         {
-          case 5:
-          case 6:
-          case 7:
+          case EFT_BMP:
+          case EFT_8bitBMP:
+          case EFT_24bitBMP:
             ofext = "bmp";
             break;
-          case 8:
+          case EFT_JPEG:
             ofext = "jpg";
             break;
-          case 9:
+          case EFT_TIFF:
             ofext = "tif";
+            break;
+          case EFT_PNG:
+            ofext = "png";
             break;
           default:
             if (di->isMonochrome()) ofext = "pgm"; else ofext = "ppm";
@@ -1354,28 +1375,28 @@ int main(int argc, char *argv[])
 
             switch (opt_fileType)
             {
-                case 1:
+                case EFT_RawPNM:
                     result = di->writeRawPPM(ofile, 8, frame);
-                case 2:
+                case EFT_8bitPNM:
                     result = di->writePPM(ofile, 8, frame);
                     break;
-                case 3:
+                case EFT_16bitPNM:
                     result = di->writePPM(ofile, 16, frame);
                     break;
-                case 4:
+                case EFT_NbitPNM:
                     result = di->writePPM(ofile, (int)opt_fileBits, frame);
                     break;
-                case 5:
+                case EFT_BMP:
                     result = di->writeBMP(ofile, 0, frame);
                     break;
-                case 6:
+                case EFT_8bitBMP:
                     result = di->writeBMP(ofile, 8, frame);
                     break;
-                case 7:
+                case EFT_24bitBMP:
                     result = di->writeBMP(ofile, 24, frame);
                     break;
 #ifdef BUILD_DCM2PNM_AS_DCMJ2PNM
-                case 8:
+                case EFT_JPEG:
                     {
                         /* initialize JPEG plugin */
                         DiJPEGPlugin plugin;
@@ -1386,7 +1407,7 @@ int main(int argc, char *argv[])
                     break;
 #endif
 #ifdef WITH_LIBTIFF
-                case 9:
+                case EFT_TIFF:
                     {
                         /* initialize TIFF plugin */
                         DiTIFFPlugin tiffPlugin;
@@ -1398,7 +1419,7 @@ int main(int argc, char *argv[])
                     break;
 #endif
 #ifdef WITH_LIBPNG
-                case 10:
+                case EFT_PNG:
                     {
                         /* initialize PNG plugin */
                         DiPNGPlugin pngPlugin;
@@ -1409,7 +1430,7 @@ int main(int argc, char *argv[])
                     break;
 #endif
 #ifdef PASTEL_COLOR_OUTPUT
-                case 99:
+                case EFT_PastelPNM:
                     result = di->writePPM(ofile, MI_PastelColor, frame);
                     break;
 #endif
@@ -1449,7 +1470,11 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcm2pnm.cc,v $
- * Revision 1.72  2003-02-11 14:53:58  meichel
+ * Revision 1.73  2003-02-12 11:33:27  joergr
+ * Defined default file extension for PNG image format.
+ * Introduced "enum" for output file type.
+ *
+ * Revision 1.72  2003/02/11 14:53:58  meichel
  * Fixed overwrite problem caused by last commit
  *
  * Revision 1.71  2003/02/11 13:18:37  meichel
