@@ -143,7 +143,7 @@ writing:
 \subsection dicom_conformance DICOM Conformance
 
 The \b dsr2xml utility supports the following SOP Classes (according to
-DICOM 2003 and Supplement 66):
+DICOM 2004):
 
 \verbatim
 BasicTextSR                 1.2.840.10008.5.1.4.1.1.88.11
