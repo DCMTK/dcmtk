@@ -3,8 +3,8 @@
 ** It was generated automatically by:
 **
 **   User: hewett
-**   Host: sulla
-**   Date: Mon Sep 23 21:23:28 1996
+**   Host: caesar
+**   Date: Wed Mar 26 17:35:37 1997
 **   Prog: /home/hewett/dicom/dcmtk/dcmdata/libsrc/mkdeftag
 **
 ** From: /home/hewett/dicom/dcmtk/dcmdata/libsrc/dicom.dic
@@ -16,12 +16,12 @@
 
 #include "dctagkey.h"
 
-#define DCM_DICT_DEFTAG_BUILD_DATE "Mon Sep 23 21:23:28 1996"
+#define DCM_DICT_DEFTAG_BUILD_DATE "Wed Mar 26 17:35:37 1997"
 
 
 /*
 ** Fixed Tags in assending (gggg,eeee) order.
-** Number of entries: 1218
+** Number of entries: 1221
 ** Tags with a repeating component (repeating tags) are listed later.
 */
 #define DCM_CommandGroupLength                   DcmTagKey(0x0000, 0x0000)
@@ -130,6 +130,7 @@
 #define DCM_RetrieveAETitle                      DcmTagKey(0x0008, 0x0054)
 #define DCM_FailedSOPInstanceUIDList             DcmTagKey(0x0008, 0x0058)
 #define DCM_Modality                             DcmTagKey(0x0008, 0x0060)
+#define DCM_ModalitiesInStudy                    DcmTagKey(0x0008, 0x0061)
 #define DCM_ConversionType                       DcmTagKey(0x0008, 0x0064)
 #define DCM_Manufacturer                         DcmTagKey(0x0008, 0x0070)
 #define DCM_InstitutionName                      DcmTagKey(0x0008, 0x0080)
@@ -513,6 +514,7 @@
 #define DCM_NumberOfPatientRelatedImages         DcmTagKey(0x0020, 0x1204)
 #define DCM_NumberOfStudyRelatedSeries           DcmTagKey(0x0020, 0x1206)
 #define DCM_NumberOfStudyRelatedImages           DcmTagKey(0x0020, 0x1208)
+#define DCM_NumberOfSeriesRelatedImages          DcmTagKey(0x0020, 0x1209)
 #define DCM_SourceImageID                        DcmTagKey(0x0020, 0x3100)
 #define DCM_ModifyingDeviceID                    DcmTagKey(0x0020, 0x3401)
 #define DCM_ModifiedImageID                      DcmTagKey(0x0020, 0x3402)
@@ -701,6 +703,7 @@
 #define DCM_ScheduledStationName                 DcmTagKey(0x0040, 0x0010)
 #define DCM_ScheduledProcedureStepLocation       DcmTagKey(0x0040, 0x0011)
 #define DCM_PreMedication                        DcmTagKey(0x0040, 0x0012)
+#define DCM_ScheduledProcedureStepStatus         DcmTagKey(0x0040, 0x0020)
 #define DCM_ScheduledProcedureStepSequence       DcmTagKey(0x0040, 0x0100)
 #define DCM_CommentsOnTheScheduledProcedureStep  DcmTagKey(0x0040, 0x0400)
 #define DCM_RequestedProcedureID                 DcmTagKey(0x0040, 0x1001)
@@ -858,7 +861,7 @@
 #define DCM_OverlayForegroundDensity             DcmTagKey(0x2040, 0x0080)
 #define DCM_OverlayMode                          DcmTagKey(0x2040, 0x0090)
 #define DCM_ThresholdDensity                     DcmTagKey(0x2040, 0x0100)
-#define DCM_ReferencedOverlayImageBoxSequence    DcmTagKey(0x2040, 0x0500)
+#define DCM_RETIRED_ReferencedImageBoxSequence   DcmTagKey(0x2040, 0x0500)
 #define DCM_PrintJobGroupLength                  DcmTagKey(0x2100, 0x0000)
 #define DCM_ExecutionStatus                      DcmTagKey(0x2100, 0x0020)
 #define DCM_ExecutionStatusInfo                  DcmTagKey(0x2100, 0x0030)
