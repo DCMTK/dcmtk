@@ -54,9 +54,9 @@
 ** Author, Date:        Stephen M. Moore, 14-Apr-93
 ** Intent:              This module contains the public entry points for the
 **                      DICOM Upper Layer (DUL) protocol package.
-** Last Update:         $Author: meichel $, $Date: 2004-02-25 12:31:17 $
+** Last Update:         $Author: wilkens $, $Date: 2004-05-17 14:39:14 $
 ** Source File:         $RCSfile: dul.cc,v $
-** Revision:            $Revision: 1.62 $
+** Revision:            $Revision: 1.63 $
 ** Status:              $State: Exp $
 */
 
@@ -1480,6 +1480,9 @@ receiveTransportConnectionTCP(PRIVATE_NETWORKKEY ** network,
     struct sockaddr from;
     struct hostent *remote = NULL;
     struct linger sockarg;
+
+    (void) memset(&sockarg, 0, sizeof(sockarg));
+
     int reuse = 1;
 
     int sock = dcmExternalSocketHandle.get();
@@ -1793,6 +1796,8 @@ initializeNetworkTCP(PRIVATE_NETWORKKEY ** key, void *parameter)
         sockarg;
     int
         reuse = 1;
+
+    (void) memset(&sockarg, 0, sizeof(sockarg));
 
     // initialize network layer settings to well-defined state
     (*key)->networkSpecific.TCP.tLayer = NULL;
@@ -2418,7 +2423,10 @@ void DUL_DumpConnectionParameters(DUL_ASSOCIATIONKEY *association, ostream& outs
 /*
 ** CVS Log
 ** $Log: dul.cc,v $
-** Revision 1.62  2004-02-25 12:31:17  meichel
+** Revision 1.63  2004-05-17 14:39:14  wilkens
+** Fixed problem reported by valgrind: passing uninitialized variable sockarg.
+**
+** Revision 1.62  2004/02/25 12:31:17  meichel
 ** Added global option flag for compatibility with very old DCMTK releases in the
 **   DICOM upper layer and ACSE code. Default is automatic handling, which should
 **   work in most cases.
