@@ -57,9 +57,9 @@
 **	Module Prefix: DIMSE_
 **
 ** Last Update:		$Author: meichel $
-** Update Date:		$Date: 1998-01-28 17:38:13 $
+** Update Date:		$Date: 1998-07-15 11:32:39 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/libsrc/dimse.cc,v $
-** CVS/RCS Revision:	$Revision: 1.14 $
+** CVS/RCS Revision:	$Revision: 1.15 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -610,7 +610,7 @@ DIMSE_sendMessage(T_ASC_Association *assoc,
     }
 
     if (DIMSE_NORMAL != (cond = validateMessage(assoc, msg))) return cond;
-    if (DIMSE_NORMAL != (checkPresentationContextForMessage(assoc, msg, presID, &xferSyntax))) return cond;
+    if (DIMSE_NORMAL != (cond = checkPresentationContextForMessage(assoc, msg, presID, &xferSyntax))) return cond;
 
     cond = DIMSE_buildCmdObject(msg, &cmdObj);
 
@@ -1008,7 +1008,7 @@ CONDITION DIMSE_createFilestream(
     if (NULL != (elem = new DcmShortString(implementationVersionName)))
     {
       metainfo->insert(elem, OFTrue);
-      char *version = OFFIS_DTK_IMPLEMENTATION_VERSION_NAME2;
+      const char *version = OFFIS_DTK_IMPLEMENTATION_VERSION_NAME2;
       ((DcmShortString*)elem)->putString(version);
     } else cond = DIMSE_OUTOFRESOURCES;
     if (cond == DIMSE_OUTOFRESOURCES)
@@ -1310,7 +1310,13 @@ void DIMSE_warning(T_ASC_Association *assoc,
 /*
 ** CVS Log
 ** $Log: dimse.cc,v $
-** Revision 1.14  1998-01-28 17:38:13  meichel
+** Revision 1.15  1998-07-15 11:32:39  meichel
+** Fixed bug in DIMSE_sendMessage() that could result in an undefined
+**   error condition passed back to the caller when an attempt was made
+**   to send a DIMSE message without appropriate presentation context.
+**   Thanks to Gilles Mevel <Gilles.Mevel@etiam.com> for the report.
+**
+** Revision 1.14  1998/01/28 17:38:13  meichel
 ** Removed minor bug from DICOM Upper Layer / DIMSE modules.
 **   For each PDV received, an error condition was pushed on the error stack
 **   and then again pulled from it. If a callback function was registered
