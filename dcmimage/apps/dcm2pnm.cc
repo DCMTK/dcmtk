@@ -8,9 +8,9 @@
 ** Purpose: Convert DICOM Images to PPM or PGM using the dcmimage library.
 **
 ** Last Update:      $Author: joergr $
-** Update Date:      $Date: 1998-06-25 08:48:15 $
+** Update Date:      $Date: 1998-06-25 12:31:43 $
 ** Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/apps/dcm2pnm.cc,v $
-** CVS/RCS Revision: $Revision: 1.13 $
+** CVS/RCS Revision: $Revision: 1.14 $
 ** Status:           $State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -68,8 +68,8 @@ usage()
       "  +te      read with little-endian explicit transfer syntax\n"
       "  +tb      read with big-endian explicit transfer syntax\n"
       "compatibility options:\n"
-      "  +Ma      compatibility with ACR-NEMA\n"
-      "  +Mp      wrong palette attribute tags\n"
+      "  +Ma      accept ACR-NEMA images without photometric interpretation\n"
+      "  +Mp      accept incorrect palette attribute tags (0028,111x) and (0028,121x)\n"
       "image processing options:\n"
       "  +F n     select frame n (default: 1)\n"
       "  +G       convert to grayscale if necessary\n"
@@ -1104,7 +1104,10 @@ int main(int argc, char *argv[])
 /*
 ** CVS/RCS Log:
 ** $Log: dcm2pnm.cc,v $
-** Revision 1.13  1998-06-25 08:48:15  joergr
+** Revision 1.14  1998-06-25 12:31:43  joergr
+** Minor changes to syntax description of dcm2pnm.
+**
+** Revision 1.13  1998/06/25 08:48:15  joergr
 ** Print 'maximum/minimum pixel value' (verbose mode) only for
 ** monochrome images.
 ** Added compatibility mode to support ACR-NEMA images and wrong
