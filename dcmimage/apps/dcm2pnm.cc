@@ -21,10 +21,10 @@
  *
  *  Purpose: Convert DICOM Images to PPM or PGM using the dcmimage library.
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-08-20 12:20:20 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2002-09-23 18:01:18 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/apps/dcm2pnm.cc,v $
- *  CVS/RCS Revision: $Revision: 1.65 $
+ *  CVS/RCS Revision: $Revision: 1.66 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -66,6 +66,10 @@ END_EXTERN_C
 
 #ifdef WITH_LIBTIFF
 # include "dipitiff.h"     /* for dcmimage TIFF plugin */
+#endif
+
+#ifdef WITH_ZLIB
+# include "zlib.h"         /* for zlibVersion() */
 #endif
 
 #include "ofstream.h"
@@ -185,7 +189,8 @@ int main(int argc, char *argv[])
     cmd.addParam("pnmfile-out", OFFIS_OUTFILE_DESCRIPTION, OFCmdParam::PM_Optional);
 
     cmd.addGroup("general options:", LONGCOL, SHORTCOL + 2);
-     cmd.addOption("--help",                "-h",      "print this help text and exit");
+     cmd.addOption("--help",                "-h",      "print this help text and exit" /*, OFTrue is set implicitly */);
+     cmd.addOption("--version",                        "print version information and exit", OFTrue /* exclusive */);
      cmd.addOption("--verbose",             "-v",      "verbose mode, print processing details");
      cmd.addOption("--quiet",               "-q",      "quiet mode, print no warnings and errors");
      cmd.addOption("--debug",               "-d",      "debug mode, print debug information");
@@ -343,6 +348,34 @@ int main(int argc, char *argv[])
 
     if (app.parseCommandLine(cmd, argc, argv))
     {
+        /* check exclusive options first */
+
+        if (cmd.getParamCount() == 0)
+        {
+            if (cmd.findOption("--version"))
+            {
+                app.printHeader(OFTrue /*print host identifier*/);          // uses ofConsole.lockCerr()
+                CERR << endl << "External libraries used:";
+#if !defined(WITH_ZLIB) && !defined(BUILD_DCM2PNM_AS_DCMJ2PNM) && !defined(WITH_LIBTIFF)
+                CERR << " none" << endl;
+#else
+                CERR << endl;
+#endif
+#ifdef WITH_ZLIB
+                CERR << "- ZLIB, Version " << zlibVersion() << endl;
+#endif
+#ifdef BUILD_DCM2PNM_AS_DCMJ2PNM
+                CERR << "- " << DiJPEGPlugin::getLibraryVersionString() << endl;
+#endif
+#ifdef WITH_LIBTIFF
+                CERR << "- " << DiTIFFPlugin::getLibraryVersionString() << endl;
+#endif
+                return 0;
+            }
+        }
+
+        /* command line parameters */
+
         cmd.getParam(1, opt_ifname);
         cmd.getParam(2, opt_ofname);
 
@@ -729,7 +762,7 @@ int main(int argc, char *argv[])
 #endif
 
     DcmFileFormat *dfile = new DcmFileFormat();
-    OFCondition cond = dfile->loadFile(opt_ifname, opt_transferSyntax, EGL_withoutGL, 
+    OFCondition cond = dfile->loadFile(opt_ifname, opt_transferSyntax, EGL_withoutGL,
         DCM_MaxReadLength, opt_readAsDataset);
 
     if (cond.bad())
@@ -1341,7 +1374,12 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcm2pnm.cc,v $
- * Revision 1.65  2002-08-20 12:20:20  meichel
+ * Revision 1.66  2002-09-23 18:01:18  joergr
+ * Added new command line option "--version" which prints the name and version
+ * number of external libraries used (incl. preparation for future support of
+ * 'config.guess' host identifiers).
+ *
+ * Revision 1.65  2002/08/20 12:20:20  meichel
  * Adapted code to new loadFile and saveFile methods, thus removing direct
  *   use of the DICOM stream classes.
  *

@@ -21,10 +21,10 @@
  *
  *  Purpose: Convert DICOM color images palette color
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-08-27 17:19:07 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2002-09-23 18:01:19 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/apps/dcmquant.cc,v $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -57,7 +57,12 @@ END_EXTERN_C
 #include "diquant.h"       /* for DcmQuant */
 
 #ifdef BUILD_WITH_DCMJPEG_SUPPORT
-#include "djdecode.h"     /* for dcmjpeg decoders */
+#include "djdecode.h"      /* for dcmjpeg decoders */
+#include "dipijpeg.h"      /* for dcmimage JPEG plugin */
+#endif
+
+#ifdef WITH_ZLIB
+#include "zlib.h"          /* for zlibVersion() */
 #endif
 
 #define OFFIS_CONSOLE_DESCRIPTION "Convert DICOM color images to palette color"
@@ -130,7 +135,8 @@ int main(int argc, char *argv[])
     cmd.addParam("dcmfile-out", "DICOM output filename to be written");
 
     cmd.addGroup("general options:", LONGCOL, SHORTCOL + 2);
-     cmd.addOption("--help",                "-h",      "print this help text and exit");
+     cmd.addOption("--help",                "-h",      "print this help text and exit" /*, OFTrue is set implicitly */);
+     cmd.addOption("--version",                        "print version information and exit", OFTrue /* exclusive */);
      cmd.addOption("--verbose",             "-v",      "verbose mode, print processing details");
 
     cmd.addGroup("input options:");
@@ -162,20 +168,20 @@ int main(int argc, char *argv[])
      cmd.addSubGroup("compatibility options:");
       cmd.addOption("--accept-palettes",    "+Mp",     "accept incorrect palette attribute tags\n(0028,111x) and (0028,121x)");
 
-     cmd.addSubGroup("median cut dimension selection options:");      
+     cmd.addSubGroup("median cut dimension selection options:");
       cmd.addOption("--mc-dimension-rgb",   "+Dr",     "max dimension from RGB range (default)");
       cmd.addOption("--mc-dimension-lum",   "+Dl",     "max dimension from luminance");
 
-     cmd.addSubGroup("median cut representative color selection options:");      
+     cmd.addSubGroup("median cut representative color selection options:");
       cmd.addOption("--mc-color-avgbox",   "+Cb",     "average colors in box (default)");
       cmd.addOption("--mc-color-avgpixel", "+Cp",     "average pixels in box");
       cmd.addOption("--mc-color-center",   "+Cc",     "select center of box");
-      
-     cmd.addSubGroup("color palette creation options:");      
+
+     cmd.addSubGroup("color palette creation options:");
       cmd.addOption("--write-ow",           "+pw",     "write Palette LUT as OW instead of US");
       cmd.addOption("--lut-entries-word",   "+pe",     "write Palette LUT with 16-bit entries");
       cmd.addOption("--floyd-steinberg",    "+pf",     "use Floyd-Steinberg error diffusion");
-      cmd.addOption("--colors",             "+pc",  1, "number of colors: 2..65536 (default 256)", 
+      cmd.addOption("--colors",             "+pc",  1, "number of colors: 2..65536 (default 256)",
                                                        "number of colors to quantize to");
 
     cmd.addSubGroup("SOP Class UID options:");
@@ -213,6 +219,31 @@ int main(int argc, char *argv[])
 
     if (app.parseCommandLine(cmd, argc, argv))
     {
+      /* check exclusive options first */
+
+      if (cmd.getParamCount() == 0)
+      {
+          if (cmd.findOption("--version"))
+          {
+              app.printHeader(OFTrue /*print host identifier*/);          // uses ofConsole.lockCerr()
+              CERR << endl << "External libraries used:";
+#if !defined(WITH_ZLIB) && !defined(BUILD_WITH_DCMJPEG_SUPPORT)
+              CERR << " none" << endl;
+#else
+              CERR << endl;
+#endif
+#ifdef WITH_ZLIB
+              CERR << "- ZLIB, Version " << zlibVersion() << endl;
+#endif
+#ifdef BUILD_WITH_DCMJPEG_SUPPORT
+              CERR << "- " << DiJPEGPlugin::getLibraryVersionString() << endl;
+#endif
+              return 0;
+          }
+      }
+
+      /* command line parameters */
+
       cmd.getParam(1, opt_ifname);
       cmd.getParam(2, opt_ofname);
 
@@ -264,7 +295,7 @@ int main(int argc, char *argv[])
 
       if (cmd.findOption("--write-ow")) opt_palette_ow = OFTrue;
       if (cmd.findOption("--lut-entries-word")) opt_entries_word = OFTrue;
-      if (cmd.findOption("--floyd-steinberg")) opt_palette_fs = OFTrue;        
+      if (cmd.findOption("--floyd-steinberg")) opt_palette_fs = OFTrue;
       if (cmd.findOption("--colors")) cmd.getValueAndCheckMinMax(opt_palette_col, 2, 65536);
 
       cmd.beginOptionBlock();
@@ -431,14 +462,14 @@ int main(int argc, char *argv[])
 
     // update image type
     if (error.good()) error = DcmQuant::updateImageType(dataset);
-    
+
     // update derivation description
     if (error.good()) error = DcmQuant::updateDerivationDescription(dataset, derivationDescription.c_str());
-    
+
     // create new SOP instance UID
     if (error.good() && (opt_secondarycapture || opt_uidcreation)) error = DcmQuant::newInstance(dataset);
 
-    // convert to Secondary Capture if requested by user.  
+    // convert to Secondary Capture if requested by user.
     // This method creates a new SOP class UID, so it should be executed
     // after the call to newInstance() which creates a Source Image Sequence.
     if (error.good() && opt_secondarycapture) error = DcmQuant::convertToSecondaryCapture(dataset);
@@ -481,7 +512,12 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmquant.cc,v $
- * Revision 1.4  2002-08-27 17:19:07  meichel
+ * Revision 1.5  2002-09-23 18:01:19  joergr
+ * Added new command line option "--version" which prints the name and version
+ * number of external libraries used (incl. preparation for future support of
+ * 'config.guess' host identifiers).
+ *
+ * Revision 1.4  2002/08/27 17:19:07  meichel
  * Added options --frame and --all-frames
  *
  * Revision 1.3  2002/08/20 12:20:21  meichel

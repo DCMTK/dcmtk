@@ -31,6 +31,7 @@ parameters:
 
 general options:
   -h      --help                print this help text and exit
+          --version             print version information and exit
   -v      --verbose             verbose mode, print processing details
   -q      --quiet               quiet mode, print no warnings and errors
   -d      --debug               debug mode, print debug information

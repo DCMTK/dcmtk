@@ -21,10 +21,10 @@
  *
  *  Purpose: Scale DICOM images
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-08-21 09:54:07 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2002-09-23 18:01:19 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/apps/dcmscale.cc,v $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -57,6 +57,11 @@ END_EXTERN_C
 
 #ifdef BUILD_DCMSCALE_AS_DCMJSCAL
 #include "djdecode.h"      /* for dcmjpeg decoders */
+#include "dipijpeg.h"      /* for dcmimage JPEG plugin */
+#endif
+
+#ifdef WITH_ZLIB
+#include "zlib.h"          /* for zlibVersion() */
 #endif
 
 #define OFFIS_CONSOLE_DESCRIPTION "Scale DICOM images"
@@ -95,9 +100,11 @@ int main(int argc, char *argv[])
     OFCmdUnsignedInt opt_itempad = 0;
 
 #ifdef BUILD_DCMSCALE_AS_DCMJSCAL
-    // JPEG parameters
+    // JPEG parameters, currently not used
+# if 0
     OFCmdUnsignedInt opt_quality = 90;                 /* default: 90% JPEG quality */
     E_SubSampling opt_sampling = ESS_422;              /* default: 4:2:2 sub-sampling */
+# endif
     E_DecompressionColorSpaceConversion opt_decompCSconversion = EDC_photometricInterpretation;
 #endif
 
@@ -121,7 +128,8 @@ int main(int argc, char *argv[])
     cmd.addParam("dcmfile-out", "DICOM output filename to be written");
 
     cmd.addGroup("general options:", LONGCOL, SHORTCOL + 2);
-     cmd.addOption("--help",                "-h",         "print this help text and exit");
+     cmd.addOption("--help",                "-h",         "print this help text and exit" /*, OFTrue is set implicitly */);
+     cmd.addOption("--version",                           "print version information and exit", OFTrue /* exclusive */);
      cmd.addOption("--debug",               "-d",         "debug mode, print debug information");
      cmd.addOption("--verbose",             "-v",         "verbose mode, print processing details");
 
@@ -191,6 +199,31 @@ int main(int argc, char *argv[])
 
     if (app.parseCommandLine(cmd, argc, argv))
     {
+      /* check exclusive options first */
+
+      if (cmd.getParamCount() == 0)
+      {
+          if (cmd.findOption("--version"))
+          {
+              app.printHeader(OFTrue /*print host identifier*/);          // uses ofConsole.lockCerr()
+              CERR << endl << "External libraries used:";
+#if !defined(WITH_ZLIB) && !defined(BUILD_DCMSCALE_AS_DCMJSCAL)
+              CERR << " none" << endl;
+#else
+              CERR << endl;
+#endif
+#ifdef WITH_ZLIB
+              CERR << "- ZLIB, Version " << zlibVersion() << endl;
+#endif
+#ifdef BUILD_DCMSCALE_AS_DCMJSCAL
+              CERR << "- " << DiJPEGPlugin::getLibraryVersionString() << endl;
+#endif
+              return 0;
+          }
+      }
+
+      /* command line parameters */
+
       cmd.getParam(1, opt_ifname);
       cmd.getParam(2, opt_ofname);
 
@@ -509,9 +542,9 @@ int main(int argc, char *argv[])
         COUT << "create output file " << opt_ofname << endl;
 
     error = fileformat.saveFile(opt_ofname, opt_oxfer, opt_oenctype, opt_oglenc, EPD_withoutPadding, 0, 0, opt_oDataset);
-    if (error != EC_Normal) 
+    if (error != EC_Normal)
     {
-        CERR << "Error: "  
+        CERR << "Error: "
              << error.text()
              << ": writing file: " <<  opt_ofname << endl;
         return 1;
@@ -534,7 +567,12 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmscale.cc,v $
- * Revision 1.3  2002-08-21 09:54:07  meichel
+ * Revision 1.4  2002-09-23 18:01:19  joergr
+ * Added new command line option "--version" which prints the name and version
+ * number of external libraries used (incl. preparation for future support of
+ * 'config.guess' host identifiers).
+ *
+ * Revision 1.3  2002/08/21 09:54:07  meichel
  * Fixed argument lists for loadFile and saveFile
  *
  * Revision 1.2  2002/08/20 12:20:21  meichel
