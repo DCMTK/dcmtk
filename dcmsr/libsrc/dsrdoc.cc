@@ -23,8 +23,8 @@
  *    classes: DSRDocument
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-10-14 15:36:55 $
- *  CVS/RCS Revision: $Revision: 1.46 $
+ *  Update Date:      $Date: 2003-10-27 11:25:31 $
+ *  CVS/RCS Revision: $Revision: 1.47 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -566,7 +566,7 @@ OFCondition DSRDocument::readXMLDocumentHeader(DSRXMLDocument &doc,
                     const char *encString = characterSetToXMLName(SpecificCharacterSetEnum);
                     if (doc.setEncodingHandler(encString).bad())
                     {
-                        OFString message = "character set '";
+                        OFString message = "Character set '";
                         message += tmpString;
                         message += "' not supported";
                         printWarningMessage(LogStream, message.c_str());
@@ -2216,7 +2216,11 @@ void DSRDocument::updateAttributes(const OFBool updateAll)
 /*
  *  CVS/RCS Log:
  *  $Log: dsrdoc.cc,v $
- *  Revision 1.46  2003-10-14 15:36:55  joergr
+ *  Revision 1.47  2003-10-27 11:25:31  joergr
+ *  Made text of a warning message consistent with other messages in this module
+ *  (always begin with an upper-case character).
+ *
+ *  Revision 1.46  2003/10/14 15:36:55  joergr
  *  Moved declaration of loop variable 'i' into the header of the for loop to get
  *  rid of warnings reported by Borland C++ 5.5.
  *
