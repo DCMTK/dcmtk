@@ -22,9 +22,9 @@
  *  Purpose: Presentation State Viewer - Print Spooler
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-06-08 10:36:25 $
+ *  Update Date:      $Date: 2000-06-19 16:29:05 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmpstat/apps/dcmprscu.cc,v $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -91,6 +91,7 @@ static int              opt_debugMode       = 0;
 static OFBool           opt_dumpMode        = OFFalse;
 static OFBool           opt_spoolMode       = OFFalse;             /* default: file print mode */
 static OFBool           opt_noPrint         = OFFalse;
+static OFBool           opt_sessionPrint    = OFFalse;             /* Basic Film Session N-ACTION? */
 static const char *     opt_cfgName         = NULL;                /* config file name */
 static const char *     opt_printer         = NULL;                /* printer name */
 
@@ -311,9 +312,17 @@ static E_Condition spoolStoredPrintFile(const char *filename, DVInterface &dvi)
                   
       if (! opt_noPrint)
       {
-        if (EC_Normal==result) if (EC_Normal != (result = stprint.printSCUprintBasicFilmBox(printHandler)))
+        if (opt_sessionPrint)
         {
-          *logstream << "spooler: printer communication failed, unable to print." << endl;
+          if (EC_Normal==result) if (EC_Normal != (result = stprint.printSCUprintBasicFilmSession(printHandler)))
+          {
+            *logstream << "spooler: printer communication failed, unable to print (at film session level)." << endl;
+          }
+        } else {
+          if (EC_Normal==result) if (EC_Normal != (result = stprint.printSCUprintBasicFilmBox(printHandler)))
+          {
+            *logstream << "spooler: printer communication failed, unable to print." << endl;
+          }
         }
       }
       if (EC_Normal==result) if (EC_Normal != (result = stprint.printSCUdelete(printHandler)))
@@ -645,11 +654,12 @@ int main(int argc, char *argv[])
     cmd.addParam("filename_in",   "stored print file(s) to be spooled", OFCmdParam::PM_MultiOptional);
 
     cmd.addGroup("general options:");
-     cmd.addOption("--help",        "-h",        "print this help text and exit");
-     cmd.addOption("--verbose",     "-v",        "verbose mode, print actions");
-     cmd.addOption("--debug",       "-d",        "debug mode, print debug information");
-     cmd.addOption("--dump",        "+d",        "dump all DIMSE messages to stdout");
-     cmd.addOption("--noprint",                  "do not create print-out (no n-action-rq)");
+     cmd.addOption("--help",        "-h",    "print this help text and exit");
+     cmd.addOption("--verbose",     "-v",    "verbose mode, print actions");
+     cmd.addOption("--debug",       "-d",    "debug mode, print debug information");
+     cmd.addOption("--dump",        "+d",    "dump all DIMSE messages to stdout");
+     cmd.addOption("--noprint",              "do not create print-out (no n-action-rq)");
+     cmd.addOption("--session-print",        "send film session n-action rq (instead of film box)");
 
     cmd.addGroup("mode options:");
      cmd.addOption("--print",       "+p",    "printer mode, print file(s) and terminate (default)");
@@ -685,6 +695,7 @@ int main(int argc, char *argv[])
       if (cmd.findOption("--debug"))   opt_debugMode = 3;
       if (cmd.findOption("--dump"))    opt_dumpMode = OFTrue;
       if (cmd.findOption("--noprint")) opt_noPrint = OFTrue;
+      if (cmd.findOption("--session-print")) opt_sessionPrint = OFTrue;
 
       cmd.beginOptionBlock();
       if (cmd.findOption("--print"))   opt_spoolMode = OFFalse;
@@ -976,7 +987,11 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmprscu.cc,v $
- * Revision 1.1  2000-06-08 10:36:25  meichel
+ * Revision 1.2  2000-06-19 16:29:05  meichel
+ * Added options for session printing and LIN OD to print tools, fixed
+ *   pixel aspect ratio related bug.
+ *
+ * Revision 1.1  2000/06/08 10:36:25  meichel
  * Renamed dcmprtsv to dcmprscu and adapted Makefile.in and Makefile.dep
  *
  * Revision 1.23  2000/06/06 09:44:07  joergr

@@ -25,10 +25,10 @@
  *    stored print and hardcopy grayscale images.
  *    Non-grayscale transformations in the presentation state are ignored.
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-06-14 14:24:39 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2000-06-19 16:29:05 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmpstat/apps/dcmpsprt.cc,v $
- *  CVS/RCS Revision: $Revision: 1.21 $
+ *  CVS/RCS Revision: $Revision: 1.22 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -151,7 +151,7 @@ int main(int argc, char *argv[])
     const char *              opt_mindensity = NULL;
     const char *              opt_plutname = NULL;
     OFList<char *>            opt_filenames;
-    OFBool                    opt_linearLUTshape = OFFalse;
+    int                       opt_LUTshape = 0; // 0=use SCP default, 1=IDENTITY, 2=LIN OD.
     OFBool                    opt_inverse_plut = OFFalse;
     OFBool                    opt_spool = OFFalse;
     const char *              opt_mediumtype = NULL;
@@ -217,6 +217,7 @@ int main(int argc, char *argv[])
     cmd.addGroup("print presentation LUT options:");
      cmd.addOption("--default-plut",         "do not create presentation LUT (default)");
      cmd.addOption("--identity",             "set IDENTITY presentation LUT shape");
+     cmd.addOption("--lin-od",               "set LIN OD presentation LUT shape");
      cmd.addOption("--plut",              1, "[l]ut identifier: string",
                                              "add LUT [l] to print job");
      cmd.addOption("--inverse-plut",         "render the inverse presentation LUT into the\nbitmap of the hardcopy grayscale image");
@@ -317,8 +318,9 @@ int main(int argc, char *argv[])
       cmd.endOptionBlock();
 
       cmd.beginOptionBlock();
-      if (cmd.findOption("--default-plut")) opt_linearLUTshape = OFFalse;
-      if (cmd.findOption("--identity"))     opt_linearLUTshape = OFTrue;
+      if (cmd.findOption("--default-plut")) opt_LUTshape = 0;
+      if (cmd.findOption("--identity"))     opt_LUTshape = 1;
+      if (cmd.findOption("--lin-od"))       opt_LUTshape = 2;
       if (cmd.findOption("--plut"))         app.checkValue(cmd.getValue(opt_plutname));
       cmd.endOptionBlock();
       if (cmd.findOption("--inverse-plut")) opt_inverse_plut = OFTrue;
@@ -550,8 +552,10 @@ int main(int argc, char *argv[])
           if (EC_Normal != dvi.selectDisplayPresentationLUT(opt_plutname))
           CERR << "warning: cannot set requested presentation LUT '" << opt_plutname << "', ignoring." << endl;
         } else {
-          if ((opt_linearLUTshape)&&(EC_Normal != dvi.getCurrentPState().setCurrentPresentationLUT(DVPSP_identity)))
+          if ((opt_LUTshape == 1)&&(EC_Normal != dvi.getCurrentPState().setCurrentPresentationLUT(DVPSP_identity)))
             CERR << "warning: cannot set IDENTITY presentation LUT shape, ignoring." << endl;
+          else if ((opt_LUTshape == 2)&&(EC_Normal != dvi.getCurrentPState().setCurrentPresentationLUT(DVPSP_lin_od)))
+            CERR << "warning: cannot set LIN OD presentation LUT shape, ignoring." << endl;
         }
 
         // save grayscale hardcopy image.
@@ -675,7 +679,11 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmpsprt.cc,v $
- * Revision 1.21  2000-06-14 14:24:39  joergr
+ * Revision 1.22  2000-06-19 16:29:05  meichel
+ * Added options for session printing and LIN OD to print tools, fixed
+ *   pixel aspect ratio related bug.
+ *
+ * Revision 1.21  2000/06/14 14:24:39  joergr
  * Added new command line option allowing to add a PBM file as an overlay to
  * the hardcopy grayscale image (very preliminary support, only "P1" files
  * without comments).

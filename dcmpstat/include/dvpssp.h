@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DVPSStoredPrint
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-06-14 11:28:15 $
- *  CVS/RCS Revision: $Revision: 1.27 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2000-06-19 16:29:07 $
+ *  CVS/RCS Revision: $Revision: 1.28 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -684,6 +684,12 @@ class DVPSStoredPrint
    */
   E_Condition printSCUprintBasicFilmBox(DVPSPrintMessageHandler& printHandler);
 
+  /** Prints the current DICOM Basic Film Session.
+   *  @param printHandler print communication handler, association must be open.
+   *  @return EC_Normal upon success, an error code otherwise.
+   */
+  E_Condition printSCUprintBasicFilmSession(DVPSPrintMessageHandler& printHandler);
+
   /** Deletes all objects currently present in the print association.
    *  @param printHandler print communication handler, association must be open.
    *  @return EC_Normal upon success, an error code otherwise.
@@ -1085,7 +1091,11 @@ class DVPSStoredPrint
 
 /*
  *  $Log: dvpssp.h,v $
- *  Revision 1.27  2000-06-14 11:28:15  joergr
+ *  Revision 1.28  2000-06-19 16:29:07  meichel
+ *  Added options for session printing and LIN OD to print tools, fixed
+ *    pixel aspect ratio related bug.
+ *
+ *  Revision 1.27  2000/06/14 11:28:15  joergr
  *  Added methods to access the attributes Polarity and Requested Image Size.
  *
  *  Revision 1.26  2000/06/08 10:44:29  meichel

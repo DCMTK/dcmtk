@@ -23,8 +23,8 @@
  *    classes: DVPSStoredPrint
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-06-08 10:44:37 $
- *  CVS/RCS Revision: $Revision: 1.32 $
+ *  Update Date:      $Date: 2000-06-19 16:29:08 $
+ *  CVS/RCS Revision: $Revision: 1.33 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1574,6 +1574,19 @@ E_Condition DVPSStoredPrint::printSCUprintBasicFilmBox(DVPSPrintMessageHandler& 
   return EC_IllegalCall; // otherwise
 }
 
+E_Condition DVPSStoredPrint::printSCUprintBasicFilmSession(DVPSPrintMessageHandler& printHandler)
+{
+  DcmDataset *attributeListOut=NULL; 
+  Uint16 status=0;
+ 
+  CONDITION cond = printHandler.actionRQ(UID_BasicFilmSessionSOPClass, filmSessionInstanceUID.c_str(), 
+    1 /* action type ID 1 = print */, NULL /* no action information */, status, attributeListOut);
+  delete attributeListOut; // should be empty anyway
+
+  if ((SUCCESS(cond))&&((status==0)||((status & 0xf000)==0xb000))) return EC_Normal;
+  return EC_IllegalCall; // otherwise
+}
+
 E_Condition DVPSStoredPrint::printSCUdelete(DVPSPrintMessageHandler& printHandler)
 {  
   CONDITION cond;
@@ -1674,7 +1687,7 @@ E_Condition DVPSStoredPrint::printSCUsetBasicImageBox(
         if (EC_Normal==result) result = DVPSHelper::putUint16Value(ditem, DCM_PixelRepresentation, 0);
         if (EC_Normal==result) result = DVPSHelper::putUint16Value(ditem, DCM_Rows, (Uint16)height);
         if (EC_Normal==result) result = DVPSHelper::putUint16Value(ditem, DCM_Columns, (Uint16)width);
-        double aspectRatio = image.getHeightWidthRatio();
+        double aspectRatio = image.getWidthHeightRatio();
         if ((aspectRatio != 1.0)&&(aspectRatio != 0))
         {
           sprintf(str, "10000\\%ld", (long)(aspectRatio*10000.0));
@@ -3394,7 +3407,11 @@ void DVPSStoredPrint::overridePresentationLUTSettings(
 
 /*
  *  $Log: dvpssp.cc,v $
- *  Revision 1.32  2000-06-08 10:44:37  meichel
+ *  Revision 1.33  2000-06-19 16:29:08  meichel
+ *  Added options for session printing and LIN OD to print tools, fixed
+ *    pixel aspect ratio related bug.
+ *
+ *  Revision 1.32  2000/06/08 10:44:37  meichel
  *  Implemented Referenced Presentation LUT Sequence on Basic Film Session level.
  *    Empty film boxes (pages) are not written to file anymore.
  *
