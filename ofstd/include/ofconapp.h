@@ -1,0 +1,157 @@
+/*
+ *
+ *  Copyright (C) 1999, OFFIS
+ *
+ *  This software and supporting documentation were developed by
+ *
+ *    Kuratorium OFFIS e.V.
+ *    Healthcare Information and Communication Systems
+ *    Escherweg 2
+ *    D-26121 Oldenburg, Germany
+ *
+ *  THIS SOFTWARE IS MADE AVAILABLE,  AS IS,  AND OFFIS MAKES NO  WARRANTY
+ *  REGARDING  THE  SOFTWARE,  ITS  PERFORMANCE,  ITS  MERCHANTABILITY  OR
+ *  FITNESS FOR ANY PARTICULAR USE, FREEDOM FROM ANY COMPUTER DISEASES  OR
+ *  ITS CONFORMITY TO ANY SPECIFICATION. THE ENTIRE RISK AS TO QUALITY AND
+ *  PERFORMANCE OF THE SOFTWARE IS WITH THE USER.
+ *
+ *  Module:  ofstd
+ *
+ *  Author:  Joerg Riesmeier
+ *
+ *  Purpose: Handle console applications (Header)
+ *
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 1999-02-08 12:00:41 $
+ *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/include/Attic/ofconapp.h,v $
+ *  CVS/RCS Revision: $Revision: 1.1 $
+ *  Status:           $State: Exp $
+ *
+ *  CVS/RCS Log at end of file
+ *
+ */
+
+
+#ifndef __OFCONAPP_H
+#define __OFCONAPP_H
+
+#include "osconfig.h"
+
+#include "oftypes.h"
+#include "ofcmdln.h"
+
+#include <iostream.h>
+
+
+/*------------------------*
+ *  forward declerations  *
+ *------------------------*/
+
+class OFString;
+
+
+/*---------------------*
+ *  class declaration  *
+ *---------------------*/
+
+class OFConsoleApplication
+{
+
+ public:
+ 
+    /** constructor
+     *
+     ** @param  app     application name
+     *  @param  desc    (short) description of what the application does
+     *  @param  rcsid   identifier for console application
+     *  @param  output  output stream (default: cerr, if parameter = NULL)
+     */
+    OFConsoleApplication(const char *app,
+                         const char *desc = NULL,
+                         const char *rcsid = NULL,
+                         ostream *output = NULL);
+    
+    /** destructor
+     */
+    ~OFConsoleApplication();
+    
+    /** parse command line
+     *
+     ** @param  cmd       application name
+     *  @param  argCount  number of arguments (argc)
+     *  @param  argValue  pointer to argument arry (argv[])
+     *  @param  parmDesc  parameter description
+     *  @param  minCount  minimum number of parameters
+     *  @param  maxCount  maximum number of parameter (default: -1 = unlimited)
+     *  @param  flags     flags to be used for parsing (e.g. OFCommandLine::ExpandWildcards)
+     *  @param  startPos  first argument to be parsed (default: 1, omit program name)
+     *
+     ** @result status of parsing process, true if successful, false otherwise
+     */
+    OFBool parseCommandLine(OFCommandLine &cmd,
+                            int argCount,
+                            char *argValue[],
+                            const char *parmDesc = "parameters",
+                            const int minCount = 0,
+                            const int maxCount = -1,
+                            const int flags = 0,
+                            const int startPos = 1);
+
+    /** print header of console application (consisting of identifier, name and description)
+     */
+    void printHeader();
+
+    /** print usage (syntax of command line options)
+     *
+     ** @param  parm  application name
+     *  @param  cmd   reference to command line class (default: object used for parsing)
+     */
+    void printUsage(const char *parm,
+                    const OFCommandLine *cmd = NULL);
+
+    /** print error message (incl. header)
+     *
+     ** @param  str  error message to be printed
+     */
+    void printError(const char *str);
+
+    /** check value status and print error message if necessary
+     *
+     ** @param  status  status of OFCommandLine::getValue() call
+     *  @param  cmd     reference to command line class (default: object used for parsing)
+     */
+    void checkValue(const OFCommandLine::E_ValueStatus status,
+                    OFCommandLine *cmd = NULL);
+
+
+ private:
+
+    OFString Name;
+    OFString Description;
+    OFString Identification;
+
+    ostream  *Output;
+    OFCommandLine *CmdLine;
+
+
+ // --- declarations to avoid compiler warnings
+ 
+    OFConsoleApplication(const OFConsoleApplication &);
+    OFConsoleApplication &operator=(const OFConsoleApplication &);
+};
+
+
+#endif
+
+
+/*
+ *
+ * CVS/RCS Log:
+ * $Log: ofconapp.h,v $
+ * Revision 1.1  1999-02-08 12:00:41  joergr
+ * Added class to handle console applications (with or w/o command line
+ * arguments).
+ *
+ *
+ *
+ */
