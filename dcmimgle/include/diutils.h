@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2001, OFFIS
+ *  Copyright (C) 1996-2002, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose: Utilities (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-11-09 16:25:59 $
+ *  Update Date:      $Date: 2002-06-26 16:08:14 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/diutils.h,v $
- *  CVS/RCS Revision: $Revision: 1.19 $
+ *  CVS/RCS Revision: $Revision: 1.20 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -82,6 +82,9 @@ const unsigned long CIF_UsePresentationState      = 0x0000008;
 
 /// don't convert YCbCr (Full and Full 4:2:2) color images to RGB
 const unsigned long CIF_KeepYCbCrColorModel       = 0x0000010;
+
+/// take responsibility for the given external DICOM dataset, i.e. delete it on destruction
+const unsigned long CIF_TakeOverExternalDataset   = 0x0000020;
 
 //@}
 
@@ -370,7 +373,7 @@ class DicomImageClass
     {
         DebugLevel.set(level);
     }
-    
+
     /** get the current debug level
      *
      ** @return  current debug level
@@ -379,7 +382,7 @@ class DicomImageClass
     {
         return DebugLevel.get();
     }
-    
+
     /** check whether specified debug level is set
      *
      ** @param  level  debug levelto be checked
@@ -405,7 +408,7 @@ class DicomImageClass
 
 
   private:
-  
+
     /// debug level defining the verboseness of the image toolkit
     static OFGlobal<int> DebugLevel;
 };
@@ -418,7 +421,11 @@ class DicomImageClass
  *
  * CVS/RCS Log:
  * $Log: diutils.h,v $
- * Revision 1.19  2001-11-09 16:25:59  joergr
+ * Revision 1.20  2002-06-26 16:08:14  joergr
+ * Added configuration flag that enables the DicomImage class to take the
+ * responsibility of an external DICOM dataset (i.e. delete it on destruction).
+ *
+ * Revision 1.19  2001/11/09 16:25:59  joergr
  * Added support for Window BMP file format.
  *
  * Revision 1.18  2001/09/28 13:11:00  joergr
