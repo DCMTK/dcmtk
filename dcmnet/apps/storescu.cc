@@ -36,9 +36,9 @@
 **
 **
 ** Last Update:		$Author: meichel $
-** Update Date:		$Date: 1997-05-20 10:00:24 $
+** Update Date:		$Date: 1997-05-20 10:17:06 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/apps/storescu.cc,v $
-** CVS/RCS Revision:	$Revision: 1.10 $
+** CVS/RCS Revision:	$Revision: 1.11 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -523,7 +523,8 @@ storeSCU(T_ASC_Association * assoc, const char *fname)
     presId = ASC_findAcceptedPresentationContextID(assoc, sopClass);
     if (presId == 0) {
         const char *modalityName = DU_sopClassToModality(sopClass);
-        if (!modalityName) modalityName = "??";
+        if (!modalityName) modalityName = dcmFindNameOfUID(sopClass);
+        if (!modalityName) modalityName = "unknown SOP class";
 	errmsg("No presentation context for: (%s) %s", modalityName, sopClass);
 	return DIMSE_NOVALIDPRESENTATIONCONTEXTID;
     }
@@ -578,7 +579,10 @@ cstore(T_ASC_Association * assoc, const char *fname)
 /*
 ** CVS Log
 ** $Log: storescu.cc,v $
-** Revision 1.10  1997-05-20 10:00:24  meichel
+** Revision 1.11  1997-05-20 10:17:06  meichel
+** *** empty log message ***
+**
+** Revision 1.10  1997/05/20 10:00:24  meichel
 ** Fixed bug in storescu which caused a segmentation fault when transmission
 ** of a non-image IOD (i.e. visit IOD) was attempted.
 **
