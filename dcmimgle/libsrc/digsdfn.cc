@@ -22,9 +22,9 @@
  *  Purpose: DicomGSDFunction (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-10-18 15:06:25 $
+ *  Update Date:      $Date: 1999-10-18 17:25:46 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/libsrc/digsdfn.cc,v $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -114,7 +114,11 @@ DiGSDFunction::DiGSDFunction(const Uint16 *ddl_tab,             // UNTESTED !!
 DiGSDFunction::DiGSDFunction(const double lum_min,
                              const double lum_max,
                              const unsigned long count)
-  : DiDisplayFunction(lum_min, lum_max, count)
+  : DiDisplayFunction(lum_min, lum_max, count),
+    JNDMin(0),
+    JNDMax(0),
+    GSDFValue(NULL),
+    GSDFSpline(NULL)
 {
     if (Valid)
         Valid = calculateGSDF() && calculateGSDFSpline() && calculateJNDBoundaries();
@@ -297,7 +301,11 @@ double DiGSDFunction::getJNDIndex(const double lum) const
  *
  * CVS/RCS Log:
  * $Log: digsdfn.cc,v $
- * Revision 1.4  1999-10-18 15:06:25  joergr
+ * Revision 1.5  1999-10-18 17:25:46  joergr
+ * Added missing variables in member initialization list (reported by egcs on
+ * Solaris with additional compiler options).
+ *
+ * Revision 1.4  1999/10/18 15:06:25  joergr
  * Enhanced command line tool dcmdspfn (added new options).
  *
  * Revision 1.3  1999/10/18 10:14:27  joergr
@@ -311,7 +319,6 @@ double DiGSDFunction::getJNDIndex(const double lum) const
  * Revision 1.1  1999/09/10 08:54:49  joergr
  * Added support for CIELAB display function. Restructured class hierarchy
  * for display functions.
- *
  *
  *
  */
