@@ -23,8 +23,8 @@
  *    classes: DSRCodedEntryValue
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-09-10 13:18:43 $
- *  CVS/RCS Revision: $Revision: 1.17 $
+ *  Update Date:      $Date: 2003-11-28 16:51:44 $
+ *  CVS/RCS Revision: $Revision: 1.18 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -141,12 +141,12 @@ void DSRCodedEntryValue::print(ostream &stream,
         if (printCodeValue)
         {
             stream << DSRTypes::convertToPrintString(CodeValue, printString) << ",";
-            stream << DSRTypes::convertToPrintString(CodingSchemeDesignator, printString) << ",";
+            stream << DSRTypes::convertToPrintString(CodingSchemeDesignator, printString);
             if (!CodingSchemeVersion.empty())
-                stream << DSRTypes::convertToPrintString(CodingSchemeVersion, printString) << ",";
+                stream << "[" << DSRTypes::convertToPrintString(CodingSchemeVersion, printString) << "]";
         } else
-            stream << ",,";
-        stream << "\"" << DSRTypes::convertToPrintString(CodeMeaning, printString) << "\")";
+            stream << ",";
+        stream << ",\"" << DSRTypes::convertToPrintString(CodeMeaning, printString) << "\")";
     }
     else if (printInvalid)
         stream << "invalid code";
@@ -328,7 +328,7 @@ OFCondition DSRCodedEntryValue::renderHTML(ostream &stream,
             stream << DSRTypes::convertToMarkupString(CodeValue, htmlString, convertNonASCII) << ", ";
         stream << DSRTypes::convertToMarkupString(CodingSchemeDesignator, htmlString, convertNonASCII);
         if (!CodingSchemeVersion.empty())
-            stream << ", " << DSRTypes::convertToMarkupString(CodingSchemeVersion, htmlString, convertNonASCII);
+            stream << " [" << DSRTypes::convertToMarkupString(CodingSchemeVersion, htmlString, convertNonASCII) << "]";
         if (valueFirst)
             stream << ", " << DSRTypes::convertToMarkupString(CodeMeaning, htmlString, convertNonASCII);
         stream << ")";
@@ -390,7 +390,11 @@ OFBool DSRCodedEntryValue::checkCode(const OFString &codeValue,
 /*
  *  CVS/RCS Log:
  *  $Log: dsrcodvl.cc,v $
- *  Revision 1.17  2003-09-10 13:18:43  joergr
+ *  Revision 1.18  2003-11-28 16:51:44  joergr
+ *  Changed output format of CodingSchemeVersion in print() and renderHTML().
+ *  Now using square brackets instead of comma to separate from CodingScheme.
+ *
+ *  Revision 1.17  2003/09/10 13:18:43  joergr
  *  Replaced PrivateCodingSchemeUID by new CodingSchemeIdenticationSequence as
  *  required by CP 324.
  *

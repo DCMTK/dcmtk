@@ -23,8 +23,8 @@
  *    classes: DSRDocument
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-10-31 13:30:10 $
- *  CVS/RCS Revision: $Revision: 1.48 $
+ *  Update Date:      $Date: 2003-11-28 16:51:44 $
+ *  CVS/RCS Revision: $Revision: 1.49 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1346,8 +1346,8 @@ OFCondition DSRDocument::renderHTML(ostream &stream,
                                 stream << "(" << convertToMarkupString(obsCode.getCodeValue(), htmlString, convertNonASCII);
                                 stream << "," << convertToMarkupString(obsCode.getCodingSchemeDesignator(), htmlString, convertNonASCII) << ",";
                                 if (!obsCode.getCodingSchemeVersion().empty())
-                                    stream << convertToMarkupString(obsCode.getCodingSchemeVersion(), htmlString, convertNonASCII) << ",";
-                                stream << "\"" << convertToMarkupString(obsCode.getCodeMeaning(), htmlString, convertNonASCII) << "\")";
+                                    stream << "[" << convertToMarkupString(obsCode.getCodingSchemeVersion(), htmlString, convertNonASCII) << "]";
+                                stream << ",\"" << convertToMarkupString(obsCode.getCodeMeaning(), htmlString, convertNonASCII) << "\")";
                             }
                         }
                         stream << ", " << convertToMarkupString(organization, htmlString, convertNonASCII);
@@ -2222,7 +2222,11 @@ void DSRDocument::updateAttributes(const OFBool updateAll)
 /*
  *  CVS/RCS Log:
  *  $Log: dsrdoc.cc,v $
- *  Revision 1.48  2003-10-31 13:30:10  joergr
+ *  Revision 1.49  2003-11-28 16:51:44  joergr
+ *  Changed output format of CodingSchemeVersion in print() and renderHTML().
+ *  Now using square brackets instead of comma to separate from CodingScheme.
+ *
+ *  Revision 1.48  2003/10/31 13:30:10  joergr
  *  Changed behaviour: do not output empty list of predecessor or identical
  *  documents in XML format unless flag XF_writeEmptyTags is set.
  *
