@@ -23,8 +23,8 @@
  *    classes: DSRContentItem
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-10-26 14:16:18 $
- *  CVS/RCS Revision: $Revision: 1.8 $
+ *  Update Date:      $Date: 2000-11-01 16:11:26 $
+ *  CVS/RCS Revision: $Revision: 1.9 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -58,7 +58,7 @@
  *  This class allows to access the document tree nodes without using any pointers.
  */
 class DSRContentItem
-  : public DSRTypes
+  : protected DSRTypes
 {
     // allow access to setTreeNode()
     friend class DSRDocumentTree;
@@ -404,7 +404,10 @@ class DSRContentItem
 /*
  *  CVS/RCS Log:
  *  $Log: dsrcitem.h,v $
- *  Revision 1.8  2000-10-26 14:16:18  joergr
+ *  Revision 1.9  2000-11-01 16:11:26  joergr
+ *  Now derive "protected" from base class DSRTypes instead of "public".
+ *
+ *  Revision 1.8  2000/10/26 14:16:18  joergr
  *  Added support for "Comprehensive SR".
  *  Added support for TCOORD content item.
  *
