@@ -21,15 +21,16 @@
  *
  *  Purpose: global type and constant definitions
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-11-27 12:07:23 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2002-12-06 12:21:00 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dctypes.h,v $
- *  CVS/RCS Revision: $Revision: 1.16 $
+ *  CVS/RCS Revision: $Revision: 1.17 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
  *
  */
+
 
 #ifndef DCTYPES_H
 #define DCTYPES_H 1
@@ -85,11 +86,28 @@ typedef enum {
 
 
 
-/** General purpose class hiding constants from the global namespace. 
+/** General purpose class hiding constants from the global namespace.
  */
 struct DCMTypes
 {
   public:
+
+    /** @name print() flags.
+     *  These flags can be combined and passed to the print() methods.
+     */
+    //@{
+
+    /// shorten long tag values (e.g. long texts, pixel data)
+    static const size_t PF_shortenLongTagValues;
+
+    /// show hierarchical tree structure of the dataset
+    static const size_t PF_showTreeStructure;
+
+    /// internal: current entry is the last one on the level
+    static const size_t PF_lastEntry;
+
+    //@}
+
 
     /** @name writeXML() flags.
      *  These flags can be combined and passed to the writeXML() methods.
@@ -98,7 +116,7 @@ struct DCMTypes
 
     /// add document type declaration
     static const size_t XF_addDocumentType;
-    
+
     /// write binary data to XML output file
     static const size_t XF_writeBinaryData;
 
@@ -111,13 +129,18 @@ struct DCMTypes
 // Undefined Length Identifier
 const Uint32 DCM_UndefinedLength = 0xffffffff;
 
+
 #endif /* !DCTYPES_H */
 
 
 /*
  * CVS/RCS Log:
  * $Log: dctypes.h,v $
- * Revision 1.16  2002-11-27 12:07:23  meichel
+ * Revision 1.17  2002-12-06 12:21:00  joergr
+ * Enhanced "print()" function by re-working the implementation and replacing
+ * the boolean "showFullData" parameter by a more general integer flag.
+ *
+ * Revision 1.16  2002/11/27 12:07:23  meichel
  * Adapted module dcmdata to use of new header file ofstdinc.h
  *
  * Revision 1.15  2002/07/10 11:45:40  meichel
