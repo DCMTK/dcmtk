@@ -1,0 +1,209 @@
+/*!
+
+\anchor dcmodify
+
+\page dcmodify Modify DICOM files
+
+\section synopsis SYNOPSIS
+
+\verbatim
+dcmodify [options] dcmfile-in...
+\endverbatim
+
+\section description DESCRIPTION
+
+\b dcmodify is a tool to modify tags in DICOM-files. Therefore it has builtin
+functions to insert, modify and delete tags. It's possible to change tags, that
+are stored in sequences and their itemsets. Also you can change tags with a
+value-multiplicity > 1. Generally there are two modes of operation,
+commandline- and batchmode. In commandline-mode the files are given directly as
+parameter dcmfile-in. Wildcards should work, too. In batchmode, the user can
+specify a batchfile, where every line contains a commando describing a
+modify-action on one file. In batchmode it's not possible to give "normal"
+commandline-parameters to \b dcmodify. So batchmode is an  eclusive option. \b
+dcmodify just accepts one single option from i/ii/m/mi/ma/e/ea on commandline.
+If you want to do different operations on a Dicomfile use different calls to
+dcmodify or use batchmode. Please be careful if you modify or insert tags to
+new values. \b Dcmodify doesn't test, whether values are of the right VR! It
+should print an error-message, but overall the user should care for right
+VR-usage.
+
+\section parameters PARAMETERS
+
+\verbatim
+dcmfile-in              DICOM input filenames to be modified
+\endverbatim
+
+\section options OPTIONS
+
+\subsection sub2 general options
+\verbatim
+-h   --help
+       print this help text and exit
+
+     --version
+       print version information and exit
+
+-d   --debug
+       debug mode, print debug information
+
+-v   --verbose
+       verbose mode, print verbose output
+\endverbatim
+
+\subsection insert_mode_options insert-mode options
+\verbatim
+-i   --insert-tag   "xxxx,xxxx=value"
+       insert (and overwrite) given tag at 1. Level denoted by
+       gggg,eeee=value
+
+-ii  --insert-item-tag  "xxxx,xxxx[n].yyyy,yyyy=value"
+       insert (and overwrite) tag in sequence denoted by
+       gggg,eeee[n]=value, n specifies item-nr(starts with 0).
+       This kind of path can repeated for deeper-level-access
+\endverbatim
+
+\subsection modify_mode_options modify-mode options
+\verbatim
+-m   --modify-tag   "xxxx,xxxx=value"
+       modify given tag at 1.Level denoted by gggg,eeee=value
+
+-mi  --modify-item-tag  "xxxx,xxxx[n].yyyy,yyyy=value"
+       modify tag in sequence denoted by gggg,eeee[n]=value;
+       n specifies item-nr (starts with 0).
+       Can repeated for deeper-level-access
+
+-ma  --modify-all-tags  "xxxx,xxxx=value"
+       modify ALL existing tags matching gggg,eeee in file
+\endverbatim
+
+\subsection erase_mode_options erase-mode options
+\verbatim
+-e   --erase-tag    "xxxx,xxxx"
+       erase given tag at 1.Level denoted by gggg,eeee
+
+-ei  --erase-item-tag   "xxxx,xxxx[n].yyyy,yyyy=value"
+       erases tag in sequences denoted by gggg,eeee[n]=value;
+       n specifies item-nr (starts with 0).
+       Can repeated for deeper-level-access
+
+-ea  --erase-all-tags   "xxxx,xxxx"
+       erase ALL exisiting tags matching gggg,eeee in file
+\endverbatim
+
+\subsection batch_mode_options batch-mode options
+\verbatim
+-b   --batch-mode   batch-file
+       processes batch-file, that contains commandos for
+       modifying/inserting tags.
+       One line consists of: filename commando tag value
+\endverbatim
+
+\section examples EXAMPLES
+\verbatim
+-i  --insert-tag:
+dcmodify -i "0010,0010=A Name" file.dcm
+Inserts the patients name tag into file.dcm at 1. level.
+If tag already exists, -i will overwrite it!
+If you want to insert an element with value-multiplicity>1 (e.g. 4)
+you can do this with: dcmodify -i "0018,1310=1\2\3\4"
+
+-ii --insert-item-tag:
+dcmodify -ii "0008,1111[2].0010,0010=A Name" file.dcm
+Inserts in sequence denoted by 0008,1111 in the third(!)
+item the tag 0010,0010 with value "A Name".
+As you see, count of items starts with 0!
+If tag already exists, -i will overwrite it!
+You can describe a longer tag path than above
+with e.g:
+"0008,1111[2].0008,1140[0].0010,0010=A Name"
+
+-m  --modify-tag:
+dcmodify -m "0010,0010=A Name" file.dcm
+Changes tag 0010,0010 on 1. level to "A Name"
+
+-mi --modify-item-tag:
+dcmodify -mi "0008,1111[2].0010,0010=A Name" file.dcm
+same as -ii, but does only change existing tag to "A Name"
+
+-ma --modify-all-tags:
+dcmodify -ma "0010,0010=A Name" file.dcm
+Does the same as -m but works on all(!) levels.
+Therefore it searches the whole dataset including
+sequences for 0010,0010 and changes all matching tags
+to "A Name"
+
+-e  --erase-tag:
+dcmodify -e "0010,0010" *.dcm
+Erases tag 0010,0010 in all *.dcm files at 1. level.
+Note: You also can erase whole sequences by using this
+option with a sequence-tag, but up to now its not
+possible to delete a single item in a sequence.
+
+
+-ea --erase-all-tags:
+dcmodify -ea "0010,0010" *.dcm
+Same as -e, but searches also in sequences and items, so
+with this commando you could "anonymize" your files e.g.
+
+-ei --erase-item-tag:
+dcmodify -ei 0008,1111[0].0010,0010
+Erases tag 0010,0010 only in item denoted by
+008,1111[0]. Other tag-occurences are not affected.
+
+-b  --batch-mode:
+dcmodify -b batchfile
+The following two lines could be an example for
+"batchfile":
+    dump.dcm m 0010,0010=Dr. Best
+    file.dcm i 0018,1310=1\\2\\3\\4
+    file.dcm ii 0008,1111[2].0010,0010=A Name
+1. column denotes a file, wildcards are NOT supported.
+2. column denotes, what to do; all modify-options are
+    allowed (i,ii,m,mi,ma,e,ea) exclusive b.
+3. column denotes the tag/-path and value split by '='
+- A row starting with a hash ('#') is ignored and
+  treated as a comment.
+- Please use only one space between columns and use
+  only '=' to split column 3 into tag and value
+- do not surround values with '"' or similar.
+\endverbatim
+\section sec6 COMMAND LINE
+
+All command line tools use the following notation for parameters: square
+brackets enclose optional values (0-1), three trailing dots indicate that
+multiple values are allowed (1-n), a combination of both means 0 to n values.
+
+Command line options are distinguished from parameters by a leading '+' or '-'
+sign, respectively.  Usually, order and position of command line options are
+arbitrary (i.e. they can appear anywhere).  However, if options are mutually
+exclusive the rightmost appearance is used.  This behaviour conforms to the
+standard evaluation rules of common Unix shells.
+
+In addition, one or more command files can be specified using an '@' sign as a
+prefix to the filename (e.g. <em>\@command.txt</em>).  Such a command argument
+is replaced by the content of the corresponding text file (multiple
+whitespaces are treated as a single separator) prior to any further
+evaluation.  Please note that a command file cannot contain another command
+file. This simple but effective approach allows to summarize common
+combinations of options/parameters and avoids longish and confusing command
+lines (an example is provided in file <em>dcmdata/apps/dumppat.txt</em>).
+
+\section environment ENVIRONMENT
+
+The \b dcmodify utility will attempt to load DICOM data dictionaries specified
+in the \e DCMDICTPATH environment variable.  By default, if the \e DCMDICTPATH
+environment variable is not set, the file <em>/usr/local/dicom/lib/dicom.dic
+</em> will be loaded.  The default behaviour should be preferred and the
+\e DCMDICTPATH environment variable only used when alternative data dictionaries
+are required. The \e DCMDICTPATH environment variable has the same format as the
+shell \e PATH variable in that a colon (":") separates entries.  The data
+dictionary code will attempt to load each file specified in the \e DCMDICTPATH
+environment variable.  It is an error if no data dictionary can be loaded.
+
+\section copyright COPYRIGHT
+
+Copyright (C) 2003 by Kuratorium OFFIS e.V., Escherweg 2, 26121 Oldenburg,
+Germany.
+
+*/
