@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2001, OFFIS
+ *  Copyright (C) 2000-2002, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,8 +23,8 @@
  *    classes: DSRTemporalCoordinatesValue
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-07-22 14:22:10 $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  Update Date:      $Date: 2002-12-05 13:53:30 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -157,6 +157,13 @@ OFCondition DSRTemporalCoordinatesValue::read(DcmItem &dataset,
     if (result.good())
     {
         TemporalRangeType = DSRTypes::enumeratedValueToTemporalRangeType(string);
+        /* check TemporalRangeType */
+        if (TemporalRangeType == DSRTypes::TRT_invalid)
+        {
+            OFString message = "Reading unknown TemporalRangeType ";
+            message += string;
+            DSRTypes::printWarningMessage(logStream, message.c_str());
+        }
         /* read data (all three lists) */
         SamplePositionList.read(dataset, logStream);
         TimeOffsetList.read(dataset, logStream);
@@ -310,7 +317,11 @@ OFBool DSRTemporalCoordinatesValue::checkData(const DSRTypes::E_TemporalRangeTyp
 /*
  *  CVS/RCS Log:
  *  $Log: dsrtcovl.cc,v $
- *  Revision 1.7  2002-07-22 14:22:10  joergr
+ *  Revision 1.8  2002-12-05 13:53:30  joergr
+ *  Added further checks when reading SR documents (e.g. value of VerificationFlag,
+ *  CompletionsFlag, ContinuityOfContent and SpecificCharacterSet).
+ *
+ *  Revision 1.7  2002/07/22 14:22:10  joergr
  *  Removed unused variable.
  *
  *  Revision 1.6  2001/11/09 16:19:03  joergr

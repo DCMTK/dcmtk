@@ -23,8 +23,8 @@
  *    classes: DSRDocument
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-07-22 14:22:33 $
- *  CVS/RCS Revision: $Revision: 1.37 $
+ *  Update Date:      $Date: 2002-12-05 13:52:27 $
+ *  CVS/RCS Revision: $Revision: 1.38 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -34,9 +34,9 @@
 
 #include "osconfig.h"    /* make sure OS specific configuration is included first */
 
-#include "ofstream.h"
 #include "dsrdoc.h"
 
+#include "ofstream.h"
 
 
 DSRDocument::DSRDocument(const E_DocumentType documentType)
@@ -362,11 +362,32 @@ OFCondition DSRDocument::read(DcmItem &dataset,
         removeAttributeFromSequence(PerformedProcedureCode, DCM_MACParametersSequence);
         removeAttributeFromSequence(PerformedProcedureCode, DCM_DigitalSignaturesSequence);
 
-        /* update internal enumerated values */
+        /* update internal enumerated values and perform additional checks */
         OFString string;
         CompletionFlagEnum = enumeratedValueToCompletionFlag(getStringValueFromElement(CompletionFlag, string));
+        /* check CompletionFlag */
+        if (CompletionFlagEnum == CF_invalid)
+        {
+            OFString message = "Reading unknown CompletionFlag ";
+            message += string;
+            printWarningMessage(LogStream, message.c_str());
+        }
         VerificationFlagEnum = enumeratedValueToVerificationFlag(getStringValueFromElement(VerificationFlag, string));
+        /* check VerificationFlag */
+        if (VerificationFlagEnum == VF_invalid)
+        {
+            OFString message = "Reading unknown VerificationFlag ";
+            message += string;
+            printWarningMessage(LogStream, message.c_str());
+        }
         SpecificCharacterSetEnum = definedTermToCharacterSet(getStringValueFromElement(SpecificCharacterSet, string));
+        /* check SpecificCharacterSet */
+        if ((SpecificCharacterSetEnum == CS_invalid) && !string.empty())
+        {
+            OFString message = "Reading unknown/unsupported SpecificCharacterSet ";
+            message += string;
+            printWarningMessage(LogStream, message.c_str());
+        }
 
         /* read SR document tree */
         if (result.good())
@@ -1863,7 +1884,11 @@ void DSRDocument::updateAttributes(const OFBool updateAll)
 /*
  *  CVS/RCS Log:
  *  $Log: dsrdoc.cc,v $
- *  Revision 1.37  2002-07-22 14:22:33  joergr
+ *  Revision 1.38  2002-12-05 13:52:27  joergr
+ *  Added further checks when reading SR documents (e.g. value of VerificationFlag,
+ *  CompletionsFlag, ContinuityOfContent and SpecificCharacterSet).
+ *
+ *  Revision 1.37  2002/07/22 14:22:33  joergr
  *  Added new print flag to suppress the output of general document information.
  *
  *  Revision 1.36  2002/06/20 12:18:53  meichel

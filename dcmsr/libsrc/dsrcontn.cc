@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2001, OFFIS
+ *  Copyright (C) 2000-2002, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,8 +23,8 @@
  *    classes: DSRContainerTreeNode
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-11-25 12:00:34 $
- *  CVS/RCS Revision: $Revision: 1.18 $
+ *  Update Date:      $Date: 2002-12-05 13:52:52 $
+ *  CVS/RCS Revision: $Revision: 1.19 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -52,7 +52,7 @@ DSRContainerTreeNode::~DSRContainerTreeNode()
 
 void DSRContainerTreeNode::clear()
 {
-   ContinuityOfContent = COC_Separate;      // this is more useful that COC_invalid
+    ContinuityOfContent = COC_Separate;      // this is more useful that COC_invalid
 }
 
 
@@ -87,7 +87,16 @@ OFCondition DSRContainerTreeNode::readContentItem(DcmItem &dataset,
     /* read ContinuityOfContent */
     OFCondition result = getAndCheckStringValueFromDataset(dataset, DCM_ContinuityOfContent, string, "1", "1", logStream, "CONTAINER content item");
     if (result.good())
+    {
         ContinuityOfContent = enumeratedValueToContinuityOfContent(string);
+        /* check ContinuityOfContent value */
+        if (ContinuityOfContent == COC_invalid)
+        {
+            OFString message = "Reading unknown ContinuityOfContent value ";
+            message += string;
+            printWarningMessage(logStream, message.c_str());
+        }
+    }
     return result;
 }
 
@@ -275,7 +284,11 @@ OFCondition DSRContainerTreeNode::setContinuityOfContent(const E_ContinuityOfCon
 /*
  *  CVS/RCS Log:
  *  $Log: dsrcontn.cc,v $
- *  Revision 1.18  2002-11-25 12:00:34  joergr
+ *  Revision 1.19  2002-12-05 13:52:52  joergr
+ *  Added further checks when reading SR documents (e.g. value of VerificationFlag,
+ *  CompletionsFlag, ContinuityOfContent and SpecificCharacterSet).
+ *
+ *  Revision 1.18  2002/11/25 12:00:34  joergr
  *  Adapted code according to CP 286, i.e. allow a COMPOSITE content item to be
  *  the target of a HAS OBS CONTEXT relationship with a CONTAINER item.
  *

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2001, OFFIS
+ *  Copyright (C) 2000-2002, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,8 +23,8 @@
  *    classes: DSRSpatialCoordinatesValue
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-10-10 15:30:01 $
- *  CVS/RCS Revision: $Revision: 1.11 $
+ *  Update Date:      $Date: 2002-12-05 13:53:30 $
+ *  CVS/RCS Revision: $Revision: 1.12 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -114,8 +114,8 @@ OFCondition DSRSpatialCoordinatesValue::writeXML(ostream &stream,
     if ((flags & DSRTypes::XF_writeEmptyTags) || !GraphicDataList.isEmpty())
     {
         stream << "<data>";
-        GraphicDataList.print(stream);        
-        stream << "</data>" << endl;        
+        GraphicDataList.print(stream);
+        stream << "</data>" << endl;
     }
     return EC_Normal;
 }
@@ -130,6 +130,13 @@ OFCondition DSRSpatialCoordinatesValue::read(DcmItem &dataset,
     if (result.good())
     {
         GraphicType = DSRTypes::enumeratedValueToGraphicType(string);
+        /* check GraphicType */
+        if (GraphicType == DSRTypes::GT_invalid)
+        {
+            OFString message = "Reading unknown GraphicType ";
+            message += string;
+            DSRTypes::printWarningMessage(logStream, message.c_str());
+        }
         /* read GraphicData */
         result = GraphicDataList.read(dataset, logStream);
         /* check GraphicData and report warnings if any */
@@ -282,7 +289,11 @@ OFBool DSRSpatialCoordinatesValue::checkData(const DSRTypes::E_GraphicType graph
 /*
  *  CVS/RCS Log:
  *  $Log: dsrscovl.cc,v $
- *  Revision 1.11  2001-10-10 15:30:01  joergr
+ *  Revision 1.12  2002-12-05 13:53:30  joergr
+ *  Added further checks when reading SR documents (e.g. value of VerificationFlag,
+ *  CompletionsFlag, ContinuityOfContent and SpecificCharacterSet).
+ *
+ *  Revision 1.11  2001/10/10 15:30:01  joergr
  *  Additonal adjustments for new OFCondition class.
  *
  *  Revision 1.10  2001/09/26 13:04:24  meichel
