@@ -16,6 +16,7 @@ oflist.o: oflist.cc ../../config/include/osconfig.h \
 oflogfil.o: oflogfil.cc ../../config/include/osconfig.h \
  ../include/oflogfil.h ../include/ofthread.h ../include/oftypes.h \
  ../include/ofstring.h
+ofstd.o: ofstd.cc ../../config/include/osconfig.h ../include/ofstd.h
 ofstring.o: ofstring.cc ../../config/include/osconfig.h \
  ../include/ofstring.h ../include/oftypes.h
 ofthread.o: ofthread.cc ../../config/include/osconfig.h \

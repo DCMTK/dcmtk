@@ -22,9 +22,9 @@
  *  Purpose: Class for various helper functions
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-06-01 15:51:35 $
+ *  Update Date:      $Date: 2001-12-04 16:57:15 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/include/Attic/ofstd.h,v $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -37,6 +37,11 @@
 
 #include "osconfig.h"
 
+BEGIN_EXTERN_C
+#ifdef HAVE_SYS_TYPES_H
+#include <sys/types.h>  /* for size_t */
+#endif
+
 #ifdef HAVE_STRING_H
 #include <string.h>
 #endif
@@ -44,7 +49,7 @@
 #ifdef HAVE_STRINGS_H
 #include <strings.h>
 #endif
-
+END_EXTERN_C
 
 /*---------------------*
  *  class declaration  *
@@ -56,32 +61,80 @@
 class OFStandard
 {
 
- public:
- 
-    /** copies specified (maximum) number of chars from source to destination.
-     *  If the source string is longer than the specified length, only the
-     *  the specified number of chars is copied, otherwise the complete
-     *  source string is copied to the destination buffer.
-     *  A closing zero byte is always added to the destination string.
-     *  The size of the destination buffer is not checked!
-     *
-     ** @param  dest  destination string (should be len+1 large)
-     *  @param  src   source string
-     *  @param  len   number of characters to be copied (without zero byte)
+public:
+
+    /** This function copies up to size - 1 characters from the NUL-
+     *  terminated string src to dst, NUL-terminating the result. It is 
+     *  designed to be a safer, more consistent, and less error-prone 
+     *  replacement for strncpy(3). strlcpy takes the full size of the 
+     *  buffer (not just the length) and guarantees to NUL-terminate the 
+     *  result (as long as size is larger than 0). Note that you should 
+     *  include a byte for the NUL in size. Also note that strlcpy only 
+     *  operates on true C strings, i. e. src must be NUL-terminated.
+     *  @param dst destination buffer of size siz, must not be NULL
+     *  @param src source string, must not be NULL
+     *  @param siz size of destination buffer
+     *  @return the total length of the string the function tried to 
+     *  create, i.e. strlen(src).  While this may seem somewhat 
+     *  confusing it was done to make truncation detection simple.
      */
-    static char *strlcpy(char *dest,
-                         const char *src,
-                         size_t len)
+    static inline size_t strlcpy(char *dst, const char *src, size_t siz)
     {
-        if (strlen(src) > len)
-        {
-            if (len > 0)
-                strncpy(dest, src, len);
-            *(dest + len) = 0;
-        } else
-            strcpy(dest, src);
-        return dest;
+#ifdef HAVE_STRLCPY
+      return ::strlcpy(dst, src, siz);
+#else
+      return my_strlcpy(dst, src, siz);
+#endif
     }
+
+    /** This function appends the NUL-terminated string src to the end of 
+     *  dst. It will append at most size - strlen(dst) - 1 bytes, NUL-
+     *  terminating the result. It is designed to be a safer, more 
+     *  consistent, and less error-prone replacement for strncat(3). 
+     *  strlcat takes the full size of the buffer (not just the length) and 
+     *  guarantees to NUL-terminate the result (as long as size is larger 
+     *  than 0). Note that you should include a byte for the NUL in size. 
+     *  Also note that strlcat only operates on true C strings, i. e. dst 
+     *  and src must be NUL-terminated.
+     *  @param dst destination buffer of size siz, must not be NULL
+     *  @param src source string, must not be NULL
+     *  @param siz size of destination buffer
+     *  @return the total length of the string the function tried to 
+     *  create, i.e. the initial length of dst plus the length of src.  
+     *  While this may seem somewhat confusing it was done to make 
+     *  truncation detection simple.
+     */
+    static inline size_t strlcat(char *dst, const char *src, size_t siz)
+    {   
+#ifdef HAVE_STRLCAT
+      return ::strlcat(dst, src, siz);
+#else   
+      return my_strlcat(dst, src, siz);
+#endif
+    }
+
+  private:
+
+    /** private implementation of strlcpy. Called when strlcpy
+     *  is not available in the standard library.
+     *  @param dst destination buffer of size siz, must not be NULL
+     *  @param src source string, must not be NULL
+     *  @param siz size of destination buffer
+     *  @return the total length of the string the function tried to 
+     *  create, i.e. strlen(src).
+     */
+    static size_t my_strlcpy(char *dst, const char *src, size_t siz);
+
+    /** private implementation of strlcat. Called when strlcat
+     *  is not available in the standard library.
+     *  @param dst destination buffer of size siz, must not be NULL
+     *  @param src source string, must not be NULL
+     *  @param siz size of destination buffer
+     *  @return the total length of the string the function tried to 
+     *  create, i.e. the initial length of dst plus the length of src.
+     */
+    static size_t my_strlcat(char *dst, const char *src, size_t siz);
+
 };
 
 
@@ -92,7 +145,11 @@ class OFStandard
  *
  * CVS/RCS Log:
  * $Log: ofstd.h,v $
- * Revision 1.2  2001-06-01 15:51:35  meichel
+ * Revision 1.3  2001-12-04 16:57:15  meichel
+ * Implemented strlcpy and strlcat routines compatible with the
+ *   corresponding BSD libc routines in class OFStandard
+ *
+ * Revision 1.2  2001/06/01 15:51:35  meichel
  * Updated copyright header
  *
  * Revision 1.1  2000/03/02 12:42:57  joergr

@@ -67,10 +67,10 @@
 **      Module Prefix: ASC_
 **
 **
-** Last Update:         $Author: wilkens $
-** Update Date:         $Date: 2001-11-27 09:54:56 $
+** Last Update:         $Author: meichel $
+** Update Date:         $Date: 2001-12-04 16:58:12 $
 ** Source File:         $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/libsrc/assoc.cc,v $
-** CVS/RCS Revision:    $Revision: 1.35 $
+** CVS/RCS Revision:    $Revision: 1.36 $
 ** Status:              $State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -1049,19 +1049,19 @@ ASC_findAcceptedPresentationContext(
         {
           return makeDcmnetCondition(ASCC_CODINGERROR, OF_error, "ASC Coding error in ASC_findAcceptedPresentationContext: too many transfer syntaxes");
         }
-        OFStandard::strlcpy(presentationContext->proposedTransferSyntaxes[count], transfer->transferSyntax, DIC_UI_LEN);
+        OFStandard::strlcpy(presentationContext->proposedTransferSyntaxes[count], transfer->transferSyntax, sizeof(DIC_UI));
         count++;
         transfer = (DUL_TRANSFERSYNTAX*) LST_Next(l);
     }
 
-    OFStandard::strlcpy(presentationContext->abstractSyntax, pc->abstractSyntax, DIC_UI_LEN);
+    OFStandard::strlcpy(presentationContext->abstractSyntax, pc->abstractSyntax, sizeof(DIC_UI));
     presentationContext->presentationContextID = pc->presentationContextID;
     presentationContext->resultReason = (T_ASC_P_ResultReason) pc->result;
     presentationContext->proposedRole = dulRole2ascRole(pc->proposedSCRole);
     presentationContext->acceptedRole = dulRole2ascRole(pc->acceptedSCRole);
 
     presentationContext->transferSyntaxCount = count;
-    OFStandard::strlcpy(presentationContext->acceptedTransferSyntax, pc->acceptedTransferSyntax, DUL_LEN_UID);
+    OFStandard::strlcpy(presentationContext->acceptedTransferSyntax, pc->acceptedTransferSyntax, sizeof(DIC_UI));
 
     return EC_Normal;
 }
@@ -1967,7 +1967,11 @@ unsigned long ASC_getPeerCertificate(T_ASC_Association *assoc, void *buf, unsign
 /*
 ** CVS Log
 ** $Log: assoc.cc,v $
-** Revision 1.35  2001-11-27 09:54:56  wilkens
+** Revision 1.36  2001-12-04 16:58:12  meichel
+** Implemented strlcpy and strlcat routines compatible with the
+**   corresponding BSD libc routines in class OFStandard
+**
+** Revision 1.35  2001/11/27 09:54:56  wilkens
 ** Updated storescp. 6 new options (--output-directory, --sort-conc-studies,
 ** --exec-on-reception, --exec-on-eostudy, --rename-on-eostudy, and
 ** --eostudy-timeout) implemented (requirements from GO-Kard).
