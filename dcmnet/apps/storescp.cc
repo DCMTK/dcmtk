@@ -22,9 +22,9 @@
  *  Purpose: Storage Service Class Provider (C-STORE operation)
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2004-04-07 09:42:34 $
+ *  Update Date:      $Date: 2004-04-07 10:01:16 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/apps/storescp.cc,v $
- *  CVS/RCS Revision: $Revision: 1.71 $
+ *  CVS/RCS Revision: $Revision: 1.72 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1982,19 +1982,16 @@ static void executeCommand( const OFString &cmd )
   }
   else // in case we are the child process, execute the command etc.
   {
-    // execute command
-    if( system( cmd.c_str() ) == -1 )
-      fprintf( stderr, "storescp: Error while executing command '%s'.\n" , cmd.c_str() );
+    // execute command through execl will terminate the child process.
+    // Since we only have a single command string and not a list of arguments,
+    // we 'emulate' a call to system() by passing the command to /bin/sh
+    // which hopefully exists on all Posix systems.
 
-    // Having executed the command we have to terminate the child process somehow.
-    // However, it is not possible to go abort() since the open network connection
-    // would be closed also for the parent process. The solution is to make use of
-    // execl which does not return to the calling process in case it was successful.
-    // So, we need to use execl to do nothing, and doing nothing is best achieved
-    // through calling /bin/false. In case execl returns to the calling process, some
-    // error has occured; in such a case, we want to dump an error message and abort.
-    if( execl( "/bin/false", "/bin/false", NULL ) < 0 )
-      fprintf( stderr, "storescp: Cannot execute /bin/false.\n" );
+    if (execl( "/bin/sh", "/bin/sh", "-c", cmd.c_str(), NULL ) < 0)
+      fprintf( stderr, "storescp: Cannot execute /bin/sh.\n" );
+
+    // if execl succeeds, this part will not get executed.
+    // if execl fails, there is not much we can do except bailing out.
     abort();
   }
 #else
@@ -2189,7 +2186,11 @@ static OFCondition acceptUnknownContextsWithPreferredTransferSyntaxes(
 /*
 ** CVS Log
 ** $Log: storescp.cc,v $
-** Revision 1.71  2004-04-07 09:42:34  meichel
+** Revision 1.72  2004-04-07 10:01:16  meichel
+** Removed call to system() and execl to /bin/false which does not exist
+**   on some BSD platforms.
+**
+** Revision 1.71  2004/04/07 09:42:34  meichel
 ** Updated sorting and command execution code in storescp to use OFString
 **   and OFList. This will hopefully fix the remaining memory leaks.
 **
