@@ -6,14 +6,19 @@ dnl Purpose: additional M4 macros for GNU autoconf
 dnl
 dnl Authors: Andreas Barth, Marco Eichelberg
 dnl
-dnl Last Update:  $Author: andreas $
-dnl Revision:     $Revision: 1.5 $
+dnl Last Update:  $Author: meichel $
+dnl Revision:     $Revision: 1.6 $
 dnl Status:       $State: Exp $
 dnl
-dnl $Id: aclocal.m4,v 1.5 1997-07-02 11:53:02 andreas Exp $
+dnl $Id: aclocal.m4,v 1.6 1997-07-03 09:38:17 meichel Exp $
 dnl
 dnl $Log: aclocal.m4,v $
-dnl Revision 1.5  1997-07-02 11:53:02  andreas
+dnl Revision 1.6  1997-07-03 09:38:17  meichel
+dnl Corrected bug in configure module - all tests trying to link or run
+dnl   a test program could fail (and, therefore, report an incorrect result)
+dnl   if libg++.a was not found in the default link path.
+dnl
+dnl Revision 1.5  1997/07/02 11:53:02  andreas
 dnl - Preliminary release of the OFFIS Standard Library.
 dnl   In the future this library shall contain a subset of the
 dnl   ANSI C++ Library (Version 3) that works on a lot of different
@@ -47,7 +52,7 @@ AC_DEFUN(AC_CHECK_GXXLIB,
 AC_CACHE_VAL(ac_cv_lib_gxx,
 [ac_save_LIBS="$LIBS"
 LIBS="-lg++ $LIBS"
-AC_TRY_LINK(, [main()], eval "ac_cv_lib_gxx=yes", eval "ac_cv_lib_gxx=no")dnl
+AC_TRY_LINK(, [main()], eval "ac_cv_lib_gxx=yes", eval "ac_cv_lib_gxx=no")
 LIBS="$ac_save_LIBS"
 ])dnl
 if eval "test \"`echo '$ac_cv_lib_gxx'`\" = yes"; then
