@@ -22,9 +22,9 @@
  *  Purpose: DicomScaleTemplates (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1998-11-27 15:47:11 $
+ *  Update Date:      $Date: 1998-12-16 16:39:45 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/discalet.h,v $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -133,21 +133,19 @@ class DiScaleTemplate
     {
     }
     
-    inline void scaleData(const T *src[],
+    inline void scaleData(const T *src[],               // combined clipping and scaling UNTESTED for multi-frame images !!
                           T *dest[],
                           const int interpolate)
     {
         if ((src != NULL) && (dest != NULL))
         {
-#ifdef DEBUG
             if (DicomImageClass::DebugLevel >= DicomImageClass::DL_DebugMessages)
             {
-                cout << Columns << " " << Rows << endl;
-                cout << Left << " " << Top << endl;
-                cout << Src_X << " " << Src_Y << endl;
-                cout << Dest_X << " " << Dest_Y << endl;
+                cout << "C/R: " << Columns << " " << Rows << endl;
+                cout << "L/T: " << Left << " " << Top << endl;
+                cout << "SX/Y: " << Src_X << " " << Src_Y << endl;
+                cout << "DX/Y: " << Dest_X << " " << Dest_Y << endl;
             }
-#endif
             if ((Src_X == Dest_X) && (Src_Y == Dest_Y))                         // no scaling
             {
                 if ((Left == 0) && (Top == 0) && (Columns == Src_X) && (Rows == Src_Y))
@@ -155,12 +153,12 @@ class DiScaleTemplate
                 else
                     clipPixel(src, dest);                                       // clipping
             }
-            else if (interpolate && (Bits <= MAX_INTERPOLATION_BITS))           // interpolation
-                interpolatePixel(src, dest);
             else if ((Dest_X % Src_X == 0) && (Dest_Y % Src_Y == 0))            // replication
                 replicatePixel(src, dest);
             else if ((Src_X % Dest_X == 0) && (Src_Y % Dest_Y == 0))            // supression
                 suppressPixel(src, dest);
+            else if (interpolate && (Bits <= MAX_INTERPOLATION_BITS))           // interpolation (ignore flag for replication/suppresion)
+                interpolatePixel(src, dest);
             else                                                                // general scaling
                 scalePixel(src, dest);
         }
@@ -183,8 +181,8 @@ class DiScaleTemplate
     inline void clipPixel(const T *src[],
                           T *dest[])
     {
-        const unsigned long x_feed = Columns - Dest_X;
-        const unsigned long y_feed = (unsigned long)(Rows - Dest_Y) * (unsigned long)Columns;
+        const unsigned long x_feed = Columns - Src_X;
+        const unsigned long y_feed = (unsigned long)(Rows - Src_Y) * (unsigned long)Columns;
         register Uint16 x;
         register Uint16 y;
         register const T *p;
@@ -216,21 +214,19 @@ class DiScaleTemplate
     {
         const Uint16 x_factor = Dest_X / Src_X;
         const Uint16 y_factor = Dest_Y / Src_Y;
-/*
-        const unsigned long x_feed = Columns - Dest_X;
-        const unsigned long y_feed = (unsigned long)(Rows - Dest_Y) * (unsigned long)Columns;
-*/
+        const unsigned long x_feed = Columns;
+        const unsigned long y_feed = (unsigned long)(Rows - Src_Y) * (unsigned long)Columns;
         const T *sp;
         register Uint16 x;
         register Uint16 y;
-            register Uint16 dx;
+        register Uint16 dx;
         register Uint16 dy;
         register const T *p;
         register T *q;
         register T value;
         for (int j = 0; j < Planes; j++)
         {
-            sp = src[j];
+            sp = src[j] + (unsigned long)Top * (unsigned long)Columns + Left;
             q = dest[j];
             for (Uint32 f = 0; f < Frames; f++)
             {
@@ -245,8 +241,9 @@ class DiScaleTemplate
                                 *(q++) = value;
                         }
                     }
-                    sp += Src_X;
+                    sp += x_feed;
                 }
+                sp += y_feed;
             }
         }
     }
@@ -259,27 +256,29 @@ class DiScaleTemplate
     inline void suppressPixel(const T *src[],
                               T *dest[])
     {
-        const Uint16 x_divisor = Src_X / Dest_X;
-        const unsigned long y_feed = (unsigned long)(Src_Y / Dest_Y - 1) * (unsigned long)Src_X;
+        const unsigned int x_divisor = Src_X / Dest_X;
+        const unsigned long x_feed = (unsigned long)(Src_Y / Dest_Y) * (unsigned long)Columns - Src_X;
+        const unsigned long y_feed = (unsigned long)(Rows - Src_Y) * (unsigned long)Columns;
         register Uint16 x;
         register Uint16 y;
         register const T *p;
         register T *q;
         for (int j = 0; j < Planes; j++)
-            {
-            p = src[j];
+        {
+            p = src[j] + (unsigned long)Top * (unsigned long)Columns + Left;
             q = dest[j];
             for (Uint32 f = 0; f < Frames; f++)
             {
                 for (y = 0; y < Dest_Y; y++)
                 {
                     for (x = 0; x < Dest_X; x++)
-                        {
+                    {
                         *(q++) = *p;
-                            p += x_divisor;
+                        p += x_divisor;
                     }
-                    p += y_feed;
+                    p += x_feed;
                 }
+                p += y_feed;
             }
         }
     }
@@ -292,6 +291,12 @@ class DiScaleTemplate
     inline void scalePixel(const T *src[],
                            T *dest[])
     {
+        if (((Src_X != Columns) || (Src_Y != Rows)) && (DicomImageClass::DebugLevel >= DicomImageClass::DL_Errors))
+        {
+           cerr << "ERROR: clipping and scaling at the same time not (fully) implemented" << endl;
+           cerr << "       ... ignoring clipping region !" << endl;
+        }
+
         const Uint16 xmin = (Dest_X < Src_X) ? Dest_X : Src_X;      // minimum width
         const Uint16 ymin = (Dest_Y < Src_Y) ? Dest_Y : Src_Y;      // minimum height
         Uint16 *x_step = new Uint16[xmin];
@@ -301,7 +306,7 @@ class DiScaleTemplate
         if ((x_step != NULL) && (y_step != NULL) && (x_fact != NULL) && (y_fact != NULL))
         {
             register Uint16 x;
-                register Uint16 y;
+            register Uint16 y;
             if (Dest_X < Src_X)
                 setScaleValues(x_step, Dest_X, Src_X);
             else if (Dest_X > Src_X)
@@ -351,7 +356,7 @@ class DiScaleTemplate
                                 value = *p;
                                 for (dx = 0; dx < x_fact[x]; dx++)
                                     *(q++) = value;
-                                     p += x_step[x];
+                                p += x_step[x];
                             }
                         }
                         sp += ((unsigned long)y_step[y] * (unsigned long)Src_X);
@@ -369,6 +374,12 @@ class DiScaleTemplate
     inline void interpolatePixel(const T *src[],
                                  T *dest[])
     {
+        if (((Src_X != Columns) || (Src_Y != Rows)) && (DicomImageClass::DebugLevel >= DicomImageClass::DL_Errors))
+        {
+           cerr << "ERROR: clipping and scaling at the same time not (fully) implemented" << endl;
+           cerr << "       ... ignoring clipping region !" << endl;
+        }
+
         /*
          *   based on scaling algorithm of "Extended Portable Bitmap Toolkit" (pbmplus10dec91)
          *   (adapted to be used with signed pixel representation and inverse images - mono2)
@@ -418,7 +429,7 @@ class DiScaleTemplate
                     register unsigned long yleft = syscale;
                     register int yneed = 1;
                     int ysrc = 0;
-                        for (y = 0; y < Dest_Y; y++)
+                    for (y = 0; y < Dest_Y; y++)
                     {
                         if (Src_Y == Dest_Y)
                             {
@@ -534,7 +545,11 @@ class DiScaleTemplate
 **
 ** CVS/RCS Log:
 ** $Log: discalet.h,v $
-** Revision 1.1  1998-11-27 15:47:11  joergr
+** Revision 1.2  1998-12-16 16:39:45  joergr
+** Implemented combined clipping and scaling for pixel replication and
+** suppression.
+**
+** Revision 1.1  1998/11/27 15:47:11  joergr
 ** Added copyright message.
 ** Combined clipping and scaling methods.
 **
