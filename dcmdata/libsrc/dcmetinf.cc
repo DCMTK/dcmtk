@@ -22,9 +22,9 @@
  *  Purpose: class DcmMetaInfo
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-03-08 16:26:38 $
+ *  Update Date:      $Date: 2000-04-14 15:55:06 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcmetinf.cc,v $
- *  CVS/RCS Revision: $Revision: 1.19 $
+ *  CVS/RCS Revision: $Revision: 1.20 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -86,8 +86,7 @@ DcmMetaInfo::DcmMetaInfo( const DcmMetaInfo &old )
         preambleUsed = old.preambleUsed;
         memcpy( filePreamble, old.filePreamble, 128 );
     } else {
-        CERR << "Warning: DcmMetaInfo: wrong use of Copy-Constructor"
-             << endl;
+    	// wrong use of copy constructor
         setPreamble();
     }
 }
@@ -210,10 +209,12 @@ OFBool DcmMetaInfo::checkAndReadPreamble(DcmStream & inStream,
         {
             newxfer = tmpxferSyn.getXfer();   // benutze ermittelte xfer
             if ( xferSyn.getXfer() != EXS_Unknown )
-                CERR << "Info: DcmMetaInfo::checkAndReadPreamble(): "
+            {
+                ofConsole.lockCerr() << "Info: DcmMetaInfo::checkAndReadPreamble(): "
                     "TransferSyntax of MetaInfo is different from "
-                    "passed parameter newxfer: ignoring newxfer!"
-                     << endl;
+                    "passed parameter newxfer: ignoring newxfer!" << endl;
+                ofConsole.unlockCerr();
+            }
         }
         else
             newxfer = xferSyn.getXfer();
@@ -304,9 +305,9 @@ E_Condition DcmMetaInfo::readGroupLength(DcmStream & inStream,
             else
             {
                 l_error = EC_CorruptedData;
-                CERR << "Warning: DcmMetaInfo::readGroupLength(): No Group"
-                    " Length available in Meta Information Header"
-                     << endl;
+                ofConsole.lockCerr() << "Warning: DcmMetaInfo::readGroupLength(): No Group"
+                    " Length available in Meta Information Header" << endl;
+                ofConsole.unlockCerr();
             }
         }
         else
@@ -436,10 +437,10 @@ E_Condition DcmMetaInfo::read(DcmStream & inStream,
             {
                 if (Length != DCM_UndefinedLength && fTransferredBytes != Length)
                 {
-                    CERR << "Warning: DcmMetaInfo::readBlock(): "
+                  ofConsole.lockCerr() << "Warning: DcmMetaInfo::read(): "
                         "Group Length of Meta"
-                        " Information Header has incorrect Value!"
-                         << endl;
+                        " Information Header has incorrect Value!" << endl;
+                  ofConsole.unlockCerr();
                 }
                 fTransferState = ERW_ready;          // MetaInfo ist komplett
             }
@@ -543,7 +544,10 @@ E_Condition DcmMetaInfo::write(DcmStream & outStream,
 /*
 ** CVS/RCS Log:
 ** $Log: dcmetinf.cc,v $
-** Revision 1.19  2000-03-08 16:26:38  meichel
+** Revision 1.20  2000-04-14 15:55:06  meichel
+** Dcmdata library code now consistently uses ofConsole for error output.
+**
+** Revision 1.19  2000/03/08 16:26:38  meichel
 ** Updated copyright header.
 **
 ** Revision 1.18  2000/03/03 14:05:35  meichel

@@ -22,9 +22,9 @@
  *  Purpose: loadable DICOM data dictionary
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-03-08 16:26:32 $
+ *  Update Date:      $Date: 2000-04-14 15:55:03 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcdict.cc,v $
- *  CVS/RCS Revision: $Revision: 1.21 $
+ *  CVS/RCS Revision: $Revision: 1.22 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -285,7 +285,8 @@ parseTagPart(char *s, unsigned int& l, unsigned int& h,
             r = DcmDictRange_Unspecified;
             break;
         default:
-            CERR << "unknown range restrictor: " << restrictor << endl;
+            ofConsole.lockCerr() << "unknown range restrictor: " << restrictor << endl;
+            ofConsole.unlockCerr();
             ok = OFFalse;
             break;
         }
@@ -411,8 +412,8 @@ DcmDataDictionary::loadDictionary(const char* fileName, OFBool errorIfAbsent)
     
     if ((f = fopen(fileName, "r")) == NULL) {
         if (errorIfAbsent) {
-            CERR << "DcmDataDictionary: " << "cannot open: " 
-                 << fileName << endl;
+            ofConsole.lockCerr() << "DcmDataDictionary: " << "cannot open: " << fileName << endl;
+            ofConsole.unlockCerr();
         }
         return OFFalse;
     }
@@ -444,15 +445,17 @@ DcmDataDictionary::loadDictionary(const char* fileName, OFBool errorIfAbsent)
         case 0:
         case 1:
         case 2:
-            CERR << "DcmDataDictionary: "<< fileName << ": "
+            ofConsole.lockCerr() << "DcmDataDictionary: "<< fileName << ": "
                  << "too few fields (line " 
                  << lineNumber << "): " << fileName << endl;
+            ofConsole.unlockCerr();
             errorOnThisLine = OFTrue;
             break;
         default:
-            CERR << "DcmDataDictionary: " << fileName << ": "
+            ofConsole.lockCerr() << "DcmDataDictionary: " << fileName << ": "
                  << "too many fields (line " 
                  << lineNumber << "): " << endl;
+            ofConsole.unlockCerr();
             errorOnThisLine = OFTrue;
             break;
         case 5:
@@ -461,18 +464,20 @@ DcmDataDictionary::loadDictionary(const char* fileName, OFBool errorIfAbsent)
         case 4:
             /* the VM field is present */
             if (!parseVMField(lineFields[3], vmMin, vmMax)) {
-                CERR << "DcmDataDictionary: " << fileName << ": "
+                ofConsole.lockCerr() << "DcmDataDictionary: " << fileName << ": "
                      << "bad VM field (line " 
                      << lineNumber << "): " << lineFields[3] << endl;
+                ofConsole.unlockCerr();
                 errorOnThisLine = OFTrue;
             }
             /* drop through to next case label */
         case 3:
             if (!parseWholeTagField(lineFields[0], key, upperKey, 
                                     groupRestriction, elementRestriction)) {
-                CERR << "DcmDataDictionary: " << fileName << ": "
+                ofConsole.lockCerr() << "DcmDataDictionary: " << fileName << ": "
                      << "bad Tag field (line " 
                      << lineNumber << "): " << lineFields[0] << endl;
+                ofConsole.unlockCerr();
                 errorOnThisLine = OFTrue;
             } else {
                 /* all is OK */
@@ -485,9 +490,10 @@ DcmDataDictionary::loadDictionary(const char* fileName, OFBool errorIfAbsent)
             /* check the VR Field */
             vr.setVR(vrName);
             if (vr.getEVR() == EVR_UNKNOWN) {
-                CERR << "DcmDataDictionary: " << fileName << ": "
+                ofConsole.lockCerr() << "DcmDataDictionary: " << fileName << ": "
                      << "bad VR field (line " 
                      << lineNumber << "): " << vrName << endl;
+                ofConsole.unlockCerr();
                 errorOnThisLine = OFTrue;
             }
         }
@@ -602,7 +608,8 @@ DcmDataDictionary::addEntry(DcmDictEntry* e)
                 DcmDictEntry *old = *iter;
                 *iter = e;
 #ifdef PRINT_REPLACED_DICTIONARY_ENTRIES 
-                CERR << "replacing " << *old << endl;
+                ofConsole.lockCerr() << "replacing " << *old << endl;
+                ofConsole.unlockCerr();
 #endif
                 delete old;
                 inserted = OFTrue;
@@ -714,7 +721,10 @@ DcmDataDictionary::findEntry(const char *name)
 /*
 ** CVS/RCS Log:
 ** $Log: dcdict.cc,v $
-** Revision 1.21  2000-03-08 16:26:32  meichel
+** Revision 1.22  2000-04-14 15:55:03  meichel
+** Dcmdata library code now consistently uses ofConsole for error output.
+**
+** Revision 1.21  2000/03/08 16:26:32  meichel
 ** Updated copyright header.
 **
 ** Revision 1.20  2000/03/03 14:05:31  meichel

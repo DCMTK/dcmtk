@@ -22,9 +22,9 @@
  *  Purpose: class DcmUnsignedLongOffset
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-03-08 16:26:52 $
+ *  Update Date:      $Date: 2000-04-14 15:55:10 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcvrulup.cc,v $
- *  CVS/RCS Revision: $Revision: 1.18 $
+ *  CVS/RCS Revision: $Revision: 1.19 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -57,14 +57,7 @@ DcmUnsignedLongOffset::DcmUnsignedLongOffset(const DcmUnsignedLongOffset& old)
   : DcmUnsignedLong(old),
     nextRecord(NULL)
 {
-    if ( old.ident() == EVR_up ) 
-        nextRecord = old.nextRecord;
-    else 
-    {
-        errorFlag = EC_IllegalCall;
-        CERR << "Warning: DcmUnsignedLongOffset: wrong use of Copy-Constructor"
-             << endl;
-    }
+  nextRecord = old.nextRecord;
 }
 
 
@@ -184,7 +177,10 @@ E_Condition DcmUnsignedLongOffset::verify(const OFBool autocorrect)
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrulup.cc,v $
-** Revision 1.18  2000-03-08 16:26:52  meichel
+** Revision 1.19  2000-04-14 15:55:10  meichel
+** Dcmdata library code now consistently uses ofConsole for error output.
+**
+** Revision 1.18  2000/03/08 16:26:52  meichel
 ** Updated copyright header.
 **
 ** Revision 1.17  2000/03/03 14:05:41  meichel

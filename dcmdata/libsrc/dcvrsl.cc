@@ -22,9 +22,9 @@
  *  Purpose: class DcmSignedLong
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-03-08 16:26:50 $
+ *  Update Date:      $Date: 2000-04-14 15:55:09 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcvrsl.cc,v $
- *  CVS/RCS Revision: $Revision: 1.16 $
+ *  CVS/RCS Revision: $Revision: 1.17 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -55,12 +55,6 @@ DcmSignedLong::DcmSignedLong(const DcmTag &tag, const Uint32 len)
 DcmSignedLong::DcmSignedLong(const DcmSignedLong& old)
 : DcmElement( old )
 {
-    if ( old.ident() != EVR_SL )
-	{
-        errorFlag = EC_IllegalCall;
-        CERR << "Warning: DcmSignedLong: wrong use of Copy-Constructor"
-             << endl;
-    }
 }
 
 
@@ -234,32 +228,6 @@ E_Condition DcmSignedLong::getSint32(Sint32 & sintVal,
     return errorFlag;
 }
 
-
-// ********************************
-
-#ifdef OLD_GET
-Sint32 * DcmSignedLong::get(void)
-{
-	Sint32 * sintVal = (Sint32 *)this -> getValue();
-
-	if (errorFlag == EC_Normal)
-		return sintVal;
-	else
-		return NULL;
-}
-
-
-// ********************************
-
-
-Sint32 DcmSignedLong::get(const unsigned long position)
-{
-	Sint32  sintVal = 0;
-	errorFlag = this -> get(sintVal, position);
-	return sintVal;
-}
-#endif
-
 // ********************************
 
 
@@ -284,7 +252,10 @@ E_Condition DcmSignedLong::verify(const OFBool autocorrect )
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrsl.cc,v $
-** Revision 1.16  2000-03-08 16:26:50  meichel
+** Revision 1.17  2000-04-14 15:55:09  meichel
+** Dcmdata library code now consistently uses ofConsole for error output.
+**
+** Revision 1.16  2000/03/08 16:26:50  meichel
 ** Updated copyright header.
 **
 ** Revision 1.15  2000/03/03 14:05:40  meichel

@@ -22,9 +22,9 @@
  *  Purpose: class DcmPixelItem
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-03-08 16:26:40 $
+ *  Update Date:      $Date: 2000-04-14 15:55:06 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcpxitem.cc,v $
- *  CVS/RCS Revision: $Revision: 1.14 $
+ *  CVS/RCS Revision: $Revision: 1.15 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -70,12 +70,6 @@ DcmPixelItem::DcmPixelItem(const DcmTag &tag, const Uint32 len)
 DcmPixelItem::DcmPixelItem(const DcmPixelItem & old)
 : DcmOtherByteOtherWord(old)
 {
-    if ( old.ident() != EVR_pixelItem )
-    {
-	errorFlag = EC_IllegalCall;
-        CERR << "Warning: DcmPixelItem: wrong use of Copy-Constructor"
-             << endl;
-    }
 }
 
 
@@ -130,7 +124,10 @@ DcmPixelItem::print(
 /*
 ** CVS/RCS Log:
 ** $Log: dcpxitem.cc,v $
-** Revision 1.14  2000-03-08 16:26:40  meichel
+** Revision 1.15  2000-04-14 15:55:06  meichel
+** Dcmdata library code now consistently uses ofConsole for error output.
+**
+** Revision 1.14  2000/03/08 16:26:40  meichel
 ** Updated copyright header.
 **
 ** Revision 1.13  2000/03/03 14:05:35  meichel

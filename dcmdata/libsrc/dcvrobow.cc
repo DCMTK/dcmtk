@@ -22,9 +22,9 @@
  *  Purpose: class DcmOtherByteOtherWord for data VR OB or OW
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-03-08 16:26:49 $
+ *  Update Date:      $Date: 2000-04-14 15:55:09 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcvrobow.cc,v $
- *  CVS/RCS Revision: $Revision: 1.29 $
+ *  CVS/RCS Revision: $Revision: 1.30 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -73,15 +73,6 @@ DcmOtherByteOtherWord::DcmOtherByteOtherWord(const DcmTag &tag,
 DcmOtherByteOtherWord::DcmOtherByteOtherWord( const DcmOtherByteOtherWord& old )
     : DcmElement( old )
 {
-    if (old.ident() != EVR_OW && old.ident() != EVR_OB && 
-    old.ident() != EVR_ox && old.ident() != EVR_UNKNOWN && 
-    old.ident() != EVR_UN && old.ident() != EVR_PixelData &&
-    old.ident() != EVR_OverlayData)
-    {
-    errorFlag = EC_IllegalCall;
-        CERR << "Warning: DcmOtherByteOtherWord: wrong use of Copy-Constructor"
-             << endl;
-    }
 }
 
 
@@ -233,11 +224,14 @@ void DcmOtherByteOtherWord::printPixel(ostream & out, const OFBool showFullData,
                         fwrite(data, sizeof(Uint8), (size_t)Length, file);
                 }
                 fclose(file);   
-            } else
-                CERR << "Warning: can't open output file for pixel data: " << fname << endl;
+            } else {
+                ofConsole.lockCerr() << "Warning: can't open output file for pixel data: " << fname << endl;
+                ofConsole.unlockCerr();
+            }
         } else {
             fclose(file);
-            CERR << "Warning: output file for pixel data already exists: " << fname << endl;
+            ofConsole.lockCerr() << "Warning: output file for pixel data already exists: " << fname << endl;
+            ofConsole.unlockCerr();
         }
     } else
         DcmOtherByteOtherWord::print(out, showFullData, level, pixelFileName, pixelCounter);
@@ -449,7 +443,10 @@ E_Condition DcmOtherByteOtherWord::write(DcmStream & outStream,
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrobow.cc,v $
-** Revision 1.29  2000-03-08 16:26:49  meichel
+** Revision 1.30  2000-04-14 15:55:09  meichel
+** Dcmdata library code now consistently uses ofConsole for error output.
+**
+** Revision 1.29  2000/03/08 16:26:49  meichel
 ** Updated copyright header.
 **
 ** Revision 1.28  2000/03/07 15:41:02  joergr

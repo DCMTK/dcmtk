@@ -22,9 +22,9 @@
  *  Purpose: class DcmSequenceOfItems
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-03-08 16:26:40 $
+ *  Update Date:      $Date: 2000-04-14 15:55:07 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcsequen.cc,v $
- *  CVS/RCS Revision: $Revision: 1.34 $
+ *  CVS/RCS Revision: $Revision: 1.35 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -109,9 +109,10 @@ DcmSequenceOfItems::DcmSequenceOfItems(const DcmSequenceOfItems& old)
                     break;
                 default:
                     newDO = new DcmItem( oldDO->getTag() );
-                    CERR << "Error: DcmSequenceOfItems(): Element("
+                    ofConsole.lockCerr() << "Error: DcmSequenceOfItems(): Element("
                          << hex << oldDO->getGTag() << "," << oldDO->getETag()
                          << dec << ") found, which was not an Item" << endl;
+                    ofConsole.unlockCerr();
                     break;
                 }
 
@@ -120,8 +121,7 @@ DcmSequenceOfItems::DcmSequenceOfItems(const DcmSequenceOfItems& old)
         }
         break;
     default:
-        CERR << "Warning: DcmSequenceOfItems: wrong use of Copy-Constructor"
-             << endl;
+        // wrong use of copy constructor, should never happen
         break;
     }
 }
@@ -181,9 +181,11 @@ DcmSequenceOfItems &DcmSequenceOfItems::operator=(const DcmSequenceOfItems &obj)
                     break;
                 default:
                     newDO = new DcmItem( oldDO->getTag() );
-                    CERR << "Error: DcmSequenceOfItems(): Element("
+
+                    ofConsole.lockCerr() << "Error: DcmSequenceOfItems(): Element("
                          << hex << oldDO->getGTag() << "," << oldDO->getETag()
                          << dec << ") found, which was not an Item" << endl;
+                    ofConsole.unlockCerr();
                     break;
                 }
 
@@ -192,8 +194,7 @@ DcmSequenceOfItems &DcmSequenceOfItems::operator=(const DcmSequenceOfItems &obj)
         }
         break;
     default:
-        CERR << "Warning: DcmSequenceOfItems: wrong use of Copy-Constructor"
-             << endl;
+        // wrong use of assignment operator, should never happen
         break;
     }
     delete itemList;
@@ -389,9 +390,11 @@ E_Condition DcmSequenceOfItems::readTagAndLength(DcmStream & inStream,
         inStream.ReadBytes(&valueLength, 4);
         swapIfNecessary(gLocalByteOrder, iByteOrder, &valueLength, 4, 4);
         if ((valueLength & 1)&&(valueLength != (Uint32) -1))
-            CERR << "Error: Length of sequence with Tag " << Tag << " is odd\n";
+        {
+            ofConsole.lockCerr() << "Error: Length of sequence with Tag " << Tag << " is odd" << endl;
+            ofConsole.unlockCerr();
+        }
         length = valueLength;
-
         tag = newTag;                  // Rueckgabewert: assignment-operator
     }
 
@@ -424,20 +427,18 @@ E_Condition DcmSequenceOfItems::readSubItem(DcmStream & inStream,
     else if ( l_error == EC_InvalidTag )  // versuche das Parsing wieder
     {                                     // einzurenken
         inStream.Putback();
-        CERR << "Warning: DcmSequenceOfItems::readSubItem(): parse error "
-            "occured: " << newTag << endl;
+        ofConsole.lockCerr() << "Warning: DcmSequenceOfItems::readSubItem(): parse error occured: " << newTag << endl;
+        ofConsole.unlockCerr();
         debug(1, ( "Warning: DcmSequenceOfItems::readSubItem(): parse error occured:"
                 " (0x%4.4hx,0x%4.4hx)", newTag.getGTag(), newTag.getETag() ));
-
     }
     else if ( l_error != EC_SequEnd )
     {
         inStream.UnsetPutbackMark();
-        CERR << "Error: DcmSequenceOfItems::readSubItem(): cannot create "
-             << "SubItem " << newTag << endl;
+        ofConsole.lockCerr() << "Error: DcmSequenceOfItems::readSubItem(): cannot create SubItem " << newTag << endl;
+        ofConsole.unlockCerr();
         debug(1, ( "Error: DcmSequenceOfItems::readSubItem(): cannot create SubItem"
                 " (0x%4.4hx,0x%4.4hx)", newTag.getGTag(), newTag.getETag() ));
-
     }
     else
         inStream.UnsetPutbackMark();
@@ -931,22 +932,16 @@ E_Condition DcmSequenceOfItems::search( const DcmTagKey &tag,
     if ( mode == ESM_afterStackTop && resultStack.top() == this )
     {
         l_error = searchSubFromHere( tag, resultStack, searchIntoSub );
-        debug(5, ( "DcmSequenceOfItems::search() mode=ESM_afterStackTop && resultStack.top()=this" ));
-
     }
     else if ( !itemList->empty() )
     {
         if ( mode == ESM_fromHere || resultStack.empty() )
         {
-            debug(5, ( "DcmSequenceOfItems::search() mode=ESM_fromHere || resultStack.empty()" ));
-
             resultStack.clear();
             l_error = searchSubFromHere( tag, resultStack, searchIntoSub );
         }
         else if ( mode == ESM_fromStackTop )
         {
-            debug(5, ( "DcmSequenceOfItems::search() mode=ESM_fromStackTop" ));
-
             dO = resultStack.top();
             if ( dO == this )
                 l_error = searchSubFromHere( tag, resultStack, searchIntoSub );
@@ -960,8 +955,6 @@ E_Condition DcmSequenceOfItems::search( const DcmTagKey &tag,
         }
         else if ( mode == ESM_afterStackTop && searchIntoSub )
         {
-            debug(5, ( "DcmSequenceOfItems::search() mode=ESM_afterStackTop && searchIntoSub" ));
-
             // resultStack enthaelt Zielinformationen:
             // - stelle Zustand der letzen Suche in den einzelnen Suchroutinen
             //   wieder her
@@ -973,11 +966,8 @@ E_Condition DcmSequenceOfItems::search( const DcmTagKey &tag,
             //   4. starte Suche ab dnO
 
             unsigned long i = resultStack.card();
-            debug(5, ( "DcmSequenceOfItems::search() resultStack: card()=%d", i ));
-
             while ( i > 0 && (dO = resultStack.elem(i-1)) != this )
             {
-                debug(5, ( "DcmSequenceOfItems::search() --dO=elem(%d)=%p  this=%p", i-1, dO, this ));
                 i--;
             }
             if ( dO != this && resultStack.card() > 0 )
@@ -987,9 +977,6 @@ E_Condition DcmSequenceOfItems::search( const DcmTagKey &tag,
             }
             if ( dO == this )
             {
-                debug(5, ( "DcmSequenceOfItems::search() --dO=elem(%d)=%p==this=%p", i-1, dO, this ));
-                debug(5, ( "currently at resultStack position %d, dO=%p", i-1, dO ));
-
                 if ( i == 1 )                 // habe resultStack.top() gefunden
                     l_error = EC_TagNotFound; // markiere als kein Treffer, s.o.
                 else
@@ -998,18 +985,10 @@ E_Condition DcmSequenceOfItems::search( const DcmTagKey &tag,
                     OFBool searchNode = OFTrue;
                     DcmObject *dnO;
                     dnO = resultStack.elem( i-2 ); // Knoten der naechsten Ebene
-                    debug(5, ( "DcmSequenceOfItems::search() itemList: dnO=%p", dnO ));
-
                     itemList->seek( ELP_first );
                     do {
                         dO = itemList->get();
                         searchNode = searchNode ? ( dO != dnO ) : OFFalse;
-                        Cdebug(5, searchNode,  ("DcmSequenceOfItems::search() --searching Node dnO=%p, found: dO=%p", dnO, dO ));
-                        Cdebug(5, !searchNode && submode==ESM_afterStackTop,
-                                ("DcmSequenceOfItems::search() --searching Node dnO=%p found!", dO ));
-                        Cdebug(5, !searchNode && submode!=ESM_afterStackTop,
-                                ("DcmSequenceOfItems::search() --next Node dO=%p for beeing tested", dO ));
-
                         if ( !searchNode )
                         {                               // suche jetzt weiter
                             if ( submode == ESM_fromStackTop )
@@ -1093,7 +1072,10 @@ E_Condition DcmSequenceOfItems::loadAllDataIntoMemory()
 /*
 ** CVS/RCS Log:
 ** $Log: dcsequen.cc,v $
-** Revision 1.34  2000-03-08 16:26:40  meichel
+** Revision 1.35  2000-04-14 15:55:07  meichel
+** Dcmdata library code now consistently uses ofConsole for error output.
+**
+** Revision 1.34  2000/03/08 16:26:40  meichel
 ** Updated copyright header.
 **
 ** Revision 1.33  2000/03/03 15:02:11  joergr

@@ -23,9 +23,9 @@
  *  for OS environments which cannot pass arguments on the command line.
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-03-08 16:26:28 $
+ *  Update Date:      $Date: 2000-04-14 15:55:02 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/cmdlnarg.cc,v $
- *  CVS/RCS Revision: $Revision: 1.11 $
+ *  CVS/RCS Revision: $Revision: 1.12 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -75,8 +75,9 @@ void prepareCmdLineArgs(int& argc, char* argv[],
     argv[0] = new char[strlen(progname)+1];
     strcpy(argv[0], progname);
     argc = 1;
-	
-    COUT << "CmdLineArgs-> ";
+
+    ofConsole.lockCout() << "CmdLineArgs-> ";
+    ofConsole.unlockCout();	
     cin.getline(buf, bufsize);
 
     istringstream is(buf);
@@ -130,8 +131,10 @@ void prepareCmdLineArgs(int& /* argc */, char** /* argv */,
     /* duplicate the stderr file descriptor be the same as stdout */ 
     close(fileno(stderr));
     int fderr = dup(fileno(stdout));
-    if (fderr != fileno(stderr)) {
-    	CERR << "INTERNAL ERROR: cannot map stderr to stdout: " << strerror(errno) << endl;
+    if (fderr != fileno(stderr))
+    {
+        ofConsole.lockCerr() << "INTERNAL ERROR: cannot map stderr to stdout: " << strerror(errno) << endl;
+        ofConsole.unlockCerr();
     }
 
 #ifndef NO_IOS_BASE_ASSIGN    
@@ -143,11 +146,15 @@ void prepareCmdLineArgs(int& /* argc */, char** /* argv */,
     *stdout = *stderr;
 
     /* make sure the buffering is removed */
-    if (setvbuf(stdout, NULL, _IONBF, 0 ) != 0 ) {
-        CERR << "INTERNAL ERROR: cannot unbuffer stdout: " << strerror(errno) << endl;
+    if (setvbuf(stdout, NULL, _IONBF, 0 ) != 0 )
+    {
+        ofConsole.lockCerr() << "INTERNAL ERROR: cannot unbuffer stdout: " << strerror(errno) << endl;
+        ofConsole.unlockCerr();
     }
-    if (setvbuf(stderr, NULL, _IONBF, 0 ) != 0 ) {
-        CERR << "INTERNAL ERROR: cannot unbuffer stderr: " << strerror(errno) << endl;
+    if (setvbuf(stderr, NULL, _IONBF, 0 ) != 0 )
+    {
+        ofConsole.lockCerr() << "INTERNAL ERROR: cannot unbuffer stderr: " << strerror(errno) << endl;
+        ofConsole.unlockCerr();
     }
 #endif
 #endif
@@ -162,7 +169,10 @@ void prepareCmdLineArgs(int& /* argc */, char** /* argv */,
 /*
 ** CVS/RCS Log:
 ** $Log: cmdlnarg.cc,v $
-** Revision 1.11  2000-03-08 16:26:28  meichel
+** Revision 1.12  2000-04-14 15:55:02  meichel
+** Dcmdata library code now consistently uses ofConsole for error output.
+**
+** Revision 1.11  2000/03/08 16:26:28  meichel
 ** Updated copyright header.
 **
 ** Revision 1.10  2000/03/06 18:13:08  joergr

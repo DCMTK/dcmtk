@@ -22,9 +22,9 @@
  *  Purpose: class DcmSignedShort
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-03-08 16:26:50 $
+ *  Update Date:      $Date: 2000-04-14 15:55:09 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcvrss.cc,v $
- *  CVS/RCS Revision: $Revision: 1.16 $
+ *  CVS/RCS Revision: $Revision: 1.17 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -55,12 +55,6 @@ DcmSignedShort::DcmSignedShort(const DcmTag &tag, const Uint32 len)
 DcmSignedShort::DcmSignedShort(const DcmSignedShort& old)
 : DcmElement( old )
 {
-    if ( old.ident() != EVR_SS )
-	{
-        errorFlag = EC_IllegalCall;
-        CERR << "Warning: DcmSignedShort: wrong use of Copy-Constructor"
-             << endl;
-    }
 }
 
 
@@ -251,7 +245,10 @@ E_Condition DcmSignedShort::verify(const OFBool autocorrect )
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrss.cc,v $
-** Revision 1.16  2000-03-08 16:26:50  meichel
+** Revision 1.17  2000-04-14 15:55:09  meichel
+** Dcmdata library code now consistently uses ofConsole for error output.
+**
+** Revision 1.16  2000/03/08 16:26:50  meichel
 ** Updated copyright header.
 **
 ** Revision 1.15  2000/03/03 14:05:40  meichel

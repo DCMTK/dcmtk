@@ -22,9 +22,9 @@
  *  Purpose: class DcmDirectoryRecord
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-03-08 16:26:34 $
+ *  Update Date:      $Date: 2000-04-14 15:55:04 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcdirrec.cc,v $
- *  CVS/RCS Revision: $Revision: 1.33 $
+ *  CVS/RCS Revision: $Revision: 1.34 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -100,7 +100,7 @@ static const char* DRTypeNames[] =
     "SR DOCUMENT" /* was "STRUCT REPORT" in old frozen draft */
 };
 
-static short DIM_OF_DRTypeNames = (sizeof(DRTypeNames) / sizeof(DRTypeNames[0]));
+static const short DIM_OF_DRTypeNames = (sizeof(DRTypeNames) / sizeof(DRTypeNames[0]));
 
 
 // ********************************
@@ -214,10 +214,11 @@ DcmDirectoryRecord::DcmDirectoryRecord(const DcmDirectoryRecord &old)
         setRecordsOriginFile(old.recordsOriginFile);
     } else {
         lowerLevelList = new DcmSequenceOfItems( sequTag );
-
         if ( old.ident() != EVR_item )
-            CERR << "Warning: DcmDirectoryRecord: wrong use of Copy-Constructor"
-                 << endl;
+        {
+          ofConsole.lockCerr() << "Warning: DcmDirectoryRecord: wrong use of Copy-Constructor" << endl;
+          ofConsole.unlockCerr();
+        }
     }
     if ( old.ident() == EVR_item )
     {
@@ -238,7 +239,6 @@ DcmDirectoryRecord::~DcmDirectoryRecord()
 }
 
 
-// ********************************
 // ********************************
 
 
@@ -471,7 +471,6 @@ E_Condition DcmDirectoryRecord::checkHierarchy(const E_DirRecType upperRecord,
 
 
 // ********************************
-// ********************************
 
 
 E_Condition DcmDirectoryRecord::setRecordType( E_DirRecType newType )
@@ -696,7 +695,6 @@ Uint32 DcmDirectoryRecord::setFileOffset(Uint32 position )
 
 
 // ********************************
-// ********************************
 
 
 E_Condition DcmDirectoryRecord::setNumberOfReferences(Uint32 newRefNum )
@@ -713,8 +711,8 @@ E_Condition DcmDirectoryRecord::setNumberOfReferences(Uint32 newRefNum )
     else
     {
         errorFlag = EC_IllegalCall;
-        CERR << "Error: illegal usage of DcmDirectoryRecord::setNumberOfReferences()"
-            " - RecordType must be MRDR" << endl;
+        ofConsole.lockCerr() << "Error: illegal usage of DcmDirectoryRecord::setNumberOfReferences() - RecordType must be MRDR" << endl;
+        ofConsole.unlockCerr(); 
     }
     return l_error;
 }
@@ -756,8 +754,8 @@ Uint32 DcmDirectoryRecord::increaseRefNum()
     else
     {
         errorFlag = EC_IllegalCall;
-        CERR << "Error: illegal usage of DcmDirectoryRecord::increaseRefNum()"
-                " - RecordType must be MRDR" << endl;
+        ofConsole.lockCerr() << "Error: illegal usage of DcmDirectoryRecord::increaseRefNum() - RecordType must be MRDR" << endl;
+        ofConsole.unlockCerr(); 
     }
     return numberOfReferences;
 }
@@ -780,15 +778,15 @@ Uint32 DcmDirectoryRecord::decreaseRefNum()
         else
         {
             errorFlag = EC_IllegalCall;
-            CERR << "Warning: DcmDirectoryRecord::decreaseRefNum()"
-                    " attempt to decrease value lower than zero" << endl;
+            ofConsole.lockCerr() << "Warning: DcmDirectoryRecord::decreaseRefNum() attempt to decrease value lower than zero" << endl;
+            ofConsole.unlockCerr(); 
         }
     }
     else
     {
         errorFlag = EC_IllegalCall;
-        CERR << "Error: illegal usage of DcmDirectoryRecord::decreaseRefNum()"
-                " - RecordType must be MRDR" << endl;
+        ofConsole.lockCerr() << "Error: illegal usage of DcmDirectoryRecord::decreaseRefNum() - RecordType must be MRDR" << endl;
+        ofConsole.unlockCerr(); 
     }
     return numberOfReferences;
 }
@@ -853,8 +851,8 @@ E_Condition DcmDirectoryRecord::fillElementsAndReadSOP(
         fileStream = new DcmFileStream(fileName, DCM_ReadMode);
         if (!fileStream || fileStream->GetError() != EC_Normal )
         {
-            CERR << "Error: DcmDirectoryRecord::readSOPandFileElements():"
-                " DicomFile \"" << fileName << "\" not found." << endl;
+            ofConsole.lockCerr() << "Error: DcmDirectoryRecord::readSOPandFileElements(): DicomFile \"" << fileName << "\" not found." << endl;
+            ofConsole.unlockCerr(); 
             l_error = EC_InvalidStream;
             directFromFile = OFFalse;
             indirectViaMRDR = OFFalse;
@@ -930,9 +928,10 @@ E_Condition DcmDirectoryRecord::fillElementsAndReadSOP(
         )
     {
         if ( refFile == (DcmFileFormat*)NULL )
-            CERR << "Error: internal Error in"
-                " DcmDirectoryRecord::fillElementsAndReadSOP()" << endl;
-
+        {
+            ofConsole.lockCerr() << "Error: internal Error in DcmDirectoryRecord::fillElementsAndReadSOP()" << endl;
+            ofConsole.unlockCerr(); 
+        }
         uiP = new DcmUniqueIdentifier( refSOPClassTag );    // (0004,1510)
         if ( refFile->search( DCM_SOPClassUID, stack )
              == EC_Normal )
@@ -943,9 +942,8 @@ E_Condition DcmDirectoryRecord::fillElementsAndReadSOP(
         }
         else
         {
-            CERR << "Error: DcmDirectoryRecord::fillElementsAndReadSOP(): "
-                "I can't find DCM_SOPClassUID in Dataset ["
-                 << fileName << "] !" << endl;
+            ofConsole.lockCerr() << "Error: DcmDirectoryRecord::fillElementsAndReadSOP(): I can't find DCM_SOPClassUID in Dataset [" << fileName << "] !" << endl;
+            ofConsole.unlockCerr(); 
             l_error = EC_CorruptedData;
         }
         insert( uiP, OFTrue );
@@ -963,10 +961,8 @@ E_Condition DcmDirectoryRecord::fillElementsAndReadSOP(
         }
         else
         {
-            CERR << "Error: DcmDirectoryRecord::fillElementsAndReadSOP():"
-                " I can't find DCM_SOPInstanceUID neither in Dataset"
-                " or MetaInfo of file ["
-                 << fileName << "] !" << endl;
+            ofConsole.lockCerr() << "Error: DcmDirectoryRecord::fillElementsAndReadSOP(): I can't find DCM_SOPInstanceUID neither in Dataset or MetaInfo of file [" << fileName << "] !" << endl;
+            ofConsole.unlockCerr(); 
             l_error = EC_CorruptedData;
         }
         insert( uiP, OFTrue );
@@ -981,9 +977,8 @@ E_Condition DcmDirectoryRecord::fillElementsAndReadSOP(
         }
         else
         {
-            CERR << "Error: DcmDirectoryRecord::fillElementsAndReadSOP():"
-                " I can't find DCM_TransferSyntaxUID in MetaInfo of file ["
-                 << fileName << "] !" << endl;
+            ofConsole.lockCerr() << "Error: DcmDirectoryRecord::fillElementsAndReadSOP(): I can't find DCM_TransferSyntaxUID in MetaInfo of file [" << fileName << "] !" << endl;
+            ofConsole.unlockCerr(); 
             l_error = EC_CorruptedData;
         }
         insert( uiP, OFTrue );
@@ -1044,9 +1039,8 @@ debug(2, ( "DcmDirectoryRecord::purgeReferencedFile() trying to purge file %s fr
             if ( unlink( localFileName ) != 0 )
             {
                 l_error = EC_InvalidStream;
-                CERR << "Error: DcmDirectoryRecord::purgeReferencedFile()"
-                        " cannot purge file ["
-                     << localFileName << "] from file system." << endl;
+                ofConsole.lockCerr() << "Error: DcmDirectoryRecord::purgeReferencedFile() cannot purge file [" << localFileName << "] from file system." << endl;
+                ofConsole.unlockCerr(); 
             }
             delete[] localFileName;
         }
@@ -1192,9 +1186,6 @@ E_Condition DcmDirectoryRecord::search( const DcmTagKey &tag,
                                            searchIntoSub );
     if ( l_error != EC_Normal )
     {
-debug(5, ( "DcmDirectoryRecord::search() no element found: err(%d, %s). now searching in lowerLevelList",
-           l_error, dcmErrorConditionToString(l_error) ));
-
         if ( mode != ESM_afterStackTop || resultStack.top() == this )
             resultStack.push( lowerLevelList );
         l_error = lowerLevelList->search( tag,
@@ -1455,7 +1446,10 @@ DcmDirectoryRecord::getRecordsOriginFile()
 /*
  * CVS/RCS Log:
  * $Log: dcdirrec.cc,v $
- * Revision 1.33  2000-03-08 16:26:34  meichel
+ * Revision 1.34  2000-04-14 15:55:04  meichel
+ * Dcmdata library code now consistently uses ofConsole for error output.
+ *
+ * Revision 1.33  2000/03/08 16:26:34  meichel
  * Updated copyright header.
  *
  * Revision 1.32  2000/03/03 14:05:32  meichel

@@ -22,9 +22,9 @@
  *  Purpose: class DcmDicomDir
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-03-08 16:26:31 $
+ *  Update Date:      $Date: 2000-04-14 15:55:03 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcdicdir.cc,v $
- *  CVS/RCS Revision: $Revision: 1.30 $
+ *  CVS/RCS Revision: $Revision: 1.31 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -142,8 +142,6 @@ DcmDicomDir::DcmDicomDir(const char *fileName, const char *fileSetID)
     }
     else
     {
-        debug(5, (  "dcdicdir:DcmDicomDir() reading DicomDir [%s]",
-                dicomDirFileName ));
         DirFile = new DcmFileFormat();
         DirFile->transferInit();
         DirFile->read(inStream);
@@ -175,7 +173,8 @@ DcmDicomDir::DcmDicomDir( const DcmDicomDir & /*newDir*/ )
     RootRec = new DcmDirectoryRecord( ERT_root, NULL, NULL );
     DcmTag mrdrSeqTag( DCM_DirectoryRecordSequence );
     MRDRSeq = new DcmSequenceOfItems( mrdrSeqTag );
-    CERR << "Warning: DcmDicomDir: wrong use of Copy-Constructor" << endl;
+    ofConsole.lockCerr() << "Warning: DcmDicomDir: wrong use of Copy-Constructor" << endl;
+    ofConsole.unlockCerr();
 }
 
 
@@ -250,8 +249,8 @@ DcmDataset& DcmDicomDir::getDataset()
     if ( localDataset == (DcmDataset*)NULL )
     {
         errorFlag = EC_CorruptedData;
-        CERR << "Error: DcmDicomDir::getDataset(): missing Dataset in Dicom"
-                " Dir File. Must create new Dicom Dir File." << endl;
+        ofConsole.lockCerr() << "Error: DcmDicomDir::getDataset(): missing Dataset in DICOMDIR File. Must create new DICOMDIR file." << endl;
+        ofConsole.unlockCerr();
         if ( DirFile != (DcmFileFormat*)NULL )
             delete DirFile;
         DirFile = new DcmFileFormat();
@@ -279,8 +278,10 @@ DcmSequenceOfItems& DcmDicomDir::getDirRecSeq( DcmDataset &dset )
     {
         errorFlag = EC_CorruptedData;
         if ( !mustCreateNewDir )
-            CERR << "Warning: DcmDicomDir::getDirRecSeq(): missing Directory"
-                    " Record Sequence. Must create new one." << endl;
+        {
+          ofConsole.lockCerr() << "Warning: DcmDicomDir::getDirRecSeq(): missing Directory Record Sequence. Must create new one." << endl;
+          ofConsole.unlockCerr();
+        }
         DcmTag dirSeqTag( DCM_DirectoryRecordSequence );    // (0004,1220)
         localDirRecSeq = new DcmSequenceOfItems( dirSeqTag );
         dset.insert( localDirRecSeq, OFTrue );
@@ -453,13 +454,16 @@ debug(2,( "DcmDicomDir::moveRecordToTree() Record(0x%4.4hx,0x%4.4hx) p=%p has lo
         {                                         // geht nur, weil friend class
              DcmItem *dit = fromDirSQ.remove( startRec );
              if ( dit == (DcmItem*)NULL )
-                CERR << "Error: DcmDicomDir::moveRecordToTree() DirRecord is"
-                        " part of unknown Sequence" << endl;
+             {
+               ofConsole.lockCerr() << "Error: DcmDicomDir::moveRecordToTree() DirRecord is part of unknown Sequence" << endl;
+               ofConsole.unlockCerr();
+             }
         }
         else
-            CERR << "Error: DcmDicomDir::moveRecordToTree() cannot insert"
-                    " DirRecord (=NULL?)" << endl;
-
+        {
+           ofConsole.lockCerr() << "Error: DcmDicomDir::moveRecordToTree() cannot insert DirRecord (=NULL?)" << endl;
+           ofConsole.unlockCerr();
+        }
         moveRecordToTree( lowerRec, fromDirSQ, startRec );
         moveRecordToTree( nextRec, fromDirSQ, toRecord );
     }
@@ -550,8 +554,8 @@ Uint32 DcmDicomDir::lengthUntilSQ(DcmDataset &dset,
         if ( sublength==DCM_UndefinedLength )
         {
             DcmVR subvr( dO->getVR() );
-            CERR << "Warning:DcmDicomDir::lengthUntilSQ() subelem \""
-                 << subvr.getVRName() << "\" has undefined Length" << endl;
+            ofConsole.lockCerr() << "Warning:DcmDicomDir::lengthUntilSQ() subelem \"" << subvr.getVRName() << "\" has undefined Length" << endl;
+            ofConsole.unlockCerr();
         }
 
         if ( dO->getVR() == EVR_SQ  && enctype == EET_UndefinedLength )
@@ -762,7 +766,6 @@ debug(2, ( "DcmDicomDir::convertTreeToLinear() copy pointer of unresolved Record
 
         unresRecs.insert( localDirRecSeq.getItem(i-1), 0 );
     }
-debug(5, ( "DcmDicomDir::convertTreeToLinear() copied %d pointer of unresolvedRecords", numUnresItems ));
 
     // Konvertiere Items in die Root Directory Entity zurueck:
     DcmDirectoryRecord *firstRootRecord[1], *lastRootRecord[1];
@@ -802,8 +805,8 @@ debug(2, ( "DcmDicomDir::convertTreeToLinear() copy pointer of MRDR no %ld of %l
         if (    convertAllPointer( dset, beginOfDataSet, oxfer, enctype )
              == EC_InvalidVR )
         {
-            CERR << "ERROR: dcdicdir: there are some Offsets incorrect"
-                    " in file " << dicomDirFileName << endl;
+            ofConsole.lockCerr() << "ERROR: dcdicdir: there are some Offsets incorrect in file " << dicomDirFileName << endl;
+            ofConsole.unlockCerr();
             l_error = EC_CorruptedData;
         }
     return l_error;
@@ -1004,7 +1007,8 @@ DcmDirectoryRecord* DcmDicomDir::matchOrCreateMRDR( char *filename )
             {
                 delete newMRDR;
                 newMRDR = (DcmDirectoryRecord*)NULL;
-                CERR << "Error: Internal error, can't Create MRDR." << endl;
+                ofConsole.lockCerr() << "Error: Internal error, can't Create MRDR." << endl;
+                ofConsole.unlockCerr();
             }
 Cdebug(1, newMRDR!=NULL, ("DcmDicomDir::matchOrCreateMRDR() New MRDR p=%p with matching filename [%s] created,"
                           " original Record p=%p with same filename modified.",
@@ -1029,9 +1033,10 @@ E_Condition DcmDicomDir::write(const E_TransferSyntax oxfer,
                                const E_GrpLenEncoding glenc)
 {
     if ( oxfer != DICOMDIR_DEFAULT_TRANSFERSYNTAX )
-        CERR << "Error: DcmDicomDir::write(): wrong TransferSyntax used"
-             << " - only LittleEndianExplicit allowed!"
-             << endl;
+    {
+      ofConsole.lockCerr() << "Error: DcmDicomDir::write(): wrong TransferSyntax used - only LittleEndianExplicit allowed!" << endl;
+      ofConsole.unlockCerr();
+    }
     errorFlag = EC_Normal;
     E_TransferSyntax outxfer = DICOMDIR_DEFAULT_TRANSFERSYNTAX;
     /* find the path of the dicomdir to be created */
@@ -1071,9 +1076,10 @@ E_Condition DcmDicomDir::write(const E_TransferSyntax oxfer,
 
     this->getDirFileFormat().validateMetaInfo( outxfer );
     DcmFileStream outStream(newname, DCM_WriteMode);
-    if (outStream.Fail()) {
-        CERR << "ERROR: cannot create DICOMDIR temporary file: " 
-             << newname << endl;
+    if (outStream.Fail())
+    {
+        ofConsole.lockCerr() << "ERROR: cannot create DICOMDIR temporary file: " << newname << endl;
+        ofConsole.unlockCerr();
     }
 
     metainfo.transferInit();
@@ -1328,7 +1334,10 @@ Cdebug(1, refCounter[k].fileOffset==refMRDR->numberOfReferences,
 /*
 ** CVS/RCS Log:
 ** $Log: dcdicdir.cc,v $
-** Revision 1.30  2000-03-08 16:26:31  meichel
+** Revision 1.31  2000-04-14 15:55:03  meichel
+** Dcmdata library code now consistently uses ofConsole for error output.
+**
+** Revision 1.30  2000/03/08 16:26:31  meichel
 ** Updated copyright header.
 **
 ** Revision 1.29  2000/03/06 18:12:08  joergr

@@ -22,9 +22,9 @@
  *  Purpose: class DcmItem
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-03-08 16:26:36 $
+ *  Update Date:      $Date: 2000-04-14 15:55:05 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcitem.cc,v $
- *  CVS/RCS Revision: $Revision: 1.51 $
+ *  CVS/RCS Revision: $Revision: 1.52 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -114,8 +114,7 @@ DcmItem::DcmItem( const DcmItem& old )
             } while ( old.elementList->seek( ELP_next ) );
         }
         break;
-    default:
-        CERR << "Warning: DcmItem: wrong use of Copy-Constructor" << endl;
+    default: // should never happen
         break;
     }
 }
@@ -333,11 +332,12 @@ DcmObject* DcmItem::copyDcmObject( DcmObject *oldObj )
 
     case EVR_na :
     default :
-        CERR << "Warning: DcmItem::copyDcmObject(): unsupported Element("
+        ofConsole.lockCerr() << "Warning: DcmItem::copyDcmObject(): unsupported Element("
              << hex << oldObj->getGTag() << "," << oldObj->getETag()
              << dec << ") with ident()="
              << DcmVR(oldObj->ident()).getVRName() << " found."
              << endl;
+        ofConsole.unlockCerr();
         break;
     }
     return newObj;
@@ -537,9 +537,9 @@ E_Condition DcmItem::computeGroupLengthAndPadding
                             DcmUnsignedLong *dUL = new DcmUnsignedLong(tagUL);
                             elementList->insert(dUL, ELP_prev);
                             dO = dUL;
-                            CERR << "Info: DcmItem::addGroupLengthElements()"
-                                " Group Length found, which was not from type"
-                                " UL - corrected." << endl;
+                            ofConsole.lockCerr() << "Info: DcmItem::computeGroupLengthAndPadding()"
+                                " Group Length with VR other than UL found, corrected." << endl;
+                            ofConsole.unlockCerr();
                         }
                         else if (glenc == EGL_withGL)
                         {
@@ -663,12 +663,14 @@ E_Condition DcmItem::readTagAndLength(DcmStream & inStream,
         DcmVR vr(vrstr);            // class DcmVR
         if (!vr.isStandard())
         {
-            /* this VR is unknown (e.g. "??").  print a warning. */
-            CERR << "WARNING: parsing attribute: " << newTag.getXTag() << 
-                " non-standard VR encountered: '" << vrstr << "', assuming ";
-            if (vr.usesExtendedLengthEncoding()) 
-              CERR << "4 byte length field" << endl;
-              else CERR << "2 byte length field" << endl;
+          /* this VR is unknown (e.g. "??").  print a warning. */
+          ostream &localCerr = ofConsole.lockCerr();
+          localCerr << "WARNING: parsing attribute: " << newTag.getXTag() << 
+              " non-standard VR encountered: '" << vrstr << "', assuming ";
+          if (vr.usesExtendedLengthEncoding()) 
+            localCerr << "4 byte length field" << endl;
+            else localCerr << "2 byte length field" << endl;
+          ofConsole.unlockCerr();
         }
         newTag.setVR(vr);     // VR in newTag anpassen, falls Element
         // nicht fehlerhaft kodiert ist.
@@ -724,7 +726,10 @@ E_Condition DcmItem::readTagAndLength(DcmStream & inStream,
             newTag.getVRName(), valueLength, newTag.getTagName() ));
 
     if ((valueLength & 1)&&(valueLength != (Uint32) -1))
-        CERR << "Error Parsing DICOM object: Length of Tag " << newTag << "is odd\n";
+    {
+        ofConsole.lockCerr() << "Error Parsing DICOM object: Length of Tag " << newTag << "is odd" << endl;
+        ofConsole.unlockCerr();
+    }
     length = valueLength;        // Rueckgabewert
     tag = newTag;                   // Rueckgabewert
     return l_error;
@@ -758,8 +763,8 @@ E_Condition DcmItem::readSubElement(DcmStream & inStream,
         // readTagAndLength but it is impossible that both can be executed
         // without setting the Mark twice.
         inStream.Putback();
-        CERR << "Warning: DcmItem::readSubElement(): parse error occurred: "
-             <<  newTag << endl;
+        ofConsole.lockCerr() << "Warning: DcmItem::readSubElement(): parse error occurred: " <<  newTag << endl;
+        ofConsole.unlockCerr();
         debug(1, ( "Warning: DcmItem::readSubElement(): parse error occurred:"
                 " (0x%4.4hx,0x%4.4hx)\n", newTag.getGTag(), newTag.getETag() ));
 
@@ -768,11 +773,10 @@ E_Condition DcmItem::readSubElement(DcmStream & inStream,
     {
         // Very important: Unset the putback mark
         inStream.UnsetPutbackMark();
-        CERR << "Error: DcmItem::readSubElement(): cannot create SubElement: "
-             <<  newTag << endl;
+        ofConsole.lockCerr() << "Error: DcmItem::readSubElement(): cannot create SubElement: " <<  newTag << endl;
+        ofConsole.unlockCerr();
         debug(1, ( "Error: DcmItem::readSubElement(): cannot create SubElement:"
                 " (0x%4.4hx,0x%4.4hx)\n", newTag.getGTag(), newTag.getETag() ));
-
     }
     else
     {
@@ -1050,10 +1054,11 @@ E_Condition DcmItem::insert( DcmElement* elem,
                 }   // if ( elem != dE )
                 else         // Versuch, Listen-Element nochmals einzufuegen
                 {
-                    CERR << "Warning: DcmItem::insert(): element "
+                    ofConsole.lockCerr() << "Warning: DcmItem::insert(): element "
                          << elem->getTag() << "VR=\"" 
                          << DcmVR(elem->getVR()).getVRName()
-                         << " was already in list: not inserted\n";
+                         << " was already in list: not inserted" << endl;
+                    ofConsole.unlockCerr();
                     errorFlag = EC_DoubledTag;
                 }
                 break;
@@ -1331,20 +1336,16 @@ E_Condition DcmItem::search(const DcmTagKey &tag,
     if ( mode == ESM_afterStackTop && resultStack.top() == this )
     {
         l_error = searchSubFromHere(tag, resultStack, searchIntoSub);
-        debug(5, ( "DcmItem::search() mode=ESM_afterStackTop && resultStack.top()=this" ));
-
     }
     else if ( !elementList->empty() )
     {
         if ( mode == ESM_fromHere || resultStack.empty() )
         {
-            debug(5, ( "DcmItem::search() mode=ESM_fromHere || resultStack.empty()" ));
             resultStack.clear();
             l_error = searchSubFromHere( tag, resultStack, searchIntoSub );
         }
         else if ( mode == ESM_fromStackTop )
         {
-            debug(5, ( "DcmItem::search() mode=ESM_fromStackTop" ));
             dO = resultStack.top();
             if ( dO == this )
                 l_error = searchSubFromHere( tag, resultStack, searchIntoSub );
@@ -1358,7 +1359,6 @@ E_Condition DcmItem::search(const DcmTagKey &tag,
         }
         else if ( mode == ESM_afterStackTop && searchIntoSub )
         {
-            debug(5, ( "DcmItem::search() mode=ESM_afterStackTop && searchIntoSub" ));
             // resultStack enthaelt Zielinformationen:
             // - stelle Zustand der letzen Suche in den einzelnen Suchroutinen
             //   wieder her
@@ -1370,12 +1370,8 @@ E_Condition DcmItem::search(const DcmTagKey &tag,
             //   4. starte Suche ab dnO
 
             unsigned long i = resultStack.card();
-            debug(5, ( "DcmItem::search() resultStack: card()=%d", i ));
-
             while ( i > 0 && (dO = resultStack.elem(i-1)) != this )
             {
-                debug(5, ( "DcmItem::search() --dO=elem(%d)=%p  this=%p", i-1, dO, this ));
-
                 i--;
             }
             if ( dO != this && resultStack.card() > 0 )
@@ -1385,9 +1381,6 @@ E_Condition DcmItem::search(const DcmTagKey &tag,
             }
             if ( dO == this )
             {
-                debug(5, ( "DcmItem::search() --dO=elem(%d)=%p==this=%p", i-1, dO, this ));
-                debug(5, ( "currently at resultStack position %d, dO=%p", i-1, dO ));
-
                 if ( i == 1 )                 // habe resultStack.top() gefunden
                     l_error = EC_TagNotFound; // markiere als kein Treffer, s.o.
                 else                          //   siehe oben
@@ -1396,18 +1389,10 @@ E_Condition DcmItem::search(const DcmTagKey &tag,
                     OFBool searchNode = OFTrue;
                     DcmObject *dnO;
                     dnO = resultStack.elem( i-2 ); // Knoten der naechsten Ebene
-                    debug(5, ( "DcmItem::search() elementList: dnO=%p", dnO ));
-
                     elementList->seek( ELP_first );
                     do {
                         dO = elementList->get();
                         searchNode = searchNode ? ( dO != dnO ) : OFFalse;
-                        Cdebug(5, searchNode,  ("DcmItem::search() --searching Node dnO=%p, found: dO=%p", dnO, dO ));
-                        Cdebug(5, !searchNode && submode==ESM_afterStackTop,
-                                ("DcmItem::search() --searching Node dnO=%p found!", dO ));
-                        Cdebug(5, !searchNode && submode!=ESM_afterStackTop,
-                                ("DcmItem::search() --next Node dO=%p for beeing tested", dO ));
-
                         if ( !searchNode )
                         {                               // suche jetzt weiter
                             if ( submode == ESM_fromStackTop )
@@ -1902,7 +1887,10 @@ DcmItem::findRealNumber(
 /*
 ** CVS/RCS Log:
 ** $Log: dcitem.cc,v $
-** Revision 1.51  2000-03-08 16:26:36  meichel
+** Revision 1.52  2000-04-14 15:55:05  meichel
+** Dcmdata library code now consistently uses ofConsole for error output.
+**
+** Revision 1.51  2000/03/08 16:26:36  meichel
 ** Updated copyright header.
 **
 ** Revision 1.50  2000/03/03 15:02:09  joergr

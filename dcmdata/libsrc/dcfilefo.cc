@@ -22,9 +22,9 @@
  *  Purpose: class DcmFileFormat
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-03-08 16:26:35 $
+ *  Update Date:      $Date: 2000-04-14 15:55:05 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcfilefo.cc,v $
- *  CVS/RCS Revision: $Revision: 1.19 $
+ *  CVS/RCS Revision: $Revision: 1.20 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -201,13 +201,13 @@ E_Condition DcmFileFormat::checkValue(DcmMetaInfo * metainfo,
             } else {
                 currVers[0] = currVers[0] | version[0]; // direkte Daten-
                 currVers[1] = currVers[1] | version[1]; // Manipulation
-
-                CERR << "Warning: dcfilefo: unknown Version of MetaHeader detected: 0x";
-                CERR.width(2); CERR.fill('0'); CERR << hex << currVers[1];
-                CERR.width(2); CERR.fill('0'); CERR << currVers[0];
-                CERR << " supported: 0x";
-                CERR.width(2); CERR.fill('0'); CERR << version[1];
-                CERR.width(2); CERR.fill('0'); CERR << version[0] << dec << endl;
+                ostream& localCerr = ofConsole.lockCerr();
+                localCerr << "Warning: dcfilefo: unknown Version of MetaHeader detected: 0x";
+                localCerr.width(2); localCerr.fill('0'); localCerr << hex << currVers[1];
+                localCerr.width(2); localCerr.fill('0'); localCerr << currVers[0] << " supported: 0x";
+                localCerr.width(2); localCerr.fill('0'); localCerr << version[1];
+                localCerr.width(2); localCerr.fill('0'); localCerr << version[0] << dec << endl;
+                ofConsole.unlockCerr();
             }
         } else if ( xtag == DCM_MediaStorageSOPClassUID ) {     // (0002,0002)
             if ( elem == (DcmElement*)NULL ) {
@@ -306,34 +306,29 @@ Cdebug(2,  uidtmp != (char*)NULL,
                 elem = new DcmApplicationEntity( tag );
                 metainfo->insert( elem, OFTrue );
             }
-            CERR << "Error: dcfilefo: I don't know how to handle"
-                " DCM_SourceApplicationEntityTitle!" << endl;
-
+            ofConsole.lockCerr() << "Error: dcfilefo: I don't know how to handle DCM_SourceApplicationEntityTitle!" << endl;
+            ofConsole.unlockCerr();
         } else if ( xtag == DCM_PrivateInformationCreatorUID ) {        // (0002,0100)
             if ( elem == (DcmElement*)NULL )
             {
                 elem = new DcmUniqueIdentifier( tag );
                 metainfo->insert( elem, OFTrue );
             }
-            CERR << "Error: dcfilefo: I don't know how to handle"
-                " DCM_PrivateInformationCreatorUID!" << endl;
-
+            ofConsole.lockCerr() << "Error: dcfilefo: I don't know how to handle DCM_PrivateInformationCreatorUID!" << endl;
+            ofConsole.unlockCerr();
         } else if ( xtag == DCM_PrivateInformation ) {  // (0002,0102)
             if ( elem == (DcmElement*)NULL )
             {
                 elem = new DcmOtherByteOtherWord( tag );
                 metainfo->insert( elem, OFTrue );
             }
-            CERR << "Warning: dcfilefo: I don't know how to handle"
-                " DCM_PrivateInformation!" << endl;
-
+            ofConsole.lockCerr() << "Warning: dcfilefo: I don't know how to handle DCM_PrivateInformation!" << endl;
+            ofConsole.unlockCerr();
         } else {
-            CERR << "Warning: dcfilefo: I don't know how to handle "
-                 << tag.getTagName() << endl;
-
+            ofConsole.lockCerr() << "Warning: dcfilefo: I don't know how to handle " << tag.getTagName() << endl;
+            ofConsole.unlockCerr();
         }
-        if ( elem == (DcmElement*)NULL )
-            l_error = EC_InvalidVR;
+        if ( elem == (DcmElement*)NULL ) l_error = EC_InvalidVR;
     } else {
         l_error = EC_IllegalCall;
     }
@@ -388,10 +383,10 @@ E_Condition DcmFileFormat::validateMetaInfo(E_TransferSyntax oxfer)
         // berechne neue GroupLength
         if (metinf->computeGroupLengthAndPadding
              (EGL_withGL, EPD_noChange, META_HEADER_DEFAULT_TRANSFERSYNTAX, 
-              EET_UndefinedLength) != EC_Normal ) {
-            CERR << "Error: DcmFileFormat::validateMetaInfo(): group length"
-                " of Meta Information Header not adapted."
-                 << endl;
+              EET_UndefinedLength) != EC_Normal )
+        {
+            ofConsole.lockCerr() << "Error: DcmFileFormat::validateMetaInfo(): group length of Meta Information Header not adapted." << endl;
+            ofConsole.unlockCerr();
         }
     }
     else {
@@ -587,8 +582,8 @@ E_Condition DcmFileFormat::write(DcmStream & outStream,
 
         if ( outxfer == EXS_BigEndianImplicit )
         {
-            CERR << "Error: DcmFileFormat::write() illegal TransferSyntax(BI)"
-                " used" << endl;
+            ofConsole.lockCerr() << "Error: DcmFileFormat::write() illegal TransferSyntax(BI) used" << endl;
+            ofConsole.unlockCerr();
         }
     }
     return errorFlag;
@@ -602,10 +597,9 @@ E_Condition DcmFileFormat::write(DcmStream & outStream,
 E_Condition DcmFileFormat::insertItem(DcmItem* /*item*/,
                                       const unsigned long /*where*/ )
 {
-    CERR << "Warning: illegal call of DcmFileFormat::insert(DcmItem*,Uin32)"
-         << endl;
+    ofConsole.lockCerr() << "Warning: illegal call of DcmFileFormat::insert(DcmItem*,Uin32)" << endl;
+    ofConsole.unlockCerr();
     errorFlag = EC_IllegalCall;
-
     return errorFlag;
 }
 
@@ -615,9 +609,9 @@ E_Condition DcmFileFormat::insertItem(DcmItem* /*item*/,
 
 DcmItem* DcmFileFormat::remove(const unsigned long /*num*/ )
 {
-    CERR << "Warning: illegal call of DcmFileFormat::remove(Uint32)" << endl;
+    ofConsole.lockCerr() << "Warning: illegal call of DcmFileFormat::remove(Uint32)" << endl;
+    ofConsole.unlockCerr();
     errorFlag = EC_IllegalCall;
-
     return (DcmItem*)NULL;
 }
 
@@ -627,9 +621,9 @@ DcmItem* DcmFileFormat::remove(const unsigned long /*num*/ )
 
 DcmItem* DcmFileFormat::remove( DcmItem* /*item*/ )
 {
-    CERR << "Warning: illegal call of DcmFileFormat::remove(DcmItem*)" << endl;
+    ofConsole.lockCerr() << "Warning: illegal call of DcmFileFormat::remove(DcmItem*)" << endl;
+    ofConsole.unlockCerr();
     errorFlag = EC_IllegalCall;
-
     return (DcmItem*)NULL;
 }
 
@@ -639,7 +633,8 @@ DcmItem* DcmFileFormat::remove( DcmItem* /*item*/ )
 
 E_Condition DcmFileFormat::clear()
 {
-    CERR << "Warning: illegal call of DcmFileFormat::clear()" << endl;
+    ofConsole.lockCerr() << "Warning: illegal call of DcmFileFormat::clear()" << endl;
+    ofConsole.unlockCerr();
     errorFlag = EC_IllegalCall;
     return errorFlag;
 }
@@ -703,7 +698,10 @@ DcmDataset* DcmFileFormat::getAndRemoveDataset()
 /*
 ** CVS/RCS Log:
 ** $Log: dcfilefo.cc,v $
-** Revision 1.19  2000-03-08 16:26:35  meichel
+** Revision 1.20  2000-04-14 15:55:05  meichel
+** Dcmdata library code now consistently uses ofConsole for error output.
+**
+** Revision 1.19  2000/03/08 16:26:35  meichel
 ** Updated copyright header.
 **
 ** Revision 1.18  2000/03/03 14:05:33  meichel

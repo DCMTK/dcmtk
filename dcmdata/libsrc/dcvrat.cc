@@ -22,9 +22,9 @@
  *  Purpose: class DcmAttributeTag
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-03-08 16:26:45 $
+ *  Update Date:      $Date: 2000-04-14 15:55:08 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcvrat.cc,v $
- *  CVS/RCS Revision: $Revision: 1.16 $
+ *  CVS/RCS Revision: $Revision: 1.17 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -58,12 +58,6 @@ DcmAttributeTag::DcmAttributeTag(const DcmTag &tag, const Uint32 len)
 DcmAttributeTag::DcmAttributeTag( const DcmAttributeTag& old )
 : DcmElement( old )
 {
-    if ( old.ident() != EVR_AT )
-    {
-        errorFlag = EC_IllegalCall;
-        CERR << "Warning: DcmAttributeTag: wrong use of Copy-Constructor"
-             << endl;
-    }
 }
 
 
@@ -272,7 +266,10 @@ E_Condition DcmAttributeTag::verify(const OFBool autocorrect)
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrat.cc,v $
-** Revision 1.16  2000-03-08 16:26:45  meichel
+** Revision 1.17  2000-04-14 15:55:08  meichel
+** Dcmdata library code now consistently uses ofConsole for error output.
+**
+** Revision 1.16  2000/03/08 16:26:45  meichel
 ** Updated copyright header.
 **
 ** Revision 1.15  2000/03/03 14:05:38  meichel

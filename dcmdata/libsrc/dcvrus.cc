@@ -22,9 +22,9 @@
  *  Purpose: class DcmUnsignedShort
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-03-08 16:26:52 $
+ *  Update Date:      $Date: 2000-04-14 15:55:10 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcvrus.cc,v $
- *  CVS/RCS Revision: $Revision: 1.16 $
+ *  CVS/RCS Revision: $Revision: 1.17 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -55,12 +55,6 @@ DcmUnsignedShort::DcmUnsignedShort(const DcmTag &tag, const Uint32 len)
 DcmUnsignedShort::DcmUnsignedShort(const DcmUnsignedShort& old)
     : DcmElement( old )
 {
-    if ( old.ident() != EVR_US )
-    {
-        errorFlag = EC_IllegalCall;
-        CERR << "Warning: DcmUnsignedShort: wrong use of Copy-Constructor"
-             << endl;
-    }
 }
 
 
@@ -253,7 +247,10 @@ E_Condition DcmUnsignedShort::verify(const OFBool autocorrect )
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrus.cc,v $
-** Revision 1.16  2000-03-08 16:26:52  meichel
+** Revision 1.17  2000-04-14 15:55:10  meichel
+** Dcmdata library code now consistently uses ofConsole for error output.
+**
+** Revision 1.16  2000/03/08 16:26:52  meichel
 ** Updated copyright header.
 **
 ** Revision 1.15  2000/03/03 14:05:41  meichel

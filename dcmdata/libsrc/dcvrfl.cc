@@ -22,9 +22,9 @@
  *  Purpose: class DcmFloatingPointSingle
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-03-08 16:26:47 $
+ *  Update Date:      $Date: 2000-04-14 15:55:08 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcvrfl.cc,v $
- *  CVS/RCS Revision: $Revision: 1.17 $
+ *  CVS/RCS Revision: $Revision: 1.18 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -60,12 +60,6 @@ DcmFloatingPointSingle::DcmFloatingPointSingle(const DcmTag &tag,
 DcmFloatingPointSingle::DcmFloatingPointSingle(const DcmFloatingPointSingle& old)
 : DcmElement( old )
 {
-    if ( old.ident() != EVR_FL )
-    {
-        errorFlag = EC_IllegalCall;
-        CERR << "Warning: DcmFloatingPointSingle: wrong use of Copy-Constructor"
-             << endl;
-    }
 }
 
 
@@ -254,7 +248,10 @@ E_Condition DcmFloatingPointSingle::verify(const OFBool autocorrect)
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrfl.cc,v $
-** Revision 1.17  2000-03-08 16:26:47  meichel
+** Revision 1.18  2000-04-14 15:55:08  meichel
+** Dcmdata library code now consistently uses ofConsole for error output.
+**
+** Revision 1.17  2000/03/08 16:26:47  meichel
 ** Updated copyright header.
 **
 ** Revision 1.16  2000/03/03 14:05:39  meichel

@@ -22,9 +22,9 @@
  *  Purpose: class DcmElement
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-03-08 16:26:34 $
+ *  Update Date:      $Date: 2000-04-14 15:55:04 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcelem.cc,v $
- *  CVS/RCS Revision: $Revision: 1.30 $
+ *  CVS/RCS Revision: $Revision: 1.31 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -784,8 +784,9 @@ E_Condition DcmElement::read(DcmStream & inStream,
                     {
                         /* Print an error message when too few bytes are available in the file in order to
                          * distinguish this problem from any other generic "InvalidStream" problem. */
-                        CERR << "ERROR: " << getTag().getTagName() << getTag().getXTag() << " larger ("
+                         ofConsole.lockCerr() << "ERROR: " << Tag.getTagName() << Tag.getXTag() << " larger ("
                              << Length << ") that remaining bytes in file" << endl;
+                         ofConsole.unlockCerr();
                     }
                 }
 
@@ -889,7 +890,10 @@ E_Condition DcmElement::write(DcmStream & outStream,
 /*
 ** CVS/RCS Log:
 ** $Log: dcelem.cc,v $
-** Revision 1.30  2000-03-08 16:26:34  meichel
+** Revision 1.31  2000-04-14 15:55:04  meichel
+** Dcmdata library code now consistently uses ofConsole for error output.
+**
+** Revision 1.30  2000/03/08 16:26:34  meichel
 ** Updated copyright header.
 **
 ** Revision 1.29  2000/03/03 14:05:32  meichel
