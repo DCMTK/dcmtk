@@ -22,8 +22,8 @@
  *  Purpose: DicomMonochromeImage (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2004-02-06 11:10:39 $
- *  CVS/RCS Revision: $Revision: 1.59 $
+ *  Update Date:      $Date: 2004-09-22 11:33:38 $
+ *  CVS/RCS Revision: $Revision: 1.60 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -905,7 +905,7 @@ int DiMonoImage::checkInterData(const int mode)
         ImageStatus = EIS_InvalidImage;
     else if (mode && (ImageStatus == EIS_Normal))
     {
-        const unsigned long count = OFstatic_cast(unsigned long, Columns) * OFstatic_cast(unsigned long, Rows) * NumberOfFrames;
+        const unsigned long count = OFstatic_cast(unsigned long, Columns) * OFstatic_cast(unsigned long, Rows) * TotalNumberOfFrames;
         if ((InterData->getInputCount() != count) && ((InterData->getInputCount() >> 1) != ((count + 1) >> 1)))
         {
             if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Warnings))
@@ -2114,7 +2114,10 @@ int DiMonoImage::writeBMP(FILE *stream,
  *
  * CVS/RCS Log:
  * $Log: dimoimg.cc,v $
- * Revision 1.59  2004-02-06 11:10:39  joergr
+ * Revision 1.60  2004-09-22 11:33:38  joergr
+ * Fixed wrong warning message about length of pixel data.
+ *
+ * Revision 1.59  2004/02/06 11:10:39  joergr
  * Distinguish more clearly between const and non-const access to pixel data.
  *
  * Revision 1.58  2003/12/23 16:03:18  joergr
