@@ -54,9 +54,9 @@
 ** Author, Date:	Stephen M. Moore, 14-Apr-93
 ** Intent:		This module contains the public entry points for the
 **			DICOM Upper Layer (DUL) protocol package.
-** Last Update:		$Author: joergr $, $Date: 2002-04-16 13:57:32 $
+** Last Update:		$Author: meichel $, $Date: 2002-05-15 11:24:16 $
 ** Source File:		$RCSfile: dul.cc,v $
-** Revision:		$Revision: 1.44 $
+** Revision:		$Revision: 1.45 $
 ** Status:		$State: Exp $
 */
 
@@ -258,29 +258,39 @@ DUL_InitializeNetwork(const char *mode,
                       void *networkParameter, int timeout, unsigned long opt,
                       DUL_NETWORKKEY ** networkKey)
 {
-    PRIVATE_NETWORKKEY
-        * key;                  /* Our local copy of the key which is created */
+    // default return value if something goes wrong
+    *networkKey = NULL;
 
+    // don't initialize the network twice
+    if (networkInitialized) return DUL_NETWORKINITIALIZED;
+
+    // make sure "Broken Pipe" signals don't terminate the application
 #ifdef SIGPIPE
     (void) signal(SIGPIPE, (mySIG_TYP)SIG_IGN);
 #endif
+
+    // initialize DUL FSM
     (void) DUL_InitializeFSM();
 
-    *networkKey = NULL;
-    if (networkInitialized++)
-    {
-        return DUL_NETWORKINITIALIZED;
-    }
+    // create PRIVATE_NETWORKKEY structure
+    PRIVATE_NETWORKKEY *key = NULL; 
     OFCondition cond = createNetworkKey(mode, timeout, opt, &key);
-    if (cond.bad()) {
-        networkInitialized = 0;
-        return cond;
-    }
 
-    cond = initializeNetworkTCP(&key, networkParameter);
+    // initialize network
+    if (cond.good()) cond = initializeNetworkTCP(&key, networkParameter);
 
     if (cond.good())
-        *networkKey = (DUL_NETWORKKEY *) key;
+    {
+      // everything worked well, return network key
+      *networkKey = (DUL_NETWORKKEY *) key;      
+      networkInitialized++;
+    }
+    else
+    {
+      // initializeNetworkTCP has failed, destroy PRIVATE_NETWORKKEY structure
+      (void) DUL_DropNetwork(&((DUL_NETWORKKEY *) key));
+    }
+
     return cond;
 }
 
@@ -2314,7 +2324,13 @@ void DUL_DumpConnectionParameters(DUL_ASSOCIATIONKEY *association, ostream& outs
 /*
 ** CVS Log
 ** $Log: dul.cc,v $
-** Revision 1.44  2002-04-16 13:57:32  joergr
+** Revision 1.45  2002-05-15 11:24:16  meichel
+** Fixed problem with DICOM upper layer: If network initialization for
+**   an acceptor failed (e.g. because the listen port was already occupied),
+**   further calls to ASC_initializeNetwork() with different port numbers
+**   would also fail.
+**
+** Revision 1.44  2002/04/16 13:57:32  joergr
 ** Added configurable support for C++ ANSI standard includes (e.g. streams).
 ** Thanks to Andreas Barth <Andreas.Barth@bruker-biospin.de> for his
 ** contribution.
