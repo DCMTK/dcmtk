@@ -22,9 +22,9 @@
  *  Purpose: DicomMonochromeImage (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1998-12-23 13:22:22 $
+ *  Update Date:      $Date: 1999-01-11 09:37:28 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/libsrc/dimoimg.cc,v $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -733,6 +733,24 @@ void DiMonoImage::deleteOverlayData()
 /*********************************************************************/
 
 
+int DiMonoImage::getMinMaxValues(double &min,
+                                 double &max,
+                                 const int mode) const
+{
+    if (InterData != NULL)
+    {
+        if (mode)
+        {
+            min = InterData->getAbsMinimum();
+            max = InterData->getAbsMaximum();
+            return 1;
+        }
+        return InterData->getMinMaxValues(min, max);
+    }
+    return 0; 
+}
+
+
 int DiMonoImage::setNoVoiTransformation()
 {
     int old = (VoiLutData != NULL) ? VoiLutData->isValid() : 2;
@@ -1321,7 +1339,12 @@ int DiMonoImage::writeRawPPM(FILE *stream, const unsigned long frame, const int 
  *
  * CVS/RCS Log:
  * $Log: dimoimg.cc,v $
- * Revision 1.7  1998-12-23 13:22:22  joergr
+ * Revision 1.8  1999-01-11 09:37:28  joergr
+ * Added parameter to method 'getMinMaxValues()' to return absolute minimum
+ * and maximum values ('possible') in addition to actually 'used' pixel
+ * values.
+ *
+ * Revision 1.7  1998/12/23 13:22:22  joergr
  * Changed parameter type (long to int) to avoid warning reported by MSVC5.
  *
  * Revision 1.3  1998/12/16 16:15:55  joergr

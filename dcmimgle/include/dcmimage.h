@@ -22,9 +22,9 @@
  *  Purpose: Provides main interface to the "dicom image toolkit"
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1998-12-23 11:31:58 $
+ *  Update Date:      $Date: 1999-01-11 09:31:20 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/dcmimage.h,v $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -212,19 +212,25 @@ class DicomImage
     }
         
     /** get minimum and maximum pixel values
-     *  the resulting pixel values are stored in 'double' variables to avoid problems with different number ranges
+     *  the resulting pixel values are stored in 'double' variables to avoid problems with different number ranges,
+     *  limited to monochrome images
      *
-     ** @param  min  minimum pixel value (reference parameter)
-     *  @param  max  maximum pixel value (reference parameter)
+     ** @param  min   minimum pixel value (reference parameter)
+     *  @param  max   maximum pixel value (reference parameter)
+     *  @param  mode  0 = min/max 'used' pixel values,
+     *                1 = min/max 'possible' pixel values (absolute min/max)
      *
      ** @return status code (true if successful)
      */
     inline int getMinMaxValues(double &min,
-                               double &max) const
+                               double &max,
+                               const int mode = 0) const
     {
-        return (Image != NULL) ? Image->getMinMaxValues(min, max) : 0;
+        if ((Image != NULL) && (Image->getMonoImagePtr() != NULL))
+            return Image->getMonoImagePtr()->getMinMaxValues(min, max, mode);
+        return 0;
     }
-        
+
     /** get width height ratio (pixel aspect ratio: x/y)
      *
      ** @return pixel aspect ratio (floating point value)
@@ -1084,7 +1090,12 @@ class DicomImage
  *
  * CVS/RCS Log:
  * $Log: dcmimage.h,v $
- * Revision 1.5  1998-12-23 11:31:58  joergr
+ * Revision 1.6  1999-01-11 09:31:20  joergr
+ * Added parameter to method 'getMinMaxValues()' to return absolute minimum
+ * and maximum values ('possible') in addition to actually 'used' pixel
+ * values.
+ *
+ * Revision 1.5  1998/12/23 11:31:58  joergr
  * Changed order of parameters for addOverlay() and getOverlayData().
  *
  * Revision 1.3  1998/12/16 16:26:17  joergr

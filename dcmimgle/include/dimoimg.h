@@ -22,9 +22,9 @@
  *  Purpose: DicomMonochromeImage (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1998-12-23 13:21:28 $
+ *  Update Date:      $Date: 1999-01-11 09:35:10 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/dimoimg.h,v $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -81,11 +81,9 @@ class DiMonoImage
 
     virtual ~DiMonoImage();
 
-    inline int getMinMaxValues(double &min,
-                               double &max) const
-    {
-        return (InterData != NULL) ? InterData->getMinMaxValues(min, max) : 0; 
-    }
+    int getMinMaxValues(double &min,
+                        double &max,
+                        const int mode) const;
 
     int setNoVoiTransformation();
 
@@ -268,7 +266,12 @@ class DiMonoImage
  *
  * CVS/RCS Log:
  * $Log: dimoimg.h,v $
- * Revision 1.7  1998-12-23 13:21:28  joergr
+ * Revision 1.8  1999-01-11 09:35:10  joergr
+ * Added parameter to method 'getMinMaxValues()' to return absolute minimum
+ * and maximum values ('possible') in addition to actually 'used' pixel
+ * values.
+ *
+ * Revision 1.7  1998/12/23 13:21:28  joergr
  * Changed parameter type (long to int) to avoid warning reported by MSVC5.
  *
  * Revision 1.6  1998/12/23 12:38:16  joergr
