@@ -24,8 +24,8 @@
  *             - InstanceStruct, SeriesStruct, StudyStruct
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-08-07 15:21:53 $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  Update Date:      $Date: 2004-04-16 13:33:52 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -420,7 +420,7 @@ size_t DSRSOPInstanceReferenceList::StudyStruct::getNumberOfInstances() const
     {
         /* sum up the number of instances */
         if (*iter != NULL)
-            result += (*iter)->getNumberOfInstances();
+            result += OFstatic_cast(SeriesStruct *, *iter)->getNumberOfInstances();
         ++iter;
     }
     return result;
@@ -640,7 +640,7 @@ OFCondition DSRSOPInstanceReferenceList::StudyStruct::gotoFirstItem()
         if (*Iterator != NULL)
         {
             /* do the same for instance level */
-            result = (*Iterator)->gotoFirstItem();
+            result = OFstatic_cast(SeriesStruct *, *Iterator)->gotoFirstItem();
         } else
             result = EC_CorruptedData;
     }
@@ -658,7 +658,7 @@ OFCondition DSRSOPInstanceReferenceList::StudyStruct::gotoNextItem()
         if (*Iterator != NULL)
         {
             /* try to go to the next instance item */
-            result = (*Iterator)->gotoNextItem();
+            result = OFstatic_cast(SeriesStruct *, *Iterator)->gotoNextItem();
             /* if this fails ... */
             if (result.bad())
             {
@@ -666,7 +666,7 @@ OFCondition DSRSOPInstanceReferenceList::StudyStruct::gotoNextItem()
                 if (++Iterator != SeriesList.end())
                 {
                     if (*Iterator != NULL)
-                        result = (*Iterator)->gotoFirstItem();
+                        result = OFstatic_cast(SeriesStruct *, *Iterator)->gotoFirstItem();
                 }
             }
         } else
@@ -802,7 +802,7 @@ size_t DSRSOPInstanceReferenceList::getNumberOfInstances() const
     {
         /* sum up the number of instances */
         if (*iter != NULL)
-            result += (*iter)->getNumberOfInstances();
+            result += OFstatic_cast(StudyStruct *, *iter)->getNumberOfInstances();
         ++iter;
     }
     return result;
@@ -1167,7 +1167,7 @@ OFCondition DSRSOPInstanceReferenceList::gotoFirstItem()
         if (*Iterator != NULL)
         {
             /* do the same for series and instance level */
-            result = (*Iterator)->gotoFirstItem();
+            result = OFstatic_cast(StudyStruct *, *Iterator)->gotoFirstItem();
         }
     }
     return result;
@@ -1184,7 +1184,7 @@ OFCondition DSRSOPInstanceReferenceList::gotoNextItem()
         if (*Iterator != NULL)
         {
             /* try to go to the next instance item */
-            result = (*Iterator)->gotoNextItem();
+            result = OFstatic_cast(StudyStruct *, *Iterator)->gotoNextItem();
             /* if this fails ... */
             if (result.bad())
             {
@@ -1192,7 +1192,7 @@ OFCondition DSRSOPInstanceReferenceList::gotoNextItem()
                 if (++Iterator != StudyList.end())
                 {
                     if (*Iterator != NULL)
-                        result = (*Iterator)->gotoFirstItem();
+                        result = OFstatic_cast(StudyStruct *, *Iterator)->gotoFirstItem();
                 }
             }
         } else
@@ -1373,7 +1373,11 @@ OFCondition DSRSOPInstanceReferenceList::setStorageMediaFileSetUID(const OFStrin
 /*
  *  CVS/RCS Log:
  *  $Log: dsrsoprf.cc,v $
- *  Revision 1.5  2003-08-07 15:21:53  joergr
+ *  Revision 1.6  2004-04-16 13:33:52  joergr
+ *  Added explicit typecast to result of dereferencing operator to keep Sun CC
+ *  2.0.1 happy.
+ *
+ *  Revision 1.5  2003/08/07 15:21:53  joergr
  *  Added brackets around "bitwise and" operator/operands to avoid warnings
  *  reported by MSVC5.
  *
