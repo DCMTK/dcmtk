@@ -22,9 +22,9 @@
  *  Purpose: DicomTransTemplate (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1998-11-27 15:48:10 $
+ *  Update Date:      $Date: 1998-12-22 14:42:23 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/ditranst.h,v $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -73,8 +73,8 @@ class DiTransTemplate
     }
 
     const int Planes;
-    const Uint16 Src_X;
-    const Uint16 Src_Y;
+    /*const*/ Uint16 Src_X;                     // add 'const' when interpolated scaling with clipping is fully implemented
+    /*const*/ Uint16 Src_Y;                     // ...
     const Uint16 Dest_X;
     const Uint16 Dest_Y;
     const Uint32 Frames;
@@ -89,7 +89,10 @@ class DiTransTemplate
 **
 ** CVS/RCS Log:
 ** $Log: ditranst.h,v $
-** Revision 1.1  1998-11-27 15:48:10  joergr
+** Revision 1.2  1998-12-22 14:42:23  joergr
+** Removed const declaration (as long as interpolated scaling isn't completed).
+**
+** Revision 1.1  1998/11/27 15:48:10  joergr
 ** Added copyright message.
 ** Added support for new bit manipulation class.
 **
