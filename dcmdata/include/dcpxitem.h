@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2001, OFFIS
+ *  Copyright (C) 1994-2002, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,10 +21,10 @@
  *
  *  Purpose: Interface of class DcmPixelItem
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-11-16 15:54:39 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2002-04-25 09:41:46 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcpxitem.h,v $
- *  CVS/RCS Revision: $Revision: 1.14 $
+ *  CVS/RCS Revision: $Revision: 1.15 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -68,6 +68,14 @@ class DcmPixelItem : public DcmOtherByteOtherWord
     virtual void print(ostream & out, const OFBool showFullData = OFTrue,
                        const int level = 0, const char *pixelFileName = NULL,
 		               size_t *pixelCounter = NULL);
+
+    /** write object in XML format
+     *  @param out output stream to which the XML document is written
+     *  @param flags optional flag used to customize the output (see DCMTypes::XF_xxx)
+     *  @return status, EC_Normal if successful, an error code otherwise
+     */
+    virtual OFCondition writeXML(ostream &out,
+                                 const size_t flags = 0);
 };
 
 
@@ -76,7 +84,10 @@ class DcmPixelItem : public DcmOtherByteOtherWord
 /*
 ** CVS/RCS Log:
 ** $Log: dcpxitem.h,v $
-** Revision 1.14  2001-11-16 15:54:39  meichel
+** Revision 1.15  2002-04-25 09:41:46  joergr
+** Added support for XML output of DICOM objects.
+**
+** Revision 1.14  2001/11/16 15:54:39  meichel
 ** Adapted digital signature code to final text of supplement 41.
 **
 ** Revision 1.13  2001/09/25 17:19:28  meichel

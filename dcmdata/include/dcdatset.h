@@ -22,9 +22,9 @@
  *  Purpose: Interface of the class DcmDataset
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-04-11 12:22:52 $
+ *  Update Date:      $Date: 2002-04-25 09:40:13 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcdatset.h,v $
- *  CVS/RCS Revision: $Revision: 1.17 $
+ *  CVS/RCS Revision: $Revision: 1.18 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -83,6 +83,15 @@ public:
 			      const Uint32 padlen = 0,
 			      const Uint32 subPadlen = 0,
 			      Uint32 instanceLength = 0);
+
+    /** write object in XML format.
+     *  The XML declaration (e.g. <?xml version="1.0"?>) is not written by this function.
+     *  @param out output stream to which the XML document is written
+     *  @param flags optional flag used to customize the output (see DCMTypes::XF_xxx)
+     *  @return status, EC_Normal if successful, an error code otherwise
+     */
+    virtual OFCondition writeXML(ostream &out,
+                                 const size_t flags = 0);
 
     /** load a DICOM object from file.
      *  This method only supports DICOM objects stored as a dataset, i.e. without meta header.
@@ -166,7 +175,10 @@ public:
 /*
 ** CVS/RCS Log:
 ** $Log: dcdatset.h,v $
-** Revision 1.17  2002-04-11 12:22:52  joergr
+** Revision 1.18  2002-04-25 09:40:13  joergr
+** Added support for XML output of DICOM objects.
+**
+** Revision 1.17  2002/04/11 12:22:52  joergr
 ** Added new methods for loading and saving DICOM files.
 **
 ** Revision 1.16  2001/09/25 17:19:24  meichel

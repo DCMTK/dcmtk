@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2001, OFFIS
+ *  Copyright (C) 1994-2002, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,10 +21,10 @@
  *
  *  Purpose: Interface of class DcmMetaInfo
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-09-25 17:19:27 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2002-04-25 09:40:56 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcmetinf.h,v $
- *  CVS/RCS Revision: $Revision: 1.15 $
+ *  CVS/RCS Revision: $Revision: 1.16 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -96,6 +96,13 @@ public:
 			      const E_EncodingType enctype 
 			      = EET_UndefinedLength);
 
+    /** write object in XML format
+     *  @param out output stream to which the XML document is written
+     *  @param flags optional flag used to customize the output (see DCMTypes::XF_xxx)
+     *  @return status, EC_Normal if successful, an error code otherwise
+     */
+    virtual OFCondition writeXML(ostream &out,
+                                 const size_t flags = 0);
 };
 
 #endif // DCMETINF_H
@@ -103,7 +110,10 @@ public:
 /*
 ** CVS/RCS Log:
 ** $Log: dcmetinf.h,v $
-** Revision 1.15  2001-09-25 17:19:27  meichel
+** Revision 1.16  2002-04-25 09:40:56  joergr
+** Added support for XML output of DICOM objects.
+**
+** Revision 1.15  2001/09/25 17:19:27  meichel
 ** Adapted dcmdata to class OFCondition
 **
 ** Revision 1.14  2001/06/01 15:48:41  meichel

@@ -24,9 +24,9 @@
  *  DICOM object encoding/decoding, search and lookup facilities.
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-04-11 12:23:46 $
+ *  Update Date:      $Date: 2002-04-25 09:38:47 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcobject.h,v $
- *  CVS/RCS Revision: $Revision: 1.29 $
+ *  CVS/RCS Revision: $Revision: 1.30 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -93,7 +93,7 @@ protected:
     virtual OFCondition writeTagAndLength(DcmStream & outStream,  
                                           const E_TransferSyntax oxfer, // in
                                           Uint32 & writtenBytes ) const; // out
-
+                                          
 public:
     DcmObject(const DcmTag & tag, const Uint32 len = 0);
     DcmObject(const DcmObject & obj);
@@ -153,6 +153,14 @@ public:
     virtual OFCondition write(DcmStream & outStream,
                               const E_TransferSyntax oxfer,
                               const E_EncodingType enctype = EET_UndefinedLength) = 0;
+
+    /** write object in XML format
+     *  @param out output stream to which the XML document is written
+     *  @param flags optional flag used to customize the output (see DCMTypes::XF_xxx)
+     *  @return status, always returns EC_Illegal Call
+     */
+    virtual OFCondition writeXML(ostream &out,
+                                 const size_t flags = 0);
 
     /** load a DICOM object from file.
      *  The only classes having a "real" implementation of this method are DcmDataset and
@@ -225,7 +233,10 @@ public:
 /*
  * CVS/RCS Log:
  * $Log: dcobject.h,v $
- * Revision 1.29  2002-04-11 12:23:46  joergr
+ * Revision 1.30  2002-04-25 09:38:47  joergr
+ * Added support for XML output of DICOM objects.
+ *
+ * Revision 1.29  2002/04/11 12:23:46  joergr
  * Added new methods for loading and saving DICOM files.
  *
  * Revision 1.28  2001/11/16 15:54:39  meichel

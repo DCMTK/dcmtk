@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2001, OFFIS
+ *  Copyright (C) 1994-2002, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,10 +21,10 @@
  *
  *  Purpose: Interface of class DcmPixelData
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-09-25 17:18:34 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2002-04-25 09:38:48 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcpixel.h,v $
- *  CVS/RCS Revision: $Revision: 1.14 $
+ *  CVS/RCS Revision: $Revision: 1.15 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -223,6 +223,14 @@ public:
         const E_TransferSyntax oxfer,
         const E_EncodingType enctype = EET_UndefinedLength);
 
+    /** write object in XML format
+     *  @param out output stream to which the XML document is written
+     *  @param flags optional flag used to customize the output (see DCMTypes::XF_xxx)
+     *  @return status, EC_Normal if successful, an error code otherwise
+     */
+    virtual OFCondition writeXML(ostream &out,
+                                 const size_t flags = 0);
+
     /** special write method for creation of digital signatures
      */
     virtual OFCondition writeSignatureFormat(
@@ -324,7 +332,10 @@ public:
 /*
 ** CVS/RCS Log:
 ** $Log: dcpixel.h,v $
-** Revision 1.14  2001-09-25 17:18:34  meichel
+** Revision 1.15  2002-04-25 09:38:48  joergr
+** Added support for XML output of DICOM objects.
+**
+** Revision 1.14  2001/09/25 17:18:34  meichel
 ** Updated abstract class DcmRepresentationParameter for use with dcmjpeg
 **
 ** Revision 1.13  2001/06/01 15:48:42  meichel
