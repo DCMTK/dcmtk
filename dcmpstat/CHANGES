@@ -1,3 +1,10 @@
+**** Changes from 1999.01.27 (vorwerk)
+- implemented error handling for indexfiles of length zero
+- fixed bug in record deletion of an indexfile (see also dbstore)
+- selectSeries, selectInstance, getAnInstance, getNumberOfStudies bugs fixed.
+- errorhandling added
+Affects: dcmpstat/include/dviface.h
+         dcmpstat/libsrc/dviface.cc
 
 **** Changes from 1999.01.27 (eichelberg)
 
