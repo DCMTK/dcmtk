@@ -68,9 +68,9 @@
 **
 **
 ** Last Update:		$Author: meichel $
-** Update Date:		$Date: 2004-02-25 12:31:15 $
+** Update Date:		$Date: 2004-04-07 10:22:09 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/include/Attic/assoc.h,v $
-** CVS/RCS Revision:	$Revision: 1.21 $
+** CVS/RCS Revision:	$Revision: 1.22 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -244,21 +244,28 @@ struct T_ASC_Association
 ** Public Function Prototypes
 */
 
-/* 
- * Network creation/destroy wrappers.
- * The T_ASC_Network structure will be allocated/freed by
- * these routines.
+/** network instance creation function (constructor)
+ *  @param role association acceptor, requestor or both
+ *  @param acceptorPort acceptor port for incoming connections.
+ *    For association requestors, zero should be passed here.
+ *  @param timeout timeout for network operations, in seconds
+ *  @param network T_ASC_Network will be allocated and returned in this parameter
+ *  @param options network options. Only DUL_FULLDOMAINNAME is currently defined
+ *    as a possible option.
+ *  @return EC_Normal if successful, an error code otherwise
  */
-
-OFCondition 
-ASC_initializeNetwork(
+OFCondition ASC_initializeNetwork(
     T_ASC_NetworkRole role,
     int acceptorPort,
     int timeout,
-    T_ASC_Network ** network);
+    T_ASC_Network ** network,
+    unsigned long options = 0);
 
-OFCondition 
-ASC_dropNetwork(T_ASC_Network ** network);
+/** network instance destruction function (destructor)
+ *  @param network T_ASC_Network will be freed by this routine
+ *  @return EC_Normal if successful, an error code otherwise
+ */ 
+OFCondition ASC_dropNetwork(T_ASC_Network ** network);
 
 /*
  * Building Association parameters
@@ -494,7 +501,11 @@ ASC_destroyAssociation(T_ASC_Association ** association);
 /*
 ** CVS Log
 ** $Log: assoc.h,v $
-** Revision 1.21  2004-02-25 12:31:15  meichel
+** Revision 1.22  2004-04-07 10:22:09  meichel
+** Added optional parameter to ASC_initializeNetwork that allows to pass
+**   the DUL_FULLDOMAINNAME option to the DUL layer
+**
+** Revision 1.21  2004/02/25 12:31:15  meichel
 ** Added global option flag for compatibility with very old DCMTK releases in the
 **   DICOM upper layer and ACSE code. Default is automatic handling, which should
 **   work in most cases.

@@ -68,9 +68,9 @@
 **
 **
 ** Last Update:         $Author: meichel $
-** Update Date:         $Date: 2004-02-25 12:31:17 $
+** Update Date:         $Date: 2004-04-07 10:22:10 $
 ** Source File:         $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/libsrc/assoc.cc,v $
-** CVS/RCS Revision:    $Revision: 1.42 $
+** CVS/RCS Revision:    $Revision: 1.43 $
 ** Status:              $State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -211,7 +211,8 @@ OFCondition
 ASC_initializeNetwork(T_ASC_NetworkRole role,
                       int acceptorPort,
                       int timeout,
-                      T_ASC_Network ** network)
+                      T_ASC_Network ** network,
+                      unsigned long options)
 {
     const char *mode;
 
@@ -232,7 +233,7 @@ ASC_initializeNetwork(T_ASC_NetworkRole role,
         break;
     }
 
-    OFCondition cond = DUL_InitializeNetwork(mode, &acceptorPort, timeout, DUL_ORDERBIGENDIAN, &netkey);
+    OFCondition cond = DUL_InitializeNetwork(mode, &acceptorPort, timeout, DUL_ORDERBIGENDIAN | options, &netkey);
     if (cond.bad()) return cond;
 
     *network = (T_ASC_Network *) malloc(sizeof(T_ASC_Network));
@@ -1976,7 +1977,11 @@ void ASC_activateCallback(T_ASC_Parameters *params, DUL_ModeCallback *cb)
 /*
 ** CVS Log
 ** $Log: assoc.cc,v $
-** Revision 1.42  2004-02-25 12:31:17  meichel
+** Revision 1.43  2004-04-07 10:22:10  meichel
+** Added optional parameter to ASC_initializeNetwork that allows to pass
+**   the DUL_FULLDOMAINNAME option to the DUL layer
+**
+** Revision 1.42  2004/02/25 12:31:17  meichel
 ** Added global option flag for compatibility with very old DCMTK releases in the
 **   DICOM upper layer and ACSE code. Default is automatic handling, which should
 **   work in most cases.
