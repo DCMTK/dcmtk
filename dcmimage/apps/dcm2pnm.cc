@@ -21,10 +21,10 @@
  *
  *  Purpose: Convert DICOM Images to PPM or PGM using the dcmimage library.
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-06-20 15:11:09 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2001-09-26 16:08:44 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/apps/dcm2pnm.cc,v $
- *  CVS/RCS Revision: $Revision: 1.47 $
+ *  CVS/RCS Revision: $Revision: 1.48 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -545,7 +545,7 @@ int main(int argc, char *argv[])
 
     if (dfile->error() != EC_Normal)
     {
-        oss << dcmErrorConditionToString(dfile->error()) << ": reading file: " << opt_ifname << ends;
+        oss << dfile->error().text() << ": reading file: " << opt_ifname << ends;
         app.printError(oss.str());
     }
 
@@ -1006,7 +1006,10 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcm2pnm.cc,v $
- * Revision 1.47  2001-06-20 15:11:09  joergr
+ * Revision 1.48  2001-09-26 16:08:44  meichel
+ * Adapted dcmimage to class OFCondition
+ *
+ * Revision 1.47  2001/06/20 15:11:09  joergr
  * Enhanced multi-frame support for command line tool 'dcm2pnm': extract all
  * or a range of frames with one call.
  * Removed old dcmimage license information.
