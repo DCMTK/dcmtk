@@ -23,8 +23,8 @@
  *    classes: DVPresentationState
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-02-09 15:59:09 $
- *  CVS/RCS Revision: $Revision: 1.9 $
+ *  Update Date:      $Date: 1999-02-17 10:05:35 $
+ *  CVS/RCS Revision: $Revision: 1.10 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -124,7 +124,7 @@ static void currentTime(OFString &str)
 
 /* --------------- class DVPresentationState --------------- */
 
-DVPresentationState::DVPresentationState(const char *displayFunctionFname)
+DVPresentationState::DVPresentationState(DiDisplayFunction *dispFunction)
 : patientName(DCM_PatientName)
 , patientID(DCM_PatientID)
 , patientBirthDate(DCM_PatientBirthDate)
@@ -208,18 +208,15 @@ DVPresentationState::DVPresentationState(const char *displayFunctionFname)
 , currentImageCurveList()
 , currentImageVOILUTList()
 , currentImageVOIWindowList()
-, displayFunctionFile()
 , useBartenTransform(OFTrue)
-, displayFunction(NULL)
+, displayFunction(dispFunction)
 {
-  if (displayFunctionFname) displayFunctionFile=displayFunctionFname;
 }
 
 
 DVPresentationState::~DVPresentationState()
 {
   detachImage();
-  if (displayFunction) delete displayFunction;
 }
 
 void DVPresentationState::detachImage()
@@ -318,10 +315,8 @@ void DVPresentationState::clear()
   windowWidth.clear();
   windowCenterWidthExplanation.clear();
   detachImage(); // clears all currentImageXX attributes
-  // we do not change the display function filename
+  // we do not change the display function
   useBartenTransform = OFTrue;
-  delete displayFunction;
-  displayFunction = NULL;
   return;
 }
 
@@ -3199,23 +3194,7 @@ E_Condition DVPresentationState::moveOverlay(size_t old_layer, size_t idx, size_
 void DVPresentationState::renderPixelData()
 {
   if (currentImage == NULL) return;
-
   int result=0;
-
-  /* initialize Barten transform */
-  if ((displayFunction==NULL)&&(displayFunctionFile.length() > 0))
-  {
-    DiDisplayFunction *df = new DiDisplayFunction(displayFunctionFile.c_str());
-    if (df && (df->isValid())) displayFunction = df;
-    else
-    {
-      if (df) delete df;
-#ifdef DEBUG
-      cerr << "warning: unable to load monitor characterics file '" << displayFunctionFile.c_str() << "', ignoring." << endl;
-#endif
-      displayFunctionFile.clear(); // we won't try again
-    }        
-  }
 
   /* activate Barten transform */
   if (displayFunction && useBartenTransform) currentImage->setDisplayFunction(displayFunction);
@@ -3544,16 +3523,18 @@ E_Condition DVPresentationState::getImageMinMaxPixelValue(double &minValue, doub
   return result;
 }
 
-void DVPresentationState::changeMonitorCharacteristics(const char *displayFunctionFname)
+void DVPresentationState::changeDisplayFunction(DiDisplayFunction *dispFunction)
 {
-  if (displayFunction) delete displayFunction;
-  displayFunction = NULL;
-  if (displayFunctionFname) displayFunctionFile = displayFunctionFname; else displayFunctionFile.clear();
+  displayFunction = dispFunction;
 }
 
 /*
  *  $Log: dvpstat.cc,v $
- *  Revision 1.9  1999-02-09 15:59:09  meichel
+ *  Revision 1.10  1999-02-17 10:05:35  meichel
+ *  Moved creation of Display Function object from DVPresentationState to
+ *    DVInterface to avoid unnecessary re-reads.
+ *
+ *  Revision 1.9  1999/02/09 15:59:09  meichel
  *  Implemented bitmap shutter activation amd method for
  *    exchanging graphic layers.
  *

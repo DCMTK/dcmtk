@@ -23,8 +23,8 @@
  *    classes: DVInterface
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-02-16 16:36:10 $
- *  CVS/RCS Revision: $Revision: 1.23 $
+ *  Update Date:      $Date: 1999-02-17 10:05:30 $
+ *  CVS/RCS Revision: $Revision: 1.24 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -56,7 +56,7 @@
 #define PSTAT_PRIVATESOPCLASSUID "1.2.276.0.7230010.3.4.1915765545.18030.917282194.0"
 
 class DVPSConfig;
-
+class DiDisplayFunction;
 
 /** Interface class for the Softcopy Presentation State viewer.
  *  This class manages the database facilities, allows to start and stop
@@ -945,6 +945,10 @@ private:
      */
     unsigned long referenceTime;
     
+    /** display function object
+     */
+    DiDisplayFunction *displayFunction;
+    
   /* Struct for databasecache */
     struct dbCache {
       OFString uid;
@@ -999,7 +1003,11 @@ private:
 
 /*
  *  $Log: dviface.h,v $
- *  Revision 1.23  1999-02-16 16:36:10  meichel
+ *  Revision 1.24  1999-02-17 10:05:30  meichel
+ *  Moved creation of Display Function object from DVPresentationState to
+ *    DVInterface to avoid unnecessary re-reads.
+ *
+ *  Revision 1.23  1999/02/16 16:36:10  meichel
  *  Added method newInstancesReceived() to DVInterface class.
  *
  *  Revision 1.22  1999/02/12 10:02:46  vorwerk

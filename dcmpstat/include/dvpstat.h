@@ -23,8 +23,8 @@
  *    classes: DVPresentationState
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-02-09 15:58:57 $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  Update Date:      $Date: 1999-02-17 10:05:32 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -67,7 +67,7 @@ public:
    *    characteristic file used to implement the standard display function.
    *    If absent, no Barten transform is performed.
    **/
-  DVPresentationState(const char *displayFunctionFname=NULL);
+  DVPresentationState(DiDisplayFunction *dispFunction=NULL);
   
   /// destructor
   virtual ~DVPresentationState();
@@ -1342,17 +1342,16 @@ public:
    OFBool getBartenTransform() { return useBartenTransform; }
    
    /** activates or deactivates Barten correction.
-    *  Barten transform will only be performed if switched on _and_
-    *  a valid monitor characteristics description exists.
+    *  Barten transform will only be performed if switched on 
+    *  _and_ a valid display function object exists.
     *  @param flag OFTrue to switch on, OFFalse to switch off.
     */
    void setBartenTransform(OFBool flag) { useBartenTransform=flag; }
    
-   /** changes the monitor characteristics file.
-    *  If NULL is passed, no monitor characteristics will be used
-    *  and Barten transform will be disabled.
+   /** changes the display function.
+    *  If NULL is passed, Barten transform is disabled.
     */
-   void changeMonitorCharacteristics(const char *displayFunctionFname=NULL);
+   void changeDisplayFunction(DiDisplayFunction *dispFunction=NULL);
    
 private:
 
@@ -1666,13 +1665,11 @@ private:
    */
   DVPSVOIWindow_PList currentImageVOIWindowList;  
   
-  /** filename of display function file 
-   */
-  OFString displayFunctionFile;
   /** flag indicating whether Barten transform
    *  is switched on or off
    */
   OFBool useBartenTransform;
+
   /** display function object if exists
    */
   DiDisplayFunction *displayFunction;
@@ -1683,7 +1680,11 @@ private:
 
 /*
  *  $Log: dvpstat.h,v $
- *  Revision 1.7  1999-02-09 15:58:57  meichel
+ *  Revision 1.8  1999-02-17 10:05:32  meichel
+ *  Moved creation of Display Function object from DVPresentationState to
+ *    DVInterface to avoid unnecessary re-reads.
+ *
+ *  Revision 1.7  1999/02/09 15:58:57  meichel
  *  Implemented bitmap shutter activation amd method for
  *    exchanging graphic layers.
  *

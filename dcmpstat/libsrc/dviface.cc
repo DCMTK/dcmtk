@@ -22,8 +22,8 @@
  *  Purpose: DVPresentationState
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-02-16 16:36:08 $
- *  CVS/RCS Revision: $Revision: 1.32 $
+ *  Update Date:      $Date: 1999-02-17 10:05:33 $
+ *  CVS/RCS Revision: $Revision: 1.33 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -38,6 +38,7 @@
 #include "dvpsconf.h"    /* for class DVPSConfig */
 #include "ofbmanip.h"    /* for OFBitmanipTemplate */
 #include "oflist.h"      /* for class OFList */
+#include "didispfn.h"    /* for DiDisplayFunction */
 #include <stdio.h>
 
 BEGIN_EXTERN_C
@@ -106,6 +107,7 @@ DVInterface::DVInterface(const char *config_file)
 , configPath()
 , databaseIndexFile()
 , referenceTime(0)
+, displayFunction(NULL)
 , studyidx(0)
 , seriesidx(0)
 , SeriesNumber(0)
@@ -128,9 +130,25 @@ DVInterface::DVInterface(const char *config_file)
     }
   }
   if (config_file) configPath = config_file;
-  pState = new DVPresentationState(getMonitorCharacteristicsFile());
   
-  // initialize reference time with "yesterday".
+  /* initialize Barten transform */
+  const char * displayFunctionFile = getMonitorCharacteristicsFile();
+  if (displayFunctionFile && (strlen(displayFunctionFile) > 0))
+  {
+    DiDisplayFunction *df = new DiDisplayFunction(displayFunctionFile);
+    if (df && (df->isValid())) displayFunction = df;
+    else
+    {
+      if (df) delete df;
+#ifdef DEBUG
+      cerr << "warning: unable to load monitor characterics file '" << displayFunctionFile.c_str() << "', ignoring." << endl;
+#endif
+    }        
+  }
+
+  pState = new DVPresentationState(displayFunction);
+  
+  /* initialize reference time with "yesterday" */
   referenceTime = (unsigned long)time(NULL);
   if (referenceTime >= 86400) referenceTime -= 86400; // subtract one day
 }
@@ -141,6 +159,7 @@ DVInterface::~DVInterface()
   if (pDicomImage) delete pDicomImage;
   if (pDicomPState) delete pDicomPState;
   if (pState) delete pState;
+  if (displayFunction) delete displayFunction;
   if (pConfig) delete pConfig;
   if (phandle) releaseDatabase();
   // refresh database index file access time
@@ -164,7 +183,7 @@ E_Condition DVInterface::loadImage(const char *imgName)
 {
     E_Condition status = EC_IllegalCall;
     DcmFileFormat *image = NULL;
-    DVPresentationState *newState = new DVPresentationState(getMonitorCharacteristicsFile());
+    DVPresentationState *newState = new DVPresentationState(displayFunction);
     if (newState==NULL) return EC_MemoryExhausted;
     if ((status = loadFileFormat(imgName, image)) == EC_Normal)
     {
@@ -203,7 +222,7 @@ E_Condition DVInterface::loadPState(const char *studyUID,
   
   // load the presentation state
   DcmFileFormat *pstate = NULL;
-  DVPresentationState *newState = new DVPresentationState(getMonitorCharacteristicsFile());
+  DVPresentationState *newState = new DVPresentationState(displayFunction);
   if (newState==NULL) return EC_MemoryExhausted;
   
   if ((EC_Normal == (status = loadFileFormat(filename, pstate)))&&(pstate))
@@ -261,7 +280,7 @@ E_Condition DVInterface::loadPState(const char *pstName,
     E_Condition status = EC_IllegalCall;
     DcmFileFormat *pstate = NULL;
     DcmFileFormat *image = NULL;
-    DVPresentationState *newState = new DVPresentationState(getMonitorCharacteristicsFile());
+    DVPresentationState *newState = new DVPresentationState(displayFunction);
     if (newState==NULL) return EC_MemoryExhausted;
     if (((status = loadFileFormat(pstName, pstate)) == EC_Normal) &&
         ((status = loadFileFormat(imgName, image)) == EC_Normal))
@@ -343,7 +362,10 @@ E_Condition DVInterface::savePState(const char *filename)
           if (fileformat != NULL) 
           {
             status = saveFileFormat(filename, fileformat);
-            delete fileformat;
+            
+            // replace the stored data for resetPresentationState()
+            if (pDicomPState) delete pDicomPState;
+            pDicomPState = fileformat;
           } else {
             status = EC_MemoryExhausted;
             delete dataset;
@@ -374,7 +396,7 @@ E_Condition DVInterface::exchangeImageAndPState(DVPresentationState *newState, D
 
 E_Condition DVInterface::resetPresentationState()
 {
-  DVPresentationState *newState = new DVPresentationState(getMonitorCharacteristicsFile());
+  DVPresentationState *newState = new DVPresentationState(displayFunction);
   if (newState==NULL) return EC_MemoryExhausted;        
 
   E_Condition status = EC_Normal;
@@ -1877,7 +1899,11 @@ void DVInterface::cleanChildren()
 /*
  *  CVS/RCS Log:
  *  $Log: dviface.cc,v $
- *  Revision 1.32  1999-02-16 16:36:08  meichel
+ *  Revision 1.33  1999-02-17 10:05:33  meichel
+ *  Moved creation of Display Function object from DVPresentationState to
+ *    DVInterface to avoid unnecessary re-reads.
+ *
+ *  Revision 1.32  1999/02/16 16:36:08  meichel
  *  Added method newInstancesReceived() to DVInterface class.
  *
  *  Revision 1.31  1999/02/12 10:04:13  vorwerk

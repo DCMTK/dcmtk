@@ -1,4 +1,19 @@
 
+**** Changes from 1999.02.17 (eichelberg)
+
+- Removed dcmdata debug level from sample apps
+  Affects: dcmpstat/apps/dcmpsmk.cc
+           dcmpstat/apps/dcmpstst.cc
+           dcmpstat/apps/listdb.cc
+
+- Moved creation of Display Function object
+  from DVPresentationState to DVInterface
+  to avoid unnecessary re-reads.
+  Affects: dcmpstat/include/dviface.h
+           dcmpstat/include/dvpstat.h   
+           dcmpstat/libsrc/dviface.cc
+           dcmpstat/libsrc/dvpstat.cc
+
 **** Changes from 1999.02.16 (eichelberg)
 
 - Added method newInstancesReceived() to DVInterface class.
