@@ -10,9 +10,9 @@
 **
 **
 ** Last Update:		$Author: hewett $
-** Update Date:		$Date: 1997-04-24 12:11:14 $
+** Update Date:		$Date: 1997-05-06 09:40:08 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcdirrec.cc,v $
-** CVS/RCS Revision:	$Revision: 1.11 $
+** CVS/RCS Revision:	$Revision: 1.12 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -32,6 +32,7 @@
 #include <unistd.h>
 #endif
 #include <iostream.h>
+#include <ctype.h>
 
 #include "dcdirrec.h"
 #include "dctk.h"
@@ -255,26 +256,42 @@ E_DirRecType DcmDirectoryRecord::recordNameToType(const char * recordTypeName)
 
 
 char* DcmDirectoryRecord::buildFileName(const char * origName,
-										char * destName)
+					char * destName)
 {
     const char* from = origName;
     char* to = destName;
     char c;
     char lastchar = '\0';
-    while ( (c = *from++) != 0 )
-    {
-	if ( c == '\\' )
-	{
-	    if ( lastchar != '\\' )       // eliminiert doppelte '\\'
-	    {
+    while ( (c = *from++) != 0 ) {
+	if ( c == '\\' ) {
+	    if ( lastchar != '\\' ) {      // eliminate double '\\'
 		*to++ = PATH_SEPARATOR;
 	    }
-	}
-	else
+	} else {
 	    *to++ = c;
+	}
 	lastchar = c;
     }
     *to = '\0';
+
+    /* 
+    ** Some OS's append a '.' to the filename of a ISO9660 filesystem.
+    ** If the filename does not exist then try appending a '.'
+    */
+    FILE* f = NULL;
+    if ((f = fopen(destName, "r")) != NULL) {
+	fclose(f);
+    } else {
+	char* newname = new char[strlen(destName) + 2];
+	strcpy(newname, destName);
+	strcat(newname, ".");
+	if ((f = fopen(newname, "r")) != NULL) {
+	    fclose(f);
+	    strcpy(destName, newname);
+	} else {
+	    /* we cannot find the file.  let the caller deal with this */
+	}
+    }
     return destName;
 }
 
@@ -496,17 +513,47 @@ debug(( 4, "RecordType-Element(0x%4.4hx,0x%4.4hx) Type=[%s]",
 
 // ********************************
 
+static void 
+hostToDicomFilename(char* fname)
+{
+    /*
+    ** Massage filename into dicom format. 
+    ** Elmiminate any invalid characters.
+    ** Most commonly there is a '.' at the end of a filename.
+    */
+    int len = strlen(fname);
+    int k = 0;
+    char c = '\0';
+    for (int i=0; i<len; i++) {
+	c = fname[i];
+	/* the PATH_SEPARATOR depends on the OS (see <osconfig.h>) */
+	if (c == PATH_SEPARATOR) {
+	    fname[k++] = '\\';
+	} else if (isalpha(c) || isdigit(c) || (c == '_') || (c == '\\')) {
+	    /* filenames in DICOM must always be in uppercase */
+	    fname[k++] = toupper(c);
+	}
+    }
+    fname[k] = '\0';
+}
 
-E_Condition DcmDirectoryRecord::setReferencedFileID( const char *referencedFileID )
+
+E_Condition 
+DcmDirectoryRecord::setReferencedFileID( const char *referencedFileID )
 {
     E_Condition l_error = EC_Normal;
+
+    char* newFname = new char[strlen(referencedFileID) + 1];
+    strcpy(newFname, referencedFileID);
+    hostToDicomFilename(newFname);
 
     DcmTag refFileTag( DCM_ReferencedFileID );
     DcmCodeString *csP = new DcmCodeString( refFileTag );
     if ( referencedFileID != (char*)NULL )
-	csP->putString( referencedFileID );
+	csP->putString( newFname );
     insert( csP, TRUE );
 
+    delete newFname;
     return l_error;
 }
 
@@ -810,7 +857,7 @@ E_Condition DcmDirectoryRecord::fillElementsAndReadSOP
 
     if ( referencedFileID != (char*)NULL && *referencedFileID != '\0' )
     {
-	fileName = new char[ strlen( referencedFileID ) + 1 ];
+	fileName = new char[ strlen( referencedFileID ) + 2 ];
 	buildFileName( referencedFileID, fileName );
 	fileStream = new DcmFileStream(fileName, DCM_ReadMode);
 	if (!fileStream || fileStream->GetError() != EC_Normal )
@@ -1010,7 +1057,7 @@ Bdebug((2, "dcdirrec:DcmDirectoryRecord::purgeReferencedFile()" ));
 	const char *fileName = this->lookForReferencedFileID();
 	if ( fileName != (char*)NULL )
 	{
-	    localFileName = new char[ strlen( fileName ) + 1 ];
+	    localFileName = new char[ strlen( fileName ) + 2 ];
 	    buildFileName( fileName, localFileName );
 	    this->setReferencedFileID( (char*)NULL );
 	}
@@ -1348,7 +1395,8 @@ unsigned long DcmDirectoryRecord::cardSub()
 
 
 E_Condition DcmDirectoryRecord::insertSub( DcmDirectoryRecord* dirRec,
-					   const unsigned long where )
+					   unsigned long where,
+					   BOOL before )
 {
 Bdebug((3, "dcdirrec:DcmDirectoryRecord::insertSub(DcmItem*,where=%ld)",
 	   where ));
@@ -1357,7 +1405,7 @@ Bdebug((3, "dcdirrec:DcmDirectoryRecord::insertSub(DcmItem*,where=%ld)",
     {
 	if (	checkHierarchy( DirRecordType, dirRec->DirRecordType )
 	     == EC_Normal )
-	    errorFlag = lowerLevelList->insert( dirRec, where );
+	    errorFlag = lowerLevelList->insert( dirRec, where, before );
 	else
 	{
 	    errorFlag = EC_IllegalCall;
