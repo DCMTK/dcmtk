@@ -21,10 +21,10 @@
  *
  *  Purpose: Class for measurement of time (Header)
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-02-05 14:07:23 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 1999-04-21 13:01:44 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/include/Attic/oftimer.h,v $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -38,7 +38,7 @@
 #include "osconfig.h"
 
 #ifdef HAVE_WINDOWS_H
- #include "windows.h"
+ #include <windows.h>
 #else /* UNIX */
  #include <sys/time.h>
 #endif
@@ -101,7 +101,10 @@ class OFTimer
  *
  * CVS/RCS Log:
  * $Log: oftimer.h,v $
- * Revision 1.3  1999-02-05 14:07:23  joergr
+ * Revision 1.4  1999-04-21 13:01:44  meichel
+ * ofstd/include/oftimer.h
+ *
+ * Revision 1.3  1999/02/05 14:07:23  joergr
  * Introduced new preprocessor definition HAVE_WINDOWS_H.
  *
  * Revision 1.2  1999/01/20 15:56:12  joergr
