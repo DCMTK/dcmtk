@@ -23,9 +23,9 @@
  *           class provider engines.
  *
  *  Last Update:      $Author: wilkens $
- *  Update Date:      $Date: 2002-08-05 09:09:59 $
+ *  Update Date:      $Date: 2002-12-12 16:48:35 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmwlm/include/Attic/wlmactmg.h,v $
- *  CVS/RCS Revision: $Revision: 1.8 $
+ *  CVS/RCS Revision: $Revision: 1.9 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -64,7 +64,7 @@ class WlmActivityManager
     WlmProcessTableType processTable;
 
     void DumpMessage( const char *message );
-    void WaitForAssociation( T_ASC_Network *net );
+    OFCondition WaitForAssociation( T_ASC_Network *net );
     void CleanChildren();
     OFCondition NegotiateAssociation( T_ASC_Association *assoc );
     void AddProcessToTable( int pid, T_ASC_Association * assoc );
@@ -124,7 +124,10 @@ class WlmActivityManager
 /*
 ** CVS Log
 ** $Log: wlmactmg.h,v $
-** Revision 1.8  2002-08-05 09:09:59  wilkens
+** Revision 1.9  2002-12-12 16:48:35  wilkens
+** Added some code to avoid compiler warning (unreachable code) on Sun CC 2.0.1.
+**
+** Revision 1.8  2002/08/05 09:09:59  wilkens
 ** Modfified the project's structure in order to be able to create a new
 ** application which contains both wlmscpdb and ppsscpdb.
 **

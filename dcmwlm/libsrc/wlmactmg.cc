@@ -22,10 +22,10 @@
  *  Purpose: Activity manager class for basic worklist management service
  *           class providers.
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-12-11 16:55:13 $
+ *  Last Update:      $Author: wilkens $
+ *  Update Date:      $Date: 2002-12-12 16:49:13 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmwlm/libsrc/wlmactmg.cc,v $
- *  CVS/RCS Revision: $Revision: 1.11 $
+ *  CVS/RCS Revision: $Revision: 1.12 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -214,11 +214,11 @@ OFCondition WlmActivityManager::StartProvidingService()
   // successfully. Now, we want to start handling all incoming requests. Since
   // this activity is supposed to represent a server process, we do not want to
   // terminate this activity. Hence, create an endless while-loop.
-  while( 1 )
+  while( cond.good() )
   {
     // Wait for an association and handle the requests of
     // the calling applications correspondingly.
-    WaitForAssociation( net );
+    cond = WaitForAssociation( net );
 
     // Clean up any child processes if the execution is not limited to a single process.
     // (Note that on a Windows platform, opt_singleProcess will always be OFTrue.)
@@ -308,14 +308,14 @@ void WlmActivityManager::RefuseAssociation( T_ASC_Association **assoc, WlmRefuse
 
 // ----------------------------------------------------------------------------
 
-void WlmActivityManager::WaitForAssociation( T_ASC_Network * net )
+OFCondition WlmActivityManager::WaitForAssociation( T_ASC_Network * net )
 // Date         : December 10, 2001
 // Author       : Thomas Wilkens
 // Task         : This function takes care of receiving, negotiating and accepting/refusing an
 //                association request. Additionally, it handles the request the association
 //                requesting application transmits after a connection isd established.
 // Parameters   : net - [in] Contains network parameters.
-// Return Value : none.
+// Return Value : Indicator which shows if function was executed successfully.
 {
   T_ASC_Association *assoc = NULL;
   char buf[BUFSIZ], msg[200];
@@ -347,7 +347,7 @@ void WlmActivityManager::WaitForAssociation( T_ASC_Network * net )
         ASC_dropAssociation( assoc );
         ASC_destroyAssociation( &assoc );
       }
-      return;
+      return( EC_Normal );
     }
 
     // Dump some information if required
@@ -378,7 +378,7 @@ void WlmActivityManager::WaitForAssociation( T_ASC_Network * net )
         ASC_dropAssociation( assoc );
         ASC_destroyAssociation( &assoc );
       }
-      return;
+      return( EC_Normal );
     }
 
     // Condition 2: determine the application context name. If an error occurred or if the
@@ -392,7 +392,7 @@ void WlmActivityManager::WaitForAssociation( T_ASC_Network * net )
         ASC_dropAssociation( assoc );
         ASC_destroyAssociation( &assoc );
       }
-      return;
+      return( EC_Normal );
     }
 
     // Condition 3: if option "--reject" is set and the caller did not provide an
@@ -405,7 +405,7 @@ void WlmActivityManager::WaitForAssociation( T_ASC_Network * net )
         ASC_dropAssociation( assoc );
         ASC_destroyAssociation( &assoc );
       }
-      return;
+      return( EC_Normal );
     }
 
     // Condition 4: if there are too many concurrent associations
@@ -418,7 +418,7 @@ void WlmActivityManager::WaitForAssociation( T_ASC_Network * net )
         ASC_dropAssociation( assoc );
         ASC_destroyAssociation( &assoc );
       }
-      return;
+      return( EC_Normal );
     }
 
     // Condition 5: if the called application entity title is not supported
@@ -432,7 +432,7 @@ void WlmActivityManager::WaitForAssociation( T_ASC_Network * net )
         ASC_dropAssociation( assoc );
         ASC_destroyAssociation( &assoc );
       }
-      return;
+      return( EC_Normal );
     }
 
     // If we get to this point the association shall be negotiated.
@@ -444,7 +444,7 @@ void WlmActivityManager::WaitForAssociation( T_ASC_Network * net )
         ASC_dropAssociation( assoc );
         ASC_destroyAssociation( &assoc );
       }
-      return;
+      return( EC_Normal );
     }
 
     // If the negotiation was successful, accept the association request.
@@ -456,7 +456,7 @@ void WlmActivityManager::WaitForAssociation( T_ASC_Network * net )
         ASC_dropAssociation( assoc );
         ASC_destroyAssociation( &assoc );
       }
-      return;
+      return( EC_Normal );
     }
 
     // Dump some information if required.
@@ -499,7 +499,7 @@ void WlmActivityManager::WaitForAssociation( T_ASC_Network * net )
           ASC_dropAssociation( assoc );
           ASC_destroyAssociation( &assoc );
         }
-        return;
+        return( EC_Normal );
       }
       else if( pid > 0 )
       {
@@ -519,6 +519,8 @@ void WlmActivityManager::WaitForAssociation( T_ASC_Network * net )
     }
 #endif
   }
+
+  return( EC_Normal );
 }
 
 // ----------------------------------------------------------------------------
@@ -1274,7 +1276,10 @@ static void FindCallback( void *callbackData, OFBool cancelled, T_DIMSE_C_FindRQ
 /*
 ** CVS Log
 ** $Log: wlmactmg.cc,v $
-** Revision 1.11  2002-12-11 16:55:13  meichel
+** Revision 1.12  2002-12-12 16:49:13  wilkens
+** Added some code to avoid compiler warning (unreachable code) on Sun CC 2.0.1.
+**
+** Revision 1.11  2002/12/11 16:55:13  meichel
 ** Added typecasts to avoid warnings on OSF/1
 **
 ** Revision 1.10  2002/08/12 10:56:18  wilkens
