@@ -22,9 +22,9 @@
  *  Purpose: DicomImage (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-04-28 14:47:34 $
+ *  Update Date:      $Date: 1999-07-23 13:53:00 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/diimage.h,v $
- *  CVS/RCS Revision: $Revision: 1.12 $
+ *  CVS/RCS Revision: $Revision: 1.13 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -92,7 +92,12 @@ class DiImage
     
     inline Uint32 getNumberOfFrames() const
     { 
-        return NumberOfFrames; 
+        return NumberOfFrames;
+    }
+
+    inline Uint32 getRepresentativeFrame() const
+    { 
+        return RepresentativeFrame;
     }
 
     inline Uint16 getRows() const
@@ -123,6 +128,10 @@ class DiImage
     {
         return getPixelWidth() / getPixelHeight();
     }
+
+    int setColumnRowRatio(const double ratio);
+
+    int setRowColumnRatio(const double ratio);
 
     virtual int getBits(const int bits = 0) const
     {
@@ -225,6 +234,7 @@ class DiImage
 
     Uint32 FirstFrame;                              // first frame to be processed
     Uint32 NumberOfFrames;                          // number of frames in case of multi-frame images (otherwise '1')
+    Uint32 RepresentativeFrame;                     // number of representative frame, type 3 attribute (default '0')
     Uint16 Rows;                                    // number of rows (in pixel)
     Uint16 Columns;                                 // number of columns (in pixel)
     double PixelWidth;                              // width of each pixel according to 'PixelSpacing/AspectRatio'
@@ -237,6 +247,7 @@ class DiImage
     
     int hasSignedRepresentation;                    // is 'true' if pixel data is signed
     int hasPixelSpacing;                            // is 'true' if attribute 'PixelSpacing' is present
+    int hasImagerPixelSpacing;                      // is 'true' if attribute 'ImagerPixelSpacing' is present
     int hasPixelAspectRatio;                        // is 'true' if attribute 'PixelAspectRatio' is present
     int isOriginal;                                 // is 'false' if derived from original image data (e.g. scaled)
 
@@ -258,7 +269,12 @@ class DiImage
  *
  * CVS/RCS Log:
  * $Log: diimage.h,v $
- * Revision 1.12  1999-04-28 14:47:34  joergr
+ * Revision 1.13  1999-07-23 13:53:00  joergr
+ * Added support for attribute 'ImagerPixelSpacing'.
+ * Added support for attribute 'RepresentativeFrameNumber'.
+ * Added methods to set 'PixelAspectRatio'.
+ *
+ * Revision 1.12  1999/04/28 14:47:34  joergr
  * Added experimental support to create grayscale images with more than 256
  * shades of gray to be displayed on a consumer monitor (use pastel colors).
  *
