@@ -22,9 +22,9 @@
  *  Purpose: Provides main interface to the "DICOM image toolkit"
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-04-27 13:08:37 $
+ *  Update Date:      $Date: 2000-06-07 14:30:26 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/dcmimage.h,v $
- *  CVS/RCS Revision: $Revision: 1.29 $
+ *  CVS/RCS Revision: $Revision: 1.30 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -402,7 +402,8 @@ class DicomImage
      */
     int hasSOPclassUID(const char *uid) const;
 
- // --- display function for output device characteristic (calibration)
+ // --- display function for output device characteristic (calibration):
+ //     only applicable for grayscale images
  
     /** get display function
      *
@@ -470,7 +471,8 @@ class DicomImage
             Image->getMonoImagePtr()->convertPValueToDDL(pvalue, ddl, bits) : 0;
     }
 
- // --- windowing (voi): return true if successful (see also 'dimoimg.cc')
+ // --- windowing (voi): only applicable for grayscale images
+ //                      return true if successful (see also 'dimoimg.cc')
     
     /** unset all VOI transformations (windows and LUTs).
      *  only applicable for monochrome images
@@ -627,7 +629,24 @@ class DicomImage
             Image->getMonoImagePtr()->getModalityLutExplanation() : (const char *)NULL;
     }
 
- // --- presentation LUT:
+ // --- polarity: only applicable for grayscale images
+
+    /** set polarity.
+     *
+     ** @param  polarity  polarity (normal or reverse)
+     *
+     ** @return true if successful (1 = polarity has changed,
+     *                              2 = polarity has not changed)
+     *          false otherwise
+     */
+    inline int setPolarity(const EP_Polarity polarity)
+    {
+        return ((Image != NULL) && (Image->getMonoImagePtr() != NULL)) ?
+            Image->getMonoImagePtr()->setPolarity(polarity) : 0;
+    }
+    
+
+ // --- presentation LUT: only applicable for grayscale images
 
     /** set shape for presentation transformation.
      *  possibly active presentation LUT is implicitly disabled.
@@ -688,6 +707,7 @@ class DicomImage
     }
 
  // --- overlays: return true (!0) if successful (see also 'diovlay.cc')
+ //               only applicable for grayscale images
 
     /** add specified plane to group of additional overlay planes.
      *  replaces old overlay plane if group number already exists.
@@ -1379,7 +1399,10 @@ class DicomImage
  *
  * CVS/RCS Log:
  * $Log: dcmimage.h,v $
- * Revision 1.29  2000-04-27 13:08:37  joergr
+ * Revision 1.30  2000-06-07 14:30:26  joergr
+ * Added method to set the image polarity (normal, reverse).
+ *
+ * Revision 1.29  2000/04/27 13:08:37  joergr
  * Dcmimgle library code now consistently uses ofConsole for error output.
  *
  * Revision 1.28  2000/03/08 16:24:13  meichel

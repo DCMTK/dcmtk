@@ -22,9 +22,9 @@
  *  Purpose: Utilities (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-04-28 12:32:33 $
+ *  Update Date:      $Date: 2000-06-07 14:30:28 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/diutils.h,v $
- *  CVS/RCS Revision: $Revision: 1.14 $
+ *  CVS/RCS Revision: $Revision: 1.15 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -208,6 +208,22 @@ enum ES_PresentationLut
     ESP_Identity,
     /// shape INVERSE
     ESP_Inverse
+/*
+    ,
+    /// shape LIN OD
+    ESP_LinOD
+*/
+};
+
+
+/** polarity
+ */
+enum EP_Polarity
+{
+    /// NORMAL
+    EPP_Normal,
+    /// REVERSE (opposite polarity)
+    EPP_Reverse
 };
 
 
@@ -357,7 +373,10 @@ class DicomImageClass
  *
  * CVS/RCS Log:
  * $Log: diutils.h,v $
- * Revision 1.14  2000-04-28 12:32:33  joergr
+ * Revision 1.15  2000-06-07 14:30:28  joergr
+ * Added method to set the image polarity (normal, reverse).
+ *
+ * Revision 1.14  2000/04/28 12:32:33  joergr
  * DebugLevel - global for the module - now derived from OFGlobal (MF-safe).
  *
  * Revision 1.13  2000/03/08 16:24:25  meichel

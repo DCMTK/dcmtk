@@ -22,9 +22,9 @@
  *  Purpose: DicomMonochromeImage (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-04-28 12:33:45 $
+ *  Update Date:      $Date: 2000-06-07 14:31:11 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/libsrc/dimoimg.cc,v $
- *  CVS/RCS Revision: $Revision: 1.34 $
+ *  CVS/RCS Revision: $Revision: 1.35 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -66,6 +66,7 @@ DiMonoImage::DiMonoImage(const DiDocument *docu,
     VoiLutCount(0),
     ValidWindow(0),
     VoiExplanation(),
+    Polarity(EPP_Normal),
     PresLutShape(ESP_Identity),
     VoiLutData(NULL),
     PresLutData(NULL),
@@ -125,6 +126,7 @@ DiMonoImage::DiMonoImage(const DiDocument *docu,
     VoiLutCount(0),
     ValidWindow(0),
     VoiExplanation(),
+    Polarity(EPP_Normal),
     PresLutShape(ESP_Identity),
     VoiLutData(NULL),
     PresLutData(NULL),
@@ -157,6 +159,7 @@ DiMonoImage::DiMonoImage(const DiDocument *docu,
     VoiLutCount(0),
     ValidWindow(0),
     VoiExplanation(),
+    Polarity(EPP_Normal),
     PresLutShape(ESP_Identity),
     VoiLutData(NULL),
     PresLutData(NULL),
@@ -184,6 +187,7 @@ DiMonoImage::DiMonoImage(const DiMonoImage *image,
     VoiLutCount(image->VoiLutCount),
     ValidWindow(image->ValidWindow),
     VoiExplanation(image->VoiExplanation),
+    Polarity(image->Polarity),
     PresLutShape(image->PresLutShape),
     VoiLutData(image->VoiLutData),
     PresLutData(image->PresLutData),
@@ -247,6 +251,7 @@ DiMonoImage::DiMonoImage(const DiColorImage *image,
     VoiLutCount(0),
     ValidWindow(0),
     VoiExplanation(),
+    Polarity(EPP_Normal),
     PresLutShape(ESP_Identity),
     VoiLutData(NULL),
     PresLutData(NULL),
@@ -285,6 +290,7 @@ DiMonoImage::DiMonoImage(const DiMonoImage *image,
     VoiLutCount(image->VoiLutCount),
     ValidWindow(image->ValidWindow),
     VoiExplanation(image->VoiExplanation),
+    Polarity(image->Polarity),
     PresLutShape(image->PresLutShape),
     VoiLutData(image->VoiLutData),
     PresLutData(image->PresLutData),
@@ -354,6 +360,7 @@ DiMonoImage::DiMonoImage(const DiMonoImage *image,
     VoiLutCount(image->VoiLutCount),
     ValidWindow(image->ValidWindow),
     VoiExplanation(image->VoiExplanation),
+    Polarity(image->Polarity),
     PresLutShape(image->PresLutShape),
     VoiLutData(image->VoiLutData),
     PresLutData(image->PresLutData),
@@ -416,6 +423,7 @@ DiMonoImage::DiMonoImage(const DiMonoImage *image,
     VoiLutCount(image->VoiLutCount),
     ValidWindow(image->ValidWindow),
     VoiExplanation(image->VoiExplanation),
+    Polarity(image->Polarity),
     PresLutShape(image->PresLutShape),
     VoiLutData(image->VoiLutData),
     PresLutData(image->PresLutData),
@@ -483,6 +491,7 @@ DiMonoImage::DiMonoImage(const DiMonoImage &)
     VoiLutCount(0),
     ValidWindow(0),
     VoiExplanation(),
+    Polarity(EPP_Normal),
     PresLutShape(ESP_Identity),
     VoiLutData(NULL),
     PresLutData(NULL),
@@ -516,6 +525,7 @@ DiMonoImage::DiMonoImage(const DiMonoImage *image,
     VoiLutCount(0),
     ValidWindow(0),
     VoiExplanation(),
+    Polarity(EPP_Normal),
     PresLutShape(ESP_Identity),
     VoiLutData(NULL),
     PresLutData(NULL),
@@ -1047,6 +1057,16 @@ int DiMonoImage::setVoiLut(const unsigned long pos)
 }
 
 
+int DiMonoImage::setPolarity(const EP_Polarity polarity)
+{
+    if (polarity != Polarity)
+    {
+        Polarity = polarity;
+        return 1;
+    }
+    return 2;
+}
+
 int DiMonoImage::setPresentationLutShape(const ES_PresentationLut shape)
 {
     if (PresLutData != NULL)
@@ -1263,6 +1283,12 @@ void *DiMonoImage::getData(void *buffer,
             } else {
                 low = 0;                                    // normal/positive: black to white
                 high = DicomImageClass::maxval(bits);
+            }
+            if (Polarity == EPP_Reverse)                    // swap high and low value
+            {
+                Uint32 temp = low;
+                low = high;
+                high = temp;
             }
             DiDisplayFunction *disp = DisplayFunction;
             if ((disp != NULL) && (disp->isValid()) && (disp->getMaxDDLValue() != DicomImageClass::maxval(bits)))
@@ -1609,7 +1635,10 @@ int DiMonoImage::writeRawPPM(FILE *stream,
  *
  * CVS/RCS Log:
  * $Log: dimoimg.cc,v $
- * Revision 1.34  2000-04-28 12:33:45  joergr
+ * Revision 1.35  2000-06-07 14:31:11  joergr
+ * Added method to set the image polarity (normal, reverse).
+ *
+ * Revision 1.34  2000/04/28 12:33:45  joergr
  * DebugLevel - global for the module - now derived from OFGlobal (MF-safe).
  *
  * Revision 1.33  2000/04/27 13:10:29  joergr
