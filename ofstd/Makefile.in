@@ -13,7 +13,7 @@ configdir=@configdir@
 include $(configdir)/@common_makefile@
 
 
-all: include-all libsrc-all 
+all: include-all libsrc-all docs-all tests-all
 
 install: all
 
@@ -30,9 +30,6 @@ include-all:
 
 libsrc-all: include-all
 	(cd libsrc; $(MAKE) ARCH="$(ARCH)" all)
-
-apps-all: libsrc-all
-	(cd apps; $(MAKE) ARCH="$(ARCH)" all)
 
 tests-all: libsrc-all
 	(cd tests; $(MAKE) ARCH="$(ARCH)" all)
