@@ -22,9 +22,9 @@
  *  Purpose: DicomColorPixel (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1998-11-27 13:47:54 $
+ *  Update Date:      $Date: 1999-01-20 14:44:04 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/include/Attic/dicopx.h,v $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -56,21 +56,42 @@ class DiColorPixel;
  *---------------------*/
 
 
-class DiColorPixel : public DiPixel
+class DiColorPixel
+  : public DiPixel
 {
+
  public:
-    DiColorPixel(const DiDocument *, const DiInputPixel *, const Uint16, EI_Status &, const Uint16 = 0);
+
+    DiColorPixel(const DiDocument *,
+                 const DiInputPixel *,
+                 const Uint16,
+                 EI_Status &,
+                 const Uint16 = 0);
+
     virtual ~DiColorPixel();
     
     int getPlanes() const
-        { return 3; }
+    {
+        return 3;
+    }
 
-    virtual void *createDIB(const Uint16, const Uint16, const unsigned long, Sint16) const = 0;
-    virtual void *createAWTBitmap(const Uint16, const Uint16, const unsigned long, Sint16) const = 0;
+    virtual void *createDIB(const Uint16,
+                            const Uint16,
+                            const unsigned long,
+                            Sint16) const = 0;
+
+    virtual void *createAWTBitmap(const Uint16,
+                                  const Uint16,
+                                  const unsigned long,
+                                  Sint16) const = 0;
     
+
  protected:
+
     DiColorPixel(const DiMonoPixel *);
-    DiColorPixel(const DiColorPixel *, const unsigned long);
+
+    DiColorPixel(const DiColorPixel *,
+                 const unsigned long);
 
     int PlanarConfiguration;
 };
@@ -80,14 +101,17 @@ class DiColorPixel : public DiPixel
 
 
 /*
-**
-** CVS/RCS Log:
-** $Log: dicopx.h,v $
-** Revision 1.4  1998-11-27 13:47:54  joergr
-** Added copyright message. Added method to directly create java AWT bitmaps.
-**
-** Revision 1.3  1998/05/11 14:53:13  joergr
-** Added CVS/RCS header to each file.
-**
-**
-*/
+ *
+ * CVS/RCS Log:
+ * $Log: dicopx.h,v $
+ * Revision 1.5  1999-01-20 14:44:04  joergr
+ * Corrected some typos and formatting.
+ *
+ * Revision 1.4  1998/11/27 13:47:54  joergr
+ * Added copyright message. Added method to directly create java AWT bitmaps.
+ *
+ * Revision 1.3  1998/05/11 14:53:13  joergr
+ * Added CVS/RCS header to each file.
+ *
+ *
+ */

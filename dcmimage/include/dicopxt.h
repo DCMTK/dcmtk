@@ -22,9 +22,9 @@
  *  Purpose: DicomColorPixelTemplate (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1998-11-27 13:50:20 $
+ *  Update Date:      $Date: 1999-01-20 14:44:49 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/include/Attic/dicopxt.h,v $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -86,11 +86,18 @@ inline Uint32 removeSign(const Sint32 value, const Sint32 offset)
  *---------------------*/
 
 template<class T>
-class DiColorPixelTemplate : public DiColorPixel, public DiPixelRepresentationTemplate<T>
+class DiColorPixelTemplate
+  : public DiColorPixel,
+    public DiPixelRepresentationTemplate<T>
 {
+
  public:
-    DiColorPixelTemplate(const DiDocument *docu, const DiInputPixel *pixel, const Uint16 samples,
-        EI_Status &status, const Uint16 sample_rate = 0)
+
+    DiColorPixelTemplate(const DiDocument *docu,
+                         const DiInputPixel *pixel,
+                         const Uint16 samples,
+                         EI_Status &status,
+                         const Uint16 sample_rate = 0)
       : DiColorPixel(docu, pixel, samples, status, sample_rate)
     {
         Data[0] = NULL;
@@ -120,7 +127,10 @@ class DiColorPixelTemplate : public DiColorPixel, public DiPixelRepresentationTe
         return (void *)Data;
     }
     
-    inline void *createDIB(const Uint16 width, const Uint16 height, const unsigned long frame, Sint16 shift) const
+    inline void *createDIB(const Uint16 width,
+                           const Uint16 height,
+                           const unsigned long frame,
+                           Sint16 shift) const
     {
         if ((Data[0] != NULL) && (Data[1] != NULL) && (Data[2] != NULL))
         {
@@ -181,7 +191,10 @@ class DiColorPixelTemplate : public DiColorPixel, public DiPixelRepresentationTe
         return NULL;
     }
 
-    inline void *createAWTBitmap(const Uint16 width, const Uint16 height, const unsigned long frame, Sint16 shift) const
+    inline void *createAWTBitmap(const Uint16 width,
+                                 const Uint16 height,
+                                 const unsigned long frame,
+                                 Sint16 shift) const
     {
         if ((Data[0] != NULL) && (Data[1] != NULL) && (Data[2] != NULL))
         {
@@ -226,7 +239,9 @@ class DiColorPixelTemplate : public DiColorPixel, public DiPixelRepresentationTe
         return NULL;
     }
 
- protected: 
+
+ protected:
+
     DiColorPixelTemplate(const DiMonoPixel *pixel)
       : DiColorPixel(pixel)
     {
@@ -235,7 +250,8 @@ class DiColorPixelTemplate : public DiColorPixel, public DiPixelRepresentationTe
         Data[2] = NULL;
     }
 
-    DiColorPixelTemplate(const DiColorPixel *pixel, const unsigned long count)
+    DiColorPixelTemplate(const DiColorPixel *pixel,
+                         const unsigned long count)
       : DiColorPixel(pixel, count)
     {
         Data[0] = NULL;
@@ -264,15 +280,18 @@ class DiColorPixelTemplate : public DiColorPixel, public DiPixelRepresentationTe
 
 
 /*
-**
-** CVS/RCS Log:
-** $Log: dicopxt.h,v $
-** Revision 1.6  1998-11-27 13:50:20  joergr
-** Added copyright message. Replaced delete by delete[] for array types.
-** Added method to give direct (non const) access to internal data buffer.
-**
-** Revision 1.5  1998/05/11 14:53:13  joergr
-** Added CVS/RCS header to each file.
-**
-**
-*/
+ *
+ * CVS/RCS Log:
+ * $Log: dicopxt.h,v $
+ * Revision 1.7  1999-01-20 14:44:49  joergr
+ * Corrected some typos and formatting.
+ *
+ * Revision 1.6  1998/11/27 13:50:20  joergr
+ * Added copyright message. Replaced delete by delete[] for array types.
+ * Added method to give direct (non const) access to internal data buffer.
+ *
+ * Revision 1.5  1998/05/11 14:53:13  joergr
+ * Added CVS/RCS header to each file.
+ *
+ *
+ */
