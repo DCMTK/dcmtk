@@ -21,10 +21,10 @@
  *
  *  Purpose: Implementation of class DcmByteString
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-12-06 13:07:28 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2003-12-11 13:40:46 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcbytstr.cc,v $
- *  CVS/RCS Revision: $Revision: 1.36 $
+ *  CVS/RCS Revision: $Revision: 1.37 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -43,6 +43,7 @@
 #define INCLUDE_CSTDLIB
 #define INCLUDE_CSTDIO
 #define INCLUDE_CSTRING
+#define INCLUDE_NEW
 #include "ofstdinc.h"
 
 
@@ -373,7 +374,15 @@ Uint8 *DcmByteString::newValueField()
     if (Length & 1)
     {
         /* allocate space for extra padding character (required for the DICOM representation of the string) */
+#ifdef HAVE_STD__NOTHROW
+        // we want to use a non-throwing new here if available.
+        // If the allocation fails, we report an EC_MemoryExhausted error
+        // back to the caller.
+        value = new (std::nothrow) Uint8[Length + 2];
+#else
         value = new Uint8[Length + 2];
+#endif
+
         /* terminate string after real length */
         if (value != NULL)
             value[Length] = 0;
@@ -385,7 +394,14 @@ Uint8 *DcmByteString::newValueField()
         }
     } else {
         /* length is even */
+#ifdef HAVE_STD__NOTHROW
+        // we want to use a non-throwing new here if available.
+        // If the allocation fails, we report an EC_MemoryExhausted error
+        // back to the caller.
+        value = new (std::nothrow) Uint8[Length + 1];
+#else
         value = new Uint8[Length + 1];
+#endif
     }
     /* make sure that the string is properly terminates by a 0 byte */
     if (value != NULL)
@@ -568,7 +584,10 @@ void normalizeString(OFString &string,
 /*
 ** CVS/RCS Log:
 ** $Log: dcbytstr.cc,v $
-** Revision 1.36  2002-12-06 13:07:28  joergr
+** Revision 1.37  2003-12-11 13:40:46  meichel
+** newValueField() now uses std::nothrow new if available
+**
+** Revision 1.36  2002/12/06 13:07:28  joergr
 ** Enhanced "print()" function by re-working the implementation and replacing
 ** the boolean "showFullData" parameter by a more general integer flag.
 ** Made source code formatting more consistent with other modules/files.

@@ -22,9 +22,9 @@
  *  Purpose: Implementation of class DcmElement
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2003-10-15 16:55:43 $
+ *  Update Date:      $Date: 2003-12-11 13:40:46 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcelem.cc,v $
- *  CVS/RCS Revision: $Revision: 1.46 $
+ *  CVS/RCS Revision: $Revision: 1.47 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -34,6 +34,7 @@
 
 #include "osconfig.h"    /* make sure OS specific configuration is included first */
 
+#define INCLUDE_NEW
 #define INCLUDE_CSTDLIB
 #define INCLUDE_CSTRING
 #include "ofstdinc.h"
@@ -503,7 +504,14 @@ Uint8 *DcmElement::newValueField()
     if (Length & 1)
     {
         /* create an array of Length+1 bytes */
+#ifdef HAVE_STD__NOTHROW
+        // we want to use a non-throwing new here if available.
+        // If the allocation fails, we report an EC_MemoryExhausted error
+        // back to the caller.
+        value = new (std::nothrow) Uint8[Length + 1];    // protocol error: odd value length
+#else
         value = new Uint8[Length + 1];    // protocol error: odd value length
+#endif
         /* if creation was successful, set last byte to 0 (in order to initialize this byte) */
         /* (no value will be assigned to this byte later, since Length was odd) */
         if (value)
@@ -516,7 +524,14 @@ Uint8 *DcmElement::newValueField()
     }
     /* if this element's length is even, create a corresponding array of Lenght bytes */
     else
+#ifdef HAVE_STD__NOTHROW
+        // we want to use a non-throwing new here if available.
+        // If the allocation fails, we report an EC_MemoryExhausted error
+        // back to the caller.
+        value = new (std::nothrow) Uint8[Length];
+#else
         value = new Uint8[Length];
+#endif
     /* if creation was not successful set member error flag correspondingly */
     if (!value)
         errorFlag = EC_MemoryExhausted;
@@ -1047,7 +1062,10 @@ OFCondition DcmElement::writeXML(ostream &out,
 /*
 ** CVS/RCS Log:
 ** $Log: dcelem.cc,v $
-** Revision 1.46  2003-10-15 16:55:43  meichel
+** Revision 1.47  2003-12-11 13:40:46  meichel
+** newValueField() now uses std::nothrow new if available
+**
+** Revision 1.46  2003/10/15 16:55:43  meichel
 ** Updated error messages for parse errors
 **
 ** Revision 1.45  2003/03/21 13:08:04  meichel
