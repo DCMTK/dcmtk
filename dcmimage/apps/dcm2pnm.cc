@@ -21,10 +21,10 @@
  *
  *  Purpose: Convert DICOM Images to PPM or PGM using the dcmimage library.
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-09-26 16:08:44 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2001-09-28 13:52:40 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/apps/dcm2pnm.cc,v $
- *  CVS/RCS Revision: $Revision: 1.48 $
+ *  CVS/RCS Revision: $Revision: 1.49 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -108,9 +108,10 @@ int main(int argc, char *argv[])
     OFCmdFloat          opt_scale_factor = 1.0;
     OFCmdUnsignedInt    opt_scale_size = 1;
     int                 opt_windowType = 0;               /* default: no windowing */
-                        /* 1=Wi, 2=Wl, 3=Wm, 4=Wh, 5=Ww, 6=Wn */
+                        /* 1=Wi, 2=Wl, 3=Wm, 4=Wh, 5=Ww, 6=Wn, 7=Wr */
     OFCmdUnsignedInt    opt_windowParameter = 0;
-    OFCmdFloat          opt_windowCenter=0.0, opt_windowWidth=0.0;
+    OFCmdUnsignedInt    opt_roiLeft = 0, opt_roiTop = 0, opt_roiWidth = 0, opt_roiHeight = 0;
+    OFCmdFloat          opt_windowCenter = 0.0, opt_windowWidth = 0.0;
 
     ES_PresentationLut  opt_presShape = ESP_Default;
     OFString            opt_displayFile;
@@ -209,6 +210,8 @@ int main(int argc, char *argv[])
                                                        "use the n-th VOI look up table from image file");
       cmd.addOption("--min-max-window",     "+Wm",     "compute VOI window using min-max algorithm");
       cmd.addOption("--min-max-window-n",   "+Wn",     "compute VOI window using min-max algorithm,\nignoring extreme values");
+      cmd.addOption("--roi-min-max-window", "+Wr",  4, "[l]eft [t]op [w]idth [h]eight : integer",
+                                                       "compute ROI window using min-max algorithm,\nregion of interest is specified by l,t,w,h");
       cmd.addOption("--histogram-window",   "+Wh",  1, "[n]umber: integer",
                                                        "compute VOI window using Histogram algorithm,\nignoring n percent");
       cmd.addOption("--set-window",         "+Ww",  2, "[c]enter [w]idth : float",
@@ -410,6 +413,14 @@ int main(int argc, char *argv[])
                 opt_windowType = 3;
             if (cmd.findOption("--min-max-window-n"))
                 opt_windowType = 6;
+            if (cmd.findOption("--roi-min-max-window"))
+            {
+                opt_windowType = 7;
+                app.checkValue(cmd.getValue(opt_roiLeft));
+                app.checkValue(cmd.getValue(opt_roiTop));
+                app.checkValue(cmd.getValue(opt_roiWidth, 1));
+                app.checkValue(cmd.getValue(opt_roiHeight, 1));
+            }
             if (cmd.findOption("--histogram-window"))
             {
                 opt_windowType = 4;
@@ -772,6 +783,12 @@ int main(int argc, char *argv[])
             if (!di->setMinMaxWindow(1))
                 app.printWarning("cannot compute min/max VOI window");
             break;
+        case 7: /* Compute region of interest VOI window */
+            if (opt_verboseMode > 1)
+                OUTPUT << "activating region of interest VOI window" << endl;
+            if (!di->setRoiWindow(opt_roiLeft, opt_roiTop, opt_roiWidth, opt_roiHeight))
+                app.printWarning("cannot compute region of interest VOI window");
+            break;
         default: /* no VOI windowing */
             if (di->isMonochrome())
             {
@@ -1006,7 +1023,11 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcm2pnm.cc,v $
- * Revision 1.48  2001-09-26 16:08:44  meichel
+ * Revision 1.49  2001-09-28 13:52:40  joergr
+ * Added method setRoiWindow() which automatically calculates a min-max VOI
+ * window for a specified rectangular region of the image.
+ *
+ * Revision 1.48  2001/09/26 16:08:44  meichel
  * Adapted dcmimage to class OFCondition
  *
  * Revision 1.47  2001/06/20 15:11:09  joergr
@@ -1058,7 +1079,7 @@ int main(int argc, char *argv[])
  * Revision 1.33  1999/09/13 17:28:30  joergr
  * Changed (almost) all output commands from C to C++ style (using string
  * streams). Advantage: C++ output routines are type safe and using the
- * same output streams (in this case 'cerr').
+ * same output streams (in this case 'CERR').
  * Introduced (more or less) consistent format for output messages.
  * Enhanced quiet mode (also warning and error messages are suppressed).
  * Corrected some typos in usage output / changed names of some options.

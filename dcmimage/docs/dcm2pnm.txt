@@ -75,6 +75,9 @@ image processing options:
     +Wm   --min-max-window      compute VOI window using min-max algorithm
     +Wn   --min-max-window-n    compute VOI window using min-max algorithm,
                                 ignoring extreme values
+    +Wr   --roi-min-max-window  [l]eft [t]op [w]idth [h]eight : integer
+                                compute ROI window using min-max algorithm,
+                                region of interest is specified by l,t,w,h
     +Wh   --histogram-window    [n]umber: integer
                                 compute VOI window using Histogram algorithm,
                                 ignoring n percent
