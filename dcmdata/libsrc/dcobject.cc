@@ -24,9 +24,9 @@
  *  DICOM object encoding/decoding, search and lookup facilities.
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-03-08 16:26:38 $
+ *  Update Date:      $Date: 2000-04-14 16:10:09 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcobject.cc,v $
- *  CVS/RCS Revision: $Revision: 1.26 $
+ *  CVS/RCS Revision: $Revision: 1.27 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -45,7 +45,7 @@
 ** Should automatic correction be applied to input data (e.g. stripping
 ** of padding blanks, removal of blanks in UIDs, etc).
 */
-OFBool dcmEnableAutomaticInputDataCorrection = OFTrue;
+OFGlobal<OFBool> dcmEnableAutomaticInputDataCorrection(OFTrue);
 
 
 
@@ -166,7 +166,7 @@ void DcmObject::printInfoLine(ostream & out, const OFBool showFullData,
 
 
 void DcmObject::printInfoLine(ostream & out, const OFBool showFullData,
-                              const int level, const DcmTag &tag, 
+                              const int level, DcmTag &tag, 
                               const Uint32 length,
                               const char *info)
 {
@@ -279,7 +279,11 @@ E_Condition DcmObject::writeTagAndLength(DcmStream & outStream,
 /*
  * CVS/RCS Log:
  * $Log: dcobject.cc,v $
- * Revision 1.26  2000-03-08 16:26:38  meichel
+ * Revision 1.27  2000-04-14 16:10:09  meichel
+ * Global flag dcmEnableAutomaticInputDataCorrection now derived from OFGlobal
+ *   and, thus, safe for use in multi-thread applications.
+ *
+ * Revision 1.26  2000/03/08 16:26:38  meichel
  * Updated copyright header.
  *
  * Revision 1.25  2000/03/07 15:41:00  joergr

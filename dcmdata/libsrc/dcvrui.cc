@@ -22,9 +22,9 @@
  *  Purpose: class DcmUniqueIdentifier
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-03-08 16:26:51 $
+ *  Update Date:      $Date: 2000-04-14 16:10:10 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcvrui.cc,v $
- *  CVS/RCS Revision: $Revision: 1.16 $
+ *  CVS/RCS Revision: $Revision: 1.17 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -128,23 +128,26 @@ E_Condition DcmUniqueIdentifier::putString(const char * value)
 E_Condition DcmUniqueIdentifier::makeMachineByteString(void)
 {
     char * value = (char *)this -> getValue();
-    if (value && dcmEnableAutomaticInputDataCorrection) {
+    if (value && dcmEnableAutomaticInputDataCorrection.get())
+    {
         int len = strlen(value);
-    /*
-    ** Remove any leading, embedded, or trailing white space.
-    ** This manipulation attempts to correct problems with 
-    ** incorrectly encoded UIDs which have been observed in
-    ** some images.
-    */
-    int k = 0;
-    int i = 0;
-    for (i=0; i<len; i++) {
-        if (!isspace(value[i])) {
-        value[k] = value[i];
-        k++;
+      /*
+      ** Remove any leading, embedded, or trailing white space.
+      ** This manipulation attempts to correct problems with 
+      ** incorrectly encoded UIDs which have been observed in
+      ** some images.
+      */
+      int k = 0;
+      int i = 0;
+      for (i=0; i<len; i++)
+      {
+        if (!isspace(value[i]))
+        {
+          value[k] = value[i];
+          k++;
         }
-    }
-    value[k] = '\0';
+      }
+      value[k] = '\0';
     }
 
     return DcmByteString::makeMachineByteString();
@@ -155,7 +158,11 @@ E_Condition DcmUniqueIdentifier::makeMachineByteString(void)
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrui.cc,v $
-** Revision 1.16  2000-03-08 16:26:51  meichel
+** Revision 1.17  2000-04-14 16:10:10  meichel
+** Global flag dcmEnableAutomaticInputDataCorrection now derived from OFGlobal
+**   and, thus, safe for use in multi-thread applications.
+**
+** Revision 1.16  2000/03/08 16:26:51  meichel
 ** Updated copyright header.
 **
 ** Revision 1.15  2000/02/10 10:52:25  joergr

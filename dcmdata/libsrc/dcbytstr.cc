@@ -22,9 +22,9 @@
  *  Purpose: class DcmByteString
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-03-08 16:26:29 $
+ *  Update Date:      $Date: 2000-04-14 16:10:09 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcbytstr.cc,v $
- *  CVS/RCS Revision: $Revision: 1.26 $
+ *  CVS/RCS Revision: $Revision: 1.27 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -275,12 +275,9 @@ E_Condition DcmByteString::makeMachineByteString(void)
     errorFlag = EC_Normal;
     char * value = NULL;
     value = (char *)this -> getValue();
-    if (value)
-        realLength = strlen(value);
-    else
-        realLength = 0;
-
-    if (dcmEnableAutomaticInputDataCorrection) {
+    if (value) realLength = strlen(value); else realLength = 0;    
+    if (dcmEnableAutomaticInputDataCorrection.get())
+    {
         /* 
         ** This code removes extra padding chars at the end of
         ** a ByteString.  Trailing padding can cause problems
@@ -290,7 +287,8 @@ E_Condition DcmByteString::makeMachineByteString(void)
             size_t i = 0;
             for(i = size_t(realLength);
                 i > 0 && (value[i-1] == paddingChar);
-                i--) {
+                i--)
+            {
                 value[i-1] = '\0';
             }
             realLength = (Uint32)i;
@@ -526,7 +524,11 @@ normalizeString(
 /*
 ** CVS/RCS Log:
 ** $Log: dcbytstr.cc,v $
-** Revision 1.26  2000-03-08 16:26:29  meichel
+** Revision 1.27  2000-04-14 16:10:09  meichel
+** Global flag dcmEnableAutomaticInputDataCorrection now derived from OFGlobal
+**   and, thus, safe for use in multi-thread applications.
+**
+** Revision 1.26  2000/03/08 16:26:29  meichel
 ** Updated copyright header.
 **
 ** Revision 1.25  2000/02/23 15:11:46  meichel
