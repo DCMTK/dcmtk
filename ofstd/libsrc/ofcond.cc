@@ -22,9 +22,9 @@
  *  Purpose: class OFCondition and helper classes
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-09-25 17:07:27 $
+ *  Update Date:      $Date: 2002-07-10 11:52:54 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/libsrc/ofcond.cc,v $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -40,6 +40,10 @@
 const OFConditionConst ECC_Normal(          0, 0, OF_ok,      "Normal");
 const OFConditionConst ECC_IllegalParameter(0, 1, OF_error,   "Illegal parameter");
 const OFConditionConst ECC_MemoryExhausted( 0, 2, OF_failure, "Virtual Memory exhausted");
+
+// NOTE: 
+// error codes 1024..2047 are reserved for inter-process communication 
+// errors defined elsewhere in module ofstd
 
 const OFCondition EC_Normal(ECC_Normal);
 const OFCondition EC_IllegalParameter(ECC_IllegalParameter);
@@ -107,7 +111,10 @@ OFBool OFConditionString::deletable() const
  *
  * CVS/RCS Log:
  * $Log: ofcond.cc,v $
- * Revision 1.2  2001-09-25 17:07:27  meichel
+ * Revision 1.3  2002-07-10 11:52:54  meichel
+ * Added comment about reserved range of error codes
+ *
+ * Revision 1.2  2001/09/25 17:07:27  meichel
  * Disabled implicit conversion to bool, added default constructor
  *   to class OFCondition.
  *
