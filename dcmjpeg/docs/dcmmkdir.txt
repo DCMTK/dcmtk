@@ -15,6 +15,7 @@ DICOM files according to the DICOM Part 11 Media Storage Application Profiles.
 Currently the following profiles are supported (others might be added later):
  - General Purpose CD-R Interchange (STD-GEN-CD)
  - General Purpose Interchange on DVD-RAM Media (STD-GEN-DVD-RAM)
+ - No profile (NONE), like STD-GEN-xxxx without restricting the transfer syntax
  - Basic Cardiac X-Ray Angiographic Studies on CD-R Media (STD-XABC-CD)
  - 1024 X-Ray Angiographic Studies on CD-R Media (STD-XA1K-CD)
  - CT/MR Studies on xxxx Media (STD-CTMR-xxxx)
@@ -89,6 +90,8 @@ output options:
   profiles:
     -Pgp  --general-purpose       General Purpose Interchange on CD-R or
                                   DVD-RAM Media (STD-GEN-CD/DVD-RAM, default)
+    -Pno  --no-profile            like --general-purpose without restricting
+                                  the transfer syntax (also compressed files)
     -Pbc  --basic-cardiac         Basic Cardiac X-Ray Angiographic Studies on
                                   CD-R Media (STD-XABC-CD)
     -Pxa  --xray-angiographic     1024 X-Ray Angiographic Studies on CD-R Media

@@ -25,6 +25,7 @@
  *  - General Purpose CD-R Interchange (STD-GEN-CD)
  *  - General Purpose Interchange on DVD-RAM Media (STD-GEN-DVD-RAM)
  *  If build with 'BUILD_DCMGPDIR_AS_DCMMKDIR' it also supports:
+ *  - No profile (NONE), like STD-GEN-xxxx without restricting the transfer syntax
  *  - Basic Cardiac X-Ray Angiographic Studies on CD-R Media (STD-XABC-CD)
  *  - 1024 X-Ray Angiographic Studies on CD-R Media (STD-XA1K-CD)
  *  - CT/MR Studies on xxxx Media (STD-CTMR-xxxx)
@@ -40,9 +41,9 @@
  *  dcmjpeg/apps/dcmmkdir.cc.
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-07-11 16:08:26 $
+ *  Update Date:      $Date: 2002-08-13 09:56:44 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/apps/dcmgpdir.cc,v $
- *  CVS/RCS Revision: $Revision: 1.63 $
+ *  CVS/RCS Revision: $Revision: 1.64 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -152,6 +153,7 @@ static char rcsid[] = "$dcmtk: " OFFIS_CONSOLE_APPLICATION " v"
 
 /* list of supported profiles */
 enum E_DicomDirProfile {
+    EDDP_None,
     EDDP_GeneralPurpose,
     EDDP_BasicCardiac,
     EDDP_XrayAngiographic,
@@ -252,6 +254,9 @@ getProfileName(E_DicomDirProfile profile)
         case EDDP_GeneralPurpose:
             result = "STD-GEN-CD/DVD-RAM";
             break;
+        case EDDP_None:
+            result = "NONE";
+            break;
     }
     return result;
 }
@@ -339,6 +344,7 @@ int main(int argc, char *argv[])
 #ifdef BUILD_DCMGPDIR_AS_DCMMKDIR
       cmd.addSubGroup("profiles:");
         cmd.addOption("--general-purpose",      "-Pgp",   "General Purpose Interchange on CD-R or\nDVD-RAM Media (STD-GEN-CD/DVD-RAM, default)");
+        cmd.addOption("--no-profile",           "-Pno",   "like --general-purpose without restricting\nthe transfer syntax (also compressed files)");
         cmd.addOption("--basic-cardiac",        "-Pbc",   "Basic Cardiac X-Ray Angiographic Studies on\nCD-R Media (STD-XABC-CD)");
         cmd.addOption("--xray-angiographic",    "-Pxa",   "1024 X-Ray Angiographic Studies on CD-R Media\n(STD-XA1K-CD)");
         cmd.addOption("--ct-and-mr",            "-Pcm",   "CT/MR Studies (STD-CTMR-xxxx)");
@@ -416,6 +422,7 @@ int main(int argc, char *argv[])
 
       cmd.beginOptionBlock();
       if (cmd.findOption("--general-purpose")) dicomdirProfile = EDDP_GeneralPurpose;
+      if (cmd.findOption("--no-profile")) dicomdirProfile = EDDP_None;
       if (cmd.findOption("--basic-cardiac"))
       {
           dicomdirProfile = EDDP_BasicCardiac;
@@ -1259,6 +1266,7 @@ checkImage(const OFString& fname, DcmFileFormat *ff)
             break;
 #endif
         case EDDP_GeneralPurpose:
+        case EDDP_None:
         default:
         {
             /* is it an image ? */
@@ -1368,6 +1376,9 @@ checkImage(const OFString& fname, DcmFileFormat *ff)
             }
             break;
 #endif
+        case EDDP_None:
+            /* accept all transfer syntaxes */
+            break;
         case EDDP_GeneralPurpose:
         default:
         {
@@ -4412,7 +4423,12 @@ expandFileNames(OFList<OFString>& fileNames, OFList<OFString>& expandedNames)
 /*
  * CVS/RCS Log:
  * $Log: dcmgpdir.cc,v $
- * Revision 1.63  2002-07-11 16:08:26  joergr
+ * Revision 1.64  2002-08-13 09:56:44  joergr
+ * Added new profile (NONE) based on STD-GEN-xxxx which allows DICOM objects
+ * of any transfer syntax to be referenced from a DICOMDIR.  NB: there's no
+ * equivilent application profile in the DICOM standard.
+ *
+ * Revision 1.63  2002/07/11 16:08:26  joergr
  * Added support for CT/MR application profile.  Added general support for
  * monochrome icon images.
  * Added new command line flags to handle inconsistant header information
