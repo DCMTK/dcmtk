@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2002-2004, OFFIS
+ *  Copyright (C) 2002-2005, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,8 +22,8 @@
  *  Purpose: Interface class for simplified creation of a DICOMDIR
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2004-02-13 17:36:46 $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  Update Date:      $Date: 2005-03-09 17:53:34 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -119,16 +119,26 @@ class DicomDirInterface
      */
     enum E_ApplicationProfile
     {
-        /// like GeneralPurpose without restricting the transfer syntax (also compressed files)
-        AP_None,
         /// General Purpose Interchange on CD-R or DVD-RAM Media (STD-GEN-CD/DVD-RAM)
         AP_GeneralPurpose,
         /// default application profile: GeneralPurpose
         AP_Default = AP_GeneralPurpose,
+        /// General Purpose DVD with Compression Interchange (STD-GEN-DVD)
+        AP_GeneralPurposeDVD,
+        /// General Purpose MIME Interchange Profile (STD-GEN-MIME)
+        AP_GeneralPurposeMIME,
+        /// General Purpose USB and Flash Memory with Compression Interchange (STD-GEN-USB/MMC/CF/SD-JPEG/J2K)
+        AP_USBandFlash,
+        /// DVD Interchange with MPEG2 MP@ML (STD-DVD-MPEG2-MPML)
+        AP_MPEG2MPatML,
         /// Basic Cardiac X-Ray Angiographic Studies on CD-R Media (STD-XABC-CD)
         AP_BasicCardiac,
         /// 1024 X-Ray Angiographic Studies on CD-R Media (STD-XA1K-CD)
         AP_XrayAngiographic,
+        /// 1024 X-Ray Angiographic Studies on DVD Media (STD-XA1K-DVD)
+        AP_XrayAngiographicDVD,
+        /// Dental Radiograph Interchange (STD-DEN-CD)
+        AP_DentalRadiograph,
         /// CT/MR Studies (STD-CTMR-xxxx)
         AP_CTandMR,
         /// Ultrasound Single Frame for Image Display (STD-US-ID-SF-xxxx)
@@ -224,7 +234,7 @@ class DicomDirInterface
     /** check whether given charset identifier is valid.
      *  Valid character sets are (see DICOM PS3.3 for details): ISO_IR 100, ISO_IR 101,
      *  ISO_IR 109, ISO_IR 110, ISO_IR 144, ISO_IR 127, ISO_IR 126, ISO_IR 138, ISO_IR 148,
-     *  ISO_IR 166, ISO_IR 13.
+     *  ISO_IR 166, ISO_IR 13, ISO_IR 192.
      *  @param charset character set identifier to be checked
      *  @return OFTrue if charset is valid, OFFalse otherwise
      */
@@ -412,7 +422,7 @@ class DicomDirInterface
 
     /** enable/disable the "invent new patient ID" mode.
      *  If the mode is enabled a new PatientID is invented in case of
-     *  inconsistant PatientsName attributes, i.e. when different patients
+     *  inconsistent PatientsName attributes, i.e. when different patients
      *  share the same ID.
      *  Default: off, do not invent new patient ID
      *  @param newMode enable mode if OFTrue, disable if OFFalse
@@ -454,7 +464,7 @@ class DicomDirInterface
 
     /** disable/enable the "consistency check".
      *  If this mode is disabled the consistency of newly added records with
-     *  already existing ones is not checked (see 'warnAboutInconsistantAttributes'
+     *  already existing ones is not checked (see 'warnAboutInconsistentAttributes'
      *  for details).
      *  Default: on, perform consistency check
      *  @param newMode disable check if OFFalse, enable if OFTrue
@@ -528,6 +538,16 @@ class DicomDirInterface
      *  @return EC_Normal upon success, an error code otherwise
      */
     OFCondition checkXrayAngiographicAttributes(DcmItem *dataset,
+                                                const OFString &sopClass,
+                                                const char *filename);
+
+    /** check attributes for compliance with dental radiograph application profile
+     *  @param dataset object where the DICOM dataset is stored
+     *  @param sopClass SOP class of the DICOM data to be checked
+     *  @param filename name of the DICOM file to be checked
+     *  @return EC_Normal upon success, an error code otherwise
+     */
+    OFCondition checkDentalRadiographAttributes(DcmItem *dataset,
                                                 const OFString &sopClass,
                                                 const char *filename);
 
@@ -972,7 +992,7 @@ class DicomDirInterface
      *  @param abortCheck flag indicating whether to abort on the first inconsistent record
      *  @return OFTrue in case of any inconsistency, OFFalse otherwise
      */
-    OFBool warnAboutInconsistantAttributes(DcmDirectoryRecord *record,
+    OFBool warnAboutInconsistentAttributes(DcmDirectoryRecord *record,
                                            DcmItem *dataset,
                                            const OFString &sourceFilename,
                                            const OFBool abortCheck = OFFalse);
@@ -1072,11 +1092,13 @@ class DicomDirInterface
      *  @param key tag of the element to be copied
      *  @param record directory record to which the element is to be copied
      *  @param optional flag indicating whether the element is optional or required
+     *  @param copyEmpty flag indicating whether to copy an empty element (no value)
      */
     void copyElement(DcmItem *dataset,
                      const DcmTagKey &key,
                      DcmDirectoryRecord *record,
-                     const OFBool optional = OFFalse);
+                     const OFBool optional = OFFalse,
+                     const OFBool copyEmpty = OFTrue);
 
     /** copy optional string value from dataset to directory record
      *  @param dataset DICOM dataset containing the original data
@@ -1208,7 +1230,12 @@ class DicomDirInterface
  *
  * CVS/RCS Log:
  * $Log: dcddirif.h,v $
- * Revision 1.3  2004-02-13 17:36:46  joergr
+ * Revision 1.4  2005-03-09 17:53:34  joergr
+ * Added support for new Media Storage Application Profiles according to DICOM
+ * PS 3.12-2004. Removed support for non-standard conformant "No profile".
+ * Added support for UTF-8 for the contents of the fileset descriptor file.
+ *
+ * Revision 1.3  2004/02/13 17:36:46  joergr
  * Added support for new directory records RAW DATA and SPECTROSCOPY introduced
  * with CP 343.
  *
@@ -1218,7 +1245,6 @@ class DicomDirInterface
  *
  * Revision 1.1  2003/08/12 14:35:00  joergr
  * Added new interface class for simplified creation of a DICOMDIR.
- *
  *
  *
  */
