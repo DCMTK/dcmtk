@@ -22,9 +22,9 @@
  *  Purpose: general purpose 32-bit CRC in C++
  *           Code is based on the CRC32 implementation (C)1986 Gary S. Brown
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2004-02-04 16:40:48 $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2004-10-20 15:56:15 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -63,33 +63,33 @@ OFBool DcmPrivateTagCacheEntry::isPrivateCreatorFor(const DcmTagKey& tk) const
 /* ======================================================================= */
 
 DcmPrivateTagCache::DcmPrivateTagCache()
-: OFList<DcmPrivateTagCacheEntry *>()
+: list_()
 {
 }
 
 
 DcmPrivateTagCache::~DcmPrivateTagCache()
 {
-  clear();
+  list_.clear();
 }
 
 
 void DcmPrivateTagCache::clear()
 {
-  OFListIterator(DcmPrivateTagCacheEntry *) first = begin();
-  OFListIterator(DcmPrivateTagCacheEntry *) last = end();
+  OFListIterator(DcmPrivateTagCacheEntry *) first = list_.begin();
+  OFListIterator(DcmPrivateTagCacheEntry *) last = list_.end();
   while (first != last)
   {
     delete (*first);
-    first = erase(first);
+    first = list_.erase(first);
   }
 }
 
 
 const char *DcmPrivateTagCache::findPrivateCreator(const DcmTagKey& tk) const
 {
-  OFListConstIterator(DcmPrivateTagCacheEntry *) first = begin();
-  OFListConstIterator(DcmPrivateTagCacheEntry *) last = end();
+  OFListConstIterator(DcmPrivateTagCacheEntry *) first = list_.begin();
+  OFListConstIterator(DcmPrivateTagCacheEntry *) last = list_.end();
   while (first != last)
   {
     if ((*first)->isPrivateCreatorFor(tk)) return (*first)->getPrivateCreator();
@@ -110,7 +110,7 @@ void DcmPrivateTagCache::updateCache(DcmObject *dobj)
       char *c = NULL;
       if ((OFstatic_cast(DcmElement *, dobj)->getString(c)).good() && c)
       {
-        push_back(new DcmPrivateTagCacheEntry(tag, c));
+        list_.push_back(new DcmPrivateTagCacheEntry(tag, c));
       }
     }
   }
@@ -120,7 +120,11 @@ void DcmPrivateTagCache::updateCache(DcmObject *dobj)
 /*
  * CVS/RCS Log:
  * $Log: dcpcache.cc,v $
- * Revision 1.3  2004-02-04 16:40:48  joergr
+ * Revision 1.4  2004-10-20 15:56:15  meichel
+ * Changed private inheritance from OFList to class member,
+ *   needed for compilation with HAVE_STL.
+ *
+ * Revision 1.3  2004/02/04 16:40:48  joergr
  * Adapted type casts to new-style typecast operators defined in ofcast.h.
  * Removed acknowledgements with e-mail addresses from CVS log.
  *

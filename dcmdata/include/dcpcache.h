@@ -22,9 +22,9 @@
  *  Purpose: class DcmPrivateTagCache
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-07-23 14:21:27 $
+ *  Update Date:      $Date: 2004-10-20 15:56:13 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcpcache.h,v $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -87,7 +87,7 @@ private:
 /** this class implements a cache of Private Creator elements
  *  and corresponding reserved tag numbers.
  */
-class DcmPrivateTagCache: private OFList<DcmPrivateTagCacheEntry *>
+class DcmPrivateTagCache
 {
 public:
   /// default constructor
@@ -120,6 +120,8 @@ private:
   /// private undefined copy assignment operator
   DcmPrivateTagCache& operator=(const DcmPrivateTagCache&);
 
+  /// the list
+  OFList<DcmPrivateTagCacheEntry *> list_;
 };
 
 #endif
@@ -127,7 +129,11 @@ private:
 /*
  * CVS/RCS Log:
  * $Log: dcpcache.h,v $
- * Revision 1.1  2002-07-23 14:21:27  meichel
+ * Revision 1.2  2004-10-20 15:56:13  meichel
+ * Changed private inheritance from OFList to class member,
+ *   needed for compilation with HAVE_STL.
+ *
+ * Revision 1.1  2002/07/23 14:21:27  meichel
  * Added support for private tag data dictionaries to dcmdata
  *
  *
