@@ -185,7 +185,7 @@ dnl -------------------------------------------------------
 
 SAVELIBS="$LIBS"
 LIBS="$LIBS -lm"
-AC_CHECK_FUNCS(isinf finite)
+AC_CHECK_FUNCS(finite isinf isnan)
 LIBS="$SAVELIBS"
 
 dnl -------------------------------------------------------
@@ -540,6 +540,7 @@ AC_CHECK_PROTOTYPE(bzero, string.h strings.h libc.h unistd.h stdlib.h)
 AC_CHECK_PROTOTYPE(connect, sys/types.h sys/socket.h)
 AC_CHECK_PROTOTYPE(finite, math.h)
 AC_CHECK_PROTOTYPE(isinf, math.h)
+AC_CHECK_PROTOTYPE(isnan, math.h)
 AC_CHECK_PROTOTYPE(flock, sys/file.h)
 AC_CHECK_PROTOTYPE(gethostbyname, libc.h unistd.h stdlib.h netdb.h)
 AC_CHECK_PROTOTYPE(gethostid, libc.h unistd.h stdlib.h netdb.h)

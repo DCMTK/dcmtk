@@ -219,6 +219,9 @@
 /* Define to 1 if you have the `isinf' function. */
 #undef HAVE_ISINF
 
+/* Define to 1 if you have the `isnan' function. */
+#undef HAVE_ISNAN
+
 /* Define to 1 if you have the <iso646.h> header file. */
 #undef HAVE_ISO646_H
 
@@ -359,6 +362,9 @@
 
 /* Define if your system has a prototype for isinf in math.h */
 #undef HAVE_PROTOTYPE_ISINF
+
+/* Define if your system has a prototype for isnan in math.h */
+#undef HAVE_PROTOTYPE_ISNAN
 
 /* Define if your system has a prototype for listen in sys/types.h
    sys/socket.h */
