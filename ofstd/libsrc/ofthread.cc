@@ -26,9 +26,9 @@
  *           multi-thread APIs.
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2003-08-14 09:01:20 $
+ *  Update Date:      $Date: 2003-10-13 13:24:14 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/libsrc/ofthread.cc,v $
- *  CVS/RCS Revision: $Revision: 1.10 $
+ *  CVS/RCS Revision: $Revision: 1.11 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -40,8 +40,14 @@
 /* if WITH_THREADS is undefined, we don't even attempt to implement a thread interface. */
 #ifdef WITH_THREADS
 
+#define INCLUDE_CSTDLIB
+#define INCLUDE_CSTRING
+#define INCLUDE_CERRNO
+#include "ofstdinc.h"
+
 #ifdef HAVE_WINDOWS_H
 #define WINDOWS_INTERFACE
+
 extern "C" {
 #include <windows.h>
 #include <process.h>
@@ -68,9 +74,6 @@ extern "C" {
 
 #endif /* WITH_THREADS */
 
-#define INCLUDE_CSTRING
-#define INCLUDE_CERRNO
-#include "ofstdinc.h"
 #include "ofthread.h"
 #include "ofconsol.h"
 #include "ofstring.h"
@@ -917,7 +920,10 @@ void OFReadWriteLock::errorstr(OFString& description, int /* code */ )
  *
  * CVS/RCS Log:
  * $Log: ofthread.cc,v $
- * Revision 1.10  2003-08-14 09:01:20  meichel
+ * Revision 1.11  2003-10-13 13:24:14  meichel
+ * Changed order of include files, as a workaround for problem in Borland C++.
+ *
+ * Revision 1.10  2003/08/14 09:01:20  meichel
  * Adapted type casts to new-style typecast operators defined in ofcast.h
  *
  * Revision 1.9  2002/11/27 11:23:11  meichel
