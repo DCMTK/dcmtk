@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DVPresentationState
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-04-27 11:26:01 $
- *  CVS/RCS Revision: $Revision: 1.19 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 1999-04-28 11:34:29 $
+ *  CVS/RCS Revision: $Revision: 1.20 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1361,13 +1361,15 @@ E_Condition DVPresentationState::createFromImage(
   if (result==EC_Normal)
   {
     /* Modality LUT */
-    if ((rescaleIntercept.getVM() == 1) && (rescaleSlope.getVM() == 1) && (rescaleType.getVM() == 1))
+    if ((rescaleIntercept.getVM() == 1) && (rescaleSlope.getVM() == 1))
     {
       useModalityRescale = OFTrue;
       modalityLUTData.clear();
       modalityLUTDescriptor.clear();
       modalityLUTExplanation.clear();
       modalityLUTType.clear();
+      // be lenient with Modality rescale type. If missing or wrong, just invent a value.
+      if (rescaleType.getVM() != 1) rescaleType.putString("US");
     } else useModalityRescale = OFFalse;
 
     if ((modalityLUTDescriptor.getVM() == 3) && (modalityLUTData.getLength() > 0))
@@ -3649,7 +3651,11 @@ void DVPresentationState::changeDisplayFunction(DiDisplayFunction *dispFunction)
 
 /*
  *  $Log: dvpstat.cc,v $
- *  Revision 1.19  1999-04-27 11:26:01  joergr
+ *  Revision 1.20  1999-04-28 11:34:29  meichel
+ *  When creating a presentation state for an image, modality rescale/slope
+ *    without rescale type is handled now in a more lenient way.
+ *
+ *  Revision 1.19  1999/04/27 11:26:01  joergr
  *  Added method to check whether current image is inverse or not.
  *
  *  Revision 1.18  1999/03/22 09:52:42  meichel
