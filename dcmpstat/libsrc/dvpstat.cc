@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DVPresentationState
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-10-19 16:24:58 $
- *  CVS/RCS Revision: $Revision: 1.44 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 1999-10-20 11:01:16 $
+ *  CVS/RCS Revision: $Revision: 1.45 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -95,7 +95,9 @@ DVPresentationState::DVPresentationState(
     unsigned long minPrintBitmapX,
     unsigned long minPrintBitmapY,
     unsigned long maxPrintBitmapX,
-    unsigned long maxPrintBitmapY)
+    unsigned long maxPrintBitmapY,
+    unsigned long maxPreviewImageX,
+    unsigned long maxPreviewImageY)
 : patientName(DCM_PatientsName)
 , patientID(DCM_PatientID)
 , patientBirthDate(DCM_PatientsBirthDate)
@@ -157,6 +159,7 @@ DVPresentationState::DVPresentationState(
 , currentImageDataset(NULL)
 , currentImageFileformat(NULL)
 , currentImage(NULL)
+, previewImage(NULL)
 , currentImageWidth(0)
 , currentImageHeight(0)
 , renderedImageWidth(0)
@@ -186,6 +189,8 @@ DVPresentationState::DVPresentationState(
 , minimumPrintBitmapHeight(minPrintBitmapY)
 , maximumPrintBitmapWidth(maxPrintBitmapX)
 , maximumPrintBitmapHeight(maxPrintBitmapY)
+, maximumPreviewImageWidth(maxPreviewImageX)
+, maximumPreviewImageHeight(maxPreviewImageY)
 {
 }
 
@@ -198,6 +203,7 @@ DVPresentationState::~DVPresentationState()
 void DVPresentationState::detachImage()
 {
   if (currentImage) delete currentImage;
+  deletePreviewImage();
   if (currentImageOwned)
   {
     if (currentImageFileformat) delete currentImageFileformat;
@@ -230,8 +236,6 @@ void DVPresentationState::detachImage()
   currentImageSOPClassUID=NULL;
   currentImageSOPInstanceUID=NULL;
   currentImageSelectedFrame=0;
-
-  return;
 }
 
 
@@ -1690,7 +1694,7 @@ E_Condition DVPresentationState::getPrintBitmap(void *bitmap,
         if ((renderedImageLeft != 1) || (renderedImageRight != (signed long)renderedImageWidth) ||
             (renderedImageTop != 1) || (renderedImageBottom != (signed long)renderedImageHeight))
         {
-          DicomImage *img = currentImage->createMonoOutputImage(0 /*frame*/, 12 /*bits*/);
+          DicomImage *img = currentImage->createMonoOutputImage(currentImageSelectedFrame-1, 12 /*bits*/);
           if (img == NULL)
             img = currentImage;                                 // fall-back solution
           image = img->createClippedImage(renderedImageLeft - 1, renderedImageTop - 1, renderedImageRight - renderedImageLeft + 1,
@@ -1709,11 +1713,116 @@ E_Condition DVPresentationState::getPrintBitmap(void *bitmap,
         }
         if (image != NULL)
         {
-          if (image->getOutputData(bitmap, size, 12 /*bits*/, 0 /*frame*/)) result = EC_Normal;
+          if (image->getOutputData(bitmap, size, 12 /*bits*/, currentImageSelectedFrame-1)) result = EC_Normal;
         }
         if (image != currentImage) delete image;
       }
     }
+  }
+  return result;
+}
+
+
+E_Condition DVPresentationState::createPreviewImage(unsigned long maxWidth,
+                                                    unsigned long maxHeight,
+                                                    OFBool clipMode)
+{
+  E_Condition result = EC_IllegalCall;
+  if ((currentImage != NULL) && (maxWidth > 0) && (maxHeight > 0))
+  {
+    deletePreviewImage();
+    renderPixelData();
+    unsigned long width = maxWidth;
+    unsigned long height = maxHeight;
+    double ratio = getPrintBitmapPixelAspectRatio();
+    if ((double)renderedImageWidth / (double)maxWidth * ratio < (double)renderedImageHeight / (double)maxHeight)
+      width = 0;
+    else
+      height = 0;
+    if (clipMode)
+    {
+        
+      /* not yet implemented: clip preview image to current displayed area */
+      
+    }
+    double oldRatio = currentImage->getWidthHeightRatio();
+    currentImage->setWidthHeightRatio(ratio);
+    previewImage = currentImage->createScaledImage(width, height, 1 /*interpolate*/, 1 /*aspect ratio*/);
+    currentImage->setWidthHeightRatio(oldRatio);
+    if (previewImage != NULL)
+    {
+      if (previewImage->getStatus() == EIS_Normal)
+      {
+        previewImage->removeAllOverlays();
+        result = EC_Normal;
+      } else {
+        deletePreviewImage();
+      }
+    }
+  }
+  return result;
+}
+
+
+void DVPresentationState::deletePreviewImage()
+{
+  delete previewImage;
+  previewImage = NULL;
+}
+
+
+unsigned long DVPresentationState::getPreviewImageSize()
+{
+  unsigned long result = 0;
+  unsigned long width;
+  unsigned long height;
+  if (getPreviewImageWidthHeight(width, height) == EC_Normal)
+      result = width * height;
+  return result;
+}
+
+
+E_Condition DVPresentationState::getPreviewImageWidthHeight(unsigned long &width,
+                                                            unsigned long &height)
+{
+  E_Condition result = EC_IllegalCall;
+  if (previewImage != NULL)
+  {
+    width = previewImage->getWidth();
+    height = previewImage->getHeight();
+    if ((width > 0) && (height > 0))
+      result = EC_Normal;
+  } else {
+    width = 0;
+    height = 0;
+  }
+  return result;
+}
+
+
+E_Condition DVPresentationState::getPreviewImageWidth(unsigned long &width)
+{
+  unsigned long dummy;
+  return getPreviewImageWidthHeight(width, dummy);
+}
+
+
+E_Condition DVPresentationState::getPreviewImageHeight(unsigned long &height)
+{
+  unsigned long dummy;
+  return getPreviewImageWidthHeight(dummy, height);
+}
+
+
+E_Condition DVPresentationState::getPreviewImageBitmap(void *bitmap,
+                                                       unsigned long size)
+{
+  E_Condition result = EC_IllegalCall;
+  if ((previewImage != NULL) && (bitmap != NULL) && (size > 0))
+  {
+    renderPixelData();
+    if (previewImage->getOutputData(bitmap, size, 8 /*bits*/, currentImageSelectedFrame-1))
+      result = EC_Normal;
   }
   return result;
 }
@@ -1805,6 +1914,8 @@ E_Condition DVPresentationState::attachImage(DcmDataset *dataset, OFBool transfe
       if (EC_Normal==result) result = currentImageCurveList.read(*dataset);
       if (EC_Normal==result) result = currentImageVOILUTList.read(*dataset);
       if (EC_Normal==result) result = currentImageVOIWindowList.read(*dataset);
+
+      createPreviewImage(maximumPreviewImageWidth, maximumPreviewImageHeight);
     } else {
       delete image;
       result = EC_IllegalCall;
@@ -3139,20 +3250,25 @@ E_Condition DVPresentationState::moveOverlay(size_t old_layer, size_t idx, size_
   return activationLayerList.setActivation(group, lname);
 }
 
-Uint8 DVPresentationState::convertPValueToDDL(Uint16 pvalue)
+Uint16 DVPresentationState::convertPValueToDDL(Uint16 pvalue, unsigned int bits)
 {
-  if (currentImage)
+  Uint16 result = 0;
+  if ((bits == 8) || (bits == 12))
   {
-    /* activate display transform */
-    if (displayFunction && (displayTransform != DVPSD_none))
-      currentImage->setDisplayFunction(displayFunction[displayTransform]);
-    else
-      currentImage->setNoDisplayFunction();
-    Uint16 result=0;
-    if (currentImage->convertPValueToDDL(pvalue, result)) return (Uint8)result;
+    if (currentImage && (bits == 8))
+    {
+      /* activate display transform */
+      if (displayFunction && (displayTransform != DVPSD_none))
+        currentImage->setDisplayFunction(displayFunction[displayTransform]);
+      else
+        currentImage->setNoDisplayFunction();
+      currentImage->convertPValueToDDL(pvalue, result, bits /* 8 */);
+    } else
+      result = (pvalue >> (16 - bits));
   }
-  return (Uint8)(pvalue >> 8);
+  return result;
 }
+
 
 void DVPresentationState::renderPixelData(OFBool display)
 {
@@ -3161,9 +3277,15 @@ void DVPresentationState::renderPixelData(OFBool display)
 
   /* activate Barten transform */
   if (displayFunction && (displayTransform != DVPSD_none) && display)
+  {
     currentImage->setDisplayFunction(displayFunction[displayTransform]);
-  else
+    if (previewImage != NULL)
+      previewImage->setDisplayFunction(displayFunction[displayTransform]);
+  } else {
     currentImage->setNoDisplayFunction();
+    if (previewImage != NULL)
+      previewImage->setNoDisplayFunction();
+  }
 
   if (! currentImageVOIValid)
   {
@@ -3176,14 +3298,27 @@ void DVPresentationState::renderPixelData(OFBool display)
        if (voi->haveLUT())
        {
          result = currentImage->setVoiLut(voi->getLUTData(), voi->getLUTDescriptor());
+         if (previewImage != NULL)
+           previewImage->setVoiLut(voi->getLUTData(), voi->getLUTDescriptor());
        } else {
          double wc=0.0, ww=0.0;
          if ((EC_Normal == voi->getCurrentWindowCenter(wc)) &&
              (EC_Normal == voi->getCurrentWindowWidth(ww)))
-         result = currentImage->setWindow(wc, ww); else result = currentImage->setNoVoiTransformation();
+         {
+           result = currentImage->setWindow(wc, ww);
+           if (previewImage != NULL)
+             currentImage->setWindow(wc, ww);
+         } else {
+           result = currentImage->setNoVoiTransformation();
+           if (previewImage != NULL)
+             previewImage->setNoVoiTransformation();
+         }
        }
+     } else {
+       result = currentImage->setNoVoiTransformation();
+       if (previewImage != NULL)
+         previewImage->setNoVoiTransformation();
      }
-     else result = currentImage->setNoVoiTransformation();
 #ifdef DEBUG
      if (!result) cerr << "warning: unable to set VOI transformation, ignoring." << endl;
 #endif
@@ -3192,6 +3327,8 @@ void DVPresentationState::renderPixelData(OFBool display)
   if (! currentImagePLUTValid)
   {
      presentationLUT.activate(currentImage);
+     if (previewImage != NULL)
+       presentationLUT.activate(previewImage);
      currentImagePLUTValid = OFTrue;
   } /* Presentation LUT */
 
@@ -3227,8 +3364,10 @@ void DVPresentationState::renderPixelData(OFBool display)
     if (currentImageFlip)
     {
       result = currentImage->flipImage();
+      if (previewImage != NULL)
+        previewImage->flipImage();
 #ifdef DEBUG
-       if (!result) cerr << "warning: unable to flip image horizontally, ignoring." << endl;
+      if (!result) cerr << "warning: unable to flip image horizontally, ignoring." << endl;
 #endif
       currentImageFlip = OFFalse;
     }
@@ -3243,8 +3382,10 @@ void DVPresentationState::renderPixelData(OFBool display)
     if (srot != 0)
     {
       result = currentImage->rotateImage(srot);
+      if (previewImage != NULL)
+        previewImage->rotateImage(srot);
 #ifdef DEBUG
-       if (!result) cerr << "warning: unable to rotate image by " << srot << " degrees, ignoring." << endl;
+      if (!result) cerr << "warning: unable to rotate image by " << srot << " degrees, ignoring." << endl;
 #endif
     }
     currentImageRotation = DVPSR_0_deg;
@@ -3252,7 +3393,7 @@ void DVPresentationState::renderPixelData(OFBool display)
     // deactivate all overlays first
     result = currentImage->removeAllOverlays();
 #ifdef DEBUG
-       if (!result) cerr << "warning: unable to disable external overlays, ignoring." << endl;
+    if (!result) cerr << "warning: unable to disable external overlays, ignoring." << endl;
 #endif
 
     size_t numOverlays = overlayList.size();
@@ -3406,16 +3547,20 @@ void DVPresentationState::renderPixelData(OFBool display)
   if (rot != 0)
   {
     result = currentImage->rotateImage(rot);
+    if (previewImage != NULL)
+      previewImage->rotateImage(rot);
 #ifdef DEBUG
-     if (!result) cerr << "warning: unable to rotate image by " << rot << " degrees, ignoring." << endl;
+    if (!result) cerr << "warning: unable to rotate image by " << rot << " degrees, ignoring." << endl;
 #endif
   }
 
   if (flp)
   {
     result = currentImage->flipImage();
+    if (previewImage != NULL)
+      previewImage->flipImage();
 #ifdef DEBUG
-     if (!result) cerr << "warning: unable to flip image horizontally, ignoring." << endl;
+    if (!result) cerr << "warning: unable to flip image horizontally, ignoring." << endl;
 #endif
   }
 
@@ -3435,24 +3580,26 @@ E_Condition DVPresentationState::getOverlayData(
      unsigned int &left,
      unsigned int &top,
      OFBool &isROI,
-     Uint8 &transp)
+     Uint16 &transp,
+     unsigned int bits)
 {
    EM_Overlay mode = EMO_Default;
-   if (currentImage)
+   if (currentImage && ((bits == 8) || (bits == 12)))
    {
      renderPixelData();
-     Uint16 group = activationLayerList.getActivationGroup(graphicLayerList.getGraphicLayerName(layer),idx,OFFalse);
+     Uint16 group = activationLayerList.getActivationGroup(graphicLayerList.getGraphicLayerName(layer), idx, OFFalse);
      if (group==0) return EC_IllegalCall;
      transp = 0;
-     Uint16 fore = 255;
+     Uint16 fore = DicomImageClass::maxval(bits);   /* 255 or 4095 */
      Uint16 pvalue = 65535;
      if (graphicLayerList.getGraphicLayerRecommendedDisplayValueGray(layer, pvalue) == EC_Normal)
-         currentImage->convertPValueToDDL(pvalue, fore, 8);
+         currentImage->convertPValueToDDL(pvalue, fore, bits);
      if (fore == 0)
-         transp = 255;
-     const Uint8 *data = currentImage->getOverlayData((unsigned int)group, left, top, width, height, mode, currentImageSelectedFrame-1, (Uint8)fore, transp);
+         transp = DicomImageClass::maxval(bits);
+     const void *data = currentImage->getOverlayData((unsigned int)group, left, top, width, height, mode,
+       currentImageSelectedFrame-1, bits, fore, transp);
      if (EMO_RegionOfInterest == mode) isROI=OFTrue; else isROI=OFFalse;
-     if (data) overlayData = (void*)data;
+     if (data) overlayData = data;
      else
      {
        overlayData = NULL;
@@ -3464,6 +3611,8 @@ E_Condition DVPresentationState::getOverlayData(
      height = 0;
      left = 0;
      top = 0;
+     isROI = OFFalse;
+     transp = 0;
      return EC_IllegalCall;
    }
    return EC_Normal;
@@ -3684,6 +3833,7 @@ E_Condition DVPresentationState::writePresentationLUTforPrint(DcmItem &dset)
   	if (EC_Normal==result) result = presentationLUT.write(dset, OFFalse);
   	presentationLUT.invert();      	
   } else result = presentationLUT.write(dset, OFFalse);
+  return result;
 }
 
 const char *DVPresentationState::getCurrentImageModality()
@@ -3692,9 +3842,18 @@ const char *DVPresentationState::getCurrentImageModality()
   if (EC_Normal == currentImageModality.getString(c)) return c; else return NULL;
 }
 
+
 /*
  *  $Log: dvpstat.cc,v $
- *  Revision 1.44  1999-10-19 16:24:58  meichel
+ *  Revision 1.45  1999-10-20 11:01:16  joergr
+ *  Enhanced method getOverlayData to support 12 bit data for print.
+ *  Enhanced method convertPValueToDDL to support 12 bit data for print.
+ *  Added support for a down-scaled preview image of the current DICOM image
+ *  (e.g. useful for online-windowing or print preview).
+ *  Always use the variable 'currentImageSelectedFrame' as the frame number,
+ *  not 1.
+ *
+ *  Revision 1.44  1999/10/19 16:24:58  meichel
  *  Corrected handling of MONOCHROME1 images when used with P-LUTs
  *
  *  Revision 1.43  1999/10/18 10:18:52  joergr
@@ -3864,6 +4023,4 @@ const char *DVPresentationState::getCurrentImageModality()
  *  Revision 1.1  1998/11/27 14:50:47  meichel
  *  Initial Release.
  *
- *
  */
-
