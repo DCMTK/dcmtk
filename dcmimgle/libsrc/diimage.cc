@@ -22,9 +22,9 @@
  *  Purpose: DicomImage (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-07-23 13:38:13 $
+ *  Update Date:      $Date: 1999-07-23 14:21:31 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/libsrc/diimage.cc,v $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -484,7 +484,7 @@ int DiImage::detachPixelData()
         {
             if (DicomImageClass::DebugLevel & DicomImageClass::DL_Informationals)
                 cerr << "INFO: detach pixel data" << endl;
-            pixel->putUint16Array(NULL, 0);                       // remove pixeldata from memory/dataset
+            pixel->putUint16Array(NULL, 0);                       // remove pixel data from memory/dataset
             return 1;
         }
     }
@@ -516,12 +516,9 @@ int DiImage::setRowColumnRatio(const double ratio)
  *
  * CVS/RCS Log:
  * $Log: diimage.cc,v $
- * Revision 1.3  1999-07-23 13:38:13  joergr
- * Added support for attribute 'ImagerPixelSpacing'.
- * Added support for attribute 'RepresentativeFrameNumber'.
- * Reading of attribute 'PixelAspectRatio' and 'PixelSpacing' now depends on
- * Flag 'CIF_UwePresentationState'.
- * Added methods to set 'PixelApsectRatio'.
+ * Revision 1.4  1999-07-23 14:21:31  joergr
+ * Corrected bug in method 'detachPixelData' (data has never really been
+ * removed from memory).
  *
  * Revision 1.2  1999/04/28 15:01:44  joergr
  * Introduced new scheme for the debug level variable: now each level can be
