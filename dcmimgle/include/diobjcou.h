@@ -21,10 +21,10 @@
  *
  *  Purpose: DicomObjectCounter (Header)
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-03-08 16:24:21 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2000-04-28 12:30:51 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/diobjcou.h,v $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -36,6 +36,8 @@
 #define __DIOBJCOU_H
 
 #include "osconfig.h"
+
+#include "ofthread.h"
 
 
 /*---------------------*
@@ -55,7 +57,13 @@ class DiObjectCounter
      */
     inline void addReference()
     {
+#ifdef _REENTRANT
+        theMutex.lock();
+#endif
         Counter++;
+#ifdef _REENTRANT
+        theMutex.unlock();
+#endif
     }
 
     /** remove a reference.
@@ -63,12 +71,15 @@ class DiObjectCounter
      */
     inline void removeReference()
     {
+#ifdef _REENTRANT
+        theMutex.lock();
+#endif
         if (--Counter == 0)
             delete this;
+#ifdef _REENTRANT
+        theMutex.unlock();
+#endif
     }
-
-    /// internal counter
-    unsigned long Counter;
 
 
  protected:
@@ -86,6 +97,19 @@ class DiObjectCounter
     virtual ~DiObjectCounter()
     {
     }
+
+
+ private:
+
+#ifdef _REENTRANT
+    /** if compiled for multi-thread operation, the Mutex protecting
+     *  access to the value of this object.
+     */
+    OFMutex theMutex;
+#endif
+
+    /// internal counter
+    unsigned long Counter;
 };
 
 
@@ -96,7 +120,10 @@ class DiObjectCounter
  *
  * CVS/RCS Log:
  * $Log: diobjcou.h,v $
- * Revision 1.4  2000-03-08 16:24:21  meichel
+ * Revision 1.5  2000-04-28 12:30:51  joergr
+ * ObjectCounter uses now class OFMutex to be MT-safe.
+ *
+ * Revision 1.4  2000/03/08 16:24:21  meichel
  * Updated copyright header.
  *
  * Revision 1.3  1999/09/17 12:44:08  joergr
