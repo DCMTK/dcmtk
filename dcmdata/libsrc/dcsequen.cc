@@ -21,10 +21,10 @@
  *
  *  Purpose: class DcmSequenceOfItems
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-03-03 14:05:36 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2000-03-03 15:02:11 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcsequen.cc,v $
- *  CVS/RCS Revision: $Revision: 1.32 $
+ *  CVS/RCS Revision: $Revision: 1.33 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -268,7 +268,7 @@ Uint32 DcmSequenceOfItems::calcElementLength(const E_TransferSyntax xfer,
                                              const E_EncodingType enctype)
 {
     Uint32 seqlen = DcmElement::calcElementLength(xfer, enctype);
-    if (Length == DCM_UndefinedLength)
+    if (enctype == EET_UndefinedLength)
         seqlen += 8;     // for Sequence Delimitation Tag
     return seqlen;
 }
@@ -1093,7 +1093,10 @@ E_Condition DcmSequenceOfItems::loadAllDataIntoMemory()
 /*
 ** CVS/RCS Log:
 ** $Log: dcsequen.cc,v $
-** Revision 1.32  2000-03-03 14:05:36  meichel
+** Revision 1.33  2000-03-03 15:02:11  joergr
+** Corrected bug related to padding of file and item size.
+**
+** Revision 1.32  2000/03/03 14:05:36  meichel
 ** Implemented library support for redirecting error messages into memory
 **   instead of printing them to stdout/stderr for GUI applications.
 **

@@ -21,10 +21,10 @@
  *
  *  Purpose: class DcmPixelSequence
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-02-23 15:11:58 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2000-03-03 15:02:10 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcpixseq.cc,v $
- *  CVS/RCS Revision: $Revision: 1.19 $
+ *  CVS/RCS Revision: $Revision: 1.20 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -133,6 +133,19 @@ void DcmPixelSequence::print(ostream & out, const OFBool showFullData,
                    0, "(SequenceDelimitationItem for re-enc.)" );
 }
 
+
+// ********************************
+
+
+Uint32 DcmPixelSequence::calcElementLength(const E_TransferSyntax xfer,
+                                           const E_EncodingType enctype)
+{
+    Uint32 seqlen = DcmElement::calcElementLength(xfer, enctype);
+    if (Length == DCM_UndefinedLength)
+        seqlen += 8;     // for Sequence Delimitation Tag
+    return seqlen;
+}
+    
 
 // ********************************
 
@@ -300,7 +313,10 @@ E_Condition DcmPixelSequence::write(DcmStream & outStream,
 /*
 ** CVS/RCS Log:
 ** $Log: dcpixseq.cc,v $
-** Revision 1.19  2000-02-23 15:11:58  meichel
+** Revision 1.20  2000-03-03 15:02:10  joergr
+** Corrected bug related to padding of file and item size.
+**
+** Revision 1.19  2000/02/23 15:11:58  meichel
 ** Corrected macro for Borland C++ Builder 4 workaround.
 **
 ** Revision 1.18  2000/02/10 10:52:21  joergr

@@ -21,10 +21,10 @@
  *
  *  Purpose: class DcmItem
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-03-03 14:05:34 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2000-03-03 15:02:09 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcitem.cc,v $
- *  CVS/RCS Revision: $Revision: 1.49 $
+ *  CVS/RCS Revision: $Revision: 1.50 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -145,13 +145,13 @@ OFBool DcmItem::foundVR( char* atposition )
     char c1 =  atposition[0];
     char c2 = atposition[1];
     OFBool valid = OFFalse;
-        
+
     if (isalpha(c1) && isalpha(c2)) {
         char vrName[3];
         vrName[0] = c1;
         vrName[1] = c2;
         vrName[2] = '\0';
-    
+
         /* is this VR name a standard VR descriptor */
         DcmVR vr(vrName);
         valid = vr.isStandard();
@@ -159,7 +159,7 @@ OFBool DcmItem::foundVR( char* atposition )
         /* cannot be a valid VR name since non-characters */
         valid = OFFalse;
     }
-    return valid;    
+    return valid;
 }
 
 
@@ -325,17 +325,17 @@ DcmObject* DcmItem::copyDcmObject( DcmObject *oldObj )
     case EVR_PixelData:
         newObj = new DcmPixelData(*(DcmPixelData *)oldObj);
         break;
-        
+
         // overlay data
     case EVR_OverlayData:
         newObj = new DcmOverlayData(*(DcmOverlayData *)oldObj);
         break;
-        
+
     case EVR_na :
     default :
         CERR << "Warning: DcmItem::copyDcmObject(): unsupported Element("
              << hex << oldObj->getGTag() << "," << oldObj->getETag()
-             << dec << ") with ident()=" 
+             << dec << ") with ident()="
              << DcmVR(oldObj->ident()).getVRName() << " found."
              << endl;
         break;
@@ -402,7 +402,7 @@ unsigned long DcmItem::getVM()
 // ********************************
 
 
-OFBool DcmItem::canWriteXfer(const E_TransferSyntax newXfer, 
+OFBool DcmItem::canWriteXfer(const E_TransferSyntax newXfer,
                               const E_TransferSyntax oldXfer)
 {
     OFBool canWrite = OFTrue;
@@ -413,7 +413,7 @@ OFBool DcmItem::canWriteXfer(const E_TransferSyntax newXfer,
     {
         DcmObject *dO;
         elementList->seek( ELP_first );
-        do 
+        do
         {
             dO = elementList->get();
             canWrite = dO -> canWriteXfer(newXfer, oldXfer);
@@ -428,11 +428,11 @@ OFBool DcmItem::canWriteXfer(const E_TransferSyntax newXfer,
 
 
 Uint32 DcmItem::calcElementLength(const E_TransferSyntax xfer,
-                                  const E_EncodingType enctype )
+                                  const E_EncodingType enctype)
 {
     Uint32 itemlen = 0L;
     DcmXfer xferSyn(xfer);
-    itemlen = getLength(xfer, enctype) + 
+    itemlen = getLength(xfer, enctype) +
         xferSyn.sizeofTagHeader(getVR());
     if (enctype == EET_UndefinedLength)
         itemlen += 8;
@@ -443,7 +443,7 @@ Uint32 DcmItem::calcElementLength(const E_TransferSyntax xfer,
 // ********************************
 
 
-Uint32 DcmItem::getLength(const E_TransferSyntax xfer, 
+Uint32 DcmItem::getLength(const E_TransferSyntax xfer,
                           const E_EncodingType enctype)
 {
     Uint32 itemlen = 0L;
@@ -473,13 +473,13 @@ E_Condition DcmItem::computeGroupLengthAndPadding
                              Uint32 instanceLength)
 {
     if ((padenc == EPD_withPadding && (padlen % 2 || subPadlen % 2)) ||
-        ((glenc == EGL_recalcGL || glenc == EGL_withGL || 
+        ((glenc == EGL_recalcGL || glenc == EGL_withGL ||
           padenc == EPD_withPadding) && xfer == EXS_Unknown))
         return EC_IllegalCall;
 
     if (glenc == EGL_noChange && padenc == EPD_noChange)
         return EC_Normal;
-  
+
     E_Condition l_error = EC_Normal;
     if ( !elementList->empty() )
     {
@@ -494,7 +494,7 @@ E_Condition DcmItem::computeGroupLengthAndPadding
 
         E_ListPos seekmode = ELP_next;
         elementList->seek( ELP_first );
-        do 
+        do
         {
             seekmode = ELP_next;
             dO = elementList->get();
@@ -502,28 +502,28 @@ E_Condition DcmItem::computeGroupLengthAndPadding
             // compute GroupLength and padding in subSequence
             if ( dO->getVR() == EVR_SQ )
             {
-                Uint32 templen = instanceLength + 
+                Uint32 templen = instanceLength +
                     xferSyn.sizeofTagHeader(EVR_SQ);
-                l_error = 
+                l_error =
                     ((DcmSequenceOfItems*)dO)->computeGroupLengthAndPadding
-                    (glenc, padenc, xfer, enctype, subPadlen, subPadlen, 
+                    (glenc, padenc, xfer, enctype, subPadlen, subPadlen,
                      templen);
             }
 
             if (l_error == EC_Normal)
             {
-                if (((glenc ==  EGL_withGL || glenc == EGL_withoutGL) && 
+                if (((glenc ==  EGL_withGL || glenc == EGL_withoutGL) &&
                      dO->getETag() == 0x0000) ||
-                    (padenc != EPD_noChange && 
+                    (padenc != EPD_noChange &&
                      dO->getTag() == DCM_DataSetTrailingPadding))
                     // delete GroupLength or Padding Element
                 {
                     delete elementList->remove();
                     seekmode = ELP_atpos;           // remove = 1 forward
                     dO = NULL;
-                } 
+                }
                 else  if (glenc == EGL_withGL || glenc == EGL_recalcGL)
-                    // recognize new group 
+                    // recognize new group
                 {
                     actGrp = dO->getGTag();
                     if (actGrp!=lastGrp || beginning) // new Group found
@@ -555,10 +555,10 @@ E_Condition DcmItem::computeGroupLengthAndPadding
                         if (padenc == EPD_withPadding && actGrp == 0xfffc)
                             paddingGL = (DcmUnsignedLong *)dO;
 
-                        // Write computed length of group into GroupLength 
+                        // Write computed length of group into GroupLength
                         // Element of previous group
                         if (actGLElem != (DcmUnsignedLong*)NULL )
-                        {   
+                        {
                             actGLElem->putUint32(grplen);
                             debug(2, ( "DcmItem::computeGroupLengthAndPadding() Length of Group 0x%4.4x len=%lu", actGLElem->getGTag(), grplen ));
                         }
@@ -576,19 +576,24 @@ E_Condition DcmItem::computeGroupLengthAndPadding
         } while (l_error == EC_Normal && elementList->seek(seekmode) );
 
         // die letzte Group Length des Items eintragen
-        if (l_error == EC_Normal &&  
-            (glenc == EGL_withGL || glenc == EGL_recalcGL) && 
+        if (l_error == EC_Normal &&
+            (glenc == EGL_withGL || glenc == EGL_recalcGL) &&
             actGLElem)
             actGLElem->putUint32(grplen);
 
         if (padenc == EPD_withPadding && padlen)
         {
-            instanceLength += calcElementLength(xfer, enctype);
-            Uint32 padding = padlen - (instanceLength % padlen);
+            Uint32 padding;
+            if (ident() == EVR_dataset)
+            {
+                instanceLength += calcElementLength(xfer, enctype);
+                padding = padlen - (instanceLength % padlen);
+            } else
+                padding = padlen - (getLength(xfer, enctype) % padlen);
             if (padding != padlen)
             {
                 // Create new padding
-                DcmOtherByteOtherWord * paddingEl = 
+                DcmOtherByteOtherWord * paddingEl =
                     new DcmOtherByteOtherWord(DCM_DataSetTrailingPadding);
                 Uint32 tmplen = paddingEl -> calcElementLength(xfer, enctype);
 
@@ -601,7 +606,7 @@ E_Condition DcmItem::computeGroupLengthAndPadding
                 paddingEl -> putUint8Array(padBytes, padding);
                 delete[] padBytes;
                 this -> insert(paddingEl);
-                
+
                 if (paddingGL)
                 {   // Update GroupLength for Padding if it exists
                     Uint32 len;
@@ -649,7 +654,7 @@ E_Condition DcmItem::readTagAndLength(DcmStream & inStream,
     bytesRead = 4;
     DcmTag newTag(groupTag, elementTag );
 
-    if (xferSyn.isExplicitVR() && 
+    if (xferSyn.isExplicitVR() &&
         newTag.getEVR() != EVR_na)      // Delimitation Items do not have a VR
     {
         char vrstr[3];
@@ -672,7 +677,7 @@ E_Condition DcmItem::readTagAndLength(DcmStream & inStream,
 
     nxtobj = newTag.getEVR();       // VR aus Tag bestimmen
 
- 
+
     if ((l_error = inStream.Avail(xferSyn.sizeofTagHeader(nxtobj)-bytesRead))
         != EC_Normal)
     {
@@ -681,7 +686,7 @@ E_Condition DcmItem::readTagAndLength(DcmStream & inStream,
         return l_error;
     }
     // The UnsetPutbackMark is in readSubElement
-        
+
     if (xferSyn.isImplicitVR() ||
         nxtobj == EVR_na)           // DelimitationItems besitzen keine VR!
     {
@@ -697,7 +702,7 @@ E_Condition DcmItem::readTagAndLength(DcmStream & inStream,
             Uint16 reserved;
             inStream.ReadBytes(&reserved, 2);  // 2 Byte Laenge
             inStream.ReadBytes(&valueLength, 4);
-            swapIfNecessary(gLocalByteOrder, byteOrder, 
+            swapIfNecessary(gLocalByteOrder, byteOrder,
                                     &valueLength, 4, 4);
             bytesRead += 6;
         }
@@ -748,9 +753,9 @@ E_Condition DcmItem::readSubElement(DcmStream & inStream,
         l_error = subElem->read(inStream, xfer, glenc, maxReadLength);
     }
     else if ( l_error == EC_InvalidTag )  // try error recovery
-    {                                                           
-        // This is the second Putback operation on the putback mark in 
-        // readTagAndLength but it is impossible that both can be executed 
+    {
+        // This is the second Putback operation on the putback mark in
+        // readTagAndLength but it is impossible that both can be executed
         // without setting the Mark twice.
         inStream.Putback();
         CERR << "Warning: DcmItem::readSubElement(): parse error occurred: "
@@ -810,14 +815,14 @@ E_Condition DcmItem::read(DcmStream & inStream,
                 if (lastElementComplete)
                 {
                     errorFlag = readTagAndLength(inStream, xfer, newTag,
-                                                 newValueLength, 
+                                                 newValueLength,
                                                  bytes_tagAndLen );
                     fTransferredBytes += bytes_tagAndLen;
                     if ( errorFlag != EC_Normal )
                         break;                  // beende while-Schleife
 
                     lastElementComplete = OFFalse;
-                    errorFlag = readSubElement(inStream, newTag, 
+                    errorFlag = readSubElement(inStream, newTag,
                                                newValueLength,
                                                xfer, glenc, maxReadLength);
 
@@ -836,14 +841,14 @@ E_Condition DcmItem::read(DcmStream & inStream,
                 if ( errorFlag != EC_Normal )
                     break;                              // beende while-Schleife
 
-            } //while 
+            } //while
             if ((fTransferredBytes < Length || !lastElementComplete) &&
                 errorFlag == EC_Normal)
                 errorFlag = EC_StreamNotifyClient;
             if (errorFlag == EC_Normal && inStream.EndOfStream())
                 errorFlag = EC_EndOfStream;
         } // else errorFlag
-                
+
         if (errorFlag == EC_ItemEnd || errorFlag == EC_EndOfStream)
             errorFlag = EC_Normal;
         if ( errorFlag == EC_Normal )
@@ -882,7 +887,7 @@ E_Condition DcmItem::write(DcmStream & outStream,
                     const E_ByteOrder oByteOrder = outXfer.getByteOrder();
                     if (oByteOrder == EBO_unknown)
                         return EC_IllegalCall;
-                    swapIfNecessary(oByteOrder, gLocalByteOrder, 
+                    swapIfNecessary(oByteOrder, gLocalByteOrder,
                                     &valueLength, 4, 4);
                     outStream.WriteBytes(&valueLength, 4); // 4 Byte Laenge
                     elementList->seek( ELP_first );
@@ -895,19 +900,19 @@ E_Condition DcmItem::write(DcmStream & outStream,
                 if (!elementList->empty())
                 {
                     DcmObject *dO = NULL;
-                    do 
+                    do
                     {
                         dO = elementList->get();
-                        if (dO->transferState() != ERW_ready) 
+                        if (dO->transferState() != ERW_ready)
                             errorFlag = dO->write(outStream, oxfer, enctype);
-                    } while (errorFlag == EC_Normal && 
+                    } while (errorFlag == EC_Normal &&
                              elementList->seek(ELP_next));
                 }
 
                 if (errorFlag == EC_Normal)
                 {
                     fTransferState = ERW_ready;
-                    if (Length == DCM_UndefinedLength && 
+                    if (Length == DCM_UndefinedLength &&
                         (errorFlag = outStream.Avail(8)) == EC_Normal)
                         // schreibe ItemDelimitationItem
                     {
@@ -919,8 +924,8 @@ E_Condition DcmItem::write(DcmStream & outStream,
                     else if (errorFlag != EC_Normal)
                     {
                         // Every subelement of the item is written but it
-                        // is not possible to write the delimination item into 
-                        // the buffer. 
+                        // is not possible to write the delimination item into
+                        // the buffer.
                         fTransferState = ERW_inWork;
                     }
                 }
@@ -942,7 +947,7 @@ void DcmItem::transferInit(void)
     if ( !elementList->empty() )
     {
         elementList->seek( ELP_first );
-        do 
+        do
         {
             elementList->get()->transferInit();
 
@@ -960,7 +965,7 @@ void DcmItem::transferEnd(void)
     if ( !elementList->empty() )
     {
         elementList->seek( ELP_first );
-        do 
+        do
         {
             elementList->get()->transferEnd();
 
@@ -1124,7 +1129,7 @@ E_Condition DcmItem::nextObject(DcmStack & stack, const OFBool intoSub)
             result = container -> nextInContainer(obj);
         }
     }
-    else if (examSub) 
+    else if (examSub)
         result = obj -> nextInContainer(NULL);
 
     if (result)
@@ -1136,7 +1141,7 @@ E_Condition DcmItem::nextObject(DcmStack & stack, const OFBool intoSub)
 
     return l_error;
 }
-    
+
 
 // ********************************
 
@@ -1304,7 +1309,7 @@ E_Condition DcmItem::searchSubFromHere( const DcmTagKey &tag,
                 }
             }
         } while ( l_error != EC_Normal && elementList->seek( ELP_next ) );
-        Cdebug(4, l_error==EC_Normal && dO->getTag()==tag, 
+        Cdebug(4, l_error==EC_Normal && dO->getTag()==tag,
                ("DcmItem::searchSubFromHere() Search-Tag=(%4.4x,%4.4x)"
                 " found!", tag.getGroup(), tag.getElement()));
 
@@ -1673,9 +1678,9 @@ E_Condition nextUp(DcmStack & stack)
     }
     return EC_TagNotFound;
 }
-    
-/* 
-** Simple tests for existance 
+
+/*
+** Simple tests for existance
 */
 OFBool DcmItem::tagExists(const DcmTagKey& key, OFBool searchIntoSub)
 {
@@ -1690,7 +1695,7 @@ OFBool DcmItem::tagExistsWithValue(const DcmTagKey& key, OFBool searchIntoSub)
     DcmElement *elem = NULL;
     Uint32 len = 0;
     DcmStack stack;
-    
+
     E_Condition ec = search(key, stack, ESM_fromHere, searchIntoSub);
     elem = (DcmElement*) stack.top();
     if (ec == EC_Normal && elem != NULL) {
@@ -1700,8 +1705,8 @@ OFBool DcmItem::tagExistsWithValue(const DcmTagKey& key, OFBool searchIntoSub)
     return (ec == EC_Normal) && (len > 0);
 }
 
-/* 
-** simplified search&get functions 
+/*
+** simplified search&get functions
 */
 
 
@@ -1709,7 +1714,7 @@ OFBool DcmItem::tagExistsWithValue(const DcmTagKey& key, OFBool searchIntoSub)
 /* New find String Version can be used if every code is checked for
    normalization!
 */
-E_Condition 
+E_Condition
 DcmItem::findString(
     const DcmTagKey& xtag,
     char* aString, size_t maxStringLength,
@@ -1719,11 +1724,11 @@ DcmItem::findString(
     E_Condition l_error = findOFStringArray(xtag, str, normalize, searchIntoSub);
     strncpy(aString, str.c_str(), maxStringLength);
     return l_error;
-    
+
 }
 #endif
 
-E_Condition 
+E_Condition
 DcmItem::findString(const DcmTagKey& xtag,
                     char* aString, size_t maxStringLength,
                     OFBool searchIntoSub)
@@ -1732,7 +1737,7 @@ DcmItem::findString(const DcmTagKey& xtag,
     DcmStack stack;
     E_Condition ec = EC_Normal;
     char* s;
-    
+
     aString[0] = '\0';
     ec = search(xtag, stack, ESM_fromHere, searchIntoSub);
     elem = (DcmElement*) stack.top();
@@ -1749,7 +1754,7 @@ DcmItem::findString(const DcmTagKey& xtag,
 }
 
 
-E_Condition 
+E_Condition
 DcmItem::findOFStringArray(
     const DcmTagKey& xtag,
     OFString & aString,
@@ -1758,19 +1763,19 @@ DcmItem::findOFStringArray(
     DcmElement *elem;
     DcmStack stack;
     E_Condition ec = EC_Normal;
-    
+
     aString = "";
     ec = search(xtag, stack, ESM_fromHere, searchIntoSub);
     elem = (DcmElement*) stack.top();
     if (ec == EC_Normal && elem != NULL) {
-        if (elem->getLength() != 0) 
+        if (elem->getLength() != 0)
             ec = elem->getOFStringArray(aString, normalize);
     }
 
     return ec;
 }
-    
-E_Condition 
+
+E_Condition
 DcmItem::findOFString(
     const DcmTagKey& xtag,
     OFString & aString, const unsigned long which,
@@ -1779,7 +1784,7 @@ DcmItem::findOFString(
     DcmElement *elem;
     DcmStack stack;
     E_Condition ec = EC_Normal;
-    
+
     aString = "";
     ec = search(xtag, stack, ESM_fromHere, searchIntoSub);
     elem = (DcmElement*) stack.top();
@@ -1791,8 +1796,8 @@ DcmItem::findOFString(
 
     return ec;
 }
-    
-E_Condition 
+
+E_Condition
 DcmItem::findIntegerNumber(
     const DcmTagKey& xtag,
     long& aLong, const unsigned long which,
@@ -1858,7 +1863,7 @@ DcmItem::findIntegerNumber(
     return ec;
 }
 
-E_Condition 
+E_Condition
 DcmItem::findRealNumber(
     const DcmTagKey& xtag,
     double& aDouble, const unsigned long which,
@@ -1897,7 +1902,10 @@ DcmItem::findRealNumber(
 /*
 ** CVS/RCS Log:
 ** $Log: dcitem.cc,v $
-** Revision 1.49  2000-03-03 14:05:34  meichel
+** Revision 1.50  2000-03-03 15:02:09  joergr
+** Corrected bug related to padding of file and item size.
+**
+** Revision 1.49  2000/03/03 14:05:34  meichel
 ** Implemented library support for redirecting error messages into memory
 **   instead of printing them to stdout/stderr for GUI applications.
 **
