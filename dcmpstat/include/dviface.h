@@ -23,8 +23,8 @@
  *    classes: DVInterface
  *
  *  Last Update:      $Author: vorwerk $
- *  Update Date:      $Date: 1999-01-27 15:28:34 $
- *  CVS/RCS Revision: $Revision: 1.15 $
+ *  Update Date:      $Date: 1999-01-28 15:30:53 $
+ *  CVS/RCS Revision: $Revision: 1.16 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -115,7 +115,9 @@ class DVInterface
        The methods defined below may only be called during a database lock.
        Other processes (i.e. Store SCPs) will be unable to store new images
        in the database as long as it is locked. */
-    E_Condition lockDatabase();
+    E_Condition lockDatabase(OFBool exclusive);
+  E_Condition lockDatabase();
+
     
   /** removes the exclusive database lock. */
     E_Condition unlockDatabase();
@@ -649,7 +651,10 @@ OFBool idxfiletest();
 
 /*
  *  $Log: dviface.h,v $
- *  Revision 1.15  1999-01-27 15:28:34  vorwerk
+ *  Revision 1.16  1999-01-28 15:30:53  vorwerk
+ *  New database lock method added.
+ *
+ *  Revision 1.15  1999/01/27 15:28:34  vorwerk
  *  new method idxfiletest added to handle with indexfiles of length zero.
  *
  *  Revision 1.14  1999/01/27 14:59:28  meichel
