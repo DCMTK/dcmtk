@@ -22,9 +22,9 @@
  *  Purpose: Handle command line arguments (Header)
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-06-01 15:51:32 $
+ *  Update Date:      $Date: 2001-08-23 16:05:52 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/include/Attic/ofcmdln.h,v $
- *  CVS/RCS Revision: $Revision: 1.26 $
+ *  CVS/RCS Revision: $Revision: 1.27 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -122,6 +122,11 @@ struct OFCmdOption
     const OFString OptionDescription;
     /// OFTrue if findOption has been applied to this option
     OFBool Checked;
+
+private:
+	/// private undefined copy assignment operator
+	OFCmdOption& operator=(const OFCmdOption& arg);
+
 };
 
 
@@ -166,6 +171,11 @@ struct OFCmdParam
     const OFString ParamDescription;
     /// parameter's cardinality mode
     const E_ParamMode ParamMode;
+
+private:
+	/// private undefined copy assignment operator
+	OFCmdParam& operator=(const OFCmdParam& arg);
+
 };
 
 
@@ -201,6 +211,11 @@ struct OFCmdParamPos
     const int OptionCount;
     /// number of options which are direct predecessor in the argument list
     const int DirectOption;
+
+private:
+	/// private undefined copy assignment operator
+	OFCmdParamPos& operator=(const OFCmdParamPos& arg);
+
 };
 
 
@@ -979,6 +994,11 @@ class OFCommandLine
 
     /// mode of last added parameter (used for debug checking)
     OFCmdParam::E_ParamMode LastParamMode;
+
+private:
+	/// private undefined copy assignment operator
+	OFCommandLine& operator=(const OFCommandLine& arg);
+
 };
 
 
@@ -989,7 +1009,10 @@ class OFCommandLine
  *
  * CVS/RCS Log:
  * $Log: ofcmdln.h,v $
- * Revision 1.26  2001-06-01 15:51:32  meichel
+ * Revision 1.27  2001-08-23 16:05:52  meichel
+ * Added private undefined copy assignment operators to avoid gcc warnings
+ *
+ * Revision 1.26  2001/06/01 15:51:32  meichel
  * Updated copyright header
  *
  * Revision 1.25  2000/10/10 12:01:20  meichel

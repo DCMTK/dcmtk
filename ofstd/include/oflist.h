@@ -23,9 +23,9 @@
  *          Defines a template list class with interfaces similar to the C++ Standard
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-06-01 15:51:34 $
+ *  Update Date:      $Date: 2001-08-23 16:05:52 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/include/Attic/oflist.h,v $
- *  CVS/RCS Revision: $Revision: 1.12 $
+ *  CVS/RCS Revision: $Revision: 1.13 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -448,7 +448,13 @@ public:
         else ++first;
       }
     }
-};
+
+private:
+	
+	/** private undefined copy assignment operator 
+	 */
+	OFList<T>& operator=(const OFList<T>& arg);
+}; 
 
 
 #ifdef HAVE_FUNCTION_TEMPLATE
@@ -523,7 +529,10 @@ void OF_ListRemoveIf(OFList<T>& c, Predicate pred)
 /*
 ** CVS/RCS Log:
 ** $Log: oflist.h,v $
-** Revision 1.12  2001-06-01 15:51:34  meichel
+** Revision 1.13  2001-08-23 16:05:52  meichel
+** Added private undefined copy assignment operators to avoid gcc warnings
+**
+** Revision 1.12  2001/06/01 15:51:34  meichel
 ** Updated copyright header
 **
 ** Revision 1.11  2000/10/10 12:01:21  meichel
