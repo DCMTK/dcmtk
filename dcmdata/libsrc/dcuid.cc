@@ -24,8 +24,8 @@
  *  routines for finding and creating UIDs.
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2004-03-16 13:49:49 $
- *  CVS/RCS Revision: $Revision: 1.53 $
+ *  Update Date:      $Date: 2004-04-06 18:08:04 $
+ *  CVS/RCS Revision: $Revision: 1.54 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -120,12 +120,13 @@ static const UIDNameMap uidNameMap[] = {
     { UID_JPEGProcess28TransferSyntax,                        "JPEGLossless:Hierarchical:Process28" },
     { UID_JPEGProcess29TransferSyntax,                        "JPEGLossless:Hierarchical:Process29" },
     { UID_JPEGProcess14SV1TransferSyntax,                     "JPEGLossless:Non-hierarchical-1stOrderPrediction" },
-    { UID_JPEGLSLossless,                                     "JPEGLSLossless" },
-    { UID_JPEGLSLossy,                                        "JPEGLSLossy" },
-    { UID_RLELossless,                                        "RLELossless" },
+    { UID_JPEGLSLosslessTransferSyntax,                       "JPEGLSLossless" },
+    { UID_JPEGLSLossyTransferSyntax,                          "JPEGLSLossy" },
+    { UID_RLELosslessTransferSyntax,                          "RLELossless" },
     { UID_DeflatedExplicitVRLittleEndianTransferSyntax,       "DeflatedLittleEndianExplicit" },
     { UID_JPEG2000LosslessOnlyTransferSyntax,                 "JPEG2000LosslessOnly" },
     { UID_JPEG2000TransferSyntax,                             "JPEG2000" },
+    { UID_MPEG2MainProfileAtMainLevelTransferSyntax,          "MPEG2MainProfile@MainLevel" },
 
     // Storage
     { UID_AmbulatoryECGWaveformStorage,                       "AmbulatoryECGWaveformStorage" },
@@ -257,6 +258,11 @@ static const UIDNameMap uidNameMap[] = {
     { UID_DetachedStudyManagementMetaSOPClass,                "DetachedStudyManagementMetaSOPClass" },
     { UID_DetachedStudyManagementSOPClass,                    "DetachedStudyManagementSOPClass" },
     { UID_DetachedVisitManagementSOPClass,                    "DetachedVisitManagementSOPClass" },
+
+    // Visible Light Video (Supplement 47 final text)
+    { UID_VideoEndoscopicImageStorage,                        "VideoEndoscopicImageStorage" },
+    { UID_MicroscopicImageStorage,                            "MicroscopicImageStorage" },
+    { UID_VideoPhotographicImageStorage                       "VideoPhotographicImageStorage" },
 
     // Catheterization Lab Structured Reports (Supplement 66 final text)
     { UID_ProceduralEventLoggingSOPClass,                     "ProceduralEventLoggingSOPClass" },
@@ -402,7 +408,16 @@ const char* dcmStorageSOPClassUIDs[] = {
     UID_VLSlideCoordinatesMicroscopicImageStorage,
     UID_XRayAngiographicImageStorage,
     UID_XRayFluoroscopyImageStorage,
-
+/* disabled new image storage SOP classes from supplement 47 to keep the
+ * number of storage transfer syntaxes <= 64.  If we have more than 64
+ * storage transfer syntaxes, tools such as storescu will fail because
+ * they attempt to negotiate two presentation contexts for each SOP class,
+ * and there is a total limit of 128 contexts for one association.
+ *
+    UID_VideoEndoscopicImageStorage,
+    UID_MicroscopicImageStorage,
+    UID_VideoPhotographicImageStorage,
+ */
     NULL
 };
 
@@ -421,16 +436,14 @@ const int numberOfDcmStorageSOPClassUIDs = (sizeof(dcmStorageSOPClassUIDs) / siz
 **
 ** The global variable numberOfDcmImageSOPClassUIDs defines the
 ** size of the array.
-** NOTE: this list represents a subset of dcmStorageSOPClassUIDs
 */
 const char* dcmImageSOPClassUIDs[] = {
     UID_CTImageStorage,
-    UID_EnhancedCTImageStorage,
     UID_ComputedRadiographyImageStorage,
-    UID_DigitalIntraOralXRayImageStorageForPresentation,
     UID_DigitalIntraOralXRayImageStorageForProcessing,
-    UID_DigitalMammographyXRayImageStorageForPresentation,
+    UID_DigitalIntraOralXRayImageStorageForPresentation,
     UID_DigitalMammographyXRayImageStorageForProcessing,
+    UID_DigitalMammographyXRayImageStorageForPresentation,
     UID_DigitalXRayImageStorageForPresentation,
     UID_DigitalXRayImageStorageForProcessing,
     UID_EnhancedCTImageStorage,
@@ -438,12 +451,17 @@ const char* dcmImageSOPClassUIDs[] = {
     UID_HardcopyColorImageStorage,
     UID_HardcopyGrayscaleImageStorage,
     UID_MRImageStorage,
+    UID_MicroscopicImageStorage,
+    UID_MultiframeGrayscaleWordSecondaryCaptureImageStorage,
+    UID_MultiframeGrayscaleByteSecondaryCaptureImageStorage,
+    UID_MultiframeSingleBitSecondaryCaptureImageStorage,
+    UID_MultiframeTrueColorSecondaryCaptureImageStorage,
     UID_NuclearMedicineImageStorage,
     UID_PETCurveStorage,
     UID_PETImageStorage,
     UID_RETIRED_NuclearMedicineImageStorage,
-    UID_RETIRED_UltrasoundImageStorage,
     UID_RETIRED_UltrasoundMultiframeImageStorage,
+    UID_RETIRED_UltrasoundImageStorage,
     UID_RETIRED_VLImageStorage,
     UID_RETIRED_VLMultiFrameImageStorage,
     UID_RETIRED_XRayAngiographicBiPlaneImageStorage,
@@ -455,13 +473,10 @@ const char* dcmImageSOPClassUIDs[] = {
     UID_VLMicroscopicImageStorage,
     UID_VLPhotographicImageStorage,
     UID_VLSlideCoordinatesMicroscopicImageStorage,
+    UID_VideoEndoscopicImageStorage,
+    UID_VideoPhotographicImageStorage,
     UID_XRayAngiographicImageStorage,
     UID_XRayFluoroscopyImageStorage,
-    UID_MultiframeSingleBitSecondaryCaptureImageStorage,
-    UID_MultiframeGrayscaleByteSecondaryCaptureImageStorage,
-    UID_MultiframeGrayscaleWordSecondaryCaptureImageStorage,
-    UID_MultiframeTrueColorSecondaryCaptureImageStorage,
-
     NULL
 };
 
@@ -486,7 +501,7 @@ static const DcmModalityTable modalities[] = {
     { UID_AmbulatoryECGWaveformStorage,                        "ECA", 4096 },
     { UID_BasicTextSR,                                         "SRt", 4096 },
     { UID_BasicVoiceAudioWaveformStorage,                      "AUV", 4096 },
-    { UID_CTImageStorage,                                      "CT",  2 *  512 *  512 },
+    { UID_CTImageStorage,                                      "CT",  2 * 512 * 512 },
     { UID_CardiacElectrophysiologyWaveformStorage,             "WVc", 4096 },
     { UID_ChestCADSR,                                          "SRx", 4096 },
     { UID_ComprehensiveSR,                                     "SRc", 4096 },
@@ -514,6 +529,7 @@ static const DcmModalityTable modalities[] = {
     { UID_MRImageStorage,                                      "MR",  2 * 256 * 256 },
     { UID_MRSpectroscopyStorage,                               "MRs", 256 * 512 * 512 },
     { UID_MammographyCADSR,                                    "SRm", 4096 },
+    { UID_MicroscopicImageStorage,                             "VVm", 768 * 576 * 3 },
     { UID_MultiframeGrayscaleByteSecondaryCaptureImageStorage, "SCb", 1 * 512 * 512 },
     { UID_MultiframeGrayscaleWordSecondaryCaptureImageStorage, "SCw", 2 * 512 * 512 },
     { UID_MultiframeSingleBitSecondaryCaptureImageStorage,     "SCs", 1024 * 1024 },  /* roughly an A4 300dpi scan */
@@ -547,6 +563,8 @@ static const DcmModalityTable modalities[] = {
     { UID_TwelveLeadECGWaveformStorage,                        "TLE", 4096 },
     { UID_UltrasoundImageStorage,                              "US",  1 * 512 * 512 },
     { UID_UltrasoundMultiframeImageStorage,                    "US",  1 * 512 * 512 },
+    { UID_VideoEndoscopicImageStorage,                         "VVe", 768 * 576 * 3 },
+    { UID_VideoPhotographicImageStorage,                       "VVp", 768 * 576 * 3 },
     { UID_VLEndoscopicImageStorage,                            "VLe", 768 * 576 * 3 },
     { UID_VLMicroscopicImageStorage,                           "VLm", 768 * 576 * 3 },
     { UID_VLPhotographicImageStorage,                          "VLp", 768 * 576 * 3 },
@@ -1107,7 +1125,12 @@ char* dcmGenerateUniqueIdentifier(char* uid, const char* prefix)
 /*
 ** CVS/RCS Log:
 ** $Log: dcuid.cc,v $
-** Revision 1.53  2004-03-16 13:49:49  joergr
+** Revision 1.54  2004-04-06 18:08:04  joergr
+** Updated data dictionary, UIDs and transfer syntaxes for the latest Final Text
+** Supplements (42 and 47) and Correction Proposals (CP 25).
+** Added missing suffix "TransferSyntax" to some transfer syntax constants.
+**
+** Revision 1.53  2004/03/16 13:49:49  joergr
 ** Updated comment.
 **
 ** Revision 1.52  2004/03/16 13:43:08  joergr

@@ -22,8 +22,8 @@
  *  Purpose: handling of transfer syntaxes
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2004-01-16 13:44:46 $
- *  CVS/RCS Revision: $Revision: 1.22 $
+ *  Update Date:      $Date: 2004-04-06 18:09:14 $
+ *  CVS/RCS Revision: $Revision: 1.23 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -234,7 +234,7 @@ const S_XferNames XferNames[] =
       EJE_Encapsulated,
       14L ,14L,
       ESC_none },
-    { UID_RLELossless,
+    { UID_RLELosslessTransferSyntax,
       "RLE Lossless",
       EXS_RLELossless,
       EBO_LittleEndian,
@@ -242,7 +242,7 @@ const S_XferNames XferNames[] =
       EJE_Encapsulated,
       0L, 0L,
       ESC_none },
-    { UID_JPEGLSLossless,
+    { UID_JPEGLSLosslessTransferSyntax,
       "JPEG-LS Lossless",
       EXS_JPEGLSLossless,
       EBO_LittleEndian,
@@ -250,7 +250,7 @@ const S_XferNames XferNames[] =
       EJE_Encapsulated,
       0L, 0L,
       ESC_none },
-    { UID_JPEGLSLossy,
+    { UID_JPEGLSLossyTransferSyntax,
       "JPEG-LS Lossy (Near-lossless)",
       EXS_JPEGLSLossy,
       EBO_LittleEndian,
@@ -282,6 +282,14 @@ const S_XferNames XferNames[] =
     { UID_JPEG2000TransferSyntax,
       "JPEG 2000 (Lossless or Lossy)",
       EXS_JPEG2000,
+      EBO_LittleEndian,
+      EVT_Explicit,
+      EJE_Encapsulated,
+      0L, 0L,
+      ESC_none },
+    { UID_MPEG2MainProfileAtMainLevelTransferSyntax,
+      "MPEG2 Main Profile @ Main Level",
+      EXS_MPEG2MainProfileAtMainLevel,
       EBO_LittleEndian,
       EVT_Explicit,
       EJE_Encapsulated,
@@ -518,7 +526,12 @@ const E_ByteOrder gLocalByteOrder = FindMachineTransferSyntax();
 /*
  * CVS/RCS Log:
  * $Log: dcxfer.cc,v $
- * Revision 1.22  2004-01-16 13:44:46  joergr
+ * Revision 1.23  2004-04-06 18:09:14  joergr
+ * Updated data dictionary, UIDs and transfer syntaxes for the latest Final Text
+ * Supplements (42 and 47) and Correction Proposals (CP 25).
+ * Added missing suffix "TransferSyntax" to some transfer syntax constants.
+ *
+ * Revision 1.22  2004/01/16 13:44:46  joergr
  * Adapted type casts to new-style typecast operators defined in ofcast.h.
  *
  * Revision 1.21  2002/11/29 17:06:50  joergr
