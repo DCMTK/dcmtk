@@ -6,26 +6,27 @@
 @SET_MAKE@
 
 SHELL = /bin/sh
-VPATH= @srcdir@:@top_srcdir@/include:@top_srcdir@/@configdir@/include
-srcdir= @srcdir@
-top_srcdir= @top_srcdir@
-configdir=@top_srcdir@/@configdir@
+VPATH = @srcdir@:@top_srcdir@/include:@top_srcdir@/@configdir@/include
+srcdir = @srcdir@
+top_srcdir = @top_srcdir@
+configdir = @top_srcdir@/@configdir@
 
 include $(configdir)/@common_makefile@
 
-dcmdatadir=$(top_srcdir)/../dcmdata
-ofstddir=$(top_srcdir)/../ofstd
-dcmtlsdir=$(top_srcdir)/../dcmtls
+dcmdatadir = $(top_srcdir)/../dcmdata
+ofstddir = $(top_srcdir)/../ofstd
+dcmtlsdir = $(top_srcdir)/../dcmtls
 
-LOCALINCLUDES=-I$(ofstddir)/include -I$(dcmdatadir)/include -I$(dcmtlsdir)/include\
-  -I$(includedir)/ofstd -I$(includedir)/dcmdata -I$(includedir)/dcmtls
-LIBDIRS = -L$(top_srcdir)/libsrc -L$(ofstddir)/libsrc -L$(dcmdatadir)/libsrc -L$(dcmtlsdir)/libsrc -L$(libdir)
+LOCALINCLUDES = -I$(ofstddir)/include -I$(dcmdatadir)/include -I$(dcmtlsdir)/include \
+	-I$(includedir)/ofstd -I$(includedir)/dcmdata -I$(includedir)/dcmtls
+LIBDIRS = -L$(top_srcdir)/libsrc -L$(ofstddir)/libsrc -L$(dcmdatadir)/libsrc \
+	-L$(dcmtlsdir)/libsrc -L$(libdir)
 LOCALLIBS = -ldcmnet -ldcmdata -lofstd $(ZLIBLIBS) $(TCPWRAPPERLIBS)
 DCMTLSLIBS = -ldcmtls
 
-objs= echoscu.o storescu.o storescp.o findscu.o movescu.o
+objs = echoscu.o storescu.o storescp.o findscu.o movescu.o
+progs = echoscu storescu storescp findscu movescu
 
-progs= echoscu storescu storescp findscu movescu
 
 all: $(progs)
 

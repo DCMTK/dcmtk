@@ -1,19 +1,22 @@
 #
-#	Makefile for dcmdata
+#	Makefile for dcmdata/libsrc
 #
 
 
 @SET_MAKE@
 
 SHELL = /bin/sh
-VPATH=@srcdir@:@top_srcdir@/include:@top_srcdir@/@configdir@/include
-srcdir=@srcdir@
-top_srcdir=@top_srcdir@
-configdir=@top_srcdir@/@configdir@
+VPATH = @srcdir@:@top_srcdir@/include:@top_srcdir@/@configdir@/include
+srcdir = @srcdir@
+top_srcdir = @top_srcdir@
+configdir = @top_srcdir@/@configdir@
 
-LOCALINCLUDES= -I$(top_srcdir)/../ofstd/include -I$(includedir)/ofstd
+include $(configdir)/@common_makefile@
+
+LOCALINCLUDES = -I$(top_srcdir)/../ofstd/include -I$(includedir)/ofstd
 LIBDIRS = -L$(top_srcdir)/../ofstd/libsrc -L$(libdir)
 LOCALLIBS = -lofstd
+LOCALDEFS =
 
 # Special defines for the Library, define them in LOCALDEFS
 #   DICOMDIR_WITHOUT_BACKUP
@@ -21,25 +24,11 @@ LOCALLIBS = -lofstd
 #   PRINT_REPLACED_DICTIONARY_ENTRIES
 #       dump duplicate entries in the data dictionary to stderr
 
-ofstddir=$(top_srcdir)/../ofstd
+DICTFILE = dicom.dic
+PRIVDICTFILE = private.dic
 
-LOCALINCLUDES=-I$(ofstddir)/include -I$(includedir)/ofstd
-
-LOCALDEFS=
-
-DICTFILE=dicom.dic
-PRIVDICTFILE=private.dic
-
-include $(configdir)/@common_makefile@
-
-support_progs= mkdeftag mkdictbi
-
-support_objs= mkdeftag.o mkdictbi.o dcdictzz.o
-
-dictobjs= dctagkey.o dcdicent.o dcdict.o dcdictbi.o \
-		dcvr.o dchashdi.o
-
-objs= dcpixseq.o dcpxitem.o dcuid.o dcerror.o \
+dictobjs = dctagkey.o dcdicent.o dcdict.o dcdictbi.o dcvr.o dchashdi.o
+objs = dcpixseq.o dcpxitem.o dcuid.o dcerror.o \
 	dcstack.o dclist.o dcswap.o dctag.o dcxfer.o \
 	dcdebug.o dcobject.o dcelem.o dcitem.o dcmetinf.o dcdatset.o \
 	dcsequen.o dcfilefo.o dcbytstr.o dcpixel.o dcvrae.o dcvras.o dcvrcs.o \
@@ -51,22 +40,20 @@ objs= dcpixseq.o dcpxitem.o dcuid.o dcerror.o \
 	$(dictobjs) cmdlnarg.o dcvrut.o dctypes.o dcpcache.o dcddirif.o \
 	dcistrma.o dcistrmb.o dcistrmf.o dcistrmz.o \
 	dcostrma.o dcostrmb.o dcostrmf.o dcostrmz.o
-
-all: libdcmdata.$(LIBEXT)
-
-
-install: install-bin install-lib install-include install-support
-
-install-bin: $(libdir)/dicom.dic
-
-install-lib: $(libdir)/libdcmdata.$(LIBEXT)
-
-install-include:
-
-install-support: install-bin
+support_objs = mkdeftag.o mkdictbi.o dcdictzz.o
+support_progs = mkdeftag mkdictbi
+library = libdcmdata.$(LIBEXT)
 
 
-$(libdir)/dicom.dic: $(DICTFILE) $(PRIVDICTFILE)
+all: $(library)
+
+install: install-lib install-support
+
+install-lib: $(library)
+	$(configdir)/mkinstalldirs $(libdir)
+	$(INSTALL_DATA) $(library) $(libdir)/$(library)
+
+install-support: $(DICTFILE) $(PRIVDICTFILE)
 	$(configdir)/mkinstalldirs $(libdir)
 	if [ "x$(INSTALL_PRIVATE_DICTIONARY)" = "xYES" ] ; then \
 		cat $(DICTFILE) $(PRIVDICTFILE) >dicom.tmp ; \
@@ -75,51 +62,46 @@ $(libdir)/dicom.dic: $(DICTFILE) $(PRIVDICTFILE)
 		$(INSTALL_DATA) $(DICTFILE) $(libdir)/dicom.dic ; \
 	fi
 
-$(libdir)/libdcmdata.$(LIBEXT):	libdcmdata.$(LIBEXT)
-	$(configdir)/mkinstalldirs $(libdir)
-	$(INSTALL_DATA) libdcmdata.$(LIBEXT) $(libdir)/libdcmdata.$(LIBEXT)
 
 clean:
-	rm -f $(support_progs) $(support_objs)
-	rm -f $(objs)
-	rm -f libdcmdata.$(LIBEXT)
-	rm -f $(TRASH)
+	rm -f $(support_progs) $(support_objs) $(objs) $(library) $(TRASH)
 
 distclean: nobuiltindict clean
 	rm -f $(DISTTRASH)
 
 
-libdcmdata.$(LIBEXT): $(objs)
+$(library): $(objs)
 	$(AR) $(ARFLAGS) $@ $(objs)
 	$(RANLIB) $@
 
 
-mkdeftag:	mkdeftag.o $(dictobjs) cmdlnarg.o
+mkdeftag: mkdeftag.o $(dictobjs) cmdlnarg.o
 	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ $@.o $(dictobjs) cmdlnarg.o $(LOCALLIBS) $(LIBS)
 
-mkdictbi:	mkdictbi.o $(dictobjs) cmdlnarg.o
+mkdictbi: mkdictbi.o $(dictobjs) cmdlnarg.o
 	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ $@.o $(dictobjs) cmdlnarg.o $(LOCALLIBS) $(LIBS)
 
 
 # Generate a new include file of defined tags
 
-gendeftag:	mkdeftag $(DICTFILE) $(PRIVDICTFILE)
+gendeftag: mkdeftag $(DICTFILE) $(PRIVDICTFILE)
 	`pwd`/mkdeftag `pwd`/$(DICTFILE) `pwd`/$(PRIVDICTFILE) > $(top_srcdir)/include/dcdeftag.h
 
 # Generate a file which can be used as a builtin dictionary
 
-dcdictzz.cc:	mkdictbi $(DICTFILE) $(PRIVDICTFILE)
+dcdictzz.cc: mkdictbi $(DICTFILE) $(PRIVDICTFILE)
 	`pwd`/mkdictbi `pwd`/$(DICTFILE) `pwd`/$(PRIVDICTFILE) > dcdictzz.cc
 
 # Generate a builtin data dictionary from $(DICTFILE) and $(PRIVDICTFILE)
 
-builtindict:	nobuiltindict mkdictbi $(DICTFILE) $(PRIVDICTFILE)
+builtindict: nobuiltindict mkdictbi $(DICTFILE) $(PRIVDICTFILE)
 	`pwd`/mkdictbi `pwd`/$(DICTFILE) `pwd`/$(PRIVDICTFILE) > dcdictbi.cc
 
 # Generate an empty builtin data dictionary
 
 nobuiltindict:
 	cp dcdictbi.nul dcdictbi.cc
+
 
 # Dependencies
 

@@ -5,10 +5,12 @@
 @SET_MAKE@
 
 SHELL = /bin/sh
-VPATH=@srcdir@:@top_srcdir@/include:@top_srcdir@/@configdir@/include
-srcdir=@srcdir@
-top_srcdir=@top_srcdir@
-configdir=@top_srcdir@/@configdir@
+VPATH = @srcdir@:@top_srcdir@/include:@top_srcdir@/@configdir@/include
+srcdir = @srcdir@
+top_srcdir = @top_srcdir@
+configdir = @top_srcdir@/@configdir@
+
+include $(configdir)/@common_makefile@
 
 # Special defines for the Library, define them in LOCALDEFS
 #   REVERSE_OVERLAY_ORIGIN_ORDER
@@ -17,34 +19,32 @@ configdir=@top_srcdir@/@configdir@
 
 LOCALINCLUDES = -I@top_srcdir@/../ofstd/include -I@top_srcdir@/../dcmdata/include -I@top_srcdir@/../dcmimgle/include
 
-include $(configdir)/@common_makefile@
-
 objs = dicoimg.o dicopx.o dicoopx.o diregist.o \
-        diargimg.o dicmyimg.o dihsvimg.o dipalimg.o dirgbimg.o \
-        diybrimg.o diyf2img.o diyp2img.o dipitiff.o dipipng.o \
-        diqtctab.o diqtfs.o diqthash.o diqthitl.o diqtpbox.o diquant.o
+	diargimg.o dicmyimg.o dihsvimg.o dipalimg.o dirgbimg.o \
+	diybrimg.o diyf2img.o diyp2img.o dipitiff.o dipipng.o \
+	diqtctab.o diqtfs.o diqthash.o diqthitl.o diqtpbox.o diquant.o
+library = libdcmimage.$(LIBEXT)
 
-all: libdcmimage.$(LIBEXT)
+
+all: $(library)
 
 install: install-lib
 
-install-lib:	$(libdir)/libdcmimage.$(LIBEXT)
-
-$(libdir)/libdcmimage.$(LIBEXT):	libdcmimage.$(LIBEXT)
+install-lib: $(library)
 	$(configdir)/mkinstalldirs $(libdir)
-	$(INSTALL_DATA) libdcmimage.$(LIBEXT) $(libdir)/libdcmimage.$(LIBEXT)
+	$(INSTALL_DATA) $(library) $(libdir)/$(library)
 
-clean:
-	rm -f $(objs)
-	rm -f libdcmimage.$(LIBEXT)
-	rm -f $(TRASH)
-
-distclean: clean
-	rm -f $(DISTTRASH)
-
-libdcmimage.$(LIBEXT): $(objs)
+$(library): $(objs)
 	$(AR) $(ARFLAGS) $@ $(objs)
 	$(RANLIB) $@
+
+
+clean:
+	rm -f $(objs) $(library) $(TRASH)
+
+distclean:
+	rm -f $(objs) $(library) $(DISTTRASH)
+
 
 dependencies:
 	$(CXX) -MM $(defines) $(includes) $(CPPFLAGS) $(CXXFLAGS) *.cc  > $(DEP)

@@ -5,19 +5,23 @@
 @SET_MAKE@
 
 SHELL = /bin/sh
-VPATH= @srcdir@:@top_srcdir@/include:@top_srcdir@/@configdir@/include
-srcdir= @srcdir@
-top_srcdir= @top_srcdir@
-configdir=@top_srcdir@/@configdir@
+VPATH = @srcdir@:@top_srcdir@/include:@top_srcdir@/@configdir@/include
+srcdir = @srcdir@
+top_srcdir = @top_srcdir@
+configdir = @top_srcdir@/@configdir@
 
 include $(configdir)/@common_makefile@
 
-LOCALINCLUDES = -I@top_srcdir@/include -I@top_srcdir@/../ofstd/include -I@top_srcdir@/../dcmdata/include
-LIBDIRS = -L@top_srcdir@/libsrc -L@top_srcdir@/../dcmdata/libsrc -L@top_srcdir@/../ofstd/libsrc -L$(libdir)
-LOCALLIBS = -ldcmimgle -ldcmdata -lofstd $(ZLIBLIBS)
-objs = dconvlum.o dcmdspfn.o dcod2lum.o
 
+LOCALINCLUDES = -I@top_srcdir@/include -I@top_srcdir@/../ofstd/include \
+	-I@top_srcdir@/../dcmdata/include
+LIBDIRS = -L@top_srcdir@/libsrc -L@top_srcdir@/../dcmdata/libsrc \
+	-L@top_srcdir@/../ofstd/libsrc -L$(libdir)
+LOCALLIBS = -ldcmimgle -ldcmdata -lofstd $(ZLIBLIBS)
+
+objs = dconvlum.o dcmdspfn.o dcod2lum.o
 progs = dconvlum dcmdspfn dcod2lum
+
 
 all: $(progs)
 
@@ -30,17 +34,20 @@ dcmdspfn: dcmdspfn.o
 dcod2lum: dcod2lum.o
 	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ $@.o $(LOCALLIBS) $(MATHLIBS) $(LIBS)
 
+
 install: all
 	$(configdir)/mkinstalldirs $(bindir)
 	for prog in $(progs); do \
 		$(INSTALL_PROGRAM) $$prog$(BINEXT) $(bindir); strip $(bindir)/$$prog$(BINEXT) ;\
 	done
 
+
 clean:
 	rm -f $(objs) $(progs) $(TRASH)
 
 distclean:
 	rm -f $(objs) $(progs) $(DISTTRASH)
+
 
 dependencies:
 	$(CXX) -MM $(defines) $(includes) $(CPPFLAGS) $(CXXFLAGS) *.cc  > $(DEP)

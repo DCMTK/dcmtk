@@ -12,103 +12,99 @@
 @SET_MAKE@
 
 SHELL = /bin/sh
-VPATH= @srcdir@:@top_srcdir@/include:@top_srcdir@/@configdir@/include
-srcdir= @srcdir@
-top_srcdir= @top_srcdir@
-configdir=@top_srcdir@/@configdir@
+VPATH = @srcdir@:@top_srcdir@/include:@top_srcdir@/@configdir@/include
+srcdir = @srcdir@
+top_srcdir = @top_srcdir@
+configdir = @top_srcdir@/@configdir@
 
 include $(configdir)/@common_makefile@
 
 #
 # Settings for Solaris 2.x with Sun CC 4.2 compiler
 #
-javainc=-I/usr/java1.3/include -I/usr/java1.3/include/solaris
-soflags=-G
-solibs=-lC
+javainc = -I/usr/java1.3/include -I/usr/java1.3/include/solaris
+soflags = -G
+solibs = -lC
 
 #
 # Settings for Linux (glibc) with gcc 2.95.x compiler
 #
 # Include files for Blackdown JDK 1.2 or IBM JDK 1.3
-# javainc=-I/usr/jdk1.2/include -I/usr/jdk1.2/include/linux
-# javainc=-I/opt/IBMJava2-13/include
-# soflags=-shared
+# javainc = -I/usr/jdk1.2/include -I/usr/jdk1.2/include/linux
+# javainc = -I/opt/IBMJava2-13/include
+# soflags = -shared
 
-ofstddir=$(top_srcdir)/../ofstd
-ofstdinc=-I$(ofstddir)/include -I$(includedir)/ofstd
-ofstdlibdir=-L$(ofstddir)/libsrc
-ofstdlib=-lofstd
+ofstddir = $(top_srcdir)/../ofstd
+ofstdinc = -I$(ofstddir)/include -I$(includedir)/ofstd
+ofstdlibdir = -L$(ofstddir)/libsrc
+ofstdlib = -lofstd
 
-dcmdatadir=$(top_srcdir)/../dcmdata
-dcmdatainc=-I$(dcmdatadir)/include -I$(includedir)/dcmdata
-dcmdatalibdir=-L$(dcmdatadir)/libsrc
-dcmdatalib=-ldcmdata
+dcmdatadir = $(top_srcdir)/../dcmdata
+dcmdatainc = -I$(dcmdatadir)/include -I$(includedir)/dcmdata
+dcmdatalibdir = -L$(dcmdatadir)/libsrc
+dcmdatalib = -ldcmdata
 
-dcmnetdir=$(top_srcdir)/../dcmnet
-dcmnetinc=-I$(dcmnetdir)/include -I$(includedir)/dcmnet
-dcmnetlibdir=-L$(dcmnetdir)/libsrc
-dcmnetlib=-ldcmnet
+dcmnetdir = $(top_srcdir)/../dcmnet
+dcmnetinc = -I$(dcmnetdir)/include -I$(includedir)/dcmnet
+dcmnetlibdir = -L$(dcmnetdir)/libsrc
+dcmnetlib = -ldcmnet
 
-dcmimgledir=$(top_srcdir)/../dcmimgle
-dcmimgleinc=-I$(dcmimgledir)/include -I$(includedir)/dcmimgle
-dcmimglelibdir=-L$(dcmimgledir)/libsrc
-dcmimglelib=-ldcmimgle
+dcmimgledir = $(top_srcdir)/../dcmimgle
+dcmimgleinc = -I$(dcmimgledir)/include -I$(includedir)/dcmimgle
+dcmimglelibdir = -L$(dcmimgledir)/libsrc
+dcmimglelib = -ldcmimgle
 
-dcmpstatdir=$(top_srcdir)/../dcmpstat
-dcmpstatinc=-I$(dcmpstatdir)/include -I$(includedir)/dcmpstat
-dcmpstatlibdir=-L$(dcmpstatdir)/libsrc
-dcmpstatlib=-ldcmpstat
+dcmpstatdir = $(top_srcdir)/../dcmpstat
+dcmpstatinc = -I$(dcmpstatdir)/include -I$(includedir)/dcmpstat
+dcmpstatlibdir = -L$(dcmpstatdir)/libsrc
+dcmpstatlib = -ldcmpstat
 
-imagectndir=$(top_srcdir)/../imagectn
-imagectninc=-I$(imagectndir)/include -I$(includedir)/imagectn
-imagectnlibdir=-L$(imagectndir)/libsrc
-imagectnlib=-limagedb
+imagectndir = $(top_srcdir)/../imagectn
+imagectninc = -I$(imagectndir)/include -I$(includedir)/imagectn
+imagectnlibdir = -L$(imagectndir)/libsrc
+imagectnlib = -limagedb
 
-dcmsigndir=$(top_srcdir)/../dcmsign
-dcmsigninc=-I$(dcmsigndir)/include -I$(includedir)/dcmsign
-dcmsignlibdir=-L$(dcmsigndir)/libsrc
-dcmsignlib=-ldcmdsig
+dcmsigndir = $(top_srcdir)/../dcmsign
+dcmsigninc = -I$(dcmsigndir)/include -I$(includedir)/dcmsign
+dcmsignlibdir = -L$(dcmsigndir)/libsrc
+dcmsignlib = -ldcmdsig
 
-dcmsrdir=$(top_srcdir)/../dcmsr
-dcmsrinc=-I$(dcmsrdir)/include -I$(includedir)/dcmsr
-dcmsrlibdir=-L$(dcmsrdir)/libsrc
-dcmsrlib=-ldcmsr
+dcmsrdir = $(top_srcdir)/../dcmsr
+dcmsrinc = -I$(dcmsrdir)/include -I$(includedir)/dcmsr
+dcmsrlibdir = -L$(dcmsrdir)/libsrc
+dcmsrlib = -ldcmsr
 
-LOCALINCLUDES=$(dcmpstatinc) $(ofstdinc) $(dcmnetinc) $(dcmdatainc) \
-			$(dcmimgleinc) $(imagectninc) $(dcmsigninc) $(dcmsrinc) \
-			$(javainc)
+LOCALINCLUDES = $(dcmpstatinc) $(ofstdinc) $(dcmnetinc) $(dcmdatainc) \
+	$(dcmimgleinc) $(imagectninc) $(dcmsigninc) $(dcmsrinc) $(javainc)
 LIBDIRS = -L$(top_srcdir)/libsrc $(dcmpstatlibdir) $(imagectnlibdir) \
-			$(dcmnetlibdir) $(dcmdatalibdir) $(ofstdlibdir) \
-			$(dcmimglelibdir) $(dcmsignlibdir) $(dcmsrlibdir) -L$(libdir)
+	$(dcmnetlibdir) $(dcmdatalibdir) $(ofstdlibdir) $(dcmimglelibdir) \
+	$(dcmsignlibdir) $(dcmsrlibdir) -L$(libdir)
 LOCALLIBS = $(dcmpstatlib) $(dcmsrlib) $(dcmsignlib) $(dcmimglelib) \
-			$(imagectnlib) $(dcmnetlib) $(dcmdatalib) $(ofstdlib) \
-			$(OPENSSLLIBS) $(solibs)
+	$(imagectnlib) $(dcmnetlib) $(dcmdatalib) $(ofstdlib) $(OPENSSLLIBS) \
+	$(solibs)
 
-objs= DVInterface.o DVPSGraphicObject.o DVPresentationState.o \
-	DVPSCurve.o DVPSTextObject.o DVPSStoredPrint.o \
-	DSRCodeValue.o DSRCompositeValue.o DSRDocument.o \
-	DSRDocumentTree.o DSRImageValue.o DSRNumericValue.o \
+objs= DVInterface.o DVPSGraphicObject.o DVPresentationState.o DVPSCurve.o \
+	DVPSTextObject.o DVPSStoredPrint.o DSRCodeValue.o DSRCompositeValue.o \
+	DSRDocument.o DSRDocumentTree.o DSRImageValue.o DSRNumericValue.o \
 	DSRSCoordValue.o DSRTCoordValue.o DSRWaveformValue.o
+library = libjInterface.so
 
 
-progs= libjInterface.so
+all: $(library)
 
-all: $(progs)
-
-libjInterface.so: $(objs)
+$(library): $(objs)
 	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) $(soflags) -o $@ $(objs) $(LOCALLIBS) $(LIBS)
 
+
 install: all
-	$(configdir)/mkinstalldirs $(bindir)
-	for prog in $(progs); do \
-		$(INSTALL_PROGRAM) $$prog$(BINEXT) $(bindir); strip $(bindir)/$$prog$(BINEXT) ;\
-	done
+	$(configdir)/mkinstalldirs $(libdir)
+	$(INSTALL_DATA) $(library) $(libdir)/$(library)
 
 clean:
-	rm -f $(objs) $(progs) $(TRASH)
+	rm -f $(objs) $(library) $(TRASH)
 
 distclean:
-	rm -f $(objs) $(progs) $(DISTTRASH)
+	rm -f $(objs) $(library) $(DISTTRASH)
 
 
 dependencies:

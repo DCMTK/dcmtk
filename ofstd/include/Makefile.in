@@ -14,20 +14,15 @@ include $(configdir)/@common_makefile@
 
 
 all: 
-	echo Nothing to do for all
 
 install: 
 	$(configdir)/mkinstalldirs $(includedir)/ofstd
-	for file in *.h ; do $(INSTALL_DATA) $$file $(includedir)/ofstd ; done
+	for file in *.h ; do \
+		$(INSTALL_DATA) $$file $(includedir)/ofstd ; \
+	done
 
 clean:
 	rm -f $(TRASH)
 
 distclean:
 	rm -f $(DISTTRASH)
-
-dependencies:
-	echo Nothing to do for dependencies
-
-
-
