@@ -21,10 +21,10 @@
  *
  *  Purpose: C++ header to handle standard and old stream libraries.
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-05-02 14:05:50 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2002-12-11 15:54:48 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/include/Attic/ofstream.h,v $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -55,6 +55,7 @@
 #error DCMTK needs stringstream or strstream type
 #endif
 #ifdef HAVE_STD_NAMESPACE
+namespace std { };
 using namespace std;
 #endif
 
@@ -125,7 +126,10 @@ typedef istrstream OFIStringStream;
 /*
  * CVS/RCS Log:
  * $Log: ofstream.h,v $
- * Revision 1.2  2002-05-02 14:05:50  joergr
+ * Revision 1.3  2002-12-11 15:54:48  meichel
+ * Added empty namespace std declaration, needed on MSVC.
+ *
+ * Revision 1.2  2002/05/02 14:05:50  joergr
  * Added support for standard and non-standard string streams (which one is
  * supported is detected automatically via the configure mechanism).
  * Thanks again to Andreas Barth <Andreas.Barth@bruker-biospin.de> for his

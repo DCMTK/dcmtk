@@ -22,9 +22,9 @@
  *  Purpose: encapsulation of old style vs. ISO C++ standard includes
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-11-28 17:16:39 $
+ *  Update Date:      $Date: 2002-12-11 15:54:47 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/include/Attic/ofstdinc.h,v $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -36,6 +36,7 @@
 #include "osconfig.h"
 
 #ifdef HAVE_STD_NAMESPACE
+namespace std { };
 using namespace std;
 #endif
 
@@ -302,7 +303,10 @@ END_EXTERN_C
 /*
  * CVS/RCS Log:
  * $Log: ofstdinc.h,v $
- * Revision 1.4  2002-11-28 17:16:39  meichel
+ * Revision 1.5  2002-12-11 15:54:47  meichel
+ * Added empty namespace std declaration, needed on MSVC.
+ *
+ * Revision 1.4  2002/11/28 17:16:39  meichel
  * Including <math.h> without extern "C" on Win32 to avoid problem with MSVC5.
  *
  * Revision 1.3  2002/11/27 17:21:18  meichel
