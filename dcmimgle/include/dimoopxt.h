@@ -22,9 +22,9 @@
  *  Purpose: DicomMonoOutputPixelTemplate (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-02-11 16:40:19 $
+ *  Update Date:      $Date: 1999-02-28 16:41:01 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/dimoopxt.h,v $
- *  CVS/RCS Revision: $Revision: 1.9 $
+ *  CVS/RCS Revision: $Revision: 1.10 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -879,7 +879,7 @@ class DiMonoOutputPixelTemplate
                                     }
                                     break;
                                 }
-                                case EMO_BitmapShutter:  /* UNTESTED !! */
+                                case EMO_BitmapShutter:
                                 {
                                     register T3 fore = (T3)((double)maxvalue * (double)plane->getPValue() / (double)DicomImageClass::maxval(WIDTH_OF_PVALUES));
                                     if ((disp != NULL) && (disp->isValid()))
@@ -894,7 +894,7 @@ class DiMonoOutputPixelTemplate
                                         q = Data + (unsigned long)y * (unsigned long)columns + (unsigned long)xmin;
                                         for (x = xmin; x < xmax; x++, q++)
                                         {
-                                            if (!plane->getNextBit())
+                                            if (plane->getNextBit())
                                                 *q = fore;
                                         }
                                     }
@@ -929,7 +929,11 @@ class DiMonoOutputPixelTemplate
  *
  * CVS/RCS Log:
  * $Log: dimoopxt.h,v $
- * Revision 1.9  1999-02-11 16:40:19  joergr
+ * Revision 1.10  1999-02-28 16:41:01  joergr
+ * Corrected bug: the output bits for bitmaps shutters were inverted (this was
+ * done due to an error in the used test images).
+ *
+ * Revision 1.9  1999/02/11 16:40:19  joergr
  * Added routine to check whether particular grayscale values are unused in
  * the output data.
  * Removed two small memory leaks reported by dmalloc library.
