@@ -22,9 +22,9 @@
  *  Purpose: DicomGSDFLUT (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-09-10 08:54:50 $
+ *  Update Date:      $Date: 1999-09-17 13:13:30 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/libsrc/digsdlut.cc,v $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -101,7 +101,7 @@ int DiGSDFLUT::createLUT(const Uint16 *ddl_tab,
             register unsigned int i;
             register double *r = jidx;
             register double value = jnd_min;                            // first value is static !
-            for (i = 1; i < Count; i++)                                 // initialize scaled JND index array
+            for (i = Count; i > 1; i--)                                 // initialize scaled JND index array
             {
                 *(r++) = value;
                 value += dist;                                          // add step by step ...
@@ -127,7 +127,7 @@ int DiGSDFLUT::createLUT(const Uint16 *ddl_tab,
                             register Uint16 *q = DataBuffer;
                             register Uint16 j = 0;
                             const double amb = getAmbientLightValue();
-                            for (i = 0; i < Count; i++, r++)
+                            for (i = Count; i != 0; i--, r++)
                             {
                                 while (((Uint16)(j + 1) < ddl_cnt) && (lum_tab[j]  + amb < *r))  // search for closest index, assuming monotony
                                     j++;
@@ -172,7 +172,10 @@ int DiGSDFLUT::createLUT(const Uint16 *ddl_tab,
  *
  * CVS/RCS Log:
  * $Log: digsdlut.cc,v $
- * Revision 1.1  1999-09-10 08:54:50  joergr
+ * Revision 1.2  1999-09-17 13:13:30  joergr
+ * Enhanced efficiency of some "for" loops.
+ *
+ * Revision 1.1  1999/09/10 08:54:50  joergr
  * Added support for CIELAB display function. Restructured class hierarchy
  * for display functions.
  *

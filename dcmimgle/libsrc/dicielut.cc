@@ -22,9 +22,9 @@
  *  Purpose: DicomCIELABLUT (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-09-10 08:54:48 $
+ *  Update Date:      $Date: 1999-09-17 13:13:28 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/libsrc/dicielut.cc,v $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -114,7 +114,7 @@ int DiCIELABLUT::createLUT(const Uint16 *ddl_tab,
                 register double *r = cielab;
                 register Uint16 *q = DataBuffer;
                 register Uint16 j = 0;
-                for (i = 0; i < Count; i++, r++)
+                for (i = Count; i != 0; i--, r++)
                 {
                     while (((Uint16)(j + 1) < ddl_cnt) && (lum_tab[j]  + amb < *r))  // search for closest index, assuming monotony
                         j++;
@@ -153,10 +153,11 @@ int DiCIELABLUT::createLUT(const Uint16 *ddl_tab,
  *
  * CVS/RCS Log:
  * $Log: dicielut.cc,v $
- * Revision 1.1  1999-09-10 08:54:48  joergr
+ * Revision 1.2  1999-09-17 13:13:28  joergr
+ * Enhanced efficiency of some "for" loops.
+ *
+ * Revision 1.1  1999/09/10 08:54:48  joergr
  * Added support for CIELAB display function. Restructured class hierarchy
  * for display functions.
- *
- *
  *
  */

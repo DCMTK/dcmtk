@@ -22,9 +22,9 @@
  *  Purpose: DicomGSDFunction (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-09-10 08:54:49 $
+ *  Update Date:      $Date: 1999-09-17 13:13:29 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/libsrc/digsdfn.cc,v $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -151,7 +151,7 @@ int DiGSDFunction::writeCurveData(const char *filename)
             file << "DDL\tCC\tGSDF\tPSC" << endl;
             DiGSDFLUT *lut = new DiGSDFLUT(ValueCount, MaxDDLValue, DDLValue, LumValue, ValueCount,
                 GSDFValue, GSDFSpline, GSDFCount, JNDMin, JNDMax, AmbientLight, &file);       // write curve data to file
-            int status = (lut !=NULL);
+            int status = (lut != NULL) && (lut->isValid());
             delete lut;
             return status;
         }
@@ -277,7 +277,10 @@ double DiGSDFunction::getJNDIndex(const double lum) const
  *
  * CVS/RCS Log:
  * $Log: digsdfn.cc,v $
- * Revision 1.1  1999-09-10 08:54:49  joergr
+ * Revision 1.2  1999-09-17 13:13:29  joergr
+ * Enhanced efficiency of some "for" loops.
+ *
+ * Revision 1.1  1999/09/10 08:54:49  joergr
  * Added support for CIELAB display function. Restructured class hierarchy
  * for display functions.
  *

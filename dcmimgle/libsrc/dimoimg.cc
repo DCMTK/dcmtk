@@ -22,9 +22,9 @@
  *  Purpose: DicomMonochromeImage (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-09-10 08:54:50 $
+ *  Update Date:      $Date: 1999-09-17 13:17:36 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/libsrc/dimoimg.cc,v $
- *  CVS/RCS Revision: $Revision: 1.22 $
+ *  CVS/RCS Revision: $Revision: 1.23 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -999,7 +999,8 @@ int DiMonoImage::removeAllOverlays()
 }
 
 
-int DiMonoImage::flip(const int horz, const int vert)
+int DiMonoImage::flip(const int horz,
+                      const int vert)
 {
     switch (InterData->getRepresentation())
     {
@@ -1329,12 +1330,12 @@ void *DiMonoImage::createDIB(const unsigned long frame)
             register Uint16 x;
             register Uint16 y;
             register int j;
-            for (y = 0; y < Rows; y++)
+            for (y = Rows; y != 0; y--)
             {
-                for (x = 0; x < Columns; x++)
+                for (x = Columns; x != 0; x--)
                 {
                     value = *(p++);                 // store gray value
-                    for (j = 0; j < 3; j++)
+                    for (j = 3; j != 0; j--)
                         *(q++) = value;             // copy to the three RGB-planes
                 }
                 q += gap;
@@ -1378,9 +1379,9 @@ void *DiMonoImage::createAWTBitmap(const unsigned long frame,
                 register Uint32 value;
                 register Uint16 x;
                 register Uint16 y;
-                for (y = 0; y < Rows; y++)
+                for (y = Rows; y != 0; y--)
                 {
-                    for (x = 0; x < Columns; x++)
+                    for (x = Columns; x != 0; x--)
                     {
                         value = *(p++);                 // store gray value
                         *(q++) = (value << 24) | (value << 16) | (value << 8);
@@ -1547,7 +1548,10 @@ int DiMonoImage::writeRawPPM(FILE *stream,
  *
  * CVS/RCS Log:
  * $Log: dimoimg.cc,v $
- * Revision 1.22  1999-09-10 08:54:50  joergr
+ * Revision 1.23  1999-09-17 13:17:36  joergr
+ * Enhanced efficiency of some "for" loops.
+ *
+ * Revision 1.22  1999/09/10 08:54:50  joergr
  * Added support for CIELAB display function. Restructured class hierarchy
  * for display functions.
  *

@@ -22,9 +22,9 @@
  *  Purpose: DicomBaseLUT (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-09-08 15:20:31 $
+ *  Update Date:      $Date: 1999-09-17 13:13:27 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/libsrc/dibaslut.cc,v $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -93,7 +93,7 @@ int DiBaseLUT::invertTable()
         register const Uint16 *p = Data;
         register Uint16 *q = (Uint16 *)Data;                // remove const to modify Data
         const Uint16 max = (Uint16)DicomImageClass::maxval(Bits);
-        for (i = 0; i < Count; i++)
+        for (i = Count; i != 0; i--)
             *(q++) = max - *(p++);
         return 1;
     }
@@ -105,7 +105,10 @@ int DiBaseLUT::invertTable()
  *
  * CVS/RCS Log:
  * $Log: dibaslut.cc,v $
- * Revision 1.4  1999-09-08 15:20:31  joergr
+ * Revision 1.5  1999-09-17 13:13:27  joergr
+ * Enhanced efficiency of some "for" loops.
+ *
+ * Revision 1.4  1999/09/08 15:20:31  joergr
  * Completed implementation of setting inverse presentation LUT as needed
  * e.g. for DICOM print (invert 8->12 bits PLUT).
  *

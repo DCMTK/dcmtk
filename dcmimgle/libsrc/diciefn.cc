@@ -22,9 +22,9 @@
  *  Purpose: DicomCIELABFunction (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-09-10 08:54:47 $
+ *  Update Date:      $Date: 1999-09-17 13:13:29 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/libsrc/diciefn.cc,v $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -123,7 +123,7 @@ int DiCIELABFunction::writeCurveData(const char *filename)
             file << "DDL\tCC\tCIELAB\tPSC" << endl;
             DiCIELABLUT *lut = new DiCIELABLUT(ValueCount, MaxDDLValue, DDLValue, LumValue, ValueCount,
                 MinLumValue, MaxLumValue, AmbientLight, &file);                          // write curve data to file
-            int status = (lut !=NULL);
+            int status = (lut != NULL) && (lut->isValid());
             delete lut;
             return status;
         }
@@ -174,7 +174,10 @@ int DiCIELABFunction::calculateMinMax()
  *
  * CVS/RCS Log:
  * $Log: diciefn.cc,v $
- * Revision 1.1  1999-09-10 08:54:47  joergr
+ * Revision 1.2  1999-09-17 13:13:29  joergr
+ * Enhanced efficiency of some "for" loops.
+ *
+ * Revision 1.1  1999/09/10 08:54:47  joergr
  * Added support for CIELAB display function. Restructured class hierarchy
  * for display functions.
  *
