@@ -65,8 +65,10 @@ LIBDIRS = -L$(top_srcdir)/libsrc $(dcmpstatlibdir) $(imagectnlibdir) $(dcmnetlib
 LOCALLIBS = $(dcmpstatlib) $(dcmsignlib) $(dcmimglelib) $(dcmsrlib) $(imagectnlib) $(dcmnetlib) \
   $(dcmdatalib) $(ofstdlib) $(XMLLIBS) $(ZLIBLIBS) $(TCPWRAPPERLIBS) $(OPENSSLLIBS)
 DCMPSCHK_LIBS = $(dcmpstatlib) $(dcmdatalib) $(ofstdlib) $(XMLLIBS) $(ZLIBLIBS)
-DCMPSMK_LIBS = $(dcmpstatlib) $(dcmdatalib) $(ofstdlib) $(XMLLIBS) $(ZLIBLIBS)
+DCMPSMK_LIBS  = $(dcmpstatlib) $(dcmdatalib) $(ofstdlib) $(XMLLIBS) $(ZLIBLIBS)
 DCMPSRCV_LIBS = $(dcmpstatlib) $(dcmtlslib) $(dcmnetlib) $(imagectnlib) $(dcmdatalib) $(ofstdlib) $(XMLLIBS) $(ZLIBLIBS) $(TCPWRAPPERLIBS) $(OPENSSLLIBS)
+DCMMKLUT_LIBS = $(dcmimglelib) $(dcmdatalib) $(ofstdlib) $(XMLLIBS) $(ZLIBLIBS) 
+DCMMKCRV_LIBS = $(dcmdatalib) $(ofstdlib) $(XMLLIBS) $(ZLIBLIBS)
 
 objs= dcmpsmk.o dcmp2pgm.o dcmmklut.o dcmmkcrv.o dcmpssnd.o dcmpsrcv.o \
       dcmpsprt.o dcmprscu.o dcmprscp.o vrscan.o dcmpschk.o
@@ -82,10 +84,10 @@ dcmp2pgm: dcmp2pgm.o
 	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ dcmp2pgm.o  $(LOCALLIBS) $(MATHLIBS) $(LIBS)
 
 dcmmklut: dcmmklut.o
-	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ dcmmklut.o $(LOCALLIBS) $(MATHLIBS) $(LIBS)
+	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ dcmmklut.o $(DCMMKLUT_LIBS) $(MATHLIBS) $(LIBS)
 
 dcmmkcrv: dcmmkcrv.o
-	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ dcmmkcrv.o $(LOCALLIBS) $(MATHLIBS) $(LIBS)
+	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ dcmmkcrv.o $(DCMMKCRV_LIBS) $(MATHLIBS) $(LIBS)
 
 dcmpssnd: dcmpssnd.o
 	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ dcmpssnd.o  $(dcmtlslib) $(LOCALLIBS) $(MATHLIBS) $(LIBS)
