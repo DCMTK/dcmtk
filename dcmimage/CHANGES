@@ -1,6 +1,11 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2000.04.14 (eichelberg)
+
+- Adapted to changed parameter list for command line class
+  Affects: dcmimage/apps/dcm2pnm.cc
+
 **** Changes from 2000.03.30 (riesmeier)
 
 - Corrected wrong bit expansion of output pixel data (left shift is not

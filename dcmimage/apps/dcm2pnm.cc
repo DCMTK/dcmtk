@@ -22,9 +22,9 @@
  *  Purpose: Convert DICOM Images to PPM or PGM using the dcmimage library.
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-03-08 16:21:47 $
+ *  Update Date:      $Date: 2000-04-14 16:31:49 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/apps/dcm2pnm.cc,v $
- *  CVS/RCS Revision: $Revision: 1.40 $
+ *  CVS/RCS Revision: $Revision: 1.41 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -94,7 +94,7 @@ static char rcsid[] = "$dcmtk: " OFFIS_CONSOLE_APPLICATION " v"
 
 int main(int argc, char *argv[])
 {
-    OFConsoleApplication app(OFFIS_CONSOLE_APPLICATION, "Convert DICOM images to PGM or PNM", rcsid, &OUTPUT);
+    OFConsoleApplication app(OFFIS_CONSOLE_APPLICATION, "Convert DICOM images to PGM or PNM", rcsid);
     OFCommandLine cmd;
 
     char buf[1024];
@@ -985,7 +985,10 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcm2pnm.cc,v $
- * Revision 1.40  2000-03-08 16:21:47  meichel
+ * Revision 1.41  2000-04-14 16:31:49  meichel
+ * Adapted to changed parameter list for command line class
+ *
+ * Revision 1.40  2000/03/08 16:21:47  meichel
  * Updated copyright header.
  *
  * Revision 1.39  2000/03/07 15:29:39  joergr
