@@ -22,9 +22,9 @@
  *  Purpose: DicomPalettePixelTemplate (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1998-11-27 14:17:31 $
+ *  Update Date:      $Date: 1998-12-14 17:08:56 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/include/Attic/dipalpxt.h,v $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -45,12 +45,16 @@
  *  class declaration  *
  *---------------------*/
 
-template<class T1, class T2>
-class DiPalettePixelTemplate : public DiColorPixelTemplate<T2>
+template<class T1, class T2, class T3>
+class DiPalettePixelTemplate
+  : public DiColorPixelTemplate<T3>
 {
  public:
-    DiPalettePixelTemplate(const DiDocument *docu, const DiInputPixel *pixel, DiLookupTable *pal[3], EI_Status &status)
-      : DiColorPixelTemplate<T2>(docu, pixel, 1, status)
+    DiPalettePixelTemplate(const DiDocument *docu,
+                           const DiInputPixel *pixel,
+                           DiLookupTable *pal[3],
+                           EI_Status &status)
+      : DiColorPixelTemplate<T3>(docu, pixel, 1, status)
     {
         if ((pixel != NULL) && (getCount() > 0) && (status == EIS_Normal))
             convert((const T1 *)pixel->getData(), pal);
@@ -61,33 +65,36 @@ class DiPalettePixelTemplate : public DiColorPixelTemplate<T2>
     }
 
  private:
-    inline void convert(const T1 *pixel, DiLookupTable *pal[3])
-    {
+    inline void convert(const T1 *pixel,
+                        DiLookupTable *pal[3])
+    {                                                                // can be optimized if necessary !
         if (Init(pixel))
         {
             register const T1 *p;
-            register T1 value;
+            register T2 value;
             register unsigned long i;
             if (PlanarConfiguration)
             {
-                register T2 *q;
-                register T1 min;
-                register T1 max;
+                register T3 *q;
+                register T2 min;
+                register T2 max;
                 for (int j = 0; j < 3; j++)
                 {
                     p = pixel;
                     q = Data[j];
-                    min = (T1)pal[j]->getFirstEntry();
-                    max = (T1)pal[j]->getLastEntry();
+                    min = pal[j]->getFirstEntry(value);
+                    max = pal[j]->getLastEntry(value);
+                    const T3 minvalue = (T3)pal[j]->getFirstValue();
+                    const T3 maxvalue = (T3)pal[j]->getLastValue();
                     for (i = 0; i < getCount(); i++)
                     {
-                        value = *(p++);
+                        value = (T2)(*(p++));
                         if (value <= min)
-                            *(q++) = (T2)pal[j]->getFirstValue();
+                            *(q++) = minvalue;
                         else if (value >= max)
-                            *(q++) = (T2)pal[j]->getLastValue();
+                            *(q++) = maxvalue;
                         else
-                            *(q++) = (T2)pal[j]->getValue(value);
+                            *(q++) = (T3)pal[j]->getValue(value);
                     }
                 }
             } 
@@ -97,15 +104,15 @@ class DiPalettePixelTemplate : public DiColorPixelTemplate<T2>
                 register int j;
                 for (i = 0; i < getCount(); i++)
                 {
-                    value = *(p++);
+                    value = (T2)(*(p++));
                     for (j = 0; j < 3; j++)
                     {
-                        if (value <= (T1)pal[j]->getFirstEntry())
-                            Data[j][i] = (T2)pal[j]->getFirstValue();
-                        else if (value >= (T1)pal[j]->getLastEntry())
-                            Data[j][i] = (T2)pal[j]->getLastValue();
+                        if (value <= pal[j]->getFirstEntry(value))
+                            Data[j][i] = (T3)pal[j]->getFirstValue();
+                        else if (value >= pal[j]->getLastEntry(value))
+                            Data[j][i] = (T3)pal[j]->getLastValue();
                         else
-                            Data[j][i] = (T2)pal[j]->getValue(value);
+                            Data[j][i] = (T3)pal[j]->getValue(value);
                     }
                 }
             }
@@ -122,7 +129,11 @@ class DiPalettePixelTemplate : public DiColorPixelTemplate<T2>
 **
 ** CVS/RCS Log:
 ** $Log: dipalpxt.h,v $
-** Revision 1.5  1998-11-27 14:17:31  joergr
+** Revision 1.6  1998-12-14 17:08:56  joergr
+** Added support for signed values as second entry in look-up tables
+** (= first value mapped).
+**
+** Revision 1.5  1998/11/27 14:17:31  joergr
 ** Added copyright message.
 **
 ** Revision 1.4  1998/07/01 08:39:27  joergr

@@ -22,9 +22,9 @@
  *  Purpose: DicomPaletteImage (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1998-11-27 14:32:19 $
+ *  Update Date:      $Date: 1998-12-14 17:09:34 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/libsrc/dipalimg.cc,v $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -82,35 +82,27 @@ DiPaletteImage::DiPaletteImage(const DiDocument *docu, const EI_Status status)
                 {
                     case EPR_Uint8:
                         if (BitsPerSample <= 8)
-                            InterData = new DiPalettePixelTemplate<Uint8, Uint8>(Document, InputData,
-                                palette, ImageStatus);
+                            InterData = new DiPalettePixelTemplate<Uint8, Uint32, Uint8>(Document, InputData, palette, ImageStatus);
                         else
-                            InterData = new DiPalettePixelTemplate<Uint8, Uint16>(Document, InputData,
-                                palette, ImageStatus);
+                            InterData = new DiPalettePixelTemplate<Uint8, Uint32, Uint16>(Document, InputData, palette, ImageStatus);
                         break;
                     case EPR_Sint8:
                         if (BitsPerSample <= 8)
-                            InterData = new DiPalettePixelTemplate<Sint8, Uint8>(Document, InputData,
-                                palette, ImageStatus);
+                            InterData = new DiPalettePixelTemplate<Sint8, Sint32, Uint8>(Document, InputData, palette, ImageStatus);
                         else
-                            InterData = new DiPalettePixelTemplate<Sint8, Uint16>(Document, InputData,
-                                palette, ImageStatus);
+                            InterData = new DiPalettePixelTemplate<Sint8, Sint32, Uint16>(Document, InputData, palette, ImageStatus);
                         break;
                     case EPR_Uint16:
                         if (BitsPerSample <= 8)
-                            InterData = new DiPalettePixelTemplate<Uint16, Uint8>(Document, InputData,
-                                palette, ImageStatus);
+                            InterData = new DiPalettePixelTemplate<Uint16, Uint32, Uint8>(Document, InputData, palette, ImageStatus);
                         else
-                            InterData = new DiPalettePixelTemplate<Uint16, Uint16>(Document, InputData,
-                                palette, ImageStatus);
+                            InterData = new DiPalettePixelTemplate<Uint16, Uint32, Uint16>(Document, InputData, palette, ImageStatus);
                         break;
                     case EPR_Sint16:
                         if (BitsPerSample <= 8)
-                            InterData = new DiPalettePixelTemplate<Sint16, Uint8>(Document, InputData,
-                                palette, ImageStatus);
+                            InterData = new DiPalettePixelTemplate<Sint16, Sint32, Uint8>(Document, InputData, palette, ImageStatus);
                         else
-                            InterData = new DiPalettePixelTemplate<Sint16, Uint16>(Document, InputData,
-                                palette, ImageStatus);
+                            InterData = new DiPalettePixelTemplate<Sint16, Sint32, Uint16>(Document, InputData, palette, ImageStatus);
                         break;
                     default:
                         if (DicomImageClass::DebugLevel >= DicomImageClass::DL_Warnings)
@@ -154,7 +146,11 @@ DiPaletteImage::~DiPaletteImage()
 ** CVS/RCS Log:
 
 ** $Log: dipalimg.cc,v $
-** Revision 1.6  1998-11-27 14:32:19  joergr
+** Revision 1.7  1998-12-14 17:09:34  joergr
+** Added support for signed values as second entry in look-up tables
+** (= first value mapped).
+**
+** Revision 1.6  1998/11/27 14:32:19  joergr
 ** Added copyright message.
 ** Introduced global debug level for dcmimage module to control error output.
 ** Renamed variable 'Status' to 'ImageStatus' because of possible conflicts
