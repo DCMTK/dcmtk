@@ -6,24 +6,29 @@
 @SET_MAKE@
 
 SHELL = /bin/sh
-VPATH= @srcdir@:@top_srcdir@/include:@top_srcdir@/@configdir@/include
-srcdir= @srcdir@
-top_srcdir= @top_srcdir@
-configdir=@top_srcdir@/@configdir@
+VPATH = @srcdir@:@top_srcdir@/include:@top_srcdir@/@configdir@/include
+srcdir = @srcdir@
+top_srcdir = @top_srcdir@
+configdir = @top_srcdir@/@configdir@
 
 include $(configdir)/@common_makefile@
 
-ofstddir=$(top_srcdir)/../ofstd
+ofstddir = $(top_srcdir)/../ofstd
 
-LOCALINCLUDES=-I$(ofstddir)/include -I$(includedir)/ofstd
+LOCALINCLUDES = -I$(ofstddir)/include -I$(includedir)/ofstd
 
 LIBDIRS = -L$(top_srcdir)/libsrc -L$(ofstddir)/libsrc -L$(libdir)
 LOCALLIBS = -ldcmdata -lofstd $(ZLIBLIBS)
 
-objs= dcmftest.o dcmconv.o dcmdump.o dump2dcm.o dcmgpdir.o dcm2xml.o xml2dcm.o \
-	dcmcrle.o dcmdrle.o dcmodify.o mdfdsman.o mdfconen.o
+objs = dcmftest.o dcmconv.o dcmdump.o dump2dcm.o dcmgpdir.o dcm2xml.o \
+	xml2dcm.o dcmcrle.o dcmdrle.o dcmodify.o mdfdsman.o mdfconen.o
 
-progs= dcmftest dcmconv dcmdump dump2dcm dcmgpdir dcm2xml xml2dcm dcmcrle dcmdrle dcmodify
+progs = dcmftest dcmconv dcmdump dump2dcm dcmgpdir dcm2xml xml2dcm dcmcrle \
+	dcmdrle dcmodify
+
+support_lib = dcm2xml.dtd
+support_data = dumppat.txt
+
 
 all: $(progs)
 
@@ -64,10 +69,23 @@ mdfdsman: mdfdsman.o
 mdfconen: mdfconen.o
 	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ $@.o $(LOCALLIBS) $(XMLLIBS) $(MATHLIBS) $(LIBS)
 
-install: all
+
+install: install-bin install-support
+
+install-bin: all
 	$(configdir)/mkinstalldirs $(bindir)
 	for prog in $(progs); do \
 		$(INSTALL_PROGRAM) $$prog$(BINEXT) $(bindir); strip $(bindir)/$$prog$(BINEXT) ;\
+	done
+
+install-support:
+	$(configdir)/mkinstalldirs $(libdir)
+	for file in $(support_lib); do \
+		$(INSTALL_DATA) $$file $(libdir) ;\
+	done
+	$(configdir)/mkinstalldirs $(datadir)
+	for file in $(support_data); do \
+		$(INSTALL_DATA) $$file $(datadir) ;\
 	done
 
 clean:
