@@ -85,7 +85,7 @@ long tag values:
 \verbatim
 character set:
 
-  +Cr  --charset-require     
+  +Cr  --charset-require
          require declaration of extended charset (default)
 
   +Ca  --charset-assume  charset: string constant
@@ -170,6 +170,7 @@ mapping:
 
 \verbatim
 ASCII         "ISO_IR 6"    =>  "UTF-8"
+UTF-8         "ISO_IR 192"  =>  "UTF-8"
 ISO Latin 1   "ISO_IR 100"  =>  "ISO-8859-1"
 ISO Latin 2   "ISO_IR 101"  =>  "ISO-8859-2"
 ISO Latin 3   "ISO_IR 109"  =>  "ISO-8859-3"

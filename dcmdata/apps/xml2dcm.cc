@@ -22,8 +22,8 @@
  *  Purpose: Convert XML document to DICOM file or data set
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2004-08-03 10:06:18 $
- *  CVS/RCS Revision: $Revision: 1.10 $
+ *  Update Date:      $Date: 2004-11-29 17:04:08 $
+ *  CVS/RCS Revision: $Revision: 1.11 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -258,6 +258,8 @@ static OFCondition parseElement(DcmItem *dataset,
                 /* check for known character set */
                 if (xmlStrcmp(elemVal, OFreinterpret_cast(const xmlChar *, "ISO_IR 6")) == 0)
                     encString = "UTF-8";
+                else if (xmlStrcmp(elemVal, OFreinterpret_cast(const xmlChar *, "ISO_IR 192")) == 0)
+                    encString = "UTF-8";
                 else if (xmlStrcmp(elemVal, OFreinterpret_cast(const xmlChar *, "ISO_IR 100")) == 0)
                     encString = "ISO-8859-1";
                 else if (xmlStrcmp(elemVal, OFreinterpret_cast(const xmlChar *, "ISO_IR 101")) == 0)
@@ -276,8 +278,8 @@ static OFCondition parseElement(DcmItem *dataset,
                     encString = "ISO-8859-7";
                 else if (xmlStrcmp(elemVal, OFreinterpret_cast(const xmlChar *, "ISO_IR 138")) == 0)
                     encString = "ISO-8859-8";
-                else
-                    CERR << "Warning: character set '" << elemVal <<"' not supported" << endl;
+                else if (xmlStrlen(elemVal) > 0)
+                    CERR << "Warning: character set '" << elemVal << "' not supported" << endl;
                 if (encString != NULL)
                 {
                     /* find appropriate encoding handler */
@@ -872,7 +874,10 @@ int main(int, char *[])
 /*
  * CVS/RCS Log:
  * $Log: xml2dcm.cc,v $
- * Revision 1.10  2004-08-03 10:06:18  joergr
+ * Revision 1.11  2004-11-29 17:04:08  joergr
+ * Added support for UTF-8 character set.
+ *
+ * Revision 1.10  2004/08/03 10:06:18  joergr
  * Added new option that allows to ignore the file meta information.
  *
  * Revision 1.9  2004/03/25 17:27:36  joergr
