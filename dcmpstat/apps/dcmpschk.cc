@@ -24,8 +24,8 @@
  *    
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-10-02 11:51:59 $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  Update Date:      $Date: 2001-11-09 16:04:51 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -888,11 +888,11 @@ int dcmchkMetaHeader(ostream& out, DcmMetaInfo* meta, DcmDataset* dset)
     // Check the group length information
     DcmTagKey gltag(DCM_MetaElementGroupLength);
     if (chkType1AttributeExistance(out, meta, gltag)) {
-        unsigned long len = 0;
+        Uint32 len = 0;
         meta->findAndGetUint32(gltag, len, 0);
         // Compute how large the Meta-Header should be
-        long expectedLength = meta->getLength(EXS_LittleEndianExplicit,
-                                              EET_ExplicitLength);
+        Uint32 expectedLength = meta->getLength(EXS_LittleEndianExplicit,
+                                                EET_ExplicitLength);
         expectedLength -= 12; // less length of group length element itself
 
         if (len != expectedLength) {
@@ -1123,7 +1123,11 @@ int main(int argc, char *argv[])
 /*     
  * CVS/RCS Log:
  * $Log: dcmpschk.cc,v $
- * Revision 1.4  2001-10-02 11:51:59  joergr
+ * Revision 1.5  2001-11-09 16:04:51  joergr
+ * Changed type of variable to avoid compiler warnings (comparison of signed
+ * and unsigned data).
+ *
+ * Revision 1.4  2001/10/02 11:51:59  joergr
  * Introduced new general purpose functions to get/put DICOM element values
  * from/to an item/dataset - removed some old and rarely used functions.
  *
