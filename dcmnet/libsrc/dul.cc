@@ -54,9 +54,9 @@
 ** Author, Date:	Stephen M. Moore, 14-Apr-93
 ** Intent:		This module contains the public entry points for the
 **			DICOM Upper Layer (DUL) protocol package.
-** Last Update:		$Author: meichel $, $Date: 2000-12-15 13:27:47 $
+** Last Update:		$Author: meichel $, $Date: 2001-03-28 15:44:37 $
 ** Source File:		$RCSfile: dul.cc,v $
-** Revision:		$Revision: 1.34 $
+** Revision:		$Revision: 1.35 $
 ** Status:		$State: Exp $
 */
 
@@ -319,12 +319,11 @@ DUL_DropNetwork(DUL_NETWORKKEY ** callerNetworkKey)
     if (cond != DUL_NORMAL)
 	return cond;
 
+    if ((*networkKey)->networkSpecific.TCP.tLayerOwned) delete (*networkKey)->networkSpecific.TCP.tLayer;
+
     if ((*networkKey)->applicationFunction & DICOM_APPLICATION_ACCEPTOR) {
 	if (strcmp((*networkKey)->networkType, DUL_NETWORK_TCP) == 0)
 	{
-          if (((*networkKey)->networkSpecific.TCP.tLayerOwned) && ((*networkKey)->networkSpecific.TCP.tLayer)) 
-            delete (*networkKey)->networkSpecific.TCP.tLayer;
-
 #ifdef HAVE_WINSOCK_H
             (void) shutdown((*networkKey)->networkSpecific.TCP.listenSocket, 1 /* SD_SEND */);
 	    (void) closesocket((*networkKey)->networkSpecific.TCP.listenSocket);
@@ -2432,7 +2431,12 @@ void DUL_DumpConnectionParameters(DUL_ASSOCIATIONKEY *association, ostream& outs
 /*
 ** CVS Log
 ** $Log: dul.cc,v $
-** Revision 1.34  2000-12-15 13:27:47  meichel
+** Revision 1.35  2001-03-28 15:44:37  meichel
+** Fixed memory leak: a DcmTransportLayer instance was not deallocated upon
+**   destruction of a DUL_NETWORKKEY if the network was declared as
+**   DICOM_APPLICATION_REQUESTOR.
+**
+** Revision 1.34  2000/12/15 13:27:47  meichel
 ** Declared qsort() and signal() callback functions as extern "C", avoids
 **   warnings on Sun C++ 5.x compiler.
 **
