@@ -22,9 +22,9 @@
  *  Purpose: class DcmItem
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-06-26 15:49:59 $
+ *  Update Date:      $Date: 2002-07-04 16:35:31 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcitem.cc,v $
- *  CVS/RCS Revision: $Revision: 1.70 $
+ *  CVS/RCS Revision: $Revision: 1.71 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -426,7 +426,7 @@ void DcmItem::print(ostream & out, const OFBool showFullData,
     else
         title = "Item with explicit Length";
 
-    sprintf( info, "(%s  #=%ld)", title, (long)card() );
+    sprintf( info, "(%s #=%ld)", title, (long)card() );
     printInfoLine(out, showFullData, level, info );
     if ( !elementList->empty() )
     {
@@ -3124,7 +3124,10 @@ OFBool DcmItem::containsUnknownVR() const
 /*
 ** CVS/RCS Log:
 ** $Log: dcitem.cc,v $
-** Revision 1.70  2002-06-26 15:49:59  joergr
+** Revision 1.71  2002-07-04 16:35:31  joergr
+** Fixed inconsistent formatting of the print() output.
+**
+** Revision 1.70  2002/06/26 15:49:59  joergr
 ** Added support for polymorp OB/OW value representation (e.g. pixel data) to
 ** putAndInsertUint8/16Array() methods.
 **
