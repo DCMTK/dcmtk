@@ -21,10 +21,10 @@
  *
  *  Purpose: Convert DICOM color images palette color
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-11-27 14:16:53 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2003-04-25 13:15:54 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/apps/dcmquant.cc,v $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -153,8 +153,8 @@ int main(int argc, char *argv[])
     cmd.addGroup("image processing and encoding options:");
      cmd.addSubGroup("frame selection:");
       cmd.addOption("--frame",              "+fr",  1, "[n]umber : integer",
-                                                       "select specified frame (default: 1)");
-      cmd.addOption("--all-frames",         "+fa",     "select all frames");
+                                                       "select specified frame");
+      cmd.addOption("--all-frames",         "+fa",     "select all frames (default)");
 
 #ifdef BUILD_WITH_DCMJPEG_SUPPORT
      cmd.addSubGroup("color space conversion options (compressed images only):");
@@ -511,7 +511,10 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmquant.cc,v $
- * Revision 1.7  2002-11-27 14:16:53  meichel
+ * Revision 1.8  2003-04-25 13:15:54  joergr
+ * Fixed inconsistency regarding the default option for frame selection.
+ *
+ * Revision 1.7  2002/11/27 14:16:53  meichel
  * Adapted module dcmimage to use of new header file ofstdinc.h
  *
  * Revision 1.6  2002/11/26 08:44:56  meichel

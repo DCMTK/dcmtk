@@ -42,8 +42,8 @@ input options:
 image processing and encoding options:
   frame selection:
     +fr  --frame                [n]umber : integer
-                                select specified frame (default: 1)
-    +fa  --all-frames           select all frames
+                                select specified frame
+    +fa  --all-frames           select all frames (default)
   compatibility options:
     +Mp  --accept-palettes      accept incorrect palette attribute tags
                                 (0028,111x) and (0028,121x)
