@@ -21,10 +21,10 @@
  *
  *  Purpose: class DcmFileFormat
  *
- *  Last Update:      $Author: wilkens $
- *  Update Date:      $Date: 2001-11-01 14:55:37 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2002-01-08 10:43:45 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcfilefo.cc,v $
- *  CVS/RCS Revision: $Revision: 1.24 $
+ *  CVS/RCS Revision: $Revision: 1.25 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -266,7 +266,7 @@ OFCondition DcmFileFormat::checkValue(DcmMetaInfo * metainfo,
                 {
                     char uid[128];
 
-                    dcmGenerateUniqueIdentifer(uid);    // from dcuid.h 
+                    dcmGenerateUniqueIdentifier(uid);    // from dcuid.h 
 
                     ((DcmUniqueIdentifier*)elem)->putString( uid );
                     debug(2, ( "DcmFileFormat::checkValue() use new generated SOPInstanceUID [%s]", uid ));
@@ -780,7 +780,10 @@ DcmDataset* DcmFileFormat::getAndRemoveDataset()
 /*
 ** CVS/RCS Log:
 ** $Log: dcfilefo.cc,v $
-** Revision 1.24  2001-11-01 14:55:37  wilkens
+** Revision 1.25  2002-01-08 10:43:45  joergr
+** Corrected spelling of function dcmGenerateUniqueIdentifier().
+**
+** Revision 1.24  2001/11/01 14:55:37  wilkens
 ** Added lots of comments.
 **
 ** Revision 1.23  2001/09/28 14:20:26  joergr
