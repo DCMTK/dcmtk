@@ -23,20 +23,19 @@
  *    classes: DVInterface
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-02-18 18:46:19 $
- *  CVS/RCS Revision: $Revision: 1.26 $
+ *  Update Date:      $Date: 1999-02-19 09:44:17 $
+ *  CVS/RCS Revision: $Revision: 1.27 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
  *
  */
 
-
  
 #ifndef DVIFACE_H
 #define DVIFACE_H
 
-#include "osconfig.h"    /* make sure OS specific configuration is included first */
+#include "osconfig.h"   /* make sure OS specific configuration is included first */
 #include "dctk.h"
 #include "dvpstat.h"    /* for class DVPresentationState */
 #include "dbpriv.h"     /* for struct IdxRecord */
@@ -44,7 +43,7 @@
 #include "ofstring.h"   /* for class OFString */
 #include "imagedb.h"    /* for DB_UpperMaxBytesPerStudy */
 
-#include "dvcache.h"
+#include "dvcache.h"    /* for index file caching */
 
 /* max study count for DB handle creation */
 #define PSTAT_MAXSTUDYCOUNT 200
@@ -176,6 +175,7 @@ class DVInterface
      *  (i.e. reading all studies, series, instances etc.) is finished.
      *  As long as a lock exists on the database, no other application
      *  (i.e. the network receiver) can add new images to the database.
+     *  This method also clears the index cache.
      *  @return EC_Normal upon success, an error code otherwise.
      */
     E_Condition releaseDatabase();
@@ -205,6 +205,7 @@ class DVInterface
      *  This method acquires a database lock which must be explicitly freed by the user.
      *  The selection remains valid until the database lock is removed or the database
      *  is modified (see comments for getNumberOfStudies).
+     *  Implicitly the first series and first instance within this study is selected, too.
      *  @param idx index to be selected, must be < getNumberOfStudies()
      *  @return EC_Normal upon success, an error code otherwise.
      */     
@@ -213,6 +214,7 @@ class DVInterface
     /** returns the review status of the currently selected study.
      *  May be called only if a valid study selection exists - see selectStudy().
      *  This method acquires a database lock which must be explicitly freed by the user.
+     *  Implicitly the first instance within this series is selected, too.
      *  @return study review status
      */
     DVIFhierarchyStatus getStudyStatus() ;
@@ -466,6 +468,13 @@ class DVInterface
      *  @return Image Number or NULL if absent or not selected.
      */
     const char *getImageNumber();
+
+    /** returns the Filename of the currently selected instance.
+     *  May be called only if a valid instance selection exists - see selectInstance().
+     *  This method acquires a database lock which must be explicitly freed by the user.
+     *  @return Filename or NULL if absent or not selected.
+     */
+    const char *getFilename();
 
     /** returns the review status of the currently selected instance.
      *  May be called only if a valid instance selection exists - see selectInstance().
@@ -922,6 +931,7 @@ private:
     /** creates an exlusive lock on the database if none exists.
      *  The lock will remain until explicitly released with releaseDatabase()
      *  or unlockExclusive().
+     *  This method also clears the index cache.
      *  @return EC_Normal upon success, an error code otherwise.
      */
     E_Condition lockExclusive();
@@ -969,15 +979,29 @@ private:
      */
     DiDisplayFunction *displayFunction;
 
+    /** handle to access database/index file
+     */
     DB_Private_Handle *pHandle;
-    OFBool lockingMode;  /* OFFalse=shared, OFTrue=exclusive */
+
+    /** locking mode (OFFalse => shared, OFTrue => exclusive)
+     */
+    OFBool lockingMode;
+
+    /** hierarchical cache structure to optimize index file access
+     */
     DVStudyCache idxCache;
+
+    /** record structure of index items (last read entry)
+     */
     IdxRecord idxRec;
+
+    /** position of last read index record (for optimization purposes)
+     */
     int idxRecPos;
 
     /* private methods for database */
     
-    /** creates index cache
+    /** creates index cache to optimize reading of index file
      */
     OFBool createIndexCache();
 
@@ -985,27 +1009,33 @@ private:
      */
     void clearIndexCache();
 
-    /** clears index record
+    /** clears specified index record
      */
-    void clearIndexRecord();
+    void clearIndexRecord(IdxRecord &record,
+                          int &recpos);
 
-    /** reads index record
+    /** reads specified index record
      */
     OFBool readIndexRecord(const int pos,
                            IdxRecord &record,
                            int *oldpos = NULL);
 
-    /** updates status cache
+    /** updates (hierarchical) status cache
      */
     void updateStatusCache();
 };
+
+
 #endif
 
 
 /*
  *  CVS/RCS Log:
  *  $Log: dviface.h,v $
- *  Revision 1.26  1999-02-18 18:46:19  joergr
+ *  Revision 1.27  1999-02-19 09:44:17  joergr
+ *  Added comments to new database routines and related member variables.
+ *
+ *  Revision 1.26  1999/02/18 18:46:19  joergr
  *  Re-implemented methods to access index file (delete methods are still
  *  missing).
  *  Removed parameter 'deletefile' from delete methods. This parameter is
