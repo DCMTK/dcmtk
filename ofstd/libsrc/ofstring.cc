@@ -11,9 +11,9 @@
 **
 ** 
 ** Last Update:		$Author: hewett $
-** Update Date:		$Date: 1997-07-07 14:05:33 $
+** Update Date:		$Date: 1997-09-01 10:00:20 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/libsrc/ofstring.cc,v $
-** CVS/RCS Revision:	$Revision
+** CVS/RCS Revision:	$Revision: 1.3 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -955,7 +955,10 @@ OFBool operator>= (const OFString& lhs, char rhs)
 /*
 ** CVS/RCS Log:
 ** $Log: ofstring.cc,v $
-** Revision 1.2  1997-07-07 14:05:33  hewett
+** Revision 1.3  1997-09-01 10:00:20  hewett
+** Added absent $ terminator to RCS/CVS Revision keyword in header.
+**
+** Revision 1.2  1997/07/07 14:05:33  hewett
 ** Renamed the constant OFnpos to OFString_npos to look more like
 ** the real ANSI constant string::npos.
 **
