@@ -176,10 +176,13 @@ diovpln.o: diovpln.cc ../../config/include/osconfig.h \
 dipalimg.o: dipalimg.cc ../../config/include/osconfig.h \
  ../../dcmdata/include/dctypes.h ../../ofstd/include/oftypes.h \
  ../../dcmdata/include/dcdeftag.h ../../dcmdata/include/dctagkey.h \
- ../include/dipalimg.h ../include/dicoimg.h ../include/diimage.h \
- ../include/diutils.h ../include/dipalpxt.h ../include/dicopxt.h \
- ../include/dicopx.h ../include/dipxrept.h ../include/diluptab.h \
- ../include/diinpx.h
+ ../../dcmdata/include/dctag.h ../../dcmdata/include/dcerror.h \
+ ../../dcmdata/include/dcvr.h ../../dcmdata/include/dcdicent.h \
+ ../include/didocu.h ../../dcmdata/include/dcxfer.h \
+ ../include/diobjcou.h ../include/dipalimg.h ../include/dicoimg.h \
+ ../include/diimage.h ../include/diutils.h ../include/dipalpxt.h \
+ ../include/dicopxt.h ../include/dicopx.h ../include/dipxrept.h \
+ ../include/diluptab.h ../include/diinpx.h
 dirgbimg.o: dirgbimg.cc ../../config/include/osconfig.h \
  ../../dcmdata/include/dctypes.h ../../ofstd/include/oftypes.h \
  ../include/dirgbimg.h ../include/dicoimg.h ../include/diimage.h \

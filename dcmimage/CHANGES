@@ -1,3 +1,9 @@
+
+**** Changes from 1998.06.29 (eichelberg)
+
+- Rebuilt Makefile dependencies.
+  Affects: dcmimage/libsrc/Makefile.dep
+
 **** Changes from 1998.06.25 (riesmeier)
 
 - Minor changes to syntax description of dcm2pnm.
@@ -64,6 +70,7 @@
   Affects: dcmimage/tests/test.cxx  
   
 - Replaced all tab characters by spaces to avoid different
+
   representations.
   Affects: dcmimage/include/*.h
            dcmimage/libsrc/*.cc
