@@ -111,8 +111,11 @@ reading:
   +r    --recurse
           recurse within filesystem directories
 
-  +p    --pattern *)  [p]attern : string (only with --recurse)
+  +p    --pattern  [p]attern : string (only with --recurse)
           pattern for filename matching (wildcards)
+
+          # possibly not available on all systems
+
 checking:
 
   -W    --no-consistency-check
@@ -243,8 +246,6 @@ length encoding in sequences and items:
 
   -e    --length-undefined
           write with undefined lengths
-
-*) possibly not available on all systems
 \endverbatim
 
 \section notes NOTES

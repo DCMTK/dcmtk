@@ -23,8 +23,8 @@ Currently, the following profiles are supported:
 \li General Purpose CD-R Interchange (STD-GEN-CD)
 \li General Purpose Interchange on DVD-RAM Media (STD-GEN-DVD-RAM)
 
-\b dcmmkdir is an extended version of this tool which also supports other 
-Media Storage Application Profiles than the general purpose one (e.g. both 
+\b dcmmkdir is an extended version of this tool which also supports other
+Media Storage Application Profiles than the general purpose one (e.g. both
 cardio profiles requiring the use of icon images).
 
 \section parameters PARAMETERS
@@ -100,8 +100,10 @@ reading:
   +r    --recurse
           recurse within filesystem directories
 
-  +p    --pattern *)  [p]attern : string (only with --recurse)
+  +p    --pattern  [p]attern : string (only with --recurse)
           pattern for filename matching (wildcards)
+
+          # possibly not available on all systems
 
 checking:
 
@@ -117,8 +119,6 @@ checking:
   +Ipi  --invent-patient-id
           invent new PatientID in case of inconsistant
           PatientsName attributes
-
-*) possibly not available on all systems
 \endverbatim
 
 \subsection output_options output options
