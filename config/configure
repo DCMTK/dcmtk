@@ -21355,6 +21355,95 @@ cat >>confdefs.h <<\_ACEOF
 _ACEOF
 
     TIFFLIBS="-ltiff"
+    SAVELIBS="$LIBS"
+    LIBS="$LIBS -ltiff"
+
+
+echo "$as_me:$LINENO: checking whether libtiff supports LZW compression" >&5
+echo $ECHO_N "checking whether libtiff supports LZW compression... $ECHO_C" >&6
+if test "${ac_cv_libtiff_lzw_compression+set}" = set; then
+  echo $ECHO_N "(cached) $ECHO_C" >&6
+else
+  if test "$cross_compiling" = yes; then
+  ac_cv_libtiff_lzw_compression=no
+else
+  cat >conftest.$ac_ext <<_ACEOF
+#line $LINENO "configure"
+#include "confdefs.h"
+
+extern "C" {
+#include <tiffio.h>
+}
+
+int main()
+{
+  const char *data[256];
+  for (int j=0; j<256; ++j) data[j]= 0;
+
+  int OK = 1;
+  TIFF *tif = TIFFOpen("lzwtest.tif", "w");
+  if (tif)
+  {
+    TIFFSetField(tif, TIFFTAG_IMAGEWIDTH, 16);
+    TIFFSetField(tif, TIFFTAG_IMAGELENGTH, 16);
+    TIFFSetField(tif, TIFFTAG_BITSPERSAMPLE, 8);
+    TIFFSetField(tif, TIFFTAG_ORIENTATION, ORIENTATION_TOPLEFT);
+    TIFFSetField(tif, TIFFTAG_COMPRESSION, COMPRESSION_LZW);
+    TIFFSetField(tif, TIFFTAG_PHOTOMETRIC, PHOTOMETRIC_MINISBLACK);
+    TIFFSetField(tif, TIFFTAG_FILLORDER, FILLORDER_MSB2LSB);
+    TIFFSetField(tif, TIFFTAG_DOCUMENTNAME, "unnamed");
+    TIFFSetField(tif, TIFFTAG_IMAGEDESCRIPTION, "test");
+    TIFFSetField(tif, TIFFTAG_SAMPLESPERPIXEL, 1);
+    TIFFSetField(tif, TIFFTAG_ROWSPERSTRIP, 512);
+    TIFFSetField(tif, TIFFTAG_PLANARCONFIG, PLANARCONFIG_CONTIG);
+
+    for (unsigned long i=0; (i < 16) && OK; i++)
+    {
+      if (TIFFWriteScanline(tif, data + (i << 4), i, 0) < 0) OK = 0;
+    }
+    TIFFFlushData(tif);
+    TIFFClose(tif);
+  }
+  if (OK) return 0; else return 10;
+}
+
+
+
+_ACEOF
+rm -f conftest$ac_exeext
+if { (eval echo "$as_me:$LINENO: \"$ac_link\"") >&5
+  (eval $ac_link) 2>&5
+  ac_status=$?
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); } && { ac_try='./conftest$ac_exeext'
+  { (eval echo "$as_me:$LINENO: \"$ac_try\"") >&5
+  (eval $ac_try) 2>&5
+  ac_status=$?
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); }; }; then
+  ac_cv_libtiff_lzw_compression=yes
+else
+  echo "$as_me: program exited with status $ac_status" >&5
+echo "$as_me: failed program was:" >&5
+cat conftest.$ac_ext >&5
+( exit $ac_status )
+ac_cv_libtiff_lzw_compression=no
+fi
+rm -f core core.* *.core conftest$ac_exeext conftest.$ac_objext conftest.$ac_ext
+fi
+
+fi
+echo "$as_me:$LINENO: result: $ac_cv_libtiff_lzw_compression" >&5
+echo "${ECHO_T}$ac_cv_libtiff_lzw_compression" >&6
+if test "$ac_cv_libtiff_lzw_compression" = yes; then
+
+cat >>confdefs.h <<\_ACEOF
+#define HAVE_LIBTIFF_LZW_COMPRESSION
+_ACEOF
+
+fi
+
+    LIBS="$SAVELIBS"
     ;;
   *)
     echo "$as_me:$LINENO: result: no" >&5
@@ -21402,6 +21491,96 @@ cat >>confdefs.h <<\_ACEOF
 _ACEOF
 
       TIFFLIBS="-ltiff"
+      SAVELIBS="$LIBS"
+      LIBS="$LIBS -ltiff"
+
+
+echo "$as_me:$LINENO: checking whether libtiff supports LZW compression" >&5
+echo $ECHO_N "checking whether libtiff supports LZW compression... $ECHO_C" >&6
+if test "${ac_cv_libtiff_lzw_compression+set}" = set; then
+  echo $ECHO_N "(cached) $ECHO_C" >&6
+else
+  if test "$cross_compiling" = yes; then
+  ac_cv_libtiff_lzw_compression=no
+else
+  cat >conftest.$ac_ext <<_ACEOF
+#line $LINENO "configure"
+#include "confdefs.h"
+
+extern "C" {
+#include <tiffio.h>
+}
+
+int main()
+{
+  const char *data[256];
+  for (int j=0; j<256; ++j) data[j]= 0;
+
+  int OK = 1;
+  TIFF *tif = TIFFOpen("lzwtest.tif", "w");
+  if (tif)
+  {
+    TIFFSetField(tif, TIFFTAG_IMAGEWIDTH, 16);
+    TIFFSetField(tif, TIFFTAG_IMAGELENGTH, 16);
+    TIFFSetField(tif, TIFFTAG_BITSPERSAMPLE, 8);
+    TIFFSetField(tif, TIFFTAG_ORIENTATION, ORIENTATION_TOPLEFT);
+    TIFFSetField(tif, TIFFTAG_COMPRESSION, COMPRESSION_LZW);
+    TIFFSetField(tif, TIFFTAG_PHOTOMETRIC, PHOTOMETRIC_MINISBLACK);
+    TIFFSetField(tif, TIFFTAG_FILLORDER, FILLORDER_MSB2LSB);
+    TIFFSetField(tif, TIFFTAG_DOCUMENTNAME, "unnamed");
+    TIFFSetField(tif, TIFFTAG_IMAGEDESCRIPTION, "test");
+    TIFFSetField(tif, TIFFTAG_SAMPLESPERPIXEL, 1);
+    TIFFSetField(tif, TIFFTAG_ROWSPERSTRIP, 512);
+    TIFFSetField(tif, TIFFTAG_PLANARCONFIG, PLANARCONFIG_CONTIG);
+
+    for (unsigned long i=0; (i < 16) && OK; i++)
+    {
+      if (TIFFWriteScanline(tif, data + (i << 4), i, 0) < 0) OK = 0;
+    }
+    TIFFFlushData(tif);
+    TIFFClose(tif);
+  }
+  if (OK) return 0; else return 10;
+}
+
+
+
+_ACEOF
+rm -f conftest$ac_exeext
+if { (eval echo "$as_me:$LINENO: \"$ac_link\"") >&5
+  (eval $ac_link) 2>&5
+  ac_status=$?
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); } && { ac_try='./conftest$ac_exeext'
+  { (eval echo "$as_me:$LINENO: \"$ac_try\"") >&5
+  (eval $ac_try) 2>&5
+  ac_status=$?
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); }; }; then
+  ac_cv_libtiff_lzw_compression=yes
+else
+  echo "$as_me: program exited with status $ac_status" >&5
+echo "$as_me: failed program was:" >&5
+cat conftest.$ac_ext >&5
+( exit $ac_status )
+ac_cv_libtiff_lzw_compression=no
+fi
+rm -f core core.* *.core conftest$ac_exeext conftest.$ac_objext conftest.$ac_ext
+fi
+
+fi
+echo "$as_me:$LINENO: result: $ac_cv_libtiff_lzw_compression" >&5
+echo "${ECHO_T}$ac_cv_libtiff_lzw_compression" >&6
+if test "$ac_cv_libtiff_lzw_compression" = yes; then
+
+cat >>confdefs.h <<\_ACEOF
+#define HAVE_LIBTIFF_LZW_COMPRESSION
+_ACEOF
+
+fi
+
+      LIBS="$SAVELIBS"
+
 else
   echo "$as_me: failed program was:" >&5
 cat conftest.$ac_ext >&5

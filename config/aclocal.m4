@@ -7,13 +7,16 @@ dnl
 dnl Authors: Andreas Barth, Marco Eichelberg
 dnl
 dnl Last Update:  $Author: meichel $
-dnl Revision:     $Revision: 1.29 $
+dnl Revision:     $Revision: 1.30 $
 dnl Status:       $State: Exp $
 dnl
-dnl $Id: aclocal.m4,v 1.29 2003-12-11 13:38:57 meichel Exp $
+dnl $Id: aclocal.m4,v 1.30 2003-12-17 17:36:18 meichel Exp $
 dnl
 dnl $Log: aclocal.m4,v $
-dnl Revision 1.29  2003-12-11 13:38:57  meichel
+dnl Revision 1.30  2003-12-17 17:36:18  meichel
+dnl Added configure test that checks if libtiff supports LZW compression
+dnl
+dnl Revision 1.29  2003/12/11 13:38:57  meichel
 dnl Added configure tests for <new.h> and std::nothrow
 dnl
 dnl Revision 1.28  2003/12/10 13:29:54  meichel
@@ -1413,5 +1416,60 @@ ac_cv_cxx_std_nothrow,
 ])
 if test "$ac_cv_cxx_std_nothrow" = yes; then
   AC_DEFINE(HAVE_STD__NOTHROW,, [Define if the compiler supports std::nothrow])
+fi
+])
+
+
+dnl AC_LIBTIFF_LZW_COMPRESSION checks if libtiff supports LZW compression.
+
+AC_DEFUN([AC_LIBTIFF_LZW_COMPRESSION],
+[AH_TEMPLATE([HAVE_LIBTIFF_LZW_COMPRESSION], [Define if libtiff supports LZW compression])
+AC_CACHE_CHECK(whether libtiff supports LZW compression,
+ac_cv_libtiff_lzw_compression,
+[AC_TRY_RUN(
+changequote({{, }})dnl
+{{
+extern "C" {
+#include <tiffio.h>
+}
+
+int main()
+{
+  const char *data[256];
+  for (int j=0; j<256; ++j) data[j]= 0;        
+
+  int OK = 1;
+  TIFF *tif = TIFFOpen("lzwtest.tif", "w");
+  if (tif)
+  {
+    TIFFSetField(tif, TIFFTAG_IMAGEWIDTH, 16);
+    TIFFSetField(tif, TIFFTAG_IMAGELENGTH, 16);
+    TIFFSetField(tif, TIFFTAG_BITSPERSAMPLE, 8);
+    TIFFSetField(tif, TIFFTAG_ORIENTATION, ORIENTATION_TOPLEFT);
+    TIFFSetField(tif, TIFFTAG_COMPRESSION, COMPRESSION_LZW);
+    TIFFSetField(tif, TIFFTAG_PHOTOMETRIC, PHOTOMETRIC_MINISBLACK);
+    TIFFSetField(tif, TIFFTAG_FILLORDER, FILLORDER_MSB2LSB);
+    TIFFSetField(tif, TIFFTAG_DOCUMENTNAME, "unnamed");
+    TIFFSetField(tif, TIFFTAG_IMAGEDESCRIPTION, "test");
+    TIFFSetField(tif, TIFFTAG_SAMPLESPERPIXEL, 1);
+    TIFFSetField(tif, TIFFTAG_ROWSPERSTRIP, 512);
+    TIFFSetField(tif, TIFFTAG_PLANARCONFIG, PLANARCONFIG_CONTIG);
+
+    for (unsigned long i=0; (i < 16) && OK; i++)
+    {
+      if (TIFFWriteScanline(tif, data + (i << 4), i, 0) < 0) OK = 0;
+    }
+    TIFFFlushData(tif);
+    TIFFClose(tif);
+  }
+  if (OK) return 0; else return 10;
+}
+
+}}
+changequote([, ])dnl
+ , ac_cv_libtiff_lzw_compression=yes, ac_cv_libtiff_lzw_compression=no, ac_cv_libtiff_lzw_compression=no)
+])
+if test "$ac_cv_libtiff_lzw_compression" = yes; then
+  AC_DEFINE(HAVE_LIBTIFF_LZW_COMPRESSION,, [Define if libtiff supports LZW compression])
 fi
 ])
