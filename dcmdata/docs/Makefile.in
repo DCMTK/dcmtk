@@ -11,7 +11,7 @@ install:
 	echo Nothing to do for install
 
 clean:
-	echo Nothing to do for clean
+	rm -f *~
 
 distclean:
 	rm -f Makefile *~
