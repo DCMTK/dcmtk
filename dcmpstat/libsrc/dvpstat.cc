@@ -23,8 +23,8 @@
  *    classes: DVPresentationState
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-02-17 10:05:35 $
- *  CVS/RCS Revision: $Revision: 1.10 $
+ *  Update Date:      $Date: 1999-02-18 11:36:40 $
+ *  CVS/RCS Revision: $Revision: 1.11 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -3191,6 +3191,19 @@ E_Condition DVPresentationState::moveOverlay(size_t old_layer, size_t idx, size_
   return activationLayerList.setActivation(group, lname);
 }
 
+Uint8 DVPresentationState::convertPValueToDDL(Uint16 pvalue)
+{
+  if (currentImage)
+  {
+    /* activate Barten transform */
+    if (displayFunction && useBartenTransform) currentImage->setDisplayFunction(displayFunction);
+    else currentImage->setNoDisplayFunction();
+    Uint16 result=0;
+    if (currentImage->convertPValueToDDL(pvalue, result)) return (Uint8)result;
+  }
+  return (Uint8)(pvalue >> 8);
+}
+
 void DVPresentationState::renderPixelData()
 {
   if (currentImage == NULL) return;
@@ -3530,7 +3543,11 @@ void DVPresentationState::changeDisplayFunction(DiDisplayFunction *dispFunction)
 
 /*
  *  $Log: dvpstat.cc,v $
- *  Revision 1.10  1999-02-17 10:05:35  meichel
+ *  Revision 1.11  1999-02-18 11:36:40  meichel
+ *  Added new method convertPValueToDDL() to DVPresentationState
+ *    that maps P-Values to DDLs.
+ *
+ *  Revision 1.10  1999/02/17 10:05:35  meichel
  *  Moved creation of Display Function object from DVPresentationState to
  *    DVInterface to avoid unnecessary re-reads.
  *

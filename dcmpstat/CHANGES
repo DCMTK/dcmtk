@@ -7,6 +7,11 @@
   Affects: dcmpstat/include/dviface.h
            dcmpstat/libsrc/dviface.cc
 
+- Added new method convertPValueToDDL() to DVPresentationState
+  that maps P-Values to DDLs.
+  Affects: dcmpstat/include/dvpstat.h
+           dcmpstat/libsrc/dvpstat.cc
+  
 **** Changes from 1999.02.17 (vorwerk)
 
 - removed bug in strippidxarray() that occurs in certain entries in database

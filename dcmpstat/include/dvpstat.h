@@ -23,8 +23,8 @@
  *    classes: DVPresentationState
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-02-17 10:05:32 $
- *  CVS/RCS Revision: $Revision: 1.8 $
+ *  Update Date:      $Date: 1999-02-18 11:36:38 $
+ *  CVS/RCS Revision: $Revision: 1.9 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1352,6 +1352,15 @@ public:
     *  If NULL is passed, Barten transform is disabled.
     */
    void changeDisplayFunction(DiDisplayFunction *dispFunction=NULL);
+
+   /** converts a 16-bit P-Value to an 8-bit DDL value for on-sceen display.
+    *  If a display function is set and enabled (see setBartenTransform()),
+    *  the DDL is corrected for the nonlinearity of the display, otherwise
+    *  a simple linear mapping is performed.
+    *  @param pvalue P-Value 0..0xFFFF
+    *  @return display driving level (DDL), 0..0xFF
+    */
+   Uint8 convertPValueToDDL(Uint16 pvalue);
    
 private:
 
@@ -1680,7 +1689,11 @@ private:
 
 /*
  *  $Log: dvpstat.h,v $
- *  Revision 1.8  1999-02-17 10:05:32  meichel
+ *  Revision 1.9  1999-02-18 11:36:38  meichel
+ *  Added new method convertPValueToDDL() to DVPresentationState
+ *    that maps P-Values to DDLs.
+ *
+ *  Revision 1.8  1999/02/17 10:05:32  meichel
  *  Moved creation of Display Function object from DVPresentationState to
  *    DVInterface to avoid unnecessary re-reads.
  *
