@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DVPresentationState
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-09-26 15:36:34 $
- *  CVS/RCS Revision: $Revision: 1.67 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2001-09-28 13:50:14 $
+ *  CVS/RCS Revision: $Revision: 1.68 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -57,6 +57,7 @@ END_EXTERN_C
 
 #include <math.h>
 #include <stdio.h>
+#include <iomanip.h>
 #include <string.h>
 #ifdef HAVE_TIME_H
 #include <time.h>
@@ -4142,7 +4143,10 @@ const char *DVPresentationState::getAttachedImageSOPInstanceUID()
 
 /*
  *  $Log: dvpstat.cc,v $
- *  Revision 1.67  2001-09-26 15:36:34  meichel
+ *  Revision 1.68  2001-09-28 13:50:14  joergr
+ *  Added "#include <iomanip.h>" to keep gcc 3.0 quiet.
+ *
+ *  Revision 1.67  2001/09/26 15:36:34  meichel
  *  Adapted dcmpstat to class OFCondition
  *
  *  Revision 1.66  2001/06/01 15:50:39  meichel

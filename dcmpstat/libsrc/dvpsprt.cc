@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DVPSPrintSCP
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-09-26 15:36:30 $
- *  CVS/RCS Revision: $Revision: 1.9 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2001-09-28 13:49:37 $
+ *  CVS/RCS Revision: $Revision: 1.10 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -38,6 +38,9 @@
 #include "dvpsfs.h"
 #include "dvpssp.h"
 #include "dvpshlp.h"
+
+#include <iomanip.h>
+
 
 DVPSPrintSCP::DVPSPrintSCP(DVInterface &iface, const char *cfname)
 : dviface(iface)
@@ -1240,7 +1243,10 @@ void DVPSPrintSCP::dumpNMessage(T_DIMSE_Message &msg, DcmItem *dataset, OFBool o
 
 /*
  *  $Log: dvpsprt.cc,v $
- *  Revision 1.9  2001-09-26 15:36:30  meichel
+ *  Revision 1.10  2001-09-28 13:49:37  joergr
+ *  Added "#include <iomanip.h>" to keep gcc 3.0 quiet.
+ *
+ *  Revision 1.9  2001/09/26 15:36:30  meichel
  *  Adapted dcmpstat to class OFCondition
  *
  *  Revision 1.8  2001/06/01 15:50:35  meichel
