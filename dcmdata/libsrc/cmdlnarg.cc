@@ -22,10 +22,10 @@
  *  Purpose: Provide prototype of command line argument gathering routine
  *  for OS environments which cannot pass arguments on the command line.
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-04-21 15:45:10 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 1999-05-04 12:20:20 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/cmdlnarg.cc,v $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -99,6 +99,7 @@ void prepareCmdLineArgs(int& /* argc */, char** /* argv */,
 			const char* /* progname */)
 {
 #ifdef _WIN32
+#ifndef __CYGWIN__
     /* Map stderr onto stdout (cannot redirect stderr under windows).
      * Remove any buffering (windows uses a 2k buffer for stdout when not
      * writing to the console.  since dcmtk uses mixed stdout, stderr 
@@ -127,6 +128,7 @@ void prepareCmdLineArgs(int& /* argc */, char** /* argv */,
         perror(NULL);
     }
 #endif
+#endif
 
     /* no need to process the arguments */
 }
@@ -137,7 +139,11 @@ void prepareCmdLineArgs(int& /* argc */, char** /* argv */,
 /*
 ** CVS/RCS Log:
 ** $Log: cmdlnarg.cc,v $
-** Revision 1.5  1999-04-21 15:45:10  meichel
+** Revision 1.6  1999-05-04 12:20:20  joergr
+** Minor changes to support Cygwin B20.1 (check __CYGWIN__ to distinguish from
+** MSVC which also defines _WIN32).
+**
+** Revision 1.5  1999/04/21 15:45:10  meichel
 ** Now always including <windows.h> instead of <winsock.h> on Win32 platforms.
 **   This makes sure that <winsock2.h> is used if available.
 **

@@ -61,10 +61,10 @@
 ** Module Prefix: none 
 ** 
 **
-** Last Update:		$Author: meichel $
-** Update Date:		$Date: 1999-04-30 16:36:32 $
+** Last Update:		$Author: joergr $
+** Update Date:		$Date: 1999-05-04 12:18:04 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/include/Attic/dcompat.h,v $
-** CVS/RCS Revision:	$Revision: 1.13 $
+** CVS/RCS Revision:	$Revision: 1.14 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -162,7 +162,9 @@ END_EXTERN_C
 #ifdef _WIN32
 #include <process.h>
 #include <io.h>
+#ifndef __CYGWIN__
 #include <sys/locking.h>
+#endif
 #endif
 
 #ifndef EINTR
@@ -420,7 +422,11 @@ char *tempnam(char *dir, char *pfx);
 /*
 ** CVS Log
 ** $Log: dcompat.h,v $
-** Revision 1.13  1999-04-30 16:36:32  meichel
+** Revision 1.14  1999-05-04 12:18:04  joergr
+** Minor changes to support Cygwin B20.1 (check __CYGWIN__ to distinguish from
+** MSVC which also defines _WIN32).
+**
+** Revision 1.13  1999/04/30 16:36:32  meichel
 ** Renamed all flock calls to dcmtk_flock to avoid name clash between flock()
 ** emulation based on fcntl() and a constructor for struct flock.
 **

@@ -63,10 +63,10 @@
 ** Module Prefix: none 
 ** 
 **
-** Last Update:		$Author: meichel $
-** Update Date:		$Date: 1999-04-30 16:36:30 $
+** Last Update:		$Author: joergr $
+** Update Date:		$Date: 1999-05-04 12:18:26 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/libsrc/dcompat.cc,v $
-** CVS/RCS Revision:	$Revision: 1.18 $
+** CVS/RCS Revision:	$Revision: 1.19 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -136,10 +136,11 @@ char dcompat_functionDefinedOnlyToStopLinkerMoaning;
 #ifndef HAVE_FLOCK
 #ifdef macintosh
 
+// MacOS seems not to support file locking
+
 int dcmtk_flock(int fd, int operation)
 {
-  fprintf(stderr, "dcmnet\libsrc\dcompat(mac): WARNING ! \n");
-  fprintf(stderr, "Unsupported flock(fd[%d],operation[0x%x]\n");
+  fprintf(stderr, "WARNING: Unsupported flock(fd[%d],operation[0x%x])\n", fd, operation);
   return 0;
 }
 
@@ -157,7 +158,11 @@ int dcmtk_flock(int fd, int operation)
 
 int dcmtk_flock(int fd, int operation)
 {
+#ifdef __CYGWIN__
+  HANDLE handle=(void *)get_osfhandle(fd);
+#else
   HANDLE handle=(void *)_get_osfhandle(fd);
+#endif
   OVERLAPPED overl;
   OFBitmanipTemplate<char>::zeroMem((char *)&overl, sizeof(overl));
 
@@ -426,7 +431,11 @@ tempnam(char *dir, char *pfx)
 /*
 ** CVS Log
 ** $Log: dcompat.cc,v $
-** Revision 1.18  1999-04-30 16:36:30  meichel
+** Revision 1.19  1999-05-04 12:18:26  joergr
+** Minor changes to support Cygwin B20.1 (check __CYGWIN__ to distinguish from
+** MSVC which also defines _WIN32).
+**
+** Revision 1.18  1999/04/30 16:36:30  meichel
 ** Renamed all flock calls to dcmtk_flock to avoid name clash between flock()
 ** emulation based on fcntl() and a constructor for struct flock.
 **
