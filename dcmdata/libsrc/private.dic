@@ -21,9 +21,9 @@
 #  Purpose:
 #  This is the private tag DICOM data dictionary for the dcmtk class library.
 #
-#  Last Update:      $Author: joergr $
-#  Update Date:      $Date: 2004-02-20 10:04:32 $
-#  CVS/RCS Revision: $Revision: 1.5 $
+#  Last Update:      $Author: wilkens $
+#  Update Date:      $Date: 2004-03-24 14:20:52 $
+#  CVS/RCS Revision: $Revision: 1.6 $
 #  Status:           $State: Exp $
 #
 #
@@ -957,6 +957,18 @@
 (3f01,"INTELERAD MEDICAL SYSTEMS",03)	LO	SourceAE	1
 (3f01,"INTELERAD MEDICAL SYSTEMS",04)	LO	DeferredValidation	1
 (3f01,"INTELERAD MEDICAL SYSTEMS",05)	LO	SeriesOwner	1
+
+(0041,"INTEGRIS 1.0",20)	FL	AccumulatedFluoroscopyDose	1
+(0041,"INTEGRIS 1.0",30)	FL	AccumulatedExposureDose	1
+(0041,"INTEGRIS 1.0",40)	FL	TotalDose	1
+(0041,"INTEGRIS 1.0",41)	FL	TotalNumberOfFrames	1
+(0041,"INTEGRIS 1.0",50)	SQ	ExposureInformationSequence	1
+(0009,"INTEGRIS 1.0",08)	CS	ExposureChannel	1
+(0009,"INTEGRIS 1.0",32)	TM	ImageBlankingShape	1
+(0019,"INTEGRIS 1.0",00)	LO	ExposureStartTime	1
+(0019,"INTEGRIS 1.0",40)	DS	FrameRate	1
+(0021,"INTEGRIS 1.0",12)	IS	ExposureNumber	1
+(0029,"INTEGRIS 1.0",08)	IS	NumberOfExposureResults	1
 
 (0029,"ISG shadow",70)	IS	Unknown	1
 (0029,"ISG shadow",80)	IS	Unknown	1
