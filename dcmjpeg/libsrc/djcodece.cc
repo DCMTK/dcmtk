@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1997-2001, OFFIS
+ *  Copyright (C) 1997-2002, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,10 +21,10 @@
  *
  *  Purpose: abstract codec class for JPEG encoders.
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-12-04 10:42:12 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2002-12-09 13:52:17 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmjpeg/libsrc/djcodece.cc,v $
- *  CVS/RCS Revision: $Revision: 1.10 $
+ *  CVS/RCS Revision: $Revision: 1.11 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -169,7 +169,7 @@ OFCondition DJCodecEncoder::encode(
 
       // update image type
       if (result.good()) result = DcmCodec::updateImageType((DcmItem *)dataset);
-      
+
       // determine compressed bit depth passed to JPEG codec
       Uint16 compressedBits = djcp->getForcedBitDepth();
       if (result.good())
@@ -177,13 +177,13 @@ OFCondition DJCodecEncoder::encode(
         if (compressedBits == 0)
         {
           result = ((DcmItem *)dataset)->findAndGetUint16(DCM_BitsStored, compressedBits);
-        }  
+        }
       }
-    
+
       // update derivation description
-      if (result.good()) result = updateDerivationDescription((DcmItem *)dataset, toRepParam, 
+      if (result.good()) result = updateDerivationDescription((DcmItem *)dataset, toRepParam,
         djcp, (Uint8)compressedBits, compressionRatio);
-      
+
       if (result.good())
       {
         if (isLosslessProcess())
@@ -195,13 +195,13 @@ OFCondition DJCodecEncoder::encode(
         {
           // lossy process - create new UID unless mode is EUC_never and we're not converting to Secondary Capture
           if (djcp->getConvertToSC() || (djcp->getUIDCreation() != EUC_never)) result = DcmCodec::newInstance((DcmItem *)dataset);
-        
+
           // update lossy compression ratio
           if (result.good()) result = updateLossyCompressionRatio((DcmItem *)dataset, compressionRatio);
         }
       }
 
-      // convert to Secondary Capture if requested by user.  
+      // convert to Secondary Capture if requested by user.
       // This method creates a new SOP class UID, so it should be executed
       // after the call to newInstance() which creates a Source Image Sequence.
       if (result.good() && djcp->getConvertToSC()) result = DcmCodec::convertToSecondaryCapture((DcmItem *)dataset);
@@ -223,13 +223,13 @@ OFCondition DJCodecEncoder::encodeColorImage(
   OFCondition result = EC_Normal;
   DcmOffsetList offsetList;
   DcmPixelSequence *pixelSequence = NULL;
-  DcmPixelItem *offsetTable = NULL; 
+  DcmPixelItem *offsetTable = NULL;
   unsigned short bitsPerSample = 0;
   compressionRatio = 0.0; // initialize if something goes wrong
   unsigned long compressedSize = 0;
   double uncompressedSize = 0.0;
   Uint16 compressedBits = cp->getForcedBitDepth();
-  
+
   // initialize settings with defaults for RGB mode
   OFBool monochromeMode = OFFalse;
   unsigned long flags = 0;
@@ -246,7 +246,7 @@ OFCondition DJCodecEncoder::encodeColorImage(
   if (cp->getCompressionColorSpaceConversion() == ECC_monochrome)
   {
     monochromeMode = OFTrue;
-    flags = 0; 
+    flags = 0;
     interpr = EPI_Monochrome2;
     samplesPerPixel = 1;
     photometricInterpretation = "MONOCHROME2";
@@ -303,7 +303,7 @@ OFCondition DJCodecEncoder::encodeColorImage(
     if (compressedBits == 0)
     {
       result = ((DcmItem *)dataset)->findAndGetUint16(DCM_BitsStored, compressedBits);
-    }  
+    }
   }
 
   // create codec instance
@@ -315,14 +315,14 @@ OFCondition DJCodecEncoder::encodeColorImage(
       // render and compress each frame
       bitsPerSample = jpeg->bitsPerSample();
       unsigned long frameCount = dimage->getFrameCount();
-      unsigned short bytesPerSample = jpeg->bytesPerSample();      
+      unsigned short bytesPerSample = jpeg->bytesPerSample();
       unsigned short columns = (unsigned short) dimage->getWidth();
       unsigned short rows = (unsigned short) dimage->getHeight();
       Uint8 *jpegData = NULL;
-      Uint32 jpegLen  = 0;      
+      Uint32 jpegLen  = 0;
       const void *frame = NULL;
-      
-      // compute original image size in bytes, ignoring any padding bits. 
+
+      // compute original image size in bytes, ignoring any padding bits.
       uncompressedSize = columns * rows * dimage->getDepth() * frameCount * samplesPerPixel / 8.0;
       for (unsigned long i=0; (i<frameCount) && (result.good()); i++)
       {
@@ -346,9 +346,9 @@ OFCondition DJCodecEncoder::encodeColorImage(
           }
 
           // delete block of JPEG data
-          delete[] jpegData;          
+          delete[] jpegData;
           compressedSize += jpegLen;
-        }       
+        }
       }
       delete jpeg;
     } else result = EC_MemoryExhausted;
@@ -372,7 +372,7 @@ OFCondition DJCodecEncoder::encodeColorImage(
   {
     // adapt attributes in image pixel module
     if (result.good()) result = dataset->putAndInsertUint16(DCM_SamplesPerPixel, samplesPerPixel);
-    if (result.good()) result = dataset->putAndInsertString(DCM_PhotometricInterpretation, photometricInterpretation);    
+    if (result.good()) result = dataset->putAndInsertString(DCM_PhotometricInterpretation, photometricInterpretation);
     if (result.good())
     {
       if (bitsPerSample > 8)
@@ -383,7 +383,7 @@ OFCondition DJCodecEncoder::encodeColorImage(
     if (result.good()) result = dataset->putAndInsertUint16(DCM_BitsStored, bitsPerSample);
     if (result.good()) result = dataset->putAndInsertUint16(DCM_HighBit, bitsPerSample-1);
     if (result.good()) result = dataset->putAndInsertUint16(DCM_PixelRepresentation, 0);
-    if (result.good()) 
+    if (result.good())
     {
       if (monochromeMode) delete dataset->remove(DCM_PlanarConfiguration);
       else result = dataset->putAndInsertUint16(DCM_PlanarConfiguration, 0);
@@ -489,7 +489,7 @@ OFCondition DJCodecEncoder::adjustOverlays(
     unsigned long frames = 0;
     DcmElement *elem = NULL;
     OFCondition result = EC_Normal;
-    
+
     // adjust overlays (prior to grayscale compression)
     for (unsigned int i=0; i < overlayCount; i++)
     {
@@ -511,22 +511,22 @@ OFCondition DJCodecEncoder::adjustOverlays(
             {
               dataset->insert(elem, OFTrue /*replaceOld*/);
               // DCM_OverlayBitsAllocated
-              result = dataset->putAndInsertUint16(DcmTagKey(group, 0x0100), 1); 
+              result = dataset->putAndInsertUint16(DcmTagKey(group, 0x0100), 1);
               // DCM_OverlayBitPosition
-              if (result.good()) result = dataset->putAndInsertUint16(DcmTagKey(group, 0x0102), 0); 
-            } 
+              if (result.good()) result = dataset->putAndInsertUint16(DcmTagKey(group, 0x0102), 0);
+            }
             else
             {
               delete elem;
               return result;
-            } 
+            }
           }
           else
           {
             delete[] buffer;
             return EC_MemoryExhausted;
           }
-        } 
+        }
         else return EC_IllegalCall;
       }
     }
@@ -545,7 +545,7 @@ OFCondition DJCodecEncoder::encodeMonochromeImage(
   OFCondition result = EC_Normal;
   DcmOffsetList offsetList;
   DcmPixelSequence *pixelSequence = NULL;
-  DcmPixelItem *offsetTable = NULL; 
+  DcmPixelItem *offsetTable = NULL;
   unsigned short bitsPerSample = 0;
   compressionRatio = 0.0; // initialize if something goes wrong
   unsigned long compressedSize = 0;
@@ -556,10 +556,10 @@ OFCondition DJCodecEncoder::encodeMonochromeImage(
   double maxRange = 0.0;
   double minUsed  = 0.0;
   double maxUsed  = 0.0;
-  double rescaleSlope = 1.0;  
-  double rescaleIntercept = 0.0;  
-  double voiFactor = 1.0;  
-  double voiOffset = 0.0;  
+  double rescaleSlope = 1.0;
+  double rescaleIntercept = 0.0;
+  double voiFactor = 1.0;
+  double voiOffset = 0.0;
   double windowCenter = 0.0;
   double windowWidth = 0.0;
   OFBool deleteVOILUT = OFFalse;
@@ -593,14 +593,14 @@ OFCondition DJCodecEncoder::encodeMonochromeImage(
         {
           // disable correction of polarity or any other presentation LUT transformation
           dimage.setPresentationLutShape(ESP_Identity);
-          
+
           // disable VOI transformation
           dimage.setNoVoiTransformation();
-          
+
           // look up SOP Class UID, if any
           const char *classUID = NULL;
           dataset->findAndGetString(DCM_SOPClassUID, classUID);
-                    
+
           // SOP Class specifics.
           if (classUID && ! cp->getConvertToSC())
           {
@@ -615,7 +615,7 @@ OFCondition DJCodecEncoder::encodeMonochromeImage(
               mode_XA = OFTrue;
               mode_useModalityRescale = OFFalse; // inverse definition of Modality LUT Module
             }
-          
+
             // CT is also a special case because the Modality LUT is required here
             // to convert to Hounsfield units. Again, this is not an issue if we're
             // converting to SC anyway.
@@ -625,67 +625,67 @@ OFCondition DJCodecEncoder::encodeMonochromeImage(
               mode_useModalityRescale = OFTrue; // required for Hounsfield units
             }
           }
-          
+
           // query image range and extreme values
-          if (result.good()) 
+          if (result.good())
           {
             if (! dimage.getMinMaxValues(minRange, maxRange, 1)) result = EC_IllegalCall;
             if (maxRange <= minRange) result = EC_IllegalCall;
-          }    
-          
-          if (result.good()) 
+          }
+
+          if (result.good())
           {
             if (! dimage.getMinMaxValues(minUsed, maxUsed, 0)) result = EC_IllegalCall;
             if (maxUsed < minUsed) result = EC_IllegalCall;
-          }              
-        }      
+          }
+        }
         break;
       case 1: // use the n-th VOI window from the image file
         {
           unsigned long windowParameter = cp->getWindowParameter();
           if ((windowParameter < 1) || (windowParameter > dimage.getWindowCount())) result = EC_IllegalCall;
           if (!dimage.setWindow(windowParameter - 1)) result = EC_IllegalCall;
-        }      
+        }
         break;
       case 2: // use the n-th VOI look up table from the image file
         {
           unsigned long windowParameter = cp->getWindowParameter();
           if ((windowParameter < 1) || (windowParameter > dimage.getVoiLutCount())) result = EC_IllegalCall;
           if (!dimage.setVoiLut(windowParameter - 1)) result = EC_IllegalCall;
-        }      
+        }
         break;
       case 3: // Compute VOI window using min-max algorithm
         if (!dimage.setMinMaxWindow(0)) result = EC_IllegalCall;
         break;
       case 4: // Compute VOI window using Histogram algorithm, ignoring n percent
         {
-          unsigned long windowParameter = cp->getWindowParameter();       
+          unsigned long windowParameter = cp->getWindowParameter();
           if (!dimage.setHistogramWindow(((double)windowParameter)/100.0)) result = EC_IllegalCall;
-        }      
+        }
         break;
       case 5: // Compute VOI window using center r and width s
         {
           double winCenter=0.0, winWidth=0.0;
           cp->getVOIWindow(winCenter, winWidth);
           if (!dimage.setWindow(winCenter, winWidth)) result = EC_IllegalCall;
-        }      
+        }
         break;
       case 6: // Compute VOI window using min-max algorithm ignoring extremes
         if (!dimage.setMinMaxWindow(1)) result = EC_IllegalCall;
         break;
       case 7: // Compute region of interest VOI window
         {
-         unsigned long left=0, top=0, width=0, height=0;
-         cp->getROI(left, top, width, height);    
-          if (!dimage.setRoiWindow(left, top, width, height)) result = EC_IllegalCall;
+         unsigned long left_pos=0, top_pos=0, width=0, height=0;
+         cp->getROI(left_pos, top_pos, width, height);
+          if (!dimage.setRoiWindow(left_pos, top_pos, width, height)) result = EC_IllegalCall;
         }
         break;
       default: // includes case 0, which must not occur here
         result = EC_IllegalCall;
         break;
     }
-  }        
-  
+  }
+
   // create initial pixel sequence
   if (result.good())
   {
@@ -707,7 +707,7 @@ OFCondition DJCodecEncoder::encodeMonochromeImage(
     if (compressedBits == 0)
     {
       result = ((DcmItem *)dataset)->findAndGetUint16(DCM_BitsStored, compressedBits);
-    }  
+    }
   }
 
   // create codec instance
@@ -736,7 +736,7 @@ OFCondition DJCodecEncoder::encodeMonochromeImage(
           if ((z + windowWidth) > maxUsed) windowCenter += z; else windowCenter += minUsed;
           dimage.setWindow(windowCenter, windowWidth);
         }
-        
+
         // perform image computations
         if (mode_useModalityRescale)
         {
@@ -745,7 +745,7 @@ OFCondition DJCodecEncoder::encodeMonochromeImage(
           if (mode_usePixelValues)
           {
             rescaleSlope = (windowWidth-1)/((1<<bitsPerSample)-1);
-            rescaleIntercept = windowCenter - (windowWidth * 0.5);                      
+            rescaleIntercept = windowCenter - (windowWidth * 0.5);
           }
           else
           {
@@ -773,14 +773,14 @@ OFCondition DJCodecEncoder::encodeMonochromeImage(
 
       // render and compress each frame
       unsigned long frameCount = dimage.getFrameCount();
-      unsigned short bytesPerSample = jpeg->bytesPerSample();      
+      unsigned short bytesPerSample = jpeg->bytesPerSample();
       unsigned short columns = (unsigned short) dimage.getWidth();
       unsigned short rows = (unsigned short) dimage.getHeight();
       Uint8 *jpegData = NULL;
-      Uint32 jpegLen  = 0;      
+      Uint32 jpegLen  = 0;
       const void *frame = NULL;
-      
-      // compute original image size in bytes, ignoring any padding bits. 
+
+      // compute original image size in bytes, ignoring any padding bits.
       Uint16 samplesPerPixel = 0;
       if ((dataset->findAndGetUint16(DCM_SamplesPerPixel, samplesPerPixel)).bad()) samplesPerPixel = 1;
       uncompressedSize = columns * rows * pixelDepth * frameCount * samplesPerPixel / 8.0;
@@ -807,9 +807,9 @@ OFCondition DJCodecEncoder::encodeMonochromeImage(
           }
 
           // delete block of JPEG data
-          delete[] jpegData;          
+          delete[] jpegData;
           compressedSize += jpegLen;
-        }       
+        }
       }
       delete jpeg;
     } else result = EC_MemoryExhausted;
@@ -921,7 +921,7 @@ OFCondition DJCodecEncoder::encodeMonochromeImage(
     if (cp->getWindowType() == 0)
     {
       if (deleteVOILUT) delete dataset->remove(DCM_VOILUTSequence);
-    
+
       // Adjust window center/width
       if (result.good()) result = correctVOIWindows(dataset, voiOffset, voiFactor);
 
@@ -933,7 +933,7 @@ OFCondition DJCodecEncoder::encodeMonochromeImage(
       delete dataset->remove(DCM_WindowCenter);
       delete dataset->remove(DCM_WindowWidth);
       delete dataset->remove(DCM_WindowCenterWidthExplanation);
-      
+
       // Adjust Presentation LUT Transformation.
       stack.clear();
       OFBool foundPresentationLUT = OFFalse;
@@ -943,16 +943,16 @@ OFCondition DJCodecEncoder::encodeMonochromeImage(
         stack.clear();
         if ((dataset->search(DCM_PresentationLUTShape, stack, ESM_fromHere, OFFalse)).good()) foundPresentationLUT = OFTrue;
       }
-      
+
       // delete old Presentation LUT transformation
       delete dataset->remove(DCM_PresentationLUTSequence);
       delete dataset->remove(DCM_PresentationLUTShape);
-      
+
       // if we had found a Presentation LUT Transformation, create a new identity transformation
       if (foundPresentationLUT)
       {
         if (result.good()) result = dataset->putAndInsertString(DCM_PresentationLUTShape, "IDENTITY");
-      }      
+      }
     }
   }
   if (compressedSize > 0) compressionRatio = uncompressedSize / compressedSize;
@@ -997,7 +997,7 @@ OFCondition DJCodecEncoder::correctVOIWindows(
   double tempCenter = 0.0;
   double tempWidth = 0.0;
   char buf[64];
-  
+
   if (center && width)
   {
     unsigned long numWindows = center->getVM();
@@ -1033,14 +1033,14 @@ OFCondition DJCodecEncoder::correctVOIWindows(
 
   delete dataset->remove(DCM_WindowCenter);
   delete dataset->remove(DCM_WindowWidth);
-  delete dataset->remove(DCM_WindowCenterWidthExplanation);  
+  delete dataset->remove(DCM_WindowCenterWidthExplanation);
 
   if (newCenter.length() > 0)
   {
     if (result.good()) result = dataset->putAndInsertString(DCM_WindowCenter, newCenter.c_str());
     if (result.good()) result = dataset->putAndInsertString(DCM_WindowWidth, newWidth.c_str());
     if (result.good()) result = dataset->putAndInsertString(DCM_WindowCenterWidthExplanation, newExplanation.c_str());
-  }  
+  }
 
   return result;
 }
@@ -1049,7 +1049,11 @@ OFCondition DJCodecEncoder::correctVOIWindows(
 /*
  * CVS/RCS Log
  * $Log: djcodece.cc,v $
- * Revision 1.10  2002-12-04 10:42:12  meichel
+ * Revision 1.11  2002-12-09 13:52:17  joergr
+ * Renamed parameter/local variable to avoid name clashes with global
+ * declaration left and/or right (used for as iostream manipulators).
+ *
+ * Revision 1.10  2002/12/04 10:42:12  meichel
  * Changed toolkit to use OFStandard::ftoa instead of sprintf for all
  *   double to string conversions that are supposed to be locale independent
  *

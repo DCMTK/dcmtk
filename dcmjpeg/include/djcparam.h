@@ -21,10 +21,10 @@
  *
  *  Purpose: codec parameter class for dcmjpeg codecs
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-11-19 15:13:26 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2002-12-09 13:51:26 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmjpeg/include/Attic/djcparam.h,v $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -48,7 +48,7 @@ public:
    *  @param pCompressionCSConversion color conversion mode for compression
    *  @param pDecompressionCSConversion color conversion mode for decompression
    *  @param pCreateSOPInstanceUID mode for SOP Instance UID creation
-   *  @param pPlanarConfiguration flag describing how planar configuration of 
+   *  @param pPlanarConfiguration flag describing how planar configuration of
    *    decompressed color images should be handled
    *  @param pVerbose verbose mode flag
    *  @param pOptimizeHuffman perform huffman table optimization for 8 bits/pixel compression?
@@ -57,9 +57,9 @@ public:
    *  @param pFragmentSize maximum fragment size (in kbytes) for compression, 0 for unlimited.
    *  @param pCreateOffsetTable create offset table during image compression?
    *  @param pSampleFactors subsampling mode for color image compression
-   *  @param pWriteYBR422 flag indicating whether a compressed YBR color stream should 
+   *  @param pWriteYBR422 flag indicating whether a compressed YBR color stream should
    *    be marked as YBR_FULL or YBR_FULL_422 on DICOM level
-   *  @param pConvertToSC flag indicating whether image should be converted to 
+   *  @param pConvertToSC flag indicating whether image should be converted to
    *    Secondary Capture upon compression
    *  @param pWindowType mode for VOI transformation of monochrome images
    *  @param pWindowParameter parameter for VOI transform of monochrome images, used in modes 1, 2, 4, 6
@@ -70,7 +70,7 @@ public:
    *  @param pRoiWidth  Region of Interest width for for VOI transform of monochrome images, mode 7
    *  @param pRoiHeight Region of Interest height for for VOI transform of monochrome images, mode 7
    *  @param pUsePixelValues Check smallest and largest pixel value and optimize compression, mode 0 only
-   *  @param pUseModalityRescale Create Rescale Slope/Intercept to scale back 
+   *  @param pUseModalityRescale Create Rescale Slope/Intercept to scale back
    *     to original pixel range, mode 0 only
    */
   DJCodecParameter(
@@ -215,19 +215,19 @@ public:
   }
 
   /** returns ROI coordinates for VOI mode 7
-   *  @param left ROI left edge returned in this parameter
-   *  @param top ROI top edge returned in this parameter
+   *  @param left_pos ROI left edge returned in this parameter
+   *  @param top_pos ROI top edge returned in this parameter
    *  @param width ROI width returned in this parameter
    *  @param height ROI height returned in this parameter
    */
   void getROI(
-    unsigned long& left,
-    unsigned long& top,
+    unsigned long& left_pos,
+    unsigned long& top_pos,
     unsigned long& width,
     unsigned long& height) const
   {
-    left = roiLeft;
-    top = roiTop;
+    left_pos = roiLeft;
+    top_pos = roiTop;
     width = roiWidth;
     height = roiHeight;
   }
@@ -363,7 +363,11 @@ private:
 /*
  * CVS/RCS Log
  * $Log: djcparam.h,v $
- * Revision 1.2  2001-11-19 15:13:26  meichel
+ * Revision 1.3  2002-12-09 13:51:26  joergr
+ * Renamed parameter/local variable to avoid name clashes with global
+ * declaration left and/or right (used for as iostream manipulators).
+ *
+ * Revision 1.2  2001/11/19 15:13:26  meichel
  * Introduced verbose mode in module dcmjpeg. If enabled, warning
  *   messages from the IJG library are printed on ofConsole, otherwise
  *   the library remains quiet.
