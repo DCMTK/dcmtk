@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DVPSOverlayCurveActivationLayer_PList
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2003-06-04 12:30:28 $
- *  CVS/RCS Revision: $Revision: 1.10 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2003-06-12 18:23:11 $
+ *  CVS/RCS Revision: $Revision: 1.11 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -56,8 +56,8 @@ DVPSOverlayCurveActivationLayer_PList::DVPSOverlayCurveActivationLayer_PList(con
 , verboseMode(arg.verboseMode)
 , debugMode(arg.debugMode)
 {
-  OFListIterator(DVPSOverlayCurveActivationLayer *) first = arg.list_.begin();
-  OFListIterator(DVPSOverlayCurveActivationLayer *) last = arg.list_.end();
+  OFListConstIterator(DVPSOverlayCurveActivationLayer *) first = arg.list_.begin();
+  OFListConstIterator(DVPSOverlayCurveActivationLayer *) last = arg.list_.end();
   while (first != last)
   {     
     list_.push_back((*first)->clone());
@@ -488,7 +488,11 @@ void DVPSOverlayCurveActivationLayer_PList::setLog(OFConsole *stream, OFBool ver
 
 /*
  *  $Log: dvpsall.cc,v $
- *  Revision 1.10  2003-06-04 12:30:28  meichel
+ *  Revision 1.11  2003-06-12 18:23:11  joergr
+ *  Modified code to use const_iterators where appropriate (required for STL).
+ *  Thanks to Henning Meyer <Henning-Meyer@web.de> for the report.
+ *
+ *  Revision 1.10  2003/06/04 12:30:28  meichel
  *  Added various includes needed by MSVC5 with STL
  *
  *  Revision 1.9  2003/06/04 10:18:07  meichel

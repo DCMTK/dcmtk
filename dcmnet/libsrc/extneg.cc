@@ -7,10 +7,10 @@
 ** Purpose:
 **   Extended Negotiation for A-ASSOCIATE
 **
-** Last Update:         $Author: meichel $
-** Update Date:         $Date: 2003-06-02 16:44:11 $
+** Last Update:         $Author: joergr $
+** Update Date:         $Date: 2003-06-12 18:25:20 $
 ** Source File:         $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/libsrc/extneg.cc,v $
-** CVS/RCS Revision:    $Revision: 1.2 $
+** CVS/RCS Revision:    $Revision: 1.3 $
 ** Status:              $State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -24,7 +24,7 @@
 
 void appendList(const SOPClassExtendedNegotiationSubItemList& from, SOPClassExtendedNegotiationSubItemList& to)
 {
-    OFListIterator(SOPClassExtendedNegotiationSubItem*) i = from.begin();
+    OFListConstIterator(SOPClassExtendedNegotiationSubItem*) i = from.begin();
     while (i != from.end()) {
         to.push_back(*i);
         ++i;
@@ -45,7 +45,11 @@ void deleteListMembers(SOPClassExtendedNegotiationSubItemList& lst)
 /*
 ** CVS/RCS Log:
 ** $Log: extneg.cc,v $
-** Revision 1.2  2003-06-02 16:44:11  meichel
+** Revision 1.3  2003-06-12 18:25:20  joergr
+** Modified code to use const_iterators where appropriate (required for STL).
+** Thanks to Henning Meyer <Henning-Meyer@web.de> for the report.
+**
+** Revision 1.2  2003/06/02 16:44:11  meichel
 ** Renamed local variables to avoid name clashes with STL
 **
 ** Revision 1.1  1999/04/19 08:40:03  meichel

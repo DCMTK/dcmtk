@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2002, OFFIS
+ *  Copyright (C) 2002-2003, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,10 +22,10 @@
  *  Purpose: general purpose 32-bit CRC in C++
  *           Code is based on the CRC32 implementation (C)1986 Gary S. Brown
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-07-23 14:21:34 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2003-06-12 18:22:23 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcpcache.cc,v $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -89,8 +89,8 @@ void DcmPrivateTagCache::clear()
 
 const char *DcmPrivateTagCache::findPrivateCreator(const DcmTagKey& tk) const
 {
-  OFListIterator(DcmPrivateTagCacheEntry *) first = begin();
-  OFListIterator(DcmPrivateTagCacheEntry *) last = end();
+  OFListConstIterator(DcmPrivateTagCacheEntry *) first = begin();
+  OFListConstIterator(DcmPrivateTagCacheEntry *) last = end();
   while (first != last)
   {     
     if ((*first)->isPrivateCreatorFor(tk)) return (*first)->getPrivateCreator();
@@ -121,7 +121,11 @@ void DcmPrivateTagCache::updateCache(DcmObject *dobj)
 /*
  * CVS/RCS Log:
  * $Log: dcpcache.cc,v $
- * Revision 1.1  2002-07-23 14:21:34  meichel
+ * Revision 1.2  2003-06-12 18:22:23  joergr
+ * Modified code to use const_iterators where appropriate (required for STL).
+ * Thanks to Henning Meyer <Henning-Meyer@web.de> for the report.
+ *
+ * Revision 1.1  2002/07/23 14:21:34  meichel
  * Added support for private tag data dictionaries to dcmdata
  *
  *

@@ -21,10 +21,10 @@
  *
  *  Purpose: class DcmPixelData
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2003-06-02 16:55:41 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2003-06-12 18:22:23 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcpixel.cc,v $
- *  CVS/RCS Revision: $Revision: 1.31 $
+ *  CVS/RCS Revision: $Revision: 1.32 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -117,8 +117,8 @@ DcmPixelData::DcmPixelData(
     original = repListEnd;
     current = original;
     recalcVR();
-    DcmRepresentationListIterator oldEnd(oldPixelData.repList.end());
-    for (DcmRepresentationListIterator it(oldPixelData.repList.begin());
+    DcmRepresentationListConstIterator oldEnd(oldPixelData.repList.end());
+    for (DcmRepresentationListConstIterator it(oldPixelData.repList.begin());
          it != oldEnd;
          ++it)
     {
@@ -160,8 +160,8 @@ DcmPixelData &DcmPixelData::operator=(const DcmPixelData &obj)
     original = repListEnd;
     current = original;
     recalcVR();
-    DcmRepresentationListIterator oldEnd(obj.repList.end());
-    DcmRepresentationListIterator it(obj.repList.begin());
+    DcmRepresentationListConstIterator oldEnd(obj.repList.end());
+    DcmRepresentationListConstIterator it(obj.repList.begin());
     while (it != oldEnd)
     {
         DcmRepresentationEntry *repEnt = new DcmRepresentationEntry(**it);
@@ -1029,7 +1029,11 @@ OFCondition DcmPixelData::loadAllDataIntoMemory(void)
 /*
 ** CVS/RCS Log:
 ** $Log: dcpixel.cc,v $
-** Revision 1.31  2003-06-02 16:55:41  meichel
+** Revision 1.32  2003-06-12 18:22:23  joergr
+** Modified code to use const_iterators where appropriate (required for STL).
+** Thanks to Henning Meyer <Henning-Meyer@web.de> for the report.
+**
+** Revision 1.31  2003/06/02 16:55:41  meichel
 ** Cleaned up implementation of DcmRepresentationEntry, added doc++ comments
 **
 ** Revision 1.30  2003/04/03 14:30:37  joergr

@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DVPSTextObject_PList
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2003-06-04 10:18:07 $
- *  CVS/RCS Revision: $Revision: 1.8 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2003-06-12 18:23:11 $
+ *  CVS/RCS Revision: $Revision: 1.9 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -50,8 +50,8 @@ DVPSTextObject_PList::DVPSTextObject_PList(const DVPSTextObject_PList &arg)
 , verboseMode(arg.verboseMode)
 , debugMode(arg.debugMode)
 {
-  OFListIterator(DVPSTextObject *) first = arg.list_.begin();
-  OFListIterator(DVPSTextObject *) last = arg.list_.end();
+  OFListConstIterator(DVPSTextObject *) first = arg.list_.begin();
+  OFListConstIterator(DVPSTextObject *) last = arg.list_.end();
   while (first != last)
   {     
     list_.push_back((*first)->clone());
@@ -191,7 +191,11 @@ void DVPSTextObject_PList::setLog(OFConsole *stream, OFBool verbMode, OFBool dbg
 
 /*
  *  $Log: dvpstxl.cc,v $
- *  Revision 1.8  2003-06-04 10:18:07  meichel
+ *  Revision 1.9  2003-06-12 18:23:11  joergr
+ *  Modified code to use const_iterators where appropriate (required for STL).
+ *  Thanks to Henning Meyer <Henning-Meyer@web.de> for the report.
+ *
+ *  Revision 1.8  2003/06/04 10:18:07  meichel
  *  Replaced private inheritance from template with aggregation
  *
  *  Revision 1.7  2001/11/28 13:57:07  joergr

@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DVPSImageBoxContent_PList
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2003-06-04 12:30:28 $
- *  CVS/RCS Revision: $Revision: 1.14 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2003-06-12 18:23:11 $
+ *  CVS/RCS Revision: $Revision: 1.15 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -56,8 +56,8 @@ DVPSPresentationLUT_PList::DVPSPresentationLUT_PList(const DVPSPresentationLUT_P
 , verboseMode(arg.verboseMode)
 , debugMode(arg.debugMode)
 {
-  OFListIterator(DVPSPresentationLUT *) first = arg.list_.begin();
-  OFListIterator(DVPSPresentationLUT *) last = arg.list_.end();
+  OFListConstIterator(DVPSPresentationLUT *) first = arg.list_.begin();
+  OFListConstIterator(DVPSPresentationLUT *) last = arg.list_.end();
   while (first != last)
   {     
     list_.push_back((*first)->clone());
@@ -287,7 +287,11 @@ void DVPSPresentationLUT_PList::printSCPDelete(T_DIMSE_Message& rq, T_DIMSE_Mess
 
 /*
  *  $Log: dvpspll.cc,v $
- *  Revision 1.14  2003-06-04 12:30:28  meichel
+ *  Revision 1.15  2003-06-12 18:23:11  joergr
+ *  Modified code to use const_iterators where appropriate (required for STL).
+ *  Thanks to Henning Meyer <Henning-Meyer@web.de> for the report.
+ *
+ *  Revision 1.14  2003/06/04 12:30:28  meichel
  *  Added various includes needed by MSVC5 with STL
  *
  *  Revision 1.13  2003/06/04 10:18:07  meichel

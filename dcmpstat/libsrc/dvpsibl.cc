@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DVPSImageBoxContent_PList
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2003-06-04 10:18:07 $
- *  CVS/RCS Revision: $Revision: 1.25 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2003-06-12 18:23:11 $
+ *  CVS/RCS Revision: $Revision: 1.26 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -52,8 +52,8 @@ DVPSImageBoxContent_PList::DVPSImageBoxContent_PList(const DVPSImageBoxContent_P
 , verboseMode(arg.verboseMode)
 , debugMode(arg.debugMode)
 {
-  OFListIterator(DVPSImageBoxContent *) first = arg.list_.begin();
-  OFListIterator(DVPSImageBoxContent *) last = arg.list_.end();
+  OFListConstIterator(DVPSImageBoxContent *) first = arg.list_.begin();
+  OFListConstIterator(DVPSImageBoxContent *) last = arg.list_.end();
   while (first != last)
   {     
     list_.push_back((*first)->clone());
@@ -543,8 +543,8 @@ OFCondition DVPSImageBoxContent_PList::writeReferencedImageBoxSQ(DcmItem &dset)
 OFBool DVPSImageBoxContent_PList::matchesPresentationLUT(DVPSPrintPresentationLUTAlignment align) const
 {
   OFBool result = OFTrue;
-  OFListIterator(DVPSImageBoxContent *) first = list_.begin();
-  OFListIterator(DVPSImageBoxContent *) last = list_.end();  
+  OFListConstIterator(DVPSImageBoxContent *) first = list_.begin();
+  OFListConstIterator(DVPSImageBoxContent *) last = list_.end();  
   while (first != last)
   {
     result = result && (*first)->matchesPresentationLUT(align);
@@ -618,7 +618,11 @@ OFBool DVPSImageBoxContent_PList::emptyPageWarning()
 
 /*
  *  $Log: dvpsibl.cc,v $
- *  Revision 1.25  2003-06-04 10:18:07  meichel
+ *  Revision 1.26  2003-06-12 18:23:11  joergr
+ *  Modified code to use const_iterators where appropriate (required for STL).
+ *  Thanks to Henning Meyer <Henning-Meyer@web.de> for the report.
+ *
+ *  Revision 1.25  2003/06/04 10:18:07  meichel
  *  Replaced private inheritance from template with aggregation
  *
  *  Revision 1.24  2002/01/08 10:35:45  joergr

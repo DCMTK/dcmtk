@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DVPSGraphicObject_PList
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2003-06-04 10:18:07 $
- *  CVS/RCS Revision: $Revision: 1.8 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2003-06-12 18:23:11 $
+ *  CVS/RCS Revision: $Revision: 1.9 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -50,8 +50,8 @@ DVPSGraphicObject_PList::DVPSGraphicObject_PList(const DVPSGraphicObject_PList &
 , verboseMode(arg.verboseMode)
 , debugMode(arg.debugMode)
 {
-  OFListIterator(DVPSGraphicObject *) first = arg.list_.begin();
-  OFListIterator(DVPSGraphicObject *) last = arg.list_.end();
+  OFListConstIterator(DVPSGraphicObject *) first = arg.list_.begin();
+  OFListConstIterator(DVPSGraphicObject *) last = arg.list_.end();
   while (first != last)
   {     
     list_.push_back((*first)->clone());
@@ -189,7 +189,11 @@ void DVPSGraphicObject_PList::setLog(OFConsole *stream, OFBool verbMode, OFBool 
 
 /*
  *  $Log: dvpsgrl.cc,v $
- *  Revision 1.8  2003-06-04 10:18:07  meichel
+ *  Revision 1.9  2003-06-12 18:23:11  joergr
+ *  Modified code to use const_iterators where appropriate (required for STL).
+ *  Thanks to Henning Meyer <Henning-Meyer@web.de> for the report.
+ *
+ *  Revision 1.8  2003/06/04 10:18:07  meichel
  *  Replaced private inheritance from template with aggregation
  *
  *  Revision 1.7  2001/11/28 13:56:55  joergr

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2002, OFFIS
+ *  Copyright (C) 1994-2003, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose: Implementation of class DcmPixelItem
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-12-06 13:16:59 $
+ *  Update Date:      $Date: 2003-06-12 18:21:46 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcpxitem.cc,v $
- *  CVS/RCS Revision: $Revision: 1.25 $
+ *  CVS/RCS Revision: $Revision: 1.26 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -124,8 +124,8 @@ OFCondition DcmPixelItem::createOffsetTable(const DcmOffsetList &offsetList)
         Uint32 *array = new Uint32[numEntries];
         if (array)
         {
-            OFListIterator(Uint32) first = offsetList.begin();
-            OFListIterator(Uint32) last = offsetList.end();
+            OFListConstIterator(Uint32) first = offsetList.begin();
+            OFListConstIterator(Uint32) last = offsetList.end();
             unsigned long idx = 0;
             while (first != last)
             {
@@ -188,7 +188,11 @@ OFCondition DcmPixelItem::writeXML(ostream &out,
 /*
 ** CVS/RCS Log:
 ** $Log: dcpxitem.cc,v $
-** Revision 1.25  2002-12-06 13:16:59  joergr
+** Revision 1.26  2003-06-12 18:21:46  joergr
+** Modified code to use const_iterators where appropriate (required for STL).
+** Thanks to Henning Meyer <Henning-Meyer@web.de> for the report.
+**
+** Revision 1.25  2002/12/06 13:16:59  joergr
 ** Enhanced "print()" function by re-working the implementation and replacing
 ** the boolean "showFullData" parameter by a more general integer flag.
 ** Made source code formatting more consistent with other modules/files.

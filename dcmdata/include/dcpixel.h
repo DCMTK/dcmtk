@@ -22,9 +22,9 @@
  *  Purpose: Interface of class DcmPixelData
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-06-12 14:03:24 $
+ *  Update Date:      $Date: 2003-06-12 18:21:24 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcpixel.h,v $
- *  CVS/RCS Revision: $Revision: 1.22 $
+ *  CVS/RCS Revision: $Revision: 1.23 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -133,6 +133,7 @@ private:
 
 typedef OFList<DcmRepresentationEntry *> DcmRepresentationList;
 typedef OFListIterator(DcmRepresentationEntry *) DcmRepresentationListIterator;
+typedef OFListConstIterator(DcmRepresentationEntry *) DcmRepresentationListConstIterator;
 
 /** The class DcmPixelData stores different pixel representations identified by
  * a type (the transfer syntax) and some representation parameters
@@ -435,7 +436,11 @@ public:
 /*
 ** CVS/RCS Log:
 ** $Log: dcpixel.h,v $
-** Revision 1.22  2003-06-12 14:03:24  joergr
+** Revision 1.23  2003-06-12 18:21:24  joergr
+** Modified code to use const_iterators where appropriate (required for STL).
+** Thanks to Henning Meyer <Henning-Meyer@web.de> for the report.
+**
+** Revision 1.22  2003/06/12 14:03:24  joergr
 ** Fixed inconsistent API documentation reported by Doxygen.
 **
 ** Revision 1.21  2003/06/02 16:55:34  meichel

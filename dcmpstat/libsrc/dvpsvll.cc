@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DVPSVOILUT_PList
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2003-06-04 10:18:07 $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2003-06-12 18:23:11 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -50,8 +50,8 @@ DVPSVOILUT_PList::DVPSVOILUT_PList(const DVPSVOILUT_PList &arg)
 , verboseMode(arg.verboseMode)
 , debugMode(arg.debugMode)
 {
-  OFListIterator(DVPSVOILUT *) first = arg.list_.begin();
-  OFListIterator(DVPSVOILUT *) last = arg.list_.end();
+  OFListConstIterator(DVPSVOILUT *) first = arg.list_.begin();
+  OFListConstIterator(DVPSVOILUT *) last = arg.list_.end();
   while (first != last)
   {     
     list_.push_back((*first)->clone());
@@ -135,7 +135,11 @@ void DVPSVOILUT_PList::setLog(OFConsole *stream, OFBool verbMode, OFBool dbgMode
 
 /*
  *  $Log: dvpsvll.cc,v $
- *  Revision 1.6  2003-06-04 10:18:07  meichel
+ *  Revision 1.7  2003-06-12 18:23:11  joergr
+ *  Modified code to use const_iterators where appropriate (required for STL).
+ *  Thanks to Henning Meyer <Henning-Meyer@web.de> for the report.
+ *
+ *  Revision 1.6  2003/06/04 10:18:07  meichel
  *  Replaced private inheritance from template with aggregation
  *
  *  Revision 1.5  2001/09/26 15:36:36  meichel

@@ -22,9 +22,9 @@
  *  Purpose: RLE compressor
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-06-12 13:32:59 $
+ *  Update Date:      $Date: 2003-06-12 18:21:24 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcrleenc.h,v $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -277,8 +277,8 @@ public:
     {
       unsigned char *current = NULL;
       unsigned char *target8 = (unsigned char *)target;
-      OFListIterator(unsigned char *) first = blockList_.begin();
-      OFListIterator(unsigned char *) last = blockList_.end();
+      OFListConstIterator(unsigned char *) first = blockList_.begin();
+      OFListConstIterator(unsigned char *) last = blockList_.end();
       while (first != last)
       {
         current = *first;
@@ -308,8 +308,8 @@ public:
   {
     if (!fail_)
     {
-      OFListIterator(unsigned char *) first = blockList_.begin();
-      OFListIterator(unsigned char *) last = blockList_.end();
+      OFListConstIterator(unsigned char *) first = blockList_.begin();
+      OFListConstIterator(unsigned char *) last = blockList_.end();
       while (first != last)
       {
         os.write(*first, DcmRLEEncoder_BLOCKSIZE);
@@ -422,7 +422,11 @@ private:
 /*
  * CVS/RCS Log
  * $Log: dcrleenc.h,v $
- * Revision 1.7  2003-06-12 13:32:59  joergr
+ * Revision 1.8  2003-06-12 18:21:24  joergr
+ * Modified code to use const_iterators where appropriate (required for STL).
+ * Thanks to Henning Meyer <Henning-Meyer@web.de> for the report.
+ *
+ * Revision 1.7  2003/06/12 13:32:59  joergr
  * Fixed inconsistent API documentation reported by Doxygen.
  *
  * Revision 1.6  2003/03/21 13:06:46  meichel
