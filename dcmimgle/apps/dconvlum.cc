@@ -22,9 +22,9 @@
  *  Purpose: convert VeriLUM CCx_xx.dat files to DCMTK display files
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-03-03 11:41:53 $
+ *  Update Date:      $Date: 1999-04-28 14:44:11 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/apps/dconvlum.cc,v $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -102,7 +102,7 @@ int main(int argc, char *argv[])
         } else
             cerr << "ERROR: can't open input file !" << endl;
     } else {
-        cerr << "ERROR: program needs exactly two filenames for input and output";
+        cerr << "ERROR: program needs exactly two filenames for input and output" << endl;
         cerr << "       (and an optional floating point value for the ambient light) !" << endl;
     }
     return 1;                                                                       // an error has happened
@@ -112,7 +112,10 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dconvlum.cc,v $
- * Revision 1.5  1999-03-03 11:41:53  joergr
+ * Revision 1.6  1999-04-28 14:44:11  joergr
+ * Added newline to error output.
+ *
+ * Revision 1.5  1999/03/03 11:41:53  joergr
  * Added support to specify ambient light value (re: Barten transformation).
  *
  * Revision 1.4  1999/02/23 16:54:10  joergr
