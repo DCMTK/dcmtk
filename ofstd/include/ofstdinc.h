@@ -22,9 +22,9 @@
  *  Purpose: encapsulation of old style vs. ISO C++ standard includes
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-11-27 11:20:52 $
+ *  Update Date:      $Date: 2002-11-27 12:33:34 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/include/Attic/ofstdinc.h,v $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -261,8 +261,10 @@ END_EXTERN_C
 BEGIN_EXTERN_C
 #include <string.h>
 END_EXTERN_C
-#elif defined(HAVE_STRINGS_H)
-// a few very old platforms define <strings.h> instead of <string.h>
+#endif
+// Some platforms define additional string functions like bzero or 
+// strcasecmp in <strings.h>, so we always include this file if available.
+#ifdef HAVE_STRINGS_H
 BEGIN_EXTERN_C
 #include <strings.h>
 END_EXTERN_C
@@ -295,7 +297,10 @@ END_EXTERN_C
 /*
  * CVS/RCS Log:
  * $Log: ofstdinc.h,v $
- * Revision 1.1  2002-11-27 11:20:52  meichel
+ * Revision 1.2  2002-11-27 12:33:34  meichel
+ * Now including <strings.h> even if <string.h> is present.
+ *
+ * Revision 1.1  2002/11/27 11:20:52  meichel
  * Added new file ofstdinc.h that encapsulates the inclusion
  *   of old style vs. ISO C++ standard header files.
  *
