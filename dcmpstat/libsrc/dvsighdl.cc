@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DVSignatureHandler
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-02-13 09:55:45 $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2001-05-25 10:07:35 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -57,8 +57,8 @@
 BEGIN_EXTERN_C
 #include <openssl/x509.h>
 END_EXTERN_C
-#endif
- 
+
+/// the signature profile class we're using with DICOMscope 
 class DVSignatureHandlerSignatureProfile: public SiNullProfile
 {
 public:
@@ -108,6 +108,8 @@ private:
   unsigned long vmNotToSign;
 };
 
+#endif
+
 
 DVSignatureHandler::DVSignatureHandler(DVConfiguration& cfg)
 : htmlSR("<html><head><title>Structured Report</title></head><body>No structured report is currently active.</body></html>\n")
@@ -123,12 +125,16 @@ DVSignatureHandler::DVSignatureHandler(DVConfiguration& cfg)
 , correctSignaturesPState(0)
 , corruptSignaturesPState(0)
 , untrustSignaturesPState(0)
+#ifdef WITH_OPENSSL
 , certVerifier()
+#endif
 , config(cfg)
 {
+#ifdef WITH_OPENSSL
   int fileFormat = config.getTLSPEMFormat() ? X509_FILETYPE_PEM : X509_FILETYPE_ASN1;
   const char *tlsCACertificateFolder = config.getTLSCACertificateFolder();
   if (tlsCACertificateFolder) certVerifier.addTrustedCertificateDir(tlsCACertificateFolder, fileFormat);
+#endif
   updateSignatureValidationOverview();
 }
 
@@ -209,39 +215,12 @@ void DVSignatureHandler::printSignatureItemPosition(DcmStack& stack, ostream& os
 
 void DVSignatureHandler::updateDigitalSignatureInformation(DcmItem& dataset, DVPSObjectType objtype, OFBool /* onRead */)
 {
-  SI_E_Condition sicond = SI_EC_Normal;
-  DcmStack stack;
-  DcmSignature signer;
-  OFString aString;
+  ostrstream os;
   unsigned long counter = 0;
   unsigned long corrupt_counter = 0;
   unsigned long untrustworthy_counter = 0;
-  unsigned long numSignatures = 0;
-  unsigned long l=0;
-  Uint16 macID = 0;
-  DcmAttributeTag at(DCM_DataElementsSigned);  
-  DcmItem *sigItem = DcmSignature::findFirstSignatureItem(dataset, stack);
-  DcmTagKey tagkey;
-  DcmTag tag;
-  const char *tagName = NULL;
-  ostrstream os;
-
   const char *htmlHead     = NULL;
   const char *htmlFoot     = "</body></html>\n\n";
-  const char *htmlEndl     = "</td></tr>\n";
-  // const char *htmlTitle    = "<tr><td colspan=\"4\">";
-  const char *htmlVfyOK    = "<tr><td colspan=\"4\" bgcolor=\"#50ff50\">";
-  const char *htmlVfyCA    = "<tr><td colspan=\"4\" bgcolor=\"yellow\">";  
-  const char *htmlVfyErr   = "<tr><td colspan=\"4\" bgcolor=\"#FF5050\">";  
-  const char *htmlLine1    = "<tr><td width=\"20\" nowrap>&nbsp;</td><td colspan=\"2\" nowrap>";
-  const char *htmlLine2    = "<tr><td colspan=\"3\" nowrap>&nbsp;</td><td>";
-  const char *htmlLine3    = "<tr><td colspan=\"2\" nowrap>&nbsp;</td><td nowrap>";
-  const char *htmlLine4    = "<tr><td width=\"20\" nowrap>&nbsp;</td><td width=\"20\" nowrap>&nbsp;</td><td>";
-  const char *htmlNext     = "</td><td>";
-  const char *htmlTableOK  = "<table cellspacing=\"0\" bgcolor=\"#D0FFD0\">\n";
-  const char *htmlTableCA  = "<table cellspacing=\"0\" bgcolor=\"#FFF8DC\">\n";
-  const char *htmlTableErr = "<table cellspacing=\"0\" bgcolor=\"#FFD0D0\">\n";
-  const char *htmlTableE   = "</table><p>\n\n";
 
   switch (objtype)
   {
@@ -256,7 +235,36 @@ void DVSignatureHandler::updateDigitalSignatureInformation(DcmItem& dataset, DVP
       break;  
   }
   os << htmlHead;
+
+#ifdef WITH_OPENSSL
+  DcmStack stack;
+  OFString aString;
+  DcmAttributeTag at(DCM_DataElementsSigned);  
+  DcmTag tag;
+  unsigned long numSignatures = 0;
+  unsigned long l=0;
+  Uint16 macID = 0;
+  DcmTagKey tagkey;
+  const char *tagName = NULL;
   OFBool nextline;
+
+  const char *htmlEndl     = "</td></tr>\n";
+  const char *htmlVfyOK    = "<tr><td colspan=\"4\" bgcolor=\"#50ff50\">";
+  const char *htmlVfyCA    = "<tr><td colspan=\"4\" bgcolor=\"yellow\">";  
+  const char *htmlVfyErr   = "<tr><td colspan=\"4\" bgcolor=\"#FF5050\">";  
+  const char *htmlLine1    = "<tr><td width=\"20\" nowrap>&nbsp;</td><td colspan=\"2\" nowrap>";
+  const char *htmlLine2    = "<tr><td colspan=\"3\" nowrap>&nbsp;</td><td>";
+  const char *htmlLine3    = "<tr><td colspan=\"2\" nowrap>&nbsp;</td><td nowrap>";
+  const char *htmlLine4    = "<tr><td width=\"20\" nowrap>&nbsp;</td><td width=\"20\" nowrap>&nbsp;</td><td>";
+  const char *htmlNext     = "</td><td>";
+  const char *htmlTableOK  = "<table cellspacing=\"0\" bgcolor=\"#D0FFD0\">\n";
+  const char *htmlTableCA  = "<table cellspacing=\"0\" bgcolor=\"#FFF8DC\">\n";
+  const char *htmlTableErr = "<table cellspacing=\"0\" bgcolor=\"#FFD0D0\">\n";
+  const char *htmlTableE   = "</table><p>\n\n";
+
+  DcmItem *sigItem = DcmSignature::findFirstSignatureItem(dataset, stack);
+  SI_E_Condition sicond = SI_EC_Normal;
+  DcmSignature signer;
   while (sigItem)
   {
     signer.attach(sigItem);
@@ -376,7 +384,8 @@ void DVSignatureHandler::updateDigitalSignatureInformation(DcmItem& dataset, DVP
     signer.detach();
     sigItem = DcmSignature::findNextSignatureItem(dataset, stack);
   }
-  
+#endif  
+
   switch (objtype)
   {
     case DVPSS_structuredReport:
@@ -703,6 +712,7 @@ unsigned long DVSignatureHandler::getNumberOfCorruptSignatures(DVPSObjectType ob
   return result;
 }
 
+#ifdef WITH_OPENSSL
 
 OFBool DVSignatureHandler::attributesSigned(DcmItem& item, DcmAttributeTag& tagList) const
 {
@@ -758,6 +768,18 @@ OFBool DVSignatureHandler::attributesSigned(DcmItem& item, DcmAttributeTag& tagL
   }
   return OFFalse;  
 }
+
+#else
+
+OFBool DVSignatureHandler::attributesSigned(DcmItem& /* item */, DcmAttributeTag& /* tagList */) const
+{
+  return OFFalse;  
+}
+
+#endif
+
+
+#ifdef WITH_OPENSSL
 
 E_Condition DVSignatureHandler::createSignature(
     DcmItem& mainDataset,
@@ -840,10 +862,27 @@ E_Condition DVSignatureHandler::createSignature(
   return EC_Normal;  
 }
 
+#else
+
+E_Condition DVSignatureHandler::createSignature(
+    DcmItem& /* mainDataset */,
+    const DcmStack& /* itemStack */,
+    DcmAttributeTag& /* attributesNotToSignInMainDataset */,
+    const char * /* userID */,
+    const char * /* passwd */)
+{
+  return EC_IllegalCall;
+}
+
+#endif
+
 
 /*
  *  $Log: dvsighdl.cc,v $
- *  Revision 1.5  2001-02-13 09:55:45  joergr
+ *  Revision 1.6  2001-05-25 10:07:35  meichel
+ *  Modified dcmpstat signature handler to also compile without OpenSSL
+ *
+ *  Revision 1.5  2001/02/13 09:55:45  joergr
  *  Minor purifications in "signature validation overview" HTML page.
  *
  *  Revision 1.4  2001/01/29 17:34:01  joergr

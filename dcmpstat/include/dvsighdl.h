@@ -23,8 +23,8 @@
  *    classes: DVSignatureHandler
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-01-29 14:55:43 $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  Update Date:      $Date: 2001-05-25 10:07:34 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -77,6 +77,8 @@ public:
   const char *getCurrentSignatureValidationOverview() const;
 
   /** updates the digital signature information for the given object type.
+   *  If compiled without WITH_OPENSSL, always reports that no signatures
+   *  were found in the object.
    *  @param dataset dataset to be checked for digital signatures
    *  @param objtype object type of dataset
    *  @param onRead true if the dataset is just being read, false if it is being written
@@ -128,6 +130,7 @@ public:
    *  is signed by a digital signature on the dataset level, or if any
    *  of the attributes is a sequence that contains one or more signatures
    *  in its items.  Otherwise returns false.
+   *  If compiled without WITH_OPENSSL, always returns false.
    *  @param item item or dataset to be tested
    *  @param tagList list of attributes (tags) to be looked up inside the dataset
    *  @return true if any of the given attributes is affected by a digital signature,
@@ -136,6 +139,7 @@ public:
   OFBool attributesSigned(DcmItem& item, DcmAttributeTag& tagList) const;
 
   /** adds one or more new digital signatures to the given dataset.
+   *  If compiled without WITH_OPENSSL, always returns EC_IllegalCall.
    *  @param mainDataset reference to main dataset in which signature(s) are to be added
    *  @param itemStack stack of items within the main dataset that are to be signed
    *    separately.  If main dataset is to be signed, it must be included in this stack.
@@ -216,9 +220,11 @@ private:
 
   /// number of untrustworthy signatures in current PState 
   unsigned long untrustSignaturesPState;
-  
-  /// the certificate verifier
+
+#ifdef WITH_OPENSSL  
+  /// the certificate verifier, available only if compiled with OpenSSL support
   SiCertificateVerifier certVerifier;  
+#endif
 
   /// reference to object maintaining the system configuration
   DVConfiguration& config;
@@ -229,7 +235,10 @@ private:
 
 /*
  *  $Log: dvsighdl.h,v $
- *  Revision 1.3  2001-01-29 14:55:43  meichel
+ *  Revision 1.4  2001-05-25 10:07:34  meichel
+ *  Modified dcmpstat signature handler to also compile without OpenSSL
+ *
+ *  Revision 1.3  2001/01/29 14:55:43  meichel
  *  Added new methods for creating signatures and checking the signature
  *    status in module dcmpstat.
  *
