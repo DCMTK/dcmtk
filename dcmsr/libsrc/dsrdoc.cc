@@ -23,8 +23,8 @@
  *    classes: DSRDocument
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-12-12 17:21:39 $
- *  CVS/RCS Revision: $Revision: 1.20 $
+ *  Update Date:      $Date: 2001-01-18 15:54:48 $
+ *  CVS/RCS Revision: $Revision: 1.21 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -263,7 +263,8 @@ E_Condition DSRDocument::checkDatasetForReading(DcmItem &dataset)
 }
 
 
-E_Condition DSRDocument::read(DcmItem &dataset)
+E_Condition DSRDocument::read(DcmItem &dataset,
+                              const OFBool signatures)
 {
     E_Condition result = EC_Normal;
     /* re-initialize SR document */
@@ -339,14 +340,15 @@ E_Condition DSRDocument::read(DcmItem &dataset)
         if (result == EC_Normal)
         {
             E_DocumentType documentType = sopClassUIDToDocumentType(getStringValueFromElement(SOPClassUID, string));
-            result = DocumentTree.read(dataset, documentType);
+            result = DocumentTree.read(dataset, documentType, signatures);
         }
     }
     return result;
 }
 
 
-E_Condition DSRDocument::write(DcmItem &dataset)
+E_Condition DSRDocument::write(DcmItem &dataset,
+                               DcmStack *markedItems)
 {
     E_Condition result = EC_Normal;
     /* only write valid documents */
@@ -414,7 +416,7 @@ E_Condition DSRDocument::write(DcmItem &dataset)
 
         /* write SR document tree */
         if (result == EC_Normal)
-            result = DocumentTree.write(dataset);
+            result = DocumentTree.write(dataset, markedItems);
     } else
         result = EC_CorruptedData;
     return result;
@@ -516,7 +518,8 @@ E_Condition DSRDocument::writeXML(ostream &stream,
             if (getVerifyingObserver(i, dateTime, obsName, obsCode, organization) == EC_Normal)
             {
                 writeStringValueToXML(stream, dateTime, "datetime", flags & XF_writeEmptyTags);
-                writeStringValueToXML(stream, obsName, "name", flags & XF_writeEmptyTags);
+                if ((obsName.length() > 0) || (flags & XF_writeEmptyTags))
+                    stream << "<name>" << endl << dicomToXMLPersonName(obsName, string) << "</name>" << endl;
                 if (obsCode.isValid())
                 {
                     stream << "<code>" << endl;
@@ -1762,7 +1765,11 @@ void DSRDocument::updateAttributes(const OFBool updateAll)
 /*
  *  CVS/RCS Log:
  *  $Log: dsrdoc.cc,v $
- *  Revision 1.20  2000-12-12 17:21:39  joergr
+ *  Revision 1.21  2001-01-18 15:54:48  joergr
+ *  Added support for digital signatures.
+ *  Encode PN components in separate XML tags.
+ *
+ *  Revision 1.20  2000/12/12 17:21:39  joergr
  *  Added explicit typecast to keep SunCC 2.0.1 quiet.
  *
  *  Revision 1.19  2000/12/08 13:45:38  joergr
