@@ -22,9 +22,9 @@
  *  Purpose: class DcmItem
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-07-08 14:44:39 $
+ *  Update Date:      $Date: 2002-07-08 16:15:40 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcitem.cc,v $
- *  CVS/RCS Revision: $Revision: 1.72 $
+ *  CVS/RCS Revision: $Revision: 1.73 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -2082,11 +2082,14 @@ OFCondition newDicomElement(DcmElement * & newElement,
     case EVR_UNKNOWN2B :
     case EVR_UN :
     default :
-        if (length == DCM_UndefinedLength) {
+        if (length == DCM_UndefinedLength)
+        {
             // The attribute is unknown but is encoded with undefined
             // length.  Assume it is really a sequence so that we can
-            // catch the sequence delimitation item.
-            newElement = new DcmSequenceOfItems(tag, length);
+            // catch the sequence delimitation item.           
+            DcmVR sqVR(EVR_SQ); // we handle this element as SQ, not UN
+            DcmTag newTag(tag.getXTag(), sqVR);
+            newElement = new DcmSequenceOfItems(newTag, length);
         } else {
             newElement = new DcmOtherByteOtherWord(tag, length);
         }
@@ -3124,7 +3127,10 @@ OFBool DcmItem::containsUnknownVR() const
 /*
 ** CVS/RCS Log:
 ** $Log: dcitem.cc,v $
-** Revision 1.72  2002-07-08 14:44:39  meichel
+** Revision 1.73  2002-07-08 16:15:40  meichel
+** Unknown undefined length attributes are now converted into SQ instead of UN.
+**
+** Revision 1.72  2002/07/08 14:44:39  meichel
 ** Improved dcmdata behaviour when reading odd tag length. Depending on the
 **   global boolean flag dcmAcceptOddAttributeLength, the parser now either accepts
 **   odd length attributes or implements the old behaviour, i.e. assumes a real
