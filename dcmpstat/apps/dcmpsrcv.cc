@@ -22,9 +22,9 @@
  *  Purpose: Presentation State Viewer - Network Receive Component (Store SCP)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-10-16 12:33:53 $
+ *  Update Date:      $Date: 2000-10-23 12:19:15 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmpstat/apps/dcmpsrcv.cc,v $
- *  CVS/RCS Revision: $Revision: 1.22 $
+ *  CVS/RCS Revision: $Revision: 1.23 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1198,7 +1198,7 @@ int main(int argc, char *argv[])
               dcmGenerateUniqueIdentifer(randomUID);              
               if (tLayer) tLayer->addPRNGseed(randomUID, strlen(randomUID));
 #endif
-              handleClient(&assoc, dbfolder, opt_verbose, networkBitPreserving);
+              handleClient(&assoc, dbfolder, opt_verbose, networkBitPreserving, useTLS);
               finished1=OFTrue;              
             } else {
               CERR << "Cannot execute command line: " << commandline << endl;
@@ -1268,7 +1268,11 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmpsrcv.cc,v $
- * Revision 1.22  2000-10-16 12:33:53  joergr
+ * Revision 1.23  2000-10-23 12:19:15  joergr
+ * Added missing parameter to call of function handleClient (only appeared
+ * on systems not supporting 'fork' command).
+ *
+ * Revision 1.22  2000/10/16 12:33:53  joergr
  * Moved incorrectly placed #endif statement to correct position.
  *
  * Revision 1.20  2000/10/10 12:23:45  meichel
