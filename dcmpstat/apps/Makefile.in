@@ -51,7 +51,7 @@ LOCALINCLUDES=$(dcmpstatinc) $(ofstdinc) $(dcmnetinc) $(dcmdatainc) $(dcmimglein
    $(dcmtlsinc)
 LIBDIRS = -L$(top_srcdir)/libsrc $(dcmpstatlibdir) $(imagectnlibdir) $(dcmnetlibdir) \
   $(dcmtlslibdir) $(dcmdatalibdir) $(ofstdlibdir) $(dcmimglelibdir) -L$(libdir)
-LOCALLIBS = $(dcmpstatlib) $(dcmimglelib) $(imagectnlib) $(dcmnetlib) $(dcmdatalib) $(ofstdlib) $(OPENSSLLIBS) -lm
+LOCALLIBS = $(dcmpstatlib) $(dcmimglelib) $(imagectnlib) $(dcmnetlib) $(dcmdatalib) $(ofstdlib) $(OPENSSLLIBS)
 
 objs= dcmpsmk.o dcmp2pgm.o dcmmklut.o dcmmkcrv.o dcmpssnd.o dcmpsrcv.o \
       dcmpsprt.o dcmprscu.o dcmprscp.o vrscan.o dcmpschk.o
@@ -61,34 +61,34 @@ progs= dcmpsmk dcmp2pgm dcmmklut dcmmkcrv dcmpssnd dcmpsrcv dcmpsprt dcmprscu dc
 all: $(progs)
 
 dcmpsmk: dcmpsmk.o
-	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ dcmpsmk.o $(LOCALLIBS) $(LIBS)  
+	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ dcmpsmk.o $(LOCALLIBS) $(MATHLIBS) $(LIBS)  
 
 dcmp2pgm: dcmp2pgm.o
-	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ dcmp2pgm.o $(LOCALLIBS) $(LIBS)  
+	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ dcmp2pgm.o $(LOCALLIBS) $(MATHLIBS) $(LIBS)  
 
 dcmmklut: dcmmklut.o
-	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ dcmmklut.o $(LOCALLIBS) $(LIBS)  
+	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ dcmmklut.o $(LOCALLIBS) $(MATHLIBS) $(LIBS)  
 
 dcmmkcrv: dcmmkcrv.o
-	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ dcmmkcrv.o $(LOCALLIBS) $(LIBS)  
+	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ dcmmkcrv.o $(LOCALLIBS) $(MATHLIBS) $(LIBS)  
 
 dcmpssnd: dcmpssnd.o
-	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ dcmpssnd.o $(dcmtlslib) $(LOCALLIBS) $(OPENSSLLIBS) $(LIBS)  
+	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ dcmpssnd.o $(dcmtlslib) $(LOCALLIBS) $(MATHLIBS) $(LIBS)  
 
 dcmpsrcv: dcmpsrcv.o
-	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ dcmpsrcv.o $(dcmtlslib) $(LOCALLIBS) $(OPENSSLLIBS) $(LIBS)  
+	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ dcmpsrcv.o $(dcmtlslib) $(LOCALLIBS) $(MATHLIBS) $(LIBS)  
 
 dcmpsprt: dcmpsprt.o
-	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ dcmpsprt.o $(LOCALLIBS) $(LIBS)  
+	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ dcmpsprt.o $(LOCALLIBS) $(MATHLIBS) $(LIBS)  
 
 dcmprscu: dcmprscu.o
-	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ dcmprscu.o $(LOCALLIBS) $(LIBS)  
+	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ dcmprscu.o $(LOCALLIBS) $(MATHLIBS) $(LIBS)  
 
 dcmprscp: dcmprscp.o
-	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ dcmprscp.o $(LOCALLIBS) $(LIBS)  
+	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ dcmprscp.o $(LOCALLIBS) $(MATHLIBS) $(LIBS)  
 
 dcmpschk: dcmpschk.o vrscan.o
-	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ dcmpschk.o vrscan.o $(LOCALLIBS) $(LIBS)  
+	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ dcmpschk.o vrscan.o $(LOCALLIBS) $(MATHLIBS) $(LIBS)  
 
 install: all
 	$(configdir)/mkinstalldirs $(bindir)

@@ -12,41 +12,6 @@ configdir=@top_srcdir@/@configdir@
 
 include $(configdir)/@common_makefile@
 
-ofstddir=$(top_srcdir)/../ofstd
-ofstdinc=-I$(ofstddir)/include -I$(includedir)/ofstd
-ofstdlibdir=-L$(ofstddir)/libsrc 
-ofstdlib=-lofstd
-
-dcmdatadir=$(top_srcdir)/../dcmdata
-dcmdatainc=-I$(dcmdatadir)/include -I$(includedir)/dcmdata
-dcmdatalibdir=-L$(dcmdatadir)/libsrc 
-dcmdatalib=-ldcmdata
-
-dcmnetdir=$(top_srcdir)/../dcmnet
-dcmnetinc=-I$(dcmnetdir)/include -I$(includedir)/dcmnet 
-dcmnetlibdir=-L$(dcmnetdir)/libsrc 
-dcmnetlib=-ldcmnet
-
-dcmimgledir=$(top_srcdir)/../dcmimgle
-dcmimgleinc=-I$(dcmimgledir)/include -I$(includedir)/dcmimgle
-dcmimglelibdir=-L$(dcmimgledir)/libsrc
-dcmimglelib=-ldcmimgle
-
-dcmpstatdir=$(top_srcdir)/../dcmpstat
-dcmpstatinc=-I$(dcmpstatdir)/include -I$(includedir)/dcmpstat
-dcmpstatlibdir=-L$(dcmpstatdir)/libsrc
-dcmpstatlib=-ldcmpstat
-
-imagectndir=$(top_srcdir)/../imagectn
-imagectninc=-I$(imagectndir)/include -I$(includedir)/imagectn
-imagectnlibdir=-L$(imagectndir)/libsrc
-imagectnlib=-limagedb
-
-LOCALINCLUDES=$(dcmpstatinc) $(ofstdinc) $(dcmnetinc) $(dcmdatainc) $(dcmimgleinc) $(imagectninc)
-LIBDIRS = -L$(top_srcdir)/libsrc $(dcmpstatlibdir) $(imagectnlibdir) $(dcmnetlibdir) \
-	$(dcmdatalibdir) $(ofstdlibdir) $(dcmimglelibdir) -L$(libdir)
-LOCALLIBS = $(dcmpstatlib) $(dcmimglelib) $(imagectnlib) $(dcmnetlib) $(dcmdatalib) $(ofstdlib) -lm
-
 all: 
 	echo Nothing to do for all
 
@@ -54,15 +19,13 @@ install:
 	echo Nothing to do for install
 
 clean:
-	echo Nothing to do for clean
+	rm -f $(TRASH)
 
 distclean: 
-	echo Nothing to do for distclean
+	rm -f $(DISTTRASH)
 
 dependencies:
 	echo Nothing to do for dependencies
-
-# $(objs): config.h
 
 include $(DEP)
 

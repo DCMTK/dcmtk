@@ -184,6 +184,16 @@ if test $ac_cv_lib_socket_main = no ; then
 AC_CHECK_LIB(socket, socket)
 fi
 
+MATHLIBS=""
+AC_CHECK_LIB(m, main,[
+MATHLIBS="-lm"
+])
+if test $ac_cv_lib_m_main = no ; then
+AC_CHECK_LIB(m, sin,[
+MATHLIBS="-lm"
+])
+fi
+
 dnl -------------------------------------------------------
 dnl Checks for header files.
 dnl -------------------------------------------------------
@@ -484,6 +494,7 @@ dnl -------------------------------------------------------
 AC_SUBST(CXXFLAGS)
 AC_SUBST(X_STD_LIBS)
 AC_SUBST(OPENSSLLIBS)
+AC_SUBST(MATHLIBS)
 AC_SUBST(DEBUG)
 
 AC_OUTPUT(Makefile.def Makefile.x Makefile)

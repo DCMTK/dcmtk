@@ -14,7 +14,7 @@ include $(configdir)/@common_makefile@
 
 LOCALINCLUDES = -I@top_srcdir@/include -I@top_srcdir@/../ofstd/include -I@top_srcdir@/../dcmdata/include
 LIBDIRS = -L@top_srcdir@/libsrc -L@top_srcdir@/../dcmdata/libsrc -L@top_srcdir@/../ofstd/libsrc -L$(libdir)
-LOCALLIBS = -ldcmimgle -ldcmdata -lofstd -lm
+LOCALLIBS = -ldcmimgle -ldcmdata -lofstd
 objs = dconvlum.o dcmdspfn.o
 
 progs = dconvlum dcmdspfn
@@ -22,10 +22,10 @@ progs = dconvlum dcmdspfn
 all: $(progs)
 
 dconvlum: dconvlum.o
-	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ $@.o $(LOCALLIBS) $(LIBS)  
+	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ $@.o $(LOCALLIBS) $(MATHLIBS) $(LIBS)  
 
 dcmdspfn: dcmdspfn.o
-	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ $@.o $(LOCALLIBS) $(LIBS)  
+	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ $@.o $(LOCALLIBS) $(MATHLIBS) $(LIBS)  
 
 install: all
 	$(configdir)/mkinstalldirs $(bindir)

@@ -15,7 +15,7 @@ include $(configdir)/@common_makefile@
 LOCALINCLUDES = -I@top_srcdir@/../dcmimgle/include -I@top_srcdir@/../ofstd/include -I@top_srcdir@/../dcmdata/include
 LIBDIRS = -L@top_srcdir@/libsrc -L@top_srcdir@/../dcmimgle/libsrc \
 	-L@top_srcdir@/../dcmdata/libsrc -L@top_srcdir@/../ofstd/libsrc -L$(libdir)
-LOCALLIBS = -ldcmimage -ldcmimgle -ldcmdata -lofstd -lm
+LOCALLIBS = -ldcmimage -ldcmimgle -ldcmdata -lofstd
 
 objs = dcm2pnm.o
 
@@ -24,7 +24,7 @@ progs = dcm2pnm
 all: $(progs)
 
 dcm2pnm: dcm2pnm.o
-	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ $@.o $(LOCALLIBS) $(LIBS)  
+	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ $@.o $(LOCALLIBS) $(MATHLIBS) $(LIBS)  
 
 install: all
 	$(configdir)/mkinstalldirs $(bindir)

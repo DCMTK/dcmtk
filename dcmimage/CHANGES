@@ -1,6 +1,12 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2000.12.13 (eichelberg)
+
+- Introduced configure test for -lm which is not present on all
+  platforms but required on some.
+  Affects: dcmimage/apps/Makefile.in
+
 **** Changes from 2000.12.08 (riesmeier)
 
 - Added new checking routines to avoid crashes when processing corrupted image
