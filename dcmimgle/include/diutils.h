@@ -22,9 +22,9 @@
  *  Purpose: Utilities (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1998-12-23 11:38:08 $
+ *  Update Date:      $Date: 1999-01-20 15:13:12 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/diutils.h,v $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -138,7 +138,8 @@ enum EM_Overlay
     EMO_Graphic = EMO_Replace,
     EMO_ThresholdReplace,
     EMO_Complement,
-    EMO_RegionOfInterest
+    EMO_RegionOfInterest,
+    EMO_BitmapShutter
 };
 
 
@@ -228,7 +229,10 @@ class DicomImageClass
 **
 ** CVS/RCS Log:
 ** $Log: diutils.h,v $
-** Revision 1.3  1998-12-23 11:38:08  joergr
+** Revision 1.4  1999-01-20 15:13:12  joergr
+** Added new overlay plane mode for bitmap shutters.
+**
+** Revision 1.3  1998/12/23 11:38:08  joergr
 ** Introduced new overlay mode item EMO_Graphic (= EMO_Replace).
 **
 ** Revision 1.2  1998/12/16 16:40:15  joergr
