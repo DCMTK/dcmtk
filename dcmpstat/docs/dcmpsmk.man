@@ -15,8 +15,8 @@ dcmpsmk [options] dcmfile-in dcmfile-out
 \section description DESCRIPTION
 
 The \b dcmpsmk utility reads a DICOM image file and creates a grayscale
-softcopy presentation state object according to Supplement 33. The
-presentation state object is written back to file. A number of command line
+softcopy presentation state object according to Supplement 33.  The
+presentation state object is written back to file.  A number of command line
 options allow to specify how certain constructs that might be present in
 the image file should be referenced or activated in the presentation state.
 The newly created presentation state references the source image and
@@ -24,122 +24,124 @@ contains values that should allow for a "reasonable" display of the image
 when rendered under control of the presentation state.
 
 \section parameters PARAMETERS
+
 \verbatim
 dcmfile-in   DICOM image file to be read
+
 dcmfile-out  DICOM presentation state file to be created
 \endverbatim
 
 \section options OPTIONS
+
 \subsection general_options general options:
 \verbatim
-  -h    --help
-          print this help text and exit
+  -h   --help
+         print this help text and exit
 
-        --version
-          print version information and exit
+       --version
+         print version information and exit
 
-  -v    --verbose
-          verbose mode, print processing details
+  -v   --verbose
+         verbose mode, print processing details
 
-  -d    --debug
-          debug mode, print debug information
+  -d   --debug
+         debug mode, print debug information
 \endverbatim
 
 \subsection input_options input optons
 \verbatim
 input file format:
 
-  +f    --read-file
-          read file format or data set (default)
+  +f   --read-file
+         read file format or data set (default)
 
-  -f    --read-dataset
-          read data set without file meta information
+  -f   --read-dataset
+         read data set without file meta information
 
 input transfer syntax (only with --read-dataset):
 
-  -t=   --read-xfer-auto
-          use TS recognition (default)
+  -t=  --read-xfer-auto
+         use TS recognition (default)
 
-  -te   --read-xfer-little
-          read with explicit VR little endian TS
+  -te  --read-xfer-little
+         read with explicit VR little endian TS
 
-  -tb   --read-xfer-big
-          read with explicit VR big endian TS
+  -tb  --read-xfer-big
+         read with explicit VR big endian TS
 
-  -ti   --read-xfer-implicit
-          read with implicit VR little endian TS
+  -ti  --read-xfer-implicit
+         read with implicit VR little endian TS
 \endverbatim
 
 \subsection processing_options processing options
 \verbatim
 VOI transform handling:
 
-  +Vl   --voi-lut
-          use first VOI LUT if present (default)
+  +Vl  --voi-lut
+         use first VOI LUT if present (default)
 
-  +Vw   --voi-window
-          use first window center/width if present
+  +Vw  --voi-window
+         use first window center/width if present
 
-  -V    --voi-ignore
-          ignore VOI LUT and window center/width
+  -V   --voi-ignore
+         ignore VOI LUT and window center/width
 
 curve handling:
 
-  +c    --curve-activate
-          activate curve data if present (default)
+  +c   --curve-activate
+         activate curve data if present (default)
 
-  -c    --curve-ignore
-          ignore curve data
+  -c   --curve-ignore
+         ignore curve data
 
 overlay handling:
 
-  +oc   --overlay-copy
-          copy overlays if not embedded,
-          activate otherwise (default)
+  +oc  --overlay-copy
+         copy overlays if not embedded, activate otherwise (default)
 
-  +oa   --overlay-activate
-          activate overlays
+  +oa  --overlay-activate
+         activate overlays
 
-  -o    --overlay-ignore
-          ignore overlays
+  -o   --overlay-ignore
+         ignore overlays
 
 shutter handling:
 
-  +s    --shutter-activate
-          use shutter if present in image (default)
+  +s   --shutter-activate
+         use shutter if present in image (default)
 
-  -s    --shutter-ignore
-          ignore shutter
+  -s   --shutter-ignore
+         ignore shutter
 
 presentation LUT shape handling:
 
-  +p    --plut-activate
-          use presentation LUT shape if present (default)
+  +p   --plut-activate
+         use presentation LUT shape if present (default)
 
-  -p    --plut-ignore
-          ignore presentation LUT shape
+  -p   --plut-ignore
+         ignore presentation LUT shape
 
 layering:
 
-  +l1   --layer-single
-          all curves and overlays are in one layer
+  +l1  --layer-single
+         all curves and overlays are in one layer
 
-  +l2   --layer-double
-          one layer for curves, one for overlays (default)
+  +l2  --layer-double
+         one layer for curves, one for overlays (default)
 
-  +ls   --layer-separate
-          separate layers for each curve and overlay
+  +ls  --layer-separate
+         separate layers for each curve and overlay
 
 location of referenced image:
 
-  -lx   --location-none
-          image reference without location (default)
+  -lx  --location-none
+         image reference without location (default)
 
-  -ln   --location-network  [a]etitle: string
-          image located at application entity a
+  -ln  --location-network  [a]etitle: string
+         image located at application entity a
 
-  -lm   --location-media  [f]ilesetID, fileset[UID]: string
-          image located on storage medium
+  -lm  --location-media  [f]ilesetID, fileset[UID]: string
+         image located on storage medium
 \endverbatim
 
 \subsection output_options output options
@@ -176,18 +178,16 @@ prefix to the filename (e.g. <em>\@command.txt</em>).  Such a command argument
 is replaced by the content of the corresponding text file (multiple
 whitespaces are treated as a single separator) prior to any further
 evaluation.  Please note that a command file cannot contain another command
-file. This simple but effective approach allows to summarize common
+file.  This simple but effective approach allows to summarize common
 combinations of options/parameters and avoids longish and confusing command
-lines (an example is provided in file <em>dcmdata/apps/dumppat.txt</em>).
-
+lines (an example is provided in file <em>data/dumppat.txt</em>).
 
 \section environment ENVIRONMENT
 
 The \b dcmpsmk utility will attempt to load DICOM data dictionaries specified
 in the \e DCMDICTPATH environment variable.  By default, i.e. if the
 \e DCMDICTPATH environment variable is not set, the file
-<em>/usr/local/dicom/lib/dicom.dic</em> (in fact the \e PREFIX as defined
-during \b configure is used) will be loaded unless the dictionary is built
+<em>\<PREFIX\>/lib/dicom.dic</em> will be loaded unless the dictionary is built
 into the application (default for Windows).
 
 The default behaviour should be preferred and the \e DCMDICTPATH environment

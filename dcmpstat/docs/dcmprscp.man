@@ -16,46 +16,46 @@ dcmprscp [options]
 
 The \b dcmprscp utility implements the DICOM Basic Grayscale Print Management
 Service Class as SCP. It also supports the optional Presentation LUT SOP
-Class. The utility is intended for use within the DICOMscope viewer.
+Class.  The utility is intended for use within the DICOMscope viewer.
 
-The \b dcmprscp utility accepts print jobs from a remote Print SCU. It does not
-create real hardcopies but stores print jobs in the local DICOMscope
+The \b dcmprscp utility accepts print jobs from a remote Print SCU.  It does
+not create real hardcopies but stores print jobs in the local DICOMscope
 database as a set of Stored Print objects (one per page) and Hardcopy
-Grayscale images (one per film box N-SET). The DICOMscope application allows
+Grayscale images (one per film box N-SET).  The DICOMscope application allows
 to load a Stored Print object created by \b dcmprscp and to render a screen
-preview of the hardcopy. The \b dcmprscp utility reads the characteristics of
+preview of the hardcopy.  The \b dcmprscp utility reads the characteristics of
 the printer to be emulated from the configuration file.
 
 \section options OPTIONS
 
 \subsection general_options general options
 \verbatim
-  -h    --help
-          print this help text and exit
+  -h  --help
+        print this help text and exit
 
-        --version
-          print version information and exit
+      --version
+        print version information and exit
 
-  -v    --verbose
-          verbose mode, print actions
+  -v  --verbose
+        verbose mode, print actions
 
-  -d    --debug
-          debug mode, print debug information
+  -d  --debug
+        debug mode, print debug information
 \endverbatim
 
 \subsection processing_options processing options
 \verbatim
-  -c    --config  [f]ilename: string
-          process using settings from configuration file
+  -c  --config  [f]ilename: string
+        process using settings from configuration file
 
-  -p    --printer  [n]ame: string (default: 1st printer in cfg file)
-          select printer with identifier [n] from cfg file
+  -p  --printer  [n]ame: string (default: 1st printer in cfg file)
+        select printer with identifier [n] from cfg file
 
-  +d    --dump
-          print all DIMSE messages
+  +d  --dump
+        print all DIMSE messages
 
-  -l    --logfile
-          print to log file instead of stdout
+  -l  --logfile
+        print to log file instead of stdout
 \endverbatim
 
 \section command_line COMMAND LINE
@@ -75,18 +75,16 @@ prefix to the filename (e.g. <em>\@command.txt</em>).  Such a command argument
 is replaced by the content of the corresponding text file (multiple
 whitespaces are treated as a single separator) prior to any further
 evaluation.  Please note that a command file cannot contain another command
-file. This simple but effective approach allows to summarize common
+file.  This simple but effective approach allows to summarize common
 combinations of options/parameters and avoids longish and confusing command
-lines (an example is provided in file <em>dcmdata/apps/dumppat.txt</em>).
-
+lines (an example is provided in file <em>data/dumppat.txt</em>).
 
 \section environment ENVIRONMENT
 
 The \b dcmprscp utility will attempt to load DICOM data dictionaries specified
 in the \e DCMDICTPATH environment variable.  By default, i.e. if the
 \e DCMDICTPATH environment variable is not set, the file
-<em>/usr/local/dicom/lib/dicom.dic</em> (in fact the \e PREFIX as defined
-during \b configure is used) will be loaded unless the dictionary is built
+<em>\<PREFIX\>/lib/dicom.dic</em> will be loaded unless the dictionary is built
 into the application (default for Windows).
 
 The default behaviour should be preferred and the \e DCMDICTPATH environment
@@ -96,9 +94,17 @@ variable only used when alternative data dictionaries are required.  The
 code will attempt to load each file specified in the \e DCMDICTPATH
 environment variable.  It is an error if no data dictionary can be loaded.
 
+\section files FILES
+
+<em>etc/test.cfg</em>, <em>etc/printers.cfg</em>  sample configuration files
+
+\section see_also SEE ALSO
+
+<b>dcmprscu</b>(1)
+
 \section copyright COPYRIGHT
 
-Copyright (C) 1998-2004 by Kuratorium OFFIS e.V., Escherweg 2, 26121 Oldenburg,
+Copyright (C) 1999-2004 by Kuratorium OFFIS e.V., Escherweg 2, 26121 Oldenburg,
 Germany.
 
 */

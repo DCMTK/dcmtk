@@ -15,41 +15,47 @@ dcmpssnd [options] config-file target study [series] [instance]
 \section description DESCRIPTION
 
 The \b dcmpssnd application is invoked by the Grayscale Softcopy Presentation
-State Viewer and is not intended to be invoked manually. The application
+State Viewer and is not intended to be invoked manually.  The application
 reads the common configuration file which is shared between the different
 components of the viewer, attempts to establish a DICOM association with
 the selected target and, if successful, selects the required DICOM
 instances from the viewer's database and transmits them using the DICOM
-storage service class, which is supported as SCU. When transmission is
+storage service class, which is supported as SCU.  When transmission is
 finished (successfully or unsuccessfully), the application terminates. This
 application supports the same storage SOP classes as the \b storescu utility,
-but does not support encapsulated transfer syntaxes. See the full
+but does not support encapsulated transfer syntaxes.  See the full
 conformance statement for further details.
 
 
 \section parameters PARAMETERS
+
 \verbatim
 config-file  configuration file to be read
+
 target       symbolic identifier of send target in config file
+
 study        study instance UID of study in database to be sent
+
 series       series instance UID (default: send complete study)
+
 instance     SOP instance UID (default: send complete series)
 \endverbatim
 
 \section options OPTIONS
+
 \subsection general_options general options
 \verbatim
-  -h    --help
-          print this help text and exit
+  -h  --help
+        print this help text and exit
 
-        --version
-          print version information and exit
+      --version
+        print version information and exit
 
-  -v    --verbose
-          verbose mode, print processing details
+  -v  --verbose
+        verbose mode, print processing details
 
-  -d    --debug
-          debug mode, print debug information
+  -d  --debug
+        debug mode, print debug information
 \endverbatim
 
 \section command_line COMMAND LINE
@@ -69,18 +75,16 @@ prefix to the filename (e.g. <em>\@command.txt</em>).  Such a command argument
 is replaced by the content of the corresponding text file (multiple
 whitespaces are treated as a single separator) prior to any further
 evaluation.  Please note that a command file cannot contain another command
-file. This simple but effective approach allows to summarize common
+file.  This simple but effective approach allows to summarize common
 combinations of options/parameters and avoids longish and confusing command
-lines (an example is provided in file <em>dcmdata/apps/dumppat.txt</em>).
-
+lines (an example is provided in file <em>data/dumppat.txt</em>).
 
 \section environment ENVIRONMENT
 
 The \b dcmpssnd utility will attempt to load DICOM data dictionaries specified
 in the \e DCMDICTPATH environment variable.  By default, i.e. if the
 \e DCMDICTPATH environment variable is not set, the file
-<em>/usr/local/dicom/lib/dicom.dic</em> (in fact the \e PREFIX as defined
-during \b configure is used) will be loaded unless the dictionary is built
+<em>\<PREFIX\>/lib/dicom.dic</em> will be loaded unless the dictionary is built
 into the application (default for Windows).
 
 The default behaviour should be preferred and the \e DCMDICTPATH environment
@@ -89,6 +93,14 @@ variable only used when alternative data dictionaries are required.  The
 \e PATH variable in that a colon (":") separates entries.  The data dictionary
 code will attempt to load each file specified in the \e DCMDICTPATH
 environment variable.  It is an error if no data dictionary can be loaded.
+
+\section files FILES
+
+<em>etc/test.cfg</em>  sample configuration file
+
+\section see_also SEE ALSO
+
+<b>dcmpsrcv</b>(1), <b>storescu</b>(1)
 
 \section copyright COPYRIGHT
 

@@ -15,19 +15,19 @@ dcmprscu [options] [filename_in...]
 \section description DESCRIPTION
 
 The \b dcmprscu utility implements the DICOM Basic Grayscale Print Management
-Service Class as SCU. It also supports the optional Basic Annotation Box
-and Presentation LUT SOP Classes. The utility is intended for use within
+Service Class as SCU.  It also supports the optional Basic Annotation Box
+and Presentation LUT SOP Classes.  The utility is intended for use within
 the DICOMscope viewer.
 
 The \b dcmprscu utility takes complete print jobs consisting of a Stored Print
 object and one or more Hardcopy Grayscale objects and spools them to the
 printer.  No attempt is made to check whether the attributes defined in the
-Stored Print object are supported by the Print SCP. However, the print
+Stored Print object are supported by the Print SCP.  However, the print
 spooler will not attempt to use the optional Annotation or Presentation LUT
 services if they are not successfully negotiated with the Print SCP.
 
 The \b dcmprscu utility reads the characteristics of the printer to
-communicate with from the configuration file. Depending on the printer's
+communicate with from the configuration file.  Depending on the printer's
 support for Presentation LUT, any Presentation LUT present in the print job
 will be rendered into the hardcopy images before they are spooled to the
 printer if necessary.  If the printer does not support image transmission
@@ -39,82 +39,84 @@ the file name of a Stored Print object must be passed, or in "spool mode",
 in which case commands are read periodically from a spool directory.
 
 \section parameters PARAMETERS
+
 \verbatim
 filename_in  stored print file(s) to be spooled
 \endverbatim
 
 \section options OPTIONS
+
 \subsection general_options general options
 \verbatim
-  -h    --help
-          print this help text and exit
+  -h  --help
+        print this help text and exit
 
-        --version
-          print version information and exit
+      --version
+        print version information and exit
 
-  -v    --verbose
-          verbose mode, print actions
+  -v  --verbose
+        verbose mode, print actions
 
-  -d    --debug
-          debug mode, print debug information
+  -d  --debug
+        debug mode, print debug information
 
-  +d    --dump
-          dump all DIMSE messages to stdout
+  +d  --dump
+        dump all DIMSE messages to stdout
 
-        --noprint
-          do not create print-out (no n-action-rq)
+      --noprint
+        do not create print-out (no n-action-rq)
 
-        --session-print
-          send film session n-action rq (instead of film box)
+      --session-print
+        send film session n-action rq (instead of film box)
 
-        --monochrome1
-          transmit basic grayscale images in MONOCHROME1
+      --monochrome1
+        transmit basic grayscale images in MONOCHROME1
 \endverbatim
 
 \subsection mode_options mode options
 \verbatim
-  +p    --print
-          printer mode, print file(s) and terminate (default)
+  +p  --print
+        printer mode, print file(s) and terminate (default)
 
-  +s    --spool  [n]ame: string
-          spooler mode, use job prefix [n]
+  +s  --spool  [n]ame: string
+        spooler mode, use job prefix [n]
 \endverbatim
 
 \subsection processing_options processing options
 \verbatim
-  -c    --config  [f]ilename: string
-          process using settings from configuration file
+  -c  --config  [f]ilename: string
+        process using settings from configuration file
 
-  -p    --printer  [n]ame: string (default: 1st printer in cfg file)
-          select printer with identifier [n] from cfg file
+  -p  --printer  [n]ame: string (default: 1st printer in cfg file)
+        select printer with identifier [n] from cfg file
 
 \endverbatim
 
 \subsection spooler_options spooler options (only with --spool)
 \verbatim
-        --sleep  [d]elay: integer (default: 1)
-          sleep [d] seconds between spooler checks
+      --sleep  [d]elay: integer (default: 1)
+        sleep [d] seconds between spooler checks
 \endverbatim
 
 \subsection film_session_options basic film session options (not with --spool):
 \verbatim
-        --copies  [v]alue: integer (1..100, default: 1)
-          set number of copies to [v]
+      --copies  [v]alue: integer (1..100, default: 1)
+        set number of copies to [v]
 
-        --medium-type  [v]alue: string
-          set medium type to [v]
+      --medium-type  [v]alue: string
+        set medium type to [v]
 
-        --destination  [v]alue: string
-          set film destination to [v]
+      --destination  [v]alue: string
+        set film destination to [v]
 
-        --label  [v]alue: string
-           set film session label to [v]
+      --label  [v]alue: string
+         set film session label to [v]
 
-        --priority  [v]alue: string
-          set print priority to [v]
+      --priority  [v]alue: string
+        set print priority to [v]
 
-        --owner  [v]alue: string
-          set film session owner ID to [v]
+      --owner  [v]alue: string
+        set film session owner ID to [v]
 \endverbatim
 
 \section command_line COMMAND LINE
@@ -134,18 +136,16 @@ prefix to the filename (e.g. <em>\@command.txt</em>).  Such a command argument
 is replaced by the content of the corresponding text file (multiple
 whitespaces are treated as a single separator) prior to any further
 evaluation.  Please note that a command file cannot contain another command
-file. This simple but effective approach allows to summarize common
+file.  This simple but effective approach allows to summarize common
 combinations of options/parameters and avoids longish and confusing command
-lines (an example is provided in file <em>dcmdata/apps/dumppat.txt</em>).
-
+lines (an example is provided in file <em>data/dumppat.txt</em>).
 
 \section environment ENVIRONMENT
 
 The \b dcmprscu utility will attempt to load DICOM data dictionaries specified
 in the \e DCMDICTPATH environment variable.  By default, i.e. if the
 \e DCMDICTPATH environment variable is not set, the file
-<em>/usr/local/dicom/lib/dicom.dic</em> (in fact the \e PREFIX as defined
-during \b configure is used) will be loaded unless the dictionary is built
+<em>\<PREFIX\>/lib/dicom.dic</em> will be loaded unless the dictionary is built
 into the application (default for Windows).
 
 The default behaviour should be preferred and the \e DCMDICTPATH environment
@@ -155,9 +155,17 @@ variable only used when alternative data dictionaries are required.  The
 code will attempt to load each file specified in the \e DCMDICTPATH
 environment variable.  It is an error if no data dictionary can be loaded.
 
+\section files FILES
+
+<em>etc/test.cfg</em>, <em>etc/printers.cfg</em>  sample configuration files
+
+\section see_also SEE ALSO
+
+<b>dcmprscp</b>(1)
+
 \section copyright COPYRIGHT
 
-Copyright (C) 1998-2004 by Kuratorium OFFIS e.V., Escherweg 2, 26121 Oldenburg,
+Copyright (C) 1999-2004 by Kuratorium OFFIS e.V., Escherweg 2, 26121 Oldenburg,
 Germany.
 
 */

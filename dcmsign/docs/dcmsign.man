@@ -19,20 +19,24 @@ signature operation and, if any modification has taken place, writes the DICOM
 object to an output file (\e dicomfile-out).
 
 Five digital signature operations are supported:
-- verification of all signatures in the DICOM file
-- creation of a new digital signature located in the main dataset,
-- creation of a new digital signature in an item of a sequence embedded
-  within the dataset,
-- removal of a single digital signature from the DICOM file, and
-- removal of all digital signatures from the DICOM file.
+
+\li verification of all signatures in the DICOM file
+\li creation of a new digital signature located in the main dataset,
+\li creation of a new digital signature in an item of a sequence embedded
+    within the dataset,
+\li removal of a single digital signature from the DICOM file, and
+\li removal of all digital signatures from the DICOM file.
 
 \section parameters PARAMETERS
+
 \verbatim
 dcmfile-in   DICOM input filename to be processed
+
 dcmfile-out  DICOM output filename
 \endverbatim
 
 \section options OPTIONS
+
 \subsection general_options general options
 \verbatim
   -h    --help
@@ -174,10 +178,11 @@ length encoding in sequences and items:
 \endverbatim
 
 \section notes NOTES
-\subsection files_and_parameters FILES AND PARAMETERS
 
-The \b dcmsign utility reads and writes a number of files and file formats which
-are described in this section.
+\subsection files_and_parameters Files and Parameters
+
+The \b dcmsign utility reads and writes a number of files and file formats
+which are described in this section.
 
 Public Key Certificates are expected in X.509v3 format, either with PEM or DER
 encoding. The dcmsign utility currently supports RSA and DSA public keys,
@@ -195,29 +200,44 @@ The list of data elements to sign can either be read from a file or specified
 on the command line or both (in this case the keys are combined).
 
 On the command line, attribute keys are specified as
+
 \verbatim
---tag "gggg,eeee"   where gggg and eeee are the hexadecimal group
-                    and element numbers
---tag "Name"        where 'Name' is a symbolic attribute name from the
-                    DICOM dictionary (see below).
+--tag "gggg,eeee"  where gggg and eeee are the hexadecimal group
+                   and element numbers
+--tag "Name"       where 'Name' is a symbolic attribute name from
+                   the DICOM dictionary (see below).
 \endverbatim
+\if MANPAGES
+.fi
+\endif
+
 When attribute tags are read from file with the \e --tag-file option, a plain
-text file of max. 64 kbyte is expected. Tags within the file are either symbolic
-names from the data dictionary or have the format (gggg,eeee) (with braces).
-Tags are separated by one or more whitespace characters.
+text file of max. 64 kbyte is expected.  Tags within the file are either
+symbolic names from the data dictionary or have the format (gggg,eeee) (with
+braces).  Tags are separated by one or more whitespace characters.
 
 The \e --sign-item operation requires a location string that describes in which
-sequence item a signature is to be created. The location string has the
+sequence item a signature is to be created.  The location string has the
 following format:
 
-  SequenceName[index].SequenceName[index].SequenceName[index](...)
+\verbatim
+SequenceName[index].SequenceName[index].SequenceName[index](...)
+\endverbatim
+\if MANPAGES
+.fi
+\endif
 
 where SequenceName is either a symbolic attribute name from the data dictionary
 or a numeric tag in the format (gggg,eeee) and index is an unsigned decimal
 integer for the item number, starting with zero for the first item in a
-sequence. As an example, the following location string
+sequence.  As an example, the following location string
 
-  ReferencedSeriesSequence[0].ReferencedImageSequence[1]
+\verbatim
+ReferencedSeriesSequence[0].ReferencedImageSequence[1]
+\endverbatim
+\if MANPAGES
+.fi
+\endif
 
 would cause a digital signature to be created in the second item of the
 ReferencedImageSequence (0008,1140) which is located in the first item of the
@@ -241,18 +261,16 @@ prefix to the filename (e.g. <em>\@command.txt</em>).  Such a command argument
 is replaced by the content of the corresponding text file (multiple
 whitespaces are treated as a single separator) prior to any further
 evaluation.  Please note that a command file cannot contain another command
-file. This simple but effective approach allows to summarize common
+file.  This simple but effective approach allows to summarize common
 combinations of options/parameters and avoids longish and confusing command
-lines (an example is provided in file <em>dcmdata/apps/dumppat.txt</em>).
-
+lines (an example is provided in file <em>data/dumppat.txt</em>).
 
 \section environment ENVIRONMENT
 
 The \b dcmsign utility will attempt to load DICOM data dictionaries specified
 in the \e DCMDICTPATH environment variable.  By default, i.e. if the
 \e DCMDICTPATH environment variable is not set, the file
-<em>/usr/local/dicom/lib/dicom.dic</em> (in fact the \e PREFIX as defined
-during \b configure is used) will be loaded unless the dictionary is built
+<em>\<PREFIX\>/lib/dicom.dic</em> will be loaded unless the dictionary is built
 into the application (default for Windows).
 
 The default behaviour should be preferred and the \e DCMDICTPATH environment
@@ -264,7 +282,7 @@ environment variable.  It is an error if no data dictionary can be loaded.
 
 \section copyright COPYRIGHT
 
-Copyright (C) 1998-2004 by Kuratorium OFFIS e.V., Escherweg 2, 26121 Oldenburg,
+Copyright (C) 2000-2004 by Kuratorium OFFIS e.V., Escherweg 2, 26121 Oldenburg,
 Germany.
 
 */

@@ -16,11 +16,11 @@ dcmp2pgm [options] dcmimage_in [bitmap_out]
 
 The \b dcmp2pgm utility renders a monochrome DICOM image under the control of
 a grayscale softcopy presentation state object into a monochrome bitmap
-with 8 bits/pixel. The bitmap is stored either as "Portable Gray Map" (PGM)
-or as a DICOM secondary capture image object. If no presentation state is
-read from file, a default presentation state is created. The utility allows
+with 8 bits/pixel.  The bitmap is stored either as "Portable Gray Map" (PGM)
+or as a DICOM secondary capture image object.  If no presentation state is
+read from file, a default presentation state is created.  The utility allows
 to read a configuration file of the Softcopy Presentation State Viewer upon
-startup. In this case, the settings from the configuration file affecting
+startup.  In this case, the settings from the configuration file affecting
 the rendering of the presentation state are used, e.g. a correction of the
 gray scale range according to Barten's model (DICOM part 14) can be
 performed if the characteristic curve of the display system is available
@@ -30,6 +30,7 @@ and defined in the configuration file.
 
 \verbatim
 dcmimage_in  input DICOM image
+
 bitmap_out   output DICOM image or PGM bitmap
 \endverbatim
 
@@ -37,44 +38,44 @@ bitmap_out   output DICOM image or PGM bitmap
 
 \subsection general_options general options
 \verbatim
-  -h    --help
-          print this help text and exit
+  -h  --help
+        print this help text and exit
 
-        --version
-          print version information and exit
+      --version
+        print version information and exit
 
-  -v    --verbose
-          verbose mode, dump presentation state contents
+  -v  --verbose
+        verbose mode, dump presentation state contents
 
-  -d    --debug
-          debug mode, print debug information
+  -d  --debug
+        debug mode, print debug information
 \endverbatim
 
 \subsection processing_options processing options
 \verbatim
-  -p    --pstate  [f]ilename: string
-          process using presentation state file
+  -p  --pstate  [f]ilename: string
+        process using presentation state file
 
-  -c    --config  [f]ilename: string
-          process using settings from configuration file
+  -c  --config  [f]ilename: string
+        process using settings from configuration file
 
-  -f    --frame  [f]rame: integer
-          process using image frame f (default: 1)
+  -f  --frame  [f]rame: integer
+        process using image frame f (default: 1)
 \endverbatim
 
 \subsection output_format output format
 \verbatim
-  -D    --pgm
-          save image as PGM (default)
+  -D  --pgm
+        save image as PGM (default)
 
-  +D    --dicom
-          save image as DICOM secondary capture
+  +D  --dicom
+        save image as DICOM secondary capture
 \endverbatim
 
 \subsection output_options output options
 \verbatim
-  +S    --save-pstate  [f]ilename: string
-          save presentation state to file
+  +S  --save-pstate  [f]ilename: string
+        save presentation state to file
 \endverbatim
 
 \section command_line COMMAND LINE
@@ -94,18 +95,16 @@ prefix to the filename (e.g. <em>\@command.txt</em>).  Such a command argument
 is replaced by the content of the corresponding text file (multiple
 whitespaces are treated as a single separator) prior to any further
 evaluation.  Please note that a command file cannot contain another command
-file. This simple but effective approach allows to summarize common
+file.  This simple but effective approach allows to summarize common
 combinations of options/parameters and avoids longish and confusing command
-lines (an example is provided in file <em>dcmdata/apps/dumppat.txt</em>).
-
+lines (an example is provided in file <em>data/dumppat.txt</em>).
 
 \section environment ENVIRONMENT
 
 The \b dcmp2pgm utility will attempt to load DICOM data dictionaries specified
 in the \e DCMDICTPATH environment variable.  By default, i.e. if the
 \e DCMDICTPATH environment variable is not set, the file
-<em>/usr/local/dicom/lib/dicom.dic</em> (in fact the \e PREFIX as defined
-during \b configure is used) will be loaded unless the dictionary is built
+<em>\<PREFIX\>/lib/dicom.dic</em> will be loaded unless the dictionary is built
 into the application (default for Windows).
 
 The default behaviour should be preferred and the \e DCMDICTPATH environment
@@ -114,6 +113,10 @@ variable only used when alternative data dictionaries are required.  The
 \e PATH variable in that a colon (":") separates entries.  The data dictionary
 code will attempt to load each file specified in the \e DCMDICTPATH
 environment variable.  It is an error if no data dictionary can be loaded.
+
+\section files FILES
+
+<em>etc/test.cfg</em>  sample configuration file
 
 \section copyright COPYRIGHT
 

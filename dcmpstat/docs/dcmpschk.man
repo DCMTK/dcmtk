@@ -18,47 +18,49 @@ The \b dcmpschk utility checks DICOM Grayscale Softcopy Presentation State
 objects for conformance with the standard.  The test is performed in three
 phases:
 
-- Phase 1 checks the Meta-header of the DICOM file. It is tested whether
-  all required attributes are present, whether the SOP class and instance
-  UIDs match the UIDs in the main object and whether the group length
-  attribute contains a correct value.  The Transfer Syntax of the Meta header 
-  is also checked.
+\li Phase 1 checks the Meta-header of the DICOM file.  It is tested whether
+    all required attributes are present, whether the SOP class and instance
+    UIDs match the UIDs in the main object and whether the group length
+    attribute contains a correct value.  The Transfer Syntax of the Meta
+    header is also checked.
 
-- Phase 2 performs a syntactic check of the values, value representations
-  and value multiplicities for each attribute in the object. The values
-  present in the object under test are compared with the definitions of the
-  DICOM data dictionary.
+\li Phase 2 performs a syntactic check of the values, value representations
+    and value multiplicities for each attribute in the object.  The values
+    present in the object under test are compared with the definitions of the
+    DICOM data dictionary.
 
-- Phase 3 performs a semantic check of the integrity of the Presentation
-  State. This phase is omitted when objects of other SOP Classes are
-  encountered. Phase 1 and 2 can also be applied to other DICOM objects of
-  arbitrary SOP class.
-  It should be noted that \b dcmpschk does not support Presentation States
-  which contain the Mask Module. These will be rejected with a message
-  that the Mask Module is not supported.
+\li Phase 3 performs a semantic check of the integrity of the Presentation
+    State.  This phase is omitted when objects of other SOP Classes are
+    encountered.  Phase 1 and 2 can also be applied to other DICOM objects of
+    arbitrary SOP class.
+    It should be noted that \b dcmpschk does not support Presentation States
+    which contain the Mask Module.  These will be rejected with a message
+    that the Mask Module is not supported.
 
 \section parameters PARAMETERS
+
 \verbatim
 filename_in  presentation state file(s) to be checked
 \endverbatim
 
 \section options OPTIONS
+
 \subsection general_options general options
 \verbatim
-  -h    --help
-          print this help text and exit
+  -h  --help
+        print this help text and exit
 
-        --version
-          print version information and exit
+      --version
+        print version information and exit
 
-  -v    --verbose
-          verbose mode, print actions
+  -v  --verbose
+        verbose mode, print actions
 
-  -d    --debug
-          debug mode, print debug information
+  -d  --debug
+        debug mode, print debug information
 
-  -l    --logfile  [f]ilename: string
-          write output to logfile f
+  -l  --logfile  [f]ilename: string
+        write output to logfile f
 \endverbatim
 
 \section command_line COMMAND LINE
@@ -78,18 +80,16 @@ prefix to the filename (e.g. <em>\@command.txt</em>).  Such a command argument
 is replaced by the content of the corresponding text file (multiple
 whitespaces are treated as a single separator) prior to any further
 evaluation.  Please note that a command file cannot contain another command
-file. This simple but effective approach allows to summarize common
+file.  This simple but effective approach allows to summarize common
 combinations of options/parameters and avoids longish and confusing command
-lines (an example is provided in file <em>dcmdata/apps/dumppat.txt</em>).
-
+lines (an example is provided in file <em>data/dumppat.txt</em>).
 
 \section environment ENVIRONMENT
 
 The \b dcmpschk utility will attempt to load DICOM data dictionaries specified
 in the \e DCMDICTPATH environment variable.  By default, i.e. if the
 \e DCMDICTPATH environment variable is not set, the file
-<em>/usr/local/dicom/lib/dicom.dic</em> (in fact the \e PREFIX as defined
-during \b configure is used) will be loaded unless the dictionary is built
+<em>\<PREFIX\>/lib/dicom.dic</em> will be loaded unless the dictionary is built
 into the application (default for Windows).
 
 The default behaviour should be preferred and the \e DCMDICTPATH environment
@@ -101,7 +101,7 @@ environment variable.  It is an error if no data dictionary can be loaded.
 
 \section copyright COPYRIGHT
 
-Copyright (C) 1998-2004 by Kuratorium OFFIS e.V., Escherweg 2, 26121 Oldenburg,
+Copyright (C) 2000-2004 by Kuratorium OFFIS e.V., Escherweg 2, 26121 Oldenburg,
 Germany.
 
 */

@@ -21,16 +21,17 @@ create a look up table according to the command line options, and write
 the new object back to file.  It is also possible to create a new object
 containing the specified LUT without reading an existing DICOM image file.
 This is e.g. useful to simply store different look-up tables in a DICOM-like
-structure.
-As a default the output file is encoded with the same transfer syntax used
-for the input file, but the transfer syntax can also be specified as a
-command line option.
+structure.  As a default the output file is encoded with the same transfer
+syntax used for the input file, but the transfer syntax can also be specified
+as a command line option.
+
 The LUT data can be derived from the shape of a gamma curve (default for the
 gamma factor is 1) or imported from a file (currently the MAP format from
 Ulead's PhotoImpact and a simple text format are supported).  The input and
 output width of the LUT can also be specified in the range allowed by the
 DICOM standard.  The interpolation of the input range is done by a polynomial
 curve fitting algorithm.
+
 In addition to the DICOM output file the LUT data can also be exported to a
 tabbed text file which allows the easy visualization of the curves with a
 common spread sheet application (e.g. Microsoft Excel).
@@ -45,116 +46,116 @@ dcmimg-out  DICOM output filename
 
 \subsection general_options general options
 \verbatim
-  -h    --help
-          print this help text and exit
+  -h   --help
+         print this help text and exit
 
-        --version
-          print version information and exit
+       --version
+         print version information and exit
 
-  -v    --verbose
-          verbose mode, print processing details
+  -v   --verbose
+         verbose mode, print processing details
 
-  -d    --debug
-          debug mode, print debug information
+  -d   --debug
+         debug mode, print debug information
 \endverbatim
 
 \subsection lut_creation_options LUT creation options
 \verbatim
 LUT type:
 
-  +Tm   --modality
-          create as Modality LUT
+  +Tm  --modality
+         create as Modality LUT
 
-  +Tp   --presentation
-          create as Presentation LUT
+  +Tp  --presentation
+         create as Presentation LUT
 
-  +Tv   --voi
-          create as VOI LUT (default)
+  +Tv  --voi
+         create as VOI LUT (default)
 
 LUT placement:
 
-  +Pa   --add
-          add to existing transform (def. for and only with +Tv)
+  +Pa  --add
+         add to existing transform (defaul for and only with +Tv)
 
-  +Pr   --replace
-          replace existing transform (default for +Tm and +Tp)
+  +Pr  --replace
+         replace existing transform (default for +Tm and +Tp)
 
 LUT content:
 
-  +Cg   --gamma  [g]amma : float
-          use gamma value (default: 1.0)
+  +Cg  --gamma  [g]amma : float
+         use gamma value (default: 1.0)
 
-  +Cm   --map-file  [f]ilename : string
-          read input data from MAP file
+  +Cm  --map-file  [f]ilename : string
+         read input data from MAP file
 
-  +Ct   --text-file  [f]ilename : string
-          read input data from text file
+  +Ct  --text-file  [f]ilename : string
+         read input data from text file
 
 LUT options:
 
-  +Og   --inverse-gsdf
-          apply inverse GSDF (print presentation LUT in OD)
+  +Og  --inverse-gsdf
+         apply inverse GSDF (print presentation LUT in OD)
 
-        --min-density  [v]alue : integer (0..65535, default: 20)
-          set min density to v (in hundreds of OD)
+       --min-density  [v]alue : integer (0..65535, default: 20)
+         set min density to v (in hundreds of OD)
 
-        --max-density  [v]alue : integer (0..65535, default: 300)
-          set max density to v (in hundreds of OD)
+       --max-density  [v]alue : integer (0..65535, default: 300)
+         set max density to v (in hundreds of OD)
 
-  +Oi   --illumination  [v]alue : integer (0..65535, default: 2000)
-          set illumination to v (in cd/m^2)
+  +Oi  --illumination  [v]alue : integer (0..65535, default: 2000)
+         set illumination to v (in cd/m^2)
 
-  +Or   --reflection  [v]alue : integer (0..65535, default: 10)
-          set reflected ambient light to v (in cd/m^2)
+  +Or  --reflection  [v]alue : integer (0..65535, default: 10)
+         set reflected ambient light to v (in cd/m^2)
 
 LUT structure:
 
-  -b    --bits  [n]umber : integer
-          create LUT with n bit values (8..16, default: 16)
+  -b   --bits  [n]umber : integer
+         create LUT with n bit values (8..16, default: 16)
 
-  -e    --entries  [n]umber : integer
-          create LUT with n entries (1..65536, default: 256)
+  -e   --entries  [n]umber : integer
+         create LUT with n entries (1..65536, default: 256)
 
-  -f    --first-mapped  [n]umber : integer
-          first input value mapped (-31768..65535, default: 0)
+  -f   --first-mapped  [n]umber : integer
+         first input value mapped (-31768..65535, default: 0)
 
-  -r    --random  [n]umber : unsigned integer
-          perform n randomly selected permutations on the LUT
+  -r   --random  [n]umber : unsigned integer
+         perform n randomly selected permutations on the LUT
 
-  -rs   --random-seed  [n]umber : unsigned integer
-          initialise the random-number generator with n
-          (default: 0, for reproduceable results)
+  -rs  --random-seed  [n]umber : unsigned integer
+         initialise the random-number generator with n
+         (default: 0, for reproduceable results)
 
-  -o    --order  [n]umber : integer
-          use polynomial curve fitting algorithm with order n
-          (0..99, default: 5)
+  -o   --order  [n]umber : integer
+         use polynomial curve fitting algorithm with order n
+         (0..99, default: 5)
 
-  -E    --explanation  [n]ame : string
-          LUT explanation (default: automatically created)
+  -E   --explanation  [n]ame : string
+         LUT explanation (default: automatically created)
 
-  -a    --byte-align
-          create byte-aligned LUT (implies -b 8)
+  -a   --byte-align
+         create byte-aligned LUT (implies -b 8)
 
 LUT data VR:
 
-  +Dw   --data-ow
-          write LUT Data as OW (default)
+  +Dw  --data-ow
+         write LUT Data as OW (default)
 
-  +Du   --data-us
-          write LUT Data as US
+  +Du  --data-us
+         write LUT Data as US
 
-  +Ds   --data-ss
-          write LUT Data as SS (minimal support)
+  +Ds  --data-ss
+         write LUT Data as SS (minimal support)
 \endverbatim
 
 \subsection file_options file options
 \verbatim
 
-  +Fi   --dicom-input  [f]ilename : string
-          read dataset from DICOM file f
+  +Fi  --dicom-input  [f]ilename : string
+         read dataset from DICOM file f
 
-  +Fo   --text-output  [f]ilename : string
-          write LUT data to tabbed text file f
+  +Fo  --text-output  [f]ilename : string
+         write LUT data to tabbed text file f
 \endverbatim
 
 \section command_line COMMAND LINE
@@ -174,18 +175,16 @@ prefix to the filename (e.g. <em>\@command.txt</em>).  Such a command argument
 is replaced by the content of the corresponding text file (multiple
 whitespaces are treated as a single separator) prior to any further
 evaluation.  Please note that a command file cannot contain another command
-file. This simple but effective approach allows to summarize common
+file.  This simple but effective approach allows to summarize common
 combinations of options/parameters and avoids longish and confusing command
-lines (an example is provided in file <em>dcmdata/apps/dumppat.txt</em>).
-
+lines (an example is provided in file <em>data/dumppat.txt</em>).
 
 \section environment ENVIRONMENT
 
 The \b dcmmklut utility will attempt to load DICOM data dictionaries specified
 in the \e DCMDICTPATH environment variable.  By default, i.e. if the
 \e DCMDICTPATH environment variable is not set, the file
-<em>/usr/local/dicom/lib/dicom.dic</em> (in fact the \e PREFIX as defined
-during \b configure is used) will be loaded unless the dictionary is built
+<em>\<PREFIX\>/lib/dicom.dic</em> will be loaded unless the dictionary is built
 into the application (default for Windows).
 
 The default behaviour should be preferred and the \e DCMDICTPATH environment
