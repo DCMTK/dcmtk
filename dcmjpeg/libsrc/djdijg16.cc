@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1997-2001, OFFIS
+ *  Copyright (C) 2001-2004, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,10 +21,10 @@
  *
  *  Purpose: decompression routines of the IJG JPEG library configured for 16 bits/sample. 
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2004-05-05 11:50:06 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2004-05-05 14:10:24 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmjpeg/libsrc/djdijg16.cc,v $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -237,11 +237,11 @@ OFCondition DJDecompressIJG16Bit::init()
         cinfo = NULL;
         return EC_MemoryExhausted;
       }
-      cinfo->err = jpeg_std_error(&jerr->pub);
+      cinfo->err = jpeg_std_error(& OFconst_cast(DJDIJG16ErrorStruct *, jerr)->pub);
       jerr->instance = this;
       jerr->pub.error_exit = DJDIJG16ErrorExit;
       jerr->pub.output_message = DJDIJG16OutputMessage;
-      if (setjmp(jerr->setjmp_buffer)) 
+      if (setjmp(OFconst_cast(DJDIJG16ErrorStruct *, jerr)->setjmp_buffer)) 
       {
         // the IJG error handler will cause the following code to be executed
         char buffer[JMSG_LENGTH_MAX];     
@@ -257,7 +257,7 @@ OFCondition DJDecompressIJG16Bit::init()
       return EC_MemoryExhausted;
     }
     jpeg_create_decompress(cinfo); 
-    cinfo->src = &src->pub;
+    cinfo->src = &OFconst_cast(DJDIJG16SourceManagerStruct *, src)->pub;
   } else return EC_MemoryExhausted;
 
   // everything OK
@@ -439,7 +439,10 @@ void DJDecompressIJG16Bit::outputMessage() const
 /*
  * CVS/RCS Log
  * $Log: djdijg16.cc,v $
- * Revision 1.7  2004-05-05 11:50:06  meichel
+ * Revision 1.8  2004-05-05 14:10:24  joergr
+ * Added explicit typecast to volatile variables to compiler with gcc 3.2.
+ *
+ * Revision 1.7  2004/05/05 11:50:06  meichel
  * Declared a few local variables as volatile that might otherwise
  *   be clobbered by longjmp.
  *
