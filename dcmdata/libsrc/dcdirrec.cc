@@ -10,9 +10,9 @@
 **
 **
 ** Last Update:		$Author: hewett $
-** Update Date:		$Date: 1996-09-27 08:23:08 $
+** Update Date:		$Date: 1997-02-06 12:12:40 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcdirrec.cc,v $
-** CVS/RCS Revision:	$Revision: 1.7 $
+** CVS/RCS Revision:	$Revision: 1.8 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -41,7 +41,12 @@
 #include "dcdebug.h"
 
 #ifdef HAVE_UNIX_H
-#include <unix.h>
+#if defined(macintosh) && defined (HAVE_WINSOCK_H)
+/* unix.h defines timeval incompatible with winsock.h */
+#define timeval _UNWANTED_timeval
+#endif
+#include <unix.h>	/* for unlink() under Metrowerks C++ (Macintosh) */
+#undef timeval
 #endif
 
 
@@ -1135,8 +1140,17 @@ E_Condition DcmDirectoryRecord::read(DcmStream & inStream,
 	else
 	{
 
-		if(fTransferState != ERW_ready)
+		if(fTransferState != ERW_ready) {
 			errorFlag = DcmItem::read(inStream, xfer, gltype, maxReadLength);
+			/*
+			** Remember the actual file offset for this Directory Record.  
+			** Compute by subtracting the Item header (tag & length fields)
+			** from the start position of data within the Item (fStartPosition).
+			** fStartPosition is set in DcmItem::read(...)
+			** offsetInFile is used in the print(...) method.
+			*/
+			offsetInFile = fStartPosition - calcHeaderLength(ident(), xfer);
+                }
 
 		if (fTransferState == ERW_ready &&
 			DirRecordType == ERT_Private)     // minimiert mehrfaches Auswerten
