@@ -22,9 +22,9 @@
  *  Purpose: DicomScaleTemplates (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-04-27 13:08:42 $
+ *  Update Date:      $Date: 2000-04-28 12:32:33 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/discalet.h,v $
- *  CVS/RCS Revision: $Revision: 1.15 $
+ *  CVS/RCS Revision: $Revision: 1.16 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -178,7 +178,7 @@ class DiScaleTemplate
         if ((src != NULL) && (dest != NULL))
         {
 #ifdef DEBUG
-            if (DicomImageClass::DebugLevel & DicomImageClass::DL_DebugMessages)
+            if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_DebugMessages))
             {
                 ofConsole.lockCout() << "C/R: " << Columns << " " << Rows << endl
                                      << "L/T: " << Left << " " << Top << endl
@@ -190,7 +190,7 @@ class DiScaleTemplate
             if ((Left + (signed long)Src_X <= 0) || (Top + (signed long)Src_Y <= 0) ||
                 (Left >= (signed long)Columns) || (Top >= (signed long)Rows))
             {                                                                   // no image to be displayed
-                if (DicomImageClass::DebugLevel & DicomImageClass::DL_Informationals)
+                if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Informationals))
                 {
                     ofConsole.lockCerr() << "INFO: clipping area is fully outside the image boundaries !" << endl;
                     ofConsole.unlockCerr();
@@ -512,7 +512,7 @@ class DiScaleTemplate
     {
         if ((Src_X != Columns) || (Src_Y != Rows))
         {
-            if (DicomImageClass::DebugLevel & DicomImageClass::DL_Errors)
+            if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Errors))
             {
                ofConsole.lockCerr() << "ERROR: interpolated scaling and clipping at the same time not implemented" << endl
                                     << "       ... ignoring clipping region !" << endl;
@@ -545,7 +545,7 @@ class DiScaleTemplate
 
         if ((xtemp == NULL) || (xvalue == NULL))
         {
-            if (DicomImageClass::DebugLevel & DicomImageClass::DL_Errors)
+            if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Errors))
             {
                 ofConsole.lockCerr() << "ERROR: can't allocate temporary buffers for interpolation scaling !" << endl;
                 ofConsole.unlockCerr();
@@ -684,7 +684,7 @@ class DiScaleTemplate
     void expandPixel(const T *src[],
                      T *dest[])
     {
-        if (DicomImageClass::DebugLevel & DicomImageClass::DL_Informationals)
+        if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Informationals))
         {
             ofConsole.lockCerr() << "INFO: expandPixel with interpolated c't algorithm" << endl;
             ofConsole.unlockCerr();
@@ -783,7 +783,7 @@ class DiScaleTemplate
     void reducePixel(const T *src[],
                           T *dest[])
     {
-        if (DicomImageClass::DebugLevel & (DicomImageClass::DL_Informationals | DicomImageClass::DL_Warnings))
+        if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Informationals | DicomImageClass::DL_Warnings))
         {
             ofConsole.lockCerr() << "INFO: reducePixel with interpolated c't algorithm ... still a little BUGGY !" << endl;
             ofConsole.unlockCerr();
@@ -873,7 +873,10 @@ class DiScaleTemplate
  *
  * CVS/RCS Log:
  * $Log: discalet.h,v $
- * Revision 1.15  2000-04-27 13:08:42  joergr
+ * Revision 1.16  2000-04-28 12:32:33  joergr
+ * DebugLevel - global for the module - now derived from OFGlobal (MF-safe).
+ *
+ * Revision 1.15  2000/04/27 13:08:42  joergr
  * Dcmimgle library code now consistently uses ofConsole for error output.
  *
  * Revision 1.14  2000/03/08 16:24:24  meichel

@@ -22,9 +22,9 @@
  *  Purpose: DicomGSDFunction (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-04-27 13:10:26 $
+ *  Update Date:      $Date: 2000-04-28 12:33:43 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/libsrc/digsdfn.cc,v $
- *  CVS/RCS Revision: $Revision: 1.10 $
+ *  CVS/RCS Revision: $Revision: 1.11 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -67,7 +67,7 @@ DiGSDFunction::DiGSDFunction(const char *filename)
         Valid = calculateGSDF() && calculateGSDFSpline() && calculateJNDBoundaries();
     if (!Valid)
     {
-        if (DicomImageClass::DebugLevel & DicomImageClass::DL_Errors)
+        if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Errors))
         {
             ofConsole.lockCerr() << "ERROR: invalid DISPLAY file ... ignoring !" << endl;
             ofConsole.unlockCerr();
@@ -89,7 +89,7 @@ DiGSDFunction::DiGSDFunction(const double *lum_tab,             // UNTESTED !!
         Valid = calculateGSDF() && calculateGSDFSpline() && calculateJNDBoundaries();
     if (!Valid)
     {
-        if (DicomImageClass::DebugLevel & DicomImageClass::DL_Errors)
+        if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Errors))
         {
             ofConsole.lockCerr() << "ERROR: invalid DISPLAY values ... ignoring !" << endl;
             ofConsole.unlockCerr();
@@ -112,7 +112,7 @@ DiGSDFunction::DiGSDFunction(const Uint16 *ddl_tab,             // UNTESTED !!
         Valid = calculateGSDF() && calculateGSDFSpline() && calculateJNDBoundaries();
     if (!Valid)
     {
-        if (DicomImageClass::DebugLevel & DicomImageClass::DL_Errors)
+        if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Errors))
         {
             ofConsole.lockCerr() << "ERROR: invalid DISPLAY values ... ignoring !" << endl;
             ofConsole.unlockCerr();
@@ -134,7 +134,7 @@ DiGSDFunction::DiGSDFunction(const double lum_min,
         Valid = calculateGSDF() && calculateGSDFSpline() && calculateJNDBoundaries();
     if (!Valid)
     {
-        if (DicomImageClass::DebugLevel & DicomImageClass::DL_Errors)
+        if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Errors))
         {
             ofConsole.lockCerr() << "ERROR: invalid DISPLAY values ... ignoring !" << endl;
             ofConsole.unlockCerr();
@@ -314,7 +314,10 @@ double DiGSDFunction::getJNDIndex(const double lum) const
  *
  * CVS/RCS Log:
  * $Log: digsdfn.cc,v $
- * Revision 1.10  2000-04-27 13:10:26  joergr
+ * Revision 1.11  2000-04-28 12:33:43  joergr
+ * DebugLevel - global for the module - now derived from OFGlobal (MF-safe).
+ *
+ * Revision 1.10  2000/04/27 13:10:26  joergr
  * Dcmimgle library code now consistently uses ofConsole for error output.
  *
  * Revision 1.9  2000/03/08 16:24:27  meichel

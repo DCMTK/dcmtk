@@ -22,9 +22,9 @@
  *  Purpose: DicomOverlayImage (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-04-27 13:10:32 $
+ *  Update Date:      $Date: 2000-04-28 12:33:47 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/libsrc/diovlimg.cc,v $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -76,7 +76,7 @@ DiOverlayImage::DiOverlayImage(const DiDocument *docu,
                 if (InterData == NULL)
                 {
                     ImageStatus = EIS_MemoryFailure;
-                    if (DicomImageClass::DebugLevel & DicomImageClass::DL_Errors)
+                    if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Errors))
                     {
                         ofConsole.lockCerr() << "ERROR: can't allocate memory for inter-representation !" << endl;
                         ofConsole.unlockCerr();
@@ -88,7 +88,7 @@ DiOverlayImage::DiOverlayImage(const DiDocument *docu,
             else
             {
                 ImageStatus = EIS_InvalidValue;
-                if (DicomImageClass::DebugLevel & DicomImageClass::DL_Errors)
+                if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Errors))
                 {
                     ofConsole.lockCerr() << "ERROR: invalid value for 'Rows' (" << Rows << ") and/or "
                                          << "'Columns' (" << Columns << ") !" << endl;
@@ -100,7 +100,7 @@ DiOverlayImage::DiOverlayImage(const DiDocument *docu,
     else
     {
         ImageStatus = EIS_InvalidDocument;
-        if (DicomImageClass::DebugLevel & DicomImageClass::DL_Errors)
+        if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Errors))
         {
             ofConsole.lockCerr() << "ERROR: this DICOM document is invalid !" << endl;
             ofConsole.unlockCerr();
@@ -122,7 +122,10 @@ DiOverlayImage::~DiOverlayImage()
  *
  * CVS/RCS Log:
  * $Log: diovlimg.cc,v $
- * Revision 1.7  2000-04-27 13:10:32  joergr
+ * Revision 1.8  2000-04-28 12:33:47  joergr
+ * DebugLevel - global for the module - now derived from OFGlobal (MF-safe).
+ *
+ * Revision 1.7  2000/04/27 13:10:32  joergr
  * Dcmimgle library code now consistently uses ofConsole for error output.
  *
  * Revision 1.6  2000/03/08 16:24:32  meichel

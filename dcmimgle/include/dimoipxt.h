@@ -22,9 +22,9 @@
  *  Purpose: DicomMonochromeInputPixelTemplate (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-04-27 13:08:39 $
+ *  Update Date:      $Date: 2000-04-28 12:32:31 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/dimoipxt.h,v $
- *  CVS/RCS Revision: $Revision: 1.17 $
+ *  CVS/RCS Revision: $Revision: 1.18 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -109,7 +109,7 @@ cout << pixel->getPixelStart() << endl;
             lut = new T3[ocnt];
             if (lut != NULL)
             {
-                if (DicomImageClass::DebugLevel & DicomImageClass::DL_Informationals)
+                if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Informationals))
                 {
                     ofConsole.lockCerr() << "INFO: using optimized routine with additional LUT" << endl;
                     ofConsole.unlockCerr();
@@ -140,7 +140,7 @@ cout << pixel->getPixelStart() << endl;
                     Data = new T3[Count];
                 if (Data != NULL)
                 {
-                    if (DicomImageClass::DebugLevel & DicomImageClass::DL_Informationals)
+                    if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Informationals))
                     {
                         ofConsole.lockCerr() << "INFO: using modality routine 'modlut()'" << endl;
                         ofConsole.unlockCerr();
@@ -225,7 +225,7 @@ cout << pixel->getPixelStart() << endl;
                             *(q++) = (T3)*(p++);
                     }
                 } else {
-                    if (DicomImageClass::DebugLevel & DicomImageClass::DL_Informationals)
+                    if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Informationals))
                     {
                         ofConsole.lockCerr() << "INFO: using modality routine 'rescale()'" << endl;
                         ofConsole.unlockCerr();
@@ -288,7 +288,10 @@ cout << pixel->getPixelStart() << endl;
  *
  * CVS/RCS Log:
  * $Log: dimoipxt.h,v $
- * Revision 1.17  2000-04-27 13:08:39  joergr
+ * Revision 1.18  2000-04-28 12:32:31  joergr
+ * DebugLevel - global for the module - now derived from OFGlobal (MF-safe).
+ *
+ * Revision 1.17  2000/04/27 13:08:39  joergr
  * Dcmimgle library code now consistently uses ofConsole for error output.
  *
  * Revision 1.16  2000/03/08 16:24:19  meichel

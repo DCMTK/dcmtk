@@ -21,10 +21,10 @@
  *
  *  Purpose: export display curves to a text file
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-04-14 16:31:24 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2000-04-28 12:31:32 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/apps/dcmdspfn.cc,v $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -145,9 +145,9 @@ int main(int argc, char *argv[])
     }
 
     if (opt_verboseMode < 1)
-        DicomImageClass::DebugLevel = 0;
+        DicomImageClass::setDebugLevel(0);
     else if (opt_debugMode > 0)
-        DicomImageClass::DebugLevel |= DicomImageClass::DL_DebugMessages | DicomImageClass::DL_Informationals;
+        DicomImageClass::setDebugLevel(DicomImageClass::getDebugLevel() | DicomImageClass::DL_DebugMessages | DicomImageClass::DL_Informationals);
 
     if (opt_outputMode > 0)
     {
@@ -219,7 +219,10 @@ int main(int argc, char *argv[])
  *
  * CVS/RCS Log:
  * $Log: dcmdspfn.cc,v $
- * Revision 1.5  2000-04-14 16:31:24  meichel
+ * Revision 1.6  2000-04-28 12:31:32  joergr
+ * DebugLevel - global for the module - now derived from OFGlobal (MF-safe).
+ *
+ * Revision 1.5  2000/04/14 16:31:24  meichel
  * Adapted to changed parameter list for command line class
  *
  * Revision 1.4  2000/03/08 16:24:10  meichel

@@ -22,9 +22,9 @@
  *  Purpose: DicomMonochromeImage (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-04-27 13:10:29 $
+ *  Update Date:      $Date: 2000-04-28 12:33:45 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/libsrc/dimoimg.cc,v $
- *  CVS/RCS Revision: $Revision: 1.33 $
+ *  CVS/RCS Revision: $Revision: 1.34 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -491,7 +491,7 @@ DiMonoImage::DiMonoImage(const DiMonoImage &)
     OutputData(NULL),
     OverlayData(NULL)
 {
-    if (DicomImageClass::DebugLevel & DicomImageClass::DL_Errors)
+    if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Errors))
     {
         ofConsole.lockCerr() << "ERROR in DiMonoImage copy-constructor !!!" << endl;
         ofConsole.unlockCerr();
@@ -801,7 +801,7 @@ int DiMonoImage::checkInterData(const int mode)
         if (ImageStatus == EIS_Normal)
         {
             ImageStatus = EIS_MemoryFailure;
-            if (DicomImageClass::DebugLevel & DicomImageClass::DL_Errors)
+            if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Errors))
             {
                 ofConsole.lockCerr() << "ERROR: can't allocate memory for inter-representation !" << endl;
                 ofConsole.unlockCerr();
@@ -816,7 +816,7 @@ int DiMonoImage::checkInterData(const int mode)
         const unsigned long count = (unsigned long)Columns * (unsigned long)Rows * NumberOfFrames;
         if ((InterData->getCount() != count) && ((InterData->getCount() >> 1) != ((count + 1) >> 1)))
         {
-            if (DicomImageClass::DebugLevel & DicomImageClass::DL_Warnings)
+            if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Warnings))
             {
                 ofConsole.lockCerr() << "WARNING: computed (" << count << ") and stored (" << InterData->getCount() << ") "
                                      << "pixel count differ !" << endl;
@@ -1267,7 +1267,7 @@ void *DiMonoImage::getData(void *buffer,
             DiDisplayFunction *disp = DisplayFunction;
             if ((disp != NULL) && (disp->isValid()) && (disp->getMaxDDLValue() != DicomImageClass::maxval(bits)))
             {
-                if (DicomImageClass::DebugLevel & DicomImageClass::DL_Warnings)
+                if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Warnings))
                 {
                    ofConsole.lockCerr() << "WARNING: selected display function doesn't fit to requested output depth ("
                                         << bits << ")" << endl << "         ... ignoring display transformation !" << endl;
@@ -1299,7 +1299,7 @@ void *DiMonoImage::getData(void *buffer,
             if (OutputData == NULL)
             {
                 ImageStatus = EIS_MemoryFailure;
-                if (DicomImageClass::DebugLevel & DicomImageClass::DL_Errors)
+                if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Errors))
                 {
                     ofConsole.lockCerr() << "ERROR: can't allocate memory for output-representation !" << endl;
                     ofConsole.unlockCerr();
@@ -1308,7 +1308,7 @@ void *DiMonoImage::getData(void *buffer,
             else
                 return OutputData->getData();           // points to beginning of output data
         } else {
-            if (DicomImageClass::DebugLevel & DicomImageClass::DL_Errors)
+            if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Errors))
             {
                 ofConsole.lockCerr() << "ERROR: given output buffer is too small (only " << size << " bytes) !" << endl;
                 ofConsole.unlockCerr();
@@ -1609,7 +1609,10 @@ int DiMonoImage::writeRawPPM(FILE *stream,
  *
  * CVS/RCS Log:
  * $Log: dimoimg.cc,v $
- * Revision 1.33  2000-04-27 13:10:29  joergr
+ * Revision 1.34  2000-04-28 12:33:45  joergr
+ * DebugLevel - global for the module - now derived from OFGlobal (MF-safe).
+ *
+ * Revision 1.33  2000/04/27 13:10:29  joergr
  * Dcmimgle library code now consistently uses ofConsole for error output.
  *
  * Revision 1.32  2000/03/08 17:14:38  meichel

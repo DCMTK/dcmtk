@@ -22,9 +22,9 @@
  *  Purpose: DicomImage-Interface (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-04-27 13:10:24 $
+ *  Update Date:      $Date: 2000-04-28 12:33:40 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/libsrc/dcmimage.cc,v $
- *  CVS/RCS Revision: $Revision: 1.14 $
+ *  CVS/RCS Revision: $Revision: 1.15 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -267,14 +267,14 @@ void DicomImage::Init()
                         if (PhotometricInterpretation == EPI_Unknown)
                         {
                             ImageStatus = EIS_InvalidValue;
-                            if (DicomImageClass::DebugLevel & DicomImageClass::DL_Errors)
+                            if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Errors))
                             {
                                 ofConsole.lockCerr() << "ERROR: invalid value for 'PhotometricInterpretation' (" << str << ") !" << endl;
                                 ofConsole.unlockCerr();
                             }
                         } else {
                             ImageStatus = EIS_NotSupportedValue;
-                            if (DicomImageClass::DebugLevel & DicomImageClass::DL_Errors)
+                            if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Errors))
                             {
                                 ofConsole.lockCerr() << "ERROR: unsupported value for 'PhotometricInterpretation' (" << str << ") !" << endl
                                                      << "       library 'dcmimage' required to handle color images !" << endl;
@@ -292,7 +292,7 @@ void DicomImage::Init()
         else
         {
             ImageStatus = EIS_MissingAttribute;  
-            if (DicomImageClass::DebugLevel & DicomImageClass::DL_Errors)
+            if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Errors))
             {
                 ofConsole.lockCerr() << "ERROR: mandatory attribute 'PhotometricInterpretation' is missing !" << endl;
                 ofConsole.unlockCerr();                
@@ -311,7 +311,7 @@ int DicomImage::checkDataDictionary()
     if (!dcmDataDict.isDictionaryLoaded()) 
     {
         ImageStatus = EIS_NoDataDictionary;
-        if (DicomImageClass::DebugLevel & DicomImageClass::DL_Errors)
+        if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Errors))
         {
             ofConsole.lockCerr() << "ERROR: can't load data dictionary !" << endl;
             ofConsole.unlockCerr();
@@ -479,7 +479,7 @@ DicomImage *DicomImage::createScaledImage(const signed long left,
         if (((left < 0) || (top < 0) || ((unsigned long)(left + clip_width) > gw) || ((unsigned long)(top + clip_height) > gh)) &&
             ((clip_width != scale_width) || (clip_height != scale_height)))
         {
-            if (DicomImageClass::DebugLevel & (DicomImageClass::DL_Errors))
+            if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Errors))
             {
                 ofConsole.lockCerr() << "ERROR: combined clipping & scaling outside image boundaries not yet supported !" << endl;
                 ofConsole.unlockCerr();
@@ -769,7 +769,10 @@ int DicomImage::writeRawPPM(FILE *stream,
  *
  * CVS/RCS Log:
  * $Log: dcmimage.cc,v $
- * Revision 1.14  2000-04-27 13:10:24  joergr
+ * Revision 1.15  2000-04-28 12:33:40  joergr
+ * DebugLevel - global for the module - now derived from OFGlobal (MF-safe).
+ *
+ * Revision 1.14  2000/04/27 13:10:24  joergr
  * Dcmimgle library code now consistently uses ofConsole for error output.
  *
  * Revision 1.13  2000/03/08 16:24:25  meichel

@@ -21,10 +21,10 @@
  *
  *  Purpose: Utilities (Header)
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-03-08 16:24:25 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2000-04-28 12:32:33 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/diutils.h,v $
- *  CVS/RCS Revision: $Revision: 1.13 $
+ *  CVS/RCS Revision: $Revision: 1.14 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -37,6 +37,8 @@
 
 #include "osconfig.h"
 #include "dctypes.h"
+
+#include "ofglobal.h"
 
 #ifdef HAVE_STDLIB_H
 #ifndef  _BCB4
@@ -299,6 +301,36 @@ class DicomImageClass
     static EP_Representation determineRepresentation(double minvalue,
                                                      double maxvalue);
 
+    /** set the debug level to the specified value
+     *
+     ** @param  level  debug level to be set
+     */
+    static void setDebugLevel(const int level)
+    {
+        DebugLevel.set(level);
+    }
+    
+    /** get the current debug level
+     *
+     ** @return  current debug level
+     */
+    static int getDebugLevel()
+    {
+        return DebugLevel.get();
+    }
+    
+    /** check whether specified debug level is set
+     *
+     ** @param  level  debug levelto be checked
+     *
+     ** @return true if debug level is set, false (0) otherwise
+     */
+    static int checkDebugLevel(const int level)
+    {
+        return DebugLevel.get() & level;
+    }
+
+
     /// debug level: display no messages
     static const int DL_NoMessages;
     /// debug level: display error messages
@@ -310,8 +342,11 @@ class DicomImageClass
     /// debug level: display debug messages
     static const int DL_DebugMessages;
 
-    /// debug level defining the verboseness of the toolkit
-    static int DebugLevel;
+
+  private:
+  
+    /// debug level defining the verboseness of the image toolkit
+    static OFGlobal<int> DebugLevel;
 };
 
 
@@ -322,7 +357,10 @@ class DicomImageClass
  *
  * CVS/RCS Log:
  * $Log: diutils.h,v $
- * Revision 1.13  2000-03-08 16:24:25  meichel
+ * Revision 1.14  2000-04-28 12:32:33  joergr
+ * DebugLevel - global for the module - now derived from OFGlobal (MF-safe).
+ *
+ * Revision 1.13  2000/03/08 16:24:25  meichel
  * Updated copyright header.
  *
  * Revision 1.12  2000/02/23 15:12:16  meichel

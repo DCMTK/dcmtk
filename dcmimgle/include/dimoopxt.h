@@ -22,9 +22,9 @@
  *  Purpose: DicomMonoOutputPixelTemplate (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-04-27 13:08:40 $
+ *  Update Date:      $Date: 2000-04-28 12:32:31 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/dimoopxt.h,v $
- *  CVS/RCS Revision: $Revision: 1.33 $
+ *  CVS/RCS Revision: $Revision: 1.34 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -264,13 +264,13 @@ class DiMonoOutputPixelTemplate
             dlut = disp->getLookupTable(bits);
             if ((dlut != NULL) && (dlut->isValid()))                          // LUT is valid
             {
-                if (DicomImageClass::DebugLevel & DicomImageClass::DL_Informationals)
+                if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Informationals))
                 {
                     ofConsole.lockCerr() << "INFO: using display transformation" << endl;
                     ofConsole.unlockCerr();
                 }
             } else {
-                if (DicomImageClass::DebugLevel & DicomImageClass::DL_Warnings)
+                if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Warnings))
                 {
                     ofConsole.lockCerr() << "WARNING: can't create display LUT ... ignoring display transformation !" << endl;
                     ofConsole.unlockCerr();
@@ -294,7 +294,7 @@ class DiMonoOutputPixelTemplate
             lut = new T3[ocnt];
             if (lut != NULL)
             {
-                if (DicomImageClass::DebugLevel & DicomImageClass::DL_Informationals)
+                if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Informationals))
                 {
                     ofConsole.lockCerr() << "INFO: using optimized routine with additional LUT" << endl;
                     ofConsole.unlockCerr();
@@ -345,7 +345,7 @@ class DiMonoOutputPixelTemplate
                 Data = new T3[FrameSize];
             if (Data != NULL)
             {
-                if (DicomImageClass::DebugLevel & DicomImageClass::DL_Informationals)
+                if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Informationals))
                 {
                     ofConsole.lockCerr() << "INFO: using VOI routine 'voilut()'" << endl;
                     ofConsole.unlockCerr();
@@ -359,7 +359,7 @@ class DiMonoOutputPixelTemplate
                     T3 value;
                     if ((plut != NULL) && (plut->isValid()))                            // has presentation LUT
                     {
-                        if (DicomImageClass::DebugLevel & DicomImageClass::DL_Informationals)
+                        if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Informationals))
                         {
                             ofConsole.lockCerr() << "INFO: using presentation LUT transformation" << endl;
                             ofConsole.unlockCerr();
@@ -400,7 +400,7 @@ class DiMonoOutputPixelTemplate
                     T3 *lut = NULL;
                     if ((plut != NULL) && (plut->isValid()))                            // has presentation LUT
                     {
-                        if (DicomImageClass::DebugLevel & DicomImageClass::DL_Informationals)
+                        if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Informationals))
                         {
                             ofConsole.lockCerr() << "INFO: using presentation LUT transformation" << endl;
                             ofConsole.unlockCerr();
@@ -632,7 +632,7 @@ class DiMonoOutputPixelTemplate
                 Data = new T3[FrameSize];
             if (Data != NULL)
             {
-                if (DicomImageClass::DebugLevel & DicomImageClass::DL_Informationals)
+                if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Informationals))
                 {
                     ofConsole.lockCerr() << "INFO: using VOI routine 'nowindow()'" << endl;
                     ofConsole.unlockCerr();
@@ -647,7 +647,7 @@ class DiMonoOutputPixelTemplate
                 T3 *lut = NULL;
                 if ((plut != NULL) && (plut->isValid()))                              // has presentation LUT
                 {
-                    if (DicomImageClass::DebugLevel & DicomImageClass::DL_Informationals)
+                    if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Informationals))
                     {
                         ofConsole.lockCerr() << "INFO: using presentation LUT transformation" << endl;
                         ofConsole.unlockCerr();
@@ -794,7 +794,7 @@ class DiMonoOutputPixelTemplate
                 Data = new T3[FrameSize];                                             // create new output buffer
             if (Data != NULL)
             {
-                if (DicomImageClass::DebugLevel & DicomImageClass::DL_Informationals)
+                if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Informationals))
                 {
                     ofConsole.lockCerr() << "INFO: using VOI routine 'window()'" << endl;
                     ofConsole.unlockCerr();
@@ -813,7 +813,7 @@ class DiMonoOutputPixelTemplate
                 T3 *lut = NULL;
                 if ((plut != NULL) && (plut->isValid()))                              // has presentation LUT
                 {
-                    if (DicomImageClass::DebugLevel & DicomImageClass::DL_Informationals)
+                    if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Informationals))
                     {
                         ofConsole.lockCerr() << "INFO: using presentation LUT transformation" << endl;
                         ofConsole.unlockCerr();
@@ -1093,7 +1093,7 @@ class DiMonoOutputPixelTemplate
                                     break;
                                 }
                                 default: /* e.g. EMO_Default */
-                                    if (DicomImageClass::DebugLevel & DicomImageClass::DL_Warnings)
+                                    if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Warnings))
                                     {
                                         ofConsole.lockCerr() << "WARNING: unhandled overlay mode (" << (int)plane->getMode() << ") !" << endl;
                                         ofConsole.unlockCerr();
@@ -1132,7 +1132,10 @@ class DiMonoOutputPixelTemplate
  *
  * CVS/RCS Log:
  * $Log: dimoopxt.h,v $
- * Revision 1.33  2000-04-27 13:08:40  joergr
+ * Revision 1.34  2000-04-28 12:32:31  joergr
+ * DebugLevel - global for the module - now derived from OFGlobal (MF-safe).
+ *
+ * Revision 1.33  2000/04/27 13:08:40  joergr
  * Dcmimgle library code now consistently uses ofConsole for error output.
  *
  * Revision 1.32  2000/03/08 16:24:20  meichel

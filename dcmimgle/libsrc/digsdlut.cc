@@ -22,9 +22,9 @@
  *  Purpose: DicomGSDFLUT (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-04-27 13:10:27 $
+ *  Update Date:      $Date: 2000-04-28 12:33:43 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/libsrc/digsdlut.cc,v $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -62,9 +62,10 @@ DiGSDFLUT::DiGSDFLUT(const unsigned long count,
 {
     if ((Count > 0) && (Bits > 0))
     {
-        if (DicomImageClass::DebugLevel & DicomImageClass::DL_Informationals)
+        if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Informationals))
         {
-            ofConsole.lockCerr() << "INFO: new GSDF LUT with " << Bits << " bits output and " << Count << " entries created !" << endl;
+            ofConsole.lockCerr() << "INFO: new GSDF LUT with " << Bits << " bits output and "
+                                 << Count << " entries created !" << endl;
             ofConsole.unlockCerr();
         }
         Valid = createLUT(ddl_tab, lum_tab, ddl_cnt, gsdf_tab, gsdf_spl, gsdf_cnt, jnd_min, jnd_max, stream, mode);
@@ -154,9 +155,10 @@ int DiGSDFLUT::createLUT(const Uint16 *ddl_tab,
                                         (*stream) << endl;
                                     }
                                 } else {
-                                    if (DicomImageClass::DebugLevel & DicomImageClass::DL_Warnings)
+                                    if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Warnings))
                                     {
-                                        ofConsole.lockCerr() << "WARNING: can't write curve data, wrong DISPLAY file or GSDF LUT !" << endl;
+                                        ofConsole.lockCerr() << "WARNING: can't write curve data, "
+                                                             << "wrong DISPLAY file or GSDF LUT !" << endl;
                                         ofConsole.unlockCerr();
                                     }
                                 }
@@ -180,7 +182,10 @@ int DiGSDFLUT::createLUT(const Uint16 *ddl_tab,
  *
  * CVS/RCS Log:
  * $Log: digsdlut.cc,v $
- * Revision 1.6  2000-04-27 13:10:27  joergr
+ * Revision 1.7  2000-04-28 12:33:43  joergr
+ * DebugLevel - global for the module - now derived from OFGlobal (MF-safe).
+ *
+ * Revision 1.6  2000/04/27 13:10:27  joergr
  * Dcmimgle library code now consistently uses ofConsole for error output.
  *
  * Revision 1.5  2000/03/08 16:24:28  meichel

@@ -22,9 +22,9 @@
  *  Purpose: DicomCIELABLUT (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-04-27 13:10:25 $
+ *  Update Date:      $Date: 2000-04-28 12:33:41 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/libsrc/dicielut.cc,v $
- *  CVS/RCS Revision: $Revision: 1.8 $
+ *  CVS/RCS Revision: $Revision: 1.9 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -58,7 +58,7 @@ DiCIELABLUT::DiCIELABLUT(const unsigned long count,
 {
     if ((Count > 0) && (Bits > 0))
     {
-        if (DicomImageClass::DebugLevel & DicomImageClass::DL_Informationals)
+        if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Informationals))
         {
             ofConsole.lockCerr() << "INFO: new CIELAB LUT with " << Bits << " bits output and " << Count << " entries created !" << endl;
             ofConsole.unlockCerr();
@@ -143,7 +143,7 @@ int DiCIELABLUT::createLUT(const Uint16 *ddl_tab,
                             (*stream) << endl;
                         }
                     } else {
-                        if (DicomImageClass::DebugLevel & DicomImageClass::DL_Warnings)
+                        if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Warnings))
                         {
                             ofConsole.lockCerr() << "WARNING: can't write curve data, wrong DISPLAY file or CIELAB LUT !" << endl;
                             ofConsole.unlockCerr();
@@ -163,7 +163,10 @@ int DiCIELABLUT::createLUT(const Uint16 *ddl_tab,
  *
  * CVS/RCS Log:
  * $Log: dicielut.cc,v $
- * Revision 1.8  2000-04-27 13:10:25  joergr
+ * Revision 1.9  2000-04-28 12:33:41  joergr
+ * DebugLevel - global for the module - now derived from OFGlobal (MF-safe).
+ *
+ * Revision 1.8  2000/04/27 13:10:25  joergr
  * Dcmimgle library code now consistently uses ofConsole for error output.
  *
  * Revision 1.7  2000/03/08 16:24:26  meichel

@@ -22,9 +22,9 @@
  *  Purpose: DicomPaletteImage (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-04-27 13:15:58 $
+ *  Update Date:      $Date: 2000-04-28 12:40:04 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/libsrc/dipalimg.cc,v $
- *  CVS/RCS Revision: $Revision: 1.12 $
+ *  CVS/RCS Revision: $Revision: 1.13 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -109,7 +109,7 @@ DiPaletteImage::DiPaletteImage(const DiDocument *docu,
                             InterData = new DiPalettePixelTemplate<Sint16, Sint32, Uint16>(Document, InputData, palette, ImageStatus);
                         break;
                     default:
-                        if (DicomImageClass::DebugLevel & DicomImageClass::DL_Warnings)
+                        if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Warnings))
                         {
                             ofConsole.lockCerr() << "WARNING: invalid value for inter-representation !" << endl;
                             ofConsole.unlockCerr();
@@ -125,7 +125,7 @@ DiPaletteImage::DiPaletteImage(const DiDocument *docu,
         else
         {
             ImageStatus = EIS_InvalidValue;
-            if (DicomImageClass::DebugLevel & DicomImageClass::DL_Errors)
+            if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Errors))
             {
                 ofConsole.lockCerr() << "ERROR: invalid value for 'BitsStored' (" << BitsStored << ") "
                                      << "... exceeds maximum palette entry size of " << MAX_TABLE_ENTRY_SIZE
@@ -150,7 +150,10 @@ DiPaletteImage::~DiPaletteImage()
  *
  * CVS/RCS Log:
  * $Log: dipalimg.cc,v $
- * Revision 1.12  2000-04-27 13:15:58  joergr
+ * Revision 1.13  2000-04-28 12:40:04  joergr
+ * DebugLevel - global for the module - now derived from OFGlobal (MF-safe).
+ *
+ * Revision 1.12  2000/04/27 13:15:58  joergr
  * Dcmimage library code now consistently uses ofConsole for error output.
  *
  * Revision 1.11  2000/03/08 16:21:57  meichel

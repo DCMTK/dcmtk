@@ -22,9 +22,9 @@
  *  Purpose: Convert DICOM Images to PPM or PGM using the dcmimage library.
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-04-27 13:18:48 $
+ *  Update Date:      $Date: 2000-04-28 12:35:59 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/apps/dcm2pnm.cc,v $
- *  CVS/RCS Revision: $Revision: 1.42 $
+ *  CVS/RCS Revision: $Revision: 1.43 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -153,7 +153,7 @@ int main(int argc, char *argv[])
         opt_Overlay[i] = 2;                               /* default: display all overlays if present */
 
     SetDebugLevel((0));
-    DicomImageClass::DebugLevel = DicomImageClass::DL_Warnings | DicomImageClass::DL_Errors;
+    DicomImageClass::setDebugLevel(DicomImageClass::DL_Warnings | DicomImageClass::DL_Errors);
 
     prepareCmdLineArgs(argc, argv, OFFIS_CONSOLE_APPLICATION);
     cmd.setOptionColumns(LONGCOL, SHORTCOL);
@@ -531,12 +531,12 @@ int main(int argc, char *argv[])
 
 //    SetDebugLevel(( (int)opt_debugMode ));
     if (opt_verboseMode < 1)
-        DicomImageClass::DebugLevel = 0;
+        DicomImageClass::setDebugLevel(0);
     else if (opt_debugMode > 0)
-        DicomImageClass::DebugLevel |= DicomImageClass::DL_DebugMessages;
+        DicomImageClass::setDebugLevel(DicomImageClass::getDebugLevel() | DicomImageClass::DL_DebugMessages);
     if (opt_verboseMode > 1)
     {
-        DicomImageClass::DebugLevel |= DicomImageClass::DL_Informationals;
+        DicomImageClass::setDebugLevel(DicomImageClass::getDebugLevel() | DicomImageClass::DL_Informationals);
         OUTPUT << "reading DICOM file: " << opt_ifname << endl;
     }
 
@@ -988,7 +988,10 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcm2pnm.cc,v $
- * Revision 1.42  2000-04-27 13:18:48  joergr
+ * Revision 1.43  2000-04-28 12:35:59  joergr
+ * DebugLevel - global for the module - now derived from OFGlobal (MF-safe).
+ *
+ * Revision 1.42  2000/04/27 13:18:48  joergr
  * Adapted output method to new behaviour of dcmimgle library supporting the
  * specification of a start frame and the number of frames to be converted.
  *

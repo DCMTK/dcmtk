@@ -22,9 +22,9 @@
  *  Purpose: DicomColorPixel (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-04-27 13:15:57 $
+ *  Update Date:      $Date: 2000-04-28 12:40:03 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/libsrc/dicopx.cc,v $
- *  CVS/RCS Revision: $Revision: 1.8 $
+ *  CVS/RCS Revision: $Revision: 1.9 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -61,7 +61,7 @@ DiColorPixel::DiColorPixel(const DiDocument *docu,
         {
             if (us != samples)
             {
-                if (DicomImageClass::DebugLevel & DicomImageClass::DL_Warnings)
+                if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Warnings))
                 {
                     ofConsole.lockCerr() << "WARNING: invalid value for 'SamplesPerPixel' (" << us
                                          << ") ... assuming " << samples << " !" << endl;
@@ -73,7 +73,7 @@ DiColorPixel::DiColorPixel(const DiDocument *docu,
                 PlanarConfiguration = (us == 1);
                 if ((us != 0) && (us != 1))
                 {
-                    if (DicomImageClass::DebugLevel & DicomImageClass::DL_Warnings)
+                    if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Warnings))
                     {
                         ofConsole.lockCerr() << "WARNING: invalid value for 'PlanarConfiguration' (" << us
                                              << ") ... assuming 'color-by-pixel' (0) !" << endl;
@@ -84,7 +84,7 @@ DiColorPixel::DiColorPixel(const DiDocument *docu,
             else if (samples > 1)
             {
                 status = EIS_MissingAttribute;
-                if (DicomImageClass::DebugLevel & DicomImageClass::DL_Errors)
+                if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Errors))
                 {
                     ofConsole.lockCerr() << "ERROR: mandatory attribute 'PlanarConfiguration' is missing !" << endl;
                     ofConsole.unlockCerr();
@@ -98,7 +98,7 @@ DiColorPixel::DiColorPixel(const DiDocument *docu,
         else
         {
             status = EIS_MissingAttribute;
-            if (DicomImageClass::DebugLevel & DicomImageClass::DL_Errors)
+            if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Errors))
             {
                 ofConsole.lockCerr() << "ERROR: mandatory attribute 'SamplesPerPixel' is missing !" << endl;
                 ofConsole.unlockCerr();
@@ -136,7 +136,10 @@ DiColorPixel::~DiColorPixel()
  *
  * CVS/RCS Log:
  * $Log: dicopx.cc,v $
- * Revision 1.8  2000-04-27 13:15:57  joergr
+ * Revision 1.9  2000-04-28 12:40:03  joergr
+ * DebugLevel - global for the module - now derived from OFGlobal (MF-safe).
+ *
+ * Revision 1.8  2000/04/27 13:15:57  joergr
  * Dcmimage library code now consistently uses ofConsole for error output.
  *
  * Revision 1.7  2000/03/08 16:21:56  meichel

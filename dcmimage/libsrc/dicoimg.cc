@@ -22,9 +22,9 @@
  *  Purpose: DicomColorImage (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-04-27 13:15:57 $
+ *  Update Date:      $Date: 2000-04-28 12:40:03 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/libsrc/dicoimg.cc,v $
- *  CVS/RCS Revision: $Revision: 1.16 $
+ *  CVS/RCS Revision: $Revision: 1.17 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -127,7 +127,7 @@ DiColorImage::DiColorImage(const DiColorImage *image,
                     src_cols, src_rows, dest_cols, dest_rows, NumberOfFrames, image->BitsPerSample, interpolate);
                 break;
             default:
-                if (DicomImageClass::DebugLevel & DicomImageClass::DL_Warnings)
+                if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Warnings))
                 {
                     ofConsole.lockCerr() << "WARNING: invalid value for inter-representation !" << endl;
                     ofConsole.unlockCerr();
@@ -159,7 +159,7 @@ DiColorImage::DiColorImage(const DiColorImage *image,
                 InterData = new DiColorFlipTemplate<Uint32>(image->InterData, Columns, Rows, NumberOfFrames, horz, vert);
                 break;
             default:
-                if (DicomImageClass::DebugLevel & DicomImageClass::DL_Warnings)
+                if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Warnings))
                 {
                     ofConsole.lockCerr() << "WARNING: invalid value for inter-representation !" << endl;
                     ofConsole.unlockCerr();
@@ -193,7 +193,7 @@ DiColorImage::DiColorImage(const DiColorImage *image,
                     NumberOfFrames, degree);
                 break;
             default:
-                if (DicomImageClass::DebugLevel & DicomImageClass::DL_Warnings)
+                if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Warnings))
                 {
                     ofConsole.lockCerr() << "WARNING: invalid value for inter-representation !" << endl;
                     ofConsole.unlockCerr();
@@ -225,7 +225,7 @@ int DiColorImage::checkInterData(const int mode)
         if (ImageStatus == EIS_Normal)
         {
             ImageStatus = EIS_MemoryFailure;
-            if (DicomImageClass::DebugLevel & DicomImageClass::DL_Errors)
+            if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Errors))
             {
                 ofConsole.lockCerr() << "ERROR: can't allocate memory for inter-representation !" << endl;
                 ofConsole.unlockCerr();
@@ -240,7 +240,7 @@ int DiColorImage::checkInterData(const int mode)
         const unsigned long count = (unsigned long)Columns * (unsigned long)Rows * NumberOfFrames;
         if ((InterData->getCount() != count) && ((InterData->getCount() >> 1) != ((count + 1) >> 1)))
         {
-            if (DicomImageClass::DebugLevel & DicomImageClass::DL_Warnings)
+            if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Warnings))
             {
                 ofConsole.lockCerr() << "WARNING: computed (" << count << ") and stored (" << InterData->getCount() << ") "
                                      << "pixel count differ !" << endl;
@@ -325,7 +325,7 @@ void *DiColorImage::getData(void *buffer,
                             getBits(), bits, planar);
                     break;
                 default:
-                    if (DicomImageClass::DebugLevel & DicomImageClass::DL_Warnings)
+                    if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Warnings))
                     {
                         ofConsole.lockCerr() << "WARNING: invalid value for inter-representation !" << endl;
                         ofConsole.unlockCerr();
@@ -334,7 +334,7 @@ void *DiColorImage::getData(void *buffer,
             if (OutputData == NULL)
             {
                 ImageStatus = EIS_MemoryFailure;
-                if (DicomImageClass::DebugLevel & DicomImageClass::DL_Errors)
+                if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Errors))
                 {
                     ofConsole.lockCerr() << "ERROR: can't allocate memory for inter-representation !" << endl;
                     ofConsole.unlockCerr();
@@ -343,7 +343,7 @@ void *DiColorImage::getData(void *buffer,
             else
                 return OutputData->getData();
         } else {
-            if (DicomImageClass::DebugLevel & DicomImageClass::DL_Errors)
+            if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Errors))
             {
                 ofConsole.lockCerr() << "ERROR: given output buffer is too small (only " << size << " bytes) !" << endl;
                 ofConsole.unlockCerr();
@@ -534,7 +534,10 @@ int DiColorImage::writeRawPPM(FILE *stream,
  *
  * CVS/RCS Log:
  * $Log: dicoimg.cc,v $
- * Revision 1.16  2000-04-27 13:15:57  joergr
+ * Revision 1.17  2000-04-28 12:40:03  joergr
+ * DebugLevel - global for the module - now derived from OFGlobal (MF-safe).
+ *
+ * Revision 1.16  2000/04/27 13:15:57  joergr
  * Dcmimage library code now consistently uses ofConsole for error output.
  *
  * Revision 1.15  2000/03/30 14:17:07  joergr

@@ -22,9 +22,9 @@
  *  Purpose: DicomYBRPart422PixelTemplate (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-04-27 13:15:16 $
+ *  Update Date:      $Date: 2000-04-28 12:39:33 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/include/Attic/diyp2pxt.h,v $
- *  CVS/RCS Revision: $Revision: 1.10 $
+ *  CVS/RCS Revision: $Revision: 1.11 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -65,7 +65,7 @@ class DiYBRPart422PixelTemplate
             if (PlanarConfiguration)
             {
                 status = EIS_InvalidValue;
-                if (DicomImageClass::DebugLevel & DicomImageClass::DL_Errors)
+                if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Errors))
                 {
                     ofConsole.lockCerr() << "ERROR: invalid value for 'PlanarConfiguration' ("
                                          << PlanarConfiguration << ") ! " << endl;
@@ -138,7 +138,10 @@ class DiYBRPart422PixelTemplate
  *
  * CVS/RCS Log:
  * $Log: diyp2pxt.h,v $
- * Revision 1.10  2000-04-27 13:15:16  joergr
+ * Revision 1.11  2000-04-28 12:39:33  joergr
+ * DebugLevel - global for the module - now derived from OFGlobal (MF-safe).
+ *
+ * Revision 1.10  2000/04/27 13:15:16  joergr
  * Dcmimage library code now consistently uses ofConsole for error output.
  *
  * Revision 1.9  2000/03/08 16:21:55  meichel

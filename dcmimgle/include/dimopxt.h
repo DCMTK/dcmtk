@@ -22,9 +22,9 @@
  *  Purpose: DicomMonochromePixelTemplate (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-04-27 13:08:41 $
+ *  Update Date:      $Date: 2000-04-28 12:32:32 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/dimopxt.h,v $
- *  CVS/RCS Revision: $Revision: 1.13 $
+ *  CVS/RCS Revision: $Revision: 1.14 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -208,7 +208,7 @@ class DiMonoPixelTemplate
                 {
                     if ((Data[i] >= MinValue[0]) && (Data[i] <= MaxValue[0]))       // only for stability !
                         quant[(Uint32)(Data[i] - MinValue[0])]++;                   // count values
-                    else if (DicomImageClass::DebugLevel & DicomImageClass::DL_Warnings)
+                    else if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Warnings))
                     {
                         ofConsole.lockCerr() << "WARNING: invalid value (" << Data[i] << ") in "
                                              << "int DiMonoPixelTemplate<T>::getHistogramWindow() ! " << endl;
@@ -362,7 +362,10 @@ class DiMonoPixelTemplate
  *
  * CVS/RCS Log:
  * $Log: dimopxt.h,v $
- * Revision 1.13  2000-04-27 13:08:41  joergr
+ * Revision 1.14  2000-04-28 12:32:32  joergr
+ * DebugLevel - global for the module - now derived from OFGlobal (MF-safe).
+ *
+ * Revision 1.13  2000/04/27 13:08:41  joergr
  * Dcmimgle library code now consistently uses ofConsole for error output.
  *
  * Revision 1.12  2000/03/08 16:24:21  meichel

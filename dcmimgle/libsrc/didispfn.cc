@@ -22,9 +22,9 @@
  *  Purpose: DicomDisplayFunction (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-04-27 13:10:25 $
+ *  Update Date:      $Date: 2000-04-28 12:33:42 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/libsrc/didispfn.cc,v $
- *  CVS/RCS Revision: $Revision: 1.24 $
+ *  CVS/RCS Revision: $Revision: 1.25 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -277,7 +277,7 @@ int DiDisplayFunction::readConfigFile(const char *filename)
                                 if ((DDLValue == NULL) || (LumValue == NULL))
                                     return 0;
                             } else {
-                                if (DicomImageClass::DebugLevel & DicomImageClass::DL_Errors)
+                                if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Errors))
                                 {
                                     ofConsole.lockCerr() << "ERROR: invalid or missing value for maximum DDL value in DISPLAY file !" << endl;
                                     ofConsole.unlockCerr();
@@ -285,7 +285,7 @@ int DiDisplayFunction::readConfigFile(const char *filename)
                                 return 0;                                   // abort
                             }
                         } else {
-                            if (DicomImageClass::DebugLevel & DicomImageClass::DL_Errors)
+                            if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Errors))
                             {
                                 ofConsole.lockCerr() << "ERROR: missing keyword 'max' for maximum DDL value in DISPLAY file !" << endl;
                                 ofConsole.unlockCerr();
@@ -302,7 +302,7 @@ int DiDisplayFunction::readConfigFile(const char *filename)
                             file >> AmbientLight;
                             if (AmbientLight < 0)
                             {
-                                if (DicomImageClass::DebugLevel & DicomImageClass::DL_Warnings)
+                                if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Warnings))
                                 {
                                     ofConsole.lockCerr() << "WARNING: invalid value for ambient light in DISPLAY file ...ignoring !" << endl;
                                     ofConsole.unlockCerr();
@@ -310,7 +310,7 @@ int DiDisplayFunction::readConfigFile(const char *filename)
                                 AmbientLight = 0;
                             }
                         } else {
-                            if (DicomImageClass::DebugLevel & DicomImageClass::DL_Errors)
+                            if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Errors))
                             {
                                 ofConsole.lockCerr() << "ERROR: invalid DISPLAY file ... ignoring !" << endl;
                                 ofConsole.unlockCerr();
@@ -324,7 +324,7 @@ int DiDisplayFunction::readConfigFile(const char *filename)
                             file >> LumValue[ValueCount];                   // read luminance value
                             if (file.fail())
                             {
-                                if (DicomImageClass::DebugLevel & DicomImageClass::DL_Warnings)
+                                if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Warnings))
                                 {
                                     ofConsole.lockCerr() << "WARNING: missing luminance value in DISPLAY file ... ignoring last entry !" << endl;
                                     ofConsole.unlockCerr();
@@ -332,7 +332,7 @@ int DiDisplayFunction::readConfigFile(const char *filename)
                             }
                             else if (DDLValue[ValueCount] > MaxDDLValue)
                             {
-                                if (DicomImageClass::DebugLevel & DicomImageClass::DL_Warnings)
+                                if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Warnings))
                                 {
                                     ofConsole.lockCerr() << "WARNING: DDL value (" << DDLValue[ValueCount]
                                                          << ") exceeds maximum value ("
@@ -343,7 +343,7 @@ int DiDisplayFunction::readConfigFile(const char *filename)
                             } else
                                 ValueCount++;
                         } else {
-                            if (DicomImageClass::DebugLevel & DicomImageClass::DL_Warnings)
+                            if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Warnings))
                             {
                                 ofConsole.lockCerr() << "WARNING: too many values in DISPLAY file ... ignoring last line(s) !" << endl;
                                 ofConsole.unlockCerr();
@@ -356,14 +356,14 @@ int DiDisplayFunction::readConfigFile(const char *filename)
             if ((MaxDDLValue > 0) && (ValueCount > 0))
                 return ((DDLValue != NULL) && (LumValue != NULL));
             else {
-                if (DicomImageClass::DebugLevel & DicomImageClass::DL_Warnings)
+                if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Warnings))
                 {
                     ofConsole.lockCerr() << "WARNING: invalid DISPLAY file ... ignoring !" << endl;
                     ofConsole.unlockCerr();
                 }
             }
         } else {
-            if (DicomImageClass::DebugLevel & DicomImageClass::DL_Warnings)
+            if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Warnings))
             {
                 ofConsole.lockCerr() << "WARNING: can't open DISPLAY file ... ignoring !" << endl;
                 ofConsole.unlockCerr();
@@ -409,7 +409,7 @@ int DiDisplayFunction::createSortedTable(const Uint16 *ddl_tab,
                 i++;
             if (i < ValueCount)                                                     // invalid luminance value(s)
             {
-                if (DicomImageClass::DebugLevel & DicomImageClass::DL_Warnings)
+                if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Warnings))
                 {
                     ofConsole.lockCerr() << "WARNING: luminance values (ordered by DDLs) don't ascend monotonously !" << endl;
                     ofConsole.unlockCerr();
@@ -482,7 +482,10 @@ int DiDisplayFunction::calculateMinMax()
  *
  * CVS/RCS Log:
  * $Log: didispfn.cc,v $
- * Revision 1.24  2000-04-27 13:10:25  joergr
+ * Revision 1.25  2000-04-28 12:33:42  joergr
+ * DebugLevel - global for the module - now derived from OFGlobal (MF-safe).
+ *
+ * Revision 1.24  2000/04/27 13:10:25  joergr
  * Dcmimgle library code now consistently uses ofConsole for error output.
  *
  * Revision 1.23  2000/03/08 16:24:27  meichel
