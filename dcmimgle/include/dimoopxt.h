@@ -22,9 +22,9 @@
  *  Purpose: DicomMonoOutputPixelTemplate (Header)
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-06-01 15:49:46 $
+ *  Update Date:      $Date: 2002-06-19 08:12:01 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/dimoopxt.h,v $
- *  CVS/RCS Revision: $Revision: 1.36 $
+ *  CVS/RCS Revision: $Revision: 1.37 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -107,7 +107,7 @@ class DiMonoOutputPixelTemplate
                               const unsigned long /*frames*/,
 #endif
                               const int pastel = 0)
-      : DiMonoOutputPixel(pixel, (unsigned long)columns * (unsigned long)rows, frame, (unsigned long)fabs(high - low)),
+      : DiMonoOutputPixel(pixel, (unsigned long)columns * (unsigned long)rows, frame, (unsigned long)fabs((double)(high - low))),
         Data(NULL),
         DeleteData(buffer == NULL),
         ColorData(NULL)
@@ -1150,7 +1150,10 @@ class DiMonoOutputPixelTemplate
  *
  * CVS/RCS Log:
  * $Log: dimoopxt.h,v $
- * Revision 1.36  2001-06-01 15:49:46  meichel
+ * Revision 1.37  2002-06-19 08:12:01  meichel
+ * Added typecasts to avoid ambiguity with built-in functions on gcc 3.2
+ *
+ * Revision 1.36  2001/06/01 15:49:46  meichel
  * Updated copyright header
  *
  * Revision 1.35  2000/05/03 09:46:28  joergr
@@ -1293,3 +1296,4 @@ class DiMonoOutputPixelTemplate
  *
  *
  */
+

@@ -21,10 +21,10 @@
  *
  *  Purpose: DicomGSDFunction (Source)
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-04-16 13:53:31 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2002-06-19 08:12:13 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/libsrc/digsdfn.cc,v $
- *  CVS/RCS Revision: $Revision: 1.14 $
+ *  CVS/RCS Revision: $Revision: 1.15 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -236,7 +236,7 @@ int DiGSDFunction::calculateGSDF()
         register double ln4;
         for (i = 0; i < GSDFCount; i++)
         {
-            ln = log(i + 1);
+            ln = log((double)(i + 1));
             ln2 = ln * ln;
             ln3 = ln2 * ln;
             ln4 = ln3 * ln;
@@ -314,7 +314,10 @@ double DiGSDFunction::getJNDIndex(const double lum)
  *
  * CVS/RCS Log:
  * $Log: digsdfn.cc,v $
- * Revision 1.14  2002-04-16 13:53:31  joergr
+ * Revision 1.15  2002-06-19 08:12:13  meichel
+ * Added typecasts to avoid ambiguity with built-in functions on gcc 3.2
+ *
+ * Revision 1.14  2002/04/16 13:53:31  joergr
  * Added configurable support for C++ ANSI standard includes (e.g. streams).
  * Thanks to Andreas Barth <Andreas.Barth@bruker-biospin.de> for his
  * contribution.
@@ -366,3 +369,4 @@ double DiGSDFunction::getJNDIndex(const double lum)
  *
  *
  */
+
