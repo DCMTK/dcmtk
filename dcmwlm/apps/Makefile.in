@@ -15,17 +15,17 @@ include $(configdir)/@common_makefile@
 
 ofstddir=$(top_srcdir)/../ofstd
 ofstdinc=-I$(ofstddir)/include -I$(includedir)/ofstd
-ofstdlibdir=-L$(ofstddir)/libsrc 
+ofstdlibdir=-L$(ofstddir)/libsrc
 ofstdlib=-lofstd
 
 dcmdatadir=$(top_srcdir)/../dcmdata
 dcmdatainc=-I$(dcmdatadir)/include -I$(includedir)/dcmdata
-dcmdatalibdir=-L$(dcmdatadir)/libsrc 
+dcmdatalibdir=-L$(dcmdatadir)/libsrc
 dcmdatalib=-ldcmdata
 
 dcmnetdir=$(top_srcdir)/../dcmnet
-dcmnetinc=-I$(dcmnetdir)/include -I$(includedir)/dcmnet 
-dcmnetlibdir=-L$(dcmnetdir)/libsrc 
+dcmnetinc=-I$(dcmnetdir)/include -I$(includedir)/dcmnet
+dcmnetlibdir=-L$(dcmnetdir)/libsrc
 dcmnetlib=-ldcmnet
 
 LOCALINCLUDES=$(dcmnetinc) $(dcmdatainc) $(ofstdinc)
@@ -39,26 +39,23 @@ progs= wlmscpfs
 all: $(progs)
 
 wlmscpfs: $(objs)
-	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ $(objs) $(LOCALLIBS) $(LIBS)  
+	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ $(objs) $(LOCALLIBS) $(LIBS)
 
 install: all
 	$(configdir)/mkinstalldirs $(bindir)
 	for prog in $(progs); do \
-		$(INSTALL_PROGRAM) $$prog $(bindir); strip $(bindir)/$$prog ;\
+		$(INSTALL_PROGRAM) $$prog $(bindir)$(BINEXT); strip $(bindir)/$$prog$(BINEXT) ;\
 	done
 
 
 clean:
 	rm -f $(objs) $(progs) $(TRASH)
 
-distclean: 
+distclean:
 	rm -f $(objs) $(progs) $(DISTTRASH)
 
 
 dependencies:
 	$(CXX) -MM $(defines) $(includes) $(CPPFLAGS) $(CXXFLAGS) *.cc  > $(DEP)
-
-$(objs): config.h
-
 
 include $(DEP)
