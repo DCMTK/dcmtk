@@ -22,9 +22,9 @@
  *  Purpose: Convert DICOM Images to PPM or PGM using the dcmimage library.
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1998-11-27 13:27:32 $
+ *  Update Date:      $Date: 1998-11-30 15:40:51 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/apps/dcm2pnm.cc,v $
- *  CVS/RCS Revision: $Revision: 1.16 $
+ *  CVS/RCS Revision: $Revision: 1.17 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -171,14 +171,14 @@ int main(int argc, char *argv[])
      cmd.addOption("--auto-read-mode",  "-D", "read as a fileformat or dataset (default)");
 
     cmd.addGroup("input transfer syntax: use only after +D");
-     cmd.addOption("--transfer-syntax-recognition", "+t=", "use transfer syntax recognition (default)");
-     cmd.addOption("--little-endian-implicit",      "+ti", "read with little-endian implicit transfer syntax");
-     cmd.addOption("--little-endian-explicit",      "+te", "read with little-endian explicit transfer syntax");
-     cmd.addOption("--big-endian-explicit",         "+tb", "read with big-endian explicit transfer syntax");
+     cmd.addOption("--transfer-syntax-recognition", "+t=", "use transfer syntax recognition\n(default)");
+     cmd.addOption("--little-endian-implicit",      "+ti", "read with little-endian implicit\ntransfer syntax");
+     cmd.addOption("--little-endian-explicit",      "+te", "read with little-endian explicit\ntransfer syntax");
+     cmd.addOption("--big-endian-explicit",         "+tb", "read with big-endian explicit\ntransfer syntax");
 
     cmd.addGroup("compatibility options:");
-     cmd.addOption("--accept-acr-nema",           "+Ma", "accept ACR-NEMA images without photometric interpretation");
-     cmd.addOption("--accept-incorrect-palettes", "+Mp", "accept incorrect palette attribute tags (0028,111x) and (0028,121x)");
+     cmd.addOption("--accept-acr-nema",           "+Ma", "accept ACR-NEMA images without\nphotometric interpretation");
+     cmd.addOption("--accept-incorrect-palettes", "+Mp", "accept incorrect palette attribute\ntags (0028,111x) and (0028,121x)");
 
     cmd.addGroup("image processing options:");
      cmd.addOption("--frame",               "+F",   1, "[n]umber : integer",
@@ -195,19 +195,19 @@ int main(int argc, char *argv[])
      cmd.addOption("--flip-horizontally",   "+Ph",     "flip image horizontally");
      cmd.addOption("--flip-vertically",     "+Pv",     "flip image vertically");
      cmd.addOption("--flip-both-axes",      "+Phv",    "flip image horizontally and vertically");
-     cmd.addOption("--pixel-aspect-ratio",  "+a",      "recognize pixel aspect ratio when scaling (default)");
+     cmd.addOption("--pixel-aspect-ratio",  "+a",      "recognize pixel aspect ratio when scaling\n(default)");
      cmd.addOption("--ignore-pixel-aspect", "-a",      "ignore pixel aspect ratio when scaling");
-     cmd.addOption("--interpolate",         "+i",      "use bilinear interpolation when scaling (default)");
+     cmd.addOption("--interpolate",         "+i",      "use bilinear interpolation when scaling\n(default)");
      cmd.addOption("--no-interpolation",    "-i",      "no interpolation when scaling");
-     cmd.addOption("--no-scaling",          "-S",      "no scaling, ignore pixel aspect ratio (default)");
+     cmd.addOption("--no-scaling",          "-S",      "no scaling, ignore pixel aspect ratio\n(default)");
      cmd.addOption("--scale-x-factor",      "+Sxf", 1, "[f]actor : float",
-                                                       "scale x axis by factor, compute y axis automatically");
+                                                       "scale x axis by factor, compute y axis\nautomatically");
      cmd.addOption("--scale-y-factor",      "+Syf", 1, "[f]actor : float",
-                                                       "scale y axis by factor, compute x axis automatically");
+                                                       "scale y axis by factor, compute x axis\nautomatically");
      cmd.addOption("--scale-x-size",        "+Sxv", 1, "[n]umber : integer",
-                                                       "scale x axis to n pixels, compute y axis automatically");
+                                                       "scale x axis to n pixels, compute y axis\nautomatically");
      cmd.addOption("--scale-y-size",        "+Syv", 1, "[n]umber : integer",
-                                                       "scale y axis to n pixels, compute x axis automatically");
+                                                       "scale y axis to n pixels, compute x axis\nautomatically");
 
     cmd.addGroup("VOI windowing options:");
      cmd.addOption("--no-windowing",     "-W",     "no VOI windowing (default)");
@@ -216,26 +216,26 @@ int main(int argc, char *argv[])
      cmd.addOption("--use-voi-lut",      "+Wl", 1, "[n]umber : integer",
                                                    "use the n-th VOI look up table from the image file");
      cmd.addOption("--min-max-window",   "+Wm",    "Compute VOI window using min-max algorithm");
-     cmd.addOption("--min-max-window-n", "+Wn",    "Compute VOI window using min-max algorithm, ignoring extreme values");
+     cmd.addOption("--min-max-window-n", "+Wn",    "Compute VOI window using min-max algorithm,\nignoring extreme values");
      cmd.addOption("--histogram-window", "+Wh", 1, "[n]umber: integer",
-                                                   "Compute VOI window using Histogram algorithm, ignoring n percent");
+                                                   "Compute VOI window using Histogram algorithm,\nignoring n percent");
      cmd.addOption("--set-window",       "+Ww", 2, "[c]enter [w]idth : float",
                                                    "Compute VOI window using center c and width w");
 
     cmd.addGroup("overlay options:");
      cmd.addOption("--no-overlays",               "-O",     "do not display overlays");
      cmd.addOption("--display-overlay",           "+O" , 1, "[n]umber : integer",
-                                                            "display overlay n (0..16, 0=all, default: +O 0)");
-     cmd.addOption("--overlay-replace",           "+mr",    "use overlay mode \"Replace\" (default for Graphic overlays)");
+                                                            "display overlay n\n(0..16, 0=all, default: +O 0)");
+     cmd.addOption("--overlay-replace",           "+mr",    "use overlay mode \"Replace\"\n(default for Graphic overlays)");
      cmd.addOption("--overlay-threshold-replace", "+mt",    "use overlay mode \"Threshold-Replace\"");
      cmd.addOption("--overlay-complement",        "+mc",    "use overlay mode \"Complement\"");
-     cmd.addOption("--overlay-roi",               "+mi",    "use overlay mode \"Region of Interest\" (default for ROI overlays)");
+     cmd.addOption("--overlay-roi",               "+mi",    "use overlay mode \"Region of Interest\"\n(default for ROI overlays)");
      cmd.addOption("--overlay-foreground",        "+of", 1, "[d]ensity : float",
-                                                            "set overlay foreground density to d (0..1, default: 1)\n"
-                                                            "must be used together with +mr, +mt, +mc or +mi.");
+                                                            "set overlay foreground density to d\n(0..1, default: 1)\n"
+                                                            "must be used together with +mr, +mt,\n+mc or +mi.");
      cmd.addOption("--overlay-threshold",         "+ot", 1, "[d]ensity : float",
-                                                            "set overlay threshold density to d (0..1, default: 0.5)\n"
-                                                            "must be used together with +mr, +mt, +mc or +mi.");
+                                                            "set overlay threshold density to d\n(0..1, default: 0.5)\n"
+                                                            "must be used together with +mr, +mt,\n+mc or +mi.");
 
     cmd.addGroup("output options:");
      cmd.addOption("--verbose",          "+V",    "verbose mode, print image details");
@@ -901,7 +901,11 @@ int main(int argc, char *argv[])
 /*
 ** CVS/RCS Log:
 ** $Log: dcm2pnm.cc,v $
-** Revision 1.16  1998-11-27 13:27:32  joergr
+** Revision 1.17  1998-11-30 15:40:51  joergr
+** Inserted newlines in the description of command line arguments to avoid
+** ugly line breaks.
+**
+** Revision 1.16  1998/11/27 13:27:32  joergr
 ** Splitted module dcmimage into two parts.
 ** Added registration class to allow easy combination of both modules
 ** (for monochrome and color images).

@@ -7,6 +7,10 @@
 - Removed wrong 'inline' from method declaration (reported by MSVC5).
   Affects: dcmimgle/include/diovlay.h
 
+- Inserted newlines in the description of command line arguments to avoid
+  ugly line breaks.
+  Affects: dcmimage/apps/dcm2pnm.cc
+
 **** Changes from 1998.11.27 (riesmeier)
 
 - Splitted module into two parts: dcmimgle (light edition) for monochrome
