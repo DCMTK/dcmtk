@@ -21,10 +21,10 @@
  *
  *  Purpose: class DcmDicomDir
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-12-06 13:10:46 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2003-11-07 13:51:39 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcdicdir.cc,v $
- *  CVS/RCS Revision: $Revision: 1.39 $
+ *  CVS/RCS Revision: $Revision: 1.40 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -77,7 +77,7 @@ char * mktemp(char *);
 #include "dcvrcs.h"
 #include "dcvrus.h"
 #include "dcmetinf.h"
-
+#include "ofstd.h"
 
 // ********************************
 
@@ -1038,71 +1038,93 @@ OFCondition DcmDicomDir::write(const E_TransferSyntax oxfer,
     }
     errorFlag = EC_Normal;
     E_TransferSyntax outxfer = DICOMDIR_DEFAULT_TRANSFERSYNTAX;
-    /* find the path of the dicomdir to be created */
-    char* sepPos = strrchr(dicomDirFileName, PATH_SEPARATOR);
-    char* dicomdirPath = NULL;
-    if (sepPos != NULL)
-    {
-        dicomdirPath = new char[sepPos - dicomDirFileName + 2];
-        strncpy(dicomdirPath, dicomDirFileName, sepPos-dicomDirFileName);
-        dicomdirPath[sepPos-dicomDirFileName] = 0;
-    }
-#if defined(HAVE_MKTEMP)
-    char *newname = new char[ strlen( TEMPNAME_TEMPLATE ) + 1 ];
-    strcpy( newname, TEMPNAME_TEMPLATE );
-    mktemp( newname );
-#else
-    /* DANGER - just use a non-unique name as it is - DANGER */
-    char *newname = new char[ strlen( TEMPNAME_TEMPLATE ) + 1 ];
-    strcpy( newname, TEMPNAME_TEMPLATE );
-#endif
-    /* prepend dicomdirPath if possible */
-    if (dicomdirPath != NULL) {
-        char* oldname = newname;
-        newname = new char[strlen(dicomdirPath) + 1 + strlen(oldname) + 1];
-        sprintf(newname, "%s%c%s", dicomdirPath, PATH_SEPARATOR, oldname);
-        delete[] oldname;
-    }
-    delete[] dicomdirPath;
-    debug(1, ( "DcmDicomDir::write() use tempory filename \"%s\"", newname ));
 
-    DcmDataset &dset = this->getDataset();       // existiert auf jeden Fall
-    // existiert daher auch:
+    /* find the path of the dicomdir to be created */
+    OFString tempfilename = dicomDirFileName;
+    size_t pathsepposition = tempfilename.rfind(PATH_SEPARATOR);
+    if (pathsepposition == OFString_npos) 
+      tempfilename.erase(); 
+      else tempfilename.erase(pathsepposition +1);
+
+    // create template for temporary file
+    tempfilename += TEMPNAME_TEMPLATE;
+
+    // copy template into non-const buffer
+    char *tempfile = new char[tempfilename.size() + 1];
+    OFStandard::strlcpy(tempfile, tempfilename.c_str(), tempfilename.size() + 1);
+
+#ifdef HAVE_MKSTEMP
+    int tempfilefd = mkstemp(tempfile);
+    if (tempfilefd < 0)
+    {
+        ofConsole.lockCerr() << "ERROR: cannot create DICOMDIR temporary file: " << tempfile << endl;
+        ofConsole.unlockCerr();
+        delete[] tempfile;
+        const char *text = strerror(errno);
+        if (text == NULL) text = "(unknown error code)";
+        errorFlag = makeOFCondition(OFM_dcmdata, 19, OF_error, text);
+        return errorFlag;
+    }
+
+    FILE *f = fdopen(tempfilefd, "wb");
+    if (f == NULL)
+    {
+        ofConsole.lockCerr() << "ERROR: cannot create DICOMDIR temporary file: " << tempfile << endl;
+        ofConsole.unlockCerr();
+        delete[] tempfile;
+        const char *text = strerror(errno);
+        if (text == NULL) text = "(unknown error code)";
+        errorFlag = makeOFCondition(OFM_dcmdata, 19, OF_error, text);
+        return errorFlag;
+    }
+
+    DcmOutputFileStream *outStream = new DcmOutputFileStream(f);    
+#else /* ! HAVE_MKSTEMP */
+
+#ifdef HAVE_MKTEMP
+    mktemp( tempfile );
+#endif
+    DcmOutputFileStream *outStream = new DcmOutputFileStream(tempfile);
+
+#endif /* HAVE_MKSTEMP */
+
+    if (! outStream->good())
+    {
+        ofConsole.lockCerr() << "ERROR: cannot create DICOMDIR temporary file: " << tempfile << endl;
+        ofConsole.unlockCerr();
+        errorFlag = outStream->status();
+        delete[] tempfile;
+        delete outStream;
+        return errorFlag;
+    }
+
+    DcmDataset &dset = this->getDataset(); // guaranteed to exist
     DcmMetaInfo &metainfo = *(this->getDirFileFormat().getMetaInfo());
     DcmSequenceOfItems &localDirRecSeq = this->getDirRecSeq( dset );
     DcmTag unresSeqTag( DCM_DirectoryRecordSequence );
     DcmSequenceOfItems localUnresRecs( unresSeqTag );
 
-    // fuege Media Stored SOP Class UID in MetaInfo ein
+    // insert Media Stored SOP Class UID
     insertMediaSOPUID( metainfo );
 
-    this->getDirFileFormat().validateMetaInfo( outxfer );
-
-    { // block is intended to make sure outStream is closed a.s.a.p.
-        DcmOutputFileStream outStream(newname);
-        if (! outStream.good())
-        {
-            ofConsole.lockCerr() << "ERROR: cannot create DICOMDIR temporary file: " << newname << endl;
-            ofConsole.unlockCerr();
-        }
-
-        metainfo.transferInit();
-        metainfo.write(outStream, META_HEADER_DEFAULT_TRANSFERSYNTAX, enctype);
-        metainfo.transferEnd();
-
-        Uint32 beginOfDataset = outStream.tell();
-
-        // convert to writable format
-        errorFlag = convertTreeToLinear(beginOfDataset, outxfer,
-                                        enctype, glenc, localUnresRecs);
-
-        dset.transferInit();
-        // do not calculate GroupLength and Padding twice!
-        dset.write(outStream, outxfer, enctype, EGL_noChange);
-        dset.transferEnd();
-
-        // outStream is closed here
-    }
+    getDirFileFormat().validateMetaInfo( outxfer );
+    
+    metainfo.transferInit();
+    metainfo.write(*outStream, META_HEADER_DEFAULT_TRANSFERSYNTAX, enctype);
+    metainfo.transferEnd();
+    
+    Uint32 beginOfDataset = outStream->tell();
+    
+    // convert to writable format
+    errorFlag = convertTreeToLinear(beginOfDataset, outxfer, enctype, glenc, localUnresRecs);
+    
+    dset.transferInit();
+    // do not calculate GroupLength and Padding twice!
+    dset.write(*outStream, outxfer, enctype, EGL_noChange);
+    dset.transferEnd();
+    
+    // outStream is closed here
+    delete outStream;
 
     char* backupname = NULL;
     if ( !mustCreateNewDir )
@@ -1137,14 +1159,15 @@ OFCondition DcmDicomDir::write(const E_TransferSyntax oxfer,
         }
 #endif
     }
-    if (errorFlag == EC_Normal && rename( newname, dicomDirFileName ) != 0)
+
+    if (errorFlag == EC_Normal && rename( tempfile, dicomDirFileName ) != 0)
     {
       const char *text = strerror(errno);
       if (text == NULL) text = "(unknown error code)";
       errorFlag = makeOFCondition(OFM_dcmdata, 19, OF_error, text);
     }
 
-    delete[] newname;
+    delete[] tempfile;
     modified = OFFalse;
 
     if (errorFlag == EC_Normal && backupname != NULL) {
@@ -1349,7 +1372,10 @@ Cdebug(1, refCounter[k].fileOffset==refMRDR->numberOfReferences,
 /*
 ** CVS/RCS Log:
 ** $Log: dcdicdir.cc,v $
-** Revision 1.39  2002-12-06 13:10:46  joergr
+** Revision 1.40  2003-11-07 13:51:39  meichel
+** Now using mkstemp instead of mktemp if available
+**
+** Revision 1.39  2002/12/06 13:10:46  joergr
 ** Enhanced "print()" function by re-working the implementation and replacing
 ** the boolean "showFullData" parameter by a more general integer flag.
 ** Made source code formatting more consistent with other modules/files.
