@@ -22,8 +22,8 @@
  *  Purpose: DVPresentationState
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-07-14 12:03:43 $
- *  CVS/RCS Revision: $Revision: 1.57 $
+ *  Update Date:      $Date: 1999-07-22 16:39:54 $
+ *  CVS/RCS Revision: $Revision: 1.58 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -250,9 +250,12 @@ E_Condition DVInterface::loadPState(const char *studyUID,
     if (status == EC_Normal)
     {
         // access the first image reference in the presentation state
-        OFString ofstudyUID, ofseriesUID, ofsopclassUID, ofinstanceUID, offrames;
-        status = newState->getImageReference(0, ofstudyUID, ofseriesUID, ofsopclassUID, ofinstanceUID, offrames);
-    
+        OFString ofstudyUID, ofseriesUID, ofsopclassUID, ofinstanceUID, offrames, aetitle, mediaID, mediaUID;
+        status = newState->getImageReference(0, ofstudyUID, ofseriesUID, ofsopclassUID, ofinstanceUID, 
+          offrames, aetitle, mediaID, mediaUID);
+          
+        // we could do something fancy with the retrieve AE title and the storage media ID here,
+        // but we just assume that the referenced image is in our local database.
         if (EC_Normal == status)
         { 
             // determine the filename of the referenced image
@@ -373,23 +376,23 @@ E_Condition DVInterface::savePState()
         if (dset != NULL)
         {
             DIC_UI sopClass;
-            DIC_UI instanceUID;
+            DIC_UI instanceUID2;
             DIC_UI seriesUID;
             DIC_UI studyUID;
             if (DU_getStringDOElement(dset, DCM_SOPClassUID, sopClass) &&
-	            DU_getStringDOElement(dset, DCM_SOPInstanceUID, instanceUID) &&
+	            DU_getStringDOElement(dset, DCM_SOPInstanceUID, instanceUID2) &&
 	            DU_getStringDOElement(dset, DCM_SeriesInstanceUID, seriesUID) &&
 	            DU_getStringDOElement(dset, DCM_StudyInstanceUID, studyUID) &&
-                ((!imageInDatabase) || (getSeriesStruct(studyUID, seriesUID, instanceUID) == NULL)))
+                ((!imageInDatabase) || (getSeriesStruct(studyUID, seriesUID, instanceUID2) == NULL)))
             {
                 releaseDatabase();   /* avoid deadlocks */
-                if (DB_NORMAL == DB_makeNewStoreFileName(handle, sopClass, instanceUID, imageFileName))
+                if (DB_NORMAL == DB_makeNewStoreFileName(handle, sopClass, instanceUID2, imageFileName))
                 {
                     // now store presentation state as filename
                     result = saveCurrentImage(imageFileName);
                     if (EC_Normal==result)
                     {
-                        if (DB_NORMAL != DB_storeRequest(handle, sopClass, instanceUID, imageFileName, &dbStatus))
+                        if (DB_NORMAL != DB_storeRequest(handle, sopClass, instanceUID2, imageFileName, &dbStatus))
                         {
                             result = EC_IllegalCall;
 #ifdef DEBUG
@@ -2208,7 +2211,10 @@ void DVInterface::cleanChildren()
 /*
  *  CVS/RCS Log:
  *  $Log: dviface.cc,v $
- *  Revision 1.57  1999-07-14 12:03:43  meichel
+ *  Revision 1.58  1999-07-22 16:39:54  meichel
+ *  Adapted dcmpstat data structures and API to supplement 33 letter ballot text.
+ *
+ *  Revision 1.57  1999/07/14 12:03:43  meichel
  *  Updated data dictionary for supplement 29, 39, 33_lb, CP packet 4 and 5.
  *    Corrected dcmtk applications for changes in attribute name constants.
  *

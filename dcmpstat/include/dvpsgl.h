@@ -23,8 +23,8 @@
  *    classes: DVPSGraphicLayer
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1998-12-14 16:10:29 $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  Update Date:      $Date: 1999-07-22 16:39:08 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -95,28 +95,23 @@ public:
    */
   Sint32 getGLOrder();
 
-  /** checks whether a recommended display value exists.
+  /** checks whether a recommended display value (grayscale, color or both) exists.
    *  @return OFTrue if a recommended display value exists
    */
   OFBool haveGLRecommendedDisplayValue();
 
-  /** checks whether a recommended display value
-   *  exists and is monochrome.
-   *  @return OFTrue if a recommended display value exists and is monochrome
-   */
-  OFBool isGrayGLRecommendedDisplayValue();
-
-  /** gets the recommended display value (monochrome). 
-   *  If the recommended display value is a color,
-   *  it is implicitly converted to grayscale.
+  /** gets the recommended grayscale display value.
+   *  If the graphic layer contains an RGB display value but no grayscale
+   *  display value, the RGB value is implicitly converted to grayscale.
    *  @param gray the recommended display value as an unsigned 16-bit P-value
    *    is returned in this parameter.
    *  @return EC_Normal upon success, an error code otherwise
    */
   E_Condition getGLRecommendedDisplayValueGray(Uint16& gray);
 
-  /** gets the recommended display value (color). If the recommended display value is monochrome,
-   *  identical R, G and B components are passed back.
+  /** gets the recommended RGB display value. 
+   *  If the graphic layer contains a grayscale display value but no RGB
+   *  display value, the grayscale value is implicitly converted to RGB.
    *  @param r returns the R component of the recommended display value as unsigned 16-bit P-value
    *  @param g returns the G component of the recommended display value as unsigned 16-bit P-value
    *  @param b returns the B component of the recommended display value as unsigned 16-bit P-value
@@ -124,6 +119,12 @@ public:
    */
   E_Condition getGLRecommendedDisplayValueRGB(Uint16& r, Uint16& g, Uint16& b);
   
+  /** removes recommended display values.
+   *  @param rgb if true, the RGB recommended display value is removed
+   *  @param monochrome if true the monochrome recommended display value is removed
+   */
+  void removeRecommendedDisplayValue(OFBool rgb, OFBool monochrome);
+
   /** set graphic layer name of this layer.
    *  @param gl a pointer to the graphic layer name, which is copied into this object.
    */
@@ -134,17 +135,21 @@ public:
    */
   void setGLOrder(Sint32 glOrder);
 
-  /** set graphic layer recommended display value (gray) of this layer.
+  /** set graphic layer recommended grayscale display value of this layer.
+   *  This method does not affect (set or modify) the recommended RGB display value
+   *  which should be set separately.
    *  @param gray the recommended display value in P-values 0..0xffff.
    */
-  void setGLRecommendedDisplayValue(Uint16 gray);
+  void setGLRecommendedDisplayValueGray(Uint16 gray);
 
-  /** set graphic layer recommended display value (color) of this layer.
+  /** set graphic layer recommended RGB display value of this layer.
+   *  This method does not affect (set or modify) the recommended grayscale display value
+   *  which should be set separately.
    *  @param r the red component of the recommended display value in P-values 0..0xffff.
    *  @param g the green component of the recommended display value in P-values 0..0xffff.
    *  @param b the blue component of the recommended display value in P-values 0..0xffff.
    */
-  void setGLRecommendedDisplayValue(Uint16 r, Uint16 g, Uint16 b);
+  void setGLRecommendedDisplayValueRGB(Uint16 r, Uint16 g, Uint16 b);
 
   /** set graphic layer description of this layer.
    *  @param glDescription a pointer to the graphic layer description, which is copied into this object.
@@ -156,8 +161,10 @@ private:
   DcmCodeString            graphicLayer;
   /// VR=IS, VM=1, Type 1
   DcmIntegerString         graphicLayerOrder;
-  /// VR=US, VM=1-3, Type 3
-  DcmUnsignedShort         graphicLayerRecommendedDisplayValue;
+  /// VR=US, VM=1, Type 3
+  DcmUnsignedShort         graphicLayerRecommendedDisplayGrayscaleValue;
+  /// VR=US, VM=3, Type 3
+  DcmUnsignedShort         graphicLayerRecommendedDisplayRGBValue;
   /// VR=LO, VM=1, Type 3
   DcmLongString            graphicLayerDescription;
 };
@@ -166,7 +173,10 @@ private:
 
 /*
  *  $Log: dvpsgl.h,v $
- *  Revision 1.2  1998-12-14 16:10:29  meichel
+ *  Revision 1.3  1999-07-22 16:39:08  meichel
+ *  Adapted dcmpstat data structures and API to supplement 33 letter ballot text.
+ *
+ *  Revision 1.2  1998/12/14 16:10:29  meichel
  *  Implemented Presentation State interface for graphic layers,
  *    text and graphic annotations, presentation LUTs.
  *

@@ -23,8 +23,8 @@
  *    classes: DVPresentationState
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1998-12-14 16:10:40 $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  Update Date:      $Date: 1999-07-22 16:39:57 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -33,6 +33,8 @@
 
 #include "osconfig.h"    /* make sure OS specific configuration is included first */
 #include "dvpsga.h"
+#include "dvpsri.h"
+#include "dvpstyp.h"
 
 /* --------------- a few macros avoiding copy/paste --------------- */
 
@@ -54,7 +56,7 @@ if (EC_Normal == dset.search((DcmTagKey &)a_name.getTag(), stack, ESM_fromHere, 
 /* --------------- class DVPSGraphicAnnotation --------------- */
 
 DVPSGraphicAnnotation::DVPSGraphicAnnotation()
-: referencedFrameNumber(DCM_ReferencedFrameNumber)
+: referencedImageList()
 , graphicAnnotationLayer(DCM_GraphicLayer)
 , textObjectList()
 , graphicObjectList()
@@ -62,7 +64,7 @@ DVPSGraphicAnnotation::DVPSGraphicAnnotation()
 }
 
 DVPSGraphicAnnotation::DVPSGraphicAnnotation(const DVPSGraphicAnnotation& copy)
-: referencedFrameNumber(copy.referencedFrameNumber)
+: referencedImageList(copy.referencedImageList)
 , graphicAnnotationLayer(copy.graphicAnnotationLayer)
 , textObjectList(copy.textObjectList)
 , graphicObjectList(copy.graphicObjectList)
@@ -78,10 +80,10 @@ E_Condition DVPSGraphicAnnotation::read(DcmItem &dset)
   E_Condition result = EC_Normal;
   DcmStack stack;
 
-  READ_FROM_DATASET(DcmIntegerString, referencedFrameNumber)
   READ_FROM_DATASET(DcmCodeString, graphicAnnotationLayer)
   if (result==EC_Normal) result = textObjectList.read(dset);
   if (result==EC_Normal) result = graphicObjectList.read(dset);
+  if (result==EC_Normal) result = referencedImageList.read(dset);
   
   /* Now perform basic sanity checks */
 
@@ -117,13 +119,10 @@ E_Condition DVPSGraphicAnnotation::write(DcmItem &dset)
   DcmElement *delem=NULL;
   
   ADD_TO_DATASET(DcmCodeString, graphicAnnotationLayer)
-  if (referencedFrameNumber.getLength() > 0)
-  {
-    ADD_TO_DATASET(DcmIntegerString, referencedFrameNumber)    
-  }
   
   if (result == EC_Normal) result = textObjectList.write(dset);
   if (result == EC_Normal) result = graphicObjectList.write(dset);
+  if ((result == EC_Normal)&&(referencedImageList.size() >0)) result = referencedImageList.write(dset);
   return result;
 }
 
@@ -185,9 +184,52 @@ DVPSGraphicObject *DVPSGraphicAnnotation::removeGraphicObject(size_t idx)
   return graphicObjectList.removeGraphicObject(idx);
 }
 
+E_Condition DVPSGraphicAnnotation::addImageReference(
+    const char *sopclassUID,
+    const char *instanceUID, 
+    unsigned long frame,
+    DVPSObjectApplicability applicability)
+{
+  if ((sopclassUID==NULL)||(instanceUID==NULL)||(applicability==DVPSB_allImages)) return EC_IllegalCall;
+  const char *framenumber=NULL;
+  if (applicability==DVPSB_currentFrame)
+  {
+    char frameString[100];
+    sprintf(frameString, "%ld", frame);
+    framenumber = frameString;
+  }
+  return referencedImageList.addImageReference(sopclassUID, instanceUID, framenumber);
+}
+
+OFBool DVPSGraphicAnnotation::isApplicable(    
+    const char *instanceUID, 
+    unsigned long frame,
+    DVPSObjectApplicability applicability)
+{
+  if (referencedImageList.size() == 0) return OFTrue; // if no image references exist, the annotation is valid "globally".
+  DVPSReferencedImage *imageRef = NULL;
+  switch (applicability)
+  {
+    case DVPSB_currentFrame: // check if annotation applies to current frame
+      imageRef = referencedImageList.findImageReference(instanceUID);
+      if (imageRef) return imageRef->appliesToFrame(frame);
+      break;
+    case DVPSB_currentImage: // check if annotation applies to all frames of current image
+      imageRef = referencedImageList.findImageReference(instanceUID);
+      if (imageRef) return imageRef->appliesToAllFrames();
+      break;
+    default: /* do nothing */
+      break;
+  }
+  return OFFalse;
+}
+
 /*
  *  $Log: dvpsga.cc,v $
- *  Revision 1.2  1998-12-14 16:10:40  meichel
+ *  Revision 1.3  1999-07-22 16:39:57  meichel
+ *  Adapted dcmpstat data structures and API to supplement 33 letter ballot text.
+ *
+ *  Revision 1.2  1998/12/14 16:10:40  meichel
  *  Implemented Presentation State interface for graphic layers,
  *    text and graphic annotations, presentation LUTs.
  *

@@ -23,8 +23,8 @@
  *    classes: DVPSVOILUT
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1998-12-22 17:57:20 $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  Update Date:      $Date: 1999-07-22 16:40:06 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -33,6 +33,7 @@
 
 #include "osconfig.h"    /* make sure OS specific configuration is included first */
 #include "dvpsvl.h"
+#include "dvpssv.h"      /* for DVPSSoftcopyVOI */
 
 /* --------------- a few macros avoiding copy/paste --------------- */
 
@@ -104,17 +105,17 @@ const char *DVPSVOILUT::getExplanation()
   return value;
 }
 
-void DVPSVOILUT::assign(DcmUnsignedShort& descriptor, DcmUnsignedShort& data, DcmLongString& explanation)
+E_Condition DVPSVOILUT::assign(DVPSSoftcopyVOI& voi)
 {
-  descriptor = voiLUTDescriptor;
-  data = voiLUTData;
-  explanation = voiLUTExplanation;
-  return;
+  return voi.setVOILUT(voiLUTDescriptor, voiLUTData, voiLUTExplanation);
 }
 
 /*
  *  $Log: dvpsvl.cc,v $
- *  Revision 1.1  1998-12-22 17:57:20  meichel
+ *  Revision 1.2  1999-07-22 16:40:06  meichel
+ *  Adapted dcmpstat data structures and API to supplement 33 letter ballot text.
+ *
+ *  Revision 1.1  1998/12/22 17:57:20  meichel
  *  Implemented Presentation State interface for overlays,
  *    VOI LUTs, VOI windows, curves. Added test program that
  *    allows to add curve data to DICOM images.

@@ -23,8 +23,8 @@
  *    classes: DVPSGraphicLayer_PList
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-04-30 16:40:50 $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  Update Date:      $Date: 1999-07-22 16:39:59 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -258,12 +258,6 @@ OFBool DVPSGraphicLayer_PList::haveGraphicLayerRecommendedDisplayValue(size_t id
   if (layer) return layer->haveGLRecommendedDisplayValue(); else return OFFalse;
 }
 
-OFBool DVPSGraphicLayer_PList::isGrayGraphicLayerRecommendedDisplayValue(size_t idx)
-{
-  DVPSGraphicLayer *layer = getGraphicLayer(idx);
-  if (layer) return layer->isGrayGLRecommendedDisplayValue(); else return OFFalse;
-}
-
 E_Condition DVPSGraphicLayer_PList::getGraphicLayerRecommendedDisplayValueGray(size_t idx, Uint16& gray)
 {
   DVPSGraphicLayer *layer = getGraphicLayer(idx);
@@ -281,7 +275,7 @@ E_Condition DVPSGraphicLayer_PList::setGraphicLayerRecommendedDisplayValueGray(s
   DVPSGraphicLayer *layer = getGraphicLayer(idx);
   if (layer) 
   {
-    layer->setGLRecommendedDisplayValue(gray);
+    layer->setGLRecommendedDisplayValueGray(gray);
     return EC_Normal;
   } else return EC_IllegalCall;
 }
@@ -291,11 +285,17 @@ E_Condition DVPSGraphicLayer_PList::setGraphicLayerRecommendedDisplayValueRGB(si
   DVPSGraphicLayer *layer = getGraphicLayer(idx);
   if (layer) 
   {
-    layer->setGLRecommendedDisplayValue(r, g, b);
+    layer->setGLRecommendedDisplayValueRGB(r, g, b);
     return EC_Normal;
   } else return EC_IllegalCall;
 }
 
+void DVPSGraphicLayer_PList::removeGraphicLayerRecommendedDisplayValue(size_t idx, OFBool rgb, OFBool monochrome)
+{
+  DVPSGraphicLayer *layer = getGraphicLayer(idx);
+  if (layer) layer->removeRecommendedDisplayValue(rgb, monochrome);
+  return;
+}
 
 E_Condition DVPSGraphicLayer_PList::setGraphicLayerName(size_t idx, const char *name)
 {
@@ -431,7 +431,10 @@ void DVPSGraphicLayer_PList::cleanupLayers(
 
 /*
  *  $Log: dvpsgll.cc,v $
- *  Revision 1.4  1999-04-30 16:40:50  meichel
+ *  Revision 1.5  1999-07-22 16:39:59  meichel
+ *  Adapted dcmpstat data structures and API to supplement 33 letter ballot text.
+ *
+ *  Revision 1.4  1999/04/30 16:40:50  meichel
  *  Minor code purifications to keep Sun CC 2.0.1 quiet
  *
  *  Revision 1.3  1999/02/09 15:59:07  meichel

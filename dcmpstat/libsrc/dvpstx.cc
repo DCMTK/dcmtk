@@ -23,8 +23,8 @@
  *    classes: DVPSTextObject
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-01-11 13:35:24 $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  Update Date:      $Date: 1999-07-22 16:40:06 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -56,24 +56,24 @@ if (EC_Normal == dset.search((DcmTagKey &)a_name.getTag(), stack, ESM_fromHere, 
 /* --------------- class DVPSTextObject --------------- */
 
 DVPSTextObject::DVPSTextObject()
-: specificCharacterSet(DCM_SpecificCharacterSet)
-, boundingBoxAnnotationUnits(DCM_BoundingBoxAnnotationUnits)
+: boundingBoxAnnotationUnits(DCM_BoundingBoxAnnotationUnits)
 , anchorPointAnnotationUnits(DCM_AnchorPointAnnotationUnits)
 , unformattedTextValue(DCM_UnformattedTextValue)
-, boundingBoxTLHC(DCM_BoundingBoxTLHC)
-, boundingBoxBRHC(DCM_BoundingBoxBRHC)
+, boundingBoxTLHC(DCM_BoundingBoxTopLeftHandCorner)
+, boundingBoxBRHC(DCM_BoundingBoxBottomRightHandCorner)
+, boundingBoxTextHorizontalJustification(DCM_BoundingBoxTextHorizontalJustification)
 , anchorPoint(DCM_AnchorPoint)
 , anchorPointVisibility(DCM_AnchorPointVisibility)
 {
 }
 
 DVPSTextObject::DVPSTextObject(const DVPSTextObject& copy)
-: specificCharacterSet(copy.specificCharacterSet)
-, boundingBoxAnnotationUnits(copy.boundingBoxAnnotationUnits)
+: boundingBoxAnnotationUnits(copy.boundingBoxAnnotationUnits)
 , anchorPointAnnotationUnits(copy.anchorPointAnnotationUnits)
 , unformattedTextValue(copy.unformattedTextValue)
 , boundingBoxTLHC(copy.boundingBoxTLHC)
 , boundingBoxBRHC(copy.boundingBoxBRHC)
+, boundingBoxTextHorizontalJustification(copy.boundingBoxTextHorizontalJustification)
 , anchorPoint(copy.anchorPoint)
 , anchorPointVisibility(copy.anchorPointVisibility)
 {
@@ -88,12 +88,12 @@ E_Condition DVPSTextObject::read(DcmItem &dset)
   E_Condition result = EC_Normal;
   DcmStack stack;
 
-  READ_FROM_DATASET(DcmCodeString, specificCharacterSet)
   READ_FROM_DATASET(DcmCodeString, boundingBoxAnnotationUnits)
   READ_FROM_DATASET(DcmCodeString, anchorPointAnnotationUnits)
   READ_FROM_DATASET(DcmShortText, unformattedTextValue)
   READ_FROM_DATASET(DcmFloatingPointSingle, boundingBoxTLHC)
   READ_FROM_DATASET(DcmFloatingPointSingle, boundingBoxBRHC)
+  READ_FROM_DATASET(DcmCodeString, boundingBoxTextHorizontalJustification)
   READ_FROM_DATASET(DcmFloatingPointSingle, anchorPoint)
   READ_FROM_DATASET(DcmCodeString, anchorPointVisibility)
   
@@ -168,6 +168,14 @@ E_Condition DVPSTextObject::read(DcmItem &dset)
 #endif
   }
 
+  if (boundingBoxTextHorizontalJustification.getVM() > 1)
+  {
+    result=EC_IllegalCall;
+#ifdef DEBUG
+    cerr << "Error: presentation state contains a text object SQ item with boundingBoxTextHorizontalJustification VM > 1" << endl;
+#endif
+  }
+
   if (anchorPoint.getVM() ==1)
   {
     result=EC_IllegalCall;
@@ -191,6 +199,15 @@ E_Condition DVPSTextObject::read(DcmItem &dset)
     result=EC_IllegalCall;
 #ifdef DEBUG
     cerr << "Error: presentation state contains a text object SQ item with bounding box but boundingBoxAnnotationUnits absent or empty" << endl;
+#endif
+  }
+
+  if ((boundingBoxTextHorizontalJustification.getVM() == 0)
+     && ((boundingBoxTLHC.getVM() >0) || (boundingBoxBRHC.getVM() >0)))
+  {
+    result=EC_IllegalCall;
+#ifdef DEBUG
+    cerr << "Error: presentation state contains a text object SQ item with bounding box but boundingBoxTextHorizontalJustification absent or empty" << endl;
 #endif
   }
 
@@ -236,10 +253,6 @@ E_Condition DVPSTextObject::write(DcmItem &dset)
   DcmElement *delem=NULL;
   
   ADD_TO_DATASET(DcmShortText, unformattedTextValue)
-  if (specificCharacterSet.getLength() > 0)
-  {
-    ADD_TO_DATASET(DcmCodeString, specificCharacterSet)
-  }
   if (anchorPoint.getLength() > 0)
   {
     ADD_TO_DATASET(DcmFloatingPointSingle, anchorPoint)
@@ -251,6 +264,7 @@ E_Condition DVPSTextObject::write(DcmItem &dset)
     ADD_TO_DATASET(DcmFloatingPointSingle, boundingBoxTLHC)
     ADD_TO_DATASET(DcmFloatingPointSingle, boundingBoxBRHC)
     ADD_TO_DATASET(DcmCodeString, boundingBoxAnnotationUnits)
+    ADD_TO_DATASET(DcmCodeString, boundingBoxTextHorizontalJustification)
   }
   return result;
 }
@@ -292,7 +306,13 @@ E_Condition DVPSTextObject::setAnchorPoint(double x, double y, DVPSannotationUni
 }
 
 
-E_Condition DVPSTextObject::setBoundingBox(double TLHC_x, double TLHC_y, double BRHC_x, double BRHC_y, DVPSannotationUnit unit) 
+E_Condition DVPSTextObject::setBoundingBox(
+  double TLHC_x, 
+  double TLHC_y, 
+  double BRHC_x, 
+  double BRHC_y, 
+  DVPSannotationUnit unit,
+  DVPSTextJustification justification)
 {
   Float32 aPoint[2];
 	
@@ -313,6 +333,18 @@ E_Condition DVPSTextObject::setBoundingBox(double TLHC_x, double TLHC_y, double 
   {
     if (unit==DVPSA_display) result=boundingBoxAnnotationUnits.putString("DISPLAY"); 
     else result=boundingBoxAnnotationUnits.putString("PIXEL"); 
+    switch (justification)
+    {
+      case DVPSX_left:
+        boundingBoxTextHorizontalJustification.putString("LEFT");
+        break;
+      case DVPSX_right:
+        boundingBoxTextHorizontalJustification.putString("RIGHT");
+        break;
+      case DVPSX_center:
+        boundingBoxTextHorizontalJustification.putString("CENTER");
+        break;  
+    }
   }
   return result;
 }
@@ -323,55 +355,6 @@ E_Condition DVPSTextObject::setText(const char *text)
   return unformattedTextValue.putString(text);
 }
 
-
-E_Condition DVPSTextObject::setCharset(DVPScharacterSet charset, DVPScharacterSet higherLevelCharset)
-{
-  if (charset==DVPSC_other) return EC_IllegalCall;
-  if (charset==higherLevelCharset)
-  {
-    // char sets are identical, no need to specify here.
-    specificCharacterSet.clear();
-    return EC_Normal;
-  }
-  const char *cname=NULL;
-  switch (charset)
-  {
-    case DVPSC_latin1:
-      cname = "ISO_IR 100"; 
-      break;    
-    case DVPSC_latin2:
-      cname = "ISO_IR 101"; 
-      break;    
-    case DVPSC_latin3:
-      cname = "ISO_IR 109"; 
-      break;    
-    case DVPSC_latin4:
-      cname = "ISO_IR 110"; 
-      break;    
-    case DVPSC_latin5:
-      cname = "ISO_IR 148"; 
-      break;    
-    case DVPSC_cyrillic:
-      cname = "ISO_IR 144"; 
-      break;    
-    case DVPSC_arabic:
-      cname = "ISO_IR 127"; 
-      break;    
-    case DVPSC_greek:
-      cname = "ISO_IR 126"; 
-      break;    
-    case DVPSC_hebrew:
-      cname = "ISO_IR 138"; 
-      break;    
-    case DVPSC_japanese:
-      cname = "ISO_IR 13"; 
-      break;    
-    default: // can only be DVPSC_ascii
-      cname = "ISO_IR 6"; 
-      break;    
-  }
-  return specificCharacterSet.putString(cname);
-}
 
 void DVPSTextObject::removeAnchorPoint()
 {
@@ -445,6 +428,16 @@ DVPSannotationUnit DVPSTextObject::getBoundingBoxAnnotationUnits()
   return aresult;
 }
 
+DVPSTextJustification DVPSTextObject::getBoundingBoxHorizontalJustification()
+{
+  DVPSTextJustification aresult = DVPSX_left;
+  OFString aString;
+  E_Condition result = boundingBoxTextHorizontalJustification.getOFString(aString,0);
+  if ((result==EC_Normal)&&(aString == "RIGHT")) aresult = DVPSX_right;
+  if ((result==EC_Normal)&&(aString == "CENTER")) aresult = DVPSX_center;
+  return aresult;
+}
+
 double DVPSTextObject::getAnchorPoint_x()
 {
   Float32 result =0.0;
@@ -481,36 +474,12 @@ DVPSannotationUnit DVPSTextObject::getAnchorPointAnnotationUnits()
   return aresult;
 }
 
-DVPScharacterSet DVPSTextObject::getCharset(DVPScharacterSet higherLevelCharset)
-{
-  if (specificCharacterSet.getLength()==0) return higherLevelCharset;
-  
-  OFString aString;
-  specificCharacterSet.getOFString(aString,0);
-  if (aString == "ISO_IR 6") return DVPSC_ascii;
-  else if (aString == "ISO_IR 100") return DVPSC_latin1;
-  else if (aString == "ISO_IR 101") return DVPSC_latin2;
-  else if (aString == "ISO_IR 109") return DVPSC_latin3;
-  else if (aString == "ISO_IR 110") return DVPSC_latin4;
-  else if (aString == "ISO_IR 148") return DVPSC_latin5;
-  else if (aString == "ISO_IR 144") return DVPSC_cyrillic;
-  else if (aString == "ISO_IR 127") return DVPSC_arabic;
-  else if (aString == "ISO_IR 126") return DVPSC_greek;
-  else if (aString == "ISO_IR 138") return DVPSC_hebrew;
-  else if (aString == "ISO_IR 13")  return DVPSC_japanese;
-  /* default */
-  return DVPSC_other;
-}
-
-const char *DVPSTextObject::getCharsetString()
-{
-  char *c = NULL;
-  if (EC_Normal == specificCharacterSet.getString(c)) return c; else return NULL;
-}
-
 /*
  *  $Log: dvpstx.cc,v $
- *  Revision 1.4  1999-01-11 13:35:24  meichel
+ *  Revision 1.5  1999-07-22 16:40:06  meichel
+ *  Adapted dcmpstat data structures and API to supplement 33 letter ballot text.
+ *
+ *  Revision 1.4  1999/01/11 13:35:24  meichel
  *  added some explicit type conversions to avoid compiler warnings with VC++.
  *
  *  Revision 1.3  1998/12/22 17:57:19  meichel

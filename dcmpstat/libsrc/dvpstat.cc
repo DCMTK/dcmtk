@@ -23,8 +23,8 @@
  *    classes: DVPresentationState
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-07-14 12:03:44 $
- *  CVS/RCS Revision: $Revision: 1.23 $
+ *  Update Date:      $Date: 1999-07-22 16:40:04 $
+ *  CVS/RCS Revision: $Revision: 1.24 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -39,6 +39,8 @@
 #include "dvpsvl.h"      /* for DVPSVOILUT */
 #include "dvpsvw.h"      /* for DVPSVOIWindow */
 #include "dvpsov.h"      /* for DVPSOverlay */
+#include "dvpsda.h"      /* for DVPSDisplayedArea */
+#include "dvpssv.h"      /* for DVPSSoftcopyVOI */
 
 #ifdef HAVE_STDLIB_H
 #include <stdlib.h>
@@ -72,12 +74,6 @@ if (result==EC_Normal)                                              \
   delem = new a_type(a_name);                                       \
   if (delem) dset.insert(delem); else result=EC_MemoryExhausted;    \
 }
-
-#define SET_DEFAULT(a_name, a_value)                                \
-if (result==EC_Normal)                                              \
-{                                                                   \
-     if (a_name.getLength()==0) result = a_name.putString(a_value); \
-}
    
 #define SET_UID(a_name)                                             \
 if (result==EC_Normal)                                              \
@@ -93,6 +89,12 @@ if (EC_Normal == dset.search((DcmTagKey &)a_name.getTag(), stack, ESM_fromHere, 
 }
 
 /* --------------- static helper functions --------------- */
+
+static void setDefault(E_Condition& result, DcmElement& a_name, const char *a_value)
+{
+  if ((result==EC_Normal)&&(a_name.getLength()==0)) result = a_name.putString(a_value);
+  return;
+}
 
 static void currentDate(OFString &str)
 {
@@ -138,8 +140,7 @@ DVPresentationState::DVPresentationState(DiDisplayFunction *dispFunction)
 , seriesInstanceUID(DCM_SeriesInstanceUID)
 , seriesNumber(DCM_SeriesNumber)
 , manufacturer(DCM_Manufacturer)
-, displayedAreaTLHC(DCM_DisplayedAreaTLHC)
-, displayedAreaBRHC(DCM_DisplayedAreaBRHC)
+, displayedAreaSelectionList()
 , presentationLUT(DVPSP_identity)
 , presentationLUTDescriptor(DCM_LUTDescriptor)
 , presentationLUTExplanation(DCM_LUTExplanation)
@@ -186,19 +187,15 @@ DVPresentationState::DVPresentationState(DiDisplayFunction *dispFunction)
 , rescaleIntercept(DCM_RescaleIntercept)
 , rescaleSlope(DCM_RescaleSlope)
 , rescaleType(DCM_RescaleType)
-, useVOIWindow(OFFalse)
-, useVOILUT(OFFalse)
-, voiLUTDescriptor(DCM_LUTDescriptor)
-, voiLUTExplanation(DCM_LUTExplanation)
-, voiLUTData(DCM_LUTData)
-, windowCenter(DCM_WindowCenter)
-, windowWidth(DCM_WindowWidth)
-, windowCenterWidthExplanation(DCM_WindowCenterWidthExplanation)
+, softcopyVOIList()
 , currentImageDataset(NULL)
 , currentImageFileformat(NULL)
 , currentImage(NULL)
 , currentImageWidth(0)
 , currentImageHeight(0)
+, currentImageSOPClassUID(NULL)
+, currentImageSOPInstanceUID(NULL)
+, currentImageSelectedFrame(0)
 , currentImageOwned(OFFalse)
 , currentImageVOIValid(OFFalse)
 , currentImagePLUTValid(OFFalse)
@@ -243,6 +240,9 @@ void DVPresentationState::detachImage()
   currentImageFlip = OFFalse;
   currentImageRotation = DVPSR_0_deg;
   currentImageOverlaysValid = 0;
+  currentImageSOPClassUID=NULL;
+  currentImageSOPInstanceUID=NULL;
+  currentImageSelectedFrame=0;
 
   return;
 }
@@ -263,8 +263,7 @@ void DVPresentationState::clear()
   seriesInstanceUID.clear();
   seriesNumber.clear();
   manufacturer.clear();
-  displayedAreaTLHC.clear();
-  displayedAreaBRHC.clear();
+  displayedAreaSelectionList.clear();
   presentationLUT = DVPSP_identity;
   presentationLUTDescriptor.clear();
   presentationLUTExplanation.clear();
@@ -307,14 +306,7 @@ void DVPresentationState::clear()
   rescaleIntercept.clear();
   rescaleSlope.clear();
   rescaleType.clear();
-  useVOIWindow = OFFalse;
-  useVOILUT = OFFalse;
-  voiLUTDescriptor.clear();
-  voiLUTExplanation.clear();
-  voiLUTData.clear();
-  windowCenter.clear();
-  windowWidth.clear();
-  windowCenterWidthExplanation.clear();
+  softcopyVOIList.clear();
   detachImage(); // clears all currentImageXX attributes
   // we do not change the display function
   useBartenTransform = OFTrue;
@@ -332,9 +324,9 @@ const char *DVPresentationState::createInstanceUID()
   
   sOPInstanceUID.putString(dcmGenerateUniqueIdentifer(uid));
   currentDate(aString);
-  SET_DEFAULT(instanceCreationDate, aString.c_str() )
+  setDefault(result, instanceCreationDate, aString.c_str());
   currentTime(aString);
-  SET_DEFAULT(instanceCreationTime, aString.c_str() )
+  setDefault(result, instanceCreationTime, aString.c_str());
   if (EC_Normal == result)
   {
     if (EC_Normal != sOPInstanceUID.getString(puid)) puid=NULL; 
@@ -350,63 +342,52 @@ E_Condition DVPresentationState::createDummyValues()
   char uid[100];
   OFString aString;
   
-  SET_DEFAULT(patientName, DEFAULT_patientName)
+  setDefault(result, patientName, DEFAULT_patientName);
   SET_UID(studyInstanceUID)
   SET_UID(seriesInstanceUID)
-  if (displayedAreaTLHC.getVM() != 2) 
-  { // default is 1\1
-    displayedAreaTLHC.putUint16(1,0);
-    displayedAreaTLHC.putUint16(1,1);
-  }
-  if (displayedAreaBRHC.getVM() != 2) 
-  { // default is 1024\1024
-    displayedAreaBRHC.putUint16(1024,0);
-    displayedAreaBRHC.putUint16(1024,1);
-  }
 
-  SET_DEFAULT(imageNumber, DEFAULT_imageNumber)
-  SET_DEFAULT(presentationLabel, DEFAULT_presentationLabel)
+  setDefault(result, imageNumber, DEFAULT_imageNumber);
+  setDefault(result, presentationLabel, DEFAULT_presentationLabel);
   currentDate(aString);
-  SET_DEFAULT(presentationCreationDate, aString.c_str() )
+  setDefault(result, presentationCreationDate, aString.c_str() );
   currentTime(aString);
-  SET_DEFAULT(presentationCreationTime, aString.c_str() )
+  setDefault(result, presentationCreationTime, aString.c_str() );
 
   if ((result==EC_Normal)&&(replaceInstanceUIDOnWrite ||(sOPInstanceUID.getLength()==0)))
   {
     sOPInstanceUID.putString(dcmGenerateUniqueIdentifer(uid));
     currentDate(aString);
-    SET_DEFAULT(instanceCreationDate, aString.c_str() )
+    setDefault(result, instanceCreationDate, aString.c_str() );
     currentTime(aString);
-    SET_DEFAULT(instanceCreationTime, aString.c_str() )
+    setDefault(result, instanceCreationTime, aString.c_str() );
   }
   replaceInstanceUIDOnWrite = OFTrue; // reset flag for next write
 
   // default for specific character set is -absent-.
-  // SET_DEFAULT(specificCharacterSet, DEFAULT_specificCharacterSet )
+  // setDefault(result, specificCharacterSet, DEFAULT_specificCharacterSet );
 
   // create some dummy defaults for shutters
   if (shutterPresentationValue.getVM() != 1) shutterPresentationValue.putUint16(0);
-  SET_DEFAULT(shutterLeftVerticalEdge, "1");
-  SET_DEFAULT(shutterRightVerticalEdge, "1024");
-  SET_DEFAULT(shutterUpperHorizontalEdge, "1");
-  SET_DEFAULT(shutterLowerHorizontalEdge, "1024"); 
-  SET_DEFAULT(centerOfCircularShutter, "512\\512");
-  SET_DEFAULT(radiusOfCircularShutter, "512");
-  SET_DEFAULT(verticesOfThePolygonalShutter, "1\\1\\1\\1024\\1024\\1024\\1024\\1\\1\\1");
+  setDefault(result, shutterLeftVerticalEdge, "1");
+  setDefault(result, shutterRightVerticalEdge, "1024");
+  setDefault(result, shutterUpperHorizontalEdge, "1");
+  setDefault(result, shutterLowerHorizontalEdge, "1024"); 
+  setDefault(result, centerOfCircularShutter, "512\\512");
+  setDefault(result, radiusOfCircularShutter, "512");
+  setDefault(result, verticesOfThePolygonalShutter, "1\\1\\1\\1024\\1024\\1024\\1024\\1\\1\\1");
   if (shutterOverlayGroup.getVM() != 1) shutterOverlayGroup.putUint16(0x6000);
 
   // create defaults for Spatial Transformation Module
-  SET_DEFAULT(imageRotation, "0");
-  SET_DEFAULT(imageHorizontalFlip, "N");
+  if (result==EC_Normal)
+  {
+    if (imageRotation.getVM() != 1) result = imageRotation.putUint16(0);
+  }
+  setDefault(result, imageHorizontalFlip, "N");
  
   // create defaults for Modality Rescale
-  SET_DEFAULT(rescaleIntercept, "0");
-  SET_DEFAULT(rescaleSlope, "1");
-  SET_DEFAULT(rescaleType, "UNSPECIFIED");
-
-  // create defaults for VOI Window
-  SET_DEFAULT(windowCenter, "128");
-  SET_DEFAULT(windowWidth, "256");
+  setDefault(result, rescaleIntercept, "0");
+  setDefault(result, rescaleSlope, "1");
+  setDefault(result, rescaleType, "UNSPECIFIED");
 
   return result;
 }
@@ -492,8 +473,6 @@ E_Condition DVPresentationState::read(DcmItem &dset)
     READ_FROM_DATASET(DcmUniqueIdentifier, seriesInstanceUID)
     READ_FROM_DATASET(DcmIntegerString, seriesNumber)
     READ_FROM_DATASET(DcmLongString, manufacturer)
-    READ_FROM_DATASET(DcmUnsignedShort, displayedAreaTLHC)
-    READ_FROM_DATASET(DcmUnsignedShort, displayedAreaBRHC)
     READ_FROM_DATASET(DcmIntegerString, imageNumber)
     READ_FROM_DATASET(DcmCodeString, presentationLabel)
     READ_FROM_DATASET(DcmLongString, presentationDescription)
@@ -515,14 +494,11 @@ E_Condition DVPresentationState::read(DcmItem &dset)
     READ_FROM_DATASET(DcmIntegerString, verticesOfThePolygonalShutter)
     READ_FROM_DATASET(DcmUnsignedShort, shutterPresentationValue)
     READ_FROM_DATASET(DcmUnsignedShort, shutterOverlayGroup)
-    READ_FROM_DATASET(DcmIntegerString, imageRotation)
+    READ_FROM_DATASET(DcmUnsignedShort, imageRotation)
     READ_FROM_DATASET(DcmCodeString, imageHorizontalFlip)
     READ_FROM_DATASET(DcmDecimalString, rescaleIntercept)
     READ_FROM_DATASET(DcmDecimalString, rescaleSlope)
     READ_FROM_DATASET(DcmLongString, rescaleType) 
-    READ_FROM_DATASET(DcmDecimalString, windowCenter)
-    READ_FROM_DATASET(DcmDecimalString, windowWidth)
-    READ_FROM_DATASET(DcmLongString, windowCenterWidthExplanation)
     READ_FROM_DATASET(DcmCodeString, presentationLUTShape)
   }
   
@@ -606,48 +582,13 @@ E_Condition DVPresentationState::read(DcmItem &dset)
     }
   }
 
-  /* read VOI LUT Sequence */
-  if (result==EC_Normal)
-  {
-    stack.clear();
-    if (EC_Normal == dset.search(DCM_VOILUTSequence, stack, ESM_fromHere, OFFalse))
-    {
-      seq=(DcmSequenceOfItems *)stack.top();
-      if (seq->card() ==1)
-      {
-         item = seq->getItem(0);
-         stack.clear();
-         if (EC_Normal == item->search((DcmTagKey &)voiLUTDescriptor.getTag(), 
-           stack, ESM_fromHere, OFFalse))
-         {
-           voiLUTDescriptor = *((DcmUnsignedShort *)(stack.top()));
-         }
-         stack.clear();
-         if (EC_Normal == item->search((DcmTagKey &)voiLUTExplanation.getTag(), 
-           stack, ESM_fromHere, OFFalse))
-         {
-           voiLUTExplanation = *((DcmLongString *)(stack.top()));
-         }
-         stack.clear();
-         if (EC_Normal == item->search((DcmTagKey &)voiLUTData.getTag(), 
-           stack, ESM_fromHere, OFFalse))
-         {
-           voiLUTData = *((DcmUnsignedShort *)(stack.top()));
-         }
-      } else {
-        result=EC_TagNotFound;
-#ifdef DEBUG
-        cerr << "Error: VOI LUT SQ does not have exactly one item in presentation state" << endl;
-#endif
-      } 
-    }
-  }
-
   if (result==EC_Normal) result = overlayList.read(dset);
   if (result==EC_Normal) result = activationLayerList.read(dset);
   if (result==EC_Normal) result = graphicLayerList.read(dset);
   if (result==EC_Normal) result = referencedSeriesList.read(dset);
   if (result==EC_Normal) result = graphicAnnotationList.read(dset);
+  if (result==EC_Normal) result = displayedAreaSelectionList.read(dset);
+  if (result==EC_Normal) result = softcopyVOIList.read(dset);
 
   /* Now perform basic sanity checks and adjust use flags */
   
@@ -684,33 +625,11 @@ E_Condition DVPresentationState::read(DcmItem &dset)
 #endif
   }
 
-  if (displayedAreaTLHC.getLength() == 0)
+  if (displayedAreaSelectionList.size() == 0)
   {
     result=EC_IllegalCall;
 #ifdef DEBUG
-    cerr << "Error: displayedAreaTLHC absent or empty in presentation state" << endl;
-#endif
-  }
-  else if (displayedAreaTLHC.getVM() != 2)
-  {
-    result=EC_IllegalCall;
-#ifdef DEBUG
-    cerr << "Error: displayedAreaTLHC VM != 2 in presentation state" << endl;
-#endif
-  }
-
-  if (displayedAreaBRHC.getLength() == 0)
-  {
-    result=EC_IllegalCall;
-#ifdef DEBUG
-    cerr << "Error: displayedAreaBRHC absent or empty in presentation state" << endl;
-#endif
-  }
-  else if (displayedAreaBRHC.getVM() != 2)
-  {
-    result=EC_IllegalCall;
-#ifdef DEBUG
-    cerr << "Error: displayedAreaBRHC VM != 2 in presentation state" << endl;
+    cerr << "Error: displayedAreaSelectionSQ absent or empty in presentation state" << endl;
 #endif
   }
 
@@ -926,62 +845,7 @@ E_Condition DVPresentationState::read(DcmItem &dset)
 #endif
     }
 
-    /* VOI LUT */
-    if (windowCenter.getLength() > 0)
-    {
-      useVOIWindow = OFTrue;
-      
-      if (windowWidth.getLength() == 0)
-      {
-        result=EC_IllegalCall;
-#ifdef DEBUG
-        cerr << "Error: windowCenter present but windowWidth absent or empty in presentation state" << endl;
-#endif
-      }
-      else if (windowWidth.getVM() != 1)
-      {
-        result=EC_IllegalCall;
-#ifdef DEBUG
-        cerr << "Error: windowCenter present but windowWidth VM != 1 in presentation state" << endl;
-#endif
-      }
-      if (windowCenter.getVM() != 1)
-      {
-        result=EC_IllegalCall;
-#ifdef DEBUG
-        cerr << "Error: windowCenter present but VM != 1 in presentation state" << endl;
-#endif
-      }
-    } else useVOIWindow = OFFalse;
-    if (voiLUTData.getLength() > 0)
-    {
-      useVOILUT = OFTrue;
-
-      if (voiLUTDescriptor.getLength() == 0)
-      {
-        result=EC_IllegalCall;
-#ifdef DEBUG
-        cerr << "Error: voiLUTData present but voiLUTDescriptor absent or empty in presentation state" << endl;
-#endif
-      }
-      else if (voiLUTDescriptor.getVM() != 3)
-      {
-        result=EC_IllegalCall;
-#ifdef DEBUG
-        cerr << "Error: voiLUTData present but voiLUTDescriptor VM != 3 in presentation state" << endl;
-#endif
-      }
-    } else useVOILUT = OFFalse;
-    /* we may not have both VOI window and LUT */
-    if (useVOIWindow && useVOILUT)
-    {
-      result=EC_IllegalCall;
-#ifdef DEBUG
-      cerr << "Error: both VOI window and LUT present in presentation state" << endl;
-#endif
-    }
-
-  }
+  } /* end result==EC_Normal */
  
   /* check shutters */
   if (result==EC_Normal)
@@ -1143,6 +1007,64 @@ E_Condition DVPresentationState::read(DcmItem &dset)
   return result;
 }
 
+E_Condition DVPresentationState::createDefaultDisplayedArea(DcmItem &dset)
+{
+  DcmUnsignedShort rows(DCM_Rows);
+  DcmUnsignedShort columns(DCM_Columns);
+  DcmUniqueIdentifier sopclassUID(DCM_SOPClassUID);
+  DcmUniqueIdentifier imageUID(DCM_SOPInstanceUID);
+  DcmDecimalString imagerPixelSpacing(DCM_ImagerPixelSpacing);
+  DcmDecimalString pixelSpacing(DCM_PixelSpacing);
+  DcmIntegerString pixelAspectRatio(DCM_PixelAspectRatio);
+  Uint16 cols_uint=0;
+  Uint16 rows_uint=0;
+  char *c_sopclassUID = NULL;
+  char *c_imageUID = NULL;
+  char *pixelspacing = NULL;
+  E_Condition result = EC_Normal;
+  DcmStack stack;
+  
+  READ_FROM_DATASET(DcmUnsignedShort, rows)
+  READ_FROM_DATASET(DcmUnsignedShort, columns)
+  READ_FROM_DATASET(DcmUniqueIdentifier, sopclassUID)
+  READ_FROM_DATASET(DcmUniqueIdentifier, imageUID)
+  READ_FROM_DATASET(DcmDecimalString, imagerPixelSpacing)
+  READ_FROM_DATASET(DcmDecimalString, pixelSpacing)
+  READ_FROM_DATASET(DcmIntegerString, pixelAspectRatio)
+
+  if (result == EC_Normal) result = columns.getUint16(cols_uint,0);
+  if (result == EC_Normal) result = rows.getUint16(rows_uint,0);
+  if (result == EC_Normal) result = sopclassUID.getString(c_sopclassUID);
+  if (result == EC_Normal) result = imageUID.getString(c_imageUID);
+  
+  /* create displayed area selection item for this image */
+  if (EC_Normal == result)
+  {
+    DVPSDisplayedArea *area = displayedAreaSelectionList.createDisplayedArea(
+      referencedSeriesList, c_sopclassUID, c_imageUID, 1, 1, DVPSB_currentImage);
+    if (area)
+    {
+      if (EC_Normal == result) result = area->setDisplayedArea(DVPSD_scaleToFit, (Sint32)1, (Sint32)1, (Sint32)cols_uint, (Sint32)rows_uint);
+      if (EC_Normal == result)
+      {
+        if ((imagerPixelSpacing.getVM()==2)&&(EC_Normal==imagerPixelSpacing.getString(pixelspacing)))
+        {
+          result = area->setDisplayedAreaPixelSpacing(pixelspacing);
+        } 
+        else if ((pixelSpacing.getVM()==2)&&(EC_Normal==pixelSpacing.getString(pixelspacing)))
+        {
+          result = area->setDisplayedAreaPixelSpacing(pixelspacing);
+        } 
+        else if ((pixelAspectRatio.getVM()==2)&&(EC_Normal==pixelAspectRatio.getString(pixelspacing)))
+        {
+          result = area->setDisplayedAreaPixelAspectRatio(pixelspacing);
+        } 
+        else result = area->setDisplayedAreaPixelAspectRatio(1.0);
+      }
+    } else result = EC_MemoryExhausted;
+  }
+  return result;
+}
 
 E_Condition DVPresentationState::createFromImage(
   DcmItem &dset,
@@ -1151,7 +1073,10 @@ E_Condition DVPresentationState::createFromImage(
   OFBool curveActivation,
   OFBool shutterActivation,
   OFBool presentationActivation,
-  DVPSGraphicLayering layering)
+  DVPSGraphicLayering layering,
+  const char *aetitle, 
+  const char *filesetID, 
+  const char *filesetUID)
 {
   E_Condition result = EC_Normal;
   DcmStack stack;
@@ -1159,19 +1084,22 @@ E_Condition DVPresentationState::createFromImage(
   DcmItem *item;
   char uid[100];
   OFString aString;
+  OFString ofsopclassUID;
+  OFString ofimageUID;
   OFBool isMonochrome1 = OFFalse;
-  
-  DcmUnsignedShort rows(DCM_Rows);
-  DcmUnsignedShort columns(DCM_Columns);
+  DcmUniqueIdentifier sopclassUID(DCM_SOPClassUID);
+  DcmUniqueIdentifier imageUID(DCM_SOPInstanceUID);
   DcmCodeString photometricInterpretation(DCM_PhotometricInterpretation);
   DcmCodeString presentationLUTShape(DCM_PresentationLUTShape);
- 
+  
   clear(); // re-initialize Presentation State object 
 
   /* copy some image attributes we will need later */
-  READ_FROM_DATASET(DcmUnsignedShort, rows)
-  READ_FROM_DATASET(DcmUnsignedShort, columns)
   READ_FROM_DATASET(DcmCodeString, photometricInterpretation)
+  READ_FROM_DATASET(DcmUniqueIdentifier, sopclassUID)
+  READ_FROM_DATASET(DcmUniqueIdentifier, imageUID)     
+  sopclassUID.getOFString(ofsopclassUID,0);
+  imageUID.getOFString(ofimageUID,0);
 
   /* copy attributes for Patient, General Study and General Equipment
    * modules from image object. Also copy specific character set (SOP common). */
@@ -1188,15 +1116,12 @@ E_Condition DVPresentationState::createFromImage(
   READ_FROM_DATASET(DcmLongString, manufacturer)
   READ_FROM_DATASET(DcmCodeString, specificCharacterSet)
 
-  /* if there is a modality rescale or VOI window, copy it now. 
+  /* if there is a modality rescale, copy it now. 
    * Later we decide whether we want to use it.
    */
   READ_FROM_DATASET(DcmDecimalString, rescaleIntercept)
   READ_FROM_DATASET(DcmDecimalString, rescaleSlope)
   READ_FROM_DATASET(DcmLongString, rescaleType) 
-  READ_FROM_DATASET(DcmDecimalString, windowCenter)
-  READ_FROM_DATASET(DcmDecimalString, windowWidth)
-  READ_FROM_DATASET(DcmLongString, windowCenterWidthExplanation)
 
   if ((result==EC_Normal) && shutterActivation)
   {
@@ -1255,38 +1180,6 @@ E_Condition DVPresentationState::createFromImage(
            stack, ESM_fromHere, OFFalse))
          {
            modalityLUTType = *((DcmLongString *)(stack.top()));
-         }
-      } else result=EC_TagNotFound;
-    }
-  }
-
-  /* read VOI LUT Sequence */
-  if (result==EC_Normal)
-  {
-    stack.clear();
-    if (EC_Normal == dset.search(DCM_VOILUTSequence, stack, ESM_fromHere, OFFalse))
-    {
-      seq=(DcmSequenceOfItems *)stack.top();
-      if (seq->card() > 0)
-      {
-         item = seq->getItem(0);
-         stack.clear();
-         if (EC_Normal == item->search((DcmTagKey &)voiLUTDescriptor.getTag(), 
-           stack, ESM_fromHere, OFFalse))
-         {
-           voiLUTDescriptor = *((DcmUnsignedShort *)(stack.top()));
-         }
-         stack.clear();
-         if (EC_Normal == item->search((DcmTagKey &)voiLUTExplanation.getTag(), 
-           stack, ESM_fromHere, OFFalse))
-         {
-           voiLUTExplanation = *((DcmLongString *)(stack.top()));
-         }
-         stack.clear();
-         if (EC_Normal == item->search((DcmTagKey &)voiLUTData.getTag(), 
-           stack, ESM_fromHere, OFFalse))
-         {
-           voiLUTData = *((DcmUnsignedShort *)(stack.top()));
          }
       } else result=EC_TagNotFound;
     }
@@ -1381,55 +1274,6 @@ E_Condition DVPresentationState::createFromImage(
     } else useModalityLUT = OFFalse;
   }       
 
-  if (result==EC_Normal)
-  {
-    /* VOI LUT */
-    if ((windowCenter.getVM() > 0) && (windowWidth.getVM() > 0))
-    {
-      useVOIWindow = OFTrue;
-      // delete all values except the first if VM>1
-      aString.clear();
-      windowCenter.getOFString(aString, 0);
-      windowCenter.putString(aString.c_str());
-      aString.clear();
-      windowWidth.getOFString(aString, 0);
-      windowWidth.putString(aString.c_str());
-    } else useVOIWindow = OFFalse;
-    if ((voiLUTDescriptor.getVM() == 3) && (voiLUTData.getLength() > 0)) useVOILUT = OFTrue;
-    else useVOILUT = OFFalse;
-    switch (voiActivation)
-    {
-      case DVPSV_ignoreVOI:
-        useVOIWindow = OFFalse;
-        useVOILUT = OFFalse;
-        windowCenter.clear();
-        windowWidth.clear();
-        windowCenterWidthExplanation.clear();
-        voiLUTDescriptor.clear();
-        voiLUTData.clear();
-        voiLUTExplanation.clear();
-        break;
-      case DVPSV_preferVOIWindow:
-        if (useVOIWindow && useVOILUT)
-        {
-          useVOILUT = OFFalse;
-          voiLUTDescriptor.clear();
-          voiLUTData.clear();
-          voiLUTExplanation.clear();
-        }
-        break;
-      case DVPSV_preferVOILUT:
-        if (useVOIWindow && useVOILUT)
-        {
-          useVOIWindow = OFFalse;
-          windowCenter.clear();
-          windowWidth.clear();
-          windowCenterWidthExplanation.clear();
-        }
-        break;
-    }
-  }       
-
   /* check shutters */
   if (result==EC_Normal)
   { 
@@ -1497,25 +1341,16 @@ E_Condition DVPresentationState::createFromImage(
   if (result==EC_Normal) result = activationLayerList.createFromImage(dset,
     graphicLayerList, overlayList, overlayActivation, curveActivation, layering);
 
-  /* set displayedAreaTLHC/BRHC to image size */
-
-  displayedAreaTLHC.putUint16(1,0);
-  displayedAreaTLHC.putUint16(1,1);
-  if (result==EC_Normal)
-  {
-    Uint16 ui=0;
-    result = columns.getUint16(ui,0);
-    if (result == EC_Normal)
-    {
-      displayedAreaBRHC.putUint16(ui,0);
-      result = rows.getUint16(ui,0);
-      if (result == EC_Normal) displayedAreaBRHC.putUint16(ui,1);
-    }
-  }
-
   /* create reference for this image */
-  if (EC_Normal == result) result = addImageReference(dset);
+  if (EC_Normal == result) result = addImageReference(dset, aetitle, filesetID, filesetUID);
+  
+  /* create displayed area selection item for this image */
+  if (EC_Normal == result) result = createDefaultDisplayedArea(dset);
 
+  /* create softcopy VOI LUT sequence item for this image if necessary */
+  if (EC_Normal == result) result = softcopyVOIList.createFromImage(dset,
+    referencedSeriesList, ofsopclassUID.c_str(), ofimageUID.c_str(), voiActivation);
+  
   return result;
 }
 
@@ -1561,8 +1396,6 @@ E_Condition DVPresentationState::write(DcmItem &dset)
   ADD_TO_DATASET(DcmUniqueIdentifier, seriesInstanceUID)
   ADD_TO_DATASET(DcmIntegerString, seriesNumber)
   ADD_TO_DATASET(DcmLongString, manufacturer)
-  ADD_TO_DATASET(DcmUnsignedShort, displayedAreaTLHC)
-  ADD_TO_DATASET(DcmUnsignedShort, displayedAreaBRHC)
 
   if (presentationLUT==DVPSP_table)
   {
@@ -1614,7 +1447,6 @@ E_Condition DVPresentationState::write(DcmItem &dset)
   ADD_TO_DATASET(DcmTime, presentationCreationTime)
   ADD_TO_DATASET(DcmPersonName, presentationCreatorsName)
 
-  referencedSeriesList.write(dset);
 
   ADD_TO_DATASET(DcmUniqueIdentifier, sOPInstanceUID)
   if (specificCharacterSet.getLength() >0) { ADD_TO_DATASET(DcmCodeString, specificCharacterSet) }
@@ -1670,19 +1502,24 @@ E_Condition DVPresentationState::write(DcmItem &dset)
     ADD_TO_DATASET(DcmUnsignedShort, shutterOverlayGroup)
   }
 
-  overlayList.write(dset);
-  activationLayerList.write(dset);
-  graphicAnnotationList.write(dset);
+  if (EC_Normal == result) result = referencedSeriesList.write(dset);
+  if (EC_Normal == result) result = overlayList.write(dset);
+  if (EC_Normal == result) result = activationLayerList.write(dset);
+  if (EC_Normal == result) result = graphicAnnotationList.write(dset);
+  if (EC_Normal == result) result = displayedAreaSelectionList.write(dset);
+  if (EC_Normal == result) result = softcopyVOIList.write(dset);
+  if (EC_Normal == result) result = graphicLayerList.write(dset);
   
   // strictly speaking we are not allowed to include the Spatial Transformation
   // Module if neither rotation nor flipping are needed.
   OFString aString;
   OFBool haveRotation=OFFalse;
   OFBool haveFlip=OFFalse;
-  if (imageRotation.getLength() > 0)
+  if (imageRotation.getVM() == 1)
   {
-    imageRotation.getOFString(aString, 0, OFTrue);
-    if (!(aString == "0")) haveRotation=OFTrue;
+    Uint16 urot=0;
+    imageRotation.getUint16(urot,0);
+    if (urot) haveRotation=OFTrue;
   }
   if (imageHorizontalFlip.getLength() > 0)
   {
@@ -1692,12 +1529,10 @@ E_Condition DVPresentationState::write(DcmItem &dset)
 
   if (haveRotation || haveFlip)
   {
-    ADD_TO_DATASET(DcmIntegerString, imageRotation)
+    ADD_TO_DATASET(DcmUnsignedShort, imageRotation)
     ADD_TO_DATASET(DcmCodeString, imageHorizontalFlip)
   }
   
-  graphicLayerList.write(dset);
-
   if (useModalityRescale)
   {
     ADD_TO_DATASET(DcmDecimalString, rescaleIntercept)
@@ -1745,51 +1580,6 @@ E_Condition DVPresentationState::write(DcmItem &dset)
     }
   }
 
-  if (useVOIWindow)
-  {
-    ADD_TO_DATASET(DcmDecimalString, windowCenter)
-    ADD_TO_DATASET(DcmDecimalString, windowWidth)
-    if (windowCenterWidthExplanation.getLength() > 0) { ADD_TO_DATASET(DcmLongString, windowCenterWidthExplanation) }
-  }
-  else if (useVOILUT)
-  {
-    if (result == EC_Normal)
-    {
-      ditem = new DcmItem();
-      if (ditem)
-      {
-        dseq = new DcmSequenceOfItems(DCM_VOILUTSequence);
-        if (dseq)
-        {
-          delem = new DcmUnsignedShort(voiLUTDescriptor);
-          if (delem) ditem->insert(delem); else result=EC_MemoryExhausted;
-          delem = new DcmUnsignedShort(voiLUTData);
-          if (delem) ditem->insert(delem); else result=EC_MemoryExhausted;
-          if (voiLUTExplanation.getLength() >0)
-          {
-            delem = new DcmLongString(voiLUTExplanation);
-            if (delem) ditem->insert(delem); else result=EC_MemoryExhausted;
-          }
-          if (result==EC_Normal)
-          {
-            dseq->insert(ditem);
-            dset.insert(dseq);
-          } else {
-            // out of memory during creation of sequence contents.
-            delete dseq;
-            delete ditem;
-            result = EC_MemoryExhausted;
-          }
-        } else {
-          // could allocate item but not sequence. Bail out.
-          delete ditem;
-          result = EC_MemoryExhausted;
-        }
-      }
-      else result = EC_MemoryExhausted;
-    }
-  }
-  
   return result;
 }
 
@@ -1837,13 +1627,25 @@ E_Condition DVPresentationState::attachImage(DcmDataset *dataset, OFBool transfe
   {
     if (EIS_Normal == image->getStatus())
     {
+      DcmStack stack;
       detachImage();
       currentImage = image;
       currentImageWidth = image->getWidth();
       currentImageHeight = image->getHeight();
       currentImageDataset = dataset;
-      currentImageOwned = transferOwnership;
-      result = currentImageCurveList.read(*dataset);
+      currentImageOwned = transferOwnership;      
+      currentImageSelectedFrame = 1; // default: first frame
+      // get SOP class UID and SOP instance UID.
+      if (EC_Normal == dataset->search(DCM_SOPClassUID, stack, ESM_fromHere, OFFalse)) 
+      {
+        result = ((DcmUniqueIdentifier *)(stack.top()))->getString(currentImageSOPClassUID);
+      }
+      stack.clear();
+      if ((EC_Normal == result)&&(EC_Normal == dataset->search(DCM_SOPInstanceUID, stack, ESM_fromHere, OFFalse)))
+      {
+        result = ((DcmUniqueIdentifier *)(stack.top()))->getString(currentImageSOPInstanceUID);
+      }  
+      if (EC_Normal==result) result = currentImageCurveList.read(*dataset);
       if (EC_Normal==result) result = currentImageVOILUTList.read(*dataset);
       if (EC_Normal==result) result = currentImageVOIWindowList.read(*dataset);      
     } else {
@@ -1893,9 +1695,12 @@ E_Condition DVPresentationState::addImageReference(
     const char *seriesUID, 
     const char *sopclassUID, 
     const char *instanceUID,
-    const char *frames)
+    const char *frames,
+    const char *aetitle, 
+    const char *filesetID, 
+    const char *filesetUID)
 {
-  if ((studyUID==NULL)||(seriesUID)||(sopclassUID==NULL)||(instanceUID==NULL)) return EC_IllegalCall;
+  if ((studyUID==NULL)||(seriesUID==NULL)||(sopclassUID==NULL)||(instanceUID==NULL)) return EC_IllegalCall;
 
   OFString study;
   studyInstanceUID.getOFString(study,0);
@@ -1906,11 +1711,15 @@ E_Condition DVPresentationState::addImageReference(
 #endif
     return EC_IllegalCall;
   }
-  return referencedSeriesList.addImageReference(seriesUID, sopclassUID, instanceUID, frames);
+  return referencedSeriesList.addImageReference(seriesUID, sopclassUID, instanceUID, frames, aetitle, filesetID, filesetUID);
 }
 
 
-E_Condition DVPresentationState::addImageReference(DcmItem &dset)
+E_Condition DVPresentationState::addImageReference(
+    DcmItem &dset,
+    const char *aetitle, 
+    const char *filesetID, 
+    const char *filesetUID)    
 {
   DcmIntegerString numberOfFrames(DCM_NumberOfFrames);
   DcmUniqueIdentifier studyUID(DCM_StudyInstanceUID);
@@ -1918,7 +1727,6 @@ E_Condition DVPresentationState::addImageReference(DcmItem &dset)
   DcmUniqueIdentifier sopclassUID(DCM_SOPClassUID);
   DcmUniqueIdentifier imageUID(DCM_SOPInstanceUID);
 
-  OFString ofstudyInstanceUID;
   OFString ofstudyUID;
   OFString ofseriesUID;
   OFString ofsopclassUID;
@@ -1940,15 +1748,6 @@ E_Condition DVPresentationState::addImageReference(DcmItem &dset)
   sopclassUID.getOFString(ofsopclassUID,0);
   imageUID.getOFString(ofimageUID,0);
   studyUID.getOFString(ofstudyUID,0);
-  studyInstanceUID.getOFString(ofstudyInstanceUID,0);
-
-  if (ofstudyInstanceUID != ofstudyUID)
-  {
-#ifdef DEBUG
-    cerr << "Error: cannot add reference to image with different Study Instance UID." << endl;
-#endif
-    return EC_IllegalCall;
-  }
      
   E_Condition result = EC_Normal;
   /* if the image is multiframe, reference all frames */
@@ -1959,19 +1758,22 @@ E_Condition DVPresentationState::addImageReference(DcmItem &dset)
         if (aString.length() > 0) sprintf(buf, "\\%ld", (long)(i+1)); else sprintf(buf, "%ld", (long)(i+1));
         aString += buf;
     }
-    result = referencedSeriesList.addImageReference(
-      ofseriesUID.c_str(), ofsopclassUID.c_str(), ofimageUID.c_str(), aString.c_str());
+    result = addImageReference(ofstudyUID.c_str(), ofseriesUID.c_str(), ofsopclassUID.c_str(), 
+      ofimageUID.c_str(), aString.c_str(), aetitle, filesetID, filesetUID);
   } else {
-    result = referencedSeriesList.addImageReference(
-      ofseriesUID.c_str(), ofsopclassUID.c_str(), ofimageUID.c_str());
+    result = addImageReference(ofstudyUID.c_str(), ofseriesUID.c_str(), ofsopclassUID.c_str(), 
+      ofimageUID.c_str(), NULL, aetitle, filesetID, filesetUID);
   }   
   return result;
 }
 
 
-E_Condition DVPresentationState::addImageReferenceAttached()
+E_Condition DVPresentationState::addImageReferenceAttached(
+    const char *aetitle, 
+    const char *filesetID, 
+    const char *filesetUID)
 {
-  if (currentImageDataset) return addImageReference(*currentImageDataset);
+  if (currentImageDataset) return addImageReference(*currentImageDataset, aetitle, filesetID, filesetUID);
   else return EC_IllegalCall;
 }
 
@@ -2035,9 +1837,13 @@ E_Condition DVPresentationState::getImageReference(
     OFString& seriesUID,
     OFString& sopclassUID,
     OFString& instanceUID, 
-    OFString& frames)
+    OFString& frames,
+    OFString& aetitle,
+    OFString& filesetID,
+    OFString& filesetUID)
 {
-  E_Condition result = referencedSeriesList.getImageReference(idx, seriesUID, sopclassUID, instanceUID, frames);
+  E_Condition result = referencedSeriesList.getImageReference(idx, seriesUID, sopclassUID, 
+    instanceUID, frames, aetitle, filesetID, filesetUID);
   if (EC_Normal == result) result = studyInstanceUID.getOFString(studyUID,0);
   return result;
 }
@@ -2104,11 +1910,11 @@ const char *DVPresentationState::getPresentationLUTExplanation()
 DVPSRotationType DVPresentationState::getRotation()
 {
   DVPSRotationType result = DVPSR_0_deg;
-  OFString rotation;
-  imageRotation.getOFString(rotation,0);
-  if (rotation=="90") result = DVPSR_90_deg;
-  else if (rotation=="180") result = DVPSR_180_deg;
-  else if (rotation=="270") result = DVPSR_270_deg;
+  Uint16 rotation=0;
+  imageRotation.getUint16(rotation,0);
+  if (rotation==90) result = DVPSR_90_deg;
+  else if (rotation==180) result = DVPSR_180_deg;
+  else if (rotation==270) result = DVPSR_270_deg;
   return result;
 }
 
@@ -2129,16 +1935,16 @@ E_Condition DVPresentationState::setRotation(DVPSRotationType rotation)
   switch (rotation)
   {
     case DVPSR_0_deg:
-      result = imageRotation.putString("0");
+      result = imageRotation.putUint16(0);
       break;
     case DVPSR_90_deg:
-      result = imageRotation.putString("90");
+      result = imageRotation.putUint16(90);
       break;
     case DVPSR_180_deg:
-      result = imageRotation.putString("180");
+      result = imageRotation.putUint16(180);
       break;
     case DVPSR_270_deg:
-      result = imageRotation.putString("270");
+      result = imageRotation.putUint16(270);
       break;
   }
   return result;
@@ -2151,49 +1957,6 @@ E_Condition DVPresentationState::setFlip(OFBool isFlipped)
   else return imageHorizontalFlip.putString("N"); 
 }
   
-
-Uint16 DVPresentationState::getDisplayedAreaTLHC_x()
-{
-  Uint16 result = 0;
-  displayedAreaTLHC.getUint16(result,0);
-  return result;
-}
-
-Uint16 DVPresentationState::getDisplayedAreaTLHC_y()
-{
-  Uint16 result = 0;
-  displayedAreaTLHC.getUint16(result,1);
-  return result;
-}
- 
-Uint16 DVPresentationState::getDisplayedAreaBRHC_x()
-{
-  Uint16 result = 0;
-  displayedAreaBRHC.getUint16(result,0);
-  return result;
-}
- 
-Uint16 DVPresentationState::getDisplayedAreaBRHC_y()
-{
-  Uint16 result = 0;
-  displayedAreaBRHC.getUint16(result,1);
-  return result;
-}
-  
-E_Condition DVPresentationState::setDisplayedAreaTLHC(Uint16 x, Uint16 y)
-{
-  E_Condition result = displayedAreaTLHC.putUint16(x,0);
-  if (result==EC_Normal) result = displayedAreaTLHC.putUint16(y,1);
-  return result;
-}
-
-E_Condition DVPresentationState::setDisplayedAreaBRHC(Uint16 x, Uint16 y)
-{
-  E_Condition result = displayedAreaBRHC.putUint16(x,0);
-  if (result==EC_Normal) result = displayedAreaBRHC.putUint16(y,1);
-  return result;
-}
-
 
 OFBool DVPresentationState::haveShutter(DVPSShutterType type)
 {
@@ -2474,11 +2237,6 @@ OFBool DVPresentationState::haveGraphicLayerRecommendedDisplayValue(size_t idx)
   return graphicLayerList.haveGraphicLayerRecommendedDisplayValue(idx);
 }
 
-OFBool DVPresentationState::isGrayGraphicLayerRecommendedDisplayValue(size_t idx)
-{
-  return graphicLayerList.isGrayGraphicLayerRecommendedDisplayValue(idx);
-}
-
 E_Condition DVPresentationState::getGraphicLayerRecommendedDisplayValueGray(size_t idx, Uint16& gray)
 {
   return graphicLayerList.getGraphicLayerRecommendedDisplayValueGray(idx,gray);
@@ -2497,6 +2255,11 @@ E_Condition DVPresentationState::setGraphicLayerRecommendedDisplayValueGray(size
 E_Condition DVPresentationState::setGraphicLayerRecommendedDisplayValueRGB(size_t idx, Uint16 r, Uint16 g, Uint16 b)
 {
   return graphicLayerList.setGraphicLayerRecommendedDisplayValueRGB(idx,r,g,b);
+}
+
+void DVPresentationState::removeGraphicLayerRecommendedDisplayValue(size_t idx, OFBool rgb, OFBool monochrome)
+{
+  return graphicLayerList.removeGraphicLayerRecommendedDisplayValue(idx, rgb, monochrome);
 }
 
 E_Condition DVPresentationState::setGraphicLayerName(size_t idx, const char *name)  
@@ -2558,60 +2321,81 @@ void DVPresentationState::cleanupLayers()
 
 size_t DVPresentationState::getNumberOfTextObjects(size_t layer)
 {
-  return graphicAnnotationList.getNumberOfTextObjects(graphicLayerList.getGraphicLayerName(layer));
+  if (!currentImage) return 0;
+  return graphicAnnotationList.getNumberOfTextObjects(graphicLayerList.getGraphicLayerName(layer), currentImageSOPInstanceUID, currentImageSelectedFrame);
 }
 
 DVPSTextObject *DVPresentationState::getTextObject(size_t layer, size_t idx)
 {
-  return graphicAnnotationList.getTextObject(graphicLayerList.getGraphicLayerName(layer), idx);
+  if (!currentImage) return NULL;
+  return graphicAnnotationList.getTextObject(graphicLayerList.getGraphicLayerName(layer), currentImageSOPInstanceUID, currentImageSelectedFrame, idx);
 }
 
-DVPSTextObject *DVPresentationState::addTextObject(size_t layer)
+DVPSTextObject *DVPresentationState::addTextObject(size_t layer, DVPSObjectApplicability applicability)
 {
-  return graphicAnnotationList.addTextObject(graphicLayerList.getGraphicLayerName(layer));
+  if (!currentImage) return NULL;
+  return graphicAnnotationList.addTextObject(graphicLayerList.getGraphicLayerName(layer), currentImageSOPClassUID,
+    currentImageSOPInstanceUID, currentImageSelectedFrame, applicability);
 }
 
 E_Condition DVPresentationState::removeTextObject(size_t layer, size_t idx)
 {
-  return graphicAnnotationList.removeTextObject(graphicLayerList.getGraphicLayerName(layer), idx);
+  if (!currentImage) return EC_IllegalCall;
+  return graphicAnnotationList.removeTextObject(graphicLayerList.getGraphicLayerName(layer), currentImageSOPInstanceUID, currentImageSelectedFrame, idx);
 }
 
-E_Condition DVPresentationState::moveTextObject(size_t old_layer, size_t idx, size_t new_layer)
+E_Condition DVPresentationState::moveTextObject(size_t old_layer, size_t idx, size_t new_layer, DVPSObjectApplicability applicability)
 {
+  if (!currentImage) return EC_IllegalCall;
   if (old_layer==new_layer) return EC_Normal;
   return graphicAnnotationList.moveTextObject(
-    graphicLayerList.getGraphicLayerName(old_layer), idx,
+    graphicLayerList.getGraphicLayerName(old_layer), 
+    currentImageSOPClassUID,
+    currentImageSOPInstanceUID, 
+    currentImageSelectedFrame,
+    idx,
+    applicability,
     graphicLayerList.getGraphicLayerName(new_layer));
 }
 
 size_t DVPresentationState::getNumberOfGraphicObjects(size_t layer)
 {
-  return graphicAnnotationList.getNumberOfGraphicObjects(graphicLayerList.getGraphicLayerName(layer));
+  if (!currentImage) return 0;
+  return graphicAnnotationList.getNumberOfGraphicObjects(graphicLayerList.getGraphicLayerName(layer), currentImageSOPInstanceUID, currentImageSelectedFrame);
 }
 
 DVPSGraphicObject *DVPresentationState::getGraphicObject(size_t layer, size_t idx)
 {
-  return graphicAnnotationList.getGraphicObject(graphicLayerList.getGraphicLayerName(layer), idx);
+  if (!currentImage) return NULL;
+  return graphicAnnotationList.getGraphicObject(graphicLayerList.getGraphicLayerName(layer), currentImageSOPInstanceUID, currentImageSelectedFrame, idx);
 }
 
-DVPSGraphicObject *DVPresentationState::addGraphicObject(size_t layer)
+DVPSGraphicObject *DVPresentationState::addGraphicObject(size_t layer, DVPSObjectApplicability applicability)
 {
-  return graphicAnnotationList.addGraphicObject(graphicLayerList.getGraphicLayerName(layer));
+  if (!currentImage) return NULL;
+  return graphicAnnotationList.addGraphicObject(graphicLayerList.getGraphicLayerName(layer), currentImageSOPClassUID,
+    currentImageSOPInstanceUID, currentImageSelectedFrame, applicability);
 }
 
 E_Condition DVPresentationState::removeGraphicObject(size_t layer, size_t idx)
 {
-  return graphicAnnotationList.removeGraphicObject(graphicLayerList.getGraphicLayerName(layer), idx);
+  if (!currentImage) return EC_IllegalCall;
+  return graphicAnnotationList.removeGraphicObject(graphicLayerList.getGraphicLayerName(layer), currentImageSOPInstanceUID, currentImageSelectedFrame, idx);
 }
   
-E_Condition DVPresentationState::moveGraphicObject(size_t old_layer, size_t idx, size_t new_layer)
+E_Condition DVPresentationState::moveGraphicObject(size_t old_layer, size_t idx, size_t new_layer, DVPSObjectApplicability applicability)
 {
+  if (!currentImage) return EC_IllegalCall;
   if (old_layer==new_layer) return EC_Normal;
   return graphicAnnotationList.moveGraphicObject(
-    graphicLayerList.getGraphicLayerName(old_layer), idx,
+    graphicLayerList.getGraphicLayerName(old_layer), 
+    currentImageSOPClassUID,
+    currentImageSOPInstanceUID, 
+    currentImageSelectedFrame,
+    idx,
+    applicability,
     graphicLayerList.getGraphicLayerName(new_layer));
 }
-
 
 E_Condition DVPresentationState::setCharset(DVPScharacterSet charset)
 {
@@ -2744,44 +2528,42 @@ E_Condition DVPresentationState::moveCurve(size_t old_layer, size_t idx, size_t 
   return activationLayerList.setActivation(group, lname);
 }
 
+OFBool DVPresentationState::haveActiveVOIWindow()
+{
+  DVPSSoftcopyVOI *voi = getCurrentSoftcopyVOI();
+  if (voi) 
+  {
+    if (voi->haveLUT()) return OFFalse; else return OFTrue;
+  }
+  return OFFalse;
+}
+
+OFBool DVPresentationState::haveActiveVOILUT()
+{
+  DVPSSoftcopyVOI *voi = getCurrentSoftcopyVOI();
+  if (voi) return voi->haveLUT();
+  return OFFalse;
+}
 
 const char *DVPresentationState::getCurrentVOIDescription()
 {
-  char *c=NULL;
-  if (useVOIWindow)
-  {
-    if (EC_Normal == windowCenterWidthExplanation.getString(c)) return c;
-  } 
-  else if (useVOILUT)
-  {
-    if (EC_Normal == voiLUTExplanation.getString(c)) return c;
-  } 
+  DVPSSoftcopyVOI *voi = getCurrentSoftcopyVOI();
+  if (voi) return voi->getCurrentVOIDescription();
   return NULL;
 }
 
-
 E_Condition DVPresentationState::getCurrentWindowWidth(double &w)
 {
-  E_Condition result = EC_IllegalCall;
-  if (useVOIWindow)
-  {
-    Float64 temp=0.0;
-    result = windowWidth.getFloat64(temp,0);
-    if (EC_Normal==result) w = (double)temp;
-  }
-  return result;
+  DVPSSoftcopyVOI *voi = getCurrentSoftcopyVOI();
+  if (voi) return voi->getCurrentWindowWidth(w);
+  return EC_IllegalCall;
 }
   
 E_Condition DVPresentationState::getCurrentWindowCenter(double &c)
 {
-  E_Condition result = EC_IllegalCall;
-  if (useVOIWindow)
-  {
-    Float64 temp=0.0;
-    result = windowCenter.getFloat64(temp,0);
-    if (EC_Normal==result) c = (double)temp;
-  }
-  return result;
+  DVPSSoftcopyVOI *voi = getCurrentSoftcopyVOI();
+  if (voi) return voi->getCurrentWindowCenter(c);
+  return EC_IllegalCall;
 }
 
 size_t DVPresentationState::getNumberOfVOILUTsInImage()
@@ -2807,81 +2589,77 @@ const char *DVPresentationState::getDescriptionOfVOIWindowsInImage(size_t idx)
   if (window==NULL) return NULL;
   return window->getExplanation();  
 }
-   
-E_Condition DVPresentationState::setVOILUTFromImage(size_t idx)
+
+E_Condition DVPresentationState::setVOILUTFromImage(size_t idx,
+    DVPSObjectApplicability applicability)
 {
+  if (currentImage == NULL) return EC_IllegalCall;  
+
   DVPSVOILUT *lut = currentImageVOILUTList.getVOILUT(idx);
-  if (lut) 
+  if (lut)
   {
-    lut->assign(voiLUTDescriptor, voiLUTData, voiLUTExplanation);
-    useVOILUT = OFTrue;
-    useVOIWindow = OFFalse;
     currentImageVOIValid = OFFalse; // VOI has changed
-    return EC_Normal;
+  
+    DVPSSoftcopyVOI *voi = softcopyVOIList.createSoftcopyVOI(
+      referencedSeriesList, currentImageSOPClassUID, currentImageSOPInstanceUID,
+      currentImageSelectedFrame, currentImage->getFrameCount(), applicability);
+    if (voi) return lut->assign(*voi);
   }
   return EC_IllegalCall;
 }
 
-E_Condition DVPresentationState::setVOIWindowFromImage(size_t idx)
+E_Condition DVPresentationState::setVOIWindowFromImage(size_t idx,
+    DVPSObjectApplicability applicability)
 {
+  currentImageVOIValid = OFFalse; // VOI has changed
   DVPSVOIWindow *window = currentImageVOIWindowList.getVOIWindow(idx);
   if (window) 
   {
     return setVOIWindow(window->getWindowCenter(), 
-      window->getWindowWidth(), window->getExplanation());
+      window->getWindowWidth(), window->getExplanation(), applicability);
   }
   return EC_IllegalCall;
 }
  
-E_Condition DVPresentationState::setVOIWindow(double wCenter, double wWidth, const char *description)
+E_Condition DVPresentationState::setVOIWindow(double wCenter, double wWidth, const char *description,
+    DVPSObjectApplicability applicability)
 {
-  if (wWidth <= 0.0) return EC_IllegalCall;
-  
-  DcmDecimalString wc(DCM_WindowCenter);
-  DcmDecimalString ww(DCM_WindowWidth);
-  DcmLongString expl(DCM_WindowCenterWidthExplanation);
-  char buf[80];
-  sprintf(buf, "%G", wCenter);
-  E_Condition result = wc.putString(buf);
-  sprintf(buf, "%G", wWidth);
-  if (EC_Normal == result) result = ww.putString(buf);
-  if ((EC_Normal == result)&&(description)) result = expl.putString(description);
-  if (EC_Normal == result)
-  {
-    // everything worked fine, now copy.
-    windowCenter = wc;
-    windowWidth = ww;
-    windowCenterWidthExplanation = expl;
-    useVOILUT = OFFalse;
-    useVOIWindow = OFTrue;
-    currentImageVOIValid = OFFalse; // VOI has changed
-  }
-  return result;
+  if (currentImage == NULL) return EC_IllegalCall;  
+  currentImageVOIValid = OFFalse; // VOI has changed
+  DVPSSoftcopyVOI *voi = softcopyVOIList.createSoftcopyVOI(
+      referencedSeriesList, currentImageSOPClassUID, currentImageSOPInstanceUID,
+      currentImageSelectedFrame, currentImage->getFrameCount(), applicability);
+  if (voi) return voi->setVOIWindow(wCenter, wWidth, description);
+  return EC_IllegalCall;
 }
 
 E_Condition DVPresentationState::setVOILUT( 
     DcmUnsignedShort& lutDescriptor,
     DcmUnsignedShort& lutData,
-    DcmLongString& lutExplanation)
+    DcmLongString& lutExplanation,
+    DVPSObjectApplicability applicability)
 {
   if (lutData.getLength() == 0) return EC_IllegalCall;
   if (lutDescriptor.getVM() != 3) return EC_IllegalCall;
-  voiLUTDescriptor = lutDescriptor;
-  voiLUTData = lutData;
-  voiLUTExplanation = lutExplanation;
-  useVOILUT = OFTrue;
-  useVOIWindow = OFFalse;
+  if (currentImage == NULL) return EC_IllegalCall;  
+
   currentImageVOIValid = OFFalse; // VOI has changed
-  return EC_Normal;  
-}
- 
-void DVPresentationState::deactivateVOI()
-{
-  useVOILUT = OFFalse;
-  useVOIWindow = OFFalse;
-  currentImageVOIValid = OFFalse; // VOI has changed
+  DVPSSoftcopyVOI *voi = softcopyVOIList.createSoftcopyVOI(
+      referencedSeriesList, currentImageSOPClassUID, currentImageSOPInstanceUID,
+      currentImageSelectedFrame, currentImage->getFrameCount(), applicability);
+  if (voi) return voi->setVOILUT(lutDescriptor, lutData, lutExplanation);
+  return EC_IllegalCall;
 }
 
+void DVPresentationState::deactivateVOI(DVPSObjectApplicability applicability)
+{
+  if (currentImage == NULL) return;  
+  currentImageVOIValid = OFFalse; // VOI has changed
+  softcopyVOIList.removeSoftcopyVOI(
+      referencedSeriesList, currentImageSOPInstanceUID,
+      currentImageSelectedFrame, currentImage->getFrameCount(), applicability);
+  return;
+}
 
 size_t DVPresentationState::getNumberOfActiveOverlays(size_t layer)
 {
@@ -3244,40 +3022,24 @@ void DVPresentationState::renderPixelData()
      currentImageVOIValid = OFTrue;
      
      /* set VOI transformation */
-     if (useVOIWindow)
+     DVPSSoftcopyVOI *voi = getCurrentSoftcopyVOI();
+     if (voi)
      {
-       Float64 wCenter = 0.0;
-       Float64 wWidth = 0.0;
-       OFBool useWindow = OFTrue;
-       
-       if (EC_Normal != windowCenter.getFloat64(wCenter, 0))
+       if (voi->haveLUT())
        {
-         useWindow = OFFalse;
-#ifdef DEBUG
-         cerr << "warning: unable to evaluate Window Center, ignoring." << endl;
-#endif
+         result = currentImage->setVoiLut(voi->getLUTData(), voi->getLUTDescriptor());
+       } else {
+         double wc=0.0, ww=0.0;
+         if ((EC_Normal == voi->getCurrentWindowCenter(wc)) && 
+             (EC_Normal == voi->getCurrentWindowWidth(ww)))
+         result = currentImage->setWindow(wc, ww); else result = currentImage->setNoVoiTransformation();
        }
-       if (EC_Normal != windowWidth.getFloat64(wWidth, 0))
-       {
-         useWindow = OFFalse;
-#ifdef DEBUG
-         cerr << "warning: unable to evaluate Window Width, ignoring." << endl;
-#endif
-       }
-       if (useWindow) result = currentImage->setWindow(wCenter, wWidth);
-       else result = currentImage->setNoVoiTransformation();
-     } 
-     else if (useVOILUT)
-     {
-       result = currentImage->setVoiLut(voiLUTData, voiLUTDescriptor);    
      }
      else result = currentImage->setNoVoiTransformation();
-
 #ifdef DEBUG
      if (!result) cerr << "warning: unable to set VOI transformation, ignoring." << endl;
 #endif
   } /* VOI transform */
-
 
   if (! currentImagePLUTValid)
   {
@@ -3485,8 +3247,7 @@ E_Condition DVPresentationState::getOverlayData(
      unsigned int &left,
      unsigned int &top,
      OFBool &isROI,
-     Uint8 &transp,
-     unsigned long frame)
+     Uint8 &transp)
 {
    EM_Overlay mode = EMO_Default;
    if (currentImage)
@@ -3501,7 +3262,7 @@ E_Condition DVPresentationState::getOverlayData(
          currentImage->convertPValueToDDL(pvalue, fore, 8);
      if (fore == 0)
          transp = 255;
-     const Uint8 *data = currentImage->getOverlayData((unsigned int)group, left, top, width, height, mode, frame, (Uint8)fore, transp);
+     const Uint8 *data = currentImage->getOverlayData((unsigned int)group, left, top, width, height, mode, currentImageSelectedFrame-1, (Uint8)fore, transp);
      if (EMO_RegionOfInterest == mode) isROI=OFTrue; else isROI=OFFalse;
      if (data) overlayData = (void*)data; 
      else 
@@ -3591,7 +3352,7 @@ E_Condition DVPresentationState::getPixelData(
      renderPixelData();
      width = currentImage->getWidth();
      height = currentImage->getHeight();
-     pixelData = currentImage->getOutputData(8, 0 /*frame*/);
+     pixelData = currentImage->getOutputData(8, currentImageSelectedFrame-1);
    } else {
      pixelData = NULL;
      width = 0;
@@ -3608,20 +3369,10 @@ E_Condition DVPresentationState::getPixelData(
    if (currentImage)
    {
      renderPixelData();
-     if (currentImage->getOutputData(pixelData, size, 8, 0 /*frame*/))
+     if (currentImage->getOutputData(pixelData, size, 8, currentImageSelectedFrame-1))
          return EC_Normal;
    }    
    return EC_IllegalCall;
-}
-
-E_Condition DVPresentationState::getImageAspectRatio(double &ratio)
-{
-  if (currentImage)
-  {
-    ratio = currentImage->getWidthHeightRatio();
-    return EC_Normal;
-  }
-  return EC_IllegalCall;
 }
 
 E_Condition DVPresentationState::getImageMinMaxPixelRange(double &minValue, double& maxValue)
@@ -3644,14 +3395,125 @@ E_Condition DVPresentationState::getImageMinMaxPixelValue(double &minValue, doub
   return result;
 }
 
+E_Condition DVPresentationState::getImageNumberOfFrames(unsigned long &frames)
+{
+  if (currentImage)
+  {
+    frames = (unsigned long)(currentImage->getFrameCount());
+    return EC_Normal;
+  }
+  return EC_IllegalCall;
+}
+
+E_Condition DVPresentationState::selectImageFrameNumber(unsigned long frame)
+{
+  if ((frame > 0) && currentImage)
+  {
+    if (frame <= currentImage->getFrameCount()) currentImageSelectedFrame=frame;
+    return EC_Normal;
+  }
+  return EC_IllegalCall;
+}
+
 void DVPresentationState::changeDisplayFunction(DiDisplayFunction *dispFunction)
 {
   displayFunction = dispFunction;
 }
 
+DVPSDisplayedArea *DVPresentationState::getDisplayedAreaSelection()
+{
+  if (currentImage==NULL) return NULL;
+  DVPSDisplayedArea * area = displayedAreaSelectionList.findDisplayedArea(currentImageSOPInstanceUID, currentImageSelectedFrame);
+  if (area==NULL)
+  {
+#ifdef DEBUG
+     cerr << "Warning: no displayed area selection item for current image found, creating default." << endl;
+#endif
+     if ((currentImageDataset)&&(EC_Normal == createDefaultDisplayedArea(*currentImageDataset)))
+     {
+      area = displayedAreaSelectionList.findDisplayedArea(currentImageSOPInstanceUID, currentImageSelectedFrame);
+     }
+  }
+  return area;
+}
+
+DVPSPresentationSizeMode DVPresentationState::getDisplayedAreaPresentationSizeMode()
+{
+  DVPSDisplayedArea * area = getDisplayedAreaSelection();
+  if (area) return area->getPresentationSizeMode(); else return DVPSD_scaleToFit;
+}
+  
+double DVPresentationState::getDisplayedAreaPresentationPixelAspectRatio()
+{
+  DVPSDisplayedArea * area = getDisplayedAreaSelection();
+  if (area) return area->getPresentationPixelAspectRatio(); else return 1.0;
+}
+
+E_Condition DVPresentationState::getDisplayedArea(Sint32& tlhcX, Sint32& tlhcY, Sint32& brhcX, Sint32& brhcY)
+{
+  DVPSDisplayedArea * area = getDisplayedAreaSelection();
+  if (area)
+  {
+    area->getDisplayedArea(tlhcX, tlhcY, brhcX, brhcY);
+    return EC_Normal;
+  }
+  return EC_IllegalCall;
+}
+
+E_Condition DVPresentationState::getDisplayedAreaPresentationPixelSpacing(double& x, double& y)
+{
+  DVPSDisplayedArea * area = getDisplayedAreaSelection();
+  if (area) return area->getPresentationPixelSpacing(x, y); else return EC_IllegalCall;
+}
+
+E_Condition DVPresentationState::getDisplayedAreaPresentationPixelMagnificationRatio(double& magnification)
+{
+  DVPSDisplayedArea * area = getDisplayedAreaSelection();
+  if (area) return area->getPresentationPixelMagnificationRatio(magnification); else return EC_IllegalCall;
+}
+
+OFBool DVPresentationState::canUseDisplayedAreaTrueSize()
+{
+  DVPSDisplayedArea * area = getDisplayedAreaSelection();
+  if (area) return area->canUseTrueSize(); else return OFFalse;
+}
+
+E_Condition DVPresentationState::setDisplayedArea(
+     DVPSPresentationSizeMode sizeMode,
+     Sint32 tlhcX, Sint32 tlhcY, 
+     Sint32 brhcX, Sint32 brhcY,
+     double magnification,
+     DVPSObjectApplicability applicability)
+{
+
+  if (currentImage == NULL) return EC_IllegalCall;
+  
+  // make sure that we have an old displayed area item that "knows" about pixel spacing/aspect ratio,
+  // because we will only copy this data into the new item. 
+  DVPSDisplayedArea *area = getDisplayedAreaSelection();
+  
+  // create find appropriate item, create new if necessary.
+  area = displayedAreaSelectionList.createDisplayedArea(
+      referencedSeriesList, currentImageSOPClassUID, currentImageSOPInstanceUID,
+      currentImageSelectedFrame, currentImage->getFrameCount(), applicability);
+
+  if (area) return area->setDisplayedArea(sizeMode, tlhcX, tlhcY, brhcX, brhcY, magnification);
+  return EC_IllegalCall;
+}
+
+DVPSSoftcopyVOI *DVPresentationState::getCurrentSoftcopyVOI()
+{
+  if (currentImage==NULL) return NULL;
+  return softcopyVOIList.findSoftcopyVOI(currentImageSOPInstanceUID, currentImageSelectedFrame);
+}
+
+
 /*
  *  $Log: dvpstat.cc,v $
- *  Revision 1.23  1999-07-14 12:03:44  meichel
+ *  Revision 1.24  1999-07-22 16:40:04  meichel
+ *  Adapted dcmpstat data structures and API to supplement 33 letter ballot text.
+ *
+ *  Revision 1.23  1999/07/14 12:03:44  meichel
  *  Updated data dictionary for supplement 29, 39, 33_lb, CP packet 4 and 5.
  *    Corrected dcmtk applications for changes in attribute name constants.
  *

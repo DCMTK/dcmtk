@@ -23,8 +23,8 @@
  *    classes: DVPSReferencedImage_PList
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-01-15 17:32:56 $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  Update Date:      $Date: 1999-07-22 16:40:01 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -34,6 +34,7 @@
 #include "osconfig.h"    /* make sure OS specific configuration is included first */
 #include "dvpsril.h"
 #include "dvpsri.h"      /* for DVPSReferencedImage */
+#include "dvpsrsl.h"     /* DVPSReferencedSeries_PList */
 
 
 DVPSReferencedImage_PList::DVPSReferencedImage_PList()
@@ -160,6 +161,26 @@ DVPSReferencedImage *DVPSReferencedImage_PList::findImageReference(const char *s
   return NULL;
 }
 
+void DVPSReferencedImage_PList::removeFrameReference(const char *sopinstanceuid, unsigned long frame, unsigned long numberOfFrames)
+{
+  if ((frame<1)||(numberOfFrames<frame)) return;
+  OFListIterator(DVPSReferencedImage *) first = begin();
+  OFListIterator(DVPSReferencedImage *) last = end();
+  while (first != last)
+  {
+    if ((*first)->isSOPInstanceUID(sopinstanceuid))
+    {
+      (*first)->removeFrameReference(frame, numberOfFrames);
+      if ((*first)->appliesToAllFrames())
+      {
+        delete (*first);
+        first = erase(first);
+      }
+    } else ++first;
+  }
+  return;
+}
+
 void DVPSReferencedImage_PList::removeImageReference(const char *sopinstanceuid)
 {
   OFListIterator(DVPSReferencedImage *) first = begin();
@@ -198,6 +219,23 @@ E_Condition DVPSReferencedImage_PList::addImageReference(
   return result;
 }
 
+E_Condition DVPSReferencedImage_PList::addImageReference(
+    const char *sopclassUID,
+    const char *instanceUID, 
+    unsigned long frame,
+    DVPSObjectApplicability applicability)
+{
+  if ((sopclassUID==NULL)||(instanceUID==NULL)||(applicability==DVPSB_allImages)) return EC_IllegalCall;
+  const char *framenumber=NULL;
+  if (applicability==DVPSB_currentFrame)
+  {
+    char frameString[100];
+    sprintf(frameString, "%ld", frame);
+    framenumber = frameString;
+  }
+  return addImageReference(sopclassUID, instanceUID, framenumber);
+}
+
 
 E_Condition DVPSReferencedImage_PList::getImageReference(
     size_t idx,
@@ -219,9 +257,96 @@ E_Condition DVPSReferencedImage_PList::getImageReference(
   return EC_IllegalCall;
 }  
 
+void DVPSReferencedImage_PList::removeImageReference(
+    DVPSReferencedSeries_PList& allReferences,
+    const char *instanceUID,
+    unsigned long frame, 
+    unsigned long numberOfFrames, 
+    DVPSObjectApplicability applicability)
+{
+  
+  if (applicability == DVPSB_allImages)
+  {
+    clear();
+    return;
+  } 
+  
+  // if list of image references is empty, add all existing references
+  if (size() == 0)
+  {
+    OFString seriesUID;
+    OFString sopclassUID;
+    OFString instanceUID;
+    OFString frames;
+    OFString aetitle;
+    OFString filesetID;
+    OFString filesetUID;
+    const char *cframes=NULL;
+
+    size_t numberOfReferences = allReferences.numberOfImageReferences();
+    for (size_t i=0; i<numberOfReferences; i++)
+    {
+      sopclassUID.clear();
+      instanceUID.clear();
+      frames.clear();
+      if (EC_Normal == allReferences.getImageReference(i, seriesUID, sopclassUID, instanceUID, frames,
+        aetitle, filesetID, filesetUID))
+      {
+      	if (frames.size() > 0) cframes=frames.c_str(); else cframes=NULL;
+      	addImageReference(sopclassUID.c_str(), instanceUID.c_str(), cframes);
+      }
+    }
+  }
+  if (applicability == DVPSB_currentImage) removeImageReference(instanceUID); 
+  else removeFrameReference(instanceUID, frame, numberOfFrames);
+  return;
+}
+
+OFBool DVPSReferencedImage_PList::isApplicable(const char *instanceUID, unsigned long frame)
+{
+  if (size() == 0) return OFTrue; // if no image references exist, the object is valid "globally".
+  DVPSReferencedImage *imageRef = findImageReference(instanceUID);
+  if (imageRef) return imageRef->appliesToFrame(frame);
+  return OFFalse;
+}
+
+OFBool DVPSReferencedImage_PList::matchesApplicability(const char *instanceUID, unsigned long frame, DVPSObjectApplicability applicability)
+{
+  DVPSReferencedImage *imageRef = NULL;
+  switch (applicability)
+  {
+    case DVPSB_currentFrame:
+      // we match if referenced image SQ contains exactly one item
+      // referencing only the current frame of the current image
+      if (size() == 1)
+      {
+      	imageRef = findImageReference(instanceUID);
+      	if (imageRef) return imageRef->appliesOnlyToFrame(frame);
+      }
+      break;
+    case DVPSB_currentImage:
+      // we match if referenced image SQ contains exactly one item 
+      // referencing all frames of the current image
+      if (size() == 1)
+      {
+      	imageRef = findImageReference(instanceUID);
+      	if (imageRef) return imageRef->appliesToAllFrames();
+      }
+      break;
+    case DVPSB_allImages:
+      // applicability matches if referenced image SQ is empty
+      if (size() == 0) return OFTrue;
+      break;  
+  }
+  return OFFalse;
+}
+
 /*
  *  $Log: dvpsril.cc,v $
- *  Revision 1.3  1999-01-15 17:32:56  meichel
+ *  Revision 1.4  1999-07-22 16:40:01  meichel
+ *  Adapted dcmpstat data structures and API to supplement 33 letter ballot text.
+ *
+ *  Revision 1.3  1999/01/15 17:32:56  meichel
  *  added methods to DVPresentationState allowing to access the image
  *    references in the presentation state.  Also added methods allowing to
  *    get the width and height of the attached image.

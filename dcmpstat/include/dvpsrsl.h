@@ -23,8 +23,8 @@
  *    classes: DVPSReferencedSeries_PList
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-01-15 17:33:04 $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  Update Date:      $Date: 1999-07-22 16:39:11 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -144,13 +144,19 @@ public:
    *  @param frames a list of frame numbers in DICOM IS format
    *    (integer numbers separated by '\' characters). Default: frame numbers absent.
    *    The frame numbers are required if the referenced image is a multiframe image.
+   *  @param aetitle the series retrieveAETitle. Default: value absent.
+   *  @param filesetID the series storageMediaFileSetID. Default: value absent.
+   *  @param filesetUID the series storageMediaFileSetUID. Default: value absent.
    *  @return EC_Normal if successful, an error code otherwise.
    */
   E_Condition addImageReference(
     const char *seriesUID,
     const char *sopclassUID,
     const char *instanceUID, 
-    const char *frames=NULL);
+    const char *frames=NULL,
+    const char *aetitle=NULL, 
+    const char *filesetID=NULL, 
+    const char *filesetUID=NULL);
 
   /** gets the number of image references in all series managed by this list.
    *  @return number of image references
@@ -163,6 +169,9 @@ public:
    *  @param sopclassUID the SOP Class UID is returned in this string
    *  @param instanceUID the SOP Instance UID is returned in this string
    *  @param frames the list of frames is returned in this string
+   *  @param aetitle the series retrieveAETitle is returned in this string
+   *  @param filesetID the series storageMediaFileSetID is returned in this string
+   *  @param filesetUID the series storageMediaFileSetUID is returned in this string
    *  @return EC_Normal if successful, an error code otherwise.
    */
   E_Condition getImageReference(
@@ -170,7 +179,10 @@ public:
     OFString& seriesUID,
     OFString& sopclassUID,
     OFString& instanceUID, 
-    OFString& frames);
+    OFString& frames,
+    OFString& aetitle,
+    OFString& filesetID,
+    OFString& filesetUID);
   
 };
 
@@ -178,7 +190,10 @@ public:
 
 /*
  *  $Log: dvpsrsl.h,v $
- *  Revision 1.3  1999-01-15 17:33:04  meichel
+ *  Revision 1.4  1999-07-22 16:39:11  meichel
+ *  Adapted dcmpstat data structures and API to supplement 33 letter ballot text.
+ *
+ *  Revision 1.3  1999/01/15 17:33:04  meichel
  *  added methods to DVPresentationState allowing to access the image
  *    references in the presentation state.  Also added methods allowing to
  *    get the width and height of the attached image.

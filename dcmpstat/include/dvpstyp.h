@@ -25,8 +25,8 @@
  *           DVPSShutterType
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1998-12-22 17:57:08 $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  Update Date:      $Date: 1999-07-22 16:39:15 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -230,6 +230,9 @@ enum DVPScharacterSet
  */
 enum DVPSGraphicType
 {
+  /** single point
+   */
+  DVPST_point,
   /** non-interpolated polygonal line
    */
   DVPST_polyline,
@@ -256,11 +259,60 @@ enum DVPSCurveType
   DVPSL_polylineCurve
 };
 
+/** describes the horizontal justification of a text box
+ */
+enum DVPSTextJustification
+{
+  /** left justified text
+   */
+  DVPSX_left,
+  /** right justified text
+   */
+  DVPSX_right,
+  /** centered text
+   */
+  DVPSX_center
+};
+
+/** describes the images and frames to which
+ *  an object (graphic layer, displayed area selection or VOI) is applicable
+ */
+enum DVPSObjectApplicability
+{
+  /** the object only applies to the current (selected) frame of the current (attached) image
+   */
+  DVPSB_currentFrame,
+  /** the object applies to all frames of the current (attached) image
+   */
+  DVPSB_currentImage,
+  /** the object applies to all frames of all referenced images
+   */
+  DVPSB_allImages
+};
+
+/** describes the presentation size mode for a displayed area selection
+ */
+enum DVPSPresentationSizeMode
+{
+  /** the displayed area should be scaled to fill the screen
+   */
+  DVPSD_scaleToFit,
+  /** the displayed area should be scaled to its true physical size
+   */
+  DVPSD_trueSize,
+  /** the displayed area should be scaled to a fixed scaling factor
+   */
+  DVPSD_magnify
+};
+
 #endif
 
 /*
  *  $Log: dvpstyp.h,v $
- *  Revision 1.3  1998-12-22 17:57:08  meichel
+ *  Revision 1.4  1999-07-22 16:39:15  meichel
+ *  Adapted dcmpstat data structures and API to supplement 33 letter ballot text.
+ *
+ *  Revision 1.3  1998/12/22 17:57:08  meichel
  *  Implemented Presentation State interface for overlays,
  *    VOI LUTs, VOI windows, curves. Added test program that
  *    allows to add curve data to DICOM images.

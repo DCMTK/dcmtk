@@ -23,8 +23,8 @@
  *    classes: DVPSTextObject
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1998-12-14 16:10:36 $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  Update Date:      $Date: 1999-07-22 16:39:14 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -106,28 +106,17 @@ public:
     *  @param BRHC_x bounding box bottom-righthand corner X value
     *  @param BRHC_x bounding box bottom-righthand corner Y value
     *  @param unit bounding box annotation units (pixel/display)
+    *  @param justification bounding box horizontal justification (left/right/center)
     *  @return EC_Normal if successful, an error code otherwise.
     */
-   E_Condition setBoundingBox(double TLHC_x, double TLHC_y, double BRHC_x, double BRHC_y, DVPSannotationUnit unit); 
+   E_Condition setBoundingBox(double TLHC_x, double TLHC_y, double BRHC_x, 
+     double BRHC_y, DVPSannotationUnit unit, DVPSTextJustification justification); 
 
    /** assigns a new "unformatted text value" for this text object.
     *  @param text unformatted text value. Must not be NULL or empty string.
     *  @return EC_Normal if successful, an error code otherwise.
     */
    E_Condition setText(const char *text);
-
-   /** sets the specific character set for this text object.
-    *  @param charset the new character set for this text object
-    *  @param higherLevelCharset the specific character set of the
-    *    presentation state in which the text object is embedded.
-    *    If this parameter is _not_ passed (i.e. the default value is passed),
-    *    this method assumes that the main presentation state might contain an unknown
-    *    character set and always explicitly sets the character set for the text object.
-    *    If this parameter is passed, it is used to optimize the specific
-    *    character set definition in the text object.
-    *  @return EC_Normal if successful, an error code otherwise.
-    */
-   E_Condition setCharset(DVPScharacterSet charset, DVPScharacterSet higherLevelCharset=DVPSC_other);
    
    /** removes any anchor point from the text object.
     *  Attention: A text object must always contain either anchor point, bounding box
@@ -176,6 +165,12 @@ public:
     */
    DVPSannotationUnit getBoundingBoxAnnotationUnits();
  
+   /** gets the bounding box horizontal justification.
+    *  May only be called when a bounding box is present (haveBoundingBox()==OFTrue)
+    *  @return bounding box horizontal justification
+    */
+   DVPSTextJustification getBoundingBoxHorizontalJustification();
+   
    /** gets the anchor point x value.
     *  May only be called when an anchor point is present (haveAnchorPoint()==OFTrue)
     *  @return anchor point x value
@@ -199,24 +194,8 @@ public:
     *  @return anchor point annotation units
     */
    DVPSannotationUnit getAnchorPointAnnotationUnits();
-
-   /** gets the specific character set for this text object.
-    *  @param higherLevelCharset specific character set of the presentation state
-    *    object in which this text object is embedded. If this parameter is
-    *    not passed (i.e. the default value is passed), this method assumes
-    *    that the presentation state object contains no specific character set.
-    *  @return character set identifier
-    */
-   DVPScharacterSet getCharset(DVPScharacterSet higherLevelCharset=DVPSC_ascii);
-
-   /** gets the specific character set string for this text object.
-    *  @return character set if present, NULL otherwise
-    */
-   const char *getCharsetString();
    
 private:
-  /// VR=CS, VM=1-n, Type 1c
-  DcmCodeString            specificCharacterSet;
   /// VR=CS, VM=1, Type 1c
   DcmCodeString            boundingBoxAnnotationUnits;
   /// VR=CS, VM=1, Type 1c
@@ -227,6 +206,8 @@ private:
   DcmFloatingPointSingle   boundingBoxTLHC;
   /// VR=FL, VM=2, Type 1c
   DcmFloatingPointSingle   boundingBoxBRHC;
+  /// VR=CS, VM=1, Type 1c
+  DcmCodeString            boundingBoxTextHorizontalJustification;
   /// VR=FL, VM=2, Type 1c
   DcmFloatingPointSingle   anchorPoint;
   /// VR=CS, VM=1, Type 1c
@@ -237,7 +218,10 @@ private:
 
 /*
  *  $Log: dvpstx.h,v $
- *  Revision 1.2  1998-12-14 16:10:36  meichel
+ *  Revision 1.3  1999-07-22 16:39:14  meichel
+ *  Adapted dcmpstat data structures and API to supplement 33 letter ballot text.
+ *
+ *  Revision 1.2  1998/12/14 16:10:36  meichel
  *  Implemented Presentation State interface for graphic layers,
  *    text and graphic annotations, presentation LUTs.
  *

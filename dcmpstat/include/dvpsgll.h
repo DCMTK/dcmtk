@@ -23,8 +23,8 @@
  *    classes: DVPSGraphicLayer_PList
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-02-09 15:58:55 $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  Update Date:      $Date: 1999-07-22 16:39:08 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -155,23 +155,15 @@ public:
    */
   const char *getGraphicLayerDescription(size_t idx);
 
-  /** checks whether a recommended display value
-   *  for the given graphic layer exists.
+  /** checks whether a recommended display value (grayscale, color or both) for the given graphic layer exists.
    *  @param idx index of the graphic layer, must be < getNumberOfGraphicLayers()
    *  @return OFTrue if a recommended display value exists
    */
   OFBool haveGraphicLayerRecommendedDisplayValue(size_t idx);
 
-  /** checks whether a recommended display value
-   *  for the given graphic layer exists and is monochrome.
-   *  @param idx index of the graphic layer, must be < getNumberOfGraphicLayers()
-   *  @return OFTrue if a recommended display value exists and is monochrome
-   */
-  OFBool isGrayGraphicLayerRecommendedDisplayValue(size_t idx);
-
-  /** gets the recommended display value for the
-   *  given graphic layer (monochrome). If the recommended display value is a color,
-   *  it is implicitly converted to grayscale.
+  /** gets the recommended grayscale display value for the given graphic layer.
+   *  If the graphic layer contains an RGB display value but no grayscale
+   *  display value, the RGB value is implicitly converted to grayscale.
    *  @param idx index of the graphic layer, must be < getNumberOfGraphicLayers()
    *  @param gray the recommended display value as an unsigned 16-bit P-value
    *    is returned in this parameter.
@@ -179,9 +171,9 @@ public:
    */
   E_Condition getGraphicLayerRecommendedDisplayValueGray(size_t idx, Uint16& gray);
 
-  /** gets the recommended display value for the
-   *  given graphic layer (color). If the recommended display value is monochrome,
-   *  identical R, G and B components are passed back.
+  /** gets the recommended RGB display value for the given graphic layer.
+   *  If the graphic layer contains a grayscale display value but no RGB
+   *  display value, the grayscale value is implicitly converted to RGB.
    *  @param idx index of the graphic layer, must be < getNumberOfGraphicLayers()
    *  @param r returns the R component of the recommended display value as unsigned 16-bit P-value
    *  @param g returns the G component of the recommended display value as unsigned 16-bit P-value
@@ -190,16 +182,18 @@ public:
    */
   E_Condition getGraphicLayerRecommendedDisplayValueRGB(size_t idx, Uint16& r, Uint16& g, Uint16& b);
 
-  /** sets the recommended display value for the
-   *  given graphic layer.
+  /** set graphic layer recommended grayscale display value for the given graphic layer.
+   *  This method does not affect (set or modify) the recommended RGB display value
+   *  which should be set separately.
    *  @param idx index of the graphic layer, must be < getNumberOfGraphicLayers()
    *  @param gray the recommended display value as an unsigned 16-bit P-value
    *  @return EC_Normal upon success, an error code otherwise
    */
   E_Condition setGraphicLayerRecommendedDisplayValueGray(size_t idx, Uint16 gray);
  
-  /** sets the recommended display value for the
-   *  given graphic layer.
+  /** set graphic layer recommended RGB display value for the given graphic layer.
+   *  This method does not affect (set or modify) the recommended grayscale display value
+   *  which should be set separately.
    *  @param idx index of the graphic layer, must be < getNumberOfGraphicLayers()
    *  @param r the R component of the recommended display value as unsigned 16-bit P-value
    *  @param g the G component of the recommended display value as unsigned 16-bit P-value
@@ -207,6 +201,12 @@ public:
    *  @return EC_Normal upon success, an error code otherwise
    */
   E_Condition setGraphicLayerRecommendedDisplayValueRGB(size_t idx, Uint16 r, Uint16 g, Uint16 b);
+
+  /** removes recommended display values for the given graphic layer.
+   *  @param rgb if true, the RGB recommended display value is removed
+   *  @param monochrome if true the monochrome recommended display value is removed
+   */
+  void removeGraphicLayerRecommendedDisplayValue(size_t idx, OFBool rgb, OFBool monochrome);
 
   /** assigns a new unique name to the given graphic layer.
    *  The new name must be unique, otherwise an error code is returned.
@@ -283,7 +283,10 @@ private:
 
 /*
  *  $Log: dvpsgll.h,v $
- *  Revision 1.3  1999-02-09 15:58:55  meichel
+ *  Revision 1.4  1999-07-22 16:39:08  meichel
+ *  Adapted dcmpstat data structures and API to supplement 33 letter ballot text.
+ *
+ *  Revision 1.3  1999/02/09 15:58:55  meichel
  *  Implemented bitmap shutter activation amd method for
  *    exchanging graphic layers.
  *

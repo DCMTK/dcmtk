@@ -23,8 +23,8 @@
  *    classes: DVPSReferencedSeries_PList
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-01-15 17:32:58 $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  Update Date:      $Date: 1999-07-22 16:40:02 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -210,7 +210,11 @@ E_Condition DVPSReferencedSeries_PList::addImageReference(
     const char *seriesUID,
     const char *sopclassUID,
     const char *instanceUID, 
-    const char *frames)
+    const char *frames,
+    const char *aetitle, 
+    const char *filesetID, 
+    const char *filesetUID)
+
 {
   if ((seriesUID==NULL) || (sopclassUID==NULL) || (instanceUID==NULL)) return EC_IllegalCall;
   
@@ -218,20 +222,21 @@ E_Condition DVPSReferencedSeries_PList::addImageReference(
   if (checkSOPClass(sopclassUID))
   {
     DVPSReferencedSeries *series = findSeriesReference(seriesUID);
-    if (series)
+    if (series == NULL)
     {
-      result = series->addImageReference(sopclassUID, instanceUID, frames);
-    } else {
       series = new DVPSReferencedSeries();
       if (series)
       {
         series->setSeriesInstanceUID(seriesUID);
-        result = series->addImageReference(sopclassUID, instanceUID, frames);
-        if (result==EC_Normal) push_back(series); else delete series;
-      } else result = EC_MemoryExhausted;
+        push_back(series);
+      }
     }
+    if (series)
+    {
+      result = series->addImageReference(sopclassUID, instanceUID, frames);
+      if (EC_Normal == result) series->setRetrieveLocation(aetitle, filesetID, filesetUID);
+    } else result = EC_MemoryExhausted;
   } else result = EC_IllegalCall;
-
   return result;
 }
 
@@ -254,7 +259,10 @@ E_Condition DVPSReferencedSeries_PList::getImageReference(
     OFString& seriesUID,
     OFString& sopclassUID,
     OFString& instanceUID, 
-    OFString& frames)
+    OFString& frames,
+    OFString& aetitle,
+    OFString& filesetID,
+    OFString& filesetUID)
 {
   OFListIterator(DVPSReferencedSeries *) first = begin();
   OFListIterator(DVPSReferencedSeries *) last = end();
@@ -269,13 +277,16 @@ E_Condition DVPSReferencedSeries_PList::getImageReference(
       ++first;
     }
   }
-  if (found) return (*first)->getImageReference(idx, seriesUID, sopclassUID, instanceUID, frames);
+  if (found) return (*first)->getImageReference(idx, seriesUID, sopclassUID, instanceUID, frames, aetitle, filesetID, filesetUID);
   return EC_IllegalCall;
 }
 
 /*
  *  $Log: dvpsrsl.cc,v $
- *  Revision 1.3  1999-01-15 17:32:58  meichel
+ *  Revision 1.4  1999-07-22 16:40:02  meichel
+ *  Adapted dcmpstat data structures and API to supplement 33 letter ballot text.
+ *
+ *  Revision 1.3  1999/01/15 17:32:58  meichel
  *  added methods to DVPresentationState allowing to access the image
  *    references in the presentation state.  Also added methods allowing to
  *    get the width and height of the attached image.

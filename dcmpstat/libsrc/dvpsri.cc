@@ -23,8 +23,8 @@
  *    classes: DVPSReferencedImage
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-01-15 17:32:56 $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  Update Date:      $Date: 1999-07-22 16:40:00 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -57,6 +57,8 @@ DVPSReferencedImage::DVPSReferencedImage()
 : referencedSOPClassUID(DCM_ReferencedSOPClassUID)
 , referencedSOPInstanceUID(DCM_ReferencedSOPInstanceUID)
 , referencedFrameNumber(DCM_ReferencedFrameNumber)
+, frameCache(NULL)
+, frameCacheEntries(0)
 {
 }
 
@@ -64,11 +66,14 @@ DVPSReferencedImage::DVPSReferencedImage(const DVPSReferencedImage& copy)
 : referencedSOPClassUID(copy.referencedSOPClassUID)
 , referencedSOPInstanceUID(copy.referencedSOPInstanceUID)
 , referencedFrameNumber(copy.referencedFrameNumber)
+, frameCache(NULL) // we don't copy the frame cache
+, frameCacheEntries(0)
 {
 }
 
 DVPSReferencedImage::~DVPSReferencedImage()
 {
+  if (frameCache) delete[] frameCache;
 }
 
 E_Condition DVPSReferencedImage::read(DcmItem &dset)
@@ -76,6 +81,8 @@ E_Condition DVPSReferencedImage::read(DcmItem &dset)
   E_Condition result = EC_Normal;
   DcmStack stack;
 
+  flushCache();
+  
   READ_FROM_DATASET(DcmUniqueIdentifier, referencedSOPClassUID)
   READ_FROM_DATASET(DcmUniqueIdentifier, referencedSOPInstanceUID)
   READ_FROM_DATASET(DcmIntegerString, referencedFrameNumber)
@@ -161,6 +168,7 @@ void DVPSReferencedImage::setSOPInstanceUID(const char *uid)
 void DVPSReferencedImage::setFrameNumbers(const char *frames)
 {
   if (frames) referencedFrameNumber.putString(frames); else referencedFrameNumber.clear();
+  flushCache();
   return;
 }
 
@@ -185,9 +193,108 @@ E_Condition DVPSReferencedImage::getImageReference(
   return result;
 }
 
+void DVPSReferencedImage::flushCache()
+{
+  if (frameCache) delete[] frameCache;
+  frameCache = NULL;
+  frameCacheEntries = 0;
+}
+
+OFBool DVPSReferencedImage::appliesToAllFrames()
+{
+  if (referencedFrameNumber.getLength() == 0) return OFTrue;
+  if (referencedFrameNumber.getVM() == 0) return OFTrue;
+  return OFFalse;
+}
+
+void DVPSReferencedImage::updateCache()
+{
+  Sint32 val=0;
+  unsigned long i;
+  if (frameCache==NULL)
+  {
+    frameCacheEntries = (Uint32) referencedFrameNumber.getVM();
+    if (frameCacheEntries > 0)
+    {
+      frameCache = new Sint32[frameCacheEntries];
+      if (frameCache)
+      {
+        for (i=0; i<frameCacheEntries; i++)
+        {
+          if (EC_Normal == referencedFrameNumber.getSint32(val, i)) frameCache[i]=val; else frameCache[i]=0;
+        }
+      } else frameCacheEntries=0; // out of memory
+    }
+  }
+}
+
+OFBool DVPSReferencedImage::appliesToFrame(unsigned long frame)
+{
+  if (referencedFrameNumber.getLength()==0) return OFTrue;
+  Sint32 val=0;
+  unsigned long i;
+  updateCache();
+  if (frameCache)
+  {
+    val = (Sint32) frame;
+    for (i=0; i<frameCacheEntries; i++) if (val == frameCache[i]) return OFTrue;
+    return OFFalse;    
+  }
+  return OFTrue; // referencedFrameNumber seems to contain garbage.
+}
+
+OFBool DVPSReferencedImage::appliesOnlyToFrame(unsigned long frame)
+{
+  Sint32 val=0;
+  if (referencedFrameNumber.getVM() == 1)
+  {
+    if (EC_Normal == referencedFrameNumber.getSint32(val, 0))
+    {
+      if (frame == (unsigned long)val) return OFTrue;
+    }
+  }
+  return OFFalse;
+}
+
+void DVPSReferencedImage::removeFrameReference(unsigned long frame, unsigned long numberOfFrames)
+{
+  unsigned long i;
+  char str[20];
+  OFString aString;
+  
+  updateCache();
+  referencedFrameNumber.clear();
+  if (frameCache)
+  {
+    for (i=0; i<frameCacheEntries; i++) 
+    {
+      if (frameCache[i] != (Sint32)frame) 
+      {
+      	if (aString.size() ==0) sprintf(str, "%ld", frameCache[i]); else sprintf(str, "\\%ld", frameCache[i]);
+      	aString += str;
+      }
+    }
+  } else {
+    for (i=1; i<=numberOfFrames; i++) 
+    {
+      if (i != frame)
+      {
+      	if (aString.size() ==0) sprintf(str, "%ld", i); else sprintf(str, "\\%ld", i);
+      	aString += str;
+      }
+    }
+  }
+  referencedFrameNumber.putString(aString.c_str());
+  flushCache();
+}
+
+
 /*
  *  $Log: dvpsri.cc,v $
- *  Revision 1.3  1999-01-15 17:32:56  meichel
+ *  Revision 1.4  1999-07-22 16:40:00  meichel
+ *  Adapted dcmpstat data structures and API to supplement 33 letter ballot text.
+ *
+ *  Revision 1.3  1999/01/15 17:32:56  meichel
  *  added methods to DVPresentationState allowing to access the image
  *    references in the presentation state.  Also added methods allowing to
  *    get the width and height of the attached image.

@@ -23,8 +23,8 @@
  *    classes: DVPSGraphicAnnotation
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1998-12-14 16:10:27 $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  Update Date:      $Date: 1999-07-22 16:39:06 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -39,6 +39,8 @@
 
 #include "dvpstxl.h"     /* for DVPSTextObject_PList */
 #include "dvpsgrl.h"     /* for DVPSGraphicObject_PList */
+#include "dvpsril.h"     /* for DVPSReferencedImage_PList */
+#include "dvpstyp.h"     /* for enum types */
 
 /** an item of the graphic annotation sequence in a presentation state (internal use only).
  *  This class manages the data structures comprising one item
@@ -92,12 +94,40 @@ public:
    */
   void setAnnotationLayer(const char *aLayer);
 
+  /** add a new image reference.
+   *  Checks if the referenced SOP instance UID already exists in this sequence.
+   *  If it exists, an error code is returned. Otherwise a new image reference
+   *  is created and added to the ReferencedImageSequence.
+   *  @param sopclassUID the SOP class UID of the image reference to be added.
+   *  @param instanceUID the SOP instance UID of the image reference to be added.
+   *  @param frame the frame number of the image reference (current image) to be added.
+   *  @param applicability the applicability of the image reference (DVPSB_currentFrame or DVPSX_currentImage)
+   *  @return EC_Normal if successful, an error code otherwise.
+   */
+  E_Condition addImageReference(
+    const char *sopclassUID,
+    const char *instanceUID, 
+    unsigned long frame,
+    DVPSObjectApplicability applicability);
+    
   /** checks if this annotation layer is empty.
    *  An annotation layer is empty when it contains no text object and no graphic object.
    *  @return OFTrue if empty.
    */
   OFBool isEmpty();
 
+  /** checks if this annotation layer is applicable to the given image and frame.
+   *  @param instanceUID SOP instance UID of the current image
+   *  @param frame number of the current frame
+   *  @param applicability the required (minimum) applicability of the reference. Default:
+   *    annotation layer applies to the current frame of the current image.
+   *  @return OFTrue if applicable.
+   */
+  OFBool isApplicable(    
+    const char *instanceUID, 
+    unsigned long frame,
+    DVPSObjectApplicability applicability=DVPSB_currentFrame);
+    
   /** returns the number of text objects in this annotation.
    *  @return number of text objects
    */
@@ -149,21 +179,24 @@ public:
   DVPSGraphicObject *removeGraphicObject(size_t idx);
   
 private:
-  /// VR=IS, VM=1-n, Type 1c 
-  DcmIntegerString         referencedFrameNumber;
+  /// ReferencedImageSequence, Type 1c
+  DVPSReferencedImage_PList referencedImageList;
   /// VR=CS, VM=1, Type 1 
-  DcmCodeString            graphicAnnotationLayer;
+  DcmCodeString             graphicAnnotationLayer;
   /// TextObjectSequence, Type 1c 
-  DVPSTextObject_PList     textObjectList;
+  DVPSTextObject_PList      textObjectList;
   /// GraphicObjectSequence, Type 1c   
-  DVPSGraphicObject_PList  graphicObjectList;
+  DVPSGraphicObject_PList   graphicObjectList;
 };
 
 #endif
 
 /*
  *  $Log: dvpsga.h,v $
- *  Revision 1.2  1998-12-14 16:10:27  meichel
+ *  Revision 1.3  1999-07-22 16:39:06  meichel
+ *  Adapted dcmpstat data structures and API to supplement 33 letter ballot text.
+ *
+ *  Revision 1.2  1998/12/14 16:10:27  meichel
  *  Implemented Presentation State interface for graphic layers,
  *    text and graphic annotations, presentation LUTs.
  *

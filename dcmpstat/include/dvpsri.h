@@ -23,8 +23,8 @@
  *    classes: DVPSReferencedImage
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-01-15 17:33:03 $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  Update Date:      $Date: 1999-07-22 16:39:09 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -125,20 +125,68 @@ public:
     OFString& instanceUID, 
     OFString& frames);
 
+  /** checks whether this image reference applies to the given frame number.
+   *  An image reference applies to a frame if the frame number is explicitly
+   *  listed in the referencedFrameNumber attribute or if the referencedFrameNumber
+   *  is empty.
+   *  @param frame frame number to be checked
+   *  @return OFTrue if the image reference applies to the given frame number, OFFalse otherwise.
+   */
+  OFBool appliesToFrame(unsigned long frame);
+
+  /** checks whether this image reference applies exactly to the given frame number.
+   *  This is the case if the referencedFrameNumber only contains the given frame number.
+   *  @param frame frame number to be checked
+   *  @return OFTrue if the image reference applies only to the given frame number, OFFalse otherwise.
+   */
+  OFBool appliesOnlyToFrame(unsigned long frame);
+
+  /** checks whether this image reference applies all frames
+   *  because the referencedFrameNumber is empty.
+   *  @return OFTrue if the image reference applies to all frames, OFFalse otherwise.
+   */
+  OFBool appliesToAllFrames();
+  
+  /** update the reference such that the given frame is not referenced any more.
+   *  @param frame the frame reference
+   *  @param numberOfFrames the number of frames of the image reference
+   */
+  void removeFrameReference(unsigned long frame, unsigned long numberOfFrames);
+
 private:
+
+  /** flushes the frame cache.
+   */
+  void flushCache();
+  /** updated the frame cache.
+   */
+  void updateCache();
+
+  /** undefined private assignment operator
+   */
+  DVPSReferencedImage& operator=(const DVPSReferencedImage& source);
+  
   /// VR=UI, VM=1, Type 1c
   DcmUniqueIdentifier      referencedSOPClassUID;
   /// VR=UI, VM=1, Type 1c
   DcmUniqueIdentifier      referencedSOPInstanceUID;
   /// VR=IS, VM=1-n, Type 1c
   DcmIntegerString         referencedFrameNumber;
+  /// if exists, contains binary representation of referencedFrameNumber
+  Sint32 *frameCache;
+  /// describes array size of frameCache
+  unsigned long frameCacheEntries;
+
 };
 
 #endif
 
 /*
  *  $Log: dvpsri.h,v $
- *  Revision 1.3  1999-01-15 17:33:03  meichel
+ *  Revision 1.4  1999-07-22 16:39:09  meichel
+ *  Adapted dcmpstat data structures and API to supplement 33 letter ballot text.
+ *
+ *  Revision 1.3  1999/01/15 17:33:03  meichel
  *  added methods to DVPresentationState allowing to access the image
  *    references in the presentation state.  Also added methods allowing to
  *    get the width and height of the attached image.

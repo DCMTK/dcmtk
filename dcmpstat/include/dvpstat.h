@@ -23,8 +23,8 @@
  *    classes: DVPresentationState
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-05-04 12:28:11 $
- *  CVS/RCS Revision: $Revision: 1.15 $
+ *  Update Date:      $Date: 1999-07-22 16:39:13 $
+ *  CVS/RCS Revision: $Revision: 1.16 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -47,12 +47,16 @@
 #include "dvpscul.h"     /* for DVPSCurve_PList */
 #include "dvpsvll.h"     /* for DVPSVOILUT_PList */
 #include "dvpsvwl.h"     /* for DVPSVOIWindow_PList */
+#include "dvpsdal.h"     /* for DVPSDisplayedArea_PList */
+#include "dvpssvl.h"     /* for DVPSSoftcopyVOI_PList */
 
 class DVPSTextObject;
 class DVPSGraphicObject;
 class DVPSCurve;
 class DicomImage;
 class DiDisplayFunction;
+class DVPSDisplayedArea;
+class DVPSSoftcopyVOI;
 
 /** a Grayscale Softcopy Presentation State.
  *  This class manages the data structures comprising a Presentation State object.
@@ -108,6 +112,9 @@ public:
    *  @param frames a list of frame numbers in DICOM IS format
    *    (integer numbers separated by '\' characters). Default: frame numbers absent.
    *    The frame numbers are required if the referenced image is a multiframe image.
+   *  @param aetitle the series retrieveAETitle. Must be a valid DICOM 'AE' value. Default: value absent.
+   *  @param filesetID the series storageMediaFileSetID. Must be a valid DICOM 'SH' value. Default: value absent.
+   *  @param filesetUID the series storageMediaFileSetUID. Must be a valid DICOM UID. Default: value absent.
    *  @return EC_Normal if successful, an error code otherwise.
    */
   E_Condition addImageReference(
@@ -115,23 +122,39 @@ public:
     const char *seriesUID, 
     const char *sopclassUID, 
     const char *instanceUID,
-    const char *frames=NULL);
+    const char *frames=NULL,
+    const char *aetitle=NULL, 
+    const char *filesetID=NULL, 
+    const char *filesetUID=NULL);
 
   /** adds a reference to an image to this presentation state.
    *  This method checks if the given SOP class and Study UID match
    *  for this presentation state and returns an error code otherwise.
    *  @param dset the DICOM dataset containing the image IOD
+   *  @param aetitle the series retrieveAETitle. Must be a valid DICOM 'AE' value. Default: value absent.
+   *  @param filesetID the series storageMediaFileSetID. Must be a valid DICOM 'SH' value. Default: value absent.
+   *  @param filesetUID the series storageMediaFileSetUID. Must be a valid DICOM UID. Default: value absent.
    *  @return EC_Normal if successful, an error code otherwise.
    */
-  E_Condition addImageReference(DcmItem &dset);
+  E_Condition addImageReference(
+    DcmItem &dset,
+    const char *aetitle=NULL, 
+    const char *filesetID=NULL, 
+    const char *filesetUID=NULL);
 
   /** adds a reference to the currently attached image to this
    *  presentation state. This method checks if the given image
    *  is not yet referenced and if its Study UID and SOP class
    *  match for this presentation state and returns an error code otherwise.
+   *  @param aetitle the series retrieveAETitle. Must be a valid DICOM 'AE' value. Default: value absent.
+   *  @param filesetID the series storageMediaFileSetID. Must be a valid DICOM 'SH' value. Default: value absent.
+   *  @param filesetUID the series storageMediaFileSetUID. Must be a valid DICOM UID. Default: value absent.
    *  @return EC_Normal if successful, an error code otherwise.
    */
-  E_Condition addImageReferenceAttached();
+  E_Condition addImageReferenceAttached(
+    const char *aetitle=NULL, 
+    const char *filesetID=NULL, 
+    const char *filesetUID=NULL);
   
   /** removes a reference to an image from this presentation state.
    *  @param studyUID the Study Instance UID of the image reference to be removed.
@@ -167,6 +190,9 @@ public:
    *  @param sopclassUID the SOP Class UID is returned in this string
    *  @param instanceUID the SOP Instance UID is returned in this string
    *  @param frames the list of frames is returned in this string
+   *  @param aetitle the series retrieveAETitle is returned in this string
+   *  @param filesetID the series storageMediaFileSetID is returned in this string
+   *  @param filesetUID the series storageMediaFileSetUID is returned in this string
    *  @return EC_Normal if successful, an error code otherwise.
    */
   E_Condition getImageReference(
@@ -175,7 +201,10 @@ public:
     OFString& seriesUID,
     OFString& sopclassUID,
     OFString& instanceUID, 
-    OFString& frames);
+    OFString& frames,
+    OFString& aetitle,
+    OFString& filesetID,
+    OFString& filesetUID);
 
   
   /** resets the object to initial state.
@@ -205,6 +234,9 @@ public:
    *  @param layering flag defining how graphic layers should be created for
    *    activated overlays and curves. Default: Create one layer for all overlays
    *    and another layer for all curves.
+   *  @param aetitle the series retrieveAETitle. Must be a valid DICOM 'AE' value. Default: value absent.
+   *  @param filesetID the series storageMediaFileSetID. Must be a valid DICOM 'SH' value. Default: value absent.
+   *  @param filesetUID the series storageMediaFileSetUID. Must be a valid DICOM UID. Default: value absent.
    *  @return EC_Normal upon success, an error code otherwise.
    */
   E_Condition createFromImage(DcmItem &dset,
@@ -213,7 +245,10 @@ public:
     OFBool                curveActivation        = OFTrue,
     OFBool                shutterActivation      = OFTrue,
     OFBool                presentationActivation = OFTrue,
-    DVPSGraphicLayering   layering               = DVPSG_twoLayers);
+    DVPSGraphicLayering   layering               = DVPSG_twoLayers,
+    const char *          aetitle                = NULL, 
+    const char *          filesetID              = NULL, 
+    const char *          filesetUID             = NULL);
   
   
   /* Presentation LUT Interface */
@@ -302,12 +337,12 @@ public:
   /** check if a VOI window is currently active
    *  @return OFTrue if a VOI window is active
    */
-  OFBool haveActiveVOIWindow() { return useVOIWindow; }
+  OFBool haveActiveVOIWindow();
 
   /** check if a VOI LUT is currently active
    *  @return OFTrue if a VOI LUT is active
    */
-  OFBool haveActiveVOILUT() { return useVOILUT; }
+  OFBool haveActiveVOILUT();
 
   /** returns a description string for a currently active VOI transform.
    *  If no description is available, NULL is returned.
@@ -354,86 +389,129 @@ public:
   const char *getDescriptionOfVOIWindowsInImage(size_t idx);
    
   /** activates one of the VOI LUTs from the attached image.
+   *  The applicability of the activation is controlled by the applicability parameter.
    *  @param idx index of the VOI transform, must be < getNumberOfVOILUTsInImage().
+   *  @param applicability defines the applicability of the new VOI transform.
    *  @return EC_Normal upon success, an error code otherwise.
    */
-  E_Condition setVOILUTFromImage(size_t idx);
+  E_Condition setVOILUTFromImage(size_t idx,
+    DVPSObjectApplicability applicability=DVPSB_currentImage);
 
   /** activates one of the VOI Windows from the attached image.
+   *  The applicability of the activation is controlled by the applicability parameter.
    *  @param idx index of the VOI transform, must be < getNumberOfVOIWindowsInImage().
+   *  @param applicability defines the applicability of the new VOI transform.
    *  @return EC_Normal upon success, an error code otherwise.
    */
-  E_Condition setVOIWindowFromImage(size_t idx);
+  E_Condition setVOIWindowFromImage(size_t idx,
+    DVPSObjectApplicability applicability=DVPSB_currentImage);
  
   /** sets a user defined VOI window center and width.
+   *  The applicability of the VOI window is controlled by the applicability parameter.
    *  @param wCenter the window center
    *  @param wWidth  the window width
    *  @param description an optional description. Default: absent.
+   *  @param applicability defines the applicability of the new VOI transform.
    *  @return EC_Normal upon success, an error code otherwise.
    */
-  E_Condition setVOIWindow(double wCenter, double wWidth, const char *description=NULL);
+  E_Condition setVOIWindow(double wCenter, double wWidth, const char *description=NULL,
+    DVPSObjectApplicability applicability=DVPSB_currentImage);
 
   /** stores a VOI lookup table in the presentation state.
    *  This method stores a VOI lookup table in the
    *  presentation state and activates it. The LUT is copied to
-   *  the presentation state. If the method returns EC_Normal,
-   *  any old VOI LUT in the presentation state is overwritten.
+   *  the presentation state. 
    *  If the method returns an error code, an old LUT is left unchanged.
+   *  The applicability of the VOI LUT is controlled by the applicability parameter.
    *  @param lutDescriptor the LUT Descriptor in DICOM format (VM=3)
    *  @param lutData the LUT Data in DICOM format
    *  @param lutExplanation the LUT Explanation in DICOM format, may be empty.
+   *  @param applicability defines the applicability of the new VOI transform.
    *  @return EC_Normal if successful, an error code otherwise.
    */ 
   E_Condition setVOILUT( 
     DcmUnsignedShort& lutDescriptor,
     DcmUnsignedShort& lutData,
-    DcmLongString& lutExplanation);
+    DcmLongString& lutExplanation,
+    DVPSObjectApplicability applicability=DVPSB_currentImage);
  
   /** deactivates the current VOI transformation.
-   *  After a call to this method, no VOI transform is active.
+   *  The applicability of the deactivation is controlled by the applicability parameter.
+   *  After a call to this method, no VOI transform is active for the current image and frame.
+   *  @param applicability defines the applicability of the new VOI transform.
    */
-  void deactivateVOI();
-   
+  void deactivateVOI(DVPSObjectApplicability applicability=DVPSB_currentImage);   
    
   /* Displayed Area Interface */
   
-  /** returns the X component of the displayed area
-   *  top left hand corner.
-   *  @return TLHC X component.
+  /** gets the presentation size mode for the current image and frame.
+   *  This method may only be called when an image is attached to the presentation state.
+   *  @return presentation size mode
    */
-  Uint16 getDisplayedAreaTLHC_x();
- 
-  /** returns the Y component of the displayed area
-   *  top left hand corner.
-   *  @return TLHC Y component.
-   */
-  Uint16 getDisplayedAreaTLHC_y();
- 
-  /** returns the X component of the displayed area
-   *  bottom right hand corner.
-   *  @return BRHC X component.
-   */
-  Uint16 getDisplayedAreaBRHC_x();
- 
-  /** returns the Y component of the displayed area
-   *  bottom right hand corner.
-   *  @return BRHC Y component.
-   */
-  Uint16 getDisplayedAreaBRHC_y();
+  DVPSPresentationSizeMode getDisplayedAreaPresentationSizeMode();
   
-  /** sets the displayed area top left hand corner.
-   *  @param x TLHC X component
-   *  @param y TLHC Y component
-   *  @return EC_Normal upon success, an error code otherwise.
+  /** gets the presentation pixel aspect ratio for for the current image and frame.
+   *  Pixel aspect ratio is defined here as the width of a pixel divided
+   *  by the height of a pixel (x/y).
+   *  This method may only be called when an image is attached to the presentation state.
+   *  @return pixel aspect ratio
    */
-  E_Condition setDisplayedAreaTLHC(Uint16 x, Uint16 y);
+  double getDisplayedAreaPresentationPixelAspectRatio();
+  
+  /** gets the displayed area top lefthand corner and
+   *  bottom righthand corner for the current image and frame.
+   *  This method may only be called when an image is attached to the presentation state.
+   *  @param tlhcX the displayed area top lefthand corner X value is returned in this parameter
+   *  @param tlhcY the displayed area top lefthand corner Y value is returned in this parameter
+   *  @param brhcX the displayed area bottom righthand corner X value is returned in this parameter
+   *  @param brhcY the displayed area bottom righthand corner Y value is returned in this parameter
+   *  @return EC_Normal if successful, an error code otherwise.
+   */
+  E_Condition getDisplayedArea(Sint32& tlhcX, Sint32& tlhcY, Sint32& brhcX, Sint32& brhcY);
 
-  /** sets the displayed area bottom right hand corner.
-   *  @param x BRHC X component
-   *  @param y BRHC Y component
-   *  @return EC_Normal upon success, an error code otherwise.
+  /** gets the presentation pixel spacing for the current image and frame if it is known.
+   *  @param x the horizontal pixel spacing (mm) is returned in this parameter upon success
+   *  @param y the vertical pixel spacing (mm) is returned in this parameter upon success
+   *  @return EC_Normal if successful, an error code if no presentation pixel spacing is available.
    */
-  E_Condition setDisplayedAreaBRHC(Uint16 x, Uint16 y);
+  E_Condition getDisplayedAreaPresentationPixelSpacing(double& x, double& y);
+  
+  /** gets the presentation pixel magnification ratio for the current image and frame if it is present.
+   *  @param magnification the magnification ratio is returned in this parameter upon success
+   *  @return EC_Normal if successful, an error code if no magnification ratio is available.
+   */
+  E_Condition getDisplayedAreaPresentationPixelMagnificationRatio(double& magnification);
+    
+  /** checks if "TRUE SIZE" can be used as presentation size mode for the current image and frame
+   *  (i.e. pixel spacing is known).
+   *  @return OFTrue if TRUE SIZE mode is available, OFFalse otherwise.
+   */
+  OFBool canUseDisplayedAreaTrueSize();
+ 
+  /** sets the displayed area and size mode (for the current frame, the current image
+   *  or all images referenced by the presentation state object).
+   *  @param sizeMode presentation size mode.
+   *  @param tlhcX displayed area top lefthand corner X
+   *  @param tlhcY displayed area top lefthand corner Y
+   *  @param brhcX displayed area bottom righthand corner X
+   *  @param brhcY displayed area bottom righthand corner Y
+   *  @param magnification magnification factor - ignored unless sizeMode==DVPSD_magnify.
+   *  @param applicability defines the applicability of the new displayed area definition.
+   *    Possible choices are: DVPSB_currentFrame - current frame only, 
+   *    DVPSB_currentImage - all frames of current image (default), 
+   *    and DVPSB_allImages -  all images referenced by this presentation state. 
+   *    The last choice should be used with care
+   *    because it will also cause the pixel spacing or pixel aspect ratio of the current image
+   *    to be applied to all images referenced by the presentation state.
+   *  @return EC_Normal if successful, an error code otherwise.
+   */   
+  E_Condition setDisplayedArea(
+    DVPSPresentationSizeMode sizeMode,
+    Sint32 tlhcX, Sint32 tlhcY, 
+    Sint32 brhcX, Sint32 brhcY,
+    double magnification=1.0,
+    DVPSObjectApplicability applicability=DVPSB_currentImage);
+
   
   /* shutter Interface */
   
@@ -693,23 +771,15 @@ public:
    */
   const char *getGraphicLayerDescription(size_t idx);
 
-  /** checks whether a recommended display value
-   *  for the given graphic layer exists.
+  /** checks whether a recommended display value (grayscale, color or both) for the given graphic layer exists.
    *  @param idx index of the graphic layer, must be < getNumberOfGraphicLayers()
    *  @return OFTrue if a recommended display value exists
    */
   OFBool haveGraphicLayerRecommendedDisplayValue(size_t idx);
 
-  /** checks whether a recommended display value
-   *  for the given graphic layer exists and is monochrome.
-   *  @param idx index of the graphic layer, must be < getNumberOfGraphicLayers()
-   *  @return OFTrue if a recommended display value exists and is monochrome
-   */
-  OFBool isGrayGraphicLayerRecommendedDisplayValue(size_t idx);
-
-  /** gets the recommended display value for the
-   *  given graphic layer (monochrome). If the recommended display value is a color,
-   *  it is implicitly converted to grayscale.
+  /** gets the recommended grayscale display value for the given graphic layer.
+   *  If the graphic layer contains an RGB display value but no grayscale
+   *  display value, the RGB value is implicitly converted to grayscale.
    *  @param idx index of the graphic layer, must be < getNumberOfGraphicLayers()
    *  @param gray the recommended display value as an unsigned 16-bit P-value
    *    is returned in this parameter.
@@ -717,9 +787,9 @@ public:
    */
   E_Condition getGraphicLayerRecommendedDisplayValueGray(size_t idx, Uint16& gray);
 
-  /** gets the recommended display value for the
-   *  given graphic layer (color). If the recommended display value is monochrome,
-   *  identical R, G and B components are passed back.
+  /** gets the recommended RGB display value for the given graphic layer.
+   *  If the graphic layer contains a grayscale display value but no RGB
+   *  display value, the grayscale value is implicitly converted to RGB.
    *  @param idx index of the graphic layer, must be < getNumberOfGraphicLayers()
    *  @param r returns the R component of the recommended display value as unsigned 16-bit P-value
    *  @param g returns the G component of the recommended display value as unsigned 16-bit P-value
@@ -728,16 +798,18 @@ public:
    */
   E_Condition getGraphicLayerRecommendedDisplayValueRGB(size_t idx, Uint16& r, Uint16& g, Uint16& b);
 
-  /** sets the recommended display value for the
-   *  given graphic layer.
+  /** set graphic layer recommended grayscale display value for the given graphic layer.
+   *  This method does not affect (set or modify) the recommended RGB display value
+   *  which should be set separately.
    *  @param idx index of the graphic layer, must be < getNumberOfGraphicLayers()
    *  @param gray the recommended display value as an unsigned 16-bit P-value
    *  @return EC_Normal upon success, an error code otherwise
    */
   E_Condition setGraphicLayerRecommendedDisplayValueGray(size_t idx, Uint16 gray);
  
-  /** sets the recommended display value for the
-   *  given graphic layer.
+  /** set graphic layer recommended RGB display value for the given graphic layer.
+   *  This method does not affect (set or modify) the recommended grayscale display value
+   *  which should be set separately.
    *  @param idx index of the graphic layer, must be < getNumberOfGraphicLayers()
    *  @param r the R component of the recommended display value as unsigned 16-bit P-value
    *  @param g the G component of the recommended display value as unsigned 16-bit P-value
@@ -745,6 +817,12 @@ public:
    *  @return EC_Normal upon success, an error code otherwise
    */
   E_Condition setGraphicLayerRecommendedDisplayValueRGB(size_t idx, Uint16 r, Uint16 g, Uint16 b);
+
+  /** removes recommended display values for the given graphic layer.
+   *  @param rgb if true, the RGB recommended display value is removed
+   *  @param monochrome if true the monochrome recommended display value is removed
+   */
+  void removeGraphicLayerRecommendedDisplayValue(size_t idx, OFBool rgb, OFBool monochrome);
 
   /** assigns a new unique name to the given graphic layer.
    *  The new name must be unique, otherwise an error code is returned.
@@ -819,7 +897,9 @@ public:
   
   /** returns the number of text objects for the given
    *  graphic layer. 
-   *  @param idx index of the graphic layer, must be < getNumberOfGraphicLayers()
+   *  Only the objects that are applicable to the current (attached) image 
+   *  and the selected frame number are used by this method.
+   *  @param layer index of the graphic layer, must be < getNumberOfGraphicLayers()
    *  @return number of text objects
    */   
   size_t getNumberOfTextObjects(size_t layer);
@@ -827,6 +907,8 @@ public:
   /** gets the text object with the given index
    *  on the given layer. If the text object or the graphic layer does
    *  not exist, NULL is returned.
+   *  Only the objects that are applicable to the current (attached) image 
+   *  and the selected frame number are used by this method.
    *  @param layer index of the graphic layer, must be < getNumberOfGraphicLayers()
    *  @param idx index of the text object, must be < getNumberOfTextObjects(layer)
    *  @return a pointer to the text object
@@ -834,15 +916,21 @@ public:
   DVPSTextObject *getTextObject(size_t layer, size_t idx);
 
   /** creates a new text object on the given layer. 
-   *  Returns a pointer to the new text object. If the graphic layer
-   *  does not exist or if the creation of the text object fails, NULL is returned.
+   *  Returns a pointer to the new text object. 
+   *  If the creation of the text object fails or if the graphic layer 
+   *  does not exist, NULL is returned.
    *  @param layer index of the graphic layer, must be < getNumberOfGraphicLayers()
+   *  @param applicability defines to which images/frames the new object applies. 
+   *   Default: all images referenced by the presentation state.
    *  @return a pointer to the new text object
    */   
-  DVPSTextObject *addTextObject(size_t layer);
+  DVPSTextObject *addTextObject(size_t layer, 
+    DVPSObjectApplicability applicability=DVPSB_allImages);
 
   /** deletes the text object with the given index
    *  on the given layer. 
+   *  Only the objects that are applicable to the current (attached) image 
+   *  and the selected frame number are used by this method.
    *  @param layer index of the graphic layer, must be < getNumberOfGraphicLayers()
    *  @param idx index of the text object, must be < getNumberOfTextObjects(layer)
    *  @return EC_Normal upon success, an error code otherwise
@@ -851,19 +939,26 @@ public:
 
   /** moves the text object with the given index on the given
    *  layer to a different layer. 
+   *  Only the objects that are applicable to the current (attached) image 
+   *  and the selected frame number are used by this method.
    *  @param old_layer index of the graphic layer on which the text object is, 
    *    must be < getNumberOfGraphicLayers()
    *  @param idx index of the text object, must be < getNumberOfTextObjects(layer)
    *  @param new_layer index of the graphic layer to which the text object is moved, 
    *    must be < getNumberOfGraphicLayers()
+   *  @param applicability defines to which images/frames the new object applies from now on. 
+   *   Default: all images referenced by the presentation state.
    *  @return EC_Normal upon success, an error code otherwise
    */   
-  E_Condition moveTextObject(size_t old_layer, size_t idx, size_t new_layer);
+  E_Condition moveTextObject(size_t old_layer, size_t idx, size_t new_layer, 
+    DVPSObjectApplicability applicability=DVPSB_allImages);
   
   /* graphic objects */
 
   /** returns the number of graphic objects for the given
    *  graphic layer. 
+   *  Only the objects that are applicable to the current (attached) image 
+   *  and the selected frame number are used by this method.
    *  @param idx index of the graphic layer, must be < getNumberOfGraphicLayers()
    *  @return number of graphic objects
    */   
@@ -872,6 +967,8 @@ public:
   /** gets the graphic object with the given index
    *  on the given layer. If the graphic object or the graphic layer does
    *  not exist, NULL is returned.
+   *  Only the objects that are applicable to the current (attached) image 
+   *  and the selected frame number are used by this method.
    *  @param layer index of the graphic layer, must be < getNumberOfGraphicLayers()
    *  @param idx index of the graphic object, must be < getNumberOfGraphicObjects(layer)
    *  @return a pointer to the graphic object
@@ -879,15 +976,21 @@ public:
   DVPSGraphicObject *getGraphicObject(size_t layer, size_t idx);
 
   /** creates a new graphic object on the given layer. 
-   *  Returns a pointer to the new graphic object. If the graphic layer
-   *  does not exist or if the creation of the graphic object fails, NULL is returned.
+   *  Returns a pointer to the new graphic object. 
+   *  If the creation of the graphic object fails or if the graphic layer 
+   *  does not exist, NULL is returned.
    *  @param layer index of the graphic layer, must be < getNumberOfGraphicLayers()
+   *  @param applicability defines to which images/frames the new object applies. 
+   *   Default: all images referenced by the presentation state.
    *  @return a pointer to the new graphic object
    */   
-  DVPSGraphicObject *addGraphicObject(size_t layer);
+  DVPSGraphicObject *addGraphicObject(size_t layer, 
+    DVPSObjectApplicability applicability=DVPSB_allImages);
 
   /** deletes the graphic object with the given index
    *  on the given layer. 
+   *  Only the objects that are applicable to the current (attached) image 
+   *  and the selected frame number are used by this method.
    *  @param layer index of the graphic layer, must be < getNumberOfGraphicLayers()
    *  @param idx index of the graphic object, must be < getNumberOfGraphicObjects(layer)
    *  @return EC_Normal upon success, an error code otherwise
@@ -896,14 +999,19 @@ public:
   
   /** moves the graphic object with the given index on the given
    *  layer to a different layer. 
+   *  Only the objects that are applicable to the current (attached) image 
+   *  and the selected frame number are used by this method.
    *  @param old_layer index of the graphic layer on which the graphic object is, 
    *    must be < getNumberOfGraphicLayers()
    *  @param idx index of the graphic object, must be < getNumberOfGraphicObjects(layer)
    *  @param new_layer index of the graphic layer to which the graphic object is moved, 
    *    must be < getNumberOfGraphicLayers()
+   *  @param applicability defines to which images/frames the new object applies from now on. 
+   *   Default: all images referenced by the presentation state.
    *  @return EC_Normal upon success, an error code otherwise
    */   
-  E_Condition moveGraphicObject(size_t old_layer, size_t idx, size_t new_layer);
+  E_Condition moveGraphicObject(size_t old_layer, size_t idx, size_t new_layer, 
+    DVPSObjectApplicability applicability=DVPSB_allImages);
   
   /* curves */
 
@@ -1022,8 +1130,6 @@ public:
    *   is returned.
    *  @param isROI returns OFTrue if the overlay is ROI, OFFalse if the overlay is Graphic.
    *  @param transp returns index of transparent (background) color
-   *  @param frame frame number of the image. Since overlays can differ for different image frames,
-   *   the image frame also selects the overlays. Default: first frame.
    *  @return EC_Normal upon success, an error code otherwise.
    */
   E_Condition getOverlayData(
@@ -1035,8 +1141,7 @@ public:
      unsigned int &left,
      unsigned int &top,
      OFBool &isROI,
-     Uint8 &transp,
-     unsigned long frame=0);
+     Uint8 &transp);
 
   /** gets the number of overlays which are embedded in the
    *  image currently attached to the presentation state. Overlays in the image are counted only
@@ -1301,16 +1406,6 @@ public:
    E_Condition getPixelData(
      void *pixelData,
      unsigned long size);
-
-   /** gets the pixel aspect ratio of the attached image.
-    *  Pixel aspect ratio is defined here as the width of a pixel divided
-    *  by the height of a pixel (x/y).
-    *  This method may only be called when an image is attached to the
-    *  presentation state.
-    *  @param ratio upon success, the pixel aspect ratio is returned in this parameter.
-    *  @return EC_Normal upon success, an error code otherwise
-    */   
-   E_Condition getImageAspectRatio(double &ratio);
    
    /** gets the width of the attached image. 
     *  The rotation status of the presentation state is not taken
@@ -1355,6 +1450,23 @@ public:
     *  @return EC_Normal upon success, an error code otherwise
     */   
    E_Condition getImageMinMaxPixelValue(double &minValue, double& maxValue);
+
+   /** gets the number of frames of the current (attached) image.
+    *  This method may only be called when an image is attached to the
+    *  presentation state.
+    *  @param frames upon success, the number of frames is returned in this parameter.
+    *  @return EC_Normal upon success, an error code otherwise
+    */   
+   E_Condition getImageNumberOfFrames(unsigned long &frames);
+
+   /** selects one frame of a multiframe image. This affects the image bitmap
+    *  that is rendered, the overlay bitmaps and the visibility of graphic and text objects.
+    *  This method may only be called when an image is attached to the
+    *  presentation state.
+    *  @param frame frame number in the range [1..getImageNumberOfFrames()]
+    *  @return EC_Normal upon success, an error code otherwise
+    */   
+   E_Condition selectImageFrameNumber(unsigned long frame);
    
    /* Barten transform */
    
@@ -1436,6 +1548,26 @@ private:
    */
   void checkInverse();
   
+  /** creates a default displayed area selection for the given dataset.
+   *  Used in createFromImage().
+   *  @param dset the DICOM dataset containing the image IOD
+   *  @return EC_Normal upon success, an error code otherwise.
+   */   
+  E_Condition createDefaultDisplayedArea(DcmItem &dset);
+
+  /** attempts to find the displayed area selection for the
+   *  current image and frame. If not found, creates a default.
+   *  @return displayed area selection item. If creation of a default failed
+   *    or no image is attached to the presentation state, returns NULL.
+   */   
+  DVPSDisplayedArea *getDisplayedAreaSelection();
+
+  /** attempts to find the Softcopy VOI LUT item for the
+   *  current image and frame. If not found, returns NULL.
+   *  @return softcopy VOI LUT item for current image and frame if found, NULL otherwise
+   */   
+  DVPSSoftcopyVOI *getCurrentSoftcopyVOI();
+  
   /* Module: Patient (M)
    */
   /// Module=Patient, VR=PN, VM=1, Type 1 
@@ -1480,10 +1612,7 @@ private:
 
   /* Module: Displayed Area (M)
    */
-  /// Module=Displayed_Area, VR=US, VM=2, Type 1 
-  DcmUnsignedShort         displayedAreaTLHC;
-  /// Module=Displayed_Area, VR=US, VM=2, Type 1 
-  DcmUnsignedShort         displayedAreaBRHC;
+  DVPSDisplayedArea_PList  displayedAreaSelectionList;
 
   /* Module: Softcopy Presentation LUT (M)
    * There must never be more that one Presentation LUT for one Presentation State,
@@ -1592,8 +1721,8 @@ private:
   /* Module: Spatial Transformation (C)
    * "required if rotation/flipping/magnification to be applied"
    */
-  /// Module=Spatial_Transform, VR=IS, VM=1, Type 1 
-  DcmIntegerString         imageRotation;
+  /// Module=Spatial_Transform, VR=US, VM=1, Type 1 
+  DcmUnsignedShort         imageRotation;
   /// Module=Spatial_Transform, VR=CS, VM=1, Type 1 
   DcmCodeString            imageHorizontalFlip;
 
@@ -1627,27 +1756,11 @@ private:
   /// Module=Modality_LUT, VR=LO, VM=1, Type 1c 
   DcmLongString            rescaleType;
   
-  /* Module: VOI LUT (C)
-   * There must never be more that one VOI LUT for one Presentation State,
-   * therefore we need not save a list of LUTs.
+  /* Module: Softcopy VOI LUT (C)
+   * "required if VOI LUT to be applied"
    */
-  /// If true, a VOI window is set
-  OFBool                   useVOIWindow;
-  /// If true, a VOI LUT is set
-  OFBool                   useVOILUT;
-  /// Module=VOI_LUT, VR=xs, VM=3, Type 1c 
-  DcmUnsignedShort         voiLUTDescriptor;
-  /// Module=VOI_LUT, VR=LO, VM=1, Type 3 
-  DcmLongString            voiLUTExplanation;
-  /// Module=VOI_LUT, VR=xs, VM=1-n, Type 1c 
-  DcmUnsignedShort         voiLUTData;
-  /// Module=VOI_LUT, VR=DS, VM=1-n, Type 3 
-  DcmDecimalString         windowCenter;
-  /// Module=VOI_LUT, VR=DS, VM=1-n, Type 1c 
-  DcmDecimalString         windowWidth;
-  /// Module=VOI_LUT, VR=LO, VM=1-n, Type 3 
-  DcmLongString            windowCenterWidthExplanation;
-
+  DVPSSoftcopyVOI_PList    softcopyVOIList;
+  
   /* connection with dcmimage */
   
   /** a pointer to the DICOM dataset comprising the image
@@ -1669,6 +1782,16 @@ private:
   /** contains the height of the attached image without consideration of rotation.
    */
   unsigned long currentImageHeight;
+  /** contains the SOP Class UID of the attached image
+   */
+  char *currentImageSOPClassUID;
+  /** contains the SOP Instance UID of the attached image
+   */
+  char *currentImageSOPInstanceUID;
+  /** contains the current selected frame number of the attached image.
+   *  Frame numbers are counted from 1 (like in DICOM, unlike dcmimgle).
+   */
+  unsigned long currentImageSelectedFrame;
   /** a flag describing whether the presentation state is owner of 
    *  the DICOM dataset in currentImageDataset/currentImageFileformat.
    *  If the presentation state is owner, it will delete the dataset
@@ -1724,7 +1847,10 @@ private:
 
 /*
  *  $Log: dvpstat.h,v $
- *  Revision 1.15  1999-05-04 12:28:11  meichel
+ *  Revision 1.16  1999-07-22 16:39:13  meichel
+ *  Adapted dcmpstat data structures and API to supplement 33 letter ballot text.
+ *
+ *  Revision 1.15  1999/05/04 12:28:11  meichel
  *  Removed carriage returns
  *
  *  Revision 1.14  1999/04/27 11:23:57  joergr

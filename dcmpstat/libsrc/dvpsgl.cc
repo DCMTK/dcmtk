@@ -23,8 +23,8 @@
  *    classes: DVPSGraphicLayer
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-05-04 15:27:26 $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  Update Date:      $Date: 1999-07-22 16:39:58 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -57,7 +57,8 @@ if (EC_Normal == dset.search((DcmTagKey &)a_name.getTag(), stack, ESM_fromHere, 
 DVPSGraphicLayer::DVPSGraphicLayer()
 : graphicLayer(DCM_GraphicLayer)
 , graphicLayerOrder(DCM_GraphicLayerOrder)
-, graphicLayerRecommendedDisplayValue(DCM_GraphicLayerRecommendedDisplayValue)
+, graphicLayerRecommendedDisplayGrayscaleValue(DCM_GraphicLayerRecommendedDisplayGrayscaleValue)
+, graphicLayerRecommendedDisplayRGBValue(DCM_GraphicLayerRecommendedDisplayRGBValue)
 , graphicLayerDescription(DCM_GraphicLayerDescription)
 {
 }
@@ -65,7 +66,8 @@ DVPSGraphicLayer::DVPSGraphicLayer()
 DVPSGraphicLayer::DVPSGraphicLayer(const DVPSGraphicLayer& copy)
 : graphicLayer(copy.graphicLayer)
 , graphicLayerOrder(copy.graphicLayerOrder)
-, graphicLayerRecommendedDisplayValue(copy.graphicLayerRecommendedDisplayValue)
+, graphicLayerRecommendedDisplayGrayscaleValue(copy.graphicLayerRecommendedDisplayGrayscaleValue)
+, graphicLayerRecommendedDisplayRGBValue(copy.graphicLayerRecommendedDisplayRGBValue)
 , graphicLayerDescription(copy.graphicLayerDescription)
 {
 }
@@ -81,7 +83,8 @@ E_Condition DVPSGraphicLayer::read(DcmItem &dset)
 
   READ_FROM_DATASET(DcmCodeString, graphicLayer)
   READ_FROM_DATASET(DcmIntegerString, graphicLayerOrder)
-  READ_FROM_DATASET(DcmUnsignedShort, graphicLayerRecommendedDisplayValue)
+  READ_FROM_DATASET(DcmUnsignedShort, graphicLayerRecommendedDisplayGrayscaleValue)
+  READ_FROM_DATASET(DcmUnsignedShort, graphicLayerRecommendedDisplayRGBValue)
   READ_FROM_DATASET(DcmLongString, graphicLayerDescription)
   
   /* Now perform basic sanity checks */
@@ -116,18 +119,19 @@ E_Condition DVPSGraphicLayer::read(DcmItem &dset)
 #endif
   }
 
-  if (graphicLayerRecommendedDisplayValue.getVM() >3)
+  if (graphicLayerRecommendedDisplayGrayscaleValue.getVM()>1)
   {
     result=EC_IllegalCall;
 #ifdef DEBUG
-    cerr << "Error: presentation state contains a graphic layer SQ item with graphicLayerRecommendedDisplayValue VM > 3" << endl;
+    cerr << "Error: presentation state contains a graphic layer SQ item with graphicLayerRecommendedDisplayGrayscaleValue VM != 1" << endl;
 #endif
   }
-  else if (graphicLayerRecommendedDisplayValue.getVM() == 2)
+
+  if ((graphicLayerRecommendedDisplayRGBValue.getVM()>0)&&(graphicLayerRecommendedDisplayRGBValue.getVM() != 3))
   {
     result=EC_IllegalCall;
 #ifdef DEBUG
-    cerr << "Error: presentation state contains a graphic layer SQ item with graphicLayerRecommendedDisplayValue VM == 2" << endl;
+    cerr << "Error: presentation state contains a graphic layer SQ item with graphicLayerRecommendedDisplayRGBValue VM != 3" << endl;
 #endif
   }
 
@@ -149,7 +153,8 @@ E_Condition DVPSGraphicLayer::write(DcmItem &dset)
   
   ADD_TO_DATASET(DcmCodeString, graphicLayer)
   ADD_TO_DATASET(DcmIntegerString, graphicLayerOrder)
-  if (graphicLayerRecommendedDisplayValue.getLength() >0) { ADD_TO_DATASET(DcmUnsignedShort, graphicLayerRecommendedDisplayValue) }
+  if (graphicLayerRecommendedDisplayGrayscaleValue.getLength() >0) { ADD_TO_DATASET(DcmUnsignedShort, graphicLayerRecommendedDisplayGrayscaleValue) }
+  if (graphicLayerRecommendedDisplayRGBValue.getLength() >0) { ADD_TO_DATASET(DcmUnsignedShort, graphicLayerRecommendedDisplayRGBValue) }
   if (graphicLayerDescription.getLength() >0) { ADD_TO_DATASET(DcmLongString, graphicLayerDescription) }
 
   return result;
@@ -182,19 +187,19 @@ void DVPSGraphicLayer::setGLOrder(Sint32 glOrder)
   return;
 }
 
-void DVPSGraphicLayer::setGLRecommendedDisplayValue(Uint16 gray)
+void DVPSGraphicLayer::setGLRecommendedDisplayValueGray(Uint16 gray)
 {
-  graphicLayerRecommendedDisplayValue.clear();
-  graphicLayerRecommendedDisplayValue.putUint16(gray,0);
+  graphicLayerRecommendedDisplayGrayscaleValue.clear();
+  graphicLayerRecommendedDisplayGrayscaleValue.putUint16(gray,0);
   return;
 }
 
-void DVPSGraphicLayer::setGLRecommendedDisplayValue(Uint16 r, Uint16 g, Uint16 b)
+void DVPSGraphicLayer::setGLRecommendedDisplayValueRGB(Uint16 r, Uint16 g, Uint16 b)
 {
-  graphicLayerRecommendedDisplayValue.clear();
-  graphicLayerRecommendedDisplayValue.putUint16(r,0);
-  graphicLayerRecommendedDisplayValue.putUint16(g,1);
-  graphicLayerRecommendedDisplayValue.putUint16(b,2);
+  graphicLayerRecommendedDisplayRGBValue.clear();
+  graphicLayerRecommendedDisplayRGBValue.putUint16(r,0);
+  graphicLayerRecommendedDisplayRGBValue.putUint16(g,1);
+  graphicLayerRecommendedDisplayRGBValue.putUint16(b,2);
   return;
 }
 
@@ -213,35 +218,28 @@ Sint32 DVPSGraphicLayer::getGLOrder()
 
 OFBool DVPSGraphicLayer::haveGLRecommendedDisplayValue()
 {
-  unsigned long vm = graphicLayerRecommendedDisplayValue.getVM();
-  if ((vm==1)||(vm==3)) return OFTrue; else return OFFalse;
+  if ((graphicLayerRecommendedDisplayGrayscaleValue.getVM() == 1) ||
+      (graphicLayerRecommendedDisplayRGBValue.getVM() == 3))
+  return OFTrue; else return OFFalse;
 }
-
-OFBool DVPSGraphicLayer::isGrayGLRecommendedDisplayValue()
-{
-  unsigned long vm = graphicLayerRecommendedDisplayValue.getVM();
-  if (vm==1) return OFTrue; else return OFFalse;
-}
-
 
 E_Condition DVPSGraphicLayer::getGLRecommendedDisplayValueGray(Uint16& gray)
 {
   gray = 0;
   E_Condition result = EC_Normal;
-  unsigned long vm = graphicLayerRecommendedDisplayValue.getVM();
-  if (vm==1)
+  if (graphicLayerRecommendedDisplayGrayscaleValue.getVM()==1)
   {
     Uint16 gr=0;
-    result = graphicLayerRecommendedDisplayValue.getUint16(gr,0);
+    result = graphicLayerRecommendedDisplayGrayscaleValue.getUint16(gr,0);
     if (result==EC_Normal) gray = gr;
-  } else if (vm==3)
+  } else if (graphicLayerRecommendedDisplayRGBValue.getVM() == 3)
   {
     Uint16 r=0;
     Uint16 g=0;
     Uint16 b=0;
-    result = graphicLayerRecommendedDisplayValue.getUint16(r,0);
-    if (EC_Normal==result) result = graphicLayerRecommendedDisplayValue.getUint16(g,1);
-    if (EC_Normal==result) result = graphicLayerRecommendedDisplayValue.getUint16(b,2);
+    result = graphicLayerRecommendedDisplayRGBValue.getUint16(r,0);
+    if (EC_Normal==result) result = graphicLayerRecommendedDisplayRGBValue.getUint16(g,1);
+    if (EC_Normal==result) result = graphicLayerRecommendedDisplayRGBValue.getUint16(b,2);
     if (result==EC_Normal)
     {
       double dg = 0.299*(double)r + 0.587*(double)g +0.114*(double)b;
@@ -257,38 +255,48 @@ E_Condition DVPSGraphicLayer::getGLRecommendedDisplayValueRGB(Uint16& r, Uint16&
   g = 0;
   b = 0;
   E_Condition result = EC_Normal;
-  unsigned long vm = graphicLayerRecommendedDisplayValue.getVM();
-  if (vm==1)
-  {
-    Uint16 gr=0;
-    result = graphicLayerRecommendedDisplayValue.getUint16(gr,0);
-    if (result==EC_Normal) 
-    {
-      r = gr;
-      g = gr;
-      b = gr;
-    }
-  } else if (vm==3)
+  if (graphicLayerRecommendedDisplayRGBValue.getVM()==3)
   {
     Uint16 rr=0;
     Uint16 gg=0;
     Uint16 bb=0;
-    result = graphicLayerRecommendedDisplayValue.getUint16(rr,0);
-    if (EC_Normal==result) result = graphicLayerRecommendedDisplayValue.getUint16(gg,1);
-    if (EC_Normal==result) result = graphicLayerRecommendedDisplayValue.getUint16(bb,2);
+    result = graphicLayerRecommendedDisplayRGBValue.getUint16(rr,0);
+    if (EC_Normal==result) result = graphicLayerRecommendedDisplayRGBValue.getUint16(gg,1);
+    if (EC_Normal==result) result = graphicLayerRecommendedDisplayRGBValue.getUint16(bb,2);
     if (result==EC_Normal)
     {
       r = rr;
       g = gg;
       b = bb;
     }
+  }
+  else if (graphicLayerRecommendedDisplayGrayscaleValue.getVM() == 1)
+  {
+    Uint16 gr=0;
+    result = graphicLayerRecommendedDisplayGrayscaleValue.getUint16(gr,0);
+    if (result==EC_Normal) 
+    {
+      r = gr;
+      g = gr;
+      b = gr;
+    }
   } else result=EC_IllegalCall;
   return result;
 }
 
+void DVPSGraphicLayer::removeRecommendedDisplayValue(OFBool rgb, OFBool monochrome)
+{
+  if (rgb) graphicLayerRecommendedDisplayRGBValue.clear();
+  if (monochrome) graphicLayerRecommendedDisplayGrayscaleValue.clear();
+  return;
+}
+
 /*
  *  $Log: dvpsgl.cc,v $
- *  Revision 1.3  1999-05-04 15:27:26  meichel
+ *  Revision 1.4  1999-07-22 16:39:58  meichel
+ *  Adapted dcmpstat data structures and API to supplement 33 letter ballot text.
+ *
+ *  Revision 1.3  1999/05/04 15:27:26  meichel
  *  Minor code purifications to keep gcc on OSF1 quiet.
  *
  *  Revision 1.2  1998/12/14 16:10:41  meichel

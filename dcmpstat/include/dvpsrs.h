@@ -23,8 +23,8 @@
  *    classes: DVPSReferencedSeries
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-01-15 17:33:04 $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  Update Date:      $Date: 1999-07-22 16:39:10 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -117,6 +117,28 @@ public:
    */
   void setSeriesInstanceUID(const char *uid);
 
+  /** set the optional retrieve location for this series reference.
+   *  @param aetitle the retrieveAETitle, must be a valid DICOM 'AE' value. Default: value absent.
+   *  @param filesetID the storageMediaFileSetID, must be a valid DICOM 'SH' value. Default: value absent.
+   *  @param filesetUID the storageMediaFileSetUID, must be a valid DICOM UID. Default: value absent.
+   */
+  void setRetrieveLocation(const char *aetitle=NULL, const char *filesetID=NULL, const char *filesetUID=NULL);
+  
+   /** gets the retrieveAETitle for this series reference.
+    *  @return retrieveAETitle if present, NULL otherwise.
+    */
+  const char *getRetrieveAETitle();
+
+   /** gets the storageMediaFileSetID for this series reference.
+    *  @return storageMediaFileSetID if present, NULL otherwise.
+    */
+  const char *getStorageMediaFileSetID();
+
+   /** gets the storageMediaFileSetUID for this series reference.
+    *  @return storageMediaFileSetUID if present, NULL otherwise.
+    */
+  const char *getStorageMediaFileSetUID();
+  
   /** add image reference to this series reference.
    *  A new image reference for this series is created.
    *  The image SOP instance UID must be unique (must not yet exist
@@ -146,6 +168,9 @@ public:
    *  @param sopclassUID the SOP Class UID is returned in this string
    *  @param instanceUID the SOP Instance UID is returned in this string
    *  @param frames the list of frames is returned in this string
+   *  @param aetitle the series retrieveAETitle is returned in this string
+   *  @param filesetID the series storageMediaFileSetID is returned in this string
+   *  @param filesetUID the series storageMediaFileSetUID is returned in this string
    *  @return EC_Normal if successful, an error code otherwise.
    */
   E_Condition getImageReference(
@@ -153,20 +178,32 @@ public:
     OFString& seriesUID,
     OFString& sopclassUID,
     OFString& instanceUID, 
-    OFString& frames);
+    OFString& frames,
+    OFString& aetitle,
+    OFString& filesetID,
+    OFString& filesetUID);
   
 private:
   /// Referenced Image Sequence
   DVPSReferencedImage_PList referencedImageList;
   /// VR=UI, VM=1, Type 1c
-  DcmUniqueIdentifier      seriesInstanceUID; 
+  DcmUniqueIdentifier       seriesInstanceUID; 
+  /// VR=AE, VM=1, Type 3
+  DcmApplicationEntity      retrieveAETitle;
+  /// VR=SH, VM=1, Type 3
+  DcmShortString            storageMediaFileSetID;
+  /// VR=UI, VM=1, Type 3
+  DcmUniqueIdentifier       storageMediaFileSetUID;
 };
 
 #endif
 
 /*
  *  $Log: dvpsrs.h,v $
- *  Revision 1.3  1999-01-15 17:33:04  meichel
+ *  Revision 1.4  1999-07-22 16:39:10  meichel
+ *  Adapted dcmpstat data structures and API to supplement 33 letter ballot text.
+ *
+ *  Revision 1.3  1999/01/15 17:33:04  meichel
  *  added methods to DVPresentationState allowing to access the image
  *    references in the presentation state.  Also added methods allowing to
  *    get the width and height of the attached image.

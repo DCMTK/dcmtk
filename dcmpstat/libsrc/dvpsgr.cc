@@ -23,8 +23,8 @@
  *    classes: DVPSGraphicObject
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1998-12-22 17:57:16 $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  Update Date:      $Date: 1999-07-22 16:39:59 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -196,9 +196,12 @@ E_Condition DVPSGraphicObject::write(DcmItem &dset)
   // strictly speaking we are not allowed to include graphicFilled
   // when the graphicType is "POLYLINE" or "INTERPOLATED" and the
   // first point of graphicData is not equal the last point.
-  // For simplicity reasons we always include the attribute.
-  ADD_TO_DATASET(DcmCodeString, graphicFilled)
-
+  // For simplicity reasons we always include the attribute unless
+  // the graphic type is POINT.
+  if (DVPST_point != getGraphicType())
+  {
+    ADD_TO_DATASET(DcmCodeString, graphicFilled)
+  }
   return result;
 }
 
@@ -240,6 +243,7 @@ DVPSGraphicType DVPSGraphicObject::getGraphicType()
   if (aString == "INTERPOLATED") return DVPST_interpolated;
   else if (aString == "CIRCLE") return DVPST_circle;
   else if (aString == "ELLIPSE") return DVPST_ellipse;
+  else if (aString == "POINT") return DVPST_point;
   /* default */
   return DVPST_polyline;
 }
@@ -288,6 +292,9 @@ E_Condition DVPSGraphicObject::setGraphicType(DVPSGraphicType gtype)
     case DVPST_polyline:
       cname = "POLYLINE"; 
       break;    
+    case DVPST_point:
+      cname = "POINT"; 
+      break;    
   }
   return graphicType.putString(cname);
 }
@@ -303,7 +310,10 @@ E_Condition DVPSGraphicObject::setFilled(OFBool filled)
 
 /*
  *  $Log: dvpsgr.cc,v $
- *  Revision 1.3  1998-12-22 17:57:16  meichel
+ *  Revision 1.4  1999-07-22 16:39:59  meichel
+ *  Adapted dcmpstat data structures and API to supplement 33 letter ballot text.
+ *
+ *  Revision 1.3  1998/12/22 17:57:16  meichel
  *  Implemented Presentation State interface for overlays,
  *    VOI LUTs, VOI windows, curves. Added test program that
  *    allows to add curve data to DICOM images.

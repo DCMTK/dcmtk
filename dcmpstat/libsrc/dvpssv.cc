@@ -1,0 +1,382 @@
+/*
+ *
+ *  Copyright (C) 1998-99, OFFIS
+ *
+ *  This software and supporting documentation were developed by
+ *
+ *    Kuratorium OFFIS e.V.
+ *    Healthcare Information and Communication Systems
+ *    Escherweg 2
+ *    D-26121 Oldenburg, Germany
+ *
+ *  THIS SOFTWARE IS MADE AVAILABLE,  AS IS,  AND OFFIS MAKES NO  WARRANTY
+ *  REGARDING  THE  SOFTWARE,  ITS  PERFORMANCE,  ITS  MERCHANTABILITY  OR
+ *  FITNESS FOR ANY PARTICULAR USE, FREEDOM FROM ANY COMPUTER DISEASES  OR
+ *  ITS CONFORMITY TO ANY SPECIFICATION. THE ENTIRE RISK AS TO QUALITY AND
+ *  PERFORMANCE OF THE SOFTWARE IS WITH THE USER.
+ *
+ *  Module: dcmpstat
+ *
+ *  Author: Marco Eichelberg
+ *
+ *  Purpose:
+ *    classes: DVPSSoftcopyVOI
+ *
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 1999-07-22 16:40:03 $
+ *  CVS/RCS Revision: $Revision: 1.1 $
+ *  Status:           $State: Exp $
+ *
+ *  CVS/RCS Log at end of file
+ *
+ */
+
+#include "osconfig.h"    /* make sure OS specific configuration is included first */
+#include "ofstring.h"
+#include "dvpssv.h"
+#include "dvpsri.h"      /* for DVPSReferencedImage */
+#include "dvpsrsl.h"     /* DVPSReferencedSeries_PList */
+
+/* --------------- a few macros avoiding copy/paste --------------- */
+
+#define ADD_TO_DATASET(a_type, a_name)                              \
+if (result==EC_Normal)                                              \
+{                                                                   \
+  delem = new a_type(a_name);                                       \
+  if (delem) dset.insert(delem); else result=EC_MemoryExhausted;    \
+}
+
+#define READ_FROM_DATASET(a_type, a_name)                           \
+stack.clear();                                                      \
+if (EC_Normal == dset.search((DcmTagKey &)a_name.getTag(), stack, ESM_fromHere, OFFalse)) \
+{                                                                   \
+  a_name = *((a_type *)(stack.top()));                              \
+}
+
+/* --------------- class DVPSSoftcopyVOI --------------- */
+
+DVPSSoftcopyVOI::DVPSSoftcopyVOI()
+: referencedImageList()
+, useLUT(OFFalse)
+, voiLUTDescriptor(DCM_LUTDescriptor)
+, voiLUTExplanation(DCM_LUTExplanation)
+, voiLUTData(DCM_LUTData)
+, windowCenter(DCM_WindowCenter)
+, windowWidth(DCM_WindowWidth)
+, windowCenterWidthExplanation(DCM_WindowCenterWidthExplanation)
+{
+}
+
+DVPSSoftcopyVOI::DVPSSoftcopyVOI(const DVPSSoftcopyVOI& copy)
+: referencedImageList(copy.referencedImageList)
+, useLUT(copy.useLUT)
+, voiLUTDescriptor(copy.voiLUTDescriptor)
+, voiLUTExplanation(copy.voiLUTExplanation)
+, voiLUTData(copy.voiLUTData)
+, windowCenter(copy.windowCenter)
+, windowWidth(copy.windowWidth)
+, windowCenterWidthExplanation(copy.windowCenterWidthExplanation)
+{
+}
+
+DVPSSoftcopyVOI::~DVPSSoftcopyVOI()
+{
+}
+
+E_Condition DVPSSoftcopyVOI::read(DcmItem &dset)
+{
+  E_Condition result = EC_Normal;
+  DcmStack stack;
+  OFString aString;
+  DcmSequenceOfItems *seq;
+  DcmItem *item;
+  
+  READ_FROM_DATASET(DcmDecimalString, windowCenter)
+  READ_FROM_DATASET(DcmDecimalString, windowWidth)
+  READ_FROM_DATASET(DcmLongString, windowCenterWidthExplanation)
+
+  /* read VOI LUT Sequence */
+  if (result==EC_Normal)
+  {
+    stack.clear();
+    if (EC_Normal == dset.search(DCM_VOILUTSequence, stack, ESM_fromHere, OFFalse))
+    {
+      seq=(DcmSequenceOfItems *)stack.top();
+      if (seq->card() ==1)
+      {
+         item = seq->getItem(0);
+         stack.clear();
+         if (EC_Normal == item->search((DcmTagKey &)voiLUTDescriptor.getTag(), 
+           stack, ESM_fromHere, OFFalse))
+         {
+           voiLUTDescriptor = *((DcmUnsignedShort *)(stack.top()));
+         }
+         stack.clear();
+         if (EC_Normal == item->search((DcmTagKey &)voiLUTExplanation.getTag(), 
+           stack, ESM_fromHere, OFFalse))
+         {
+           voiLUTExplanation = *((DcmLongString *)(stack.top()));
+         }
+         stack.clear();
+         if (EC_Normal == item->search((DcmTagKey &)voiLUTData.getTag(), 
+           stack, ESM_fromHere, OFFalse))
+         {
+           voiLUTData = *((DcmUnsignedShort *)(stack.top()));
+         }
+      } else {
+        result=EC_TagNotFound;
+#ifdef DEBUG
+        cerr << "Error: VOI LUT SQ does not have exactly one item in presentation state" << endl;
+#endif
+      } 
+    }
+  }
+
+  if (result==EC_Normal) result = referencedImageList.read(dset);
+
+  /* Now perform basic sanity checks */
+
+  if (result==EC_Normal)
+  {
+    if (windowCenter.getLength() > 0)
+    {
+      useLUT = OFFalse;
+      
+      if (windowWidth.getLength() == 0)
+      {
+        result=EC_IllegalCall;
+#ifdef DEBUG
+        cerr << "Error: windowCenter present but windowWidth absent or empty in presentation state" << endl;
+#endif
+      }
+      else if (windowWidth.getVM() != 1)
+      {
+        result=EC_IllegalCall;
+#ifdef DEBUG
+        cerr << "Error: windowCenter present but windowWidth VM != 1 in presentation state" << endl;
+#endif
+      }
+      if (windowCenter.getVM() != 1)
+      {
+        result=EC_IllegalCall;
+#ifdef DEBUG
+        cerr << "Error: windowCenter present but VM != 1 in presentation state" << endl;
+#endif
+      }
+    } else useLUT = OFTrue;
+    
+    if (voiLUTData.getLength() > 0)
+    {
+    	
+      if (! useLUT)
+      {
+        result=EC_IllegalCall;
+#ifdef DEBUG
+        cerr << "Error: both VOI window and LUT present in presentation state" << endl;
+#endif
+      }
+
+      if (voiLUTDescriptor.getLength() == 0)
+      {
+        result=EC_IllegalCall;
+#ifdef DEBUG
+        cerr << "Error: voiLUTData present but voiLUTDescriptor absent or empty in presentation state" << endl;
+#endif
+      }
+      else if (voiLUTDescriptor.getVM() != 3)
+      {
+        result=EC_IllegalCall;
+#ifdef DEBUG
+        cerr << "Error: voiLUTData present but voiLUTDescriptor VM != 3 in presentation state" << endl;
+#endif
+      }
+    } 
+    else if (useLUT)
+    {
+        result=EC_IllegalCall;
+#ifdef DEBUG
+        cerr << "Error: neither VOI window nor LUT present in presentation state" << endl;
+#endif
+    }
+  }
+  return result;
+}
+
+E_Condition DVPSSoftcopyVOI::write(DcmItem &dset)
+{
+  E_Condition result = EC_Normal;
+  DcmElement *delem=NULL;
+  DcmSequenceOfItems *dseq=NULL;
+  DcmItem *ditem=NULL;
+
+  if (useLUT)
+  {
+    ditem = new DcmItem();
+    if (ditem)
+    {
+      dseq = new DcmSequenceOfItems(DCM_VOILUTSequence);
+      if (dseq)
+      {
+        delem = new DcmUnsignedShort(voiLUTDescriptor);
+        if (delem) ditem->insert(delem); else result=EC_MemoryExhausted;
+        delem = new DcmUnsignedShort(voiLUTData);
+        if (delem) ditem->insert(delem); else result=EC_MemoryExhausted;
+        if (voiLUTExplanation.getLength() >0)
+        {
+          delem = new DcmLongString(voiLUTExplanation);
+          if (delem) ditem->insert(delem); else result=EC_MemoryExhausted;
+        }
+        if (result==EC_Normal)
+        {
+          dseq->insert(ditem);
+          dset.insert(dseq);
+        } else {
+          // out of memory during creation of sequence contents.
+          delete dseq;
+          delete ditem;
+          result = EC_MemoryExhausted;
+        }
+      } else {
+        // could allocate item but not sequence. Bail out.
+        delete ditem;
+        result = EC_MemoryExhausted;
+      }
+    }
+    else result = EC_MemoryExhausted;
+  }
+  else
+  {
+    ADD_TO_DATASET(DcmDecimalString, windowCenter)
+    ADD_TO_DATASET(DcmDecimalString, windowWidth)
+    if (windowCenterWidthExplanation.getLength() > 0) { ADD_TO_DATASET(DcmLongString, windowCenterWidthExplanation) }
+  }
+
+  if ((result == EC_Normal)&&(referencedImageList.size() >0)) result = referencedImageList.write(dset);
+  return result;
+}
+
+OFBool DVPSSoftcopyVOI::isApplicable(const char *instanceUID, unsigned long frame)
+{
+  return referencedImageList.isApplicable(instanceUID, frame);
+}
+
+OFBool DVPSSoftcopyVOI::matchesApplicability(const char *instanceUID, unsigned long frame, DVPSObjectApplicability applicability)
+{
+  return referencedImageList.matchesApplicability(instanceUID, frame, applicability);
+}
+
+void DVPSSoftcopyVOI::removeImageReference(
+    DVPSReferencedSeries_PList& allReferences,
+    const char *instanceUID,
+    unsigned long frame, 
+    unsigned long numberOfFrames, 
+    DVPSObjectApplicability applicability)
+{
+  referencedImageList.removeImageReference(allReferences, instanceUID, frame, numberOfFrames, applicability);
+  return;
+}
+
+E_Condition DVPSSoftcopyVOI::addImageReference(
+    const char *sopclassUID,
+    const char *instanceUID, 
+    unsigned long frame,
+    DVPSObjectApplicability applicability)
+{
+  return referencedImageList.addImageReference(sopclassUID, instanceUID, frame, applicability);
+}
+
+const char *DVPSSoftcopyVOI::getCurrentVOIDescription()
+{
+  char *c=NULL;
+  if (useLUT)
+  {
+    if (EC_Normal == voiLUTExplanation.getString(c)) return c;
+  } 
+  else
+  {
+    if (EC_Normal == windowCenterWidthExplanation.getString(c)) return c;
+  } 
+  return NULL;
+}
+
+E_Condition DVPSSoftcopyVOI::getCurrentWindowWidth(double &w)
+{
+  E_Condition result = EC_IllegalCall;
+  if (!useLUT)
+  {
+    Float64 temp=0.0;
+    result = windowWidth.getFloat64(temp,0);
+    if (EC_Normal==result) w = (double)temp;
+  }
+  return result;
+}
+  
+E_Condition DVPSSoftcopyVOI::getCurrentWindowCenter(double &c)
+{
+  E_Condition result = EC_IllegalCall;
+  if (!useLUT)
+  {
+    Float64 temp=0.0;
+    result = windowCenter.getFloat64(temp,0);
+    if (EC_Normal==result) c = (double)temp;
+  }
+  return result;
+}
+
+E_Condition DVPSSoftcopyVOI::setVOIWindow(double wCenter, double wWidth, const char *description)
+{
+  if (wWidth <= 1.0) 
+  {
+#ifdef DEBUG
+        cerr << "Error: Window Width < 1 not allowed." << endl;
+#endif
+    return EC_IllegalCall;
+  }
+  DcmDecimalString wc(DCM_WindowCenter);
+  DcmDecimalString ww(DCM_WindowWidth);
+  DcmLongString expl(DCM_WindowCenterWidthExplanation);
+  char buf[80];
+  sprintf(buf, "%G", wCenter);
+  E_Condition result = wc.putString(buf);
+  sprintf(buf, "%G", wWidth);
+  if (EC_Normal == result) result = ww.putString(buf);
+  if ((EC_Normal == result)&&(description)) result = expl.putString(description);
+  if (EC_Normal == result)
+  {
+    // everything worked fine, now copy.
+    windowCenter = wc;
+    windowWidth = ww;
+    windowCenterWidthExplanation = expl;
+    voiLUTDescriptor.clear();
+    voiLUTData.clear();
+    voiLUTExplanation.clear();
+    useLUT = OFFalse;
+  }
+  return result;
+}
+
+E_Condition DVPSSoftcopyVOI::setVOILUT( 
+    DcmUnsignedShort& lutDescriptor,
+    DcmUnsignedShort& lutData,
+    DcmLongString& lutExplanation)
+{
+  if (lutData.getLength() == 0) return EC_IllegalCall;
+  if (lutDescriptor.getVM() != 3) return EC_IllegalCall;
+  voiLUTDescriptor = lutDescriptor;
+  voiLUTData = lutData;
+  voiLUTExplanation = lutExplanation;
+  windowCenter.clear();
+  windowWidth.clear();
+  windowCenterWidthExplanation.clear();
+  useLUT = OFTrue;
+  return EC_Normal;
+}
+
+/*
+ *  $Log: dvpssv.cc,v $
+ *  Revision 1.1  1999-07-22 16:40:03  meichel
+ *  Adapted dcmpstat data structures and API to supplement 33 letter ballot text.
+ *
+ *
+ */
+
