@@ -17,9 +17,9 @@ LOCALINCLUDES= -I$(top_srcdir)/include -I$(includedir)/ofstd
 LIBDIRS = -L$(top_srcdir)/libsrc -L$(libdir)
 LOCALLIBS = -lofstd
 
-objs= tststack.o tstlist.o tlist.o tstring.o
+objs= tststack.o tstlist.o tlist.o tstring.o tstcmdln.o
 
-progs= tststack tstlist tlist tstring
+progs= tststack tstlist tlist tstring tstcmdln
 
 LOCALTRASH= *.out
 
@@ -35,6 +35,9 @@ tlist: tlist.o
 	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ $@.o $(LOCALLIBS) $(LIBS)
 
 tstring: tstring.o
+	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ $@.o $(LOCALLIBS) $(LIBS)
+
+tstcmdln: tstcmdln.o
 	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ $@.o $(LOCALLIBS) $(LIBS)
 
 
@@ -77,5 +80,3 @@ $(objs): config.h
 
 
 include $(DEP)
-
-

@@ -1,5 +1,8 @@
 tlist.o: tlist.cc ../include/oflist.h ../../config/include/osconfig.h \
  ../include/oftypes.h ../include/ofalgo.h
+tstcmdln.o: tstcmdln.cc ../include/ofcmdln.h \
+ ../../config/include/osconfig.h ../include/oftypes.h \
+ ../include/oflist.h ../include/ofstring.h
 tstlist.o: tstlist.cc ../include/ofalgo.h \
  ../../config/include/osconfig.h ../include/oftypes.h \
  ../include/oflist.h
