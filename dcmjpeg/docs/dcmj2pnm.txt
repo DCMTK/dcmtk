@@ -169,6 +169,7 @@ output options:
   +obp    --write-8-bit-bmp     write 8-bit palette BMP (monochrome only)
   +obt    --write-24-bit-bmp    write 24-bit truecolor BMP
   +ot     --write-tiff          write 8-bit (monochrome) or 24-bit (color) TIFF
+  +on     --write-png           write 8-bit (monochrome) or 24-bit (color) PNG
   +oj     --write-jpeg          write 8-bit lossy JPEG (baseline)
 
 

@@ -121,6 +121,10 @@ image processing options:
                                 ambient light value (cd/m^2, default: file f)
     +Di   --illumination        [i]llumination : float
                                 illumination value (cd/m^2, default: file f)
+    +Dn   --min-density         [m]inimum optical density : float
+                                Dmin value (default: off, only with +Dp)
+    +Dx   --max-density         [m]aximum optical density : float
+                                Dmax value (default: off, only with +Dp)
     +Dg   --gsd-function        use GSDF for calibration (default for +Dm/+Dp)
     +Dc   --cielab-function     use CIELAB function for calibration
   compatibility options:
