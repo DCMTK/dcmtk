@@ -22,8 +22,8 @@
  *  Purpose: DicomColorImage (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2004-05-10 10:47:47 $
- *  CVS/RCS Revision: $Revision: 1.32 $
+ *  Update Date:      $Date: 2004-10-19 12:56:17 $
+ *  CVS/RCS Revision: $Revision: 1.33 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -244,7 +244,7 @@ int DiColorImage::checkInterData(const int mode)
         ImageStatus = EIS_InvalidImage;
     else if (mode && (ImageStatus == EIS_Normal))
     {
-        const unsigned long count = OFstatic_cast(unsigned long, Columns) * OFstatic_cast(unsigned long, Rows) * NumberOfFrames;
+        const unsigned long count = OFstatic_cast(unsigned long, Columns) * OFstatic_cast(unsigned long, Rows) * TotalNumberOfFrames;
         if ((InterData->getInputCount() != count) && ((InterData->getInputCount() >> 1) != ((count + 1) >> 1)))
         {
             if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Warnings))
@@ -741,7 +741,10 @@ int DiColorImage::writeBMP(FILE *stream,
  *
  * CVS/RCS Log:
  * $Log: dicoimg.cc,v $
- * Revision 1.32  2004-05-10 10:47:47  joergr
+ * Revision 1.33  2004-10-19 12:56:17  joergr
+ * Fixed wrong warning message about length of pixel data.
+ *
+ * Revision 1.32  2004/05/10 10:47:47  joergr
  * Fixed bug that prevented the proper rotation of color images.
  * Removed unused template instantiations (flipping class for signed images).
  *
