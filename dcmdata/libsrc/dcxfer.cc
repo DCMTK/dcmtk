@@ -9,8 +9,8 @@
  * handling of transfer syntax
  *
  * 
- * Last Update:	  $Author: hewett $
- * Revision:      $Revision: 1.4 $
+ * Last Update:	  $Author: andreas $
+ * Revision:      $Revision: 1.5 $
  * Status:        $State: Exp $
  *
  */
@@ -207,7 +207,7 @@ const int DIM_OF_XferNames = (sizeof(XferNames) / sizeof(S_XferNames));
 
 DcmXfer::DcmXfer( E_TransferSyntax xfer )
 {
-    Bdebug((7, "dcxfer:DcmXfer::DcmXfer(xfer=%d)", xfer ));
+Bdebug((7, "dcxfer:DcmXfer::DcmXfer(xfer=%d)", xfer ));
 
     int i = 0;
     while (    (i < DIM_OF_XferNames)
@@ -239,7 +239,7 @@ DcmXfer::DcmXfer( E_TransferSyntax xfer )
         JPEGProcess8  = 0L;
         JPEGProcess12 = 0L;
     }
-    Edebug(());
+Edebug(());
 
 }
 
@@ -249,7 +249,7 @@ DcmXfer::DcmXfer( E_TransferSyntax xfer )
 
 DcmXfer::DcmXfer( const char* xferName_xferID )
 {
-    Bdebug((7, "dcxfer:DcmXfer::DcmXfer(char*)" ));
+Bdebug((7, "dcxfer:DcmXfer::DcmXfer(char*)" ));
 
     const char* xname = xferName_xferID;
     if ( xname == (char*)NULL )
@@ -316,7 +316,7 @@ DcmXfer::DcmXfer( const char* xferName_xferID )
             }
         }
     }
-    Edebug(());
+Edebug(());
 
 }
 
@@ -326,7 +326,7 @@ DcmXfer::DcmXfer( const char* xferName_xferID )
 
 DcmXfer::DcmXfer( const DcmXfer &newXfer )
 {
-    Bdebug((7, "dcxfer:DcmXfer::DcmXfer(DcmXfer&)" ));
+Bdebug((7, "dcxfer:DcmXfer::DcmXfer(DcmXfer&)" ));
 
     xferSyn       = newXfer.xferSyn;
     xferID        = newXfer.xferID;
@@ -336,7 +336,7 @@ DcmXfer::DcmXfer( const DcmXfer &newXfer )
     encapsulated  = newXfer.encapsulated;
     JPEGProcess8  = newXfer.JPEGProcess8;
     JPEGProcess12 = newXfer.JPEGProcess12;
-    Edebug(());
+Edebug(());
 
 }
 
