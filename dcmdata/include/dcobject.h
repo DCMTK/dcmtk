@@ -24,9 +24,9 @@
  *  DICOM object encoding/decoding, search and lookup facilities.
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-03-08 16:26:16 $
+ *  Update Date:      $Date: 2000-04-14 16:02:39 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcobject.h,v $
- *  CVS/RCS Revision: $Revision: 1.23 $
+ *  CVS/RCS Revision: $Revision: 1.24 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -39,6 +39,7 @@
 #include "osconfig.h"    /* make sure OS specific configuration is included first */
 
 #include "ofconsol.h"
+#include "ofglobal.h"
 #include "dcerror.h"
 #include "dctypes.h"
 #include "dcxfer.h"
@@ -63,7 +64,7 @@ const Uint32 DCM_OptPrintLineLength = 70;
 ** Should automatic correction be applied to input data (e.g. stripping
 ** of padding blanks, removal of blanks in UIDs, etc).
 */
-extern OFBool dcmEnableAutomaticInputDataCorrection; /* default OFTrue */
+extern OFGlobal<OFBool> dcmEnableAutomaticInputDataCorrection; /* default OFTrue */
 
 /*
 ** The base dicom object class
@@ -84,7 +85,7 @@ protected:
     virtual void printInfoLine(ostream & out, const OFBool showFullData,
                                const int level, const char *info );
     virtual void printInfoLine(ostream & out, const OFBool showFullData,
-                               const int level, const DcmTag &tag,
+                               const int level, DcmTag &tag,
                                const Uint32 length, const char *info );
 
     E_Condition writeTag(DcmStream & outStream, const DcmTag & tag,
@@ -115,7 +116,7 @@ public:
 
     virtual OFBool isLeaf(void) const = 0;
     virtual DcmObject * nextInContainer(const DcmObject * obj);
-    virtual void print(ostream & out = COUT, const OFBool showFullData = OFTrue,
+    virtual void print(ostream & out, const OFBool showFullData = OFTrue,
                        const int level = 0, const char *pixelFileName = NULL,
                        size_t *pixelCounter = NULL) = 0;
     inline E_Condition error(void) const { return errorFlag; }
@@ -126,7 +127,7 @@ public:
 
     inline Uint16 getGTag() const { return Tag.getGTag(); }
     inline Uint16 getETag() const { return Tag.getETag(); }
-    inline const DcmTag & getTag(void) const { return Tag; }
+    inline const DcmTag & getTag() const { return Tag; }
     inline void setGTag(Uint16 gtag) { Tag.setGroup(gtag); }
 
     virtual E_Condition setVR(DcmEVR /*vr*/) { return EC_IllegalCall; }
@@ -175,7 +176,11 @@ public:
 /*
  * CVS/RCS Log:
  * $Log: dcobject.h,v $
- * Revision 1.23  2000-03-08 16:26:16  meichel
+ * Revision 1.24  2000-04-14 16:02:39  meichel
+ * Global flag dcmEnableAutomaticInputDataCorrection now derived from OFGlobal
+ *   and, thus, safe for use in multi-thread applications.
+ *
+ * Revision 1.23  2000/03/08 16:26:16  meichel
  * Updated copyright header.
  *
  * Revision 1.22  2000/03/03 14:05:24  meichel
