@@ -23,8 +23,8 @@
  *    classes: DSRDocumentTree
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-10-18 17:16:08 $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  Update Date:      $Date: 2000-10-26 14:29:49 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -208,13 +208,20 @@ OFBool DSRDocumentTree::canAddContentItem(const E_RelationshipType relationshipT
     const DSRDocumentTreeNode *node = (const DSRDocumentTreeNode *)getNode();
     if (node != NULL)
     {
-        if ((addMode == AM_beforeCurrent) || (addMode == AM_afterCurrent))
-        {     /* check parent node */
-            node = (const DSRDocumentTreeNode *)getParentNode();
-            if (node != NULL)
+        /* this is just a trick to test by-reference relationships, should be removed later on !!! */
+        if ((DocumentType == DT_ComprehensiveSR) && (relationshipType != RT_contains) && (valueType == VT_byReference))
+        {
+            /* temporarily allow by-reference relationship to all value types */
+            result = OFTrue;
+        } else {
+            if ((addMode == AM_beforeCurrent) || (addMode == AM_afterCurrent))
+            {     /* check parent node */
+                node = (const DSRDocumentTreeNode *)getParentNode();
+                if (node != NULL)
+                    result = node->canAddNode(DocumentType, relationshipType, valueType);
+            } else
                 result = node->canAddNode(DocumentType, relationshipType, valueType);
-        } else
-            result = node->canAddNode(DocumentType, relationshipType, valueType);
+        }
     } else    /* root node */
         result = (relationshipType == RT_isRoot) && (valueType == VT_Container);
     return result;
@@ -275,7 +282,10 @@ size_t DSRDocumentTree::removeNode()
 /*
  *  CVS/RCS Log:
  *  $Log: dsrdoctr.cc,v $
- *  Revision 1.4  2000-10-18 17:16:08  joergr
+ *  Revision 1.5  2000-10-26 14:29:49  joergr
+ *  Added support for "Comprehensive SR".
+ *
+ *  Revision 1.4  2000/10/18 17:16:08  joergr
  *  Added check for read methods (VM and type).
  *
  *  Revision 1.3  2000/10/16 16:32:56  joergr

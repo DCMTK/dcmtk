@@ -23,8 +23,8 @@
  *    classes: DSRTextTreeNode
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-10-23 15:04:46 $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  Update Date:      $Date: 2000-10-26 14:35:09 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -136,15 +136,7 @@ OFBool DSRTextTreeNode::canAddNode(const E_DocumentType documentType,
     switch (relationshipType)
     {
         case RT_hasConceptMod:
-            switch (valueType)
-            {
-                case VT_Text:
-                case VT_Code:
-                    result = OFTrue;
-                    break;
-                default:
-                    break;
-            }
+            result = (valueType == VT_Text) || (valueType == VT_Code);
             break;
         case RT_inferredFrom:
         case RT_hasProperties:
@@ -167,9 +159,11 @@ OFBool DSRTextTreeNode::canAddNode(const E_DocumentType documentType,
                 case VT_TCoord:
                     result = (documentType == DT_EnhancedSR) || (documentType == DT_ComprehensiveSR);
                     break;
+/*
                 case VT_Container:
-                    result = (documentType == DT_ComprehensiveSR);  /* only by-reference - to be checked ! */
+                    result = (documentType == DT_ComprehensiveSR);  // only by-reference - to be checked !
                     break;
+*/
                 default:
                     break;
             }
@@ -184,7 +178,10 @@ OFBool DSRTextTreeNode::canAddNode(const E_DocumentType documentType,
 /*
  *  CVS/RCS Log:
  *  $Log: dsrtextn.cc,v $
- *  Revision 1.4  2000-10-23 15:04:46  joergr
+ *  Revision 1.5  2000-10-26 14:35:09  joergr
+ *  Added support for "Comprehensive SR".
+ *
+ *  Revision 1.4  2000/10/23 15:04:46  joergr
  *  Added clear() method.
  *
  *  Revision 1.3  2000/10/18 17:23:12  joergr

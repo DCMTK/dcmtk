@@ -23,8 +23,8 @@
  *    classes: DSRImageTreeNode
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-10-20 10:14:58 $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  Update Date:      $Date: 2000-10-26 14:30:37 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -134,23 +134,18 @@ OFBool DSRImageTreeNode::canAddNode(const E_DocumentType documentType,
                     break;
                 case VT_Num:
                     result = (documentType == DT_EnhancedSR) || (documentType == DT_ComprehensiveSR);
-                case VT_Container:
-                    result = (documentType == DT_ComprehensiveSR);  /* only by-reference - to be checked ! */
                     break;
+/*
+                case VT_Container:
+                    result = (documentType == DT_ComprehensiveSR);  // only by-reference - to be checked !
+                    break;
+*/
                 default:
                     break;
             }
             break;
         case RT_hasConceptMod:
-            switch (valueType)
-            {
-                case VT_Text:                
-                case VT_Code:
-                    result = OFTrue;
-                    break;
-                default:
-                    break;
-            }
+            result = (valueType == VT_Text) || (valueType == VT_Code);
             break;
         default:
             break;
@@ -162,7 +157,10 @@ OFBool DSRImageTreeNode::canAddNode(const E_DocumentType documentType,
 /*
  *  CVS/RCS Log:
  *  $Log: dsrimgtn.cc,v $
- *  Revision 1.4  2000-10-20 10:14:58  joergr
+ *  Revision 1.5  2000-10-26 14:30:37  joergr
+ *  Added support for "Comprehensive SR".
+ *
+ *  Revision 1.4  2000/10/20 10:14:58  joergr
  *  Renamed class DSRReferenceValue to DSRCompositeReferenceValue.
  *
  *  Revision 1.3  2000/10/18 17:18:51  joergr

@@ -23,8 +23,8 @@
  *    classes: DSRDocumentTreeNode
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-10-23 15:03:36 $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  Update Date:      $Date: 2000-10-26 14:29:20 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -296,8 +296,10 @@ E_Condition DSRDocumentTreeNode::createAndAppendNewNode(DSRDocumentTreeNode *&pr
                                                         const E_RelationshipType relationshipType,
                                                         const E_ValueType valueType)
 {
-    E_Condition result = EC_IllegalCall;
-    if (canAddNode(documentType, relationshipType, valueType))
+    E_Condition result = EC_CorruptedData;
+    /* this is just a trick to test by-reference relationships, first line should be removed later on !!! */
+    if (((documentType == DT_ComprehensiveSR) && (relationshipType != RT_contains) && (valueType == VT_byReference)) ||
+        canAddNode(documentType, relationshipType, valueType))
     {
         DSRDocumentTreeNode *node = createDocumentTreeNode(relationshipType, valueType);
         if (node != NULL)
@@ -314,8 +316,7 @@ E_Condition DSRDocumentTreeNode::createAndAppendNewNode(DSRDocumentTreeNode *&pr
             /* store new node for the next time */
             previousNode = node;
             result = EC_Normal;
-        } else
-            result = EC_CorruptedData;
+        }
     }
     return result;
 }
@@ -354,34 +355,44 @@ E_Condition DSRDocumentTreeNode::readContentSequence(DcmItem &dataset,
                         /* check relationship type */
                         if (relationshipType == RT_unknown)
                         {
-                            OFString message = "Reading unknown relationship type ";
+                            OFString message = "Reading unknown RelationshipType ";
                             message += string;
                             printWarningMessage(logStream, message.c_str());
                         }
-                        /* read ValueType (from DocumentContentMacro) - required to create new node */
-                        result = getAndCheckStringValueFromDataset(*ditem, DCM_ValueType, string, "1", "1", logStream);
-                    }
-                    if (result == EC_Normal)
-                    {
-                        valueType = definedTermToValueType(string);
-                        /* check value type */
-                        if (valueType == VT_unknown)
+                        /* check for by-reference relationship */
+                        DcmUnsignedLong referencedContentItemIdentifier(DCM_ReferencedContentItemIdentifier);
+                        if (getAndCheckElementFromDataset(*ditem, referencedContentItemIdentifier, "1-n", "1C", logStream) == EC_Normal)
                         {
-                            OFString message = "Reading unknown value type ";
-                            message += string;
-                            printWarningMessage(logStream, message.c_str());
+                            /* create new node (by-reference) */
+                            result = createAndAppendNewNode(node, documentType, relationshipType, VT_byReference);
+                            /* read ReferencedContentItemIdentifier (again) */
+                            if (result == EC_Normal)
+                                result = node->readContentItem(*ditem, logStream);
+                        } else {
+                            /* read ValueType (from DocumentContentMacro) - required to create new node */
+                            result = getAndCheckStringValueFromDataset(*ditem, DCM_ValueType, string, "1", "1", logStream);
+                            if (result == EC_Normal)
+                            {
+                                /* read by-value relationship */
+                                valueType = definedTermToValueType(string);
+                                /* check value type */
+                                if (valueType == VT_unknown)
+                                {
+                                    OFString message = "Reading unknown ValueType ";
+                                    message += string;
+                                    printWarningMessage(logStream, message.c_str());
+                                }
+                                /* create new node (by-value) */
+                                result = createAndAppendNewNode(node, documentType, relationshipType, valueType);
+                                /* read RelationshipMacro */
+                                if (result == EC_Normal)
+                                    result = node->readDocumentRelationshipMacro(*ditem, documentType, logStream);
+                                /* read DocumentContentMacro (might be empty) */
+                                if (result == EC_Normal)
+                                    node->readDocumentContentMacro(*ditem, logStream);
+                            }
                         }
-                        /* create new node */
-                        result = createAndAppendNewNode(node, documentType, relationshipType, valueType);
                     }
-                    /* read RelationshipMacro (only for by-value references! to be checked) */
-                    if (result == EC_Normal)
-                        result = node->readDocumentRelationshipMacro(*ditem, documentType, logStream);
-                    /* read DocumentContentMacro (might be empty) */
-                    if (result == EC_Normal)
-                        node->readDocumentContentMacro(*ditem, logStream);
-                    /* tbd: read ReferencedContentItemIdentifier (conditional) */
-
                     /* check for any errors */
                     if (result != EC_Normal)
                         printContentItemErrorMessage(logStream, "Reading", result, node);
@@ -418,14 +429,20 @@ E_Condition DSRDocumentTreeNode::writeContentSequence(DcmItem &dataset,
                     {
                         /* write RelationshipType */
                         result = putStringValueToDataset(*ditem, DCM_RelationshipType, relationshipTypeToDefinedTerm(node->getRelationshipType()));
-                        /* write RelationshipMacro (only for by-value references !) */
-                        if (result == EC_Normal)
-                            result = node->writeDocumentRelationshipMacro(*ditem, logStream);
-                        /* write DocumentContentMacro */
-                        if (result == EC_Normal)
-                            node->writeDocumentContentMacro(*ditem, logStream);
-                        /* tbd: write ReferencedContentItemIdentifier (conditional) */
-
+                        /* check for by-reference relationship */
+                        if (node->getValueType() == VT_byReference)
+                        {
+                            /* write ReferencedContentItemIdentifier */
+                            if (result == EC_Normal)
+                                result = node->writeContentItem(*ditem, logStream);
+                        } else {    // by-value          
+                            /* write RelationshipMacro */
+                            if (result == EC_Normal)
+                                result = node->writeDocumentRelationshipMacro(*ditem, logStream);
+                            /* write DocumentContentMacro */
+                            if (result == EC_Normal)
+                                node->writeDocumentContentMacro(*ditem, logStream);
+                        }
                         /* check for any errors */
                         if (result != EC_Normal)
                             printContentItemErrorMessage(logStream, "Writing", result, node);
@@ -534,9 +551,9 @@ E_Condition DSRDocumentTreeNode::renderHTMLChildNodes(ostream &docStream,
                                 ConceptName.renderHTML(docStream, logStream);
                             else
                                 docStream << node->getConceptName().getCodeMeaning();
-                            docStream << " ";
                         } else
-                            docStream << valueTypeToReadableName(node->getValueType()) << " ";
+                            docStream << valueTypeToReadableName(node->getValueType());
+                        docStream << " = ";
                         /* render HTML code (directly to the reference text) */
                         result = node->renderHTML(docStream, annexStream, 0 /* nesting level */, annexNumber, newFlags | HF_renderItemInline, logStream);
 //                        docStream << endl;
@@ -644,7 +661,10 @@ const OFString &DSRDocumentTreeNode::getRelationshipText(const E_RelationshipTyp
 /*
  *  CVS/RCS Log:
  *  $Log: dsrdoctn.cc,v $
- *  Revision 1.4  2000-10-23 15:03:36  joergr
+ *  Revision 1.5  2000-10-26 14:29:20  joergr
+ *  Added support for "Comprehensive SR".
+ *
+ *  Revision 1.4  2000/10/23 15:03:36  joergr
  *  Allow to set empty concept name code (= clear).
  *
  *  Revision 1.3  2000/10/18 17:16:08  joergr

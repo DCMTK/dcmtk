@@ -23,8 +23,8 @@
  *    classes: DSRContainerTreeNode
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-10-23 15:02:49 $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  Update Date:      $Date: 2000-10-26 14:27:47 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -224,23 +224,17 @@ OFBool DSRContainerTreeNode::canAddNode(const E_DocumentType documentType,
                 case VT_Num:
                     result = (documentType == DT_EnhancedSR) || (documentType == DT_ComprehensiveSR);
                     break;
+/*
                 case VT_Container:
-                    result = (documentType == DT_ComprehensiveSR);  /* only by-reference - to be checked ! */
+                    result = (documentType == DT_ComprehensiveSR);  // only by-reference - to be checked !
                     break;
+*/
                 default:
                     break;
             }
             break;
         case RT_hasConceptMod:
-            switch (valueType)
-            {
-                case VT_Text:                
-                case VT_Code:
-                    result = OFTrue;
-                    break;
-                default:
-                    break;
-            }
+            result = (valueType == VT_Text) || (valueType == VT_Code);
             break;
         default:
             break;
@@ -264,7 +258,10 @@ E_Condition DSRContainerTreeNode::setContinuityOfContent(const E_ContinuityOfCon
 /*
  *  CVS/RCS Log:
  *  $Log: dsrcontn.cc,v $
- *  Revision 1.5  2000-10-23 15:02:49  joergr
+ *  Revision 1.6  2000-10-26 14:27:47  joergr
+ *  Added support for "Comprehensive SR".
+ *
+ *  Revision 1.5  2000/10/23 15:02:49  joergr
  *  Enhanced implementation of method isValid().
  *
  *  Revision 1.4  2000/10/19 16:03:48  joergr

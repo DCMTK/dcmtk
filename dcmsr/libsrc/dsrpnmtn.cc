@@ -23,8 +23,8 @@
  *    classes: DSRPNameTreeNode
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-10-23 15:04:46 $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  Update Date:      $Date: 2000-10-26 14:32:09 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -121,10 +121,7 @@ OFBool DSRPNameTreeNode::canAddNode(const E_DocumentType /* documentType */,
 {
     OFBool result = OFFalse;
     if (relationshipType == RT_hasConceptMod)
-    {
-        if ((valueType == VT_Text) || (valueType == VT_Code))
-            result = OFTrue;
-    }
+        result = (valueType == VT_Text) || (valueType == VT_Code);
     return result;
 }
 
@@ -132,7 +129,10 @@ OFBool DSRPNameTreeNode::canAddNode(const E_DocumentType /* documentType */,
 /*
  *  CVS/RCS Log:
  *  $Log: dsrpnmtn.cc,v $
- *  Revision 1.4  2000-10-23 15:04:46  joergr
+ *  Revision 1.5  2000-10-26 14:32:09  joergr
+ *  Added support for "Comprehensive SR".
+ *
+ *  Revision 1.4  2000/10/23 15:04:46  joergr
  *  Added clear() method.
  *
  *  Revision 1.3  2000/10/18 17:20:20  joergr

@@ -23,8 +23,8 @@
  *    classes: DSRSCoordTreeNode
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-10-16 12:07:29 $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  Update Date:      $Date: 2000-10-26 14:33:53 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -118,18 +118,17 @@ OFBool DSRSCoordTreeNode::canAddNode(const E_DocumentType documentType,
                                      const E_ValueType valueType) const
 {
     OFBool result = OFFalse;
-    if (relationshipType == RT_selectedFrom)
+    switch (relationshipType)
     {
-        switch (valueType)
-        {
-            case VT_Image:
-            case VT_Waveform:
-            case VT_SCoord:
+        case RT_hasConceptMod:
+            result = (valueType == VT_Text) || (valueType == VT_Code);
+            break;
+        case RT_selectedFrom:
+            if (valueType == VT_Image)
                 result = (documentType == DT_EnhancedSR) || (documentType == DT_ComprehensiveSR);
-                break;
-            default:
-                break;
-        }
+            break;
+        default:
+            break;
     }
     return result;
 }
@@ -138,7 +137,10 @@ OFBool DSRSCoordTreeNode::canAddNode(const E_DocumentType documentType,
 /*
  *  CVS/RCS Log:
  *  $Log: dsrscotn.cc,v $
- *  Revision 1.2  2000-10-16 12:07:29  joergr
+ *  Revision 1.3  2000-10-26 14:33:53  joergr
+ *  Added support for "Comprehensive SR".
+ *
+ *  Revision 1.2  2000/10/16 12:07:29  joergr
  *  Reformatted print output.
  *
  *  Revision 1.1  2000/10/13 07:52:24  joergr
