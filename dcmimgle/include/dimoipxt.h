@@ -22,9 +22,9 @@
  *  Purpose: DicomMonochromeInputPixelTemplate (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-05-03 09:46:28 $
+ *  Update Date:      $Date: 2000-06-02 12:40:50 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/dimoipxt.h,v $
- *  CVS/RCS Revision: $Revision: 1.19 $
+ *  CVS/RCS Revision: $Revision: 1.20 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -66,8 +66,6 @@ class DiMonoInputPixelTemplate
     {
         if ((pixel != NULL) && (Count > 0))
         {   
-cout << Count << endl;
-cout << pixel->getPixelStart() << endl;
             if ((Modality != NULL) && Modality->hasLookupTable() && (bitsof(T1) <= MAX_TABLE_ENTRY_SIZE))
             {
                 modlut(pixel);
@@ -294,7 +292,10 @@ cout << pixel->getPixelStart() << endl;
  *
  * CVS/RCS Log:
  * $Log: dimoipxt.h,v $
- * Revision 1.19  2000-05-03 09:46:28  joergr
+ * Revision 1.20  2000-06-02 12:40:50  joergr
+ * Removed debug message.
+ *
+ * Revision 1.19  2000/05/03 09:46:28  joergr
  * Removed most informational and some warning messages from release built
  * (#ifndef DEBUG).
  *
