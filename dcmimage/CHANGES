@@ -1,6 +1,11 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2000.03.07 (riesmeier)
+
+- Added type cast to make Sun CC 2.0.1 happy.
+  Affects: dcmimage/apps/dcm2pnm.cc
+
 **** Changes from 2000.03.03 (eichelberg)
 
 - Implemented library support for redirecting error messages into memory
