@@ -22,9 +22,9 @@
  *  Purpose: class DcmDataset
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-03-08 16:26:30 $
+ *  Update Date:      $Date: 2000-04-14 16:07:26 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcdatset.cc,v $
- *  CVS/RCS Revision: $Revision: 1.16 $
+ *  CVS/RCS Revision: $Revision: 1.17 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -136,19 +136,6 @@ void DcmDataset::print(ostream & out, const OFBool showFullData,
 // ********************************
 
 
-void DcmDataset::resolveAmbigous(void)
-{
-    /*
-    ** Nothing to do.
-    ** The handling of VR for PixelData is now done according
-    ** to Correction Proposal 14 in DcmItem::readSubElement(...)
-    */
-}
-
-
-// ********************************
-
-
 E_Condition DcmDataset::read(DcmStream & inStream,
                              const E_TransferSyntax xfer,
                              const E_GrpLenEncoding glenc,
@@ -178,8 +165,6 @@ E_Condition DcmDataset::read(DcmStream & inStream,
     if ( errorFlag == EC_Normal || errorFlag == EC_EndOfStream )
     {
         errorFlag = EC_Normal;
-        this -> resolveAmbigous();
-
         computeGroupLengthAndPadding(glenc, EPD_noChange, Xfer);
         fTransferState = ERW_ready;              // Dataset ist komplett
     }
@@ -344,7 +329,10 @@ DcmDataset::removeAllButOriginalRepresentations()
 /*
 ** CVS/RCS Log:
 ** $Log: dcdatset.cc,v $
-** Revision 1.16  2000-03-08 16:26:30  meichel
+** Revision 1.17  2000-04-14 16:07:26  meichel
+** Dcmdata library code now consistently uses ofConsole for error output.
+**
+** Revision 1.16  2000/03/08 16:26:30  meichel
 ** Updated copyright header.
 **
 ** Revision 1.15  2000/02/10 10:52:16  joergr
