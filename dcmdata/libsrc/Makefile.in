@@ -66,14 +66,13 @@ install-support: install-bin
 
 
 $(libdir)/dicom.dic: $(DICTFILE) $(PRIVDICTFILE)
-	$(configdir)/mkinstalldirs $(libdir)       
-ifeq ($(INSTALL_PRIVATE_DICTIONARY),YES)
-	cat $(DICTFILE) $(PRIVDICTFILE) >dicom.tmp
-	$(INSTALL_DATA) dicom.tmp $(libdir)/dicom.dic
-else
-	$(INSTALL_DATA) $(DICTFILE) $(libdir)/dicom.dic
-endif
-
+	$(configdir)/mkinstalldirs $(libdir)
+	if [ "x$(INSTALL_PRIVATE_DICTIONARY)" = "xYES" ] ; then \
+		cat $(DICTFILE) $(PRIVDICTFILE) >dicom.tmp ; \
+		$(INSTALL_DATA) dicom.tmp $(libdir)/dicom.dic ; \
+	else \
+		$(INSTALL_DATA) $(DICTFILE) $(libdir)/dicom.dic ; \
+	fi
 
 $(libdir)/libdcmdata.$(LIBEXT):	libdcmdata.$(LIBEXT)
 	$(configdir)/mkinstalldirs $(libdir)
