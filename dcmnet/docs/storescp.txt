@@ -28,6 +28,9 @@ general options:
   -h      --help                 print this help text and exit
   -v      --verbose              verbose mode, print processing details
   -d      --debug                debug mode, print debug information
+  -od     --output-directory     [p]ath: string
+                                 write output-files to (existing) directory p
+                                 (default: .)
 network options:
   preferred network transfer syntaxes:
     +x=   --prefer-uncompr       prefer explicit VR local byte order (default)
@@ -81,6 +84,31 @@ output options:
     +p    --padding-create       [f]ile-pad [i]tem-pad: integer
                                  align file on multiple of f bytes
                                  and items on multiple of i bytes
+  sorting into subdirectories (not with --bit-preserving):
+    -ss   --sort-conc-studies    [p]refix: string
+                                 Sort concerning studies into subdirectories
+                                 that start with prefix p.
+event options:
+  -xcr  --exec-on-reception    [c]ommand: string
+                               Execute command c after having received and
+                               processed one C-STORE-Request message
+  -xcs  --exec-on-eostudy      [c]ommand: string (only w/ --sort-conc-studies)
+                               Execute command c after having received and
+                               processed all C-STORE-Request messages that
+                               belong to one study.
+  -rns  --rename-on-eostudy    (only with --sort-conc-studies)
+                               After having received and processed all
+                               C-STORE-Request messages that belong to one
+                               study, rename files according to pattern
+                               [modality-prefix][consecutive-number].
+  -tos  --eostudy-timeout      [t]imeout: integer
+                               (only with --sort-conc-studies or --exec-
+                               on-eostudy or --rename-on-eostudy)
+                               If after the reception of DICOM objects (which
+                               belong to one study s) no information was
+                               received over the network for t seconds, it
+                               will be considered that all objects for the
+                               study s have been received.
 transport layer security (TLS) options:
   transport protocol stack options:
     -tls  --disable-tls          use normal TCP/IP connection (default)
@@ -115,6 +143,81 @@ transport layer security (TLS) options:
     -vc   --verify-peer-cert     verify peer certificate if present
     -ic   --ignore-peer-cert     don't verify peer certificate
 
+OPTIONS
+
+The semantic impacts of the above mentioned options is clear for the majority
+of options. Some particular options, however, are so specific that they need
+detailed descriptions which will be given in this passage.
+
+Option --sort-conc-studies enables a user to sort all received DICOM objects
+into different subdirectories. The sorting will be done with regard to the
+studies the individual objects belong to, i.e. objects that belong to the same
+study will be stored in the same subdirectory. In general, a DICOM object d_n+1
+is considered to belong to the same study as a DICOM object d_n if and only if
+d_n and d_n+1 show the exact same values in attribute Study Instance UID. The
+names of the resulting subdirectories always start with a prefix p which was
+passed to this option as a parameter. In addition to this prefix, the subdirec-
+tory names contain time stamp information with regard to the date and time of
+reception of this particular study's first DICOM object. In detail, the deter-
+mination of the subdirectory names pertains to the pattern
+                         [prefix]_[YYYYMMDD]_[HHMMSSPPP]
+where YYYY refers to year (4 digits), MM to month (01-12), DD to day (01-31),
+HH to hour (00-23), MM to minute (00-59), SS to second (00-59) and PPP to
+milliseconds (000-999).
+
+Option --exec-on-reception makes it possible to execute a certain command line
+after having received and processed one DICOM object (through a C-STORE-Request
+message). The command line which shall be executed will be passed to this
+option as a parameter; note that the specified command line may contain a
+placeholder ("#p") which will be replaced at run time by the complete path to
+the output directory into which the last DICOM object was stored, and it may
+contain another placeholder ("#f") which will be replaced at run time by the
+last output file's filename. The specified command line will be executed as a
+separate process, so that the execution of storescp will not be held back.
+
+Option --exec-on-eostudy enables a user to execute a certain command line after
+having determined that all DICOM objects that belong to one study have been
+received by storescp. The command line which shall be executed will be passed
+to this option as a parameter; note that the specified command line may contain
+a placeholder ("#p") that will be replaced at run time by the complete path to
+the output directory into which the last study's DICOM objects were stored.
+The specified command line will be executed as a separate process, so that the
+execution of storescp will not be held back. In general, the question if all
+DICOM objects that belong to one study have been received by storescp will be
+answered positively if and only if two consecutively received DICOM objects
+d_n and d_n+1 do not show the same values in attribute Study Instance UID; in
+such a case, d_n+1 is considered to belong to a new study. Note that in case
+this option is used in combination with option --rename-on-eostudy, the
+renaming performed by the latter option will be executed before this option's
+command line is executed.
+
+Option --rename-on-eostudy refers to the above mentioned option --sort-conc-
+studies and can only be used in combination with this option. If a user
+specifies option --rename-on-eostudy and storescp determines that all DICOM
+objects that belong to a certain study have been received, all DICOM files
+that belong to the last study will be renamed in the corresponding output
+directory. The filenames into which the files are being renamed will be
+calculated using the pattern
+                        [prefix][consecutive numbering]
+where [prefix] is a 2 character prefix that reveals the kind of DICOM object
+stored in the file and [consecutive numbering] is a consecutively numbered,
+6-digit number, starting at "000001". In general, the question if all DICOM
+objects that belong to one study have been received by storescp will be
+answered positively if and only if two consecutively received DICOM objects
+d_n and d_n+1 do not show the same values in attribute Study Instance UID; in
+such a case, d_n+1 is considered to belong to a new study.
+
+Using option --eostudy-timeout a user can modify the determination process to
+figure out if all DICOM objects that belong to one study have already been
+received by storescp. With regard to this fact, it is clear that this option
+can only be used in combination with at least one of the three options --sort-
+conc-studies, --exec-on-eostudy and --rename-on-eostudy. If option --eostudy-
+timeout is specified, the end of a study is considered to have occurred not
+only if two consecutively received DICOM objects d_n and d_n+1 do not show the
+same values in attribute Study Instance UID, but also if whithin a time span of
+x seconds after the reception of a DICOM object d_n, no other DICOM object was
+received over the network. Note that the amount x of seconds (which determines
+the length of this time span) has to be passed to this option as a parameter.
 
 DICOM CONFORMANCE
 
@@ -218,4 +321,9 @@ variable has the same format as the shell PATH variable in that a colon
 (":") separates entries.  The data dictionary code will attempt to load
 each file specified in the DCMDICTPATH environment variable.  It is an
 error if no data dictionary can be loaded.
+
+
+
+
+
 
