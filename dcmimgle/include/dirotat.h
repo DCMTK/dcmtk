@@ -22,9 +22,9 @@
  *  Purpose: DicomRotateTemplate (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1998-12-16 16:38:49 $
+ *  Update Date:      $Date: 1999-01-20 15:12:47 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/dirotat.h,v $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -40,6 +40,10 @@
 
 #include "dipixel.h"
 #include "ditranst.h"
+
+#ifdef DEBUG
+ #include "oftimer.h"
+#endif
 
 
 /*---------------------*
@@ -200,6 +204,14 @@ class DiRotateTemplate
         T *temp = new T[count];
         if (temp != NULL)
         {
+/*
+            const Uint16 block_X = (Dest_X < 256) ? Dest_X : 256;
+            const Uint16 block_Y = (Dest_Y < 256) ? Dest_Y : 256;
+            Uint16 count_X = 0;
+            Uint16 count_Y = 0;
+            Uint16 copy_X = block_X;
+            Uint16 copy_Y = block_Y;
+*/
             register Uint16 x;
             register Uint16 y;
             register const T *p;
@@ -210,7 +222,13 @@ class DiRotateTemplate
                 r = data[j];
                 for (unsigned long f = 0; f < Frames; f++)
                 {
+#ifdef DEBUG
+ OFTimer timer;
+#endif
                     OFBitmanipTemplate<T>::copyMem((const T *)r, temp, count);      // create temporary copy of current frame
+#ifdef DEBUG
+ cerr << "time for copyMem: " << timer.getDiff() << " s" << endl;
+#endif
                     p = temp;
                     r += count;
                     for (x = Dest_X; x > 0; x--)
@@ -222,6 +240,42 @@ class DiRotateTemplate
                             q -= Dest_X;
                         }
                     }
+/*
+                    T *p_block = temp;
+                    T *p_line;
+                    T *q_block = data + count - Dest_X;
+                    T *q_line;
+                    while (copy_X == block_X)
+                    {
+                        for (x = 0; x < copy_X, x++)
+                        {
+                            p_line = p_block;
+                            while (copy_Y == block_Y)
+                            {
+                                p = p_line;
+                                q = q_line;
+                                for (y = 0; y < copy_Y, y++)
+                                {
+                                    *q = *p++;
+                                    q -= Dest_X;
+                                }
+                                p_line += Src_X;
+                                q_line++;
+                                count_Y += block_Y;
+                                if (count_Y > Dest_Y)
+                                    copy_Y = count_Y - Dest_Y;
+                            }
+                            p_block += block_X
+                        }
+                        q_block -= 
+                        count_X += block_X;
+                        if (count_X > Dest_X)
+                            copy_X = count_X - Dest_X;
+                    }
+*/
+#ifdef DEBUG
+ cerr << "time for copy+rotate: " << timer.getDiff() << " s" << endl;
+#endif
                 }
             }
             delete[] temp;
@@ -293,21 +347,23 @@ class DiRotateTemplate
                         
 
 /*
-**
-** CVS/RCS Log:
-** $Log: dirotat.h,v $
-** Revision 1.3  1998-12-16 16:38:49  joergr
-** Added additional case to copy pixels.
-**
-** Revision 1.2  1998/12/14 17:30:49  joergr
-** Added (missing) implementation of methods to rotate images/frames without
-** creating a new DicomImage.
-**
-** Revision 1.1  1998/11/27 14:57:46  joergr
-** Added copyright message.
-** Added methods and classes for flipping and rotating, changed for
-** scaling and clipping.
-**
-**
-**
-*/
+ *
+ * CVS/RCS Log:
+ * $Log: dirotat.h,v $
+ * Revision 1.4  1999-01-20 15:12:47  joergr
+ * Added debug code to measure time of some routines.
+ *
+ * Revision 1.3  1998/12/16 16:38:49  joergr
+ * Added additional case to copy pixels.
+ *
+ * Revision 1.2  1998/12/14 17:30:49  joergr
+ * Added (missing) implementation of methods to rotate images/frames without
+ * creating a new DicomImage.
+ *
+ * Revision 1.1  1998/11/27 14:57:46  joergr
+ * Added copyright message.
+ * Added methods and classes for flipping and rotating, changed for
+ * scaling and clipping.
+ *
+ *
+ */
