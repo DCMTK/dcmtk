@@ -1,9 +1,16 @@
+
+**** Unreleased Changes from 97.05.23 (eichelberg)
+
+- Corrected typo introduced by last update causing a
+  parse error in dcmimage.cc
+  Affects: dcmimage/libsrc/dcmimage.cc
+
 **** Unreleased Changes from 97.05.22 (hewett)
 
 - Modified the test for presence of a data dictionary to use the
   method DcmDataDictionary::isDictionaryLoaded().
-  Affects: dcmcheck/apps/dcm2pnm.cc 
-	   dcmcheck/libsrc/dcmimage.cc
+  Affects: dcmimage/apps/dcm2pnm.cc 
+	   dcmimage/libsrc/dcmimage.cc
 
 **** Unreleased Changes from 97.05.16 (barth)
 
