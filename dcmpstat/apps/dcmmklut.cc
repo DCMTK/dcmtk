@@ -25,9 +25,9 @@
  *    file.
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-10-15 09:35:05 $
+ *  Update Date:      $Date: 1999-10-18 10:21:31 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmpstat/apps/dcmmklut.cc,v $
- *  CVS/RCS Revision: $Revision: 1.8 $
+ *  CVS/RCS Revision: $Revision: 1.9 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -330,8 +330,8 @@ E_Condition convertInputLUT(const unsigned int numberOfBits,
     E_Condition result = EC_IllegalCall;
     if ((inputXData != NULL) && (inputYData != NULL) && (inputEntries > 0) && (inputYMax > 0) && (outputData != NULL))
     {
-        char buf[1024];
-        ostrstream oss(buf, 1024);
+        char buf[8192];
+        ostrstream oss(buf, 8192);
         if (explanation !=NULL)
         {
             if (strlen(explanation) == 0)
@@ -934,7 +934,10 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmmklut.cc,v $
- * Revision 1.8  1999-10-15 09:35:05  joergr
+ * Revision 1.9  1999-10-18 10:21:31  joergr
+ * Enlarged string buffer for output text file header.
+ *
+ * Revision 1.8  1999/10/15 09:35:05  joergr
  * Enhanced checking mechanism for input text files.
  *
  * Revision 1.7  1999/10/14 20:21:29  joergr
