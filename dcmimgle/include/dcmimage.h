@@ -22,9 +22,9 @@
  *  Purpose: Provides main interface to the "dicom image toolkit"
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-07-23 13:50:07 $
+ *  Update Date:      $Date: 1999-08-25 16:38:48 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/dcmimage.h,v $
- *  CVS/RCS Revision: $Revision: 1.19 $
+ *  CVS/RCS Revision: $Revision: 1.20 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -232,9 +232,9 @@ class DicomImage
             Image->getBits() : 0;
     }
         
-    /** get minimum and maximum pixel values
-     *  the resulting pixel values are stored in 'double' variables to avoid problems with different number ranges,
-     *  limited to monochrome images
+    /** get minimum and maximum pixel values.
+     *  the resulting pixel values are stored in 'double' variables to avoid problems
+     *  with different number ranges, limited to monochrome images
      *
      ** @param  min   minimum pixel value (reference parameter)
      *  @param  max   maximum pixel value (reference parameter)
@@ -792,7 +792,7 @@ class DicomImage
     /** activate specified overlay plane and change 'pvalue' (only for bitmap shutters)
      *
      ** @param  plane   number (0..15) or group number (0x60nn) of overlay plane
-     *  @param  pvalue  P-value
+     *  @param  pvalue  P-value used to display overlay plane
      *
      ** @return false (0) if an error occurred, true otherwise
      */
@@ -1042,9 +1042,10 @@ class DicomImage
 
     /** create scaled copy of specified (clipping) area of the current image object.
      *  memory is not handled internally - must be deleted from calling program.
-     *  NB: clipping and interpolated scaling at the same moment is not yet implemented!
+     *  NB: clipping and interpolated scaling at the same moment is not yet fully implemented!
      *
-     ** @param  left          x coordinate of top left corner of area to be scaled (referring to image orgin)
+     ** @param  left          x coordinate of top left corner of area to be scaled
+     *                        (referring to image orgin, negative values create a border around the image)
      *  @param  top           y coordinate of top left corner of area to be scaled
      *  @param  clip_width    width of area to be scaled
      *  @param  clip_height   height of area to be scaled
@@ -1055,23 +1056,26 @@ class DicomImage
      *  @param  aspect        specifies whether pixel aspect ratio should be taken into consideration
      *                        (if true, width OR height should be 0, i.e. this component will be calculated
      *                         automatically)
+     *  @param  pvalue        P-value used for the border outside the image (0..65535)
      *
      ** @return pointer to new DicomImage object (NULL if an error occurred)
      */
-    DicomImage *createScaledImage(const unsigned long left,
-                                  const unsigned long top,
+    DicomImage *createScaledImage(const signed long left,
+                                  const signed long top,
                                   unsigned long clip_width,
                                   unsigned long clip_height,
                                   unsigned long scale_width = 0,
                                   unsigned long scale_height = 0,
                                   const int interpolate = 0,
-                                  int aspect = 0) const;
+                                  int aspect = 0,
+                                  const Uint16 pvalue = 0) const;
 
     /** create scaled copy of specified (clipping) area of the current image object.
      *  memory is not handled internally - must be deleted from calling program.
-     *  NB: clipping and interpolated scaling at the same moment is not yet implemented!
+     *  NB: clipping and interpolated scaling at the same moment is not yet fully implemented!
      *
-     ** @param  left         x coordinate of top left corner of area to be scaled (referring to image orgin)
+     ** @param  left         x coordinate of top left corner of area to be scaled
+     *                       (referring to image orgin, negative values create a border around the image)
      *  @param  top          y coordinate of top left corner of area to be scaled
      *  @param  width        width of area to be scaled
      *  @param  height       height of area to be scaled
@@ -1082,32 +1086,37 @@ class DicomImage
      *  @param  aspect       specifies whether pixel aspect ratio should be taken into consideration
      *                       (if true, width OR height should be 0, i.e. this component will be calculated
      *                        automatically)
+     *  @param  pvalue       P-value used for the border outside the image (0..65535)
      *
      ** @return pointer to new DicomImage object (NULL if an error occurred)
      */
-    DicomImage *createScaledImage(const unsigned long left,
-                                  const unsigned long top,
+    DicomImage *createScaledImage(const signed long left,
+                                  const signed long top,
                                   unsigned long width,
                                   unsigned long height,
                                   const double xfactor,
                                   const double yfactor = 0,
                                   const int interpolate = 0,
-                                  const int aspect = 0) const;
+                                  const int aspect = 0,
+                                  const Uint16 pvalue = 0) const;
 
     /** create copy of specified area of the current image object (clipping).
      *  memory is not handled internally - must be deleted from calling program.
      *
-     ** @param  left    x coordinate of top left corner of area to be copied (referring to image orgin)
+     ** @param  left    x coordinate of top left corner of area to be copied
+     *                  (referring to image orgin, negative values create a border around the image)
      *  @param  top     y coordinate of top left corner of area to be copied
-     *  @param  width   width of area to be copied
-     *  @param  height  height of area to be copied
+     *  @param  width   width of area to be copied/clipped
+     *  @param  height  height of area to be copied/clipped
+     *  @param  pvalue  P-value used for the border outside the image (0..65535)
      *
      ** @return pointer to new DicomImage object (NULL if an error occurred)
      */
-    DicomImage *createClippedImage(const unsigned long left,
-                                   const unsigned long top,
+    DicomImage *createClippedImage(const signed long left,
+                                   const signed long top,
                                    unsigned long width = 0,
-                                   unsigned long height = 0) const;
+                                   unsigned long height = 0,
+                                   const Uint16 pvalue = 0) const;
 
     /** flip current image (horizontally and/or vertically)
      *
@@ -1354,7 +1363,10 @@ class DicomImage
  *
  * CVS/RCS Log:
  * $Log: dcmimage.h,v $
- * Revision 1.19  1999-07-23 13:50:07  joergr
+ * Revision 1.20  1999-08-25 16:38:48  joergr
+ * Allow clipping region to be outside the image (overlapping).
+ *
+ * Revision 1.19  1999/07/23 13:50:07  joergr
  * Added methods to set 'PixelAspectRatio'.
  * Added dummy method (no implementation yet) to create inverse LUTs.
  * Added method to create 12 bit packed bitmap data (used for grayscale print

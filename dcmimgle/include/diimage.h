@@ -22,9 +22,9 @@
  *  Purpose: DicomImage (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-07-23 13:53:00 $
+ *  Update Date:      $Date: 1999-08-25 16:39:31 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/diimage.h,v $
- *  CVS/RCS Revision: $Revision: 1.13 $
+ *  CVS/RCS Revision: $Revision: 1.14 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -165,14 +165,15 @@ class DiImage
     virtual DiImage *createImage(const unsigned long fstart,
                                  const unsigned long fcount) const = 0;
 
-    virtual DiImage *createScale(const unsigned long left,
-                                 const unsigned long top,
+    virtual DiImage *createScale(const signed long left,
+                                 const signed long top,
                                  const unsigned long clip_width,
                                  const unsigned long clip_height,
                                  const unsigned long scale_width,
                                  const unsigned long scale_height,
                                  const int interpolate,
-                                 const int aspect) const = 0;
+                                 const int aspect,
+                                 const Uint16 pvalue) const = 0;
 
     virtual int flip(const int horz,
                      const int vert) = 0;
@@ -269,7 +270,10 @@ class DiImage
  *
  * CVS/RCS Log:
  * $Log: diimage.h,v $
- * Revision 1.13  1999-07-23 13:53:00  joergr
+ * Revision 1.14  1999-08-25 16:39:31  joergr
+ * Allow clipping region to be outside the image (overlapping).
+ *
+ * Revision 1.13  1999/07/23 13:53:00  joergr
  * Added support for attribute 'ImagerPixelSpacing'.
  * Added support for attribute 'RepresentativeFrameNumber'.
  * Added methods to set 'PixelAspectRatio'.
