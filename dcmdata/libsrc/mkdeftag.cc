@@ -8,9 +8,9 @@
 ** Generate a C++ header defining symbolic names for DICOM Tags.
 **
 ** Last Update:		$Author: hewett $
-** Update Date:		$Date: 1996-09-24 16:26:28 $
+** Update Date:		$Date: 1996-09-24 16:37:43 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/mkdeftag.cc,v $
-** CVS/RCS Revision:	$Revision: 1.4 $
+** CVS/RCS Revision:	$Revision: 1.5 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -35,6 +35,7 @@
 #endif
 
 #include "dcdict.h"
+#include "cmdlnarg.h"
 
 static char*
 convertToIdentifier(char* s)
@@ -288,7 +289,10 @@ int main(int argc, char* argv[])
 /*
 ** CVS/RCS Log:
 ** $Log: mkdeftag.cc,v $
-** Revision 1.4  1996-09-24 16:26:28  hewett
+** Revision 1.5  1996-09-24 16:37:43  hewett
+** Now correctly includes cmdlnarg.h
+**
+** Revision 1.4  1996/09/24 16:26:28  hewett
 ** Added preliminary support for the Macintosh environment (GUSI library).
 **
 ** Revision 1.3  1996/03/20 16:44:06  hewett
