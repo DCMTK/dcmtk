@@ -6,14 +6,17 @@ dnl Purpose: additional M4 macros for GNU autoconf
 dnl
 dnl Authors: Andreas Barth, Marco Eichelberg
 dnl
-dnl Last Update:  $Author: joergr $
-dnl Revision:     $Revision: 1.18 $
+dnl Last Update:  $Author: meichel $
+dnl Revision:     $Revision: 1.19 $
 dnl Status:       $State: Exp $
 dnl
-dnl $Id: aclocal.m4,v 1.18 2002-04-16 14:06:18 joergr Exp $
+dnl $Id: aclocal.m4,v 1.19 2002-05-15 14:13:11 meichel Exp $
 dnl
 dnl $Log: aclocal.m4,v $
-dnl Revision 1.18  2002-04-16 14:06:18  joergr
+dnl Revision 1.19  2002-05-15 14:13:11  meichel
+dnl Added configure test for readdir_r conforming to Posix 1.c draft 6
+dnl
+dnl Revision 1.18  2002/04/16 14:06:18  joergr
 dnl Added configurable support for C++ ANSI standard includes (e.g. streams).
 dnl Thanks to Andreas Barth <Andreas.Barth@bruker-biospin.de> for his
 dnl contribution.
@@ -1029,3 +1032,71 @@ ifelse([$4], , , [$4
 fi
 unset ac_cv_declaration
 ])
+
+
+
+dnl AC_CHECK_OLD_READDIR_R checks if there is a function readdir_r
+dnl   conforming to the Posix 1.c Draft 6 interface, i.e.
+dnl     struct dirent *readdir_r(DIR *dirp, struct dirent *entry);
+dnl   instead of the Posix 1.c interface, i.e.
+dnl     int readdir_r(DIR *dirp, struct dirent *entry, struct dirent **result);
+dnl Note:
+dnl   Since GNU autoheader does not support this macro, you must create entries
+dnl   in your acconfig.h manually
+dnl Examples:
+dnl   in configure.in: 
+dnl     AC_CHECK_OLD_READDIR_R
+dnl   in acconfig.h:
+dnl     #undef HAVE_OLD_READDIR_R
+dnl
+dnl  The test macro AC_HEADER_DIRENT must be run before this test!
+dnl
+dnl AC_CHECK_OLD_READDIR_R([ACTION-IF-FOUND [, ACTION-IF-NOT-FOUND]])
+AC_DEFUN(AC_CHECK_OLD_READDIR_R,
+[
+AC_MSG_CHECKING([if declaration of readdir_r conforms to Posix 1.c draft 6])
+ac_cv_result=ac_cv_old_readdir_r
+AC_CACHE_VAL($ac_cv_result,
+[AC_TRY_COMPILE([
+#ifdef __cplusplus
+extern "C" {
+#endif
+#ifdef HAVE_DIRENT_H
+#include <dirent.h>
+#else
+#define dirent direct
+#ifdef HAVE_SYS_NDIR_H
+#include <sys/ndir.h>
+#endif
+#ifdef HAVE_SYS_DIR_H
+#include <sys/dir.h>
+#endif
+#ifdef HAVE_NDIR_H
+#include <ndir.h>
+#endif
+#endif
+#ifdef __cplusplus
+}
+#endif
+], [
+  DIR *dirp;
+  struct dirent *dp;
+  dp = readdir_r(dirp, dp);
+], eval "$ac_cv_result=yes", eval "$ac_cv_result=no")])dnl
+if eval "test \"\$$ac_cv_result\" = yes"; then
+  AC_MSG_RESULT(yes)
+changequote(, )dnl
+  ac_cv_result=HAVE_OLD_READDIR_R
+changequote([, ])dnl
+  AC_DEFINE_UNQUOTED($ac_cv_result)
+  ifelse([$1], , , [$1
+])dnl
+else
+  AC_MSG_RESULT(no)
+  ifelse([$2], , , [$2
+])dnl
+fi
+unset ac_cv_result
+])
+
+

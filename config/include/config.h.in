@@ -454,6 +454,11 @@
    as int * instead of size_t * or struct socklen_t * */
 #undef HAVE_INTP_ACCEPT
 
+/* Define if your system supports readdir_r with the obsolete
+   Posix 1.c draft 6 declaration (2 arguments) instead of the
+   Posix 1.c declaration with 3 arguments. */
+#undef HAVE_OLD_READDIR_R
+
 /* Define if your system has a prototype for setsockopt */
 #undef HAVE_PROTOTYPE_SETSOCKOPT
 
