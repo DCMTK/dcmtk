@@ -106,3 +106,15 @@
            dcmpstat/Makefile.in
            dcmpstat/configure
            dcmpstat/CHANGES
+
+**** Changes from 1998.12.22 (vorwerk)
+- constructor with parameter for directory of index.dat
+- changed const methods in non-const-methods 
+- added methods for attributes of DICOM-documents
+
+- added private method for operations on index.dat  
+Affects: dcmpstat/include/dviface.h
+
+
+- browser methods implemented
+Affects: dcmpstat/include/dviface.cc
