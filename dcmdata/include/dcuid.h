@@ -24,9 +24,9 @@
  *  routines for finding and creating UIDs.
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-03-31 09:24:52 $
+ *  Update Date:      $Date: 1999-05-06 12:42:09 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcuid.h,v $
- *  CVS/RCS Revision: $Revision: 1.29 $
+ *  CVS/RCS Revision: $Revision: 1.30 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -127,14 +127,14 @@ char* dcmGenerateUniqueIdentifer(char* uid, const char* prefix=NULL);
 
 /* NOTE: Implementation version name VR=SH may not be longer than 16 chars
  *   The second name is used to identify files written without dcmdata
- *   (i.e. using the "bypass" switch in storescp)
+ *   (i.e. using the --bit-preserving switch in various tools)
  */
-#define OFFIS_DTK_IMPLEMENTATION_VERSION_NAME   "OFFIS_DCMTK_331"
-#define OFFIS_DTK_IMPLEMENTATION_VERSION_NAME2  "OFFIS_DCMBP_331"
-#define OFFIS_DCMTK_RELEASEDATE        "1998/02/17"
+#define OFFIS_DTK_IMPLEMENTATION_VERSION_NAME   "OFFIS_DCMTK_340"
+#define OFFIS_DTK_IMPLEMENTATION_VERSION_NAME2  "OFFIS_DCMBP_340"
+#define OFFIS_DCMTK_RELEASEDATE        "1999/05/06"
 
 #define OFFIS_UID_ROOT                 "1.2.276.0.7230010.3"
-#define OFFIS_DCMTK_VERSION            "3.3.1"
+#define OFFIS_DCMTK_VERSION            "3.4.0"
 #define OFFIS_IMPLEMENTATION_CLASS_UID OFFIS_UID_ROOT ".0." OFFIS_DCMTK_VERSION
 
 /*
@@ -402,7 +402,11 @@ char* dcmGenerateUniqueIdentifer(char* uid, const char* prefix=NULL);
 /*
 ** CVS/RCS Log:
 ** $Log: dcuid.h,v $
-** Revision 1.29  1999-03-31 09:24:52  meichel
+** Revision 1.30  1999-05-06 12:42:09  meichel
+** Updated Version Number and Implementation Version Name to reflect the
+**   current public release (3.4.0)
+**
+** Revision 1.29  1999/03/31 09:24:52  meichel
 ** Updated copyright header in module dcmdata
 **
 ** Revision 1.28  1999/03/22 13:41:22  meichel
