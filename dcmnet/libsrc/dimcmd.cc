@@ -56,9 +56,9 @@
 **	Module Prefix: DIMSE_
 **
 ** Last Update:		$Author: meichel $
-** Update Date:		$Date: 2003-06-02 16:44:11 $
+** Update Date:		$Date: 2003-10-22 16:48:54 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/libsrc/dimcmd.cc,v $
-** CVS/RCS Revision:	$Revision: 1.17 $
+** CVS/RCS Revision:	$Revision: 1.18 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -118,7 +118,7 @@ buildErrorWithMsg(const char* msg, DcmTagKey t)
 {
     DcmTag tag(t);
     char buf[1024];
-    sprintf(buf, "DIMSE: Command Build Failed: %s: Element: (%x,%x) %s", 
+    sprintf(buf, "DIMSE: Command Build Failed: %s: Element: (%04x,%04x) %s", 
       msg, t.getGroup(), t.getElement(), tag.getTagName());
     return makeDcmnetCondition(DIMSEC_BUILDFAILED, OF_error, buf);
 }
@@ -128,7 +128,7 @@ parseError(DcmTagKey t)
 {
     DcmTag tag(t);
     char buf[1024];
-    sprintf(buf, "DIMSE: Command Parse Failed: Element: (%x,%x) %s", 
+    sprintf(buf, "DIMSE: Command Parse Failed: Element: (%04x,%04x) %s", 
         t.getGroup(), t.getElement(), tag.getTagName());
     return makeDcmnetCondition(DIMSEC_PARSEFAILED, OF_error, buf);
 }
@@ -138,7 +138,7 @@ parseErrorWithMsg(const char* msg, DcmTagKey t)
 {
     DcmTag tag(t);
     char buf[1024];
-    sprintf(buf, "DIMSE: Command Parse Failed: %s: Element: (%x,%x) %s", msg,
+    sprintf(buf, "DIMSE: Command Parse Failed: %s: Element: (%04x,%04x) %s", msg,
         t.getGroup(), t.getElement(), tag.getTagName());
     return makeDcmnetCondition(DIMSEC_PARSEFAILED, OF_error, buf);
 }
@@ -2057,7 +2057,10 @@ DIMSE_countElements(DcmDataset *obj)
 /*
 ** CVS Log
 ** $Log: dimcmd.cc,v $
-** Revision 1.17  2003-06-02 16:44:11  meichel
+** Revision 1.18  2003-10-22 16:48:54  meichel
+** Fixed formatting of DICOM tag in error messages
+**
+** Revision 1.17  2003/06/02 16:44:11  meichel
 ** Renamed local variables to avoid name clashes with STL
 **
 ** Revision 1.16  2002/11/27 13:04:39  meichel
