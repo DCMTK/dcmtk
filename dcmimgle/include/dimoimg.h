@@ -22,9 +22,9 @@
  *  Purpose: DicomMonochromeImage (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-06-07 14:30:27 $
+ *  Update Date:      $Date: 2000-07-07 13:42:30 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/dimoimg.h,v $
- *  CVS/RCS Revision: $Revision: 1.26 $
+ *  CVS/RCS Revision: $Revision: 1.27 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -312,10 +312,28 @@ class DiMonoImage
      */
     int setPolarity(const EP_Polarity polarity);
 
+    /** set hardcopy parameters. (used to display LinOD images)
+     *
+     ** @param  min      minimum density of the print-out (in hundreds of Optical Density, e.g. 150 means 1.5 OD)
+     *  @param  max      maximum density of the print-out (ditto)
+     *  @param  reflect  reflected ambient light (in candela per square meter - cd/m^2)
+     *  @param  illumin  illumination (ditto)
+     *
+     ** @return true if successful (1 = at least one of the parameters has changed,
+     *                              2 = no parameter has changed)
+     *          false otherwise
+     */
+     int setHardcopyParameters(const unsigned int min,
+                               const unsigned int max,
+                               const unsigned int reflect,
+                               const unsigned int illumin);
+
     /** set shape for presentation transformation.
      *  possibly active presentation LUT is implicitly disabled.
      *
-     ** @param  shape  presentation LUT shape (identity or inverse)
+     ** @param  shape  presentation LUT shape (default, identity or inverse).
+     *                 'default' means that the output data is always created with 0 for black
+     *                 and maxvalue for white (i.e. monochrome2 data is created for output).
      *
      ** @return true if successful (1 = shape has changed,
      *                              2 = shape has not changed)
@@ -898,6 +916,16 @@ class DiMonoImage
                        const int bits,
                        const Uint32 low,
                        const Uint32 high);
+                       
+    /** create a presentation look-up table converting the pixel data which is linear to
+     *  Optical Density to DDLs of the softcopy device (used to display print images on screen).
+     *
+     ** @param  count  number of LUT entries
+     *  @param  bits   number of bits per entry
+     *
+     ** @return true if successful, false otherwise
+     */
+    int createLinODPresentationLut(const unsigned long count, const int bits);
 
     /// center of current VOI-window
     double WindowCenter;
@@ -918,6 +946,15 @@ class DiMonoImage
     EP_Polarity Polarity;
     /// presentation LUT shape (identity or inverse)
     ES_PresentationLut PresLutShape;
+
+    /// minimum density of a print-out (in hundreds of Optical Density)
+    unsigned int MinDensity;
+    /// maximum density of a print-out (ditto)
+    unsigned int MaxDensity;
+    // reflected ambient light (in candela per squaremeter)
+    unsigned int Reflection;
+    // illumination (ditto)
+    unsigned int Illumination;
 
     /// points to associated overlay-objects ([0] = built-in, [1] = additional)
     DiOverlay *Overlays[2];
@@ -953,7 +990,10 @@ class DiMonoImage
  *
  * CVS/RCS Log:
  * $Log: dimoimg.h,v $
- * Revision 1.26  2000-06-07 14:30:27  joergr
+ * Revision 1.27  2000-07-07 13:42:30  joergr
+ * Added support for LIN OD presentation LUT shape.
+ *
+ * Revision 1.26  2000/06/07 14:30:27  joergr
  * Added method to set the image polarity (normal, reverse).
  *
  * Revision 1.25  2000/03/08 16:24:18  meichel

@@ -22,9 +22,9 @@
  *  Purpose: DicomLookupTable (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-05-03 09:47:24 $
+ *  Update Date:      $Date: 2000-07-07 13:44:11 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/libsrc/diluptab.cc,v $
- *  CVS/RCS Revision: $Revision: 1.22 $
+ *  CVS/RCS Revision: $Revision: 1.23 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -139,7 +139,7 @@ DiLookupTable::DiLookupTable(const DcmUnsignedShort &data,
 DiLookupTable::DiLookupTable(Uint16 *buffer,
                              const Uint32 count,
                              const Uint16 bits)
-  : DiBaseLUT(buffer),
+  : DiBaseLUT(buffer, count, bits),
     OriginalBitsAllocated(16),
     OriginalData(buffer)
 {
@@ -220,7 +220,7 @@ void DiLookupTable::checkTable(unsigned long count,
                 }
 #endif
                 DataBuffer = new Uint16[Count];                               // create new LUT
-                if (DataBuffer != NULL)
+                if ((DataBuffer != NULL) && (Data != NULL))
                 {
                     register const Uint8 *p = (const Uint8 *)Data;
                     register Uint16 *q = DataBuffer;
@@ -594,7 +594,10 @@ OFBool DiLookupTable::operator==(const DiLookupTable &lut)
  *
  * CVS/RCS Log:
  * $Log: diluptab.cc,v $
- * Revision 1.22  2000-05-03 09:47:24  joergr
+ * Revision 1.23  2000-07-07 13:44:11  joergr
+ * Added support for LIN OD presentation LUT shape.
+ *
+ * Revision 1.22  2000/05/03 09:47:24  joergr
  * Removed most informational and some warning messages from release built
  * (#ifndef DEBUG).
  *

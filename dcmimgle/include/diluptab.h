@@ -21,10 +21,10 @@
  *
  *  Purpose: DicomLookupTable (Header)
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-03-08 16:24:17 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2000-07-07 13:42:30 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/diluptab.h,v $
- *  CVS/RCS Revision: $Revision: 1.17 $
+ *  CVS/RCS Revision: $Revision: 1.18 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -112,6 +112,16 @@ class DiLookupTable
                   const signed long first = -1,
                   EI_Status *status = NULL);
 
+    /** constructor
+     *
+     ** @param  buffer  pointer to array with LUT entries
+     *  @param  count   number of LUT entries
+     *  @param  bits    number of bits per entry
+     */
+    DiLookupTable(Uint16 *buffer,
+                  const Uint32 count,
+                  const Uint16 bits);
+
     /** destructor
      */
     virtual ~DiLookupTable();
@@ -184,16 +194,6 @@ class DiLookupTable
 
  protected:
 
-    /** constructor
-     *
-     ** @param  buffer  pointer to array with LUT entries
-     *  @param  count   number of LUT entries
-     *  @param  bits    number of bits per entry
-     */
-    DiLookupTable(Uint16 *buffer,
-                  const Uint32 count,
-                  const Uint16 bits);
-
     /** initialize lookup table
      *
      ** @param  docu         pointer to dataset (encapsulated)
@@ -254,7 +254,10 @@ class DiLookupTable
  *
  * CVS/RCS Log:
  * $Log: diluptab.h,v $
- * Revision 1.17  2000-03-08 16:24:17  meichel
+ * Revision 1.18  2000-07-07 13:42:30  joergr
+ * Added support for LIN OD presentation LUT shape.
+ *
+ * Revision 1.17  2000/03/08 16:24:17  meichel
  * Updated copyright header.
  *
  * Revision 1.16  2000/03/06 18:19:36  joergr

@@ -22,9 +22,9 @@
  *  Purpose: Utilities (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-06-07 14:30:28 $
+ *  Update Date:      $Date: 2000-07-07 13:40:31 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/diutils.h,v $
- *  CVS/RCS Revision: $Revision: 1.15 $
+ *  CVS/RCS Revision: $Revision: 1.16 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -204,15 +204,14 @@ enum EM_Overlay
  */
 enum ES_PresentationLut
 {
+    /// default shape (not expicitly set)
+    ESP_Default,
     /// shape IDENTITY
     ESP_Identity,
     /// shape INVERSE
-    ESP_Inverse
-/*
-    ,
+    ESP_Inverse,
     /// shape LIN OD
     ESP_LinOD
-*/
 };
 
 
@@ -373,7 +372,10 @@ class DicomImageClass
  *
  * CVS/RCS Log:
  * $Log: diutils.h,v $
- * Revision 1.15  2000-06-07 14:30:28  joergr
+ * Revision 1.16  2000-07-07 13:40:31  joergr
+ * Added support for LIN OD presentation LUT shape.
+ *
+ * Revision 1.15  2000/06/07 14:30:28  joergr
  * Added method to set the image polarity (normal, reverse).
  *
  * Revision 1.14  2000/04/28 12:32:33  joergr

@@ -22,9 +22,9 @@
  *  Purpose: Provides main interface to the "DICOM image toolkit"
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-06-07 14:30:26 $
+ *  Update Date:      $Date: 2000-07-07 13:42:11 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/dcmimage.h,v $
- *  CVS/RCS Revision: $Revision: 1.30 $
+ *  CVS/RCS Revision: $Revision: 1.31 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -68,7 +68,7 @@ class DicomImage
  public:
 
  // --- constructors and destructor
- 
+
     /** constructor, open a DICOM file.
      *  opens specified file and reads image related data, creates internal representation of image data.
      *  use getStatus() to obtain detailed information about any errors.
@@ -151,7 +151,7 @@ class DicomImage
     /** destructor
      */
     virtual ~DicomImage();
-    
+
 
  // --- information: return requested value if successful
 
@@ -161,8 +161,8 @@ class DicomImage
      *
      ** @return pointer to status string
      */
-    static const char *getString(const EI_Status status); 
-            
+    static const char *getString(const EI_Status status);
+
     /** convert photometric interpretation code to interpretation string
      *
      ** @param  interpret  code of image's photometric interpretation
@@ -170,17 +170,17 @@ class DicomImage
      ** @return pointer to photometric interpretation string
      */
     static const char *getString(const EP_Interpretation interpret);
-            
+
     /** get status information
      *
      ** @return status code
      */
-    inline EI_Status getStatus() const 
+    inline EI_Status getStatus() const
     {
         return (Image != NULL) ?
             Image->getStatus() : ImageStatus;
     }
-            
+
     /** get number of frames
      *
      ** @return number of frames
@@ -206,7 +206,7 @@ class DicomImage
      *
      ** @return number of pixels in one row
      */
-    inline unsigned long getWidth() const 
+    inline unsigned long getWidth() const
     {
         return (Image != NULL) ?
             Image->getColumns() : 0;
@@ -216,7 +216,7 @@ class DicomImage
      *
      ** @return number of pixels in one column
      */
-    inline unsigned long getHeight() const 
+    inline unsigned long getHeight() const
     {
         return (Image != NULL) ?
             Image->getRows() : 0;
@@ -231,7 +231,7 @@ class DicomImage
         return (Image != NULL) ?
             Image->getBits() : 0;
     }
-        
+
     /** get minimum and maximum pixel values.
      *  the resulting pixel values are stored in 'double' variables to avoid problems
      *  with different number ranges, limited to monochrome images
@@ -295,7 +295,7 @@ class DicomImage
             Image->setRowColumnRatio(ratio) : 0;
     }
 
-    /** check whether given output value is unused 
+    /** check whether given output value is unused
      *
      ** @param  value  output value to be checked
      *
@@ -306,9 +306,9 @@ class DicomImage
         return ((Image != NULL) && (Image->getMonoImagePtr() != NULL)) ?
             Image->getMonoImagePtr()->isValueUnused(value) : 0;
     }
-    
+
  // --- output: return pointer to output data if successful
-    
+
     /** render pixel data and return pointer to internal memory buffer.
      *  apply VOI/PLUT transformation and (visible) overlay planes.
      *  internal memory buffer will be delete for the next getBitmap/Output operation.
@@ -324,7 +324,7 @@ class DicomImage
      */
     inline const void *getOutputData(const int bits = 0,
                                      const unsigned long frame = 0,
-                                     const int planar = 0) 
+                                     const int planar = 0)
     {
         return (Image != NULL) ?
             Image->getOutputData(frame, Image->getBits(bits), planar) : NULL;
@@ -348,7 +348,7 @@ class DicomImage
                              const unsigned long size,
                              const int bits = 0,
                              const unsigned long frame = 0,
-                             const int planar = 0) 
+                             const int planar = 0)
     {
         return (Image != NULL) ?
             Image->getOutputData(buffer, size, frame, Image->getBits(bits), planar) : 0;
@@ -362,7 +362,7 @@ class DicomImage
      *
      ** @return pointer to internal memory buffer containing rendered pixel data (if successful, NULL otherwise)
      */
-    inline const void *getOutputPlane(const int plane) const 
+    inline const void *getOutputPlane(const int plane) const
     {
         return (Image != NULL) ?
             Image->getOutputPlane(plane) : NULL;
@@ -371,18 +371,18 @@ class DicomImage
     /** delete internal memory buffer used for rendered images.
      *  Save memory if data is no longer needed.
      */
-    inline void deleteOutputData() const 
+    inline void deleteOutputData() const
     {
         if (Image != NULL) Image->deleteOutputData();
     }
-    
+
   // --- misc
-  
+
     /** check whether image is monochrome or not.
      *
      ** @return true if image is monochrome, false otherwise (i.e. color image)
      */
-    inline int isMonochrome() const 
+    inline int isMonochrome() const
     {
         return (PhotometricInterpretation == EPI_Monochrome1) || (PhotometricInterpretation == EPI_Monochrome2);
     }
@@ -391,7 +391,7 @@ class DicomImage
      *
      ** @return code for photometric interpretation of the image
      */
-    inline EP_Interpretation getPhotometricInterpretation() const 
+    inline EP_Interpretation getPhotometricInterpretation() const
     {
         return PhotometricInterpretation;
     }
@@ -404,7 +404,7 @@ class DicomImage
 
  // --- display function for output device characteristic (calibration):
  //     only applicable for grayscale images
- 
+
     /** get display function
      *
      ** @return pointer to current display function, NULL if absent
@@ -473,7 +473,7 @@ class DicomImage
 
  // --- windowing (voi): only applicable for grayscale images
  //                      return true if successful (see also 'dimoimg.cc')
-    
+
     /** unset all VOI transformations (windows and LUTs).
      *  only applicable for monochrome images
      *
@@ -481,7 +481,7 @@ class DicomImage
      *                              2 = otherwise),
      *          false otherwise (image is invalid or not monochrome)
      */
-    inline int setNoVoiTransformation() 
+    inline int setNoVoiTransformation()
     {
         return ((Image != NULL) && (Image->getMonoImagePtr() != NULL)) ?
             Image->getMonoImagePtr()->setNoVoiTransformation() : 0;
@@ -496,7 +496,7 @@ class DicomImage
      *                             2 = new window is the same as previous one),
      *          false otherwise
      */
-    inline int setMinMaxWindow(const int idx = 1) 
+    inline int setMinMaxWindow(const int idx = 1)
     {
         return ((Image != NULL) && (Image->getMonoImagePtr() != NULL)) ?
             Image->getMonoImagePtr()->setMinMaxWindow(idx) : 0;
@@ -522,7 +522,7 @@ class DicomImage
      *
      ** @return true if successful, false otherwise (none monochrome or invalid index)
      */
-    inline int setWindow(const unsigned long window) 
+    inline int setWindow(const unsigned long window)
     {
         return ((Image != NULL) && (Image->getMonoImagePtr() != NULL)) ?
             Image->getMonoImagePtr()->setWindow(window) : 0;
@@ -539,7 +539,7 @@ class DicomImage
      *          false otherwise
      */
     inline int setWindow(const double center,
-                         const double width) 
+                         const double width)
     {
         return ((Image != NULL) && (Image->getMonoImagePtr() != NULL)) ?
             Image->getMonoImagePtr()->setWindow(center, width) : 0;
@@ -553,7 +553,7 @@ class DicomImage
      ** @return true if successful, false otherwise
      */
     inline int getWindow(double &center,
-                         double &width) 
+                         double &width)
     {
         return ((Image != NULL) && (Image->getMonoImagePtr() != NULL)) ?
             Image->getMonoImagePtr()->getWindow(center, width) : 0;
@@ -563,12 +563,12 @@ class DicomImage
      *
      ** @return number of VOI windows
      */
-    inline unsigned long getWindowCount() const 
+    inline unsigned long getWindowCount() const
     {
         return ((Image != NULL) && (Image->getMonoImagePtr() != NULL)) ?
             Image->getMonoImagePtr()->getWindowCount() : 0;
     }
-    
+
     /** set VOI LUT (given by dcmdata elements).
      *  possibly active window/center is implicitly disabled.
      *
@@ -629,7 +629,7 @@ class DicomImage
             Image->getMonoImagePtr()->getModalityLutExplanation() : (const char *)NULL;
     }
 
- // --- polarity: only applicable for grayscale images
+ // --- hardcopy parameters: only applicable for grayscale images
 
     /** set polarity.
      *
@@ -644,20 +644,41 @@ class DicomImage
         return ((Image != NULL) && (Image->getMonoImagePtr() != NULL)) ?
             Image->getMonoImagePtr()->setPolarity(polarity) : 0;
     }
-    
+
+    /** set hardcopy parameters. (used to display LinOD images)
+     *
+     ** @param  min      minimum density of the print-out (in hundreds of Optical Density, e.g. 150 means 1.5 OD)
+     *  @param  max      maximum density of the print-out (ditto)
+     *  @param  reflect  reflected ambient light (in candela per square meter - cd/m^2)
+     *  @param  illumin  illumination (ditto)
+     *
+     ** @return true if successful (1 = at least one of the parameters has changed,
+     *                              2 = no parameter has changed)
+     *          false otherwise
+     */
+    inline int setHardcopyParameters(const unsigned int min,
+                                     const unsigned int max,
+                                     const unsigned int reflect,
+                                     const unsigned int illumin)
+    {
+        return ((Image != NULL) && (Image->getMonoImagePtr() != NULL)) ?
+            Image->getMonoImagePtr()->setHardcopyParameters(min, max, reflect, illumin) : 0;
+    }
 
  // --- presentation LUT: only applicable for grayscale images
 
     /** set shape for presentation transformation.
      *  possibly active presentation LUT is implicitly disabled.
      *
-     ** @param  shape  presentation LUT shape (identity or inverse)
+     ** @param  shape  presentation LUT shape (default, identity or inverse).
+     *                 'default' means that the output data is always created with 0 for black
+     *                 and maxvalue for white (i.e. monochrome2 data is created for output).
      *
      ** @return true if successful (1 = shape has changed,
      *                              2 = shape has not changed)
      *          false otherwise
      */
-    inline int setPresentationLutShape(const ES_PresentationLut shape = ESP_Identity)
+    inline int setPresentationLutShape(const ES_PresentationLut shape)
     {
         return ((Image != NULL) && (Image->getMonoImagePtr() != NULL)) ?
             Image->getMonoImagePtr()->setPresentationLutShape(shape) : 0;
@@ -857,7 +878,7 @@ class DicomImage
         return ((Image != NULL) && (Image->getOverlayPtr(idx) != NULL)) ?
             Image->getOverlayPtr(idx)->showAllPlanes(fore, thresh, mode) : 0;
     }
-        
+
     /** deactivate specified overlay plane
      *
      ** @param  plane  number (0..15) or group number (0x60nn) of overlay plane
@@ -885,7 +906,7 @@ class DicomImage
         return ((Image != NULL) && (Image->getOverlayPtr(idx) != NULL)) ?
             Image->getOverlayPtr(idx)->hideAllPlanes() : 0;
     }
-        
+
     /** move origin of specified overlay plane to given position
      *
      ** @param  plane  number (0..15) or group number (0x60nn) of overlay plane
@@ -979,7 +1000,7 @@ class DicomImage
      ** @param  plane   number (0..15) or group number (0x60nn) of overlay plane
      *  @param  width   returns width of overlay plane (in pixels)
      *  @param  height  returns height of overlay plane (in pixels)
-     *  @param  left    returns x coordinate of plane's origin 
+     *  @param  left    returns x coordinate of plane's origin
      *  @param  top     returns y coordinate of plane's origin
      *  @param  mode    return display mode (see 'diutils.h')
      *  @param  frame   index of frame used for output, default: 0
@@ -1005,19 +1026,19 @@ class DicomImage
         return ((Image != NULL) && (Image->getMonoImagePtr() != NULL)) ?
             Image->getMonoImagePtr()->getOverlayData(frame, plane, left, top, width, height, mode, idx, bits, fore, back) : NULL;
     }
-    
+
     /** delete buffer for overlay plane data.
      *  Save memory if data is no longer needed.
      */
-    inline void deleteOverlayData() const 
+    inline void deleteOverlayData() const
     {
         if ((Image != NULL) && (Image->getMonoImagePtr() != NULL))
             Image->getMonoImagePtr()->deleteOverlayData();
     }
-    
+
 
  // --- create...Image: return pointer to new 'DicomImage' object, memory isn't handled internally !
-    
+
     /** create copy of current image object.
      *  memory is not handled internally - must be deleted from calling program.
      *
@@ -1211,7 +1232,7 @@ class DicomImage
         return (Image != NULL) ?
             Image->createDIB(frame) : NULL;
     }
-    
+
     /** create true color (32 bit) bitmap for Java (AWT default format).
      *  Memory is not handled internally - must be deleted from calling program.
      *
@@ -1271,7 +1292,7 @@ class DicomImage
     int writePPM(const char *filename,
                  const int bits = 0,
                  const unsigned long frame = 0);
-                 
+
     /** write pixel data to PPM file (specified by open C++ stream).
      *  pixel data is written in ASCII format.
      *
@@ -1286,7 +1307,7 @@ class DicomImage
     int writePPM(ostream &stream,
                  const int bits = 0,
                  const unsigned long frame = 0);
-                 
+
     /** write pixel data to PPM file (specified by open C stream).
      *  pixel data is written in ASCII format.
      *
@@ -1344,7 +1365,7 @@ class DicomImage
     DicomImage(const DicomImage *dicom,
                DiImage *image,
                const EP_Interpretation interpret = EPI_Unknown);
-    
+
     /** initialize object.
      *  create internal image object depending on color model. is used for all 'real' constructors.
      */
@@ -1361,7 +1382,7 @@ class DicomImage
      ** @return SOP class UID (or NULL if an error occurred)
      */
     const char *getSOPclassUID() const;
-    
+
     /** normalize given degree value (for internal use).
      *  negative value are mapped to positive range (-360 -> 0, -270 -> 90, -180 -> 180, -90 -> 270),
      *  360 is set to 0, all other value are rejected
@@ -1371,7 +1392,7 @@ class DicomImage
      ** @return true if successful, false otherwise (invalid value)
      */
     int normalizeDegreeValue(signed int &degree) const;
-    
+
 
  private:
 
@@ -1386,7 +1407,7 @@ class DicomImage
     DiImage    *Image;
 
  // --- declarations to avoid compiler warnings
- 
+
     DicomImage(const DicomImage &);
     DicomImage &operator=(const DicomImage &);
 };
@@ -1399,7 +1420,10 @@ class DicomImage
  *
  * CVS/RCS Log:
  * $Log: dcmimage.h,v $
- * Revision 1.30  2000-06-07 14:30:26  joergr
+ * Revision 1.31  2000-07-07 13:42:11  joergr
+ * Added support for LIN OD presentation LUT shape.
+ *
+ * Revision 1.30  2000/06/07 14:30:26  joergr
  * Added method to set the image polarity (normal, reverse).
  *
  * Revision 1.29  2000/04/27 13:08:37  joergr
