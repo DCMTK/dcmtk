@@ -22,9 +22,9 @@
  *  Purpose: Presentation State Viewer - Network Send Component (Store SCU)
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-11-24 10:21:56 $
+ *  Update Date:      $Date: 2000-02-03 11:50:45 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmpstat/apps/dcmpssnd.cc,v $
- *  CVS/RCS Revision: $Revision: 1.9 $
+ *  CVS/RCS Revision: $Revision: 1.10 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -100,7 +100,7 @@ static CONDITION sendImage(T_ASC_Association *assoc, const char *sopClass, const
     presId = ASC_findAcceptedPresentationContextID(assoc, sopClass);
     if (presId == 0)
     {
-      if (opt_verbose) cerr << "error: no presentation context for: (" << DU_sopClassToModality(sopClass) << ") " << sopClass << endl;
+      if (opt_verbose) cerr << "error: no presentation context for: (" << dcmSOPClassUIDToModality(sopClass) << ") " << sopClass << endl;
       return DIMSE_NOVALIDPRESENTATIONCONTEXTID;
     }
 
@@ -577,7 +577,12 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmpssnd.cc,v $
- * Revision 1.9  1999-11-24 10:21:56  meichel
+ * Revision 1.10  2000-02-03 11:50:45  meichel
+ * Moved UID related functions from dcmnet (diutil.h) to dcmdata (dcuid.h)
+ *   where they belong. Renamed access functions to dcmSOPClassUIDToModality
+ *   and dcmGuessModalityBytes.
+ *
+ * Revision 1.9  1999/11/24 10:21:56  meichel
  * Fixed locking problem in dcmpssnd and dcmpsrcv on Win9x platforms.
  *
  * Revision 1.8  1999/09/17 14:29:07  meichel

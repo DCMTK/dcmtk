@@ -57,9 +57,9 @@
 **	Module Prefix: DIMSE_
 **
 ** Last Update:		$Author: meichel $
-** Update Date:		$Date: 2000-02-01 10:24:11 $
+** Update Date:		$Date: 2000-02-03 11:50:12 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/libsrc/dimstore.cc,v $
-** CVS/RCS Revision:	$Revision: 1.6 $
+** CVS/RCS Revision:	$Revision: 1.7 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -166,8 +166,7 @@ DIMSE_storeUser(
         if (imageFileName != NULL) {
             progress.totalBytes = DU_fileSize(imageFileName);
         } else {
-            progress.totalBytes = 
-	        DU_guessModalityBytes(request->AffectedSOPClassUID);
+            progress.totalBytes = dcmGuessModalityBytes(request->AffectedSOPClassUID);
         }
 	callbackCtx.progress = &progress;
 	callbackCtx.request = request;
@@ -328,8 +327,7 @@ DIMSE_storeProvider(/* in */
         progress.state = DIMSE_StoreBegin;
 	progress.callbackCount = 1;
 	progress.progressBytes = 0;
-        progress.totalBytes = 
-	    DU_guessModalityBytes(request->AffectedSOPClassUID);
+        progress.totalBytes = dcmGuessModalityBytes(request->AffectedSOPClassUID);
 	callbackCtx.progress = &progress;
 	callbackCtx.request = request;
 	callbackCtx.imageFileName = (char*)imageFileName;
@@ -400,7 +398,12 @@ DIMSE_storeProvider(/* in */
 /*
 ** CVS Log
 ** $Log: dimstore.cc,v $
-** Revision 1.6  2000-02-01 10:24:11  meichel
+** Revision 1.7  2000-02-03 11:50:12  meichel
+** Moved UID related functions from dcmnet (diutil.h) to dcmdata (dcuid.h)
+**   where they belong. Renamed access functions to dcmSOPClassUIDToModality
+**   and dcmGuessModalityBytes.
+**
+** Revision 1.6  2000/02/01 10:24:11  meichel
 ** Avoiding to include <stdlib.h> as extern "C" on Borland C++ Builder 4,
 **   workaround for bug in compiler header files.
 **

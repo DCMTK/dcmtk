@@ -58,9 +58,9 @@
 **
 **
 ** Last Update:		$Author: meichel $
-** Update Date:		$Date: 1999-06-10 10:56:35 $
+** Update Date:		$Date: 2000-02-03 11:50:11 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/include/Attic/diutil.h,v $
-** CVS/RCS Revision:	$Revision: 1.4 $
+** CVS/RCS Revision:	$Revision: 1.5 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -75,67 +75,39 @@
 #include "dcdatset.h"
 #include "dimse.h"
 
-const char* 
-DU_sopClassToModality(const char *sopClassUID);
+char* DU_stripTrailingSpaces(char *s);
+char* DU_stripLeadingSpaces(char *s);
+char* DU_stripLeadingAndTrailingSpaces(char *s);
 
-#ifdef USE_OBSOLETE_ISSTORAGESOPCLASS_FUNCTION
-// this functions has been replaced by the dcmIsaStorageSOPClassUID
-// function in dcmdata/include/dcuid.h
-OFBool 
-DU_isStorageSOPClass(const char *sopClassUID);
-#endif
+OFBool DU_getStringDOElement(DcmItem *obj, DcmTagKey t, char *s);
+OFBool DU_putStringDOElement(DcmItem *obj, DcmTagKey t, const char *s);
+OFBool DU_getShortDOElement(DcmItem *obj, DcmTagKey t, Uint16 *us);
+OFBool DU_putShortDOElement(DcmItem *obj, DcmTagKey t, Uint16 us);
 
-unsigned long
-DU_guessModalityBytes(const char *sopClassUID);
-
-char* 
-DU_stripTrailingSpaces(char *s);
-char*
-DU_stripLeadingSpaces(char *s);
-char*
-DU_stripLeadingAndTrailingSpaces(char *s);
-
-OFBool
-DU_getStringDOElement(DcmItem *obj, DcmTagKey t, char *s);
-
-OFBool
-DU_putStringDOElement(DcmItem *obj, DcmTagKey t, const char *s);
-
-OFBool
-DU_getShortDOElement(DcmItem *obj, DcmTagKey t, Uint16 *us);
-OFBool
-DU_putShortDOElement(DcmItem *obj, DcmTagKey t, Uint16 us);
-
-
-OFBool
-DU_findSOPClassAndInstanceInDataSet(DcmItem *obj,
+OFBool DU_findSOPClassAndInstanceInDataSet(DcmItem *obj,
 			      char* sopClass, char* sopInstance);
 
-OFBool
-DU_findSOPClassAndInstanceInFile(const char *fname,
+OFBool DU_findSOPClassAndInstanceInFile(const char *fname,
 			      char* sopClass, char* sopInstance);
  
-unsigned long
-DU_fileSize(const char *fname);
+unsigned long DU_fileSize(const char *fname);
 
-const char *
-DU_cstoreStatusString(Uint16 statusCode);
-
-const char *
-DU_cfindStatusString(Uint16 statusCode);
-
-const char *
-DU_cmoveStatusString(Uint16 statusCode);
-
-const char *
-DU_cgetStatusString(Uint16 statusCode);
+const char *DU_cstoreStatusString(Uint16 statusCode);
+const char *DU_cfindStatusString(Uint16 statusCode);
+const char *DU_cmoveStatusString(Uint16 statusCode);
+const char *DU_cgetStatusString(Uint16 statusCode);
 
 #endif
 
 /*
 ** CVS Log
 ** $Log: diutil.h,v $
-** Revision 1.4  1999-06-10 10:56:35  meichel
+** Revision 1.5  2000-02-03 11:50:11  meichel
+** Moved UID related functions from dcmnet (diutil.h) to dcmdata (dcuid.h)
+**   where they belong. Renamed access functions to dcmSOPClassUIDToModality
+**   and dcmGuessModalityBytes.
+**
+** Revision 1.4  1999/06/10 10:56:35  meichel
 ** Adapted imagectn to new command line option scheme.
 **   Added support for Patient/Study Only Q/R model and C-GET (experimental).
 **

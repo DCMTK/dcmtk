@@ -21,10 +21,10 @@
  *
  *  Purpose: Storage Service Class User (C-STORE operation)
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-02-02 14:41:19 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2000-02-03 11:50:09 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/apps/storescu.cc,v $
- *  CVS/RCS Revision: $Revision: 1.27 $
+ *  CVS/RCS Revision: $Revision: 1.28 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -901,7 +901,7 @@ storeSCU(T_ASC_Association * assoc, const char *fname)
     if (filexfer.getXfer() != EXS_Unknown) presId = ASC_findAcceptedPresentationContextID(assoc, sopClass, filexfer.getXferID());
     else presId = ASC_findAcceptedPresentationContextID(assoc, sopClass);
     if (presId == 0) {
-        const char *modalityName = DU_sopClassToModality(sopClass);
+        const char *modalityName = dcmSOPClassUIDToModality(sopClass);
         if (!modalityName) modalityName = dcmFindNameOfUID(sopClass);
         if (!modalityName) modalityName = "unknown SOP class";
 	errmsg("No presentation context for: (%s) %s", modalityName, sopClass);
@@ -925,8 +925,7 @@ storeSCU(T_ASC_Association * assoc, const char *fname)
     req.Priority = DIMSE_PRIORITY_LOW;
 
     if (opt_verbose) {
-	printf("Store SCU RQ: MsgID %d, (%s)\n", 
-	    msgId, DU_sopClassToModality(sopClass));
+	printf("Store SCU RQ: MsgID %d, (%s)\n", msgId, dcmSOPClassUIDToModality(sopClass));
     }
 
     cond = DIMSE_storeUser(assoc, presId, &req,
@@ -976,7 +975,12 @@ cstore(T_ASC_Association * assoc, const OFString& fname)
 /*
 ** CVS Log
 ** $Log: storescu.cc,v $
-** Revision 1.27  2000-02-02 14:41:19  joergr
+** Revision 1.28  2000-02-03 11:50:09  meichel
+** Moved UID related functions from dcmnet (diutil.h) to dcmdata (dcuid.h)
+**   where they belong. Renamed access functions to dcmSOPClassUIDToModality
+**   and dcmGuessModalityBytes.
+**
+** Revision 1.27  2000/02/02 14:41:19  joergr
 ** Replaced 'delete' statements by 'delete[]' for objects created with 'new[]'.
 **
 ** Revision 1.26  2000/02/01 10:24:03  meichel

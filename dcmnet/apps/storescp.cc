@@ -22,9 +22,9 @@
  *  Purpose: Storage Service Class Provider (C-STORE operation)
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-02-01 10:24:03 $
+ *  Update Date:      $Date: 2000-02-03 11:50:09 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/apps/storescp.cc,v $
- *  CVS/RCS Revision: $Revision: 1.25 $
+ *  CVS/RCS Revision: $Revision: 1.26 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -866,7 +866,7 @@ static CONDITION storeSCP(
 #endif
     } else {
       sprintf(imageFileName, "%s.%s", 
-        DU_sopClassToModality(req->AffectedSOPClassUID),
+        dcmSOPClassUIDToModality(req->AffectedSOPClassUID),
         req->AffectedSOPInstanceUID);
     }
 
@@ -919,7 +919,12 @@ static CONDITION storeSCP(
 /*
 ** CVS Log
 ** $Log: storescp.cc,v $
-** Revision 1.25  2000-02-01 10:24:03  meichel
+** Revision 1.26  2000-02-03 11:50:09  meichel
+** Moved UID related functions from dcmnet (diutil.h) to dcmdata (dcuid.h)
+**   where they belong. Renamed access functions to dcmSOPClassUIDToModality
+**   and dcmGuessModalityBytes.
+**
+** Revision 1.25  2000/02/01 10:24:03  meichel
 ** Avoiding to include <stdlib.h> as extern "C" on Borland C++ Builder 4,
 **   workaround for bug in compiler header files.
 **

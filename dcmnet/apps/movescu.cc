@@ -22,9 +22,9 @@
  *  Purpose: Query/Retrieve Service Class User (C-MOVE operation)
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-02-02 15:17:28 $
+ *  Update Date:      $Date: 2000-02-03 11:50:08 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/apps/movescu.cc,v $
- *  CVS/RCS Revision: $Revision: 1.26 $
+ *  CVS/RCS Revision: $Revision: 1.27 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1073,7 +1073,7 @@ static CONDITION storeSCP(
 #endif
     } else {
 	sprintf(imageFileName, "%s.%s", 
-	    DU_sopClassToModality(req->AffectedSOPClassUID),
+	    dcmSOPClassUIDToModality(req->AffectedSOPClassUID),
 	    req->AffectedSOPInstanceUID);
     }
 
@@ -1352,7 +1352,12 @@ cmove(T_ASC_Association * assoc, const char *fname)
 ** CVS Log
 **
 ** $Log: movescu.cc,v $
-** Revision 1.26  2000-02-02 15:17:28  meichel
+** Revision 1.27  2000-02-03 11:50:08  meichel
+** Moved UID related functions from dcmnet (diutil.h) to dcmdata (dcuid.h)
+**   where they belong. Renamed access functions to dcmSOPClassUIDToModality
+**   and dcmGuessModalityBytes.
+**
+** Revision 1.26  2000/02/02 15:17:28  meichel
 ** Replaced some #if statements by more robust #ifdef
 **
 ** Revision 1.25  2000/02/01 10:24:02  meichel

@@ -58,9 +58,9 @@
 **
 **
 ** Last Update:		$Author: meichel $
-** Update Date:		$Date: 2000-02-01 10:24:11 $
+** Update Date:		$Date: 2000-02-03 11:50:12 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/libsrc/diutil.cc,v $
-** CVS/RCS Revision:	$Revision: 1.15 $
+** CVS/RCS Revision:	$Revision: 1.16 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -111,145 +111,8 @@ END_EXTERN_C
 #include "dcdeftag.h"
 #include "dcuid.h"
 
-/*
- * Private Types
- */
-
-typedef struct {
-    const char *sopClass;
-    const char *modality;
-    unsigned long averageSize;	/* can be way, way out */
-} DU_Modality;
-
-
-/*
- * Private Globals
- */
-
-/*
-** The modalities table defines a short character code for each
-** Storage SOP Class for use in filenames.
-** It also gives a typical size for each SOP Instance.  This will
-** ususally be way out, but is useful in user interfaces to give an
-** idea of progress when receiving an image (C-STORE does not indicate 
-** the size of an image being transmitted).
-*/
-static DU_Modality modalities[] = {
-    { UID_BasicAudioWaveformStorage,                    "AU", 4096 },
-    { UID_CTImageStorage,                               "CT", 2 * 512 * 512 },
-    { UID_CardiacElectrophysiologyWaveformStorage,      "WVc", 4096 },
-    { UID_ComputedRadiographyImageStorage,              "CR", 2 * 1024 * 1024 },
-    { UID_DRAFT_VLImageStorage,                         "VLd", 768 * 576 * 3 },
-    { UID_DRAFT_VLMultiFrameImageStorage,               "VMd", 768 * 576 * 3 },
-    { UID_DRAFT_WaveformStorage,                        "WVd", 4096 },
-    { UID_DigitalIntraOralXRayImageStorageForPresentation,   "DXo", 2 * 1024 * 1024 },
-    { UID_DigitalIntraOralXRayImageStorageForProcessing,     "DPo", 2 * 1024 * 1024 },
-    { UID_DigitalMammographyXRayImageStorageForPresentation, "DXm", 2 * 4096 * 4096 },
-    { UID_DigitalMammographyXRayImageStorageForProcessing,   "DPm", 2 * 4096 * 4096 },
-    { UID_DigitalXRayImageStorageForPresentation,            "DX", 2 * 2048 * 2048 },
-    { UID_DigitalXRayImageStorageForProcessing,              "DP", 2 * 2048 * 2048 },
-    { UID_GeneralECGWaveformStorage,                    "ECG", 4096 },
-    { UID_GrayscaleSoftcopyPresentationStateStorage,    "PSg", 4096 },
-    { UID_HardcopyColorImageStorage,                    "HC", 4096 },
-    { UID_HardcopyGrayscaleImageStorage,                "HG", 4096 },
-    { UID_HemodynamicWaveformStorage,                   "WVh", 4096 },
-    { UID_HighResolutionAudioWaveformStorage,           "AUh", 4096 },
-    { UID_MRImageStorage,                               "MR", 2 * 256 * 256 },
-    { UID_NuclearMedicineImageStorage,                  "NM", 2 * 64 * 64 },
-    { UID_PETCurveStorage,                              "PC", 4096 },
-    { UID_PETImageStorage,                              "PI", 512*512*2 },
-    { UID_RETIRED_NuclearMedicineImageStorage,          "NMr", 2 * 64 * 64 },
-    { UID_RETIRED_UltrasoundImageStorage,               "USr", 1 * 512 * 512 },
-    { UID_RETIRED_UltrasoundMultiframeImageStorage,     "USr", 1 * 512 * 512 },
-    { UID_RTBeamsTreatmentRecordStorage,                "RTb", 4096 },
-    { UID_RTBrachyTreatmentRecordStorage,               "RTr", 4096 },
-    { UID_RTDoseStorage,                                "RD", 4096 },
-    { UID_RTImageStorage,                               "RI", 4096 },
-    { UID_RTPlanStorage,                                "RP", 4096 },
-    { UID_RTStructureSetStorage,                        "RS", 4096 },
-    { UID_RTTreatmentSummaryRecordStorage,              "RTs", 4096 },
-    { UID_SRAudioStorage,                               "SRa", 4096 },
-    { UID_SRComprehensiveStorage,                       "SRc", 4096 },
-    { UID_SRDetailStorage,                              "SRd", 4096 },
-    { UID_SRTextStorage,                                "SRt", 4096 },
-    { UID_SecondaryCaptureImageStorage,                 "SC", 2 * 512 * 512 },
-    { UID_StandaloneCurveStorage,                       "CV", 4096 },
-    { UID_StandaloneModalityLUTStorage,                 "ML", 4096*2 },
-    { UID_StandaloneOverlayStorage,                     "OV", 512 * 512 },
-    { UID_StandaloneVOILUTStorage,                      "VO", 4096*2 },
-    { UID_StoredPrintStorage,                           "SP", 4096 },
-    { UID_TwelveLeadECGWaveformStorage,                 "TLE", 4096 },
-    { UID_UltrasoundImageStorage,                       "US", 1 * 512 * 512 },
-    { UID_UltrasoundMultiframeImageStorage,             "US", 1 * 512 * 512 },
-    { UID_VLEndoscopicImageStorage,                     "VLe", 768 * 576 * 3 },
-    { UID_VLMicroscopicImageStorage,                    "VLm", 768 * 576 * 3 },
-    { UID_VLPhotographicImageStorage,                   "VLp", 768 * 576 * 3 },
-    { UID_VLSlideCoordinatesMicroscopicImageStorage,    "VMs", 768 * 576 * 3 },
-    { UID_WaveformStorage,                              "WV", 4096 },
-    { UID_RETIRED_XRayAngiographicBiPlaneImageStorage,  "XB", 2 * 512 * 512 },
-    { UID_XRayAngiographicImageStorage,                 "XA", 2 * 512 * 512 },
-    { UID_XRayFluoroscopyImageStorage,                  "RF", 2 * 512 * 512 },
-
-};
 
 static char staticBuf[256];
-
-/*
- * Public Function Prototypes
- */
-
-
-const 
-char* DU_sopClassToModality(const char *sopClassUID)
-{
-    int i;
-
-    if (sopClassUID == NULL) return NULL;
-
-    for (i = 0; i < (int)DIM_OF(modalities); i++) {
-	if (strcmp(modalities[i].sopClass, sopClassUID) == 0) {
-	    return modalities[i].modality;
-	}
-    }
-
-    return NULL;
-}
-
-#ifdef USE_OBSOLETE_ISSTORAGESOPCLASS_FUNCTION
-// this functions has been replaced by the dcmIsaStorageSOPClassUID
-// function in dcmdata/include/dcuid.h
-OFBool 
-DU_isStorageSOPClass(const char *sopClassUID)
-{
-    int i = 0;
-
-    if (sopClassUID == NULL) return OFFalse;
-
-    for (i=0; i < (int)DIM_OF(modalities); i++) {
-	if (strcmp(modalities[i].sopClass, sopClassUID) == 0) {
-	    return OFTrue;
-	}
-    }
-
-    return OFFalse;
-}
-#endif
-
-unsigned long
-DU_guessModalityBytes(const char *sopClassUID)
-{
-    unsigned long nbytes = 131072;	/* default: 256*256*2 bytes */
-    int i, found=0;
-
-    if (sopClassUID == NULL) return nbytes;
-
-    for (i = 0; !found && i < (int)DIM_OF(modalities); i++) {
-	found = (strcmp(modalities[i].sopClass, sopClassUID) == 0);
-	if (found) nbytes = modalities[i].averageSize;
-    }
-
-    return nbytes;
-}
 
 char* 
 DU_stripTrailingSpaces(char *s)
@@ -590,7 +453,12 @@ DU_cgetStatusString(Uint16 statusCode)
 /*
 ** CVS Log
 ** $Log: diutil.cc,v $
-** Revision 1.15  2000-02-01 10:24:11  meichel
+** Revision 1.16  2000-02-03 11:50:12  meichel
+** Moved UID related functions from dcmnet (diutil.h) to dcmdata (dcuid.h)
+**   where they belong. Renamed access functions to dcmSOPClassUIDToModality
+**   and dcmGuessModalityBytes.
+**
+** Revision 1.15  2000/02/01 10:24:11  meichel
 ** Avoiding to include <stdlib.h> as extern "C" on Borland C++ Builder 4,
 **   workaround for bug in compiler header files.
 **
