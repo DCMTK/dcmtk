@@ -64,9 +64,9 @@
 ** 
 **
 ** Last Update:		$Author: hewett $
-** Update Date:		$Date: 1996-09-27 08:37:15 $
+** Update Date:		$Date: 1996-09-27 09:18:02 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/libsrc/dcompat.cc,v $
-** CVS/RCS Revision:	$Revision: 1.4 $
+** CVS/RCS Revision:	$Revision: 1.5 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -138,7 +138,7 @@ int flock(int fd, int operation)
 
 int flock(int fd, int operation)
 {
-    flock_t fl;
+    struct flock fl;
     int result;
     int cmd;
 
@@ -313,7 +313,10 @@ tempnam(char *dir, char *pfx)
 /*
 ** CVS Log
 ** $Log: dcompat.cc,v $
-** Revision 1.4  1996-09-27 08:37:15  hewett
+** Revision 1.5  1996-09-27 09:18:02  hewett
+** Changed flock_t to struct flock (for IBM AIX C Set++).
+**
+** Revision 1.4  1996/09/27 08:37:15  hewett
 ** Preliminary Win32 support.  File-locking is disabled.
 **
 ** Revision 1.3  1996/06/20 07:35:48  hewett
