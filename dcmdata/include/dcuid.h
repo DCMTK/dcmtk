@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2004, OFFIS
+ *  Copyright (C) 1994-2005, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,10 +23,10 @@
  *  Definitions of "well known" DICOM Unique Indentifiers,
  *  routines for finding and creating UIDs.
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2004-11-10 12:37:55 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2005-02-17 13:09:55 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcuid.h,v $
- *  CVS/RCS Revision: $Revision: 1.66 $
+ *  CVS/RCS Revision: $Revision: 1.67 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -59,7 +59,7 @@ const char* dcmFindNameOfUID(const char* uid);
 // Returns NULL if the name is not known.
 //
 
-const char * dcmFindUIDFromName(const char * name);
+const char* dcmFindUIDFromName(const char * name);
 
 
 /*
@@ -308,11 +308,11 @@ unsigned long dcmGuessModalityBytes(const char *sopClassUID);
 #define UID_VLEndoscopicImageStorage                               "1.2.840.10008.5.1.4.1.1.77.1.1"
 #define UID_VideoEndoscopicImageStorage                            "1.2.840.10008.5.1.4.1.1.77.1.1.1"
 #define UID_VLMicroscopicImageStorage                              "1.2.840.10008.5.1.4.1.1.77.1.2"
-#define UID_MicroscopicImageStorage                                "1.2.840.10008.5.1.4.1.1.77.1.2.1"
+#define UID_VideoMicroscopicImageStorage                           "1.2.840.10008.5.1.4.1.1.77.1.2.1"
 #define UID_VLSlideCoordinatesMicroscopicImageStorage              "1.2.840.10008.5.1.4.1.1.77.1.3"
 #define UID_VLPhotographicImageStorage                             "1.2.840.10008.5.1.4.1.1.77.1.4"
 #define UID_VideoPhotographicImageStorage                          "1.2.840.10008.5.1.4.1.1.77.1.4.1"
-#define UID_Ophthalmic8BitPhotographyImageStorage		   "1.2.840.10008.5.1.4.1.1.77.1.5.1" 
+#define UID_Ophthalmic8BitPhotographyImageStorage                  "1.2.840.10008.5.1.4.1.1.77.1.5.1" 
 #define UID_Ophthalmic16BitPhotographyImageStorage                 "1.2.840.10008.5.1.4.1.1.77.1.5.2" 
 #define UID_StereometricRelationshipStorage                        "1.2.840.10008.5.1.4.1.1.77.1.5.3" 
 #define UID_RETIRED_VLMultiFrameImageStorage                       "1.2.840.10008.5.1.4.1.1.77.2"
@@ -411,7 +411,7 @@ unsigned long dcmGuessModalityBytes(const char *sopClassUID);
 #define UID_ProceduralEventLoggingSOPInstance                      "1.2.840.10008.1.40.1"
 
 // Configuration Management LDAP UIDs
-#define UID_LDAP_dicomDeviceName				   "1.2.840.10008.15.0.3.1" 
+#define UID_LDAP_dicomDeviceName                                   "1.2.840.10008.15.0.3.1" 
 #define UID_LDAP_dicomDescription                                  "1.2.840.10008.15.0.3.2" 
 #define UID_LDAP_dicomManufacturer                                 "1.2.840.10008.15.0.3.3" 
 #define UID_LDAP_dicomManufacturerModelName                        "1.2.840.10008.15.0.3.4" 
@@ -420,7 +420,7 @@ unsigned long dcmGuessModalityBytes(const char *sopClassUID);
 #define UID_LDAP_dicomAETitle                                      "1.2.840.10008.15.0.3.7" 
 #define UID_LDAP_dicomNetworkConnectionReference                   "1.2.840.10008.15.0.3.8" 
 #define UID_LDAP_dicomApplicationCluster                           "1.2.840.10008.15.0.3.9" 
-#define UID_LDAP_dicomAssociationInitiator			   "1.2.840.10008.15.0.3.10" 
+#define UID_LDAP_dicomAssociationInitiator                         "1.2.840.10008.15.0.3.10" 
 #define UID_LDAP_dicomAssociationAcceptor                          "1.2.840.10008.15.0.3.11" 
 #define UID_LDAP_dicomHostname                                     "1.2.840.10008.15.0.3.12" 
 #define UID_LDAP_dicomPort                                         "1.2.840.10008.15.0.3.13" 
@@ -442,7 +442,7 @@ unsigned long dcmGuessModalityBytes(const char *sopClassUID);
 #define UID_LDAP_dicomIssuerOfPatientID                            "1.2.840.10008.15.0.3.29" 
 #define UID_LDAP_dicomPreferredCallingAETitle                      "1.2.840.10008.15.0.3.30" 
 #define UID_LDAP_dicomSupportedCharacterSet                        "1.2.840.10008.15.0.3.31" 
-#define UID_LDAP_dicomConfigurationRoot				   "1.2.840.10008.15.0.4.1" 
+#define UID_LDAP_dicomConfigurationRoot                            "1.2.840.10008.15.0.4.1" 
 #define UID_LDAP_dicomDevicesRoot                                  "1.2.840.10008.15.0.4.2" 
 #define UID_LDAP_dicomUniqueAETitlesRegistryRoot                   "1.2.840.10008.15.0.4.3" 
 #define UID_LDAP_dicomDevice                                       "1.2.840.10008.15.0.4.4" 
@@ -474,18 +474,18 @@ unsigned long dcmGuessModalityBytes(const char *sopClassUID);
 #define UID_ICBMSingleSubjectMRIFrameOfReference                   "1.2.840.10008.1.4.2.2"
 
 // Relevant Patient Information Query
-#define UID_GeneralRelevantPatientInformationQuery 		   "1.2.840.10008.5.1.4.37.1" 
-#define UID_BreastImagingRelevantPatientInformationQuery 	   "1.2.840.10008.5.1.4.37.2" 
-#define UID_CardiacRelevantPatientInformationQuery 		   "1.2.840.10008.5.1.4.37.3" 
+#define UID_GeneralRelevantPatientInformationQuery                 "1.2.840.10008.5.1.4.37.1" 
+#define UID_BreastImagingRelevantPatientInformationQuery           "1.2.840.10008.5.1.4.37.2" 
+#define UID_CardiacRelevantPatientInformationQuery                 "1.2.840.10008.5.1.4.37.3" 
 
 // Media Creation Management
-#define UID_MediaCreationManagementSOPClass			   "1.2.840.10008.5.1.1.33" 
+#define UID_MediaCreationManagementSOPClass                        "1.2.840.10008.5.1.1.33" 
 
 // SOP Class Relationship Negotiation
-#define UID_StorageServiceClass					   "1.2.840.10008.4.2" 
+#define UID_StorageServiceClass                                    "1.2.840.10008.4.2" 
 
 // Instance Availability Notification
-#define UID_InstanceAvailabilityNotificationSOPClass		   "1.2.840.10008.5.1.4.33" 
+#define UID_InstanceAvailabilityNotificationSOPClass               "1.2.840.10008.5.1.4.33" 
 
 // UTC Synchronization Frame of Reference (CP 432)
 #define UID_UniversalCoordinatedTimeSynchronizationFrameOfReference "1.2.840.10008.15.1.1" 
@@ -521,7 +521,10 @@ unsigned long dcmGuessModalityBytes(const char *sopClassUID);
 /*
 ** CVS/RCS Log:
 ** $Log: dcuid.h,v $
-** Revision 1.66  2004-11-10 12:37:55  meichel
+** Revision 1.67  2005-02-17 13:09:55  joergr
+** Renamed "MicroscopicImageStorage" to "VideoMicroscopicImageStorage".
+**
+** Revision 1.66  2004/11/10 12:37:55  meichel
 ** Updated directory of UIDs for 2004 DICOM edition. Removed all standalone and
 **   most retired storage SOP classes from list of storage SOP classes for
 **   storescu, storescp, imagectn etc. to keep list shorter than 64 entries.

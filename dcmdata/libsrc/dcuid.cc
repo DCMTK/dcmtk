@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2004, OFFIS
+ *  Copyright (C) 1994-2005, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,9 +23,9 @@
  *  Definitions of "well known" DICOM Unique Indentifiers,
  *  routines for finding and creating UIDs.
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2004-11-10 12:37:56 $
- *  CVS/RCS Revision: $Revision: 1.57 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2005-02-17 13:10:41 $
+ *  CVS/RCS Revision: $Revision: 1.58 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -260,7 +260,7 @@ static const UIDNameMap uidNameMap[] = {
 
     // Visible Light Video (Supplement 47 final text)
     { UID_VideoEndoscopicImageStorage,                        "VideoEndoscopicImageStorage" },
-    { UID_MicroscopicImageStorage,                            "MicroscopicImageStorage" },
+    { UID_VideoMicroscopicImageStorage,                       "VideoMicroscopicImageStorage" },
     { UID_VideoPhotographicImageStorage,                      "VideoPhotographicImageStorage" },
 
     // Catheterization Lab Structured Reports (Supplement 66 final text)
@@ -382,7 +382,7 @@ const char* dcmStorageSOPClassUIDs[] = {
      * presentation contexts for each SOP class, and there is a total limit of
      * 128 contexts for one association.
      * Because of this limitation, all draft and retired storage SOP classes
-     * (except for Ultrasound 1993) and the "Standalone" SOP classes 
+     * (except for Ultrasound 1993) and the "Standalone" SOP classes
      * are removed from this list.
      * UID_MediaStorageDirectoryStorage should not be present in this list.
      */
@@ -444,7 +444,7 @@ const char* dcmStorageSOPClassUIDs[] = {
     UID_XRayAngiographicImageStorage,
     UID_XRayFluoroscopyImageStorage,
     UID_VideoEndoscopicImageStorage,
-    UID_MicroscopicImageStorage,
+    UID_VideoMicroscopicImageStorage,
     UID_VideoPhotographicImageStorage,
     UID_Ophthalmic16BitPhotographyImageStorage,
     UID_Ophthalmic8BitPhotographyImageStorage,
@@ -482,7 +482,6 @@ const char* dcmImageSOPClassUIDs[] = {
     UID_HardcopyColorImageStorage,
     UID_HardcopyGrayscaleImageStorage,
     UID_MRImageStorage,
-    UID_MicroscopicImageStorage,
     UID_MultiframeGrayscaleWordSecondaryCaptureImageStorage,
     UID_MultiframeGrayscaleByteSecondaryCaptureImageStorage,
     UID_MultiframeSingleBitSecondaryCaptureImageStorage,
@@ -505,6 +504,7 @@ const char* dcmImageSOPClassUIDs[] = {
     UID_VLPhotographicImageStorage,
     UID_VLSlideCoordinatesMicroscopicImageStorage,
     UID_VideoEndoscopicImageStorage,
+    UID_VideoMicroscopicImageStorage,
     UID_VideoPhotographicImageStorage,
     UID_XRayAngiographicImageStorage,
     UID_XRayFluoroscopyImageStorage,
@@ -562,7 +562,6 @@ static const DcmModalityTable modalities[] = {
     { UID_MRImageStorage,                                      "MR",  2 * 256 * 256 },
     { UID_MRSpectroscopyStorage,                               "MRs", 256 * 512 * 512 },
     { UID_MammographyCADSR,                                    "SRm", 4096 },
-    { UID_MicroscopicImageStorage,                             "VVm", 768 * 576 * 3 },
     { UID_MultiframeGrayscaleByteSecondaryCaptureImageStorage, "SCb", 1 * 512 * 512 },
     { UID_MultiframeGrayscaleWordSecondaryCaptureImageStorage, "SCw", 2 * 512 * 512 },
     { UID_MultiframeSingleBitSecondaryCaptureImageStorage,     "SCs", 1024 * 1024 },  /* roughly an A4 300dpi scan */
@@ -597,6 +596,7 @@ static const DcmModalityTable modalities[] = {
     { UID_UltrasoundImageStorage,                              "US",  1 * 512 * 512 },
     { UID_UltrasoundMultiframeImageStorage,                    "US",  1 * 512 * 512 },
     { UID_VideoEndoscopicImageStorage,                         "VVe", 768 * 576 * 3 },
+    { UID_VideoMicroscopicImageStorage,                        "VVm", 768 * 576 * 3 },
     { UID_VideoPhotographicImageStorage,                       "VVp", 768 * 576 * 3 },
     { UID_VLEndoscopicImageStorage,                            "VLe", 768 * 576 * 3 },
     { UID_VLMicroscopicImageStorage,                           "VLm", 768 * 576 * 3 },
@@ -1161,7 +1161,10 @@ char* dcmGenerateUniqueIdentifier(char* uid, const char* prefix)
 /*
 ** CVS/RCS Log:
 ** $Log: dcuid.cc,v $
-** Revision 1.57  2004-11-10 12:37:56  meichel
+** Revision 1.58  2005-02-17 13:10:41  joergr
+** Renamed "MicroscopicImageStorage" to "VideoMicroscopicImageStorage".
+**
+** Revision 1.57  2004/11/10 12:37:56  meichel
 ** Updated directory of UIDs for 2004 DICOM edition. Removed all standalone and
 **   most retired storage SOP classes from list of storage SOP classes for
 **   storescu, storescp, imagectn etc. to keep list shorter than 64 entries.
