@@ -22,8 +22,8 @@
  *  Purpose: Create sample structured reports using the dcmsr API
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-09-26 13:04:34 $
- *  CVS/RCS Revision: $Revision: 1.12 $
+ *  Update Date:      $Date: 2001-09-26 13:19:11 $
+ *  CVS/RCS Revision: $Revision: 1.13 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -48,9 +48,8 @@ OFCondition saveFileFormat(const char *filename, DcmFileFormat *fileformat)
     {
         if (fileformat != NULL)
         {
-            OFCondition status;
             fileformat->transferInit();
-            status = fileformat->write(stream, EXS_LittleEndianExplicit, EET_ExplicitLength, EGL_recalcGL, EPD_withoutPadding);
+            OFCondition status = fileformat->write(stream, EXS_LittleEndianExplicit, EET_ExplicitLength, EGL_recalcGL, EPD_withoutPadding);
             fileformat->transferEnd();
             return status;
         }
@@ -1136,7 +1135,10 @@ int main(int argc, char *argv[])
 /*
  *  CVS/RCS Log:
  *  $Log: mkreport.cc,v $
- *  Revision 1.12  2001-09-26 13:04:34  meichel
+ *  Revision 1.13  2001-09-26 13:19:11  meichel
+ *  Adapted dcmsr to class OFCondition
+ *
+ *  Revision 1.12  2001/09/26 13:04:34  meichel
  *  Adapted dcmsr to class OFCondition
  *
  *  Revision 1.11  2001/07/02 12:58:04  joergr
