@@ -92,9 +92,9 @@
  *
  *  Purpose: Class for various helper functions
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2004-04-16 12:47:53 $
- *  CVS/RCS Revision: $Revision: 1.27 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2004-04-30 15:52:33 $
+ *  CVS/RCS Revision: $Revision: 1.28 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -168,7 +168,28 @@ const unsigned int OFStandard::ftoa_alternate = 0x08;
 const unsigned int OFStandard::ftoa_leftadj   = 0x10;
 const unsigned int OFStandard::ftoa_zeropad   = 0x20;
 
-#ifndef HAVE_ISINF
+#ifdef HAVE_ISINF
+
+// some systems don't properly define finite()
+#ifndef HAVE_PROTOTYPE_ISINF
+extern "C"
+{
+  int isinf(double value);
+}
+#endif
+
+#else
+
+// some systems don't properly define finite()
+#ifdef HAVE_FINITE
+#ifndef HAVE_PROTOTYPE_FINITE
+extern "C"
+{
+  int finite(double value);
+}
+#endif
+#endif
+
 static int my_isinf(double x)
 {
 #ifdef HAVE_WINDOWS_H
@@ -1585,7 +1606,11 @@ unsigned int OFStandard::my_sleep(unsigned int seconds)
 
 /*
  *  $Log: ofstd.cc,v $
- *  Revision 1.27  2004-04-16 12:47:53  joergr
+ *  Revision 1.28  2004-04-30 15:52:33  meichel
+ *  my_isinf() now also works on systems where finite() or isinf()
+ *    are defined but not properly declared in <math.h> or <cmath>.
+ *
+ *  Revision 1.27  2004/04/16 12:47:53  joergr
  *  Renamed local function "isinf" to "my_isinf" to avoid possible conflicts.
  *
  *  Revision 1.26  2004/01/16 10:33:57  joergr
