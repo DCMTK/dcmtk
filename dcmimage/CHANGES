@@ -1,3 +1,11 @@
+
+**** Changes from 1999.03.22 (eichelberg)
+
+- Reworked data dictionary based on the 1998 DICOM edition and the latest
+  supplement versions. Corrected dcmtk applications for minor changes 
+  in attribute name constants.
+  Affects: dcmimgle/libsrc/diovpln.cc
+
 **** Changes from 1999.03.22 (riesmeier)
 
 - Added/Changed comments.

@@ -21,10 +21,10 @@
  *
  *  Purpose: DicomOverlayPlane (Source) - Multiframe Overlays UNTESTED !
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-03-22 08:58:32 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 1999-03-22 09:37:33 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/libsrc/diovpln.cc,v $
- *  CVS/RCS Revision: $Revision: 1.10 $
+ *  CVS/RCS Revision: $Revision: 1.11 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -90,7 +90,7 @@ DiOverlayPlane::DiOverlayPlane(const DiDocument *docu,
         if ((docu->getValue(tag, str) > 0) && (strcmp(str, "R") == 0))
             DefaultMode = Mode = EMO_RegionOfInterest;
         Sint32 sl = 0;
-        tag.setElement(DCM_OverlayNumberOfFrames.getElement());
+        tag.setElement(DCM_NumberOfFramesInOverlay.getElement());
         docu->getValue(tag, sl);
         NumberOfFrames = (sl < 1) ? 1 : (Uint32)sl;
         tag.setElement(DCM_ImageFrameOrigin.getElement());
@@ -388,7 +388,12 @@ void DiOverlayPlane::setRotation(const int degree,
  *
  * CVS/RCS Log:
  * $Log: diovpln.cc,v $
- * Revision 1.10  1999-03-22 08:58:32  joergr
+ * Revision 1.11  1999-03-22 09:37:33  meichel
+ * Reworked data dictionary based on the 1998 DICOM edition and the latest
+ *   supplement versions. Corrected dcmtk applications for minor changes
+ *   in attribute name constants.
+ *
+ * Revision 1.10  1999/03/22 08:58:32  joergr
  * Added parameter to specify (transparent) background color for method
  * getOverlayData().
  *
