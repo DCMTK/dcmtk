@@ -23,8 +23,8 @@
  *    classes: DVPSImageBoxContent_PList
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-06-14 11:29:00 $
- *  CVS/RCS Revision: $Revision: 1.19 $
+ *  Update Date:      $Date: 2000-07-04 16:06:47 $
+ *  CVS/RCS Revision: $Revision: 1.20 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -108,7 +108,12 @@ E_Condition DVPSImageBoxContent_PList::read(DcmItem &dset, DVPSPresentationLUT_P
   return result;
 }
 
-E_Condition DVPSImageBoxContent_PList::write(DcmItem &dset, OFBool writeRequestedImageSize, size_t numItems, OFBool ignoreEmptyImages)
+E_Condition DVPSImageBoxContent_PList::write(
+  DcmItem &dset,
+  OFBool writeRequestedImageSize, 
+  size_t numItems,
+  OFBool ignoreEmptyImages,
+  OFBool writeReferencedPLUTSQ)
 {
   if (size()==0) return EC_IllegalCall; // can't write if sequence is empty
 
@@ -130,7 +135,7 @@ E_Condition DVPSImageBoxContent_PList::write(DcmItem &dset, OFBool writeRequeste
         ditem = new DcmItem();
         if (ditem)
         {
-          result = (*first)->write(*ditem, writeRequestedImageSize);
+          result = (*first)->write(*ditem, writeRequestedImageSize, writeReferencedPLUTSQ);
           if (result==EC_Normal) 
           {
             dseq->insert(ditem); 
@@ -613,7 +618,11 @@ OFBool DVPSImageBoxContent_PList::emptyPageWarning()
 
 /*
  *  $Log: dvpsibl.cc,v $
- *  Revision 1.19  2000-06-14 11:29:00  joergr
+ *  Revision 1.20  2000-07-04 16:06:47  joergr
+ *  Added support for overriding the presentation LUT settings made for the
+ *  image boxes.
+ *
+ *  Revision 1.19  2000/06/14 11:29:00  joergr
  *  Added methods to access the attributes Polarity and Requested Image Size.
  *
  *  Revision 1.18  2000/06/08 10:44:35  meichel

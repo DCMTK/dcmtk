@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DVPSStoredPrint
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-06-20 14:50:09 $
- *  CVS/RCS Revision: $Revision: 1.34 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2000-07-04 16:06:48 $
+ *  CVS/RCS Revision: $Revision: 1.35 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -97,6 +97,8 @@ DVPSStoredPrint::DVPSStoredPrint(Uint16 illumin, Uint16 reflection, const char *
 , filmSessionInstanceUID()
 , filmBoxInstanceUID()
 , presentationLUTInstanceUID()
+, globalPresentationLUT()
+, globalPresentationLUTValid(OFFalse)
 , transmitImagesIn12Bit(OFTrue)
 , renderPresentationLUTinSCP(OFFalse)
 , tempDensity()
@@ -160,6 +162,8 @@ DVPSStoredPrint::DVPSStoredPrint(const DVPSStoredPrint& copy)
 , filmSessionInstanceUID(copy.filmSessionInstanceUID)
 , filmBoxInstanceUID(copy.filmBoxInstanceUID)
 , presentationLUTInstanceUID(copy.presentationLUTInstanceUID)
+, globalPresentationLUT(copy.globalPresentationLUT)
+, globalPresentationLUTValid(copy.globalPresentationLUTValid)
 , transmitImagesIn12Bit(copy.transmitImagesIn12Bit)
 , renderPresentationLUTinSCP(copy.renderPresentationLUTinSCP)
 , tempDensity(copy.tempDensity)
@@ -222,6 +226,8 @@ void DVPSStoredPrint::clear()
   filmSessionInstanceUID.clear();
   filmBoxInstanceUID.clear();
   presentationLUTInstanceUID.clear();
+  globalPresentationLUT.clear();
+  globalPresentationLUTValid = OFFalse;
   transmitImagesIn12Bit = OFTrue;
   renderPresentationLUTinSCP = OFFalse;
   tempDensity.clear();
@@ -694,10 +700,18 @@ E_Condition DVPSStoredPrint::write(
         if (minDensity.getLength() > 0) { ADD_TO_DATASET2(DcmUnsignedShort, minDensity) }
         if (trim.getLength() > 0) { ADD_TO_DATASET2(DcmCodeString, trim) }
         if (requestedResolutionID.getLength() > 0) { ADD_TO_DATASET2(DcmCodeString, requestedResolutionID) }
-        if (presentationLUTList.size() > 0)
+        if ((presentationLUTList.size() > 0) || globalPresentationLUTValid)
         {
           ADD_TO_DATASET2(DcmUnsignedShort, illumination)
           ADD_TO_DATASET2(DcmUnsignedShort, reflectedAmbientLight)
+          if ((result == EC_Normal) && globalPresentationLUTValid)
+          {
+              // generate a new UID for the "global" presentation LUT
+              char uid[100];
+              dcmGenerateUniqueIdentifer(uid);
+              globalPresentationLUT.setSOPInstanceUID(uid);
+              result = referencedPresentationLUTInstanceUID.putString(uid);
+          }
           if (EC_Normal == result) result = addReferencedPLUTSQ(*ditem);
         }
         if (result==EC_Normal)
@@ -742,10 +756,31 @@ E_Condition DVPSStoredPrint::write(
   if (limitImages && currentValuesValid) writeImageBoxes = currentNumCols * currentNumRows;
  
   // write PresentationLUTContentSequence
-  if (EC_Normal == result) result = presentationLUTList.write(dset);
+  if (EC_Normal == result)
+  {
+    // write general presentation LUT only
+    if (globalPresentationLUTValid)    
+    {
+        dseq = new DcmSequenceOfItems(DCM_PresentationLUTContentSequence);
+        if (dseq)
+        {
+            ditem = new DcmItem();
+            if (ditem)
+            {
+                result = globalPresentationLUT.write(*ditem, OFTrue);
+                if (result == EC_Normal) dseq->insert(ditem); else delete ditem;
+            } else result = EC_MemoryExhausted;
+        } else result = EC_MemoryExhausted;
+        if (result == EC_Normal) dset.insert(dseq); else delete dseq;
+    } else {
+        // write presentation LUT list
+        result = presentationLUTList.write(dset);
+    }
+  }
  
   // write imageBoxContentList
-  if (EC_Normal == result) result = imageBoxContentList.write(dset, writeRequestedImageSize, (size_t)writeImageBoxes, ignoreEmptyImages);
+  if (EC_Normal == result)
+    result = imageBoxContentList.write(dset, writeRequestedImageSize, (size_t)writeImageBoxes, ignoreEmptyImages, !globalPresentationLUTValid);
 
   // write annotationContentList
   if (EC_Normal == result) result = annotationContentList.write(dset);
@@ -836,6 +871,38 @@ DVPSPresentationLUT *DVPSStoredPrint::getImagePresentationLUT(size_t idx)
     if ((plutuid != NULL) && (strlen(plutuid) > 0))
         plut = presentationLUTList.findPresentationLUT(plutuid);
     return plut;
+}
+
+DVPSPresentationLUT *DVPSStoredPrint::getPresentationLUT()
+{
+    if (globalPresentationLUTValid)
+        return &globalPresentationLUT;
+    return NULL;
+}
+
+E_Condition DVPSStoredPrint::setDefaultPresentationLUT()
+{
+    globalPresentationLUTValid = OFFalse;
+    globalPresentationLUT.clear();
+    return EC_Normal;
+}
+
+E_Condition DVPSStoredPrint::setPresentationLUTShape(DVPSPresentationLUTType shape)
+{
+    E_Condition result = EC_IllegalCall;
+    if ((shape == DVPSP_identity) || (shape == DVPSP_lin_od))
+    {
+        result = globalPresentationLUT.setType(shape);
+        globalPresentationLUTValid = (result == EC_Normal);
+    }
+    return result;
+}
+
+E_Condition DVPSStoredPrint::setPresentationLookupTable(DcmItem &dset)
+{
+  E_Condition result = globalPresentationLUT.read(dset, OFFalse);
+  globalPresentationLUTValid = (result == EC_Normal);
+  return result;
 }
 
 E_Condition DVPSStoredPrint::addImageBox(
@@ -3414,7 +3481,11 @@ void DVPSStoredPrint::overridePresentationLUTSettings(
 
 /*
  *  $Log: dvpssp.cc,v $
- *  Revision 1.34  2000-06-20 14:50:09  meichel
+ *  Revision 1.35  2000-07-04 16:06:48  joergr
+ *  Added support for overriding the presentation LUT settings made for the
+ *  image boxes.
+ *
+ *  Revision 1.34  2000/06/20 14:50:09  meichel
  *  Added monochrome1 printing mode.
  *
  *  Revision 1.33  2000/06/19 16:29:08  meichel
