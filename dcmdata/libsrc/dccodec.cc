@@ -22,9 +22,9 @@
  *  Purpose: abstract class DcmCodec and the class DcmCodecStruct
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-05-24 14:51:50 $
+ *  Update Date:      $Date: 2002-06-27 15:15:53 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dccodec.cc,v $
- *  CVS/RCS Revision: $Revision: 1.10 $
+ *  CVS/RCS Revision: $Revision: 1.11 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -88,6 +88,7 @@ OFCondition DcmCodec::convertToSecondaryCapture(DcmItem *dataset)
   if (result.good()) result = insertStringIfMissing(dataset, DCM_PatientID, NULL);
   if (result.good()) result = insertStringIfMissing(dataset, DCM_PatientsBirthDate, NULL);
   if (result.good()) result = insertStringIfMissing(dataset, DCM_PatientsSex, NULL);
+  if (result.good()) result = insertStringIfMissing(dataset, DCM_PatientOrientation, NULL);
   if (result.good()) result = insertStringIfMissing(dataset, DCM_StudyDate, NULL);
   if (result.good()) result = insertStringIfMissing(dataset, DCM_StudyTime, NULL);
   if (result.good()) result = insertStringIfMissing(dataset, DCM_ReferringPhysiciansName, NULL);
@@ -451,7 +452,11 @@ OFBool DcmCodecList::canChangeCoding(
 /*
 ** CVS/RCS Log:
 ** $Log: dccodec.cc,v $
-** Revision 1.10  2002-05-24 14:51:50  meichel
+** Revision 1.11  2002-06-27 15:15:53  meichel
+** Now adding empty Patient Orientation when converting to
+**   Secondary Capture.
+**
+** Revision 1.10  2002/05/24 14:51:50  meichel
 ** Moved helper methods that are useful for different compression techniques
 **   from module dcmjpeg to module dcmdata
 **
