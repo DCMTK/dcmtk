@@ -57,9 +57,9 @@
 **	Module Prefix: DIMSE_
 **
 ** Last Update:		$Author: meichel $
-** Update Date:		$Date: 1998-01-27 10:51:44 $
+** Update Date:		$Date: 1998-08-10 08:53:44 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/libsrc/dimfind.cc,v $
-** CVS/RCS Revision:	$Revision: 1.5 $
+** CVS/RCS Revision:	$Revision: 1.6 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -163,7 +163,7 @@ DIMSE_findUser(
 		response->MessageIDBeingRespondedTo, msgId);
         }
 
-        status = response->Status;
+        status = response->DimseStatus;
 	responseCount++;
 
 	switch (status) {
@@ -281,15 +281,15 @@ DIMSE_findProvider(
     }
 
     bzero((char*)&rsp, sizeof(rsp));
-    rsp.Status = STATUS_Pending;
+    rsp.DimseStatus = STATUS_Pending;
     
-    while (cond == DIMSE_NORMAL && DICOM_PENDING_STATUS(rsp.Status)) {
+    while (cond == DIMSE_NORMAL && DICOM_PENDING_STATUS(rsp.DimseStatus)) {
 	responseCount++;
 
 	cond = DIMSE_checkForCancelRQ(assoc, presIdCmd, request->MessageID);
 	if (cond == DIMSE_NORMAL) {
 	    /* cancel received */
-	    rsp.Status = 
+	    rsp.DimseStatus = 
 	        STATUS_FIND_Cancel_MatchingTerminatedDueToCancelRequest;
 	    cancelled = OFTrue;	    
 	} else if (cond == DIMSE_NODATAAVAILABLE) {
@@ -310,7 +310,7 @@ DIMSE_findProvider(
 	
 	if (cancelled) {
 	    /* make sure */
-	    rsp.Status = 
+	    rsp.DimseStatus = 
 	        STATUS_FIND_Cancel_MatchingTerminatedDueToCancelRequest;
 	    if (rspIds != NULL) {
 	        delete reqIds;
@@ -341,7 +341,12 @@ providerCleanup:
 /*
 ** CVS Log
 ** $Log: dimfind.cc,v $
-** Revision 1.5  1998-01-27 10:51:44  meichel
+** Revision 1.6  1998-08-10 08:53:44  meichel
+** renamed member variable in DIMSE structures from "Status" to
+**   "DimseStatus". This is required if dcmnet is used together with
+**   <X11/Xlib.h> where Status is #define'd as int.
+**
+** Revision 1.5  1998/01/27 10:51:44  meichel
 ** Removed some unused variables, meaningless const modifiers
 **   and unreached statements.
 **

@@ -56,9 +56,9 @@
 **	Module Prefix: DIMSE_
 **
 ** Last Update:		$Author: meichel $
-** Update Date:		$Date: 1997-09-18 08:10:57 $
+** Update Date:		$Date: 1998-08-10 08:53:41 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/libsrc/dimcmd.cc,v $
-** CVS/RCS Revision:	$Revision: 1.7 $
+** CVS/RCS Revision:	$Revision: 1.8 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -535,7 +535,7 @@ buildCEchoRSP(T_DIMSE_C_EchoRSP * e, DcmDataset * obj)
 
     cond = buildCommonRSP(obj, DIMSE_C_ECHO_RSP, 
         e->MessageIDBeingRespondedTo,
-	e->DataSetType, e->Status); RET(cond);
+	e->DataSetType, e->DimseStatus); RET(cond);
 
     /* build optional items */
     if (e->opts & O_ECHO_AFFECTEDSOPCLASSUID) {
@@ -561,7 +561,7 @@ parseCEchoRSP(T_DIMSE_C_EchoRSP * e, DcmDataset * obj)
     } else {
         e->DataSetType = DIMSE_DATASET_PRESENT;
     }
-    e->Status = status;
+    e->DimseStatus = status;
 
     if (cmd != DIMSE_C_ECHO_RSP) {
 	cond = DIMSE_PARSEFAILED; RET(cond);
@@ -661,7 +661,7 @@ buildCStoreRSP(T_DIMSE_C_StoreRSP * e, DcmDataset * obj)
 
     cond = buildCommonRSP(obj, DIMSE_C_STORE_RSP, 
         e->MessageIDBeingRespondedTo,
-	e->DataSetType, e->Status); RET(cond);
+	e->DataSetType, e->DimseStatus); RET(cond);
 
     /* build optional items */
     if (e->opts & O_STORE_AFFECTEDSOPCLASSUID) {
@@ -691,7 +691,7 @@ parseCStoreRSP(T_DIMSE_C_StoreRSP * e, DcmDataset * obj)
     } else {
         e->DataSetType = DIMSE_DATASET_PRESENT;
     }
-    e->Status = status;
+    e->DimseStatus = status;
 
     if (cmd != DIMSE_C_STORE_RSP) {
 	cond = DIMSE_PARSEFAILED; RET(cond);
@@ -772,7 +772,7 @@ buildCFindRSP(T_DIMSE_C_FindRSP * e, DcmDataset * obj)
 
     cond = buildCommonRSP(obj, DIMSE_C_FIND_RSP, 
         e->MessageIDBeingRespondedTo,
-	e->DataSetType, e->Status); RET(cond);
+	e->DataSetType, e->DimseStatus); RET(cond);
 
     /* build optional items */
     if (e->opts & O_FIND_AFFECTEDSOPCLASSUID) {
@@ -798,7 +798,7 @@ parseCFindRSP(T_DIMSE_C_FindRSP * e, DcmDataset * obj)
     } else {
         e->DataSetType = DIMSE_DATASET_PRESENT;
     }
-    e->Status = status;
+    e->DimseStatus = status;
 
     if (cmd != DIMSE_C_FIND_RSP) {
 	cond = DIMSE_PARSEFAILED; RET(cond);
@@ -875,7 +875,7 @@ buildCGetRSP(T_DIMSE_C_GetRSP * e, DcmDataset * obj)
 
     cond = buildCommonRSP(obj, DIMSE_C_GET_RSP, 
         e->MessageIDBeingRespondedTo,
-	e->DataSetType, e->Status); RET(cond);
+	e->DataSetType, e->DimseStatus); RET(cond);
 
     /* build optional items */
     if (e->opts & O_GET_AFFECTEDSOPCLASSUID) {
@@ -917,7 +917,7 @@ parseCGetRSP(T_DIMSE_C_GetRSP * e, DcmDataset * obj)
     } else {
         e->DataSetType = DIMSE_DATASET_PRESENT;
     }
-    e->Status = status;
+    e->DimseStatus = status;
 
     if (cmd != DIMSE_C_GET_RSP) {
 	cond = DIMSE_PARSEFAILED; RET(cond);
@@ -1012,7 +1012,7 @@ buildCMoveRSP(T_DIMSE_C_MoveRSP * e, DcmDataset * obj)
 
     cond = buildCommonRSP(obj, DIMSE_C_MOVE_RSP, 
         e->MessageIDBeingRespondedTo,
-	e->DataSetType, e->Status); RET(cond);
+	e->DataSetType, e->DimseStatus); RET(cond);
 
     /* build optional items */
     if (e->opts & O_MOVE_AFFECTEDSOPCLASSUID) {
@@ -1054,7 +1054,7 @@ parseCMoveRSP(T_DIMSE_C_MoveRSP * e, DcmDataset * obj)
     } else {
         e->DataSetType = DIMSE_DATASET_PRESENT;
     }
-    e->Status = status;
+    e->DimseStatus = status;
 
     if (cmd != DIMSE_C_MOVE_RSP) {
 	cond = DIMSE_PARSEFAILED; RET(cond);
@@ -1191,7 +1191,7 @@ buildNEventReportRSP(T_DIMSE_N_EventReportRSP * e, DcmDataset * obj)
 
     cond = buildCommonRSP(obj, DIMSE_N_EVENT_REPORT_RSP, 
         e->MessageIDBeingRespondedTo,
-	e->DataSetType, e->Status); RET(cond);
+	e->DataSetType, e->DimseStatus); RET(cond);
 
     /* build optional items */
     if (e->opts & O_NEVENTREPORT_AFFECTEDSOPCLASSUID) {
@@ -1225,7 +1225,7 @@ parseNEventReportRSP(T_DIMSE_N_EventReportRSP * e, DcmDataset * obj)
     } else {
         e->DataSetType = DIMSE_DATASET_PRESENT;
     }
-    e->Status = status;
+    e->DimseStatus = status;
 
     if (cmd != DIMSE_N_EVENT_REPORT_RSP) {
 	cond = DIMSE_PARSEFAILED; RET(cond);
@@ -1308,7 +1308,7 @@ buildNGetRSP(T_DIMSE_N_GetRSP * e, DcmDataset * obj)
     CONDITION cond = DIMSE_NORMAL;
 
     cond = buildCommonRSP(obj, DIMSE_N_GET_RSP, e->MessageIDBeingRespondedTo,
-	e->DataSetType, e->Status); RET(cond);
+	e->DataSetType, e->DimseStatus); RET(cond);
 
     /* build optional items */
     if (e->opts & O_NGET_AFFECTEDSOPCLASSUID) {
@@ -1338,7 +1338,7 @@ parseNGetRSP(T_DIMSE_N_GetRSP * e, DcmDataset * obj)
     } else {
         e->DataSetType = DIMSE_DATASET_PRESENT;
     }
-    e->Status = status;
+    e->DimseStatus = status;
 
     if (cmd != DIMSE_N_GET_RSP) {
 	cond = DIMSE_PARSEFAILED; RET(cond);
@@ -1413,7 +1413,7 @@ buildNSetRSP(T_DIMSE_N_SetRSP * e, DcmDataset * obj)
     CONDITION cond = DIMSE_NORMAL;
 
     cond = buildCommonRSP(obj, DIMSE_N_SET_RSP, e->MessageIDBeingRespondedTo,
-	e->DataSetType, e->Status); RET(cond);
+	e->DataSetType, e->DimseStatus); RET(cond);
 
     /* build optional items */
     if (e->opts & O_NSET_AFFECTEDSOPCLASSUID) {
@@ -1443,7 +1443,7 @@ parseNSetRSP(T_DIMSE_N_SetRSP * e, DcmDataset * obj)
     } else {
         e->DataSetType = DIMSE_DATASET_PRESENT;
     }
-    e->Status = status;
+    e->DimseStatus = status;
 
     if (cmd != DIMSE_N_SET_RSP) {
 	cond = DIMSE_PARSEFAILED; RET(cond);
@@ -1524,7 +1524,7 @@ buildNActionRSP(T_DIMSE_N_ActionRSP * e, DcmDataset * obj)
 
     cond = buildCommonRSP(obj, DIMSE_N_ACTION_RSP, 
         e->MessageIDBeingRespondedTo,
-	e->DataSetType, e->Status); RET(cond);
+	e->DataSetType, e->DimseStatus); RET(cond);
 
     /* build optional items */
     if (e->opts & O_NACTION_AFFECTEDSOPCLASSUID) {
@@ -1558,7 +1558,7 @@ parseNActionRSP(T_DIMSE_N_ActionRSP * e, DcmDataset * obj)
     } else {
         e->DataSetType = DIMSE_DATASET_PRESENT;
     }
-    e->Status = status;
+    e->DimseStatus = status;
 
     if (cmd != DIMSE_N_ACTION_RSP) {
 	cond = DIMSE_PARSEFAILED; RET(cond);
@@ -1646,7 +1646,7 @@ buildNCreateRSP(T_DIMSE_N_CreateRSP * e, DcmDataset * obj)
 
     cond = buildCommonRSP(obj, DIMSE_N_CREATE_RSP, 
         e->MessageIDBeingRespondedTo,
-	e->DataSetType, e->Status); RET(cond);
+	e->DataSetType, e->DimseStatus); RET(cond);
 
     /* build optional items */
     if (e->opts & O_NCREATE_AFFECTEDSOPCLASSUID) {
@@ -1676,7 +1676,7 @@ parseNCreateRSP(T_DIMSE_N_CreateRSP * e, DcmDataset * obj)
     } else {
         e->DataSetType = DIMSE_DATASET_PRESENT;
     }
-    e->Status = status;
+    e->DimseStatus = status;
 
     if (cmd != DIMSE_N_CREATE_RSP) {
 	cond = DIMSE_PARSEFAILED; RET(cond);
@@ -1752,7 +1752,7 @@ buildNDeleteRSP(T_DIMSE_N_DeleteRSP * e, DcmDataset * obj)
 
     cond = buildCommonRSP(obj, DIMSE_N_DELETE_RSP, 
         e->MessageIDBeingRespondedTo,
-	e->DataSetType, e->Status); RET(cond);
+	e->DataSetType, e->DimseStatus); RET(cond);
 
     /* build optional items */
     if (e->opts & O_NDELETE_AFFECTEDSOPCLASSUID) {
@@ -1782,7 +1782,7 @@ parseNDeleteRSP(T_DIMSE_N_DeleteRSP * e, DcmDataset * obj)
     } else {
         e->DataSetType = DIMSE_DATASET_PRESENT;
     }
-    e->Status = status;
+    e->DimseStatus = status;
 
     if (cmd != DIMSE_N_DELETE_RSP) {
 	cond = DIMSE_PARSEFAILED; RET(cond);
@@ -2095,7 +2095,12 @@ DIMSE_countElements(DcmDataset *obj)
 /*
 ** CVS Log
 ** $Log: dimcmd.cc,v $
-** Revision 1.7  1997-09-18 08:10:57  meichel
+** Revision 1.8  1998-08-10 08:53:41  meichel
+** renamed member variable in DIMSE structures from "Status" to
+**   "DimseStatus". This is required if dcmnet is used together with
+**   <X11/Xlib.h> where Status is #define'd as int.
+**
+** Revision 1.7  1997/09/18 08:10:57  meichel
 ** Many minor type conflicts (e.g. long passed as int) solved.
 **
 ** Revision 1.6  1997/07/21 08:47:16  andreas

@@ -57,9 +57,9 @@
 **	Module Prefix: DIMSE_
 **
 ** Last Update:		$Author: meichel $
-** Update Date:		$Date: 1998-01-27 10:51:45 $
+** Update Date:		$Date: 1998-08-10 08:53:45 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/libsrc/dimmove.cc,v $
-** CVS/RCS Revision:	$Revision: 1.5 $
+** CVS/RCS Revision:	$Revision: 1.6 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -227,7 +227,7 @@ DIMSE_moveUser(
 		response->MessageIDBeingRespondedTo, msgId);
         }
 
-        status = response->Status;
+        status = response->DimseStatus;
 	responseCount++;
 
 	switch (status) {
@@ -293,7 +293,7 @@ DIMSE_sendMoveResponse(T_ASC_Association * assoc,
     strcpy(rsp.msg.CMoveRSP.AffectedSOPClassUID, request->AffectedSOPClassUID);
     rsp.msg.CMoveRSP.opts = O_MOVE_AFFECTEDSOPCLASSUID;
     
-    switch (response->Status) {
+    switch (response->DimseStatus) {
     case STATUS_Success:
     case STATUS_Pending:
         /* Success cannot have a Failed SOP Instance UID list (no failures).
@@ -318,7 +318,7 @@ DIMSE_sendMoveResponse(T_ASC_Association * assoc,
 	O_MOVE_NUMBEROFFAILEDSUBOPERATIONS |
 	O_MOVE_NUMBEROFWARNINGSUBOPERATIONS);
 	
-    switch (response->Status) {
+    switch (response->DimseStatus) {
     case STATUS_Pending:
     case STATUS_MOVE_Cancel_SubOperationsTerminatedDueToCancelIndication:
 	break;
@@ -372,15 +372,15 @@ DIMSE_moveProvider(
     }
 
     bzero((char*)&rsp, sizeof(rsp));
-    rsp.Status = STATUS_Pending;	/* assume */
+    rsp.DimseStatus = STATUS_Pending;	/* assume */
     
-    while (cond == DIMSE_NORMAL && rsp.Status == STATUS_Pending) {
+    while (cond == DIMSE_NORMAL && rsp.DimseStatus == STATUS_Pending) {
 	responseCount++;
 
 	cond = DIMSE_checkForCancelRQ(assoc, presIdCmd, request->MessageID);
 	if (cond == DIMSE_NORMAL) {
 	    /* cancel received */
-	    rsp.Status = 
+	    rsp.DimseStatus = 
 	      STATUS_MOVE_Cancel_SubOperationsTerminatedDueToCancelIndication;
 	    cancelled = OFTrue;	    
 	} else if (cond == DIMSE_NODATAAVAILABLE) {
@@ -401,7 +401,7 @@ DIMSE_moveProvider(
 	
 	if (cancelled) {
 	    /* make sure */
-	    rsp.Status = 
+	    rsp.DimseStatus = 
 	      STATUS_MOVE_Cancel_SubOperationsTerminatedDueToCancelIndication;
 	    if (rspIds != NULL) {
 	        delete reqIds;
@@ -438,7 +438,12 @@ providerCleanup:
 /*
 ** CVS Log
 ** $Log: dimmove.cc,v $
-** Revision 1.5  1998-01-27 10:51:45  meichel
+** Revision 1.6  1998-08-10 08:53:45  meichel
+** renamed member variable in DIMSE structures from "Status" to
+**   "DimseStatus". This is required if dcmnet is used together with
+**   <X11/Xlib.h> where Status is #define'd as int.
+**
+** Revision 1.5  1998/01/27 10:51:45  meichel
 ** Removed some unused variables, meaningless const modifiers
 **   and unreached statements.
 **

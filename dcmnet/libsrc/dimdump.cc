@@ -56,10 +56,10 @@
 **
 **	Module Prefix: DIMSE_
 **
-** Last Update:		$Author: hewett $
-** Update Date:		$Date: 1996-03-26 18:38:45 $
+** Last Update:		$Author: meichel $
+** Update Date:		$Date: 1998-08-10 08:53:42 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/libsrc/dimdump.cc,v $
-** CVS/RCS Revision:	$Revision: 1.1 $
+** CVS/RCS Revision:	$Revision: 1.2 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -205,7 +205,7 @@ DIMSE_printCEchoRSP(FILE * f, T_DIMSE_C_EchoRSP * rsp)
 {
     fprintf(f, "C-Echo RSP: MsgID: %d [Status=%s]\n",
 	    rsp->MessageIDBeingRespondedTo,
-	    DU_cstoreStatusString(rsp->Status));
+	    DU_cstoreStatusString(rsp->DimseStatus));
     if (rsp->opts & O_ECHO_AFFECTEDSOPCLASSUID)
 	fprintf(f, "  AffectedSOPClassUID: %s\n",
 		uid2name(rsp->AffectedSOPClassUID));
@@ -240,7 +240,7 @@ DIMSE_printCStoreRSP(FILE * f, T_DIMSE_C_StoreRSP * rsp)
 {
     fprintf(f, "C-Store RSP: MsgID: %d [Status=%s]\n",
 	    rsp->MessageIDBeingRespondedTo,
-	    DU_cstoreStatusString(rsp->Status));
+	    DU_cstoreStatusString(rsp->DimseStatus));
     if (rsp->opts & O_STORE_AFFECTEDSOPCLASSUID)
 	fprintf(f, "  AffectedSOPClassUID: %s\n",
 		uid2name(rsp->AffectedSOPClassUID));
@@ -270,7 +270,7 @@ DIMSE_printCGetRSP(FILE * f, T_DIMSE_C_GetRSP * rsp)
 {
     fprintf(f, "C-Get RSP: MsgID: %d [Status=%s]\n",
 	    rsp->MessageIDBeingRespondedTo,
-	    DU_cgetStatusString(rsp->Status));
+	    DU_cgetStatusString(rsp->DimseStatus));
     if (rsp->opts & O_GET_AFFECTEDSOPCLASSUID)
 	fprintf(f, "  AffectedSOPClassUID: %s\n",
 		uid2name(rsp->AffectedSOPClassUID));
@@ -310,7 +310,7 @@ DIMSE_printCMoveRSP(FILE * f, T_DIMSE_C_MoveRSP * rsp)
 {
     fprintf(f, "C-Move RSP: MsgID: %d [Status=%s]\n",
 	    rsp->MessageIDBeingRespondedTo,
-	    DU_cmoveStatusString(rsp->Status));
+	    DU_cmoveStatusString(rsp->DimseStatus));
     if (rsp->opts & O_MOVE_AFFECTEDSOPCLASSUID)
 	fprintf(f, "  AffectedSOPClassUID: %s\n",
 		uid2name(rsp->AffectedSOPClassUID));
@@ -349,7 +349,7 @@ DIMSE_printCFindRSP(FILE * f, T_DIMSE_C_FindRSP * rsp)
 {
     fprintf(f, "C-Find RSP: MsgID: %d [Status=%s]\n",
 	    rsp->MessageIDBeingRespondedTo,
-	    DU_cfindStatusString(rsp->Status));
+	    DU_cfindStatusString(rsp->DimseStatus));
     if (rsp->opts & O_FIND_AFFECTEDSOPCLASSUID)
 	fprintf(f, "  AffectedSOPClassUID: %s\n",
 		uid2name(rsp->AffectedSOPClassUID));
@@ -385,7 +385,7 @@ void DIMSE_printNEventReportRQ(FILE * f, T_DIMSE_N_EventReportRQ * req)
 void DIMSE_printNEventReportRSP(FILE * f, T_DIMSE_N_EventReportRSP * rsp)
 {
     fprintf(f, "N-Event-Report RSP: MsgID: %d [Status=0x%hx]\n",
-	    rsp->MessageIDBeingRespondedTo, rsp->Status);
+	    rsp->MessageIDBeingRespondedTo, rsp->DimseStatus);
     if (rsp->opts & O_NEVENTREPORT_AFFECTEDSOPCLASSUID)
 	fprintf(f, "  AffectedSOPClassUID: %s\n",
 		uid2name(rsp->AffectedSOPClassUID));
@@ -422,7 +422,7 @@ void DIMSE_printNGetRQ(FILE * f, T_DIMSE_N_GetRQ * req)
 void DIMSE_printNGetRSP(FILE * f, T_DIMSE_N_GetRSP * rsp)
 {
     fprintf(f, "N-Get RSP: MsgID: %d [Status=0x%hx]\n",
-	    rsp->MessageIDBeingRespondedTo, rsp->Status);
+	    rsp->MessageIDBeingRespondedTo, rsp->DimseStatus);
     if (rsp->opts & O_NGET_AFFECTEDSOPCLASSUID)
 	fprintf(f, "  AffectedSOPClassUID: %s\n",
 		uid2name(rsp->AffectedSOPClassUID));
@@ -450,7 +450,7 @@ void DIMSE_printNSetRQ(FILE * f, T_DIMSE_N_SetRQ * req)
 void DIMSE_printNSetRSP(FILE * f, T_DIMSE_N_SetRSP * rsp)
 {
     fprintf(f, "N-Set RSP: MsgID: %d [Status=0x%hx]\n",
-	    rsp->MessageIDBeingRespondedTo, rsp->Status);
+	    rsp->MessageIDBeingRespondedTo, rsp->DimseStatus);
     if (rsp->opts & O_NSET_AFFECTEDSOPCLASSUID)
 	fprintf(f, "  AffectedSOPClassUID: %s\n",
 		uid2name(rsp->AffectedSOPClassUID));
@@ -479,7 +479,7 @@ void DIMSE_printNActionRQ(FILE * f, T_DIMSE_N_ActionRQ * req)
 void DIMSE_printNActionRSP(FILE * f, T_DIMSE_N_ActionRSP * rsp)
 {
     fprintf(f, "N-Action RSP: MsgID: %d [Status=0x%hx]\n",
-	    rsp->MessageIDBeingRespondedTo, rsp->Status);
+	    rsp->MessageIDBeingRespondedTo, rsp->DimseStatus);
     if (rsp->opts & O_NACTION_AFFECTEDSOPCLASSUID)
 	fprintf(f, "  AffectedSOPClassUID: %s\n",
 		uid2name(rsp->AffectedSOPClassUID));
@@ -511,7 +511,7 @@ void DIMSE_printNCreateRQ(FILE * f, T_DIMSE_N_CreateRQ * req)
 void DIMSE_printNCreateRSP(FILE * f, T_DIMSE_N_CreateRSP * rsp)
 {
     fprintf(f, "N-Create RSP: MsgID: %d [Status=0x%hx]\n",
-	    rsp->MessageIDBeingRespondedTo, rsp->Status);
+	    rsp->MessageIDBeingRespondedTo, rsp->DimseStatus);
     if (rsp->opts & O_NCREATE_AFFECTEDSOPCLASSUID)
 	fprintf(f, "  AffectedSOPClassUID: %s\n",
 		uid2name(rsp->AffectedSOPClassUID));
@@ -539,7 +539,7 @@ void DIMSE_printNDeleteRQ(FILE * f, T_DIMSE_N_DeleteRQ * req)
 void DIMSE_printNDeleteRSP(FILE * f, T_DIMSE_N_DeleteRSP * rsp)
 {
     fprintf(f, "N-Delete RSP: MsgID: %d [Status=0x%hx]\n",
-	    rsp->MessageIDBeingRespondedTo, rsp->Status);
+	    rsp->MessageIDBeingRespondedTo, rsp->DimseStatus);
     if (rsp->opts & O_NDELETE_AFFECTEDSOPCLASSUID)
 	fprintf(f, "  AffectedSOPClassUID: %s\n",
 		uid2name(rsp->AffectedSOPClassUID));
@@ -555,8 +555,13 @@ void DIMSE_printNDeleteRSP(FILE * f, T_DIMSE_N_DeleteRSP * rsp)
 /*
 ** CVS Log
 ** $Log: dimdump.cc,v $
-** Revision 1.1  1996-03-26 18:38:45  hewett
-** Initial revision
+** Revision 1.2  1998-08-10 08:53:42  meichel
+** renamed member variable in DIMSE structures from "Status" to
+**   "DimseStatus". This is required if dcmnet is used together with
+**   <X11/Xlib.h> where Status is #define'd as int.
+**
+** Revision 1.1.1.1  1996/03/26 18:38:45  hewett
+** Initial Release.
 **
 **
 */

@@ -57,9 +57,9 @@
 **	Module Prefix: DIMSE_
 **
 ** Last Update:		$Author: meichel $
-** Update Date:		$Date: 1998-06-29 12:14:26 $
+** Update Date:		$Date: 1998-08-10 08:53:40 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/include/Attic/dimse.h,v $
-** CVS/RCS Revision:	$Revision: 1.5 $
+** CVS/RCS Revision:	$Revision: 1.6 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -222,7 +222,7 @@ typedef struct {
 	DIC_US          MessageIDBeingRespondedTo;		/* M */
 	DIC_UI          AffectedSOPClassUID;			/* U(=) */
 	T_DIMSE_DataSetType DataSetType;			/* M */
-	DIC_US          Status;					/* M */
+	DIC_US          DimseStatus;				/* M */
 	DIC_UI          AffectedSOPInstanceUID;			/* U(=) */
 	unsigned int	opts; /* which optional items are set */
 #define O_STORE_AFFECTEDSOPCLASSUID		0x0001
@@ -241,7 +241,7 @@ typedef struct {
 	DIC_US          MessageIDBeingRespondedTo;		/* M */
 	DIC_UI          AffectedSOPClassUID;			/* U(=) */
 	T_DIMSE_DataSetType DataSetType;			/* M */
-	DIC_US          Status;					/* M */
+	DIC_US          DimseStatus;				/* M */
 	unsigned int	opts; /* which optional items are set */
 #define O_ECHO_AFFECTEDSOPCLASSUID		0x0001
 } T_DIMSE_C_EchoRSP;
@@ -260,7 +260,7 @@ typedef struct {
 	DIC_US          MessageIDBeingRespondedTo;		/* M */
 	DIC_UI          AffectedSOPClassUID;			/* U(=) */
 	T_DIMSE_DataSetType DataSetType;			/* M */
-	DIC_US          Status;					/* M */
+	DIC_US          DimseStatus;				/* M */
 	/* Identifier provided as argument to DIMSE functions *//* C */
 	unsigned int	opts; /* which optional items are set */
 #define O_FIND_AFFECTEDSOPCLASSUID		0x0001
@@ -280,7 +280,7 @@ typedef struct {
 	DIC_US          MessageIDBeingRespondedTo;		/* M */
 	DIC_UI          AffectedSOPClassUID;			/* U(=) */
 	T_DIMSE_DataSetType DataSetType;			/* M */
-	DIC_US          Status;					/* M */
+	DIC_US          DimseStatus;				/* M */
 	DIC_US          NumberOfRemainingSubOperations;		/* C */
 	DIC_US          NumberOfCompletedSubOperations;		/* C */
 	DIC_US          NumberOfFailedSubOperations;		/* C */
@@ -308,7 +308,7 @@ typedef struct {
 	DIC_US          MessageIDBeingRespondedTo;		/* M */
 	DIC_UI          AffectedSOPClassUID;			/* U(=) */
 	T_DIMSE_DataSetType DataSetType;			/* M */
-	DIC_US          Status;					/* M */
+	DIC_US          DimseStatus;				/* M */
 	DIC_US          NumberOfRemainingSubOperations;		/* C */
 	DIC_US          NumberOfCompletedSubOperations;		/* C */
 	DIC_US          NumberOfFailedSubOperations;		/* C */
@@ -344,7 +344,7 @@ typedef struct {
 typedef struct {
 	DIC_US          MessageIDBeingRespondedTo;		/* M */
 	DIC_UI          AffectedSOPClassUID;			/* U(=) */
-	DIC_US          Status;					/* M */
+	DIC_US          DimseStatus;				/* M */
 	DIC_UI          AffectedSOPInstanceUID;			/* U(=) */
 	T_DIMSE_DataSetType DataSetType;			/* M */
 	DIC_US		EventTypeID;				/* C(=) */
@@ -375,7 +375,7 @@ typedef struct {
 typedef struct {
 	DIC_US          MessageIDBeingRespondedTo;		/* M */
 	DIC_UI          AffectedSOPClassUID;			/* U */
-	DIC_US          Status;					/* M */
+	DIC_US          DimseStatus;				/* M */
 	DIC_UI          AffectedSOPInstanceUID;			/* U */
 	T_DIMSE_DataSetType DataSetType;			/* M */
 	/* AttributeList provided as argument to DIMSE functions *//* C */
@@ -397,7 +397,7 @@ typedef struct {
 typedef struct {
 	DIC_US          MessageIDBeingRespondedTo;		/* M */
 	DIC_UI          AffectedSOPClassUID;			/* U */
-	DIC_US          Status;					/* M */
+	DIC_US          DimseStatus;				/* M */
 	DIC_UI          AffectedSOPInstanceUID;			/* U */
 	T_DIMSE_DataSetType DataSetType;			/* M */
 	/* AttributeList provided as argument to DIMSE functions *//* U */
@@ -420,7 +420,7 @@ typedef struct {
 typedef struct {
 	DIC_US          MessageIDBeingRespondedTo;		/* M */
 	DIC_UI          AffectedSOPClassUID;			/* U */
-	DIC_US          Status;					/* M */
+	DIC_US          DimseStatus;				/* M */
 	DIC_UI          AffectedSOPInstanceUID;			/* U */
 	DIC_US		ActionTypeID;				/* C(=) */
 	T_DIMSE_DataSetType DataSetType;			/* M */
@@ -446,7 +446,7 @@ typedef struct {
 typedef struct {
 	DIC_US          MessageIDBeingRespondedTo;		/* M */
 	DIC_UI          AffectedSOPClassUID;			/* U(=) */
-	DIC_US          Status;					/* M */
+	DIC_US          DimseStatus;				/* M */
 	DIC_UI          AffectedSOPInstanceUID;			/* C */
 	T_DIMSE_DataSetType DataSetType;			/* M */
 	/* AttributeList provided as argument to DIMSE functions *//* U */
@@ -467,7 +467,7 @@ typedef struct {
 typedef struct {
 	DIC_US          MessageIDBeingRespondedTo;		/* M */
 	DIC_UI          AffectedSOPClassUID;			/* U */
-	DIC_US          Status;					/* M */
+	DIC_US          DimseStatus;				/* M */
 	DIC_UI          AffectedSOPInstanceUID;			/* U */
 	T_DIMSE_DataSetType DataSetType;			/* M */
 	unsigned int	opts; /* which optional items are set */
@@ -927,7 +927,12 @@ void DIMSE_printNDeleteRSP(FILE * f, T_DIMSE_N_DeleteRSP * rsp);
 /*
 ** CVS Log
 ** $Log: dimse.h,v $
-** Revision 1.5  1998-06-29 12:14:26  meichel
+** Revision 1.6  1998-08-10 08:53:40  meichel
+** renamed member variable in DIMSE structures from "Status" to
+**   "DimseStatus". This is required if dcmnet is used together with
+**   <X11/Xlib.h> where Status is #define'd as int.
+**
+** Revision 1.5  1998/06/29 12:14:26  meichel
 ** Removed some name clashes (e.g. local variable with same
 **   name as class member) to improve maintainability.
 **   Applied some code purifications proposed by the gcc 2.8.1 -Weffc++ option.

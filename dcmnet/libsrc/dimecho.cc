@@ -56,10 +56,10 @@
 **
 **	Module Prefix: DIMSE_
 **
-** Last Update:		$Author: hewett $
-** Update Date:		$Date: 1996-04-25 16:11:14 $
+** Last Update:		$Author: meichel $
+** Update Date:		$Date: 1998-08-10 08:53:43 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/libsrc/dimecho.cc,v $
-** CVS/RCS Revision:	$Revision: 1.2 $
+** CVS/RCS Revision:	$Revision: 1.3 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -141,7 +141,7 @@ DIMSE_echoUser(
 		rsp.msg.CEchoRSP.MessageIDBeingRespondedTo, msgId);
     }
     
-    *status = rsp.msg.CEchoRSP.Status;
+    *status = rsp.msg.CEchoRSP.DimseStatus;
 
     return DIMSE_NORMAL;
    
@@ -163,7 +163,7 @@ DIMSE_sendEchoResponse(T_ASC_Association * assoc,
 	req->AffectedSOPClassUID);
     rsp.msg.CEchoRSP.opts = O_ECHO_AFFECTEDSOPCLASSUID;
     rsp.msg.CEchoRSP.DataSetType = DIMSE_DATASET_NULL;
-    rsp.msg.CEchoRSP.Status = status;
+    rsp.msg.CEchoRSP.DimseStatus = status;
 
     cond = DIMSE_sendMessageUsingMemoryData(assoc, presID, &rsp, statusDetail,
         NULL, NULL, NULL);
@@ -176,7 +176,12 @@ DIMSE_sendEchoResponse(T_ASC_Association * assoc,
 /*
 ** CVS Log
 ** $Log: dimecho.cc,v $
-** Revision 1.2  1996-04-25 16:11:14  hewett
+** Revision 1.3  1998-08-10 08:53:43  meichel
+** renamed member variable in DIMSE structures from "Status" to
+**   "DimseStatus". This is required if dcmnet is used together with
+**   <X11/Xlib.h> where Status is #define'd as int.
+**
+** Revision 1.2  1996/04/25 16:11:14  hewett
 ** Added parameter casts to char* for bzero calls.  Replaced some declarations
 ** of DIC_UL with unsigned long (reduces mismatch problems with 32 & 64 bit
 ** architectures).  Added some protection to inclusion of sys/socket.h (due

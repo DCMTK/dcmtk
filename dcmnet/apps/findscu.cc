@@ -35,10 +35,10 @@
 **		Kuratorium OFFIS e.V., Oldenburg, Germany
 ** Created:	03/96
 **
-** Last Update:		$Author: hewett $
-** Update Date:		$Date: 1998-01-14 14:35:53 $
+** Last Update:		$Author: meichel $
+** Update Date:		$Date: 1998-08-10 08:53:34 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/apps/findscu.cc,v $
-** CVS/RCS Revision:	$Revision: 1.16 $
+** CVS/RCS Revision:	$Revision: 1.17 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -643,8 +643,8 @@ findSCU(T_ASC_Association * assoc, const char *fname)
         if (verbose) {
 	    DIMSE_printCFindRSP(stdout, &rsp);
         } else {
-	    if (rsp.Status != STATUS_Success) {
-		printf("Response: %s\n", DU_cfindStatusString(rsp.Status));
+	    if (rsp.DimseStatus != STATUS_Success) {
+		printf("Response: %s\n", DU_cfindStatusString(rsp.DimseStatus));
 	    }
 	}
     } else {
@@ -680,7 +680,12 @@ cfind(T_ASC_Association * assoc, const char *fname)
 /*
 ** CVS Log
 ** $Log: findscu.cc,v $
-** Revision 1.16  1998-01-14 14:35:53  hewett
+** Revision 1.17  1998-08-10 08:53:34  meichel
+** renamed member variable in DIMSE structures from "Status" to
+**   "DimseStatus". This is required if dcmnet is used together with
+**   <X11/Xlib.h> where Status is #define'd as int.
+**
+** Revision 1.16  1998/01/14 14:35:53  hewett
 ** Modified existing -u command line option to also disable generation
 ** of UT and VS (previously just disabled generation of UN).
 **

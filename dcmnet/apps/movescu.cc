@@ -36,9 +36,9 @@
 ** Created:	03/96
 **
 ** Last Update:		$Author: meichel $
-** Update Date:		$Date: 1998-02-06 15:07:28 $
+** Update Date:		$Date: 1998-08-10 08:53:35 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/apps/movescu.cc,v $
-** CVS/RCS Revision:	$Revision: 1.20 $
+** CVS/RCS Revision:	$Revision: 1.21 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -740,7 +740,7 @@ static void storeSCPCallback(
 	*statusDetail = NULL;	/* no status detail */
 
 	/* could save the image somewhere else, put it in database, etc */
-	rsp->Status = STATUS_Success;
+	rsp->DimseStatus = STATUS_Success;
 
 	if ((imageDataSet)&&(*imageDataSet))
 	{
@@ -750,7 +750,7 @@ static void storeSCPCallback(
 	    DcmFileStream outf( fileName, DCM_WriteMode );
 	    if ( outf.Fail() ) {
 		errmsg("Cannot write image file: %s", fileName);
-		rsp->Status = STATUS_STORE_Refused_OutOfResources;
+		rsp->DimseStatus = STATUS_STORE_Refused_OutOfResources;
 	    } else {
 
 		E_TransferSyntax xfer = EXS_Unknown;
@@ -770,7 +770,7 @@ static void storeSCPCallback(
 
 		if (ff->error() != EC_Normal) {
 		    errmsg("Cannot write image file: %s", fileName);
-		    rsp->Status = STATUS_STORE_Refused_OutOfResources;
+		    rsp->DimseStatus = STATUS_STORE_Refused_OutOfResources;
 		}
 	    }
 	}
@@ -779,18 +779,18 @@ static void storeSCPCallback(
 	 * that its sopClass and sopInstance correspond with those in
 	 * the request.
 	 */
-	 if ((rsp->Status == STATUS_Success)&&(!ignoreStoreData)) {
+	 if ((rsp->DimseStatus == STATUS_Success)&&(!ignoreStoreData)) {
              /* which SOP class and SOP instance ? */
              if (! DU_findSOPClassAndInstanceInDataSet(*imageDataSet, 
 						       sopClass, sopInstance))
 	     {
 	        errmsg("Bad image file: %s", imageFileName);
-	        rsp->Status = STATUS_STORE_Error_CannotUnderstand;
+	        rsp->DimseStatus = STATUS_STORE_Error_CannotUnderstand;
              } else if (strcmp(sopClass, req->AffectedSOPClassUID) != 0) {
-	         rsp->Status = STATUS_STORE_Error_DataSetDoesNotMatchSOPClass;
+	         rsp->DimseStatus = STATUS_STORE_Error_DataSetDoesNotMatchSOPClass;
              } else if (strcmp(sopInstance, 
 			       req->AffectedSOPInstanceUID) != 0) {
-	         rsp->Status = STATUS_STORE_Error_DataSetDoesNotMatchSOPClass;
+	         rsp->DimseStatus = STATUS_STORE_Error_DataSetDoesNotMatchSOPClass;
 	     }
 	}
     }
@@ -1068,7 +1068,12 @@ cmove(T_ASC_Association * assoc, const char *fname)
 ** CVS Log
 **
 ** $Log: movescu.cc,v $
-** Revision 1.20  1998-02-06 15:07:28  meichel
+** Revision 1.21  1998-08-10 08:53:35  meichel
+** renamed member variable in DIMSE structures from "Status" to
+**   "DimseStatus". This is required if dcmnet is used together with
+**   <X11/Xlib.h> where Status is #define'd as int.
+**
+** Revision 1.20  1998/02/06 15:07:28  meichel
 ** Removed many minor problems (name clashes, unreached code)
 **   reported by Sun CC4 with "+w" or Sun CC2.
 **

@@ -35,9 +35,9 @@
 **		Kuratorium OFFIS e.V., Oldenburg, Germany
 **
 ** Last Update:		$Author: meichel $
-** Update Date:		$Date: 1998-02-06 15:07:30 $
+** Update Date:		$Date: 1998-08-10 08:53:36 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/apps/storescp.cc,v $
-** CVS/RCS Revision:	$Revision: 1.18 $
+** CVS/RCS Revision:	$Revision: 1.19 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -960,7 +960,7 @@ storeSCPCallback(
        *statusDetail = NULL;    /* no status detail */
 
        /* could save the image somewhere else, put it in database, etc */
-       rsp->Status = STATUS_Success;
+       rsp->DimseStatus = STATUS_Success;
 
        if ((imageDataSet)&&(*imageDataSet)&&(!opt_bypass)&&(!opt_ignore))
        {
@@ -971,7 +971,7 @@ storeSCPCallback(
          if (outf.Fail())
          {
            fprintf(stderr, "storescp: Cannot write image file: %s\n", fileName);
-           rsp->Status = STATUS_STORE_Refused_OutOfResources;
+           rsp->DimseStatus = STATUS_STORE_Refused_OutOfResources;
          } else {
            E_TransferSyntax xfer = opt_writeTransferSyntax;
            if (xfer == EXS_Unknown) xfer = (*imageDataSet)->getOriginalXfer();
@@ -986,7 +986,7 @@ storeSCPCallback(
              if (cbdata->dcmff->error() != EC_Normal)
              {
                fprintf(stderr, "storescp: Cannot write image file: %s\n", fileName);
-               rsp->Status = STATUS_STORE_Refused_OutOfResources;
+               rsp->DimseStatus = STATUS_STORE_Refused_OutOfResources;
              }
            } else {
              /* write as dataset */
@@ -997,7 +997,7 @@ storeSCPCallback(
              if ((*imageDataSet)->error() != EC_Normal)
              {
                fprintf(stderr, "storescp: Cannot write image file: %s\n", fileName);
-               rsp->Status = STATUS_STORE_Refused_OutOfResources;
+               rsp->DimseStatus = STATUS_STORE_Refused_OutOfResources;
              }
            }
          }
@@ -1006,21 +1006,21 @@ storeSCPCallback(
          * that its sopClass and sopInstance correspond with those in
          * the request.
          */
-        if ((rsp->Status == STATUS_Success)&&(!opt_ignore))
+        if ((rsp->DimseStatus == STATUS_Success)&&(!opt_ignore))
         {
           /* which SOP class and SOP instance ? */
           if (! DU_findSOPClassAndInstanceInDataSet(*imageDataSet, sopClass, sopInstance))
           {
              fprintf(stderr, "storescp: Bad image file: %s\n", imageFileName);
-             rsp->Status = STATUS_STORE_Error_CannotUnderstand;
+             rsp->DimseStatus = STATUS_STORE_Error_CannotUnderstand;
           }
           else if (strcmp(sopClass, req->AffectedSOPClassUID) != 0)
           {
-            rsp->Status = STATUS_STORE_Error_DataSetDoesNotMatchSOPClass;
+            rsp->DimseStatus = STATUS_STORE_Error_DataSetDoesNotMatchSOPClass;
           }
           else if (strcmp(sopInstance, req->AffectedSOPInstanceUID) != 0)
           {
-            rsp->Status = STATUS_STORE_Error_DataSetDoesNotMatchSOPClass;
+            rsp->DimseStatus = STATUS_STORE_Error_DataSetDoesNotMatchSOPClass;
           }
         }
       }
@@ -1091,7 +1091,12 @@ static CONDITION storeSCP(
 /*
 ** CVS Log
 ** $Log: storescp.cc,v $
-** Revision 1.18  1998-02-06 15:07:30  meichel
+** Revision 1.19  1998-08-10 08:53:36  meichel
+** renamed member variable in DIMSE structures from "Status" to
+**   "DimseStatus". This is required if dcmnet is used together with
+**   <X11/Xlib.h> where Status is #define'd as int.
+**
+** Revision 1.18  1998/02/06 15:07:30  meichel
 ** Removed many minor problems (name clashes, unreached code)
 **   reported by Sun CC4 with "+w" or Sun CC2.
 **

@@ -57,9 +57,9 @@
 **	Module Prefix: DIMSE_
 **
 ** Last Update:		$Author: meichel $
-** Update Date:		$Date: 1997-05-23 10:45:28 $
+** Update Date:		$Date: 1998-08-10 08:53:46 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/libsrc/dimstore.cc,v $
-** CVS/RCS Revision:	$Revision: 1.3 $
+** CVS/RCS Revision:	$Revision: 1.4 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -290,7 +290,7 @@ DIMSE_storeProvider(/* in */
     T_DIMSE_StoreProgress progress;
 
     bzero((char*)&response, sizeof(response));
-    response.Status = STATUS_Success;	/* assume */
+    response.DimseStatus = STATUS_Success;	/* assume */
 
     /* set up callback routine */
     if (callback != NULL) {
@@ -359,7 +359,7 @@ DIMSE_storeProvider(/* in */
 	    &response, &statusDetail);
     } else {
         /* user does not have to provide callback */
-        response.Status = STATUS_Success;
+        response.DimseStatus = STATUS_Success;
     }
     
     if (cond == DIMSE_NORMAL) {
@@ -373,7 +373,12 @@ DIMSE_storeProvider(/* in */
 /*
 ** CVS Log
 ** $Log: dimstore.cc,v $
-** Revision 1.3  1997-05-23 10:45:28  meichel
+** Revision 1.4  1998-08-10 08:53:46  meichel
+** renamed member variable in DIMSE structures from "Status" to
+**   "DimseStatus". This is required if dcmnet is used together with
+**   <X11/Xlib.h> where Status is #define'd as int.
+**
+** Revision 1.3  1997/05/23 10:45:28  meichel
 ** Major rewrite of storescp application. See CHANGES for details.
 ** Changes required to interfaces of some DIMSE functions.
 **
