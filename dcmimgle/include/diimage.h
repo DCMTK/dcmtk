@@ -21,10 +21,10 @@
  *
  *  Purpose: DicomImage (Header)
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-06-01 15:49:42 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2001-06-20 15:12:49 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/diimage.h,v $
- *  CVS/RCS Revision: $Revision: 1.19 $
+ *  CVS/RCS Revision: $Revision: 1.20 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -109,6 +109,15 @@ class DiImage
     inline Uint32 getNumberOfFrames() const
     {
         return NumberOfFrames;
+    }
+
+    /** get index of first frame
+     *
+     ** @return index of first frame
+     */
+    inline Uint32 getFirstFrame() const
+    {
+        return FirstFrame;
     }
 
     /** get representative frame
@@ -543,7 +552,11 @@ class DiImage
  *
  * CVS/RCS Log:
  * $Log: diimage.h,v $
- * Revision 1.19  2001-06-01 15:49:42  meichel
+ * Revision 1.20  2001-06-20 15:12:49  joergr
+ * Enhanced multi-frame support for command line tool 'dcm2pnm': extract all
+ * or a range of frames with one call.
+ *
+ * Revision 1.19  2001/06/01 15:49:42  meichel
  * Updated copyright header
  *
  * Revision 1.18  2000/03/08 16:24:16  meichel

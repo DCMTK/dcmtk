@@ -22,9 +22,9 @@
  *  Purpose: Provides main interface to the "DICOM image toolkit"
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-05-14 09:49:17 $
+ *  Update Date:      $Date: 2001-06-20 15:12:49 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/dcmimage.h,v $
- *  CVS/RCS Revision: $Revision: 1.33 $
+ *  CVS/RCS Revision: $Revision: 1.34 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -191,10 +191,20 @@ class DicomImage
             Image->getNumberOfFrames() : 0;
     }
 
-    /** get number of representative frame.
+    /** get index of first frame
+     *
+     ** @return index of first frame (0..n-1)
+     */
+    inline unsigned long getFirstFrame() const
+    {
+        return (Image != NULL) ?
+            Image->getFirstFrame() : 0;
+    }
+
+    /** get index of representative frame.
      *  This attribute is optionally stored in the dataset (type 3).
      *
-     ** @return number of representative frame (0..n-1)
+     ** @return index of representative frame (0..n-1)
      */
     inline unsigned long getRepresentativeFrame() const
     {
@@ -1465,7 +1475,11 @@ class DicomImage
  *
  * CVS/RCS Log:
  * $Log: dcmimage.h,v $
- * Revision 1.33  2001-05-14 09:49:17  joergr
+ * Revision 1.34  2001-06-20 15:12:49  joergr
+ * Enhanced multi-frame support for command line tool 'dcm2pnm': extract all
+ * or a range of frames with one call.
+ *
+ * Revision 1.33  2001/05/14 09:49:17  joergr
  * Added support for "1 bit output" of overlay planes; useful to extract
  * overlay planes from the pixel data and store them separately in the dataset.
  *

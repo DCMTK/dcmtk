@@ -8,17 +8,18 @@ SYNOPSIS
 
 SUMMARY
 
-The dcm2pnm utility reads a DICOM image, converts the pixel data according
-to the selected image processing options and writes back an image in the
-well-known PPM/PGM file format (portable pix map / portable gray map).
+The dcm2pnm utility reads a DICOM image, converts the pixel data according to
+the selected image processing options and writes back an image in the well-
+known PPM/PGM file format (portable pix map / portable gray map).
 
 USAGE
 
+dcm2pnm: Convert DICOM images to PGM or PNM
 usage: dcm2pnm [options] dcmfile-in [pnmfile-out]
 
 parameters:
   dcmfile-in   DICOM input filename to be converted
-  dcmfile-out  PGM/PNM output file name to be written
+  pnmfile-out  PGM/PNM output file name to be written
 
 general options:
   -h      --help                print this help text and exit
@@ -51,13 +52,12 @@ image processing options:
     +Lv   --flip-vertically     flip image vertically
     +Lhv  --flip-both-axes      flip image horizontally and vertically
   scaling:
-    +a    --recognize-aspect    recognize pixel aspect ratio when scaling
-                                (default)
+    +a    --recognize-aspect    recognize pixel aspect ratio (default)
     -a    --ignore-aspect       ignore pixel aspect ratio when scaling
     +i    --interpolate         [n]umber of algorithm : integer
                                 use interpolation when scaling (1..2, def: 1)
     -i    --no-interpolation    no interpolation when scaling
-    -S    --no-scaling          no scaling, ignore pixel aspect ratio (def.)
+    -S    --no-scaling          no scaling, ignore pixel aspect ratio (default)
     +Sxf  --scale-x-factor      [f]actor : float
                                 scale x axis by factor, auto-compute y axis
     +Syf  --scale-y-factor      [f]actor : float
@@ -81,7 +81,7 @@ image processing options:
     +Ww   --set-window          [c]enter [w]idth : float
                                 compute VOI window using center c and width w
   presentation LUT transformation options:
-    +Pid  --identity-shape      presentation LUT shape IDENTITY (default)
+    +Pid  --identity-shape      presentation LUT shape IDENTITY
     +Piv  --inverse-shape       presentation LUT shape INVERSE
     +Pod  --lin-od-shape        presentation LUT shape LIN OD
   overlay options:
@@ -125,13 +125,12 @@ output options:
 
 ENVIRONMENT
 
-The dcm2pnm utility will attempt to load DICOM data dictionaries
-specified in the DCMDICTPATH environment variable.  By default, if
-the DCMDICTPATH environment variable is not set, the file
-/usr/local/dicom/lib/dicom.dic will be loaded.  The default behaviour
-should be preferred and the DCMDICTPATH environment variable only used
-when alternative data dictionaries are required.  The DCMDICTPATH 
-environment variable has the same format as the shell PATH variable in
-that a colon (":") separates entries.  The data dictionary code will
-attempt to load each file specified in the DCMDICTPATH environment 
-variable.  It is an error if no data dictionary can be loaded.
+The dcm2pnm utility will attempt to load DICOM data dictionaries specified in
+the DCMDICTPATH environment variable.  By default, if the DCMDICTPATH
+environment variable is not set, the file /usr/local/dicom/lib/dicom.dic will
+be loaded.  The default behaviour should be preferred and the DCMDICTPATH
+environment variable only used when alternative data dictionaries are
+required.  The DCMDICTPATH environment variable has the same format as the
+shell PATH variable in that a colon (":") separates entries.  The data
+dictionary code will attempt to load each file specified in the DCMDICTPATH
+environment variable.  It is an error if no data dictionary can be loaded.
