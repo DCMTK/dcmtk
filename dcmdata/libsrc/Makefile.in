@@ -48,6 +48,7 @@ all: libdcmdata.a
 install: all
 	$(configdir)/mkinstalldirs $(libdir)
 	$(INSTALL_DATA) libdcmdata.a $(libdir)/libdcmdata.a
+	$(INSTALL_DATA) dicom.dic $(libdir)/dicom.dic
 
 
 clean:
