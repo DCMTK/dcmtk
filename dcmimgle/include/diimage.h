@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2001, OFFIS
+ *  Copyright (C) 1996-2002, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose: DicomImage (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-04-16 13:53:11 $
+ *  Update Date:      $Date: 2002-06-26 16:01:55 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/diimage.h,v $
- *  CVS/RCS Revision: $Revision: 1.24 $
+ *  CVS/RCS Revision: $Revision: 1.25 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -37,6 +37,7 @@
 
 #include "osconfig.h"
 #include "dctypes.h"
+#include "dcitem.h"
 
 #ifdef SUNCC
 #include "didocu.h"
@@ -98,7 +99,7 @@ class DiImage
     inline EI_Status getStatus() const
     {
         return ImageStatus;
-    }    
+    }
 
     /** get number of frames
      *
@@ -196,6 +197,26 @@ class DiImage
      ** @return status, true if successful, false otherwise
      */
     int setColumnRowRatio(const double ratio);
+
+    /** get polarity.
+     *  possible values are EPP_Normal and EPP_Reverse
+     *
+     ** @return currently active polarity mode
+     */
+    inline EP_Polarity getPolarity() const
+    {
+        return Polarity;
+    }
+
+    /** set polarity.
+     *
+     ** @param  polarity  polarity (normal or reverse)
+     *
+     ** @return true if successful (1 = polarity has changed,
+     *                              2 = polarity has not changed)
+     *          false otherwise
+     */
+    int setPolarity(const EP_Polarity polarity);
 
     /** get color model of internal pixel representation.
      *  Possible values are: EPI_Monochrome1, EPI_Monochrome2, EPI_RGB and EPI_YBR_Full
@@ -397,6 +418,20 @@ class DiImage
                                           const unsigned long frame,
                                           const int bits) = 0;
 
+    /** render pixel data and write image related attributes to DICOM dataset.
+     *
+     ** @param  dataset  reference to DICOM dataset where the image attributes are stored
+     *  @param  frame    index of frame used for output
+     *  @param  bits     number of bits used for output of pixel data
+     *  @param  planar   flag, whether the output data (for multi-planar images) should be planar or not
+     *
+     ** @return true if successful, false otherwise
+     */
+    int writeToDataset(DcmItem &dataset,
+                       const unsigned long frame = 0,
+                       const int bits = 0,
+                       const int planar = 0);
+
     /** write pixel data to PPM file (abstract).
      *  pixel data is written in ASCII format.
      *
@@ -550,6 +585,9 @@ class DiImage
     /// actual number of bits per sample (depth)
     int BitsPerSample;
 
+    /// polarity (normal or reverse)
+    EP_Polarity Polarity;
+
     /// is 'true' if pixel data is signed
     int hasSignedRepresentation;
     /// is 'true' if attribute 'PixelSpacing' is present
@@ -580,7 +618,12 @@ class DiImage
  *
  * CVS/RCS Log:
  * $Log: diimage.h,v $
- * Revision 1.24  2002-04-16 13:53:11  joergr
+ * Revision 1.25  2002-06-26 16:01:55  joergr
+ * Added support for polarity flag to color images.
+ * Added new method to write a selected frame to a DICOM dataset (incl. required
+ * attributes from the "Image Pixel Module").
+ *
+ * Revision 1.24  2002/04/16 13:53:11  joergr
  * Added configurable support for C++ ANSI standard includes (e.g. streams).
  * Thanks to Andreas Barth <Andreas.Barth@bruker-biospin.de> for his
  * contribution.
