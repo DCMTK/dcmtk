@@ -2,6 +2,7 @@
 #	Makefile for dcmwlm/etc
 #
 
+
 @SET_MAKE@
 
 SHELL = /bin/sh

@@ -2,6 +2,7 @@
 #	Makefile for dcmnet
 #
 
+
 @SET_MAKE@
 
 SHELL = /bin/sh

@@ -2,6 +2,7 @@
 #	Makefile for dcmsign/etc
 #
 
+
 @SET_MAKE@
 
 SHELL = /bin/sh

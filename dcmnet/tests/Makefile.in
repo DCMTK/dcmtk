@@ -2,6 +2,7 @@
 #	Makefile for dcmnet/tests
 #
 
+
 @SET_MAKE@
 
 SHELL = /bin/sh

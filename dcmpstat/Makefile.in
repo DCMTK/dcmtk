@@ -2,12 +2,13 @@
 #	Makefile for dcmpstat
 #
 
+
 @SET_MAKE@
 
 SHELL = /bin/sh
-VPATH= @srcdir@:@top_srcdir@/include:@configdir@/include
-srcdir= @srcdir@
-top_srcdir=@top_srcdir@
+VPATH = @srcdir@:@top_srcdir@/include:@configdir@/include
+srcdir = @srcdir@
+top_srcdir = @top_srcdir@
 configdir = @configdir@
 
 include $(configdir)/@common_makefile@

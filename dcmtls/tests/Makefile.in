@@ -2,6 +2,7 @@
 #	Makefile for dcmtls/tests
 #
 
+
 @SET_MAKE@
 
 SHELL = /bin/sh
