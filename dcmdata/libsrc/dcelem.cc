@@ -10,9 +10,9 @@
 ** Implementation of class DcmElement
 **
 ** Last Update:         $Author: meichel $
-** Update Date:         $Date: 1998-11-12 16:48:15 $
+** Update Date:         $Date: 1999-03-22 15:46:24 $
 ** Source File:         $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcelem.cc,v $
-** CVS/RCS Revision:    $Revision: 1.24 $
+** CVS/RCS Revision:    $Revision: 1.25 $
 ** Status:              $State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -758,6 +758,13 @@ E_Condition DcmElement::read(DcmStream & inStream,
                     inStream.ClearError();
                     inStream.Seek((Sint32)(offset+Length));
                     errorFlag = inStream.GetError();
+                    if (errorFlag != EC_Normal)
+                    {
+                        /* Print an error message when too few bytes are available in the file in order to
+                         * distinguish this problem from any other generic "InvalidStream" problem. */
+                        cerr << "ERROR: " << getTag().getTagName() << getTag().getXTag() << " larger ("
+                             << Length << ") that remaining bytes in file" << endl;
+                    }
                 }
 
                 if (fValue)
@@ -860,7 +867,10 @@ E_Condition DcmElement::write(DcmStream & outStream,
 /*
 ** CVS/RCS Log:
 ** $Log: dcelem.cc,v $
-** Revision 1.24  1998-11-12 16:48:15  meichel
+** Revision 1.25  1999-03-22 15:46:24  meichel
+** Printing explicit error message when DICOM file is too short.
+**
+** Revision 1.24  1998/11/12 16:48:15  meichel
 ** Implemented operator= for all classes derived from DcmObject.
 **
 ** Revision 1.23  1998/07/15 15:51:55  joergr
