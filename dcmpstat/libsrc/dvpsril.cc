@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DVPSReferencedImage_PList
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-06-02 16:01:05 $
- *  CVS/RCS Revision: $Revision: 1.8 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2000-06-29 13:56:21 $
+ *  CVS/RCS Revision: $Revision: 1.9 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -184,7 +184,7 @@ void DVPSReferencedImage_PList::removeFrameReference(const char *sopinstanceuid,
       {
         delete (*first);
         first = erase(first);
-      }
+      } else ++first;
     } else ++first;
   }
   return;
@@ -367,7 +367,10 @@ void DVPSReferencedImage_PList::setLog(OFConsole *stream, OFBool verbMode, OFBoo
 
 /*
  *  $Log: dvpsril.cc,v $
- *  Revision 1.8  2000-06-02 16:01:05  meichel
+ *  Revision 1.9  2000-06-29 13:56:21  joergr
+ *  Fixed bug causing a non-terminating "while" loop.
+ *
+ *  Revision 1.8  2000/06/02 16:01:05  meichel
  *  Adapted all dcmpstat classes to use OFConsole for log and error output
  *
  *  Revision 1.7  2000/03/08 16:29:09  meichel
