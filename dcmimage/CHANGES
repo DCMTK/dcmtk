@@ -1,6 +1,7 @@
 **** Changes from 1999.02.05 (riesmeier)
 
 - Added conversion P-Value to DDL when display function is absent.
+  Corrected calculation of DDL value for bitmaps shutters (overlays).
   Affects: dcmimgle/include/dimoopxt.h
   
 - Added console application to convert VeriLUM LUT files to dcmtk DISPLAY
@@ -9,6 +10,13 @@
   Added:   dcmimgle/apps/Makefile.dep
            dcmimgle/apps/Makefile.in
            dcmimgle/apps/dconvlum.cc
+
+- Added optional parameter to method convertPValueToDDL to specify width
+  of output data (number of bits).
+  Affects: dcmimgle/include/dcmimage.h
+           dcmimgle/include/didispfn.h
+           dcmimgle/include/dimoimg.h
+           dcmimgle/libsrc/dimoimg.cc
 
 **** Changes from 1999.02.03 (riesmeier)
 
