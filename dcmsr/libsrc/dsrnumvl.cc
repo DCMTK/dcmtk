@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2003, OFFIS
+ *  Copyright (C) 2000-2004, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,8 +23,8 @@
  *    classes: DSRNumericMeasurementValue
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-08-07 17:29:13 $
- *  CVS/RCS Revision: $Revision: 1.17 $
+ *  Update Date:      $Date: 2004-09-03 09:07:53 $
+ *  CVS/RCS Revision: $Revision: 1.18 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -139,17 +139,20 @@ OFCondition DSRNumericMeasurementValue::readXML(const DSRXMLDocument &doc,
     if (cursor.valid())
     {
         cursor.gotoChild();
-        /* get "value" element */
-        doc.getStringFromNodeContent(doc.getNamedNode(cursor, "value"), NumericValue);
-        /* get "unit" element */
-        result = MeasurementUnit.readXML(doc, doc.getNamedNode(cursor, "unit"));
+        /* get "value" element (might be absent since "Measured Value Sequence" is type 2) */
+        if (!doc.getStringFromNodeContent(doc.getNamedNode(cursor, "value", OFFalse /*required*/), NumericValue).empty())
+        {
+            /* get "unit" element (only if "value" present) */
+            result = MeasurementUnit.readXML(doc, doc.getNamedNode(cursor, "unit"));
+        } else
+            result = EC_Normal;
         if (result.good())
         {
             /* get "qualifier" element (optional, do not report if absent or erroneous) */
             ValueQualifier.readXML(doc, doc.getNamedNode(cursor, "qualifier", OFFalse /*required*/));
-            if (!isValid())
-                result = SR_EC_InvalidValue;
         }
+        if (!isValid())
+            result = SR_EC_InvalidValue;
     }
     return result;
 }
@@ -160,14 +163,17 @@ OFCondition DSRNumericMeasurementValue::writeXML(ostream &stream,
                                                  OFConsole *logStream) const
 {
     DSRTypes::writeStringValueToXML(stream, NumericValue, "value", (flags & DSRTypes::XF_writeEmptyTags) > 0);
-    /* write measurement unit */
-    if (flags & DSRTypes::XF_codeComponentsAsAttribute)
-        stream << "<unit";     // bracket ">" is closed in the next writeXML() routine
-    else
-        stream << "<unit>" << endl;
-    MeasurementUnit.writeXML(stream, flags, logStream);
-    stream << "</unit>" << endl;
-    if (!ValueQualifier.isEmpty())
+    if (!MeasurementUnit.isEmpty() || (flags & DSRTypes::XF_writeEmptyTags))
+    {
+        /* write measurement unit */
+        if (flags & DSRTypes::XF_codeComponentsAsAttribute)
+            stream << "<unit";     // bracket ">" is closed in the next writeXML() routine
+        else
+            stream << "<unit>" << endl;
+        MeasurementUnit.writeXML(stream, flags, logStream);
+        stream << "</unit>" << endl;
+    }
+    if (!ValueQualifier.isEmpty() || (flags & DSRTypes::XF_writeEmptyTags))
     {
         /* write value qualifier */
         if (flags & DSRTypes::XF_codeComponentsAsAttribute)
@@ -420,7 +426,13 @@ OFBool DSRNumericMeasurementValue::checkNumericValueQualifier(const DSRCodedEntr
 /*
  *  CVS/RCS Log:
  *  $Log: dsrnumvl.cc,v $
- *  Revision 1.17  2003-08-07 17:29:13  joergr
+ *  Revision 1.18  2004-09-03 09:07:53  joergr
+ *  Fixed inconsistency in readXML() method that prevented support for empty
+ *  MeasuredValueSequence.
+ *  Removed output of empty measurement unit in writeXML() by default. Added
+ *  output of empty value qualifier in writeXML() if flag is set accordingly.
+ *
+ *  Revision 1.17  2003/08/07 17:29:13  joergr
  *  Removed libxml dependency from header files. Simplifies linking (MSVC).
  *
  *  Revision 1.16  2003/08/07 15:21:53  joergr
