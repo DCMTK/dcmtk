@@ -22,9 +22,9 @@
  *  Purpose: DiCubicSpline Function/Interpolation (Header/Implementation)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-05-03 11:09:31 $
+ *  Update Date:      $Date: 1999-07-23 14:11:25 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/displint.h,v $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  * 
  *  CVS/RCS Log at end of file
@@ -110,7 +110,6 @@ class DiCubicSpline
     }
 
 
-
     /** perform cubic spline interpolation for given points
      *  T1 = type of x coordinates
      *  T2 = type of y coordinates
@@ -170,6 +169,53 @@ class DiCubicSpline
         }
         return 0;
     }
+    
+/*
+    static int Function2D(const T1 *x1a,
+                          const T1 *x2a,
+                          const T1 **ya,
+                          const unsigned int m,
+                          const unsigned int n,
+                          T2 **y2a)
+    {
+        register unsigned int j;
+        for (j = 0; j < m; j++)
+            Function(x2a, ya[j], n, y2a[j]);
+        return 1;
+    }
+    
+    
+    static int Interpolation2D(const T1 *x1a,
+                               const T1 *x2a,
+                               const T1 *ya,
+                               const T2 **y2a,
+                               const unsigned int m,
+                               const unsigned int n,
+                               const T1 *x1,
+                               const T1 *x2,
+                               const T1 **y)
+    {
+        int result = 0;
+        T2 *ytmp = new T2[m];
+        T2 *yytmp = new T2[m];
+        if ((ytmp != NULL) && (yytmp != NULL))
+        {
+            register unsigned int i;
+            register unsigned int j;
+            for (i = 0; i < n; i++)
+            {
+                for (j = 0; j < m; j++)
+                    Interpolation(x2a, ya[j], y2a[j], n, x2, &yytmp[j]);
+                Function(x1a, yytmp, m, ytmp);
+                Interpolation(x1a, yytmp, ytmp, m, x1, y[i]);
+            }
+            result = 1;
+        }
+        delete[] ytmp;
+        delete[] yytmp;
+        return result;
+    }
+*/
 };
 
 
@@ -180,7 +226,11 @@ class DiCubicSpline
  *
  * CVS/RCS Log:
  * $Log: displint.h,v $
- * Revision 1.6  1999-05-03 11:09:31  joergr
+ * Revision 1.7  1999-07-23 14:11:25  joergr
+ * Added preliminary support for 2D bi-cubic spline interpolation (currently
+ * not used).
+ *
+ * Revision 1.6  1999/05/03 11:09:31  joergr
  * Minor code purifications to keep Sun CC 2.0.1 quiet.
  *
  * Revision 1.5  1999/04/29 13:49:08  joergr
