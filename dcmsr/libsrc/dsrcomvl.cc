@@ -23,8 +23,8 @@
  *    classes: DSRCompositeReferenceValue
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-11-01 16:30:32 $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  Update Date:      $Date: 2000-11-06 11:31:46 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -207,7 +207,9 @@ E_Condition DSRCompositeReferenceValue::renderHTML(ostream &docStream,
                                                    const size_t /* flags */,
                                                    OFConsole * /* logStream */) const
 {
-    docStream << "<a href=\"file://dicom/composite/" << SOPClassUID << "/" << SOPInstanceUID << "\">";
+    /* render reference */
+    docStream << "<a href=\"" << HTML_HYPERLINK_PREFIX_FOR_CGI;
+    docStream << "?composite=" << SOPClassUID << "+" << SOPInstanceUID << "\">";
     const char *string = dcmFindNameOfUID(SOPClassUID.c_str());
     if (string != NULL)
         docStream << string;
@@ -285,7 +287,11 @@ OFBool DSRCompositeReferenceValue::checkSOPInstanceUID(const OFString &sopInstan
 /*
  *  CVS/RCS Log:
  *  $Log: dsrcomvl.cc,v $
- *  Revision 1.5  2000-11-01 16:30:32  joergr
+ *  Revision 1.6  2000-11-06 11:31:46  joergr
+ *  Changes structure of HTML hyperlinks to composite objects (now using pseudo
+ *  CGI script).
+ *
+ *  Revision 1.5  2000/11/01 16:30:32  joergr
  *  Added support for conversion to XML.
  *
  *  Revision 1.4  2000/10/26 14:27:23  joergr

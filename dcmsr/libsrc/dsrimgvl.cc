@@ -23,8 +23,8 @@
  *    classes: DSRImageReferenceValue
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-11-01 16:37:00 $
- *  CVS/RCS Revision: $Revision: 1.9 $
+ *  Update Date:      $Date: 2000-11-06 11:32:51 $
+ *  CVS/RCS Revision: $Revision: 1.10 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -218,23 +218,33 @@ E_Condition DSRImageReferenceValue::renderHTML(ostream &docStream,
                                                const size_t flags,
                                                OFConsole * /* logStream */) const
 {
-    /* image reference */
-    docStream << "<a href=\"file://dicom/image/" << SOPClassUID << "/" << SOPInstanceUID << "\">";
+    /* reference: image */
+    docStream << "<a href=\"" << HTML_HYPERLINK_PREFIX_FOR_CGI;
+    docStream << "?image=" << SOPClassUID << "+" << SOPInstanceUID;
+    /* reference: pstate */
+    if (PresentationState.isValid())
+    {
+        docStream << "&pstate=" << PresentationState.getSOPClassUID();
+        docStream << "+" << PresentationState.getSOPInstanceUID();
+    }
+    /* reference: frames */
+    if (!FrameList.isEmpty())
+    {
+        docStream << "&frames=";
+        FrameList.print(docStream, 0 /* flags */, '+');
+    }
+    docStream << "\">";
+    /* text: image */
     const char *string = dcmSOPClassUIDToModality(SOPClassUID.c_str());
     if (string != NULL)
         docStream << string;
     else
         docStream << "unknown";
-    docStream << " image</a>";
-    /* presentation state */
+    docStream << " image";
+    /* text: pstate */
     if (PresentationState.isValid())
-    {
-        docStream << " with ";
-        docStream << "<a href=\"file://dicom/pstate/";
-        docStream << PresentationState.getSOPClassUID() << "/";
-        docStream << PresentationState.getSOPInstanceUID() << "\">";
-        docStream << " GSPS</a>";
-    }
+        docStream << " with GSPS";
+    docStream << "</a>";
     if (!isShort(flags))
     {
         if (flags & DSRTypes::HF_currentlyInsideAnnex)
@@ -319,7 +329,11 @@ OFBool DSRImageReferenceValue::checkPresentationState(const DSRCompositeReferenc
 /*
  *  CVS/RCS Log:
  *  $Log: dsrimgvl.cc,v $
- *  Revision 1.9  2000-11-01 16:37:00  joergr
+ *  Revision 1.10  2000-11-06 11:32:51  joergr
+ *  Changes structure of HTML hyperlinks to composite objects (now using pseudo
+ *  CGI script).
+ *
+ *  Revision 1.9  2000/11/01 16:37:00  joergr
  *  Added support for conversion to XML. Optimized HTML rendering.
  *
  *  Revision 1.8  2000/10/26 14:31:44  joergr

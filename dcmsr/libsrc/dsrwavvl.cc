@@ -23,8 +23,8 @@
  *    classes: DSRWaveformReferenceValue
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-11-01 16:37:08 $
- *  CVS/RCS Revision: $Revision: 1.9 $
+ *  Update Date:      $Date: 2000-11-06 11:32:52 $
+ *  CVS/RCS Revision: $Revision: 1.10 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -160,7 +160,14 @@ E_Condition DSRWaveformReferenceValue::renderHTML(ostream &docStream,
                                                   OFConsole * /* logStream */) const
 {
     /* render reference */
-    docStream << "<a href=\"file://dicom/waveform/" << SOPClassUID << "/" << SOPInstanceUID << "\">";
+    docStream << "<a href=\"" << HTML_HYPERLINK_PREFIX_FOR_CGI;
+    docStream << "?waveform=" << SOPClassUID << "+" << SOPInstanceUID;
+    if (!ChannelList.isEmpty())
+    {
+        docStream << "&channels=";
+        ChannelList.print(docStream, 0 /* flags */, '+', '+');
+    }
+    docStream << "\">";
     const char *string = dcmFindNameOfUID(SOPClassUID.c_str());
     if (string != NULL)
         docStream << string;
@@ -239,7 +246,11 @@ OFBool DSRWaveformReferenceValue::checkSOPClassUID(const OFString &sopClassUID) 
 /*
  *  CVS/RCS Log:
  *  $Log: dsrwavvl.cc,v $
- *  Revision 1.9  2000-11-01 16:37:08  joergr
+ *  Revision 1.10  2000-11-06 11:32:52  joergr
+ *  Changes structure of HTML hyperlinks to composite objects (now using pseudo
+ *  CGI script).
+ *
+ *  Revision 1.9  2000/11/01 16:37:08  joergr
  *  Added support for conversion to XML. Optimized HTML rendering.
  *
  *  Revision 1.8  2000/10/26 14:38:02  joergr
