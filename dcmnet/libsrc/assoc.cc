@@ -68,9 +68,9 @@
 **
 **
 ** Last Update:		$Author: hewett $
-** Update Date:		$Date: 1996-06-20 07:35:47 $
+** Update Date:		$Date: 1996-09-03 11:42:56 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/libsrc/assoc.cc,v $
-** CVS/RCS Revision:	$Revision: 1.7 $
+** CVS/RCS Revision:	$Revision: 1.8 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -1566,6 +1566,24 @@ ASC_requestAssociation(T_ASC_Network * network,
     CONDITION cond;
     long sendLen;
 
+    if (network == NULL) {
+	return COND_PushCondition(
+	    ASC_NULLKEY, ASC_Message(ASC_NULLKEY), 
+	    "ASC_requestAssociation: null network");
+    }
+
+    if (params == NULL) {
+	return COND_PushCondition(
+	    ASC_NULLKEY, ASC_Message(ASC_NULLKEY), 
+	    "ASC_requestAssociation: null params");
+    }
+
+    if (ASC_countPresentationContexts(params) == 0) {
+	return COND_PushCondition(
+	    ASC_CODINGERROR, ASC_Message(ASC_CODINGERROR), 
+	    "ASC_requestAssociation: missing presentation contexts");
+    }
+
     *assoc = (T_ASC_Association *) malloc(sizeof(**assoc));
     if (*assoc == NULL) {
 	return COND_PushCondition(ASC_MALLOCERROR,
@@ -1776,7 +1794,11 @@ ASC_dropAssociation(T_ASC_Association * association)
 /*
 ** CVS Log
 ** $Log: assoc.cc,v $
-** Revision 1.7  1996-06-20 07:35:47  hewett
+** Revision 1.8  1996-09-03 11:42:56  hewett
+** When requesting an association, added check that presentation
+** contexts have been defined.
+**
+** Revision 1.7  1996/06/20 07:35:47  hewett
 ** Removed inclusion of system header already included by dcompat.h
 ** and made sure that dcompat.h is always included (via dicom.h).
 **
