@@ -23,8 +23,8 @@
  *    classes: DVInterface
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-05-05 14:25:26 $
- *  CVS/RCS Revision: $Revision: 1.36 $
+ *  Update Date:      $Date: 1999-08-25 16:47:20 $
+ *  CVS/RCS Revision: $Revision: 1.37 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -857,6 +857,17 @@ class DVInterface
       unsigned long height,
       double aspectRatio=1.0);
 
+    /** helper function which saves a DICOM object to file.
+     *  @param filename name of DICOM file to be created
+     *  @param fileformat DICOM object to be saved
+     *  @param explicitVR selects the transfer syntax to be written. 
+     *    True selects Explicit VR Little Endian, False selects Implicit VR Little Endian.
+     *  @return EC_Normal upon success, an error code otherwise.
+     */
+    static E_Condition saveFileFormat(const char *filename,
+                                      DcmFileFormat *fileformat,
+                                      OFBool explicitVR);
+
     /** helper function that inserts a new element into a DICOM dataset.
      *  A new DICOM element of the type determined by the tag is created.
      *  The string value (if any) is assigned and the element is inserted
@@ -961,16 +972,6 @@ private:
      */
     E_Condition loadFileFormat(const char *filename,
                                DcmFileFormat *&fileformat);
-
-    /** helper function which saves a DICOM object to file.
-     *  @param filename name of DICOM file to be created
-     *  @param fileformat DICOM object to be saved
-     *  @param explicitVR selects the transfer syntax to be written. 
-     *    True selects Explicit VR Little Endian, False selects Implicit VR Little Endian.
-     *  @return EC_Normal upon success, an error code otherwise.
-     */
-    E_Condition saveFileFormat(const char *filename,
-                               DcmFileFormat *fileformat, OFBool explicitVR);
 
     /** helper function that exchanges the current presentation state and image
      *  by the pointers passed and frees the old ones.
@@ -1165,7 +1166,10 @@ private:
 /*
  *  CVS/RCS Log:
  *  $Log: dviface.h,v $
- *  Revision 1.36  1999-05-05 14:25:26  joergr
+ *  Revision 1.37  1999-08-25 16:47:20  joergr
+ *  Moved method 'saveFileFormat()' to public part of the interface class.
+ *
+ *  Revision 1.36  1999/05/05 14:25:26  joergr
  *  Added optional parameter to method loadPState (from database) to change
  *  instance reviewed flag for pstate and image.
  *
