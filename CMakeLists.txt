@@ -6,16 +6,16 @@ PROJECT(dcmtk)
 OPTION(WITH_LIBXML "Turn support for libxml on/off" OFF)
 FIND_PATH(WITH_LIBXMLINC "include/libxml/parser.h" ${dcmtk_SOURCE_DIR}/../libxml2-2.5.7)
 # libpng support
-OPTION(WITH_LIBPNG "Turn support for libpng on/off" OFF)
+OPTION(WITH_LIBPNG "Turn support for libpng on/off" ON)
 FIND_PATH(WITH_LIBPNGINC "include/png.h" ${dcmtk_SOURCE_DIR}/../libpng-1.2.5)
 # libtiff support
-OPTION(WITH_LIBTIFF "Turn support for libtiff on/off" OFF)
+OPTION(WITH_LIBTIFF "Turn support for libtiff on/off" ON)
 FIND_PATH(WITH_LIBTIFFINC "include/tiff.h" ${dcmtk_SOURCE_DIR}/../tiff-3.5.7)
 # openssl support
 OPTION(WITH_OPENSSL "Turn support for openssl on/off" OFF)
 FIND_PATH(WITH_OPENSSLINC "include/openssl/ssl.h" ${dcmtk_SOURCE_DIR}/../openssl-0.9.6i)
 # zlib support
-OPTION(WITH_ZLIB "Turn support for zlib on/off" OFF)
+OPTION(WITH_ZLIB "Turn support for zlib on/off" ON)
 FIND_PATH(WITH_ZLIBINC "include/zlib.h" ${dcmtk_SOURCE_DIR}/../zlib-1.1.4)
 
 # set certain project wide flags
