@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DVPSStoredPrint
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-09-26 15:36:32 $
- *  CVS/RCS Revision: $Revision: 1.43 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2001-09-28 13:50:54 $
+ *  CVS/RCS Revision: $Revision: 1.44 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -255,7 +255,7 @@ void DVPSStoredPrint::updateCache()
     unsigned long rows=0;
     char format[30];
     aString.copy(format,OFString_npos,9);
-    if (2==sscanf(format, "%ld,%ld", &columns, &rows))
+    if (2==sscanf(format, "%lu,%lu", &columns, &rows))
     {
       currentNumCols = columns;
       currentNumRows = rows;
@@ -1006,7 +1006,7 @@ OFCondition DVPSStoredPrint::setImageDisplayFormat(unsigned long columns, unsign
 {
   if ((columns==0)||(rows==0)) return EC_IllegalCall;
   char newFormat[80];
-  sprintf(newFormat, "STANDARD\\%ld,%ld", columns, rows);
+  sprintf(newFormat, "STANDARD\\%lu,%lu", columns, rows);
   
   OFCondition result = imageDisplayFormat.putString(newFormat);
   if (EC_Normal == result)
@@ -2305,13 +2305,13 @@ OFBool DVPSStoredPrint::printSCPCreate(
             found = OFTrue;
             break;
           } else {
-            if (1 == sscanf(aString.c_str(), "%ld", &l)) supportsNumericDensity = OFTrue;
+            if (1 == sscanf(aString.c_str(), "%lu", &l)) supportsNumericDensity = OFTrue;
           }
         }
         if ((! found) && supportsNumericDensity)
         {
           // the density was not found in the list; check whether it is numerical
-          if (1 == sscanf(theBorderDensity.c_str(), "%ld", &l)) found = OFTrue;
+          if (1 == sscanf(theBorderDensity.c_str(), "%lu", &l)) found = OFTrue;
         }
           
         if (! found)
@@ -2367,13 +2367,13 @@ OFBool DVPSStoredPrint::printSCPCreate(
             found = OFTrue;
             break;
           } else {
-            if (1 == sscanf(aString.c_str(), "%ld", &l)) supportsNumericDensity = OFTrue;
+            if (1 == sscanf(aString.c_str(), "%lu", &l)) supportsNumericDensity = OFTrue;
           }
         }
         if ((! found) && supportsNumericDensity)
         {
           // the density was not found in the list; check whether it is numerical
-          if (1 == sscanf(theEIDensity.c_str(), "%ld", &l)) found = OFTrue;
+          if (1 == sscanf(theEIDensity.c_str(), "%lu", &l)) found = OFTrue;
         }
           
         if (! found)
@@ -3057,13 +3057,13 @@ OFBool DVPSStoredPrint::printSCPSet(
             found = OFTrue;
             break;
           } else {
-            if (1 == sscanf(aString.c_str(), "%ld", &l)) supportsNumericDensity = OFTrue;
+            if (1 == sscanf(aString.c_str(), "%lu", &l)) supportsNumericDensity = OFTrue;
           }
         }
         if ((! found) && supportsNumericDensity)
         {
           // the density was not found in the list; check whether it is numerical
-          if (1 == sscanf(theBorderDensity.c_str(), "%ld", &l)) found = OFTrue;
+          if (1 == sscanf(theBorderDensity.c_str(), "%lu", &l)) found = OFTrue;
         }
           
         if (! found)
@@ -3116,13 +3116,13 @@ OFBool DVPSStoredPrint::printSCPSet(
             found = OFTrue;
             break;
           } else {
-            if (1 == sscanf(aString.c_str(), "%ld", &l)) supportsNumericDensity = OFTrue;
+            if (1 == sscanf(aString.c_str(), "%lu", &l)) supportsNumericDensity = OFTrue;
           }
         }
         if ((! found) && supportsNumericDensity)
         {
           // the density was not found in the list; check whether it is numerical
-          if (1 == sscanf(theEIDensity.c_str(), "%ld", &l)) found = OFTrue;
+          if (1 == sscanf(theEIDensity.c_str(), "%lu", &l)) found = OFTrue;
         }
           
         if (! found)
@@ -3535,7 +3535,10 @@ void DVPSStoredPrint::overridePresentationLUTSettings(
 
 /*
  *  $Log: dvpssp.cc,v $
- *  Revision 1.43  2001-09-26 15:36:32  meichel
+ *  Revision 1.44  2001-09-28 13:50:54  joergr
+ *  Changed formatting.
+ *
+ *  Revision 1.43  2001/09/26 15:36:32  meichel
  *  Adapted dcmpstat to class OFCondition
  *
  *  Revision 1.42  2001/06/07 14:31:35  joergr
