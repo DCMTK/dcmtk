@@ -445,8 +445,7 @@
 /* Define if your C++ compiler can work with function templates */
 #define HAVE_FUNCTION_TEMPLATE 1
  
-/* Define if your C++ compiler can work with static methods in class templates *
-/
+/* Define if your C++ compiler can work with static methods in class templates */
 #define HAVE_STATIC_TEMPLATE_METHOD 1
 
 
