@@ -24,9 +24,9 @@
  *  CD-R Image Interchange Profile (former Supplement 19).
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-02-02 15:17:13 $
+ *  Update Date:      $Date: 2000-02-03 11:49:05 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/apps/dcmgpdir.cc,v $
- *  CVS/RCS Revision: $Revision: 1.37 $
+ *  CVS/RCS Revision: $Revision: 1.38 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -500,13 +500,13 @@ dcmCopyStringWithDefault(DcmItem* sink, const DcmTagKey& key,
 #endif
 
 static OFBool 
-dcmCopyOptSequence(DcmItem* sink, const DcmTagKey& key, DcmItem* source)
+dcmCopySequence(DcmItem* sink, const DcmTagKey& key, DcmItem* source)
 {
     OFBool ok = OFTrue;
     DcmTag tag(key);
 
     if (tag.getEVR() != EVR_SQ) {
-	cerr << "internal error: dcmCopyOptSequence: " 
+	cerr << "internal error: dcmCopySequence: " 
 	     << key << " not SQ" << endl;
 	abort();
     }
@@ -517,24 +517,31 @@ dcmCopyOptSequence(DcmItem* sink, const DcmTagKey& key, DcmItem* source)
 	E_Condition ec = EC_Normal;
     
 	ec = source->search(key, stack, ESM_fromHere, OFFalse);
-
 	sq = (DcmSequenceOfItems*) stack.top();
 	if (ec == EC_Normal && sq != NULL) {
 	    // make a copy of sq
 	    DcmSequenceOfItems *sqcopy = new DcmSequenceOfItems(*sq); 
-
 	    // insert sqcopy into the sink
 	    ec = sink->insert(sqcopy, OFTrue);
 	    if (ec != EC_Normal) {
-		cerr << "error: dcmInsertSequence: cannot insert element" 
-		     << endl;
+		cerr << "error: dcmCopySequence: cannot insert element" << endl;
 		ok = OFFalse;
 	    }
 	} else {
 	    ok = OFFalse;
 	}
+    } else {
+	cerr << "dcmCopySequence: error while finding " << tag.getTagName() << " " << key << endl;
+        ok = OFFalse;
     }
     return ok;
+}
+
+static OFBool 
+dcmCopyOptSequence(DcmItem* sink, const DcmTagKey& key, DcmItem* source)
+{
+    if (dcmTagExists(source, key)) return dcmCopySequence(sink, key, source);
+    return OFTrue;
 }
 
 static OFString
@@ -878,11 +885,9 @@ checkImage(const OFString& fname, DcmFileFormat *ff)
     found = found || cmp(mediaSOPClassUID, UID_StandaloneVOILUTStorage);
     found = found || cmp(mediaSOPClassUID, UID_PETCurveStorage);
     /* is it one of the Structured reporing SOP Classes? */
-    found = found || cmp(mediaSOPClassUID, UID_SRTextStorage);
-    found = found || cmp(mediaSOPClassUID, UID_SRAudioStorage);
-    found = found || cmp(mediaSOPClassUID, UID_SRDetailStorage);
-    found = found || cmp(mediaSOPClassUID, UID_SRComprehensiveStorage);
-
+    found = found || cmp(mediaSOPClassUID, UID_BasicTextSR);
+    found = found || cmp(mediaSOPClassUID, UID_EnhancedSR);
+    found = found || cmp(mediaSOPClassUID, UID_ComprehensiveSR);
     /* a detached patient mgmt sop class is also ok */
     found = found || cmp(mediaSOPClassUID, UID_DetachedPatientManagementSOPClass);
 
@@ -980,18 +985,29 @@ checkImage(const OFString& fname, DcmFileFormat *ff)
 		ok = OFFalse;
 	}
 
-    } else if (cmp(mediaSOPClassUID, UID_SRTextStorage) ||
-	       cmp(mediaSOPClassUID, UID_SRAudioStorage) ||
-	       cmp(mediaSOPClassUID, UID_SRDetailStorage) ||
-	       cmp(mediaSOPClassUID, UID_SRComprehensiveStorage)) {
+    } else if (cmp(mediaSOPClassUID, UID_BasicTextSR) ||
+	       cmp(mediaSOPClassUID, UID_EnhancedSR) ||
+	       cmp(mediaSOPClassUID, UID_ComprehensiveSR)) {
 	/* a structured report */
-	if (!checkExistsWithValue(d, DCM_ReportStatusID, fname)) 
-	    ok = OFFalse; /* ReportStatusIS is type 1 in a Structured Report */
+        if (!checkExistsWithValue(d, DCM_CompletionFlag, fname)) ok = OFFalse; 
+	if (!checkExistsWithValue(d, DCM_VerificationFlag, fname)) ok = OFFalse; 
+	if (!checkExistsWithValue(d, DCM_ImageDate, fname)) ok = OFFalse; 
+	if (!checkExistsWithValue(d, DCM_ImageTime, fname)) ok = OFFalse; 
+        if (!dcmTagExistsWithValue(d, DCM_ConceptNameCodeSequence))
+        {
+	  DcmTag cncsqtag(DCM_ConceptNameCodeSequence);
+  	  cerr << "error: required attribute " << cncsqtag.getTagName() 
+	       << " " << DCM_ConceptNameCodeSequence << " missing or empty in file: "
+	       << fname << endl;
+          ok = OFFalse;
+        }
+        OFString verificationFlag(dcmFindString(d, DCM_VerificationFlag));
+        if (verificationFlag == "VERIFIED")
+        {
+          // VerificationDateTime is required if verificationFlag is VERIFIED
+  	  if (!checkExistsWithValue(d, DCM_VerificationDateTime, fname)) ok = OFFalse; 
+        }
 	if (!inventAttributes) {
-            /* 
-             * NOTE: SR uses the name "Instance Number" for (0020,0013) but we know it
-             * as "Image Number".  CP 99 wants to change the name of this attribute.
-             */
 	    if (!checkExistsWithValue(d, DCM_InstanceNumber, fname)) 
 		ok = OFFalse;
 	}
@@ -1261,14 +1277,13 @@ buildStructReportRecord(
     }
     
     dcmCopyOptString(rec, DCM_SpecificCharacterSet, d);
-    dcmCopyString(rec, DCM_ReportStatusID, d);
-    /* 
-     * NOTE: SR uses the name "Instance Number" for (0020,0013) but we know it
-     * as "Image Number".  CP 99 wants to change the name of this attribute.
-     */
+    dcmCopyString(rec, DCM_CompletionFlag, d);
+    dcmCopyString(rec, DCM_VerificationFlag, d);
+    dcmCopyString(rec, DCM_ImageDate, d);
+    dcmCopyString(rec, DCM_ImageTime, d);
     dcmCopyString(rec, DCM_InstanceNumber, d);
-    dcmCopyOptString(rec, DCM_InterpretationRecordedDate, d);
-
+    dcmCopyOptString(rec, DCM_VerificationDateTime, d);
+    dcmCopySequence(rec, DCM_ConceptNameCodeSequence, d);
     return rec;
 }
 
@@ -1926,7 +1941,7 @@ insertSortedUnder(DcmDirectoryRecord *parent, DcmDirectoryRecord *child)
     E_Condition cond = EC_Normal;
     switch (child->getRecordType()) {
     case ERT_Image:
-	/* try to insert based on ImageNumber */
+	/* try to insert based on Image/InstanceNumber */
 	cond = insertWithISCriterion(parent, child, DCM_InstanceNumber);
 	break;
     case ERT_Overlay:
@@ -1944,10 +1959,6 @@ insertSortedUnder(DcmDirectoryRecord *parent, DcmDirectoryRecord *child)
 	break;
     case ERT_StructReport:
 	/* try to insert based on InstanceNumber */
-        /* 
-         * NOTE: SR uses the name "Instance Number" for (0020,0013) but we know it
-         * as "Image Number".  CP 99 wants to change the name of this attribute.
-         */
 	cond = insertWithISCriterion(parent, child, DCM_InstanceNumber);
 	break;
     case ERT_Series:
@@ -2115,10 +2126,9 @@ addToDir(DcmDirectoryRecord* rootRec, const OFString& ifname)
 	if (rec == NULL) {
 	    return OFFalse;
 	}
-    } else if (cmp(sopClass, UID_SRTextStorage) ||
-	       cmp(sopClass, UID_SRAudioStorage) ||
-	       cmp(sopClass, UID_SRDetailStorage) ||
-	       cmp(sopClass, UID_SRComprehensiveStorage)) {
+    } else if (cmp(sopClass, UID_BasicTextSR) ||
+	       cmp(sopClass, UID_EnhancedSR) ||
+	       cmp(sopClass, UID_ComprehensiveSR)) {
 	/* Add a structured report */
 	rec = includeRecord(seriesRec, ERT_StructReport, dataset, fname, ifname);
 	if (rec == NULL) {
@@ -2361,10 +2371,6 @@ inventMissingImageLevelAttributes(DcmDirectoryRecord *parent)
 	    }
 	    break;
 	case ERT_StructReport:
-            /* 
-             * NOTE: SR uses the name "Instance Number" for (0020,0013) but we know it
-             * as "Image Number".  CP 99 wants to change the name of this attribute.
-             */
 	    if (!dcmTagExistsWithValue(rec, DCM_InstanceNumber)) {
 		OFString defNum = defaultNumber(structReportInstanceNumber++);
 		cerr << "Warning: " <<  recordTypeToName(rec->getRecordType())
@@ -2768,7 +2774,11 @@ expandFileNames(OFList<OFString>& fileNames, OFList<OFString>& expandedNames)
 /*
 ** CVS/RCS Log:
 ** $Log: dcmgpdir.cc,v $
-** Revision 1.37  2000-02-02 15:17:13  meichel
+** Revision 1.38  2000-02-03 11:49:05  meichel
+** Updated dcmgpdir to new directory record structure in letter ballot text
+**   of Structured Report.
+**
+** Revision 1.37  2000/02/02 15:17:13  meichel
 ** Replaced some #if statements by more robust #ifdef
 **
 ** Revision 1.36  2000/02/01 10:11:58  meichel

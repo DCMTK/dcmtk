@@ -21,10 +21,10 @@
  *
  *  Purpose: class DcmDirectoryRecord
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-02-02 14:32:50 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2000-02-03 11:49:07 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcdirrec.cc,v $
- *  CVS/RCS Revision: $Revision: 1.28 $
+ *  CVS/RCS Revision: $Revision: 1.29 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -97,7 +97,7 @@ static const char* DRTypeNames[] =
     "TOPIC",
     "VISIT",
     "VOI LUT",
-    "STRUCT REPORT"
+    "SR DOCUMENT" /* was "STRUCT REPORT" in old frozen draft */
 };
 
 static short DIM_OF_DRTypeNames = (sizeof(DRTypeNames) / sizeof(DRTypeNames[0]));
@@ -252,9 +252,8 @@ E_DirRecType DcmDirectoryRecord::recordNameToType(const char * recordTypeName)
                strcmp(DRTypeNames[i], recordTypeName) != 0)
             i++;
 
-        if (i < DIM_OF_DRTypeNames && 
-            strcmp(DRTypeNames[i], recordTypeName) == 0)
-            recType = (E_DirRecType)i;
+        if (i < DIM_OF_DRTypeNames && strcmp(DRTypeNames[i], recordTypeName) == 0) recType = (E_DirRecType)i;
+        else if (strcmp(recordTypeName,"STRUCT REPORT")) recType = ERT_StructReport; // we recognise the old name as well
         debug(4, ("DcmDirectoryRecord::recordNameToType() input char*=\"%s\" output enum=%d", recordTypeName, recType));
     }
     return recType;
@@ -1455,7 +1454,11 @@ DcmDirectoryRecord::getRecordsOriginFile()
 /*
  * CVS/RCS Log:
  * $Log: dcdirrec.cc,v $
- * Revision 1.28  2000-02-02 14:32:50  joergr
+ * Revision 1.29  2000-02-03 11:49:07  meichel
+ * Updated dcmgpdir to new directory record structure in letter ballot text
+ *   of Structured Report.
+ *
+ * Revision 1.28  2000/02/02 14:32:50  joergr
  * Replaced 'delete' statements by 'delete[]' for objects created with 'new[]'.
  *
  * Revision 1.27  2000/02/01 10:12:05  meichel
