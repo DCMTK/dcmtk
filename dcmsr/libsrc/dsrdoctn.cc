@@ -23,8 +23,8 @@
  *    classes: DSRDocumentTreeNode
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-10-09 14:17:59 $
- *  CVS/RCS Revision: $Revision: 1.31 $
+ *  Update Date:      $Date: 2003-10-09 17:48:16 $
+ *  CVS/RCS Revision: $Revision: 1.32 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -91,6 +91,7 @@ OFCondition DSRDocumentTreeNode::print(ostream &stream,
     if (RelationshipType != RT_isRoot)
         stream << relationshipTypeToReadableName(RelationshipType) << " ";
     stream << valueTypeToDefinedTerm(ValueType) << ":";
+    /* only print valid concept name codes */
     if (ConceptName.isValid())
         ConceptName.print(stream, (flags & PF_printConceptNameCodes) > 0);
     return EC_Normal;
@@ -234,7 +235,7 @@ OFCondition DSRDocumentTreeNode::writeXML(ostream &stream,
     if (cursor.isValid())
     {
         DSRDocumentTreeNode *node = NULL;
-        do {        /* for all child nodes */
+        do {    /* for all child nodes */
             node = OFstatic_cast(DSRDocumentTreeNode *, cursor.getNode());
             if (node != NULL)
                 result = node->writeXML(stream, flags, logStream);
@@ -421,12 +422,12 @@ OFCondition DSRDocumentTreeNode::readDocumentRelationshipMacro(DcmItem &dataset,
                 /* compare with expected TID */
                 if (templateIdentifier != expectedTemplateIdentifier)
                 {
-                    OFString message = "Unexpected value for TemplateIdentifier (";
+                    OFString message = "Incorrect value for TemplateIdentifier (";
                     if (templateIdentifier.empty())
                         message += "<empty>";
                     else
                         message += templateIdentifier;
-                    message += "), TID ";
+                    message += "), ";
                     message += expectedTemplateIdentifier;
                     message += " expected";
                     printWarningMessage(logStream, message.c_str());
@@ -963,7 +964,10 @@ const OFString &DSRDocumentTreeNode::getRelationshipText(const E_RelationshipTyp
 /*
  *  CVS/RCS Log:
  *  $Log: dsrdoctn.cc,v $
- *  Revision 1.31  2003-10-09 14:17:59  joergr
+ *  Revision 1.32  2003-10-09 17:48:16  joergr
+ *  Slightly modified warning message text in readDocumentRelationshipMacro().
+ *
+ *  Revision 1.31  2003/10/09 14:17:59  joergr
  *  Changed message type for incorrect/missing TemplateIdentifier from error to
  *  warning.
  *
@@ -1047,7 +1051,7 @@ const OFString &DSRDocumentTreeNode::getRelationshipText(const E_RelationshipTyp
  *  Added support for digital signatures.
  *
  *  Revision 1.10  2000/11/13 10:27:00  joergr
- *  dded output of optional observation datetime to rendered HTML page.
+ *  Added output of optional observation datetime to rendered HTML page.
  *
  *  Revision 1.9  2000/11/09 20:34:00  joergr
  *  Added support for non-ASCII characters in HTML 3.2 (use numeric value).
