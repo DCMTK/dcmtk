@@ -1,3 +1,34 @@
+**** Changes from 1999.02.25 (riesmeier)
+
+- Added debug code (explicitly delete data dictionary).
+  Affects: dcmpstat/apps/dcmpssnd.cc
+           dcmpstat/apps/dcmpsrcv.cc
+
+- Added setting of debug level in DicomImageClass (avoids compiler warnings).
+  Affects: dcmpstat/apps/listdb.cc
+  
+- Changed formatting of some comments.
+  Affects: dcmpstat/apps/dcmp2pgm.cc
+
+- Added some comments.
+  Affects: dcmpstat/include/dviface.h
+  
+- Renamed methods enable/disablePState().
+  Affects: dcmpstat/include/dviface.h
+           dcmpstat/libsrc/dviface.cc
+
+- Added method to fill pixel data into an externally handled storage area.
+  Affects: dcmpstat/include/dvpstat.h
+           dcmpstat/libsrc/dvpstat.cc
+           
+- Added initialization of local variable to avoid compiler warnings (reported
+  by gcc 2.7.2.1 on Linux).
+  Affects: dcmpstat/libsrc/dvpstat.cc
+
+- Performed some modifications in the implementation of enable/disablePState()
+  to avoid dmalloc warnings (not yet finished).
+  Affects: dcmpstat/libsrc/dviface.cc
+
 **** Changes from 1999.02.24 (riesmeier)
 
 - Added support for presentation state caching (e.g. pstate description).
@@ -21,7 +52,7 @@
   
 **** Changes from 1999.02.23 (riesmeier)
 
-- Added debug code (exclitly delete data dictionary).
+- Added debug code (explicitly delete data dictionary).
   Affects: dcmpstat/apps/dcmp2pgm.cc
 
 - Added layer number to filename when extracting overlay planes.
