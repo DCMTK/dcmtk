@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2001, OFFIS
+ *  Copyright (C) 2000-2003, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,8 +23,8 @@
  *    classes: DSRTreeNodeCursor
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-03-28 09:07:42 $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  Update Date:      $Date: 2003-08-07 14:11:20 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -75,10 +75,10 @@ DSRTreeNodeCursor &DSRTreeNodeCursor::operator=(const DSRTreeNodeCursor &cursor)
     NodeCursor = cursor.NodeCursor;
     NodeCursorStack = cursor.NodeCursorStack;
     Position = cursor.Position;
-    /* copy position list (operator= is private is class OFList) */
+    /* copy position list (operator= is private in class OFList) */
     PositionList.clear();
-    const OFListIterator(size_t) endPos = cursor.PositionList.end();
-    OFListIterator(size_t) iterator = cursor.PositionList.begin();
+    const OFListConstIterator(size_t) endPos = cursor.PositionList.end();
+    OFListConstIterator(size_t) iterator = cursor.PositionList.begin();
     while (iterator != endPos)
     {
         PositionList.push_back(*iterator);
@@ -113,7 +113,7 @@ OFBool DSRTreeNodeCursor::isValid() const
 void DSRTreeNodeCursor::clearNodeCursorStack()
 {
     while (!NodeCursorStack.empty())
-        NodeCursorStack.pop();        
+        NodeCursorStack.pop();
 }
 
 
@@ -301,7 +301,7 @@ size_t DSRTreeNodeCursor::gotoNode(const OFString &position,
                                    const char separator)
 {
     size_t nodeID = 0;
-    if (position.length() > 0)
+    if (!position.empty())
     {
         if (NodeCursor != NULL)
         {
@@ -337,7 +337,7 @@ size_t DSRTreeNodeCursor::gotoNode(const OFString &position,
                         nodeID = 0;
                 }
             } while ((nodeID > 0) && (posEnd != OFString_npos));
-        }        
+        }
     }
     return nodeID;
 }
@@ -367,19 +367,19 @@ const OFString &DSRTreeNodeCursor::getPosition(OFString &position,
     position.clear();
     if (Position > 0)
     {
-        char string[20];
-        const OFListIterator(size_t) endPos = PositionList.end();
-        OFListIterator(size_t) iterator = PositionList.begin();
+        char stringBuf[20];
+        const OFListConstIterator(size_t) endPos = PositionList.end();
+        OFListConstIterator(size_t) iterator = PositionList.begin();
         while (iterator != endPos)
         {
-            if (position.length() > 0)
+            if (!position.empty())
                 position += separator;
-            position += DSRTypes::numberToString(*iterator, string);
+            position += DSRTypes::numberToString(*iterator, stringBuf);
             iterator++;
         }
-        if (position.length() > 0)
+        if (!position.empty())
             position += separator;
-        position += DSRTypes::numberToString(Position, string);
+        position += DSRTypes::numberToString(Position, stringBuf);
     }
     return position;
 }
@@ -388,7 +388,11 @@ const OFString &DSRTreeNodeCursor::getPosition(OFString &position,
 /*
  *  CVS/RCS Log:
  *  $Log: dsrtncsr.cc,v $
- *  Revision 1.6  2001-03-28 09:07:42  joergr
+ *  Revision 1.7  2003-08-07 14:11:20  joergr
+ *  Renamed parameters/variables "string" to avoid name clash with STL class.
+ *  Adapted for use of OFListConstIterator, needed for compiling with HAVE_STL.
+ *
+ *  Revision 1.6  2001/03/28 09:07:42  joergr
  *  Fixed bug in cycle/loop detection "algorithm".
  *
  *  Revision 1.5  2001/02/13 16:34:35  joergr
