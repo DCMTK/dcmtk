@@ -1,3 +1,14 @@
+**** Changes from 1999.03.02 (riesmeier)
+
+- Added parameter to selectPState() specifying whether to change the review
+  status of the loaded presentation state.
+  Affects: dcmpstat/include/dviface.h
+           dcmpstat/libsrc/dviface.cc
+
+- Added method to presentation state class that checks whether Barten
+  transformation is possible or not.
+  Affects:dcmpstat/include/dvpstat.h
+
 **** Changes from 1999.02.27 (riesmeier)
 
 - Changed implementation of deleteImageFile (imagectn method doesn't function
