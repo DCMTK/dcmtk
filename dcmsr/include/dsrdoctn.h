@@ -23,8 +23,8 @@
  *    classes: DSRDocumentTreeNode
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-09-15 14:18:54 $
- *  CVS/RCS Revision: $Revision: 1.16 $
+ *  Update Date:      $Date: 2003-10-06 09:52:58 $
+ *  CVS/RCS Revision: $Revision: 1.17 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -457,11 +457,13 @@ class DSRDocumentTreeNode
     /** read document content macro
      ** @param  dataset    DICOM dataset from which the data should be read
      *  @param  posString  location of the current content item (e.g. "1.2.3")
+     *  @param  flags      flag used to customize the reading process (see DSRTypes::RF_xxx)
      *  @param  logStream  pointer to error/warning output stream (output disabled if NULL)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
     OFCondition readDocumentContentMacro(DcmItem &dataset,
                                          const OFString &posString,
+                                         const size_t flags,
                                          OFConsole *logStream);
 
     /** write document content macro
@@ -577,7 +579,11 @@ class DSRDocumentTreeNode
 /*
  *  CVS/RCS Log:
  *  $Log: dsrdoctn.h,v $
- *  Revision 1.16  2003-09-15 14:18:54  joergr
+ *  Revision 1.17  2003-10-06 09:52:58  joergr
+ *  Added new flag which allows to ignore content item errors when reading an SR
+ *  document (e.g. missing value type specific attributes).
+ *
+ *  Revision 1.16  2003/09/15 14:18:54  joergr
  *  Introduced new class to facilitate checking of SR IOD relationship content
  *  constraints. Replaced old implementation distributed over numerous classes.
  *

@@ -23,8 +23,8 @@
  *    classes: DSRTypes
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-09-15 14:18:54 $
- *  CVS/RCS Revision: $Revision: 1.35 $
+ *  Update Date:      $Date: 2003-10-06 09:52:58 $
+ *  CVS/RCS Revision: $Revision: 1.36 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -150,7 +150,7 @@ class DSRTypes
 
     /** @name read() flags.
      *  These flags can be combined and passed to the read() methods.
-     *  The 'shortcut' flags can be used for common cobinations.
+     *  The 'shortcut' flags can be used for common combinations.
      */
     //@{
 
@@ -159,6 +159,9 @@ class DSRTypes
 
     /// ignore relationship constraints for this document class
     static const size_t RF_ignoreRelationshipConstraints;
+
+    /// do not abort on content item errors (e.g. missing value type specific attributes)
+    static const size_t RF_ignoreContentItemErrors;
 
     /// do not abort when detecting an invalid content item, skip invalid sub-tree instead
     static const size_t RF_skipInvalidContentItems;
@@ -174,7 +177,7 @@ class DSRTypes
     /** @name renderHTML() flags.
      *  These flags can be combined and passed to the renderHMTL() methods.
      *  Please note that only the 'external' flags can be used from outside
-     *  this library.  The 'shortcut' flags can be used for common cobinations.
+     *  this library.  The 'shortcut' flags can be used for common combinations.
      */
     //@{
 
@@ -239,7 +242,7 @@ class DSRTypes
 
     /** @name read/writeXML() flags.
      *  These flags can be combined and passed to the read/writeXML() methods.
-     *  The 'shortcut' flags can be used for common cobinations.
+     *  The 'shortcut' flags can be used for common combinations.
      */
     //@{
 
@@ -274,7 +277,7 @@ class DSRTypes
 
     /** @name print() flags
      *  These flags can be combined and passed to the renderHMTL() methods.
-     *  The 'shortcut' flags can be used for common cobinations.
+     *  The 'shortcut' flags can be used for common combinations.
      */
     //@{
 
@@ -1183,7 +1186,11 @@ class DSRTypes
 /*
  *  CVS/RCS Log:
  *  $Log: dsrtypes.h,v $
- *  Revision 1.35  2003-09-15 14:18:54  joergr
+ *  Revision 1.36  2003-10-06 09:52:58  joergr
+ *  Added new flag which allows to ignore content item errors when reading an SR
+ *  document (e.g. missing value type specific attributes).
+ *
+ *  Revision 1.35  2003/09/15 14:18:54  joergr
  *  Introduced new class to facilitate checking of SR IOD relationship content
  *  constraints. Replaced old implementation distributed over numerous classes.
  *

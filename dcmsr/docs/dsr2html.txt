@@ -52,6 +52,8 @@ parsing options:
     -Ip  --processing-details   show currently processed content item
   error handling:
     -Ec  --ignore-constraints   ignore relationship content constraints
+    -Ee  --ignore-item-errors   do not abort on content item errors, just warn
+                                (e.g. missing value type specific attributes)
     -Ei  --skip-invalid-items   skip invalid content items (incl. sub-tree)
 output options:
   HTML compatibility:

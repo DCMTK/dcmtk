@@ -23,8 +23,8 @@
  *    classes: DSRTypes
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-09-15 14:13:42 $
- *  CVS/RCS Revision: $Revision: 1.34 $
+ *  Update Date:      $Date: 2003-10-06 09:55:35 $
+ *  CVS/RCS Revision: $Revision: 1.35 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -71,9 +71,10 @@
 /* read flags */
 const size_t DSRTypes::RF_readDigitalSignatures          = 1 <<  0;
 const size_t DSRTypes::RF_ignoreRelationshipConstraints  = 1 <<  1;
-const size_t DSRTypes::RF_skipInvalidContentItems        = 1 <<  2;
-const size_t DSRTypes::RF_verboseDebugMode               = 1 <<  3;
-const size_t DSRTypes::RF_showCurrentlyProcessedItem     = 1 <<  4;
+const size_t DSRTypes::RF_ignoreContentItemErrors        = 1 <<  2;
+const size_t DSRTypes::RF_skipInvalidContentItems        = 1 <<  3;
+const size_t DSRTypes::RF_verboseDebugMode               = 1 <<  4;
+const size_t DSRTypes::RF_showCurrentlyProcessedItem     = 1 <<  5;
 
 /* renderHTML flags */
 const size_t DSRTypes::HF_neverExpandChildrenInline      = 1 <<  0;
@@ -763,7 +764,7 @@ OFCondition DSRTypes::putStringValueToDataset(DcmItem &dataset,
 {
     OFCondition result = EC_Normal;
     if (allowEmpty || !stringValue.empty())
-        result = dataset.putAndInsertString(tag, stringValue.c_str(), OFTrue /*replaceOld*/);    
+        result = dataset.putAndInsertString(tag, stringValue.c_str(), OFTrue /*replaceOld*/);
     return result;
 }
 
@@ -1443,7 +1444,11 @@ OFCondition DSRTypes::appendStream(ostream &mainStream,
 /*
  *  CVS/RCS Log:
  *  $Log: dsrtypes.cc,v $
- *  Revision 1.34  2003-09-15 14:13:42  joergr
+ *  Revision 1.35  2003-10-06 09:55:35  joergr
+ *  Added new flag which allows to ignore content item errors when reading an SR
+ *  document (e.g. missing value type specific attributes).
+ *
+ *  Revision 1.34  2003/09/15 14:13:42  joergr
  *  Introduced new class to facilitate checking of SR IOD relationship content
  *  constraints. Replaced old implementation distributed over numerous classes.
  *

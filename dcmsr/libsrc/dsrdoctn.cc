@@ -23,8 +23,8 @@
  *    classes: DSRDocumentTreeNode
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-09-15 14:13:42 $
- *  CVS/RCS Revision: $Revision: 1.28 $
+ *  Update Date:      $Date: 2003-10-06 09:55:35 $
+ *  CVS/RCS Revision: $Revision: 1.29 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -369,7 +369,7 @@ OFCondition DSRDocumentTreeNode::readSRDocumentContentModule(DcmItem &dataset,
     result = readDocumentRelationshipMacro(dataset, constraintChecker, "1" /*posString*/, flags, logStream);
     /* read DocumentContentMacro */
     if (result.good())
-        result= readDocumentContentMacro(dataset, "1" /*posString*/, logStream);
+        result = readDocumentContentMacro(dataset, "1" /*posString*/, flags, logStream);
     return result;
 }
 
@@ -383,7 +383,7 @@ OFCondition DSRDocumentTreeNode::writeSRDocumentContentModule(DcmItem &dataset,
     result = writeDocumentRelationshipMacro(dataset, markedItems, logStream);
     /* write DocumentContentMacro */
     if (result.good())
-        result= writeDocumentContentMacro(dataset, logStream);
+        result = writeDocumentContentMacro(dataset, logStream);
     return result;
 }
 
@@ -442,21 +442,26 @@ OFCondition DSRDocumentTreeNode::writeDocumentRelationshipMacro(DcmItem &dataset
 
 OFCondition DSRDocumentTreeNode::readDocumentContentMacro(DcmItem &dataset,
                                                           const OFString &posString,
+                                                          const size_t flags,
                                                           OFConsole *logStream)
 {
     OFCondition result = EC_Normal;
-    /* skip: read ValueType, already done somewhere else */
+    /* skip reading ValueType, already done somewhere else */
 
     /* read ConceptNameCodeSequence (might be empty) */
-    if (result.good())
-        ConceptName.readSequence(dataset, DCM_ConceptNameCodeSequence, "1C" /*type*/, logStream);
-    if (result.good())
+    ConceptName.readSequence(dataset, DCM_ConceptNameCodeSequence, "1C" /*type*/, logStream);
+    /* read ContentItem (depending on ValueType) */
+    result = readContentItem(dataset, logStream);
+    /* check for validity, after reading */
+    if (result.bad() || !isValid())
     {
-        /* read ContentItem (depending on ValueType) */
-        result = readContentItem(dataset, logStream);
-        /* check for validity, after reading */
-        if (!isValid())
-            printInvalidContentItemMessage(logStream, "Reading", this, posString.c_str());
+        printInvalidContentItemMessage(logStream, "Reading", this, posString.c_str());
+        /* ignore content item reading/parsing error if flag is set */
+        if (flags & RF_ignoreContentItemErrors)
+           result = EC_Normal;
+        /* content item is not valid */
+        else if (result.good())
+           result = SR_EC_InvalidValue;
     }
     return result;
 }
@@ -593,36 +598,41 @@ OFCondition DSRDocumentTreeNode::readContentSequence(DcmItem &dataset,
                                 /* read by-value relationship */
                                 valueType = definedTermToValueType(tmpString);
                                 /* check value type */
-                                if (valueType == VT_unknown)
-                                    printUnknownValueWarningMessage(logStream, "ValueType", tmpString.c_str());
-                                /* create new node (by-value) */
-                                result = createAndAppendNewNode(node, relationshipType, valueType, (flags & RF_ignoreRelationshipConstraints) ? NULL : constraintChecker);
-                                /* read RelationshipMacro */
-                                if (result.good())
-                                    result = node->readDocumentRelationshipMacro(*ditem, constraintChecker, location, flags, logStream);
-                                else
+                                if (valueType != VT_unknown)
                                 {
-                                    /* create new node failed */
-                                    OFString message = "Cannot add \"";
-                                    message += relationshipTypeToReadableName(relationshipType);
-                                    message += " ";
-                                    message += valueTypeToDefinedTerm(valueType /*target item*/);
-                                    message += "\" to ";
-                                    message += valueTypeToDefinedTerm(ValueType /*source item*/);
-                                    message += " in ";
-                                    /* determine document type */
-                                    const E_DocumentType documentType = (constraintChecker != NULL) ? constraintChecker->getDocumentType() : DT_invalid;
-                                    message += documentTypeToReadableName(documentType);
-                                    printErrorMessage(logStream, message.c_str());
-                                }
-                                /* read DocumentContentMacro (might be empty) */
-                                if (result.good())
-                                    node->readDocumentContentMacro(*ditem, location.c_str(), logStream);
+                                    /* create new node (by-value) */
+                                    result = createAndAppendNewNode(node, relationshipType, valueType, (flags & RF_ignoreRelationshipConstraints) ? NULL : constraintChecker);
+                                    /* read RelationshipMacro */
+                                    if (result.good())
+                                    {
+                                        result = node->readDocumentRelationshipMacro(*ditem, constraintChecker, location, flags, logStream);
+                                        /* read DocumentContentMacro */
+                                        if (result.good())
+                                            result = node->readDocumentContentMacro(*ditem, location.c_str(), flags, logStream);
+                                    } else {
+                                        /* create new node failed */
+                                        OFString message = "Cannot add \"";
+                                        message += relationshipTypeToReadableName(relationshipType);
+                                        message += " ";
+                                        message += valueTypeToDefinedTerm(valueType /*target item*/);
+                                        message += "\" to ";
+                                        message += valueTypeToDefinedTerm(ValueType /*source item*/);
+                                        message += " in ";
+                                        /* determine document type */
+                                        const E_DocumentType documentType = (constraintChecker != NULL) ? constraintChecker->getDocumentType() : DT_invalid;
+                                        message += documentTypeToReadableName(documentType);
+                                        printErrorMessage(logStream, message.c_str());
+                                    }
+                                } else {
+                                    /* unknown/unsupported value type */
+                                    printUnknownValueWarningMessage(logStream, "ValueType", tmpString.c_str());
+                                    result = SR_EC_UnknownValueType;
+                                }                                    
                             }
                         }
                     }
                     /* check for any errors */
-                    if (result.bad() /*&& (node != NULL)*/)
+                    if (result.bad())
                     {
                         printContentItemErrorMessage(logStream, "Reading", result, node, location.c_str());
                         /* print current data set (item) that caused the error */
@@ -913,7 +923,11 @@ const OFString &DSRDocumentTreeNode::getRelationshipText(const E_RelationshipTyp
 /*
  *  CVS/RCS Log:
  *  $Log: dsrdoctn.cc,v $
- *  Revision 1.28  2003-09-15 14:13:42  joergr
+ *  Revision 1.29  2003-10-06 09:55:35  joergr
+ *  Added new flag which allows to ignore content item errors when reading an SR
+ *  document (e.g. missing value type specific attributes).
+ *
+ *  Revision 1.28  2003/09/15 14:13:42  joergr
  *  Introduced new class to facilitate checking of SR IOD relationship content
  *  constraints. Replaced old implementation distributed over numerous classes.
  *

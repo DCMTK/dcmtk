@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2002, OFFIS
+ *  Copyright (C) 2000-2003, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,10 +22,10 @@
  *  Purpose: Renders the contents of a DICOM structured reporting file in
  *           HTML format
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-11-26 08:45:34 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2003-10-06 09:56:10 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmsr/apps/dsr2html.cc,v $
- *  CVS/RCS Revision: $Revision: 1.18 $
+ *  CVS/RCS Revision: $Revision: 1.19 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -156,6 +156,7 @@ int main(int argc, char *argv[])
         cmd.addOption("--processing-details",  "-Ip",    "show currently processed content item");
       cmd.addSubGroup("error handling:");
         cmd.addOption("--ignore-constraints",  "-Ec",    "ignore relationship content constraints");
+        cmd.addOption("--ignore-item-errors",  "-Ee",    "do not abort on content item errors, just warn\n(e.g. missing value type specific attributes)");
         cmd.addOption("--skip-invalid-items",  "-Ei",    "skip invalid content items (incl. sub-tree)");
 
     cmd.addGroup("output options:");
@@ -248,6 +249,8 @@ int main(int argc, char *argv[])
             opt_readFlags |= DSRTypes::RF_showCurrentlyProcessedItem;
         if (cmd.findOption("--ignore-constraints"))
             opt_readFlags |= DSRTypes::RF_ignoreRelationshipConstraints;
+        if (cmd.findOption("--ignore-item-errors"))
+            opt_readFlags |= DSRTypes::RF_ignoreContentItemErrors;
         if (cmd.findOption("--skip-invalid-items"))
             opt_readFlags |= DSRTypes::RF_skipInvalidContentItems;
 
@@ -357,7 +360,11 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dsr2html.cc,v $
- * Revision 1.18  2002-11-26 08:45:34  meichel
+ * Revision 1.19  2003-10-06 09:56:10  joergr
+ * Added new flag which allows to ignore content item errors when reading an SR
+ * document (e.g. missing value type specific attributes).
+ *
+ * Revision 1.18  2002/11/26 08:45:34  meichel
  * Replaced all includes for "zlib.h" with <zlib.h>
  *   to avoid inclusion of zlib.h in the makefile dependencies.
  *
