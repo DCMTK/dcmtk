@@ -63,10 +63,10 @@
 ** Module Prefix: none 
 ** 
 **
-** Last Update:		$Author: vorwerk $
-** Update Date:		$Date: 1999-01-12 17:09:02 $
+** Last Update:		$Author: meichel $
+** Update Date:		$Date: 1999-01-20 19:12:35 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/libsrc/dcompat.cc,v $
-** CVS/RCS Revision:	$Revision: 1.13 $
+** CVS/RCS Revision:	$Revision: 1.14 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -76,6 +76,7 @@
 
 #include "dcompat.h"
 #include "dicom.h"
+#include "ofbmanip.h"
 
 #include <stdio.h>
 #include <string.h>
@@ -120,17 +121,13 @@ BEGIN_EXTERN_C
 #include <io.h>
 #undef access
 #endif
-
-END_EXTERN_C
-#if defined (windows)
-/* Structure that controls the locking mechanism of Windows NT */
-BEGIN_EXTERN_C
-OVERLAPPED overl;
 END_EXTERN_C
 
+#ifdef _WIN32
 #include "windows.h"
 #include "winbase.h"
 #endif
+
 /*
  * On DEC alpha the linker moans if a library is empty.
  * So define a dummy variable.
@@ -148,55 +145,37 @@ int flock(int fd, int operation)
   return 0;
 }
 #else
-#if defined(windows)
+#ifdef _WIN32
 
-/*
-* MS Visual C++ only
-*/
+/* Note: this emulation of flock() for Win32 uses the function _get_osfhandle()
+ * which takes a Unix-style file descriptor and derives the corresponding
+ * Win32 API file handle (HANDLE). This function may not be available on all
+ * compilers for Win32, sorry.
+ * Since _locking() does not implement shared/exclusive locks, the only alternative
+ * would be to re-write the complete file access to Win32 API functions. Have fun!
+ */
 
 int flock(int fd, int operation)
 {
-  if (operation==LOCK_SH){
-    HANDLE handle;
-    handle=(void *)_get_osfhandle(fd);
-    if (LockFileEx(handle,0,0,65535,65535,&overl)!=0) {
-      printf("file locked \n");
-      return 0;
-    }
-    else 
-      return -1;
+  HANDLE handle=(void *)_get_osfhandle(fd);
+  OVERLAPPED overl;
+  OFBitmanipTemplate<char>::zeroMem((char *)&overl, sizeof(overl));
+  
+  if (operation==LOCK_SH)
+  {
+    if (LockFileEx(handle,0,0,(DWORD)-1,(DWORD)-1,&overl) !=0) return 0; else return -1;
   }
-  
-  
-  if ((operation==LOCK_EX))
-	{
-	  HANDLE handle;
-	  long a;
-	  a=_get_osfhandle(fd);
-	  handle=(int *)a;
-	  if (LockFileEx(handle,LOCKFILE_EXCLUSIVE_LOCK,0,65535,65535,&overl)!=0) {
-	    return 0;}
-	  else 
-	    return -1;
-	  
-	}
-	if (operation==LOCK_UN)
-	  {
-	    HANDLE handle;
-	    long a;
-	    a=_get_osfhandle(fd);
-	    handle=(int *)a;
-	    if (UnlockFileEx(handle,0,65535,65535,&overl)!=0) {
-	      return 0;}
-	    else
-	      {
-		printf("unlock failed \n");
-		return 0;
-	      }
-	  }
-	printf("unknown lockcommand \n");
-	return -1;
+  else if (operation==LOCK_EX)
+  {
+    if (LockFileEx(handle,LOCKFILE_EXCLUSIVE_LOCK,0,(DWORD)-1,(DWORD)-1,&overl) !=0) return 0; else return -1;
+  }
+  else if (operation==LOCK_UN)
+  {
+    if (UnlockFileEx(handle,0,(DWORD)-1,(DWORD)-1,&overl) !=0) return 0; else return -1;
+  }
+  else return -1; /* unknown lock operation */
 }
+
 #else
 /*
  * Simulate the flock function calls (e.g. Solaris 2 does not have them)
@@ -391,7 +370,10 @@ tempnam(char *dir, char *pfx)
 /*
 ** CVS Log
 ** $Log: dcompat.cc,v $
-** Revision 1.13  1999-01-12 17:09:02  vorwerk
+** Revision 1.14  1999-01-20 19:12:35  meichel
+** Some code purifications in Win32 variant of flock() emulation.
+**
+** Revision 1.13  1999/01/12 17:09:02  vorwerk
 ** differences of lock from windows and flock corrected.
 **
 ** Revision 1.11  1999/01/11 13:06:13  vorwerk
