@@ -22,9 +22,9 @@
  *  Purpose: DicomOverlayPlane (Source) - Multiframe Overlays UNTESTED !
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1998-12-22 13:51:04 $
+ *  Update Date:      $Date: 1998-12-23 11:31:12 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/libsrc/diovpln.cc,v $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -63,8 +63,8 @@ DiOverlayPlane::DiOverlayPlane(const DiDocument *docu,
     BitPosition(0),
     Foreground(1),
     Threshold(1),
-    Mode(EMO_Replace),
-    DefaultMode(EMO_Replace),
+    Mode(EMO_Graphic),
+    DefaultMode(EMO_Graphic),
     Label(),
     Description(),
     GroupNumber(group),
@@ -140,20 +140,20 @@ DiOverlayPlane::DiOverlayPlane(const DiDocument *docu,
 
 
 DiOverlayPlane::DiOverlayPlane(const unsigned int group,
-                               const unsigned long rows,
-                               const unsigned long columns,
-                               const EM_Overlay mode,
                                const signed int left,
                                const signed int top,
+                               const unsigned long columns,
+                               const unsigned long rows,
                                const DcmOverlayData &data,
                                const DcmLongString &label,
-                               const DcmLongString &description)
+                               const DcmLongString &description,
+                               const EM_Overlay mode)
   : NumberOfFrames(1),
     ImageFrameOrigin(0),
     Top(top),
     Left(left),
-    Height(0),
-    Width(0),
+    Height(rows),
+    Width(columns),
     Rows(rows),
     Columns(columns),
     BitsAllocated(1),
@@ -166,7 +166,7 @@ DiOverlayPlane::DiOverlayPlane(const unsigned int group,
     Description(),
     GroupNumber(group),
     Valid(0),
-    Visible(1),
+    Visible(0),
     BitPos(0),
     StartBitPos(0),
     StartLeft(0),
@@ -176,16 +176,11 @@ DiOverlayPlane::DiOverlayPlane(const unsigned int group,
     StartPtr(NULL),
     Data(NULL)
 {
-    const char *str;
-    if ((Valid = DiDocument::getElemValue((const DcmElement *)&label, str)))
-        Label = str;
-    if ((Valid &= DiDocument::getElemValue((const DcmElement *)&description, str)))
-        Description = str;
-    Valid &= DiDocument::getElemValue((const DcmElement *)&data, Data);
+    DiDocument::getElemValue((const DcmElement *)&label, Label);
+    DiDocument::getElemValue((const DcmElement *)&description, Description);
+    Valid = (DiDocument::getElemValue((const DcmElement *)&data, Data) > 0);
     Top--;                                                      // overlay origin is numbered from 1
     Left--;
-    
-    /* ... */
 }
 
 
@@ -218,8 +213,8 @@ DiOverlayPlane::DiOverlayPlane(DiOverlayPlane *plane,
     Visible(plane->Visible),
     BitPos(0),
     StartBitPos(0),
-    StartLeft(0),
-    StartTop(0),
+    StartLeft(plane->StartLeft),
+    StartTop(plane->StartTop),
     EmbeddedData(0),
     Ptr(NULL),
     StartPtr(NULL),
@@ -350,9 +345,11 @@ void DiOverlayPlane::setRotation(const int degree,
         Uint16 us = Height;                     // swap visible width/height
         Height = Width;
         Width = us;
-        us = Rows;                              // swap stored width/height
+/*
+        us = Rows;                              // swap stored width/height -> already done in constructor !
         Rows = Columns;
         Columns = us;
+*/
         if (degree == 90)                       // rotate right
         {
             Sint16 ss = Left;
@@ -374,29 +371,35 @@ void DiOverlayPlane::setRotation(const int degree,
 
 
 /*
-**
-** CVS/RCS Log:
-** $Log: diovpln.cc,v $
-** Revision 1.4  1998-12-22 13:51:04  joergr
-** Removed variable declaration to avoid compiler warnings (reported by
-** MSVC5). Changed initialization of member variable 'DefaultMode'.
-**
-** Revision 1.3  1998/12/16 16:20:10  joergr
-** Added method to export overlay planes (create 8-bit bitmap).
-** Implemented flipping and rotation of overlay planes.
-**
-** Revision 1.2  1998/12/14 17:41:56  joergr
-** Added methods to add and remove additional overlay planes (still untested).
-** Added methods to support overlay labels and descriptions.
-**
-** Revision 1.1  1998/11/27 16:22:13  joergr
-** Added copyright message.
-** Introduced global debug level for dcmimage module to control error output.
-** Added methods and constructors for flipping and rotating, changed for
-** scaling and clipping.
-**
-** Revision 1.5  1998/05/11 14:52:35  joergr
-** Added CVS/RCS header to each file.
-**
-**
-*/
+ *
+ * CVS/RCS Log:
+ * $Log: diovpln.cc,v $
+ * Revision 1.5  1998-12-23 11:31:12  joergr
+ * Change order of parameters for addOverlay() and getOverlayData().
+ * Introduced new overlay mode item EMO_Graphic (= EMO_Replace).
+ * Corrected bug concerning flipping and rotating overlay planes (same
+ * image object).
+ *
+ * Revision 1.4  1998/12/22 13:51:04  joergr
+ * Removed variable declaration to avoid compiler warnings (reported by
+ * MSVC5). Changed initialization of member variable 'DefaultMode'.
+ *
+ * Revision 1.3  1998/12/16 16:20:10  joergr
+ * Added method to export overlay planes (create 8-bit bitmap).
+ * Implemented flipping and rotation of overlay planes.
+ *
+ * Revision 1.2  1998/12/14 17:41:56  joergr
+ * Added methods to add and remove additional overlay planes (still untested).
+ * Added methods to support overlay labels and descriptions.
+ *
+ * Revision 1.1  1998/11/27 16:22:13  joergr
+ * Added copyright message.
+ * Introduced global debug level for dcmimage module to control error output.
+ * Added methods and constructors for flipping and rotating, changed for
+ * scaling and clipping.
+ *
+ * Revision 1.5  1998/05/11 14:52:35  joergr
+ * Added CVS/RCS header to each file.
+ *
+ *
+ */
