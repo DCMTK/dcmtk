@@ -9,10 +9,10 @@
 ** Interface for a dictionary entry in the loadable DICOM data dictionary
 ** 
 **
-** Last Update:		$Author: meichel $
-** Update Date:		$Date: 1997-07-31 14:40:35 $
+** Last Update:		$Author: hewett $
+** Update Date:		$Date: 1997-08-26 13:44:59 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcdicent.h,v $
-** CVS/RCS Revision:	$Revision: 1.9 $
+** CVS/RCS Revision:	$Revision: 1.10 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -62,14 +62,14 @@ private:
 public:
     /* constructors */
     DcmDictEntry();
-    DcmDictEntry(DcmTagKey k);
+    DcmDictEntry(const DcmTagKey& k);
     DcmDictEntry(Uint16 g, Uint16 e, DcmVR vr, 
         const char* nam=NULL, int vmMin=1, int vmMax=1,
         const char* vers="DICOM3", OFBool doCopyStrings=OFTrue);	
     DcmDictEntry(Uint16 g, Uint16 e, Uint16 ug, Uint16 ue, DcmVR vr,
         const char* nam=NULL, int vmMin=1, int vmMax=1,
         const char* vers="DICOM3", OFBool doCopyStrings=OFTrue);	
-    DcmDictEntry(DcmDictEntry &dict);
+    DcmDictEntry(const DcmDictEntry& e);
     
     /* destructor */
     ~DcmDictEntry();
@@ -321,7 +321,10 @@ DcmDictEntry::setEQ(const DcmDictEntry& e) const
 /*
 ** CVS/RCS Log:
 ** $Log: dcdicent.h,v $
-** Revision 1.9  1997-07-31 14:40:35  meichel
+** Revision 1.10  1997-08-26 13:44:59  hewett
+** Modified constructors to take const parameters.
+**
+** Revision 1.9  1997/07/31 14:40:35  meichel
 ** Created copy constructor for class DcmDictEntry, required by dcmcheck.
 **
 ** Revision 1.8  1997/07/21 08:25:07  andreas
