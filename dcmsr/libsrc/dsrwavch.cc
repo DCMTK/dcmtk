@@ -23,8 +23,8 @@
  *    classes: DSRWaveformChannelList
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-10-13 07:52:28 $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  Update Date:      $Date: 2000-10-16 12:10:53 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -131,6 +131,13 @@ E_Condition DSRWaveformChannelList::write(DcmItem &dataset,
 }
 
 
+OFBool DSRWaveformChannelList::isElement(const Uint16 multiplexGroupNumber,
+                                         const Uint16 channelNumber) const
+{
+    return DSRListOfItems<DSRWaveformChannelItem>::isElement(DSRWaveformChannelItem(multiplexGroupNumber, channelNumber));
+}
+
+
 E_Condition DSRWaveformChannelList::getItem(const size_t idx,
                                             Uint16 &multiplexGroupNumber,
                                             Uint16 &channelNumber) const
@@ -153,7 +160,11 @@ void DSRWaveformChannelList::addItem(const Uint16 multiplexGroupNumber,
 /*
  *  CVS/RCS Log:
  *  $Log: dsrwavch.cc,v $
- *  Revision 1.1  2000-10-13 07:52:28  joergr
+ *  Revision 1.2  2000-10-16 12:10:53  joergr
+ *  Added new method checking whether a waveform content item applies to a
+ *  certain channel.
+ *
+ *  Revision 1.1  2000/10/13 07:52:28  joergr
  *  Added new module 'dcmsr' providing access to DICOM structured reporting
  *  documents (supplement 23).  Doc++ documentation not yet completed.
  *
