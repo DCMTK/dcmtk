@@ -23,8 +23,8 @@
  *    classes: DSRTypes
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-01-18 15:56:46 $
- *  CVS/RCS Revision: $Revision: 1.13 $
+ *  Update Date:      $Date: 2001-01-25 11:50:10 $
+ *  CVS/RCS Revision: $Revision: 1.14 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -564,11 +564,34 @@ E_Condition DSRTypes::addElementToDataset(E_Condition &result,
 }
 
 
+void DSRTypes::removeAttributeFromSequence(DcmSequenceOfItems &sequence,
+                                           const DcmTagKey &tagKey)
+{
+    DcmStack stack;
+    DcmItem *item = NULL;
+    const size_t count = (size_t)sequence.card();
+    for (size_t i = 0; i < count; i++)
+    {
+        item = sequence.getItem(i);
+        if (item != NULL)
+        {
+            /* should not be necessary, but is more secure */
+            stack.clear();
+            if (item->search(tagKey, stack, ESM_fromHere, OFTrue /* searchIntoSub */) == EC_Normal)
+            {
+                while (!stack.empty())
+                    delete item->remove(stack.pop());
+            }
+        }
+    }
+}
+
+
 E_Condition DSRTypes::getElementFromDataset(DcmItem &dataset,
                                             DcmElement &delem)
 {
     DcmStack stack;
-    E_Condition result = dataset.search((DcmTagKey &)delem.getTag(), stack, ESM_fromHere, OFFalse);
+    E_Condition result = dataset.search((DcmTagKey &)delem.getTag(), stack, ESM_fromHere, OFFalse /* searchIntoSub */);
     if (result == EC_Normal)
         delem = *((DcmElement *)stack.top());
     return result;
@@ -579,7 +602,7 @@ E_Condition DSRTypes::getSequenceFromDataset(DcmItem &dataset,
                                              DcmSequenceOfItems &dseq)
 {
     DcmStack stack;
-    E_Condition result = dataset.search((DcmTagKey &)dseq.getTag(), stack, ESM_fromHere, OFFalse);
+    E_Condition result = dataset.search((DcmTagKey &)dseq.getTag(), stack, ESM_fromHere, OFFalse /* searchIntoSub */);
     if (result == EC_Normal)
         dseq = *((DcmSequenceOfItems *)stack.top());
     return result;
@@ -626,7 +649,7 @@ E_Condition DSRTypes::getStringValueFromDataset(DcmItem &dataset,
                                                 OFString &stringValue)
 {
     DcmStack stack;
-    E_Condition result = dataset.search(tagKey, stack, ESM_fromHere, OFFalse);
+    E_Condition result = dataset.search(tagKey, stack, ESM_fromHere, OFFalse /* searchIntoSub */);
     if (result == EC_Normal)
     {
         DcmElement *delem = (DcmElement *)stack.top();
@@ -807,7 +830,7 @@ E_Condition DSRTypes::getAndCheckStringValueFromDataset(DcmItem &dataset,
                                                         const char *moduleName)
 {
     DcmStack stack;
-    E_Condition result = dataset.search(tagKey, stack, ESM_fromHere, OFFalse);
+    E_Condition result = dataset.search(tagKey, stack, ESM_fromHere, OFFalse /* searchIntoSub */);
     if (result == EC_Normal)
     {
         DcmElement *delem = (DcmElement *)stack.top();
@@ -1458,7 +1481,11 @@ E_Condition DSRTypes::appendStream(ostream &mainStream,
 /*
  *  CVS/RCS Log:
  *  $Log: dsrtypes.cc,v $
- *  Revision 1.13  2001-01-18 15:56:46  joergr
+ *  Revision 1.14  2001-01-25 11:50:10  joergr
+ *  Always remove signature sequences from certain dataset sequences (e.g.
+ *  VerifyingObserver or PredecessorDocuments).
+ *
+ *  Revision 1.13  2001/01/18 15:56:46  joergr
  *  Encode PN components in separate XML tags.
  *
  *  Revision 1.12  2000/12/12 17:21:21  joergr

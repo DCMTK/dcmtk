@@ -23,8 +23,8 @@
  *    classes: DSRDocument
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-01-18 15:54:48 $
- *  CVS/RCS Revision: $Revision: 1.21 $
+ *  Update Date:      $Date: 2001-01-25 11:49:42 $
+ *  CVS/RCS Revision: $Revision: 1.22 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -316,6 +316,9 @@ E_Condition DSRDocument::read(DcmItem &dataset,
         /* need to check sequence in two steps (avoids additional getAndCheck... method) */
         searchCond = getSequenceFromDataset(dataset, ReferencedStudyComponent);
         checkElementValue(ReferencedStudyComponent, "1", "2", LogStream, searchCond);
+        /* remove possible signature sequences */
+        removeAttributeFromSequence(ReferencedStudyComponent, DCM_MACParametersSequence);
+        removeAttributeFromSequence(ReferencedStudyComponent, DCM_DigitalSignaturesSequence);
 
         // --- SR Document General Module (M) ---
         getAndCheckElementFromDataset(dataset, InstanceNumber, "1", "1", LogStream);
@@ -329,6 +332,13 @@ E_Condition DSRDocument::read(DcmItem &dataset,
         /* need to check sequence in two steps (avoids additional getAndCheck... method) */
         searchCond = getSequenceFromDataset(dataset, PerformedProcedureCode);
         checkElementValue(PerformedProcedureCode, "1", "2", LogStream, searchCond);
+        /* remove possible signature sequences */
+        removeAttributeFromSequence(VerifyingObserver, DCM_MACParametersSequence);
+        removeAttributeFromSequence(VerifyingObserver, DCM_DigitalSignaturesSequence);
+        removeAttributeFromSequence(PredecessorDocuments, DCM_MACParametersSequence);
+        removeAttributeFromSequence(PredecessorDocuments, DCM_DigitalSignaturesSequence);
+        removeAttributeFromSequence(PerformedProcedureCode, DCM_MACParametersSequence);
+        removeAttributeFromSequence(PerformedProcedureCode, DCM_DigitalSignaturesSequence);
 
         /* update internal enumerated values */
         OFString string;
@@ -1765,7 +1775,11 @@ void DSRDocument::updateAttributes(const OFBool updateAll)
 /*
  *  CVS/RCS Log:
  *  $Log: dsrdoc.cc,v $
- *  Revision 1.21  2001-01-18 15:54:48  joergr
+ *  Revision 1.22  2001-01-25 11:49:42  joergr
+ *  Always remove signature sequences from certain dataset sequences (e.g.
+ *  VerifyingObserver or PredecessorDocuments).
+ *
+ *  Revision 1.21  2001/01/18 15:54:48  joergr
  *  Added support for digital signatures.
  *  Encode PN components in separate XML tags.
  *

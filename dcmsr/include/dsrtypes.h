@@ -23,8 +23,8 @@
  *    classes: DSRTypes
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-01-18 15:52:11 $
- *  CVS/RCS Revision: $Revision: 1.12 $
+ *  Update Date:      $Date: 2001-01-25 11:47:43 $
+ *  CVS/RCS Revision: $Revision: 1.13 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -733,6 +733,14 @@ class DSRTypes
                                            DcmItem &dataset,
                                            DcmElement *delem);
 
+    /** remove given attribute from the sequence.
+     *  All occurrences of the attribute in all items of the sequence are removed.
+     ** @param  dataset  reference to DICOM sequence from which the attribute should be removed
+     *  @param  tagKey   DICOM tag specifying the attribute which should be removed
+     */
+    static void removeAttributeFromSequence(DcmSequenceOfItems &sequence,
+                                            const DcmTagKey &tagKey);
+
     /** get element from dataset
      ** @param  dataset  reference to DICOM dataset from which the element should be retrieved.
      *                   (Would be 'const' if the methods from 'dcmdata' would also be 'const'.)
@@ -985,7 +993,11 @@ class DSRTypes
 /*
  *  CVS/RCS Log:
  *  $Log: dsrtypes.h,v $
- *  Revision 1.12  2001-01-18 15:52:11  joergr
+ *  Revision 1.13  2001-01-25 11:47:43  joergr
+ *  Always remove signature sequences from certain dataset sequences (e.g.
+ *  VerifyingObserver or PredecessorDocuments).
+ *
+ *  Revision 1.12  2001/01/18 15:52:11  joergr
  *  Encode PN components in separate XML tags.
  *
  *  Revision 1.11  2000/12/08 13:45:17  joergr
