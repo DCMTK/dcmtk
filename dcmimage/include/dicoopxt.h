@@ -22,9 +22,9 @@
  *  Purpose: DicomColorOutputPixelTemplate (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-07-23 13:20:45 $
+ *  Update Date:      $Date: 1999-08-17 10:28:47 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/include/Attic/dicoopxt.h,v $
- *  CVS/RCS Revision: $Revision: 1.12 $
+ *  CVS/RCS Revision: $Revision: 1.13 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -62,7 +62,6 @@ class DiColorOutputPixelTemplate
                                const DiColorPixel *pixel,
                                const unsigned long count,
                                const unsigned long frame,
-                               const unsigned long frames,
                                const int bits,
                                const Sint16 shift,
                                const int planar)
@@ -172,7 +171,7 @@ class DiColorOutputPixelTemplate
 
     inline void convert(const T1 *pixel[3],
                         const unsigned long start,
-                        const int bits,
+                        const int /*bits*/,
                         /*const*/ Sint16 shift,
                         const int planar)
     {
@@ -310,7 +309,11 @@ class DiColorOutputPixelTemplate
  *
  * CVS/RCS Log:
  * $Log: dicoopxt.h,v $
- * Revision 1.12  1999-07-23 13:20:45  joergr
+ * Revision 1.13  1999-08-17 10:28:47  joergr
+ * Commented unused parameter name to avoid compiler warnings.
+ * Removed unused parameter.
+ *
+ * Revision 1.12  1999/07/23 13:20:45  joergr
  * Enhanced handling of corrupted pixel data (wrong length).
  *
  * Revision 1.11  1999/04/30 16:12:03  meichel
