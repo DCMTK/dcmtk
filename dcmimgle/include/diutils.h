@@ -21,10 +21,10 @@
  *
  *  Purpose: Utilities (Header)
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-04-28 14:55:41 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 1999-04-30 16:33:19 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/diutils.h,v $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -39,11 +39,13 @@
 #include "dctypes.h"
 
 BEGIN_EXTERN_C
- #ifdef HAVE_LIBC_H
-  #include <libc.h>
- #else
-  #include <stdlib.h>
- #endif
+#ifdef HAVE_LIBC_H
+#include <libc.h>
+#endif
+#ifdef HAVE_STDLIB_H
+#include <stdlib.h>
+#endif
+#include <stdio.h>
 END_EXTERN_C
 
 
@@ -246,7 +248,10 @@ class DicomImageClass
  *
  * CVS/RCS Log:
  * $Log: diutils.h,v $
- * Revision 1.7  1999-04-28 14:55:41  joergr
+ * Revision 1.8  1999-04-30 16:33:19  meichel
+ * Now including stdio.h in diutils.h, required on SunOS
+ *
+ * Revision 1.7  1999/04/28 14:55:41  joergr
  * Added experimental support to create grayscale images with more than 256
  * shades of gray to be displayed on a consumer monitor (use pastel colors).
  *
