@@ -22,9 +22,9 @@
  *  Purpose: DicomInputPixel (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1998-12-16 16:30:34 $
+ *  Update Date:      $Date: 1998-12-22 14:18:40 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/diinpx.h,v $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  * 
  *   CVS/RCS Log at end of file
@@ -47,7 +47,9 @@
 
 class DiInputPixel 
 {
+
  public:
+
     DiInputPixel();
     virtual ~DiInputPixel();
     
@@ -57,14 +59,29 @@ class DiInputPixel
     virtual void *getData() const = 0;
     virtual double getMinValue() const = 0;
     virtual double getMaxValue() const = 0;
-    virtual double getAbsMinimum() const = 0;
-    virtual double getAbsMaximum() const = 0;
+
+    inline double getAbsMinimum() const
+    {
+        return AbsMinimum;
+    }
+    
+    inline double getAbsMaximum() const
+    {
+        return AbsMaximum;
+    }
     
     inline unsigned long getCount() const
-        { return Count; };
+    {
+        return Count;
+    }
     
+
  protected:
+
     unsigned long Count;
+    
+    double AbsMinimum;
+    double AbsMaximum;
 };
 
 
@@ -75,7 +92,11 @@ class DiInputPixel
 **
 ** CVS/RCS Log:
 ** $Log: diinpx.h,v $
-** Revision 1.2  1998-12-16 16:30:34  joergr
+** Revision 1.3  1998-12-22 14:18:40  joergr
+** Added implementation of methods to return member variables AbsMinimum/
+** Maximum.
+**
+** Revision 1.2  1998/12/16 16:30:34  joergr
 ** Added methods to determine absolute minimum and maximum value for given
 ** value representation.
 **
