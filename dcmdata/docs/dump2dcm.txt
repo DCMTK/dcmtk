@@ -95,7 +95,12 @@ Value: There are several rules for writing values:
        1. US, SS, SL, UL, FD, FL are written as 
           decimal strings that can be read by scanf.
        2. OB, OW values are written as byte or word hexadecimal values
-          separated by \
+          separated by '\' character.  Alternatively, OB or OW values can
+          be read from a separate file by writing the filename prefixed
+          by a '=' character (e.g. =largepixeldata.dat).  The contents of
+          the file will be read as is.  No byte swapping, or other conversions
+          will be performed.  No checks will be made to ensure that the amount of
+          data is reasonable in terms of other attributes such as Rows or Columns.
        3. UI is written as =Name in data dictionary or as 
           unique identifer string (see  5.) , e.g. [1.2.840.....]
        4. Strings without () <> [] spaces, tabs and # can be 

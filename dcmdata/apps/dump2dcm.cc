@@ -25,7 +25,12 @@
 **        1. US, SS, SL, UL, FD, FL are written as 
 **           decimal strings that can be read by scanf.
 **        2. OB, OW values are written as byte or word hexadecimal values
-**           separated by \
+**           separated by '\' character.  Alternatively, OB or OW values can
+**           be read from a separate file by writing the filename prefixed
+**           by a '=' character (e.g. =largepixeldata.dat).  The contents of
+**           the file will be read as is.  No byte swapping, or other conversions
+**           will be performed.  No checks will be made to ensure that the amount of
+**           data is reasonable in terms of other attributes such as Rows or Columns.
 **        3. UI is written as =Name in data dictionary or as 
 **           unique identifer string (see  5.) , e.g. [1.2.840.....]
 **        4. Strings without () <> [] spaces, tabs and # can be 
@@ -51,9 +56,9 @@
 **
 **
 ** Last Update:		$Author: meichel $
-** Update Date:		$Date: 1999-01-07 14:13:12 $
+** Update Date:		$Date: 1999-03-22 16:16:01 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/apps/dump2dcm.cc,v $
-** CVS/RCS Revision:	$Revision: 1.20 $
+** CVS/RCS Revision:	$Revision: 1.21 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -67,6 +72,16 @@
 #endif
 #include <iostream.h>
 #include <ctype.h>
+
+#ifdef HAVE_SYS_TYPES_H
+#include <sys/types.h>
+#endif
+#ifdef HAVE_SYS_STAT_H
+#include <sys/stat.h>
+#endif
+#ifdef HAVE_STAT_H
+#include <stat.h>
+#endif
 
 #ifdef HAVE_GUSI_H
 #include <GUSI.h>
@@ -311,8 +326,8 @@ searchLastClose(char *s, char closeChar)
     else
 	return 0;
 }
-	
 
+	
 static int
 searchCommentOrEol(char *s)
 {
@@ -324,8 +339,25 @@ searchCommentOrEol(char *s)
     else
 	return 0;
 }
-	
-	
+
+
+static char*
+convertNewlineCharacters(char* s)
+{
+    // convert the string "\n" into the \r\n combination required by DICOM
+    if (s == NULL || s[0] == '\0') return s;
+    int len = strlen(s);
+    int i = 0;
+    for (i=0; i<(len-1); i++) {
+        if (s[i] == '\\' && s[i+1] == 'n') {
+            s[i] = '\r';
+            s[i+1] = '\n';
+            i++;
+        }
+    }
+
+    return s;
+}
 
 static OFBool
 parseValue(char * & s, char * & value)
@@ -347,6 +379,7 @@ parseValue(char * & s, char * & value)
 	    value = new char[len-1];
 	    strncpy(value, s+1, len-2);
 	    value[len-2] = '\0';
+            value = convertNewlineCharacters(value);
 	}
 	else 
 	    value = NULL;
@@ -376,6 +409,57 @@ parseValue(char * & s, char * & value)
     return ok;
 }
 
+
+static unsigned long
+fileSize(const char *fname)
+{
+    struct stat s;
+    unsigned long nbytes = 0;
+
+    if (stat(fname, &s) == 0) {
+	nbytes = s.st_size;
+    }
+    return nbytes;
+}
+
+static E_Condition 
+putFileContentsIntoElement(DcmElement* elem, const char* filename)
+{
+    FILE* f = NULL;
+    E_Condition ec = EC_Normal;
+
+    if ((f = fopen(filename, "rb")) == NULL) {
+        cerr << "ERROR: cannot open binary data file: " << filename << endl;
+        return EC_InvalidTag;
+    }
+
+    unsigned long len = fileSize(filename);
+    unsigned long buflen = len;
+    if (buflen & 1) buflen++; /* if odd then make even (DICOM required even length values) */
+
+    Uint8* buf = new Uint8[buflen];
+    if (buf == NULL) {
+        cerr << "ERROR: out of memory reading binary data file: " << filename << endl;
+        ec = EC_MemoryExhausted;
+    } else if (fread(buf, 1, len, f) != len) {
+        cerr << "ERROR: error reading binary data file: " << filename << ": ";
+        perror(NULL);
+        ec = EC_CorruptedData;
+    } else {
+        /* assign buffer to attribute */
+        DcmEVR evr = elem->getVR();
+        if (evr == EVR_OB) {
+            /* put 8 bit OB data into the attribute */
+            ec = elem->putUint8Array(buf, buflen);
+        } else if (evr == EVR_OW) {
+            /* put 16 bit OW data into the attribute */
+            ec = elem->putUint16Array((Uint16*)buf, buflen/2);
+        }
+    }
+
+    fclose(f);
+    return ec;
+}
 
 static E_Condition 
 insertIntoSet(DcmStack & stack, DcmTagKey tagkey, DcmEVR vr, char * value)
@@ -422,8 +506,20 @@ insertIntoSet(DcmStack & stack, DcmTagKey tagkey, DcmEVR vr, char * value)
 	    else
 	    {
 		// fill value
-		if (value)
-		    l_error = newElement->putString(value);
+                if (value) {
+                    if (value[0] == '=' && (tag.getEVR() == EVR_OB || tag.getEVR() == EVR_OW)) {
+                        /*
+                         * Special case handling for OB or OW data.
+                         * Allow a value beginning with a '=' character to represent
+                         * a file containing data to be used as the attribute value.
+                         * A '=' character is not a normal value since OB and OW values
+                         * must be written as multivalued hexidecimal (e.g. "00\ff\0d\8f");
+                         */
+                        l_error = putFileContentsIntoElement(newElement, value+1);
+                    } else {
+		        l_error = newElement->putString(value);
+                    }
+                }
 
 		// insert element into hierarchy
 		if (l_error == EC_Normal)
@@ -935,7 +1031,11 @@ int main(int argc, char *argv[])
 /*
 ** CVS/RCS Log:
 ** $Log: dump2dcm.cc,v $
-** Revision 1.20  1999-01-07 14:13:12  meichel
+** Revision 1.21  1999-03-22 16:16:01  meichel
+** dump2dcm now allows to include the contents of binary files
+**   as OB/OW values while converting a dump to a DICOM file.
+**
+** Revision 1.20  1999/01/07 14:13:12  meichel
 ** Corrected bug in dump2dcm that prevented the correct processing of
 **   dumps created with dcmdump if they contained the "internal" VR markers
 **   "xs" (US or SS) or "ox" (OB or OW).
