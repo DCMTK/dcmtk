@@ -5,7 +5,7 @@ Unless otherwise specified, the DCMTK software package has the
 following copyright:
 
 /*
- *  Copyright (C) 1994-2001, OFFIS
+ *  Copyright (C) 1994-2002, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -161,5 +161,21 @@ Group Toolkit is located in dcmjpeg/docs/ijg_readme.txt.
  *  We specifically permit and encourage the use of this software as the basis of
  *  commercial products, provided that all warranty or liability claims are
  *  assumed by the product vendor.
+ */
+
+
+The color quantization code in module dcmimage (dcmquant and the related 
+classes) is derived from code written by Jef Poskanzer for the NetPBM 
+toolkit which has the following copyright:
+
+/*  
+ * Copyright (C) 1989, 1991 by Jef Poskanzer.
+ *
+ * Permission to use, copy, modify, and distribute this software and its
+ * documentation for any purpose and without fee is hereby granted, provided
+ * that the above copyright notice appear in all copies and that both that
+ * copyright notice and this permission notice appear in supporting
+ * documentation.  This software is provided "as is" without express or
+ * implied warranty.
  */
 
