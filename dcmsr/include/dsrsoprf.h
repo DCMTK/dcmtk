@@ -24,8 +24,8 @@
  *             - InstanceStruct, SeriesStruct, StudyStruct
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-05-07 14:04:44 $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  Update Date:      $Date: 2002-05-14 08:16:07 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -128,6 +128,12 @@ class DSRSOPInstanceReferenceList
         OFCondition addItem(const OFString &sopClassUID,
                             const OFString &instanceUID);
 
+        /** remove the current item from the list of instances.
+         *  After sucessful removal the cursor is set to the next valid position.
+         ** @return status, EC_Normal if successful, an error code otherwise
+         */
+        OFCondition removeItem();
+
         /// series instance UID (VR=UI, VM=1)
         const OFString SeriesUID;
         /// optional: retrieve application entity title (VR=AE, VM=1-n)
@@ -203,6 +209,12 @@ class DSRSOPInstanceReferenceList
                             const OFString &sopClassUID,
                             const OFString &instanceUID);
 
+        /** remove the current item from the list of series and instances.
+         *  After sucessful removal the cursors are set to the next valid position.
+         ** @return status, EC_Normal if successful, an error code otherwise
+         */
+        OFCondition removeItem();
+
         /// study instance UID (VR=UI, VM=1)
         const OFString StudyUID;
 
@@ -212,7 +224,7 @@ class DSRSOPInstanceReferenceList
         OFListIterator(SeriesStruct *) Iterator;
     };
 
-    // friend declarations required for MSVC
+    // friend declarations required for MSVC compiler
     friend struct InstanceStruct;
     friend struct SeriesStruct;
     friend struct StudyStruct;
@@ -223,7 +235,7 @@ class DSRSOPInstanceReferenceList
     /** constructor
      ** @param  tagKey  DICOM tag specifying the attribute (sequence) of the reference list
      */
-    DSRSOPInstanceReferenceList(const DcmTagKey &tagKey);
+    DSRSOPInstanceReferenceList(const DcmTagKey &sequence);
 
     /** destructor
      */
@@ -262,7 +274,7 @@ class DSRSOPInstanceReferenceList
     OFCondition writeXML(ostream &stream,
                          const size_t flags = 0) const;
 
-    /** add value tuple to the list of referenced SOP instances.
+    /** add the specified item to the list of references.
      *  Internally the item is inserted into the hierarchical structure of studies, series
      *  and instances, if not already contained in the list. In any case the specified item
      *  is selected as the current one.
@@ -277,18 +289,44 @@ class DSRSOPInstanceReferenceList
                         const OFString &sopClassUID,
                         const OFString &instanceUID);
 
-    /** select the specified SOP instances as the current one
-     ** @param  sopClassUID  SOP class UID to be selected
-     *  @param  instanceUID  SOP instance UID to be selected
+    /** remove the current item from the list of referenced SOP instances.
+     *  After sucessful removal the cursor is set to the next valid position.
+     ** @return status, EC_Normal if successful, an error code otherwise
+     */
+    OFCondition removeItem();
+
+    /** remove the specified item from the list of references.
+     *  After sucessful removal the cursor is set to the next valid position.
+     ** @param  sopClassUID  SOP class UID of the item to be removed
+     *  @param  instanceUID  SOP instance UID of the item to be removed
+     ** @return status, EC_Normal if successful, an error code otherwise
+     */
+    OFCondition removeItem(const OFString &sopClassUID,
+                           const OFString &instanceUID);
+
+    /** remove the specified item from the list of references.
+     *  After sucessful removal the cursor is set to the next valid position.
+     ** @param  studyUID     study instance UID of the item to be removed
+     *  @param  seriesUID    series instance UID of the item to be removed
+     *  @param  instanceUID  SOP instance UID of the item to be removed
+     ** @return status, EC_Normal if successful, an error code otherwise
+     */
+    OFCondition removeItem(const OFString &studyUID,
+                           const OFString &seriesUID,
+                           const OFString &instanceUID);
+
+    /** select the specified item as the current one
+     ** @param  sopClassUID  SOP class UID of the item to be selected
+     *  @param  instanceUID  SOP instance UID of the item to be selected
      *  @return status, EC_Normal if successful, an error code otherwise
      */
     OFCondition gotoItem(const OFString &sopClassUID,
                          const OFString &instanceUID);
 
-    /** select the specified SOP instances as the current one
-     ** @param  studyUID     study instance UID to be selected
-     *  @param  seriesUID    series instance UID to be selected
-     *  @param  instanceUID  SOP instance UID to be selected
+    /** select the specified item as the current one
+     ** @param  studyUID     study instance UID of the item to be selected
+     *  @param  seriesUID    series instance UID of the item to be selected
+     *  @param  instanceUID  SOP instance UID of the item to be selected
      *  @return status, EC_Normal if successful, an error code otherwise
      */
     OFCondition gotoItem(const OFString &studyUID,
@@ -307,7 +345,7 @@ class DSRSOPInstanceReferenceList
      */
     const OFString &getSeriesInstanceUID(OFString &string) const;
 
-    /** get the SOP instance instance UID of the currently selected entry
+    /** get the SOP instance UID of the currently selected entry
      ** @param  string  reference to string variable in which the result is stored
      ** @return reference to the resulting string (might be empty)
      */
@@ -319,7 +357,8 @@ class DSRSOPInstanceReferenceList
      */
     const OFString &getSOPClassUID(OFString &string) const;
 
-    /** get the retrieve application entity title of the currently selected entry (optional)
+    /** get the retrieve application entity title of the currently selected entry (optional).
+     *  The resulting string may contain multiple values separated by a backslash ("\").
      ** @param  string  reference to string variable in which the result is stored
      ** @return reference to the resulting string (might be empty)
      */
@@ -337,7 +376,8 @@ class DSRSOPInstanceReferenceList
      */
     const OFString &getStorageMediaFileSetUID(OFString &string) const;
 
-    /** set the retrieve application entity title of the currently selected entry
+    /** set the retrieve application entity title of the currently selected entry.
+     *  Multiple values are to be separated by a backslash ("\").
      ** @param  value  string value to be set (use empty string to omit optional attribute)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
@@ -405,13 +445,15 @@ class DSRSOPInstanceReferenceList
 /*
  *  CVS/RCS Log:
  *  $Log: dsrsoprf.h,v $
- *  Revision 1.2  2002-05-07 14:04:44  joergr
+ *  Revision 1.3  2002-05-14 08:16:07  joergr
+ *  Added removeItem() methods.
+ *
+ *  Revision 1.2  2002/05/07 14:04:44  joergr
  *  Added "friend" statements to class declaration (required for MSVC).
  *
  *  Revision 1.1  2002/05/07 12:49:31  joergr
  *  Added support for the Current Requested Procedure Evidence Sequence and the
  *  Pertinent Other Evidence Sequence to the dcmsr module.
- *
  *
  *
  */

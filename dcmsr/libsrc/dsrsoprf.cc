@@ -24,8 +24,8 @@
  *             - InstanceStruct, SeriesStruct, StudyStruct
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-05-07 12:54:28 $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  Update Date:      $Date: 2002-05-14 08:16:29 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -244,6 +244,22 @@ OFCondition DSRSOPInstanceReferenceList::SeriesStruct::addItem(const OFString &s
 }
 
 
+OFCondition DSRSOPInstanceReferenceList::SeriesStruct::removeItem()
+{
+    OFCondition result = EC_IllegalCall;
+    /* check whether list is empty or iterator is invalid */
+    if (!InstanceList.empty() && (Iterator != InstanceList.end()))
+    {
+        /* free memory */
+        delete (*Iterator);
+        /* remove item from list */
+        Iterator = InstanceList.erase(Iterator);
+        result = EC_Normal;
+    }
+    return result;
+}
+
+
 // --- DSRSOPInstanceReferenceList::StudyStruct ---
 
 
@@ -396,7 +412,7 @@ DSRSOPInstanceReferenceList::InstanceStruct *DSRSOPInstanceReferenceList::StudyS
         /* continue search on instance level */
         if (series != NULL)
             instance = series->gotoInstance(instanceUID);
-        /* if found exit loop */
+        /* if found exit loop, else goto next */
         if (instance == NULL)
             Iterator++;
     }
@@ -430,10 +446,34 @@ OFCondition DSRSOPInstanceReferenceList::StudyStruct::addItem(const OFString &se
 }
 
 
+OFCondition DSRSOPInstanceReferenceList::StudyStruct::removeItem()
+{
+    OFCondition result = EC_IllegalCall;
+    /* check whether list is empty or iterator is invalid */
+    if (!SeriesList.empty() && (Iterator != SeriesList.end()))
+    {
+        SeriesStruct *series = (SeriesStruct *)(*Iterator);
+        if (series != NULL)
+        {
+            result = series->removeItem();
+            /* check whether lower level list has become empty */
+            if (result.good() && series->InstanceList.empty())
+            {
+                /* free memory */
+                delete (*Iterator);
+                /* if so, remove series from list and set iterator to the next item */
+                Iterator = SeriesList.erase(Iterator);
+            }
+        }
+    }
+    return result;
+}
+
+
 // --- DSRSOPInstanceReferenceList ---
 
-DSRSOPInstanceReferenceList::DSRSOPInstanceReferenceList(const DcmTagKey &tagKey)
-  : SequenceTag(tagKey),
+DSRSOPInstanceReferenceList::DSRSOPInstanceReferenceList(const DcmTagKey &sequence)
+  : SequenceTag(sequence),
     StudyList(),
     Iterator()
 {
@@ -613,6 +653,55 @@ OFCondition DSRSOPInstanceReferenceList::addItem(const OFString &studyUID,
 }
 
 
+OFCondition DSRSOPInstanceReferenceList::removeItem()
+{
+    OFCondition result = EC_IllegalCall;
+    /* check whether list is empty or iterator is invalid */
+    if (!StudyList.empty() && (Iterator != StudyList.end()))
+    {
+        StudyStruct *study = (StudyStruct *)(*Iterator);
+        if (study != NULL)
+        {
+            result = study->removeItem();
+            /* check whether lower level list has become empty */
+            if (result.good() && study->SeriesList.empty())
+            {
+                /* free memory */
+                delete (*Iterator);
+                /* if so, remove study from list and set iterator to the next item */
+                Iterator = StudyList.erase(Iterator);
+            }
+        }
+    }
+    return result;
+}
+
+
+OFCondition DSRSOPInstanceReferenceList::removeItem(const OFString &sopClassUID,
+                                                    const OFString &instanceUID)
+{
+    /* goto specified item ... */
+    OFCondition result = gotoItem(sopClassUID, instanceUID);
+    /* ... and remove it */
+    if (result.good())
+        result = removeItem();
+    return result;
+}
+
+
+OFCondition DSRSOPInstanceReferenceList::removeItem(const OFString &studyUID,
+                                                    const OFString &seriesUID,
+                                                    const OFString &instanceUID)
+{
+    /* goto specified item ... */
+    OFCondition result = gotoItem(studyUID, seriesUID, instanceUID);
+    /* ... and remove it */
+    if (result.good())
+        result = removeItem();
+    return result;
+}
+
+
 OFCondition DSRSOPInstanceReferenceList::gotoItem(const OFString &sopClassUID,
                                                   const OFString &instanceUID)
 {
@@ -715,6 +804,7 @@ const OFString &DSRSOPInstanceReferenceList::getStudyInstanceUID(OFString &strin
 {
     /* check whether current study is valid */
     StudyStruct *study = getCurrentStudy();
+    /* get study instance UID or clear string if invalid */
     if (study != NULL)
         string = study->StudyUID;
     else
@@ -727,6 +817,7 @@ const OFString &DSRSOPInstanceReferenceList::getSeriesInstanceUID(OFString &stri
 {
     /* check whether current series is valid */
     SeriesStruct *series = getCurrentSeries();
+    /* get series instance UID or clear string if invalid */
     if (series != NULL)
         string = series->SeriesUID;
     else
@@ -739,6 +830,7 @@ const OFString &DSRSOPInstanceReferenceList::getSOPInstanceUID(OFString &string)
 {
     /* check whether current instance is valid */
     InstanceStruct *instance = getCurrentInstance();
+    /* get SOP instance UID or clear string if invalid */
     if (instance != NULL)
         string = instance->InstanceUID;
     else
@@ -751,6 +843,7 @@ const OFString &DSRSOPInstanceReferenceList::getSOPClassUID(OFString &string) co
 {
     /* check whether current instance is valid */
     InstanceStruct *instance = getCurrentInstance();
+    /* get SOP class UID or clear string if invalid */
     if (instance != NULL)
         string = instance->SOPClassUID;
     else
@@ -763,6 +856,7 @@ const OFString &DSRSOPInstanceReferenceList::getRetrieveAETitle(OFString &string
 {
     /* check whether current series is valid */
     SeriesStruct *series = getCurrentSeries();
+    /* get retrieve application entity title or clear string if invalid */
     if (series != NULL)
         string = series->RetrieveAETitle;
     else
@@ -775,6 +869,7 @@ const OFString &DSRSOPInstanceReferenceList::getStorageMediaFileSetID(OFString &
 {
     /* check whether current series is valid */
     SeriesStruct *series = getCurrentSeries();
+    /* get storage media file set ID or clear string if invalid */
     if (series != NULL)
         string = series->StorageMediaFileSetID;
     else
@@ -787,6 +882,7 @@ const OFString &DSRSOPInstanceReferenceList::getStorageMediaFileSetUID(OFString 
 {
     /* check whether current series is valid */
     SeriesStruct *series = getCurrentSeries();
+    /* get storage media file set UID or clear string if invalid */
     if (series != NULL)
         string = series->StorageMediaFileSetUID;
     else
@@ -843,10 +939,12 @@ OFCondition DSRSOPInstanceReferenceList::setStorageMediaFileSetUID(const OFStrin
 /*
  *  CVS/RCS Log:
  *  $Log: dsrsoprf.cc,v $
- *  Revision 1.1  2002-05-07 12:54:28  joergr
+ *  Revision 1.2  2002-05-14 08:16:29  joergr
+ *  Added removeItem() methods.
+ *
+ *  Revision 1.1  2002/05/07 12:54:28  joergr
  *  Added support for the Current Requested Procedure Evidence Sequence and the
  *  Pertinent Other Evidence Sequence to the dcmsr module.
- *
  *
  *
  */
