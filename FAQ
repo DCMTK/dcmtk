@@ -1,6 +1,20 @@
 DCMTK FAQ - Frequently Asked Questions
 
 ----
+1997.05.30
+
+Q: I'm using a Nextstep system.  I run the configure script but it claims
+   that my compiler is a cross-compiler (produces the message: 'checking 
+   whether cross-compiling... yes') and produces nonsense results.
+
+A: Your compiler seems to be producing code which cannot always be executed.
+   There seems to be a problem with the C++ name demangler causing the 
+   linker to occasionally generate bad code.  This problem occurs most 
+   frequently when the using NFS file-systems.  A workaround (at least for 
+   Nextstep 3.3 Developer) is to modify the shell script /bin/ld++ and remove 
+   the pipe to the c++filt program.  /bin/ld++ then just contains a call to 
+   the linker (i.e. ld $*).  
+
 1997.05.22
 
 Q: I'm using a unix system.  I run the configure script and then make but
@@ -49,8 +63,7 @@ A: Yes.  We have added preliminary support for Win32 environments.
 Q: Does DCMTK compile on Apple Macintosh ?
 
 A: Yes.  Parts (dcmdata and dcmnet) compile using the Metrowerks
-   CodeWarrior 6.0 C++ compiler.  The current version of DCMTK (3.1.2)
-   compiles using the CodeWarrior 11 compiler.
+   CodeWarrior C++ compiler.  
 
    No real testing has yet been done.
 
