@@ -7051,10 +7051,10 @@ else
   echo "$ac_t""no" 1>&6
 fi
 
-echo $ac_n "checking prototype for gethostid (in libc.h unistd.h stdlib.h)""... $ac_c" 1>&6
-echo "configure:7056: checking prototype for gethostid (in libc.h unistd.h stdlib.h)" >&5
+echo $ac_n "checking prototype for gethostid (in libc.h unistd.h stdlib.h netdb.h)""... $ac_c" 1>&6
+echo "configure:7056: checking prototype for gethostid (in libc.h unistd.h stdlib.h netdb.h)" >&5
 ac_includes=""
-for ac_header in libc.h unistd.h stdlib.h
+for ac_header in libc.h unistd.h stdlib.h netdb.h
 do
   ac_safe=`echo "$ac_header" | sed 'y%./+-%__p_%'`
   if eval "test \"`echo '$''{'ac_cv_header_$ac_safe'}'`\" = yes"; then
