@@ -24,8 +24,8 @@
  *    the IJG library from the central DCMTK configuration file osconfig.h
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-11-13 15:56:40 $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  Update Date:      $Date: 2001-11-19 14:55:55 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -76,11 +76,18 @@
 #undef DEFAULT_MAX_MEM
 #undef NO_MKTEMP
 
+/* We don't want to use getenv which is thread unsafe on some platforms */
+#define NO_GETENV
+
 #endif /* JPEG_INTERNALS */
 
 /*
  *  $Log: jconfig12.h,v $
- *  Revision 1.1  2001-11-13 15:56:40  meichel
+ *  Revision 1.2  2001-11-19 14:55:55  meichel
+ *  Disabled JPEGMEM environment variable in dcmjpeg IJG code
+ *    since it is not required and getenv() is thread unsafe on some systems.
+ *
+ *  Revision 1.1  2001/11/13 15:56:40  meichel
  *  Initial release of module dcmjpeg
  *
  *
