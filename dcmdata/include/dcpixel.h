@@ -21,10 +21,10 @@
  *
  *  Purpose: Interface of class DcmPixelData
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-04-17 15:56:59 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2003-06-02 16:55:34 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcpixel.h,v $
- *  CVS/RCS Revision: $Revision: 1.20 $
+ *  CVS/RCS Revision: $Revision: 1.21 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -46,6 +46,7 @@ class DcmStack;
 class DcmPixelSequence;
 class DcmPixelData;
 class DcmRepresentationEntry;
+
 
 class DcmRepresentationParameter
 {
@@ -76,6 +77,58 @@ public:
      *  @return true if equal, false otherwise.
      */
     virtual OFBool operator==(const DcmRepresentationParameter &arg) const = 0;
+};
+
+
+/** an object of this class maintains one compression "version"
+ *  of a PixelData element within a DICOM dataset.  There can be
+ *  multiple compressed versions in parallel, with different
+ *  transfer syntaxes (compression algorithms) or representation
+ *  parameters (e.g. compression factors).
+ */
+class DcmRepresentationEntry
+{
+    /** constructor
+     *  @param rt transfer syntax
+     *  @param rp pointer to representation parameter on heap,
+     *     will be deleted when this object destructs.
+     *  @param pixSeq pointer to pixel sequence on heap,
+     *     will be deleted when this object destructs.
+     */
+    DcmRepresentationEntry(
+        const E_TransferSyntax rt,
+        const DcmRepresentationParameter * rp,
+        DcmPixelSequence * pixSeq);
+
+    /// copy constructor
+    DcmRepresentationEntry(const DcmRepresentationEntry &oldEntry);
+
+    /// destructor
+    ~DcmRepresentationEntry();
+
+    /// comparison operator
+    OFBool operator==(const DcmRepresentationEntry& x) const;
+
+    /// comparison operator
+    OFBool operator!=(const DcmRepresentationEntry & x) const 
+    { 
+      return !(*this == x);
+    }
+
+private:
+    /// private undefined copy assignment operator
+    DcmRepresentationEntry &operator=(const DcmRepresentationEntry &);
+
+    /// transfer syntax
+    E_TransferSyntax repType;
+
+    /// representation parameter for this pixel sequence
+    DcmRepresentationParameter * repParam;
+
+    /// the compressed pixel sequence itself
+    DcmPixelSequence * pixSeq;
+
+    friend class DcmPixelData;
 };
 
 typedef OFList<DcmRepresentationEntry *> DcmRepresentationList;
@@ -383,7 +436,10 @@ public:
 /*
 ** CVS/RCS Log:
 ** $Log: dcpixel.h,v $
-** Revision 1.20  2003-04-17 15:56:59  joergr
+** Revision 1.21  2003-06-02 16:55:34  meichel
+** Cleaned up implementation of DcmRepresentationEntry, added doc++ comments
+**
+** Revision 1.20  2003/04/17 15:56:59  joergr
 ** Corrected API documentation of createUint8/16Array() methods.
 **
 ** Revision 1.19  2003/04/01 12:35:12  joergr

@@ -21,10 +21,10 @@
  *
  *  Purpose: class DcmPixelData
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-04-03 14:30:37 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2003-06-02 16:55:41 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcpixel.cc,v $
- *  CVS/RCS Revision: $Revision: 1.30 $
+ *  CVS/RCS Revision: $Revision: 1.31 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -39,33 +39,6 @@
 //
 // class DcmRepresentationEntry
 //
-
-
-class DcmRepresentationEntry
-{
-friend class DcmPixelData;
-private:
-    E_TransferSyntax repType;
-    DcmRepresentationParameter * repParam;
-    DcmPixelSequence * pixSeq;
-
-    DcmRepresentationEntry(
-        const DcmRepresentationEntry & oldEntry);
-    DcmRepresentationEntry(
-        const E_TransferSyntax rt,
-        const DcmRepresentationParameter * rp,
-        DcmPixelSequence * pixSeq);
-    ~DcmRepresentationEntry();
-    OFBool operator==(
-        const DcmRepresentationEntry & x) const;
-    OFBool operator!=(
-        const DcmRepresentationEntry & x) const { return !(*this == x); }
-
- // --- declarations to avoid compiler warnings
-
-    DcmRepresentationEntry &operator=(const DcmRepresentationEntry &);
-};
-
 
 DcmRepresentationEntry::DcmRepresentationEntry(
     const E_TransferSyntax rt,
@@ -92,10 +65,8 @@ DcmRepresentationEntry::DcmRepresentationEntry(
 
 DcmRepresentationEntry::~DcmRepresentationEntry()
 {
-    if (repParam)
-        delete repParam;
-    if (pixSeq)
-        delete pixSeq;
+    delete repParam;
+    delete pixSeq;
 }
 
 OFBool
@@ -1058,7 +1029,10 @@ OFCondition DcmPixelData::loadAllDataIntoMemory(void)
 /*
 ** CVS/RCS Log:
 ** $Log: dcpixel.cc,v $
-** Revision 1.30  2003-04-03 14:30:37  joergr
+** Revision 1.31  2003-06-02 16:55:41  meichel
+** Cleaned up implementation of DcmRepresentationEntry, added doc++ comments
+**
+** Revision 1.30  2003/04/03 14:30:37  joergr
 ** Fixed bug introduced in the context of the new createUint8/16Array() methods.
 **
 ** Revision 1.29  2003/04/01 12:35:17  joergr
