@@ -22,9 +22,9 @@
  *  Purpose: Handle command line arguments (Header)
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-03-08 16:36:01 $
+ *  Update Date:      $Date: 2000-04-14 15:17:11 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/include/Attic/ofcmdln.h,v $
- *  CVS/RCS Revision: $Revision: 1.23 $
+ *  CVS/RCS Revision: $Revision: 1.24 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -109,7 +109,10 @@ struct OFCmdOption
     {
 #ifdef DEBUG
         if (!Checked && (LongOption.length() > 0) && (LongOption != "--help"))
-            CERR << "WARNING: option " << LongOption << " has never been checked !" << endl;
+        {
+            ofConsole.lockCerr() << "WARNING: option " << LongOption << " has never been checked !" << endl;
+            ofConsole.unlockCerr();
+        }
 #endif
     }
 
@@ -991,7 +994,10 @@ class OFCommandLine
  *
  * CVS/RCS Log:
  * $Log: ofcmdln.h,v $
- * Revision 1.23  2000-03-08 16:36:01  meichel
+ * Revision 1.24  2000-04-14 15:17:11  meichel
+ * Adapted all ofstd library classes to consistently use ofConsole for output.
+ *
+ * Revision 1.23  2000/03/08 16:36:01  meichel
  * Updated copyright header.
  *
  * Revision 1.22  2000/03/07 15:38:49  joergr

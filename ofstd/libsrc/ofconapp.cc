@@ -22,9 +22,9 @@
  *  Purpose: Handle console applications (Source)
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-03-08 16:36:06 $
+ *  Update Date:      $Date: 2000-04-14 15:17:16 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/libsrc/ofconapp.cc,v $
- *  CVS/RCS Revision: $Revision: 1.13 $
+ *  CVS/RCS Revision: $Revision: 1.14 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -45,13 +45,11 @@
 
 OFConsoleApplication::OFConsoleApplication(const char *app,
                                            const char *desc,
-                                           const char *rcsid,
-                                           ostream *output)
+                                           const char *rcsid)
  : Name(app),
    Description(desc),
    Identification(rcsid),
    QuietMode(OFFalse),
-   Output((output != NULL) ? output : &CERR),
    CmdLine(NULL)
 {
 }
@@ -96,12 +94,14 @@ OFBool OFConsoleApplication::parseCommandLine(OFCommandLine &cmd,
 
 void OFConsoleApplication::printHeader()
 {
+    ostream &Output = ofConsole.lockCerr();
     if (!Identification.empty())
-        (*Output) << Identification << endl << endl;
-    (*Output) << Name;
+        Output << Identification << endl << endl;
+    Output << Name;
     if (!Description.empty())
-        (*Output) << ": " << Description;
-    (*Output) << endl;
+        Output << ": " << Description;
+    Output << endl;
+    ofConsole.unlockCerr();
 }
 
 
@@ -110,31 +110,34 @@ void OFConsoleApplication::printUsage(const OFCommandLine *cmd)
     if (cmd == NULL)
         cmd = CmdLine;
     printHeader();
-    (*Output) << "usage: " << Name;
+    ostream &Output = ofConsole.lockCerr();
+    Output << "usage: " << Name;
     if (cmd != NULL)
     {
         OFString str;
         cmd->getSyntaxString(str);
-        (*Output) << str << endl;
+        Output << str << endl;
         cmd->getParamString(str);
         if (str.length() > 0)
-            (*Output) << endl << str;
+            Output << endl << str;
         cmd->getOptionString(str);
         if (str.length() > 0)
-            (*Output) << endl << str;
+            Output << endl << str;
     }
-    (*Output) << endl;
+    Output << endl;
+    ofConsole.unlockCerr();
     exit(0);
 }
 
 
 void OFConsoleApplication::printError(const char *str,
-									  const int code)
+                                      const int code)
 {
     if (!QuietMode)
     {
         printHeader();
-        (*Output) << "error: " << str << endl;
+        ofConsole.lockCerr() << "error: " << str << endl;
+        ofConsole.unlockCerr();
     }
     exit(code);
 }
@@ -143,14 +146,20 @@ void OFConsoleApplication::printError(const char *str,
 void OFConsoleApplication::printWarning(const char *str)
 {
     if (!QuietMode)
-        (*Output) << Name << ": warning: " << str << endl;
+    {
+        ofConsole.lockCerr() << Name << ": warning: " << str << endl;
+        ofConsole.unlockCerr();
+    }
 }
 
 
 void OFConsoleApplication::printMessage(const char *str)
 {
     if (!QuietMode)
-        (*Output) << str << endl;
+    {
+        ofConsole.lockCerr() << str << endl;
+        ofConsole.unlockCerr();
+    }
 }
 
 
@@ -222,7 +231,10 @@ void OFConsoleApplication::checkConflict(const char *firstOpt,
  *
  * CVS/RCS Log:
  * $Log: ofconapp.cc,v $
- * Revision 1.13  2000-03-08 16:36:06  meichel
+ * Revision 1.14  2000-04-14 15:17:16  meichel
+ * Adapted all ofstd library classes to consistently use ofConsole for output.
+ *
+ * Revision 1.13  2000/03/08 16:36:06  meichel
  * Updated copyright header.
  *
  * Revision 1.12  2000/03/07 15:38:54  joergr

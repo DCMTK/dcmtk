@@ -22,9 +22,9 @@
  *  Purpose: Handle console applications (Header)
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-03-08 16:36:01 $
+ *  Update Date:      $Date: 2000-04-14 15:17:12 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/include/Attic/ofconapp.h,v $
- *  CVS/RCS Revision: $Revision: 1.9 $
+ *  CVS/RCS Revision: $Revision: 1.10 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -69,12 +69,10 @@ class OFConsoleApplication
      ** @param  app     application name
      *  @param  desc    (short) description of what the application does
      *  @param  rcsid   identifier for console application
-     *  @param  output  output stream (default: cerr, if parameter = NULL)
      */
     OFConsoleApplication(const char *app,
                          const char *desc = NULL,
-                         const char *rcsid = NULL,
-                         ostream *output = NULL);
+                         const char *rcsid = NULL);
     
     /** destructor
      */
@@ -184,8 +182,6 @@ class OFConsoleApplication
     /// Switch on/off error and warning messages
     OFBool QuietMode;
 
-    /// Pointer to output stream for error messages (default: err)
-    ostream  *Output;
     /// Pointer to associated CommandLine class
     OFCommandLine *CmdLine;
 
@@ -204,7 +200,10 @@ class OFConsoleApplication
  *
  * CVS/RCS Log:
  * $Log: ofconapp.h,v $
- * Revision 1.9  2000-03-08 16:36:01  meichel
+ * Revision 1.10  2000-04-14 15:17:12  meichel
+ * Adapted all ofstd library classes to consistently use ofConsole for output.
+ *
+ * Revision 1.9  2000/03/08 16:36:01  meichel
  * Updated copyright header.
  *
  * Revision 1.8  2000/03/07 15:38:50  joergr

@@ -22,9 +22,9 @@
  *  Purpose: Template class for command line arguments (Source)
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-03-08 16:36:05 $
+ *  Update Date:      $Date: 2000-04-14 15:17:15 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/libsrc/ofcmdln.cc,v $
- *  CVS/RCS Revision: $Revision: 1.23 $
+ *  CVS/RCS Revision: $Revision: 1.24 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -156,13 +156,15 @@ OFBool OFCommandLine::addOption(const char *longOpt,
             {
                 if ((*iter)->LongOption == longOpt)
                 {
-                    CERR << "WARNING: long option " << longOpt << " already defined ... not added !" << endl;
+                    ofConsole.lockCerr() << "WARNING: long option " << longOpt << " already defined ... not added !" << endl;
+                    ofConsole.unlockCerr();
                     return OFFalse;
                 }
                 if ((strlen(shortOpt) > 0) && ((*iter)->ShortOption == shortOpt))
                 {
-                    CERR << "WARNING: short option " << shortOpt << " already defined for " << (*iter)->LongOption << " ..." << endl
+                    ofConsole.lockCerr() << "WARNING: short option " << shortOpt << " already defined for " << (*iter)->LongOption << " ..." << endl
                          << "         option " << longOpt << " not added !" << endl;
+                    ofConsole.unlockCerr();
                     return OFFalse;
                 }
                 iter++;
@@ -177,7 +179,8 @@ OFBool OFCommandLine::addOption(const char *longOpt,
         }
     }
 #ifdef DEBUG
-    CERR << "WARNING: invalid option " << shortOpt << "/" <<longOpt << " ... not added !" << endl;
+    ofConsole.lockCerr() << "WARNING: invalid option " << shortOpt << "/" <<longOpt << " ... not added !" << endl;
+    ofConsole.unlockCerr();
 #endif
     return OFFalse;
 }
@@ -230,6 +233,7 @@ OFBool OFCommandLine::addParam(const char *param,
     if (param != NULL)
     {
 #ifdef DEBUG
+        ostream &CERR = ofConsole.lockCerr();
         switch (LastParamMode)
         {
             case OFCmdParam::PM_Optional:
@@ -245,6 +249,7 @@ OFBool OFCommandLine::addParam(const char *param,
             default:
                 break;
         }
+        ofConsole.unlockCerr();
         LastParamMode = mode;
 #endif
         OFCmdParam *par = new OFCmdParam(param, descr, mode);
@@ -507,7 +512,8 @@ OFBool OFCommandLine::findOption(const char *longOpt,
     }
     if (iter == last)
     {
-        CERR << "WARNING: unknown option " << longOpt << " in 'OFCommandLine::findOption()' !" << endl;
+        ofConsole.lockCerr() << "WARNING: unknown option " << longOpt << " in 'OFCommandLine::findOption()' !" << endl;
+        ofConsole.unlockCerr();
         return OFFalse;
     }    
 #endif
@@ -1218,7 +1224,10 @@ void OFCommandLine::getStatusString(const E_ValueStatus status,
  *
  * CVS/RCS Log:
  * $Log: ofcmdln.cc,v $
- * Revision 1.23  2000-03-08 16:36:05  meichel
+ * Revision 1.24  2000-04-14 15:17:15  meichel
+ * Adapted all ofstd library classes to consistently use ofConsole for output.
+ *
+ * Revision 1.23  2000/03/08 16:36:05  meichel
  * Updated copyright header.
  *
  * Revision 1.22  2000/03/03 14:02:50  meichel
