@@ -9,10 +9,10 @@
 ** Interface for a dictionary entry in the loadable DICOM data dictionary
 ** 
 **
-** Last Update:		$Author: hewett $
-** Update Date:		$Date: 1997-04-15 16:25:05 $
+** Last Update:		$Author: andreas $
+** Update Date:		$Date: 1997-04-18 08:04:39 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcdicent.h,v $
-** CVS/RCS Revision:	$Revision: 1.6 $
+** CVS/RCS Revision:	$Revision: 1.7 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -268,19 +268,21 @@ DcmDictEntry::contains(const DcmTagKey& key) const
     if ((getGroupRangeRestriction() == DcmDictRange_Even) && 
 	DCM_IS_ODD(key.getGroup()))
 	return FALSE;
-    if ((getGroupRangeRestriction() == DcmDictRange_Odd) &&
+    else if ((getGroupRangeRestriction() == DcmDictRange_Odd) &&
 	DCM_IS_EVEN(key.getGroup())) 
 	return FALSE;
-    if ((getElementRangeRestriction() == DcmDictRange_Even) &&
+    else if ((getElementRangeRestriction() == DcmDictRange_Even) &&
 	DCM_IS_ODD(key.getElement()))
 	return FALSE;
-    if ((getElementRangeRestriction() == DcmDictRange_Odd) &&
+    else if ((getElementRangeRestriction() == DcmDictRange_Odd) &&
 	DCM_IS_EVEN(key.getElement()))
 	return FALSE;
-
-    return 
-	DCM_INRANGE(key.getGroup(), getGroup(), getUpperGroup()) &&
-	DCM_INRANGE(key.getElement(), getElement(), getUpperElement());
+    else
+    {
+	return 
+	    DCM_INRANGE(key.getGroup(), getGroup(), getUpperGroup()) &&
+	    DCM_INRANGE(key.getElement(), getElement(), getUpperElement());
+    }
 }
 
 inline int 
@@ -318,7 +320,12 @@ DcmDictEntry::setEQ(const DcmDictEntry& e) const
 /*
 ** CVS/RCS Log:
 ** $Log: dcdicent.h,v $
-** Revision 1.6  1997-04-15 16:25:05  hewett
+** Revision 1.7  1997-04-18 08:04:39  andreas
+** - Minor corrections: correct some warnings of the SUN-C++ Compiler
+**   concerning the assignments of wrong types and inline compiler
+**   errors
+**
+** Revision 1.6  1997/04/15 16:25:05  hewett
 ** Corrected data dictionary bug whereby the even/odd range restrictions
 ** were not being taken into consideration when searching the dictionary.
 **

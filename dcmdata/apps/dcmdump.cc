@@ -9,10 +9,10 @@
 ** List the contents of a dicom file to stdout
 **
 **
-** Last Update:		$Author: hewett $
-** Update Date:		$Date: 1997-02-06 11:19:22 $
+** Last Update:		$Author: andreas $
+** Update Date:		$Date: 1997-04-18 08:04:47 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/apps/dcmdump.cc,v $
-** CVS/RCS Revision:	$Revision: 1.8 $
+** CVS/RCS Revision:	$Revision: 1.9 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -280,14 +280,14 @@ int main(int argc, char *argv[])
 
 static void printResult(ostream& out, DcmStack& stack, BOOL showFullData)
 {
-    int n = stack.card();
+    unsigned long n = stack.card();
     if (n == 0) {
 	return;
     }
 
     if (prependSequenceHierarchy) {
 	/* print the path leading up to the top stack elem */
-	for (int i=n-1; i>=1; i--) {
+	for (unsigned long i=n-1; i>=1; i--) {
 	    DcmObject *dobj = stack.elem(i);
 	    /* do not print if a DCM_Item as this is not 
 	     * very helpful to distinguish instances.
@@ -397,7 +397,12 @@ static int dumpFile(ostream & out,
 /*
 ** CVS/RCS Log:
 ** $Log: dcmdump.cc,v $
-** Revision 1.8  1997-02-06 11:19:22  hewett
+** Revision 1.9  1997-04-18 08:04:47  andreas
+** - Minor corrections: correct some warnings of the SUN-C++ Compiler
+**   concerning the assignments of wrong types and inline compiler
+**   errors
+**
+** Revision 1.8  1997/02/06 11:19:22  hewett
 ** Update for CodeWarrior 11 on Macintrosh.  Now explicitly sets flags
 ** for the SIOUX console.
 **
