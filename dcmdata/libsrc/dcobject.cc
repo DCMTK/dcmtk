@@ -10,7 +10,7 @@
 **
 **
 ** Last Update:   $Author: andreas $
-** Revision:      $Revision: 1.4 $
+** Revision:      $Revision: 1.5 $
 ** Status:	  $State: Exp $
 **
 */
@@ -33,20 +33,20 @@
 
 DcmObject::DcmObject(const DcmTag &tag, const Uint32 len)
 {
-    Bdebug((6, "DcmObject::DcmObject(DcmTag&,len=%ld)", len ));
-    debug(( 8, "Object pointer this=0x%p", this ));
+  Bdebug((6, "DcmObject::DcmObject(DcmTag&,len=%ld)", len ));
+  debug(( 8, "Object pointer this=0x%p", this ));
 
-    Tag = new DcmTag( tag );    // copy-operator in DcmTag
-    Length = len;
-    errorFlag = EC_Normal;
-    fTransferState = ERW_init;
-    fTransferredBytes = 0;
+  Tag = new DcmTag( tag );    // copy-operator in DcmTag
+  Length = len;
+  errorFlag = EC_Normal;
+  fTransferState = ERW_init;
+  fTransferredBytes = 0;
 
 #ifdef DEBUG
-    testConstructDestruct = 1; // for debugging
+  testConstructDestruct = 1; // for debugging
 #endif
 
-    Edebug(());
+  Edebug(());
 }
 
 
@@ -55,20 +55,20 @@ DcmObject::DcmObject(const DcmTag &tag, const Uint32 len)
 
 DcmObject::DcmObject( const DcmObject& obj )
 {
-    Bdebug((6, "dcobject:DcmObject::DcmObject(const DcmObject& obj=0x%p)", &obj ));
-    debug(( 8, "Object pointer this=0x%p", this ));
+  Bdebug((6, "dcobject:DcmObject::DcmObject(const DcmObject& obj=0x%p)", &obj ));
+  debug(( 8, "Object pointer this=0x%p", this ));
 
-    Tag = new DcmTag( *obj.Tag );    // copy-operator in DcmTag
-    Length = obj.Length;
-    errorFlag = obj.errorFlag;
-    fTransferState = obj.fTransferState;
-    fTransferredBytes = obj.fTransferredBytes;
+  Tag = new DcmTag( *obj.Tag );    // copy-operator in DcmTag
+  Length = obj.Length;
+  errorFlag = obj.errorFlag;
+  fTransferState = obj.fTransferState;
+  fTransferredBytes = obj.fTransferredBytes;
 
 #ifdef DEBUG
-    testConstructDestruct = 1; // for debugging
+  testConstructDestruct = 1; // for debugging
 #endif
 
-    Edebug(());
+  Edebug(());
 }
 
 
@@ -77,27 +77,27 @@ DcmObject::DcmObject( const DcmObject& obj )
 
 DcmObject::~DcmObject()
 {
-    Bdebug((6, "dcobject:DcmObject::~DcmObject()" ));
-    debug(( 8, "Object pointer this=0x%p", this ));
-    debug(( 8, "Pointer to Tag=0x%p", Tag ));
+  Bdebug((6, "dcobject:DcmObject::~DcmObject()" ));
+  debug(( 8, "Object pointer this=0x%p", this ));
+  debug(( 8, "Pointer to Tag=0x%p", Tag ));
 
-    if (Tag != (DcmTag*)NULL)
-	delete Tag;
+  if (Tag != (DcmTag*)NULL)
+    delete Tag;
 
 #ifdef DEBUG
-    if ( testConstructDestruct == 1 )                   // for debugging
-        testConstructDestruct = 2; // for debugging
-    else
+  if ( testConstructDestruct == 1 )                   // for debugging
+    testConstructDestruct = 2; // for debugging
+  else
     {
-	debug(( 1, "Error: ~DcmObject called more than once (%d)",
-		testConstructDestruct ));
+      debug(( 1, "Error: ~DcmObject called more than once (%d)",
+	      testConstructDestruct ));
 
-        cerr << "Error: ~DcmObject called more than once ("
-             << testConstructDestruct << ")" << endl;
-        testConstructDestruct++;
+      cerr << "Error: ~DcmObject called more than once ("
+	   << testConstructDestruct << ")" << endl;
+      testConstructDestruct++;
     }
 #endif
-    Edebug(());
+  Edebug(());
 
 }
 
@@ -107,9 +107,9 @@ DcmObject::~DcmObject()
 
 Uint16 DcmObject::getGTag()
 {
-    Uint16 grpTag = Tag->getGTag();
-    errorFlag = Tag->error();
-    return grpTag;
+  Uint16 grpTag = Tag->getGTag();
+  errorFlag = Tag->error();
+  return grpTag;
 }
 
 
@@ -118,9 +118,9 @@ Uint16 DcmObject::getGTag()
 
 Uint16 DcmObject::getETag()
 {
-    Uint16 elemTag = Tag->getETag();
-    errorFlag = Tag->error();
-    return elemTag;
+  Uint16 elemTag = Tag->getETag();
+  errorFlag = Tag->error();
+  return elemTag;
 }
 
 
@@ -129,7 +129,7 @@ Uint16 DcmObject::getETag()
 
 const DcmTag & DcmObject::getTag(void) const
 {
-    return *Tag;
+  return *Tag;
 }
 
 
@@ -138,9 +138,9 @@ const DcmTag & DcmObject::getTag(void) const
 
 DcmEVR DcmObject::getVR(void) 
 {
-    DcmEVR vr = Tag->getEVR();
-    errorFlag = Tag->error();
-    return vr;
+  DcmEVR vr = Tag->getEVR();
+  errorFlag = Tag->error();
+  return vr;
 }
 
 
@@ -149,7 +149,7 @@ DcmEVR DcmObject::getVR(void)
 
 E_Condition DcmObject::setVR( DcmEVR /*vr*/ )
 {
-    return EC_Normal;
+  return EC_Normal;
 }
 
 
@@ -158,8 +158,8 @@ E_Condition DcmObject::setVR( DcmEVR /*vr*/ )
 
 void DcmObject::transferInit()
 {
-    fTransferState = ERW_init;
-    fTransferredBytes = 0;
+  fTransferState = ERW_init;
+  fTransferredBytes = 0;
 }
 
 
@@ -168,7 +168,7 @@ void DcmObject::transferInit()
 
 void DcmObject::transferEnd()
 {
-    fTransferState = ERW_notInitialized;
+  fTransferState = ERW_notInitialized;
 }
 
 
@@ -180,17 +180,17 @@ E_Condition DcmObject::search( const DcmTag &tag,
 			       E_SearchMode mode,
 			       BOOL searchIntoSub )
 {
-    Bdebug((5, "dcobject:DcmObject::search(tag=(%4.4x,%4.4x),Stack&(%ld),mode=%d,"
-	    "sub=%d)", tag.getGTag(), tag.getETag(), resultStack.card(),
-	    mode, searchIntoSub ));
-    debug(( 5, "local Info: Tag=(%4.4x,%4.4x) \"%s\" p=%p",
-	    getGTag(), getETag(), DcmVR(getVR()).getVRName(), this ));
+  Bdebug((5, "dcobject:DcmObject::search(tag=(%4.4x,%4.4x),Stack&(%ld),mode=%d,"
+	  "sub=%d)", tag.getGTag(), tag.getETag(), resultStack.card(),
+	  mode, searchIntoSub ));
+  debug(( 5, "local Info: Tag=(%4.4x,%4.4x) \"%s\" p=%p",
+	  getGTag(), getETag(), DcmVR(getVR()).getVRName(), this ));
 
-    E_Condition l_error = EC_TagNotFound;
+  E_Condition l_error = EC_TagNotFound;
 
-    Edebug(());
+  Edebug(());
 
-    return l_error;
+  return l_error;
 }
 
 
@@ -202,14 +202,14 @@ E_Condition DcmObject::search( const DcmTagKey& xtag,
 			       E_SearchMode mode,
 			       BOOL searchIntoSub )
 {
-    Bdebug((5, "dcobject:DcmObject::search(xtag=(%x,%x),Stack&,mode=%d,sub=%d)",
-	    xtag.getGroup(), xtag.getElement(), mode, searchIntoSub ));
+  Bdebug((5, "dcobject:DcmObject::search(xtag=(%x,%x),Stack&,mode=%d,sub=%d)",
+	  xtag.getGroup(), xtag.getElement(), mode, searchIntoSub ));
 
-    DcmTag tag( xtag );
-    E_Condition l_error = search( tag, resultStack, mode, searchIntoSub );
-    Edebug(());
+  DcmTag tag( xtag );
+  E_Condition l_error = search( tag, resultStack, mode, searchIntoSub );
+  Edebug(());
 
-    return l_error;
+  return l_error;
 }
 
 
@@ -218,13 +218,13 @@ E_Condition DcmObject::search( const DcmTagKey& xtag,
 
 E_Condition DcmObject::searchErrors( DcmStack &resultStack )
 {
-    Bdebug((5, "dcobject:DcmObject::searchErrors(Stack&)" ));
+  Bdebug((5, "dcobject:DcmObject::searchErrors(Stack&)" ));
 
-    if ( errorFlag != EC_Normal )
-	resultStack.push( this );
-    Edebug(());
+  if ( errorFlag != EC_Normal )
+    resultStack.push( this );
+  Edebug(());
 
-    return errorFlag;
+  return errorFlag;
 }
 
 
@@ -236,7 +236,7 @@ E_Condition DcmObject::searchErrors( DcmStack &resultStack )
 
 void DcmObject::printInfoLine(const int level, const char *info )
 {
-    printInfoLine( level, *Tag, Length, info );
+  printInfoLine( level, *Tag, Length, info );
 }
 
 
@@ -247,18 +247,18 @@ void DcmObject::printInfoLine(const int level, const DcmTag &tag,
 			      const Uint32 length,
 			      const char *info)
 {
-    DcmVR vr( tag.getVR() );
+  DcmVR vr( tag.getVR() );
 
-    char * output = new char[2000];
-    for ( int i=1; i<level; i++)
-	cout << "    ";
+  char * output = new char[2000];
+  for ( int i=1; i<level; i++)
+    cout << "    ";
 
-    sprintf(output, "%4.4x %4.4x %-5.5s %-38.1500s#%6lu,%3lu",
-	    tag.getGTag(), tag.getETag(), vr.getVRName(), info,
-	    length, getVM());
+  sprintf(output, "%4.4x %4.4x %-5.5s %-38.1500s#%6lu,%3lu",
+	  tag.getGTag(), tag.getETag(), vr.getVRName(), info,
+	  length, getVM());
 
-    cout << output << "  " << tag.getTagName() << endl;
-    delete[] output;
+  cout << output << "  " << tag.getTagName() << endl;
+  delete[] output;
 }
 
 
@@ -269,8 +269,8 @@ void DcmObject::swapIfNecessary(const E_ByteOrder newByteOrder,
 				void * value, const Uint32 byteLength,
 				const size_t valWidth)
 {
-    if (oldByteOrder != newByteOrder)
-	swapBytes(value, byteLength, valWidth);
+  if (oldByteOrder != newByteOrder)
+    swapBytes(value, byteLength, valWidth);
 }
 
 
@@ -279,86 +279,86 @@ void DcmObject::swapIfNecessary(const E_ByteOrder newByteOrder,
 E_Condition DcmObject::writeTag(DcmStream & outStream, const DcmTag & tag, 
 				const E_TransferSyntax oxfer)
 {
-    DcmXfer outXfer(oxfer);
-    const E_ByteOrder outByteOrder = outXfer.getByteOrder();
-    Uint16 groupTag = tag.getGTag();		// 2 Byte Laenge; 
-    swapIfNecessary(outByteOrder, gLocalByteOrder, &groupTag, 2, 2);
-    outStream.WriteBytes(&groupTag, 2);
+  DcmXfer outXfer(oxfer);
+  const E_ByteOrder outByteOrder = outXfer.getByteOrder();
+  Uint16 groupTag = tag.getGTag();		// 2 Byte Laenge; 
+  swapIfNecessary(outByteOrder, gLocalByteOrder, &groupTag, 2, 2);
+  outStream.WriteBytes(&groupTag, 2);
 	
-    Uint16 elementTag = tag.getETag();	// 2 Byte Laenge; 
-    swapIfNecessary(outByteOrder, gLocalByteOrder, &elementTag, 2, 2);
-    outStream.WriteBytes(&elementTag, 2);
-    if (outStream.GetError() != EC_Normal)
-	return outStream.GetError();
-    else
-	return EC_Normal;
+  Uint16 elementTag = tag.getETag();	// 2 Byte Laenge; 
+  swapIfNecessary(outByteOrder, gLocalByteOrder, &elementTag, 2, 2);
+  outStream.WriteBytes(&elementTag, 2);
+  if (outStream.GetError() != EC_Normal)
+    return outStream.GetError();
+  else
+    return EC_Normal;
 }
 
 
-E_Condition DcmObject::writeTagAndLength(DcmStream & outStream,            // in
-					 const E_TransferSyntax oxfer,	// in
-					 unsigned long & writtenBytes )	// out
+E_Condition DcmObject::writeTagAndLength(DcmStream & outStream, 
+					 const E_TransferSyntax oxfer,	
+					 Uint32 & writtenBytes)	
 {
-    Bdebug((4, "DcmObject::writeTagAndLength(&outStream,oxfer=%d)", oxfer ));
+  Bdebug((4, "DcmObject::writeTagAndLength(&outStream,oxfer=%d)", oxfer ));
 
-    E_Condition l_error = outStream.GetError();
-    if (l_error != EC_Normal)
-	writtenBytes = 0;
-    else
+  E_Condition l_error = outStream.GetError();
+  if (l_error != EC_Normal)
+    writtenBytes = 0;
+  else
     {
 #ifndef NO_ANON_CLASS_COMP
-	debug(( 4, "Tag (0x%4.4x,0x%4.4x) \"%s\" [0x%8.8x] \"%s\"",
-		Tag->getGTag(), Tag->getETag(),
-		DcmVR(Tag->getVR()).getVRName(),
-		this -> getLength(), Tag->getTagName() ));
+      debug(( 4, "Tag (0x%4.4x,0x%4.4x) \"%s\" [0x%8.8x] \"%s\"",
+	      Tag->getGTag(), Tag->getETag(),
+	      DcmVR(Tag->getVR()).getVRName(),
+	      this -> getLength(), Tag->getTagName() ));
 #endif
 
-	l_error = this -> writeTag(outStream, *Tag, oxfer);
-	writtenBytes = 4;
+      l_error = this -> writeTag(outStream, *Tag, oxfer);
+      writtenBytes = 4;
 
-        DcmXfer oxferSyn(oxfer);
-	const E_ByteOrder oByteOrder = oxferSyn.getByteOrder();
-        if (oxferSyn.isExplicitVR())
+      DcmXfer oxferSyn(oxfer);
+      const E_ByteOrder oByteOrder = oxferSyn.getByteOrder();
+      if (oxferSyn.isExplicitVR())
 	{
-	    // Umwandlung in gueltige VR
-	    DcmEVR vr = Tag->getVR().getValidEVR();
-	    // Umwandlung in gueltige Strings
-	    const char *vrname = Tag->getVR().getValidVRName();
-            outStream.WriteBytes(vrname, 2);    // 2 Byte Laenge:VR als string
-	    writtenBytes += 2;
+	  // Umwandlung in gueltige VR
+	  DcmEVR vr = Tag->getVR().getValidEVR();
+	  // Umwandlung in gueltige Strings
+	  const char *vrname = Tag->getVR().getValidVRName();
+	  outStream.WriteBytes(vrname, 2);    // 2 Byte Laenge:VR als string
+	  writtenBytes += 2;
 
-	    if (vr == EVR_OB || vr == EVR_OW || vr == EVR_SQ)
+	  if (vr == EVR_OB || vr == EVR_OW || vr == EVR_SQ)
 	    {
-		Uint16 reserved = 0;
-                outStream.WriteBytes(&reserved, 2); // 2 Byte Laenge
-                Uint32 valueLength = Length;
-		this -> swapIfNecessary(oByteOrder, gLocalByteOrder, 
-					&valueLength, 4, 4);
-		outStream.WriteBytes(&valueLength, 4); // 4 Byte Laenge
-		writtenBytes += 6;
+	      Uint16 reserved = 0;
+	      outStream.WriteBytes(&reserved, 2); // 2 Byte Laenge
+	      Uint32 valueLength = Length;
+	      this -> swapIfNecessary(oByteOrder, gLocalByteOrder, 
+				      &valueLength, 4, 4);
+	      outStream.WriteBytes(&valueLength, 4); // 4 Byte Laenge
+	      writtenBytes += 6;
 	    }
-	    else
+	  else
 	    {
-		Uint16 valueLength = (Uint16)Length;
-		this -> swapIfNecessary(oByteOrder, gLocalByteOrder, 
-					&valueLength, 2, 2);
-                outStream.WriteBytes(&valueLength, 2); // 2 Byte Laenge
-		writtenBytes += 2;
+	      Uint16 valueLength = (Uint16)Length;
+	      this -> swapIfNecessary(oByteOrder, gLocalByteOrder, 
+				      &valueLength, 2, 2);
+	      outStream.WriteBytes(&valueLength, 2); // 2 Byte Laenge
+	      writtenBytes += 2;
 	    }
 
         } // if ( oxferSyn.isExplicitVR() )
-	else
+      else
 	{
-	    Uint32 valueLength = Length;
-	    this -> swapIfNecessary(oByteOrder, gLocalByteOrder,
-				    &valueLength, 4, 4);
-	    outStream.WriteBytes(&valueLength, 4); // 4 Byte Laenge
-	    writtenBytes += 4;
+	  Uint32 valueLength = Length;
+	  this -> swapIfNecessary(oByteOrder, gLocalByteOrder,
+				  &valueLength, 4, 4);
+	  outStream.WriteBytes(&valueLength, 4); // 4 Byte Laenge
+	  writtenBytes += 4;
 	}
     }
-    Edebug(());
+  Edebug(());
 
-    return l_error;
+  return l_error;
 }
 
 

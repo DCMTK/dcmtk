@@ -11,9 +11,9 @@
 **
 **
 ** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1996-01-05 13:22:58 $
+** Update Date:		$Date: 1996-01-24 09:34:55 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcpixseq.h,v $
-** CVS/RCS Revision:	$Revision: 1.3 $
+** CVS/RCS Revision:	$Revision: 1.4 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -31,18 +31,18 @@
 
 class DcmPixelSequence : public DcmSequenceOfItems 
 {
-  protected:
-	virtual E_Condition makeSubObject(DcmObject * & newObject,	// out
-									  const DcmTag & newTag,
-									  const unsigned long newLength);	// in
+protected:
+  virtual E_Condition makeSubObject(DcmObject * & newObject, // out
+				    const DcmTag & newTag,
+				    const Uint32 newLength);	// in
 
-  public:
-    DcmPixelSequence(const DcmTag &tag, const Uint32 len = 0);
-    DcmPixelSequence(const DcmPixelSequence &old);
-    virtual ~DcmPixelSequence();
+public:
+  DcmPixelSequence(const DcmTag &tag, const Uint32 len = 0);
+  DcmPixelSequence(const DcmPixelSequence &old);
+  virtual ~DcmPixelSequence();
 
-    virtual DcmEVR ident(void) const { return EVR_pixelSQ; }
-    virtual void print(int level = 0);
+  virtual DcmEVR ident(void) const { return EVR_pixelSQ; }
+  virtual void print(int level = 0);
 };
 
 #endif // DCPIXSEQ_H
@@ -50,7 +50,10 @@ class DcmPixelSequence : public DcmSequenceOfItems
 /*
 ** CVS/RCS Log:
 ** $Log: dcpixseq.h,v $
-** Revision 1.3  1996-01-05 13:22:58  andreas
+** Revision 1.4  1996-01-24 09:34:55  andreas
+** Support for 64 bit long
+**
+** Revision 1.3  1996/01/05 13:22:58  andreas
 ** - changed to support new streaming facilities
 ** - more cleanups
 ** - merged read / write methods for block and file transfer
