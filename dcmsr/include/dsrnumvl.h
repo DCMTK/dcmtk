@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2001, OFFIS
+ *  Copyright (C) 2000-2002, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DSRNumericMeasurementValue
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-09-26 13:04:09 $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2002-12-10 13:20:07 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -55,7 +55,7 @@ class DSRNumericMeasurementValue
 
   public:
 
-    /** default contructor
+    /** default constructor
      */
     DSRNumericMeasurementValue();
 
@@ -67,6 +67,17 @@ class DSRNumericMeasurementValue
      */
     DSRNumericMeasurementValue(const OFString &numericValue,
                                const DSRCodedEntryValue &measurementUnit);
+
+    /** constructor.
+     *  The two codes are only set if they passed the validity check (see setValue()).
+     ** @param  numericValue     numeric measurement value. (VR=DS, type 1)
+     *  @param  measurementUnit  code representing the measurement name (code meaning)
+     *                           and unit (code value). (type 2)
+     *  @param  valueQualifier   code representing the numeric value qualifier. (type 3)
+     */
+    DSRNumericMeasurementValue(const OFString &numericValue,
+                               const DSRCodedEntryValue &measurementUnit,
+                               const DSRCodedEntryValue &valueQualifier);
 
     /** copy constructor.
      ** @param  numericMeasurement  numeric measurement value to be copied (not checked !)
@@ -89,14 +100,14 @@ class DSRNumericMeasurementValue
     virtual void clear();
 
     /** check whether the current numeric measurement value is valid.
-     *  The value is valid if both numeric value and measurement unit are empty or do contain
-     *  itself valid values (see check...() methods).
+     *  The value is valid if isEmpty() is true or all three values (numeric value, measurement
+     *  unit and value qualifier) do contain valid values (see check...() methods).
      ** @return OFTrue if value is valid, OFFalse otherwise
      */
     virtual OFBool isValid() const;
 
     /** check whether the current numeric measurement value is empty.
-     *  Checks whether both components of the numeric measurement value are empty.
+     *  Checks whether both the numeric value and the measurement unit are empty.
      ** @return OFTrue if value is empty, OFFalse otherwise
      */
     virtual OFBool isEmpty() const;
@@ -104,7 +115,7 @@ class DSRNumericMeasurementValue
     /** print numeric measurement value.
      *  The output of a typical numeric measurement value looks like this:
      *  "3" (cm,99_OFFIS_DCMTK,"Length Unit").  If the value is empty the text "empty" is
-     *  printed instead.
+     *  printed instead.  The numeric value qualifier is never printed.
      ** @param  stream  output stream to which the numeric measurement value should be printed
      *  @param  flags   flag used to customize the output (not used)
      ** @return status, EC_Normal if successful, an error code otherwise
@@ -122,20 +133,21 @@ class DSRNumericMeasurementValue
                                  const size_t flags,
                                  OFConsole *logStream) const;
 
-    /** read measured value sequence from dataset.
-     *  The number of items within the sequence is checked.  If error/warning output are
-     *  enabled a warning message is printed if the sequence is absent or contains more than
+    /** read measured value sequence and numeric value qualifier code sequence from dataset.
+     *  The number of items within the sequences is checked.  If error/warning output are
+     *  enabled a warning message is printed if a sequence is absent or contains more than
      *  one item.
-     ** @param  dataset    DICOM dataset from which the sequence should be read
+     ** @param  dataset    DICOM dataset from which the sequences should be read
      *  @param  logStream  pointer to error/warning output stream (output disabled if NULL)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
     virtual OFCondition readSequence(DcmItem &dataset,
                                      OFConsole *logStream);
 
-    /** write measured value sequence to dataset.
-     *  If the value is empty an empty sequence (without any items) is written.
-     ** @param  dataset    DICOM dataset to which the sequence should be written
+    /** write measured value sequence and numeric value qualifier code sequence to dataset.
+     *  The measured value sequence is always written (might be empty, though).  The numeric
+     *  value qualifier code sequence is optional and, therefore, only written if non-empty.
+     ** @param  dataset    DICOM dataset to which the sequences should be written
      *  @param  logStream  pointer to error/warning output stream (output disabled if NULL)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
@@ -187,6 +199,14 @@ class DSRNumericMeasurementValue
         return MeasurementUnit;
     }
 
+    /** get numeric value qualifier
+     ** @return reference to current numeric value qualifier code (might be invalid or empty)
+     */
+    inline const DSRCodedEntryValue &getNumericValueQualifier() const
+    {
+        return ValueQualifier;
+    }
+
     /** get copy of measurement unit
      ** @param  measurementUnit  reference to variable in which the code should be stored
      ** @return status, EC_Normal if successful, an error code otherwise
@@ -211,6 +231,19 @@ class DSRNumericMeasurementValue
     OFCondition setValue(const OFString &numericValue,
                          const DSRCodedEntryValue &measurementUnit);
 
+    /** set numeric value, measurement unit and numeric value qualifier.
+     *  Before setting the values they are checked (see check...()).  If one of the three
+     *  values is invalid the current numeric measurement value is not replaced and remains
+     *  unchanged.
+     ** @param  numericValue     numeric value to be set
+     *  @param  measurementUnit  measurement unit to be set
+     *  @param  valueQualifier   numeric value qualifier to be set
+     ** @return status, EC_Normal if successful, an error code otherwise
+     */
+    OFCondition setValue(const OFString &numericValue,
+                         const DSRCodedEntryValue &measurementUnit,
+                         const DSRCodedEntryValue &valueQualifier);
+
     /** set numeric value.
      *  Before setting the value it is checked (see checkNumericValue()).  If the value is
      *  invalid the current value is not replaced and remains unchanged.
@@ -226,6 +259,16 @@ class DSRNumericMeasurementValue
      ** @return status, EC_Normal if successful, an error code otherwise
      */
     OFCondition setMeasurementUnit(const DSRCodedEntryValue &measurementUnit);
+
+    /** set numeric value qualifier.
+     *  This optional code specifies the qualification of the Numeric Value in the Measured
+     *  Value Sequence, or the reason for the absence of the Measured Value Sequence Item.
+     *  Before setting the code it is checked (see checkNumericValueQualifier()).  If the
+     *  code is invalid the current code is not replaced and remains unchanged.
+     ** @param  valueQualifier  numeric value qualifier to be set
+     ** @return status, EC_Normal if successful, an error code otherwise
+     */
+    OFCondition setNumericValueQualifier(const DSRCodedEntryValue &valueQualifier);
 
 
   protected:
@@ -263,11 +306,20 @@ class DSRNumericMeasurementValue
     virtual OFBool checkNumericValue(const OFString &numericValue) const;
 
     /** check the specified measurement unit for validity.
-     *  The checkCode() method in class DSRCodedEntryValue is used for this purpose.
+     *  The isValid() method in class DSRCodedEntryValue is used for this purpose.
      ** @param  measurementUnit  measurement unit to be checked
      ** @return OFTrue if measurement unit is valid, OFFalse otherwise
      */
     virtual OFBool checkMeasurementUnit(const DSRCodedEntryValue &measurementUnit) const;
+
+    /** check the specified numeric value qualifier for validity.
+     *  The isEmpty() and isValid() methods in class DSRCodedEntryValue are used for this
+     *  purpose.  The conformance with the Context Group 42 (as defined in the DICOM
+     *  standard) is not yet checked.
+     ** @param  valueQualifier  numeric value qualifier to be checked
+     ** @return OFTrue if value qualifier is valid, OFFalse otherwise
+     */
+    virtual OFBool checkNumericValueQualifier(const DSRCodedEntryValue &valueQualifier) const;
 
 
   private:
@@ -276,6 +328,8 @@ class DSRNumericMeasurementValue
     OFString           NumericValue;
     /// measurement unit (type 2)
     DSRCodedEntryValue MeasurementUnit;
+    /// numeric value qualifier (type 3)
+    DSRCodedEntryValue ValueQualifier;
 };
 
 
@@ -285,7 +339,11 @@ class DSRNumericMeasurementValue
 /*
  *  CVS/RCS Log:
  *  $Log: dsrnumvl.h,v $
- *  Revision 1.6  2001-09-26 13:04:09  meichel
+ *  Revision 1.7  2002-12-10 13:20:07  joergr
+ *  Added support for the Numeric Value Qualifier Code Sequence (introduced with
+ *  CP 260).
+ *
+ *  Revision 1.6  2001/09/26 13:04:09  meichel
  *  Adapted dcmsr to class OFCondition
  *
  *  Revision 1.5  2001/06/01 15:51:02  meichel

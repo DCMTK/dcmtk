@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2001, OFFIS
+ *  Copyright (C) 2000-2002, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,8 +23,8 @@
  *    classes: DSRNumericMeasurementValue
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-11-09 16:17:13 $
- *  CVS/RCS Revision: $Revision: 1.13 $
+ *  Update Date:      $Date: 2002-12-10 13:20:37 $
+ *  CVS/RCS Revision: $Revision: 1.14 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -40,7 +40,8 @@
 
 DSRNumericMeasurementValue::DSRNumericMeasurementValue()
   : NumericValue(),
-    MeasurementUnit()
+    MeasurementUnit(),
+    ValueQualifier()
 {
 }
 
@@ -48,21 +49,35 @@ DSRNumericMeasurementValue::DSRNumericMeasurementValue()
 DSRNumericMeasurementValue::DSRNumericMeasurementValue(const OFString &numericValue,
                                                        const DSRCodedEntryValue &measurementUnit)
   : NumericValue(),
-    MeasurementUnit()
+    MeasurementUnit(),
+    ValueQualifier()
 {
     /* use the set methods for checking purposes */
     setValue(numericValue, measurementUnit);
 }
 
 
+DSRNumericMeasurementValue::DSRNumericMeasurementValue(const OFString &numericValue,
+                                                       const DSRCodedEntryValue &measurementUnit,
+                                                       const DSRCodedEntryValue &valueQualifier)
+  : NumericValue(),
+    MeasurementUnit(),
+    ValueQualifier()
+{
+    /* use the set methods for checking purposes */
+    setValue(numericValue, measurementUnit, valueQualifier);
+}
+
+
 DSRNumericMeasurementValue::DSRNumericMeasurementValue(const DSRNumericMeasurementValue &numericMeasurement)
   : NumericValue(numericMeasurement.NumericValue),
-    MeasurementUnit(numericMeasurement.MeasurementUnit)
+    MeasurementUnit(numericMeasurement.MeasurementUnit),
+    ValueQualifier(numericMeasurement.ValueQualifier)
 {
     /* do not check since this would unexpected to the user */
 }
 
-    
+
 DSRNumericMeasurementValue::~DSRNumericMeasurementValue()
 {
 }
@@ -73,6 +88,7 @@ DSRNumericMeasurementValue &DSRNumericMeasurementValue::operator=(const DSRNumer
     /* do not check since this would unexpected to the user */
     NumericValue = numericMeasurement.NumericValue;
     MeasurementUnit = numericMeasurement.MeasurementUnit;
+    ValueQualifier = numericMeasurement.ValueQualifier;
     return *this;
 }
 
@@ -81,12 +97,15 @@ void DSRNumericMeasurementValue::clear()
 {
     NumericValue.clear();
     MeasurementUnit.clear();
+    ValueQualifier.clear();
 }
 
 
 OFBool DSRNumericMeasurementValue::isValid() const
 {
-    return isEmpty() || (checkNumericValue(NumericValue) && checkMeasurementUnit(MeasurementUnit));
+    return isEmpty() || (checkNumericValue(NumericValue) &&
+                         checkMeasurementUnit(MeasurementUnit) &&
+                         checkNumericValueQualifier(ValueQualifier));
 }
 
 
@@ -117,12 +136,23 @@ OFCondition DSRNumericMeasurementValue::writeXML(ostream &stream,
                                                  OFConsole *logStream) const
 {
     DSRTypes::writeStringValueToXML(stream, NumericValue, "value", flags & DSRTypes::XF_writeEmptyTags);
+    /* write measurement unit */
     if (flags & DSRTypes::XF_codeComponentsAsAttribute)
         stream << "<unit";     // bracket ">" is closed in the next writeXML() routine
     else
         stream << "<unit>" << endl;
     MeasurementUnit.writeXML(stream, flags, logStream);
     stream << "</unit>" << endl;
+    if (!ValueQualifier.isEmpty())
+    {
+        /* write value qualifier */
+        if (flags & DSRTypes::XF_codeComponentsAsAttribute)
+            stream << "<qualifier";     // bracket ">" is closed in the next writeXML() routine
+        else
+            stream << "<qualifier>" << endl;
+        ValueQualifier.writeXML(stream, flags, logStream);
+        stream << "</qualifier>" << endl;
+    }
     return EC_Normal;
 }
 
@@ -173,6 +203,11 @@ OFCondition DSRNumericMeasurementValue::readSequence(DcmItem &dataset,
                 result = SR_EC_InvalidDocumentTree;
         }
     }
+    if (result.good())
+    {
+        /* read NumericValueQualifierCodeSequence (optional) */
+        ValueQualifier.readSequence(dataset, DCM_NumericValueQualifierCodeSequence, "3" /* type */, logStream);
+    }
     return result;
 }
 
@@ -188,7 +223,7 @@ OFCondition DSRNumericMeasurementValue::writeSequence(DcmItem &dataset,
         /* check for empty value */
         if (isEmpty())
             result = EC_Normal;
-        else 
+        else
         {
             DcmItem *ditem = new DcmItem();
             if (ditem != NULL)
@@ -207,6 +242,12 @@ OFCondition DSRNumericMeasurementValue::writeSequence(DcmItem &dataset,
             result = dataset.insert(dseq, OFTrue /* replaceOld */);
         if (result.bad())
             delete dseq;
+    }
+    if (result.good())
+    {
+        /* write NumericValueQualifierCodeSequence (optional) */
+        if (!ValueQualifier.isEmpty())
+            ValueQualifier.writeSequence(dataset, DCM_NumericValueQualifierCodeSequence, logStream);
     }
     return result;
 }
@@ -234,6 +275,13 @@ OFCondition DSRNumericMeasurementValue::renderHTML(ostream &docStream,
         if (!fullCode)
             docStream << "</u>";
     }
+    if (!ValueQualifier.isEmpty())
+    {
+        /* render optional numeric value qualifier */
+        docStream << " [";
+        ValueQualifier.renderHTML(docStream, flags, logStream, flags & DSRTypes::HF_renderInlineCodes /*fullCode*/);
+        docStream << "]";
+    }
     return EC_Normal;
 }
 
@@ -254,7 +302,7 @@ OFCondition DSRNumericMeasurementValue::getMeasurementUnit(DSRCodedEntryValue &m
 
 OFCondition DSRNumericMeasurementValue::setValue(const DSRNumericMeasurementValue &numericMeasurement)
 {
-    return setValue(numericMeasurement.NumericValue, numericMeasurement.MeasurementUnit);
+    return setValue(numericMeasurement.NumericValue, numericMeasurement.MeasurementUnit, numericMeasurement.ValueQualifier);
 }
 
 
@@ -267,6 +315,24 @@ OFCondition DSRNumericMeasurementValue::setValue(const OFString &numericValue,
     {
         NumericValue = numericValue;
         MeasurementUnit = measurementUnit;
+        result = EC_Normal;
+    }
+    return result;
+}
+
+
+OFCondition DSRNumericMeasurementValue::setValue(const OFString &numericValue,
+                                                 const DSRCodedEntryValue &measurementUnit,
+                                                 const DSRCodedEntryValue &valueQualifier)
+{
+    OFCondition result = EC_IllegalParameter;
+    /* check all three values before setting them */
+    if (checkNumericValue(numericValue) && checkMeasurementUnit(measurementUnit) &&
+        checkNumericValueQualifier(valueQualifier))
+    {
+        NumericValue = numericValue;
+        MeasurementUnit = measurementUnit;
+        ValueQualifier = valueQualifier;
         result = EC_Normal;
     }
     return result;
@@ -293,7 +359,19 @@ OFCondition DSRNumericMeasurementValue::setMeasurementUnit(const DSRCodedEntryVa
         MeasurementUnit = measurementUnit;
         result = EC_Normal;
     }
-    return result;    
+    return result;
+}
+
+
+OFCondition DSRNumericMeasurementValue::setNumericValueQualifier(const DSRCodedEntryValue &valueQualifier)
+{
+    OFCondition result = EC_IllegalParameter;
+    if (checkNumericValueQualifier(valueQualifier))
+    {
+        ValueQualifier = valueQualifier;
+        result = EC_Normal;
+    }
+    return result;
 }
 
 
@@ -309,10 +387,20 @@ OFBool DSRNumericMeasurementValue::checkMeasurementUnit(const DSRCodedEntryValue
 }
 
 
+OFBool DSRNumericMeasurementValue::checkNumericValueQualifier(const DSRCodedEntryValue &valueQualifier) const
+{
+    return valueQualifier.isEmpty() || valueQualifier.isValid();
+}
+
+
 /*
  *  CVS/RCS Log:
  *  $Log: dsrnumvl.cc,v $
- *  Revision 1.13  2001-11-09 16:17:13  joergr
+ *  Revision 1.14  2002-12-10 13:20:37  joergr
+ *  Added support for the Numeric Value Qualifier Code Sequence (introduced with
+ *  CP 260).
+ *
+ *  Revision 1.13  2001/11/09 16:17:13  joergr
  *  Added new command line option allowing to encode codes as XML attributes
  *  (instead of tags).
  *
