@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2002, OFFIS
+ *  Copyright (C) 2002-2003, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -24,8 +24,8 @@
  *             - InstanceStruct, SeriesStruct, StudyStruct
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-08-30 14:16:59 $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  Update Date:      $Date: 2003-08-07 12:50:12 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -47,6 +47,7 @@
 #include "dctagkey.h"
 
 #include "dsrtypes.h"
+#include "dsrxmlc.h"
 
 
 /*---------------------*
@@ -91,6 +92,11 @@ class DSRSOPInstanceReferenceList
          */
         ~SeriesStruct();
 
+        /** get number of instance stored in the list of instances
+         ** @return number of instances
+         */
+        size_t getNumberOfInstances() const;
+
         /** read instance level attributes from dataset
          ** @param  dataset    DICOM dataset from which the list should be read
          *  @param  logStream  pointer to error/warning output stream (output disabled if NULL)
@@ -107,6 +113,14 @@ class DSRSOPInstanceReferenceList
         OFCondition write(DcmItem &dataset,
                           OFConsole *logStream) const;
 
+        /** read series and instance level attributes from XML document
+         ** @param  doc     document containing the XML file content
+         *  @param  cursor  cursor pointing to the starting node
+         ** @return status, EC_Normal if successful, an error code otherwise
+         */
+        OFCondition readXML(const DSRXMLDocument &doc,
+                            DSRXMLCursor cursor);
+
         /** write series and instance level attributes in XML format
          ** @param  stream  output stream to which the XML document is written
          *  @param  flags   optional flag used to customize the output (see DSRTypes::XF_xxx)
@@ -120,6 +134,18 @@ class DSRSOPInstanceReferenceList
          ** @return pointer to the instance structure if successful, NULL otherwise
          */
         InstanceStruct *gotoInstance(const OFString &instanceUID);
+
+        /** select the first item in the list.
+         *  That means the first instance in the current series.
+         ** @return status, EC_Normal if successful, an error code otherwise
+         */
+        OFCondition gotoFirstItem();
+
+        /** select the next item in the list.
+         *  That means the next instance in the current series (if available).
+         ** @return status, EC_Normal if successful, an error code otherwise
+         */
+        OFCondition gotoNextItem();
 
         /** add new entry to the list of instances (if not already existent).
          *  Finally, the specified item is selected as the current one.
@@ -164,6 +190,11 @@ class DSRSOPInstanceReferenceList
          */
         ~StudyStruct();
 
+        /** get number of instance stored in the list of series
+         ** @return number of instances
+         */
+        size_t getNumberOfInstances() const;
+
         /** read series and instance level from dataset
          ** @param  dataset    DICOM dataset from which the list should be read
          *  @param  logStream  pointer to error/warning output stream (output disabled if NULL)
@@ -179,6 +210,14 @@ class DSRSOPInstanceReferenceList
          */
         OFCondition write(DcmItem &dataset,
                           OFConsole *logStream) const;
+
+        /** read study, series and instance level attributes from XML document
+         ** @param  doc     document containing the XML file content
+         *  @param  cursor  cursor pointing to the starting node
+         ** @return status, EC_Normal if successful, an error code otherwise
+         */
+        OFCondition readXML(const DSRXMLDocument &doc,
+                            DSRXMLCursor cursor);
 
         /** write study, series and instance level attributes in XML format
          ** @param  stream  output stream to which the XML document is written
@@ -200,6 +239,19 @@ class DSRSOPInstanceReferenceList
          */
         InstanceStruct *gotoInstance(const OFString &instanceUID);
 
+        /** select the first item in the list.
+         *  That means the first instance in the first series of the current study.
+         ** @return status, EC_Normal if successful, an error code otherwise
+         */
+        OFCondition gotoFirstItem();
+
+        /** select the next item in the list.
+         *  That means the next instance in the current series, or the first instance
+         *  in the next series (if available).
+         ** @return status, EC_Normal if successful, an error code otherwise
+         */
+        OFCondition gotoNextItem();
+
         /** add new entry to the list of series and instances (if not already existent).
          *  Finally, the specified items are selected as the current one.
          ** @param  seriesUID    series instance UID of the entry to be added
@@ -217,6 +269,12 @@ class DSRSOPInstanceReferenceList
          */
         OFCondition removeItem();
 
+        /** remove empty/incomplete items from the list.
+         *  (e.g. series with no instances)
+         *  Please note that this function modifies the value of 'Iterator'.
+         */
+        void removeIncompleteItems();
+
         /// study instance UID (VR=UI, VM=1)
         const OFString StudyUID;
 
@@ -228,7 +286,7 @@ class DSRSOPInstanceReferenceList
 
 
     /** constructor
-     ** @param  tagKey  DICOM tag specifying the attribute (sequence) of the reference list
+     ** @param  sequence  DICOM tag specifying the attribute (sequence) of the reference list
      */
     DSRSOPInstanceReferenceList(const DcmTagKey &sequence);
 
@@ -241,11 +299,20 @@ class DSRSOPInstanceReferenceList
     void clear();
 
     /** check whether list of references is empty
-     *  @return OFTrue if list is empty, OFFalse otherwise
+     ** @return OFTrue if list is empty, OFFalse otherwise
      */
     OFBool empty() const;
 
-    /** read list of referenced SOP instances
+    /** get number of instance stored in the list of references
+     ** @return number of instances
+     */
+    size_t getNumberOfInstances() const;
+
+    /** read list of referenced SOP instances.
+     *  The hierarchical structure is automatically reorganized in a way that each study,
+     *  each series (within a study) and each instance (within a series) only exist once,
+     *  i.e. the structure might look different when written back to a dataset.  However,
+     *  the content is identical and this way of storing information saves storage space.
      ** @param  dataset    DICOM dataset from which the data should be read
      *  @param  logStream  pointer to error/warning output stream (output disabled if NULL)
      ** @return status, EC_Normal if successful, an error code otherwise
@@ -253,13 +320,28 @@ class DSRSOPInstanceReferenceList
     OFCondition read(DcmItem &dataset,
                      OFConsole *logStream);
 
-    /** write list of referenced SOP instances
+    /** write list of referenced SOP instances.
+     *  Does nothing if list is empty.
      ** @param  dataset    DICOM dataset to which the data should be written
      *  @param  logStream  pointer to error/warning output stream (output disabled if NULL)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
     OFCondition write(DcmItem &dataset,
                       OFConsole *logStream) const;
+
+    /** read list of references from XML document.
+     *  The hierarchical structure is automatically reorganized in a way that each study,
+     *  each series (within a study) and each instance (within a series) only exist once,
+     *  i.e. the structure might look different when written back to a dataset.  However,
+     *  the content is identical and this way of storing information saves storage space.
+     ** @param  doc     document containing the XML file content
+     *  @param  cursor  cursor pointing to the starting node
+     *  @param  flags   optional flag used to customize the reading process (see DSRTypes::XF_xxx)
+     ** @return status, EC_Normal if successful, an error code otherwise
+     */
+    OFCondition readXML(const DSRXMLDocument &doc,
+                        DSRXMLCursor cursor,
+                        const size_t flags);
 
     /** write current list of references in XML format
      ** @param  stream  output stream to which the XML data is written
@@ -277,7 +359,7 @@ class DSRSOPInstanceReferenceList
      *  @param  seriesUID    series instance UID of the entry to be added
      *  @param  sopClassUID  SOP class UID of the entry to be added
      *  @param  instanceUID  SOP instance UID of the entry to be added
-     *  @return status, EC_Normal if successful, an error code otherwise
+     ** @return status, EC_Normal if successful, an error code otherwise
      */
     OFCondition addItem(const OFString &studyUID,
                         const OFString &seriesUID,
@@ -313,7 +395,7 @@ class DSRSOPInstanceReferenceList
     /** select the specified item as the current one
      ** @param  sopClassUID  SOP class UID of the item to be selected
      *  @param  instanceUID  SOP instance UID of the item to be selected
-     *  @return status, EC_Normal if successful, an error code otherwise
+     ** @return status, EC_Normal if successful, an error code otherwise
      */
     OFCondition gotoItem(const OFString &sopClassUID,
                          const OFString &instanceUID);
@@ -322,54 +404,72 @@ class DSRSOPInstanceReferenceList
      ** @param  studyUID     study instance UID of the item to be selected
      *  @param  seriesUID    series instance UID of the item to be selected
      *  @param  instanceUID  SOP instance UID of the item to be selected
-     *  @return status, EC_Normal if successful, an error code otherwise
+     ** @return status, EC_Normal if successful, an error code otherwise
      */
     OFCondition gotoItem(const OFString &studyUID,
                          const OFString &seriesUID,
                          const OFString &instanceUID);
 
+    /** select the first item in the list.
+     *  That means the first instance in the first series of the first study
+     *  is selected (if available).
+     ** @return status, EC_Normal if successful, an error code otherwise.
+     *    (e.g. if the list is empty)
+     */
+    OFCondition gotoFirstItem();
+
+    /** select the next item in the list.
+     *  That means the next instance in the current series, or the first instance
+     *  in the next series, or the first instance in the first series of the next
+     *  study is selected (if available).  The combination of this function and
+     *  gotoFirstItem() allows to iterate over all referenced SOP instances.
+     ** @return status, EC_Normal if successful, an error code otherwise.
+     *    (e.g. if the end of the list has been reached)
+     */
+    OFCondition gotoNextItem();
+
     /** get the study instance UID of the currently selected entry
-     ** @param  string  reference to string variable in which the result is stored
+     ** @param  stringValue  reference to string variable in which the result is stored
      ** @return reference to the resulting string (might be empty)
      */
-    const OFString &getStudyInstanceUID(OFString &string) const;
+    const OFString &getStudyInstanceUID(OFString &stringValue) const;
 
     /** get the series instance UID of the currently selected entry
-     ** @param  string  reference to string variable in which the result is stored
+     ** @param  stringValue  reference to string variable in which the result is stored
      ** @return reference to the resulting string (might be empty)
      */
-    const OFString &getSeriesInstanceUID(OFString &string) const;
+    const OFString &getSeriesInstanceUID(OFString &stringValue) const;
 
     /** get the SOP instance UID of the currently selected entry
-     ** @param  string  reference to string variable in which the result is stored
+     ** @param  stringValue  reference to string variable in which the result is stored
      ** @return reference to the resulting string (might be empty)
      */
-    const OFString &getSOPInstanceUID(OFString &string) const;
+    const OFString &getSOPInstanceUID(OFString &stringValue) const;
 
     /** get the SOP class UID of the currently selected entry
-     ** @param  string  reference to string variable in which the result is stored
+     ** @param  stringValue  reference to string variable in which the result is stored
      ** @return reference to the resulting string (might be empty)
      */
-    const OFString &getSOPClassUID(OFString &string) const;
+    const OFString &getSOPClassUID(OFString &stringValue) const;
 
     /** get the retrieve application entity title of the currently selected entry (optional).
      *  The resulting string may contain multiple values separated by a backslash ("\").
-     ** @param  string  reference to string variable in which the result is stored
+     ** @param  stringValue  reference to string variable in which the result is stored
      ** @return reference to the resulting string (might be empty)
      */
-    const OFString &getRetrieveAETitle(OFString &string) const;
+    const OFString &getRetrieveAETitle(OFString &stringValue) const;
 
     /** get the storage media file set ID of the currently selected entry (optional)
-     ** @param  string  reference to string variable in which the result is stored
+     ** @param  stringValue  reference to string variable in which the result is stored
      ** @return reference to the resulting string (might be empty)
      */
-    const OFString &getStorageMediaFileSetID(OFString &string) const;
+    const OFString &getStorageMediaFileSetID(OFString &stringValue) const;
 
     /** get the storage media file set UID of the currently selected entry (optional)
-     ** @param  string  reference to string variable in which the result is stored
+     ** @param  stringValue  reference to string variable in which the result is stored
      ** @return reference to the resulting string (might be empty)
      */
-    const OFString &getStorageMediaFileSetUID(OFString &string) const;
+    const OFString &getStorageMediaFileSetUID(OFString &stringValue) const;
 
     /** set the retrieve application entity title of the currently selected entry.
      *  Multiple values are to be separated by a backslash ("\").
@@ -414,6 +514,12 @@ class DSRSOPInstanceReferenceList
      */
     InstanceStruct *getCurrentInstance() const;
 
+    /** remove empty/incomplete items from the list.
+     *  (e.g. series with no instances or studies with no series)
+     *  Please note that this function modifies the value of 'Iterator'.
+     */
+    void removeIncompleteItems();
+
 
   private:
 
@@ -440,7 +546,14 @@ class DSRSOPInstanceReferenceList
 /*
  *  CVS/RCS Log:
  *  $Log: dsrsoprf.h,v $
- *  Revision 1.4  2002-08-30 14:16:59  joergr
+ *  Revision 1.5  2003-08-07 12:50:12  joergr
+ *  Added readXML functionality.
+ *  Renamed parameters/variables "string" to avoid name clash with STL class.
+ *  Enhanced class DSRSOPInstanceReferenceList: empty/incomplete items (e.g.
+ *  series with no instances or studies with no series) are automatically
+ *  removed from the list.
+ *
+ *  Revision 1.4  2002/08/30 14:16:59  joergr
  *  Removed "friend" statements from class declaration and moved sub-classes to
  *  the "public" section (required for Sun CC 6).
  *
