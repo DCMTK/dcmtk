@@ -9,10 +9,10 @@
 ** Purpose:
 ** Implementation of class DcmFloatingPointSingle
 **
-** Last Update:		$Author: hewett $
-** Update Date:		$Date: 1996-09-27 08:20:40 $
+** Last Update:		$Author: andreas $
+** Update Date:		$Date: 1997-04-18 08:10:52 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcvrfl.cc,v $
-** CVS/RCS Revision:	$Revision: 1.9 $
+** CVS/RCS Revision:	$Revision: 1.10 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -88,7 +88,8 @@ void DcmFloatingPointSingle::print(ostream & out, const BOOL showFullData,
 {
     if (this -> valueLoaded())
     {
-	Float32 * floatVals =  this -> get();
+	Float32 * floatVals;
+	errorFlag =  this -> getFloat32Array(floatVals);
 
 	if (!floatVals)
 	    printInfoLine(out, showFullData, level, "(no value available)" );
@@ -134,8 +135,9 @@ unsigned long DcmFloatingPointSingle::getVM()
 // ********************************
 
 
-E_Condition DcmFloatingPointSingle::put(const Float32 * floatVal,
-					const unsigned long numFloats)
+E_Condition DcmFloatingPointSingle::putFloat32Array(
+    const Float32 * floatVal,
+    const unsigned long numFloats)
 {
     errorFlag = EC_Normal;
     if (numFloats)
@@ -155,28 +157,17 @@ E_Condition DcmFloatingPointSingle::put(const Float32 * floatVal,
 
 // ********************************
 
-
-E_Condition DcmFloatingPointSingle::put(const Float32 floatVal)
+E_Condition DcmFloatingPointSingle::putFloat32(const Float32 floatVal,
+					       const unsigned long position)
 {
-    Float32 val = floatVal;
-    errorFlag = this -> putValue(&val, sizeof(Float32));
-    return errorFlag;
-}
-
-
-// ********************************
-
-
-E_Condition DcmFloatingPointSingle::put(const Float32 floatVal,
-					const unsigned long position)
-{
-    Bdebug((2, "DcmFloatingPointSingle::put(floatval=%ld,position=%ld)", 
-	    floatVal, position));
+Bdebug((2, "DcmFloatingPointSingle::putFloat32(floatval=%ld,position=%ld)", 
+	floatVal, position));
 
     Float32 val = floatVal;
 
     errorFlag = this -> changeValue(&val, sizeof(Float32)*position,
 				    sizeof(Float32));
+Edebug(());
     return errorFlag;
 }
 
@@ -184,7 +175,7 @@ E_Condition DcmFloatingPointSingle::put(const Float32 floatVal,
 // ********************************
 
 
-E_Condition DcmFloatingPointSingle::put(const char * val)
+E_Condition DcmFloatingPointSingle::putString(const char * val)
 {
     errorFlag = EC_Normal;
     if (val && val[0] != 0)
@@ -205,7 +196,7 @@ E_Condition DcmFloatingPointSingle::put(const char * val)
 	    }
 	
 	    if (errorFlag == EC_Normal)
-		errorFlag = this -> put(field, vm);
+		errorFlag = this -> putFloat32Array(field, vm);
 	    delete[] field;
 	}
 	else
@@ -221,7 +212,7 @@ E_Condition DcmFloatingPointSingle::put(const char * val)
 // ********************************
 
 
-E_Condition DcmFloatingPointSingle::get(Float32 * & singleVals)
+E_Condition DcmFloatingPointSingle::getFloat32Array(Float32 * & singleVals)
 {
 	singleVals = (Float32 *)this -> getValue();
 	return errorFlag;
@@ -231,11 +222,11 @@ E_Condition DcmFloatingPointSingle::get(Float32 * & singleVals)
 // ********************************
 
 
-E_Condition DcmFloatingPointSingle::get(Float32 & singleVal, 
-					const unsigned long pos)
+E_Condition DcmFloatingPointSingle::getFloat32(Float32 & singleVal, 
+					       const unsigned long pos)
 {
     Float32 * floatVals = NULL;
-    errorFlag = this -> get(floatVals);
+    errorFlag = this -> getFloat32Array(floatVals);
 
     if (floatVals && errorFlag == EC_Normal &&
 	pos < this -> getVM())
@@ -250,32 +241,6 @@ E_Condition DcmFloatingPointSingle::get(Float32 & singleVal,
 
 
 // ********************************
-
-
-Float32 * DcmFloatingPointSingle::get(void)
-{
-	Float32 * floatVal = (Float32 *)this -> getValue();
-
-	if (errorFlag == EC_Normal)
-		return floatVal;
-	else
-		return NULL;
-}
-
-
-// ********************************
-
-
-Float32 DcmFloatingPointSingle::get(const unsigned long position)
-{
-    Float32 floatVal = (Float32)0.0;
-    errorFlag = this -> get(floatVal, position);
-    return floatVal;
-}
-
-
-// ********************************
-
 
 E_Condition DcmFloatingPointSingle::verify(const BOOL autocorrect)
 {
@@ -296,7 +261,21 @@ E_Condition DcmFloatingPointSingle::verify(const BOOL autocorrect)
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrfl.cc,v $
-** Revision 1.9  1996-09-27 08:20:40  hewett
+** Revision 1.10  1997-04-18 08:10:52  andreas
+** - Corrected debugging code
+** - The put/get-methods for all VRs did not conform to the C++-Standard
+**   draft. Some Compilers (e.g. SUN-C++ Compiler, Metroworks
+**   CodeWarrier, etc.) create many warnings concerning the hiding of
+**   overloaded get methods in all derived classes of DcmElement.
+**   So the interface of all value representation classes in the
+**   library are changed rapidly, e.g.
+**   E_Condition get(Uint16 & value, const unsigned long pos);
+**   becomes
+**   E_Condition getUint16(Uint16 & value, const unsigned long pos);
+**   All (retired) "returntype get(...)" methods are deleted.
+**   For more information see dcmdata/include/dcelem.h
+**
+** Revision 1.9  1996/09/27 08:20:40  hewett
 ** Added explicit cast: (Float32)0.0
 **
 ** Revision 1.8  1996/08/05 08:46:20  andreas

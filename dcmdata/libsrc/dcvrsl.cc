@@ -10,9 +10,9 @@
 ** Implementation of class DcmSignedLong
 **
 ** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1996-08-05 08:46:21 $
+** Update Date:		$Date: 1997-04-18 08:10:52 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcvrsl.cc,v $
-** CVS/RCS Revision:	$Revision: 1.8 $
+** CVS/RCS Revision:	$Revision: 1.9 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -82,7 +82,8 @@ void DcmSignedLong::print(ostream & out, const BOOL showFullData,
 {
     if (this -> valueLoaded())
     {
-	Sint32 * sintVals = this -> get();
+	Sint32 * sintVals;
+	errorFlag = this -> getSint32Array(sintVals);
 
 	if (!sintVals)
 	    printInfoLine(out, showFullData, level, "(no value available)" );
@@ -132,8 +133,8 @@ unsigned long DcmSignedLong::getVM()
 // ********************************
 
 
-E_Condition DcmSignedLong::put(const Sint32 * sintVal,
-			       const unsigned long numSints)
+E_Condition DcmSignedLong::putSint32Array(const Sint32 * sintVal,
+					  const unsigned long numSints)
 {
     errorFlag = EC_Normal;
     if (numSints)
@@ -153,28 +154,16 @@ E_Condition DcmSignedLong::put(const Sint32 * sintVal,
 // ********************************
 
 
-E_Condition DcmSignedLong::put(const Sint32 sintVal)
+E_Condition DcmSignedLong::putSint32(const Sint32 sintVal,
+				     const unsigned long position)
 {
-    Sint32 val = sintVal;
-    errorFlag = this -> putValue(&val, sizeof(Sint32));
-    return errorFlag;
-
-    errorFlag = EC_Normal;
-}
-
-
-// ********************************
-
-
-E_Condition DcmSignedLong::put(const Sint32 sintVal,
-			       const unsigned long position)
-{
-    Bdebug((2, "DcmSignedLong::put(slong=%ld,num=%ld)", sintVal, position));
+ Bdebug((2, "DcmSignedLong::putSint32(slong=%ld,num=%ld)", sintVal, position));
 
     Sint32 val = sintVal;
 
     errorFlag = this -> changeValue(&val, sizeof(Sint32)*position,
 				    sizeof(Sint32));
+Edebug(());
     return errorFlag;
 }
 
@@ -182,7 +171,7 @@ E_Condition DcmSignedLong::put(const Sint32 sintVal,
 // ********************************
 
 
-E_Condition DcmSignedLong::put(const char * val)
+E_Condition DcmSignedLong::putString(const char * val)
 {
     errorFlag = EC_Normal;
     if (val && val[0] != 0)
@@ -209,7 +198,7 @@ E_Condition DcmSignedLong::put(const char * val)
 	    }
 	
 	    if (errorFlag == EC_Normal)
-		errorFlag = this -> put(field, vm);
+		errorFlag = this -> putSint32Array(field, vm);
 	    delete[] field;
 	}
 	else 
@@ -224,7 +213,7 @@ E_Condition DcmSignedLong::put(const char * val)
 // ********************************
 
 
-E_Condition DcmSignedLong::get(Sint32 * & sintVals)
+E_Condition DcmSignedLong::getSint32Array(Sint32 * & sintVals)
 {
 	sintVals = (Sint32 *)this -> getValue();
 	return errorFlag;
@@ -233,10 +222,11 @@ E_Condition DcmSignedLong::get(Sint32 * & sintVals)
 // ********************************
 
 
-E_Condition DcmSignedLong::get(Sint32 & sintVal, const unsigned long pos)
+E_Condition DcmSignedLong::getSint32(Sint32 & sintVal, 
+				     const unsigned long pos)
 {
     Sint32 * sintVals = NULL;
-    errorFlag = this -> get(sintVals);
+    errorFlag = this -> getSint32Array(sintVals);
 
     if (sintVals && errorFlag == EC_Normal &&
 	pos < this -> getVM())
@@ -252,7 +242,7 @@ E_Condition DcmSignedLong::get(Sint32 & sintVal, const unsigned long pos)
 
 // ********************************
 
-
+#ifdef OLD_GET
 Sint32 * DcmSignedLong::get(void)
 {
 	Sint32 * sintVal = (Sint32 *)this -> getValue();
@@ -273,7 +263,7 @@ Sint32 DcmSignedLong::get(const unsigned long position)
 	errorFlag = this -> get(sintVal, position);
 	return sintVal;
 }
-
+#endif
 
 // ********************************
 
@@ -299,7 +289,21 @@ E_Condition DcmSignedLong::verify(const BOOL autocorrect )
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrsl.cc,v $
-** Revision 1.8  1996-08-05 08:46:21  andreas
+** Revision 1.9  1997-04-18 08:10:52  andreas
+** - Corrected debugging code
+** - The put/get-methods for all VRs did not conform to the C++-Standard
+**   draft. Some Compilers (e.g. SUN-C++ Compiler, Metroworks
+**   CodeWarrier, etc.) create many warnings concerning the hiding of
+**   overloaded get methods in all derived classes of DcmElement.
+**   So the interface of all value representation classes in the
+**   library are changed rapidly, e.g.
+**   E_Condition get(Uint16 & value, const unsigned long pos);
+**   becomes
+**   E_Condition getUint16(Uint16 & value, const unsigned long pos);
+**   All (retired) "returntype get(...)" methods are deleted.
+**   For more information see dcmdata/include/dcelem.h
+**
+** Revision 1.8  1996/08/05 08:46:21  andreas
 ** new print routine with additional parameters:
 **         - print into files
 **         - fix output length for elements

@@ -10,10 +10,10 @@
 ** Implementation of the class DcmItem
 **
 **
-** Last Update:		$Author: hewett $
-** Update Date:		$Date: 1997-03-27 15:52:50 $
+** Last Update:		$Author: andreas $
+** Update Date:		$Date: 1997-04-18 08:10:49 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcitem.cc,v $
-** CVS/RCS Revision:	$Revision: 1.21 $
+** CVS/RCS Revision:	$Revision: 1.22 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -561,7 +561,7 @@ E_Condition DcmItem::addGroupLengthElements(const E_TransferSyntax xfer,
                 // Elements der vorherigen Gruppe:
                 if ( actGLElem != (DcmUnsignedLong*)NULL )
                 {                                // eine Gruppe ist durchlaufen
-                    actGLElem->put( grplen );
+                    actGLElem->putUint32( grplen );
 		    debug(( 2, "Length of Group 0x%4.4x len=%lu", actGLElem->getGTag(), grplen ));
 
                     grplen = 0L;
@@ -575,7 +575,7 @@ E_Condition DcmItem::addGroupLengthElements(const E_TransferSyntax xfer,
 
         // die letzte Group Length des Items eintragen
         if ( actGLElem != (DcmUnsignedLong*)NULL )
-            actGLElem->put( grplen );
+            actGLElem->putUint32( grplen );
     }
     Edebug(());
 
@@ -644,7 +644,10 @@ E_Condition DcmItem::readTagAndLength(DcmStream & inStream,
 
     const E_ByteOrder byteOrder = xferSyn.getByteOrder();
     if (byteOrder == EBO_unknown)
+    {
+	Edebug(());
 	return EC_IllegalCall;
+    }
 
     inStream.SetPutbackMark();
     inStream.ReadBytes(&groupTag, 2);
@@ -914,7 +917,10 @@ E_Condition DcmItem::write(DcmStream & outStream,
 		    DcmXfer outXfer(oxfer);
 		    const E_ByteOrder oByteOrder = outXfer.getByteOrder();
 		    if (oByteOrder == EBO_unknown)
+		    {
+			Edebug(());
 			return EC_IllegalCall;
+		    }
 		    this -> swapIfNecessary(oByteOrder, 
 					    gLocalByteOrder, 
 					    &valueLength, 4, 4);
@@ -1804,7 +1810,7 @@ DcmItem::findString(const DcmTagKey& xtag,
     elem = (DcmElement*) stack.top();
     if (ec == EC_Normal && elem != NULL) {
 	if (elem->getLength() != 0) {
-            ec = elem->get(s);
+            ec = elem->getString(s);
 	    if (ec == EC_Normal) {
 		strncpy(aString, s, maxStringLength);
 	    }
@@ -1829,22 +1835,22 @@ DcmItem::findLong(const DcmTagKey& xtag,
 	switch (elem->ident()) {
 	case EVR_UL:
 	    Uint32 ul;
-	    ec = elem->get(ul, 0);
+	    ec = elem->getUint32(ul);
 	    aLong = ul;
 	    break;
 	case EVR_SL:
 	    Sint32 sl;
-	    ec = elem->get(sl, 0);
+	    ec = elem->getSint32(sl);
 	    aLong = sl;
 	    break;
 	case EVR_US:
 	    Uint16 us;
-	    ec = elem->get(us, 0);
+	    ec = elem->getUint16(us);
 	    aLong = us;
 	    break;
 	case EVR_SS:
 	    Sint16 ss;
-	    ec = elem->get(ss, 0);
+	    ec = elem->getSint16(ss);
 	    aLong = ss;
 	    break;
 	default:
@@ -1862,7 +1868,21 @@ DcmItem::findLong(const DcmTagKey& xtag,
 /*
 ** CVS/RCS Log:
 ** $Log: dcitem.cc,v $
-** Revision 1.21  1997-03-27 15:52:50  hewett
+** Revision 1.22  1997-04-18 08:10:49  andreas
+** - Corrected debugging code
+** - The put/get-methods for all VRs did not conform to the C++-Standard
+**   draft. Some Compilers (e.g. SUN-C++ Compiler, Metroworks
+**   CodeWarrier, etc.) create many warnings concerning the hiding of
+**   overloaded get methods in all derived classes of DcmElement.
+**   So the interface of all value representation classes in the
+**   library are changed rapidly, e.g.
+**   E_Condition get(Uint16 & value, const unsigned long pos);
+**   becomes
+**   E_Condition getUint16(Uint16 & value, const unsigned long pos);
+**   All (retired) "returntype get(...)" methods are deleted.
+**   For more information see dcmdata/include/dcelem.h
+**
+** Revision 1.21  1997/03/27 15:52:50  hewett
 ** Extended preliminary support for Unknown VR (UN) described in
 ** Supplement 14.  Attributes with undefined length should now
 ** be handled as a sequence.
