@@ -46,9 +46,9 @@
 ** Author, Date:	Stephen M. Moore, 15-Apr-93
 ** Intent:		Define tables and provide functions that implement
 **			the DICOM Upper Layer (DUL) finite state machine.
-** Last Update:		$Author: meichel $, $Date: 2001-09-26 12:29:03 $
+** Last Update:		$Author: joergr $, $Date: 2001-09-28 13:28:55 $
 ** Source File:		$RCSfile: dulfsm.cc,v $
-** Revision:		$Revision: 1.38 $
+** Revision:		$Revision: 1.39 $
 ** Status:		$State: Exp $
 */
 
@@ -67,6 +67,7 @@ END_EXTERN_C
 #endif
 
 #include <stdio.h>
+#include <iomanip.h>
 #include <string.h>
 #include <errno.h>
 #ifdef HAVE_SYS_TIME_H
@@ -3921,7 +3922,10 @@ destroyUserInformationLists(DUL_USERINFO * userInfo)
 /*
 ** CVS Log
 ** $Log: dulfsm.cc,v $
-** Revision 1.38  2001-09-26 12:29:03  meichel
+** Revision 1.39  2001-09-28 13:28:55  joergr
+** Added "#include <iomanip.h>" to keep gcc 3.0 quiet.
+**
+** Revision 1.38  2001/09/26 12:29:03  meichel
 ** Implemented changes in dcmnet required by the adaptation of dcmdata
 **   to class OFCondition.  Removed some unused code.
 **

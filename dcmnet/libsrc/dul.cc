@@ -54,9 +54,9 @@
 ** Author, Date:	Stephen M. Moore, 14-Apr-93
 ** Intent:		This module contains the public entry points for the
 **			DICOM Upper Layer (DUL) protocol package.
-** Last Update:		$Author: meichel $, $Date: 2001-09-26 12:29:02 $
+** Last Update:		$Author: joergr $, $Date: 2001-09-28 13:28:53 $
 ** Source File:		$RCSfile: dul.cc,v $
-** Revision:		$Revision: 1.37 $
+** Revision:		$Revision: 1.38 $
 ** Status:		$State: Exp $
 */
 
@@ -103,6 +103,8 @@ BEGIN_EXTERN_C
 #include <netinet/tcp.h>        /* for TCP_NODELAY */
 #endif
 END_EXTERN_C
+
+#include <iomanip.h>
 
 #ifdef HAVE_GUSI_H
 #include <GUSI.h>	/* Use the Grand Unified Sockets Interface (GUSI) on Macintosh */
@@ -2429,7 +2431,10 @@ void DUL_DumpConnectionParameters(DUL_ASSOCIATIONKEY *association, ostream& outs
 /*
 ** CVS Log
 ** $Log: dul.cc,v $
-** Revision 1.37  2001-09-26 12:29:02  meichel
+** Revision 1.38  2001-09-28 13:28:53  joergr
+** Added "#include <iomanip.h>" to keep gcc 3.0 quiet.
+**
+** Revision 1.37  2001/09/26 12:29:02  meichel
 ** Implemented changes in dcmnet required by the adaptation of dcmdata
 **   to class OFCondition.  Removed some unused code.
 **
