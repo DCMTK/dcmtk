@@ -22,8 +22,8 @@
  *  Purpose: DVPresentationState
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-06-22 10:46:47 $
- *  CVS/RCS Revision: $Revision: 1.99 $
+ *  Update Date:      $Date: 2000-07-04 16:06:28 $
+ *  CVS/RCS Revision: $Revision: 1.100 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -116,6 +116,7 @@ DVInterface::DVInterface(const char *config_file, OFBool useLog)
 , maximumPreviewImageHeight(0)
 , currentPrinter()
 , displayCurrentLUTID()
+, printCurrentLUTID()
 , printerMediumType()
 , printerFilmDestination()
 , printerFilmSessionLabel()
@@ -2432,18 +2433,18 @@ E_Condition DVInterface::saveHardcopyGrayscaleImage(
       }
 
       if (status != EC_Normal)
-        writeLogMessage(DVPSM_error, "DCMPSTAT", "Save hardcopy image to file failed: invalid data structures.");
+        writeLogMessage(DVPSM_error, "DCMPSTAT", "Save hardcopy grayscale image to file failed: invalid data structures.");
 
       // save image file
       if (EC_Normal == status)
       {
         status = DVPSHelper::saveFileFormat(filename, fileformat, explicitVR);
         if (status != EC_Normal)
-          writeLogMessage(DVPSM_error, "DCMPSTAT", "Save hardcopy image to file failed: could not write fileformat.");
+          writeLogMessage(DVPSM_error, "DCMPSTAT", "Save hardcopy grayscale image to file failed: could not write fileformat.");
       }
     } else {
       status = EC_MemoryExhausted;
-      writeLogMessage(DVPSM_error, "DCMPSTAT", "Save hardcopy image to file failed: memory exhausted.");
+      writeLogMessage(DVPSM_error, "DCMPSTAT", "Save hardcopy grayscale image to file failed: memory exhausted.");
     }
 
     if (EC_Normal == status)
@@ -2484,7 +2485,7 @@ E_Condition DVInterface::saveHardcopyGrayscaleImage(
   char imageFileName[MAXPATHLEN+1];
   if (DB_createHandle(getDatabaseFolder(), PSTAT_MAXSTUDYCOUNT, PSTAT_STUDYSIZE, &handle) != DB_NORMAL)
   {
-    writeLogMessage(DVPSM_error, "DCMPSTAT", "Save hardcopy image to database failed: could not lock index file.");
+    writeLogMessage(DVPSM_error, "DCMPSTAT", "Save hardcopy grayscale image to database failed: could not lock index file.");
     return EC_IllegalCall;
   }
 
@@ -2497,7 +2498,7 @@ E_Condition DVInterface::saveHardcopyGrayscaleImage(
        if (DB_NORMAL != DB_storeRequest(handle, UID_HardcopyGrayscaleImageStorage, uid, imageFileName, &dbStatus))
        {
          result = EC_IllegalCall;
-         writeLogMessage(DVPSM_error, "DCMPSTAT", "Save hardcopy image to database failed: could not register in index file.");
+         writeLogMessage(DVPSM_error, "DCMPSTAT", "Save hardcopy grayscale image to database failed: could not register in index file.");
          if (verboseMode)
          {
            ostream &mycerr = logstream->lockCerr();
@@ -2821,11 +2822,13 @@ E_Condition DVInterface::loadPrintPreview(size_t idx)
             if ((polarity != NULL) && (strcmp(polarity, "REVERSE") == 0))
                 image->setPolarity(EPP_Reverse);
             /* set (print) presentation LUT */
-            DVPSPresentationLUT *plut = pPrint->getImagePresentationLUT(idx);
+            DVPSPresentationLUT *plut = pPrint->getPresentationLUT();   // first check whether there's a global one
+            if (plut == NULL)
+                pPrint->getImagePresentationLUT(idx);                   // then check for an image box specific
             if (plut != NULL)
             {
                 /* tbd: distinguish between "softcopy" and "hardcopy" presentation LUT */
-                plut->activate(image , OFTrue /* printLUT */);
+                plut->activate(image , OFFalse /* printLUT */);
             }
 
             unsigned long width = maximumPrintPreviewWidth;
@@ -2846,14 +2849,14 @@ E_Condition DVInterface::loadPrintPreview(size_t idx)
               else
                 unloadPrintPreview();
             } else
-              writeLogMessage(DVPSM_error, "DCMPSTAT", "Load hardcopy image for print preview failed: memory exhausted.");
+              writeLogMessage(DVPSM_error, "DCMPSTAT", "Load hardcopy grayscale image for print preview failed: memory exhausted.");
           } else
-            writeLogMessage(DVPSM_error, "DCMPSTAT", "Load hardcopy image for print preview failed: could not read image.");
+            writeLogMessage(DVPSM_error, "DCMPSTAT", "Load hardcopy grayscale image for print preview failed: could not read image.");
           delete image;
         } else
-          writeLogMessage(DVPSM_error, "DCMPSTAT", "Load hardcopy image for print preview failed: memory exhausted.");
+          writeLogMessage(DVPSM_error, "DCMPSTAT", "Load hardcopy grayscale image for print preview failed: memory exhausted.");
       } else
-        writeLogMessage(DVPSM_error, "DCMPSTAT", "Load hardcopy image for print preview failed: UIDs not in index file.");
+        writeLogMessage(DVPSM_error, "DCMPSTAT", "Load hardcopy grayscale image for print preview failed: UIDs not in index file.");
     }
   }
   return status;
@@ -3009,16 +3012,27 @@ E_Condition DVInterface::selectDisplayPresentationLUT(const char *lutID)
        filename += PATH_SEPARATOR;
        filename += lutfile;
        DcmFileFormat *fileformat = NULL;
-       result = DVPSHelper::loadFileFormat(filename.c_str(), fileformat);
-       if ((EC_Normal == result) && fileformat)
+       if ((result = DVPSHelper::loadFileFormat(filename.c_str(), fileformat)) == EC_Normal)
        {
-         DcmDataset *dataset = fileformat->getDataset();
-         if (dataset) result = pState->setPresentationLookupTable(*dataset);
-         else result = EC_IllegalCall;
-         if (EC_Normal == result) displayCurrentLUTID = lutID; else displayCurrentLUTID.clear();
-       }
+         if (fileformat)
+         {
+           DcmDataset *dataset = fileformat->getDataset();
+           if (dataset)
+             result = pState->setPresentationLookupTable(*dataset);
+           else
+             result = EC_IllegalCall;
+           if (EC_Normal == result)
+             displayCurrentLUTID = lutID;
+           else
+             displayCurrentLUTID.clear();
+         } else result = EC_IllegalCall;
+         if (result != EC_Normal)
+           writeLogMessage(DVPSM_error, "DCMPSTAT", "Load display presentation LUT from file: invalid data structures.");
+       } else
+         writeLogMessage(DVPSM_error, "DCMPSTAT", "Load display presentation LUT from file: could not read fileformat.");
        delete fileformat;
-     }
+     } else
+       writeLogMessage(DVPSM_error, "DCMPSTAT", "Load display presentation LUT from file: not specified in config file.");
   }
   return result;
 }
@@ -3026,6 +3040,48 @@ E_Condition DVInterface::selectDisplayPresentationLUT(const char *lutID)
 const char *DVInterface::getDisplayPresentationLUTID()
 {
   return displayCurrentLUTID.c_str();
+}
+
+E_Condition DVInterface::selectPrintPresentationLUT(const char *lutID)
+{
+  E_Condition result = EC_IllegalCall;
+  if (lutID && pPrint)
+  {
+     const char *lutfile = getLUTFilename(lutID);
+     if (lutfile)
+     {
+       OFString filename = getLUTFolder(); // never NULL.
+       filename += PATH_SEPARATOR;
+       filename += lutfile;
+       DcmFileFormat *fileformat = NULL;
+       if ((result = DVPSHelper::loadFileFormat(filename.c_str(), fileformat)) == EC_Normal)
+       {
+         if (fileformat)
+         {
+           DcmDataset *dataset = fileformat->getDataset();
+           if (dataset)
+             result = pPrint->setPresentationLookupTable(*dataset);
+           else
+             result = EC_IllegalCall;
+           if (EC_Normal == result)
+             printCurrentLUTID = lutID;
+           else
+             printCurrentLUTID.clear();
+         } else result = EC_IllegalCall;
+         if (result != EC_Normal)
+           writeLogMessage(DVPSM_error, "DCMPSTAT", "Load print presentation LUT from file: invalid data structures.");
+       } else
+         writeLogMessage(DVPSM_error, "DCMPSTAT", "Load print presentation LUT from file: could not read fileformat.");
+       delete fileformat;
+     } else
+       writeLogMessage(DVPSM_error, "DCMPSTAT", "Load print presentation LUT from file: not specified in config file.");
+  }
+  return result;
+}
+
+const char *DVInterface::getPrintPresentationLUTID()
+{
+  return printCurrentLUTID.c_str();
 }
 
 E_Condition DVInterface::spoolPrintJob(OFBool deletePrintedImages)
@@ -3347,41 +3403,55 @@ E_Condition DVInterface::addToPrintHardcopyFromDB(const char *studyUID, const ch
 {
   E_Condition result = EC_IllegalCall;
 
-  if (studyUID && seriesUID && instanceUID && pPrint)
+  if (pPrint)
   {
-    if (EC_Normal == (result = lockDatabase()))
+    if (studyUID && seriesUID && instanceUID)
     {
-      DcmUniqueIdentifier sopclassuid(DCM_SOPClassUID);
-      const char *filename = getFilename(studyUID, seriesUID, instanceUID);
-      if (filename)
+      if (EC_Normal == (result = lockDatabase()))
       {
-        DcmFileFormat *ff = NULL;
-        result = DVPSHelper::loadFileFormat(filename, ff);
-        if ((EC_Normal == result) && ff)
+        DcmUniqueIdentifier sopclassuid(DCM_SOPClassUID);
+        const char *filename = getFilename(studyUID, seriesUID, instanceUID);
+        if (filename)
         {
-          DcmDataset *dataset = ff->getDataset();
-          if (dataset)
+          DcmFileFormat *ff = NULL;
+          if ((result = DVPSHelper::loadFileFormat(filename, ff)) == EC_Normal)
           {
-            DcmStack stack;
-            DVPSPresentationLUT presentationLUT;
-                if (EC_Normal != presentationLUT.read(*dataset, OFFalse)) presentationLUT.setType(DVPSP_identity);
-                result = dataset->search((DcmTagKey &)sopclassuid.getTag(), stack, ESM_fromHere, OFFalse);
-            if (EC_Normal == result)
+            if (ff)
             {
-              char *sopclass = NULL;
-              sopclassuid = *((DcmUniqueIdentifier *)(stack.top()));
-              if (EC_Normal == sopclassuid.getString(sopclass))
-                result = pPrint->addImageBox(getNetworkAETitle(), studyUID, seriesUID,
-                  sopclass, instanceUID, NULL, NULL, &presentationLUT, OFFalse);
-              else
-                result = EC_IllegalCall;
-            }
-          } else result = EC_IllegalCall;
-        } else result = EC_IllegalCall;
-        if (ff) delete ff;
-      } else result = EC_IllegalCall;
-    }
+              DcmDataset *dataset = ff->getDataset();
+              if (dataset)
+              {
+                DcmStack stack;
+                DVPSPresentationLUT presentationLUT;
+                    if (EC_Normal != presentationLUT.read(*dataset, OFFalse)) presentationLUT.setType(DVPSP_identity);
+                    result = dataset->search((DcmTagKey &)sopclassuid.getTag(), stack, ESM_fromHere, OFFalse);
+                if (EC_Normal == result)
+                {
+                  char *sopclass = NULL;
+                  sopclassuid = *((DcmUniqueIdentifier *)(stack.top()));
+                  if (EC_Normal == sopclassuid.getString(sopclass))
+                    result = pPrint->addImageBox(getNetworkAETitle(), studyUID, seriesUID,
+                      sopclass, instanceUID, NULL, NULL, &presentationLUT, OFFalse);
+                  else
+                    result = EC_IllegalCall;
+                }
+              } else result = EC_CorruptedData;
+            } else result = EC_IllegalCall;
+            if (result != EC_Normal)
+                writeLogMessage(DVPSM_error, "DCMPSTAT", "Load hardcopy grayscale image from file failed: invalid data structures.");
+          } else
+            writeLogMessage(DVPSM_error, "DCMPSTAT", "Load hardcopy grayscale image from file failed: could not read fileformat.");
+          if (ff) delete ff;
+        } else {
+          result = EC_IllegalCall;
+          writeLogMessage(DVPSM_error, "DCMPSTAT", "Load hardcopy grayscale image from database failed: UIDs not in index file.");
+        }
+      } else
+        writeLogMessage(DVPSM_error, "DCMPSTAT", "Load hardcopy grayscale image from database failed: could not lock index file.");
+    } else
+      writeLogMessage(DVPSM_error, "DCMPSTAT", "Load hardcopy grayscale image from database failed: invalid UIDs.");
   }
+  
   releaseDatabase();
   return result;
 }
@@ -3397,10 +3467,10 @@ E_Condition DVInterface::spoolStoredPrintFromDB(const char *studyUID, const char
   FILE *outf = fopen(tempFilename.c_str(),"wb");
   if (outf)
   {
-        time_t now = time(NULL);
-        fprintf(outf,"#\n# print job created %s", asctime(localtime(&now)));
-        fprintf(outf,"# target printer: [%s]\n#\n", (prt ? prt : "none"));
-    fprintf(outf,"study        %s\nseries       %s\ninstance     %s\n", studyUID, seriesUID, instanceUID);
+    time_t now = time(NULL);
+    fprintf(outf, "#\n# print job created %s", asctime(localtime(&now)));
+    fprintf(outf, "# target printer: [%s]\n#\n", (prt ? prt : "none"));
+    fprintf(outf, "study        %s\nseries       %s\ninstance     %s\n", studyUID, seriesUID, instanceUID);
     if (printerMediumType.size() >0)       fprintf(outf,"mediumtype   %s\n", printerMediumType.c_str());
     if (printerFilmDestination.size() >0)  fprintf(outf,"destination  %s\n", printerFilmDestination.c_str());
     if (printerFilmSessionLabel.size() >0) fprintf(outf,"label        %s\n", printerFilmSessionLabel.c_str());
@@ -3431,7 +3501,7 @@ E_Condition DVInterface::spoolStoredPrintFromDB(const char *studyUID, const char
 
 E_Condition DVInterface::printSCUcreateBasicFilmSession(DVPSPrintMessageHandler& printHandler, OFBool plutInSession)
 {
-  if (! pPrint) return EC_IllegalCall;
+  if (!pPrint) return EC_IllegalCall;
   E_Condition result = EC_Normal;
   DcmDataset dset;
   DcmElement *delem = NULL;
@@ -3440,44 +3510,44 @@ E_Condition DVInterface::printSCUcreateBasicFilmSession(DVPSPrintMessageHandler&
   if ((EC_Normal==result)&&(printerMediumType.size() > 0))
   {
     delem = new DcmCodeString(DCM_MediumType);
-        if (delem) result = delem->putString(printerMediumType.c_str()); else result=EC_IllegalCall;
-        if (EC_Normal==result) result = dset.insert(delem);
+    if (delem) result = delem->putString(printerMediumType.c_str()); else result=EC_IllegalCall;
+    if (EC_Normal==result) result = dset.insert(delem);
   }
 
   if ((EC_Normal==result)&&(printerFilmDestination.size() > 0))
   {
     delem = new DcmCodeString(DCM_FilmDestination);
-        if (delem) result = delem->putString(printerFilmDestination.c_str()); else result=EC_IllegalCall;
-        if (EC_Normal==result) result = dset.insert(delem);
+    if (delem) result = delem->putString(printerFilmDestination.c_str()); else result=EC_IllegalCall;
+    if (EC_Normal==result) result = dset.insert(delem);
   }
 
   if ((EC_Normal==result)&&(printerFilmSessionLabel.size() > 0))
   {
     delem = new DcmLongString(DCM_FilmSessionLabel);
-        if (delem) result = delem->putString(printerFilmSessionLabel.c_str()); else result=EC_IllegalCall;
-        if (EC_Normal==result) result = dset.insert(delem);
+    if (delem) result = delem->putString(printerFilmSessionLabel.c_str()); else result=EC_IllegalCall;
+    if (EC_Normal==result) result = dset.insert(delem);
   }
 
   if ((EC_Normal==result)&&(printerPriority.size() > 0))
   {
     delem = new DcmCodeString(DCM_PrintPriority);
-        if (delem) result = delem->putString(printerPriority.c_str()); else result=EC_IllegalCall;
-        if (EC_Normal==result) result = dset.insert(delem);
+    if (delem) result = delem->putString(printerPriority.c_str()); else result=EC_IllegalCall;
+    if (EC_Normal==result) result = dset.insert(delem);
   }
 
   if ((EC_Normal==result)&&(printerOwnerID.size() > 0))
   {
     delem = new DcmShortString(DCM_OwnerID);
-        if (delem) result = delem->putString(printerOwnerID.c_str()); else result=EC_IllegalCall;
-        if (EC_Normal==result) result = dset.insert(delem);
+    if (delem) result = delem->putString(printerOwnerID.c_str()); else result=EC_IllegalCall;
+    if (EC_Normal==result) result = dset.insert(delem);
   }
 
   if ((EC_Normal==result)&&(printerNumberOfCopies > 0))
   {
-        sprintf(buf, "%lu", printerNumberOfCopies);
+    sprintf(buf, "%lu", printerNumberOfCopies);
     delem = new DcmIntegerString(DCM_NumberOfCopies);
-        if (delem) result = delem->putString(buf); else result=EC_IllegalCall;
-        if (EC_Normal==result) result = dset.insert(delem);
+    if (delem) result = delem->putString(buf); else result=EC_IllegalCall;
+    if (EC_Normal==result) result = dset.insert(delem);
   }
 
   if (EC_Normal==result) result = pPrint->printSCUcreateBasicFilmSession(printHandler, dset, plutInSession);
@@ -3623,7 +3693,12 @@ E_Condition DVInterface::checkIOD(const char *studyUID, const char *seriesUID, c
 /*
  *  CVS/RCS Log:
  *  $Log: dviface.cc,v $
- *  Revision 1.99  2000-06-22 10:46:47  joergr
+ *  Revision 1.100  2000-07-04 16:06:28  joergr
+ *  Added support for overriding the presentation LUT settings made for the
+ *  image boxes.
+ *  Added new log output messages.
+ *
+ *  Revision 1.99  2000/06/22 10:46:47  joergr
  *  Fixed bug creating config file for Q/R server when Q/R server name was not
  *  specified in application config file.
  *
