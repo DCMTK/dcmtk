@@ -702,7 +702,9 @@
 (2040,0080)	CS	OverlayForegroundDensity	1	DICOM3
 (2040,0090)	CS	OverlayMode	1	DICOM3
 (2040,0100)	CS	ThresholdDensity	1	DICOM3
-(2040,0500)	SQ	ReferencedOverlayImageBoxSequence	1	DICOM3
+# Attribute (2040,0500) is retired by Correction Proposal 53.
+# It is a duplicate of (2010,0510).
+(2040,0500)	SQ	RETIRED_ReferencedImageBoxSequence	1	DICOM3
 (2100,0000)	UL	PrintJobGroupLength	1	DICOM3
 (2100,0020)	CS	ExecutionStatus	1	DICOM3
 (2100,0030)	CS	ExecutionStatusInfo	1	DICOM3
@@ -1417,6 +1419,27 @@
 (300E,0004)	DA	ReviewDate	1	DICOM3
 (300E,0005)	TM	ReviewTime	1	DICOM3
 (300E,0008)	PN	ReviewerName	1	DICOM3
+#
+#---------------------------------------------------------------------------
+#
+# Addition from Correction Proposal 71
+# - Include Modality at the Study Level of Query
+#
+(0008,0061)	CS	ModalitiesInStudy	1-n	DICOM3
+#
+#---------------------------------------------------------------------------
+#
+# Addition from Correction Proposal 72
+# - Add Modality Worklist matching key Scheduled Procedure Step Status
+#
+(0040,0020)	CS	ScheduledProcedureStepStatus	1	DICOM3
+#
+#---------------------------------------------------------------------------
+#
+# Addition from Correction Proposal 74
+# - Add number of series related images in Series level keys
+#
+(0020,1209)	IS	NumberOfSeriesRelatedImages	1	DICOM3
 #
 #---------------------------------------------------------------------------
 #
