@@ -43,9 +43,9 @@
 ** Author, Date:	Stephen M. Moore, 11-May-92
 ** Intent:		This module defines structures and constants needed
 **			to implement the DICOM Upper Layer state machine.
-** Last Update:		$Author: meichel $, $Date: 1999-03-29 11:20:07 $
+** Last Update:		$Author: meichel $, $Date: 2001-10-12 10:18:39 $
 ** Source File:		$RCSfile: dulfsm.h,v $
-** Revision:		$Revision: 1.2 $
+** Revision:		$Revision: 1.3 $
 ** Status:		$State: Exp $
 */
 
@@ -106,7 +106,7 @@ typedef struct {
 
 typedef struct {
     DUL_FSM_ACTION action;
-    CONDITION (*actionFunction)(PRIVATE_NETWORKKEY **network,
+    OFCondition (*actionFunction)(PRIVATE_NETWORKKEY **network,
 				PRIVATE_ASSOCIATIONKEY **association, 
 				int nextState, void *params);
     char actionName[64];
@@ -119,7 +119,7 @@ typedef struct {
     int nextState;
     char eventName[64];
     char actionName[64];
-    CONDITION (*actionFunction)(PRIVATE_NETWORKKEY **network,
+    OFCondition (*actionFunction)(PRIVATE_NETWORKKEY **network,
 				PRIVATE_ASSOCIATIONKEY **association, 
 				int nextState, void *params);
 
@@ -130,7 +130,12 @@ typedef struct {
 /*
 ** CVS Log
 ** $Log: dulfsm.h,v $
-** Revision 1.2  1999-03-29 11:20:07  meichel
+** Revision 1.3  2001-10-12 10:18:39  meichel
+** Replaced the CONDITION types, constants and functions in the dcmnet module
+**   by an OFCondition based implementation which eliminates the global condition
+**   stack.  This is a major change, caveat emptor!
+**
+** Revision 1.2  1999/03/29 11:20:07  meichel
 ** Cleaned up dcmnet code for char* to const char* assignments.
 **
 ** Revision 1.1.1.1  1996/03/26 18:38:46  hewett

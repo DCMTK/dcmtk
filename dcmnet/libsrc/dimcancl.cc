@@ -58,9 +58,9 @@
 **
 **
 ** Last Update:		$Author: meichel $
-** Update Date:		$Date: 2000-02-23 15:12:30 $
+** Update Date:		$Date: 2001-10-12 10:18:31 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/libsrc/dimcancl.cc,v $
-** CVS/RCS Revision:	$Revision: 1.4 $
+** CVS/RCS Revision:	$Revision: 1.5 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -94,65 +94,62 @@ END_EXTERN_C
 
 #include "diutil.h"
 #include "dimse.h"		/* always include the module header */
-#include "dimcond.h"
+#include "cond.h"
 
-CONDITION
+OFCondition
 DIMSE_sendCancelRequest(T_ASC_Association * assoc, 
 	T_ASC_PresentationContextID presId, DIC_US msgId)
 {
-    CONDITION           cond;
-    T_DIMSE_Message	req;
-
+    T_DIMSE_Message req;
     bzero((char*)&req, sizeof(req));
 	
     req.CommandField = DIMSE_C_CANCEL_RQ;
     req.msg.CCancelRQ.MessageIDBeingRespondedTo = msgId;
     req.msg.CCancelRQ.DataSetType = DIMSE_DATASET_NULL;
 
-    cond = DIMSE_sendMessageUsingMemoryData(assoc, presId, &req,
-        NULL, NULL, NULL, NULL);
-
-    return cond;
+    return DIMSE_sendMessageUsingMemoryData(assoc, presId, &req, NULL, NULL, NULL, NULL);
 }
 
-CONDITION
+OFCondition
 DIMSE_checkForCancelRQ(T_ASC_Association * assoc, 
     T_ASC_PresentationContextID presId, DIC_US msgId)
 {
-    CONDITION cond = DIMSE_NORMAL;
     T_DIMSE_Message msg;
     T_ASC_PresentationContextID presIdCmd;
 
-    cond = DIMSE_receiveCommand(assoc, DIMSE_NONBLOCKING, 0, &presIdCmd,
-				    &msg, NULL);
+    OFCondition cond = DIMSE_receiveCommand(assoc, DIMSE_NONBLOCKING, 0, &presIdCmd, &msg, NULL);
 
-    if (cond != DIMSE_NORMAL) {
-        /* DIMSE_NODATAAVAILABLE or some error condition */
-        return cond;
-    } else {
-        if (presIdCmd != presId) {
-	    return COND_PushCondition(DIMSE_INVALIDPRESENTATIONCONTEXTID,
-	        "DIMSE: Checking for C-CANCEL-RQ, bad presId");
+    if (cond.good()) /* could be DIMSE_NODATAAVAILABLE or some error condition */
+    {
+        if (presIdCmd != presId)
+        {
+          return makeDcmnetCondition(DIMSEC_INVALIDPRESENTATIONCONTEXTID, OF_error, "DIMSE: Checking for C-CANCEL-RQ, bad presId");
 	}
-        if (msg.CommandField != DIMSE_C_CANCEL_RQ) {
-	    return COND_PushCondition(DIMSE_UNEXPECTEDREQUEST,
-	        "DIMSE: Checking for C-CANCEL-RQ, Protocol Error: Cmd=0x%x",
-		msg.CommandField);
+        if (msg.CommandField != DIMSE_C_CANCEL_RQ)
+        {
+          char buf1[256];
+          sprintf(buf1, "DIMSE: Checking for C-CANCEL-RQ, Protocol Error: Cmd=0x%x", msg.CommandField);          
+          return makeDcmnetCondition(DIMSEC_UNEXPECTEDREQUEST, OF_error, buf1);
 	}
-	if (msg.msg.CCancelRQ.MessageIDBeingRespondedTo != msgId) {
-	    return COND_PushCondition(DIMSE_UNEXPECTEDREQUEST,
-	        "DIMSE: Checking for C-CANCEL-RQ, Protocol Error: msgId=%d",
-		msg.msg.CCancelRQ.MessageIDBeingRespondedTo);
+	if (msg.msg.CCancelRQ.MessageIDBeingRespondedTo != msgId)
+	{
+          char buf2[256];
+          sprintf(buf2, "DIMSE: Checking for C-CANCEL-RQ, Protocol Error: msgId=%d", msg.msg.CCancelRQ.MessageIDBeingRespondedTo);          
+          return makeDcmnetCondition(DIMSEC_UNEXPECTEDREQUEST, OF_error, buf2);
 	}
     }
-    /* return DIMSE_NORMAL if appropriate cancel req received */
-    return DIMSE_NORMAL;
+    return cond;
 }
 
 /*
 ** CVS Log
 ** $Log: dimcancl.cc,v $
-** Revision 1.4  2000-02-23 15:12:30  meichel
+** Revision 1.5  2001-10-12 10:18:31  meichel
+** Replaced the CONDITION types, constants and functions in the dcmnet module
+**   by an OFCondition based implementation which eliminates the global condition
+**   stack.  This is a major change, caveat emptor!
+**
+** Revision 1.4  2000/02/23 15:12:30  meichel
 ** Corrected macro for Borland C++ Builder 4 workaround.
 **
 ** Revision 1.3  2000/02/01 10:24:07  meichel

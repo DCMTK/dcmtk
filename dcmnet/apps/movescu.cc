@@ -22,9 +22,9 @@
  *  Purpose: Query/Retrieve Service Class User (C-MOVE operation)
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-09-26 12:28:55 $
+ *  Update Date:      $Date: 2001-10-12 10:18:21 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/apps/movescu.cc,v $
- *  CVS/RCS Revision: $Revision: 1.37 $
+ *  CVS/RCS Revision: $Revision: 1.38 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -206,9 +206,9 @@ addOverrideKey(OFConsoleApplication& app, const char* s)
     }
 }
 
-static CONDITION cmove(T_ASC_Association *assoc, const char *fname);
+static OFCondition cmove(T_ASC_Association *assoc, const char *fname);
 
-static CONDITION
+static OFCondition
 addPresentationContext(T_ASC_Parameters *params, 
 			T_ASC_PresentationContextID pid,
 			const char* abstractSyntax);
@@ -219,7 +219,6 @@ addPresentationContext(T_ASC_Parameters *params,
 int
 main(int argc, char *argv[])
 {
-    CONDITION cond;
     T_ASC_Parameters *params = NULL;
     const char *opt_peer;
     OFCmdUnsignedInt opt_port = 104;
@@ -542,12 +541,12 @@ main(int argc, char *argv[])
 #endif
 
     /* network for move request and responses */
-    cond = ASC_initializeNetwork(NET_ACCEPTORREQUESTOR, (int)opt_retrievePort, 
+    OFCondition cond = ASC_initializeNetwork(NET_ACCEPTORREQUESTOR, (int)opt_retrievePort, 
 				 1000, &net);
-    if (!SUCCESS(cond))
+    if (cond.bad())
     {
 	errmsg("cannot create network:");
-	COND_DumpConditions();
+	DimseCondition::dump(cond);
         return 1;
     }
 
@@ -562,8 +561,8 @@ main(int argc, char *argv[])
 
     /* set up main association */
     cond = ASC_createAssociationParameters(&params, opt_maxPDU);
-    if (!SUCCESS(cond)) {
-	COND_DumpConditions();
+    if (cond.bad()) {
+	DimseCondition::dump(cond);
 	exit(1);
     }
     ASC_setAPTitles(params, opt_ourTitle, opt_peerTitle, NULL);
@@ -581,8 +580,8 @@ main(int argc, char *argv[])
 
     cond = addPresentationContext(params, 3, 
         querySyntax[opt_queryModel].moveSyntax);
-    if (!SUCCESS(cond)) {
-	COND_DumpConditions();
+    if (cond.bad()) {
+	DimseCondition::dump(cond);
 	exit(1);
     }
     if (opt_debug) {
@@ -594,8 +593,8 @@ main(int argc, char *argv[])
     if (opt_verbose)
 	printf("Requesting Association\n");
     cond = ASC_requestAssociation(net, params, &assoc);
-    if (cond != ASC_NORMAL) {
-	if (cond == ASC_ASSOCIATIONREJECTED) {
+    if (cond.bad()) {
+	if (cond == DUL_ASSOCIATIONREJECTED) {
 	    T_ASC_RejectParameters rej;
 
 	    ASC_getRejectParameters(params, &rej);
@@ -604,7 +603,7 @@ main(int argc, char *argv[])
 	    exit(1);
 	} else {
 	    errmsg("Association Request Failed:");
-	    COND_DumpConditions();
+	    DimseCondition::dump(cond);
 	    exit(1);
 	}
     }
@@ -625,7 +624,7 @@ main(int argc, char *argv[])
     }
 
     /* do the real work */
-    cond = DIMSE_NORMAL;
+    cond = EC_Normal;
     if (fileNameList.empty())
     {
 	/* no files provided on command line */
@@ -633,7 +632,7 @@ main(int argc, char *argv[])
     } else {
       OFListIterator(OFString) iter = fileNameList.begin();
       OFListIterator(OFString) enditer = fileNameList.end();    
-      while ((iter != enditer) && (cond == DIMSE_NORMAL))
+      while ((iter != enditer) && (cond == EC_Normal)) // compare with EC_Normal since DUL_PEERREQUESTEDRELEASE is also good()
       {
           cond = cmove(assoc, (*iter).c_str());
           ++iter;
@@ -641,15 +640,15 @@ main(int argc, char *argv[])
     }
 
     /* tear down association */
-    switch (cond) {
-    case DIMSE_NORMAL:
+    if (cond == EC_Normal)
+    {
 	if (opt_abortAssociation) {
 	    if (opt_verbose)
 		printf("Aborting Association\n");
 	    cond = ASC_abortAssociation(assoc);
-	    if (!SUCCESS(cond)) {
+	    if (cond.bad()) {
 		errmsg("Association Abort Failed:");
-		COND_DumpConditions();
+		DimseCondition::dump(cond);
 		exit(1);
 	    }
 	} else {
@@ -657,63 +656,55 @@ main(int argc, char *argv[])
 	    if (opt_verbose)
 		printf("Releasing Association\n");
 	    cond = ASC_releaseAssociation(assoc);
-	    if (cond != ASC_NORMAL && cond != ASC_RELEASECONFIRMED) {
+	    if (cond.bad())
+	    {
 		errmsg("Association Release Failed:");
-		COND_DumpConditions();
+		DimseCondition::dump(cond);
 		exit(1);
 	    }
 	}
-	break;
-    case DIMSE_PEERREQUESTEDRELEASE:
+    }
+    else if (cond == DUL_PEERREQUESTEDRELEASE)
+    {
 	errmsg("Protocol Error: peer requested release (Aborting)");
 	if (opt_verbose)
 	    printf("Aborting Association\n");
 	cond = ASC_abortAssociation(assoc);
-	if (!SUCCESS(cond)) {
+	if (cond.bad()) {
 	    errmsg("Association Abort Failed:");
-	    COND_DumpConditions();
+	    DimseCondition::dump(cond);
 	    exit(1);
 	}
-	break;
-    case DIMSE_PEERABORTEDASSOCIATION:
+    }
+    else if (cond == DUL_PEERABORTEDASSOCIATION)
+    {
 	if (opt_verbose) printf("Peer Aborted Association\n");
-	break;
-    default:
+    }
+    else 
+    {
 	errmsg("SCU Failed:");
-	COND_DumpConditions();
+	DimseCondition::dump(cond);
 	if (opt_verbose)
 	    printf("Aborting Association\n");
 	cond = ASC_abortAssociation(assoc);
-	if (!SUCCESS(cond)) {
+	if (cond.bad()) {
 	    errmsg("Association Abort Failed:");
-	    COND_DumpConditions();
+	    DimseCondition::dump(cond);
 	    exit(1);
 	}
-	break;
     }
 
     cond = ASC_destroyAssociation(&assoc);
-    if (!SUCCESS(cond)) {
-	COND_DumpConditions();
+    if (cond.bad()) {
+	DimseCondition::dump(cond);
 	exit(1);
     }
     cond = ASC_dropNetwork(&net);
-    if (!SUCCESS(cond)) {
-	COND_DumpConditions();
+    if (cond.bad()) {
+	DimseCondition::dump(cond);
 	exit(1);
     }
     
-    if (opt_debug) {
-	/* are there any conditions sitting on the condition stack? */
-	char buf[BUFSIZ];
-	CONDITION c;
-
-	if (COND_TopCondition(&c, buf, BUFSIZ) != COND_NORMAL) {
-	    fprintf(stderr, "CONDITIONS Remaining\n");
-	    COND_DumpConditions();
-	}
-    }
-
 #ifdef HAVE_WINSOCK_H
     WSACleanup();
 #endif
@@ -722,13 +713,11 @@ main(int argc, char *argv[])
 }
 
 
-static CONDITION
+static OFCondition
 addPresentationContext(T_ASC_Parameters *params, 
 			T_ASC_PresentationContextID pid,
 			const char* abstractSyntax)
 {
-    CONDITION cond = ASC_NORMAL;
-
     /* 
     ** We prefer to use Explicitly encoded transfer syntaxes.
     ** If we are running on a Little Endian machine we prefer 
@@ -784,25 +773,22 @@ addPresentationContext(T_ASC_Parameters *params,
         break;
     }
 
-    cond = ASC_addPresentationContext(
+    return ASC_addPresentationContext(
 	params, pid, abstractSyntax,
 	transferSyntaxes, numTransferSyntaxes);
-
-    return cond;
 }
 
-static CONDITION
+static OFCondition
 acceptSubAssoc(T_ASC_Network * aNet, T_ASC_Association ** assoc)
 {
-    CONDITION cond = ASC_NORMAL;
     const char* knownAbstractSyntaxes[] = {
 	UID_VerificationSOPClass
     };
     const char* transferSyntaxes[] = { NULL, NULL, NULL, NULL };
     int numTransferSyntaxes;
 
-    cond = ASC_receiveAssociation(aNet, assoc, opt_maxPDU);
-    if (SUCCESS(cond))
+    OFCondition cond = ASC_receiveAssociation(aNet, assoc, opt_maxPDU);
+    if (cond.good())
     {
       switch (opt_in_networkTransferSyntax)
       {
@@ -882,7 +868,7 @@ acceptSubAssoc(T_ASC_Network * aNet, T_ASC_Association ** assoc)
 	    knownAbstractSyntaxes, DIM_OF(knownAbstractSyntaxes),
 	    transferSyntaxes, numTransferSyntaxes);
         
-        if (SUCCESS(cond))
+        if (cond.good())
         {
             /* the array of Storage SOP Class UIDs comes from dcuid.h */
             cond = ASC_acceptContextsWithPreferredTransferSyntaxes(
@@ -891,21 +877,19 @@ acceptSubAssoc(T_ASC_Network * aNet, T_ASC_Association ** assoc)
 	        transferSyntaxes, numTransferSyntaxes);
         }
     }
-    if (SUCCESS(cond)) cond = ASC_acknowledgeAssociation(*assoc);
-    if (cond != ASC_NORMAL) {
+    if (cond.good()) cond = ASC_acknowledgeAssociation(*assoc);
+    if (cond.bad()) {
         ASC_dropAssociation(*assoc);
         ASC_destroyAssociation(assoc);
     }
     return cond;
 }
 
-static CONDITION echoSCP(
+static OFCondition echoSCP(
   T_ASC_Association * assoc,
   T_DIMSE_Message * msg,
   T_ASC_PresentationContextID presID)
 {
-  CONDITION cond;
-
   if (opt_verbose)
   {
     printf("Received ");
@@ -913,11 +897,11 @@ static CONDITION echoSCP(
   }
 
   /* the echo succeeded !! */
-  cond = DIMSE_sendEchoResponse(assoc, presID, &msg->msg.CEchoRQ, STATUS_Success, NULL);
-  if (!SUCCESS(cond))
+  OFCondition cond = DIMSE_sendEchoResponse(assoc, presID, &msg->msg.CEchoRQ, STATUS_Success, NULL);
+  if (cond.bad())
   {
     fprintf(stderr, "storescp: Echo SCP Failed:\n");
-    COND_DumpConditions();
+    DimseCondition::dump(cond);
   }
   return cond;
 }
@@ -1053,12 +1037,12 @@ storeSCPCallback(
     return;
 }
 
-static CONDITION storeSCP(
+static OFCondition storeSCP(
   T_ASC_Association *assoc,
   T_DIMSE_Message *msg,
   T_ASC_PresentationContextID presID)
 {
-    CONDITION cond;
+    OFCondition cond = EC_Normal;
     T_DIMSE_C_StoreRQ *req;
     char imageFileName[2048];
 
@@ -1100,10 +1084,10 @@ static CONDITION storeSCP(
         &dset, storeSCPCallback, (void*)&callbackData, DIMSE_BLOCKING, 0);
     }
 
-    if (!SUCCESS(cond))
+    if (cond.bad())
     {
       fprintf(stderr, "storescp: Store SCP Failed:\n");
-      COND_DumpConditions();
+      DimseCondition::dump(cond);
       /* remove file */
       if (!opt_ignore)
       {
@@ -1122,20 +1106,19 @@ static CONDITION storeSCP(
     return cond;
 }
 
-static CONDITION
+static OFCondition
 subOpSCP(T_ASC_Association **subAssoc)
 {
-    CONDITION cond;
     T_DIMSE_Message     msg;
     T_ASC_PresentationContextID presID;
 
     if (!ASC_dataWaiting(*subAssoc, 0))	/* just in case */
 	return DIMSE_NODATAAVAILABLE;
 
-    cond = DIMSE_receiveCommand(*subAssoc, DIMSE_BLOCKING, 0, &presID,
+    OFCondition cond = DIMSE_receiveCommand(*subAssoc, DIMSE_BLOCKING, 0, &presID,
 	    &msg, NULL);
 
-    if (cond == DIMSE_NORMAL) {
+    if (cond == EC_Normal) {
 	switch (msg.CommandField) {
 	case DIMSE_C_STORE_RQ:
 	    cond = storeSCP(*subAssoc, &msg, presID);
@@ -1149,21 +1132,26 @@ subOpSCP(T_ASC_Association **subAssoc)
 	}
     }
     /* clean up on association termination */
-    if (cond == DIMSE_PEERREQUESTEDRELEASE) {
-        /* pop only the peer requested release condition from the stack */
-	COND_PopCondition(OFFalse);	
+    if (cond == DUL_PEERREQUESTEDRELEASE)
+    {
 	cond = ASC_acknowledgeRelease(*subAssoc);
-    ASC_dropSCPAssociation(*subAssoc);
-    } else if (cond == DIMSE_PEERABORTEDASSOCIATION) {
-	COND_PopCondition(OFFalse);	/* pop DIMSE abort */
-	COND_PopCondition(OFFalse);	/* pop DUL abort */
-    } else if (cond != DIMSE_NORMAL) {
+        ASC_dropSCPAssociation(*subAssoc);
+        ASC_destroyAssociation(subAssoc);
+        return cond;
+    } 
+    else if (cond == DUL_PEERABORTEDASSOCIATION)
+    {
+    } 
+    else if (cond != EC_Normal)
+    {
 	errmsg("DIMSE Failure (aborting sub-association):\n");
-	COND_DumpConditions();
+	DimseCondition::dump(cond);
         /* some kind of error so abort the association */
 	cond = ASC_abortAssociation(*subAssoc);
     }
-    if (cond != DIMSE_NORMAL) {
+
+    if (cond != EC_Normal)
+    {
         ASC_dropAssociation(*subAssoc);
         ASC_destroyAssociation(subAssoc);
     }
@@ -1190,7 +1178,7 @@ static void
 moveCallback(void *callbackData, T_DIMSE_C_MoveRQ *request, 
     int responseCount, T_DIMSE_C_MoveRSP *response)
 {
-    CONDITION cond;
+    OFCondition cond = EC_Normal;
     MyCallbackInfo *myCallbackData;
 
     myCallbackData = (MyCallbackInfo*)callbackData;
@@ -1207,9 +1195,9 @@ moveCallback(void *callbackData, T_DIMSE_C_MoveRQ *request,
 	}
         cond = DIMSE_sendCancelRequest(myCallbackData->assoc,
 	    myCallbackData->presId, request->MessageID);
-        if (cond != DIMSE_NORMAL) {
+        if (cond != EC_Normal) {
 	    errmsg("Cancel RQ Failed:");
-	    COND_DumpConditions();
+	    DimseCondition::dump(cond);
 	}
     }
 }
@@ -1235,10 +1223,9 @@ substituteOverrideKeys(DcmDataset *dset)
 }
 
 
-static  CONDITION
+static  OFCondition
 moveSCU(T_ASC_Association * assoc, const char *fname)
 {
-    CONDITION           cond;
     T_ASC_PresentationContextID presId;
     T_DIMSE_C_MoveRQ	req;
     T_DIMSE_C_MoveRSP   rsp;
@@ -1280,10 +1267,7 @@ moveSCU(T_ASC_Association * assoc, const char *fname)
     
     /* which presentation context should be used */
     presId = ASC_findAcceptedPresentationContextID(assoc, sopClass);
-    if (presId == 0) {
-	return COND_PushCondition(DIMSE_NOVALIDPRESENTATIONCONTEXTID, 
-	    "No Presentation Context for: %s", sopClass);
-    }
+    if (presId == 0) return DIMSE_NOVALIDPRESENTATIONCONTEXTID;
 
     if (opt_verbose) {
 	printf("Move SCU RQ: MsgID %d\n", msgId);
@@ -1306,12 +1290,12 @@ moveSCU(T_ASC_Association * assoc, const char *fname)
 	strcpy(req.MoveDestination, opt_moveDestination);
     }
 
-    cond = DIMSE_moveUser(assoc, presId, &req, dcmff.getDataset(),
+    OFCondition cond = DIMSE_moveUser(assoc, presId, &req, dcmff.getDataset(),
         moveCallback, &callbackData, DIMSE_BLOCKING, 0, 
 	net, subOpCallback, NULL,
 	&rsp, &statusDetail, &rspIds);
         
-    if (cond == DIMSE_NORMAL) {
+    if (cond == EC_Normal) {
         if (opt_verbose) {
 	    DIMSE_printCMoveRSP(stdout, &rsp); 
 	    if (rspIds != NULL) {
@@ -1321,7 +1305,7 @@ moveSCU(T_ASC_Association * assoc, const char *fname)
         }
     } else {
         errmsg("Move Failed:");
-	COND_DumpConditions();
+	DimseCondition::dump(cond);
     }
     if (statusDetail != NULL) {
         printf("  Status Detail:\n");
@@ -1335,13 +1319,14 @@ moveSCU(T_ASC_Association * assoc, const char *fname)
 }
 
 
-static CONDITION
+static OFCondition
 cmove(T_ASC_Association * assoc, const char *fname)
 {
-    CONDITION cond = DIMSE_NORMAL;
+    OFCondition cond = EC_Normal;
     int n = (int)opt_repeatCount;
 
-    while (cond == DIMSE_NORMAL && n--) {
+    while (cond.good() && n--)
+    {
 	cond = moveSCU(assoc, fname);
     }
     return cond;
@@ -1351,7 +1336,12 @@ cmove(T_ASC_Association * assoc, const char *fname)
 ** CVS Log
 **
 ** $Log: movescu.cc,v $
-** Revision 1.37  2001-09-26 12:28:55  meichel
+** Revision 1.38  2001-10-12 10:18:21  meichel
+** Replaced the CONDITION types, constants and functions in the dcmnet module
+**   by an OFCondition based implementation which eliminates the global condition
+**   stack.  This is a major change, caveat emptor!
+**
+** Revision 1.37  2001/09/26 12:28:55  meichel
 ** Implemented changes in dcmnet required by the adaptation of dcmdata
 **   to class OFCondition.  Removed some unused code.
 **

@@ -44,9 +44,9 @@
 ** Intent:		This file defines the public structures and constants
 **			and the function prototypes for the DUL (DICOM Upper
 **			Layer) facility.
-** Last Update:		$Author: meichel $, $Date: 2001-09-26 12:28:59 $
+** Last Update:		$Author: meichel $, $Date: 2001-10-12 10:18:27 $
 ** Source File:		$RCSfile: dul.h,v $
-** Revision:		$Revision: 1.11 $
+** Revision:		$Revision: 1.12 $
 ** Status:		$State: Exp $
 */
 
@@ -142,6 +142,8 @@ typedef enum {
 #define	DUL_PRESENTATION_REJECT_ABSTRACT_SYNTAX	3
 #define	DUL_PRESENTATION_REJECT_TRANSFER_SYNTAX	4
 
+typedef OFList<char *> DUL_TRANSFERSYNTAXLIST;
+
 typedef struct {
     void *reserved[2];
     DUL_PRESENTATIONCONTEXTID presentationContextID;
@@ -205,9 +207,6 @@ typedef struct {
 
 #define	DUL_DOMAINMASK		0x04
 #define	DUL_FULLDOMAINNAME	0x04
-
-#define	DUL_NETWORK_TCP		"NETWORK TCP"
-#define	DUL_NETWORK_OSI		"NETWORK OSI"
 
 #define	DUL_AEREQUESTOR		"AE REQUESTOR"
 #define	DUL_AEACCEPTOR		"AE ACCEPTOR"
@@ -288,15 +287,14 @@ typedef enum {
 ** First set of functions are for establishing the network and associations.
 */
 
-CONDITION
+OFCondition
 DUL_AcknowledgeAssociationRQ(
   DUL_ASSOCIATIONKEY ** association,
   DUL_ASSOCIATESERVICEPARAMETERS * params, 
   int activatePDUStorage);
 
-CONDITION
+OFCondition
 DUL_InitializeNetwork(
-  const char *type, 
   const char *mode, 
   void *param,
   int timeout, 
@@ -304,7 +302,7 @@ DUL_InitializeNetwork(
   options, 
   DUL_NETWORKKEY ** network);
 
-CONDITION
+OFCondition
 DUL_ReceiveAssociationRQ(
   DUL_NETWORKKEY ** net,
   DUL_BLOCKOPTIONS blk, 
@@ -312,13 +310,13 @@ DUL_ReceiveAssociationRQ(
   DUL_ASSOCIATIONKEY ** association, 
   int activatePDUStorage);
 
-CONDITION
+OFCondition
 DUL_RejectAssociationRQ(
   DUL_ASSOCIATIONKEY ** association,
   DUL_ABORTITEMS * params, 
   int activatePDUStorage);
   
-CONDITION
+OFCondition
 DUL_RequestAssociation(
   DUL_NETWORKKEY ** network,
   DUL_ASSOCIATESERVICEPARAMETERS * params,
@@ -327,32 +325,32 @@ DUL_RequestAssociation(
 
 /* Define functions for releasing/aborting Associations.
 */
-CONDITION DUL_AbortAssociation(DUL_ASSOCIATIONKEY ** association);
-CONDITION DUL_DropAssociation(DUL_ASSOCIATIONKEY ** association);
-CONDITION DUL_DropNetwork(DUL_NETWORKKEY ** network);
-CONDITION DUL_ReleaseAssociation(DUL_ASSOCIATIONKEY ** association);
-CONDITION DUL_AcknowledgeRelease(DUL_ASSOCIATIONKEY ** association);
+OFCondition DUL_AbortAssociation(DUL_ASSOCIATIONKEY ** association);
+OFCondition DUL_DropAssociation(DUL_ASSOCIATIONKEY ** association);
+OFCondition DUL_DropNetwork(DUL_NETWORKKEY ** network);
+OFCondition DUL_ReleaseAssociation(DUL_ASSOCIATIONKEY ** association);
+OFCondition DUL_AcknowledgeRelease(DUL_ASSOCIATIONKEY ** association);
 
 /* Functions for reading/write PDVs inside P DATA PDUs.
 */
-CONDITION
+OFCondition
 DUL_ReadPDVs(DUL_ASSOCIATIONKEY ** association,
 	     DUL_PDVLIST * pdvList, DUL_BLOCKOPTIONS block, int timeout);
-CONDITION
+OFCondition
 DUL_WritePDVs(DUL_ASSOCIATIONKEY ** association,
 	      DUL_PDVLIST * pdvList);
-CONDITION DUL_NextPDV(DUL_ASSOCIATIONKEY ** association, DUL_PDV * pdv);
+OFCondition DUL_NextPDV(DUL_ASSOCIATIONKEY ** association, DUL_PDV * pdv);
 
 
 /* Miscellaneous functions.
 */
-const char *DUL_Message(CONDITION cond);
+const char *DUL_Message(OFCondition cond);
 void DUL_Debug(OFBool flag);
-CONDITION
+OFCondition
 DUL_AssociationParameter(DUL_ASSOCIATIONKEY ** association,
 			 DUL_ASSOCIATION_PARAMETER param, DUL_DATA_TYPE type,
 			 void *address, size_t length);
-CONDITION
+OFCondition
 DUL_MakePresentationCtx(DUL_PRESENTATIONCONTEXT ** ctx,
 		     DUL_SC_ROLE proposedSCRole, DUL_SC_ROLE acceptedSCRole,
 DUL_PRESENTATIONCONTEXTID ctxID, unsigned char reason, const char *abstractSyntax,
@@ -360,7 +358,7 @@ DUL_PRESENTATIONCONTEXTID ctxID, unsigned char reason, const char *abstractSynta
 void DUL_DumpParams(DUL_ASSOCIATESERVICEPARAMETERS * params);
 void DUL_DumpConnectionParameters(DUL_ASSOCIATIONKEY *association, ostream& outstream);
 
-CONDITION DUL_ClearServiceParameters(DUL_ASSOCIATESERVICEPARAMETERS * params);
+OFCondition DUL_ClearServiceParameters(DUL_ASSOCIATESERVICEPARAMETERS * params);
 void DUL_DefaultServiceParameters(DUL_ASSOCIATESERVICEPARAMETERS * params);
 void dumpExtNegList(SOPClassExtendedNegotiationSubItemList& list);
 
@@ -387,7 +385,7 @@ void DUL_returnAssociatePDUStorage(DUL_ASSOCIATIONKEY *dulassoc, void *& pdu, un
 DcmTransportConnection *DUL_getTransportConnection(DUL_ASSOCIATIONKEY * callerAssociation);
 
 /* change transport layer */
-CONDITION DUL_setTransportLayer(DUL_NETWORKKEY *callerNetworkKey, DcmTransportLayer *newLayer, int takeoverOwnership);
+OFCondition DUL_setTransportLayer(DUL_NETWORKKEY *callerNetworkKey, DcmTransportLayer *newLayer, int takeoverOwnership);
 
 /*
  * function allowing to retrieve the peer certificate from the DUL layer
@@ -399,66 +397,18 @@ unsigned long DUL_getPeerCertificate(DUL_ASSOCIATIONKEY *dulassoc, void *buf, un
 ** END extra functions
 */
 
-/*  Now define the fixed values for conditions returned by this
-**  package.  Note that FAC_DUL is used to generate these
-**  conditions.  This should be defined in some global include
-**  file so that we can keep all of the facilities straight.
-*/
-
-#define	DUL_NORMAL	FORM_COND(FAC_DUL, SEV_SUCC, 1)
-#define	DUL_NETWORKINITIALIZED	FORM_COND(FAC_DUL, SEV_ERROR, 2)
-#define	DUL_KEYCREATEFAILURE	FORM_COND(FAC_DUL, SEV_ERROR, 3)
-#define	DUL_UNSUPPORTEDNETWORK	FORM_COND(FAC_DUL, SEV_ERROR, 4)
-#define	DUL_UNRECOGNIZEDAE	FORM_COND(FAC_DUL, SEV_ERROR, 5)
-#define	DUL_TCPINITERROR	FORM_COND(FAC_DUL, SEV_ERROR, 6)
-#define	DUL_NULLKEY		FORM_COND(FAC_DUL, SEV_ERROR, 7)
-#define	DUL_ILLEGALKEY		FORM_COND(FAC_DUL, SEV_ERROR, 8)
-#define	DUL_ILLEGALACCEPT	FORM_COND(FAC_DUL, SEV_ERROR, 9)
-#define	DUL_ILLEGALREQUEST	FORM_COND(FAC_DUL, SEV_ERROR, 10)
-#define	DUL_UNEXPECTEDPDU	FORM_COND(FAC_DUL, SEV_ERROR, 11)
-#define	DUL_UNKNOWNREMOTENODE	FORM_COND(FAC_DUL, SEV_ERROR, 12)
-#define	DUL_UNKNOWNHOST		FORM_COND(FAC_DUL, SEV_ERROR, 13)
-#define	DUL_MALLOCERROR		FORM_COND(FAC_DUL, SEV_ERROR, 14)
-#define	DUL_TCPIOERROR		FORM_COND(FAC_DUL, SEV_ERROR, 15)
-#define	DUL_NOASSOCIATIONREQUEST	FORM_COND(FAC_DUL, SEV_WARN,  16)
-#define	DUL_UNRECOGNIZEDPDUTYPE	FORM_COND(FAC_DUL, SEV_ERROR, 17)
-#define	DUL_PEERABORTEDASSOCIATION	FORM_COND(FAC_DUL, SEV_ERROR, 19)
-#define	DUL_PEERDROPPEDASSOCIATION	FORM_COND(FAC_DUL, SEV_ERROR, 20)
-#define	DUL_WRONGASSOCIATIONSTATE	FORM_COND(FAC_DUL, SEV_ERROR, 21)
-#define	DUL_CODINGERROR		FORM_COND(FAC_DUL, SEV_ERROR, 22)
-#define	DUL_ILLEGALSERVICEPARAMETER	FORM_COND(FAC_DUL, SEV_ERROR, 23)
-#define	DUL_REQUESTASSOCIATIONFAILED	FORM_COND(FAC_DUL, SEV_ERROR, 24)
-#define	DUL_APABORT		FORM_COND(FAC_DUL, SEV_ERROR, 25)
-#define DUL_ASSOCIATIONREJECTED	FORM_COND(FAC_DUL, SEV_ERROR, 26)
-#define	DUL_ILLEGALREJECTRESULT	FORM_COND(FAC_DUL, SEV_ERROR, 27)
-#define	DUL_ILLEGALREJECTREASON	FORM_COND(FAC_DUL, SEV_ERROR, 28)
-#define	DUL_RELEASECONFIRMED	FORM_COND(FAC_DUL, SEV_SUCC,  29)
-#define	DUL_PEERREQUESTEDRELEASE	FORM_COND(FAC_DUL, SEV_SUCC,  30)
-#define DUL_PDATAPDUARRIVED	FORM_COND(FAC_DUL, SEV_SUCC,  31)
-#define	DUL_READTIMEOUT		FORM_COND(FAC_DUL, SEV_WARN,  32)
-#define DUL_NETWORKCLOSED	FORM_COND(FAC_DUL, SEV_ERROR, 33)
-#define DUL_ILLEGALPDU		FORM_COND(FAC_DUL, SEV_ERROR, 34)
-#define	DUL_FSMERROR		FORM_COND(FAC_DUL, SEV_FATAL, 35)
-#define	DUL_WRONGDATATYPE	FORM_COND(FAC_DUL, SEV_ERROR, 36)
-#define	DUL_INSUFFICIENTBUFFERLENGTH	FORM_COND(FAC_DUL, SEV_ERROR, 37)
-#define	DUL_INCORRECTBUFFERLENGTH	FORM_COND(FAC_DUL, SEV_ERROR, 38)
-#define	DUL_ASSOCIATIONPARAMETERFAILED	FORM_COND(FAC_DUL, SEV_ERROR, 39)
-#define	DUL_NOPDVS			FORM_COND(FAC_DUL, SEV_ERROR, 40)
-#define DUL_ILLEGALPARAMETER	FORM_COND(FAC_DUL, SEV_ERROR, 41)
-#define	DUL_LISTERROR		FORM_COND(FAC_DUL, SEV_ERROR, 42)
-#define	DUL_ILLEGALPDULENGTH	FORM_COND(FAC_DUL, SEV_FATAL, 43)
-#define	DUL_LISTCREATEFAILED	FORM_COND(FAC_DUL, SEV_ERROR, 44)
-#define	DUL_UNSUPPORTEDPEERPROTOCOL	FORM_COND(FAC_DUL, SEV_ERROR, 45)
-#define	DUL_PEERILLEGALXFERSYNTAXCOUNT	FORM_COND(FAC_DUL, SEV_ERROR, 46)
-#define	DUL_PCTRANSLATIONFAILURE	FORM_COND(FAC_DUL, SEV_ERROR, 47)
-#define DUL_TLSERROR			FORM_COND(FAC_DUL, SEV_ERROR, 48)
 
 #endif
 
 /*
 ** CVS Log
 ** $Log: dul.h,v $
-** Revision 1.11  2001-09-26 12:28:59  meichel
+** Revision 1.12  2001-10-12 10:18:27  meichel
+** Replaced the CONDITION types, constants and functions in the dcmnet module
+**   by an OFCondition based implementation which eliminates the global condition
+**   stack.  This is a major change, caveat emptor!
+**
+** Revision 1.11  2001/09/26 12:28:59  meichel
 ** Implemented changes in dcmnet required by the adaptation of dcmdata
 **   to class OFCondition.  Removed some unused code.
 **

@@ -22,9 +22,9 @@
  *  Purpose: Query/Retrieve Service Class User (C-FIND operation)
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-09-26 12:28:54 $
+ *  Update Date:      $Date: 2001-10-12 10:18:20 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/apps/findscu.cc,v $
- *  CVS/RCS Revision: $Revision: 1.30 $
+ *  CVS/RCS Revision: $Revision: 1.31 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -166,10 +166,10 @@ addOverrideKey(OFConsoleApplication& app, const char* s)
     }
 }
 
-static CONDITION
+static OFCondition
 addPresentationContexts(T_ASC_Parameters *params);
 
-static CONDITION 
+static OFCondition 
 cfind(T_ASC_Association *assoc, const char* fname);
 
 #define SHORTCOL 4
@@ -178,7 +178,6 @@ cfind(T_ASC_Association *assoc, const char* fname);
 int
 main(int argc, char *argv[])
 {
-    CONDITION cond;
     T_ASC_Network *net;
     T_ASC_Parameters *params;
     const char *opt_peer;
@@ -343,14 +342,14 @@ main(int argc, char *argv[])
 		DCM_DICT_ENVIRONMENT_VARIABLE);
     }
 
-    cond = ASC_initializeNetwork(NET_REQUESTOR, 0, 1000, &net);
-    if (!SUCCESS(cond)) {
-	COND_DumpConditions();
+    OFCondition cond = ASC_initializeNetwork(NET_REQUESTOR, 0, 1000, &net);
+    if (cond.bad()) {
+	DimseCondition::dump(cond);
 	exit(1);
     }
     cond = ASC_createAssociationParameters(&params, opt_maxReceivePDULength);
-    if (!SUCCESS(cond)) {
-	COND_DumpConditions();
+    if (cond.bad()) {
+	DimseCondition::dump(cond);
 	exit(1);
     }
     ASC_setAPTitles(params, opt_ourTitle, opt_peerTitle, NULL);
@@ -360,8 +359,8 @@ main(int argc, char *argv[])
     ASC_setPresentationAddresses(params, localHost, peerHost);
 
     cond = addPresentationContexts(params);
-    if (!SUCCESS(cond)) {
-	COND_DumpConditions();
+    if (cond.bad()) {
+	DimseCondition::dump(cond);
 	exit(1);
     }
     if (opt_debug) {
@@ -373,8 +372,8 @@ main(int argc, char *argv[])
     if (opt_verbose)
 	printf("Requesting Association\n");
     cond = ASC_requestAssociation(net, params, &assoc);
-    if (cond != ASC_NORMAL) {
-	if (cond == ASC_ASSOCIATIONREJECTED) {
+    if (cond.bad()) {
+	if (cond == DUL_ASSOCIATIONREJECTED) {
 	    T_ASC_RejectParameters rej;
 
 	    ASC_getRejectParameters(params, &rej);
@@ -383,7 +382,7 @@ main(int argc, char *argv[])
 	    exit(1);
 	} else {
 	    errmsg("Association Request Failed:");
-	    COND_DumpConditions();
+	    DimseCondition::dump(cond);
 	    exit(1);
 	}
     }
@@ -404,7 +403,7 @@ main(int argc, char *argv[])
     }
 
     /* do the real work */
-    cond = DIMSE_NORMAL;
+    cond = EC_Normal;
     if (fileNameList.empty())
     {
 	/* no files provided on command line */
@@ -412,7 +411,7 @@ main(int argc, char *argv[])
     } else {
       OFListIterator(OFString) iter = fileNameList.begin();
       OFListIterator(OFString) enditer = fileNameList.end();    
-      while ((iter != enditer) && (cond == DIMSE_NORMAL))
+      while ((iter != enditer) && (cond == EC_Normal)) // compare with EC_Normal since DUL_PEERREQUESTEDRELEASE is also good()
       {
           cond = cfind(assoc, (*iter).c_str());
           ++iter;
@@ -420,15 +419,15 @@ main(int argc, char *argv[])
     }
 
     /* tear down association */
-    switch (cond) {
-    case DIMSE_NORMAL:
+    if (cond == EC_Normal)
+    {
 	if (opt_abortAssociation) {
 	    if (opt_verbose)
 		printf("Aborting Association\n");
 	    cond = ASC_abortAssociation(assoc);
-	    if (!SUCCESS(cond)) {
+	    if (cond.bad()) {
 		errmsg("Association Abort Failed:");
-		COND_DumpConditions();
+		DimseCondition::dump(cond);
 		exit(1);
 	    }
 	} else {
@@ -436,60 +435,53 @@ main(int argc, char *argv[])
 	    if (opt_verbose)
 		printf("Releasing Association\n");
 	    cond = ASC_releaseAssociation(assoc);
-	    if (cond != ASC_NORMAL && cond != ASC_RELEASECONFIRMED) {
+	    if (cond.bad())
+	    {
 		errmsg("Association Release Failed:");
-		COND_DumpConditions();
+		DimseCondition::dump(cond);
 		exit(1);
 	    }
 	}
-	break;
-    case DIMSE_PEERREQUESTEDRELEASE:
+    }
+    else if (cond == DUL_PEERREQUESTEDRELEASE)
+    {
 	errmsg("Protocol Error: peer requested release (Aborting)");
 	if (opt_verbose)
 	    printf("Aborting Association\n");
 	cond = ASC_abortAssociation(assoc);
-	if (!SUCCESS(cond)) {
+	if (cond.bad()) {
 	    errmsg("Association Abort Failed:");
-	    COND_DumpConditions();
+	    DimseCondition::dump(cond);
 	    exit(1);
 	}
-	break;
-    case DIMSE_PEERABORTEDASSOCIATION:
+    }
+    else if (cond == DUL_PEERABORTEDASSOCIATION)
+    {
 	if (opt_verbose) printf("Peer Aborted Association\n");
-	break;
-    default:
+    }
+    else 
+    {
 	errmsg("SCU Failed:");
-	COND_DumpConditions();
+	DimseCondition::dump(cond);
 	if (opt_verbose)
 	    printf("Aborting Association\n");
 	cond = ASC_abortAssociation(assoc);
-	if (!SUCCESS(cond)) {
+	if (cond.bad()) {
 	    errmsg("Association Abort Failed:");
-	    COND_DumpConditions();
+	    DimseCondition::dump(cond);
 	    exit(1);
 	}
-	break;
     }
 
     cond = ASC_destroyAssociation(&assoc);
-    if (!SUCCESS(cond)) {
-	COND_DumpConditions();
+    if (cond.bad()) {
+	DimseCondition::dump(cond);
 	exit(1);
     }
     cond = ASC_dropNetwork(&net);
-    if (!SUCCESS(cond)) {
-	COND_DumpConditions();
+    if (cond.bad()) {
+	DimseCondition::dump(cond);
 	exit(1);
-    }
-    if (opt_debug) {
-	/* are there any conditions sitting on the condition stack? */
-	char buf[BUFSIZ];
-	CONDITION c;
-
-	if (COND_TopCondition(&c, buf, BUFSIZ) != COND_NORMAL) {
-	    fprintf(stderr, "CONDITIONS Remaining\n");
-	    COND_DumpConditions();
-	}
     }
 
 #ifdef HAVE_WINSOCK_H
@@ -499,10 +491,10 @@ main(int argc, char *argv[])
     return 0;
 }
 
-static CONDITION
+static OFCondition
 addPresentationContexts(T_ASC_Parameters *params)
 {
-    CONDITION cond = ASC_NORMAL;
+    OFCondition cond = EC_Normal;
 
     /* 
     ** We prefer to accept Explicitly encoded transfer syntaxes.
@@ -609,10 +601,9 @@ progressCallback(
     }
 }
 
-static CONDITION 
+static OFCondition 
 findSCU(T_ASC_Association * assoc, const char *fname)
 {
-    CONDITION cond;
     DIC_US msgId = assoc->nextMsgID++;
     T_ASC_PresentationContextID presId;
     T_DIMSE_C_FindRQ req;
@@ -662,13 +653,13 @@ findSCU(T_ASC_Association * assoc, const char *fname)
 	printf("--------\n");
     }
 
-    cond = DIMSE_findUser(assoc, presId, &req, dcmff.getDataset(), 
+    OFCondition cond = DIMSE_findUser(assoc, presId, &req, dcmff.getDataset(), 
 			  progressCallback, NULL, 
 			  DIMSE_BLOCKING, 0, 
 			  &rsp, &statusDetail);
 	
 	
-    if (cond == DIMSE_NORMAL) {
+    if (cond == EC_Normal) {
         if (opt_verbose) {
 	    DIMSE_printCFindRSP(stdout, &rsp);
         } else {
@@ -683,7 +674,7 @@ findSCU(T_ASC_Association * assoc, const char *fname)
 	    errmsg("Find Failed, query keys:");
 	    dcmff.getDataset()->print(COUT);
 	}
-	COND_DumpConditions();
+	DimseCondition::dump(cond);
     }
     if (statusDetail != NULL) {
         printf("  Status Detail:\n");
@@ -694,13 +685,13 @@ findSCU(T_ASC_Association * assoc, const char *fname)
 }
 
 
-static CONDITION
+static OFCondition
 cfind(T_ASC_Association * assoc, const char *fname)
 {
-    CONDITION cond = DIMSE_NORMAL;
+    OFCondition cond = EC_Normal;
     int n = (int)opt_repeatCount;
 
-    while (cond == DIMSE_NORMAL && n--) {
+    while (cond == EC_Normal && n--) {
 	cond = findSCU(assoc, fname);
     }
     return cond;
@@ -709,7 +700,12 @@ cfind(T_ASC_Association * assoc, const char *fname)
 /*
 ** CVS Log
 ** $Log: findscu.cc,v $
-** Revision 1.30  2001-09-26 12:28:54  meichel
+** Revision 1.31  2001-10-12 10:18:20  meichel
+** Replaced the CONDITION types, constants and functions in the dcmnet module
+**   by an OFCondition based implementation which eliminates the global condition
+**   stack.  This is a major change, caveat emptor!
+**
+** Revision 1.30  2001/09/26 12:28:54  meichel
 ** Implemented changes in dcmnet required by the adaptation of dcmdata
 **   to class OFCondition.  Removed some unused code.
 **

@@ -68,9 +68,9 @@
 **
 **
 ** Last Update:		$Author: meichel $
-** Update Date:		$Date: 2001-09-26 12:28:59 $
+** Update Date:		$Date: 2001-10-12 10:18:26 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/include/Attic/dicom.h,v $
-** CVS/RCS Revision:	$Revision: 1.8 $
+** CVS/RCS Revision:	$Revision: 1.9 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -103,47 +103,10 @@ END_EXTERN_C
 #include <libc.h>
 #endif
 
+#include "cond.h"       /* condition typedefs */
 #include "dcompat.h"	/* compatability routines */
-
 #include "dctypes.h"	/* dcmdata toolkit basic types */
 #include "dcuid.h"	/* dcmdata UID definitions */
-
-
-typedef unsigned long CONDITION;
-
-#define	FORM_COND(facility, severity, value) \
-	(CONDITION)((((unsigned long)value)<<16) | \
-	(((unsigned long)facility) << 4) | ((unsigned long)severity))
-
-#define	SEV_SUCC	1
-#define SEV_INFORM	3
-#define	SEV_WARN	5
-#define	SEV_ERROR	2
-#define	SEV_FATAL	4
-
-#define SUCCESS(A)	(((A)&0xf) == SEV_SUCC)
-#define INFORM(A)	(((A)&0xf) == SEV_INFORM)
-#define WARNING(A)	(((A)&0xf) == SEV_WARN)
-#define CONDERROR(A)	(((A)&0xf) == SEV_ERROR)
-#define FATAL(A)	(((A)&0xf) == SEV_FATAL)
-
-#define	FACILITY(A)	((unsigned long)(A)>>4) & 0xfff
-
-#define	FAC_DUL		1
-// #define	FAC_ACR		2	/* obsolete !! */
-// #define	FAC_IDX		3	/* obsolete !! */
-#define	FAC_LST		4
-#define	FAC_DIAG	5
-#define	FAC_COND	6
-#define	FAC_SNQ		7
-// #define	FAC_CTX1	8	/* obsolete !! */
-#define FAC_ASC		9
-#define FAC_DIMSE	10
-#define FAC_DCM		11	
-#define FAC_DB		12
-#define FAC_CNF		13
-#define FAC_APP 	0x0fff	/* for stand-alone programs	*/
-
 
 /*
  * Useful Types
@@ -220,7 +183,12 @@ typedef char	DIC_NODENAME[DIC_NODENAME_LEN + 1];
 /*
 ** CVS Log
 ** $Log: dicom.h,v $
-** Revision 1.8  2001-09-26 12:28:59  meichel
+** Revision 1.9  2001-10-12 10:18:26  meichel
+** Replaced the CONDITION types, constants and functions in the dcmnet module
+**   by an OFCondition based implementation which eliminates the global condition
+**   stack.  This is a major change, caveat emptor!
+**
+** Revision 1.8  2001/09/26 12:28:59  meichel
 ** Implemented changes in dcmnet required by the adaptation of dcmdata
 **   to class OFCondition.  Removed some unused code.
 **

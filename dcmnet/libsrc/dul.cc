@@ -34,10 +34,10 @@
 ** @$=@$=@$=
 */
 /*
-**				DICOM 93
-**		     Electronic Radiology Laboratory
-**		   Mallinckrodt Institute of Radiology
-**		Washington University School of Medicine
+**                              DICOM 93
+**                   Electronic Radiology Laboratory
+**                 Mallinckrodt Institute of Radiology
+**              Washington University School of Medicine
 **
 ** Module Name(s):
 **			DUL_InitializeNetwork
@@ -54,9 +54,9 @@
 ** Author, Date:	Stephen M. Moore, 14-Apr-93
 ** Intent:		This module contains the public entry points for the
 **			DICOM Upper Layer (DUL) protocol package.
-** Last Update:		$Author: joergr $, $Date: 2001-09-28 13:28:53 $
+** Last Update:		$Author: meichel $, $Date: 2001-10-12 10:18:36 $
 ** Source File:		$RCSfile: dul.cc,v $
-** Revision:		$Revision: 1.38 $
+** Revision:		$Revision: 1.39 $
 ** Status:		$State: Exp $
 */
 
@@ -107,7 +107,7 @@ END_EXTERN_C
 #include <iomanip.h>
 
 #ifdef HAVE_GUSI_H
-#include <GUSI.h>	/* Use the Grand Unified Sockets Interface (GUSI) on Macintosh */
+#include <GUSI.h>       /* Use the Grand Unified Sockets Interface (GUSI) on Macintosh */
 #endif
 
 #include "dcompat.h"
@@ -128,45 +128,45 @@ OFGlobal<OFBool> dcmDisableGethostbyaddr(OFFalse);
 static int networkInitialized = 0;
 static OFBool debug = 0;
 
-static CONDITION
-createNetworkKey(const char *type, const char *mode, int timeout, unsigned long opt,
-		 PRIVATE_NETWORKKEY ** k);
-static CONDITION
+static OFCondition
+createNetworkKey(const char *mode, int timeout, unsigned long opt,
+                 PRIVATE_NETWORKKEY ** k);
+static OFCondition
 createAssociationKey(PRIVATE_NETWORKKEY ** net, const char *node,
-		     unsigned long maxPDU,
-		     PRIVATE_ASSOCIATIONKEY ** assoc);
-static CONDITION initializeNetworkTCP(PRIVATE_NETWORKKEY ** k, void *p);
-static CONDITION
+                     unsigned long maxPDU,
+                     PRIVATE_ASSOCIATIONKEY ** assoc);
+static OFCondition initializeNetworkTCP(PRIVATE_NETWORKKEY ** k, void *p);
+static OFCondition
 receiveTransportConnection(PRIVATE_NETWORKKEY ** network,
-			   DUL_BLOCKOPTIONS block,
-			   DUL_ASSOCIATESERVICEPARAMETERS * params,
-			   PRIVATE_ASSOCIATIONKEY ** association);
-static CONDITION
+                           DUL_BLOCKOPTIONS block,
+                           DUL_ASSOCIATESERVICEPARAMETERS * params,
+                           PRIVATE_ASSOCIATIONKEY ** association);
+static OFCondition
 receiveTransportConnectionTCP(PRIVATE_NETWORKKEY ** network,
-			      DUL_BLOCKOPTIONS block,
-			      DUL_ASSOCIATESERVICEPARAMETERS * params,
-			      PRIVATE_ASSOCIATIONKEY ** association);
+                              DUL_BLOCKOPTIONS block,
+                              DUL_ASSOCIATESERVICEPARAMETERS * params,
+                              PRIVATE_ASSOCIATIONKEY ** association);
 
 
 static void destroyAssociationKey(PRIVATE_ASSOCIATIONKEY ** key);
 #if 0
-static CONDITION writeDataPDU(PRIVATE_ASSOCIATIONKEY ** key, DUL_DATAPDU * pdu);
-static CONDITION dropPDU(PRIVATE_ASSOCIATIONKEY ** association, unsigned long l);
+static OFCondition writeDataPDU(PRIVATE_ASSOCIATIONKEY ** key, DUL_DATAPDU * pdu);
+static OFCondition dropPDU(PRIVATE_ASSOCIATIONKEY ** association, unsigned long l);
 #endif
-static CONDITION
+static OFCondition
 get_association_parameter(void *paramAddress,
   DUL_DATA_TYPE paramType, size_t paramLength,
   DUL_DATA_TYPE outputType, void *outputAddress, size_t outputLength);
 static void setTCPBufferLength(int sock);
-static CONDITION checkNetwork(PRIVATE_NETWORKKEY ** networkKey, const char *caller);
-static CONDITION checkAssociation(PRIVATE_ASSOCIATIONKEY ** association, const char *caller);
+static OFCondition checkNetwork(PRIVATE_NETWORKKEY ** networkKey);
+static OFCondition checkAssociation(PRIVATE_ASSOCIATIONKEY ** association);
 static void dump_presentation_ctx(LST_HEAD ** l);
 static void dump_uid(const char *UID, const char *indent);
 static void clearRequestorsParams(DUL_ASSOCIATESERVICEPARAMETERS * params);
 static void clearPresentationContext(LST_HEAD ** l);
 
-#define	MIN_PDU_LENGTH	4*1024
-#define	MAX_PDU_LENGTH	128*1024
+#define MIN_PDU_LENGTH  4*1024
+#define MAX_PDU_LENGTH  128*1024
 
 
 void DUL_activateAssociatePDUStorage(DUL_ASSOCIATIONKEY *dulassoc)
@@ -218,48 +218,38 @@ unsigned long DUL_getPeerCertificateLength(DUL_ASSOCIATIONKEY *dulassoc)
 **
 ** Purpose:
 **  Identify and initialize a network to request or accept Associations.
-**  The caller identifies a network type (DUL_NETWORK_TCP, DUL_NETWORK_OSI)
-**  and whether the application wishes to be an Acceptor (AE_ACCEPTOR) or a
+**  The caller identifies 
+**  whether the application wishes to be an Acceptor (AE_ACCEPTOR) or a
 **  Requestor (AE_REQUESTOR) or both (AE_BOTH).  Upon successful
 **  initialization of the network, the function returns a key to be used
 **  for further network access.
 **
 ** Parameter Dictionary:
-**	networkType		One of a set of predefined constants which
-**				describe the type of network environment
-**				requested.
-**	mode			NULL terminated string identifying the appli-
-**				cation as a requestor or acceptor.
-**	networkParameter	A parameter which is specific to the network
-**				type, which may be needed to initialize the n/w
-**	timeout			Length of time in seconds for TIMER timeout.
-**				If 0, the function will use a default value.
-**	opt			Bitmask which describes options to be used
-**				when initializing the network.
-**	networkKey		The handle created by this function and returned
-**				to the caller to access this network environment
+**      mode                    NULL terminated string identifying the appli-
+**                              cation as a requestor or acceptor.
+**      networkParameter        A parameter which is specific to the network
+**                              type, which may be needed to initialize the n/w
+**      timeout                 Length of time in seconds for TIMER timeout.
+**                              If 0, the function will use a default value.
+**      opt                     Bitmask which describes options to be used
+**                              when initializing the network.
+**      networkKey              The handle created by this function and returned
+**                              to the caller to access this network environment
 **
 ** Return Values:
 **
-**	DUL_KEYCREATEFAILURE
-**	DUL_NETWORKINITIALIZED
-**	DUL_NORMAL
-**	DUL_UNRECOGNIZEDAE
-**	DUL_UNSUPPORTEDNETWORK
 **
 ** Algorithm:
-**	Description of the algorithm (optional) and any other notes.
+**      Description of the algorithm (optional) and any other notes.
 */
 
-CONDITION
-DUL_InitializeNetwork(const char *networkType, const char *mode,
-		      void *networkParameter, int timeout, unsigned long opt,
-		      DUL_NETWORKKEY ** networkKey)
+OFCondition
+DUL_InitializeNetwork(const char *mode,
+                      void *networkParameter, int timeout, unsigned long opt,
+                      DUL_NETWORKKEY ** networkKey)
 {
     PRIVATE_NETWORKKEY
-	* key;			/* Our local copy of the key which is created */
-    CONDITION
-	cond;
+        * key;                  /* Our local copy of the key which is created */
 
 #ifdef SIGPIPE
 #ifdef SIGNAL_HANDLER_WITH_ELLIPSE
@@ -271,112 +261,97 @@ DUL_InitializeNetwork(const char *networkType, const char *mode,
     (void) DUL_InitializeFSM();
 
     *networkKey = NULL;
-    if (networkInitialized++) {
-	return COND_PushCondition(DUL_NETWORKINITIALIZED,
-				  DUL_Message(DUL_NETWORKINITIALIZED));
+    if (networkInitialized++)
+    {
+        return DUL_NETWORKINITIALIZED;
     }
-    cond = createNetworkKey(networkType, mode, timeout, opt, &key);
-    if (!SUCCESS(cond)) {
-	networkInitialized = 0;
-	return cond;
+    OFCondition cond = createNetworkKey(mode, timeout, opt, &key);
+    if (cond.bad()) {
+        networkInitialized = 0;
+        return cond;
     }
-    if (strcmp(networkType, DUL_NETWORK_TCP) == 0)
-	cond = initializeNetworkTCP(&key, networkParameter);
 
-    if (cond == DUL_NORMAL)
-	*networkKey = (DUL_NETWORKKEY *) key;
+    cond = initializeNetworkTCP(&key, networkParameter);
+
+    if (cond.good())
+        *networkKey = (DUL_NETWORKKEY *) key;
     return cond;
 }
 
 /* DUL_DropNetwork
 **
 ** Purpose:
-**	This function drops the network connection established by
-**	by DUL_InitializeNetwork.  The caller passes the pointer to the
-**	network key.  The network connection is closed and the caller's
-**	key is zeroed to prevent misuse.
+**      This function drops the network connection established by
+**      by DUL_InitializeNetwork.  The caller passes the pointer to the
+**      network key.  The network connection is closed and the caller's
+**      key is zeroed to prevent misuse.
 **
 ** Parameter Dictionary:
-**	callerNetworkKey	Caller's handle to the network environment
+**      callerNetworkKey        Caller's handle to the network environment
 **
 ** Return Values:
 **
-**	DUL_ILLEGALKEY
-**	DUL_NORMAL
-**	DUL_NULLKEY
 **
 ** Algorithm:
-**	Close the socket and free the memeory occupied by the network key
+**      Close the socket and free the memeory occupied by the network key
 */
 
-CONDITION
+OFCondition
 DUL_DropNetwork(DUL_NETWORKKEY ** callerNetworkKey)
 {
     PRIVATE_NETWORKKEY
-	** networkKey;
-    CONDITION
-	cond;
+        ** networkKey;
 
     networkKey = (PRIVATE_NETWORKKEY **) callerNetworkKey;
 
-    cond = checkNetwork(networkKey, "DUL_DropNetwork");
-    if (cond != DUL_NORMAL)
-	return cond;
+    OFCondition cond = checkNetwork(networkKey);
+    if (cond.bad()) return cond;
 
     if ((*networkKey)->networkSpecific.TCP.tLayerOwned) delete (*networkKey)->networkSpecific.TCP.tLayer;
 
-    if ((*networkKey)->applicationFunction & DICOM_APPLICATION_ACCEPTOR) {
-	if (strcmp((*networkKey)->networkType, DUL_NETWORK_TCP) == 0)
-	{
+    if ((*networkKey)->applicationFunction & DICOM_APPLICATION_ACCEPTOR)
+    {
 #ifdef HAVE_WINSOCK_H
             (void) shutdown((*networkKey)->networkSpecific.TCP.listenSocket, 1 /* SD_SEND */);
-	    (void) closesocket((*networkKey)->networkSpecific.TCP.listenSocket);
+            (void) closesocket((*networkKey)->networkSpecific.TCP.listenSocket);
 #else
-	    (void) close((*networkKey)->networkSpecific.TCP.listenSocket);
+            (void) close((*networkKey)->networkSpecific.TCP.listenSocket);
 #endif
-	}
     }
     networkInitialized = 0;
     free(*networkKey);
     *networkKey = NULL;
-    return DUL_NORMAL;
+    return EC_Normal;
 }
 
 /* DUL_RequestAssociation
 **
 ** Purpose:
-**	This function requests an Association with another node.  The caller
-**	identifies the network to be used, the name of the other node, a
-**	network dependent parameter and a structure which defines the
-**	Association parameters needed to establish an Association (the
-**	syntax items).  This function establishes the Association and
-**	returns the modified list of Association parameters and a key to
-**	be used to access this Association.  If the caller does not choose
-**	to recognize the parameters returned by the Acceptor, the caller
-**	should abort the Association.
+**      This function requests an Association with another node.  The caller
+**      identifies the network to be used, the name of the other node, a
+**      network dependent parameter and a structure which defines the
+**      Association parameters needed to establish an Association (the
+**      syntax items).  This function establishes the Association and
+**      returns the modified list of Association parameters and a key to
+**      be used to access this Association.  If the caller does not choose
+**      to recognize the parameters returned by the Acceptor, the caller
+**      should abort the Association.
 **
 ** Parameter Dictionary:
-**	network		Caller's handle whcih describes the network environment
-**	params		Pointer to list of parameters which describe the type
-**			of Association requested by the caller.
-**	association	Handle created by this function which describes the
-**			Association; returned to the caller.
+**      network         Caller's handle whcih describes the network environment
+**      params          Pointer to list of parameters which describe the type
+**                      of Association requested by the caller.
+**      association     Handle created by this function which describes the
+**                      Association; returned to the caller.
 **
 ** Return Values:
 **
-**	DUL_ASSOCIATIONREJECTED
-**	DUL_ILLEGALKEY
-**	DUL_ILLEGALREQUEST
-**	DUL_NOCONNECTION
-**	DUL_NORMAL
-**	DUL_NULLKEY
-**	DUL_REQUESTASSOCIATIONFAILED
 **
 ** Algorithm:
-**	Description of the algorithm (optional) and any other notes.
+**      Description of the algorithm (optional) and any other notes.
 */
 
-CONDITION
+OFCondition
 DUL_RequestAssociation(
   DUL_NETWORKKEY ** callerNetworkKey,
   DUL_ASSOCIATESERVICEPARAMETERS * params,
@@ -384,11 +359,9 @@ DUL_RequestAssociation(
   int activatePDUStorage)
 {
     PRIVATE_ASSOCIATIONKEY
-	** association;
+        ** association;
     PRIVATE_NETWORKKEY
-	** network;
-    CONDITION
-	cond;
+        ** network;
     unsigned char
         pduType;
     int
@@ -396,88 +369,87 @@ DUL_RequestAssociation(
 
     network = (PRIVATE_NETWORKKEY **) callerNetworkKey;
     association = (PRIVATE_ASSOCIATIONKEY **) callerAssociation;
-    cond = checkNetwork(network, "DUL_RequestAssociation");
-    if (cond != DUL_NORMAL)
-	return cond;
+    OFCondition cond = checkNetwork(network);
+    if (cond.bad()) return cond;
 
-    if (((*network)->applicationFunction & DICOM_APPLICATION_REQUESTOR) == 0) {
-	return COND_PushCondition(DUL_ILLEGALREQUEST,
-				  DUL_Message(DUL_ILLEGALREQUEST));
+    if (((*network)->applicationFunction & DICOM_APPLICATION_REQUESTOR) == 0)
+    {
+        return DUL_ILLEGALREQUEST;
     }
     if (params->maxPDU < MIN_PDU_LENGTH || params->maxPDU > MAX_PDU_LENGTH)
-	return COND_PushCondition(DUL_ILLEGALPARAMETER,
-				DUL_Message(DUL_ILLEGALPARAMETER), "maxPDU",
-				  "DUL_RequestAssociation");
+    {
+        return makeDcmnetCondition(DULC_ILLEGALPARAMETER, OF_error, "DUL Illegal parameter (maxPDU) in function DUL_RequestAssociation");
+    }
+
     cond = createAssociationKey(network, "", params->maxPDU, association);
-    if (cond != DUL_NORMAL)
-	return cond;
+    if (cond.bad())
+        return cond;
 
     if (activatePDUStorage) DUL_activateAssociatePDUStorage(*association);
 
     /* send a request primitive */
     cond = PRV_StateMachine(network, association,
-	     A_ASSOCIATE_REQ_LOCAL_USER, (*network)->protocolState, params);
+             A_ASSOCIATE_REQ_LOCAL_USER, (*network)->protocolState, params);
 
-    if (cond != DUL_NORMAL) {
-	/*
-	 * In case of an error, close the connection and go to the initial
-	 * state
-	 */
-	cond = PRV_StateMachine(network, association,
-		    TRANS_CONN_CLOSED, (*association)->protocolState, NULL);
-	destroyAssociationKey(association);
-	return COND_PushCondition(DUL_REQUESTASSOCIATIONFAILED,
-				  DUL_Message(DUL_REQUESTASSOCIATIONFAILED));
+    if (cond.bad())
+    {
+        /*
+         * In case of an error, close the connection and go to the initial
+         * state
+         */
+        OFCondition cond2 = PRV_StateMachine(network, association, TRANS_CONN_CLOSED, (*association)->protocolState, NULL);
+        destroyAssociationKey(association);
+        return makeDcmnetSubCondition(DULC_REQUESTASSOCIATIONFAILED, OF_error, "Failed to establish association", DimseCondition::push(cond2, cond));
     }
     cond = PRV_StateMachine(network, association,
       TRANS_CONN_CONFIRM_LOCAL_USER, (*association)->protocolState, params);
-    if (cond != DUL_NORMAL) {
-	destroyAssociationKey(association);
-	return cond;
+    if (cond.bad()) {
+        destroyAssociationKey(association);
+        return cond;
     }
     /* Find the next event */
     cond = PRV_NextPDUType(association, DUL_BLOCK, PRV_DEFAULTTIMEOUT, &pduType);
     if (cond == DUL_NETWORKCLOSED)
-	event = TRANS_CONN_CLOSED;
+        event = TRANS_CONN_CLOSED;
     else if (cond == DUL_READTIMEOUT)
-	event = ARTIM_TIMER_EXPIRED;
-    else if (cond != DUL_NORMAL) {
-	destroyAssociationKey(association);
-	return cond;
+        event = ARTIM_TIMER_EXPIRED;
+    else if (cond.bad()) {
+        destroyAssociationKey(association);
+        return cond;
     } else {
-	switch (pduType) {
-	case DUL_TYPEASSOCIATERQ:
-	    event = A_ASSOCIATE_RQ_PDU_RCV;
-	    break;
-	case DUL_TYPEASSOCIATEAC:
-	    event = A_ASSOCIATE_AC_PDU_RCV;
-	    break;
-	case DUL_TYPEASSOCIATERJ:
-	    event = A_ASSOCIATE_RJ_PDU_RCV;
-	    break;
-	case DUL_TYPEDATA:
-	    event = P_DATA_TF_PDU_RCV;
-	    break;
-	case DUL_TYPERELEASERQ:
-	    event = A_RELEASE_RQ_PDU_RCV;
-	    break;
-	case DUL_TYPERELEASERP:
-	    event = A_RELEASE_RP_PDU_RCV;
-	    break;
-	case DUL_TYPEABORT:
-	    event = A_ABORT_PDU_RCV;
-	    break;
-	default:
-	    event = INVALID_PDU;
-	    break;
-	}
+        switch (pduType) {
+        case DUL_TYPEASSOCIATERQ:
+            event = A_ASSOCIATE_RQ_PDU_RCV;
+            break;
+        case DUL_TYPEASSOCIATEAC:
+            event = A_ASSOCIATE_AC_PDU_RCV;
+            break;
+        case DUL_TYPEASSOCIATERJ:
+            event = A_ASSOCIATE_RJ_PDU_RCV;
+            break;
+        case DUL_TYPEDATA:
+            event = P_DATA_TF_PDU_RCV;
+            break;
+        case DUL_TYPERELEASERQ:
+            event = A_RELEASE_RQ_PDU_RCV;
+            break;
+        case DUL_TYPERELEASERP:
+            event = A_RELEASE_RP_PDU_RCV;
+            break;
+        case DUL_TYPEABORT:
+            event = A_ABORT_PDU_RCV;
+            break;
+        default:
+            event = INVALID_PDU;
+            break;
+        }
     }
 
-    cond = PRV_StateMachine(network, association, event,
-			    (*association)->protocolState, params);
-    if (cond != DUL_NORMAL) {
-	destroyAssociationKey(association);
-	return cond;
+    cond = PRV_StateMachine(network, association, event, (*association)->protocolState, params);
+    if (cond.bad() && (cond != DUL_PEERREQUESTEDRELEASE))
+    {
+        destroyAssociationKey(association);
+        return cond;
     }
     return cond;
 }
@@ -485,38 +457,28 @@ DUL_RequestAssociation(
 /* DUL_ReceiveAssociationRQ
 **
 ** Purpose:
-**	This function allows a caller to ask to receive an Association Request.
-**	If the function does receive such a request, it returns a list of
-**	Association Items which describe the proposed Association and an
-**	AssociationKey used to access this Association.  The user should call
-**	DUL_AcknowledgeAssociateRQ if the Association is to be accepted.
+**      This function allows a caller to ask to receive an Association Request.
+**      If the function does receive such a request, it returns a list of
+**      Association Items which describe the proposed Association and an
+**      AssociationKey used to access this Association.  The user should call
+**      DUL_AcknowledgeAssociateRQ if the Association is to be accepted.
 **
 ** Parameter Dictionary:
-**	network		Caller's handle to the network environment.
-**	block		Flag indicating blocking/non blocking mode
-**	params		Pointer to a structure holding parameters which
-**			describe this Association.
-**	association	Caller handle for thsi association that is created
-**			by this function.
+**      network         Caller's handle to the network environment.
+**      block           Flag indicating blocking/non blocking mode
+**      params          Pointer to a structure holding parameters which
+**                      describe this Association.
+**      association     Caller handle for thsi association that is created
+**                      by this function.
 **
 ** Return Values:
 **
-**	DUL_ABORTEDREQUEST
-**	DUL_ILLEGALACCEPT
-**	DUL_ILLEGALKEY
-**	DUL_ILLEGALPARAMETER
-**	DUL_ILLEGALREQUEST
-**	DUL_NETWORKCLOSED
-**	DUL_NORMAL
-**	DUL_NULLKEY
-**	DUL_UNKNOWNREMOTENODE
-**	DUL_UNSUPPORTEDNETWORK
 **
 ** Algorithm:
-**	Description of the algorithm (optional) and any other notes.
+**      Description of the algorithm (optional) and any other notes.
 */
 
-CONDITION
+OFCondition
 DUL_ReceiveAssociationRQ(
   DUL_NETWORKKEY ** callerNetworkKey,
   DUL_BLOCKOPTIONS block, 
@@ -525,94 +487,88 @@ DUL_ReceiveAssociationRQ(
   int activatePDUStorage)
 {
     PRIVATE_NETWORKKEY
-	** network;
+        ** network;
     PRIVATE_ASSOCIATIONKEY
-	** association;
-    CONDITION
-	cond;
+        ** association;
     unsigned char
         pduType;
     int
         event;
     DUL_ABORTITEMS
-	abortItems;
+        abortItems;
 
     network = (PRIVATE_NETWORKKEY **) callerNetworkKey;
     association = (PRIVATE_ASSOCIATIONKEY **) callerAssociation;
-    cond = checkNetwork(network, "DUL_ReceiveAssociationRQ");
-    if (cond != DUL_NORMAL)
-	return cond;
+    OFCondition cond = checkNetwork(network);
+    if (cond.bad()) return cond;
 
     if (((*network)->applicationFunction & DICOM_APPLICATION_ACCEPTOR) == 0) {
-	return COND_PushCondition(DUL_ILLEGALACCEPT,
-				  DUL_Message(DUL_ILLEGALACCEPT));
+        return DUL_ILLEGALACCEPT;
     }
 
     if (params->maxPDU < MIN_PDU_LENGTH || params->maxPDU > MAX_PDU_LENGTH)
-	return COND_PushCondition(DUL_ILLEGALPARAMETER,
-				DUL_Message(DUL_ILLEGALPARAMETER), "maxPDU",
-				  "DUL_RequestAssociation");
+        return makeDcmnetCondition(DULC_ILLEGALPARAMETER, OF_error, "DUL Illegal parameter (maxPDU) in function DUL_ReceiveAssociationRQ");
+
     cond = createAssociationKey(network, "", params->maxPDU, association);
-    if (cond != DUL_NORMAL)
-	return cond;
+    if (cond.bad())
+        return cond;
 
     if (activatePDUStorage) DUL_activateAssociatePDUStorage(*association);
     clearRequestorsParams(params);
 
     cond = receiveTransportConnection(network, block, params, association);
-    if (cond != DUL_NORMAL)
-	return cond;
+    if (cond.bad())
+        return cond;
 
     cond = PRV_StateMachine(network, association,
-		  TRANS_CONN_INDICATION, (*network)->protocolState, params);
-    if (cond != DUL_NORMAL)
-	return cond;
+                  TRANS_CONN_INDICATION, (*network)->protocolState, params);
+    if (cond.bad())
+        return cond;
 
     cond = PRV_NextPDUType(association, DUL_NOBLOCK, PRV_DEFAULTTIMEOUT, &pduType);
     if (cond == DUL_NETWORKCLOSED)
-	event = TRANS_CONN_CLOSED;
+        event = TRANS_CONN_CLOSED;
     else if (cond == DUL_READTIMEOUT)
-	event = ARTIM_TIMER_EXPIRED;
-    else if (cond != DUL_NORMAL)
-	return cond;
+        event = ARTIM_TIMER_EXPIRED;
+    else if (cond.bad())
+        return cond;
     else {
-	switch (pduType) {
-	case DUL_TYPEASSOCIATERQ:
-	    event = A_ASSOCIATE_RQ_PDU_RCV;
-	    break;
-	case DUL_TYPEASSOCIATEAC:
-	    event = A_ASSOCIATE_AC_PDU_RCV;
-	    break;
-	case DUL_TYPEASSOCIATERJ:
-	    event = A_ASSOCIATE_RJ_PDU_RCV;
-	    break;
-	case DUL_TYPEDATA:
-	    event = P_DATA_TF_PDU_RCV;
-	    break;
-	case DUL_TYPERELEASERQ:
-	    event = A_RELEASE_RQ_PDU_RCV;
-	    break;
-	case DUL_TYPERELEASERP:
-	    event = A_RELEASE_RP_PDU_RCV;
-	    break;
-	case DUL_TYPEABORT:
-	    event = A_ABORT_PDU_RCV;
-	    break;
-	default:
-	    event = INVALID_PDU;
-	    break;
-	}
+        switch (pduType) {
+        case DUL_TYPEASSOCIATERQ:
+            event = A_ASSOCIATE_RQ_PDU_RCV;
+            break;
+        case DUL_TYPEASSOCIATEAC:
+            event = A_ASSOCIATE_AC_PDU_RCV;
+            break;
+        case DUL_TYPEASSOCIATERJ:
+            event = A_ASSOCIATE_RJ_PDU_RCV;
+            break;
+        case DUL_TYPEDATA:
+            event = P_DATA_TF_PDU_RCV;
+            break;
+        case DUL_TYPERELEASERQ:
+            event = A_RELEASE_RQ_PDU_RCV;
+            break;
+        case DUL_TYPERELEASERP:
+            event = A_RELEASE_RP_PDU_RCV;
+            break;
+        case DUL_TYPEABORT:
+            event = A_ABORT_PDU_RCV;
+            break;
+        default:
+            event = INVALID_PDU;
+            break;
+        }
     }
     cond = PRV_StateMachine(network, association, event,
-			    (*association)->protocolState, params);
+                            (*association)->protocolState, params);
     if (cond == DUL_UNSUPPORTEDPEERPROTOCOL) {
-	abortItems.result = DUL_REJECT_PERMANENT;
-	abortItems.source = DUL_ULSP_ACSE_REJECT;
-	abortItems.reason = DUL_ULSP_ACSE_UNSUP_PROTOCOL;
-/*	(void) DUL_RejectAssociationRQ(callerAssociation, &abortItems); */
-	(void) PRV_StateMachine(NULL, association,
-				A_ASSOCIATE_RESPONSE_REJECT,
-				(*association)->protocolState, &abortItems);
+        abortItems.result = DUL_REJECT_PERMANENT;
+        abortItems.source = DUL_ULSP_ACSE_REJECT;
+        abortItems.reason = DUL_ULSP_ACSE_UNSUP_PROTOCOL;
+        (void) PRV_StateMachine(NULL, association,
+                                A_ASSOCIATE_RESPONSE_REJECT,
+                                (*association)->protocolState, &abortItems);
     }
     return cond;
 }
@@ -622,49 +578,41 @@ DUL_ReceiveAssociationRQ(
 /* DUL_AcknowledgeAssociationRQ
 **
 ** Purpose:
-**	This function is used by an Acceptor to acknowledge an Association
-**	Request.  The caller passes the partially completed Association Key
-**	and the Association Items (syntax items) which describe the Association.
-**	This function constructs an Acknowledge PDU and sends it to the
-**	Requestor.  At this point, an Association is established.
+**      This function is used by an Acceptor to acknowledge an Association
+**      Request.  The caller passes the partially completed Association Key
+**      and the Association Items (syntax items) which describe the Association.
+**      This function constructs an Acknowledge PDU and sends it to the
+**      Requestor.  At this point, an Association is established.
 **
 ** Parameter Dictionary:
-**	association	Caller's handle to the Association that is to be
-**			acknowledged and hence established.
-**	params		Parameters that describe the type of service handled
-**			by this Association.
+**      association     Caller's handle to the Association that is to be
+**                      acknowledged and hence established.
+**      params          Parameters that describe the type of service handled
+**                      by this Association.
 **
 ** Return Values:
 **
-**	DUL_ILLEGALKEY
-**	DUL_ILLEGALREQUEST
-**	DUL_NORMAL
-**	DUL_NULLKEY
-**
 ** Algorithm:
-**	Description of the algorithm (optional) and any other notes.
+**      Description of the algorithm (optional) and any other notes.
 */
 
-CONDITION
+OFCondition
 DUL_AcknowledgeAssociationRQ(
   DUL_ASSOCIATIONKEY ** callerAssociation,
   DUL_ASSOCIATESERVICEPARAMETERS * params, 
   int activatePDUStorage)
 {
     PRIVATE_ASSOCIATIONKEY
-	** association;
-    CONDITION
-	cond;
+        ** association;
 
     association = (PRIVATE_ASSOCIATIONKEY **) callerAssociation;
-    cond = checkAssociation(association, "DUL_AcknowledgeAssociationRQ");
-    if (cond != DUL_NORMAL)
-	return cond;
+    OFCondition cond = checkAssociation(association);
+    if (cond.bad()) return cond;
 
     if (activatePDUStorage) DUL_activateAssociatePDUStorage(*association);
 
     cond = PRV_StateMachine(NULL, association,
-	A_ASSOCIATE_RESPONSE_ACCEPT, (*association)->protocolState, params);
+        A_ASSOCIATE_RESPONSE_ACCEPT, (*association)->protocolState, params);
 
     return cond;
 
@@ -674,79 +622,75 @@ DUL_AcknowledgeAssociationRQ(
 /* DUL_RejectAssociationRQ
 **
 ** Purpose:
-**	This function is used to reject an Association Request and destroy
-**	the corresponding Association Key.  The caller indicates if the
-**	reject is permanent or transient and the reason for the reject.
-**	This function constructs a Reject PDU and sends it to the connected
-**	peer.  The Association Key is then destroyed and the caller's reference
-**	to the key destroyed to prevent misuse.
+**      This function is used to reject an Association Request and destroy
+**      the corresponding Association Key.  The caller indicates if the
+**      reject is permanent or transient and the reason for the reject.
+**      This function constructs a Reject PDU and sends it to the connected
+**      peer.  The Association Key is then destroyed and the caller's reference
+**      to the key destroyed to prevent misuse.
 **
 ** Parameter Dictionary:
-**	association	Caller's handle to the association that is to be
-**			rejected.
-**	params		Pointer to a structure that gives the reasons for
-**			rejecting this Association.
+**      association     Caller's handle to the association that is to be
+**                      rejected.
+**      params          Pointer to a structure that gives the reasons for
+**                      rejecting this Association.
 **
 ** Return Values:
 **
-**	DUL_ILLEGALKEY
-**	DUL_ILLEGALREJECTREASON
-**	DUL_ILLEGALREJECTRESULT
-**	DUL_ILLEGALREQUEST
-**	DUL_NETWORKCLOSED
-**	DUL_NORMAL
-**	DUL_NULLKEY
 **
 ** Algorithm:
-**	Description of the algorithm (optional) and any other notes.
+**      Description of the algorithm (optional) and any other notes.
 */
 
-CONDITION
+OFCondition
 DUL_RejectAssociationRQ(
   DUL_ASSOCIATIONKEY ** callerAssociation,
   DUL_ABORTITEMS * params, 
   int activatePDUStorage)
 {
     PRIVATE_ASSOCIATIONKEY
-	** association;
-    CONDITION
-	cond;
+        ** association;
     DUL_ABORTITEMS
-	localParams;
+        localParams;
 
     association = (PRIVATE_ASSOCIATIONKEY **) callerAssociation;
-    cond = checkAssociation(association, "DUL_RejectAssociationRQ");
-    if (cond != DUL_NORMAL)
-	return cond;
+    OFCondition cond = checkAssociation(association);
+    if (cond.bad()) return cond;
 
     if (activatePDUStorage) DUL_activateAssociatePDUStorage(*association);
 
     localParams = *params;
     localParams.source = 0x01;
     {
-	unsigned char diagtable[] = {0x01, 0x02, 0x03, 0x07};
-	int l_index;
-	OFBool found = OFFalse;
-	for (l_index = 0; l_index < (int) DIM_OF(diagtable) && !found; l_index++)
-	    found = (localParams.reason == diagtable[l_index]);
+        unsigned char diagtable[] = {0x01, 0x02, 0x03, 0x07};
+        int l_index;
+        OFBool found = OFFalse;
+        for (l_index = 0; l_index < (int) DIM_OF(diagtable) && !found; l_index++)
+            found = (localParams.reason == diagtable[l_index]);
 
-	if (!found)
-	    return COND_PushCondition(DUL_ILLEGALREJECTREASON,
-		  DUL_Message(DUL_ILLEGALREJECTREASON), localParams.reason);
+        if (!found)
+        {
+            char buf1[256];
+            sprintf(buf1, "DUL Illegal reason for rejecting Association: %x", localParams.reason);
+            return makeDcmnetCondition(DULC_ILLEGALREJECTREASON, OF_error, buf1);
+        }
     }
     {
-	unsigned char resulttable[] = {0x01, 0x02};
-	int l_index;
-	OFBool found = OFFalse;
-	for (l_index = 0; l_index < (int) DIM_OF(resulttable) && !found; l_index++)
-	    found = (localParams.result == resulttable[l_index]);
+        unsigned char resulttable[] = {0x01, 0x02};
+        int l_index;
+        OFBool found = OFFalse;
+        for (l_index = 0; l_index < (int) DIM_OF(resulttable) && !found; l_index++)
+            found = (localParams.result == resulttable[l_index]);
 
-	if (!found)
-	    return COND_PushCondition(DUL_ILLEGALREJECTRESULT,
-		  DUL_Message(DUL_ILLEGALREJECTRESULT), localParams.result);
+        if (!found)
+        {
+            char buf2[256];
+            sprintf(buf2, "DUL Illegal result for rejecting Association: %x", localParams.result);
+            return makeDcmnetCondition(DULC_ILLEGALREJECTRESULT, OF_error, buf2);
+        }
     }
     cond = PRV_StateMachine(NULL, association,
-			    A_ASSOCIATE_RESPONSE_REJECT, (*association)->protocolState, &localParams);
+                            A_ASSOCIATE_RESPONSE_REJECT, (*association)->protocolState, &localParams);
 
     return cond;
 }
@@ -755,181 +699,151 @@ DUL_RejectAssociationRQ(
 /* DUL_DropAssociation
 **
 ** Purpose:
-**	This function drops an Association without notifying the peer
-**	application and destroys the Association Key.  The caller's
-**	reference to the Association Key is also destroyed to prevent misuse.
-**	This routine is called if a peer disconnects from you or if you
-**	want to drop an Association without notifying the peer (can be
-**	used in the unix environment if you use the fork call and have
-**	two open channels to the peer).
+**      This function drops an Association without notifying the peer
+**      application and destroys the Association Key.  The caller's
+**      reference to the Association Key is also destroyed to prevent misuse.
+**      This routine is called if a peer disconnects from you or if you
+**      want to drop an Association without notifying the peer (can be
+**      used in the unix environment if you use the fork call and have
+**      two open channels to the peer).
 **
 ** Parameter Dictionary:
-**	callerAssociation	Caller's handle to the Association that is
-**				to be dropped.
+**      callerAssociation       Caller's handle to the Association that is
+**                              to be dropped.
 **
 ** Return Values:
 **
-**	DUL_ILLEGALKEY
-**	DUL_NORMAL
-**	DUL_NULLKEY
 **
 ** Algorithm:
-**	Description of the algorithm (optional) and any other notes.
+**      Description of the algorithm (optional) and any other notes.
 */
 
-CONDITION
+OFCondition
 DUL_DropAssociation(DUL_ASSOCIATIONKEY ** callerAssociation)
 {
     PRIVATE_ASSOCIATIONKEY
-	** association;
-    CONDITION
-	cond;
+        ** association;
 
     association = (PRIVATE_ASSOCIATIONKEY **) callerAssociation;
-    cond = checkAssociation(association, "DUL_DropAssociation");
-    if (cond != DUL_NORMAL)
-	return cond;
+    OFCondition cond = checkAssociation(association);
+    if (cond.bad()) return cond;
 
-    if (strcmp((*association)->networkType, DUL_NETWORK_TCP) == 0)
+    if ((*association)->connection)
     {
-      if ((*association)->connection)
-      {
-       (*association)->connection->close();
-       delete (*association)->connection;
-       (*association)->connection = NULL;
-      }
-      destroyAssociationKey(association);
+     (*association)->connection->close();
+     delete (*association)->connection;
+     (*association)->connection = NULL;
     }
-    return DUL_NORMAL;
+    destroyAssociationKey(association);
+    return EC_Normal;
 }
 
 
 /* DUL_ReleaseAssociation
 **
 ** Purpose:
-**	Request the orderly release of an Association.
+**      Request the orderly release of an Association.
 **
 ** Parameter Dictionary:
-**	callerAssociation	Caller's handle to the Association to be
-**				released.
+**      callerAssociation       Caller's handle to the Association to be
+**                              released.
 **
 ** Return Values:
 **
-**	DUL_ILLEGALKEY
-**	DUL_ILLEGALREQUEST
-**	DUL_NETWORKCLOSED
-**	DUL_NORMAL
-**	DUL_NULLKEY
-**	DUL_PEERREQUESTEDRELEASE
 **
 ** Algorithm:
-**	Description of the algorithm (optional) and any other notes.
+**      Description of the algorithm (optional) and any other notes.
 */
 
-CONDITION
+OFCondition
 DUL_ReleaseAssociation(DUL_ASSOCIATIONKEY ** callerAssociation)
 {
     PRIVATE_ASSOCIATIONKEY
-	** association;
+        ** association;
     unsigned char
         pduType;
     int
         event;
-    CONDITION
-	cond;
 
     association = (PRIVATE_ASSOCIATIONKEY **) callerAssociation;
-    cond = checkAssociation(association, "DUL_ReleaseAssociation");
-    if (cond != DUL_NORMAL)
-	return cond;
+    OFCondition cond = checkAssociation(association);
+    if (cond.bad()) return cond;
 
     cond = PRV_StateMachine(NULL, association,
-			A_RELEASE_REQ, (*association)->protocolState, NULL);
-    if (cond != DUL_NORMAL)
-	return cond;
+                        A_RELEASE_REQ, (*association)->protocolState, NULL);
+    if (cond.bad())
+        return cond;
 
     cond = PRV_NextPDUType(association, DUL_NOBLOCK, PRV_DEFAULTTIMEOUT, &pduType);
     if (cond == DUL_NETWORKCLOSED)
-	event = TRANS_CONN_CLOSED;
+        event = TRANS_CONN_CLOSED;
     else if (cond == DUL_READTIMEOUT)
-	event = ARTIM_TIMER_EXPIRED;
-    else if (cond != DUL_NORMAL)
-	return cond;
+        event = ARTIM_TIMER_EXPIRED;
+    else if (cond.bad())
+        return cond;
     else {
-	switch (pduType) {
-	case DUL_TYPEASSOCIATERQ:
-	    event = A_ASSOCIATE_RQ_PDU_RCV;
-	    break;
-	case DUL_TYPEASSOCIATEAC:
-	    event = A_ASSOCIATE_AC_PDU_RCV;
-	    break;
-	case DUL_TYPEASSOCIATERJ:
-	    event = A_ASSOCIATE_RJ_PDU_RCV;
-	    break;
-	case DUL_TYPEDATA:
-	    event = P_DATA_TF_PDU_RCV;
-	    break;
-	case DUL_TYPERELEASERQ:
-	    event = A_RELEASE_RQ_PDU_RCV;
-	    break;
-	case DUL_TYPERELEASERP:
-	    event = A_RELEASE_RP_PDU_RCV;
-	    break;
-	case DUL_TYPEABORT:
-	    event = A_ABORT_PDU_RCV;
-	    break;
-	default:
-	    event = INVALID_PDU;
-	    break;
-	}
+        switch (pduType) {
+        case DUL_TYPEASSOCIATERQ:
+            event = A_ASSOCIATE_RQ_PDU_RCV;
+            break;
+        case DUL_TYPEASSOCIATEAC:
+            event = A_ASSOCIATE_AC_PDU_RCV;
+            break;
+        case DUL_TYPEASSOCIATERJ:
+            event = A_ASSOCIATE_RJ_PDU_RCV;
+            break;
+        case DUL_TYPEDATA:
+            event = P_DATA_TF_PDU_RCV;
+            break;
+        case DUL_TYPERELEASERQ:
+            event = A_RELEASE_RQ_PDU_RCV;
+            break;
+        case DUL_TYPERELEASERP:
+            event = A_RELEASE_RP_PDU_RCV;
+            break;
+        case DUL_TYPEABORT:
+            event = A_ABORT_PDU_RCV;
+            break;
+        default:
+            event = INVALID_PDU;
+            break;
+        }
     }
-    cond = PRV_StateMachine(NULL, association, event,
-			    (*association)->protocolState, NULL);
-
-    if (cond == DUL_READTIMEOUT)
-	return COND_PushCondition(DUL_READTIMEOUT, DUL_Message(DUL_READTIMEOUT));
-    else
-	return cond;
+    return PRV_StateMachine(NULL, association, event,(*association)->protocolState, NULL);
 }
 
 /* DUL_AcknowledgeRelease
 **
 ** Purpose:
-**	Send Acknowledgement to the Release request
+**      Send Acknowledgement to the Release request
 **
 ** Parameter Dictionary:
-**	callerAssociation	Caller's handle to the Association whose
-**				release is acknowledged.
+**      callerAssociation       Caller's handle to the Association whose
+**                              release is acknowledged.
 **
 ** Return Values:
 **
-**	DUL_ILLEGALKEY
-**	DUL_NORMAL
-**	DUL_NULLKEY
 **
 ** Algorithm:
-**	Description of the algorithm (optional) and any other notes.
+**      Description of the algorithm (optional) and any other notes.
 */
 
-CONDITION
+OFCondition
 DUL_AcknowledgeRelease(DUL_ASSOCIATIONKEY ** callerAssociation)
 {
     PRIVATE_ASSOCIATIONKEY
-	** association;
-    CONDITION
-	cond;
+        ** association;
 
     association = (PRIVATE_ASSOCIATIONKEY **) callerAssociation;
-    cond = checkAssociation(association, "DUL_AcknowledgeRelease");
-    if (cond != DUL_NORMAL)
-	return cond;
+    OFCondition cond = checkAssociation(association);
+    if (cond.bad()) return cond;
 
     cond = PRV_StateMachine(NULL, association,
-		       A_RELEASE_RESP, (*association)->protocolState, NULL);
-    if (!SUCCESS(cond))
-	return cond;
+                       A_RELEASE_RESP, (*association)->protocolState, NULL);
+    if (cond.bad())
+        return cond;
 //    cond = PRV_StateMachine(NULL, association,
-//		  ARTIM_TIMER_EXPIRED, (*association)->protocolState, NULL);
+//                ARTIM_TIMER_EXPIRED, (*association)->protocolState, NULL);
     return cond;
 }
 
@@ -938,96 +852,78 @@ DUL_AcknowledgeRelease(DUL_ASSOCIATIONKEY ** callerAssociation)
 /* DUL_AbortAssociation
 **
 ** Purpose:
-**	Abort an association by sending an A-ABORT PDU and waiting for the
-**	network to close.
+**      Abort an association by sending an A-ABORT PDU and waiting for the
+**      network to close.
 **
 ** Parameter Dictionary:
-**	callerAssociation	The handle for the association to be
-**				aborted.
+**      callerAssociation       The handle for the association to be
+**                              aborted.
 **
 ** Return Values:
 **
-**	DUL_ILLEGALKEY
-**	DUL_NETWORKCLOSED
-**	DUL_NORMAL
-**	DUL_NULLKEY
 **
 ** Algorithm:
-**	Description of the algorithm (optional) and any other notes.
+**      Description of the algorithm (optional) and any other notes.
 */
 
-CONDITION
+OFCondition
 DUL_AbortAssociation(DUL_ASSOCIATIONKEY ** callerAssociation)
 {
-    PRIVATE_ASSOCIATIONKEY
-	** association;
-    CONDITION
-	cond;
-    DUL_ABORTITEMS
-	abortItems = {
-	0, DUL_SCU_INITIATED_ABORT, 0
-    };
-    int
-        event;
-    unsigned char
-        pduType;
-    OFBool
-	done;
+    DUL_ABORTITEMS abortItems = { 0, DUL_SCU_INITIATED_ABORT, 0 };
+    int event = 0;
+    unsigned char pduType = 0;
 
-    association = (PRIVATE_ASSOCIATIONKEY **) callerAssociation;
-    cond = checkAssociation(association, "DUL_AbortAssociation");
-    if (cond != DUL_NORMAL)
-	return cond;
+    PRIVATE_ASSOCIATIONKEY ** association = (PRIVATE_ASSOCIATIONKEY **) callerAssociation;
+    OFCondition cond = checkAssociation(association);
+    if (cond.bad()) return cond;
 
-    cond = PRV_StateMachine(NULL, association, A_ABORT_REQ,
-			    (*association)->protocolState, &abortItems);
+    cond = PRV_StateMachine(NULL, association, A_ABORT_REQ, (*association)->protocolState, &abortItems);
+    if (cond.bad()) return cond;
 
-    if (cond != DUL_NORMAL)
-	return cond;
+    OFBool done = OFFalse;
+    while (!done)
+    {
+    	// bug fix 2001-10-08 meichel: the code we're interested in comes
+    	// from the state machine, not from PRV_NextPDUType.
+        /* cond = */ PRV_NextPDUType(association, DUL_NOBLOCK, PRV_DEFAULTTIMEOUT, &pduType);
 
-    done = OFFalse;
-    while (!done) {
-	cond = PRV_NextPDUType(association, DUL_NOBLOCK, PRV_DEFAULTTIMEOUT, &pduType);
-	if (cond == DUL_NETWORKCLOSED)
-	    event = TRANS_CONN_CLOSED;
-	else if (cond == DUL_READTIMEOUT)
-	    event = ARTIM_TIMER_EXPIRED;
-	else {
-	    switch (pduType) {
-	    case DUL_TYPEASSOCIATERQ:
-		event = A_ASSOCIATE_RQ_PDU_RCV;
-		break;
-	    case DUL_TYPEASSOCIATEAC:
-		event = A_ASSOCIATE_AC_PDU_RCV;
-		break;
-	    case DUL_TYPEASSOCIATERJ:
-		event = A_ASSOCIATE_RJ_PDU_RCV;
-		break;
-	    case DUL_TYPEDATA:
-		event = P_DATA_TF_PDU_RCV;
-		break;
-	    case DUL_TYPERELEASERQ:
-		event = A_RELEASE_RQ_PDU_RCV;
-		break;
-	    case DUL_TYPERELEASERP:
-		event = A_RELEASE_RP_PDU_RCV;
-		break;
-	    case DUL_TYPEABORT:
-		event = A_ABORT_PDU_RCV;
-		break;
-	    default:
-		event = INVALID_PDU;
-		break;
-	    }
-	}
+        if (cond == DUL_NETWORKCLOSED) event = TRANS_CONN_CLOSED;
+        else if (cond == DUL_READTIMEOUT) event = ARTIM_TIMER_EXPIRED;
+        else
+        {
+            switch (pduType)
+            {
+              case DUL_TYPEASSOCIATERQ:
+                event = A_ASSOCIATE_RQ_PDU_RCV;
+                break;
+              case DUL_TYPEASSOCIATEAC:
+                event = A_ASSOCIATE_AC_PDU_RCV;
+                break;
+              case DUL_TYPEASSOCIATERJ:
+                event = A_ASSOCIATE_RJ_PDU_RCV;
+                break;
+              case DUL_TYPEDATA:
+                event = P_DATA_TF_PDU_RCV;
+                break;
+              case DUL_TYPERELEASERQ:
+                event = A_RELEASE_RQ_PDU_RCV;
+                break;
+              case DUL_TYPERELEASERP:
+                event = A_RELEASE_RP_PDU_RCV;
+                break;
+              case DUL_TYPEABORT:
+                event = A_ABORT_PDU_RCV;
+                break;
+              default:
+                event = INVALID_PDU;
+                break;
+            }
+        }
 
-	cond = PRV_StateMachine(NULL, association, event,
-				(*association)->protocolState, NULL);
-
-	if (cond == DUL_NORMAL)
-	    done = OFTrue;
+        cond = PRV_StateMachine(NULL, association, event, (*association)->protocolState, NULL);
+        if (cond == EC_Normal) done = OFTrue;
     }
-    return DUL_NORMAL;
+    return EC_Normal;
 }
 
 
@@ -1035,42 +931,34 @@ DUL_AbortAssociation(DUL_ASSOCIATIONKEY ** callerAssociation)
 /* DUL_WritePDVs
 **
 ** Purpose:
-**	Write a list of PDVs on an active Association.
+**      Write a list of PDVs on an active Association.
 **
 ** Parameter Dictionary:
-**	callerAssociation	Caller's handle to the Association
-**	pdvList			Pointer to a structure which describes
-**				the list of PDVs to be written on the active
-**				Association.
+**      callerAssociation       Caller's handle to the Association
+**      pdvList                 Pointer to a structure which describes
+**                              the list of PDVs to be written on the active
+**                              Association.
 **
 ** Return Values:
 **
-**	DUL_ILLEGALKEY
-**	DUL_ILLEGALREQUEST
-**	DUL_NETWORKCLOSED
-**	DUL_NORMAL
-**	DUL_NULLKEY
 **
 ** Algorithm:
-**	Description of the algorithm (optional) and any other notes.
+**      Description of the algorithm (optional) and any other notes.
 */
 
-CONDITION
+OFCondition
 DUL_WritePDVs(DUL_ASSOCIATIONKEY ** callerAssociation,
-	      DUL_PDVLIST * pdvList)
+              DUL_PDVLIST * pdvList)
 {
     PRIVATE_ASSOCIATIONKEY
-	** association;
-    CONDITION
-	cond;
+        ** association;
 
     association = (PRIVATE_ASSOCIATIONKEY **) callerAssociation;
-    cond = checkAssociation(association, "DUL_WritePDVs");
-    if (cond != DUL_NORMAL)
-	return cond;
+    OFCondition cond = checkAssociation(association);
+    if (cond.bad()) return cond;
 
     cond = PRV_StateMachine(NULL, association, P_DATA_REQ,
-			    (*association)->protocolState, pdvList);
+                            (*association)->protocolState, pdvList);
 
     return cond;
 }
@@ -1079,88 +967,75 @@ DUL_WritePDVs(DUL_ASSOCIATIONKEY ** callerAssociation,
 /* DUL_ReadPDVs
 **
 ** Purpose:
-**	Read the next available PDU.
+**      Read the next available PDU.
 **
 ** Parameter Dictionary:
-**	callerAssociation	Caller's handle for the Association.
+**      callerAssociation       Caller's handle for the Association.
 **      pdvList                 Pointer to a structure which describes
 **                              the list of PDVs to be read from the active
 **                              Association.
-**	block			Option used for blocking/non-blocking read.
-**	timeout			Timeout interval.
+**      block                   Option used for blocking/non-blocking read.
+**      timeout                 Timeout interval.
 **
 ** Return Values:
 **
-**	DUL_ILLEGALKEY
-**	DUL_ILLEGALREQUEST
-**	DUL_NETWORKCLOSED
-**	DUL_NORMAL
-**	DUL_NULLKEY
-**	DUL_PEERABORTEDASSOCIATION
-**	DUL_PEERDROPPEDASSOCIATION
-**	DUL_PEERREQUESTEDRELEASE
 **
 ** Algorithm:
-**	Description of the algorithm (optional) and any other notes.
+**      Description of the algorithm (optional) and any other notes.
 */
 
-CONDITION
+OFCondition
 DUL_ReadPDVs(DUL_ASSOCIATIONKEY ** callerAssociation,
-	     DUL_PDVLIST * pdvList, DUL_BLOCKOPTIONS block, int timeout)
+             DUL_PDVLIST * pdvList, DUL_BLOCKOPTIONS block, int timeout)
 {
     PRIVATE_ASSOCIATIONKEY
-	** association;
-    CONDITION
-	cond;
+        ** association;
     unsigned char
         pduType;
     int
         event;
 
     association = (PRIVATE_ASSOCIATIONKEY **) callerAssociation;
-    cond = checkAssociation(association, "DUL_ReadPDVs");
-    if (cond != DUL_NORMAL)
-	return cond;
+    OFCondition cond = checkAssociation(association);
+    if (cond.bad()) return cond;
 
     cond = PRV_NextPDUType(association, block, timeout, &pduType);
-    if (cond == DUL_NETWORKCLOSED)
-	event = TRANS_CONN_CLOSED;
-    else if ((cond == DUL_READTIMEOUT) && (block == DUL_NOBLOCK))
-	return cond;
-    else if (cond == DUL_READTIMEOUT)
-	event = ARTIM_TIMER_EXPIRED;
-    else if (cond != DUL_NORMAL)
-	return cond;
-    else {
-	switch (pduType) {
-	case DUL_TYPEASSOCIATERQ:
-	    event = A_ASSOCIATE_RQ_PDU_RCV;
-	    break;
-	case DUL_TYPEASSOCIATEAC:
-	    event = A_ASSOCIATE_AC_PDU_RCV;
-	    break;
-	case DUL_TYPEASSOCIATERJ:
-	    event = A_ASSOCIATE_RJ_PDU_RCV;
-	    break;
-	case DUL_TYPEDATA:
-	    event = P_DATA_TF_PDU_RCV;
-	    break;
-	case DUL_TYPERELEASERQ:
-	    event = A_RELEASE_RQ_PDU_RCV;
-	    break;
-	case DUL_TYPERELEASERP:
-	    event = A_RELEASE_RP_PDU_RCV;
-	    break;
-	case DUL_TYPEABORT:
-	    event = A_ABORT_PDU_RCV;
-	    break;
-	default:
-	    event = INVALID_PDU;
-	    break;
-	}
+    if (cond == DUL_NETWORKCLOSED) event = TRANS_CONN_CLOSED;
+    else if ((cond == DUL_READTIMEOUT) && (block == DUL_NOBLOCK)) return cond;
+    else if (cond == DUL_READTIMEOUT) event = ARTIM_TIMER_EXPIRED;
+    else if (cond.bad()) return cond;
+    else
+    {
+        switch (pduType)
+        {
+          case DUL_TYPEASSOCIATERQ:
+            event = A_ASSOCIATE_RQ_PDU_RCV;
+            break;
+          case DUL_TYPEASSOCIATEAC:
+            event = A_ASSOCIATE_AC_PDU_RCV;
+            break;
+          case DUL_TYPEASSOCIATERJ:
+            event = A_ASSOCIATE_RJ_PDU_RCV;
+            break;
+          case DUL_TYPEDATA:
+            event = P_DATA_TF_PDU_RCV;
+            break;
+          case DUL_TYPERELEASERQ:
+            event = A_RELEASE_RQ_PDU_RCV;
+            break;
+          case DUL_TYPERELEASERP:
+            event = A_RELEASE_RP_PDU_RCV;
+            break;
+          case DUL_TYPEABORT:
+            event = A_ABORT_PDU_RCV;
+            break;
+          default:
+            event = INVALID_PDU;
+            break;
+        }
     }
     cond = PRV_StateMachine(NULL, association, event,
-			    (*association)->protocolState, pdvList);
+                            (*association)->protocolState, pdvList);
 
     return cond;
 }
@@ -1168,16 +1043,16 @@ DUL_ReadPDVs(DUL_ASSOCIATIONKEY ** callerAssociation,
 /* DUL_Debug
 **
 ** Purpose:
-**	Set debug flag in this module and in the other modules.
+**      Set debug flag in this module and in the other modules.
 **
 ** Parameter Dictionary:
-**	flag	The boolean variable to set the debug facility.
+**      flag    The boolean variable to set the debug facility.
 **
 ** Return Values:
-**	None
+**      None
 **
 ** Algorithm:
-**	Description of the algorithm (optional) and any other notes.
+**      Description of the algorithm (optional) and any other notes.
 */
 
 void
@@ -1193,62 +1068,53 @@ DUL_Debug(OFBool flag)
 /* DUL_AssociationParameter
 **
 ** Purpose:
-**	This function examines the Association parameters and returns
-**	a single parameter requested by the caller.
+**      This function examines the Association parameters and returns
+**      a single parameter requested by the caller.
 **
 ** Parameter Dictionary:
-**	callerAssociation	Caller's handle to the Association.
-**	param			The only supported value is DUL_K_MAX_PDV_XMIT.
-**	type			The TYPE of the parameter requested.
-**	address			Requested parameter to be obtained from the
-**				Association key.
-**	length			The size of the parameter requested.
+**      callerAssociation       Caller's handle to the Association.
+**      param                   The only supported value is DUL_K_MAX_PDV_XMIT.
+**      type                    The TYPE of the parameter requested.
+**      address                 Requested parameter to be obtained from the
+**                              Association key.
+**      length                  The size of the parameter requested.
 **
 ** Return Values:
 **
-**	DUL_ASSOCIATIONPARAMETERFAILED
-**	DUL_ILLEGALKEY
-**	DUL_NORMAL
-**	DUL_NULLKEY
 **
 ** Algorithm:
-**	Description of the algorithm (optional) and any other notes.
+**      Description of the algorithm (optional) and any other notes.
 */
 
-CONDITION
+OFCondition
 DUL_AssociationParameter(DUL_ASSOCIATIONKEY ** callerAssociation,
-			 DUL_ASSOCIATION_PARAMETER param, DUL_DATA_TYPE type,
-			 void *address, size_t length)
+                         DUL_ASSOCIATION_PARAMETER param, DUL_DATA_TYPE type,
+                         void *address, size_t length)
 {
     PRIVATE_ASSOCIATIONKEY
-	** association;
-    CONDITION
-	cond;
+        ** association;
 
     association = (PRIVATE_ASSOCIATIONKEY **) callerAssociation;
-    cond = checkAssociation(association, "DUL_AssociationParameter");
-    if (cond != DUL_NORMAL)
-	return cond;
+    OFCondition cond = checkAssociation(association);
+    if (cond.bad()) return cond;
 
-    switch (param) {
+    switch (param)
+    {
     case DUL_K_MAX_PDV_XMIT:
-/*	if (strcmp((*association)->applicationType, AE_ACCEPTOR) == 0) { */
-	if ((*association)->applicationFunction == DICOM_APPLICATION_ACCEPTOR) {
-	    cond = get_association_parameter(
-					 &((*association)->maxPDVRequestor),
-		     DUL_K_INTEGER, sizeof((*association)->maxPDVRequestor),
-					     type, address, length);
-	} else {
-	    cond = get_association_parameter(
-					  &((*association)->maxPDVAcceptor),
-		      DUL_K_INTEGER, sizeof((*association)->maxPDVAcceptor),
-					     type, address, length);
-	}
-	if (cond != DUL_NORMAL)
-	    cond = COND_PushCondition(DUL_ASSOCIATIONPARAMETERFAILED,
-				DUL_Message(DUL_ASSOCIATIONPARAMETERFAILED),
-				      "DUL_K_MAX_PDU_XMIT");
-	break;
+        if ((*association)->applicationFunction == DICOM_APPLICATION_ACCEPTOR)
+        {
+            cond = get_association_parameter(
+                                         &((*association)->maxPDVRequestor),
+                     DUL_K_INTEGER, sizeof((*association)->maxPDVRequestor),
+                                             type, address, length);
+        } else {
+            cond = get_association_parameter(
+                                          &((*association)->maxPDVAcceptor),
+                      DUL_K_INTEGER, sizeof((*association)->maxPDVAcceptor),
+                                             type, address, length);
+        }
+        if (cond.bad()) return cond;
+        break;
     }
     return cond;
 }
@@ -1257,112 +1123,100 @@ DUL_AssociationParameter(DUL_ASSOCIATIONKEY ** callerAssociation,
 /* DUL_NextPDV
 **
 ** Purpose:
-**	Return the next PDV to the caller.
+**      Return the next PDV to the caller.
 **
 ** Parameter Dictionary:
-**	callerAssociation	Caller's handle to the Association
-**	pdv			The next PDU to be returned
+**      callerAssociation       Caller's handle to the Association
+**      pdv                     The next PDU to be returned
 **
 ** Return Values:
 **
-**	DUL_ILLEGALKEY
-**	DUL_NOPDVS
-**	DUL_NORMAL
-**	DUL_NULLKEY
 **
 ** Algorithm:
-**	Description of the algorithm (optional) and any other notes.
+**      Description of the algorithm (optional) and any other notes.
 */
 
-CONDITION
+OFCondition
 DUL_NextPDV(DUL_ASSOCIATIONKEY ** callerAssociation, DUL_PDV * pdv)
 {
     PRIVATE_ASSOCIATIONKEY
-	** association;
-    CONDITION
-	cond;
+        ** association;
     unsigned char
        *p;
     unsigned long
         pdvLength;
 
     association = (PRIVATE_ASSOCIATIONKEY **) callerAssociation;
-    cond = checkAssociation(association, "DUL_NextPDV");
-    if (cond != DUL_NORMAL)
-	return cond;
+    OFCondition cond = checkAssociation(association);
+    if (cond.bad()) return cond;
 
     if ((*association)->pdvIndex == -1)
-#ifdef PUT_DUL_NOPDVS_ON_CONDITION_STACK
-	return COND_PushCondition(DUL_NOPDVS, DUL_Message(DUL_NOPDVS));
-#else
      /* in this special case we want to avoid a message on the
         condition stack because this is no real error, but normal
         behaviour - A callback function registered in the condition stack
         would (unnecessarily) be called once for each PDV. 
         the #ifdef allows to mimick the old behaviour.
       */
-	return DUL_NOPDVS;
-#endif 
+    return DUL_NOPDVS;
 
     *pdv = (*association)->currentPDV;
 
     (*association)->pdvIndex++;
     if ((*association)->pdvIndex >= (*association)->pdvCount)
-	(*association)->pdvIndex = -1;
+        (*association)->pdvIndex = -1;
     else {
-	unsigned char u;
-	p = (*association)->pdvPointer;
-	p += (*association)->currentPDV.fragmentLength + 2 + 4;
+        unsigned char u;
+        p = (*association)->pdvPointer;
+        p += (*association)->currentPDV.fragmentLength + 2 + 4;
 
-	EXTRACT_LONG_BIG(p, pdvLength);
-	(*association)->currentPDV.fragmentLength = pdvLength - 2;
-	(*association)->currentPDV.presentationContextID = p[4];
+        EXTRACT_LONG_BIG(p, pdvLength);
+        (*association)->currentPDV.fragmentLength = pdvLength - 2;
+        (*association)->currentPDV.presentationContextID = p[4];
 
-	u = p[5];
-	if (u & 2)
-	    (*association)->currentPDV.lastPDV = OFTrue;
-	else
-	    (*association)->currentPDV.lastPDV = OFFalse;
+        u = p[5];
+        if (u & 2)
+            (*association)->currentPDV.lastPDV = OFTrue;
+        else
+            (*association)->currentPDV.lastPDV = OFFalse;
 
-	if (u & 1)
-	    (*association)->currentPDV.pdvType = DUL_COMMANDPDV;
-	else
-	    (*association)->currentPDV.pdvType = DUL_DATASETPDV;
+        if (u & 1)
+            (*association)->currentPDV.pdvType = DUL_COMMANDPDV;
+        else
+            (*association)->currentPDV.pdvType = DUL_DATASETPDV;
 
-	(*association)->currentPDV.data = p + 6;
-	(*association)->pdvPointer += 4 + pdvLength;
+        (*association)->currentPDV.data = p + 6;
+        (*association)->pdvPointer += 4 + pdvLength;
     }
-    return DUL_NORMAL;
+    return EC_Normal;
 }
 
 
 /* DUL_ClearServiceParameters
 **
 ** Purpose:
-**	DUL_ClearServiceParameters is used to clear the lists that were
-**	constructed in a DUL_ASSOCIATEDSERVICEPARAMETERS structure.  The
-**	lists in that structure were built to contain the requested
-**	and accepted Presentation Contexts.  Once the lists were built,
-**	an Association request could be made.  After the Association
-**	has been closed, the Presentation Contexts need to be discarded
-**	so that the same structure can be reused for a new Association.
-**	This function removes all of the nodes from the requested
-**	and accepted Presentation Context lists and then destroys the
-**	lists themselves.
+**      DUL_ClearServiceParameters is used to clear the lists that were
+**      constructed in a DUL_ASSOCIATEDSERVICEPARAMETERS structure.  The
+**      lists in that structure were built to contain the requested
+**      and accepted Presentation Contexts.  Once the lists were built,
+**      an Association request could be made.  After the Association
+**      has been closed, the Presentation Contexts need to be discarded
+**      so that the same structure can be reused for a new Association.
+**      This function removes all of the nodes from the requested
+**      and accepted Presentation Context lists and then destroys the
+**      lists themselves.
 **
 ** Parameter Dictionary:
-**	params	Pointer to a DUL_ASSOCIATESERVICEPARAMETERS structure
-**		to be cleared.
+**      params  Pointer to a DUL_ASSOCIATESERVICEPARAMETERS structure
+**              to be cleared.
 **
 ** Return Values:
-**	DUL_NORMAL
 ** Notes:
 **
 ** Algorithm:
-**	Description of the algorithm (optional) and any other notes.
+**      Description of the algorithm (optional) and any other notes.
 */
 
-CONDITION
+OFCondition
 DUL_ClearServiceParameters(DUL_ASSOCIATESERVICEPARAMETERS * params)
 {
     clearPresentationContext(&params->requestedPresentationContext);
@@ -1371,23 +1225,23 @@ DUL_ClearServiceParameters(DUL_ASSOCIATESERVICEPARAMETERS * params)
     delete params->requestedExtNegList;
     deleteListMembers(*params->acceptedExtNegList);
     delete params->acceptedExtNegList;
-    return DUL_NORMAL;
+    return EC_Normal;
 }
 
 /* DUL_DefaultServiceParameters
 **
 ** Purpose:
-**	DUL_DefaultServiceParameters is used to set a number of default
-**	parameters in a DUL_ASSOCIATESERVICEPARAMETERS structure.  These
-**	parameters are the default MIR parameters (which should be
-**	adequate for most Unix installations).
+**      DUL_DefaultServiceParameters is used to set a number of default
+**      parameters in a DUL_ASSOCIATESERVICEPARAMETERS structure.  These
+**      parameters are the default MIR parameters (which should be
+**      adequate for most Unix installations).
 **
 ** Parameter Dictionary:
-**	params	Pointer to a DUL_ASSOCIATESERVICEPARAMETERS structure
-**		to be set.
+**      params  Pointer to a DUL_ASSOCIATESERVICEPARAMETERS structure
+**              to be set.
 **
 ** Return Values:
-**	none
+**      none
 ** Notes:
 **
 ** Algorithm:
@@ -1397,25 +1251,25 @@ void
 DUL_DefaultServiceParameters(DUL_ASSOCIATESERVICEPARAMETERS * params)
 {
     static DUL_ASSOCIATESERVICEPARAMETERS p = {
-	DICOM_STDAPPLICATIONCONTEXT,	/* Application Ctx Name */
-	"Calling AP Title",	/* Calling AP Title */
-	"Called AP Title",	/* Called AP Title */
-	"",			/* Responding AP Title */
-	16384,			/* Max PDU */
-	0,			/* result */
-	0,			/* result source */
-	0,			/* diagnostic */
-	"localhost",		/* Calling presentation addr */
-	"localhost:104",	/* Called presentation addr */
-	NULL,			/* Requested presentation ctx list */
-	NULL,			/* Accepted presentation ctx list */
-	0,			/* Maximum operations invoked */
-	0,			/* Maximum operations performed */
-	DICOM_NET_IMPLEMENTATIONCLASSUID, /* Calling implementation class UID */
-	DICOM_NET_IMPLEMENTATIONVERSIONNAME, /* Calling implementation vers name */
-	"",			/* Called implementation class UID */
-	"",			/* Called implementation vers name */
-	0,			/* peer max pdu */
+        DICOM_STDAPPLICATIONCONTEXT,    /* Application Ctx Name */
+        "Calling AP Title",     /* Calling AP Title */
+        "Called AP Title",      /* Called AP Title */
+        "",                     /* Responding AP Title */
+        16384,                  /* Max PDU */
+        0,                      /* result */
+        0,                      /* result source */
+        0,                      /* diagnostic */
+        "localhost",            /* Calling presentation addr */
+        "localhost:104",        /* Called presentation addr */
+        NULL,                   /* Requested presentation ctx list */
+        NULL,                   /* Accepted presentation ctx list */
+        0,                      /* Maximum operations invoked */
+        0,                      /* Maximum operations performed */
+        DICOM_NET_IMPLEMENTATIONCLASSUID, /* Calling implementation class UID */
+        DICOM_NET_IMPLEMENTATIONVERSIONNAME, /* Calling implementation vers name */
+        "",                     /* Called implementation class UID */
+        "",                     /* Called implementation vers name */
+        0,                      /* peer max pdu */
         NULL,                   /* Requested Extended Negotation List */
         NULL,                   /* Accepted Extended Negotation List */
         OFFalse                 /* don't use Secure Transport Layer */
@@ -1432,76 +1286,60 @@ DUL_DefaultServiceParameters(DUL_ASSOCIATESERVICEPARAMETERS * params)
 /* receiveTransportConnection
 **
 ** Purpose:
-**	Receive a transport connection and fill in various fields of the
-**	service parameters and Association handle.
+**      Receive a transport connection and fill in various fields of the
+**      service parameters and Association handle.
 ** Parameter Dictionary:
-**	network		Pointer to a structure maintaining information about
-**			the network environment.
-**	block		Option indicating blocking/non-blocking mode
-**	params		Pointer to structure describing the services for the
-**			Association.
-**	association	Handle to the association
+**      network         Pointer to a structure maintaining information about
+**                      the network environment.
+**      block           Option indicating blocking/non-blocking mode
+**      params          Pointer to structure describing the services for the
+**                      Association.
+**      association     Handle to the association
 **
 ** Return Values:
 **
-**	DUL_NOASSOCIATIONREQUEST
-**	DUL_NORMAL
-**	DUL_TCPINITERROR
-**	DUL_UNKNOWNREMOTENODE
-**	DUL_UNSUPPORTEDNETWORK
 **
 ** Notes:
 **
 ** Algorithm:
-**	Description of the algorithm (optional) and any other notes.
+**      Description of the algorithm (optional) and any other notes.
 */
-static CONDITION
+static OFCondition
 receiveTransportConnection(PRIVATE_NETWORKKEY ** network,
-			   DUL_BLOCKOPTIONS block,
-			   DUL_ASSOCIATESERVICEPARAMETERS * params,
-			   PRIVATE_ASSOCIATIONKEY ** association)
+                           DUL_BLOCKOPTIONS block,
+                           DUL_ASSOCIATESERVICEPARAMETERS * params,
+                           PRIVATE_ASSOCIATIONKEY ** association)
 {
-    if (strcmp((*network)->networkType, DUL_NETWORK_TCP) == 0)
-	return receiveTransportConnectionTCP(network, block, params,
-					     association);
-    else
-	return COND_PushCondition(DUL_UNSUPPORTEDNETWORK,
-				  DUL_Message(DUL_UNSUPPORTEDNETWORK),
-				  (*network)->networkType);
+  return receiveTransportConnectionTCP(network, block, params, association);
 }
 
 
 /* receiveTransportConnectionTCP
 **
 ** Purpose:
-**	Receive a TCP transport connection and fill in the fields of the
-**	service parameters and the Association handle.
+**      Receive a TCP transport connection and fill in the fields of the
+**      service parameters and the Association handle.
 **
 ** Parameter Dictionary:
-**	network		Pointer to a structure maintaining information about
-**			the network environment.
-**	block		Option indicating blocking/non-blocking mode
-**	params		Pointer to structure describing the services for the
-**			Association.
-**	association	Handle to the association
+**      network         Pointer to a structure maintaining information about
+**                      the network environment.
+**      block           Option indicating blocking/non-blocking mode
+**      params          Pointer to structure describing the services for the
+**                      Association.
+**      association     Handle to the association
 **
 ** Return Values:
 **
-**	DUL_NOASSOCIATIONREQUEST
-**	DUL_NORMAL
-**	DUL_TCPINITERROR
-**	DUL_UNKNOWNREMOTENODE
-**	DUL_UNSUPPORTEDNETWORK
 ** Notes:
 **
 ** Algorithm:
-**	Description of the algorithm (optional) and any other notes.
+**      Description of the algorithm (optional) and any other notes.
 */
-static CONDITION
+static OFCondition
 receiveTransportConnectionTCP(PRIVATE_NETWORKKEY ** network,
-			      DUL_BLOCKOPTIONS block,
-			      DUL_ASSOCIATESERVICEPARAMETERS * params,
-			      PRIVATE_ASSOCIATIONKEY ** association)
+                              DUL_BLOCKOPTIONS block,
+                              DUL_ASSOCIATESERVICEPARAMETERS * params,
+                              PRIVATE_ASSOCIATIONKEY ** association)
 {
     fd_set
     fdset;
@@ -1526,79 +1364,79 @@ receiveTransportConnectionTCP(PRIVATE_NETWORKKEY ** network,
         reuse = 1;
 
     if (block == DUL_NOBLOCK) {
-	connected = 0;
-	FD_ZERO(&fdset);
-	FD_SET((*network)->networkSpecific.TCP.listenSocket, &fdset);
-	timeout.tv_sec = 0;
-	timeout.tv_usec = 0;
+        connected = 0;
+        FD_ZERO(&fdset);
+        FD_SET((*network)->networkSpecific.TCP.listenSocket, &fdset);
+        timeout.tv_sec = 0;
+        timeout.tv_usec = 0;
 #ifdef HAVE_INTP_SELECT
-	nfound = select((*network)->networkSpecific.TCP.listenSocket + 1,
-			(int *)(&fdset), NULL, NULL, &timeout);
+        nfound = select((*network)->networkSpecific.TCP.listenSocket + 1,
+                        (int *)(&fdset), NULL, NULL, &timeout);
 #else
-	nfound = select((*network)->networkSpecific.TCP.listenSocket + 1,
-			&fdset, NULL, NULL, &timeout);
+        nfound = select((*network)->networkSpecific.TCP.listenSocket + 1,
+                        &fdset, NULL, NULL, &timeout);
 #endif
-	if (nfound != 0) {
-	    if (FD_ISSET((*network)->networkSpecific.TCP.listenSocket, &fdset))
-		connected++;
-	}
-	if (!connected)
-	    return COND_PushCondition(DUL_NOASSOCIATIONREQUEST,
-				      DUL_Message(DUL_NOASSOCIATIONREQUEST));
+        if (nfound != 0) {
+            if (FD_ISSET((*network)->networkSpecific.TCP.listenSocket, &fdset))
+                connected++;
+        }
+        if (!connected) return DUL_NOASSOCIATIONREQUEST;
     } else {
-	connected = 0;
-	do {
-	    FD_ZERO(&fdset);
-	    FD_SET((*network)->networkSpecific.TCP.listenSocket, &fdset);
+        connected = 0;
+        do {
+            FD_ZERO(&fdset);
+            FD_SET((*network)->networkSpecific.TCP.listenSocket, &fdset);
 
-	    timeout.tv_sec = 5;
-	    timeout.tv_usec = 0;
+            timeout.tv_sec = 5;
+            timeout.tv_usec = 0;
 #ifdef HAVE_INTP_SELECT
-	    nfound = select((*network)->networkSpecific.TCP.listenSocket + 1,
-			    (int *)(&fdset), NULL, NULL, &timeout);
+            nfound = select((*network)->networkSpecific.TCP.listenSocket + 1,
+                            (int *)(&fdset), NULL, NULL, &timeout);
 #else
-	    nfound = select((*network)->networkSpecific.TCP.listenSocket + 1,
-			    &fdset, NULL, NULL, &timeout);
+            nfound = select((*network)->networkSpecific.TCP.listenSocket + 1,
+                            &fdset, NULL, NULL, &timeout);
 #endif
-	    if (nfound != 0) {
-		if (FD_ISSET((*network)->networkSpecific.TCP.listenSocket,
-			     &fdset))
-		    connected++;
-	    }
-	} while (!connected);
+            if (nfound != 0) {
+                if (FD_ISSET((*network)->networkSpecific.TCP.listenSocket,
+                             &fdset))
+                    connected++;
+            }
+        } while (!connected);
     }
 
     len = sizeof(from);
     do {
-	if (debug)
-	    COUT << "\n\n\n*************BEFORE ACCEPT*************\n";
-	sock = accept((*network)->networkSpecific.TCP.listenSocket, &from, &len);
-	if (debug)
-	    COUT << "*************AFTER ACCEPT(sock: " << sock << "/errno: "
+        if (debug)
+            COUT << "\n\n\n*************BEFORE ACCEPT*************\n";
+        sock = accept((*network)->networkSpecific.TCP.listenSocket, &from, &len);
+        if (debug)
+            COUT << "*************AFTER ACCEPT(sock: " << sock << "/errno: "
             << errno << ")*************\n\n\n";
     } while (sock == -1 && errno == EINTR);
 
-    if (sock < 0) {
-	(void) COND_PushCondition(DUL_TCPINITERROR,
-				  "Accept Error In %s, socket %d",
-				  "receiveTransportConnectionTCP", sock);
-	return COND_PushCondition(DUL_TCPINITERROR, strerror(errno));
+    if (sock < 0)
+    {
+        char buf3[256];
+        sprintf(buf3, "TCP Initialization Error: %s, accept failed on socket %d", strerror(errno), sock);
+        return makeDcmnetCondition(DULC_TCPINITERROR, OF_error, buf3);
     }
 #ifdef HAVE_GUSI_H
     /* GUSI always returns an error for setsockopt(...) */
 #else
     sockarg.l_onoff = 0;
     if (setsockopt(sock, SOL_SOCKET, SO_LINGER, (char *) &sockarg,
-		   sizeof(sockarg)) < 0) {
-	(void) COND_PushCondition(DUL_TCPINITERROR, "In %s, socket %d",
-				  "receiveTransportConnectionTCP", sock);
-	return COND_PushCondition(DUL_TCPINITERROR, strerror(errno));
+                   sizeof(sockarg)) < 0)
+    {
+        char buf4[256];
+        sprintf(buf4, "TCP Initialization Error: %s, setsockopt failed on socket %d", strerror(errno), sock);
+        return makeDcmnetCondition(DULC_TCPINITERROR, OF_error, buf4);
     }
     reuse = 1;
-    if (setsockopt(sock,
-	    SOL_SOCKET, SO_REUSEADDR, (char *) &reuse, sizeof(reuse)) < 0) {
-	return COND_PushCondition(DUL_TCPINITERROR,
-			    DUL_Message(DUL_TCPINITERROR), strerror(errno));
+    if (setsockopt(sock, SOL_SOCKET, SO_REUSEADDR, (char *) &reuse, sizeof(reuse)) < 0)
+    {
+        char buf1[256];
+        sprintf(buf1, "TCP Initialization Error: %s", strerror(errno));
+        return makeDcmnetCondition(DULC_TCPINITERROR, OF_error, buf1);
     }
 #endif
     setTCPBufferLength(sock);
@@ -1614,46 +1452,49 @@ receiveTransportConnectionTCP(PRIVATE_NETWORKKEY ** network,
     int tcpNoDelay = 1; // disable
     char* tcpNoDelayString = NULL;
     if ((tcpNoDelayString = getenv("TCP_NODELAY")) != NULL) {
-	if (sscanf(tcpNoDelayString, "%d", &tcpNoDelay) != 1) {
-	    COUT << "DUL: cannot parse environment variable TCP_NODELAY=" << tcpNoDelayString << endl;
-	}
+        if (sscanf(tcpNoDelayString, "%d", &tcpNoDelay) != 1) {
+            COUT << "DUL: cannot parse environment variable TCP_NODELAY=" << tcpNoDelayString << endl;
+        }
     }
     if (tcpNoDelay) {
-	if (setsockopt(sock, IPPROTO_TCP, TCP_NODELAY, (char*)&tcpNoDelay, sizeof(tcpNoDelay)) < 0) {
-	    return COND_PushCondition(DUL_TCPINITERROR, DUL_Message(DUL_TCPINITERROR), strerror(errno));
-	}
+        if (setsockopt(sock, IPPROTO_TCP, TCP_NODELAY, (char*)&tcpNoDelay, sizeof(tcpNoDelay)) < 0)
+        {
+          char buf1[256];
+          sprintf(buf1, "TCP Initialization Error: %s", strerror(errno));
+          return makeDcmnetCondition(DULC_TCPINITERROR, OF_error, buf1);
+        }
     }
 #endif // DONT_DISABLE_NAGLE_ALGORITHM
 
     if (! dcmDisableGethostbyaddr.get()) remote = gethostbyaddr(&from.sa_data[2], 4, 2);
     if (remote == NULL)
     {
-    	// reverse DNS lookup disabled or host not found, use numerical address
-	(void) sprintf(params->callingPresentationAddress, "%-d.%-d.%-d.%-d",
-		       ((int) from.sa_data[2]) & 0xff,
-		       ((int) from.sa_data[3]) & 0xff,
-		       ((int) from.sa_data[4]) & 0xff,
-		       ((int) from.sa_data[5]) & 0xff);
+        // reverse DNS lookup disabled or host not found, use numerical address
+        (void) sprintf(params->callingPresentationAddress, "%-d.%-d.%-d.%-d",
+                       ((int) from.sa_data[2]) & 0xff,
+                       ((int) from.sa_data[3]) & 0xff,
+                       ((int) from.sa_data[4]) & 0xff,
+                       ((int) from.sa_data[5]) & 0xff);
     } 
     else 
     {
-	char node[128];
-	size_t size;
+        char node[128];
+        size_t size;
 
-	if ((*network)->options & DUL_FULLDOMAINNAME)
-	    strcpy(node, remote->h_name);
-	else {
-	    if (sscanf(remote->h_name, "%[^.]", node) != 1)
-		node[0] = '\0';
-	}
+        if ((*network)->options & DUL_FULLDOMAINNAME)
+            strcpy(node, remote->h_name);
+        else {
+            if (sscanf(remote->h_name, "%[^.]", node) != 1)
+                node[0] = '\0';
+        }
 
-	size = sizeof((*association)->remoteNode);
-	(void) strncpy((*association)->remoteNode, node, size);
-	(*association)->remoteNode[size - 1] = '\0';
+        size = sizeof((*association)->remoteNode);
+        (void) strncpy((*association)->remoteNode, node, size);
+        (*association)->remoteNode[size - 1] = '\0';
 
-	size = sizeof(params->callingPresentationAddress);
-	(void) strncpy(params->callingPresentationAddress, node, size);
-	params->callingPresentationAddress[size - 1] = '\0';
+        size = sizeof(params->callingPresentationAddress);
+        (void) strncpy(params->callingPresentationAddress, node, size);
+        params->callingPresentationAddress[size - 1] = '\0';
     }
 
     if ((*association)->connection) delete (*association)->connection;
@@ -1672,112 +1513,101 @@ receiveTransportConnectionTCP(PRIVATE_NETWORKKEY ** network,
 #else
       (void) close(sock);
 #endif
-      return COND_PushCondition(DUL_TCPINITERROR, DUL_Message(DUL_TCPINITERROR), strerror(errno));
+      char buf1[256];
+      sprintf(buf1, "TCP Initialization Error: %s", strerror(errno));
+      return makeDcmnetCondition(DULC_TCPINITERROR, OF_error, buf1);
     }
 
     DcmTransportLayerStatus tcsStatus;
     if (TCS_ok != (tcsStatus = (*association)->connection->serverSideHandshake()))
     {
-      return COND_PushCondition(DUL_TLSERROR, DUL_Message(DUL_TLSERROR), (*association)->connection->errorString(tcsStatus));
+      char buf[4096]; // error message could be long
+      sprintf(buf, "DUL secure transport layer: %s", (*association)->connection->errorString(tcsStatus));
+      return makeDcmnetCondition(DULC_TLSERROR, OF_error, buf);
     }
 
-    return DUL_NORMAL;
+    return EC_Normal;
 }
 
 
 /* createNetworkKey
 **
 ** Purpose:
-**	Create a network key for the network environment.
+**      Create a network key for the network environment.
 **
 ** Parameter Dictionary:
-**	networkType	Type of transport level network (e.g. TCP)
-**	mode		Role played by the application entity
-**	timeout		The timeout value to be used for timers
-**	key		Pointer to the structure maintaining the
-**			entire information of the network environment.
-**			This is returned back to the caller.
+**      mode            Role played by the application entity
+**      timeout         The timeout value to be used for timers
+**      key             Pointer to the structure maintaining the
+**                      entire information of the network environment.
+**                      This is returned back to the caller.
 **
 ** Return Values:
 **
-**	DUL_KEYCREATEFAILURE
-**	DUL_NORMAL
-**	DUL_UNRECOGNIZEDAE
-**	DUL_UNSUPPORTEDNETWORK
 **
 ** Notes:
 **
 ** Algorithm:
-**	Description of the algorithm (optional) and any other notes.
+**      Description of the algorithm (optional) and any other notes.
 */
-static CONDITION
-createNetworkKey(const char *networkType, const char *mode,
-		 int timeout, unsigned long opt, PRIVATE_NETWORKKEY ** key)
+static OFCondition
+createNetworkKey(const char *mode,
+                 int timeout, unsigned long opt, PRIVATE_NETWORKKEY ** key)
 {
-    if (strcmp(networkType, DUL_NETWORK_TCP) == 0) {
-    } else {
-	return COND_PushCondition(DUL_UNSUPPORTEDNETWORK,
-			  DUL_Message(DUL_UNSUPPORTEDNETWORK), networkType);
-    }
-
     if (strcmp(mode, AE_REQUESTOR) != 0 &&
-	strcmp(mode, AE_ACCEPTOR) != 0 &&
-	strcmp(mode, AE_BOTH) != 0) {
-	return COND_PushCondition(DUL_UNRECOGNIZEDAE,
-				  DUL_Message(DUL_UNRECOGNIZEDAE), mode);
+        strcmp(mode, AE_ACCEPTOR) != 0 &&
+        strcmp(mode, AE_BOTH) != 0)
+    {
+        char buf1[4096];
+        sprintf(buf1, "Unrecognized Network Mode: %s", mode);
+        return makeDcmnetCondition(DULC_ILLEGALPARAMETER, OF_error, buf1);
     }
     *key = (PRIVATE_NETWORKKEY *) malloc(sizeof(PRIVATE_NETWORKKEY));
-    if (*key == NULL) {
-	return COND_PushCondition(DUL_KEYCREATEFAILURE,
-				  DUL_Message(DUL_KEYCREATEFAILURE));
-    }
+    if (*key == NULL) return EC_MemoryExhausted;
     (void) strcpy((*key)->keyType, KEY_NETWORK);
 
-    (void) strcpy((*key)->networkType, networkType);
     (*key)->applicationFunction = 0;
 
     if (strcmp(mode, AE_REQUESTOR) == 0)
-	(*key)->applicationFunction |= DICOM_APPLICATION_REQUESTOR;
+        (*key)->applicationFunction |= DICOM_APPLICATION_REQUESTOR;
     else if (strcmp(mode, AE_ACCEPTOR) == 0)
-	(*key)->applicationFunction |= DICOM_APPLICATION_ACCEPTOR;
+        (*key)->applicationFunction |= DICOM_APPLICATION_ACCEPTOR;
     else
-	(*key)->applicationFunction |=
-	    DICOM_APPLICATION_ACCEPTOR | DICOM_APPLICATION_REQUESTOR;
+        (*key)->applicationFunction |=
+            DICOM_APPLICATION_ACCEPTOR | DICOM_APPLICATION_REQUESTOR;
 
     (*key)->networkState = NETWORK_DISCONNECTED;
     (*key)->protocolState = STATE1;
 
     if (timeout > 0)
-	(*key)->timeout = timeout;
+        (*key)->timeout = timeout;
     else
-	(*key)->timeout = DEFAULT_TIMEOUT;
+        (*key)->timeout = DEFAULT_TIMEOUT;
 
     (*key)->options = opt;
 
-    return DUL_NORMAL;
+    return EC_Normal;
 }
 
 
 /* initializeNetworkTCP
 **
 ** Purpose:
-**	Create a socket and listen for connections on the port number
+**      Create a socket and listen for connections on the port number
 **
 ** Parameter Dictionary:
-**	key		Handle to the network environment
-**	parameter	port number on which to listen for connection
+**      key             Handle to the network environment
+**      parameter       port number on which to listen for connection
 **
 ** Return Values:
 **
-**	DUL_NORMAL
-**	DUL_TCPINITERROR
 **
 ** Notes:
 **
 ** Algorithm:
-**	Description of the algorithm (optional) and any other notes.
+**      Description of the algorithm (optional) and any other notes.
 */
-static CONDITION
+static OFCondition
 initializeNetworkTCP(PRIVATE_NETWORKKEY ** key, void *parameter)
 {
     struct linger
@@ -1798,61 +1628,74 @@ initializeNetworkTCP(PRIVATE_NETWORKKEY ** key, void *parameter)
     struct sockaddr_in server;
 
 /* Create socket for internet type communication */
-	(*key)->networkSpecific.TCP.port = *(int *) parameter;
-	(*key)->networkSpecific.TCP.listenSocket = socket(AF_INET, SOCK_STREAM, 0);
-	if ((*key)->networkSpecific.TCP.listenSocket < 0) {
-	    return COND_PushCondition(DUL_TCPINITERROR,
-			    DUL_Message(DUL_TCPINITERROR), strerror(errno));
-	}
-	reuse = 1;
+        (*key)->networkSpecific.TCP.port = *(int *) parameter;
+        (*key)->networkSpecific.TCP.listenSocket = socket(AF_INET, SOCK_STREAM, 0);
+        if ((*key)->networkSpecific.TCP.listenSocket < 0)
+        {
+          char buf1[256];
+          sprintf(buf1, "TCP Initialization Error: %s", strerror(errno));
+          return makeDcmnetCondition(DULC_TCPINITERROR, OF_error, buf1);
+        }
+        reuse = 1;
 #ifdef HAVE_GUSI_H
         /* GUSI always returns an error for setsockopt(...) */
 #else
-	if (setsockopt((*key)->networkSpecific.TCP.listenSocket,
-	    SOL_SOCKET, SO_REUSEADDR, (char *) &reuse, sizeof(reuse)) < 0) {
-	    return COND_PushCondition(DUL_TCPINITERROR,
-			    DUL_Message(DUL_TCPINITERROR), strerror(errno));
-	}
+        if (setsockopt((*key)->networkSpecific.TCP.listenSocket,
+            SOL_SOCKET, SO_REUSEADDR, (char *) &reuse, sizeof(reuse)) < 0)
+        {
+          char buf2[256];
+          sprintf(buf2, "TCP Initialization Error: %s", strerror(errno));
+          return makeDcmnetCondition(DULC_TCPINITERROR, OF_error, buf2);
+        }
 #endif
 /* Name socket using wildcards */
-	server.sin_family = AF_INET;
-	server.sin_addr.s_addr = INADDR_ANY;
-	server.sin_port = (unsigned short) htons((*key)->networkSpecific.TCP.port);
-	if (bind((*key)->networkSpecific.TCP.listenSocket,
-		 (struct sockaddr *) & server, sizeof(server))) {
-	    return COND_PushCondition(DUL_TCPINITERROR,
-			    DUL_Message(DUL_TCPINITERROR), strerror(errno));
-	}
+        server.sin_family = AF_INET;
+        server.sin_addr.s_addr = INADDR_ANY;
+        server.sin_port = (unsigned short) htons((*key)->networkSpecific.TCP.port);
+        if (bind((*key)->networkSpecific.TCP.listenSocket,
+                 (struct sockaddr *) & server, sizeof(server)))
+        {
+          char buf3[256];
+          sprintf(buf3, "TCP Initialization Error: %s", strerror(errno));
+          return makeDcmnetCondition(DULC_TCPINITERROR, OF_error, buf3);
+        }
 /* Find out assigned port number and print it out */
-	length = sizeof(server);
-	if (getsockname((*key)->networkSpecific.TCP.listenSocket,
-			(struct sockaddr *) & server, &length)) {
-	    return COND_PushCondition(DUL_TCPINITERROR,
-			    DUL_Message(DUL_TCPINITERROR), strerror(errno));
-	}
+        length = sizeof(server);
+        if (getsockname((*key)->networkSpecific.TCP.listenSocket,
+                        (struct sockaddr *) & server, &length))
+        {
+          char buf4[256];
+          sprintf(buf4, "TCP Initialization Error: %s", strerror(errno));
+          return makeDcmnetCondition(DULC_TCPINITERROR, OF_error, buf4);
+        }
 #ifdef HAVE_GUSI_H
         /* GUSI always returns an error for setsockopt(...) */
 #else
-	sockarg.l_onoff = 0;
-	if (setsockopt((*key)->networkSpecific.TCP.listenSocket,
-	   SOL_SOCKET, SO_LINGER, (char *) &sockarg, sizeof(sockarg)) < 0) {
-	    return COND_PushCondition(DUL_TCPINITERROR,
-			    DUL_Message(DUL_TCPINITERROR), strerror(errno));
-	}
+        sockarg.l_onoff = 0;
+        if (setsockopt((*key)->networkSpecific.TCP.listenSocket,
+           SOL_SOCKET, SO_LINGER, (char *) &sockarg, sizeof(sockarg)) < 0)
+        {
+          char buf5[256];
+          sprintf(buf5, "TCP Initialization Error: %s", strerror(errno));
+          return makeDcmnetCondition(DULC_TCPINITERROR, OF_error, buf5);
+        }
 #endif
 
-	if (debug)
-	    COUT << "\n\n\n***BEFORE LISTEN***\n";
-	listen((*key)->networkSpecific.TCP.listenSocket, PRV_LISTENBACKLOG);
-	if (debug)
-	    COUT << "***AFTER LISTEN***\n\n\n";
+        if (debug)
+            COUT << "\n\n\n***BEFORE LISTEN***\n";
+        listen((*key)->networkSpecific.TCP.listenSocket, PRV_LISTENBACKLOG);
+        if (debug)
+            COUT << "***AFTER LISTEN***\n\n\n";
     }
 
     (*key)->networkSpecific.TCP.tLayer = new DcmTransportLayer((*key)->applicationFunction);
     (*key)->networkSpecific.TCP.tLayerOwned = 1;
-    if (NULL == (*key)->networkSpecific.TCP.tLayer) return COND_PushCondition(DUL_TCPINITERROR, "Cannot initialize DcmTransportLayer");
+    if (NULL == (*key)->networkSpecific.TCP.tLayer)
+    {
+      return makeDcmnetCondition(DULC_TCPINITERROR, OF_error, "Cannot initialize DcmTransportLayer");
+    }
 
-    return DUL_NORMAL;
+    return EC_Normal;
 }
 
 
@@ -1860,43 +1703,37 @@ initializeNetworkTCP(PRIVATE_NETWORKKEY ** key, void *parameter)
 /* createAssociationKey
 **
 ** Purpose:
-**	Create handle to the Association.
+**      Create handle to the Association.
 **
 ** Parameter Dictionary:
-**	networkKey		Handle to the network environment
-**	remoteNode		The remote node to whcih the association
-**				is to be set up.
-**	maxPDU			Size of the maximum PDU.
-**	associationKey		The handle to the Association that is to be
-**				returned.
+**      networkKey              Handle to the network environment
+**      remoteNode              The remote node to whcih the association
+**                              is to be set up.
+**      maxPDU                  Size of the maximum PDU.
+**      associationKey          The handle to the Association that is to be
+**                              returned.
 **
 ** Return Values:
 **
-**	DUL_KEYCREATEFAILURE
-**	DUL_NORMAL
 **
 ** Notes:
 **
 ** Algorithm:
-**	Description of the algorithm (optional) and any other notes.
+**      Description of the algorithm (optional) and any other notes.
 */
-static CONDITION
+static OFCondition
 createAssociationKey(PRIVATE_NETWORKKEY ** networkKey,
-		     const char *remoteNode, unsigned long maxPDU,
-		     PRIVATE_ASSOCIATIONKEY ** associationKey)
+                     const char *remoteNode, unsigned long maxPDU,
+                     PRIVATE_ASSOCIATIONKEY ** associationKey)
 {
     PRIVATE_ASSOCIATIONKEY *key;
 
     key = (PRIVATE_ASSOCIATIONKEY *) malloc(
-	size_t(sizeof(PRIVATE_ASSOCIATIONKEY) + maxPDU + 100));
-    if (key == NULL) {
-	return COND_PushCondition(DUL_KEYCREATEFAILURE,
-				  DUL_Message(DUL_KEYCREATEFAILURE));
-    }
+        size_t(sizeof(PRIVATE_ASSOCIATIONKEY) + maxPDU + 100));
+    if (key == NULL) return EC_MemoryExhausted;
     key->receivePDUQueue = NULL;
 
     (void) strcpy(key->keyType, KEY_ASSOCIATION);
-    (void) strcpy(key->networkType, (*networkKey)->networkType);
     key->applicationFunction = (*networkKey)->applicationFunction;
 
     (void) strcpy(key->remoteNode, remoteNode);
@@ -1932,7 +1769,7 @@ createAssociationKey(PRIVATE_NETWORKKEY ** networkKey,
     key->logHandle = NULL;
     key->connection = NULL;
     *associationKey = key;
-    return DUL_NORMAL;
+    return EC_Normal;
 }
 
 
@@ -1940,17 +1777,17 @@ createAssociationKey(PRIVATE_NETWORKKEY ** networkKey,
 /* destroyAssociationKey
 **
 ** Purpose:
-**	Destroy the handle to the Association.
+**      Destroy the handle to the Association.
 **
 ** Parameter Dictionary:
-**	key		Handle to the association.
+**      key             Handle to the association.
 **
 ** Return Values:
 **
 ** Notes:
 **
 ** Algorithm:
-**	Description of the algorithm (optional) and any other notes.
+**      Description of the algorithm (optional) and any other notes.
 */
 static void
 destroyAssociationKey(PRIVATE_ASSOCIATIONKEY ** key)
@@ -1964,70 +1801,60 @@ destroyAssociationKey(PRIVATE_ASSOCIATIONKEY ** key)
 /* get_association_parameter
 **
 ** Purpose:
-**	Get a single parameter.
+**      Get a single parameter.
 **
 ** Parameter Dictionary:
-**	paramAddress		Source parameter
-**	paramType		Type of the source parameter
-**	paramLength		Size of the source parameter
-**	outputType		Type of the destination parameter
-**	outputAddress		Destination parameter returned to caller
-**	outputLength		Size of the destination parameter
+**      paramAddress            Source parameter
+**      paramType               Type of the source parameter
+**      paramLength             Size of the source parameter
+**      outputType              Type of the destination parameter
+**      outputAddress           Destination parameter returned to caller
+**      outputLength            Size of the destination parameter
 **
 ** Return Values:
 **
-**	DUL_INCORRECTBUFFERLENGTH
-**	DUL_INSUFFICIENTBUFFERLENGTH
-**	DUL_NORMAL
-**	DUL_WRONGDATATYPE
 **
 ** Notes:
 **
 ** Algorithm:
-**	Description of the algorithm (optional) and any other notes.
+**      Description of the algorithm (optional) and any other notes.
 */
-static CONDITION
+static OFCondition
 get_association_parameter(void *paramAddress,
-			  DUL_DATA_TYPE paramType, size_t paramLength,
-	 DUL_DATA_TYPE outputType, void *outputAddress, size_t outputLength)
+                          DUL_DATA_TYPE paramType, size_t paramLength,
+         DUL_DATA_TYPE outputType, void *outputAddress, size_t outputLength)
 {
-    if (paramType != outputType)
-	return COND_PushCondition(DUL_WRONGDATATYPE,
-				  DUL_Message(DUL_WRONGDATATYPE));
-    if ((paramType == DUL_K_INTEGER) && (outputLength != paramLength))
-	return COND_PushCondition(DUL_INCORRECTBUFFERLENGTH,
-				  DUL_Message(DUL_INCORRECTBUFFERLENGTH));
-    if ((paramType == DUL_K_STRING) && (outputLength < strlen((char*)paramAddress)))
-	return COND_PushCondition(DUL_INSUFFICIENTBUFFERLENGTH,
-				  DUL_Message(DUL_INSUFFICIENTBUFFERLENGTH));
+    if (paramType != outputType) return DUL_WRONGDATATYPE;
+    if ((paramType == DUL_K_INTEGER) && (outputLength != paramLength)) return DUL_INCORRECTBUFFERLENGTH;
+    if ((paramType == DUL_K_STRING) && (outputLength < strlen((char*)paramAddress))) return DUL_INSUFFICIENTBUFFERLENGTH;
 
     switch (paramType) {
     case DUL_K_INTEGER:
-	(void) memcpy(outputAddress, paramAddress, paramLength);
-	break;
+        (void) memcpy(outputAddress, paramAddress, paramLength);
+        break;
     case DUL_K_STRING:
-	strcpy((char*)outputAddress, (char*)paramAddress);
-	break;
+        strcpy((char*)outputAddress, (char*)paramAddress);
+        break;
     }
-    return DUL_NORMAL;
+    return EC_Normal;
 }
 
 
 /* setTCPBufferLength
 **
 ** Purpose:
-**	Initialize the length of the buffer.
+**      Initialize the length of the buffer.
 **
 ** Parameter Dictionary:
-**	sock		Socket descriptor.
+**      sock            Socket descriptor.
 **
 ** Return Values:
-**	None
+**      None
 **
 ** Notes:
 **
 ** Algorithm:
-**	Description of the algorithm (optional) and any other notes.
+**      Description of the algorithm (optional) and any other notes.
 */
 static void
 setTCPBufferLength(int sock)
@@ -2046,16 +1873,16 @@ setTCPBufferLength(int sock)
 #else
     bufLen = 32768; // a socket buffer size of 32K gives best throughput for image transmission
     if ((TCPBufferLength = getenv("TCP_BUFFER_LENGTH")) != NULL) {
-	if (sscanf(TCPBufferLength, "%d", &bufLen) != 1) {
-	    CERR << "DUL: cannot parse environment variable TCP_BUFFER_LENGTH=" << TCPBufferLength << endl;
-	}
+        if (sscanf(TCPBufferLength, "%d", &bufLen) != 1) {
+            CERR << "DUL: cannot parse environment variable TCP_BUFFER_LENGTH=" << TCPBufferLength << endl;
+        }
     }
 #if defined(SO_SNDBUF) && defined(SO_RCVBUF)
     (void) setsockopt(sock, SOL_SOCKET, SO_SNDBUF, (char *) &bufLen, sizeof(bufLen));
     (void) setsockopt(sock, SOL_SOCKET, SO_RCVBUF, (char *) &bufLen, sizeof(bufLen));
 #else
     CERR << "DULFSM: setTCPBufferLength: "
-	    "cannot set TCP buffer length socket option: "
+            "cannot set TCP buffer length socket option: "
             "code disabled because SO_SNDBUF and SO_RCVBUF constants are unknown" << endl;
 #endif // SO_SNDBUF and SO_RCVBUF
 #endif // HAVE_GUSI_H
@@ -2064,18 +1891,18 @@ setTCPBufferLength(int sock)
 /* DUL_DumpParams
 **
 ** Purpose:
-**	Display information of various fields of the service parameters.
+**      Display information of various fields of the service parameters.
 **
 ** Parameter Dictionary:
-**	params		Pointer to structure holding the service parameters.
+**      params          Pointer to structure holding the service parameters.
 **
 ** Return Values:
-**	None
+**      None
 **
 ** Notes:
 **
 ** Algorithm:
-**	Description of the algorithm (optional) and any other notes.
+**      Description of the algorithm (optional) and any other notes.
 */
 void
 DUL_DumpParams(DUL_ASSOCIATESERVICEPARAMETERS * params)
@@ -2123,18 +1950,18 @@ static SC_MAP scMap[] = {
 /* dump_presentation_ctx
 **
 ** Purpose:
-**	Display the contents of the presentation context list
+**      Display the contents of the presentation context list
 **
 ** Parameter Dictionary:
-**	l	Head of the list of various presentation conmtexts.
+**      l       Head of the list of various presentation conmtexts.
 **
 ** Return Values:
-**	None
+**      None
 **
 ** Notes:
 **
 ** Algorithm:
-**	Description of the algorithm (optional) and any other notes.
+**      Description of the algorithm (optional) and any other notes.
 */
 static void
 dump_presentation_ctx(LST_HEAD ** l)
@@ -2142,47 +1969,47 @@ dump_presentation_ctx(LST_HEAD ** l)
     DUL_PRESENTATIONCONTEXT
     * ctx;
     DUL_TRANSFERSYNTAX
-	* transfer;
+        * transfer;
     int
         l_index;
 
     if (*l == NULL)
-	return;
+        return;
 
     ctx = (DUL_PRESENTATIONCONTEXT*)LST_Head(l);
     if (ctx == NULL)
-	return;
+        return;
 
     (void) LST_Position(l, (LST_NODE*)ctx);
 
     while (ctx != NULL) {
-	COUT << "  Context ID:           " << ctx->presentationContextID << endl
-	    << "  Abstract Syntax:      " << ctx->abstractSyntax << endl;
-	dump_uid(ctx->abstractSyntax, "%24s");
-	COUT << "  Result field:         " << (int) ctx->result << endl;
-	for (l_index = 0; l_index < (int) DIM_OF(scMap); l_index++) {
-	    if (ctx->proposedSCRole == scMap[l_index].role)
-		COUT << "  Proposed SCU/SCP Role:  " << scMap[l_index].text << endl;
-	}
-	for (l_index = 0; l_index < (int) DIM_OF(scMap); l_index++) {
-	    if (ctx->acceptedSCRole == scMap[l_index].role)
-		COUT << "  Accepted SCU/SCP Role:  " << scMap[l_index].text << endl;
-	}
-	COUT << "  Proposed Xfer Syntax(es)" << endl;
-	if (ctx->proposedTransferSyntax != NULL) {
-	    transfer = (DUL_TRANSFERSYNTAX*)LST_Head(&ctx->proposedTransferSyntax);
-	    if (transfer != NULL)
-		(void) LST_Position(&ctx->proposedTransferSyntax, (LST_NODE*)transfer);
+        COUT << "  Context ID:           " << ctx->presentationContextID << endl
+            << "  Abstract Syntax:      " << ctx->abstractSyntax << endl;
+        dump_uid(ctx->abstractSyntax, "%24s");
+        COUT << "  Result field:         " << (int) ctx->result << endl;
+        for (l_index = 0; l_index < (int) DIM_OF(scMap); l_index++) {
+            if (ctx->proposedSCRole == scMap[l_index].role)
+                COUT << "  Proposed SCU/SCP Role:  " << scMap[l_index].text << endl;
+        }
+        for (l_index = 0; l_index < (int) DIM_OF(scMap); l_index++) {
+            if (ctx->acceptedSCRole == scMap[l_index].role)
+                COUT << "  Accepted SCU/SCP Role:  " << scMap[l_index].text << endl;
+        }
+        COUT << "  Proposed Xfer Syntax(es)" << endl;
+        if (ctx->proposedTransferSyntax != NULL) {
+            transfer = (DUL_TRANSFERSYNTAX*)LST_Head(&ctx->proposedTransferSyntax);
+            if (transfer != NULL)
+                (void) LST_Position(&ctx->proposedTransferSyntax, (LST_NODE*)transfer);
 
-	    while (transfer != NULL) {
-		COUT << "                  " << transfer->transferSyntax << endl;
-		dump_uid(transfer->transferSyntax, "%18s");
-		transfer = (DUL_TRANSFERSYNTAX*)LST_Next(&ctx->proposedTransferSyntax);
-	    }
-	}
-	COUT << "  Accepted Xfer Syntax: " << ctx->acceptedTransferSyntax << endl;
-	dump_uid(ctx->acceptedTransferSyntax, "%24s");
-	ctx = (DUL_PRESENTATIONCONTEXT*)LST_Next(l);
+            while (transfer != NULL) {
+                COUT << "                  " << transfer->transferSyntax << endl;
+                dump_uid(transfer->transferSyntax, "%18s");
+                transfer = (DUL_TRANSFERSYNTAX*)LST_Next(&ctx->proposedTransferSyntax);
+            }
+        }
+        COUT << "  Accepted Xfer Syntax: " << ctx->acceptedTransferSyntax << endl;
+        dump_uid(ctx->acceptedTransferSyntax, "%24s");
+        ctx = (DUL_PRESENTATIONCONTEXT*)LST_Next(l);
     }
 
 }
@@ -2190,15 +2017,15 @@ dump_presentation_ctx(LST_HEAD ** l)
 /* dumpExtNegList
 **
 ** Purpose:
-**	Display the extended negotiation structure
+**      Display the extended negotiation structure
 **
 ** Return Values:
-**	None
+**      None
 **
 ** Notes:
 **
 ** Algorithm:
-**	Description of the algorithm (optional) and any other notes.
+**      Description of the algorithm (optional) and any other notes.
 */
 
 void dumpExtNegList(SOPClassExtendedNegotiationSubItemList& list)
@@ -2223,19 +2050,19 @@ void dumpExtNegList(SOPClassExtendedNegotiationSubItemList& list)
 /* dump_uid
 **
 ** Purpose:
-**	Display the UID structure
+**      Display the UID structure
 **
 ** Parameter Dictionary:
-**	UID		The UID associated with the structure
-**	indent		Useful for printing purposes.
+**      UID             The UID associated with the structure
+**      indent          Useful for printing purposes.
 **
 ** Return Values:
-**	None
+**      None
 **
 ** Notes:
 **
 ** Algorithm:
-**	Description of the algorithm (optional) and any other notes.
+**      Description of the algorithm (optional) and any other notes.
 */
 static void
 dump_uid(const char *UID, const char *indent)
@@ -2245,108 +2072,89 @@ dump_uid(const char *UID, const char *indent)
     
     if ((UID==NULL)||(UID[0] == '\0'))
     {
-	sprintf(buf, indent, " ");
-	COUT << buf << "No UID" << endl;
+        sprintf(buf, indent, " ");
+        COUT << buf << "No UID" << endl;
     } else {
-	uidName = dcmFindNameOfUID(UID);
-	if (uidName != NULL) {
-	    sprintf(buf, indent, " ");
-	    COUT << buf << uidName << endl;
-	} else {
-	    sprintf(buf, indent, " ");
-	    COUT << buf << "Unknown UID" << endl;
-	}
+        uidName = dcmFindNameOfUID(UID);
+        if (uidName != NULL) {
+            sprintf(buf, indent, " ");
+            COUT << buf << uidName << endl;
+        } else {
+            sprintf(buf, indent, " ");
+            COUT << buf << "Unknown UID" << endl;
+        }
     }
 }
 /* checkNetwork
 **
 ** Purpose:
-**	Verify the validity of the network handle.
+**      Verify the validity of the network handle.
 **
 ** Parameter Dictionary:
-**	networkKey		Handle to the network to be validated.
-**	caller			Used only for better error messages, contains
-**				the string indicating the name of the
-**				routine that called this one.
+**      networkKey              Handle to the network to be validated.
+**      caller                  Used only for better error messages, contains
+**                              the string indicating the name of the
+**                              routine that called this one.
 **
 ** Return Values:
 **
-**	DUL_ILLEGALKEY
-**	DUL_NORMAL
-**	DUL_NULLKEY
 **
 ** Algorithm:
-**	Description of the algorithm (optional) and any other notes.
+**      Description of the algorithm (optional) and any other notes.
 */
-static CONDITION
-checkNetwork(PRIVATE_NETWORKKEY ** networkKey, const char *caller)
+static OFCondition
+checkNetwork(PRIVATE_NETWORKKEY ** networkKey)
 {
-    if (networkKey == NULL)
-	return COND_PushCondition(DUL_NULLKEY,
-				  DUL_Message(DUL_NULLKEY), caller);
-    if (*networkKey == NULL)
-	return COND_PushCondition(DUL_NULLKEY,
-				  DUL_Message(DUL_NULLKEY), caller);
-    if (strcmp((*networkKey)->keyType, KEY_NETWORK) != 0)
-	return COND_PushCondition(DUL_ILLEGALKEY,
-				  DUL_Message(DUL_ILLEGALKEY), caller);
+    if (networkKey == NULL) return DUL_NULLKEY;
+    if (*networkKey == NULL) return DUL_NULLKEY;
+    if (strcmp((*networkKey)->keyType, KEY_NETWORK) != 0) return DUL_ILLEGALKEY;
 
-    return DUL_NORMAL;
+    return EC_Normal;
 }
 
 
 /* checkAssociation
 **
 ** Purpose:
-**	Verify the validity of the Association handle
+**      Verify the validity of the Association handle
 **
 ** Parameter Dictionary:
-**	association	Handle to the association to be validated.
-**	caller		Name of routine that called this one.
+**      association     Handle to the association to be validated.
+**      caller          Name of routine that called this one.
 **
 ** Return Values:
 **
-**	DUL_ILLEGALKEY
-**	DUL_NORMAL
-**	DUL_NULLKEY
 **
 ** Algorithm:
-**	Description of the algorithm (optional) and any other notes.
+**      Description of the algorithm (optional) and any other notes.
 */
 
-static CONDITION
-checkAssociation(PRIVATE_ASSOCIATIONKEY ** association,
-		 const char *caller)
+static OFCondition
+checkAssociation(PRIVATE_ASSOCIATIONKEY ** association)
 {
-    if (association == NULL)
-	return COND_PushCondition(DUL_NULLKEY,
-				  DUL_Message(DUL_NULLKEY), caller);
-    if (*association == NULL)
-	return COND_PushCondition(DUL_NULLKEY,
-				  DUL_Message(DUL_NULLKEY), caller);
-    if (strcmp((*association)->keyType, KEY_ASSOCIATION) != 0)
-	return COND_PushCondition(DUL_ILLEGALKEY,
-				  DUL_Message(DUL_ILLEGALKEY), caller);
+    if (association == NULL) return DUL_NULLKEY;
+    if (*association == NULL)  return DUL_NULLKEY;
+    if (strcmp((*association)->keyType, KEY_ASSOCIATION) != 0) return DUL_ILLEGALKEY;
 
-    return DUL_NORMAL;
+    return EC_Normal;
 }
 
 
 /* clearRequestorsParams
 **
 ** Purpose:
-**	Reset all the fields of the service parameters.
+**      Reset all the fields of the service parameters.
 **
 ** Parameter Dictionary:
-**	params		Pointer to the service parameters to be reset.
+**      params          Pointer to the service parameters to be reset.
 **
 ** Return Values:
-**	None
+**      None
 **
 ** Notes:
 **
 ** Algorithm:
-**	Description of the algorithm (optional) and any other notes.
+**      Description of the algorithm (optional) and any other notes.
 */
 static void
 clearRequestorsParams(DUL_ASSOCIATESERVICEPARAMETERS * params)
@@ -2371,18 +2179,18 @@ clearRequestorsParams(DUL_ASSOCIATESERVICEPARAMETERS * params)
 /* clearPresentationContext
 **
 ** Purpose:
-**	Free the memory oocupied by the given presentation context.
+**      Free the memory oocupied by the given presentation context.
 **
 ** Parameter Dictionary:
-**	l	Head of list of the presentation contexts to be freed.
+**      l       Head of list of the presentation contexts to be freed.
 **
 ** Return Values:
-**	None
+**      None
 **
 ** Notes:
 **
 ** Algorithm:
-**	Description of the algorithm (optional) and any other notes.
+**      Description of the algorithm (optional) and any other notes.
 */
 static void
 clearPresentationContext(LST_HEAD ** l)
@@ -2390,23 +2198,23 @@ clearPresentationContext(LST_HEAD ** l)
     DUL_PRESENTATIONCONTEXT
     * ctx;
     DUL_TRANSFERSYNTAX
-	* transfer;
+        * transfer;
 
     if (*l == NULL)
-	return;
+        return;
 
     while ((ctx = (DUL_PRESENTATIONCONTEXT*)LST_Pop(l)) != NULL) {
-	if (ctx->proposedTransferSyntax != NULL) {
-	    while ((transfer = (DUL_TRANSFERSYNTAX*)LST_Pop(&ctx->proposedTransferSyntax)) != NULL)
-		free(transfer);
-	    (void) LST_Destroy(&ctx->proposedTransferSyntax);
-	}
-	free(ctx);
+        if (ctx->proposedTransferSyntax != NULL) {
+            while ((transfer = (DUL_TRANSFERSYNTAX*)LST_Pop(&ctx->proposedTransferSyntax)) != NULL)
+                free(transfer);
+            (void) LST_Destroy(&ctx->proposedTransferSyntax);
+        }
+        free(ctx);
     }
     (void) LST_Destroy(l);
 }
 
-CONDITION DUL_setTransportLayer(DUL_NETWORKKEY *callerNetworkKey, DcmTransportLayer *newLayer, int takeoverOwnership)
+OFCondition DUL_setTransportLayer(DUL_NETWORKKEY *callerNetworkKey, DcmTransportLayer *newLayer, int takeoverOwnership)
 {
   if (callerNetworkKey && newLayer)
   {
@@ -2414,9 +2222,9 @@ CONDITION DUL_setTransportLayer(DUL_NETWORKKEY *callerNetworkKey, DcmTransportLa
     if ((key->networkSpecific.TCP.tLayerOwned) && (key->networkSpecific.TCP.tLayer)) delete key->networkSpecific.TCP.tLayer;
     key->networkSpecific.TCP.tLayer = newLayer;
     key->networkSpecific.TCP.tLayerOwned = takeoverOwnership;
-    return DUL_NORMAL;
+    return EC_Normal;
   } 
-  return COND_PushCondition(DUL_NULLKEY, "null key passed to DUL_setTransportLayer()");
+  return DUL_NULLKEY;
 }
 
 void DUL_DumpConnectionParameters(DUL_ASSOCIATIONKEY *association, ostream& outstream)
@@ -2431,7 +2239,12 @@ void DUL_DumpConnectionParameters(DUL_ASSOCIATIONKEY *association, ostream& outs
 /*
 ** CVS Log
 ** $Log: dul.cc,v $
-** Revision 1.38  2001-09-28 13:28:53  joergr
+** Revision 1.39  2001-10-12 10:18:36  meichel
+** Replaced the CONDITION types, constants and functions in the dcmnet module
+**   by an OFCondition based implementation which eliminates the global condition
+**   stack.  This is a major change, caveat emptor!
+**
+** Revision 1.38  2001/09/28 13:28:53  joergr
 ** Added "#include <iomanip.h>" to keep gcc 3.0 quiet.
 **
 ** Revision 1.37  2001/09/26 12:29:02  meichel

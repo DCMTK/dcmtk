@@ -57,9 +57,9 @@
 **	Module Prefix: DIMSE_
 **
 ** Last Update:		$Author: meichel $
-** Update Date:		$Date: 2000-02-23 15:12:33 $
+** Update Date:		$Date: 2001-10-12 10:18:33 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/libsrc/dimecho.cc,v $
-** CVS/RCS Revision:	$Revision: 1.6 $
+** CVS/RCS Revision:	$Revision: 1.7 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -88,10 +88,10 @@ END_EXTERN_C
 
 #include "diutil.h"
 #include "dimse.h"		/* always include the module header */
-#include "dimcond.h"
+#include "cond.h"
 
 
-CONDITION
+OFCondition
 DIMSE_echoUser(
 	/* in */ 
 	T_ASC_Association *assoc, DIC_US msgId, 
@@ -100,7 +100,6 @@ DIMSE_echoUser(
 	/* out */
 	DIC_US *status, DcmDataset **statusDetail)
 {
-    CONDITION cond;
     T_DIMSE_Message req, rsp;
     T_ASC_PresentationContextID presID;
     const char *sopClass;
@@ -110,9 +109,11 @@ DIMSE_echoUser(
 
     /* which presentation context should be used */
     presID = ASC_findAcceptedPresentationContextID(assoc, sopClass);
-    if (presID == 0) {
-	return COND_PushCondition(DIMSE_NOVALIDPRESENTATIONCONTEXTID, 
-	    "DIMSE: No Presentation Context for: %s", sopClass);
+    if (presID == 0)
+    {
+        char buf[1024];
+        sprintf(buf, "DIMSE: No Presentation Context for: %s", sopClass);
+        return makeDcmnetCondition(DIMSEC_NOVALIDPRESENTATIONCONTEXTID, OF_error, buf);
     }
 
     bzero((char*)&req, sizeof(req));
@@ -124,43 +125,37 @@ DIMSE_echoUser(
 	   sopClass);
     req.msg.CEchoRQ.DataSetType = DIMSE_DATASET_NULL;
     
-    cond = DIMSE_sendMessageUsingMemoryData(assoc, presID, &req, 
-        NULL, NULL, NULL, NULL);
-    if (cond != DIMSE_NORMAL) {
-	return cond;
-    }
+    OFCondition cond = DIMSE_sendMessageUsingMemoryData(assoc, presID, &req, NULL, NULL, NULL, NULL);
+    if (cond.bad()) return cond;
 
     /* receive response */
-    cond = DIMSE_receiveCommand(assoc, blockMode, timeout, &presID, 
-        &rsp, statusDetail);
-    if (cond != DIMSE_NORMAL) {
-	return cond;
-    }
+    cond = DIMSE_receiveCommand(assoc, blockMode, timeout, &presID, &rsp, statusDetail);
+    if (cond.bad()) return cond;
 
-    if (rsp.CommandField != DIMSE_C_ECHO_RSP) {
-	return COND_PushCondition(DIMSE_UNEXPECTEDRESPONSE, 
-		"DIMSE: Unexpected Response Command Field: 0x%x",
-		(unsigned)rsp.CommandField);
+    if (rsp.CommandField != DIMSE_C_ECHO_RSP)
+    {
+        char buf1[256];
+        sprintf(buf1, "DIMSE: Unexpected Response Command Field: 0x%x", (unsigned)rsp.CommandField);
+        return makeDcmnetCondition(DIMSEC_UNEXPECTEDRESPONSE, OF_error, buf1);
     }
  
-    if (rsp.msg.CEchoRSP.MessageIDBeingRespondedTo != msgId) {
-	return COND_PushCondition(DIMSE_UNEXPECTEDRESPONSE, 
-		"DIMSE: Unexpected Response MsgId: %d (expected: %d)",
-		rsp.msg.CEchoRSP.MessageIDBeingRespondedTo, msgId);
+    if (rsp.msg.CEchoRSP.MessageIDBeingRespondedTo != msgId)
+    {
+        char buf1[256];
+        sprintf(buf1, "DIMSE: Unexpected Response MsgId: %d (expected: %d)", rsp.msg.CEchoRSP.MessageIDBeingRespondedTo, msgId);
+        return makeDcmnetCondition(DIMSEC_UNEXPECTEDRESPONSE, OF_error, buf1);
     }
     
     *status = rsp.msg.CEchoRSP.DimseStatus;
 
-    return DIMSE_NORMAL;
-   
+    return EC_Normal;   
 }
  
-CONDITION
+OFCondition
 DIMSE_sendEchoResponse(T_ASC_Association * assoc, 
 	T_ASC_PresentationContextID presID,
 	T_DIMSE_C_EchoRQ *req, DIC_US status, DcmDataset *statusDetail)
 {
-    CONDITION cond;
     T_DIMSE_Message rsp;
 
     bzero((char*)&rsp, sizeof(rsp));
@@ -173,10 +168,7 @@ DIMSE_sendEchoResponse(T_ASC_Association * assoc,
     rsp.msg.CEchoRSP.DataSetType = DIMSE_DATASET_NULL;
     rsp.msg.CEchoRSP.DimseStatus = status;
 
-    cond = DIMSE_sendMessageUsingMemoryData(assoc, presID, &rsp, statusDetail,
-        NULL, NULL, NULL);
-
-    return cond;
+    return DIMSE_sendMessageUsingMemoryData(assoc, presID, &rsp, statusDetail, NULL, NULL, NULL);
 }
 
 
@@ -184,7 +176,12 @@ DIMSE_sendEchoResponse(T_ASC_Association * assoc,
 /*
 ** CVS Log
 ** $Log: dimecho.cc,v $
-** Revision 1.6  2000-02-23 15:12:33  meichel
+** Revision 1.7  2001-10-12 10:18:33  meichel
+** Replaced the CONDITION types, constants and functions in the dcmnet module
+**   by an OFCondition based implementation which eliminates the global condition
+**   stack.  This is a major change, caveat emptor!
+**
+** Revision 1.6  2000/02/23 15:12:33  meichel
 ** Corrected macro for Borland C++ Builder 4 workaround.
 **
 ** Revision 1.5  2000/02/01 10:24:09  meichel

@@ -1,438 +1,178 @@
 /*
-          Copyright (C) 1993, RSNA and Washington University
+ *
+ *  Copyright (C) 1994-2001, OFFIS
+ *
+ *  This software and supporting documentation were developed by
+ *
+ *    Kuratorium OFFIS e.V.
+ *    Healthcare Information and Communication Systems
+ *    Escherweg 2
+ *    D-26121 Oldenburg, Germany
+ *
+ *  THIS SOFTWARE IS MADE AVAILABLE,  AS IS,  AND OFFIS MAKES NO  WARRANTY
+ *  REGARDING  THE  SOFTWARE,  ITS  PERFORMANCE,  ITS  MERCHANTABILITY  OR
+ *  FITNESS FOR ANY PARTICULAR USE, FREEDOM FROM ANY COMPUTER DISEASES  OR
+ *  ITS CONFORMITY TO ANY SPECIFICATION. THE ENTIRE RISK AS TO QUALITY AND
+ *  PERFORMANCE OF THE SOFTWARE IS WITH THE USER.
+ *
+ *  Module:  dcmnet
+ *
+ *  Author:  Marco Eichelberg
+ *
+ *  Purpose: network conditions and helper class
+ *
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2001-10-12 10:18:30 $
+ *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/libsrc/cond.cc,v $
+ *  CVS/RCS Revision: $Revision: 1.8 $
+ *  Status:           $State: Exp $
+ *
+ *  CVS/RCS Log at end of file
+ *
+ */
 
-          The software and supporting documentation for the Radiological
-          Society of North America (RSNA) 1993 Digital Imaging and
-          Communications in Medicine (DICOM) Demonstration were developed
-          at the
-                  Electronic Radiology Laboratory
-                  Mallinckrodt Institute of Radiology
-                  Washington University School of Medicine
-                  510 S. Kingshighway Blvd.
-                  St. Louis, MO 63110
-          as part of the 1993 DICOM Central Test Node project for, and
-          under contract with, the Radiological Society of North America.
-
-          THIS SOFTWARE IS MADE AVAILABLE, AS IS, AND NEITHER RSNA NOR
-          WASHINGTON UNIVERSITY MAKE ANY WARRANTY ABOUT THE SOFTWARE, ITS
-          PERFORMANCE, ITS MERCHANTABILITY OR FITNESS FOR ANY PARTICULAR
-          USE, FREEDOM FROM ANY COMPUTER DISEASES OR ITS CONFORMITY TO ANY
-          SPECIFICATION. THE ENTIRE RISK AS TO QUALITY AND PERFORMANCE OF
-          THE SOFTWARE IS WITH THE USER.
-
-          Copyright of the software and supporting documentation is
-          jointly owned by RSNA and Washington University, and free access
-          is hereby granted as a license to use this software, copy this
-          software and prepare derivative works based upon this software.
-          However, any distribution of this software source code or
-          supporting documentation or derivative works (source code and
-          supporting documentation) must include the three paragraphs of
-          the copyright notice.
-*/
-/*			condition.c
-**
-**  This file contains functions implementing a simple error facility.
-**  It was first written by Stephen Moore (smm@wuerl.wustl.edu) to
-**  support PACS development at the Mallinckrodt Institute of Radiology.
-**  The function names have been modified to have a slightly more
-**  generic name, but the basic model and concepts are the same.
-**
-**  The condition package maintains a stack of <condition, message>
-**  pairs that callers can push or pop.  When a routine returns an
-**  abnormal value, it should push a condition onto the stack so that
-**  the caller can examine the value at a later time.  Nested routines
-**  may push a number of conditions onto the stack providing more
-**  detailed information about why a routine did not return normally.
-**
-**  The stack is maintained as a simple stack array.  If it overflows,
-**  we dump the stack to stdout and reset it.
-**
-**  Public routines:
-**  CONDITION COND_PushCondition(CONDITION code, char *controlstring, var args)
-**	Push a condition onto the stack.  CODE is a "defined" CONDITION
-**	value that should be defined for a package or could be internally
-**	defined for an application.  It will consist of fields for
-**	facility, value and severity.  CONTROLSTRING is a control string
-**	used by the standard C run time library "printf" for formatting
-**	an output string.  The caller passes a variable number of arguments
-**	after CONTROLSTRING to match the conversion specifications in
-**	CONTROLSTRING.  This function returns the CONDITION passed to it.
-**  CONDITION COND_ExtractConditions(int *callback())
-**	Step through the stack and extract the conditions and messages on
-**	the stack.  For each condition, call the user's CALLBACK routine
-**	with arguments (CONDITION, char *) so that the user can examine
-**	the CONDITION value and the ASCIZ message.  The callback routine
-**	returns 0 if no more conditions are to be returned and a nonzero
-**	value otherwise.
-**  CONDITION COND_TopCondition(CONDITION *code, int *text, int maxlength)
-**	Examine the stack and return the top condition and corresponding
-**	message in the users's CODE and TEXT areas.  The caller specifies
-**	the maximum length of the text area with MAXLENGTH.   The function
-**	also uses the top condition as its return value.  If the stack is
-**	empty, the function returns COND_NORMAL;
-**  CONDITION COND_PopCondition(int clearstack)
-**	Pop one or all values off the stack.  This function returns the
-**	top condition from the stack.  If CLEARSTACK is zero, the top
-**	condition is removed from the stack.  If CLEARSTACK is nonzero,
-**	the entire stack is cleared.
-**
-**  AUTHORS:
-**
-**      Stephen M. Moore (smm@wuerl.wustl.edu)
-**	Electronic Radiology Laboratory
-**	Mallinckrodt Institute of Radiology
-**	Washington University School of Medicine
-**
-**  CREATION DATE:  January 30, 1991
-**
-**
-**  MODIFICATION HISTORY:
-**	smm	23-May-1992
-**	Change functions names and drop some functions to be used
-**	with the DICOM project.
-**
-**  hewett 8-June-1993
-**  Added function to dump the contents of the condition stack (needed)
-**  for new release of DUL code from MIR.
-**
-**
-** Last Update:		$Author: meichel $
-** Update Date:		$Date: 2000-10-10 12:06:23 $
-** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/libsrc/cond.cc,v $
-** CVS/RCS Revision:	$Revision: 1.7 $
-** Status:		$State: Exp $
-**
-** CVS/RCS Log at end of file
-*/
-
-/*
-**
-**  INCLUDE FILES
-**
-*/
-
-#include "osconfig.h"    /* make sure OS specific configuration is included first */
-
-#include <stdio.h>
-#include <string.h>
-#include <iostream.h>    /* needed for Sun CC 2.01, declaration of class ios */
-#include <iomanip.h>
-
-#ifdef HAVE_STDARG_H
-#include <stdarg.h>
-#endif
-#include "dicom.h"
+#include "osconfig.h"
 #include "cond.h"
-#include "ofconsol.h"
 
-typedef struct {
-  CONDITION statusCode;
-  char statusText[256];
-  } EDB;
+BEGIN_EXTERN_C
+#include <stdio.h>
+END_EXTERN_C
 
-#define MAXEDB  100
+#ifdef HAVE_STRSTREA_H
+#include <strstrea.h>
+#else
+#include <strstream.h>
+#endif
+#include <fstream.h>
 
-static EDB EDBStack[MAXEDB];
-static int stackPtr = -1;
-static void (*ErrorCallback)(CONDITION cond, char *str) = NULL;
-static void dumpstack(ostream &out);
+const OFConditionConst ASCE_BADPRESENTATIONCONTEXTID(OFM_dcmnet, ASCC_BADPRESENTATIONCONTEXTID, OF_error, "ASC Bad presentation context ID");
+const OFConditionConst ASCE_MISSINGTRANSFERSYNTAX(   OFM_dcmnet, ASCC_MISSINGTRANSFERSYNTAX,    OF_error, "ASC Missing transfer syntax");
+const OFConditionConst ASCE_NULLKEY(                 OFM_dcmnet, ASCC_NULLKEY,                  OF_error, "ASC Caller passed in a NULL key");
+const OFConditionConst ASCE_SHUTDOWNAPPLICATION(     OFM_dcmnet, ASCC_SHUTDOWNAPPLICATION,      OF_error, "ASC Application shutdown requested");
 
+const OFCondition ASC_BADPRESENTATIONCONTEXTID(ASCE_BADPRESENTATIONCONTEXTID);
+const OFCondition ASC_MISSINGTRANSFERSYNTAX(   ASCE_MISSINGTRANSFERSYNTAX);
+const OFCondition ASC_NULLKEY(                 ASCE_NULLKEY);
+const OFCondition ASC_SHUTDOWNAPPLICATION(     ASCE_SHUTDOWNAPPLICATION);
 
-/*
-**++
-**  FUNCTIONAL DESCRIPTION:
-**
-**      COND_PushCondition
-**	This routine is used to log a condition on the stack.  The user
-**	passes an error code (currently uninterpreted), a format string
-**	and optional format arguments.  We use the vsprintf routine to
-**	interpret the user's format string and arguments, and we place the
-**	error condition and resultant string on the stack.
-**
-**  FORMAL PARAMETERS:
-**
-**      code:
-**          The condition code of the error/warning.
-**       
-**      controlString:
-**          format string for vsprintf statement
-**       
-**      [varargs]:
-**          variable arguments to be used with controlString
-**       
-**  RETURN VALUE:
-**
-**      code (as passed in by the user)
-**
-**  SIDE EFFECTS:
-**
-**      Places a new entry on the stack.  If the stack
-**	fills up, drop the last condition.
-**	Calls a user-established callback just before return.
-**
-*/
-CONDITION COND_PushCondition(CONDITION cond, const char *controlString, ...)
+const OFConditionConst DIMSEE_BADCOMMANDTYPE(               OFM_dcmnet, DIMSEC_BADCOMMANDTYPE,               OF_error, "DIMSE Bad command type");
+const OFConditionConst DIMSEE_BADDATA(                      OFM_dcmnet, DIMSEC_BADDATA,                      OF_error, "DIMSE Inappropriate data for message");
+const OFConditionConst DIMSEE_BADMESSAGE(                   OFM_dcmnet, DIMSEC_BADMESSAGE,                   OF_error, "DIMSE Badly formed message");
+const OFConditionConst DIMSEE_ILLEGALASSOCIATION(           OFM_dcmnet, DIMSEC_ILLEGALASSOCIATION,           OF_error, "DIMSE Caller passed in an illegal association");
+const OFConditionConst DIMSEE_NODATAAVAILABLE(              OFM_dcmnet, DIMSEC_NODATAAVAILABLE,              OF_error, "DIMSE No data available (timout in non-blocking mode)");
+const OFConditionConst DIMSEE_NOVALIDPRESENTATIONCONTEXTID( OFM_dcmnet, DIMSEC_NOVALIDPRESENTATIONCONTEXTID, OF_error, "DIMSE No valid Presentation Context ID");
+const OFConditionConst DIMSEE_NULLKEY(                      OFM_dcmnet, DIMSEC_NULLKEY,                      OF_error, "DIMSE Caller passed in a NULL key");
+const OFConditionConst DIMSEE_OUTOFRESOURCES(               OFM_dcmnet, DIMSEC_OUTOFRESOURCES,               OF_error, "DIMSE Out of resources");
+const OFConditionConst DIMSEE_PARSEFAILED(                  OFM_dcmnet, DIMSEC_PARSEFAILED,                  OF_error, "DIMSE Failed to parse received message");
+const OFConditionConst DIMSEE_READPDVFAILED(                OFM_dcmnet, DIMSEC_READPDVFAILED,                OF_error, "DIMSE Read PDV failed");
+const OFConditionConst DIMSEE_RECEIVEFAILED(                OFM_dcmnet, DIMSEC_RECEIVEFAILED,                OF_error, "DIMSE Failed to receive message");
+const OFConditionConst DIMSEE_SENDFAILED(                   OFM_dcmnet, DIMSEC_SENDFAILED,                   OF_error, "DIMSE Failed to send message");
+const OFConditionConst DIMSEE_UNEXPECTEDPDVTYPE(            OFM_dcmnet, DIMSEC_UNEXPECTEDPDVTYPE,            OF_error, "DIMSE Unexpected PDV type");
+const OFConditionConst DIMSEE_NODATADICT(                   OFM_dcmnet, DIMSEC_NODATADICT,                   OF_error, "Data dictionary missing");
+
+const OFCondition DIMSE_BADCOMMANDTYPE(               DIMSEE_BADCOMMANDTYPE);
+const OFCondition DIMSE_BADDATA(                      DIMSEE_BADDATA);
+const OFCondition DIMSE_BADMESSAGE(                   DIMSEE_BADMESSAGE);
+const OFCondition DIMSE_ILLEGALASSOCIATION(           DIMSEE_ILLEGALASSOCIATION);
+const OFCondition DIMSE_NODATAAVAILABLE(              DIMSEE_NODATAAVAILABLE);
+const OFCondition DIMSE_NULLKEY(                      DIMSEE_NULLKEY);
+const OFCondition DIMSE_NOVALIDPRESENTATIONCONTEXTID( DIMSEE_NOVALIDPRESENTATIONCONTEXTID);
+const OFCondition DIMSE_OUTOFRESOURCES(               DIMSEE_OUTOFRESOURCES);
+const OFCondition DIMSE_PARSEFAILED(                  DIMSEE_PARSEFAILED);
+const OFCondition DIMSE_READPDVFAILED(                DIMSEE_READPDVFAILED);
+const OFCondition DIMSE_RECEIVEFAILED(                DIMSEE_RECEIVEFAILED);
+const OFCondition DIMSE_SENDFAILED(                   DIMSEE_SENDFAILED);
+const OFCondition DIMSE_UNEXPECTEDPDVTYPE(            DIMSEE_UNEXPECTEDPDVTYPE);
+const OFCondition DIMSE_NODATADICT(                   DIMSEE_NODATADICT);
+
+const OFConditionConst DULE_ASSOCIATIONREJECTED(      OFM_dcmnet, DULC_ASSOCIATIONREJECTED     , OF_error, "DUL Association Rejected");
+const OFConditionConst DULE_ILLEGALACCEPT(            OFM_dcmnet, DULC_ILLEGALACCEPT           , OF_error, "Attempt to accept by requestor");
+const OFConditionConst DULE_ILLEGALKEY(               OFM_dcmnet, DULC_ILLEGALKEY              , OF_error, "Illegal key");
+const OFConditionConst DULE_ILLEGALPDU(               OFM_dcmnet, DULC_ILLEGALPDU              , OF_error, "DUL Illegal or ill-formed PDU");
+const OFConditionConst DULE_ILLEGALPDULENGTH(         OFM_dcmnet, DULC_ILLEGALPDULENGTH        , OF_error, "DUL Illegal PDU Length");
+const OFConditionConst DULE_ILLEGALREQUEST(           OFM_dcmnet, DULC_ILLEGALREQUEST          , OF_error, "Attempt to request by acceptor");
+const OFConditionConst DULE_INCORRECTBUFFERLENGTH(    OFM_dcmnet, DULC_INCORRECTBUFFERLENGTH   , OF_error, "DUL Incorrect buffer space allocated for data");
+const OFConditionConst DULE_INSUFFICIENTBUFFERLENGTH( OFM_dcmnet, DULC_INSUFFICIENTBUFFERLENGTH, OF_error, "DUL Insufficient buffer space allocated for data");
+const OFConditionConst DULE_LISTERROR(                OFM_dcmnet, DULC_LISTERROR               , OF_error, "DUL List error");
+const OFConditionConst DULE_NETWORKCLOSED(            OFM_dcmnet, DULC_NETWORKCLOSED           , OF_error, "DUL network closed");
+const OFConditionConst DULE_NETWORKINITIALIZED(       OFM_dcmnet, DULC_NETWORKINITIALIZED      , OF_error, "Network already initialized");
+const OFConditionConst DULE_NOASSOCIATIONREQUEST(     OFM_dcmnet, DULC_NOASSOCIATIONREQUEST    , OF_error, "No requests for associations for this server");
+const OFConditionConst DULE_NOPDVS(                   OFM_dcmnet, DULC_NOPDVS                  , OF_error, "DUL No PDVs available in current buffer");
+const OFConditionConst DULE_NULLKEY(                  OFM_dcmnet, DULC_NULLKEY                 , OF_error, "NULL key passed to routine");
+const OFConditionConst DULE_PCTRANSLATIONFAILURE(     OFM_dcmnet, DULC_PCTRANSLATIONFAILURE    , OF_error, "DUL Presentation Context translation failure");
+const OFConditionConst DULE_PDATAPDUARRIVED(          OFM_dcmnet, DULC_PDATAPDUARRIVED         , OF_error, "DUL P-Data PDU arrived");
+const OFConditionConst DULE_PEERABORTEDASSOCIATION(   OFM_dcmnet, DULC_PEERABORTEDASSOCIATION  , OF_error, "Peer aborted Association (or never connected)");
+const OFConditionConst DULE_PEERREQUESTEDRELEASE(     OFM_dcmnet, DULC_PEERREQUESTEDRELEASE    , OF_error, "DUL Peer Requested Release");
+const OFConditionConst DULE_READTIMEOUT(              OFM_dcmnet, DULC_READTIMEOUT             , OF_error, "DUL network read timeout");
+const OFConditionConst DULE_REQUESTASSOCIATIONFAILED( OFM_dcmnet, DULC_REQUESTASSOCIATIONFAILED, OF_error, "Failed to establish association");
+const OFConditionConst DULE_UNEXPECTEDPDU(            OFM_dcmnet, DULC_UNEXPECTEDPDU           , OF_error, "Received unexpected PDU");
+const OFConditionConst DULE_UNSUPPORTEDPEERPROTOCOL(  OFM_dcmnet, DULC_UNSUPPORTEDPEERPROTOCOL , OF_error, "DUL Unsupported peer protocol");
+const OFConditionConst DULE_WRONGDATATYPE(            OFM_dcmnet, DULC_WRONGDATATYPE           , OF_error, "DUL Wrong Data Type Specified for Request");
+                                                                     
+const OFCondition DUL_ASSOCIATIONREJECTED(      DULE_ASSOCIATIONREJECTED);
+const OFCondition DUL_ILLEGALACCEPT(            DULE_ILLEGALACCEPT);
+const OFCondition DUL_ILLEGALKEY(               DULE_ILLEGALKEY);
+const OFCondition DUL_ILLEGALPDU(               DULE_ILLEGALPDU);
+const OFCondition DUL_ILLEGALPDULENGTH(         DULE_ILLEGALPDULENGTH);
+const OFCondition DUL_ILLEGALREQUEST(           DULE_ILLEGALREQUEST);
+const OFCondition DUL_INCORRECTBUFFERLENGTH(    DULE_INCORRECTBUFFERLENGTH);
+const OFCondition DUL_INSUFFICIENTBUFFERLENGTH( DULE_INSUFFICIENTBUFFERLENGTH);
+const OFCondition DUL_LISTERROR(                DULE_LISTERROR);
+const OFCondition DUL_NETWORKCLOSED(            DULE_NETWORKCLOSED);
+const OFCondition DUL_NETWORKINITIALIZED(       DULE_NETWORKINITIALIZED);
+const OFCondition DUL_NOASSOCIATIONREQUEST(     DULE_NOASSOCIATIONREQUEST);
+const OFCondition DUL_NOPDVS(                   DULE_NOPDVS);
+const OFCondition DUL_NULLKEY(                  DULE_NULLKEY);
+const OFCondition DUL_PCTRANSLATIONFAILURE(     DULE_PCTRANSLATIONFAILURE);
+const OFCondition DUL_PDATAPDUARRIVED(          DULE_PDATAPDUARRIVED);
+const OFCondition DUL_PEERABORTEDASSOCIATION(   DULE_PEERABORTEDASSOCIATION);
+const OFCondition DUL_PEERREQUESTEDRELEASE(     DULE_PEERREQUESTEDRELEASE);
+const OFCondition DUL_READTIMEOUT(              DULE_READTIMEOUT);
+const OFCondition DUL_REQUESTASSOCIATIONFAILED( DULE_REQUESTASSOCIATIONFAILED);
+const OFCondition DUL_UNEXPECTEDPDU(            DULE_UNEXPECTEDPDU);
+const OFCondition DUL_UNSUPPORTEDPEERPROTOCOL(  DULE_UNSUPPORTEDPEERPROTOCOL);
+const OFCondition DUL_WRONGDATATYPE(            DULE_WRONGDATATYPE);
+
+void DimseCondition::dump(OFCondition cond, OFConsole& console)
 {
-  va_list
-    args;
-  char
-    buffer[1024];
-
-    va_start(args, controlString);
-    if (controlString == NULL)
-	controlString = "NULL Control string passedto PushCondition";
-    (void)vsprintf(buffer, controlString, args);
-    va_end(args);
-
-    stackPtr++;
-    EDBStack[stackPtr].statusCode = cond;
-    buffer[256] = '\0';
-    (void)strcpy(EDBStack[stackPtr].statusText, buffer);
-    if (ErrorCallback != NULL)
-	ErrorCallback(EDBStack[stackPtr].statusCode,
-			EDBStack[stackPtr].statusText);
-
-    if (stackPtr == MAXEDB - 1) {
-	dumpstack(CERR);
-	CERR << "CONDITION Stack overflow" << endl;
-	stackPtr = 0;
-    }
-    return cond;
-
+  char buf[16];
+  sprintf(buf,"%04x:%04x ", cond.module(), cond.code()); 
+  console.lockCerr() << buf << cond.text() << endl;
+  console.unlockCerr();
 }
 
-
-/*
-**++
-**  FUNCTIONAL DESCRIPTION:
-**
-**  COND_ExtractConditions
-**	This routine walks through the stack and passes the condition
-**	codes and text back to the user.  The caller supplies a
-**	callback routine.  We start at the top of the stack and
-**	call the user's callback for each message on the stack.  The
-**	user can terminate the process at any time by returning
-**	a zero from his callback.
-**
-**  FORMAL PARAMETERS:
-**
-**      callback:
-**          User routine to call for each message on the stack.
-**       
-**  RETURN VALUE:
-**
-**      1
-**
-**  SIDE EFFECTS:
-**
-**
-**  DESIGN:
-**
-**      None
-**--
-*/
-
-CONDITION COND_ExtractConditions(OFBool (*callback)(CONDITION cond, char *str)) 
+OFCondition DimseCondition::push(
+    unsigned short aModule, 
+    unsigned short aCode, 
+    OFStatus aStatus, 
+    const char *aText,
+    OFCondition subCondition)
 {
-  int
-    l_index,
-    returnflag;
-
-    for (l_index = stackPtr, returnflag = 1; l_index >= 0 && returnflag != 0;
-	l_index--) {
-	returnflag = callback(EDBStack[l_index].statusCode,
-				EDBStack[l_index].statusText);
-    }
-    return COND_NORMAL;
+  ostrstream os;
+  char buf[16];
+  sprintf(buf,"%04x:%04x ", subCondition.module(), subCondition.code()); 
+  os << aText << endl << buf << subCondition.text() << ends;
+  const char *c = os.str();  
+  OFCondition result(new OFConditionString(aModule, aCode, aStatus, c));
+  delete[] (char *)c;
+  return result;
 }
 
-/*
-**++
-**  FUNCTIONAL DESCRIPTION:
-**
-**      COND_TopCondition
-**	This routine is used to look at the top condition message on
-**	the stack.  The user passes pointers to areas to place
-**	the error message.  The function also returns the code
-**	for the top error message.  If the stack is empty, the
-**	success code (0) is returned.
-**
-**  FORMAL PARAMETERS:
-**
-**      code:
-**          Pointer to the user's area to hold the error code
-**       
-**      text
-**          Pointer to the user's area to hold the error text
-**       
-**      maxlength
-**          Maximum buffer length in the user's text area
-**       
-**  RETURN VALUE:
-**
-**      top error code on the stack
-**
-**  SIDE EFFECTS:
-**
-**
-*/
-
-CONDITION COND_TopCondition(CONDITION *code,char *text,unsigned long maxlength)
+OFCondition DimseCondition::push(
+  OFCondition newCondition,
+  OFCondition subCondition)
 {
-    if (stackPtr >= 0) {
-	*code = EDBStack[stackPtr].statusCode;
-	(void)strncpy(text, EDBStack[stackPtr].statusText, size_t(maxlength-1));
-	text[maxlength - 1] = '\0';
-	return EDBStack[stackPtr].statusCode;
-    } else {
-	*code = COND_NORMAL;
-	*text = '\0';
-	return COND_NORMAL;
-    }
+  return DimseCondition::push(newCondition.module(), newCondition.code(), 
+    newCondition.status(), newCondition.text(), subCondition);
 }
 
 /*
-**++
-**  FUNCTIONAL DESCRIPTION:
-**
-**      COND_PopCondition
-**	This routine pops one or all conditions off the stack.
-**	The user passes a flag which indicates the operation.
-**	After the clear, the current top error code is returned.
-**	If the stack is empty at this point, the success code (0)
-**	is returned.
-**
-**  FORMAL PARAMETERS:
-**
-**      clearstack:
-**          Flag which indicates if the entire stack is to be cleared.
-**		0	    Just pop the top error
-**		non zero    Clear the entire stack
-**       
-**  RETURN VALUE:
-**
-**      The new top error code.  0 if the stack is empty
-**
-**  SIDE EFFECTS:
-**
-**
-*/
-
-CONDITION COND_PopCondition(OFBool clearstack)
-{
-  CONDITION
-    value;
-
-    if (stackPtr >= 0)
-	value = EDBStack[stackPtr].statusCode;
-    else
-	value = COND_NORMAL;
-
-    if (clearstack) {
-	stackPtr = -1;
-    } else if (stackPtr <= 0) {
-	stackPtr = -1;
-    } else {
-	stackPtr--;
-    }
-    return value;
-}
-
-/*
-**++
-**  FUNCTIONAL DESCRIPTION:
-**
-**      COND_EstablishCallback
-**	Establishes a callback routine to be called whenever a
-**	new condition is placed on the stack.  There is no stack
-**	mechanism for these callbacks, so each new callback routine
-**	completely supersedes the previous one.
-**
-**  FORMAL PARAMETERS:
-**
-**      callback:
-**          The new callback routine.  If NULL, this will
-**	    disable callbacks.
-**       
-**  RETURN VALUE:
-**
-**      0
-**
-**  SIDE EFFECTS:
-**
-**
-*/
-
-CONDITION COND_EstablishCallback(void (* callback)(CONDITION cond, char *str))
-{
-    ErrorCallback = callback;
-    return COND_NORMAL;
-}
-
-static void dumpstack(ostream &out)
-{
-  for (int l_index = 0; l_index <= stackPtr; l_index++)
-  {
-      out.width(8); out << hex << EDBStack[l_index].statusCode
-          << " " << EDBStack[l_index].statusText << dec << endl;
-  }
-}
-
-
-/*
-**++
-**  FUNCTIONAL DESCRIPTION:
-**
-**      COND_DumpConditions
-**	
-**	Dumps the conditions onto stderr.
-**	
-**  FORMAL PARAMETERS:
-**
-**		void
-**       
-**  RETURN VALUE:
-**
-**      void
-**
-**  SIDE EFFECTS:
-**
-**		none
-**
-*/
-
-void COND_DumpConditions(ostream &out)
-{
-  dumpstack(out);
-}
-
-/*
-** CVS Log
-** $Log: cond.cc,v $
-** Revision 1.7  2000-10-10 12:06:23  meichel
-** Modified COND_DumpConditions to take an optional ostream& parameter
-**
-** Revision 1.6  2000/03/07 16:01:10  joergr
-** Added include statement required for Sun CC 2.0.1.
-**
-** Revision 1.5  2000/03/03 14:11:19  meichel
-** Implemented library support for redirecting error messages into memory
-**   instead of printing them to stdout/stderr for GUI applications.
-**
-** Revision 1.4  1998/06/29 12:14:32  meichel
-** Removed some name clashes (e.g. local variable with same
-**   name as class member) to improve maintainability.
-**   Applied some code purifications proposed by the gcc 2.8.1 -Weffc++ option.
-**
-** Revision 1.3  1997/07/24 13:10:57  andreas
-** - Removed Warnings from SUN CC 2.0.1
-**
-** Revision 1.2  1997/07/21 08:47:15  andreas
-** - Replace all boolean types (BOOLEAN, CTNBOOLEAN, DICOM_BOOL, BOOL)
-**   with one unique boolean type OFBool.
-**
-** Revision 1.1.1.1  1996/03/26 18:38:46  hewett
-** Initial Release.
-**
-**
-*/
+ * CVS Log
+ * $Log: cond.cc,v $
+ * Revision 1.8  2001-10-12 10:18:30  meichel
+ * Replaced the CONDITION types, constants and functions in the dcmnet module
+ *   by an OFCondition based implementation which eliminates the global condition
+ *   stack.  This is a major change, caveat emptor!
+ *
+ *
+ */

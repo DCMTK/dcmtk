@@ -43,13 +43,14 @@
 ** Author, Date:	Stephen M. Moore, 15-Apr-93
 ** Intent:		This module contains routines for the user to
 **			build and manipulate the public DUL structures.
-** Last Update:		$Author: meichel $, $Date: 2000-02-23 15:12:51 $
+** Last Update:		$Author: meichel $, $Date: 2001-10-12 10:18:40 $
 ** Source File:		$RCSfile: dulpres.cc,v $
-** Revision:		$Revision: 1.8 $
+** Revision:		$Revision: 1.9 $
 ** Status:		$State: Exp $
 */
 
 #include "osconfig.h"    /* make sure OS specific configuration is included first */
+#include "ofcond.h"
 
 #ifdef HAVE_STDLIB_H
 #ifndef  _BCB4
@@ -94,10 +95,7 @@ END_EXTERN_C
 **	abstarctSyntax
 **
 ** Return Values:
-**	DUL_NORMAL
-**	DUL_LISTCREATEFAILED
 **	DUL_LISTERROR
-**	DUL_MALLOCERROR
 **
 **
 ** Notes:
@@ -112,7 +110,7 @@ END_EXTERN_C
 **	Description of the algorithm (optional) and any other notes.
 */
 
-CONDITION
+OFCondition
 DUL_MakePresentationCtx(DUL_PRESENTATIONCONTEXT ** ctx,
 		     DUL_SC_ROLE proposedSCRole, DUL_SC_ROLE acceptedSCRole,
 		      DUL_PRESENTATIONCONTEXTID ctxID, unsigned char result,
@@ -129,15 +127,11 @@ DUL_MakePresentationCtx(DUL_PRESENTATIONCONTEXT ** ctx,
 #endif
 
     *ctx = (DUL_PRESENTATIONCONTEXT *) malloc(sizeof(**ctx));
-    if (*ctx == NULL)
-	return COND_PushCondition(DUL_MALLOCERROR, DUL_Message(DUL_MALLOCERROR),
-				  "DUL_MakePresentationCtx", sizeof(**ctx));
+    if (*ctx == NULL) return EC_MemoryExhausted;
 
     (void) memset(*ctx, 0, sizeof(**ctx));
     lst = LST_Create();
-    if (lst == NULL)
-	return COND_PushCondition(DUL_LISTCREATEFAILED,
-	      DUL_Message(DUL_LISTCREATEFAILED), "DUL_MakePresentationCtx");
+    if (lst == NULL) return EC_MemoryExhausted;
 
     (*ctx)->presentationContextID = ctxID;
     (*ctx)->result = result;
@@ -147,27 +141,31 @@ DUL_MakePresentationCtx(DUL_PRESENTATIONCONTEXT ** ctx,
 
     va_start(args, transferSyntax);
     strcpy((*ctx)->acceptedTransferSyntax, transferSyntax);
-    while ((transferSyntax = va_arg(args, char *)) != NULL) {
-	if (strlen(transferSyntax) != 0) {
+    while ((transferSyntax = va_arg(args, char *)) != NULL)
+    {
+	if (strlen(transferSyntax) != 0)
+	{
 	    transfer = (DUL_TRANSFERSYNTAX*)malloc(sizeof(DUL_TRANSFERSYNTAX));
-	    if (transfer == NULL)
-		return COND_PushCondition(DUL_MALLOCERROR, DUL_Message(DUL_MALLOCERROR),
-			      "DUL_MakePresentationCtx", sizeof(*transfer));
+	    if (transfer == NULL) return EC_MemoryExhausted;
 	    strcpy(transfer->transferSyntax, transferSyntax);
-	    if (LST_Enqueue(&lst, (LST_NODE*)transfer) != LST_NORMAL)
-		return COND_PushCondition(DUL_LISTERROR, DUL_Message(DUL_LISTERROR),
-					  "DUL_MakePresentationCtx");
+	    OFCondition cond = LST_Enqueue(&lst, (LST_NODE*)transfer);
+	    if (cond.bad()) return cond;
 	}
     }
     va_end(args);
     (*ctx)->proposedTransferSyntax = lst;
-    return DUL_NORMAL;
+    return EC_Normal;
 }
 
 /*
 ** CVS Log
 ** $Log: dulpres.cc,v $
-** Revision 1.8  2000-02-23 15:12:51  meichel
+** Revision 1.9  2001-10-12 10:18:40  meichel
+** Replaced the CONDITION types, constants and functions in the dcmnet module
+**   by an OFCondition based implementation which eliminates the global condition
+**   stack.  This is a major change, caveat emptor!
+**
+** Revision 1.8  2000/02/23 15:12:51  meichel
 ** Corrected macro for Borland C++ Builder 4 workaround.
 **
 ** Revision 1.7  2000/02/01 10:24:14  meichel

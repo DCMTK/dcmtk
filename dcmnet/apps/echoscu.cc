@@ -22,9 +22,9 @@
  *  Purpose: Verification Service Class User (C-ECHO operation)
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-06-01 15:50:01 $
+ *  Update Date:      $Date: 2001-10-12 10:18:20 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/apps/echoscu.cc,v $
- *  CVS/RCS Revision: $Revision: 1.22 $
+ *  CVS/RCS Revision: $Revision: 1.23 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -79,7 +79,7 @@ static void errmsg(const char *msg)
   if (msg) fprintf(stderr, "%s: %s\n", OFFIS_CONSOLE_APPLICATION, msg);
 }
 
-static CONDITION cecho(T_ASC_Association * assoc, unsigned long num_repeat);
+static OFCondition cecho(T_ASC_Association * assoc, unsigned long num_repeat);
 
 /* DICOM standard transfer syntaxes */
 static const char* transferSyntaxes[] = {
@@ -126,7 +126,6 @@ main(int argc, char *argv[])
     OFCmdUnsignedInt maxXferSyntaxes         = (OFCmdUnsignedInt)(DIM_OF(transferSyntaxes));
     
     
-    CONDITION cond;
     T_ASC_Network *net;
     T_ASC_Parameters *params;
     DIC_NODENAME localHost;
@@ -228,14 +227,14 @@ main(int argc, char *argv[])
 		DCM_DICT_ENVIRONMENT_VARIABLE);
     }
 
-    cond = ASC_initializeNetwork(NET_REQUESTOR, 0, 1000, &net);
-    if (!SUCCESS(cond)) {
-	COND_DumpConditions();
+    OFCondition cond = ASC_initializeNetwork(NET_REQUESTOR, 0, 1000, &net);
+    if (cond.bad()) {
+	DimseCondition::dump(cond);
 	exit(1);
     }
     cond = ASC_createAssociationParameters(&params, opt_maxReceivePDULength);
-    if (!SUCCESS(cond)) {
-	COND_DumpConditions();
+    if (cond.bad()) {
+	DimseCondition::dump(cond);
 	exit(1);
     }
     ASC_setAPTitles(params, opt_ourTitle, opt_peerTitle, NULL);
@@ -250,9 +249,9 @@ main(int argc, char *argv[])
       cond = ASC_addPresentationContext(params, presentationContextID, UID_VerificationSOPClass,
 	         transferSyntaxes, (int)opt_numXferSyntaxes);
       presentationContextID += 2;
-      if (!SUCCESS(cond))
+      if (cond.bad())
       {
-	    COND_DumpConditions();
+	    DimseCondition::dump(cond);
 	    exit(1);
       }
     }
@@ -266,8 +265,9 @@ main(int argc, char *argv[])
     if (opt_verbose)
 	printf("Requesting Association\n");
     cond = ASC_requestAssociation(net, params, &assoc);
-    if (cond != ASC_NORMAL) {
-	if (cond == ASC_ASSOCIATIONREJECTED) {
+    if (cond.bad()) {
+	if (cond == DUL_ASSOCIATIONREJECTED)
+	{
 	    T_ASC_RejectParameters rej;
 
 	    ASC_getRejectParameters(params, &rej);
@@ -276,7 +276,7 @@ main(int argc, char *argv[])
 	    exit(1);
 	} else {
 	    errmsg("Association Request Failed:");
-	    COND_DumpConditions();
+	    DimseCondition::dump(cond);
 	    exit(1);
 	}
     }
@@ -301,15 +301,16 @@ main(int argc, char *argv[])
     cond = cecho(assoc, opt_repeatCount);
 
     /* tear down association */
-    switch (cond) {
-    case DIMSE_NORMAL:
+    if (cond == EC_Normal)
+    {
 	if (opt_abortAssociation) {
 	    if (opt_verbose)
 		printf("Aborting Association\n");
 	    cond = ASC_abortAssociation(assoc);
-	    if (!SUCCESS(cond)) {
+	    if (cond.bad())
+	    {
 		errmsg("Association Abort Failed:");
-		COND_DumpConditions();
+		DimseCondition::dump(cond);
 		exit(1);
 	    }
 	} else {
@@ -317,60 +318,53 @@ main(int argc, char *argv[])
 	    if (opt_verbose)
 		printf("Releasing Association\n");
 	    cond = ASC_releaseAssociation(assoc);
-	    if (cond != ASC_NORMAL && cond != ASC_RELEASECONFIRMED) {
+	    if (cond.bad())
+	    {
 		errmsg("Association Release Failed:");
-		COND_DumpConditions();
+		DimseCondition::dump(cond);
 		exit(1);
 	    }
 	}
-	break;
-    case DIMSE_PEERREQUESTEDRELEASE:
+    }
+    else if (cond == DUL_PEERREQUESTEDRELEASE)
+    {
 	errmsg("Protocol Error: peer requested release (Aborting)");
 	if (opt_verbose)
 	    printf("Aborting Association\n");
 	cond = ASC_abortAssociation(assoc);
-	if (!SUCCESS(cond)) {
+	if (cond.bad()) {
 	    errmsg("Association Abort Failed:");
-	    COND_DumpConditions();
+	    DimseCondition::dump(cond);
 	    exit(1);
 	}
-	break;
-    case DIMSE_PEERABORTEDASSOCIATION:
+    }
+    else if (cond == DUL_PEERABORTEDASSOCIATION)
+    {
 	if (opt_verbose) printf("Peer Aborted Association\n");
-	break;
-    default:
+    }
+    else 
+    {
 	errmsg("SCU Failed:");
-	COND_DumpConditions();
+	DimseCondition::dump(cond);
 	if (opt_verbose)
 	    printf("Aborting Association\n");
 	cond = ASC_abortAssociation(assoc);
-	if (!SUCCESS(cond)) {
+	if (cond.bad()) {
 	    errmsg("Association Abort Failed:");
-	    COND_DumpConditions();
+	    DimseCondition::dump(cond);
 	    exit(1);
 	}
-	break;
     }
 
     cond = ASC_destroyAssociation(&assoc);
-    if (!SUCCESS(cond)) {
-	COND_DumpConditions();
+    if (cond.bad()) {
+	DimseCondition::dump(cond);
 	exit(1);
     }
     cond = ASC_dropNetwork(&net);
-    if (!SUCCESS(cond)) {
-	COND_DumpConditions();
+    if (cond.bad()) {
+	DimseCondition::dump(cond);
 	exit(1);
-    }
-    if (opt_debug) {
-	/* are there any conditions sitting on the condition stack? */
-	char buf[BUFSIZ];
-	CONDITION c;
-
-	if (COND_TopCondition(&c, buf, BUFSIZ) != COND_NORMAL) {
-	    fprintf(stderr, "CONDITIONS Remaining\n");
-	    COND_DumpConditions();
-	}
     }
 
 #ifdef HAVE_WINSOCK_H
@@ -380,10 +374,9 @@ main(int argc, char *argv[])
     return 0;
 }
 
-static CONDITION 
+static OFCondition 
 echoSCU(T_ASC_Association * assoc)
 {
-    CONDITION cond;
     DIC_US msgId = assoc->nextMsgID++;
     DIC_US status;
     DcmDataset *statusDetail = NULL;
@@ -393,17 +386,17 @@ echoSCU(T_ASC_Association * assoc)
 	fflush(stdout);
     }
 
-    cond = DIMSE_echoUser(assoc, msgId, DIMSE_BLOCKING, 0,
+    OFCondition cond = DIMSE_echoUser(assoc, msgId, DIMSE_BLOCKING, 0,
     	&status, &statusDetail);
 
-    if (cond == DIMSE_NORMAL) {
+    if (cond.good()) {
         if (opt_verbose) {
 	    printf("Complete [Status: %s]\n",
 	        DU_cstoreStatusString(status));
         }
     } else {
         errmsg("Failed:");
-	COND_DumpConditions();
+	DimseCondition::dump(cond);
     }
     if (statusDetail != NULL) {
         printf("  Status Detail (should never be any):\n");
@@ -413,19 +406,24 @@ echoSCU(T_ASC_Association * assoc)
     return cond;
 }
 
-static CONDITION
+static OFCondition
 cecho(T_ASC_Association * assoc, unsigned long num_repeat)
 {
-    CONDITION cond = DIMSE_NORMAL;
+    OFCondition cond = EC_Normal;
     unsigned long n = num_repeat;
-    while (cond == DIMSE_NORMAL && n--) cond = echoSCU(assoc);
+    while (cond == EC_Normal && n--) cond = echoSCU(assoc); // compare with EC_Normal since DUL_PEERREQUESTEDRELEASE is also good()
     return cond;
 }
 
 /*
 ** CVS Log
 ** $Log: echoscu.cc,v $
-** Revision 1.22  2001-06-01 15:50:01  meichel
+** Revision 1.23  2001-10-12 10:18:20  meichel
+** Replaced the CONDITION types, constants and functions in the dcmnet module
+**   by an OFCondition based implementation which eliminates the global condition
+**   stack.  This is a major change, caveat emptor!
+**
+** Revision 1.22  2001/06/01 15:50:01  meichel
 ** Updated copyright header
 **
 ** Revision 1.21  2000/06/07 13:56:16  meichel

@@ -57,9 +57,9 @@
 **	Module Prefix: DIMSE_
 **
 ** Last Update:		$Author: meichel $
-** Update Date:		$Date: 2000-12-15 13:28:18 $
+** Update Date:		$Date: 2001-10-12 10:18:36 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/libsrc/dimstore.cc,v $
-** CVS/RCS Revision:	$Revision: 1.13 $
+** CVS/RCS Revision:	$Revision: 1.14 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -95,7 +95,7 @@ END_EXTERN_C
 
 #include "diutil.h"
 #include "dimse.h"		/* always include the module header */
-#include "dimcond.h"
+#include "cond.h"
 
 
 /* Global flag to enable/disable workaround code for some buggy Store SCUs
@@ -134,7 +134,7 @@ privateUserCallback(void *callbackData, unsigned long bytes)
     }
 }
 
-CONDITION
+OFCondition
 DIMSE_storeUser(
 	/* in */ 
 	T_ASC_Association *assoc, T_ASC_PresentationContextID presId,
@@ -150,16 +150,13 @@ DIMSE_storeUser(
         /* in */
         long imageFileTotalBytes)
 {
-    CONDITION cond;
+    OFCondition cond = EC_Normal;
     T_DIMSE_Message req, rsp;
     DIMSE_PrivateUserContext callbackCtx;
     DIMSE_ProgressCallback privCallback = NULL;
     T_DIMSE_StoreProgress progress;
 
-    if (imageFileName == NULL && imageDataSet == NULL) {
-        return COND_PushCondition(DIMSE_NULLKEY,
-	    "DIMSE_storeUser: no imageFileName or imageDataSet provided");
-    }
+    if (imageFileName == NULL && imageDataSet == NULL) return DIMSE_NULLKEY;
     
     bzero((char*)&req, sizeof(req));
     bzero((char*)&rsp, sizeof(rsp));
@@ -200,7 +197,7 @@ DIMSE_storeUser(
 	    NULL, imageDataSet, privCallback, &callbackCtx);
     }
     
-    if (cond != DIMSE_NORMAL) {
+    if (cond != EC_Normal) {
 	return cond;
     }
 
@@ -222,7 +219,7 @@ DIMSE_storeUser(
         T_ASC_PresentationContextID thisPresId = presId;
         cond = DIMSE_receiveCommand(assoc, blockMode, timeout, 
             &thisPresId, &rsp, statusDetail);
-        if (cond != DIMSE_NORMAL) return cond;
+        if (cond != EC_Normal) return cond;
 
         if (checkForCancelParams != NULL && rsp.CommandField == DIMSE_C_CANCEL_RQ)
         {
@@ -230,35 +227,36 @@ DIMSE_storeUser(
             checkForCancelParams->req = rsp.msg.CCancelRQ;
             checkForCancelParams->presId = thisPresId;
         } else {
-            if (rsp.CommandField != DIMSE_C_STORE_RSP) {
-	        return COND_PushCondition(DIMSE_UNEXPECTEDRESPONSE, 
-	        	"DIMSE: Unexpected Response Command Field: 0x%x",
-	    	    (unsigned)rsp.CommandField);
+            if (rsp.CommandField != DIMSE_C_STORE_RSP)
+            {
+              char buf[256];
+              sprintf(buf, "DIMSE: Unexpected Response Command Field: 0x%x", (unsigned)rsp.CommandField);
+              return makeDcmnetCondition(DIMSEC_UNEXPECTEDRESPONSE, OF_error, buf);
             }
     
-            *response = rsp.msg.CStoreRSP;          // BoundsChecker warning !?
-	
-            if (response->MessageIDBeingRespondedTo != request->MessageID) {
-	        return COND_PushCondition(DIMSE_UNEXPECTEDRESPONSE, 
-	    	    "DIMSE: Unexpected Response MsgId: %d (expected: %d)",
-	    	    response->MessageIDBeingRespondedTo, request->MessageID);
+            *response = rsp.msg.CStoreRSP;          // BoundsChecker warning !?	
+            if (response->MessageIDBeingRespondedTo != request->MessageID)
+            {
+              char buf2[256];
+              sprintf(buf2, "DIMSE: Unexpected Response MsgId: %d (expected: %d)", response->MessageIDBeingRespondedTo, request->MessageID);
+              return makeDcmnetCondition(DIMSEC_UNEXPECTEDRESPONSE, OF_error, buf2);
             }
         }
     } while (checkForCancelParams != NULL && rsp.CommandField == DIMSE_C_CANCEL_RQ);
     
-    return DIMSE_NORMAL;
+    return EC_Normal;
 }
 
 
 
-CONDITION
+OFCondition
 DIMSE_sendStoreResponse(T_ASC_Association * assoc, 
 	T_ASC_PresentationContextID presID,
 	T_DIMSE_C_StoreRQ *request, /* send response to this request */
 	T_DIMSE_C_StoreRSP *response, /* response structure */
 	DcmDataset *statusDetail)
 {
-    CONDITION           cond = DIMSE_NORMAL;
+    OFCondition           cond = EC_Normal;
     T_DIMSE_Message     rsp;
 
     bzero((char*)&rsp, sizeof(rsp));
@@ -305,7 +303,7 @@ privateProviderCallback(void *callbackData, unsigned long bytes)
 }
 
 
-CONDITION
+OFCondition
 DIMSE_storeProvider(/* in */ 
 	T_ASC_Association *assoc, 
 	T_ASC_PresentationContextID presIdCmd,
@@ -316,7 +314,7 @@ DIMSE_storeProvider(/* in */
 	/* blocking info for data set */
 	T_DIMSE_BlockingMode blockMode, int timeout)
 {	
-    CONDITION cond = DIMSE_NORMAL;
+    OFCondition cond = EC_Normal;
     DIMSE_PrivateProviderContext callbackCtx;
     DIMSE_ProgressCallback privCallback = NULL;
     T_ASC_PresentationContextID presIdData = 0;
@@ -360,7 +358,7 @@ DIMSE_storeProvider(/* in */
     
     if (imageFileName != NULL) {
         DcmFileStream *filestream = NULL;
-        if (DIMSE_NORMAL != (cond = DIMSE_createFilestream(imageFileName, request, assoc, 
+        if (EC_Normal != (cond = DIMSE_createFilestream(imageFileName, request, assoc, 
           presIdCmd, writeMetaheader, &filestream)))
         {
           return cond;
@@ -368,7 +366,7 @@ DIMSE_storeProvider(/* in */
           cond = DIMSE_receiveDataSetInFile(assoc, blockMode, timeout,
           &presIdData, filestream, privCallback, &callbackCtx);
           delete filestream;
-          if (cond != DIMSE_NORMAL)
+          if (cond != EC_Normal)
           {
             if (strcmp(imageFileName, NULL_DEVICE_NAME) != 0) unlink(imageFileName);
           }
@@ -377,16 +375,15 @@ DIMSE_storeProvider(/* in */
         cond = DIMSE_receiveDataSetInMemory(assoc, blockMode, timeout,
 		&presIdData, imageDataSet, privCallback, &callbackCtx);
     } else {
- 	  return COND_PushCondition(DIMSE_BADDATA, 
-		"DIMSE_storeProvider: No filename or DcmDataset provided");
+ 	return DIMSE_BADDATA;
     }
 
-    if (presIdData != presIdCmd) {
-	cond = COND_PushCondition(DIMSE_INVALIDPRESENTATIONCONTEXTID, 
-		"DIMSE: Presentation Contexts of Command and Data Differ");
+    if (presIdData != presIdCmd)
+    {
+    	cond = makeDcmnetCondition(DIMSEC_INVALIDPRESENTATIONCONTEXTID, OF_error, "DIMSE: Presentation Contexts of Command and Data Differ");
     }
 
-    if (cond == DIMSE_NORMAL) {
+    if (cond == EC_Normal) {
         response.DimseStatus = STATUS_Success;
     } else if (cond == DIMSE_OUTOFRESOURCES) {
         response.DimseStatus = STATUS_STORE_Refused_OutOfResources;
@@ -413,7 +410,12 @@ DIMSE_storeProvider(/* in */
 /*
 ** CVS Log
 ** $Log: dimstore.cc,v $
-** Revision 1.13  2000-12-15 13:28:18  meichel
+** Revision 1.14  2001-10-12 10:18:36  meichel
+** Replaced the CONDITION types, constants and functions in the dcmnet module
+**   by an OFCondition based implementation which eliminates the global condition
+**   stack.  This is a major change, caveat emptor!
+**
+** Revision 1.13  2000/12/15 13:28:18  meichel
 ** Global flag to enable/disable workaround code for some buggy Store SCUs
 **   in DIMSE_storeProvider().  If enabled, an illegal space-padding in the
 **   Affected SOP Instance UID field of the C-STORE-RQ message is retained

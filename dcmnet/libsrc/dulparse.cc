@@ -45,9 +45,9 @@
 ** Intent:		This file contains functions for parsing Dicom
 **			Upper Layer (DUL) Protocol Data Units (PDUs)
 **			into logical in-memory structures.
-** Last Update:		$Author: joergr $, $Date: 2001-06-05 10:07:10 $
+** Last Update:		$Author: meichel $, $Date: 2001-10-12 10:18:40 $
 ** Source File:		$RCSfile: dulparse.cc,v $
-** Revision:		$Revision: 1.15 $
+** Revision:		$Revision: 1.16 $
 ** Status:		$State: Exp $
 */
 
@@ -76,27 +76,27 @@ END_EXTERN_C
 #include "dulpriv.h"
 #include "ofconsol.h"
 
-static CONDITION
+static OFCondition
 parseSubItem(DUL_SUBITEM * subItem, unsigned char *buf,
 	     unsigned long *itemLength);
-static CONDITION
+static OFCondition
 parsePresentationContext(unsigned char type,
 			 PRV_PRESENTATIONCONTEXTITEM * context,
 			 unsigned char *buf, unsigned long *itemLength);
-static CONDITION
+static OFCondition
 parseUserInfo(DUL_USERINFO * userInfo,
 	      unsigned char *buf, unsigned long *itemLength);
-static CONDITION
+static OFCondition
 parseMaxPDU(DUL_MAXLENGTH * max, unsigned char *buf,
 	    unsigned long *itemLength);
-static CONDITION
+static OFCondition
     parseDummy(unsigned char *buf, unsigned long *itemLength);
-static CONDITION
+static OFCondition
 parseSCUSCPRole(PRV_SCUSCPROLE * role, unsigned char *buf,
 		unsigned long *length);
 static void trim_trailing_spaces(char *s);
 
-static CONDITION
+static OFCondition
 parseExtNeg(SOPClassExtendedNegotiationSubItem* extNeg, unsigned char *buf,
 	    unsigned long *length);
 
@@ -119,21 +119,17 @@ static OFBool debug = OFFalse;
 ** Return Values:
 **
 **	DUL_ILLEGALPDU
-**	DUL_LISTCREATEFAILED
 **	DUL_LISTERROR
-**	DUL_MALLOCERROR
-**	DUL_NORMAL
 **
 ** Algorithm:
 **	Description of the algorithm (optional) and any other notes.
 */
 
-CONDITION
+OFCondition
 parseAssociate(unsigned char *buf, unsigned long pduLength,
 	       PRV_ASSOCIATEPDU * assoc)
 {
-    CONDITION
-	cond;
+    OFCondition cond = EC_Normal;
     unsigned char
         type;
     unsigned long
@@ -142,12 +138,8 @@ parseAssociate(unsigned char *buf, unsigned long pduLength,
 	* context;
 
     (void) memset(assoc, 0, sizeof(*assoc));
-    if ((assoc->presentationContextList = LST_Create()) == NULL)
-	return COND_PushCondition(DUL_LISTCREATEFAILED,
-		       DUL_Message(DUL_LISTCREATEFAILED), "parseAssociate");
-    if ((assoc->userInfo.SCUSCPRoleList = LST_Create()) == NULL)
-	return COND_PushCondition(DUL_LISTCREATEFAILED,
-		       DUL_Message(DUL_LISTCREATEFAILED), "parseAssociate");
+    if ((assoc->presentationContextList = LST_Create()) == NULL) return EC_MemoryExhausted;
+    if ((assoc->userInfo.SCUSCPRoleList = LST_Create()) == NULL) return EC_MemoryExhausted;
 
     assoc->type = *buf++;
     assoc->rsv1 = *buf++;
@@ -158,9 +150,11 @@ parseAssociate(unsigned char *buf, unsigned long pduLength,
     buf += 2;
     pduLength -= 2;
     if ((assoc->protocol & DUL_PROTOCOL) == 0)
-	return COND_PushCondition(DUL_UNSUPPORTEDPEERPROTOCOL,
-				  DUL_Message(DUL_UNSUPPORTEDPEERPROTOCOL), assoc->protocol, DUL_PROTOCOL,
-				  "parseAssociate");
+    {
+        char buf[256];
+        sprintf(buf, "DUL Unsupported peer protocol %04x; expected %04x in %s", assoc->protocol, DUL_PROTOCOL, "parseAssociate");
+        return makeDcmnetCondition(DULC_UNSUPPORTEDPEERPROTOCOL, OF_error, buf);
+    }
     assoc->rsv2[0] = *buf++;
     pduLength--;
     assoc->rsv2[1] = *buf++;
@@ -200,8 +194,8 @@ parseAssociate(unsigned char *buf, unsigned long pduLength,
 	    << "Calling AP Title: " << assoc->callingAPTitle << endl;
     }
 #endif
-    cond = DUL_NORMAL;
-    while ((cond == DUL_NORMAL) && (pduLength > 0)) {
+    while ((cond.good()) && (pduLength > 0))
+    {
 	type = *buf;
 #ifdef DEBUG
 	if (debug) {
@@ -216,7 +210,8 @@ parseAssociate(unsigned char *buf, unsigned long pduLength,
 	case DUL_TYPEAPPLICATIONCONTEXT:
 	    cond = parseSubItem(&assoc->applicationContext,
 				buf, &itemLength);
-	    if (cond == DUL_NORMAL) {
+	    if (cond.good())
+	    {
 		buf += itemLength;
 		pduLength -= itemLength;
 #ifdef DEBUG
@@ -228,30 +223,22 @@ parseAssociate(unsigned char *buf, unsigned long pduLength,
 	case DUL_TYPEPRESENTATIONCONTEXTRQ:
 	case DUL_TYPEPRESENTATIONCONTEXTAC:
 	    context = (PRV_PRESENTATIONCONTEXTITEM*)malloc(sizeof(PRV_PRESENTATIONCONTEXTITEM));
-	    if (context == NULL)
-		return COND_PushCondition(DUL_MALLOCERROR,
-			     DUL_Message(DUL_MALLOCERROR), "parseAssociate",
-					  sizeof(*context));
+	    if (context == NULL) return EC_MemoryExhausted;
 	    (void) memset(context, 0, sizeof(*context));
 	    cond = parsePresentationContext(type, context, buf, &itemLength);
-	    if (cond != DUL_NORMAL)
-		return cond;
+	    if (cond.bad()) return cond;
 	    buf += itemLength;
 	    pduLength -= itemLength;
-	    if (LST_Enqueue(&assoc->presentationContextList, (LST_NODE*)context) !=
-		LST_NORMAL) {
-		return COND_PushCondition(DUL_LISTERROR,
-			      DUL_Message(DUL_LISTERROR), "parseAssociate");
-	    }
+	    cond = LST_Enqueue(&assoc->presentationContextList, (LST_NODE*)context);
+            if (cond.bad()) return cond;
 #ifdef DEBUG
 	    if (debug)
 		    DEBUG_DEVICE << "Successfully parsed Presentation Context " << endl;
 #endif
 	    break;
 	case DUL_TYPEUSERINFO:
-	    cond = parseUserInfo(&assoc->userInfo,
-				 buf, &itemLength);
-	    if (cond != DUL_NORMAL)
+	    cond = parseUserInfo(&assoc->userInfo, buf, &itemLength);
+	    if (cond.bad())
 		return cond;
 	    buf += itemLength;
 	    pduLength -= itemLength;
@@ -312,13 +299,12 @@ parseDebug(OFBool /*flag*/)
 **	itemLength	Length of the subitem extracted
 **
 ** Return Values:
-**	DUL_NORMAL
 **
 ** Algorithm:
 **	Description of the algorithm (optional) and any other notes.
 */
 
-static CONDITION
+static OFCondition
 parseSubItem(DUL_SUBITEM * subItem, unsigned char *buf,
 	     unsigned long *itemLength)
 {
@@ -339,7 +325,7 @@ parseSubItem(DUL_SUBITEM * subItem, unsigned char *buf,
         DEBUG_DEVICE << (int)subItem->length << ", Content: " << subItem->data << endl;
     }
 #endif
-    return DUL_NORMAL;
+    return EC_Normal;
 }
 
 
@@ -357,16 +343,13 @@ parseSubItem(DUL_SUBITEM * subItem, unsigned char *buf,
 ** Return Values:
 **
 **	DUL_ILLEGALPDU
-**	DUL_LISTCREATEFAILED
 **	DUL_LISTERROR
-**	DUL_MALLOCERROR
-**	DUL_NORMAL
 **
 ** Algorithm:
 **	Description of the algorithm (optional) and any other notes.
 */
 
-static CONDITION
+static OFCondition
 parsePresentationContext(unsigned char type,
 		  PRV_PRESENTATIONCONTEXTITEM * context, unsigned char *buf,
 			 unsigned long *itemLength)
@@ -375,14 +358,11 @@ parsePresentationContext(unsigned char type,
         length;
     unsigned long
         presentationLength;
-    CONDITION
-	cond;
+    OFCondition cond = EC_Normal;
     DUL_SUBITEM
 	* subItem;
 
-    if ((context->transferSyntaxList = LST_Create()) == NULL)
-	return COND_PushCondition(DUL_LISTCREATEFAILED,
-	     DUL_Message(DUL_LISTCREATEFAILED), "parsePresentationContext");
+    if ((context->transferSyntaxList = LST_Create()) == NULL) return EC_MemoryExhausted;
 
     *itemLength = 0;
     context->type = *buf++;
@@ -423,7 +403,7 @@ parsePresentationContext(unsigned char type,
 	    switch (*buf) {
 	    case DUL_TYPEABSTRACTSYNTAX:
 		cond = parseSubItem(&context->abstractSyntax, buf, &length);
-		if (cond != DUL_NORMAL)
+		if (cond.bad())
 		    return cond;
 
 		buf += length;
@@ -436,19 +416,11 @@ parsePresentationContext(unsigned char type,
 		break;
 	    case DUL_TYPETRANSFERSYNTAX:
 		subItem = (DUL_SUBITEM*)malloc(sizeof(DUL_SUBITEM));
-		if (subItem == NULL)
-		    return COND_PushCondition(DUL_MALLOCERROR,
-					      DUL_Message(DUL_MALLOCERROR),
-			      "parsePresentationContext", sizeof(*subItem));
-
+		if (subItem == NULL) return EC_MemoryExhausted;
 		cond = parseSubItem(subItem, buf, &length);
-		if (cond != DUL_NORMAL)
-		    return cond;
-		if (LST_Enqueue(&context->transferSyntaxList, (LST_NODE*)subItem) !=
-		    LST_NORMAL)
-		    return COND_PushCondition(DUL_LISTERROR,
-		    DUL_Message(DUL_LISTERROR), "parsePresentationContext");
-
+		if (cond.bad()) return cond;
+		cond = LST_Enqueue(&context->transferSyntaxList, (LST_NODE*)subItem);
+		if (cond.bad()) return cond;
 		buf += length;
 		presentationLength -= length;
 #ifdef DEBUG
@@ -465,7 +437,7 @@ parsePresentationContext(unsigned char type,
 	    }
 	}
     }
-    return DUL_NORMAL;
+    return EC_Normal;
 }
 
 
@@ -483,8 +455,6 @@ parsePresentationContext(unsigned char type,
 ** Return Values:
 **
 **	DUL_ILLEGALPDU
-**	DUL_MALLOCERROR
-**	DUL_NORMAL
 **
 ** Notes:
 **
@@ -492,13 +462,13 @@ parsePresentationContext(unsigned char type,
 **	Description of the algorithm (optional) and any other notes.
 */
 
-static CONDITION
+static OFCondition
 parseUserInfo(DUL_USERINFO * userInfo,
 	      unsigned char *buf, unsigned long *itemLength)
 {
     unsigned short userLength;
     unsigned long length;
-    CONDITION cond;
+    OFCondition cond = EC_Normal;
     PRV_SCUSCPROLE *role;
     SOPClassExtendedNegotiationSubItem *extNeg = NULL;
 
@@ -530,7 +500,7 @@ parseUserInfo(DUL_USERINFO * userInfo,
 	switch (*buf) {
 	case DUL_TYPEMAXLENGTH:
 	    cond = parseMaxPDU(&userInfo->maxLength, buf, &length);
-	    if (cond != DUL_NORMAL)
+	    if (cond.bad())
 		return cond;
 	    buf += length;
 	    userLength -= (unsigned short) length;
@@ -543,7 +513,7 @@ parseUserInfo(DUL_USERINFO * userInfo,
 	case DUL_TYPEIMPLEMENTATIONCLASSUID:
 	    cond = parseSubItem(&userInfo->implementationClassUID,
 				buf, &length);
-	    if (cond != DUL_NORMAL)
+	    if (cond.bad())
 		return cond;
 	    buf += length;
 	    userLength -= (unsigned short) length;
@@ -556,25 +526,18 @@ parseUserInfo(DUL_USERINFO * userInfo,
 	    break;
 	case DUL_TYPESCUSCPROLE:
 	    role = (PRV_SCUSCPROLE*)malloc(sizeof(PRV_SCUSCPROLE));
-	    if (role == NULL)
-		return COND_PushCondition(DUL_MALLOCERROR,
-					  DUL_Message(DUL_MALLOCERROR),
-					  "parseUserInfo", sizeof(*role));
+	    if (role == NULL) return EC_MemoryExhausted;
 	    cond = parseSCUSCPRole(role, buf, &length);
-	    if (cond != DUL_NORMAL)
-		return cond;
+	    if (cond.bad()) return cond;
 	    cond = LST_Enqueue(&userInfo->SCUSCPRoleList, (LST_NODE*)role);
-	    if (cond != LST_NORMAL)
-		return COND_PushCondition(DUL_LISTERROR,
-			       DUL_Message(DUL_LISTERROR), "parseUserInfo");
+	    if (cond.bad()) return cond;
 	    buf += length;
 	    userLength -= (unsigned short) length;
 	    break;
 	case DUL_TYPEIMPLEMENTATIONVERSIONNAME:
 	    cond = parseSubItem(&userInfo->implementationVersionName,
 				buf, &length);
-	    if (cond != DUL_NORMAL)
-		return cond;
+	    if (cond.bad()) return cond;
 	    buf += length;
 	    userLength -= (unsigned short) length;
 	    break;
@@ -582,15 +545,13 @@ parseUserInfo(DUL_USERINFO * userInfo,
         case DUL_TYPESOPCLASSEXTENDEDNEGOTIATION: 
             /* parse an extended negotiation sub-item */
             extNeg = new SOPClassExtendedNegotiationSubItem;
-            if (extNeg == NULL) return COND_PushCondition(DUL_MALLOCERROR, 
-               DUL_Message(DUL_MALLOCERROR), "parseUserInfo", sizeof(*extNeg));
+            if (extNeg == NULL)  return EC_MemoryExhausted;
 	    cond = parseExtNeg(extNeg, buf, &length);
-	    if (cond != DUL_NORMAL) return cond;
+	    if (cond.bad()) return cond;
             if (userInfo->extNegList == NULL)
             {
                 userInfo->extNegList = new SOPClassExtendedNegotiationSubItemList;
-                if (userInfo->extNegList == NULL) return COND_PushCondition(DUL_MALLOCERROR,
-		  DUL_Message(DUL_MALLOCERROR), "parseUserInfo", sizeof(*(userInfo->extNegList)));
+                if (userInfo->extNegList == NULL)  return EC_MemoryExhausted;
             }
             userInfo->extNegList->push_back(extNeg);
 	    buf += length;
@@ -601,14 +562,11 @@ parseUserInfo(DUL_USERINFO * userInfo,
 	    cond = parseDummy(buf, &length);
 	    buf += length;
 	    userLength -= (unsigned short) length;
-/*	    return COND_PushCondition(DUL_ILLEGALPDU,
-				      DUL_Message(DUL_ILLEGALPDU), 0xfff);
-*/
 	    break;
 	}
     }
 
-    return DUL_NORMAL;
+    return EC_Normal;
 }
 
 
@@ -624,14 +582,13 @@ parseUserInfo(DUL_USERINFO * userInfo,
 **	itemLength	Length of structure extracted.
 **
 ** Return Values:
-**	DUL_NORMAL
 **
 ** Notes:
 **
 ** Algorithm:
 **	Description of the algorithm (optional) and any other notes.
 */
-static CONDITION
+static OFCondition
 parseMaxPDU(DUL_MAXLENGTH * max, unsigned char *buf,
 	    unsigned long *itemLength)
 {
@@ -648,7 +605,7 @@ parseMaxPDU(DUL_MAXLENGTH * max, unsigned char *buf,
     }
 #endif
 
-    return DUL_NORMAL;
+    return EC_Normal;
 }
 
 /* parseDummy
@@ -662,14 +619,13 @@ parseMaxPDU(DUL_MAXLENGTH * max, unsigned char *buf,
 **	itemLength	Length of structure extracted.
 **
 ** Return Values:
-**	DUL_NORMAL
 **
 ** Notes:
 **
 ** Algorithm:
 **	Description of the algorithm (optional) and any other notes.
 */
-static CONDITION
+static OFCondition
 parseDummy(unsigned char *buf, unsigned long *itemLength)
 {
     unsigned short
@@ -681,7 +637,7 @@ parseDummy(unsigned char *buf, unsigned long *itemLength)
     buf += 2;
 
     *itemLength = userLength + 4;
-    return DUL_NORMAL;
+    return EC_Normal;
 }
 
 /* parseSCUSCPRole
@@ -695,14 +651,13 @@ parseDummy(unsigned char *buf, unsigned long *itemLength)
 **	itemLength	Length of structure extracted.
 **
 ** Return Values:
-**	DUL_NORMAL
 **
 ** Notes:
 **
 ** Algorithm:
 **	Description of the algorithm (optional) and any other notes.
 */
-static CONDITION
+static OFCondition
 parseSCUSCPRole(PRV_SCUSCPROLE * role, unsigned char *buf,
 		unsigned long *length)
 {
@@ -735,7 +690,7 @@ parseSCUSCPRole(PRV_SCUSCPROLE * role, unsigned char *buf,
         << " " << (int)role->SCURole << " " << (int)role->SCPRole << endl;
     }
 #endif
-    return DUL_NORMAL;
+    return EC_Normal;
 }
 
 /* parseExtNeg
@@ -744,11 +699,10 @@ parseSCUSCPRole(PRV_SCUSCPROLE * role, unsigned char *buf,
 **	Parse the buffer and extract the extended negotiation item
 **
 ** Return Values:
-**	DUL_NORMAL
 **
 */
 
-static CONDITION
+static OFCondition
 parseExtNeg(SOPClassExtendedNegotiationSubItem* extNeg, unsigned char *buf,
 		unsigned long *length)
 {
@@ -792,7 +746,7 @@ parseExtNeg(SOPClassExtendedNegotiationSubItem* extNeg, unsigned char *buf,
     }
 #endif
 
-    return DUL_NORMAL;
+    return EC_Normal;
 }
 
 /* trim_trailing_spaces
@@ -834,7 +788,12 @@ trim_trailing_spaces(char *s)
 /*
 ** CVS Log
 ** $Log: dulparse.cc,v $
-** Revision 1.15  2001-06-05 10:07:10  joergr
+** Revision 1.16  2001-10-12 10:18:40  meichel
+** Replaced the CONDITION types, constants and functions in the dcmnet module
+**   by an OFCondition based implementation which eliminates the global condition
+**   stack.  This is a major change, caveat emptor!
+**
+** Revision 1.15  2001/06/05 10:07:10  joergr
 ** Minor code purifications to keep Sun CC 2.0.1 quiet.
 **
 ** Revision 1.14  2000/03/08 11:23:40  joergr

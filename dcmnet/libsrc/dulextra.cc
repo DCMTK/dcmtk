@@ -46,18 +46,18 @@
 */
 /*
 **
-** Author: Andrew Hewett		Created: 03-08-93
+** Author: Andrew Hewett                Created: 03-08-93
 ** 
 ** Module: dulextra
 **
 ** Purpose: 
-**	Supplementary DUL functions.
+**      Supplementary DUL functions.
 **
-** Last Update:		$Author: meichel $
-** Update Date:		$Date: 2000-08-10 14:50:57 $
-** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/libsrc/dulextra.cc,v $
-** CVS/RCS Revision:	$Revision: 1.11 $
-** Status:		$State: Exp $
+** Last Update:         $Author: meichel $
+** Update Date:         $Date: 2001-10-12 10:18:38 $
+** Source File:         $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/libsrc/dulextra.cc,v $
+** CVS/RCS Revision:    $Revision: 1.12 $
+** Status:              $State: Exp $
 **
 ** CVS/RCS Log at end of file
 **
@@ -114,18 +114,9 @@ DcmTransportConnection *DUL_getTransportConnection(DUL_ASSOCIATIONKEY * callerAs
 int 
 DUL_networkSocket(DUL_NETWORKKEY * callerNet)
 {
-    PRIVATE_NETWORKKEY *net;
-    int                 s = -1;
-
-    if (callerNet == NULL)
-	return -1;
-
-    net = (PRIVATE_NETWORKKEY*)callerNet;
-
-    if (strcmp(net->networkType, DUL_NETWORK_TCP) == 0) {
-	s = net->networkSpecific.TCP.listenSocket;
-    }
-    return s;
+    if (callerNet == NULL) return -1;
+    PRIVATE_NETWORKKEY *net = (PRIVATE_NETWORKKEY*)callerNet;
+    return net->networkSpecific.TCP.listenSocket;
 }
 
 OFBool 
@@ -139,41 +130,42 @@ DUL_associationWaiting(DUL_NETWORKKEY * callerNet, int timeout)
     int                 nfound;
 
     if (callerNet == NULL)
-	return OFFalse;
+        return OFFalse;
 
     net = (PRIVATE_NETWORKKEY*)callerNet;
 
-    if (strcmp(net->networkType, DUL_NETWORK_TCP) == 0) {
-	s = net->networkSpecific.TCP.listenSocket;
+    s = net->networkSpecific.TCP.listenSocket;
 
-	FD_ZERO(&fdset);
-	FD_SET(s, &fdset);
-	t.tv_sec = timeout;
-	t.tv_usec = 0;
+    FD_ZERO(&fdset);
+    FD_SET(s, &fdset);
+    t.tv_sec = timeout;
+    t.tv_usec = 0;
 #ifdef HAVE_INTP_SELECT
-	nfound = select(s + 1, (int *)(&fdset), NULL, NULL, &t);
+    nfound = select(s + 1, (int *)(&fdset), NULL, NULL, &t);
 #else
-	nfound = select(s + 1, &fdset, NULL, NULL, &t);
+    nfound = select(s + 1, &fdset, NULL, NULL, &t);
 #endif
-	if (nfound <= 0)
-	    assocWaiting = OFFalse;
-	else {
-	    if (FD_ISSET(s, &fdset))
-		assocWaiting = OFTrue;
-	    else		/* This one should not really happen */
-		assocWaiting = OFFalse;
-	}
-
-    } else {
-	assocWaiting = OFFalse;
+    if (nfound <= 0) assocWaiting = OFFalse;
+    else
+    {
+        if (FD_ISSET(s, &fdset))
+            assocWaiting = OFTrue;
+        else                /* This one should not really happen */
+            assocWaiting = OFFalse;
     }
+
     return assocWaiting;
 }
 
 /*
 ** CVS Log
 ** $Log: dulextra.cc,v $
-** Revision 1.11  2000-08-10 14:50:57  meichel
+** Revision 1.12  2001-10-12 10:18:38  meichel
+** Replaced the CONDITION types, constants and functions in the dcmnet module
+**   by an OFCondition based implementation which eliminates the global condition
+**   stack.  This is a major change, caveat emptor!
+**
+** Revision 1.11  2000/08/10 14:50:57  meichel
 ** Added initial OpenSSL support.
 **
 ** Revision 1.10  2000/02/23 15:12:46  meichel

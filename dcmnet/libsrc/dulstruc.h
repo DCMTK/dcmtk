@@ -50,9 +50,9 @@
 **  get the public definitions and function prototypes.  I have omitted
 **  the public definitions and prototypes on purpose so that they
 **  exist in only one location.
-** Last Update:		$Author: meichel $, $Date: 2000-08-10 14:50:59 $
+** Last Update:		$Author: meichel $, $Date: 2001-10-12 10:18:41 $
 ** Source File:		$RCSfile: dulstruc.h,v $
-** Revision:		$Revision: 1.5 $
+** Revision:		$Revision: 1.6 $
 ** Status:		$State: Exp $
 */
 
@@ -80,7 +80,7 @@ typedef enum {
 typedef struct {
 /*    void *reserved[2]; */
     char keyType[40];
-    char networkType[40];
+    // char networkType[40];
     int applicationFunction;
     int networkState;
     int protocolState;
@@ -100,7 +100,7 @@ typedef struct {
 typedef struct {
 /*    void *reserved[2]; */
     char keyType[40];
-    char networkType[40];
+    // char networkType[40];
 /*    char applicationType[40]; */
     int applicationFunction;
     char remoteNode[64];
@@ -314,7 +314,12 @@ typedef struct dul_datapdu {
 /*
 ** CVS Log
 ** $Log: dulstruc.h,v $
-** Revision 1.5  2000-08-10 14:50:59  meichel
+** Revision 1.6  2001-10-12 10:18:41  meichel
+** Replaced the CONDITION types, constants and functions in the dcmnet module
+**   by an OFCondition based implementation which eliminates the global condition
+**   stack.  This is a major change, caveat emptor!
+**
+** Revision 1.5  2000/08/10 14:50:59  meichel
 ** Added initial OpenSSL support.
 **
 ** Revision 1.4  2000/06/07 08:57:27  meichel

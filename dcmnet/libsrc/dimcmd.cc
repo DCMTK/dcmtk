@@ -56,9 +56,9 @@
 **	Module Prefix: DIMSE_
 **
 ** Last Update:		$Author: meichel $
-** Update Date:		$Date: 2001-09-26 12:29:00 $
+** Update Date:		$Date: 2001-10-12 10:18:31 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/libsrc/dimcmd.cc,v $
-** CVS/RCS Revision:	$Revision: 1.13 $
+** CVS/RCS Revision:	$Revision: 1.14 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -104,9 +104,9 @@ END_EXTERN_C
  * Useful Macros
  */
 
-#define RET(cond) if (!SUCCESS(cond)) return cond
-#define BRET(cond, t) if (!SUCCESS(cond)) return buildError(t)
-#define PRET(cond, t) if (!SUCCESS(cond)) return parseError(t)
+#define RET(cond) if (cond.bad()) return cond
+#define BRET(cond, t) if (cond.bad()) return buildError(t)
+#define PRET(cond, t) if (cond.bad()) return parseError(t)
 
 /*
  * Type definitions
@@ -124,50 +124,41 @@ END_EXTERN_C
 ** Private Functions Bodies
 */
 
-#if 0
-/* Currently Unused */
-static CONDITION
-buildError(DcmTagKey t)
-{
-    DcmTag tag(t);
-    return COND_PushCondition(DIMSE_BUILDFAILED,
-        "DIMSE: Command Build Failed: Element: (%x,%x) %s", 
-        t.getGroup(), t.getElement(), tag.getTagName());
-}
-#endif
-
-static CONDITION
+static OFCondition
 buildErrorWithMsg(const char* msg, DcmTagKey t)
 {
     DcmTag tag(t);
-    return COND_PushCondition(DIMSE_BUILDFAILED,
-        "DIMSE: Command Build Failed: %s: Element: (%x,%x) %s", msg,
-        t.getGroup(), t.getElement(), tag.getTagName());
+    char buf[1024];
+    sprintf(buf, "DIMSE: Command Build Failed: %s: Element: (%x,%x) %s", 
+      msg, t.getGroup(), t.getElement(), tag.getTagName());
+    return makeDcmnetCondition(DIMSEC_BUILDFAILED, OF_error, buf);
 }
 
-static CONDITION
+static OFCondition
 parseError(DcmTagKey t)
 {
     DcmTag tag(t);
-    return COND_PushCondition(DIMSE_PARSEFAILED,
-        "DIMSE: Command Parse Failed: Element: (%x,%x) %s", 
+    char buf[1024];
+    sprintf(buf, "DIMSE: Command Parse Failed: Element: (%x,%x) %s", 
         t.getGroup(), t.getElement(), tag.getTagName());
+    return makeDcmnetCondition(DIMSEC_PARSEFAILED, OF_error, buf);
 }
 
-static CONDITION
+static OFCondition
 parseErrorWithMsg(const char* msg, DcmTagKey t)
 {
     DcmTag tag(t);
-    return COND_PushCondition(DIMSE_PARSEFAILED,
-        "DIMSE: Command Parse Failed: %s: Element: (%x,%x) %s", msg,
+    char buf[1024];
+    sprintf(buf, "DIMSE: Command Parse Failed: %s: Element: (%x,%x) %s", msg,
         t.getGroup(), t.getElement(), tag.getTagName());
+    return makeDcmnetCondition(DIMSEC_PARSEFAILED, OF_error, buf);
 }
 
 /*
  * Common dcmcode based utilities
  */
 
-static CONDITION
+static OFCondition
 deleteElem(DcmDataset *obj, DcmTagKey t)
 {
     DcmTag tag(t);
@@ -178,12 +169,12 @@ deleteElem(DcmDataset *obj, DcmTagKey t)
     ok = (e != NULL);
     if (e) delete e;
     
-    return (ok)?(DIMSE_NORMAL):
+    return (ok)?(EC_Normal):
         (parseErrorWithMsg("dimcmd:deleteElem: Cannot delete element", t));
 }
 
 
-static CONDITION 
+static OFCondition 
 addString(DcmDataset *obj, DcmTagKey t, char *s, OFBool keepPadding)
 {
     OFCondition ec = EC_Normal;
@@ -200,11 +191,11 @@ addString(DcmDataset *obj, DcmTagKey t, char *s, OFBool keepPadding)
         ec = obj->insert(e, OFTrue);
     }
 
-    return (ec == EC_Normal)?(DIMSE_NORMAL):
+    return (ec == EC_Normal)?(EC_Normal):
         (buildErrorWithMsg("dimcmd:addString: Cannot add string", t));
 }
 
-static CONDITION
+static OFCondition
 getString(DcmDataset *obj, DcmTagKey t, char *s, int maxlen, OFBool *spacePadded)
 {
     DcmElement *elem;
@@ -239,30 +230,26 @@ getString(DcmDataset *obj, DcmTagKey t, char *s, int maxlen, OFBool *spacePadded
 	    DU_stripLeadingAndTrailingSpaces(s);
         }
     }
-    return (ec == EC_Normal)?(DIMSE_NORMAL):(DIMSE_PARSEFAILED);
+    return (ec.good())? ec : DIMSE_PARSEFAILED;
 }
 
-static CONDITION
+static OFCondition
 getAndDeleteString(DcmDataset *obj, DcmTagKey t, char *s, int maxlen, OFBool *spacePadded)
 {
-    CONDITION cond = DIMSE_NORMAL;
-    
-    cond = getString(obj, t, s, maxlen, spacePadded); PRET(cond, t);
+    OFCondition cond = getString(obj, t, s, maxlen, spacePadded); PRET(cond, t);
     cond = deleteElem(obj, t);
     return cond;
 }
 
-static CONDITION
+static OFCondition
 getAndDeleteStringOpt(DcmDataset *obj, DcmTagKey t, char *s, int maxlen, OFBool *spacePadded)
 {
-    CONDITION cond = DIMSE_NORMAL;
-    
-    cond = getString(obj, t, s, maxlen, spacePadded); RET(cond);
+    OFCondition cond = getString(obj, t, s, maxlen, spacePadded); RET(cond);
     cond = deleteElem(obj, t);
     return cond;
 }
 
-static CONDITION
+static OFCondition
 addUS(DcmDataset *obj, DcmTagKey t, Uint16 us)
 {
     OFCondition ec = EC_Normal;
@@ -276,11 +263,11 @@ addUS(DcmDataset *obj, DcmTagKey t, Uint16 us)
     if (ec == EC_Normal) {
         ec = obj->insert(e, OFTrue);
     }
-    return (ec == EC_Normal)?(DIMSE_NORMAL):
+    return (ec == EC_Normal)?(EC_Normal):
         (buildErrorWithMsg("dimcmd:addUS: Cannot add Uint16", t));
 }
 
-static CONDITION
+static OFCondition
 getUS(DcmDataset *obj, DcmTagKey t, Uint16 *us)
 {
     DcmElement *elem;
@@ -293,31 +280,27 @@ getUS(DcmDataset *obj, DcmTagKey t, Uint16 *us)
         ec = elem->getUint16(*us, 0);
     }
 
-    return (ec == EC_Normal)?(DIMSE_NORMAL):(DIMSE_PARSEFAILED);
+    return (ec == EC_Normal)?(EC_Normal):(DIMSE_PARSEFAILED);
 }
 
-static CONDITION
+static OFCondition
 getAndDeleteUS(DcmDataset *obj, DcmTagKey t, Uint16 *us)
-{
-    CONDITION cond;
-    
-    cond = getUS(obj, t, us); PRET(cond, t);
+{    
+    OFCondition cond = getUS(obj, t, us); PRET(cond, t);
     cond = deleteElem(obj, t);
     return cond;
 }
 
-static CONDITION
+static OFCondition
 getAndDeleteUSOpt(DcmDataset *obj, DcmTagKey t, Uint16 *us)
 {
-    CONDITION cond;
-    
-    cond = getUS(obj, t, us); RET(cond);
+    OFCondition cond = getUS(obj, t, us); RET(cond);
     cond = deleteElem(obj, t);
     return cond;
 }
 
 
-static CONDITION
+static OFCondition
 addUL(DcmDataset *obj, DcmTagKey t, Uint32 ul)
 {
     OFCondition ec = EC_Normal;
@@ -331,11 +314,11 @@ addUL(DcmDataset *obj, DcmTagKey t, Uint32 ul)
     if (ec == EC_Normal) {
         ec = obj->insert(e, OFTrue);
     }
-    return (ec == EC_Normal)?(DIMSE_NORMAL):
+    return (ec == EC_Normal)?(EC_Normal):
         (buildErrorWithMsg("dimcmd:addUL: Cannot add Uint32", t));
 }
 
-static CONDITION
+static OFCondition
 getUL(DcmDataset *obj, DcmTagKey t, Uint32 *ul)
 {
     DcmElement *elem;
@@ -348,33 +331,29 @@ getUL(DcmDataset *obj, DcmTagKey t, Uint32 *ul)
         ec = elem->getUint32(*ul, 0);
     }
 
-    return (ec == EC_Normal)?(DIMSE_NORMAL):(DIMSE_PARSEFAILED);
+    return (ec == EC_Normal)?(EC_Normal):(DIMSE_PARSEFAILED);
 }
 
 #if 0
 /* Currently Unused */
-static CONDITION
+static OFCondition
 getAndDeleteUL(DcmDataset *obj, DcmTagKey t, Uint32 *ul)
 {
-    CONDITION cond;
-    
-    cond = getUL(obj, t, ul); PRET(cond, t);
+    OFCondition cond = getUL(obj, t, ul); PRET(cond, t);
     cond = deleteElem(obj, t); 
     return cond;
 }
 #endif
 
-static CONDITION
+static OFCondition
 getAndDeleteULOpt(DcmDataset *obj, DcmTagKey t, Uint32 *ul)
 {
-    CONDITION cond;
-    
-    cond = getUL(obj, t, ul); RET(cond);
+    OFCondition cond = getUL(obj, t, ul); RET(cond);
     cond = deleteElem(obj, t); 
     return cond;
 }
 
-static CONDITION
+static OFCondition
 addAttributeList(DcmDataset *obj, DcmTagKey t, Uint16 *list, int listCount)
 {
     /* ListCount should represent the number of US values in the list (not the
@@ -396,11 +375,11 @@ addAttributeList(DcmDataset *obj, DcmTagKey t, Uint16 *list, int listCount)
     if (ec == EC_Normal) {
         ec = obj->insert(e, OFTrue);
     }
-    return (ec == EC_Normal)?(DIMSE_NORMAL):
+    return (ec == EC_Normal)?(EC_Normal):
         (buildErrorWithMsg("dimcmd:addAttributeList: Cannot add list", t));
 }
 
-static CONDITION
+static OFCondition
 getAttributeList(DcmDataset *obj, DcmTagKey t, Uint16 **list, int *listCount)
 {
     DcmElement *elem;
@@ -423,7 +402,7 @@ getAttributeList(DcmDataset *obj, DcmTagKey t, Uint16 **list, int *listCount)
 	}
     }
 
-    return (ec == EC_Normal)?(DIMSE_NORMAL):(DIMSE_PARSEFAILED);
+    return (ec == EC_Normal)?(EC_Normal):(DIMSE_PARSEFAILED);
 }
 
 /*
@@ -431,12 +410,11 @@ getAttributeList(DcmDataset *obj, DcmTagKey t, Uint16 **list, int *listCount)
  * The old code was causing problems with Print SCU software which 
  * sent an N-GET-RQ on the Printer SOP Class to obtain the printer identity.
  */
-static CONDITION
+static OFCondition
 getAndDeleteAttributeListOpt(DcmDataset *obj, DcmTagKey t, 
     Uint16 **list, int *listCount)
 {
-    CONDITION cond;
-    cond = getAttributeList(obj, t, list, listCount); RET(cond);
+    OFCondition cond = getAttributeList(obj, t, list, listCount); RET(cond);
     cond = deleteElem(obj, t);
     return cond;
 }
@@ -445,95 +423,80 @@ getAndDeleteAttributeListOpt(DcmDataset *obj, DcmTagKey t,
  * Common Building/Parsing Routines
  */
 
-static CONDITION
+static OFCondition
 buildCommonRQ(DcmDataset *obj, Uint16 command, Uint16 messageID,  
 	Uint16 dataSetType)
 {
-    CONDITION cond;
-
     // insert group length but calculate later
-    cond = addUL(obj, DCM_CommandGroupLength, 0); RET(cond);
+    OFCondition cond = addUL(obj, DCM_CommandGroupLength, 0); RET(cond);
     cond = addUS(obj, DCM_CommandField, command); RET(cond);
     cond = addUS(obj, DCM_MessageID, messageID); RET(cond);
     cond = addUS(obj, DCM_DataSetType, dataSetType); RET(cond);
 
-    return DIMSE_NORMAL;
+    return EC_Normal;
 }
 
-static CONDITION
+static OFCondition
 parseCommonRQ(DcmDataset *obj, Uint16 *command, Uint16 *messageID,
 	Uint16 *dataSetType)
 {
-    CONDITION cond;
-
-    cond = getAndDeleteUS(obj, DCM_CommandField, command); RET(cond);
+    OFCondition cond = getAndDeleteUS(obj, DCM_CommandField, command); RET(cond);
     cond = getAndDeleteUS(obj, DCM_MessageID, messageID); RET(cond);
     cond = getAndDeleteUS(obj, DCM_DataSetType, dataSetType); RET(cond);
 
-    return DIMSE_NORMAL;
+    return EC_Normal;
 }
 
-static CONDITION
+static OFCondition
 buildCommonRSP(DcmDataset *obj, Uint16 command, 
 	Uint16 messageIDBeingRespondedTo,  
 	Uint16 dataSetType, Uint16 status)
 {
-    CONDITION cond;
-
     // insert group length but calculate later
-    cond = addUL(obj, DCM_CommandGroupLength, 0); RET(cond);
+    OFCondition cond = addUL(obj, DCM_CommandGroupLength, 0); RET(cond);
     cond = addUS(obj, DCM_CommandField, command); RET(cond);
-    cond = addUS(obj, DCM_MessageIDBeingRespondedTo, 
-    	messageIDBeingRespondedTo); RET(cond);
+    cond = addUS(obj, DCM_MessageIDBeingRespondedTo, messageIDBeingRespondedTo); RET(cond);
     cond = addUS(obj, DCM_DataSetType, dataSetType); RET(cond);
     cond = addUS(obj, DCM_Status, status); RET(cond);
 
-    return DIMSE_NORMAL;
+    return EC_Normal;
 }
 
-static CONDITION
+static OFCondition
 parseCommonRSP(DcmDataset *obj, Uint16 *command, 
 	Uint16 *messageIDBeingRespondedTo,
 	Uint16 *dataSetType, Uint16 *status)
 {
-    CONDITION cond;
-
-    cond = getAndDeleteUS(obj, DCM_CommandField, command); RET(cond);
+    OFCondition cond = getAndDeleteUS(obj, DCM_CommandField, command); RET(cond);
     cond = getAndDeleteUS(obj, DCM_MessageIDBeingRespondedTo,  
     	messageIDBeingRespondedTo);	 RET(cond);
     cond = getAndDeleteUS(obj, DCM_DataSetType, dataSetType); RET(cond);
     cond = getAndDeleteUS(obj, DCM_Status, status); RET(cond);
 
-    return DIMSE_NORMAL;
+    return EC_Normal;
 }
 
 /*
  * C-ECHO-RQ
  */
 
-static CONDITION
+static OFCondition
 buildCEchoRQ(T_DIMSE_C_EchoRQ * e, DcmDataset * obj)
 {
-    CONDITION cond = DIMSE_NORMAL;
-
-    cond = buildCommonRQ(obj, DIMSE_C_ECHO_RQ, e->MessageID,
-	e->DataSetType); RET(cond);
-	
-    cond = addString(obj, DCM_AffectedSOPClassUID, 
-        e->AffectedSOPClassUID, OFFalse); RET(cond);
+    OFCondition cond = buildCommonRQ(obj, DIMSE_C_ECHO_RQ, e->MessageID, e->DataSetType); RET(cond);
+    cond = addString(obj, DCM_AffectedSOPClassUID, e->AffectedSOPClassUID, OFFalse); RET(cond);
 
     return cond;
 }
 
-static CONDITION
+static OFCondition
 parseCEchoRQ(T_DIMSE_C_EchoRQ * e, DcmDataset * obj)
 {
-    CONDITION cond = DIMSE_NORMAL;
     Uint16 cmd;
     Uint16 msgid;
     Uint16 dtype;
 
-    cond = parseCommonRQ(obj, &cmd, &msgid, &dtype); RET(cond);
+    OFCondition cond = parseCommonRQ(obj, &cmd, &msgid, &dtype); RET(cond);
     e->MessageID = msgid;
     if (dtype == DIMSE_DATASET_NULL) {
         e->DataSetType = DIMSE_DATASET_NULL;
@@ -548,19 +511,17 @@ parseCEchoRQ(T_DIMSE_C_EchoRQ * e, DcmDataset * obj)
     cond = getAndDeleteString(obj, DCM_AffectedSOPClassUID, 
         e->AffectedSOPClassUID, DIC_UI_LEN, NULL); RET(cond);
 
-    return DIMSE_NORMAL;
+    return EC_Normal;
 }
 
 /*
  * C-ECHO-RSP
  */
  
-static CONDITION
+static OFCondition
 buildCEchoRSP(T_DIMSE_C_EchoRSP * e, DcmDataset * obj)
 {
-    CONDITION cond = DIMSE_NORMAL;
-
-    cond = buildCommonRSP(obj, DIMSE_C_ECHO_RSP, 
+    OFCondition cond = buildCommonRSP(obj, DIMSE_C_ECHO_RSP, 
         e->MessageIDBeingRespondedTo,
 	e->DataSetType, e->DimseStatus); RET(cond);
 
@@ -572,16 +533,15 @@ buildCEchoRSP(T_DIMSE_C_EchoRSP * e, DcmDataset * obj)
     return cond;
 }
 
-static CONDITION
+static OFCondition
 parseCEchoRSP(T_DIMSE_C_EchoRSP * e, DcmDataset * obj)
 {
-    CONDITION cond = DIMSE_NORMAL;
     Uint16 cmd;
     Uint16 msgid;
     Uint16 dtype;
     Uint16 status;
 
-    cond = parseCommonRSP(obj, &cmd, &msgid, &dtype, &status); RET(cond);
+    OFCondition cond = parseCommonRSP(obj, &cmd, &msgid, &dtype, &status); RET(cond);
     e->MessageIDBeingRespondedTo = msgid;
     if (dtype == DIMSE_DATASET_NULL) {
         e->DataSetType = DIMSE_DATASET_NULL;
@@ -598,21 +558,19 @@ parseCEchoRSP(T_DIMSE_C_EchoRSP * e, DcmDataset * obj)
     /* parse optional items */
     cond = getAndDeleteStringOpt(obj, DCM_AffectedSOPClassUID,  
         e->AffectedSOPClassUID, DIC_UI_LEN, NULL);
-    if (SUCCESS(cond)) e->opts |= O_ECHO_AFFECTEDSOPCLASSUID;
+    if (cond.good()) e->opts |= O_ECHO_AFFECTEDSOPCLASSUID;
 
-    return DIMSE_NORMAL;
+    return EC_Normal;
 }
 
 /*
  * C-STORE-RQ
  */
 
-static CONDITION
+static OFCondition
 buildCStoreRQ(T_DIMSE_C_StoreRQ * e, DcmDataset * obj)
 {
-    CONDITION cond = DIMSE_NORMAL;
-
-    cond = buildCommonRQ(obj, DIMSE_C_STORE_RQ, e->MessageID,
+    OFCondition cond = buildCommonRQ(obj, DIMSE_C_STORE_RQ, e->MessageID,
 	e->DataSetType); RET(cond);
 	
     /* build other mandatory items */
@@ -635,16 +593,15 @@ buildCStoreRQ(T_DIMSE_C_StoreRQ * e, DcmDataset * obj)
     return cond;
 }
 
-static CONDITION
+static OFCondition
 parseCStoreRQ(T_DIMSE_C_StoreRQ * e, DcmDataset * obj)
 {
-    CONDITION cond = DIMSE_NORMAL;
     Uint16 cmd;
     Uint16 msgid;
     Uint16 dtype;
     Uint16 priority;
 
-    cond = parseCommonRQ(obj, &cmd, &msgid, &dtype); RET(cond);
+    OFCondition cond = parseCommonRQ(obj, &cmd, &msgid, &dtype); RET(cond);
     e->MessageID = msgid;
     if (dtype == DIMSE_DATASET_NULL) {
         e->DataSetType = DIMSE_DATASET_NULL;
@@ -670,26 +627,24 @@ parseCStoreRQ(T_DIMSE_C_StoreRQ * e, DcmDataset * obj)
     e->opts = 0;
     cond = getAndDeleteStringOpt(obj, DCM_MoveOriginatorApplicationEntityTitle,  
         e->MoveOriginatorApplicationEntityTitle, DIC_AE_LEN, NULL);
-    if (SUCCESS(cond)) e->opts |= O_STORE_MOVEORIGINATORAETITLE;
+    if (cond.good()) e->opts |= O_STORE_MOVEORIGINATORAETITLE;
 
     cond = getAndDeleteUSOpt(obj, DCM_MoveOriginatorMessageID,  
 	&e->MoveOriginatorID); 
-    if (SUCCESS(cond)) e->opts |= O_STORE_MOVEORIGINATORID;
+    if (cond.good()) e->opts |= O_STORE_MOVEORIGINATORID;
     if (uidSpacePadded) e->opts |= O_STORE_RQ_BLANK_PADDING;
 
-    return DIMSE_NORMAL;
+    return EC_Normal;
 }
 
 /*
  * C-STORE-RSP
  */
 
-static CONDITION
+static OFCondition
 buildCStoreRSP(T_DIMSE_C_StoreRSP * e, DcmDataset * obj)
 {
-    CONDITION cond = DIMSE_NORMAL;
-
-    cond = buildCommonRSP(obj, DIMSE_C_STORE_RSP, 
+    OFCondition cond = buildCommonRSP(obj, DIMSE_C_STORE_RSP, 
         e->MessageIDBeingRespondedTo,
 	e->DataSetType, e->DimseStatus); RET(cond);
 
@@ -713,16 +668,15 @@ buildCStoreRSP(T_DIMSE_C_StoreRSP * e, DcmDataset * obj)
     return cond;
 }
 
-static CONDITION
+static OFCondition
 parseCStoreRSP(T_DIMSE_C_StoreRSP * e, DcmDataset * obj)
 {
-    CONDITION cond = DIMSE_NORMAL;
     Uint16 cmd;
     Uint16 msgid;
     Uint16 dtype;
     Uint16 status;
 
-    cond = parseCommonRSP(obj, &cmd, &msgid, &dtype, &status); RET(cond);
+    OFCondition cond = parseCommonRSP(obj, &cmd, &msgid, &dtype, &status); RET(cond);
     e->MessageIDBeingRespondedTo = msgid;
     if (dtype == DIMSE_DATASET_NULL) {
         e->DataSetType = DIMSE_DATASET_NULL;
@@ -739,25 +693,24 @@ parseCStoreRSP(T_DIMSE_C_StoreRSP * e, DcmDataset * obj)
     /* parse optional items */
     cond = getAndDeleteStringOpt(obj, DCM_AffectedSOPClassUID,  
         e->AffectedSOPClassUID, DIC_UI_LEN, NULL);
-    if (SUCCESS(cond)) e->opts |= O_STORE_AFFECTEDSOPCLASSUID;
+    if (cond.good()) e->opts |= O_STORE_AFFECTEDSOPCLASSUID;
 
     cond = getAndDeleteStringOpt(obj, DCM_AffectedSOPInstanceUID,  
 	e->AffectedSOPInstanceUID, DIC_UI_LEN, NULL); 
-    if (SUCCESS(cond)) e->opts |= O_STORE_AFFECTEDSOPINSTANCEUID;
+    if (cond.good()) e->opts |= O_STORE_AFFECTEDSOPINSTANCEUID;
 
-    return DIMSE_NORMAL;
+    return EC_Normal;
 }
 
 /*
  * C-FIND-RQ
  */
  
-static CONDITION
+static OFCondition
 buildCFindRQ(T_DIMSE_C_FindRQ * e, DcmDataset * obj)
 {
-    CONDITION cond = DIMSE_NORMAL;
 
-    cond = buildCommonRQ(obj, DIMSE_C_FIND_RQ, e->MessageID,
+    OFCondition cond = buildCommonRQ(obj, DIMSE_C_FIND_RQ, e->MessageID,
 	e->DataSetType); RET(cond);
 	
     /* build other mandatory items */
@@ -769,16 +722,15 @@ buildCFindRQ(T_DIMSE_C_FindRQ * e, DcmDataset * obj)
     return cond;
 }
 
-static CONDITION
+static OFCondition
 parseCFindRQ(T_DIMSE_C_FindRQ * e, DcmDataset * obj)
 {
-    CONDITION cond = DIMSE_NORMAL;
     Uint16 cmd;
     Uint16 msgid;
     Uint16 dtype;
     Uint16 priority;
 
-    cond = parseCommonRQ(obj, &cmd, &msgid, &dtype); RET(cond);
+    OFCondition cond = parseCommonRQ(obj, &cmd, &msgid, &dtype); RET(cond);
     e->MessageID = msgid;
     if (dtype == DIMSE_DATASET_NULL) {
         e->DataSetType = DIMSE_DATASET_NULL;
@@ -796,19 +748,17 @@ parseCFindRQ(T_DIMSE_C_FindRQ * e, DcmDataset * obj)
     cond = getAndDeleteUS(obj, DCM_Priority,  
 	&priority); e->Priority = (T_DIMSE_Priority)priority; RET(cond);
 
-    return DIMSE_NORMAL;
+    return EC_Normal;
 }
  
 /*
  * C-FIND-RSP
  */
  
-static CONDITION
+static OFCondition
 buildCFindRSP(T_DIMSE_C_FindRSP * e, DcmDataset * obj)
 {
-    CONDITION cond = DIMSE_NORMAL;
-
-    cond = buildCommonRSP(obj, DIMSE_C_FIND_RSP, 
+    OFCondition cond = buildCommonRSP(obj, DIMSE_C_FIND_RSP, 
         e->MessageIDBeingRespondedTo,
 	e->DataSetType, e->DimseStatus); RET(cond);
 
@@ -820,16 +770,15 @@ buildCFindRSP(T_DIMSE_C_FindRSP * e, DcmDataset * obj)
     return cond;
 }
 
-static CONDITION
+static OFCondition
 parseCFindRSP(T_DIMSE_C_FindRSP * e, DcmDataset * obj)
 {
-    CONDITION cond = DIMSE_NORMAL;
     Uint16 cmd;
     Uint16 msgid;
     Uint16 dtype;
     Uint16 status;
 
-    cond = parseCommonRSP(obj, &cmd, &msgid, &dtype, &status); RET(cond);
+    OFCondition cond = parseCommonRSP(obj, &cmd, &msgid, &dtype, &status); RET(cond);
     e->MessageIDBeingRespondedTo = msgid;
     if (dtype == DIMSE_DATASET_NULL) {
         e->DataSetType = DIMSE_DATASET_NULL;
@@ -846,21 +795,19 @@ parseCFindRSP(T_DIMSE_C_FindRSP * e, DcmDataset * obj)
     /* parse optional items */
     cond = getAndDeleteStringOpt(obj, DCM_AffectedSOPClassUID,  
         e->AffectedSOPClassUID, DIC_UI_LEN, NULL);
-    if (SUCCESS(cond)) e->opts |= O_FIND_AFFECTEDSOPCLASSUID;
+    if (cond.good()) e->opts |= O_FIND_AFFECTEDSOPCLASSUID;
 
-    return DIMSE_NORMAL;
+    return EC_Normal;
 }
 
 /*
  * C-GET-RQ
  */
 
-static CONDITION
+static OFCondition
 buildCGetRQ(T_DIMSE_C_GetRQ * e, DcmDataset * obj)
 {
-    CONDITION cond = DIMSE_NORMAL;
-
-    cond = buildCommonRQ(obj, DIMSE_C_GET_RQ, e->MessageID,
+    OFCondition cond = buildCommonRQ(obj, DIMSE_C_GET_RQ, e->MessageID,
 	e->DataSetType); RET(cond);
 	
     /* build other mandatory items */
@@ -872,16 +819,15 @@ buildCGetRQ(T_DIMSE_C_GetRQ * e, DcmDataset * obj)
     return cond;
 }
 
-static CONDITION
+static OFCondition
 parseCGetRQ(T_DIMSE_C_GetRQ * e, DcmDataset * obj)
 {
-    CONDITION cond = DIMSE_NORMAL;
     Uint16 cmd;
     Uint16 msgid;
     Uint16 dtype;
     Uint16 priority;
 
-    cond = parseCommonRQ(obj, &cmd, &msgid, &dtype); RET(cond);
+    OFCondition cond = parseCommonRQ(obj, &cmd, &msgid, &dtype); RET(cond);
     e->MessageID = msgid;
     if (dtype == DIMSE_DATASET_NULL) {
         e->DataSetType = DIMSE_DATASET_NULL;
@@ -899,19 +845,17 @@ parseCGetRQ(T_DIMSE_C_GetRQ * e, DcmDataset * obj)
     cond = getAndDeleteUS(obj, DCM_Priority,  
 	&priority); e->Priority = (T_DIMSE_Priority)priority; RET(cond);
 
-    return DIMSE_NORMAL;
+    return EC_Normal;
 }
  
 /*
  * C-GET-RSP
  */
  
-static CONDITION
+static OFCondition
 buildCGetRSP(T_DIMSE_C_GetRSP * e, DcmDataset * obj)
 {
-    CONDITION cond = DIMSE_NORMAL;
-
-    cond = buildCommonRSP(obj, DIMSE_C_GET_RSP, 
+    OFCondition cond = buildCommonRSP(obj, DIMSE_C_GET_RSP, 
         e->MessageIDBeingRespondedTo,
 	e->DataSetType, e->DimseStatus); RET(cond);
 
@@ -939,16 +883,15 @@ buildCGetRSP(T_DIMSE_C_GetRSP * e, DcmDataset * obj)
     return cond;
 }
 
-static CONDITION
+static OFCondition
 parseCGetRSP(T_DIMSE_C_GetRSP * e, DcmDataset * obj)
 {
-    CONDITION cond = DIMSE_NORMAL;
     Uint16 cmd;
     Uint16 msgid;
     Uint16 dtype;
     Uint16 status;
 
-    cond = parseCommonRSP(obj, &cmd, &msgid, &dtype, &status); RET(cond);
+    OFCondition cond = parseCommonRSP(obj, &cmd, &msgid, &dtype, &status); RET(cond);
     e->MessageIDBeingRespondedTo = msgid;
     if (dtype == DIMSE_DATASET_NULL) {
         e->DataSetType = DIMSE_DATASET_NULL;
@@ -965,37 +908,35 @@ parseCGetRSP(T_DIMSE_C_GetRSP * e, DcmDataset * obj)
     e->opts = 0;
     cond = getAndDeleteStringOpt(obj, DCM_AffectedSOPClassUID,  
         e->AffectedSOPClassUID, DIC_UI_LEN, NULL);
-    if (SUCCESS(cond)) e->opts |= O_GET_AFFECTEDSOPCLASSUID;
+    if (cond.good()) e->opts |= O_GET_AFFECTEDSOPCLASSUID;
 
     cond = getAndDeleteUSOpt(obj, DCM_NumberOfRemainingSuboperations,  
         &e->NumberOfRemainingSubOperations);
-    if (SUCCESS(cond)) e->opts |= O_GET_NUMBEROFREMAININGSUBOPERATIONS;
+    if (cond.good()) e->opts |= O_GET_NUMBEROFREMAININGSUBOPERATIONS;
 
     cond = getAndDeleteUSOpt(obj, DCM_NumberOfCompletedSuboperations,  
         &e->NumberOfCompletedSubOperations);
-    if (SUCCESS(cond)) e->opts |= O_GET_NUMBEROFCOMPLETEDSUBOPERATIONS;
+    if (cond.good()) e->opts |= O_GET_NUMBEROFCOMPLETEDSUBOPERATIONS;
 
     cond = getAndDeleteUSOpt(obj, DCM_NumberOfFailedSuboperations,  
         &e->NumberOfFailedSubOperations);
-    if (SUCCESS(cond)) e->opts |= O_GET_NUMBEROFFAILEDSUBOPERATIONS;
+    if (cond.good()) e->opts |= O_GET_NUMBEROFFAILEDSUBOPERATIONS;
 
     cond = getAndDeleteUSOpt(obj, DCM_NumberOfWarningSuboperations,  
         &e->NumberOfWarningSubOperations);
-    if (SUCCESS(cond)) e->opts |= O_GET_NUMBEROFWARNINGSUBOPERATIONS;
+    if (cond.good()) e->opts |= O_GET_NUMBEROFWARNINGSUBOPERATIONS;
 
-    return DIMSE_NORMAL;
+    return EC_Normal;
 }
  
 /*
  * C-MOVE-RQ
  */
 
-static CONDITION
+static OFCondition
 buildCMoveRQ(T_DIMSE_C_MoveRQ * e, DcmDataset * obj)
 {
-    CONDITION cond = DIMSE_NORMAL;
-
-    cond = buildCommonRQ(obj, DIMSE_C_MOVE_RQ, e->MessageID,
+    OFCondition cond = buildCommonRQ(obj, DIMSE_C_MOVE_RQ, e->MessageID,
 	e->DataSetType); RET(cond);
 	
     /* build other mandatory items */
@@ -1007,16 +948,15 @@ buildCMoveRQ(T_DIMSE_C_MoveRQ * e, DcmDataset * obj)
     return cond;
 }
 
-static CONDITION
+static OFCondition
 parseCMoveRQ(T_DIMSE_C_MoveRQ * e, DcmDataset * obj)
 {
-    CONDITION cond = DIMSE_NORMAL;
     Uint16 cmd;
     Uint16 msgid;
     Uint16 dtype;
     Uint16 priority;
 
-    cond = parseCommonRQ(obj, &cmd, &msgid, &dtype); RET(cond);
+    OFCondition cond = parseCommonRQ(obj, &cmd, &msgid, &dtype); RET(cond);
     e->MessageID = msgid;
     if (dtype == DIMSE_DATASET_NULL) {
         e->DataSetType = DIMSE_DATASET_NULL;
@@ -1036,19 +976,17 @@ parseCMoveRQ(T_DIMSE_C_MoveRQ * e, DcmDataset * obj)
     cond = getAndDeleteString(obj, DCM_MoveDestination,  
 	e->MoveDestination, DIC_AE_LEN, NULL); RET(cond);
 
-    return DIMSE_NORMAL;
+    return EC_Normal;
 }
  
 /*
  * C-MOVE-RSP
  */
  
-static CONDITION
+static OFCondition
 buildCMoveRSP(T_DIMSE_C_MoveRSP * e, DcmDataset * obj)
 {
-    CONDITION cond = DIMSE_NORMAL;
-
-    cond = buildCommonRSP(obj, DIMSE_C_MOVE_RSP, 
+    OFCondition cond = buildCommonRSP(obj, DIMSE_C_MOVE_RSP, 
         e->MessageIDBeingRespondedTo,
 	e->DataSetType, e->DimseStatus); RET(cond);
 
@@ -1076,16 +1014,15 @@ buildCMoveRSP(T_DIMSE_C_MoveRSP * e, DcmDataset * obj)
     return cond;
 }
 
-static CONDITION
+static OFCondition
 parseCMoveRSP(T_DIMSE_C_MoveRSP * e, DcmDataset * obj)
 {
-    CONDITION cond = DIMSE_NORMAL;
     Uint16 cmd;
     Uint16 msgid;
     Uint16 dtype;
     Uint16 status;
 
-    cond = parseCommonRSP(obj, &cmd, &msgid, &dtype, &status); RET(cond);
+    OFCondition cond = parseCommonRSP(obj, &cmd, &msgid, &dtype, &status); RET(cond);
     e->MessageIDBeingRespondedTo = msgid;
     if (dtype == DIMSE_DATASET_NULL) {
         e->DataSetType = DIMSE_DATASET_NULL;
@@ -1102,53 +1039,50 @@ parseCMoveRSP(T_DIMSE_C_MoveRSP * e, DcmDataset * obj)
     e->opts = 0;
     cond = getAndDeleteStringOpt(obj, DCM_AffectedSOPClassUID,  
         e->AffectedSOPClassUID, DIC_UI_LEN, NULL);
-    if (SUCCESS(cond)) e->opts |= O_MOVE_AFFECTEDSOPCLASSUID;
+    if (cond.good()) e->opts |= O_MOVE_AFFECTEDSOPCLASSUID;
 
     cond = getAndDeleteUSOpt(obj, DCM_NumberOfRemainingSuboperations,  
         &e->NumberOfRemainingSubOperations);
-    if (SUCCESS(cond)) e->opts |= O_MOVE_NUMBEROFREMAININGSUBOPERATIONS;
+    if (cond.good()) e->opts |= O_MOVE_NUMBEROFREMAININGSUBOPERATIONS;
 
     cond = getAndDeleteUSOpt(obj, DCM_NumberOfCompletedSuboperations,  
         &e->NumberOfCompletedSubOperations);
-    if (SUCCESS(cond)) e->opts |= O_MOVE_NUMBEROFCOMPLETEDSUBOPERATIONS;
+    if (cond.good()) e->opts |= O_MOVE_NUMBEROFCOMPLETEDSUBOPERATIONS;
 
     cond = getAndDeleteUSOpt(obj, DCM_NumberOfFailedSuboperations,  
         &e->NumberOfFailedSubOperations);
-    if (SUCCESS(cond)) e->opts |= O_MOVE_NUMBEROFFAILEDSUBOPERATIONS;
+    if (cond.good()) e->opts |= O_MOVE_NUMBEROFFAILEDSUBOPERATIONS;
 
     cond = getAndDeleteUSOpt(obj, DCM_NumberOfWarningSuboperations,  
         &e->NumberOfWarningSubOperations);
-    if (SUCCESS(cond)) e->opts |= O_MOVE_NUMBEROFWARNINGSUBOPERATIONS;
+    if (cond.good()) e->opts |= O_MOVE_NUMBEROFWARNINGSUBOPERATIONS;
 
-    return DIMSE_NORMAL;
+    return EC_Normal;
 }
 
 /* 
  * C-CANCEL-RQ
  */
  
-static CONDITION
+static OFCondition
 buildCCancelRQ(T_DIMSE_C_CancelRQ * e, DcmDataset * obj)
 {
-    CONDITION cond;
-
-    cond = addUS(obj, DCM_CommandField, DIMSE_C_CANCEL_RQ); RET(cond);
+    OFCondition cond = addUS(obj, DCM_CommandField, DIMSE_C_CANCEL_RQ); RET(cond);
     cond = addUS(obj, DCM_MessageIDBeingRespondedTo, 
     	e->MessageIDBeingRespondedTo); RET(cond);
     cond = addUS(obj, DCM_DataSetType, e->DataSetType); RET(cond);
 
-    return DIMSE_NORMAL;
+    return EC_Normal;
 }
 
-static CONDITION
+static OFCondition
 parseCCancelRQ(T_DIMSE_C_CancelRQ * e, DcmDataset * obj)
 {
-    CONDITION cond;
     Uint16 cmd;
     Uint16 msgid;
     Uint16 dtype;
 
-    cond = getAndDeleteUS(obj, DCM_CommandField, &cmd); RET(cond);
+    OFCondition cond = getAndDeleteUS(obj, DCM_CommandField, &cmd); RET(cond);
     cond = getAndDeleteUS(obj, DCM_MessageIDBeingRespondedTo, 
         &msgid); RET(cond);
     cond = getAndDeleteUS(obj, DCM_DataSetType, &dtype); RET(cond);
@@ -1164,19 +1098,17 @@ parseCCancelRQ(T_DIMSE_C_CancelRQ * e, DcmDataset * obj)
 	cond = DIMSE_PARSEFAILED; RET(cond);
     }
 
-    return DIMSE_NORMAL;
+    return EC_Normal;
 }
 
 /*
  * N-EVENT-REPORT-RQ
  */
 
-static CONDITION
+static OFCondition
 buildNEventReportRQ(T_DIMSE_N_EventReportRQ * e, DcmDataset * obj)
 {
-    CONDITION cond = DIMSE_NORMAL;
-
-    cond = buildCommonRQ(obj, DIMSE_N_EVENT_REPORT_RQ, e->MessageID,
+    OFCondition cond = buildCommonRQ(obj, DIMSE_N_EVENT_REPORT_RQ, e->MessageID,
 	e->DataSetType); RET(cond);
     cond = addString(obj, DCM_AffectedSOPClassUID,  
         e->AffectedSOPClassUID, OFFalse); RET(cond);
@@ -1188,15 +1120,14 @@ buildNEventReportRQ(T_DIMSE_N_EventReportRQ * e, DcmDataset * obj)
     return cond;
 }
 
-static CONDITION
+static OFCondition
 parseNEventReportRQ(T_DIMSE_N_EventReportRQ * e, DcmDataset * obj)
 {
-    CONDITION cond = DIMSE_NORMAL;
     Uint16 cmd;
     Uint16 msgid;
     Uint16 dtype;
 
-    cond = parseCommonRQ(obj, &cmd, &msgid, &dtype); RET(cond);
+    OFCondition cond = parseCommonRQ(obj, &cmd, &msgid, &dtype); RET(cond);
     e->MessageID = msgid;
     if (dtype == DIMSE_DATASET_NULL) {
         e->DataSetType = DIMSE_DATASET_NULL;
@@ -1222,12 +1153,10 @@ parseNEventReportRQ(T_DIMSE_N_EventReportRQ * e, DcmDataset * obj)
  * N-EVENT-REPORT-RSP
  */
 
-static CONDITION
+static OFCondition
 buildNEventReportRSP(T_DIMSE_N_EventReportRSP * e, DcmDataset * obj)
 {
-    CONDITION cond = DIMSE_NORMAL;
-
-    cond = buildCommonRSP(obj, DIMSE_N_EVENT_REPORT_RSP, 
+    OFCondition cond = buildCommonRSP(obj, DIMSE_N_EVENT_REPORT_RSP, 
         e->MessageIDBeingRespondedTo,
 	e->DataSetType, e->DimseStatus); RET(cond);
 
@@ -1247,16 +1176,15 @@ buildNEventReportRSP(T_DIMSE_N_EventReportRSP * e, DcmDataset * obj)
     return cond;
 }
 
-static CONDITION
+static OFCondition
 parseNEventReportRSP(T_DIMSE_N_EventReportRSP * e, DcmDataset * obj)
 {
-    CONDITION cond = DIMSE_NORMAL;
     Uint16 cmd;
     Uint16 msgid;
     Uint16 dtype;
     Uint16 status;
 
-    cond = parseCommonRSP(obj, &cmd, &msgid, &dtype, &status); RET(cond);
+    OFCondition cond = parseCommonRSP(obj, &cmd, &msgid, &dtype, &status); RET(cond);
     e->MessageIDBeingRespondedTo = msgid;
     if (dtype == DIMSE_DATASET_NULL) {
         e->DataSetType = DIMSE_DATASET_NULL;
@@ -1273,29 +1201,27 @@ parseNEventReportRSP(T_DIMSE_N_EventReportRSP * e, DcmDataset * obj)
     /* parse optional items */
     cond = getAndDeleteStringOpt(obj, DCM_AffectedSOPClassUID,  
         e->AffectedSOPClassUID, DIC_UI_LEN, NULL);
-    if (SUCCESS(cond)) e->opts |= O_NEVENTREPORT_AFFECTEDSOPCLASSUID;
+    if (cond.good()) e->opts |= O_NEVENTREPORT_AFFECTEDSOPCLASSUID;
 
     cond = getAndDeleteStringOpt(obj, DCM_AffectedSOPInstanceUID,  
 	e->AffectedSOPInstanceUID, DIC_UI_LEN, NULL); 
-    if (SUCCESS(cond)) e->opts |= O_NEVENTREPORT_AFFECTEDSOPINSTANCEUID;
+    if (cond.good()) e->opts |= O_NEVENTREPORT_AFFECTEDSOPINSTANCEUID;
 
     cond = getAndDeleteUSOpt(obj, DCM_EventTypeID,  
 	&e->EventTypeID); 
-    if (SUCCESS(cond)) e->opts |= O_NEVENTREPORT_EVENTTYPEID;
+    if (cond.good()) e->opts |= O_NEVENTREPORT_EVENTTYPEID;
 
-    return DIMSE_NORMAL;
+    return EC_Normal;
 }
 
 /*
  * N-GET-RQ
  */
 
-static CONDITION
+static OFCondition
 buildNGetRQ(T_DIMSE_N_GetRQ * e, DcmDataset * obj)
 {
-    CONDITION cond = DIMSE_NORMAL;
-
-    cond = buildCommonRQ(obj, DIMSE_N_GET_RQ, e->MessageID,
+    OFCondition cond = buildCommonRQ(obj, DIMSE_N_GET_RQ, e->MessageID,
 	e->DataSetType); RET(cond);
     cond = addString(obj, DCM_RequestedSOPClassUID,  
         e->RequestedSOPClassUID, OFFalse); RET(cond);
@@ -1309,15 +1235,14 @@ buildNGetRQ(T_DIMSE_N_GetRQ * e, DcmDataset * obj)
     return cond;
 }
 
-static CONDITION
+static OFCondition
 parseNGetRQ(T_DIMSE_N_GetRQ * e, DcmDataset * obj)
 {
-    CONDITION cond = DIMSE_NORMAL;
     Uint16 cmd;
     Uint16 msgid;
     Uint16 dtype;
 
-    cond = parseCommonRQ(obj, &cmd, &msgid, &dtype); RET(cond);
+    OFCondition cond = parseCommonRQ(obj, &cmd, &msgid, &dtype); RET(cond);
     e->MessageID = msgid;
     if (dtype == DIMSE_DATASET_NULL) {
         e->DataSetType = DIMSE_DATASET_NULL;
@@ -1346,12 +1271,10 @@ parseNGetRQ(T_DIMSE_N_GetRQ * e, DcmDataset * obj)
  * N-GET-RSP
  */
 
-static CONDITION
+static OFCondition
 buildNGetRSP(T_DIMSE_N_GetRSP * e, DcmDataset * obj)
 {
-    CONDITION cond = DIMSE_NORMAL;
-
-    cond = buildCommonRSP(obj, DIMSE_N_GET_RSP, e->MessageIDBeingRespondedTo,
+    OFCondition cond = buildCommonRSP(obj, DIMSE_N_GET_RSP, e->MessageIDBeingRespondedTo,
 	e->DataSetType, e->DimseStatus); RET(cond);
 
     /* build optional items */
@@ -1366,16 +1289,15 @@ buildNGetRSP(T_DIMSE_N_GetRSP * e, DcmDataset * obj)
     return cond;
 }
 
-static CONDITION
+static OFCondition
 parseNGetRSP(T_DIMSE_N_GetRSP * e, DcmDataset * obj)
 {
-    CONDITION cond = DIMSE_NORMAL;
     Uint16 cmd;
     Uint16 msgid;
     Uint16 dtype;
     Uint16 status;
 
-    cond = parseCommonRSP(obj, &cmd, &msgid, &dtype, &status); RET(cond);
+    OFCondition cond = parseCommonRSP(obj, &cmd, &msgid, &dtype, &status); RET(cond);
     e->MessageIDBeingRespondedTo = msgid;
     if (dtype == DIMSE_DATASET_NULL) {
         e->DataSetType = DIMSE_DATASET_NULL;
@@ -1392,25 +1314,23 @@ parseNGetRSP(T_DIMSE_N_GetRSP * e, DcmDataset * obj)
     /* parse optional items */
     cond = getAndDeleteStringOpt(obj, DCM_AffectedSOPClassUID,  
         e->AffectedSOPClassUID, DIC_UI_LEN, NULL);
-    if (SUCCESS(cond)) e->opts |= O_NGET_AFFECTEDSOPCLASSUID;
+    if (cond.good()) e->opts |= O_NGET_AFFECTEDSOPCLASSUID;
 
     cond = getAndDeleteStringOpt(obj, DCM_AffectedSOPInstanceUID,  
 	e->AffectedSOPInstanceUID, DIC_UI_LEN, NULL); 
-    if (SUCCESS(cond)) e->opts |= O_NGET_AFFECTEDSOPINSTANCEUID;
+    if (cond.good()) e->opts |= O_NGET_AFFECTEDSOPINSTANCEUID;
 
-    return DIMSE_NORMAL;
+    return EC_Normal;
 }
 
 /*
  * N-SET-RQ
  */
 
-static CONDITION
+static OFCondition
 buildNSetRQ(T_DIMSE_N_SetRQ * e, DcmDataset * obj)
 {
-    CONDITION cond = DIMSE_NORMAL;
-
-    cond = buildCommonRQ(obj, DIMSE_N_SET_RQ, e->MessageID,
+    OFCondition cond = buildCommonRQ(obj, DIMSE_N_SET_RQ, e->MessageID,
 	e->DataSetType); RET(cond);
     cond = addString(obj, DCM_RequestedSOPClassUID,  
         e->RequestedSOPClassUID, OFFalse); RET(cond);
@@ -1419,15 +1339,14 @@ buildNSetRQ(T_DIMSE_N_SetRQ * e, DcmDataset * obj)
     return cond;
 }
 
-static CONDITION
+static OFCondition
 parseNSetRQ(T_DIMSE_N_SetRQ * e, DcmDataset * obj)
 {
-    CONDITION cond = DIMSE_NORMAL;
     Uint16 cmd;
     Uint16 msgid;
     Uint16 dtype;
 
-    cond = parseCommonRQ(obj, &cmd, &msgid, &dtype); RET(cond);
+    OFCondition cond = parseCommonRQ(obj, &cmd, &msgid, &dtype); RET(cond);
     e->MessageID = msgid;
     if (dtype == DIMSE_DATASET_NULL) {
         e->DataSetType = DIMSE_DATASET_NULL;
@@ -1451,12 +1370,10 @@ parseNSetRQ(T_DIMSE_N_SetRQ * e, DcmDataset * obj)
  * N-SET-RSP
  */
 
-static CONDITION
+static OFCondition
 buildNSetRSP(T_DIMSE_N_SetRSP * e, DcmDataset * obj)
 {
-    CONDITION cond = DIMSE_NORMAL;
-
-    cond = buildCommonRSP(obj, DIMSE_N_SET_RSP, e->MessageIDBeingRespondedTo,
+    OFCondition cond = buildCommonRSP(obj, DIMSE_N_SET_RSP, e->MessageIDBeingRespondedTo,
 	e->DataSetType, e->DimseStatus); RET(cond);
 
     /* build optional items */
@@ -1471,16 +1388,15 @@ buildNSetRSP(T_DIMSE_N_SetRSP * e, DcmDataset * obj)
     return cond;
 }
 
-static CONDITION
+static OFCondition
 parseNSetRSP(T_DIMSE_N_SetRSP * e, DcmDataset * obj)
 {
-    CONDITION cond = DIMSE_NORMAL;
     Uint16 cmd;
     Uint16 msgid;
     Uint16 dtype;
     Uint16 status;
 
-    cond = parseCommonRSP(obj, &cmd, &msgid, &dtype, &status); RET(cond);
+    OFCondition cond = parseCommonRSP(obj, &cmd, &msgid, &dtype, &status); RET(cond);
     e->MessageIDBeingRespondedTo = msgid;
     if (dtype == DIMSE_DATASET_NULL) {
         e->DataSetType = DIMSE_DATASET_NULL;
@@ -1497,25 +1413,23 @@ parseNSetRSP(T_DIMSE_N_SetRSP * e, DcmDataset * obj)
     /* parse optional items */
     cond = getAndDeleteStringOpt(obj, DCM_AffectedSOPClassUID,  
         e->AffectedSOPClassUID, DIC_UI_LEN, NULL);
-    if (SUCCESS(cond)) e->opts |= O_NSET_AFFECTEDSOPCLASSUID;
+    if (cond.good()) e->opts |= O_NSET_AFFECTEDSOPCLASSUID;
 
     cond = getAndDeleteStringOpt(obj, DCM_AffectedSOPInstanceUID,  
 	e->AffectedSOPInstanceUID, DIC_UI_LEN, NULL); 
-    if (SUCCESS(cond)) e->opts |= O_NSET_AFFECTEDSOPINSTANCEUID;
+    if (cond.good()) e->opts |= O_NSET_AFFECTEDSOPINSTANCEUID;
 
-    return DIMSE_NORMAL;
+    return EC_Normal;
 }
 
 /*
  * N-ACTION-RQ
  */
  
-static CONDITION
+static OFCondition
 buildNActionRQ(T_DIMSE_N_ActionRQ * e, DcmDataset * obj)
 {
-    CONDITION cond = DIMSE_NORMAL;
-
-    cond = buildCommonRQ(obj, DIMSE_N_ACTION_RQ, e->MessageID,
+    OFCondition cond = buildCommonRQ(obj, DIMSE_N_ACTION_RQ, e->MessageID,
 	e->DataSetType); RET(cond);
     cond = addString(obj, DCM_RequestedSOPClassUID,  
         e->RequestedSOPClassUID, OFFalse); RET(cond);
@@ -1527,15 +1441,14 @@ buildNActionRQ(T_DIMSE_N_ActionRQ * e, DcmDataset * obj)
     return cond;
 }
 
-static CONDITION
+static OFCondition
 parseNActionRQ(T_DIMSE_N_ActionRQ * e, DcmDataset * obj)
 {
-    CONDITION cond = DIMSE_NORMAL;
     Uint16 cmd;
     Uint16 msgid;
     Uint16 dtype;
 
-    cond = parseCommonRQ(obj, &cmd, &msgid, &dtype); RET(cond);
+    OFCondition cond = parseCommonRQ(obj, &cmd, &msgid, &dtype); RET(cond);
     e->MessageID = msgid;
     if (dtype == DIMSE_DATASET_NULL) {
         e->DataSetType = DIMSE_DATASET_NULL;
@@ -1561,12 +1474,10 @@ parseNActionRQ(T_DIMSE_N_ActionRQ * e, DcmDataset * obj)
  * N-ACTION-RSP
  */
 
-static CONDITION
+static OFCondition
 buildNActionRSP(T_DIMSE_N_ActionRSP * e, DcmDataset * obj)
 {
-    CONDITION cond = DIMSE_NORMAL;
-
-    cond = buildCommonRSP(obj, DIMSE_N_ACTION_RSP, 
+    OFCondition cond = buildCommonRSP(obj, DIMSE_N_ACTION_RSP, 
         e->MessageIDBeingRespondedTo,
 	e->DataSetType, e->DimseStatus); RET(cond);
 
@@ -1586,16 +1497,15 @@ buildNActionRSP(T_DIMSE_N_ActionRSP * e, DcmDataset * obj)
     return cond;
 }
 
-static CONDITION
+static OFCondition
 parseNActionRSP(T_DIMSE_N_ActionRSP * e, DcmDataset * obj)
 {
-    CONDITION cond = DIMSE_NORMAL;
     Uint16 cmd;
     Uint16 msgid;
     Uint16 dtype;
     Uint16 status;
 
-    cond = parseCommonRSP(obj, &cmd, &msgid, &dtype, &status); RET(cond);
+    OFCondition cond = parseCommonRSP(obj, &cmd, &msgid, &dtype, &status); RET(cond);
     e->MessageIDBeingRespondedTo = msgid;
     if (dtype == DIMSE_DATASET_NULL) {
         e->DataSetType = DIMSE_DATASET_NULL;
@@ -1612,29 +1522,27 @@ parseNActionRSP(T_DIMSE_N_ActionRSP * e, DcmDataset * obj)
     /* parse optional items */
     cond = getAndDeleteStringOpt(obj, DCM_AffectedSOPClassUID,  
         e->AffectedSOPClassUID, DIC_UI_LEN, NULL);
-    if (SUCCESS(cond)) e->opts |= O_NACTION_AFFECTEDSOPCLASSUID;
+    if (cond.good()) e->opts |= O_NACTION_AFFECTEDSOPCLASSUID;
 
     cond = getAndDeleteStringOpt(obj, DCM_AffectedSOPInstanceUID,  
 	e->AffectedSOPInstanceUID, DIC_UI_LEN, NULL); 
-    if (SUCCESS(cond)) e->opts |= O_NACTION_AFFECTEDSOPINSTANCEUID;
+    if (cond.good()) e->opts |= O_NACTION_AFFECTEDSOPINSTANCEUID;
 
     cond = getAndDeleteUSOpt(obj, DCM_ActionTypeID,  
 	&e->ActionTypeID); 
-    if (SUCCESS(cond)) e->opts |= O_NACTION_ACTIONTYPEID;
+    if (cond.good()) e->opts |= O_NACTION_ACTIONTYPEID;
 
-    return DIMSE_NORMAL;
+    return EC_Normal;
 }
 
 /*
  * N-CREATE-RQ
  */
  
-static CONDITION
+static OFCondition
 buildNCreateRQ(T_DIMSE_N_CreateRQ * e, DcmDataset * obj)
 {
-    CONDITION cond = DIMSE_NORMAL;
-
-    cond = buildCommonRQ(obj, DIMSE_N_CREATE_RQ, e->MessageID,
+    OFCondition cond = buildCommonRQ(obj, DIMSE_N_CREATE_RQ, e->MessageID,
 	e->DataSetType); RET(cond);
     cond = addString(obj, DCM_AffectedSOPClassUID,  
         e->AffectedSOPClassUID, OFFalse); RET(cond);
@@ -1646,15 +1554,14 @@ buildNCreateRQ(T_DIMSE_N_CreateRQ * e, DcmDataset * obj)
     return cond;
 }
 
-static CONDITION
+static OFCondition
 parseNCreateRQ(T_DIMSE_N_CreateRQ * e, DcmDataset * obj)
 {
-    CONDITION cond = DIMSE_NORMAL;
     Uint16 cmd;
     Uint16 msgid;
     Uint16 dtype;
 
-    cond = parseCommonRQ(obj, &cmd, &msgid, &dtype); RET(cond);
+    OFCondition cond = parseCommonRQ(obj, &cmd, &msgid, &dtype); RET(cond);
     e->MessageID = msgid;
     if (dtype == DIMSE_DATASET_NULL) {
         e->DataSetType = DIMSE_DATASET_NULL;
@@ -1674,21 +1581,19 @@ parseNCreateRQ(T_DIMSE_N_CreateRQ * e, DcmDataset * obj)
     e->opts = 0;
     cond = getAndDeleteStringOpt(obj, DCM_AffectedSOPInstanceUID,  
 	e->AffectedSOPInstanceUID, DIC_UI_LEN, NULL); 
-    if (SUCCESS(cond)) e->opts |= O_NCREATE_AFFECTEDSOPINSTANCEUID;
+    if (cond.good()) e->opts |= O_NCREATE_AFFECTEDSOPINSTANCEUID;
 
-    return DIMSE_NORMAL;
+    return EC_Normal;
 }
 
 /*
  * N-CREATE-RSP
  */
 
-static CONDITION
+static OFCondition
 buildNCreateRSP(T_DIMSE_N_CreateRSP * e, DcmDataset * obj)
 {
-    CONDITION cond = DIMSE_NORMAL;
-
-    cond = buildCommonRSP(obj, DIMSE_N_CREATE_RSP, 
+    OFCondition cond = buildCommonRSP(obj, DIMSE_N_CREATE_RSP, 
         e->MessageIDBeingRespondedTo,
 	e->DataSetType, e->DimseStatus); RET(cond);
 
@@ -1704,16 +1609,15 @@ buildNCreateRSP(T_DIMSE_N_CreateRSP * e, DcmDataset * obj)
     return cond;
 }
 
-static CONDITION
+static OFCondition
 parseNCreateRSP(T_DIMSE_N_CreateRSP * e, DcmDataset * obj)
 {
-    CONDITION cond = DIMSE_NORMAL;
     Uint16 cmd;
     Uint16 msgid;
     Uint16 dtype;
     Uint16 status;
 
-    cond = parseCommonRSP(obj, &cmd, &msgid, &dtype, &status); RET(cond);
+    OFCondition cond = parseCommonRSP(obj, &cmd, &msgid, &dtype, &status); RET(cond);
     e->MessageIDBeingRespondedTo = msgid;
     if (dtype == DIMSE_DATASET_NULL) {
         e->DataSetType = DIMSE_DATASET_NULL;
@@ -1730,25 +1634,23 @@ parseNCreateRSP(T_DIMSE_N_CreateRSP * e, DcmDataset * obj)
     /* parse optional items */
     cond = getAndDeleteStringOpt(obj, DCM_AffectedSOPClassUID,  
         e->AffectedSOPClassUID, DIC_UI_LEN, NULL);
-    if (SUCCESS(cond)) e->opts |= O_NCREATE_AFFECTEDSOPCLASSUID;
+    if (cond.good()) e->opts |= O_NCREATE_AFFECTEDSOPCLASSUID;
 
     cond = getAndDeleteStringOpt(obj, DCM_AffectedSOPInstanceUID,  
 	e->AffectedSOPInstanceUID, DIC_UI_LEN, NULL); 
-    if (SUCCESS(cond)) e->opts |= O_NCREATE_AFFECTEDSOPINSTANCEUID;
+    if (cond.good()) e->opts |= O_NCREATE_AFFECTEDSOPINSTANCEUID;
 
-    return DIMSE_NORMAL;
+    return EC_Normal;
 }
 
 /*
  * N-DELETE-RQ
  */
 
-static CONDITION
+static OFCondition
 buildNDeleteRQ(T_DIMSE_N_DeleteRQ * e, DcmDataset * obj)
 {
-    CONDITION cond = DIMSE_NORMAL;
-
-    cond = buildCommonRQ(obj, DIMSE_N_DELETE_RQ, e->MessageID,
+    OFCondition cond = buildCommonRQ(obj, DIMSE_N_DELETE_RQ, e->MessageID,
 	e->DataSetType); RET(cond);
     cond = addString(obj, DCM_RequestedSOPClassUID,  
         e->RequestedSOPClassUID, OFFalse); RET(cond);
@@ -1757,15 +1659,14 @@ buildNDeleteRQ(T_DIMSE_N_DeleteRQ * e, DcmDataset * obj)
     return cond;
 }
 
-static CONDITION
+static OFCondition
 parseNDeleteRQ(T_DIMSE_N_DeleteRQ * e, DcmDataset * obj)
 {
-    CONDITION cond = DIMSE_NORMAL;
     Uint16 cmd;
     Uint16 msgid;
     Uint16 dtype;
 
-    cond = parseCommonRQ(obj, &cmd, &msgid, &dtype); RET(cond);
+    OFCondition cond = parseCommonRQ(obj, &cmd, &msgid, &dtype); RET(cond);
     e->MessageID = msgid;
     if (dtype == DIMSE_DATASET_NULL) {
         e->DataSetType = DIMSE_DATASET_NULL;
@@ -1789,12 +1690,10 @@ parseNDeleteRQ(T_DIMSE_N_DeleteRQ * e, DcmDataset * obj)
  * N-DELETE-RSP
  */
 
-static CONDITION
+static OFCondition
 buildNDeleteRSP(T_DIMSE_N_DeleteRSP * e, DcmDataset * obj)
 {
-    CONDITION cond = DIMSE_NORMAL;
-
-    cond = buildCommonRSP(obj, DIMSE_N_DELETE_RSP, 
+    OFCondition cond = buildCommonRSP(obj, DIMSE_N_DELETE_RSP, 
         e->MessageIDBeingRespondedTo,
 	e->DataSetType, e->DimseStatus); RET(cond);
 
@@ -1810,16 +1709,15 @@ buildNDeleteRSP(T_DIMSE_N_DeleteRSP * e, DcmDataset * obj)
     return cond;
 }
 
-static CONDITION
+static OFCondition
 parseNDeleteRSP(T_DIMSE_N_DeleteRSP * e, DcmDataset * obj)
 {
-    CONDITION cond = DIMSE_NORMAL;
     Uint16 cmd;
     Uint16 msgid;
     Uint16 dtype;
     Uint16 status;
 
-    cond = parseCommonRSP(obj, &cmd, &msgid, &dtype, &status); RET(cond);
+    OFCondition cond = parseCommonRSP(obj, &cmd, &msgid, &dtype, &status); RET(cond);
     e->MessageIDBeingRespondedTo = msgid;
     if (dtype == DIMSE_DATASET_NULL) {
         e->DataSetType = DIMSE_DATASET_NULL;
@@ -1836,20 +1734,20 @@ parseNDeleteRSP(T_DIMSE_N_DeleteRSP * e, DcmDataset * obj)
     /* parse optional items */
     cond = getAndDeleteStringOpt(obj, DCM_AffectedSOPClassUID,  
         e->AffectedSOPClassUID, DIC_UI_LEN, NULL);
-    if (SUCCESS(cond)) e->opts |= O_NDELETE_AFFECTEDSOPCLASSUID;
+    if (cond.good()) e->opts |= O_NDELETE_AFFECTEDSOPCLASSUID;
 
     cond = getAndDeleteStringOpt(obj, DCM_AffectedSOPInstanceUID,  
 	e->AffectedSOPInstanceUID, DIC_UI_LEN, NULL); 
-    if (SUCCESS(cond)) e->opts |= O_NDELETE_AFFECTEDSOPINSTANCEUID;
+    if (cond.good()) e->opts |= O_NDELETE_AFFECTEDSOPINSTANCEUID;
 
-    return DIMSE_NORMAL;
+    return EC_Normal;
 }
 
 
-CONDITION
+OFCondition
 DIMSE_buildCmdObject(T_DIMSE_Message *msg, DcmDataset **obj)
 {
-    CONDITION cond = DIMSE_NORMAL;
+    OFCondition cond = EC_Normal;
 
     if (*obj == NULL) {
         *obj = new DcmDataset();
@@ -1925,15 +1823,17 @@ DIMSE_buildCmdObject(T_DIMSE_Message *msg, DcmDataset **obj)
     case DIMSE_N_DELETE_RSP:
 	cond = buildNDeleteRSP(&msg->msg.NDeleteRSP, *obj);
 	break;
-
     default:
-	cond = COND_PushCondition(DIMSE_BADCOMMANDTYPE, 
-	    "DIMSE_buildCmdObject: Invalid Command Message: 0x%x", 
-	    msg->CommandField);
+        {
+          char buf[256];
+          sprintf(buf, "DIMSE_buildCmdObject: Invalid Command Message: 0x%x", msg->CommandField);
+          cond = makeDcmnetCondition(DIMSEC_BADCOMMANDTYPE, OF_error, buf);
+        }
 	break;
     }
 
-    if (!SUCCESS(cond)) {
+    if (cond.bad())
+    {
 	delete *obj;
 	*obj = NULL;
     }
@@ -1941,10 +1841,9 @@ DIMSE_buildCmdObject(T_DIMSE_Message *msg, DcmDataset **obj)
     return cond;
 }
 
-CONDITION
+OFCondition
 DIMSE_parseCmdObject(T_DIMSE_Message *msg, DcmDataset *obj)
 {
-    CONDITION cond = DIMSE_NORMAL;
     Uint16 cmd = DIMSE_NOTHING;
     Uint32 glen = 0;
 
@@ -1952,10 +1851,10 @@ DIMSE_parseCmdObject(T_DIMSE_Message *msg, DcmDataset *obj)
     getAndDeleteULOpt(obj, DCM_CommandGroupLength, &glen);
 
     /* get the command field */
-    cond = getUS(obj, DCM_CommandField, &cmd);
-    if (!SUCCESS(cond)) {
-	return COND_PushCondition(DIMSE_PARSEFAILED,
-	    "DIMSE_parseCmdObject: Missing CommandField");
+    OFCondition cond = getUS(obj, DCM_CommandField, &cmd);
+    if (cond.bad())
+    {
+      return makeDcmnetCondition(DIMSEC_PARSEFAILED, OF_error, "DIMSE_parseCmdObject: Missing CommandField");
     }
 
     bzero((char*)msg, sizeof(*msg));	/* make message empty */
@@ -2031,11 +1930,12 @@ DIMSE_parseCmdObject(T_DIMSE_Message *msg, DcmDataset *obj)
     case DIMSE_N_DELETE_RSP:
 	cond = parseNDeleteRSP(&msg->msg.NDeleteRSP, obj);
 	break;
-
     default:
-	cond = COND_PushCondition(DIMSE_BADCOMMANDTYPE, 
-	    "DIMSE_parseCmdObject: Invalid Command Message: 0x%x", 
-	    msg->CommandField);
+        {
+          char buf[256];
+          sprintf(buf, "DIMSE_parseCmdObject: Invalid Command Message: 0x%x", msg->CommandField);
+          cond = makeDcmnetCondition(DIMSEC_BADCOMMANDTYPE, OF_error, buf);
+        }
 	break;
     }
 
@@ -2139,7 +2039,12 @@ DIMSE_countElements(DcmDataset *obj)
 /*
 ** CVS Log
 ** $Log: dimcmd.cc,v $
-** Revision 1.13  2001-09-26 12:29:00  meichel
+** Revision 1.14  2001-10-12 10:18:31  meichel
+** Replaced the CONDITION types, constants and functions in the dcmnet module
+**   by an OFCondition based implementation which eliminates the global condition
+**   stack.  This is a major change, caveat emptor!
+**
+** Revision 1.13  2001/09/26 12:29:00  meichel
 ** Implemented changes in dcmnet required by the adaptation of dcmdata
 **   to class OFCondition.  Removed some unused code.
 **

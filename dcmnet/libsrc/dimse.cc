@@ -46,21 +46,21 @@
 */
 /*
 **
-** Author: Andrew Hewett		Created: 03-06-93
+** Author: Andrew Hewett                Created: 03-06-93
 ** 
 ** Module: dimse
 **
 ** Purpose: 
-**	This file contains the routines which provide dimse layer services
-**	for DICOM V.3 applications.  
+**      This file contains the routines which provide dimse layer services
+**      for DICOM V.3 applications.  
 **
-**	Module Prefix: DIMSE_
+**      Module Prefix: DIMSE_
 **
-** Last Update:		$Author: meichel $
-** Update Date:		$Date: 2001-09-26 12:29:01 $
-** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/libsrc/dimse.cc,v $
-** CVS/RCS Revision:	$Revision: 1.25 $
-** Status:		$State: Exp $
+** Last Update:         $Author: meichel $
+** Update Date:         $Date: 2001-10-12 10:18:35 $
+** Source File:         $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/libsrc/dimse.cc,v $
+** CVS/RCS Revision:    $Revision: 1.26 $
+** Status:              $State: Exp $
 **
 ** CVS/RCS Log at end of file
 */
@@ -92,7 +92,7 @@ END_EXTERN_C
 /* unix.h defines timeval incompatible with winsock.h */
 #define timeval _UNWANTED_timeval
 #endif
-#include <unix.h>	/* for unlink() under Metrowerks C++ (Macintosh) */
+#include <unix.h>       /* for unlink() under Metrowerks C++ (Macintosh) */
 #undef timeval
 #endif
 #ifdef HAVE_FCNTL_H
@@ -104,8 +104,8 @@ END_EXTERN_C
 #include <errno.h>
 
 #include "diutil.h"
-#include "dimse.h"		/* always include the module header */
-#include "dimcond.h"
+#include "dimse.h"              /* always include the module header */
+#include "cond.h"
 #include "dimcmd.h"
 
 #include "dctk.h"
@@ -192,61 +192,47 @@ isDataDictPresent()
  * PDV Reading
  */
 
-static CONDITION
+static OFCondition
 DIMSE_readNextPDV(T_ASC_Association * assoc,
     T_DIMSE_BlockingMode blocking,
     int timeout,
     DUL_PDV * pdv)
 {
-    CONDITION cond;
     DUL_BLOCKOPTIONS blk;
 
     /*
      * NOTE: DUL currently ignores blocking and timeout so do it here! 
      */
 
-    if (blocking == DIMSE_NONBLOCKING) {
-	if (!ASC_dataWaiting(assoc, timeout))
-	    return COND_PushCondition(DIMSE_NODATAAVAILABLE,
-		DIMSE_Message(DIMSE_NODATAAVAILABLE));
+    if (blocking == DIMSE_NONBLOCKING)
+    {
+        if (!ASC_dataWaiting(assoc, timeout)) return DIMSE_NODATAAVAILABLE;
     }
     blk = (blocking == DIMSE_BLOCKING) ? (DUL_BLOCK) : (DUL_NOBLOCK);
 
-    cond = DUL_NextPDV(&assoc->DULassociation, pdv);
+    OFCondition cond = DUL_NextPDV(&assoc->DULassociation, pdv);
 
-    if (cond != DUL_NORMAL) {
-	/* there is no pdv waiting to be picked up */
+    if (cond.bad())
+    {
+        /* there is no pdv waiting to be picked up */
 
-#ifdef PUT_DUL_NOPDVS_ON_CONDITION_STACK
-        /* see DUL_NextPDV in dul.cc for a description */
-	COND_PopCondition(OFFalse);
-#endif
+        /* try to read new pdv's */
+        cond = DUL_ReadPDVs(&assoc->DULassociation, NULL, blk, timeout);
 
-	/* try to read new pdv's */
-	cond = DUL_ReadPDVs(&assoc->DULassociation, NULL, blk, timeout);
-
-	if (cond != DUL_PDATAPDUARRIVED) {
-	    if (cond == DUL_NULLKEY || cond == DUL_ILLEGALKEY)
-		return COND_PushCondition(DIMSE_ILLEGALASSOCIATION,
-		    DIMSE_Message(DIMSE_ILLEGALASSOCIATION));
-	    else if (cond == DUL_PEERREQUESTEDRELEASE)
-		return COND_PushCondition(DIMSE_PEERREQUESTEDRELEASE,
-		    DIMSE_Message(DIMSE_PEERREQUESTEDRELEASE));
-	    else if (cond == DUL_PEERABORTEDASSOCIATION ||
-		cond == DUL_PEERDROPPEDASSOCIATION)
-		return COND_PushCondition(DIMSE_PEERABORTEDASSOCIATION,
-		    DIMSE_Message(DIMSE_PEERABORTEDASSOCIATION));
-	    else
-		return COND_PushCondition(DIMSE_READPDVFAILED,
-		    DIMSE_Message(DIMSE_READPDVFAILED));
-	}
-	cond = DUL_NextPDV(&assoc->DULassociation, pdv);
-	if (cond != DUL_NORMAL) {
-	    return COND_PushCondition(DIMSE_READPDVFAILED,
-		DIMSE_Message(DIMSE_READPDVFAILED));
-	}
+        if (cond != DUL_PDATAPDUARRIVED) // this is the pseudo-error code we expect
+        {
+            if (cond == DUL_NULLKEY || cond == DUL_ILLEGALKEY) return DIMSE_ILLEGALASSOCIATION;
+            else if (cond == DUL_PEERREQUESTEDRELEASE ||
+                     cond == DUL_PEERABORTEDASSOCIATION) return cond;
+            else return makeDcmnetSubCondition(DIMSEC_READPDVFAILED, OF_error, "DIMSE Read PDV failed", cond);
+        }
+        cond = DUL_NextPDV(&assoc->DULassociation, pdv);
+        if (cond.bad())
+        {
+            return makeDcmnetSubCondition(DIMSEC_READPDVFAILED, OF_error, "DIMSE Read PDV failed", cond);
+        }
     }
-    return DIMSE_NORMAL;
+    return EC_Normal;
 }
 
 /*
@@ -254,22 +240,19 @@ DIMSE_readNextPDV(T_ASC_Association * assoc,
  */
 
 
-static CONDITION
+static OFCondition
 getTransferSyntax(T_ASC_Association * assoc, 
-	T_ASC_PresentationContextID pid,
-	E_TransferSyntax *xferSyntax)
+        T_ASC_PresentationContextID pid,
+        E_TransferSyntax *xferSyntax)
 {
-    CONDITION cond = DIMSE_NORMAL;
-    CONDITION acond = ASC_NORMAL;
     T_ASC_PresentationContext pc;
     char *ts = NULL;
 
     /* is this a valid presentation context ? */
-    acond = ASC_findAcceptedPresentationContext(assoc->params, pid, &pc);
-    if (acond != ASC_NORMAL) {
-	cond = DIMSE_INVALIDPRESENTATIONCONTEXTID;
-	COND_PushCondition(cond, DIMSE_Message(cond), pid);
-	return DIMSE_RECEIVEFAILED;
+    OFCondition cond = ASC_findAcceptedPresentationContext(assoc->params, pid, &pc);
+    if (cond.bad())
+    {
+        return makeDcmnetSubCondition(DIMSEC_RECEIVEFAILED, OF_error, "DIMSE Failed to receive message", cond);
     }
     ts = pc.acceptedTransferSyntax;
     
@@ -300,157 +283,149 @@ getTransferSyntax(T_ASC_Association * assoc,
         case EXS_JPEGProcess29TransferSyntax:
         case EXS_JPEGProcess14SV1TransferSyntax:
         case EXS_RLELossless:
-    	/* OK, these can be supported */
-    	break;
+        /* OK, these can be supported */
+        break;
     default:
-	cond = DIMSE_UNSUPPORTEDTRANSFERSYNTAX;
-	COND_PushCondition(cond, DIMSE_Message(cond), ts);
-	cond = DIMSE_RECEIVEFAILED;
-	break;
+        {
+          char buf[256];
+          sprintf(buf, "DIMSE Unsupported transfer syntax: %s", ts);
+          OFCondition subCond = makeDcmnetCondition(DIMSEC_UNSUPPORTEDTRANSFERSYNTAX, OF_error, buf);
+          cond = makeDcmnetSubCondition(DIMSEC_RECEIVEFAILED, OF_error, "DIMSE Failed to receive message", subCond);
+        }
+        break;
     }
     return cond;
 }
 
 
-static CONDITION
+static OFCondition
 checkPresentationContextForMessage(T_ASC_Association * assoc,
-	T_DIMSE_Message * msg, T_ASC_PresentationContextID presID,
-	E_TransferSyntax * xferSyntax)
+        T_DIMSE_Message * msg, T_ASC_PresentationContextID presID,
+        E_TransferSyntax * xferSyntax)
 {
-    CONDITION cond;
-    /* char *as; */	/* abstract syntax */
-    /* char *ts; */	/* transfer syntax */
+    /* char *as; */     /* abstract syntax */
+    /* char *ts; */     /* transfer syntax */
     T_ASC_PresentationContext pc;
-
-
-    cond = ASC_findAcceptedPresentationContext(assoc->params, presID, &pc);
-    if (cond != ASC_NORMAL) {
-	cond = DIMSE_INVALIDPRESENTATIONCONTEXTID;
-    } else {
-	cond = DIMSE_NORMAL;
-    }
+    OFCondition cond = ASC_findAcceptedPresentationContext(assoc->params, presID, &pc);
 
     /*
      * as = pc.abstractSyntax;
      * ts = pc.acceptedTransferSyntax;
      */
      
-    if (cond == DIMSE_NORMAL) {
-
-    switch (msg->CommandField) {
-	case DIMSE_C_ECHO_RQ:
-	case DIMSE_C_ECHO_RSP:
-	case DIMSE_C_STORE_RQ:
-	case DIMSE_C_STORE_RSP:
-	case DIMSE_C_GET_RQ:
-	case DIMSE_C_GET_RSP:
-	case DIMSE_C_FIND_RQ:
-	case DIMSE_C_FIND_RSP:
-	case DIMSE_C_MOVE_RQ:
-	case DIMSE_C_MOVE_RSP:
-	case DIMSE_C_CANCEL_RQ:
-	case DIMSE_N_EVENT_REPORT_RQ:
-	case DIMSE_N_EVENT_REPORT_RSP:
-	case DIMSE_N_GET_RQ:
-	case DIMSE_N_GET_RSP:
-	case DIMSE_N_SET_RQ:
-	case DIMSE_N_SET_RSP:
-	case DIMSE_N_ACTION_RQ:
-	case DIMSE_N_ACTION_RSP:
-	case DIMSE_N_CREATE_RQ:
-	case DIMSE_N_CREATE_RSP:
-	case DIMSE_N_DELETE_RQ:
-	case DIMSE_N_DELETE_RSP:
-	    break;
+    if (cond.good())
+    {
+      switch (msg->CommandField)
+      {
+        case DIMSE_C_ECHO_RQ:
+        case DIMSE_C_ECHO_RSP:
+        case DIMSE_C_STORE_RQ:
+        case DIMSE_C_STORE_RSP:
+        case DIMSE_C_GET_RQ:
+        case DIMSE_C_GET_RSP:
+        case DIMSE_C_FIND_RQ:
+        case DIMSE_C_FIND_RSP:
+        case DIMSE_C_MOVE_RQ:
+        case DIMSE_C_MOVE_RSP:
+        case DIMSE_C_CANCEL_RQ:
+        case DIMSE_N_EVENT_REPORT_RQ:
+        case DIMSE_N_EVENT_REPORT_RSP:
+        case DIMSE_N_GET_RQ:
+        case DIMSE_N_GET_RSP:
+        case DIMSE_N_SET_RQ:
+        case DIMSE_N_SET_RSP:
+        case DIMSE_N_ACTION_RQ:
+        case DIMSE_N_ACTION_RSP:
+        case DIMSE_N_CREATE_RQ:
+        case DIMSE_N_CREATE_RSP:
+        case DIMSE_N_DELETE_RQ:
+        case DIMSE_N_DELETE_RSP:
+            break;
     
-	default:
-	    cond = DIMSE_BADCOMMANDTYPE;
-	    break;
-	}
+        default:
+            cond = DIMSE_BADCOMMANDTYPE;
+            break;
+      }
     }
 
-    if (cond == DIMSE_NORMAL) {
-	cond = getTransferSyntax(assoc, presID, xferSyntax);
-    }
-    if (cond != DIMSE_NORMAL)
-	return COND_PushCondition(cond, DIMSE_Message(cond));
-    return DIMSE_NORMAL;
+    if (cond.good()) cond = getTransferSyntax(assoc, presID, xferSyntax);
+    return cond;
 }
 
-static CONDITION
+static OFCondition
 validateMessage(T_ASC_Association *assoc, T_DIMSE_Message *msg)
 {
-    CONDITION cond = DIMSE_NORMAL;
+    OFCondition cond = EC_Normal;
 
     switch (msg->CommandField) {
     case DIMSE_C_ECHO_RQ:
-	if (msg->msg.CEchoRQ.DataSetType != DIMSE_DATASET_NULL) {
-	    DIMSE_warning(assoc, "CEchoRQ: DataSetType != NULL");
-	    cond = DIMSE_BADMESSAGE;
-	}
-	break;
+        if (msg->msg.CEchoRQ.DataSetType != DIMSE_DATASET_NULL) {
+            DIMSE_warning(assoc, "CEchoRQ: DataSetType != NULL");
+            cond = DIMSE_BADMESSAGE;
+        }
+        break;
     case DIMSE_C_ECHO_RSP:
-	if (msg->msg.CEchoRSP.DataSetType != DIMSE_DATASET_NULL) {
-	    DIMSE_warning(assoc, "CEchoRSP: DataSetType != NULL");
-	    cond = DIMSE_BADMESSAGE;
-	}
-	break;
+        if (msg->msg.CEchoRSP.DataSetType != DIMSE_DATASET_NULL) {
+            DIMSE_warning(assoc, "CEchoRSP: DataSetType != NULL");
+            cond = DIMSE_BADMESSAGE;
+        }
+        break;
     case DIMSE_C_STORE_RQ:
-	if (msg->msg.CStoreRQ.DataSetType == DIMSE_DATASET_NULL) {
-	    DIMSE_warning(assoc, "CStoreRQ: DataSetType == NULL");
-	    cond = DIMSE_BADMESSAGE;
-	}
-	if (! IN_RANGE(strlen(msg->msg.CStoreRQ.AffectedSOPInstanceUID), 
-		1, DIC_UI_LEN)) {
-	    DIMSE_warning(assoc, "CStoreRQ: AffectedSOPInstanceUID: bad size");
-	    cond = DIMSE_BADMESSAGE;
-	}
-	break;
+        if (msg->msg.CStoreRQ.DataSetType == DIMSE_DATASET_NULL) {
+            DIMSE_warning(assoc, "CStoreRQ: DataSetType == NULL");
+            cond = DIMSE_BADMESSAGE;
+        }
+        if (! IN_RANGE(strlen(msg->msg.CStoreRQ.AffectedSOPInstanceUID), 
+                1, DIC_UI_LEN)) {
+            DIMSE_warning(assoc, "CStoreRQ: AffectedSOPInstanceUID: bad size");
+            cond = DIMSE_BADMESSAGE;
+        }
+        break;
     case DIMSE_C_STORE_RSP:
-	if (msg->msg.CStoreRSP.DataSetType != DIMSE_DATASET_NULL) {
-	    DIMSE_warning(assoc, "CStoreRSP: DataSetType != NULL");
-	    cond = DIMSE_BADMESSAGE;
-	}
-	if ((msg->msg.CStoreRSP.opts & O_STORE_AFFECTEDSOPINSTANCEUID) &&
-	    (! IN_RANGE(strlen(msg->msg.CStoreRSP.AffectedSOPInstanceUID), 
-		1, DIC_UI_LEN))) {
-	    DIMSE_warning(assoc, "CStoreRSP: AffectedSOPInstanceUID: bad size");
-	    cond = DIMSE_BADMESSAGE;
-	}
-	break;
+        if (msg->msg.CStoreRSP.DataSetType != DIMSE_DATASET_NULL) {
+            DIMSE_warning(assoc, "CStoreRSP: DataSetType != NULL");
+            cond = DIMSE_BADMESSAGE;
+        }
+        if ((msg->msg.CStoreRSP.opts & O_STORE_AFFECTEDSOPINSTANCEUID) &&
+            (! IN_RANGE(strlen(msg->msg.CStoreRSP.AffectedSOPInstanceUID), 
+                1, DIC_UI_LEN))) {
+            DIMSE_warning(assoc, "CStoreRSP: AffectedSOPInstanceUID: bad size");
+            cond = DIMSE_BADMESSAGE;
+        }
+        break;
     case DIMSE_C_GET_RQ:
-	if (msg->msg.CGetRQ.DataSetType == DIMSE_DATASET_NULL) {
-	    DIMSE_warning(assoc, "CGetRQ: DataSetType == NULL");
-	    cond = DIMSE_BADMESSAGE;
-	}
-	break;
+        if (msg->msg.CGetRQ.DataSetType == DIMSE_DATASET_NULL) {
+            DIMSE_warning(assoc, "CGetRQ: DataSetType == NULL");
+            cond = DIMSE_BADMESSAGE;
+        }
+        break;
     case DIMSE_C_GET_RSP:
-	/* data set can be empty or present */
-	break;
+        /* data set can be empty or present */
+        break;
     case DIMSE_C_FIND_RQ:
-	if (msg->msg.CFindRQ.DataSetType == DIMSE_DATASET_NULL) {
-	    DIMSE_warning(assoc, "CFindRQ: DataSetType == NULL");
-	    cond = DIMSE_BADMESSAGE;
-	}
-	break;
+        if (msg->msg.CFindRQ.DataSetType == DIMSE_DATASET_NULL) {
+            DIMSE_warning(assoc, "CFindRQ: DataSetType == NULL");
+            cond = DIMSE_BADMESSAGE;
+        }
+        break;
     case DIMSE_C_FIND_RSP:
-	/* data set can be empty or present */
-	break;
+        /* data set can be empty or present */
+        break;
     case DIMSE_C_MOVE_RQ:
-	if (msg->msg.CMoveRQ.DataSetType == DIMSE_DATASET_NULL) {
-	    DIMSE_warning(assoc, "CMoveRQ: DataSetType == NULL");
-	    cond = DIMSE_BADMESSAGE;
-	}
-	break;
+        if (msg->msg.CMoveRQ.DataSetType == DIMSE_DATASET_NULL) {
+            DIMSE_warning(assoc, "CMoveRQ: DataSetType == NULL");
+            cond = DIMSE_BADMESSAGE;
+        }
+        break;
     case DIMSE_C_MOVE_RSP:
-	/* data set can be empty or present */
-	break;
+        /* data set can be empty or present */
+        break;
     case DIMSE_C_CANCEL_RQ:
-	if (msg->msg.CCancelRQ.DataSetType != DIMSE_DATASET_NULL) {
-	    DIMSE_warning(assoc, "CCancelRQ: DataSetType != NULL");
-	    cond = DIMSE_BADMESSAGE;
-	}
-	break;
+        if (msg->msg.CCancelRQ.DataSetType != DIMSE_DATASET_NULL) {
+            DIMSE_warning(assoc, "CCancelRQ: DataSetType != NULL");
+            cond = DIMSE_BADMESSAGE;
+        }
+        break;
 
     case DIMSE_N_EVENT_REPORT_RQ:
     case DIMSE_N_EVENT_REPORT_RSP:
@@ -464,19 +439,15 @@ validateMessage(T_ASC_Association *assoc, T_DIMSE_Message *msg)
     case DIMSE_N_CREATE_RSP:
     case DIMSE_N_DELETE_RQ:
     case DIMSE_N_DELETE_RSP:
-	/* No checking on the normalized messages yet, assume ok */
-	break;
+        /* No checking on the normalized messages yet, assume ok */
+        break;
 
     default:
-	cond = DIMSE_BADCOMMANDTYPE;
-	break;
+        cond = DIMSE_BADCOMMANDTYPE;
+        break;
     }
 
-    if (cond != DIMSE_NORMAL) 
-	return COND_PushCondition(cond, 
-	    "Invalid Message: %s", DIMSE_Message(cond));
-
-    return DIMSE_NORMAL;
+    return cond;
 }
 
 
@@ -493,23 +464,22 @@ validateMessage(T_ASC_Association *assoc, T_DIMSE_Message *msg)
 ** whole file in the current implementation.  It is thus not worth
 ** the effort!
 */
-static CONDITION
+static OFCondition
 sendStraightFileData(T_ASC_Association * assoc, const char *dataFileName,
-	T_ASC_PresentationContextID presID,
-	E_TransferSyntax /* xferSyntax */,
-	DIMSE_ProgressCallback callback,
-	void *callbackContext)
+        T_ASC_PresentationContextID presID,
+        E_TransferSyntax /* xferSyntax */,
+        DIMSE_ProgressCallback callback,
+        void *callbackContext)
 
 {
     /* we assume that the file contains transfer syntax compatible data */
-    CONDITION cond;
     unsigned char *buf;
     unsigned long bufLen;
     FILE *f;
     long nbytes;
     int last;
     unsigned long bytesTransmitted = 0;
-    CONDITION dulCond;
+    OFCondition dulCond = EC_Normal;
     DUL_PDVLIST pdvList;
     DUL_PDV pdv;
     unsigned long pdvCount = 0;
@@ -517,44 +487,45 @@ sendStraightFileData(T_ASC_Association * assoc, const char *dataFileName,
     buf = assoc->sendPDVBuffer;
     bufLen = assoc->sendPDVLength;
 
-    cond = DIMSE_NORMAL;
+    OFCondition cond = EC_Normal;
 
     f = fopen(dataFileName, "rb");
     if (f == NULL) {
-	DIMSE_warning(assoc, 
-	    "sendStraightFileData: cannot open dicom file (%s): %s\n", 
-	    dataFileName, strerror(errno));
-	cond = DIMSE_SENDFAILED;
+        DIMSE_warning(assoc, 
+            "sendStraightFileData: cannot open dicom file (%s): %s\n", 
+            dataFileName, strerror(errno));
+        cond = DIMSE_SENDFAILED;
     }
     
-    while (SUCCESS(cond) && ((nbytes = fread(buf, 1, bufLen, f)) > 0)) {
-	last = ((unsigned long)nbytes != bufLen);
-	pdv.fragmentLength = nbytes;
-	pdv.presentationContextID = presID;
-	pdv.pdvType = DUL_DATASETPDV;
-	pdv.lastPDV = last;
-	pdv.data = buf;
+    while (cond.good() && ((nbytes = fread(buf, 1, bufLen, f)) > 0)) {
+        last = ((unsigned long)nbytes != bufLen);
+        pdv.fragmentLength = nbytes;
+        pdv.presentationContextID = presID;
+        pdv.pdvType = DUL_DATASETPDV;
+        pdv.lastPDV = last;
+        pdv.data = buf;
 
-	pdvList.count = 1;
-	pdvList.pdv = &pdv;
+        pdvList.count = 1;
+        pdvList.pdv = &pdv;
 
-	if (debug) {
-	    COUT << "DIMSE sendStraightFileData: sending "
+        if (debug) {
+            COUT << "DIMSE sendStraightFileData: sending "
             << pdv.fragmentLength << " bytes (last: "
             << ((last)?("YES"):("NO")) << ")" << endl;
-	}
+        }
 
-	dulCond = DUL_WritePDVs(&assoc->DULassociation, &pdvList);
-	if (dulCond != DUL_NORMAL) {
-	    cond = DIMSE_SENDFAILED;
-	}
+        dulCond = DUL_WritePDVs(&assoc->DULassociation, &pdvList);
+        if (dulCond.bad())
+        {
+	    cond = makeDcmnetSubCondition(DIMSEC_SENDFAILED, OF_error, "DIMSE Failed to send message", dulCond);
+        }
 
-	bytesTransmitted += nbytes;
-	pdvCount += pdvList.count;
+        bytesTransmitted += nbytes;
+        pdvCount += pdvList.count;
 
-	if (callback) { /* execute callback function */
-	    callback(callbackContext, bytesTransmitted);
-	}
+        if (callback) { /* execute callback function */
+            callback(callbackContext, bytesTransmitted);
+        }
     }
 
     fclose(f);
@@ -563,15 +534,15 @@ sendStraightFileData(T_ASC_Association * assoc, const char *dataFileName,
 }
 #endif
 
-static CONDITION
+static OFCondition
 sendDcmDataset(T_ASC_Association * assoc, DcmDataset * obj,
-		T_ASC_PresentationContextID presID,
-		E_TransferSyntax xferSyntax, DUL_DATAPDV pdvType,
-		DIMSE_ProgressCallback callback,
-		void *callbackContext)
+                T_ASC_PresentationContextID presID,
+                E_TransferSyntax xferSyntax, DUL_DATAPDV pdvType,
+                DIMSE_ProgressCallback callback,
+                void *callbackContext)
 
 {
-    CONDITION dulCond;
+    OFCondition dulCond = EC_Normal;
     OFCondition econd = EC_Normal;
     unsigned char *buf;
     unsigned long bufLen;
@@ -593,8 +564,8 @@ sendDcmDataset(T_ASC_Association * assoc, DcmDataset * obj,
     obj->transferInit();
     
     if (econd != EC_Normal) {
-	    DIMSE_warning(assoc, "writeBlockInit Failed (%s)", econd.text());
-	    return DIMSE_SENDFAILED;        
+            DIMSE_warning(assoc, "writeBlockInit Failed (%s)", econd.text());
+            return DIMSE_SENDFAILED;        
     }
 
     E_GrpLenEncoding groupLength_encoding = g_dimse_send_groupLength_encoding;
@@ -606,53 +577,53 @@ sendDcmDataset(T_ASC_Association * assoc, DcmDataset * obj,
     /* Commands do not contain sequences, ... yet */
 
     while (!last) {
-    	econd = obj->write(outBuf, xferSyntax, sequenceType_encoding, 
-			   groupLength_encoding, EPD_withoutPadding);
-	if (econd == EC_Normal) {
-	    last = OFTrue;	/* all contents have been written */
-	} else if (econd == EC_StreamNotifyClient) {
-	    /* ok,just no more space in streambuf */
-	    last = OFFalse;
-	} else {
-	    /* some error has occurred */
-	    DIMSE_warning(assoc, "writeBlock Failed (%s)", econd.text());
-	    return DIMSE_SENDFAILED;	
-	}
+        econd = obj->write(outBuf, xferSyntax, sequenceType_encoding, 
+                           groupLength_encoding, EPD_withoutPadding);
+        if (econd == EC_Normal) {
+            last = OFTrue;      /* all contents have been written */
+        } else if (econd == EC_StreamNotifyClient) {
+            /* ok,just no more space in streambuf */
+            last = OFFalse;
+        } else {
+            /* some error has occurred */
+            DIMSE_warning(assoc, "writeBlock Failed (%s)", econd.text());
+            return DIMSE_SENDFAILED;    
+        }
 
-	void *fullBuf = NULL;
-	outBuf.GetBuffer(fullBuf, rtnLength);
+        void *fullBuf = NULL;
+        outBuf.GetBuffer(fullBuf, rtnLength);
 
-	if (rtnLength > 0) {
-	    pdv.fragmentLength = rtnLength;
-	    pdv.presentationContextID = presID;
-	    pdv.pdvType = pdvType;
-	    pdv.lastPDV = last;
-	    pdv.data = fullBuf;
+        if (rtnLength > 0) {
+            pdv.fragmentLength = rtnLength;
+            pdv.presentationContextID = presID;
+            pdv.pdvType = pdvType;
+            pdv.lastPDV = last;
+            pdv.data = fullBuf;
 
-	    pdvList.count = 1;
-	    pdvList.pdv = &pdv;
+            pdvList.count = 1;
+            pdvList.pdv = &pdv;
 
-	    if (debug) {
-	        COUT << "DIMSE sendDcmDataset: sending " << pdv.fragmentLength
+            if (debug) {
+                COUT << "DIMSE sendDcmDataset: sending " << pdv.fragmentLength
                 << " bytes" << endl;
-	    }
+            }
 
-	    dulCond = DUL_WritePDVs(&assoc->DULassociation, &pdvList);
-	    if (dulCond != DUL_NORMAL)
-	        return DIMSE_SENDFAILED;
+            dulCond = DUL_WritePDVs(&assoc->DULassociation, &pdvList);
+            if (dulCond.bad())
+ 	        return makeDcmnetSubCondition(DIMSEC_SENDFAILED, OF_error, "DIMSE Failed to send message", dulCond);
 
-	    bytesTransmitted += rtnLength;
-	    pdvCount += pdvList.count;
+            bytesTransmitted += rtnLength;
+            pdvCount += pdvList.count;
 
-	    if (callback) { /* execute callback function */
-	        callback(callbackContext, bytesTransmitted);
-	    }
-	}
+            if (callback) { /* execute callback function */
+                callback(callbackContext, bytesTransmitted);
+            }
+        }
     }
 
     obj->transferEnd();
     
-    return DIMSE_NORMAL;
+    return EC_Normal;
 }
 
 /*
@@ -667,68 +638,62 @@ sendDcmDataset(T_ASC_Association * assoc, DcmDataset * obj,
  * Message Send
  */
 
-static CONDITION 
+static OFCondition 
 DIMSE_sendMessage(T_ASC_Association *assoc,
-		  T_ASC_PresentationContextID presID,
-		  T_DIMSE_Message *msg, DcmDataset *statusDetail,
-		  DcmDataset *dataObject,
-		  const char *dataFileName,
-		  DIMSE_ProgressCallback callback,
-		  void *callbackContext,
-		  DcmDataset **commandSet)
+                  T_ASC_PresentationContextID presID,
+                  T_DIMSE_Message *msg, DcmDataset *statusDetail,
+                  DcmDataset *dataObject,
+                  const char *dataFileName,
+                  DIMSE_ProgressCallback callback,
+                  void *callbackContext,
+                  DcmDataset **commandSet)
 
 {
-    CONDITION cond;
     E_TransferSyntax xferSyntax;
     DcmDataset *cmdObj = NULL;
     DcmFileFormat dcmff;
     int fromFile = 0;
+    OFCondition cond = EC_Normal;
     
     if (commandSet) *commandSet = NULL;
     
-    if (!isDataDictPresent())
-    {
-	  /* we must have a data dictionary */
-	  return COND_PushCondition(
-	    DIMSE_BUILDFAILED,
-        "DIMSE_sendMessage: missing data dictionary");
-    }
+    if (!isDataDictPresent()) return DIMSE_NODATADICT;
 
-    if (DIMSE_NORMAL != (cond = validateMessage(assoc, msg))) return cond;
-    if (DIMSE_NORMAL != (cond = checkPresentationContextForMessage(assoc, msg, presID, &xferSyntax))) return cond;
+    if (EC_Normal != (cond = validateMessage(assoc, msg))) return cond;
+    if (EC_Normal != (cond = checkPresentationContextForMessage(assoc, msg, presID, &xferSyntax))) return cond;
 
     cond = DIMSE_buildCmdObject(msg, &cmdObj);
 
-    if (SUCCESS(cond) && statusDetail != NULL)
+    if (cond.good() && statusDetail != NULL)
     {
       /* move the status detail to the command */
       DcmElement* e;
       while ((e = statusDetail->remove((unsigned long)0)) != NULL) cmdObj->insert(e, OFTrue);
     }
     
-    if (SUCCESS(cond) && DIMSE_isDataSetPresent(msg))
+    if (cond.good() && DIMSE_isDataSetPresent(msg))
     {
       /* read the data from file if necessary */
       if ((dataObject != NULL)&&(dataFileName != NULL))
       {
-	    DIMSE_warning(assoc, "sendData: both object and file specified (sending object only)");
+            DIMSE_warning(assoc, "sendData: both object and file specified (sending object only)");
       }
       else if ((dataObject == NULL)&&(dataFileName != NULL))
       {
         DcmFileStream inf(dataFileName, DCM_ReadMode);
         if (inf.Fail())
         {
-	       DIMSE_warning(assoc, 
-	       "sendMessage: cannot open dicom file (%s): %s\n", 
-	       dataFileName, strerror(errno));
-	       cond = DIMSE_SENDFAILED;
+               DIMSE_warning(assoc, 
+               "sendMessage: cannot open dicom file (%s): %s\n", 
+               dataFileName, strerror(errno));
+               cond = DIMSE_SENDFAILED;
         } else {
           dcmff.transferInit();
           dcmff.read(inf, EXS_Unknown);
           dcmff.transferEnd();
           dataObject = dcmff.getDataset();
           fromFile = 1;
-	    }      
+            }      
       }
       
       /* check if we can convert the dataset to the required transfer syntax */
@@ -740,24 +705,24 @@ DIMSE_sendMessage(T_ASC_Association *assoc,
           DcmXfer originalXferSyntax(dataObject->getOriginalXfer());
           if (fromFile && dataFileName)
           {
-	        DIMSE_warning(assoc, 
-	         "sendMessage: unable to convert DICOM file '%s'\nfrom '%s' transfer syntax to '%s'.\n",
-	         dataFileName, originalXferSyntax.getXferName(), writeXferSyntax.getXferName());
+                DIMSE_warning(assoc, 
+                 "sendMessage: unable to convert DICOM file '%s'\nfrom '%s' transfer syntax to '%s'.\n",
+                 dataFileName, originalXferSyntax.getXferName(), writeXferSyntax.getXferName());
           } else {
-	        DIMSE_warning(assoc, 
-	         "sendMessage: unable to convert dataset\nfrom '%s' transfer syntax to '%s'.\n",
-	         originalXferSyntax.getXferName(), writeXferSyntax.getXferName());
+                DIMSE_warning(assoc, 
+                 "sendMessage: unable to convert dataset\nfrom '%s' transfer syntax to '%s'.\n",
+                 originalXferSyntax.getXferName(), writeXferSyntax.getXferName());
           }
-	      cond = DIMSE_SENDFAILED;
+              cond = DIMSE_SENDFAILED;
         }
       } else {
-	    DIMSE_warning(assoc, 
-	    "sendMessage: no dataset to send\n");
-	    cond = DIMSE_SENDFAILED;
+            DIMSE_warning(assoc, 
+            "sendMessage: no dataset to send\n");
+            cond = DIMSE_SENDFAILED;
       }
     }
 
-    if (SUCCESS(cond))
+    if (cond.good())
     {
       if (g_dimse_save_dimse_data) saveDimseFragment(cmdObj, OFTrue, OFFalse);
 
@@ -766,18 +731,18 @@ DIMSE_sendMessage(T_ASC_Association *assoc,
  
       if (debug)
       {
-	    COUT << "DIMSE Command To Send:" << endl;
-	    cmdObj->print(COUT);
+            COUT << "DIMSE Command To Send:" << endl;
+            cmdObj->print(COUT);
       }
-	  /* Send the command.
-	   * Commands are always little endian implicit.
-	   */
-	  cond = sendDcmDataset(assoc, cmdObj, presID, 
-	    EXS_LittleEndianImplicit, DUL_COMMANDPDV,
-	    NULL, NULL);	
+          /* Send the command.
+           * Commands are always little endian implicit.
+           */
+          cond = sendDcmDataset(assoc, cmdObj, presID, 
+            EXS_LittleEndianImplicit, DUL_COMMANDPDV,
+            NULL, NULL);        
     }
 
-    if (SUCCESS(cond) && DIMSE_isDataSetPresent(msg) &&(dataObject))
+    if (cond.good() && DIMSE_isDataSetPresent(msg) &&(dataObject))
     {
       if (g_dimse_save_dimse_data) saveDimseFragment(dataObject, OFFalse, OFFalse);
       cond = sendDcmDataset(assoc, dataObject, presID, xferSyntax,
@@ -785,91 +750,78 @@ DIMSE_sendMessage(T_ASC_Association *assoc,
     }
 
     delete cmdObj;
-    if (cond != DIMSE_NORMAL) return COND_PushCondition(cond, DIMSE_Message(cond));
-    return DIMSE_NORMAL;
+    return cond;
 }
 
-CONDITION
+OFCondition
 DIMSE_sendMessageUsingFileData(T_ASC_Association * assoc,
-		  T_ASC_PresentationContextID presID,
-		  T_DIMSE_Message * msg,
-		  DcmDataset *statusDetail,
-		  const char *dataFileName,
-		  DIMSE_ProgressCallback callback,
-		  void *callbackContext,
-		  DcmDataset **commandSet)
+                  T_ASC_PresentationContextID presID,
+                  T_DIMSE_Message * msg,
+                  DcmDataset *statusDetail,
+                  const char *dataFileName,
+                  DIMSE_ProgressCallback callback,
+                  void *callbackContext,
+                  DcmDataset **commandSet)
 
 {
-    CONDITION cond;
-
-    cond = DIMSE_sendMessage(assoc, presID, msg, statusDetail, 
-	NULL, dataFileName,
-	callback, callbackContext, commandSet);
-
-    return cond;
+    return DIMSE_sendMessage(assoc, presID, msg, statusDetail, NULL, dataFileName, callback, callbackContext, commandSet);
 }
 
-CONDITION
+OFCondition
 DIMSE_sendMessageUsingMemoryData(T_ASC_Association * assoc,
-		  T_ASC_PresentationContextID presID,
-		  T_DIMSE_Message * msg,
-		  DcmDataset *statusDetail,
-		  DcmDataset *dataObject,
-		  DIMSE_ProgressCallback callback,
-		  void *callbackContext,
-		  DcmDataset **commandSet)
+                  T_ASC_PresentationContextID presID,
+                  T_DIMSE_Message * msg,
+                  DcmDataset *statusDetail,
+                  DcmDataset *dataObject,
+                  DIMSE_ProgressCallback callback,
+                  void *callbackContext,
+                  DcmDataset **commandSet)
 
 {
-    CONDITION cond;
-
-    cond = DIMSE_sendMessage(assoc, presID, msg, statusDetail, 
-	dataObject, NULL,
-	callback, callbackContext, commandSet);
-
-    return cond;
+    return DIMSE_sendMessage(assoc, presID, msg, statusDetail, dataObject, NULL, callback, callbackContext, commandSet);
 }
 
 /*
  * Message Receive
  */
 
-static CONDITION
+static OFCondition
 ignoreDataSet(T_ASC_Association * assoc,
-	      T_DIMSE_BlockingMode blocking, int timeout,
-	      DIC_UL * bytesRead, DIC_UL * pdvCount)
+              T_DIMSE_BlockingMode blocking, int timeout,
+              DIC_UL * bytesRead, DIC_UL * pdvCount)
 {
-    CONDITION           cond = DIMSE_NORMAL;
-    DUL_PDV             pdv;
-    OFBool             last = OFFalse;
+    OFCondition cond = EC_Normal;
+    DUL_PDV pdv;
+    OFBool last = OFFalse;
 
     while (!last) {
-	cond = DIMSE_readNextPDV(assoc, blocking, timeout, &pdv);
-	if (cond != DIMSE_NORMAL) {
-	    break;
-	}
-	if (pdv.pdvType != DUL_DATASETPDV) {
-	    cond = DIMSE_UNEXPECTEDPDVTYPE;
-	    break;
-	}
-	*bytesRead += pdv.fragmentLength;
-	(*pdvCount)++;
-	last = pdv.lastPDV;
+        cond = DIMSE_readNextPDV(assoc, blocking, timeout, &pdv);
+        if (cond != EC_Normal) {
+            break;
+        }
+        if (pdv.pdvType != DUL_DATASETPDV) {
+            cond = DIMSE_UNEXPECTEDPDVTYPE;
+            break;
+        }
+        *bytesRead += pdv.fragmentLength;
+        (*pdvCount)++;
+        last = pdv.lastPDV;
     }
     return cond;
 }
 
 
-CONDITION
+OFCondition
 DIMSE_receiveCommand(T_ASC_Association * assoc,
-		     T_DIMSE_BlockingMode blocking,
-		     int timeout,
-		     T_ASC_PresentationContextID *presID,
-		     T_DIMSE_Message * msg, 
-		     DcmDataset ** statusDetail,
-		     DcmDataset ** commandSet)
+                     T_DIMSE_BlockingMode blocking,
+                     int timeout,
+                     T_ASC_PresentationContextID *presID,
+                     T_DIMSE_Message * msg, 
+                     DcmDataset ** statusDetail,
+                     DcmDataset ** commandSet)
 
 {
-    CONDITION cond;
+    OFCondition cond = EC_Normal;
     unsigned long bytesRead;
     unsigned long pdvCount;
 
@@ -887,23 +839,15 @@ DIMSE_receiveCommand(T_ASC_Association * assoc,
     if (commandSet) *commandSet = NULL;
 
     if (debug) {
-	COUT << "DIMSE receiveCommand" << endl;
+        COUT << "DIMSE receiveCommand" << endl;
     }
 
-    if (!isDataDictPresent()) {
-	/* we must have a data dictionary */
-	return COND_PushCondition(
-	    DIMSE_PARSEFAILED,
-	        "DIMSE_receiveCommand: missing data dictionary");
-    }
+    if (!isDataDictPresent()) return DIMSE_NODATADICT;
 
     pdvCount = 0;
 
     cmdSet = new DcmDataset();
-    if (cmdSet == NULL) {
-	return COND_PushCondition(DIMSE_MALLOCERROR, 
-	    "DIMSE: receiveCommand: Cannot allocate DcmDataset");
-    }
+    if (cmdSet == NULL) return EC_MemoryExhausted;
 
     cmdSet->transferInit();
 
@@ -911,89 +855,91 @@ DIMSE_receiveCommand(T_ASC_Association * assoc,
     econd = cmdBuf.GetError();
     if (econd != EC_Normal) 
     {
-    	delete cmdSet;
-	return COND_PushCondition(DIMSE_PARSEFAILED, 
-	    "DIMSE: receiveCommand: Failed to initialize cmdBuf(DCM_ReadMode)");
+        delete cmdSet;
+        return makeDcmnetSubCondition(DIMSEC_PARSEFAILED, OF_error, "DIMSE: receiveCommand: Failed to initialize cmdBuf (DCM_ReadMode)", econd);
     }
 
     for (last = OFFalse, bytesRead = 0, type = DUL_COMMANDPDV;
-	 type == DUL_COMMANDPDV && !last;) {
-	 
-	cmdBuf.ReleaseBuffer();	/* make the stream remember any unread bytes */
-	
-	cond = DIMSE_readNextPDV(assoc, blocking, timeout, &pdv);
-	if (cond != DIMSE_NORMAL) {
-       	    delete cmdSet;
-	    if (cond == DIMSE_READPDVFAILED)
-		return COND_PushCondition(DIMSE_RECEIVEFAILED,
-					DIMSE_Message(DIMSE_RECEIVEFAILED));
-	    else {
-	        /* it was an abort or release request */
-		return cond;
-	    }
-	}
+         type == DUL_COMMANDPDV && !last;)
+    {
+         
+        cmdBuf.ReleaseBuffer(); /* make the stream remember any unread bytes */
+        
+        cond = DIMSE_readNextPDV(assoc, blocking, timeout, &pdv);
+        if (cond.bad() || (cond == DUL_PEERREQUESTEDRELEASE))
+        {
+            delete cmdSet;
+            if (cond == DIMSE_READPDVFAILED)
+                return makeDcmnetSubCondition(DIMSEC_RECEIVEFAILED, OF_error, "DIMSE Failed to receive message", cond);
+            else return cond; /* it was an abort or release request */                
+        }
 
-	if (pdvCount == 0) {
-	    pid = pdv.presentationContextID;
-	} else if (pdv.presentationContextID != pid) {
-       	    delete cmdSet;
-	    cond = DIMSE_INVALIDPRESENTATIONCONTEXTID;
-	    COND_PushCondition(cond, 
-	        "DIMSE: Different PIDs inside Command Set: %d != %d", 
-	        pid, pdv.presentationContextID);
-	    return DIMSE_RECEIVEFAILED;
-	}
-	if ((pdv.fragmentLength % 2) != 0) {
-	    /* This should NEVER happen.  See Part 7, Annex F. */
-	    cond = COND_PushCondition(DIMSE_RECEIVEFAILED,
-	        "DIMSE: Odd Fragment Length: %lu", pdv.fragmentLength);
-	    break;
-	}
-	
-	if (pdv.fragmentLength > 0) {
-	    cmdBuf.SetBuffer(pdv.data, pdv.fragmentLength);
-	}
+        if (pdvCount == 0)
+        {
+            pid = pdv.presentationContextID;
+        } 
+        else if (pdv.presentationContextID != pid)
+        {
+            delete cmdSet;
+            char buf1[256];
+            sprintf(buf1, "DIMSE: Different PIDs inside Command Set: %d != %d", pid, pdv.presentationContextID);
+            OFCondition subCond = makeDcmnetCondition(DIMSEC_INVALIDPRESENTATIONCONTEXTID, OF_error, buf1);                
+            return makeDcmnetSubCondition(DIMSEC_RECEIVEFAILED, OF_error, "DIMSE Failed to receive message", subCond);
+        }
 
-	if (pdv.lastPDV) {
-	    cmdBuf.SetEndOfStream();
-	}
-	
+        if ((pdv.fragmentLength % 2) != 0)
+        {
+            /* This should NEVER happen.  See Part 7, Annex F. */
+            char buf2[256];
+            sprintf(buf2, "DIMSE: Odd Fragment Length: %lu", pdv.fragmentLength);
+            cond = makeDcmnetCondition(DIMSEC_RECEIVEFAILED, OF_error, buf2);
+            break;
+        }
+        
+        if (pdv.fragmentLength > 0) {
+            cmdBuf.SetBuffer(pdv.data, pdv.fragmentLength);
+        }
+
+        if (pdv.lastPDV) {
+            cmdBuf.SetEndOfStream();
+        }
+        
         /* Commands are always little endian implicit */
 
-	econd = cmdSet->read(cmdBuf, EXS_LittleEndianImplicit, EGL_withoutGL);
-	if (econd != EC_Normal && econd != EC_StreamNotifyClient) {
-	    delete cmdSet;
-	    return COND_PushCondition(DIMSE_RECEIVEFAILED, 
-	        "DIMSE: receiveCommand: cmdSet->read() Failed (%s)", econd.text());
-	}
-	
-	bytesRead += pdv.fragmentLength;
-	last = pdv.lastPDV;
-	type = pdv.pdvType;
-	pdvCount++;
+        econd = cmdSet->read(cmdBuf, EXS_LittleEndianImplicit, EGL_withoutGL);
+        if (econd != EC_Normal && econd != EC_StreamNotifyClient)
+        {
+          delete cmdSet;
+          return makeDcmnetSubCondition(DIMSEC_RECEIVEFAILED, OF_error, "DIMSE: receiveCommand: cmdSet->read() Failed", econd);
+        }
+        
+        bytesRead += pdv.fragmentLength;
+        last = pdv.lastPDV;
+        type = pdv.pdvType;
+        pdvCount++;
 
     }
 
     cmdSet->transferEnd();
     
     if (debug) {
-	COUT << "DIMSE receiveCommand: " << pdvCount << " pdv's ("
+        COUT << "DIMSE receiveCommand: " << pdvCount << " pdv's ("
         << bytesRead << " bytes), presID=" << pid << endl;
     }
 
     /* is this a valid presentation context ? */
     cond = getTransferSyntax(assoc, pid, &xferSyntax);
-    if (!SUCCESS(cond))
+    if (cond.bad())
     {
         delete cmdSet;
         return cond;
     }
     
-    if (type != DUL_COMMANDPDV) {
+    if (type != DUL_COMMANDPDV)
+    {
         delete cmdSet;
-        cond = DIMSE_UNEXPECTEDPDVTYPE;
-	COND_PushCondition(cond, "DIMSE: Command PDV Expected");
-	return DIMSE_RECEIVEFAILED;
+        OFCondition subCond = makeDcmnetCondition(DIMSEC_UNEXPECTEDPDVTYPE, OF_error, "DIMSE: Command PDV Expected");
+        return makeDcmnetSubCondition(DIMSEC_RECEIVEFAILED, OF_error, "DIMSE Failed to receive message", subCond);
     }
 
     if (g_dimse_save_dimse_data) saveDimseFragment(cmdSet, OFTrue, OFTrue);
@@ -1002,17 +948,17 @@ DIMSE_receiveCommand(T_ASC_Association * assoc,
     if (commandSet) *commandSet = new DcmDataset(*cmdSet);
 
     if (debug) {
-	COUT << "DIMSE Command Received:" << endl;
+        COUT << "DIMSE Command Received:" << endl;
         cmdSet->print(COUT);
     }
 
     cond = DIMSE_parseCmdObject(msg, cmdSet);
-    if (cond != DIMSE_NORMAL) {
-	delete cmdSet;    
+    if (cond != EC_Normal) {
+        delete cmdSet;    
     }
     
-    if (cond == DIMSE_NORMAL) {
-	cond = validateMessage(assoc, msg);
+    if (cond == EC_Normal) {
+        cond = validateMessage(assoc, msg);
     }
     
     /*
@@ -1020,27 +966,24 @@ DIMSE_receiveCommand(T_ASC_Association * assoc,
      * information. 
      */
 
-    if (cond == DIMSE_NORMAL) {
+    if (cond == EC_Normal) {
         elemsLeft = DIMSE_countElements(cmdSet);
         if ((statusDetail != NULL) && (elemsLeft > 0)) {
-	    /* this must be any status detail */
-	    *statusDetail = cmdSet;
-	} else {
-	    /* nothing left or the caller does not want status detail */
-	    delete cmdSet;
-	}
+            /* this must be any status detail */
+            *statusDetail = cmdSet;
+        } else {
+            /* nothing left or the caller does not want status detail */
+            delete cmdSet;
+        }
     } else delete cmdSet;
 
     /* set the Presentation Context ID we received */
     *presID = pid;
 
-    if (cond != DIMSE_NORMAL)
-	return COND_PushCondition(cond, DIMSE_Message(cond));
-    return DIMSE_NORMAL;
-
+    return cond;
 }
 
-CONDITION DIMSE_createFilestream(
+OFCondition DIMSE_createFilestream(
   const char *filename,
   const T_DIMSE_C_StoreRQ *request,
   const T_ASC_Association *assoc, 
@@ -1048,7 +991,7 @@ CONDITION DIMSE_createFilestream(
   int writeMetaheader,
   DcmFileStream **filestream)
 {
-  CONDITION cond = DIMSE_NORMAL;
+  OFCondition cond = EC_Normal;
   DcmElement *elem=NULL;
   DcmMetaInfo *metainfo=NULL;
   DcmTag metaElementGroupLength(DCM_MetaElementGroupLength);
@@ -1064,81 +1007,68 @@ CONDITION DIMSE_createFilestream(
   if ((filename == NULL) || (request==NULL) || (assoc==NULL) ||
       (assoc->params==NULL) || (filestream==NULL))
   {
-    cond = COND_PushCondition(DIMSE_NULLKEY, 
-      "DIMSE_createFilestream: NULL parameters");
-    return cond;
+    return DIMSE_NULLKEY;
   }
-  if (ASC_NORMAL != ASC_findAcceptedPresentationContext(assoc->params,
-      presIdCmd, &presentationContext))
-  {
-    cond = COND_PushCondition(DIMSE_INVALIDPRESENTATIONCONTEXTID, 
-      "DIMSE_createFilestream: Invalid presentation context ID");
-    return cond;
-  }    
+  
+  cond = ASC_findAcceptedPresentationContext(assoc->params, presIdCmd, &presentationContext);
+  if (cond.bad()) return cond;
 
   if (writeMetaheader)
   {
-    if (NULL == (metainfo = new DcmMetaInfo()))
-    {
-      cond = COND_PushCondition(DIMSE_OUTOFRESOURCES, 
-       "DIMSE_createFilestream: out of memory");
-      return cond;
-    }
+    if (NULL == (metainfo = new DcmMetaInfo())) return EC_MemoryExhausted;
     if (NULL != (elem = new DcmUnsignedLong(metaElementGroupLength)))
     {
       metainfo->insert(elem, OFTrue);
       Uint32 temp = 0;
       ((DcmUnsignedLong*)elem)->putUint32Array(&temp, 1);
-    } else cond = DIMSE_OUTOFRESOURCES;
+    } else cond = EC_MemoryExhausted;
     if (NULL != (elem = new DcmOtherByteOtherWord(fileMetaInformationVersion)))
     {
       metainfo->insert(elem, OFTrue);
       Uint8 version[2] = {0,1};
       ((DcmOtherByteOtherWord*)elem)->putUint8Array( version, 2 );
-    } else cond = DIMSE_OUTOFRESOURCES;
+    } else cond = EC_MemoryExhausted;
     if (NULL != (elem = new DcmUniqueIdentifier(mediaStorageSOPClassUID)))
     {
       metainfo->insert(elem, OFTrue);
       ((DcmUniqueIdentifier*)elem)->putString(request->AffectedSOPClassUID);
-    } else cond = DIMSE_OUTOFRESOURCES;
+    } else cond = EC_MemoryExhausted;
     if (NULL != (elem = new DcmUniqueIdentifier(mediaStorageSOPInstanceUID)))
     {
       metainfo->insert(elem, OFTrue);
       ((DcmUniqueIdentifier*)elem)->putString(request->AffectedSOPInstanceUID);
-    } else cond = DIMSE_OUTOFRESOURCES;
+    } else cond = EC_MemoryExhausted;
     if (NULL != (elem = new DcmUniqueIdentifier(transferSyntaxUID)))
     {
       metainfo->insert(elem, OFTrue);
       elem->putString(presentationContext.acceptedTransferSyntax);
-    } else cond = DIMSE_OUTOFRESOURCES;
+    } else cond = EC_MemoryExhausted;
     if (NULL != (elem = new DcmUniqueIdentifier(implementationClassUID)))
     {
       metainfo->insert(elem, OFTrue);
       const char *uid = OFFIS_IMPLEMENTATION_CLASS_UID;
       ((DcmUniqueIdentifier*)elem)->putString(uid);
-    } else cond = DIMSE_OUTOFRESOURCES;
+    } else cond = EC_MemoryExhausted;
     if (NULL != (elem = new DcmShortString(implementationVersionName)))
     {
       metainfo->insert(elem, OFTrue);
       const char *version = OFFIS_DTK_IMPLEMENTATION_VERSION_NAME2;
       ((DcmShortString*)elem)->putString(version);
-    } else cond = DIMSE_OUTOFRESOURCES;
-    if (cond == DIMSE_OUTOFRESOURCES)
+    } else cond = EC_MemoryExhausted;
+
+    if (cond == EC_MemoryExhausted)
     {
       delete metainfo;
-      cond = COND_PushCondition(DIMSE_OUTOFRESOURCES, 
-       "DIMSE_createFilestream: out of memory");
       return cond;
     }
-    if (EC_Normal != metainfo->computeGroupLengthAndPadding
-	  (EGL_withGL, EPD_noChange, META_HEADER_DEFAULT_TRANSFERSYNTAX, 
-	  EET_UndefinedLength))
-	{
+    
+    cond = metainfo->computeGroupLengthAndPadding(EGL_withGL, EPD_noChange, 
+      META_HEADER_DEFAULT_TRANSFERSYNTAX, EET_UndefinedLength);
+    if (cond.bad())
+    {
       delete metainfo;
-      cond = COND_PushCondition(DIMSE_OUTOFRESOURCES, 
-       "DIMSE_createFilestream: cannot compute metaheader length");
       return cond;
-	}
+    }
   }
   
   *filestream = new DcmFileStream(filename, DCM_WriteMode);
@@ -1150,9 +1080,9 @@ CONDITION DIMSE_createFilestream(
        delete *filestream;
        *filestream = NULL;
      }
-     cond = COND_PushCondition(DIMSE_OUTOFRESOURCES, 
-       "DIMSE_createFilestream: cannot create file '%s'", filename);
-     return cond;
+     char buf[4096]; // file names could be long!
+     sprintf(buf, "DIMSE_createFilestream: cannot create file '%s'", filename);
+     return makeDcmnetCondition(DIMSEC_OUTOFRESOURCES, OF_error, buf);
   }
   
   if (metainfo)
@@ -1160,8 +1090,9 @@ CONDITION DIMSE_createFilestream(
     metainfo->transferInit();
     if (EC_Normal != metainfo->write(**filestream, META_HEADER_DEFAULT_TRANSFERSYNTAX, EET_ExplicitLength))
     {
-      cond = COND_PushCondition(DIMSE_OUTOFRESOURCES, 
-       "DIMSE_createFilestream: cannot write metaheader to file '%s'", filename);
+      char buf2[4096]; // file names could be long!
+      sprintf(buf2, "DIMSE_createFilestream: cannot write metaheader to file '%s'", filename);
+      cond = makeDcmnetCondition(DIMSEC_OUTOFRESOURCES, OF_error, buf2);
     }
     metainfo->transferEnd();
     delete metainfo;
@@ -1171,14 +1102,14 @@ CONDITION DIMSE_createFilestream(
   
 }
 
-CONDITION
+OFCondition
 DIMSE_receiveDataSetInFile(T_ASC_Association *assoc,
-	T_DIMSE_BlockingMode blocking, int timeout, 
-	T_ASC_PresentationContextID *presID,
-	DcmStream *filestream,
-	DIMSE_ProgressCallback callback, void *callbackData)
+        T_DIMSE_BlockingMode blocking, int timeout, 
+        T_ASC_PresentationContextID *presID,
+        DcmStream *filestream,
+        DIMSE_ProgressCallback callback, void *callbackData)
 {
-    CONDITION cond = DIMSE_NORMAL;
+    OFCondition cond = EC_Normal;
     DUL_PDV pdv;
     T_ASC_PresentationContextID pid = 0;
     E_TransferSyntax xferSyntax; 
@@ -1186,94 +1117,83 @@ DIMSE_receiveDataSetInFile(T_ASC_Association *assoc,
     DIC_UL pdvCount = 0;
     DIC_UL bytesRead = 0;
 
-    if ((assoc == NULL) || (presID==NULL) || (filestream==NULL))
-    {
-      cond = COND_PushCondition(DIMSE_NULLKEY, 
-        "DIMSE_receiveDataSetInFile: NULL parameters");
-      return cond;
-    }
+    if ((assoc == NULL) || (presID==NULL) || (filestream==NULL)) return DIMSE_NULLKEY;
 
-    *presID = 0;	/* invalid value */
+    *presID = 0;        /* invalid value */
 
     while (!last)
     {
-	  cond = DIMSE_readNextPDV(assoc, blocking, timeout, &pdv);
-	  if (cond != DIMSE_NORMAL) break;
-      if (pdv.pdvType != DUL_DATASETPDV)
-      {
-	    cond = DIMSE_UNEXPECTEDPDVTYPE;
-	    break;
-	  }
-	  if (pdvCount == 0)
-	  {
-	    pid = pdv.presentationContextID;
-	    /* is this a valid presentation context ? */
-	    cond = getTransferSyntax(assoc, pid, &xferSyntax);
-	    if (!SUCCESS(cond)) break;
-	  }
-	  else if (pdv.presentationContextID != pid)
-	  {
-	    cond = DIMSE_INVALIDPRESENTATIONCONTEXTID;
-	    COND_PushCondition(cond, 
-	        "DIMSE: Different PIDs inside Data Set: %d != %d", 
-	        pid, pdv.presentationContextID);
-	    cond = DIMSE_RECEIVEFAILED;
-	    break;
-	  }
-	  if ((pdv.fragmentLength % 2) != 0)
-	  {
-	    /* This should NEVER happen.  See Part 7, Annex F. */
-	    cond = COND_PushCondition(DIMSE_RECEIVEFAILED,
-	        "DIMSE: Odd Fragment Length: %lu", pdv.fragmentLength);
-	    break;
-	  }
-	  filestream->WriteBytes((void *)(pdv.data), (Uint32)(pdv.fragmentLength));
-	  if (filestream->Fail())
-	  {
-	      cond = ignoreDataSet(assoc, blocking, timeout, &bytesRead, &pdvCount);
-	      if (cond == DIMSE_NORMAL)
-	      {
-	          cond = COND_PushCondition(DIMSE_OUTOFRESOURCES, 
-	            "DIMSE_receiveDataSetInFile: Cannot write to file");
-	      }
-	     break;
-	  }
-	  bytesRead += pdv.fragmentLength;
-	  pdvCount++;
-	  last = pdv.lastPDV;
-	  if (debug)
-	  {
-	     COUT << "DIMSE receiveFileData: " << pdv.fragmentLength
+          cond = DIMSE_readNextPDV(assoc, blocking, timeout, &pdv);
+          if (cond != EC_Normal) break;
+          if (pdv.pdvType != DUL_DATASETPDV)
+          {
+            cond = DIMSE_UNEXPECTEDPDVTYPE;
+            break;
+          }
+          if (pdvCount == 0)
+          {
+            pid = pdv.presentationContextID;
+            /* is this a valid presentation context ? */
+            cond = getTransferSyntax(assoc, pid, &xferSyntax);
+            if (cond.bad()) break;
+          }
+          else if (pdv.presentationContextID != pid)
+          {
+
+            char buf1[256]; 
+            sprintf(buf1, "DIMSE: Different PIDs inside Data Set: %d != %d", pid, pdv.presentationContextID);
+            OFCondition subCond = makeDcmnetCondition(DIMSEC_INVALIDPRESENTATIONCONTEXTID, OF_error, buf1);
+            cond = makeDcmnetSubCondition(DIMSEC_RECEIVEFAILED, OF_error, "DIMSE Failed to receive message", subCond);
+            break;
+          }
+          if ((pdv.fragmentLength % 2) != 0)
+          {
+            /* This should NEVER happen.  See Part 7, Annex F. */
+            char buf2[256]; 
+            sprintf(buf2, "DIMSE: Odd Fragment Length: %lu", pdv.fragmentLength);
+            cond = makeDcmnetCondition(DIMSEC_RECEIVEFAILED, OF_error, buf2);
+            break;
+          }
+          filestream->WriteBytes((void *)(pdv.data), (Uint32)(pdv.fragmentLength));
+          if (filestream->Fail())
+          {
+              cond = ignoreDataSet(assoc, blocking, timeout, &bytesRead, &pdvCount);
+              if (cond == EC_Normal)
+              {
+                cond = makeDcmnetCondition(DIMSEC_OUTOFRESOURCES, OF_error, "DIMSE_receiveDataSetInFile: Cannot write to file");
+              }
+             break;
+          }
+          bytesRead += pdv.fragmentLength;
+          pdvCount++;
+          last = pdv.lastPDV;
+          if (debug)
+          {
+             COUT << "DIMSE receiveFileData: " << pdv.fragmentLength
             << " bytes read (last: " << ((last)?("YES"):("NO")) << ")" << endl;
-	  }
-	  if (callback)
-	  { /* execute callback function */
-	    callback(callbackData, bytesRead);
-	  }
+          }
+          if (callback)
+          { /* execute callback function */
+            callback(callbackData, bytesRead);
+          }
     }
 
     /* set the Presentation Context ID we received */
     *presID = pid;
-
-    if (cond != DIMSE_NORMAL)
-    {
-	  return COND_PushCondition(cond, DIMSE_Message(cond));
-    }
-
     return cond;
 }
 
 
-CONDITION
+OFCondition
 DIMSE_receiveDataSetInMemory(T_ASC_Association * assoc,
-			     T_DIMSE_BlockingMode blocking,
-			     int timeout,
-			     T_ASC_PresentationContextID * presID,
-			     DcmDataset ** dataObject,
-		  	     DIMSE_ProgressCallback callback,
-		             void *callbackData)
+                             T_DIMSE_BlockingMode blocking,
+                             int timeout,
+                             T_ASC_PresentationContextID * presID,
+                             DcmDataset ** dataObject,
+                             DIMSE_ProgressCallback callback,
+                             void *callbackData)
 {
-    CONDITION cond = DIMSE_NORMAL;
+    OFCondition cond = EC_Normal;
     OFCondition econd = EC_Normal;
     DcmDataset *dset = NULL;
     DUL_PDV pdv;
@@ -1283,107 +1203,95 @@ DIMSE_receiveDataSetInMemory(T_ASC_Association * assoc,
     DIC_UL pdvCount = 0;
     DIC_UL bytesRead = 0;
 
-    if (dataObject == NULL) {
-	return COND_PushCondition(DIMSE_NULLKEY,
-	        "DIMSE_receiveDataSetInMemory: dataObject==NULL");
-    }
-
-    if (!isDataDictPresent()) {
-	/* we must have a data dictionary */
-	return COND_PushCondition(
-	    DIMSE_PARSEFAILED,
-	        "DIMSE_receiveDataSetInMemory: missing data dictionary");
-    }
+    if (dataObject == NULL) return DIMSE_NULLKEY;
+    if (!isDataDictPresent()) return DIMSE_NODATADICT;
 
     if (*dataObject == NULL) {
-	dset = new DcmDataset();
+        dset = new DcmDataset();
     } else {
-	dset = *dataObject; /* use the passed in Dataset */
+        dset = *dataObject; /* use the passed in Dataset */
     }
-    if (dset == NULL) {
-	cond = ignoreDataSet(assoc, blocking, timeout, 
-	    &bytesRead, &pdvCount);
-	if (cond == DIMSE_NORMAL) {
-            return COND_PushCondition(DIMSE_OUTOFRESOURCES,
-	        "DIMSE_receiveDataSetInMemory: Cannot create DcmDataset");
-	}
-	/* there was a network problem */
-	return cond;
+    if (dset == NULL)
+    {
+        cond = ignoreDataSet(assoc, blocking, timeout, &bytesRead, &pdvCount);
+        if (cond == EC_Normal)
+        {
+            return makeDcmnetCondition(DIMSEC_OUTOFRESOURCES, OF_error, "DIMSE_receiveDataSetInMemory: Cannot create DcmDataset");
+        }
+        /* there was a network problem */
+        return cond;
     }
     
     DcmBufferStream dataBuf(DCM_ReadMode);
-    
     dset->transferInit();
 
-    while (!last && cond == DIMSE_NORMAL) {
+    while (!last && cond == EC_Normal) {
     
-	dataBuf.ReleaseBuffer(); /* make the stream remember any unread bytes */
+        dataBuf.ReleaseBuffer(); /* make the stream remember any unread bytes */
         
-	cond = DIMSE_readNextPDV(assoc, blocking, timeout, &pdv);
-	if (cond != DIMSE_NORMAL) {
-	    break;
-	}
-	if (pdv.pdvType != DUL_DATASETPDV) {
-	    cond = DIMSE_UNEXPECTEDPDVTYPE;
-	    break;
-	}
-	if (pdvCount == 0) {
-	    pid = pdv.presentationContextID;
+        cond = DIMSE_readNextPDV(assoc, blocking, timeout, &pdv);
+        if (cond != EC_Normal) {
+            break;
+        }
+        if (pdv.pdvType != DUL_DATASETPDV) {
+            cond = DIMSE_UNEXPECTEDPDVTYPE;
+            break;
+        }
+        if (pdvCount == 0) {
+            pid = pdv.presentationContextID;
 
-	    /* is this a valid presentation context ? */
-	    cond = getTransferSyntax(assoc, pid, &xferSyntax);
-	    if (!SUCCESS(cond)) 
-	        break;
-		
-	} else if (pdv.presentationContextID != pid) {
-	    cond = DIMSE_INVALIDPRESENTATIONCONTEXTID;
-	    COND_PushCondition(cond, 
-	        "DIMSE: Different PIDs inside Data Set: %d != %d", 
-	        pid, pdv.presentationContextID);
-	    cond = DIMSE_RECEIVEFAILED;
-	    break;
-	}
-	if ((pdv.fragmentLength % 2) != 0) {
-	    /* This should NEVER happen.  See Part 7, Annex F. */
-	    cond = COND_PushCondition(DIMSE_RECEIVEFAILED,
-	        "DIMSE: Odd Fragment Length: %lu", pdv.fragmentLength);
-	    break;
-	}
+            /* is this a valid presentation context ? */
+            cond = getTransferSyntax(assoc, pid, &xferSyntax);
+            if (cond.bad()) 
+                break;
+                
+        } else if (pdv.presentationContextID != pid) {
+            char buf1[256];
+            sprintf(buf1, "DIMSE: Different PIDs inside Data Set: %d != %d", pid, pdv.presentationContextID);
+            OFCondition subCond = makeDcmnetCondition(DIMSEC_INVALIDPRESENTATIONCONTEXTID, OF_error, buf1);
+            cond = makeDcmnetSubCondition(DIMSEC_RECEIVEFAILED, OF_error, "DIMSE Failed to receive message", subCond);
+            break;
+        }
+        if ((pdv.fragmentLength % 2) != 0) {
+            /* This should NEVER happen.  See Part 7, Annex F. */
+            char buf2[256];
+            sprintf(buf2, "DIMSE: Odd Fragment Length: %lu", pdv.fragmentLength);
+            cond = makeDcmnetCondition(DIMSEC_RECEIVEFAILED, OF_error, buf2);
+            break;
+        }
 
-	
-	if (pdv.fragmentLength > 0) {
-	    dataBuf.SetBuffer(pdv.data, pdv.fragmentLength);
-	}
+        
+        if (pdv.fragmentLength > 0) {
+            dataBuf.SetBuffer(pdv.data, pdv.fragmentLength);
+        }
 
-	if (pdv.lastPDV) {
-	    dataBuf.SetEndOfStream();
-	}
-	
-	econd = dset->read(dataBuf, xferSyntax);
-	if (econd != EC_Normal && econd != EC_StreamNotifyClient) {
-	    DIMSE_warning(assoc, 
-		"DIMSE_receiveDataSetInMemory: dset->read() Failed (%s)", econd.text());
-	    cond = DIMSE_RECEIVEFAILED;
-	    break;
-	}
+        if (pdv.lastPDV) {
+            dataBuf.SetEndOfStream();
+        }
+        
+        econd = dset->read(dataBuf, xferSyntax);
+        if (econd != EC_Normal && econd != EC_StreamNotifyClient)
+        {
+            DIMSE_warning(assoc, "DIMSE_receiveDataSetInMemory: dset->read() Failed (%s)", econd.text());
+            cond = DIMSE_RECEIVEFAILED;
+            break;
+        }
 
-	bytesRead += pdv.fragmentLength;
-	pdvCount++;
-	last = pdv.lastPDV;
-	if (debug) {
-	    COUT << "DIMSE receiveFileData: " << pdv.fragmentLength
+        bytesRead += pdv.fragmentLength;
+        pdvCount++;
+        last = pdv.lastPDV;
+        if (debug) {
+            COUT << "DIMSE receiveFileData: " << pdv.fragmentLength
             << " bytes read (last: " << ((last)?("YES"):("NO")) << ")" << endl;
-	}
-	if (callback) { /* execute callback function */
-	    callback(callbackData, bytesRead);
-	}
+        }
+        if (callback) { /* execute callback function */
+            callback(callbackData, bytesRead);
+        }
     }
 
     dset->transferEnd();
     
-    if (cond != DIMSE_NORMAL) {
-	return COND_PushCondition(cond, DIMSE_Message(cond));
-    }
+    if (cond.bad()) return cond;
 
     if (g_dimse_save_dimse_data) saveDimseFragment(dset, OFFalse, OFTrue);
 
@@ -1403,11 +1311,11 @@ DIMSE_receiveDataSetInMemory(T_ASC_Association * assoc,
 
 void DIMSE_debug(int level)
 {
-	debug = level;
+        debug = level;
 }
 
 void DIMSE_warning(T_ASC_Association *assoc,
-	const char *format, ...)
+        const char *format, ...)
 {
     va_list args;
     char buf[8192]; /* we hope a DIMSE warning never gets larger */
@@ -1424,7 +1332,12 @@ void DIMSE_warning(T_ASC_Association *assoc,
 /*
 ** CVS Log
 ** $Log: dimse.cc,v $
-** Revision 1.25  2001-09-26 12:29:01  meichel
+** Revision 1.26  2001-10-12 10:18:35  meichel
+** Replaced the CONDITION types, constants and functions in the dcmnet module
+**   by an OFCondition based implementation which eliminates the global condition
+**   stack.  This is a major change, caveat emptor!
+**
+** Revision 1.25  2001/09/26 12:29:01  meichel
 ** Implemented changes in dcmnet required by the adaptation of dcmdata
 **   to class OFCondition.  Removed some unused code.
 **

@@ -67,10 +67,10 @@
 **	Module Prefix: ASC_
 **
 **
-** Last Update:		$Author: joergr $
-** Update Date:		$Date: 2001-09-28 13:23:46 $
+** Last Update:		$Author: meichel $
+** Update Date:		$Date: 2001-10-12 10:18:25 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/include/Attic/assoc.h,v $
-** CVS/RCS Revision:	$Revision: 1.16 $
+** CVS/RCS Revision:	$Revision: 1.17 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -246,67 +246,67 @@ typedef struct {
  * these routines.
  */
 
-CONDITION 
+OFCondition 
 ASC_initializeNetwork(
     T_ASC_NetworkRole role,
     int acceptorPort,
     int timeout,
     T_ASC_Network ** network);
 
-CONDITION 
+OFCondition 
 ASC_dropNetwork(T_ASC_Network ** network);
 
 /*
  * Building Association parameters
  */
 
-CONDITION
+OFCondition
 ASC_createAssociationParameters(
     T_ASC_Parameters ** params,
     long maxReceivePDUSize);
 
-CONDITION 
+OFCondition 
 ASC_destroyAssociationParameters(
     T_ASC_Parameters ** params);
 
 /* set transport layer type in association parameters */
-CONDITION
+OFCondition
 ASC_setTransportLayerType(
     T_ASC_Parameters * params,
     OFBool useSecureLayer);
 
-CONDITION 
+OFCondition 
 ASC_setAPTitles(
     T_ASC_Parameters * params,
     const char* callingAPTitle,
     const char* calledAPTitle,
     const char* respondingAPTitle);
 
-CONDITION 
+OFCondition 
 ASC_getAPTitles(
     T_ASC_Parameters * params,
     char* callingAPTitle,
     char* calledAPTitle,
     char* respondingAPTitle);
 
-CONDITION 
+OFCondition 
 ASC_getApplicationContextName(
     T_ASC_Parameters * params,
     char* applicationContextName);
 
-CONDITION 
+OFCondition 
 ASC_setPresentationAddresses(
     T_ASC_Parameters * params,
     const char* callingPresentationAddress,
     const char* calledPresentationAddress);
 
-CONDITION 
+OFCondition 
 ASC_getPresentationAddresses(
     T_ASC_Parameters * params,
     char* callingPresentationAddress,
     char* calledPresentationAddress);
 
-CONDITION 
+OFCondition 
 ASC_getRejectParameters(
     T_ASC_Parameters * params,
     T_ASC_RejectParameters * rejectParameters);
@@ -321,7 +321,7 @@ ASC_printRejectParameters(
     ostream &out, 
     T_ASC_RejectParameters *rej);
 
-CONDITION 
+OFCondition 
 ASC_addPresentationContext(
     T_ASC_Parameters * params,
     T_ASC_PresentationContextID presentationContextID,
@@ -338,40 +338,40 @@ int
 ASC_countAcceptedPresentationContexts(
     T_ASC_Parameters * params);
 
-CONDITION 
+OFCondition 
 ASC_getPresentationContext(
     T_ASC_Parameters * params,
     int listPosition,
     T_ASC_PresentationContext * presentationContext);
 
-CONDITION 
+OFCondition 
 ASC_acceptPresentationContext(
     T_ASC_Parameters * params,
     T_ASC_PresentationContextID presentationContextID,
     const char* transferSyntax,
     T_ASC_SC_ROLE acceptedRole = ASC_SC_ROLE_DEFAULT);
 
-CONDITION
+OFCondition
 ASC_acceptContextsWithPreferredTransferSyntaxes(
     T_ASC_Parameters * params,
     const char* abstractSyntaxes[], int abstractSyntaxCount,
     const char* transferSyntaxes[], int transferSyntaxCount,
     T_ASC_SC_ROLE acceptedRole = ASC_SC_ROLE_DEFAULT);
 
-CONDITION
+OFCondition
 ASC_acceptContextsWithTransferSyntax(
     T_ASC_Parameters * params,
     const char* transferSyntax, int abstractSyntaxCount,
     const char* abstractSyntaxes[],
     T_ASC_SC_ROLE acceptedRole = ASC_SC_ROLE_DEFAULT);
 
-CONDITION 
+OFCondition 
 ASC_refusePresentationContext(
     T_ASC_Parameters * params,
     T_ASC_PresentationContextID presentationContextID,
     T_ASC_P_ResultReason resultReason);
 
-CONDITION
+OFCondition
 ASC_findAcceptedPresentationContext(
     T_ASC_Parameters * params,
     T_ASC_PresentationContextID presentationContextID,
@@ -399,7 +399,7 @@ unsigned long ASC_getPeerCertificateLength(T_ASC_Association *assoc);
 unsigned long ASC_getPeerCertificate(T_ASC_Association *assoc, void *buf, unsigned long bufLen);
 
 /* set new transport layer object */
-CONDITION
+OFCondition
 ASC_setTransportLayer(T_ASC_Network *network, DcmTransportLayer *newLayer, int takeoverOwnership);
 
 void 
@@ -430,7 +430,7 @@ ASC_selectReadableAssociation(
  * Association Messages
  */
 
-CONDITION 
+OFCondition 
 ASC_requestAssociation(
     T_ASC_Network * network,
     T_ASC_Parameters * params,	/* params will be saved
@@ -440,7 +440,7 @@ ASC_requestAssociation(
     void **associatePDU=NULL,
     unsigned long *associatePDUlength=NULL);
 
-CONDITION 
+OFCondition 
 ASC_receiveAssociation(
     T_ASC_Network * network,
     T_ASC_Association ** association,
@@ -449,96 +449,49 @@ ASC_receiveAssociation(
     unsigned long *associatePDUlength=NULL,
     OFBool useSecureLayer=OFFalse);
 
-CONDITION
+OFCondition
 ASC_acknowledgeAssociation(
     T_ASC_Association * assoc,
     void **associatePDU=NULL,
     unsigned long *associatePDUlength=NULL);
 
-CONDITION
+OFCondition
 ASC_rejectAssociation(
     T_ASC_Association * association,
     T_ASC_RejectParameters * rejectParameters,
     void **associatePDU=NULL,
     unsigned long *associatePDUlength=NULL);
 
-CONDITION 
+OFCondition 
 ASC_releaseAssociation(T_ASC_Association * association);
 
-CONDITION 
+OFCondition 
 ASC_acknowledgeRelease(T_ASC_Association * association);
 
-CONDITION 
+OFCondition 
 ASC_abortAssociation(T_ASC_Association * association);
 
-CONDITION 
+OFCondition 
 ASC_dropSCPAssociation(T_ASC_Association * association);
 
-CONDITION 
+OFCondition 
 ASC_dropAssociation(T_ASC_Association * association);
 
-CONDITION 
+OFCondition 
 ASC_destroyAssociation(T_ASC_Association ** association);
 
-/*
-** Conditions
-*/
-/*  Now define the fixed values for conditions returned by this
-**  package.  Note that FAC_ASC is used to generate these
-**  conditions.  
-*/
-
-#ifndef FAC_ASC
-#define FAC_ASC		9
-#endif
-
-#define	ASC_NORMAL				/* Successful return */ \
-	FORM_COND(FAC_ASC, SEV_SUCC, 1)
-#define	ASC_NETWORKERROR		/* Network Layer Error */ \
-	FORM_COND(FAC_ASC, SEV_ERROR, 2)
-#define	ASC_NULLKEY				/* Caller passed in a NULL key */ \
-	FORM_COND(FAC_ASC, SEV_ERROR, 3)
-#define	ASC_ILLEGALKEY			/* Caller passed in an illegal key */ \
-	FORM_COND(FAC_ASC, SEV_ERROR, 4)
-#define	ASC_MALLOCERROR			/* Failed to malloc a buffer */ \
-	FORM_COND(FAC_ASC, SEV_ERROR, 5)
-#define ASC_CODINGERROR			/* */ \
-	FORM_COND(FAC_ASC, SEV_ERROR, 6)
-#define ASC_BADPRESENTATIONCONTEXTID		/* */ \
-	FORM_COND(FAC_ASC, SEV_ERROR, 7)
-#define ASC_DUPLICATEPRESENTATIONCONTEXTID		/* */ \
-	FORM_COND(FAC_ASC, SEV_ERROR, 8)
-#define ASC_BADPRESENTATIONCONTEXTPOSITION	/* */ \
-	FORM_COND(FAC_ASC, SEV_ERROR, 9)
-#define ASC_MISSINGTRANSFERSYNTAX	/* */ \
-	FORM_COND(FAC_ASC, SEV_ERROR, 10)
-#define ASC_ASSOCIATIONREJECTED		/* Association rejected by peer */ \
-	FORM_COND(FAC_ASC, SEV_ERROR, 11)
-#define	ASC_PEERRELEASEDASSOCIATION	/* Peer released the association */ \
-	FORM_COND(FAC_ASC, SEV_ERROR, 12)
-#define	ASC_PEERABORTEDASSOCIATION	/* Peer aborted the association */ \
-	FORM_COND(FAC_ASC, SEV_ERROR, 13)
-#define	ASC_PEERDROPPEDASSOCIATION	/* Peer dropped the association */ \
-	FORM_COND(FAC_ASC, SEV_ERROR, 14)
-#define	ASC_REQUESTASSOCIATIONFAILED	/* Failed to establish association */ \
-	FORM_COND(FAC_ASC, SEV_ERROR, 15)
-#define	ASC_APABORT			/* Provider aborted association */ \
-	FORM_COND(FAC_ASC, SEV_ERROR, 16)
-#define	ASC_RELEASECONFIRMED		/* Release was confirmed */ \
-	FORM_COND(FAC_ASC, SEV_SUCC,  17)
-#define	ASC_PEERREQUESTEDRELEASE	/* Peer requested release */ \
-	FORM_COND(FAC_ASC, SEV_SUCC,  18)
-#define	ASC_READTIMEOUT			/* Timeout on network */ \
-	FORM_COND(FAC_ASC, SEV_WARN,  19)
-#define	ASC_SHUTDOWNAPPLICATION	/* Peer requested application shutdown */ \
-	FORM_COND(FAC_ASC, SEV_ERROR, 20)
 
 #endif
 
 /*
 ** CVS Log
 ** $Log: assoc.h,v $
-** Revision 1.16  2001-09-28 13:23:46  joergr
+** Revision 1.17  2001-10-12 10:18:25  meichel
+** Replaced the CONDITION types, constants and functions in the dcmnet module
+**   by an OFCondition based implementation which eliminates the global condition
+**   stack.  This is a major change, caveat emptor!
+**
+** Revision 1.16  2001/09/28 13:23:46  joergr
 ** Added forward declaration of "ostream" to keep gcc 3.0 quiet.
 **
 ** Revision 1.15  2000/10/10 12:06:05  meichel

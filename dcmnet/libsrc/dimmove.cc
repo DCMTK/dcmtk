@@ -46,21 +46,21 @@
 */
 /*
 **
-** Author: Andrew Hewett		Created: 03-06-93
+** Author: Andrew Hewett                Created: 03-06-93
 ** 
 ** Module: dimmove
 **
 ** Purpose: 
-**	This file contains the routines which help with
-**	query/retrieve services using the C-MOVE operation.
+**      This file contains the routines which help with
+**      query/retrieve services using the C-MOVE operation.
 **
-**	Module Prefix: DIMSE_
+**      Module Prefix: DIMSE_
 **
-** Last Update:		$Author: meichel $
-** Update Date:		$Date: 2000-02-23 15:12:36 $
-** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/libsrc/dimmove.cc,v $
-** CVS/RCS Revision:	$Revision: 1.8 $
-** Status:		$State: Exp $
+** Last Update:         $Author: meichel $
+** Update Date:         $Date: 2001-10-12 10:18:35 $
+** Source File:         $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/libsrc/dimmove.cc,v $
+** CVS/RCS Revision:    $Revision: 1.9 $
+** Status:              $State: Exp $
 **
 ** CVS/RCS Log at end of file
 */
@@ -92,8 +92,8 @@ END_EXTERN_C
 #endif
 
 #include "diutil.h"
-#include "dimse.h"		/* always include the module header */
-#include "dimcond.h"
+#include "dimse.h"              /* always include the module header */
+#include "cond.h"
 
 /*
 **
@@ -109,8 +109,8 @@ selectReadable(T_ASC_Association *assoc,
     
     if (net != NULL && subAssoc == NULL) {
         if (ASC_associationWaiting(net, 0)) {
-	    /* association request waiting on network */
-	    return 2;
+            /* association request waiting on network */
+            return 2;
         }
     } 
     assocList[0] = assoc; 
@@ -118,56 +118,52 @@ selectReadable(T_ASC_Association *assoc,
     assocList[1] = subAssoc;
     if (subAssoc != NULL) assocCount++;
     if (subAssoc == NULL) {
-        timeout = 1;	/* poll wait until an assoc req or move rsp */
+        timeout = 1;    /* poll wait until an assoc req or move rsp */
     } else {
         if (blockMode == DIMSE_BLOCKING) {
-            timeout = 10000;	/* a long time */
+            timeout = 10000;    /* a long time */
         }
     }
     if (!ASC_selectReadableAssociation(assocList, assocCount, timeout)) {
-	/* none readable */
+        /* none readable */
         return 0;
     }
     if (assocList[0] != NULL) {
-	/* main association readable */
-	return 1;
+        /* main association readable */
+        return 1;
     }
     if (assocList[1] != NULL) {
-	/* sub association readable */
+        /* sub association readable */
         return 2;
     }
     /* should not be reached */
     return 0;
 }
 
-CONDITION
+OFCondition
 DIMSE_moveUser(
-	/* in */
-	T_ASC_Association *assoc, 
+        /* in */
+        T_ASC_Association *assoc, 
         T_ASC_PresentationContextID presID,
-	T_DIMSE_C_MoveRQ *request,
-	DcmDataset *requestIdentifiers,
-	DIMSE_MoveUserCallback callback, void *callbackData,
-	/* blocking info for response */
-	T_DIMSE_BlockingMode blockMode, int timeout,
-	/* sub-operation provider callback */
-	T_ASC_Network *net,
-	DIMSE_SubOpProviderCallback subOpCallback, void *subOpCallbackData,
-	/* out */
-	T_DIMSE_C_MoveRSP *response, DcmDataset **statusDetail,
+        T_DIMSE_C_MoveRQ *request,
+        DcmDataset *requestIdentifiers,
+        DIMSE_MoveUserCallback callback, void *callbackData,
+        /* blocking info for response */
+        T_DIMSE_BlockingMode blockMode, int timeout,
+        /* sub-operation provider callback */
+        T_ASC_Network *net,
+        DIMSE_SubOpProviderCallback subOpCallback, void *subOpCallbackData,
+        /* out */
+        T_DIMSE_C_MoveRSP *response, DcmDataset **statusDetail,
         DcmDataset **rspIds)
 {
-    CONDITION cond;
     T_DIMSE_Message req, rsp;
     DIC_US msgId;
     int responseCount = 0;
     T_ASC_Association *subAssoc = NULL;
     DIC_US status = STATUS_Pending;
 
-    if (requestIdentifiers == NULL) {
-        return COND_PushCondition(DIMSE_NULLKEY,
-	    "DIMSE_moveUser: No Request Identifiers Supplied");
-    }
+    if (requestIdentifiers == NULL) return DIMSE_NULLKEY;
 
     bzero((char*)&req, sizeof(req));
     bzero((char*)&rsp, sizeof(rsp));
@@ -178,96 +174,97 @@ DIMSE_moveUser(
 
     msgId = request->MessageID;
 
-    cond = DIMSE_sendMessageUsingMemoryData(assoc, presID, &req,
-					  NULL, requestIdentifiers, 
-					  NULL, NULL);
-    if (cond != DIMSE_NORMAL) {
-	return cond;
+    OFCondition cond = DIMSE_sendMessageUsingMemoryData(assoc, presID, &req,
+                                          NULL, requestIdentifiers, 
+                                          NULL, NULL);
+    if (cond != EC_Normal) {
+        return cond;
     }
 
     /* receive responses */
 
-    while (cond == DIMSE_NORMAL && status == STATUS_Pending) {
+    while (cond == EC_Normal && status == STATUS_Pending) {
 
-	/* if user wants, multiplex between net/subAssoc 
-	 * and move responses over main assoc.
-	 */
-	switch (selectReadable(assoc, net, subAssoc, blockMode, timeout)) {
-	case 0:
-	    /* none are readble, timeout */
-	    if (blockMode == DIMSE_BLOCKING) {
-	        continue;	/* continue with while loop */
-	    } else {
-	        return COND_PushCondition(DIMSE_NODATAAVAILABLE,
-		    "DIMSE_moveUser: receive timeout");
-	    }
-	    /* break; */ // never reached after continue or return.
-	case 1:
-	    /* main association readable */
-	    break;
-	case 2:
-	    /* net/subAssoc readable */
-	    if (subOpCallback) {
-	        subOpCallback(subOpCallbackData, net, &subAssoc);
-	    }
-	    continue;	/* continue with main loop */
-	    /* break; */ // never reached after continue statement
-	}
+        /* if user wants, multiplex between net/subAssoc 
+         * and move responses over main assoc.
+         */
+        switch (selectReadable(assoc, net, subAssoc, blockMode, timeout)) {
+        case 0:
+            /* none are readble, timeout */
+            if (blockMode == DIMSE_BLOCKING) {
+                continue;       /* continue with while loop */
+            } else {
+                return DIMSE_NODATAAVAILABLE;
+            }
+            /* break; */ // never reached after continue or return.
+        case 1:
+            /* main association readable */
+            break;
+        case 2:
+            /* net/subAssoc readable */
+            if (subOpCallback) {
+                subOpCallback(subOpCallbackData, net, &subAssoc);
+            }
+            continue;   /* continue with main loop */
+            /* break; */ // never reached after continue statement
+        }
 
         bzero((char*)&rsp, sizeof(rsp));
 
-	cond = DIMSE_receiveCommand(assoc, blockMode, timeout, &presID, 
-		&rsp, statusDetail);
-	if (cond != DIMSE_NORMAL) {
-	    return cond;
-	}
-        if (rsp.CommandField != DIMSE_C_MOVE_RSP) {
-	    return COND_PushCondition(DIMSE_UNEXPECTEDRESPONSE, 
-		"DIMSE: Unexpected Response Command Field: 0x%x",
-		(unsigned)rsp.CommandField);
+        cond = DIMSE_receiveCommand(assoc, blockMode, timeout, &presID, 
+                &rsp, statusDetail);
+        if (cond != EC_Normal) {
+            return cond;
+        }
+        if (rsp.CommandField != DIMSE_C_MOVE_RSP)
+        {
+          char buf1[256];
+          sprintf(buf1, "DIMSE: Unexpected Response Command Field: 0x%x", (unsigned)rsp.CommandField);
+          return makeDcmnetCondition(DIMSEC_UNEXPECTEDRESPONSE, OF_error, buf1);
         }
     
         *response = rsp.msg.CMoveRSP;
-	
-        if (response->MessageIDBeingRespondedTo != msgId) {
-	    return COND_PushCondition(DIMSE_UNEXPECTEDRESPONSE, 
-		"DIMSE: Unexpected Response MsgId: %d (expected: %d)",
-		response->MessageIDBeingRespondedTo, msgId);
+        
+        if (response->MessageIDBeingRespondedTo != msgId)
+        {
+          char buf2[256];
+          sprintf(buf2, "DIMSE: Unexpected Response MsgId: %d (expected: %d)", response->MessageIDBeingRespondedTo, msgId);
+          return makeDcmnetCondition(DIMSEC_UNEXPECTEDRESPONSE, OF_error, buf2);
         }
 
         status = response->DimseStatus;
-	responseCount++;
+        responseCount++;
 
-	switch (status) {
-	case STATUS_Pending:
-	    if (*statusDetail != NULL) {
-	        DIMSE_warning(assoc, 
-		    "moveUser: Pending with statusDetail, ignoring detail");
-		delete *statusDetail;
-		*statusDetail = NULL;
-	    }
-	    if (response->DataSetType != DIMSE_DATASET_NULL) {
-		DIMSE_warning(assoc, 
-		    "moveUser: Status Pending, but DataSetType!=NULL");
-		DIMSE_warning(assoc, 
-		    "  Assuming NO response identifiers are present");
-	    }
+        switch (status) {
+        case STATUS_Pending:
+            if (*statusDetail != NULL) {
+                DIMSE_warning(assoc, 
+                    "moveUser: Pending with statusDetail, ignoring detail");
+                delete *statusDetail;
+                *statusDetail = NULL;
+            }
+            if (response->DataSetType != DIMSE_DATASET_NULL) {
+                DIMSE_warning(assoc, 
+                    "moveUser: Status Pending, but DataSetType!=NULL");
+                DIMSE_warning(assoc, 
+                    "  Assuming NO response identifiers are present");
+            }
 
-	    /* execute callback */
-	    if (callback) {
-	        callback(callbackData, request, responseCount, response);
-	    }
-	    break;
-	default:
-	    if (response->DataSetType != DIMSE_DATASET_NULL) {
+            /* execute callback */
+            if (callback) {
+                callback(callbackData, request, responseCount, response);
+            }
+            break;
+        default:
+            if (response->DataSetType != DIMSE_DATASET_NULL) {
                 cond = DIMSE_receiveDataSetInMemory(assoc, blockMode, timeout,
-	    	    &presID, rspIds, NULL, NULL);
-    	        if (cond != DIMSE_NORMAL) {
-		    return cond;
-	        }
-	    }
-	    break;
-	}
+                    &presID, rspIds, NULL, NULL);
+                if (cond != EC_Normal) {
+                    return cond;
+                }
+            }
+            break;
+        }
     }
 
     /* do remaining sub-association work, we may receive a non-pending
@@ -282,13 +279,13 @@ DIMSE_moveUser(
     return cond;
 }
 
-CONDITION
+OFCondition
 DIMSE_sendMoveResponse(T_ASC_Association * assoc, 
-	T_ASC_PresentationContextID presID, T_DIMSE_C_MoveRQ *request, 
-	T_DIMSE_C_MoveRSP *response, DcmDataset *rspIds, 
-	DcmDataset *statusDetail)
+        T_ASC_PresentationContextID presID, T_DIMSE_C_MoveRQ *request, 
+        T_DIMSE_C_MoveRSP *response, DcmDataset *rspIds, 
+        DcmDataset *statusDetail)
 {
-    CONDITION cond = DIMSE_NORMAL;
+    OFCondition cond = EC_Normal;
     T_DIMSE_Message rsp;
     unsigned int opts;
 
@@ -305,11 +302,11 @@ DIMSE_sendMoveResponse(T_ASC_Association * assoc,
     case STATUS_Success:
     case STATUS_Pending:
         /* Success cannot have a Failed SOP Instance UID list (no failures).
-	 * Pending may not send such a list.
-	 */ 
+         * Pending may not send such a list.
+         */ 
         rsp.msg.CMoveRSP.DataSetType = DIMSE_DATASET_NULL;
-	rspIds = NULL;	/* zero our local pointer */
-	break;
+        rspIds = NULL;  /* zero our local pointer */
+        break;
     default:
         /* send it if provided */
         if (rspIds == NULL) rsp.msg.CMoveRSP.DataSetType = DIMSE_DATASET_NULL;
@@ -322,131 +319,131 @@ DIMSE_sendMoveResponse(T_ASC_Association * assoc,
      * the status (see Part 4, C.4.2.1.6-9)
      */
     opts = (O_MOVE_NUMBEROFREMAININGSUBOPERATIONS |
-	O_MOVE_NUMBEROFCOMPLETEDSUBOPERATIONS |
-	O_MOVE_NUMBEROFFAILEDSUBOPERATIONS |
-	O_MOVE_NUMBEROFWARNINGSUBOPERATIONS);
-	
+        O_MOVE_NUMBEROFCOMPLETEDSUBOPERATIONS |
+        O_MOVE_NUMBEROFFAILEDSUBOPERATIONS |
+        O_MOVE_NUMBEROFWARNINGSUBOPERATIONS);
+        
     switch (response->DimseStatus) {
     case STATUS_Pending:
     case STATUS_MOVE_Cancel_SubOperationsTerminatedDueToCancelIndication:
-	break;
+        break;
     default:
-	/* Remaining sub-operations may not be in responses 
-	 * with a status of Warning, Failed, Refused or Successful
-	 */
- 	opts &= (~ O_MOVE_NUMBEROFREMAININGSUBOPERATIONS);
-	break;
+        /* Remaining sub-operations may not be in responses 
+         * with a status of Warning, Failed, Refused or Successful
+         */
+        opts &= (~ O_MOVE_NUMBEROFREMAININGSUBOPERATIONS);
+        break;
     }
 
     rsp.msg.CMoveRSP.opts |= opts;
 
     cond = DIMSE_sendMessageUsingMemoryData(assoc, presID, &rsp, 
-	statusDetail, rspIds, NULL, NULL);
+        statusDetail, rspIds, NULL, NULL);
 
     return cond;
 
 }
 
-CONDITION
+OFCondition
 DIMSE_moveProvider(
-	/* in */ 
-	T_ASC_Association *assoc, 
-	T_ASC_PresentationContextID presIdCmd,
-	T_DIMSE_C_MoveRQ *request,
-	DIMSE_MoveProviderCallback callback, void *callbackData,
-	/* blocking info for data set */
-	T_DIMSE_BlockingMode blockMode, int timeout)
-{	
-    CONDITION cond = DIMSE_NORMAL;
+        /* in */ 
+        T_ASC_Association *assoc, 
+        T_ASC_PresentationContextID presIdCmd,
+        T_DIMSE_C_MoveRQ *request,
+        DIMSE_MoveProviderCallback callback, void *callbackData,
+        /* blocking info for data set */
+        T_DIMSE_BlockingMode blockMode, int timeout)
+{       
+    OFCondition cond = EC_Normal;
     T_ASC_PresentationContextID presIdData;
     DcmDataset *statusDetail = NULL;
     DcmDataset *reqIds = NULL;
     DcmDataset *rspIds = NULL;
     OFBool cancelled = OFFalse;
+    OFBool normal = OFTrue;
     int responseCount = 0;
     T_DIMSE_C_MoveRSP rsp;
 
-    cond = DIMSE_receiveDataSetInMemory(assoc, blockMode, timeout,
-		&presIdData, &reqIds, NULL, NULL);
+    cond = DIMSE_receiveDataSetInMemory(assoc, blockMode, timeout, &presIdData, &reqIds, NULL, NULL);
 
-    if (cond != DIMSE_NORMAL) {
-	goto providerCleanup;
-    }
-
-    if (presIdData != presIdCmd) {
-	cond = COND_PushCondition(DIMSE_INVALIDPRESENTATIONCONTEXTID, 
-		"DIMSE: Presentation Contexts of Command and Data Differ");
-	goto providerCleanup;
-    }
-
-    bzero((char*)&rsp, sizeof(rsp));
-    rsp.DimseStatus = STATUS_Pending;	/* assume */
-    
-    while (cond == DIMSE_NORMAL && rsp.DimseStatus == STATUS_Pending) {
-	responseCount++;
-
-	cond = DIMSE_checkForCancelRQ(assoc, presIdCmd, request->MessageID);
-	if (cond == DIMSE_NORMAL) {
-	    /* cancel received */
-	    rsp.DimseStatus = 
-	      STATUS_MOVE_Cancel_SubOperationsTerminatedDueToCancelIndication;
-	    cancelled = OFTrue;	    
-	} else if (cond == DIMSE_NODATAAVAILABLE) {
-	    /* get rid of timeout on condition stack */
-	    COND_PopCondition(OFFalse);	
-	} else {
-	    /* some execption condition occured */
-	    goto providerCleanup;
-	}
-
-        if (callback) {
-	    callback(callbackData, cancelled, request, reqIds, 
-	        responseCount, &rsp, &statusDetail, &rspIds);
-	} else {
-	    return COND_PushCondition(DIMSE_NULLKEY,
-	        "DIMSE_moveProvider: no callback function"); 
+    if (cond.good())
+    {    
+        if (presIdData != presIdCmd)
+        {
+          cond = makeDcmnetCondition(DIMSEC_INVALIDPRESENTATIONCONTEXTID, OF_error, "DIMSE: Presentation Contexts of Command and Data Differ");
         }
-	
-	if (cancelled) {
-	    /* make sure */
-	    rsp.DimseStatus = 
-	      STATUS_MOVE_Cancel_SubOperationsTerminatedDueToCancelIndication;
-	    if (rspIds != NULL) {
-	        delete reqIds;
-	        reqIds = NULL;
-	    }
-	}
-	
-	cond = DIMSE_sendMoveResponse(assoc, presIdCmd, request,
-	    &rsp, rspIds, statusDetail);
-	    
-	if (rspIds != NULL) {
-	    delete rspIds;
-	    rspIds = NULL;
-	}
-	if (statusDetail != NULL) {
-	    delete statusDetail;
-	    statusDetail = NULL;
-	}
+        else
+        {
+            bzero((char*)&rsp, sizeof(rsp));
+            rsp.DimseStatus = STATUS_Pending;   /* assume */
+            
+            while (cond == EC_Normal && rsp.DimseStatus == STATUS_Pending && normal)
+            {
+                responseCount++;
+            
+                cond = DIMSE_checkForCancelRQ(assoc, presIdCmd, request->MessageID);
+                if (cond == EC_Normal)
+                {
+                    /* cancel received */
+                    rsp.DimseStatus = STATUS_MOVE_Cancel_SubOperationsTerminatedDueToCancelIndication;
+                    cancelled = OFTrue;     
+                } else if (cond == DIMSE_NODATAAVAILABLE)
+                {
+                    /* timeout */
+                } else {
+                    /* some execption condition occured, bail out */
+                    normal = OFFalse;
+                }
+            
+                if (normal)            
+                {
+                     if (callback) {
+                         callback(callbackData, cancelled, request, reqIds, 
+                             responseCount, &rsp, &statusDetail, &rspIds);
+                     } else {
+                         return makeDcmnetCondition(DIMSEC_NULLKEY, OF_error, "DIMSE_moveProvider: no callback function");
+                     }
+                     
+                     if (cancelled) {
+                         /* make sure */
+                         rsp.DimseStatus = 
+                           STATUS_MOVE_Cancel_SubOperationsTerminatedDueToCancelIndication;
+                         if (rspIds != NULL) {
+                             delete reqIds;
+                             reqIds = NULL;
+                         }
+                     }
+                     
+                     cond = DIMSE_sendMoveResponse(assoc, presIdCmd, request,
+                         &rsp, rspIds, statusDetail);
+                         
+                     if (rspIds != NULL) {
+                         delete rspIds;
+                         rspIds = NULL;
+                     }
+                     if (statusDetail != NULL) {
+                         delete statusDetail;
+                         statusDetail = NULL;
+                     }
+                }
+            }
+        }
     }
 
-providerCleanup:
-    if (reqIds != NULL) {
-        delete reqIds;
-        reqIds = NULL;
-    }
-    if (rspIds != NULL) {
-        delete rspIds;
-        rspIds = NULL;
-    }
-       
+    delete reqIds;
+    delete rspIds;
     return cond;
 }
 
 /*
 ** CVS Log
 ** $Log: dimmove.cc,v $
-** Revision 1.8  2000-02-23 15:12:36  meichel
+** Revision 1.9  2001-10-12 10:18:35  meichel
+** Replaced the CONDITION types, constants and functions in the dcmnet module
+**   by an OFCondition based implementation which eliminates the global condition
+**   stack.  This is a major change, caveat emptor!
+**
+** Revision 1.8  2000/02/23 15:12:36  meichel
 ** Corrected macro for Borland C++ Builder 4 workaround.
 **
 ** Revision 1.7  2000/02/01 10:24:10  meichel

@@ -20,11 +20,11 @@ LOCALDEFS=
 
 include $(configdir)/@common_makefile@
 
-objs= 	asccond.o assoc.o cond.o dcompat.o dimcancl.o \
-	dimcmd.o dimcond.o dimdump.o dimecho.o dimfind.o \
-	dimmove.o dimse.o dimstore.o diutil.o dulcond.o \
+objs= 	assoc.o cond.o dcompat.o dimcancl.o \
+	dimcmd.o dimdump.o dimecho.o dimfind.o \
+	dimmove.o dimse.o dimstore.o diutil.o \
 	dulconst.o dulextra.o dulfsm.o dulparse.o \
-	dulpres.o dul.o lst.o lstcond.o extneg.o dimget.o \
+	dulpres.o dul.o lst.o extneg.o dimget.o \
 	dcmlayer.o dcmtrans.o
 
 all: libdcmnet.$(LIBEXT)

@@ -21,10 +21,10 @@
  *
  *  Purpose: Storage Service Class Provider (C-STORE operation)
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-09-28 13:21:41 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2001-10-12 10:18:21 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/apps/storescp.cc,v $
- *  CVS/RCS Revision: $Revision: 1.38 $
+ *  CVS/RCS Revision: $Revision: 1.39 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -79,11 +79,11 @@ static char rcsid[] = "$dcmtk: " OFFIS_CONSOLE_APPLICATION " v"
 
 #define APPLICATIONTITLE "STORESCP"     /* our application entity title */
 
-static CONDITION processCommands(T_ASC_Association *assoc);
-static CONDITION acceptAssociation(T_ASC_Network *net);
-static CONDITION echoSCP(T_ASC_Association * assoc, T_DIMSE_Message * msg,
+static OFCondition processCommands(T_ASC_Association *assoc);
+static OFCondition acceptAssociation(T_ASC_Network *net);
+static OFCondition echoSCP(T_ASC_Association * assoc, T_DIMSE_Message * msg,
 	T_ASC_PresentationContextID presID);
-static CONDITION storeSCP(T_ASC_Association * assoc, T_DIMSE_Message * msg,
+static OFCondition storeSCP(T_ASC_Association * assoc, T_DIMSE_Message * msg,
 	T_ASC_PresentationContextID presID);
 	
 OFCmdUnsignedInt  opt_port = 0;
@@ -127,7 +127,6 @@ static const char *opt_dhparam = NULL;
 
 int main(int argc, char *argv[])
 {
-    CONDITION cond;
     T_ASC_Network *net;
     
 #ifdef HAVE_GUSI_H
@@ -511,10 +510,10 @@ int main(int argc, char *argv[])
 	  DCM_DICT_ENVIRONMENT_VARIABLE);
   }
 
-  cond = ASC_initializeNetwork(NET_ACCEPTOR, (int)opt_port, 1000, &net);
-  if (!SUCCESS(cond))
+  OFCondition cond = ASC_initializeNetwork(NET_ACCEPTOR, (int)opt_port, 1000, &net);
+  if (cond.bad())
   {
-    COND_DumpConditions();
+    DimseCondition::dump(cond);
     return 1;
   }
 
@@ -595,16 +594,16 @@ int main(int argc, char *argv[])
     
     
       cond = ASC_setTransportLayer(net, tLayer, 0);
-      if (!SUCCESS(cond))
+      if (cond.bad())
       {
-	  COND_DumpConditions();
+	  DimseCondition::dump(cond);
 	  return 1;
       }
    }
 
 #endif
 
-  while (SUCCESS(cond)) 
+  while (cond.good()) 
   {
     cond = acceptAssociation(net);
 #ifdef WITH_OPENSSL
@@ -628,9 +627,9 @@ int main(int argc, char *argv[])
   }
 
   cond = ASC_dropNetwork(&net);
-  if (!SUCCESS(cond))
+  if (cond.bad())
   {
-    COND_DumpConditions();
+    DimseCondition::dump(cond);
     return 1;
   }
 
@@ -645,10 +644,9 @@ int main(int argc, char *argv[])
   return 0;
 }
 
-static CONDITION 
+static OFCondition 
 acceptAssociation(T_ASC_Network * net)
 {
-  CONDITION cond;
   char buf[BUFSIZ];
   T_ASC_Association *assoc;
 
@@ -660,11 +658,11 @@ acceptAssociation(T_ASC_Network * net)
   const char* transferSyntaxes[] = { NULL, NULL, NULL, NULL };
   int numTransferSyntaxes = 0;
 
-  cond = ASC_receiveAssociation(net, &assoc, opt_maxPDU, NULL, NULL, opt_secureConnection);
+  OFCondition cond = ASC_receiveAssociation(net, &assoc, opt_maxPDU, NULL, NULL, opt_secureConnection);
   
-  if (!SUCCESS(cond))
+  if (cond.bad())
   {
-    if (opt_verbose) COND_DumpConditions();
+    if (opt_verbose) DimseCondition::dump(cond);
     goto cleanup;
   }
   if (opt_verbose) printf("Association Received\n");
@@ -686,10 +684,10 @@ acceptAssociation(T_ASC_Network * net)
 
     if (opt_verbose) printf("Refusing Association (forced via command line)\n");
     cond = ASC_rejectAssociation(assoc, &rej);
-    if (cond != ASC_NORMAL)
+    if (cond.bad())
     {
       printf("Association Reject Failed:\n");
-      COND_DumpConditions();
+      DimseCondition::dump(cond);
     }
     goto cleanup;
   }
@@ -770,9 +768,9 @@ acceptAssociation(T_ASC_Network * net)
     assoc->params, 
     knownAbstractSyntaxes, DIM_OF(knownAbstractSyntaxes),
     transferSyntaxes, numTransferSyntaxes);
-  if (!SUCCESS(cond))
+  if (cond.bad())
   {
-    if (opt_verbose) COND_DumpConditions();
+    if (opt_verbose) DimseCondition::dump(cond);
     goto cleanup;
   }
 
@@ -781,9 +779,9 @@ acceptAssociation(T_ASC_Network * net)
     assoc->params, 
     dcmStorageSOPClassUIDs, numberOfDcmStorageSOPClassUIDs,
     transferSyntaxes, numTransferSyntaxes);
-  if (!SUCCESS(cond))
+  if (cond.bad())
   {
-    if (opt_verbose) COND_DumpConditions();
+    if (opt_verbose) DimseCondition::dump(cond);
     goto cleanup;
   }
 
@@ -791,8 +789,8 @@ acceptAssociation(T_ASC_Network * net)
   ASC_setAPTitles(assoc->params, NULL, NULL, opt_respondingaetitle);
 
   /* acknowledge or reject this association */
-  if ((cond = ASC_getApplicationContextName(assoc->params, buf) != 
-    ASC_NORMAL) || strcmp(buf, UID_StandardApplicationContext) != 0)
+  cond = ASC_getApplicationContextName(assoc->params, buf);
+  if ((cond.bad()) || strcmp(buf, UID_StandardApplicationContext) != 0)
   {
     /* reject: the application context name is not supported */
     T_ASC_RejectParameters rej =
@@ -804,9 +802,9 @@ acceptAssociation(T_ASC_Network * net)
 
     if (opt_verbose) printf("Association Rejected: bad application context name: %s\n", buf);
     cond = ASC_rejectAssociation(assoc, &rej);
-    if (cond != ASC_NORMAL)
+    if (cond.bad())
     {
-      if (opt_verbose) COND_DumpConditions();
+      if (opt_verbose) DimseCondition::dump(cond);
     }
     goto cleanup;
 
@@ -823,16 +821,16 @@ acceptAssociation(T_ASC_Network * net)
 
     if (opt_verbose) printf("Association Rejected: No Implementation Class UID provided\n");
     cond = ASC_rejectAssociation(assoc, &rej);
-    if (cond != ASC_NORMAL)
+    if (cond.bad())
     {
-      if (opt_verbose) COND_DumpConditions();
+      if (opt_verbose) DimseCondition::dump(cond);
     }
     goto cleanup;
   } else {
     cond = ASC_acknowledgeAssociation(assoc);
-    if (cond != ASC_NORMAL)
+    if (cond.bad())
     {
-      COND_DumpConditions();
+      DimseCondition::dump(cond);
       goto cleanup;
     }
     if (opt_verbose)
@@ -861,66 +859,48 @@ acceptAssociation(T_ASC_Network * net)
   /* now do the real work */
   cond = processCommands(assoc);
 
-  if (cond == DIMSE_PEERREQUESTEDRELEASE)
+
+  if (cond == DUL_PEERREQUESTEDRELEASE)
   {
-    COND_PopCondition(OFFalse); 
-      /* pop only the peer requested
-       * release condition from the stack */
     if (opt_verbose) printf("Association Release\n");
     cond = ASC_acknowledgeRelease(assoc);
   } 
-  else if (cond == DIMSE_PEERABORTEDASSOCIATION)
+  else if (cond == DUL_PEERABORTEDASSOCIATION)
   {
-    COND_PopCondition(OFFalse);  /* pop DIMSE abort */
-    COND_PopCondition(OFFalse);  /* pop DUL abort */
     if (opt_verbose) printf("Association Aborted\n");
   } else {
     fprintf(stderr, "storescp: DIMSE Failure (aborting association)\n");
-    COND_PopCondition(OFTrue); // pop all conditions
     /* some kind of error so abort the association */
     cond = ASC_abortAssociation(assoc);
   }
 
 cleanup:
   cond = ASC_dropSCPAssociation(assoc);
-  if (!SUCCESS(cond))
+  if (cond.bad())
   {
-    COND_DumpConditions();
+    DimseCondition::dump(cond);
     exit(1);
   }
   cond = ASC_destroyAssociation(&assoc);
-  if (!SUCCESS(cond))
+  if (cond.bad())
   {
-    COND_DumpConditions();
+    DimseCondition::dump(cond);
     exit(1);
   }
-
-  if (opt_verbose)
-  {
-    /* are there any conditions sitting on the condition stack? */
-    char buf2[BUFSIZ];
-    CONDITION c;
-
-    if (COND_TopCondition(&c, buf2, BUFSIZ) != COND_NORMAL)
-    {
-      fprintf(stderr, "CONDITIONS Remaining\n");
-      COND_DumpConditions();
-      COND_PopCondition(OFTrue); // pop all conditions
-    }
-  }
+  
   return cond;
 }
 
 
-static CONDITION
+static OFCondition
 processCommands(T_ASC_Association * assoc)
 {
-  CONDITION cond = DIMSE_NORMAL;
+  OFCondition cond = EC_Normal;
   T_DIMSE_Message msg;
   T_ASC_PresentationContextID presID = 0;
   DcmDataset *statusDetail = NULL;
 
-  while (cond == DIMSE_NORMAL)
+  while (cond == EC_Normal) // compare with EC_Normal since DUL_PEERREQUESTEDRELEASE is also good()
   {
     cond = DIMSE_receiveCommand(assoc, DIMSE_BLOCKING, 0, &presID,
         &msg, &statusDetail);
@@ -932,9 +912,8 @@ processCommands(T_ASC_Association * assoc)
     }
 
     /* did peer release, abort, or do we have a valid message ? */
-    switch (cond)
+    if (cond == EC_Normal)
     {
-      case DIMSE_NORMAL:
         /* process command */
         switch (msg.CommandField)
         {
@@ -950,26 +929,17 @@ processCommands(T_ASC_Association * assoc)
             fprintf(stderr, "storescp: Cannot handle command: 0x%x\n", (unsigned)msg.CommandField);
             break;
         }
-        break;
-      case DIMSE_PEERREQUESTEDRELEASE:
-      case DIMSE_PEERABORTEDASSOCIATION:
-        /* association gone */
-        break;
-      default:
-        break;
     }
   }
   return cond;
 }
 
 
-static CONDITION echoSCP(
+static OFCondition echoSCP(
   T_ASC_Association * assoc,
   T_DIMSE_Message * msg,
   T_ASC_PresentationContextID presID)
 {
-  CONDITION cond;
-
   if (opt_verbose)
   {
     printf("Received ");
@@ -977,11 +947,11 @@ static CONDITION echoSCP(
   }
 
   /* the echo succeeded !! */
-  cond = DIMSE_sendEchoResponse(assoc, presID, &msg->msg.CEchoRQ, STATUS_Success, NULL);
-  if (!SUCCESS(cond))
+  OFCondition cond = DIMSE_sendEchoResponse(assoc, presID, &msg->msg.CEchoRQ, STATUS_Success, NULL);
+  if (cond.bad())
   {
     fprintf(stderr, "storescp: Echo SCP Failed:\n");
-    COND_DumpConditions();
+    DimseCondition::dump(cond);
   }
   return cond;
 }
@@ -1117,12 +1087,12 @@ storeSCPCallback(
     return;
 }
 
-static CONDITION storeSCP(
+static OFCondition storeSCP(
   T_ASC_Association *assoc,
   T_DIMSE_Message *msg,
   T_ASC_PresentationContextID presID)
 {
-    CONDITION cond;
+    OFCondition cond = EC_Normal;
     T_DIMSE_C_StoreRQ *req;
     char imageFileName[2048];
 
@@ -1163,10 +1133,10 @@ static CONDITION storeSCP(
         &dset, storeSCPCallback, (void*)&callbackData, DIMSE_BLOCKING, 0);
     }
 
-    if (!SUCCESS(cond))
+    if (cond.bad())
     {
       fprintf(stderr, "storescp: Store SCP Failed:\n");
-      COND_DumpConditions();
+      DimseCondition::dump(cond);
       /* remove file */
       if (!opt_ignore)
       {
@@ -1189,7 +1159,12 @@ static CONDITION storeSCP(
 /*
 ** CVS Log
 ** $Log: storescp.cc,v $
-** Revision 1.38  2001-09-28 13:21:41  joergr
+** Revision 1.39  2001-10-12 10:18:21  meichel
+** Replaced the CONDITION types, constants and functions in the dcmnet module
+**   by an OFCondition based implementation which eliminates the global condition
+**   stack.  This is a major change, caveat emptor!
+**
+** Revision 1.38  2001/09/28 13:21:41  joergr
 ** Replaced "cerr" by "CERR".
 **
 ** Revision 1.37  2001/06/01 15:50:02  meichel

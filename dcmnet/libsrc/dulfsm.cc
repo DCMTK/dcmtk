@@ -46,9 +46,9 @@
 ** Author, Date:	Stephen M. Moore, 15-Apr-93
 ** Intent:		Define tables and provide functions that implement
 **			the DICOM Upper Layer (DUL) finite state machine.
-** Last Update:		$Author: joergr $, $Date: 2001-09-28 13:28:55 $
+** Last Update:		$Author: meichel $, $Date: 2001-10-12 10:18:38 $
 ** Source File:		$RCSfile: dulfsm.cc,v $
-** Revision:		$Revision: 1.39 $
+** Revision:		$Revision: 1.40 $
 ** Status:		$State: Exp $
 */
 
@@ -95,7 +95,7 @@ BEGIN_EXTERN_C
 END_EXTERN_C
 
 #ifdef HAVE_GUSI_H
-#include <GUSI.h>	/* Use the Grand Unified Sockets Interface (GUSI) on Macintosh */
+#include <GUSI.h>       /* Use the Grand Unified Sockets Interface (GUSI) on Macintosh */
 #endif
 
 #include "dicom.h"
@@ -113,169 +113,169 @@ END_EXTERN_C
 
 static OFBool debug = OFFalse;
 
-static CONDITION
+static OFCondition
 AE_1_TransportConnect(PRIVATE_NETWORKKEY ** network,
-	PRIVATE_ASSOCIATIONKEY ** association, int nextState, void *params);
-static CONDITION
+        PRIVATE_ASSOCIATIONKEY ** association, int nextState, void *params);
+static OFCondition
 AE_2_SendAssociateRQPDU(PRIVATE_NETWORKKEY ** network,
-	PRIVATE_ASSOCIATIONKEY ** association, int nextState, void *params);
-static CONDITION
+        PRIVATE_ASSOCIATIONKEY ** association, int nextState, void *params);
+static OFCondition
 AE_3_AssociateConfirmationAccept(PRIVATE_NETWORKKEY ** network,
-	PRIVATE_ASSOCIATIONKEY ** association, int nextState, void *params);
-static CONDITION
+        PRIVATE_ASSOCIATIONKEY ** association, int nextState, void *params);
+static OFCondition
 AE_4_AssociateConfirmationReject(PRIVATE_NETWORKKEY ** network,
-	PRIVATE_ASSOCIATIONKEY ** association, int nextState, void *params);
-static CONDITION
+        PRIVATE_ASSOCIATIONKEY ** association, int nextState, void *params);
+static OFCondition
 AE_5_TransportConnectResponse(PRIVATE_NETWORKKEY ** network,
-	PRIVATE_ASSOCIATIONKEY ** association, int nextState, void *params);
-static CONDITION
+        PRIVATE_ASSOCIATIONKEY ** association, int nextState, void *params);
+static OFCondition
 AE_6_ExamineAssociateRequest(PRIVATE_NETWORKKEY ** network,
-	PRIVATE_ASSOCIATIONKEY ** association, int nextState, void *params);
-static CONDITION
+        PRIVATE_ASSOCIATIONKEY ** association, int nextState, void *params);
+static OFCondition
 AE_7_SendAssociateAC(PRIVATE_NETWORKKEY ** network,
-	PRIVATE_ASSOCIATIONKEY ** association, int nextState, void *params);
-static CONDITION
+        PRIVATE_ASSOCIATIONKEY ** association, int nextState, void *params);
+static OFCondition
 AE_8_SendAssociateRJ(PRIVATE_NETWORKKEY ** network,
-	PRIVATE_ASSOCIATIONKEY ** association, int nextState, void *params);
+        PRIVATE_ASSOCIATIONKEY ** association, int nextState, void *params);
 
-static CONDITION
+static OFCondition
 DT_1_SendPData(PRIVATE_NETWORKKEY ** network,
-	 PRIVATE_ASSOCIATIONKEY ** associatin, int nextState, void *params);
-static CONDITION
+         PRIVATE_ASSOCIATIONKEY ** associatin, int nextState, void *params);
+static OFCondition
 DT_2_IndicatePData(PRIVATE_NETWORKKEY ** network,
-	PRIVATE_ASSOCIATIONKEY ** association, int nextState, void *params);
+        PRIVATE_ASSOCIATIONKEY ** association, int nextState, void *params);
 
-static CONDITION
+static OFCondition
 AA_1_SendAAbort(PRIVATE_NETWORKKEY ** network,
-	 PRIVATE_ASSOCIATIONKEY ** associatin, int nextState, void *params);
-static CONDITION
+         PRIVATE_ASSOCIATIONKEY ** associatin, int nextState, void *params);
+static OFCondition
 AA_2_CloseTransport(PRIVATE_NETWORKKEY ** network,
-	PRIVATE_ASSOCIATIONKEY ** association, int nextState, void *params);
-static CONDITION
+        PRIVATE_ASSOCIATIONKEY ** association, int nextState, void *params);
+static OFCondition
 AA_2_CloseTimeout(PRIVATE_NETWORKKEY ** network,
-	PRIVATE_ASSOCIATIONKEY ** association, int nextState, void *params);
-static CONDITION
+        PRIVATE_ASSOCIATIONKEY ** association, int nextState, void *params);
+static OFCondition
 AA_3_IndicatePeerAborted(PRIVATE_NETWORKKEY ** network,
-	PRIVATE_ASSOCIATIONKEY ** association, int nextState, void *params);
-static CONDITION
+        PRIVATE_ASSOCIATIONKEY ** association, int nextState, void *params);
+static OFCondition
 AA_4_IndicateAPAbort(PRIVATE_NETWORKKEY ** network,
-	PRIVATE_ASSOCIATIONKEY ** association, int nextState, void *params);
-static CONDITION
+        PRIVATE_ASSOCIATIONKEY ** association, int nextState, void *params);
+static OFCondition
 AA_5_StopARTIMtimer(PRIVATE_NETWORKKEY ** network,
-	PRIVATE_ASSOCIATIONKEY ** association, int nextState, void *params);
-static CONDITION
+        PRIVATE_ASSOCIATIONKEY ** association, int nextState, void *params);
+static OFCondition
 AA_6_IgnorePDU(PRIVATE_NETWORKKEY ** network,
-	PRIVATE_ASSOCIATIONKEY ** association, int nextState, void *params);
-static CONDITION
+        PRIVATE_ASSOCIATIONKEY ** association, int nextState, void *params);
+static OFCondition
 AA_7_State13SendAbort(PRIVATE_NETWORKKEY ** network,
-	PRIVATE_ASSOCIATIONKEY ** association, int nextState, void *params);
-static CONDITION
+        PRIVATE_ASSOCIATIONKEY ** association, int nextState, void *params);
+static OFCondition
 AA_8_UnrecognizedPDUSendAbort(PRIVATE_NETWORKKEY ** network,
-	PRIVATE_ASSOCIATIONKEY ** association, int nextState, void *params);
+        PRIVATE_ASSOCIATIONKEY ** association, int nextState, void *params);
 
-static CONDITION
+static OFCondition
 AR_1_SendReleaseRQ(PRIVATE_NETWORKKEY ** network,
-	PRIVATE_ASSOCIATIONKEY ** association, int nextState, void *params);
-static CONDITION
+        PRIVATE_ASSOCIATIONKEY ** association, int nextState, void *params);
+static OFCondition
 AR_2_IndicateRelease(PRIVATE_NETWORKKEY ** network,
-	PRIVATE_ASSOCIATIONKEY ** association, int nextState, void *params);
-static CONDITION
+        PRIVATE_ASSOCIATIONKEY ** association, int nextState, void *params);
+static OFCondition
 AR_3_ConfirmRelease(PRIVATE_NETWORKKEY ** network,
-	PRIVATE_ASSOCIATIONKEY ** association, int nextState, void *params);
-static CONDITION
+        PRIVATE_ASSOCIATIONKEY ** association, int nextState, void *params);
+static OFCondition
 AR_4_SendReleaseRP(PRIVATE_NETWORKKEY ** network,
-	PRIVATE_ASSOCIATIONKEY ** association, int nextState, void *params);
-static CONDITION
+        PRIVATE_ASSOCIATIONKEY ** association, int nextState, void *params);
+static OFCondition
 AR_5_StopARTIMtimer(PRIVATE_NETWORKKEY ** network,
-	PRIVATE_ASSOCIATIONKEY ** association, int nextState, void *params);
-static CONDITION
+        PRIVATE_ASSOCIATIONKEY ** association, int nextState, void *params);
+static OFCondition
 AR_6_IndicatePData(PRIVATE_NETWORKKEY ** network,
-	PRIVATE_ASSOCIATIONKEY ** association, int nextState, void *params);
-static CONDITION
+        PRIVATE_ASSOCIATIONKEY ** association, int nextState, void *params);
+static OFCondition
 AR_7_SendPDATA(PRIVATE_NETWORKKEY ** network,
-	PRIVATE_ASSOCIATIONKEY ** association, int nextState, void *params);
-static CONDITION
+        PRIVATE_ASSOCIATIONKEY ** association, int nextState, void *params);
+static OFCondition
 AR_8_IndicateARelease(PRIVATE_NETWORKKEY ** network,
-	PRIVATE_ASSOCIATIONKEY ** association, int nextState, void *params);
-static CONDITION
+        PRIVATE_ASSOCIATIONKEY ** association, int nextState, void *params);
+static OFCondition
 AR_9_SendAReleaseRP(PRIVATE_NETWORKKEY ** network,
-	PRIVATE_ASSOCIATIONKEY ** association, int nextState, void *params);
-static CONDITION
+        PRIVATE_ASSOCIATIONKEY ** association, int nextState, void *params);
+static OFCondition
 AR_10_ConfirmRelease(PRIVATE_NETWORKKEY ** network,
-	PRIVATE_ASSOCIATIONKEY ** association, int nextState, void *params);
+        PRIVATE_ASSOCIATIONKEY ** association, int nextState, void *params);
 
-static CONDITION
+static OFCondition
 requestAssociationTCP(PRIVATE_NETWORKKEY ** network,
-		      DUL_ASSOCIATESERVICEPARAMETERS * params,
-		      PRIVATE_ASSOCIATIONKEY ** association);
-static CONDITION
+                      DUL_ASSOCIATESERVICEPARAMETERS * params,
+                      PRIVATE_ASSOCIATIONKEY ** association);
+static OFCondition
 sendAssociationRQTCP(PRIVATE_NETWORKKEY ** network,
-		     DUL_ASSOCIATESERVICEPARAMETERS * params,
-		     PRIVATE_ASSOCIATIONKEY ** association);
-static CONDITION
+                     DUL_ASSOCIATESERVICEPARAMETERS * params,
+                     PRIVATE_ASSOCIATIONKEY ** association);
+static OFCondition
 sendAssociationACTCP(PRIVATE_NETWORKKEY ** network,
-		     DUL_ASSOCIATESERVICEPARAMETERS * params,
-		     PRIVATE_ASSOCIATIONKEY ** association);
-static CONDITION
+                     DUL_ASSOCIATESERVICEPARAMETERS * params,
+                     PRIVATE_ASSOCIATIONKEY ** association);
+static OFCondition
 sendAssociationRJTCP(PRIVATE_NETWORKKEY ** network,
-	DUL_ABORTITEMS * abortItems, PRIVATE_ASSOCIATIONKEY ** association);
-static CONDITION
+        DUL_ABORTITEMS * abortItems, PRIVATE_ASSOCIATIONKEY ** association);
+static OFCondition
 sendAbortTCP(DUL_ABORTITEMS * abortItems,
-	     PRIVATE_ASSOCIATIONKEY ** association);
-static CONDITION sendReleaseRQTCP(PRIVATE_ASSOCIATIONKEY ** association);
-static CONDITION sendReleaseRPTCP(PRIVATE_ASSOCIATIONKEY ** association);
-static CONDITION
+             PRIVATE_ASSOCIATIONKEY ** association);
+static OFCondition sendReleaseRQTCP(PRIVATE_ASSOCIATIONKEY ** association);
+static OFCondition sendReleaseRPTCP(PRIVATE_ASSOCIATIONKEY ** association);
+static OFCondition
 sendPDataTCP(PRIVATE_ASSOCIATIONKEY ** association,
-	     DUL_PDVLIST * pdvList);
-static CONDITION
+             DUL_PDVLIST * pdvList);
+static OFCondition
 writeDataPDU(PRIVATE_ASSOCIATIONKEY ** association,
-	     DUL_DATAPDU * pdu);
+             DUL_DATAPDU * pdu);
 static void clearPDUCache(PRIVATE_ASSOCIATIONKEY ** association);
 static void closeTransport(PRIVATE_ASSOCIATIONKEY ** association);
 static void closeTransportTCP(PRIVATE_ASSOCIATIONKEY ** association);
-static CONDITION
+static OFCondition
 readPDUHead(PRIVATE_ASSOCIATIONKEY ** association,
-	    unsigned char *buffer, unsigned long maxlength,
-	    DUL_BLOCKOPTIONS block, int timeout,
-	    unsigned char *PDUtype, unsigned char *PDUreserved,
-	    unsigned long *PDULength);
-static CONDITION
+            unsigned char *buffer, unsigned long maxlength,
+            DUL_BLOCKOPTIONS block, int timeout,
+            unsigned char *PDUtype, unsigned char *PDUreserved,
+            unsigned long *PDULength);
+static OFCondition
 readPDU(PRIVATE_ASSOCIATIONKEY ** association, DUL_BLOCKOPTIONS block,
-	int timeout, unsigned char **buffer,
-	unsigned char *pduType, unsigned char *pduReserved,
-	unsigned long *pduLength);
-static CONDITION
+        int timeout, unsigned char **buffer,
+        unsigned char *pduType, unsigned char *pduReserved,
+        unsigned long *pduLength);
+static OFCondition
 readPDUBody(PRIVATE_ASSOCIATIONKEY ** association,
-	    DUL_BLOCKOPTIONS block, int timeout,
-	    unsigned char *buffer, unsigned long maxLength,
-	    unsigned char *pduType, unsigned char *pduReserved,
-	    unsigned long *pduLength);
-static CONDITION
+            DUL_BLOCKOPTIONS block, int timeout,
+            unsigned char *buffer, unsigned long maxLength,
+            unsigned char *pduType, unsigned char *pduReserved,
+            unsigned long *pduLength);
+static OFCondition
 readPDUHeadTCP(PRIVATE_ASSOCIATIONKEY ** association,
-	       unsigned char *buffer, unsigned long maxLength,
-	       DUL_BLOCKOPTIONS block, int timeout,
-	       unsigned char *PDUtype, unsigned char *PDUreserved,
-	       unsigned long *PDULength);
-static CONDITION
+               unsigned char *buffer, unsigned long maxLength,
+               DUL_BLOCKOPTIONS block, int timeout,
+               unsigned char *PDUtype, unsigned char *PDUreserved,
+               unsigned long *PDULength);
+static OFCondition
 readPDUBodyTCP(PRIVATE_ASSOCIATIONKEY ** association,
-	       DUL_BLOCKOPTIONS block, int timeout,
-	       unsigned char *buffer, unsigned long maxLength,
-	       unsigned char *pduType, unsigned char *pduReserved,
-	       unsigned long *pduLength);
-static CONDITION
+               DUL_BLOCKOPTIONS block, int timeout,
+               unsigned char *buffer, unsigned long maxLength,
+               unsigned char *pduType, unsigned char *pduReserved,
+               unsigned long *pduLength);
+static OFCondition
 defragmentTCP(DcmTransportConnection *connection, DUL_BLOCKOPTIONS block, time_t timerStart,
-	      int timeout, void *b, unsigned long l, unsigned long *rtnLen);
+              int timeout, void *b, unsigned long l, unsigned long *rtnLen);
 
 static void dump_pdu(const char *type, void *buffer, unsigned long length);
 
 static void setTCPBufferLength(int sock);
-CONDITION
+OFCondition
 translatePresentationContextList(LST_HEAD ** internalList,
-				 LST_HEAD ** SCUSCPRoleList,
-				 LST_HEAD ** userContextList);
+                                 LST_HEAD ** SCUSCPRoleList,
+                                 LST_HEAD ** userContextList);
 DUL_PRESENTATIONCONTEXT *
 findPresentationCtx(
-		    LST_HEAD ** list, DUL_PRESENTATIONCONTEXTID contextID);
+                    LST_HEAD ** list, DUL_PRESENTATIONCONTEXTID contextID);
 PRV_SCUSCPROLE
 * findSCUSCPRole(LST_HEAD ** list, char *abstractSyntax);
 
@@ -346,291 +346,291 @@ static FSM_FUNCTION FSM_FunctionTable[] = {
 
 static FSM_ENTRY StateTable[DUL_NUMBER_OF_EVENTS][DUL_NUMBER_OF_STATES] = {
     {
-	{A_ASSOCIATE_REQ_LOCAL_USER, STATE1, AE_1, STATE4, "", "", NULL},
-	{A_ASSOCIATE_REQ_LOCAL_USER, STATE2, NOACTION, NOSTATE, "", "", NULL},
-	{A_ASSOCIATE_REQ_LOCAL_USER, STATE3, NOACTION, NOSTATE, "", "", NULL},
-	{A_ASSOCIATE_REQ_LOCAL_USER, STATE4, NOACTION, NOSTATE, "", "", NULL},
-	{A_ASSOCIATE_REQ_LOCAL_USER, STATE5, NOACTION, NOSTATE, "", "", NULL},
-	{A_ASSOCIATE_REQ_LOCAL_USER, STATE6, NOACTION, NOSTATE, "", "", NULL},
-	{A_ASSOCIATE_REQ_LOCAL_USER, STATE7, NOACTION, NOSTATE, "", "", NULL},
-	{A_ASSOCIATE_REQ_LOCAL_USER, STATE8, NOACTION, NOSTATE, "", "", NULL},
-	{A_ASSOCIATE_REQ_LOCAL_USER, STATE9, NOACTION, NOSTATE, "", "", NULL},
-	{A_ASSOCIATE_REQ_LOCAL_USER, STATE10, NOACTION, NOSTATE, "", "", NULL},
-	{A_ASSOCIATE_REQ_LOCAL_USER, STATE11, NOACTION, NOSTATE, "", "", NULL},
-	{A_ASSOCIATE_REQ_LOCAL_USER, STATE12, NOACTION, NOSTATE, "", "", NULL},
+        {A_ASSOCIATE_REQ_LOCAL_USER, STATE1, AE_1, STATE4, "", "", NULL},
+        {A_ASSOCIATE_REQ_LOCAL_USER, STATE2, NOACTION, NOSTATE, "", "", NULL},
+        {A_ASSOCIATE_REQ_LOCAL_USER, STATE3, NOACTION, NOSTATE, "", "", NULL},
+        {A_ASSOCIATE_REQ_LOCAL_USER, STATE4, NOACTION, NOSTATE, "", "", NULL},
+        {A_ASSOCIATE_REQ_LOCAL_USER, STATE5, NOACTION, NOSTATE, "", "", NULL},
+        {A_ASSOCIATE_REQ_LOCAL_USER, STATE6, NOACTION, NOSTATE, "", "", NULL},
+        {A_ASSOCIATE_REQ_LOCAL_USER, STATE7, NOACTION, NOSTATE, "", "", NULL},
+        {A_ASSOCIATE_REQ_LOCAL_USER, STATE8, NOACTION, NOSTATE, "", "", NULL},
+        {A_ASSOCIATE_REQ_LOCAL_USER, STATE9, NOACTION, NOSTATE, "", "", NULL},
+        {A_ASSOCIATE_REQ_LOCAL_USER, STATE10, NOACTION, NOSTATE, "", "", NULL},
+        {A_ASSOCIATE_REQ_LOCAL_USER, STATE11, NOACTION, NOSTATE, "", "", NULL},
+        {A_ASSOCIATE_REQ_LOCAL_USER, STATE12, NOACTION, NOSTATE, "", "", NULL},
     {A_ASSOCIATE_REQ_LOCAL_USER, STATE13, NOACTION, NOSTATE, "", "", NULL}},
 
     {
-	{TRANS_CONN_CONFIRM_LOCAL_USER, STATE1, NOACTION, NOSTATE, "", "", NULL},
-	{TRANS_CONN_CONFIRM_LOCAL_USER, STATE2, NOACTION, NOSTATE, "", "", NULL},
-	{TRANS_CONN_CONFIRM_LOCAL_USER, STATE3, NOACTION, NOSTATE, "", "", NULL},
-	{TRANS_CONN_CONFIRM_LOCAL_USER, STATE4, AE_2, STATE5, "", "", NULL},
-	{TRANS_CONN_CONFIRM_LOCAL_USER, STATE5, NOACTION, NOSTATE, "", "", NULL},
-	{TRANS_CONN_CONFIRM_LOCAL_USER, STATE6, NOACTION, NOSTATE, "", "", NULL},
-	{TRANS_CONN_CONFIRM_LOCAL_USER, STATE7, NOACTION, NOSTATE, "", "", NULL},
-	{TRANS_CONN_CONFIRM_LOCAL_USER, STATE8, NOACTION, NOSTATE, "", "", NULL},
-	{TRANS_CONN_CONFIRM_LOCAL_USER, STATE9, NOACTION, NOSTATE, "", "", NULL},
-	{TRANS_CONN_CONFIRM_LOCAL_USER, STATE10, NOACTION, NOSTATE, "", "", NULL},
-	{TRANS_CONN_CONFIRM_LOCAL_USER, STATE11, NOACTION, NOSTATE, "", "", NULL},
-	{TRANS_CONN_CONFIRM_LOCAL_USER, STATE12, NOACTION, NOSTATE, "", "", NULL},
+        {TRANS_CONN_CONFIRM_LOCAL_USER, STATE1, NOACTION, NOSTATE, "", "", NULL},
+        {TRANS_CONN_CONFIRM_LOCAL_USER, STATE2, NOACTION, NOSTATE, "", "", NULL},
+        {TRANS_CONN_CONFIRM_LOCAL_USER, STATE3, NOACTION, NOSTATE, "", "", NULL},
+        {TRANS_CONN_CONFIRM_LOCAL_USER, STATE4, AE_2, STATE5, "", "", NULL},
+        {TRANS_CONN_CONFIRM_LOCAL_USER, STATE5, NOACTION, NOSTATE, "", "", NULL},
+        {TRANS_CONN_CONFIRM_LOCAL_USER, STATE6, NOACTION, NOSTATE, "", "", NULL},
+        {TRANS_CONN_CONFIRM_LOCAL_USER, STATE7, NOACTION, NOSTATE, "", "", NULL},
+        {TRANS_CONN_CONFIRM_LOCAL_USER, STATE8, NOACTION, NOSTATE, "", "", NULL},
+        {TRANS_CONN_CONFIRM_LOCAL_USER, STATE9, NOACTION, NOSTATE, "", "", NULL},
+        {TRANS_CONN_CONFIRM_LOCAL_USER, STATE10, NOACTION, NOSTATE, "", "", NULL},
+        {TRANS_CONN_CONFIRM_LOCAL_USER, STATE11, NOACTION, NOSTATE, "", "", NULL},
+        {TRANS_CONN_CONFIRM_LOCAL_USER, STATE12, NOACTION, NOSTATE, "", "", NULL},
     {TRANS_CONN_CONFIRM_LOCAL_USER, STATE13, NOACTION, NOSTATE, "", "", NULL}},
 
     {
-	{A_ASSOCIATE_AC_PDU_RCV, STATE1, NOACTION, NOSTATE, "", "", NULL},
-	{A_ASSOCIATE_AC_PDU_RCV, STATE2, AA_1, STATE13, "", "", NULL},
-	{A_ASSOCIATE_AC_PDU_RCV, STATE3, AA_8, STATE13, "", "", NULL},
-	{A_ASSOCIATE_AC_PDU_RCV, STATE4, NOACTION, NOSTATE, "", "", NULL},
-	{A_ASSOCIATE_AC_PDU_RCV, STATE5, AE_3, STATE6, "", "", NULL},
-	{A_ASSOCIATE_AC_PDU_RCV, STATE6, AA_8, STATE13, "", "", NULL},
-	{A_ASSOCIATE_AC_PDU_RCV, STATE7, AA_8, STATE13, "", "", NULL},
-	{A_ASSOCIATE_AC_PDU_RCV, STATE8, AA_8, STATE13, "", "", NULL},
-	{A_ASSOCIATE_AC_PDU_RCV, STATE9, AA_8, STATE13, "", "", NULL},
-	{A_ASSOCIATE_AC_PDU_RCV, STATE10, AA_8, STATE13, "", "", NULL},
-	{A_ASSOCIATE_AC_PDU_RCV, STATE11, AA_8, STATE13, "", "", NULL},
-	{A_ASSOCIATE_AC_PDU_RCV, STATE12, AA_8, STATE13, "", "", NULL},
+        {A_ASSOCIATE_AC_PDU_RCV, STATE1, NOACTION, NOSTATE, "", "", NULL},
+        {A_ASSOCIATE_AC_PDU_RCV, STATE2, AA_1, STATE13, "", "", NULL},
+        {A_ASSOCIATE_AC_PDU_RCV, STATE3, AA_8, STATE13, "", "", NULL},
+        {A_ASSOCIATE_AC_PDU_RCV, STATE4, NOACTION, NOSTATE, "", "", NULL},
+        {A_ASSOCIATE_AC_PDU_RCV, STATE5, AE_3, STATE6, "", "", NULL},
+        {A_ASSOCIATE_AC_PDU_RCV, STATE6, AA_8, STATE13, "", "", NULL},
+        {A_ASSOCIATE_AC_PDU_RCV, STATE7, AA_8, STATE13, "", "", NULL},
+        {A_ASSOCIATE_AC_PDU_RCV, STATE8, AA_8, STATE13, "", "", NULL},
+        {A_ASSOCIATE_AC_PDU_RCV, STATE9, AA_8, STATE13, "", "", NULL},
+        {A_ASSOCIATE_AC_PDU_RCV, STATE10, AA_8, STATE13, "", "", NULL},
+        {A_ASSOCIATE_AC_PDU_RCV, STATE11, AA_8, STATE13, "", "", NULL},
+        {A_ASSOCIATE_AC_PDU_RCV, STATE12, AA_8, STATE13, "", "", NULL},
     {A_ASSOCIATE_AC_PDU_RCV, STATE13, AA_6, STATE13, "", "", NULL}},
 
     {
-	{A_ASSOCIATE_RJ_PDU_RCV, STATE1, NOACTION, NOSTATE, "", "", NULL},
-	{A_ASSOCIATE_RJ_PDU_RCV, STATE2, AA_1, STATE13, "", "", NULL},
-	{A_ASSOCIATE_RJ_PDU_RCV, STATE3, AA_8, STATE13, "", "", NULL},
-	{A_ASSOCIATE_RJ_PDU_RCV, STATE4, NOACTION, NOSTATE, "", "", NULL},
-	{A_ASSOCIATE_RJ_PDU_RCV, STATE5, AE_4, STATE1, "", "", NULL},
-	{A_ASSOCIATE_RJ_PDU_RCV, STATE6, AA_8, STATE13, "", "", NULL},
-	{A_ASSOCIATE_RJ_PDU_RCV, STATE7, AA_8, STATE13, "", "", NULL},
-	{A_ASSOCIATE_RJ_PDU_RCV, STATE8, AA_8, STATE13, "", "", NULL},
-	{A_ASSOCIATE_RJ_PDU_RCV, STATE9, AA_8, STATE13, "", "", NULL},
-	{A_ASSOCIATE_RJ_PDU_RCV, STATE10, AA_8, STATE13, "", "", NULL},
-	{A_ASSOCIATE_RJ_PDU_RCV, STATE11, AA_8, STATE13, "", "", NULL},
-	{A_ASSOCIATE_RJ_PDU_RCV, STATE12, AA_8, STATE13, "", "", NULL},
+        {A_ASSOCIATE_RJ_PDU_RCV, STATE1, NOACTION, NOSTATE, "", "", NULL},
+        {A_ASSOCIATE_RJ_PDU_RCV, STATE2, AA_1, STATE13, "", "", NULL},
+        {A_ASSOCIATE_RJ_PDU_RCV, STATE3, AA_8, STATE13, "", "", NULL},
+        {A_ASSOCIATE_RJ_PDU_RCV, STATE4, NOACTION, NOSTATE, "", "", NULL},
+        {A_ASSOCIATE_RJ_PDU_RCV, STATE5, AE_4, STATE1, "", "", NULL},
+        {A_ASSOCIATE_RJ_PDU_RCV, STATE6, AA_8, STATE13, "", "", NULL},
+        {A_ASSOCIATE_RJ_PDU_RCV, STATE7, AA_8, STATE13, "", "", NULL},
+        {A_ASSOCIATE_RJ_PDU_RCV, STATE8, AA_8, STATE13, "", "", NULL},
+        {A_ASSOCIATE_RJ_PDU_RCV, STATE9, AA_8, STATE13, "", "", NULL},
+        {A_ASSOCIATE_RJ_PDU_RCV, STATE10, AA_8, STATE13, "", "", NULL},
+        {A_ASSOCIATE_RJ_PDU_RCV, STATE11, AA_8, STATE13, "", "", NULL},
+        {A_ASSOCIATE_RJ_PDU_RCV, STATE12, AA_8, STATE13, "", "", NULL},
     {A_ASSOCIATE_RJ_PDU_RCV, STATE13, AA_6, STATE13, "", "", NULL}},
 
     {
-	{TRANS_CONN_INDICATION, STATE1, AE_5, STATE2, "", "", NULL},
-	{TRANS_CONN_INDICATION, STATE2, NOACTION, NOSTATE, "", "", NULL},
-	{TRANS_CONN_INDICATION, STATE3, NOACTION, NOSTATE, "", "", NULL},
-	{TRANS_CONN_INDICATION, STATE4, NOACTION, NOSTATE, "", "", NULL},
-	{TRANS_CONN_INDICATION, STATE5, NOACTION, NOSTATE, "", "", NULL},
-	{TRANS_CONN_INDICATION, STATE6, NOACTION, NOSTATE, "", "", NULL},
-	{TRANS_CONN_INDICATION, STATE7, NOACTION, NOSTATE, "", "", NULL},
-	{TRANS_CONN_INDICATION, STATE8, NOACTION, NOSTATE, "", "", NULL},
-	{TRANS_CONN_INDICATION, STATE9, NOACTION, NOSTATE, "", "", NULL},
-	{TRANS_CONN_INDICATION, STATE10, NOACTION, NOSTATE, "", "", NULL},
-	{TRANS_CONN_INDICATION, STATE11, NOACTION, NOSTATE, "", "", NULL},
-	{TRANS_CONN_INDICATION, STATE12, NOACTION, NOSTATE, "", "", NULL},
+        {TRANS_CONN_INDICATION, STATE1, AE_5, STATE2, "", "", NULL},
+        {TRANS_CONN_INDICATION, STATE2, NOACTION, NOSTATE, "", "", NULL},
+        {TRANS_CONN_INDICATION, STATE3, NOACTION, NOSTATE, "", "", NULL},
+        {TRANS_CONN_INDICATION, STATE4, NOACTION, NOSTATE, "", "", NULL},
+        {TRANS_CONN_INDICATION, STATE5, NOACTION, NOSTATE, "", "", NULL},
+        {TRANS_CONN_INDICATION, STATE6, NOACTION, NOSTATE, "", "", NULL},
+        {TRANS_CONN_INDICATION, STATE7, NOACTION, NOSTATE, "", "", NULL},
+        {TRANS_CONN_INDICATION, STATE8, NOACTION, NOSTATE, "", "", NULL},
+        {TRANS_CONN_INDICATION, STATE9, NOACTION, NOSTATE, "", "", NULL},
+        {TRANS_CONN_INDICATION, STATE10, NOACTION, NOSTATE, "", "", NULL},
+        {TRANS_CONN_INDICATION, STATE11, NOACTION, NOSTATE, "", "", NULL},
+        {TRANS_CONN_INDICATION, STATE12, NOACTION, NOSTATE, "", "", NULL},
     {TRANS_CONN_INDICATION, STATE13, NOACTION, NOSTATE, "", "", NULL}},
 
     {
-	{A_ASSOCIATE_RQ_PDU_RCV, STATE1, NOACTION, NOSTATE, "", "", NULL},
-	{A_ASSOCIATE_RQ_PDU_RCV, STATE2, AE_6, NOSTATE, "", "", NULL},
-	{A_ASSOCIATE_RQ_PDU_RCV, STATE3, AA_8, STATE13, "", "", NULL},
-	{A_ASSOCIATE_RQ_PDU_RCV, STATE4, NOACTION, NOSTATE, "", "", NULL},
-	{A_ASSOCIATE_RQ_PDU_RCV, STATE5, AE_4, STATE1, "", "", NULL},
-	{A_ASSOCIATE_RQ_PDU_RCV, STATE6, AA_8, STATE13, "", "", NULL},
-	{A_ASSOCIATE_RQ_PDU_RCV, STATE7, AA_8, STATE13, "", "", NULL},
-	{A_ASSOCIATE_RQ_PDU_RCV, STATE8, AA_8, STATE13, "", "", NULL},
-	{A_ASSOCIATE_RQ_PDU_RCV, STATE9, AA_8, STATE13, "", "", NULL},
-	{A_ASSOCIATE_RQ_PDU_RCV, STATE10, AA_8, STATE13, "", "", NULL},
-	{A_ASSOCIATE_RQ_PDU_RCV, STATE11, AA_8, STATE13, "", "", NULL},
-	{A_ASSOCIATE_RQ_PDU_RCV, STATE12, AA_8, STATE13, "", "", NULL},
+        {A_ASSOCIATE_RQ_PDU_RCV, STATE1, NOACTION, NOSTATE, "", "", NULL},
+        {A_ASSOCIATE_RQ_PDU_RCV, STATE2, AE_6, NOSTATE, "", "", NULL},
+        {A_ASSOCIATE_RQ_PDU_RCV, STATE3, AA_8, STATE13, "", "", NULL},
+        {A_ASSOCIATE_RQ_PDU_RCV, STATE4, NOACTION, NOSTATE, "", "", NULL},
+        {A_ASSOCIATE_RQ_PDU_RCV, STATE5, AE_4, STATE1, "", "", NULL},
+        {A_ASSOCIATE_RQ_PDU_RCV, STATE6, AA_8, STATE13, "", "", NULL},
+        {A_ASSOCIATE_RQ_PDU_RCV, STATE7, AA_8, STATE13, "", "", NULL},
+        {A_ASSOCIATE_RQ_PDU_RCV, STATE8, AA_8, STATE13, "", "", NULL},
+        {A_ASSOCIATE_RQ_PDU_RCV, STATE9, AA_8, STATE13, "", "", NULL},
+        {A_ASSOCIATE_RQ_PDU_RCV, STATE10, AA_8, STATE13, "", "", NULL},
+        {A_ASSOCIATE_RQ_PDU_RCV, STATE11, AA_8, STATE13, "", "", NULL},
+        {A_ASSOCIATE_RQ_PDU_RCV, STATE12, AA_8, STATE13, "", "", NULL},
     {A_ASSOCIATE_RQ_PDU_RCV, STATE13, AA_7, STATE13, "", "", NULL}},
 
     {
-	{A_ASSOCIATE_RESPONSE_ACCEPT, STATE1, NOACTION, NOSTATE, "", "", NULL},
-	{A_ASSOCIATE_RESPONSE_ACCEPT, STATE2, NOACTION, NOSTATE, "", "", NULL},
-	{A_ASSOCIATE_RESPONSE_ACCEPT, STATE3, AE_7, STATE6, "", "", NULL},
-	{A_ASSOCIATE_RESPONSE_ACCEPT, STATE4, NOACTION, NOSTATE, "", "", NULL},
-	{A_ASSOCIATE_RESPONSE_ACCEPT, STATE5, NOACTION, NOSTATE, "", "", NULL},
-	{A_ASSOCIATE_RESPONSE_ACCEPT, STATE6, NOACTION, NOSTATE, "", "", NULL},
-	{A_ASSOCIATE_RESPONSE_ACCEPT, STATE7, NOACTION, NOSTATE, "", "", NULL},
-	{A_ASSOCIATE_RESPONSE_ACCEPT, STATE8, NOACTION, NOSTATE, "", "", NULL},
-	{A_ASSOCIATE_RESPONSE_ACCEPT, STATE9, NOACTION, NOSTATE, "", "", NULL},
-	{A_ASSOCIATE_RESPONSE_ACCEPT, STATE10, NOACTION, NOSTATE, "", "", NULL},
-	{A_ASSOCIATE_RESPONSE_ACCEPT, STATE11, NOACTION, NOSTATE, "", "", NULL},
-	{A_ASSOCIATE_RESPONSE_ACCEPT, STATE12, NOACTION, NOSTATE, "", "", NULL},
+        {A_ASSOCIATE_RESPONSE_ACCEPT, STATE1, NOACTION, NOSTATE, "", "", NULL},
+        {A_ASSOCIATE_RESPONSE_ACCEPT, STATE2, NOACTION, NOSTATE, "", "", NULL},
+        {A_ASSOCIATE_RESPONSE_ACCEPT, STATE3, AE_7, STATE6, "", "", NULL},
+        {A_ASSOCIATE_RESPONSE_ACCEPT, STATE4, NOACTION, NOSTATE, "", "", NULL},
+        {A_ASSOCIATE_RESPONSE_ACCEPT, STATE5, NOACTION, NOSTATE, "", "", NULL},
+        {A_ASSOCIATE_RESPONSE_ACCEPT, STATE6, NOACTION, NOSTATE, "", "", NULL},
+        {A_ASSOCIATE_RESPONSE_ACCEPT, STATE7, NOACTION, NOSTATE, "", "", NULL},
+        {A_ASSOCIATE_RESPONSE_ACCEPT, STATE8, NOACTION, NOSTATE, "", "", NULL},
+        {A_ASSOCIATE_RESPONSE_ACCEPT, STATE9, NOACTION, NOSTATE, "", "", NULL},
+        {A_ASSOCIATE_RESPONSE_ACCEPT, STATE10, NOACTION, NOSTATE, "", "", NULL},
+        {A_ASSOCIATE_RESPONSE_ACCEPT, STATE11, NOACTION, NOSTATE, "", "", NULL},
+        {A_ASSOCIATE_RESPONSE_ACCEPT, STATE12, NOACTION, NOSTATE, "", "", NULL},
     {A_ASSOCIATE_RESPONSE_ACCEPT, STATE13, NOACTION, NOSTATE, "", "", NULL}},
 
     {
-	{A_ASSOCIATE_RESPONSE_REJECT, STATE1, NOACTION, NOSTATE, "", "", NULL},
-	{A_ASSOCIATE_RESPONSE_REJECT, STATE2, NOACTION, NOSTATE, "", "", NULL},
-	{A_ASSOCIATE_RESPONSE_REJECT, STATE3, AE_8, STATE13, "", "", NULL},
-	{A_ASSOCIATE_RESPONSE_REJECT, STATE4, NOACTION, NOSTATE, "", "", NULL},
-	{A_ASSOCIATE_RESPONSE_REJECT, STATE5, NOACTION, NOSTATE, "", "", NULL},
-	{A_ASSOCIATE_RESPONSE_REJECT, STATE6, NOACTION, NOSTATE, "", "", NULL},
-	{A_ASSOCIATE_RESPONSE_REJECT, STATE7, NOACTION, NOSTATE, "", "", NULL},
-	{A_ASSOCIATE_RESPONSE_REJECT, STATE8, NOACTION, NOSTATE, "", "", NULL},
-	{A_ASSOCIATE_RESPONSE_REJECT, STATE9, NOACTION, NOSTATE, "", "", NULL},
-	{A_ASSOCIATE_RESPONSE_REJECT, STATE10, NOACTION, NOSTATE, "", "", NULL},
-	{A_ASSOCIATE_RESPONSE_REJECT, STATE11, NOACTION, NOSTATE, "", "", NULL},
-	{A_ASSOCIATE_RESPONSE_REJECT, STATE12, NOACTION, NOSTATE, "", "", NULL},
+        {A_ASSOCIATE_RESPONSE_REJECT, STATE1, NOACTION, NOSTATE, "", "", NULL},
+        {A_ASSOCIATE_RESPONSE_REJECT, STATE2, NOACTION, NOSTATE, "", "", NULL},
+        {A_ASSOCIATE_RESPONSE_REJECT, STATE3, AE_8, STATE13, "", "", NULL},
+        {A_ASSOCIATE_RESPONSE_REJECT, STATE4, NOACTION, NOSTATE, "", "", NULL},
+        {A_ASSOCIATE_RESPONSE_REJECT, STATE5, NOACTION, NOSTATE, "", "", NULL},
+        {A_ASSOCIATE_RESPONSE_REJECT, STATE6, NOACTION, NOSTATE, "", "", NULL},
+        {A_ASSOCIATE_RESPONSE_REJECT, STATE7, NOACTION, NOSTATE, "", "", NULL},
+        {A_ASSOCIATE_RESPONSE_REJECT, STATE8, NOACTION, NOSTATE, "", "", NULL},
+        {A_ASSOCIATE_RESPONSE_REJECT, STATE9, NOACTION, NOSTATE, "", "", NULL},
+        {A_ASSOCIATE_RESPONSE_REJECT, STATE10, NOACTION, NOSTATE, "", "", NULL},
+        {A_ASSOCIATE_RESPONSE_REJECT, STATE11, NOACTION, NOSTATE, "", "", NULL},
+        {A_ASSOCIATE_RESPONSE_REJECT, STATE12, NOACTION, NOSTATE, "", "", NULL},
     {A_ASSOCIATE_RESPONSE_REJECT, STATE13, NOACTION, NOSTATE, "", "", NULL}},
 
     {
-	{P_DATA_REQ, STATE1, NOACTION, NOSTATE, "", "", NULL},
-	{P_DATA_REQ, STATE2, NOACTION, NOSTATE, "", "", NULL},
-	{P_DATA_REQ, STATE3, NOACTION, NOSTATE, "", "", NULL},
-	{P_DATA_REQ, STATE4, NOACTION, NOSTATE, "", "", NULL},
-	{P_DATA_REQ, STATE5, NOACTION, NOSTATE, "", "", NULL},
-	{P_DATA_REQ, STATE6, DT_1, STATE6, "", "", NULL},
-	{P_DATA_REQ, STATE7, NOACTION, NOSTATE, "", "", NULL},
-	{P_DATA_REQ, STATE8, AR_7, STATE8, "", "", NULL},
-	{P_DATA_REQ, STATE9, NOACTION, NOSTATE, "", "", NULL},
-	{P_DATA_REQ, STATE10, NOACTION, NOSTATE, "", "", NULL},
-	{P_DATA_REQ, STATE11, NOACTION, NOSTATE, "", "", NULL},
-	{P_DATA_REQ, STATE12, NOACTION, NOSTATE, "", "", NULL},
+        {P_DATA_REQ, STATE1, NOACTION, NOSTATE, "", "", NULL},
+        {P_DATA_REQ, STATE2, NOACTION, NOSTATE, "", "", NULL},
+        {P_DATA_REQ, STATE3, NOACTION, NOSTATE, "", "", NULL},
+        {P_DATA_REQ, STATE4, NOACTION, NOSTATE, "", "", NULL},
+        {P_DATA_REQ, STATE5, NOACTION, NOSTATE, "", "", NULL},
+        {P_DATA_REQ, STATE6, DT_1, STATE6, "", "", NULL},
+        {P_DATA_REQ, STATE7, NOACTION, NOSTATE, "", "", NULL},
+        {P_DATA_REQ, STATE8, AR_7, STATE8, "", "", NULL},
+        {P_DATA_REQ, STATE9, NOACTION, NOSTATE, "", "", NULL},
+        {P_DATA_REQ, STATE10, NOACTION, NOSTATE, "", "", NULL},
+        {P_DATA_REQ, STATE11, NOACTION, NOSTATE, "", "", NULL},
+        {P_DATA_REQ, STATE12, NOACTION, NOSTATE, "", "", NULL},
     {P_DATA_REQ, STATE13, NOACTION, NOSTATE, "", "", NULL}},
 
     {
-	{P_DATA_TF_PDU_RCV, STATE1, NOACTION, NOSTATE, "", "", NULL},
-	{P_DATA_TF_PDU_RCV, STATE2, AA_1, STATE13, "", "", NULL},
-	{P_DATA_TF_PDU_RCV, STATE3, AA_8, STATE13, "", "", NULL},
-	{P_DATA_TF_PDU_RCV, STATE4, NOACTION, NOSTATE, "", "", NULL},
-	{P_DATA_TF_PDU_RCV, STATE5, AA_8, STATE13, "", "", NULL},
-	{P_DATA_TF_PDU_RCV, STATE6, DT_2, STATE6, "", "", NULL},
-	{P_DATA_TF_PDU_RCV, STATE7, AR_6, STATE7, "", "", NULL},
-	{P_DATA_TF_PDU_RCV, STATE8, AA_8, STATE13, "", "", NULL},
-	{P_DATA_TF_PDU_RCV, STATE9, AA_8, STATE13, "", "", NULL},
-	{P_DATA_TF_PDU_RCV, STATE10, AA_8, STATE13, "", "", NULL},
-	{P_DATA_TF_PDU_RCV, STATE11, AA_8, STATE13, "", "", NULL},
-	{P_DATA_TF_PDU_RCV, STATE12, AA_8, STATE13, "", "", NULL},
+        {P_DATA_TF_PDU_RCV, STATE1, NOACTION, NOSTATE, "", "", NULL},
+        {P_DATA_TF_PDU_RCV, STATE2, AA_1, STATE13, "", "", NULL},
+        {P_DATA_TF_PDU_RCV, STATE3, AA_8, STATE13, "", "", NULL},
+        {P_DATA_TF_PDU_RCV, STATE4, NOACTION, NOSTATE, "", "", NULL},
+        {P_DATA_TF_PDU_RCV, STATE5, AA_8, STATE13, "", "", NULL},
+        {P_DATA_TF_PDU_RCV, STATE6, DT_2, STATE6, "", "", NULL},
+        {P_DATA_TF_PDU_RCV, STATE7, AR_6, STATE7, "", "", NULL},
+        {P_DATA_TF_PDU_RCV, STATE8, AA_8, STATE13, "", "", NULL},
+        {P_DATA_TF_PDU_RCV, STATE9, AA_8, STATE13, "", "", NULL},
+        {P_DATA_TF_PDU_RCV, STATE10, AA_8, STATE13, "", "", NULL},
+        {P_DATA_TF_PDU_RCV, STATE11, AA_8, STATE13, "", "", NULL},
+        {P_DATA_TF_PDU_RCV, STATE12, AA_8, STATE13, "", "", NULL},
     {P_DATA_TF_PDU_RCV, STATE13, AA_6, STATE13, "", "", NULL}},
 
     {
-	{A_RELEASE_REQ, STATE1, NOACTION, NOSTATE, "", "", NULL},
-	{A_RELEASE_REQ, STATE2, NOACTION, NOSTATE, "", "", NULL},
-	{A_RELEASE_REQ, STATE3, NOACTION, NOSTATE, "", "", NULL},
-	{A_RELEASE_REQ, STATE4, NOACTION, NOSTATE, "", "", NULL},
-	{A_RELEASE_REQ, STATE5, NOACTION, NOSTATE, "", "", NULL},
-	{A_RELEASE_REQ, STATE6, AR_1, STATE7, "", "", NULL},
-	{A_RELEASE_REQ, STATE7, NOACTION, NOSTATE, "", "", NULL},
-	{A_RELEASE_REQ, STATE8, NOACTION, NOSTATE, "", "", NULL},
-	{A_RELEASE_REQ, STATE9, NOACTION, NOSTATE, "", "", NULL},
-	{A_RELEASE_REQ, STATE10, NOACTION, NOSTATE, "", "", NULL},
-	{A_RELEASE_REQ, STATE11, NOACTION, NOSTATE, "", "", NULL},
-	{A_RELEASE_REQ, STATE12, NOACTION, NOSTATE, "", "", NULL},
+        {A_RELEASE_REQ, STATE1, NOACTION, NOSTATE, "", "", NULL},
+        {A_RELEASE_REQ, STATE2, NOACTION, NOSTATE, "", "", NULL},
+        {A_RELEASE_REQ, STATE3, NOACTION, NOSTATE, "", "", NULL},
+        {A_RELEASE_REQ, STATE4, NOACTION, NOSTATE, "", "", NULL},
+        {A_RELEASE_REQ, STATE5, NOACTION, NOSTATE, "", "", NULL},
+        {A_RELEASE_REQ, STATE6, AR_1, STATE7, "", "", NULL},
+        {A_RELEASE_REQ, STATE7, NOACTION, NOSTATE, "", "", NULL},
+        {A_RELEASE_REQ, STATE8, NOACTION, NOSTATE, "", "", NULL},
+        {A_RELEASE_REQ, STATE9, NOACTION, NOSTATE, "", "", NULL},
+        {A_RELEASE_REQ, STATE10, NOACTION, NOSTATE, "", "", NULL},
+        {A_RELEASE_REQ, STATE11, NOACTION, NOSTATE, "", "", NULL},
+        {A_RELEASE_REQ, STATE12, NOACTION, NOSTATE, "", "", NULL},
     {A_RELEASE_REQ, STATE13, NOACTION, NOSTATE, "", "", NULL}},
 
     {
-	{A_RELEASE_RQ_PDU_RCV, STATE1, NOACTION, NOSTATE, "", "", NULL},
-	{A_RELEASE_RQ_PDU_RCV, STATE2, AA_1, STATE13, "", "", NULL},
-	{A_RELEASE_RQ_PDU_RCV, STATE3, AA_8, STATE13, "", "", NULL},
-	{A_RELEASE_RQ_PDU_RCV, STATE4, NOACTION, NOSTATE, "", "", NULL},
-	{A_RELEASE_RQ_PDU_RCV, STATE5, AA_8, STATE13, "", "", NULL},
-	{A_RELEASE_RQ_PDU_RCV, STATE6, AR_2, STATE8, "", "", NULL},
-	{A_RELEASE_RQ_PDU_RCV, STATE7, AR_8, NOSTATE, "", "", NULL},
-	{A_RELEASE_RQ_PDU_RCV, STATE8, AA_8, STATE13, "", "", NULL},
-	{A_RELEASE_RQ_PDU_RCV, STATE9, AA_8, STATE13, "", "", NULL},
-	{A_RELEASE_RQ_PDU_RCV, STATE10, AA_8, STATE13, "", "", NULL},
-	{A_RELEASE_RQ_PDU_RCV, STATE11, AA_8, STATE13, "", "", NULL},
-	{A_RELEASE_RQ_PDU_RCV, STATE12, AA_8, STATE13, "", "", NULL},
+        {A_RELEASE_RQ_PDU_RCV, STATE1, NOACTION, NOSTATE, "", "", NULL},
+        {A_RELEASE_RQ_PDU_RCV, STATE2, AA_1, STATE13, "", "", NULL},
+        {A_RELEASE_RQ_PDU_RCV, STATE3, AA_8, STATE13, "", "", NULL},
+        {A_RELEASE_RQ_PDU_RCV, STATE4, NOACTION, NOSTATE, "", "", NULL},
+        {A_RELEASE_RQ_PDU_RCV, STATE5, AA_8, STATE13, "", "", NULL},
+        {A_RELEASE_RQ_PDU_RCV, STATE6, AR_2, STATE8, "", "", NULL},
+        {A_RELEASE_RQ_PDU_RCV, STATE7, AR_8, NOSTATE, "", "", NULL},
+        {A_RELEASE_RQ_PDU_RCV, STATE8, AA_8, STATE13, "", "", NULL},
+        {A_RELEASE_RQ_PDU_RCV, STATE9, AA_8, STATE13, "", "", NULL},
+        {A_RELEASE_RQ_PDU_RCV, STATE10, AA_8, STATE13, "", "", NULL},
+        {A_RELEASE_RQ_PDU_RCV, STATE11, AA_8, STATE13, "", "", NULL},
+        {A_RELEASE_RQ_PDU_RCV, STATE12, AA_8, STATE13, "", "", NULL},
     {A_RELEASE_RQ_PDU_RCV, STATE13, AA_6, STATE13, "", "", NULL}},
 
     {
-	{A_RELEASE_RP_PDU_RCV, STATE1, NOACTION, NOSTATE, "", "", NULL},
-	{A_RELEASE_RP_PDU_RCV, STATE2, AA_1, STATE13, "", "", NULL},
-	{A_RELEASE_RP_PDU_RCV, STATE3, AA_8, STATE13, "", "", NULL},
-	{A_RELEASE_RP_PDU_RCV, STATE4, NOACTION, NOSTATE, "", "", NULL},
-	{A_RELEASE_RP_PDU_RCV, STATE5, AA_8, STATE13, "", "", NULL},
-	{A_RELEASE_RP_PDU_RCV, STATE6, AA_8, STATE13, "", "", NULL},
-	{A_RELEASE_RP_PDU_RCV, STATE7, AR_3, STATE1, "", "", NULL},
-	{A_RELEASE_RP_PDU_RCV, STATE8, AA_8, STATE13, "", "", NULL},
-	{A_RELEASE_RP_PDU_RCV, STATE9, AA_8, STATE13, "", "", NULL},
-	{A_RELEASE_RP_PDU_RCV, STATE10, AR_10, STATE12, "", "", NULL},
-	{A_RELEASE_RP_PDU_RCV, STATE11, AR_3, STATE1, "", "", NULL},
-	{A_RELEASE_RP_PDU_RCV, STATE12, AA_8, STATE13, "", "", NULL},
+        {A_RELEASE_RP_PDU_RCV, STATE1, NOACTION, NOSTATE, "", "", NULL},
+        {A_RELEASE_RP_PDU_RCV, STATE2, AA_1, STATE13, "", "", NULL},
+        {A_RELEASE_RP_PDU_RCV, STATE3, AA_8, STATE13, "", "", NULL},
+        {A_RELEASE_RP_PDU_RCV, STATE4, NOACTION, NOSTATE, "", "", NULL},
+        {A_RELEASE_RP_PDU_RCV, STATE5, AA_8, STATE13, "", "", NULL},
+        {A_RELEASE_RP_PDU_RCV, STATE6, AA_8, STATE13, "", "", NULL},
+        {A_RELEASE_RP_PDU_RCV, STATE7, AR_3, STATE1, "", "", NULL},
+        {A_RELEASE_RP_PDU_RCV, STATE8, AA_8, STATE13, "", "", NULL},
+        {A_RELEASE_RP_PDU_RCV, STATE9, AA_8, STATE13, "", "", NULL},
+        {A_RELEASE_RP_PDU_RCV, STATE10, AR_10, STATE12, "", "", NULL},
+        {A_RELEASE_RP_PDU_RCV, STATE11, AR_3, STATE1, "", "", NULL},
+        {A_RELEASE_RP_PDU_RCV, STATE12, AA_8, STATE13, "", "", NULL},
     {A_RELEASE_RP_PDU_RCV, STATE13, AA_6, STATE13, "", "", NULL}},
 
     {
-	{A_RELEASE_RESP, STATE1, NOACTION, NOSTATE, "", "", NULL},
-	{A_RELEASE_RESP, STATE2, NOACTION, NOSTATE, "", "", NULL},
-	{A_RELEASE_RESP, STATE3, NOACTION, NOSTATE, "", "", NULL},
-	{A_RELEASE_RESP, STATE4, NOACTION, NOSTATE, "", "", NULL},
-	{A_RELEASE_RESP, STATE5, NOACTION, NOSTATE, "", "", NULL},
-	{A_RELEASE_RESP, STATE6, NOACTION, NOSTATE, "", "", NULL},
-	{A_RELEASE_RESP, STATE7, NOACTION, NOSTATE, "", "", NULL},
-	{A_RELEASE_RESP, STATE8, AR_4, STATE13, "", "", NULL},
-	{A_RELEASE_RESP, STATE9, AR_9, STATE11, "", "", NULL},
-	{A_RELEASE_RESP, STATE10, NOACTION, NOSTATE, "", "", NULL},
-	{A_RELEASE_RESP, STATE11, NOACTION, NOSTATE, "", "", NULL},
-	{A_RELEASE_RESP, STATE12, AR_4, STATE13, "", "", NULL},
+        {A_RELEASE_RESP, STATE1, NOACTION, NOSTATE, "", "", NULL},
+        {A_RELEASE_RESP, STATE2, NOACTION, NOSTATE, "", "", NULL},
+        {A_RELEASE_RESP, STATE3, NOACTION, NOSTATE, "", "", NULL},
+        {A_RELEASE_RESP, STATE4, NOACTION, NOSTATE, "", "", NULL},
+        {A_RELEASE_RESP, STATE5, NOACTION, NOSTATE, "", "", NULL},
+        {A_RELEASE_RESP, STATE6, NOACTION, NOSTATE, "", "", NULL},
+        {A_RELEASE_RESP, STATE7, NOACTION, NOSTATE, "", "", NULL},
+        {A_RELEASE_RESP, STATE8, AR_4, STATE13, "", "", NULL},
+        {A_RELEASE_RESP, STATE9, AR_9, STATE11, "", "", NULL},
+        {A_RELEASE_RESP, STATE10, NOACTION, NOSTATE, "", "", NULL},
+        {A_RELEASE_RESP, STATE11, NOACTION, NOSTATE, "", "", NULL},
+        {A_RELEASE_RESP, STATE12, AR_4, STATE13, "", "", NULL},
     {A_RELEASE_RESP, STATE13, NOACTION, NOSTATE, "", "", NULL}},
 
     {
-	{A_ABORT_REQ, STATE1, NOACTION, NOSTATE, "", "", NULL},
-	{A_ABORT_REQ, STATE2, NOACTION, NOSTATE, "", "", NULL},
-	{A_ABORT_REQ, STATE3, AA_1, STATE13, "", "", NULL},
-	{A_ABORT_REQ, STATE4, AA_2, STATE1, "", "", NULL},
-	{A_ABORT_REQ, STATE5, AA_1, STATE13, "", "", NULL},
-	{A_ABORT_REQ, STATE6, AA_1, STATE13, "", "", NULL},
-	{A_ABORT_REQ, STATE7, AA_1, STATE13, "", "", NULL},
-	{A_ABORT_REQ, STATE8, AA_1, STATE13, "", "", NULL},
-	{A_ABORT_REQ, STATE9, AA_1, STATE13, "", "", NULL},
-	{A_ABORT_REQ, STATE10, AA_1, STATE13, "", "", NULL},
-	{A_ABORT_REQ, STATE11, AA_1, STATE13, "", "", NULL},
-	{A_ABORT_REQ, STATE12, AA_1, STATE13, "", "", NULL},
+        {A_ABORT_REQ, STATE1, NOACTION, NOSTATE, "", "", NULL},
+        {A_ABORT_REQ, STATE2, NOACTION, NOSTATE, "", "", NULL},
+        {A_ABORT_REQ, STATE3, AA_1, STATE13, "", "", NULL},
+        {A_ABORT_REQ, STATE4, AA_2, STATE1, "", "", NULL},
+        {A_ABORT_REQ, STATE5, AA_1, STATE13, "", "", NULL},
+        {A_ABORT_REQ, STATE6, AA_1, STATE13, "", "", NULL},
+        {A_ABORT_REQ, STATE7, AA_1, STATE13, "", "", NULL},
+        {A_ABORT_REQ, STATE8, AA_1, STATE13, "", "", NULL},
+        {A_ABORT_REQ, STATE9, AA_1, STATE13, "", "", NULL},
+        {A_ABORT_REQ, STATE10, AA_1, STATE13, "", "", NULL},
+        {A_ABORT_REQ, STATE11, AA_1, STATE13, "", "", NULL},
+        {A_ABORT_REQ, STATE12, AA_1, STATE13, "", "", NULL},
     {A_ABORT_REQ, STATE13, NOACTION, NOSTATE, "", "", NULL}},
 
     {
-	{A_ABORT_PDU_RCV, STATE1, NOACTION, NOSTATE, "", "", NULL},
-	{A_ABORT_PDU_RCV, STATE2, AA_2, STATE1, "", "", NULL},
-	{A_ABORT_PDU_RCV, STATE3, AA_3, STATE1, "", "", NULL},
-	{A_ABORT_PDU_RCV, STATE4, NOACTION, NOSTATE, "", "", NULL},
-	{A_ABORT_PDU_RCV, STATE5, AA_3, STATE1, "", "", NULL},
-	{A_ABORT_PDU_RCV, STATE6, AA_3, STATE1, "", "", NULL},
-	{A_ABORT_PDU_RCV, STATE7, AA_3, STATE1, "", "", NULL},
-	{A_ABORT_PDU_RCV, STATE8, AA_3, STATE1, "", "", NULL},
-	{A_ABORT_PDU_RCV, STATE9, AA_3, STATE1, "", "", NULL},
-	{A_ABORT_PDU_RCV, STATE10, AA_3, STATE1, "", "", NULL},
-	{A_ABORT_PDU_RCV, STATE11, AA_3, STATE1, "", "", NULL},
-	{A_ABORT_PDU_RCV, STATE12, AA_3, STATE1, "", "", NULL},
+        {A_ABORT_PDU_RCV, STATE1, NOACTION, NOSTATE, "", "", NULL},
+        {A_ABORT_PDU_RCV, STATE2, AA_2, STATE1, "", "", NULL},
+        {A_ABORT_PDU_RCV, STATE3, AA_3, STATE1, "", "", NULL},
+        {A_ABORT_PDU_RCV, STATE4, NOACTION, NOSTATE, "", "", NULL},
+        {A_ABORT_PDU_RCV, STATE5, AA_3, STATE1, "", "", NULL},
+        {A_ABORT_PDU_RCV, STATE6, AA_3, STATE1, "", "", NULL},
+        {A_ABORT_PDU_RCV, STATE7, AA_3, STATE1, "", "", NULL},
+        {A_ABORT_PDU_RCV, STATE8, AA_3, STATE1, "", "", NULL},
+        {A_ABORT_PDU_RCV, STATE9, AA_3, STATE1, "", "", NULL},
+        {A_ABORT_PDU_RCV, STATE10, AA_3, STATE1, "", "", NULL},
+        {A_ABORT_PDU_RCV, STATE11, AA_3, STATE1, "", "", NULL},
+        {A_ABORT_PDU_RCV, STATE12, AA_3, STATE1, "", "", NULL},
     {A_ABORT_PDU_RCV, STATE13, AA_2, STATE1, "", "", NULL}},
 
     {
-	{TRANS_CONN_CLOSED, STATE1, NOACTION, NOSTATE, "", "", NULL},
-	{TRANS_CONN_CLOSED, STATE2, AA_5, STATE1, "", "", NULL},
-	{TRANS_CONN_CLOSED, STATE3, AA_4, STATE1, "", "", NULL},
-	{TRANS_CONN_CLOSED, STATE4, AA_4, STATE1, "", "", NULL},
-	{TRANS_CONN_CLOSED, STATE5, AA_4, STATE1, "", "", NULL},
-	{TRANS_CONN_CLOSED, STATE6, AA_4, STATE1, "", "", NULL},
-	{TRANS_CONN_CLOSED, STATE7, AA_4, STATE1, "", "", NULL},
-	{TRANS_CONN_CLOSED, STATE8, AA_4, STATE1, "", "", NULL},
-	{TRANS_CONN_CLOSED, STATE9, AA_4, STATE1, "", "", NULL},
-	{TRANS_CONN_CLOSED, STATE10, AA_4, STATE1, "", "", NULL},
-	{TRANS_CONN_CLOSED, STATE11, AA_4, STATE1, "", "", NULL},
-	{TRANS_CONN_CLOSED, STATE12, AA_4, STATE1, "", "", NULL},
+        {TRANS_CONN_CLOSED, STATE1, NOACTION, NOSTATE, "", "", NULL},
+        {TRANS_CONN_CLOSED, STATE2, AA_5, STATE1, "", "", NULL},
+        {TRANS_CONN_CLOSED, STATE3, AA_4, STATE1, "", "", NULL},
+        {TRANS_CONN_CLOSED, STATE4, AA_4, STATE1, "", "", NULL},
+        {TRANS_CONN_CLOSED, STATE5, AA_4, STATE1, "", "", NULL},
+        {TRANS_CONN_CLOSED, STATE6, AA_4, STATE1, "", "", NULL},
+        {TRANS_CONN_CLOSED, STATE7, AA_4, STATE1, "", "", NULL},
+        {TRANS_CONN_CLOSED, STATE8, AA_4, STATE1, "", "", NULL},
+        {TRANS_CONN_CLOSED, STATE9, AA_4, STATE1, "", "", NULL},
+        {TRANS_CONN_CLOSED, STATE10, AA_4, STATE1, "", "", NULL},
+        {TRANS_CONN_CLOSED, STATE11, AA_4, STATE1, "", "", NULL},
+        {TRANS_CONN_CLOSED, STATE12, AA_4, STATE1, "", "", NULL},
     {TRANS_CONN_CLOSED, STATE13, AR_5, STATE1, "", "", NULL}},
 
     {
-	{ARTIM_TIMER_EXPIRED, STATE1, NOACTION, NOSTATE, "", "", NULL},
-	{ARTIM_TIMER_EXPIRED, STATE2, AA_2, STATE1, "", "", NULL},
-	{ARTIM_TIMER_EXPIRED, STATE3, NOACTION, NOSTATE, "", "", NULL},
-	{ARTIM_TIMER_EXPIRED, STATE4, NOACTION, NOSTATE, "", "", NULL},
-	{ARTIM_TIMER_EXPIRED, STATE5, NOACTION, NOSTATE, "", "", NULL},
-	{ARTIM_TIMER_EXPIRED, STATE6, NOACTION, NOSTATE, "", "", NULL},
+        {ARTIM_TIMER_EXPIRED, STATE1, NOACTION, NOSTATE, "", "", NULL},
+        {ARTIM_TIMER_EXPIRED, STATE2, AA_2, STATE1, "", "", NULL},
+        {ARTIM_TIMER_EXPIRED, STATE3, NOACTION, NOSTATE, "", "", NULL},
+        {ARTIM_TIMER_EXPIRED, STATE4, NOACTION, NOSTATE, "", "", NULL},
+        {ARTIM_TIMER_EXPIRED, STATE5, NOACTION, NOSTATE, "", "", NULL},
+        {ARTIM_TIMER_EXPIRED, STATE6, NOACTION, NOSTATE, "", "", NULL},
 /* This next line is not per the standard.  We added a timeout action
 ** in this state.
 */
-	{ARTIM_TIMER_EXPIRED, STATE7, AA_2T, STATE1, "", "", NULL},
-	{ARTIM_TIMER_EXPIRED, STATE8, NOACTION, NOSTATE, "", "", NULL},
-	{ARTIM_TIMER_EXPIRED, STATE9, NOACTION, NOSTATE, "", "", NULL},
-	{ARTIM_TIMER_EXPIRED, STATE10, NOACTION, NOSTATE, "", "", NULL},
-	{ARTIM_TIMER_EXPIRED, STATE11, NOACTION, NOSTATE, "", "", NULL},
-	{ARTIM_TIMER_EXPIRED, STATE12, NOACTION, NOSTATE, "", "", NULL},
+        {ARTIM_TIMER_EXPIRED, STATE7, AA_2T, STATE1, "", "", NULL},
+        {ARTIM_TIMER_EXPIRED, STATE8, NOACTION, NOSTATE, "", "", NULL},
+        {ARTIM_TIMER_EXPIRED, STATE9, NOACTION, NOSTATE, "", "", NULL},
+        {ARTIM_TIMER_EXPIRED, STATE10, NOACTION, NOSTATE, "", "", NULL},
+        {ARTIM_TIMER_EXPIRED, STATE11, NOACTION, NOSTATE, "", "", NULL},
+        {ARTIM_TIMER_EXPIRED, STATE12, NOACTION, NOSTATE, "", "", NULL},
     {ARTIM_TIMER_EXPIRED, STATE13, AA_2, STATE1, "", "", NULL}},
 
     {
-	{INVALID_PDU, STATE1, NOACTION, NOSTATE, "", "", NULL},
-	{INVALID_PDU, STATE2, AA_1, STATE13, "", "", NULL},
-	{INVALID_PDU, STATE3, AA_8, STATE13, "", "", NULL},
-	{INVALID_PDU, STATE4, NOACTION, NOSTATE, "", "", NULL},
-	{INVALID_PDU, STATE5, AA_8, STATE13, "", "", NULL},
-	{INVALID_PDU, STATE6, AA_8, STATE13, "", "", NULL},
-	{INVALID_PDU, STATE7, AA_8, STATE13, "", "", NULL},
-	{INVALID_PDU, STATE8, AA_8, STATE13, "", "", NULL},
-	{INVALID_PDU, STATE9, AA_8, STATE13, "", "", NULL},
-	{INVALID_PDU, STATE10, AA_8, STATE13, "", "", NULL},
-	{INVALID_PDU, STATE11, AA_8, STATE13, "", "", NULL},
-	{INVALID_PDU, STATE12, AA_8, STATE13, "", "", NULL},
+        {INVALID_PDU, STATE1, NOACTION, NOSTATE, "", "", NULL},
+        {INVALID_PDU, STATE2, AA_1, STATE13, "", "", NULL},
+        {INVALID_PDU, STATE3, AA_8, STATE13, "", "", NULL},
+        {INVALID_PDU, STATE4, NOACTION, NOSTATE, "", "", NULL},
+        {INVALID_PDU, STATE5, AA_8, STATE13, "", "", NULL},
+        {INVALID_PDU, STATE6, AA_8, STATE13, "", "", NULL},
+        {INVALID_PDU, STATE7, AA_8, STATE13, "", "", NULL},
+        {INVALID_PDU, STATE8, AA_8, STATE13, "", "", NULL},
+        {INVALID_PDU, STATE9, AA_8, STATE13, "", "", NULL},
+        {INVALID_PDU, STATE10, AA_8, STATE13, "", "", NULL},
+        {INVALID_PDU, STATE11, AA_8, STATE13, "", "", NULL},
+        {INVALID_PDU, STATE12, AA_8, STATE13, "", "", NULL},
     {INVALID_PDU, STATE13, AA_7, STATE13, "", "", NULL}}
 };
 
@@ -638,52 +638,51 @@ static FSM_ENTRY StateTable[DUL_NUMBER_OF_EVENTS][DUL_NUMBER_OF_STATES] = {
 /* Dul_InitializeFSM
 **
 ** Purpose:
-**	Initialize the DUL finite state machine by filling in addresses of
-**	functions.
+**      Initialize the DUL finite state machine by filling in addresses of
+**      functions.
 **
 ** Parameter Dictionary:
-**	None
+**      None
 **
 ** Return Values:
-**	DUL_NORMAL
 **
 ** Notes:
 **
 ** Algorithm:
-**	Description of the algorithm (optional) and any other notes.
+**      Description of the algorithm (optional) and any other notes.
 */
-CONDITION
+OFCondition
 DUL_InitializeFSM()
 {
     unsigned long
         l_index,
         idx2;
     FSM_ENTRY
-	* stateEntries;
+        * stateEntries;
 
     stateEntries = (FSM_ENTRY *) StateTable;
     for (l_index = 0; l_index < DUL_NUMBER_OF_EVENTS * DUL_NUMBER_OF_STATES; l_index++) {
-	if (stateEntries[l_index].action != NOACTION) {
-	    for (idx2 = 0; idx2 < DIM_OF(FSM_FunctionTable) &&
-		 stateEntries[l_index].actionFunction == NULL; idx2++)
-		if (stateEntries[l_index].action == FSM_FunctionTable[idx2].action) {
-		    stateEntries[l_index].actionFunction =
-			FSM_FunctionTable[idx2].actionFunction;
-		    (void) sprintf(stateEntries[l_index].actionName, "%.*s",
-				 (int)(sizeof(stateEntries[l_index].actionName) - 1),
-				   FSM_FunctionTable[idx2].actionName);
-		}
-	}
-	for (idx2 = 0; idx2 < DIM_OF(Event_Table) &&
-	     strlen(stateEntries[l_index].eventName) == 0; idx2++) {
-	    if (stateEntries[l_index].event == Event_Table[idx2].event)
-		(void) sprintf(stateEntries[l_index].eventName, "%.*s",
-			       (int)(sizeof(stateEntries[l_index].eventName) - 1),
-			       Event_Table[idx2].eventName);
-	}
+        if (stateEntries[l_index].action != NOACTION) {
+            for (idx2 = 0; idx2 < DIM_OF(FSM_FunctionTable) &&
+                 stateEntries[l_index].actionFunction == NULL; idx2++)
+                if (stateEntries[l_index].action == FSM_FunctionTable[idx2].action) {
+                    stateEntries[l_index].actionFunction =
+                        FSM_FunctionTable[idx2].actionFunction;
+                    (void) sprintf(stateEntries[l_index].actionName, "%.*s",
+                                 (int)(sizeof(stateEntries[l_index].actionName) - 1),
+                                   FSM_FunctionTable[idx2].actionName);
+                }
+        }
+        for (idx2 = 0; idx2 < DIM_OF(Event_Table) &&
+             strlen(stateEntries[l_index].eventName) == 0; idx2++) {
+            if (stateEntries[l_index].event == Event_Table[idx2].event)
+                (void) sprintf(stateEntries[l_index].eventName, "%.*s",
+                               (int)(sizeof(stateEntries[l_index].eventName) - 1),
+                               Event_Table[idx2].eventName);
+        }
     }
 
-    return DUL_NORMAL;
+    return EC_Normal;
 }
 
 
@@ -691,82 +690,79 @@ DUL_InitializeFSM()
 /* PRV_StateMachine
 **
 ** Purpose:
-**	Execute the action function, given the current state and the event.
+**      Execute the action function, given the current state and the event.
 **
 ** Parameter Dictionary:
-**	network		Handle to the network environment
-**	association	Handle to the Association
-**	event		The event that will trigger this action
-**	state		Current state of the finite state machine.
-**	params		Service parameters describing this Association
+**      network         Handle to the network environment
+**      association     Handle to the Association
+**      event           The event that will trigger this action
+**      state           Current state of the finite state machine.
+**      params          Service parameters describing this Association
 **
 ** Return Values:
 **
-**	DUL_FSMERROR
-**	DUL_NORMAL
 **
 ** Notes:
 **
 ** Algorithm:
-**	Description of the algorithm (optional) and any other notes.
+**      Description of the algorithm (optional) and any other notes.
 */
-CONDITION
+OFCondition
 PRV_StateMachine(PRIVATE_NETWORKKEY ** network,
-		 PRIVATE_ASSOCIATIONKEY ** association, int event, int state,
-		 void *params)
+                 PRIVATE_ASSOCIATIONKEY ** association, int event, int state,
+                 void *params)
 {
     FSM_ENTRY
-	* entry;
+        * entry;
 
-    if (event < 0 || event >= DUL_NUMBER_OF_EVENTS) {
-	CERR << "Bad event: " << event << endl
-	    << "This must be a coding error of some kind." << endl;
-	return COND_PushCondition(DUL_FSMERROR, DUL_Message(DUL_FSMERROR),
-				  state, event);
+    if (event < 0 || event >= DUL_NUMBER_OF_EVENTS)
+    {
+      char buf1[256];
+      sprintf(buf1, "DUL Finite State Machine Error: Bad event, state %d event %d", state, event);
+      return makeDcmnetCondition(DULC_FSMERROR, OF_error, buf1);
     }
-    if (state < 1 || state > DUL_NUMBER_OF_STATES) {
-	CERR << "Bad state: " << state << endl
-        << "This must be a coding error of some kind." << endl;
-	return COND_PushCondition(DUL_FSMERROR, DUL_Message(DUL_FSMERROR),
-				  state, event);
+    if (state < 1 || state > DUL_NUMBER_OF_STATES)
+    {
+      char buf1[256];
+      sprintf(buf1, "DUL Finite State Machine Error: Bad state, state %d event %d", state, event);
+      return makeDcmnetCondition(DULC_FSMERROR, OF_error, buf1);
     }
     entry = &StateTable[event][state - 1];
 
 #ifdef DEBUG
     if (debug) {
         DEBUG_DEVICE.width(2);
-	    DEBUG_DEVICE << "DUL  FSM Table: State: " << state << " Event: " << event
-	        << "DUL  Event:  " << entry->eventName << endl
-	        << "DUL  Action: " << entry->actionName << endl;
+            DEBUG_DEVICE << "DUL  FSM Table: State: " << state << " Event: " << event
+                << "DUL  Event:  " << entry->eventName << endl
+                << "DUL  Action: " << entry->actionName << endl;
     }
 #endif
 
     if (entry->actionFunction != NULL)
-	return entry->actionFunction(network, association, entry->nextState,
-				     params);
-    else {
-	CERR << "PRV_StateMachine: No action defined, state: " << state
-        << " event " << event << endl;
-	return COND_PushCondition(DUL_FSMERROR, DUL_Message(DUL_FSMERROR),
-				  state, event);
+        return entry->actionFunction(network, association, entry->nextState, params);
+    else
+    {
+      char buf1[256];
+      sprintf(buf1, "DUL Finite State Machine Error: No action defined, state %d event %d", state, event);
+      return makeDcmnetCondition(DULC_FSMERROR, OF_error, buf1);
     }
 }
 
 /* fsmDebug
 **
 ** Purpose:
-**	To enable/disable the debugging facility.
+**      To enable/disable the debugging facility.
 **
 ** Parameter Dictionary:
-**	flag	Used to enable/disable the debugging facility.
+**      flag    Used to enable/disable the debugging facility.
 **
 ** Return Values:
-**	None
+**      None
 **
 ** Notes:
 **
 ** Algorithm:
-**	Description of the algorithm (optional) and any other notes.
+**      Description of the algorithm (optional) and any other notes.
 */
 void
 fsmDebug(OFBool flag)
@@ -783,136 +779,100 @@ fsmDebug(OFBool flag)
 /* AE_1_TransportConnect
 **
 ** Purpose:
-**	Issue a TRANSPORT_CONNECT request primitive to local transport
-**	service.
+**      Issue a TRANSPORT_CONNECT request primitive to local transport
+**      service.
 **
 ** Parameter Dictionary:
-**	network		Handle to the network environment
-**	association	Handle to the Association
-**	nextState	The next state to be reached from the current state
-**	params		Service parameters describing the Association
+**      network         Handle to the network environment
+**      association     Handle to the Association
+**      nextState       The next state to be reached from the current state
+**      params          Service parameters describing the Association
 **
 ** Return Values:
-**
-**	DUL_ILLEGALSERVICEPARAMETER
-**	DUL_NORMAL
-**	DUL_TCPINITERROR
-**	DUL_UNKNOWNHOST
-**	DUL_UNSUPPORTEDNETWORK
 **
 ** Notes:
 **
 ** Algorithm:
-**	Description of the algorithm (optional) and any other notes.
+**      Description of the algorithm (optional) and any other notes.
 */
-static CONDITION
+static OFCondition
 AE_1_TransportConnect(PRIVATE_NETWORKKEY ** network,
-	 PRIVATE_ASSOCIATIONKEY ** association, int nextState, void *params)
+         PRIVATE_ASSOCIATIONKEY ** association, int nextState, void *params)
 {
     DUL_ASSOCIATESERVICEPARAMETERS
     * service;
-    CONDITION
-	cond;
+    OFCondition cond = EC_Normal;
 
     service = (DUL_ASSOCIATESERVICEPARAMETERS *) params;
     clearPDUCache(association);
-    if (strcmp((*association)->networkType, DUL_NETWORK_TCP) == 0) {
-	cond = requestAssociationTCP(network, service, association);
-	(*association)->protocolState = nextState;
-    } else
-	cond = COND_PushCondition(DUL_UNSUPPORTEDNETWORK,
-	      DUL_Message(DUL_UNSUPPORTEDNETWORK), (*network)->networkType);
-
+    cond = requestAssociationTCP(network, service, association);
+    (*association)->protocolState = nextState;
     return cond;
 }
 
 /* AE_2_SendAssociateRQPDU
 **
 ** Purpose:
-**	Send A-ASSOCIATE-RQ PDU.
+**      Send A-ASSOCIATE-RQ PDU.
 **
 ** Parameter Dictionary:
 **
-**	network		Handle to the network environment
-**	association	Handle to the Association
-**	nextState	The next state to be reached from the current state
-**	params		Service parameters describing the Association
+**      network         Handle to the network environment
+**      association     Handle to the Association
+**      nextState       The next state to be reached from the current state
+**      params          Service parameters describing the Association
 **
 ** Return Values:
 **
-**	DUL_LISTCREATEFAILED
-**	DUL_LISTERROR
-**	DUL_MALLOCERROR
-**	DUL_NORMAL
-**	DUL_TCPIOERROR
-**	DUL_UNSUPPORTEDNETWORK
 **
 ** Notes:
 **
 ** Algorithm:
-**	Description of the algorithm (optional) and any other notes.
+**      Description of the algorithm (optional) and any other notes.
 */
-static CONDITION
+static OFCondition
 AE_2_SendAssociateRQPDU(PRIVATE_NETWORKKEY ** network,
-	 PRIVATE_ASSOCIATIONKEY ** association, int nextState, void *params)
+         PRIVATE_ASSOCIATIONKEY ** association, int nextState, void *params)
 {
     DUL_ASSOCIATESERVICEPARAMETERS
     * service;
-    CONDITION
-	cond;
+    OFCondition cond = EC_Normal;
 
     service = (DUL_ASSOCIATESERVICEPARAMETERS *) params;
-    if (strcmp((*association)->networkType, DUL_NETWORK_TCP) == 0) {
-	cond = sendAssociationRQTCP(network, service, association);
-	(*association)->protocolState = nextState;
-	return cond;
-    } else
-	return COND_PushCondition(DUL_UNSUPPORTEDNETWORK,
-	      DUL_Message(DUL_UNSUPPORTEDNETWORK), (*network)->networkType);
+
+    cond = sendAssociationRQTCP(network, service, association);
+    (*association)->protocolState = nextState;
+    return cond;
 }
 
 
 /* AE_3_AssociateConfirmationAccept
 **
 ** Purpose:
-**	Issue an A-ASSOCIATE confirmation (Accept) primitive
+**      Issue an A-ASSOCIATE confirmation (Accept) primitive
 **
 ** Parameter Dictionary:
 **
-**	network		Handle to the network environment
-**	association	Handle to the Association
-**	nextState	The next state to be reached from the current state
-**	params		Service parameters describing the Association
+**      network         Handle to the network environment
+**      association     Handle to the Association
+**      nextState       The next state to be reached from the current state
+**      params          Service parameters describing the Association
 **
 ** Return Values:
 **
-**	DUL_CODINGERROR
-**	DUL_ILLEGALPDU
-**	DUL_ILLEGALPDULENGTH
-**	DUL_LISTCREATEFAILED
-**	DUL_LISTERROR
-**	DUL_MALLOCERROR
-**	DUL_NETWORKCLOSED
-**	DUL_NORMAL
-**	DUL_READTIMEOUT
-**	DUL_UNEXPECTEDPDU
-**	DUL_UNRECOGNIZEDPDUTYPE
-**	DUL_UNSUPPORTEDNETWORK
 **
 ** Notes:
 **
 ** Algorithm:
-**	Description of the algorithm (optional) and any other notes.
+**      Description of the algorithm (optional) and any other notes.
 */
 
-static CONDITION
+static OFCondition
 AE_3_AssociateConfirmationAccept(PRIVATE_NETWORKKEY ** /*network*/,
-	 PRIVATE_ASSOCIATIONKEY ** association, int nextState, void *params)
+         PRIVATE_ASSOCIATIONKEY ** association, int nextState, void *params)
 {
     DUL_ASSOCIATESERVICEPARAMETERS
     * service;
-    CONDITION
-	cond;
     unsigned char
         *buffer=NULL,
         pduType,
@@ -920,36 +880,35 @@ AE_3_AssociateConfirmationAccept(PRIVATE_NETWORKKEY ** /*network*/,
     unsigned long
         pduLength;
     PRV_ASSOCIATEPDU
-	assoc;
+        assoc;
     PRV_PRESENTATIONCONTEXTITEM
-	* prvCtx;
+        * prvCtx;
     DUL_PRESENTATIONCONTEXT
-	* userPresentationCtx,
-	*requestedPresentationCtx;
+        * userPresentationCtx,
+        *requestedPresentationCtx;
     DUL_SUBITEM
-	* subItem;
+        * subItem;
     PRV_SCUSCPROLE
-	* scuscpRole;
+        * scuscpRole;
 
     service = (DUL_ASSOCIATESERVICEPARAMETERS *) params;
-    cond = readPDU(association, DUL_BLOCK, 0, &buffer,
-		   &pduType, &pduReserve, &pduLength);
+    OFCondition cond = readPDU(association, DUL_BLOCK, 0, &buffer, &pduType, &pduReserve, &pduLength);
  
-    if (cond != DUL_NORMAL) 
+    if (cond.bad()) 
     {
        if (buffer) free(buffer);
        return cond;
     }
  
-    /* cond is DUL_NORMAL so we know that buffer exists */
+    /* cond is good so we know that buffer exists */
 
     if (debug)
-	dump_pdu("Associate Accept", buffer, pduLength + 6);
+        dump_pdu("Associate Accept", buffer, pduLength + 6);
 
     if (pduType == DUL_TYPEASSOCIATEAC)   
     {
-    	if ((*association)->associatePDUFlag)
-    	{
+        if ((*association)->associatePDUFlag)
+        {
           // copy A-ASSOCIATE-AC PDU
           (*association)->associatePDU = new char[pduLength+6];
           if ((*association)->associatePDU)
@@ -959,154 +918,129 @@ AE_3_AssociateConfirmationAccept(PRIVATE_NETWORKKEY ** /*network*/,
           }
         }
 
-	cond = parseAssociate(buffer, pduLength, &assoc);
+        cond = parseAssociate(buffer, pduLength, &assoc);
         free(buffer);
-	if (debug) {
-	    DEBUG_DEVICE.flush();
-	}
-	if (cond != DUL_NORMAL)
-	    return COND_PushCondition(DUL_ILLEGALPDU,
-				      DUL_Message(DUL_ILLEGALPDU));
+        if (debug) {
+            DEBUG_DEVICE.flush();
+        }
+        if (cond.bad()) return makeDcmnetSubCondition(DULC_ILLEGALPDU, OF_error, "DUL Illegal or ill-formed PDU", cond);
 
-	(void) strcpy(service->respondingAPTitle, assoc.calledAPTitle);
-	(void) strcpy(service->callingAPTitle, assoc.callingAPTitle);
-	(void) strcpy(service->applicationContextName,
-		      assoc.applicationContext.data);
+        (void) strcpy(service->respondingAPTitle, assoc.calledAPTitle);
+        (void) strcpy(service->callingAPTitle, assoc.callingAPTitle);
+        (void) strcpy(service->applicationContextName,
+                      assoc.applicationContext.data);
 
-	if ((service->acceptedPresentationContext = LST_Create()) == NULL)
-	    return COND_PushCondition(DUL_LISTCREATEFAILED,
-				      DUL_Message(DUL_LISTCREATEFAILED),
-				      "AE_3_AssociateConfirmationAccept");
+        if ((service->acceptedPresentationContext = LST_Create()) == NULL) return EC_MemoryExhausted;
 
-	prvCtx = (PRV_PRESENTATIONCONTEXTITEM*)LST_Head(&assoc.presentationContextList);
-	if (prvCtx != NULL)
-	    (void) LST_Position(&assoc.presentationContextList, (LST_NODE*)prvCtx);
-	while (prvCtx != NULL) {
-	    userPresentationCtx = (DUL_PRESENTATIONCONTEXT*)malloc(sizeof(DUL_PRESENTATIONCONTEXT));
-	    if (userPresentationCtx == NULL)
-		return COND_PushCondition(DUL_MALLOCERROR,
-					  DUL_Message(DUL_MALLOCERROR),
-					  "AE_3_AssociateConfirmationAccept",
-					  sizeof(*userPresentationCtx));
+        prvCtx = (PRV_PRESENTATIONCONTEXTITEM*)LST_Head(&assoc.presentationContextList);
+        if (prvCtx != NULL)
+            (void) LST_Position(&assoc.presentationContextList, (LST_NODE*)prvCtx);
+        while (prvCtx != NULL) {
+            userPresentationCtx = (DUL_PRESENTATIONCONTEXT*)malloc(sizeof(DUL_PRESENTATIONCONTEXT));
+            if (userPresentationCtx == NULL) return EC_MemoryExhausted;
 
-	    (void) memset(userPresentationCtx, 0, sizeof(userPresentationCtx));
-	    userPresentationCtx->result = prvCtx->result;
-	    userPresentationCtx->presentationContextID = prvCtx->contextID;
-	    userPresentationCtx->proposedTransferSyntax = NULL;
-	    requestedPresentationCtx = findPresentationCtx(
-		 &service->requestedPresentationContext, prvCtx->contextID);
-	    if (requestedPresentationCtx != NULL) {
-		strcpy(userPresentationCtx->abstractSyntax,
-		       requestedPresentationCtx->abstractSyntax);
-		userPresentationCtx->proposedSCRole =
-		    requestedPresentationCtx->proposedSCRole;
-	    }
-	    userPresentationCtx->acceptedSCRole = DUL_SC_ROLE_DEFAULT;
-	    scuscpRole = findSCUSCPRole(
-					&assoc.userInfo.SCUSCPRoleList,
-					userPresentationCtx->abstractSyntax);
-	    if (scuscpRole != NULL) {
-		if (scuscpRole->SCURole == scuscpRole->SCPRole)
-		    userPresentationCtx->acceptedSCRole = DUL_SC_ROLE_SCUSCP;
-		else if (scuscpRole->SCURole == 1)
-		    userPresentationCtx->acceptedSCRole = DUL_SC_ROLE_SCU;
-		else
-		    userPresentationCtx->acceptedSCRole = DUL_SC_ROLE_SCP;
-	    }
-	    if (prvCtx->transferSyntaxList == NULL)
-		return COND_PushCondition(DUL_PEERILLEGALXFERSYNTAXCOUNT,
-			    DUL_Message(DUL_PEERILLEGALXFERSYNTAXCOUNT), 0);
+            (void) memset(userPresentationCtx, 0, sizeof(userPresentationCtx));
+            userPresentationCtx->result = prvCtx->result;
+            userPresentationCtx->presentationContextID = prvCtx->contextID;
+            userPresentationCtx->proposedTransferSyntax = NULL;
+            requestedPresentationCtx = findPresentationCtx(
+                 &service->requestedPresentationContext, prvCtx->contextID);
+            if (requestedPresentationCtx != NULL) {
+                strcpy(userPresentationCtx->abstractSyntax,
+                       requestedPresentationCtx->abstractSyntax);
+                userPresentationCtx->proposedSCRole =
+                    requestedPresentationCtx->proposedSCRole;
+            }
+            userPresentationCtx->acceptedSCRole = DUL_SC_ROLE_DEFAULT;
+            scuscpRole = findSCUSCPRole(
+                                        &assoc.userInfo.SCUSCPRoleList,
+                                        userPresentationCtx->abstractSyntax);
+            if (scuscpRole != NULL) {
+                if (scuscpRole->SCURole == scuscpRole->SCPRole)
+                    userPresentationCtx->acceptedSCRole = DUL_SC_ROLE_SCUSCP;
+                else if (scuscpRole->SCURole == 1)
+                    userPresentationCtx->acceptedSCRole = DUL_SC_ROLE_SCU;
+                else
+                    userPresentationCtx->acceptedSCRole = DUL_SC_ROLE_SCP;
+            }
+            if (prvCtx->transferSyntaxList == NULL)
+            {
+              char buf1[256];
+              sprintf(buf1, "DUL Peer supplied illegal number of transfer syntaxes (%d)", 0);
+              return makeDcmnetCondition(DULC_PEERILLEGALXFERSYNTAXCOUNT, OF_error, buf1);
+            }
+            
+            if ((prvCtx->result == DUL_PRESENTATION_ACCEPT) && (LST_Count(&prvCtx->transferSyntaxList) != 1))
+            {
+              char buf2[256];
+              sprintf(buf2, "DUL Peer supplied illegal number of transfer syntaxes (%ld)", LST_Count(&prvCtx->transferSyntaxList));
+              return makeDcmnetCondition(DULC_PEERILLEGALXFERSYNTAXCOUNT, OF_error, buf2);
+            }
+            subItem = (DUL_SUBITEM*)LST_Head(&prvCtx->transferSyntaxList);
+            if (subItem != NULL)
+                (void) strcpy(userPresentationCtx->acceptedTransferSyntax,
+                              subItem->data);
+            cond = LST_Enqueue(&service->acceptedPresentationContext, (LST_NODE*)userPresentationCtx);
+            if (cond.bad()) return cond;
 
-	    if ((prvCtx->result == DUL_PRESENTATION_ACCEPT) &&
-		(LST_Count(&prvCtx->transferSyntaxList) != 1))
-		return COND_PushCondition(DUL_PEERILLEGALXFERSYNTAXCOUNT,
-				DUL_Message(DUL_PEERILLEGALXFERSYNTAXCOUNT),
-				    LST_Count(&prvCtx->transferSyntaxList));
+            prvCtx = (PRV_PRESENTATIONCONTEXTITEM*)LST_Next(&assoc.presentationContextList);
 
-	    subItem = (DUL_SUBITEM*)LST_Head(&prvCtx->transferSyntaxList);
-	    if (subItem != NULL)
-		(void) strcpy(userPresentationCtx->acceptedTransferSyntax,
-			      subItem->data);
-
-	    if (LST_Enqueue(&service->acceptedPresentationContext,
-			    (LST_NODE*)userPresentationCtx) != LST_NORMAL)
-		return COND_PushCondition(DUL_LISTERROR,
-					  DUL_Message(DUL_LISTERROR),
-					"AE_3_AssociateConfirmationAccept");
-
-	    prvCtx = (PRV_PRESENTATIONCONTEXTITEM*)LST_Next(&assoc.presentationContextList);
-
-	}
+        }
 
         /* extended negotiation */
         if (assoc.userInfo.extNegList != NULL) {
             service->acceptedExtNegList = new SOPClassExtendedNegotiationSubItemList;
-            if (service->acceptedExtNegList == NULL) {
-                return COND_PushCondition(DUL_MALLOCERROR, DUL_Message(DUL_MALLOCERROR),
-                    "AE_3_AssociateConfirmationAccept", sizeof(*service->acceptedExtNegList));
-            }
+            if (service->acceptedExtNegList == NULL)  return EC_MemoryExhausted;
             appendList(*assoc.userInfo.extNegList, *service->acceptedExtNegList);
         }
 
-	destroyPresentationContextList(&assoc.presentationContextList);
-	destroyUserInformationLists(&assoc.userInfo);
-	service->peerMaxPDU = assoc.userInfo.maxLength.maxLength;
-	(*association)->maxPDV = assoc.userInfo.maxLength.maxLength;
-	(*association)->maxPDVAcceptor =
-	    assoc.userInfo.maxLength.maxLength;
-	strcpy(service->calledImplementationClassUID,
-	       assoc.userInfo.implementationClassUID.data);
-	strcpy(service->calledImplementationVersionName,
-	       assoc.userInfo.implementationVersionName.data);
+        destroyPresentationContextList(&assoc.presentationContextList);
+        destroyUserInformationLists(&assoc.userInfo);
+        service->peerMaxPDU = assoc.userInfo.maxLength.maxLength;
+        (*association)->maxPDV = assoc.userInfo.maxLength.maxLength;
+        (*association)->maxPDVAcceptor =
+            assoc.userInfo.maxLength.maxLength;
+        strcpy(service->calledImplementationClassUID,
+               assoc.userInfo.implementationClassUID.data);
+        strcpy(service->calledImplementationVersionName,
+               assoc.userInfo.implementationVersionName.data);
 
-	(*association)->associationState = DUL_ASSOC_ESTABLISHED;
-	(*association)->protocolState = nextState;
-	return DUL_NORMAL;
+        (*association)->associationState = DUL_ASSOC_ESTABLISHED;
+        (*association)->protocolState = nextState;
+        return EC_Normal;
     } else {
-	return COND_PushCondition(DUL_UNEXPECTEDPDU,
-				  DUL_Message(DUL_UNEXPECTEDPDU));
+    	return DUL_UNEXPECTEDPDU;
     }
 }
 
 /* AE_4_AssociateConfirmationReject
 **
 ** Purpose:
-**	Issue A-ASSOCIATE confirmation reject primitive and close transport
-**	connection.
+**      Issue A-ASSOCIATE confirmation reject primitive and close transport
+**      connection.
 **
 ** Parameter Dictionary:
 **
-**	network		Handle to the network environment
-**	association	Handle to the Association
-**	nextState	The next state to be reached from the current state
-**	params		Service parameters describing the Association
+**      network         Handle to the network environment
+**      association     Handle to the Association
+**      nextState       The next state to be reached from the current state
+**      params          Service parameters describing the Association
 **
 ** Return Values:
 **
-**	DUL_ASSOCIATIONREJECTED
-**	DUL_CODINGERROR
-**	DUL_ILLEGALPDULENGTH
-**	DUL_NETWORKCLOSED
-**	DUL_NORMAL
-**	DUL_READTIMEOUT
-**	DUL_UNEXPECTEDPDU
-**	DUL_UNRECOGNIZEDPDUTYPE
-**	DUL_UNSUPPORTEDNETWORK
 **
 ** Notes:
 **
 ** Algorithm:
-**	Description of the algorithm (optional) and any other notes.
+**      Description of the algorithm (optional) and any other notes.
 */
 
-static CONDITION
+static OFCondition
 AE_4_AssociateConfirmationReject(PRIVATE_NETWORKKEY ** /*network*/,
-	 PRIVATE_ASSOCIATIONKEY ** association, int nextState, void *params)
+         PRIVATE_ASSOCIATIONKEY ** association, int nextState, void *params)
 {
     DUL_ASSOCIATESERVICEPARAMETERS
     * service;
-    CONDITION
-	cond;
     unsigned char
         buffer[128],
         pduType,
@@ -1115,22 +1049,19 @@ AE_4_AssociateConfirmationReject(PRIVATE_NETWORKKEY ** /*network*/,
         pduLength;
 
     service = (DUL_ASSOCIATESERVICEPARAMETERS *) params;
-    cond = readPDUBody(association, DUL_BLOCK, 0, buffer, sizeof(buffer),
-		       &pduType, &pduReserve, &pduLength);
-    if (cond != DUL_NORMAL)
-	return cond;
+    OFCondition cond = readPDUBody(association, DUL_BLOCK, 0, buffer, sizeof(buffer),
+                       &pduType, &pduReserve, &pduLength);
+    if (cond.bad())
+        return cond;
 
     if (pduType == DUL_TYPEASSOCIATERJ) {
-	service->result = buffer[1];
-	service->resultSource = buffer[2];
-	service->diagnostic = buffer[3];
-	(*association)->protocolState = nextState;
-	closeTransport(association);
-	cond = COND_PushCondition(DUL_ASSOCIATIONREJECTED,
-				  DUL_Message(DUL_ASSOCIATIONREJECTED));
-    } else
-	cond = COND_PushCondition(DUL_UNEXPECTEDPDU,
-				  DUL_Message(DUL_UNEXPECTEDPDU));
+        service->result = buffer[1];
+        service->resultSource = buffer[2];
+        service->diagnostic = buffer[3];
+        (*association)->protocolState = nextState;
+        closeTransport(association);
+        cond = DUL_ASSOCIATIONREJECTED;
+    } else cond = DUL_UNEXPECTEDPDU;
 
     return cond;
 }
@@ -1139,33 +1070,33 @@ AE_4_AssociateConfirmationReject(PRIVATE_NETWORKKEY ** /*network*/,
 /* AE_5_TransportConnectResponse
 **
 ** Purpose:
-**	Issue Transport connection response primitive and start ARTIM timer.
+**      Issue Transport connection response primitive and start ARTIM timer.
 **
 ** Parameter Dictionary:
 **
-**	network		Handle to the network environment
-**	association	Handle to the Association
-**	nextState	The next state to be reached from the current state
-**	params		Service parameters describing the Association
+**      network         Handle to the network environment
+**      association     Handle to the Association
+**      nextState       The next state to be reached from the current state
+**      params          Service parameters describing the Association
 **
 ** Return Values:
-**	DUL_NORMAL
+
 **
 ** Notes:
 **
 ** Algorithm:
-**	Description of the algorithm (optional) and any other notes.
+**      Description of the algorithm (optional) and any other notes.
 */
 
-static CONDITION
+static OFCondition
 AE_5_TransportConnectResponse(PRIVATE_NETWORKKEY ** /*network*/,
-	 PRIVATE_ASSOCIATIONKEY ** association, int nextState, void * /*params*/)
+         PRIVATE_ASSOCIATIONKEY ** association, int nextState, void * /*params*/)
 {
     clearPDUCache(association);
     (*association)->protocolState = nextState;
 /*  Start the timer */
 
-    return DUL_NORMAL;
+    return EC_Normal;
 }
 
 
@@ -1173,47 +1104,32 @@ AE_5_TransportConnectResponse(PRIVATE_NETWORKKEY ** /*network*/,
 /* AE_6_ExamineAssociateRequest
 **
 ** Purpose:
-**	Stop ARTIM timer and if A-ASSOCIATE-RQ acceptable by service-provider,
-**	issue A-ASSOCIATE indication primitive else issue A-ASSOCIATE
-**	indication primitive.
+**      Stop ARTIM timer and if A-ASSOCIATE-RQ acceptable by service-provider,
+**      issue A-ASSOCIATE indication primitive else issue A-ASSOCIATE
+**      indication primitive.
 **
 ** Parameter Dictionary:
 **
-**	network		Handle to the network environment
-**	association	Handle to the Association
-**	nextState	The next state to be reached from the current state
-**	params		Service parameters describing the Association
+**      network         Handle to the network environment
+**      association     Handle to the Association
+**      nextState       The next state to be reached from the current state
+**      params          Service parameters describing the Association
 **
 ** Return Values:
 **
-**	DUL_CODINGERROR
-**	DUL_ILLEGALPDU
-**	DUL_ILLEGALPDULENGTH
-**	DUL_LISTCREATEFAILED
-**	DUL_LISTERROR
-**	DUL_MALLOCERROR
-**	DUL_NETWORKCLOSED
-**	DUL_NORMAL
-**	DUL_READTIMEOUT
-**	DUL_UNEXPECTEDPDU
-**	DUL_UNRECOGNIZEDPDUTYPE
-**	DUL_UNSUPPORTEDNETWORK
-**	DUL_UNSUPPORTEDPEERPROTOCOL
 **
 ** Notes:
 **
 ** Algorithm:
-**	Description of the algorithm (optional) and any other notes.
+**      Description of the algorithm (optional) and any other notes.
 */
 
-static CONDITION
+static OFCondition
 AE_6_ExamineAssociateRequest(PRIVATE_NETWORKKEY ** /*network*/,
-	 PRIVATE_ASSOCIATIONKEY ** association, int /*nextState*/, void *params)
+         PRIVATE_ASSOCIATIONKEY ** association, int /*nextState*/, void *params)
 {
     DUL_ASSOCIATESERVICEPARAMETERS
     * service;
-    CONDITION
-	cond;
     unsigned char
         *buffer=NULL,
         pduType,
@@ -1221,25 +1137,25 @@ AE_6_ExamineAssociateRequest(PRIVATE_NETWORKKEY ** /*network*/,
     unsigned long
         pduLength;
     PRV_ASSOCIATEPDU
-	assoc;
+        assoc;
 
     (*association)->timerStart = 0;
     service = (DUL_ASSOCIATESERVICEPARAMETERS *) params;
-    cond = readPDU(association, DUL_BLOCK, 0, &buffer,
-		   &pduType, &pduReserve, &pduLength);
+    OFCondition cond = readPDU(association, DUL_BLOCK, 0, &buffer,
+                   &pduType, &pduReserve, &pduLength);
  
-    if (cond != DUL_NORMAL) 
+    if (cond.bad()) 
     {
        if (buffer) free(buffer);
        return cond;
     }
  
-    /* cond is DUL_NORMAL so we know that buffer exists */
+    /* cond is good so we know that buffer exists */
 
     if (pduType == DUL_TYPEASSOCIATERQ)
     {
-    	if ((*association)->associatePDUFlag)
-    	{
+        if ((*association)->associatePDUFlag)
+        {
           // copy A-ASSOCIATE-RQ PDU
           (*association)->associatePDU = new char[pduLength+6];
           if ((*association)->associatePDU)
@@ -1249,66 +1165,59 @@ AE_6_ExamineAssociateRequest(PRIVATE_NETWORKKEY ** /*network*/,
           }
         }
 
-	if (debug)
-	    dump_pdu("Associate Request", buffer, pduLength + 6);
-	cond = parseAssociate(buffer, pduLength, &assoc);
+        if (debug)
+            dump_pdu("Associate Request", buffer, pduLength + 6);
+        cond = parseAssociate(buffer, pduLength, &assoc);
         free(buffer);
         buffer = NULL;
 
-	if (debug) {
-	    DEBUG_DEVICE.flush();
-	}
-	if (cond != DUL_NORMAL) {
-	    if (cond == DUL_UNSUPPORTEDPEERPROTOCOL)	/* Make it look OK */
-		(*association)->protocolState = STATE3;
-	    return cond;
-	}
-	(void) strcpy(service->calledAPTitle, assoc.calledAPTitle);
-	(void) strcpy(service->callingAPTitle, assoc.callingAPTitle);
-	(void) strcpy(service->applicationContextName,
-		      assoc.applicationContext.data);
+        if (debug) {
+            DEBUG_DEVICE.flush();
+        }
+        if (cond.bad()) {
+            if (cond == DUL_UNSUPPORTEDPEERPROTOCOL)    /* Make it look OK */
+                (*association)->protocolState = STATE3;
+            return cond;
+        }
+        (void) strcpy(service->calledAPTitle, assoc.calledAPTitle);
+        (void) strcpy(service->callingAPTitle, assoc.callingAPTitle);
+        (void) strcpy(service->applicationContextName,
+                      assoc.applicationContext.data);
 
-	if ((service->requestedPresentationContext = LST_Create()) == NULL)
-	    return COND_PushCondition(DUL_LISTCREATEFAILED,
-				      DUL_Message(DUL_LISTCREATEFAILED), "AE_6_ExamineAssociateRequest");
-	if (translatePresentationContextList(&assoc.presentationContextList,
-					     &assoc.userInfo.SCUSCPRoleList,
-		      &service->requestedPresentationContext) != DUL_NORMAL)
-	    return COND_PushCondition(DUL_PCTRANSLATIONFAILURE,
-				      DUL_Message(DUL_PCTRANSLATIONFAILURE),
-				      "AE_6_ExamineAssociateRequest");
-
+        if ((service->requestedPresentationContext = LST_Create()) == NULL) return EC_MemoryExhausted;
+        if (translatePresentationContextList(&assoc.presentationContextList,
+                                             &assoc.userInfo.SCUSCPRoleList,
+                      &service->requestedPresentationContext).bad())
+        {
+            return DUL_PCTRANSLATIONFAILURE;
+        }
 
         /* extended negotiation */
         if (assoc.userInfo.extNegList != NULL) {
             service->requestedExtNegList = new SOPClassExtendedNegotiationSubItemList;
-            if (service->requestedExtNegList == NULL) {
-                return COND_PushCondition(DUL_MALLOCERROR, DUL_Message(DUL_MALLOCERROR),
-                    "AE_6_ExamineAssociateRequest", sizeof(*service->requestedExtNegList));
-            }
+            if (service->requestedExtNegList == NULL) return EC_MemoryExhausted;
             appendList(*assoc.userInfo.extNegList, *service->requestedExtNegList);
         }
 
-	service->peerMaxPDU = assoc.userInfo.maxLength.maxLength;
-	(*association)->maxPDV = assoc.userInfo.maxLength.maxLength;
-	(*association)->maxPDVRequestor =
-	    assoc.userInfo.maxLength.maxLength;
-	strcpy(service->callingImplementationClassUID,
-	       assoc.userInfo.implementationClassUID.data);
-	strcpy(service->callingImplementationVersionName,
-	       assoc.userInfo.implementationVersionName.data);
-	(*association)->associationState = DUL_ASSOC_ESTABLISHED;
+        service->peerMaxPDU = assoc.userInfo.maxLength.maxLength;
+        (*association)->maxPDV = assoc.userInfo.maxLength.maxLength;
+        (*association)->maxPDVRequestor =
+            assoc.userInfo.maxLength.maxLength;
+        strcpy(service->callingImplementationClassUID,
+               assoc.userInfo.implementationClassUID.data);
+        strcpy(service->callingImplementationVersionName,
+               assoc.userInfo.implementationVersionName.data);
+        (*association)->associationState = DUL_ASSOC_ESTABLISHED;
 
-	destroyPresentationContextList(&assoc.presentationContextList);
-	destroyUserInformationLists(&assoc.userInfo);
+        destroyPresentationContextList(&assoc.presentationContextList);
+        destroyUserInformationLists(&assoc.userInfo);
 
-	/* If this PDU is ok with us */
-	(*association)->protocolState = STATE3;
+        /* If this PDU is ok with us */
+        (*association)->protocolState = STATE3;
 
-	return DUL_NORMAL;
+        return EC_Normal;
     } else {
-	return COND_PushCondition(DUL_UNEXPECTEDPDU,
-				  DUL_Message(DUL_UNEXPECTEDPDU));
+    	return DUL_UNEXPECTEDPDU;
     }
 }
 
@@ -1316,172 +1225,132 @@ AE_6_ExamineAssociateRequest(PRIVATE_NETWORKKEY ** /*network*/,
 /* AE_7_SendAssociateAC
 **
 ** Purpose:
-**	Send A-ASSOCIATE-AC PDU.
+**      Send A-ASSOCIATE-AC PDU.
 **
 ** Parameter Dictionary:
 **
-**	network		Handle to the network environment
-**	association	Handle to the Association
-**	nextState	The next state to be reached from the current state
-**	params		Service parameters describing the Association
+**      network         Handle to the network environment
+**      association     Handle to the Association
+**      nextState       The next state to be reached from the current state
+**      params          Service parameters describing the Association
 **
 ** Return Values:
 **
-**	DUL_LISTCREATEFAILED
-**	DUL_LISTERROR
-**	DUL_MALLOCERROR
-**	DUL_NORMAL
-**	DUL_TCPIOERROR
-**	DUL_UNSUPPORTEDNETWORK
 **
 ** Algorithm:
-**	Description of the algorithm (optional) and any other notes.
+**      Description of the algorithm (optional) and any other notes.
 */
 
-static CONDITION
+static OFCondition
 AE_7_SendAssociateAC(PRIVATE_NETWORKKEY ** network,
-	 PRIVATE_ASSOCIATIONKEY ** association, int nextState, void *params)
+         PRIVATE_ASSOCIATIONKEY ** association, int nextState, void *params)
 {
     DUL_ASSOCIATESERVICEPARAMETERS
     * service;
-    CONDITION
-	cond;
+    OFCondition cond = EC_Normal;
 
     service = (DUL_ASSOCIATESERVICEPARAMETERS *) params;
-    if (strcmp((*association)->networkType, DUL_NETWORK_TCP) == 0) {
-	cond = sendAssociationACTCP(network, service, association);
-	(*association)->protocolState = nextState;
-	return cond;
-    } else
-	return COND_PushCondition(DUL_UNSUPPORTEDNETWORK,
-	      DUL_Message(DUL_UNSUPPORTEDNETWORK), (*network)->networkType);
+    cond = sendAssociationACTCP(network, service, association);
+    (*association)->protocolState = nextState;
+    return cond;
 }
 
 
 /* AE_8_SendAssociateRJ
 **
 ** Purpose:
-**	Send A-ASSOCIATE-RJ PDU and start ARTIM timer.
+**      Send A-ASSOCIATE-RJ PDU and start ARTIM timer.
 **
 ** Parameter Dictionary:
 **
-**	network		Handle to the network environment
-**	association	Handle to the Association
-**	nextState	The next state to be reached from the current state
-**	params		Service parameters describing the Association
+**      network         Handle to the network environment
+**      association     Handle to the Association
+**      nextState       The next state to be reached from the current state
+**      params          Service parameters describing the Association
 **
 ** Return Values:
 **
-**	DUL_MALLOCERROR
-**	DUL_NORMAL
-**	DUL_TCPIOERROR
-**	DUL_UNSUPPORTEDNETWORK
 **
 ** Notes:
 **
 ** Algorithm:
-**	Description of the algorithm (optional) and any other notes.
+**      Description of the algorithm (optional) and any other notes.
 */
 
-static CONDITION
+static OFCondition
 AE_8_SendAssociateRJ(PRIVATE_NETWORKKEY ** network,
-	 PRIVATE_ASSOCIATIONKEY ** association, int nextState, void *params)
+         PRIVATE_ASSOCIATIONKEY ** association, int nextState, void *params)
 {
     DUL_ABORTITEMS
     * abortItems;
-    CONDITION
-	cond;
+    OFCondition cond = EC_Normal;
 
     abortItems = (DUL_ABORTITEMS *) params;
-    if (strcmp((*association)->networkType, DUL_NETWORK_TCP) == 0) {
-	cond = sendAssociationRJTCP(network, abortItems, association);
-	(*association)->protocolState = nextState;
-	return cond;
-    } else
-	return COND_PushCondition(DUL_UNSUPPORTEDNETWORK,
-	      DUL_Message(DUL_UNSUPPORTEDNETWORK), (*network)->networkType);
+    cond = sendAssociationRJTCP(network, abortItems, association);
+    (*association)->protocolState = nextState;
+    return cond;
 }
 
 /* DT_1_SendPData
 **
 ** Purpose:
-**	Send P-DATA-TF PDU
+**      Send P-DATA-TF PDU
 **
 ** Parameter Dictionary:
 **
-**	network		Handle to the network environment
-**	association	Handle to the Association
-**	nextState	The next state to be reached from the current state
-**	params		Service parameters describing the Association
+**      network         Handle to the network environment
+**      association     Handle to the Association
+**      nextState       The next state to be reached from the current state
+**      params          Service parameters describing the Association
 **
 ** Return Values:
 **
-**	DUL_NORMAL
-**	DUL_TCPIOERROR
-**	DUL_UNSUPPORTEDNETWORK
 **
 ** Notes:
 **
 ** Algorithm:
-**	Description of the algorithm (optional) and any other notes.
+**      Description of the algorithm (optional) and any other notes.
 */
 
-static CONDITION
+static OFCondition
 DT_1_SendPData(PRIVATE_NETWORKKEY ** /*network*/,
-	 PRIVATE_ASSOCIATIONKEY ** association, int nextState, void *params)
+         PRIVATE_ASSOCIATIONKEY ** association, int nextState, void *params)
 {
-    CONDITION
-    cond;
+    OFCondition cond = EC_Normal;
     DUL_PDVLIST
-	* pdvList;
+        * pdvList;
 
     pdvList = (DUL_PDVLIST *) params;
-    if (strcmp((*association)->networkType, DUL_NETWORK_TCP) == 0) {
-	cond = sendPDataTCP(association, pdvList);
-	(*association)->protocolState = nextState;
-	return cond;
-    } else
-	return COND_PushCondition(DUL_UNSUPPORTEDNETWORK,
-	  DUL_Message(DUL_UNSUPPORTEDNETWORK), (*association)->networkType);
+    cond = sendPDataTCP(association, pdvList);
+    (*association)->protocolState = nextState;
+    return cond;
 }
 
 /* DT_2_IndicatePData
 **
 ** Purpose:
-**	Send P-DATA indication primitive.
+**      Send P-DATA indication primitive.
 **
 ** Parameter Dictionary:
 **
-**	network		Handle to the network environment
-**	association	Handle to the Association
-**	nextState	The next state to be reached from the current state
-**	params		Service parameters describing the Association
+**      network         Handle to the network environment
+**      association     Handle to the Association
+**      nextState       The next state to be reached from the current state
+**      params          Service parameters describing the Association
 **
 ** Return Values:
 **
-**	DUL_CODINGERROR
-**	DUL_ILLEGALPDU
-**	DUL_ILLEGALPDULENGTH
-**	DUL_MALLOCERROR
-**	DUL_NETWORKCLOSED
-**	DUL_NORMAL
-**	DUL_PDATAPDUARRIVED
-**	DUL_READTIMEOUT
-**	DUL_UNRECOGNIZEDPDUTYPE
-**	DUL_UNSUPPORTEDNETWORK
 **
 ** Notes:
 **
 ** Algorithm:
-**	Description of the algorithm (optional) and any other notes.
+**      Description of the algorithm (optional) and any other notes.
 */
 
-static CONDITION
+static OFCondition
 DT_2_IndicatePData(PRIVATE_NETWORKKEY ** /*network*/,
-	 PRIVATE_ASSOCIATIONKEY ** association, int nextState, void * /*params*/)
+         PRIVATE_ASSOCIATIONKEY ** association, int nextState, void * /*params*/)
 {
-    CONDITION
-    cond;
     unsigned char
         pduType,
         pduReserved;
@@ -1496,56 +1365,54 @@ DT_2_IndicatePData(PRIVATE_NETWORKKEY ** /*network*/,
 
     (*association)->protocolState = nextState;
 
-    cond = readPDUBody(association, DUL_BLOCK, 0,
-		       (*association)->fragmentBuffer,
-		       (*association)->fragmentBufferLength,
-		       &pduType, &pduReserved, &pduLength);
-    if (cond != DUL_NORMAL)
-	return cond;
+    OFCondition cond = readPDUBody(association, DUL_BLOCK, 0,
+                       (*association)->fragmentBuffer,
+                       (*association)->fragmentBufferLength,
+                       &pduType, &pduReserved, &pduLength);
+    if (cond.bad())
+        return cond;
 
     length = pduLength;
     pdvCount = 0;
     p = (*association)->fragmentBuffer;
     while (length > 0) {
-	EXTRACT_LONG_BIG(p, pdvLength);
-	p += 4 + pdvLength;
-	length -= 4 + pdvLength;
-	pdvCount++;
+        EXTRACT_LONG_BIG(p, pdvLength);
+        p += 4 + pdvLength;
+        length -= 4 + pdvLength;
+        pdvCount++;
     }
-    if (length != 0) {
-	CERR << "PDV Lengths don't add up correctly: "
-        << (int)pdvCount << " pdvs" << endl
-        << "In DT_2_IndicatePData.  This probably indicates a"
-	    << " malformed P DATA PDU." << endl;
-	return COND_PushCondition(DUL_ILLEGALPDU, DUL_Message(DUL_ILLEGALPDU),
-				  (unsigned long) pduType);
+    if (length != 0)
+    {
+       char buf[256];
+       sprintf(buf, "PDV lengths don't add up correctly: %d PDVs. This probably indicates a malformed P-DATA PDU. PDU type is %02x.", (int)pdvCount, (unsigned int) pduType);
+       return makeDcmnetCondition(DULC_ILLEGALPDU, OF_error, buf);
     }
     (*association)->pdvCount = (int)pdvCount;
     if (pdvCount > 0)
-	(*association)->pdvIndex = 0;
+        (*association)->pdvIndex = 0;
     else
-	(*association)->pdvIndex = -1;
+        (*association)->pdvIndex = -1;
 
     {
-	unsigned char u;
-	p = (*association)->fragmentBuffer;
-	(*association)->pdvPointer = p;
-	EXTRACT_LONG_BIG(p, pdvLength);
-	(*association)->currentPDV.fragmentLength = pdvLength - 2;
-	(*association)->currentPDV.presentationContextID = p[4];
+        unsigned char u;
+        p = (*association)->fragmentBuffer;
+        (*association)->pdvPointer = p;
+        EXTRACT_LONG_BIG(p, pdvLength);
+        (*association)->currentPDV.fragmentLength = pdvLength - 2;
+        (*association)->currentPDV.presentationContextID = p[4];
 
-	u = p[5];
-	if (u & 2)
-	    (*association)->currentPDV.lastPDV = OFTrue;
-	else
-	    (*association)->currentPDV.lastPDV = OFFalse;
+        u = p[5];
+        if (u & 2)
+            (*association)->currentPDV.lastPDV = OFTrue;
+        else
+            (*association)->currentPDV.lastPDV = OFFalse;
 
-	if (u & 1)
-	    (*association)->currentPDV.pdvType = DUL_COMMANDPDV;
-	else
-	    (*association)->currentPDV.pdvType = DUL_DATASETPDV;
+        if (u & 1)
+            (*association)->currentPDV.pdvType = DUL_COMMANDPDV;
+        else
+            (*association)->currentPDV.pdvType = DUL_DATASETPDV;
 
-	(*association)->currentPDV.data = p + 6;
+        (*association)->currentPDV.data = p + 6;
     }
     return DUL_PDATAPDUARRIVED;
 }
@@ -1554,71 +1421,59 @@ DT_2_IndicatePData(PRIVATE_NETWORKKEY ** /*network*/,
 /* AR_1_SendReleaseRQ
 **
 ** Purpose:
-**	Send A-RELEASE-RQ PDU.
+**      Send A-RELEASE-RQ PDU.
 **
 ** Parameter Dictionary:
 **
-**	network		Handle to the network environment
-**	association	Handle to the Association
-**	nextState	The next state to be reached from the current state
-**	params		Service parameters describing the Association
+**      network         Handle to the network environment
+**      association     Handle to the Association
+**      nextState       The next state to be reached from the current state
+**      params          Service parameters describing the Association
 **
 ** Return Values:
 **
-**      DUL_MALLOCERROR
-**      DUL_NORMAL
-**      DUL_TCPIOERROR
-**	DUL_UNSUPPORTEDNETWORK
 **
 ** Notes:
 **
 ** Algorithm:
-**	Description of the algorithm (optional) and any other notes.
+**      Description of the algorithm (optional) and any other notes.
 */
 
-static CONDITION
-AR_1_SendReleaseRQ(PRIVATE_NETWORKKEY ** network,
-	 PRIVATE_ASSOCIATIONKEY ** association, int nextState, void * /*params*/)
+static OFCondition
+AR_1_SendReleaseRQ(PRIVATE_NETWORKKEY ** /* network */,
+         PRIVATE_ASSOCIATIONKEY ** association, int nextState, void * /*params*/)
 {
-    CONDITION
-    cond;
+    OFCondition cond = EC_Normal;
 
-    if (strcmp((*association)->networkType, DUL_NETWORK_TCP) == 0) {
-	cond = sendReleaseRQTCP(association);
-	(*association)->protocolState = nextState;
-	return cond;
-    } else
-	return COND_PushCondition(DUL_UNSUPPORTEDNETWORK,
-	      DUL_Message(DUL_UNSUPPORTEDNETWORK), (*network)->networkType);
+    cond = sendReleaseRQTCP(association);
+    (*association)->protocolState = nextState;
+    return cond;
 }
 
 /* AR_2_IndicateRelease
 **
 ** Purpose:
-**	Issue A-RELEASE indication primitive.
+**      Issue A-RELEASE indication primitive.
 **
 ** Parameter Dictionary:
 **
-**	network		Handle to the network environment
-**	association	Handle to the Association
-**	nextState	The next state to be reached from the current state
-**	params		Service parameters describing the Association
+**      network         Handle to the network environment
+**      association     Handle to the Association
+**      nextState       The next state to be reached from the current state
+**      params          Service parameters describing the Association
 **
 ** Return Values:
 **
-**	DUL_PEERREQUESTEDRELEASE
 **
 ** Notes:
 **
 ** Algorithm:
-**	Description of the algorithm (optional) and any other notes.
+**      Description of the algorithm (optional) and any other notes.
 */
-static CONDITION
+static OFCondition
 AR_2_IndicateRelease(PRIVATE_NETWORKKEY ** /*network*/,
-	 PRIVATE_ASSOCIATIONKEY ** association, int nextState, void * /*params*/)
+         PRIVATE_ASSOCIATIONKEY ** association, int nextState, void * /*params*/)
 {
-    CONDITION
-	cond;
     unsigned char
         buffer[128],
         pduType,
@@ -1627,10 +1482,10 @@ AR_2_IndicateRelease(PRIVATE_NETWORKKEY ** /*network*/,
         pduLength;
 
     /* Read remaining unimportant bytes of the A-RELEASE-RQ PDU */
-	cond = readPDUBody(association, DUL_BLOCK, 0, buffer, sizeof(buffer),
-		       &pduType, &pduReserve, &pduLength);
-    if (cond != DUL_NORMAL)
-	return cond;
+    OFCondition cond = readPDUBody(association, DUL_BLOCK, 0, buffer, sizeof(buffer),
+                       &pduType, &pduReserve, &pduLength);
+    if (cond.bad())
+        return cond;
 
     (*association)->protocolState = nextState;
     return DUL_PEERREQUESTEDRELEASE;
@@ -1639,127 +1494,116 @@ AR_2_IndicateRelease(PRIVATE_NETWORKKEY ** /*network*/,
 /* AR_3_ConfirmRelease
 **
 ** Purpose:
-**	Issue A-RELEASE confirmation primitive and close transport connection.
+**      Issue A-RELEASE confirmation primitive and close transport connection.
 **
 ** Parameter Dictionary:
 **
-**	network		Handle to the network environment
-**	association	Handle to the Association
-**	nextState	The next state to be reached from the current state
-**	params		Service parameters describing the Association
+**      network         Handle to the network environment
+**      association     Handle to the Association
+**      nextState       The next state to be reached from the current state
+**      params          Service parameters describing the Association
 **
 ** Return Values:
 **
-**	DUL_RELEASECONFIRMED
 **
 ** Notes:
 **
 ** Algorithm:
-**	Description of the algorithm (optional) and any other notes.
+**      Description of the algorithm (optional) and any other notes.
 */
-static CONDITION
+static OFCondition
 AR_3_ConfirmRelease(PRIVATE_NETWORKKEY ** /*network*/,
-	 PRIVATE_ASSOCIATIONKEY ** association, int nextState, void * /*params*/)
+         PRIVATE_ASSOCIATIONKEY ** association, int nextState, void * /*params*/)
 {
     closeTransport(association);
     (*association)->protocolState = nextState;
-    return DUL_RELEASECONFIRMED;
+    return EC_Normal;
 }
 
 /* AR_4_SendReleaseRP
 **
 ** Purpose:
-**	Issue A-RELEASE-RP PDU and start ARTIM timer.
+**      Issue A-RELEASE-RP PDU and start ARTIM timer.
 **
 ** Parameter Dictionary:
 **
-**	network		Handle to the network environment
-**	association	Handle to the Association
-**	nextState	The next state to be reached from the current state
-**	params		Service parameters describing the Association
+**      network         Handle to the network environment
+**      association     Handle to the Association
+**      nextState       The next state to be reached from the current state
+**      params          Service parameters describing the Association
 **
 ** Return Values:
 **
-**      DUL_MALLOCERROR
-**      DUL_NORMAL
-**      DUL_TCPIOERROR
-**	DUL_UNSUPPORTEDNETWORK
 **
 ** Notes:
 **
 ** Algorithm:
-**	Description of the algorithm (optional) and any other notes.
+**      Description of the algorithm (optional) and any other notes.
 */
 
-static CONDITION
-AR_4_SendReleaseRP(PRIVATE_NETWORKKEY ** network,
-	 PRIVATE_ASSOCIATIONKEY ** association, int nextState, void * /*params*/)
+static OFCondition
+AR_4_SendReleaseRP(PRIVATE_NETWORKKEY ** /* network */,
+         PRIVATE_ASSOCIATIONKEY ** association, int nextState, void * /*params*/)
 {
-    CONDITION
-    cond;
+    OFCondition cond = EC_Normal;
 
-    if (strcmp((*association)->networkType, DUL_NETWORK_TCP) == 0) {
-	cond = sendReleaseRPTCP(association);
-	(*association)->timerStart = time(NULL);
-	(*association)->protocolState = nextState;
-	return cond;
-    } else
-	return COND_PushCondition(DUL_UNSUPPORTEDNETWORK,
-	      DUL_Message(DUL_UNSUPPORTEDNETWORK), (*network)->networkType);
+    cond = sendReleaseRPTCP(association);
+    (*association)->timerStart = time(NULL);
+    (*association)->protocolState = nextState;
+    return cond;
 }
 
 /* AR_5_StopARTTIMtimer
 **
 ** Purpose:
-**	Stop ARTIM timer.
+**      Stop ARTIM timer.
 **
 ** Parameter Dictionary:
 **
-**	network		Handle to the network environment
-**	association	Handle to the Association
-**	nextState	The next state to be reached from the current state
-**	params		Service parameters describing the Association
+**      network         Handle to the network environment
+**      association     Handle to the Association
+**      nextState       The next state to be reached from the current state
+**      params          Service parameters describing the Association
 **
 ** Return Values:
-**	DUL_NORMAL
+
 **
 ** Notes:
 **
 ** Algorithm:
-**	Description of the algorithm (optional) and any other notes.
+**      Description of the algorithm (optional) and any other notes.
 */
 
-static CONDITION
+static OFCondition
 AR_5_StopARTIMtimer(PRIVATE_NETWORKKEY ** /*network*/,
-	 PRIVATE_ASSOCIATIONKEY ** association, int /*nextState*/, void * /*params*/)
+         PRIVATE_ASSOCIATIONKEY ** association, int /*nextState*/, void * /*params*/)
 {
     (*association)->timerStart = 0;
-    return DUL_NORMAL;
+    return EC_Normal;
 }
 
 /* AR_6_IndicatePData
 **
 ** Purpose:
-**	Issue P-DATA indication.
+**      Issue P-DATA indication.
 **
 ** Parameter Dictionary:
 **
-**	network		Handle to the network environment
-**	association	Handle to the Association
-**	nextState	The next state to be reached from the current state
-**	params		Service parameters describing the Association
+**      network         Handle to the network environment
+**      association     Handle to the Association
+**      nextState       The next state to be reached from the current state
+**      params          Service parameters describing the Association
 **
 ** Return Values:
-**	DUL_PDATAPDUARRIVED
 **
 ** Notes:
 **
 ** Algorithm:
-**	Description of the algorithm (optional) and any other notes.
+**      Description of the algorithm (optional) and any other notes.
 */
-static CONDITION
+static OFCondition
 AR_6_IndicatePData(PRIVATE_NETWORKKEY ** /*network*/,
-	 PRIVATE_ASSOCIATIONKEY ** /*association*/, int /*nextState*/, void * /*params*/)
+         PRIVATE_ASSOCIATIONKEY ** /*association*/, int /*nextState*/, void * /*params*/)
 {
     return DUL_PDATAPDUARRIVED;
 }
@@ -1767,73 +1611,62 @@ AR_6_IndicatePData(PRIVATE_NETWORKKEY ** /*network*/,
 /* AR_7_SendPData
 **
 ** Purpose:
-**	Issue P-DATA-TF PDU
+**      Issue P-DATA-TF PDU
 **
 ** Parameter Dictionary:
 **
-**	network		Handle to the network environment
-**	association	Handle to the Association
-**	nextState	The next state to be reached from the current state
-**	params		Service parameters describing the Association
+**      network         Handle to the network environment
+**      association     Handle to the Association
+**      nextState       The next state to be reached from the current state
+**      params          Service parameters describing the Association
 **
 ** Return Values:
 **
-**	DUL_NORMAL
-**	DUL_TCPIOERROR
-**	DUL_UNSUPPORTEDNETWORK
 **
 ** Notes:
 **
 ** Algorithm:
-**	Description of the algorithm (optional) and any other notes.
+**      Description of the algorithm (optional) and any other notes.
 */
-static CONDITION
+static OFCondition
 AR_7_SendPDATA(PRIVATE_NETWORKKEY ** /*network*/,
-	 PRIVATE_ASSOCIATIONKEY ** association, int nextState, void *params)
+         PRIVATE_ASSOCIATIONKEY ** association, int nextState, void *params)
 {
-    CONDITION
-    cond;
+    OFCondition cond = EC_Normal;
     DUL_PDVLIST
-	* pdvList;
+        * pdvList;
 
     pdvList = (DUL_PDVLIST *) params;
-    if (strcmp((*association)->networkType, DUL_NETWORK_TCP) == 0) {
-	cond = sendPDataTCP(association, pdvList);
-	(*association)->protocolState = nextState;
-	return cond;
-    } else
-	return COND_PushCondition(DUL_UNSUPPORTEDNETWORK,
-	  DUL_Message(DUL_UNSUPPORTEDNETWORK), (*association)->networkType);
+    cond = sendPDataTCP(association, pdvList);
+    (*association)->protocolState = nextState;
+    return cond;
 }
 
 /* AR_8_IndicateARelease
 **
 ** Purpose:
-**	Issue A-RELEASE indication (release collision):
+**      Issue A-RELEASE indication (release collision):
 **
 ** Parameter Dictionary:
 **
-**	network		Handle to the network environment
-**	association	Handle to the Association
-**	nextState	The next state to be reached from the current state
-**	params		Service parameters describing the Association
+**      network         Handle to the network environment
+**      association     Handle to the Association
+**      nextState       The next state to be reached from the current state
+**      params          Service parameters describing the Association
 **
 ** Return Values:
-**	DUL_PEERREQUESTEDRELEASE
 **
 ** Notes:
 **
 ** Algorithm:
-**	Description of the algorithm (optional) and any other notes.
+**      Description of the algorithm (optional) and any other notes.
 */
-static CONDITION
+static OFCondition
 AR_8_IndicateARelease(PRIVATE_NETWORKKEY ** /*network*/,
-	 PRIVATE_ASSOCIATIONKEY ** association, int /*nextState*/, void * /*params*/)
+         PRIVATE_ASSOCIATIONKEY ** association, int /*nextState*/, void * /*params*/)
 {
 /*    if (strcmp((*association)->applicationType, AE_REQUESTOR) == 0) */
 
-    CONDITION
-	cond;
     unsigned char
         buffer[128],
         pduType,
@@ -1842,15 +1675,15 @@ AR_8_IndicateARelease(PRIVATE_NETWORKKEY ** /*network*/,
         pduLength;
 
     /* Read remaining unimportant bytes of the A-RELEASE-RQ PDU */
-	cond = readPDUBody(association, DUL_BLOCK, 0, buffer, sizeof(buffer),
-		       &pduType, &pduReserve, &pduLength);
-    if (cond != DUL_NORMAL)
-	return cond;
+    OFCondition cond = readPDUBody(association, DUL_BLOCK, 0, buffer, sizeof(buffer),
+                       &pduType, &pduReserve, &pduLength);
+    if (cond.bad())
+        return cond;
 
     if ((*association)->applicationFunction == DICOM_APPLICATION_REQUESTOR)
-	(*association)->protocolState = STATE9;
+        (*association)->protocolState = STATE9;
     else
-	(*association)->protocolState = STATE10;
+        (*association)->protocolState = STATE10;
 
     return DUL_PEERREQUESTEDRELEASE;
 }
@@ -1858,173 +1691,149 @@ AR_8_IndicateARelease(PRIVATE_NETWORKKEY ** /*network*/,
 /* AR_9_SendAReleaseRP
 **
 ** Purpose:
-**	Send A-RELEASE-RP PDU
+**      Send A-RELEASE-RP PDU
 **
 ** Parameter Dictionary:
 **
-**	network		Handle to the network environment
-**	association	Handle to the Association
-**	nextState	The next state to be reached from the current state
-**	params		Service parameters describing the Association
+**      network         Handle to the network environment
+**      association     Handle to the Association
+**      nextState       The next state to be reached from the current state
+**      params          Service parameters describing the Association
 **
 ** Return Values:
 **
-**      DUL_MALLOCERROR
-**      DUL_NORMAL
-**      DUL_TCPIOERROR
-**	DUL_UNSUPPORTEDNETWORK
 ** Notes:
 **
 ** Algorithm:
-**	Description of the algorithm (optional) and any other notes.
+**      Description of the algorithm (optional) and any other notes.
 */
-static CONDITION
-AR_9_SendAReleaseRP(PRIVATE_NETWORKKEY ** network,
-	 PRIVATE_ASSOCIATIONKEY ** association, int nextState, void * /*params*/)
+static OFCondition
+AR_9_SendAReleaseRP(PRIVATE_NETWORKKEY ** /* network */,
+         PRIVATE_ASSOCIATIONKEY ** association, int nextState, void * /*params*/)
 {
-    CONDITION
-    cond;
-
-    if (strcmp((*association)->networkType, DUL_NETWORK_TCP) == 0) {
-	cond = sendReleaseRPTCP(association);
-	(*association)->protocolState = nextState;
-	return cond;
-    } else
-	return COND_PushCondition(DUL_UNSUPPORTEDNETWORK,
-	      DUL_Message(DUL_UNSUPPORTEDNETWORK), (*network)->networkType);
+    OFCondition cond = sendReleaseRPTCP(association);
+    (*association)->protocolState = nextState;
+    return cond;
 }
 
 /* AR_10_ConfirmRelease
 **
 ** Purpose:
-**	Issue A-RELEASE confirmation primitive.
+**      Issue A-RELEASE confirmation primitive.
 **
 ** Parameter Dictionary:
 **
-**	network		Handle to the network environment
-**	association	Handle to the Association
-**	nextState	The next state to be reached from the current state
-**	params		Service parameters describing the Association
+**      network         Handle to the network environment
+**      association     Handle to the Association
+**      nextState       The next state to be reached from the current state
+**      params          Service parameters describing the Association
 **
 ** Return Values:
-**	DUL_RELEASECONFIRMED
 **
 ** Notes:
 **
 ** Algorithm:
-**	Description of the algorithm (optional) and any other notes.
+**      Description of the algorithm (optional) and any other notes.
 */
-static CONDITION
+static OFCondition
 AR_10_ConfirmRelease(PRIVATE_NETWORKKEY ** /*network*/,
-	 PRIVATE_ASSOCIATIONKEY ** association, int nextState, void * /*params*/)
+         PRIVATE_ASSOCIATIONKEY ** association, int nextState, void * /*params*/)
 {
     (*association)->protocolState = nextState;
-    return DUL_RELEASECONFIRMED;
+    return EC_Normal;
 }
 
 
 /* AA_1_SendAbort
 **
 ** Purpose:
-**	Send A-ABORT PDU (service-user source) and start (or restart if
-**	already started) ARTIM timer.
+**      Send A-ABORT PDU (service-user source) and start (or restart if
+**      already started) ARTIM timer.
 **
 ** Parameter Dictionary:
 **
-**	network		Handle to the network environment
-**	association	Handle to the Association
-**	nextState	The next state to be reached from the current state
-**	params		Service parameters describing the Association
+**      network         Handle to the network environment
+**      association     Handle to the Association
+**      nextState       The next state to be reached from the current state
+**      params          Service parameters describing the Association
 **
 ** Return Values:
 **
-**      DUL_MALLOCERROR
-**      DUL_NORMAL
-**      DUL_TCPIOERROR
-**	DUL_UNSUPPORTEDNETWORK
 ** Notes:
 **
 ** Algorithm:
-**	Description of the algorithm (optional) and any other notes.
+**      Description of the algorithm (optional) and any other notes.
 */
 
-static CONDITION
-AA_1_SendAAbort(PRIVATE_NETWORKKEY ** network,
-	 PRIVATE_ASSOCIATIONKEY ** association, int nextState, void * /*params*/)
+static OFCondition
+AA_1_SendAAbort(PRIVATE_NETWORKKEY ** /* network */,
+         PRIVATE_ASSOCIATIONKEY ** association, int nextState, void * /*params*/)
 {
-    DUL_ABORTITEMS
-    abortItems;
-    CONDITION
-	cond;
+    DUL_ABORTITEMS abortItems;
 
     abortItems.result = 0x00;
     abortItems.source = DUL_ABORTSERVICEUSER;
     abortItems.reason = 0x00;
 
-    if (strcmp((*association)->networkType, DUL_NETWORK_TCP) == 0) {
-	cond = sendAbortTCP(&abortItems, association);
-	(*association)->protocolState = nextState;
-	(*association)->timerStart = time(NULL);
-	return cond;
-    } else
-	return COND_PushCondition(DUL_UNSUPPORTEDNETWORK,
-	      DUL_Message(DUL_UNSUPPORTEDNETWORK), (*network)->networkType);
+    OFCondition cond = sendAbortTCP(&abortItems, association);
+    (*association)->protocolState = nextState;
+    (*association)->timerStart = time(NULL);
+    return cond;
 }
 
 /* AA_2_CloseTransport
 **
 ** Purpose:
-**	Close transport connection.
+**      Close transport connection.
 **
 ** Parameter Dictionary:
 **
-**	network		Handle to the network environment
-**	association	Handle to the Association
-**	nextState	The next state to be reached from the current state
-**	params		Service parameters describing the Association
+**      network         Handle to the network environment
+**      association     Handle to the Association
+**      nextState       The next state to be reached from the current state
+**      params          Service parameters describing the Association
 **
 ** Return Values:
-**	DUL_NORMAL
+
 **
 ** Notes:
 **
 ** Algorithm:
-**	Description of the algorithm (optional) and any other notes.
+**      Description of the algorithm (optional) and any other notes.
 */
 
-static CONDITION
+static OFCondition
 AA_2_CloseTransport(PRIVATE_NETWORKKEY ** /*network*/,
-	 PRIVATE_ASSOCIATIONKEY ** association, int nextState, void * /*params*/)
+         PRIVATE_ASSOCIATIONKEY ** association, int nextState, void * /*params*/)
 {
     (*association)->timerStart = 0;
     closeTransport(association);
     (*association)->protocolState = nextState;
-    return DUL_NORMAL;
+    return EC_Normal;
 }
 
 /* AA_2_CloseTimeout
 **
 ** Purpose:
-**	Stop ARTIM timer.
+**      Stop ARTIM timer.
 **
 ** Parameter Dictionary:
 **
-**	network		Handle to the network environment
-**	association	Handle to the Association
-**	nextState	The next state to be reached from the current state
-**	params		Service parameters describing the Association
+**      network         Handle to the network environment
+**      association     Handle to the Association
+**      nextState       The next state to be reached from the current state
+**      params          Service parameters describing the Association
 **
 ** Return Values:
-**	DUL_READTIMEOUT
 **
 ** Notes:
 **
 ** Algorithm:
-**	Description of the algorithm (optional) and any other notes.
+**      Description of the algorithm (optional) and any other notes.
 */
-static CONDITION
+static OFCondition
 AA_2_CloseTimeout(PRIVATE_NETWORKKEY ** /*network*/,
-	 PRIVATE_ASSOCIATIONKEY ** association, int nextState, void * /*params*/)
+         PRIVATE_ASSOCIATIONKEY ** association, int nextState, void * /*params*/)
 {
     (*association)->timerStart = 0;
     closeTransport(association);
@@ -2036,133 +1845,119 @@ AA_2_CloseTimeout(PRIVATE_NETWORKKEY ** /*network*/,
 /* AA_3_IndicatePeerAborted
 **
 ** Purpose:
-**	If (service-user initiated abort)
-**	   - issue A-ABORT indication and close transport connection
-**	otherwise (service provider initiated abort)
-**	   - issue A-P-ABORT indication and close transport connection.
+**      If (service-user initiated abort)
+**         - issue A-ABORT indication and close transport connection
+**      otherwise (service provider initiated abort)
+**         - issue A-P-ABORT indication and close transport connection.
 **
 ** Parameter Dictionary:
 **
-**	network		Handle to the network environment
-**	association	Handle to the Association
-**	nextState	The next state to be reached from the current state
-**	params		Service parameters describing the Association
+**      network         Handle to the network environment
+**      association     Handle to the Association
+**      nextState       The next state to be reached from the current state
+**      params          Service parameters describing the Association
 **
 ** Return Values:
-**
-**	DUL_PEERABORTEDASSOCIATION
 **
 ** Notes:
 **
 ** Algorithm:
-**	Description of the algorithm (optional) and any other notes.
+**      Description of the algorithm (optional) and any other notes.
 */
-static CONDITION
+static OFCondition
 AA_3_IndicatePeerAborted(PRIVATE_NETWORKKEY ** /*network*/,
-	 PRIVATE_ASSOCIATIONKEY ** association, int nextState, void * /*params*/)
+         PRIVATE_ASSOCIATIONKEY ** association, int nextState, void * /*params*/)
 {
     closeTransport(association);
     (*association)->protocolState = nextState;
-    return COND_PushCondition(DUL_PEERABORTEDASSOCIATION,
-			      DUL_Message(DUL_PEERABORTEDASSOCIATION));
+    return DUL_PEERABORTEDASSOCIATION;
 }
 
 
 /* AA_4_IndicateAPAbort
 **
 ** Purpose:
-**	Issue A-P-ABORT indication primitive.
+**      Issue A-P-ABORT indication primitive.
 **
 ** Parameter Dictionary:
 **
-**	network		Handle to the network environment
-**	association	Handle to the Association
-**	nextState	The next state to be reached from the current state
-**	params		Service parameters describing the Association
+**      network         Handle to the network environment
+**      association     Handle to the Association
+**      nextState       The next state to be reached from the current state
+**      params          Service parameters describing the Association
 **
 ** Return Values:
-**
-**	DUL_PEERABORTEDASSOCIATION
 ** Notes:
 **
 ** Algorithm:
-**	Description of the algorithm (optional) and any other notes.
+**      Description of the algorithm (optional) and any other notes.
 */
 
-static CONDITION
+static OFCondition
 AA_4_IndicateAPAbort(PRIVATE_NETWORKKEY ** /*network*/,
-	 PRIVATE_ASSOCIATIONKEY ** association, int nextState, void * /*params*/)
+         PRIVATE_ASSOCIATIONKEY ** association, int nextState, void * /*params*/)
 {
     closeTransport(association);
     (*association)->protocolState = nextState;
-    return COND_PushCondition(DUL_PEERABORTEDASSOCIATION,
-			      DUL_Message(DUL_PEERABORTEDASSOCIATION));
+    return DUL_PEERABORTEDASSOCIATION;
 }
 
 
 /* AA_5_StopARTIMtimer
 **
 ** Purpose:
-**	Stop ARTIM timer.
+**      Stop ARTIM timer.
 **
 ** Parameter Dictionary:
 **
-**	network		Handle to the network environment
-**	association	Handle to the Association
-**	nextState	The next state to be reached from the current state
-**	params		Service parameters describing the Association
+**      network         Handle to the network environment
+**      association     Handle to the Association
+**      nextState       The next state to be reached from the current state
+**      params          Service parameters describing the Association
 **
 ** Return Values:
-**	DUL_NORMAL
 **
 ** Notes:
 **
 ** Algorithm:
-**	Description of the algorithm (optional) and any other notes.
+**      Description of the algorithm (optional) and any other notes.
 */
 
-static CONDITION
+static OFCondition
 AA_5_StopARTIMtimer(PRIVATE_NETWORKKEY ** /*network*/,
-	 PRIVATE_ASSOCIATIONKEY ** association, int nextState, void * /*params*/)
+         PRIVATE_ASSOCIATIONKEY ** association, int nextState, void * /*params*/)
 {
     (*association)->timerStart = 0;
     (*association)->protocolState = nextState;
-    return DUL_NORMAL;
+    return EC_Normal;
 }
 
 
 /* AA_6_IgnorePDU
 **
 ** Purpose:
-**	Ignore PDU
+**      Ignore PDU
 **
 ** Parameter Dictionary:
 **
-**	network		Handle to the network environment
-**	association	Handle to the Association
-**	nextState	The next state to be reached from the current state
-**	params		Service parameters describing the Association
+**      network         Handle to the network environment
+**      association     Handle to the Association
+**      nextState       The next state to be reached from the current state
+**      params          Service parameters describing the Association
 **
 ** Return Values:
 **
-**	DUL_CODINGERROR
-**	DUL_ILLEGALPDULENGTH
-**	DUL_NETWORKCLOSED
-**	DUL_NORMAL
-**	DUL_READTIMEOUT
-**	DUL_UNRECOGNIZEDPDUTYPE
-**	DUL_UNSUPPORTEDNETWORK
 **
 ** Notes:
 **
 ** Algorithm:
-**	Description of the algorithm (optional) and any other notes.
+**      Description of the algorithm (optional) and any other notes.
 */
 
 
-static CONDITION
+static OFCondition
 AA_6_IgnorePDU(PRIVATE_NETWORKKEY ** /*network*/,
-	 PRIVATE_ASSOCIATIONKEY ** association, int nextState, void * /*params*/)
+         PRIVATE_ASSOCIATIONKEY ** association, int nextState, void * /*params*/)
 {
     unsigned char
         buffer[1024],
@@ -2172,156 +1967,125 @@ AA_6_IgnorePDU(PRIVATE_NETWORKKEY ** /*network*/,
         PDULength;
     unsigned long
         l;
-    CONDITION
-	cond;
 
     (*association)->protocolState = nextState;
-    cond = readPDUHead(association, buffer, sizeof(buffer), DUL_NOBLOCK,
-		    PRV_DEFAULTTIMEOUT, &PDUType, &PDUReserved, &l);
-    if (cond != DUL_NORMAL) {
-	return cond;
+    OFCondition cond = readPDUHead(association, buffer, sizeof(buffer), DUL_NOBLOCK,
+                    PRV_DEFAULTTIMEOUT, &PDUType, &PDUReserved, &l);
+    if (cond.bad()) {
+        return cond;
     }
     PDULength = l;
-    while (PDULength > 0 && cond == DUL_NORMAL) {
-	if (strcmp((*association)->networkType, DUL_NETWORK_TCP) == 0) {
-	    cond = defragmentTCP((*association)->connection,
-				 DUL_NOBLOCK, (*association)->timerStart,
-		       (*association)->timeout, buffer, sizeof(buffer), &l);
-	    if (cond != DUL_NORMAL)
-		return cond;
-	    PDULength -= l;
-	} else
-	    PDULength = 0;
+    while (PDULength > 0 && cond.good())
+    {
+        cond = defragmentTCP((*association)->connection,
+                             DUL_NOBLOCK, (*association)->timerStart,
+                   (*association)->timeout, buffer, sizeof(buffer), &l);
+        if (cond.bad()) return cond;
+        PDULength -= l;
     }
-    return DUL_NORMAL;
+    return EC_Normal;
 }
 
 
 /* AA_7_State13SendAbort
 **
 ** Purpose:
-**	SendA-ABORT PDU
+**      SendA-ABORT PDU
 **
 ** Parameter Dictionary:
 **
-**	network		Handle to the network environment
-**	association	Handle to the Association
-**	nextState	The next state to be reached from the current state
-**	params		Service parameters describing the Association
+**      network         Handle to the network environment
+**      association     Handle to the Association
+**      nextState       The next state to be reached from the current state
+**      params          Service parameters describing the Association
 **
 ** Return Values:
 **
-**      DUL_MALLOCERROR
-**      DUL_NORMAL
-**      DUL_TCPIOERROR
-**	DUL_UNSUPPORTEDNETWORK
 **
 ** Notes:
 **
 ** Algorithm:
-**	Description of the algorithm (optional) and any other notes.
+**      Description of the algorithm (optional) and any other notes.
 */
 
-static CONDITION
-AA_7_State13SendAbort(PRIVATE_NETWORKKEY ** network,
-	 PRIVATE_ASSOCIATIONKEY ** association, int nextState, void * /*params*/)
+static OFCondition
+AA_7_State13SendAbort(PRIVATE_NETWORKKEY ** /* network */,
+         PRIVATE_ASSOCIATIONKEY ** association, int nextState, void * /*params*/)
 {
-    DUL_ABORTITEMS
-    abortItems;
-    CONDITION
-	cond;
+    DUL_ABORTITEMS abortItems;
 
     abortItems.result = 0x00;
     abortItems.source = DUL_ABORTSERVICEPROVIDER;
     abortItems.reason = DUL_ABORTUNEXPECTEDPDU;
 
-    if (strcmp((*association)->networkType, DUL_NETWORK_TCP) == 0) {
-	cond = sendAbortTCP(&abortItems, association);
-	(*association)->protocolState = nextState;
-	return cond;
-    } else
-	return COND_PushCondition(DUL_UNSUPPORTEDNETWORK,
-	      DUL_Message(DUL_UNSUPPORTEDNETWORK), (*network)->networkType);
+    OFCondition cond = sendAbortTCP(&abortItems, association);
+    (*association)->protocolState = nextState;
+    return cond;
 }
 
 
 /* AA_8_UnrecognizedPDUSendAbort
 **
 ** Purpose:
-**	Send A-ABORT PDU (service provider source), issue an A-P-ABORT
-**	indication and start timer.
+**      Send A-ABORT PDU (service provider source), issue an A-P-ABORT
+**      indication and start timer.
 **
 ** Parameter Dictionary:
 **
-**	network		Handle to the network environment
-**	association	Handle to the Association
-**	nextState	The next state to be reached from the current state
-**	params		Service parameters describing the Association
+**      network         Handle to the network environment
+**      association     Handle to the Association
+**      nextState       The next state to be reached from the current state
+**      params          Service parameters describing the Association
 **
 ** Return Values:
 **
-**      DUL_MALLOCERROR
-**      DUL_NORMAL
-**      DUL_TCPIOERROR
-**      DUL_UNSUPPORTEDNETWORK
 **
 ** Notes:
 **
 ** Algorithm:
-**	Description of the algorithm (optional) and any other notes.
+**      Description of the algorithm (optional) and any other notes.
 */
-static CONDITION
-AA_8_UnrecognizedPDUSendAbort(PRIVATE_NETWORKKEY ** network,
-	 PRIVATE_ASSOCIATIONKEY ** association, int nextState, void * /*params*/)
+static OFCondition
+AA_8_UnrecognizedPDUSendAbort(PRIVATE_NETWORKKEY ** /* network */,
+         PRIVATE_ASSOCIATIONKEY ** association, int nextState, void * /*params*/)
 {
-    DUL_ABORTITEMS
-    abortItems;
-    CONDITION
-	cond;
+    DUL_ABORTITEMS abortItems;
 
     abortItems.result = 0x00;
     abortItems.source = DUL_ABORTSERVICEPROVIDER;
     abortItems.reason = DUL_ABORTUNEXPECTEDPDU;
 
-    if (strcmp((*association)->networkType, DUL_NETWORK_TCP) == 0) {
-	cond = sendAbortTCP(&abortItems, association);
-	(*association)->protocolState = nextState;
-	(*association)->timerStart = time(0);
-	return cond;
-    } else
-	return COND_PushCondition(DUL_UNSUPPORTEDNETWORK,
-	      DUL_Message(DUL_UNSUPPORTEDNETWORK), (*network)->networkType);
+    OFCondition cond = sendAbortTCP(&abortItems, association);
+    (*association)->protocolState = nextState;
+    (*association)->timerStart = time(0);
+    return cond;
 }
 
 /* requestAssociationTCP
 **
 ** Purpose:
-**	Request a TCP Association
+**      Request a TCP Association
 **
 ** Parameter Dictionary:
 **
-**	network		Handle to the network environment
-**	params		Service parameters describing the Association
-**	association	Handle to the Association
+**      network         Handle to the network environment
+**      params          Service parameters describing the Association
+**      association     Handle to the Association
 **
 ** Return Values:
 **
-**	DUL_ILLEGALSERVICEPARAMETER
-**	DUL_NORMAL
-**	DUL_TCPINITERROR
-**	DUL_UNKNOWNHOST
 **
 ** Notes:
 **
 ** Algorithm:
-**	Description of the algorithm (optional) and any other notes.
+**      Description of the algorithm (optional) and any other notes.
 */
 
 
-static CONDITION
+static OFCondition
 requestAssociationTCP(PRIVATE_NETWORKKEY ** network,
-		      DUL_ASSOCIATESERVICEPARAMETERS * params,
-		      PRIVATE_ASSOCIATIONKEY ** association)
+                      DUL_ASSOCIATESERVICEPARAMETERS * params,
+                      PRIVATE_ASSOCIATIONKEY ** association)
 {
     char
         node[128];
@@ -2337,22 +2101,28 @@ requestAssociationTCP(PRIVATE_NETWORKKEY ** network,
         sockarg;
 
     if (sscanf(params->calledPresentationAddress, "%[^:]:%d", node, &port) != 2)
-	return COND_PushCondition(DUL_ILLEGALSERVICEPARAMETER,
-				  DUL_Message(DUL_ILLEGALSERVICEPARAMETER),
-				  params->calledPresentationAddress);
+    {
+        char buf[1024];
+        sprintf(buf,"Illegal service parameter: %s", params->calledPresentationAddress);
+        return makeDcmnetCondition(DULC_ILLEGALSERVICEPARAMETER, OF_error, buf);
+    }
 
     s = socket(AF_INET, SOCK_STREAM, 0);
-    if (s < 0) {
-	return COND_PushCondition(DUL_TCPINITERROR,
-			    DUL_Message(DUL_TCPINITERROR), strerror(errno));
+    if (s < 0)
+    {
+      char buf1[256];
+      sprintf(buf1, "TCP Initialization Error: %s", strerror(errno));
+      return makeDcmnetCondition(DULC_TCPINITERROR, OF_error, buf1);
     }
     server.sin_family = AF_INET;
 
 #ifdef NO_WINDOWS95_ADDRESS_TRANSLATION_WORKAROUND
     hp = gethostbyname(node);
-    if (hp == NULL) {
-	return COND_PushCondition(DUL_UNKNOWNHOST,
-				  DUL_Message(DUL_UNKNOWNHOST), node);
+    if (hp == NULL)
+    {
+        char buf2[4095]; // node could be a long string
+        sprintf(buf2, "Attempt to connect to unknown host: %s", node);
+        return makeDcmnetCondition(DULC_UNKNOWNHOST, OF_error, buf2);
     }
     (void) memcpy(&server.sin_addr, hp->h_addr, (size_t) hp->h_length);
 #else
@@ -2364,17 +2134,18 @@ requestAssociationTCP(PRIVATE_NETWORKKEY ** network,
      */
     unsigned long addr = 0;
     if ((int)(addr = inet_addr(node)) != -1) {
-	// it is an IP address
-	(void) memcpy(&server.sin_addr, &addr, (size_t) sizeof(addr));
+        // it is an IP address
+        (void) memcpy(&server.sin_addr, &addr, (size_t) sizeof(addr));
     } else {
-	// must be a host name
-	hp = gethostbyname(node);
-	if (hp == NULL) {
-	    return COND_PushCondition(DUL_UNKNOWNHOST,
-				      DUL_Message(DUL_UNKNOWNHOST), node);
-	}
-	(void) memcpy(&server.sin_addr, hp->h_addr, (size_t) hp->h_length);
-
+        // must be a host name
+        hp = gethostbyname(node);
+        if (hp == NULL)
+        {
+          char buf2[4095]; // node could be a long string
+          sprintf(buf2, "Attempt to connect to unknown host: %s", node);
+          return makeDcmnetCondition(DULC_UNKNOWNHOST, OF_error, buf2);
+        }
+        (void) memcpy(&server.sin_addr, hp->h_addr, (size_t) hp->h_length);
     }
 #endif
 
@@ -2384,17 +2155,20 @@ requestAssociationTCP(PRIVATE_NETWORKKEY ** network,
     {
 #ifdef HAVE_WINSOCK_H
         (void) shutdown(s,  1 /* SD_SEND */); 
-	(void) closesocket(s);
+        (void) closesocket(s);
 #else
-	(void) close(s);
+        (void) close(s);
 #endif
-	(*association)->networkState = NETWORK_DISCONNECTED;
-	if ((*association)->connection) delete (*association)->connection;
-	(*association)->connection = NULL;
-	return COND_PushCondition(DUL_TCPINITERROR, DUL_Message(DUL_TCPINITERROR), strerror(errno));
+        (*association)->networkState = NETWORK_DISCONNECTED;
+        if ((*association)->connection) delete (*association)->connection;
+        (*association)->connection = NULL;
+
+        char buf1[256];
+        sprintf(buf1, "TCP Initialization Error: %s", strerror(errno));
+        return makeDcmnetCondition(DULC_TCPINITERROR, OF_error, buf1);
     } else {
-	(*association)->networkState = NETWORK_CONNECTED;
-	if ((*association)->connection) delete (*association)->connection;
+        (*association)->networkState = NETWORK_CONNECTED;
+        if ((*association)->connection) delete (*association)->connection;
 
         if (network && (*network) && ((*network)->networkSpecific.TCP.tLayer))
         {
@@ -2406,53 +2180,65 @@ requestAssociationTCP(PRIVATE_NETWORKKEY ** network,
         {
 #ifdef HAVE_WINSOCK_H
           (void) shutdown(s,  1 /* SD_SEND */); 
-	  (void) closesocket(s);
+          (void) closesocket(s);
 #else
-	  (void) close(s);
+          (void) close(s);
 #endif
-	  (*association)->networkState = NETWORK_DISCONNECTED;
-	  return COND_PushCondition(DUL_TCPINITERROR, DUL_Message(DUL_TCPINITERROR), strerror(errno));
+          (*association)->networkState = NETWORK_DISCONNECTED;
+          char buf1[256];
+          sprintf(buf1, "TCP Initialization Error: %s", strerror(errno));
+          return makeDcmnetCondition(DULC_TCPINITERROR, OF_error, buf1);
         }
-	sockarg.l_onoff = 0;
+        sockarg.l_onoff = 0;
 
 #ifdef HAVE_GUSI_H
         /* GUSI always returns an error for setsockopt(...) */
 #else
-	if (setsockopt(s, SOL_SOCKET, SO_LINGER, (char *) &sockarg, (int) sizeof(sockarg)) < 0)
-	{
-	  return COND_PushCondition(DUL_TCPINITERROR, DUL_Message(DUL_TCPINITERROR), strerror(errno));
-	}
+        if (setsockopt(s, SOL_SOCKET, SO_LINGER, (char *) &sockarg, (int) sizeof(sockarg)) < 0)
+        {
+          char buf2[256];
+          sprintf(buf2, "TCP Initialization Error: %s", strerror(errno));
+          return makeDcmnetCondition(DULC_TCPINITERROR, OF_error, buf2);
+        }
 #endif
-	setTCPBufferLength(s);
+        setTCPBufferLength(s);
 
 #ifndef DONT_DISABLE_NAGLE_ALGORITHM
-	/*
-	 * Disable the Nagle algorithm.
-	 * This provides a 2-4 times performance improvement (WinNT4/SP4, 100Mbit/s Ethernet).
-	 * Effects on other environments are unknown.
-	 * The code below allows the Nagle algorithm to be enabled by setting the TCP_NODELAY environment 
-	 * variable to have value 0.
-	 */
-	int tcpNoDelay = 1; // disable
-	char* tcpNoDelayString = NULL;
-	if ((tcpNoDelayString = getenv("TCP_NODELAY")) != NULL) {
-	    if (sscanf(tcpNoDelayString, "%d", &tcpNoDelay) != 1) {
-		COUT << "DULFSM: cannot parse environment variable TCP_NODELAY=" << tcpNoDelayString << endl;
-	    }
-	}
-	if (tcpNoDelay) {
-	    if (setsockopt(s, IPPROTO_TCP, TCP_NODELAY, (char*)&tcpNoDelay, sizeof(tcpNoDelay)) < 0) {
-		return COND_PushCondition(DUL_TCPINITERROR, DUL_Message(DUL_TCPINITERROR), strerror(errno));
-	    }
-	}
+        /*
+         * Disable the Nagle algorithm.
+         * This provides a 2-4 times performance improvement (WinNT4/SP4, 100Mbit/s Ethernet).
+         * Effects on other environments are unknown.
+         * The code below allows the Nagle algorithm to be enabled by setting the TCP_NODELAY environment 
+         * variable to have value 0.
+         */
+        int tcpNoDelay = 1; // disable
+        char* tcpNoDelayString = NULL;
+        if ((tcpNoDelayString = getenv("TCP_NODELAY")) != NULL)
+        {
+            if (sscanf(tcpNoDelayString, "%d", &tcpNoDelay) != 1)
+            {
+              ofConsole.lockCerr() << "DULFSM: cannot parse environment variable TCP_NODELAY=" << tcpNoDelayString << endl;
+              ofConsole.unlockCerr();
+            }
+        }
+        if (tcpNoDelay) {
+            if (setsockopt(s, IPPROTO_TCP, TCP_NODELAY, (char*)&tcpNoDelay, sizeof(tcpNoDelay)) < 0)
+            {
+              char buf1[256];
+              sprintf(buf1, "TCP Initialization Error: %s", strerror(errno));
+              return makeDcmnetCondition(DULC_TCPINITERROR, OF_error, buf1);
+            }
+        }
 #endif // DONT_DISABLE_NAGLE_ALGORITHM
        
        DcmTransportLayerStatus tcsStatus;
        if (TCS_ok != (tcsStatus = (*association)->connection->clientSideHandshake()))
        {
-       	 return COND_PushCondition(DUL_TLSERROR, DUL_Message(DUL_TLSERROR), (*association)->connection->errorString(tcsStatus));
+         char buf[4096]; // error message could be long
+         sprintf(buf, "DUL secure transport layer: %s", (*association)->connection->errorString(tcsStatus));
+         return makeDcmnetCondition(DULC_TLSERROR, OF_error, buf);
        }
-       return DUL_NORMAL;
+       return EC_Normal;
     }
 }
 
@@ -2460,31 +2246,27 @@ requestAssociationTCP(PRIVATE_NETWORKKEY ** network,
 /* sendAssociationRQTCP
 **
 ** Purpose:
-**	Send a TCP association request PDU.
+**      Send a TCP association request PDU.
 **
 ** Parameter Dictionary:
 **
-**	network		Handle to the network environment
-**	params		Service parameters describing the Association
-**	association	Handle to the Association
+**      network         Handle to the network environment
+**      params          Service parameters describing the Association
+**      association     Handle to the Association
 **
 ** Return Values:
 **
-**	DUL_LISTCREATEFAILED
-**	DUL_LISTERROR
-**	DUL_MALLOCERROR
-**	DUL_TCPIOERROR
 **
 ** Notes:
 **
 ** Algorithm:
-**	Description of the algorithm (optional) and any other notes.
+**      Description of the algorithm (optional) and any other notes.
 */
 
-static CONDITION
+static OFCondition
 sendAssociationRQTCP(PRIVATE_NETWORKKEY ** /*network*/,
-		     DUL_ASSOCIATESERVICEPARAMETERS * params,
-		     PRIVATE_ASSOCIATIONKEY ** association)
+                     DUL_ASSOCIATESERVICEPARAMETERS * params,
+                     PRIVATE_ASSOCIATIONKEY ** association)
 {
     PRV_ASSOCIATEPDU
     associateRequest;
@@ -2495,27 +2277,21 @@ sendAssociationRQTCP(PRIVATE_NETWORKKEY ** /*network*/,
         length;
     int
         nbytes;
-    CONDITION
-	cond;
 
     OFBitmanipTemplate<char>::zeroMem((char *)&associateRequest, sizeof(PRV_ASSOCIATEPDU)); // initialize PDU
     // associateRequest.presentationContextList = NULL;
-    cond = constructAssociatePDU(params, DUL_TYPEASSOCIATERQ,
-				 &associateRequest);
-    if (cond != DUL_NORMAL)
-	return cond;
+    OFCondition cond = constructAssociatePDU(params, DUL_TYPEASSOCIATERQ,
+                                 &associateRequest);
+    if (cond.bad())
+        return cond;
     if (associateRequest.length + 6 <= sizeof(buffer))
-	b = buffer;
+        b = buffer;
     else {
-	b = (unsigned char*)malloc(size_t(associateRequest.length + 6));
-	if (b == NULL) {
-	    return COND_PushCondition(DUL_MALLOCERROR,
-		       DUL_Message(DUL_MALLOCERROR), "sendAssociationRQTCP",
-				      associateRequest.length + 6);
-	}
+        b = (unsigned char*)malloc(size_t(associateRequest.length + 6));
+        if (b == NULL)  return EC_MemoryExhausted;
     }
     cond = streamAssociatePDU(&associateRequest, b,
-			      associateRequest.length + 6, &length);
+                              associateRequest.length + 6, &length);
 
     if ((*association)->associatePDUFlag)
     {
@@ -2530,48 +2306,44 @@ sendAssociationRQTCP(PRIVATE_NETWORKKEY ** /*network*/,
 
     destroyPresentationContextList(&associateRequest.presentationContextList);
     destroyUserInformationLists(&associateRequest.userInfo);
-    if (cond != DUL_NORMAL)
-	return cond;
+    if (cond.bad())
+        return cond;
 
     do {
       nbytes = (*association)->connection ? (*association)->connection->write((char*)b, size_t(associateRequest.length + 6)) : 0;
     } while (nbytes == -1 && errno == EINTR);
-    if ((unsigned long) nbytes != associateRequest.length + 6) {
-	return COND_PushCondition(DUL_TCPIOERROR, DUL_Message(DUL_TCPIOERROR),
-				  strerror(errno), "requestAssociationTCP");
+    if ((unsigned long) nbytes != associateRequest.length + 6)
+    {
+      char buf1[256];
+      sprintf(buf1, "TCP I/O Error (%s) occurred in routine: %s", strerror(errno), "requestAssociationTCP");
+      return makeDcmnetCondition(DULC_TCPIOERROR, OF_error, buf1);
     }
-    if (b != buffer)
-	free(b);
-    return DUL_NORMAL;
+    if (b != buffer) free(b);
+    return EC_Normal;
 }
 
 /* sendAssociationACTCP
 **
 ** Purpose:
-**	Send an Association ACK on a TCP connection
+**      Send an Association ACK on a TCP connection
 **
 ** Parameter Dictionary:
 **
-**	network		Handle to the network environment
-**	params		Service parameters describing the Association
-**	association	Handle to the Association
+**      network         Handle to the network environment
+**      params          Service parameters describing the Association
+**      association     Handle to the Association
 **
 ** Return Values:
 **
-**	DUL_LISTCREATEFAILED
-**	DUL_LISTERROR
-**	DUL_MALLOCERROR
-**	DUL_NORMAL
-**	DUL_TCPIOERROR
 **
 ** Algorithm:
-**	Description of the algorithm (optional) and any other notes.
+**      Description of the algorithm (optional) and any other notes.
 */
 
-static CONDITION
+static OFCondition
 sendAssociationACTCP(PRIVATE_NETWORKKEY ** /*network*/,
-		     DUL_ASSOCIATESERVICEPARAMETERS * params,
-		     PRIVATE_ASSOCIATIONKEY ** association)
+                     DUL_ASSOCIATESERVICEPARAMETERS * params,
+                     PRIVATE_ASSOCIATIONKEY ** association)
 {
     PRV_ASSOCIATEPDU
     associateReply;
@@ -2580,29 +2352,24 @@ sendAssociationACTCP(PRIVATE_NETWORKKEY ** /*network*/,
        *b;
     unsigned long length = 0;
     int nbytes;
-    CONDITION cond;
     DUL_ASSOCIATESERVICEPARAMETERS localService;
 
     OFBitmanipTemplate<char>::zeroMem((char *)&associateReply, sizeof(PRV_ASSOCIATEPDU)); // initialize PDU
     // associateReply.presentationContextList = NULL;
 
     localService = *params;
-    cond = constructAssociatePDU(&localService, DUL_TYPEASSOCIATEAC,
-				 &associateReply);
-    if (cond != DUL_NORMAL) return cond;
+    OFCondition cond = constructAssociatePDU(&localService, DUL_TYPEASSOCIATEAC,
+                                 &associateReply);
+    if (cond.bad()) return cond;
 
     // we need to have length+6 bytes in buffer, but 4 bytes reserve won't hurt
     if (associateReply.length + 10 <= sizeof(buffer)) b = buffer;
     else {
-	b = (unsigned char*)malloc(size_t(associateReply.length + 10));
-	if (b == NULL) {
-	    return COND_PushCondition(DUL_MALLOCERROR,
-			DUL_Message(DUL_MALLOCERROR), "ReplyAssociationTCP",
-				      associateReply.length + 10);
-	}
+        b = (unsigned char*)malloc(size_t(associateReply.length + 10));
+        if (b == NULL)  return EC_MemoryExhausted;
     }
     cond = streamAssociatePDU(&associateReply, b,
-			      associateReply.length + 10, &length);
+                              associateReply.length + 10, &length);
 
     if ((*association)->associatePDUFlag)
     {
@@ -2618,52 +2385,49 @@ sendAssociationACTCP(PRIVATE_NETWORKKEY ** /*network*/,
     destroyPresentationContextList(&associateReply.presentationContextList);
     destroyUserInformationLists(&associateReply.userInfo);
 
-    if (cond != DUL_NORMAL) return cond;
+    if (cond.bad()) return cond;
 
     do {
       nbytes = (*association)->connection ? (*association)->connection->write((char*)b, size_t(associateReply.length + 6)) : 0;
     } while (nbytes == -1 && errno == EINTR);
-    if ((unsigned long) nbytes != associateReply.length + 6) {
-	return COND_PushCondition(DUL_TCPIOERROR, DUL_Message(DUL_TCPIOERROR),
-				  strerror(errno), "ReplyAssociationTCP");
+    if ((unsigned long) nbytes != associateReply.length + 6)
+    {
+      char buf1[256];
+      sprintf(buf1, "TCP I/O Error (%s) occurred in routine: %s", strerror(errno), "ReplyAssociationTCP");
+      return makeDcmnetCondition(DULC_TCPIOERROR, OF_error, buf1);
     }
     if (b != buffer) free(b);
-    return DUL_NORMAL;
+    return EC_Normal;
 }
 
 /* sendAssociationRJTCP
 **
 ** Purpose:
-**	Send an Association Reject PDU on a TCP connection.
+**      Send an Association Reject PDU on a TCP connection.
 **
 ** Parameter Dictionary:
 **
-**	network		Handle to the network environment
-**	abortItems	Pointer to structure holding information regarding
-**			the reason for rejection, the source and result.
-**	association	Handle to the Association
+**      network         Handle to the network environment
+**      abortItems      Pointer to structure holding information regarding
+**                      the reason for rejection, the source and result.
+**      association     Handle to the Association
 **
 ** Return Values:
 **
-**	DUL_MALLOCERROR
-**	DUL_NORMAL
-**	DUL_TCPIOERROR
 **
 ** Notes:
 **
 ** Algorithm:
-**	Description of the algorithm (optional) and any other notes.
+**      Description of the algorithm (optional) and any other notes.
 */
 
-static CONDITION
+static OFCondition
 sendAssociationRJTCP(PRIVATE_NETWORKKEY ** /*network*/,
-	 DUL_ABORTITEMS * abortItems, PRIVATE_ASSOCIATIONKEY ** association)
+         DUL_ABORTITEMS * abortItems, PRIVATE_ASSOCIATIONKEY ** association)
 {
-    CONDITION
-    cond;
 
     DUL_REJECTRELEASEABORTPDU
-	pdu;
+        pdu;
     unsigned char
         buffer[64],
        *b;
@@ -2673,18 +2437,14 @@ sendAssociationRJTCP(PRIVATE_NETWORKKEY ** /*network*/,
         nbytes;
 
 
-    cond = constructAssociateRejectPDU((unsigned char) abortItems->result,
+    OFCondition cond = constructAssociateRejectPDU((unsigned char) abortItems->result,
      (unsigned char) abortItems->source, (unsigned char) abortItems->reason,
-				       &pdu);
+                                       &pdu);
     if (pdu.length + 6 <= sizeof(buffer))
-	b = buffer;
+        b = buffer;
     else {
-	b = (unsigned char*)malloc(size_t(pdu.length + 6));
-	if (b == NULL) {
-	    return COND_PushCondition(DUL_MALLOCERROR,
-			DUL_Message(DUL_MALLOCERROR), "ReplyAssociationTCP",
-				      pdu.length + 6);
-	}
+        b = (unsigned char*)malloc(size_t(pdu.length + 6));
+        if (b == NULL)  return EC_MemoryExhausted;
     }
     cond = streamRejectReleaseAbortPDU(&pdu, b, pdu.length + 6, &length);
 
@@ -2699,45 +2459,44 @@ sendAssociationRJTCP(PRIVATE_NETWORKKEY ** /*network*/,
       }
     }
 
-    if (cond == DUL_NORMAL) {
+    if (cond.good())
+    {
         do {
           nbytes = (*association)->connection ? (*association)->connection->write((char*)b, size_t(pdu.length + 6)) : 0;
         } while (nbytes == -1 && errno == EINTR);
-	if ((unsigned long) nbytes != pdu.length + 6) {
-	    cond = COND_PushCondition(DUL_TCPIOERROR, strerror(errno),
-				      "sendAssociationRJTCP");
-	}
+        if ((unsigned long) nbytes != pdu.length + 6)
+        {
+          char buf1[256];
+          sprintf(buf1, "TCP I/O Error (%s) occurred in routine: %s", strerror(errno), "sendAssociationRJTCP");
+          cond = makeDcmnetCondition(DULC_TCPIOERROR, OF_error, buf1);
+        }
     }
-    if (b != buffer)
-	free(b);
+    if (b != buffer) free(b);
     return cond;
 }
 
 /* sendAbortTCP
 **
 ** Purpose:
-**	Send an ABORT PDU over a TCP connection.
+**      Send an ABORT PDU over a TCP connection.
 **
 ** Parameter Dictionary:
-**	abortItems	Pointer to structure holding information regarding
-**			the reason for rejection, the source and result.
-**	association	Handle to the Association
+**      abortItems      Pointer to structure holding information regarding
+**                      the reason for rejection, the source and result.
+**      association     Handle to the Association
 **
 ** Return Values:
 **
-**	DUL_MALLOCERROR
-**	DUL_NORMAL
-**	DUL_TCPIOERROR
 **
 ** Notes:
 **
 ** Algorithm:
-**	Description of the algorithm (optional) and any other notes.
+**      Description of the algorithm (optional) and any other notes.
 */
 
-static CONDITION
+static OFCondition
 sendAbortTCP(DUL_ABORTITEMS * abortItems,
-	     PRIVATE_ASSOCIATIONKEY ** association)
+             PRIVATE_ASSOCIATIONKEY ** association)
 {
     DUL_REJECTRELEASEABORTPDU
     pdu;
@@ -2748,35 +2507,30 @@ sendAbortTCP(DUL_ABORTITEMS * abortItems,
         length;
     int
         nbytes;
-    CONDITION
-	cond;
 
-    cond = constructAbortPDU(abortItems->source, abortItems->reason, &pdu);
-    if (cond != DUL_NORMAL)
-	return cond;
+    OFCondition cond = constructAbortPDU(abortItems->source, abortItems->reason, &pdu);
+    if (cond.bad())
+        return cond;
 
     if (pdu.length + 6 <= sizeof(buffer))
-	b = buffer;
+        b = buffer;
     else {
-	b = (unsigned char*)malloc(size_t(pdu.length + 6));
-	if (b == NULL) {
-	    return COND_PushCondition(DUL_MALLOCERROR,
-			       DUL_Message(DUL_MALLOCERROR), "sendAbortTCP",
-				      pdu.length + 6);
-	}
+        b = (unsigned char*)malloc(size_t(pdu.length + 6));
+        if (b == NULL)  return EC_MemoryExhausted;
     }
     cond = streamRejectReleaseAbortPDU(&pdu, b, pdu.length + 6, &length);
-    if (cond == DUL_NORMAL) {
+    if (cond.good()) {
         do {
           nbytes = (*association)->connection ? (*association)->connection->write((char*)b, size_t(pdu.length + 6)) : 0;
         } while (nbytes == -1 && errno == EINTR);
-	if ((unsigned long) nbytes != pdu.length + 6) {
-	    cond = COND_PushCondition(DUL_TCPIOERROR, strerror(errno),
-				      "sendAbortTCP");
-	}
+        if ((unsigned long) nbytes != pdu.length + 6)
+        {
+          char buf1[256];
+          sprintf(buf1, "TCP I/O Error (%s) occurred in routine: %s", strerror(errno), "sendAbortTCP");
+          cond = makeDcmnetCondition(DULC_TCPIOERROR, OF_error, buf1);
+        }
     }
-    if (b != buffer)
-	free(b);
+    if (b != buffer) free(b);
 
     return cond;
 }
@@ -2785,25 +2539,22 @@ sendAbortTCP(DUL_ABORTITEMS * abortItems,
 /* sendReleaseRQTCP
 **
 ** Purpose:
-**	Send a Release request PDU over a TCP connection
+**      Send a Release request PDU over a TCP connection
 **
 ** Parameter Dictionary:
 **
-**	association	Handle to the Association
+**      association     Handle to the Association
 **
 ** Return Values:
 **
-**	DUL_MALLOCERROR
-**	DUL_NORMAL
-**	DUL_TCPIOERROR
 **
 ** Notes:
 **
 ** Algorithm:
-**	Description of the algorithm (optional) and any other notes.
+**      Description of the algorithm (optional) and any other notes.
 */
 
-static CONDITION
+static OFCondition
 sendReleaseRQTCP(PRIVATE_ASSOCIATIONKEY ** association)
 {
     DUL_REJECTRELEASEABORTPDU
@@ -2815,35 +2566,31 @@ sendReleaseRQTCP(PRIVATE_ASSOCIATIONKEY ** association)
         length;
     int
         nbytes;
-    CONDITION
-	cond;
 
-    cond = constructReleaseRQPDU(&pdu);
-    if (cond != DUL_NORMAL)
-	return cond;
+    OFCondition cond = constructReleaseRQPDU(&pdu);
+    if (cond.bad())
+        return cond;
 
     if (pdu.length + 6 <= sizeof(buffer))
-	b = buffer;
+        b = buffer;
     else {
-	b = (unsigned char*)malloc(size_t(pdu.length + 6));
-	if (b == NULL) {
-	    return COND_PushCondition(DUL_MALLOCERROR,
-			   DUL_Message(DUL_MALLOCERROR), "sendReleaseRQTCP",
-				      pdu.length + 6);
-	}
+        b = (unsigned char*)malloc(size_t(pdu.length + 6));
+        if (b == NULL)  return EC_MemoryExhausted;
     }
     cond = streamRejectReleaseAbortPDU(&pdu, b, pdu.length + 6, &length);
-    if (cond == DUL_NORMAL) {
+    if (cond.good()) {
         do {
           nbytes = (*association)->connection ? (*association)->connection->write((char*)b, size_t(pdu.length + 6)) : 0;
         } while (nbytes == -1 && errno == EINTR);
-	if ((unsigned long) nbytes != pdu.length + 6) {
-	    cond = COND_PushCondition(DUL_TCPIOERROR, strerror(errno),
-				      "sendReleaseRQTCP");
-	}
+        if ((unsigned long) nbytes != pdu.length + 6)
+        {
+          char buf1[256];
+          sprintf(buf1, "TCP I/O Error (%s) occurred in routine: %s", strerror(errno), "sendReleaseRQTCP");
+          cond = makeDcmnetCondition(DULC_TCPIOERROR, OF_error, buf1);
+        }
     }
     if (b != buffer)
-	free(b);
+        free(b);
 
     return cond;
 }
@@ -2853,25 +2600,22 @@ sendReleaseRQTCP(PRIVATE_ASSOCIATIONKEY ** association)
 /* sendReleaseRPTCP
 **
 ** Purpose:
-**	Send a release response PDU over a TCP connection
+**      Send a release response PDU over a TCP connection
 **
 ** Parameter Dictionary:
 **
-**	association	Handle to the Association
+**      association     Handle to the Association
 **
 ** Return Values:
 **
-**	DUL_MALLOCERROR
-**	DUL_NORMAL
-**	DUL_TCPIOERROR
 **
 ** Notes:
 **
 ** Algorithm:
-**	Description of the algorithm (optional) and any other notes.
+**      Description of the algorithm (optional) and any other notes.
 */
 
-static CONDITION
+static OFCondition
 sendReleaseRPTCP(PRIVATE_ASSOCIATIONKEY ** association)
 {
     DUL_REJECTRELEASEABORTPDU
@@ -2882,35 +2626,30 @@ sendReleaseRPTCP(PRIVATE_ASSOCIATIONKEY ** association)
         length;
     int
         nbytes;
-    CONDITION
-	cond;
 
-    cond = constructReleaseRPPDU(&pdu);
-    if (cond != DUL_NORMAL)
-	return cond;
+    OFCondition cond = constructReleaseRPPDU(&pdu);
+    if (cond.bad())
+        return cond;
 
     if (pdu.length + 6 <= sizeof(buffer))
-	b = buffer;
+        b = buffer;
     else {
-	b = (unsigned char*)malloc(size_t(pdu.length + 6));
-	if (b == NULL) {
-	    return COND_PushCondition(DUL_MALLOCERROR,
-			   DUL_Message(DUL_MALLOCERROR), "sendReleaseRPTCP",
-				      pdu.length + 6);
-	}
+        b = (unsigned char*)malloc(size_t(pdu.length + 6));
+        if (b == NULL)  return EC_MemoryExhausted;
     }
     cond = streamRejectReleaseAbortPDU(&pdu, b, pdu.length + 6, &length);
-    if (cond == DUL_NORMAL) {
+    if (cond.good()) {
         do {
           nbytes = (*association)->connection ? (*association)->connection->write((char*)b, size_t(pdu.length + 6)) : 0;
         } while (nbytes == -1 && errno == EINTR);
-	if ((unsigned long) nbytes != pdu.length + 6) {
-	    cond = COND_PushCondition(DUL_TCPIOERROR, strerror(errno),
-				      "sendReleaseRPTCP");
-	}
+        if ((unsigned long) nbytes != pdu.length + 6)
+        {
+          char buf1[256];
+          sprintf(buf1, "TCP I/O Error (%s) occurred in routine: %s", strerror(errno), "sendReleaseRPTCP");
+          cond = makeDcmnetCondition(DULC_TCPIOERROR, OF_error, buf1);
+        }
     }
-    if (b != buffer)
-	free(b);
+    if (b != buffer) free(b);
 
     return cond;
 }
@@ -2919,27 +2658,25 @@ sendReleaseRPTCP(PRIVATE_ASSOCIATIONKEY ** association)
 /* SendPDataTCP
 **
 ** Purpose:
-**	Send a data PDU over a TCP connection.
+**      Send a data PDU over a TCP connection.
 **
 ** Parameter Dictionary:
 **
-**	association	Handle to the Association
-**	pdvList		Pointer to structure holding a list of PDVs
+**      association     Handle to the Association
+**      pdvList         Pointer to structure holding a list of PDVs
 **
 ** Return Values:
 **
-**	DUL_NORMAL
-**	DUL_TCPIOERROR
 **
 ** Notes:
 **
 ** Algorithm:
-**	Description of the algorithm (optional) and any other notes.
+**      Description of the algorithm (optional) and any other notes.
 */
 
-static CONDITION
+static OFCondition
 sendPDataTCP(PRIVATE_ASSOCIATIONKEY ** association,
-	     DUL_PDVLIST * pdvList)
+             DUL_PDVLIST * pdvList)
 {
     DUL_PDV *pdv;
     unsigned long
@@ -2949,7 +2686,6 @@ sendPDataTCP(PRIVATE_ASSOCIATIONKEY ** association,
         maxLength;
 
     int localLast;
-    CONDITION cond;
     unsigned char *p;
     DUL_DATAPDU dataPDU;
     OFBool firstTrip;
@@ -2960,31 +2696,34 @@ sendPDataTCP(PRIVATE_ASSOCIATIONKEY ** association,
     // The name "maxPDV" is misleading. This field contains the maxPDU size which is max PDV size +6
     // or max PDV data field + 12.
     maxLength = (*association)->maxPDV;
-    cond = DUL_NORMAL;
+    OFCondition cond = EC_Normal;
 
     if (maxLength == 0) maxLength = ASC_MAXIMUMPDUSIZE - 12;
     else if (maxLength < 14)
     {
-      cond = COND_PushCondition(DUL_ILLEGALPDULENGTH, "DUL Cannot send P-DATA PDU because receiver's max PDU size of %lu is illegal (must be > 12)", maxLength);
+       char buf[256];
+       sprintf(buf, "DUL Cannot send P-DATA PDU because receiver's max PDU size of %lu is illegal (must be > 12)", maxLength);
+       cond = makeDcmnetCondition(DULC_ILLEGALPDULENGTH, OF_error, buf);
     } 
     else maxLength -= 12;
 
-    while (cond == DUL_NORMAL && count-- > 0) {
-	length = pdv->fragmentLength;
-	p = (unsigned char *) pdv->data;
-	firstTrip = OFTrue;
-	while ((firstTrip || (length > 0)) && (cond == DUL_NORMAL)) {
-	    firstTrip = OFFalse;
-	    pdvLength = (length <= maxLength) ? length : maxLength;
-	    localLast = ((pdvLength == length) && pdv->lastPDV);
-	    cond = constructDataPDU(p, pdvLength, pdv->pdvType,
-			   pdv->presentationContextID, localLast, &dataPDU);
-	    cond = writeDataPDU(association, &dataPDU);
+    while (cond.good() && count-- > 0)
+    {
+        length = pdv->fragmentLength;
+        p = (unsigned char *) pdv->data;
+        firstTrip = OFTrue;
+        while ((firstTrip || (length > 0)) && (cond.good())) {
+            firstTrip = OFFalse;
+            pdvLength = (length <= maxLength) ? length : maxLength;
+            localLast = ((pdvLength == length) && pdv->lastPDV);
+            cond = constructDataPDU(p, pdvLength, pdv->pdvType,
+                           pdv->presentationContextID, localLast, &dataPDU);
+            cond = writeDataPDU(association, &dataPDU);
 
-	    p += pdvLength;
-	    length -= pdvLength;
-	}
-	pdv++;
+            p += pdvLength;
+            length -= pdvLength;
+        }
+        pdv++;
 
     }
     return cond;
@@ -2993,30 +2732,26 @@ sendPDataTCP(PRIVATE_ASSOCIATIONKEY ** association,
 /* writeDataPDU
 **
 ** Purpose:
-**	Send the data through the socket interface (for TCP).
+**      Send the data through the socket interface (for TCP).
 **
 ** Parameter Dictionary:
 **
-**	association	Handle to the Association
-**	pdu		The data unit that is to be sent thru the socket
+**      association     Handle to the Association
+**      pdu             The data unit that is to be sent thru the socket
 **
 ** Return Values:
 **
-**	DUL_NORMAL
-**	DUL_TCPIOERROR
 **
 ** Notes:
 **
 ** Algorithm:
-**	Description of the algorithm (optional) and any other notes.
+**      Description of the algorithm (optional) and any other notes.
 */
 
-static CONDITION
+static OFCondition
 writeDataPDU(PRIVATE_ASSOCIATIONKEY ** association,
-	     DUL_DATAPDU * pdu)
+             DUL_DATAPDU * pdu)
 {
-    CONDITION
-    cond;
     unsigned char
         head[24];
     unsigned long
@@ -3024,71 +2759,75 @@ writeDataPDU(PRIVATE_ASSOCIATIONKEY ** association,
     int
         nbytes;
 
-    cond = streamDataPDUHead(pdu, head, sizeof(head), &length);
-    if (cond != DUL_NORMAL)
-	return cond;
+    OFCondition cond = streamDataPDUHead(pdu, head, sizeof(head), &length);
+    if (cond.bad()) return cond;
 
-    if (strcmp((*association)->networkType, DUL_NETWORK_TCP) == 0) {
-        do {
-          nbytes = (*association)->connection ? (*association)->connection->write((char*)head, size_t(length)) : 0;
-        } while (nbytes == -1 && errno == EINTR);
-	if ((unsigned long) nbytes != length)
-	    return COND_PushCondition(DUL_TCPIOERROR,
-			       DUL_Message(DUL_TCPIOERROR), strerror(errno),
-				      "writeDataPDU");
-        do {
-          nbytes = (*association)->connection ? (*association)->connection->write((char*)pdu->presentationDataValue.data, 
-            size_t(pdu->presentationDataValue.length - 2)) : 0;
-        } while (nbytes == -1 && errno == EINTR);
-	if ((unsigned long) nbytes != pdu->presentationDataValue.length - 2)
-	    return COND_PushCondition(DUL_TCPIOERROR,
-			       DUL_Message(DUL_TCPIOERROR), strerror(errno),
-				      "writeDataPDU");
+    do
+    {
+      nbytes = (*association)->connection ? (*association)->connection->write((char*)head, size_t(length)) : 0;
+    } while (nbytes == -1 && errno == EINTR);
+    if ((unsigned long) nbytes != length)
+    {
+        char buf1[256];
+        sprintf(buf1, "TCP I/O Error (%s) occurred in routine: %s", strerror(errno), "writeDataPDU");
+        return makeDcmnetCondition(DULC_TCPIOERROR, OF_error, buf1);
     }
-    return DUL_NORMAL;
+
+    do
+    {
+      nbytes = (*association)->connection ? (*association)->connection->write((char*)pdu->presentationDataValue.data, 
+        size_t(pdu->presentationDataValue.length - 2)) : 0;
+    } while (nbytes == -1 && errno == EINTR);
+    if ((unsigned long) nbytes != pdu->presentationDataValue.length - 2)
+    {
+        char buf2[256];
+        sprintf(buf2, "TCP I/O Error (%s) occurred in routine: %s", strerror(errno), "writeDataPDU");
+        return makeDcmnetCondition(DULC_TCPIOERROR, OF_error, buf2);
+    }
+
+    return EC_Normal;
 }
 
 /* closeTransport
 **
 ** Purpose:
-**	Close the transport connection.
+**      Close the transport connection.
 **
 ** Parameter Dictionary:
 **
-**	association	Handle to the Association
+**      association     Handle to the Association
 **
 ** Return Values:
-**	None.
+**      None.
 **
 ** Notes:
 **
 ** Algorithm:
-**	Description of the algorithm (optional) and any other notes.
+**      Description of the algorithm (optional) and any other notes.
 */
 
 static void
 closeTransport(PRIVATE_ASSOCIATIONKEY ** association)
 {
-    if (strcmp((*association)->networkType, DUL_NETWORK_TCP) == 0)
-	closeTransportTCP(association);
+    closeTransportTCP(association);
 }
 
 /* closeTransportTCP
 **
 ** Purpose:
-**	Close the TCP transport connection.
+**      Close the TCP transport connection.
 **
 ** Parameter Dictionary:
 **
-**	association	Handle to the Association
+**      association     Handle to the Association
 **
 ** Return Values:
-**	None
+**      None
 **
 ** Notes:
 **
 ** Algorithm:
-**	Description of the algorithm (optional) and any other notes.
+**      Description of the algorithm (optional) and any other notes.
 */
 
 static void
@@ -3106,19 +2845,19 @@ closeTransportTCP(PRIVATE_ASSOCIATIONKEY ** association)
 /* clearPDUCache()
 **
 ** Purpose:
-**	Clear the Association of any PDUs.
+**      Clear the Association of any PDUs.
 **
 ** Parameter Dictionary:
 **
-**	association	Handle to the Association
+**      association     Handle to the Association
 **
 ** Return Values:
-**	None.
+**      None.
 **
 ** Notes:
 **
 ** Algorithm:
-**	Description of the algorithm (optional) and any other notes.
+**      Description of the algorithm (optional) and any other notes.
 */
 
 static void
@@ -3130,109 +2869,92 @@ clearPDUCache(PRIVATE_ASSOCIATIONKEY ** association)
 /* PRV_NextPDUType
 **
 ** Purpose:
-**	Get the next PDU's type.
+**      Get the next PDU's type.
 **
 ** Parameter Dictionary:
 **
-**	association	Handle to the Association
-**	block		Option for blocking/non-blocking
-**	timeout		Timeout interval within to get the Type of the next
-**			PDU
-**	pduType		The type of next PDU returned to caller.
+**      association     Handle to the Association
+**      block           Option for blocking/non-blocking
+**      timeout         Timeout interval within to get the Type of the next
+**                      PDU
+**      pduType         The type of next PDU returned to caller.
 **
 ** Return Values:
 **
-**	DUL_CODINGERROR
-**	DUL_ILLEGALPDULENGTH
-**	DUL_NETWORKCLOSED
-**	DUL_NORMAL
-**	DUL_READTIMEOUT
-**	DUL_UNRECOGNIZEDPDUTYPE
-**	DUL_UNSUPPORTEDNETWORK
 **
 ** Notes:
 **
 ** Algorithm:
-**	Description of the algorithm (optional) and any other notes.
+**      Description of the algorithm (optional) and any other notes.
 */
 
-CONDITION
+OFCondition
 PRV_NextPDUType(PRIVATE_ASSOCIATIONKEY ** association, DUL_BLOCKOPTIONS block,
-		int timeout, unsigned char *pduType)
+                int timeout, unsigned char *pduType)
 {
-    CONDITION
-	cond;
+    OFCondition cond = EC_Normal;
 
     if ((*association)->inputPDU == NO_PDU) {
-	cond = readPDUHead(association, (*association)->pduHead,
-			   sizeof((*association)->pduHead),
-			   block, timeout, &(*association)->nextPDUType,
-			   &(*association)->nextPDUReserved,
-			   &(*association)->nextPDULength);
-	if (cond != DUL_NORMAL)
-	    return cond;
-	(*association)->inputPDU = PDU_HEAD;
+        cond = readPDUHead(association, (*association)->pduHead,
+                           sizeof((*association)->pduHead),
+                           block, timeout, &(*association)->nextPDUType,
+                           &(*association)->nextPDUReserved,
+                           &(*association)->nextPDULength);
+        if (cond.bad())
+            return cond;
+        (*association)->inputPDU = PDU_HEAD;
     }
     *pduType = (*association)->nextPDUType;
 
-    return DUL_NORMAL;
+    return EC_Normal;
 }
 
 /* readPDU
 **
 ** Purpose:
-**	Read the PDU from the incoming stream.
+**      Read the PDU from the incoming stream.
 **
 ** Parameter Dictionary:
-**	association	Handle to the Association
-**	block		Blocking/non-blocking options for reading
-**	timeout		Timeout interval for reading
-**	buffer		Buffer holding the PDU (returned to the caller)
-**	PDUType		Type of the PDU (returned to the caller)
-**	PDUReserved	Reserved field of the PDU (returned to caller)
-**	PDULength	Length of PDU read (returned to caller)
+**      association     Handle to the Association
+**      block           Blocking/non-blocking options for reading
+**      timeout         Timeout interval for reading
+**      buffer          Buffer holding the PDU (returned to the caller)
+**      PDUType         Type of the PDU (returned to the caller)
+**      PDUReserved     Reserved field of the PDU (returned to caller)
+**      PDULength       Length of PDU read (returned to caller)
 **
 **
 ** Return Values:
 **
-**	DUL_CODINGERROR
-**	DUL_ILLEGALPDULENGTH
-**	DUL_NETWORKCLOSED
-**	DUL_NORMAL
-**	DUL_READTIMEOUT
-**	DUL_UNRECOGNIZEDPDUTYPE
-**	DUL_UNSUPPORTEDNETWORK
-**	DUL_MALLOCERROR
 **
 ** Notes:
-**    Interface changed 970428 by meichel.
 **    The buffer is allocated (malloc) when the PDU size is known.
-**    If malloc fails, DUL_MALLOCERROR is returned.
+**    If malloc fails, EC_MemoryExhausted is returned.
 **    Otherwise, the buffer must be released (free) by the caller!
 **
 ** Algorithm:
-**	Description of the algorithm (optional) and any other notes.
+**      Description of the algorithm (optional) and any other notes.
 */
 
-static CONDITION
+static OFCondition
 readPDU(PRIVATE_ASSOCIATIONKEY ** association, DUL_BLOCKOPTIONS block,
-	int timeout, unsigned char **buffer, 
-	unsigned char *pduType, unsigned char *pduReserved,
-	unsigned long *pduLength)
+        int timeout, unsigned char **buffer, 
+        unsigned char *pduType, unsigned char *pduReserved,
+        unsigned long *pduLength)
 {
-    CONDITION cond;
+    OFCondition cond = EC_Normal;
     unsigned long maxLength;
 
     *buffer = NULL;
     if ((*association)->inputPDU == NO_PDU) {
-	cond = readPDUHead(association, (*association)->pduHead,
-			   sizeof((*association)->pduHead),
-			   block, timeout, &(*association)->nextPDUType,
-			   &(*association)->nextPDUReserved,
-			   &(*association)->nextPDULength);
-	if (cond != DUL_NORMAL)
-	    return cond;
-	(*association)->inputPDU = PDU_HEAD;
+        cond = readPDUHead(association, (*association)->pduHead,
+                           sizeof((*association)->pduHead),
+                           block, timeout, &(*association)->nextPDUType,
+                           &(*association)->nextPDUReserved,
+                           &(*association)->nextPDULength);
+        if (cond.bad())
+            return cond;
+        (*association)->inputPDU = PDU_HEAD;
     }
 
     maxLength = ((*association)->nextPDULength)+100;
@@ -3244,8 +2966,7 @@ readPDU(PRIVATE_ASSOCIATIONKEY ** association, DUL_BLOCKOPTIONS block,
         (*buffer) + sizeof((*association)->pduHead),
         maxLength - sizeof((*association)->pduHead),
         pduType, pduReserved, pduLength);
-    } else cond = COND_PushCondition(DUL_MALLOCERROR,
-	DUL_Message(DUL_MALLOCERROR), "readPDU", maxLength);
+    } else cond = EC_MemoryExhausted;
     return cond;
 }
 
@@ -3253,67 +2974,53 @@ readPDU(PRIVATE_ASSOCIATIONKEY ** association, DUL_BLOCKOPTIONS block,
 /* readPDUHead
 **
 ** Purpose:
-**	Read the header from the PDU. The type of protocol is obtained from
-**	the Association handle.
+**      Read the header from the PDU. The type of protocol is obtained from
+**      the Association handle.
 **
 ** Parameter Dictionary:
-**	association	Handle to the Association
-**	buffer		Buffer holding the PDU
-**	maxLength	Maximum allowable length of the header
-**	block		Blocking/non-blocking options for reading
-**	timeout		Timeout interval for reading
-**	PDUType		Type of the PDU (returned to the caller)
-**	PDUReserved	Reserved field of the PDU (returned to caller)
-**	PDULength	Length of PDU header read (returned to caller)
+**      association     Handle to the Association
+**      buffer          Buffer holding the PDU
+**      maxLength       Maximum allowable length of the header
+**      block           Blocking/non-blocking options for reading
+**      timeout         Timeout interval for reading
+**      PDUType         Type of the PDU (returned to the caller)
+**      PDUReserved     Reserved field of the PDU (returned to caller)
+**      PDULength       Length of PDU header read (returned to caller)
 **
 ** Return Values:
 **
-**	DUL_CODINGERROR
-**	DUL_ILLEGALPDULENGTH
-**	DUL_NETWORKCLOSED
-**	DUL_NORMAL
-**	DUL_READTIMEOUT
-**	DUL_UNRECOGNIZEDPDUTYPE
-**	DUL_UNSUPPORTEDNETWORK
 **
 ** Notes:
 **
 ** Algorithm:
-**	Description of the algorithm (optional) and any other notes.
+**      Description of the algorithm (optional) and any other notes.
 */
-static CONDITION
+static OFCondition
 readPDUHead(PRIVATE_ASSOCIATIONKEY ** association,
-	    unsigned char *buffer, unsigned long maxLength,
-	    DUL_BLOCKOPTIONS block, int timeout,
-	    unsigned char *PDUType, unsigned char *PDUReserved,
-	    unsigned long *PDULength)
+            unsigned char *buffer, unsigned long maxLength,
+            DUL_BLOCKOPTIONS block, int timeout,
+            unsigned char *PDUType, unsigned char *PDUReserved,
+            unsigned long *PDULength)
 {
-    CONDITION
-    cond;
-
-    cond = DUL_NORMAL;
-    if ((*association)->inputPDU == NO_PDU) {
-	if (strcmp((*association)->networkType, DUL_NETWORK_TCP) == 0)
-	    cond = readPDUHeadTCP(association, buffer, maxLength, block,
-				  timeout,
-	     &(*association)->nextPDUType, &(*association)->nextPDUReserved,
-				  &(*association)->nextPDULength);
-	else
-	    cond = COND_PushCondition(DUL_UNSUPPORTEDNETWORK,
-				      DUL_Message(DUL_UNSUPPORTEDNETWORK),
-				      (*association)->networkType);
+    OFCondition cond = EC_Normal;
+    if ((*association)->inputPDU == NO_PDU)
+    {
+        cond = readPDUHeadTCP(association, buffer, maxLength, block, timeout,
+             &(*association)->nextPDUType, &(*association)->nextPDUReserved, &(*association)->nextPDULength);
     }
-    if (cond == DUL_NORMAL) {
-	(*association)->inputPDU = PDU_HEAD;
-	*PDUType = (*association)->nextPDUType;
-	*PDUReserved = (*association)->nextPDUReserved;
-	*PDULength = (*association)->nextPDULength;
+    if (cond.good()) {
+        (*association)->inputPDU = PDU_HEAD;
+        *PDUType = (*association)->nextPDUType;
+        *PDUReserved = (*association)->nextPDUReserved;
+        *PDULength = (*association)->nextPDULength;
 
         /* bugfix - thanks to B. Gorissen, Philips Medical Systems */
         if ((*PDUType == DUL_TYPEDATA) && (*PDULength > (*association)->maxPDVInput))
-	  cond = COND_PushCondition(DUL_ILLEGALPDULENGTH,
-            DUL_Message(DUL_ILLEGALPDULENGTH), *PDULength,
-	    (*association)->maxPDVInput, "readPDUHead");
+        {
+          char buf1[256];
+          sprintf(buf1, "DUL Illegal PDU Length %ld.  Max expected %ld", *PDULength, (*association)->maxPDVInput);
+          cond = makeDcmnetCondition(DULC_ILLEGALPDULENGTH, OF_error, buf1);
+        }
     }
     return cond;
 }
@@ -3322,50 +3029,38 @@ readPDUHead(PRIVATE_ASSOCIATIONKEY ** association,
 /* readPDUBody
 **
 ** Purpose:
-**	Read the body of the incoming PDU.
+**      Read the body of the incoming PDU.
 **
 ** Parameter Dictionary:
-**	association	Handle to the Association
-**	block		For blocking/non-blocking read
-**	timeout		Timeout interval for reading
-**	buffer		Buffer to hold the PDU
-**	maxLength	MAximum number of bytes to read
-**	pduType		PDU Type of the incoming PDU (returned to caller)
-**	pduReserved	Reserved field in the PDU
-**	pduLength	Actual number of bytes read
+**      association     Handle to the Association
+**      block           For blocking/non-blocking read
+**      timeout         Timeout interval for reading
+**      buffer          Buffer to hold the PDU
+**      maxLength       MAximum number of bytes to read
+**      pduType         PDU Type of the incoming PDU (returned to caller)
+**      pduReserved     Reserved field in the PDU
+**      pduLength       Actual number of bytes read
 **
 ** Return Values:
 **
-**	DUL_CODINGERROR
-**	DUL_ILLEGALPDULENGTH
-**	DUL_NETWORKCLOSED
-**	DUL_NORMAL
-**	DUL_READTIMEOUT
-**	DUL_UNRECOGNIZEDPDUTYPE
-**	DUL_UNSUPPORTEDNETWORK
 **
 ** Notes:
 **
 ** Algorithm:
-**	Description of the algorithm (optional) and any other notes.
+**      Description of the algorithm (optional) and any other notes.
 */
 
-static CONDITION
+static OFCondition
 readPDUBody(PRIVATE_ASSOCIATIONKEY ** association,
-	    DUL_BLOCKOPTIONS block, int timeout,
-	    unsigned char *buffer, unsigned long maxLength,
-	    unsigned char *pduType, unsigned char *pduReserved,
-	    unsigned long *pduLength)
+            DUL_BLOCKOPTIONS block, int timeout,
+            unsigned char *buffer, unsigned long maxLength,
+            unsigned char *pduType, unsigned char *pduReserved,
+            unsigned long *pduLength)
 {
-    CONDITION
-    cond;
+    OFCondition cond = EC_Normal;
 
-    if (strcmp((*association)->networkType, DUL_NETWORK_TCP) == 0)
-	cond = readPDUBodyTCP(association, block, timeout, buffer, maxLength,
-			      pduType, pduReserved, pduLength);
-    else
-	return COND_PushCondition(DUL_UNSUPPORTEDNETWORK,
-	  DUL_Message(DUL_UNSUPPORTEDNETWORK), (*association)->networkType);
+    cond = readPDUBodyTCP(association, block, timeout, buffer, maxLength,
+                              pduType, pduReserved, pduLength);
 
     (*association)->inputPDU = NO_PDU;
     return cond;
@@ -3374,49 +3069,42 @@ readPDUBody(PRIVATE_ASSOCIATIONKEY ** association,
 /* readPDUHeadTCP
 **
 ** Purpose:
-**	Read the TCP header.
+**      Read the TCP header.
 **
 ** Parameter Dictionary:
-**	association	Handle to the Association
-**	buffer		Buffer containing the header
-**	maxLength	Maximum length of the header
-**	block		For blocking/non-blocking read
-**	timeout		Timeout interval for reading
-**	type		One of the many DUL PDU types
-**	reserved	For reserved field
-**	pduLength	Length of the header finally read in.
+**      association     Handle to the Association
+**      buffer          Buffer containing the header
+**      maxLength       Maximum length of the header
+**      block           For blocking/non-blocking read
+**      timeout         Timeout interval for reading
+**      type            One of the many DUL PDU types
+**      reserved        For reserved field
+**      pduLength       Length of the header finally read in.
 **
 ** Return Values:
 **
-**	DUL_CODINGERROR
-**	DUL_NETWORKCLOSED
-**	DUL_NORMAL
-**	DUL_READTIMEOUT
-**	DUL_UNRECOGNIZEDPDUTYPE
 **
 ** Notes:
 **
 ** Algorithm:
-**	Description of the algorithm (optional) and any other notes.
+**      Description of the algorithm (optional) and any other notes.
 */
 
 
-static CONDITION
+static OFCondition
 readPDUHeadTCP(PRIVATE_ASSOCIATIONKEY ** association,
-	       unsigned char *buffer, unsigned long maxLength,
-	       DUL_BLOCKOPTIONS block, int timeout,
+               unsigned char *buffer, unsigned long maxLength,
+               DUL_BLOCKOPTIONS block, int timeout,
      unsigned char *type, unsigned char *reserved, unsigned long *pduLength)
 {
-    CONDITION
-    cond;
     unsigned long
         length;
     static unsigned char
         legalPDUTypes[] = {
-	DUL_TYPEASSOCIATERQ, DUL_TYPEASSOCIATEAC,
-	DUL_TYPEASSOCIATERJ, DUL_TYPEDATA,
-	DUL_TYPERELEASERQ, DUL_TYPERELEASERP,
-	DUL_TYPEABORT
+        DUL_TYPEASSOCIATERQ, DUL_TYPEASSOCIATEAC,
+        DUL_TYPEASSOCIATERJ, DUL_TYPEDATA,
+        DUL_TYPERELEASERQ, DUL_TYPERELEASERP,
+        DUL_TYPEABORT
     };
     int
         found;
@@ -3424,21 +3112,21 @@ readPDUHeadTCP(PRIVATE_ASSOCIATIONKEY ** association,
         idx;
 
     if (maxLength < 6)
-	return COND_PushCondition(DUL_CODINGERROR,
-	DUL_Message(DUL_CODINGERROR), "buffer too small in readPDUTCPHead");
+    {
+        return makeDcmnetCondition(DULC_CODINGERROR, OF_error, "Coding Error in DUL routine: buffer too small in readPDUTCPHead");
+    }
 
     if (timeout == PRV_DEFAULTTIMEOUT)
-	timeout = (*association)->timeout;
-    cond = defragmentTCP((*association)->connection, block, (*association)->timerStart, timeout, buffer, 6, &length);
-    if (cond != DUL_NORMAL)
-	return cond;
+        timeout = (*association)->timeout;
+    OFCondition cond = defragmentTCP((*association)->connection, block, (*association)->timerStart, timeout, buffer, 6, &length);
+    if (cond.bad()) return cond;
 
 #ifdef DEBUG
     if (debug) {
-	DEBUG_DEVICE << "Read PDU HEAD TCP: ";
-	DEBUG_DEVICE.width(2); DEBUG_DEVICE.fill('0');
-	for (idx = 0; idx < 6; idx++)
-	{
+        DEBUG_DEVICE << "Read PDU HEAD TCP: ";
+        DEBUG_DEVICE.width(2); DEBUG_DEVICE.fill('0');
+        for (idx = 0; idx < 6; idx++)
+        {
             DEBUG_DEVICE << hex << " " <<  buffer[idx];
         }
         DEBUG_DEVICE << dec << endl;
@@ -3449,11 +3137,14 @@ readPDUHeadTCP(PRIVATE_ASSOCIATIONKEY ** association,
     *reserved = *buffer++;
 
     for (idx = found = 0; !found && idx < sizeof(legalPDUTypes); idx++) {
-	found = (*type == legalPDUTypes[idx]);
+        found = (*type == legalPDUTypes[idx]);
     }
     if (!found)
-	return COND_PushCondition(DUL_UNRECOGNIZEDPDUTYPE,
-			       DUL_Message(DUL_UNRECOGNIZEDPDUTYPE), *type);
+    {
+        char buf[256];
+        sprintf(buf, "Unrecognized PDU type: %2x", *type);
+        return makeDcmnetCondition(DULC_UNRECOGNIZEDPDUTYPE, OF_error, buf);
+    }
 
     EXTRACT_LONG_BIG(buffer, length);
     buffer += 4;
@@ -3461,85 +3152,75 @@ readPDUHeadTCP(PRIVATE_ASSOCIATIONKEY ** association,
 
 #ifdef DEBUG
     if (debug) {
-	    DEBUG_DEVICE << "Read PDU HEAD TCP: type: " << hex << (*type)
+            DEBUG_DEVICE << "Read PDU HEAD TCP: type: " << hex << (*type)
             << ", length: " << dec << (*pduLength)
             << " (" << hex << (unsigned int)*pduLength << ")" << dec << endl;
         }
 #endif
-    return DUL_NORMAL;
+    return EC_Normal;
 }
 
 
 /* readPDUBodyTCP
 **
 ** Purpose:
-**	Read the PDU from a TCP socket interface.
+**      Read the PDU from a TCP socket interface.
 **
 ** Parameter Dictionary:
-**	association	Handle to the Association
-**	block		For blocking/non-blocking read
-**	timeout		Timeout interval for reading
-**	buffer		Buffer to hold the PDU
-**	maxLength	MAximum number of bytes to read
-**	pduType		PDU Type of the incoming PDU (returned to caller)
-**	pduReserved	Reserved field in the PDU
-**	pduLength	Actual number of bytes read
+**      association     Handle to the Association
+**      block           For blocking/non-blocking read
+**      timeout         Timeout interval for reading
+**      buffer          Buffer to hold the PDU
+**      maxLength       MAximum number of bytes to read
+**      pduType         PDU Type of the incoming PDU (returned to caller)
+**      pduReserved     Reserved field in the PDU
+**      pduLength       Actual number of bytes read
 **
 **
 ** Return Values:
 **
-**	DUL_CODINGERROR
-**	DUL_ILLEGALPDULENGTH
-**	DUL_NETWORKCLOSED
-**	DUL_NORMAL
-**	DUL_READTIMEOUT
-**	DUL_UNRECOGNIZEDPDUTYPE
-**	DUL_UNSUPPORTEDNETWORK
 **
 ** Notes:
 **
 ** Algorithm:
-**	Description of the algorithm (optional) and any other notes.
+**      Description of the algorithm (optional) and any other notes.
 */
 
-static CONDITION
+static OFCondition
 readPDUBodyTCP(PRIVATE_ASSOCIATIONKEY ** association,
-	       DUL_BLOCKOPTIONS block, int timeout,
-	       unsigned char *buffer, unsigned long maxLength,
-	       unsigned char *pduType, unsigned char *pduReserved,
-	       unsigned long *pduLength)
+               DUL_BLOCKOPTIONS block, int timeout,
+               unsigned char *buffer, unsigned long maxLength,
+               unsigned char *pduType, unsigned char *pduReserved,
+               unsigned long *pduLength)
 {
-    CONDITION
-    cond;
+    OFCondition cond = EC_Normal;
     unsigned long
         length;
 
     if ((*association)->inputPDU == NO_PDU) {
-	cond = readPDUHead(association, (*association)->pduHead,
-			   sizeof((*association)->pduHead),
-			   block, timeout, &(*association)->nextPDUType,
-			   &(*association)->nextPDUReserved,
-			   &(*association)->nextPDULength);
-	if (cond != DUL_NORMAL)
-	    return cond;
+        cond = readPDUHead(association, (*association)->pduHead,
+                           sizeof((*association)->pduHead),
+                           block, timeout, &(*association)->nextPDUType,
+                           &(*association)->nextPDUReserved,
+                           &(*association)->nextPDULength);
+        if (cond.bad())
+            return cond;
     }
     *pduType = (*association)->nextPDUType;
     *pduReserved = (*association)->nextPDUReserved;
     *pduLength = (*association)->nextPDULength;
 
     if (timeout == PRV_DEFAULTTIMEOUT)
-	timeout = (*association)->timeout;
+        timeout = (*association)->timeout;
 
     /* bugfix by meichel 97/04/28: test if PDU fits into buffer */
     if (*pduLength > maxLength)
     {
-      cond = COND_PushCondition(DUL_ILLEGALPDULENGTH,
-			DUL_Message(DUL_ILLEGALPDULENGTH));
-
+      cond = DUL_ILLEGALPDULENGTH;
     } else {
       cond = defragmentTCP((*association)->connection,
-			 block, (*association)->timerStart, timeout,
-			 buffer, (*association)->nextPDULength, &length);
+                         block, (*association)->timerStart, timeout,
+                         buffer, (*association)->nextPDULength, &length);
     }
     return cond;
 }
@@ -3548,87 +3229,84 @@ readPDUBodyTCP(PRIVATE_ASSOCIATIONKEY ** association,
 /* defragmentTCP
 **
 ** Purpose:
-**	Actually read the desired number of bytes  of the PDU from the
-**	incoming socket stream.
+**      Actually read the desired number of bytes  of the PDU from the
+**      incoming socket stream.
 **
 ** Parameter Dictionary:
-**	sock		Socket descriptor
-**	block		Blocking/non-blocking option
-**	timerStart	Time at which the reading operation is started.
-**	timeout		Timeout interval for reading
-**	p		Buffer to hold the information
-**	l		Maximum number of bytes to read
-**	rtnLength	Actual number of bytes that were read (returned
-**			to the caller)
+**      sock            Socket descriptor
+**      block           Blocking/non-blocking option
+**      timerStart      Time at which the reading operation is started.
+**      timeout         Timeout interval for reading
+**      p               Buffer to hold the information
+**      l               Maximum number of bytes to read
+**      rtnLength       Actual number of bytes that were read (returned
+**                      to the caller)
 **
 **
 ** Return Values:
 **
-**	DUL_NETWORKCLOSED
-**	DUL_NORMAL
-**	DUL_READTIMEOUT
 **
 ** Notes:
 **
 ** Algorithm:
-**	Description of the algorithm (optional) and any other notes.
+**      Description of the algorithm (optional) and any other notes.
 */
 
 
-static CONDITION
+static OFCondition
 defragmentTCP(DcmTransportConnection *connection, DUL_BLOCKOPTIONS block, time_t timerStart,
-	      int timeout, void *p, unsigned long l, unsigned long *rtnLen)
+              int timeout, void *p, unsigned long l, unsigned long *rtnLen)
 {
     unsigned char *b;
     int bytesRead;
 
     b = (unsigned char *) p;
     if (rtnLen != NULL)
-	*rtnLen = 0;
+        *rtnLen = 0;
 
     if (connection == NULL) return DUL_NULLKEY;
 
     if (block == DUL_NOBLOCK) {
-	int timeToWait;
-	if (timerStart == 0)
-	    timeToWait = timeout;
-	else
-	    timeToWait = timeout - (int) (time(NULL) - timerStart);
-	if (!connection->networkDataAvailable(timeToWait)) return DUL_READTIMEOUT;
+        int timeToWait;
+        if (timerStart == 0)
+            timeToWait = timeout;
+        else
+            timeToWait = timeout - (int) (time(NULL) - timerStart);
+        if (!connection->networkDataAvailable(timeToWait)) return DUL_READTIMEOUT;
     }
     while (l > 0) {
         do {
-	  bytesRead = connection->read((char*)b, size_t(l));
+          bytesRead = connection->read((char*)b, size_t(l));
         } while (bytesRead == -1 && errno == EINTR);
-	if (bytesRead > 0) {
-	    b += bytesRead;
-	    l -= (unsigned long) bytesRead;
-	    if (rtnLen != NULL)
-		*rtnLen += (unsigned long) bytesRead;
-	} else {
-	    return DUL_NETWORKCLOSED;
-	}
+        if (bytesRead > 0) {
+            b += bytesRead;
+            l -= (unsigned long) bytesRead;
+            if (rtnLen != NULL)
+                *rtnLen += (unsigned long) bytesRead;
+        } else {
+            return DUL_NETWORKCLOSED;
+        }
     }
-    return DUL_NORMAL;
+    return EC_Normal;
 }
 
 /* dump_pdu
 **
 ** Purpose:
-** 	Debugging routine for dumping a pdu
+**      Debugging routine for dumping a pdu
 **
 ** Parameter Dictionary:
-**	type		PDU type
-**	buffer		Buffer holding the PDU
-**	length		Length of the PDU
+**      type            PDU type
+**      buffer          Buffer holding the PDU
+**      length          Length of the PDU
 **
 ** Return Values:
-**	None
+**      None
 **
 ** Notes:
 **
 ** Algorithm:
-**	Description of the algorithm (optional) and any other notes.
+**      Description of the algorithm (optional) and any other notes.
 */
 
 static void
@@ -3641,15 +3319,15 @@ dump_pdu(const char *type, void *buffer, unsigned long length)
 
     DEBUG_DEVICE << "PDU Type: " << type << " PDU Length: " << length << endl;
     if (length > 512) {
-	    DEBUG_DEVICE << "Only dumping 512 bytes" << endl;
-	    length = 512;
+            DEBUG_DEVICE << "Only dumping 512 bytes" << endl;
+            length = 512;
     }
     p = (unsigned char*)buffer;
 
     while (length-- > 0) {
         DEBUG_DEVICE.width(2); DEBUG_DEVICE.fill('0');
-	DEBUG_DEVICE << "  " << hex << ((unsigned int)(*p++)) << dec;
-	if ((++position) % 16 == 0) DEBUG_DEVICE << endl;
+        DEBUG_DEVICE << "  " << hex << ((unsigned int)(*p++)) << dec;
+        if ((++position) % 16 == 0) DEBUG_DEVICE << endl;
     }
     DEBUG_DEVICE << endl;
 }
@@ -3660,20 +3338,20 @@ dump_pdu(const char *type, void *buffer, unsigned long length)
 **
 ** Purpose:
 **      This routine checks for the existence of an environment
-**	variable (TCP_BUFFER_LENGTH).  If that variable is defined (and
-**	is a legal integer), this routine sets the socket SNDBUF and RCVBUF
-**	variables to the value defined in TCP_BUFFER_LENGTH.
+**      variable (TCP_BUFFER_LENGTH).  If that variable is defined (and
+**      is a legal integer), this routine sets the socket SNDBUF and RCVBUF
+**      variables to the value defined in TCP_BUFFER_LENGTH.
 **
 ** Parameter Dictionary:
-**	sock		Socket descriptor (identifier)
+**      sock            Socket descriptor (identifier)
 **
 ** Return Values:
-**	None
+**      None
 **
 ** Notes:
 **
 ** Algorithm:
-**	Description of the algorithm (optional) and any other notes.
+**      Description of the algorithm (optional) and any other notes.
 */
 static void
 setTCPBufferLength(int sock)
@@ -3692,17 +3370,20 @@ setTCPBufferLength(int sock)
 #else
     bufLen = 32768; // a socket buffer size of 32K gives best throughput for image transmission
     if ((TCPBufferLength = getenv("TCP_BUFFER_LENGTH")) != NULL) {
-	if (sscanf(TCPBufferLength, "%d", &bufLen) != 1) {
-	    CERR << "DULFSM: cannot parse environment variable TCP_BUFFER_LENGTH=" << TCPBufferLength << endl;
-	}
+        if (sscanf(TCPBufferLength, "%d", &bufLen) != 1)
+        {
+            ofConsole.lockCerr() << "DULFSM: cannot parse environment variable TCP_BUFFER_LENGTH=" << TCPBufferLength << endl;
+            ofConsole.unlockCerr();
+        }
     }
 #if defined(SO_SNDBUF) && defined(SO_RCVBUF)
     (void) setsockopt(sock, SOL_SOCKET, SO_SNDBUF, (char *) &bufLen, sizeof(bufLen));
     (void) setsockopt(sock, SOL_SOCKET, SO_RCVBUF, (char *) &bufLen, sizeof(bufLen));
 #else
-    CERR << "DULFSM: setTCPBufferLength: "
-	    "cannot set TCP buffer length socket option: "
+     ofConsole.lockCerr() << "DULFSM: setTCPBufferLength: "
+            "cannot set TCP buffer length socket option: "
             "code disabled because SO_SNDBUF and SO_RCVBUF constants are unknown" << endl;
+     ofConsole.unlockCerr();
 #endif // SO_SNDBUF and SO_RCVBUF
 #endif // HAVE_GUSI_H
 }
@@ -3710,129 +3391,118 @@ setTCPBufferLength(int sock)
 /* translatePresentationContextList
 **
 ** Purpose:
-**	Translate the internal list into a user context list and a
-**	SCU-SCP role list
+**      Translate the internal list into a user context list and a
+**      SCU-SCP role list
 **
 ** Parameter Dictionary:
-**	internalList		Input list from which the two output lists
-**				are derived
-**	SCUSCPRoleList		Role list (returned to the caller)
-**	userContextList		User context list (returend to the caller)
+**      internalList            Input list from which the two output lists
+**                              are derived
+**      SCUSCPRoleList          Role list (returned to the caller)
+**      userContextList         User context list (returend to the caller)
 **
 ** Return Values:
-**	DUL_NORMAL
-**	0
 **
 ** Notes:
 **
 ** Algorithm:
-**	Description of the algorithm (optional) and any other notes.
+**      Description of the algorithm (optional) and any other notes.
 */
-CONDITION
+OFCondition
 translatePresentationContextList(LST_HEAD ** internalList,
-				 LST_HEAD ** SCUSCPRoleList,
-				 LST_HEAD ** userContextList)
+                                 LST_HEAD ** SCUSCPRoleList,
+                                 LST_HEAD ** userContextList)
 {
     PRV_PRESENTATIONCONTEXTITEM
-	* context;
+        * context;
     DUL_PRESENTATIONCONTEXT
-	* userContext;
+        * userContext;
     DUL_SUBITEM
-	* subItem;
+        * subItem;
     DUL_TRANSFERSYNTAX
-	* transfer;
+        * transfer;
     PRV_SCUSCPROLE
-	* scuscpRole;
+        * scuscpRole;
+    OFCondition cond = EC_Normal;
 
     context = (PRV_PRESENTATIONCONTEXTITEM*)LST_Head(internalList);
     (void) LST_Position(internalList, (LST_NODE*)context);
     while (context != NULL) {
-	userContext = (DUL_PRESENTATIONCONTEXT*)malloc(sizeof(DUL_PRESENTATIONCONTEXT));
-	if (userContext == NULL)
-	    return COND_PushCondition(DUL_MALLOCERROR,
-	    DUL_Message(DUL_MALLOCERROR), "translatePresentationContextList",
-				      sizeof(*userContext));
-	if ((userContext->proposedTransferSyntax = LST_Create()) == NULL)
-	    return COND_PushCondition(DUL_LISTCREATEFAILED,
-				      DUL_Message(DUL_LISTCREATEFAILED),
-				      "translatePresentationContextList");
+        userContext = (DUL_PRESENTATIONCONTEXT*)malloc(sizeof(DUL_PRESENTATIONCONTEXT));
+        if (userContext == NULL)  return EC_MemoryExhausted;
+        if ((userContext->proposedTransferSyntax = LST_Create()) == NULL) return EC_MemoryExhausted;
 
-	userContext->acceptedTransferSyntax[0] = '\0';
-	userContext->presentationContextID = context->contextID;
-	strcpy(userContext->abstractSyntax, context->abstractSyntax.data);
-	userContext->proposedSCRole = DUL_SC_ROLE_DEFAULT;
-	userContext->acceptedSCRole = DUL_SC_ROLE_DEFAULT;
+        userContext->acceptedTransferSyntax[0] = '\0';
+        userContext->presentationContextID = context->contextID;
+        strcpy(userContext->abstractSyntax, context->abstractSyntax.data);
+        userContext->proposedSCRole = DUL_SC_ROLE_DEFAULT;
+        userContext->acceptedSCRole = DUL_SC_ROLE_DEFAULT;
 
-	scuscpRole = findSCUSCPRole(SCUSCPRoleList,
-				    userContext->abstractSyntax);
-	if (scuscpRole != NULL) {
-	    if (scuscpRole->SCURole == scuscpRole->SCPRole)
-		userContext->proposedSCRole = DUL_SC_ROLE_SCUSCP;
-	    else if (scuscpRole->SCURole == 1)
-		userContext->proposedSCRole = DUL_SC_ROLE_SCU;
-	    else
-		userContext->proposedSCRole = DUL_SC_ROLE_SCP;
-	}
-	subItem = (DUL_SUBITEM*)LST_Head(&context->transferSyntaxList);
-	if (subItem == NULL)
-	    return COND_PushCondition(DUL_PEERILLEGALXFERSYNTAXCOUNT,
-			    DUL_Message(DUL_PEERILLEGALXFERSYNTAXCOUNT), 0);
-	(void) LST_Position(&context->transferSyntaxList, (LST_NODE*)subItem);
-	while (subItem != NULL) {
-	    transfer = (DUL_TRANSFERSYNTAX*)malloc(sizeof(DUL_TRANSFERSYNTAX));
-	    if (transfer == NULL)
-		return COND_PushCondition(DUL_MALLOCERROR,
-					  DUL_Message(DUL_MALLOCERROR), "translatePresentationContextList",
-					  sizeof(*transfer));
-	    strcpy(transfer->transferSyntax, subItem->data);
-	    if (LST_Enqueue(&userContext->proposedTransferSyntax, (LST_NODE*)transfer) !=
-		LST_NORMAL)
-		return COND_PushCondition(DUL_LISTERROR,
-					  DUL_Message(DUL_LISTERROR),
-					"translatePresentationContextList");
+        scuscpRole = findSCUSCPRole(SCUSCPRoleList,
+                                    userContext->abstractSyntax);
+        if (scuscpRole != NULL) {
+            if (scuscpRole->SCURole == scuscpRole->SCPRole)
+                userContext->proposedSCRole = DUL_SC_ROLE_SCUSCP;
+            else if (scuscpRole->SCURole == 1)
+                userContext->proposedSCRole = DUL_SC_ROLE_SCU;
+            else
+                userContext->proposedSCRole = DUL_SC_ROLE_SCP;
+        }
+        subItem = (DUL_SUBITEM*)LST_Head(&context->transferSyntaxList);
+        if (subItem == NULL)
+        {
+              char buf1[256];
+              sprintf(buf1, "DUL Peer supplied illegal number of transfer syntaxes (%d)", 0);
+              return makeDcmnetCondition(DULC_PEERILLEGALXFERSYNTAXCOUNT, OF_error, buf1);
+        }
+        (void) LST_Position(&context->transferSyntaxList, (LST_NODE*)subItem);
+        while (subItem != NULL) {
+            transfer = (DUL_TRANSFERSYNTAX*)malloc(sizeof(DUL_TRANSFERSYNTAX));
+            if (transfer == NULL) return EC_MemoryExhausted;
+            strcpy(transfer->transferSyntax, subItem->data);
 
-	    subItem = (DUL_SUBITEM*)LST_Next(&context->transferSyntaxList);
-	}
-	if (LST_Enqueue(userContextList, (LST_NODE*)userContext) != LST_NORMAL)
-	    return COND_PushCondition(DUL_LISTERROR,
-	    DUL_Message(DUL_LISTERROR), "translatePresentationContextList");
-	context = (PRV_PRESENTATIONCONTEXTITEM*)LST_Next(internalList);
+            cond = LST_Enqueue(&userContext->proposedTransferSyntax, (LST_NODE*)transfer);
+            if (cond.bad()) return cond;
+            subItem = (DUL_SUBITEM*)LST_Next(&context->transferSyntaxList);
+        }
+        cond = LST_Enqueue(userContextList, (LST_NODE*)userContext);
+        if (cond.bad()) return cond;
+        context = (PRV_PRESENTATIONCONTEXTITEM*)LST_Next(internalList);
     }
-    return DUL_NORMAL;
+    return EC_Normal;
 }
 
 /* findPresentationCtx
 **
 ** Purpose:
-**	Find the requested presentation context using the contextID as the
-**	key
+**      Find the requested presentation context using the contextID as the
+**      key
 **
 ** Parameter Dictionary:
-**	list		List to be searched
-**	contextID	The search key
+**      list            List to be searched
+**      contextID       The search key
 **
 ** Return Values:
-**	A presentation context list (if found) else NULL.
+**      A presentation context list (if found) else NULL.
 **
 ** Algorithm:
-**	Description of the algorithm (optional) and any other notes.
+**      Description of the algorithm (optional) and any other notes.
 */
 DUL_PRESENTATIONCONTEXT *
 findPresentationCtx(
-		    LST_HEAD ** list, DUL_PRESENTATIONCONTEXTID contextID)
+                    LST_HEAD ** list, DUL_PRESENTATIONCONTEXTID contextID)
 {
     DUL_PRESENTATIONCONTEXT
     * ctx;
 
     if ((ctx = (DUL_PRESENTATIONCONTEXT*)LST_Head(list)) == NULL)
-	return NULL;
+        return NULL;
 
     (void) LST_Position(list, (LST_NODE*)ctx);
     while (ctx != NULL) {
-	if (ctx->presentationContextID == contextID)
-	    return ctx;
+        if (ctx->presentationContextID == contextID)
+            return ctx;
 
-	ctx = (DUL_PRESENTATIONCONTEXT*)LST_Next(list);
+        ctx = (DUL_PRESENTATIONCONTEXT*)LST_Next(list);
     }
     return NULL;
 }
@@ -3841,37 +3511,37 @@ findPresentationCtx(
 /* findSCUSCPRole
 **
 ** Purpose:
-**	Search for a SCUSCP role list, given the abstarct syntax as the
-**	key.
+**      Search for a SCUSCP role list, given the abstarct syntax as the
+**      key.
 **
 ** Parameter Dictionary:
-**	list		List to be searched
-**	abstractSyntax	The search key
+**      list            List to be searched
+**      abstractSyntax  The search key
 **
 ** Return Values:
-**	The role list, if found, else NULL
+**      The role list, if found, else NULL
 **
 ** Notes:
 **
 ** Algorithm:
-**	Description of the algorithm (optional) and any other notes.
+**      Description of the algorithm (optional) and any other notes.
 */
 PRV_SCUSCPROLE
 *
 findSCUSCPRole(LST_HEAD ** list, char *abstractSyntax)
 {
     PRV_SCUSCPROLE
-	* role;
+        * role;
 
     role = (PRV_SCUSCPROLE*)LST_Head(list);
     if (role != NULL)
-	(void) LST_Position(list, (LST_NODE*)role);
+        (void) LST_Position(list, (LST_NODE*)role);
 
     while (role != NULL) {
-	if (strcmp(role->SOPClassUID, abstractSyntax) == 0)
-	    return role;
+        if (strcmp(role->SOPClassUID, abstractSyntax) == 0)
+            return role;
 
-	role = (PRV_SCUSCPROLE*)LST_Next(list);
+        role = (PRV_SCUSCPROLE*)LST_Next(list);
     }
     return NULL;
 }
@@ -3882,21 +3552,21 @@ destroyPresentationContextList(LST_HEAD ** l)
     PRV_PRESENTATIONCONTEXTITEM
     * prvCtx;
     DUL_SUBITEM
-	* subItem;
+        * subItem;
 
     if (*l == NULL)
-	return;
+        return;
 
     prvCtx = (PRV_PRESENTATIONCONTEXTITEM*)LST_Dequeue(l);
     while (prvCtx != NULL) {
-	subItem = (DUL_SUBITEM*)LST_Dequeue(&prvCtx->transferSyntaxList);
-	while (subItem != NULL) {
-	    free(subItem);
-	    subItem = (DUL_SUBITEM*)LST_Dequeue(&prvCtx->transferSyntaxList);
-	}
-	LST_Destroy(&prvCtx->transferSyntaxList);
-	free(prvCtx);
-	prvCtx = (PRV_PRESENTATIONCONTEXTITEM*)LST_Dequeue(l);
+        subItem = (DUL_SUBITEM*)LST_Dequeue(&prvCtx->transferSyntaxList);
+        while (subItem != NULL) {
+            free(subItem);
+            subItem = (DUL_SUBITEM*)LST_Dequeue(&prvCtx->transferSyntaxList);
+        }
+        LST_Destroy(&prvCtx->transferSyntaxList);
+        free(prvCtx);
+        prvCtx = (PRV_PRESENTATIONCONTEXTITEM*)LST_Dequeue(l);
     }
     (void) LST_Destroy(l);
 }
@@ -3909,8 +3579,8 @@ destroyUserInformationLists(DUL_USERINFO * userInfo)
 
     role = (PRV_SCUSCPROLE*)LST_Dequeue(&userInfo->SCUSCPRoleList);
     while (role != NULL) {
-	free(role);
-	role = (PRV_SCUSCPROLE*)LST_Dequeue(&userInfo->SCUSCPRoleList);
+        free(role);
+        role = (PRV_SCUSCPROLE*)LST_Dequeue(&userInfo->SCUSCPRoleList);
     }
     (void) LST_Destroy(&userInfo->SCUSCPRoleList);
 
@@ -3922,7 +3592,12 @@ destroyUserInformationLists(DUL_USERINFO * userInfo)
 /*
 ** CVS Log
 ** $Log: dulfsm.cc,v $
-** Revision 1.39  2001-09-28 13:28:55  joergr
+** Revision 1.40  2001-10-12 10:18:38  meichel
+** Replaced the CONDITION types, constants and functions in the dcmnet module
+**   by an OFCondition based implementation which eliminates the global condition
+**   stack.  This is a major change, caveat emptor!
+**
+** Revision 1.39  2001/09/28 13:28:55  joergr
 ** Added "#include <iomanip.h>" to keep gcc 3.0 quiet.
 **
 ** Revision 1.38  2001/09/26 12:29:03  meichel

@@ -51,9 +51,9 @@
 **  the public definitions and prototypes on purpose so that they
 **  exist in only one location.
 **
-** Last Update:		$Author: meichel $, $Date: 2001-09-26 12:29:04 $
+** Last Update:		$Author: meichel $, $Date: 2001-10-12 10:18:41 $
 ** Source File:		$RCSfile: dulpriv.h,v $
-** Revision:		$Revision: 1.5 $
+** Revision:		$Revision: 1.6 $
 ** Status:		$State: Exp $
 */
 
@@ -68,40 +68,40 @@
 
 #define DEBUG_DEVICE	COUT
 
-CONDITION DUL_InitializeFSM(void);
-CONDITION
+OFCondition DUL_InitializeFSM(void);
+OFCondition
 PRV_StateMachine(PRIVATE_NETWORKKEY ** network,
 		 PRIVATE_ASSOCIATIONKEY ** association, int event, int state,
 		 void *params);
 
-CONDITION
+OFCondition
 constructAssociatePDU(DUL_ASSOCIATESERVICEPARAMETERS * items,
 		      unsigned char type, PRV_ASSOCIATEPDU * pdu);
-CONDITION
+OFCondition
 constructAssociateRejectPDU(unsigned char result,
 			    unsigned char source, unsigned char reason,
 			    DUL_REJECTRELEASEABORTPDU * pdu);
-CONDITION constructReleaseRQPDU(DUL_REJECTRELEASEABORTPDU * pdu);
-CONDITION constructReleaseRPPDU(DUL_REJECTRELEASEABORTPDU * pdu);
-CONDITION
+OFCondition constructReleaseRQPDU(DUL_REJECTRELEASEABORTPDU * pdu);
+OFCondition constructReleaseRPPDU(DUL_REJECTRELEASEABORTPDU * pdu);
+OFCondition
 constructAbortPDU(unsigned char src, unsigned char reason,
 		  DUL_REJECTRELEASEABORTPDU * pdu);
-CONDITION
+OFCondition
 constructDataPDU(void *buf, unsigned long length, DUL_DATAPDV type,
        DUL_PRESENTATIONCONTEXTID ctxID, OFBool last, DUL_DATAPDU * pdu);
-CONDITION
+OFCondition
 streamAssociatePDU(PRV_ASSOCIATEPDU * assoc, unsigned char *b,
 		   unsigned long maxLength, unsigned long *rtnLen);
-CONDITION
+OFCondition
 streamRejectReleaseAbortPDU(DUL_REJECTRELEASEABORTPDU * pdu,
 	  unsigned char *b, unsigned long maxLength, unsigned long *rtnLen);
-CONDITION
+OFCondition
 streamDataPDUHead(DUL_DATAPDU * pdu, unsigned char *buf,
 		  unsigned long maxLength, unsigned long *rtnLen);
-CONDITION
+OFCondition
 parseAssociate(unsigned char *buf, unsigned long len,
 	       PRV_ASSOCIATEPDU * pdu);
-CONDITION
+OFCondition
 PRV_NextPDUType(PRIVATE_ASSOCIATIONKEY ** association,
 		DUL_BLOCKOPTIONS block, int timeout, unsigned char *type);
 
@@ -114,7 +114,12 @@ void parseDebug(OFBool flag);
 /*
 ** CVS Log
 ** $Log: dulpriv.h,v $
-** Revision 1.5  2001-09-26 12:29:04  meichel
+** Revision 1.6  2001-10-12 10:18:41  meichel
+** Replaced the CONDITION types, constants and functions in the dcmnet module
+**   by an OFCondition based implementation which eliminates the global condition
+**   stack.  This is a major change, caveat emptor!
+**
+** Revision 1.5  2001/09/26 12:29:04  meichel
 ** Implemented changes in dcmnet required by the adaptation of dcmdata
 **   to class OFCondition.  Removed some unused code.
 **

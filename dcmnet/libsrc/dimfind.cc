@@ -46,21 +46,21 @@
 */
 /*
 **
-** Author: Andrew Hewett		Created: 03-06-93
+** Author: Andrew Hewett                Created: 03-06-93
 ** 
 ** Module: dimfind
 **
 ** Purpose: 
-**	This file contains the routines which help with
-**	query services using the C-FIND operation.
+**      This file contains the routines which help with
+**      query services using the C-FIND operation.
 **
-**	Module Prefix: DIMSE_
+**      Module Prefix: DIMSE_
 **
-** Last Update:		$Author: meichel $
-** Update Date:		$Date: 2000-02-23 15:12:34 $
-** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/libsrc/dimfind.cc,v $
-** CVS/RCS Revision:	$Revision: 1.8 $
-** Status:		$State: Exp $
+** Last Update:         $Author: meichel $
+** Update Date:         $Date: 2001-10-12 10:18:34 $
+** Source File:         $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/libsrc/dimfind.cc,v $
+** CVS/RCS Revision:    $Revision: 1.9 $
+** Status:              $State: Exp $
 **
 ** CVS/RCS Log at end of file
 */
@@ -92,8 +92,8 @@ END_EXTERN_C
 #endif
 
 #include "diutil.h"
-#include "dimse.h"		/* always include the module header */
-#include "dimcond.h"
+#include "dimse.h"              /* always include the module header */
+#include "cond.h"
 
 
 /*
@@ -101,29 +101,25 @@ END_EXTERN_C
 */
  
 
-CONDITION
+OFCondition
 DIMSE_findUser(
-	/* in */
-	T_ASC_Association *assoc, 
+        /* in */
+        T_ASC_Association *assoc, 
         T_ASC_PresentationContextID presID,
-	T_DIMSE_C_FindRQ *request, DcmDataset *requestIdentifiers,
-	DIMSE_FindUserCallback callback, void *callbackData,
-	/* blocking info for response */
-	T_DIMSE_BlockingMode blockMode, int timeout,
-	/* out */
-	T_DIMSE_C_FindRSP *response, DcmDataset **statusDetail)
+        T_DIMSE_C_FindRQ *request, DcmDataset *requestIdentifiers,
+        DIMSE_FindUserCallback callback, void *callbackData,
+        /* blocking info for response */
+        T_DIMSE_BlockingMode blockMode, int timeout,
+        /* out */
+        T_DIMSE_C_FindRSP *response, DcmDataset **statusDetail)
 {
-    CONDITION cond;
     T_DIMSE_Message req, rsp;
     DIC_US msgId;
     int responseCount = 0;
     DcmDataset *rspIds = NULL;
     DIC_US status = STATUS_Pending;
 
-    if (requestIdentifiers == NULL) {
-        return COND_PushCondition(DIMSE_NULLKEY,
-	    "DIMSE_findUser: No Request Identifiers Supplied");
-    }
+    if (requestIdentifiers == NULL) return DIMSE_NULLKEY;
 
     bzero((char*)&req, sizeof(req));
     bzero((char*)&rsp, sizeof(rsp));
@@ -134,104 +130,102 @@ DIMSE_findUser(
 
     msgId = request->MessageID;
 
-    cond = DIMSE_sendMessageUsingMemoryData(assoc, presID, &req,
-					  NULL, requestIdentifiers, 
-					  NULL, NULL);
-    if (cond != DIMSE_NORMAL) {
-	return cond;
-    }
+    OFCondition cond = DIMSE_sendMessageUsingMemoryData(assoc, presID, &req,
+                                          NULL, requestIdentifiers, 
+                                          NULL, NULL);
+    if (cond.bad()) return cond;
 
     /* receive responses */
 
-    while (cond == DIMSE_NORMAL && DICOM_PENDING_STATUS(status)) {
+    while (cond == EC_Normal && DICOM_PENDING_STATUS(status))
+    {
 
-	/* initialise the response to collect */
+        /* initialise the response to collect */
         bzero((char*)&rsp, sizeof(rsp));
-	if (rspIds != NULL) {
-	    delete rspIds;
-	    rspIds = NULL;
-	}
+        if (rspIds != NULL) {
+            delete rspIds;
+            rspIds = NULL;
+        }
 
-	cond = DIMSE_receiveCommand(assoc, blockMode, timeout, &presID, 
-		&rsp, statusDetail);
-	if (cond != DIMSE_NORMAL) {
-	    return cond;
-	}
-        if (rsp.CommandField != DIMSE_C_FIND_RSP) {
-	    return COND_PushCondition(DIMSE_UNEXPECTEDRESPONSE, 
-		"DIMSE: Unexpected Response Command Field: 0x%x",
-		(unsigned)rsp.CommandField);
+        cond = DIMSE_receiveCommand(assoc, blockMode, timeout, &presID, 
+                &rsp, statusDetail);
+        if (cond.bad()) return cond; 
+        if (rsp.CommandField != DIMSE_C_FIND_RSP)
+        {
+          char buf1[256];
+          sprintf(buf1, "DIMSE: Unexpected Response Command Field: 0x%x", (unsigned)rsp.CommandField);
+          return makeDcmnetCondition(DIMSEC_UNEXPECTEDRESPONSE, OF_error, buf1);
         }
     
-        *response = rsp.msg.CFindRSP;
-	
-        if (response->MessageIDBeingRespondedTo != msgId) {
-	    return COND_PushCondition(DIMSE_UNEXPECTEDRESPONSE, 
-		"DIMSE: Unexpected Response MsgId: %d (expected: %d)",
-		response->MessageIDBeingRespondedTo, msgId);
+        *response = rsp.msg.CFindRSP;        
+        if (response->MessageIDBeingRespondedTo != msgId)
+        {
+          char buf2[256];
+          sprintf(buf2, "DIMSE: Unexpected Response MsgId: %d (expected: %d)", response->MessageIDBeingRespondedTo, msgId);
+          return makeDcmnetCondition(DIMSEC_UNEXPECTEDRESPONSE, OF_error, buf2);
         }
 
         status = response->DimseStatus;
-	responseCount++;
+        responseCount++;
 
-	switch (status) {
-	case STATUS_Pending:
-	case STATUS_FIND_Pending_WarningUnsupportedOptionalKeys:
-	    if (*statusDetail != NULL) {
-	        DIMSE_warning(assoc, 
-		    "findUser: Pending with statusDetail, ignoring detail");
+        switch (status) {
+        case STATUS_Pending:
+        case STATUS_FIND_Pending_WarningUnsupportedOptionalKeys:
+            if (*statusDetail != NULL) {
+                DIMSE_warning(assoc, 
+                    "findUser: Pending with statusDetail, ignoring detail");
                 delete *statusDetail;
                 *statusDetail = NULL;
-	    }
-	    if (response->DataSetType == DIMSE_DATASET_NULL) {
-		DIMSE_warning(assoc, 
-		    "findUser: Status Pending, but DataSetType==NULL");
-		DIMSE_warning(assoc, 
-		    "  Assuming response identifiers are present");
-	    }
+            }
+            if (response->DataSetType == DIMSE_DATASET_NULL) {
+                DIMSE_warning(assoc, 
+                    "findUser: Status Pending, but DataSetType==NULL");
+                DIMSE_warning(assoc, 
+                    "  Assuming response identifiers are present");
+            }
             cond = DIMSE_receiveDataSetInMemory(assoc, blockMode, timeout,
-	    	&presID, &rspIds, NULL, NULL);
-    	    if (cond != DIMSE_NORMAL) {
-		return cond;
-	    }
+                &presID, &rspIds, NULL, NULL);
+            if (cond != EC_Normal) {
+                return cond;
+            }
 
-	    /* execute callback */
-	    if (callback) {
-	        callback(callbackData, request, responseCount, 
-		    response, rspIds);
-	    }
-	    break;
-	case STATUS_Success:
-	    if (response->DataSetType != DIMSE_DATASET_NULL) {
-	        DIMSE_warning(assoc, 
-		    "findUser: Status Success, but DataSetType!=NULL");
-		DIMSE_warning(assoc, 
-		    "  Assuming no response identifiers are present");
-	    }
-	    break;
-	default:
-	    if (response->DataSetType != DIMSE_DATASET_NULL) {
-		DIMSE_warning(assoc, 
-		    "findUser: Status %s, but DataSetType!=NULL",
-		    DU_cfindStatusString(status));
-		DIMSE_warning(assoc, 
-		    "  Assuming no response identifiers are present");
-	    }
-	    break;
-	}
+            /* execute callback */
+            if (callback) {
+                callback(callbackData, request, responseCount, 
+                    response, rspIds);
+            }
+            break;
+        case STATUS_Success:
+            if (response->DataSetType != DIMSE_DATASET_NULL) {
+                DIMSE_warning(assoc, 
+                    "findUser: Status Success, but DataSetType!=NULL");
+                DIMSE_warning(assoc, 
+                    "  Assuming no response identifiers are present");
+            }
+            break;
+        default:
+            if (response->DataSetType != DIMSE_DATASET_NULL) {
+                DIMSE_warning(assoc, 
+                    "findUser: Status %s, but DataSetType!=NULL",
+                    DU_cfindStatusString(status));
+                DIMSE_warning(assoc, 
+                    "  Assuming no response identifiers are present");
+            }
+            break;
+        }
     }
     return cond;
 }
 
-CONDITION
+OFCondition
 DIMSE_sendFindResponse(T_ASC_Association * assoc, 
-	T_ASC_PresentationContextID presID,
-	T_DIMSE_C_FindRQ *request, 
-	T_DIMSE_C_FindRSP *response, DcmDataset *rspIds,
-	DcmDataset *statusDetail)
+        T_ASC_PresentationContextID presID,
+        T_DIMSE_C_FindRQ *request, 
+        T_DIMSE_C_FindRSP *response, DcmDataset *rspIds,
+        DcmDataset *statusDetail)
 {
-    CONDITION 	cond = DIMSE_NORMAL;
-    DIC_US	dtype;
+    OFCondition         cond = EC_Normal;
+    DIC_US      dtype;
     T_DIMSE_Message rsp;
 
     bzero((char*)&rsp, sizeof(rsp));
@@ -239,117 +233,124 @@ DIMSE_sendFindResponse(T_ASC_Association * assoc,
     rsp.msg.CFindRSP = *response;
     rsp.msg.CFindRSP.MessageIDBeingRespondedTo = request->MessageID;
     strcpy(rsp.msg.CFindRSP.AffectedSOPClassUID,
-	    request->AffectedSOPClassUID);
+            request->AffectedSOPClassUID);
     rsp.msg.CFindRSP.opts = O_FIND_AFFECTEDSOPCLASSUID;
 
     if (rspIds != NULL) {
-	dtype = DIMSE_DATASET_PRESENT;
+        dtype = DIMSE_DATASET_PRESENT;
     } else {
-	dtype = DIMSE_DATASET_NULL;
+        dtype = DIMSE_DATASET_NULL;
     }
     rsp.msg.CFindRSP.DataSetType = (T_DIMSE_DataSetType)dtype;
 
     cond = DIMSE_sendMessageUsingMemoryData(assoc, presID, &rsp, 
-	statusDetail, rspIds, NULL, NULL);
+        statusDetail, rspIds, NULL, NULL);
 
     return cond;
 }
 
 
-CONDITION
+OFCondition
 DIMSE_findProvider(
-	/* in */ 
-	T_ASC_Association *assoc, 
-	T_ASC_PresentationContextID presIdCmd,
-	T_DIMSE_C_FindRQ *request,
-	DIMSE_FindProviderCallback callback, void *callbackData,
-	/* blocking info for data set */
-	T_DIMSE_BlockingMode blockMode, int timeout)
-{	
-    CONDITION cond = DIMSE_NORMAL;
+        /* in */ 
+        T_ASC_Association *assoc, 
+        T_ASC_PresentationContextID presIdCmd,
+        T_DIMSE_C_FindRQ *request,
+        DIMSE_FindProviderCallback callback, void *callbackData,
+        /* blocking info for data set */
+        T_DIMSE_BlockingMode blockMode, int timeout)
+{       
     T_ASC_PresentationContextID presIdData;
     T_DIMSE_C_FindRSP rsp;
     DcmDataset *statusDetail = NULL;
     DcmDataset *reqIds = NULL;
     DcmDataset *rspIds = NULL;
     OFBool cancelled = OFFalse;
+    OFBool normal = OFTrue;
     int responseCount = 0;
 
-    cond = DIMSE_receiveDataSetInMemory(assoc, blockMode, timeout,
-		&presIdData, &reqIds, NULL, NULL);
+    OFCondition cond = DIMSE_receiveDataSetInMemory(assoc, blockMode, timeout, &presIdData, &reqIds, NULL, NULL);
 
-    if (cond != DIMSE_NORMAL) {
-	goto providerCleanup;
-    }
-
-    if (presIdData != presIdCmd) {
-	cond = COND_PushCondition(DIMSE_INVALIDPRESENTATIONCONTEXTID, 
-		"DIMSE: Presentation Contexts of Command and Data Differ");
-	goto providerCleanup;
-    }
-
-    bzero((char*)&rsp, sizeof(rsp));
-    rsp.DimseStatus = STATUS_Pending;
-    
-    while (cond == DIMSE_NORMAL && DICOM_PENDING_STATUS(rsp.DimseStatus)) {
-	responseCount++;
-
-	cond = DIMSE_checkForCancelRQ(assoc, presIdCmd, request->MessageID);
-	if (cond == DIMSE_NORMAL) {
-	    /* cancel received */
-	    rsp.DimseStatus = 
-	        STATUS_FIND_Cancel_MatchingTerminatedDueToCancelRequest;
-	    cancelled = OFTrue;	    
-	} else if (cond == DIMSE_NODATAAVAILABLE) {
-	    /* get rid of timeout on condition stack */
-	    COND_PopCondition(OFFalse);	
-	} else {
-	    /* some execption condition occured */
-	    goto providerCleanup;
-	}
-
-        if (callback) {
-	    callback(callbackData, cancelled, request, reqIds, 
-	        responseCount, &rsp, &rspIds, &statusDetail);
-	} else {
-	    return COND_PushCondition(DIMSE_NULLKEY,
-	        "DIMSE_findProvider: no callback function"); 
+    if (cond.good())
+    {    
+        if (presIdData != presIdCmd)
+        {
+          cond = makeDcmnetCondition(DIMSEC_INVALIDPRESENTATIONCONTEXTID, OF_error, "DIMSE: Presentation Contexts of Command and Data Differ");
         }
-	
-	if (cancelled) {
-	    /* make sure */
-	    rsp.DimseStatus = 
-	        STATUS_FIND_Cancel_MatchingTerminatedDueToCancelRequest;
-	    if (rspIds != NULL) {
-	        delete reqIds;
-	        reqIds = NULL;
-	    }
-	}
-	
-	cond = DIMSE_sendFindResponse(assoc, presIdCmd, request,
-	    &rsp, rspIds, statusDetail);
-	    
-	if (rspIds != NULL) {
-	    delete rspIds;
-	    rspIds = NULL;
-	}
-	if (statusDetail != NULL) {
-	    delete statusDetail;
-	    statusDetail = NULL;
-	}
+        else
+        {
+            bzero((char*)&rsp, sizeof(rsp));
+            rsp.DimseStatus = STATUS_Pending;
+            
+            while (cond.good() && DICOM_PENDING_STATUS(rsp.DimseStatus) && normal)
+            {
+                responseCount++;
+            
+                cond = DIMSE_checkForCancelRQ(assoc, presIdCmd, request->MessageID);
+                if (cond.good())
+                {
+                    /* cancel received */
+                    rsp.DimseStatus = STATUS_FIND_Cancel_MatchingTerminatedDueToCancelRequest;
+                    cancelled = OFTrue;     
+                } else if (cond == DIMSE_NODATAAVAILABLE)
+                {
+                    /* timeout */
+                } 
+                else
+                {
+                    /* some execption condition occured, bail out */
+                    normal = OFFalse;
+                }
+
+                if (normal)            
+                {
+                    if (callback) {
+                        callback(callbackData, cancelled, request, reqIds, 
+                            responseCount, &rsp, &rspIds, &statusDetail);
+                    } else {
+                        return makeDcmnetCondition(DIMSEC_NULLKEY, OF_error, "DIMSE_findProvider: no callback function");
+                    }
+                    
+                    if (cancelled) {
+                        /* make sure */
+                        rsp.DimseStatus = 
+                            STATUS_FIND_Cancel_MatchingTerminatedDueToCancelRequest;
+                        if (rspIds != NULL) {
+                            delete reqIds;
+                            reqIds = NULL;
+                        }
+                    }
+                    
+                    cond = DIMSE_sendFindResponse(assoc, presIdCmd, request,
+                        &rsp, rspIds, statusDetail);
+                        
+                    if (rspIds != NULL) {
+                        delete rspIds;
+                        rspIds = NULL;
+                    }
+                    if (statusDetail != NULL) {
+                        delete statusDetail;
+                        statusDetail = NULL;
+                    }
+                }
+            }
+        }
     }
 
-providerCleanup:
-    if (reqIds != NULL) delete reqIds;
-    if (rspIds != NULL) delete rspIds;
-       
+    delete reqIds;
+    delete rspIds;
     return cond;
 }
 
 /*
 ** CVS Log
 ** $Log: dimfind.cc,v $
-** Revision 1.8  2000-02-23 15:12:34  meichel
+** Revision 1.9  2001-10-12 10:18:34  meichel
+** Replaced the CONDITION types, constants and functions in the dcmnet module
+**   by an OFCondition based implementation which eliminates the global condition
+**   stack.  This is a major change, caveat emptor!
+**
+** Revision 1.8  2000/02/23 15:12:34  meichel
 ** Corrected macro for Borland C++ Builder 4 workaround.
 **
 ** Revision 1.7  2000/02/01 10:24:09  meichel

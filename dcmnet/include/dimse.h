@@ -57,9 +57,9 @@
 **	Module Prefix: DIMSE_
 **
 ** Last Update:		$Author: meichel $
-** Update Date:		$Date: 2000-12-15 13:28:16 $
+** Update Date:		$Date: 2001-10-12 10:18:26 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/include/Attic/dimse.h,v $
-** CVS/RCS Revision:	$Revision: 1.10 $
+** CVS/RCS Revision:	$Revision: 1.11 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -640,7 +640,7 @@ extern OFBool            g_dimse_save_dimse_data;              /* default: OFFal
  * Verification Service Class
  */
  
-CONDITION
+OFCondition
 DIMSE_echoUser(
 	/* in */ 
 	T_ASC_Association *assoc, DIC_US msgId, 
@@ -649,7 +649,7 @@ DIMSE_echoUser(
 	/* out */
 	DIC_US *status, DcmDataset **statusDetail);
  
-CONDITION
+OFCondition
 DIMSE_sendEchoResponse(T_ASC_Association * assoc, 
 	T_ASC_PresentationContextID presID,
 	T_DIMSE_C_EchoRQ *request, DIC_US status, DcmDataset *statusDetail);
@@ -685,7 +685,7 @@ typedef struct {
     T_DIMSE_C_CancelRQ req;
 } T_DIMSE_DetectedCancelParameters;
 
-CONDITION
+OFCondition
 DIMSE_storeUser(
 	/* in */ 
 	T_ASC_Association *assoc, T_ASC_PresentationContextID presId,
@@ -712,7 +712,7 @@ typedef void (*DIMSE_StoreProviderCallback)(
     /* out */
     DcmDataset **statusDetail);
 
-CONDITION
+OFCondition
 DIMSE_storeProvider(/* in */
 	T_ASC_Association *assoc, 
 	T_ASC_PresentationContextID presIdCmd,
@@ -723,7 +723,7 @@ DIMSE_storeProvider(/* in */
 	/* blocking info for data set */
 	T_DIMSE_BlockingMode blockMode, int timeout);
 
-CONDITION
+OFCondition
 DIMSE_sendStoreResponse(T_ASC_Association * assoc,
 	T_ASC_PresentationContextID presID,
 	T_DIMSE_C_StoreRQ *request, /* send response to this request */
@@ -744,7 +744,7 @@ typedef void (*DIMSE_FindUserCallback)(
 	DcmDataset *responseIdentifiers /* pending response identifiers */
 	);
 
-CONDITION
+OFCondition
 DIMSE_findUser(
 	/* in */
 	T_ASC_Association *assoc, 
@@ -766,7 +766,7 @@ typedef void (*DIMSE_FindProviderCallback)(
 	DcmDataset **responseIdentifiers,
 	DcmDataset **statusDetail);
 
-CONDITION
+OFCondition
 DIMSE_findProvider(
 	/* in */ 
 	T_ASC_Association *assoc, 
@@ -776,7 +776,7 @@ DIMSE_findProvider(
 	/* blocking info for data set */
 	T_DIMSE_BlockingMode blockMode, int timeout);
  
-CONDITION
+OFCondition
 DIMSE_sendFindResponse(T_ASC_Association * assoc, 
 	T_ASC_PresentationContextID presID,
 	T_DIMSE_C_FindRQ *request, 
@@ -796,7 +796,7 @@ typedef void (*DIMSE_MoveUserCallback)(
 typedef void (*DIMSE_SubOpProviderCallback)(void *subOpCallbackData,
 	T_ASC_Network *net, T_ASC_Association **subOpAssoc);
 
-CONDITION
+OFCondition
 DIMSE_moveUser(
 	/* in */
 	T_ASC_Association *assoc, 
@@ -822,7 +822,7 @@ typedef void (*DIMSE_MoveProviderCallback)(
 	T_DIMSE_C_MoveRSP *response, DcmDataset **statusDetail,	
 	DcmDataset **responseIdentifiers);
 
-CONDITION
+OFCondition
 DIMSE_moveProvider(
 	/* in */ 
 	T_ASC_Association *assoc, 
@@ -832,7 +832,7 @@ DIMSE_moveProvider(
 	/* blocking info for data set */
 	T_DIMSE_BlockingMode blockMode, int timeout);
 
-CONDITION
+OFCondition
 DIMSE_sendMoveResponse(T_ASC_Association * assoc, 
 	T_ASC_PresentationContextID presID, T_DIMSE_C_MoveRQ *request, 
 	T_DIMSE_C_MoveRSP *response, DcmDataset *rspIds, 
@@ -851,7 +851,7 @@ typedef void (*DIMSE_GetUserCallback)(
 typedef void (*DIMSE_SubOpProviderCallback)(void *subOpCallbackData,
 	T_ASC_Network *net, T_ASC_Association **subOpAssoc);
 
-CONDITION
+OFCondition
 DIMSE_getUser(
 	/* in */
 	T_ASC_Association *assoc, 
@@ -877,7 +877,7 @@ typedef void (*DIMSE_GetProviderCallback)(
 	T_DIMSE_C_GetRSP *response, DcmDataset **statusDetail,	
 	DcmDataset **responseIdentifiers);
 
-CONDITION
+OFCondition
 DIMSE_getProvider(
 	/* in */ 
 	T_ASC_Association *assoc, 
@@ -887,7 +887,7 @@ DIMSE_getProvider(
 	/* blocking info for data set */
 	T_DIMSE_BlockingMode blockMode, int timeout);
 
-CONDITION
+OFCondition
 DIMSE_sendGetResponse(T_ASC_Association * assoc, 
 	T_ASC_PresentationContextID presID, T_DIMSE_C_GetRQ *request, 
 	T_DIMSE_C_GetRSP *response, DcmDataset *rspIds, 
@@ -897,11 +897,11 @@ DIMSE_sendGetResponse(T_ASC_Association * assoc,
  * Query/Retrieve Service Class (CANCEL)
  */
  
-CONDITION
+OFCondition
 DIMSE_sendCancelRequest(T_ASC_Association * assoc, 
 	T_ASC_PresentationContextID presId, DIC_US msgId);
 
-CONDITION
+OFCondition
 DIMSE_checkForCancelRQ(T_ASC_Association * assoc, 
     T_ASC_PresentationContextID presId, DIC_US msgId);
 
@@ -923,7 +923,7 @@ typedef void (*DIMSE_ProgressCallback)(void *callbackContext,
     unsigned long byteCount);
 
 
-CONDITION 
+OFCondition 
 DIMSE_sendMessageUsingFileData(T_ASC_Association *association,
 		  T_ASC_PresentationContextID presID,
 		  T_DIMSE_Message *msg, DcmDataset *statusDetail,
@@ -932,7 +932,7 @@ DIMSE_sendMessageUsingFileData(T_ASC_Association *association,
 		  void *callbackContext,
 		  DcmDataset **commandSet=NULL);
 
-CONDITION 
+OFCondition 
 DIMSE_sendMessageUsingMemoryData(T_ASC_Association *association,
 		  T_ASC_PresentationContextID presID,
 		  T_DIMSE_Message *msg, DcmDataset *statusDetail,
@@ -941,7 +941,7 @@ DIMSE_sendMessageUsingMemoryData(T_ASC_Association *association,
 		  void *callbackContext,
 		  DcmDataset **commandSet=NULL);
 
-CONDITION
+OFCondition
 DIMSE_receiveCommand(T_ASC_Association *association,
 		     T_DIMSE_BlockingMode blocking,
 		     int timeout,
@@ -950,7 +950,7 @@ DIMSE_receiveCommand(T_ASC_Association *association,
 		     DcmDataset **statusDetail,
 		     DcmDataset **commandSet=NULL);
 
-CONDITION
+OFCondition
 DIMSE_receiveDataSetInMemory(T_ASC_Association *association,
 		     T_DIMSE_BlockingMode blocking,
 		     int timeout, 
@@ -959,7 +959,7 @@ DIMSE_receiveDataSetInMemory(T_ASC_Association *association,
 		     DIMSE_ProgressCallback callback,
 		     void *callbackContext);
 
-CONDITION
+OFCondition
 DIMSE_createFilestream(
 		     /* in */
 		     const char *filename,
@@ -970,7 +970,7 @@ DIMSE_createFilestream(
 		     /* out */
 		     DcmFileStream **filestream);
 
-CONDITION
+OFCondition
 DIMSE_receiveDataSetInFile(T_ASC_Association *assoc,
 		     T_DIMSE_BlockingMode blocking, int timeout, 
 		     T_ASC_PresentationContextID *presID,
@@ -985,8 +985,6 @@ void DIMSE_debug(int level);
 	/* set debug level */
 
 void DIMSE_warning(T_ASC_Association *assoc, const char *format, ...);
-const char* DIMSE_Message(CONDITION cond);
-	/* return string for DIMSE condition (NULL if invalid) */
 
 /* Debugging functions for printing contents of a command structure */
 void DIMSE_printCommand(FILE *f, T_DIMSE_Message *msg);
@@ -1016,78 +1014,18 @@ void DIMSE_printNDeleteRSP(FILE * f, T_DIMSE_N_DeleteRSP * rsp);
 
 void DIMSE_printMessage(ostream& outstream, T_DIMSE_Message &msg, DcmItem *dataset=NULL);
 
-/*
- * Conditions
- */
-
-/*
- * Now define the fixed values for conditions returned by this package.
- * Note that FAC_DIMSE is used to generate these conditions.
- */
-
-#ifndef FAC_DIMSE
-#define FAC_DIMSE		10
-#endif
-
-#define	DIMSE_NORMAL				/* Successful return */ \
-	FORM_COND(FAC_DIMSE, SEV_SUCC,	1)
-#define	DIMSE_NETWORKERROR			/* Network Layer Error */ \
-	FORM_COND(FAC_DIMSE, SEV_ERROR,	2)
-#define	DIMSE_NULLKEY				/* Caller passed in a NULL key */ \
-	FORM_COND(FAC_DIMSE, SEV_ERROR,	3)
-#define	DIMSE_ILLEGALASSOCIATION		/* Caller passed in an illegal association */ \
-	FORM_COND(FAC_DIMSE, SEV_ERROR,	4)
-#define	DIMSE_MALLOCERROR			/* Failed to malloc a buffer */ \
-	FORM_COND(FAC_DIMSE, SEV_ERROR,	5)
-#define	DIMSE_PEERREQUESTEDRELEASE	/* Peer requested release */ \
-	FORM_COND(FAC_DIMSE, SEV_SUCC,	6)
-#define	DIMSE_READPDVFAILED			/* Read PDV failed */ \
-	FORM_COND(FAC_DIMSE, SEV_ERROR,	7)
-#define	DIMSE_BUILDFAILED			/* Failed to build an DICOM object */ \
-	FORM_COND(FAC_DIMSE, SEV_ERROR,	8)
-#define	DIMSE_UNEXPECTEDPDVTYPE		/* Unexpected PDV type */ \
-	FORM_COND(FAC_DIMSE, SEV_ERROR,	9)
-#define	DIMSE_PEERABORTEDASSOCIATION	/* An association abort was received*/ \
-	FORM_COND(FAC_DIMSE, SEV_ERROR, 10)
-#define DIMSE_NOVALIDPRESENTATIONCONTEXTID	/* No valid presentation Context ID (send) */ \
-	FORM_COND(FAC_DIMSE, SEV_ERROR, 11)
-#define	DIMSE_BADMESSAGE			/* Badly formed message (send) */ \
-	FORM_COND(FAC_DIMSE, SEV_ERROR,	12)
-#define	DIMSE_BADDATA				/* Inappropriate data for message (send) */ \
-	FORM_COND(FAC_DIMSE, SEV_ERROR,	13)
-#define	DIMSE_PARSEFAILED			/* Failed to parse received message*/ \
-	FORM_COND(FAC_DIMSE, SEV_ERROR,	14)
-#define	DIMSE_RECEIVEFAILED			/* Failed to receive message */ \
-	FORM_COND(FAC_DIMSE, SEV_ERROR,	15)
-#define	DIMSE_OBJECTTOOLARGE			/* Object too large */ \
-	FORM_COND(FAC_DIMSE, SEV_ERROR,	15)
-#define DIMSE_INVALIDPRESENTATIONCONTEXTID	/* Invalid presentation Context ID */ \
-	FORM_COND(FAC_DIMSE, SEV_ERROR, 16)
-#define DIMSE_BADCOMMANDTYPE			/* Bad command type */ \
-	FORM_COND(FAC_DIMSE, SEV_ERROR, 17)
-#define DIMSE_SENDFAILED			/* Failed to send message */ \
-	FORM_COND(FAC_DIMSE, SEV_ERROR, 18)
-#define DIMSE_UNSUPPORTEDTRANSFERSYNTAX		/* xfer syntax unsupported */\
-	FORM_COND(FAC_DIMSE, SEV_ERROR, 19)
-#define DIMSE_OUTOFRESOURCES			/* out of resources */\
-	FORM_COND(FAC_DIMSE, SEV_ERROR, 20)
-#define DIMSE_NODATAAVAILABLE			/* no data (timout in non-blocking mode) */\
-	FORM_COND(FAC_DIMSE, SEV_SUCC, 21)
-#define DIMSE_UNKNOWNCMDELEMENT			/* Unknown command element encountered */\
-	FORM_COND(FAC_DIMSE, SEV_SUCC, 22)
-
-#define DIMSE_UNEXPECTEDRESPONSE		/* Unexpected response received  */\
-	FORM_COND(FAC_DIMSE, SEV_SUCC, 23)
-
-#define DIMSE_UNEXPECTEDREQUEST			/* Unexpected request received  */\
-	FORM_COND(FAC_DIMSE, SEV_SUCC, 24)
 
 #endif
 
 /*
 ** CVS Log
 ** $Log: dimse.h,v $
-** Revision 1.10  2000-12-15 13:28:16  meichel
+** Revision 1.11  2001-10-12 10:18:26  meichel
+** Replaced the CONDITION types, constants and functions in the dcmnet module
+**   by an OFCondition based implementation which eliminates the global condition
+**   stack.  This is a major change, caveat emptor!
+**
+** Revision 1.10  2000/12/15 13:28:16  meichel
 ** Global flag to enable/disable workaround code for some buggy Store SCUs
 **   in DIMSE_storeProvider().  If enabled, an illegal space-padding in the
 **   Affected SOP Instance UID field of the C-STORE-RQ message is retained

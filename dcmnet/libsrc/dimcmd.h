@@ -55,10 +55,10 @@
 **
 **	Module Prefix: DIMSE_
 **
-** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1997-07-21 08:47:17 $
+** Last Update:		$Author: meichel $
+** Update Date:		$Date: 2001-10-12 10:18:32 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/libsrc/dimcmd.h,v $
-** CVS/RCS Revision:	$Revision: 1.2 $
+** CVS/RCS Revision:	$Revision: 1.3 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -79,10 +79,10 @@
  * Function Prototypes
  */
 
-CONDITION
+OFCondition
 DIMSE_buildCmdObject(T_DIMSE_Message *msg, DcmDataset **obj);
 
-CONDITION
+OFCondition
 DIMSE_parseCmdObject(T_DIMSE_Message *msg, DcmDataset *obj);
 
 OFBool
@@ -96,7 +96,12 @@ DIMSE_countElements(DcmDataset *obj);
 /*
 ** CVS Log
 ** $Log: dimcmd.h,v $
-** Revision 1.2  1997-07-21 08:47:17  andreas
+** Revision 1.3  2001-10-12 10:18:32  meichel
+** Replaced the CONDITION types, constants and functions in the dcmnet module
+**   by an OFCondition based implementation which eliminates the global condition
+**   stack.  This is a major change, caveat emptor!
+**
+** Revision 1.2  1997/07/21 08:47:17  andreas
 ** - Replace all boolean types (BOOLEAN, CTNBOOLEAN, DICOM_BOOL, BOOL)
 **   with one unique boolean type OFBool.
 **
