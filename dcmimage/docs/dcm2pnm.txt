@@ -1,3 +1,4 @@
+
 NAME
 
     dcm2pnm
@@ -12,8 +13,8 @@ SUMMARY
 
 The dcm2pnm utility reads a DICOM image, converts the pixel data according to
 the selected image processing options and writes back an image in the well-
-known PPM/PGM file format (portable pix map / portable gray map) or Windows
-BMP format.
+known PPM/PGM file format (portable pix map / portable gray map), Windows BMP
+or TIFF format.
 This utility only supports uncompressed DICOM images.  The command line tool
 dcmj2pnm (located in dcmjpeg/apps) also supports a number of JPEG compression
 schemes.
@@ -143,15 +144,17 @@ output options:
   +ob     --write-bmp           write 8-bit (monochrome) or 24-bit (color) BMP
   +obp    --write-8-bit-bmp     write 8-bit palette BMP (monochrome only)
   +obt    --write-24-bit-bmp    write 24-bit truecolor BMP
-  +ot     --write-tiff          write 8-bit TIFF
+  +ot     --write-tiff          write 8-bit (monochrome) or 24-bit (color) TIFF
+
 
 NOTES
 
-The --write-tiff option is only available when DCMTK has been configured 
-and compiled with support for the external "libtiff" TIFF library.  The 
-availability of the TIFF compression options depends on the libtiff 
-configuration.  In particular, the patented LZW algorithm may not be 
+The --write-tiff option is only available when DCMTK has been configured
+and compiled with support for the external "libtiff" TIFF library.  The
+availability of the TIFF compression options depends on the libtiff
+configuration.  In particular, the patented LZW algorithm may not be
 available.
+
 
 ENVIRONMENT
 
@@ -159,8 +162,8 @@ The dcm2pnm utility will attempt to load DICOM data dictionaries specified in
 the DCMDICTPATH environment variable.  By default, if the DCMDICTPATH
 environment variable is not set, the file /usr/local/dicom/lib/dicom.dic will
 be loaded.  The default behaviour should be preferred and the DCMDICTPATH
-environment variable only used when alternative data dictionaries are
-required.  The DCMDICTPATH environment variable has the same format as the
-shell PATH variable in that a colon (":") separates entries.  The data
-dictionary code will attempt to load each file specified in the DCMDICTPATH
-environment variable.  It is an error if no data dictionary can be loaded.
+environment variable only used when alternative data dictionaries are required.
+The DCMDICTPATH environment variable has the same format as the shell PATH
+variable in that a colon (":") separates entries.  The data dictionary code
+will attempt to load each file specified in the DCMDICTPATH environment
+variable.  It is an error if no data dictionary can be loaded.

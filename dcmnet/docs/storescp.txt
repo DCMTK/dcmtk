@@ -3,9 +3,11 @@ NAME
 
    storescp
 
+
 SYNOPSIS
 
    storescp [options] port
+
 
 SUMMARY
 
@@ -15,6 +17,7 @@ association requests from a Storage SCU and can receive images according to
 the Storage Service Class. Received images will normally be stored in files
 (within the current working directory).  The storescp application also
 supports the Verification Service Class as an SCP.
+
 
 USAGE
 
@@ -45,7 +48,7 @@ network options:
     -aet  --aetitle              aetitle: string
                                  set my AE title (default: STORESCP)
     -pdu  --max-pdu              [n]umber of bytes: integer [4096..131072]
-                                 set max receive pdu to n bytes (default: 16384)
+                                 set max receive pdu to n bytes (def.: 16384)
     -dhl  --disable-host-lookup  disable hostname lookup
           --refuse               refuse association
           --reject               reject association if no implement. class UID
@@ -64,7 +67,7 @@ output options:
   output file format:
     +F    --write-file           write file format (default)
     -F    --write-dataset        write data set without file meta information
-  output transfer syntax (not with --bit-preserving or compressed transmission):
+  output transfer syntax (not with --bit-preserving or compr. transmission):
     +t=   --write-xfer-same      write with same TS as input (default)
     +te   --write-xfer-little    write with explicit VR little endian TS
     +tb   --write-xfer-big       write with explicit VR big endian TS
@@ -82,27 +85,27 @@ output options:
   data set trailing padding (not with --write-dataset or --bit-preserving):
     -p    --padding-off          no padding (default)
     +p    --padding-create       [f]ile-pad [i]tem-pad: integer
-                                 align file on multiple of f bytes
-                                 and items on multiple of i bytes
+                                 align file on multiple of f bytes and items
+                                 on multiple of i bytes
   sorting into subdirectories (not with --bit-preserving):
     -ss   --sort-conc-studies    [p]refix: string
-                                 Sort concerning studies into subdirectories
-                                 that start with prefix p.
+                                 sort concerning studies into subdirectories
+                                 that start with prefix p
 event options:
   -xcr    --exec-on-reception    [c]ommand: string
-                                 Execute command c after having received and
+                                 execute command c after having received and
                                  processed one C-STORE-Request message
   -xcs    --exec-on-eostudy      [c]ommand: string (only w/ -ss)
-                                 Execute command c after having received and
+                                 execute command c after having received and
                                  processed all C-STORE-Request messages that
-                                 belong to one study.
-  -rns    --rename-on-eostudy    (only w/ -ss) Having received and processed
-                                 all C-STORE-Request messages that
-                                 belong to one study, rename output files
-                                 according to a certain pattern.
+                                 belong to one study
+  -rns    --rename-on-eostudy    (only w/ -ss) having received and processed
+                                 all C-STORE-Request messages that belong to
+                                 one study, rename output files according to
+                                 a certain pattern
   -tos    --eostudy-timeout      [t]imeout: integer (only w/ -ss, -xcs or -rns)
-                                 Specifies a timeout value for end-of-study
-                                 determination.
+                                 specifies a timeout value for end-of-study
+                                 determination
 transport layer security (TLS) options:
   transport protocol stack options:
     -tls  --disable-tls          use normal TCP/IP connection (default)
@@ -114,13 +117,13 @@ transport layer security (TLS) options:
                                  use specified password
     -pw   --null-passwd          use empty string as password
   key and certificate file format options:
-    -pem  --pem-keys             read keys and certificates as PEM file (default)
+    -pem  --pem-keys             read keys and certificates as PEM file (def.)
     -der  --der-keys             read keys and certificates as DER file
   certification authority options:
     +cf   --add-cert-file        [c]ertificate filename: string
                                  add certificate file to list of certificates
     +cd   --add-cert-dir         [c]ertificate directory: string
-                                 add certificates in [d] to list of certificates
+                                 add certificates in d to list of certificates
   ciphersuite options:
     +cs   --cipher               [c]iphersuite name: string
                                  add ciphersuite to list of negotiated suites
@@ -128,14 +131,15 @@ transport layer security (TLS) options:
                                  read DH parameters for DH/DSS ciphersuites
   pseudo random generator options:
     +rs   --seed                 [f]ilename: string
-                                 seed random generator with contents of [f]
+                                 seed random generator with contents of f
     +ws   --write-seed           write back modified seed (only with --seed)
     +wf   --write-seed-file      [f]ilename: string (only with --seed)
-                                 write modified seed to file [f]
+                                 write modified seed to file f
   peer authentication options:
-    -rc   --require-peer-cert    verify peer certificate, fail if absent (default)
+    -rc   --require-peer-cert    verify peer certificate, fail if absent (def.)
     -vc   --verify-peer-cert     verify peer certificate if present
     -ic   --ignore-peer-cert     don't verify peer certificate
+
 
 OPTIONS
 
@@ -154,7 +158,9 @@ passed to this option as a parameter. In addition to this prefix, the subdirec-
 tory names contain time stamp information with regard to the date and time of
 reception of this particular study's first DICOM object. In detail, the deter-
 mination of the subdirectory names pertains to the pattern
+
                          [prefix]_[YYYYMMDD]_[HHMMSSPPP]
+
 where YYYY refers to year (4 digits), MM to month (01-12), DD to day (01-31),
 HH to hour (00-23), MM to minute (00-59), SS to second (00-59) and PPP to
 milliseconds (000-999).
@@ -192,7 +198,9 @@ objects that belong to a certain study have been received, all DICOM files
 that belong to the last study will be renamed in the corresponding output
 directory. The filenames into which the files are being renamed will be
 calculated using the pattern
+
                         [prefix][consecutive numbering]
+
 where [prefix] is a 2 character prefix that reveals the kind of DICOM object
 stored in the file and [consecutive numbering] is a consecutively numbered,
 6-digit number, starting at "000001". In general, the question if all DICOM
@@ -213,111 +221,103 @@ x seconds after the reception of a DICOM object d_n, no other DICOM object was
 received over the network. Note that the amount x of seconds (which determines
 the length of this time span) has to be passed to this option as a parameter.
 
+
 DICOM CONFORMANCE
 
-The storescp application supports the following SOP Classes
-as an SCP:
+The storescp application supports the following SOP Classes as an SCP:
 
-    VerificationSOPClass                                "1.2.840.10008.1.1"
+    VerificationSOPClass                                 "1.2.840.10008.1.1"
 
-    StoredPrintStorage                                  "1.2.840.10008.5.1.1.27"
-    HardcopyGrayscaleImageStorage                       "1.2.840.10008.5.1.1.29"
-    HardcopyColorImageStorage                           "1.2.840.10008.5.1.1.30"
-    ComputedRadiographyImageStorage                     "1.2.840.10008.5.1.4.1.1.1"
-    DigitalXRayImageStorageForPresentation              "1.2.840.10008.5.1.4.1.1.1.1"
-    DigitalXRayImageStorageForProcessing                "1.2.840.10008.5.1.4.1.1.1.1.1"
-    DigitalMammographyXRayImageStorageForPresentation   "1.2.840.10008.5.1.4.1.1.1.2"
-    DigitalMammographyXRayImageStorageForProcessing     "1.2.840.10008.5.1.4.1.1.1.2.1"
-    DigitalIntraOralXRayImageStorageForPresentation     "1.2.840.10008.5.1.4.1.1.1.3"
-    DigitalIntraOralXRayImageStorageForProcessing       "1.2.840.10008.5.1.4.1.1.1.3.1"
-    StandaloneModalityLUTStorage                        "1.2.840.10008.5.1.4.1.1.10"
-    StandaloneVOILUTStorage                             "1.2.840.10008.5.1.4.1.1.11"
-    GrayscaleSoftcopyPresentationStateStorage           "1.2.840.10008.5.1.4.1.1.11.1"
-    XRayAngiographicImageStorage                        "1.2.840.10008.5.1.4.1.1.12.1"
-    XRayFluoroscopyImageStorage                         "1.2.840.10008.5.1.4.1.1.12.2"
-    RETIRED_XRayAngiographicBiPlaneImageStorage         "1.2.840.10008.5.1.4.1.1.12.3"
-    PETImageStorage                                     "1.2.840.10008.5.1.4.1.1.128"
-    PETCurveStorage                                     "1.2.840.10008.5.1.4.1.1.129"
-    CTImageStorage                                      "1.2.840.10008.5.1.4.1.1.2"
-    NuclearMedicineImageStorage                         "1.2.840.10008.5.1.4.1.1.20"
-    RETIRED_UltrasoundMultiframeImageStorage            "1.2.840.10008.5.1.4.1.1.3"
-    UltrasoundMultiframeImageStorage                    "1.2.840.10008.5.1.4.1.1.3.1"
-    MRImageStorage                                      "1.2.840.10008.5.1.4.1.1.4"
-    RTImageStorage                                      "1.2.840.10008.5.1.4.1.1.481.1"
-    RTDoseStorage                                       "1.2.840.10008.5.1.4.1.1.481.2"
-    RTStructureSetStorage                               "1.2.840.10008.5.1.4.1.1.481.3"
-    RTBeamsTreatmentRecordStorage                       "1.2.840.10008.5.1.4.1.1.481.4"
-    RTPlanStorage                                       "1.2.840.10008.5.1.4.1.1.481.5"
-    RTBrachyTreatmentRecordStorage                      "1.2.840.10008.5.1.4.1.1.481.6"
-    RTTreatmentSummaryRecordStorage                     "1.2.840.10008.5.1.4.1.1.481.7"
-    RETIRED_NuclearMedicineImageStorage                 "1.2.840.10008.5.1.4.1.1.5"
-    RETIRED_UltrasoundImageStorage                      "1.2.840.10008.5.1.4.1.1.6"
-    UltrasoundImageStorage                              "1.2.840.10008.5.1.4.1.1.6.1"
-    SecondaryCaptureImageStorage                        "1.2.840.10008.5.1.4.1.1.7"
-    MultiframeSingleBitSecondaryCaptureImageStorage     "1.2.840.10008.5.1.4.1.1.7.1"
-    MultiframeGrayscaleByteSecondaryCaptureImageStorage "1.2.840.10008.5.1.4.1.1.7.2"
-    MultiframeGrayscaleWordSecondaryCaptureImageStorage "1.2.840.10008.5.1.4.1.1.7.3"
-    MultiframeTrueColorSecondaryCaptureImageStorage     "1.2.840.10008.5.1.4.1.1.7.4"
-    RETIRED_VLImageStorage                              "1.2.840.10008.5.1.4.1.1.77.1"
-    VLEndoscopicImageStorage                            "1.2.840.10008.5.1.4.1.1.77.1.1"
-    VLMicroscopicImageStorage                           "1.2.840.10008.5.1.4.1.1.77.1.2"
-    VLSlideCoordinatesMicroscopicImageStorage           "1.2.840.10008.5.1.4.1.1.77.1.3"
-    VLPhotographicImageStorage                          "1.2.840.10008.5.1.4.1.1.77.1.4"
-    RETIRED_VLMultiFrameImageStorage                    "1.2.840.10008.5.1.4.1.1.77.2"
-    StandaloneOverlayStorage                            "1.2.840.10008.5.1.4.1.1.8"
-    BasicTextSR                                         "1.2.840.10008.5.1.4.1.1.88.11"
-    EnhancedSR                                          "1.2.840.10008.5.1.4.1.1.88.22"
-    ComprehensiveSR                                     "1.2.840.10008.5.1.4.1.1.88.33"
-    MammographyCADSR                                    "1.2.840.10008.5.1.4.1.1.88.50"
-    KeyObjectSelectionDocument                          "1.2.840.10008.5.1.4.1.1.88.59"
-    StandaloneCurveStorage                              "1.2.840.10008.5.1.4.1.1.9"
-    TwelveLeadECGWaveformStorage                        "1.2.840.10008.5.1.4.1.1.9.1.1"
-    GeneralECGWaveformStorage                           "1.2.840.10008.5.1.4.1.1.9.1.2"
-    AmbulatoryECGWaveformStorage                        "1.2.840.10008.5.1.4.1.1.9.1.3"
-    HemodynamicWaveformStorage                          "1.2.840.10008.5.1.4.1.1.9.2.1"
-    CardiacElectrophysiologyWaveformStorage             "1.2.840.10008.5.1.4.1.1.9.3.1"
-    BasicVoiceAudioWaveformStorage                      "1.2.840.10008.5.1.4.1.1.9.4.1"
+    StoredPrintStorage                                   "1.2.840.10008.5.1.1.27"
+    HardcopyGrayscaleImageStorage                        "1.2.840.10008.5.1.1.29"
+    HardcopyColorImageStorage                            "1.2.840.10008.5.1.1.30"
+    ComputedRadiographyImageStorage                      "1.2.840.10008.5.1.4.1.1.1"
+    DigitalXRayImageStorageForPresentation               "1.2.840.10008.5.1.4.1.1.1.1"
+    DigitalXRayImageStorageForProcessing                 "1.2.840.10008.5.1.4.1.1.1.1.1"
+    DigitalMammographyXRayImageStorageForPresentation    "1.2.840.10008.5.1.4.1.1.1.2"
+    DigitalMammographyXRayImageStorageForProcessing      "1.2.840.10008.5.1.4.1.1.1.2.1"
+    DigitalIntraOralXRayImageStorageForPresentation      "1.2.840.10008.5.1.4.1.1.1.3"
+    DigitalIntraOralXRayImageStorageForProcessing        "1.2.840.10008.5.1.4.1.1.1.3.1"
+    CTImageStorage                                       "1.2.840.10008.5.1.4.1.1.2"
+    RETIRED_UltrasoundMultiframeImageStorage             "1.2.840.10008.5.1.4.1.1.3"
+    UltrasoundMultiframeImageStorage                     "1.2.840.10008.5.1.4.1.1.3.1"
+    MRImageStorage                                       "1.2.840.10008.5.1.4.1.1.4"
+    RETIRED_NuclearMedicineImageStorage                  "1.2.840.10008.5.1.4.1.1.5"
+    RETIRED_UltrasoundImageStorage                       "1.2.840.10008.5.1.4.1.1.6"
+    UltrasoundImageStorage                               "1.2.840.10008.5.1.4.1.1.6.1"
+    SecondaryCaptureImageStorage                         "1.2.840.10008.5.1.4.1.1.7"
+    MultiframeSingleBitSecondaryCaptureImageStorage      "1.2.840.10008.5.1.4.1.1.7.1"
+    MultiframeGrayscaleByteSecondaryCaptureImageStorage  "1.2.840.10008.5.1.4.1.1.7.2"
+    MultiframeGrayscaleWordSecondaryCaptureImageStorage  "1.2.840.10008.5.1.4.1.1.7.3"
+    MultiframeTrueColorSecondaryCaptureImageStorage      "1.2.840.10008.5.1.4.1.1.7.4"
+    StandaloneOverlayStorage                             "1.2.840.10008.5.1.4.1.1.8"
+    StandaloneCurveStorage                               "1.2.840.10008.5.1.4.1.1.9"
+    TwelveLeadECGWaveformStorage                         "1.2.840.10008.5.1.4.1.1.9.1.1"
+    GeneralECGWaveformStorage                            "1.2.840.10008.5.1.4.1.1.9.1.2"
+    AmbulatoryECGWaveformStorage                         "1.2.840.10008.5.1.4.1.1.9.1.3"
+    HemodynamicWaveformStorage                           "1.2.840.10008.5.1.4.1.1.9.2.1"
+    CardiacElectrophysiologyWaveformStorage              "1.2.840.10008.5.1.4.1.1.9.3.1"
+    BasicVoiceAudioWaveformStorage                       "1.2.840.10008.5.1.4.1.1.9.4.1"
+    StandaloneModalityLUTStorage                         "1.2.840.10008.5.1.4.1.1.10"
+    StandaloneVOILUTStorage                              "1.2.840.10008.5.1.4.1.1.11"
+    GrayscaleSoftcopyPresentationStateStorage            "1.2.840.10008.5.1.4.1.1.11.1"
+    XRayAngiographicImageStorage                         "1.2.840.10008.5.1.4.1.1.12.1"
+    XRayFluoroscopyImageStorage                          "1.2.840.10008.5.1.4.1.1.12.2"
+    RETIRED_XRayAngiographicBiPlaneImageStorage          "1.2.840.10008.5.1.4.1.1.12.3"
+    NuclearMedicineImageStorage                          "1.2.840.10008.5.1.4.1.1.20"
+    RETIRED_VLImageStorage                               "1.2.840.10008.5.1.4.1.1.77.1"
+    VLEndoscopicImageStorage                             "1.2.840.10008.5.1.4.1.1.77.1.1"
+    VLMicroscopicImageStorage                            "1.2.840.10008.5.1.4.1.1.77.1.2"
+    VLSlideCoordinatesMicroscopicImageStorage            "1.2.840.10008.5.1.4.1.1.77.1.3"
+    VLPhotographicImageStorage                           "1.2.840.10008.5.1.4.1.1.77.1.4"
+    RETIRED_VLMultiFrameImageStorage                     "1.2.840.10008.5.1.4.1.1.77.2"
+    BasicTextSR                                          "1.2.840.10008.5.1.4.1.1.88.11"
+    EnhancedSR                                           "1.2.840.10008.5.1.4.1.1.88.22"
+    ComprehensiveSR                                      "1.2.840.10008.5.1.4.1.1.88.33"
+    MammographyCADSR                                     "1.2.840.10008.5.1.4.1.1.88.50"
+    KeyObjectSelectionDocument                           "1.2.840.10008.5.1.4.1.1.88.59"
+    PETImageStorage                                      "1.2.840.10008.5.1.4.1.1.128"
+    PETCurveStorage                                      "1.2.840.10008.5.1.4.1.1.129"
+    RTImageStorage                                       "1.2.840.10008.5.1.4.1.1.481.1"
+    RTDoseStorage                                        "1.2.840.10008.5.1.4.1.1.481.2"
+    RTStructureSetStorage                                "1.2.840.10008.5.1.4.1.1.481.3"
+    RTBeamsTreatmentRecordStorage                        "1.2.840.10008.5.1.4.1.1.481.4"
+    RTPlanStorage                                        "1.2.840.10008.5.1.4.1.1.481.5"
+    RTBrachyTreatmentRecordStorage                       "1.2.840.10008.5.1.4.1.1.481.6"
+    RTTreatmentSummaryRecordStorage                      "1.2.840.10008.5.1.4.1.1.481.7"
 
 Experimental support for the following draft SOP classes is also provided as SCP:
 
-    DRAFT_SRTextStorage                                 "1.2.840.10008.5.1.4.1.1.88.1"
-    DRAFT_SRAudioStorage                                "1.2.840.10008.5.1.4.1.1.88.2"
-    DRAFT_SRDetailStorage                               "1.2.840.10008.5.1.4.1.1.88.3"
-    DRAFT_SRComprehensiveStorage                        "1.2.840.10008.5.1.4.1.1.88.4"
-    DRAFT_WaveformStorage                               "1.2.840.10008.5.1.4.1.1.9.1"
+    DRAFT_WaveformStorage                                "1.2.840.10008.5.1.4.1.1.9.1"
+    DRAFT_SRTextStorage                                  "1.2.840.10008.5.1.4.1.1.88.1"
+    DRAFT_SRAudioStorage                                 "1.2.840.10008.5.1.4.1.1.88.2"
+    DRAFT_SRDetailStorage                                "1.2.840.10008.5.1.4.1.1.88.3"
+    DRAFT_SRComprehensiveStorage                         "1.2.840.10008.5.1.4.1.1.88.4"
 
-The storescp application will accept presentation contexts for
-all of the abovementioned supported SOP Classes using any
-of the transfer syntaxes:
+The storescp application will accept presentation contexts for all of the
+abovementioned supported SOP Classes using any of the transfer syntaxes:
 
-    LittleEndianImplicitTransferSyntax                  "1.2.840.10008.1.2"
-    LittleEndianExplicitTransferSyntax                  "1.2.840.10008.1.2.1"
-    BigEndianExplicitTransferSyntax                     "1.2.840.10008.1.2.2"
+    LittleEndianImplicitTransferSyntax                   "1.2.840.10008.1.2"
+    LittleEndianExplicitTransferSyntax                   "1.2.840.10008.1.2.1"
+    BigEndianExplicitTransferSyntax                      "1.2.840.10008.1.2.2"
 
 The default behaviour of the storescp application is to prefer transfer
 syntaxes having an explicit encoding over the default implicit transfer syntax.
-If storescp is running on big-endian hardware it will prefer
-BigEndianExplicitTransferSyntax to LittleEndianExplicitTransferSyntax (and vice
-versa). This behaviour can be changed with the --prefer options
-(see above).
+If storescp is running on big-endian hardware it will prefer BigEndianExplicit-
+TransferSyntax to LittleEndianExplicitTransferSyntax (and vice versa). This
+behaviour can be changed with the --prefer options (see above).
 
 The storescp application does not support extended negotiation.
 
+
 ENVIRONMENT
 
-The storescp application will attempt to load DICOM data dictionaries
-specified in the DCMDICTPATH environment variable.  By default, if the
-DCMDICTPATH environment variable is not set, the file
-/usr/local/dicom/lib/dicom.dic will be loaded.  The default behaviour
-should be preferred and the DCMDICTPATH environment variable only used when
-alternative data dictionaries are required.  The DCMDICTPATH environment
-variable has the same format as the shell PATH variable in that a colon
-(":") separates entries.  The data dictionary code will attempt to load
-each file specified in the DCMDICTPATH environment variable.  It is an
-error if no data dictionary can be loaded.
-
-
-
-
-
-
+The storescp application will attempt to load DICOM data dictionaries specified
+in the DCMDICTPATH environment variable.  By default, if the DCMDICTPATH
+environment variable is not set, the file /usr/local/dicom/lib/dicom.dic will
+be loaded.  The default behaviour should be preferred and the DCMDICTPATH
+environment variable only used when alternative data dictionaries are required.
+The DCMDICTPATH environment variable has the same format as the shell PATH
+variable in that a colon (":") separates entries.  The data dictionary code
+will attempt to load each file specified in the DCMDICTPATH environment
+variable.  It is an error if no data dictionary can be loaded.

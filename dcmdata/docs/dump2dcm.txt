@@ -1,3 +1,4 @@
+
 NAME
 
     dump2dcm
@@ -10,12 +11,11 @@ SYNOPSIS
 
 SUMMARY
 
-The dump2dcm utility converts an ASCII dumpfile to a dicom file.
-The dumpfile has the same format as the output of dcmdump.  Thus
-it is possible to capture the output of dcmdump into a file,
-modify some attributes and create a new dicom file.  However,
-dump2dcm is not really suitable for generating dicom files
-containing pixel data.
+The dump2dcm utility converts an ASCII dumpfile to a dicom file. The dumpfile
+has the same format as the output of dcmdump.  Thus it is possible to capture
+the output of dcmdump into a file, modify some attributes and create a new
+dicom file.  However, dump2dcm is not really suitable for generating dicom
+files containing pixel data.
 
 
 USAGE
@@ -112,18 +112,12 @@ Examples:
 
 ENVIRONMENT
 
-The dump2dcm utility will attempt to load DICOM data dictionaries
-specified in the DCMDICTPATH environment variable.  By default, if
-the DCMDICTPATH environment variable is not set, the file
-/usr/local/dicom/lib/dicom.dic will be loaded.  The default behaviour
-should be preferred and the DCMDICTPATH environment variable only used
-when alternative data dictionaries are required.  The DCMDICTPATH
-environment variable has the same format as the shell PATH variable in
-that a colon (":") separates entries.  The data dictionary code will
-attempt to load each file specified in the DCMDICTPATH environment
+The dump2dcm utility will attempt to load DICOM data dictionaries specified in
+the DCMDICTPATH environment variable.  By default, if the DCMDICTPATH
+environment variable is not set, the file /usr/local/dicom/lib/dicom.dic will
+be loaded.  The default behaviour should be preferred and the DCMDICTPATH
+environment variable only used when alternative data dictionaries are required.
+The DCMDICTPATH environment variable has the same format as the shell PATH
+variable in that a colon (":") separates entries.  The data dictionary code
+will attempt to load each file specified in the DCMDICTPATH environment
 variable.  It is an error if no data dictionary can be loaded.
-
-
-AUTHOR
-
-Andreas Barth, Kuratorium OFFIS e.V., Oldenburg, Germany

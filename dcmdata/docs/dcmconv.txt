@@ -1,18 +1,19 @@
+
 NAME
 
     dcmconv
+
 
 SYNOPSIS
 
     dcmconv [options] dcmfile-in dcmfile-out
 
+
 SUMMARY
 
-The dcmconv utility reads a DICOM file (dicomfile-in),
-performs an encoding conversion and writes the converted
-data to an output file (dicomfile-out). Beginning with 
-version 3.2 of the DCMTK toolkit, dcmconv replaces the 
-applications ds2file and file2ds from previous releases. 
+The dcmconv utility reads a DICOM file (dicomfile-in), performs an encoding
+conversion and writes the converted data to an output file (dicomfile-out).
+
 
 USAGE
 
@@ -59,23 +60,15 @@ output options:
                                  align file on multiple of f bytes
                                  and items on multiple of i bytes
 
+
 ENVIRONMENT
 
-The dcmconv utility will attempt to load DICOM data dictionaries
-specified in the DCMDICTPATH environment variable.  By default, if
-the DCMDICTPATH environment variable is not set, the file
-/usr/local/dicom/lib/dicom.dic will be loaded.  The default behaviour
-should be preferred and the DCMDICTPATH environment variable only used
-when alternative data dictionaries are required.  The DCMDICTPATH 
-environment variable has the same format as the shell PATH variable in
-that a colon (":") separates entries.  The data dictionary code will
-attempt to load each file specified in the DCMDICTPATH environment 
+The dcmconv utility will attempt to load DICOM data dictionaries specified in
+the DCMDICTPATH environment variable.  By default, if the DCMDICTPATH
+environment variable is not set, the file /usr/local/dicom/lib/dicom.dic will
+be loaded.  The default behaviour should be preferred and the DCMDICTPATH
+environment variable only used when alternative data dictionaries are required.
+The DCMDICTPATH environment variable has the same format as the shell PATH
+variable in that a colon (":") separates entries.  The data dictionary code
+will attempt to load each file specified in the DCMDICTPATH environment
 variable.  It is an error if no data dictionary can be loaded.
-
-AUTHORS
-
-Andrew Hewett, Andreas Barth, Kuratorium OFFIS e.V., Oldenburg, Germany
-
-
-
-

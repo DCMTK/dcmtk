@@ -1,3 +1,4 @@
+
 NAME
 
     dsr2html
@@ -15,12 +16,12 @@ document (file format or raw data set) to HTML (Hyper Text Markup Language)
 which is compatible with version 3.2 or 4.0.
 
 If dsr2html reads a raw data set (DICOM data without a file format meta-
-header) it will attempt to guess the transfer syntax by examining the first
-few bytes of the file.  It is not always possible to correctly guess the
-transfer syntax and it is better to convert a data set to a file format
-whenever possible (using the dcmconv utility).  It is also possible to use the -
-f and -t[ieb] options to force dsr2html to read a dataset with a particular
-transfer syntax.
+header) it will attempt to guess the transfer syntax by examining the first few
+bytes of the file.  It is not always possible to correctly guess the transfer
+syntax and it is better to convert a data set to a file format whenever
+possible (using the dcmconv utility).  It is also possible to use the -f and
+-t[ieb] options to force dsr2html to read a dataset with a particular transfer
+syntax.
 
 
 USAGE
@@ -78,12 +79,13 @@ output options:
 
 DICOM CONFORMANCE
 
-The dsr2html application supports the following SOP Classes (according to
-DICOM 2000 and Supplement 59 Final Text):
+The dsr2xml application supports the following SOP Classes (according to
+DICOM 2001):
 
     BasicTextSR                 "1.2.840.10008.5.1.4.1.1.88.11"
     EnhancedSR                  "1.2.840.10008.5.1.4.1.1.88.22"
     ComprehensiveSR             "1.2.840.10008.5.1.4.1.1.88.33"
+    MammographyCADSR            "1.2.840.10008.5.1.4.1.1.88.50"
     KeyObjectSelectionDocument  "1.2.840.10008.5.1.4.1.1.88.59"
 
 

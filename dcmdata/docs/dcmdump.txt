@@ -1,3 +1,4 @@
+
 NAME
 
     dcmdump
@@ -10,21 +11,19 @@ SYNOPSIS
 
 SUMMARY
 
-The dcmdump utility dumps the contents of a dicom file (file format or
-raw data set) to stdout in textual form.  Attributes with very large
-value fields (e.g. pixel data) can be described as "(not loaded)".
-String value fields will be delimited with square breackets ([]).
-Known UIDs will be displayed by their names prefixed by an equals sign
-(e.g. =MRImageStorage).  Empty value fields are described
-as "(no value available)".
+The dcmdump utility dumps the contents of a dicom file (file format or raw data
+set) to stdout in textual form.  Attributes with very large value fields (e.g.
+pixel data) can be described as "(not loaded)". String value fields will be
+delimited with square breackets ([]). Known UIDs will be displayed by their
+names prefixed by an equals sign (e.g. =MRImageStorage).  Empty value fields
+are described as "(no value available)".
 
-If dcmdump reads a raw data set (dicom data without a file format
-meta-header) it will attempt to guess the transfer syntax by examining
-the first few bytes of the file.  It is not always possible to correctly
-guess the transfer syntax and it is better to convert a data set to
-a file format whenever possible (using the dcmconv utility).  It is
-also possible to use the -f and -t[ieb] options to force dcmdump to read
-a dataset with a particular transfer syntax.
+If dcmdump reads a raw data set (dicom data without a file format meta-header)
+it will attempt to guess the transfer syntax by examining the first few bytes
+of the file.  It is not always possible to correctly guess the transfer syntax
+and it is better to convert a data set to a file format whenever possible
+(using the dcmconv utility).  It is also possible to use the -f and -t[ieb]
+options to force dcmdump to read a dataset with a particular transfer syntax.
 
 
 USAGE
@@ -75,18 +74,12 @@ output options:
 
 ENVIRONMENT
 
-The dcmdump utility will attempt to load DICOM data dictionaries
-specified in the DCMDICTPATH environment variable.  By default, if
-the DCMDICTPATH environment variable is not set, the file
-/usr/local/dicom/lib/dicom.dic will be loaded.  The default behaviour
-should be preferred and the DCMDICTPATH environment variable only used
-when alternative data dictionaries are required.  The DCMDICTPATH
-environment variable has the same format as the shell PATH variable in
-that a colon (":") separates entries.  The data dictionary code will
-attempt to load each file specified in the DCMDICTPATH environment
+The dcmdump utility will attempt to load DICOM data dictionaries specified in
+the DCMDICTPATH environment variable.  By default, if the DCMDICTPATH
+environment variable is not set, the file /usr/local/dicom/lib/dicom.dic will
+be loaded.  The default behaviour should be preferred and the DCMDICTPATH
+environment variable only used when alternative data dictionaries are required.
+The DCMDICTPATH environment variable has the same format as the shell PATH
+variable in that a colon (":") separates entries.  The data dictionary code
+will attempt to load each file specified in the DCMDICTPATH environment
 variable.  It is an error if no data dictionary can be loaded.
-
-
-AUTHOR
-
-Andrew Hewett, Kuratorium OFFIS e.V., Oldenburg, Germany

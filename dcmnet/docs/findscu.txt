@@ -1,18 +1,22 @@
+
 NAME
 
     findscu
+
 
 SYNOPSIS
 
     findscu [options] peer port [dcmfile_in...]
 
+
 SUMMARY
 
-The findscu application implements an SCU for the Query/Retrieve Service 
-Class and the Basic Worklist Management Service Class.  Findscu only 
-supports query functionality using the C-FIND message.  It sends query keys 
-to an SCP and awaits responses. The application can be used to test SCPs of 
-the Query/Retrieve and Basic Worklist Management Service Classes.  
+The findscu application implements an SCU for the Query/Retrieve Service
+Class and the Basic Worklist Management Service Class.  Findscu only
+supports query functionality using the C-FIND message.  It sends query keys
+to an SCP and awaits responses. The application can be used to test SCPs of
+the Query/Retrieve and Basic Worklist Management Service Classes.
+
 
 USAGE
 
@@ -54,7 +58,9 @@ network options:
     -X    --extract         extract responses to file (rsp0001.dcm, ...)
 
 
-Each file supplied on the command line will be sent to the SCP as part of a 
+NOTES
+
+Each file supplied on the command line will be sent to the SCP as part of a
 C-FIND request.  The query file must be a valid DICOM data set containing
 the dataset part of a C-FIND-RQ message. The query file could, for instance,
 be created with the dump2dcm utility from a script like the following example:
@@ -64,17 +70,17 @@ be created with the dump2dcm utility from a script like the following example:
 (0010,0010) PN []            # PatientsName
 (0010,0020) LO []            # PatientID
 
-Individual attributes of each file sent can be modified or supplemented 
+Individual attributes of each file sent can be modified or supplemented
 using the "-k key" option.  For example the command:
 
     findscu -k 0010,0010="HEWETT*" caesar 5678 patqry.dcm
 
-will, when sent to the SCP caesar at TCP/IP port 5678, cause any 
-PatientsName attribute in patqry.dcm to have the value "HEWETT*". If such 
-an attribute is present it will be replaced, if absent it will be inserted.  
-The -k option can be present more than once.  The value part (after the =) 
-may be absent causing the attribute to be sent with zero length.  It is not 
-possible to replace or insert attributes within sequences using the -k 
+will, when sent to the SCP caesar at TCP/IP port 5678, cause any
+PatientsName attribute in patqry.dcm to have the value "HEWETT*". If such
+an attribute is present it will be replaced, if absent it will be inserted.
+The -k option can be present more than once.  The value part (after the =)
+may be absent causing the attribute to be sent with zero length.  It is not
+possible to replace or insert attributes within sequences using the -k
 option.
 
 If no file is specified on the command line, the query must be specified
@@ -85,24 +91,25 @@ Each set of response identifers received will be printed to stdout.
 
 DICOM CONFORMANCE
 
-The findscu application supports the following SOP Classes 
+The findscu application supports the following SOP Classes
 as an SCU:
 
-    FINDPatientRootQueryRetrieveInformationModel "1.2.840.10008.5.1.4.1.2.1.1"
-    FINDStudyRootQueryRetrieveInformationModel	"1.2.840.10008.5.1.4.1.2.2.1"
+    FINDPatientRootQueryRetrieveInformationModel      "1.2.840.10008.5.1.4.1.2.1.1"
+    FINDStudyRootQueryRetrieveInformationModel	      "1.2.840.10008.5.1.4.1.2.2.1"
     FINDPatientStudyOnlyQueryRetrieveInformationModel "1.2.840.10008.5.1.4.1.2.3.1"
-    FINDModalityWorklistInformationModel	"1.2.840.10008.5.1.4.31"
+    FINDModalityWorklistInformationModel	          "1.2.840.10008.5.1.4.31"
 
 The findscu application will propose presentation contexts for
 one of the abovementioned supported SOP Classes depending
 on command line options (-P, -S, -O or -W).  Each proposed
 presentation context will propose the transfer syntaxes:
 
-    LittleEndianImplicitTransferSyntax	"1.2.840.10008.1.2"
-    LittleEndianExplicitTransferSyntax	"1.2.840.10008.1.2.1"
-    BigEndianExplicitTransferSyntax	"1.2.840.10008.1.2.2"
+    LittleEndianImplicitTransferSyntax	              "1.2.840.10008.1.2"
+    LittleEndianExplicitTransferSyntax	              "1.2.840.10008.1.2.1"
+    BigEndianExplicitTransferSyntax	                  "1.2.840.10008.1.2.2"
 
 The findscu application does not support extended negotiation.
+
 
 ENVIRONMENT
 
@@ -111,9 +118,8 @@ specified in the DCMDICTPATH environment variable.  By default, if
 the DCMDICTPATH environment variable is not set, the file
 /usr/local/dicom/lib/dicom.dic will be loaded.  The default behaviour
 should be preferred and the DCMDICTPATH environment variable only used
-when alternative data dictionaries are required.  The DCMDICTPATH 
+when alternative data dictionaries are required.  The DCMDICTPATH
 environment variable has the same format as the shell PATH variable in
 that a colon (":") separates entries.  The data dictionary code will
-attempt to load each file specified in the DCMDICTPATH environment 
+attempt to load each file specified in the DCMDICTPATH environment
 variable.  It is an error if no data dictionary can be loaded.
-

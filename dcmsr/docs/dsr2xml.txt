@@ -64,8 +64,8 @@ DICOM 2001):
     BasicTextSR                 "1.2.840.10008.5.1.4.1.1.88.11"
     EnhancedSR                  "1.2.840.10008.5.1.4.1.1.88.22"
     ComprehensiveSR             "1.2.840.10008.5.1.4.1.1.88.33"
-    KeyObjectSelectionDocument  "1.2.840.10008.5.1.4.1.1.88.59"
     MammographyCadSR            "1.2.840.10008.5.1.4.1.1.88.50"
+    KeyObjectSelectionDocument  "1.2.840.10008.5.1.4.1.1.88.59"
 
 
 ENVIRONMENT

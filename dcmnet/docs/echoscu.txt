@@ -1,17 +1,21 @@
+
 NAME
 
     echoscu
+
 
 SYNOPSIS
 
     echoscu [options] peer port
 
+
 SUMMARY
 
-The echoscu application implements a Service Class User (SCU) for the 
+The echoscu application implements a Service Class User (SCU) for the
 Verification SOP Class.  It sends a DICOM C-ECHO message to a Service
 Class Provider (SCP) and waits for a response.  The application can be
-used to verify basic DICOM connectivity.  
+used to verify basic DICOM connectivity.
+
 
 USAGE
 
@@ -44,27 +48,27 @@ network options:
                         repeat n times
           --abort       abort association instead of releasing it
 
+
 DICOM CONFORMANCE
 
 The echoscu application supports the SOP Classes as an SCU:
 
     VerificationSOPClass	"1.2.840.10008.1.1"
 
-Unless the --propose-ts option is used, the echoscu application will only 
+Unless the --propose-ts option is used, the echoscu application will only
 propose the transfer syntax
 
     LittleEndianImplicitTransferSyntax	"1.2.840.10008.1.2"
 
+
 ENVIRONMENT
 
-The echoscu application will attempt to load DICOM data dictionaries 
-specified in the DCMDICTPATH environment variable.  By default, if the 
-DCMDICTPATH environment variable is not set, the file 
-/usr/local/dicom/lib/dicom.dic will be loaded.  The default behaviour 
-should be preferred and the DCMDICTPATH environment variable only used when 
-alternative data dictionaries are required.  The DCMDICTPATH environment 
-variable has the same format as the shell PATH variable in that a colon 
-(":") separates entries.  The data dictionary code will attempt to load 
-each file specified in the DCMDICTPATH environment variable.  It is an 
-error if no data dictionary can be loaded.
-
+The echoscu application will attempt to load DICOM data dictionaries specified
+in the DCMDICTPATH environment variable.  By default, if the DCMDICTPATH
+environment variable is not set, the file /usr/local/dicom/lib/dicom.dic will
+be loaded.  The default behaviour should be preferred and the DCMDICTPATH
+environment variable only used when alternative data dictionaries are required.
+The DCMDICTPATH environment variable has the same format as the shell PATH
+variable in that a colon (":") separates entries.  The data dictionary code
+will attempt to load each file specified in the DCMDICTPATH environment
+variable.  It is an error if no data dictionary can be loaded.
