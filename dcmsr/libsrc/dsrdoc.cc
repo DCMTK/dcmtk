@@ -23,8 +23,8 @@
  *    classes: DSRDocument
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-05-02 14:08:35 $
- *  CVS/RCS Revision: $Revision: 1.34 $
+ *  Update Date:      $Date: 2002-05-07 12:52:48 $
+ *  CVS/RCS Revision: $Revision: 1.35 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -77,7 +77,9 @@ DSRDocument::DSRDocument(const E_DocumentType documentType)
     ContentTime(DCM_ContentTime),
     VerifyingObserver(DCM_VerifyingObserverSequence),
     PredecessorDocuments(DCM_PredecessorDocumentsSequence),
-    PerformedProcedureCode(DCM_PerformedProcedureCodeSequence)
+    PerformedProcedureCode(DCM_PerformedProcedureCodeSequence),
+    CurrentRequestedProcedureEvidence(DCM_CurrentRequestedProcedureEvidenceSequence),
+    PertinentOtherEvidence(DCM_PertinentOtherEvidenceSequence)
 {
     /* set initial values for a new SOP instance */
     updateAttributes();
@@ -131,6 +133,8 @@ void DSRDocument::clear()
     VerifyingObserver.clear();
     PredecessorDocuments.clear();
     PerformedProcedureCode.clear();
+    CurrentRequestedProcedureEvidence.clear();
+    PertinentOtherEvidence.clear();
 }
 
 
@@ -345,6 +349,8 @@ OFCondition DSRDocument::read(DcmItem &dataset,
         /* need to check sequence in two steps (avoids additional getAndCheck... method) */
         searchCond = getSequenceFromDataset(dataset, PerformedProcedureCode);
         checkElementValue(PerformedProcedureCode, "1", "2", LogStream, searchCond);
+        CurrentRequestedProcedureEvidence.read(dataset, LogStream);
+        PertinentOtherEvidence.read(dataset, LogStream);
         /* remove possible signature sequences */
         removeAttributeFromSequence(VerifyingObserver, DCM_MACParametersSequence);
         removeAttributeFromSequence(VerifyingObserver, DCM_DigitalSignaturesSequence);
@@ -440,7 +446,11 @@ OFCondition DSRDocument::write(DcmItem &dataset,
         /* always write empty sequence since not yet fully supported */
         PerformedProcedureCode.clear();
         addElementToDataset(result, dataset, new DcmSequenceOfItems(PerformedProcedureCode));
-
+        if (result.good())
+            result = CurrentRequestedProcedureEvidence.write(dataset, LogStream);
+        if (result.good())
+            result = PertinentOtherEvidence.write(dataset, LogStream);
+        
         /* write SR document tree */
         if (result.good())
             result = DocumentTree.write(dataset, markedItems);
@@ -475,7 +485,12 @@ OFCondition DSRDocument::writeXML(ostream &stream,
 
         // --- write some general document information ---
 
-        stream << "<sopclass uid=\"" << getMarkupStringFromElement(SOPClassUID, string) << "\"/>" << endl;
+        stream << "<sopclass uid=\"" << getMarkupStringFromElement(SOPClassUID, string) << "\">";
+        /* retrieve name of SOP class */
+        const char *sopClass = dcmFindNameOfUID(string.c_str());
+        if (sopClass != NULL)
+            stream << sopClass;
+        stream << "</sopclass>" << endl;
         writeStringFromElementToXML(stream, Modality, "modality", flags & XF_writeEmptyTags);
         writeStringFromElementToXML(stream, Manufacturer, "manufacturer", flags & XF_writeEmptyTags);
 
@@ -521,13 +536,28 @@ OFCondition DSRDocument::writeXML(ostream &stream,
         if ((flags & XF_writeEmptyTags) || (InstanceCreatorUID.getLength() > 0) ||
             (InstanceCreationDate.getLength() > 0) || (InstanceCreationTime.getLength() > 0))
         {
-            stream << "<creation>" << endl;
-            writeStringFromElementToXML(stream, InstanceCreatorUID, "uid", flags & XF_writeEmptyTags);
+            stream << "<creation";
+            if (InstanceCreatorUID.getLength() > 0)
+                stream << " uid=\"" << getMarkupStringFromElement(InstanceCreatorUID, string);
+            stream << "\">" << endl;
             writeStringFromElementToXML(stream, InstanceCreationDate, "date", flags & XF_writeEmptyTags);
             writeStringFromElementToXML(stream, InstanceCreationTime, "time", flags & XF_writeEmptyTags);
             stream << "</creation>" << endl;
         }
         stream << "</instance>" << endl;
+
+        if ((flags & XF_writeEmptyTags) || !CurrentRequestedProcedureEvidence.empty())
+        {
+            stream << "<evidence type=\"Current Requested Procedure\">" << endl;
+            CurrentRequestedProcedureEvidence.writeXML(stream, flags);
+            stream << "</evidence>" << endl;
+        }
+        if ((flags & XF_writeEmptyTags) || !PertinentOtherEvidence.empty())
+        {
+            stream << "<evidence type=\"Pertinent Other\">" << endl;
+            PertinentOtherEvidence.writeXML(stream, flags);
+            stream << "</evidence>" << endl;
+        }
 
         stream << "<document>" << endl;
         stream << "<completion flag=\"" << completionFlagToEnumeratedValue(CompletionFlagEnum) << "\">" << endl;
@@ -1098,6 +1128,18 @@ OFCondition DSRDocument::getPredecessorDocument(const size_t idx,
     } else
         result = EC_IllegalParameter;
     return result;
+}
+
+
+DSRSOPInstanceReferenceList &DSRDocument::getCurrentRequestedProcedureEvidence()
+{
+    return CurrentRequestedProcedureEvidence;
+}
+
+
+DSRSOPInstanceReferenceList &DSRDocument::getPertinentOtherEvidence()
+{
+    return PertinentOtherEvidence;
 }
 
 
@@ -1818,7 +1860,12 @@ void DSRDocument::updateAttributes(const OFBool updateAll)
 /*
  *  CVS/RCS Log:
  *  $Log: dsrdoc.cc,v $
- *  Revision 1.34  2002-05-02 14:08:35  joergr
+ *  Revision 1.35  2002-05-07 12:52:48  joergr
+ *  Added support for the Current Requested Procedure Evidence Sequence and the
+ *  Pertinent Other Evidence Sequence to the dcmsr module.
+ *  Added output of SOP class name to XML document.
+ *
+ *  Revision 1.34  2002/05/02 14:08:35  joergr
  *  Added support for standard and non-standard string streams (which one is
  *  supported is detected automatically via the configure mechanism).
  *  Thanks again to Andreas Barth <Andreas.Barth@bruker-biospin.de> for his
