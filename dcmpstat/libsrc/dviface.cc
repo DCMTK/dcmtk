@@ -22,8 +22,8 @@
  *  Purpose: DVPresentationState
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-01-29 17:34:41 $
- *  CVS/RCS Revision: $Revision: 1.127 $
+ *  Update Date:      $Date: 2001-02-23 13:31:10 $
+ *  CVS/RCS Revision: $Revision: 1.128 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -4237,15 +4237,20 @@ E_Condition DVInterface::verifyAndSignStructuredReport(const char *userID, const
         DcmItem dataset;
         if (pReport->write(dataset, &stack) == EC_Normal)
         {
-          /* do not sign particular attributes */
           DcmAttributeTag tagList(DcmTag(0, 0) /* irrelevant value */);
           if (mode == DVPSY_verifyAndSign)
           {
+            /* do not sign particular attributes */
             tagList.putTagVal(DCM_SOPInstanceUID, 0);
             tagList.putTagVal(DCM_VerifyingObserverSequence, 1);
             tagList.putTagVal(DCM_InstanceCreationDate, 2);
             tagList.putTagVal(DCM_InstanceCreationTime, 3);
             tagList.putTagVal(DCM_InstanceCreatorUID, 4);
+          }
+          else if (mode == DVPSY_verifyAndSign_finalize)
+          {
+            /* always sign the entire document */
+            stack.clear();
           }
           /* if no item is marked, sign entire dataset */
           if (stack.empty())
@@ -4325,7 +4330,12 @@ void DVInterface::disableImageAndPState()
 /*
  *  CVS/RCS Log:
  *  $Log: dviface.cc,v $
- *  Revision 1.127  2001-01-29 17:34:41  joergr
+ *  Revision 1.128  2001-02-23 13:31:10  joergr
+ *  Changed behaviour of method verifyAndSignStructuredReport() with 'finalize'.
+ *  Now the entire document is always signed independently from the tree items
+ *  marked.
+ *
+ *  Revision 1.127  2001/01/29 17:34:41  joergr
  *  Added method to verify and digitally sign structured reports.
  *
  *  Revision 1.126  2001/01/29 14:55:46  meichel

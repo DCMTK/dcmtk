@@ -23,8 +23,8 @@
  *    classes: DVInterface
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-01-29 17:32:30 $
- *  CVS/RCS Revision: $Revision: 1.84 $
+ *  Update Date:      $Date: 2001-02-23 13:31:46 $
+ *  CVS/RCS Revision: $Revision: 1.85 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1484,8 +1484,9 @@ class DVInterface: public DVConfiguration
      *  @param password for user as entered in some GUI control
      *  @param mode flag specifying whether to verify only, verify and sign or verify and
      *    sign and finalize the document. The difference between the second and the third mode
-     *    is that "finalize" signs the entire document whereas the other mode leave out certain
-     *    attributes (e.g. the SOP instance UID and the verifying observer sequence).
+     *    is that "finalize" always signs the entire document whereas the other mode only signs
+     *    the marked items (if any, all items otherwise) and leaves out certain header attributes
+     *    (e.g. the SOP instance UID and the verifying observer sequence).
      *  @return status, EC_Normal if successful, an error code otherwise.
      */
     E_Condition verifyAndSignStructuredReport(const char *userID, const char *passwd, DVPSVerifyAndSignMode mode);
@@ -1889,7 +1890,12 @@ private:
 /*
  *  CVS/RCS Log:
  *  $Log: dviface.h,v $
- *  Revision 1.84  2001-01-29 17:32:30  joergr
+ *  Revision 1.85  2001-02-23 13:31:46  joergr
+ *  Changed behaviour of method verifyAndSignStructuredReport() with 'finalize'.
+ *  Now the entire document is always signed independently from the tree items
+ *  marked.
+ *
+ *  Revision 1.84  2001/01/29 17:32:30  joergr
  *  Added method to verify and digitally sign structured reports.
  *
  *  Revision 1.83  2001/01/29 14:55:41  meichel
