@@ -12,9 +12,9 @@
 ** not be used directly in applications. No identification exists.
 **
 ** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1997-07-21 07:54:00 $
+** Update Date:		$Date: 1997-07-31 06:59:00 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcvrpobw.h,v $
-** CVS/RCS Revision:	$Revision: 1.1 $
+** CVS/RCS Revision:	$Revision: 1.2 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -31,6 +31,7 @@ class DcmPolymorphOBOW : public DcmOtherByteOtherWord
 {
 private:
     OFBool changeVR;
+    DcmEVR currentVR;    // current VR of value field (can change)
 
 public:
     DcmPolymorphOBOW(
@@ -42,6 +43,12 @@ public:
 
     virtual ~DcmPolymorphOBOW();
 
+    virtual E_Condition read(
+	DcmStream & inStream,
+	const E_TransferSyntax ixfer,
+	const E_GrpLenEncoding glenc,
+	const Uint32 maxReadLength);
+
     virtual E_Condition write(
 	DcmStream & outStream,
 	const E_TransferSyntax oxfer,
@@ -49,6 +56,14 @@ public:
 
     virtual void transferInit();
     virtual void transferEnd();
+
+    // get data as Uint8 Array
+    virtual E_Condition getUint8Array(
+	Uint8 * & bytes);
+
+    // get data as Uint16 Array
+    virtual E_Condition getUint16Array(
+	Uint16 * & words);
 
     // put an Unit8 array. It is converted to OW if VR == OW
     virtual E_Condition putUint8Array(
@@ -66,7 +81,12 @@ public:
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrpobw.h,v $
-** Revision 1.1  1997-07-21 07:54:00  andreas
+** Revision 1.2  1997-07-31 06:59:00  andreas
+** Error correction and additonal functionality for
+** DcmPolymorphOBOW to support getting and putting of Uint8 and
+** Uint16 data independent of the VR.
+**
+** Revision 1.1  1997/07/21 07:54:00  andreas
 ** - Support for CP 14. PixelData and OverlayData can have VR OW or OB
 **   (depending on the transfer syntax). New internal value
 **   representation (only for ident()) for OverlayData.
