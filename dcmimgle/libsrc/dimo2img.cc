@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2001, OFFIS
+ *  Copyright (C) 1996-2002, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,10 +21,10 @@
  *
  *  Purpose: DicomMonochrome2Image (Source)
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-06-01 15:49:57 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2002-12-09 13:34:51 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/libsrc/dimo2img.cc,v $
- *  CVS/RCS Revision: $Revision: 1.9 $
+ *  CVS/RCS Revision: $Revision: 1.10 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -47,7 +47,7 @@ DiMono2Image::DiMono2Image(const DiDocument *docu,
                            const EI_Status status)
   : DiMonoImage(docu, status)
 {
-} 
+}
 
 
 DiMono2Image::DiMono2Image(const DiDocument *docu,
@@ -74,7 +74,7 @@ DiMono2Image::DiMono2Image(const DiDocument *docu,
                            const char dummy)
   : DiMonoImage(docu, status, dummy)
 {
-} 
+}
 
 
 DiMono2Image::DiMono2Image(const DiMonoImage *image,
@@ -95,16 +95,16 @@ DiMono2Image::DiMono2Image(const DiColorImage *image,
 
 
 DiMono2Image::DiMono2Image(const DiMonoImage *image,
-                           const signed long left,
-                           const signed long top,
+                           const signed long left_pos,
+                           const signed long top_pos,
                            const Uint16 src_cols,
-                           const Uint16 src_rows,                 
+                           const Uint16 src_rows,
                            const Uint16 dest_cols,
                            const Uint16 dest_rows,
                            const int interpolate,
                            const int aspect,
                            const Uint16 pvalue)
-  : DiMonoImage(image, left, top, src_cols, src_rows, dest_cols, dest_rows, interpolate, aspect, pvalue)
+  : DiMonoImage(image, left_pos, top_pos, src_cols, src_rows, dest_cols, dest_rows, interpolate, aspect, pvalue)
 {
 }
 
@@ -150,7 +150,7 @@ void *DiMono2Image::getOutputData(const unsigned long frame,
                                   const int bits,
                                   const int planar)
 {
-    return DiMonoImage::getData(NULL, 0, frame, bits, planar, 0); 
+    return DiMonoImage::getData(NULL, 0, frame, bits, planar, 0);
 }
 
 
@@ -172,17 +172,17 @@ DiImage *DiMono2Image::createImage(const unsigned long fstart,
 }
 
 
-DiImage *DiMono2Image::createScale(const signed long left,
-                                   const signed long top,
+DiImage *DiMono2Image::createScale(const signed long left_pos,
+                                   const signed long top_pos,
                                    const unsigned long src_cols,
-                                   const unsigned long src_rows,                 
+                                   const unsigned long src_rows,
                                    const unsigned long dest_cols,
                                    const unsigned long dest_rows,
                                    const int interpolate,
                                    const int aspect,
                                    const Uint16 pvalue) const
 {
-    DiImage *image = new DiMono2Image(this, left, top, (Uint16)src_cols, (Uint16)src_rows,
+    DiImage *image = new DiMono2Image(this, left_pos, top_pos, (Uint16)src_cols, (Uint16)src_rows,
         (Uint16)dest_cols, (Uint16)dest_rows, interpolate, aspect, pvalue);
     return image;
 }
@@ -215,7 +215,11 @@ DiImage *DiMono2Image::createMono(const double,
  *
  * CVS/RCS Log:
  * $Log: dimo2img.cc,v $
- * Revision 1.9  2001-06-01 15:49:57  meichel
+ * Revision 1.10  2002-12-09 13:34:51  joergr
+ * Renamed parameter/local variable to avoid name clashes with global
+ * declaration left and/or right (used for as iostream manipulators).
+ *
+ * Revision 1.9  2001/06/01 15:49:57  meichel
  * Updated copyright header
  *
  * Revision 1.8  2000/03/08 16:24:29  meichel

@@ -22,9 +22,9 @@
  *  Purpose: DicomColorImage (Header)
  *
  *  Last Update:         $Author: joergr $
- *  Update Date:         $Date: 2002-08-02 15:07:02 $
+ *  Update Date:         $Date: 2002-12-09 13:37:51 $
  *  Source File:         $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/include/Attic/dicoimg.h,v $
- *  CVS/RCS Revision:    $Revision: 1.15 $
+ *  CVS/RCS Revision:    $Revision: 1.16 $
  *  Status:              $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -148,9 +148,9 @@ class DiColorImage
 
     /** create scaled copy of specified (clipping) area of the current image object.
      *
-     ** @param  left          x coordinate of top left corner of area to be scaled
+     ** @param  left_pos      x coordinate of top left corner of area to be scaled
      *                        (referring to image origin, negative values create a border around the image)
-     *  @param  top           y coordinate of top left corner of area to be scaled
+     *  @param  top_pos       y coordinate of top left corner of area to be scaled
      *  @param  src_cols      width of area to be scaled
      *  @param  src_rows      height of area to be scaled
      *  @param  dest_cols     width of scaled image (in pixels)
@@ -164,8 +164,8 @@ class DiColorImage
      *
      ** @return pointer to new DiImage object (NULL if an error occurred)
      */
-    DiImage *createScale(const signed long left,
-                         const signed long top,
+    DiImage *createScale(const signed long left_pos,
+                         const signed long top_pos,
                          const unsigned long src_cols,
                          const unsigned long src_rows,
                          const unsigned long dest_cols,
@@ -341,9 +341,9 @@ class DiColorImage
     /** constructor, scale/clip
      *
      ** @param  image        pointer to reference image
-     *  @param  left         x coordinate of top left corner of area to be scaled
+     *  @param  left_pos     x coordinate of top left corner of area to be scaled
      *                       (referring to image origin, negative values create a border around the image)
-     *  @param  top          y coordinate of top left corner of area to be scaled
+     *  @param  top_pos      y coordinate of top left corner of area to be scaled
      *  @param  src_cols     width of area to be scaled
      *  @param  src_rows     height of area to be scaled
      *  @param  dest_cols    width of scaled image (in pixels)
@@ -355,8 +355,8 @@ class DiColorImage
      *                        automatically)
      */
     DiColorImage(const DiColorImage *image,
-                 const signed long left,
-                 const signed long top,
+                 const signed long left_pos,
+                 const signed long top_pos,
                  const Uint16 src_cols,
                  const Uint16 src_rows,
                  const Uint16 dest_cols,
@@ -438,7 +438,11 @@ class DiColorImage
  *
  * CVS/RCS Log:
  * $Log: dicoimg.h,v $
- * Revision 1.15  2002-08-02 15:07:02  joergr
+ * Revision 1.16  2002-12-09 13:37:51  joergr
+ * Renamed parameter/local variable to avoid name clashes with global
+ * declaration left and/or right (used for as iostream manipulators).
+ *
+ * Revision 1.15  2002/08/02 15:07:02  joergr
  * Added function to write the current image (not only a selected frame) to a
  * DICOM dataset.
  *

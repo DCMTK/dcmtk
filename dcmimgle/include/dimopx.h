@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2001, OFFIS
+ *  Copyright (C) 1996-2002, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose: DicomMonochromePixel (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-11-19 12:56:15 $
+ *  Update Date:      $Date: 2002-12-09 13:32:54 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/dimopx.h,v $
- *  CVS/RCS Revision: $Revision: 1.14 $
+ *  CVS/RCS Revision: $Revision: 1.15 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -122,8 +122,8 @@ class DiMonoPixel
 
     /** get automatically computed Region of Interest (ROI) window (abstract)
      *
-     ** @param  left       x-coordinate of the top left-hand corner of the ROI (starting from 0)
-     *  @param  top        y-coordinate of the top left-hand corner of the ROI (starting from 0)
+     ** @param  left_pos   x-coordinate of the top left-hand corner of the ROI (starting from 0)
+     *  @param  top_pos    y-coordinate of the top left-hand corner of the ROI (starting from 0)
      *  @param  width      width in pixels of the rectangular ROI (minimum: 1)
      *  @param  height     height in pixels of the rectangular ROI (minimum: 1)
      *  @param  columns    number of columns (width) of the associated image
@@ -134,8 +134,8 @@ class DiMonoPixel
      *
      ** @return status, true if successful, false otherwise
      */
-    virtual int getRoiWindow(const unsigned long left,
-                             const unsigned long top,
+    virtual int getRoiWindow(const unsigned long left_pos,
+                             const unsigned long top_pos,
                              const unsigned long width,
                              const unsigned long height,
                              const unsigned long columns,
@@ -253,7 +253,11 @@ class DiMonoPixel
  *
  * CVS/RCS Log:
  * $Log: dimopx.h,v $
- * Revision 1.14  2001-11-19 12:56:15  joergr
+ * Revision 1.15  2002-12-09 13:32:54  joergr
+ * Renamed parameter/local variable to avoid name clashes with global
+ * declaration left and/or right (used for as iostream manipulators).
+ *
+ * Revision 1.14  2001/11/19 12:56:15  joergr
  * Added parameter 'frame' to setRoiWindow().
  *
  * Revision 1.13  2001/09/28 13:07:43  joergr

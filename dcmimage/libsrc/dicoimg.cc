@@ -22,9 +22,9 @@
  *  Purpose: DicomColorImage (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-11-26 14:51:13 $
+ *  Update Date:      $Date: 2002-12-09 13:39:56 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/libsrc/dicoimg.cc,v $
- *  CVS/RCS Revision: $Revision: 1.27 $
+ *  CVS/RCS Revision: $Revision: 1.28 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -103,8 +103,8 @@ DiColorImage::DiColorImage(const DiColorImage *image,
 
 
 DiColorImage::DiColorImage(const DiColorImage *image,
-                           const signed long left,
-                           const signed long top,
+                           const signed long left_pos,
+                           const signed long top_pos,
                            const Uint16 src_cols,
                            const Uint16 src_rows,
                            const Uint16 dest_cols,
@@ -121,15 +121,15 @@ DiColorImage::DiColorImage(const DiColorImage *image,
         switch (image->InterData->getRepresentation())
         {
             case EPR_Uint8:
-                InterData = new DiColorScaleTemplate<Uint8>(image->InterData, image->Columns, image->Rows, left, top,
+                InterData = new DiColorScaleTemplate<Uint8>(image->InterData, image->Columns, image->Rows, left_pos, top_pos,
                     src_cols, src_rows, dest_cols, dest_rows, NumberOfFrames, image->BitsPerSample, interpolate);
                 break;
             case EPR_Uint16:
-                InterData = new DiColorScaleTemplate<Uint16>(image->InterData, image->Columns, image->Rows, left, top,
+                InterData = new DiColorScaleTemplate<Uint16>(image->InterData, image->Columns, image->Rows, left_pos, top_pos,
                     src_cols, src_rows, dest_cols, dest_rows, NumberOfFrames, image->BitsPerSample, interpolate);
                 break;
             case EPR_Uint32:
-                InterData = new DiColorScaleTemplate<Uint32>(image->InterData, image->Columns, image->Rows, left, top,
+                InterData = new DiColorScaleTemplate<Uint32>(image->InterData, image->Columns, image->Rows, left_pos, top_pos,
                     src_cols, src_rows, dest_cols, dest_rows, NumberOfFrames, image->BitsPerSample, interpolate);
                 break;
             default:
@@ -380,8 +380,8 @@ DiImage *DiColorImage::createImage(const unsigned long fstart,
 }
 
 
-DiImage *DiColorImage::createScale(const signed long left,
-                                   const signed long top,
+DiImage *DiColorImage::createScale(const signed long left_pos,
+                                   const signed long top_pos,
                                    const unsigned long src_cols,
                                    const unsigned long src_rows,
                                    const unsigned long dest_cols,
@@ -390,7 +390,7 @@ DiImage *DiColorImage::createScale(const signed long left,
                                    const int aspect,
                                    const Uint16 /*pvalue*/) const
 {
-    DiImage *image = new DiColorImage(this, left, top, (Uint16)src_cols, (Uint16)src_rows,
+    DiImage *image = new DiColorImage(this, left_pos, top_pos, (Uint16)src_cols, (Uint16)src_rows,
         (Uint16)dest_cols, (Uint16)dest_rows, interpolate, aspect);
     return image;
 }
@@ -694,7 +694,11 @@ int DiColorImage::writeBMP(FILE *stream,
  *
  * CVS/RCS Log:
  * $Log: dicoimg.cc,v $
- * Revision 1.27  2002-11-26 14:51:13  joergr
+ * Revision 1.28  2002-12-09 13:39:56  joergr
+ * Renamed parameter/local variable to avoid name clashes with global
+ * declaration left and/or right (used for as iostream manipulators).
+ *
+ * Revision 1.27  2002/11/26 14:51:13  joergr
  * Added PaletteColorLookupTableUID to the list of attributes to be removed
  * from a newly created dataset.
  *

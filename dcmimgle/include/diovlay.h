@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2001, OFFIS
+ *  Copyright (C) 1996-2002, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose: DicomOverlay (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-09-28 13:09:59 $
+ *  Update Date:      $Date: 2002-12-09 13:32:55 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/diovlay.h,v $
- *  CVS/RCS Revision: $Revision: 1.20 $
+ *  CVS/RCS Revision: $Revision: 1.21 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -76,15 +76,15 @@ class DiOverlay
 
     /** constructor, clip/scale
      *
-     ** @param  overlay  pointer to reference overlay object
-     *  @param  left     x-coordinate of new overlay origin (offset for all planes)
-     *  @param  top      y-coordinate of new overlay origin (offset for all planes)
-     *  @param  xfactor  scaling factor in x-direction
-     *  @param  yfactor  scaling factor in y-direction
+     ** @param  overlay   pointer to reference overlay object
+     *  @param  left_pos  x-coordinate of new overlay origin (offset for all planes)
+     *  @param  top_pos   y-coordinate of new overlay origin (offset for all planes)
+     *  @param  xfactor   scaling factor in x-direction
+     *  @param  yfactor   scaling factor in y-direction
      */
     DiOverlay(const DiOverlay *overlay,
-              const signed long left,
-              const signed long top,
+              const signed long left_pos,
+              const signed long top_pos,
               const double xfactor,
               const double yfactor);
 
@@ -193,15 +193,15 @@ class DiOverlay
 
     /** move plane to a new place
      *
-     ** @param  plane  index of plane (starting from 0) or group number (0x6000-0x60ff)
-     *  @param  left   new x-coordinate of the overlay plane origin
-     *  @param  left   new y-coordinate of the overlay plane origin
+     ** @param  plane     index of plane (starting from 0) or group number (0x6000-0x60ff)
+     *  @param  left_pos  new x-coordinate of the overlay plane origin
+     *  @param  top_pos   new y-coordinate of the overlay plane origin
      *
      ** @return status, true if successful, false otherwise
      */
     int placePlane(unsigned int plane,
-                   const signed int left,
-                   const signed int top);
+                   const signed int left_pos,
+                   const signed int top_pos);
 
     /** get group number of specified plane
      *
@@ -276,8 +276,8 @@ class DiOverlay
      *                       If group number already exists in the list of additional planes
      *                       the old one is replaced. If the number exists in the list of
      *                       planes stored in the image dataset the new plane hides it.
-     *  @param  left         x-coordinate of the plane origin
-     *  @param  top          y-coordinate of the plane origin
+     *  @param  left_pos     x-coordinate of the plane origin
+     *  @param  top_pos      y-coordinate of the plane origin
      *  @param  columns      width of the overlay plane (in pixels)
      *  @param  rows         height of the overlay plane
      *  @param  data         element where the plane data is stored
@@ -288,8 +288,8 @@ class DiOverlay
      ** @return status, true if successful, false otherwise
      */
     int addPlane(const unsigned int group,
-                 const signed int left,
-                 const signed int top,
+                 const signed int left_pos,
+                 const signed int top_pos,
                  const unsigned int columns,
                  const unsigned int rows,
                  const DcmOverlayData &data,
@@ -327,25 +327,25 @@ class DiOverlay
     /** get overlay plane data as an array of 1/8/16 bit values.
      *  Memory isn't handled internally and must therefore be deleted from calling program.
      *
-     ** @param  frame    number of frame
-     *  @param  plane    index of plane (starting from 0) or group number (0x6000-0x60ff)
-     *  @param  left     get x-coordinate of the plane origin
-     *  @param  top      get y-coordinate of the plane origin
-     *  @param  width    get width of the overlay plane (in pixels)
-     *  @param  height   get height of the overlay plane
-     *  @param  mode     get overlay plane mode
-     *  @param  columns  width of the surrounding image
-     *  @param  rows     height of the surrounding image
-     *  @param  bits     number of bits (stored) in the resulting array, default: 8
-     *  @param  fore     foreground color used for the plane (default: 0xff = white, for 8 bits)
-     *  @param  back     transparent background color (default: 0x00 = black)
+     ** @param  frame     number of frame
+     *  @param  plane     index of plane (starting from 0) or group number (0x6000-0x60ff)
+     *  @param  left_pos  get x-coordinate of the plane origin
+     *  @param  top_pos   get y-coordinate of the plane origin
+     *  @param  width     get width of the overlay plane (in pixels)
+     *  @param  height    get height of the overlay plane
+     *  @param  mode      get overlay plane mode
+     *  @param  columns   width of the surrounding image
+     *  @param  rows      height of the surrounding image
+     *  @param  bits      number of bits (stored) in the resulting array, default: 8
+     *  @param  fore      foreground color used for the plane (default: 0xff = white, for 8 bits)
+     *  @param  back      transparent background color (default: 0x00 = black)
      *
      ** @return pointer to pixel data if successful, NULL otherwise
      */
     void *getPlaneData(const unsigned long frame,
                        unsigned int plane,
-                       unsigned int &left,
-                       unsigned int &top,
+                       unsigned int &left_pos,
+                       unsigned int &top_pos,
                        unsigned int &width,
                        unsigned int &height,
                        EM_Overlay &mode,
@@ -405,7 +405,7 @@ class DiOverlay
 
     /** initialize new overlay managing object
      *
-     ** @param  overlay  reference object used as a template  
+     ** @param  overlay  reference object used as a template
      *
      ** @return pointer to a new array of pixel data
      */
@@ -446,7 +446,7 @@ class DiOverlay
 
     /** check whether the specified plane is valid. and determine maximum resolution
      *  and number of frames which are common for all overlay planes so far.
-     *    
+     *
      ** @param  plane  index of plane (0..15)
      *  @param  mode   if true the maximum number of frames is determined, otherwise not
      *
@@ -489,7 +489,11 @@ class DiOverlay
  *
  * CVS/RCS Log:
  * $Log: diovlay.h,v $
- * Revision 1.20  2001-09-28 13:09:59  joergr
+ * Revision 1.21  2002-12-09 13:32:55  joergr
+ * Renamed parameter/local variable to avoid name clashes with global
+ * declaration left and/or right (used for as iostream manipulators).
+ *
+ * Revision 1.20  2001/09/28 13:09:59  joergr
  * Added method to extract embedded overlay planes from pixel data and store
  * them in group (6xxx,3000) format.
  *

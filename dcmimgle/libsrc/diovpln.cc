@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2001, OFFIS
+ *  Copyright (C) 1996-2002, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose: DicomOverlayPlane (Source) - Multiframe Overlays UNTESTED !
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-09-28 13:18:28 $
+ *  Update Date:      $Date: 2002-12-09 13:34:52 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/libsrc/diovpln.cc,v $
- *  CVS/RCS Revision: $Revision: 1.25 $
+ *  CVS/RCS Revision: $Revision: 1.26 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -127,7 +127,7 @@ DiOverlayPlane::DiOverlayPlane(const DiDocument *docu,
         }
 #endif
         /* overlay origin is numbered from 1 */
-        Top--;                                                      
+        Top--;
         Left--;
         /* check overlay resolution */
         tag.setElement(DCM_OverlayRows.getElement());
@@ -195,8 +195,8 @@ DiOverlayPlane::DiOverlayPlane(const DiDocument *docu,
 
 
 DiOverlayPlane::DiOverlayPlane(const unsigned int group,
-                               const Sint16 left,
-                               const Sint16 top,
+                               const Sint16 left_pos,
+                               const Sint16 top_pos,
                                const Uint16 columns,
                                const Uint16 rows,
                                const DcmOverlayData &data,
@@ -205,8 +205,8 @@ DiOverlayPlane::DiOverlayPlane(const unsigned int group,
                                const EM_Overlay mode)
   : NumberOfFrames(1),
     ImageFrameOrigin(0),
-    Top(top),
-    Left(left),
+    Top(top_pos),
+    Left(left_pos),
     Height(rows),
     Width(columns),
     Rows(rows),
@@ -563,13 +563,13 @@ void DiOverlayPlane::setFlipping(const int horz,
 
 
 void DiOverlayPlane::setRotation(const int degree,
-                                 const signed long left,
-                                 const signed long top,
+                                 const signed long left_pos,
+                                 const signed long top_pos,
                                  const Uint16 columns,
                                  const Uint16 rows)
 {
     if (degree == 180)                          // equal to v/h flip
-        setFlipping(1, 1, left + columns, top + rows);
+        setFlipping(1, 1, left_pos + columns, top_pos + rows);
     else if ((degree == 90) || (degree == 270))
     {
         Uint16 us = Height;                     // swap visible width/height
@@ -584,16 +584,16 @@ void DiOverlayPlane::setRotation(const int degree,
         {
             Sint16 ss = Left;
             us = StartLeft;
-            Left = (Sint16)((signed long)columns - Width - Top + top);
+            Left = (Sint16)((signed long)columns - Width - Top + top_pos);
             StartLeft = (Uint16)((signed long)Columns - Width - StartTop);
-            Top = (Sint16)(ss - left);
+            Top = (Sint16)(ss - left_pos);
             StartTop = us;
         } else {                                // rotate left
             Sint16 ss = Left;
             us = StartLeft;
-            Left = (Sint16)(Top - top);
+            Left = (Sint16)(Top - top_pos);
             StartLeft = StartTop;
-            Top = (Sint16)((signed long)rows - Height - ss + left);
+            Top = (Sint16)((signed long)rows - Height - ss + left_pos);
             StartTop = (Uint16)((signed long)Rows - Height - us);
         }
     }
@@ -604,7 +604,11 @@ void DiOverlayPlane::setRotation(const int degree,
  *
  * CVS/RCS Log:
  * $Log: diovpln.cc,v $
- * Revision 1.25  2001-09-28 13:18:28  joergr
+ * Revision 1.26  2002-12-09 13:34:52  joergr
+ * Renamed parameter/local variable to avoid name clashes with global
+ * declaration left and/or right (used for as iostream manipulators).
+ *
+ * Revision 1.25  2001/09/28 13:18:28  joergr
  * Added method to extract embedded overlay planes from pixel data and store
  * them in group (6xxx,3000) format.
  *

@@ -22,9 +22,9 @@
  *  Purpose: DicomMonochromePixelTemplate (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-10-21 10:13:51 $
+ *  Update Date:      $Date: 2002-12-09 13:32:54 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/dimopxt.h,v $
- *  CVS/RCS Revision: $Revision: 1.20 $
+ *  CVS/RCS Revision: $Revision: 1.21 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -188,8 +188,8 @@ class DiMonoPixelTemplate
 
     /** get automatically computed Region of Interest (ROI) window
      *
-     ** @param  left       x-coordinate of the top left-hand corner of the ROI (starting from 0)
-     *  @param  top        y-coordinate of the top left-hand corner of the ROI (starting from 0)
+     ** @param  left_pos   x-coordinate of the top left-hand corner of the ROI (starting from 0)
+     *  @param  top_pos    y-coordinate of the top left-hand corner of the ROI (starting from 0)
      *  @param  width      width in pixels of the rectangular ROI (minimum: 1)
      *  @param  height     height in pixels of the rectangular ROI (minimum: 1)
      *  @param  columns    number of columns (width) of the associated image
@@ -200,8 +200,8 @@ class DiMonoPixelTemplate
      *
      ** @return status, true if successful, false otherwise
      */
-    virtual int getRoiWindow(const unsigned long left,
-                             const unsigned long top,
+    virtual int getRoiWindow(const unsigned long left_pos,
+                             const unsigned long top_pos,
                              const unsigned long width,
                              const unsigned long height,
                              const unsigned long columns,
@@ -211,20 +211,20 @@ class DiMonoPixelTemplate
                              double &voiWidth)
     {
         int result = 0;
-        if ((Data != NULL) && (left < columns) && (top < rows))
+        if ((Data != NULL) && (left_pos < columns) && (top_pos < rows))
         {
-            register T *p = Data + (columns * rows * frame) + (top * columns) + left;
-            const unsigned long right = (left + width < columns) ? left + width : columns;
-            const unsigned long bottom = (top + height < rows) ? top + height : rows;
-            const unsigned long skip_x = left + (columns - right);
+            register T *p = Data + (columns * rows * frame) + (top_pos * columns) + left_pos;
+            const unsigned long right_pos = (left_pos + width < columns) ? left_pos + width : columns;
+            const unsigned long bottom = (top_pos + height < rows) ? top_pos + height : rows;
+            const unsigned long skip_x = left_pos + (columns - right_pos);
             register unsigned long x;
             register unsigned long y;
             register T value = 0;
             register T min = *p;                    // get first pixel as initial value for min ...
             register T max = min;                   // ... and max
-            for (y = top; y < bottom; y++)
+            for (y = top_pos; y < bottom; y++)
             {
-                for (x = left; x < right; x++)
+                for (x = left_pos; x < right_pos; x++)
                 {
                     value = *(p++);
                     if (value < min)
@@ -427,7 +427,11 @@ class DiMonoPixelTemplate
  *
  * CVS/RCS Log:
  * $Log: dimopxt.h,v $
- * Revision 1.20  2002-10-21 10:13:51  joergr
+ * Revision 1.21  2002-12-09 13:32:54  joergr
+ * Renamed parameter/local variable to avoid name clashes with global
+ * declaration left and/or right (used for as iostream manipulators).
+ *
+ * Revision 1.20  2002/10/21 10:13:51  joergr
  * Corrected wrong calculation of min/max pixel value in cases where the
  * stored pixel data exceeds the expected size.
  * Thanks to Andreas Barth <Andreas.Barth@bruker-biospin.de> for the bug

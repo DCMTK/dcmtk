@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2001, OFFIS
+ *  Copyright (C) 1996-2002, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose: DicomScaleTemplates (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-04-16 13:53:12 $
+ *  Update Date:      $Date: 2002-12-09 13:32:56 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/discalet.h,v $
- *  CVS/RCS Revision: $Revision: 1.19 $
+ *  CVS/RCS Revision: $Revision: 1.20 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -104,8 +104,8 @@ class DiScaleTemplate
      ** @param  planes     number of planes (1 or 3)
      *  @param  columns    width of source image
      *  @param  rows       height of source image
-     *  @param  left       left coordinate of clipping area
-     *  @param  top        top coordinate of clipping area
+     *  @param  left_pos   left coordinate of clipping area
+     *  @param  top_pos    top coordinate of clipping area
      *  @param  src_cols   width of clipping area
      *  @param  src_rows   height of clipping area
      *  @param  dest_cols  width of destination image (scaled image)
@@ -116,8 +116,8 @@ class DiScaleTemplate
     DiScaleTemplate(const int planes,
                     const Uint16 columns,           /* resolution of source image */
                     const Uint16 rows,
-                    const signed long left,         /* origin of clipping area */
-                    const signed long top,
+                    const signed long left_pos,     /* origin of clipping area */
+                    const signed long top_pos,
                     const Uint16 src_cols,          /* extension of clipping area */
                     const Uint16 src_rows,
                     const Uint16 dest_cols,         /* extension of destination image */
@@ -125,8 +125,8 @@ class DiScaleTemplate
                     const Uint32 frames,            /* number of frames */
                     const int bits = 0)
       : DiTransTemplate<T>(planes, src_cols, src_rows, dest_cols, dest_rows, frames, bits),
-        Left(left),
-        Top(top),
+        Left(left_pos),
+        Top(top_pos),
         Columns(columns),
         Rows(rows)
     {
@@ -879,7 +879,11 @@ class DiScaleTemplate
  *
  * CVS/RCS Log:
  * $Log: discalet.h,v $
- * Revision 1.19  2002-04-16 13:53:12  joergr
+ * Revision 1.20  2002-12-09 13:32:56  joergr
+ * Renamed parameter/local variable to avoid name clashes with global
+ * declaration left and/or right (used for as iostream manipulators).
+ *
+ * Revision 1.19  2002/04/16 13:53:12  joergr
  * Added configurable support for C++ ANSI standard includes (e.g. streams).
  * Thanks to Andreas Barth <Andreas.Barth@bruker-biospin.de> for his
  * contribution.

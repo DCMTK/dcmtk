@@ -22,9 +22,9 @@
  *  Purpose: DicomColorScaleTemplate (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-11-09 16:45:23 $
+ *  Update Date:      $Date: 2002-12-09 13:37:52 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/include/Attic/dicosct.h,v $
- *  CVS/RCS Revision: $Revision: 1.11 $
+ *  CVS/RCS Revision: $Revision: 1.12 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -61,21 +61,21 @@ class DiColorScaleTemplate
      ** @param  pixel        pointer to intermediate pixel representation
      *  @param  columns      width of source image
      *  @param  rows         height of source image
-     *  @param  left         left coordinate of clipping area
-     *  @param  top          top coordinate of clipping area
+     *  @param  left_pos     left coordinate of clipping area
+     *  @param  top_pos      top coordinate of clipping area
      *  @param  src_cols     width of clipping area
      *  @param  src_rows     height of clipping area
      *  @param  dest_cols    width of destination image (scaled image)
      *  @param  dest_rows    height of destination image
-     *  @param  frames       number of frames 
+     *  @param  frames       number of frames
      *  @param  bits         number of bits per plane/pixel
      *  @param  interpolate  use of interpolation when scaling
-     */     
+     */
     DiColorScaleTemplate(const DiColorPixel *pixel,
                          const Uint16 columns,
                          const Uint16 rows,
-                         const signed long left,
-                         const signed long top,
+                         const signed long left_pos,
+                         const signed long top_pos,
                          const Uint16 src_cols,
                          const Uint16 src_rows,
                          const Uint16 dest_cols,
@@ -84,7 +84,7 @@ class DiColorScaleTemplate
                          const int bits,
                          const int interpolate)
       : DiColorPixelTemplate<T>(pixel, (unsigned long)dest_cols * (unsigned long)dest_rows * frames),
-        DiScaleTemplate<T>(3, columns, rows, left, top, src_cols, src_rows, dest_cols, dest_rows, frames, bits)
+        DiScaleTemplate<T>(3, columns, rows, left_pos, top_pos, src_cols, src_rows, dest_cols, dest_rows, frames, bits)
    {
         if ((pixel != NULL) && (pixel->getCount() > 0))
         {
@@ -99,7 +99,7 @@ class DiColorScaleTemplate
             }
         }
     }
-    
+
     /** destructor
      */
     virtual ~DiColorScaleTemplate()
@@ -130,7 +130,11 @@ class DiColorScaleTemplate
  *
  * CVS/RCS Log:
  * $Log: dicosct.h,v $
- * Revision 1.11  2001-11-09 16:45:23  joergr
+ * Revision 1.12  2002-12-09 13:37:52  joergr
+ * Renamed parameter/local variable to avoid name clashes with global
+ * declaration left and/or right (used for as iostream manipulators).
+ *
+ * Revision 1.11  2001/11/09 16:45:23  joergr
  * Updated/Enhanced comments.
  *
  * Revision 1.10  2001/06/01 15:49:30  meichel

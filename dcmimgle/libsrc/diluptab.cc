@@ -22,9 +22,9 @@
  *  Purpose: DicomLookupTable (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-07-18 12:36:02 $
+ *  Update Date:      $Date: 2002-12-09 13:34:50 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/libsrc/diluptab.cc,v $
- *  CVS/RCS Revision: $Revision: 1.26 $
+ *  CVS/RCS Revision: $Revision: 1.27 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -330,8 +330,8 @@ void DiLookupTable::checkTable(unsigned long count,
 
 
 void DiLookupTable::checkBits(const Uint16 bits,
-                              const Uint16 right,
-                              const Uint16 wrong)
+                              const Uint16 rightBits,
+                              const Uint16 wrongBits)
 {
     if ((bits < MIN_TABLE_ENTRY_SIZE) || (bits > MAX_TABLE_ENTRY_SIZE))
     {
@@ -346,15 +346,15 @@ void DiLookupTable::checkBits(const Uint16 bits,
         else
             Bits = MAX_TABLE_ENTRY_SIZE;
     }
-    else if (bits == wrong)
+    else if (bits == wrongBits)
     {
         if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Warnings))
         {
             ofConsole.lockCerr() << "WARNING: unsuitable value for 'BitsPerTableEntry' (" << bits << ") "
-                                 << "... assuming " << right << " !" << endl;
+                                 << "... assuming " << rightBits << " !" << endl;
             ofConsole.unlockCerr();
         }
-        Bits = right;
+        Bits = rightBits;
     } else {
 
         /* do something heuristically in the future, e.g. create a 'Mask'? */
@@ -595,7 +595,11 @@ OFBool DiLookupTable::operator==(const DiLookupTable &lut)
  *
  * CVS/RCS Log:
  * $Log: diluptab.cc,v $
- * Revision 1.26  2002-07-18 12:36:02  joergr
+ * Revision 1.27  2002-12-09 13:34:50  joergr
+ * Renamed parameter/local variable to avoid name clashes with global
+ * declaration left and/or right (used for as iostream manipulators).
+ *
+ * Revision 1.26  2002/07/18 12:36:02  joergr
  * Corrected typos.
  *
  * Revision 1.25  2002/06/26 16:12:01  joergr

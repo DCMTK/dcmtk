@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2001, OFFIS
+ *  Copyright (C) 1996-2002, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,10 +21,10 @@
  *
  *  Purpose: DicomMonochrome1Image (Source)
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-06-01 15:49:56 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2002-12-09 13:34:50 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/libsrc/dimo1img.cc,v $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -47,7 +47,7 @@ DiMono1Image::DiMono1Image(const DiDocument *docu,
                            const EI_Status status)
   : DiMonoImage(docu, status)
 {
-} 
+}
 
 
 DiMono1Image::DiMono1Image(const DiMonoImage *image,
@@ -59,16 +59,16 @@ DiMono1Image::DiMono1Image(const DiMonoImage *image,
 
 
 DiMono1Image::DiMono1Image(const DiMonoImage *image,
-                           const signed long left,
-                           const signed long top,
+                           const signed long left_pos,
+                           const signed long top_pos,
                            const Uint16 src_cols,
-                           const Uint16 src_rows,                 
+                           const Uint16 src_rows,
                            const Uint16 dest_cols,
                            const Uint16 dest_rows,
                            const int interpolate,
                            const int aspect,
                            const Uint16 pvalue)
-  : DiMonoImage(image, left, top, src_cols, src_rows, dest_cols, dest_rows, interpolate, aspect, pvalue)
+  : DiMonoImage(image, left_pos, top_pos, src_cols, src_rows, dest_cols, dest_rows, interpolate, aspect, pvalue)
 {
 }
 
@@ -126,17 +126,17 @@ DiImage *DiMono1Image::createImage(const unsigned long fstart,
 }
 
 
-DiImage *DiMono1Image::createScale(const signed long left,
-                                   const signed long top,
+DiImage *DiMono1Image::createScale(const signed long left_pos,
+                                   const signed long top_pos,
                                    const unsigned long src_cols,
-                                   const unsigned long src_rows,                 
+                                   const unsigned long src_rows,
                                    const unsigned long dest_cols,
                                    const unsigned long dest_rows,
                                    const int interpolate,
                                    const int aspect,
                                    const Uint16 pvalue) const
 {
-    DiImage *image = new DiMono1Image(this, (Uint16)left, (Uint16)top, (Uint16)src_cols, (Uint16)src_rows,
+    DiImage *image = new DiMono1Image(this, (Uint16)left_pos, (Uint16)top_pos, (Uint16)src_cols, (Uint16)src_rows,
         (Uint16)dest_cols, (Uint16)dest_rows, interpolate, aspect,pvalue);
     return image;
 }
@@ -169,7 +169,11 @@ DiImage *DiMono1Image::createMono(const double,
  *
  * CVS/RCS Log:
  * $Log: dimo1img.cc,v $
- * Revision 1.7  2001-06-01 15:49:56  meichel
+ * Revision 1.8  2002-12-09 13:34:50  joergr
+ * Renamed parameter/local variable to avoid name clashes with global
+ * declaration left and/or right (used for as iostream manipulators).
+ *
+ * Revision 1.7  2001/06/01 15:49:56  meichel
  * Updated copyright header
  *
  * Revision 1.6  2000/03/08 16:24:29  meichel

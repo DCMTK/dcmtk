@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DVPSOverlay
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-12-18 10:36:41 $
- *  CVS/RCS Revision: $Revision: 1.13 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2002-12-09 13:28:16 $
+ *  CVS/RCS Revision: $Revision: 1.14 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -82,7 +82,7 @@ OFCondition DVPSOverlay::read(DcmItem &dset, Uint8 ovGroup, Uint8 asGroup)
 {
   OFCondition result = EC_Normal;
   DcmStack stack;
-  
+
   if (asGroup==0xFF) asGroup=ovGroup;
   overlayGroup = asGroup;
   Uint16 gtag = 0x6000 + ovGroup;
@@ -125,7 +125,7 @@ OFCondition DVPSOverlay::read(DcmItem &dset, Uint8 ovGroup, Uint8 asGroup)
       logstream->unlockCerr();
     }
   }
-  
+
   if (overlayColumns.getLength() == 0)
   {
     result=EC_IllegalCall;
@@ -241,7 +241,7 @@ OFCondition DVPSOverlay::write(DcmItem &dset)
   OFCondition result = EC_Normal;
   DcmElement *delem=NULL;
   Uint16 repeatingGroup = 0x6000 + overlayGroup;
-  
+
   ADD_REPEATING_ELEMENT_TO_DATASET(DcmUnsignedShort, overlayRows, repeatingGroup)
   ADD_REPEATING_ELEMENT_TO_DATASET(DcmUnsignedShort, overlayColumns, repeatingGroup)
   ADD_REPEATING_ELEMENT_TO_DATASET(DcmCodeString, overlayType, repeatingGroup)
@@ -269,14 +269,14 @@ OFBool DVPSOverlay::isSuitableAsShutter(unsigned long x, unsigned long y)
 {
   // check that overlay is Graphic, not ROI.
   if (isROI()) return OFFalse;
-  
+
   // check if overlay origin is 1\1
   Sint16 originX=0;
   Sint16 originY=0;
   OFCondition result = overlayOrigin.getSint16(originX,0);
   if (result==EC_Normal) result = overlayOrigin.getSint16(originY,1);
   if ((result != EC_Normal)||(originX != 1)||(originY != 1)) return OFFalse;
-  
+
   // check if overlay size matches given image size
   Uint16 rows=0;
   Uint16 columns=0;
@@ -298,7 +298,7 @@ const char *DVPSOverlay::getOverlayDescription()
   char *c = NULL;
   if (EC_Normal == overlayDescription.getString(c)) return c; else return NULL;
 }
-  
+
 OFBool DVPSOverlay::isROI()
 {
   OFString aString;
@@ -326,19 +326,19 @@ OFCondition DVPSOverlay::activate(DicomImage &image, OFBool asShutter, Uint16 pv
   if (result==EC_Normal) result = overlayRows.getUint16(sizeY,0);
   if (result==EC_Normal)
   {
-    signed int left = (signed int) originX;
-    signed int top  = (signed int) originY;
+    signed int left_pos = (signed int) originX;
+    signed int top_pos = (signed int) originY;
     unsigned int columns = (unsigned int)sizeX;
     unsigned int rows = (unsigned int)sizeY;
-    if (0 == image.addOverlay(group, left, top, columns, rows,
+    if (0 == image.addOverlay(group, left_pos, top_pos, columns, rows,
       overlayData, overlayLabel, overlayDescription, mode))
-      result = EC_IllegalCall;
+        result = EC_IllegalCall;
     if ((asShutter)&&(EC_Normal==result))
     {
       if (0 == image.showOverlay(group, pvalue)) result = EC_IllegalCall;
     }
-  }  
-  return result;                      
+  }
+  return result;
 }
 
 void DVPSOverlay::setLog(OFConsole *stream, OFBool verbMode, OFBool dbgMode)
@@ -351,7 +351,11 @@ void DVPSOverlay::setLog(OFConsole *stream, OFBool verbMode, OFBool dbgMode)
 
 /*
  *  $Log: dvpsov.cc,v $
- *  Revision 1.13  2001-12-18 10:36:41  meichel
+ *  Revision 1.14  2002-12-09 13:28:16  joergr
+ *  Renamed parameter/local variable to avoid name clashes with global
+ *  declaration left and/or right (used for as iostream manipulators).
+ *
+ *  Revision 1.13  2001/12/18 10:36:41  meichel
  *  Minor modifications to avoid warning on Sun CC 2.0.1
  *
  *  Revision 1.12  2001/09/26 15:36:28  meichel

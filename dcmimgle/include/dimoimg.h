@@ -22,9 +22,9 @@
  *  Purpose: DicomMonochromeImage (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-08-02 15:03:53 $
+ *  Update Date:      $Date: 2002-12-09 13:32:52 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/dimoimg.h,v $
- *  CVS/RCS Revision: $Revision: 1.36 $
+ *  CVS/RCS Revision: $Revision: 1.37 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -202,21 +202,21 @@ class DiMonoImage
     int setMinMaxWindow(const int idx = 1);
 
     /** set automatically calculated VOI window for the specified Region of Interest (ROI).
-     *  The ROI is specified by means of a rectangle (left, top, width, height).
+     *  The ROI is specified by means of a rectangle (left_pos, top_pos, width, height).
      *  Possibly active VOI LUT is implicitly disabled.
      *
-     ** @param  left    x-coordinate of the top left-hand corner of the ROI (starting from 0)
-     *  @param  top     y-coordinate of the top left-hand corner of the ROI (starting from 0)
-     *  @param  width   width in pixels of the rectangular ROI (minimum: 1)
-     *  @param  height  height in pixels of the rectangular ROI (minimum: 1)
-     *  @param  frame   index of the frame to be used for the calculation
+     ** @param  left_pos  x-coordinate of the top left-hand corner of the ROI (starting from 0)
+     *  @param  top_pos   y-coordinate of the top left-hand corner of the ROI (starting from 0)
+     *  @param  width     width in pixels of the rectangular ROI (minimum: 1)
+     *  @param  height    height in pixels of the rectangular ROI (minimum: 1)
+     *  @param  frame     index of the frame to be used for the calculation
      *
      ** @return true if sucessful (1 = window has changed,
      *                             2 = new window is the same as previous one),
      *          false otherwise
      */
-    int setRoiWindow(const unsigned long left,
-                     const unsigned long top,
+    int setRoiWindow(const unsigned long left_pos,
+                     const unsigned long top_pos,
                      const unsigned long width,
                      const unsigned long height,
                      const unsigned long frame);
@@ -417,8 +417,8 @@ class DiMonoImage
      *  replaces old overlay plane if group number already exists.
      *
      ** @param  group        group number (0x60nn) of overlay plane
-     *  @param  left         x coordinate of plane orgin (referring to image origin)
-     *  @param  top          y coordinate of plane origin
+     *  @param  left_pos     x coordinate of plane orgin (referring to image origin)
+     *  @param  top_pos      y coordinate of plane origin
      *  @param  columns      width of overlay plane (in pixels)
      *  @param  rows         height of overlay plane (in pixels)
      *  @param  data         overlay plane data (dcmdata element)
@@ -430,8 +430,8 @@ class DiMonoImage
      *                                                          2 = replaced existing plane)
      */
     int addOverlay(const unsigned int group,
-                   const signed int left,
-                   const signed int top,
+                   const signed int left_pos,
+                   const signed int top_pos,
                    const unsigned int columns,
                    const unsigned int rows,
                    const DcmOverlayData &data,
@@ -551,24 +551,24 @@ class DiMonoImage
     /** create bitmap for specified overlay plane.
      *  (up to 16 bits per pixel with two values: fore and back)
      *
-     ** @param  frame   index of frame used for output
-     *  @param  plane   number (0..15) or group number (0x60nn) of overlay plane
-     *  @param  left    returns x coordinate of plane's origin
-     *  @param  top     returns y coordinate of plane's origin
-     *  @param  width   returns width of overlay plane (in pixels)
-     *  @param  height  returns height of overlay plane (in pixels)
-     *  @param  mode    return display mode (see 'diutils.h')
-     *  @param  idx     index of overlay group (0 = dataset, 1 = additional, 2 = '1' plane hides '0' plane)
-     *  @param  bits    number of bits (stored) in the resulting array, default: 8
-     *  @param  fore    foreground color to be set in bitmap, default: 255
-     *  @param  back    background color to be set in bitmap (transparent), default: 0
+     ** @param  frame     index of frame used for output
+     *  @param  plane     number (0..15) or group number (0x60nn) of overlay plane
+     *  @param  left_pos  returns x coordinate of plane's origin
+     *  @param  top_pos   returns y coordinate of plane's origin
+     *  @param  width     returns width of overlay plane (in pixels)
+     *  @param  height    returns height of overlay plane (in pixels)
+     *  @param  mode      return display mode (see 'diutils.h')
+     *  @param  idx       index of overlay group (0 = dataset, 1 = additional, 2 = '1' plane hides '0' plane)
+     *  @param  bits      number of bits (stored) in the resulting array, default: 8
+     *  @param  fore      foreground color to be set in bitmap, default: 255
+     *  @param  back      background color to be set in bitmap (transparent), default: 0
      *
      ** @return pointer to overlay plane data (internal memory buffer)
      */
     const void *getOverlayData(const unsigned long frame,
                                 const unsigned int plane,
-                                unsigned int &left,
-                                unsigned int &top,
+                                unsigned int &left_pos,
+                                unsigned int &top_pos,
                                 unsigned int &width,
                                 unsigned int &height,
                                 EM_Overlay &mode,
@@ -795,9 +795,9 @@ class DiMonoImage
     /** constructor, scale/clip
      *
      ** @param  image         pointer to reference image
-     *  @param  left          x coordinate of top left corner of area to be scaled
+     *  @param  left_pos      x coordinate of top left corner of area to be scaled
      *                        (referring to image origin, negative values create a border around the image)
-     *  @param  top           y coordinate of top left corner of area to be scaled
+     *  @param  top_pos       y coordinate of top left corner of area to be scaled
      *  @param  src_cols      width of area to be scaled
      *  @param  src_rows      height of area to be scaled
      *  @param  dest_cols     width of scaled image (in pixels)
@@ -810,8 +810,8 @@ class DiMonoImage
      *  @param  pvalue        P-value used for the border outside the image (0..65535)
      */
     DiMonoImage(const DiMonoImage *image,
-                const signed long left,
-                const signed long top,
+                const signed long left_pos,
+                const signed long top_pos,
                 const Uint16 src_cols,
                 const Uint16 src_rows,
                 const Uint16 dest_cols,
@@ -1112,7 +1112,11 @@ class DiMonoImage
  *
  * CVS/RCS Log:
  * $Log: dimoimg.h,v $
- * Revision 1.36  2002-08-02 15:03:53  joergr
+ * Revision 1.37  2002-12-09 13:32:52  joergr
+ * Renamed parameter/local variable to avoid name clashes with global
+ * declaration left and/or right (used for as iostream manipulators).
+ *
+ * Revision 1.36  2002/08/02 15:03:53  joergr
  * Added function to write the current image (not only a selected frame) to a
  * DICOM dataset.
  *

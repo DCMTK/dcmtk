@@ -21,14 +21,14 @@
  *
  *  Purpose: DicomOverlayPlane (Header) - Multiframe Overlays UNTESTED !
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-11-27 14:08:07 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2002-12-09 13:32:55 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/diovpln.h,v $
- *  CVS/RCS Revision: $Revision: 1.21 $
+ *  CVS/RCS Revision: $Revision: 1.22 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
- * 
+ *
  */
 
 
@@ -79,8 +79,8 @@ class DiOverlayPlane
     /** constructor, additional
      *
      ** @param  group        group number of the overlay plane
-     *  @param  left         x-coordinate of the plane origin
-     *  @param  topt         y-coordinate of the plane origin
+     *  @param  left_pos     x-coordinate of the plane origin
+     *  @param  top_pos      y-coordinate of the plane origin
      *  @param  columns      width of the overlay plane
      *  @param  rows         height of the overlay plane
      *  @param  data         element containing the plane data
@@ -89,8 +89,8 @@ class DiOverlayPlane
      *  @param  mode         overlay plane mode
      */
     DiOverlayPlane(const unsigned int group,
-                   const Sint16 left,
-                   const Sint16 top,
+                   const Sint16 left_pos,
+                   const Sint16 top_pos,
                    const Uint16 columns,
                    const Uint16 rows,
                    const DcmOverlayData &data,
@@ -124,24 +124,24 @@ class DiOverlayPlane
 
     /** get x-coordinate of overlay plane origin
      *
-     ** @param  left  offset to be subtracted from the actual value (optional)
+     ** @param  left_pos  offset to be subtracted from the actual value (optional)
      *
      ** @return x-coordinate of overlay plane origin
      */
-    inline Sint16 getLeft(const Sint32 left = 0) const
+    inline Sint16 getLeft(const Sint32 left_pos = 0) const
     {
-        return (Sint16)((Sint32)Left - left);
+        return (Sint16)((Sint32)Left - left_pos);
     }
 
     /** get y-coordinate of overlay plane origin
      *
-     ** @param  top  offset to be subtracted from the actual value (optional)
+     ** @param  top_pos  offset to be subtracted from the actual value (optional)
      *
      ** @return y-coordinate of overlay plane origin
      */
-    inline Sint16 getTop(const Sint32 top = 0) const
+    inline Sint16 getTop(const Sint32 top_pos = 0) const
     {
-        return (Sint16)((Sint32)Top - top);
+        return (Sint16)((Sint32)Top - top_pos);
     }
 
     /** get width of overlay plane
@@ -164,24 +164,24 @@ class DiOverlayPlane
 
     /** get right border of overlay plane origin
      *
-     ** @param  left  offset to be subtracted from the actual value (optional).
+     ** @param  left_pos  offset to be subtracted from the actual value (optional).
      *
      ** @return right border of overlay plane origin. Negative values are set to 0.
      */
-    inline Uint16 getRight(const Sint32 left = 0) const
+    inline Uint16 getRight(const Sint32 left_pos = 0) const
     {
-        return ((Sint32)Left + (Sint32)Width - left > 0) ? (Uint16)((Sint32)Left + (Sint32)Width - left) : 0;
+        return ((Sint32)Left + (Sint32)Width - left_pos > 0) ? (Uint16)((Sint32)Left + (Sint32)Width - left_pos) : 0;
     }
 
     /** get bottom border of overlay plane origin
      *
-     ** @param  top  offset to be subtracted from the actual value (optional).
+     ** @param  top_pos  offset to be subtracted from the actual value (optional).
      *
      ** @return bottom border of overlay plane origin. Negative values are set to 0.
      */
-    inline Uint16 getBottom(const Sint32 top = 0) const
+    inline Uint16 getBottom(const Sint32 top_pos = 0) const
     {
-        return ((Sint32)Top + (Sint32)Height - top > 0) ? (Uint16)((Sint32)Top + (Sint32)Height - top) : 0;
+        return ((Sint32)Top + (Sint32)Height - top_pos > 0) ? (Uint16)((Sint32)Top + (Sint32)Height - top_pos) : 0;
     }
 
     /** check whether overlay plane is valid
@@ -215,18 +215,18 @@ class DiOverlayPlane
     {
         Visible = 0;
     }
-    
+
     /** move overlay plane to a new place
      *
-     ** @param  left  x-coordinate of the new plane origin (maybe negative)
-     *  @param  top   y-coordinate of the new plane origin (maybe negative)
+     ** @param  left_pos  x-coordinate of the new plane origin (maybe negative)
+     *  @param  top_pos   y-coordinate of the new plane origin (maybe negative)
      */
-    inline void place(const signed int left,
-                      const signed int top)
+    inline void place(const signed int left_pos,
+                      const signed int top_pos)
     {
-        Left = left; Top = top;
+        Left = left_pos; Top = top_pos;
     }
-    
+
     /** set scaling factor in x- and y-direction
      *
      ** @param  xfactor  scaling factor in x-direction
@@ -246,18 +246,18 @@ class DiOverlayPlane
                      const int vert,
                      const signed long columns,
                      const signed long rows);
-                    
+
     /** set rotation
      *
-     ** @param  degree   angle by which the plane should be rotated
-     *  @param  left     x-coordinate of the origin for all overlay planes
-     *  @param  top      y-coordinate of the origin for all overlay planes
-     *  @param  columns  width of surrounding image (already rotated)
-     *  @param  rows     height of surrounding image (already rotated)
+     ** @param  degree    angle by which the plane should be rotated
+     *  @param  left_pos  x-coordinate of the origin for all overlay planes
+     *  @param  top_pos   y-coordinate of the origin for all overlay planes
+     *  @param  columns   width of surrounding image (already rotated)
+     *  @param  rows      height of surrounding image (already rotated)
      */
     void setRotation(const int degree,
-                     const signed long left,
-                     const signed long top,
+                     const signed long left_pos,
+                     const signed long top_pos,
                      const Uint16 columns,
                      const Uint16 rows);
 
@@ -334,7 +334,7 @@ class DiOverlayPlane
     {
         return EmbeddedData;
     }
-    
+
     /** get label of overlay plane
      *
      ** @return label if successful, NULL otherwise
@@ -429,77 +429,77 @@ class DiOverlayPlane
  protected:
 
     /// number of frames
-    Uint32 NumberOfFrames;          
+    Uint32 NumberOfFrames;
     /// number of starting frame
-    Uint16 ImageFrameOrigin;        
+    Uint16 ImageFrameOrigin;
 
     /// y-coordinate of overlay plane's origin
-    Sint16 Top;                     
+    Sint16 Top;
     /// x-coordinate of overlay plane's origin
-    Sint16 Left;                    
+    Sint16 Left;
     /// visible height
-    Uint16 Height;                  
+    Uint16 Height;
     /// visible width
-    Uint16 Width;                   
+    Uint16 Width;
     /// number of (stored) rows
-    Uint16 Rows;                    
+    Uint16 Rows;
     /// number of (stored) columns
-    Uint16 Columns;                 
+    Uint16 Columns;
     /// number of allocated bits per pixel
-    Uint16 BitsAllocated;           
-    /// position of overlay plane bit    
-    Uint16 BitPosition;             
-    
+    Uint16 BitsAllocated;
+    /// position of overlay plane bit
+    Uint16 BitPosition;
+
     /// "color" of overlay plane (in percent: '0.0' = dark, '1.0' = bright)
-    double Foreground;              
+    double Foreground;
     /// threshold value used for "threshold replace"
-    double Threshold;               
+    double Threshold;
     /// P-value used for bitmap shutters
-    Uint16 PValue;                  
+    Uint16 PValue;
 
     /// current overlay mode
-    EM_Overlay Mode;                
+    EM_Overlay Mode;
     /// default (stored) overlay mode
-    EM_Overlay DefaultMode;         
+    EM_Overlay DefaultMode;
 
     /// label of overlay plane
-    OFString Label;                 
+    OFString Label;
     /// textual description of overlay plane
-    OFString Description;           
- 
+    OFString Description;
+
     /// group number of overlay plane
-    Uint16 GroupNumber;             
+    Uint16 GroupNumber;
 
     /// validity status
-    int Valid;                      
+    int Valid;
     /// visibility status
-    int Visible;                    
+    int Visible;
 
 
  private:
 
     /// current bit position
-    unsigned long BitPos;           
+    unsigned long BitPos;
     /// starting bit position of current frame
-    unsigned long StartBitPos;      
+    unsigned long StartBitPos;
 
     /// x-coordinate of first pixel in surrounding memory buffer
-    unsigned int StartLeft;         
+    unsigned int StartLeft;
     /// y-coordinate of first pixel in surrounding memory buffer
-    unsigned int StartTop;          
-    
+    unsigned int StartTop;
+
     /// true, if overlay data in embedded in pixel data
-    int EmbeddedData;               
-    
+    int EmbeddedData;
+
     /// pointer to current element of 'Data'
-    const Uint16 *Ptr;              
+    const Uint16 *Ptr;
     /// pointer to starting element of current frame
-    const Uint16 *StartPtr;         
+    const Uint16 *StartPtr;
     /// pointer to overlay data (standalone) or pixel data (embedded)
-    const Uint16 *Data;             
+    const Uint16 *Data;
 
  // --- declarations to avoid compiler warnings
- 
+
     DiOverlayPlane(const DiOverlayPlane &);
     DiOverlayPlane &operator=(const DiOverlayPlane &);
 };
@@ -518,14 +518,14 @@ inline int DiOverlayPlane::reset(const unsigned long frame)
         StartBitPos = BitPos = (unsigned long)BitPosition + bits;
         StartPtr = Ptr = Data + (bits >> 4);
         result = (getRight() > 0) && (getBottom() > 0);
-    } 
+    }
     return result;
 }
 
 
 inline int DiOverlayPlane::getNextBit()
 {
-    int result; 
+    int result;
     if (BitsAllocated == 16)                                    // optimization
         result = (int)(*(Ptr++) & (1 << BitPosition));
     else
@@ -533,7 +533,7 @@ inline int DiOverlayPlane::getNextBit()
        Ptr = StartPtr + (BitPos >> 4);                          // div 16
        result = (int)(*Ptr & (1 << (BitPos & 0xf)));            // mod 16
        BitPos += BitsAllocated;                                 // next bit
-    }    
+    }
     return result;
 }
 
@@ -555,7 +555,11 @@ inline void DiOverlayPlane::setStart(const Uint16 x,
  *
  * CVS/RCS Log:
  * $Log: diovpln.h,v $
- * Revision 1.21  2002-11-27 14:08:07  meichel
+ * Revision 1.22  2002-12-09 13:32:55  joergr
+ * Renamed parameter/local variable to avoid name clashes with global
+ * declaration left and/or right (used for as iostream manipulators).
+ *
+ * Revision 1.21  2002/11/27 14:08:07  meichel
  * Adapted module dcmimgle to use of new header file ofstdinc.h
  *
  * Revision 1.20  2002/04/16 13:53:12  joergr

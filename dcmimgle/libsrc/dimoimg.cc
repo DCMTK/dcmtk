@@ -21,10 +21,10 @@
  *
  *  Purpose: DicomMonochromeImage (Source)
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-11-27 14:08:12 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2002-12-09 13:34:51 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/libsrc/dimoimg.cc,v $
- *  CVS/RCS Revision: $Revision: 1.50 $
+ *  CVS/RCS Revision: $Revision: 1.51 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -315,8 +315,8 @@ DiMonoImage::DiMonoImage(const DiColorImage *image,
  */
 
 DiMonoImage::DiMonoImage(const DiMonoImage *image,
-                         const signed long left,
-                         const signed long top,
+                         const signed long left_pos,
+                         const signed long top_pos,
                          const Uint16 src_cols,
                          const Uint16 src_rows,
                          const Uint16 dest_cols,
@@ -350,28 +350,28 @@ DiMonoImage::DiMonoImage(const DiMonoImage *image,
         switch (image->InterData->getRepresentation())
         {
             case EPR_Uint8:
-                InterData = new DiMonoScaleTemplate<Uint8>(image->InterData, image->Columns, image->Rows, left, top,
-                    src_cols, src_rows, dest_cols, dest_rows, NumberOfFrames, interpolate, pvalue);
+                InterData = new DiMonoScaleTemplate<Uint8>(image->InterData, image->Columns, image->Rows,
+                    left_pos, top_pos, src_cols, src_rows, dest_cols, dest_rows, NumberOfFrames, interpolate, pvalue);
                 break;
             case EPR_Sint8:
-                InterData = new DiMonoScaleTemplate<Sint8>(image->InterData, image->Columns, image->Rows, left, top,
-                    src_cols, src_rows, dest_cols, dest_rows, NumberOfFrames, interpolate, pvalue);
+                InterData = new DiMonoScaleTemplate<Sint8>(image->InterData, image->Columns, image->Rows,
+                    left_pos, top_pos, src_cols, src_rows, dest_cols, dest_rows, NumberOfFrames, interpolate, pvalue);
                 break;
             case EPR_Uint16:
-                InterData = new DiMonoScaleTemplate<Uint16>(image->InterData, image->Columns, image->Rows, left, top,
-                    src_cols, src_rows, dest_cols, dest_rows, NumberOfFrames, interpolate, pvalue);
+                InterData = new DiMonoScaleTemplate<Uint16>(image->InterData, image->Columns, image->Rows,
+                    left_pos, top_pos, src_cols, src_rows, dest_cols, dest_rows, NumberOfFrames, interpolate, pvalue);
                 break;
             case EPR_Sint16:
-                InterData = new DiMonoScaleTemplate<Sint16>(image->InterData, image->Columns, image->Rows, left, top,
-                    src_cols, src_rows, dest_cols, dest_rows, NumberOfFrames, interpolate, pvalue);
+                InterData = new DiMonoScaleTemplate<Sint16>(image->InterData, image->Columns, image->Rows,
+                    left_pos, top_pos, src_cols, src_rows, dest_cols, dest_rows, NumberOfFrames, interpolate, pvalue);
                 break;
             case EPR_Uint32:
-                InterData = new DiMonoScaleTemplate<Uint32>(image->InterData, image->Columns, image->Rows, left, top,
-                    src_cols, src_rows, dest_cols, dest_rows, NumberOfFrames, interpolate, pvalue);
+                InterData = new DiMonoScaleTemplate<Uint32>(image->InterData, image->Columns, image->Rows,
+                    left_pos, top_pos, src_cols, src_rows, dest_cols, dest_rows, NumberOfFrames, interpolate, pvalue);
                 break;
             case EPR_Sint32:
-                InterData = new DiMonoScaleTemplate<Sint32>(image->InterData, image->Columns, image->Rows, left, top,
-                    src_cols, src_rows, dest_cols, dest_rows, NumberOfFrames, interpolate, pvalue);
+                InterData = new DiMonoScaleTemplate<Sint32>(image->InterData, image->Columns, image->Rows,
+                    left_pos, top_pos, src_cols, src_rows, dest_cols, dest_rows, NumberOfFrames, interpolate, pvalue);
                 break;
         }
     }
@@ -380,7 +380,10 @@ DiMonoImage::DiMonoImage(const DiMonoImage *image,
         for (int i = 0; i < 2; i++)
         {
             if ((image->Overlays[i] != NULL) && (image->Overlays[i]->getCount() > 0))
-                Overlays[i] = new DiOverlay(image->Overlays[i], left, top, (double)dest_cols / (double)src_cols, (double)dest_rows / (double)src_rows);
+            {
+                Overlays[i] = new DiOverlay(image->Overlays[i], left_pos, top_pos,
+                    (double)dest_cols / (double)src_cols, (double)dest_rows / (double)src_rows);
+            }
         }
     }
     if (VoiLutData != NULL)
@@ -1033,8 +1036,8 @@ int DiMonoImage::setMinMaxWindow(const int idx)
 }
 
 
-int DiMonoImage::setRoiWindow(const unsigned long left,
-                              const unsigned long top,
+int DiMonoImage::setRoiWindow(const unsigned long left_pos,
+                              const unsigned long top_pos,
                               const unsigned long width,
                               const unsigned long height,
                               const unsigned long frame)
@@ -1043,7 +1046,7 @@ int DiMonoImage::setRoiWindow(const unsigned long left,
     {
         double voiCenter;
         double voiWidth;
-        if (InterData->getRoiWindow(left, top, width, height, Columns, Rows, frame, voiCenter, voiWidth))
+        if (InterData->getRoiWindow(left_pos, top_pos, width, height, Columns, Rows, frame, voiCenter, voiWidth))
             return setWindow(voiCenter, voiWidth, "ROI Window");
     }
     return 0;
@@ -1279,8 +1282,8 @@ int DiMonoImage::setInversePresentationLut(const DcmUnsignedShort &data,
 
 
 int DiMonoImage::addOverlay(const unsigned int group,
-                            const signed int left,
-                            const signed int top,
+                            const signed int left_pos,
+                            const signed int top_pos,
                             const unsigned int columns,
                             const unsigned int rows,
                             const DcmOverlayData &data,
@@ -1291,7 +1294,7 @@ int DiMonoImage::addOverlay(const unsigned int group,
     if (Overlays[1] == NULL)
         Overlays[1] = new DiOverlay();
     if (Overlays[1] != NULL)
-        return Overlays[1]->addPlane(group, left, top, columns, rows, data, label, description, mode);
+        return Overlays[1]->addPlane(group, left_pos, top_pos, columns, rows, data, label, description, mode);
     return 0;
 }
 
@@ -1529,8 +1532,8 @@ void *DiMonoImage::getData(void *buffer,
 
 const void *DiMonoImage::getOverlayData(const unsigned long frame,
                                         const unsigned int plane,
-                                        unsigned int &left,
-                                        unsigned int &top,
+                                        unsigned int &left_pos,
+                                        unsigned int &top_pos,
                                         unsigned int &width,
                                         unsigned int &height,
                                         EM_Overlay &mode,
@@ -1550,7 +1553,8 @@ const void *DiMonoImage::getOverlayData(const unsigned long frame,
             if ((Overlays[i] != NULL) && (Overlays[i]->hasPlane(plane)))
             {
                 deleteOverlayData();
-                OverlayData = Overlays[i]->getPlaneData(frame, plane, left, top, width, height, mode, Columns, Rows, bits, fore, back);
+                OverlayData = Overlays[i]->getPlaneData(frame, plane, left_pos, top_pos, width, height,
+                    mode, Columns, Rows, bits, fore, back);
                 return (const void *)OverlayData;
             }
         }
@@ -2088,7 +2092,11 @@ int DiMonoImage::writeBMP(FILE *stream,
  *
  * CVS/RCS Log:
  * $Log: dimoimg.cc,v $
- * Revision 1.50  2002-11-27 14:08:12  meichel
+ * Revision 1.51  2002-12-09 13:34:51  joergr
+ * Renamed parameter/local variable to avoid name clashes with global
+ * declaration left and/or right (used for as iostream manipulators).
+ *
+ * Revision 1.50  2002/11/27 14:08:12  meichel
  * Adapted module dcmimgle to use of new header file ofstdinc.h
  *
  * Revision 1.49  2002/08/02 15:05:25  joergr

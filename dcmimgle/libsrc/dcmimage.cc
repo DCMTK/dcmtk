@@ -21,16 +21,16 @@
  *
  *  Purpose: DicomImage-Interface (Source)
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-11-27 14:08:10 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2002-12-09 13:34:50 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/libsrc/dcmimage.cc,v $
- *  CVS/RCS Revision: $Revision: 1.20 $
+ *  CVS/RCS Revision: $Revision: 1.21 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
  *
  */
- 
+
 
 #include "osconfig.h"
 #include "dctypes.h"
@@ -67,7 +67,7 @@ DiRegisterBase *DiRegisterBase::Pointer = NULL;
  *----------------*/
 
 // --- create 'DicomImage' from 'filename', for valid 'flags' see 'diutils.h'
- 
+
 DicomImage::DicomImage(const char *filename,
                        const unsigned long flags,
                        const unsigned long fstart,
@@ -86,7 +86,7 @@ DicomImage::DicomImage(const char *filename,
 
 
 // --- create 'DicomImage' from valid 'DicomObject' with transfer syntax 'xfer'
- 
+
 DicomImage::DicomImage(DcmObject *object,
                        const E_TransferSyntax xfer,
                        const unsigned long flags,
@@ -158,8 +158,8 @@ DicomImage::DicomImage(DcmObject *object,
 }
 
 
-// --- protected: create 'DicomImage' from source with different image data and photometric interpretation 
- 
+// --- protected: create 'DicomImage' from source with different image data and photometric interpretation
+
 DicomImage::DicomImage(const DicomImage *dicom,
                        DiImage *image,
                        const EP_Interpretation interpret)
@@ -175,7 +175,7 @@ DicomImage::DicomImage(const DicomImage *dicom,
 }
 
 
-/*--------------* 
+/*--------------*
  *  destructor  *
  *--------------*/
 
@@ -270,11 +270,11 @@ void DicomImage::Init()
         }
         else
         {
-            ImageStatus = EIS_MissingAttribute;  
+            ImageStatus = EIS_MissingAttribute;
             if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Errors))
             {
                 ofConsole.lockCerr() << "ERROR: mandatory attribute 'PhotometricInterpretation' is missing !" << endl;
-                ofConsole.unlockCerr();                
+                ofConsole.unlockCerr();
             }
         }
     }
@@ -287,7 +287,7 @@ void DicomImage::Init()
 
 int DicomImage::checkDataDictionary()
 {
-    if (!dcmDataDict.isDictionaryLoaded()) 
+    if (!dcmDataDict.isDictionaryLoaded())
     {
         ImageStatus = EIS_NoDataDictionary;
         if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Errors))
@@ -354,7 +354,7 @@ const char *DicomImage::getSOPclassUID() const
 
 
 // --- return 'true' (1) if 'Document' has the same 'SOPclassUID' as given in parameter 'uid'
-        
+
 int DicomImage::hasSOPclassUID(const char *uid) const
 {
     const char *str = getSOPclassUID();
@@ -408,8 +408,8 @@ DicomImage *DicomImage::createScaledImage(const double xfactor,
 
 // --- clip & scale
 
-DicomImage *DicomImage::createScaledImage(const signed long left,
-                                          const signed long top,
+DicomImage *DicomImage::createScaledImage(const signed long left_pos,
+                                          const signed long top_pos,
                                           unsigned long clip_width,
                                           unsigned long clip_height,
                                           unsigned long scale_width,
@@ -423,9 +423,9 @@ DicomImage *DicomImage::createScaledImage(const signed long left,
     if ((Image != NULL) && (gw > 0) && (gh > 0))
     {
         if (clip_width == 0)                                         // set 'width' if parameter is missing
-            clip_width = gw - left;
+            clip_width = gw - left_pos;
         if (clip_height == 0)                                        // same for 'height'
-            clip_height = gh - top;
+            clip_height = gh - top_pos;
         if ((scale_width == 0) && (scale_height == 0))
         {
             scale_width = clip_width;                                // auto-set width/height
@@ -452,10 +452,11 @@ DicomImage *DicomImage::createScaledImage(const signed long left,
             scale_width = maxvalue;                                   // limit 'width' to maximum value (65535)
         if (scale_height > maxvalue)
             scale_height = maxvalue;                                  // same for 'height'
-            
+
         /* need to limit clipping region ... !? */
-        
-        if (((left < 0) || (top < 0) || ((unsigned long)(left + clip_width) > gw) || ((unsigned long)(top + clip_height) > gh)) &&
+
+        if (((left_pos < 0) || (top_pos < 0) || ((unsigned long)(left_pos + clip_width) > gw) ||
+            ((unsigned long)(top_pos + clip_height) > gh)) &&
             ((clip_width != scale_width) || (clip_height != scale_height)))
         {
             if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Errors))
@@ -466,7 +467,7 @@ DicomImage *DicomImage::createScaledImage(const signed long left,
         }
         else if ((scale_width > 0) && (scale_height > 0))
         {
-            DiImage *image = Image->createScale(left, top, clip_width, clip_height, scale_width, scale_height,
+            DiImage *image = Image->createScale(left_pos, top_pos, clip_width, clip_height, scale_width, scale_height,
                 interpolate, aspect, pvalue);
             if (image != NULL)
             {
@@ -481,8 +482,8 @@ DicomImage *DicomImage::createScaledImage(const signed long left,
 
 // --- clip & scale
 
-DicomImage *DicomImage::createScaledImage(const signed long left,
-                                          const signed long top,
+DicomImage *DicomImage::createScaledImage(const signed long left_pos,
+                                          const signed long top_pos,
                                           unsigned long width,
                                           unsigned long height,
                                           const double xfactor,
@@ -496,26 +497,26 @@ DicomImage *DicomImage::createScaledImage(const signed long left,
         const unsigned long gw = getWidth();
         const unsigned long gh = getHeight();
         if (width == 0)                                     // set 'width' if parameter is missing (0)
-            width = gw - left;
+            width = gw - left_pos;
         if (height == 0)                                    // same for 'height'
-            height = gh - top;
-        return createScaledImage(left, top, width, height, (unsigned long)(xfactor * width), (unsigned long)(yfactor * height),
-            interpolate, aspect, pvalue);
+            height = gh - top_pos;
+        return createScaledImage(left_pos, top_pos, width, height, (unsigned long)(xfactor * width),
+            (unsigned long)(yfactor * height), interpolate, aspect, pvalue);
     }
     return NULL;
 }
 
 
-// --- create clipped to given box ('left', 'top' and 'width', 'height') image, memory isn't handled internally !
-// --- 'width' and 'height' are optional
+// --- create clipped to given box ('left_pos', 'top_pos' and 'width', 'height') image,
+// ---- memory isn't handled internally! 'width' and 'height' are optional
 
-DicomImage *DicomImage::createClippedImage(const signed long left,
-                                           const signed long top,
+DicomImage *DicomImage::createClippedImage(const signed long left_pos,
+                                           const signed long top_pos,
                                            unsigned long width,
                                            unsigned long height,
                                            const Uint16 pvalue) const
 {
-    return createScaledImage(left, top, width, height, (unsigned long)0, (unsigned long)0, 0, 0, pvalue);
+    return createScaledImage(left_pos, top_pos, width, height, (unsigned long)0, (unsigned long)0, 0, 0, pvalue);
 }
 
 
@@ -818,7 +819,11 @@ int DicomImage::writePluginFormat(const DiPluginFormat *plugin,
  *
  * CVS/RCS Log:
  * $Log: dcmimage.cc,v $
- * Revision 1.20  2002-11-27 14:08:10  meichel
+ * Revision 1.21  2002-12-09 13:34:50  joergr
+ * Renamed parameter/local variable to avoid name clashes with global
+ * declaration left and/or right (used for as iostream manipulators).
+ *
+ * Revision 1.20  2002/11/27 14:08:10  meichel
  * Adapted module dcmimgle to use of new header file ofstdinc.h
  *
  * Revision 1.19  2002/08/21 09:51:47  meichel

@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DVPresentationState
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-12-04 10:41:38 $
- *  CVS/RCS Revision: $Revision: 1.73 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2002-12-09 13:28:16 $
+ *  CVS/RCS Revision: $Revision: 1.74 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -3049,7 +3049,7 @@ OFCondition DVPresentationState::setGammaVOILUT(double gammaValue, DVPSObjectApp
       {
         numberOfEntries = (unsigned long)ww;
         firstMapped = (signed long)(wc - ww / 2);
-      }    
+      }
     }
   }
   if (numberOfEntries == 0)     // no valid VOI window, use whole pixel range
@@ -3122,7 +3122,7 @@ OFCondition DVPresentationState::setGammaVOILUT(double gammaValue, DVPSObjectApp
         if (lutData != NULL)
           status = lutData->putUint16Array(data, numberOfEntries);
         else
-          status = EC_MemoryExhausted;        
+          status = EC_MemoryExhausted;
       }
 
       /* LUT Explanation */
@@ -3132,7 +3132,7 @@ OFCondition DVPresentationState::setGammaVOILUT(double gammaValue, DVPSObjectApp
         char explanation[100];
         char gammabuf[16];
         OFStandard::ftoa(gammabuf, sizeof(gammabuf), gammaValue, OFStandard::ftoa_format_f, 3, 1);
-        
+
         sprintf(explanation, "LUT with gamma %s, descriptor %u/%ld/%u", gammabuf,
                (numberOfEntries < 65536) ? (Uint16)numberOfEntries : 0, firstMapped, numberOfBits);
 
@@ -3149,7 +3149,7 @@ OFCondition DVPresentationState::setGammaVOILUT(double gammaValue, DVPSObjectApp
         if ((lutDescriptor != NULL) && (lutData != NULL) && (lutExplanation !=  NULL))
           status = setVOILUT(*(DcmUnsignedShort *)lutDescriptor, *(DcmUnsignedShort *)lutData, *lutExplanation, applicability);
       }
-      
+
       /* delete temporary dcmtk structures */
       delete lutDescriptor;
       delete lutData;
@@ -3835,8 +3835,8 @@ OFCondition DVPresentationState::getOverlayData(
      const void *&overlayData,
      unsigned int &width,
      unsigned int &height,
-     unsigned int &left,
-     unsigned int &top,
+     unsigned int &left_pos,
+     unsigned int &top_pos,
      OFBool &isROI,
      Uint16 &fore,
      unsigned int bits)
@@ -3854,7 +3854,7 @@ OFCondition DVPresentationState::getOverlayData(
          currentImage->convertPValueToDDL(pvalue, fore, bits);
      if (fore == 0)
          back = (Uint16)DicomImageClass::maxval(bits);
-     const void *data = currentImage->getOverlayData((unsigned int)group, left, top, width, height, mode,
+     const void *data = currentImage->getOverlayData((unsigned int)group, left_pos, top_pos, width, height, mode,
        currentImageSelectedFrame-1, bits, fore, back);
      if (EMO_RegionOfInterest == mode) isROI=OFTrue; else isROI=OFFalse;
      if (data) overlayData = data;
@@ -3867,8 +3867,8 @@ OFCondition DVPresentationState::getOverlayData(
      overlayData = NULL;
      width = 0;
      height = 0;
-     left = 0;
-     top = 0;
+     left_pos = 0;
+     top_pos = 0;
      isROI = OFFalse;
      fore = 0;
      return EC_IllegalCall;
@@ -3958,7 +3958,7 @@ OFCondition DVPresentationState::selectImageFrameNumber(unsigned long frame)
   if ((frame > 0) && currentImage && (frame <= currentImage->getFrameCount()))
   {
     if (currentImageSelectedFrame != frame)
-      currentImageVOIValid = OFFalse; // VOI might has changed    
+      currentImageVOIValid = OFFalse; // VOI might has changed
     currentImageSelectedFrame=frame;
     return EC_Normal;
   }
@@ -4121,9 +4121,9 @@ void DVPresentationState::setLog(OFConsole *stream, OFBool verbMode, OFBool dbgM
   graphicAnnotationList.setLog(logstream, verbMode, dbgMode);
   graphicLayerList.setLog(logstream, verbMode, dbgMode);
   softcopyVOIList.setLog(logstream, verbMode, dbgMode);
-  currentImageCurveList.setLog(logstream, verbMode, dbgMode);  
+  currentImageCurveList.setLog(logstream, verbMode, dbgMode);
   currentImageVOILUTList.setLog(logstream, verbMode, dbgMode);
-  currentImageVOIWindowList.setLog(logstream, verbMode, dbgMode);  
+  currentImageVOIWindowList.setLog(logstream, verbMode, dbgMode);
 }
 
 
@@ -4141,7 +4141,11 @@ const char *DVPresentationState::getAttachedImageSOPInstanceUID()
 
 /*
  *  $Log: dvpstat.cc,v $
- *  Revision 1.73  2002-12-04 10:41:38  meichel
+ *  Revision 1.74  2002-12-09 13:28:16  joergr
+ *  Renamed parameter/local variable to avoid name clashes with global
+ *  declaration left and/or right (used for as iostream manipulators).
+ *
+ *  Revision 1.73  2002/12/04 10:41:38  meichel
  *  Changed toolkit to use OFStandard::ftoa instead of sprintf for all
  *    double to string conversions that are supposed to be locale independent
  *

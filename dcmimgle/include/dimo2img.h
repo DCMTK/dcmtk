@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2001, OFFIS
+ *  Copyright (C) 1996-2002, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose: DicomMonochrome2Image (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-11-27 18:18:23 $
+ *  Update Date:      $Date: 2002-12-09 13:32:52 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/dimo2img.h,v $
- *  CVS/RCS Revision: $Revision: 1.10 $
+ *  CVS/RCS Revision: $Revision: 1.11 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -60,7 +60,7 @@ class DiMono2Image
      */
     DiMono2Image(const DiDocument *docu,
                  const EI_Status status);
-                 
+
     /** constructor, modality (linear)
      *
      ** @param  docu       pointer to dataset (encapsulated)
@@ -98,7 +98,7 @@ class DiMono2Image
                  const double red,
                  const double green,
                  const double blue);
-                 
+
     /** constructor, createMonoOutput
      *
      ** @param  image   pointer to reference image
@@ -167,9 +167,9 @@ class DiMono2Image
 
     /** create scaled copy of specified (clipping) area of the current image object.
      *
-     ** @param  left          x coordinate of top left corner of area to be scaled
+     ** @param  left_pos      x coordinate of top left corner of area to be scaled
      *                        (referring to image origin, negative values create a border around the image)
-     *  @param  top           y coordinate of top left corner of area to be scaled
+     *  @param  top_pos       y coordinate of top left corner of area to be scaled
      *  @param  clip_width    width of area to be scaled
      *  @param  clip_height   height of area to be scaled
      *  @param  scale_width   width of scaled image (in pixels)
@@ -183,8 +183,8 @@ class DiMono2Image
      *
      ** @return pointer to new DiImage object (NULL if an error occurred)
      */
-    DiImage *createScale(const signed long left,
-                         const signed long top,
+    DiImage *createScale(const signed long left_pos,
+                         const signed long top_pos,
                          const unsigned long clip_width,
                          const unsigned long clip_height,
                          const unsigned long scale_width,
@@ -236,7 +236,7 @@ class DiMono2Image
     DiMono2Image(const DiDocument *docu,
                  const EI_Status status,
                  const char dummy);
-                 
+
     /** constructor, copy
      *
      ** @param  image   pointer to reference image
@@ -250,9 +250,9 @@ class DiMono2Image
     /** constructor, scale/clip
      *
      ** @param  image         pointer to reference image
-     *  @param  left          x coordinate of top left corner of area to be scaled
+     *  @param  left_pos      x coordinate of top left corner of area to be scaled
      *                        (referring to image origin, negative values create a border around the image)
-     *  @param  top           y coordinate of top left corner of area to be scaled
+     *  @param  top_pos       y coordinate of top left corner of area to be scaled
      *  @param  src_cols      width of area to be scaled
      *  @param  src_rows      height of area to be scaled
      *  @param  dest_cols     width of scaled image (in pixels)
@@ -265,16 +265,16 @@ class DiMono2Image
      *  @param  pvalue        P-value used for the border outside the image (0..65535)
      */
     DiMono2Image(const DiMonoImage *image,
-                 const signed long left,
-                 const signed long top,
+                 const signed long left_pos,
+                 const signed long top_pos,
                  const Uint16 src_cols,
-                 const Uint16 src_rows,                 
+                 const Uint16 src_rows,
                  const Uint16 dest_cols,
                  const Uint16 dest_rows,
                  const int interpolate = 0,
                  const int aspect = 0,
                  const Uint16 pvalue = 0);
-                 
+
     /** constructor, flip
      *
      ** @param  image  pointer to reference image
@@ -302,7 +302,11 @@ class DiMono2Image
  *
  * CVS/RCS Log:
  * $Log: dimo2img.h,v $
- * Revision 1.10  2001-11-27 18:18:23  joergr
+ * Revision 1.11  2002-12-09 13:32:52  joergr
+ * Renamed parameter/local variable to avoid name clashes with global
+ * declaration left and/or right (used for as iostream manipulators).
+ *
+ * Revision 1.10  2001/11/27 18:18:23  joergr
  * Added support for plugable output formats in class DicomImage. First
  * implementation is JPEG.
  *
@@ -334,7 +338,7 @@ class DiMono2Image
  *
  * Revision 1.2  1998/12/16 16:32:02  joergr
  * Added explanation string to LUT class (retrieved from dataset).
- * 
+ *
  * Revision 1.1  1998/11/27 15:12:18  joergr
  * Added copyright message.
  * Added methods and constructors for flipping and rotating, changed for

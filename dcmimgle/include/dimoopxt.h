@@ -21,10 +21,10 @@
  *
  *  Purpose: DicomMonoOutputPixelTemplate (Header)
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-11-27 14:08:06 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2002-12-09 13:32:53 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/dimoopxt.h,v $
- *  CVS/RCS Revision: $Revision: 1.38 $
+ *  CVS/RCS Revision: $Revision: 1.39 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -817,8 +817,8 @@ class DiMonoOutputPixelTemplate
                 const DiDisplayLUT *dlut = NULL;
                 const double absmin = inter->getAbsMinimum();
                 const double width_1 = width - 1;
-                const double left = center - 0.5 - width_1 / 2;                       // window borders, according to supplement 33
-                const double right = center - 0.5 + width_1 / 2;
+                const double leftBorder = center - 0.5 - width_1 / 2;                 // window borders, according to supplement 33
+                const double rightBorder = center - 0.5 + width_1 / 2;
                 const double outrange = (double)high - (double)low;                   // output range
                 const unsigned long ocnt = (unsigned long)inter->getAbsMaxRange();    // number of LUT entries
                 register const T1 *p = pixel + start;
@@ -851,12 +851,12 @@ class DiMonoOutputPixelTemplate
                             for (i = 0; i < ocnt; i++)
                             {
                                 value = (double)i + absmin;                           // pixel value
-                                if (value <= left)
+                                if (value <= leftBorder)
                                     value2 = 0;                                       // first LUT index
-                                else if (value > right)
+                                else if (value > rightBorder)
                                     value2 = pcnt - 1;                                // last LUT index
                                 else
-                                    value2 = (Uint32)((value - left) * gradient1);
+                                    value2 = (Uint32)((value - leftBorder) * gradient1);
                                 *(q++) = (T3)dlut->getValue((Uint16)(offset + (double)plut->getValue(value2) * gradient2));
                             }
                         } else {                                                      // don't use display: invalid or absent
@@ -864,12 +864,12 @@ class DiMonoOutputPixelTemplate
                             for (i = 0; i < ocnt; i++)
                             {
                                 value = (double)i + absmin;                           // pixel value
-                                if (value <= left)
+                                if (value <= leftBorder)
                                     value2 = 0;                                       // first LUT index
-                                else if (value > right)
+                                else if (value > rightBorder)
                                     value2 = pcnt - 1;                                // last LUT index
                                 else
-                                    value2 = (Uint32)((value - left) * gradient1);
+                                    value2 = (Uint32)((value - leftBorder) * gradient1);
                                 *(q++) = (T3)((double)low + (double)plut->getValue(value2) * gradient2);
                             }
                         }
@@ -888,12 +888,12 @@ class DiMonoOutputPixelTemplate
                             for (i = Count; i != 0; i--)
                             {
                                 value = (double)*(p++);                               // pixel value
-                                if (value <= left)
+                                if (value <= leftBorder)
                                     value2 = 0;                                       // first LUT index
-                                else if (value > right)
+                                else if (value > rightBorder)
                                     value2 = pcnt - 1;                                // last LUT index
                                 else
-                                    value2 = (Uint32)((value - left) * gradient1);
+                                    value2 = (Uint32)((value - leftBorder) * gradient1);
                                 *(q++) = (T3)dlut->getValue((Uint16)(offset + (double)plut->getValue(value2) * gradient2));
                             }
                         } else {                                                      // don't use display: invalid or absent
@@ -901,12 +901,12 @@ class DiMonoOutputPixelTemplate
                             for (i = Count; i != 0; i--)
                             {
                                 value = (double)*(p++);                               // pixel value
-                                if (value <= left)
+                                if (value <= leftBorder)
                                     value2 = 0;                                       // first LUT index
-                                else if (value > right)
+                                else if (value > rightBorder)
                                     value2 = pcnt - 1;                                // last LUT index
                                 else
-                                    value2 = (Uint32)((value - left) * gradient1);
+                                    value2 = (Uint32)((value - leftBorder) * gradient1);
                                 *(q++) = (T3)((double)low + (double)plut->getValue(value2) * gradient2);
                             }
                         }
@@ -923,7 +923,7 @@ class DiMonoOutputPixelTemplate
                             const double gradient = (width_1 == 0) ? 0 : ((low > high) ? (-maxvalue / width_1) : (maxvalue / width_1));
                             for (i = 0; i < ocnt; i++)                                // calculating LUT entries
                             {
-                                value = (double)i + absmin - left;
+                                value = (double)i + absmin - leftBorder;
                                 if (value < 0)                                               // left border
                                     value = 0;
                                 else if (value > width_1)                                    // right border
@@ -936,9 +936,9 @@ class DiMonoOutputPixelTemplate
                             for (i = 0; i < ocnt; i++)                                 // calculating LUT entries
                             {
                                 value = (double)i + absmin;
-                                if (value <= left)
+                                if (value <= leftBorder)
                                     *(q++) = low;                                            // black/white
-                                else if (value > right)
+                                else if (value > rightBorder)
                                     *(q++) = high;                                           // white/black
                                 else
                                     *(q++) = (T3)(offset + value * gradient);                // gray value
@@ -958,7 +958,7 @@ class DiMonoOutputPixelTemplate
                             const double gradient = (width_1 == 0) ? 0 : ((low > high) ? (-maxvalue / width_1) : (maxvalue / width_1));
                             for (i = Count; i != 0; i--)                              // calculating LUT entries
                             {
-                                value = (double)*(p++) - left;
+                                value = (double)*(p++) - leftBorder;
                                 if (value < 0)                                               // left border
                                     value = 0;
                                 else if (value > width_1)                                    // right border
@@ -971,9 +971,9 @@ class DiMonoOutputPixelTemplate
                             for (i = Count; i != 0; i--)
                             {
                                 value = (double)*(p++);
-                                if (value <= left)
+                                if (value <= leftBorder)
                                     *(q++) = low;                                            // black/white
-                                else if (value > right)
+                                else if (value > rightBorder)
                                     *(q++) = high;                                           // white/black
                                 else
                                     *(q++) = (T3)(offset + value * gradient);                // gray value
@@ -1009,8 +1009,8 @@ class DiMonoOutputPixelTemplate
             {
                 if (overlays[j] != NULL)
                 {
-                    const signed long left = overlays[j]->getLeft();
-                    const signed long top = overlays[j]->getTop();
+                    const signed long left_pos = overlays[j]->getLeft();
+                    const signed long top_pos = overlays[j]->getTop();
                     register DiOverlayPlane *plane;
                     for (unsigned int i = 0; i < overlays[j]->getCount(); i++)
                     {
@@ -1020,10 +1020,10 @@ class DiMonoOutputPixelTemplate
                             register T3 *q;
                             register Uint16 x;
                             register Uint16 y;
-                            const Uint16 xmin = (plane->getLeft(left) > 0) ? plane->getLeft(left) : 0;
-                            const Uint16 ymin = (plane->getTop(top) > 0) ? plane->getTop(top) : 0;
-                            const Uint16 xmax = (plane->getRight(left) < columns) ? plane->getRight(left) : columns;
-                            const Uint16 ymax = (plane->getBottom(top) < rows) ? plane->getBottom(top) : rows;
+                            const Uint16 xmin = (plane->getLeft(left_pos) > 0) ? plane->getLeft(left_pos) : 0;
+                            const Uint16 ymin = (plane->getTop(top_pos) > 0) ? plane->getTop(top_pos) : 0;
+                            const Uint16 xmax = (plane->getRight(left_pos) < columns) ? plane->getRight(left_pos) : columns;
+                            const Uint16 ymax = (plane->getBottom(top_pos) < rows) ? plane->getBottom(top_pos) : rows;
                             const T3 maxvalue = (T3)DicomImageClass::maxval(bitsof(T3));
                             switch (plane->getMode())
                             {
@@ -1032,7 +1032,7 @@ class DiMonoOutputPixelTemplate
                                     const T3 fore = (T3)(plane->getForeground() * maxvalue);
                                     for (y = ymin; y < ymax; y++)
                                     {
-                                        plane->setStart((Uint16)(left + xmin), (Uint16)(top + y));
+                                        plane->setStart((Uint16)(left_pos + xmin), (Uint16)(top_pos + y));
                                         q = Data + (unsigned long)y * (unsigned long)columns + (unsigned long)xmin;
                                         for (x = xmin; x < xmax; x++, q++)
                                         {
@@ -1048,7 +1048,7 @@ class DiMonoOutputPixelTemplate
                                     const T3 thresh = (T3)(plane->getThreshold() * maxvalue);
                                     for (y = ymin; y < ymax; y++)
                                     {
-                                        plane->setStart((Uint16)(left + xmin), (Uint16)(top + y));
+                                        plane->setStart((Uint16)(left_pos + xmin), (Uint16)(top_pos + y));
                                         q = Data + (unsigned long)y * (unsigned long)columns + (unsigned long)xmin;
                                         for (x = xmin; x < xmax; x++, q++)
                                         {
@@ -1063,7 +1063,7 @@ class DiMonoOutputPixelTemplate
                                     const T3 thresh = (T3)DicomImageClass::maxval(bitsof(T3) / 2);
                                     for (y = ymin; y < ymax; y++)
                                     {
-                                        plane->setStart((Uint16)(left + xmin), (Uint16)(top + y));
+                                        plane->setStart((Uint16)(left_pos + xmin), (Uint16)(top_pos + y));
                                         q = Data + (unsigned long)y * (unsigned long)columns + (unsigned long)xmin;
                                         for (x = xmin; x < xmax; x++, q++)
                                         {
@@ -1078,7 +1078,7 @@ class DiMonoOutputPixelTemplate
                                     const int dim = bitsof(T3) / 2;
                                     for (y = ymin; y < ymax; y++)
                                     {
-                                        plane->setStart((Uint16)(left + xmin), (Uint16)(top + y));
+                                        plane->setStart((Uint16)(left_pos + xmin), (Uint16)(top_pos + y));
                                         q = Data + (unsigned long)y * (unsigned long)columns + (unsigned long)xmin;
                                         for (x = xmin; x < xmax; x++, q++)
                                         {
@@ -1099,7 +1099,7 @@ class DiMonoOutputPixelTemplate
                                     }
                                     for (y = ymin; y < ymax; y++)
                                     {
-                                        plane->setStart((Uint16)(left + xmin), (Uint16)(top + y));
+                                        plane->setStart((Uint16)(left_pos + xmin), (Uint16)(top_pos + y));
                                         q = Data + (unsigned long)y * (unsigned long)columns + (unsigned long)xmin;
                                         for (x = xmin; x < xmax; x++, q++)
                                         {
@@ -1149,7 +1149,11 @@ class DiMonoOutputPixelTemplate
  *
  * CVS/RCS Log:
  * $Log: dimoopxt.h,v $
- * Revision 1.38  2002-11-27 14:08:06  meichel
+ * Revision 1.39  2002-12-09 13:32:53  joergr
+ * Renamed parameter/local variable to avoid name clashes with global
+ * declaration left and/or right (used for as iostream manipulators).
+ *
+ * Revision 1.38  2002/11/27 14:08:06  meichel
  * Adapted module dcmimgle to use of new header file ofstdinc.h
  *
  * Revision 1.37  2002/06/19 08:12:01  meichel

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2001, OFFIS
+ *  Copyright (C) 1996-2002, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose: DicomOverlay (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-09-28 13:17:57 $
+ *  Update Date:      $Date: 2002-12-09 13:34:52 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/libsrc/diovlay.cc,v $
- *  CVS/RCS Revision: $Revision: 1.21 $
+ *  CVS/RCS Revision: $Revision: 1.22 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -69,7 +69,7 @@ DiOverlay::DiOverlay(const DiDocument *docu,
     Data = new DiOverlayData(MaxOverlayCount);                                         // can't determine number of overlays :-(
     if ((docu != NULL) && (Data != NULL) && (Data->Planes != NULL))
     {
-        register unsigned int i; 
+        register unsigned int i;
         for (i = 0; i < MaxOverlayCount; i++)
         {
             Data->Planes[Data->Count] = new DiOverlayPlane(docu, convertToGroupNumber(i), alloc);
@@ -77,7 +77,7 @@ DiOverlay::DiOverlay(const DiDocument *docu,
             {
                 if (checkPlane(Data->Count))
                     (Data->Count)++;
-                else {                
+                else {
                     delete Data->Planes[Data->Count];
                     Data->Planes[Data->Count] = NULL;
                 }
@@ -90,12 +90,12 @@ DiOverlay::DiOverlay(const DiDocument *docu,
 // --- scale/clip overlay
 
 DiOverlay::DiOverlay(const DiOverlay *overlay,
-                     const signed long left,
-                     const signed long top,
+                     const signed long left_pos,
+                     const signed long top_pos,
                      const double xfactor,
                      const double yfactor)
-  : Left(left),
-    Top(top),
+  : Left(left_pos),
+    Top(top_pos),
     Width((Uint16)(xfactor * overlay->Width)),
     Height((Uint16)(yfactor * overlay->Height)),
     Frames(overlay->Frames),
@@ -105,7 +105,7 @@ DiOverlay::DiOverlay(const DiOverlay *overlay,
     Uint16 *temp = Init(overlay);
     if (temp != NULL)
     {
-        register unsigned int i; 
+        register unsigned int i;
         for (i = 0; i < Data->ArrayEntries; i++)
         {
             if (Data->Planes[i] != NULL)
@@ -172,7 +172,7 @@ DiOverlay::DiOverlay(const DiOverlay *overlay,
         rotate.rotateData((const Uint16 **)&temp, &(Data->DataBuffer), degree);
         if (temp != overlay->Data->DataBuffer)
             delete[] temp;
-        register unsigned int i; 
+        register unsigned int i;
         for (i = 0; i < Data->ArrayEntries; i++)
         {
             if (Data->Planes[i] != NULL)
@@ -259,7 +259,7 @@ int DiOverlay::convertToPlaneNumber(unsigned int &plane,
                     return 2;                                                           // plane alreay exists
                 return 1;                                                               // ... is new
             } else {
-                register unsigned int i; 
+                register unsigned int i;
                 for (i = 0; i < Data->Count; i++)
                 {
                     if ((Data->Planes[i] != NULL) && (Data->Planes[i]->getGroupNumber() == plane))
@@ -306,7 +306,7 @@ int DiOverlay::isPlaneVisible(unsigned int plane)
 {
     if (convertToPlaneNumber(plane, AdditionalPlanes) > 1)
         return Data->Planes[plane]->isVisible();
-    return 0; 
+    return 0;
 }
 
 
@@ -319,7 +319,7 @@ int DiOverlay::showPlane(unsigned int plane)
         Data->Planes[plane]->show();
         return 1;
     }
-    return 0; 
+    return 0;
 }
 
 
@@ -350,7 +350,7 @@ int DiOverlay::showAllPlanes()
 {
     if ((Data != NULL) && (Data->Planes != NULL))
     {
-        register unsigned int i; 
+        register unsigned int i;
         for (i = 0; i < Data->ArrayEntries; i++)
         {
             if (Data->Planes[i] != NULL)
@@ -370,7 +370,7 @@ int DiOverlay::showAllPlanes(const double fore,
 {
     if ((Data != NULL) && (Data->Planes != NULL))
     {
-        register unsigned int i; 
+        register unsigned int i;
         for (i = 0; i < Data->ArrayEntries; i++)
         {
             if ((Data->Planes[i] != NULL))
@@ -401,7 +401,7 @@ int DiOverlay::hideAllPlanes()
 {
     if ((Data != NULL) && (Data->Planes != NULL))
     {
-        register unsigned int i; 
+        register unsigned int i;
         for (i = 0; i < Data->ArrayEntries; i++)
         {
             if (Data->Planes[i] != NULL)
@@ -416,14 +416,14 @@ int DiOverlay::hideAllPlanes()
 
 
 int DiOverlay::placePlane(unsigned int plane,
-                          const signed int left,
-                          const signed int top)
+                          const signed int left_pos,
+                          const signed int top_pos)
 {
     if (convertToPlaneNumber(plane, AdditionalPlanes) > 1)
     {
-        if ((Data->Planes[plane]->getLeft() == left) && (Data->Planes[plane]->getTop() == top))
+        if ((Data->Planes[plane]->getLeft() == left_pos) && (Data->Planes[plane]->getTop() == top_pos))
             return 2;
-        Data->Planes[plane]->place(left, top);
+        Data->Planes[plane]->place(left_pos, top_pos);
         return 1;
     }
     return 0;
@@ -478,8 +478,8 @@ int DiOverlay::hasEmbeddedData() const
 
 
 int DiOverlay::addPlane(const unsigned int group,
-                        const signed int left,
-                        const signed int top,
+                        const signed int left_pos,
+                        const signed int top_pos,
                         const unsigned int columns,
                         const unsigned int rows,
                         const DcmOverlayData &data,
@@ -498,7 +498,7 @@ int DiOverlay::addPlane(const unsigned int group,
                 (Data->Count)++;
             else if (status == 2)                                              // group number already exists
                 delete Data->Planes[plane];
-            Data->Planes[plane] = new DiOverlayPlane(group, left, top, columns, rows, data, label, description, mode);
+            Data->Planes[plane] = new DiOverlayPlane(group, left_pos, top_pos, columns, rows, data, label, description, mode);
             if (checkPlane(plane, 0))
             {
                 if (Data->Planes[plane]->getNumberOfFrames() > Frames)         // set maximum number of frames
@@ -514,7 +514,7 @@ int DiOverlay::addPlane(const unsigned int group,
     }
     return status;
 }
-                 
+
 
 int DiOverlay::removePlane(const unsigned int group)
 {
@@ -532,11 +532,11 @@ int DiOverlay::removePlane(const unsigned int group)
 
 void *DiOverlay::getPlaneData(const unsigned long frame,
                               unsigned int plane,
-                              unsigned int &left,
-                              unsigned int &top,
+                              unsigned int &left_pos,
+                              unsigned int &top_pos,
                               unsigned int &width,
                               unsigned int &height,
-                              EM_Overlay &mode,                        
+                              EM_Overlay &mode,
                               const Uint16 columns,
                               const Uint16 rows,
                               const int bits,
@@ -552,8 +552,8 @@ void *DiOverlay::getPlaneData(const unsigned long frame,
             const Uint16 ymin = (op->getTop(Top) > 0) ? op->getTop(Top) : 0;
             const Uint16 xmax = (op->getRight(Left) < columns) ? op->getRight(Left) : columns;
             const Uint16 ymax = (op->getBottom(Top) < rows) ? op->getBottom(Top) : rows;
-            left = xmin;
-            top = ymin;
+            left_pos = xmin;
+            top_pos = ymin;
             width = xmax - xmin;
             height = ymax - ymin;
             mode = op->getMode();
@@ -578,7 +578,7 @@ void *DiOverlay::getFullPlaneData(const unsigned long frame,
         if ((op != NULL) && op->isValid())
         {
             width = op->getWidth();
-            height = op->getHeight();            
+            height = op->getHeight();
             return op->getData(frame, 0, 0, width, height, bits, fore, back);
         }
     }
@@ -606,7 +606,11 @@ unsigned long DiOverlay::create6xxx3000PlaneData(Uint8 *&buffer,
  *
  * CVS/RCS Log:
  * $Log: diovlay.cc,v $
- * Revision 1.21  2001-09-28 13:17:57  joergr
+ * Revision 1.22  2002-12-09 13:34:52  joergr
+ * Renamed parameter/local variable to avoid name clashes with global
+ * declaration left and/or right (used for as iostream manipulators).
+ *
+ * Revision 1.21  2001/09/28 13:17:57  joergr
  * Added method to extract embedded overlay planes from pixel data and store
  * them in group (6xxx,3000) format.
  *
