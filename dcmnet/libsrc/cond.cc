@@ -96,10 +96,10 @@
 **  for new release of DUL code from MIR.
 **
 **
-** Last Update:		$Author: joergr $
-** Update Date:		$Date: 2000-03-07 16:01:10 $
+** Last Update:		$Author: meichel $
+** Update Date:		$Date: 2000-10-10 12:06:23 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/libsrc/cond.cc,v $
-** CVS/RCS Revision:	$Revision: 1.6 $
+** CVS/RCS Revision:	$Revision: 1.7 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -135,7 +135,7 @@ typedef struct {
 static EDB EDBStack[MAXEDB];
 static int stackPtr = -1;
 static void (*ErrorCallback)(CONDITION cond, char *str) = NULL;
-static void dumpstack();
+static void dumpstack(ostream &out);
 
 
 /*
@@ -193,7 +193,7 @@ CONDITION COND_PushCondition(CONDITION cond, const char *controlString, ...)
 			EDBStack[stackPtr].statusText);
 
     if (stackPtr == MAXEDB - 1) {
-	dumpstack();
+	dumpstack(CERR);
 	CERR << "CONDITION Stack overflow" << endl;
 	stackPtr = 0;
     }
@@ -369,16 +369,13 @@ CONDITION COND_EstablishCallback(void (* callback)(CONDITION cond, char *str))
     return COND_NORMAL;
 }
 
-
-static void dumpstack()
+static void dumpstack(ostream &out)
 {
-  int l_index;
-
-     for (l_index = 0; l_index <= stackPtr; l_index++)
-     {
-         CERR.width(8); CERR << hex << EDBStack[l_index].statusCode
-             << " " << EDBStack[l_index].statusText << dec << endl;
-     }
+  for (int l_index = 0; l_index <= stackPtr; l_index++)
+  {
+      out.width(8); out << hex << EDBStack[l_index].statusCode
+          << " " << EDBStack[l_index].statusText << dec << endl;
+  }
 }
 
 
@@ -404,15 +401,18 @@ static void dumpstack()
 **
 */
 
-void COND_DumpConditions(void)
+void COND_DumpConditions(ostream &out)
 {
-	dumpstack();
+  dumpstack(out);
 }
 
 /*
 ** CVS Log
 ** $Log: cond.cc,v $
-** Revision 1.6  2000-03-07 16:01:10  joergr
+** Revision 1.7  2000-10-10 12:06:23  meichel
+** Modified COND_DumpConditions to take an optional ostream& parameter
+**
+** Revision 1.6  2000/03/07 16:01:10  joergr
 ** Added include statement required for Sun CC 2.0.1.
 **
 ** Revision 1.5  2000/03/03 14:11:19  meichel

@@ -66,6 +66,7 @@
 #include "osconfig.h"    /* make sure OS specific configuration is included first */
 
 #include "dicom.h"
+#include "ofconsol.h"
 
 typedef OFBool (*CALLBACK_TYPE)();
 
@@ -75,7 +76,7 @@ CONDITION COND_TopCondition(CONDITION *condition, char *text,
 	unsigned long maxlength);
 CONDITION COND_PopCondition(OFBool clearstack);
 CONDITION COND_EstablishError(CALLBACK_TYPE callback);
-void COND_DumpConditions(void);
+void COND_DumpConditions(ostream& out = CERR);
 CONDITION COND_ExtractConditions(OFBool (*callback)(CONDITION cond, char *str));
 CONDITION COND_EstablishCallback(void (* callback)(CONDITION cond, char *str));
 
