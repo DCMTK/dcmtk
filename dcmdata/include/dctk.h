@@ -9,8 +9,8 @@
  * Collection of necessary Header-Files for users
  *
  * 
- * Last Update:	  $Author: andreas $
- * Revision:      $Revision: 1.5 $
+ * Last Update:	  $Author: hewett $
+ * Revision:      $Revision: 1.6 $
  * Status:        $State: Exp $
  *
  */
@@ -32,14 +32,10 @@
 #include "dcdebug.h"
 
 // tags and dictionary
-#include "pix.h"
 #include "dctagkey.h"
 #include "dctag.h"
 #include "dcdicent.h"
-#include "dcentdef.h"
-#include "dcentlst.h"
-#include "dcentbst.h"
-#include "dcentset.h"
+#include "dchashdi.h"
 #include "dcdict.h"
 #include "dcdeftag.h"
 

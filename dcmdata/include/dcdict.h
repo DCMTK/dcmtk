@@ -9,10 +9,10 @@
 ** Interface for loadable DICOM data dictionary
 ** 
 **
-** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1997-07-21 08:25:07 $
+** Last Update:		$Author: hewett $
+** Update Date:		$Date: 1997-08-26 14:02:56 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcdict.h,v $
-** CVS/RCS Revision:	$Revision: 1.10 $
+** CVS/RCS Revision:	$Revision: 1.11 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -24,10 +24,7 @@
 
 #include "osconfig.h"    /* make sure OS specific configuration is included first */
 
-#include "dcdicent.h"
-#include "dcentbst.h"
-#include "dcentlst.h"
-
+#include "dchashdi.h"
 
 /*
  * The DICOM Data Dictionary
@@ -53,7 +50,7 @@
 
 class DcmDataDictionary {
 private:
-    DcmDictEntryPtrBSTSet dict;    /* dictionary of normal tags */
+    DcmHashDict hashDict;    /* dictionary of normal tags */
     DcmDictEntryList repDict; /* dictionary of repeating tags */
     int skeletonCount; /* the number of skeleton entries */
     OFBool dictionaryLoaded; /* is a dictionary loaded (more than skeleton) */
@@ -84,8 +81,8 @@ public:
     OFBool isDictionaryLoaded() { return dictionaryLoaded; }
 
     /* the number of normal/repeating tag entries  */
-    int numberOfNormalTagEntries() { return dict.length(); }
-    int numberOfRepeatingTagEntries() { return repDict.length(); }
+    int numberOfNormalTagEntries() { return hashDict.size(); }
+    int numberOfRepeatingTagEntries() { return repDict.size(); }
 
     /* total number of dictionary entries  */
     int numberOfEntries() 
@@ -108,11 +105,9 @@ public:
      * then the repeating tag dictionary is searched.
      */
     const DcmDictEntry* findEntry(const DcmTagKey& key);
-    const DcmDictEntry* findEntry( const char *name ); /* by name also */
+    const DcmDictEntry* findEntry(const char *name); /* by name also */
 
     void clear(); /* delete all entries */
-
-    void balance(); /* force a rebalance of the dictionary trees */
 
     /*
      * Add an entry to the dictionary.  Must be allocated via new.
@@ -122,24 +117,12 @@ public:
      * the new entry and the old entry deallocated (via delete).
      */
     void addEntry(DcmDictEntry* entry);
-    
-    /* 
-     * For stepping through the normal tags of dictionary D use:
-     * for (Pix p = D.first(); p != NULL; D.next(p)) 
-     *     WHATEVER(D.contents(p)); 
-     */
-    Pix normalFirst() { return dict.first(); }
-    void normalNext(Pix& i) { dict.next(i); }
-    const DcmDictEntry* normalContents(Pix i) { return dict(i); }
 
-    /*
-     * For stepping through the repeating tags of dictionary D use:
-     * for (Pix p = D.repFirst(); p != NULL; D.repNext(p)) 
-     *     WHATEVER(D.repContents(p)); 
-     */
-    Pix repeatingFirst() { return repDict.first(); }
-    void repeatingNext(Pix& i) { repDict.next(i); }
-    const DcmDictEntry* repeatingContents(Pix i) { return repDict.contents(i); }
+    /* Iterators to access the normal and the repeating entries */ 
+    DcmHashDictIterator normalBegin() { return hashDict.begin(); }
+    DcmHashDictIterator normalEnd() { return hashDict.end(); }
+    DcmDictEntryListIterator repeatingBegin() { return repDict.begin(); }
+    DcmDictEntryListIterator repeatingEnd() { return repDict.end(); }
 
 };
 
@@ -168,7 +151,17 @@ extern DcmDataDictionary dcmDataDict;
 /*
 ** CVS/RCS Log:
 ** $Log: dcdict.h,v $
-** Revision 1.10  1997-07-21 08:25:07  andreas
+** Revision 1.11  1997-08-26 14:02:56  hewett
+** New data structures for data-dictionary.  The main part of the
+** data-dictionary is now stored in an hash table using an optimized
+** hash function.  This new data structure reduces data-dictionary
+** load times by a factor of 4!  he data-dictionary specific linked-list
+** has been replaced by a linked list derived from OFList class
+** (see ofstd/include/oflist.h).
+** The only interface modifications are related to iterating over the entire
+** data dictionary which should not be needed by "normal" applications.
+**
+** Revision 1.10  1997/07/21 08:25:07  andreas
 ** - Replace all boolean types (BOOLEAN, CTNBOOLEAN, DICOM_BOOL, BOOL)
 **   with one unique boolean type OFBool.
 **

@@ -9,10 +9,10 @@
 ** Loadable DICOM data dictionary
 ** 
 **
-** Last Update:		$Author: meichel $
-** Update Date:		$Date: 1997-07-31 15:55:11 $
+** Last Update:		$Author: hewett $
+** Update Date:		$Date: 1997-08-26 14:03:17 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcdict.cc,v $
-** CVS/RCS Revision:	$Revision: 1.11 $
+** CVS/RCS Revision:	$Revision: 1.12 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -38,12 +38,6 @@
 ** Comment character for the data dictionary file(s)
 */
 #define DCM_DICT_COMMENT_CHAR '#'
-
-/*
-** A dictionary tree is rebalanced after 
-** adding every DCM_DICT_BALANCE_RATE entries.
-*/
-#define DCM_DICT_BALANCE_RATE 5
 
 /*
 ** THE Global DICOM Data Dictionary
@@ -133,19 +127,8 @@ DcmDataDictionary::~DcmDataDictionary()
 
 void DcmDataDictionary::clear()
 {
-   Pix p = NULL;
-   DcmDictEntry* e = NULL;
-
-   for (p = dict.first(); p != 0; dict.next(p)) {
-       e = dict(p);
-       delete e;
-   }
-   dict.clear();
-
-   while ((p = repDict.head()) != NULL) {
-       e = repDict.remove(p);
-       delete e;
-   }
+   hashDict.clear();
+   repDict.clear();
 }
 
 
@@ -508,11 +491,6 @@ DcmDataDictionary::loadDictionary(const char* fileName, OFBool errorIfAbsent)
     
     fclose(f);
     
-    if (errorsEncountered == 0) {
-	/* perform a final rebalance */
-	balance();
-    }
-    
     /* return OFFalse if errors were encountered */
     return (errorsEncountered == 0) ? (OFTrue) : (OFFalse);
 }
@@ -578,11 +556,6 @@ DcmDataDictionary::loadExternalDictionaries()
     return (loadFailed) ? (OFFalse) : (OFTrue);
 }
 
-void
-DcmDataDictionary::balance()
-{
-    dict.balance();
-}
     
 void 
 DcmDataDictionary::addEntry(DcmDictEntry* e)
@@ -598,38 +571,29 @@ DcmDataDictionary::addEntry(DcmDictEntry* e)
 	 * Otherwise entries are appended to the end of the list.
 	 */
 	OFBool inserted = OFFalse;
-	Pix p = NULL;
-	const DcmDictEntry* pe = NULL;
-	for (p = repDict.first(); !inserted && p != NULL; repDict.next(p)) {
-	    pe = repDict.contents(p);
-	    if (e->setEQ(*pe)) {
+
+	DcmDictEntryListIterator iter(repDict.begin());
+	DcmDictEntryListIterator last(repDict.end());
+	for (; !inserted && iter != last; ++iter) {
+	    if (e->setEQ(**iter)) {
 		/* replace the old entry with the new */
-		DcmDictEntry *old = repDict.replace(p,e);
+		DcmDictEntry *old = *iter;
+		*iter = e;
 		delete old;
 		inserted = OFTrue;
-	    } else if (e->subset(*pe)) {
+	    } else if (e->subset(**iter)) {
 		/* e is a subset of the current list position, insert before */
-		repDict.insertBefore(p, e);
+		repDict.insert(iter, e);
 		inserted = OFTrue;
 	    }
 	}
 	if (!inserted) {
 	    /* insert at end */
-	    repDict.insertAfter(repDict.tail(), e);
+	    repDict.push_back(e);
+	    inserted = OFTrue;
 	}
     } else {
-        dict.add(e, OFTrue);
-	/*
-	 * The normal tag dictionary is implemented as a binary tree.
-	 * Since the entries are often added in assending
-	 * order, we would get a pathalogically unbalanced
-	 * tree.  It is thus worthwhile to perform a
-	 * rebalance every once in a while.  Every DCM_DICT_BALANCE_RATE
-	 * entries seems reasonable.
-	 */
-        if ((dict.length() % DCM_DICT_BALANCE_RATE) == 0) {
-            dict.balance();
-        }
+	hashDict.put(e);
     }
 }
 
@@ -637,15 +601,13 @@ void
 DcmDataDictionary::deleteEntry(const DcmDictEntry& entry)
 {
     DcmDictEntry* e = NULL;
-
     e = (DcmDictEntry*)findEntry(entry);
     if (e != NULL) {
 	if (e->isRepeating()) {
-	    repDict.del(e);
+	    repDict.remove(e);
 	    delete e;
         } else {
-	    dict.del(e);
-	    delete e;
+	    hashDict.del(entry.getKey());
         }
     }
 }
@@ -654,21 +616,19 @@ const DcmDictEntry*
 DcmDataDictionary::findEntry(const DcmDictEntry& entry)
 {
     const DcmDictEntry* e = NULL;
-    Pix p = NULL;
 
     if (entry.isRepeating()) {
 	OFBool found = OFFalse;
-	for (p = repDict.first(); !found && p != NULL; repDict.next(p)) {
-	    if (entry.setEQ(*repDict.contents(p))) {
+	DcmDictEntryListIterator iter(repDict.begin());
+	DcmDictEntryListIterator last(repDict.end());
+	for (; !found && iter != last; ++iter) {
+	    if (entry.setEQ(**iter)) {
 		found = OFTrue;
-		e = repDict.contents(p);
+		e = *iter;
 	    }
 	}
     } else {
-        p = dict.seek((DcmDictEntry*)&entry);
-        if (p != NULL) {
-            e = dict(p);
-        }
+	e = hashDict.get(entry);
     }
     return e;
 }
@@ -676,24 +636,21 @@ DcmDataDictionary::findEntry(const DcmDictEntry& entry)
 const DcmDictEntry* 
 DcmDataDictionary::findEntry(const DcmTagKey& key)
 {
-    DcmDictEntry keyEntry(key);
-    const DcmDictEntry* e = NULL;
-    Pix p = NULL;
-
-    /* search first in the normal tags dictionary, then
-     * in the repeating element dictionary and then in
-     * the repeating group dictionary.
+    /* search first in the normal tags dictionary and if not found
+     * then search in the repeating tags list.
      */
-    p = dict.seek(&keyEntry);
-    if (p != NULL) {
-        e = dict(p);
-    } else {
+    const DcmDictEntry* e = NULL;
+
+    e = hashDict.get(key);
+    if (e == NULL) {
 	/* search in the repeating tags dictionary */
 	OFBool found = OFFalse;
-	for (p = repDict.first(); !found && p!=NULL; repDict.next(p)) {
-	    if (repDict.contents(p)->contains(key)) {
+	DcmDictEntryListIterator iter(repDict.begin());
+	DcmDictEntryListIterator last(repDict.end());
+	for (; !found && iter != last; ++iter) {
+	    if ((*iter)->contains(key)) {
 		found = OFTrue;
-		e = repDict.contents(p);
+		e = *iter;
 	    }
 	}
     }
@@ -704,24 +661,27 @@ const DcmDictEntry*
 DcmDataDictionary::findEntry(const char *name)
 {
     const DcmDictEntry* e = NULL;
-    Pix p = NULL;
 
-    /* search first in the normal tags dictionary, then
-     * in the repeating element dictionary and then in
-     * the repeating group dictionary.
+    /* search first in the normal tags dictionary and if not found
+     * then search in the repeating tags list.
      */
-    p = dict.seek(name);
-    if (p != NULL) {
-        e = dict(p);
-    } else {
-      /* search in the repeating tags dictionary */
-      OFBool found = OFFalse;
-      for (p = repDict.first(); !found && p!=NULL; repDict.next(p)) {
-          if (repDict.contents(p)->contains(name)) {
-              found = OFTrue;
-              e = repDict.contents(p);
-          }
-      }
+    DcmHashDictIterator iter;
+    for (iter=hashDict.begin(); (e==NULL) && (iter!=hashDict.end()); ++iter) {
+	if ((*iter)->contains(name)) {
+	    e = *iter;
+	}
+    }
+    if (e == NULL) {
+	/* search in the repeating tags dictionary */
+	OFBool found = OFFalse;
+	DcmDictEntryListIterator iter(repDict.begin());
+	DcmDictEntryListIterator last(repDict.end());
+	for (; !found && iter != last; ++iter) {
+	    if ((*iter)->contains(name)) {
+		found = OFTrue;
+		e = *iter;
+	    }
+	}
     }
     return e;
 }
@@ -729,7 +689,17 @@ DcmDataDictionary::findEntry(const char *name)
 /*
 ** CVS/RCS Log:
 ** $Log: dcdict.cc,v $
-** Revision 1.11  1997-07-31 15:55:11  meichel
+** Revision 1.12  1997-08-26 14:03:17  hewett
+** New data structures for data-dictionary.  The main part of the
+** data-dictionary is now stored in an hash table using an optimized
+** hash function.  This new data structure reduces data-dictionary
+** load times by a factor of 4!  he data-dictionary specific linked-list
+** has been replaced by a linked list derived from OFList class
+** (see ofstd/include/oflist.h).
+** The only interface modifications are related to iterating over the entire
+** data dictionary which should not be needed by "normal" applications.
+**
+** Revision 1.11  1997/07/31 15:55:11  meichel
 ** New routine stripWhitespace() in dcdict.cc, much faster.
 **
 ** Revision 1.10  1997/07/21 08:25:25  andreas

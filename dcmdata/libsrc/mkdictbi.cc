@@ -8,10 +8,10 @@
 ** Generate a builtin data dictionary which can be compiled into
 ** the dcmdata library.  
 **
-** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1997-07-21 08:25:37 $
+** Last Update:		$Author: hewett $
+** Update Date:		$Date: 1997-08-26 14:03:20 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/mkdictbi.cc,v $
-** CVS/RCS Revision:	$Revision: 1.9 $
+** CVS/RCS Revision:	$Revision: 1.10 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -164,7 +164,7 @@ main(int argc, char* argv[])
 {
     char* progname;
     FILE* fout = NULL;
-    const DcmDictEntry* e = NULL;
+    DcmDictEntry* e = NULL;
 
 #ifdef HAVE_GUSI_H
     GUSISetup(GUSIwithSIOUXSockets);
@@ -238,22 +238,36 @@ main(int argc, char* argv[])
     fprintf(fout, "\n");
     fprintf(fout, "static DBI_SimpleEntry simpleBuiltinDict[] = {\n");
     
-    Pix p = NULL;
-    Pix pp = NULL;
     int lastEntry = OFFalse;
-    for (p = dcmDataDict.normalFirst(); p != 0; dcmDataDict.normalNext(p)) {
-        e = dcmDataDict.normalContents(p);
-        printSimpleEntry(fout, e, lastEntry);
+
+    /* 
+    ** the hash table does not maintain ordering so we must put
+    ** all the entries into a sorted list.
+    */
+    DcmDictEntryList list;
+    DcmHashDictIterator iter(dcmDataDict.normalBegin());
+    DcmHashDictIterator last(dcmDataDict.normalEnd());
+    for (; iter != last; ++iter) {
+	e = new DcmDictEntry(*(*iter));
+	list.insertAndReplace(e);
+    }
+    /* output the list contents */
+    DcmDictEntryListIterator listIter(list.begin());
+    DcmDictEntryListIterator listLast(list.end());
+    for (; listIter != listLast; ++listIter) {
+	printSimpleEntry(fout, *listIter, lastEntry);
     }
 
-    for (p = dcmDataDict.repeatingFirst(); p != 0; 
-	 dcmDataDict.repeatingNext(p)) {
-        e = dcmDataDict.repeatingContents(p);
-        pp = p;
-        dcmDataDict.repeatingNext(pp);
-        if (pp == 0) {
-            lastEntry = OFTrue;
-        }
+    DcmDictEntryListIterator repIter(dcmDataDict.repeatingBegin());
+    DcmDictEntryListIterator repLast(dcmDataDict.repeatingEnd());
+    DcmDictEntryListIterator nextIter;
+    for (; repIter != repLast; ++repIter) {
+	e = *repIter;
+	nextIter = repIter;
+	++nextIter;
+	if (nextIter == repLast) {
+	    lastEntry = OFTrue;
+	}
         printSimpleEntry(fout, e, lastEntry);
     }
 
@@ -289,7 +303,17 @@ main(int argc, char* argv[])
 /*
 ** CVS/RCS Log:
 ** $Log: mkdictbi.cc,v $
-** Revision 1.9  1997-07-21 08:25:37  andreas
+** Revision 1.10  1997-08-26 14:03:20  hewett
+** New data structures for data-dictionary.  The main part of the
+** data-dictionary is now stored in an hash table using an optimized
+** hash function.  This new data structure reduces data-dictionary
+** load times by a factor of 4!  he data-dictionary specific linked-list
+** has been replaced by a linked list derived from OFList class
+** (see ofstd/include/oflist.h).
+** The only interface modifications are related to iterating over the entire
+** data dictionary which should not be needed by "normal" applications.
+**
+** Revision 1.9  1997/07/21 08:25:37  andreas
 ** - Replace all boolean types (BOOLEAN, CTNBOOLEAN, DICOM_BOOL, BOOL)
 **   with one unique boolean type OFBool.
 **

@@ -7,10 +7,10 @@
 ** Purpose:
 ** Generate a C++ header defining symbolic names for DICOM Tags.
 **
-** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1997-06-26 12:59:15 $
+** Last Update:		$Author: hewett $
+** Update Date:		$Date: 1997-08-26 14:03:19 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/mkdeftag.cc,v $
-** CVS/RCS Revision:	$Revision: 1.6 $
+** CVS/RCS Revision:	$Revision: 1.7 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -200,8 +200,7 @@ getHostName(char* hostString, int maxLen)
 int main(int argc, char* argv[])
 {
     char* progname = "mkdeftag";
-    const DcmDictEntry* e = NULL;
-    Pix p = 0;
+    DcmDictEntry* e = NULL;
     int i = 0;
     FILE* fout = NULL;
 
@@ -267,11 +266,23 @@ int main(int argc, char* argv[])
     fputs("** Tags with a repeating component (repeating tags) are listed later.\n", fout);
     fputs("*/\n", fout);
 
-    for (p = dcmDataDict.normalFirst(); p != 0; dcmDataDict.normalNext(p)) {
-	e = dcmDataDict.normalContents(p);
-	printDefined(fout, e);
+    /* 
+    ** the hash table does not maintain ordering so we must put
+    ** all the entries into a sorted list.
+    */
+    DcmDictEntryList list;
+    DcmHashDictIterator iter(dcmDataDict.normalBegin());
+    DcmHashDictIterator end(dcmDataDict.normalEnd());
+    for (; iter != end; ++iter) {
+	e = new DcmDictEntry(*(*iter));
+	list.insertAndReplace(e);
     }
-
+    /* output the list contents */
+    DcmDictEntryListIterator listIter(list.begin());
+    DcmDictEntryListIterator listLast(list.end());
+    for (; listIter != listLast; ++listIter) {
+	printDefined(fout, *listIter);
+    }
 
     fputs("\n/*\n", fout);
     fputs("** Tags where the group/element can vary (repeating tags).\n", 
@@ -280,12 +291,11 @@ int main(int argc, char* argv[])
 	   dcmDataDict.numberOfRepeatingTagEntries());
     fputs("*/\n", fout);
 
-    for (p=dcmDataDict.repeatingFirst(); 
-	 p!=0; dcmDataDict.repeatingNext(p)) {
-	e = dcmDataDict.repeatingContents(p);
-	printDefined(fout, e);
+    DcmDictEntryListIterator repIter(dcmDataDict.repeatingBegin());
+    DcmDictEntryListIterator repLast(dcmDataDict.repeatingEnd());
+    for (; repIter != repLast; ++repIter) {
+	printDefined(fout, *repIter);
     }
-
     fputs("\n#endif /* !DCDEFTAG_H */\n", fout);
 
     return 0;
@@ -294,7 +304,17 @@ int main(int argc, char* argv[])
 /*
 ** CVS/RCS Log:
 ** $Log: mkdeftag.cc,v $
-** Revision 1.6  1997-06-26 12:59:15  andreas
+** Revision 1.7  1997-08-26 14:03:19  hewett
+** New data structures for data-dictionary.  The main part of the
+** data-dictionary is now stored in an hash table using an optimized
+** hash function.  This new data structure reduces data-dictionary
+** load times by a factor of 4!  he data-dictionary specific linked-list
+** has been replaced by a linked list derived from OFList class
+** (see ofstd/include/oflist.h).
+** The only interface modifications are related to iterating over the entire
+** data dictionary which should not be needed by "normal" applications.
+**
+** Revision 1.6  1997/06/26 12:59:15  andreas
 ** - Include Additional headers (winsock.h, io.h) for Windows NT/95
 **
 ** Revision 1.5  1996/09/24 16:37:43  hewett

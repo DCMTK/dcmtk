@@ -11,6 +11,11 @@ srcdir=@srcdir@
 top_srcdir=@top_srcdir@
 configdir=@top_srcdir@/@configdir@
 
+LOCALINCLUDES= -I$(top_srcdir)/../ofstd/include \
+  -I$(includedir)/ofstd
+LIBDIRS = -L$(top_srcdir)/../ofstd/libsrc -L$(libdir)
+LOCALLIBS = -lofstd
+
 # Special defines for the Library, define them in LOCALDEFS
 #   DICOMDIR_WITHOUT_BACKUP
 #	no Backup for DICOMDIR files. default: not defined
@@ -30,7 +35,7 @@ support_progs= mkdeftag mkdictbi
 support_objs= mkdeftag.o mkdictbi.o dcdictzz.o
 
 dictobjs=	dctagkey.o dcdicent.o dcdict.o dcdictbi.o \
-		dcentset.o dcentbst.o dcentlst.o dcvr.o
+		dcvr.o dchashdi.o
 
 objs= 	dcpixseq.o dcpxitem.o dcuid.o dcerror.o dcbuf.o \
 	dcstack.o dclist.o dcswap.o dcstream.o dctag.o dcxfer.o \
