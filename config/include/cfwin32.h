@@ -358,7 +358,7 @@
 #define PATH_SEPARATOR '\\'
 
 /* Define the environment variable path separator */
-#define ENVIRONMENT_PATH_SEPARATOR ':'
+#define ENVIRONMENT_PATH_SEPARATOR ';'
 
 
 /* Define if your system cannot pass command line arguments into main() (e.g. Macintosh) */
