@@ -46,8 +46,8 @@
  *  ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
  *
  *
- *  The code for OFStandard::atof has been derived
- *  from an implementation which carries the following copyright notice:
+ *  The code for OFStandard::atof has been derived from an implementation
+ *  which carries the following copyright notice:
  *
  *  Copyright 1988 Regents of the University of California
  *  Permission to use, copy, modify, and distribute this software and
@@ -58,8 +58,8 @@
  *  is" without express or implied warranty.
  *
  *
- *  The code for OFStandard::ftoa has been derived
- *  from an implementation which carries the following copyright notice:
+ *  The code for OFStandard::ftoa has been derived from an implementation
+ *  which carries the following copyright notice:
  *
  *  Copyright (c) 1988 Regents of the University of California.
  *  All rights reserved.
@@ -77,13 +77,13 @@
  *  WARRANTIES OF MERCHANTIBILITY AND FITNESS FOR A PARTICULAR PURPOSE.
  *
  *
- *  Furthermore, the "Base64" encoder/decoder has been derived from an
- *  implementation with the following copyright notice:
+ *  The "Base64" encoder/decoder has been derived from an implementation
+ *  with the following copyright notice:
  *
  *  Copyright (c) 1999, Bob Withers - bwit@pobox.com
  *
- *  This code may be freely used for any purpose, either personal or commercial,
- *  provided the authors copyright notice remains intact.
+ *  This code may be freely used for any purpose, either personal or
+ *  commercial, provided the authors copyright notice remains intact.
  *
  *
  *  Module: ofstd
@@ -92,9 +92,9 @@
  *
  *  Purpose: Class for various helper functions
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-12-04 09:13:03 $
- *  CVS/RCS Revision: $Revision: 1.11 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2002-12-05 13:50:08 $
+ *  CVS/RCS Revision: $Revision: 1.12 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -150,6 +150,16 @@ END_EXTERN_C
 #endif /* R_OK */
 
 #endif /* HAVE_WINDOWS_H */
+
+
+// --- ftoa() processing flags ---
+
+const unsigned int OFStandard::ftoa_format_e  = 0x01;
+const unsigned int OFStandard::ftoa_format_f  = 0x02;
+const unsigned int OFStandard::ftoa_uppercase = 0x04;
+const unsigned int OFStandard::ftoa_alternate = 0x08;
+const unsigned int OFStandard::ftoa_leftadj   = 0x10;
+const unsigned int OFStandard::ftoa_zeropad   = 0x20;
 
 
 // --- string functions ---
@@ -888,10 +898,10 @@ public:
   , offset_(0)
   , size_(theSize)
   {
-  	if (size_ > 0) buf_ = new char[size_];  	
+  	if (size_ > 0) buf_ = new char[size_];
   }
 
-  /// destructor  
+  /// destructor
   ~FTOAStringBuffer()
   {
     delete[] buf_;
@@ -947,12 +957,12 @@ static char *ftoa_exponent(char *p, int exp, char fmtch)
     do
     {
       *--t = FTOA_TOCHAR(exp % 10);
-    } 
+    }
     while ((exp /= 10) > 9);
     *--t = FTOA_TOCHAR(exp);
     for (; t < expbuf + FTOA_MAXEXP; *p++ = *t++) /* nothing */;
   }
-  else 
+  else
   {
     *p++ = '0';
     *p++ = FTOA_TOCHAR(exp);
@@ -987,12 +997,12 @@ static char *ftoa_round(double fract, int *exp, char *start, char *end, char ch,
       if (end == start)
       {
         if (exp) /* e/E; increment exponent */
-        {      
+        {
           *end = '1';
           ++*exp;
         }
         else /* f; add extra digit */
-        {          
+        {
           *--end = '1';
           --start;
         }
@@ -1022,7 +1032,7 @@ static char *ftoa_round(double fract, int *exp, char *start, char *end, char ch,
  *  @param fmtch   format character
  *  @param startp  pointer to start of target buffer
  *  @param endp    pointer to one char after end of target buffer
- *  @return 
+ *  @return
  */
 static int ftoa_convert(double val, int prec, int flags, char *signp, char fmtch, char *startp, char *endp)
 {
@@ -1082,7 +1092,7 @@ static int ftoa_convert(double val, int prec, int flags, char *signp, char fmtch
 
     case 'e':
     case 'E':
-eformat:        
+eformat:
       if (expcnt)
       {
         *t++ = *++p;
@@ -1125,7 +1135,7 @@ eformat:
       /* if requires more precision and some fraction left */
       if (fract)
       {
-        if (prec) do 
+        if (prec) do
         {
           fract = modf(fract * 10, &tmp);
           *t++ = FTOA_TOCHAR((int)tmp);
@@ -1260,7 +1270,7 @@ void OFStandard::ftoa(
     else fmtch = 'g';
   }
 
-  // don't do unrealistic precision; just pad it with zeroes later, 
+  // don't do unrealistic precision; just pad it with zeroes later,
   // so buffer size stays rational.
   if (prec > FTOA_MAXFRACT)
   {
@@ -1290,11 +1300,11 @@ void OFStandard::ftoa(
   if (softsign) sign = '-';
   register char *t = *buf ? buf : buf + 1;
 
-  /* At this point, `t' points to a string which (if not flags&FTOA_LEFT_ADJUSTMENT) 
-   * should be padded out to `width' places.  If flags&FTOA_ZEROPAD, it should 
-   * first be prefixed by any sign or other prefix; otherwise, it should be 
-   * blank padded before the prefix is emitted.  After any left-hand 
-   * padding, print the string proper, then emit zeroes required by any 
+  /* At this point, `t' points to a string which (if not flags&FTOA_LEFT_ADJUSTMENT)
+   * should be padded out to `width' places.  If flags&FTOA_ZEROPAD, it should
+   * first be prefixed by any sign or other prefix; otherwise, it should be
+   * blank padded before the prefix is emitted.  After any left-hand
+   * padding, print the string proper, then emit zeroes required by any
    * leftover floating precision; finally, if FTOA_LEFT_ADJUSTMENT, pad with blanks.
    *
    * compute actual size, so we know how much to pad
@@ -1367,7 +1377,11 @@ OFBool OFStandard::stringMatchesCharacterSet( const char *str, const char *chars
 
 /*
  *  $Log: ofstd.cc,v $
- *  Revision 1.11  2002-12-04 09:13:03  meichel
+ *  Revision 1.12  2002-12-05 13:50:08  joergr
+ *  Moved definition of ftoa() processing flags to implementation file to avoid
+ *  compiler errors (e.g. on Sun CC 2.0.1).
+ *
+ *  Revision 1.11  2002/12/04 09:13:03  meichel
  *  Implemented a locale independent function OFStandard::ftoa() that
  *    converts double to string and offers all the flexibility of the
  *    sprintf family of functions.

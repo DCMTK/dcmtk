@@ -21,10 +21,10 @@
  *
  *  Purpose: Class for various helper functions
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-12-04 09:13:00 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2002-12-05 13:49:36 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/include/Attic/ofstd.h,v $
- *  CVS/RCS Revision: $Revision: 1.10 $
+ *  CVS/RCS Revision: $Revision: 1.11 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -75,8 +75,8 @@ class OFStandard
      *  @param src source string, must not be NULL
      *  @param siz size of destination buffer
      *  @return the total length of the string the function tried to
-     *  create, i.e. strlen(src).  While this may seem somewhat
-     *  confusing it was done to make truncation detection simple.
+     *    create, i.e. strlen(src).  While this may seem somewhat
+     *    confusing it was done to make truncation detection simple.
      */
     static inline size_t strlcpy(char *dst, const char *src, size_t siz)
     {
@@ -100,9 +100,9 @@ class OFStandard
      *  @param src source string, must not be NULL
      *  @param siz size of destination buffer
      *  @return the total length of the string the function tried to
-     *  create, i.e. the initial length of dst plus the length of src.
-     *  While this may seem somewhat confusing it was done to make
-     *  truncation detection simple.
+     *    create, i.e. the initial length of dst plus the length of src.
+     *    While this may seem somewhat confusing it was done to make
+     *    truncation detection simple.
      */
     static inline size_t strlcat(char *dst, const char *src, size_t siz)
     {
@@ -191,16 +191,16 @@ class OFStandard
      *  corresponding mnenonics (e.g. "&lt;" and "&amp;").  If flag 'convertNonASCII' is OFTrue
      *  all characters > #127 are also converted (useful if only HTML 3.2 is supported which does
      *  not allow to specify the character set).
-     ** @param  sourceString     source string to be converted
-     *  @param  markupString     reference to character string where the result should be stored
-     *  @param  convertNonASCII  convert non-ASCII characters (> #127) to numeric value (&#nnn;)
-     *                           if OFTrue
-     *  @param  xmlMode          convert to XML markup string if OFTrue, HTML string otherwise.
-     *                           Newlines are always encoded as "&#182;" in XML mode, the flag
-     *                           'newlineAllowed' has no meaning in this case.
-     *  @param  newlineAllowed   optional flag indicating whether newlines are allowed or not.
-     *                           If they are allowed the text "<br>" is used, "&para;" otherwise.
-     *                           The following combinations are accepted: LF, CR, LF CR, CF LF.
+     ** @param sourceString source string to be converted
+     *  @param markupString reference to character string where the result should be stored
+     *  @param convertNonASCII convert non-ASCII characters (> #127) to numeric value (&#nnn;)
+     *    if OFTrue
+     *  @param xmlMode convert to XML markup string if OFTrue, HTML string otherwise.
+     *    Newlines are always encoded as "&#182;" in XML mode, the flag 'newlineAllowed' has no
+     *    meaning in this case.
+     *  @param newlineAllowed optional flag indicating whether newlines are allowed or not.
+     *    If they are allowed the text "<br>" is used, "&para;" otherwise. The following
+     *    combinations are accepted: LF, CR, LF CR, CF LF.
      ** @return reference to resulting 'markupString' (might be empty if 'sourceString' was empty)
      */
     static const OFString &convertToMarkupString(const OFString &sourceString,
@@ -215,11 +215,11 @@ class OFStandard
      *  even multiple of 3.  A special character ('=') is used to denote padding so that the output
      *  can be decoded back to its exact size.
      *  If the input data is NULL an empty string is returned.
-     ** @param  data    buffer with binary data to be encoded (big endian required!)
-     *  @param  length  length of the input data buffer (in bytes)
-     *  @param  result  reference to resulting string variable (Base64 encoded)
-     *  @param  width   maximum number of characters per line in the output string
-     *                  (default: 0 = no line breaks, typical for MIME = 72)
+     ** @param data buffer with binary data to be encoded (big endian required!)
+     *  @param length length of the input data buffer (in bytes)
+     *  @param result reference to resulting string variable (Base64 encoded)
+     *  @param width maximum number of characters per line in the output string
+     *    (default: 0 = no line breaks, typical for MIME = 72)
      ** @return reference to the resulting string
      */
     static const OFString &encodeBase64(const unsigned char *data,
@@ -235,10 +235,10 @@ class OFStandard
      *  NB: The memory buffer in which the binary output is stored is allocated inside this function
      *      and has to to be freed (using "delete[]") by the caller!  Do not pass a pointer to an
      *      already allocated buffer to this function, the caller does not know the exact size anyway.
-     ** @param  data    Base64 encoded input data (possibly padded with '=' at the end)
-     *  @param  result  receives pointer to resulting buffer with binary data (big endian encoded)
+     ** @param data Base64 encoded input data (possibly padded with '=' at the end)
+     *  @param result receives pointer to resulting buffer with binary data (big endian encoded)
      ** @return length of the resulting binary data (0 if an error occurred, in this case the buffer
-     *          is deleted internally)
+     *    is deleted internally)
      */
     static const size_t decodeBase64(const OFString &data,
                                      unsigned char *&result);
@@ -277,11 +277,12 @@ class OFStandard
      *    If a terminating character is found before any floating-point
      *    digits, then zero is returned.
      */
-     static double atof(const char *s, OFBool *success=NULL);
+     static double atof(const char *s,
+                        OFBool *success = NULL);
 
      /** formats a floating-point number into an ASCII string.
       *  This function works similar to sprintf(), except that this
-      *  implementation is not affected by a locale setting. 
+      *  implementation is not affected by a locale setting.
       *  The radix character is always '.'.
       *
       *  This implementation guarantees that the given string size
@@ -298,38 +299,44 @@ class OFStandard
       *  @param siz size of target string buffer
       *  @param val double value to be formatted
       *  @param flags processing flags. Any of the flags defined below
-      *    can be combined by bit-wise or. 
+      *    can be combined by bit-wise or.
       *  @param width width from format (%8d), or 0
       *  @param precision precision from format (%.3d), or -1
       */
-     static void ftoa(
-       char *target,
-       size_t targetSize,
-       double value,
-       unsigned int flags = 0,
-       int width = 0,
-       int precision = -1);
+     static void ftoa(char *target,
+                      size_t targetSize,
+                      double value,
+                      unsigned int flags = 0,
+                      int width = 0,
+                      int precision = -1);
+
+     /** @name ftoa() processing flags.
+      *  These flags can be combined by bit-wise or.
+      */
+     //@{
 
      /// Use %e or %E conversion format instead of %g or %G
-     static const unsigned int ftoa_format_e = 0x01;
+     static const unsigned int ftoa_format_e;
 
      /// Use %f or %F conversion format instead of %g or %G
-     static const unsigned int ftoa_format_f = 0x02;
+     static const unsigned int ftoa_format_f;
 
      /// Use %E, %F or %G conversion format instead of %e, %f or %g
-     static const unsigned int ftoa_uppercase = 0x04;
+     static const unsigned int ftoa_uppercase;
 
-     /** convert value to alternate form. The result will always contain 
-      *  a decimal point, even if no digits follow the point. For g and G 
+     /** convert value to alternate form. The result will always contain
+      *  a decimal point, even if no digits follow the point. For g and G
       *  conversions, trailing zeroes will not be removed from the result.
       */
-     static const unsigned int ftoa_alternate = 0x08;
+     static const unsigned int ftoa_alternate;
 
      /// left-justify number be within the field
-     static const unsigned int ftoa_leftadj = 0x10;
+     static const unsigned int ftoa_leftadj;
 
      /// pad with zeroes instead of blanks
-     static const unsigned int ftoa_zeropad = 0x20;
+     static const unsigned int ftoa_zeropad;
+
+     //@}
 
     /** Checks if a given string consists only of characters which are specified in a
      *  given charset. Note that in case one of the parameters equals NULL, OFTrue will
@@ -337,7 +344,7 @@ class OFStandard
      *  @param str String which shall be checked.
      *  @param charset Possible character set for s.
      *  @return OFTrue if the given string consists only of characters which are specified
-     *          in the given charset; OFFalse otherwise.
+     *    in the given charset; OFFalse otherwise.
      */
      static OFBool stringMatchesCharacterSet( const char *str, const char *charset );
 
@@ -349,7 +356,7 @@ class OFStandard
      *  @param src source string, must not be NULL
      *  @param siz size of destination buffer
      *  @return the total length of the string the function tried to
-     *  create, i.e. strlen(src).
+     *    create, i.e. strlen(src).
      */
     static size_t my_strlcpy(char *dst, const char *src, size_t siz);
 
@@ -359,7 +366,7 @@ class OFStandard
      *  @param src source string, must not be NULL
      *  @param siz size of destination buffer
      *  @return the total length of the string the function tried to
-     *  create, i.e. the initial length of dst plus the length of src.
+     *    create, i.e. the initial length of dst plus the length of src.
      */
     static size_t my_strlcat(char *dst, const char *src, size_t siz);
 
@@ -373,7 +380,11 @@ class OFStandard
  *
  * CVS/RCS Log:
  * $Log: ofstd.h,v $
- * Revision 1.10  2002-12-04 09:13:00  meichel
+ * Revision 1.11  2002-12-05 13:49:36  joergr
+ * Moved definition of ftoa() processing flags to implementation file to avoid
+ * compiler errors (e.g. on Sun CC 2.0.1).
+ *
+ * Revision 1.10  2002/12/04 09:13:00  meichel
  * Implemented a locale independent function OFStandard::ftoa() that
  *   converts double to string and offers all the flexibility of the
  *   sprintf family of functions.
