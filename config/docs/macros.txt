@@ -211,13 +211,6 @@ SUPRESS_CREATE_STAMP
   Explanation: When defined, suppresses the creation of a time stamp 
     comment when re-generating dcdeftag.h and dcdictzz.cc
 
-USE__FINDFIRST
-  Affected: dcmdata/apps/dcmgpdir.cc
-  Type of modification: Activates alternative implementation
-  Explanation: Activates the old version of expandFileNames() using 
-    _findfirst(). The new version directly uses Win32 API calls and is, 
-    therefore, more portable.
-
 USE__LOCKING
   Affected: dcmnet and related (imagectn, dcmpstat)
   Type of modification: Activates alternative implementation
@@ -225,4 +218,3 @@ USE__LOCKING
     platforms using _locking(). This version should only be used on 
     compilers where _get_osfhandle() is not available since it does not 
     implement shared locks.
-
