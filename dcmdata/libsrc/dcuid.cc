@@ -23,10 +23,10 @@
  *  Definitions of "well known" DICOM Unique Indentifiers,
  *  routines for finding and creating UIDs.
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-06-01 15:49:12 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2001-06-05 10:08:16 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcuid.cc,v $
- *  CVS/RCS Revision: $Revision: 1.33 $
+ *  CVS/RCS Revision: $Revision: 1.34 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -645,12 +645,12 @@ static long gethostid(void)
     if (gethostname(name, 1024) < 0) {
         return 0;
     }
-#if defined(_REENTRANT) && !defined(_WIN32)
+#if defined(_REENTRANT) && !defined(_WIN32) && !defined(__CYGWIN__)
     // use gethostbyname_r instead of gethostbyname
     int h_errnop=0;
     struct hostent theHostent;
     char buffer[GETHOSTBYNAME_R_BUFSIZE];    
-    if ((hent = hent =gethostbyname_r(name, &theHostent, buffer, GETHOSTBYNAME_R_BUFSIZE, &h_errnop)) == NULL)
+    if ((hent = gethostbyname_r(name, &theHostent, buffer, GETHOSTBYNAME_R_BUFSIZE, &h_errnop)) == NULL)
 #else
     if ((hent = gethostbyname(name)) == NULL)
 #endif
@@ -781,7 +781,12 @@ char* dcmGenerateUniqueIdentifer(char* uid, const char* prefix)
 /*
 ** CVS/RCS Log:
 ** $Log: dcuid.cc,v $
-** Revision 1.33  2001-06-01 15:49:12  meichel
+** Revision 1.34  2001-06-05 10:08:16  joergr
+** Replaced some #ifdef _WIN32 statements by #ifdef HAVE_WINDOWS_H or #ifdef
+** __CYGWIN__ respectively to reflect the fact that the latest Cygwin/gcc
+** version does not define _WIN32 any more.
+**
+** Revision 1.33  2001/06/01 15:49:12  meichel
 ** Updated copyright header
 **
 ** Revision 1.32  2001/05/25 09:50:24  meichel
