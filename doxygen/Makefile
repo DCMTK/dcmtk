@@ -6,6 +6,8 @@
 SHELL = /bin/sh
 DOXYGEN = doxygen
 
+all: html man
+
 html:
 	$(DOXYGEN) htmldocs.cfg
 
@@ -13,11 +15,8 @@ man:
 	$(DOXYGEN) manpages.cfg
 	rm -f manpages/man/man1/*.man.1
 
-all: html man
-
-
 clean:
-	rm -f *.log *.bak
+	rm -f *.log $(TRASH)
 
 distclean: clean
 	rm -rf htmldocs
