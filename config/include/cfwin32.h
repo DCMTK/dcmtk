@@ -36,37 +36,37 @@
 #endif
 
 /* Define if you don't have vprintf but do have _doprnt.  */
-#undef HAVE_DOPRNT
+/* #undef HAVE_DOPRNT */
 
 /* Define if you support file names longer than 14 characters.  */
 #define HAVE_LONG_FILE_NAMES 1
 
 /* Define if you have <sys/wait.h> that is POSIX.1 compatible.  */
-#undef HAVE_SYS_WAIT_H
+/* #undef HAVE_SYS_WAIT_H */
 
 /* Define if you have the vprintf function.  */
 #define HAVE_VPRINTF 1
 
 /* Define if you have the wait3 system call.  */
-#undef HAVE_WAIT3
+/* #undef HAVE_WAIT3 */
 
 /* Define to `int' if <sys/types.h> doesn't define.  */
-#undef pid_t
+/* #undef pid_t */
 
 /* Define if you need to in order for stat and other things to work.  */
-#undef _POSIX_SOURCE
+/* #undef _POSIX_SOURCE */
 
 /* Define as the return type of signal handlers (int or void).  */
 #define RETSIGTYPE void
 
 /* Define to `unsigned' if <sys/types.h> doesn't define.  */
-#undef size_t
+/* #undef size_t */
 
 /* Define if you have the ANSI C header files.  */
 #define STDC_HEADERS 1
 
 /* Define if your <sys/time.h> declares struct tm.  */
-#undef TM_IN_SYS_TIME
+/* #undef TM_IN_SYS_TIME */
 
 /* The number of bytes in a char.  */
 #define SIZEOF_CHAR 1
@@ -99,46 +99,46 @@
 #define HAVE_ACCESS 1
 
 /* Define if you have the bcmp function.  */
-#undef HAVE_BCMP
+/* #undef HAVE_BCMP */
 
 /* Define if you have the bcopy function.  */
-#undef HAVE_BCOPY
+/* #undef HAVE_BCOPY */
 
 /* Define if you have the bind function.  */
 #define HAVE_BIND 1
 
 /* Define if you have the bzero function.  */
-#undef HAVE_BZERO
+/* #undef HAVE_BZERO */
 
 /* Define if you have the connect function.  */
 #define HAVE_CONNECT 1
 
 /* Define if you have the cuserid function.  */
-#undef HAVE_CUSERID
+/* #undef HAVE_CUSERID */
 
 /* Define if you have the flock function.  */
-#undef HAVE_FLOCK
+/* #undef HAVE_FLOCK */
 
 /* Define if you have the fork function.  */
-#undef HAVE_FORK 
+/* #undef HAVE_FORK */
 
 /* Define if you have the getenv function.  */
 #define HAVE_GETENV 1
 
 /* Define if you have the geteuid function.  */
-#undef HAVE_GETEUID
+/* #undef HAVE_GETEUID */
 
 /* Define if you have the gethostbyname function.  */
 #define HAVE_GETHOSTBYNAME 1
 
 /* Define if you have the gethostid function.  */
-#undef HAVE_GETHOSTID
+/* #undef HAVE_GETHOSTID */
 
 /* Define if you have the gethostname function.  */
 #define HAVE_GETHOSTNAME 1
 
 /* Define if you have the getlogin function.  */
-#undef HAVE_GETLOGIN
+/* #undef HAVE_GETLOGIN */
 
 /* Define if you have the getpid function.  */
 #define HAVE_GETPID 1
@@ -150,10 +150,10 @@
 #define HAVE_GETSOCKOPT 1
 
 /* Define if you have the getuid function.  */
-#undef HAVE_GETUID
+/* #undef HAVE_GETUID */
 
 /* Define if you have the index function.  */
-#undef HAVE_INDEX
+/* #undef HAVE_INDEX */
 
 /* Define if you have the itoa function.  */
 #define HAVE_ITOA 1
@@ -162,10 +162,10 @@
 #define HAVE_LISTEN 1
 
 /* Define if you have the lockf function.  */
-#undef HAVE_LOCKF
+/* #undef HAVE_LOCKF */
 
 /* Define if you have the malloc_debug function.  */
-#undef HAVE_MALLOC_DEBUG
+/* #undef HAVE_MALLOC_DEBUG */
 
 /* Define if you have the memcmp function.  */
 #define HAVE_MEMCMP 1
@@ -183,7 +183,7 @@
 #define HAVE_MKTEMP 1
 
 /* Define if you have the rindex function.  */
-#undef HAVE_RINDEX
+/* #undef HAVE_RINDEX */
 
 /* Define if you have the select function.  */
 #define HAVE_SELECT 1
@@ -192,10 +192,10 @@
 #define HAVE_SETSOCKOPT 1
 
 /* Define if you have the setuid function.  */
-#undef HAVE_SETUID
+/* #undef HAVE_SETUID */
 
 /* Define if you have the sleep function.  */
-#undef HAVE_SLEEP
+/* #undef HAVE_SLEEP */
 
 /* Define if you have the socket function.  */
 #define HAVE_SOCKET 1
@@ -207,16 +207,16 @@
 #define HAVE_STRCHR 1
 
 /* Define if you have the strdup function.  */
-#undef HAVE_STRDUP
+/* #undef HAVE_STRDUP */
 
 /* Define if you have the strerror function.  */
 #define HAVE_STRERROR 1
 
 /* Define if you have the strlcat function.  */
-#undef HAVE_STRLCAT
+/* #undef HAVE_STRLCAT */
 
 /* Define if you have the strlcpy function.  */
-#undef HAVE_STRLCPY
+/* #undef HAVE_STRLCPY */
 
 /* Define if you have the strstr function.  */
 #define HAVE_STRSTR 1
@@ -225,28 +225,28 @@
 #define HAVE_STRTOUL 1
 
 /* Define if you have the sysinfo function.  */
-#undef HAVE_SYSINFO
+/* #undef HAVE_SYSINFO */
 
 /* Define if you have the tempnam function.  */
-#undef HAVE_TEMPNAM 
+/* #undef HAVE_TEMPNAM */
 
 /* Define if you have the tmpnam function.  */
 #define HAVE_TMPNAM 1
 
 /* Define if you have the uname function.  */
-#undef HAVE_UNAME 
+/* #undef HAVE_UNAME */
 
 /* Define if you have the usleep function.  */
-#undef HAVE_USLEEP
+/* #undef HAVE_USLEEP */
 
 /* Define if you have the waitpid function.  */
-#undef HAVE_WAITPID
+/* #undef HAVE_WAITPID */
 
 /* Define if you have the <alloca.h> header file.  */
-#undef HAVE_ALLOCA_H
+/* #undef HAVE_ALLOCA_H */
 
 /* Define if you have the <arpa/inet.h> header file.  */
-#undef HAVE_ARPA_INET_H
+/* #undef HAVE_ARPA_INET_H */
 
 /* Define if you have the <assert.h> header file.  */
 #define HAVE_ASSERT_H 1
@@ -255,7 +255,7 @@
 #define HAVE_CTYPE_H 1
 
 /* Define if you have the <dirent.h> header file.  */
-#undef HAVE_DIRENT_H
+/* #undef HAVE_DIRENT_H */
 
 /* Define if you have the <errno.h> header file.  */
 #define HAVE_ERRNO_H 1
@@ -291,10 +291,10 @@
 #define HAVE_ISO646_H 1
 
 /* Define if you have the <libc.h> header file.  */
-#undef HAVE_LIBC_H
+/* #undef HAVE_LIBC_H */
 
 /* Define if you have the <limits.h> header file.  */
-#undef HAVE_LIMITS_H
+/* #undef HAVE_LIMITS_H */
 
 /* Define if you have the <locale.h> header file.  */
 #define HAVE_LOCALE_H 1
@@ -306,25 +306,25 @@
 #define HAVE_MATH_H 1
 
 /* Define if you have the <ndir.h> header file.  */
-#undef HAVE_NDIR_H
+/* #undef HAVE_NDIR_H */
 
 /* Define if you have the <netdb.h> header file.  */
-#undef HAVE_NETDB_H
+/* #undef HAVE_NETDB_H */
 
 /* Define if you have the <netinet/in.h> header file.  */
-#undef HAVE_NETINET_IN_H
+/* #undef HAVE_NETINET_IN_H */
 
 /* Define if you have the <netinet/in_systm.h> header file.  */
-#undef HAVE_NETINET_IN_SYSTM_H
+/* #undef HAVE_NETINET_IN_SYSTM_H */
 
 /* Define if you have the <netinet/tcp.h> header file.  */
-#undef HAVE_NETINET_TCP_H
+/* #undef HAVE_NETINET_TCP_H */
 
 /* Define if you have the <pthread.h> header file.  */
-#undef HAVE_PTHREAD_H
+/* #undef HAVE_PTHREAD_H */
 
 /* Define if you have the <semaphore.h> header file.  */
-#undef HAVE_SEMAPHORE_H
+/* #undef HAVE_SEMAPHORE_H */
 
 /* Define if you have the <setjmp.h> header file.  */
 #define HAVE_SETJMP_H 1
@@ -336,10 +336,10 @@
 #define HAVE_SSTREAM 1
 
 /* Define if you have the <sstream.h> header file.  */
-#undef HAVE_SSTREAM_H
+/* #undef HAVE_SSTREAM_H */
 
 /* Define if you have the <stat.h> header file.  */
-#undef HAVE_STAT_H 
+/* #undef HAVE_STAT_H  */
 
 /* Define if you have the <stdarg.h> header file.  */
 #define HAVE_STDARG_H 1
@@ -357,7 +357,7 @@
 #define HAVE_STRING_H 1
 
 /* Define if you have the <strings.h> header file.  */
-#undef HAVE_STRINGS_H
+/* #undef HAVE_STRINGS_H */
 
 /* Define if you have the <strstrea.h> header file.  */
 #define HAVE_STRSTREA_H 1
@@ -366,40 +366,40 @@
 #define HAVE_STRSTREAM 1
 
 /* Define if you have the <strstream.h> header file.  */
-#undef HAVE_STRSTREAM_H
+/* #undef HAVE_STRSTREAM_H */
 
 /* Define if you have the <synch.h> header file.  */
-#undef HAVE_SYNCH_H
+/* #undef HAVE_SYNCH_H */
 
 /* Define if you have the <sys/dir.h> header file.  */
-#undef HAVE_SYS_DIR_H
+/* #undef HAVE_SYS_DIR_H */
 
 /* Define if you have the <sys/errno.h> header file.  */
-#undef HAVE_SYS_ERRNO_H
+/* #undef HAVE_SYS_ERRNO_H */
 
 /* Define if you have the <sys/file.h> header file.  */
-#undef HAVE_SYS_FILE_H
+/* #undef HAVE_SYS_FILE_H */
 
 /* Define if you have the <sys/ndir.h> header file.  */
-#undef HAVE_SYS_NDIR_H
+/* #undef HAVE_SYS_NDIR_H */
 
 /* Define if you have the <sys/param.h> header file.  */
-#undef HAVE_SYS_PARAM_H
+/* #undef HAVE_SYS_PARAM_H */
 
 /* Define if you have the <sys/resource.h> header file.  */
-#undef HAVE_SYS_RESOURCE_H
+/* #undef HAVE_SYS_RESOURCE_H */
 
 /* Define if you have the <sys/select.h> header file.  */
-#undef HAVE_SYS_SELECT_H
+/* #undef HAVE_SYS_SELECT_H */
 
 /* Define if you have the <sys/socket.h> header file.  */
-#undef HAVE_SYS_SOCKET_H
+/* #undef HAVE_SYS_SOCKET_H */
 
 /* Define if you have the <sys/stat.h> header file.  */
 #define HAVE_SYS_STAT_H 1
 
 /* Define if you have the <sys/time.h> header file.  */
-#undef HAVE_SYS_TIME_H
+/* #undef HAVE_SYS_TIME_H */
 
 /* Define if you have the <sys/types.h> header file.  */
 #define HAVE_SYS_TYPES_H 1
@@ -408,35 +408,44 @@
 #define HAVE_SYS_UTIME_H 1
 
 /* Define if you have the <sys/utsname.h> header file.  */
-#undef HAVE_SYS_UTSNAME_H
+/* #undef HAVE_SYS_UTSNAME_H */
 
 /* Define if you have the <thread.h> header file.  */
-#undef HAVE_THREAD_H
+/* #undef HAVE_THREAD_H */
 
 /* Define if you have the <time.h> header file.  */
 #define HAVE_TIME_H 1
 
 /* Define if you have the <unistd.h> header file.  */
-#undef HAVE_UNISTD_H
+/* #undef HAVE_UNISTD_H */
 
 /* Define if you have the <unix.h> header file.  */
-#undef HAVE_UNIX_H
+/* #undef HAVE_UNIX_H */
 
 /* Define if you have the <utime.h> header file.  */
-#undef HAVE_UTIME_H
+/* #undef HAVE_UTIME_H */
 
 /* Define if you have the <wctype.h> header file.  */
 #define HAVE_WCTYPE_H 1
 
 /* Define if you have the iostream library (-liostream).  */
-#undef HAVE_LIBIOSTREAM
+/* #undef HAVE_LIBIOSTREAM */
 
 /* Define if you have the nsl library (-lnsl).  */
-#undef HAVE_LIBNSL
+/* #undef HAVE_LIBNSL */
 
 /* Define if you have the socket library (-lsocket).  */
-#undef HAVE_LIBSOCKET
+/* #undef HAVE_LIBSOCKET */
 /* User definable section */
+
+/* MinGW needs some special handling because it is a mixture of WIN32 and Posix. 
+ * The following settings are not tested by configure but need to be set for MinGW.
+ */
+#ifdef __MINGW32__
+#define HAVE_WINDOWS_H
+#define HAVE_WINSOCK_H
+#define NO_IOS_BASE_ASSIGN
+#endif
 
 /* Define the DCMTK default path */
 #define DCMTK_PREFIX "C:\\usr\\local\\dicom"
@@ -451,7 +460,7 @@
 #define ENVIRONMENT_PATH_SEPARATOR ';'
 
 /* Define if your system cannot pass command line arguments into main() (e.g. Macintosh) */
-#undef HAVE_EMPTY_ARGC_ARGV
+/* #undef HAVE_EMPTY_ARGC_ARGV */
 
 /* Compile in the debug code */
 /* #define DEBUG 1 */ 
@@ -460,7 +469,7 @@
 #define NO_ANON_CLASS_COMP 1
 
 /* Define if your system has a prototype for bzero */
-#undef HAVE_PROTOTYPE_BZERO
+/* #undef HAVE_PROTOTYPE_BZERO */
 
 /* Define if your system has a prototype for accept */
 #define HAVE_PROTOTYPE_ACCEPT 1
@@ -472,13 +481,13 @@
 #define HAVE_PROTOTYPE_GETHOSTBYNAME 1
 
 /* Define if your system has a prototype for gethostid */
-#undef HAVE_PROTOTYPE_GETHOSTID
+/* #undef HAVE_PROTOTYPE_GETHOSTID */
 
 /* Define if your system has a prototype for gethostname */
 #define HAVE_PROTOTYPE_GETHOSTNAME 1
 
 /* Define if your system has a prototype for flock */
-#undef HAVE_PROTOTYPE_FLOCK
+/* #undef HAVE_PROTOTYPE_FLOCK */
 
 /* Define if your system has a prototype for listen */
 #define HAVE_PROTOTYPE_LISTEN 1
@@ -494,7 +503,7 @@
 
 /* Define if your system declares argument 2-4 of select() 
    as int * instead of struct fd_set * */
-#undef HAVE_INTP_SELECT
+/* #undef HAVE_INTP_SELECT */
 
 /* Define if your system declares argument 3 of accept() 
    as int * instead of size_t * or socklen_t * */
@@ -507,7 +516,7 @@
 /* Define if your system supports readdir_r with the obsolete
    Posix 1.c draft 6 declaration (2 arguments) instead of the
    Posix 1.c declaration with 3 arguments. */
-#undef HAVE_OLD_READDIR_R
+/* #undef HAVE_OLD_READDIR_R */
 
 /* Define if your system has a prototype for setsockopt */
 #define HAVE_PROTOTYPE_SETSOCKOPT 1
@@ -516,28 +525,28 @@
 #define HAVE_PROTOTYPE_GETSOCKOPT 1
 
 /* Define if your system has a prototype for gettimeofday */
-#undef HAVE_PROTOTYPE_GETTIMEOFDAY
+/* #undef HAVE_PROTOTYPE_GETTIMEOFDAY */
 
 /* Define if your system has a prototype for getsockname */
 #define HAVE_PROTOTYPE_GETSOCKNAME 1
 
 /* Define if your system has a prototype for wait3 */
-#undef HAVE_PROTOTYPE_WAIT3
+/* #undef HAVE_PROTOTYPE_WAIT3 */
 
 /* Define if your system has a prototype for waitpid */
-#undef HAVE_PROTOTYPE_WAITPID
+/* #undef HAVE_PROTOTYPE_WAITPID */
 
 /* Define if your system has a prototype for usleep in libc.h */
-#undef HAVE_PROTOTYPE_USLEEP
+/* #undef HAVE_PROTOTYPE_USLEEP */
 
 /* Define if your system has a prototype for mktemp */
-#undef HAVE_PROTOTYPE_MKTEMP
+/* #undef HAVE_PROTOTYPE_MKTEMP */
 
 /* Define if your system has a prototype for strcasecmp in string.h */
-#undef HAVE_PROTOTYPE_STRCASECMP
+/* #undef HAVE_PROTOTYPE_STRCASECMP */
 
 /* Define if your system has a prototype for strncasecmp in string.h */
-#undef HAVE_PROTOTYPE_STRNCASECMP
+/* #undef HAVE_PROTOTYPE_STRNCASECMP */
 
 /* Define if your system has a prototype for _stricmp in string.h */
 #define HAVE_PROTOTYPE__STRICMP 1
@@ -546,10 +555,10 @@
 #define HAVE_DECLARATION_STRUCT_UTIMBUF 1
 
 /* Define if your system has a prototype for socklen_t */
-#undef HAVE_DECLARATION_SOCKLEN_T
+/* #undef HAVE_DECLARATION_SOCKLEN_T */
 
 /* Define if your system has a prototype for std::ios_base::openmode */
-#undef HAVE_DECLARATION_STD__IOS_BASE__OPENMODE
+/* #undef HAVE_DECLARATION_STD__IOS_BASE__OPENMODE */
 
 /* Define if your system defines ios::nocreate in iostream.h */
 /* see definition for HAVE_IOS_NOCREATE below */
@@ -567,7 +576,7 @@
 #define HAVE_EXPLICIT_TEMPLATE_SPECIALIZATION 1
 
 /* Define if your system supports POSIX read/write locks */
-#undef HAVE_PTHREAD_RWLOCK
+/* #undef HAVE_PTHREAD_RWLOCK */
 
 /* Define to `long' if <sys/types.h> doesn't define.  */
 #define ssize_t long
@@ -588,7 +597,7 @@
 #ifdef USE_STD_CXX_INCLUDES
 
 /* Define if your system defines ios::nocreate in iostream.h */
-#undef HAVE_IOS_NOCREATE 
+/* #undef HAVE_IOS_NOCREATE  */
 
 /* Define if ANSI standard C++ includes use std namespace */
 #define HAVE_STD_NAMESPACE 1
@@ -602,10 +611,10 @@
 #define HAVE_IOS_NOCREATE 1
 
 /* Define if ANSI standard C++ includes use std namespace */
-#undef HAVE_STD_NAMESPACE 
+/* #undef HAVE_STD_NAMESPACE  */
 
 /* Define if it is not possible to assign stream objects */
-#undef NO_IOS_BASE_ASSIGN 
+/* #undef NO_IOS_BASE_ASSIGN  */
 
 #endif
 

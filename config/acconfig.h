@@ -6,6 +6,15 @@
 @BOTTOM@
 /* User definable section */
 
+/* MinGW needs some special handling because it is a mixture of WIN32 and Posix. 
+ * The following settings are not tested by configure but need to be set for MinGW.
+ */
+#ifdef __MINGW32__
+#define HAVE_WINDOWS_H
+#define HAVE_WINSOCK_H
+#define NO_IOS_BASE_ASSIGN
+#endif
+
 /* Define the DCMTK default path */
 #undef DCMTK_PREFIX
 

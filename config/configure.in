@@ -217,6 +217,12 @@ MATHLIBS="-lm"
 ])
 fi
 
+dnl On MinGW we have to link against the winsock32 library
+dnl
+AC_CHECK_LIB(wsock32, main,[
+LIBS="$LIBS -lwsock32"
+])
+
 dnl -------------------------------------------------------
 dnl Checks for header files.
 dnl -------------------------------------------------------
@@ -502,7 +508,7 @@ AC_CHECK_PROTOTYPE(strncasecmp, string.h)
 AC_CHECK_PROTOTYPE(usleep, libc.h unistd.h stdlib.h)
 AC_CHECK_PROTOTYPE(wait3, libc.h sys/wait.h sys/time.h sys/resource.h)
 AC_CHECK_PROTOTYPE(waitpid, sys/wait.h sys/time.h sys/resource.h)
-AC_CHECK_DECLARATION(struct utimbuf, sys/types.h utime.h)
+AC_CHECK_DECLARATION(struct utimbuf, sys/types.h utime.h sys/utime.h)
 AC_CHECK_DECLARATION(socklen_t, sys/types.h sys/socket.h)
 AC_CHECK_OLD_READDIR_R
 AC_CHECK_ELLIPSE_SIGNAL_HANDLER(signal.h)
