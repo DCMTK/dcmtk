@@ -25,10 +25,10 @@
  *           of these classes supports the Solaris, POSIX and Win32 
  *           multi-thread APIs.
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-04-14 15:17:16 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2000-06-26 09:27:38 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/libsrc/ofthread.cc,v $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -37,7 +37,7 @@
 
 #include "osconfig.h"
 
-#ifdef _WIN32
+#ifdef HAVE_WINDOWS_H
 extern "C" {
 #include <windows.h>
 #include <process.h>
@@ -76,7 +76,7 @@ extern "C" {
  */
 
 
-#ifdef _WIN32
+#ifdef HAVE_WINDOWS_H
 unsigned int __stdcall thread_stub(void *arg)
 {
   ((OFThread *)arg)->run();
@@ -92,7 +92,7 @@ void *thread_stub(void *arg)
 
 /* ------------------------------------------------------------------------- */
 
-#ifdef _WIN32
+#ifdef HAVE_WINDOWS_H
   const int OFThread::busy = -1;
 #elif defined(POSIX_INTERFACE) || defined(SOLARIS_INTERFACE)
   const int OFThread::busy = ESRCH;
@@ -101,7 +101,7 @@ void *thread_stub(void *arg)
 #endif
 
 OFThread::OFThread()
-#ifdef _WIN32
+#ifdef HAVE_WINDOWS_H
 : theThreadHandle(0)
 , theThread(0)
 #else
@@ -112,14 +112,14 @@ OFThread::OFThread()
 
 OFThread::~OFThread()
 {
-#ifdef _WIN32
+#ifdef HAVE_WINDOWS_H
   CloseHandle((HANDLE)theThreadHandle);
 #endif  
 }
 
 int OFThread::start()
 {
-#ifdef _WIN32
+#ifdef HAVE_WINDOWS_H
   unsigned int tid = 0;
   theThreadHandle = _beginthreadex(NULL, 0, thread_stub, (void *)this, 0, &tid); 
   if (theThreadHandle == 0) return errno; else
@@ -144,7 +144,7 @@ int OFThread::start()
 
 int OFThread::join()
 {
-#ifdef _WIN32
+#ifdef HAVE_WINDOWS_H
   if (WaitForSingleObject((HANDLE)theThreadHandle, INFINITE) == WAIT_OBJECT_0) return 0;
   else return (int)GetLastError();
 #elif defined(POSIX_INTERFACE)
@@ -163,13 +163,13 @@ unsigned long OFThread::threadID()
   return theThread;
 }
 
-#if defined(_WIN32) || defined(POSIX_INTERFACE) || defined(SOLARIS_INTERFACE)
+#if defined(HAVE_WINDOWS_H) || defined(POSIX_INTERFACE) || defined(SOLARIS_INTERFACE)
 OFBool OFThread::equal(unsigned long tID)
 #else
 OFBool OFThread::equal(unsigned long /* tID */ )
 #endif
 {
-#ifdef _WIN32
+#ifdef HAVE_WINDOWS_H
   if (theThread == tID) return OFTrue; else return OFFalse;
 #elif defined(POSIX_INTERFACE)
   if (pthread_equal((pthread_t)theThread, (pthread_t)tID)) return OFTrue; else return OFFalse;
@@ -182,7 +182,7 @@ OFBool OFThread::equal(unsigned long /* tID */ )
 
 void OFThread::thread_exit()
 {
-#ifdef _WIN32
+#ifdef HAVE_WINDOWS_H
   _endthreadex(0);
 #elif defined(POSIX_INTERFACE)
   pthread_exit(NULL);
@@ -195,7 +195,7 @@ void OFThread::thread_exit()
 
 unsigned long OFThread::self()
 {
-#ifdef _WIN32
+#ifdef HAVE_WINDOWS_H
   return (unsigned long) GetCurrentThreadId();
 #elif defined(POSIX_INTERFACE)
   return (unsigned long) pthread_self();
@@ -206,13 +206,13 @@ unsigned long OFThread::self()
 #endif
 }
 
-#if defined(_WIN32) || defined(POSIX_INTERFACE) || defined(SOLARIS_INTERFACE)
+#if defined(HAVE_WINDOWS_H) || defined(POSIX_INTERFACE) || defined(SOLARIS_INTERFACE)
 void OFThread::errorstr(OFString& description, int code)
 #else
 void OFThread::errorstr(OFString& description, int /* code */ )
 #endif
 {
-#ifdef _WIN32
+#ifdef HAVE_WINDOWS_H
   if (code == OFThread::busy) description = "another thread already waiting for join"; else
   {
     LPVOID buf;
@@ -238,7 +238,7 @@ void OFThread::errorstr(OFString& description, int /* code */ )
 OFThreadSpecificData::OFThreadSpecificData()
 : theKey(NULL)
 {
-#ifdef _WIN32
+#ifdef HAVE_WINDOWS_H
   DWORD *key = new DWORD;
   if (key)
   {
@@ -266,7 +266,7 @@ OFThreadSpecificData::OFThreadSpecificData()
 
 OFThreadSpecificData::~OFThreadSpecificData()
 {
-#ifdef _WIN32
+#ifdef HAVE_WINDOWS_H
   if (theKey) TlsFree(*((DWORD *)theKey));
 #elif defined(POSIX_INTERFACE)
   delete (pthread_key_t *)theKey;
@@ -281,13 +281,13 @@ OFBool OFThreadSpecificData::initialized()
   if (theKey) return OFTrue; else return OFFalse;
 }
 
-#if defined(_WIN32) || defined(POSIX_INTERFACE) || defined(SOLARIS_INTERFACE)
+#if defined(HAVE_WINDOWS_H) || defined(POSIX_INTERFACE) || defined(SOLARIS_INTERFACE)
 int OFThreadSpecificData::set(void *value)
 #else
 int OFThreadSpecificData::set(void * /* value */ )
 #endif
 {
-#ifdef _WIN32
+#ifdef HAVE_WINDOWS_H
   if (theKey)
   {
     if (0 == TlsSetValue(*((DWORD *)theKey), value)) return (int)GetLastError(); else return 0;
@@ -303,7 +303,7 @@ int OFThreadSpecificData::set(void * /* value */ )
 
 int OFThreadSpecificData::get(void *&value)
 {  
-#ifdef _WIN32
+#ifdef HAVE_WINDOWS_H
   if (theKey)
   {
     value = TlsGetValue(*((DWORD *)theKey));
@@ -330,13 +330,13 @@ int OFThreadSpecificData::get(void *&value)
 #endif	
 }
 
-#if defined(_WIN32) || defined(POSIX_INTERFACE) || defined(SOLARIS_INTERFACE)
+#if defined(HAVE_WINDOWS_H) || defined(POSIX_INTERFACE) || defined(SOLARIS_INTERFACE)
 void OFThreadSpecificData::errorstr(OFString& description, int code)
 #else
 void OFThreadSpecificData::errorstr(OFString& description, int /* code */ )
 #endif
 {
-#ifdef _WIN32
+#ifdef HAVE_WINDOWS_H
   LPVOID buf;
   FormatMessage( 
     FORMAT_MESSAGE_ALLOCATE_BUFFER | FORMAT_MESSAGE_FROM_SYSTEM, 
@@ -356,7 +356,7 @@ void OFThreadSpecificData::errorstr(OFString& description, int /* code */ )
 /* ------------------------------------------------------------------------- */
 
 
-#ifdef _WIN32
+#ifdef HAVE_WINDOWS_H
   const int OFSemaphore::busy = -1;
 #elif defined(POSIX_INTERFACE)
   const int OFSemaphore::busy = EAGAIN;  // Posix returns EAGAIN instead of EBUSY in trywait.
@@ -367,14 +367,14 @@ void OFThreadSpecificData::errorstr(OFString& description, int /* code */ )
 #endif
 
 
-#if defined(_WIN32) || defined(POSIX_INTERFACE) || defined(SOLARIS_INTERFACE)
+#if defined(HAVE_WINDOWS_H) || defined(POSIX_INTERFACE) || defined(SOLARIS_INTERFACE)
 OFSemaphore::OFSemaphore(unsigned int numResources)
 #else
 OFSemaphore::OFSemaphore(unsigned int /* numResources */ )
 #endif
 : theSemaphore(NULL)
 {
-#ifdef _WIN32
+#ifdef HAVE_WINDOWS_H
   theSemaphore = (void *)(CreateSemaphore(NULL, numResources, numResources, NULL));
 #elif defined(POSIX_INTERFACE)
   sem_t *sem = new sem_t;
@@ -396,7 +396,7 @@ OFSemaphore::OFSemaphore(unsigned int /* numResources */ )
 
 OFSemaphore::~OFSemaphore()
 {
-#ifdef _WIN32
+#ifdef HAVE_WINDOWS_H
   CloseHandle((HANDLE)theSemaphore);
 #elif defined(POSIX_INTERFACE)
   if (theSemaphore) sem_destroy((sem_t *)theSemaphore);
@@ -415,7 +415,7 @@ OFBool OFSemaphore::initialized()
 
 int OFSemaphore::wait()
 {
-#ifdef _WIN32
+#ifdef HAVE_WINDOWS_H
   if (WaitForSingleObject((HANDLE)theSemaphore, INFINITE) == WAIT_OBJECT_0) return 0;
   else return (int)GetLastError();
 #elif defined(POSIX_INTERFACE)
@@ -432,7 +432,7 @@ int OFSemaphore::wait()
 
 int OFSemaphore::trywait()
 {
-#ifdef _WIN32
+#ifdef HAVE_WINDOWS_H
   DWORD result = WaitForSingleObject((HANDLE)theSemaphore, 0);
   if (result == WAIT_OBJECT_0) return 0;
   else if (result == WAIT_TIMEOUT) return OFSemaphore::busy;
@@ -451,7 +451,7 @@ int OFSemaphore::trywait()
 
 int OFSemaphore::post()
 {
-#ifdef _WIN32
+#ifdef HAVE_WINDOWS_H
   if (ReleaseSemaphore((HANDLE)theSemaphore, 1, NULL)) return 0; else return (int)GetLastError();
 #elif defined(POSIX_INTERFACE)
   if (theSemaphore)
@@ -465,13 +465,13 @@ int OFSemaphore::post()
 #endif
 }
 
-#if defined(_WIN32) || defined(POSIX_INTERFACE) || defined(SOLARIS_INTERFACE)
+#if defined(HAVE_WINDOWS_H) || defined(POSIX_INTERFACE) || defined(SOLARIS_INTERFACE)
 void OFSemaphore::errorstr(OFString& description, int code)
 #else
 void OFSemaphore::errorstr(OFString& description, int /* code */ )
 #endif
 {
-#ifdef _WIN32
+#ifdef HAVE_WINDOWS_H
   if (code == OFSemaphore::busy) description = "semaphore is already locked"; else
   {
     LPVOID buf;
@@ -495,7 +495,7 @@ void OFSemaphore::errorstr(OFString& description, int /* code */ )
 /* ------------------------------------------------------------------------- */
 
 
-#ifdef _WIN32
+#ifdef HAVE_WINDOWS_H
   const int OFMutex::busy = -1;
 #elif defined(POSIX_INTERFACE) || defined(SOLARIS_INTERFACE)
   const int OFMutex::busy = EBUSY;
@@ -506,7 +506,7 @@ void OFSemaphore::errorstr(OFString& description, int /* code */ )
 OFMutex::OFMutex()
 : theMutex(NULL)
 {
-#ifdef _WIN32
+#ifdef HAVE_WINDOWS_H
   theMutex = (void *)(CreateMutex(NULL, FALSE, NULL));
 #elif defined(POSIX_INTERFACE)
   pthread_mutex_t *mtx = new pthread_mutex_t;
@@ -529,7 +529,7 @@ OFMutex::OFMutex()
 
 OFMutex::~OFMutex()
 {
-#ifdef _WIN32
+#ifdef HAVE_WINDOWS_H
   CloseHandle((HANDLE)theMutex);
 #elif defined(POSIX_INTERFACE)
   if (theMutex) pthread_mutex_destroy((pthread_mutex_t *)theMutex);
@@ -550,7 +550,7 @@ OFBool OFMutex::initialized()
   
 int OFMutex::lock()
 {
-#ifdef _WIN32
+#ifdef HAVE_WINDOWS_H
   if (WaitForSingleObject((HANDLE)theMutex, INFINITE) == WAIT_OBJECT_0) return 0;
   else return (int)GetLastError();
 #elif defined(POSIX_INTERFACE)
@@ -564,7 +564,7 @@ int OFMutex::lock()
 
 int OFMutex::trylock()
 {
-#ifdef _WIN32
+#ifdef HAVE_WINDOWS_H
   DWORD result = WaitForSingleObject((HANDLE)theMutex, 0);
   if (result == WAIT_OBJECT_0) return 0;
   else if (result == WAIT_TIMEOUT) return OFMutex::busy;
@@ -580,7 +580,7 @@ int OFMutex::trylock()
 
 int OFMutex::unlock()
 {
-#ifdef _WIN32
+#ifdef HAVE_WINDOWS_H
   if (ReleaseMutex((HANDLE)theMutex)) return 0; else return (int)GetLastError();
 #elif defined(POSIX_INTERFACE)
   if (theMutex) return pthread_mutex_unlock((pthread_mutex_t *)theMutex); else return EINVAL;
@@ -591,13 +591,13 @@ int OFMutex::unlock()
 #endif
 }
 
-#if defined(_WIN32) || defined(POSIX_INTERFACE) || defined(SOLARIS_INTERFACE)
+#if defined(HAVE_WINDOWS_H) || defined(POSIX_INTERFACE) || defined(SOLARIS_INTERFACE)
 void OFMutex::errorstr(OFString& description, int code)
 #else
 void OFMutex::errorstr(OFString& description, int /* code */ )
 #endif
 {
-#ifdef _WIN32
+#ifdef HAVE_WINDOWS_H
   if (code == OFSemaphore::busy) description = "mutex is already locked"; else
   {
     LPVOID buf;
@@ -620,7 +620,7 @@ void OFMutex::errorstr(OFString& description, int /* code */ )
 
 /* ------------------------------------------------------------------------- */
 
-#if defined(_WIN32) || defined(POSIX_INTERFACE_WITHOUT_RWLOCK)
+#if defined(HAVE_WINDOWS_H) || defined(POSIX_INTERFACE_WITHOUT_RWLOCK)
 
 class OFReadWriteLockHelper
 {
@@ -641,7 +641,7 @@ private:
 /* ------------------------------------------------------------------------- */
 
 
-#if defined(_WIN32)
+#if defined(HAVE_WINDOWS_H)
   const int OFReadWriteLock::busy = -1;
 #elif defined(POSIX_INTERFACE) || defined(SOLARIS_INTERFACE)
   const int OFReadWriteLock::busy = EBUSY;
@@ -652,7 +652,7 @@ private:
 OFReadWriteLock::OFReadWriteLock()
 : theLock(NULL)
 {
-#if defined(_WIN32) || defined(POSIX_INTERFACE_WITHOUT_RWLOCK)
+#if defined(HAVE_WINDOWS_H) || defined(POSIX_INTERFACE_WITHOUT_RWLOCK)
    OFReadWriteLockHelper *rwl = new OFReadWriteLockHelper();
    if ((rwl->accessMutex.initialized()) && (rwl->usageSemaphore.initialized())) theLock=rwl;
    else delete rwl;
@@ -676,7 +676,7 @@ OFReadWriteLock::OFReadWriteLock()
 
 OFReadWriteLock::~OFReadWriteLock()
 {
-#if defined(_WIN32) || defined(POSIX_INTERFACE_WITHOUT_RWLOCK)
+#if defined(HAVE_WINDOWS_H) || defined(POSIX_INTERFACE_WITHOUT_RWLOCK)
   delete (OFReadWriteLockHelper *)theLock;
 #elif defined(POSIX_INTERFACE)
   if (theLock) pthread_rwlock_destroy((pthread_rwlock_t *)theLock);
@@ -695,7 +695,7 @@ OFBool OFReadWriteLock::initialized()
 
 int OFReadWriteLock::rdlock()
 {
-#if defined(_WIN32) || defined(POSIX_INTERFACE_WITHOUT_RWLOCK)
+#if defined(HAVE_WINDOWS_H) || defined(POSIX_INTERFACE_WITHOUT_RWLOCK)
   if (theLock)
   {
     OFReadWriteLockHelper *rwl = (OFReadWriteLockHelper *)theLock;
@@ -733,7 +733,7 @@ int OFReadWriteLock::rdlock()
 
 int OFReadWriteLock::wrlock()
 {
-#if defined(_WIN32) || defined(POSIX_INTERFACE_WITHOUT_RWLOCK)
+#if defined(HAVE_WINDOWS_H) || defined(POSIX_INTERFACE_WITHOUT_RWLOCK)
   if (theLock)
   {
     OFReadWriteLockHelper *rwl = (OFReadWriteLockHelper *)theLock;
@@ -770,7 +770,7 @@ int OFReadWriteLock::wrlock()
 
 int OFReadWriteLock::tryrdlock()
 {
-#if defined(_WIN32) || defined(POSIX_INTERFACE_WITHOUT_RWLOCK)
+#if defined(HAVE_WINDOWS_H) || defined(POSIX_INTERFACE_WITHOUT_RWLOCK)
   if (theLock)
   {
     OFReadWriteLockHelper *rwl = (OFReadWriteLockHelper *)theLock;
@@ -803,7 +803,7 @@ int OFReadWriteLock::tryrdlock()
 
 int OFReadWriteLock::trywrlock()
 {
-#if defined(_WIN32) || defined(POSIX_INTERFACE_WITHOUT_RWLOCK)
+#if defined(HAVE_WINDOWS_H) || defined(POSIX_INTERFACE_WITHOUT_RWLOCK)
   if (theLock)
   {
     OFReadWriteLockHelper *rwl = (OFReadWriteLockHelper *)theLock;
@@ -834,7 +834,7 @@ int OFReadWriteLock::trywrlock()
 
 int OFReadWriteLock::unlock()
 {
-#if defined(_WIN32) || defined(POSIX_INTERFACE_WITHOUT_RWLOCK)
+#if defined(HAVE_WINDOWS_H) || defined(POSIX_INTERFACE_WITHOUT_RWLOCK)
   if (theLock)
   {
     OFReadWriteLockHelper *rwl = (OFReadWriteLockHelper *)theLock;
@@ -857,13 +857,13 @@ int OFReadWriteLock::unlock()
 #endif
 }
 
-#if defined(_WIN32) || defined(POSIX_INTERFACE) || defined(SOLARIS_INTERFACE)
+#if defined(HAVE_WINDOWS_H) || defined(POSIX_INTERFACE) || defined(SOLARIS_INTERFACE)
 void OFReadWriteLock::errorstr(OFString& description, int code)
 #else
 void OFReadWriteLock::errorstr(OFString& description, int /* code */ )
 #endif
 {
-#ifdef _WIN32
+#ifdef HAVE_WINDOWS_H
   if (code == OFSemaphore::busy) description = "read/write lock is already locked"; else
   {
     LPVOID buf;
@@ -889,7 +889,10 @@ void OFReadWriteLock::errorstr(OFString& description, int /* code */ )
  *
  * CVS/RCS Log:
  * $Log: ofthread.cc,v $
- * Revision 1.3  2000-04-14 15:17:16  meichel
+ * Revision 1.4  2000-06-26 09:27:38  joergr
+ * Replaced _WIN32 by HAVE_WINDOWS_H to avoid compiler errors using CygWin-32.
+ *
+ * Revision 1.3  2000/04/14 15:17:16  meichel
  * Adapted all ofstd library classes to consistently use ofConsole for output.
  *
  * Revision 1.2  2000/04/11 15:24:45  meichel

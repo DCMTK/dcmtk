@@ -25,10 +25,10 @@
  *           of these classes supports the Solaris, POSIX and Win32 
  *           multi-thread APIs.
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-03-29 16:41:23 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2000-06-26 09:27:26 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/include/Attic/ofthread.h,v $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -50,7 +50,7 @@ class OFString;
  */
 extern "C"
 {
-#ifdef _WIN32
+#ifdef HAVE_WINDOWS_H
   unsigned int __stdcall thread_stub(void *arg);
 #else
   void *thread_stub(void *arg);
@@ -173,7 +173,7 @@ private:
    */
   virtual void run() = 0;
 
-#ifdef _WIN32
+#ifdef HAVE_WINDOWS_H
   /** thread handle (Win32 only) */
   unsigned long theThreadHandle;
 #endif
@@ -188,7 +188,7 @@ private:
   OFThread& operator=(const OFThread& arg);
 
   /** thread stub must be friend to call run() */
-#ifdef _WIN32
+#ifdef HAVE_WINDOWS_H
   friend unsigned int __stdcall thread_stub(void *arg);
 #else
   friend void *thread_stub(void *arg);
@@ -493,7 +493,10 @@ private:
  *
  * CVS/RCS Log:
  * $Log: ofthread.h,v $
- * Revision 1.1  2000-03-29 16:41:23  meichel
+ * Revision 1.2  2000-06-26 09:27:26  joergr
+ * Replaced _WIN32 by HAVE_WINDOWS_H to avoid compiler errors using CygWin-32.
+ *
+ * Revision 1.1  2000/03/29 16:41:23  meichel
  * Added new classes providing an operating system independent abstraction
  *   for threads, thread specific data, semaphores, mutexes and read/write locks.
  *
