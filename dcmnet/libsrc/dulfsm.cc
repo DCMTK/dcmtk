@@ -46,9 +46,9 @@
 ** Author, Date:	Stephen M. Moore, 15-Apr-93
 ** Intent:		Define tables and provide functions that implement
 **			the DICOM Upper Layer (DUL) finite state machine.
-** Last Update:		$Author: meichel $, $Date: 1997-09-18 08:11:00 $
+** Last Update:		$Author: hewett $, $Date: 1998-02-05 11:37:24 $
 ** Source File:		$RCSfile: dulfsm.cc,v $
-** Revision:		$Revision: 1.18 $
+** Revision:		$Revision: 1.19 $
 ** Status:		$State: Exp $
 */
 
@@ -2384,12 +2384,37 @@ requestAssociationTCP(PRIVATE_NETWORKKEY ** /*network*/,
 			    DUL_Message(DUL_TCPINITERROR), strerror(errno));
     }
     server.sin_family = AF_INET;
+
+#ifdef NO_WINDOWS95_ADDRESS_TRANSLATION_WORKAROUND
     hp = gethostbyname(node);
     if (hp == NULL) {
 	return COND_PushCondition(DUL_UNKNOWNHOST,
 				  DUL_Message(DUL_UNKNOWNHOST), node);
     }
     (void) memcpy(&server.sin_addr, hp->h_addr, (size_t) hp->h_length);
+#else
+    /*
+     * Under Win95 gethostbyname will not accept an IP address e.g. 
+     * "134.106.1.1".  This appears to work without problems under WindowsNT
+     * and several Unix variants.
+     * Workaround is to explicitly handle the IP address case.
+     */
+    u_long addr = 0;
+    if ((int)(addr = inet_addr(node)) != -1) {
+	// it is an IP address
+	(void) memcpy(&server.sin_addr, &addr, (size_t) sizeof(addr));
+    } else {
+	// must be a host name
+	hp = gethostbyname(node);
+	if (hp == NULL) {
+	    return COND_PushCondition(DUL_UNKNOWNHOST,
+				      DUL_Message(DUL_UNKNOWNHOST), node);
+	}
+	(void) memcpy(&server.sin_addr, hp->h_addr, (size_t) hp->h_length);
+
+    }
+#endif
+
     server.sin_port = (u_short) htons(port);
 
     if (connect(s, (struct sockaddr *) & server, sizeof(server)) < 0) {
@@ -4131,7 +4156,13 @@ DULPRV_translateAssocReq(unsigned char *buffer,
 /*
 ** CVS Log
 ** $Log: dulfsm.cc,v $
-** Revision 1.18  1997-09-18 08:11:00  meichel
+** Revision 1.19  1998-02-05 11:37:24  hewett
+** Added code to explicitly handle IP addresses in the DUL code.
+** It seems that under Windows95 (but not WindowsNT) the
+** gethostbyname() function will not accept a string representation
+** of an IP address.  Thanks to <rayred@worldnet.fr> for the report.
+**
+** Revision 1.18  1997/09/18 08:11:00  meichel
 ** Many minor type conflicts (e.g. long passed as int) solved.
 **
 ** Revision 1.17  1997/09/11 15:58:47  hewett
