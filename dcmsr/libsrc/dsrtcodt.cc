@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DSRReferencedDatetimeList
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2003-06-04 14:26:54 $
- *  CVS/RCS Revision: $Revision: 1.8 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2003-07-11 14:41:38 $
+ *  CVS/RCS Revision: $Revision: 1.9 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -69,8 +69,8 @@ OFCondition DSRReferencedDatetimeList::print(ostream &stream,
                                              const size_t flags,
                                              const char separator) const
 {
-    const OFListIterator(OFString) endPos = list_.end();
-    OFListIterator(OFString) iterator = list_.begin();
+    const OFListIterator(OFString) endPos = ItemList.end();
+    OFListIterator(OFString) iterator = ItemList.begin();
     while (iterator != endPos)
     {
         stream << (*iterator);
@@ -116,8 +116,8 @@ OFCondition DSRReferencedDatetimeList::write(DcmItem &dataset,
     OFCondition result = EC_Normal;
     /* fill string with values from list */
     OFString string;
-    const OFListIterator(OFString) endPos = list_.end();
-    OFListIterator(OFString) iterator = list_.begin();
+    const OFListIterator(OFString) endPos = ItemList.end();
+    OFListIterator(OFString) iterator = ItemList.begin();
     while (iterator != endPos)
     {
         if (string.length() > 0)
@@ -138,7 +138,10 @@ OFCondition DSRReferencedDatetimeList::write(DcmItem &dataset,
 /*
  *  CVS/RCS Log:
  *  $Log: dsrtcodt.cc,v $
- *  Revision 1.8  2003-06-04 14:26:54  meichel
+ *  Revision 1.9  2003-07-11 14:41:38  joergr
+ *  Renamed member variable.
+ *
+ *  Revision 1.8  2003/06/04 14:26:54  meichel
  *  Simplified include structure to avoid preprocessor limitation
  *    (max 32 #if levels) on MSVC5 with STL.
  *

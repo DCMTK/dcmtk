@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DSRReferencedSamplePositionList
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2003-06-04 14:26:54 $
- *  CVS/RCS Revision: $Revision: 1.8 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2003-07-11 14:41:38 $
+ *  CVS/RCS Revision: $Revision: 1.9 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -69,8 +69,8 @@ OFCondition DSRReferencedSamplePositionList::print(ostream &stream,
                                                    const size_t flags,
                                                    const char separator) const
 {
-    const OFListIterator(Uint32) endPos = list_.end();
-    OFListIterator(Uint32) iterator = list_.begin();
+    const OFListIterator(Uint32) endPos = ItemList.end();
+    OFListIterator(Uint32) iterator = ItemList.begin();
     while (iterator != endPos)
     {
         stream << (*iterator);
@@ -117,8 +117,8 @@ OFCondition DSRReferencedSamplePositionList::write(DcmItem &dataset,
     unsigned long i = 0;
     /* create element */
     DcmUnsignedLong delem(DCM_ReferencedSamplePositions);
-    const OFListIterator(Uint32) endPos = list_.end();
-    OFListIterator(Uint32) iterator = list_.begin();
+    const OFListIterator(Uint32) endPos = ItemList.end();
+    OFListIterator(Uint32) iterator = ItemList.begin();
     /* set elemnent values */
     while (iterator != endPos)
     {
@@ -135,7 +135,10 @@ OFCondition DSRReferencedSamplePositionList::write(DcmItem &dataset,
 /*
  *  CVS/RCS Log:
  *  $Log: dsrtcosp.cc,v $
- *  Revision 1.8  2003-06-04 14:26:54  meichel
+ *  Revision 1.9  2003-07-11 14:41:38  joergr
+ *  Renamed member variable.
+ *
+ *  Revision 1.8  2003/06/04 14:26:54  meichel
  *  Simplified include structure to avoid preprocessor limitation
  *    (max 32 #if levels) on MSVC5 with STL.
  *

@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DSRGraphicDataList
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2003-06-04 14:26:54 $
- *  CVS/RCS Revision: $Revision: 1.11 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2003-07-11 14:41:38 $
+ *  CVS/RCS Revision: $Revision: 1.12 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -70,8 +70,8 @@ OFCondition DSRGraphicDataList::print(ostream &stream,
                                       const char pairSeparator,
                                       const char itemSeparator) const
 {
-    const OFListIterator(DSRGraphicDataItem) endPos = list_.end();
-    OFListIterator(DSRGraphicDataItem) iterator = list_.begin();
+    const OFListIterator(DSRGraphicDataItem) endPos = ItemList.end();
+    OFListIterator(DSRGraphicDataItem) iterator = ItemList.begin();
     while (iterator != endPos)
     {
         stream << (*iterator).Column << pairSeparator << (*iterator).Row;
@@ -123,8 +123,8 @@ OFCondition DSRGraphicDataList::write(DcmItem &dataset,
     OFCondition result = EC_Normal;
     /* fill string with values from list */
     DcmFloatingPointSingle delem(DCM_GraphicData);
-    const OFListIterator(DSRGraphicDataItem) endPos = list_.end();
-    OFListIterator(DSRGraphicDataItem) iterator = list_.begin();
+    const OFListIterator(DSRGraphicDataItem) endPos = ItemList.end();
+    OFListIterator(DSRGraphicDataItem) iterator = ItemList.begin();
     unsigned long i = 0;
     while ((iterator != endPos) && (result.good()))
     {
@@ -169,7 +169,10 @@ void DSRGraphicDataList::addItem(const Float32 column,
 /*
  *  CVS/RCS Log:
  *  $Log: dsrscogr.cc,v $
- *  Revision 1.11  2003-06-04 14:26:54  meichel
+ *  Revision 1.12  2003-07-11 14:41:38  joergr
+ *  Renamed member variable.
+ *
+ *  Revision 1.11  2003/06/04 14:26:54  meichel
  *  Simplified include structure to avoid preprocessor limitation
  *    (max 32 #if levels) on MSVC5 with STL.
  *

@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DSRWaveformChannelList
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2003-06-04 14:26:54 $
- *  CVS/RCS Revision: $Revision: 1.12 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2003-07-11 14:41:38 $
+ *  CVS/RCS Revision: $Revision: 1.13 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -70,8 +70,8 @@ OFCondition DSRWaveformChannelList::print(ostream &stream,
                                           const char pairSeparator,
                                           const char itemSeparator) const
 {
-    const OFListIterator(DSRWaveformChannelItem) endPos = list_.end();
-    OFListIterator(DSRWaveformChannelItem) iterator = list_.begin();
+    const OFListIterator(DSRWaveformChannelItem) endPos = ItemList.end();
+    OFListIterator(DSRWaveformChannelItem) iterator = ItemList.begin();
     while (iterator != endPos)
     {
         stream << (*iterator).MultiplexGroupNumber << pairSeparator << (*iterator).ChannelNumber;
@@ -123,8 +123,8 @@ OFCondition DSRWaveformChannelList::write(DcmItem &dataset,
     OFCondition result = EC_Normal;
     /* fill string with values from list */
     DcmUnsignedShort delem(DCM_ReferencedWaveformChannels);
-    const OFListIterator(DSRWaveformChannelItem) endPos = list_.end();
-    OFListIterator(DSRWaveformChannelItem) iterator = list_.begin();
+    const OFListIterator(DSRWaveformChannelItem) endPos = ItemList.end();
+    OFListIterator(DSRWaveformChannelItem) iterator = ItemList.begin();
     unsigned long i = 0;
     while ((iterator != endPos) && (result.good()))
     {
@@ -169,7 +169,10 @@ void DSRWaveformChannelList::addItem(const Uint16 multiplexGroupNumber,
 /*
  *  CVS/RCS Log:
  *  $Log: dsrwavch.cc,v $
- *  Revision 1.12  2003-06-04 14:26:54  meichel
+ *  Revision 1.13  2003-07-11 14:41:38  joergr
+ *  Renamed member variable.
+ *
+ *  Revision 1.12  2003/06/04 14:26:54  meichel
  *  Simplified include structure to avoid preprocessor limitation
  *    (max 32 #if levels) on MSVC5 with STL.
  *

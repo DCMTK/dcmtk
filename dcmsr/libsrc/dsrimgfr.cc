@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DSRImageFrameList
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2003-06-04 14:26:54 $
- *  CVS/RCS Revision: $Revision: 1.11 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2003-07-11 14:41:38 $
+ *  CVS/RCS Revision: $Revision: 1.12 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -70,8 +70,8 @@ OFCondition DSRImageFrameList::print(ostream &stream,
                                      const size_t flags,
                                      const char separator) const
 {
-    const OFListIterator(Sint32) endPos = list_.end();
-    OFListIterator(Sint32) iterator = list_.begin();
+    const OFListIterator(Sint32) endPos = ItemList.end();
+    OFListIterator(Sint32) iterator = ItemList.begin();
     while (iterator != endPos)
     {
         stream << (*iterator);
@@ -118,8 +118,8 @@ OFCondition DSRImageFrameList::write(DcmItem &dataset,
     /* fill string with values from list */
     OFString string;
     char buffer[16];
-    const OFListIterator(Sint32) endPos = list_.end();
-    OFListIterator(Sint32) iterator = list_.begin();
+    const OFListIterator(Sint32) endPos = ItemList.end();
+    OFListIterator(Sint32) iterator = ItemList.begin();
     while (iterator != endPos)
     {
         if (string.length() > 0)
@@ -145,7 +145,10 @@ OFCondition DSRImageFrameList::write(DcmItem &dataset,
 /*
  *  CVS/RCS Log:
  *  $Log: dsrimgfr.cc,v $
- *  Revision 1.11  2003-06-04 14:26:54  meichel
+ *  Revision 1.12  2003-07-11 14:41:38  joergr
+ *  Renamed member variable.
+ *
+ *  Revision 1.11  2003/06/04 14:26:54  meichel
  *  Simplified include structure to avoid preprocessor limitation
  *    (max 32 #if levels) on MSVC5 with STL.
  *
