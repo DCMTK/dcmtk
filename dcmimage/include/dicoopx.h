@@ -22,9 +22,9 @@
  *  Purpose: DicomColorOutputPixel (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-04-29 09:31:12 $
+ *  Update Date:      $Date: 1999-07-23 13:20:44 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/include/Attic/dicoopx.h,v $
- *  CVS/RCS Revision: $Revision: 1.8 $
+ *  CVS/RCS Revision: $Revision: 1.9 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -67,7 +67,8 @@ class DiColorOutputPixel
  public:
 
     DiColorOutputPixel(const DiPixel *pixel,
-                       const unsigned long frames);
+                       const unsigned long size,
+                       const unsigned long frame);
 
     virtual ~DiColorOutputPixel();
     
@@ -85,13 +86,14 @@ class DiColorOutputPixel
     
     inline unsigned long getCount() const
     {
-        return Count;
+        return FrameSize;
     }
 
 
  protected:
 
-    const unsigned long Count;
+    /*const*/ unsigned long Count;          // number of pixels per frame (intermediate representation)
+    const unsigned long FrameSize;          // number of pixels per frame (memory buffer size)
 };
 
 
@@ -102,7 +104,10 @@ class DiColorOutputPixel
  *
  * CVS/RCS Log:
  * $Log: dicoopx.h,v $
- * Revision 1.8  1999-04-29 09:31:12  joergr
+ * Revision 1.9  1999-07-23 13:20:44  joergr
+ * Enhanced handling of corrupted pixel data (wrong length).
+ *
+ * Revision 1.8  1999/04/29 09:31:12  joergr
  * Moved color related image files back to non-public part.
  *
  * Revision 1.1  1999/04/28 14:57:31  joergr

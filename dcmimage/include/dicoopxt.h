@@ -21,10 +21,10 @@
  *
  *  Purpose: DicomColorOutputPixelTemplate (Header)
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-04-30 16:12:03 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 1999-07-23 13:20:45 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/include/Attic/dicoopxt.h,v $
- *  CVS/RCS Revision: $Revision: 1.11 $
+ *  CVS/RCS Revision: $Revision: 1.12 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -60,33 +60,36 @@ class DiColorOutputPixelTemplate
 
     DiColorOutputPixelTemplate(void *buffer,
                                const DiColorPixel *pixel,
+                               const unsigned long count,
                                const unsigned long frame,
                                const unsigned long frames,
-                               Sint16 shift,
+                               const int bits,
+                               const Sint16 shift,
                                const int planar)
-      : DiColorOutputPixel(pixel, frames),
+      : DiColorOutputPixel(pixel, count, frame),
         Data(NULL),
         DeleteData(buffer == NULL),
         isPlanar(planar)
     {
-        if ((pixel != NULL) && (Count > 0))
+        if ((pixel != NULL) && (Count > 0) && (FrameSize >= Count))
         {
             Data = (T2 *)buffer;
-            convert((const T1 **)(pixel->getData()), frame * Count, shift, planar);
+            convert((const T1 **)(pixel->getData()), frame * FrameSize, bits, shift, planar);
         }
     }
 
     DiColorOutputPixelTemplate(void *buffer,
                                const DiPixel *pixel,
-                               const unsigned long /*frame*/,
-                               const unsigned long frames,
+                               const unsigned long count,
+                               const unsigned long frame,
+                               const unsigned long /*frames*/,
                                const int planar)
-      : DiColorOutputPixel(pixel, frames),
+      : DiColorOutputPixel(pixel, count, frame),
         Data(NULL),
         DeleteData(buffer == NULL),
         isPlanar(planar)
     {
-        if ((pixel != NULL) && (Count > 0))
+        if ((pixel != NULL) && (Count > 0) && (FrameSize >= Count))
             Data = (T2 *)buffer;
     }
 
@@ -121,7 +124,7 @@ class DiColorOutputPixelTemplate
             else
             {
                 if (isPlanar)
-                    result = (void *)(Data + ((plane == 1) ? 1 : 2) * Count);
+                    result = (void *)(Data + ((plane == 1) ? 1 : 2) * FrameSize);
                 else
                     result = (void *)(Data + ((plane == 1) ? 1 : 2));
             }
@@ -136,7 +139,7 @@ class DiColorOutputPixelTemplate
             register T2 *p = Data;
             register unsigned long i;
             register int j;
-            for (i = 0; i < Count; i++)
+            for (i = 0; i < FrameSize; i++)
                 for (j = 0; j < 3; j++)
                     stream << (unsigned long)*(p++) << " ";     // typecast to resolve problems with 'char'
             return 1;
@@ -151,7 +154,7 @@ class DiColorOutputPixelTemplate
             register T2 *p = Data;
             register unsigned long i;
             register int j;
-            for (i = 0; i < Count; i++)
+            for (i = 0; i < FrameSize; i++)
                 for (j = 0; j < 3; j++)
                     fprintf(stream, "%lu ", (unsigned long)*(p++));
             return 1;
@@ -169,13 +172,14 @@ class DiColorOutputPixelTemplate
 
     inline void convert(const T1 *pixel[3],
                         const unsigned long start,
-                        Sint16 shift,
+                        const int bits,
+                        /*const*/ Sint16 shift,
                         const int planar)
     {
         if ((pixel[0] != NULL) && (pixel[1] != NULL) && (pixel[2] != NULL))
         {
             if (Data == NULL)
-                Data = new T2[Count * 3];
+                Data = new T2[FrameSize * 3];
             if (Data != NULL)
             {
                 register T2 *q = Data;
@@ -190,16 +194,58 @@ class DiColorOutputPixelTemplate
                             p = pixel[j] + start;
                             for (i = 0; i < Count; i++)
                                 *(q++) = (T2)*(p++);                            // copy
+                            if (Count < FrameSize)
+                            {
+                                OFBitmanipTemplate<T2>::zeroMem(q, FrameSize - Count);  // set remaining pixels of frame to zero
+                                q += (FrameSize - Count);
+                            }
                         }
                     }
                     else if (shift < 0)
                     {
+/*                        
+                        T2 *lut = NULL;
+//                        if (initOptimizationLUT(lut, ocnt))
+                        {                                                       // use LUT for optimization
+                        
+                        }                        
+                        if (lut == NULL)                                        // use "normal" transformation
+                        {
+                            register T2 pv;
+                            register T2 qv;
+                            register int b;
+                            for (int j = 0; j < 3; j++)
+                            {
+                                p = pixel[j] + start;
+                                for (i = 0; i < Count; i++)
+                                {                                               // expand depth: 1001 -> 10011001 !!
+                                    b = -shift;
+                                    pv = qv = (T2)(*(p++));
+                                    while (b >= bits)
+                                    {
+                                        qv = (qv << bits) | pv;
+                                        b -= bits;
+                                    }
+                                    if (b > 0)
+                                        *(q++) = (qv << b) | (pv >> (bits - b));
+                                    else
+                                        *(q++) = qv;
+                                }
+                            }
+                        }
+                        delete[] lut;
+*/
                         shift = -shift;
                         for (int j = 0; j < 3; j++)
                         {
                             p = pixel[j] + start;
                             for (i = 0; i < Count; i++)
                                 *(q++) = (T2)(*(p++) << shift);                 // expand depth: simple left shift is not correct !!
+                            if (Count < FrameSize)
+                            {
+                                OFBitmanipTemplate<T2>::zeroMem(q, FrameSize - Count);  // set remaining pixels of frame to zero
+                                q += (FrameSize - Count);
+                            }
                         }                                                       // ... to be enhanced !
                     }
                     else /* shift > 0 */
@@ -209,6 +255,11 @@ class DiColorOutputPixelTemplate
                             p = pixel[j] + start;
                             for (i = 0; i < Count; i++)
                                 *(q++) = (T2)(*(p++) >> shift);                 // reduce depth: correct ?
+                            if (Count < FrameSize)
+                            {
+                                OFBitmanipTemplate<T2>::zeroMem(q, FrameSize - Count);  // set remaining pixels of frame to zero
+                                q += (FrameSize - Count);
+                            }
                         }
                     }
                 }
@@ -234,6 +285,8 @@ class DiColorOutputPixelTemplate
                             for (j = 0; j < 3; j++)
                                 *(q++) = (T2)(pixel[j][i] >> shift);            // reduce depth: correct ?
                     }
+                    if (Count < FrameSize)
+                        OFBitmanipTemplate<T2>::zeroMem(q, 3 * (FrameSize - Count));  // set remaining pixels of frame to zero
                 }
             }
         } else
@@ -257,7 +310,10 @@ class DiColorOutputPixelTemplate
  *
  * CVS/RCS Log:
  * $Log: dicoopxt.h,v $
- * Revision 1.11  1999-04-30 16:12:03  meichel
+ * Revision 1.12  1999-07-23 13:20:45  joergr
+ * Enhanced handling of corrupted pixel data (wrong length).
+ *
+ * Revision 1.11  1999/04/30 16:12:03  meichel
  * Minor code purifications to keep IBM xlC quiet
  *
  * Revision 1.10  1999/04/29 09:31:13  joergr
