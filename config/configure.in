@@ -355,6 +355,12 @@ AC_CHECK_HEADERS(unix.h)
 AC_CHECK_HEADERS(utime.h)
 AC_CHECK_HEADERS(wctype.h)
 
+if test $ac_cv_header_libc_h = yes ; then
+  if test $ac_cv_header_math_h = yes ; then
+    AC_CXX_LIBC_H_EXTERN_C
+  fi
+fi
+
 dnl -------------------------------------------------------
 dnl Check for thread support
 dnl -------------------------------------------------------

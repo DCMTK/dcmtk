@@ -7,13 +7,17 @@ dnl
 dnl Authors: Andreas Barth, Marco Eichelberg
 dnl
 dnl Last Update:  $Author: meichel $
-dnl Revision:     $Revision: 1.31 $
+dnl Revision:     $Revision: 1.32 $
 dnl Status:       $State: Exp $
 dnl
-dnl $Id: aclocal.m4,v 1.31 2004-01-21 11:57:56 meichel Exp $
+dnl $Id: aclocal.m4,v 1.32 2004-08-03 11:29:04 meichel Exp $
 dnl
 dnl $Log: aclocal.m4,v $
-dnl Revision 1.31  2004-01-21 11:57:56  meichel
+dnl Revision 1.32  2004-08-03 11:29:04  meichel
+dnl Added configure test that checks if <libc.h> needs to be treated as a C++
+dnl   header, i.e. included without extern "C". Needed for QNX.
+dnl
+dnl Revision 1.31  2004/01/21 11:57:56  meichel
 dnl Fixed AC_CHECK_PROTOTYPE autoconf macro to support names containing
 dnl   space or colon characters.
 dnl
@@ -1476,5 +1480,27 @@ changequote([, ])dnl
 ])
 if test "$ac_cv_libtiff_lzw_compression" = yes; then
   AC_DEFINE(HAVE_LIBTIFF_LZW_COMPRESSION,, [Define if libtiff supports LZW compression])
+fi
+])
+
+
+dnl AC_CXX_LIBC_H_EXTERN_C checks if <libc.h> and <math.h> cause a problem if
+dnl   libc.h is included extern "C" and math.h is not. This is the case on QNX 6.2.x
+
+AC_DEFUN([AC_CXX_LIBC_H_EXTERN_C],
+[AH_TEMPLATE([INCLUDE_LIBC_H_AS_CXX], [Define if libc.h should be treated as a C++ header])
+AC_CACHE_CHECK(whether libc.h should be treated as a C++ header,
+ac_cv_cxx_libc_h_is_cxx,
+[AC_LANG_SAVE
+ AC_LANG_CPLUSPLUS
+ AC_TRY_COMPILE([#include <math.h>
+extern "C" {
+#include <libc.h>
+}],[int i = 0],
+ ac_cv_cxx_libc_h_is_cxx=no, ac_cv_cxx_libc_h_is_cxx=yes)
+ AC_LANG_RESTORE
+])
+if test "$ac_cv_cxx_libc_h_is_cxx" = yes; then
+  AC_DEFINE(INCLUDE_LIBC_H_AS_CXX,, [Define if libc.h should be treated as a C++ header])
 fi
 ])

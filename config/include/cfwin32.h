@@ -641,6 +641,9 @@
 /* Define to 1 if you have the `_findfirst' function. */
 #define HAVE__FINDFIRST 1
 
+/* Define if libc.h should be treated as a C++ header */
+/* #undef INCLUDE_LIBC_H_AS_CXX */
+
 /* Define if <math.h> fails if included extern "C" */
 #define INCLUDE_MATH_H_AS_CXX 1
 

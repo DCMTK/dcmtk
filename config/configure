@@ -13875,6 +13875,84 @@ fi
 done
 
 
+if test $ac_cv_header_libc_h = yes ; then
+  if test $ac_cv_header_math_h = yes ; then
+
+
+echo "$as_me:$LINENO: checking whether libc.h should be treated as a C++ header" >&5
+echo $ECHO_N "checking whether libc.h should be treated as a C++ header... $ECHO_C" >&6
+if test "${ac_cv_cxx_libc_h_is_cxx+set}" = set; then
+  echo $ECHO_N "(cached) $ECHO_C" >&6
+else
+
+
+ ac_ext=cc
+ac_cpp='$CXXCPP $CPPFLAGS'
+ac_compile='$CXX -c $CXXFLAGS $CPPFLAGS conftest.$ac_ext >&5'
+ac_link='$CXX -o conftest$ac_exeext $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
+ac_compiler_gnu=$ac_cv_cxx_compiler_gnu
+
+ cat >conftest.$ac_ext <<_ACEOF
+#line $LINENO "configure"
+#include "confdefs.h"
+#include <math.h>
+extern "C" {
+#include <libc.h>
+}
+#ifdef F77_DUMMY_MAIN
+#  ifdef __cplusplus
+     extern "C"
+#  endif
+   int F77_DUMMY_MAIN() { return 1; }
+#endif
+int
+main ()
+{
+int i = 0
+  ;
+  return 0;
+}
+_ACEOF
+rm -f conftest.$ac_objext
+if { (eval echo "$as_me:$LINENO: \"$ac_compile\"") >&5
+  (eval $ac_compile) 2>&5
+  ac_status=$?
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); } &&
+         { ac_try='test -s conftest.$ac_objext'
+  { (eval echo "$as_me:$LINENO: \"$ac_try\"") >&5
+  (eval $ac_try) 2>&5
+  ac_status=$?
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); }; }; then
+  ac_cv_cxx_libc_h_is_cxx=no
+else
+  echo "$as_me: failed program was:" >&5
+cat conftest.$ac_ext >&5
+ac_cv_cxx_libc_h_is_cxx=yes
+fi
+rm -f conftest.$ac_objext conftest.$ac_ext
+ ac_ext=cc
+ac_cpp='$CXXCPP $CPPFLAGS'
+ac_compile='$CXX -c $CXXFLAGS $CPPFLAGS conftest.$ac_ext >&5'
+ac_link='$CXX -o conftest$ac_exeext $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS >&5'
+ac_compiler_gnu=$ac_cv_cxx_compiler_gnu
+
+
+fi
+echo "$as_me:$LINENO: result: $ac_cv_cxx_libc_h_is_cxx" >&5
+echo "${ECHO_T}$ac_cv_cxx_libc_h_is_cxx" >&6
+if test "$ac_cv_cxx_libc_h_is_cxx" = yes; then
+
+cat >>confdefs.h <<\_ACEOF
+#define INCLUDE_LIBC_H_AS_CXX
+_ACEOF
+
+fi
+
+  fi
+fi
+
 
 if test $THREADSUPPORT = auto ; then
   if test $ac_cv_header_synch_h = yes ; then
@@ -20724,7 +20802,7 @@ if test "${ac_cv_check_std_namespace+set}" = set; then
 else
   ac_link_o='${CXX-g++} -o conftest $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.o $LIBS 1>&5'
 cat > conftest.$ac_ext <<EOF
-#line 20727 "configure"
+#line 20805 "configure"
 #include "confdefs.h"
 
 #include <iostream>
@@ -21253,7 +21331,7 @@ if test "${ac_cv_check_class_template+set}" = set; then
 else
   ac_link_o='${CXX-g++} -o conftest $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.o $LIBS 1>&5'
 cat > conftest.$ac_ext <<EOF
-#line 21256 "configure"
+#line 21334 "configure"
 #include "confdefs.h"
 
 template <class T>
@@ -21326,7 +21404,7 @@ if test "${ac_cv_check_static_template_method+set}" = set; then
 else
   ac_link_o='${CXX-g++} -o conftest $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.o $LIBS 1>&5'
 cat > conftest.$ac_ext <<EOF
-#line 21329 "configure"
+#line 21407 "configure"
 #include "confdefs.h"
 
 void additive(int & i)
@@ -21399,7 +21477,7 @@ if test "${ac_cv_check_function_template+set}" = set; then
 else
   ac_link_o='${CXX-g++} -o conftest $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.o $LIBS 1>&5'
 cat > conftest.$ac_ext <<EOF
-#line 21402 "configure"
+#line 21480 "configure"
 #include "confdefs.h"
 
 template <class T>
