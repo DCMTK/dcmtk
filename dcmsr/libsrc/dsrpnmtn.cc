@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2001, OFFIS
+ *  Copyright (C) 2000-2003, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DSRPNameTreeNode
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-11-09 16:17:53 $
- *  CVS/RCS Revision: $Revision: 1.14 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2003-06-04 14:26:54 $
+ *  CVS/RCS Revision: $Revision: 1.15 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -34,6 +34,7 @@
 
 #include "osconfig.h"    /* make sure OS specific configuration is included first */
 
+#include "dsrtypes.h"
 #include "dsrpnmtn.h"
 
 
@@ -132,7 +133,7 @@ OFCondition DSRPNameTreeNode::renderHTMLContentItem(ostream &docStream,
         OFString string, htmlString;
         if (!(flags & DSRTypes::HF_renderItemsSeparately))
             docStream << "<u>";
-        docStream << convertToMarkupString(dicomToReadablePersonName(getValue(), string), htmlString, flags & HF_convertNonASCIICharacters);
+        docStream << convertToMarkupString(dicomToReadablePersonName(getValue(), string), htmlString, ((flags & HF_convertNonASCIICharacters) ? OFTrue: OFFalse));
         if (!(flags & DSRTypes::HF_renderItemsSeparately))
             docStream << "</u>";
         docStream << endl;
@@ -159,7 +160,11 @@ OFBool DSRPNameTreeNode::canAddNode(const E_DocumentType documentType,
 /*
  *  CVS/RCS Log:
  *  $Log: dsrpnmtn.cc,v $
- *  Revision 1.14  2001-11-09 16:17:53  joergr
+ *  Revision 1.15  2003-06-04 14:26:54  meichel
+ *  Simplified include structure to avoid preprocessor limitation
+ *    (max 32 #if levels) on MSVC5 with STL.
+ *
+ *  Revision 1.14  2001/11/09 16:17:53  joergr
  *  Added preliminary support for Mammography CAD SR.
  *
  *  Revision 1.13  2001/10/10 15:29:58  joergr

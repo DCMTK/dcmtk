@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2001, OFFIS
+ *  Copyright (C) 2000-2003, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,8 +23,8 @@
  *    classes: DSRReferencedDatetimeList
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2003-06-04 12:40:02 $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  Update Date:      $Date: 2003-06-04 14:26:54 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -138,7 +138,11 @@ OFCondition DSRReferencedDatetimeList::write(DcmItem &dataset,
 /*
  *  CVS/RCS Log:
  *  $Log: dsrtcodt.cc,v $
- *  Revision 1.7  2003-06-04 12:40:02  meichel
+ *  Revision 1.8  2003-06-04 14:26:54  meichel
+ *  Simplified include structure to avoid preprocessor limitation
+ *    (max 32 #if levels) on MSVC5 with STL.
+ *
+ *  Revision 1.7  2003/06/04 12:40:02  meichel
  *  Replaced protected inheritance from OFList with protected aggregation
  *
  *  Revision 1.6  2003/06/03 10:16:46  meichel

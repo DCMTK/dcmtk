@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2001, OFFIS
+ *  Copyright (C) 2000-2003, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DSRCodeTreeNode
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-11-19 13:16:58 $
- *  CVS/RCS Revision: $Revision: 1.14 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2003-06-04 14:26:54 $
+ *  CVS/RCS Revision: $Revision: 1.15 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -34,6 +34,7 @@
 
 #include "osconfig.h"    /* make sure OS specific configuration is included first */
 
+#include "dsrtypes.h"
 #include "dsrcodtn.h"
 
 
@@ -202,7 +203,11 @@ OFBool DSRCodeTreeNode::canAddNode(const E_DocumentType documentType,
 /*
  *  CVS/RCS Log:
  *  $Log: dsrcodtn.cc,v $
- *  Revision 1.14  2001-11-19 13:16:58  joergr
+ *  Revision 1.15  2003-06-04 14:26:54  meichel
+ *  Simplified include structure to avoid preprocessor limitation
+ *    (max 32 #if levels) on MSVC5 with STL.
+ *
+ *  Revision 1.14  2001/11/19 13:16:58  joergr
  *  Adapted implementation according to correction proposal 266.
  *
  *  Revision 1.13  2001/11/09 16:12:45  joergr

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2001, OFFIS
+ *  Copyright (C) 2000-2003, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DSRTimeTreeNode
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-11-09 16:19:36 $
- *  CVS/RCS Revision: $Revision: 1.12 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2003-06-04 14:26:54 $
+ *  CVS/RCS Revision: $Revision: 1.13 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -34,6 +34,7 @@
 
 #include "osconfig.h"    /* make sure OS specific configuration is included first */
 
+#include "dsrtypes.h"
 #include "dsrtimtn.h"
 
 
@@ -91,7 +92,7 @@ OFCondition DSRTimeTreeNode::writeXML(ostream &stream,
     OFCondition result = EC_Normal;
     writeXMLItemStart(stream, flags);
     result = DSRDocumentTreeNode::writeXML(stream, flags, logStream);
-    writeStringValueToXML(stream, getValue(), "value", flags & XF_writeEmptyTags);
+    writeStringValueToXML(stream, getValue(), "value", ((flags & XF_writeEmptyTags) ? OFTrue : OFFalse));
     writeXMLItemEnd(stream, flags);
     return result;
 }
@@ -155,7 +156,11 @@ OFBool DSRTimeTreeNode::canAddNode(const E_DocumentType documentType,
 /*
  *  CVS/RCS Log:
  *  $Log: dsrtimtn.cc,v $
- *  Revision 1.12  2001-11-09 16:19:36  joergr
+ *  Revision 1.13  2003-06-04 14:26:54  meichel
+ *  Simplified include structure to avoid preprocessor limitation
+ *    (max 32 #if levels) on MSVC5 with STL.
+ *
+ *  Revision 1.12  2001/11/09 16:19:36  joergr
  *  Added preliminary support for Mammography CAD SR.
  *
  *  Revision 1.11  2001/10/10 15:30:06  joergr

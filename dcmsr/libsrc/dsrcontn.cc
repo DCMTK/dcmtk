@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2002, OFFIS
+ *  Copyright (C) 2000-2003, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DSRContainerTreeNode
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-12-05 13:52:52 $
- *  CVS/RCS Revision: $Revision: 1.19 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2003-06-04 14:26:54 $
+ *  CVS/RCS Revision: $Revision: 1.20 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -34,6 +34,7 @@
 
 #include "osconfig.h"    /* make sure OS specific configuration is included first */
 
+#include "dsrtypes.h"
 #include "dsrcontn.h"
 
 
@@ -284,7 +285,11 @@ OFCondition DSRContainerTreeNode::setContinuityOfContent(const E_ContinuityOfCon
 /*
  *  CVS/RCS Log:
  *  $Log: dsrcontn.cc,v $
- *  Revision 1.19  2002-12-05 13:52:52  joergr
+ *  Revision 1.20  2003-06-04 14:26:54  meichel
+ *  Simplified include structure to avoid preprocessor limitation
+ *    (max 32 #if levels) on MSVC5 with STL.
+ *
+ *  Revision 1.19  2002/12/05 13:52:52  joergr
  *  Added further checks when reading SR documents (e.g. value of VerificationFlag,
  *  CompletionsFlag, ContinuityOfContent and SpecificCharacterSet).
  *

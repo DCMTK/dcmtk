@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2001, OFFIS
+ *  Copyright (C) 2000-2003, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DSRCodedEntryValue
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-11-09 16:13:16 $
- *  CVS/RCS Revision: $Revision: 1.11 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2003-06-04 14:26:54 $
+ *  CVS/RCS Revision: $Revision: 1.12 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -34,6 +34,7 @@
 
 #include "osconfig.h"    /* make sure OS specific configuration is included first */
 
+#include "dsrtypes.h"
 #include "dsrcodvl.h"
 
 
@@ -277,12 +278,12 @@ OFCondition DSRCodedEntryValue::writeXML(ostream &stream,
         stream << ">";      // close open bracket from calling routine
         stream << DSRTypes::convertToMarkupString(CodeMeaning, string, OFFalse /* convertNonASCII */, OFFalse /* newlineAllowed */, OFTrue /* xmlMode */);
     } else {
-        DSRTypes::writeStringValueToXML(stream, CodeValue, "value", flags & DSRTypes::XF_writeEmptyTags);
+        DSRTypes::writeStringValueToXML(stream, CodeValue, "value", ((flags & DSRTypes::XF_writeEmptyTags) ? OFTrue : OFFalse));
         stream << "<scheme>" << endl;
-        DSRTypes::writeStringValueToXML(stream, CodingSchemeDesignator, "designator", flags & DSRTypes::XF_writeEmptyTags);
-        DSRTypes::writeStringValueToXML(stream, CodingSchemeVersion, "version", flags & DSRTypes::XF_writeEmptyTags);
+        DSRTypes::writeStringValueToXML(stream, CodingSchemeDesignator, "designator", ((flags & DSRTypes::XF_writeEmptyTags) ? OFTrue : OFFalse));
+        DSRTypes::writeStringValueToXML(stream, CodingSchemeVersion, "version", ((flags & DSRTypes::XF_writeEmptyTags) ? OFTrue : OFFalse));
         stream << "</scheme>" << endl;
-        DSRTypes::writeStringValueToXML(stream, CodeMeaning, "meaning", flags & DSRTypes::XF_writeEmptyTags);
+        DSRTypes::writeStringValueToXML(stream, CodeMeaning, "meaning", ((flags & DSRTypes::XF_writeEmptyTags) ? OFTrue : OFFalse));
     }
     return EC_Normal;
 }
@@ -295,7 +296,7 @@ OFCondition DSRCodedEntryValue::renderHTML(ostream &stream,
                                            const OFBool valueFirst) const
 {
     OFString htmlString;
-    const OFBool convertNonASCII = flags & DSRTypes::HF_convertNonASCIICharacters;
+    const OFBool convertNonASCII = ((flags & DSRTypes::HF_convertNonASCIICharacters) ? OFTrue : OFFalse);
     if (valueFirst)
         stream << DSRTypes::convertToMarkupString(CodeValue, htmlString, convertNonASCII);
     else
@@ -373,7 +374,11 @@ OFBool DSRCodedEntryValue::checkCode(const OFString &codeValue,
 /*
  *  CVS/RCS Log:
  *  $Log: dsrcodvl.cc,v $
- *  Revision 1.11  2001-11-09 16:13:16  joergr
+ *  Revision 1.12  2003-06-04 14:26:54  meichel
+ *  Simplified include structure to avoid preprocessor limitation
+ *    (max 32 #if levels) on MSVC5 with STL.
+ *
+ *  Revision 1.11  2001/11/09 16:13:16  joergr
  *  Added new command line option allowing to encode codes as XML attributes
  *  (instead of tags).
  *
