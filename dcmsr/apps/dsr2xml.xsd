@@ -179,6 +179,8 @@
         <!-- special handling for root content item -->
         <xsd:complexType>
           <xsd:sequence>
+            <!-- template identification currently only for container items -->
+            <xsd:element name="template" type="dsr:Template" minOccurs="0"/>
             <xsd:element name="concept" type="dsr:Code"/>
             <xsd:element name="observation" type="dsr:Observation" minOccurs="0"/>
             <!-- open question: is at least one child content item required? -->
@@ -200,6 +202,13 @@
   </xsd:complexType>
 
   <!-- Complex Types (4th level) -->
+
+  <xsd:complexType name="Template">
+    <xsd:sequence>
+      <xsd:element name="resource" type="dsr:CodeString"/>
+      <xsd:element name="id" type="dsr:CodeString"/>
+    </xsd:sequence>
+  </xsd:complexType>
 
   <xsd:complexType name="Observation">
     <xsd:sequence>
@@ -551,6 +560,8 @@
       <xsd:element name="container">
         <xsd:complexType>
           <xsd:sequence>
+            <!-- template identification currently only for container items -->
+            <xsd:element name="template" type="dsr:Template" minOccurs="0"/>
             <xsd:element name="relationship" type="dsr:RelationshipType"/>
             <xsd:element name="concept" type="dsr:Code" minOccurs="0"/>
             <xsd:element name="observation" type="dsr:Observation" minOccurs="0"/>
@@ -789,13 +800,13 @@
 
   <xsd:simpleType name="FloatList">
     <xsd:restriction base="xsd:string">
-      <xsd:pattern value="[-+]?\d+(\.\d+)?(,[-+]?\d+(\.\d+)?)*"/>
+      <xsd:pattern value="[\-+]?\d+(\.\d+)?(,[\-+]?\d+(\.\d+)?)*"/>
     </xsd:restriction>
   </xsd:simpleType>
 
   <xsd:simpleType name="FloatPairList">
     <xsd:restriction base="xsd:string">
-      <xsd:pattern value="[-+]?\d+(\.\d+)?/[-+]?\d+(\.\d+)?(,[-+]?\d+(\.\d+)?/[-+]?\d+(\.\d+)?)*"/>
+      <xsd:pattern value="[\-+]?\d+(\.\d+)?/[\-+]?\d+(\.\d+)?(,[\-+]?\d+(\.\d+)?/[\-+]?\d+(\.\d+)?)*"/>
     </xsd:restriction>
   </xsd:simpleType>
 
