@@ -1,4 +1,17 @@
 
+**** Unreleased Changes from 97.07.21 (barth)
+
+- new PixelData and OverlayData classes
+  Affects: dcmimage/apps/Makefile.dep
+           dcmimage/libsrc/Makefile.dep
+
+- Replace all boolean types (BOOLEAN, CTNBOOLEAN, DICOM_BOOL, BOOL)
+  with one unique boolean type OFBool. 
+  Affects: dcmimage/apps/Makefile.dep
+           dcmimage/apps/Makefile.in
+           dcmimage/libsrc/Makefile.dep
+           dcmimage/libsrc/Makefile.in
+
 **** Unreleased Changes from 97.06.17 (eichelberg)
 
 - all debug messages now go to stderr (instead of stdout).
