@@ -9,10 +9,10 @@
 ** Interface for a dictionary entry in the loadable DICOM data dictionary
 ** 
 **
-** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1997-07-21 08:25:07 $
+** Last Update:		$Author: meichel $
+** Update Date:		$Date: 1997-07-31 14:40:35 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcdicent.h,v $
-** CVS/RCS Revision:	$Revision: 1.8 $
+** CVS/RCS Revision:	$Revision: 1.9 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -69,6 +69,7 @@ public:
     DcmDictEntry(Uint16 g, Uint16 e, Uint16 ug, Uint16 ue, DcmVR vr,
         const char* nam=NULL, int vmMin=1, int vmMax=1,
         const char* vers="DICOM3", OFBool doCopyStrings=OFTrue);	
+    DcmDictEntry(DcmDictEntry &dict);
     
     /* destructor */
     ~DcmDictEntry();
@@ -320,7 +321,10 @@ DcmDictEntry::setEQ(const DcmDictEntry& e) const
 /*
 ** CVS/RCS Log:
 ** $Log: dcdicent.h,v $
-** Revision 1.8  1997-07-21 08:25:07  andreas
+** Revision 1.9  1997-07-31 14:40:35  meichel
+** Created copy constructor for class DcmDictEntry, required by dcmcheck.
+**
+** Revision 1.8  1997/07/21 08:25:07  andreas
 ** - Replace all boolean types (BOOLEAN, CTNBOOLEAN, DICOM_BOOL, BOOL)
 **   with one unique boolean type OFBool.
 **

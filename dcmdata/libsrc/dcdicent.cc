@@ -9,10 +9,10 @@
 ** A dictionary entry in the loadable DICOM data dictionary
 ** 
 **
-** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1997-07-21 08:25:24 $
+** Last Update:		$Author: meichel $
+** Update Date:		$Date: 1997-07-31 14:40:36 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcdicent.cc,v $
-** CVS/RCS Revision:	$Revision: 1.3 $
+** CVS/RCS Revision:	$Revision: 1.4 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -97,7 +97,28 @@ DcmDictEntry::DcmDictEntry(Uint16 g, Uint16 e, Uint16 ug, Uint16 ue, DcmVR vr,
     stringsAreCopies = doCopyStrings;
     groupRangeRestriction = elementRangeRestriction = DcmDictRange_Unspecified;
 }
-    
+
+DcmDictEntry::DcmDictEntry(DcmDictEntry &dict)
+: DcmTagKey(dict)
+, upperKey(dict.upperKey)
+, valueRepresentation(dict.valueRepresentation)
+, groupRangeRestriction(dict.groupRangeRestriction)
+, elementRangeRestriction(dict.elementRangeRestriction)
+{
+    valueMultiplicityMin = dict.valueMultiplicityMin;
+    valueMultiplicityMax = dict.valueMultiplicityMax;
+    stringsAreCopies = dict.stringsAreCopies;
+    if (stringsAreCopies)
+    {
+        tagName = strdup_new(dict.tagName);
+	standardVersion = strdup_new(dict.standardVersion);
+    } else {
+        tagName = dict.tagName;
+        standardVersion = dict.standardVersion;
+    }
+}
+
+
 DcmDictEntry::~DcmDictEntry()
 {
     if (stringsAreCopies) {
@@ -155,7 +176,10 @@ ostream& operator<<(ostream& s, const DcmDictEntry& e) {
 /*
 ** CVS/RCS Log:
 ** $Log: dcdicent.cc,v $
-** Revision 1.3  1997-07-21 08:25:24  andreas
+** Revision 1.4  1997-07-31 14:40:36  meichel
+** Created copy constructor for class DcmDictEntry, required by dcmcheck.
+**
+** Revision 1.3  1997/07/21 08:25:24  andreas
 ** - Replace all boolean types (BOOLEAN, CTNBOOLEAN, DICOM_BOOL, BOOL)
 **   with one unique boolean type OFBool.
 **
