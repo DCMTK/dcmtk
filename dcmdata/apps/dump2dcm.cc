@@ -21,9 +21,9 @@
  *
  *  Purpose: create a Dicom FileFormat or DataSet from an ASCII-dump
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2004-03-05 09:59:00 $
- *  CVS/RCS Revision: $Revision: 1.48 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2004-07-13 09:43:10 $
+ *  CVS/RCS Revision: $Revision: 1.49 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -468,6 +468,7 @@ putFileContentsIntoElement(DcmElement* elem, const char* filename)
     }
 
     fclose(f);
+    delete[] buf;
     return ec;
 }
 
@@ -954,7 +955,10 @@ int main(int argc, char *argv[])
 /*
 ** CVS/RCS Log:
 ** $Log: dump2dcm.cc,v $
-** Revision 1.48  2004-03-05 09:59:00  joergr
+** Revision 1.49  2004-07-13 09:43:10  meichel
+** Fixed memory leak occuring when raw data is read from file.
+**
+** Revision 1.48  2004/03/05 09:59:00  joergr
 ** Avoid wrong warning for LUTData (0028,3006) having a VR of US or SS.
 ** Added initial "hooks" for (compressed) pixel items.
 ** Added "ignore errors" option (similar to dcmdump).
