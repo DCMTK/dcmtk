@@ -17590,7 +17590,8 @@ do
 #include<$ac_header>"
   fi
 done
-if test "${ac_cv_prototype__stricmp+set}" = set; then
+tmp_save_1=`echo _stricmp | tr ' :' '__'`
+if eval "test \"\${ac_cv_prototype_$tmp_save_1+set}\" = set"; then
   echo $ECHO_N "(cached) $ECHO_C" >&6
 else
   cat >conftest.$ac_ext <<_ACEOF
@@ -17636,18 +17637,18 @@ if { (eval echo "$as_me:$LINENO: \"$ac_compile\"") >&5
   ac_status=$?
   echo "$as_me:$LINENO: \$? = $ac_status" >&5
   (exit $ac_status); }; }; then
-  eval "ac_cv_prototype__stricmp=no"
+  eval "ac_cv_prototype_$tmp_save_1=no"
 else
   echo "$as_me: failed program was:" >&5
 cat conftest.$ac_ext >&5
-eval "ac_cv_prototype__stricmp=yes"
+eval "ac_cv_prototype_$tmp_save_1=yes"
 fi
 rm -f conftest.$ac_objext conftest.$ac_ext
 fi
-if eval "test \"`echo '$ac_cv_prototype_'_stricmp`\" = yes"; then
+if eval "test \"`echo '$''{'ac_cv_prototype_$tmp_save_1'}'`\" = yes"; then
   echo "$as_me:$LINENO: result: yes" >&5
 echo "${ECHO_T}yes" >&6
-  ac_tr_prototype=HAVE_PROTOTYPE_`echo _stricmp | tr '[a-z]' '[A-Z]'`
+  ac_tr_prototype=HAVE_PROTOTYPE_`echo $tmp_save_1 | tr '[a-z]' '[A-Z]'`
   cat >>confdefs.h <<_ACEOF
 #define $ac_tr_prototype 1
 _ACEOF
@@ -17673,7 +17674,8 @@ do
 #include<$ac_header>"
   fi
 done
-if test "${ac_cv_prototype_accept+set}" = set; then
+tmp_save_1=`echo accept | tr ' :' '__'`
+if eval "test \"\${ac_cv_prototype_$tmp_save_1+set}\" = set"; then
   echo $ECHO_N "(cached) $ECHO_C" >&6
 else
   cat >conftest.$ac_ext <<_ACEOF
@@ -17719,18 +17721,18 @@ if { (eval echo "$as_me:$LINENO: \"$ac_compile\"") >&5
   ac_status=$?
   echo "$as_me:$LINENO: \$? = $ac_status" >&5
   (exit $ac_status); }; }; then
-  eval "ac_cv_prototype_accept=no"
+  eval "ac_cv_prototype_$tmp_save_1=no"
 else
   echo "$as_me: failed program was:" >&5
 cat conftest.$ac_ext >&5
-eval "ac_cv_prototype_accept=yes"
+eval "ac_cv_prototype_$tmp_save_1=yes"
 fi
 rm -f conftest.$ac_objext conftest.$ac_ext
 fi
-if eval "test \"`echo '$ac_cv_prototype_'accept`\" = yes"; then
+if eval "test \"`echo '$''{'ac_cv_prototype_$tmp_save_1'}'`\" = yes"; then
   echo "$as_me:$LINENO: result: yes" >&5
 echo "${ECHO_T}yes" >&6
-  ac_tr_prototype=HAVE_PROTOTYPE_`echo accept | tr '[a-z]' '[A-Z]'`
+  ac_tr_prototype=HAVE_PROTOTYPE_`echo $tmp_save_1 | tr '[a-z]' '[A-Z]'`
   cat >>confdefs.h <<_ACEOF
 #define $ac_tr_prototype 1
 _ACEOF
@@ -17893,7 +17895,8 @@ do
 #include<$ac_header>"
   fi
 done
-if test "${ac_cv_prototype_bind+set}" = set; then
+tmp_save_1=`echo bind | tr ' :' '__'`
+if eval "test \"\${ac_cv_prototype_$tmp_save_1+set}\" = set"; then
   echo $ECHO_N "(cached) $ECHO_C" >&6
 else
   cat >conftest.$ac_ext <<_ACEOF
@@ -17939,18 +17942,18 @@ if { (eval echo "$as_me:$LINENO: \"$ac_compile\"") >&5
   ac_status=$?
   echo "$as_me:$LINENO: \$? = $ac_status" >&5
   (exit $ac_status); }; }; then
-  eval "ac_cv_prototype_bind=no"
+  eval "ac_cv_prototype_$tmp_save_1=no"
 else
   echo "$as_me: failed program was:" >&5
 cat conftest.$ac_ext >&5
-eval "ac_cv_prototype_bind=yes"
+eval "ac_cv_prototype_$tmp_save_1=yes"
 fi
 rm -f conftest.$ac_objext conftest.$ac_ext
 fi
-if eval "test \"`echo '$ac_cv_prototype_'bind`\" = yes"; then
+if eval "test \"`echo '$''{'ac_cv_prototype_$tmp_save_1'}'`\" = yes"; then
   echo "$as_me:$LINENO: result: yes" >&5
 echo "${ECHO_T}yes" >&6
-  ac_tr_prototype=HAVE_PROTOTYPE_`echo bind | tr '[a-z]' '[A-Z]'`
+  ac_tr_prototype=HAVE_PROTOTYPE_`echo $tmp_save_1 | tr '[a-z]' '[A-Z]'`
   cat >>confdefs.h <<_ACEOF
 #define $ac_tr_prototype 1
 _ACEOF
@@ -17976,7 +17979,8 @@ do
 #include<$ac_header>"
   fi
 done
-if test "${ac_cv_prototype_bzero+set}" = set; then
+tmp_save_1=`echo bzero | tr ' :' '__'`
+if eval "test \"\${ac_cv_prototype_$tmp_save_1+set}\" = set"; then
   echo $ECHO_N "(cached) $ECHO_C" >&6
 else
   cat >conftest.$ac_ext <<_ACEOF
@@ -18022,18 +18026,18 @@ if { (eval echo "$as_me:$LINENO: \"$ac_compile\"") >&5
   ac_status=$?
   echo "$as_me:$LINENO: \$? = $ac_status" >&5
   (exit $ac_status); }; }; then
-  eval "ac_cv_prototype_bzero=no"
+  eval "ac_cv_prototype_$tmp_save_1=no"
 else
   echo "$as_me: failed program was:" >&5
 cat conftest.$ac_ext >&5
-eval "ac_cv_prototype_bzero=yes"
+eval "ac_cv_prototype_$tmp_save_1=yes"
 fi
 rm -f conftest.$ac_objext conftest.$ac_ext
 fi
-if eval "test \"`echo '$ac_cv_prototype_'bzero`\" = yes"; then
+if eval "test \"`echo '$''{'ac_cv_prototype_$tmp_save_1'}'`\" = yes"; then
   echo "$as_me:$LINENO: result: yes" >&5
 echo "${ECHO_T}yes" >&6
-  ac_tr_prototype=HAVE_PROTOTYPE_`echo bzero | tr '[a-z]' '[A-Z]'`
+  ac_tr_prototype=HAVE_PROTOTYPE_`echo $tmp_save_1 | tr '[a-z]' '[A-Z]'`
   cat >>confdefs.h <<_ACEOF
 #define $ac_tr_prototype 1
 _ACEOF
@@ -18059,7 +18063,8 @@ do
 #include<$ac_header>"
   fi
 done
-if test "${ac_cv_prototype_connect+set}" = set; then
+tmp_save_1=`echo connect | tr ' :' '__'`
+if eval "test \"\${ac_cv_prototype_$tmp_save_1+set}\" = set"; then
   echo $ECHO_N "(cached) $ECHO_C" >&6
 else
   cat >conftest.$ac_ext <<_ACEOF
@@ -18105,18 +18110,18 @@ if { (eval echo "$as_me:$LINENO: \"$ac_compile\"") >&5
   ac_status=$?
   echo "$as_me:$LINENO: \$? = $ac_status" >&5
   (exit $ac_status); }; }; then
-  eval "ac_cv_prototype_connect=no"
+  eval "ac_cv_prototype_$tmp_save_1=no"
 else
   echo "$as_me: failed program was:" >&5
 cat conftest.$ac_ext >&5
-eval "ac_cv_prototype_connect=yes"
+eval "ac_cv_prototype_$tmp_save_1=yes"
 fi
 rm -f conftest.$ac_objext conftest.$ac_ext
 fi
-if eval "test \"`echo '$ac_cv_prototype_'connect`\" = yes"; then
+if eval "test \"`echo '$''{'ac_cv_prototype_$tmp_save_1'}'`\" = yes"; then
   echo "$as_me:$LINENO: result: yes" >&5
 echo "${ECHO_T}yes" >&6
-  ac_tr_prototype=HAVE_PROTOTYPE_`echo connect | tr '[a-z]' '[A-Z]'`
+  ac_tr_prototype=HAVE_PROTOTYPE_`echo $tmp_save_1 | tr '[a-z]' '[A-Z]'`
   cat >>confdefs.h <<_ACEOF
 #define $ac_tr_prototype 1
 _ACEOF
@@ -18142,7 +18147,8 @@ do
 #include<$ac_header>"
   fi
 done
-if test "${ac_cv_prototype_flock+set}" = set; then
+tmp_save_1=`echo flock | tr ' :' '__'`
+if eval "test \"\${ac_cv_prototype_$tmp_save_1+set}\" = set"; then
   echo $ECHO_N "(cached) $ECHO_C" >&6
 else
   cat >conftest.$ac_ext <<_ACEOF
@@ -18188,18 +18194,18 @@ if { (eval echo "$as_me:$LINENO: \"$ac_compile\"") >&5
   ac_status=$?
   echo "$as_me:$LINENO: \$? = $ac_status" >&5
   (exit $ac_status); }; }; then
-  eval "ac_cv_prototype_flock=no"
+  eval "ac_cv_prototype_$tmp_save_1=no"
 else
   echo "$as_me: failed program was:" >&5
 cat conftest.$ac_ext >&5
-eval "ac_cv_prototype_flock=yes"
+eval "ac_cv_prototype_$tmp_save_1=yes"
 fi
 rm -f conftest.$ac_objext conftest.$ac_ext
 fi
-if eval "test \"`echo '$ac_cv_prototype_'flock`\" = yes"; then
+if eval "test \"`echo '$''{'ac_cv_prototype_$tmp_save_1'}'`\" = yes"; then
   echo "$as_me:$LINENO: result: yes" >&5
 echo "${ECHO_T}yes" >&6
-  ac_tr_prototype=HAVE_PROTOTYPE_`echo flock | tr '[a-z]' '[A-Z]'`
+  ac_tr_prototype=HAVE_PROTOTYPE_`echo $tmp_save_1 | tr '[a-z]' '[A-Z]'`
   cat >>confdefs.h <<_ACEOF
 #define $ac_tr_prototype 1
 _ACEOF
@@ -18225,7 +18231,8 @@ do
 #include<$ac_header>"
   fi
 done
-if test "${ac_cv_prototype_gethostbyname+set}" = set; then
+tmp_save_1=`echo gethostbyname | tr ' :' '__'`
+if eval "test \"\${ac_cv_prototype_$tmp_save_1+set}\" = set"; then
   echo $ECHO_N "(cached) $ECHO_C" >&6
 else
   cat >conftest.$ac_ext <<_ACEOF
@@ -18271,18 +18278,18 @@ if { (eval echo "$as_me:$LINENO: \"$ac_compile\"") >&5
   ac_status=$?
   echo "$as_me:$LINENO: \$? = $ac_status" >&5
   (exit $ac_status); }; }; then
-  eval "ac_cv_prototype_gethostbyname=no"
+  eval "ac_cv_prototype_$tmp_save_1=no"
 else
   echo "$as_me: failed program was:" >&5
 cat conftest.$ac_ext >&5
-eval "ac_cv_prototype_gethostbyname=yes"
+eval "ac_cv_prototype_$tmp_save_1=yes"
 fi
 rm -f conftest.$ac_objext conftest.$ac_ext
 fi
-if eval "test \"`echo '$ac_cv_prototype_'gethostbyname`\" = yes"; then
+if eval "test \"`echo '$''{'ac_cv_prototype_$tmp_save_1'}'`\" = yes"; then
   echo "$as_me:$LINENO: result: yes" >&5
 echo "${ECHO_T}yes" >&6
-  ac_tr_prototype=HAVE_PROTOTYPE_`echo gethostbyname | tr '[a-z]' '[A-Z]'`
+  ac_tr_prototype=HAVE_PROTOTYPE_`echo $tmp_save_1 | tr '[a-z]' '[A-Z]'`
   cat >>confdefs.h <<_ACEOF
 #define $ac_tr_prototype 1
 _ACEOF
@@ -18308,7 +18315,8 @@ do
 #include<$ac_header>"
   fi
 done
-if test "${ac_cv_prototype_gethostid+set}" = set; then
+tmp_save_1=`echo gethostid | tr ' :' '__'`
+if eval "test \"\${ac_cv_prototype_$tmp_save_1+set}\" = set"; then
   echo $ECHO_N "(cached) $ECHO_C" >&6
 else
   cat >conftest.$ac_ext <<_ACEOF
@@ -18354,18 +18362,18 @@ if { (eval echo "$as_me:$LINENO: \"$ac_compile\"") >&5
   ac_status=$?
   echo "$as_me:$LINENO: \$? = $ac_status" >&5
   (exit $ac_status); }; }; then
-  eval "ac_cv_prototype_gethostid=no"
+  eval "ac_cv_prototype_$tmp_save_1=no"
 else
   echo "$as_me: failed program was:" >&5
 cat conftest.$ac_ext >&5
-eval "ac_cv_prototype_gethostid=yes"
+eval "ac_cv_prototype_$tmp_save_1=yes"
 fi
 rm -f conftest.$ac_objext conftest.$ac_ext
 fi
-if eval "test \"`echo '$ac_cv_prototype_'gethostid`\" = yes"; then
+if eval "test \"`echo '$''{'ac_cv_prototype_$tmp_save_1'}'`\" = yes"; then
   echo "$as_me:$LINENO: result: yes" >&5
 echo "${ECHO_T}yes" >&6
-  ac_tr_prototype=HAVE_PROTOTYPE_`echo gethostid | tr '[a-z]' '[A-Z]'`
+  ac_tr_prototype=HAVE_PROTOTYPE_`echo $tmp_save_1 | tr '[a-z]' '[A-Z]'`
   cat >>confdefs.h <<_ACEOF
 #define $ac_tr_prototype 1
 _ACEOF
@@ -18391,7 +18399,8 @@ do
 #include<$ac_header>"
   fi
 done
-if test "${ac_cv_prototype_gethostname+set}" = set; then
+tmp_save_1=`echo gethostname | tr ' :' '__'`
+if eval "test \"\${ac_cv_prototype_$tmp_save_1+set}\" = set"; then
   echo $ECHO_N "(cached) $ECHO_C" >&6
 else
   cat >conftest.$ac_ext <<_ACEOF
@@ -18437,18 +18446,18 @@ if { (eval echo "$as_me:$LINENO: \"$ac_compile\"") >&5
   ac_status=$?
   echo "$as_me:$LINENO: \$? = $ac_status" >&5
   (exit $ac_status); }; }; then
-  eval "ac_cv_prototype_gethostname=no"
+  eval "ac_cv_prototype_$tmp_save_1=no"
 else
   echo "$as_me: failed program was:" >&5
 cat conftest.$ac_ext >&5
-eval "ac_cv_prototype_gethostname=yes"
+eval "ac_cv_prototype_$tmp_save_1=yes"
 fi
 rm -f conftest.$ac_objext conftest.$ac_ext
 fi
-if eval "test \"`echo '$ac_cv_prototype_'gethostname`\" = yes"; then
+if eval "test \"`echo '$''{'ac_cv_prototype_$tmp_save_1'}'`\" = yes"; then
   echo "$as_me:$LINENO: result: yes" >&5
 echo "${ECHO_T}yes" >&6
-  ac_tr_prototype=HAVE_PROTOTYPE_`echo gethostname | tr '[a-z]' '[A-Z]'`
+  ac_tr_prototype=HAVE_PROTOTYPE_`echo $tmp_save_1 | tr '[a-z]' '[A-Z]'`
   cat >>confdefs.h <<_ACEOF
 #define $ac_tr_prototype 1
 _ACEOF
@@ -18474,7 +18483,8 @@ do
 #include<$ac_header>"
   fi
 done
-if test "${ac_cv_prototype_getsockname+set}" = set; then
+tmp_save_1=`echo getsockname | tr ' :' '__'`
+if eval "test \"\${ac_cv_prototype_$tmp_save_1+set}\" = set"; then
   echo $ECHO_N "(cached) $ECHO_C" >&6
 else
   cat >conftest.$ac_ext <<_ACEOF
@@ -18520,18 +18530,18 @@ if { (eval echo "$as_me:$LINENO: \"$ac_compile\"") >&5
   ac_status=$?
   echo "$as_me:$LINENO: \$? = $ac_status" >&5
   (exit $ac_status); }; }; then
-  eval "ac_cv_prototype_getsockname=no"
+  eval "ac_cv_prototype_$tmp_save_1=no"
 else
   echo "$as_me: failed program was:" >&5
 cat conftest.$ac_ext >&5
-eval "ac_cv_prototype_getsockname=yes"
+eval "ac_cv_prototype_$tmp_save_1=yes"
 fi
 rm -f conftest.$ac_objext conftest.$ac_ext
 fi
-if eval "test \"`echo '$ac_cv_prototype_'getsockname`\" = yes"; then
+if eval "test \"`echo '$''{'ac_cv_prototype_$tmp_save_1'}'`\" = yes"; then
   echo "$as_me:$LINENO: result: yes" >&5
 echo "${ECHO_T}yes" >&6
-  ac_tr_prototype=HAVE_PROTOTYPE_`echo getsockname | tr '[a-z]' '[A-Z]'`
+  ac_tr_prototype=HAVE_PROTOTYPE_`echo $tmp_save_1 | tr '[a-z]' '[A-Z]'`
   cat >>confdefs.h <<_ACEOF
 #define $ac_tr_prototype 1
 _ACEOF
@@ -18557,7 +18567,8 @@ do
 #include<$ac_header>"
   fi
 done
-if test "${ac_cv_prototype_getsockopt+set}" = set; then
+tmp_save_1=`echo getsockopt | tr ' :' '__'`
+if eval "test \"\${ac_cv_prototype_$tmp_save_1+set}\" = set"; then
   echo $ECHO_N "(cached) $ECHO_C" >&6
 else
   cat >conftest.$ac_ext <<_ACEOF
@@ -18603,18 +18614,18 @@ if { (eval echo "$as_me:$LINENO: \"$ac_compile\"") >&5
   ac_status=$?
   echo "$as_me:$LINENO: \$? = $ac_status" >&5
   (exit $ac_status); }; }; then
-  eval "ac_cv_prototype_getsockopt=no"
+  eval "ac_cv_prototype_$tmp_save_1=no"
 else
   echo "$as_me: failed program was:" >&5
 cat conftest.$ac_ext >&5
-eval "ac_cv_prototype_getsockopt=yes"
+eval "ac_cv_prototype_$tmp_save_1=yes"
 fi
 rm -f conftest.$ac_objext conftest.$ac_ext
 fi
-if eval "test \"`echo '$ac_cv_prototype_'getsockopt`\" = yes"; then
+if eval "test \"`echo '$''{'ac_cv_prototype_$tmp_save_1'}'`\" = yes"; then
   echo "$as_me:$LINENO: result: yes" >&5
 echo "${ECHO_T}yes" >&6
-  ac_tr_prototype=HAVE_PROTOTYPE_`echo getsockopt | tr '[a-z]' '[A-Z]'`
+  ac_tr_prototype=HAVE_PROTOTYPE_`echo $tmp_save_1 | tr '[a-z]' '[A-Z]'`
   cat >>confdefs.h <<_ACEOF
 #define $ac_tr_prototype 1
 _ACEOF
@@ -18769,7 +18780,8 @@ do
 #include<$ac_header>"
   fi
 done
-if test "${ac_cv_prototype_gettimeofday+set}" = set; then
+tmp_save_1=`echo gettimeofday | tr ' :' '__'`
+if eval "test \"\${ac_cv_prototype_$tmp_save_1+set}\" = set"; then
   echo $ECHO_N "(cached) $ECHO_C" >&6
 else
   cat >conftest.$ac_ext <<_ACEOF
@@ -18815,18 +18827,18 @@ if { (eval echo "$as_me:$LINENO: \"$ac_compile\"") >&5
   ac_status=$?
   echo "$as_me:$LINENO: \$? = $ac_status" >&5
   (exit $ac_status); }; }; then
-  eval "ac_cv_prototype_gettimeofday=no"
+  eval "ac_cv_prototype_$tmp_save_1=no"
 else
   echo "$as_me: failed program was:" >&5
 cat conftest.$ac_ext >&5
-eval "ac_cv_prototype_gettimeofday=yes"
+eval "ac_cv_prototype_$tmp_save_1=yes"
 fi
 rm -f conftest.$ac_objext conftest.$ac_ext
 fi
-if eval "test \"`echo '$ac_cv_prototype_'gettimeofday`\" = yes"; then
+if eval "test \"`echo '$''{'ac_cv_prototype_$tmp_save_1'}'`\" = yes"; then
   echo "$as_me:$LINENO: result: yes" >&5
 echo "${ECHO_T}yes" >&6
-  ac_tr_prototype=HAVE_PROTOTYPE_`echo gettimeofday | tr '[a-z]' '[A-Z]'`
+  ac_tr_prototype=HAVE_PROTOTYPE_`echo $tmp_save_1 | tr '[a-z]' '[A-Z]'`
   cat >>confdefs.h <<_ACEOF
 #define $ac_tr_prototype 1
 _ACEOF
@@ -18852,7 +18864,8 @@ do
 #include<$ac_header>"
   fi
 done
-if test "${ac_cv_prototype_listen+set}" = set; then
+tmp_save_1=`echo listen | tr ' :' '__'`
+if eval "test \"\${ac_cv_prototype_$tmp_save_1+set}\" = set"; then
   echo $ECHO_N "(cached) $ECHO_C" >&6
 else
   cat >conftest.$ac_ext <<_ACEOF
@@ -18898,18 +18911,18 @@ if { (eval echo "$as_me:$LINENO: \"$ac_compile\"") >&5
   ac_status=$?
   echo "$as_me:$LINENO: \$? = $ac_status" >&5
   (exit $ac_status); }; }; then
-  eval "ac_cv_prototype_listen=no"
+  eval "ac_cv_prototype_$tmp_save_1=no"
 else
   echo "$as_me: failed program was:" >&5
 cat conftest.$ac_ext >&5
-eval "ac_cv_prototype_listen=yes"
+eval "ac_cv_prototype_$tmp_save_1=yes"
 fi
 rm -f conftest.$ac_objext conftest.$ac_ext
 fi
-if eval "test \"`echo '$ac_cv_prototype_'listen`\" = yes"; then
+if eval "test \"`echo '$''{'ac_cv_prototype_$tmp_save_1'}'`\" = yes"; then
   echo "$as_me:$LINENO: result: yes" >&5
 echo "${ECHO_T}yes" >&6
-  ac_tr_prototype=HAVE_PROTOTYPE_`echo listen | tr '[a-z]' '[A-Z]'`
+  ac_tr_prototype=HAVE_PROTOTYPE_`echo $tmp_save_1 | tr '[a-z]' '[A-Z]'`
   cat >>confdefs.h <<_ACEOF
 #define $ac_tr_prototype 1
 _ACEOF
@@ -18935,7 +18948,8 @@ do
 #include<$ac_header>"
   fi
 done
-if test "${ac_cv_prototype_mktemp+set}" = set; then
+tmp_save_1=`echo mktemp | tr ' :' '__'`
+if eval "test \"\${ac_cv_prototype_$tmp_save_1+set}\" = set"; then
   echo $ECHO_N "(cached) $ECHO_C" >&6
 else
   cat >conftest.$ac_ext <<_ACEOF
@@ -18981,18 +18995,18 @@ if { (eval echo "$as_me:$LINENO: \"$ac_compile\"") >&5
   ac_status=$?
   echo "$as_me:$LINENO: \$? = $ac_status" >&5
   (exit $ac_status); }; }; then
-  eval "ac_cv_prototype_mktemp=no"
+  eval "ac_cv_prototype_$tmp_save_1=no"
 else
   echo "$as_me: failed program was:" >&5
 cat conftest.$ac_ext >&5
-eval "ac_cv_prototype_mktemp=yes"
+eval "ac_cv_prototype_$tmp_save_1=yes"
 fi
 rm -f conftest.$ac_objext conftest.$ac_ext
 fi
-if eval "test \"`echo '$ac_cv_prototype_'mktemp`\" = yes"; then
+if eval "test \"`echo '$''{'ac_cv_prototype_$tmp_save_1'}'`\" = yes"; then
   echo "$as_me:$LINENO: result: yes" >&5
 echo "${ECHO_T}yes" >&6
-  ac_tr_prototype=HAVE_PROTOTYPE_`echo mktemp | tr '[a-z]' '[A-Z]'`
+  ac_tr_prototype=HAVE_PROTOTYPE_`echo $tmp_save_1 | tr '[a-z]' '[A-Z]'`
   cat >>confdefs.h <<_ACEOF
 #define $ac_tr_prototype 1
 _ACEOF
@@ -19018,7 +19032,8 @@ do
 #include<$ac_header>"
   fi
 done
-if test "${ac_cv_prototype_mkstemp+set}" = set; then
+tmp_save_1=`echo mkstemp | tr ' :' '__'`
+if eval "test \"\${ac_cv_prototype_$tmp_save_1+set}\" = set"; then
   echo $ECHO_N "(cached) $ECHO_C" >&6
 else
   cat >conftest.$ac_ext <<_ACEOF
@@ -19064,18 +19079,18 @@ if { (eval echo "$as_me:$LINENO: \"$ac_compile\"") >&5
   ac_status=$?
   echo "$as_me:$LINENO: \$? = $ac_status" >&5
   (exit $ac_status); }; }; then
-  eval "ac_cv_prototype_mkstemp=no"
+  eval "ac_cv_prototype_$tmp_save_1=no"
 else
   echo "$as_me: failed program was:" >&5
 cat conftest.$ac_ext >&5
-eval "ac_cv_prototype_mkstemp=yes"
+eval "ac_cv_prototype_$tmp_save_1=yes"
 fi
 rm -f conftest.$ac_objext conftest.$ac_ext
 fi
-if eval "test \"`echo '$ac_cv_prototype_'mkstemp`\" = yes"; then
+if eval "test \"`echo '$''{'ac_cv_prototype_$tmp_save_1'}'`\" = yes"; then
   echo "$as_me:$LINENO: result: yes" >&5
 echo "${ECHO_T}yes" >&6
-  ac_tr_prototype=HAVE_PROTOTYPE_`echo mkstemp | tr '[a-z]' '[A-Z]'`
+  ac_tr_prototype=HAVE_PROTOTYPE_`echo $tmp_save_1 | tr '[a-z]' '[A-Z]'`
   cat >>confdefs.h <<_ACEOF
 #define $ac_tr_prototype 1
 _ACEOF
@@ -19101,7 +19116,8 @@ do
 #include<$ac_header>"
   fi
 done
-if test "${ac_cv_prototype_select+set}" = set; then
+tmp_save_1=`echo select | tr ' :' '__'`
+if eval "test \"\${ac_cv_prototype_$tmp_save_1+set}\" = set"; then
   echo $ECHO_N "(cached) $ECHO_C" >&6
 else
   cat >conftest.$ac_ext <<_ACEOF
@@ -19147,18 +19163,18 @@ if { (eval echo "$as_me:$LINENO: \"$ac_compile\"") >&5
   ac_status=$?
   echo "$as_me:$LINENO: \$? = $ac_status" >&5
   (exit $ac_status); }; }; then
-  eval "ac_cv_prototype_select=no"
+  eval "ac_cv_prototype_$tmp_save_1=no"
 else
   echo "$as_me: failed program was:" >&5
 cat conftest.$ac_ext >&5
-eval "ac_cv_prototype_select=yes"
+eval "ac_cv_prototype_$tmp_save_1=yes"
 fi
 rm -f conftest.$ac_objext conftest.$ac_ext
 fi
-if eval "test \"`echo '$ac_cv_prototype_'select`\" = yes"; then
+if eval "test \"`echo '$''{'ac_cv_prototype_$tmp_save_1'}'`\" = yes"; then
   echo "$as_me:$LINENO: result: yes" >&5
 echo "${ECHO_T}yes" >&6
-  ac_tr_prototype=HAVE_PROTOTYPE_`echo select | tr '[a-z]' '[A-Z]'`
+  ac_tr_prototype=HAVE_PROTOTYPE_`echo $tmp_save_1 | tr '[a-z]' '[A-Z]'`
   cat >>confdefs.h <<_ACEOF
 #define $ac_tr_prototype 1
 _ACEOF
@@ -19313,7 +19329,8 @@ do
 #include<$ac_header>"
   fi
 done
-if test "${ac_cv_prototype_setsockopt+set}" = set; then
+tmp_save_1=`echo setsockopt | tr ' :' '__'`
+if eval "test \"\${ac_cv_prototype_$tmp_save_1+set}\" = set"; then
   echo $ECHO_N "(cached) $ECHO_C" >&6
 else
   cat >conftest.$ac_ext <<_ACEOF
@@ -19359,18 +19376,18 @@ if { (eval echo "$as_me:$LINENO: \"$ac_compile\"") >&5
   ac_status=$?
   echo "$as_me:$LINENO: \$? = $ac_status" >&5
   (exit $ac_status); }; }; then
-  eval "ac_cv_prototype_setsockopt=no"
+  eval "ac_cv_prototype_$tmp_save_1=no"
 else
   echo "$as_me: failed program was:" >&5
 cat conftest.$ac_ext >&5
-eval "ac_cv_prototype_setsockopt=yes"
+eval "ac_cv_prototype_$tmp_save_1=yes"
 fi
 rm -f conftest.$ac_objext conftest.$ac_ext
 fi
-if eval "test \"`echo '$ac_cv_prototype_'setsockopt`\" = yes"; then
+if eval "test \"`echo '$''{'ac_cv_prototype_$tmp_save_1'}'`\" = yes"; then
   echo "$as_me:$LINENO: result: yes" >&5
 echo "${ECHO_T}yes" >&6
-  ac_tr_prototype=HAVE_PROTOTYPE_`echo setsockopt | tr '[a-z]' '[A-Z]'`
+  ac_tr_prototype=HAVE_PROTOTYPE_`echo $tmp_save_1 | tr '[a-z]' '[A-Z]'`
   cat >>confdefs.h <<_ACEOF
 #define $ac_tr_prototype 1
 _ACEOF
@@ -19396,7 +19413,8 @@ do
 #include<$ac_header>"
   fi
 done
-if test "${ac_cv_prototype_socket+set}" = set; then
+tmp_save_1=`echo socket | tr ' :' '__'`
+if eval "test \"\${ac_cv_prototype_$tmp_save_1+set}\" = set"; then
   echo $ECHO_N "(cached) $ECHO_C" >&6
 else
   cat >conftest.$ac_ext <<_ACEOF
@@ -19442,18 +19460,18 @@ if { (eval echo "$as_me:$LINENO: \"$ac_compile\"") >&5
   ac_status=$?
   echo "$as_me:$LINENO: \$? = $ac_status" >&5
   (exit $ac_status); }; }; then
-  eval "ac_cv_prototype_socket=no"
+  eval "ac_cv_prototype_$tmp_save_1=no"
 else
   echo "$as_me: failed program was:" >&5
 cat conftest.$ac_ext >&5
-eval "ac_cv_prototype_socket=yes"
+eval "ac_cv_prototype_$tmp_save_1=yes"
 fi
 rm -f conftest.$ac_objext conftest.$ac_ext
 fi
-if eval "test \"`echo '$ac_cv_prototype_'socket`\" = yes"; then
+if eval "test \"`echo '$''{'ac_cv_prototype_$tmp_save_1'}'`\" = yes"; then
   echo "$as_me:$LINENO: result: yes" >&5
 echo "${ECHO_T}yes" >&6
-  ac_tr_prototype=HAVE_PROTOTYPE_`echo socket | tr '[a-z]' '[A-Z]'`
+  ac_tr_prototype=HAVE_PROTOTYPE_`echo $tmp_save_1 | tr '[a-z]' '[A-Z]'`
   cat >>confdefs.h <<_ACEOF
 #define $ac_tr_prototype 1
 _ACEOF
@@ -19479,7 +19497,8 @@ do
 #include<$ac_header>"
   fi
 done
-if test "${ac_cv_prototype_strcasecmp+set}" = set; then
+tmp_save_1=`echo strcasecmp | tr ' :' '__'`
+if eval "test \"\${ac_cv_prototype_$tmp_save_1+set}\" = set"; then
   echo $ECHO_N "(cached) $ECHO_C" >&6
 else
   cat >conftest.$ac_ext <<_ACEOF
@@ -19525,18 +19544,18 @@ if { (eval echo "$as_me:$LINENO: \"$ac_compile\"") >&5
   ac_status=$?
   echo "$as_me:$LINENO: \$? = $ac_status" >&5
   (exit $ac_status); }; }; then
-  eval "ac_cv_prototype_strcasecmp=no"
+  eval "ac_cv_prototype_$tmp_save_1=no"
 else
   echo "$as_me: failed program was:" >&5
 cat conftest.$ac_ext >&5
-eval "ac_cv_prototype_strcasecmp=yes"
+eval "ac_cv_prototype_$tmp_save_1=yes"
 fi
 rm -f conftest.$ac_objext conftest.$ac_ext
 fi
-if eval "test \"`echo '$ac_cv_prototype_'strcasecmp`\" = yes"; then
+if eval "test \"`echo '$''{'ac_cv_prototype_$tmp_save_1'}'`\" = yes"; then
   echo "$as_me:$LINENO: result: yes" >&5
 echo "${ECHO_T}yes" >&6
-  ac_tr_prototype=HAVE_PROTOTYPE_`echo strcasecmp | tr '[a-z]' '[A-Z]'`
+  ac_tr_prototype=HAVE_PROTOTYPE_`echo $tmp_save_1 | tr '[a-z]' '[A-Z]'`
   cat >>confdefs.h <<_ACEOF
 #define $ac_tr_prototype 1
 _ACEOF
@@ -19562,7 +19581,8 @@ do
 #include<$ac_header>"
   fi
 done
-if test "${ac_cv_prototype_strncasecmp+set}" = set; then
+tmp_save_1=`echo strncasecmp | tr ' :' '__'`
+if eval "test \"\${ac_cv_prototype_$tmp_save_1+set}\" = set"; then
   echo $ECHO_N "(cached) $ECHO_C" >&6
 else
   cat >conftest.$ac_ext <<_ACEOF
@@ -19608,18 +19628,18 @@ if { (eval echo "$as_me:$LINENO: \"$ac_compile\"") >&5
   ac_status=$?
   echo "$as_me:$LINENO: \$? = $ac_status" >&5
   (exit $ac_status); }; }; then
-  eval "ac_cv_prototype_strncasecmp=no"
+  eval "ac_cv_prototype_$tmp_save_1=no"
 else
   echo "$as_me: failed program was:" >&5
 cat conftest.$ac_ext >&5
-eval "ac_cv_prototype_strncasecmp=yes"
+eval "ac_cv_prototype_$tmp_save_1=yes"
 fi
 rm -f conftest.$ac_objext conftest.$ac_ext
 fi
-if eval "test \"`echo '$ac_cv_prototype_'strncasecmp`\" = yes"; then
+if eval "test \"`echo '$''{'ac_cv_prototype_$tmp_save_1'}'`\" = yes"; then
   echo "$as_me:$LINENO: result: yes" >&5
 echo "${ECHO_T}yes" >&6
-  ac_tr_prototype=HAVE_PROTOTYPE_`echo strncasecmp | tr '[a-z]' '[A-Z]'`
+  ac_tr_prototype=HAVE_PROTOTYPE_`echo $tmp_save_1 | tr '[a-z]' '[A-Z]'`
   cat >>confdefs.h <<_ACEOF
 #define $ac_tr_prototype 1
 _ACEOF
@@ -19645,7 +19665,8 @@ do
 #include<$ac_header>"
   fi
 done
-if test "${ac_cv_prototype_usleep+set}" = set; then
+tmp_save_1=`echo usleep | tr ' :' '__'`
+if eval "test \"\${ac_cv_prototype_$tmp_save_1+set}\" = set"; then
   echo $ECHO_N "(cached) $ECHO_C" >&6
 else
   cat >conftest.$ac_ext <<_ACEOF
@@ -19691,18 +19712,18 @@ if { (eval echo "$as_me:$LINENO: \"$ac_compile\"") >&5
   ac_status=$?
   echo "$as_me:$LINENO: \$? = $ac_status" >&5
   (exit $ac_status); }; }; then
-  eval "ac_cv_prototype_usleep=no"
+  eval "ac_cv_prototype_$tmp_save_1=no"
 else
   echo "$as_me: failed program was:" >&5
 cat conftest.$ac_ext >&5
-eval "ac_cv_prototype_usleep=yes"
+eval "ac_cv_prototype_$tmp_save_1=yes"
 fi
 rm -f conftest.$ac_objext conftest.$ac_ext
 fi
-if eval "test \"`echo '$ac_cv_prototype_'usleep`\" = yes"; then
+if eval "test \"`echo '$''{'ac_cv_prototype_$tmp_save_1'}'`\" = yes"; then
   echo "$as_me:$LINENO: result: yes" >&5
 echo "${ECHO_T}yes" >&6
-  ac_tr_prototype=HAVE_PROTOTYPE_`echo usleep | tr '[a-z]' '[A-Z]'`
+  ac_tr_prototype=HAVE_PROTOTYPE_`echo $tmp_save_1 | tr '[a-z]' '[A-Z]'`
   cat >>confdefs.h <<_ACEOF
 #define $ac_tr_prototype 1
 _ACEOF
@@ -19728,7 +19749,8 @@ do
 #include<$ac_header>"
   fi
 done
-if test "${ac_cv_prototype_wait3+set}" = set; then
+tmp_save_1=`echo wait3 | tr ' :' '__'`
+if eval "test \"\${ac_cv_prototype_$tmp_save_1+set}\" = set"; then
   echo $ECHO_N "(cached) $ECHO_C" >&6
 else
   cat >conftest.$ac_ext <<_ACEOF
@@ -19774,18 +19796,18 @@ if { (eval echo "$as_me:$LINENO: \"$ac_compile\"") >&5
   ac_status=$?
   echo "$as_me:$LINENO: \$? = $ac_status" >&5
   (exit $ac_status); }; }; then
-  eval "ac_cv_prototype_wait3=no"
+  eval "ac_cv_prototype_$tmp_save_1=no"
 else
   echo "$as_me: failed program was:" >&5
 cat conftest.$ac_ext >&5
-eval "ac_cv_prototype_wait3=yes"
+eval "ac_cv_prototype_$tmp_save_1=yes"
 fi
 rm -f conftest.$ac_objext conftest.$ac_ext
 fi
-if eval "test \"`echo '$ac_cv_prototype_'wait3`\" = yes"; then
+if eval "test \"`echo '$''{'ac_cv_prototype_$tmp_save_1'}'`\" = yes"; then
   echo "$as_me:$LINENO: result: yes" >&5
 echo "${ECHO_T}yes" >&6
-  ac_tr_prototype=HAVE_PROTOTYPE_`echo wait3 | tr '[a-z]' '[A-Z]'`
+  ac_tr_prototype=HAVE_PROTOTYPE_`echo $tmp_save_1 | tr '[a-z]' '[A-Z]'`
   cat >>confdefs.h <<_ACEOF
 #define $ac_tr_prototype 1
 _ACEOF
@@ -19811,7 +19833,8 @@ do
 #include<$ac_header>"
   fi
 done
-if test "${ac_cv_prototype_waitpid+set}" = set; then
+tmp_save_1=`echo waitpid | tr ' :' '__'`
+if eval "test \"\${ac_cv_prototype_$tmp_save_1+set}\" = set"; then
   echo $ECHO_N "(cached) $ECHO_C" >&6
 else
   cat >conftest.$ac_ext <<_ACEOF
@@ -19857,18 +19880,18 @@ if { (eval echo "$as_me:$LINENO: \"$ac_compile\"") >&5
   ac_status=$?
   echo "$as_me:$LINENO: \$? = $ac_status" >&5
   (exit $ac_status); }; }; then
-  eval "ac_cv_prototype_waitpid=no"
+  eval "ac_cv_prototype_$tmp_save_1=no"
 else
   echo "$as_me: failed program was:" >&5
 cat conftest.$ac_ext >&5
-eval "ac_cv_prototype_waitpid=yes"
+eval "ac_cv_prototype_$tmp_save_1=yes"
 fi
 rm -f conftest.$ac_objext conftest.$ac_ext
 fi
-if eval "test \"`echo '$ac_cv_prototype_'waitpid`\" = yes"; then
+if eval "test \"`echo '$''{'ac_cv_prototype_$tmp_save_1'}'`\" = yes"; then
   echo "$as_me:$LINENO: result: yes" >&5
 echo "${ECHO_T}yes" >&6
-  ac_tr_prototype=HAVE_PROTOTYPE_`echo waitpid | tr '[a-z]' '[A-Z]'`
+  ac_tr_prototype=HAVE_PROTOTYPE_`echo $tmp_save_1 | tr '[a-z]' '[A-Z]'`
   cat >>confdefs.h <<_ACEOF
 #define $ac_tr_prototype 1
 _ACEOF
@@ -20442,7 +20465,7 @@ if test "${ac_cv_check_std_namespace+set}" = set; then
 else
   ac_link_o='${CXX-g++} -o conftest $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.o $LIBS 1>&5'
 cat > conftest.$ac_ext <<EOF
-#line 20445 "configure"
+#line 20468 "configure"
 #include "confdefs.h"
 
 #include <iostream>
@@ -20642,6 +20665,90 @@ echo "${ECHO_T}no" >&6
 fi
 unset ac_cv_declaration
 
+   echo "$as_me:$LINENO: checking prototype for std::fprintf (in cstdio)" >&5
+echo $ECHO_N "checking prototype for std::fprintf (in cstdio)... $ECHO_C" >&6
+
+
+:
+
+ac_includes=""
+for ac_header in cstdio
+do
+  ac_safe=`echo "$ac_header" | sed 'y%./+-%__p_%'`
+  if eval "test \"`echo '$''{'ac_cv_header_$ac_safe'}'`\" = yes"; then
+    ac_includes="$ac_includes
+#include<$ac_header>"
+  fi
+done
+tmp_save_1=`echo std::fprintf | tr ' :' '__'`
+if eval "test \"\${ac_cv_prototype_$tmp_save_1+set}\" = set"; then
+  echo $ECHO_N "(cached) $ECHO_C" >&6
+else
+  cat >conftest.$ac_ext <<_ACEOF
+#line $LINENO "configure"
+#include "confdefs.h"
+#ifdef __cplusplus
+extern "C" {
+#endif
+$ac_includes
+#ifdef __cplusplus
+}
+#endif
+typedef union { int member; } dummyStruct;
+#ifdef __cplusplus
+extern "C"
+#endif
+dummyStruct std::fprintf(dummyStruct);
+
+
+#ifdef F77_DUMMY_MAIN
+#  ifdef __cplusplus
+     extern "C"
+#  endif
+   int F77_DUMMY_MAIN() { return 1; }
+#endif
+int
+main ()
+{
+
+  ;
+  return 0;
+}
+_ACEOF
+rm -f conftest.$ac_objext
+if { (eval echo "$as_me:$LINENO: \"$ac_compile\"") >&5
+  (eval $ac_compile) 2>&5
+  ac_status=$?
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); } &&
+         { ac_try='test -s conftest.$ac_objext'
+  { (eval echo "$as_me:$LINENO: \"$ac_try\"") >&5
+  (eval $ac_try) 2>&5
+  ac_status=$?
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); }; }; then
+  eval "ac_cv_prototype_$tmp_save_1=no"
+else
+  echo "$as_me: failed program was:" >&5
+cat conftest.$ac_ext >&5
+eval "ac_cv_prototype_$tmp_save_1=yes"
+fi
+rm -f conftest.$ac_objext conftest.$ac_ext
+fi
+if eval "test \"`echo '$''{'ac_cv_prototype_$tmp_save_1'}'`\" = yes"; then
+  echo "$as_me:$LINENO: result: yes" >&5
+echo "${ECHO_T}yes" >&6
+  ac_tr_prototype=HAVE_PROTOTYPE_`echo $tmp_save_1 | tr '[a-z]' '[A-Z]'`
+  cat >>confdefs.h <<_ACEOF
+#define $ac_tr_prototype 1
+_ACEOF
+
+  :
+else
+  echo "$as_me:$LINENO: result: no" >&5
+echo "${ECHO_T}no" >&6
+fi
+
 else
 
 echo "$as_me:$LINENO: checking declaration for std::ios_base::openmode (in iostream.h)" >&5
@@ -20792,6 +20899,90 @@ echo "${ECHO_T}no" >&6
 fi
 unset ac_cv_declaration
 
+   echo "$as_me:$LINENO: checking prototype for std::fprintf (in stdio.h)" >&5
+echo $ECHO_N "checking prototype for std::fprintf (in stdio.h)... $ECHO_C" >&6
+
+
+:
+
+ac_includes=""
+for ac_header in stdio.h
+do
+  ac_safe=`echo "$ac_header" | sed 'y%./+-%__p_%'`
+  if eval "test \"`echo '$''{'ac_cv_header_$ac_safe'}'`\" = yes"; then
+    ac_includes="$ac_includes
+#include<$ac_header>"
+  fi
+done
+tmp_save_1=`echo std::fprintf | tr ' :' '__'`
+if eval "test \"\${ac_cv_prototype_$tmp_save_1+set}\" = set"; then
+  echo $ECHO_N "(cached) $ECHO_C" >&6
+else
+  cat >conftest.$ac_ext <<_ACEOF
+#line $LINENO "configure"
+#include "confdefs.h"
+#ifdef __cplusplus
+extern "C" {
+#endif
+$ac_includes
+#ifdef __cplusplus
+}
+#endif
+typedef union { int member; } dummyStruct;
+#ifdef __cplusplus
+extern "C"
+#endif
+dummyStruct std::fprintf(dummyStruct);
+
+
+#ifdef F77_DUMMY_MAIN
+#  ifdef __cplusplus
+     extern "C"
+#  endif
+   int F77_DUMMY_MAIN() { return 1; }
+#endif
+int
+main ()
+{
+
+  ;
+  return 0;
+}
+_ACEOF
+rm -f conftest.$ac_objext
+if { (eval echo "$as_me:$LINENO: \"$ac_compile\"") >&5
+  (eval $ac_compile) 2>&5
+  ac_status=$?
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); } &&
+         { ac_try='test -s conftest.$ac_objext'
+  { (eval echo "$as_me:$LINENO: \"$ac_try\"") >&5
+  (eval $ac_try) 2>&5
+  ac_status=$?
+  echo "$as_me:$LINENO: \$? = $ac_status" >&5
+  (exit $ac_status); }; }; then
+  eval "ac_cv_prototype_$tmp_save_1=no"
+else
+  echo "$as_me: failed program was:" >&5
+cat conftest.$ac_ext >&5
+eval "ac_cv_prototype_$tmp_save_1=yes"
+fi
+rm -f conftest.$ac_objext conftest.$ac_ext
+fi
+if eval "test \"`echo '$''{'ac_cv_prototype_$tmp_save_1'}'`\" = yes"; then
+  echo "$as_me:$LINENO: result: yes" >&5
+echo "${ECHO_T}yes" >&6
+  ac_tr_prototype=HAVE_PROTOTYPE_`echo $tmp_save_1 | tr '[a-z]' '[A-Z]'`
+  cat >>confdefs.h <<_ACEOF
+#define $ac_tr_prototype 1
+_ACEOF
+
+  :
+else
+  echo "$as_me:$LINENO: result: no" >&5
+echo "${ECHO_T}no" >&6
+fi
+
 fi
 
 echo "$as_me:$LINENO: checking for C++ class template" >&5
@@ -20803,7 +20994,7 @@ if test "${ac_cv_check_class_template+set}" = set; then
 else
   ac_link_o='${CXX-g++} -o conftest $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.o $LIBS 1>&5'
 cat > conftest.$ac_ext <<EOF
-#line 20806 "configure"
+#line 20997 "configure"
 #include "confdefs.h"
 
 template <class T>
@@ -20876,7 +21067,7 @@ if test "${ac_cv_check_static_template_method+set}" = set; then
 else
   ac_link_o='${CXX-g++} -o conftest $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.o $LIBS 1>&5'
 cat > conftest.$ac_ext <<EOF
-#line 20879 "configure"
+#line 21070 "configure"
 #include "confdefs.h"
 
 void additive(int & i)
@@ -20949,7 +21140,7 @@ if test "${ac_cv_check_function_template+set}" = set; then
 else
   ac_link_o='${CXX-g++} -o conftest $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.o $LIBS 1>&5'
 cat > conftest.$ac_ext <<EOF
-#line 20952 "configure"
+#line 21143 "configure"
 #include "confdefs.h"
 
 template <class T>

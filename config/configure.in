@@ -609,9 +609,11 @@ if test "$ac_use_std_includes" = "yes"; then
    AC_CHECK_STD_NAMESPACE
    AC_CHECK_DECLARATION(std::ios_base::openmode, , iostream)
    AC_CHECK_IOS_NOCREATE(std::ios, fstream)
+   AC_CHECK_PROTOTYPE(std::fprintf, cstdio)
 else
    AC_CHECK_DECLARATION(std::ios_base::openmode, , iostream.h)
    AC_CHECK_IOS_NOCREATE(ios, fstream.h)
+   AC_CHECK_PROTOTYPE(std::fprintf, stdio.h)
 fi
 
 AC_CHECK_CLASS_TEMPLATE
