@@ -21,10 +21,10 @@
  *
  *  Purpose: Implementation of class DcmSignedLong
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-12-10 20:02:10 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2002-12-11 16:55:03 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcvrsl.cc,v $
- *  CVS/RCS Revision: $Revision: 1.24 $
+ *  CVS/RCS Revision: $Revision: 1.25 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -196,7 +196,7 @@ OFCondition DcmSignedLong::getOFString(OFString &stringVal,
     {
         /* ... and convert it to a character string */
         char buffer[32];
-        sprintf(buffer, "%li", sintVal);
+        sprintf(buffer, "%li", (long)sintVal);
         /* assign result */
         stringVal = buffer;
     }
@@ -301,7 +301,10 @@ OFCondition DcmSignedLong::verify(const OFBool autocorrect)
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrsl.cc,v $
-** Revision 1.24  2002-12-10 20:02:10  joergr
+** Revision 1.25  2002-12-11 16:55:03  meichel
+** Added typecasts to avoid warnings on OSF/1
+**
+** Revision 1.24  2002/12/10 20:02:10  joergr
 ** Fixed "cut and paste" error in assignment operator.
 **
 ** Revision 1.23  2002/12/06 13:12:39  joergr

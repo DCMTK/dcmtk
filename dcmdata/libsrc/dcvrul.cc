@@ -21,10 +21,10 @@
  *
  *  Purpose: Implementation of class DcmUnsignedLong
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-12-10 20:02:09 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2002-12-11 16:55:04 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcvrul.cc,v $
- *  CVS/RCS Revision: $Revision: 1.24 $
+ *  CVS/RCS Revision: $Revision: 1.25 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -195,7 +195,7 @@ OFCondition DcmUnsignedLong::getOFString(OFString &stringVal,
     {
         /* ... and convert it to a character string */
         char buffer[32];
-        sprintf(buffer, "%lu", uintVal);
+        sprintf(buffer, "%lu", (unsigned long)uintVal);
         /* assign result */
         stringVal = buffer;
     }
@@ -300,7 +300,10 @@ OFCondition DcmUnsignedLong::verify(const OFBool autocorrect)
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrul.cc,v $
-** Revision 1.24  2002-12-10 20:02:09  joergr
+** Revision 1.25  2002-12-11 16:55:04  meichel
+** Added typecasts to avoid warnings on OSF/1
+**
+** Revision 1.24  2002/12/10 20:02:09  joergr
 ** Fixed "cut and paste" error in assignment operator.
 **
 ** Revision 1.23  2002/12/06 13:12:38  joergr

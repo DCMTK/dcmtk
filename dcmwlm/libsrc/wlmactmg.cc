@@ -22,10 +22,10 @@
  *  Purpose: Activity manager class for basic worklist management service
  *           class providers.
  *
- *  Last Update:      $Author: wilkens $
- *  Update Date:      $Date: 2002-08-12 10:56:18 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2002-12-11 16:55:13 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmwlm/libsrc/wlmactmg.cc,v $
- *  CVS/RCS Revision: $Revision: 1.10 $
+ *  CVS/RCS Revision: $Revision: 1.11 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1044,7 +1044,7 @@ static void AddStatusDetail( DcmDataset **statusDetail, const DcmElement *elem, 
       lo = new DcmLongString( *((DcmLongString*)elem) );
       if( lo->getLength() > vr.getMaxValueLength() && logStream != NULL )
       {
-        sprintf( msg, "AddStatusDetail: INTERNAL ERROR: value too large (max %lu) for %s: ", vr.getMaxValueLength(), vr.getVRName() );
+        sprintf( msg, "AddStatusDetail: INTERNAL ERROR: value too large (max %lu) for %s: ", (unsigned long)(vr.getMaxValueLength()), vr.getVRName() );
         logStream->lockCout();
         logStream->getCout() << msg << endl;
         logStream->unlockCout();
@@ -1061,7 +1061,7 @@ static void AddStatusDetail( DcmDataset **statusDetail, const DcmElement *elem, 
       at = new DcmAttributeTag( *((DcmAttributeTag*)elem) );
       if( at->getLength() > vr.getMaxValueLength() )
       {
-        sprintf( msg, "AddStatusDetail: INTERNAL ERROR: value too large (max %lu) for %s: ", vr.getMaxValueLength(), vr.getVRName() );
+        sprintf( msg, "AddStatusDetail: INTERNAL ERROR: value too large (max %lu) for %s: ", (unsigned long)(vr.getMaxValueLength()), vr.getVRName() );
         logStream->lockCout();
         logStream->getCout() << msg << endl;
         logStream->unlockCout();
@@ -1274,7 +1274,10 @@ static void FindCallback( void *callbackData, OFBool cancelled, T_DIMSE_C_FindRQ
 /*
 ** CVS Log
 ** $Log: wlmactmg.cc,v $
-** Revision 1.10  2002-08-12 10:56:18  wilkens
+** Revision 1.11  2002-12-11 16:55:13  meichel
+** Added typecasts to avoid warnings on OSF/1
+**
+** Revision 1.10  2002/08/12 10:56:18  wilkens
 ** Made some modifications in in order to be able to create a new application
 ** which contains both wlmscpdb and ppsscpdb and another application which
 ** contains both wlmscpfs and ppsscpfs.
