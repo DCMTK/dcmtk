@@ -823,6 +823,9 @@ if test "${with_libpnginc+set}" = set; then
     esac        
 fi
 
+dnl perform check for <libpng/png.h> only after we have evaluated --with-libpnginc
+AC_CHECK_HEADERS(libpng/png.h)
+
 PNGLIBS=""
 AC_MSG_CHECKING(whether to include libpng support)
 AC_ARG_WITH(libpng,
@@ -846,11 +849,17 @@ AC_ARG_WITH(libpng,
 [ if test "x$ZLIBLIBS" != x; then
       SAVELIBS="$LIBS"
       LIBS="$LIBS -lpng $ZLIBLIBS"
-      AC_TRY_LINK([#include <png.h>], [(void) png_access_version_number()], 
+
+      AC_TRY_LINK([#ifdef HAVE_LIBPNG_PNG_H
+#include <libpng/png.h>
+#else
+#include <png.h>
+#endif], [(void) png_access_version_number()], 
         [ AC_MSG_RESULT(yes)
           AC_DEFINE(WITH_LIBPNG, , [Define if we are compiling with libpng support])
           PNGLIBS="-lpng" ], 
         [AC_MSG_RESULT(no)])
+
       LIBS="$SAVELIBS"
   else
       AC_MSG_RESULT(no because libpng requires zlib)
