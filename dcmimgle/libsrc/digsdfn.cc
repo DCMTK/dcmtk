@@ -22,9 +22,9 @@
  *  Purpose: DicomGSDFunction (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-02-12 11:37:14 $
+ *  Update Date:      $Date: 2003-03-12 14:54:19 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/libsrc/digsdfn.cc,v $
- *  CVS/RCS Revision: $Revision: 1.23 $
+ *  CVS/RCS Revision: $Revision: 1.24 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -172,7 +172,7 @@ DiDisplayLUT *DiGSDFunction::getDisplayLUT(unsigned long count)
         if ((DeviceType == EDT_Printer) || (DeviceType == EDT_Scanner))
         {
             /* hardcopy: values are in optical density, first convert them to luminance */
-            double *tmp_tab = convertODtoLumTable(LODValue, ValueCount);
+            double *tmp_tab = convertODtoLumTable(LODValue, ValueCount, OFFalse /*useAmb*/);
             if (tmp_tab != NULL)
             {
                 checkMinMaxDensity();
@@ -461,7 +461,11 @@ double DiGSDFunction::getJNDIndex(const double lum)
  *
  * CVS/RCS Log:
  * $Log: digsdfn.cc,v $
- * Revision 1.23  2003-02-12 11:37:14  joergr
+ * Revision 1.24  2003-03-12 14:54:19  joergr
+ * Fixed bug in GSDF calibration routines. Ambient light value was added twice
+ * in case of OD input data (i.e. for hardcopy devices).
+ *
+ * Revision 1.23  2003/02/12 11:37:14  joergr
  * Added Dmin/max support to CIELAB calibration routines.
  *
  * Revision 1.22  2003/02/11 10:02:31  joergr
