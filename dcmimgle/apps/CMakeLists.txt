@@ -9,6 +9,11 @@ ADD_EXECUTABLE(dcmdspfn dcmdspfn)
 ADD_EXECUTABLE(dcod2lum dcod2lum)
 ADD_EXECUTABLE(dconvlum dconvlum)
 
+# declare link flags
+SET_TARGET_PROPERTIES(dcmdspfn PROPERTIES LINK_FLAGS "/incremental:no")
+SET_TARGET_PROPERTIES(dcod2lum PROPERTIES LINK_FLAGS "/incremental:no")
+SET_TARGET_PROPERTIES(dconvlum PROPERTIES LINK_FLAGS "/incremental:no")
+
 # make sure executables are linked to the corresponding libraries
 # dcmdspfn
 IF(WITH_ZLIB)

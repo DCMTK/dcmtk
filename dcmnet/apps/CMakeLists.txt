@@ -20,6 +20,13 @@ ADD_EXECUTABLE(movescu movescu)
 ADD_EXECUTABLE(storescp storescp)
 ADD_EXECUTABLE(storescu storescu)
 
+# declare link flags
+SET_TARGET_PROPERTIES(echoscu PROPERTIES LINK_FLAGS "/incremental:no")
+SET_TARGET_PROPERTIES(findscu PROPERTIES LINK_FLAGS "/incremental:no")
+SET_TARGET_PROPERTIES(movescu PROPERTIES LINK_FLAGS "/incremental:no")
+SET_TARGET_PROPERTIES(storescp PROPERTIES LINK_FLAGS "/incremental:no")
+SET_TARGET_PROPERTIES(storescu PROPERTIES LINK_FLAGS "/incremental:no")
+
 # make sure executables are linked to the corresponding libraries
 # echoscu
 IF(WITH_ZLIB)

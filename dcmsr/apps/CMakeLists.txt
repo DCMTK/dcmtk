@@ -13,6 +13,12 @@ ADD_EXECUTABLE(dsr2xml dsr2xml)
 ADD_EXECUTABLE(dsrdump dsrdump)
 ADD_EXECUTABLE(xml2dsr xml2dsr)
 
+# declare link flags
+SET_TARGET_PROPERTIES(dsr2html PROPERTIES LINK_FLAGS "/incremental:no")
+SET_TARGET_PROPERTIES(dsr2xml PROPERTIES LINK_FLAGS "/incremental:no")
+SET_TARGET_PROPERTIES(dsrdump PROPERTIES LINK_FLAGS "/incremental:no")
+SET_TARGET_PROPERTIES(xml2dsr PROPERTIES LINK_FLAGS "/incremental:no")
+
 # make sure executables are linked to the corresponding libraries
 # dsr2html
 IF(WITH_ZLIB)

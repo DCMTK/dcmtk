@@ -10,6 +10,9 @@ ENDIF(WITH_ZLIB)
 # declare executables
 ADD_EXECUTABLE(wlmscpfs wlmscpfs wlcefs)
 
+# declare link flags
+SET_TARGET_PROPERTIES(wlmscpfs PROPERTIES LINK_FLAGS "/incremental:no")
+
 # make sure executables are linked to the corresponding libraries
 # wlmscpfs
 IF(WITH_ZLIB)

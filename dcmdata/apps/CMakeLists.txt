@@ -24,6 +24,18 @@ ADD_EXECUTABLE(dcmodify dcmodify mdfconen mdfdsman)
 ADD_EXECUTABLE(dump2dcm dump2dcm)
 ADD_EXECUTABLE(xml2dcm xml2dcm)
 
+# declare link flags
+SET_TARGET_PROPERTIES(dcm2xml PROPERTIES LINK_FLAGS "/incremental:no")
+SET_TARGET_PROPERTIES(dcmconv PROPERTIES LINK_FLAGS "/incremental:no")
+SET_TARGET_PROPERTIES(dcmcrle PROPERTIES LINK_FLAGS "/incremental:no")
+SET_TARGET_PROPERTIES(dcmdrle PROPERTIES LINK_FLAGS "/incremental:no")
+SET_TARGET_PROPERTIES(dcmdump PROPERTIES LINK_FLAGS "/incremental:no")
+SET_TARGET_PROPERTIES(dcmftest PROPERTIES LINK_FLAGS "/incremental:no")
+SET_TARGET_PROPERTIES(dcmgpdir PROPERTIES LINK_FLAGS "/incremental:no")
+SET_TARGET_PROPERTIES(dcmodify PROPERTIES LINK_FLAGS "/incremental:no")
+SET_TARGET_PROPERTIES(dump2dcm PROPERTIES LINK_FLAGS "/incremental:no")
+SET_TARGET_PROPERTIES(xml2dcm PROPERTIES LINK_FLAGS "/incremental:no")
+
 # make sure executables are linked to the corresponding libraries
 # dcm2xml
 IF(WITH_ZLIB)

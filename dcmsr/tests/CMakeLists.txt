@@ -10,6 +10,9 @@ ENDIF(WITH_LIBXML)
 # declare executables
 ADD_EXECUTABLE(mkreport mkreport)
 
+# declare link flags
+SET_TARGET_PROPERTIES(mkreport PROPERTIES LINK_FLAGS "/incremental:no")
+
 # make sure executables are linked to the corresponding libraries
 # mkreport
 IF(WITH_ZLIB)
