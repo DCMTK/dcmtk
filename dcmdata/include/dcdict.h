@@ -10,9 +10,9 @@
 ** 
 **
 ** Last Update:		$Author: hewett $
-** Update Date:		$Date: 1996-03-20 16:43:49 $
+** Update Date:		$Date: 1996-03-21 09:50:38 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcdict.h,v $
-** CVS/RCS Revision:	$Revision: 1.4 $
+** CVS/RCS Revision:	$Revision: 1.5 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -81,6 +81,10 @@ public:
     /* the number of normal/repeating tag entries  */
     int numberOfNormalTagEntries() { return dict.length(); }
     int numberOfRepeatingTagEntries() { return repDict.length(); }
+
+    /* total number of dictionary entries  */
+    int numberOfEntries() 
+	{ return numberOfNormalTagEntries() + numberOfRepeatingTagEntries(); }
 
     /*
      * Load a particular dictionary from file.
@@ -154,7 +158,11 @@ extern DcmDataDictionary dcmDataDict;
 /*
 ** CVS/RCS Log:
 ** $Log: dcdict.h,v $
-** Revision 1.4  1996-03-20 16:43:49  hewett
+** Revision 1.5  1996-03-21 09:50:38  hewett
+** Added a  method numberOfEntries() to return the total number of
+** dictionary entries.
+**
+** Revision 1.4  1996/03/20 16:43:49  hewett
 ** Updated for revised data dictionary.  Repeating tags are now handled better.
 ** A linear list of repeating tags has been introduced with a subset ordering
 ** mechanism to ensure that dictionary searches locate the most precise
