@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DVPSImageBoxContent_PList
  *
- *  Last Update:      $Author: thiel $
- *  Update Date:      $Date: 1999-08-26 09:30:59 $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 1999-08-27 15:57:56 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -128,6 +128,26 @@ public:
    */   
   static E_Condition addReferencedUIDItem(DcmSequenceOfItems& seq, const char *uid);
   
+  /** creates a new image box object and sets the content of this image box object.
+   *  @param instanceuid SOP instance UID of this image box
+   *  @param retrieveaetitle retrieve AETITLE of the referenced image
+   *  @param refstudyuid study instance UID of the referenced image
+   *  @param refseriesuid series instance UID of the referenced image
+   *  @param refsopclassuid SOP class UID of the referenced image
+   *  @param refsopinstanceuid SOP instance UID of the referenced image
+   *  @param requestedimagesize requested images size for this image, default: absent
+   *  @param patientid patient ID for the referenced image, default: absent
+   *  @return EC_Normal if successful, an error code otherwise.
+   */
+  E_Condition addImageBox(
+    const char *instanceuid,
+    const char *retrieveaetitle,
+    const char *refstudyuid,
+    const char *refseriesuid,
+    const char *refsopclassuid,
+    const char *refsopinstanceuid,
+    const char *requestedimagesize=NULL,
+    const char *patientid=NULL);
   
    /** adds the image to the Box with retrieve AETitle and Boxnumber set
    *  @image the printable image 
@@ -143,7 +163,11 @@ public:
 
 /*
  *  $Log: dvpsibl.h,v $
- *  Revision 1.2  1999-08-26 09:30:59  thiel
+ *  Revision 1.3  1999-08-27 15:57:56  meichel
+ *  Added methods for saving hardcopy images and stored print objects
+ *    either in file or in the local database.
+ *
+ *  Revision 1.2  1999/08/26 09:30:59  thiel
  *  Add extensions for the usage of the StoredPrint
  *
  *  Revision 1.1  1999/07/30 13:34:48  meichel

@@ -22,8 +22,8 @@
  *  Purpose: DVPresentationState
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-07-22 16:39:54 $
- *  CVS/RCS Revision: $Revision: 1.58 $
+ *  Update Date:      $Date: 1999-08-27 15:57:48 $
+ *  CVS/RCS Revision: $Revision: 1.59 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -39,6 +39,7 @@
 #include "oflist.h"      /* for class OFList */
 #include "didispfn.h"    /* for DiDisplayFunction */
 #include "diutil.h"      /* for DU_getStringDOElement */
+#include "dvpssp.h"      /* for class DVPSStoredPrint */
 #include <stdio.h>
 
 BEGIN_EXTERN_C
@@ -100,8 +101,38 @@ END_EXTERN_C
 #define L0_CHARACTERISTICS   "CHARACTERISTICS"
 
 
+/* --------------- static helper functions --------------- */
+
+static void currentDate(OFString &str)
+{
+  char buf[32];
+  time_t tt = time(NULL);
+  struct tm *ts = localtime(&tt);
+  if (ts)
+  {
+    int year = 1900 + ts->tm_year;
+    sprintf(buf, "%04d%02d%02d", year, ts->tm_mon + 1, ts->tm_mday);
+    str = buf;
+  } else str = "19000101";
+  return;
+}
+
+static void currentTime(OFString &str)
+{
+  char buf[32];
+  time_t tt = time(NULL);
+  struct tm *ts = localtime(&tt);
+  if (ts)
+  {
+    sprintf(buf, "%02d%02d%02d", ts->tm_hour, ts->tm_min, ts->tm_sec);
+    str = buf;
+  } else str = "000000";
+  return;
+}
+
 DVInterface::DVInterface(const char *config_file)
-: pState(NULL)
+: pPrint(NULL)
+, pState(NULL)
 , pStoredPState(NULL)
 , pDicomImage(NULL)
 , pDicomPState(NULL)
@@ -129,7 +160,7 @@ DVInterface::DVInterface(const char *config_file)
     }
     if (config_file) configPath = config_file;
 
-      /* initialize Barten transform (only on low-cost systems) */
+    /* initialize Barten transform (only on low-cost systems) */
     if (!getGUIConfigEntryBool(L2_HIGHENDSYSTEM, OFFalse))
     {
         const char * displayFunctionFile = getMonitorCharacteristicsFile();
@@ -147,6 +178,7 @@ DVInterface::DVInterface(const char *config_file)
         }        
     }
 
+    pPrint = new DVPSStoredPrint();
     pState = new DVPresentationState(displayFunction);
   
     /* initialize reference time with "yesterday" */
@@ -157,6 +189,7 @@ DVInterface::DVInterface(const char *config_file)
 
 DVInterface::~DVInterface()
 {
+    if (pPrint) delete pPrint;
     if (pDicomImage) delete pDicomImage;
     if (pDicomPState) delete pDicomPState;
     if (pState) delete pState;
@@ -2072,7 +2105,7 @@ E_Condition DVInterface::saveDICOMImage(
     E_Condition status = EC_Normal;
     DcmDataset *dataset = new DcmDataset();
     char newuid[70];
-    
+
     if (dataset)
     {
       if (EC_Normal==status) status = putStringValue(dataset, DCM_PatientsName);
@@ -2175,6 +2208,227 @@ E_Condition DVInterface::saveDICOMImage(
 }
 
 
+E_Condition DVInterface::saveGrayscaleHardcopyImage(
+  const char *filename, 
+  const void *pixelData,
+  unsigned long width,
+  unsigned long height,
+  double aspectRatio,
+  OFBool explicitVR,
+  const char *instanceUID)
+{
+    if (pState == NULL) return EC_IllegalCall;
+    if (pPrint == NULL) return EC_IllegalCall;
+    
+    if ((width<1)||(width > 0xFFFF)) return EC_IllegalCall;
+    if ((height<1)||(height > 0xFFFF)) return EC_IllegalCall;
+    if (pixelData == NULL) return EC_IllegalCall;
+    if (filename == NULL) return EC_IllegalCall;
+    if (aspectRatio == 0.0) return EC_IllegalCall;
+    
+    Uint16 columns = (Uint16) width;
+    Uint16 rows = (Uint16) height;
+    E_Condition status = EC_Normal;
+    DcmDataset *dataset = new DcmDataset();
+    char newuid[70];
+    OFString aString;
+    OFString theInstanceUID;
+    
+    if (dataset)
+    {
+      // write patient module
+      if (EC_Normal==status) status = pState->writeHardcopyImageAttributes(*dataset);
+      // write general study and general series module
+      if (EC_Normal==status) status = pPrint->writeHardcopyImageAttributes(*dataset);
+      
+      // Hardcopy Equipment Module
+      if (EC_Normal==status) status = putStringValue(dataset, DCM_HardcopyDeviceManufacturer, "OFFIS");
+      if (EC_Normal==status) status = putStringValue(dataset, DCM_HardcopyDeviceSoftwareVersion, OFFIS_DTK_IMPLEMENTATION_VERSION_NAME);
+      
+      // General Image Module
+      if (EC_Normal==status) status = putStringValue(dataset, DCM_InstanceNumber);
+      if (EC_Normal==status) status = putStringValue(dataset, DCM_PatientOrientation);
+      if (EC_Normal==status) status = putStringValue(dataset, DCM_ImageType, "DERIVED\\SECONDARY");
+      if (EC_Normal==status) status = putStringValue(dataset, DCM_DerivationDescription, "Hardcopy rendered using Presentation State");
+      // source image sequence is written in pState->writeHardcopyImageAttributes().
+   
+      // SOP Common Module
+      if (EC_Normal==status) status = putStringValue(dataset, DCM_SOPClassUID, UID_HardcopyGrayscaleImageStorage);
+      dcmGenerateUniqueIdentifer(newuid);
+      theInstanceUID = (instanceUID ? instanceUID : newuid);
+      if (EC_Normal==status) status = putStringValue(dataset, DCM_SOPInstanceUID, theInstanceUID.c_str());
+      currentDate(aString);
+      if (EC_Normal==status) status = putStringValue(dataset, DCM_InstanceCreationDate, aString.c_str());
+      currentTime(aString);
+      if (EC_Normal==status) status = putStringValue(dataset, DCM_InstanceCreationTime, aString.c_str());
+
+      // Hardcopy Grayscale Image Module
+      if (EC_Normal==status) status = putStringValue(dataset, DCM_PhotometricInterpretation, "MONOCHROME2");
+      if (EC_Normal==status) status = putUint16Value(dataset, DCM_SamplesPerPixel, 1);
+      if (EC_Normal==status) status = putUint16Value(dataset, DCM_Rows, rows);
+      if (EC_Normal==status) status = putUint16Value(dataset, DCM_Columns, columns);
+      if (EC_Normal==status) status = putUint16Value(dataset, DCM_BitsAllocated, 16);
+      if (EC_Normal==status) status = putUint16Value(dataset, DCM_BitsStored, 12);
+      if (EC_Normal==status) status = putUint16Value(dataset, DCM_HighBit, 11);
+      if (EC_Normal==status) status = putUint16Value(dataset, DCM_PixelRepresentation, 0);
+      if ((EC_Normal==status)&&(aspectRatio != 1.0))
+      {
+        sprintf(newuid, "%ld\\%ld", 1000L, (long)(aspectRatio*1000.0));
+        status = putStringValue(dataset, DCM_PixelAspectRatio, newuid);
+      }
+
+      DcmPolymorphOBOW *pxData = new DcmPolymorphOBOW(DCM_PixelData);
+      if (pxData)
+      {
+        status = pxData->putUint16Array((Uint16 *)pixelData, (unsigned long)(width*height));
+        if (EC_Normal==status) status = dataset->insert(pxData); else delete pxData;
+      } else status = EC_MemoryExhausted;
+ 
+      // save image file
+      if (EC_Normal == status)
+      {
+          DcmFileFormat *fileformat = new DcmFileFormat(dataset);
+          if (fileformat) 
+          {
+            status = saveFileFormat(filename, fileformat, explicitVR);
+            delete fileformat;
+          } else {
+            status = EC_MemoryExhausted;
+            delete dataset;
+          }
+      } else delete dataset;
+    } else status = EC_MemoryExhausted;
+    
+    if (EC_Normal == status)
+    {
+      // UNIMPLEMENTED: We do not yet pass the "requested image size" for presentation states with display mode "TRUE SIZE".
+      status = pPrint->addImageBox(getNetworkAETitle(), theInstanceUID.c_str(), NULL, pState->getPatientID());
+    }
+    return status;
+}
+
+
+E_Condition DVInterface::saveGrayscaleHardcopyImage(
+  const void *pixelData,
+  unsigned long width,
+  unsigned long height,
+  double aspectRatio)
+{
+  // release database lock since we are using the DB module directly
+  releaseDatabase();
+
+  char uid[100];
+  dcmGenerateUniqueIdentifer(uid);
+    
+  DB_Status dbStatus;
+  dbStatus.status = STATUS_Success;
+  dbStatus.statusDetail = NULL;
+  DB_Handle *handle = NULL;
+  char imageFileName[MAXPATHLEN+1];
+  if (DB_createHandle(getDatabaseFolder(), PSTAT_MAXSTUDYCOUNT, PSTAT_STUDYSIZE, &handle) != DB_NORMAL) return EC_IllegalCall;
+  
+  E_Condition result=EC_Normal;
+  if (DB_NORMAL == DB_makeNewStoreFileName(handle, UID_HardcopyGrayscaleImageStorage, uid, imageFileName))
+  {
+     // now store presentation state as filename
+     result = saveDICOMImage(imageFileName, pixelData, width, height, aspectRatio, OFTrue, uid);
+     if (EC_Normal==result)
+     {
+       if (DB_NORMAL != DB_storeRequest(handle, UID_HardcopyGrayscaleImageStorage, uid, imageFileName, &dbStatus))
+       {
+         result = EC_IllegalCall;
+#ifdef DEBUG
+         cerr << "unable to register grayscale hardcopy image '" << imageFileName << "' in database." << endl;
+         COND_DumpConditions();
+#endif         
+       }
+     }
+  }
+  DB_destroyHandle(&handle);
+  COND_PopCondition(OFTrue); // clear condition stack
+  return result;
+}
+
+
+E_Condition DVInterface::saveStoredPrint(
+  const char *filename, 
+  OFBool explicitVR,
+  const char *instanceUID)
+{
+    if (pState == NULL) return EC_IllegalCall;
+    if (pPrint == NULL) return EC_IllegalCall;    
+    if (filename == NULL) return EC_IllegalCall;
+    
+    E_Condition status = EC_Normal;
+    DcmDataset *dataset = new DcmDataset();
+    char newuid[70];
+    OFString aString;
+    OFString theInstanceUID;
+    
+    if (dataset)
+    {
+      if (instanceUID) status = pPrint->setInstanceUID(instanceUID); else
+      {
+        dcmGenerateUniqueIdentifer(newuid);
+        status = pPrint->setInstanceUID(newuid);
+      }
+      if (EC_Normal == status) status = pPrint->write(*dataset, OFTrue);
+ 
+      // save file
+      if (EC_Normal == status)
+      {
+          DcmFileFormat *fileformat = new DcmFileFormat(dataset);
+          if (fileformat) 
+          {
+            status = saveFileFormat(filename, fileformat, explicitVR);
+            delete fileformat;
+          } else {
+            status = EC_MemoryExhausted;
+            delete dataset;
+          }
+      } else delete dataset;
+    } else status = EC_MemoryExhausted;    
+    return status;
+}
+
+E_Condition DVInterface::saveStoredPrint()
+{
+  // release database lock since we are using the DB module directly
+  releaseDatabase();
+
+  char uid[100];
+  dcmGenerateUniqueIdentifer(uid);
+    
+  DB_Status dbStatus;
+  dbStatus.status = STATUS_Success;
+  dbStatus.statusDetail = NULL;
+  DB_Handle *handle = NULL;
+  char imageFileName[MAXPATHLEN+1];
+  if (DB_createHandle(getDatabaseFolder(), PSTAT_MAXSTUDYCOUNT, PSTAT_STUDYSIZE, &handle) != DB_NORMAL) return EC_IllegalCall;
+  
+  E_Condition result=EC_Normal;
+  if (DB_NORMAL == DB_makeNewStoreFileName(handle, UID_HardcopyGrayscaleImageStorage, uid, imageFileName))
+  {
+     // now store stored print object as filename
+     result = saveStoredPrint(imageFileName, OFTrue, uid);
+     if (EC_Normal==result)
+     {
+       if (DB_NORMAL != DB_storeRequest(handle, UID_HardcopyGrayscaleImageStorage, uid, imageFileName, &dbStatus))
+       {
+         result = EC_IllegalCall;
+#ifdef DEBUG
+         cerr << "unable to register stored print object '" << imageFileName << "' in database." << endl;
+         COND_DumpConditions();
+#endif         
+       }
+     }
+  }
+  DB_destroyHandle(&handle);
+  COND_PopCondition(OFTrue); // clear condition stack
+  return result;
+}
+
+
 void DVInterface::cleanChildren()
 {
 #ifdef HAVE_WAITPID
@@ -2211,7 +2465,11 @@ void DVInterface::cleanChildren()
 /*
  *  CVS/RCS Log:
  *  $Log: dviface.cc,v $
- *  Revision 1.58  1999-07-22 16:39:54  meichel
+ *  Revision 1.59  1999-08-27 15:57:48  meichel
+ *  Added methods for saving hardcopy images and stored print objects
+ *    either in file or in the local database.
+ *
+ *  Revision 1.58  1999/07/22 16:39:54  meichel
  *  Adapted dcmpstat data structures and API to supplement 33 letter ballot text.
  *
  *  Revision 1.57  1999/07/14 12:03:43  meichel

@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DVPSImageBoxContent
  *
- *  Last Update:      $Author: thiel $
- *  Update Date:      $Date: 1999-08-26 09:30:59 $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 1999-08-27 15:57:55 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -60,6 +60,12 @@ public:
   /// destructor
   virtual ~DVPSImageBoxContent();
 
+  /** resets the object to initial state.
+   *  After this call, the object is in the same state as after
+   *  creation with the default constructor.
+   */
+  void clear();
+
   /** reads an image box content item from a DICOM dataset.
    *  The DICOM elements of the referenced item are copied
    *  from the dataset to this object.
@@ -81,8 +87,8 @@ public:
 
   /** create default values for all missing type 1 elements.
    *  Called before a stored print object is written.
-   *  @renumber if true, a new imageBoxPosition values is created 
-   *  @number new imageBoxPosition to be assigned
+   *  @param renumber if true, a new imageBoxPosition values is created 
+   *  @param number new imageBoxPosition to be assigned
    *  @return EC_Normal if successful, an error code otherwise.
    */
   E_Condition createDefaultValues(OFBool renumber, unsigned long number);
@@ -92,6 +98,27 @@ public:
    */
   const char *getSOPClassUID();
 
+  /** sets the content of this image box object.
+   *  @param instanceuid SOP instance UID of this image box
+   *  @param retrieveaetitle retrieve AETITLE of the referenced image
+   *  @param refstudyuid study instance UID of the referenced image
+   *  @param refseriesuid series instance UID of the referenced image
+   *  @param refsopclassuid SOP class UID of the referenced image
+   *  @param refsopinstanceuid SOP instance UID of the referenced image
+   *  @param requestedimagesize requested images size for this image, default: absent
+   *  @param patientid patient ID for the referenced image, default: absent
+   *  @return EC_Normal if successful, an error code otherwise.
+   */
+  E_Condition setContent(
+    const char *instanceuid,
+    const char *retrieveaetitle,
+    const char *refstudyuid,
+    const char *refseriesuid,
+    const char *refsopclassuid,
+    const char *refsopinstanceuid,
+    const char *requestedimagesize=NULL,
+    const char *patientid=NULL);
+    
   /** adds the image to the Box with retrieve AETitle and Boxnumber set
    *  @image the printable image 
    *  @AETitle the title where we can get the image
@@ -148,7 +175,11 @@ private:
 
 /*
  *  $Log: dvpsib.h,v $
- *  Revision 1.2  1999-08-26 09:30:59  thiel
+ *  Revision 1.3  1999-08-27 15:57:55  meichel
+ *  Added methods for saving hardcopy images and stored print objects
+ *    either in file or in the local database.
+ *
+ *  Revision 1.2  1999/08/26 09:30:59  thiel
  *  Add extensions for the usage of the StoredPrint
  *
  *  Revision 1.1  1999/07/30 13:34:47  meichel

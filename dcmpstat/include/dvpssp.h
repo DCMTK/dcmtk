@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DVPSStoredPrint
  *
- *  Last Update:      $Author: thiel $
- *  Update Date:      $Date: 1999-08-26 09:31:00 $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 1999-08-27 15:57:57 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -93,6 +93,27 @@ class DVPSStoredPrint
    */
   E_Condition write(DcmItem &dset, OFBool limitImages);
   
+  /** writes the general study and series module attributes for a grayscale hardcopy image
+   *  that is related to this stored print object to a DICOM dataset.
+   *  Copies of the DICOM elements managed by this object are inserted into
+   *  the DICOM dataset.
+   *  @param dset the dataset to which the data is written
+   *  @return EC_Normal if successful, an error code otherwise.
+   */
+  E_Condition writeHardcopyImageAttributes(DcmItem &dset);
+  
+  /** creates a new image box object and sets the content of this image box object.
+   *  @param retrieveaetitle retrieve AETITLE of the referenced image
+   *  @param refsopinstanceuid SOP instance UID of the referenced image
+   *  @param requestedimagesize requested images size for this image, default: absent
+   *  @param patientid patient ID for the referenced image, default: absent
+   *  @return EC_Normal if successful, an error code otherwise.
+   */
+  E_Condition addImageBox(
+    const char *retrieveaetitle,
+    const char *refsopinstanceuid,
+    const char *requestedimagesize=NULL,
+    const char *patientid=NULL);
   
   /** creates a Stored Print object from a DICOM dataset.
    *  The DICOM elements are copied
@@ -111,37 +132,39 @@ class DVPSStoredPrint
    */
   E_Condition addImage(DcmItem &image,char *aETitle);
   
+  /** sets a new SOP Instance UID for the Stored Print object.
+   *  @param uid new SOP Instance UID
+   *  @return EC_Normal if successful, an error code otherwise.
+   */
+  E_Condition setInstanceUID(const char *uid);
   
   /** create a ImageBox with this image and presentation state and append it to the ImageBoxList
    *  The image have to be stored 
-   *  @pstate the presentation state corresponding to the image
-   *  @image the printable image 
-   *  @aETitle the title where we can get the image
+   *  @param pstate the presentation state corresponding to the image
+   *  @param image the printable image 
+   *  @param aETitle the title where we can get the image
    *  @return EC_Normal if successful, an error code otherwise.
-   
-  */
-  
-  
+   */ 
   E_Condition addPresentationState(DVPresentationState &pstate,DcmItem &image,char *aETitle);
   
-  /** starts an PrintJob
-   *  @printJob a already connected DICOM association to a remote printer
+  /** starts a print job
+   *  @param printJob a already connected DICOM association to a remote printer
    *  @return EC_Normal if successful, an error code otherwise.
    */
-  E_Condition	startPrint(DVPSPrintMessageHandler &printJob);
+  E_Condition startPrint(DVPSPrintMessageHandler &printJob);
   
   /** gets the next needed image reference, used in combination with setImage
-   *  @aETitle  AETitle where the image can be found
-   *  @patID Patient ID of the image
-   *  @studyUID Study UID of the image
-   *  @seriesUID series UID of the image 
-   *  @instanceUID instance UID of the image
+   *  @param aETitle  AETitle where the image can be found
+   *  @param patID Patient ID of the image
+   *  @param studyUID Study UID of the image
+   *  @param seriesUID series UID of the image 
+   *  @param instanceUID instance UID of the image
    *  @return EC_Normal if successful, an error code otherwise.
    */
   E_Condition getNextImageReference(char *aETitle,char *patID,char *studyUID,char *seriesUID,char *instanceUID);
   
-  /** transfer the preformatted image to the printJob
-   *  @image the preformatted image, used in combination with getNextImageReference
+  /** transfer the preformatted image to the print job
+   *  @param image the preformatted image, used in combination with getNextImageReference
    *  @return EC_Normal if successful, an error code otherwise.
    */
   E_Condition setImage(DcmItem &image);
@@ -304,7 +327,11 @@ class DVPSStoredPrint
 
 /*
  *  $Log: dvpssp.h,v $
- *  Revision 1.2  1999-08-26 09:31:00  thiel
+ *  Revision 1.3  1999-08-27 15:57:57  meichel
+ *  Added methods for saving hardcopy images and stored print objects
+ *    either in file or in the local database.
+ *
+ *  Revision 1.2  1999/08/26 09:31:00  thiel
  *  Add extensions for the usage of the StoredPrint
  *
  *  Revision 1.1  1999/07/30 13:34:50  meichel

@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DVInterface
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-08-25 16:47:20 $
- *  CVS/RCS Revision: $Revision: 1.37 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 1999-08-27 15:57:55 $
+ *  CVS/RCS Revision: $Revision: 1.38 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -58,7 +58,7 @@
 
 class DVPSConfig;
 class DiDisplayFunction;
-
+class DVPSStoredPrint;
 
 /** Interface class for the Softcopy Presentation State viewer.
  *  This class manages the database facilities, allows to start and stop
@@ -857,6 +857,76 @@ class DVInterface
       unsigned long height,
       double aspectRatio=1.0);
 
+    /** saves a monochrome bitmap as a DICOM Grayscale Hardcopy image.
+     *  The bitmap must use 16 bits per pixel, left to right, top to bottom
+     *  order of the pixels. It is assumed that only values 0..4095 are used.
+     *  @param filename the file name or path under which the image is saved.
+     *  @param pixelData a pointer to the image data. Must contain at least
+     *    width*height*2 bytes of data.
+     *  @param width the width of the image, must be <= 0xFFFF
+     *  @param height the height of the image, must be <= 0xFFFF
+     *  @aspectRatio the pixel aspect ratio as width/height. If omitted, a pixel
+     *    aspect ratio of 1/1 is assumed.
+     *  @param explicitVR selects the transfer syntax to be written. 
+     *    True selects Explicit VR Little Endian, False selects Implicit VR Little Endian.
+     *  @param instanceUID optional parameter containing the SOP Instance UID to be written.
+     *    This parameter should be omitted unless the SOP Instance UID needs to be controlled
+     *    externally.
+     *  @return EC_Normal upon success, an error code otherwise.
+     */
+    E_Condition saveGrayscaleHardcopyImage(
+      const char *filename, 
+      const void *pixelData,
+      unsigned long width,
+      unsigned long height,
+      double aspectRatio=1.0,
+      OFBool explicitVR=OFTrue,
+      const char *instanceUID=NULL);
+
+    /** saves a monochrome bitmap as a DICOM Grayscale Hardcopy image
+     *  in the same directory in which the database index file resides. 
+     *  The filename is generated automatically.
+     *  When the image is stored successfully, the database index is updated
+     *  to include the new object.
+     *  This method releases under any circumstances the database lock if it exists.
+     *  @param pixelData a pointer to the image data. Must contain at least
+     *    width*height*2 bytes of data.
+     *  @param width the width of the image, must be <= 0xFFFF
+     *  @param height the height of the image, must be <= 0xFFFF
+     *  @aspectRatio the pixel aspect ratio as width/height. If omitted, a pixel
+     *    aspect ratio of 1/1 is assumed.
+     *  @return EC_Normal upon success, an error code otherwise.
+     */
+    E_Condition saveGrayscaleHardcopyImage(
+      const void *pixelData,
+      unsigned long width,
+      unsigned long height,
+      double aspectRatio=1.0);
+
+    /** saves the current print job as a Stored Print object.
+     *  @param filename the file name or path under which the image is saved.
+     *  @param explicitVR selects the transfer syntax to be written. 
+     *    True selects Explicit VR Little Endian, False selects Implicit VR Little Endian.
+     *  @param instanceUID optional parameter containing the SOP Instance UID to be written.
+     *    This parameter should be omitted unless the SOP Instance UID needs to be controlled
+     *    externally.
+     *  @return EC_Normal upon success, an error code otherwise.
+     */
+    E_Condition DVInterface::saveStoredPrint(
+      const char *filename, 
+      OFBool explicitVR=OFTrue,
+      const char *instanceUID=NULL);
+
+    /** saves the current print job as a Stored Print object
+     *  in the same directory in which the database index file resides. 
+     *  The filename is generated automatically.
+     *  When the image is stored successfully, the database index is updated
+     *  to include the new object.
+     *  This method releases under any circumstances the database lock if it exists.
+     *  @return EC_Normal upon success, an error code otherwise.
+     */
+    E_Condition saveStoredPrint();
+
     /** helper function which saves a DICOM object to file.
      *  @param filename name of DICOM file to be created
      *  @param fileformat DICOM object to be saved
@@ -1027,6 +1097,10 @@ private:
     
     /* member variables */
     
+    /** pointer to the current print handler object
+     */
+    DVPSStoredPrint *pPrint;
+    
     /** pointer to the current presentation state object
      */
     DVPresentationState *pState;
@@ -1166,7 +1240,11 @@ private:
 /*
  *  CVS/RCS Log:
  *  $Log: dviface.h,v $
- *  Revision 1.37  1999-08-25 16:47:20  joergr
+ *  Revision 1.38  1999-08-27 15:57:55  meichel
+ *  Added methods for saving hardcopy images and stored print objects
+ *    either in file or in the local database.
+ *
+ *  Revision 1.37  1999/08/25 16:47:20  joergr
  *  Moved method 'saveFileFormat()' to public part of the interface class.
  *
  *  Revision 1.36  1999/05/05 14:25:26  joergr

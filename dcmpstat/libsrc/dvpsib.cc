@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DVPSImageBoxContent
  *
- *  Last Update:      $Author: thiel $
- *  Update Date:      $Date: 1999-08-26 09:29:48 $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 1999-08-27 15:57:49 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -106,6 +106,52 @@ DVPSImageBoxContent::DVPSImageBoxContent(const DVPSImageBoxContent& copy)
 
 DVPSImageBoxContent::~DVPSImageBoxContent()
 {
+}
+
+void DVPSImageBoxContent::clear()
+{
+  sOPInstanceUID.clear();
+  imageBoxPosition.clear();
+  polarity.clear();
+  magnificationType.clear();
+  configurationInformation.clear();
+  smoothingType.clear();
+  requestedImageSize.clear();
+  requestedDecimateCropBehavior.clear();
+  retrieveAETitle.clear();
+  referencedSOPClassUID.clear();
+  referencedSOPInstanceUID.clear();
+  studyInstanceUID.clear();
+  seriesInstanceUID.clear();
+  referencedFrameNumber.clear();
+  patientID.clear();
+  return;
+}
+
+E_Condition DVPSImageBoxContent::setContent(
+  const char *instanceuid,
+  const char *retrieveaetitle,
+  const char *refstudyuid,
+  const char *refseriesuid,
+  const char *refsopclassuid,
+  const char *refsopinstanceuid,
+  const char *requestedimagesize,
+  const char *patientid)
+{
+  E_Condition result = EC_Normal;
+  if (refstudyuid && refseriesuid && instanceuid && retrieveaetitle && refsopclassuid && refsopinstanceuid)
+  {
+    clear();
+    result = sOPInstanceUID.putString(instanceuid);
+    if (EC_Normal == result) result = retrieveAETitle.putString(retrieveaetitle);
+    if (EC_Normal == result) result = referencedSOPClassUID.putString(refsopclassuid);
+    if (EC_Normal == result) result = referencedSOPInstanceUID.putString(refsopinstanceuid);
+    if (EC_Normal == result) result = studyInstanceUID.putString(refstudyuid);
+    if (EC_Normal == result) result = seriesInstanceUID.putString(refseriesuid);
+    if (requestedimagesize && (EC_Normal == result)) result = requestedImageSize.putString(requestedimagesize);
+    if (patientid && (EC_Normal == result)) result = patientID.putString(patientid);
+  } else result = EC_IllegalCall;
+  return result;
 }
 
 E_Condition DVPSImageBoxContent::read(DcmItem &dset)
@@ -417,7 +463,11 @@ E_Condition DVPSImageBoxContent::addImage(DcmItem & dset,char * aETitle,unsigned
 
 /*
  *  $Log: dvpsib.cc,v $
- *  Revision 1.2  1999-08-26 09:29:48  thiel
+ *  Revision 1.3  1999-08-27 15:57:49  meichel
+ *  Added methods for saving hardcopy images and stored print objects
+ *    either in file or in the local database.
+ *
+ *  Revision 1.2  1999/08/26 09:29:48  thiel
  *  Extensions for the usage of the StoredPrint
  *
  *  Revision 1.1  1999/07/30 13:34:56  meichel

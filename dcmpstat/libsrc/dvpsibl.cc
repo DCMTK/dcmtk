@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DVPSImageBoxContent_PList
  *
- *  Last Update:      $Author: thiel $
- *  Update Date:      $Date: 1999-08-26 09:29:48 $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 1999-08-27 15:57:49 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -218,6 +218,27 @@ E_Condition DVPSImageBoxContent_PList::addImageSOPClasses(DcmSequenceOfItems& se
   return result;
 }
 
+E_Condition DVPSImageBoxContent_PList::addImageBox(
+  const char *instanceuid,
+  const char *retrieveaetitle,
+  const char *refstudyuid,
+  const char *refseriesuid,
+  const char *refsopclassuid,
+  const char *refsopinstanceuid,
+  const char *requestedimagesize,
+  const char *patientid)
+{
+  E_Condition result = EC_Normal;
+  DVPSImageBoxContent *newImage = new DVPSImageBoxContent();
+  if (newImage)
+  {
+    result = newImage->setContent(instanceuid, retrieveaetitle, refstudyuid,
+               refseriesuid, refsopclassuid, refsopinstanceuid,
+               requestedimagesize, patientid);
+    if (EC_Normal == result) push_back(newImage); else delete newImage;
+  } else result = EC_MemoryExhausted;
+  return result;
+}
 
 E_Condition DVPSImageBoxContent_PList::addImage(DcmItem &image,char *aETitle)
 {
@@ -241,7 +262,11 @@ E_Condition DVPSImageBoxContent_PList::addImageBox(DVPSImageBoxContent * box)
 
 /*
  *  $Log: dvpsibl.cc,v $
- *  Revision 1.2  1999-08-26 09:29:48  thiel
+ *  Revision 1.3  1999-08-27 15:57:49  meichel
+ *  Added methods for saving hardcopy images and stored print objects
+ *    either in file or in the local database.
+ *
+ *  Revision 1.2  1999/08/26 09:29:48  thiel
  *  Extensions for the usage of the StoredPrint
  *
  *  Revision 1.1  1999/07/30 13:34:57  meichel

@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DVPresentationState
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-08-25 16:48:01 $
- *  CVS/RCS Revision: $Revision: 1.18 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 1999-08-27 15:57:58 $
+ *  CVS/RCS Revision: $Revision: 1.19 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -89,10 +89,10 @@ public:
    */
   E_Condition read(DcmItem &dset);
 
-  /** writes the list of graphic annotations managed by this object to a DICOM dataset.
+  /** writes the presentation state managed by this object to a DICOM dataset.
    *  Copies of the DICOM elements managed by this object are inserted into
    *  the DICOM dataset.
-   *  @param dset the dataset to which the GraphicAnnotationSequence is written
+   *  @param dset the dataset to which the presentation state is written
    *  @return EC_Normal if successful, an error code otherwise.
    */
   E_Condition write(DcmItem &dset);
@@ -102,6 +102,10 @@ public:
    *  @return new SOP Instance UID if successfully set, NULL otherwise.
    */
   const char *createInstanceUID();
+
+  /** returns the patient ID of the presentation state
+   */
+  const char *getPatientID();
     
   /** adds a reference to an image to this presentation state.
    *  This method checks if the given SOP class and Study UID match
@@ -1568,6 +1572,17 @@ public:
     */
    Uint8 convertPValueToDDL(Uint16 pvalue);
    
+  /* print related methods */
+  
+  /** writes the patient module attributes and a source image sequence
+   *  for a grayscale hardcopy image.
+   *  Copies of the DICOM elements managed by this object are inserted into
+   *  the DICOM dataset.
+   *  @param dset the dataset to which the data is written
+   *  @return EC_Normal if successful, an error code otherwise.
+   */
+  E_Condition writeHardcopyImageAttributes(DcmItem &dset);
+
 private:
 
   /** private undefined copy constructor
@@ -1924,7 +1939,11 @@ private:
 
 /*
  *  $Log: dvpstat.h,v $
- *  Revision 1.18  1999-08-25 16:48:01  joergr
+ *  Revision 1.19  1999-08-27 15:57:58  meichel
+ *  Added methods for saving hardcopy images and stored print objects
+ *    either in file or in the local database.
+ *
+ *  Revision 1.18  1999/08/25 16:48:01  joergr
  *  Added minimal support to get a print bitmap out of a pstate object.
  *
  *  Revision 1.17  1999/07/30 13:34:51  meichel

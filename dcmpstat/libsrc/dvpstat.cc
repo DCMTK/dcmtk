@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DVPresentationState
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-08-25 16:51:17 $
- *  CVS/RCS Revision: $Revision: 1.27 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 1999-08-27 15:57:51 $
+ *  CVS/RCS Revision: $Revision: 1.28 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -338,6 +338,12 @@ const char *DVPresentationState::createInstanceUID()
   return puid;
 }
 
+
+const char *DVPresentationState::getPatientID()
+{
+  char *c = NULL;
+  if (EC_Normal == patientID.getString(c)) return c; else return NULL;
+}
 
 E_Condition DVPresentationState::createDummyValues()
 {
@@ -1456,6 +1462,67 @@ E_Condition DVPresentationState::write(DcmItem &dset)
   return result;
 }
 
+
+E_Condition DVPresentationState::writeHardcopyImageAttributes(DcmItem &dset)
+{
+  E_Condition result = EC_Normal;
+  DcmElement *delem=NULL;
+  DcmSequenceOfItems *dseq=NULL;
+  DcmItem *ditem=NULL;
+  
+  setDefault(result, patientName, DEFAULT_patientName);
+  ADD_TO_DATASET(DcmPersonName, patientName)
+  ADD_TO_DATASET(DcmLongString, patientID)
+  ADD_TO_DATASET(DcmDate, patientBirthDate)
+  ADD_TO_DATASET(DcmCodeString, patientSex)
+  
+  // write source image sequence
+  if (result == EC_Normal)
+  {
+    dseq = new DcmSequenceOfItems(DCM_ModalityLUTSequence);
+    if (dseq)
+    {
+      // first item references source image
+      if (currentImageSOPClassUID && currentImageSOPInstanceUID)
+      {
+        ditem = new DcmItem();
+        if (ditem)
+        {
+          delem = new DcmUniqueIdentifier(DCM_SOPClassUID);
+          if (delem) 
+          {
+            result = delem->putString(currentImageSOPClassUID);
+            ditem->insert(delem);
+          } else result=EC_MemoryExhausted;
+          delem = new DcmUniqueIdentifier(DCM_SOPInstanceUID);
+          if (delem) 
+          {
+            result = delem->putString(currentImageSOPInstanceUID);
+            ditem->insert(delem);
+          } else result=EC_MemoryExhausted;
+          if (EC_Normal == result) dseq->insert(ditem);  else delete ditem;
+        } else result = EC_MemoryExhausted;
+      } 
+      // second item references presentation state
+      ditem = new DcmItem();
+      if (ditem)
+      {
+        delem = new DcmUniqueIdentifier(sOPInstanceUID);
+        if (delem) ditem->insert(delem); else result=EC_MemoryExhausted;
+        delem = new DcmUniqueIdentifier(DCM_SOPClassUID);
+        if (delem) 
+        {
+          result = delem->putString(UID_GrayscaleSoftcopyPresentationStateStorage);
+          ditem->insert(delem);
+        } else result=EC_MemoryExhausted;
+        if (EC_Normal == result) dseq->insert(ditem);  else delete ditem;
+       }
+    } else result = EC_MemoryExhausted;
+    if (EC_Normal == result) dset.insert(dseq); else delete dseq;
+  }
+
+  return result;
+}
 
 // -+-+- <NEW> -+-+-
 
@@ -3502,7 +3569,11 @@ DVPSSoftcopyVOI *DVPresentationState::getCurrentSoftcopyVOI()
 
 /*
  *  $Log: dvpstat.cc,v $
- *  Revision 1.27  1999-08-25 16:51:17  joergr
+ *  Revision 1.28  1999-08-27 15:57:51  meichel
+ *  Added methods for saving hardcopy images and stored print objects
+ *    either in file or in the local database.
+ *
+ *  Revision 1.27  1999/08/25 16:51:17  joergr
  *  Added minimal support to get a print bitmap out of a pstate object.
  *
  *  Revision 1.26  1999/07/30 13:35:01  meichel

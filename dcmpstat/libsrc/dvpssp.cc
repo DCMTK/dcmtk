@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DVPSStoredPrint
  *
- *  Last Update:      $Author: thiel $
- *  Update Date:      $Date: 1999-08-26 09:29:49 $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 1999-08-27 15:57:50 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -285,7 +285,7 @@ void DVPSStoredPrint::updateCache()
 {
   if (currentValuesValid) return;
   OFString aString;
-  imageDisplayFormat.getOFString(aString,0);
+  imageDisplayFormat.getOFStringArray(aString,OFTrue);
   if (aString.substr(0,9) == "STANDARD\\")
   {
     unsigned long columns=0;
@@ -299,12 +299,12 @@ void DVPSStoredPrint::updateCache()
       currentValuesValid = OFTrue;
     } else {
 #ifdef DEBUG
-      cerr << "Warning cannot parse image display format '" << aString.c_str() << "'" << endl;
+      cerr << "Warning: cannot parse image display format '" << aString.c_str() << "'" << endl;
 #endif    	
     }
   } else {
 #ifdef DEBUG
-    cerr << "Warning unknown image display format '" << aString.c_str() << "'" << endl;
+    cerr << "Warning: unknown image display format '" << aString.c_str() << "'" << endl;
 #endif    	
   }
   return;
@@ -649,10 +649,8 @@ E_Condition DVPSStoredPrint::createDefaultValues()
   char uid[100];
   OFString aString;
 
-  if ((studyInstanceUID.getLength() == 0)||(studyInstanceUID.getVM() != 1))
-			SET_UID(studyInstanceUID)
   SET_UID(seriesInstanceUID)
-  SET_UID(sOPInstanceUID)
+  SET_UID(imageSeriesInstanceUID)
 
   if ((result==EC_Normal)&&(sOPInstanceUID.getLength()==0))
   {
@@ -662,6 +660,16 @@ E_Condition DVPSStoredPrint::createDefaultValues()
     currentTime(aString);
     if (result==EC_Normal) result = instanceCreationTime.putString(aString.c_str());
   }
+
+  if ((result==EC_Normal)&&(studyInstanceUID.getLength()==0))
+  {
+    result = studyInstanceUID.putString(dcmGenerateUniqueIdentifer(uid));
+    currentDate(aString);
+    if (result==EC_Normal) result = studyDate.putString(aString.c_str());
+    currentTime(aString);
+    if (result==EC_Normal) result = studyTime.putString(aString.c_str());
+  }
+
   if ((result==EC_Normal)&&(imageDisplayFormat.getLength()==0)) result = imageDisplayFormat.putString(DEFAULT_imageDisplayFormat);
   return result;
 }
@@ -724,7 +732,7 @@ E_Condition DVPSStoredPrint::write(DcmItem &dset, OFBool limitImages)
   ADD_TO_DATASET(DcmIntegerString, instanceNumber) 
   ADD_TO_DATASET(DcmUniqueIdentifier, sOPInstanceUID)
 	
-	if (specificCharacterSet.getLength() > 0) { ADD_TO_DATASET(DcmCodeString, specificCharacterSet) }
+  if (specificCharacterSet.getLength() > 0) { ADD_TO_DATASET(DcmCodeString, specificCharacterSet) }
   if (instanceCreationDate.getLength() > 0) { ADD_TO_DATASET(DcmDate, instanceCreationDate) }
   if (instanceCreationTime.getLength() > 0) { ADD_TO_DATASET(DcmTime, instanceCreationTime) }
 
@@ -834,10 +842,10 @@ E_Condition DVPSStoredPrint::write(DcmItem &dset, OFBool limitImages)
   dseq = new DcmSequenceOfItems(DCM_PrintManagementCapabilitiesSequence);
   if (dseq)
   {
-    if (EC_Normal == result) result = imageBoxContentList.addImageSOPClasses(*dseq, writeImageBoxes);
+    if (EC_Normal == result) result = imageBoxContentList.addReferencedUIDItem(*dseq, UID_BasicFilmSessionSOPClass);
     if (EC_Normal == result) result = imageBoxContentList.addReferencedUIDItem(*dseq, UID_BasicFilmBoxSOPClass);
     if (EC_Normal == result) result = imageBoxContentList.addReferencedUIDItem(*dseq, UID_BasicGrayscaleImageBoxSOPClass);
-    if (EC_Normal == result) result = imageBoxContentList.addReferencedUIDItem(*dseq, UID_BasicGrayscaleImageBoxSOPClass);
+    if (EC_Normal == result) result = imageBoxContentList.addImageSOPClasses(*dseq, writeImageBoxes);
     if ((result == EC_Normal)&&(presentationLUTInstanceUID.getLength() > 0))
     {
       result = imageBoxContentList.addReferencedUIDItem(*dseq, UID_PresentationLUTSOPClass);
@@ -849,9 +857,68 @@ E_Condition DVPSStoredPrint::write(DcmItem &dset, OFBool limitImages)
   return result;
 }
 
+
+E_Condition DVPSStoredPrint::writeHardcopyImageAttributes(DcmItem &dset)
+{
+  DcmElement *delem=NULL;
+  E_Condition result = createDefaultValues();
+
+  // add general study module
+  ADD_TO_DATASET(DcmUniqueIdentifier, studyInstanceUID)
+  ADD_TO_DATASET(DcmDate, studyDate)
+  ADD_TO_DATASET(DcmTime, studyTime)
+  ADD_TO_DATASET(DcmPersonName, referringPhysiciansName)
+  ADD_TO_DATASET(DcmShortString, studyID)
+  ADD_TO_DATASET(DcmShortString, accessionNumber)
+
+  // add general series module for hardcopy images
+  DcmIntegerString imageSeriesNumber(DCM_SeriesNumber); // always empty
+  DcmCodeString modality(DCM_Modality);
+  if (result==EC_Normal)
+  {
+     result = modality.putString("HC");
+  }
+  ADD_TO_DATASET(DcmUniqueIdentifier, imageSeriesInstanceUID)
+  ADD_TO_DATASET(DcmIntegerString, imageSeriesNumber)
+  ADD_TO_DATASET(DcmCodeString, modality)
+  
+  return result;
+}
+
+
+E_Condition DVPSStoredPrint::addImageBox(
+  const char *retrieveaetitle,
+  const char *refsopinstanceuid,
+  const char *requestedimagesize,
+  const char *patientid)
+{
+  char instanceuid[100];
+  char *refstudyuid=NULL;
+  char *refseriesuid=NULL;
+
+  createDefaultValues(); // make sure that all UIDs are defined
+  
+  studyInstanceUID.getString(refstudyuid); // same study UID for stored print and hardcopy image
+  imageSeriesInstanceUID.getString(refseriesuid); // but separate series for the hardcopy images
+
+  return imageBoxContentList.addImageBox(dcmGenerateUniqueIdentifer(instanceuid), 
+     retrieveaetitle, refstudyuid, refseriesuid, UID_HardcopyGrayscaleImageStorage, 
+     refsopinstanceuid, requestedimagesize, patientid);
+}
+
+E_Condition DVPSStoredPrint::setInstanceUID(const char *uid)
+{
+  if ((uid==NULL)||(strlen(uid)==0)) return EC_IllegalCall;
+  return sOPInstanceUID.putString(uid);
+}
+
 /*
  *  $Log: dvpssp.cc,v $
- *  Revision 1.3  1999-08-26 09:29:49  thiel
+ *  Revision 1.4  1999-08-27 15:57:50  meichel
+ *  Added methods for saving hardcopy images and stored print objects
+ *    either in file or in the local database.
+ *
+ *  Revision 1.3  1999/08/26 09:29:49  thiel
  *  Extensions for the usage of the StoredPrint
  *
  *  Revision 1.2  1999/08/25 16:56:14  joergr
