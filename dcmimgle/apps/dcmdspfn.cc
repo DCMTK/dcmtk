@@ -22,9 +22,8 @@
  *  Purpose: export display curves to a text file
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-02-12 11:34:35 $
- *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/apps/dcmdspfn.cc,v $
- *  CVS/RCS Revision: $Revision: 1.16 $
+ *  Update Date:      $Date: 2003-12-08 19:23:33 $
+ *  CVS/RCS Revision: $Revision: 1.17 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -244,10 +243,10 @@ int main(int argc, char *argv[])
             app.checkValue(cmd.getValue(opt_ofname));
             DiGSDFunction *disp = NULL;
             if (opt_ifname != NULL)
-                disp = new DiGSDFunction(opt_ifname, deviceType, (signed int)opt_polyOrder);
+                disp = new DiGSDFunction(opt_ifname, deviceType, OFstatic_cast(signed int, opt_polyOrder));
             else
                 disp = new DiGSDFunction(opt_minVal, opt_maxVal, opt_ddlCount, DiDisplayFunction::EDT_Monitor,
-                                        (signed int)opt_polyOrder);
+                                        OFstatic_cast(signed int, opt_polyOrder));
             if ((disp != NULL) && disp->isValid())
             {
                 if (opt_ambLight >= 0)
@@ -295,10 +294,10 @@ int main(int argc, char *argv[])
             app.checkValue(cmd.getValue(opt_ofname));
             DiCIELABFunction *disp = NULL;
             if (opt_ifname != NULL)
-                disp = new DiCIELABFunction(opt_ifname, deviceType, (signed int)opt_polyOrder);
+                disp = new DiCIELABFunction(opt_ifname, deviceType, OFstatic_cast(signed int, opt_polyOrder));
             else
                 disp = new DiCIELABFunction(opt_minVal, opt_maxVal, opt_ddlCount, DiDisplayFunction::EDT_Monitor,
-                                           (signed int)opt_polyOrder);
+                                            OFstatic_cast(signed int, opt_polyOrder));
             if ((disp != NULL) && disp->isValid())
             {
                 if (opt_ambLight >= 0)
@@ -342,7 +341,11 @@ int main(int argc, char *argv[])
  *
  * CVS/RCS Log:
  * $Log: dcmdspfn.cc,v $
- * Revision 1.16  2003-02-12 11:34:35  joergr
+ * Revision 1.17  2003-12-08 19:23:33  joergr
+ * Adapted type casts to new-style typecast operators defined in ofcast.h.
+ * Updated CVS header.
+ *
+ * Revision 1.16  2003/02/12 11:34:35  joergr
  * Added Dmin/max support to CIELAB calibration routines.
  *
  * Revision 1.15  2003/02/11 16:38:50  joergr
