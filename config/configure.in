@@ -117,6 +117,7 @@ AC_CHECK_FUNCS(usleep)
 AC_CHECK_FUNCS(semctl semget semop)
 AC_CHECK_FUNCS(shmat shmdt shmctl shmget)
 AC_CHECK_FUNCS(getwd getcwd)
+
 dnl Checks for prototypes
 
 AC_CHECK_PROTOTYPE(bzero)
@@ -132,7 +133,13 @@ AC_CHECK_PROTOTYPE(connect, sys/types.h sys/socket.h)
 AC_CHECK_PROTOTYPE(setsockopt, sys/types.h sys/socket.h)
 AC_CHECK_PROTOTYPE(wait3, sys/wait.h sys/time.h sys/resource.h)
 AC_CHECK_PROTOTYPE(usleep, libc.h)
-AC_CHECK_PROTOTYPE(strncasecmp, string.h)
+AC_CHECK_PROTOTYPE(semctl, sys/types.h sys/ipc.h sys/sem.h)
+AC_CHECK_PROTOTYPE(semget, sys/types.h sys/ipc.h sys/sem.h)
+AC_CHECK_PROTOTYPE(semop, sys/types.h sys/ipc.h sys/sem.h)
+AC_CHECK_PROTOTYPE(shmat, sys/types.h sys/ipc.h sys/shm.h)
+AC_CHECK_PROTOTYPE(shmdt, sys/types.h sys/ipc.h sys/shm.h)
+AC_CHECK_PROTOTYPE(shmctl, sys/types.h sys/ipc.h sys/shm.h)
+AC_CHECK_PROTOTYPE(shmget, sys/types.h sys/ipc.h sys/shm.h)
 if test $ac_cv_header_libc_h = yes ; then
 AC_CHECK_PROTOTYPE(mktemp, stdlib.h libc.h)
 else
