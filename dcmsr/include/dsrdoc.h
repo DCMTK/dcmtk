@@ -23,8 +23,8 @@
  *    classes: DSRDocument
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-11-14 17:27:25 $
- *  CVS/RCS Revision: $Revision: 1.16 $
+ *  Update Date:      $Date: 2000-11-16 13:31:27 $
+ *  CVS/RCS Revision: $Revision: 1.17 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -150,7 +150,9 @@ class DSRDocument
 
     /** get specific character set type.
      *  If the type is unknown the original DICOM defined term can be retrieved
-     *  with the method getSpecificCharacterSet().
+     *  with the method getSpecificCharacterSet().  Please note that only the
+     *  first of possibly multiple values is used to determine the type from the
+     *  DICOM code string (multiple character sets are not supported).
      ** @return character set (might be CS_invalid/unknown if not supported)
      */
     E_CharacterSet getSpecificCharacterSetType() const;
@@ -276,6 +278,8 @@ class DSRDocument
 
 
   // --- get DICOM string attributes (C string) ---
+  // --- (these functions return the whole string value,
+  // ---  i.e. all components of multi-valued attributes)
 
     /** get modality
      ** @return pointer to string value (might be NULL)
@@ -404,6 +408,8 @@ class DSRDocument
 
 
   // --- get DICOM string attributes (C++ string) ---
+  // --- (these functions return only return the first
+  // ---  component of multi-valued attributes)
 
     /** get modality
      ** @param  string  reference to character string in which the value should be stored
@@ -623,14 +629,18 @@ class DSRDocument
     E_Condition setManufacturer(const OFString &string);
 
     /** set content date.
-     *  The passed string must be a valid DICOM Date (DA).
+     *  The passed string must be a valid DICOM Date (DA).  If an empty string
+     *  is passed the current date is set when displaying or writing the document
+     *  since the corresponding DICOM attribute is type 1 (= mandatory).
      ** @param  string  character string specifying the value to be set
      ** @return status, EC_Normal if successful, an error code otherwise
      */
     E_Condition setContentDate(const OFString &string);
 
     /** set content time.
-     *  The passed string must be a valid DICOM Time (TM).
+     *  The passed string must be a valid DICOM Time (TM).  If an empty string
+     *  is passed the current time is set when displaying or writing the document
+     *  since the corresponding DICOM attribute is type 1 (= mandatory).
      ** @param  string  character string specifying the value to be set
      ** @return status, EC_Normal if successful, an error code otherwise
      */
@@ -651,14 +661,18 @@ class DSRDocument
     E_Condition setPatientID(const OFString &string);
 
     /** set series number.
-     *  The passed string must be a valid DICOM Short String (SH).
+     *  The passed string must be a valid DICOM Short String (SH).  If an empty
+     *  string is passed the value "1" is set when displaying or writing the
+     *  document since the corresponding DICOM attribute is type 1 (= mandatory).
      ** @param  string  character string specifying the value to be set
      ** @return status, EC_Normal if successful, an error code otherwise
      */
     E_Condition setSeriesNumber(const OFString &string);
 
     /** set instance number.
-     *  The passed string must be a valid DICOM Integer String (IS).
+     *  The passed string must be a valid DICOM Integer String (IS).  If an empty
+     *  string is passed the value "1" is set when displaying or writing the
+     *  document since the corresponding DICOM attribute is type 1 (= mandatory).
      ** @param  string  character string specifying the value to be set
      ** @return status, EC_Normal if successful, an error code otherwise
      */
@@ -812,8 +826,10 @@ class DSRDocument
 
     /** update several DICOM attributes.
      *  (e.g. set the modality to 'SR', generate a new SOP instance UID if required, set date/time, etc.)
+     ** @param  updateAll  flag indicating whether all DICOM attributes should be updated or only the
+     *                     completion and verification flag. (set DICOM defined terms from enum values)
      */
-    void updateAttributes();
+    void updateAttributes(const OFBool updateAll = OFTrue);
 
 
   private:
@@ -918,14 +934,16 @@ class DSRDocument
     DcmSequenceOfItems  VerifyingObserver;
     /// Predecessor Documents Sequence: (SQ, 1, 1C)
     DcmSequenceOfItems  PredecessorDocuments;
+    //  Identical Documents Sequence: (SQ, 1, 1C)
+        // -- not supported --
     //  Referenced Request Sequence: (SQ, 1, 1C)
-
+        // -- not supported --
     //  Performed Procedure Code Sequence: (SQ, 1, 2)
     DcmSequenceOfItems  PerformedProcedureCode;
-
     //  Current Requested Procedure Evidence Sequence: (SQ, 1, 1C)
-
+        // -- not supported --
     //  Pertinent Other Evidence Sequence: (SQ, 1, 1C)
+        // -- not supported --
 
 
  // --- declaration copy constructor and assignment operator
@@ -941,7 +959,10 @@ class DSRDocument
 /*
  *  CVS/RCS Log:
  *  $Log: dsrdoc.h,v $
- *  Revision 1.16  2000-11-14 17:27:25  joergr
+ *  Revision 1.17  2000-11-16 13:31:27  joergr
+ *  Corrected behaviour of updateDicomAttributes().
+ *
+ *  Revision 1.16  2000/11/14 17:27:25  joergr
  *  Added method to remove verification information.
  *
  *  Revision 1.15  2000/11/14 16:36:21  joergr

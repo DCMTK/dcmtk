@@ -23,8 +23,8 @@
  *    classes: DSRDocument
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-11-14 17:27:29 $
- *  CVS/RCS Revision: $Revision: 1.17 $
+ *  Update Date:      $Date: 2000-11-16 13:33:03 $
+ *  CVS/RCS Revision: $Revision: 1.18 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -146,8 +146,8 @@ E_Condition DSRDocument::print(ostream &stream,
     if (isValid())
     {
         OFString string;
-        /* update DICOM attributes */
-        updateAttributes();
+        /* update only some DICOM attributes */
+        updateAttributes(OFFalse /* updateAll */);
 
         // --- print some general document information ---
 
@@ -210,9 +210,13 @@ E_Condition DSRDocument::print(ostream &stream,
             }
         }
         /* content date and time */
-        stream << "Content Date/Time  : " << getPrintStringFromElement(ContentDate, string) << ", ";
-        stream <<                            getPrintStringFromElement(ContentTime, string) << endl << endl;
-
+        if ((ContentDate.getLength() > 0) && (ContentTime.getLength() > 0))
+        {
+            stream << "Content Date/Time  : " << getPrintStringFromElement(ContentDate, string) << ", ";
+            stream <<                            getPrintStringFromElement(ContentTime, string) << endl;
+        }
+        stream << endl;
+        
         // --- dump document tree to stream ---
         result = DocumentTree.print(stream, flags);
     }
@@ -277,6 +281,8 @@ E_Condition DSRDocument::read(DcmItem &dataset)
         getElementFromDataset(dataset, SOPClassUID);   /* already checked */
         getAndCheckElementFromDataset(dataset, SOPInstanceUID, "1", "1", LogStream);
         getAndCheckElementFromDataset(dataset, SpecificCharacterSet, "1-n", "1C", LogStream);
+        if (SpecificCharacterSet.getVM() > 1)
+            printWarningMessage(LogStream, "Multiple values for 'SpecificCharacterSet' are not supported");
         getAndCheckElementFromDataset(dataset, InstanceCreationDate, "1", "3", LogStream);
         getAndCheckElementFromDataset(dataset, InstanceCreationTime, "1", "3", LogStream);
         getAndCheckElementFromDataset(dataset, InstanceCreatorUID, "1", "3", LogStream);
@@ -346,7 +352,7 @@ E_Condition DSRDocument::write(DcmItem &dataset)
     /* only write valid documents */
     if (isValid())
     {
-        /* update DICOM attributes */
+        /* update all DICOM attributes */
         updateAttributes();
 
         /* write general document attributes */
@@ -354,13 +360,13 @@ E_Condition DSRDocument::write(DcmItem &dataset)
         // --- SOP Common Module ---
         addElementToDataset(result, dataset, new DcmUniqueIdentifier(SOPClassUID));
         addElementToDataset(result, dataset, new DcmUniqueIdentifier(SOPInstanceUID));
-        if (SpecificCharacterSet.getLength() >0)
+        if (SpecificCharacterSet.getLength() >0)    /* optional */
             addElementToDataset(result, dataset, new DcmCodeString(SpecificCharacterSet));
-        if (InstanceCreationDate.getLength() >0)
+        if (InstanceCreationDate.getLength() >0)    /* optional */
             addElementToDataset(result, dataset, new DcmDate(InstanceCreationDate));
-        if (InstanceCreationTime.getLength() >0)
+        if (InstanceCreationTime.getLength() >0)    /* optional */
             addElementToDataset(result, dataset, new DcmTime(InstanceCreationTime));
-        if (InstanceCreatorUID.getLength() >0)
+        if (InstanceCreatorUID.getLength() >0)      /* optional */
             addElementToDataset(result, dataset, new DcmUniqueIdentifier(InstanceCreatorUID));
 
         // --- General Study Module ---
@@ -370,11 +376,11 @@ E_Condition DSRDocument::write(DcmItem &dataset)
         addElementToDataset(result, dataset, new DcmPersonName(ReferringPhysiciansName));
         addElementToDataset(result, dataset, new DcmShortString(StudyID));
         addElementToDataset(result, dataset, new DcmShortString(AccessionNumber));
-        if (StudyDescription.getLength() >0)
+        if (StudyDescription.getLength() >0)     /* optional */
             addElementToDataset(result, dataset, new DcmLongString(StudyDescription));
 
         // --- General series Module ---
-        if (SeriesDescription.getLength() >0)
+        if (SeriesDescription.getLength() >0)    /* optional */
             addElementToDataset(result, dataset, new DcmLongString(SeriesDescription));
 
         // --- Patient Module ---
@@ -395,14 +401,14 @@ E_Condition DSRDocument::write(DcmItem &dataset)
         // --- SR Document General Module (M) ---
         addElementToDataset(result, dataset, new DcmIntegerString(InstanceNumber));
         addElementToDataset(result, dataset, new DcmCodeString(CompletionFlag));
-        if (CompletionFlagDescription.getLength() > 0)
+        if (CompletionFlagDescription.getLength() > 0)    /* optional */
             addElementToDataset(result, dataset, new DcmLongString(CompletionFlagDescription));
         addElementToDataset(result, dataset, new DcmCodeString(VerificationFlag));
         addElementToDataset(result, dataset, new DcmDate(ContentDate));
         addElementToDataset(result, dataset, new DcmTime(ContentTime));
-        if (VerifyingObserver.card() > 0)
+        if (VerifyingObserver.card() > 0)                /* optional */
             addElementToDataset(result, dataset, new DcmSequenceOfItems(VerifyingObserver));
-        if (PredecessorDocuments.card() > 0)
+        if (PredecessorDocuments.card() > 0)             /* optional */
             addElementToDataset(result, dataset, new DcmSequenceOfItems(PredecessorDocuments));
         addElementToDataset(result, dataset, new DcmSequenceOfItems(PerformedProcedureCode));
 
@@ -609,8 +615,8 @@ E_Condition DSRDocument::renderHTML(ostream &stream,
         OFString string, string2;
         /* used for HTML string conversion */
         OFString htmlString;
-        /* update DICOM attributes */
-        updateAttributes();
+        /* update only some DICOM attributes */
+        updateAttributes(OFFalse /* updateAll */);
 
         // --- HTML document structure (start) ---
 
@@ -792,12 +798,15 @@ E_Condition DSRDocument::renderHTML(ostream &stream,
                     stream << "</tr>" << endl;
                 }
             }
-            /* content date and time */
-            stream << "<tr>" << endl;
-            stream << "<td><b>Content Date/Time:</b></td>" << endl;
-            stream << "<td>" << dicomToReadableDate(getStringValueFromElement(ContentDate, string), string2) << ", ";
-            stream << dicomToReadableTime(getStringValueFromElement(ContentTime, string), string2) << "</td>" << endl;
-            stream << "</tr>" << endl;
+            if ((ContentDate.getLength() > 0) && (ContentTime.getLength() > 0))
+            {
+                /* content date and time */
+                stream << "<tr>" << endl;
+                stream << "<td><b>Content Date/Time:</b></td>" << endl;
+                stream << "<td>" << dicomToReadableDate(getStringValueFromElement(ContentDate, string), string2) << ", ";
+                stream << dicomToReadableTime(getStringValueFromElement(ContentTime, string), string2) << "</td>" << endl;
+                stream << "</tr>" << endl;
+            }
             /* end of table */
             stream << "</table>" << endl;
 
@@ -989,6 +998,7 @@ E_Condition DSRDocument::getPredecessorDocument(const size_t idx,
     seriesInstanceUID.clear();
     sopClassUID.clear();
     sopInstanceUID.clear();
+    /* check for valid index */
     if ((idx > 0) && (idx <= getNumberOfPredecessorDocuments()))
     {
         size_t sopIdx = idx;
@@ -1043,6 +1053,7 @@ E_Condition DSRDocument::getPredecessorDocument(const size_t idx,
                 result = EC_CorruptedData;
             study++;
         }
+        /* check whether resulting UIDs are valid */
         if (result == EC_Normal)
         {
             if ((studyInstanceUID.length() == 0) || (seriesInstanceUID.length() == 0) ||
@@ -1514,7 +1525,7 @@ E_Condition DSRDocument::createNewSeries(const OFString &studyUID)
 void DSRDocument::createNewSOPInstance()
 {
     SOPInstanceUID.clear();
-    /* update DICOM attributes (incl. empty UIDs) */
+    /* update all DICOM attributes (incl. empty UIDs) */
     updateAttributes();
 }
 
@@ -1694,60 +1705,67 @@ void DSRDocument::setLogStream(OFConsole *stream)
 }
 
 
-void DSRDocument::updateAttributes()
+void DSRDocument::updateAttributes(const OFBool updateAll)
 {
-    /* retrieve SOP class UID from internal document type */
-    SOPClassUID.putString(documentTypeToSOPClassUID(getDocumentType()));
-    /* put static modality string */
-    Modality.putString("SR");
-
-    /* create new instance number if required (type 1) */
-    if (InstanceNumber.getLength() == 0)
-        InstanceNumber.putString("1");
-    /* create new series number if required (type 1) */
-    if (SeriesNumber.getLength() == 0)
-        SeriesNumber.putString("1");
-
-    char uid[100];
-    /* create new SOP instance UID if required */
-    if (SOPInstanceUID.getLength() == 0)
+    if (updateAll)
     {
-        SOPInstanceUID.putString(dcmGenerateUniqueIdentifer(uid));
-        OFString string;
-        /* set instance creation date to current date */
-        InstanceCreationDate.putString(currentDate(string).c_str());
-        /* set instance creation time to current time */
-        InstanceCreationTime.putString(currentTime(string).c_str());
+        /* retrieve SOP class UID from internal document type */
+        SOPClassUID.putString(documentTypeToSOPClassUID(getDocumentType()));
+        /* put static modality string */
+        Modality.putString("SR");
+    
+        /* create new instance number if required (type 1) */
+        if (InstanceNumber.getLength() == 0)
+            InstanceNumber.putString("1");
+        /* create new series number if required (type 1) */
+        if (SeriesNumber.getLength() == 0)
+            SeriesNumber.putString("1");
+    
+        char uid[100];
+        /* create new SOP instance UID if required */
+        if (SOPInstanceUID.getLength() == 0)
+        {
+            SOPInstanceUID.putString(dcmGenerateUniqueIdentifer(uid));
+            OFString string;
+            /* set instance creation date to current date */
+            InstanceCreationDate.putString(currentDate(string).c_str());
+            /* set instance creation time to current time */
+            InstanceCreationTime.putString(currentTime(string).c_str());
+            /* set instance creator UID to identify instances that have been created by this toolkit */
+            InstanceCreatorUID.putString(OFFIS_INSTANCE_CREATOR_UID);
+        }
+        /* create new study instance UID if required */
+        if (StudyInstanceUID.getLength() == 0)
+            StudyInstanceUID.putString(dcmGenerateUniqueIdentifer(uid));
+        /* create new series instance UID if required */
+        if (SeriesInstanceUID.getLength() == 0)
+            SeriesInstanceUID.putString(dcmGenerateUniqueIdentifer(uid));
+    
+        /* check and set content date if required */
+        if (ContentDate.getLength() == 0)
+            ContentDate.putString(getStringValueFromElement(InstanceCreationDate));
+        /* check and set content time if required */
+        if (ContentTime.getLength() == 0)
+            ContentTime.putString(getStringValueFromElement(InstanceCreationTime));
     }
-    /* create new study instance UID if required */
-    if (StudyInstanceUID.getLength() == 0)
-        StudyInstanceUID.putString(dcmGenerateUniqueIdentifer(uid));
-    /* create new series instance UID if required */
-    if (SeriesInstanceUID.getLength() == 0)
-        SeriesInstanceUID.putString(dcmGenerateUniqueIdentifer(uid));
-
     /* check and adjust completion flag if required */
     if (CompletionFlagEnum == CF_invalid)
         CompletionFlagEnum = CF_Partial;
     CompletionFlag.putString(completionFlagToEnumeratedValue(CompletionFlagEnum));
     /* check and adjust verification flag if required */
     if (VerificationFlagEnum == VF_invalid)
-        VerificationFlagEnum = VF_Unverified;
+        VerificationFlagEnum = VF_Unverified;    
     VerificationFlag.putString(verificationFlagToEnumeratedValue(VerificationFlagEnum));
-
-    /* check and set content date if required */
-    if (ContentDate.getLength() == 0)
-        ContentDate.putString(getStringValueFromElement(InstanceCreationDate));
-    /* check and set content time if required */
-    if (ContentTime.getLength() == 0)
-        ContentTime.putString(getStringValueFromElement(InstanceCreationTime));
 }
 
 
 /*
  *  CVS/RCS Log:
  *  $Log: dsrdoc.cc,v $
- *  Revision 1.17  2000-11-14 17:27:29  joergr
+ *  Revision 1.18  2000-11-16 13:33:03  joergr
+ *  Corrected behaviour of updateDicomAttributes().
+ *
+ *  Revision 1.17  2000/11/14 17:27:29  joergr
  *  Added method to remove verification information.
  *
  *  Revision 1.16  2000/11/14 16:36:24  joergr
