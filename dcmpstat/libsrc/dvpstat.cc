@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DVPresentationState
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-02-18 11:36:40 $
- *  CVS/RCS Revision: $Revision: 1.11 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 1999-02-23 11:49:05 $
+ *  CVS/RCS Revision: $Revision: 1.12 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1616,6 +1616,26 @@ E_Condition DVPresentationState::write(DcmItem &dset)
   if (instanceCreationTime.getLength() >0) { ADD_TO_DATASET(DcmTime, instanceCreationTime) }
   if (instanceCreatorUID.getLength() >0) { ADD_TO_DATASET(DcmUniqueIdentifier, instanceCreatorUID) }
 
+  shutterShape.clear();
+  if (useShutterRectangular || useShutterCircular || useShutterPolygonal)
+  {
+    OFString aString;
+    if (useShutterRectangular) aString = "RECTANGULAR";
+    if (useShutterCircular)
+    {
+      if (aString.size() > 0) aString += '\\';
+      aString += "CIRCULAR";
+    }
+    if (useShutterPolygonal)
+    {
+      if (aString.size() > 0) aString += '\\';
+      aString += "POLYGONAL";
+    }
+    shutterShape.putString(aString.c_str());
+  } else if (useShutterBitmap)
+  {
+    shutterShape.putString("BITMAP");
+  }
   if (useShutterRectangular || useShutterCircular || useShutterPolygonal)
   {
     ADD_TO_DATASET(DcmCodeString, shutterShape)
@@ -3543,7 +3563,10 @@ void DVPresentationState::changeDisplayFunction(DiDisplayFunction *dispFunction)
 
 /*
  *  $Log: dvpstat.cc,v $
- *  Revision 1.11  1999-02-18 11:36:40  meichel
+ *  Revision 1.12  1999-02-23 11:49:05  joergr
+ *  Corrected bug: shutters were not saved correctly (sometimes even ignored).
+ *
+ *  Revision 1.11  1999/02/18 11:36:40  meichel
  *  Added new method convertPValueToDDL() to DVPresentationState
  *    that maps P-Values to DDLs.
  *
