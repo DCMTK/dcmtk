@@ -1,5 +1,5 @@
-#ifndef CONFIG_H
-#define CONFIG_H
+#ifndef CFUNIX_H
+#define CFUNIX_H
 
 @TOP@
 
@@ -22,10 +22,10 @@
 /* #define HAVE_EMPTY_ARGC_ARGV 1 */
 
 /* Compile in the debug code */
-/* #define DEBUG 1 */ 
+/* #define DEBUG 1 */
 
 /* Define if your compile cannot user anonymous struct/class components */
-/* #define NO_ANON_CLASS_COMP 1 */ 
+/* #define NO_ANON_CLASS_COMP 1 */
 
 /* Define if your system has a prototype for bzero */
 #undef HAVE_PROTOTYPE_BZERO
@@ -60,11 +60,11 @@
 /* Define if your system has a prototype for select */
 #undef HAVE_PROTOTYPE_SELECT
 
-/* Define if your system declares argument 2-4 of select() 
+/* Define if your system declares argument 2-4 of select()
    as int * instead of struct fd_set * */
 #undef HAVE_INTP_SELECT
 
-/* Define if your system declares argument 3 of accept() 
+/* Define if your system declares argument 3 of accept()
    as int * instead of size_t * or struct socklen_t * */
 #undef HAVE_INTP_ACCEPT
 

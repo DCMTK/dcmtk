@@ -10,12 +10,12 @@ SHELL = /bin/sh
 include @common_makefile@
 
 
-all: 
+all:
 	echo Nothing to do for all
 
-install: 
+install:
 
-install-bin: 
+install-bin:
 
 install-lib: include-install
 
@@ -26,17 +26,17 @@ install-support:
 libsrc-all:
 
 
-include-install: 
+include-install:
 	./mkinstalldirs $(includedir)
 	$(INSTALL_DATA) include/osconfig.h $(includedir)
-	$(INSTALL_DATA) include/config.h $(includedir)
+	$(INSTALL_DATA) include/cfunix.h $(includedir)
 
 clean:
 	(cd include; rm -f $(TRASH))
 	rm -f $(TRASH)
 
 distclean:
-	(cd include; rm -f $(DISTTRASH) config.h)
+	(cd include; rm -f $(DISTTRASH) cfunix.h)
 	rm -f $(DISTTRASH) Makefile.def
 
 
