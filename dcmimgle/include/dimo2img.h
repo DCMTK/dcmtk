@@ -21,10 +21,10 @@
  *
  *  Purpose: DicomMonochrome2Image (Header)
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-06-01 15:49:44 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2001-11-27 18:18:23 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/dimo2img.h,v $
- *  CVS/RCS Revision: $Revision: 1.9 $
+ *  CVS/RCS Revision: $Revision: 1.10 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -116,6 +116,14 @@ class DiMono2Image
     /** destructor
      */
     virtual ~DiMono2Image();
+
+    /** get color model of internal pixel representation.
+     *  @return always returns EPI_Monochrome2
+     */
+    virtual EP_Interpretation getInternalColorModel() const
+    {
+        return EPI_Monochrome2;
+    }
 
     /** get pixel data with specified format.
      *  (memory is handled internally)
@@ -294,7 +302,11 @@ class DiMono2Image
  *
  * CVS/RCS Log:
  * $Log: dimo2img.h,v $
- * Revision 1.9  2001-06-01 15:49:44  meichel
+ * Revision 1.10  2001-11-27 18:18:23  joergr
+ * Added support for plugable output formats in class DicomImage. First
+ * implementation is JPEG.
+ *
+ * Revision 1.9  2001/06/01 15:49:44  meichel
  * Updated copyright header
  *
  * Revision 1.8  2000/03/08 16:24:18  meichel

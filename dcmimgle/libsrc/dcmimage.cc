@@ -22,9 +22,9 @@
  *  Purpose: DicomImage-Interface (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-11-09 16:28:48 $
+ *  Update Date:      $Date: 2001-11-27 18:21:37 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/libsrc/dcmimage.cc,v $
- *  CVS/RCS Revision: $Revision: 1.17 $
+ *  CVS/RCS Revision: $Revision: 1.18 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -45,6 +45,7 @@
 #include "dimo2img.h"
 #include "didocu.h"
 #include "diregbas.h"
+#include "diplugin.h"
 
 BEGIN_EXTERN_C
 #ifdef HAVE_CTYPE_H
@@ -765,18 +766,6 @@ int DicomImage::writeRawPPM(FILE *stream,
 }
 
 
-// --- same for open C 'FILE' in BMP format
-
-int DicomImage::writeBMP(FILE *stream,
-                         const int bits,
-                         const unsigned long frame)
-{
-    if ((stream != NULL) && (Image != NULL) && ((bits == 0) || ((bits == 8) && isMonochrome()) || (bits == 24)))
-        return Image->writeBMP(stream, frame, bits);
-    return 0;
-}
-
-
 // --- write 'frame' of image data to 'filename' with 'bits' depth in BMP format
 
 int DicomImage::writeBMP(const char *filename,
@@ -800,11 +789,62 @@ int DicomImage::writeBMP(const char *filename,
 }
 
 
+// --- same for open C 'FILE' in BMP format
+
+int DicomImage::writeBMP(FILE *stream,
+                         const int bits,
+                         const unsigned long frame)
+{
+    if ((stream != NULL) && (Image != NULL) && ((bits == 0) || ((bits == 8) && isMonochrome()) || (bits == 24)))
+        return Image->writeBMP(stream, frame, bits);
+    return 0;
+}
+
+
+// --- write 'frame' of image data to 'filename' plugable image format
+
+int DicomImage::writePluginFormat(const DiPluginFormat *plugin,
+                                  const char *filename,
+                                  const unsigned long frame)
+{
+    if ((plugin != NULL) && (filename != NULL) && (Image != NULL))
+    {
+        char fname[FILENAME_MAX + 1];
+        if (sprintf(fname, filename, frame) >= 0)           // replace '%d' etc. with frame number
+            filename = fname;
+        FILE *stream = fopen(filename, "wb");               // open binary file for writing
+        if (stream != NULL)
+        {
+            int ok = plugin->write(Image, stream, frame);
+            fclose(stream);
+            return ok;
+        }
+    }
+    return 0;
+}
+
+
+// --- same for open C 'FILE' in plugable image format
+
+int DicomImage::writePluginFormat(const DiPluginFormat *plugin,
+                                  FILE *stream,
+                                  const unsigned long frame)
+{
+    if ((plugin != NULL) && (stream != NULL) && (Image != NULL))
+        return plugin->write(Image, stream, frame);
+    return 0;
+}
+
+
 /*
  *
  * CVS/RCS Log:
  * $Log: dcmimage.cc,v $
- * Revision 1.17  2001-11-09 16:28:48  joergr
+ * Revision 1.18  2001-11-27 18:21:37  joergr
+ * Added support for plugable output formats in class DicomImage. First
+ * implementation is JPEG.
+ *
+ * Revision 1.17  2001/11/09 16:28:48  joergr
  * Added support for Windows BMP file format.
  *
  * Revision 1.16  2001/06/01 15:49:52  meichel

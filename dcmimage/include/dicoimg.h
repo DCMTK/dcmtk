@@ -22,9 +22,9 @@
  *  Purpose: DicomColorImage (Header)
  *
  *  Last Update:         $Author: joergr $
- *  Update Date:         $Date: 2001-11-09 16:38:36 $
+ *  Update Date:         $Date: 2001-11-27 18:22:17 $
  *  Source File:         $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/include/Attic/dicoimg.h,v $
- *  CVS/RCS Revision:    $Revision: 1.12 $
+ *  CVS/RCS Revision:    $Revision: 1.13 $
  *  Status:              $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -77,6 +77,14 @@ class DiColorImage
     /** destructor
      */
     virtual ~DiColorImage();
+
+    /** get color model of internal pixel representation.
+     *  @return returns EPI_RGB or EPI_YBR_Full depending on the 'rgb' flag in the constructor
+     */
+    virtual EP_Interpretation getInternalColorModel() const
+    {
+        return (RGBColorModel) ? EPI_RGB : EPI_YBR_Full;
+    }
 
     /** get pixel data with specified format.
      *  (memory is handled internally)
@@ -414,7 +422,11 @@ class DiColorImage
  *
  * CVS/RCS Log:
  * $Log: dicoimg.h,v $
- * Revision 1.12  2001-11-09 16:38:36  joergr
+ * Revision 1.13  2001-11-27 18:22:17  joergr
+ * Added support for plugable output formats in class DicomImage. First
+ * implementation is JPEG.
+ *
+ * Revision 1.12  2001/11/09 16:38:36  joergr
  * Added support for Windows BMP file format.
  * Enhanced and renamed createTrueColorDIB() method.
  * Updated/Enhanced comments.

@@ -22,9 +22,9 @@
  *  Purpose: DicomMonochrome1Image (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-11-09 16:28:03 $
+ *  Update Date:      $Date: 2001-11-27 18:18:23 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/dimo1img.h,v $
- *  CVS/RCS Revision: $Revision: 1.8 $
+ *  CVS/RCS Revision: $Revision: 1.9 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -64,6 +64,14 @@ class DiMono1Image
     /** destructor
      */
     virtual ~DiMono1Image();
+
+    /** get color model of internal pixel representation.
+     *  @return always returns EPI_Monochrome1
+     */
+    virtual EP_Interpretation getInternalColorModel() const
+    {
+        return EPI_Monochrome1;
+    }
 
     /** get pixel data with specified format.
      *  (memory is handled internally)
@@ -232,7 +240,11 @@ class DiMono1Image
  *
  * CVS/RCS Log:
  * $Log: dimo1img.h,v $
- * Revision 1.8  2001-11-09 16:28:03  joergr
+ * Revision 1.9  2001-11-27 18:18:23  joergr
+ * Added support for plugable output formats in class DicomImage. First
+ * implementation is JPEG.
+ *
+ * Revision 1.8  2001/11/09 16:28:03  joergr
  * Updated comments.
  *
  * Revision 1.7  2001/06/01 15:49:43  meichel

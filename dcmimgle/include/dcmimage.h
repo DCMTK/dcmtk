@@ -22,9 +22,9 @@
  *  Purpose: Provides main interface to the "DICOM image toolkit"
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-11-19 12:54:29 $
+ *  Update Date:      $Date: 2001-11-27 18:18:20 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/dcmimage.h,v $
- *  CVS/RCS Revision: $Revision: 1.37 $
+ *  CVS/RCS Revision: $Revision: 1.38 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -54,6 +54,7 @@ class DcmLongString;
 class DcmUnsignedShort;
 
 class DiDocument;
+class DiPluginFormat;
 
 
 /*---------------------*
@@ -1525,7 +1526,7 @@ class DicomImage
      *  pixel data is written in binary format.
      *  This method does not work if original YCbCr color model is retained (see CIF_KeepYCbCrColorModel).
      *
-     ** @param  stream  open C output stream (%d is replaced by frame number if present)
+     ** @param  stream  open C output stream (binary mode required!)
      *  @param  bits    number of bits used for output of pixel data
      *                  (default: full resolution, max: 8;
      *                   MI_PastelColor = -1 for true color pastel mode, EXPERIMENTAL)
@@ -1541,7 +1542,7 @@ class DicomImage
      *  pixel data is written in palette or truecolor mode.
      *  This method does not work if original YCbCr color model is retained (see CIF_KeepYCbCrColorModel).
      *
-     ** @param  stream  open C output stream
+     ** @param  stream  open C output stream (binary mode required!)
      *  @param  bits    number of bits used for output of pixel data
      *                  (8 or 24, default (0): 8 for monochrome and 24 for color images)
      *  @param  frame   index of frame used for output (default: first frame = 0)
@@ -1566,6 +1567,32 @@ class DicomImage
     int writeBMP(const char *filename,
                  const int bits = 0,
                  const unsigned long frame = 0);
+
+    /** write pixel data to plugable image format file (specified by open C stream).
+     *  Format specific parameters may be set directly in the instantiated 'plugin' class.
+     *
+     ** @param  plugin  pointer to image format plugin (derived from abstract class DiPluginFormat)
+     *  @param  stream  open C output stream (binary mode required!)
+     *  @param  frame   index of frame used for output (default: first frame = 0)
+     *
+     ** @return true if successful, false otherwise
+     */
+    int writePluginFormat(const DiPluginFormat *plugin,
+                          FILE *stream,
+                          const unsigned long frame = 0);
+
+    /** write pixel data to plugable image format file (specified by filename).
+     *  Format specific parameters may be set directly in the instantiated 'plugin' class.
+     *
+     ** @param  plugin    pointer to image format plugin (derived from abstract class DiPluginFormat)
+     *  @param  filename  name of output file (%d is replaced by frame number if present)
+     *  @param  frame     index of frame used for output (default: first frame = 0)
+     *
+     ** @return true if successful, false otherwise
+     */
+    int writePluginFormat(const DiPluginFormat *plugin,
+                          const char *filename,
+                          const unsigned long frame = 0);
 
 
  protected:
@@ -1634,7 +1661,11 @@ class DicomImage
  *
  * CVS/RCS Log:
  * $Log: dcmimage.h,v $
- * Revision 1.37  2001-11-19 12:54:29  joergr
+ * Revision 1.38  2001-11-27 18:18:20  joergr
+ * Added support for plugable output formats in class DicomImage. First
+ * implementation is JPEG.
+ *
+ * Revision 1.37  2001/11/19 12:54:29  joergr
  * Added parameter 'frame' to setRoiWindow().
  *
  * Revision 1.36  2001/11/09 16:25:13  joergr

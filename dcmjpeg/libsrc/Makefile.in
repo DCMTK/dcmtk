@@ -29,7 +29,7 @@ include $(configdir)/@common_makefile@
 objs = djutils.o  djencode.o djrplol.o  djrploss.o djcparam.o  djeijg8.o \
        djcodecd.o djdecbas.o djdecext.o djdecpro.o djdecsps.o djdeclol.o djdecsv1.o \
        djcodece.o djencbas.o djencext.o djencpro.o djencsps.o djenclol.o djencsv1.o \
-       djeijg12.o djeijg16.o djdijg8.o  djdijg12.o djdijg16.o djdecode.o
+       djeijg12.o djeijg16.o djdijg8.o  djdijg12.o djdijg16.o djdecode.o dipijpeg.o
 
 all: libdcmjpeg.$(LIBEXT)
 

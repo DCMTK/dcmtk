@@ -22,9 +22,9 @@
  *  Purpose: Convert DICOM Images to PPM or PGM using the dcmimage library.
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-11-19 17:52:18 $
+ *  Update Date:      $Date: 2001-11-27 18:23:08 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/apps/dcm2pnm.cc,v $
- *  CVS/RCS Revision: $Revision: 1.52 $
+ *  CVS/RCS Revision: $Revision: 1.53 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -60,6 +60,7 @@ END_EXTERN_C
 
 #ifdef BUILD_DCM2PNM_AS_DCMJ2PNM
 # include "djdecode.h"     /* for dcmjpeg decoders */
+# include "dipijpeg.h"     /* for dcmimage JPEG plugin */
 #endif
 
 #ifdef HAVE_STRSTREA_H
@@ -71,8 +72,12 @@ END_EXTERN_C
 
 #ifdef BUILD_DCM2PNM_AS_DCMJ2PNM
 # define OFFIS_CONSOLE_APPLICATION "dcmj2pnm"
+# define OFFIS_CONSOLE_DESCRIPTION "Convert DICOM images to PGM, PNM, BMP or JPEG"
+# define OFFIS_OUTFILE_DESCRIPTION "PGM/PNM/BMP/JPEG output filename to be written (default: stdout)"
 #else
 # define OFFIS_CONSOLE_APPLICATION "dcm2pnm"
+# define OFFIS_CONSOLE_DESCRIPTION "Convert DICOM images to PGM, PNM or BMP"
+# define OFFIS_OUTFILE_DESCRIPTION "PGM/PNM/BMP output filename to be written (default: stdout)"
 #endif
 
 static char rcsid[] = "$dcmtk: " OFFIS_CONSOLE_APPLICATION " v"
@@ -88,7 +93,7 @@ static char rcsid[] = "$dcmtk: " OFFIS_CONSOLE_APPLICATION " v"
 
 int main(int argc, char *argv[])
 {
-    OFConsoleApplication app(OFFIS_CONSOLE_APPLICATION, "Convert DICOM images to PGM, PNM or BMP", rcsid);
+    OFConsoleApplication app(OFFIS_CONSOLE_APPLICATION, OFFIS_CONSOLE_DESCRIPTION, rcsid);
     OFCommandLine cmd;
 
     char buf[1024];
@@ -126,6 +131,8 @@ int main(int argc, char *argv[])
     int                 opt_displayFunction = 0;          /* default: GSDF */
 
 #ifdef BUILD_DCM2PNM_AS_DCMJ2PNM
+    OFCmdUnsignedInt    opt_quality = 75;                 /* default: 75% JPEG quality */
+    E_SubSampling       opt_sampling = ESS_422;           /* default: 4:2:2 sub-sampling */
     // JPEG parameters
     E_DecompressionColorSpaceConversion opt_decompCSconversion = EDC_photometricInterpretation;
 #endif
@@ -160,7 +167,7 @@ int main(int argc, char *argv[])
     cmd.setOptionColumns(LONGCOL, SHORTCOL);
 
     cmd.addParam("dcmfile-in",  "DICOM input filename to be converted");
-    cmd.addParam("pnmfile-out", "PGM/PNM/BMP output file name to be written (default: stdout)", OFCmdParam::PM_Optional);
+    cmd.addParam("pnmfile-out", OFFIS_OUTFILE_DESCRIPTION, OFCmdParam::PM_Optional);
 
     cmd.addGroup("general options:", LONGCOL, SHORTCOL + 2);
      cmd.addOption("--help",                "-h",      "print this help text and exit");
@@ -266,6 +273,13 @@ int main(int argc, char *argv[])
       cmd.addOption("--accept-acr-nema",    "+Ma",     "accept ACR-NEMA images without photometric\ninterpretation");
       cmd.addOption("--accept-palettes",    "+Mp",     "accept incorrect palette attribute tags\n(0028,111x) and (0028,121x)");
 
+     cmd.addSubGroup("compression options (JPEG):");
+      cmd.addOption("--compr-quality",      "+Jq",  1, "[q]uality : integer (0..100, default: 75)",
+                                                       "quality value for compression (in percent)");
+      cmd.addOption("--sample-444",         "+Js4",    "4:4:4 sampling (no subsampling)");
+      cmd.addOption("--sample-422",         "+Js2",    "4:2:2 subsampling (horizontal subsampling of\nchroma components, default)");
+      cmd.addOption("--sample-411",         "+Js1",    "4:1:1 subsampling (horizontal and vertical\nsubsampling of chroma components)");
+
      cmd.addSubGroup("other transformations:");
       cmd.addOption("--grayscale",          "+G",      "convert to grayscale if necessary");
       cmd.addOption("--change-polarity",    "+P",      "change polarity (invert pixel output)");
@@ -282,7 +296,9 @@ int main(int argc, char *argv[])
      cmd.addOption("--write-bmp",           "+ob",     "write 8-bit (monochrome) or 24-bit (color) BMP");
      cmd.addOption("--write-8-bit-bmp",     "+obp",    "write 8-bit palette BMP (monochrome only)");
      cmd.addOption("--write-24-bit-bmp",    "+obt",    "write 24-bit truecolor BMP");
-
+#ifdef BUILD_DCM2PNM_AS_DCMJ2PNM
+     cmd.addOption("--write-jpeg",          "+oj",     "write 8-bit lossy JPEG (baseline)");
+#endif
 #ifdef PASTEL_COLOR_OUTPUT
      cmd.addOption("--write-pastel-pnm",    "+op",     "write 8-bit binary PPM with pastel colors\n(early experimental version)");
 #endif
@@ -530,6 +546,19 @@ int main(int argc, char *argv[])
         if (cmd.findOption("--set-threshold"))
             app.checkValue(cmd.getValueAndCheckMinMax(opt_thresholdDensity, 0.0, 1.0));
 
+#ifdef BUILD_DCM2PNM_AS_DCMJ2PNM
+        if (cmd.findOption("--compr-quality"))
+            app.checkValue(cmd.getValueAndCheckMinMax(opt_quality, 0, 100));
+        cmd.beginOptionBlock();
+        if (cmd.findOption("--sample-444"))
+            opt_sampling = ESS_444;
+        if (cmd.findOption("--sample-422"))
+            opt_sampling = ESS_422;
+        if (cmd.findOption("--sample-411"))
+            opt_sampling = ESS_411;
+        cmd.endOptionBlock();
+#endif
+
         cmd.beginOptionBlock();
         if (cmd.findOption("--no-output"))
             opt_suppressOutput = 1;
@@ -550,9 +579,13 @@ int main(int argc, char *argv[])
             opt_fileType = 6;
         if (cmd.findOption("--write-24-bit-bmp"))
             opt_fileType = 7;
+#ifdef BUILD_DCM2PNM_AS_DCMJ2PNM
+        if (cmd.findOption("--write-jpeg"))
+            opt_fileType = 8;
+#endif
 #ifdef PASTEL_COLOR_OUTPUT
         if (cmd.findOption("--write-pastel-pnm"))
-            opt_fileType = 8;
+            opt_fileType = 99;
 #endif
         cmd.endOptionBlock();
     }
@@ -992,7 +1025,7 @@ int main(int argc, char *argv[])
         FILE *ofile = NULL;
         char ofname[255];
         unsigned int fcount = (unsigned int)(((opt_frameCount > 0) && (opt_frameCount <= di->getFrameCount())) ? opt_frameCount : di->getFrameCount());
-        const char *ofext = (opt_fileType >= 5) && (opt_fileType <= 7) ? "bmp" : (di->isMonochrome() ? "pgm" : "ppm");
+        const char *ofext = (opt_fileType == 8) ? "jpg" : ((opt_fileType >= 5) && (opt_fileType <= 7) ? "bmp" : (di->isMonochrome() ? "pgm" : "ppm"));
 
         if (fcount < opt_frameCount)
         {
@@ -1048,11 +1081,22 @@ int main(int argc, char *argv[])
                 case 7:
                     status = di->writeBMP(ofile, 24, frame);
                     break;
-        #ifdef PASTEL_COLOR_OUTPUT
+#ifdef BUILD_DCM2PNM_AS_DCMJ2PNM
                 case 8:
+                    {
+                        /* initialize JPEG plugin */
+                        DiJPEGPlugin plugin;
+                        plugin.setQuality(opt_quality);
+                        plugin.setSampling(opt_sampling);
+                        status = di->writePluginFormat(&plugin, ofile, frame);
+                    }
+                    break;
+#endif
+#ifdef PASTEL_COLOR_OUTPUT
+                case 99:
                     status = di->writePPM(ofile, MI_PastelColor, frame);
                     break;
-        #endif
+#endif
                 default:
                     if (opt_ofname)
                         status = di->writeRawPPM(ofile, 8, frame);
@@ -1087,7 +1131,11 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcm2pnm.cc,v $
- * Revision 1.52  2001-11-19 17:52:18  joergr
+ * Revision 1.53  2001-11-27 18:23:08  joergr
+ * Added support for plugable output formats in class DicomImage. First
+ * implementation is JPEG.
+ *
+ * Revision 1.52  2001/11/19 17:52:18  joergr
  * Added support for new 'verbose mode' in module dcmjpeg.
  *
  * Revision 1.51  2001/11/19 13:04:54  joergr

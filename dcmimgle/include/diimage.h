@@ -22,9 +22,9 @@
  *  Purpose: DicomImage (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-11-09 16:26:37 $
+ *  Update Date:      $Date: 2001-11-27 18:18:22 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/diimage.h,v $
- *  CVS/RCS Revision: $Revision: 1.21 $
+ *  CVS/RCS Revision: $Revision: 1.22 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -100,7 +100,7 @@ class DiImage
     inline EI_Status getStatus() const
     {
         return ImageStatus;
-    }
+    }    
 
     /** get number of frames
      *
@@ -198,6 +198,12 @@ class DiImage
      ** @return status, true if successful, false otherwise
      */
     int setColumnRowRatio(const double ratio);
+
+    /** get color model of internal pixel representation.
+     *  Possible values are: EPI_Monochrome1, EPI_Monochrome2, EPI_RGB and EPI_YBR_Full
+     *  @return color model of internal pixel representation
+     */
+    virtual EP_Interpretation getInternalColorModel() const = 0;
 
     /** get number of bits per sample.
      *  If the optional parameter is specified the value will be checked and in any case
@@ -574,7 +580,11 @@ class DiImage
  *
  * CVS/RCS Log:
  * $Log: diimage.h,v $
- * Revision 1.21  2001-11-09 16:26:37  joergr
+ * Revision 1.22  2001-11-27 18:18:22  joergr
+ * Added support for plugable output formats in class DicomImage. First
+ * implementation is JPEG.
+ *
+ * Revision 1.21  2001/11/09 16:26:37  joergr
  * Added support for Window BMP file format.
  * Enhanced and renamed createTrueColorDIB() method.
  *

@@ -12,18 +12,18 @@ SUMMARY
 
 The dcmj2pnm utility reads a DICOM image, converts the pixel data according to
 the selected image processing options and writes back an image in the well-
-known PPM/PGM file format (portable pix map / portable gray map) or Windows
-BMP format.
+known PPM/PGM file format (portable pix map / portable gray map), Windows
+BMP format and JPEG (Joint Photographic Experts Group) format.
 
 
 USAGE
 
-dcmj2pnm: Convert DICOM images to PGM, PNM or BMP
+dcmj2pnm: Convert DICOM images to PGM, PNM, BMP or JPEG
 usage: dcmj2pnm [options] dcmfile-in [pnmfile-out]
 
 parameters:
   dcmfile-in   DICOM input filename to be converted
-  pnmfile-out  PGM/PNM/BMP output file name to be written (default: stdout)
+  pnmfile-out  PGM/PNM/BMP/JPEG output filename to be written (default: stdout)
 
 general options:
   -h      --help                print this help text and exit
@@ -121,6 +121,14 @@ image processing options:
                                 interpretation
     +Mp   --accept-palettes     accept incorrect palette attribute tags
                                 (0028,111x) and (0028,121x)
+  compression options (JPEG):
+    +Jq   --compr-quality       [q]uality : integer (0..100, default: 75)
+                                quality value for compression (in percent)
+    +Js4  --sample-444          4:4:4 sampling (no subsampling)
+    +Js2  --sample-422          4:2:2 subsampling (horizontal subsampling of
+                                chroma components, default)
+    +Js1  --sample-411          4:1:1 subsampling (horizontal and vertical
+                                subsampling of chroma components)
   other transformations:
     +G    --grayscale           convert to grayscale if necessary
     +P    --change-polarity     change polarity (invert pixel output)
@@ -136,6 +144,7 @@ output options:
   +ob     --write-bmp           write 8-bit (monochrome) or 24-bit (color) BMP
   +obp    --write-8-bit-bmp     write 8-bit palette BMP (monochrome only)
   +obt    --write-24-bit-bmp    write 24-bit truecolor BMP
+  +oj     --write-jpeg          write 8-bit lossy JPEG (baseline)
 
 
 ENVIRONMENT

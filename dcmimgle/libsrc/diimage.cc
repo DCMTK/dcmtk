@@ -22,9 +22,9 @@
  *  Purpose: DicomImage (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-11-19 12:57:17 $
+ *  Update Date:      $Date: 2001-11-27 18:21:38 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/libsrc/diimage.cc,v $
- *  CVS/RCS Revision: $Revision: 1.17 $
+ *  CVS/RCS Revision: $Revision: 1.18 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -115,7 +115,7 @@ DiImage::DiImage(const DiDocument *docu,
             }
             else
                 RepresentativeFrame = us - 1;
-        }              
+        }
         FirstFrame = (docu->getFrameStart() < NumberOfFrames) ? docu->getFrameStart() : NumberOfFrames - 1;
         /* restrict to actually processed/loaded number of frames */
         NumberOfFrames -= FirstFrame;
@@ -126,7 +126,7 @@ DiImage::DiImage(const DiDocument *docu,
         int ok = (Document->getValue(DCM_Rows, Rows) > 0);
         ok &= (Document->getValue(DCM_Columns, Columns) > 0);
         if (!ok || ((Rows > 0) && (Columns > 0)))
-        {            
+        {
             ok &= (Document->getValue(DCM_BitsAllocated, BitsAllocated) > 0);
             ok &= (Document->getValue(DCM_BitsStored, BitsStored) > 0);
             ok &= (Document->getValue(DCM_HighBit, HighBit) > 0);
@@ -199,7 +199,7 @@ DiImage::DiImage(const DiDocument *docu,
                 DcmPixelData *pixel = (DcmPixelData *)pstack.top();
                 pstack.clear();
                 // push reference to DICOM dataset on the stack (required for decompression process)
-                pstack.push(Document->getDicomObject());                
+                pstack.push(Document->getDicomObject());
                 pstack.push(pixel);                         // dummy stack entry
                 if ((pixel != NULL) && (pixel->chooseRepresentation(EXS_LittleEndianExplicit, NULL, pstack) == EC_Normal))
                     convertPixelData(pixel, spp);
@@ -278,7 +278,7 @@ DiImage::DiImage(const DiImage *image,
     FirstFrame(image->FirstFrame + fstart),
     NumberOfFrames(fcount),
     RepresentativeFrame(image->RepresentativeFrame),
-    Rows(image->Rows), 
+    Rows(image->Rows),
     Columns(image->Columns),
     PixelWidth(image->PixelWidth),
     PixelHeight(image->PixelHeight),
@@ -305,7 +305,7 @@ DiImage::DiImage(const DiImage *image,
     FirstFrame(image->FirstFrame),
     NumberOfFrames(image->NumberOfFrames),
     RepresentativeFrame(image->RepresentativeFrame),
-    Rows(rows), 
+    Rows(rows),
     Columns(columns),
     PixelWidth((aspect) ? 1 : image->PixelWidth),
     PixelHeight((aspect) ? 1 : image->PixelHeight),
@@ -469,7 +469,7 @@ void DiImage::convertPixelData(/*const*/ DcmPixelData *pixel,
     {
         const unsigned long start = FirstFrame * (unsigned long)Rows * (unsigned long)Columns;
         const unsigned long count = NumberOfFrames * (unsigned long)Rows * (unsigned long)Columns;
-        if ((BitsAllocated < 1) || (BitsStored < 1) || (BitsAllocated < BitsStored) || 
+        if ((BitsAllocated < 1) || (BitsStored < 1) || (BitsAllocated < BitsStored) ||
             (BitsStored > (Uint16)(HighBit + 1)))
         {
             ImageStatus = EIS_InvalidValue;
@@ -488,7 +488,7 @@ void DiImage::convertPixelData(/*const*/ DcmPixelData *pixel,
             else
                 InputData  = new DiInputPixelTemplate<Uint8, Uint8>(pixel, BitsAllocated, BitsStored, HighBit, start, count);
         }
-        else if (BitsStored <= bitsof(Uint8)) 
+        else if (BitsStored <= bitsof(Uint8))
         {
             if (hasSignedRepresentation)
                 InputData = new DiInputPixelTemplate<Uint16, Sint8>(pixel, BitsAllocated, BitsStored, HighBit, start, count);
@@ -545,7 +545,7 @@ void DiImage::convertPixelData(/*const*/ DcmPixelData *pixel,
 
 int DiImage::detachPixelData()
 {
-    DcmStack pstack;    
+    DcmStack pstack;
     if ((Document != NULL) && (Document->getFlags() & CIF_MayDetachPixelData) && Document->search(DCM_PixelData, pstack))
     {
         DcmPixelData *pixel = (DcmPixelData *)pstack.top();
@@ -562,7 +562,7 @@ int DiImage::detachPixelData()
             return 1;
         }
     }
-    return 0;        
+    return 0;
 }
 
 
@@ -683,7 +683,11 @@ int DiImage::writeBMP(FILE *stream,
  *
  * CVS/RCS Log:
  * $Log: diimage.cc,v $
- * Revision 1.17  2001-11-19 12:57:17  joergr
+ * Revision 1.18  2001-11-27 18:21:38  joergr
+ * Added support for plugable output formats in class DicomImage. First
+ * implementation is JPEG.
+ *
+ * Revision 1.17  2001/11/19 12:57:17  joergr
  * Adapted code to support new dcmjpeg module and JPEG compressed images.
  *
  * Revision 1.16  2001/11/13 18:01:41  joergr
