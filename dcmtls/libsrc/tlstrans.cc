@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2001, OFFIS
+ *  Copyright (C) 1998-2002, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,8 +23,8 @@
  *    classes: DcmTLSConnection
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-12-19 10:00:04 $
- *  CVS/RCS Revision: $Revision: 1.8 $
+ *  Update Date:      $Date: 2002-11-27 12:58:39 $
+ *  CVS/RCS Revision: $Revision: 1.9 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -35,21 +35,15 @@
 
 #ifdef WITH_OPENSSL
 
-#ifdef HAVE_STDLIB_H
-#ifndef  _BCB4
-/* workaround for bug in Borland C++ Builder 4 */
-BEGIN_EXTERN_C
-#endif
-#include <stdlib.h>
-#ifndef  _BCB4
-END_EXTERN_C
-#endif
-#endif
+#define INCLUDE_CSTDLIB
+#define INCLUDE_CSTDIO
+#define INCLUDE_CSTRING
+#define INCLUDE_CERRNO
+#define INCLUDE_CSIGNAL
+#define INCLUDE_CTIME
+#include "ofstdinc.h"
 
 BEGIN_EXTERN_C
-#include <stdio.h>
-#include <string.h>
-#include <errno.h>
 #ifdef HAVE_SYS_TIME_H
 #include <sys/time.h>
 #endif
@@ -59,8 +53,6 @@ BEGIN_EXTERN_C
 #ifdef HAVE_SYS_SELECT_H
 #include <sys/select.h>
 #endif
-#include <signal.h>
-#include <time.h>
 #ifdef HAVE_WINDOWS_H
 #include <windows.h>
 #include <winbase.h>
@@ -350,7 +342,10 @@ void tlstrans_dummy_function()
 
 /*
  *  $Log: tlstrans.cc,v $
- *  Revision 1.8  2001-12-19 10:00:04  meichel
+ *  Revision 1.9  2002-11-27 12:58:39  meichel
+ *  Adapted module dcmtls to use of new header file ofstdinc.h
+ *
+ *  Revision 1.8  2001/12/19 10:00:04  meichel
  *  Added include to avoid warning on Ultrix.
  *
  *  Revision 1.7  2001/06/05 10:32:56  joergr
