@@ -22,9 +22,9 @@
  *  Purpose: DicomMonoOutputPixel (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-02-11 16:53:35 $
+ *  Update Date:      $Date: 1999-07-23 13:45:39 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/libsrc/dimoopx.cc,v $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -43,12 +43,21 @@
  *----------------*/
 
 DiMonoOutputPixel::DiMonoOutputPixel(const DiMonoPixel *pixel,
-                                     const unsigned long frames,
+                                     const unsigned long size,
+                                     const unsigned long frame,
                                      const unsigned long max)
-  : Count(((pixel != NULL) && (frames > 0)) ? pixel->getCount() / frames : 0),
+  : Count(0),
+    FrameSize(size),
     UsedValues(NULL),
     MaxValue(max)
 {
+    if (pixel != NULL)
+    {
+        if (pixel->getCount() > frame * size)
+            Count = pixel->getCount() - frame * size;       // number of pixels remaining for this 'frame'
+    }
+    if (Count > FrameSize)
+        Count = FrameSize;                                  // cut off at frame 'size'
 }
 
 
@@ -83,7 +92,10 @@ int DiMonoOutputPixel::isUnused(const unsigned long value)
  *
  * CVS/RCS Log:
  * $Log: dimoopx.cc,v $
- * Revision 1.3  1999-02-11 16:53:35  joergr
+ * Revision 1.4  1999-07-23 13:45:39  joergr
+ * Enhanced handling of corrupted pixel data (wrong length).
+ *
+ * Revision 1.3  1999/02/11 16:53:35  joergr
  * Added routine to check whether particular grayscale values are unused in
  * the output data.
  * Removed unused parameter / member variable.
