@@ -8,10 +8,10 @@
 ** Purpose:
 **	implements streaming classes for file and buffer input/output
 **
-** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1997-04-18 08:02:10 $
+** Last Update:		$Author: meichel $
+** Update Date:		$Date: 1997-07-04 09:27:48 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/Attic/dcstream.cc,v $
-** CVS/RCS Revision:	$Revision: 1.7 $
+** CVS/RCS Revision:	$Revision: 1.8 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -24,6 +24,8 @@
 #ifdef HAVE_UNISTD_H
 #include <unistd.h>
 #endif
+
+#include <string.h>
 
 #include "dcstream.h"
 #include "dcbuf.h"
@@ -725,7 +727,11 @@ DcmFileStreamConstructor::Copy(void)
 /*
 ** CVS/RCS Log:
 ** $Log: dcstream.cc,v $
-** Revision 1.7  1997-04-18 08:02:10  andreas
+** Revision 1.8  1997-07-04 09:27:48  meichel
+** Now including <stream.h> in dcstream.cc,
+** required for systems without <unistd.h>.
+**
+** Revision 1.7  1997/04/18 08:02:10  andreas
 ** - Make the Declaration of DcmBuffer local to the DcmStream classes
 **
 ** Revision 1.6  1996/09/18 16:28:51  hewett
