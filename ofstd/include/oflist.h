@@ -23,9 +23,9 @@
  *          Defines a template list class with interfaces similar to the C++ Standard
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-06-12 13:21:54 $
+ *  Update Date:      $Date: 2003-06-12 15:20:30 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/include/Attic/oflist.h,v $
- *  CVS/RCS Revision: $Revision: 1.16 $
+ *  CVS/RCS Revision: $Revision: 1.17 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -67,12 +67,12 @@
 
 #ifdef HAVE_STD_NAMESPACE
 #define OFList std::list
-#define OFListIterator(x) std::list<x>::iterator
-#define OFListConstIterator(x) std::list<x>::const_iterator
+#define OFListIterator(x) std::list< x >::iterator
+#define OFListConstIterator(x) std::list< x >::const_iterator
 #else
 #define OFList list
-#define OFListIterator(x) list<x>::iterator
-#define OFListConstIterator(x) list<x>::const_iterator
+#define OFListIterator(x) list< x >::iterator
+#define OFListConstIterator(x) list< x >::const_iterator
 #endif
 
 #define OFListInsert(InputIterator, T, c, pos, first, last) (c).insert((pos), (first), (last))
@@ -530,8 +530,8 @@ void OF_ListRemoveIf(OFList<T>& c, Predicate pred)
 };
 #endif
 
-#define OFListIterator(x) OFIterator<x>
-#define OFListConstIterator(x) OFIterator<x>
+#define OFListIterator(x) OFIterator< x >
+#define OFListConstIterator(x) OFIterator< x >
 
 #endif
 
@@ -540,7 +540,11 @@ void OF_ListRemoveIf(OFList<T>& c, Predicate pred)
 /*
 ** CVS/RCS Log:
 ** $Log: oflist.h,v $
-** Revision 1.16  2003-06-12 13:21:54  joergr
+** Revision 1.17  2003-06-12 15:20:30  joergr
+** Slightly modified macro definitions to avoid potential parser errors (added
+** space character after '<' and before '>').
+**
+** Revision 1.16  2003/06/12 13:21:54  joergr
 ** Introduced macro OFListConstIterator() to support STL const_iterators.
 **
 ** Revision 1.15  2003/06/03 10:20:00  meichel
