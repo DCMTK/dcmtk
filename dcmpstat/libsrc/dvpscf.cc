@@ -22,8 +22,8 @@
  *  Purpose: DVConfiguration
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-10-07 17:21:57 $
- *  CVS/RCS Revision: $Revision: 1.12 $
+ *  Update Date:      $Date: 1999-10-13 14:12:00 $
+ *  CVS/RCS Revision: $Revision: 1.13 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -55,18 +55,22 @@
 #define L0_ALWAYSDELETETERMINATEJOBS    "ALWAYSDELETETERMINATEJOBS"
 #define L0_BITPRESERVINGMODE            "BITPRESERVINGMODE"
 #define L0_BORDERDENSITY                "BORDERDENSITY"
+#define L0_CENTER                       "CENTER"
 #define L0_CHARACTERISTICS              "CHARACTERISTICS"
 #define L0_DEFAULTILLUMINATION          "DEFAULTILLUMINATION"
 #define L0_DEFAULTREFLECTION            "DEFAULTREFLECTION"
 #define L0_DELETEPRINTJOBS              "DELETEPRINTJOBS"
 #define L0_DESCRIPTION                  "DESCRIPTION"
+#define L0_DETAILEDLOG                  "DETAILEDLOG"
 #define L0_DIRECTORY                    "DIRECTORY"
 #define L0_DISABLENEWVRS                "DISABLENEWVRS"
+#define L0_DISPLAYFORMAT                "DISPLAYFORMAT"
 #define L0_EMPTYIMAGEDENSITY            "EMPTYIMAGEDENSITY"
 #define L0_FILENAME                     "FILENAME"
 #define L0_FILMSIZEID                   "FILMSIZEID"
 #define L0_HOSTNAME                     "HOSTNAME"
 #define L0_IMPLICITONLY                 "IMPLICITONLY"
+#define L0_LOGDIRECTORY                 "LOGDIRECTORY"
 #define L0_MAGNIFICATIONTYPE            "MAGNIFICATIONTYPE"
 #define L0_MAXCOLUMNS                   "MAXCOLUMNS"
 #define L0_MAXPDU                       "MAXPDU"
@@ -74,6 +78,7 @@
 #define L0_MAXROWS                      "MAXROWS"
 #define L0_MEDIUMTYPE                   "MEDIUMTYPE"
 #define L0_MINPRINTRESOLUTION           "MINPRINTRESOLUTION"
+#define L0_MODALITY                     "MODALITY"
 #define L0_PORT                         "PORT"
 #define L0_PRESENTATIONLUTINFILMSESSION "PRESENTATIONLUTINFILMSESSION"
 #define L0_PRESENTATIONLUTMATCHREQUIRED "PRESENTATIONLUTMATCHREQUIRED"
@@ -92,6 +97,7 @@
 #define L0_SUPPORTSPRESENTATIONLUT      "SUPPORTSPRESENTATIONLUT"
 #define L0_SUPPORTSTRIM                 "SUPPORTSTRIM"
 #define L0_TYPE                         "TYPE"
+#define L0_WIDTH                        "WIDTH"
 #define L1_DATABASE                     "DATABASE"
 #define L1_GUI                          "GUI"
 #define L1_LUT                          "LUT"
@@ -102,6 +108,7 @@
 #define L2_GENERAL                      "GENERAL"
 #define L2_HIGHENDSYSTEM                "HIGHENDSYSTEM"
 #define L2_LUT                          "LUT"
+#define L2_VOI                          "VOI"
 
 /* --------------- static helper functions --------------- */
 
@@ -399,6 +406,18 @@ const char *DVConfiguration::getSpoolFolder()
   const char *result = getConfigEntry(L2_GENERAL, L1_PRINT, L0_DIRECTORY);
   if (result==NULL) result = PSTAT_SPOOLFOLDER;
   return result;
+}
+
+const char *DVConfiguration::getLogFolder()
+{
+  const char *result = getConfigEntry(L2_GENERAL, L1_PRINT, L0_LOGDIRECTORY);
+  if (result==NULL) result = getSpoolFolder();
+  return result;
+}
+
+OFBool DVConfiguration::getDetailedLog()
+{
+  return getConfigBoolEntry(L2_GENERAL, L1_PRINT, L0_DETAILEDLOG, OFFalse);
 }
 
 unsigned long DVConfiguration::getSpoolerSleep()
@@ -794,11 +813,150 @@ Uint16 DVConfiguration::getDefaultPrintReflection()
   return PSTAT_DEFAULT_REFLECTION;
 }
 
+Uint32 DVConfiguration::getNumberOfVOIPresets(const char *modality)
+{
+  Uint32 result = 0;
+  if (modality && pConfig)
+  {
+  	OFString aModality = modality;
+    const char *currentModality = NULL;
+    pConfig->set_section(2, L2_VOI);
+    if (pConfig->section_valid(2))
+    {
+       pConfig->first_section(1);
+       while (pConfig->section_valid(1))
+       {
+       	 currentModality = pConfig->get_entry(L0_MODALITY);
+         if (currentModality && (aModality == currentModality)) result++;
+         pConfig->next_section(1);
+       }
+    }
+  }
+  return result;
+}
+
+const char *DVConfiguration::getVOIPresetDescription(const char *modality, Uint32 idx)
+{
+  if (modality && pConfig)
+  {
+  	OFString aModality = modality;
+    const char *currentModality = NULL;
+    pConfig->set_section(2, L2_VOI);
+    if (pConfig->section_valid(2))
+    {
+       pConfig->first_section(1);
+       while (pConfig->section_valid(1))
+       {
+       	 currentModality = pConfig->get_entry(L0_MODALITY);
+         if (currentModality && (aModality == currentModality))
+         {
+           if (idx==0)
+           {
+           	  // found entry
+           	  return pConfig->get_entry(L0_DESCRIPTION);
+           } else idx--;
+         }
+         pConfig->next_section(1);
+       }
+    }
+  }
+  return NULL;
+}
+
+double DVConfiguration::getVOIPresetWindowCenter(const char *modality, Uint32 idx)
+{
+  double result = 0.0;
+  if (modality && pConfig)
+  {
+  	OFString aModality = modality;
+    const char *currentModality = NULL;
+    pConfig->set_section(2, L2_VOI);
+    if (pConfig->section_valid(2))
+    {
+       pConfig->first_section(1);
+       while (pConfig->section_valid(1))
+       {
+       	 currentModality = pConfig->get_entry(L0_MODALITY);
+         if (currentModality && (aModality == currentModality))
+         {
+           if (idx==0)
+           {
+           	  // found entry
+           	  const char *window = pConfig->get_entry(L0_CENTER);
+           	  if (window && (1 == sscanf(window, "%lf", &result))) return result; else return 0.0;
+           } else idx--;
+         }
+         pConfig->next_section(1);
+       }
+    }
+  }
+  return result;
+}
+
+double DVConfiguration::getVOIPresetWindowWidth(const char *modality, Uint32 idx)
+{
+  double result = 1.0;
+  if (modality && pConfig)
+  {
+  	OFString aModality = modality;
+    const char *currentModality = NULL;
+    pConfig->set_section(2, L2_VOI);
+    if (pConfig->section_valid(2))
+    {
+       pConfig->first_section(1);
+       while (pConfig->section_valid(1))
+       {
+       	 currentModality = pConfig->get_entry(L0_MODALITY);
+         if (currentModality && (aModality == currentModality))
+         {
+           if (idx==0)
+           {
+           	  // found entry
+           	  const char *window = pConfig->get_entry(L0_WIDTH);
+           	  if (window && (1 == sscanf(window, "%lf", &result))) return result; else return 1.0;
+           } else idx--;
+         }
+         pConfig->next_section(1);
+       }
+    }
+  }
+  return result;
+}
+
+Uint32 DVConfiguration::getTargetPrinterNumberOfPortraitDisplayFormats(const char *targetID)
+{
+  return countValues(getConfigEntry(L2_COMMUNICATION, targetID, L0_DISPLAYFORMAT));
+}
+
+Uint32 DVConfiguration::getTargetPrinterPortraitDisplayFormatRows(const char *targetID, Uint32 idx)
+{
+  OFString value;
+  unsigned long rows=0;
+  unsigned long columns=0;
+  copyValue(getConfigEntry(L2_COMMUNICATION, targetID, L0_DISPLAYFORMAT), idx, value);
+  if (2==sscanf(value.c_str(), "%lu,%lu", &columns, &rows)) return rows;
+  return 0;
+}
+
+Uint32 DVConfiguration::getTargetPrinterPortraitDisplayFormatColumns(const char *targetID, Uint32 idx)
+{
+  OFString value;
+  unsigned long rows=0;
+  unsigned long columns=0;
+  copyValue(getConfigEntry(L2_COMMUNICATION, targetID, L0_DISPLAYFORMAT), idx, value);
+  if (2==sscanf(value.c_str(), "%lu,%lu", &columns, &rows)) return columns;
+  return 0;
+}
 
 /*
  *  CVS/RCS Log:
  *  $Log: dvpscf.cc,v $
- *  Revision 1.12  1999-10-07 17:21:57  meichel
+ *  Revision 1.13  1999-10-13 14:12:00  meichel
+ *  Added config file entries and access methods
+ *    for user-defined VOI presets, log directory, verbatim logging
+ *    and an explicit list of image display formats for each printer.
+ *
+ *  Revision 1.12  1999/10/07 17:21:57  meichel
  *  Reworked management of Presentation LUTs in order to create tighter
  *    coupling between Softcopy and Print.
  *

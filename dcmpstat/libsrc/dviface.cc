@@ -21,9 +21,9 @@
  *
  *  Purpose: DVPresentationState
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-10-13 06:44:17 $
- *  CVS/RCS Revision: $Revision: 1.75 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 1999-10-13 14:11:59 $
+ *  CVS/RCS Revision: $Revision: 1.76 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -2304,6 +2304,7 @@ E_Condition DVInterface::startPrintSpooler()
   if (sleepingTime==0) sleepingTime=1; // default
   char sleepStr[20];
   sprintf(sleepStr, "%lu", sleepingTime);
+  OFBool detailedLog = getDetailedLog();
 
   E_Condition result = EC_Normal;
 
@@ -2321,11 +2322,22 @@ E_Condition DVInterface::startPrintSpooler()
     else if (pid==0)
     {
       // we are the child process
-      if (execl(spooler_application, spooler_application, "--spool", printJobIdentifier.c_str(),
-        "--printer", printer, "--config", configPath.c_str(), "--sleep", sleepStr, NULL) < 0)
+
+      if (detailedLog)
       {
-        *logstream << "error: unable to execute '" << spooler_application << "'" << endl;
+        if (execl(spooler_application, spooler_application, "--verbose", "--dump", "--spool", printJobIdentifier.c_str(),
+          "--printer", printer, "--config", configPath.c_str(), "--sleep", sleepStr, NULL) < 0)
+        {
+          *logstream << "error: unable to execute '" << spooler_application << "'" << endl;
+        }
+      } else {
+        if (execl(spooler_application, spooler_application, "--spool", printJobIdentifier.c_str(),
+          "--printer", printer, "--config", configPath.c_str(), "--sleep", sleepStr, NULL) < 0)
+        {
+          *logstream << "error: unable to execute '" << spooler_application << "'" << endl;
+        }
       }
+
       // if execl succeeds, this part will not get executed.
       // if execl fails, there is not much we can do except bailing out.
       abort();
@@ -2338,8 +2350,14 @@ E_Condition DVInterface::startPrintSpooler()
     OFBitmanipTemplate<char>::zeroMem((char *)&sinfo, sizeof(sinfo));
     sinfo.cb = sizeof(sinfo);
     char commandline[4096];
-    sprintf(commandline, "%s --spool %s --printer %s --config %s --sleep %s", spooler_application,
-      printJobIdentifier.c_str(), printer, configPath.c_str(), sleepStr);
+    if (detailedLog)
+    {
+      sprintf(commandline, "%s --verbose --dump --spool %s --printer %s --config %s --sleep %s", spooler_application,
+        printJobIdentifier.c_str(), printer, configPath.c_str(), sleepStr);
+    } else {
+      sprintf(commandline, "%s --spool %s --printer %s --config %s --sleep %s", spooler_application,
+        printJobIdentifier.c_str(), printer, configPath.c_str(), sleepStr);
+    }
 #ifdef DEBUG
     if (0 == CreateProcess(NULL, commandline, NULL, NULL, 0, 0, NULL, NULL, &sinfo, &procinfo))
 #else
@@ -2559,7 +2577,12 @@ void DVInterface::setLog(ostream *o)
 /*
  *  CVS/RCS Log:
  *  $Log: dviface.cc,v $
- *  Revision 1.75  1999-10-13 06:44:17  joergr
+ *  Revision 1.76  1999-10-13 14:11:59  meichel
+ *  Added config file entries and access methods
+ *    for user-defined VOI presets, log directory, verbatim logging
+ *    and an explicit list of image display formats for each printer.
+ *
+ *  Revision 1.75  1999/10/13 06:44:17  joergr
  *  Fixed bug in get/setAmbientLightValue()
  *
  *  Revision 1.74  1999/10/07 17:21:56  meichel

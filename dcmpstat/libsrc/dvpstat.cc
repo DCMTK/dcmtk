@@ -23,8 +23,8 @@
  *    classes: DVPresentationState
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-10-07 17:22:03 $
- *  CVS/RCS Revision: $Revision: 1.41 $
+ *  Update Date:      $Date: 1999-10-13 14:12:02 $
+ *  CVS/RCS Revision: $Revision: 1.42 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -177,6 +177,7 @@ DVPresentationState::DVPresentationState(
 , currentImageCurveList()
 , currentImageVOILUTList()
 , currentImageVOIWindowList()
+, currentImageModality(DCM_Modality)
 , displayTransform(DVPSD_GSDF)
 , imageInverse(OFFalse)
 , displayFunction(dispFunction)
@@ -207,6 +208,7 @@ void DVPresentationState::detachImage()
   currentImageCurveList.clear();
   currentImageVOILUTList.clear();
   currentImageVOIWindowList.clear();
+  currentImageModality.clear();
   // reset flags
   currentImageWidth = 0;
   currentImageHeight = 0;
@@ -1764,8 +1766,16 @@ E_Condition DVPresentationState::attachImage(DcmDataset *dataset, OFBool transfe
       currentImageDataset = dataset;
       currentImageOwned = transferOwnership;
       currentImageSelectedFrame = 1; // default: first frame
+
+      // get Modality
+      if (EC_Normal == dataset->search(DCM_Modality, stack, ESM_fromHere, OFFalse))
+      {
+        currentImageModality = *((DcmCodeString *)(stack.top()));
+      }
+      stack.clear();
+      
       // get SOP class UID and SOP instance UID.
-      if (EC_Normal == dataset->search(DCM_SOPClassUID, stack, ESM_fromHere, OFFalse))
+      if ((EC_Normal == result)&&(EC_Normal == dataset->search(DCM_SOPClassUID, stack, ESM_fromHere, OFFalse)))
       {
         result = ((DcmUniqueIdentifier *)(stack.top()))->getString(currentImageSOPClassUID);
       }
@@ -3634,9 +3644,20 @@ E_Condition DVPresentationState::writePresentationLUT(DcmItem &dset)
   return presentationLUT.write(dset, OFFalse);
 }
 
+const char *DVPresentationState::getCurrentImageModality()
+{
+  char *c = NULL;
+  if (EC_Normal == currentImageModality.getString(c)) return c; else return NULL;
+}
+
 /*
  *  $Log: dvpstat.cc,v $
- *  Revision 1.41  1999-10-07 17:22:03  meichel
+ *  Revision 1.42  1999-10-13 14:12:02  meichel
+ *  Added config file entries and access methods
+ *    for user-defined VOI presets, log directory, verbatim logging
+ *    and an explicit list of image display formats for each printer.
+ *
+ *  Revision 1.41  1999/10/07 17:22:03  meichel
  *  Reworked management of Presentation LUTs in order to create tighter
  *    coupling between Softcopy and Print.
  *

@@ -23,8 +23,8 @@
  *    classes: DVPresentationState
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-10-07 17:21:51 $
- *  CVS/RCS Revision: $Revision: 1.24 $
+ *  Update Date:      $Date: 1999-10-13 14:11:57 $
+ *  CVS/RCS Revision: $Revision: 1.25 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1649,6 +1649,11 @@ public:
    */
   E_Condition writeHardcopyImageAttributes(DcmItem &dset);
 
+  /** gets the modality of the attached image.
+   *  @return modality string if it exists, NULL or empty string otherwise.
+   */
+  const char *getCurrentImageModality();
+
 private:
 
   /** private undefined copy constructor
@@ -1985,6 +1990,10 @@ private:
   /** list of VOI Windows of the currently attached image
    */
   DVPSVOIWindow_PList currentImageVOIWindowList;  
+
+  /** modality of currently attached image (if any)
+   */
+  DcmCodeString currentImageModality;
   
   /** flag indicating the currently selected display transform
    *  DVPSD_none if switched off
@@ -2020,7 +2029,12 @@ private:
 
 /*
  *  $Log: dvpstat.h,v $
- *  Revision 1.24  1999-10-07 17:21:51  meichel
+ *  Revision 1.25  1999-10-13 14:11:57  meichel
+ *  Added config file entries and access methods
+ *    for user-defined VOI presets, log directory, verbatim logging
+ *    and an explicit list of image display formats for each printer.
+ *
+ *  Revision 1.24  1999/10/07 17:21:51  meichel
  *  Reworked management of Presentation LUTs in order to create tighter
  *    coupling between Softcopy and Print.
  *

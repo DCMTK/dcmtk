@@ -23,8 +23,8 @@
  *    classes: DVConfiguration
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-10-07 17:21:46 $
- *  CVS/RCS Revision: $Revision: 1.8 $
+ *  Update Date:      $Date: 1999-10-13 14:11:56 $
+ *  CVS/RCS Revision: $Revision: 1.9 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -209,6 +209,54 @@ class DVConfiguration
      */
     OFBool getTargetPrinterSupportsTrim(const char *targetID);
 
+    /** returns the number of distinct values (separated by backslash characters)
+     *  in the BORDERDENSITY entry for the printer with the given
+     *  target ID from the configuration file.
+     *  @param targetID communication target ID, must be one of the target
+     *    identifiers returned by getTargetID() for peer type DVPSE_printer.
+     *  @return number of values if entry present in the config file, 0 otherwise.
+     */
+    Uint32 getTargetPrinterNumberOfBorderDensities(const char *targetID);
+
+    /** returns one value from the BORDERDENSITY entry for the printer
+     *  with the given target ID from the configuration file.
+     *  @param targetID communication target ID, must be one of the target
+     *    identifiers returned by getTargetID() for peer type DVPSE_printer.
+     *  @param idx index of the value, must be < getTargetPrinterNumberOfBorderDensities(targetID)
+     *  @param value the result is both stored in this object and returned as return value.
+     *  @return value if present, NULL otherwise.
+     */
+    const char *getTargetPrinterBorderDensity(const char *targetID, Uint32 idx, OFString& value);
+
+    /** returns the number of distinct values (separated by backslash characters)
+     *  in the DISPLAYFORMAT entry for the printer with the given
+     *  target ID from the configuration file.
+     *  @param targetID communication target ID, must be one of the target
+     *    identifiers returned by getTargetID() for peer type DVPSE_printer.
+     *  @return number of values if entry present in the config file, 0 otherwise.
+     */
+    Uint32 getTargetPrinterNumberOfPortraitDisplayFormats(const char *targetID);
+
+    /** returns one row value from the DISPLAYFORMAT entry for the printer
+     *  with the given target ID from the configuration file.
+     *  @param targetID communication target ID, must be one of the target
+     *    identifiers returned by getTargetID() for peer type DVPSE_printer.
+     *  @param idx index of the value, must be < getTargetPrinterNumberOfPortraitDisplayFormats(targetID)
+     *  @return number of rows for this display format if present, 0 otherwise
+     */
+    Uint32 getTargetPrinterPortraitDisplayFormatRows(const char *targetID, Uint32 idx);
+
+    /** returns one columns value from the DISPLAYFORMAT entry for the printer
+     *  with the given target ID from the configuration file.
+     *  @param targetID communication target ID, must be one of the target
+     *    identifiers returned by getTargetID() for peer type DVPSE_printer.
+     *  @param idx index of the value, must be < getTargetPrinterNumberOfPortraitDisplayFormats(targetID)
+     *  @return number of columns for this display format if present, 0 otherwise
+     */
+    Uint32 getTargetPrinterPortraitDisplayFormatColumns(const char *targetID, Uint32 idx);
+
+// --- <BEGIN> ONLY FOR COMPATIBILITY REASONS <BEGIN> ---
+
     /** returns the MAXCOLUMNS entry for the printer with the given
      *  target ID from the configuration file.
      *  @param targetID communication target ID, must be one of the target
@@ -224,6 +272,8 @@ class DVConfiguration
      *  @return entry if present in the config file, 0xFFFFFFFF otherwise.
      */
     Uint32 getTargetPrinterMaxDisplayFormatRows(const char *targetID);
+
+// --- <END> ONLY FOR COMPATIBILITY REASONS <END> ---
 
     /** returns the number of distinct values (separated by backslash characters)
      *  in the FILMSIZEID entry for the printer with the given
@@ -338,25 +388,6 @@ class DVConfiguration
     const char *getTargetPrinterConfigurationSetting(const char *targetID, Uint32 idx);
 
     /** returns the number of distinct values (separated by backslash characters)
-     *  in the BORDERDENSITY entry for the printer with the given
-     *  target ID from the configuration file.
-     *  @param targetID communication target ID, must be one of the target
-     *    identifiers returned by getTargetID() for peer type DVPSE_printer.
-     *  @return number of values if entry present in the config file, 0 otherwise.
-     */
-    Uint32 getTargetPrinterNumberOfBorderDensities(const char *targetID);
-
-    /** returns one value from the BORDERDENSITY entry for the printer
-     *  with the given target ID from the configuration file.
-     *  @param targetID communication target ID, must be one of the target
-     *    identifiers returned by getTargetID() for peer type DVPSE_printer.
-     *  @param idx index of the value, must be < getTargetPrinterNumberOfBorderDensities(targetID)
-     *  @param value the result is both stored in this object and returned as return value.
-     *  @return value if present, NULL otherwise.
-     */
-    const char *getTargetPrinterBorderDensity(const char *targetID, Uint32 idx, OFString& value);
-
-    /** returns the number of distinct values (separated by backslash characters)
      *  in the EMPTYIMAGEDENSITY entry for the printer with the given
      *  target ID from the configuration file.
      *  @param targetID communication target ID, must be one of the target
@@ -428,6 +459,19 @@ class DVConfiguration
      *  @return spool folder path. Never returns NULL.
      */
     const char *getSpoolFolder();
+
+    /** returns the log folder to be used by detached print processes.
+     *  Value is taken from the section GENERAL/PRINT/LOGDIRECTORY
+     *  in the config file. If absent, a default value is returned.
+     *  @return log folder path. Never returns NULL.
+     */
+    const char *getLogFolder();
+
+    /** returns the DETAILEDLOG entry
+     *  from the section GENERAL/PRINT in the config file.
+     *  @return entry if present in the config file, OFFalse otherwise.
+     */
+    OFBool getDetailedLog();
 
     /** returns the filename (path) of the DICOM Store SCU application used
      *  for sending images, as configured in section
@@ -578,6 +622,35 @@ class DVConfiguration
      */
     Uint16 getDefaultPrintReflection();
 
+    /* VOI settings */
+
+    /** returns the number of VOI Presets defined for the given modality
+     *  @param modality Modality, e.g. "CT", "MR", "DX" etc.
+     *  @return number of VOI Presets
+     */
+    Uint32 getNumberOfVOIPresets(const char *modality);
+
+    /** returns the description string for the given VOI Preset
+     *  @param modality Modality, e.g. "CT", "MR", "DX" etc.
+     *  @param idx index of the value, must be < getNumberOfVOIPresets(modality)
+     *  @return description if present, NULL otherwise.
+     */
+    const char *getVOIPresetDescription(const char *modality, Uint32 idx);
+
+    /** returns the window center for the given VOI Preset
+     *  @param modality Modality, e.g. "CT", "MR", "DX" etc.
+     *  @param idx index of the value, must be < getNumberOfVOIPresets(modality)
+     *  @return window center if present, 0.0 otherwise.
+     */
+    double getVOIPresetWindowCenter(const char *modality, Uint32 idx);
+
+    /** returns the window width for the given VOI Preset
+     *  @param modality Modality, e.g. "CT", "MR", "DX" etc.
+     *  @param idx index of the value, must be < getNumberOfVOIPresets(modality)
+     *  @return window width if present, 1.0 otherwise.
+     */
+    double getVOIPresetWindowWidth(const char *modality, Uint32 idx);
+
     /** sets a new log stream
      *  @param o new log stream, must not be NULL
      */
@@ -633,7 +706,12 @@ private:
 /*
  *  CVS/RCS Log:
  *  $Log: dvpscf.h,v $
- *  Revision 1.8  1999-10-07 17:21:46  meichel
+ *  Revision 1.9  1999-10-13 14:11:56  meichel
+ *  Added config file entries and access methods
+ *    for user-defined VOI presets, log directory, verbatim logging
+ *    and an explicit list of image display formats for each printer.
+ *
+ *  Revision 1.8  1999/10/07 17:21:46  meichel
  *  Reworked management of Presentation LUTs in order to create tighter
  *    coupling between Softcopy and Print.
  *

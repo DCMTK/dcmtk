@@ -22,9 +22,9 @@
  *  Purpose: Presentation State Viewer - Print Spooler
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-10-07 17:21:41 $
+ *  Update Date:      $Date: 1999-10-13 14:11:53 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmpstat/apps/Attic/dcmprtsv.cc,v $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -509,10 +509,11 @@ static E_Condition updateJobList(
   printJob *currentJob = NULL;
   OFBool currentTerminate = OFFalse;
   E_Condition result = EC_Normal;
-
+  const char *spoolFolder = dvi.getSpoolFolder();
+  
 #ifdef _WIN32
   WIN32_FIND_DATA stWin32FindData;
-  OFString currentdir = dvi.getSpoolFolder();
+  OFString currentdir = spoolFolder;
   currentdir += "\\*";
 
   HANDLE hFile = FindFirstFile(currentdir.c_str(), &stWin32FindData);
@@ -523,7 +524,7 @@ static E_Condition updateJobList(
 #else
   DIR *dirp = NULL;
   struct dirent *dp = NULL;
-  if ((dirp = opendir(dvi.getSpoolFolder())) != NULL)
+  if ((dirp = opendir(spoolFolder)) != NULL)
   {
     for (dp=readdir(dirp);((result == EC_Normal)&&(dp != NULL)); dp=readdir(dirp))
     {
@@ -534,7 +535,7 @@ static E_Condition updateJobList(
           (postfix == currentName.substr(currentName.size()-postfixSize)))
       {
         // name matches pattern
-        jobName = dvi.getSpoolFolder();
+        jobName = spoolFolder;
         jobName += PATH_SEPARATOR;
         jobName += currentName;
         renameName = jobName;
@@ -569,7 +570,7 @@ static E_Condition updateJobList(
     closedir(dirp);
 #endif
   } else {
-    *logstream << "error: unable to read spool directory '" << dvi.getSpoolFolder() << "'" << endl;
+    *logstream << "error: unable to read spool directory '" << spoolFolder << "'" << endl;
     result = EC_IllegalCall;
   }
   return result;
@@ -741,7 +742,7 @@ int main(int argc, char *argv[])
     if (opt_spoolMode)
     {
       time_t now = time(NULL);
-      OFString fname = dvi.getSpoolFolder();
+      OFString fname = dvi.getLogFolder();
       fname += PATH_SEPARATOR;
       fname += opt_spoolPrefix;
       fname += "_";
@@ -917,7 +918,12 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmprtsv.cc,v $
- * Revision 1.7  1999-10-07 17:21:41  meichel
+ * Revision 1.8  1999-10-13 14:11:53  meichel
+ * Added config file entries and access methods
+ *   for user-defined VOI presets, log directory, verbatim logging
+ *   and an explicit list of image display formats for each printer.
+ *
+ * Revision 1.7  1999/10/07 17:21:41  meichel
  * Reworked management of Presentation LUTs in order to create tighter
  *   coupling between Softcopy and Print.
  *
