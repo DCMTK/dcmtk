@@ -22,9 +22,9 @@
  *  Purpose: DicomLookupTable (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-10-20 18:40:26 $
+ *  Update Date:      $Date: 1999-11-24 11:14:44 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/libsrc/diluptab.cc,v $
- *  CVS/RCS Revision: $Revision: 1.15 $
+ *  CVS/RCS Revision: $Revision: 1.16 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -392,6 +392,88 @@ int DiLookupTable::invertTable(const int flag)
 }
 
 
+int DiLookupTable::mirrorTable(const int flag)
+{
+    int result = 0;
+    if ((Data != NULL) && (Count > 0) && (flag & 0x3))
+    {
+        register Uint32 i;
+        if (flag & 0x2)
+        {
+            if (OriginalData != NULL)
+            {
+                if (OriginalBitsAllocated == 8)
+                {
+                    if (Bits <= 8)
+                    {
+                        register Uint8 *p = (Uint8 *)OriginalData + (Count - 1);
+                        register Uint8 *q = (Uint8 *)OriginalData;
+                        register Uint8 val;
+                        const unsigned long mid = Count / 2;
+                        for (i = mid; i != 0; i--)
+                        {
+                            val = *q;
+                            *(q++) = *p;
+                            *(p--) = val;
+                        }
+                        result |= 0x2;
+                    }
+                } else {
+                    register Uint16 *p = (Uint16 *)OriginalData + (Count - 1);
+                    register Uint16 *q = (Uint16 *)OriginalData;
+                    register Uint16 val;
+                    const unsigned long mid = Count / 2;
+                    for (i = mid; i != 0; i--)
+                    {
+                        val = *q;
+                        *(q++) = *p;
+                        *(p--) = val;
+                    }
+                    result |= 0x2;
+                }
+            }
+        }
+        if (flag & 0x1)
+        {
+            if (DataBuffer != NULL)
+            {
+                register Uint16 *p = DataBuffer + (Count - 1);
+                register Uint16 *q = DataBuffer;
+                register Uint16 val;
+                const unsigned long mid = Count / 2;
+                for (i = mid; i != 0; i--)
+                {
+                    val = *q;
+                    *(q++) = *p;
+                    *(p--) = val;
+                }
+                result |= 0x1;
+            }
+            else if (!(flag & 0x2))
+            {
+                DataBuffer = new Uint16[Count];
+                if (DataBuffer != NULL)
+                {
+                    register Uint16 *p = (Uint16 *)Data + (Count - 1);
+                    register Uint16 *q = DataBuffer;
+                    register Uint16 val;
+                    const unsigned long mid = Count / 2;
+                    for (i = mid; i != 0; i--)
+                    {
+                        val = *q;
+                        *(q++) = *p;
+                        *(p--) = val;
+                    }
+                    Data = DataBuffer;
+                    result |= 0x1;
+                }
+            }
+        }
+    }
+    return result;
+}
+
+
 DiLookupTable *DiLookupTable::createInverseLUT() const
 {
     DiLookupTable *lut = NULL;
@@ -473,7 +555,10 @@ OFBool DiLookupTable::operator==(const DiLookupTable &lut)
  *
  * CVS/RCS Log:
  * $Log: diluptab.cc,v $
- * Revision 1.15  1999-10-20 18:40:26  joergr
+ * Revision 1.16  1999-11-24 11:14:44  joergr
+ * Added method to mirror order of entries in look-up tables.
+ *
+ * Revision 1.15  1999/10/20 18:40:26  joergr
  * Removed const from pointer declaration (problem reported by MSVC).
  *
  * Revision 1.14  1999/10/20 10:36:37  joergr
