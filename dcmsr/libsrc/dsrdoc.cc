@@ -23,8 +23,8 @@
  *    classes: DSRDocument
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-10-27 11:25:31 $
- *  CVS/RCS Revision: $Revision: 1.47 $
+ *  Update Date:      $Date: 2003-10-31 13:30:10 $
+ *  CVS/RCS Revision: $Revision: 1.48 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1047,7 +1047,7 @@ OFCondition DSRDocument::writeXML(ostream &stream,
                     if (obsCode.isValid())
                     {
                         if (flags & DSRTypes::XF_codeComponentsAsAttribute)
-                            stream << "<code";     // bracket ">" is closed in next writeXML() routine
+                            stream << "<code";     // bracket ">" is closed in next writeXML() call
                         else
                             stream << "<code>" << endl;
                         obsCode.writeXML(stream, flags, LogStream);
@@ -1059,13 +1059,19 @@ OFCondition DSRDocument::writeXML(ostream &stream,
             }
             stream << "</verification>" << endl;
 
-            stream << "<predecessor>" << endl;
-            PredecessorDocuments.writeXML(stream, flags);
-            stream << "</predecessor>" << endl;
+            if ((flags & XF_writeEmptyTags) || !PredecessorDocuments.empty())
+            {
+                stream << "<predecessor>" << endl;
+                PredecessorDocuments.writeXML(stream, flags);
+                stream << "</predecessor>" << endl;
+            }
         }
-        stream << "<identical>" << endl;
-        IdenticalDocuments.writeXML(stream, flags);
-        stream << "</identical>" << endl;
+        if ((flags & XF_writeEmptyTags) || !IdenticalDocuments.empty())
+        {
+            stream << "<identical>" << endl;
+            IdenticalDocuments.writeXML(stream, flags);
+            stream << "</identical>" << endl;
+        }
 
         // --- write document content/tree to stream ---
 
@@ -1383,7 +1389,7 @@ OFCondition DSRDocument::renderHTML(ostream &stream,
 
             stream << "<small>" << endl;
             stream << "This page was generated from a DICOM Structured Reporting document by ";
-            stream << "<a href=\"" << DCMTK_INTERNET_URL << "\">OFFIS dcmtk</a> " << OFFIS_DCMTK_VERSION << "." << endl;
+            stream << "<a href=\"" << DCMTK_INTERNET_URL << "\">OFFIS DCMTK</a> " << OFFIS_DCMTK_VERSION << "." << endl;
             stream << "</small>" << endl;
         }
 
@@ -2216,7 +2222,11 @@ void DSRDocument::updateAttributes(const OFBool updateAll)
 /*
  *  CVS/RCS Log:
  *  $Log: dsrdoc.cc,v $
- *  Revision 1.47  2003-10-27 11:25:31  joergr
+ *  Revision 1.48  2003-10-31 13:30:10  joergr
+ *  Changed behaviour: do not output empty list of predecessor or identical
+ *  documents in XML format unless flag XF_writeEmptyTags is set.
+ *
+ *  Revision 1.47  2003/10/27 11:25:31  joergr
  *  Made text of a warning message consistent with other messages in this module
  *  (always begin with an upper-case character).
  *
