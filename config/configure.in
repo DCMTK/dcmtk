@@ -970,6 +970,10 @@ AC_ARG_WITH(libwrap,
     [#ifdef __cplusplus
     extern "C" {
     #endif
+    #ifdef HAVE_STDIO_H
+    /* on some platforms, tcpd.h needs stdio.h */
+    #include <stdio.h>
+    #endif
     #ifdef HAVE_SYS_TYPES_H
     /* on some platforms, tcpd.h needs sys/types.h */
     #include <sys/types.h>
