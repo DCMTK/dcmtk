@@ -23,8 +23,8 @@
  *    classes: DSRDocumentTreeNode
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-10-13 07:49:26 $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  Update Date:      $Date: 2000-10-18 17:02:27 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -52,6 +52,8 @@
 class DSRDocumentTreeNode
   : public DSRTreeNode
 {
+    // allow access to getConceptNamePtr()
+    friend class DSRContentItem;
 
   public:
 
@@ -83,27 +85,27 @@ class DSRDocumentTreeNode
                                    const size_t flags,
                                    OFConsole *logStream = NULL) const;
 
-    OFBool hasChildNodes() const
+    inline OFBool hasChildNodes() const
     {
         return (Down != NULL);
     }
 
-    size_t getNodeID() const
+    inline size_t getNodeID() const
     {
         return Ident;
     }
 
-    E_RelationshipType getRelationshipType() const
+    inline E_RelationshipType getRelationshipType() const
     {
         return RelationshipType;
     }
 
-    E_ValueType getValueType() const
+    inline E_ValueType getValueType() const
     {
         return ValueType;
     }
 
-    const DSRCodedEntryValue &getConceptName() const
+    inline const DSRCodedEntryValue &getConceptName() const
     {
         return ConceptName;
     }
@@ -112,7 +114,7 @@ class DSRDocumentTreeNode
 
     E_Condition setConceptName(const DSRCodedEntryValue &conceptName);
 
-    const OFString &getObservationDateTime() const
+    inline const OFString &getObservationDateTime() const
     {
         return ObservationDateTime;
     }
@@ -125,6 +127,11 @@ class DSRDocumentTreeNode
 
 
   protected:
+
+    inline DSRCodedEntryValue *getConceptNamePtr()
+    {
+        return &ConceptName;
+    }
 
     E_Condition createAndAppendNewNode(DSRDocumentTreeNode *&previousNode,
                                        const E_DocumentType documentType,
@@ -210,7 +217,11 @@ class DSRDocumentTreeNode
 /*
  *  CVS/RCS Log:
  *  $Log: dsrdoctn.h,v $
- *  Revision 1.1  2000-10-13 07:49:26  joergr
+ *  Revision 1.2  2000-10-18 17:02:27  joergr
+ *  Added methods allowing direct access to certain content item values.
+ *  Made some functions inline.
+ *
+ *  Revision 1.1  2000/10/13 07:49:26  joergr
  *  Added new module 'dcmsr' providing access to DICOM structured reporting
  *  documents (supplement 23).  Doc++ documentation not yet completed.
  *
