@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DSRCodedEntryValue
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-08-07 17:29:13 $
- *  CVS/RCS Revision: $Revision: 1.15 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2003-09-08 14:59:32 $
+ *  CVS/RCS Revision: $Revision: 1.16 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -180,7 +180,7 @@ OFCondition DSRCodedEntryValue::readItem(DcmItem &dataset,
     {
         result = DSRTypes::getAndCheckStringValueFromDataset(dataset, DCM_CodeMeaning, CodeMeaning, "1", "1", logStream, moduleName);
         /* optional (type 3) */
-        DSRTypes::getAndCheckStringValueFromDataset(dataset, DCM_PrivateCodingSchemeCreatorUID, PrivateCodingSchemeCreatorUID, "1", "3", logStream, moduleName);
+        DSRTypes::getAndCheckStringValueFromDataset(dataset, DCM_CodingSchemeUID, PrivateCodingSchemeCreatorUID, "1", "3", logStream, moduleName);
     }
     /* tbd: might add check for correct code */
 
@@ -200,7 +200,7 @@ OFCondition DSRCodedEntryValue::writeItem(DcmItem &dataset,
     if (result.good())
         result = DSRTypes::putStringValueToDataset(dataset, DCM_CodeMeaning, CodeMeaning);
     if (result.good() && !PrivateCodingSchemeCreatorUID.empty())      /* optional (type 3) */
-        result = DSRTypes::putStringValueToDataset(dataset, DCM_PrivateCodingSchemeCreatorUID, PrivateCodingSchemeCreatorUID);
+        result = DSRTypes::putStringValueToDataset(dataset, DCM_CodingSchemeUID, PrivateCodingSchemeCreatorUID);
     return result;
 }
 
@@ -413,7 +413,10 @@ OFBool DSRCodedEntryValue::checkCode(const OFString &codeValue,
 /*
  *  CVS/RCS Log:
  *  $Log: dsrcodvl.cc,v $
- *  Revision 1.15  2003-08-07 17:29:13  joergr
+ *  Revision 1.16  2003-09-08 14:59:32  meichel
+ *  Updated attribute names that have changed in DICOM 2003
+ *
+ *  Revision 1.15  2003/08/07 17:29:13  joergr
  *  Removed libxml dependency from header files. Simplifies linking (MSVC).
  *
  *  Revision 1.14  2003/08/07 15:21:53  joergr
