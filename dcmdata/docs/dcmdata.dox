@@ -1,0 +1,11 @@
+/*!
+
+\addtogroup dcmdata dcmdata
+
+This module is ... and contains the following command line tools:
+
+\li \b dcmdump: \ref dcmdump
+\li \b dump2dcm: ...
+\li ...
+
+*/

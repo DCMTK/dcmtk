@@ -6,18 +6,17 @@ DICOM TOOLKIT (DCMTK) INSTALLATION
 PRE-REQUISITES
 ==============
 
-The DICOM ToolKit (DCMTK) needs to be compiled with a C++ compiler.
-We recommend using the GNU C++ compiler in versions higher than 2.7
-(most of the development was done using GNU C++ 3.2 on Linux 2.4).
-The software is also known to compile using the SUNPro C++ compiler,
-the IBM C Set++ compiler and the Microsoft Visual C++ compiler.
+The DICOM ToolKit (DCMTK) needs to be compiled with a C++ compiler.  We
+recommend using the GNU C++ compiler in versions higher than 2.7 (most of the
+development was done using GNU C++ 3.2 on Linux 2.4). The software is also
+known to compile using the SUNPro C++ compiler, the IBM C Set++ compiler and
+the Microsoft Visual C++ compiler.
 
-Compatibility with other C++ compilers is unknown, however, we have
-tried to keep language demands to a minimum (newer C++ features such
-as ANSI C++ Library, Exceptions and RTTI have been avoided).
+Compatibility with other C++ compilers is unknown, however, we have tried to
+keep language demands to a minimum (newer C++ features such as ANSI C++
+Library, Exceptions and RTTI have been avoided).
 
-You will need between 100Mb and 250Mb of disk space to compile all
-the software.
+You will need between 100 and 250 Mb of disk space to compile all the software.
 
 
 SUPPORTED SYSTEMS
@@ -53,27 +52,27 @@ The current DCMTK software release successfully compiles on the following
 operating system / hardware / compiler combinations using the instructions
 given below:
 
-    FreeBSD 4.6    / Intel x86       / Gnu gcc 2.95.3
-    HP-UX 10.20    / HP PA-RISC      / Gnu gcc 2.95.2
-    IRIX 5.3       / SGI Indy        / Gnu gcc 2.95.3   (see note *2)
-    IRIX 6.5       / SGI Onyx        / Gnu gcc 2.95.2   (see note *4)
-    IRIX 6.5       / SGI Onyx        / MIPSpro 7.3.1.1m (see note *4)
-    Linux 2.0.33   / Intel x86       / Gnu gcc 2.7.2.1
-    Linux 2.2.16   / Intel x86       / Gnu gcc 2.95.2
-    Linux 2.4.19   / Intel x86       / Gnu gcc 3.2
-    MacOS X 10.1.5 / Power Mac G4    / Apple gcc-934.3 (gcc 2.95.2) (see note *5)
-    MacOS X 10.2.2 / Power Mac G4    / Apple gcc-1173  (gcc 3.1)
-    NetBSD 1.5.2   / Intel x86       / Gnu egcs 1.1.2  (egcs-2.91.66)
-    OSF/1 4.0      / DEC Alpha       / Compaq C++ V6.3-002
-    OSF/1 4.0      / DEC Alpha       / Gnu gcc 2.95.3
-    OpenBSD 3.0    / Intel x86       / Gnu gcc 2.95.3
-    Solaris 2.5.1  / Sun Sparc       / Gnu egcs 1.1.2  (egcs-2.91.66)
-    Solaris 2.5.1  / Sun Sparc       / Sun SC 2.0.1 (SunPro C++ 3.0.1)
-    Solaris 7      / Sun Sparc       / Gnu gcc 2.95.3
-    Solaris 7      / Sun Sparc       / SunPro CC 4.2
-    Solaris 8      / Sun Sparc       / Gnu gcc 3.0.2
-    Solaris 8      / Sun Sparc       / SunPro CC 5.2 (Sun WorkShop 6 update 1)
-    WindowsNT 4.0  / Intel x86       / Cygwin 1.3.13 (gcc 3.2)
+    FreeBSD 4.6    / Intel x86    / Gnu gcc 2.95.3
+    HP-UX 10.20    / HP PA-RISC   / Gnu gcc 2.95.2
+    IRIX 5.3       / SGI Indy     / Gnu gcc 2.95.3   (see note *2)
+    IRIX 6.5       / SGI Onyx     / Gnu gcc 2.95.2   (see note *4)
+    IRIX 6.5       / SGI Onyx     / MIPSpro 7.3.1.1m (see note *4)
+    Linux 2.0.33   / Intel x86    / Gnu gcc 2.7.2.1
+    Linux 2.2.16   / Intel x86    / Gnu gcc 2.95.2
+    Linux 2.4.19   / Intel x86    / Gnu gcc 3.2
+    MacOS X 10.1.5 / Power Mac G4 / Apple gcc-934.3  (gcc 2.95.2, see note *5)
+    MacOS X 10.2.2 / Power Mac G4 / Apple gcc-1173   (gcc 3.1)
+    NetBSD 1.5.2   / Intel x86    / Gnu egcs 1.1.2   (egcs-2.91.66)
+    OSF/1 4.0      / DEC Alpha    / Compaq C++ V6.3-002
+    OSF/1 4.0      / DEC Alpha    / Gnu gcc 2.95.3
+    OpenBSD 3.0    / Intel x86    / Gnu gcc 2.95.3
+    Solaris 2.5.1  / Sun Sparc    / Gnu egcs 1.1.2   (egcs-2.91.66)
+    Solaris 2.5.1  / Sun Sparc    / Sun SC 2.0.1     (SunPro C++ 3.0.1)
+    Solaris 7      / Sun Sparc    / Gnu gcc 2.95.3
+    Solaris 7      / Sun Sparc    / SunPro CC 4.2
+    Solaris 8      / Sun Sparc    / Gnu gcc 3.0.2
+    Solaris 8      / Sun Sparc    / SunPro CC 5.2    (Sun WorkShop 6 update 1)
+    WindowsNT 4.0  / Intel x86    / Cygwin 1.3.13    (gcc 3.2)
 
 Earlier releases are known to also compile on the following platforms which
 are not available to us for testing purposes:
@@ -104,11 +103,11 @@ Platform Notes
      config/Makefile.def, which is created by configure (see below).
 (*3) Requires -fpermissive when compiled with gcc due to the X11R5 header
      files which are not ANSI compliant.
-(*4) IRIX 6 users are recommended to consult SGI's Notes on building
-     Open Source software on IRIX, available from:
-     http://toolbox.sgi.com/TasteOfDT/public/freeware/shared/howto.html
-     In short, after running configure, the following modifications are required
-     in config/Makefile.def before DCMTK can be compiled:
+(*4) IRIX 6 users are recommended to consult SGI's Notes on building Open
+     Source software on IRIX, available from:
+       http://toolbox.sgi.com/TasteOfDT/public/freeware/shared/howto.html
+     In short, after running configure, the following modifications are
+     required in config/Makefile.def before DCMTK can be compiled:
        - remove "-lsocket -lnsl" from LIBS
      On IRIX, DCMTK should be built using GNU make (gmake), not with the IRIX
      specific pmake/smake/make commands.
@@ -149,17 +148,16 @@ OpenSSL support and disables all security enhancements.
 ZLIB SUPPORT
 ============
 
-Starting with release 3.5.2, DCMTK supports the "Deflated Explicit VR
-Little Endian" Transfer Syntax, i.e. ZIP-compressed network transmission
-and media storage.  DCMTK relies on the ZLIB toolkit (www.zlib.org) for
-the underlying compression routines.  Due to security considerations, we
-recommend that DCMTK should only be used with ZLIB 1.1.4 or newer.
+Starting with release 3.5.2, DCMTK supports the "Deflated Explicit VR Little
+Endian" Transfer Syntax, i.e. ZIP-compressed network transmission and media
+storage.  DCMTK relies on the ZLIB toolkit (www.zlib.org) for the underlying
+compression routines.  Due to security considerations, we recommend that DCMTK
+should only be used with ZLIB 1.1.4 or newer.
 
-On Unix platforms, if support for zlib compression is desired, a
-compiled version of the zlib library and include files must be available
-during compilation of DCMTK, and the ZLIB support must be switched on
-explicitly.  DCMTK compiles without ZLIB support and disables ZLIB
-compression by default.
+On Unix platforms, if support for zlib compression is desired, a compiled
+version of the zlib library and include files must be available during
+compilation of DCMTK, and the ZLIB support must be switched on explicitly.
+DCMTK compiles without ZLIB support and disables ZLIB compression by default.
 
 On Windows platforms, the Visual C++ project files which are provided as part
 of the toolkit expect a directory named "zlib-1.1.4" to be present in the same
@@ -169,8 +167,8 @@ in zlib-1.1.4/lib/zlib_d.lib, a release version in zlib-1.1.4/lib/zlib_o.lib.
 The debug version must be compiled for the multithread debug version of the
 runtime (/MTd), the release version must be compiled for the non-debug
 multithread runtime (/MT).  A precompiled version of the library can be
-downloaded from http://dicom.offis.de/dcmtk/.  zlib support can be turned on or
-off manually using the CMake utility (see below), which will generate new
+downloaded from http://dicom.offis.de/dcmtk/.  zlib support can be turned on
+or off manually using the CMake utility (see below), which will generate new
 ".dsp" and ".dsw" files for Microsoft Visual C++.
 
 
@@ -179,13 +177,13 @@ LIBTIFF SUPPORT
 
 Starting with release 3.5.1, DCMTK supports the conversion of DICOM images
 to TIFF.  DCMTK relies on the libtiff toolkit (www.libtiff.org) for this
-purpose.  This release of DCMTK is known to compile with the current
-libtiff release 3.5.7, although older releases may work as well.
+purpose.  This release of DCMTK is known to compile with the current libtiff
+release 3.5.7, although older releases may work as well.
 
-On Unix platforms, if support for TIFF export is desired, a compiled
-version of the libtiff libraries and include files must be available
-during compilation of DCMTK, and the libtiff support must be switched on
-explicitly.  By default, DCMTK compiles without libtiff support.
+On Unix platforms, if support for TIFF export is desired, a compiled version
+of the libtiff libraries and include files must be available during compilation
+of DCMTK, and the libtiff support must be switched on explicitly.  By default,
+DCMTK compiles without libtiff support.
 
 On Windows platforms, the Visual C++ project files which are provided as part
 of the toolkit expect a directory named "tiff-3.5.7" to be present in the same
@@ -203,23 +201,22 @@ which will generate new ".dsp" and ".dsw" files for Microsoft Visual C++.
 LIBPNG SUPPORT
 ==============
 
-Starting with release 3.5.3, DCMTK supports the conversion of DICOM images
-to PNG.  DCMTK relies on the libpng toolkit (www.libpng.org) for this
-purpose.  This release of DCMTK is known to compile with the current
-libpng release 1.2.5, although older releases may work as well.
+Starting with release 3.5.3, DCMTK supports the conversion of DICOM images to
+PNG.  DCMTK relies on the libpng toolkit (www.libpng.org) for this purpose.
+This release of DCMTK is known to compile with the current libpng release
+1.2.5, although older releases may work as well.
 
-On Unix platforms, if support for PNG export is desired, a compiled
-version of the libpng libraries and include files must be available
-during compilation of DCMTK, and the libpng support must be switched on
-explicitly.  By default, DCMTK compiles without libpng support.
-It should be noted that libpng requires zlib. The configure script
-will disable libpng support even though --with-libpng is specified if
---with-zlib is not specified as well.
+On Unix platforms, if support for PNG export is desired, a compiled version of
+the libpng libraries and include files must be available during compilation of
+DCMTK, and the libpng support must be switched on explicitly.  By default,
+DCMTK compiles without libpng support.  It should be noted that libpng requires
+zlib.  The configure script will disable libpng support even though
+--with-libpng is specified if --with-zlib is not specified as well.
 
-On Windows platforms, the Visual C++ project files which are provided as part of
-the toolkit expect a directory named "libpng-1.2.5" to be present in the same
-directory where the DCMTK root directory (dcmtk) also resides.  Include files
-are expected in libpng-1.2.5/include.  A debug version of the library is
+On Windows platforms, the Visual C++ project files which are provided as part
+of the toolkit expect a directory named "libpng-1.2.5" to be present in the
+same directory where the DCMTK root directory (dcmtk) also resides.  Include
+files are expected in libpng-1.2.5/include.  A debug version of the library is
 expected in libpng-1.2.5/lib/libpng_d.lib, a release version in
 libpng-1.2.5/lib/libpng_o.lib.  The debug version must be compiled for the
 multithread debug version of the runtime (/MTd), the release version must be
@@ -232,10 +229,10 @@ generate new ".dsp" and ".dsw" files for Microsoft Visual C++.
 LIBXML SUPPORT
 ==============
 
-Starting with release 3.5.3, DCMTK supports the conversion of XML documents
-to DICOM files.  DCMTK relies on the libxml toolkit (www.xmlsoft.org) for
-this purpose.  This release of DCMTK is known to compile with the current
-libxml release 2.5.7, although older releases may work as well.
+Starting with release 3.5.3, DCMTK supports the conversion of XML documents to
+DICOM files.  DCMTK relies on the libxml toolkit (www.xmlsoft.org) for this
+purpose.  This release of DCMTK is known to compile with the current libxml
+release 2.5.7, although older releases may work as well.
 
 On Unix platforms, if support for XML import is desired, a compiled version of
 the libxml (and possibly iconv) libraries and include files must be available
@@ -244,28 +241,28 @@ explicitly.  By default, DCMTK compiles without libxml support.
 
 On Windows platforms, if support for XML import is desired, a compiled version
 of the libxml (and possibly iconv) libraries and include files must be
-available during compilation of DCMTK, and the libxml support must be switched on
-explicitly (using CMake, see below).  By default, DCMTK compiles without libxml
-support by default.
+available during compilation of DCMTK, and the libxml support must be switched
+on explicitly (using CMake, see below).  By default, DCMTK compiles without
+libxml support.
 
 
 TCP WRAPPER (LIBWRAP) SUPPORT
 =============================
 
 Starting with release 3.5.3, DCMTK supports Wietse Venema's TCP wrappers
-library (libwrap) which is freely available for most Unix platforms and
-part of the default installation of most recent Linux distributions.
-This library allows to enforce host-based access control via the
-/etc/hosts_deny and /etc/hosts_allow configuration files.  See
-hosts_access(5) for details.  This release of DCMTK is known to compile
-with the current TCP wrappers release 7.6, although older releases may
-work as well.  The TCP wrappers library is available for download from
+library (libwrap) which is freely available for most Unix platforms and part
+of the default installation of most recent Linux distributions.  This library
+allows to enforce host-based access control via the /etc/hosts_deny and
+/etc/hosts_allow configuration files.  See hosts_access(5) man page for
+details.  This release of DCMTK is known to compile with the current TCP
+wrappers release 7.6, although older releases may work as well.  The TCP
+wrappers library is available for download from
 ftp://ftp.porcupine.org/pub/security/tcp_wrappers_7.6.tar.gz
 
-On Unix platforms, if support for TCP wrappers is desired, a compiled
-version of the libwrap library and include file (tcpd.h) must be available
-during compilation of DCMTK, and the libwrap support must be switched on
-explicitly.  By default, DCMTK compiles without libwrap support.
+On Unix platforms, if support for TCP wrappers is desired, a compiled version
+of the libwrap library and include file (tcpd.h) must be available during
+compilation of DCMTK, and the libwrap support must be switched on explicitly.
+By default, DCMTK compiles without libwrap support.
 
 On Windows platforms, TCP wrappers are currently not supported.
 
@@ -274,10 +271,10 @@ BUILDING (Unix)
 ===============
 
 GNU autoconf is used to configure the software for the hardware / operating
-system you are using.  You do not need to obtain GNU autoconf to compile
-and install this software.  All the neccessary configure scripts are
-included in this distribution.  The configure scripts examine your system
-capabilities and automatically generate include files and Makefiles.
+system you are using.  You do not need to obtain GNU autoconf to compile and
+install this software.  All the neccessary configure scripts are included in
+this distribution.  The configure scripts examine your system capabilities and
+automatically generate include files and Makefiles.
 
 Perform the following steps from the top level (dcmtk) directory to compile
 and install the software:
@@ -294,30 +291,30 @@ processed (default: all).
 Step 2:
     ./configure
 
-Step 2 executes the configure scripts in each subdirectory.  First the
-system capabilities are examined and then Makefiles are generated.  By
-default, executables and libraries will be installed (in Step 4) in the
-directory /usr/local/dicom in the bin and lib subdirectories.  If you wish
-to use another install prefix you can use the --prefix=<path> flag to
-configure.  E.g., if you wish to install underneath your home directory in
-~/dicom/bin and ~/dicom/lib then you should start configure as:
+Step 2 executes the configure scripts in each subdirectory.  First the system
+capabilities are examined and then Makefiles are generated.  By default,
+executables and libraries will be installed (in Step 4) in the directory
+/usr/local/dicom in the bin and lib subdirectories.  If you wish to use another
+install prefix you can use the --prefix=<path> flag to configure.  E.g., if you
+wish to install underneath your home directory in ~/dicom/bin and ~/dicom/lib
+then you should start configure as:
 
     ./configure --prefix=$HOME/dicom
 
-Step 2 is also the place where support for OpenSSL, libtiff and zlib can
-be enabled. Use the --with-openssl switch to enable OpenSSL support.
-The --with-opensslinc option allows to specify the directory in which
-OpenSSL is installed.  This is usually the directory that has been used
-as --prefix when compiling OpenSSL.  For example, if you wish to enable
-the security enhancements, and OpenSSL is installed in
-/usr/local/apps/openssl-0.9.6h, then you should start configure as:
+Step 2 is also the place where support for OpenSSL, libtiff and zlib can be
+enabled.  Use the --with-openssl switch to enable OpenSSL support.  The
+--with-opensslinc option allows to specify the directory in which OpenSSL is
+installed.  This is usually the directory that has been used as --prefix when
+compiling OpenSSL.  For example, if you wish to enable the security
+enhancements, and OpenSSL is installed in /usr/local/apps/openssl-0.9.6h, then
+you should start configure as:
 
     ./configure --with-openssl --with-opensslinc=/usr/local/apps/openssl-0.9.6h
 
 Configure will assume that the OpenSSL include files are installed in
 /usr/local/apps/openssl-0.9.6h/include and will expect the library in
-/usr/local/apps/openssl-0.9.6h/lib. Appropriate options will be passed
-to the compiler and the linker.
+/usr/local/apps/openssl-0.9.6h/lib.  Appropriate options will be passed to the
+compiler and the linker.
 
 Support for libtiff, libpng, libxml and libwrap can be enabled in a similar
 way:
@@ -341,45 +338,43 @@ options are:
 Step 3:
     make all
 
-Step 3 will build the libraries and executables.  If you run into problems
-see the section on PROBLEMS below.
+Step 3 will build the libraries and executables.  If you run into problems see
+the section on PROBLEMS below.
 
 Step 4:
     make install
 
-Step 4 will install the executables and data dictionary.  If you also wish
-to install the libraries and include files then use the "make install-lib".
+Step 4 will install the executables and data dictionary.  If you also wish to
+install the libraries and include files then use the "make install-lib".
 
 Step 5:
     make distclean
 
-Step 5 will revert the source tree to the state prior to Step 1.  If you
-just want to get rid of object files and local executables use "make clean"
-instead.
+Step 5 will revert the source tree to the state prior to Step 1.  If you just
+want to get rid of object files and local executables use "make clean" instead.
 
 
 Solving configuration and compilation problems:
 
 The configure script might not be able to guess the correct compiler and
-compiler flags to use.  For example, we have noticed that use of the
--pedantic flag to the GNU C++ compiler causes compilation errors on some
-systems (e.g. SunOS 4.1.3) due to system include files with incorrect ANSI
-function prototypes.
+compiler flags to use.  For example, we have noticed that use of the -pedantic
+flag to the GNU C++ compiler causes compilation errors on some systems (e.g.
+SunOS 4.1.3) due to system include files with incorrect ANSI function
+prototypes.
 
-You can set environment variables to initialize configure before it is
-called (before Step 2 above):
+You can set environment variables to initialize configure before it is called
+(before Step 2 above):
 
   Set environment variable CXX to the name of your C++ compiler
   Set environment variable CXXFLAGS to the compile flags of your C++ compiler.
   Set environment variable LDFLAGS to your linker flags.
   Set environment variable CPPFLAGS to you preprocessor flags.
 
-You do not need to specify all the above environment variables since
-the default settings are sensible for most unix compilers.
+You do not need to specify all the above environment variables since the
+default settings are sensible for most unix compilers.
 
-If the configure script fails you may have to change the configuration
-settings in the config directory.  See the config/docs directory for more
-information.
+If the configure script fails you may have to change the configuration settings
+in the config directory.  See the config/docs directory for more information.
 
 See also the FAQ for more hints.
 
@@ -435,9 +430,9 @@ Use of CMake on Windows platforms for configuring the support of external libs:
 
 On Windows platforms (and only on Windows platforms!), the CMake utility can be
 used to turn the support for the above mentioned external libs (OPENSSL, ZLIB,
-LIBTIFF, LIBPNG and LIBXML) on or off manually.  (Note that LIBWRAP is currently
-not supported on Windows platforms.)  CMake is a cross-platform, open-source
-make system which can be used to control the software compilation process using
+LIBTIFF, LIBPNG and LIBXML) on or off manually (LIBWRAP is currently not
+supported on Windows platforms.)  CMake is a cross-platform, open-source make
+system which can be used to control the software compilation process using
 simple configuration files.  CMake can be obtained free of charge from
 http://www.cmake.org.  For configuring the support of external libs in dcmtk on
 Windows platforms, the toolkit contains corresponding "CMakeLists.txt" files in
@@ -456,9 +451,9 @@ the following steps to install CMake on your machine:
 2. Execute the file which was downloaded to install CMake on your machine.
    Follow all install instructions appropriately.
 
-In order to manually configure the support for the above mentioned external libs
-(OPENSSL, ZLIB, LIBTIFF, LIBPNG and LIBXML) through CMake, perform the following
-steps:
+In order to manually configure the support for the above mentioned external
+libs (OPENSSL, ZLIB, LIBTIFF, LIBPNG and LIBXML) through CMake, perform the
+following steps:
 
 1. Go Start -> Programs -> CMake -> CMakeSetup to start the CMake utility
    through which the configuration can be done.
@@ -505,7 +500,7 @@ steps:
    (Please note also that the library files of all external libraries are
    always expected in directory named "lib" below the directory which is
    specified in "WITH_LIBXMLINC", "WITH_LIBPNGINC", "WITH_LIBTIFFINC",
-   "WITH_OPENSSLINC", or "WITH_ZLIBINC". Moreover note that the following
+   "WITH_OPENSSLINC", or "WITH_ZLIBINC".  Moreover note that the following
    filenames must be used for the corresponding lib files:
 
      libxml:
@@ -536,9 +531,9 @@ steps:
    debug version of the runtime (/MTd), the release version must be compiled
    for the non-debug multithread runtime (/MT).  Precompiled versions of all
    libraries can be downloaded from http://dicom.offis.de/dcmtk/.)
-6. Go "Configure" a second time.  (CMake will adjust the configuration according
-   to the displayed specifications.  The variables in the "Cache Values" area
-   will be displayed in grey.)
+6. Go "Configure" a second time.  (CMake will adjust the configuration
+   according to the displayed specifications.  The variables in the "Cache
+   Values" area will be displayed in grey.)
 7. Go "OK".  (CMake will generate new ".dsp" and ".dsw" files in the
    corresponding directories.  These files will be adjusted according to the
    displayed specifications, i.e. support for the external libraries will be
@@ -546,8 +541,8 @@ steps:
 
 Having performed these steps, the Microsoft Developer Studio (IDE) can be
 started, the "dcmtk.dsw" Workspace file can be opened, and one or more of
-dcmtk's subprojects can be built. In case you want to build all libraries and
-applications, mark the "ALL_BUILD" subproject and build it.
+dcmtk's subprojects can be built.  In case you want to build all libraries
+and applications, mark the "ALL_BUILD" subproject and build it.
 
 
 HTML DOCUMENTATION
@@ -557,7 +552,8 @@ Some DCMTK modules have been documented with Doxygen (http://www.doxygen.org/),
 a free source code documentation system similar to Javadoc.  Users who have
 Doxygen installed can create a hypertext documentation with "make html" in the
 dcmtk or doxygen directory.  Other output formats (e.g. LaTeX) can be enabled
-manually by changing the configuration file doxygen/doxygen.cfg.
+manually by changing the configuration file in the doxygen directory.
+
 At the current time, dcmimgle, dcmjpeg, dcmpstat, dcmsign, dcmsr, dcmtls and
 ofstd are completely documented, dcmdata, dcmimage and dcmwlm are partially
 documented.  See FAQ entry: "Where is rest of the documentation?"
@@ -583,4 +579,4 @@ Have fun.
 Marco Eichelberg, Joerg Riesmeier, Thomas Wilkens
 Kuratorium OFFIS e.V., Oldenburg, Germany.
 
-Last revised: 2003-09-04 (Wilkens).
+Last revised: 2003-10-07 (Riesmeier).

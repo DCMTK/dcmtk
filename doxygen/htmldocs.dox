@@ -1,0 +1,67 @@
+/*!
+
+\mainpage
+
+This DICOM ToolKit (DCMTK) package consists of source code, documentation
+and installation instructions for a set of software libraries and
+applications implementing part of the DICOM/MEDICOM Standard.
+
+DCMTK contains the following sub-packages, each in its own sub-directory:
+
+\verbatim
+  config   - configuration utilities for dcmtk
+  dcmdata  - a data encoding/decoding library and utility apps
+  dcmimage - adds support for color images to dcmimgle
+  dcmimgle - an image processing library and utility apps
+  dcmjpeg  - a compression/decompression library and utility apps
+  dcmnet   - a networking library and utility apps
+  dcmpstat - a presentation state library and utility apps
+  dcmsign  - a digital signature library and utility apps
+  dcmsr    - a structured report library and utility apps
+  dcmtls   - security extensions for the network library
+  dcmwlm   - a modality worklist database server
+  imagectn - an image database server
+  ofstd    - a library of general purpose classes
+\endverbatim
+
+Each sub-directory (except config) contains further sub-directories for
+application source code (apps), library source code (libsrc), library
+include files (include), documentation (docs) and optional test programs
+(tests).
+
+To build and install the DCMTK package see the \ref install.
+For copyright information see the \ref copyright.
+For information about the history of this software see the \ref history.
+For answers to some frequently asked questions see the \ref faq.
+
+If you find bugs or other problems with this software we would appreciate
+hearing about them.  Please send electronic mail to:
+
+        dicom-bugs@offis.de
+
+Please try to describe the problem in detail and if possible give a
+suggested fix.
+
+*/
+
+
+/*!
+    \page readme README file
+    \verbinclude README
+*/
+/*!
+    \page install INSTALL file
+    \verbinclude INSTALL
+*/
+/*!
+    \page copyright COPYRIGHT file
+    \verbinclude COPYRIGHT
+*/
+/*!
+    \page history HISTORY file
+    \verbinclude HISTORY
+*/
+/*!
+    \page faq FAQ file
+    \verbinclude FAQ
+*/
