@@ -9,10 +9,10 @@
 ** Definitions of "well known" DICOM Unique Indentifiers,
 ** routines for finding and creating UIDs.
 **
-** Last Update:		$Author: hewett $
-** Update Date:		$Date: 1997-05-13 13:57:42 $
+** Last Update:		$Author: meichel $
+** Update Date:		$Date: 1997-05-23 10:44:17 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcuid.h,v $
-** CVS/RCS Revision:	$Revision: 1.14 $
+** CVS/RCS Revision:	$Revision: 1.15 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -86,8 +86,13 @@ char* dcmGenerateUniqueIdentifer(char* uid, const char* prefix=NULL);
 ** UID Root for dcmtk DICOM project: 1.2.276.0.7230010.3
 */
 
-/* NOTE: Implementation version name may not be longer than 16 chars */
+/* NOTE: Implementation version name VR=SH may not be longer than 16 chars
+ *   The second name is used to identify files written without dcmdata
+ *   (i.e. using the "bypass" switch in storescp)
+ */
 #define OFFIS_DTK_IMPLEMENTATION_VERSION_NAME	"OFFIS_DCMTK_313B"
+#define OFFIS_DTK_IMPLEMENTATION_VERSION_NAME2  "OFFIS_DCMTK_313b"
+
 
 #define OFFIS_UID_ROOT		       "1.2.276.0.7230010.3"
 #define OFFIS_DCMTK_VERSION	       "3.1.3.2"
@@ -272,7 +277,11 @@ char* dcmGenerateUniqueIdentifer(char* uid, const char* prefix=NULL);
 /*
 ** CVS/RCS Log:
 ** $Log: dcuid.h,v $
-** Revision 1.14  1997-05-13 13:57:42  hewett
+** Revision 1.15  1997-05-23 10:44:17  meichel
+** Major rewrite of storescp application. See CHANGES for details.
+** Changes to interfaces of some DIMSE functions.
+**
+** Revision 1.14  1997/05/13 13:57:42  hewett
 ** Added UIDs for the draft supplements 12 (PET), 13 (Queue Management),
 ** 15 (Visible Light), 17 (Modality Performed Procedure Step), 22 (User
 ** Preference LUT) and 24 (Print Storage).  Updated UID tables so that

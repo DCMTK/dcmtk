@@ -35,10 +35,10 @@
 **		Kuratorium OFFIS e.V., Oldenburg, Germany
 ** Created:	03/96
 **
-** Last Update:		$Author: hewett $
-** Update Date:		$Date: 1997-05-22 13:29:59 $
+** Last Update:		$Author: meichel $
+** Update Date:		$Date: 1997-05-23 10:44:19 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/apps/movescu.cc,v $
-** CVS/RCS Revision:	$Revision: 1.12 $
+** CVS/RCS Revision:	$Revision: 1.13 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -817,7 +817,7 @@ storeSCP(T_ASC_Association * assoc, T_DIMSE_Message * msg,
 
     DcmDataset *dset = dcmff.getDataset();
 
-    cond = DIMSE_storeProvider(assoc, presID, req, (char *)NULL,
+    cond = DIMSE_storeProvider(assoc, presID, req, (char *)NULL, 1, 
 			       &dset, storeSCPCallback, (void*)&callbackData,
 			       DIMSE_BLOCKING, 0);
     if (!SUCCESS(cond)) {
@@ -1058,7 +1058,11 @@ cmove(T_ASC_Association * assoc, const char *fname)
 ** CVS Log
 **
 ** $Log: movescu.cc,v $
-** Revision 1.12  1997-05-22 13:29:59  hewett
+** Revision 1.13  1997-05-23 10:44:19  meichel
+** Major rewrite of storescp application. See CHANGES for details.
+** Changes to interfaces of some DIMSE functions.
+**
+** Revision 1.12  1997/05/22 13:29:59  hewett
 ** Modified the test for presence of a data dictionary to use the
 ** method DcmDataDictionary::isDictionaryLoaded().
 **
