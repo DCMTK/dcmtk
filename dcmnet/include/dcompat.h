@@ -62,9 +62,9 @@
 ** 
 **
 ** Last Update:		$Author: hewett $
-** Update Date:		$Date: 1996-09-24 16:22:36 $
+** Update Date:		$Date: 1996-09-27 08:27:59 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/include/Attic/dcompat.h,v $
-** CVS/RCS Revision:	$Revision: 1.5 $
+** CVS/RCS Revision:	$Revision: 1.6 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -76,19 +76,15 @@
 
 #include "osconfig.h"    /* make sure OS specific configuration is included first */
 
-#ifdef __cplusplus
-#define BEGIN_EXTERN_C extern "C" {
-#define END_EXTERN_C }
-#else
-#define BEGIN_EXTERN_C 
-#define END_EXTERN_C
-#endif
-
 #ifdef HAVE_GUSI_H
 /* Use the Grand Unified Sockets Interface (GUSI) on Macintosh */
 #include <GUSI.h>	
 #endif
 
+#ifdef HAVE_WINSOCK_H
+/* Use the WinSock sockets library on Windows */
+#include <WINSOCK.H>
+#endif
 
 BEGIN_EXTERN_C
 
@@ -128,6 +124,9 @@ BEGIN_EXTERN_C
 #endif
 #ifdef HAVE_SYS_SELECT_H
 #include <sys/select.h>
+#endif
+#ifdef HAVE_SYS_FILE_H
+#include <sys/file.h>
 #endif
 
 END_EXTERN_C
@@ -352,7 +351,11 @@ char *tempnam(char *dir, char *pfx);
 /*
 ** CVS Log
 ** $Log: dcompat.h,v $
-** Revision 1.5  1996-09-24 16:22:36  hewett
+** Revision 1.6  1996-09-27 08:27:59  hewett
+** Move the defines for BEGIN_EXTERN_C/END_EXTERN_C to config/include/osconfig.h
+** Added support for Win32 by conditionally including <WINSOCK.h>.
+**
+** Revision 1.5  1996/09/24 16:22:36  hewett
 ** Added preliminary support for the Macintosh environment (GUSI library).
 **
 ** Revision 1.4  1996/06/20 07:31:09  hewett
