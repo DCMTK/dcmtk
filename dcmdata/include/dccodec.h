@@ -22,9 +22,9 @@
  *  Purpose: Interface of abstract class DcmCodec and the class DcmCodecStruct
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-09-27 08:19:54 $
+ *  Update Date:      $Date: 2001-05-25 09:53:51 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dccodec.h,v $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -43,22 +43,33 @@
 class DcmStack;
 class DcmRepresentationParameter;
 class DcmPixelSequence;
+class DcmPolymorphOBOW;
 
-class DcmCodecParameter {};                    
+class DcmCodecParameter
+{
+};                    
 
 class DcmCodec
 {
 public:
     DcmCodec() {}
 
-    // decompress pixSeq in an uncompressed transfer syntax
+    /** decompresses the given pixel sequence and
+     *  stores the result in the given uncompressedPixelData element.
+     *  @param fromRepParam current representation parameter of compressed data, may be NULL
+     *  @param pixSeq compressed pixel sequence
+     *  @param uncompressedPixelData uncompressed pixel data stored in this element
+     *  @param cp codec parameters for this codec
+     *  @param objStack stack pointing to the location of the pixel data
+     *    element in the current dataset.
+     *  @return EC_Normal if successful, an error code otherwise.
+     */
     virtual E_Condition decode(
         const DcmRepresentationParameter * fromRepParam,
         DcmPixelSequence * pixSeq,
-        Uint16 * & pixelData,
-        Uint32 & length,
+        DcmPolymorphOBOW& uncompressedPixelData,
         const DcmCodecParameter * cp,
-        DcmStack & objStack) const = 0;
+        const DcmStack& objStack) const = 0;
 
     // compress pixelData to pixSeq 
     virtual E_Condition encode(
@@ -129,7 +140,10 @@ const DcmCodecStruct * searchGlobalCodec(const E_TransferSyntax repType);
 /*
 ** CVS/RCS Log:
 ** $Log: dccodec.h,v $
-** Revision 1.7  2000-09-27 08:19:54  meichel
+** Revision 1.8  2001-05-25 09:53:51  meichel
+** Modified DcmCodec::decode() interface, required for future dcmjpeg module.
+**
+** Revision 1.7  2000/09/27 08:19:54  meichel
 ** Minor changes in DcmCodec interface, required for future dcmjpeg module.
 **
 ** Revision 1.6  2000/04/14 16:09:12  meichel

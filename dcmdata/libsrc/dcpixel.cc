@@ -22,9 +22,9 @@
  *  Purpose: class DcmPixelData
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-11-07 16:56:21 $
+ *  Update Date:      $Date: 2001-05-25 09:53:54 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcpixel.cc,v $
- *  CVS/RCS Revision: $Revision: 1.15 $
+ *  CVS/RCS Revision: $Revision: 1.16 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -378,17 +378,18 @@ DcmPixelData::decode(
         if (codec && codec->canChangeCoding(fromType.getXfer(), 
                                             EXS_LittleEndianExplicit))
         {
-            Uint16 * pixelData;
-            Uint32 length;
-            l_error = codec->decode(fromParam, fromPixSeq, pixelData, length,
-                                    codecStruct->getCodecParameter(), 
-                                    pixelStack);
+            l_error = codec->decode(fromParam, fromPixSeq, *this, codecStruct->getCodecParameter(), pixelStack);
             if (l_error == EC_Normal)
             {
                 existUnencapsulated = OFTrue;
                 current = repListEnd;
+                setVR(EVR_OW);
                 recalcVR();
-                DcmPolymorphOBOW::putUint16Array(pixelData, length);
+            } 
+            else
+            {
+                DcmPolymorphOBOW::putUint16Array(NULL,0);
+                existUnencapsulated = OFFalse;
             }
         }
     }
@@ -1000,7 +1001,10 @@ E_Condition DcmPixelData::loadAllDataIntoMemory(void)
 /*
 ** CVS/RCS Log:
 ** $Log: dcpixel.cc,v $
-** Revision 1.15  2000-11-07 16:56:21  meichel
+** Revision 1.16  2001-05-25 09:53:54  meichel
+** Modified DcmCodec::decode() interface, required for future dcmjpeg module.
+**
+** Revision 1.15  2000/11/07 16:56:21  meichel
 ** Initial release of dcmsign module for DICOM Digital Signatures
 **
 ** Revision 1.14  2000/09/27 08:19:58  meichel
