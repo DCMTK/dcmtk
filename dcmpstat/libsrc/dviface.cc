@@ -22,8 +22,8 @@
  *  Purpose: DVPresentationState
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-07-05 12:32:21 $
- *  CVS/RCS Revision: $Revision: 1.102 $
+ *  Update Date:      $Date: 2000-07-06 09:41:17 $
+ *  CVS/RCS Revision: $Revision: 1.103 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -2800,7 +2800,7 @@ size_t DVInterface::getNumberOfPrintPreviews()
   return 0;
 }
 
-E_Condition DVInterface::loadPrintPreview(size_t idx)
+E_Condition DVInterface::loadPrintPreview(size_t idx, OFBool printLUT)
 {
   E_Condition status = EC_IllegalCall;
   if ((pPrint != NULL) && (maximumPrintPreviewWidth > 0) && (maximumPrintPreviewHeight > 0))
@@ -2831,10 +2831,7 @@ E_Condition DVInterface::loadPrintPreview(size_t idx)
             if (plut == NULL)
                 pPrint->getImagePresentationLUT(idx);                   // then check for an image box specific
             if (plut != NULL)
-            {
-                /* tbd: distinguish between "softcopy" and "hardcopy" presentation LUT */
-                plut->activate(image , OFFalse /* printLUT */);
-            }
+                plut->activate(image, printLUT);
 
             unsigned long width = maximumPrintPreviewWidth;
             unsigned long height = maximumPrintPreviewHeight;
@@ -3727,7 +3724,11 @@ E_Condition DVInterface::checkIOD(const char *studyUID, const char *seriesUID, c
 /*
  *  CVS/RCS Log:
  *  $Log: dviface.cc,v $
- *  Revision 1.102  2000-07-05 12:32:21  joergr
+ *  Revision 1.103  2000-07-06 09:41:17  joergr
+ *  Added flag to loadPrintPreview() method allowing to choose how to interpret
+ *  the presentation LUT (hardcopy or softcopy definition).
+ *
+ *  Revision 1.102  2000/07/05 12:32:21  joergr
  *  Added check whether external processes were actually started before
  *  terminating them.
  *  Fixed bug concerning the termination of external processes.

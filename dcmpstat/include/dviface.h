@@ -23,8 +23,8 @@
  *    classes: DVInterface
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-07-04 15:58:00 $
- *  CVS/RCS Revision: $Revision: 1.71 $
+ *  Update Date:      $Date: 2000-07-06 09:41:00 $
+ *  CVS/RCS Revision: $Revision: 1.72 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -948,9 +948,13 @@ class DVInterface: public DVConfiguration
      *  The preview bitmap is implicitly scaled to fit into the rectangle specified by
      *  setMaxPrintPreviewWidthHeight().
      *  @param idx index of the image, must be < getNumberOfPrintPreviews()
+     *  @param printLUT OFTrue if presentation LUT should be interpreted as a print presentation LUT
+     *    (default, in this case there is no implicit scaling of the input width of the LUT and,
+     *    therefore, the VOI transformation - which is absent for print - is used),
+     *    OFFalse otherwise (softcopy interpretation of a presentation LUT)
      *  @return EC_Normal if successful, an error code otherwise.
      */
-    E_Condition loadPrintPreview(size_t idx);
+    E_Condition loadPrintPreview(size_t idx, OFBool printLUT = OFTrue);
   
     /** removes a currently loaded Hardcopy Grayscale image from memory.
      */
@@ -1667,7 +1671,11 @@ private:
 /*
  *  CVS/RCS Log:
  *  $Log: dviface.h,v $
- *  Revision 1.71  2000-07-04 15:58:00  joergr
+ *  Revision 1.72  2000-07-06 09:41:00  joergr
+ *  Added flag to loadPrintPreview() method allowing to choose how to interpret
+ *  the presentation LUT (hardcopy or softcopy definition).
+ *
+ *  Revision 1.71  2000/07/04 15:58:00  joergr
  *  Added support for overriding the presentation LUT settings made for the
  *  image boxes.
  *
