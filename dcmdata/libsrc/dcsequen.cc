@@ -11,9 +11,9 @@
 **
 **
 ** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1996-01-09 11:06:48 $
+** Update Date:		$Date: 1996-01-29 13:38:29 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcsequen.cc,v $
-** CVS/RCS Revision:	$Revision: 1.4 $
+** CVS/RCS Revision:	$Revision: 1.5 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -141,16 +141,15 @@ DcmSequenceOfItems::~DcmSequenceOfItems()
 
 void DcmSequenceOfItems::print(const int level)
 {
-    char *info = new char[200];
+    char info[200]; 
     char *title = (char*)NULL;
     if ( Length == DCM_UndefinedLength )
-        title = "\"Sequence with undefined length\"";
+        title = "Sequence with undefined length";
     else
-        title = "\"Sequence with explicit Length\"";
+        title = "Sequence with explicit Length";
 
-    sprintf( info, "%s #=%ld ", title, (long)card() );
+    sprintf( info, "(%s #=%ld)", title, (long)card() );
     DcmObject::printInfoLine( level, info );
-    delete info;
 
     if ( !itemList->empty() )
     {
@@ -165,10 +164,10 @@ void DcmSequenceOfItems::print(const int level)
 
     if ( Length == DCM_UndefinedLength )
         DcmObject::printInfoLine( level, delimItemTag,
-				  0, "\"SequenceDelimitationItem\"" );
+				  0, "(SequenceDelimitationItem)" );
     else
         DcmObject::printInfoLine( level, delimItemTag,
-				  0, "\"SequenceDelimitationItem for re-enc.\"" );
+				  0, "(SequenceDelimitationItem for re-enc.)" );
 }
 
 
@@ -258,7 +257,7 @@ E_Condition DcmSequenceOfItems::makeSubObject(DcmObject * & subObject,
 	else if ( newTag.getXTag() == DCM_SequenceDelimitationItem )
 	    l_error = EC_SequEnd;
 	else if ( newTag.getXTag() == DCM_ItemDelimitationItem )
-	    l_error = EC_InvalidTag;
+	    l_error = EC_ItemEnd;
 	else
 	    l_error = EC_InvalidTag;
 	break;
@@ -1038,7 +1037,11 @@ E_Condition DcmSequenceOfItems::loadAllDataIntoMemory()
 /*
 ** CVS/RCS Log:
 ** $Log: dcsequen.cc,v $
-** Revision 1.4  1996-01-09 11:06:48  andreas
+** Revision 1.5  1996-01-29 13:38:29  andreas
+** - new put method for every VR to put value as a string
+** - better and unique print methods
+**
+** Revision 1.4  1996/01/09 11:06:48  andreas
 ** New Support for Visual C++
 ** Correct problems with inconsistent const declarations
 ** Correct error in reading Item Delimitation Elements

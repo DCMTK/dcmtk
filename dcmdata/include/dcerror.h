@@ -10,9 +10,9 @@
 ** 
 **
 ** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1996-01-05 13:22:55 $
+** Update Date:		$Date: 1996-01-29 13:38:12 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcerror.h,v $
-** CVS/RCS Revision:	$Revision: 1.2 $
+** CVS/RCS Revision:	$Revision: 1.3 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -41,9 +41,10 @@ typedef enum {
     EC_IllegalCall = 7,
     EC_SequEnd = 8,
     EC_DoubledTag = 9,
-	EC_StreamNotifyClient = 10,
-	EC_WrongStreamMode = 11,
-	EC_MemoryExhausted = 12
+    EC_StreamNotifyClient = 10,
+    EC_WrongStreamMode = 11,
+    EC_MemoryExhausted = 12,
+    EC_ItemEnd = 13
 } E_Condition;
 
 
@@ -68,7 +69,11 @@ dcmErrorConditionToString(E_Condition cond);
 /*
 ** CVS/RCS Log:
 ** $Log: dcerror.h,v $
-** Revision 1.2  1996-01-05 13:22:55  andreas
+** Revision 1.3  1996-01-29 13:38:12  andreas
+** - new put method for every VR to put value as a string
+** - better and unique print methods
+**
+** Revision 1.2  1996/01/05 13:22:55  andreas
 ** - changed to support new streaming facilities
 ** - more cleanups
 ** - merged read / write methods for block and file transfer

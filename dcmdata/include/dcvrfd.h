@@ -10,9 +10,9 @@
 ** Interface of class DcmFloatingPointDouble
 **
 ** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1996-01-05 13:23:05 $
+** Update Date:		$Date: 1996-01-29 13:38:16 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcvrfd.h,v $
-** CVS/RCS Revision:	$Revision: 1.3 $
+** CVS/RCS Revision:	$Revision: 1.4 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -32,7 +32,7 @@
 
 class DcmFloatingPointDouble : public DcmElement 
 {
-  public:
+public:
     DcmFloatingPointDouble(const DcmTag &tag, const Uint32 len = 0);
     DcmFloatingPointDouble( const DcmFloatingPointDouble &newFD );
     virtual ~DcmFloatingPointDouble();
@@ -49,8 +49,10 @@ class DcmFloatingPointDouble : public DcmElement
     virtual E_Condition put(const Float64 doubleval,       // one double
                             const unsigned long position); // at any position
 
-	virtual E_Condition get(Float64 * & doubleVals);
-	virtual E_Condition get(Float64 & doubleVal, const unsigned long pos = 0);
+    virtual E_Condition put(const char * value);  // double as Strings
+
+    virtual E_Condition get(Float64 * & doubleVals);
+    virtual E_Condition get(Float64 & doubleVal, const unsigned long pos = 0);
     Float64 * get(void);
     Float64 get(const unsigned long position);
 
@@ -63,7 +65,11 @@ class DcmFloatingPointDouble : public DcmElement
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrfd.h,v $
-** Revision 1.3  1996-01-05 13:23:05  andreas
+** Revision 1.4  1996-01-29 13:38:16  andreas
+** - new put method for every VR to put value as a string
+** - better and unique print methods
+**
+** Revision 1.3  1996/01/05 13:23:05  andreas
 ** - changed to support new streaming facilities
 ** - more cleanups
 ** - merged read / write methods for block and file transfer

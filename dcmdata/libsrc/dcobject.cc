@@ -10,7 +10,7 @@
 **
 **
 ** Last Update:   $Author: andreas $
-** Revision:      $Revision: 1.5 $
+** Revision:      $Revision: 1.6 $
 ** Status:	  $State: Exp $
 **
 */
@@ -247,18 +247,27 @@ void DcmObject::printInfoLine(const int level, const DcmTag &tag,
 			      const Uint32 length,
 			      const char *info)
 {
-  DcmVR vr( tag.getVR() );
+    DcmVR vr( tag.getVR() );
 
-  char * output = new char[2000];
-  for ( int i=1; i<level; i++)
-    cout << "    ";
+    char output[100];
+    for ( int i=1; i<level; i++)
+	cout << "    ";
 
-  sprintf(output, "%4.4x %4.4x %-5.5s %-38.1500s#%6lu,%3lu",
-	  tag.getGTag(), tag.getETag(), vr.getVRName(), info,
-	  length, getVM());
-
-  cout << output << "  " << tag.getTagName() << endl;
-  delete[] output;
+    if (strlen(info) <= 38)
+    {
+	sprintf(output, "(%4.4x,%4.4x) %-5.5s %-38s #%6lu,%3lu",
+		tag.getGTag(), tag.getETag(), vr.getVRName(), info,
+		length, getVM());
+	cout << output << "  " << tag.getTagName() << endl;
+    }
+    else
+    {
+	sprintf(output, "(%4.4x,%4.4x) %-5.5s ",
+		tag.getGTag(), tag.getETag(), vr.getVRName());
+	cout << output << info;
+	sprintf(output, " #%6lu,%3lu", length, getVM());
+	cout << output << "  " << tag.getTagName() << endl;
+    }
 }
 
 

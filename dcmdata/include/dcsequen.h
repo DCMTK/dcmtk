@@ -11,9 +11,9 @@
 **
 **
 ** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1996-01-24 09:34:56 $
+** Update Date:		$Date: 1996-01-29 13:38:14 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcsequen.h,v $
-** CVS/RCS Revision:	$Revision: 1.5 $
+** CVS/RCS Revision:	$Revision: 1.6 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -102,15 +102,15 @@ public:
   virtual DcmItem*    remove(DcmItem* item);
   virtual E_Condition clear();
   virtual E_Condition verify(const BOOL autocorrect = FALSE);
-  virtual E_Condition search(const DcmTag &tag,                    // in
+  virtual E_Condition search(const DcmTag &tag,                // in
 			     DcmStack &resultStack, 	       // inout
-			     E_SearchMode mode = ESM_fromHere,     // in
-			     BOOL searchIntoSub = TRUE );	       // in
-  virtual E_Condition search(  const DcmTagKey &xtag,		       // in
+			     E_SearchMode mode = ESM_fromHere, // in
+			     BOOL searchIntoSub = TRUE );      // in
+  virtual E_Condition search(  const DcmTagKey &xtag,	       // in
 			       DcmStack &resultStack, 	       // inout
-			       E_SearchMode mode = ESM_fromHere,     // in
-			       BOOL searchIntoSub = TRUE );	       // in
-  virtual E_Condition searchErrors( DcmStack &resultStack );	       // inout
+			       E_SearchMode mode = ESM_fromHere,  // in
+			       BOOL searchIntoSub = TRUE );	  // in
+  virtual E_Condition searchErrors( DcmStack &resultStack );	  // inout
   virtual E_Condition loadAllDataIntoMemory(void);
 
   virtual E_Condition addGroupLengthElements( E_TransferSyntax xfer,
@@ -125,7 +125,11 @@ public:
 /*
 ** CVS/RCS Log:
 ** $Log: dcsequen.h,v $
-** Revision 1.5  1996-01-24 09:34:56  andreas
+** Revision 1.6  1996-01-29 13:38:14  andreas
+** - new put method for every VR to put value as a string
+** - better and unique print methods
+**
+** Revision 1.5  1996/01/24 09:34:56  andreas
 ** Support for 64 bit long
 **
 ** Revision 1.4  1996/01/09 11:06:16  andreas

@@ -11,9 +11,9 @@
 **
 **
 ** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1996-01-05 13:27:40 $
+** Update Date:		$Date: 1996-01-29 13:38:29 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcpixseq.cc,v $
-** CVS/RCS Revision:	$Revision: 1.3 $
+** CVS/RCS Revision:	$Revision: 1.4 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -39,14 +39,14 @@
 
 
 DcmPixelSequence::DcmPixelSequence(const DcmTag &tag,
-								   const Uint32 len)
+				   const Uint32 len)
 : DcmSequenceOfItems(tag, len)
 {
 Bdebug((5, "dcpixseq:DcmPixelSequence::DcmPixelSequence(DcmTag&,len=%ld)",
            len ));
 debug(( 8, "Object pointer this=0x%p", this ));
 
-    Tag->setVR( EVR_OB );
+    Tag->setVR(EVR_pixelSQ);
 Edebug(());
 
 }
@@ -87,11 +87,11 @@ void DcmPixelSequence::print( int level )
     char *info = new char[200];
     char *title = (char*)NULL;
     if ( Length == DCM_UndefinedLength)
-        title = "\"PixelSequence\"";
+        title = "PixelSequence";
     else
-        title = "\"PixelSequence with explicit Length\"";
+        title = "PixelSequence with explicit Length";
 
-    sprintf( info, "%s #=%ld ", title, (long)card() );
+    sprintf( info, "(%s #=%ld)", title, (long)card() );
     DcmObject::printInfoLine( level, info );
     delete info;
 
@@ -108,10 +108,10 @@ void DcmPixelSequence::print( int level )
 
     if ( Length == DCM_UndefinedLength )
         DcmObject::printInfoLine( level, delimItemTag,
-				  0, "\"SequenceDelimitationItem\"" );
+				  0, "(SequenceDelimitationItem)" );
     else
         DcmObject::printInfoLine( level, delimItemTag,
-		   0, "\"SequenceDelimitationItem for re-enc.\"" );
+		   0, "(SequenceDelimitationItem for re-enc.)" );
 }
 
 
@@ -119,33 +119,128 @@ void DcmPixelSequence::print( int level )
 
 
 E_Condition DcmPixelSequence::makeSubObject(DcmObject * & subObject,
-										  const DcmTag & newTag,
-										  const Uint32 newLength)
+					    const DcmTag & newTag,
+					    const Uint32 newLength)
 {
     E_Condition l_error = EC_Normal;
     DcmObject * newObject = NULL;
 
     switch ( newTag.getEVR() )
     {
-	  case EVR_na:
-		if ( newTag.getXTag() == DCM_Item )
-			newObject = new DcmPixelItem(newTag, newLength);
-		else if (newTag.getXTag() == DCM_SequenceDelimitationItem)
-			l_error = EC_SequEnd;
-		else if (newTag.getXTag() == DCM_ItemDelimitationItem)
-			l_error = EC_InvalidTag;
-	    else
-			l_error = EC_InvalidTag;
-		break;
+    case EVR_na:
+	if ( newTag.getXTag() == DCM_Item )
+	    newObject = new DcmPixelItem(newTag, newLength);
+	else if (newTag.getXTag() == DCM_SequenceDelimitationItem)
+	    l_error = EC_SequEnd;
+	else if (newTag.getXTag() == DCM_ItemDelimitationItem)
+	    l_error = EC_ItemEnd;
+	else
+	    l_error = EC_InvalidTag;
+	break;
 
-	  default:
-		newObject = new DcmPixelItem(newTag, newLength);
-		l_error = EC_CorruptedData;
-	    break;
+    default:
+	newObject = new DcmPixelItem(newTag, newLength);
+	l_error = EC_CorruptedData;
+	break;
     }
 
-	subObject = newObject;
-	return l_error;
+    subObject = newObject;
+    return l_error;
+}
+
+// ********************************
+
+
+E_Condition DcmPixelSequence::insert(DcmPixelItem* item,
+				       unsigned long where)
+{
+    Bdebug((3, "dcsequen:DcmSequenceOfItems::insert(DcmItem*=%p,where=%ld)",
+	    item, where ));
+
+    errorFlag = EC_Normal;
+    if ( item != NULL )
+    {
+	itemList->seek_to( where );
+	itemList->insert( item );
+	Vdebug((3, where< itemList->card(), "item at position %d inserted", where ));
+	Vdebug((3, where>=itemList->card(), "item at last position inserted" ));
+
+    }
+    else
+	errorFlag = EC_IllegalCall;
+    Edebug(());
+
+    return errorFlag;
+}
+
+
+// ********************************
+
+
+E_Condition DcmPixelSequence::getItem(DcmPixelItem * & item, 
+					const unsigned long num)
+{
+    errorFlag = EC_Normal;
+    item = (DcmPixelItem*)( itemList->seek_to(num) );  // liest Item aus Liste
+    if ( item == NULL )
+	errorFlag = EC_IllegalCall;
+    return errorFlag;
+}
+
+
+// ********************************
+
+
+E_Condition DcmPixelSequence::remove(DcmPixelItem * & item, 
+				     const unsigned long num)
+{
+    Bdebug((3, "dcsequen:DcmSequenceOfItems::remove(num=%ld)", num ));
+
+    errorFlag = EC_Normal;
+    item = (DcmPixelItem*)( itemList->seek_to(num) );  // liest Item aus Liste
+    if ( item != (DcmPixelItem*)NULL )
+    {
+	debug(( 3, "item p=%p removed, but not deleted", item ));
+
+	itemList->remove();
+    }
+    else
+	errorFlag = EC_IllegalCall;
+    Edebug(());
+
+    return errorFlag;
+}
+
+
+// ********************************
+
+
+E_Condition DcmPixelSequence::remove(DcmPixelItem* item)
+{
+    Bdebug((3, "dcsequen:DcmSequenceOfItems::remove(DcmItem*)" ));
+
+    errorFlag = EC_IllegalCall;
+    if ( !itemList->empty() && item != NULL )
+    {
+	DcmObject *dO;
+	itemList->seek( ELP_first );
+	do {
+	    dO = itemList->get();
+	    if ( dO == item )
+	    {
+		debug(( 3, "item p=%p removed, but not deleted", item ));
+
+		itemList->remove();	    // entfernt Element aus Liste,
+		// aber loescht es nicht
+		errorFlag = EC_Normal;
+		break;
+	    }
+	} while ( itemList->seek( ELP_next ) );
+    }
+
+    Edebug(());
+
+    return errorFlag;
 }
 
 // ********************************
@@ -153,7 +248,11 @@ E_Condition DcmPixelSequence::makeSubObject(DcmObject * & subObject,
 /*
 ** CVS/RCS Log:
 ** $Log: dcpixseq.cc,v $
-** Revision 1.3  1996-01-05 13:27:40  andreas
+** Revision 1.4  1996-01-29 13:38:29  andreas
+** - new put method for every VR to put value as a string
+** - better and unique print methods
+**
+** Revision 1.3  1996/01/05 13:27:40  andreas
 ** - changed to support new streaming facilities
 ** - unique read/write methods for file and block transfer
 ** - more cleanups

@@ -10,9 +10,9 @@
 ** Interface of class DcmUniqueIdentifier
 **
 ** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1996-01-05 13:23:10 $
+** Update Date:		$Date: 1996-01-29 13:38:18 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcvrui.h,v $
-** CVS/RCS Revision:	$Revision: 1.3 $
+** CVS/RCS Revision:	$Revision: 1.4 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -38,6 +38,8 @@ class DcmUniqueIdentifier : public DcmByteString
  
     virtual DcmEVR ident(void) const { return EVR_UI; }
     virtual void print(const int level = 0);
+
+    virtual E_Condition put(const char * value);
 };
 
 
@@ -46,7 +48,11 @@ class DcmUniqueIdentifier : public DcmByteString
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrui.h,v $
-** Revision 1.3  1996-01-05 13:23:10  andreas
+** Revision 1.4  1996-01-29 13:38:18  andreas
+** - new put method for every VR to put value as a string
+** - better and unique print methods
+**
+** Revision 1.3  1996/01/05 13:23:10  andreas
 ** - changed to support new streaming facilities
 ** - more cleanups
 ** - merged read / write methods for block and file transfer
@@ -54,3 +60,4 @@ class DcmUniqueIdentifier : public DcmByteString
 **
 **
 */
+

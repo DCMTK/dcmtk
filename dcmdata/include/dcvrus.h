@@ -10,9 +10,9 @@
 ** Interface of class DcmUnsignedShort
 **
 ** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1996-01-05 13:23:12 $
+** Update Date:		$Date: 1996-01-29 13:38:19 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcvrus.h,v $
-** CVS/RCS Revision:	$Revision: 1.3 $
+** CVS/RCS Revision:	$Revision: 1.4 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -32,7 +32,7 @@
 
 class DcmUnsignedShort : public DcmElement 
 {
-  public:
+public:
     DcmUnsignedShort(const DcmTag &tag, const Uint32 len = 0);
     DcmUnsignedShort(const DcmUnsignedShort& old );
     virtual ~DcmUnsignedShort(void);
@@ -42,16 +42,17 @@ class DcmUnsignedShort : public DcmElement
     virtual unsigned long getVM(void);
 
     virtual E_Condition put(const Uint16 * uintVal,
-                            const unsigned long numUints);     // number of longs
+                            const unsigned long numUints);  // number of longs
 
-    virtual E_Condition put(const Uint16 uintVal);		// for one long only
+    virtual E_Condition put(const Uint16 uintVal);	    // for one long only
 
-    virtual E_Condition put(const Uint16 uintVal,		    // one Uint16
-                            const unsigned long position);	// at any position
+    virtual E_Condition put(const Uint16 uintVal,	    // one Uint16
+                            const unsigned long position);  // at any position
 
+    virtual E_Condition put(const char * value);  // Uint16 as Strings
 
-	virtual E_Condition get(Uint16 & uintVal, const unsigned long pos = 0);
-	virtual E_Condition get(Uint16 * & uintVals);
+    virtual E_Condition get(Uint16 & uintVal, const unsigned long pos = 0);
+    virtual E_Condition get(Uint16 * & uintVals);
 
     Uint16 * get(void);
     Uint16 get(const unsigned long position);
@@ -65,7 +66,11 @@ class DcmUnsignedShort : public DcmElement
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrus.h,v $
-** Revision 1.3  1996-01-05 13:23:12  andreas
+** Revision 1.4  1996-01-29 13:38:19  andreas
+** - new put method for every VR to put value as a string
+** - better and unique print methods
+**
+** Revision 1.3  1996/01/05 13:23:12  andreas
 ** - changed to support new streaming facilities
 ** - more cleanups
 ** - merged read / write methods for block and file transfer

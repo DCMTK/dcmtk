@@ -10,9 +10,9 @@
 ** Implementation of class DcmFloatingPointSingle
 **
 ** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1996-01-05 13:27:49 $
+** Update Date:		$Date: 1996-01-29 13:38:32 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcvrfl.cc,v $
-** CVS/RCS Revision:	$Revision: 1.3 $
+** CVS/RCS Revision:	$Revision: 1.4 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -26,6 +26,7 @@
 #include <iostream.h>
 
 #include "dcvrfl.h"
+#include "dcvm.h"
 #include "dcdebug.h"
 
 
@@ -126,18 +127,18 @@ unsigned long DcmFloatingPointSingle::getVM()
 
 
 E_Condition DcmFloatingPointSingle::put(const Float32 * floatVal,
-										const unsigned long numFloats)
+					const unsigned long numFloats)
 {
     errorFlag = EC_Normal;
-	if (numFloats)
-	{
-		if (floatVal)
-			errorFlag = this -> putValue(floatVal, 
-										 sizeof(Float32)*Uint32(numFloats));
-		else
-			errorFlag = EC_CorruptedData;
-	}
-	return errorFlag;
+    if (numFloats)
+    {
+	if (floatVal)
+	    errorFlag = this -> putValue(floatVal, 
+					 sizeof(Float32)*Uint32(numFloats));
+	else
+	    errorFlag = EC_CorruptedData;
+    }
+    return errorFlag;
 }
 
 
@@ -146,9 +147,9 @@ E_Condition DcmFloatingPointSingle::put(const Float32 * floatVal,
 
 E_Condition DcmFloatingPointSingle::put(const Float32 floatVal)
 {
-	Float32 val = floatVal;
-	errorFlag = this -> putValue(&val, sizeof(Float32));
-	return errorFlag;
+    Float32 val = floatVal;
+    errorFlag = this -> putValue(&val, sizeof(Float32));
+    return errorFlag;
 }
 
 
@@ -156,16 +157,45 @@ E_Condition DcmFloatingPointSingle::put(const Float32 floatVal)
 
 
 E_Condition DcmFloatingPointSingle::put(const Float32 floatVal,
-										const unsigned long position)
+					const unsigned long position)
 {
-	Bdebug((2, "DcmFloatingPointSingle::put(floatval=%ld,position=%ld)", 
-			floatVal, position));
+    Bdebug((2, "DcmFloatingPointSingle::put(floatval=%ld,position=%ld)", 
+	    floatVal, position));
 
-	Float32 val = floatVal;
+    Float32 val = floatVal;
 
-	errorFlag = this -> changeValue(&val, sizeof(Float32)*position,
-									sizeof(Float32));
-	return errorFlag;
+    errorFlag = this -> changeValue(&val, sizeof(Float32)*position,
+				    sizeof(Float32));
+    return errorFlag;
+}
+
+
+// ********************************
+
+
+E_Condition DcmFloatingPointSingle::put(const char * val)
+{
+    errorFlag = EC_Normal;
+    if (val)
+    {
+	unsigned long vm = getVMFromString(val);
+	Float32 * field = new Float32[vm];
+	const char * s = val;
+	    
+	for(unsigned long i = 0; i < vm && errorFlag == EC_Normal; i++)
+	{
+	    const char * value = getFirstValueFromString(s);
+	    if (!value || sscanf(value, "%f", &field[i]) != 1)
+		errorFlag = EC_CorruptedData;
+	    else if (value)
+		delete[] value;
+	}
+	
+	if (errorFlag == EC_Normal)
+	    errorFlag = this -> put(field, vm);
+	delete[] field;
+    }
+    return errorFlag;
 }
 
 
@@ -241,7 +271,11 @@ E_Condition DcmFloatingPointSingle::verify(const BOOL autocorrect)
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrfl.cc,v $
-** Revision 1.3  1996-01-05 13:27:49  andreas
+** Revision 1.4  1996-01-29 13:38:32  andreas
+** - new put method for every VR to put value as a string
+** - better and unique print methods
+**
+** Revision 1.3  1996/01/05 13:27:49  andreas
 ** - changed to support new streaming facilities
 ** - unique read/write methods for file and block transfer
 ** - more cleanups

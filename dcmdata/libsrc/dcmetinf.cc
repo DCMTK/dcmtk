@@ -11,9 +11,9 @@
 **
 **
 ** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1996-01-09 11:06:47 $
+** Update Date:		$Date: 1996-01-29 13:38:27 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcmetinf.cc,v $
-** CVS/RCS Revision:	$Revision: 1.4 $
+** CVS/RCS Revision:	$Revision: 1.5 $
 ** Status:		$State: Exp $
 **
 */
@@ -419,7 +419,7 @@ E_Condition DcmMetaInfo::read(DcmStream & inStream,
 		errorFlag = EC_Normal;      // es existiert kein Meta-Header
 		Xfer = EXS_Unknown;
 	    }
-	    else if ( errorFlag == EC_SequEnd )
+	    else if ( errorFlag == EC_ItemEnd )
 		errorFlag = EC_Normal;
 	    if (errorFlag == EC_Normal)
 	    {
@@ -542,7 +542,11 @@ E_Condition DcmMetaInfo::write(DcmStream & outStream,
 /*
 ** CVS/RCS Log:
 ** $Log: dcmetinf.cc,v $
-** Revision 1.4  1996-01-09 11:06:47  andreas
+** Revision 1.5  1996-01-29 13:38:27  andreas
+** - new put method for every VR to put value as a string
+** - better and unique print methods
+**
+** Revision 1.4  1996/01/09 11:06:47  andreas
 ** New Support for Visual C++
 ** Correct problems with inconsistent const declarations
 ** Correct error in reading Item Delimitation Elements

@@ -10,9 +10,9 @@
 ** Interface of class DcmUnsignedLong
 **
 ** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1996-01-05 13:23:11 $
+** Update Date:		$Date: 1996-01-29 13:38:18 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcvrul.h,v $
-** CVS/RCS Revision:	$Revision: 1.3 $
+** CVS/RCS Revision:	$Revision: 1.4 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -41,12 +41,14 @@ public:
     virtual unsigned long getVM(void);
 
     virtual E_Condition put(const Uint32 * uintVal,
-                            const unsigned long numUints);     // number of longs
+                            const unsigned long numUints);  // number of longs
 
-    virtual E_Condition put(const Uint32 uintVal);		// for one long only
+    virtual E_Condition put(const Uint32 uintVal);	    // for one long only
 
-    virtual E_Condition put(const Uint32 uintVal,		    // one Uint32
-                            const unsigned long position);	// at any position
+    virtual E_Condition put(const Uint32 uintVal,	    // one Uint32
+                            const unsigned long position);  // at any position
+
+    virtual E_Condition put(const char * value);  // Uint32 in string
 
     virtual E_Condition get(Uint32 * & uintVals);
     virtual E_Condition get(Uint32 & uintVal, const unsigned long pos);
@@ -63,7 +65,11 @@ public:
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrul.h,v $
-** Revision 1.3  1996-01-05 13:23:11  andreas
+** Revision 1.4  1996-01-29 13:38:18  andreas
+** - new put method for every VR to put value as a string
+** - better and unique print methods
+**
+** Revision 1.3  1996/01/05 13:23:11  andreas
 ** - changed to support new streaming facilities
 ** - more cleanups
 ** - merged read / write methods for block and file transfer

@@ -10,9 +10,9 @@
 ** Interface of class DcmOtherByteOtherWord
 **
 ** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1996-01-05 13:23:07 $
+** Update Date:		$Date: 1996-01-29 13:38:17 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcvrobow.h,v $
-** CVS/RCS Revision:	$Revision: 1.3 $
+** CVS/RCS Revision:	$Revision: 1.4 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -32,11 +32,11 @@
 
 class DcmOtherByteOtherWord : public DcmElement 
 {
-  protected:
-	virtual void postLoadValue(void);
+protected:
+    virtual void postLoadValue(void);
     E_Condition alignValue();
 
-  public:
+public:
     DcmOtherByteOtherWord( const DcmTag &tag, const Uint32 len = 0);
     DcmOtherByteOtherWord( const DcmOtherByteOtherWord& old );
     virtual ~DcmOtherByteOtherWord();
@@ -47,18 +47,20 @@ class DcmOtherByteOtherWord : public DcmElement
     virtual unsigned long getVM(void) { return 1L; }
 
     virtual E_Condition write(DcmStream & outStream,
-							  const E_TransferSyntax oxfer,
-							  const E_EncodingType enctype = EET_UndefinedLength,
-							  const E_GrpLenEncoding gltype = EGL_withoutGL);
+			      const E_TransferSyntax oxfer,
+			      const E_EncodingType enctype = EET_UndefinedLength,
+			      const E_GrpLenEncoding gltype = EGL_withoutGL);
 
     virtual E_Condition put(const Uint8 * byteValue,
-							const unsigned long length);      // number of bytes
+			    const unsigned long length);      // number of bytes
 
     virtual E_Condition put(const Uint16 * wordValue,
-							const unsigned long length );      // number of words
+			    const unsigned long length );      // number of words
 
-	virtual E_Condition get(Uint8 * & bytes);
-	virtual E_Condition get(Uint16 * & words);
+    virtual E_Condition put(const char * value);
+
+    virtual E_Condition get(Uint8 * & bytes);
+    virtual E_Condition get(Uint16 * & words);
 
     Uint8 * getBytes(void);		       // Restriction of C++
     Uint16 * getWords(void);	       //	   -""-
@@ -72,7 +74,11 @@ class DcmOtherByteOtherWord : public DcmElement
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrobow.h,v $
-** Revision 1.3  1996-01-05 13:23:07  andreas
+** Revision 1.4  1996-01-29 13:38:17  andreas
+** - new put method for every VR to put value as a string
+** - better and unique print methods
+**
+** Revision 1.3  1996/01/05 13:23:07  andreas
 ** - changed to support new streaming facilities
 ** - more cleanups
 ** - merged read / write methods for block and file transfer

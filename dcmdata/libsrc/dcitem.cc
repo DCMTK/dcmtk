@@ -11,9 +11,9 @@
 **
 **
 ** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1996-01-09 11:06:46 $
+** Update Date:		$Date: 1996-01-29 13:38:27 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcitem.cc,v $
-** CVS/RCS Revision:	$Revision: 1.4 $
+** CVS/RCS Revision:	$Revision: 1.5 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -355,11 +355,11 @@ void DcmItem::print(const int level)
     char *info = new char[200];
     char *title = (char*)NULL;
     if ( Length == DCM_UndefinedLength )
-	title = "\"Item with undefined length\"";
+	title = "Item with undefined length";
     else
-	title = "\"Item with explicit Length\"";
+	title = "Item with explicit Length";
 
-    sprintf( info, "%s  #=%ld ", title, (long)card() );
+    sprintf( info, "(%s  #=%ld)", title, (long)card() );
     DcmObject::printInfoLine( level, info );
     if ( !elementList->empty() )
     {
@@ -374,10 +374,10 @@ void DcmItem::print(const int level)
     DcmTag delimItemTag( DCM_ItemDelimitationItem );
     if ( Length == DCM_UndefinedLength)
 	DcmObject::printInfoLine( level, delimItemTag,
-				  0, "\"ItemDelimitationItem\"" );
+				  0, "(ItemDelimitationItem)" );
     else
 	DcmObject::printInfoLine( level, delimItemTag,
-				  0, "\"ItemDelimitationItem for re-encoding\"" );
+				  0, "(ItemDelimitationItem for re-encoding)" );
     delete info;
 }
 
@@ -736,144 +736,22 @@ E_Condition DcmItem::readSubElement(DcmStream & inStream,
     Bdebug((4, "dcitem:DcmItem::readSubElement(&newTag,newLength=%ld,xfer=%d,gltype=%d)",
 	    newLength, xfer, gltype ));
 
-    E_Condition l_error = EC_Normal;
     DcmElement *subElem = NULL;
+    E_Condition l_error = newDicomElement(subElem, newTag, newLength);
 
-    switch ( newTag.getEVR() )
+
+    if (l_error == EC_Normal && subElem == NULL && 
+	newTag.getXTag() == DCM_PixelData) 
     {
-	// Byte-Strings:
-    case EVR_AE :
-	subElem = new DcmApplicationEntity( newTag, newLength);
-	break;
-    case EVR_AS :
-	subElem = new DcmAgeString( newTag, newLength);
-	break;
-    case EVR_CS :
-	subElem = new DcmCodeString( newTag, newLength);
-	break;
-    case EVR_DA :
-	subElem = new DcmDate( newTag, newLength);
-	break;
-    case EVR_DS :
-	subElem = new DcmDecimalString( newTag, newLength);
-	break;
-    case EVR_DT :
-	subElem = new DcmDateTime( newTag, newLength);
-	break;
-    case EVR_IS :
-	subElem = new DcmIntegerString( newTag, newLength);
-	break;
-    case EVR_TM :
-	subElem = new DcmTime( newTag, newLength);
-	break;
-    case EVR_UI :
-	subElem = new DcmUniqueIdentifier( newTag, newLength);
-	break;
-
-	// Charakter-Strings:
-    case EVR_LO :
-	subElem = new DcmLongString( newTag, newLength);
-	break;
-    case EVR_LT :
-	subElem = new DcmLongText( newTag, newLength);
-	break;
-    case EVR_PN :
-	subElem = new DcmPersonName( newTag, newLength);
-	break;
-    case EVR_SH :
-	subElem = new DcmShortString( newTag, newLength);
-	break;
-    case EVR_ST :
-	subElem = new DcmShortText( newTag, newLength);
-	break;
-
-	// abhaengig von ByteOrder:
-    case EVR_AT :
-	subElem = new DcmAttributeTag( newTag, newLength);
-	break;
-    case EVR_SS :
-	subElem = new DcmSignedShort( newTag, newLength);
-	break;
-    case EVR_xs : // laut Dicom-Standard V3.0
-    case EVR_US :
-	subElem = new DcmUnsignedShort( newTag, newLength);
-	break;
-    case EVR_SL :
-	subElem = new DcmSignedLong( newTag, newLength);
-	break;
-    case EVR_up : // fuer (0004,eeee) laut Dicom-Standard V3.0
-    case EVR_UL :
-    {
-	// generiere Tag mit VR aus Dictionary!
-	DcmTag ulupTag(newTag.getXTag());
-	if ( ulupTag.getEVR() == EVR_up )
-	    subElem = new DcmUnsignedLongOffset(ulupTag, newLength);
+	DcmXfer xferSyn(xfer);
+	if (xferSyn.isEncapsulated())
+	    subElem = new DcmPixelSequence(newTag, newLength);
 	else
-	    subElem = new DcmUnsignedLong( newTag, newLength);
-    }
-    break;
-    case EVR_FL:
-	subElem = new DcmFloatingPointSingle( newTag, newLength);
-	break;
-    case EVR_FD :
-	subElem = new DcmFloatingPointDouble( newTag, newLength);
-	break;
-
-	// Sequences and Items
-    case EVR_SQ :
-	subElem = new DcmSequenceOfItems( newTag, newLength);
-	break;
-    case EVR_na :
-	if ( newTag.getXTag() == DCM_Item )
-	    l_error = EC_InvalidTag;
-	else if ( newTag.getXTag() == DCM_SequenceDelimitationItem )
-	    l_error = EC_InvalidTag;
-	else if ( newTag.getXTag() == DCM_ItemDelimitationItem )
-	    l_error = EC_SequEnd;
-	else
-	    l_error = EC_InvalidTag;
-	break;
-
-	// nicht-eindeutig 8- oder 16-Bit:
-    case EVR_ox :
-    case EVR_OB :
-    case EVR_OW :
-    {
-	DcmXfer xferSyn( xfer );
-	if ( newTag.getXTag() == DCM_PixelData )
 	{
-	    if ( xferSyn.isEncapsulated() )
-		subElem = new DcmPixelSequence(newTag, newLength);
-	    else
-	    {
-		if ( xferSyn.isImplicitVR() )
-		    newTag.setVR( EVR_OW );
-		subElem = new DcmOtherByteOtherWord(newTag, newLength);
-	    }
+	    if ( xferSyn.isImplicitVR() )
+		newTag.setVR(EVR_OW);
+	    subElem = new DcmOtherByteOtherWord(newTag, newLength);
 	}
-	else
-	    subElem = new DcmOtherByteOtherWord( newTag, newLength);
-    }
-    break;
-
-    // Gekapselte Pixeldaten als spezielle Sequenz:
-    case EVR_pixelSQ :
-	subElem = new DcmPixelSequence( newTag, newLength);
-	break;
-
-	// Falls das Parsing nicht so ganz funktionieren sollte:
-    case EVR_pixelItem :
-	l_error = EC_InvalidTag;
-	break;
-
-        // Unbekannte Typen als Byte-String lesen:
-    case EVR_UNKNOWN :
-    default :
-	subElem = new DcmOtherByteOtherWord( newTag, newLength);
-
-        cerr << "Warning: DcmItem::readSubElement(): unknown Tag detected: "
-	     << newTag << endl;
-	break;
     }
 
     if ( l_error == EC_Normal && subElem != (DcmElement*)NULL )
@@ -896,7 +774,7 @@ E_Condition DcmItem::readSubElement(DcmStream & inStream,
 		" (0x%4.4hx,0x%4.4hx)\n", newTag.getGTag(), newTag.getETag() ));
 
     }
-    else if ( l_error != EC_SequEnd )
+    else if ( l_error != EC_ItemEnd )
     {
 	// Very important: Unset the putback mark
 	inStream.UnsetPutbackMark();
@@ -984,7 +862,7 @@ E_Condition DcmItem::read(DcmStream & inStream,
 		errorFlag = EC_EndOfStream;
 	} // else errorFlag
 		
-	if (errorFlag == EC_SequEnd || errorFlag == EC_EndOfStream)
+	if (errorFlag == EC_ItemEnd || errorFlag == EC_EndOfStream)
 	    errorFlag = EC_Normal;
 	if ( errorFlag == EC_Normal )
 	    fTransferState = ERW_ready;	     // Item ist komplett
@@ -1645,13 +1523,173 @@ E_Condition DcmItem::loadAllDataIntoMemory(void)
 }
 
 
+
+
 // ********************************
 
+//
+// Support functions
+
+DcmElement * newDicomElement(DcmTag & tag,
+			     const Uint32 length)
+{
+    DcmElement * newElement = NULL;
+    newDicomElement(newElement, tag, length);
+    return newElement;
+}
+
+// ********************************
+
+E_Condition newDicomElement(DcmElement * & newElement,
+			    DcmTag & tag,
+			    const Uint32 length)
+{
+    E_Condition l_error = EC_Normal;
+    newElement = NULL;
+
+    switch (tag.getEVR())
+    {
+	// Byte-Strings:
+    case EVR_AE :
+	newElement = new DcmApplicationEntity( tag, length);
+	break;
+    case EVR_AS :
+	newElement = new DcmAgeString( tag, length);
+	break;
+    case EVR_CS :
+	newElement = new DcmCodeString( tag, length);
+	break;
+    case EVR_DA :
+	newElement = new DcmDate( tag, length);
+	break;
+    case EVR_DS :
+	newElement = new DcmDecimalString( tag, length);
+	break;
+    case EVR_DT :
+	newElement = new DcmDateTime( tag, length);
+	break;
+    case EVR_IS :
+	newElement = new DcmIntegerString( tag, length);
+	break;
+    case EVR_TM :
+	newElement = new DcmTime( tag, length);
+	break;
+    case EVR_UI :
+	newElement = new DcmUniqueIdentifier( tag, length);
+	break;
+
+	// Charakter-Strings:
+    case EVR_LO :
+	newElement = new DcmLongString( tag, length);
+	break;
+    case EVR_LT :
+	newElement = new DcmLongText( tag, length);
+	break;
+    case EVR_PN :
+	newElement = new DcmPersonName( tag, length);
+	break;
+    case EVR_SH :
+	newElement = new DcmShortString( tag, length);
+	break;
+    case EVR_ST :
+	newElement = new DcmShortText( tag, length);
+	break;
+
+	// abhaengig von ByteOrder:
+    case EVR_AT :
+	newElement = new DcmAttributeTag( tag, length);
+	break;
+    case EVR_SS :
+	newElement = new DcmSignedShort( tag, length);
+	break;
+    case EVR_xs : // laut Dicom-Standard V3.0
+    case EVR_US :
+	newElement = new DcmUnsignedShort( tag, length);
+	break;
+    case EVR_SL :
+	newElement = new DcmSignedLong( tag, length);
+	break;
+    case EVR_up : // fuer (0004,eeee) laut Dicom-Standard V3.0
+    case EVR_UL :
+    {
+	// generiere Tag mit VR aus Dictionary!
+	DcmTag ulupTag(tag.getXTag());
+	if ( ulupTag.getEVR() == EVR_up )
+	    newElement = new DcmUnsignedLongOffset(ulupTag, length);
+	else
+	    newElement = new DcmUnsignedLong( tag, length);
+    }
+    break;
+    case EVR_FL:
+	newElement = new DcmFloatingPointSingle( tag, length);
+	break;
+    case EVR_FD :
+	newElement = new DcmFloatingPointDouble( tag, length);
+	break;
+
+	// Sequences and Items
+    case EVR_SQ :
+	newElement = new DcmSequenceOfItems( tag, length);
+	break;
+    case EVR_na :
+	if ( tag.getXTag() == DCM_Item )
+	    l_error = EC_InvalidTag;
+	else if ( tag.getXTag() == DCM_SequenceDelimitationItem )
+	    l_error = EC_SequEnd;
+	else if ( tag.getXTag() == DCM_ItemDelimitationItem )
+	    l_error = EC_ItemEnd;
+	else
+	    l_error = EC_InvalidTag;
+	break;
+
+	// nicht-eindeutig 8- oder 16-Bit:
+
+    case EVR_ox :
+	// We cannot handle EVR_ox here because we do not know the
+	// transfer syntax
+	break;
+
+    case EVR_OB :
+    case EVR_OW :
+	newElement = new DcmOtherByteOtherWord(tag, length);
+	break;
+
+    // Gekapselte Pixeldaten als spezielle Sequenz:
+    case EVR_pixelSQ :
+	newElement = new DcmPixelSequence( tag, length);
+	break;
+
+	// Falls das Parsing nicht so ganz funktionieren sollte:
+    case EVR_pixelItem :
+	l_error = EC_InvalidTag;
+	break;
+
+        // Unbekannte Typen als Byte-String lesen:
+    case EVR_UNKNOWN :
+    default :
+	newElement = new DcmOtherByteOtherWord(tag, length);
+
+        cerr << "Warning: newDicomElement(): unknown Tag detected: "
+	     << tag << endl;
+	break;
+    }
+
+    return l_error;
+}
+
+
+
+
+// ********************************
 
 /*
 ** CVS/RCS Log:
 ** $Log: dcitem.cc,v $
-** Revision 1.4  1996-01-09 11:06:46  andreas
+** Revision 1.5  1996-01-29 13:38:27  andreas
+** - new put method for every VR to put value as a string
+** - better and unique print methods
+**
+** Revision 1.4  1996/01/09 11:06:46  andreas
 ** New Support for Visual C++
 ** Correct problems with inconsistent const declarations
 ** Correct error in reading Item Delimitation Elements

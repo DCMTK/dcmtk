@@ -10,9 +10,9 @@
 ** Implementation of class DcmSignedShort
 **
 ** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1996-01-05 13:27:53 $
+** Update Date:		$Date: 1996-01-29 13:38:34 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcvrss.cc,v $
-** CVS/RCS Revision:	$Revision: 1.3 $
+** CVS/RCS Revision:	$Revision: 1.4 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -24,6 +24,7 @@
 #include <iostream.h>
 
 #include "dcvrss.h"
+#include "dcvm.h"
 #include "dcdebug.h"
 
 
@@ -120,18 +121,18 @@ unsigned long DcmSignedShort::getVM()
 
 
 E_Condition DcmSignedShort::put(const Sint16 * sintVal,
-							   const unsigned long numSints)
+				const unsigned long numSints)
 {
     errorFlag = EC_Normal;
-	if (numSints)
-	{
-		if (sintVal)
-			errorFlag = this -> putValue(sintVal, 
-										 sizeof(Sint16)*Uint32(numSints));
-		else
-			errorFlag = EC_CorruptedData;
-	}
-	return errorFlag;
+    if (numSints)
+    {
+	if (sintVal)
+	    errorFlag = this -> putValue(sintVal, 
+					 sizeof(Sint16)*Uint32(numSints));
+	else
+	    errorFlag = EC_CorruptedData;
+    }
+    return errorFlag;
 }
 
 
@@ -140,9 +141,9 @@ E_Condition DcmSignedShort::put(const Sint16 * sintVal,
 
 E_Condition DcmSignedShort::put(const Sint16 sintVal)
 {
-	Sint16 val = sintVal;
-	errorFlag = this -> putValue(&val, sizeof(Sint16));
-	return errorFlag;
+    Sint16 val = sintVal;
+    errorFlag = this -> putValue(&val, sizeof(Sint16));
+    return errorFlag;
 
     errorFlag = EC_Normal;
 }
@@ -152,15 +153,44 @@ E_Condition DcmSignedShort::put(const Sint16 sintVal)
 
 
 E_Condition DcmSignedShort::put(const Sint16 sintVal,
-							   const unsigned long position)
+				const unsigned long position)
 {
-	Bdebug((2, "DcmSignedShort::put(slong=%ld,num=%ld)", sintVal, position));
+    Bdebug((2, "DcmSignedShort::put(slong=%ld,num=%ld)", sintVal, position));
 
-	Sint16 val = sintVal;
+    Sint16 val = sintVal;
 
-	errorFlag = this -> changeValue(&val, sizeof(Sint16)*position,
-									sizeof(Sint16));
-	return errorFlag;
+    errorFlag = this -> changeValue(&val, sizeof(Sint16)*position,
+				    sizeof(Sint16));
+    return errorFlag;
+}
+
+
+// ********************************
+
+
+E_Condition DcmSignedShort::put(const char * val)
+{
+    errorFlag = EC_Normal;
+    if (val)
+    {
+	unsigned long vm = getVMFromString(val);
+	Sint16 * field = new Sint16[vm];
+	const char * s = val;
+	    
+	for(unsigned long i = 0; i < vm && errorFlag == EC_Normal; i++)
+	{
+	    const char * value = getFirstValueFromString(s);
+	    if (!value || sscanf(value, "%hd", &field[i]) != 1)
+		errorFlag = EC_CorruptedData;
+	    else if (value)
+		delete[] value;
+	}
+	
+	if (errorFlag == EC_Normal)
+	    errorFlag = this -> put(field, vm);
+	delete[] field;
+    }
+    return errorFlag;
 }
 
 
@@ -237,7 +267,11 @@ E_Condition DcmSignedShort::verify(const BOOL autocorrect )
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrss.cc,v $
-** Revision 1.3  1996-01-05 13:27:53  andreas
+** Revision 1.4  1996-01-29 13:38:34  andreas
+** - new put method for every VR to put value as a string
+** - better and unique print methods
+**
+** Revision 1.3  1996/01/05 13:27:53  andreas
 ** - changed to support new streaming facilities
 ** - unique read/write methods for file and block transfer
 ** - more cleanups

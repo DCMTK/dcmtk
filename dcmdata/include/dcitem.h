@@ -11,9 +11,9 @@
 **
 **
 ** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1996-01-09 11:06:15 $
+** Update Date:		$Date: 1996-01-29 13:38:12 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcitem.h,v $
-** CVS/RCS Revision:	$Revision: 1.4 $
+** CVS/RCS Revision:	$Revision: 1.5 $
 ** Status:		$State: Exp $
 **
 */
@@ -123,13 +123,55 @@ public:
     virtual E_Condition removeGroupLengthElements();
 };
 
+//
+// SUPPORT FUNCTIONS
+//
+
+
+
+// Function: newDicomElement
+// creates a new DicomElement from a Tag.
+// 
+// Input:
+//   tag : Tag of the new element
+//   length : length of the element value
+//
+// Output:
+//   newElement: point of a heap allocated new element. If the tag does not
+//               describe a dicom element or has ambigious VR (e.g. EVR_ox)
+//               a NULL pointer is returned.
+//
+// Result:
+//   EC_Normal:     tag describes an element (possibly with ambiguous VR)
+//   EC_InvalidTag: tag describes an item begin or an unknown element
+//   EC_SequEnd:    tag describes a sequence delimitation element
+//   EC_ItemEnd:    tag describes an item delmitation element
+//   other: an error
+
+E_Condition newDicomElement(DcmElement * & newElement,
+			    DcmTag & tag,
+			    const Uint32 length = 0);
+
+
+
+// Function: newDicomElement
+// creates a new DicomElement from a Tag. If differs from the above funtion in 
+// not returning a condition. 
+ 
+DcmElement * newDicomElement(DcmTag & tag,
+			     const Uint32 length = 0);
+
 
 #endif // DCITEM_H
 
 /*
 ** CVS/RCS Log:
 ** $Log: dcitem.h,v $
-** Revision 1.4  1996-01-09 11:06:15  andreas
+** Revision 1.5  1996-01-29 13:38:12  andreas
+** - new put method for every VR to put value as a string
+** - better and unique print methods
+**
+** Revision 1.4  1996/01/09 11:06:15  andreas
 ** New Support for Visual C++
 ** Correct problems with inconsistent const declarations
 **

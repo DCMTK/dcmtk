@@ -10,9 +10,9 @@
 ** Implementation of class DcmSignedLong
 **
 ** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1996-01-05 13:27:53 $
+** Update Date:		$Date: 1996-01-29 13:38:33 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcvrsl.cc,v $
-** CVS/RCS Revision:	$Revision: 1.3 $
+** CVS/RCS Revision:	$Revision: 1.4 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -24,6 +24,7 @@
 #include <iostream.h>
 
 #include "dcvrsl.h"
+#include "dcvm.h"
 #include "dcdebug.h"
 
 
@@ -78,32 +79,36 @@ Edebug(());
 
 void DcmSignedLong::print(const int level)
 {
-	if (valueLoaded())
+    if (valueLoaded())
+    {
+	Sint32 * sintVals = this -> get();
+
+	if (!sintVals)
+	    printInfoLine( level, "(no value available)" );
+	else
 	{
-		Sint32 * sintVals = this -> get();
+	    char *ch_words;
+	    char *tmp = ch_words = new char[Length*12/sizeof(Sint32)+4];
 
-		if (!sintVals)
-			printInfoLine( level, "(no value available)" );
-		else
-		{
-			char *ch_words;
-			char *tmp = ch_words = new char[Length*12/sizeof(Sint32)+4];
-
-			for (unsigned long i=0; i<( Length/sizeof(Sint32) ); i++ )
-			{
-				sprintf( tmp, "%ld\\", *sintVals );
-				tmp += strlen(tmp);
-				sintVals++;
-			}
-			if ( Length > 0 )
-				tmp--;
-			*tmp = '\0';
-			printInfoLine(level, ch_words);
-			delete ch_words;
-		}
+	    for (unsigned long i=0; i<( Length/sizeof(Sint32) ); i++ )
+	    {
+# if SIZEOF_LONG == 8
+		sprintf(tmp, "%d\\", *sintVals);
+#else
+		sprintf(tmp, "%ld\\", *sintVals);
+#endif
+		tmp += strlen(tmp);
+		sintVals++;
+	    }
+	    if ( Length > 0 )
+		tmp--;
+	    *tmp = '\0';
+	    printInfoLine(level, ch_words);
+	    delete ch_words;
+	}
     }
     else
-		printInfoLine( level, "(not loaded)" );
+	printInfoLine( level, "(not loaded)" );
 }
 
 
@@ -120,18 +125,18 @@ unsigned long DcmSignedLong::getVM()
 
 
 E_Condition DcmSignedLong::put(const Sint32 * sintVal,
-							   const unsigned long numSints)
+			       const unsigned long numSints)
 {
     errorFlag = EC_Normal;
-	if (numSints)
-	{
-		if (sintVal)
-			errorFlag = this -> putValue(sintVal, 
-										 sizeof(Sint32)*Uint32(numSints));
-		else
-			errorFlag = EC_CorruptedData;
-	}
-	return errorFlag;
+    if (numSints)
+    {
+	if (sintVal)
+	    errorFlag = this -> putValue(sintVal, 
+					 sizeof(Sint32)*Uint32(numSints));
+	else
+	    errorFlag = EC_CorruptedData;
+    }
+    return errorFlag;
 }
 
 
@@ -140,9 +145,9 @@ E_Condition DcmSignedLong::put(const Sint32 * sintVal,
 
 E_Condition DcmSignedLong::put(const Sint32 sintVal)
 {
-	Sint32 val = sintVal;
-	errorFlag = this -> putValue(&val, sizeof(Sint32));
-	return errorFlag;
+    Sint32 val = sintVal;
+    errorFlag = this -> putValue(&val, sizeof(Sint32));
+    return errorFlag;
 
     errorFlag = EC_Normal;
 }
@@ -152,15 +157,49 @@ E_Condition DcmSignedLong::put(const Sint32 sintVal)
 
 
 E_Condition DcmSignedLong::put(const Sint32 sintVal,
-							   const unsigned long position)
+			       const unsigned long position)
 {
-	Bdebug((2, "DcmSignedLong::put(slong=%ld,num=%ld)", sintVal, position));
+    Bdebug((2, "DcmSignedLong::put(slong=%ld,num=%ld)", sintVal, position));
 
-	Sint32 val = sintVal;
+    Sint32 val = sintVal;
 
-	errorFlag = this -> changeValue(&val, sizeof(Sint32)*position,
-									sizeof(Sint32));
-	return errorFlag;
+    errorFlag = this -> changeValue(&val, sizeof(Sint32)*position,
+				    sizeof(Sint32));
+    return errorFlag;
+}
+
+
+// ********************************
+
+
+E_Condition DcmSignedLong::put(const char * val)
+{
+    errorFlag = EC_Normal;
+    if (val)
+    {
+	unsigned long vm = getVMFromString(val);
+	Sint32 * field = new Sint32[vm];
+	const char * s = val;
+	    
+	for(unsigned long i = 0; i < vm && errorFlag == EC_Normal; i++)
+	{
+	    const char * value = getFirstValueFromString(s);
+	    if (!value || 
+#if SIZEOF_LONG == 8
+		sscanf(value, "%d", &field[i]) != 1)
+#else
+		sscanf(value, "%ld", &field[i]) != 1)
+#endif
+		errorFlag = EC_CorruptedData;
+	    else if (value)
+		delete[] value;
+	}
+	
+	if (errorFlag == EC_Normal)
+	    errorFlag = this -> put(field, vm);
+	delete[] field;
+    }
+    return errorFlag;
 }
 
 
@@ -236,7 +275,11 @@ E_Condition DcmSignedLong::verify(const BOOL autocorrect )
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrsl.cc,v $
-** Revision 1.3  1996-01-05 13:27:53  andreas
+** Revision 1.4  1996-01-29 13:38:33  andreas
+** - new put method for every VR to put value as a string
+** - better and unique print methods
+**
+** Revision 1.3  1996/01/05 13:27:53  andreas
 ** - changed to support new streaming facilities
 ** - unique read/write methods for file and block transfer
 ** - more cleanups

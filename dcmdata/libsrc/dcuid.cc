@@ -10,9 +10,9 @@
 ** routines for finding and created UIDs.
 **
 ** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1996-01-23 17:29:25 $
+** Update Date:		$Date: 1996-01-29 13:38:30 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcuid.cc,v $
-** CVS/RCS Revision:	$Revision: 1.2 $
+** CVS/RCS Revision:	$Revision: 1.3 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -43,30 +43,34 @@ struct UIDNameMap {
     const char* name;
 };
 
+//
+// It is very important that the names of the UIDs may not use the following 
+// characters: space  (  )  [  ], =  <  >
+ 
 static UIDNameMap uidNameMap[] = {
     { UID_StandardApplicationContext, "StandardApplicationContext" },
     { UID_VerificationSOPClass, "VerificationSOPClass" },        
     { UID_LittleEndianImplicitTransferSyntax, "LittleEndianImplicit" },
     { UID_LittleEndianExplicitTransferSyntax, "LittleEndianExplicit" },
     { UID_BigEndianExplicitTransferSyntax, "BigEndianExplicit" },
-    { UID_JPEGProcess1TransferSyntax, "JPEG Baseline" },
-    { UID_JPEGProcess2_4TransferSyntax, "JPEG Extended" },
-    { UID_JPEGProcess3_5TransferSyntax, "JPEG Extended" },
-    { UID_JPEGProcess6_8TransferSyntax, "JPEG Spectral Selection, Non-hierarchical" },
-    { UID_JPEGProcess7_9TransferSyntax, "JPEG Spectral Selection, Non-hierarchical" },
-    { UID_JPEGProcess10_12TransferSyntax, "JPEG Full Progression, Non-hierarchical" },
-    { UID_JPEGProcess11_13TransferSyntax, "JPEG Full Progression, Non-hierarchical" },
-    { UID_JPEGProcess14TransferSyntax, "JPEG Lossless, Non-hierarchical" },
-    { UID_JPEGProcess15TransferSyntax, "JPEG Lossless, Non-hierarchical" },
-    { UID_JPEGProcess16_18TransferSyntax, "JPEG Extended, Hierarchical" },
-    { UID_JPEGProcess17_19TransferSyntax, "JPEG Extended, Hierarchical" },
-    { UID_JPEGProcess20_22TransferSyntax, "JPEG Spectral Selection, Hierarchical" },
-    { UID_JPEGProcess21_23TransferSyntax, "JPEG Spectral Selection, Hierarchical" },
-    { UID_JPEGProcess24_26TransferSyntax, "JPEG Full Progression, Hierarchical" },
-    { UID_JPEGProcess25_27TransferSyntax, "JPEG Full Progression, Hierarchical" },
-    { UID_JPEGProcess28TransferSyntax, "JPEG Lossless, Hierarchical" },
-    { UID_JPEGProcess29TransferSyntax, "JPEG Lossless, Hierarchical" },
-    { UID_JPEGProcess14SV1TransferSyntax, "JPEG Lossless, Hierarchical, 1st Order Prediction" },
+    { UID_JPEGProcess1TransferSyntax, "JPEGBaseline" },
+    { UID_JPEGProcess2_4TransferSyntax, "JPEGExtended" },
+    { UID_JPEGProcess3_5TransferSyntax, "JPEGExtended" },
+    { UID_JPEGProcess6_8TransferSyntax, "JPEGSpectralSelection:Non-hierarchical" },
+    { UID_JPEGProcess7_9TransferSyntax, "JPEGSpectralSelection:Non-hierarchical" },
+    { UID_JPEGProcess10_12TransferSyntax, "JPEGFullProgression:Non-hierarchical" },
+    { UID_JPEGProcess11_13TransferSyntax, "JPEGFullProgression:Non-hierarchical" },
+    { UID_JPEGProcess14TransferSyntax, "JPEGLossless:Non-hierarchical" },
+    { UID_JPEGProcess15TransferSyntax, "JPEGLossless:Non-hierarchical" },
+    { UID_JPEGProcess16_18TransferSyntax, "JPEGExtended:Hierarchical" },
+    { UID_JPEGProcess17_19TransferSyntax, "JPEGExtended:Hierarchical" },
+    { UID_JPEGProcess20_22TransferSyntax, "JPEGSpectralSelection:Hierarchical" },
+    { UID_JPEGProcess21_23TransferSyntax, "JPEGSpectralSelection:Hierarchical" },
+    { UID_JPEGProcess24_26TransferSyntax, "JPEGFullProgression:Hierarchical" },
+    { UID_JPEGProcess25_27TransferSyntax, "JPEGFullProgression:Hierarchical" },
+    { UID_JPEGProcess28TransferSyntax, "JPEGLossless:Hierarchical" },
+    { UID_JPEGProcess29TransferSyntax, "JPEGLossless:Hierarchical" },
+    { UID_JPEGProcess14SV1TransferSyntax, "JPEGLossless:Hierarchical-1stOrderPrediction" },
     { UID_BasicDirectoryStorageSOPClass, "BasicDirectoryStorageSOPClass" },
     { UID_BasicStudyContentNotificationSOPClass, "BasicStudyContentNotificationSOPClass" },
     { UID_DetachedPatientManagementSOPClass, "DetachedPatientManagementSOPClass" },
@@ -136,6 +140,25 @@ dcmFindNameOfUID(const char* uid)
     }
     return NULL;
 }
+
+//
+// dcmFindUIDFromName(const char* name)
+// Return the UID of a name.
+// Performs a table lookup and returns a pointer to a read-only string.
+// Returns NULL of the name is not known.
+//
+
+const char *
+dcmFindUIDFromName(const char * name)
+{
+    for(int i = 0; i < uidNameMap_size; i++)
+    {
+        if (strcmp(name, uidNameMap[i].name) == 0) 
+            return uidNameMap[i].uid;
+    }
+    return NULL;
+}
+
 
 
 // ********************************
@@ -251,7 +274,11 @@ char* dcmGenerateUniqueIdentifer(char* uid, const char* prefix)
 /*
 ** CVS/RCS Log:
 ** $Log: dcuid.cc,v $
-** Revision 1.2  1996-01-23 17:29:25  andreas
+** Revision 1.3  1996-01-29 13:38:30  andreas
+** - new put method for every VR to put value as a string
+** - better and unique print methods
+**
+** Revision 1.2  1996/01/23 17:29:25  andreas
 ** Support for old fashioned make without @^
 ** Support for machines that have mktemp but do not define it.
 **

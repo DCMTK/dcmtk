@@ -10,9 +10,9 @@
 ** Interface of class DcmAttributeTag
 **
 ** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1996-01-09 11:06:17 $
+** Update Date:		$Date: 1996-01-29 13:38:15 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcvrat.h,v $
-** CVS/RCS Revision:	$Revision: 1.4 $
+** CVS/RCS Revision:	$Revision: 1.5 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -31,7 +31,7 @@
 
 class DcmAttributeTag : public DcmElement 
 {
-  public:
+public:
     DcmAttributeTag(const DcmTag &tag, const Uint32 len = 0);
     DcmAttributeTag( const DcmAttributeTag &newAT );
     virtual ~DcmAttributeTag();
@@ -40,16 +40,18 @@ class DcmAttributeTag : public DcmElement
     virtual void print(const int level = 0);
     virtual unsigned long getVM();
 
-    virtual E_Condition put(const Uint16 * attrValue,	// Tags
-                            const unsigned long tagNum);   	// number of tags
+    virtual E_Condition put(const Uint16 * attrValue,	  // Tags
+                            const unsigned long tagNum);  // number of tags
 
-	virtual E_Condition put(const DcmTag & attrTag);
+    virtual E_Condition put(const DcmTag & attrTag);
 
-	virtual E_Condition put(const DcmTag & attrTag, 		// new Tag
-							const unsigned long position);	// pos. in Tag array
+    virtual E_Condition put(const DcmTag & attrTag, 	    // new Tag
+			    const unsigned long position);  // pos. in Tag array
 
-	virtual E_Condition get(DcmTag & attrTag, const unsigned long pos = 0);
-	virtual E_Condition get(Uint16 * & attributeTags);
+    virtual E_Condition put(const char * val);
+
+    virtual E_Condition get(DcmTag & attrTag, const unsigned long pos = 0);
+    virtual E_Condition get(Uint16 * & attributeTags);
     Uint16 * get(void);
     DcmTag get(const unsigned long num);
 
@@ -62,7 +64,11 @@ class DcmAttributeTag : public DcmElement
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrat.h,v $
-** Revision 1.4  1996-01-09 11:06:17  andreas
+** Revision 1.5  1996-01-29 13:38:15  andreas
+** - new put method for every VR to put value as a string
+** - better and unique print methods
+**
+** Revision 1.4  1996/01/09 11:06:17  andreas
 ** New Support for Visual C++
 ** Correct problems with inconsistent const declarations
 **

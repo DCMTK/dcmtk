@@ -7,12 +7,12 @@
 **
 ** Purpose:
 ** Definitions of "well known" DICOM Unique Indentifiers,
-** routines for finding and created UIDs.
+** routines for finding and creating UIDs.
 **
-** Last Update:		$Author: hewett $
-** Update Date:		$Date: 1995-11-23 16:38:05 $
+** Last Update:		$Author: andreas $
+** Update Date:		$Date: 1996-01-29 13:38:14 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcuid.h,v $
-** CVS/RCS Revision:	$Revision: 1.1 $
+** CVS/RCS Revision:	$Revision: 1.2 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -33,6 +33,16 @@
 */
 
 const char* dcmFindNameOfUID(const char* uid);
+
+//
+// dcmFindUIDFromName(const char* name)
+// Return the UID of a name.
+// Performs a table lookup and returns a pointer to a read-only string.
+// Returns NULL of the name is not known.
+//
+
+const char * dcmFindUIDFromName(const char * name);
+
 
 /*		
 ** char* generateUniqueIdentifer(char* uid)
@@ -183,7 +193,11 @@ char* dcmGenerateUniqueIdentifer(char* uid, const char* prefix=NULL);
 /*
 ** CVS/RCS Log:
 ** $Log: dcuid.h,v $
-** Revision 1.1  1995-11-23 16:38:05  hewett
+** Revision 1.2  1996-01-29 13:38:14  andreas
+** - new put method for every VR to put value as a string
+** - better and unique print methods
+**
+** Revision 1.1  1995/11/23 16:38:05  hewett
 ** Updated for loadable data dictionary + some cleanup (more to do).
 **
 **

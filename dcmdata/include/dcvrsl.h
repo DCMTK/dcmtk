@@ -10,9 +10,9 @@
 ** Interface of class DcmSignedLong
 **
 ** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1996-01-05 13:23:09 $
+** Update Date:		$Date: 1996-01-29 13:38:17 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcvrsl.h,v $
-** CVS/RCS Revision:	$Revision: 1.3 $
+** CVS/RCS Revision:	$Revision: 1.4 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -32,7 +32,7 @@
 
 class DcmSignedLong : public DcmElement 
 {
-  public:
+public:
     DcmSignedLong(const DcmTag &tag, const Uint32 len = 0);
     DcmSignedLong(const DcmSignedLong& old );
     virtual ~DcmSignedLong(void);
@@ -44,13 +44,15 @@ class DcmSignedLong : public DcmElement
     virtual E_Condition put(const Sint32 * sintVal,
                             const unsigned long numSints);     // number of longs
 
-    virtual E_Condition put(const Sint32 sintVal);		// for one long only
+    virtual E_Condition put(const Sint32 sintVal);	   // for one long only
 
-    virtual E_Condition put(const Sint32 sintVal,		    // one Sint32
-                            const unsigned long numSint);	// at any position
+    virtual E_Condition put(const Sint32 sintVal,	     // one Sint32
+                            const unsigned long numSint);    // at any position
 
-	virtual E_Condition get(Sint32 * & sintVals);
-	virtual E_Condition get(Sint32 & sintVal, const unsigned long pos = 0);
+    virtual E_Condition put(const char * value);  // Sint32 as Strings
+
+    virtual E_Condition get(Sint32 * & sintVals);
+    virtual E_Condition get(Sint32 & sintVal, const unsigned long pos = 0);
 
     Sint32 * get(void);
     Sint32 get(const unsigned long position);
@@ -64,7 +66,11 @@ class DcmSignedLong : public DcmElement
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrsl.h,v $
-** Revision 1.3  1996-01-05 13:23:09  andreas
+** Revision 1.4  1996-01-29 13:38:17  andreas
+** - new put method for every VR to put value as a string
+** - better and unique print methods
+**
+** Revision 1.3  1996/01/05 13:23:09  andreas
 ** - changed to support new streaming facilities
 ** - more cleanups
 ** - merged read / write methods for block and file transfer

@@ -10,9 +10,9 @@
 **
 **
 ** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1996-01-09 11:06:44 $
+** Update Date:		$Date: 1996-01-29 13:38:25 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcdirrec.cc,v $
-** CVS/RCS Revision:	$Revision: 1.3 $
+** CVS/RCS Revision:	$Revision: 1.4 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -811,7 +811,7 @@ E_Condition DcmDirectoryRecord::fillTypeElements( E_DirRecType type,
 E_Condition DcmDirectoryRecord::fillElementsAndReadSOP
                                                  (const char *referencedFileID)
 {
-	Bdebug((3, "dcdirrec:DcmDirectoryRecord::fillElementsAndReadSOP(char*)" ));
+    Bdebug((3, "dcdirrec:DcmDirectoryRecord::fillElementsAndReadSOP(char*)" ));
 
     E_Condition l_error = EC_Normal;
     char *fileName = (char*)NULL;
@@ -821,38 +821,38 @@ E_Condition DcmDirectoryRecord::fillElementsAndReadSOP
     BOOL directFromFile = FALSE;
     BOOL indirectViaMRDR = FALSE;
     if (referencedFileID != (char*)NULL && *referencedFileID != '\0' )
-		directFromFile = TRUE;
+	directFromFile = TRUE;
     else if (DirRecordType != ERT_Mrdr &&		   // fuer MRDR verboten
-			 referencedMRDR != NULL)
+	     referencedMRDR != NULL)
     {
-		indirectViaMRDR = TRUE;
-		referencedFileID = referencedMRDR->lookForReferencedFileID();
+	indirectViaMRDR = TRUE;
+	referencedFileID = referencedMRDR->lookForReferencedFileID();
     }
 
     if ( referencedFileID != (char*)NULL && *referencedFileID != '\0' )
     {
-		fileName = new char[ strlen( referencedFileID ) + 1 ];
-		buildFileName( referencedFileID, fileName );
-		fileStream = new DcmFileStream(fileName, DCM_ReadMode);
-		if (!fileStream || fileStream->GetError() != EC_Normal )
-		{
-			cerr << "Error: DcmDirectoryRecord::readSOPandFileElements():"
-				    " DicomFile \"" << fileName << "\" not found." << endl;
-			l_error = EC_InvalidStream;
-			directFromFile = FALSE;
-			indirectViaMRDR = FALSE;
-		}
-		else if ( DirRecordType != ERT_Mrdr )
-		{
-			refFile = new DcmFileFormat();
-			refFile->transferInit();
-			refFile->read(*fileStream);
-		}
+	fileName = new char[ strlen( referencedFileID ) + 1 ];
+	buildFileName( referencedFileID, fileName );
+	fileStream = new DcmFileStream(fileName, DCM_ReadMode);
+	if (!fileStream || fileStream->GetError() != EC_Normal )
+	{
+	    cerr << "Error: DcmDirectoryRecord::readSOPandFileElements():"
+		" DicomFile \"" << fileName << "\" not found." << endl;
+	    l_error = EC_InvalidStream;
+	    directFromFile = FALSE;
+	    indirectViaMRDR = FALSE;
+	}
+	else if ( DirRecordType != ERT_Mrdr )
+	{
+	    refFile = new DcmFileFormat();
+	    refFile->transferInit();
+	    refFile->read(*fileStream);
+	}
     }
     else
     {
-		directFromFile = FALSE;
-		indirectViaMRDR = FALSE;
+	directFromFile = FALSE;
+	indirectViaMRDR = FALSE;
     }
     DcmStack stack;
     DcmUnsignedLongOffset *uloP;
@@ -860,131 +860,131 @@ E_Condition DcmDirectoryRecord::fillElementsAndReadSOP
 
     DcmTag nextOffTag( DCM_NextDirectoryRecordOffset ); // (0004,1400)
     uloP = new DcmUnsignedLongOffset( nextOffTag );
-    uloP->put( 0L );
+    uloP->put(Uint32(0));
     if ( insert( uloP, FALSE ) != EC_Normal )
-		delete uloP;
+	delete uloP;
 
     this->setRecordInUseFlag( 0xffff ); 		    // (0004,1410)
 
     DcmTag lowerOffTag( DCM_LowerLevelDirectoryOffset );
     uloP = new DcmUnsignedLongOffset( lowerOffTag );	    // (0004,1420)
-    uloP->put( 0L );
+    uloP->put(Uint32(0));
     if ( insert( uloP, FALSE ) != EC_Normal )
-		delete uloP;
+	delete uloP;
 
     this->setRecordType( DirRecordType );		    // (0004,1430)
 
     DcmTag privRecTag( DCM_PrivateRecordUID );		    // (0004,1432)
     if ( DirRecordType == ERT_Private )
     {
-		uiP = new DcmUniqueIdentifier( privRecTag );
-		if ( insert( uiP, FALSE ) != EC_Normal )
-			delete uiP;
+	uiP = new DcmUniqueIdentifier( privRecTag );
+	if ( insert( uiP, FALSE ) != EC_Normal )
+	    delete uiP;
     }
     else
-		delete this->remove( privRecTag );
+	delete this->remove( privRecTag );
 
-	/*  // alternative Realisierung
-		else if ( this->search( DCM_PrivateRecordUID,
-		stack, ESM_fromHere, FALSE )
-		== EC_Normal )
-		delete this->remove( stack.top() );
-		*/
+    /*  // alternative Realisierung
+	else if ( this->search( DCM_PrivateRecordUID,
+	stack, ESM_fromHere, FALSE )
+	== EC_Normal )
+	delete this->remove( stack.top() );
+	*/
 
     if ( directFromFile )				    // (0004,1500)
-		this->setReferencedFileID( referencedFileID );
-	/*---				      // neueste Aenderung des Standards:
-	  else if ( indirectViaMRDR )
-	  this->setReferencedFileID( (char*)NULL );
-	  ---*/
+	this->setReferencedFileID( referencedFileID );
+    /*---				      // neueste Aenderung des Standards:
+      else if ( indirectViaMRDR )
+      this->setReferencedFileID( (char*)NULL );
+      ---*/
     else
     {
-		DcmTag refFileTag( DCM_ReferencedFileID );
-		delete this->remove( refFileTag );
+	DcmTag refFileTag( DCM_ReferencedFileID );
+	delete this->remove( refFileTag );
     }
 
     DcmTag mrdrOffTag( DCM_DirectoryRecordOffset );	    // (0004,1504)
     if ( indirectViaMRDR )
     {
-		// erzeuge Zeiger-Attribut auf MRDR
-		DcmUnsignedLongOffset *uloP = new DcmUnsignedLongOffset( mrdrOffTag );
-		uloP->put( 0L );
-		uloP->setNextRecord( referencedMRDR );
-		insert( uloP, TRUE );
+	// erzeuge Zeiger-Attribut auf MRDR
+	DcmUnsignedLongOffset *uloP = new DcmUnsignedLongOffset( mrdrOffTag );
+	uloP->put(Uint32(0));
+	uloP->setNextRecord( referencedMRDR );
+	insert( uloP, TRUE );
     }
     else
-		delete this->remove( mrdrOffTag );
+	delete this->remove( mrdrOffTag );
 
     DcmTag refSOPClassTag( DCM_ReferencedSOPClassUIDInFile );
     DcmTag refSOPInstTag( DCM_ReferencedSOPInstanceUIDInFile );
     DcmTag refFileXferTag( DCM_ReferencedTransferSyntaxUIDInFile );
 
     if (    DirRecordType != ERT_Mrdr
-		&& ( directFromFile || indirectViaMRDR )
-		)
+	    && ( directFromFile || indirectViaMRDR )
+	)
     {
-		if ( refFile == (DcmFileFormat*)NULL )
-			cerr << "Error: internal Error in"
-				" DcmDirectoryRecord::fillElementsAndReadSOP()" << endl;
+	if ( refFile == (DcmFileFormat*)NULL )
+	    cerr << "Error: internal Error in"
+		" DcmDirectoryRecord::fillElementsAndReadSOP()" << endl;
 
-		uiP = new DcmUniqueIdentifier( refSOPClassTag );    // (0004,1510)
-		if ( refFile->search( DCM_SOPClassUID, stack )
-			== EC_Normal )
-		{
-			const char *uid = ((DcmUniqueIdentifier*)stack.top())->get();
-			uiP->put( uid );
-		}
-		else
-		{
-			cerr << "Error: DcmDirectoryRecord::fillElementsAndReadSOP(): "
-				"I can't find DCM_SOPClassUID in Dataset ["
-					<< fileName << "] !" << endl;
-			l_error = EC_CorruptedData;
-		}
-		insert( uiP, TRUE );
+	uiP = new DcmUniqueIdentifier( refSOPClassTag );    // (0004,1510)
+	if ( refFile->search( DCM_SOPClassUID, stack )
+	     == EC_Normal )
+	{
+	    const char *uid = ((DcmUniqueIdentifier*)stack.top())->get();
+	    uiP->put( uid );
+	}
+	else
+	{
+	    cerr << "Error: DcmDirectoryRecord::fillElementsAndReadSOP(): "
+		"I can't find DCM_SOPClassUID in Dataset ["
+		 << fileName << "] !" << endl;
+	    l_error = EC_CorruptedData;
+	}
+	insert( uiP, TRUE );
 
-		uiP = new DcmUniqueIdentifier( refSOPInstTag );     // (0004,1511)
-		if (	refFile->search( DCM_SOPInstanceUID, stack )
-			== EC_Normal
-			|| refFile->search( DCM_MediaStorageSOPInstanceUID, stack )
-			== EC_Normal
-			)
-		{
-			const char *uid = ((DcmUniqueIdentifier*)stack.top())->get();
-			uiP->put( uid );
-		}
-		else
-		{
-			cerr << "Error: DcmDirectoryRecord::fillElementsAndReadSOP():"
-				" I can't find DCM_SOPInstanceUID neither in Dataset"
-					" or MetaInfo of file ["
-						<< fileName << "] !" << endl;
-			l_error = EC_CorruptedData;
-		}
-		insert( uiP, TRUE );
+	uiP = new DcmUniqueIdentifier( refSOPInstTag );     // (0004,1511)
+	if (	refFile->search( DCM_SOPInstanceUID, stack )
+		== EC_Normal
+		|| refFile->search( DCM_MediaStorageSOPInstanceUID, stack )
+		== EC_Normal
+	    )
+	{
+	    const char *uid = ((DcmUniqueIdentifier*)stack.top())->get();
+	    uiP->put( uid );
+	}
+	else
+	{
+	    cerr << "Error: DcmDirectoryRecord::fillElementsAndReadSOP():"
+		" I can't find DCM_SOPInstanceUID neither in Dataset"
+		" or MetaInfo of file ["
+		 << fileName << "] !" << endl;
+	    l_error = EC_CorruptedData;
+	}
+	insert( uiP, TRUE );
 
-		uiP = new DcmUniqueIdentifier( refFileXferTag );     // (0004,1512)
-		if ( refFile->search( DCM_TransferSyntaxUID, stack )
-			== EC_Normal )
-		{
-			const char *uid = ((DcmUniqueIdentifier*)stack.top())->get();
-			uiP->put( uid );
-		}
-		else
-		{
-			cerr << "Error: DcmDirectoryRecord::fillElementsAndReadSOP():"
-				" I can't find DCM_TransferSyntaxUID in MetaInfo of file ["
-					<< fileName << "] !" << endl;
-			l_error = EC_CorruptedData;
-		}
-		insert( uiP, TRUE );
+	uiP = new DcmUniqueIdentifier( refFileXferTag );     // (0004,1512)
+	if ( refFile->search( DCM_TransferSyntaxUID, stack )
+	     == EC_Normal )
+	{
+	    const char *uid = ((DcmUniqueIdentifier*)stack.top())->get();
+	    uiP->put( uid );
+	}
+	else
+	{
+	    cerr << "Error: DcmDirectoryRecord::fillElementsAndReadSOP():"
+		" I can't find DCM_TransferSyntaxUID in MetaInfo of file ["
+		 << fileName << "] !" << endl;
+	    l_error = EC_CorruptedData;
+	}
+	insert( uiP, TRUE );
     }
     else  // nicht nur dann: if ( DirRecordType == ERT_Mrdr )
     {
-		// entferne SOP-UIDs aus Directory Record
-		delete this->remove( refSOPClassTag );
-		delete this->remove( refSOPInstTag );
-		delete this->remove( refFileXferTag );
+	// entferne SOP-UIDs aus Directory Record
+	delete this->remove( refSOPClassTag );
+	delete this->remove( refSOPInstTag );
+	delete this->remove( refFileXferTag );
     }
 
     // Erzeuge typ-abhaengige Elemente:
@@ -992,12 +992,12 @@ E_Condition DcmDirectoryRecord::fillElementsAndReadSOP
     fillTypeElements( DirRecordType, refFile );
 
     if ( refFile != (DcmFileFormat*)NULL )
-		delete refFile;
+	delete refFile;
     if (fileStream != NULL)
-		delete fileStream;
+	delete fileStream;
     if ( fileName != (char*)NULL )
-		delete fileName;
-	Edebug(());
+	delete fileName;
+    Edebug(());
 
     return l_error;
 }

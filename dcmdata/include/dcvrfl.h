@@ -10,9 +10,9 @@
 ** Interface of class DcmFloatingPointSingle
 **
 ** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1996-01-05 13:23:05 $
+** Update Date:		$Date: 1996-01-29 13:38:16 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcvrfl.h,v $
-** CVS/RCS Revision:	$Revision: 1.3 $
+** CVS/RCS Revision:	$Revision: 1.4 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -32,7 +32,7 @@
 
 class DcmFloatingPointSingle : public DcmElement 
 {
-  public:
+public:
     DcmFloatingPointSingle( const DcmTag &tag, const Uint32 len = 0);
     DcmFloatingPointSingle( const DcmFloatingPointSingle &newFL );
     virtual ~DcmFloatingPointSingle();
@@ -46,11 +46,14 @@ class DcmFloatingPointSingle : public DcmElement
 
     virtual E_Condition put(const Float32 floatVal);   // for one float only
 
-    virtual E_Condition put(const Float32 floatVal,     	// one float
-                            const unsigned long position);	// at any position
+    virtual E_Condition put(const Float32 floatVal,           // one float
+                            const unsigned long position);    // at any position
+ 
+    virtual E_Condition put(const char * value);  // float as Strings
 
-	virtual	E_Condition get(Float32 * & singleVals);
-	virtual E_Condition get(Float32 & singleVal, const unsigned long pos = 0);
+
+    virtual	E_Condition get(Float32 * & singleVals);
+    virtual E_Condition get(Float32 & singleVal, const unsigned long pos = 0);
 
     Float32 * get(void);
     Float32 get(const unsigned long position);
@@ -64,7 +67,11 @@ class DcmFloatingPointSingle : public DcmElement
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrfl.h,v $
-** Revision 1.3  1996-01-05 13:23:05  andreas
+** Revision 1.4  1996-01-29 13:38:16  andreas
+** - new put method for every VR to put value as a string
+** - better and unique print methods
+**
+** Revision 1.3  1996/01/05 13:23:05  andreas
 ** - changed to support new streaming facilities
 ** - more cleanups
 ** - merged read / write methods for block and file transfer

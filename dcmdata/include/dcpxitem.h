@@ -10,9 +10,9 @@
 ** Interface of class DcmPixelItem
 **
 ** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1996-01-05 13:22:58 $
+** Update Date:		$Date: 1996-01-29 13:38:13 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcpxitem.h,v $
-** CVS/RCS Revision:	$Revision: 1.3 $
+** CVS/RCS Revision:	$Revision: 1.4 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -32,11 +32,12 @@
 // CLASS DcmPixelItem
 // This is a pseudo item, that has a value with representation OB 
 // and has no sub elements. Since a DcmOtherByteOtherWord is defined as a 
-// Dicom structure wirt a value of representation OW/OB it is better to
+// Dicom structure with a value of representation OW/OB it is better to
 // derive this class from DcmOtherByteOtherWord.
 
 
-class DcmPixelItem : public DcmOtherByteOtherWord 
+class DcmPixelItem : public DcmOtherByteOtherWord
+
 {
   public:
     DcmPixelItem(const DcmTag &tag, const Uint32 len = 0);
@@ -52,7 +53,11 @@ class DcmPixelItem : public DcmOtherByteOtherWord
 /*
 ** CVS/RCS Log:
 ** $Log: dcpxitem.h,v $
-** Revision 1.3  1996-01-05 13:22:58  andreas
+** Revision 1.4  1996-01-29 13:38:13  andreas
+** - new put method for every VR to put value as a string
+** - better and unique print methods
+**
+** Revision 1.3  1996/01/05 13:22:58  andreas
 ** - changed to support new streaming facilities
 ** - more cleanups
 ** - merged read / write methods for block and file transfer

@@ -10,9 +10,9 @@
 ** Interface of class DcmByteString
 **
 ** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1996-01-09 11:06:13 $
+** Update Date:		$Date: 1996-01-29 13:38:11 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcbytstr.h,v $
-** CVS/RCS Revision:	$Revision: 1.4 $
+** CVS/RCS Revision:	$Revision: 1.5 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -37,24 +37,24 @@ typedef enum
 
 class DcmByteString : public DcmElement 
 {
-  private:
-	Uint32 realLength;
-	E_StringMode fStringMode;
+private:
+    Uint32 realLength;
+    E_StringMode fStringMode;
 
-  protected:
+protected:
     char paddingChar;
     Uint32 maxLength;
 
-	virtual Uint8 * newValueField(void);
-	virtual void postLoadValue(void);
+    virtual Uint8 * newValueField(void);
+    virtual void postLoadValue(void);
 
-	E_Condition makeMachineByteString(void);
-	E_Condition makeDicomByteString(void);
+    E_Condition makeMachineByteString(void);
+    E_Condition makeDicomByteString(void);
 
 
 public:
     DcmByteString(const DcmTag &tag,
-				  const Uint32 len = 0);
+		  const Uint32 len = 0);
     DcmByteString(const DcmByteString& old,
                   const DcmEVR oldIdent = EVR_UNKNOWN);
 
@@ -64,17 +64,17 @@ public:
     virtual void print(const int level = 0);
     virtual unsigned long getVM();
 
-	Uint32 getRealLength(void);
+    Uint32 getRealLength(void);
 
     virtual E_Condition write(DcmStream & outStream,
-							  const E_TransferSyntax oxfer,
-							  const E_EncodingType enctype = EET_UndefinedLength,
-							  const E_GrpLenEncoding gltype = EGL_withoutGL);
+			      const E_TransferSyntax oxfer,
+			      const E_EncodingType enctype = EET_UndefinedLength,
+			      const E_GrpLenEncoding gltype = EGL_withoutGL);
 
     virtual E_Condition put(const char *byteStringValue);
 
-	virtual E_Condition get(char * & byteStringValue);
-	virtual E_Condition get(unsigned char * & byteStringValue);
+    virtual E_Condition get(char * & byteStringValue);
+    virtual E_Condition get(unsigned char * & byteStringValue);
     char * get();
 
     virtual E_Condition clear();
@@ -87,7 +87,11 @@ public:
 /*
 ** CVS/RCS Log:
 ** $Log: dcbytstr.h,v $
-** Revision 1.4  1996-01-09 11:06:13  andreas
+** Revision 1.5  1996-01-29 13:38:11  andreas
+** - new put method for every VR to put value as a string
+** - better and unique print methods
+**
+** Revision 1.4  1996/01/09 11:06:13  andreas
 ** New Support for Visual C++
 ** Correct problems with inconsistent const declarations
 **

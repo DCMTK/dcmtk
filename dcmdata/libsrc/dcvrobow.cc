@@ -11,9 +11,9 @@
 **
 **
 ** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1996-01-09 11:06:50 $
+** Update Date:		$Date: 1996-01-29 13:38:33 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcvrobow.cc,v $
-** CVS/RCS Revision:	$Revision: 1.4 $
+** CVS/RCS Revision:	$Revision: 1.5 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -30,6 +30,7 @@
 #include "dcvrobow.h"
 #include "dcswap.h"
 #include "dcstream.h"
+#include "dcvm.h"
 #include "dcdebug.h"
 
 
@@ -111,63 +112,58 @@ void DcmOtherByteOtherWord::print(const int level )
 {
     if (this -> valueLoaded())
     {
-	if (Tag->getEVR() != EVR_OW)
+	const DcmEVR evr = Tag -> getEVR();
+	const Uint16 * wordValues = NULL;
+	const Uint8 * byteValues = NULL;
+
+	if (evr == EVR_OW)
+	    wordValues = this -> getWords();
+	else
+	    byteValues = this -> getBytes();
+
+	errorFlag = EC_Normal;
+	if (wordValues || byteValues)
 	{
-	    const Uint8 * pixelValue = this -> getBytes();
-	    errorFlag = EC_Normal;
-	    if (pixelValue)
+	    char *ch_words = NULL;;
+	    char *tmp = NULL;
+
+	    if (evr == EVR_OW)
+		tmp = ch_words = new char[Length*5+6];
+	    else
+		tmp = ch_words = new char[Length*3+6];
+		
+	    if (tmp)
 	    {
-		Uint32 mlen = (100 < Length) ? 100 : Length;
-		char *ch_words;
-		char *tmp = ch_words = new char[ mlen*5 + 6 ];
-		if (tmp)
+		const size_t bytePerValue = 
+		    (evr == EVR_OW ? sizeof(Uint16) : sizeof(Uint8));
+
+		for (unsigned int i=0; i<Length/bytePerValue; i++)
 		{
-		    for (unsigned int i=0; i<mlen/sizeof(Uint8); i++)
+		    if (evr == EVR_OW)
 		    {
-			sprintf( tmp, "%2.2x\\", *pixelValue);
-			tmp += 3;
-			pixelValue++;
+			sprintf(tmp, "%4.4hx\\", *wordValues);
+			tmp += 5;
+			wordValues++;
 		    }
-		    if ( Length > 0 )
-			tmp--;
-		    *tmp = '\0';
-		    printInfoLine( level, ch_words );
-		    delete[] ch_words;
+		    else
+		    {
+			sprintf(tmp, "%2.2x\\", *byteValues);
+			tmp += 3;
+			byteValues++;
+		    }
 		}
-		else
-		    errorFlag = EC_MemoryExhausted;
+
+		if ( Length > 0 )
+		    tmp--;
+		*tmp = '\0';
+		printInfoLine( level, ch_words );
+		delete[] ch_words;
 	    }
 	    else
-		DcmObject::printInfoLine( level, "(no value available)" );
+		errorFlag = EC_MemoryExhausted;
 	}
 	else
-	{
-	    Uint16 * pixelValue = this -> getWords();
-	    if (pixelValue)
-	    {
-		Uint32 mlen = (100 < Length) ? 100 : Length;
-		char *ch_words;
-		char *tmp = ch_words = new char[ mlen*5 + 6 ];
-		if (tmp)
-		{
-		    for (unsigned int i=0; i<mlen/sizeof(Uint16); i++)
-		    {
-			sprintf( tmp, "%2.2x\\", *pixelValue);
-			tmp += 3;
-			pixelValue++;
-		    }
-		    if ( Length > 0 )
-			tmp--;
-		    *tmp = '\0';
-		    printInfoLine( level, ch_words );
-		    delete[] ch_words;
-		}
-		else
-		    errorFlag = EC_MemoryExhausted;
-	    }
-	    else
-		DcmObject::printInfoLine( level, "(no value available)" );
-	}
+	    DcmObject::printInfoLine( level, "(no value available)" );
     }
     else
 	DcmObject::printInfoLine( level, "(not loaded)" );
@@ -244,6 +240,63 @@ E_Condition DcmOtherByteOtherWord::put(const Uint16 * wordValue,
 	}
 	else
 	    errorFlag = EC_IllegalCall;
+    }
+    return errorFlag;
+}
+
+
+// ********************************
+
+
+E_Condition DcmOtherByteOtherWord::put(const char * val)
+{
+    errorFlag = EC_Normal;
+    if (val)
+    {
+	unsigned long vm = getVMFromString(val);
+	const DcmEVR evr = Tag -> getEVR();
+	Uint16 * wordField = NULL;
+	Uint8 * byteField = NULL;
+
+	if (evr == EVR_OW)
+	    wordField = new Uint16[vm];
+	else
+	    byteField = new Uint8[vm];
+
+	const char * s = val;
+	Uint16 intVal = 0;
+	    
+	for(unsigned long i = 0; i < vm && errorFlag == EC_Normal; i++)
+	{
+	    const char * value = getFirstValueFromString(s);
+	    if (value) 
+	    {
+		if (sscanf(value, "%hx", &intVal) != 1)
+		    errorFlag = EC_CorruptedData;
+		else if (evr != EVR_OW)
+		    byteField[i] = Uint8(intVal);
+		else
+		    wordField[i] = Uint16(intVal);
+		delete[] value;
+	    }
+	    else 
+		errorFlag = EC_CorruptedData;
+	}
+	
+
+
+	if (errorFlag == EC_Normal)
+	{
+	    if (evr != EVR_OW)
+		errorFlag = this -> put(byteField, vm);
+	    else
+		errorFlag = this -> put(wordField, vm);
+	}
+
+	if (evr != EVR_OW)
+	    delete[] byteField;
+	else
+	    delete[] wordField;
     }
     return errorFlag;
 }
@@ -341,7 +394,11 @@ E_Condition DcmOtherByteOtherWord::write(DcmStream & outStream,
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrobow.cc,v $
-** Revision 1.4  1996-01-09 11:06:50  andreas
+** Revision 1.5  1996-01-29 13:38:33  andreas
+** - new put method for every VR to put value as a string
+** - better and unique print methods
+**
+** Revision 1.4  1996/01/09 11:06:50  andreas
 ** New Support for Visual C++
 ** Correct problems with inconsistent const declarations
 ** Correct error in reading Item Delimitation Elements

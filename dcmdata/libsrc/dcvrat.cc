@@ -10,9 +10,9 @@
 ** Implementation of class DcmAttributeTag
 **
 ** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1996-01-05 13:27:46 $
+** Update Date:		$Date: 1996-01-29 13:38:31 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcvrat.cc,v $
-** CVS/RCS Revision:	$Revision: 1.3 $
+** CVS/RCS Revision:	$Revision: 1.4 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -26,6 +26,7 @@
 #include <iostream.h>
 
 #include "dcvrat.h"
+#include "dcvm.h"
 #include "dcdebug.h"
 
 
@@ -81,39 +82,39 @@ Edebug(());
 
 void DcmAttributeTag::print(const int level)
 {
-	if (valueLoaded)
-	{
-		Uint16 * attributeTags = this -> get();
+    if (valueLoaded)
+    {
+	Uint16 * attributeTags = this -> get();
 
-		if (!attributeTags)
-			printInfoLine( level, "(no value available)" );
-		else
+	if (!attributeTags)
+	    printInfoLine( level, "(no value available)" );
+	else
+	{
+	    char *ch_words;
+	    char *tmp = ch_words = new char[ Length*6/sizeof(Uint16) + 9 ];
+	    if (ch_words)
+	    {
+		for (unsigned long i=0; i<( Length/(2*sizeof(Uint16)) ); i++ )
 		{
-			char *ch_words;
-			char *tmp = ch_words = new char[ Length*6/sizeof(Uint16) + 9 ];
-			if (ch_words)
-			{
-				for (unsigned long i=0; i<( Length/(2*sizeof(Uint16)) ); i++ )
-				{
-					sprintf( tmp, "(%4.4x,%4.4x)\\", 
-							*attributeTags, *(attributeTags+1));
-					tmp += 12;
-					attributeTags += 2;
-				}
-			
-				if ( Length > 0 )
-					tmp--;
-			
-				*tmp = '\0';
-				printInfoLine( level, ch_words );
-				delete ch_words;
-			}
-			else
-				printInfoLine( level, "(no value available)" );
+		    sprintf( tmp, "(%4.4x,%4.4x)\\", 
+			     *attributeTags, *(attributeTags+1));
+		    tmp += 12;
+		    attributeTags += 2;
 		}
+			
+		if ( Length > 0 )
+		    tmp--;
+			
+		*tmp = '\0';
+		printInfoLine( level, ch_words );
+		delete ch_words;
+	    }
+	    else
+		printInfoLine( level, "(no value available)" );
+	}
     }
     else
-		DcmObject::printInfoLine( level, "(not loaded)" );
+	DcmObject::printInfoLine( level, "(not loaded)" );
 }
 
 
@@ -130,12 +131,12 @@ unsigned long DcmAttributeTag::getVM()
 
 
 E_Condition DcmAttributeTag::put(const Uint16 * attrValue, 
-								 const unsigned long tagNum)
+				 const unsigned long tagNum)
 {
-	errorFlag = EC_Normal;
-	if (tagNum)
-		errorFlag = this -> putValue(attrValue, 2*sizeof(Uint16)*Uint32(tagNum));
-	return errorFlag;
+    errorFlag = EC_Normal;
+    if (tagNum)
+	errorFlag = this -> putValue(attrValue, 2*sizeof(Uint16)*Uint32(tagNum));
+    return errorFlag;
 }
 
 
@@ -144,11 +145,11 @@ E_Condition DcmAttributeTag::put(const Uint16 * attrValue,
 
 E_Condition DcmAttributeTag::put(const DcmTag & attrTag)
 {
-	Uint16 attributeTag[2];
-	attributeTag[0] = attrTag.getGTag();
-	attributeTag[1] = attrTag.getETag();
+    Uint16 attributeTag[2];
+    attributeTag[0] = attrTag.getGTag();
+    attributeTag[1] = attrTag.getETag();
 
-	errorFlag = this -> putValue(attributeTag, 2*sizeof(Uint16));
+    errorFlag = this -> putValue(attributeTag, 2*sizeof(Uint16));
 	
     return errorFlag;
 }
@@ -158,18 +159,47 @@ E_Condition DcmAttributeTag::put(const DcmTag & attrTag)
 
 
 E_Condition DcmAttributeTag::put(const DcmTag &attrTag, 
-								 const unsigned long position)
+				 const unsigned long position)
 {
-	Bdebug((2, "DcmAttributeTag::put(DcmTag&,=%ld)", position ));
+    Bdebug((2, "DcmAttributeTag::put(DcmTag&,=%ld)", position ));
 
-	Uint16 attributeTag[2];
-	attributeTag[0] = attrTag.getGTag();
-	attributeTag[1] = attrTag.getETag();
+    Uint16 attributeTag[2];
+    attributeTag[0] = attrTag.getGTag();
+    attributeTag[1] = attrTag.getETag();
 
-	errorFlag = this -> changeValue(attributeTag, 
-									2*sizeof(Uint16)* Uint32(position), 
-									2*sizeof(Uint16));
+    errorFlag = this -> changeValue(attributeTag, 
+				    2*sizeof(Uint16)* Uint32(position), 
+				    2*sizeof(Uint16));
 
+    return errorFlag;
+}
+
+
+// ********************************
+
+
+E_Condition DcmAttributeTag::put(const char * val)
+{
+    errorFlag = EC_Normal;
+    if (val)
+    {
+	unsigned long vm = getVMFromString(val);
+	Uint16 * field = new Uint16[2*vm];
+	const char * s = val;
+	    
+	for(unsigned long i = 0; i < 2*vm && errorFlag == EC_Normal; i+=2)
+	{
+	    const char * value = getFirstValueFromString(s);
+	    if (!value || sscanf(value, "(%hx,%hx)", &field[i], &field[i+1]) != 2)
+		errorFlag = EC_CorruptedData;
+	    else if (value)
+		delete[] value;
+	}
+	
+	if (errorFlag == EC_Normal)
+	    errorFlag = this -> put(field, vm);
+	delete[] field;
+    }
     return errorFlag;
 }
 
@@ -256,7 +286,11 @@ E_Condition DcmAttributeTag::verify(const BOOL autocorrect)
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrat.cc,v $
-** Revision 1.3  1996-01-05 13:27:46  andreas
+** Revision 1.4  1996-01-29 13:38:31  andreas
+** - new put method for every VR to put value as a string
+** - better and unique print methods
+**
+** Revision 1.3  1996/01/05 13:27:46  andreas
 ** - changed to support new streaming facilities
 ** - unique read/write methods for file and block transfer
 ** - more cleanups

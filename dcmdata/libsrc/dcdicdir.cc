@@ -11,9 +11,9 @@
 **
 **
 ** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1996-01-23 17:29:24 $
+** Update Date:		$Date: 1996-01-29 13:38:24 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcdicdir.cc,v $
-** CVS/RCS Revision:	$Revision: 1.3 $
+** CVS/RCS Revision:	$Revision: 1.4 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -205,19 +205,19 @@ Bdebug((3, "dcdicdir:DcmDicomDir::createNewElements(char*)" ));
 
     DcmTag firstRecTag( DCM_RootDirectoryFirstRecord );
     uloP = new DcmUnsignedLongOffset( firstRecTag );	   // (0004,1200)
-    uloP->put( 0L );
+    uloP->put(Uint32(0));
     if ( dset.insert( uloP, FALSE ) != EC_Normal )
 	delete uloP;
 
     DcmTag lastRecTag( DCM_RootDirectoryLastRecord );
     uloP = new DcmUnsignedLongOffset( lastRecTag );	   // (0004,1202)
-    uloP->put( 0L );
+    uloP->put(Uint32(0));
     if ( dset.insert( uloP, FALSE ) != EC_Normal )
 	delete uloP;
 
     DcmTag fileConsTag( DCM_FileSetConsistencyFlag );
     usP = new DcmUnsignedShort( fileConsTag );		   // (0004,1212)
-    usP->put( 0x0000 );
+    usP->put(Uint16(0x0000));
     dset.insert( usP, TRUE );
 
 Edebug(());
@@ -770,7 +770,7 @@ debug(( 3, "testing subRecord no %ld of %ld:", i, lastIndex ));
 							// nextPointer anpassen
 		DcmTag nextRecTag( DCM_NextDirectoryRecordOffset );
 		uloP = new DcmUnsignedLongOffset( nextRecTag );
-		uloP->put( 0L );
+		uloP->put(Uint32(0));
 		uloP->setNextRecord( nextRec );
 		subRecord->insert( uloP, TRUE );
 debug(( 2, "Next Offset-Element(0x%4.4hx,0x%4.4hx) offs=0x%8.8lx p=%p next=%p",
@@ -782,7 +782,7 @@ debug(( 2, "Next Offset-Element(0x%4.4hx,0x%4.4hx) offs=0x%8.8lx p=%p next=%p",
 							// lowerPointer anpassen
 		DcmTag lowerRefTag( DCM_LowerLevelDirectoryOffset );
 		uloP = new DcmUnsignedLongOffset( lowerRefTag );
-		uloP->put( 0L );
+		uloP->put(Uint32(0));
 		uloP->setNextRecord( *firstRec );
 		subRecord->insert( uloP, TRUE );
 debug(( 2, "Lower Offset-Element(0x%4.4hx,0x%4.4hx) offs=0x%8.8lx p=%p lower=%p",
@@ -1400,7 +1400,11 @@ Edebug(());
 /*
 ** CVS/RCS Log:
 ** $Log: dcdicdir.cc,v $
-** Revision 1.3  1996-01-23 17:29:24  andreas
+** Revision 1.4  1996-01-29 13:38:24  andreas
+** - new put method for every VR to put value as a string
+** - better and unique print methods
+**
+** Revision 1.3  1996/01/23 17:29:24  andreas
 ** Support for old fashioned make without @^
 ** Support for machines that have mktemp but do not define it.
 **

@@ -10,9 +10,9 @@
 ** Implementation of class DcmFloatingPointDouble
 **
 ** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1996-01-05 13:27:48 $
+** Update Date:		$Date: 1996-01-29 13:38:32 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcvrfd.cc,v $
-** CVS/RCS Revision:	$Revision: 1.3 $
+** CVS/RCS Revision:	$Revision: 1.4 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -26,6 +26,7 @@
 #include <iostream.h>
 
 #include "dcvrfd.h"
+#include "dcvm.h"
 #include "dcdebug.h"
 
 
@@ -120,18 +121,18 @@ unsigned long DcmFloatingPointDouble::getVM(void)
 
 
 E_Condition DcmFloatingPointDouble::put(const Float64 * doubleVal,
-										const unsigned long numDoubles)
+					const unsigned long numDoubles)
 {
-	errorFlag = EC_Normal;
-	if (numDoubles)
-	{
-		if (doubleVal)
-			errorFlag = this -> putValue(doubleVal, 
-										 sizeof(Float64)*Uint32(numDoubles));
-		else
-			errorFlag = EC_CorruptedData;
-	}
-	return errorFlag;
+    errorFlag = EC_Normal;
+    if (numDoubles)
+    {
+	if (doubleVal)
+	    errorFlag = this -> putValue(doubleVal, 
+					 sizeof(Float64)*Uint32(numDoubles));
+	else
+	    errorFlag = EC_CorruptedData;
+    }
+    return errorFlag;
 }
 
 
@@ -139,9 +140,9 @@ E_Condition DcmFloatingPointDouble::put(const Float64 * doubleVal,
 
 E_Condition DcmFloatingPointDouble::put(const Float64 doubleVal )
 {
-	Float64 val = doubleVal;
-	errorFlag = this -> putValue(&val, sizeof(Float64));
-	return errorFlag;
+    Float64 val = doubleVal;
+    errorFlag = this -> putValue(&val, sizeof(Float64));
+    return errorFlag;
 }
 
 
@@ -151,15 +152,44 @@ E_Condition DcmFloatingPointDouble::put(const Float64 doubleVal )
 E_Condition DcmFloatingPointDouble::put(const Float64 doubleVal,
                                         const unsigned long position )
 {
-	Bdebug((2, "DcmFloatingPointDouble::put(doubleval=%ld,position=%ld)", 
-			doubleVal, position));
+    Bdebug((2, "DcmFloatingPointDouble::put(doubleval=%ld,position=%ld)", 
+	    doubleVal, position));
 
-	Float64 val = doubleVal;
+    Float64 val = doubleVal;
 
-	errorFlag = this -> changeValue(&val, sizeof(Float64)*position, 
-									sizeof(Float64));
+    errorFlag = this -> changeValue(&val, sizeof(Float64)*position, 
+				    sizeof(Float64));
 
-	return errorFlag;
+    return errorFlag;
+}
+
+
+// ********************************
+
+
+E_Condition DcmFloatingPointDouble::put(const char * val)
+{
+    errorFlag = EC_Normal;
+    if (val)
+    {
+	unsigned long vm = getVMFromString(val);
+	Float64 * field = new Float64[vm];
+	const char * s = val;
+	    
+	for(unsigned long i = 0; i < vm && errorFlag == EC_Normal; i++)
+	{
+	    const char * value = getFirstValueFromString(s);
+	    if (!value || sscanf(value, "%lf", &field[i]) != 1)
+		errorFlag = EC_CorruptedData;
+	    else if (value)
+		delete[] value;
+	}
+	
+	if (errorFlag == EC_Normal)
+	    errorFlag = this -> put(field, vm);
+	delete[] field;
+    }
+    return errorFlag;
 }
 
 
@@ -239,7 +269,11 @@ E_Condition DcmFloatingPointDouble::verify(const BOOL autocorrect )
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrfd.cc,v $
-** Revision 1.3  1996-01-05 13:27:48  andreas
+** Revision 1.4  1996-01-29 13:38:32  andreas
+** - new put method for every VR to put value as a string
+** - better and unique print methods
+**
+** Revision 1.3  1996/01/05 13:27:48  andreas
 ** - changed to support new streaming facilities
 ** - unique read/write methods for file and block transfer
 ** - more cleanups

@@ -10,9 +10,9 @@
 ** Implementation of class DcmUnsignedLong
 **
 ** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1996-01-05 13:27:55 $
+** Update Date:		$Date: 1996-01-29 13:38:35 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcvrul.cc,v $
-** CVS/RCS Revision:	$Revision: 1.3 $
+** CVS/RCS Revision:	$Revision: 1.4 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -24,6 +24,7 @@
 #include <iostream.h>
 
 #include "dcvrul.h"
+#include "dcvm.h"
 #include "dcdebug.h"
 
 
@@ -78,32 +79,36 @@ Edebug(());
 
 void DcmUnsignedLong::print(const int level)
 {
-	if (valueLoaded())
+    if (valueLoaded())
+    {
+	Uint32 * uintVals = this -> get();
+
+	if (!uintVals)
+	    printInfoLine( level, "(no value available)" );
+	else
 	{
-		Uint32 * uintVals = this -> get();
+	    char *ch_words;
+	    char *tmp = ch_words = new char[Length*12/sizeof(Uint32)+4];
 
-		if (!uintVals)
-			printInfoLine( level, "(no value available)" );
-		else
-		{
-			char *ch_words;
-			char *tmp = ch_words = new char[Length*12/sizeof(Uint32)+4];
-
-			for (unsigned long i=0; i<( Length/sizeof(Uint32) ); i++ )
-			{
-				sprintf( tmp, "%lu\\", *uintVals );
-				tmp += strlen(tmp);
-				uintVals++;
-			}
-			if ( Length > 0 )
-				tmp--;
-			*tmp = '\0';
-			printInfoLine(level, ch_words);
-			delete ch_words;
-		}
+	    for (unsigned long i=0; i<( Length/sizeof(Uint32) ); i++ )
+	    {
+#if SIZEOF_LONG == 8
+		sprintf(tmp, "%u\\", *uintVals);
+#else
+		sprintf(tmp, "%lu\\", *uintVals);
+#endif
+		tmp += strlen(tmp);
+		uintVals++;
+	    }
+	    if ( Length > 0 )
+		tmp--;
+	    *tmp = '\0';
+	    printInfoLine(level, ch_words);
+	    delete ch_words;
+	}
     }
     else
-		printInfoLine( level, "(not loaded)" );
+	printInfoLine( level, "(not loaded)" );
 }
 
 
@@ -120,18 +125,18 @@ unsigned long DcmUnsignedLong::getVM()
 
 
 E_Condition DcmUnsignedLong::put(const Uint32 * uintVal,
-							   const unsigned long numUints)
+				 const unsigned long numUints)
 {
     errorFlag = EC_Normal;
-	if (numUints)
-	{
-		if (uintVal)
-			errorFlag = this -> putValue(uintVal, 
-										 sizeof(Uint32)*Uint32(numUints));
-		else
-			errorFlag = EC_CorruptedData;
-	}
-	return errorFlag;
+    if (numUints)
+    {
+	if (uintVal)
+	    errorFlag = this -> putValue(uintVal, 
+					 sizeof(Uint32)*Uint32(numUints));
+	else
+	    errorFlag = EC_CorruptedData;
+    }
+    return errorFlag;
 }
 
 
@@ -140,9 +145,9 @@ E_Condition DcmUnsignedLong::put(const Uint32 * uintVal,
 
 E_Condition DcmUnsignedLong::put(const Uint32 uintVal)
 {
-	Uint32 val = uintVal;
-	errorFlag = this -> putValue(&val, sizeof(Uint32));
-	return errorFlag;
+    Uint32 val = uintVal;
+    errorFlag = this -> putValue(&val, sizeof(Uint32));
+    return errorFlag;
 
     errorFlag = EC_Normal;
 }
@@ -152,15 +157,49 @@ E_Condition DcmUnsignedLong::put(const Uint32 uintVal)
 
 
 E_Condition DcmUnsignedLong::put(const Uint32 uintVal,
-							   const unsigned long position)
+				 const unsigned long position)
 {
-	Bdebug((2, "DcmUnsignedLong::put(slong=%ld,num=%ld)", uintVal, position));
+    Bdebug((2, "DcmUnsignedLong::put(slong=%ld,num=%ld)", uintVal, position));
 
-	Uint32 val = uintVal;
+    Uint32 val = uintVal;
 
-	errorFlag = this -> changeValue(&val, sizeof(Uint32)*position,
-									sizeof(Uint32));
-	return errorFlag;
+    errorFlag = this -> changeValue(&val, sizeof(Uint32)*position,
+				    sizeof(Uint32));
+    return errorFlag;
+}
+
+
+// ********************************
+
+
+E_Condition DcmUnsignedLong::put(const char * val)
+{
+    errorFlag = EC_Normal;
+    if (val)
+    {
+	unsigned long vm = getVMFromString(val);
+	Uint32 * field = new Uint32[vm];
+	const char * s = val;
+	    
+	for(unsigned long i = 0; i < vm && errorFlag == EC_Normal; i++)
+	{
+	    const char * value = getFirstValueFromString(s);
+	    if (!value || 
+#if SIZEOF_LONG == 8
+		sscanf(value, "%u", &field[i]) != 1)
+#else
+		sscanf(value, "%lu", &field[i]) != 1)
+#endif
+		errorFlag = EC_CorruptedData;
+	    else if (value)
+		delete[] value;
+	}
+	
+	if (errorFlag == EC_Normal)
+	    errorFlag = this -> put(field, vm);
+	delete[] field;
+    }
+    return errorFlag;
 }
 
 
@@ -236,7 +275,11 @@ E_Condition DcmUnsignedLong::verify(const BOOL autocorrect )
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrul.cc,v $
-** Revision 1.3  1996-01-05 13:27:55  andreas
+** Revision 1.4  1996-01-29 13:38:35  andreas
+** - new put method for every VR to put value as a string
+** - better and unique print methods
+**
+** Revision 1.3  1996/01/05 13:27:55  andreas
 ** - changed to support new streaming facilities
 ** - unique read/write methods for file and block transfer
 ** - more cleanups
