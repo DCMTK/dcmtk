@@ -21,10 +21,10 @@
  *
  *  Purpose: Class for modifying DICOM-Files from comandline
  *
- *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2003-06-26 09:17:18 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2003-07-03 15:39:35 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/apps/mdfconen.cc,v $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -46,6 +46,11 @@
 #define SHORTCOL 3
 #define LONGCOL 17
  
+#ifdef WITH_ZLIB
+BEGIN_EXTERN_C
+#include <zlib.h>
+END_EXTERN_C
+#endif
 
 // Date         : May 13th, 2003
 // Author       : Michael Onken
@@ -337,7 +342,7 @@ int MdfConsoleEngine::startTagAction(DcmTagKey mod_key, char* tag_value)
     OFCondition result;
     int result2=0;
     //file_it will iterate through the files saved in a List
-    OFIterator<const char*> file_it;
+    OFListIterator(const char*) file_it;
     //begin with the first...suprise;)
     file_it=files->begin();
     
@@ -450,7 +455,7 @@ int MdfConsoleEngine::startItemTagAction(char *tag_path, char *tag_value)
     OFString backup;
             
     //file_it will iterate through the files saved in a List
-    OFIterator<const char*> file_it;
+    OFListIterator(const char*) file_it;
     //begin with the first...suprise;)
     file_it=files->begin();
     
@@ -794,7 +799,10 @@ MdfConsoleEngine::~MdfConsoleEngine()
 /*
 ** CVS/RCS Log:
 ** $Log: mdfconen.cc,v $
-** Revision 1.1  2003-06-26 09:17:18  onken
+** Revision 1.2  2003-07-03 15:39:35  meichel
+** Fixed problems with iterators, included zlib.h if needed
+**
+** Revision 1.1  2003/06/26 09:17:18  onken
 ** Added commandline-application dcmodify.
 **
 **
