@@ -1,5 +1,27 @@
 **** Changes from 1999.03.02 (riesmeier)
 
+- Added methods to get and set ambient light value (re: Barten transformation).
+  Affects: dcmpstat/include/dviface.h
+           dcmpstat/libsrc/dviface.cc
+  
+- Moved method 'isBartenTransformPossible()' from presentation state class to
+  interface class.
+  Affects: dcmpstat/include/dviface.h
+           dcmpstat/include/dvpstat.h
+           dcmpstat/libsrc/dviface.cc
+
+- Added method to invert an image by changing the presentation state LUT or
+  shape.
+  Affects: dcmpstat/include/dvpstat.h
+           dcmpstat/libsrc/dvpstat.cc
+           
+- Changed implementation of method 'getOverlayData()': now conversion from
+  P-value to DDL is implictly performed and the correct P-value for the related
+  layer is used.
+  Affects: dcmpstat/libsrc/dvpstat.cc
+ 
+**** Changes from 1999.03.02 (riesmeier)
+
 - Added parameter to selectPState() specifying whether to change the review
   status of the loaded presentation state.
   Affects: dcmpstat/include/dviface.h
