@@ -1,3 +1,15 @@
+**** Changes from 1999.02.05 (riesmeier)
+
+- Added conversion P-Value to DDL when display function is absent.
+  Affects: dcmimgle/include/dimoopxt.h
+  
+- Added console application to convert VeriLUM LUT files to dcmtk DISPLAY
+  file used for Barten transformation.
+  Affects: dcmimgle/Makefile.in
+  Added:   dcmimgle/apps/Makefile.dep
+           dcmimgle/apps/Makefile.in
+           dcmimgle/apps/dconvlum.cc
+
 **** Changes from 1999.02.03 (riesmeier)
 
 - Rebuilt Makefile dependencies.
