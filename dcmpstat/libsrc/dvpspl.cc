@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DVPSPresentationLUT
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-06-07 14:27:13 $
- *  CVS/RCS Revision: $Revision: 1.13 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2000-06-08 10:44:36 $
+ *  CVS/RCS Revision: $Revision: 1.14 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -512,8 +512,8 @@ DVPSPrintPresentationLUTAlignment DVPSPresentationLUT::getAlignment()
     Uint16 firstEntryMapped = 0xFFFF;
     if (EC_Normal != presentationLUTDescriptor.getUint16(numberOfEntries, 0)) numberOfEntries = 0;
     if (EC_Normal != presentationLUTDescriptor.getUint16(firstEntryMapped, 1)) firstEntryMapped = 0xFFFF;
-    if ((numberOfEntries == 256)||(firstEntryMapped == 0)) return DVPSK_table8;
-    if ((numberOfEntries == 4096)||(firstEntryMapped == 0)) return DVPSK_table12;
+    if ((numberOfEntries == 256)&&(firstEntryMapped == 0)) return DVPSK_table8;
+    if ((numberOfEntries == 4096)&&(firstEntryMapped == 0)) return DVPSK_table12;
     return DVPSK_other;
   }
   return DVPSK_shape;
@@ -551,9 +551,11 @@ OFBool DVPSPresentationLUT::printSCPCreate(
   // browse through rqDataset and check for unsupported attributes
   if (result && rqDataset)
   {
+    OFBool intoSub = OFTrue;
     stack.clear();
-    while (EC_Normal == rqDataset->nextObject(stack, OFFalse))
+    while (EC_Normal == rqDataset->nextObject(stack, intoSub))
     {
+      intoSub = OFFalse;
       const DcmTagKey& currentTag = (stack.top())->getTag();
       if (currentTag == DCM_PresentationLUTShape) /* OK */ ;
       else if (currentTag == DCM_PresentationLUTSequence) /* OK */ ;
@@ -633,7 +635,11 @@ void DVPSPresentationLUT::setLog(OFConsole *stream, OFBool verbMode, OFBool dbgM
 
 /*
  *  $Log: dvpspl.cc,v $
- *  Revision 1.13  2000-06-07 14:27:13  joergr
+ *  Revision 1.14  2000-06-08 10:44:36  meichel
+ *  Implemented Referenced Presentation LUT Sequence on Basic Film Session level.
+ *    Empty film boxes (pages) are not written to file anymore.
+ *
+ *  Revision 1.13  2000/06/07 14:27:13  joergr
  *  Added support for rendering "hardcopy" and "softcopy" presentation LUTs.
  *
  *  Revision 1.12  2000/06/07 13:17:07  meichel

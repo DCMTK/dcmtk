@@ -23,8 +23,8 @@
  *    classes: DVPresentationState
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-06-02 16:01:08 $
- *  CVS/RCS Revision: $Revision: 1.59 $
+ *  Update Date:      $Date: 2000-06-08 10:44:38 $
+ *  CVS/RCS Revision: $Revision: 1.60 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -3022,7 +3022,7 @@ E_Condition DVPresentationState::setGammaVOILUT(double gammaValue, DVPSObjectApp
   E_Condition status = EC_IllegalCall;
   const unsigned int numberOfBits = 16;
   unsigned long numberOfEntries = 0;
-  signed long firstMapped;
+  signed long firstMapped = 0;
   if (haveActiveVOIWindow())    // use active VOI window to specify the LUT descriptor
   {
     double ww, wc;
@@ -4106,7 +4106,11 @@ void DVPresentationState::setLog(OFConsole *stream, OFBool verbMode, OFBool dbgM
 
 /*
  *  $Log: dvpstat.cc,v $
- *  Revision 1.59  2000-06-02 16:01:08  meichel
+ *  Revision 1.60  2000-06-08 10:44:38  meichel
+ *  Implemented Referenced Presentation LUT Sequence on Basic Film Session level.
+ *    Empty film boxes (pages) are not written to file anymore.
+ *
+ *  Revision 1.59  2000/06/02 16:01:08  meichel
  *  Adapted all dcmpstat classes to use OFConsole for log and error output
  *
  *  Revision 1.58  2000/06/02 12:48:04  joergr

@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DVPSStoredPrint
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-06-07 14:27:50 $
- *  CVS/RCS Revision: $Revision: 1.31 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2000-06-08 10:44:37 $
+ *  CVS/RCS Revision: $Revision: 1.32 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -2624,9 +2624,11 @@ OFBool DVPSStoredPrint::printSCPCreate(
   // browse through rqDataset and check for unsupported attributes
   if (result && rqDataset)
   {
+    OFBool intoSub = OFTrue;
     stack.clear();
-    while (EC_Normal == rqDataset->nextObject(stack, OFFalse))
+    while (EC_Normal == rqDataset->nextObject(stack, intoSub))
     {
+      intoSub = OFFalse;
       const DcmTagKey& currentTag = (stack.top())->getTag();
       if (currentTag == DCM_ImageDisplayFormat) /* OK */ ;
       else if (currentTag == DCM_FilmOrientation) /* OK */ ;
@@ -2648,7 +2650,7 @@ OFBool DVPSStoredPrint::printSCPCreate(
           if (verboseMode)
           {
             ostream &mycerr = logstream->lockCerr();
-            mycerr << "cannot create Basic Film Box: illumination received but Presentation LUT SOP class not negotiated:" << endl;
+            mycerr << "cannot create Basic Film Box: illumination received:" << endl;
             (stack.top())->print(mycerr, OFFalse);
             logstream->unlockCerr();
           }
@@ -2663,7 +2665,7 @@ OFBool DVPSStoredPrint::printSCPCreate(
           if (verboseMode)
           {
             ostream &mycerr = logstream->lockCerr();
-            mycerr << "cannot create Basic Film Box: reflected ambient light received but Presentation LUT SOP class not negotiated:" << endl;
+            mycerr << "cannot create Basic Film Box: reflected ambient light received:" << endl;
             (stack.top())->print(mycerr, OFFalse);
             logstream->unlockCerr();
           }
@@ -2678,7 +2680,7 @@ OFBool DVPSStoredPrint::printSCPCreate(
           if (verboseMode)
           {
             ostream &mycerr = logstream->lockCerr();
-            mycerr << "cannot create Basic Film Box: referenced presentation LUT sequence received but Presentation LUT SOP class not negotiated:" << endl;
+            mycerr << "cannot create Basic Film Box: referenced presentation LUT sequence received:" << endl;
             (stack.top())->print(mycerr, OFFalse);
             logstream->unlockCerr();
           }
@@ -3259,9 +3261,11 @@ OFBool DVPSStoredPrint::printSCPSet(
   // browse through rqDataset and check for unsupported attributes
   if (result && rqDataset)
   {
+    OFBool intoSub = OFTrue;
     stack.clear();
-    while (EC_Normal == rqDataset->nextObject(stack, OFFalse))
+    while (EC_Normal == rqDataset->nextObject(stack, intoSub))
     {
+      intoSub = OFFalse;
       const DcmTagKey& currentTag = (stack.top())->getTag();
       if (currentTag == DCM_MagnificationType) /* OK */ ;
       else if (currentTag == DCM_SmoothingType) /* OK */ ;
@@ -3279,7 +3283,7 @@ OFBool DVPSStoredPrint::printSCPSet(
           if (verboseMode)
           {
             ostream &mycerr = logstream->lockCerr();
-            mycerr << "cannot update Basic Film Box: illumination received but Presentation LUT SOP class not negotiated:" << endl;
+            mycerr << "cannot update Basic Film Box: illumination received:" << endl;
             (stack.top())->print(mycerr, OFFalse);
             logstream->unlockCerr();
           }
@@ -3294,7 +3298,7 @@ OFBool DVPSStoredPrint::printSCPSet(
           if (verboseMode)
           {
             ostream &mycerr = logstream->lockCerr();
-            mycerr << "cannot update Basic Film Box: reflected ambient light received but Presentation LUT SOP class not negotiated:" << endl;
+            mycerr << "cannot update Basic Film Box: reflected ambient light received:" << endl;
             (stack.top())->print(mycerr, OFFalse);
             logstream->unlockCerr();            
           }
@@ -3309,7 +3313,7 @@ OFBool DVPSStoredPrint::printSCPSet(
           if (verboseMode)
           {
             ostream &mycerr = logstream->lockCerr();
-            mycerr << "cannot update Basic Film Box: referenced presentation LUT sequence received but Presentation LUT SOP class not negotiated:" << endl;
+            mycerr << "cannot update Basic Film Box: referenced presentation LUT sequence received:" << endl;
             (stack.top())->print(mycerr, OFFalse);
             logstream->unlockCerr();            
           }
@@ -3374,9 +3378,27 @@ void DVPSStoredPrint::updatePresentationLUTList(DVPSPresentationLUT_PList& globa
   }
 }
 
+void DVPSStoredPrint::overridePresentationLUTSettings(
+      DcmUnsignedShort& newIllumination,
+      DcmUnsignedShort& newReflectedAmbientLight,
+      DcmUniqueIdentifier& newReferencedPLUT,
+      DVPSPrintPresentationLUTAlignment newAlignment)
+{
+  illumination = newIllumination;
+  reflectedAmbientLight = newReflectedAmbientLight;
+  referencedPresentationLUTInstanceUID = newReferencedPLUT;
+  presentationLUTInstanceUID.clear();
+  referencedPresentationLUTInstanceUID.getOFString(presentationLUTInstanceUID,0);             
+  referencedPresentationLUTAlignment = newAlignment;  
+}
+
 /*
  *  $Log: dvpssp.cc,v $
- *  Revision 1.31  2000-06-07 14:27:50  joergr
+ *  Revision 1.32  2000-06-08 10:44:37  meichel
+ *  Implemented Referenced Presentation LUT Sequence on Basic Film Session level.
+ *    Empty film boxes (pages) are not written to file anymore.
+ *
+ *  Revision 1.31  2000/06/07 14:27:50  joergr
  *  Added missing transformations (polarity, GSDF, presentation LUT, aspect
  *  ratio) to print preview rendering.
  *

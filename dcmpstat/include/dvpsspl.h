@@ -23,8 +23,8 @@
  *    classes: DVPSStoredPrint_PList
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-06-02 16:00:52 $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  Update Date:      $Date: 2000-06-08 10:44:30 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -38,6 +38,7 @@
 #include "oflist.h"
 #include "dctk.h"
 #include "dimse.h"
+#include "dvpstyp.h"
 
 class DVInterface;
 class DVPSStoredPrint;
@@ -119,6 +120,9 @@ public:
    *  @param rqDataset N-SET request dataset
    *  @param rsp N-SET response message
    *  @param rspDataset N-SET response dataset passed back in this parameter
+   *  @param presentationLUTnegotiated 
+   *    OFTrue if support for the Presentation LUT SOP class
+   *    has been negotiated at association negotiation
    */
   void printSCPBasicGrayscaleImageBoxSet(
     DVInterface& cfg, 
@@ -126,7 +130,8 @@ public:
     T_DIMSE_Message& rq,
     DcmDataset *rqDataset, 
     T_DIMSE_Message& rsp, 
-    DcmDataset *& rspDataset);
+    DcmDataset *& rspDataset,
+    OFBool presentationLUTnegotiated);
 
   /** performs a Print SCP Basic Film Box N-ACTION operation.
    *  The results of the N-ACTION operation are stored in the 
@@ -191,6 +196,29 @@ public:
    */
   void setLog(OFConsole *stream, OFBool verbMode, OFBool dbgMode);
 
+  /** checks whether the given Presentation LUT type could be used together
+   *  with all image boxes in all film boxes on a Print SCP that requires a matching 
+   *  alignment between a Presentation LUT and the image pixel data.
+   *  @param align LUT alignment type
+   *  @return OFTrue if matching, OFFalse otherwise
+   */
+  OFBool matchesPresentationLUT(DVPSPrintPresentationLUTAlignment align) const;
+
+  /** replaces the settings for illumination, reflected ambient light and
+   *  referenced Presentation LUT in all film boxes in this list.
+   *  Used by a Print SCP if Presentation LUT is implemented on Film Session
+   *  level.
+   *  @param newIllumination new value for illumination
+   *  @param newReflectedAmbientLight new value for reflectedAmbientLight
+   *  @param newReferencedPLUT new value for referenced presentation LUT instance UID
+   *  @param newAlignment new alignment type of active presentation LUT
+   */
+  void overridePresentationLUTSettings(
+      DcmUnsignedShort& newIllumination,
+      DcmUnsignedShort& newReflectedAmbientLight,
+      DcmUniqueIdentifier& newReferencedPLUT,
+      DVPSPrintPresentationLUTAlignment newAlignment);
+
 private:
 
   /// private undefined assignment operator
@@ -213,7 +241,11 @@ private:
 
 /*
  *  $Log: dvpsspl.h,v $
- *  Revision 1.2  2000-06-02 16:00:52  meichel
+ *  Revision 1.3  2000-06-08 10:44:30  meichel
+ *  Implemented Referenced Presentation LUT Sequence on Basic Film Session level.
+ *    Empty film boxes (pages) are not written to file anymore.
+ *
+ *  Revision 1.2  2000/06/02 16:00:52  meichel
  *  Adapted all dcmpstat classes to use OFConsole for log and error output
  *
  *  Revision 1.1  2000/05/31 12:56:36  meichel

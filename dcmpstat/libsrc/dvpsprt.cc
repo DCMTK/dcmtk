@@ -23,8 +23,8 @@
  *    classes: DVPSPrintSCP
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-06-07 13:17:28 $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  Update Date:      $Date: 2000-06-08 10:44:36 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -147,7 +147,7 @@ DVPSAssociationNegotiationResult DVPSPrintSCP::negotiateAssociation(T_ASC_Networ
       ostream &outstream = logstream->lockCerr();
       outstream << endl << "====================== BEGIN A-ASSOCIATE-RQ =====================" << endl;
       ASC_dumpParameters(assoc->params, outstream);
-      outstream << "======================= END A-ASSOCIATE-RQ ======================" << endl << endl;
+      outstream << "======================= END A-ASSOCIATE-RQ ======================" << endl << endl << flush;
       logstream->unlockCerr();
     }
 
@@ -261,7 +261,7 @@ CONDITION DVPSPrintSCP::refuseAssociation(OFBool isBadContext)
     ostream &outstream = logstream->lockCerr();
     outstream << endl << "====================== BEGIN A-ASSOCIATE-RJ =====================" << endl;
     ASC_dumpParameters(assoc->params, outstream);
-    outstream << "======================= END A-ASSOCIATE-RJ ======================" << endl << endl;
+    outstream << "======================= END A-ASSOCIATE-RJ ======================" << endl << endl << flush;
     logstream->unlockCerr();
   }
 
@@ -310,7 +310,7 @@ void DVPSPrintSCP::handleClient()
     ostream &outstream = logstream->lockCerr();
     outstream << endl << "====================== BEGIN A-ASSOCIATE-AC =====================" << endl;
     ASC_dumpParameters(assoc->params, outstream);
-    outstream << "======================= END A-ASSOCIATE-AC ======================" << endl << endl;
+    outstream << "======================= END A-ASSOCIATE-AC ======================" << endl << endl << flush;
     logstream->unlockCerr();
   }  
   if (acseSequence && associatePDU)
@@ -839,10 +839,16 @@ void DVPSPrintSCP::filmSessionNSet(T_DIMSE_Message& rq, DcmDataset *rqDataset, T
 {
   if (filmSession && (filmSession->isInstance(rq.msg.NSetRQ.RequestedSOPInstanceUID)))
   {
+    OFBool usePLUTinFilmSession = OFFalse;
+    if (assoc && (0 != ASC_findAcceptedPresentationContextID(assoc, UID_PresentationLUTSOPClass))) 
+    {
+      if (dviface.getTargetPrinterPresentationLUTinFilmSession(cfgname)) usePLUTinFilmSession = OFTrue;
+    }
+
     DVPSFilmSession *newSession = new DVPSFilmSession(*filmSession);
     if (newSession)
     {
-      if (newSession->printSCPSet(dviface, cfgname, rqDataset, rsp, rspDataset))
+      if (newSession->printSCPSet(dviface, cfgname, rqDataset, rsp, rspDataset, usePLUTinFilmSession, presentationLUTList, storedPrintList))
       {
         delete filmSession;
         filmSession = newSession;
@@ -868,9 +874,12 @@ void DVPSPrintSCP::filmSessionNSet(T_DIMSE_Message& rq, DcmDataset *rqDataset, T
 
 void DVPSPrintSCP::filmBoxNSet(T_DIMSE_Message& rq, DcmDataset *rqDataset, T_DIMSE_Message& rsp, DcmDataset *& rspDataset)
 {
-  OFBool plut = OFFalse;
-  if (assoc && (0 != ASC_findAcceptedPresentationContextID(assoc, UID_PresentationLUTSOPClass))) plut=OFTrue;
-  storedPrintList.printSCPBasicFilmBoxSet(dviface, cfgname, rq, rqDataset, rsp, rspDataset, plut, presentationLUTList);
+  OFBool usePLUTinFilmBox = OFFalse;
+  if (assoc && (0 != ASC_findAcceptedPresentationContextID(assoc, UID_PresentationLUTSOPClass))) 
+  {
+    if (! dviface.getTargetPrinterPresentationLUTinFilmSession(cfgname)) usePLUTinFilmBox = OFTrue;
+  }
+  storedPrintList.printSCPBasicFilmBoxSet(dviface, cfgname, rq, rqDataset, rsp, rspDataset, usePLUTinFilmBox, presentationLUTList);
 }
 
 void DVPSPrintSCP::filmSessionNAction(T_DIMSE_Message& rq, T_DIMSE_Message& rsp)
@@ -907,14 +916,22 @@ void DVPSPrintSCP::filmSessionNCreate(DcmDataset *rqDataset, T_DIMSE_Message& rs
     rsp.msg.NCreateRSP.DimseStatus = STATUS_N_DuplicateSOPInstance;
     rsp.msg.NCreateRSP.opts = 0;  // don't include affected SOP instance UID
   } else {
-    DVPSFilmSession *newSession = new DVPSFilmSession();
+    OFBool usePLUTinFilmSession = OFFalse;
+    if (assoc && (0 != ASC_findAcceptedPresentationContextID(assoc, UID_PresentationLUTSOPClass))) 
+    {
+      if (dviface.getTargetPrinterPresentationLUTinFilmSession(cfgname)) usePLUTinFilmSession = OFTrue;
+    }
+    
+    DVPSFilmSession *newSession = new DVPSFilmSession(DEFAULT_illumination, DEFAULT_reflectedAmbientLight);
     if (newSession)
     {
       newSession->setLog(logstream, verboseMode, debugMode);
       DIC_AE peerTitle;
       peerTitle[0]=0;
       ASC_getAPTitles(assoc->params, peerTitle, NULL, NULL);
-      if (newSession->printSCPCreate(dviface, cfgname, rqDataset, rsp, rspDataset, peerTitle)) filmSession = newSession;
+      if (newSession->printSCPCreate(dviface, cfgname, rqDataset, rsp, rspDataset, 
+          peerTitle, usePLUTinFilmSession, presentationLUTList)) 
+          filmSession = newSession;
       char uid[100];
       studyInstanceUID.putString(dcmGenerateUniqueIdentifer(uid));
       psSeriesInstanceUID.putString(dcmGenerateUniqueIdentifer(uid));
@@ -948,11 +965,21 @@ void DVPSPrintSCP::filmBoxNCreate(DcmDataset *rqDataset, T_DIMSE_Message& rsp, D
       DVPSStoredPrint *newSPrint = new DVPSStoredPrint(DEFAULT_illumination, DEFAULT_reflectedAmbientLight);
       if (newSPrint)
       {
-        OFBool plut = OFFalse;
-        if (assoc && (0 != ASC_findAcceptedPresentationContextID(assoc, UID_PresentationLUTSOPClass))) plut=OFTrue;
-        if (newSPrint->printSCPCreate(dviface, cfgname, rqDataset, rsp, rspDataset, plut,
+        newSPrint->setLog(logstream, verboseMode, debugMode);
+        OFBool usePLUTinFilmBox = OFFalse;
+        OFBool usePLUTinFilmSession = OFFalse;
+        if (assoc && (0 != ASC_findAcceptedPresentationContextID(assoc, UID_PresentationLUTSOPClass))) 
+        {
+          if (dviface.getTargetPrinterPresentationLUTinFilmSession(cfgname)) usePLUTinFilmSession = OFTrue;
+          else usePLUTinFilmBox = OFTrue;
+        }
+        if (newSPrint->printSCPCreate(dviface, cfgname, rqDataset, rsp, rspDataset, usePLUTinFilmBox,
           presentationLUTList, filmSession->getUID(), studyInstanceUID, psSeriesInstanceUID, imageSeriesInstanceUID))
         {
+          if (usePLUTinFilmSession)
+          {
+            filmSession->copyPresentationLUTSettings(*newSPrint); // update P-LUT settings from film session
+          }
           storedPrintList.insert(newSPrint);
         } else delete newSPrint;
       } else {
@@ -992,6 +1019,7 @@ void DVPSPrintSCP::presentationLUTNCreate(DcmDataset *rqDataset, T_DIMSE_Message
     DVPSPresentationLUT *newPLut = new DVPSPresentationLUT();
     if (newPLut)
     {
+      newPLut->setLog(logstream, verboseMode, debugMode);
       OFBool matchRequired = dviface.getTargetPrinterPresentationLUTMatchRequired(cfgname);
       OFBool supports12Bit = dviface.getTargetPrinterSupports12BitTransmission(cfgname);
       if (newPLut->printSCPCreate(rqDataset, rsp, rspDataset, matchRequired, supports12Bit))
@@ -1052,7 +1080,9 @@ void DVPSPrintSCP::presentationLUTNDelete(T_DIMSE_Message& rq, T_DIMSE_Message& 
 
 void DVPSPrintSCP::imageBoxNSet(T_DIMSE_Message& rq, DcmDataset *rqDataset, T_DIMSE_Message& rsp, DcmDataset *& rspDataset)
 {
-  storedPrintList.printSCPBasicGrayscaleImageBoxSet(dviface, cfgname, rq, rqDataset, rsp, rspDataset);
+  OFBool usePLUT = OFFalse;
+  if (assoc && (0 != ASC_findAcceptedPresentationContextID(assoc, UID_PresentationLUTSOPClass))) usePLUT = OFTrue;
+  storedPrintList.printSCPBasicGrayscaleImageBoxSet(dviface, cfgname, rq, rqDataset, rsp, rspDataset, usePLUT);
 }
 
 void DVPSPrintSCP::setLog(OFConsole *stream, OFBool verbMode, OFBool dbgMode, OFBool dmpMode)
@@ -1180,14 +1210,18 @@ void DVPSPrintSCP::dumpNMessage(T_DIMSE_Message &msg, DcmItem *dataset, OFBool o
       outstream << endl << "===================== INCOMING DIMSE MESSAGE ====================" << endl;
     }
     DIMSE_printMessage(outstream, msg, dataset);
-    outstream << "======================= END DIMSE MESSAGE =======================" << endl << endl;
+    outstream << "======================= END DIMSE MESSAGE =======================" << endl << endl << flush;
     logstream->unlockCerr();
     return;
 }
 
 /*
  *  $Log: dvpsprt.cc,v $
- *  Revision 1.3  2000-06-07 13:17:28  meichel
+ *  Revision 1.4  2000-06-08 10:44:36  meichel
+ *  Implemented Referenced Presentation LUT Sequence on Basic Film Session level.
+ *    Empty film boxes (pages) are not written to file anymore.
+ *
+ *  Revision 1.3  2000/06/07 13:17:28  meichel
  *  added binary and textual log facilities to Print SCP.
  *
  *  Revision 1.2  2000/06/02 16:01:04  meichel

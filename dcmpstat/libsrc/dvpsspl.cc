@@ -23,8 +23,8 @@
  *    classes: DVPSStoredPrint_PList
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-06-07 13:17:09 $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  Update Date:      $Date: 2000-06-08 10:44:38 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -134,7 +134,8 @@ void DVPSStoredPrint_PList::printSCPBasicGrayscaleImageBoxSet(
     T_DIMSE_Message& rq,
     DcmDataset *rqDataset,
     T_DIMSE_Message& rsp,
-    DcmDataset *& rspDataset)
+    DcmDataset *& rspDataset,
+    OFBool presentationLUTnegotiated)
 {
   OFListIterator(DVPSStoredPrint *) first = begin();
   OFListIterator(DVPSStoredPrint *) last = end();
@@ -151,7 +152,8 @@ void DVPSStoredPrint_PList::printSCPBasicGrayscaleImageBoxSet(
     DcmFileFormat imageFile;
     DcmDataset *imageDataset = imageFile.getDataset();
 
-    if (newib->printSCPSet(cfg, cfgname, rqDataset, rsp, rspDataset, *imageDataset, sp->getReferencedPresentationLUTAlignment()))
+    if (newib->printSCPSet(cfg, cfgname, rqDataset, rsp, rspDataset, *imageDataset, 
+        sp->getReferencedPresentationLUTAlignment(), presentationLUTnegotiated))
     {
       if (EC_Normal == sp->writeHardcopyImageAttributes(*imageDataset))
       {
@@ -223,23 +225,32 @@ void DVPSStoredPrint_PList::printSCPBasicFilmBoxAction(
     sp->updatePresentationLUTList(globalPresentationLUTList);
     sp->clearInstanceUID();
 
-    if (EC_Normal == sp->write(*spDataset, writeRequestedImageSize, OFFalse, OFFalse, OFTrue))
+    if ((*first)->emptyPageWarning())
     {
-      if (EC_Normal == cfg.saveFileFormatToDB(spFile))
-      {
-        // N-ACTION successful.
-      } else {
-        rsp.msg.NActionRSP.DimseStatus = STATUS_N_ProcessingFailure;
-      }
-    } else {
       if (verboseMode)
       {
-        logstream->lockCerr() << "error: cannot print basic film box, out of memory." << endl;
+        logstream->lockCerr() << "warning: empty page, will not be stored in database" << endl;
         logstream->unlockCerr();
       }
-      rsp.msg.NActionRSP.DimseStatus = STATUS_N_ProcessingFailure;
+      if (STATUS_Success == rsp.msg.NActionRSP.DimseStatus) rsp.msg.NActionRSP.DimseStatus = STATUS_N_PRINT_BFB_Warn_EmptyPage;
+    } else {
+      if (EC_Normal == sp->write(*spDataset, writeRequestedImageSize, OFFalse, OFFalse, OFTrue))
+      {
+        if (EC_Normal == cfg.saveFileFormatToDB(spFile))
+        {
+          // N-ACTION successful.
+        } else {
+          rsp.msg.NActionRSP.DimseStatus = STATUS_N_ProcessingFailure;
+        }
+      } else {
+        if (verboseMode)
+        {
+          logstream->lockCerr() << "error: cannot print basic film box, out of memory." << endl;
+          logstream->unlockCerr();
+        }
+        rsp.msg.NActionRSP.DimseStatus = STATUS_N_ProcessingFailure;
+      }
     }
-
   } else {
     // film box does not exist or wrong instance UID
     if (verboseMode)
@@ -270,21 +281,31 @@ void DVPSStoredPrint_PList::printSCPBasicFilmSessionAction(
       (*first)->updatePresentationLUTList(globalPresentationLUTList);
       (*first)->clearInstanceUID();
 
-      if (EC_Normal == (*first)->write(*spDataset, writeRequestedImageSize, OFFalse, OFFalse, OFTrue))
+      if ((*first)->emptyPageWarning())
       {
-        if (EC_Normal == cfg.saveFileFormatToDB(spFile))
-        {
-          // success for this film box
-        } else {
-          rsp.msg.NActionRSP.DimseStatus = STATUS_N_ProcessingFailure;
-        }
-      } else {
         if (verboseMode)
         {
-          logstream->lockCerr() << "error: cannot print basic film session, out of memory." << endl;
+          logstream->lockCerr() << "warning: empty page, will not be stored in database" << endl;
           logstream->unlockCerr();
         }
-        rsp.msg.NActionRSP.DimseStatus = STATUS_N_ProcessingFailure;
+        if (STATUS_Success == rsp.msg.NActionRSP.DimseStatus) rsp.msg.NActionRSP.DimseStatus = STATUS_N_PRINT_BFS_Warn_EmptyPage;
+      } else {
+         if (EC_Normal == (*first)->write(*spDataset, writeRequestedImageSize, OFFalse, OFFalse, OFTrue))
+         {
+           if (EC_Normal == cfg.saveFileFormatToDB(spFile))
+           {
+             // success for this film box
+           } else {
+             rsp.msg.NActionRSP.DimseStatus = STATUS_N_ProcessingFailure;
+           }
+         } else {
+           if (verboseMode)
+           {
+             logstream->lockCerr() << "error: cannot print basic film session, out of memory." << endl;
+             logstream->unlockCerr();
+           }
+           rsp.msg.NActionRSP.DimseStatus = STATUS_N_ProcessingFailure;
+         }
       }
       ++first;
     }
@@ -368,10 +389,41 @@ void DVPSStoredPrint_PList::setLog(OFConsole *stream, OFBool verbMode, OFBool db
   }	
 }
 
+OFBool DVPSStoredPrint_PList::matchesPresentationLUT(DVPSPrintPresentationLUTAlignment align) const
+{
+  OFBool result = OFTrue;
+  OFListIterator(DVPSStoredPrint *) first = begin();
+  OFListIterator(DVPSStoredPrint *) last = end();  
+  while (first != last)
+  {
+    result = result && (*first)->matchesPresentationLUT(align);
+    ++first;
+  }  
+  return result;
+}
+
+void DVPSStoredPrint_PList::overridePresentationLUTSettings(
+      DcmUnsignedShort& newIllumination,
+      DcmUnsignedShort& newReflectedAmbientLight,
+      DcmUniqueIdentifier& newReferencedPLUT,
+      DVPSPrintPresentationLUTAlignment newAlignment)
+{
+  OFListIterator(DVPSStoredPrint *) first = begin();
+  OFListIterator(DVPSStoredPrint *) last = end();  
+  while (first != last)
+  {
+    (*first)->overridePresentationLUTSettings(newIllumination, newReflectedAmbientLight, newReferencedPLUT, newAlignment);
+    ++first;
+  }  
+}
 
 /*
  *  $Log: dvpsspl.cc,v $
- *  Revision 1.3  2000-06-07 13:17:09  meichel
+ *  Revision 1.4  2000-06-08 10:44:38  meichel
+ *  Implemented Referenced Presentation LUT Sequence on Basic Film Session level.
+ *    Empty film boxes (pages) are not written to file anymore.
+ *
+ *  Revision 1.3  2000/06/07 13:17:09  meichel
  *  now using DIMSE status constants and log facilities defined in dcmnet
  *
  *  Revision 1.2  2000/06/02 16:01:07  meichel

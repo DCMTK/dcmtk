@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DVPSImageBoxContent
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-06-07 14:26:45 $
- *  CVS/RCS Revision: $Revision: 1.19 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2000-06-08 10:44:35 $
+ *  CVS/RCS Revision: $Revision: 1.20 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -680,7 +680,7 @@ OFBool DVPSImageBoxContent::hasAdditionalSettings()
   return OFFalse;
 }
 
-OFBool DVPSImageBoxContent::matchesPresentationLUT(DVPSPrintPresentationLUTAlignment align)
+OFBool DVPSImageBoxContent::matchesPresentationLUT(DVPSPrintPresentationLUTAlignment align) const
 {
   OFBool result = OFFalse;
   switch (align)
@@ -708,7 +708,8 @@ OFBool DVPSImageBoxContent::printSCPSet(
   T_DIMSE_Message& rsp,
   DcmDataset *& rspDataset,
   DcmDataset &imageDataset,
-  DVPSPrintPresentationLUTAlignment align)
+  DVPSPrintPresentationLUTAlignment align,
+  OFBool presentationLUTnegotiated)
 {
   OFBool result = OFTrue;
   DcmStack stack;
@@ -971,7 +972,7 @@ OFBool DVPSImageBoxContent::printSCPSet(
       if (seq->card() ==1)
       {
          DcmItem *item = seq->getItem(0);
-         result = printSCPEvaluateBasicGrayscaleImageSequence(cfg, cfgname, item, rsp, imageDataset, align);
+         result = printSCPEvaluateBasicGrayscaleImageSequence(cfg, cfgname, item, rsp, imageDataset, align, presentationLUTnegotiated);
       } else {
         if (verboseMode)
         {
@@ -995,9 +996,11 @@ OFBool DVPSImageBoxContent::printSCPSet(
   // browse through rqDataset and check for unsupported attributes
   if (result && rqDataset)
   {
+    OFBool intoSub = OFTrue;
     stack.clear();
-    while (EC_Normal == rqDataset->nextObject(stack, OFFalse))
+    while (EC_Normal == rqDataset->nextObject(stack, intoSub))
     {
+      intoSub = OFFalse;
       const DcmTagKey& currentTag = (stack.top())->getTag();
       if (currentTag == DCM_ImageBoxPosition) /* OK */ ;
       else if (currentTag == DCM_Polarity) /* OK */ ;
@@ -1042,7 +1045,8 @@ OFBool DVPSImageBoxContent::printSCPEvaluateBasicGrayscaleImageSequence(
   DcmItem *rqDataset,
   T_DIMSE_Message& rsp,
   DcmDataset &imageDataset,
-  DVPSPrintPresentationLUTAlignment align)
+  DVPSPrintPresentationLUTAlignment align,
+  OFBool presentationLUTnegotiated)
 {
   OFBool result = OFTrue;
   DcmStack stack;
@@ -1188,7 +1192,7 @@ OFBool DVPSImageBoxContent::printSCPEvaluateBasicGrayscaleImageSequence(
           rsp.msg.NSetRSP.DimseStatus = STATUS_N_InvalidAttributeValue;
           result = OFFalse;
         } else {
-          if ((cfg.getTargetPrinterPresentationLUTMatchRequired(cfgname)) && (! matchesPresentationLUT(align)))
+          if (presentationLUTnegotiated && (cfg.getTargetPrinterPresentationLUTMatchRequired(cfgname)) && (! matchesPresentationLUT(align)))
           {
             if (verboseMode)
             {
@@ -1413,9 +1417,11 @@ OFBool DVPSImageBoxContent::printSCPEvaluateBasicGrayscaleImageSequence(
   // browse through rqDataset and check for unsupported attributes
   if (result && rqDataset)
   {
+    OFBool intoSub = OFTrue;
     stack.clear();
-    while (EC_Normal == rqDataset->nextObject(stack, OFFalse))
+    while (EC_Normal == rqDataset->nextObject(stack, intoSub))
     {
+      intoSub = OFFalse;
       const DcmTagKey& currentTag = (stack.top())->getTag();
       if (currentTag == DCM_SamplesPerPixel) /* OK */ ;
       else if (currentTag == DCM_PhotometricInterpretation) /* OK */ ;
@@ -1505,7 +1511,11 @@ void DVPSImageBoxContent::setLog(OFConsole *stream, OFBool verbMode, OFBool dbgM
 
 /*
  *  $Log: dvpsib.cc,v $
- *  Revision 1.19  2000-06-07 14:26:45  joergr
+ *  Revision 1.20  2000-06-08 10:44:35  meichel
+ *  Implemented Referenced Presentation LUT Sequence on Basic Film Session level.
+ *    Empty film boxes (pages) are not written to file anymore.
+ *
+ *  Revision 1.19  2000/06/07 14:26:45  joergr
  *  Added methods to access the image polarity attribute.
  *
  *  Revision 1.18  2000/06/07 13:17:06  meichel

@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DVPSImageBoxContent
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-06-07 14:17:41 $
- *  CVS/RCS Revision: $Revision: 1.15 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2000-06-08 10:44:29 $
+ *  CVS/RCS Revision: $Revision: 1.16 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -249,7 +249,7 @@ public:
    *  @param align LUT alignment type
    *  @return OFTrue if matching, OFFalse otherwise
    */
-  OFBool matchesPresentationLUT(DVPSPrintPresentationLUTAlignment align);
+  OFBool matchesPresentationLUT(DVPSPrintPresentationLUTAlignment align) const;
 
   /** performs a Print SCP Basic Grayscale Image Box N-SET operation.
    *  The results of the N-SET operation are stored in the objects passed as 
@@ -266,6 +266,9 @@ public:
    *  @param align describes the current Presentation LUT. Used if the Print
    *     SCP has been configured to enforce a matching of Presentation LUT
    *     and pixel data bit depth.
+   *  @param presentationLUTnegotiated 
+   *    OFTrue if support for the Presentation LUT SOP class
+   *    has been negotiated at association negotiation
    *  @return OFTrue if N-SET operation was successful, OFFalse otherwise.
    */
   OFBool printSCPSet(
@@ -275,7 +278,8 @@ public:
     T_DIMSE_Message& rsp,
     DcmDataset *& rspDataset,
     DcmDataset &imageDataset,
-    DVPSPrintPresentationLUTAlignment align);
+    DVPSPrintPresentationLUTAlignment align,
+    OFBool presentationLUTnegotiated);
  
   /** assigns new values for study instance UID, series instance UID
    *  and retrieve aetitle.
@@ -314,6 +318,9 @@ private:
    *  @param align describes the current Presentation LUT. Used if the Print
    *     SCP has been configured to enforce a matching of Presentation LUT
    *     and pixel data bit depth.
+   *  @param presentationLUTnegotiated 
+   *    OFTrue if support for the Presentation LUT SOP class
+   *    has been negotiated at association negotiation
    *  @return OFTrue if N-SET operation was successful, OFFalse otherwise.
    */
   OFBool printSCPEvaluateBasicGrayscaleImageSequence(
@@ -322,7 +329,8 @@ private:
    DcmItem *rqDataset,
    T_DIMSE_Message& rsp,
    DcmDataset &imageDataset,
-   DVPSPrintPresentationLUTAlignment align);
+   DVPSPrintPresentationLUTAlignment align,
+   OFBool presentationLUTnegotiated);
 
   /// Module=Image_Box_List, VR=UI, VM=1, Type 1(c) 
   DcmUniqueIdentifier      sOPInstanceUID;
@@ -385,7 +393,11 @@ private:
 
 /*
  *  $Log: dvpsib.h,v $
- *  Revision 1.15  2000-06-07 14:17:41  joergr
+ *  Revision 1.16  2000-06-08 10:44:29  meichel
+ *  Implemented Referenced Presentation LUT Sequence on Basic Film Session level.
+ *    Empty film boxes (pages) are not written to file anymore.
+ *
+ *  Revision 1.15  2000/06/07 14:17:41  joergr
  *  Added methods to access the image polarity attribute.
  *
  *  Revision 1.14  2000/06/02 16:00:47  meichel

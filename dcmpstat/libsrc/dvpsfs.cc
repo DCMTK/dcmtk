@@ -23,8 +23,8 @@
  *    classes: DVPSFilmSession
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-06-07 13:17:06 $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  Update Date:      $Date: 2000-06-08 10:44:34 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -37,12 +37,16 @@
 #include "ofstring.h"
 #include "dvpshlp.h"
 #include "dvpscf.h"
+#include "dvpspl.h"
+#include "dvpspll.h"
+#include "dvpssp.h"
+#include "dvpsspl.h"
 
 #include <string.h>
 
 /* --------------- class DVPSFilmSession --------------- */
 
-DVPSFilmSession::DVPSFilmSession()
+DVPSFilmSession::DVPSFilmSession(Uint16 illumin, Uint16 reflection)
 : sopInstanceUID(NULL)
 , numberOfCopies(DCM_NumberOfCopies)
 , printPriority(DCM_PrintPriority)
@@ -50,10 +54,16 @@ DVPSFilmSession::DVPSFilmSession()
 , filmDestination(DCM_FilmDestination)
 , filmSessionLabel(DCM_FilmSessionLabel)
 , ownerID(DCM_OwnerID)
+, illumination(DCM_Illumination)
+, reflectedAmbientLight(DCM_ReflectedAmbientLight)
+, referencedPresentationLUTInstanceUID(DCM_ReferencedSOPInstanceUID)
+, referencedPresentationLUTAlignment(DVPSK_other)
 , logstream(&ofConsole)
 , verboseMode(OFFalse)
 , debugMode(OFFalse)
 {
+  illumination.putUint16(illumin, 0);
+  reflectedAmbientLight.putUint16(reflection, 0);
 }
 
 DVPSFilmSession::DVPSFilmSession(const DVPSFilmSession& copy)
@@ -64,6 +74,10 @@ DVPSFilmSession::DVPSFilmSession(const DVPSFilmSession& copy)
 , filmDestination(copy.filmDestination)
 , filmSessionLabel(copy.filmSessionLabel)
 , ownerID(copy.ownerID)
+, illumination(copy.illumination)
+, reflectedAmbientLight(copy.reflectedAmbientLight)
+, referencedPresentationLUTInstanceUID(copy.referencedPresentationLUTInstanceUID)
+, referencedPresentationLUTAlignment(copy.referencedPresentationLUTAlignment)
 , logstream(copy.logstream)
 , verboseMode(copy.verboseMode)
 , debugMode(copy.debugMode)
@@ -80,7 +94,15 @@ OFBool DVPSFilmSession::isInstance(const char *uid)
   return OFFalse;
 }
 
-OFBool DVPSFilmSession::printSCPCreate(DVConfiguration& cfg, const char *cfgname, DcmDataset *rqDataset, T_DIMSE_Message& rsp, DcmDataset *& rspDataset, const char *peerae)
+OFBool DVPSFilmSession::printSCPCreate(
+    DVConfiguration& cfg, 
+    const char *cfgname, 
+    DcmDataset *rqDataset, 
+    T_DIMSE_Message& rsp, 
+    DcmDataset *& rspDataset, 
+    const char *peerae,
+    OFBool presentationLUTnegotiated,
+    DVPSPresentationLUT_PList& globalPresentationLUTList)
 {
   OFBool result = OFTrue;
   DcmStack stack;
@@ -252,12 +274,117 @@ OFBool DVPSFilmSession::printSCPCreate(DVConfiguration& cfg, const char *cfgname
     }
   }
 
+  if (presentationLUTnegotiated)
+  {
+
+    // illumination
+    if (result)
+    {
+      READ_FROM_PDATASET(DcmUnsignedShort, illumination)
+      if (illumination.getLength() == 0) illumination.putUint16(DEFAULT_illumination, 0);
+      // we don't check illumination set by the user (for now)
+    }
+
+    // reflectedAmbientLight
+    if (result)
+    {
+      READ_FROM_PDATASET(DcmUnsignedShort, reflectedAmbientLight)
+      if (reflectedAmbientLight.getLength() == 0) illumination.putUint16(DEFAULT_reflectedAmbientLight, 0);
+      // we don't check reflected ambient light set by the user (for now)
+    }
+
+    // referenced presentation LUT sequence
+    if (result)
+    {
+      stack.clear();
+
+      if (rqDataset && (EC_Normal == rqDataset->search(DCM_ReferencedPresentationLUTSequence, stack, ESM_fromHere, OFFalse)))
+      {
+        DcmSequenceOfItems *seq=(DcmSequenceOfItems *)stack.top();
+        if (seq->card() ==1)
+        {
+           OFString aString;
+           DcmItem *item = seq->getItem(0);
+           stack.clear();
+           READ_FROM_DATASET2(DcmUniqueIdentifier, referencedPresentationLUTInstanceUID)           
+           if (referencedPresentationLUTInstanceUID.getLength() > 0)
+           {
+             referencedPresentationLUTInstanceUID.getOFString(aString,0);
+             DVPSPresentationLUT *currentPLUT = globalPresentationLUTList.findPresentationLUT(aString.c_str());
+             if (NULL == currentPLUT)
+             {
+               if (verboseMode)
+               {
+                 logstream->lockCerr() << "cannot create Basic Film Session: presentation LUT reference cannot be resolved" << endl;
+                 logstream->unlockCerr();
+               }
+               rsp.msg.NCreateRSP.DimseStatus = STATUS_N_InvalidAttributeValue;
+               result = OFFalse;
+             } else {
+               // check referenced SOP class UID
+               DcmUniqueIdentifier refClassUID(DCM_ReferencedSOPClassUID);
+               stack.clear();
+               READ_FROM_DATASET2(DcmUniqueIdentifier, refClassUID)
+               if (refClassUID.getLength() > 0)
+               {     
+                  aString.clear();
+                  refClassUID.getOFString(aString,0, OFTrue);
+                  if (aString != UID_PresentationLUTSOPClass)
+                  {
+                    if (verboseMode)
+                    {
+                      ostream &mycerr = logstream->lockCerr();
+                      mycerr << "cannot create Basic Film Session: referenced SOP class UID in referenced presentation LUT sequence incorrect:" << endl;
+                      (stack.top())->print(mycerr, OFFalse);
+                      logstream->unlockCerr();            
+                    }
+                    rsp.msg.NCreateRSP.DimseStatus = STATUS_N_InvalidAttributeValue;
+                    result = OFFalse;
+                  } else {
+                    // referenced presentation LUT sequence is OK
+                    referencedPresentationLUTAlignment = currentPLUT->getAlignment();
+                  }
+               } else {
+                  if (verboseMode)
+                  {
+                    logstream->lockCerr() << "cannot create Basic Film Session: no referenced SOP class UID in referenced presentation LUT sequence" << endl;
+                    logstream->unlockCerr();
+                  }
+                  rsp.msg.NCreateRSP.DimseStatus = STATUS_N_InvalidAttributeValue;
+                  result = OFFalse;
+               }
+             }
+           } else {
+             if (verboseMode)
+             {
+               logstream->lockCerr() << "cannot create Basic Film Session: no referenced SOP instance UID in referenced presentation LUT sequence" << endl;
+               logstream->unlockCerr();
+             }
+             rsp.msg.NCreateRSP.DimseStatus = STATUS_N_InvalidAttributeValue;
+             result = OFFalse;
+           }
+        } else {
+          if (verboseMode)
+          {
+            logstream->lockCerr() << "cannot create Basic Film Session: referenced presentation LUT sequence number of items != 1" << endl;
+            logstream->unlockCerr();
+          }
+          rsp.msg.NCreateRSP.DimseStatus = STATUS_N_InvalidAttributeValue;
+          result = OFFalse;
+        }
+      }
+    }    
+    
+  } /* if presentationLUTnegotiated */
+
   // browse through rqDataset and check for unsupported attributes
   if (result && rqDataset)
   {
+    OFBool intoSub = OFTrue;
     stack.clear();
-    while (EC_Normal == rqDataset->nextObject(stack, OFFalse))
+    while (EC_Normal == rqDataset->nextObject(stack, intoSub))
     {
+      intoSub = OFFalse;
       const DcmTagKey& currentTag = (stack.top())->getTag();
       if (currentTag == DCM_NumberOfCopies) /* OK */ ;
       else if (currentTag == DCM_PrintPriority) /* OK */ ;
@@ -275,6 +402,51 @@ OFBool DVPSFilmSession::printSCPCreate(DVConfiguration& cfg, const char *cfgname
           logstream->unlockCerr();
         }
       	if (rsp.msg.NCreateRSP.DimseStatus == 0) rsp.msg.NCreateRSP.DimseStatus = STATUS_N_PRINT_BFS_Warn_MemoryAllocation;
+      }
+      else if (currentTag == DCM_Illumination)
+      {
+        if (! presentationLUTnegotiated)
+        {
+          if (verboseMode)
+          {
+            ostream &mycerr = logstream->lockCerr();
+            mycerr << "cannot create Basic Film Session: illumination received:" << endl;
+            (stack.top())->print(mycerr, OFFalse);
+            logstream->unlockCerr();
+          }
+          rsp.msg.NCreateRSP.DimseStatus = STATUS_N_AttributeListError;          
+          result = OFFalse;
+        }
+      }
+      else if (currentTag == DCM_ReflectedAmbientLight)
+      {
+        if (! presentationLUTnegotiated)
+        {
+          if (verboseMode)
+          {
+            ostream &mycerr = logstream->lockCerr();
+            mycerr << "cannot create Basic Film Session: reflected ambient light received:" << endl;
+            (stack.top())->print(mycerr, OFFalse);
+            logstream->unlockCerr();
+          }
+          rsp.msg.NCreateRSP.DimseStatus = STATUS_N_AttributeListError;          
+          result = OFFalse;
+        }
+      }
+      else if (currentTag == DCM_ReferencedPresentationLUTSequence)
+      {
+        if (! presentationLUTnegotiated)
+        {
+          if (verboseMode)
+          {
+            ostream &mycerr = logstream->lockCerr();
+            mycerr << "cannot create Basic Film Session: referenced presentation LUT sequence received:" << endl;
+            (stack.top())->print(mycerr, OFFalse);
+            logstream->unlockCerr();
+          }
+          rsp.msg.NCreateRSP.DimseStatus = STATUS_N_AttributeListError;          
+          result = OFFalse;
+        }
       }
       else
       {
@@ -307,6 +479,25 @@ OFBool DVPSFilmSession::printSCPCreate(DVConfiguration& cfg, const char *cfgname
       ADD_TO_PDATASET(DcmLongString, filmSessionLabel)
       ADD_TO_PDATASET(DcmShortString, ownerID)
 
+      if (presentationLUTnegotiated)
+      {
+        if (referencedPresentationLUTInstanceUID.getLength() == 0)
+        {
+          referencedPresentationLUTInstanceUID.putString(WELLKNOWN_IDENTITY_PLUT_UID);
+          if (NULL == globalPresentationLUTList.findPresentationLUT(WELLKNOWN_IDENTITY_PLUT_UID))
+          {
+            DVPSPresentationLUT *wellknownlut = new DVPSPresentationLUT();
+            if (wellknownlut)
+            {
+              writeresult = wellknownlut->setType(DVPSP_identity);
+              if (EC_Normal == writeresult) writeresult = wellknownlut->setSOPInstanceUID(WELLKNOWN_IDENTITY_PLUT_UID);
+              if (EC_Normal == writeresult) globalPresentationLUTList.insert(wellknownlut);              
+            } else writeresult = EC_MemoryExhausted;
+          }
+        }
+        if (EC_Normal == writeresult) writeresult = addPresentationLUTReference(*rspDataset);
+      }
+
       if (EC_Normal == writeresult)
       {
         rsp.msg.NCreateRSP.DataSetType = DIMSE_DATASET_PRESENT;
@@ -325,13 +516,22 @@ OFBool DVPSFilmSession::printSCPCreate(DVConfiguration& cfg, const char *cfgname
 }
 
 
-OFBool DVPSFilmSession::printSCPSet(DVConfiguration& cfg, const char *cfgname, DcmDataset *rqDataset, T_DIMSE_Message& rsp, DcmDataset *& rspDataset)
+OFBool DVPSFilmSession::printSCPSet(
+    DVConfiguration& cfg, 
+    const char *cfgname, 
+    DcmDataset *rqDataset, 
+    T_DIMSE_Message& rsp, 
+    DcmDataset *& rspDataset,
+    OFBool presentationLUTnegotiated,
+    DVPSPresentationLUT_PList& globalPresentationLUTList,
+    DVPSStoredPrint_PList& basicFilmBoxList)
 {
   OFBool result = OFTrue;
   DcmStack stack;
   E_Condition writeresult = EC_Normal;
   DcmElement *delem = NULL;
-
+  OFBool overrideFilmBoxPLUTSettings = OFFalse;
+  
   rspDataset = new DcmDataset;    
   if ((rqDataset == NULL)||(rspDataset == NULL))
   {
@@ -483,12 +683,144 @@ OFBool DVPSFilmSession::printSCPSet(DVConfiguration& cfg, const char *cfgname, D
     }
   }
 
+  if (presentationLUTnegotiated)
+  {
+
+    // illumination
+    if (result)
+    {
+      stack.clear();
+      if (rqDataset && (EC_Normal == rqDataset->search((DcmTagKey &)illumination.getTag(), stack, ESM_fromHere, OFFalse)))
+      {
+        illumination = *((DcmUnsignedShort *)(stack.top()));
+        // we don't check illumination set by the user (for now)
+        ADD_TO_PDATASET(DcmUnsignedShort, illumination)
+      }
+    }
+
+    // reflectedAmbientLight
+    if (result)
+    {
+      stack.clear();
+      if (rqDataset && (EC_Normal == rqDataset->search((DcmTagKey &)reflectedAmbientLight.getTag(), stack, ESM_fromHere, OFFalse)))
+      {
+        reflectedAmbientLight = *((DcmUnsignedShort *)(stack.top()));
+        // we don't check reflected ambient light set by the user (for now)
+        ADD_TO_PDATASET(DcmUnsignedShort, reflectedAmbientLight)
+      }
+    }
+
+    // referenced presentation LUT sequence
+    if (result)
+    {
+      stack.clear();
+
+      if (rqDataset && (EC_Normal == rqDataset->search(DCM_ReferencedPresentationLUTSequence, stack, ESM_fromHere, OFFalse)))
+      {
+        DcmSequenceOfItems *seq=(DcmSequenceOfItems *)stack.top();
+        if (seq->card() ==1)
+        {
+           OFString aString;
+           DcmItem *item = seq->getItem(0);
+           stack.clear();
+           READ_FROM_DATASET2(DcmUniqueIdentifier, referencedPresentationLUTInstanceUID)
+           if (referencedPresentationLUTInstanceUID.getLength() > 0)
+           {
+             referencedPresentationLUTInstanceUID.getOFString(aString,0);
+             DVPSPresentationLUT *currentPLUT = globalPresentationLUTList.findPresentationLUT(aString.c_str());
+             if (NULL == currentPLUT)
+             {
+               if (verboseMode)
+               {
+                 logstream->lockCerr() << "cannot update Basic Film Session: presentation LUT reference cannot be resolved" << endl;
+                 logstream->unlockCerr();
+               }
+               rsp.msg.NSetRSP.DimseStatus = STATUS_N_InvalidAttributeValue;
+               result = OFFalse;
+             } else {
+               // check referenced SOP class UID
+               DcmUniqueIdentifier refClassUID(DCM_ReferencedSOPClassUID);
+               stack.clear();
+               READ_FROM_DATASET2(DcmUniqueIdentifier, refClassUID)
+               if (refClassUID.getLength() > 0)
+               {     
+                  aString.clear();
+                  refClassUID.getOFString(aString,0, OFTrue);
+                  if (aString != UID_PresentationLUTSOPClass)
+                  {
+                    if (verboseMode)
+                    {
+                      ostream &mycerr = logstream->lockCerr();
+                      mycerr << "cannot update Basic Film Session: referenced SOP class UID in referenced presentation LUT sequence incorrect:" << endl;
+                      (stack.top())->print(mycerr, OFFalse);
+                      logstream->unlockCerr();
+                    }
+                    rsp.msg.NSetRSP.DimseStatus = STATUS_N_InvalidAttributeValue;
+                    result = OFFalse;
+                  } else {
+                    referencedPresentationLUTAlignment = currentPLUT->getAlignment();
+                    if ((cfg.getTargetPrinterPresentationLUTMatchRequired(cfgname)) &&
+                        (! basicFilmBoxList.matchesPresentationLUT(referencedPresentationLUTAlignment)))
+                    {
+                      if (verboseMode)
+                      {
+                        logstream->lockCerr() << "cannot update Basic Film Session: referenced presentation LUT number of entries does not match image bit depth." << endl;
+                        logstream->unlockCerr();
+                      }
+                      rsp.msg.NSetRSP.DimseStatus = STATUS_N_InvalidAttributeValue;
+                      result = OFFalse;
+                    } else {
+                      // referenced presentation LUT sequence is OK                      
+                      overrideFilmBoxPLUTSettings = OFTrue;
+                      DcmSequenceOfItems *newSeq = new DcmSequenceOfItems(*seq);
+                      if (newSeq) rspDataset->insert(newSeq);
+                      else 
+                      {
+                        writeresult = EC_MemoryExhausted;
+                      }
+                    }
+                  }
+               } else {
+                  if (verboseMode)
+                  {
+                    logstream->lockCerr() << "cannot update Basic Film Session: no referenced SOP class UID in referenced presentation LUT sequence" << endl;
+                    logstream->unlockCerr();
+                  }
+                  rsp.msg.NSetRSP.DimseStatus = STATUS_N_InvalidAttributeValue;
+                  result = OFFalse;
+               }
+             }
+           } else {
+             if (verboseMode)
+             {
+               logstream->lockCerr() << "cannot update Basic Film Session: no referenced SOP instance UID in referenced presentation LUT sequence" << endl;
+               logstream->unlockCerr();
+             }
+             rsp.msg.NSetRSP.DimseStatus = STATUS_N_InvalidAttributeValue;
+             result = OFFalse;
+           }
+        } else {
+          if (verboseMode)
+          {
+            logstream->lockCerr() << "cannot update Basic Film Session: referenced presentation LUT sequence number of items != 1" << endl;
+            logstream->unlockCerr();
+          }
+          rsp.msg.NSetRSP.DimseStatus = STATUS_N_InvalidAttributeValue;
+          result = OFFalse;
+        }
+      }
+    }    
+    
+  } /* if presentationLUTnegotiated */
+
   // browse through rqDataset and check for unsupported attributes
   if (result && rqDataset)
   {
     stack.clear();
-    while (EC_Normal == rqDataset->nextObject(stack, OFFalse))
+    OFBool intoSub = OFTrue;
+    while (EC_Normal == rqDataset->nextObject(stack, intoSub))
     {
+      intoSub = OFFalse;
       const DcmTagKey& currentTag = (stack.top())->getTag();
       if (currentTag == DCM_NumberOfCopies) /* OK */ ;
       else if (currentTag == DCM_PrintPriority) /* OK */ ;
@@ -506,6 +838,51 @@ OFBool DVPSFilmSession::printSCPSet(DVConfiguration& cfg, const char *cfgname, D
           logstream->unlockCerr();
         }
       	if (rsp.msg.NSetRSP.DimseStatus == 0) rsp.msg.NSetRSP.DimseStatus = STATUS_N_PRINT_BFS_Warn_MemoryAllocation;
+      }
+      else if (currentTag == DCM_Illumination)
+      {
+        if (! presentationLUTnegotiated)
+        {
+          if (verboseMode)
+          {
+            ostream &mycerr = logstream->lockCerr();
+            mycerr << "cannot update Basic Film Session: illumination received:" << endl;
+            (stack.top())->print(mycerr, OFFalse);
+            logstream->unlockCerr();
+          }
+          rsp.msg.NSetRSP.DimseStatus = STATUS_N_AttributeListError;          
+          result = OFFalse;
+        }
+      }
+      else if (currentTag == DCM_ReflectedAmbientLight)
+      {
+        if (! presentationLUTnegotiated)
+        {
+          if (verboseMode)
+          {
+            ostream &mycerr = logstream->lockCerr();
+            mycerr << "cannot update Basic Film Session: reflected ambient light received:" << endl;
+            (stack.top())->print(mycerr, OFFalse);
+            logstream->unlockCerr();            
+          }
+          rsp.msg.NSetRSP.DimseStatus = STATUS_N_AttributeListError;          
+          result = OFFalse;
+        }
+      }
+      else if (currentTag == DCM_ReferencedPresentationLUTSequence)
+      {
+        if (! presentationLUTnegotiated)
+        {
+          if (verboseMode)
+          {
+            ostream &mycerr = logstream->lockCerr();
+            mycerr << "cannot update Basic Film Session: referenced presentation LUT sequence received:" << endl;
+            (stack.top())->print(mycerr, OFFalse);
+            logstream->unlockCerr();            
+          }
+          rsp.msg.NSetRSP.DimseStatus = STATUS_N_AttributeListError;          
+          result = OFFalse;
+        }
       }
       else
       {
@@ -526,6 +903,11 @@ OFBool DVPSFilmSession::printSCPSet(DVConfiguration& cfg, const char *cfgname, D
   if (result && (EC_Normal == writeresult))
   {
     rsp.msg.NSetRSP.DataSetType = DIMSE_DATASET_PRESENT;
+    if (overrideFilmBoxPLUTSettings)
+    {
+      basicFilmBoxList.overridePresentationLUTSettings(illumination, reflectedAmbientLight, 
+        referencedPresentationLUTInstanceUID, referencedPresentationLUTAlignment);
+    }
   } else {
     delete rspDataset;
     rspDataset = NULL;
@@ -542,9 +924,54 @@ void DVPSFilmSession::setLog(OFConsole *stream, OFBool verbMode, OFBool dbgMode)
   debugMode = dbgMode;
 }
 
+E_Condition DVPSFilmSession::addPresentationLUTReference(DcmItem& dset)
+{
+  DcmElement *delem=NULL;
+  E_Condition result = EC_Normal;
+
+  ADD_TO_DATASET(DcmUnsignedShort, illumination)
+  ADD_TO_DATASET(DcmUnsignedShort, reflectedAmbientLight)
+
+  if (referencedPresentationLUTInstanceUID.getLength() > 0)
+  {
+    DcmUniqueIdentifier refsopclassuid(DCM_ReferencedSOPClassUID);
+    if (result==EC_Normal) result = refsopclassuid.putString(UID_PresentationLUTSOPClass);
+    DcmSequenceOfItems *dseq = new DcmSequenceOfItems(DCM_ReferencedPresentationLUTSequence);
+    DcmItem *ditem = new DcmItem();
+    if ((result == EC_Normal) && ditem && dseq)
+    {
+       ADD_TO_DATASET2(DcmUniqueIdentifier, refsopclassuid)
+       ADD_TO_DATASET2(DcmUniqueIdentifier, referencedPresentationLUTInstanceUID)
+       if (result==EC_Normal)
+       {
+         dseq->insert(ditem);
+         dset.insert(dseq);
+       } else {
+        delete dseq;
+        delete ditem;
+       }
+    } else {
+      delete dseq;
+      delete ditem;
+      result = EC_MemoryExhausted;
+    }
+  }
+  return result;
+}
+
+void DVPSFilmSession::copyPresentationLUTSettings(DVPSStoredPrint& sp)
+{
+  sp.overridePresentationLUTSettings(illumination, reflectedAmbientLight, 
+     referencedPresentationLUTInstanceUID, referencedPresentationLUTAlignment);
+}
+
 /*
  *  $Log: dvpsfs.cc,v $
- *  Revision 1.4  2000-06-07 13:17:06  meichel
+ *  Revision 1.5  2000-06-08 10:44:34  meichel
+ *  Implemented Referenced Presentation LUT Sequence on Basic Film Session level.
+ *    Empty film boxes (pages) are not written to file anymore.
+ *
+ *  Revision 1.4  2000/06/07 13:17:06  meichel
  *  now using DIMSE status constants and log facilities defined in dcmnet
  *
  *  Revision 1.3  2000/06/02 16:00:59  meichel

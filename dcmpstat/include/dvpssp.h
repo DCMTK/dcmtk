@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DVPSStoredPrint
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-06-07 14:23:09 $
- *  CVS/RCS Revision: $Revision: 1.25 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2000-06-08 10:44:29 $
+ *  CVS/RCS Revision: $Revision: 1.26 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -702,7 +702,8 @@ class DVPSStoredPrint
    *  @param rspDataset N-CREATE response dataset passed back in this parameter
    *  @param presentationLUTnegotiated 
    *    OFTrue if support for the Presentation LUT SOP class
-   *    has been negotiated at association negotiation
+   *    has been negotiated at association negotiation and is supported on
+   *    Basic Film Box level
    *  @param globalPresentationLUTList
    *    list of presentation LUTs managed by the Print SCP.
    *    If a SCP default Presentation LUT needs to be created as the result
@@ -737,7 +738,8 @@ class DVPSStoredPrint
    *  @param rspDataset N-SET response dataset passed back in this parameter
    *  @param presentationLUTnegotiated 
    *    OFTrue if support for the Presentation LUT SOP class
-   *    has been negotiated at association negotiation
+   *    has been negotiated at association negotiation and is supported on
+   *    Basic Film Box level
    *  @param globalPresentationLUTList
    *    list of presentation LUTs managed by the Print SCP
    *  @return OFTrue if N-SET was successful, OFFalse otherwise.
@@ -804,6 +806,40 @@ class DVPSStoredPrint
    *  @param dbgMode debug mode flag
    */
   void setLog(OFConsole *stream, OFBool verbMode, OFBool dbgMode);
+
+  /** checks whether the given Presentation LUT type could be used together
+   *  with all image boxes in this film box on a Print SCP that requires a matching 
+   *  alignment between a Presentation LUT and the image pixel data.
+   *  @param align LUT alignment type
+   *  @return OFTrue if matching, OFFalse otherwise
+   */
+  OFBool matchesPresentationLUT(DVPSPrintPresentationLUTAlignment align) const
+  {
+    return imageBoxContentList.matchesPresentationLUT(align);
+  }
+
+  /** replaces the settings for illumination, reflected ambient light and
+   *  referenced Presentation LUT in this film box.
+   *  Used by a Print SCP if Presentation LUT is implemented on Film Session
+   *  level.
+   *  @param newIllumination new value for illumination
+   *  @param newReflectedAmbientLight new value for reflectedAmbientLight
+   *  @param newReferencedPLUT new value for referenced presentation LUT instance UID
+   *  @param newAlignment new alignment type of active presentation LUT
+   */
+  void overridePresentationLUTSettings(
+      DcmUnsignedShort& newIllumination,
+      DcmUnsignedShort& newReflectedAmbientLight,
+      DcmUniqueIdentifier& newReferencedPLUT,
+      DVPSPrintPresentationLUTAlignment newAlignment);
+
+  /** checks whether any of the image boxes has an image box position
+   *  assigned. If no image box position is assigned, the stored print object
+   *  cannot be written and a Print SCP should return a warning
+   *  status upon receipt of an N-ACTION request.
+   *  @return OFTrue if empty page (no image box position assigned), OFFalse otherwise.
+   */
+  OFBool emptyPageWarning() { return imageBoxContentList.emptyPageWarning(); }
 
  private:
 
@@ -1020,7 +1056,11 @@ class DVPSStoredPrint
 
 /*
  *  $Log: dvpssp.h,v $
- *  Revision 1.25  2000-06-07 14:23:09  joergr
+ *  Revision 1.26  2000-06-08 10:44:29  meichel
+ *  Implemented Referenced Presentation LUT Sequence on Basic Film Session level.
+ *    Empty film boxes (pages) are not written to file anymore.
+ *
+ *  Revision 1.25  2000/06/07 14:23:09  joergr
  *  Added methods to access the image polarity attribute.
  *  Added missing transformations (polarity, GSDF, presentation LUT, aspect
  *  ratio) to print preview rendering.

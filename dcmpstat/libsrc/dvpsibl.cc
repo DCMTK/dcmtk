@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DVPSImageBoxContent_PList
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-06-07 14:26:46 $
- *  CVS/RCS Revision: $Revision: 1.17 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2000-06-08 10:44:35 $
+ *  CVS/RCS Revision: $Revision: 1.18 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -116,6 +116,7 @@ E_Condition DVPSImageBoxContent_PList::write(DcmItem &dset, OFBool writeRequeste
   DcmSequenceOfItems *dseq=NULL;
   DcmItem *ditem=NULL;
   OFBool working = OFTrue;
+  unsigned long numWritten = 0;
   
   dseq = new DcmSequenceOfItems(DCM_ImageBoxContentSequence);
   if (dseq)
@@ -130,13 +131,18 @@ E_Condition DVPSImageBoxContent_PList::write(DcmItem &dset, OFBool writeRequeste
         if (ditem)
         {
           result = (*first)->write(*ditem, writeRequestedImageSize);
-          if (result==EC_Normal) dseq->insert(ditem); else delete ditem;
+          if (result==EC_Normal) 
+          {
+            dseq->insert(ditem); 
+            numWritten++;
+          } else delete ditem;
         } else result = EC_MemoryExhausted;
       }
       ++first;
       if (numItems && (--numItems==0)) working=OFFalse;
     }
-    if (result==EC_Normal) dset.insert(dseq); else delete dseq;
+    // we're not allowed to store SP objects with empty image box list sequence
+    if ((result==EC_Normal) && (numWritten > 0)) dset.insert(dseq); else delete dseq;
   } else result = EC_MemoryExhausted;
   return result;
 }
@@ -452,6 +458,7 @@ OFBool DVPSImageBoxContent_PList::printSCPCreate(
       if ((EC_Normal == box->setSOPInstanceUID(dcmGenerateUniqueIdentifer(uid))) &&
           (EC_Normal == box->setUIDsAndAETitle(studyUID, seriesUID, aetitle)))
       {
+      	box->setLog(logstream, verboseMode, debugMode);
         push_back(box);
       }
       else
@@ -507,14 +514,14 @@ E_Condition DVPSImageBoxContent_PList::writeReferencedImageBoxSQ(DcmItem &dset)
 }
 
 
-OFBool DVPSImageBoxContent_PList::matchesPresentationLUT(DVPSPrintPresentationLUTAlignment align)
+OFBool DVPSImageBoxContent_PList::matchesPresentationLUT(DVPSPrintPresentationLUTAlignment align) const
 {
   OFBool result = OFTrue;
   OFListIterator(DVPSImageBoxContent *) first = begin();
   OFListIterator(DVPSImageBoxContent *) last = end();  
   while (first != last)
   {
-    result = result & (*first)->matchesPresentationLUT(align);
+    result = result && (*first)->matchesPresentationLUT(align);
     ++first;
   }  
   return result;
@@ -571,9 +578,25 @@ void DVPSImageBoxContent_PList::replace(DVPSImageBoxContent *newImageBox)
   push_back(newImageBox);
 }
 
+OFBool DVPSImageBoxContent_PList::emptyPageWarning()
+{
+  OFListIterator(DVPSImageBoxContent *) first = begin();
+  OFListIterator(DVPSImageBoxContent *) last = end();  
+  while (first != last)
+  {
+    if ((*first)->getImageBoxPosition() > 0) return OFFalse;
+    ++first;
+  }  
+  return OFTrue;
+}
+
 /*
  *  $Log: dvpsibl.cc,v $
- *  Revision 1.17  2000-06-07 14:26:46  joergr
+ *  Revision 1.18  2000-06-08 10:44:35  meichel
+ *  Implemented Referenced Presentation LUT Sequence on Basic Film Session level.
+ *    Empty film boxes (pages) are not written to file anymore.
+ *
+ *  Revision 1.17  2000/06/07 14:26:46  joergr
  *  Added methods to access the image polarity attribute.
  *
  *  Revision 1.16  2000/06/02 16:01:02  meichel

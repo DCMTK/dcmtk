@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DVPSImageBoxContent_PList
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-06-07 14:17:41 $
- *  CVS/RCS Revision: $Revision: 1.16 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2000-06-08 10:44:29 $
+ *  CVS/RCS Revision: $Revision: 1.17 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -321,7 +321,7 @@ public:
    *  @param align LUT alignment type
    *  @return OFTrue if matching, OFFalse otherwise
    */
-  OFBool matchesPresentationLUT(DVPSPrintPresentationLUTAlignment align);
+  OFBool matchesPresentationLUT(DVPSPrintPresentationLUTAlignment align) const;
 
   /** looks up the image box with the given SOP instance UID in this list
    *  and returns a pointer to a new object containing a copy of this
@@ -346,6 +346,14 @@ public:
    *  @param newImageBox new image box object to be added to the list.
    */
   void replace(DVPSImageBoxContent *newImageBox);
+
+  /** checks whether any of the image boxes has an image box position
+   *  assigned. If no image box position is assigned, the object list
+   *  cannot be written and a Print SCP should return a warning
+   *  status upon receipt of an N-ACTION request.
+   *  @return OFTrue if empty page (no image box position assigned), OFFalse otherwise.
+   */
+  OFBool emptyPageWarning();
   
 private:
 
@@ -379,7 +387,11 @@ private:
 
 /*
  *  $Log: dvpsibl.h,v $
- *  Revision 1.16  2000-06-07 14:17:41  joergr
+ *  Revision 1.17  2000-06-08 10:44:29  meichel
+ *  Implemented Referenced Presentation LUT Sequence on Basic Film Session level.
+ *    Empty film boxes (pages) are not written to file anymore.
+ *
+ *  Revision 1.16  2000/06/07 14:17:41  joergr
  *  Added methods to access the image polarity attribute.
  *
  *  Revision 1.15  2000/06/02 16:00:48  meichel
