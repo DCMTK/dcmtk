@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2003, OFFIS
+ *  Copyright (C) 1996-2004, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,8 +22,8 @@
  *  Purpose: DicomImage (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-12-23 16:03:18 $
- *  CVS/RCS Revision: $Revision: 1.26 $
+ *  Update Date:      $Date: 2004-02-06 11:09:21 $
+ *  CVS/RCS Revision: $Revision: 1.27 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -319,22 +319,23 @@ DiImage::DiImage(const DiImage *image,
     isOriginal(0),
     InputData(NULL)
 {
+    /* we do not check for "division by zero", this is already done somewhere else */
     const double xfactor = OFstatic_cast(double, Columns) / OFstatic_cast(double, image->Columns);
     const double yfactor = OFstatic_cast(double, Rows) / OFstatic_cast(double, image->Rows);
     /* re-compute pixel width and height */
     if (image->hasPixelSpacing)
     {
         hasPixelSpacing = image->hasPixelSpacing;
-        PixelWidth = image->PixelWidth * xfactor;
-        PixelHeight = image->PixelHeight * yfactor;
+        PixelWidth = image->PixelWidth / xfactor;
+        PixelHeight = image->PixelHeight / yfactor;
     }
     else if (image->hasImagerPixelSpacing)
     {
         hasImagerPixelSpacing = image->hasImagerPixelSpacing;
-        PixelWidth = image->PixelWidth * xfactor;
-        PixelHeight = image->PixelHeight * yfactor;
+        PixelWidth = image->PixelWidth / xfactor;
+        PixelHeight = image->PixelHeight / yfactor;
     }
-    else if (image->hasPixelAspectRatio && !aspect)
+    else if (image->hasPixelAspectRatio && !aspect /*recognize pixel aspect ratio*/)
     {
         hasPixelAspectRatio = image->hasPixelAspectRatio;
         PixelWidth = image->PixelWidth * xfactor;
@@ -841,7 +842,11 @@ int DiImage::writeBMP(FILE *stream,
  *
  * CVS/RCS Log:
  * $Log: diimage.cc,v $
- * Revision 1.26  2003-12-23 16:03:18  joergr
+ * Revision 1.27  2004-02-06 11:09:21  joergr
+ * Fixed inconsistency in re-calculation of PixelSpacing and ImagerPixelSpacing
+ * when scaling images.
+ *
+ * Revision 1.26  2003/12/23 16:03:18  joergr
  * Replaced post-increment/decrement operators by pre-increment/decrement
  * operators where appropriate (e.g. 'i++' by '++i').
  *
