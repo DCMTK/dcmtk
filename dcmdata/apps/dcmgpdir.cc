@@ -24,9 +24,9 @@
  *  CD-R Image Interchange Profile (former Supplement 19).
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-04-22 13:32:52 $
+ *  Update Date:      $Date: 1999-04-22 13:43:09 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/apps/dcmgpdir.cc,v $
- *  CVS/RCS Revision: $Revision: 1.30 $
+ *  CVS/RCS Revision: $Revision: 1.31 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -2745,7 +2745,10 @@ expandFileNames(OFList<OFString>& fileNames, OFList<OFString>& expandedNames)
 /*
 ** CVS/RCS Log:
 ** $Log: dcmgpdir.cc,v $
-** Revision 1.30  1999-04-22 13:32:52  meichel
+** Revision 1.31  1999-04-22 13:43:09  meichel
+** Removed carriage returns that VC++ has put into the source code
+**
+** Revision 1.30  1999/04/22 13:32:52  meichel
 ** Corrected Win32 API version of expandFileNames routine in dcmgpdir
 **
 ** Revision 1.29  1999/03/31 09:24:20  meichel
