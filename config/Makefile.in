@@ -17,7 +17,7 @@ install-bin:
 
 install-doc:
 
-install-bin:
+install-etc:
 
 install-include: include-install
 
