@@ -19,7 +19,7 @@ LOCALDEFS=
 
 include $(configdir)/@common_makefile@
 
-objs=oflist.o
+objs=oflist.o ofstring.o
 
 LIB=libofstd.a
 
@@ -53,8 +53,4 @@ $(objs): config.h
 
 
 include $(DEP)
-
-
-
-
 
