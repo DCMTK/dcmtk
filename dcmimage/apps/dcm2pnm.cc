@@ -22,9 +22,9 @@
  *  Purpose: Convert DICOM Images to PPM or PGM using the dcmimage library.
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-01-20 14:34:25 $
+ *  Update Date:      $Date: 1999-02-03 16:46:48 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/apps/dcm2pnm.cc,v $
- *  CVS/RCS Revision: $Revision: 1.21 $
+ *  CVS/RCS Revision: $Revision: 1.22 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -34,8 +34,10 @@
 
 #include "osconfig.h"    /* make sure OS specific configuration is included first */
 
-#include <stdio.h>
-#include <string.h>
+BEGIN_EXTERN_C
+ #include <stdio.h>
+ #include <string.h>
+END_EXTERN_C
 
 #ifdef HAVE_GUSI_H
 #include <GUSI.h>
@@ -145,6 +147,7 @@ int main(int argc, char *argv[])
 
     int                 opt_usePresShape = 0;
     ES_PresentationLut  opt_presShape = ESP_Identity;
+    OFString            opt_displayFile;
 
     int                 opt_Overlay[16];
     int                 opt_O_used = 0;                   /* flag for +O parameter */
@@ -233,6 +236,10 @@ int main(int argc, char *argv[])
     cmd.addGroup("presentation LUT transformation options:");
      cmd.addOption("--identity-shape",             "Presentation LUT shape IDENTITY (default)");
      cmd.addOption("--inverse-shape",              "Presentation LUT shape INVERSE");
+
+    cmd.addGroup("Barten LUT transformation options:");
+     cmd.addOption("--display-file",           1, "file name",
+                                                  "Calibrate output according to monitor characteristics");
 
     cmd.addGroup("overlay options:");
      cmd.addOption("--no-overlays",               "-O",     "do not display overlays");
@@ -437,6 +444,9 @@ int main(int argc, char *argv[])
                 }
                 cmd.endOptionBlock();
                 
+                if (cmd.findOption("--display-file"))
+                    checkValue(cmd, cmd.getValue(opt_displayFile));
+
                 cmd.beginOptionBlock();
                 if (cmd.findOption("--no-overlays"))
                 {
@@ -540,7 +550,6 @@ int main(int argc, char *argv[])
         xfer = ((DcmDataset *)dfile)->getOriginalXfer();
     else
         xfer = ((DcmFileFormat *)dfile)->getDataset()->getOriginalXfer();
-
     DicomImage *di = new DicomImage(dfile, xfer, opt_compatibilityMode); /* warning: dfile is Dataset or Fileformat! */
 //    DicomImage *di = new DicomImage(dfile, xfer, opt_compatibilityMode, opt_Frame - 1, opt_FrameCount);
     if (di == NULL)
@@ -548,6 +557,15 @@ int main(int argc, char *argv[])
 
     if (di->getStatus() != EIS_Normal)
         printError(DicomImage::getString(di->getStatus()));
+
+
+/* ---------------------------- */
+
+    DiDisplayFunction disp(opt_displayFile.c_str());
+    if (disp.isValid() && (di != NULL))
+        di->setDisplayFunction(&disp);
+
+/* ---------------------------- */
 
     if (opt_imageInfo)
     {
@@ -816,7 +834,7 @@ int main(int argc, char *argv[])
 #endif
         di->rotateImage(opt_rotateDegree);
 #ifdef DEBUG
- fprintf(stderr, "time for rotation: %fs\n", (float)timer.getDiff()); 
+ fprintf(stderr, "time for rotation: %fs\n", timer.getDiff()); 
 #endif
 /*
         DicomImage *newimage = di->createRotatedImage(opt_rotateDegree);
@@ -992,7 +1010,10 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcm2pnm.cc,v $
- * Revision 1.21  1999-01-20 14:34:25  joergr
+ * Revision 1.22  1999-02-03 16:46:48  joergr
+ * Added new option to select a display file (for calibration).
+ *
+ * Revision 1.21  1999/01/20 14:34:25  joergr
  * Added debug code to measure time of some routines.
  * Changed default value for compatibility flag.
  *
