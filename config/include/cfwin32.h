@@ -513,6 +513,9 @@
 /* Define if your system has a prototype for struct sembuf */
 #undef HAVE_DECLARATION_STRUCT_SEMBUF
 
+/* Define if your system has a prototype for struct utimbuf */
+#define HAVE_DECLARATION_STRUCT_UTIMBUF 1
+
 /* Define if your C++ compiler can work with class templates */
 #define HAVE_CLASS_TEMPLATE 1
  

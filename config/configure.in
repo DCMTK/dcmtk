@@ -206,6 +206,7 @@ AC_CHECK_PROTOTYPE(waitpid, sys/wait.h sys/time.h sys/resource.h)
 
 AC_CHECK_DECLARATION(union semun, sys/types.h sys/ipc.h sys/sem.h)
 AC_CHECK_DECLARATION(struct sembuf, sys/types.h sys/ipc.h sys/sem.h)
+AC_CHECK_DECLARATION(struct utimbuf, sys/types.h utime.h)                          
 
 AC_CHECK_CLASS_TEMPLATE
 AC_CHECK_STATIC_TEMPLATE_METHOD

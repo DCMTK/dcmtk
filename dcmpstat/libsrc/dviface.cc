@@ -21,9 +21,9 @@
  *
  *  Purpose: DVPresentationState
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-05-03 14:15:58 $
- *  CVS/RCS Revision: $Revision: 1.53 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 1999-05-04 10:53:08 $
+ *  CVS/RCS Revision: $Revision: 1.54 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -789,10 +789,18 @@ void DVInterface::resetDatabaseReferenceTime()
     // set index file modification time to "yesterday" to make sure
     // we notice any change even if different processes have minor
     // date/time differences (i.e. over NFS)
+#ifdef HAVE_DECLARATION_STRUCT_UTIMBUF
     struct utimbuf utime_buf;
     utime_buf.actime  = (time_t) referenceTime; 
     utime_buf.modtime = (time_t) referenceTime;
     if (0 != utime(databaseIndexFile.c_str(), &utime_buf))
+#else
+    // some old platforms use the prototype int utime(char *file, time_t timep[])
+    time_t utime_buf[2];
+    utime_buf[0]  = (time_t) referenceTime; 
+    utime_buf[1] = (time_t) referenceTime;
+    if (0 != utime((char *)databaseIndexFile.c_str(), utime_buf))
+#endif
     {
 #ifdef DEBUG
       cerr << "warning: cannot set database index file modification time" << endl;
@@ -2183,7 +2191,10 @@ void DVInterface::cleanChildren()
 /*
  *  CVS/RCS Log:
  *  $Log: dviface.cc,v $
- *  Revision 1.53  1999-05-03 14:15:58  joergr
+ *  Revision 1.54  1999-05-04 10:53:08  meichel
+ *  Added test for struct utimbuf declaration, absent on some platforms
+ *
+ *  Revision 1.53  1999/05/03 14:15:58  joergr
  *  Enhanced check in savePState() method whether image file is already stored
  *  in database.
  *

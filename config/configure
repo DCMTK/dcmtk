@@ -7787,15 +7787,71 @@ else
 fi
 unset ac_cv_declaration
 
+echo $ac_n "checking declaration for struct utimbuf (in sys/types.h utime.h)""... $ac_c" 1>&6
+echo "configure:7792: checking declaration for struct utimbuf (in sys/types.h utime.h)" >&5
+ac_includes=""
+for ac_header in sys/types.h utime.h
+do
+  ac_includes="$ac_includes
+#include<$ac_header>"
+done
+ac_cv_declaration=`echo 'ac_cv_declaration_struct utimbuf' | tr ' ' '_'`
+if eval "test \"`echo '$''{'$ac_cv_declaration'+set}'`\" = set"; then
+  echo $ac_n "(cached) $ac_c" 1>&6
+else
+  cat > conftest.$ac_ext <<EOF
+#line 7804 "configure"
+#include "confdefs.h"
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+$ac_includes
+
+#ifdef __cplusplus
+}
+#endif
+
+struct utimbuf dummy;
+
+
+int main() {
+
+; return 0; }
+EOF
+if { (eval echo configure:7823: \"$ac_compile\") 1>&5; (eval $ac_compile) 2>&5; }; then
+  rm -rf conftest*
+  eval "$ac_cv_declaration=yes"
+else
+  echo "configure: failed program was:" >&5
+  cat conftest.$ac_ext >&5
+  rm -rf conftest*
+  eval "$ac_cv_declaration=no"
+fi
+rm -f conftest*
+fi
+if eval "test \"\$$ac_cv_declaration\" = yes"; then
+  echo "$ac_t""yes" 1>&6
+  ac_tr_declaration=HAVE_DECLARATION_`echo struct utimbuf | tr ' [a-z]' '_[A-Z]'`
+  cat >> confdefs.h <<EOF
+#define $ac_tr_declaration 1
+EOF
+
+  :
+else
+  echo "$ac_t""no" 1>&6
+fi
+unset ac_cv_declaration
+                          
 
 echo $ac_n "checking for C++ class template""... $ac_c" 1>&6
-echo "configure:7793: checking for C++ class template" >&5
+echo "configure:7849: checking for C++ class template" >&5
 if eval "test \"`echo '$''{'ac_cv_check_class_template'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
   ac_link_o='${CXX-g++} -o conftest $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.o $LIBS 1>&5'
 cat > conftest.$ac_ext <<EOF
-#line 7799 "configure"
+#line 7855 "configure"
 #include "confdefs.h"
 
 template <class T>
@@ -7820,8 +7876,8 @@ int main() {
 
 ; return 0; }
 EOF
-if { (eval echo configure:7824: \"$ac_compile\") 1>&5; (eval $ac_compile) 2>&5; }; then
-  if { (eval echo configure:7825: \"$ac_link_o\") 1>&5; (eval $ac_link_o) 2>&5; }; then
+if { (eval echo configure:7880: \"$ac_compile\") 1>&5; (eval $ac_compile) 2>&5; }; then
+  if { (eval echo configure:7881: \"$ac_link_o\") 1>&5; (eval $ac_link_o) 2>&5; }; then
     rm -rf conftest*
     eval "ac_cv_check_class_template=yes"
   else
@@ -7850,13 +7906,13 @@ else
 fi
 
 echo $ac_n "checking for C++ static methods in class templates""... $ac_c" 1>&6
-echo "configure:7854: checking for C++ static methods in class templates" >&5
+echo "configure:7910: checking for C++ static methods in class templates" >&5
 if eval "test \"`echo '$''{'ac_cv_check_static_template_method'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
   ac_link_o='${CXX-g++} -o conftest $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.o $LIBS 1>&5'
 cat > conftest.$ac_ext <<EOF
-#line 7860 "configure"
+#line 7916 "configure"
 #include "confdefs.h"
 
 void additive(int & i)
@@ -7881,8 +7937,8 @@ int main() {
 
 ; return 0; }
 EOF
-if { (eval echo configure:7885: \"$ac_compile\") 1>&5; (eval $ac_compile) 2>&5; }; then
-  if { (eval echo configure:7886: \"$ac_link_o\") 1>&5; (eval $ac_link_o) 2>&5; }; then
+if { (eval echo configure:7941: \"$ac_compile\") 1>&5; (eval $ac_compile) 2>&5; }; then
+  if { (eval echo configure:7942: \"$ac_link_o\") 1>&5; (eval $ac_link_o) 2>&5; }; then
     rm -rf conftest*
     eval "ac_cv_check_static_template_method=yes"
   else
@@ -7911,13 +7967,13 @@ else
 fi
 
 echo $ac_n "checking for C++ function template""... $ac_c" 1>&6
-echo "configure:7915: checking for C++ function template" >&5
+echo "configure:7971: checking for C++ function template" >&5
 if eval "test \"`echo '$''{'ac_cv_check_function_template'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
   ac_link_o='${CXX-g++} -o conftest $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.o $LIBS 1>&5'
 cat > conftest.$ac_ext <<EOF
-#line 7921 "configure"
+#line 7977 "configure"
 #include "confdefs.h"
 
 template <class T>
@@ -7934,8 +7990,8 @@ int main() {
 
 ; return 0; }
 EOF
-if { (eval echo configure:7938: \"$ac_compile\") 1>&5; (eval $ac_compile) 2>&5; }; then
-  if { (eval echo configure:7939: \"$ac_link_o\") 1>&5; (eval $ac_link_o) 2>&5; }; then
+if { (eval echo configure:7994: \"$ac_compile\") 1>&5; (eval $ac_compile) 2>&5; }; then
+  if { (eval echo configure:7995: \"$ac_link_o\") 1>&5; (eval $ac_link_o) 2>&5; }; then
     rm -rf conftest*
     eval "ac_cv_check_function_template=yes"
   else
@@ -7964,12 +8020,12 @@ else
 fi
 
 echo $ac_n "checking for C++ explicit template specialization syntax""... $ac_c" 1>&6
-echo "configure:7968: checking for C++ explicit template specialization syntax" >&5
+echo "configure:8024: checking for C++ explicit template specialization syntax" >&5
 if eval "test \"`echo '$''{'ac_cv_check_explicit_template_specialization'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
   cat > conftest.$ac_ext <<EOF
-#line 7973 "configure"
+#line 8029 "configure"
 #include "confdefs.h"
 
 template<class T>
@@ -7989,7 +8045,7 @@ int main() {
 X<int> x
 ; return 0; }
 EOF
-if { (eval echo configure:7993: \"$ac_compile\") 1>&5; (eval $ac_compile) 2>&5; }; then
+if { (eval echo configure:8049: \"$ac_compile\") 1>&5; (eval $ac_compile) 2>&5; }; then
   rm -rf conftest*
   eval "ac_cv_check_explicit_template_specialization=yes"
 else
