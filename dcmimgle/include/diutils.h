@@ -22,9 +22,9 @@
  *  Purpose: Utilities (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-03-24 17:20:28 $
+ *  Update Date:      $Date: 1999-04-28 14:55:41 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/diutils.h,v $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -69,6 +69,10 @@ const unsigned long CIF_MayDetachPixelData        = 0x0000004;
 const unsigned long CIF_UsePresentationState      = 0x0000008;
 
 //@}
+
+
+/// true color color mode (for monochrome images only)
+const int MI_PastelColor = -1;
 
 
 /*--------------------*
@@ -231,7 +235,7 @@ class DicomImageClass
     static const int DL_Informationals;
     static const int DL_DebugMessages;
     
-    static int DebugLevel;    
+    static int DebugLevel;
 };
 
 
@@ -242,7 +246,11 @@ class DicomImageClass
  *
  * CVS/RCS Log:
  * $Log: diutils.h,v $
- * Revision 1.6  1999-03-24 17:20:28  joergr
+ * Revision 1.7  1999-04-28 14:55:41  joergr
+ * Added experimental support to create grayscale images with more than 256
+ * shades of gray to be displayed on a consumer monitor (use pastel colors).
+ *
+ * Revision 1.6  1999/03/24 17:20:28  joergr
  * Added/Modified comments and formatting.
  *
  * Revision 1.5  1999/02/03 17:36:06  joergr
