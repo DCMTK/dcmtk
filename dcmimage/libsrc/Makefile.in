@@ -15,15 +15,13 @@ configdir=@top_srcdir@/@configdir@
 #	swap order of overlay origin coordinates
 # LOCALDEFS = -DREVERSE_OVERLAY_ORIGIN_ORDER
 
-LOCALINCLUDES = -I../../ofstd/include -I../../dcmdata/include
+LOCALINCLUDES = -I@top_srcdir@/../ofstd/include -I@top_srcdir@/../dcmdata/include -I@top_srcdir@/../dcmimgle/include
 
 include $(configdir)/@common_makefile@
 
-objs = diutils.o \
-	dcmimage.o didocu.o diimage.o diinpx.o diovlay.o diovpln.o diovlimg.o diluptab.o \
-	dimoimg.o dimo1img.o dimo2img.o dimomod.o dimopx.o dimoopx.o \
-	dicoimg.o dicopx.o dicoopx.o dipalimg.o dirgbimg.o dicmyimg.o diargimg.o dihsvimg.o \
-	diybrimg.o diyf2img.o diyp2img.o
+objs = dicoimg.o dicopx.o dicoopx.o diregist.o \
+        diargimg.o dicmyimg.o dihsvimg.o dipalimg.o dirgbimg.o \
+        diybrimg.o diyf2img.o diyp2img.o  
 
 all: libdcmimage.$(LIBEXT)
 
@@ -37,7 +35,7 @@ $(libdir)/libdcmimage.$(LIBEXT):	libdcmimage.$(LIBEXT)
 
 clean:
 	rm -f $(objs) 
-	rm -f libdcmimage.$(LIBEXT) 
+	rm -f libdcmimage.$(LIBEXT)
 	rm -f $(TRASH)
 
 distclean: clean
