@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2003, OFFIS
+ *  Copyright (C) 2000-2004, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,8 +23,8 @@
  *    classes: DSRImageReferenceValue
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-08-07 13:38:32 $
- *  CVS/RCS Revision: $Revision: 1.15 $
+ *  Update Date:      $Date: 2004-01-16 10:14:14 $
+ *  CVS/RCS Revision: $Revision: 1.16 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -176,7 +176,7 @@ OFCondition DSRImageReferenceValue::readXML(const DSRXMLDocument &doc,
         {
             /* presentation state (optional) */
             cursor = doc.getNamedNode(cursor.getChild(), "pstate", OFFalse /*required*/);
-            if (cursor.valid())
+            if (cursor.getChild().valid())
                 result = PresentationState.readXML(doc, cursor);
         }
     }
@@ -198,7 +198,8 @@ OFCondition DSRImageReferenceValue::writeXML(ostream &stream,
     if ((flags & DSRTypes::XF_writeEmptyTags) || PresentationState.isValid())
     {
         stream << "<pstate>" << endl;
-        PresentationState.writeXML(stream, flags, logStream);
+        if (PresentationState.isValid())
+            PresentationState.writeXML(stream, flags, logStream);
         stream << "</pstate>" << endl;
     }
     return result;
@@ -358,7 +359,11 @@ OFBool DSRImageReferenceValue::checkPresentationState(const DSRCompositeReferenc
 /*
  *  CVS/RCS Log:
  *  $Log: dsrimgvl.cc,v $
- *  Revision 1.15  2003-08-07 13:38:32  joergr
+ *  Revision 1.16  2004-01-16 10:14:14  joergr
+ *  Made readXML() more robust with regard to expected XML structure.
+ *  Only write <pstate/> XML element value when presentation state is valid.
+ *
+ *  Revision 1.15  2003/08/07 13:38:32  joergr
  *  Added readXML functionality.
  *  Renamed parameters/variables "string" to avoid name clash with STL class.
  *
