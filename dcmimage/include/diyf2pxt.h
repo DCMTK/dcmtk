@@ -1,21 +1,35 @@
 /*
-**
-** Author:  Joerg Riesmeier
-** Created: 13.03.98
-**
-** Module:  diyf2pxt.h
-**
-** Purpose: DicomYBR422PixelTemplate (Header)
-**
-** Last Update:      $Author: joergr $
-** Update Date:      $Date: 1998-05-11 14:53:33 $
-** Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/include/Attic/diyf2pxt.h,v $
-** CVS/RCS Revision: $Revision: 1.2 $
-** Status:           $State: Exp $
-**
-** CVS/RCS Log at end of file
-**
-*/
+ *
+ *  Copyright (C) 1998-99, OFFIS
+ *
+ *  This software and supporting documentation were developed by
+ *
+ *    Kuratorium OFFIS e.V.
+ *    Healthcare Information and Communication Systems
+ *    Escherweg 2
+ *    D-26121 Oldenburg, Germany
+ *
+ *  THIS SOFTWARE IS MADE AVAILABLE,  AS IS,  AND OFFIS MAKES NO  WARRANTY
+ *  REGARDING  THE  SOFTWARE,  ITS  PERFORMANCE,  ITS  MERCHANTABILITY  OR
+ *  FITNESS FOR ANY PARTICULAR USE, FREEDOM FROM ANY COMPUTER DISEASES  OR
+ *  ITS CONFORMITY TO ANY SPECIFICATION. THE ENTIRE RISK AS TO QUALITY AND
+ *  PERFORMANCE OF THE SOFTWARE IS WITH THE USER.
+ *
+ *  Module:  dcmimage
+ *
+ *  Author:  Joerg Riesmeier
+ *
+ *  Purpose: DicomYBR422PixelTemplate (Header)
+ *
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 1998-11-27 14:21:48 $
+ *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/include/Attic/diyf2pxt.h,v $
+ *  CVS/RCS Revision: $Revision: 1.3 $
+ *  Status:           $State: Exp $
+ *
+ *  CVS/RCS Log at end of file
+ *
+ */
 
 
 #ifndef __DIYF2PXT_H
@@ -42,7 +56,8 @@ class DiYBR422PixelTemplate : public DiColorPixelTemplate<T2>
             if (PlanarConfiguration)
             {
                 status = EIS_InvalidValue;
-                cerr << "ERROR: invalid value for 'PlanarConfiguration' (" << PlanarConfiguration << ") ! " << endl;
+                if (DicomImageClass::DebugLevel >= DicomImageClass::DL_Errors)
+                    cerr << "ERROR: invalid value for 'PlanarConfiguration' (" << PlanarConfiguration << ") ! " << endl;
             }
             else
                 convert((const T1 *)pixel->getData(), bits);
@@ -101,7 +116,11 @@ class DiYBR422PixelTemplate : public DiColorPixelTemplate<T2>
 **
 ** CVS/RCS Log:
 ** $Log: diyf2pxt.h,v $
-** Revision 1.2  1998-05-11 14:53:33  joergr
+** Revision 1.3  1998-11-27 14:21:48  joergr
+** Added copyright message.
+** Introduced global debug level for dcmimage module to control error output.
+**
+** Revision 1.2  1998/05/11 14:53:33  joergr
 ** Added CVS/RCS header to each file.
 **
 **
