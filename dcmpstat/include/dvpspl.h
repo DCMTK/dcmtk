@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DVPSPresentationLUT
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-06-02 16:00:49 $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2000-06-07 14:20:18 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -166,9 +166,13 @@ public:
 
   /** activates the current presentation transform in the given DicomImage.
    *  @param image the DicomImage for which the presentation transform is to be set.
+   *  @param printLUT OFTrue if presentation LUT is activated for print bitmap rendering
+   *    (in this case there is no implicit scaling of the input width of the LUT and,
+   *    therefore, the VOI transformation - which is absent for print - is used),
+   *    OFFalse otherwise (softcopy rendering, default)
    *  @return OFTrue if successful, OFFalse otherwise.
    */
-  OFBool activate(DicomImage *image);
+  OFBool activate(DicomImage *image, OFBool printLUT = OFFalse);
 
   /** sets a new log stream
    *  @param stream new log stream, NULL for default logstream
@@ -264,7 +268,10 @@ private:
 
 /*
  *  $Log: dvpspl.h,v $
- *  Revision 1.6  2000-06-02 16:00:49  meichel
+ *  Revision 1.7  2000-06-07 14:20:18  joergr
+ *  Added support for rendering "hardcopy" and "softcopy" presentation LUTs.
+ *
+ *  Revision 1.6  2000/06/02 16:00:49  meichel
  *  Adapted all dcmpstat classes to use OFConsole for log and error output
  *
  *  Revision 1.5  2000/05/31 12:56:39  meichel
