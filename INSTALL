@@ -17,21 +17,20 @@ You will need around 100Mb of disk space to compile all the software.
 
 SUPPORTED SYSTEMS
 
-- Windows 95/98/NT
+- Windows 95/98/2000/NT
 
-The DCMTK software can be compiled under a native Windows95/NT environment. 
-More information and a ZIP archive containing project files for for 
-Microsoft Visual C++ 5.0 can be found in the dcmtk/config/systems/win32 
-directory. 
+The DCMTK software can be compiled under a native Windows95/NT environment.
+More information and a ZIP archive containing project files for Microsoft
+Visual C++ 5.0 can be found in the dcmtk/config/systems/win32 directory.
 
-    Windows 9x    / Intel x86 / Microsoft Visual C++ 5.0
-    WindowsNT 4.0 / Intel x86 / Microsoft Visual C++ 5.0
-    WindowsNT 4.0 / Intel x86 / Microsoft Visual C++ 6.0
-    Windows 2000  / Intel x86 / Microsoft Visual C++ 6.0
+    Windows 9x     / Intel x86 / Microsoft Visual C++ 5.0
+    Windows NT 4.0 / Intel x86 / Microsoft Visual C++ 5.0
+    Windows NT 4.0 / Intel x86 / Microsoft Visual C++ 6.0
+    Windows 2000   / Intel x86 / Microsoft Visual C++ 6.0
 
-The imagectn and wlistctn have been ported to Windows, but do not support 
-multi-processing (i.e. multiple clients concurrently) under Windows. The 
-ctndisp application requires the X-Window System. The Worklist WWW Scripts 
+The imagectn and wlistctn have been ported to Windows, but do not support
+multi-processing (i.e. multiple clients concurrently) under Windows. The
+ctndisp application requires the X-Window System. The Worklist WWW Scripts
 require an http server and a perl interpreter and have not been tested
 under Windows (file locking interaction with the wlistctn server may or may
 not work).
@@ -39,13 +38,13 @@ not work).
 
 - Unix (or lookalikes)
 
-The current DCMTK software release successfully compiles on the following 
-operating system / hardware / compiler combinations using the instructions 
+The current DCMTK software release successfully compiles on the following
+operating system / hardware / compiler combinations using the instructions
 given below:
 
     Solaris 7     / Sun Sparc       / Gnu gcc 2.95
     Solaris 7     / Sun Sparc       / SunPro CC 4.2
-    Solaris 7     / Sun Sparc       / Sun SC 2.0.1 (SunPro C++ 3.0.1)    
+    Solaris 7     / Sun Sparc       / Sun SC 2.0.1 (SunPro C++ 3.0.1)
     Solaris 2.5.1 / Sun Sparc       / Gnu egcs 1.1.2 (egcs-2.91.66)
     Linux 2.2.16  / Intel x86       / Gnu gcc 2.95.2
     SunOS 4.1.3   / Sun Sparc       / Gnu gcc 2.7.2
@@ -58,7 +57,7 @@ given below:
     IRIX 6.5.6m   / SGI Onyx        / Gnu gcc 2.95.2 (see note *5)
     FreeBSD 4.1.1 / Intel x86       / Gnu gcc 2.95.2
 
-Earlier releases are known to also compile on the following platforms which 
+Earlier releases are known to also compile on the following platforms which
 are not available to us for testing purposes:
 
     HP-UX 9.05    / HP PA 1.1       / Gnu gcc 2.7.2.1
@@ -67,21 +66,21 @@ are not available to us for testing purposes:
 
 Platform Notes:
 
-(*1) The NeXT gcc 2.5.8 compiler provides only very limited support for C++ 
-     templates and, therefore, fails to compile the dcmimgle module
-     ("internal compiler error"). However, modules and applications 
+(*1) The NeXT gcc 2.5.8 compiler provides only very limited support for C++
+     templates and, therefore, might fail to compile the dcmimgle module
+     ("internal compiler error"). However, modules and applications
      that were present in earlier releases of DCMTK still compile.
 (*2) requires -DSIGNAL_HANDLER_WITH_ELLIPSE to be defined.
-(*3) The dcmimgle module makes intensive use of inlined templates. Depending 
-     on the compiler and the available virtual memory, compilation might 
-     fail if this module is compiled with optimization. Compilation succeeds 
-     if the optimizer and any automatic inlining of code are switched off. 
-     For example Gnu gcc might require that the -O option is removed and 
+(*3) The dcmimgle module makes intensive use of inlined templates. Depending
+     on the compiler and the available virtual memory, compilation might
+     fail if this module is compiled with optimization. Compilation succeeds
+     if the optimizer and any automatic inlining of code are switched off.
+     For example Gnu gcc might require that the -O option is removed and
      -fno-default-inline is added in the CXXFLAGS setting in the file
      config/Makefile.def, which is created by configure (see below).
-(*4) requires -fpermissive when compiled with gcc due to the X11R5 header 
+(*4) requires -fpermissive when compiled with gcc due to the X11R5 header
      files which are not ANSI compliant.
-(*5) IRIX 6 users are recommended to consult SGI's Notes on building 
+(*5) IRIX 6 users are recommended to consult SGI's Notes on building
      Open Source software on IRIX, available from:
      http://toolbox.sgi.com/TasteOfDT/public/freeware/shared/howto.html
      After running configure, the following modifications are required
@@ -95,42 +94,42 @@ Platform Notes:
      On IRIX, DCMTK should be built using GNU make (gmake), not with the IRIX
      specific pmake/smake/make commands.
 
-     
-Please Note: Due to resource limitations it is not practical for us to 
-ensure that the newest release of DCMTK is problem free under all the above 
-combinations.  Our main development environment is SUN Solaris 7 using GNU 
+
+Please Note: Due to resource limitations it is not practical for us to
+ensure that the newest release of DCMTK is problem free under all the above
+combinations.  Our main development environment is SUN Solaris 7 using GNU
 C++ 2.95 and DCMTK should always compile on this platform.
 
 
 OPENSSL SUPPORT
 
-Starting with release 3.4.2, DCMTK supports the "DICOM Security Enhancements 
-One", i.e. DICOM network transmission "tunneled" through a secure TLSv1 
-transport connection.  DCMTK relies on the OpenSSL toolkit (www.openssl.org) 
-for the underlying cryptographic routines and the TLS protocol 
+Starting with release 3.4.2, DCMTK supports the "DICOM Security Enhancements
+One", i.e. DICOM network transmission "tunneled" through a secure TLSv1
+transport connection.  DCMTK relies on the OpenSSL toolkit (www.openssl.org)
+for the underlying cryptographic routines and the TLS protocol
 implementation.  This release of DCMTK is known to compile with OpenSSL
 releases 0.9.5a and 0.9.6.
 
-If support for the security enhancements is desired, a compiled version of 
-the OpenSSL libraries and include files must be available during compilation 
-of DCMTK, and the OpenSSL support must be switched on explicitly.  By 
-default, DCMTK compiles without OpenSSL support and disables all security 
-enhancements.  
+If support for the security enhancements is desired, a compiled version of
+the OpenSSL libraries and include files must be available during compilation
+of DCMTK, and the OpenSSL support must be switched on explicitly.  By
+default, DCMTK compiles without OpenSSL support and disables all security
+enhancements.
 
-To enable OpenSSL support when compiling for Windows, select the appropriate 
-target in the Visual C++ workspace. You may have to adapt the include paths, 
-which expect OpenSSL in a directory named openssl-(version) on the same 
-directory level as the DCMTK root directory. To enable OpenSSL support when 
-compiling for Unix, see description for Step 2 below. We recommend that you 
+To enable OpenSSL support when compiling for Windows, select the appropriate
+target in the Visual C++ workspace. You may have to adapt the include paths,
+which expect OpenSSL in a directory named openssl-(version) on the same
+directory level as the DCMTK root directory. To enable OpenSSL support when
+compiling for Unix, see description for Step 2 below. We recommend that you
 also read the documentation in dcmtk/dcmtls/docs about using TLS with DCMTK.
 
 
 BUILDING
 
-GNU autoconf is used to configure the software for the hardware / operating 
-system you are using.  You do not need to obtain GNU autoconf to compile 
-and install this software.  All the neccessary configure scripts are 
-included in this distribution.  The configure scripts examine your system 
+GNU autoconf is used to configure the software for the hardware / operating
+system you are using.  You do not need to obtain GNU autoconf to compile
+and install this software.  All the neccessary configure scripts are
+included in this distribution.  The configure scripts examine your system
 capabilities and automatically generate include files and Makefiles.
 
 Perform the following steps from the top level (dcmtk) directory
@@ -141,33 +140,33 @@ Step 1:
 	./rootconf
 	cd ..
 
-Step 1 generates a Makefile and a configure script in the top level dcmtk 
+Step 1 generates a Makefile and a configure script in the top level dcmtk
 directory.
 
 Step 2:
 	./configure
 
-Step 2 executes the configure scripts in each subdirectory.  First the 
-system capabilities are examined and then Makefiles are generated. By 
-default, executables and libraries will be installed (in Step 4) in the 
-directory /usr/local/dicom in the bin and lib subdirectories. If you wish to 
-use another install prefix you can use the --prefix=<path> flag to 
-configure.  e.g., if you wish to install underneath your home directory in 
+Step 2 executes the configure scripts in each subdirectory.  First the
+system capabilities are examined and then Makefiles are generated. By
+default, executables and libraries will be installed (in Step 4) in the
+directory /usr/local/dicom in the bin and lib subdirectories. If you wish to
+use another install prefix you can use the --prefix=<path> flag to
+configure.  e.g., if you wish to install underneath your home directory in
 ~/dicom/bin and ~/dicom/lib then you should start configure as:
 
 	./configure --prefix=$HOME/dicom
 
-Step 2 is also the place where support for OpenSSL can be enabled. Use the 
+Step 2 is also the place where support for OpenSSL can be enabled. Use the
 --with-openssl switch to enable OpenSSL support. The --with-opensslinc option
-allows to specify the directory in which OpenSSL is installed. This is 
-usually the directory that has been used as --prefix when compiling OpenSSL. 
-For example, if you wish to enable the security enhancements, and OpenSSL is 
+allows to specify the directory in which OpenSSL is installed. This is
+usually the directory that has been used as --prefix when compiling OpenSSL.
+For example, if you wish to enable the security enhancements, and OpenSSL is
 installed in /usr/local/apps/openssl-0.9.6, then you should start configure as:
 
 	./configure --with-openssl --with-opensslinc=/usr/local/apps/openssl-0.9.6
 
-Different configure options can be combined in any order. configure --help 
-will print a list of all existing configure options.  Useful configure 
+Different configure options can be combined in any order. configure --help
+will print a list of all existing configure options.  Useful configure
 options are:
 
   --enable-debug          compile with debug code, don't optimize
@@ -178,20 +177,20 @@ options are:
 Step 3:
 	make all
 
-Step 3 will build the libraries and executables.  If you run into problems 
+Step 3 will build the libraries and executables.  If you run into problems
 see the section on PROBLEMS below.
 
 Step 4:
 	make install
 
-Step 4 will install the executables and data dictionary.  If you also wish 
+Step 4 will install the executables and data dictionary.  If you also wish
 to install the libraries and include files then use the "make install-lib".
 
 Step 5:
 	make distclean
 
-Step 5 will revert the source tree to the state prior to Step 1.  If you 
-just want to get rid of object files and local executables use "make clean" 
+Step 5 will revert the source tree to the state prior to Step 1.  If you
+just want to get rid of object files and local executables use "make clean"
 instead.
 
 
@@ -199,20 +198,20 @@ SOLVING CONFIGURATION AND COMPILATION PROBLEMS
 
 The configure script might not be able to guess the correct compiler
 and compiler flags to use.  For example, we have noticed that use of
-the -pedantic flag to the GNU-C++ compiler causes compilation errors 
+the -pedantic flag to the GNU-C++ compiler causes compilation errors
 on some systems (e.g. SunOS 4.1.3) due to system include files with
 incorrect ANSI function prototypes.
 
-You can set environment variables to initialize configure before it is 
+You can set environment variables to initialize configure before it is
 called (before Step 2 above):
 
   Set environment variable CXX to the name of your C++ compiler
-  Set environment variable CXXFLAGS to the compile flags of your C++ compiler. 
+  Set environment variable CXXFLAGS to the compile flags of your C++ compiler.
   Set environment variable LDFLAGS to your linker flags.
   Set environment variable CPPFLAGS to you preprocessor flags.
 
-You do not need to specify all the above environment variables since 
-the default settings are sensible for most unix compilers. 
+You do not need to specify all the above environment variables since
+the default settings are sensible for most unix compilers.
 
 If the configure script fails you may have to change
 the configuration settings in the config directory. See the
@@ -223,12 +222,12 @@ See also the FAQ for more hints.
 
 HTML DOCUMENTATION
 
-A few DCMTK modules have been documented with DOC++, a free source code 
-documentation system similar to javadoc (see 
-http://www.linuxsupportline.com/~doc++/). Users who have doc++ installed can 
-create a hypertext documentation for these modules with "make html" in the 
-module subdirectories. At the current time, dcmimgle, dcmpstat and dcmtls 
-are fully documented and ofstd is partially documented. See FAQ entry: 
+A few DCMTK modules have been documented with DOC++, a free source code
+documentation system similar to javadoc (see
+http://www.linuxsupportline.com/~doc++/). Users who have doc++ installed can
+create a hypertext documentation for these modules with "make html" in the
+module subdirectories. At the current time, dcmimgle, dcmpstat and dcmtls
+are fully documented and ofstd is partially documented. See FAQ entry:
 "Where is rest of the documentation?"
 
 ---------

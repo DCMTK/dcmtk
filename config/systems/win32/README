@@ -1,10 +1,11 @@
 WIN32 CONFIGURATIONS
 
 This directory contains information and makefiles / project files for
-Windows NT and Windows 95. Currently, only one configuration
+Windows NT and Windows 95/98/2000. Currently, only one configuration
 is supported:
 
-- Windows NT/95 with WINSOCK using the Visual C++ Compiler Version 5.0
+- Windows NT/9x with WINSOCK using the Microsoft Visual C++ Compiler
+  Version 5.0 (project files can also be imported into Version 6.0).
 
 The ZIP file msvc5.zip contains the project information for the following
 parts of the toolkit:
@@ -16,26 +17,27 @@ parts of the toolkit:
 5. wlistctn - library and wlistctn application
 6. dcmimgle - library and all applications
 7. dcmpstat - library and all applications
+8. dcmtls   - library
 
 The following parts of the toolkit are not supported and probably will 
 never be:
 
 1. ctndisp - This part needs X-Windows and Unix shared memory. It is not
-   planned to port it to Windows NT/95
+   planned to port it to Windows NT/9x.
 2. wlistctn web server scripts - This part needs perl and consistent 
    locking mechanisms between perl and C++. It should be principle possible to 
    port it. 
 
 COMPILE INSTRUCTIONS:
 
-1. unzip the file msvc5.zip into the same directory in which you have
+1. Unzip the file msvc5.zip into the same directory in which you have
    unpacked the source archive itself. You can do this e.g. with WinZIP or
    InfoZIP.
-2. rename the extensions of all .cc files into .cxx
+2. Rename the extensions of all .cc files into .cxx
    (e.g. ren .cc .cxx with the COMMAND shell or if you have a UNIX workstation 
-   station available use config/changext cxx). You must rename
-   files in the libsrc, apps and tests directories of all modules.
-2. Start the Microsoft Developer Studio
+   station available use config/changext cxx). You must rename files in the
+   libsrc, apps and tests directories of all modules.
+2. Start the Microsoft Developer Studio.
 3. Open Workspace.. and select dcmtk.dsw
 4. Choose one of the subprojects and build it. If you want to build all 
    applications, mark all subprojects and select "build selection" from the 
@@ -53,4 +55,3 @@ KNOWN PROBLEMS:
    a network name and a TCP/IP address. If SLIP or PPP is used the
    applications can only work if a connection to a provider exists (since 
    the internet addresses and names are given dynamically).
-
