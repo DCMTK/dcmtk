@@ -22,10 +22,10 @@
  *  Purpose: Renders the contents of a DICOM structured reporting file in
  *           HTML format
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2004-01-05 14:34:59 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2004-11-22 17:20:16 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmsr/apps/dsr2html.cc,v $
- *  CVS/RCS Revision: $Revision: 1.20 $
+ *  CVS/RCS Revision: $Revision: 1.21 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -58,6 +58,7 @@ static char rcsid[] = "$dcmtk: " OFFIS_CONSOLE_APPLICATION " v"
 static OFCondition renderFile(ostream &out,
                               const char *ifname,
                               const char *cssName,
+                              const char *defaultCharset,
                               const OFBool isDataset,
                               const E_TransferSyntax xfer,
                               const size_t readFlags,
@@ -97,7 +98,34 @@ static OFCondition renderFile(ostream &out,
                 dsrdoc->setLogStream(&ofConsole);
             result = dsrdoc->read(*dfile->getDataset(), readFlags);
             if (result.good())
-                result = dsrdoc->renderHTML(out, renderFlags, cssName);
+            {
+                // check extended character set
+                const char *charset = dsrdoc->getSpecificCharacterSet();                
+                if ((charset == NULL || strlen(charset) == 0) && dsrdoc->containsExtendedCharacters())
+                {
+                  // we have an unspecified extended character set
+                  if (defaultCharset == NULL)
+                  {
+                    /* the dataset contains non-ASCII characters that really should not be there */
+                    CERR << OFFIS_CONSOLE_APPLICATION << ": error: (0008,0005) Specific Character Set absent but extended characters used in file: "<< ifname << endl;
+                    result = EC_IllegalCall;
+                  }
+                  else 
+                  {
+                    OFString charset(defaultCharset);
+                    if (charset == "latin-1") dsrdoc->setSpecificCharacterSetType(DSRTypes::CS_Latin1);
+                    else if (charset == "latin-2") dsrdoc->setSpecificCharacterSetType(DSRTypes::CS_Latin2);
+                    else if (charset == "latin-3") dsrdoc->setSpecificCharacterSetType(DSRTypes::CS_Latin3);
+                    else if (charset == "latin-4") dsrdoc->setSpecificCharacterSetType(DSRTypes::CS_Latin4);
+                    else if (charset == "latin-5") dsrdoc->setSpecificCharacterSetType(DSRTypes::CS_Latin5);
+                    else if (charset == "cyrillic") dsrdoc->setSpecificCharacterSetType(DSRTypes::CS_Cyrillic);
+                    else if (charset == "arabic") dsrdoc->setSpecificCharacterSetType(DSRTypes::CS_Arabic);
+                    else if (charset == "greek") dsrdoc->setSpecificCharacterSetType(DSRTypes::CS_Greek);
+                    else if (charset == "hebrew") dsrdoc->setSpecificCharacterSetType(DSRTypes::CS_Hebrew);
+                  }
+                }
+                if (result.good()) result = dsrdoc->renderHTML(out, renderFlags, cssName);
+            }
             else
             {
                 CERR << OFFIS_CONSOLE_APPLICATION << ": error (" << result.text()
@@ -122,6 +150,7 @@ int main(int argc, char *argv[])
     size_t opt_readFlags = 0;
     size_t opt_renderFlags = DSRTypes::HF_renderDcmtkFootnote;
     const char *opt_cssName = NULL;
+    const char *opt_defaultCharset = NULL;
     OFBool isDataset = OFFalse;
     E_TransferSyntax xfer = EXS_Unknown;
 
@@ -158,7 +187,11 @@ int main(int argc, char *argv[])
         cmd.addOption("--ignore-constraints",  "-Ec",    "ignore relationship content constraints");
         cmd.addOption("--ignore-item-errors",  "-Ee",    "do not abort on content item errors, just warn\n(e.g. missing value type specific attributes)");
         cmd.addOption("--skip-invalid-items",  "-Ei",    "skip invalid content items (incl. sub-tree)");
-
+      cmd.addSubGroup("character set:");
+        cmd.addOption("--charset-require",     "+Cr",    "require declaration of ext. charset (default)");
+        cmd.addOption("--charset-assume",      "+Ca", 1, "charset: string constant (latin-1 to -5,",
+                                                         "greek, cyrillic, arabic, hebrew)\n"
+                                                         "assume charset if undeclared ext. charset found");     
     cmd.addGroup("output options:");
       cmd.addSubGroup("HTML compatibility:");
         cmd.addOption("--html-3.2",            "+H3",    "use only HTML version 3.2 compatible features");
@@ -254,6 +287,25 @@ int main(int argc, char *argv[])
         if (cmd.findOption("--skip-invalid-items"))
             opt_readFlags |= DSRTypes::RF_skipInvalidContentItems;
 
+        /* charset options */
+        cmd.beginOptionBlock();
+        if (cmd.findOption("--charset-require"))
+        {
+           opt_defaultCharset = NULL;
+        }
+        if (cmd.findOption("--charset-assume"))
+        {
+          app.checkValue(cmd.getValue(opt_defaultCharset));
+          OFString charset(opt_defaultCharset);
+          if (charset != "latin-1" && charset != "latin-2" && charset != "latin-3" && 
+              charset != "latin-4" && charset != "latin-5" && charset != "cyrillic" && 
+              charset != "arabic" && charset != "greek" && charset != "hebrew")
+          {
+            app.printError("unknown value for --charset-assume. known values are latin-1 to -5, cyrillic, arabic, greek, hebrew.");
+          }
+        }
+        cmd.endOptionBlock();
+
         /* HTML compatibility */
         cmd.beginOptionBlock();
         if (cmd.findOption("--html-3.2"))
@@ -344,12 +396,12 @@ int main(int argc, char *argv[])
         ofstream stream(ofname);
         if (stream.good())
         {
-            if (renderFile(stream, ifname, opt_cssName, isDataset, xfer, opt_readFlags, opt_renderFlags, opt_debugMode != 0).bad())
+            if (renderFile(stream, ifname, opt_cssName, opt_defaultCharset, isDataset, xfer, opt_readFlags, opt_renderFlags, opt_debugMode != 0).bad())
                 result = 2;
         } else
             result = 1;
     } else {
-        if (renderFile(COUT, ifname, opt_cssName, isDataset, xfer, opt_readFlags, opt_renderFlags, opt_debugMode != 0).bad())
+        if (renderFile(COUT, ifname, opt_cssName, opt_defaultCharset, isDataset, xfer, opt_readFlags, opt_renderFlags, opt_debugMode != 0).bad())
             result = 3;
     }
 
@@ -360,7 +412,11 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dsr2html.cc,v $
- * Revision 1.20  2004-01-05 14:34:59  joergr
+ * Revision 1.21  2004-11-22 17:20:16  meichel
+ * Now checking whether extended characters are present in a DICOM SR document,
+ *   preventing generation of incorrect HTML if undeclared extended charset used.
+ *
+ * Revision 1.20  2004/01/05 14:34:59  joergr
  * Removed acknowledgements with e-mail addresses from CVS log.
  *
  * Revision 1.19  2003/10/06 09:56:10  joergr
