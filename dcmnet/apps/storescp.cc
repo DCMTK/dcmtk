@@ -21,10 +21,10 @@
  *
  *  Purpose: Storage Service Class Provider (C-STORE operation)
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-12-19 09:59:43 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2002-04-11 12:47:33 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/apps/storescp.cc,v $
- *  CVS/RCS Revision: $Revision: 1.50 $
+ *  CVS/RCS Revision: $Revision: 1.51 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -45,38 +45,17 @@ END_EXTERN_C
 #endif
 
 BEGIN_EXTERN_C
-#include <stdio.h>
 #include <string.h>
-#ifdef HAVE_SYS_TYPES_H
-#include <sys/types.h>
-#endif
 #ifdef HAVE_SYS_STAT_H
 #include <sys/stat.h>
 #endif
 #ifdef HAVE_STDARG_H
 #include <stdarg.h>
 #endif
-#ifdef HAVE_TIME_H
-#include <time.h>          // for date/time functions like time(...), localtime(...)
-#endif
-#ifdef HAVE_SYS_TIME_H
-#include <sys/time.h>      /* for struct timeval on Linux */
-#endif
-
-#ifndef HAVE_WINDOWS_H
-#ifndef HAVE_PROTOTYPE_GETTIMEOFDAY
-/* Ultrix has gettimeofday() but no prototype in the header files */
-int gettimeofday(struct timeval *tp, void *);
-#endif
-#endif
 END_EXTERN_C
 
 #ifdef HAVE_GUSI_H
 #include <GUSI.h>
-#endif
-
-#ifdef HAVE_DIRENT_H
-#include <dirent.h>
 #endif
 
 #ifdef HAVE_WINDOWS_H
@@ -93,6 +72,7 @@ END_EXTERN_C
 #include "cmdlnarg.h"
 #include "ofconapp.h"
 #include "ofstd.h"
+#include "ofdatime.h"
 #include "dcuid.h"    /* for dcmtk version name */
 #include "dicom.h"    /* for DICOM_APPLICATION_ACCEPTOR */
 #include "dcdeftag.h" // for DCM_StudyInstanceUID
@@ -616,31 +596,12 @@ int main(int argc, char *argv[])
       opt_outputDirectory.erase(opt_outputDirectory.length()-1, 1);
     }
 
-    /* check if the specified directory exists and if it is a directory */
-    OFBool isValidOutputDir = OFFalse;
-
-#ifdef HAVE__FINDFIRST
-    struct _finddata_t fileData;
-    long hFile = _findfirst( opt_outputDirectory.c_str() , &fileData );
-    if( hFile != -1L )
+    /* check if the specified directory exists and if it is a directory.
+     * If the output directory is invalid, dump an error message and terminate execution.
+     */
+    if( !OFStandard::dirExists(opt_outputDirectory) )
     {
-      if( fileData.attrib & _A_SUBDIR )
-        isValidOutputDir = OFTrue;
-      _findclose(hFile);
-    }
-#else
-    DIR *d = opendir( opt_outputDirectory.c_str() );
-    if( d != NULL )
-    {
-      isValidOutputDir = OFTrue;
-      closedir(d);
-    }
-#endif
-
-    /* if the output directory is invalid, dump an error message and terminate execution */
-    if( !isValidOutputDir )
-    {
-      CERR << "Error: invalid output directory encountered ('" << opt_outputDirectory.c_str() << "')" << endl;
+      CERR << "Error: invalid output directory encountered ('" << opt_outputDirectory << "')" << endl;
       return 1;
     }
   }
@@ -1381,32 +1342,14 @@ storeSCPCallback(
             delete subdirectoryPathAndName;
 
           // get the current time (needed for subdirectory name)
-#ifdef HAVE_WINDOWS_H
-          SYSTEMTIME timebuf;
-          GetLocalTime(&timebuf);
-          int year = timebuf.wYear;
-          int month = timebuf.wMonth;
-          int day = timebuf.wDay;
-          int hour = timebuf.wHour;
-          int min = timebuf.wMinute;
-          int sec = timebuf.wSecond;
-          int millisec = timebuf.wMilliseconds;
-#else
-          struct timeval tv;
-          gettimeofday(&tv, NULL);
-          time_t tt = time(NULL);
-          tm *tVal = localtime( &tt );
-          int year = tVal->tm_year + 1900;
-          int month = tVal->tm_mon + 1;
-          int day = tVal->tm_mday;
-          int hour = tVal->tm_hour;
-          int min = tVal->tm_min;
-          int sec = tVal->tm_sec;
-          int millisec = (int)(tv.tv_usec / 1000);
-#endif
+          OFDateTime dateTime;
+          dateTime.setCurrentDateTime();
           // create a name for the new subdirectory. pattern: "[opt_sortConcerningStudies]_[YYYYMMDD]_[HHMMSSMMM]" (use current datetime)
           char *subdirectoryName = new char[ strlen( opt_sortConcerningStudies ) + 1 + 8 + 1 + 9 + 1 ];
-          sprintf( subdirectoryName, "%s_%d%02d%02d_%02d%02d%02d%03d", opt_sortConcerningStudies, year, month, day, hour, min, sec, millisec );
+          sprintf( subdirectoryName, "%s_%04u%02u%02u_%02u%02u%02u%03u", opt_sortConcerningStudies,
+            dateTime.getDate().getYear(), dateTime.getDate().getMonth(), dateTime.getDate().getDay(),
+            dateTime.getTime().getHour(), dateTime.getTime().getMinute(), (unsigned int)dateTime.getTime().getSecond(),
+            (unsigned int)((dateTime.getTime().getSecond() - (unsigned int)dateTime.getTime().getSecond()) * 1000) /*millisec*/ );
 
           // create subdirectoryPathAndName (string with full path to new subdirectory)
           char *tmpstr2 = cbdata->imageFileName;
@@ -1418,27 +1361,8 @@ storeSCPCallback(
           delete subdirectoryName;
 
           // check if the subdirectory is already existent
-          OFBool isSubdirExistent = OFFalse;
-#ifdef HAVE__FINDFIRST
-          struct _finddata_t fileData;
-          long hFile = _findfirst( subdirectoryPathAndName, &fileData );
-          if( hFile != -1L )
-          {
-            if( fileData.attrib & _A_SUBDIR )
-              isSubdirExistent = OFTrue;
-            _findclose(hFile);
-          }
-#else
-          DIR *d = opendir( subdirectoryPathAndName );
-          if( d != NULL )
-          {
-            isSubdirExistent = OFTrue;
-            closedir(d);
-          }
-#endif
-
           // if it is already existent dump a warning
-          if( isSubdirExistent )
+          if( OFStandard::dirExists(subdirectoryPathAndName) )
           {
             fprintf(stderr, "storescp: Warning: Subdirectory for studies already existent. (%s)\n", subdirectoryPathAndName );
           }
@@ -1954,7 +1878,12 @@ static void executeCommand( const OFString &cmd )
 /*
 ** CVS Log
 ** $Log: storescp.cc,v $
-** Revision 1.50  2001-12-19 09:59:43  meichel
+** Revision 1.51  2002-04-11 12:47:33  joergr
+** Replaced direct call of system routines by new standard date and time
+** functions.
+** Use the new standard file system routines like fileExists() etc.
+**
+** Revision 1.50  2001/12/19 09:59:43  meichel
 ** Added prototype declaration for gettimeofday() for systems like Ultrix
 **   where the function is known but no prototype present in the system headers.
 **
