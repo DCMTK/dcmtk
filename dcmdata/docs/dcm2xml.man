@@ -88,7 +88,7 @@ character set:
   +Cr  --charset-require     
          require declaration of extended charset (default)
 
-  +Ca  --charset-assume      charset: string constant
+  +Ca  --charset-assume  charset: string constant
          (latin-1 to -5, cyrillic, arabic, greek, hebrew)
          assume charset if undeclared ext. charset found
 \endverbatim
