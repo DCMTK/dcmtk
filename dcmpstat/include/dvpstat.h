@@ -23,8 +23,8 @@
  *    classes: DVPresentationState
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-03-02 13:01:02 $
- *  CVS/RCS Revision: $Revision: 1.11 $
+ *  Update Date:      $Date: 1999-03-03 13:26:06 $
+ *  CVS/RCS Revision: $Revision: 1.12 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1012,6 +1012,7 @@ public:
    *    must be < getNumberOfActiveOverlays(layer).
    *  @param overlayData upon success a pointer to the overlay plane is passed back
    *    in this parameter. The overlay plane is organized as one byte per pixel.
+   *    The byte values are already transform from pvalues to DDLs.
    *  @param width upon success the width of the overlay bitmap in pixels is returned in this parameter.
    *  @param height upon success the height of the overlay bitmap in pixels is returned in this parameter.
    *  @param left upon success the horizontal position of the overlay relative to the image 
@@ -1254,6 +1255,12 @@ public:
    */
   void detachImage();
   	
+  /** inverts image by changing presentation state LUT or presentation state LUT shape.
+   *  Pixel data has to be re-get after this transformation.
+   *  @return EC_Normal upon success, an error code otherwise.
+   */
+  E_Condition invertImage();
+  
   /** applies presentation state to attached image and returns image bitmap.
    *  This method sets all parameter required to correctly render the pixel data
    *  in the image attached to the presentation state and then creates the
@@ -1358,13 +1365,6 @@ public:
     *  @param flag OFTrue to switch on, OFFalse to switch off.
     */
    void setBartenTransform(OFBool flag) { useBartenTransform=flag; }
-   
-   /** checks whether Barten correction is possible, i.e.
-    *  a valid monitor characteristics description exists
-    *  and current system is a low-cost system (without built-in
-    *  calibration).
-    */
-   OFBool isBartenTransformPossible() { return displayFunction!=NULL; }
    
    /** changes the display function.
     *  If NULL is passed, Barten transform is disabled.
@@ -1707,7 +1707,13 @@ private:
 
 /*
  *  $Log: dvpstat.h,v $
- *  Revision 1.11  1999-03-02 13:01:02  joergr
+ *  Revision 1.12  1999-03-03 13:26:06  joergr
+ *  Added method to invert an image by changing the presentation state LUT or
+ *  shape.
+ *  Moved method 'isBartenTransformPossible()' from presentation state class to
+ *  interface class.
+ *
+ *  Revision 1.11  1999/03/02 13:01:02  joergr
  *  Added method to presentation state class that checks whether Barten
  *  transformation is possible or not.
  *
