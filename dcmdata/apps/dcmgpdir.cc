@@ -24,9 +24,9 @@
  *  CD-R Image Interchange Profile (former Supplement 19).
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-04-14 16:01:01 $
+ *  Update Date:      $Date: 2000-10-12 10:26:47 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/apps/dcmgpdir.cc,v $
- *  CVS/RCS Revision: $Revision: 1.44 $
+ *  CVS/RCS Revision: $Revision: 1.45 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -581,7 +581,7 @@ alternativeStudyDate(DcmItem* d)
     if (!date.empty()) return date;
     date = dcmFindString(d, DCM_AcquisitionDate);
     if (!date.empty()) return date;
-    date = dcmFindString(d, DCM_ImageDate);
+    date = dcmFindString(d, DCM_ContentDate);
     if (!date.empty()) return date;
     /* use current date */
     return currentDate();
@@ -595,7 +595,7 @@ alternativeStudyTime(DcmItem* d)
     if (!timestr.empty()) return timestr;
     timestr = dcmFindString(d, DCM_AcquisitionTime);
     if (!timestr.empty()) return timestr;
-    timestr = dcmFindString(d, DCM_ImageTime);
+    timestr = dcmFindString(d, DCM_ContentTime);
     if (!timestr.empty()) return timestr;
     /* use current time */
     return currentTime();
@@ -991,8 +991,8 @@ checkImage(const OFString& fname, DcmFileFormat *ff)
 	/* a structured report */
         if (!checkExistsWithValue(d, DCM_CompletionFlag, fname)) ok = OFFalse; 
 	if (!checkExistsWithValue(d, DCM_VerificationFlag, fname)) ok = OFFalse; 
-	if (!checkExistsWithValue(d, DCM_ImageDate, fname)) ok = OFFalse; 
-	if (!checkExistsWithValue(d, DCM_ImageTime, fname)) ok = OFFalse; 
+	if (!checkExistsWithValue(d, DCM_ContentDate, fname)) ok = OFFalse; 
+	if (!checkExistsWithValue(d, DCM_ContentTime, fname)) ok = OFFalse; 
         if (!dcmTagExistsWithValue(d, DCM_ConceptNameCodeSequence))
         {
 	  DcmTag cncsqtag(DCM_ConceptNameCodeSequence);
@@ -1279,8 +1279,8 @@ buildStructReportRecord(
     dcmCopyOptString(rec, DCM_SpecificCharacterSet, d);
     dcmCopyString(rec, DCM_CompletionFlag, d);
     dcmCopyString(rec, DCM_VerificationFlag, d);
-    dcmCopyString(rec, DCM_ImageDate, d);
-    dcmCopyString(rec, DCM_ImageTime, d);
+    dcmCopyString(rec, DCM_ContentDate, d);
+    dcmCopyString(rec, DCM_ContentTime, d);
     dcmCopyString(rec, DCM_InstanceNumber, d);
     dcmCopyOptString(rec, DCM_VerificationDateTime, d);
     dcmCopySequence(rec, DCM_ConceptNameCodeSequence, d);
@@ -2777,7 +2777,10 @@ expandFileNames(OFList<OFString>& fileNames, OFList<OFString>& expandedNames)
 /*
 ** CVS/RCS Log:
 ** $Log: dcmgpdir.cc,v $
-** Revision 1.44  2000-04-14 16:01:01  meichel
+** Revision 1.45  2000-10-12 10:26:47  meichel
+** Updated data dictionary for 2000 edition of the DICOM standard
+**
+** Revision 1.44  2000/04/14 16:01:01  meichel
 ** Restructured class DcmTag. Instances don't keep a permanent pointer
 **   to a data dictionary entry anymore. Required for MT applications.
 **

@@ -21,18 +21,16 @@
 #  Purpose: 
 #  This is the global DICOM data dictionary for the dcmtk class library.
 #
-#  Last Update:      $Author: joergr $
-#  Update Date:      $Date: 2000-10-12 08:15:51 $
+#  Last Update:      $Author: meichel $
+#  Update Date:      $Date: 2000-10-12 10:26:53 $
 #  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/Attic/dicom.dic,v $
-#  CVS/RCS Revision: $Revision: 1.35 $
+#  CVS/RCS Revision: $Revision: 1.36 $
 #  Status:           $State: Exp $
 #
 #  This dictionary contains
-#   - the complete dictionary from the 1999 DICOM publication
-#     which includes supplements 1-22 (except 16 and 21 which are cancelled),
-#     24-25, 27-29, 32 and 35-39 and CP packages 1-5
-#   - the final text of supplement 23 and 33 and CP package 6
-#   - the letter ballot texts of supplements 30 and 31
+#     the complete dictionary from the 2000 DICOM publication
+#     which includes supplements 1-25 (except 16 and 21 which are cancelled),
+#     27-33, 35-39 and CP packages 1-8
 #
 # Each line represents an entry in the data dictionary.  Each line
 # has 5 fields (Tag, VR, Name, VM, Version).  Entries need not be
@@ -117,18 +115,22 @@
 (0008,0020)	DA	StudyDate	1	dicom98
 (0008,0021)	DA	SeriesDate	1	dicom98
 (0008,0022)	DA	AcquisitionDate	1	dicom98
-(0008,0023)	DA	ImageDate	1	dicom98
+# (0008,0023) ContentDate was named ImageDate before. Changed in dicom2000 (Supplement 30).
+(0008,0023)	DA	ContentDate	1	dicom2000
 (0008,0024)	DA	OverlayDate	1	dicom98
 (0008,0025)	DA	CurveDate	1	dicom98
+(0008,002A)	DT	AcquisitionDatetime	1	dicom2000
 (0008,0030)	TM	StudyTime	1	dicom98
 (0008,0031)	TM	SeriesTime	1	dicom98
 (0008,0032)	TM	AcquisitionTime	1	dicom98
-(0008,0033)	TM	ImageTime	1	dicom98
+# (0008,0033) ContentTime was named ImageTime before. Changed in dicom2000 (Supplement 30).
+(0008,0033)	TM	ContentTime	1	dicom2000
 (0008,0034)	TM	OverlayTime	1	dicom98
 (0008,0035)	TM	CurveTime	1	dicom98
 (0008,0050)	SH	AccessionNumber	1	dicom98
 (0008,0052)	CS	QueryRetrieveLevel	1	dicom98
 (0008,0054)	AE	RetrieveAETitle	1-n	dicom98
+(0008,0056)	CS	InstanceAvailability	1	dicom2000
 (0008,0058)	UI	FailedSOPInstanceUIDList	1-n	dicom98
 (0008,0060)	CS	Modality	1	dicom98
 (0008,0061)	CS	ModalitiesInStudy	1-n	dicom98
@@ -152,6 +154,7 @@
 (0008,010C)	UI	PrivateCodingSchemeCreatorUID	1	dicom99
 (0008,010D)	UI	CodeSetExtensionCreatorUID	1	dicom99
 (0008,010F)	CS	ContextIdentifier	1	dicom99
+(0008,0201)	SH	TimezoneOffsetFromUTC	1	dicom2000
 (0008,1010)	SH	StationName	1	dicom98
 (0008,1030)	LO	StudyDescription	1	dicom98
 (0008,1032)	SQ	ProcedureCodeSequence	1	dicom98
@@ -176,7 +179,8 @@
 (0008,1150)	UI	ReferencedSOPClassUID	1	dicom98
 (0008,1155)	UI	ReferencedSOPInstanceUID	1	dicom98
 (0008,115A)	UI	SOPClassesSupported	1-n	dicom99
-(0008,1160)	IS	ReferencedFrameNumber	1	dicom98
+# VM of (0008,1160) ReferencedFrameNumber was 1 in dicom98. Changed in dicom2000 (Supplement 33).
+(0008,1160)	IS	ReferencedFrameNumber	1-n	dicom2000
 (0008,1195)	UI	TransactionUID	1	dicom98
 (0008,1197)	US	FailureReason	1	dicom98
 (0008,1198)	SQ	FailedSOPSequence	1	dicom98
@@ -318,6 +322,12 @@
 (0018,1064)	LO	FramingType	1	dicom98
 (0018,1065)	DS	FrameTimeVector	1-n	dicom98
 (0018,1066)	DS	FrameDelay	1	dicom98
+(0018,1067)	DS	ImageTriggerDelay	1	dicom2000
+(0018,1068)	DS	MultiplexGroupTimeOffset	1	dicom2000
+(0018,1069)	DS	TriggerTimeOffset	1	dicom2000
+(0018,106A)	CS	SynchronizationTrigger	1	dicom2000
+(0018,106C)	US	SynchronizationChannel	2	dicom2000
+(0018,106E)	UL	TriggerSamplePosition	1	dicom2000
 # (0018,1070) RadiopharmaceuticalRoute was named RadionucleideRoute VM=1-n in DICOM93. Changed in DICOM96 (Supplement 7).
 (0018,1070)	LO	RadiopharmaceuticalRoute	1	dicom98
 # (0018,1071) RadiopharmaceuticalVolume was named RadionucleideVolume VM=1-n in DICOM93. Changed in DICOM96 (Supplement 7).
@@ -440,6 +450,8 @@
 (0018,1610)	IS	CenterOfCircularShutter	2	dicom98
 (0018,1612)	IS	RadiusOfCircularShutter	1	dicom98
 (0018,1620)	IS	VerticesOfThePolygonalShutter	2-2n	dicom98
+(0018,1622)	US	ShutterPresentationValue	1	dicom2000
+(0018,1623)	US	ShutterOverlayGroup	1	dicom2000
 (0018,1700)	CS	CollimatorShape	1-3	dicom98
 (0018,1702)	IS	CollimatorLeftVerticalEdge	1	dicom98
 (0018,1704)	IS	CollimatorRightVerticalEdge	1	dicom98
@@ -448,6 +460,9 @@
 (0018,1710)	IS	CenterOfCircularCollimator	2	dicom98
 (0018,1712)	IS	RadiusOfCircularCollimator	1	dicom98
 (0018,1720)	IS	VerticesOfThePolygonalCollimator	2-2n	dicom98
+(0018,1800)	CS	AcquisitionTimeSynchronized	1	dicom2000
+(0018,1801)	SH	TimeSource	1	dicom2000
+(0018,1802)	CS	TimeDistributionProtocol	1	dicom2000
 (0018,5000)	SH	OutputPower	1-n	dicom98
 (0018,5010)	LO	TransducerData	3	dicom98
 (0018,5012)	DS	FocusDepth	1	dicom98
@@ -535,13 +550,17 @@
 (0018,7046)	IS	GridAspectRatio	2	dicom99
 (0018,7048)	DS	GridPeriod	1	dicom99
 (0018,704C)	DS	GridFocalDistance	1	dicom99
-(0018,7050)	LT	FilterMaterial	1-n	dicom99
+# VR of (0018,7050) FilterMaterial was LT 1-n (which is not possible) in dicom99.
+# Changed in dicom2000 (CP 187).
+(0018,7050)	CS	FilterMaterial	1-n	dicom2000
 (0018,7052)	DS	FilterThicknessMinimum	1-n	dicom99
 (0018,7054)	DS	FilterThicknessMaximum	1-n	dicom99
 (0018,7060)	CS	ExposureControlMode	1	dicom99
 (0018,7062)	LT	ExposureControlModeDescription	1	dicom99
 (0018,7064)	CS	ExposureStatus	1	dicom99
 (0018,7065)	DS	PhototimerSetting	1	dicom99
+(0018,8150)	DS	ExposureTimeInMicroS	1	dicom2000
+(0018,8151)	DS	XRayTubeCurrentInMicroA	1	dicom2000
 (0020,0000)	UL	ImageGroupLength	1	dicom98
 (0020,000D)	UI	StudyInstanceUID	1	dicom98
 (0020,000E)	UI	SeriesInstanceUID	1	dicom98
@@ -563,6 +582,7 @@
 (0020,0100)	IS	TemporalPositionIdentifier	1	dicom98
 (0020,0105)	IS	NumberOfTemporalPositions	1	dicom98
 (0020,0110)	DS	TemporalResolution	1	dicom98
+(0020,0200)	UI	SynchronizationFrameofReferenceUID	1	dicom2000
 (0020,1000)	IS	SeriesInStudy	1	dicom98
 (0020,1002)	IS	ImagesInAcquisition	1	dicom98
 (0020,1004)	IS	AcquisitionsInStudy	1	dicom98
@@ -635,14 +655,20 @@
 (0028,1222)	OW	SegmentedGreenPaletteColorLookupTableData	1	dicom98
 (0028,1223)	OW	SegmentedBluePaletteColorLookupTableData	1	dicom98
 (0028,1300)	CS	ImplantPresent	1	dicom99
+(0028,1350)	CS	PartialView	1	dicom2000
+(0028,1351)	ST	PartialViewDescription	1	dicom2000
 (0028,2110)	CS	LossyImageCompression	1	dicom98
 (0028,2112)	DS	LossyImageCompressionRatio	1-n	dicom99
 (0028,3000)	SQ	ModalityLUTSequence	1	dicom98
 (0028,3002)	xs	LUTDescriptor	3	dicom98
 (0028,3003)	LO	LUTExplanation	1	dicom98
 (0028,3004)	LO	ModalityLUTType	1	dicom98
-(0028,3006)	xs	LUTData	1-n	dicom98
+# VM of (0028,3006) LUTData was US/SS in dicom93. Because US/SS does not allow to encode
+# LUTs with 64K entries in explicit VR, this was changed in dicom2000 (Supplement 33)
+# to US/SS/OW. We default to OW, because this always works whereas US/SS does not.
+(0028,3006)	OW	LUTData	1-n	dicom2000
 (0028,3010)	SQ	VOILUTSequence	1	dicom98
+(0028,3110)	SQ	SoftcopyVOILUTSequence	1	dicom2000
 (0028,5000)	SQ	BiPlaneAcquisitionSequence	1	dicom98
 (0028,6010)	US	RepresentativeFrameNumber	1	dicom98
 (0028,6020)	US	FrameNumbersOfInterestFOI	1-n	dicom98
@@ -705,6 +731,31 @@
 (0038,0400)	LO	PatientsInstitutionResidence	1	dicom98
 (0038,0500)	LO	PatientState	1	dicom98
 (0038,4000)	LT	VisitComments	1	dicom98
+(003A,0004)	CS	WaveformOriginality	1	dicom2000
+(003A,0005)	US	NumberofWaveformChannels	1	dicom2000
+(003A,0010)	UL	NumberofWaveformSamples	1	dicom2000
+(003A,001A)	DS	SamplingFrequency	1	dicom2000
+(003A,0020)	SH	MultiplexGroupLabel	1	dicom2000
+(003A,0200)	SQ	ChannelDefinitionSequence	1	dicom2000
+(003A,0202)	IS	WaveformChannelNumber	1	dicom2000
+(003A,0203)	SH	ChannelLabel	1	dicom2000
+(003A,0205)	CS	ChannelStatus	1-n	dicom2000
+(003A,0208)	SQ	ChannelSourceSequence	1	dicom2000
+(003A,0209)	SQ	ChannelSourceModifiersSequence	1	dicom2000
+(003A,020A)	SQ	SourceWaveformSequence	1	dicom2000
+(003A,020C)	LO	ChannelDerivationDescription	1	dicom2000
+(003A,0210)	DS	ChannelSensitivity	1	dicom2000
+(003A,0211)	SQ	ChannelSensitivityUnitsSequence	1	dicom2000
+(003A,0212)	DS	ChannelSensitivityCorrectionFactor	1	dicom2000
+(003A,0213)	DS	ChannelBaseline	1	dicom2000
+(003A,0214)	DS	ChannelTimeSkew	1	dicom2000
+(003A,0215)	DS	ChannelSampleSkew	1	dicom2000
+(003A,0218)	DS	ChannelOffset	1	dicom2000
+(003A,021A)	US	WaveformBitsStored	1	dicom2000
+(003A,0220)	DS	FilterLowFrequency	1	dicom2000
+(003A,0221)	DS	FilterHighFrequency	1	dicom2000
+(003A,0222)	DS	NotchFilterFrequency	1	dicom2000
+(003A,0223)	DS	NotchFilterBandwidth	1	dicom2000
 (0040,0000)	UL	ModalityWorklistGroupLength	1	dicom98
 (0040,0001)	AE	ScheduledStationAETitle	1-n	dicom98
 (0040,0002)	DA	ScheduledProcedureStepStartDate	1	dicom98
@@ -757,8 +808,12 @@
 (0040,0330)	SQ	ReferencedProcedureStepSequence	1	dicom98
 (0040,0340)	SQ	PerformedSeriesSequence	1	dicom98
 (0040,0400)	LT	CommentsOnTheScheduledProcedureStep	1	dicom98
+(0040,050A)	LO	SpecimenAccessionNumber	1	dicom2000
+(0040,0550)	SQ	SpecimenSequence	1	dicom2000
+(0040,0551)	LO	SpecimenIdentifier	1	dicom2000
 (0040,0555)	SQ	AcquisitionContextSequence	1	dicom99
 (0040,0556)	ST	AcquisitionContextDescription	1	dicom99
+(0040,059A)	SQ	SpecimenTypeCodeSequence	1	dicom2000
 (0040,06FA)	LO	SlideIdentifier	1	dicom99
 (0040,071A)	SQ	ImageCenterPointCoordinatesSequence	1	dicom99
 (0040,072A)	DS	XOffsetInSlideCoordinateSystem	1	dicom99
@@ -792,14 +847,53 @@
 (0040,2017)	LO	FillerOrderNumberImagingServiceRequest	1	dicom99
 (0040,2400)	LT	ImagingServiceRequestComments	1	dicom98
 (0040,3001)	LO	ConfidentialityConstraintOnPatientDataDescription	1	dicom98
+(0040,8302)	DS	EntranceDoseInmGy	1	dicom2000
+(0040,A010)	CS	RelationshipType	1	dicom2000
+(0040,A027)	LO	VerifyingOrganization	1	dicom2000
+(0040,A030)	DT	VerificationDateTime	1	dicom2000
+(0040,A032)	DT	ObservationDateTime	1	dicom2000
+(0040,A040)	CS	ValueType	1	dicom2000
 (0040,A043)	SQ	ConceptNameCodeSequence	1	dicom99
+(0040,A050)	CS	ContinuityOfContent	1	dicom2000
+(0040,A073)	SQ	VerifyingObserverSequence	1	dicom2000
+(0040,A075)	PN	VerifyingObserverName	1	dicom2000
+(0040,A088)	SQ	VerifyingObserverIdentificationCodeSequence	1	dicom2000
+(0040,A0B0)	US	ReferencedWaveformChannels	2-2n	dicom2000
+(0040,A120)	DT	DateTime	1	dicom2000
 (0040,A121)	DA	Date	1	dicom99
 (0040,A122)	TM	Time	1	dicom99
 (0040,A123)	PN	PersonName	1	dicom99
+(0040,A124)	UI	UID	1	dicom2000
+(0040,A130)	CS	TemporalRangeType	1	dicom2000
+(0040,A132)	UL	ReferencedSamplePositions	1-n	dicom2000
 (0040,A136)	US	ReferencedFrameNumbers	1-n	dicom99
+(0040,A138)	DS	ReferencedTimeOffsets	1-n	dicom2000
+(0040,A13A)	DT	ReferencedDatetime	1-n	dicom2000
 (0040,A160)	UT	TextValue	1	dicom99
 (0040,A168)	SQ	ConceptCodeSequence	1	dicom99
+(0040,A180)	US	AnnotationGroupNumber	1	dicom2000
+(0040,A195)	SQ	ModifierCodeSequence	1	dicom2000
+(0040,A300)	SQ	MeasuredValueSequence	1	dicom2000
 (0040,A30A)	DS	NumericValue	1-n	dicom99
+(0040,A360)	SQ	PredecessorDocumentsSequence	1	dicom2000
+(0040,A370)	SQ	ReferencedRequestSequence	1	dicom2000
+(0040,A372)	SQ	PerformedProcedureCodeSequence	1	dicom2000
+(0040,A375)	SQ	CurrentRequestedProcedureEvidenceSequence	1	dicom2000
+(0040,A385)	SQ	PertinentOtherEvidenceSequence	1	dicom2000
+(0040,A491)	CS	CompletionFlag	1	dicom2000
+(0040,A492)	LO	CompletionFlagDescription	1	dicom2000
+(0040,A493)	CS	VerificationFlag	1	dicom2000
+(0040,A504)	SQ	ContentTemplateSequence	1	dicom2000
+(0040,A525)	SQ	IdenticalDocumentsSequence	1	dicom2000
+(0040,A730)	SQ	ContentSequence	1	dicom2000
+(0040,B020)	SQ	AnnotationSequence	1	dicom2000
+(0040,DB00)	CS	TemplateIdentifier	1	dicom2000
+(0040,DB06)	DT	TemplateVersion	1	dicom2000
+(0040,DB07)	DT	TemplateLocalVersion	1	dicom2000
+(0040,DB0B)	CS	TemplateExtensionFlag	1	dicom2000
+(0040,DB0C)	UI	TemplateExtensionOrganizationUID	1	dicom2000
+(0040,DB0D)	UI	TemplateExtensionCreatorUID	1	dicom2000
+(0040,DB73)	UL	ReferencedContentItemIdentifier	1-n	dicom2000
 (0050,0000)	UL	XRayAngioDeviceGroupLength	1	dicom98
 # name for (0050,0004) was CalibrationObject in DICOM96. Name changed to CalibrationImage in DICOM98.
 (0050,0004)	CS	CalibrationImage	1	dicom98
@@ -898,6 +992,44 @@
 (0060,3008)	US	HistogramBinWidth	1	dicom99
 (0060,3010)	LO	HistogramExplanation	1	dicom99
 (0060,3020)	UL	HistogramData	1-n	dicom99
+(0070,0000)	UL	PresentationStateGroupLength	1	dicom2000
+(0070,0001)	SQ	GraphicAnnotationSequence	1	dicom2000
+(0070,0002)	CS	GraphicLayer	1	dicom2000
+(0070,0003)	CS	BoundingBoxAnnotationUnits	1	dicom2000
+(0070,0004)	CS	AnchorPointAnnotationUnits	1	dicom2000
+(0070,0005)	CS	GraphicAnnotationUnits	1	dicom2000
+(0070,0006)	ST	UnformattedTextValue	1	dicom2000
+(0070,0008)	SQ	TextObjectSequence	1	dicom2000
+(0070,0009)	SQ	GraphicObjectSequence	1	dicom2000
+(0070,0010)	FL	BoundingBoxTopLeftHandCorner	2	dicom2000
+(0070,0011)	FL	BoundingBoxBottomRightHandCorner	2	dicom2000
+(0070,0012)	CS	BoundingBoxTextHorizontalJustification	1	dicom2000
+(0070,0014)	FL	AnchorPoint	2	dicom2000
+(0070,0015)	CS	AnchorPointVisibility	1	dicom2000
+(0070,0020)	US	GraphicDimensions	1	dicom2000
+(0070,0021)	US	NumberOfGraphicPoints	1	dicom2000
+(0070,0022)	FL	GraphicData	2-n	dicom2000
+(0070,0023)	CS	GraphicType	1	dicom2000
+(0070,0024)	CS	GraphicFilled	1	dicom2000
+(0070,0041)	CS	ImageHorizontalFlip	1	dicom2000
+(0070,0042)	US	ImageRotation	1	dicom2000
+(0070,0052)	SL	DisplayedAreaTopLeftHandCorner	2	dicom2000
+(0070,0053)	SL	DisplayedAreaBottomRightHandCorner	2	dicom2000
+(0070,005A)	SQ	DisplayedAreaSelectionSequence	1	dicom2000
+(0070,0060)	SQ	GraphicLayerSequence	1	dicom2000
+(0070,0062)	IS	GraphicLayerOrder	1	dicom2000
+(0070,0066)	US	GraphicLayerRecommendedDisplayGrayscaleValue	1	dicom2000
+(0070,0067)	US	GraphicLayerRecommendedDisplayRGBValue	3	dicom2000
+(0070,0068)	LO	GraphicLayerDescription	1	dicom2000
+(0070,0080)	CS	PresentationLabel	1	dicom2000
+(0070,0081)	LO	PresentationDescription	1	dicom2000
+(0070,0082)	DA	PresentationCreationDate	1	dicom2000
+(0070,0083)	TM	PresentationCreationTime	1	dicom2000
+(0070,0084)	PN	PresentationCreatorsName	1	dicom2000
+(0070,0100)	CS	PresentationSizeMode	1	dicom2000
+(0070,0101)	DS	PresentationPixelSpacing	2	dicom2000
+(0070,0102)	IS	PresentationPixelAspectRatio	2	dicom2000
+(0070,0103)	FL	PresentationPixelMagnificationRatio	1	dicom2000
 (0088,0000)	UL	StorageGroupLength	1	dicom98
 (0088,0130)	SH	StorageMediaFileSetID	1	dicom98
 (0088,0140)	UI	StorageMediaFileSetUID	1	dicom98
@@ -906,6 +1038,10 @@
 (0088,0906)	ST	TopicSubject	1	dicom98
 (0088,0910)	LO	TopicAuthor	1	dicom98
 (0088,0912)	LO	TopicKeyWords	1-32	dicom98
+(0100,0410)	CS	SOPInstanceStatus	1	dicom2000
+(0100,0420)	DT	SOPAuthorizationDateandTime	1	dicom2000
+(0100,0424)	LT	SOPAuthorizationComment	1	dicom2000
+(0100,0426)	LO	AuthorizationEquipmentCertificationNumber	1	dicom2000
 (2000,0000)	UL	FilmSessionGroupLength	1	dicom98
 (2000,0010)	IS	NumberOfCopies	1	dicom98
 (2000,001E)	SQ	PrinterConfigurationSequence	1	dicom99
@@ -1030,6 +1166,7 @@
 (3002,0004)	ST	RTImageDescription	1	dicom98
 (3002,000A)	CS	ReportedValuesOrigin	1	dicom98
 (3002,000C)	CS	RTImagePlane	1	dicom98
+(3002,000D)	DS	XRayImageReceptorTranslation	3	dicom2000
 (3002,000E)	DS	XRayImageReceptorAngle	1	dicom98
 (3002,0010)	DS	RTImageOrientation	6	dicom98
 (3002,0011)	DS	ImagePlanePixelSpacing	2	dicom98
@@ -1092,6 +1229,8 @@
 (3006,0044)	DS	ContourSlabThickness	1	dicom98
 (3006,0045)	DS	ContourOffsetVector	3	dicom98
 (3006,0046)	IS	NumberOfContourPoints	1	dicom98
+(3006,0048)	IS	ContourNumber	1	dicom2000
+(3006,0049)	IS	AttachedContours	1-n	dicom2000
 (3006,0050)	DS	ContourData	3-3n	dicom98
 (3006,0080)	SQ	RTROIObservationsSequence	1	dicom98
 (3006,0082)	IS	ObservationNumber	1	dicom98
@@ -1488,6 +1627,7 @@
 (5000-50ff,0110)	US	CurveDataDescriptor	1-n	dicom98
 (5000-50ff,0112)	US	CoordinateStartValue	1	dicom98
 (5000-50ff,0114)	US	CoordinateStepValue	1	dicom98
+(5000-50ff,1001)	CS	CurveActivationLayer	1	dicom2000
 (5000-50ff,2000)	US	AudioType	1	dicom98
 (5000-50ff,2002)	US	AudioSampleFormat	1	dicom98
 (5000-50ff,2004)	US	NumberOfChannels	1	dicom98
@@ -1502,6 +1642,14 @@
 # (5000-50ff,2600) is called ReferencedOverlaySequence in the standard, but this collides with tag (0008,1130)
 (5000-50ff,2610)	US	ReferencedOverlayGroup	1	dicom98
 (5000-50ff,3000)	ox	CurveData	1	dicom98
+(5400,0000)	UL	WaveformGroupLength	1	dicom2000
+(5400,0100)	SQ	WaveformSequence	1	dicom2000
+(5400,0110)	ox	ChannelMinimumValue	1	dicom2000
+(5400,0112)	ox	ChannelMaximumValue	1	dicom2000
+(5400,1004)	US	WaveformBitsAllocated	1	dicom2000
+(5400,1006)	CS	WaveformSampleInterpretation	1	dicom2000
+(5400,100A)	ox	WaveformPaddingValue	1	dicom2000
+(5400,1010)	ox	WaveformData	1	dicom2000
 (6000-60ff,0000)	UL	OverlayGroupLength	1	dicom98
 (6000-60ff,0010)	US	OverlayRows	1	dicom98
 (6000-60ff,0011)	US	OverlayColumns	1	dicom98
@@ -1515,11 +1663,13 @@
 (6000-60ff,0052)	US	OverlayPlaneOrigin	1	dicom98
 (6000-60ff,0100)	US	OverlayBitsAllocated	1	dicom98
 (6000-60ff,0102)	US	OverlayBitPosition	1	dicom98
+(6000-60ff,1001)	CS	OverlayActivationLayer	1	dicom2000
 (6000-60ff,1301)	IS	ROIArea	1	dicom98
 (6000-60ff,1302)	DS	ROIMean	1	dicom98
 (6000-60ff,1303)	DS	ROIStandardDeviation	1	dicom98
 (6000-60ff,1500)	LO	OverlayLabel	1	dicom98
-(6000-60ff,3000)	OW	OverlayData	1	dicom98
+# VM of (6000-60ff,3000) OverlayData was OW in dicom93. Changed to OB/OW in dicom2000 (Supplement 33).
+(6000-60ff,3000)	ox	OverlayData	1	dicom2000
 (7FE0,0000)	UL	PixelDataGroupLength	1	dicom98
 (7FE0,0010)	ox	PixelData	1	dicom98
 (FFFC,FFFC)	OB	DataSetTrailingPadding	1	dicom98
@@ -1723,230 +1873,7 @@
 (7FE0,0020)	OW	CoefficientsSDVN	1-n	ACR/NEMA2C
 (7FE0,0030)	OW	CoefficientsSDHN	1-n	ACR/NEMA2C
 (7FE0,0040)	OW	CoefficientsSDDN	1-n	ACR/NEMA2C
-#
-#---------------------------------------------------------------------------
-#
-# Supplement 23: Structured Reporting Storage SOP Classes
-# Final Text - 6 April 2000
-#
-# Attribute (0008,0110) removed from final text
-# (0008,0110)	ST	OverridingCodeMeaning	1	Supp23_lb
-(0040,A010)	CS	RelationshipType	1	Supp23_ft
-(0040,A027)	LO	VerifyingOrganization	1	Supp23_ft
-(0040,A030)	DT	VerificationDateTime	1	Supp23_ft
-(0040,A032)	DT	ObservationDateTime	1	Supp23_ft
-(0040,A040)	CS	ValueType	1	Supp23_ft
-# ConceptNameCodeSequence is already defined in 1999 base text
-# (0040,A043)	SQ	ConceptNameCodeSequence	1	Supp23_ft
-# ContinuationFlag renamed to ContinuityOfContent in final text
-(0040,A050)	CS	ContinuityOfContent	1	Supp23_ft
-(0040,A073)	SQ	VerifyingObserverSequence	1	Supp23_ft
-(0040,A075)	PN	VerifyingObserverName	1	Supp23_ft
-(0040,A088)	SQ	VerifyingObserverIdentificationCodeSequence	1	Supp23_ft
-# Changed VR from SQ to DT in final text
-(0040,A120)	DT	DateTime	1	Supp23_ft
-# Changed VR from SQ to UI in final text
-(0040,A124)	UI	UID	1	Supp23_ft
-# Attribute (0040,A168) is already defined in the 1999 base text as "ConceptCodeSequence".
-# leaving the original definition for now.
-# (0040,A168)	SQ	CodeValueSequence	1	Supp23_lb
-(0040,A300)	SQ	MeasuredValueSequence	1	Supp23_ft
-# Attribute (0040,A301) removed from final text
-# (0040,A301)	DS	NumericMeasurementValue	1	Supp23_lb
-(0040,A360)	SQ	PredecessorDocumentsSequence	1	Supp23_ft
-(0040,A370)	SQ	ReferencedRequestSequence	1	Supp23_ft
-(0040,A372)	SQ	PerformedProcedureCodeSequence	1	Supp23_ft
-(0040,A375)	SQ	CurrentRequestedProcedureEvidenceSequence	1	Supp23_ft
-(0040,A385)	SQ	PertinentOtherEvidenceSequence	1	Supp23_ft
-# Attribute (0040,A450) removed from final text
-# (0040,A450)	SQ	PurposeofReferenceCodeSequence	1	Supp23_lb
-(0040,A491)	CS	CompletionFlag	1	Supp23_ft
-(0040,A492)	LO	CompletionFlagDescription	1	Supp23_ft
-(0040,A493)	CS	VerificationFlag	1	Supp23_ft
-(0040,A504)	SQ	ContentTemplateSequence	1	Supp23_ft
-(0040,A525)	SQ	IdenticalDocumentsSequence	1	Supp23_ft
-(0040,A730)	SQ	ContentSequence	1	Supp23_ft
-(0040,DB00)	CS	TemplateIdentifier	1	Supp23_ft
-(0040,DB06)	DT	TemplateVersion	1	Supp23_ft
-(0040,DB07)	DT	TemplateLocalVersion	1	Supp23_ft
-(0040,DB0B)	CS	TemplateExtensionFlag	1	Supp23_ft
-(0040,DB0C)	UI	TemplateExtensionOrganizationUID	1	Supp23_ft
-(0040,DB0D)	UI	TemplateExtensionCreatorUID	1	Supp23_ft
-(0040,DB73)	US	ReferencedContentItemIdentifier	1-n	Supp23_ft
-#
-#---------------------------------------------------------------------------
-#
-# Supplement 33: Grayscale Softcopy Presentation State Storage
-# Final Text - 21 September 1999
-#
-# ReferencedFrameNumber is redefined here (VM now 1-n).
-(0008,1160)	IS	ReferencedFrameNumber	1-n	Supp33_ft
-# LUTData is redefined here as US/SS/OW where OW is the only VR that allows to encode 64K LUTs
-(0028,3006)	OW	LUTData	1-n	Supp33_ft
-# OverlayData is redefined here as OW/OB
-(6000-60ff,3000)	ox	OverlayData	1	Supp33_ft
-#
-(0018,1622)	US	ShutterPresentationValue	1	Supp33_ft
-(0018,1623)	US	ShutterOverlayGroup	1	Supp33_ft
-(0028,3110)	SQ	SoftcopyVOILUTSequence	1	Supp33_ft
-(0070,0001)	SQ	GraphicAnnotationSequence	1	Supp33_ft
-(0070,0002)	CS	GraphicLayer	1	Supp33_ft
-(0070,0003)	CS	BoundingBoxAnnotationUnits	1	Supp33_ft
-(0070,0004)	CS	AnchorPointAnnotationUnits	1	Supp33_ft
-(0070,0005)	CS	GraphicAnnotationUnits	1	Supp33_ft
-(0070,0006)	ST	UnformattedTextValue	1	Supp33_ft
-(0070,0008)	SQ	TextObjectSequence	1	Supp33_ft
-(0070,0009)	SQ	GraphicObjectSequence	1	Supp33_ft
-(0070,0010)	FL	BoundingBoxTopLeftHandCorner	2	Supp33_ft
-(0070,0011)	FL	BoundingBoxBottomRightHandCorner	2	Supp33_ft
-(0070,0012)	CS	BoundingBoxTextHorizontalJustification	1	Supp33_ft
-(0070,0014)	FL	AnchorPoint	2	Supp33_ft
-(0070,0015)	CS	AnchorPointVisibility	1	Supp33_ft
-(0070,0020)	US	GraphicDimensions	1	Supp33_ft
-(0070,0021)	US	NumberOfGraphicPoints	1	Supp33_ft
-(0070,0022)	FL	GraphicData	2-n	Supp33_ft
-(0070,0023)	CS	GraphicType	1	Supp33_ft
-(0070,0024)	CS	GraphicFilled	1	Supp33_ft
-(0070,0041)	CS	ImageHorizontalFlip	1	Supp33_ft
-(0070,0042)	US	ImageRotation	1	Supp33_ft
-(0070,0052)	SL	DisplayedAreaTopLeftHandCorner	2	Supp33_ft
-(0070,0053)	SL	DisplayedAreaBottomRightHandCorner	2	Supp33_ft
-(0070,005A)	SQ	DisplayedAreaSelectionSequence	1	Supp33_ft
-(0070,0060)	SQ	GraphicLayerSequence	1	Supp33_ft
-(0070,0062)	IS	GraphicLayerOrder	1	Supp33_ft
-(0070,0066)	US	GraphicLayerRecommendedDisplayGrayscaleValue	1	Supp33_ft
-(0070,0067)	US	GraphicLayerRecommendedDisplayRGBValue	3	Supp33_ft
-(0070,0068)	LO	GraphicLayerDescription	1	Supp33_ft
-(0070,0080)	CS	PresentationLabel	1	Supp33_ft
-(0070,0081)	LO	PresentationDescription	1	Supp33_ft
-(0070,0082)	DA	PresentationCreationDate	1	Supp33_ft
-(0070,0083)	TM	PresentationCreationTime	1	Supp33_ft
-(0070,0084)	PN	PresentationCreatorsName	1	Supp33_ft
-(0070,0100)	CS	PresentationSizeMode	1	Supp33_ft
-(0070,0101)	DS	PresentationPixelSpacing	2	Supp33_ft
-(0070,0102)	IS	PresentationPixelAspectRatio	2	Supp33_ft
-(0070,0103)	FL	PresentationPixelMagnificationRatio	1	Supp33_ft
-(5000-50ff,1001)	CS	CurveActivationLayer	1	Supp33_ft
-(6000-60ff,1001)	CS	OverlayActivationLayer	1	Supp33_ft
-#
-#---------------------------------------------------------------------------
-# 
-# Correction Proposal Package #6 (Final Texts, January 2000)
-#
-# CP 131
-(0008,0201)	SH	TimezoneOffsetFromUTC	1	CP_6
-#
-# CP 133
-(3006,0048)	IS	ContourNumber	1	CP_6
-(3006,0049)	IS	AttachedContours	1-n	CP_6
-#
-# CP 143 changes the definitions for Palette Color LUTs.
-# The new definitions are in line with the entries we had in the dictionary anyway.
-# (0028,1101)	xs	RedPaletteColorLookupTableDescriptor	3	CP_6
-# (0028,1102)	xs	GreenPaletteColorLookupTableDescriptor	3	CP_6
-# (0028,1103)	xs	BluePaletteColorLookupTableDescriptor	3	CP_6
-# (0028,1201)	OW	RedPaletteColorLookupTableData	1	CP_6 
-# (0028,1202)	OW	GreenPaletteColorLookupTableData	1	CP_6 
-# (0028,1203)	OW	BluePaletteColorLookupTableData	1	CP_6 
-#
-# CP 171
-(3002,000D)	DS	XRayImageReceptorTranslation	3	CP_6
-#
-#---------------------------------------------------------------------------
-#
-# Supplement 30: Waveform Interchange
-# Letter Ballot Text, 1 November 1999
-#
-# WARNING: These data dictionary attributes come from a DRAFT 
-# document and are likely to change.  Included for experimental
-# purposes only.
-#
-(0008,000A)	US	SequenceItemNumber	1	Supp30_lb
-# This redefines the name of "ImageDate" already defined in the 1999 base text.
-# Leaving the old name for now.
-#(0008,0023)	DA	ContentDate	1	Supp30_lb
-# This redefines the name of "ImageTime" already defined in the 1999 base text.
-# Leaving the old name for now.
-#(0008,0033)	TM	ContentTime	1	Supp30_lb
-(0008,114A)	SQ	ReferencedInstanceSequence	1	Supp30_lb
-(0008,114B)	LO	ReferenceDescription	1	Supp30_lb
-(0018,1067)	DS	ImageTriggerDelay	1	Supp30_lb
-(0018,1068)	DS	MultiplexGroupTimeOffset	1	Supp30_lb
-(0018,1069)	DS	TriggerTimeOffset	1	Supp30_lb
-(0018,106A)	CS	SynchronizationTrigger	1	Supp30_lb
-(0018,106C)	US	SynchronizationChannel	2	Supp30_lb
-(0018,106E)	UL	TriggerSamplePosition	1	Supp30_lb
-(0018,1800)	CS	AcquisitionTimeSynchronized	1	Supp30_lb
-(0018,1802)	CS	TimeDistributionProtocol	1	Supp30_lb
-(0018,1801)	SH	TimeSource	1	Supp30_lb
-(0018,1810)	DT	AcquisitionTimestamp	1	Supp30_lb
-(0020,0200)	UI	SynchronizationFrameofReferenceUID	1	Supp30_lb
-(003A,0004)	CS	WaveformOriginality	1	Supp30_lb
-(003A,0005)	US	NumberofChannels	1	Supp30_lb
-(003A,0010)	UL	NumberofSamples	1	Supp30_lb
-(003A,001A)	DS	SamplingFrequency	1	Supp30_lb
-(003A,0020)	SH	MultiplexGroupLabel	1	Supp30_lb
-(003A,0200)	SQ	ChannelDefinitionSequence	1	Supp30_lb
-# Name clash: (300A,0282) in the 1998 base text is also called Channel Number.
-(003A,0202)	IS	WVChannelNumber	1	Supp30_lb
-(003A,0203)	SH	ChannelLabel	1	Supp30_lb
-(003A,0205)	CS	ChannelStatus	1-n	Supp30_lb
-(003A,0208)	SQ	ChannelSourceSequence	1	Supp30_lb
-(003A,0209)	SQ	ChannelSourceModifiersSequence	1	Supp30_lb
-(003A,020A)	SQ	SourceWaveformSequence	1	Supp30_lb
-(003A,020C)	LO	ChannelDerivationDescription	1	Supp30_lb
-(003A,0210)	DS	ChannelSensitivity	1	Supp30_lb
-(003A,0211)	SQ	ChannelSensitivityUnits	1	Supp30_lb
-(003A,0212)	DS	ChannelSensitivityCorrectionFactor	1	Supp30_lb
-(003A,0213)	DS	ChannelBaseline	1	Supp30_lb
-(003A,0214)	DS	ChannelTimeSkew	1	Supp30_lb
-(003A,0215)	DS	ChannelSampleSkew	1	Supp30_lb
-(003A,0218)	DS	ChannelOffset	1	Supp30_lb
-(003A,021A)	US	WaveformBitsStored	1	Supp30_lb
-(003A,0220)	DS	FilterLowFrequency	1	Supp30_lb
-(003A,0221)	DS	FilterHighFrequency	1	Supp30_lb
-(003A,0222)	DS	NotchFilterFrequency	1	Supp30_lb
-(003A,0223)	DS	NotchFilterBandwidth	1	Supp30_lb
-(0040,A0B0)	US	ReferencedWaveformChannels	2-2n	Supp30_lb
-(0040,A130)	CS	TemporalRangeType	1	Supp30_lb
-(0040,A132)	UL	ReferencedSamplePositionsU	1-n	Supp30_lb
-(0040,A138)	DS	ReferencedTimeOffsets	1-n	Supp30_lb
-(0040,A13A)	DT	ReferencedDatetime	1-n	Supp30_lb
-(0040,A180)	US	AnnotationGroupNumber	1	Supp30_lb
-(0040,A195)	SQ	ConceptNameCodeSequenceModifier	1	Supp30_lb
-(0040,B020)	SQ	AnnotationSequence	1	Supp30_lb
-(5400,0100)	SQ	WaveformSequence	1	Supp30_lb
-(5400,0110)	ox	ChannelMinimumValue	1	Supp30_lb
-(5400,0112)	ox	ChannelMaximumValue	1	Supp30_lb
-(5400,1004)	US	WaveformBitsAllocated	1	Supp30_lb
-(5400,1006)	CS	WaveformSampleInterpretation	1	Supp30_lb
-(5400,100A)	ox	WaveformPaddingValue	1	Supp30_lb
-(5400,1010)	ox	WaveformData	1	Supp30_lb
-#
-#---------------------------------------------------------------------------
-#
-# Supplement 31: Security Enhancements One
-# Letter Ballot Text, 26 October 1999
-#
-# WARNING: These data dictionary attributes come from a DRAFT 
-# document and are likely to change.  Included for experimental
-# purposes only.
-#
-(0100,0410)	CS	SOPInstanceStatus	1	Supp31_lb
-(0100,0420)	DT	SOPAuthorizationDateandTime	1	Supp31_lb
-(0100,0424)	LT	SOPAuthorizationComment	1	Supp31_lb
-(0100,0426)	LO	AuthorizationEquipmentCertificationNumber	1	Supp31_lb
-#
-#---------------------------------------------------------------------------
-#
-# The following tags have been omitted from Supplement 15 and 32
-# (according to a posting in comp.protocols.dicom from 1999-12-20).
-# The VRs need to be confirmed by a CP.
-#
-(0040,050A)	LO	SpecimenAccessionNumber	1	CP_xxx
-(0040,0550)	SQ	SpecimenSequence	1	CP_xxx
-(0040,0551)	LO	SpecimenIdentifier	1	CP_xxx
-(0040,059A)	SQ	SpecimenTypeCodeSequence	1	CP_xxx
+
 #
 # EOF
 #
