@@ -41,13 +41,13 @@ preplock: preplock.o
 	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ preplock.o $(LIBS)
 
 readoviw: readoviw.o
-	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ readoviw.o $(LOCALLIBS) $(LIBS)
+	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ readoviw.o $(LOCALLIBS) $(MATHLIBS) $(LIBS)
 
 readwlst: readwlst.o
-	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ readwlst.o $(LOCALLIBS) $(LIBS)
+	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ readwlst.o $(LOCALLIBS) $(MATHLIBS) $(LIBS)
 
 writwlst: writwlst.o
-	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ writwlst.o $(LOCALLIBS) $(LIBS)
+	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ writwlst.o $(LOCALLIBS) $(MATHLIBS) $(LIBS)
 
 install: all
 	$(configdir)/mkinstalldirs $(bindir)

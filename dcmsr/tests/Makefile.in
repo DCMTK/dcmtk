@@ -32,7 +32,7 @@ all: $(progs)
 
 
 mkreport: mkreport.o
-	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ mkreport.o $(LOCALLIBS) $(LIBS)
+	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ mkreport.o $(LOCALLIBS) $(MATHLIBS) $(LIBS)
 
 install: all
 	echo Nothing to do for install

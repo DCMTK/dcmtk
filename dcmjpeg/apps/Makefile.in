@@ -48,7 +48,7 @@ progs= dcmdjpeg dcmcjpeg dcmj2pnm dcmmkdir
 all: $(progs)
 
 dcmdjpeg: dcmdjpeg.o
-	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ $@.o  $(LOCALLIBS) $(LIBS)
+	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ $@.o  $(LOCALLIBS) $(MATHLIBS) $(LIBS)
 
 dcmcjpeg: dcmcjpeg.o
 	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ $@.o  $(LOCALLIBS) $(MATHLIBS) $(LIBS)

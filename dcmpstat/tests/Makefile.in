@@ -40,7 +40,7 @@ all: $(progs)
 
 
 msgserv: msgserv.o
-	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ msgserv.o $(LOCALLIBS) $(LIBS)
+	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ msgserv.o $(LOCALLIBS) $(MATHLIBS) $(LIBS)
 
 install: all
 	echo Nothing to do for install
