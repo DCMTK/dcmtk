@@ -57,9 +57,9 @@
 **      Module Prefix: DIMSE_
 **
 ** Last Update:         $Author: meichel $
-** Update Date:         $Date: 2003-06-02 16:44:11 $
+** Update Date:         $Date: 2003-06-04 14:27:46 $
 ** Source File:         $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/libsrc/dimse.cc,v $
-** CVS/RCS Revision:    $Revision: 1.35 $
+** CVS/RCS Revision:    $Revision: 1.36 $
 ** Status:              $State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -577,7 +577,7 @@ sendStraightFileData(T_ASC_Association * assoc, const char *dataFileName,
     unsigned long bufLen;
     FILE *f;
     long nbytes;
-    int last;
+    OFBool last;
     unsigned long bytesTransmitted = 0;
     OFCondition dulCond = EC_Normal;
     DUL_PDVLIST pdvList;
@@ -660,7 +660,7 @@ sendDcmDataset(T_ASC_Association * assoc, DcmDataset * obj,
     OFCondition econd = EC_Normal;
     unsigned char *buf;
     unsigned long bufLen;
-    int last = OFFalse;
+    OFBool last = OFFalse;
     OFBool written = OFFalse;
     Uint32 rtnLength;
     Uint32 bytesTransmitted = 0;
@@ -1764,7 +1764,10 @@ void DIMSE_warning(T_ASC_Association *assoc,
 /*
 ** CVS Log
 ** $Log: dimse.cc,v $
-** Revision 1.35  2003-06-02 16:44:11  meichel
+** Revision 1.36  2003-06-04 14:27:46  meichel
+** Cleaned up usage of boolean constants
+**
+** Revision 1.35  2003/06/02 16:44:11  meichel
 ** Renamed local variables to avoid name clashes with STL
 **
 ** Revision 1.34  2002/11/27 13:04:41  meichel

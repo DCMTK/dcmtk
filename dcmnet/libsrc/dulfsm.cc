@@ -46,9 +46,9 @@
 ** Author, Date:	Stephen M. Moore, 15-Apr-93
 ** Intent:		Define tables and provide functions that implement
 **			the DICOM Upper Layer (DUL) finite state machine.
-** Last Update:		$Author: meichel $, $Date: 2003-06-02 16:44:11 $
+** Last Update:		$Author: meichel $, $Date: 2003-06-04 14:27:46 $
 ** Source File:		$RCSfile: dulfsm.cc,v $
-** Revision:		$Revision: 1.49 $
+** Revision:		$Revision: 1.50 $
 ** Status:		$State: Exp $
 */
 
@@ -2848,7 +2848,7 @@ sendPDataTCP(PRIVATE_ASSOCIATIONKEY ** association,
         pdvLength,
         maxLength;
 
-    int localLast;
+    OFBool localLast;
     unsigned char *p;
     DUL_DATAPDU dataPDU;
     OFBool firstTrip;
@@ -3872,7 +3872,10 @@ destroyUserInformationLists(DUL_USERINFO * userInfo)
 /*
 ** CVS Log
 ** $Log: dulfsm.cc,v $
-** Revision 1.49  2003-06-02 16:44:11  meichel
+** Revision 1.50  2003-06-04 14:27:46  meichel
+** Cleaned up usage of boolean constants
+**
+** Revision 1.49  2003/06/02 16:44:11  meichel
 ** Renamed local variables to avoid name clashes with STL
 **
 ** Revision 1.48  2002/12/11 13:10:15  meichel
