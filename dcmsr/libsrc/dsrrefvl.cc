@@ -23,8 +23,8 @@
  *    classes: DSRReferenceValue
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-10-13 07:52:23 $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  Update Date:      $Date: 2000-10-16 12:08:02 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -90,13 +90,18 @@ OFBool DSRReferenceValue::isValid() const
 
 
 E_Condition DSRReferenceValue::print(ostream &stream,
-                                     const size_t /* flags */) const
+                                     const size_t flags) const
 {
     const char *string = dcmFindNameOfUID(SOPClassUID.c_str());
+    stream << "(";
     if (string != NULL)
-        stream << " = " << string;
+        stream << string;
     else
-        stream << " = unknown SOP class";
+        stream << "\"" << SOPClassUID << "\"";
+    stream << ",";
+    if (flags & DSRTypes::PF_printSOPInstanceUID)
+        stream << "\"" << SOPInstanceUID << "\"";
+    stream << ")";
     return EC_Normal;
 }
 
@@ -265,7 +270,12 @@ OFBool DSRReferenceValue::checkSOPInstanceUID(const OFString &sopInstanceUID) co
 /*
  *  CVS/RCS Log:
  *  $Log: dsrrefvl.cc,v $
- *  Revision 1.1  2000-10-13 07:52:23  joergr
+ *  Revision 1.2  2000-10-16 12:08:02  joergr
+ *  Reformatted print output.
+ *  Added new options: number nested items instead of indenting them, print SOP
+ *  instance UID of referenced composite objects.
+ *
+ *  Revision 1.1  2000/10/13 07:52:23  joergr
  *  Added new module 'dcmsr' providing access to DICOM structured reporting
  *  documents (supplement 23).  Doc++ documentation not yet completed.
  *
