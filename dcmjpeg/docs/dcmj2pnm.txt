@@ -74,7 +74,10 @@ image processing options:
                                 scale x axis to n pixels, auto-compute y axis
     +Syv  --scale-y-size        [n]umber : integer
                                 scale y axis to n pixels, auto-compute x axis
-  VOI windowing:
+  modality LUT transformation:
+    -M    --no-modality         ignore stored modality LUT transformation
+    +M    --use-modality        use modality LUT transformation (default)
+  VOI LUT transformation:
     -W    --no-windowing        no VOI windowing (default)
     +Wi   --use-window          [n]umber : integer
                                 use the n-th VOI window from image file
