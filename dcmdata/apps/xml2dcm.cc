@@ -22,9 +22,9 @@
  *  Purpose: Convert XML document to DICOM file or data set
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-05-20 08:52:56 $
+ *  Update Date:      $Date: 2003-06-17 17:36:04 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/apps/xml2dcm.cc,v $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -773,7 +773,7 @@ int main(int argc, char *argv[])
         if (opt_verbose)
             COUT << "reading XML input file: " << opt_ifname << endl;
         /* read XML file and feed data into DICOM fileformat */
-        result = readXmlFile(opt_ifname, fileformat, xfer, opt_namespace, opt_validate, opt_verbose, opt_debug);
+        result = readXmlFile(opt_ifname, fileformat, xfer, opt_namespace, opt_validate, opt_verbose, opt_debug != 0);
         if (result.good())
         {
             if (opt_verbose)
@@ -826,7 +826,11 @@ int main(int, char *[])
 /*
  * CVS/RCS Log:
  * $Log: xml2dcm.cc,v $
- * Revision 1.3  2003-05-20 08:52:56  joergr
+ * Revision 1.4  2003-06-17 17:36:04  joergr
+ * Distinguish more strictly between OFBool and int (required when HAVE_CXX_BOOL
+ * is defined).
+ *
+ * Revision 1.3  2003/05/20 08:52:56  joergr
  * iMinor code corrections.
  *
  * Revision 1.2  2003/04/22 08:25:48  joergr
