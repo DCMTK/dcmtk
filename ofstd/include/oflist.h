@@ -9,10 +9,10 @@
 **	Defines a template list class with interfaces similar to the
 **      C++ Standard
 **
-** Last Update:		$Author: hewett $
-** Update Date:		$Date: 1997-09-11 15:43:15 $
+** Last Update:		$Author: meichel $
+** Update Date:		$Date: 1997-11-10 16:31:19 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/include/Attic/oflist.h,v $
-** CVS/RCS Revision:	$Revision: 1.4 $
+** CVS/RCS Revision:	$Revision: 1.5 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -76,6 +76,7 @@ struct OFListLinkBase
     OFListLinkBase * prev;
     OFBool dummy;
     OFListLinkBase() { next = prev = NULL; dummy = OFFalse; }
+    virtual ~OFListLinkBase() {}
 };
 
 
@@ -106,6 +107,7 @@ struct OFListLink : public OFListLinkBase
 {
     T info;
     OFListLink(const T & i) : OFListLinkBase(), info(i)  { }
+    virtual ~OFListLink() {}
 };
 
 
@@ -397,7 +399,11 @@ void OF_ListRemoveIf(OFList<T> & c, Predicate pred)
 /*
 ** CVS/RCS Log:
 ** $Log: oflist.h,v $
-** Revision 1.4  1997-09-11 15:43:15  hewett
+** Revision 1.5  1997-11-10 16:31:19  meichel
+** Corrected bug possibly causing a memory leak in OFList.
+**   Added virtual destructors to classes OFListLinkBase and OFListLink.
+**
+** Revision 1.4  1997/09/11 15:43:15  hewett
 ** Minor changes to eliminate warnings when compiled under the
 ** Signus GnuWin32 envionment.  Changed order of initialisers
 ** for OFListLink and OFStackLink.  Make ~OFLisBase and ~OFStackBase
