@@ -1,21 +1,35 @@
 /*
-**
-** Author:  Joerg Riesmeier
-** Created: 06.01.97
-**
-** Module:  diargimg.cc
-**
-** Purpose: DiARGBImage (Source) - UNTESTED !!! 
-**
-** Last Update:      $Author: joergr $
-** Update Date:      $Date: 1998-07-01 08:39:34 $
-** Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/libsrc/diargimg.cc,v $
-** CVS/RCS Revision: $Revision: 1.4 $
-** Status:           $State: Exp $
-**
-** CVS/RCS Log at end of file
-**
-*/
+ *
+ *  Copyright (C) 1997-99, OFFIS
+ *
+ *  This software and supporting documentation were developed by
+ *
+ *    Kuratorium OFFIS e.V.
+ *    Healthcare Information and Communication Systems
+ *    Escherweg 2
+ *    D-26121 Oldenburg, Germany
+ *
+ *  THIS SOFTWARE IS MADE AVAILABLE,  AS IS,  AND OFFIS MAKES NO  WARRANTY
+ *  REGARDING  THE  SOFTWARE,  ITS  PERFORMANCE,  ITS  MERCHANTABILITY  OR
+ *  FITNESS FOR ANY PARTICULAR USE, FREEDOM FROM ANY COMPUTER DISEASES  OR
+ *  ITS CONFORMITY TO ANY SPECIFICATION. THE ENTIRE RISK AS TO QUALITY AND
+ *  PERFORMANCE OF THE SOFTWARE IS WITH THE USER.
+ *
+ *  Module:  dcmimage
+ *
+ *  Author:  Joerg Riesmeier
+ *
+ *  Purpose: DiARGBImage (Source) - UNTESTED !!! 
+ *
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 1998-11-27 14:25:09 $
+ *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/libsrc/diargimg.cc,v $
+ *  CVS/RCS Revision: $Revision: 1.5 $
+ *  Status:           $State: Exp $
+ *
+ *  CVS/RCS Log at end of file
+ *
+ */
 
 
 #include "osconfig.h"
@@ -33,20 +47,20 @@
  *----------------*/
 
 DiARGBImage::DiARGBImage(const DiDocument *docu, const EI_Status status)
-  : DiColorImage(docu, status)
+  : DiColorImage(docu, status, 4)
 {
-    if ((Document != NULL) && (InputData != NULL) && (Status == EIS_Normal))
+    if ((Document != NULL) && (InputData != NULL) && (ImageStatus == EIS_Normal))
     {
         if (BitsStored <= MAX_TABLE_ENTRY_SIZE)                         // color depth <= 16
         {
             DiLookupTable *palette[3];                                  // create color luts
             palette[0] = new DiLookupTable(Document, DCM_RedPaletteColorLookupTableDescriptor,
-                DCM_RedPaletteColorLookupTableData, &Status);
+                DCM_RedPaletteColorLookupTableData, &ImageStatus);
             palette[1] = new DiLookupTable(Document, DCM_GreenPaletteColorLookupTableDescriptor,
-                DCM_GreenPaletteColorLookupTableData, &Status);
+                DCM_GreenPaletteColorLookupTableData, &ImageStatus);
             palette[2] = new DiLookupTable(Document, DCM_BluePaletteColorLookupTableDescriptor,
-                DCM_BluePaletteColorLookupTableData, &Status);
-            if ((Status == EIS_Normal) && (palette[0] != NULL) && (palette[1] != NULL) && (palette[2] != NULL))
+                DCM_BluePaletteColorLookupTableData, &ImageStatus);
+            if ((ImageStatus == EIS_Normal) && (palette[0] != NULL) && (palette[1] != NULL) && (palette[2] != NULL))
             {
                 BitsPerSample = BitsStored;
                 for (int jj = 0; jj < 3; jj++)                          // determine maximum bit count
@@ -58,38 +72,39 @@ DiARGBImage::DiARGBImage(const DiDocument *docu, const EI_Status status)
                 {
                     case EPR_Uint8:
                         if (BitsPerSample <= 8)
-                            InterData = new DiARGBPixelTemplate<Uint8, Uint8>(Document, InputData, palette, Status,
+                            InterData = new DiARGBPixelTemplate<Uint8, Uint8>(Document, InputData, palette, ImageStatus,
                                 BitsStored);
                         else
-                            InterData = new DiARGBPixelTemplate<Uint8, Uint16>(Document, InputData, palette, Status,
+                            InterData = new DiARGBPixelTemplate<Uint8, Uint16>(Document, InputData, palette, ImageStatus,
                                 BitsStored);
                         break;
                     case EPR_Sint8:
                         if (BitsPerSample <= 8)
-                            InterData = new DiARGBPixelTemplate<Sint8, Uint8>(Document, InputData, palette, Status,
+                            InterData = new DiARGBPixelTemplate<Sint8, Uint8>(Document, InputData, palette, ImageStatus,
                                 BitsStored);
                         else
-                            InterData = new DiARGBPixelTemplate<Sint8, Uint16>(Document, InputData, palette, Status,
+                            InterData = new DiARGBPixelTemplate<Sint8, Uint16>(Document, InputData, palette, ImageStatus,
                                 BitsStored);
                         break;
                     case EPR_Uint16:
                         if (BitsPerSample <= 8)
-                            InterData = new DiARGBPixelTemplate<Uint16, Uint8>(Document, InputData, palette, Status,
+                            InterData = new DiARGBPixelTemplate<Uint16, Uint8>(Document, InputData, palette, ImageStatus,
                                 BitsStored);
                         else
-                            InterData = new DiARGBPixelTemplate<Uint16, Uint16>(Document, InputData, palette, Status,
+                            InterData = new DiARGBPixelTemplate<Uint16, Uint16>(Document, InputData, palette, ImageStatus,
                                 BitsStored);
                         break;
                     case EPR_Sint16:
                         if (BitsPerSample <= 8)
-                            InterData = new DiARGBPixelTemplate<Sint16, Uint8>(Document, InputData, palette, Status,
+                            InterData = new DiARGBPixelTemplate<Sint16, Uint8>(Document, InputData, palette, ImageStatus,
                                 BitsStored);
                         else
-                            InterData = new DiARGBPixelTemplate<Sint16, Uint16>(Document, InputData, palette, Status,
+                            InterData = new DiARGBPixelTemplate<Sint16, Uint16>(Document, InputData, palette, ImageStatus,
                                 BitsStored);
                         break;
                     default: 
-                        cerr << "WARNING: invalid value for inter-representation !";
+                        if (DicomImageClass::DebugLevel >= DicomImageClass::DL_Warnings)
+                            cerr << "WARNING: invalid value for inter-representation !";
                 }
                 deleteInputData();                          // input data is no longer needed
                 checkInterData();
@@ -100,9 +115,12 @@ DiARGBImage::DiARGBImage(const DiDocument *docu, const EI_Status status)
         }
         else                                                // color depth > 16
         {
-            Status = EIS_InvalidValue;
-            cerr << "ERROR: invalid value for 'BitsStored' (" << BitsStored << ") ";
-            cerr << "... exceeds maximum palette entry size of " << MAX_TABLE_ENTRY_SIZE << " bits !" << endl;
+            ImageStatus = EIS_InvalidValue;
+            if (DicomImageClass::DebugLevel >= DicomImageClass::DL_Errors)
+            {
+                cerr << "ERROR: invalid value for 'BitsStored' (" << BitsStored << ") ";
+                cerr << "... exceeds maximum palette entry size of " << MAX_TABLE_ENTRY_SIZE << " bits !" << endl;
+            }
         }
     }
 } 
@@ -121,7 +139,12 @@ DiARGBImage::~DiARGBImage()
 **
 ** CVS/RCS Log:
 ** $Log: diargimg.cc,v $
-** Revision 1.4  1998-07-01 08:39:34  joergr
+** Revision 1.5  1998-11-27 14:25:09  joergr
+** Added copyright message.
+** Renamed variable 'Status' to 'ImageStatus' because of possible conflicts
+** with X windows systems.
+**
+** Revision 1.4  1998/07/01 08:39:34  joergr
 ** Minor changes to avoid compiler warnings (gcc 2.8.1 with additional
 ** options), e.g. add copy constructors.
 **
