@@ -9,9 +9,9 @@
 **
 **
 ** Last Update:		$Author: hewett $
-** Update Date:		$Date: 1996-09-24 16:13:50 $
+** Update Date:		$Date: 1997-03-27 15:47:25 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/apps/Attic/ds2file.cc,v $
-** CVS/RCS Revision:	$Revision: 1.5 $
+** CVS/RCS Revision:	$Revision: 1.6 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -57,6 +57,7 @@ usage()
 	   "    +te   write with little-endian explicit transfer syntax\n"
 	   "    +tb   write with big-endian explicit transfer syntax\n"
 	   "  other test/debug options:\n"
+	   "    -u    disable generation of unknown VR (UN)\n"
 	   "    +V    verbose mode, print actions\n"
 	   "    +v    validate input data (currently almost useless)\n"
 	   "    +dn   set debug level to n (n=1..9)\n");
@@ -176,6 +177,14 @@ int main(int argc, char *argv[])
 		    return 1;
 		}
 		break;
+	    case 'u':
+		if (arg[0] == '-' && arg[2] == '\0') {
+		    dcmEnableUnknownVRGeneration = FALSE;
+		} else {
+		    fprintf(stderr, "unknown option: %s\n", arg);
+		    return 1;
+		}
+		break;
 	    case 'v':
 		if (arg[0] == '+' && arg[2] == '\0') {
 		    verifymode = TRUE;
@@ -283,7 +292,11 @@ int main(int argc, char *argv[])
 /*
 ** CVS/RCS Log:
 ** $Log: ds2file.cc,v $
-** Revision 1.5  1996-09-24 16:13:50  hewett
+** Revision 1.6  1997-03-27 15:47:25  hewett
+** Added command line switche to allow generation of UN to be
+** disabled (it is enabled by default).
+**
+** Revision 1.5  1996/09/24 16:13:50  hewett
 ** Added preliminary support for the Macintosh environment (GUSI library).
 **
 ** Revision 1.4  1996/03/12 15:11:38  hewett

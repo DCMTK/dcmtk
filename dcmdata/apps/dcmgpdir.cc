@@ -11,9 +11,9 @@
 **
 **
 ** Last Update:		$Author: hewett $
-** Update Date:		$Date: 1997-03-26 17:38:14 $
+** Update Date:		$Date: 1997-03-27 15:47:24 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/apps/dcmgpdir.cc,v $
-** CVS/RCS Revision:	$Revision: 1.1 $
+** CVS/RCS Revision:	$Revision: 1.2 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -84,6 +84,7 @@ usage()
 "                       (default: if descriptor file presend add \"" << scsfsdf << "\")\n"
 "    -w                 do not write out dicomdir (default: do write)\n"
 "  other test/debug options:\n"
+"    -u    disable generation of unknown VR (UN)\n"
 "    +V    verbose mode\n"
 "    +dn   set debug level to n (n=1..9)\n";
 }
@@ -195,6 +196,14 @@ int main(int argc, char *argv[])
 	    case 'w':
 		if (arg[0] == '-' && arg[2] == '\0') {
 		    writeDicomdir = FALSE;
+		} else {
+		    fprintf(stderr, "unknown option: %s\n", arg);
+		    return 1;
+		}
+		break;
+	    case 'u':
+		if (arg[0] == '-' && arg[2] == '\0') {
+		    dcmEnableUnknownVRGeneration = FALSE;
 		} else {
 		    fprintf(stderr, "unknown option: %s\n", arg);
 		    return 1;
@@ -1025,7 +1034,11 @@ createDicomdirFromFiles(char* fileNames[], int numberOfFileNames)
 /*
 ** CVS/RCS Log:
 ** $Log: dcmgpdir.cc,v $
-** Revision 1.1  1997-03-26 17:38:14  hewett
+** Revision 1.2  1997-03-27 15:47:24  hewett
+** Added command line switche to allow generation of UN to be
+** disabled (it is enabled by default).
+**
+** Revision 1.1  1997/03/26 17:38:14  hewett
 ** Initial version.
 **
 **
