@@ -46,9 +46,9 @@
 ** Author, Date:	Stephen M. Moore, 15-Apr-93
 ** Intent:		Define tables and provide functions that implement
 **			the DICOM Upper Layer (DUL) finite state machine.
-** Last Update:		$Author: meichel $, $Date: 2000-03-03 14:11:24 $
+** Last Update:		$Author: meichel $, $Date: 2000-03-08 16:32:04 $
 ** Source File:		$RCSfile: dulfsm.cc,v $
-** Revision:		$Revision: 1.32 $
+** Revision:		$Revision: 1.33 $
 ** Status:		$State: Exp $
 */
 
@@ -82,8 +82,14 @@ END_EXTERN_C
 #include <time.h>
 
 BEGIN_EXTERN_C
+#ifdef HAVE_NETINET_IN_SYSTM_H
+#include <netinet/in_systm.h>   /* prerequisite for netinet/in.h on NeXT */
+#endif
+#ifdef HAVE_NETINET_IN_H
+#include <netinet/in.h>         /* prerequisite for netinet/tcp.h on NeXT */
+#endif
 #ifdef HAVE_NETINET_TCP_H
-#include <netinet/tcp.h>   /* for TCP_NODELAY */
+#include <netinet/tcp.h>        /* for TCP_NODELAY */
 #endif
 END_EXTERN_C
 
@@ -4139,7 +4145,11 @@ DULPRV_translateAssocReq(unsigned char *buffer,
 /*
 ** CVS Log
 ** $Log: dulfsm.cc,v $
-** Revision 1.32  2000-03-03 14:11:24  meichel
+** Revision 1.33  2000-03-08 16:32:04  meichel
+** Now including netinet/in_systm.h and netinet/in.h wherever netinet/tcp.h
+**   is used. Required for NeXTStep 3.3.
+**
+** Revision 1.32  2000/03/03 14:11:24  meichel
 ** Implemented library support for redirecting error messages into memory
 **   instead of printing them to stdout/stderr for GUI applications.
 **

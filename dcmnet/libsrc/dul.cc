@@ -54,9 +54,9 @@
 ** Author, Date:	Stephen M. Moore, 14-Apr-93
 ** Intent:		This module contains the public entry points for the
 **			DICOM Upper Layer (DUL) protocol package.
-** Last Update:		$Author: meichel $, $Date: 2000-03-06 16:11:46 $
+** Last Update:		$Author: meichel $, $Date: 2000-03-08 16:32:03 $
 ** Source File:		$RCSfile: dul.cc,v $
-** Revision:		$Revision: 1.25 $
+** Revision:		$Revision: 1.26 $
 ** Status:		$State: Exp $
 */
 
@@ -94,8 +94,14 @@ END_EXTERN_C
 #include <time.h>
 
 BEGIN_EXTERN_C
+#ifdef HAVE_NETINET_IN_SYSTM_H
+#include <netinet/in_systm.h>   /* prerequisite for netinet/in.h on NeXT */
+#endif
+#ifdef HAVE_NETINET_IN_H
+#include <netinet/in.h>         /* prerequisite for netinet/tcp.h on NeXT */
+#endif
 #ifdef HAVE_NETINET_TCP_H
-#include <netinet/tcp.h>   /* for TCP_NODELAY */
+#include <netinet/tcp.h>        /* for TCP_NODELAY */
 #endif
 END_EXTERN_C
 
@@ -2330,7 +2336,11 @@ clearPresentationContext(LST_HEAD ** l)
 /*
 ** CVS Log
 ** $Log: dul.cc,v $
-** Revision 1.25  2000-03-06 16:11:46  meichel
+** Revision 1.26  2000-03-08 16:32:03  meichel
+** Now including netinet/in_systm.h and netinet/in.h wherever netinet/tcp.h
+**   is used. Required for NeXTStep 3.3.
+**
+** Revision 1.25  2000/03/06 16:11:46  meichel
 ** Avoiding to include <sys/socket.h> directly, using dcompat.h instead.
 **   <sys/socket.h> is not protected against multiple inclusion on Ultrix.
 **
