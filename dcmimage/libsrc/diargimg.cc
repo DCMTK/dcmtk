@@ -22,9 +22,9 @@
  *  Purpose: DiARGBImage (Source) - UNTESTED !!! 
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1998-12-14 17:09:44 $
+ *  Update Date:      $Date: 1998-12-16 16:03:47 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/libsrc/diargimg.cc,v $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -55,11 +55,11 @@ DiARGBImage::DiARGBImage(const DiDocument *docu, const EI_Status status)
         {
             DiLookupTable *palette[3];                                  // create color luts
             palette[0] = new DiLookupTable(Document, DCM_RedPaletteColorLookupTableDescriptor,
-                DCM_RedPaletteColorLookupTableData, &ImageStatus);
+                DCM_RedPaletteColorLookupTableData, DcmTagKey(0,0), &ImageStatus);
             palette[1] = new DiLookupTable(Document, DCM_GreenPaletteColorLookupTableDescriptor,
-                DCM_GreenPaletteColorLookupTableData, &ImageStatus);
+                DCM_GreenPaletteColorLookupTableData, DcmTagKey(0,0), &ImageStatus);
             palette[2] = new DiLookupTable(Document, DCM_BluePaletteColorLookupTableDescriptor,
-                DCM_BluePaletteColorLookupTableData, &ImageStatus);
+                DCM_BluePaletteColorLookupTableData, DcmTagKey(0,0), &ImageStatus);
             if ((ImageStatus == EIS_Normal) && (palette[0] != NULL) && (palette[1] != NULL) && (palette[2] != NULL))
             {
                 BitsPerSample = BitsStored;
@@ -139,7 +139,10 @@ DiARGBImage::~DiARGBImage()
 **
 ** CVS/RCS Log:
 ** $Log: diargimg.cc,v $
-** Revision 1.6  1998-12-14 17:09:44  joergr
+** Revision 1.7  1998-12-16 16:03:47  joergr
+** Added explanation string to LUT class (retrieved from dataset).
+**
+** Revision 1.6  1998/12/14 17:09:44  joergr
 ** Added support for signed values as second entry in look-up tables
 ** (= first value mapped).
 **

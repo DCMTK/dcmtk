@@ -22,9 +22,9 @@
  *  Purpose: DicomPaletteImage (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1998-12-14 17:09:34 $
+ *  Update Date:      $Date: 1998-12-16 16:04:01 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/libsrc/dipalimg.cc,v $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -58,18 +58,21 @@ DiPaletteImage::DiPaletteImage(const DiDocument *docu, const EI_Status status)
             DiLookupTable *palette[3];
             if (Document->getFlags() & CIF_WrongPaletteAttributeTags)
             {
-                palette[0] = new DiLookupTable(Document, DcmTagKey(0x0028, 0x1111), DcmTagKey(0x0028, 0x1211), &ImageStatus);
-                palette[1] = new DiLookupTable(Document, DcmTagKey(0x0028, 0x1112), DcmTagKey(0x0028, 0x1212), &ImageStatus);
-                palette[2] = new DiLookupTable(Document, DcmTagKey(0x0028, 0x1113), DcmTagKey(0x0028, 0x1213), &ImageStatus);
+                palette[0] = new DiLookupTable(Document, DcmTagKey(0x0028, 0x1111), DcmTagKey(0x0028, 0x1211),
+                    DcmTagKey(0,0), &ImageStatus);
+                palette[1] = new DiLookupTable(Document, DcmTagKey(0x0028, 0x1112), DcmTagKey(0x0028, 0x1212),
+                    DcmTagKey(0,0), &ImageStatus);
+                palette[2] = new DiLookupTable(Document, DcmTagKey(0x0028, 0x1113), DcmTagKey(0x0028, 0x1213),
+                    DcmTagKey(0,0), &ImageStatus);
             } 
             else
             {
                 palette[0] = new DiLookupTable(Document, DCM_RedPaletteColorLookupTableDescriptor,
-                    DCM_RedPaletteColorLookupTableData, &ImageStatus);
+                    DCM_RedPaletteColorLookupTableData, DcmTagKey(0,0), &ImageStatus);
                 palette[1] = new DiLookupTable(Document, DCM_GreenPaletteColorLookupTableDescriptor,
-                    DCM_GreenPaletteColorLookupTableData, &ImageStatus);
+                    DCM_GreenPaletteColorLookupTableData, DcmTagKey(0,0), &ImageStatus);
                 palette[2] = new DiLookupTable(Document, DCM_BluePaletteColorLookupTableDescriptor,
-                    DCM_BluePaletteColorLookupTableData, &ImageStatus);
+                    DCM_BluePaletteColorLookupTableData, DcmTagKey(0,0), &ImageStatus);
             }
             if ((ImageStatus == EIS_Normal) && (palette[0] != NULL) && (palette[1] != NULL) && (palette[2] != NULL))
             {
@@ -146,7 +149,10 @@ DiPaletteImage::~DiPaletteImage()
 ** CVS/RCS Log:
 
 ** $Log: dipalimg.cc,v $
-** Revision 1.7  1998-12-14 17:09:34  joergr
+** Revision 1.8  1998-12-16 16:04:01  joergr
+** Added explanation string to LUT class (retrieved from dataset).
+**
+** Revision 1.7  1998/12/14 17:09:34  joergr
 ** Added support for signed values as second entry in look-up tables
 ** (= first value mapped).
 **
