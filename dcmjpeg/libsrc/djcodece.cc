@@ -22,9 +22,9 @@
  *  Purpose: abstract codec class for JPEG encoders.
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-01-25 13:44:53 $
+ *  Update Date:      $Date: 2002-05-24 14:59:51 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmjpeg/libsrc/djcodece.cc,v $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -161,7 +161,7 @@ OFCondition DJCodecEncoder::encode(
     }
 
     // update image type
-    if (result.good()) result = updateImageType((DcmItem *)dataset);
+    if (result.good()) result = DcmCodec::updateImageType((DcmItem *)dataset);
 
     // determine compressed bit depth passed to JPEG codec
     Uint16 compressedBits = djcp->getForcedBitDepth();
@@ -182,12 +182,12 @@ OFCondition DJCodecEncoder::encode(
       if (isLosslessProcess())
       {
         // lossless process - create new UID if mode is EUC_always or if we're converting to Secondary Capture
-        if (djcp->getConvertToSC() || (djcp->getUIDCreation() == EUC_always)) result = newInstance((DcmItem *)dataset);
+        if (djcp->getConvertToSC() || (djcp->getUIDCreation() == EUC_always)) result = DcmCodec::newInstance((DcmItem *)dataset);
       }
       else
       {
         // lossy process - create new UID unless mode is EUC_never and we're not converting to Secondary Capture
-        if (djcp->getConvertToSC() || (djcp->getUIDCreation() != EUC_never)) result = newInstance((DcmItem *)dataset);
+        if (djcp->getConvertToSC() || (djcp->getUIDCreation() != EUC_never)) result = DcmCodec::newInstance((DcmItem *)dataset);
       
         // update lossy compression ratio
         if (result.good()) result = updateLossyCompressionRatio((DcmItem *)dataset, compressionRatio);
@@ -197,7 +197,7 @@ OFCondition DJCodecEncoder::encode(
     // convert to Secondary Capture if requested by user.  
     // This method creates a new SOP class UID, so it should be executed
     // after the call to newInstance() which creates a Source Image Sequence.
-    if (result.good() && djcp->getConvertToSC()) result = convertToSecondaryCapture((DcmItem *)dataset);
+    if (result.good() && djcp->getConvertToSC()) result = DcmCodec::convertToSecondaryCapture((DcmItem *)dataset);
   }
 
   return result;
@@ -213,7 +213,7 @@ OFCondition DJCodecEncoder::encodeColorImage(
         double& compressionRatio) const
 {
   OFCondition result = EC_Normal;
-  DJOffsetList offsetList;
+  DcmOffsetList offsetList;
   DcmPixelSequence *pixelSequence = NULL;
   DcmPixelItem *offsetTable = NULL; 
   unsigned short bitsPerSample = 0;
@@ -334,7 +334,7 @@ OFCondition DJCodecEncoder::encodeColorImage(
           // store frame
           if (result.good())
           {
-            result = storeCompressedFrame(pixelSequence, offsetList, jpegData, jpegLen, cp);
+            result = pixelSequence->storeCompressedFrame(offsetList, jpegData, jpegLen, cp->getFragmentSize());
           }
 
           // delete block of JPEG data
@@ -357,7 +357,7 @@ OFCondition DJCodecEncoder::encodeColorImage(
   if ((result.good()) && (cp->getCreateOffsetTable()))
   {
     // create offset table
-    result = createOffsetTable(offsetList, offsetTable);
+    result = offsetTable->createOffsetTable(offsetList);
   }
 
   if (result.good())
@@ -400,171 +400,6 @@ OFCondition DJCodecEncoder::encodeColorImage(
 
   delete dimage;
   return result;
-}
-
-
-OFCondition DJCodecEncoder::createOffsetTable(
-        DJOffsetList& offsetList, 
-        DcmPixelItem *offsetTable) const
-{
-  if (offsetTable == NULL) return EC_IllegalCall;
-  OFCondition result = EC_Normal;
-
-  unsigned long numEntries = offsetList.size();
-  if (numEntries > 0)
-  {
-    Uint32 current = 0;
-    Uint32 *array = new Uint32[numEntries];
-    if (array)
-    {
-      OFListIterator(Uint32) first = offsetList.begin();
-      OFListIterator(Uint32) last = offsetList.end();
-      unsigned long idx = 0;
-      while (first != last)
-      {
-        array[idx++] = current;
-        current += *first; 
-        ++first;        
-      }
-      result = swapIfNecessary(EBO_LittleEndian, gLocalByteOrder, 
-        array, numEntries * sizeof(Uint32), sizeof(Uint32));
-      if (result.good())
-      {
-        result = offsetTable->putUint8Array((Uint8 *)array, numEntries * sizeof(Uint32));
-      }
-      delete[] array;      
-    } else result = EC_MemoryExhausted;
-  }
-  return result;
-}
-
-OFCondition DJCodecEncoder::storeCompressedFrame(
-        DcmPixelSequence *pixelSequence, 
-        DJOffsetList& offsetList, 
-        Uint8 *jpegData, 
-        Uint32 jpegLen,
-        const DJCodecParameter *cp) const
-{
-  if ((pixelSequence == NULL)||(jpegData == NULL)) return EC_IllegalCall;
-
-  OFCondition result = EC_Normal;
-  Uint32 fragmentSize = cp->getFragmentSize();
-  if (fragmentSize >= 0x400000) fragmentSize = 0; // prevent overflow
-  else fragmentSize <<= 10; // unit is kbytes
-
-  if (fragmentSize == 0) fragmentSize = jpegLen;
-  Uint32 offset = 0;
-  Uint32 currentSize = 0;
-  Uint32 numFragments = 0;
-  DcmPixelItem *fragment = NULL;
-
-  while ((offset < jpegLen) && (result.good()))
-  {
-    fragment = new DcmPixelItem(DcmTag(DCM_Item,EVR_OB));
-    if (fragment == NULL) result = EC_MemoryExhausted;
-    else 
-    {
-      pixelSequence->insert(fragment);
-      numFragments++;
-      currentSize = fragmentSize;
-      if (offset + currentSize > jpegLen) currentSize = jpegLen - offset;
-      result = fragment->putUint8Array(jpegData+offset, currentSize);
-      if (result.good()) offset += currentSize;
-    }
-  }
-
-  currentSize = offset + (numFragments << 3); // 8 bytes extra for each item header
-  offsetList.push_back(currentSize);
-  return result;
-}        
-
-
-OFCondition DJCodecEncoder::newInstance(DcmItem *dataset) const
-{
-  if (dataset == NULL) return EC_IllegalCall;
-
-  // look up current SOP Class UID and SOP Instance UID
-  const char *classUID = NULL;
-  const char *instanceUID = NULL;
-  OFCondition result = dataset->findAndGetString(DCM_SOPClassUID, classUID);
-  if (result.good()) result = dataset->findAndGetString(DCM_SOPInstanceUID, instanceUID);
-  if (result.good())
-  {
-    if ((classUID == NULL)||(instanceUID == NULL)) result = EC_TagNotFound;
-  }
-
-  // create source image sequence
-  if (result.good())
-  {  
-    DcmSequenceOfItems *dseq = new DcmSequenceOfItems(DCM_SourceImageSequence);
-    if (dseq)
-    {
-      DcmItem *ditem = new DcmItem();
-      if (ditem)
-      {
-        dseq->insert(ditem);
-        DcmElement *elem1 = new DcmUniqueIdentifier(DCM_ReferencedSOPClassUID);
-        if (elem1)
-        {
-          result = elem1->putString(classUID);
-          ditem->insert(elem1, OFTrue /*replaceOld*/);
-          if (result.good())
-          {
-            DcmElement *elem2 = new DcmUniqueIdentifier(DCM_ReferencedSOPInstanceUID);
-            if (elem2)
-            {
-              result = elem2->putString(instanceUID);
-              ditem->insert(elem2, OFTrue /*replaceOld*/);
-            } else result = EC_MemoryExhausted;
-          }
-        } else result = EC_MemoryExhausted;
-      } else result = EC_MemoryExhausted;
-      if (result.good()) dataset->insert(dseq, OFTrue); else delete dseq;
-    } else result = EC_MemoryExhausted;
-  }
-
-  // create new SOP instance UID
-  if (result.good())
-  {  
-    char new_uid[100];
-    DcmElement *elem = new DcmUniqueIdentifier(DCM_SOPInstanceUID);
-    if (elem)
-    {
-      if (EC_Normal == (result = elem->putString(dcmGenerateUniqueIdentifier(new_uid))))
-        dataset->insert(elem, OFTrue); // replace SOP Instance UID
-        else delete elem;
-    } else result = EC_MemoryExhausted;
-  }
-
-  return result;
-}
-
-
-OFCondition DJCodecEncoder::updateImageType(DcmItem *dataset) const
-{
-  if (dataset == NULL) return EC_IllegalCall;
-
-  DcmStack stack;
-  OFString imageType("DERIVED\\SECONDARY");
-  OFString a;
-
-  /* find existing Image Type element */
-  OFCondition status = dataset->search(DCM_ImageType, stack, ESM_fromHere, OFFalse);
-  if (status.good())
-  {
-    DcmElement *elem = (DcmElement *)stack.top();
-    unsigned long pos = 2;
-
-    // append old image type information beginning with third entry
-    while ((elem->getOFString(a, pos++)).good())
-    {
-      imageType += "\\";
-      imageType += a;      
-    }
-  }
-
-  // insert new Image Type, replace old value
-  return dataset->putAndInsertString(DCM_ImageType, imageType.c_str(), OFTrue);
 }
 
 void DJCodecEncoder::appendCompressionRatio(OFString& arg, double ratio)
@@ -700,7 +535,7 @@ OFCondition DJCodecEncoder::encodeMonochromeImage(
         double& compressionRatio) const
 {
   OFCondition result = EC_Normal;
-  DJOffsetList offsetList;
+  DcmOffsetList offsetList;
   DcmPixelSequence *pixelSequence = NULL;
   DcmPixelItem *offsetTable = NULL; 
   unsigned short bitsPerSample = 0;
@@ -960,7 +795,7 @@ OFCondition DJCodecEncoder::encodeMonochromeImage(
           // store frame
           if (result.good())
           {
-            result = storeCompressedFrame(pixelSequence, offsetList, jpegData, jpegLen, cp);
+            result = pixelSequence->storeCompressedFrame(offsetList, jpegData, jpegLen, cp->getFragmentSize());
           }
 
           // delete block of JPEG data
@@ -983,7 +818,7 @@ OFCondition DJCodecEncoder::encodeMonochromeImage(
   if ((result.good()) && (cp->getCreateOffsetTable()))
   {
     // create offset table
-    result = createOffsetTable(offsetList, offsetTable);
+    result = offsetTable->createOffsetTable(offsetList);
   }
 
   if (result.good())
@@ -1199,59 +1034,14 @@ OFCondition DJCodecEncoder::correctVOIWindows(
 }
 
 
-OFCondition DJCodecEncoder::insertStringIfMissing(DcmItem *dataset, const DcmTagKey& tag, const char *val)
-{
-  DcmStack stack;
-  if ((dataset->search(tag, stack, ESM_fromHere, OFFalse)).bad())
-  {
-    return dataset->putAndInsertString(tag, val, OFTrue);
-  }
-  return EC_Normal;
-}
-
-OFCondition DJCodecEncoder::convertToSecondaryCapture(DcmItem *dataset)
-{
-  if (dataset == NULL) return EC_IllegalCall;
-
-  OFCondition result = EC_Normal;
-  char buf[70];
-  
-  // SOP Class UID - always replace
-  if (result.good()) result = dataset->putAndInsertString(DCM_SOPClassUID, UID_SecondaryCaptureImageStorage);
-
-  // SOP Instance UID - only insert if missing.
-  dcmGenerateUniqueIdentifier(buf);
-  if (result.good()) result = insertStringIfMissing(dataset, DCM_SOPInstanceUID, buf);
-
-  // Type 1 attributes - insert with value if missing
-  dcmGenerateUniqueIdentifier(buf, SITE_STUDY_UID_ROOT);
-  if (result.good()) result = insertStringIfMissing(dataset, DCM_StudyInstanceUID, buf);
-  dcmGenerateUniqueIdentifier(buf, SITE_SERIES_UID_ROOT);
-  if (result.good()) result = insertStringIfMissing(dataset, DCM_SeriesInstanceUID, buf);
-  if (result.good()) result = insertStringIfMissing(dataset, DCM_ConversionType, "WSD");
-  if (result.good()) result = insertStringIfMissing(dataset, DCM_Modality, "OT");
-
-  // Type 2 attributes - insert without value if missing
-  if (result.good()) result = insertStringIfMissing(dataset, DCM_PatientsName, NULL);
-  if (result.good()) result = insertStringIfMissing(dataset, DCM_PatientID, NULL);
-  if (result.good()) result = insertStringIfMissing(dataset, DCM_PatientsBirthDate, NULL);
-  if (result.good()) result = insertStringIfMissing(dataset, DCM_PatientsSex, NULL);
-  if (result.good()) result = insertStringIfMissing(dataset, DCM_StudyDate, NULL);
-  if (result.good()) result = insertStringIfMissing(dataset, DCM_StudyTime, NULL);
-  if (result.good()) result = insertStringIfMissing(dataset, DCM_ReferringPhysiciansName, NULL);
-  if (result.good()) result = insertStringIfMissing(dataset, DCM_StudyID, NULL);
-  if (result.good()) result = insertStringIfMissing(dataset, DCM_AccessionNumber, NULL);
-  if (result.good()) result = insertStringIfMissing(dataset, DCM_SeriesNumber, NULL);
-  if (result.good()) result = insertStringIfMissing(dataset, DCM_InstanceNumber, NULL);
-
-  return result;    
-}
-
-
 /*
  * CVS/RCS Log
  * $Log: djcodece.cc,v $
- * Revision 1.6  2002-01-25 13:44:53  meichel
+ * Revision 1.7  2002-05-24 14:59:51  meichel
+ * Moved helper methods that are useful for different compression techniques
+ *   from module dcmjpeg to module dcmdata
+ *
+ * Revision 1.6  2002/01/25 13:44:53  meichel
  * Fixed minor bug in code that converts a DICOM object to secondary capture
  *
  * Revision 1.5  2002/01/08 10:30:13  joergr

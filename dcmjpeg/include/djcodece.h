@@ -22,9 +22,9 @@
  *  Purpose: abstract codec class for JPEG encoders.
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-11-13 15:56:16 $
+ *  Update Date:      $Date: 2002-05-24 14:58:04 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmjpeg/include/Attic/djcodece.h,v $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -51,7 +51,6 @@ class DcmPixelItem;
 class DicomImage;
 class DcmTagKey;
 
-typedef OFList<Uint32> DJOffsetList;
 
 /** abstract codec class for JPEG encoders.
  *  This abstract class contains most of the application logic
@@ -203,47 +202,6 @@ private:
         const DJCodecParameter *cp,
         double& compressionRatio) const;
 
-  /** stores a single compressed frame in a DICOM pixel sequence
-   *  @param pixelSequence pointer to pixel sequence in which
-   *    compressed frame data is to be inserted. Must not be NULL.
-   *  @param offsetList list containing offset table entries.
-   *    Upon success, an entry is appended to the list
-   *  @param jpegData pointer to compressed JPEG data, must not be NULL
-   *  @param jpegLen number of bytes of compressed JPEG data
-   *  @param cp codec parameter
-   *  @return EC_Normal if successful, an error code otherwise
-   */  
-  virtual OFCondition storeCompressedFrame(
-        DcmPixelSequence *pixelSequence, 
-        DJOffsetList& offsetList, 
-        Uint8 *jpegData, 
-        Uint32 jpegLen,
-        const DJCodecParameter *cp) const;
-
-  /** creates an offset table for a compressed pixel sequence.
-   *  @param offsetList list of offset entries created by
-   *    (possibly multiple) calls to storeCompressedFrame().
-   *  @param offsetTable pointer to offset table element to
-   *    which the table is written, must not be NULL.
-   *  @return EC_Normal if successful, an error code otherwise
-   */   
-  virtual OFCondition createOffsetTable(
-        DJOffsetList& offsetList, 
-        DcmPixelItem *offsetTable) const;
-
-  /** create new SOP instance UID and Source Image Sequence
-   *  referencing the old SOP instance.
-   *  @param dataset dataset to be modified
-   *  @return EC_Normal if successful, an error code otherwise
-   */
-  virtual OFCondition newInstance(DcmItem *dataset) const;
-
-  /** set first two values of Image Type to DERIVED\SECONDARY.
-   *  @param dataset dataset to be modified
-   *  @return EC_Normal if successful, an error code otherwise
-   */
-  virtual OFCondition updateImageType(DcmItem *dataset) const;
-
   /** create Lossy Image Compression and Lossy Image Compression Ratio.
    *  @param dataset dataset to be modified
    *  @param ratio image compression ratio > 1. This is not the "quality factor"
@@ -312,27 +270,6 @@ private:
     const DJCodecParameter *cp,
     Uint8 bitsPerSample) const = 0;
 
-  /** helper function that inserts a string attribute with a given value into a dataset
-   *  if missing in the dataset.
-   *  @param dataset dataset to insert to, must not be NULL.
-   *  @param tag tag key of attribute to check/insert
-   *  @param val string value, may be NULL.
-   *  @return EC_Normal if successful, an error code otherwise
-   */   
-  static OFCondition insertStringIfMissing(DcmItem *dataset, const DcmTagKey& tag, const char *val);
-
-  /** helper function that converts a dataset containing a DICOM image
-   *  into a valid (standard extended) Secondary Capture object
-   *  by inserting all attributes that are type 1/2 in Secondary Capture
-   *  and missing in the source dataset.  Replaces SOP Class UID
-   *  by Secondary Capture. It does not, however, change an existing SOP Instance UID.
-   *  @param dataset dataset to insert to, must not be NULL.
-   *  @param tag tag key of attribute to check/insert
-   *  @param val string value, may be NULL.
-   *  @return EC_Normal if successful, an error code otherwise
-   */   
-  static OFCondition convertToSecondaryCapture(DcmItem *dataset);
-
   /** modifies all VOI window center/width settings in the image.
    *  Modifications are based on the pixel value mapping
    *  f(x) = (x+voiOffset)*voiFactor
@@ -350,7 +287,11 @@ private:
 /*
  * CVS/RCS Log
  * $Log: djcodece.h,v $
- * Revision 1.1  2001-11-13 15:56:16  meichel
+ * Revision 1.2  2002-05-24 14:58:04  meichel
+ * Moved helper methods that are useful for different compression techniques
+ *   from module dcmjpeg to module dcmdata
+ *
+ * Revision 1.1  2001/11/13 15:56:16  meichel
  * Initial release of module dcmjpeg
  *
  *

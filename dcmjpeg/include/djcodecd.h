@@ -22,9 +22,9 @@
  *  Purpose: abstract codec class for JPEG decoders.
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-11-13 15:56:16 $
+ *  Update Date:      $Date: 2002-05-24 14:58:03 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmjpeg/include/Attic/djcodecd.h,v $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -180,13 +180,6 @@ private:
    */
   static Uint16 readUint16(const Uint8 *data);
 
-  /** create new SOP instance UID and Source Image Sequence
-   *  referencing the old SOP instance.
-   *  @param dataset dataset to be modified
-   *  @return EC_Normal if successful, an error code otherwise
-   */
-  static OFCondition newInstance(DcmItem *dataset);
-
   /** converts an RGB or YBR frame with 8 bits/sample from
    *  color-by-pixel to color-by-plane planar configuration.
    *  @param imageFrame pointer to image frame, must contain
@@ -232,7 +225,11 @@ private:
 /*
  * CVS/RCS Log
  * $Log: djcodecd.h,v $
- * Revision 1.1  2001-11-13 15:56:16  meichel
+ * Revision 1.2  2002-05-24 14:58:03  meichel
+ * Moved helper methods that are useful for different compression techniques
+ *   from module dcmjpeg to module dcmdata
+ *
+ * Revision 1.1  2001/11/13 15:56:16  meichel
  * Initial release of module dcmjpeg
  *
  *

@@ -21,10 +21,10 @@
  *
  *  Purpose: Abstract base class for IJG JPEG decoder
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-01-08 10:29:07 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2002-05-24 14:59:51 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmjpeg/libsrc/djcodecd.cc,v $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -296,8 +296,15 @@ OFCondition DJCodecDecoder::decode(
       }
     }
 
-    // create new SOP instance UID if codec parameters require so
-    if (result.good() && (djcp->getUIDCreation() == EUC_always)) result = newInstance((DcmItem *)dataset);
+    // the following operations do not affect the Image Pixel Module
+    // but other modules such as SOP Common.  We only perform these
+    // changes if we're on the main level of the dataset,
+    // which should always identify itself as dataset, not as item.
+    if (dataset->ident() == EVR_dataset)
+    {
+        // create new SOP instance UID if codec parameters require so
+        if (result.good() && (djcp->getUIDCreation() == EUC_always)) result = DcmCodec::newInstance((DcmItem *)dataset);
+    }
 
   }
   return result;
@@ -480,67 +487,6 @@ Uint8 DJCodecDecoder::scanJpegDataForBitDepth(
 }
 
 
-OFCondition DJCodecDecoder::newInstance(DcmItem *dataset)
-{
-  if (dataset == NULL) return EC_IllegalCall;
-
-  // look up current SOP Class UID and SOP Instance UID
-  const char *classUID = NULL;
-  const char *instanceUID = NULL;
-  OFCondition result = dataset->findAndGetString(DCM_SOPClassUID, classUID);
-  if (result.good()) result = dataset->findAndGetString(DCM_SOPInstanceUID, instanceUID);
-  if (result.good())
-  {
-    if ((classUID == NULL)||(instanceUID == NULL)) result = EC_TagNotFound;
-  }
-
-  // create source image sequence
-  if (result.good())
-  {  
-    DcmSequenceOfItems *dseq = new DcmSequenceOfItems(DCM_SourceImageSequence);
-    if (dseq)
-    {
-      DcmItem *ditem = new DcmItem();
-      if (ditem)
-      {
-      	dseq->insert(ditem);
-        DcmElement *elem1 = new DcmUniqueIdentifier(DCM_ReferencedSOPClassUID);
-        if (elem1)
-        {
-          result = elem1->putString(classUID);
-          ditem->insert(elem1, OFTrue /*replaceOld*/);
-          if (result.good())
-          {
-            DcmElement *elem2 = new DcmUniqueIdentifier(DCM_ReferencedSOPInstanceUID);
-            if (elem2)
-            {
-              result = elem2->putString(instanceUID);
-              ditem->insert(elem2, OFTrue /*replaceOld*/);
-            } else result = EC_MemoryExhausted;
-          }
-        } else result = EC_MemoryExhausted;
-      } else result = EC_MemoryExhausted;
-      if (result.good()) dataset->insert(dseq, OFTrue); else delete dseq;
-    } else result = EC_MemoryExhausted;
-  }
-
-  // create new SOP instance UID
-  if (result.good())
-  {  
-    char new_uid[100];
-    DcmElement *elem = new DcmUniqueIdentifier(DCM_SOPInstanceUID);
-    if (elem)
-    {
-      result = elem->putString(dcmGenerateUniqueIdentifier(new_uid));
-      if (result.good())
-        dataset->insert(elem, OFTrue); // replace SOP Instance UID
-        else delete elem;
-    } else result = EC_MemoryExhausted;
-  }
-
-  return result;
-}
-
 OFCondition DJCodecDecoder::createPlanarConfigurationByte(
   Uint8 *imageFrame,
   Uint16 columns,
@@ -631,7 +577,11 @@ OFBool DJCodecDecoder::requiresPlanarConfiguration(
 /*
  * CVS/RCS Log
  * $Log: djcodecd.cc,v $
- * Revision 1.4  2002-01-08 10:29:07  joergr
+ * Revision 1.5  2002-05-24 14:59:51  meichel
+ * Moved helper methods that are useful for different compression techniques
+ *   from module dcmjpeg to module dcmdata
+ *
+ * Revision 1.4  2002/01/08 10:29:07  joergr
  * Corrected spelling of function dcmGenerateUniqueIdentifier().
  *
  * Revision 1.3  2001/12/20 10:41:49  meichel
