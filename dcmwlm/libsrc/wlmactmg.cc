@@ -22,10 +22,10 @@
  *  Purpose: Activity manager class for basic worklist management service
  *           class providers.
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2003-06-06 09:45:42 $
+ *  Last Update:      $Author: wilkens $
+ *  Update Date:      $Date: 2003-08-21 09:33:52 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmwlm/libsrc/wlmactmg.cc,v $
- *  CVS/RCS Revision: $Revision: 1.14 $
+ *  CVS/RCS Revision: $Revision: 1.15 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1191,18 +1191,8 @@ static void FindCallback( void *callbackData, OFBool cancelled, T_DIMSE_C_FindRQ
   // If the dbstatus is "pending" try to select another matching record.
   if( dbstatus == WLM_PENDING || dbstatus == WLM_PENDING_WARNING )
   {
-    // Create an object for the next matching record/data set
-    *responseIdentifiers = new DcmDataset();
-
     // Get the next matching record/data set
     *responseIdentifiers = dataSource->NextFindResponse( dbstatus );
-    if( dbstatus != WLM_SUCCESS && !( dbstatus == WLM_PENDING || dbstatus == WLM_PENDING_WARNING ) && opt_debug && logStream != NULL )
-    {
-      sprintf( msg, "findSCP: Worklist Database: NextFindResponse() Failed (%s).", DU_cfindStatusString( (Uint16)dbstatus ) );
-      logStream->lockCout();
-      logStream->getCout() << msg << endl;
-      logStream->unlockCout();
-    }
   }
 
   // Dump some information if required
@@ -1219,28 +1209,6 @@ static void FindCallback( void *callbackData, OFBool cancelled, T_DIMSE_C_FindRQ
       logStream->getCout() << "-------" << endl;
     }
     logStream->unlockCout();
-  }
-
-  // A pending status will cause the object for the current matching record/data set
-  // to be deleted by the calling function. Hence, if the current status is not pending
-  // and a there is a matching record/data set, we need to delete it.
-  if( !( dbstatus == WLM_PENDING || dbstatus == WLM_PENDING_WARNING ) && *responseIdentifiers != NULL )
-  {
-    // Check if we have a nonpending status and the matching record/data set
-    // is not empty. In this case, something is fishy.
-    if( (*responseIdentifiers)->card() > 0 )
-    {
-      if( logStream != NULL )
-      {
-        logStream->lockCout();
-        logStream->getCout() << "INTERNAL ERROR: non-pending status with a response!" << endl;
-        logStream->unlockCout();
-      }
-    }
-
-    // delete the response identifers
-    delete *responseIdentifiers;
-    *responseIdentifiers = NULL;
   }
 
   // Set response status
@@ -1277,7 +1245,11 @@ static void FindCallback( void *callbackData, OFBool cancelled, T_DIMSE_C_FindRQ
 /*
 ** CVS Log
 ** $Log: wlmactmg.cc,v $
-** Revision 1.14  2003-06-06 09:45:42  meichel
+** Revision 1.15  2003-08-21 09:33:52  wilkens
+** Got rid of memory leak in function FindCallback().
+** Got rid of some unnecessary if-statements in function FindCallback().
+**
+** Revision 1.14  2003/06/06 09:45:42  meichel
 ** Added static sleep function in class OFStandard. This replaces the various
 **   calls to sleep(), Sleep() and usleep() throughout the toolkit.
 **
