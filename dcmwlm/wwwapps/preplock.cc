@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2002, OFFIS
+ *  Copyright (C) 1996-2003, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -39,10 +39,10 @@
  *   whole file, which must be a successfully opened perl  file  descriptor.
  *   See perl man page for details. 
  *
- *  Last Update:      $Author: wilkens $
- *  Update Date:      $Date: 2002-12-03 12:17:35 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2003-07-03 14:26:57 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmwlm/wwwapps/preplock.cc,v $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -60,6 +60,10 @@ END_EXTERN_C
 
 int main()
 {
+#ifdef __MINGW32__
+  /* MinGW does not support flock, there is no way to make this work. */
+  printf("die \"Sorry, this application is not supported on the MinGW platform\";\n");
+#else
   struct flock lockdata;
   unsigned int i;
   unsigned char *c;
@@ -96,13 +100,19 @@ int main()
   for (i=0; i<sizeof(struct flock); i++) printf(",%d",(int)(c[i]));
   printf(");\n");
 
+#endif
   return 0;  
 }
 
 /*
  * CVS/RCS Log
  *   $Log: preplock.cc,v $
- *   Revision 1.1  2002-12-03 12:17:35  wilkens
+ *   Revision 1.2  2003-07-03 14:26:57  meichel
+ *   When compiling on MinGW, only issues "die" command since the flock
+ *     family of functions is not available on this platform and, therefore,
+ *     preplock cannot be made to work.
+ *
+ *   Revision 1.1  2002/12/03 12:17:35  wilkens
  *   Added files und functionality from the dcmtk/wlisctn folder to dcmtk/dcmwlm
  *   so that dcmwlm can now completely replace wlistctn in the public domain part
  *   of dcmtk. Pertaining to this replacement requirement, another optional return
