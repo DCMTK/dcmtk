@@ -25,6 +25,12 @@
 */
 #define HAVE_WINSOCK_H 1	/* use the WINSOCK.H include file */
 
+/* Define if on AIX 3.
+   System headers sometimes define this.
+   We just want to avoid a redefinition error message.  */
+#ifndef _ALL_SOURCE
+/* #undef _ALL_SOURCE */
+#endif
 
 /* Define if you don't have vprintf but do have _doprnt.  */
 #undef HAVE_DOPRNT
@@ -40,9 +46,6 @@
 
 /* Define if you have the wait3 system call.  */
 #undef HAVE_WAIT3
-
-/* Define as __inline if that's what the C compiler calls it.  */
-#undef inline
 
 /* Define to `int' if <sys/types.h> doesn't define.  */
 #undef pid_t
@@ -62,6 +65,9 @@
 /* Define if your <sys/time.h> declares struct tm.  */
 #undef TM_IN_SYS_TIME
 
+/* Define if the X Window System is missing or not being used.  */
+#define X_DISPLAY_MISSING 1
+
 /* The number of bytes in a char.  */
 #define SIZEOF_CHAR 1
 
@@ -79,6 +85,9 @@
 
 /* The number of bytes in a short.  */
 #define SIZEOF_SHORT 2
+
+/* The number of bytes in a void *.  */
+#define SIZEOF_VOID_P 4
 
 /* Define if you have the _findfirst function.  */
 #define HAVE__FINDFIRST 1
@@ -197,6 +206,9 @@
 /* Define if you have the shmget function.  */
 #undef HAVE_SHMGET
 
+/* Define if you have the sleep function.  */
+#undef HAVE_SLEEP
+
 /* Define if you have the socket function.  */
 #define HAVE_SOCKET 1
 
@@ -224,11 +236,11 @@
 /* Define if you have the tempnam function.  */
 #undef HAVE_TEMPNAM 
 
+/* Define if you have the tmpnam function.  */
+#define HAVE_TMPNAM 1
+
 /* Define if you have the uname function.  */
 #undef HAVE_UNAME 
-
-/* Define if you have the sleep function.  */
-#undef HAVE_SLEEP
 
 /* Define if you have the usleep function.  */
 #undef HAVE_USLEEP
@@ -236,14 +248,20 @@
 /* Define if you have the waitpid function.  */
 #undef HAVE_WAITPID
 
-/* Define if you have the <assert.h> header file */
-#define HAVE_ASSERT_H
+/* Define if you have the <alloca.h> header file.  */
+#undef HAVE_ALLOCA_H
 
-/* Define if you have the <assert.h> header file */
-#define HAVE_CTYPE_H
+/* Define if you have the <arpa/inet.h> header file.  */
+#undef HAVE_ARPA_INET_H
+
+/* Define if you have the <assert.h> header file.  */
+#define HAVE_ASSERT_H 1
+
+/* Define if you have the <ctype.h> header file.  */
+#define HAVE_CTYPE_H 1
 
 /* Define if you have the <dirent.h> header file.  */
-#undef HAVE_DIRENT_H
+#undef HAVE_DIRENT_H 1
 
 /* Define if you have the <fcntl.h> header file.  */
 #define HAVE_FCNTL_H 1
@@ -351,8 +369,11 @@
 #undef HAVE_LIBSOCKET
 /* User definable section */
 
+/* Define the DCMTK default path */
+#define DCMTK_PREFIX "C:\\usr\\local\\dicom"
+
 /* Define the default data dictionary path for the dcmdata library package */
-#define DCM_DICT_DEFAULT_PATH "dicom.dic:\\dicom.dic"
+#define DCM_DICT_DEFAULT_PATH "dicom.dic;\\dicom.dic;" DCMTK_PREFIX "\\lib\\dicom.dic"
 
 /* Define path separator */
 #define PATH_SEPARATOR '\\'
@@ -365,9 +386,9 @@
 #undef HAVE_EMPTY_ARGC_ARGV
 
 /* Compile in the debug code */
-#define DEBUG 1
+/* #define DEBUG 1 */ 
 
-/* Define if your compile cannot use anonymous struct/class components */
+/* Define if your compile cannot user anonymous struct/class components */
 #define NO_ANON_CLASS_COMP 1
 
 /* Define if your system has a prototype for bzero */
@@ -402,6 +423,10 @@
 
 /* Define if your system has a prototype for select */
 #define HAVE_PROTOTYPE_SELECT 1
+
+/* Define if your system declares argument 2-4 of select() 
+   as int * instead of struct fd_set * */
+/* #undef HAVE_INTP_SELECT */
 
 /* Define if your system has a prototype for setsockopt */
 #define HAVE_PROTOTYPE_SETSOCKOPT 1
@@ -444,6 +469,12 @@
 
 /* Define if your system has a prototype for mktemp */
 #undef HAVE_PROTOTYPE_MKTEMP
+
+/* Define if your system has a prototype for getcwd */
+/* #undef HAVE_PROTOTYPE_GETCWD */
+
+/* Define if your system has a prototype for getwd */
+/* #undef HAVE_PROTOTYPE_GETWD */
 
 /* Define if your system has a prototype for union semun */
 #undef HAVE_DECLARATION_UNION_SEMUN
