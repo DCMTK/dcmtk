@@ -22,9 +22,9 @@
  *  Purpose: Classes for caching of the image database (Header/Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-06-30 09:08:39 $
+ *  Update Date:      $Date: 2000-10-16 11:39:10 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmpstat/include/Attic/dvcache.h,v $
- *  CVS/RCS Revision: $Revision: 1.12 $
+ *  CVS/RCS Revision: $Revision: 1.13 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -54,6 +54,8 @@ enum DVPSInstanceType
     DVPSI_image,
     /// presentation state object
     DVPSI_presentationState,
+    /// structured reporting document
+    DVPSI_structuredReport,
     /// stored print object
     DVPSI_storedPrint,
     /// hardcopy grayscale object
@@ -791,6 +793,29 @@ class DVStudyCache
         return result;
     }
     
+    /** sets internal cursor to first position in cache list
+     *
+     ** @return OFTrue if successful, OFFalse if list is empty
+     */
+    inline OFBool gotoFirst()
+    {
+        //OldIterator = Iterator;
+        Iterator = List.begin();
+        return (Iterator != List.end());
+    }
+    
+    /** sets internal cursor to next position in cache list
+     *
+     ** @return OFTrue if successful, OFFalse if new position is invalid
+     */
+    inline OFBool gotoNext()
+    {
+        OFListIterator(ItemStruct *) last = List.end();
+        if (Iterator != last)
+            Iterator++;
+        return (Iterator != last);
+    }
+    
     /** checks whether an item with the specified UID exists in the cache list
      *
      ** @param  uid  UID which should be checked
@@ -885,7 +910,12 @@ class DVStudyCache
  *
  * CVS/RCS Log:
  * $Log: dvcache.h,v $
- * Revision 1.12  2000-06-30 09:08:39  joergr
+ * Revision 1.13  2000-10-16 11:39:10  joergr
+ * Added method allowing to select an instance by instance UID and SOP class
+ * UID (without series and study UID). Required for composite references in
+ * DICOM SR.
+ *
+ * Revision 1.12  2000/06/30 09:08:39  joergr
  * Fixed bug in database cache routines (re. study status).
  *
  * Revision 1.11  2000/05/30 13:37:15  joergr
