@@ -26,9 +26,9 @@
  *    Non-grayscale transformations in the presentation state are ignored. 
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-10-19 14:45:27 $
+ *  Update Date:      $Date: 1999-10-28 08:18:32 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmpstat/apps/dcmpsprt.cc,v $
- *  CVS/RCS Revision: $Revision: 1.10 $
+ *  CVS/RCS Revision: $Revision: 1.11 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -80,7 +80,9 @@ int main(int argc, char *argv[])
     const char *              opt_img_configuration = NULL;   
     const char *              opt_resolution = NULL;   
     const char *              opt_border = NULL;   
-    const char *              opt_emptyimage = NULL;       
+    const char *              opt_emptyimage = NULL;
+    const char *              opt_maxdensity = NULL;
+    const char *              opt_mindensity = NULL;       
     const char *              opt_plutname = NULL;     
     OFList<const char *>      opt_filenames;
     OFBool                    opt_linearLUTshape = OFFalse;
@@ -199,6 +201,10 @@ int main(int argc, char *argv[])
                                              "set border density to [v]");
      cmd.addOption("--empty-image",       1, "[v]alue: string",
                                              "set empty image density to [v]");
+     cmd.addOption("--max-density",       1, "[v]alue: string",
+                                             "set max density to [v]");
+     cmd.addOption("--min-density",       1, "[v]alue: string",
+                                             "set min density to [v]");
      cmd.addOption("--img-magnification", 1, "[v]alue: string",
                                              "set image box magnification type to [v]");
      cmd.addOption("--img-smoothing",     1, "[v]alue: string",
@@ -274,6 +280,8 @@ int main(int argc, char *argv[])
       if (cmd.findOption("--resolution"))    app.checkValue(cmd.getValue(opt_resolution));
       if (cmd.findOption("--border"))        app.checkValue(cmd.getValue(opt_border));
       if (cmd.findOption("--empty-image"))   app.checkValue(cmd.getValue(opt_emptyimage));
+      if (cmd.findOption("--max-density"))   app.checkValue(cmd.getValue(opt_maxdensity));
+      if (cmd.findOption("--min-density"))   app.checkValue(cmd.getValue(opt_mindensity));
       if (cmd.findOption("--config"))        app.checkValue(cmd.getValue(opt_cfgName));
       if (cmd.findOption("--printer"))       app.checkValue(cmd.getValue(opt_printerID));
       if (cmd.findOption("--img-magnification")) app.checkValue(cmd.getValue(opt_img_magnification));
@@ -376,9 +384,13 @@ int main(int argc, char *argv[])
     if ((opt_resolution)&&(EC_Normal != dvi.getPrintHandler().setResolutionID(opt_resolution)))
       cerr << "warning: cannot set requested resolution ID to '" << opt_resolution << "', ignoring." << endl;
     if ((opt_border)&&(EC_Normal != dvi.getPrintHandler().setBorderDensity(opt_border)))
-      cerr << "warning: cannot set border density to '" << opt_resolution << "', ignoring." << endl;
+      cerr << "warning: cannot set border density to '" << opt_border << "', ignoring." << endl;
     if ((opt_emptyimage)&&(EC_Normal != dvi.getPrintHandler().setEmtpyImageDensity(opt_emptyimage)))
-      cerr << "warning: cannot set empty image density to '" << opt_resolution << "', ignoring." << endl;
+      cerr << "warning: cannot set empty image density to '" << opt_emptyimage << "', ignoring." << endl;
+    if ((opt_maxdensity)&&(EC_Normal != dvi.getPrintHandler().setMaxDensity(opt_maxdensity)))
+      cerr << "warning: cannot set max density to '" << opt_maxdensity << "', ignoring." << endl;
+    if ((opt_mindensity)&&(EC_Normal != dvi.getPrintHandler().setMinDensity(opt_mindensity)))
+      cerr << "warning: cannot set min density to '" << opt_mindensity << "', ignoring." << endl;
     if (EC_Normal != dvi.getPrintHandler().setFilmOrientation(opt_filmorientation))
       cerr << "warning: cannot set film orientation, ignoring." << endl;
     if (EC_Normal != dvi.getPrintHandler().setTrim(opt_trim))
@@ -558,7 +570,10 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmpsprt.cc,v $
- * Revision 1.10  1999-10-19 14:45:27  meichel
+ * Revision 1.11  1999-10-28 08:18:32  meichel
+ * Added options for setting Max Density and Min Density from command line
+ *
+ * Revision 1.10  1999/10/19 14:45:27  meichel
  * added support for the Basic Annotation Box SOP Class
  *   as well as access methods for Max Density and Min Density.
  *
