@@ -21,10 +21,10 @@
  *
  *  Purpose: DiCurveFitting (header/implementation)
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-10-31 10:10:45 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2002-11-26 18:18:35 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/dicrvfit.h,v $
- *  CVS/RCS Revision: $Revision: 1.12 $
+ *  CVS/RCS Revision: $Revision: 1.13 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -37,7 +37,7 @@
 
 #include "osconfig.h"
 
-#include "math.h"
+#include <math.h>
 
 
 // SunCC 4.x does not support default values for template types :-/
@@ -336,7 +336,11 @@ class DiCurveFitting
  *
  * CVS/RCS Log:
  * $Log: dicrvfit.h,v $
- * Revision 1.12  2002-10-31 10:10:45  meichel
+ * Revision 1.13  2002-11-26 18:18:35  joergr
+ * Replaced include for "math.h" with <math.h> to avoid inclusion of math.h in
+ * the makefile dependencies.
+ *
+ * Revision 1.12  2002/10/31 10:10:45  meichel
  * Added workaround for a bug in the Sparc optimizer in gcc 3.2
  *
  * Revision 1.11  2002/07/19 08:23:12  joergr
