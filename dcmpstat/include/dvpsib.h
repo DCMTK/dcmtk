@@ -23,8 +23,8 @@
  *    classes: DVPSImageBoxContent
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-09-24 15:23:44 $
- *  CVS/RCS Revision: $Revision: 1.10 $
+ *  Update Date:      $Date: 1999-10-07 17:21:47 $
+ *  CVS/RCS Revision: $Revision: 1.11 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -38,6 +38,8 @@
 #include "ofstring.h"
 #include "dctk.h"
 #include "dvpstyp.h"     /* for enum types */
+
+class DVPSPresentationLUT_PList;
 
 /** the representation of a Image Box Content SQ item for Stored Print
  */  
@@ -73,9 +75,10 @@ public:
    *  value multiplicity) is checked.
    *  If this method returns an error code, the object is in undefined state afterwards.
    *  @param dset the item of the ImageBoxContentSequence from which the data is to be read
+   *  @param presentationLUTList list of presentation LUTs which may be referenced
    *  @return EC_Normal if successful, an error code otherwise.
    */
-  E_Condition read(DcmItem &dset);
+  E_Condition read(DcmItem &dset, DVPSPresentationLUT_PList& presentationLUTList);
   
   /** writes the image box managed by this object to a DICOM dataset.
    *  Copies of the DICOM element managed by this object are inserted into
@@ -107,8 +110,9 @@ public:
    *  @param refseriesuid series instance UID of the referenced image
    *  @param refsopclassuid SOP class UID of the referenced image
    *  @param refsopinstanceuid SOP instance UID of the referenced image
-   *  @param requestedimagesize requested images size for this image, default: absent
-   *  @param patientid patient ID for the referenced image, default: absent
+   *  @param requestedimagesize requested images size for this image
+   *  @param patientid patient ID for the referenced image
+   *  @param presentationlutreference referenced SOP instance UID for the referenced Presentation LUT,
    *  @return EC_Normal if successful, an error code otherwise.
    */
   E_Condition setContent(
@@ -118,8 +122,9 @@ public:
     const char *refseriesuid,
     const char *refsopclassuid,
     const char *refsopinstanceuid,
-    const char *requestedimagesize=NULL,
-    const char *patientid=NULL);
+    const char *requestedimagesize,
+    const char *patientid,
+    const char *presentationlutreference);
     
   /** sets the (optional) requested decimate/crop behaviour for this image box.
    *  @param value new enumerated value. The caller is responsible for
@@ -140,6 +145,11 @@ public:
    *  @return OFTrue if additional settings exist, OFFalse otherwise.
    */
   OFBool hasAdditionalSettings();
+
+  /** gets the (optional) referenced Presentation LUT Instance UID.
+   *  @return UID, may be NULL.
+   */
+  const char *getReferencedPresentationLUTInstanceUID();
 
   /** gets the (optional) magnification type.
    *  @return magnification type, may be NULL.
@@ -225,6 +235,13 @@ private:
   /// private undefined assignment operator
   DVPSImageBoxContent& operator=(const DVPSImageBoxContent&);
 
+  /** writes a Referenced Presentation LUT SQ to the given
+   *  dataset. Helper function used in the more general write() method.
+   *  @param dset the dataset to which the data is written
+   *  @return EC_Normal if successful, an error code otherwise.
+   */
+  E_Condition addReferencedPLUTSQ(DcmItem &dset);
+
   /// Module=Image_Box_List, VR=UI, VM=1, Type 1(c) 
   DcmUniqueIdentifier      sOPInstanceUID;
   /// Module=Image_Box_List, VR=US, VM=1, Type 1 
@@ -261,7 +278,9 @@ private:
   DcmLongString            patientID;
 
   // we do not support the ReferencedImageOverlayBoxSequence which is retired in Supplement 35 anyway.
-  // we do not support the ReferencedPresentationLUTSequence at Image Box level.
+
+  // the ReferencedPresentationLUTSequence is only created/read on the fly
+  DcmUniqueIdentifier      referencedPresentationLUTInstanceUID;
 
   /** output stream for error messages, never NULL
    */
@@ -273,7 +292,11 @@ private:
 
 /*
  *  $Log: dvpsib.h,v $
- *  Revision 1.10  1999-09-24 15:23:44  meichel
+ *  Revision 1.11  1999-10-07 17:21:47  meichel
+ *  Reworked management of Presentation LUTs in order to create tighter
+ *    coupling between Softcopy and Print.
+ *
+ *  Revision 1.10  1999/09/24 15:23:44  meichel
  *  Print spooler (dcmprtsv) now logs diagnostic messages in log files
  *    when operating in spool mode.
  *

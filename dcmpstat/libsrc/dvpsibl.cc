@@ -23,8 +23,8 @@
  *    classes: DVPSImageBoxContent_PList
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-09-24 15:24:07 $
- *  CVS/RCS Revision: $Revision: 1.9 $
+ *  Update Date:      $Date: 1999-10-07 17:21:59 $
+ *  CVS/RCS Revision: $Revision: 1.10 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -73,7 +73,7 @@ void DVPSImageBoxContent_PList::clear()
   }
 }
 
-E_Condition DVPSImageBoxContent_PList::read(DcmItem &dset)
+E_Condition DVPSImageBoxContent_PList::read(DcmItem &dset, DVPSPresentationLUT_PList& presentationLUTList)
 {
   E_Condition result = EC_Normal;
   DcmStack stack;
@@ -94,7 +94,7 @@ E_Condition DVPSImageBoxContent_PList::read(DcmItem &dset)
         if (newImage && ditem)
         {
           newImage->setLog(logstream);
-          result = newImage->read(*ditem);
+          result = newImage->read(*ditem, presentationLUTList);
           push_back(newImage);
         } else result = EC_MemoryExhausted;
       }
@@ -181,7 +181,8 @@ E_Condition DVPSImageBoxContent_PList::addImageBox(
   const char *refsopclassuid,
   const char *refsopinstanceuid,
   const char *requestedimagesize,
-  const char *patientid)
+  const char *patientid,
+  const char *presentationlutuid)
 {
   E_Condition result = EC_Normal;
   DVPSImageBoxContent *newImage = new DVPSImageBoxContent();
@@ -190,7 +191,7 @@ E_Condition DVPSImageBoxContent_PList::addImageBox(
     newImage->setLog(logstream);  	
     result = newImage->setContent(instanceuid, retrieveaetitle, refstudyuid,
                refseriesuid, refsopclassuid, refsopinstanceuid,
-               requestedimagesize, patientid);
+               requestedimagesize, patientid, presentationlutuid);
     if (EC_Normal == result) push_back(newImage); else delete newImage;
   } else result = EC_MemoryExhausted;
   return result;
@@ -318,6 +319,13 @@ const char *DVPSImageBoxContent_PList::getSOPInstanceUID(size_t idx)
   return NULL; 
 }
 
+const char *DVPSImageBoxContent_PList::getReferencedPresentationLUTInstanceUID(size_t idx)
+{
+  DVPSImageBoxContent *box = getImageBox(idx);
+  if (box) return box->getReferencedPresentationLUTInstanceUID();
+  return NULL; 
+}
+
 E_Condition DVPSImageBoxContent_PList::setAllImagesToDefault()
 {
   E_Condition result = EC_Normal;
@@ -361,9 +369,67 @@ void DVPSImageBoxContent_PList::setLog(ostream *o)
   }
 }
 
+OFBool DVPSImageBoxContent_PList::presentationLUTInstanceUIDisUsed(const char *uid)
+{
+  OFString uidS;
+  if (uid) uidS = uid;
+  const char *c;
+  
+  OFListIterator(DVPSImageBoxContent *) first = begin();
+  OFListIterator(DVPSImageBoxContent *) last = end();  
+  while (first != last)
+  {
+    c = (*first)->getReferencedPresentationLUTInstanceUID();
+    if (c && (uidS == c)) return OFTrue;
+    ++first;
+  }
+  return OFFalse;
+}
+
+const char *DVPSImageBoxContent_PList::haveSinglePresentationLUTUsed(const char *filmBox)
+{
+  OFList<const char *> uidList;
+  if (filmBox==NULL) filmBox = "";
+  const char *c;
+  OFString aString;
+  OFBool found;
+  OFListIterator(const char *) uidfirst;
+  OFListIterator(const char *) uidlast;  
+  
+  OFListIterator(DVPSImageBoxContent *) first = begin();
+  OFListIterator(DVPSImageBoxContent *) last = end();  
+  while (first != last)
+  {
+    c = (*first)->getReferencedPresentationLUTInstanceUID();
+    if ((c == NULL)||(strlen(c)==0)) c = filmBox;
+    aString = c;  // aString now contains the UID of the P-LUT to be used for this image, if any.
+    uidfirst = uidList.begin();
+    uidlast = uidList.end();  
+    found = OFFalse;
+    while (uidfirst != uidlast)
+    {
+      if (aString == (*uidfirst)) 
+      {
+      	found = OFTrue;
+        break;
+      }
+      ++uidfirst;
+    }
+    if (!found) uidList.push_back(c);
+    ++first;
+  }
+
+  if (uidList.size()==1) return *(uidList.begin()); // if there is only one LUT, return it
+  return NULL;
+}
+
 /*
  *  $Log: dvpsibl.cc,v $
- *  Revision 1.9  1999-09-24 15:24:07  meichel
+ *  Revision 1.10  1999-10-07 17:21:59  meichel
+ *  Reworked management of Presentation LUTs in order to create tighter
+ *    coupling between Softcopy and Print.
+ *
+ *  Revision 1.9  1999/09/24 15:24:07  meichel
  *  Print spooler (dcmprtsv) now logs diagnostic messages in log files
  *    when operating in spool mode.
  *

@@ -23,8 +23,8 @@
  *    classes: DVPSPresentationLUT
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-09-24 15:23:46 $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  Update Date:      $Date: 1999-10-07 17:21:49 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -40,6 +40,7 @@
 #include "dvpstyp.h"     /* for enum types */
 
 class DicomImage;
+class DiLookupTable;
 
 /** the representation of a Presentation LUT Content SQ item for Stored Print
  */  
@@ -75,17 +76,19 @@ public:
    *  value multiplicity) is checked.
    *  If this method returns an error code, the object is in undefined state afterwards.
    *  @param dset the item of the PresentationLUTContentSequence from which the data is to be read
+   *  @param withSOPInstance true if SOPinstanceUID should be read (when used with Stored Print).
    *  @return EC_Normal if successful, an error code otherwise.
    */
-  E_Condition read(DcmItem &dset);
+  E_Condition read(DcmItem &dset, OFBool withSOPInstance);
   
   /** writes the Presentation LUT managed by this object to a DICOM dataset.
    *  Copies of the DICOM element managed by this object are inserted into
    *  the DICOM dataset.
    *  @param dset the the item of the PresentationLUTContentSequence to which the data is written
+   *  @param withSOPInstance true if SOPinstanceUID should be written (when used with Stored Print).
    *  @return EC_Normal if successful, an error code otherwise.
    */
-  E_Condition write(DcmItem &dset);
+  E_Condition write(DcmItem &dset, OFBool withSOPInstance);
 
   /** checks whether current presentation LUT is inverse, i.e.
    *  shape is INVERSE or first LUT entry larger than last LUT entry.
@@ -118,6 +121,12 @@ public:
    *  @return a string pointer
    */
   const char *getLUTExplanation();
+
+  /** returns the SOP instance UID of the presentation LUT if present. 
+   *  Otherwise returns NULL.
+   *  @return a string pointer
+   */
+  const char *getSOPInstanceUID();
 
   /** stores a presentation lookup table and activates it.
    *  The LUT is copied. If the method returns EC_Normal,
@@ -160,6 +169,38 @@ public:
     if (o) logstream = o;
   }
   
+  /** creates a DiLookupTable instance from the LUT table
+   *  managed by this object. The returned object must be freed by the caller.
+   *  @return new DiLookupTable object, may be NULL if no LUT present.
+   */
+  DiLookupTable *createDiLookupTable();
+  
+  /** compares a DiLookupTable instance with the LUT table
+   *  managed by this object. Returns OFTrue if equal, OFFalse otherwise.
+   *  @param lut DiLookupTable object to compare with
+   *  @return comparison, true if equal
+   */
+  OFBool compareDiLookupTable(DiLookupTable *lut);
+
+  /** sets the SOP instance UID.
+   *  @param value new attribute value, must not be NULL.
+   *  @return EC_Normal if successful, an error code otherwise.
+   */
+  E_Condition setSOPInstanceUID(const char *value);
+  
+  /** checks whether the current Presentation LUT (or shape) is
+   *  legal when used with Supplement 22.
+   *  @return true if current Presentation LUT is legal for print.
+   */
+  OFBool isLegalPrintPresentationLUT();
+  
+  /** checks whether the current Presentation LUT (or shape)
+   *  matches the current image bit depth in number of entries and first value mapped.
+   *  @param is12bit true if the image is 12 bit, false if the image is 8 bit
+   *  @return true if Presentation LUT matches, false otherwise.
+   */
+  OFBool matchesImageDepth(OFBool is12bit);
+
 private:
   /// private undefined assignment operator
   DVPSPresentationLUT& operator=(const DVPSPresentationLUT&);
@@ -173,6 +214,9 @@ private:
   /// Module=Softcopy_Presentation_LUT, VR=xs, VM=1-n, Type 1c 
   DcmUnsignedShort         presentationLUTData;
 
+  /// Module=Presentation_LUT_List, VR=UI, VM=1, Type 1 
+  DcmUniqueIdentifier      sOPInstanceUID;
+
   /** output stream for error messages, never NULL
    */
   ostream *logstream;
@@ -183,7 +227,11 @@ private:
 
 /*
  *  $Log: dvpspl.h,v $
- *  Revision 1.2  1999-09-24 15:23:46  meichel
+ *  Revision 1.3  1999-10-07 17:21:49  meichel
+ *  Reworked management of Presentation LUTs in order to create tighter
+ *    coupling between Softcopy and Print.
+ *
+ *  Revision 1.2  1999/09/24 15:23:46  meichel
  *  Print spooler (dcmprtsv) now logs diagnostic messages in log files
  *    when operating in spool mode.
  *

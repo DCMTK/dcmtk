@@ -23,8 +23,8 @@
  *    classes: DVPSImageBoxContent_PList
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-09-24 15:23:45 $
- *  CVS/RCS Revision: $Revision: 1.10 $
+ *  Update Date:      $Date: 1999-10-07 17:21:48 $
+ *  CVS/RCS Revision: $Revision: 1.11 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -40,6 +40,7 @@
 #include "dvpstyp.h"     /* for enum types */
 
 class DVPSImageBoxContent;
+class DVPSPresentationLUT_PList;
 
 /** the list of Image Boxes contained in a stored print object.
  *  This class manages the data structures comprising one complete
@@ -71,9 +72,10 @@ public:
    *  value multiplicity) is checked.
    *  If this method returns an error code, the object is in undefined state afterwards.
    *  @param dset the DICOM dataset from which the sequence is to be read
+   *  @param presentationLUTList list of presentation LUTs which may be referenced
    *  @return EC_Normal if successful, an error code otherwise.
    */
-  E_Condition read(DcmItem &dset);
+  E_Condition read(DcmItem &dset, DVPSPresentationLUT_PList& presentationLUTList);
   
   /** writes the list of image boxes managed by this object to a DICOM dataset.
    *  Copies of the DICOM element managed by this object are inserted into
@@ -132,8 +134,9 @@ public:
     const char *refseriesuid,
     const char *refsopclassuid,
     const char *refsopinstanceuid,
-    const char *requestedimagesize=NULL,
-    const char *patientid=NULL);
+    const char *requestedimagesize,
+    const char *patientid,
+    const char *presentationlutuid);
   
   /** sets the (optional) requested decimate/crop behaviour
    *  for all image boxes managed by this object.
@@ -227,6 +230,12 @@ public:
    */
   const char *getSOPInstanceUID(size_t idx);
 
+  /** gets the referenced Presentation LUT SOP Instance UID for the given registered image box..
+   *  @param idx index, must be < getNumberOfImages()
+   *  @return SOP Instance UID, may be NULL.
+   */
+  const char *getReferencedPresentationLUTInstanceUID(size_t idx);
+
   /** returns the image UIDs that are required to look up the referenced image in the database
    *  @param idx index, must be < getNumberOfImages()
    *  @param studyUID Study UID of the image
@@ -251,6 +260,23 @@ public:
    */
   void setLog(ostream *o);
 
+  /** checks whether the given SOP instance UID is used as 
+   *  referenced Presentation LUT SOP Instance UID inside the list of
+   *  image boxes managed by this object.
+   *  @param uid name of UID
+   *  @return OFTrue if UID is used, OFFalse otherwise.
+   */
+  OFBool presentationLUTInstanceUIDisUsed(const char *uid);
+
+  /** if only one Presentation LUT is required to render all images
+   *  managed by this object, returns the UID of this presentation LUT.
+   *  Otherwise returns NULL.
+   *  @param filmBox UID of Presentation LUT specified on Film Box
+   *    level. May be NULL or empty string if absent.
+   *  @return UID of Presentation LUT if found, NULL or empty string otherwise.
+   */
+  const char *haveSinglePresentationLUTUsed(const char *filmBox);
+  
 private:
 
   /** private undefined assignment operator
@@ -275,7 +301,11 @@ private:
 
 /*
  *  $Log: dvpsibl.h,v $
- *  Revision 1.10  1999-09-24 15:23:45  meichel
+ *  Revision 1.11  1999-10-07 17:21:48  meichel
+ *  Reworked management of Presentation LUTs in order to create tighter
+ *    coupling between Softcopy and Print.
+ *
+ *  Revision 1.10  1999/09/24 15:23:45  meichel
  *  Print spooler (dcmprtsv) now logs diagnostic messages in log files
  *    when operating in spool mode.
  *

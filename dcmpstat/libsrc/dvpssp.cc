@@ -23,8 +23,8 @@
  *    classes: DVPSStoredPrint
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-09-24 15:24:34 $
- *  CVS/RCS Revision: $Revision: 1.16 $
+ *  Update Date:      $Date: 1999-10-07 17:22:01 $
+ *  CVS/RCS Revision: $Revision: 1.17 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -116,9 +116,9 @@ DVPSStoredPrint::DVPSStoredPrint(Uint16 illumin, Uint16 reflection)
 , illumination(DCM_Illumination)
 , reflectedAmbientLight(DCM_ReflectedAmbientLight)
 , requestedResolutionID(DCM_RequestedResolutionID)
+, referencedPresentationLUTInstanceUID(DCM_ReferencedSOPInstanceUID)
 , imageBoxContentList()
-, presentationLUT()  
-, presentationLUTInstanceUID(DCM_SOPInstanceUID)
+, presentationLUTList()
 , sOPInstanceUID(DCM_SOPInstanceUID)
 , specificCharacterSet(DCM_SpecificCharacterSet)
 , instanceCreationDate(DCM_InstanceCreationDate)
@@ -130,6 +130,8 @@ DVPSStoredPrint::DVPSStoredPrint(Uint16 illumin, Uint16 reflection)
 , decimateCropBehaviour(DVPSI_default)
 , filmSessionInstanceUID()
 , filmBoxInstanceUID()
+, presentationLUTInstanceUID()
+, transmitImagesIn12Bit(OFTrue)
 , logstream(&cerr)
 {
   illumination.putUint16(illumin,0);
@@ -166,9 +168,9 @@ DVPSStoredPrint::DVPSStoredPrint(const DVPSStoredPrint& copy)
 , illumination(copy.illumination)
 , reflectedAmbientLight(copy.reflectedAmbientLight)
 , requestedResolutionID(copy.requestedResolutionID)
+, referencedPresentationLUTInstanceUID(copy.referencedPresentationLUTInstanceUID)
 , imageBoxContentList(copy.imageBoxContentList)
-, presentationLUT(copy.presentationLUT)  
-, presentationLUTInstanceUID(copy.presentationLUTInstanceUID)
+, presentationLUTList(copy.presentationLUTList)  
 , sOPInstanceUID(copy.sOPInstanceUID)
 , specificCharacterSet(copy.specificCharacterSet)
 , instanceCreationDate(copy.instanceCreationDate)
@@ -180,6 +182,8 @@ DVPSStoredPrint::DVPSStoredPrint(const DVPSStoredPrint& copy)
 , decimateCropBehaviour(copy.decimateCropBehaviour)
 , filmSessionInstanceUID(copy.filmSessionInstanceUID)
 , filmBoxInstanceUID(copy.filmBoxInstanceUID)
+, presentationLUTInstanceUID(copy.presentationLUTInstanceUID)
+, transmitImagesIn12Bit(copy.transmitImagesIn12Bit)
 , logstream(copy.logstream)
 {
 }
@@ -219,9 +223,9 @@ void DVPSStoredPrint::clear()
   illumination.clear();
   reflectedAmbientLight.clear();
   requestedResolutionID.clear();
+  referencedPresentationLUTInstanceUID.clear();
   imageBoxContentList.clear();
-  presentationLUT.clear();  
-  presentationLUTInstanceUID.clear();
+  presentationLUTList.clear();  
   sOPInstanceUID.clear();
   specificCharacterSet.clear();
   instanceCreationDate.clear();
@@ -231,6 +235,8 @@ void DVPSStoredPrint::clear()
   decimateCropBehaviour = DVPSI_default;
   filmSessionInstanceUID.clear();
   filmBoxInstanceUID.clear();
+  presentationLUTInstanceUID.clear();
+  transmitImagesIn12Bit = OFTrue;
   // we don't change the log stream
 }
 
@@ -332,28 +338,7 @@ E_Condition DVPSStoredPrint::read(DcmItem &dset)
   READ_FROM_DATASET(DcmDate, instanceCreationDate)
   READ_FROM_DATASET(DcmTime, instanceCreationTime)
 
-  // read Presentation LUT List Module
-  if (result==EC_Normal)
-  {
-    stack.clear();
-    if (EC_Normal == dset.search(DCM_PresentationLUTContentSequence, stack, ESM_fromHere, OFFalse))
-    {
-      seq=(DcmSequenceOfItems *)stack.top();
-      if (seq->card() == 1)
-      {
-         item = seq->getItem(0);
-         stack.clear();
-         
-         READ_FROM_DATASET2(DcmUniqueIdentifier, presentationLUTInstanceUID)
-         if (EC_Normal==result) result = presentationLUT.read(*item);
-      } else {
-        result=EC_TagNotFound;
-#ifdef DEBUG
-        *logstream << "Unsupported: found PresentationLUTContentSequence in Stored Print with number of items != 1" << endl;
-#endif
-      }
-    }
-  }
+  if (EC_Normal==result) result = presentationLUTList.read(dset);
 
   if (result==EC_Normal)
   {
@@ -390,22 +375,20 @@ E_Condition DVPSStoredPrint::read(DcmItem &dset)
          READ_FROM_DATASET2(DcmCodeString, requestedResolutionID)
          if (result==EC_TagNotFound) result = EC_Normal;
          // check referenced presentation LUT sequence
-         // if there is any reference, it must refer to the (only) presentation LUT we are managing.
+         // if there is any reference, it must refer to one of the presentation LUTs we are managing.
          stack.clear();
          if (EC_Normal == dset.search(DCM_ReferencedPresentationLUTSequence, stack, ESM_fromHere, OFFalse))
          {
            seq=(DcmSequenceOfItems *)stack.top();
            if (seq->card() ==1)
            {
-              DcmUniqueIdentifier referencedSOPInstanceUID(DCM_ReferencedSOPInstanceUID);
               item = seq->getItem(0);
               stack.clear();
-              READ_FROM_DATASET2(DcmUniqueIdentifier, referencedSOPInstanceUID)
-              if (referencedSOPInstanceUID.getLength() > 0)
+              READ_FROM_DATASET2(DcmUniqueIdentifier, referencedPresentationLUTInstanceUID)
+              if (referencedPresentationLUTInstanceUID.getLength() > 0)
               {
-                referencedSOPInstanceUID.getOFString(aString,0);
-                presentationLUTInstanceUID.getOFString(aString2,0);
-                if (aString != aString2)
+                referencedPresentationLUTInstanceUID.getOFString(aString,0);
+                if (NULL == presentationLUTList.findPresentationLUT(aString.c_str()))
                 {
                   result=EC_IllegalCall;
 #ifdef DEBUG
@@ -429,7 +412,7 @@ E_Condition DVPSStoredPrint::read(DcmItem &dset)
     }
   }
 
-  if (EC_Normal==result) result = imageBoxContentList.read(dset);
+  if (EC_Normal==result) result = imageBoxContentList.read(dset, presentationLUTList);
        
   /* Now perform basic sanity checks */
 
@@ -651,42 +634,12 @@ E_Condition DVPSStoredPrint::write(DcmItem &dset, OFBool writeRequestedImageSize
         if (minDensity.getLength() > 0) { ADD_TO_DATASET2(DcmUnsignedShort, minDensity) }
         if (trim.getLength() > 0) { ADD_TO_DATASET2(DcmCodeString, trim) }
         if (requestedResolutionID.getLength() > 0) { ADD_TO_DATASET2(DcmCodeString, requestedResolutionID) }
-        if (presentationLUTInstanceUID.getLength() > 0)
+        if (presentationLUTList.size() > 0)
         {
           ADD_TO_DATASET2(DcmUnsignedShort, illumination)
           ADD_TO_DATASET2(DcmUnsignedShort, reflectedAmbientLight)
           if (EC_Normal == result) result = addReferencedPLUTSQ(*ditem);
         }
-        if (result==EC_Normal)
-        {
-          dseq->insert(ditem);
-          dset.insert(dseq);
-        } else {
-          // out of memory during creation of sequence contents.
-          delete dseq;
-          delete ditem;
-          result = EC_MemoryExhausted;
-        }
-      } else {
-        // could allocate item but not sequence. Bail out.
-        delete ditem;
-        result = EC_MemoryExhausted;
-      }
-    }
-    else result = EC_MemoryExhausted;
-  }
-
-  /* create the PresentationLUTContentSequence */
-  if ((result == EC_Normal)&&(presentationLUTInstanceUID.getLength() > 0))
-  {
-    ditem = new DcmItem();
-    if (ditem)
-    {
-      dseq = new DcmSequenceOfItems(DCM_PresentationLUTContentSequence);
-      if (dseq)
-      {
-        ADD_TO_DATASET2(DcmUniqueIdentifier, presentationLUTInstanceUID)
-        if (EC_Normal == result) result = presentationLUT.write(*ditem);
         if (result==EC_Normal)
         {
           dseq->insert(ditem);
@@ -727,7 +680,10 @@ E_Condition DVPSStoredPrint::write(DcmItem &dset, OFBool writeRequestedImageSize
   updateCache();
   unsigned long writeImageBoxes=0; // default: write all
   if (limitImages && currentValuesValid) writeImageBoxes = currentNumCols * currentNumRows;
-  
+ 
+  // write PresentationLUTContentSequence
+  if (EC_Normal == result) result = presentationLUTList.write(dset);
+ 
   // write imageBoxContentList
   if (EC_Normal == result) result = imageBoxContentList.write(dset, writeRequestedImageSize, writeImageBoxes);
 
@@ -739,7 +695,7 @@ E_Condition DVPSStoredPrint::write(DcmItem &dset, OFBool writeRequestedImageSize
     if (EC_Normal == result) result = DVPSHelper::addReferencedUIDItem(*dseq, UID_BasicFilmBoxSOPClass);
     if (EC_Normal == result) result = DVPSHelper::addReferencedUIDItem(*dseq, UID_BasicGrayscaleImageBoxSOPClass);
     if (EC_Normal == result) result = imageBoxContentList.addImageSOPClasses(*dseq, writeImageBoxes);
-    if ((result == EC_Normal)&&(presentationLUTInstanceUID.getLength() > 0))
+    if ((result == EC_Normal)&&(presentationLUTList.size() > 0))
     {
       result = DVPSHelper::addReferencedUIDItem(*dseq, UID_PresentationLUTSOPClass);
     }
@@ -786,19 +742,22 @@ E_Condition DVPSStoredPrint::addImageBox(
   const char *refsopclassuid,
   const char *refsopinstanceuid,
   const char *requestedimagesize,
-  const char *patientid)
+  const char *patientid,
+  DVPSPresentationLUT *presentationlut)
 {  
   char instanceuid[100];
+  const char *lutUID = presentationLUTList.addPresentationLUT(presentationlut);
   return imageBoxContentList.addImageBox(dcmGenerateUniqueIdentifer(instanceuid), 
      retrieveaetitle, refstudyuid, refseriesuid, refsopclassuid, 
-     refsopinstanceuid, requestedimagesize, patientid);
+     refsopinstanceuid, requestedimagesize, patientid, lutUID);
 }
 
 E_Condition DVPSStoredPrint::addImageBox(
   const char *retrieveaetitle,
   const char *refsopinstanceuid,
   const char *requestedimagesize,
-  const char *patientid)
+  const char *patientid,
+  DVPSPresentationLUT *presentationlut)
 {
   char *refstudyuid=NULL;
   char *refseriesuid=NULL;
@@ -808,7 +767,7 @@ E_Condition DVPSStoredPrint::addImageBox(
   imageSeriesInstanceUID.getString(refseriesuid); // but separate series for the hardcopy images
 
   return addImageBox(retrieveaetitle, refstudyuid, refseriesuid, UID_HardcopyGrayscaleImageStorage,
-     refsopinstanceuid, requestedimagesize, patientid);
+     refsopinstanceuid, requestedimagesize, patientid, presentationlut);
 }
 
 E_Condition DVPSStoredPrint::setInstanceUID(const char *uid)
@@ -1025,83 +984,6 @@ const char *DVPSStoredPrint::getResolutionID()
   if (EC_Normal == requestedResolutionID.getString(c)) return c; else return NULL;
 }
 
-DVPSPrintPresentationLUTType DVPSStoredPrint::getPresentationLUT()
-{
-  if (presentationLUTInstanceUID.getLength() == 0) return DVPSQ_none;
-
-  switch (presentationLUT.getType())
-  {
-      case DVPSP_identity:
-        break;
-      case DVPSP_lin_od:
-        return DVPSQ_lin_od;
-        /*break;*/
-      case DVPSP_table:
-        return DVPSQ_table;
-        /* break; */
-      case DVPSP_inverse: /* should not happen */
-#ifdef DEBUG
-        *logstream << "Warning: INVERSE presentation LUT shape found in stored print" << endl;
-#endif      
-        break;
-  }
-  return DVPSQ_identity;
-}
-  
-E_Condition DVPSStoredPrint::setCurrentPresentationLUT(DVPSPrintPresentationLUTType newType)
-{
-  char uid[70];
-  E_Condition result = EC_Normal;
-  
-  switch (newType)
-  {
-    case DVPSQ_identity:
-      result = presentationLUT.setType(DVPSP_identity);
-      if (EC_Normal == result) result = presentationLUTInstanceUID.putString(dcmGenerateUniqueIdentifer(uid));
-      break;
-    case DVPSQ_lin_od:
-      result = presentationLUT.setType(DVPSP_lin_od);
-      if (EC_Normal == result) result = presentationLUTInstanceUID.putString(dcmGenerateUniqueIdentifer(uid));
-      break;
-    case DVPSQ_table:
-      result = presentationLUT.setType(DVPSP_table);
-      if (EC_Normal == result) result = presentationLUTInstanceUID.putString(dcmGenerateUniqueIdentifer(uid));
-      break;
-    case DVPSQ_none:
-      presentationLUTInstanceUID.clear();
-      break;
-  }
-  return result;
-}
-
-E_Condition DVPSStoredPrint::setPresentationLookupTable(
-    DcmUnsignedShort& lutDescriptor,
-    DcmUnsignedShort& lutData,
-    DcmLongString& lutExplanation)
-{
-  char uid[70];
-  E_Condition result = presentationLUT.setLUT(lutDescriptor, lutData, lutExplanation);
-  if (EC_Normal == result) result = presentationLUTInstanceUID.putString(dcmGenerateUniqueIdentifer(uid));
-  return result;
-}
-
-E_Condition DVPSStoredPrint::setPresentationLookupTable(DcmItem &dset)
-{
-  char uid[70];
-  E_Condition result = presentationLUT.read(dset);
-  if (EC_Normal == result) result = presentationLUTInstanceUID.putString(dcmGenerateUniqueIdentifer(uid));
-  else presentationLUTInstanceUID.clear(); // disable LUT
-  return result;
-}
-
-const char *DVPSStoredPrint::getCurrentPresentationLUTExplanation()
-{ 
-  if (presentationLUTInstanceUID.getLength() > 0) return presentationLUT.getCurrentExplanation();
-  return NULL;
-}
-
-
-
 E_Condition DVPSStoredPrint::setBorderDensity(const char *value)
 {
   if ((value==NULL)||(strlen(value)==0)) 
@@ -1156,17 +1038,40 @@ Uint16 DVPSStoredPrint::getPrintReflectedAmbientLight()
   if (EC_Normal == reflectedAmbientLight.getUint16(result, 0)) return result; else return 0;
 }
 
+E_Condition DVPSStoredPrint::deleteImage(size_t idx)
+{
+  E_Condition result = imageBoxContentList.deleteImage(idx);
+  char *c = NULL;
+  if (EC_Normal != configurationInformation.getString(c)) c = NULL;
+  presentationLUTList.cleanup(c, imageBoxContentList);
+  return result;
+}
+  
+E_Condition DVPSStoredPrint::deleteMultipleImages(size_t number)
+{
+  E_Condition result = imageBoxContentList.deleteMultipleImages(number);
+  char *c = NULL;
+  if (EC_Normal != configurationInformation.getString(c)) c = NULL;
+  presentationLUTList.cleanup(c, imageBoxContentList);
+  return result;
+}
+
 E_Condition DVPSStoredPrint::deleteSpooledImages()
 {
-  updateCache();
+  E_Condition result = EC_IllegalCall;
+  char *c = NULL;
   unsigned long deleteImageBoxes=0;
+
+  updateCache();
   if (currentValuesValid) 
   {
   	deleteImageBoxes = currentNumCols * currentNumRows;
     if (deleteImageBoxes > imageBoxContentList.size()) deleteImageBoxes = imageBoxContentList.size();
-    return imageBoxContentList.deleteMultipleImages(deleteImageBoxes);
+    result = imageBoxContentList.deleteMultipleImages(deleteImageBoxes);
   }
-  return EC_IllegalCall;
+  if (EC_Normal != configurationInformation.getString(c)) c = NULL;
+  presentationLUTList.cleanup(c, imageBoxContentList);
+  return result;
 }
 
 E_Condition DVPSStoredPrint::printSCUgetPrinterInstance(DVPSPrintMessageHandler& printHandler)
@@ -1182,52 +1087,105 @@ E_Condition DVPSStoredPrint::printSCUgetPrinterInstance(DVPSPrintMessageHandler&
   return EC_Normal;
 }
 
-E_Condition DVPSStoredPrint::printSCUpreparePresentationLUT(DVPSPrintMessageHandler& printHandler)
+E_Condition DVPSStoredPrint::printSCUpreparePresentationLUT(
+  DVPSPrintMessageHandler& printHandler,
+  OFBool printerRequiresMatchingLUT,
+  OFBool printerLUTRenderingPreferred,
+  OFBool printerSupports12Bit)
 {
-  if (presentationLUTInstanceUID.getLength() == 0) return EC_Normal; // print job does not contain any P-LUT.
+  /* first of all we determine whether we can let the print SCP render Presentation LUT for us. */
+  OFBool canUsePLUT = OFFalse;   // set to true if we can create a presentation LUT for all images
+  transmitImagesIn12Bit = OFTrue; // set to false later if images should be transmitted in 8-bit depth
   
-  if (! printHandler.printerSupportsPresentationLUT())
+  OFBool printerSupportsPresentationLUT = printHandler.printerSupportsPresentationLUT();
+  DVPSPresentationLUT *plut = NULL;
+  if (printerSupportsPresentationLUT)
   {
+    char *filmBox = NULL;
+    if (EC_Normal != referencedPresentationLUTInstanceUID.getString(filmBox)) filmBox=NULL;    
+    const char *plutuid = imageBoxContentList.haveSinglePresentationLUTUsed(filmBox);
+    if (plutuid) plut = presentationLUTList.findPresentationLUT(plutuid);
+    if (plut && (plut->isLegalPrintPresentationLUT()))
+    {
+      /* there is a single Presentation LUT that can be used for the complete film,
+       * and it is a valid Supplement 22 Presentation LUT.
+       */
+      if (printerSupports12Bit)
+      {
+        /* 12-bit printer, we use the LUT if the printer can handle it and if the user wants it */
+        if (printerLUTRenderingPreferred)
+        {
+          if (printerRequiresMatchingLUT)
+          {
+            if (plut->matchesImageDepth(OFTrue)) canUsePLUT = OFTrue;
+            else
+            {
+              if (plut->matchesImageDepth(OFFalse)) 
+              {
+                canUsePLUT = OFTrue;
+                transmitImagesIn12Bit = OFFalse;
+              }
+            }
+          } else canUsePLUT = OFTrue;
+        }
+      } else {
+        /* 8-bit printer, we use the LUT if the printer can handle it */
+        transmitImagesIn12Bit = OFFalse;
+        if (printerRequiresMatchingLUT)
+        {
+          if (plut->matchesImageDepth(OFFalse)) canUsePLUT = OFTrue;
+        } else canUsePLUT = OFTrue;
+      }
+    } else transmitImagesIn12Bit = printerSupports12Bit;
+  } else {
+  	transmitImagesIn12Bit = printerSupports12Bit;
   	*logstream << "spooler: warning: printer does not support Presentation LUT SOP Class," << endl
   	     << "  presentation LUT related print job settings will be ignored." << endl;
-  	return EC_Normal; // we only issue a warning but continue printing.
   }
 
-  DcmDataset dset;
-  E_Condition result = presentationLUT.write(dset);  
-  DcmDataset *attributeListOut=NULL; 
-  Uint16 status=0;
-  OFString sopinstanceUID;
-
-  if (result==EC_Normal)
+  E_Condition result = EC_Normal;  
+  if (printerSupportsPresentationLUT)
   {
-    CONDITION cond = printHandler.createRQ(UID_PresentationLUTSOPClass, sopinstanceUID, &dset, status, attributeListOut);
-    if ((SUCCESS(cond))&&((status==0)||((status & 0xf000)==0xb000)))
+    DcmDataset dset;
+    DcmDataset *attributeListOut=NULL; 
+    Uint16 status=0;
+    if (canUsePLUT)
     {
-      result = presentationLUTInstanceUID.putString(sopinstanceUID.c_str());
+      result = plut->write(dset, OFFalse);
     } else {
-      presentationLUTInstanceUID.clear();
-      result = EC_IllegalCall;
+      DVPSPresentationLUT identity;
+      result = identity.write(dset, OFFalse);
     }
-    delete attributeListOut;
+
+    if (result==EC_Normal)
+    {
+      CONDITION cond = printHandler.createRQ(UID_PresentationLUTSOPClass, presentationLUTInstanceUID, &dset, status, attributeListOut);
+      if ((SUCCESS(cond))&&((status==0)||((status & 0xf000)==0xb000)))
+      {
+      	/* nothing */
+      } else {
+        presentationLUTInstanceUID.clear();
+        result = EC_IllegalCall;
+      }
+      delete attributeListOut;
+    }
   }
+
   return result;  
 }
 
 E_Condition DVPSStoredPrint::addReferencedPLUTSQ(DcmItem &dset)
 {
+  if (referencedPresentationLUTInstanceUID.getLength() == 0) return EC_Normal;
+  
   E_Condition result = EC_Normal;
   DcmElement *delem=NULL;
   DcmSequenceOfItems *dseq = new DcmSequenceOfItems(DCM_ReferencedPresentationLUTSequence);
   DcmItem *ditem = new DcmItem();
-  char *c = NULL;
 
-  DcmUniqueIdentifier pLUTUID(DCM_ReferencedSOPInstanceUID);
-  if (EC_Normal == presentationLUTInstanceUID.getString(c)) result = pLUTUID.putString(c);
-
-  if ((result == EC_Normal) && ditem && dseq)
+  if (ditem && dseq)
   {
-     ADD_TO_DATASET2(DcmUniqueIdentifier, pLUTUID)
+     ADD_TO_DATASET2(DcmUniqueIdentifier, referencedPresentationLUTInstanceUID)
      if (result==EC_Normal)
      {
        dseq->insert(ditem);
@@ -1249,18 +1207,16 @@ E_Condition DVPSStoredPrint::addPresentationLUTReference(DcmItem& dset)
   DcmElement *delem=NULL;
   E_Condition result = EC_Normal;
 
-  // add supplement 22 attributes if necessary
-  if (presentationLUTInstanceUID.getLength() > 0)
-  {
-    ADD_TO_DATASET(DcmUnsignedShort, illumination)
-    ADD_TO_DATASET(DcmUnsignedShort, reflectedAmbientLight)
+  ADD_TO_DATASET(DcmUnsignedShort, illumination)
+  ADD_TO_DATASET(DcmUnsignedShort, reflectedAmbientLight)
 
-    char *c = NULL;
+  if (presentationLUTInstanceUID.size() > 0)
+  {
+
     DcmUniqueIdentifier refsopclassuid(DCM_ReferencedSOPClassUID);
     DcmUniqueIdentifier refsopinstanceuid(DCM_ReferencedSOPInstanceUID);
-    if (result==EC_Normal) result = presentationLUTInstanceUID.getString(c);
     if (result==EC_Normal) result = refsopclassuid.putString(UID_PresentationLUTSOPClass);
-    if (result==EC_Normal) result = refsopinstanceuid.putString(c);  
+    if (result==EC_Normal) result = refsopinstanceuid.putString(presentationLUTInstanceUID.c_str());  
     DcmSequenceOfItems *dseq = new DcmSequenceOfItems(DCM_ReferencedPresentationLUTSequence);
     DcmItem *ditem = new DcmItem();
     if ((result == EC_Normal) && ditem && dseq)
@@ -1296,7 +1252,7 @@ E_Condition DVPSStoredPrint::printSCUcreateBasicFilmSession(
   E_Condition result = EC_Normal;
 
   // we expect 'number of copies', 'print priority', 'medium type' and 'film destination' in dset
-  // add presentation LUT reference if necessary.
+  // add illumination and reflection, and presentation LUT reference if necessary.
   if ((printHandler.printerSupportsPresentationLUT()) && plutInSession) result = addPresentationLUTReference(dset);
     
   if (result==EC_Normal)
@@ -1377,7 +1333,7 @@ E_Condition DVPSStoredPrint::printSCUcreateBasicFilmBox(DVPSPrintMessageHandler&
     else result = EC_MemoryExhausted;
   }
 
-  // add presentation LUT reference if necessary.
+  // add illumination and reflection, and presentation LUT reference if necessary.
   if ((result==EC_Normal) && (printHandler.printerSupportsPresentationLUT()) && (!plutInSession)) result = addPresentationLUTReference(dset);
 
   if (result==EC_Normal)
@@ -1453,16 +1409,11 @@ E_Condition DVPSStoredPrint::printSCUdelete(DVPSPrintMessageHandler& printHandle
   }
 
   // delete presentation LUT
-  if ((presentationLUTInstanceUID.getLength() > 0)&&(printHandler.printerSupportsPresentationLUT()))
+  if ((presentationLUTInstanceUID.size() > 0)&&(printHandler.printerSupportsPresentationLUT()))
   {
-  	char *c=NULL;
-    if (EC_Normal != presentationLUTInstanceUID.getString(c)) result = EC_IllegalCall;
-  	else
-  	{
-  	  cond = printHandler.deleteRQ(UID_PresentationLUTSOPClass, c, status);
-      if ((! SUCCESS(cond))||((status!=0)&&((status & 0xf000)!=0xb000))) result = EC_IllegalCall;
-      // don't clear this UID, is required as flag indicating that we have a Presentation LUT.
-    }
+    cond = printHandler.deleteRQ(UID_PresentationLUTSOPClass, presentationLUTInstanceUID.c_str(), status);
+    if ((! SUCCESS(cond))||((status!=0)&&((status & 0xf000)!=0xb000))) result = EC_IllegalCall;
+    presentationLUTInstanceUID.clear();
   }
   return result;  
 }
@@ -1470,7 +1421,6 @@ E_Condition DVPSStoredPrint::printSCUdelete(DVPSPrintMessageHandler& printHandle
 E_Condition DVPSStoredPrint::printSCUsetBasicImageBox(
     DVPSPrintMessageHandler& printHandler,
     size_t idx,
-    OFBool supports12bit,
     DicomImage& image)
 {
   DcmDataset dataset;
@@ -1487,6 +1437,35 @@ E_Condition DVPSStoredPrint::printSCUsetBasicImageBox(
   const char *imageSopInstanceUID = imageBoxContentList.getSOPInstanceUID(idx);  
   if (imageSopInstanceUID==NULL) return EC_IllegalCall;
 
+  /* any presentation LUT to render on SCU side? */
+  if (presentationLUTInstanceUID.size() == 0) // otherwise we use SCP rendering
+  {
+  	/* look for referenced Presentation LUT in image box */
+    const char *imageplutuid = imageBoxContentList.getReferencedPresentationLUTInstanceUID(idx);
+    char *filmplutuid = NULL;
+    if (EC_Normal != referencedPresentationLUTInstanceUID.getString(filmplutuid)) filmplutuid=NULL;
+    /* if absent, look for referenced Presentation LUT in film box */
+    if ((imageplutuid == NULL)||(strlen(imageplutuid)==0)) imageplutuid = filmplutuid;
+    DVPSPresentationLUT *pLUT = NULL;
+    if (imageplutuid && (strlen(imageplutuid)>0)) pLUT = presentationLUTList.findPresentationLUT(imageplutuid);
+    if (pLUT)
+    {
+      /* found presentation LUT, activate */
+      if (pLUT->activate(&image))
+      {
+        if ((pLUT->getType() == DVPSP_table)&&(! transmitImagesIn12Bit))
+        {
+          *logstream << "Warning: rendering Presentation LUT into 8-bit bitmap, image quality loss possible." << endl;
+        }
+      } else {
+#ifdef DEBUG
+        *logstream << "Warning: unable to activate Presentation LUT, using IDENTITY instead." << endl;
+#endif      
+        image.setPresentationLutShape(ESP_Identity);
+      }
+    } else image.setPresentationLutShape(ESP_Identity); // default
+  } else image.setPresentationLutShape(ESP_Identity); // default
+  
   E_Condition result = imageBoxContentList.prepareBasicImageBox(idx, dataset);
   if (EC_Normal == result)
   {
@@ -1507,7 +1486,7 @@ E_Condition DVPSStoredPrint::printSCUsetBasicImageBox(
           sprintf(str, "10000\\%ld", (long)(aspectRatio*10000.0));
           if (EC_Normal==result) result = DVPSHelper::putStringValue(ditem, DCM_Columns, str);
         }
-        if (supports12bit)
+        if (transmitImagesIn12Bit)
         {
           if (EC_Normal==result) result = DVPSHelper::putUint16Value(ditem, DCM_BitsAllocated, 16);
           if (EC_Normal==result) result = DVPSHelper::putUint16Value(ditem, DCM_BitsStored, 12);
@@ -1571,13 +1550,17 @@ void DVPSStoredPrint::setLog(ostream *o)
   {
   	logstream = o;
   	imageBoxContentList.setLog(o);
-  	presentationLUT.setLog(o);
+  	presentationLUTList.setLog(o);
   }
 }
 
 /*
  *  $Log: dvpssp.cc,v $
- *  Revision 1.16  1999-09-24 15:24:34  meichel
+ *  Revision 1.17  1999-10-07 17:22:01  meichel
+ *  Reworked management of Presentation LUTs in order to create tighter
+ *    coupling between Softcopy and Print.
+ *
+ *  Revision 1.16  1999/09/24 15:24:34  meichel
  *  Added support for CP 173 (Presentation LUT clarifications)
  *
  *  Revision 1.15  1999/09/17 14:33:54  meichel

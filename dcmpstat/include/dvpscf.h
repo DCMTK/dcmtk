@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DVConfiguration
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-10-01 13:32:36 $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 1999-10-07 17:21:46 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -151,6 +151,22 @@ class DVConfiguration
      *  @return entry if present in the config file, OFFalse otherwise.
      */
     OFBool getTargetPrinterSupportsPresentationLUT(const char *targetID);
+
+    /** returns the PRESENTATIONLUTMATCHREQUIRED entry for the printer with the given
+     *  target ID from the configuration file.
+     *  @param targetID communication target ID, must be one of the target
+     *    identifiers returned by getTargetID() for peer type DVPSE_printer.
+     *  @return entry if present in the config file, OFTrue otherwise.
+     */
+    OFBool getTargetPrinterPresentationLUTMatchRequired(const char *targetID);
+
+    /** returns the PRESENTATIONLUTPREFERSCPRENDERING entry for the printer with the given
+     *  target ID from the configuration file.
+     *  @param targetID communication target ID, must be one of the target
+     *    identifiers returned by getTargetID() for peer type DVPSE_printer.
+     *  @return entry if present in the config file, OFFalse otherwise.
+     */
+    OFBool getTargetPrinterPresentationLUTPreferSCPRendering(const char *targetID);
 
     /** returns the PRESENTATIONLUTINFILMSESSION entry for the printer with the given
      *  target ID from the configuration file.
@@ -617,7 +633,11 @@ private:
 /*
  *  CVS/RCS Log:
  *  $Log: dvpscf.h,v $
- *  Revision 1.7  1999-10-01 13:32:36  joergr
+ *  Revision 1.8  1999-10-07 17:21:46  meichel
+ *  Reworked management of Presentation LUTs in order to create tighter
+ *    coupling between Softcopy and Print.
+ *
+ *  Revision 1.7  1999/10/01 13:32:36  joergr
  *  Added new option to config file: AlwaysDeleteTerminateJobs.
  *
  *  Revision 1.6  1999/09/24 15:24:29  meichel

@@ -26,9 +26,9 @@
  *    Non-grayscale transformations in the presentation state are ignored. 
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-09-24 15:24:25 $
+ *  Update Date:      $Date: 1999-10-07 17:21:42 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmpstat/apps/dcmpsprt.cc,v $
- *  CVS/RCS Revision: $Revision: 1.8 $
+ *  CVS/RCS Revision: $Revision: 1.9 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -144,7 +144,7 @@ int main(int argc, char *argv[])
      cmd.addOption("--default-request",      "use printer default (default)");
 
     cmd.addGroup("print presentation LUT options:");
-     cmd.addOption("--no-plut",              "do not use presentation LUT (default)");
+     cmd.addOption("--default-plut",         "do not create presentation LUT (default)");
      cmd.addOption("--identity",             "set IDENTITY presentation LUT shape");
      cmd.addOption("--plut",              1, "[l]ut identifier: string",
                                              "add LUT [l] to print job");
@@ -218,7 +218,7 @@ int main(int argc, char *argv[])
       cmd.endOptionBlock();
 
       cmd.beginOptionBlock();
-      if (cmd.findOption("--no-plut"))   opt_linearLUTshape = OFFalse;
+      if (cmd.findOption("--default-plut")) opt_linearLUTshape = OFFalse;
       if (cmd.findOption("--identity"))  opt_linearLUTshape = OFTrue;
       if (cmd.findOption("--plut"))      app.checkValue(cmd.getValue(opt_plutname));
       cmd.endOptionBlock();
@@ -365,16 +365,6 @@ int main(int argc, char *argv[])
       cerr << "warning: cannot set film session print priority to '" << opt_priority << "', ignoring." << endl;
     if ((opt_ownerID)&&(EC_Normal != dvi.setPrinterOwnerID(opt_ownerID)))
       cerr << "warning: cannot set film session owner ID to '" << opt_ownerID << "', ignoring." << endl;
-      
-    if (opt_plutname)
-    {
-      if (EC_Normal != dvi.selectPrintPresentationLUT(opt_plutname))
-      cerr << "warning: cannot set requested presentation LUT '" << opt_plutname << "', ignoring." << endl;
-    } else {
-      if ((opt_linearLUTshape)&&(EC_Normal != dvi.getPrintHandler().setCurrentPresentationLUT(DVPSQ_identity)))
-        cerr << "warning: cannot set IDENTITY presentation LUT shape, ignoring." << endl;
-    }
-
     if ((opt_spool)&&(EC_Normal != dvi.startPrintSpooler()))
       cerr << "warning: unable to start print spooler, ignoring." << endl;
     
@@ -416,6 +406,15 @@ int main(int argc, char *argv[])
             cerr << "error: loading image file '" << currentImage << "' failed." << endl;
             return 10;
           }
+        }
+
+        if (opt_plutname)
+        {
+          if (EC_Normal != dvi.selectDisplayPresentationLUT(opt_plutname))
+          cerr << "warning: cannot set requested presentation LUT '" << opt_plutname << "', ignoring." << endl;
+        } else {
+          if ((opt_linearLUTshape)&&(EC_Normal != dvi.getCurrentPState().setCurrentPresentationLUT(DVPSP_identity)))
+            cerr << "warning: cannot set IDENTITY presentation LUT shape, ignoring." << endl;
         }
 
         // save grayscale hardcopy image.
@@ -611,7 +610,11 @@ void dumpPrinterCharacteristics(DVInterface& dvi, const char *target)
 /*
  * CVS/RCS Log:
  * $Log: dcmpsprt.cc,v $
- * Revision 1.8  1999-09-24 15:24:25  meichel
+ * Revision 1.9  1999-10-07 17:21:42  meichel
+ * Reworked management of Presentation LUTs in order to create tighter
+ *   coupling between Softcopy and Print.
+ *
+ * Revision 1.8  1999/09/24 15:24:25  meichel
  * Added support for CP 173 (Presentation LUT clarifications)
  *
  * Revision 1.7  1999/09/23 17:37:09  meichel

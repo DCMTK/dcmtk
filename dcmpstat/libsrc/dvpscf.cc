@@ -21,9 +21,9 @@
  *
  *  Purpose: DVConfiguration
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-10-01 15:34:33 $
- *  CVS/RCS Revision: $Revision: 1.11 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 1999-10-07 17:21:57 $
+ *  CVS/RCS Revision: $Revision: 1.12 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -50,7 +50,7 @@
 #define PSTAT_DEFAULT_REFLECTION 10
 
 /* keywords for configuration file */
-#define L0_PRESENTATIONLUTINFILMSESSION "PRESENTATIONLUTINFILMSESSION"
+
 #define L0_AETITLE                      "AETITLE"
 #define L0_ALWAYSDELETETERMINATEJOBS    "ALWAYSDELETETERMINATEJOBS"
 #define L0_BITPRESERVINGMODE            "BITPRESERVINGMODE"
@@ -75,6 +75,9 @@
 #define L0_MEDIUMTYPE                   "MEDIUMTYPE"
 #define L0_MINPRINTRESOLUTION           "MINPRINTRESOLUTION"
 #define L0_PORT                         "PORT"
+#define L0_PRESENTATIONLUTINFILMSESSION "PRESENTATIONLUTINFILMSESSION"
+#define L0_PRESENTATIONLUTMATCHREQUIRED "PRESENTATIONLUTMATCHREQUIRED"
+#define L0_PRESENTATIONLUTPREFERSCPRENDERING "PRESENTATIONLUTPREFERSCPRENDERING"
 #define L0_RECEIVER                     "RECEIVER"
 #define L0_RESOLUTION                   "RESOLUTION"
 #define L0_RESOLUTIONID                 "RESOLUTIONID"
@@ -501,6 +504,16 @@ OFBool DVConfiguration::getTargetPrinterSupportsPresentationLUT(const char *targ
   return getConfigBoolEntry(L2_COMMUNICATION, targetID, L0_SUPPORTSPRESENTATIONLUT, OFFalse);
 }
 
+OFBool DVConfiguration::getTargetPrinterPresentationLUTMatchRequired(const char *targetID)
+{
+  return getConfigBoolEntry(L2_COMMUNICATION, targetID, L0_PRESENTATIONLUTMATCHREQUIRED, OFTrue);
+}
+
+OFBool DVConfiguration::getTargetPrinterPresentationLUTPreferSCPRendering(const char *targetID)
+{
+  return getConfigBoolEntry(L2_COMMUNICATION, targetID, L0_PRESENTATIONLUTPREFERSCPRENDERING, OFFalse);
+}
+
 OFBool DVConfiguration::getTargetPrinterPresentationLUTinFilmSession(const char *targetID)
 {
   return getConfigBoolEntry(L2_COMMUNICATION, targetID, L0_PRESENTATIONLUTINFILMSESSION, OFFalse);
@@ -785,7 +798,11 @@ Uint16 DVConfiguration::getDefaultPrintReflection()
 /*
  *  CVS/RCS Log:
  *  $Log: dvpscf.cc,v $
- *  Revision 1.11  1999-10-01 15:34:33  joergr
+ *  Revision 1.12  1999-10-07 17:21:57  meichel
+ *  Reworked management of Presentation LUTs in order to create tighter
+ *    coupling between Softcopy and Print.
+ *
+ *  Revision 1.11  1999/10/01 15:34:33  joergr
  *  Fixed "copy and paste" error.
  *
  *  Revision 1.10  1999/10/01 13:33:18  joergr

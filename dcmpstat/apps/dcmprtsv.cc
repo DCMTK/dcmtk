@@ -21,10 +21,10 @@
  *
  *  Purpose: Presentation State Viewer - Print Spooler
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-10-01 13:29:48 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 1999-10-07 17:21:41 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmpstat/apps/Attic/dcmprtsv.cc,v $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -118,6 +118,8 @@ static OFBool         targetDisableNewVRs   = OFFalse;
 static OFBool         targetSupportsPLUT    = OFTrue;
 static OFBool         targetSupports12bit   = OFTrue;
 static OFBool         targetPLUTinFilmSession = OFFalse;
+static OFBool         targetRequiresMatchingLUT   = OFTrue;
+static OFBool         targetPreferSCPLUTRendering = OFFalse;
 static OFBool         deletePrintJobs       = OFFalse;
 static OFBool         deleteTerminateJobs   = OFFalse;
 
@@ -235,7 +237,8 @@ static E_Condition spoolStoredPrintFile(const char *filename, DVInterface &dvi)
       {
         *logstream << "spooler: printer communication failed, unable to request printer settings." << endl;
       }
-      if (EC_Normal==result) if (EC_Normal != (result = stprint.printSCUpreparePresentationLUT(printHandler)))
+      if (EC_Normal==result) if (EC_Normal != (result = stprint.printSCUpreparePresentationLUT(
+        printHandler, targetRequiresMatchingLUT, targetPreferSCPLUTRendering, targetSupports12bit)))
       {
         *logstream << "spooler: printer communication failed, unable to create presentation LUT." << endl;
       }
@@ -269,7 +272,7 @@ static E_Condition spoolStoredPrintFile(const char *filename, DVInterface &dvi)
             if (dcmimage && (EIS_Normal == dcmimage->getStatus()))
             {
               // N-SET basic image box
-              if (EC_Normal != (result = stprint.printSCUsetBasicImageBox(printHandler, currentImage, targetSupports12bit, *dcmimage)))
+              if (EC_Normal != (result = stprint.printSCUsetBasicImageBox(printHandler, currentImage, *dcmimage)))
               {
                 *logstream << "spooler: printer communication failed, unable to transmit basic grayscale image box." << endl;
               }
@@ -754,16 +757,18 @@ int main(int argc, char *argv[])
         *logstream << "Warning: no data dictionary loaded, check environment variable: " << DCM_DICT_ENVIRONMENT_VARIABLE << endl;
 
     /* get print target from configuration file */
-    targetHostname         = dvi.getTargetHostname(opt_printer);
-    targetDescription      = dvi.getTargetDescription(opt_printer);
-    targetAETitle          = dvi.getTargetAETitle(opt_printer);
-    targetPort             = dvi.getTargetPort(opt_printer);
-    targetMaxPDU           = dvi.getTargetMaxPDU(opt_printer);
-    targetImplicitOnly     = dvi.getTargetImplicitOnly(opt_printer);
-    targetDisableNewVRs    = dvi.getTargetDisableNewVRs(opt_printer);
-    targetSupportsPLUT     = dvi.getTargetPrinterSupportsPresentationLUT(opt_printer);
-    targetSupports12bit    = dvi.getTargetPrinterSupports12BitTransmission(opt_printer);
-    targetPLUTinFilmSession= dvi.getTargetPrinterPresentationLUTinFilmSession(opt_printer);
+    targetHostname              = dvi.getTargetHostname(opt_printer);
+    targetDescription           = dvi.getTargetDescription(opt_printer);
+    targetAETitle               = dvi.getTargetAETitle(opt_printer);
+    targetPort                  = dvi.getTargetPort(opt_printer);
+    targetMaxPDU                = dvi.getTargetMaxPDU(opt_printer);
+    targetImplicitOnly          = dvi.getTargetImplicitOnly(opt_printer);
+    targetDisableNewVRs         = dvi.getTargetDisableNewVRs(opt_printer);
+    targetSupportsPLUT          = dvi.getTargetPrinterSupportsPresentationLUT(opt_printer);
+    targetSupports12bit         = dvi.getTargetPrinterSupports12BitTransmission(opt_printer);
+    targetPLUTinFilmSession     = dvi.getTargetPrinterPresentationLUTinFilmSession(opt_printer);
+    targetRequiresMatchingLUT   = dvi.getTargetPrinterPresentationLUTMatchRequired(opt_printer);
+    targetPreferSCPLUTRendering = dvi.getTargetPrinterPresentationLUTPreferSCPRendering(opt_printer);
     deletePrintJobs        = dvi.getSpoolerDeletePrintJobs();
     deleteTerminateJobs    = dvi.getSpoolerAlwaysDeleteTerminateJobs();
 
@@ -912,7 +917,11 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmprtsv.cc,v $
- * Revision 1.6  1999-10-01 13:29:48  joergr
+ * Revision 1.7  1999-10-07 17:21:41  meichel
+ * Reworked management of Presentation LUTs in order to create tighter
+ *   coupling between Softcopy and Print.
+ *
+ * Revision 1.6  1999/10/01 13:29:48  joergr
  * Added new option to config file: AlwaysDeleteTerminateJobs.
  *
  * Revision 1.5  1999/09/24 15:24:24  meichel

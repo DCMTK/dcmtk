@@ -23,8 +23,8 @@
  *    classes: DVPSStoredPrint
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-09-24 15:24:30 $
- *  CVS/RCS Revision: $Revision: 1.13 $
+ *  Update Date:      $Date: 1999-10-07 17:21:50 $
+ *  CVS/RCS Revision: $Revision: 1.14 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -38,14 +38,15 @@
 #include "osconfig.h"    /* make sure OS specific configuration is included first */
 #include "ofstring.h"
 #include "dctk.h"
-#include "dvpstyp.h"     /* for enum types */
-#include "dvpspl.h"      /* for class DVPSPresentationLUT */
-#include "dvpsibl.h"     /* for class DVPSImageBoxContent_PList */
+#include "dvpstyp.h"         /* for enum types */
+#include "dvpspll.h"         /* for class DVPSPresentationLUT_PList */
+#include "dvpsibl.h"         /* for class DVPSImageBoxContent_PList */
 #include "dvpstat.h"		 /* for class DVPresentationState */
 #include "dvpspr.h"			 /* for class DVPrintMessageHandler */
 
 class DicomImage;
 class ostream;
+class DVPSPresentationLUT;
 
 /** the representation of a Stored Print object
  */  
@@ -292,20 +293,14 @@ class DVPSStoredPrint
    *  @param idx index, must be < getNumberOfImages()
    *  @return EC_Normal if successful, an error code otherwise.
    */
-  E_Condition deleteImage(size_t idx)
-  {
-    return imageBoxContentList.deleteImage(idx);
-  }
+  E_Condition deleteImage(size_t idx);
   
   /** deletes multiple of the registered
    *  images, starting with the first one.
    *  @param number number of images to delete, must be <= getNumberOfImages()
    *  @return EC_Normal if successful, an error code otherwise.
    */
-  E_Condition deleteMultipleImages(size_t number)
-  {
-    return imageBoxContentList.deleteMultipleImages(number);
-  }
+  E_Condition deleteMultipleImages(size_t number);
 
   /** deletes as many images as fit on the current page according
    *  to the image display format settings. Used to remove images
@@ -405,6 +400,7 @@ class DVPSStoredPrint
    *  @param refsopinstanceuid SOP instance UID of the referenced image
    *  @param requestedimagesize requested images size for this image, may be NULL (absent)
    *  @param patientid patient ID for the referenced image, may be NULL (absent)
+   *  @param presentationlut presentation LUT to be used, may be NULL (absent)
    *  @return EC_Normal if successful, an error code otherwise.
    */
   E_Condition addImageBox(
@@ -414,7 +410,8 @@ class DVPSStoredPrint
     const char *refsopclassuid,
     const char *refsopinstanceuid,
     const char *requestedimagesize,
-    const char *patientid);
+    const char *patientid,
+    DVPSPresentationLUT *presentationlut);
   
   /** creates a new image box object and sets the content of this image box object.
    *  This is a specialized version of the method with the same name and more parameters.
@@ -424,83 +421,21 @@ class DVPSStoredPrint
    *  @param refsopinstanceuid SOP instance UID of the referenced image
    *  @param requestedimagesize requested images size for this image, default: absent
    *  @param patientid patient ID for the referenced image, default: absent
+   *  @param presentationlut presentation LUT to be used, may be NULL (absent)
    *  @return EC_Normal if successful, an error code otherwise.
    */
   E_Condition addImageBox(
     const char *retrieveaetitle,
     const char *refsopinstanceuid,
     const char *requestedimagesize=NULL,
-    const char *patientid=NULL);
+    const char *patientid=NULL,
+    DVPSPresentationLUT *presentationlut=NULL);
       
   /** sets a new SOP Instance UID for the Stored Print object.
    *  @param uid new SOP Instance UID
    *  @return EC_Normal if successful, an error code otherwise.
    */
   E_Condition setInstanceUID(const char *uid);
-
-  /* Presentation LUT Interface */
-  
-  /** gets the current Presentation LUT type.
-   *  @return the current presentation LUT type
-   */
-  DVPSPrintPresentationLUTType getPresentationLUT();
-  
-  /** checks if a real Presentation LUT (not shape)
-   *  is available in the presentation state.
-   *  @return OFTrue if the presentation state contains
-   *    a presentation LUT, no matter if it is activated or not.
-   *    Returns OFFalse otherwise.
-   */
-  OFBool havePresentationLookupTable() { return presentationLUT.haveTable(); }
-  
-  /** sets the current Presentation LUT type.
-   *  DVPSP_table can only be used if the presentation state
-   *  contains a lookup table, i.e. if havePresentationLookupTable() returns OFTrue.
-   *  @param newType the new presentation LUT type.
-   *  @return EC_Normal if successful, an error code otherwise.
-   */
-  E_Condition setCurrentPresentationLUT(DVPSPrintPresentationLUTType newType);
- 
-  /** stores a presentation lookup table in the presentation state.
-   *  This method stores a presentation lookup table in the
-   *  presentation state and activates it. The LUT is copied to
-   *  the presentation state. If the method returns EC_Normal,
-   *  any old presentation LUT in the presentation state is overwritten.
-   *  If the method returns an error code, an old LUT is left unchanged.
-   *  @param lutDescriptor the LUT Descriptor in DICOM format (VM=3)
-   *  @param lutData the LUT Data in DICOM format
-   *  @param lutExplanation the LUT Explanation in DICOM format, may be empty.
-   *  @return EC_Normal if successful, an error code otherwise.
-   */ 
-  E_Condition setPresentationLookupTable(
-    DcmUnsignedShort& lutDescriptor,
-    DcmUnsignedShort& lutData,
-    DcmLongString& lutExplanation);
-
-  /** stores a presentation lookup table in the presentation state.
-   *  This method stores a presentation lookup table in the
-   *  presentation state and activates it. The LUT is copied to
-   *  the presentation state. Overwrites old LUT. If unsuccessful,
-   *  LUT is set to DVPSQ_none.
-   *  @param dset dataset from which the Presentation LUT SQ or Shape is read.
-   *  @return EC_Normal if successful, an error code otherwise.
-   */ 
-  E_Condition setPresentationLookupTable(DcmItem &dset);
-    
-  /** gets a description of the current presentation LUT.
-   *  For well-known presentation LUT shapes, a standard text
-   *  is returned. For presentation LUTs, the LUT explanation
-   *  is returned if it exists and a standard text otherwise.
-   *  Returns NULL if presentation LUT is deactivated (getPresentationLUT() == DVPSQ_none).
-   *  @return a pointer to a string describing the current presentation LUT.
-   */
-  const char *getCurrentPresentationLUTExplanation();
-
-  /** returns the LUT explanation of the presentation LUT
-   *  if it exists and is non-empty. Otherwise returns NULL.
-   *  @return a string pointer
-   */
-  const char *getPresentationLUTExplanation() { return presentationLUT.getLUTExplanation(); }
 
   /** returns the image UIDs that are required to look up the referenced image in the database
    *  @param idx index, must be < getNumberOfImages()
@@ -526,9 +461,17 @@ class DVPSStoredPrint
    *  In this case, if the printer supports the Presentation LUT SOP class,
    *  a Presentation LUT SOP Instance is created in the printer.  
    *  @param printHandler print communication handler, association must be open.
+   *  @param printerRequiresMatchingLUT true if printer requires presentation LUTs matching the image depth
+   *  @param printerLUTRenderingPreferred true if SCP side presentation LUTs should be preferred 
+   *    even if printer supports 12-bit image transmission.
+   *  @param printerSupports12Bit true if printer supports 12 bit transmission
    *  @return EC_Normal upon success, an error code otherwise.
    */
-  E_Condition printSCUpreparePresentationLUT(DVPSPrintMessageHandler& printHandler);
+  E_Condition printSCUpreparePresentationLUT(
+     DVPSPrintMessageHandler& printHandler,
+     OFBool printerRequiresMatchingLUT,
+     OFBool printerLUTRenderingPreferred,
+     OFBool printerSupports12Bit);
 
   /** Creates a DICOM Basic Film Session SOP Instance in the printer.
    *  @param printHandler print communication handler, association must be open.
@@ -556,14 +499,12 @@ class DVPSStoredPrint
    *  @param printHandler print communication handler, association must be open.
    *  @param idx index of the image reference from which the Image Box settings are taken,
    *     must be < getNumberOfImages().
-   *  @param supports12bit flag defining whether the printer supports 12-bit transmission.
    *  @param image DICOM image to be printed
    *  @return EC_Normal upon success, an error code otherwise.
    */
   E_Condition printSCUsetBasicImageBox(
     DVPSPrintMessageHandler& printHandler,
     size_t idx,
-    OFBool supports12bit,
     DicomImage& image);
   
   /** Prints the current DICOM Basic Film Box SOP Instance.
@@ -731,7 +672,8 @@ class DVPSStoredPrint
   DcmUnsignedShort         reflectedAmbientLight;
   /// Module=Film_Box_Module (Supplement 38), VR=CS, VM=1, Type 3
   DcmCodeString            requestedResolutionID;
-  // the ReferencedPresentationLUTSequence is only created/checked on the fly
+  // the ReferencedPresentationLUTSequence is only created/read on the fly
+  DcmUniqueIdentifier      referencedPresentationLUTInstanceUID;
 
   /* Module: Image Box List (M)
    */
@@ -739,10 +681,8 @@ class DVPSStoredPrint
   DVPSImageBoxContent_PList imageBoxContentList;
 
   /* Module: Presentation LUT List (U)
-   * we only support a single item for the Presentation LUT Content Sequence
    */   
-  DVPSPresentationLUT      presentationLUT;  
-  DcmUniqueIdentifier      presentationLUTInstanceUID;
+  DVPSPresentationLUT_PList presentationLUTList;  
 
   /* Module: SOP Common (M) 
    * we don't store the SOP Class UID because it is well known.
@@ -769,12 +709,18 @@ class DVPSStoredPrint
   /// requested decimate/crop behaviour used in all image boxes
   DVPSDecimateCropBehaviour decimateCropBehaviour;
 
-  /// the current filmsessioninstance
+  /// the current film session instance
   OFString filmSessionInstanceUID;
 			
-  /// the current filmboxinstance
+  /// the current film box instance
   OFString filmBoxInstanceUID;
 
+  /// the current presentation LUT instance
+  OFString presentationLUTInstanceUID;
+
+  /// transmit images in 12 bit for the current print job
+  OFBool transmitImagesIn12Bit;
+  
   /** output stream for error messages, never NULL
    */
   ostream *logstream;
@@ -785,7 +731,11 @@ class DVPSStoredPrint
 
 /*
  *  $Log: dvpssp.h,v $
- *  Revision 1.13  1999-09-24 15:24:30  meichel
+ *  Revision 1.14  1999-10-07 17:21:50  meichel
+ *  Reworked management of Presentation LUTs in order to create tighter
+ *    coupling between Softcopy and Print.
+ *
+ *  Revision 1.13  1999/09/24 15:24:30  meichel
  *  Added support for CP 173 (Presentation LUT clarifications)
  *
  *  Revision 1.12  1999/09/17 14:33:59  meichel

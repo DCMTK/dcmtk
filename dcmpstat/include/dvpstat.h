@@ -23,8 +23,8 @@
  *    classes: DVPresentationState
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-09-10 12:46:48 $
- *  CVS/RCS Revision: $Revision: 1.23 $
+ *  Update Date:      $Date: 1999-10-07 17:21:51 $
+ *  CVS/RCS Revision: $Revision: 1.24 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -304,6 +304,16 @@ public:
     DcmUnsignedShort& lutDescriptor,
     DcmUnsignedShort& lutData,
     DcmLongString& lutExplanation);
+
+  /** stores a presentation lookup table in the presentation state.
+   *  This method stores a presentation lookup table in the
+   *  presentation state and activates it. The LUT is copied to
+   *  the presentation state. Overwrites old LUT. If unsuccessful,
+   *  LUT is set to DVPSP_identity.
+   *  @param dset dataset from which the Presentation LUT SQ or Shape is read.
+   *  @return EC_Normal if successful, an error code otherwise.
+   */ 
+  E_Condition setPresentationLookupTable(DcmItem &dset);
     
   /** gets a description of the current presentation LUT.
    *  For well-known presentation LUT shapes, a standard text
@@ -320,7 +330,19 @@ public:
    *  @return a string pointer
    */
   const char *getPresentationLUTExplanation() { return presentationLUT.getLUTExplanation(); }
-  
+
+  /** writes the current Presentation LUT to a DICOM dataset.
+   *  Copies of the DICOM element managed by this object are inserted into
+   *  the DICOM dataset.
+   *  @param dset the dataset to which the Presentation LUT SQ/Shape is written
+   *  @return EC_Normal if successful, an error code otherwise.
+   */
+  E_Condition writePresentationLUT(DcmItem &dset);
+
+  /** gets the current Presentation LUT object.
+   *  @return the current presentation LUT object
+   */
+  DVPSPresentationLUT *getPresentationLUTData() { return &presentationLUT; }
   
   /* Rotate/Flip Interface */
   
@@ -1998,7 +2020,11 @@ private:
 
 /*
  *  $Log: dvpstat.h,v $
- *  Revision 1.23  1999-09-10 12:46:48  meichel
+ *  Revision 1.24  1999-10-07 17:21:51  meichel
+ *  Reworked management of Presentation LUTs in order to create tighter
+ *    coupling between Softcopy and Print.
+ *
+ *  Revision 1.23  1999/09/10 12:46:48  meichel
  *  Added implementations for a number of print API methods.
  *
  *  Revision 1.22  1999/09/10 09:02:32  joergr

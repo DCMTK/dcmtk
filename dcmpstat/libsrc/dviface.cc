@@ -22,8 +22,8 @@
  *  Purpose: DVPresentationState
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-09-27 10:41:56 $
- *  CVS/RCS Revision: $Revision: 1.73 $
+ *  Update Date:      $Date: 1999-10-07 17:21:56 $
+ *  CVS/RCS Revision: $Revision: 1.74 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -108,7 +108,7 @@ DVInterface::DVInterface(const char *config_file)
 , maximumPrintBitmapWidth(0)
 , maximumPrintBitmapHeight(0)
 , currentPrinter()
-, printCurrentLUTID()
+, displayCurrentLUTID()
 , printerMediumType()
 , printerFilmDestination()
 , printerFilmSessionLabel()
@@ -1992,6 +1992,12 @@ E_Condition DVInterface::saveGrayscaleHardcopyImage(
         if (EC_Normal==status) status = dataset->insert(pxData); else delete pxData;
       } else status = EC_MemoryExhausted;
  
+      // add Presentation LUT to hardcopy file if present, making it a Standard Extended SOP Class
+      if ((EC_Normal==status)&&(pState->getPresentationLUT() == DVPSP_table))
+      {
+        status = pState->writePresentationLUT(*dataset);
+      }
+
       // save image file
       if (EC_Normal == status)
       {
@@ -2011,12 +2017,14 @@ E_Condition DVInterface::saveGrayscaleHardcopyImage(
     {
       OFString reqImageTmp;
       const char *reqImageSize = NULL;
+      DVPSPresentationLUT *presLUT = pState->getPresentationLUTData();
+
       if (EC_Normal == pState->getPrintBitmapRequestedImageSize(reqImageTmp)) reqImageSize = reqImageTmp.c_str();
       /* we don't pass the patient ID (available as pState->getPatientID()) here because then
        * we could end up with multiple images being part of one study and one series, but having
        * different patient IDs. This might confuse archives using the patient root query model.
        */
-      status = pPrint->addImageBox(getNetworkAETitle(), theInstanceUID.c_str(), reqImageSize, NULL);
+      status = pPrint->addImageBox(getNetworkAETitle(), theInstanceUID.c_str(), reqImageSize, NULL, presLUT);
     }
     return status;
 }
@@ -2245,10 +2253,10 @@ Uint16 DVInterface::getPrintReflectedAmbientLight()
   else return 0;
 }
 
-E_Condition DVInterface::selectPrintPresentationLUT(const char *lutID)
+E_Condition DVInterface::selectDisplayPresentationLUT(const char *lutID)
 {
   E_Condition result = EC_IllegalCall;
-  if (lutID && pPrint)
+  if (lutID && pState)
   {
      const char *lutfile = getLUTFilename(lutID);
      if (lutfile)
@@ -2261,9 +2269,9 @@ E_Condition DVInterface::selectPrintPresentationLUT(const char *lutID)
        if ((EC_Normal == result) && ff)
        {
          DcmDataset *dataset = ff->getDataset();
-         if (dataset) result = pPrint->setPresentationLookupTable(*dataset);
+         if (dataset) result = pState->setPresentationLookupTable(*dataset);
          else result = EC_IllegalCall;
-         if (EC_Normal == result) printCurrentLUTID = lutID; else printCurrentLUTID.clear();
+         if (EC_Normal == result) displayCurrentLUTID = lutID; else displayCurrentLUTID.clear();
        }
        if (ff) delete ff;
      }
@@ -2271,9 +2279,9 @@ E_Condition DVInterface::selectPrintPresentationLUT(const char *lutID)
   return result;
 }
 
-const char *DVInterface::getPrintPresentationLUTID()
+const char *DVInterface::getDisplayPresentationLUTID()
 {
-  return printCurrentLUTID.c_str(); 
+  return displayCurrentLUTID.c_str(); 
 }
 
 E_Condition DVInterface::spoolPrintJob(OFBool deletePrintedImages)
@@ -2408,10 +2416,40 @@ E_Condition DVInterface::terminatePrintSpooler()
 E_Condition DVInterface::addToPrintHardcopyFromDB(const char *studyUID, const char *seriesUID, const char *instanceUID)
 {
   E_Condition result = EC_IllegalCall;
+
   if (studyUID && seriesUID && instanceUID && pPrint)
   {
-    result = pPrint->addImageBox(getNetworkAETitle(), studyUID, seriesUID, UID_HardcopyGrayscaleImageStorage, instanceUID, NULL, NULL);
+    char *sopclass = NULL;
+    DVPSPresentationLUT presentationLUT;
+    if (EC_Normal == (result = lockDatabase()))
+    {
+      DcmUniqueIdentifier sopclassuid(DCM_SOPClassUID);  
+      DcmStack stack;
+      const char *filename = getFilename(studyUID, seriesUID, instanceUID);
+      if (filename)
+      {
+        DcmFileFormat *ff = NULL;
+        result = DVPSHelper::loadFileFormat(filename, ff);
+        if ((EC_Normal == result) && ff)
+        {
+          DcmDataset *dataset = ff->getDataset();
+          if (dataset)
+          {
+          	if (EC_Normal != presentationLUT.read(*dataset, OFFalse)) presentationLUT.setType(DVPSP_identity);
+            if (EC_Normal == dataset->search((DcmTagKey &)sopclassuid.getTag(), stack, ESM_fromHere, OFFalse))
+            {
+              sopclassuid = *((DcmUniqueIdentifier *)(stack.top()));
+              if (EC_Normal != sopclassuid.getString(sopclass)) result = EC_IllegalCall;
+            }
+          } else result = EC_IllegalCall;
+        }
+        if (ff) delete ff;
+      } else result = EC_IllegalCall;
+    }
+    if (EC_Normal == result) result = pPrint->addImageBox(getNetworkAETitle(), studyUID, seriesUID, 
+      sopclass, instanceUID, NULL, NULL, &presentationLUT);
   }
+  releaseDatabase();
   return result;  
 }
 
@@ -2525,7 +2563,11 @@ void DVInterface::setLog(ostream *o)
 /*
  *  CVS/RCS Log:
  *  $Log: dviface.cc,v $
- *  Revision 1.73  1999-09-27 10:41:56  meichel
+ *  Revision 1.74  1999-10-07 17:21:56  meichel
+ *  Reworked management of Presentation LUTs in order to create tighter
+ *    coupling between Softcopy and Print.
+ *
+ *  Revision 1.73  1999/09/27 10:41:56  meichel
  *  Print interface now copies current printer name, avoids JNI problems.
  *
  *  Revision 1.72  1999/09/24 15:24:32  meichel

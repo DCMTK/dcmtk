@@ -23,8 +23,8 @@
  *    classes: DVPSImageBoxContent
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-09-24 15:24:06 $
- *  CVS/RCS Revision: $Revision: 1.11 $
+ *  Update Date:      $Date: 1999-10-07 17:21:58 $
+ *  CVS/RCS Revision: $Revision: 1.12 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -34,6 +34,7 @@
 #include "osconfig.h"    /* make sure OS specific configuration is included first */
 #include "ofstring.h"
 #include "dvpsib.h"
+#include "dvpspll.h"
 
 /* --------------- a few macros avoiding copy/paste --------------- */
 
@@ -42,6 +43,13 @@ if (result==EC_Normal)                                              \
 {                                                                   \
   delem = new a_type(a_name);                                       \
   if (delem) dset.insert(delem); else result=EC_MemoryExhausted;    \
+}
+
+#define ADD_TO_DATASET2(a_type, a_name)                             \
+if (result==EC_Normal)                                              \
+{                                                                   \
+  delem = new a_type(a_name);                                       \
+  if (delem) ditem->insert(delem); else result=EC_MemoryExhausted;  \
 }
 
 #define READ_FROM_DATASET(a_type, a_name)                           \
@@ -82,6 +90,7 @@ DVPSImageBoxContent::DVPSImageBoxContent()
 , seriesInstanceUID(DCM_SeriesInstanceUID)
 , referencedFrameNumber(DCM_ReferencedFrameNumber)
 , patientID(DCM_PatientID)
+, referencedPresentationLUTInstanceUID(DCM_ReferencedSOPInstanceUID)
 , logstream(&cerr)
 {
 }
@@ -102,6 +111,7 @@ DVPSImageBoxContent::DVPSImageBoxContent(const DVPSImageBoxContent& copy)
 , seriesInstanceUID(copy.seriesInstanceUID)
 , referencedFrameNumber(copy.referencedFrameNumber)
 , patientID(copy.patientID)
+, referencedPresentationLUTInstanceUID(copy.referencedPresentationLUTInstanceUID)
 , logstream(copy.logstream)
 {
 }
@@ -127,6 +137,7 @@ void DVPSImageBoxContent::clear()
   seriesInstanceUID.clear();
   referencedFrameNumber.clear();
   patientID.clear();
+  referencedPresentationLUTInstanceUID.clear();
   return;
 }
 
@@ -138,7 +149,8 @@ E_Condition DVPSImageBoxContent::setContent(
   const char *refsopclassuid,
   const char *refsopinstanceuid,
   const char *requestedimagesize,
-  const char *patientid)
+  const char *patientid,
+  const char *presentationlutreference)
 {
   E_Condition result = EC_Normal;
   if (refstudyuid && refseriesuid && instanceuid && retrieveaetitle && refsopclassuid && refsopinstanceuid)
@@ -152,11 +164,12 @@ E_Condition DVPSImageBoxContent::setContent(
     if (EC_Normal == result) result = seriesInstanceUID.putString(refseriesuid);
     if (requestedimagesize && (EC_Normal == result)) result = requestedImageSize.putString(requestedimagesize);
     if (patientid && (EC_Normal == result)) result = patientID.putString(patientid);
+    if (presentationlutreference && (EC_Normal == result)) result = referencedPresentationLUTInstanceUID.putString(presentationlutreference);
   } else result = EC_IllegalCall;
   return result;
 }
 
-E_Condition DVPSImageBoxContent::read(DcmItem &dset)
+E_Condition DVPSImageBoxContent::read(DcmItem &dset, DVPSPresentationLUT_PList& presentationLUTList)
 {
   DcmSequenceOfItems *seq;
   DcmItem *item;
@@ -206,6 +219,39 @@ E_Condition DVPSImageBoxContent::read(DcmItem &dset)
     }
   }
   
+  if (result==EC_Normal)
+  {
+    // check referenced presentation LUT sequence
+    // if there is any reference, it must refer to one of the presentation LUTs we are managing.
+    stack.clear();
+    if (EC_Normal == dset.search(DCM_ReferencedPresentationLUTSequence, stack, ESM_fromHere, OFFalse))
+    {
+      seq=(DcmSequenceOfItems *)stack.top();
+      if (seq->card() ==1)
+      {
+         item = seq->getItem(0);
+         stack.clear();
+         READ_FROM_DATASET2(DcmUniqueIdentifier, referencedPresentationLUTInstanceUID)
+         if (referencedPresentationLUTInstanceUID.getLength() > 0)
+         {
+           referencedPresentationLUTInstanceUID.getOFString(aString,0);
+           if (NULL == presentationLUTList.findPresentationLUT(aString.c_str()))
+           {
+             result=EC_IllegalCall;
+#ifdef DEBUG
+             *logstream << "Error: ImageBoxContentSequence presentation LUT reference cannot be resolved" << endl;
+#endif
+           }
+         }
+      } else {
+        result=EC_TagNotFound;
+#ifdef DEBUG
+        *logstream << "Error: found ImageBoxContentSequence in Stored Print with ReferencedPresentationLUTSequence number of items != 1" << endl;
+#endif
+      }
+    }
+  }
+  
   /* the following attributes belong to the ReferencedImageSequence */
 
   if (result==EC_Normal)
@@ -219,19 +265,7 @@ E_Condition DVPSImageBoxContent::read(DcmItem &dset)
 #endif
     }
   }
-  
-  if (result==EC_Normal)
-  {
-    stack.clear();
-    if (EC_Normal == dset.search(DCM_ReferencedPresentationLUTSequence, stack, ESM_fromHere, OFFalse))
-    {
-      result=EC_IllegalCall;
-#ifdef DEBUG
-      *logstream << "Error: Stored Print: ReferencedPresentationLUTSequence not supported" << endl;
-#endif
-    }
-  }
-    
+      
   /* Now perform basic sanity checks */
 
   if (result==EC_Normal)
@@ -408,6 +442,36 @@ E_Condition DVPSImageBoxContent::write(DcmItem &dset, OFBool writeRequestedImage
     else result = EC_MemoryExhausted;
   }
 
+  if (EC_Normal == result) result = addReferencedPLUTSQ(dset);
+
+  return result;
+}
+
+E_Condition DVPSImageBoxContent::addReferencedPLUTSQ(DcmItem &dset)
+{
+  if (referencedPresentationLUTInstanceUID.getLength() == 0) return EC_Normal;
+  
+  E_Condition result = EC_Normal;
+  DcmElement *delem=NULL;
+  DcmSequenceOfItems *dseq = new DcmSequenceOfItems(DCM_ReferencedPresentationLUTSequence);
+  DcmItem *ditem = new DcmItem();
+
+  if (ditem && dseq)
+  {
+     ADD_TO_DATASET2(DcmUniqueIdentifier, referencedPresentationLUTInstanceUID)
+     if (result==EC_Normal)
+     {
+       dseq->insert(ditem);
+       dset.insert(dseq);
+     } else {
+      delete dseq;
+      delete ditem;
+     }
+  } else {
+    delete dseq;
+    delete ditem;
+    result = EC_MemoryExhausted;
+  }
   return result;
 }
 
@@ -530,6 +594,12 @@ const char *DVPSImageBoxContent::getConfigurationInformation()
   if (EC_Normal == configurationInformation.getString(c)) return c; else return NULL;
 }
 
+const char *DVPSImageBoxContent::getReferencedPresentationLUTInstanceUID()
+{
+  char *c = NULL;
+  if (EC_Normal == referencedPresentationLUTInstanceUID.getString(c)) return c; else return NULL;
+}
+
 E_Condition DVPSImageBoxContent::setMagnificationType(const char *value)
 {
   if ((value==NULL)||(strlen(value)==0)) 
@@ -590,7 +660,11 @@ OFBool DVPSImageBoxContent::hasAdditionalSettings()
 
 /*
  *  $Log: dvpsib.cc,v $
- *  Revision 1.11  1999-09-24 15:24:06  meichel
+ *  Revision 1.12  1999-10-07 17:21:58  meichel
+ *  Reworked management of Presentation LUTs in order to create tighter
+ *    coupling between Softcopy and Print.
+ *
+ *  Revision 1.11  1999/09/24 15:24:06  meichel
  *  Print spooler (dcmprtsv) now logs diagnostic messages in log files
  *    when operating in spool mode.
  *

@@ -23,8 +23,8 @@
  *    classes: DVInterface
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-09-27 10:41:52 $
- *  CVS/RCS Revision: $Revision: 1.53 $
+ *  Update Date:      $Date: 1999-10-07 17:21:45 $
+ *  CVS/RCS Revision: $Revision: 1.54 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1016,20 +1016,20 @@ class DVInterface: public DVConfiguration
      *  priority, owner ID, and number of copies.
      */
     void clearFilmSessionSettings();
-    
+        
     /** sets the LUT with the given identifier
-     *  in the Stored Print object as current Presentation LUT.
+     *  in the Presentation State as current Presentation LUT.
      *  @param lutID LUT identifier, as returned by getLUTID().
      *  @return EC_Normal if successful, an error code otherwise.
      */
-    E_Condition selectPrintPresentationLUT(const char *lutID);
+    E_Condition selectDisplayPresentationLUT(const char *lutID);
     
-    /** if the Stored Print object contains an active
+    /** if the Presentation State contains an active
      *  Presentation LUT that was set with selectPrintPresentationLUT(),
      *  return the corresponding LUT identifier.
-     *  @return lutID if found, NULL otherwise.
+     *  @return lutID if found, NULL or empty string otherwise.
      */
-    const char *getPrintPresentationLUTID();
+    const char *getDisplayPresentationLUTID();
 
     /** start spooling of print job with current settings.
      *  @param deletePrintedImages if true, delete printed images from queue.
@@ -1058,11 +1058,11 @@ class DVInterface: public DVConfiguration
      */
     E_Condition terminatePrintSpooler();
 
-    /** adds an existing Grayscale Hardcopy image that is already present
-     *  in the image database to the current print image queue without rendering it again.
+    /** adds an existing DICOM image (should be Hardcopy Grayscale) 
+     *  that is already present in the image database to the current print image queue
+     *  without rendering it again.
      *  The "requested image size" option is not used - the bitmap is treated as if the
-     *  presentation mode was "SCALE TO FIT". The image must be a Grayscale Hardcopy image
-     *  (modality HC), otherwise the behaviour of the print job when printing the image is undefined.
+     *  presentation mode was "SCALE TO FIT".
      *  @param studyUID study instance UID of the image, as reported by getStudyUID()
      *  @param seriesUID series instance UID of the image, as reported by getSeriesUID()
      *  @param instanceUID SOP instance UID of the image, as reported by getInstanceUID()
@@ -1306,11 +1306,11 @@ private:
     /** target ID of current printer, empty if no printer exists in config file
      */
     OFString currentPrinter;
-
-    /** config file identifier of LUT currently selected as Print Presentation LUT
+ 
+     /** config file identifier of LUT currently selected as Display Presentation LUT
      */
-    OFString printCurrentLUTID;
-    
+    OFString displayCurrentLUTID;
+   
     /** printer medium type identifier, may be empty. VR=CS, VM=1
      */
     OFString printerMediumType;
@@ -1345,7 +1345,11 @@ private:
 /*
  *  CVS/RCS Log:
  *  $Log: dviface.h,v $
- *  Revision 1.53  1999-09-27 10:41:52  meichel
+ *  Revision 1.54  1999-10-07 17:21:45  meichel
+ *  Reworked management of Presentation LUTs in order to create tighter
+ *    coupling between Softcopy and Print.
+ *
+ *  Revision 1.53  1999/09/27 10:41:52  meichel
  *  Print interface now copies current printer name, avoids JNI problems.
  *
  *  Revision 1.52  1999/09/24 15:24:28  meichel

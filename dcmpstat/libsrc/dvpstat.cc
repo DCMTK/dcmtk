@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DVPresentationState
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-10-06 13:24:50 $
- *  CVS/RCS Revision: $Revision: 1.40 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 1999-10-07 17:22:03 $
+ *  CVS/RCS Revision: $Revision: 1.41 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -535,7 +535,7 @@ E_Condition DVPresentationState::read(DcmItem &dset)
   if (result==EC_Normal) result = graphicAnnotationList.read(dset);
   if (result==EC_Normal) result = displayedAreaSelectionList.read(dset);
   if (result==EC_Normal) result = softcopyVOIList.read(dset);
-  if (result==EC_Normal) result = presentationLUT.read(dset);
+  if (result==EC_Normal) result = presentationLUT.read(dset, OFFalse);
 
   /* Now perform basic sanity checks and adjust use flags */
 
@@ -1371,7 +1371,7 @@ E_Condition DVPresentationState::write(DcmItem &dset)
   if (EC_Normal == result) result = displayedAreaSelectionList.write(dset);
   if (EC_Normal == result) result = softcopyVOIList.write(dset);
   if (EC_Normal == result) result = graphicLayerList.write(dset);
-  if (EC_Normal == result) result = presentationLUT.write(dset);
+  if (EC_Normal == result) result = presentationLUT.write(dset, OFFalse);
 
   // strictly speaking we are not allowed to include the Spatial Transformation
   // Module if neither rotation nor flipping are needed.
@@ -1665,9 +1665,21 @@ E_Condition DVPresentationState::getPrintBitmap(void *bitmap,
       renderPixelData(OFFalse);                                 // don't use current display function
       unsigned long width;
       unsigned long height;
-      DicomImage *image = currentImage;
       if (getPrintBitmapWidthHeight(width, height) == EC_Normal)
       {
+        DicomImage *image = currentImage;
+
+        /* we deactivate any presentation LUT at this point because
+         * getPrintBitmapWidthHeight() calls renderPixelData().
+         */
+        if (presentationLUT.getType() == DVPSP_table)
+        {
+          // we never render a presentation LUT into the print bitmap at this stage.
+          currentImage->setPresentationLutShape(ESP_Identity);
+          // make sure the presentation LUT is re-activated for on-screen display
+          currentImagePLUTValid = OFFalse;
+        }
+
         /* clip to displayed area if necessary */
         if ((renderedImageLeft != 1) || (renderedImageRight != (signed long)renderedImageWidth) ||
             (renderedImageTop != 1) || (renderedImageBottom != (signed long)renderedImageHeight))
@@ -1689,14 +1701,12 @@ E_Condition DVPresentationState::getPrintBitmap(void *bitmap,
           if (img != currentImage)
             delete img;
         }
+        if (image != NULL)
+        {
+          if (image->getOutputData(bitmap, size, 12 /*bits*/, 0 /*frame*/)) result = EC_Normal;
+        }
+        if (image != currentImage) delete image;
       }
-      if (image != NULL)
-      {
-        if (image->getOutputData(bitmap, size, 12 /*bits*/, 0 /*frame*/))
-          result = EC_Normal;
-      }
-      if (image != currentImage)
-        delete image;
     }
   }
   return result;
@@ -1980,7 +1990,15 @@ E_Condition DVPresentationState::setPresentationLookupTable(
     DcmLongString& lutExplanation)
 {
   E_Condition result = presentationLUT.setLUT(lutDescriptor, lutData, lutExplanation);
-  if (EC_Normal==result) currentImagePLUTValid = OFFalse; // PLUT has changed
+  if (EC_Normal == result) currentImagePLUTValid = OFFalse; // PLUT has changed
+  return result;
+}
+
+E_Condition DVPresentationState::setPresentationLookupTable(DcmItem &dset)
+{
+  E_Condition result = presentationLUT.read(dset, OFFalse);
+  if (EC_Normal != result) presentationLUT.setType(DVPSP_identity); // set to well-defined default in case of error
+  currentImagePLUTValid = OFFalse; // PLUT has changed
   return result;
 }
 
@@ -3286,8 +3304,8 @@ void DVPresentationState::renderPixelData(OFBool display)
   if (pstateFlip)
   {
     signed long tmp = renderedImageLeft;
-    renderedImageLeft = (signed long)currentImageWidth - renderedImageRight + 1;
-    renderedImageRight = (signed long)currentImageWidth - tmp + 1;
+    renderedImageLeft = (signed long)renderedImageWidth - renderedImageRight + 1;
+    renderedImageRight = (signed long)renderedImageWidth - tmp + 1;
   }
 
   // we can always reach the final rotation/flip status with
@@ -3611,10 +3629,18 @@ E_Condition DVPresentationState::getPrintBitmapRequestedImageSize(OFString& requ
   return EC_IllegalCall;
 }
 
+E_Condition DVPresentationState::writePresentationLUT(DcmItem &dset)
+{
+  return presentationLUT.write(dset, OFFalse);
+}
 
 /*
  *  $Log: dvpstat.cc,v $
- *  Revision 1.40  1999-10-06 13:24:50  joergr
+ *  Revision 1.41  1999-10-07 17:22:03  meichel
+ *  Reworked management of Presentation LUTs in order to create tighter
+ *    coupling between Softcopy and Print.
+ *
+ *  Revision 1.40  1999/10/06 13:24:50  joergr
  *  Fixed bug in renderPixelData: images haven't been flipped correctly for
  *  PrintBitmap.
  *  Corrected creation of PrintBitmap pixel data: VOI windows should be applied

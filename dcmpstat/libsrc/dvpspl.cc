@@ -23,8 +23,8 @@
  *    classes: DVPSPresentationLUT
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-09-24 15:24:07 $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  Update Date:      $Date: 1999-10-07 17:22:00 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -59,6 +59,7 @@ DVPSPresentationLUT::DVPSPresentationLUT()
 , presentationLUTDescriptor(DCM_LUTDescriptor)
 , presentationLUTExplanation(DCM_LUTExplanation)
 , presentationLUTData(DCM_LUTData)
+, sOPInstanceUID(DCM_SOPInstanceUID)
 , logstream(&cerr)
 {
 }
@@ -68,6 +69,7 @@ DVPSPresentationLUT::DVPSPresentationLUT(const DVPSPresentationLUT& copy)
 , presentationLUTDescriptor(copy.presentationLUTDescriptor)
 , presentationLUTExplanation(copy.presentationLUTExplanation)
 , presentationLUTData(copy.presentationLUTData)
+, sOPInstanceUID(copy.sOPInstanceUID)
 , logstream(copy.logstream)
 {
 }
@@ -82,9 +84,10 @@ void DVPSPresentationLUT::clear()
   presentationLUTDescriptor.clear();
   presentationLUTExplanation.clear();
   presentationLUTData.clear();
+  sOPInstanceUID.clear();
 }
 
-E_Condition DVPSPresentationLUT::read(DcmItem &dset)
+E_Condition DVPSPresentationLUT::read(DcmItem &dset, OFBool withSOPInstance)
 {
   DcmSequenceOfItems *seq;
   DcmItem *item;
@@ -95,7 +98,9 @@ E_Condition DVPSPresentationLUT::read(DcmItem &dset)
   DcmCodeString presentationLUTShape(DCM_PresentationLUTShape);
   
   READ_FROM_DATASET(DcmCodeString, presentationLUTShape)
-
+  if (withSOPInstance) { READ_FROM_DATASET(DcmUniqueIdentifier, sOPInstanceUID) }
+  else sOPInstanceUID.clear();
+  
   /* read Presentation LUT Sequence */
   if (result==EC_Normal)
   {
@@ -185,10 +190,28 @@ E_Condition DVPSPresentationLUT::read(DcmItem &dset)
     }
   }
 
+  if (withSOPInstance)
+  {
+    if (sOPInstanceUID.getLength() == 0)
+    {
+      result=EC_IllegalCall;
+#ifdef DEBUG
+      *logstream << "Error: sOPInstanceUID absent in Presentation LUT Content Sequence" << endl;
+#endif
+    }
+    else if (sOPInstanceUID.getVM() != 1)
+    {
+      result=EC_IllegalCall;
+#ifdef DEBUG
+      *logstream << "Error: sOPInstanceUID VM != 1 in Presentation LUT Content Sequence" << endl;
+#endif
+    }
+  }
+  
   return result;
 }
 
-E_Condition DVPSPresentationLUT::write(DcmItem &dset)
+E_Condition DVPSPresentationLUT::write(DcmItem &dset, OFBool withSOPInstance)
 {
   E_Condition result = EC_Normal;
   DcmElement *delem=NULL;
@@ -239,6 +262,7 @@ E_Condition DVPSPresentationLUT::write(DcmItem &dset)
     else presentationLUTShape.putString("IDENTITY");
     ADD_TO_DATASET(DcmCodeString, presentationLUTShape)
   }
+  if (withSOPInstance) { ADD_TO_DATASET(DcmUniqueIdentifier, sOPInstanceUID) }
 
   return result;
 }
@@ -273,6 +297,11 @@ OFBool DVPSPresentationLUT::haveTable()
   else return OFFalse;
 }
 
+const char *DVPSPresentationLUT::getSOPInstanceUID()
+{
+  char *c = NULL;
+  if (EC_Normal == sOPInstanceUID.getString(c)) return c; else return NULL;
+}
 
 const char *DVPSPresentationLUT::getCurrentExplanation()
 {
@@ -391,9 +420,80 @@ OFBool DVPSPresentationLUT::activate(DicomImage *image)
   if (result) return OFTrue; else return OFFalse;
 }
 
+E_Condition DVPSPresentationLUT::setSOPInstanceUID(const char *value)
+{
+  if ((value==NULL)||(strlen(value)==0)) return EC_IllegalCall;
+  return sOPInstanceUID.putString(value);
+}
+
+DiLookupTable *DVPSPresentationLUT::createDiLookupTable()
+{
+  DiLookupTable *result = NULL;
+  if (presentationLUT == DVPSP_table) result = new DiLookupTable(presentationLUTData, presentationLUTDescriptor);
+  return result;
+}  
+
+OFBool DVPSPresentationLUT::compareDiLookupTable(DiLookupTable *lut)
+{
+  if ((presentationLUT == DVPSP_table) && lut 
+     && (0 == lut->compareLUT(presentationLUTData, presentationLUTDescriptor))) return OFTrue;
+  return OFFalse;
+}
+
+OFBool DVPSPresentationLUT::isLegalPrintPresentationLUT()
+{
+  OFBool result = OFFalse;
+  Uint16 val=0;
+  switch (presentationLUT)
+  {
+    case DVPSP_table:
+      if (EC_Normal == presentationLUTDescriptor.getUint16(val,2))
+      {
+        if ((val>=10)&&(val<=16)) result = OFTrue;
+      }
+      break;
+    case DVPSP_inverse:
+      break;
+    case DVPSP_identity:
+    case DVPSP_lin_od:
+      result = OFTrue;
+      break;
+  }
+  return result;
+}
+  
+OFBool DVPSPresentationLUT::matchesImageDepth(OFBool is12bit)
+{
+  Uint16 numEntries=0;
+  Uint16 firstMapped=0;
+  OFBool result = OFFalse;
+  switch (presentationLUT)
+  {
+    case DVPSP_table:
+
+      if ((EC_Normal == presentationLUTDescriptor.getUint16(numEntries,0)) &&
+         (EC_Normal == presentationLUTDescriptor.getUint16(firstMapped,1)))
+      {
+      	if ((firstMapped == 0)&&((is12bit && (numEntries == 4096))||((!is12bit) && (numEntries == 256)))) result = OFTrue;
+      }
+      break;
+    case DVPSP_inverse:
+      break;
+    case DVPSP_identity:
+    case DVPSP_lin_od:
+      result = OFTrue;
+      break;
+  }
+  return result;
+}
+
 /*
  *  $Log: dvpspl.cc,v $
- *  Revision 1.4  1999-09-24 15:24:07  meichel
+ *  Revision 1.5  1999-10-07 17:22:00  meichel
+ *  Reworked management of Presentation LUTs in order to create tighter
+ *    coupling between Softcopy and Print.
+ *
+ *  Revision 1.4  1999/09/24 15:24:07  meichel
  *  Print spooler (dcmprtsv) now logs diagnostic messages in log files
  *    when operating in spool mode.
  *
