@@ -21,10 +21,10 @@
  *
  *  Purpose: DicomOverlayPlane (Source) - Multiframe Overlays UNTESTED !
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-06-01 15:49:59 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2001-09-28 13:18:28 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/libsrc/diovpln.cc,v $
- *  CVS/RCS Revision: $Revision: 1.24 $
+ *  CVS/RCS Revision: $Revision: 1.25 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -351,13 +351,13 @@ void *DiOverlayPlane::getData(const unsigned long frame,
         const Uint16 mask = (Uint16)DicomImageClass::maxval(bits);
         if (bits == 1)
         {
-            const unsigned long count1 = (count + 7) / 8;           // round value
-            Uint8 *data = new Uint8[count1];
+            const unsigned long count8 = (count + 7) / 8;           // round value: 8 bit padding
+            Uint8 *data = new Uint8[count8];
             if (data != NULL)
             {
                 if ((fore & mask) != (back & mask))
                 {
-                    OFBitmanipTemplate<Uint8>::setMem(data, 0x0, count1);
+                    OFBitmanipTemplate<Uint8>::setMem(data, 0x0, count8);
                     register Uint16 x;
                     register Uint16 y;
                     register Uint8 value = 0;
@@ -390,7 +390,7 @@ void *DiOverlayPlane::getData(const unsigned long frame,
                             *(q++) = value;
                     }
                 } else {
-                    OFBitmanipTemplate<Uint8>::setMem(data, (fore) ? 0xff : 0x0, count1);
+                    OFBitmanipTemplate<Uint8>::setMem(data, (fore) ? 0xff : 0x0, count8);
                 }
             }
             return (void *)data;
@@ -455,6 +455,59 @@ void *DiOverlayPlane::getData(const unsigned long frame,
         }
     }
     return NULL;
+}
+
+
+unsigned long DiOverlayPlane::create6xxx3000Data(Uint8 *&buffer,
+                                                 unsigned int &width,
+                                                 unsigned int &height,
+                                                 unsigned long &frames)
+{
+    buffer = NULL;
+    width = Width;
+    height = Height;
+    frames = NumberOfFrames;
+    const unsigned long count = (unsigned long)Width * (unsigned long)Height * NumberOfFrames;
+    if (Valid && (count > 0))
+    {
+        const unsigned long count8 = ((count + 15) / 16) * 2;           // round value: 16 bit padding
+        buffer = new Uint8[count8];
+        if (buffer != NULL)
+        {
+            OFBitmanipTemplate<Uint8>::setMem(buffer, 0x0, count8);
+            register Uint16 x;
+            register Uint16 y;
+            register Uint8 value = 0;
+            register Uint8 *q = buffer;
+            register int bit = 0;
+            for (unsigned long f = 0; f < NumberOfFrames; f++)
+            {
+                if (reset(f + ImageFrameOrigin))
+                {
+                    for (y = 0; y < Height; y++)
+                    {
+                        for (x = 0; x < Width; x++)
+                        {
+                            if (getNextBit())
+                                value |= (1 << bit);
+                            if (bit == 7)
+                            {
+                                *(q++) = value;
+                                value = 0;
+                                bit = 0;
+                            } else {
+                                bit++;
+                            }
+                        }
+                    }
+                }
+                if (bit != 0)
+                    *(q++) = value;
+            }
+            return count8;      // number of bytes
+        }
+    }
+    return 0;
 }
 
 
@@ -551,7 +604,11 @@ void DiOverlayPlane::setRotation(const int degree,
  *
  * CVS/RCS Log:
  * $Log: diovpln.cc,v $
- * Revision 1.24  2001-06-01 15:49:59  meichel
+ * Revision 1.25  2001-09-28 13:18:28  joergr
+ * Added method to extract embedded overlay planes from pixel data and store
+ * them in group (6xxx,3000) format.
+ *
+ * Revision 1.24  2001/06/01 15:49:59  meichel
  * Updated copyright header
  *
  * Revision 1.23  2001/05/22 13:20:27  joergr

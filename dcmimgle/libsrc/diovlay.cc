@@ -22,9 +22,9 @@
  *  Purpose: DicomOverlay (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-05-22 13:20:27 $
+ *  Update Date:      $Date: 2001-09-28 13:17:57 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/libsrc/diovlay.cc,v $
- *  CVS/RCS Revision: $Revision: 1.20 $
+ *  CVS/RCS Revision: $Revision: 1.21 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -586,11 +586,31 @@ void *DiOverlay::getFullPlaneData(const unsigned long frame,
 }
 
 
+unsigned long DiOverlay::create6xxx3000PlaneData(Uint8 *&buffer,
+                                                 unsigned int plane,
+                                                 unsigned int &width,
+                                                 unsigned int &height,
+                                                 unsigned long &frames)
+{
+    if (convertToPlaneNumber(plane, AdditionalPlanes) > 1)                    // plane does exist
+    {
+        DiOverlayPlane *op = Data->Planes[plane];
+        if ((op != NULL) && op->isValid())
+            return op->create6xxx3000Data(buffer, width, height, frames);
+    }
+    return 0;
+}
+
+
 /*
  *
  * CVS/RCS Log:
  * $Log: diovlay.cc,v $
- * Revision 1.20  2001-05-22 13:20:27  joergr
+ * Revision 1.21  2001-09-28 13:17:57  joergr
+ * Added method to extract embedded overlay planes from pixel data and store
+ * them in group (6xxx,3000) format.
+ *
+ * Revision 1.20  2001/05/22 13:20:27  joergr
  * Enhanced checking routines for corrupt overlay data (e.g. invalid value for
  * OverlayBitsAllocated).
  *
