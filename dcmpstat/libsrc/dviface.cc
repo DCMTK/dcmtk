@@ -21,9 +21,9 @@
  *
  *  Purpose: DVPresentationState
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-12-13 13:24:23 $
- *  CVS/RCS Revision: $Revision: 1.123 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2000-12-13 13:30:22 $
+ *  CVS/RCS Revision: $Revision: 1.124 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -250,7 +250,9 @@ DVInterface::~DVInterface()
       delete displayFunction[i];
     if (pHandle) releaseDatabase();
     // refresh database index file access time
-    if (databaseIndexFile.length() > 0) utime(databaseIndexFile.c_str(), NULL);
+    if (databaseIndexFile.length() > 0)
+        // cast to char* required for gcc 2.5.8 on NeXTSTEP
+        utime((char *)databaseIndexFile.c_str(), NULL);
 }
 
 
@@ -4181,7 +4183,10 @@ OFBool DVInterface::verifyUserPassword(const char * /*userID*/, const char * /*p
 /*
  *  CVS/RCS Log:
  *  $Log: dviface.cc,v $
- *  Revision 1.123  2000-12-13 13:24:23  meichel
+ *  Revision 1.124  2000-12-13 13:30:22  joergr
+ *  Added explicit typecast to keep gcc 2.5.8 (NeXTSTEP) quiet.
+ *
+ *  Revision 1.123  2000/12/13 13:24:23  meichel
  *  Removed unused local variables
  *
  *  Revision 1.122  2000/12/11 18:18:24  joergr
