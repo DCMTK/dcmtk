@@ -10,9 +10,9 @@
 ** routines for finding and created UIDs.
 **
 ** Last Update:		$Author: hewett $
-** Update Date:		$Date: 1997-01-13 15:50:49 $
+** Update Date:		$Date: 1997-05-13 13:54:27 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcuid.cc,v $
-** CVS/RCS Revision:	$Revision: 1.8 $
+** CVS/RCS Revision:	$Revision: 1.9 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -170,8 +170,26 @@ static UIDNameMap uidNameMap[] = {
     { UID_RTImageStorage, "RTImageStorage" },
     { UID_RTDoseStorage, "RTDoseStorage" },
     { UID_RTStructureSetStorage, "RTStructureSetStorage" },
-    { UID_RTTreatmentRecordStorage, "RTTreatmentRecordStorage" },
     { UID_RTPlanStorage, "RTPlanStorage" },
+
+    { UID_PETImageStorage, "PETImageStorage" },
+    { UID_PETCurveStorage, "PETCurveStorage" },
+
+    { UID_PrintQueueSOPInstance, "PrintQueueSOPInstance" },
+    { UID_PrintQueueManagementSOPClass, "PrintQueueManagementSOPClass" },
+
+    { UID_VLImageStorage, "VLImageStorage" },
+    { UID_VLMultiFrameImageStorage, "VLMultiFrameImageStorage" },
+
+    { UID_ModalityPerformedProcedureStepSOPClass, "ModalityPerformedProcedureStepSOPClass" },
+    { UID_ModalityManagementMetaSOPClass, "ModalityManagementMetaSOPClass" },
+
+    { UID_UserPreferenceLUTSOPClass, "UserPreferenceLUTSOPClass" },
+
+    { UID_BasicGrayscalePrintStorageSOPClass, "BasicGrayscalePrintStorageSOPClass" },
+    { UID_BasicColorPrintStorageSOPClass, "BasicColorPrintStorageSOPClass" },
+    { UID_ReferencedGrayscalePrintStorageSOPClass, "ReferencedGrayscalePrintStorageSOPClass" },
+    { UID_ReferencedColorPrintStorageSOPClass, "ReferencedColorPrintStorageSOPClass" },
 
     { NULL, NULL }
 };
@@ -211,8 +229,18 @@ const char* dcmStorageSOPClassUIDs[] = {
     UID_RTImageStorage,
     UID_RTDoseStorage,
     UID_RTStructureSetStorage,
-    UID_RTTreatmentRecordStorage,
     UID_RTPlanStorage,
+
+    UID_PETImageStorage,
+    UID_PETCurveStorage,
+
+    UID_VLImageStorage,
+    UID_VLMultiFrameImageStorage,
+
+    UID_BasicGrayscalePrintStorageSOPClass, 
+    UID_BasicColorPrintStorageSOPClass, 
+    UID_ReferencedGrayscalePrintStorageSOPClass, 
+    UID_ReferencedColorPrintStorageSOPClass, 
 
     NULL
 };
@@ -428,7 +456,13 @@ char* dcmGenerateUniqueIdentifer(char* uid, const char* prefix)
 /*
 ** CVS/RCS Log:
 ** $Log: dcuid.cc,v $
-** Revision 1.8  1997-01-13 15:50:49  hewett
+** Revision 1.9  1997-05-13 13:54:27  hewett
+** Added UIDs and data dictionary attributes for the draft supplements 12 (PET),
+** 13 (Queue Management), 15 (Visible Light), 17 (Modality Performed Procedure
+** Step), 22 (User Preference LUT) and 24 (Print Storage).  Updated UID tables
+** so that recompiled Storage SCP/SCU's will handle the new SOPs.
+**
+** Revision 1.8  1997/01/13 15:50:49  hewett
 ** Fixed bug when creating unique identifers.  No check was made to ensure
 ** that negative numbers never appeared in a UID.  Also added an
 ** implementation of a simple gethostid() function for systems which
