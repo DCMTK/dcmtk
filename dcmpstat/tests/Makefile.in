@@ -30,6 +30,8 @@ LIBDIRS = -L$(top_srcdir)/libsrc -L$(dcmnetdir)/libsrc -L$(ofstddir)/libsrc \
 LOCALLIBS = -ldcmpstat -ldcmimgle -limagedb  -ldcmnet -ldcmdata -lofstd 
 
 
+objs = show.o didb.o
+
 progs= show didb
 
 
