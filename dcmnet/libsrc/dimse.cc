@@ -57,9 +57,9 @@
 **	Module Prefix: DIMSE_
 **
 ** Last Update:		$Author: meichel $
-** Update Date:		$Date: 1998-10-20 08:20:23 $
+** Update Date:		$Date: 1999-04-19 08:35:23 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/libsrc/dimse.cc,v $
-** CVS/RCS Revision:	$Revision: 1.16 $
+** CVS/RCS Revision:	$Revision: 1.17 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -116,6 +116,15 @@
  */
 
 static int debug = 0;
+
+/*
+ * Define global defaults for data encoding when sending out data-sets.
+ * These can be adjusted to allow variants to be tested.
+ */
+
+E_GrpLenEncoding  g_dimse_send_groupLength_encoding = EGL_recalcGL;
+E_EncodingType    g_dimse_send_sequenceType_encoding = EET_ExplicitLength;
+
 
 /*
 ** Private Functions Prototypes
@@ -221,10 +230,30 @@ getTransferSyntax(T_ASC_Association * assoc,
     DcmXfer xfer(ts);
     *xferSyntax = xfer.getXfer();
 
-    switch (*xferSyntax) {
-    case EXS_LittleEndianImplicit:
-    case EXS_LittleEndianExplicit:
-    case EXS_BigEndianExplicit:
+    switch (*xferSyntax)
+    {
+        case EXS_LittleEndianImplicit:
+        case EXS_LittleEndianExplicit:
+        case EXS_BigEndianExplicit:
+        case EXS_JPEGProcess1TransferSyntax:
+        case EXS_JPEGProcess2_4TransferSyntax:
+        case EXS_JPEGProcess3_5TransferSyntax:
+        case EXS_JPEGProcess6_8TransferSyntax:
+        case EXS_JPEGProcess7_9TransferSyntax:
+        case EXS_JPEGProcess10_12TransferSyntax:
+        case EXS_JPEGProcess11_13TransferSyntax:
+        case EXS_JPEGProcess14TransferSyntax:
+        case EXS_JPEGProcess15TransferSyntax:
+        case EXS_JPEGProcess16_18TransferSyntax:
+        case EXS_JPEGProcess17_19TransferSyntax:
+        case EXS_JPEGProcess20_22TransferSyntax:
+        case EXS_JPEGProcess21_23TransferSyntax:
+        case EXS_JPEGProcess24_26TransferSyntax:
+        case EXS_JPEGProcess25_27TransferSyntax:
+        case EXS_JPEGProcess28TransferSyntax:
+        case EXS_JPEGProcess29TransferSyntax:
+        case EXS_JPEGProcess14SV1TransferSyntax:
+        case EXS_RLELossless:
     	/* OK, these can be supported */
     	break;
     default:
@@ -522,9 +551,17 @@ sendDcmDataset(T_ASC_Association * assoc, DcmDataset * obj,
 	    return DIMSE_SENDFAILED;        
     }
 
+    E_GrpLenEncoding groupLength_encoding = g_dimse_send_groupLength_encoding;
+    if (pdvType == DUL_COMMANDPDV) {
+        /* Commands must always include group length (0000,0000) */
+        groupLength_encoding = EGL_withGL;
+    }
+    E_EncodingType sequenceType_encoding = g_dimse_send_sequenceType_encoding;
+    /* Commands do not contain sequences, ... yet */
+
     while (!last) {
-    	econd = obj->write(outBuf, xferSyntax, EET_ExplicitLength, 
-			   EGL_recalcGL, EPD_withoutPadding);
+    	econd = obj->write(outBuf, xferSyntax, sequenceType_encoding, 
+			   groupLength_encoding, EPD_withoutPadding);
 	if (econd == EC_Normal) {
 	    last = OFTrue;	/* all contents have been written */
 	} else if (econd == EC_StreamNotifyClient) {
@@ -786,6 +823,8 @@ DIMSE_receiveCommand(T_ASC_Association * assoc,
     E_TransferSyntax xferSyntax;
     DcmDataset *cmdSet;
     E_Condition econd = EC_Normal;
+
+    if (statusDetail) *statusDetail = NULL;
 
     if (debug) {
 	printf("DIMSE receiveCommand\n");
@@ -1141,13 +1180,13 @@ DIMSE_receiveDataSetInFile(T_ASC_Association *assoc,
 	  }
     }
 
+    /* set the Presentation Context ID we received */
+    *presID = pid;
+
     if (cond != DIMSE_NORMAL)
     {
 	  return COND_PushCondition(cond, DIMSE_Message(cond));
     }
-
-    /* set the Presentation Context ID we received */
-    *presID = pid;
 
     return cond;
 }
@@ -1311,7 +1350,10 @@ void DIMSE_warning(T_ASC_Association *assoc,
 /*
 ** CVS Log
 ** $Log: dimse.cc,v $
-** Revision 1.16  1998-10-20 08:20:23  meichel
+** Revision 1.17  1999-04-19 08:35:23  meichel
+** Added basic support for sending/receiving in encapsulated transfer syntaxes.
+**
+** Revision 1.16  1998/10/20 08:20:23  meichel
 ** Closed some memory leaks in dcmdata and dcmnet libraries.
 **
 ** Revision 1.15  1998/07/15 11:32:39  meichel
