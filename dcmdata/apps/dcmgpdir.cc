@@ -11,15 +11,14 @@
 **
 **
 ** Last Update:		$Author: meichel $
-** Update Date:		$Date: 1999-03-22 14:10:55 $
+** Update Date:		$Date: 1999-03-29 10:14:14 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/apps/dcmgpdir.cc,v $
-** CVS/RCS Revision:	$Revision: 1.27 $
+** CVS/RCS Revision:	$Revision: 1.28 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
 **
 */
-
 
 #include "osconfig.h"    /* make sure OS specific configuration is included first */
 
@@ -84,9 +83,12 @@ END_EXTERN_C
 #include "dcdebug.h"
 #include "cmdlnarg.h"
 
+#include "ofconapp.h"
 #include "dcuid.h"    /* for dcmtk version name */
 
-static char rcsid[] = "$dcmtk: dcmgpdir v"
+#define OFFIS_CONSOLE_APPLICATION "dcmgpdir"
+
+static char rcsid[] = "$dcmtk: " OFFIS_CONSOLE_APPLICATION " v"
   OFFIS_DCMTK_VERSION " " OFFIS_DCMTK_RELEASEDATE " $";
 
 /* default File-Set ID */
@@ -101,7 +103,6 @@ static char rcsid[] = "$dcmtk: dcmgpdir v"
 /* DICOM only allows max 8 path components in a file name */
 #define MAX_FNAME_COMPONENTS 8
 
-OFString progname = "dcmgpdir";
 OFString ofname = "DICOMDIR";
 
 /* actual File-Set ID */
@@ -121,6 +122,9 @@ OFBool recurseFilesystem = OFFalse;
 E_EncodingType lengthEncoding = EET_ExplicitLength;
 E_GrpLenEncoding groupLengthEncoding = EGL_withoutGL;
 
+#define SHORTCOL 3
+#define LONGCOL 21
+
 // ********************************************
 
 static OFBool
@@ -130,43 +134,6 @@ static OFBool
 createDicomdirFromFiles(OFList<OFString>& fileNames);
 
 // ********************************************
-
-static void
-usage()
-{
-    cerr << rcsid <<
-"\n\n"
-"dcmgpdir: create a general purpose dicomdir\n"
-"usage: dcmgpdir [options] referenced-dicom-file ...\n"
-"options are:\n"
-"  output options\n"
-"    +D<dicomdir-path>  generate specific DICOMDIR file (default: DICOMDIR\n"
-"                       in current directory)\n"
-"    +F<file-set-id>    use specific file set ID (default: " << fsid << ")\n"
-"    +R[<desc-file>]    add a file set descriptor file ID (e.g. README)\n"
-"                       (default: add nothing)\n"
-"    +C<char-set>       add a specific character set for descriptor\n"
-"                       (default: if descriptor file presend add \"" 
-	 << scsfsdf << "\")\n"
-"    +I                 invent DICOMDIR type 1 attributes if missing in\n"
-"                       image file (default: exit with error)\n"
-"    +m                 map to DICOM filenames [lowercase -> uppercase,\n"
-"                       and remove trailing period] (default: expect\n"
-"                       filenames to already be in DICOM format)\n"
-"    -w                 do not write out dicomdir (default: do write)\n"
-"    +A                 append to existing dicomdir (default: create new)\n"
-"    +r                 recurse within filesystem directories\n"
-"  group length encoding:\n"
-"    -g                 write without group lengths (default)\n"
-"    +g                 write with group lengths\n"
-"  length encoding in sequences and items:\n"
-"    +e                 write with explicit lengths (default)\n"
-"    -e                 write with undefined lengths\n"
-"  other test/debug options:\n"
-"    -u    disable generation of new VRs (UN/UT/VS)\n"
-"    +V    verbose mode\n"
-"    +dn   set debug level to n (n=1..9)\n";
-}
 
 static OFBool
 isaValidCharSetName(const OFString& cs)
@@ -192,17 +159,6 @@ isaValidCharSetName(const OFString& cs)
     return found;
 }
 
-static OFString
-basename(const OFString& path)
-{
-    OFString base(path);
-    size_t pos = path.rfind(PATH_SEPARATOR);
-    if (pos != OFString_npos) {
-	base = path.substr(pos+1);
-    }
-    return base;
-}
-
 int main(int argc, char *argv[])
 {
 
@@ -213,160 +169,137 @@ int main(int argc, char *argv[])
 
     SetDebugLevel(0);
 
-    prepareCmdLineArgs(argc, argv, progname.c_str());
-    progname = basename(argv[0]);
+  OFConsoleApplication app(OFFIS_CONSOLE_APPLICATION , "Create a general purpose DICOMDIR", rcsid);
+  OFCommandLine cmd;
+  
+  OFString opt1 = "[i]d: string (default: ";
+  opt1 += fsid;
+  opt1 += ")";
 
-    int localDebugLevel = 0;
+  cmd.addGroup("general options:", LONGCOL, SHORTCOL+2);
+   cmd.addOption("--help",                      "-h",        "print this help text and exit");
+   cmd.addOption("--verbose",                   "-v",        "verbose mode, print processing details");
+   cmd.addOption("--debug",                     "-d",        "debug mode, print debug information");
+ 
+  cmd.addGroup("input options:");
+    cmd.addSubGroup("dicomdir identifiers:", LONGCOL, SHORTCOL);
+      cmd.addOption("--output-file",            "+D",    1,  "[f]ilename: string", "generate specific DICOMDIR file\n(default: DICOMDIR in current directory)");
+      cmd.addOption("--fileset-id",             "+F",    1,   opt1.c_str(), "use specific file set ID");
+      cmd.addOption("--descriptor",             "+R",    1,  "[f]ilename: string", "add a file set descriptor file ID\n(e.g. README, default: no descriptor)");
+      cmd.addOption("--char-set",               "+C",    1,  "[c]har-set: string", "add a specific character set for descriptor\n(default: \"ISO_IR 100\" if descriptor present)");
+    cmd.addSubGroup("type 1 attributes:", LONGCOL, SHORTCOL);
+      cmd.addOption("--strict",                 "-I",        "exit with error if DICOMDIR type 1 attributes\nare missing in image file (default)");
+      cmd.addOption("--invent",                 "+I",        "invent DICOMDIR type 1 attributes\nif missing in image file");
+    cmd.addSubGroup("reading:", LONGCOL, SHORTCOL);
+      cmd.addOption("--keep-filenames",         "-m",        "expect filenames to be in DICOM format (default)");
+      cmd.addOption("--map-filenames",          "+m",        "map to DICOM filenames (lowercase -> uppercase,\nand remove trailing period)");
+      cmd.addOption("--no-recurse",             "-r",        "do not recurse within directories (default)");
+      cmd.addOption("--recurse",                "+r",        "recurse within filesystem directories");
+  cmd.addGroup("output options:");
+    cmd.addSubGroup("writing:", LONGCOL, SHORTCOL);
+      cmd.addOption("--replace",                "-A",        "replace existing dicomdir (default)");
+      cmd.addOption("--append",                 "+A",        "append to existing dicomdir");
+      cmd.addOption("--discard",                "-w",        "do not write out dicomdir");
+    cmd.addSubGroup("post-1993 value representations:", LONGCOL, SHORTCOL);
+      cmd.addOption("--enable-new-vr",          "+u",        "enable support for new VRs (UN/UT/VS) (default)");
+      cmd.addOption("--disable-new-vr",         "-u",        "disable support for new VRs, convert to OB");
+    cmd.addSubGroup("group length encoding:", LONGCOL, SHORTCOL);
+      cmd.addOption("--group-length-remove",    "-g",        "write without group length elements (default)");
+      cmd.addOption("--group-length-create",    "+g",        "write with group length elements");
+    cmd.addSubGroup("length encoding in sequences and items:", LONGCOL, SHORTCOL);
+      cmd.addOption("--length-explicit",        "+e",        "write with explicit lengths (default)");
+      cmd.addOption("--length-undefined",       "-e",        "write with undefined lengths");
 
+    /* evaluate command line */                           
+    prepareCmdLineArgs(argc, argv, OFFIS_CONSOLE_APPLICATION);
+    if (app.parseCommandLine(cmd, argc, argv, "referenced-dicom-file ...", 1, -1, OFCommandLine::ExpandWildcards))
+    {
 
-    /* parse cmd line */
-    if (argc <= 3) {
-        usage();
-        return 0;
+      if (cmd.findOption("--help")) app.printUsage(OFFIS_CONSOLE_APPLICATION);
+      if (cmd.findOption("--verbose")) verbosemode=OFTrue;
+      if (cmd.findOption("--debug")) SetDebugLevel(5);
+      if (cmd.findOption("--output-file")) app.checkValue(cmd.getValue(ofname));
+      if (cmd.findOption("--fileset-id")) app.checkValue(cmd.getValue(fsid));
+      if (cmd.findOption("--descriptor")) app.checkValue(cmd.getValue(fsdfid));
+      if (cmd.findOption("--char-set")) 
+      {
+          app.checkValue(cmd.getValue(scsfsdf));
+          if (!isaValidCharSetName(scsfsdf))
+          {
+            OFString aString = "unknown char-set: ";
+            aString += scsfsdf;
+            app.printError(aString.c_str());
+          }
+      }
+        
+      cmd.beginOptionBlock();
+      if (cmd.findOption("--strict")) inventAttributes = OFFalse;
+      if (cmd.findOption("--invent")) inventAttributes = OFTrue;
+      cmd.endOptionBlock();
+
+      cmd.beginOptionBlock();
+      if (cmd.findOption("--keep-filenames")) mapFilenames = OFFalse;
+      if (cmd.findOption("--map-filenames")) mapFilenames = OFTrue;
+      cmd.endOptionBlock();
+
+      cmd.beginOptionBlock();
+      if (cmd.findOption("--no-recurse")) recurseFilesystem = OFFalse;
+      if (cmd.findOption("--recurse")) recurseFilesystem = OFTrue;
+      cmd.endOptionBlock();
+
+      cmd.beginOptionBlock();
+      if (cmd.findOption("--replace"))
+      {
+      	writeDicomdir = OFTrue;
+      	appendMode = OFFalse;
+      }
+      if (cmd.findOption("--append"))
+      {
+      	writeDicomdir = OFTrue;
+      	appendMode = OFTrue;
+      }
+      if (cmd.findOption("--discard"))
+      {
+      	writeDicomdir = OFFalse;
+      	appendMode = OFFalse;
+      }
+      cmd.endOptionBlock();
+
+      cmd.beginOptionBlock();
+      if (cmd.findOption("--enable-new-vr")) 
+      {
+        dcmEnableUnknownVRGeneration = OFTrue;
+        dcmEnableUnlimitedTextVRGeneration = OFTrue;
+        dcmEnableVirtualStringVRGeneration = OFTrue;
+      }
+      if (cmd.findOption("--disable-new-vr"))
+      {
+        dcmEnableUnknownVRGeneration = OFFalse;
+        dcmEnableUnlimitedTextVRGeneration = OFFalse;
+        dcmEnableVirtualStringVRGeneration = OFFalse;
+      }
+      cmd.endOptionBlock();
+
+      cmd.beginOptionBlock();
+      if (cmd.findOption("--group-length-create")) groupLengthEncoding = EGL_withGL;
+      if (cmd.findOption("--group-length-remove")) groupLengthEncoding = EGL_withoutGL;
+      cmd.endOptionBlock();
+
+      cmd.beginOptionBlock();
+      if (cmd.findOption("--length-explicit")) lengthEncoding = EET_ExplicitLength;
+      if (cmd.findOption("--length-undefined")) lengthEncoding = EET_UndefinedLength;
+      cmd.endOptionBlock();
+
     }
 
+    const char *current = NULL;
     OFList<OFString> fnames;
-
-    for (int i=1; i<argc; i++) {
-	char* arg = argv[i];
-	if (arg[0] == '-' || arg[0] == '+') {
-	    if (strlen(arg) < 2) {
-		cerr << "unknown argument: " << arg << endl;
-		usage();
-		return 1;
-	    }
-	    switch (arg[1]) {
-	    case 'D':
-		if (arg[0] == '+' && arg[2] != '\0') {
-		    ofname = arg + 2;
-		} else {
-		    cerr << "unknown option: " << arg << endl;
-		    return 1;
-		}
-		break;
-	    case 'F':
-		if (arg[0] == '+' && arg[2] != '\0') {
-		    fsid = arg + 2;
-		} else {
-		    cerr << "unknown option: " << arg << endl;
-		    return 1;
-		}
-		break;
-	    case 'R':
-		if (arg[0] == '+') {
-		    if (arg[2] != '\0') {
-			fsdfid = arg + 2;
-		    } else {
-			fsdfid = DEFAULT_FSDFID;
-		    }
-		} else {
-		    cerr << "unknown option: " << arg << endl;
-		    return 1;
-		}
-		break;
-	    case 'C':
-		if (arg[0] == '+' && arg[2] != '\0') {
-		    scsfsdf = arg + 2;
-		    if (!isaValidCharSetName(scsfsdf)) {
-			cerr << "unknown char-set: " << scsfsdf << endl;
-		    }
-		} else {
-		    cerr << "unknown option: " << arg << endl;
-		    return 1;
-		}
-		break;
-	    case 'I':
-		if (arg[0] == '+' && arg[2] == '\0') {
-		    inventAttributes = OFTrue;
-		} else {
-		    cerr << "unknown option: " << arg << endl;
-		    return 1;
-		}
-		break;
-	    case 'm':
-		if (arg[0] == '+' && arg[2] == '\0') {
-		    mapFilenames = OFTrue;
-		} else {
-		    cerr << "unknown option: " << arg << endl;
-		    return 1;
-		}
-		break;
-	    case 'w':
-		if (arg[0] == '-' && arg[2] == '\0') {
-		    writeDicomdir = OFFalse;
-		} else {
-		    cerr << "unknown option: " << arg << endl;
-		    return 1;
-		}
-		break;
-	    case 'A':
-		if (arg[0] == '+' && arg[2] == '\0') {
-		    appendMode = OFTrue;
-		} else {
-		    cerr << "unknown option: " << arg << endl;
-		    return 1;
-		}
-		break;
-	    case 'r':
-		if (arg[0] == '+' && arg[2] == '\0') {
-		    recurseFilesystem = OFTrue;
-		} else {
-		    cerr << "unknown option: " << arg << endl;
-		    return 1;
-		}
-		break;
-	    case 'u':
-		if (arg[0] == '-' && arg[2] == '\0') {
-		    dcmEnableUnknownVRGeneration = OFFalse;
-		    dcmEnableUnlimitedTextVRGeneration = OFFalse;
-		    dcmEnableVirtualStringVRGeneration = OFFalse;
-		} else {
-		    cerr << "unknown option: " << arg << endl;
-		    return 1;
-		}
-		break;
-	    case 'g':
-		if (arg[0] == '+' && arg[2] == '\0') {
-		    groupLengthEncoding = EGL_withGL;
-		} else if (arg[0] == '-' && arg[2] == '\0') {
-		    groupLengthEncoding = EGL_withoutGL;
-		} else {
-		    cerr << "unknown option: " << arg << endl;
-		    return 1;
-		}
-		break;
-	    case 'e':
-		if (arg[0] == '+' && arg[2] == '\0') {
-		    lengthEncoding = EET_ExplicitLength;
-		} else if (arg[0] == '-' && arg[2] == '\0') {
-		    lengthEncoding = EET_UndefinedLength;
-		} else {
-		    cerr << "unknown option: " << arg << endl;
-		    return 1;
-		}
-		break;
-	    case 'V':
-		if (arg[0] == '+' && arg[2] == '\0') {
-		    verbosemode = OFTrue;
-		} else {
-		    cerr << "unknown option: " << arg << endl;
-		    return 1;
-		}
-		break;
-	    case 'd':
-		if (sscanf(arg+2, "%d", &localDebugLevel) != 1) {
-		    cerr << "unknown option: " << arg << endl;
-		    return 1;
-		}
-		break;
-	    default:
-		cerr << "unknown option: " << arg << endl;
-		return 1;
-	    }
-	} else {
-	    OFString fname(arg);
-	    fnames.push_back(fname);
-	}
+    int count = cmd.getParamCount();
+    for (int i=1; i<=count; i++) 
+    {
+      cmd.getParam(i, current);
+      // OFString fname(current);
+      fnames.push_back(current);
     }
 
     /* make sure data dictionary is loaded */
@@ -376,8 +309,6 @@ int main(int argc, char *argv[])
 	     << DCM_DICT_ENVIRONMENT_VARIABLE << endl;
 	return 1; /* DcmDicomDir class dumps core when no data dictionary */
     }
-
-    SetDebugLevel(localDebugLevel);
 
     OFBool ok = OFTrue;
     if (recurseFilesystem) {
@@ -2637,6 +2568,13 @@ createDicomdirFromFiles(OFList<OFString>& fileNames)
 /*
 ** For Win32 and its evil associates.
 */
+
+#ifdef USE__FINDFIRST
+/* 
+ * This is the old version of expandFileNames() using _findfirst().
+ * The new version below directly uses Win32 API calls and is, therefore,
+ * more portable.
+ */
 static OFBool
 expandFileNames(OFList<OFString>& fileNames, OFList<OFString>& expandedNames)
 {
@@ -2680,6 +2618,65 @@ expandFileNames(OFList<OFString>& fileNames, OFList<OFString>& expandedNames)
     }
     return ok;
 }
+
+#else
+
+static OFBool
+expandFileNames(OFList<OFString>& fileNames, OFList<OFString>& expandedNames)
+{
+  OFBool ok = OFTrue;
+  HANDLE     hFile;
+  WIN32_FIND_DATA stWin32FindData;
+  int             ret;
+
+  OFListIterator(OFString) iter = fileNames.begin();
+  while (iter != fileNames.end())
+  {
+    OFString fname(*iter);
+    ++iter;
+
+    hFile = FindFirstFile(fname.c_str(), &stWin32FindData);
+    if (hFile == INVALID_HANDLE_VALUE)
+    {
+      cerr << "error: cannot access: " << fname << endl;
+      ok = OFFalse;
+    }
+    else if(stWin32FindData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)
+    {
+      OFList<OFString> subList;
+      OFString     newSearchname(fname);
+      newSearchname += "\\*";
+      FindClose(hFile);
+
+      hFile = FindFirstFile(newSearchname.c_str(), &stWin32FindData);
+      ret = (hFile != INVALID_HANDLE_VALUE);
+
+      while(ret)
+      {
+        if (!stWin32FindData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)
+        {
+          OFString subname(fname);
+          subname += PATH_SEPARATOR;
+          subname += stWin32FindData.cFileName;
+          subList.push_back(subname);
+        }
+        ret = FindNextFile(hFile, &stWin32FindData);
+      }
+
+      if(hFile != INVALID_HANDLE_VALUE)
+      {
+        FindClose(hFile);
+        expandFileNames(subList, expandedNames);
+      } else {
+        expandedNames.push_back(fname);
+      }
+    }
+  }
+
+  return ok;
+}
+#endif /* USE__FINDFIRST */
+
 #else
 /*
 ** Unix-like environments
@@ -2726,7 +2723,10 @@ expandFileNames(OFList<OFString>& fileNames, OFList<OFString>& expandedNames)
 /*
 ** CVS/RCS Log:
 ** $Log: dcmgpdir.cc,v $
-** Revision 1.27  1999-03-22 14:10:55  meichel
+** Revision 1.28  1999-03-29 10:14:14  meichel
+** Adapted command line options of dcmdata applications to new scheme.
+**
+** Revision 1.27  1999/03/22 14:10:55  meichel
 ** Added support for Structured Reports to dcmgpdir.
 **   Added preliminary support for including sequences into a DICOMDIR.
 **

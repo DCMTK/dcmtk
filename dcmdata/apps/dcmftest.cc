@@ -9,10 +9,10 @@
 ** Test if a file uses DICOM Part 10 format.
 **
 **
-** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1997-08-06 12:20:01 $
+** Last Update:		$Author: meichel $
+** Update Date:		$Date: 1999-03-29 10:14:13 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/apps/dcmftest.cc,v $
-** CVS/RCS Revision:	$Revision: 1.5 $
+** CVS/RCS Revision:	$Revision: 1.6 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -35,33 +35,29 @@
 #endif
 
 #include "dcmetinf.h"
+#include "ofconapp.h"
 #include "dcuid.h"    /* for dcmtk version name */
 
-static char rcsid[] = "$dcmtk: dcmftest v"
+#define OFFIS_CONSOLE_APPLICATION "dcmftest"
+
+static char rcsid[] = "$dcmtk: " OFFIS_CONSOLE_APPLICATION " v"
   OFFIS_DCMTK_VERSION " " OFFIS_DCMTK_RELEASEDATE " $";
 
 // ********************************************
 
-static void
-usage()
-{
-    fprintf(stderr, 
-"%s\n\n" 
-"dcmftest: test if file uses dicom part 10 format\n"
-"usage: dcmftest file ...\n", rcsid);
-}
-
 int main(int argc, char *argv[])
 {
-    /* parse cmd line */
-    if (argc < 2) {
-        usage();
-        return 0;
-    }
+    OFConsoleApplication app(OFFIS_CONSOLE_APPLICATION , "test if file uses dicom part 10 format", rcsid);
+    OFCommandLine cmd;
 
+    /* evaluate command line */                           
+    app.parseCommandLine(cmd, argc, argv, "file ...", 1, -1, OFCommandLine::ExpandWildcards);
+	
     int badCount = 0;
-    for (int i=1; i<argc; i++) {
-	char* fname = argv[i];
+    int count = cmd.getParamCount();
+    const char *fname = NULL;
+    for (int i=1; i<=count; i++) {
+        cmd.getParam(i, fname);
 	OFBool ok = OFFalse;
 	FILE* f = fopen(fname, "rb");
 
@@ -98,7 +94,10 @@ int main(int argc, char *argv[])
 /*
 ** CVS/RCS Log:
 ** $Log: dcmftest.cc,v $
-** Revision 1.5  1997-08-06 12:20:01  andreas
+** Revision 1.6  1999-03-29 10:14:13  meichel
+** Adapted command line options of dcmdata applications to new scheme.
+**
+** Revision 1.5  1997/08/06 12:20:01  andreas
 ** - Using Windows NT with Visual C++ 4.x the standard open mode for files
 **   is TEXT with conversions. For binary files (image files, imagectn database
 **   index) this must be changed (e.g. fopen(filename, "...b"); or

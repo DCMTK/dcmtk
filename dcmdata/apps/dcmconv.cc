@@ -9,9 +9,9 @@
 **
 **
 ** Last Update:		$Author: meichel $
-** Update Date:		$Date: 1998-01-27 10:51:26 $
+** Update Date:		$Date: 1999-03-29 10:14:11 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/apps/dcmconv.cc,v $
-** CVS/RCS Revision:	$Revision: 1.17 $
+** CVS/RCS Revision:	$Revision: 1.18 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -34,303 +34,181 @@
 #include "dctk.h"
 #include "dcdebug.h"
 #include "cmdlnarg.h"
-
+#include "ofconapp.h"
 #include "dcuid.h"    /* for dcmtk version name */
 
-static char rcsid[] = "$dcmtk: dcmconv v"
+#define OFFIS_CONSOLE_APPLICATION "dcmconv"
+
+static char rcsid[] = "$dcmtk: " OFFIS_CONSOLE_APPLICATION " v"
   OFFIS_DCMTK_VERSION " " OFFIS_DCMTK_RELEASEDATE " $";
 
 // ********************************************
 
-static void
-usage()
-{
-    cerr << rcsid 
-         << "\n\n"
-	"dcmconv: convert dicom file encoding\n"
-	"usage: dcmconv [options] dcmfile-in dcmfile-out\n"
-	"options are:\n"
-	"  input options:\n"
-	"    DICOM fileformat (Sup. 1) support:\n"
-	"      -f      read file without metaheader\n"
-	"      +f      read file with metaheader (default)\n"
-	"    input transfer syntax (only with -f):\n"
-	"      -t=     try and discover input transfer syntax (can fail) (default)\n"
-	"      -ti     read with little-endian implicit transfer syntax\n"
-	"      -te     read with little-endian explicit transfer syntax\n"
-	"      -tb     read with big-endian explicit transfer syntax\n"
-	"  output options:\n"
-	"    DICOM fileformat (Sup. 1) support:\n"
-	"      -F      write file without metaheader\n"
-	"      +F      write file with metaheader (default)\n"
-	"    output transfer syntax:\n"
-	"      +t=     write with same transfer syntax as input (default)\n"
-	"      +ti     write with little-endian implicit transfer syntax\n"
-	"      +te     write with little-endian explicit transfer syntax\n"
-	"      +tb     write with big-endian explicit transfer syntax\n"
-	"    group length encoding:\n" 
-	"      +g      write with group lengths\n"
-	"      +g=     recalculate group lengths (default)\n"
-	"      -g      write without group lengths\n"
-	"    length encoding in sequences and items:\n"
-	"      +e      write with explicit lengths (default)\n"
-	"      -e      write with undefined lengths\n"
-	"    padding (only applicable for DICOM files with metaheader)\n"
-	"      -p      no padding (default for datasets)\n"
-	"      -p=     do not change padding (default for metaheader files)\n"
-	"      +p n m  pad file x*n bytes and items y*m bytes\n"
-        "    unknown VR\n"
-	"      -u      disable generation of new VRs (UN/UT/VS)\n"
-        "      +u      enable generation of new VRs (UN/UT/VS) (default)\n"
-	"  other options:\n"
-	"      -h      print this usage string\n"
-	"      +V      verbose mode, print actions\n"
-	"      +dn     set debug level to n (n=1..9)\n";
-}
 
-// ********************************************
-
+#define SHORTCOL 4
+#define LONGCOL 21
 
 int main(int argc, char *argv[])
 {
 
 #ifdef HAVE_GUSI_H
-    GUSISetup(GUSIwithSIOUXSockets);
-    GUSISetup(GUSIwithInternetSockets);
+  GUSISetup(GUSIwithSIOUXSockets);
+  GUSISetup(GUSIwithInternetSockets);
 #endif
 
-    SetDebugLevel(0);
+  SetDebugLevel(0);
 
-    prepareCmdLineArgs(argc, argv, "dcmconv");
+  const char *opt_ifname = NULL; 
+  const char *opt_ofname = NULL; 
+  
+  OFBool opt_verbose = OFFalse;
+  OFBool opt_iDataset = OFFalse;
+  OFBool opt_oDataset = OFFalse;
+  E_TransferSyntax opt_ixfer = EXS_Unknown;
+  E_TransferSyntax opt_oxfer = EXS_Unknown;
+  E_GrpLenEncoding opt_oglenc = EGL_recalcGL;
+  E_EncodingType opt_oenctype = EET_ExplicitLength;
+  E_PaddingEncoding opt_opadenc = EPD_noChange;
+  OFCmdUnsignedInt opt_filepad = 0;
+  OFCmdUnsignedInt opt_itempad = 0;
+
+  OFConsoleApplication app(OFFIS_CONSOLE_APPLICATION , "Convert DICOM file encoding", rcsid);
+  OFCommandLine cmd;
+  
+  cmd.addGroup("general options:", LONGCOL, SHORTCOL+2);
+   cmd.addOption("--help",                      "-h",        "print this help text and exit");
+   cmd.addOption("--verbose",                   "-v",        "verbose mode, print processing details");
+   cmd.addOption("--debug",                     "-d",        "debug mode, print debug information");
+ 
+  cmd.addGroup("input options:");
+    cmd.addSubGroup("input file format:", LONGCOL, SHORTCOL);
+      cmd.addOption("--read-file",              "+f",        "read file format or data set (default)");
+      cmd.addOption("--read-dataset",           "-f",        "read data set without file meta information");
+    cmd.addSubGroup("input transfer syntax (only with --read-dataset):", LONGCOL, SHORTCOL);
+     cmd.addOption("--read-xfer-auto",          "-t=",       "use TS recognition (default)");
+     cmd.addOption("--read-xfer-little",        "-te",       "read with explicit VR little endian TS");
+     cmd.addOption("--read-xfer-big",           "-tb",       "read with explicit VR big endian TS");
+     cmd.addOption("--read-xfer-implicit",      "-ti",       "read with implicit VR little endian TS");
+
+  cmd.addGroup("output options:");
+    cmd.addSubGroup("output file format:", LONGCOL, SHORTCOL);
+      cmd.addOption("--write-file",             "+F",        "write file format (default)");
+      cmd.addOption("--write-dataset",          "-F",        "write data set without file meta information");
+    cmd.addSubGroup("output transfer syntax:", LONGCOL, SHORTCOL);
+      cmd.addOption("--write-xfer-same",        "+t=",       "write with same TS as input (default)");
+      cmd.addOption("--write-xfer-little",      "+te",       "write with explicit VR little endian TS");
+      cmd.addOption("--write-xfer-big",         "+tb",       "write with explicit VR big endian TS");
+      cmd.addOption("--write-xfer-implicit",    "+ti",       "write with implicit VR little endian TS");
+    cmd.addSubGroup("post-1993 value representations:", LONGCOL, SHORTCOL);
+      cmd.addOption("--enable-new-vr",          "+u",        "enable support for new VRs (UN/UT/VS) (default)");
+      cmd.addOption("--disable-new-vr",         "-u",        "disable support for new VRs, convert to OB");
+    cmd.addSubGroup("group length encoding:", LONGCOL, SHORTCOL);
+      cmd.addOption("--group-length-recalc",    "+g=",       "recalculate group lengths if present (default)");
+      cmd.addOption("--group-length-create",    "+g",        "always write with group length elements");
+      cmd.addOption("--group-length-remove",    "-g",        "always write without group length elements");
+    cmd.addSubGroup("length encoding in sequences and items:", LONGCOL, SHORTCOL);
+      cmd.addOption("--length-explicit",        "+e",        "write with explicit lengths (default)");
+      cmd.addOption("--length-undefined",       "-e",        "write with undefined lengths");
+    cmd.addSubGroup("data set trailing padding (not with --write-dataset):", LONGCOL, SHORTCOL);
+      cmd.addOption("--padding-retain",         "-p=",       "do not change padding\n(default if not --write-dataset)");
+      cmd.addOption("--padding-off",            "-p",        "no padding (implicit if --write-dataset)");
+      cmd.addOption("--padding-create",         "+p",    2,  "[f]ile-pad [i]tem-pad: integer", "align file on multiple of f bytes\nand items on multiple of i bytes");
+
+    /* evaluate command line */                           
+    prepareCmdLineArgs(argc, argv, OFFIS_CONSOLE_APPLICATION);
+    if (app.parseCommandLine(cmd, argc, argv, "dcmfile-in dcmfile-out", 2, 2, OFCommandLine::ExpandWildcards))
+    {
+      cmd.getParam(1, opt_ifname);
+      cmd.getParam(2, opt_ofname);
+
+      if (cmd.findOption("--help")) app.printUsage(OFFIS_CONSOLE_APPLICATION);
+      if (cmd.findOption("--verbose")) opt_verbose=OFTrue;
+      if (cmd.findOption("--debug")) SetDebugLevel(5);
+      
+      cmd.beginOptionBlock();
+      if (cmd.findOption("--read-file")) opt_iDataset = OFFalse;
+      if (cmd.findOption("--read-dataset")) opt_iDataset = OFTrue;
+      cmd.endOptionBlock();
+
+      cmd.beginOptionBlock();
+      if (cmd.findOption("--read-xfer-auto"))
+      {
+      	if (! opt_iDataset) app.printError("--read-xfer-auto only allowed with --read-dataset");
+      	opt_ixfer = EXS_Unknown;
+      }
+      if (cmd.findOption("--read-xfer-little"))
+      {
+      	if (! opt_iDataset) app.printError("--read-xfer-little only allowed with --read-dataset");
+      	opt_ixfer = EXS_LittleEndianExplicit;
+      }
+      if (cmd.findOption("--read-xfer-big"))
+      {
+      	if (! opt_iDataset) app.printError("--read-xfer-big only allowed with --read-dataset");
+      	opt_ixfer = EXS_BigEndianExplicit;
+      }
+      if (cmd.findOption("--read-xfer-implicit"))
+      {
+      	if (! opt_iDataset) app.printError("--read-xfer-implicit only allowed with --read-dataset");
+      	opt_ixfer = EXS_LittleEndianImplicit;
+      }
+      cmd.endOptionBlock();
+
+      cmd.beginOptionBlock();
+      if (cmd.findOption("--write-file")) opt_oDataset = OFFalse;
+      if (cmd.findOption("--write-dataset")) opt_oDataset = OFTrue;
+      cmd.endOptionBlock();
+
+      cmd.beginOptionBlock();
+      if (cmd.findOption("--write-xfer-same")) opt_oxfer = EXS_Unknown;
+      if (cmd.findOption("--write-xfer-little")) opt_oxfer = EXS_LittleEndianExplicit;
+      if (cmd.findOption("--write-xfer-big")) opt_oxfer = EXS_BigEndianExplicit;
+      if (cmd.findOption("--write-xfer-implicit")) opt_oxfer = EXS_LittleEndianImplicit;
+      cmd.endOptionBlock();
+
+      cmd.beginOptionBlock();
+      if (cmd.findOption("--enable-new-vr")) 
+      {
+        dcmEnableUnknownVRGeneration = OFTrue;
+        dcmEnableUnlimitedTextVRGeneration = OFTrue;
+        dcmEnableVirtualStringVRGeneration = OFTrue;
+      }
+      if (cmd.findOption("--disable-new-vr"))
+      {
+        dcmEnableUnknownVRGeneration = OFFalse;
+        dcmEnableUnlimitedTextVRGeneration = OFFalse;
+        dcmEnableVirtualStringVRGeneration = OFFalse;
+      }
+      cmd.endOptionBlock();
+
+      cmd.beginOptionBlock();
+      if (cmd.findOption("--group-length-recalc")) opt_oglenc = EGL_recalcGL;
+      if (cmd.findOption("--group-length-create")) opt_oglenc = EGL_withGL;
+      if (cmd.findOption("--group-length-remove")) opt_oglenc = EGL_withoutGL;
+      cmd.endOptionBlock();
+
+      cmd.beginOptionBlock();
+      if (cmd.findOption("--length-explicit")) opt_oenctype = EET_ExplicitLength;
+      if (cmd.findOption("--length-undefined")) opt_oenctype = EET_UndefinedLength;
+      cmd.endOptionBlock();
+
+      cmd.beginOptionBlock();
+      if (cmd.findOption("--padding-retain")) 
+      {
+      	if (opt_oDataset) app.printError("--padding-retain not allowed with --write-dataset");
+      	opt_opadenc = EPD_noChange;
+      }
+      if (cmd.findOption("--padding-off")) opt_opadenc = EPD_withoutPadding;
+      if (cmd.findOption("--padding-create")) 
+      {
+      	  if (opt_oDataset) app.printError("--padding-create not allowed with --write-dataset");
+          app.checkValue(cmd.getValue(opt_filepad, 0));
+          app.checkValue(cmd.getValue(opt_itempad, 0));
+          opt_opadenc = EPD_withPadding;
+      }
+      cmd.endOptionBlock();
+
+    }
     
-    if (argc < 3) {
-	usage();
-        return 1;
-    }
-
-    // Variables for input parameters
-    const char*	ifname = NULL;
-    OFBool iDataset = OFFalse;
-    OFBool iXferSet = OFFalse;
-    E_TransferSyntax ixfer = EXS_Unknown;
-
-    // Variables for output parameters
-    const char*	ofname = NULL;
-    OFBool oDataset = OFFalse;
-    E_TransferSyntax oxfer = EXS_Unknown;
-    E_GrpLenEncoding oglenc = EGL_recalcGL;
-    E_EncodingType oenctype = EET_ExplicitLength;
-    E_PaddingEncoding opadenc = EPD_noChange;
-    Uint32 padlen = 0;
-    Uint32 subPadlen = 0;
-    OFBool verbosemode = OFFalse;
-    int localDebugLevel = 0;
-
-
-    // interpret calling parameters
-    for (int i=1; i<argc; i++) 
-    {
-	char* arg = argv[i];
-	if (arg[0] == '-' || arg[0] == '+') 
-	{
-	    if (strlen(arg) < 2) 
-	    {
-		cerr << "unknown argument: "<< arg << endl;
-		return 1;
-	    }
-	    switch (arg[1]) {
-	    case 'f':
-		if (arg[0] == '+' && arg[2] == '\0')
-		    iDataset = OFFalse;
-		else if (arg[0] == '-' && arg[2] == '\0')
-		    iDataset = OFTrue;
-		else 
-		{
-		    cerr << "unknown argument: "<< arg << endl;
-		    return 1;
-		}
-		break;
-	    case 't':
-	    {
-		E_TransferSyntax & xfer = (arg[0] == '-' ? ixfer : oxfer);
-		if ((arg[0] != '-' && arg[0] != '+') || 
-		    arg[2] == '\0' || arg[3] != '\0')
-		{
-		    cerr << "unknown option: " << arg << endl;
-		    return 1;
-		}
-		if (arg[0] == '-')
-		    iXferSet = OFTrue;
-		switch (arg[2]) {
-		case '=':
-		    xfer = EXS_Unknown;
-		    break;
-		case 'i':
-		    xfer = EXS_LittleEndianImplicit;
-		    break;
-		case 'e':
-		    xfer = EXS_LittleEndianExplicit;
-		    break;
-		case 'b':
-		    xfer = EXS_BigEndianExplicit;
-		    break;
-		default:
-		    cerr << "unknown option: " << arg << endl;
-		    return 1;
-		}
-	    }
-	    break;
-	    case 'F':
-		if (arg[0] == '+' && arg[2] == '\0')
-		    oDataset = OFFalse;
-		else if (arg[0] == '-' && arg[2] == '\0')
-		    oDataset = OFTrue;
-		else 
-		{
-		    cerr << "unknown argument: "<< arg << endl;
-		    return 1;
-		}
-		break;
-	    case 'e':
-		if (arg[0] == '-' && arg[2] == '\0') 
-		    oenctype = EET_UndefinedLength;
-		else if (arg[0] == '+' && arg[2] == '\0')
-		    oenctype = EET_ExplicitLength;
-		else
-		{
-		    cerr << "wrong parameter option +p n m\n";
-		    return 1;
-		}
-		break;
-	    case 'g':
-		if (arg[0] == '+' && arg[2] == '\0')
-		    oglenc = EGL_withGL;
-		else if (arg[0] == '+' && arg[2] == '=' && arg[3] == '\0')
-		    oglenc = EGL_recalcGL;
-		else if (arg[0] == '-' && arg[2] == '\0')
-		    oglenc = EGL_withoutGL;
-		else 
-		{
-		    cerr << "unknown argument: "<< arg << endl;
-		    return 1;
-		}
-		break;
-	    case 'p':
-		if (arg[0] == '-' && arg[2] == '\0')
-		    opadenc = EPD_withoutPadding;
-		else if (arg[0] == '-' && arg[2] == '=' && arg[3] == '\0')
-		    opadenc = EPD_noChange;
-		else if (arg[0] == '+' && arg[2] == '\0')
-		{
-		    opadenc = EPD_withPadding;
-#if SIZEOF_LONG == 8
-		    if (sscanf(argv[++i], "%d", &padlen) != 1)
-#else
-		    if (sscanf(argv[++i], "%ld", &padlen) != 1)
-#endif
-		    {
-			cerr << "wrong parameter option +p n m\n";
-			return 1;
-		    }
-#if SIZEOF_LONG == 8
-		    if (sscanf(argv[++i], "%d", &subPadlen) != 1)
-#else
-		    if (sscanf(argv[++i], "%ld", &subPadlen) != 1)
-#endif
-		    {
-			cerr << "wrong parameter option +p n m\n";
-			return 1;
-		    }
-		}
-		else
-		{
-		    cerr << "wrong parameter option +p n m\n";
-		    return 1;
-		}
-		break;
-	    case 'u':
-		if (arg[0] == '-' && arg[2] == '\0') {
-		    dcmEnableUnknownVRGeneration = OFFalse;
-		    dcmEnableUnlimitedTextVRGeneration = OFFalse;
-		    dcmEnableVirtualStringVRGeneration = OFFalse;
-		} else if (arg[0] == '+' && arg[2] == '\0') {
-		    dcmEnableUnknownVRGeneration = OFTrue;
-		    dcmEnableUnlimitedTextVRGeneration = OFTrue;
-		    dcmEnableVirtualStringVRGeneration = OFTrue;
-		} else {
-		    cerr << "unknown option: " << arg << endl;
-		    return 1;
-		}
-		break;
-	    case 'h':
-		if (arg[0] == '-' && arg[2] == '\0')
-		{
-		    usage();
-		    return 0;
-		}
-		else
-		{
-		    cerr << "unknown option: " << arg << endl;
-		    return 1;
-		}
-		/* break; */ /* never reached after return */
-	    case 'V':
-		if (arg[0] == '+' && arg[2] == '\0') 
-		    verbosemode = OFTrue;
-		else 
-		{
-		    cerr << "unknown option: " << arg << endl;
-		    return 1;
-		}
-		break;
-	    case 'd':
-		if (sscanf(arg+2, "%d", &localDebugLevel) != 1) {
-		    cerr << "unknown option: " << arg << endl;
-		    return 1;
-		}
-		break;
-	    default:
-		cerr << "unknown option: " << arg << endl;
-		return 1;
-	    }
-	}
-	else if ( ifname == NULL ) 
-	    ifname = arg;
-	else if ( ofname == NULL ) 
-	    ofname = arg;
-	else 
-	{
-	    cerr << "too many arguments: " << arg << endl;
-	    return 1;
-	}
-    }
-
-    // additional checkings
-
-    if (ifname == NULL) 
-    {
-	cerr << "missing input file\n";
-	return 1;
-    }
-
-    if (ofname == NULL) 
-    {
-	cerr << "missing output file\n";
-	return 1;
-    }
-
-    if (!iDataset && iXferSet)
-    {
-	cerr << "option -tx is only allowed with -f\n";
-	return 1;
-    }
-
-    if (oDataset && opadenc)
-    {
-	cerr << "no padding allowed for DICOM datasets\n";
-	return 1;
-    }
-
     /* make sure data dictionary is loaded */
     if (!dcmDataDict.isDictionaryLoaded()) {
 	cerr << "Warning: no data dictionary loaded, "
@@ -338,24 +216,21 @@ int main(int argc, char *argv[])
 	     << DCM_DICT_ENVIRONMENT_VARIABLE << endl;
     }
 	
-    SetDebugLevel(localDebugLevel);
-
     // open inputfile
-    if (verbosemode) 
-	cout << "open input file " << ifname << endl;
+    if (opt_verbose) 
+	cout << "open input file " << opt_ifname << endl;
 
-    DcmFileStream inf(ifname, DCM_ReadMode);
+    DcmFileStream inf(opt_ifname, DCM_ReadMode);
     if ( inf.Fail() ) {
-	cerr << "cannot open file: " << ifname << endl;
+	cerr << "cannot open file: " << opt_ifname << endl;
         return 1;
     }
-
        
     DcmFileFormat *fileformat = NULL;
     DcmDataset * dataset = NULL;
     E_Condition error = EC_Normal;
 
-    if (iDataset)
+    if (opt_iDataset)
     {
 	dataset = new DcmDataset;
 	if (!dataset)
@@ -363,10 +238,10 @@ int main(int argc, char *argv[])
 	    cerr << "memory exhausted\n";
 	    return 1;
 	}
-	if (verbosemode)
-	    cout << "read and interpret DICOM dataset " << ifname << endl;
+	if (opt_verbose)
+	    cout << "read and interpret DICOM dataset " << opt_ifname << endl;
 	dataset->transferInit();
-	error = dataset -> read(inf, ixfer, EGL_noChange);
+	error = dataset -> read(inf, opt_ixfer, EGL_noChange);
 	dataset->transferEnd();
     }
     else
@@ -377,11 +252,11 @@ int main(int argc, char *argv[])
 	    cerr << "memory exhausted\n";
 	    return 1;
 	}
-	if (verbosemode)
+	if (opt_verbose)
 	    cout << "read and interpret DICOM file with metaheader " 
-		 << ifname << endl;
+		 << opt_ifname << endl;
 	fileformat->transferInit();
-	error = fileformat -> read(inf, ixfer, EGL_noChange);
+	error = fileformat -> read(inf, opt_ixfer, EGL_noChange);
 	fileformat->transferEnd();
     }
 
@@ -389,78 +264,78 @@ int main(int argc, char *argv[])
     {
 	cerr << "Error: "  
 	     << dcmErrorConditionToString(error)
-	     << ": reading file: " <<  ifname << endl;
+	     << ": reading file: " <<  opt_ifname << endl;
 	return 1;
     }
 
     if (fileformat)
     {
-	if (oDataset && verbosemode)
+	if (opt_oDataset && opt_verbose)
 	    cout << "get dataset of DICOM file with metaheader\n";
 	dataset = fileformat -> getDataset();
     }
     
-    if (!fileformat && !oDataset)
+    if (!fileformat && !opt_oDataset)
     {
-	if (verbosemode)
+	if (opt_verbose)
 	    cout << "create new Metaheader for dataset\n";
 	fileformat = new DcmFileFormat(dataset);
     }
 
-    if (verbosemode)
-	cout << "create output file " << ofname << endl;
+    if (opt_verbose)
+	cout << "create output file " << opt_ofname << endl;
  
-    DcmFileStream outf( ofname, DCM_WriteMode );
+    DcmFileStream outf( opt_ofname, DCM_WriteMode );
     if ( outf.Fail() ) {
-	cerr << "cannot create file: " << ofname << endl;
+	cerr << "cannot create file: " << opt_ofname << endl;
 	return 1;
     }
 
-    if (oxfer == EXS_Unknown)
+    if (opt_oxfer == EXS_Unknown)
     {
-	if (verbosemode)
-	    cout << "set output transfersyntax to input transfer syntax\n";
-	oxfer = dataset->getOriginalXfer();
+	if (opt_verbose)
+	    cout << "set output transfer syntax to input transfer syntax\n";
+	opt_oxfer = dataset->getOriginalXfer();
     }
 
-   if (verbosemode)
+   if (opt_verbose)
        cout << "Check if new output transfer syntax is possible\n";
 
-   DcmXfer oxferSyn(oxfer);
+   DcmXfer opt_oxferSyn(opt_oxfer);
 
-   dataset->chooseRepresentation(oxfer, NULL);
+   dataset->chooseRepresentation(opt_oxfer, NULL);
 
-   if (dataset->canWriteXfer(oxfer))
+   if (dataset->canWriteXfer(opt_oxfer))
    {
-       if (verbosemode)
-	   cout << "Output transfer syntax " << oxferSyn.getXferName() 
+       if (opt_verbose)
+	   cout << "Output transfer syntax " << opt_oxferSyn.getXferName() 
 		<< " can be written\n";
    }
    else
    {
-       cerr << "No conversion to transfer syntax " << oxferSyn.getXferName()
+       cerr << "No conversion to transfer syntax " << opt_oxferSyn.getXferName()
 	    << " possible!\n";
        return 1;
    }
 
-   if (oDataset)
+   if (opt_oDataset)
    {
-	if (verbosemode) 
+	if (opt_verbose) 
 	    cout << "write converted DICOM dataset\n";
 	
 	dataset->transferInit();
-	error = dataset->write(outf, oxfer, oenctype, oglenc, 
+	error = dataset->write(outf, opt_oxfer, opt_oenctype, opt_oglenc, 
 			       EPD_withoutPadding);
 	dataset->transferEnd();
     }
     else
     {
-	if (verbosemode)
+	if (opt_verbose)
 	    cout << "write converted DICOM file with metaheader\n";
 
 	fileformat->transferInit();
-	error = fileformat->write(outf, oxfer, oenctype, oglenc,
-				  opadenc, padlen, subPadlen);
+	error = fileformat->write(outf, opt_oxfer, opt_oenctype, opt_oglenc,
+				  opt_opadenc, (Uint32) opt_filepad, (Uint32) opt_itempad);
 	fileformat->transferEnd();
     }
 
@@ -468,12 +343,12 @@ int main(int argc, char *argv[])
     {
 	cerr << "Error: "  
 	     << dcmErrorConditionToString(error)
-	     << ": writing file: " <<  ifname << endl;
+	     << ": writing file: " <<  opt_ifname << endl;
 	return 1;
     }
 
-    if (verbosemode) 
-	cout << "conversion successfull\n";
+    if (opt_verbose) 
+	cout << "conversion successful\n";
 
     return 0;
 }
@@ -482,7 +357,10 @@ int main(int argc, char *argv[])
 /*
 ** CVS/RCS Log:
 ** $Log: dcmconv.cc,v $
-** Revision 1.17  1998-01-27 10:51:26  meichel
+** Revision 1.18  1999-03-29 10:14:11  meichel
+** Adapted command line options of dcmdata applications to new scheme.
+**
+** Revision 1.17  1998/01/27 10:51:26  meichel
 ** Removed some unused variables, meaningless const modifiers
 **   and unreached statements.
 **

@@ -9,9 +9,9 @@
 **
 **
 ** Last Update:		$Author: meichel $
-** Update Date:		$Date: 1999-03-22 16:12:16 $
+** Update Date:		$Date: 1999-03-29 10:14:12 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/apps/dcmdump.cc,v $
-** CVS/RCS Revision:	$Revision: 1.18 $
+** CVS/RCS Revision:	$Revision: 1.19 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -28,10 +28,12 @@
 #include "dctk.h"
 #include "dcdebug.h"
 #include "cmdlnarg.h"
-
+#include "ofconapp.h"
 #include "dcuid.h"    /* for dcmtk version name */
 
-static char rcsid[] = "$dcmtk: dcmdump v"
+#define OFFIS_CONSOLE_APPLICATION "dcmdump"
+
+static char rcsid[] = "$dcmtk: " OFFIS_CONSOLE_APPLICATION " v"
   OFFIS_DCMTK_VERSION " " OFFIS_DCMTK_RELEASEDATE " $";
 
 #ifdef HAVE_GUSI_H
@@ -44,7 +46,8 @@ static int dumpFile(ostream & out,
 		    const char* ifname, const OFBool isDataset, 
 		    const E_TransferSyntax xfer,
 		    const OFBool showFullData,
-		    const OFBool loadIntoMemory);
+		    const OFBool loadIntoMemory,
+		    const OFBool stopOnErrors);
 
 // ********************************************
 
@@ -86,62 +89,18 @@ static OFBool addPrintTagName(const char* tagName)
     return OFTrue;
 }
 
-// ********************************************
-
-static void
-usage()
-{
-    cerr << rcsid
-         << "\n\n"
-	"dcmdump: dump dicom file and data set\n"
-	"usage: dcmdump [options] dcmfile-in [options] dcmfile-in\n"
-	"Options are valid if specified before filename.\n"
-	"options are:\n"
-	"  input options:\n"
-	"    DICOM fileformat (Sup. 1) support:\n"
-	"      -f      read file without metaheader\n"
-	"      +f      read file with metaheader (default)\n"
-	"    input transfer syntax (only with -f):\n" 
-	"      -t=     try and discover input transfer syntax (can fail)\n"
-	"      -ti     read with little-endian implicit transfer syntax (default)\n"
-	"      -te     read with little-endian explicit transfer syntax\n"
-	"      -tb     read with big-endian explicit transfer syntax\n"
-	"  output options:\n"
-	"    printing\n"
-	"      +E    print to stderr\n"
-	"      -E    print to stdout (default)\n"
-	"      +L    print long tag values\n"
-	"      -L    do not print long tag values (default)\n"
-	"      +M    load very long tag values (default)\n"
-	"      -M    do not load very long values (e.g. pixel data)\n"
-	"    search Tags\n"
-	"      +P tag    print all encountered instances of \"tag\" (where\n"
-	"                tag is \"xxxx,xxxx\" or a data dictionary name)\n"
-	"                this option can be specified multiple times\n"
-	"                default: the complete file is printed\n"
-	"      -P tag    only print first instance of \"tag\" (where\n"
-	"                tag is \"xxxx,xxxx\" or a data dictionary name)\n"
-	"                this option can be specified multiple times\n"
-	"                default: the complete file is printed\n"
-	"      +p        prepend sequence hierarchy to printed tag instance\n"
-	"                (only meaningful in conjunction with the +P or -P\n"
-	"                options), denoted by: (xxxx,xxxx).(xxxx,xxxx).*\n"
-	"      -p        do not prepend hierarchy to tag instance (default)\n"
-	"  other options:\n"
-	"      -h        print this usage string\n"
-	"      +dn       set debug level to n (n=1..9)\n";
-}
+#define SHORTCOL 3
+#define LONGCOL 20
 
 int main(int argc, char *argv[])
 {
     OFBool loadIntoMemory = OFTrue;
     OFBool showFullData = OFFalse;
     OFBool isDataset = OFFalse;
-    OFBool iXferSet = OFFalse;
-    OFBool perr = OFFalse;
     E_TransferSyntax xfer = EXS_Unknown;
-    int errorCount = 0;
-
+    OFBool stopOnErrors = OFTrue;
+    const char *current = NULL;
+    
 #ifdef HAVE_GUSI_H
     /* needed for Macintosh */
     /* set options for the Metrowerks CodeWarrior SIOUX console */
@@ -154,156 +113,148 @@ int main(int argc, char *argv[])
     GUSISetup(GUSIwithInternetSockets);
 #endif
 
-    int localDebugLevel = 0;
-
     SetDebugLevel(0);
 
-    prepareCmdLineArgs(argc, argv, "dcmdump");
-    
-    if (argc < 2) {
-	usage();
-        return 1;
+  OFConsoleApplication app(OFFIS_CONSOLE_APPLICATION , "Dump DICOM file and data set", rcsid);
+  OFCommandLine cmd;
+  
+  cmd.addGroup("general options:", LONGCOL, SHORTCOL+2);
+   cmd.addOption("--help",                      "-h",        "print this help text and exit");
+   cmd.addOption("--debug",                     "-d",        "debug mode, print debug information");
+ 
+  cmd.addGroup("input options:");
+    cmd.addSubGroup("input file format:", LONGCOL, SHORTCOL);
+      cmd.addOption("--read-file",              "+f",        "read file format or data set (default)");
+      cmd.addOption("--read-dataset",           "-f",        "read data set without file meta information");
+    cmd.addSubGroup("input transfer syntax (only with --read-dataset):", LONGCOL, SHORTCOL);
+     cmd.addOption("--read-xfer-auto",          "-t=",       "use TS recognition (default)");
+     cmd.addOption("--read-xfer-little",        "-te",       "read with explicit VR little endian TS");
+     cmd.addOption("--read-xfer-big",           "-tb",       "read with explicit VR big endian TS");
+     cmd.addOption("--read-xfer-implicit",      "-ti",       "read with implicit VR little endian TS");
+
+  cmd.addGroup("output options:");
+    cmd.addSubGroup("printing:", LONGCOL, SHORTCOL);
+      cmd.addOption("--load-all",               "+M",        "load very long tag values (default)");
+      cmd.addOption("--load-short",             "-M",        "do not load very long values (e.g. pixel data)");
+      cmd.addOption("--print-all",              "+L",        "print long tag values completely");
+      cmd.addOption("--print-short",            "-L",        "print long tag values shortened (default)");
+
+    cmd.addSubGroup("error handling:", LONGCOL, SHORTCOL);
+      cmd.addOption("--stop-on-error",          "-E",        "do not print if file is damaged (default)");
+      cmd.addOption("--ignore-errors",          "+E",        "attempt to print even if file is damaged");
+
+    cmd.addSubGroup("searching:", LONGCOL, SHORTCOL);
+      cmd.addOption("--search",                 "+P",    1,  "[t]ag: \"xxxx,xxxx\" or a data dictionary name", "print the value of tag t\nthis option can be specified multiple times\n(default: the complete file is printed)");
+
+      cmd.addOption("--search-all",             "+s",        "print all instances of searched tags (default)");
+      cmd.addOption("--search-first",           "-s",        "only print first instance of searched tags");
+ 
+      cmd.addOption("--prepend",               "+p",         "prepend sequence hierarchy to printed tag,\ndenoted by: (xxxx,xxxx).(xxxx,xxxx).*\n(only with --search-all or --search-first)");
+      cmd.addOption("--no-prepend",            "-p",         "do not prepend hierarchy to tag (default)");
+
+    /* evaluate command line */                           
+    prepareCmdLineArgs(argc, argv, OFFIS_CONSOLE_APPLICATION);
+    if (app.parseCommandLine(cmd, argc, argv, "dcmfile-in dcmfile-in...", 1, -1, OFCommandLine::ExpandWildcards))
+    {
+      if (cmd.findOption("--help")) app.printUsage(OFFIS_CONSOLE_APPLICATION);
+      if (cmd.findOption("--debug")) SetDebugLevel(5);
+      
+      cmd.beginOptionBlock();
+      if (cmd.findOption("--read-file")) isDataset = OFFalse;
+      if (cmd.findOption("--read-dataset")) isDataset = OFTrue;
+      cmd.endOptionBlock();
+
+      cmd.beginOptionBlock();
+      if (cmd.findOption("--read-xfer-auto"))
+      {
+      	if (! isDataset) app.printError("--read-xfer-auto only allowed with --read-dataset");
+      	xfer = EXS_Unknown;
+      }
+      if (cmd.findOption("--read-xfer-little"))
+      {
+      	if (! isDataset) app.printError("--read-xfer-little only allowed with --read-dataset");
+      	xfer = EXS_LittleEndianExplicit;
+      }
+      if (cmd.findOption("--read-xfer-big"))
+      {
+      	if (! isDataset) app.printError("--read-xfer-big only allowed with --read-dataset");
+      	xfer = EXS_BigEndianExplicit;
+      }
+      if (cmd.findOption("--read-xfer-implicit"))
+      {
+      	if (! isDataset) app.printError("--read-xfer-implicit only allowed with --read-dataset");
+      	xfer = EXS_LittleEndianImplicit;
+      }
+      cmd.endOptionBlock();
+
+      cmd.beginOptionBlock();
+      if (cmd.findOption("--load-all")) loadIntoMemory = OFTrue;
+      if (cmd.findOption("--load-short")) loadIntoMemory = OFFalse;
+      cmd.endOptionBlock();
+
+      cmd.beginOptionBlock();
+      if (cmd.findOption("--print-all")) showFullData = OFTrue;
+      if (cmd.findOption("--print-short")) showFullData = OFFalse;
+      cmd.endOptionBlock();
+
+      cmd.beginOptionBlock();
+      if (cmd.findOption("--stop-on-error")) stopOnErrors = OFTrue;
+      if (cmd.findOption("--ignore-errors")) stopOnErrors = OFFalse;
+      cmd.endOptionBlock();
+
+      if (cmd.findOption("--search", 0, OFCommandLine::FOM_First))
+      {
+        do
+        {
+          app.checkValue(cmd.getValue(current));
+          if (!addPrintTagName(current)) return 1;
+        } while (cmd.findOption("--search", 0, OFCommandLine::FOM_Next));
+      }
+
+      cmd.beginOptionBlock();
+      if (cmd.findOption("--search-all"))
+      {
+      	if (printTagCount==0) app.printError("--search-all only allowed with --search");
+      	printAllInstances = OFTrue;
+      }
+      if (cmd.findOption("--search-first"))
+      {
+      	if (printTagCount==0) app.printError("--search-first only allowed with --search");
+      	printAllInstances = OFFalse;
+      }
+      cmd.endOptionBlock();
+
+      cmd.beginOptionBlock();
+      if (cmd.findOption("--prepend"))
+      {
+      	if (printTagCount==0) app.printError("--prepend only allowed with --search");
+      	printAllInstances = OFTrue;
+      }
+      if (cmd.findOption("--no-prepend"))
+      {
+      	if (printTagCount==0) app.printError("--no-prepend only allowed with --search");
+      	printAllInstances = OFFalse;
+      }
+      cmd.endOptionBlock();
+
     }
 
     /* make sure data dictionary is loaded */
-    if (!dcmDataDict.isDictionaryLoaded()) {
+    if (!dcmDataDict.isDictionaryLoaded())
+    {
 	cerr << "Warning: no data dictionary loaded, "
 	     << "check environment variable: "
 	     << DCM_DICT_ENVIRONMENT_VARIABLE;
     }
-    /* parse cmd line */
-    for (int i=1; i<argc; i++) {
-	char* arg = argv[i];
-	if (arg[0] == '-' || arg[0] == '+') {
-	    if (strlen(arg) < 2) {
-		cerr << "unknown argument: " << arg << endl;
-		usage();
-		return 1;
-	    }
-	    switch (arg[1]) {
-	    case 'P':
-		if (arg[0] == '+' && arg[2] == '\0') 
-		    printAllInstances = OFTrue;
-		else if (arg[0] == '-' && arg[2] == '\0') 
-		    printAllInstances = OFFalse;
-		else {
-		    cerr << "unknown option: " << arg << endl;
-		    return 1;
-		}
-		if (!addPrintTagName(argv[i+1])) {
-		    return 1;
-		}
-		i++; /* eat the elem name argument */
-		break;
-	    case 'p':
-		if (arg[0] == '+' && arg[2] == '\0') 
-		    prependSequenceHierarchy = OFTrue;
-		else if (arg[0] == '-' && arg[2] == '\0') 
-		    prependSequenceHierarchy = OFFalse;
-		else {
-		    cerr << "unknown option: " << arg << endl;
-		    return 1;
-		}
-		break;
-	    case 'f':
-		if (arg[0] == '-' && arg[2] == '\0')
-		    isDataset = OFTrue;
-		else if (arg[0] == '+' && arg[2] == '\0') 
-		    isDataset = OFFalse;
-		else {
-		    cerr << "unknown option: " << arg << endl;
-		    return 1;
-		}
-		break;
-	    case 'E':
-		if (arg[0] == '+' && arg[2] == '\0')
-		    perr = OFTrue;
-		else if (arg[0] == '-' && arg[2] == '\0') 
-		    perr = OFFalse;
-		else {
-		    cerr << "unknown option: " << arg << endl;
-		    return 1;
-		}
-		break;
-	    case 'L':
-		if (arg[0] == '+' && arg[2] == '\0') 
-		    showFullData = OFTrue;
-		else if (arg[0] == '-' && arg[2] == '\0') 
-		    showFullData = OFFalse;
-		else {
-		    cerr << "unknown option: " << arg << endl;
-		    return 1;
-		}
-		break;
-	    case 'M':
-		if (arg[0] == '+' && arg[2] == '\0') 
-		    loadIntoMemory = OFTrue;
-		else if (arg[0] == '-' && arg[2] == '\0') 
-		    loadIntoMemory = OFFalse;
-		else {
-		    cerr << "unknown option: " << arg << endl;
-		    return 1;
-		}
-		break;
-	    case 'h':
-		usage();
-		return 0;
-	    case 't':
-	        if (arg[0] == '-' && arg[2] != '\0' && arg[3] == '\0')
-		{
-		    iXferSet = OFTrue;
-		    switch (arg[2]) {
-		    case '=':
-			xfer = EXS_Unknown;
-			break;
-		    case 'i':
-			xfer = EXS_LittleEndianImplicit;
-			break;
-		    case 'e':
-			xfer = EXS_LittleEndianExplicit;
-			break;
-		    case 'b':
-			xfer = EXS_BigEndianExplicit;
-			break;
-		    default:
-			cerr << "unknown option: " << arg << endl;
-			return 1;
-		    }
-		}
-		else
-		{
-		    cerr << "unknown option: " << arg << endl;
-		    return 1;
-		}
-		break;
-	    case 'd':
-		if (sscanf(arg, "+d%d", &localDebugLevel) != 1) {
-		    cerr << "unknown option: " << arg << endl;
-		    return 1;
-		}
-                SetDebugLevel(localDebugLevel);
-		break;
-	    default:
-		cerr << "unknown option: " << arg << endl;
-		return 1;
-	    }
-	}
-	else
-	{
-	    if (!isDataset && iXferSet)
-	    {
-		cerr << "option -tx is only allowed with -f" << endl;
-		return 1;
-	    }
-	    if (!perr)
-		errorCount += dumpFile(cout, arg, isDataset, xfer, 
-				       showFullData, loadIntoMemory);
-	    else
-		errorCount += dumpFile(cerr, arg, isDataset, xfer, 
-				       showFullData, loadIntoMemory);
-	}
+    
+    int errorCount = 0;
+    int count = cmd.getParamCount();
+    for (int i=1; i<=count; i++) 
+    {
+      cmd.getParam(i, current);
+      errorCount += dumpFile(cout, current, isDataset, xfer, showFullData, loadIntoMemory, stopOnErrors);
     }
-	    
+        
     return errorCount;
 }
 
@@ -340,8 +291,11 @@ static int dumpFile(ostream & out,
 		    const char* ifname, const OFBool isDataset, 
 		    const E_TransferSyntax xfer,
 		    const OFBool showFullData,
-		    const OFBool loadIntoMemory)
+		    const OFBool loadIntoMemory,
+		    const OFBool stopOnErrors)
 {
+    int result = 0;
+    
     DcmFileStream myin(ifname, DCM_ReadMode);
     if ( myin.GetError() != EC_Normal ) {
         cerr << "dcmdump: cannot open file: " << ifname << endl;
@@ -349,45 +303,37 @@ static int dumpFile(ostream & out,
     }
 
     DcmObject * dfile = NULL;
-    if (isDataset)
-	dfile = new DcmDataset();
-    else
-	dfile = new DcmFileFormat();
+    if (isDataset) dfile = new DcmDataset(); else dfile = new DcmFileFormat();
 
     dfile->transferInit();
     dfile->read(myin, xfer, EGL_noChange);
     dfile->transferEnd();
 
-    if (dfile->error() != EC_Normal) {
+    if (dfile->error() != EC_Normal)
+    {
 	cerr << "dcmdump: error: " << dcmErrorConditionToString(dfile->error()) 
 	     << ": reading file: "<< ifname << endl;
-#ifdef DEBUG
-	dfile->print(out, showFullData);
-#endif
-	return 1;
+	
+	result = 1;
+	if (stopOnErrors) return result;
     }
 
-    if (loadIntoMemory)
-	dfile->loadAllDataIntoMemory();
+    if (loadIntoMemory) dfile->loadAllDataIntoMemory();
 
-    if (printTagCount == 0) {
-	/* print everything */
-	dfile->print(out, showFullData);
-    } else {
+    if (printTagCount == 0) dfile->print(out, showFullData);
+    else {
 	/* only print specified tags */
-	for (int i=0; i<printTagCount; i++) {
+	for (int i=0; i<printTagCount; i++)
+	{
 	    int group = 0xffff;
 	    int elem = 0xffff;
 	    DcmTagKey searchKey;
 	    const char* tagName = printTagNames[i];
 	    const DcmDictEntry* dictEntry = printTagDictEntries[i];
 
-	    if (dictEntry != NULL) {
-		/* we have already done a lookup */
-		searchKey = dictEntry->getKey();
-	    } else if (sscanf( tagName, "%x,%x", &group, &elem ) == 2 ) {
-		searchKey.set(group, elem);
-	    } else {
+	    if (dictEntry != NULL) searchKey = dictEntry->getKey();
+	    else if (sscanf( tagName, "%x,%x", &group, &elem ) == 2 ) searchKey.set(group, elem);
+            else {
 		cerr << "Internal ERROR in File " << __FILE__ << ", Line "
 		     << __LINE__ << endl 
 		     << "-- Named tag inconsistency\n";
@@ -395,34 +341,30 @@ static int dumpFile(ostream & out,
 	    }
 
 	    DcmStack stack;
-	    if (dfile->search(searchKey, stack, 
-			      ESM_fromHere, OFTrue) == EC_Normal) {
-
+	    if (dfile->search(searchKey, stack, ESM_fromHere, OFTrue) == EC_Normal)
+	    {
 		printResult(out, stack, showFullData);
-
-		if (printAllInstances) {
-		    while (dfile->search(searchKey, stack, 
-					 ESM_afterStackTop, OFTrue) 
-			   == EC_Normal) {
-			printResult(out, stack, showFullData);
-		    }
+		if (printAllInstances)
+		{
+		    while (dfile->search(searchKey, stack, ESM_afterStackTop, OFTrue)  == EC_Normal) 
+		      printResult(out, stack, showFullData);
 		}
 	    }
-
 	}
-
     }
 
     delete dfile;
-
-    return 0;
+    return result;
 }
 
 
 /*
 ** CVS/RCS Log:
 ** $Log: dcmdump.cc,v $
-** Revision 1.18  1999-03-22 16:12:16  meichel
+** Revision 1.19  1999-03-29 10:14:12  meichel
+** Adapted command line options of dcmdata applications to new scheme.
+**
+** Revision 1.18  1999/03/22 16:12:16  meichel
 ** Added -d <debuglevel> flag to dcmdump.
 **
 ** Revision 1.17  1997/07/21 08:04:24  andreas

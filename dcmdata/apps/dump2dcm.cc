@@ -56,9 +56,9 @@
 **
 **
 ** Last Update:		$Author: meichel $
-** Update Date:		$Date: 1999-03-22 16:16:01 $
+** Update Date:		$Date: 1999-03-29 10:14:15 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/apps/dump2dcm.cc,v $
-** CVS/RCS Revision:	$Revision: 1.21 $
+** CVS/RCS Revision:	$Revision: 1.22 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -90,10 +90,16 @@
 #include "dctk.h"
 #include "dcdebug.h"
 #include "cmdlnarg.h"
+#include "ofconapp.h"
 #include "dcuid.h"    /* for dcmtk version name */
 
-static char rcsid[] = "$dcmtk: dump2dcm v"
+#define OFFIS_CONSOLE_APPLICATION "dump2dcm"
+
+static char rcsid[] = "$dcmtk: " OFFIS_CONSOLE_APPLICATION " v"
   OFFIS_DCMTK_VERSION " " OFFIS_DCMTK_RELEASEDATE " $";
+
+#define SHORTCOL 3
+#define LONGCOL 21
 
 // Maximum Line Size
 
@@ -109,45 +115,6 @@ const unsigned int DCM_DumpMaxLineSize = 4096;
 #define DCM_DumpOpenDescription '('
 #define DCM_DumpOpenFile '<'
 #define DCM_DumpCloseFile '>'
-
-
-static void
-usage()
-{
-    cerr << rcsid << "\n\n"
-	"dump2dcm: convert dicom dumpfile into dicom-fileformat or -dataset\n"
-	"usage: dump2dcm [options] dumpfile-in dcmfile-out\n"
-	"options are:\n"
-	"  input options: \n"
-	"      +ln     maximum line length n (default 4096)\n"
-	"  output options:\n"
-	"    DICOM fileformat (Sup. 1) support:\n"
-	"      -F      write file without metaheader\n"
-	"      +F      write file with metaheader (default)\n"
-	"    output transfer syntax:\n"
-	"      +ti     write with little-endian implicit transfer syntax\n"
-	"      +te     write with little-endian explicit transfer syntax(default)\n"
-	"      +tb     write with big-endian explicit transfer syntax\n"
-	"    group length encoding:\n" 
-	"      +g      write with group lengths\n"
-	"      +g=     recalculate group lengths (default)\n"
-	"      -g      write without group lengths\n"
-	"    length encoding in sequences and items:\n"
-	"      +e      write with explicit lengths (default)\n"
-	"      -e      write with undefined lengths\n"
-	"    padding (only applicable for DICOM files with metaheader)\n"
-	"      -p      no padding (default)\n"
-	"      +p n m  pad file x*n bytes and items y*m bytes\n"
-        "    unknown VR\n"
-	"      -u      disable generation of new VRs (UN/UT/VS)\n"
-        "      +u      enable generation of new VRs (UN/UT/VS) (default)\n"
-	"  other options:\n"
-	"      -h      print this usage string\n"
-	"      +V      verbose mode, print actions\n"
-	"      +dn     set debug level to n (n=1..9)\n";
-}
-
-
 
 static void
 stripWhitespace(char* s)
@@ -646,7 +613,7 @@ readDumpFile(DcmMetaInfo * metaheader, DcmDataset * dataset,
 	// parse tag an the line
 	if (!parseTag(parse, tagkey))
 	{
-	    cerr << "dump2dcm: "<< ifname << ": "
+	    cerr << OFFIS_CONSOLE_APPLICATION ": "<< ifname << ": "
 		 << "no Tag found (line " 
 		 << lineNumber << ")"<< endl;
 	    errorOnThisLine = OFTrue;
@@ -659,7 +626,7 @@ readDumpFile(DcmMetaInfo * metaheader, DcmDataset * dataset,
 	// parse optional value
 	if (!errorOnThisLine && !parseValue(parse, value))
 	{
-	    cerr << "dump2dcm: "<< ifname << ": "
+	    cerr << OFFIS_CONSOLE_APPLICATION ": "<< ifname << ": "
 		 << "incorrect value specification (line " 
 		 << lineNumber << ")"<< endl;
 	    errorOnThisLine = OFTrue;
@@ -686,7 +653,7 @@ readDumpFile(DcmMetaInfo * metaheader, DcmDataset * dataset,
 	    if (l_error != EC_Normal)
 	    {
 		errorOnThisLine = OFTrue;
-		cerr << "dump2dcm: " << ifname << ": Error in creating Element: "
+		cerr << OFFIS_CONSOLE_APPLICATION ": " << ifname << ": Error in creating Element: "
 		     << dcmErrorConditionToString(l_error) << " (line "
 		     << lineNumber << ")"<< endl;
 	    }
@@ -701,14 +668,14 @@ readDumpFile(DcmMetaInfo * metaheader, DcmDataset * dataset,
     // test blocking structure
     if (metaheader && metaheaderStack.card() != 1)
     {
-	cerr << "dump2dcm: " << ifname << ": Block Error in metaheader"
+	cerr << OFFIS_CONSOLE_APPLICATION ": " << ifname << ": Block Error in metaheader"
 	     << endl;
 	errorsEncountered++;
     }
 
     if (datasetStack.card() != 1)
     {
-	cerr << "dump2dcm: " << ifname << ": Block Error in dataset"
+	cerr << OFFIS_CONSOLE_APPLICATION ": " << ifname << ": Block Error in dataset"
 	     << endl;
 	errorsEncountered++;
     }
@@ -733,207 +700,129 @@ int main(int argc, char *argv[])
     GUSISetup(GUSIwithInternetSockets);
 #endif
 
-    SetDebugLevel(0);
+  OFConsoleApplication app(OFFIS_CONSOLE_APPLICATION , "Convert ASCII dump to DICOM file", rcsid);
+  OFCommandLine cmd;
+  
+  cmd.addGroup("general options:", LONGCOL, SHORTCOL+2);
+   cmd.addOption("--help",                      "-h",        "print this help text and exit");
+   cmd.addOption("--verbose",                   "-v",        "verbose mode, print processing details");
+   cmd.addOption("--debug",                     "-d",        "debug mode, print debug information");
+ 
+  cmd.addGroup("input options:", LONGCOL, SHORTCOL+2);
+    cmd.addOption("--line",         "+l",    1,  "[m]ax-length: integer", "maximum line length m (default 4096)");
 
-    prepareCmdLineArgs(argc, argv, "dump2dcm");
-        
-    if (argc < 3) {
-	usage();
-        return 1;
-    }
+  cmd.addGroup("output options:");
+    cmd.addSubGroup("output file format:", LONGCOL, SHORTCOL);
+      cmd.addOption("--write-file",             "+F",        "write file format (default)");
+      cmd.addOption("--write-dataset",          "-F",        "write data set without file meta information");
+    cmd.addSubGroup("output transfer syntax:", LONGCOL, SHORTCOL);
+      cmd.addOption("--write-xfer-same",        "+t=",       "write with same TS as input (default)");
+      cmd.addOption("--write-xfer-little",      "+te",       "write with explicit VR little endian TS");
+      cmd.addOption("--write-xfer-big",         "+tb",       "write with explicit VR big endian TS");
+      cmd.addOption("--write-xfer-implicit",    "+ti",       "write with implicit VR little endian TS");
+    cmd.addSubGroup("post-1993 value representations:", LONGCOL, SHORTCOL);
+      cmd.addOption("--enable-new-vr",          "+u",        "enable support for new VRs (UN/UT/VS) (default)");
+      cmd.addOption("--disable-new-vr",         "-u",        "disable support for new VRs, convert to OB");
+    cmd.addSubGroup("group length encoding:", LONGCOL, SHORTCOL);
+      cmd.addOption("--group-length-recalc",    "+g=",       "recalculate group lengths if present (default)");
+      cmd.addOption("--group-length-create",    "+g",        "always write with group length elements");
+      cmd.addOption("--group-length-remove",    "-g",        "always write without group length elements");
+    cmd.addSubGroup("length encoding in sequences and items:", LONGCOL, SHORTCOL);
+      cmd.addOption("--length-explicit",        "+e",        "write with explicit lengths (default)");
+      cmd.addOption("--length-undefined",       "-e",        "write with undefined lengths");
+    cmd.addSubGroup("data set trailing padding (not with --write-dataset):", LONGCOL, SHORTCOL);
+      cmd.addOption("--padding-retain",         "-p=",       "do not change padding\n(default if not --write-dataset)");
+      cmd.addOption("--padding-off",            "-p",        "no padding (implicit if --write-dataset)");
+      cmd.addOption("--padding-create",         "+p",    2,  "[f]ile-pad [i]tem-pad: integer", "align file on multiple of f bytes\nand items on multiple of i bytes");
+
 
     const char*	ifname = NULL;
     const char*	ofname = NULL;
-    DcmFileFormat * fileformat = NULL;
-    DcmMetaInfo * metaheader = NULL;
-    DcmDataset * dataset = NULL;
     E_TransferSyntax oxfer = EXS_LittleEndianExplicit;
     E_EncodingType oenctype = EET_ExplicitLength;
     E_GrpLenEncoding oglenc = EGL_recalcGL;
     E_PaddingEncoding opadenc = EPD_withoutPadding;
-    Uint32 padlen = 0;
-    Uint32 subPadlen = 0;
+    OFCmdUnsignedInt opt_filepad = 0;
+    OFCmdUnsignedInt opt_itempad = 0;
+    OFCmdUnsignedInt opt_linelength = DCM_DumpMaxLineSize;
     OFBool verbosemode = OFFalse;
     OFBool createFileFormat = OFTrue;
-    int localDebugLevel = 0;
-    unsigned long maxLineLength = DCM_DumpMaxLineSize;
 
-    for (int i=1; i<argc; i++) {
-	char* arg = argv[i];
-	if (arg[0] == '-' || arg[0] == '+') {
-	    if (strlen(arg) < 2) {
-		cerr << "unknown argument: " << arg << endl;
-		return 1;
-	    }
-	    switch (arg[1]) {
-	    case 'F':
-		if (arg[0] == '-' && arg[2] =='\0') 
-		    createFileFormat = OFFalse;
-		else if (arg[0] == '+' && arg[2] == '\0')
-		    createFileFormat = OFTrue;
-		else
-		{
-		    cerr << "unknown argument: "<< arg << endl;
-		    return 1;
-		}
-		break;
-	    case 't':
-	    {
-		if (arg[0] != '+' || arg[2] == '\0' || arg[3] != '\0')
-		{
-		    cerr << "unknown option: " << arg << endl;
-		    return 1;
-		}
-		switch (arg[2]) {
-		case 'i':
-		    oxfer = EXS_LittleEndianImplicit;
-		    break;
-		case 'e':
-		    oxfer = EXS_LittleEndianExplicit;
-		    break;
-		case 'b':
-		    oxfer = EXS_BigEndianExplicit;
-		    break;
-		default:
-		    cerr << "unknown option: " << arg << endl;
-		    return 1;
-		}
-	    }
-	    break;
-	    case 'e':
-		if (arg[0] == '-' && arg[2] == '\0') 
-		    oenctype = EET_UndefinedLength;
-		else if (arg[0] == '+' && arg[2] == '\0')
-		    oenctype = EET_ExplicitLength;
-		else
-		{
-		    cerr << "wrong parameter option +p n m\n";
-		    return 1;
-		}
-		break;
-	    case 'g':
-		if (arg[0] == '+' && arg[2] == '\0')
-		    oglenc = EGL_withGL;
-		else if (arg[0] == '+' && arg[2] == '=' && arg[3] == '\0')
-		    oglenc = EGL_recalcGL;
-		else if (arg[0] == '-' && arg[2] == '\0')
-		    oglenc = EGL_withoutGL;
-		else 
-		{
-		    cerr << "unknown argument: "<< arg << endl;
-		    return 1;
-		}
-		break;
-	    case 'p':
-		if (arg[0] == '-' && arg[2] == '\0')
-		    opadenc = EPD_withoutPadding;
-		else if (arg[0] == '+' && arg[2] == '\0')
-		{
-		    opadenc = EPD_withPadding;
-#if SIZEOF_LONG == 8
-		    if (sscanf(argv[++i], "%d", &padlen) != 1)
-#else
-		    if (sscanf(argv[++i], "%ld", &padlen) != 1)
-#endif
-		    {
-			cerr << "wrong parameter option +p n m\n";
-			return 1;
-		    }
-#if SIZEOF_LONG == 8
-		    if (sscanf(argv[++i], "%d", &subPadlen) != 1)
-#else
-		    if (sscanf(argv[++i], "%ld", &subPadlen) != 1)
-#endif
-		    {
-			cerr << "wrong parameter option +p n m\n";
-			return 1;
-		    }
-		}
-		else
-		{
-		    cerr << "wrong parameter option +p n m\n";
-		    return 1;
-		}
-		break;
-	    case 'u':
-		if (arg[0] == '-' && arg[2] == '\0') {
-		    dcmEnableUnknownVRGeneration = OFFalse;
-		    dcmEnableUnlimitedTextVRGeneration = OFFalse;
-		    dcmEnableVirtualStringVRGeneration = OFFalse;
-		} else if (arg[0] == '+' && arg[2] == '\0') {
-		    dcmEnableUnknownVRGeneration = OFTrue;
-		    dcmEnableUnlimitedTextVRGeneration = OFTrue;
-		    dcmEnableVirtualStringVRGeneration = OFTrue;
-		} else {
-		    cerr << "unknown option: " << arg << endl;
-		    return 1;
-		}
-		break;
-	    case 'h':
-		if (arg[0] == '-' && arg[2] == '\0')
-		{
-		    usage();
-		    return 0;
-		}
-		else
-		{
-		    cerr << "unknown option: " << arg << endl;
-		    return 1;
-		}
-		/* break; */ /* never reached after return */
-	    case 'V':
-		if (arg[0] == '+' && arg[2] == '\0') 
-		    verbosemode = OFTrue;
-		else 
-		{
-		    cerr << "unknown option: " << arg << endl;
-		    return 1;
-		}
-		break;
-	    case 'd':
-		if (sscanf(arg+2, "%d", &localDebugLevel) != 1) {
-		    cerr << "unknown option: " << arg << endl;
-		    return 1;
-		}
-		break;
-	    case 'l':
-		if (sscanf(arg+2, "%lu", &maxLineLength) != 1) 
-		{
-		    cerr << "unknown option: " << arg << endl;
-		    return 1;
-		}
-		break;
-	    default:
-		cerr << "unknown option: " << arg << endl;
-		return 1;
-	    }
-	}
-	else if ( ifname == NULL ) 
-	    ifname = arg;
-	else if ( ofname == NULL ) 
-	    ofname = arg;
-	else 
-	{
-	    cerr << "too many arguments: " << arg << endl;
-	    return 1;
-	}
-    }
-
-    if (!createFileFormat && opadenc == EPD_withPadding)
+    /* evaluate command line */                           
+    prepareCmdLineArgs(argc, argv, OFFIS_CONSOLE_APPLICATION);
+    if (app.parseCommandLine(cmd, argc, argv, "dumpfile-in dcmfile-out", 2, 2, OFCommandLine::ExpandWildcards))
     {
-	cerr << "Padding is not allowed in datasets\n";
-	return 1;
+      cmd.getParam(1, ifname);
+      cmd.getParam(2, ofname);
+
+      if (cmd.findOption("--help")) app.printUsage(OFFIS_CONSOLE_APPLICATION);
+      if (cmd.findOption("--verbose")) verbosemode=OFTrue;
+      if (cmd.findOption("--debug")) SetDebugLevel(5);
+      
+      if (cmd.findOption("--line")) 
+      {
+          app.checkValue(cmd.getValue(opt_linelength, 80));
+      }
+
+      cmd.beginOptionBlock();
+      if (cmd.findOption("--write-file")) createFileFormat = OFTrue;
+      if (cmd.findOption("--write-dataset")) createFileFormat = OFFalse;
+      cmd.endOptionBlock();
+
+      cmd.beginOptionBlock();
+      if (cmd.findOption("--write-xfer-same")) oxfer = EXS_Unknown;
+      if (cmd.findOption("--write-xfer-little")) oxfer = EXS_LittleEndianExplicit;
+      if (cmd.findOption("--write-xfer-big")) oxfer = EXS_BigEndianExplicit;
+      if (cmd.findOption("--write-xfer-implicit")) oxfer = EXS_LittleEndianImplicit;
+      cmd.endOptionBlock();
+
+      cmd.beginOptionBlock();
+      if (cmd.findOption("--enable-new-vr")) 
+      {
+        dcmEnableUnknownVRGeneration = OFTrue;
+        dcmEnableUnlimitedTextVRGeneration = OFTrue;
+        dcmEnableVirtualStringVRGeneration = OFTrue;
+      }
+      if (cmd.findOption("--disable-new-vr"))
+      {
+        dcmEnableUnknownVRGeneration = OFFalse;
+        dcmEnableUnlimitedTextVRGeneration = OFFalse;
+        dcmEnableVirtualStringVRGeneration = OFFalse;
+      }
+      cmd.endOptionBlock();
+
+      cmd.beginOptionBlock();
+      if (cmd.findOption("--group-length-recalc")) oglenc = EGL_recalcGL;
+      if (cmd.findOption("--group-length-create")) oglenc = EGL_withGL;
+      if (cmd.findOption("--group-length-remove")) oglenc = EGL_withoutGL;
+      cmd.endOptionBlock();
+
+      cmd.beginOptionBlock();
+      if (cmd.findOption("--length-explicit")) oenctype = EET_ExplicitLength;
+      if (cmd.findOption("--length-undefined")) oenctype = EET_UndefinedLength;
+      cmd.endOptionBlock();
+
+      cmd.beginOptionBlock();
+      if (cmd.findOption("--padding-retain")) 
+      {
+      	if (!createFileFormat) app.printError("--padding-retain not allowed with --write-dataset");
+      	opadenc = EPD_noChange;
+      }
+      if (cmd.findOption("--padding-off")) opadenc = EPD_withoutPadding;
+      if (cmd.findOption("--padding-create")) 
+      {
+      	  if (!createFileFormat) app.printError("--padding-create not allowed with --write-dataset");
+          app.checkValue(cmd.getValue(opt_filepad, 0));
+          app.checkValue(cmd.getValue(opt_itempad, 0));
+          opadenc = EPD_withPadding;
+      }
+      cmd.endOptionBlock();
+
     }
 
-    if ( ifname == NULL ) {
-	cerr << "missing input file name\n";
-	return 1;
-    }
-
-    if ( ofname == NULL ) {
-	cerr << "missing output file name\n";
-	return 1;
-    }
+    DcmFileFormat * fileformat = NULL;
+    DcmMetaInfo * metaheader = NULL;
+    DcmDataset * dataset = NULL;
 
     /* make sure data dictionary is loaded */
     if (!dcmDataDict.isDictionaryLoaded()) {
@@ -942,10 +831,8 @@ int main(int argc, char *argv[])
 	     << DCM_DICT_ENVIRONMENT_VARIABLE << endl;
     }
     
-    SetDebugLevel(localDebugLevel);
-
     if (verbosemode) 
-	cout << "reading dumfile: " << ifname << endl;
+	cout << "reading dump file: " << ifname << endl;
 
 
     // create dicom metaheader and dataset
@@ -981,12 +868,12 @@ int main(int argc, char *argv[])
     FILE * dumpfile = fopen(ifname, "r");
     if (!dumpfile)
     {
-	cerr << "inputfile does not exist: " << ifname << endl;
+	cerr << "input file does not exist: " << ifname << endl;
 	return 1;
     }
 
     // read dump file into metaheader and dataset
-    if (readDumpFile(metaheader, dataset, dumpfile, ifname, maxLineLength))
+    if (readDumpFile(metaheader, dataset, dumpfile, ifname, (unsigned long)opt_linelength))
     {
 	// write into file format or dataset
 	if (verbosemode)
@@ -1005,7 +892,7 @@ int main(int argc, char *argv[])
 	{
 	    fileformat -> transferInit();
 	    l_error = fileformat -> write(oStream, oxfer, oenctype, oglenc, 
-					  opadenc, padlen, subPadlen);
+					  opadenc, (Uint32) opt_filepad, (Uint32) opt_itempad);
 	}
 	else if (dataset)
 	{
@@ -1014,11 +901,11 @@ int main(int argc, char *argv[])
 	}
 
 	if (l_error == EC_Normal)
-	    cout << "Dump successfully converted." << endl;
+	    cout << "dump successfully converted." << endl;
 	else
 	{
 	    cerr << "Error: " << dcmErrorConditionToString(l_error) 
-		 << ": reading file: "  << ifname << endl;
+		 << ": writing file: "  << ofname << endl;
 	    return 1;
 	}
     }
@@ -1031,7 +918,10 @@ int main(int argc, char *argv[])
 /*
 ** CVS/RCS Log:
 ** $Log: dump2dcm.cc,v $
-** Revision 1.21  1999-03-22 16:16:01  meichel
+** Revision 1.22  1999-03-29 10:14:15  meichel
+** Adapted command line options of dcmdata applications to new scheme.
+**
+** Revision 1.21  1999/03/22 16:16:01  meichel
 ** dump2dcm now allows to include the contents of binary files
 **   as OB/OW values while converting a dump to a DICOM file.
 **
