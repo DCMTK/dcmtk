@@ -20,12 +20,12 @@
  *  Author:  Andreas Barth
  *
  *  Purpose:
- *	    Defines a template list class with interfaces similar to the C++ Standard
+ *          Defines a template list class with interfaces similar to the C++ Standard
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-03-08 16:36:02 $
+ *  Update Date:      $Date: 2000-10-10 12:01:21 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/include/Attic/oflist.h,v $
- *  CVS/RCS Revision: $Revision: 1.10 $
+ *  CVS/RCS Revision: $Revision: 1.11 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -36,12 +36,6 @@
 #define OFLIST_H
 
 // Usage (only non standard): 
-//   OFList<T>          defines a list containing elements of type T
-//   OFListIterator(T)  defines an iterator to an element of type T in an List
-//                      No default constructor is defined. You can only use
-//                      a copy constructor for the definition of an iterator.
-//                      For compatibility reasons with the C++ Standard 
-//                      iterator classes, do not use OFIterator<T>!
 //   OFListInsert(InputIterator_type, T_type, c, pos, first, last)    
 //                      Inserts the elements of type T in 
 //                      range [first, last) into list c, 
@@ -83,6 +77,9 @@
 // OFListLinkBase, OFListLink and OFListBase are classes for internal 
 // use only and shall not be used.
 
+/* non-template double linked list. Base class fo OFListLink.
+ * Implicitly used by OFList, should not be called by users.
+ */
 struct OFListLinkBase
 {
     OFListLinkBase * next;
@@ -97,6 +94,9 @@ struct OFListLinkBase
 };
 
 
+/* non-template list. Base class fo OFList.
+ * Implicitly used by OFList, should not be called by users.
+ */
 class OFListBase
 {
 protected:
@@ -113,7 +113,7 @@ public:
     OFListLinkBase * base_insert(OFListLinkBase * pos, OFListLinkBase * newElem);
     OFListLinkBase * base_erase(OFListLinkBase * pos);
     void base_splice(OFListLinkBase * pos, 
-		OFListLinkBase * begin, OFListLinkBase * end);
+                OFListLinkBase * begin, OFListLinkBase * end);
     void base_clear();
 
   private:
@@ -123,11 +123,14 @@ public:
 
 
 
+/* template class for double linked list entries.
+ * Implicitly used by OFList, should not be called by users.
+ */
 template <class T>
 struct OFListLink : public OFListLinkBase
 {
     T info;
-    OFListLink(const T & i) : OFListLinkBase(), info(i)  { }
+    OFListLink(const T& i) : OFListLinkBase(), info(i)  { }
     virtual ~OFListLink() {}
   private:
     /* undefined */ OFListLink(const OFListLink<T>&);
@@ -139,216 +142,311 @@ struct OFListLink : public OFListLinkBase
 
 template <class T> class OFList;
 
-// class OFIterator
-// An iterator is  a generalization of a pointer and allows a C++ program to 
-// work with different containers (e.g. a list).
 
+/** iterator class for OFList. An iterator is a generalization of a pointer 
+ *  and allows a C++ program to work with different containers independently 
+ *  from their internal structure. Instances of this template class should 
+ *  be declared as OFListIterator(T) instead of OFListIterator<T>.  This 
+ *  allows to re-map OFList to the STL list class if available.
+ */
 template <class T>
 class OFIterator
 {
     friend class OFList<T>;
 protected:
+
+    /// list node referenced by the iterator
     OFListLinkBase * node;
+
+    /** constructor.
+     *  @param x list node referenced by the iterator
+     */
     OFIterator(OFListLinkBase * x) : node(x) { }
 public:
-    // constructors
+
+    /** default constructor. Creates an iterator referencing nothing. 
+     *  In general, iterators should always be copy-constructed
+     *  in user code.
+     */
     OFIterator() : node(NULL)  { }
     
-    // Creates a copy of another iterator
-    OFIterator(const OFIterator<T> & x) : node(x.node) { };
+    /// copy constructor
+    OFIterator(const OFIterator<T>& x) : node(x.node) { };
 
-    // Assign an Iterator
-    OFIterator<T> & operator=(const OFIterator<T> & x) 
+    /// copy assignment operator
+    OFIterator<T>& operator=(const OFIterator<T>& x) 
     { 
-	node = x.node; 
-	return *this; 
+        node = x.node; 
+        return *this; 
     }
 
-    // The following operations are only defined if the iterator is
-    // valid. An iterator is invalid if the element in the container
-    // the iterator is pointed to was deleted.
+    /** comparison of two iterators.  The iterators are equal if and only if
+     *  they reference the same element, independent from the element values.
+     *  @param x iterator to be compared
+     *  @return OFTrue if equal, OFFalse otherwise.
+     */
+    OFBool operator==(const OFIterator<T>& x) const { return node == x.node; }
 
-    // Compares two iterators. Two iterators are equal if
-    // they point to the same list element
-    OFBool operator==(const OFIterator<T> & x) const { return node == x.node; }
-    OFBool operator!=(const OFIterator<T> & x) const { return node != x.node; }
+    /** comparison of two iterators.  The iterators are equal if and only if
+     *  they reference the same element, independent from the element values.
+     *  @param x iterator to be compared
+     *  @return OFTrue if not equal, OFFalse otherwise.
+     */
+    OFBool operator!=(const OFIterator<T>& x) const { return node != x.node; }
     
-    // Returns the value of the list element the iterator is pointed to.
-    T & operator*() const 
+    /** dereferences the iterator. May only be called if iterator references
+     *  a valid element of a list.
+     *  @return reference to the element "pointed to" by the iterator.
+     */
+    T& operator*() const 
     { 
-	assert(!node->dummy);
-	return ((OFListLink<T> *)node)->info;
+        assert(!node->dummy);
+        return ((OFListLink<T> *)node)->info;
     }
 
-    // These operators point to the next resp. previous element in the list.
-    // After the end of the list the first element follows.
-    // Caution: The pre-operators return references while the
-    // post-operators return the value!
-    OFIterator<T> & operator++()
+    /** moves the iterator to the next element of the list.
+     *  The list is circular: the first element follows after the end of the list.
+     *  May only be called if iterator references a valid element or the end of a list.
+     *  @return reference to the incremented iterator.
+     */
+    OFIterator<T>& operator++()
     {
-	node = node->next;
-	return *this;
+        node = node->next;
+        return *this;
     }
-
+    
+    /** moves the iterator to the next element of the list.
+     *  The list is circular: the first element follows after the end of the list.
+     *  May only be called if iterator references a valid element or the end of a list.
+     *  This is the post-increment operator.
+     *  @return previous iterator state, by value
+     */
     OFIterator<T> operator++(int)
     {
-	OFIterator<T> tmp(*this);
-	node = node->next;
-	return tmp;
+        OFIterator<T> tmp(*this);
+        node = node->next;
+        return tmp;
     }
 
-    OFIterator<T> & operator--()
+    /** moves the iterator to the previous element of the list.
+     *  The list is circular: the end of the list follows before the first element.
+     *  May only be called if iterator references a valid element or the end of a list.
+     *  @return reference to the decremented iterator.
+     */
+    OFIterator<T>& operator--()
     {
-	node = node->prev;
-	return *this;
+        node = node->prev;
+        return *this;
     }
 
+    /** moves the iterator to the previous element of the list.
+     *  The list is circular: the end of the list follows before the first element.
+     *  May only be called if iterator references a valid element or the end of a list.
+     *  This is the post-decremented operator.
+     *  @return previous iterator state, by value
+     */
     OFIterator<T> operator--(int)
     {
-	OFIterator<T> tmp(*this);
-	node = node->prev;
-	return tmp;
+        OFIterator<T> tmp(*this);
+        node = node->prev;
+        return tmp;
     }
 };
 
 
+/** double linked list template class. The interface is a subset of the STL 
+ *  list class. 
+ */
 template <class T>
 class OFList : private OFListBase
 {
 public:
-    // Insert a element x  before position.
-    // Returns an iterator pointing to the new element in the list.
-    OFIterator<T> insert(OFIterator<T> position, const T & x)
-	{
-	    return OFIterator<T>(OFListBase::base_insert(position.node, 
-						    new OFListLink<T>(x)));
-	}
-private:
-    void copy(const OFList<T> & oldList) 
+    /** inserts an element into the list before the given position.
+     *  @param position iterator to position before which the element is inserted
+     *  @param x value from which the new list entry is copy-constructed
+     *  @return iterator pointing to the new element in the list
+     */
+    OFIterator<T> insert(OFIterator<T> position, const T& x)
     {
-	OFIterator<T> vfirst(oldList.begin());
-	OFIterator<T> vend(oldList.end());
-	OFIterator<T> vpos(this->end());
-	while (vfirst != vend)
-	{
-	    insert(vpos, *vfirst);
-	    ++vfirst;
-	}
+      return OFIterator<T>(OFListBase::base_insert(position.node, new OFListLink<T>(x)));
     }
 
+private:
+
+    /** inserts a copy of the given list into the current list.
+     *  @param oldList list to be copied
+     */
+    void copy(const OFList<T>& oldList) 
+    {
+        OFIterator<T> vfirst(oldList.begin());
+        OFIterator<T> vend(oldList.end());
+        OFIterator<T> vpos(this->end());
+        while (vfirst != vend)
+        {
+            insert(vpos, *vfirst);
+            ++vfirst;
+        }
+    }
+
+    /** counts the elements in the list and adjusts the listSize
+     *  member variable.
+     */
     void recalcListSize() { OFListBase::base_recalcListSize(); }
+
 public:
+ 
+    /// default constructor
     OFList() : OFListBase() { }
 
-    // Copy Constructor
-    OFList(const OFList<T> & oldList):OFListBase()
+    /// copy constructor
+    OFList(const OFList<T>& oldList):OFListBase()
     {
-	copy(oldList);
+        copy(oldList);
     }
 
-    // Returns an iterator referring to the first element in the list
-    // If the list is empty then begin() == end().
+    /** returns an iterator referencing the first element in the list.
+     *  If the list is empty, then begin() == end().
+     *  @return iterator to first element of list, by value.
+     */
     OFIterator<T> begin() const { return OFIterator<T>(OFListBase::base_begin()); }
 
-    // Returns an iterator which points to the past-to-end value for the
-    // list.
+    /** returns an iterator which points to the past-to-end element
+     *  of the list.
+     *  @return iterator to past-to-end, by value.
+     */
     OFIterator<T> end() const { return OFIterator<T>(OFListBase::base_end()); }
     
-    // Returns OFTrue if the list is empty.
+    /** returns true if list is empty.
+     *  @return OFTrue if list is empty, OFFalse otherwise.
+     */
     OFBool empty() const { return OFListBase::base_empty(); }
     
-    // Returns the number of elements in the list.
+    /** returns number of elements in the list.
+     *  @return number of elements
+     */
     size_t size() const { return OFListBase::base_size(); }
 
-    // Returns the first element of the list. If the list is empty
-    // an assertion is raised.
-    T & front() { return *begin(); }
+    /** returns a reference to the first element in the list.
+     *  May only be called if list is non-empty.
+     *  @return first element in list, by reference
+     */
+    T& front() { return *begin(); }
 
-    // Returns the last element of the list. If the list is empty
-    // an assertion is raised
-    T & back() { return *(--end()); }
+    /** returns a reference to the last element in the list.
+     *  May only be called if list is non-empty.
+     *  @return last element in list, by reference
+     */
+    T& back() { return *(--end()); }
 
-    // Inserts before the first element
-    void push_front(const T & x) { insert(begin(), (T&)x); } 
-         /* const cast away to keep some old compilers happy */
+    /** inserts before the first element of the list.
+     *  @param x value from which the new list entry is copy constructed
+     */
+    void push_front(const T& x) { insert(begin(), (T&)x); } 
+    /* const cast away to keep some old compilers happy */
 
-    // Deletes the first element of the list.
-    // All iterators pointing to the deleted element are invalid.
+    /** removes the first element of the list.
+     *  May only be called if list is non-empty.
+     *  All iterators pointing to the removed element become invalid.
+     */
     void pop_front() { erase(begin()); }
 
-    // Inserts after the last element in the list
-    void push_back(const T & x) { insert(end(), (T&)x); }
-         /* const cast away to keep some old compilers happy */
+    /** inserts after the last element of the list.
+     *  @param x value from which the new list entry is copy constructed
+     */
+    void push_back(const T& x) { insert(end(), (T&)x); }
+    /* const cast away to keep some old compilers happy */
 
-    // Deletes the last element of the list.
-    // All iterators pointing to the deleted element are invalid.
+    /** removes the last element of the list.
+     *  May only be called if list is non-empty.
+     *  All iterators pointing to the removed element become invalid.
+     */
     void pop_back() { erase(--end()); }
 
-    // Insert n times element x before position.
-    void insert(OFIterator<T> position, size_t n, const T & x)
-	{
-	    while(n--)
-		OFListBase::base_insert(position.node, new OFListLink<T>(x));
-	}
+    /** inserts n elements with value x into the list, before the given position.
+     *  @param position iterator to position before which the elements are inserted
+     *  @param n number of entries to be created
+     *  @param x value from which the new list entries are copy-constructed
+     */
+    void insert(OFIterator<T> position, size_t n, const T& x)
+    {
+      while(n--) OFListBase::base_insert(position.node, new OFListLink<T>(x));
+    }
 
-    // Erase the element at position in the list.
-    // All iterators pointing to the deleted element are invalid.
-    // Returns Iterator pointing to the element after the deleted.
+    /** removes the element at the given position from the list.
+     *  All iterators pointing to the removed element become invalid.
+     *  @return iterator pointing to the element after the removed one
+     */
     OFIterator<T> erase(OFIterator<T> position)
-	{
-	    return OFIterator<T>(OFListBase::base_erase(position.node));
-	}
+    {
+      return OFIterator<T>(OFListBase::base_erase(position.node));
+    }
 
-    // Erase elements in range [position, last) from the list
-    // All iterators pointing to the deleted elements are invalis
+    /** removes all elements in the range [position,last) from the list.
+     *  All iterators pointing to the removed elements become invalid.
+     *  @param position iterator to the first element to be deleted
+     *  @param last iterator pointing to the element after the last element to be removed
+     *  @return iterator pointing to the element after the last removed element
+     */
     OFIterator<T> erase(OFIterator<T> position, OFIterator<T> last)
-	{
-	    while (position != last)
-		position = erase(position);
-	    return last;
-	}
+    {
+      while (position != last) position = erase(position);
+      return last;
+    }
 
-    // Erases the complete list.	    
+    /** removes all elements from the list.
+     *  All iterators pointing to elements in the list become invalid.
+     */           
     void clear() { OFListBase::base_clear(); }
 
-
-    // Inserts the contents of x before position and x becomes empty
-    void splice(OFIterator<T> position, OFList<T> & x)
+    /** moves the contents of list x into the current list before the
+     *  given position.
+     *  @param position iterator to position before which the elements are inserted
+     *  @param x list from which the elements are taken, becomes empty
+     */
+    void splice(OFIterator<T> position, OFList<T>& x)
     {
-	splice(position, x, x.begin(), x.end());
+      splice(position, x, x.begin(), x.end());
     }
 
-    // Inserts an element pointed by iterator i from list x before
-    // position and removes the element from x
-    void splice(OFIterator<T> position, OFList<T> & x, OFIterator<T> i)
+    /** inserts one element from list x into the current list and removes it from x
+     *  @param position iterator to position before which the element is inserted
+     *  @param x list from which the element is taken
+     *  @param i iterator to element in list x which is to be moved
+     */
+    void splice(OFIterator<T> position, OFList<T>& x, OFIterator<T> i)
     {
-	OFIterator<T> change(i);
-	++i;
-	splice(position, x, change, i);
+      OFIterator<T> change(i);
+      ++i;
+      splice(position, x, change, i);
     }
 
-    // Inserts elements in the range [first, last) before position and
-    // removes the elements from x
-    void splice(OFIterator<T> position, OFList<T> & x,
-		OFIterator<T> first, OFIterator<T> last)
+    /** inserts elements in the range [first, last) before position and
+     *  removes the elements from x
+     *  @param position iterator to position before which the elements are inserted
+     *  @param x list from which the elements are taken
+     *  @param first iterator to first element in list x to be moved
+     *  @param last iterator to element after last element in list x to be moved
+     */
+    void splice(OFIterator<T> position, OFList<T>& x,
+                OFIterator<T> first, OFIterator<T> last)
     {
-	OFListBase::base_splice(position.node, first.node, last.node);
-	x.recalcListSize();
+      OFListBase::base_splice(position.node, first.node, last.node);
+      x.recalcListSize();
     }
 
-    // Erases all elements in the list referred by an iterator i where
-    // *i == value
-    void remove(const T & value)
+    /** removes all elements from the list referred by an iterator i where
+     *  *i == value
+     *  @param value value to be compared with list contents
+     */
+    void remove(const T& value)
     {
-	OFIterator<T> first = begin();
-	OFIterator<T> last = end();
-	while(first != last)
-	{
-	    if (*first == value)
-		first = erase(first);
-	    else
-		++first;
-	}
+      OFIterator<T> first = begin();
+      OFIterator<T> last = end();
+      while(first != last)
+      {
+        if (*first == value) first = erase(first);
+        else ++first;
+      }
     }
 };
 
@@ -377,13 +475,13 @@ class OF_ListInsertClass
 public:
 static
 #endif
-void OF_ListInsert(OFList<T> & c, OFIterator<T> position, 
-		  InputIterator first, InputIterator last)
+void OF_ListInsert(OFList<T>& c, OFIterator<T> position, 
+                  InputIterator first, InputIterator last)
 {
     while(first != last)
     {
-	c.insert(position, *first);
-	++first;
+        c.insert(position, *first);
+        ++first;
     }
 }
 #if defined(HAVE_STATIC_TEMPLATE_METHOD) && !defined(HAVE_FUNCTION_TEMPLATE)
@@ -399,16 +497,16 @@ class OF_ListRemoveIfClass
 public:
 static
 #endif
-void OF_ListRemoveIf(OFList<T> & c, Predicate pred)
+void OF_ListRemoveIf(OFList<T>& c, Predicate pred)
 {
     OFIterator<T> first = c.begin();
     OFIterator<T> last = c.end();
     while (first != last)
     {
-	if (pred(*first))
-	    first = c.erase(first);
-	else
-	    ++first;
+        if (pred(*first))
+            first = c.erase(first);
+        else
+            ++first;
     }
 }
 
@@ -425,7 +523,10 @@ void OF_ListRemoveIf(OFList<T> & c, Predicate pred)
 /*
 ** CVS/RCS Log:
 ** $Log: oflist.h,v $
-** Revision 1.10  2000-03-08 16:36:02  meichel
+** Revision 1.11  2000-10-10 12:01:21  meichel
+** Created/updated doc++ comments
+**
+** Revision 1.10  2000/03/08 16:36:02  meichel
 ** Updated copyright header.
 **
 ** Revision 1.9  1998/11/27 12:42:51  joergr

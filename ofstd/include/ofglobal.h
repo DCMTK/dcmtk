@@ -26,9 +26,9 @@
  * 
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-05-30 17:03:38 $
+ *  Update Date:      $Date: 2000-10-10 12:01:21 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/include/Attic/ofglobal.h,v $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -43,9 +43,9 @@
 #include "ofthread.h"  /* for class OFBool */
 
 /** Template class which allows to declare global objects that are 
- *  protected by a Mutex if used in multi-thread applications (i.e. 
- *  compiled with -D_REENTRANT). Class T must have copy constructor and 
- *  assignment operator.
+ *  protected by a Mutex if used in multi-thread applications.
+ *  Must be compiled with -D_REENTRANT for multi-thread-operation.
+ *  Template class T must have copy constructor and assignment operator.
  */
 template <class T> class OFGlobal
 {
@@ -144,7 +144,10 @@ private:
  *
  * CVS/RCS Log:
  * $Log: ofglobal.h,v $
- * Revision 1.2  2000-05-30 17:03:38  meichel
+ * Revision 1.3  2000-10-10 12:01:21  meichel
+ * Created/updated doc++ comments
+ *
+ * Revision 1.2  2000/05/30 17:03:38  meichel
  * Added default constructor for Mutex to initializer list in OFGlobal.
  *
  * Revision 1.1  2000/04/14 15:17:48  meichel

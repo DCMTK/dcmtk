@@ -23,9 +23,9 @@
  *	    Defines a template stack class with interfaces similar to the C++ Standard
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-03-08 16:36:02 $
+ *  Update Date:      $Date: 2000-10-10 12:01:21 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/include/Attic/ofstack.h,v $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -59,6 +59,9 @@
 // OFStackLinkBase, OFStackLink and OFStackBase are classes for internal 
 // use only and shall not be used.
 
+/*  non-template single linked list, used to store elements of a stack.
+ *  Implicitly used by OFStack, should not be called by users.
+ */
 struct OFStackLinkBase
 {
     OFStackLinkBase * next;
@@ -75,6 +78,9 @@ private:
     OFStackLinkBase &operator=(const OFStackLinkBase &);
 };
 
+/*  non-template base class for OFStack.
+ *  Implicitly used by OFStack, should not be called by users.
+ */
 class OFStackBase
 {
 private:
@@ -127,6 +133,9 @@ public:
     }
 };
 
+/*  template class used to store stack entries.
+ *  Implicitly used by OFStack, should not be called by users.
+ */
 template <class T>
 struct OFStackLink : public OFStackLinkBase
 {
@@ -135,16 +144,20 @@ struct OFStackLink : public OFStackLinkBase
 };
 
 
-// Definition of OFStack
 
+/** template stack class. The interface is a subset of
+ *  the STL stack class.
+ */
 template <class T>
 class OFStack : protected OFStackBase
 {
 friend class OFStackBase;
 private:
 
-    // copy is needed for the SUN CC 2.0.1. It returns a dummy value
-    // to make this compiler happy.
+    /** copy assignment of a stack. 
+     *  @param x stack to be copied
+     *  @return dummy value, required to keep Sun CC 2.0.1 happy
+     */
     int copy(const OFStack<T> & x)
     {
 	stackSize = x.size();
@@ -165,35 +178,47 @@ private:
     }
 
 public:
-    // Constructors
+
+    /// Default constructor
     OFStack() {};
 
+    /// copy constructor
     OFStack(const OFStack<T> & x) : OFStackBase()
     {
 	copy(x);
     }
 
-    // returns TRUE if Stack is empty
+    /** checks if the stack is empty.
+     *  @return OFTrue if stack is empty, OFFalse otherwise.
+     */
     OFBool empty() const { return OFStackBase::base_empty(); }
 
-    // returns number of Elements in the Stack
+    /** returns the number of elements on the stack
+     *  @return number of elements on stack
+     */
     size_t size() const { return OFStackBase::base_size(); }
 
-    // returns top element in the stack
-    // precondition: stack is not empty
+    /** returns a reference to the top element on the stack.
+     *  This method may not be called if the stack is empty.
+     *  @return reference to top element
+     */
     T & top() 
     { 
 	return ((OFStackLink<T>*)(OFStackBase::base_top()))->info; 
     }
 
-    // inserts new Element on top of stack
+    /** inserts a new element on top of the stack. The value of
+     *  the new element is copy constructed from the given argument.
+     *  @param x value to be pushed (copied) onto the stack
+     */
     void push(const T & x) 
     { 
 	OFStackBase::base_push(new OFStackLink<T>(x));
     }
 
-    // removes top element of the stack
-    // precondition: stack is not empty
+    /** removes the top element from the stack.
+     *  This method may not be called if the stack is empty.
+     */    
     void pop() { OFStackBase::base_pop(); }
 };
 
@@ -203,7 +228,10 @@ public:
 /*
 ** CVS/RCS Log:
 ** $Log: ofstack.h,v $
-** Revision 1.7  2000-03-08 16:36:02  meichel
+** Revision 1.8  2000-10-10 12:01:21  meichel
+** Created/updated doc++ comments
+**
+** Revision 1.7  2000/03/08 16:36:02  meichel
 ** Updated copyright header.
 **
 ** Revision 1.6  1998/11/27 12:42:52  joergr

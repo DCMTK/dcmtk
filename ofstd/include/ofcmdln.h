@@ -22,9 +22,9 @@
  *  Purpose: Handle command line arguments (Header)
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-04-14 15:17:11 $
+ *  Update Date:      $Date: 2000-10-10 12:01:20 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/include/Attic/ofcmdln.h,v $
- *  CVS/RCS Revision: $Revision: 1.24 $
+ *  CVS/RCS Revision: $Revision: 1.25 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -48,10 +48,6 @@
  *  type declaration  *
  *--------------------*/
 
-/** @name Type definitions for OFCommandLine
- */
-//@{
-
 /// signed integer value
 typedef signed long OFCmdSignedInt;
     
@@ -63,8 +59,6 @@ typedef double OFCmdFloat;
     
 /// dynamic string value
 typedef OFString OFCmdString;
-
-//@}
 
 
 typedef OFListIterator(OFString) OFListIterator_OFString;       // necessary for MSVC5
@@ -214,8 +208,9 @@ struct OFCmdParamPos
  *  class declaration  *
  *---------------------*/
 
-/** A class to handle command line arguments.
- *  This is the interface to this module. All methods which can be used from outside are defined here.
+/** handles command line arguments.
+ *  This class is the interface to this module. 
+ *  All methods which can be used from outside are defined here.
  */
 class OFCommandLine
 {
@@ -994,7 +989,10 @@ class OFCommandLine
  *
  * CVS/RCS Log:
  * $Log: ofcmdln.h,v $
- * Revision 1.24  2000-04-14 15:17:11  meichel
+ * Revision 1.25  2000-10-10 12:01:20  meichel
+ * Created/updated doc++ comments
+ *
+ * Revision 1.24  2000/04/14 15:17:11  meichel
  * Adapted all ofstd library classes to consistently use ofConsole for output.
  *
  * Revision 1.23  2000/03/08 16:36:01  meichel

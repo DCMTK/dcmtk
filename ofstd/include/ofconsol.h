@@ -53,9 +53,9 @@
  *  in multithread applications. Use ofConsole instead.
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-09-26 13:46:12 $
+ *  Update Date:      $Date: 2000-10-10 12:01:21 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/include/Attic/ofconsol.h,v $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -81,9 +81,9 @@ END_EXTERN_C
 #endif
 #endif
 
-/** provides access to the standard console output and error streams
- *  in a way that allows multiple threads to concurrently create output
- *  even if that output is redirected, e. g. to file or memory.
+/** provides thread-safe access to the standard console output and error streams.
+ *  Allows multiple threads to concurrently create output
+ *  even if that output is redirected to file or memory.
  *  Protection is implemented if the module is compiled with -D_REENTRANT
  *  and is based on Mutexes.
  */
@@ -294,7 +294,10 @@ extern OFConsole ofConsole;
  *
  * CVS/RCS Log:
  * $Log: ofconsol.h,v $
- * Revision 1.5  2000-09-26 13:46:12  meichel
+ * Revision 1.6  2000-10-10 12:01:21  meichel
+ * Created/updated doc++ comments
+ *
+ * Revision 1.5  2000/09/26 13:46:12  meichel
  * Simplified inline code in ofconsol.h, required by Sun CC 2.x
  *
  * Revision 1.4  2000/06/21 15:47:54  meichel
