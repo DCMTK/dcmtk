@@ -22,9 +22,9 @@
  *  Purpose: class DcmItem
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-10-02 11:48:01 $
+ *  Update Date:      $Date: 2001-10-10 15:19:51 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcitem.cc,v $
- *  CVS/RCS Revision: $Revision: 1.59 $
+ *  CVS/RCS Revision: $Revision: 1.60 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -900,8 +900,8 @@ OFCondition DcmItem::write(DcmStream & outStream,
       }
       if (fTransferState == ERW_inWork)
       {
-      	// elementList->get() can be NULL if buffer was full after
-      	// writing the last item but before writing the sequence delimitation.
+        // elementList->get() can be NULL if buffer was full after
+        // writing the last item but before writing the sequence delimitation.
         if (!elementList->empty() && (elementList->get() != NULL))
         {
           DcmObject *dO = NULL;
@@ -961,8 +961,8 @@ OFCondition DcmItem::writeSignatureFormat(DcmStream & outStream,
       }
       if (fTransferState == ERW_inWork)
       {
-      	// elementList->get() can be NULL if buffer was full after
-      	// writing the last item but before writing the sequence delimitation.
+        // elementList->get() can be NULL if buffer was full after
+        // writing the last item but before writing the sequence delimitation.
         if (!elementList->empty() && (elementList->get() != NULL))
         {
           DcmObject *dO = NULL;
@@ -1751,7 +1751,7 @@ DcmItem::findAndGetString(
     DcmStack stack;
     /* find element */
     OFCondition status = search(tagKey, stack, ESM_fromHere, searchIntoSub);
-    if (status == EC_Normal)
+    if (status.good())
     {
         DcmElement *elem = (DcmElement *)stack.top();
         /* get value */
@@ -1761,7 +1761,7 @@ DcmItem::findAndGetString(
             status = EC_IllegalCall;
     }
     /* reset value */
-    if (status != EC_Normal)
+    if (status.bad())
         value = NULL;
     return status;
 }
@@ -1776,7 +1776,7 @@ DcmItem::findAndGetOFString(const DcmTagKey& tagKey,
     DcmStack stack;
     /* find element */
     OFCondition status = search(tagKey, stack, ESM_fromHere, searchIntoSub);
-    if (status == EC_Normal)
+    if (status.good())
     {
         DcmElement *elem = (DcmElement *)stack.top();
         /* get value */
@@ -1786,7 +1786,7 @@ DcmItem::findAndGetOFString(const DcmTagKey& tagKey,
             status = EC_IllegalCall;
     }
     /* reset value */
-    if (status != EC_Normal)
+    if (status.bad())
         value.clear();
     return status;
 }
@@ -1800,7 +1800,7 @@ DcmItem::findAndGetOFStringArray(const DcmTagKey& tagKey,
     DcmStack stack;
     /* find element */
     OFCondition status = search(tagKey, stack, ESM_fromHere, searchIntoSub);
-    if (status == EC_Normal)
+    if (status.good())
     {
         DcmElement *elem = (DcmElement *)stack.top();
         /* get value */
@@ -1810,7 +1810,7 @@ DcmItem::findAndGetOFStringArray(const DcmTagKey& tagKey,
             status = EC_IllegalCall;
     }
     /* reset value */
-    if (status != EC_Normal)
+    if (status.bad())
         value.clear();
     return status;
 }
@@ -1825,7 +1825,7 @@ DcmItem::findAndGetUint8(const DcmTagKey& tagKey,
     DcmStack stack;
     /* find element */
     OFCondition status = search(tagKey, stack, ESM_fromHere, searchIntoSub);
-    if (status == EC_Normal)
+    if (status.good())
     {
         status = EC_IllegalCall;
         DcmElement *elem = (DcmElement *)stack.top();
@@ -1837,7 +1837,7 @@ DcmItem::findAndGetUint8(const DcmTagKey& tagKey,
             status = EC_IllegalCall;
     }
     /* reset value */
-    if (status != EC_Normal)
+    if (status.bad())
         value = 0;
     return status;
 }
@@ -1851,7 +1851,7 @@ DcmItem::findAndGetUint8Array(const DcmTagKey& tagKey,
     DcmStack stack;
     /* find element */
     OFCondition status = search(tagKey, stack, ESM_fromHere, searchIntoSub);
-    if (status == EC_Normal)
+    if (status.good())
     {
         DcmElement *elem = (DcmElement *)stack.top();
         /* get value */
@@ -1861,7 +1861,7 @@ DcmItem::findAndGetUint8Array(const DcmTagKey& tagKey,
             status = EC_IllegalCall;
     }
     /* reset value */
-    if (status != EC_Normal)
+    if (status.bad())
         value = NULL;
     return status;
 }
@@ -1876,7 +1876,7 @@ DcmItem::findAndGetUint16(const DcmTagKey& tagKey,
     DcmStack stack;
     /* find element */
     OFCondition status = search(tagKey, stack, ESM_fromHere, searchIntoSub);
-    if (status == EC_Normal)
+    if (status.good())
     {
         DcmElement *elem = (DcmElement *)stack.top();
         /* get value */
@@ -1886,7 +1886,7 @@ DcmItem::findAndGetUint16(const DcmTagKey& tagKey,
             status = EC_IllegalCall;
     }
     /* reset value */
-    if (status != EC_Normal)
+    if (status.bad())
         value = 0;
     return status;
 }
@@ -1900,7 +1900,7 @@ DcmItem::findAndGetUint16Array(const DcmTagKey& tagKey,
     DcmStack stack;
     /* find element */
     OFCondition status = search(tagKey, stack, ESM_fromHere, searchIntoSub);
-    if (status == EC_Normal)
+    if (status.good())
     {
         DcmElement *elem = (DcmElement *)stack.top();
         /* get value */
@@ -1910,7 +1910,7 @@ DcmItem::findAndGetUint16Array(const DcmTagKey& tagKey,
             status = EC_IllegalCall;
     }
     /* reset value */
-    if (status != EC_Normal)
+    if (status.bad())
         value = NULL;
     return status;
 }
@@ -1925,7 +1925,7 @@ DcmItem::findAndGetSint16(const DcmTagKey& tagKey,
     DcmStack stack;
     /* find element */
     OFCondition status = search(tagKey, stack, ESM_fromHere, searchIntoSub);
-    if (status == EC_Normal)
+    if (status.good())
     {
         DcmElement *elem = (DcmElement *)stack.top();
         /* get value */
@@ -1935,7 +1935,7 @@ DcmItem::findAndGetSint16(const DcmTagKey& tagKey,
             status = EC_IllegalCall;
     }
     /* reset value */
-    if (status != EC_Normal)
+    if (status.bad())
         value = 0;
     return status;
 }
@@ -1949,7 +1949,7 @@ DcmItem::findAndGetSint16Array(const DcmTagKey& tagKey,
     DcmStack stack;
     /* find element */
     OFCondition status = search(tagKey, stack, ESM_fromHere, searchIntoSub);
-    if (status == EC_Normal)
+    if (status.good())
     {
         DcmElement *elem = (DcmElement *)stack.top();
         /* get value */
@@ -1959,7 +1959,7 @@ DcmItem::findAndGetSint16Array(const DcmTagKey& tagKey,
             status = EC_IllegalCall;
     }
     /* reset value */
-    if (status != EC_Normal)
+    if (status.bad())
         value = NULL;
     return status;
 }
@@ -1974,7 +1974,7 @@ DcmItem::findAndGetUint32(const DcmTagKey& tagKey,
     DcmStack stack;
     /* find element */
     OFCondition status = search(tagKey, stack, ESM_fromHere, searchIntoSub);
-    if (status == EC_Normal)
+    if (status.good())
     {
         DcmElement *elem = (DcmElement *)stack.top();
         /* get value */
@@ -1984,7 +1984,7 @@ DcmItem::findAndGetUint32(const DcmTagKey& tagKey,
             status = EC_IllegalCall;
     }
     /* reset value */
-    if (status != EC_Normal)
+    if (status.bad())
         value = 0;
     return status;
 }
@@ -1999,7 +1999,7 @@ DcmItem::findAndGetSint32(const DcmTagKey& tagKey,
     DcmStack stack;
     /* find element */
     OFCondition status = search(tagKey, stack, ESM_fromHere, searchIntoSub);
-    if (status == EC_Normal)
+    if (status.good())
     {
         DcmElement *elem = (DcmElement *)stack.top();
         /* get value */
@@ -2009,7 +2009,7 @@ DcmItem::findAndGetSint32(const DcmTagKey& tagKey,
             status = EC_IllegalCall;
     }
     /* reset value */
-    if (status != EC_Normal)
+    if (status.bad())
         value = 0;
     return status;
 }
@@ -2024,7 +2024,7 @@ DcmItem::findAndGetFloat32(const DcmTagKey& tagKey,
     DcmStack stack;
     /* find element */
     OFCondition status = search(tagKey, stack, ESM_fromHere, searchIntoSub);
-    if (status == EC_Normal)
+    if (status.good())
     {
         DcmElement *elem = (DcmElement *)stack.top();
         /* get value */
@@ -2034,7 +2034,7 @@ DcmItem::findAndGetFloat32(const DcmTagKey& tagKey,
             status = EC_IllegalCall;
     }
     /* reset value */
-    if (status != EC_Normal)
+    if (status.bad())
         value = 0;
     return status;
 }
@@ -2049,7 +2049,7 @@ DcmItem::findAndGetFloat64(const DcmTagKey& tagKey,
     DcmStack stack;
     /* find element */
     OFCondition status = search(tagKey, stack, ESM_fromHere, searchIntoSub);
-    if (status == EC_Normal)
+    if (status.good())
     {
         DcmElement *elem = (DcmElement *)stack.top();
         /* get value */
@@ -2059,7 +2059,7 @@ DcmItem::findAndGetFloat64(const DcmTagKey& tagKey,
             status = EC_IllegalCall;
     }
     /* reset value */
-    if (status != EC_Normal)
+    if (status.bad())
         value = 0;
     return status;
 }
@@ -2070,12 +2070,11 @@ DcmItem::findAndGetFloat64(const DcmTagKey& tagKey,
 /* --- putAndInsert functions: put value and insert new element --- */
 
 OFCondition
-DcmItem::putAndInsertString(const DcmTagKey& tagKey,
+DcmItem::putAndInsertString(const DcmTag& tag,
                             const char *value,
                             const OFBool replaceOld)
 {
     OFCondition status = EC_Normal;
-    DcmTag tag(tagKey);
     /* create new element */
     DcmElement *elem = NULL;
     switch(tag.getEVR())
@@ -2140,24 +2139,23 @@ DcmItem::putAndInsertString(const DcmTagKey& tagKey,
         /* put value */
         status = elem->putString(value);
         /* insert into dataset/item */
-        if (status == EC_Normal)
+        if (status.good())
             status = insert(elem, replaceOld);
         /* could not be inserted, therefore, delete it immediately */
-        if (status != EC_Normal)
+        if (status.bad())
             delete elem;
-    } else if (status == EC_Normal)
+    } else if (status.good())
         status = EC_MemoryExhausted;
     return status;
 }
 
 
 OFCondition
-DcmItem::putAndInsertOFStringArray(const DcmTagKey& tagKey,
+DcmItem::putAndInsertOFStringArray(const DcmTag& tag,
                                    const OFString &value,
                                    const OFBool replaceOld)
 {
     OFCondition status = EC_Normal;
-    DcmTag tag(tagKey);
     /* create new element */
     DcmElement *elem = NULL;
     switch(tag.getEVR())
@@ -2216,24 +2214,23 @@ DcmItem::putAndInsertOFStringArray(const DcmTagKey& tagKey,
         /* put value */
         status = elem->putOFStringArray(value);
         /* insert into dataset/item */
-        if (status == EC_Normal)
+        if (status.good())
             status = insert(elem, replaceOld);
         /* could not be inserted, therefore, delete it immediately */
-        if (status != EC_Normal)
+        if (status.bad())
             delete elem;
-    } else if (status == EC_Normal)
+    } else if (status.good())
         status = EC_MemoryExhausted;
     return status;
 }
 
 
 OFCondition
-DcmItem::putAndInsertUint16(const DcmTagKey& tagKey,
+DcmItem::putAndInsertUint16(const DcmTag& tag,
                             const Uint16 value,
                             const OFBool replaceOld)
 {
     OFCondition status = EC_IllegalCall;
-    DcmTag tag(tagKey);
     /* create new element */
     if (tag.getEVR() == EVR_US)
     {
@@ -2243,10 +2240,10 @@ DcmItem::putAndInsertUint16(const DcmTagKey& tagKey,
             /* put value */
             status = elem->putUint16(value);
             /* insert into dataset/item */
-            if (status == EC_Normal)
+            if (status.good())
                 status = insert(elem, replaceOld);
             /* could not be inserted, therefore, delete it immediately */
-            if (status != EC_Normal)
+            if (status.bad())
                 delete elem;
         } else
             status = EC_MemoryExhausted;
@@ -2256,13 +2253,12 @@ DcmItem::putAndInsertUint16(const DcmTagKey& tagKey,
 
 
 OFCondition
-DcmItem::putAndInsertUint8Array(const DcmTagKey& tagKey,
+DcmItem::putAndInsertUint8Array(const DcmTag& tag,
                                 const Uint8 *value,
                                 const unsigned long count,
                                 const OFBool replaceOld)
 {
     OFCondition status = EC_IllegalCall;
-    DcmTag tag(tagKey);
     /* create new element */
     DcmElement *elem = NULL;
     if (tag.getEVR()== EVR_OB)
@@ -2273,10 +2269,10 @@ DcmItem::putAndInsertUint8Array(const DcmTagKey& tagKey,
             /* put value */
             status = elem->putUint8Array(value, count);
             /* insert into dataset/item */
-            if (status == EC_Normal)
+            if (status.good())
                 status = insert(elem, replaceOld);
             /* could not be inserted, therefore, delete it immediately */
-            if (status != EC_Normal)
+            if (status.bad())
                 delete elem;
         } else
             status = EC_MemoryExhausted;
@@ -2286,13 +2282,12 @@ DcmItem::putAndInsertUint8Array(const DcmTagKey& tagKey,
 
 
 OFCondition
-DcmItem::putAndInsertUint16Array(const DcmTagKey& tagKey,
+DcmItem::putAndInsertUint16Array(const DcmTag& tag,
                                  const Uint16 *value,
                                  const unsigned long count,
                                  const OFBool replaceOld)
 {
     OFCondition status = EC_Normal;
-    DcmTag tag(tagKey);
     /* create new element */
     DcmElement *elem = NULL;
     switch(tag.getEVR())
@@ -2315,24 +2310,23 @@ DcmItem::putAndInsertUint16Array(const DcmTagKey& tagKey,
         /* put value */
         status = elem->putUint16Array(value, count);
         /* insert into dataset/item */
-        if (status == EC_Normal)
+        if (status.good())
             status = insert(elem, replaceOld);
         /* could not be inserted, therefore, delete it immediately */
-        if (status != EC_Normal)
+        if (status.bad())
             delete elem;
-    } else if (status == EC_Normal)
+    } else if (status.good())
         status = EC_MemoryExhausted;
     return status;
 }
 
 
 OFCondition
-DcmItem::putAndInsertSint16(const DcmTagKey& tagKey,
+DcmItem::putAndInsertSint16(const DcmTag& tag,
                             const Sint16 value,
                             const OFBool replaceOld)
 {
     OFCondition status = EC_IllegalCall;
-    DcmTag tag(tagKey);
     /* create new element */
     if (tag.getEVR() == EVR_SS)
     {
@@ -2342,10 +2336,10 @@ DcmItem::putAndInsertSint16(const DcmTagKey& tagKey,
             /* put value */
             status = elem->putSint16(value);
             /* insert into dataset/item */
-            if (status == EC_Normal)
+            if (status.good())
                 status = insert(elem, replaceOld);
             /* could not be inserted, therefore, delete it immediately */
-            if (status != EC_Normal)
+            if (status.bad())
                 delete elem;
         } else
             status = EC_MemoryExhausted;
@@ -2355,13 +2349,12 @@ DcmItem::putAndInsertSint16(const DcmTagKey& tagKey,
 
 
 OFCondition
-DcmItem::putAndInsertSint16Array(const DcmTagKey& tagKey,
+DcmItem::putAndInsertSint16Array(const DcmTag& tag,
                                  const Sint16 *value,
                                  const unsigned long count,
                                  const OFBool replaceOld)
 {
     OFCondition status = EC_IllegalCall;
-    DcmTag tag(tagKey);
     /* create new element */
     if (tag.getEVR() == EVR_SS)
     {
@@ -2371,10 +2364,10 @@ DcmItem::putAndInsertSint16Array(const DcmTagKey& tagKey,
             /* put value */
             status = elem->putSint16Array(value, count);
             /* insert into dataset/item */
-            if (status == EC_Normal)
+            if (status.good())
                 status = insert(elem, replaceOld);
             /* could not be inserted, therefore, delete it immediately */
-            if (status != EC_Normal)
+            if (status.bad())
                 delete elem;
         } else
             status = EC_MemoryExhausted;
@@ -2384,12 +2377,11 @@ DcmItem::putAndInsertSint16Array(const DcmTagKey& tagKey,
 
 
 OFCondition
-DcmItem::putAndInsertUint32(const DcmTagKey& tagKey,
+DcmItem::putAndInsertUint32(const DcmTag& tag,
                             const Uint32 value,
                             const OFBool replaceOld)
 {
     OFCondition status = EC_IllegalCall;
-    DcmTag tag(tagKey);
     /* create new element */
     if (tag.getEVR() == EVR_UL)
     {
@@ -2399,10 +2391,10 @@ DcmItem::putAndInsertUint32(const DcmTagKey& tagKey,
             /* put value */
             status = elem->putUint32(value);
             /* insert into dataset/item */
-            if (status == EC_Normal)
+            if (status.good())
                 status = insert(elem, replaceOld);
             /* could not be inserted, therefore, delete it immediately */
-            if (status != EC_Normal)
+            if (status.bad())
                 delete elem;
         } else
             status = EC_MemoryExhausted;
@@ -2412,12 +2404,11 @@ DcmItem::putAndInsertUint32(const DcmTagKey& tagKey,
 
 
 OFCondition
-DcmItem::putAndInsertSint32(const DcmTagKey& tagKey,
+DcmItem::putAndInsertSint32(const DcmTag& tag,
                             const Sint32 value,
                             const OFBool replaceOld)
 {
     OFCondition status = EC_IllegalCall;
-    DcmTag tag(tagKey);
     /* create new element */
     if (tag.getEVR() == EVR_SL)
     {
@@ -2427,10 +2418,10 @@ DcmItem::putAndInsertSint32(const DcmTagKey& tagKey,
             /* put value */
             status = elem->putSint32(value);
             /* insert into dataset/item */
-            if (status == EC_Normal)
+            if (status.good())
                 status = insert(elem, replaceOld);
             /* could not be inserted, therefore, delete it immediately */
-            if (status != EC_Normal)
+            if (status.bad())
                 delete elem;
         } else
             status = EC_MemoryExhausted;
@@ -2440,12 +2431,11 @@ DcmItem::putAndInsertSint32(const DcmTagKey& tagKey,
 
 
 OFCondition
-DcmItem::putAndInsertFloat32(const DcmTagKey& tagKey,
+DcmItem::putAndInsertFloat32(const DcmTag& tag,
                              const Float32 value,
                              const OFBool replaceOld)
 {
     OFCondition status = EC_IllegalCall;
-    DcmTag tag(tagKey);
     /* create new element */
     if (tag.getEVR() == EVR_FL)
     {
@@ -2455,10 +2445,10 @@ DcmItem::putAndInsertFloat32(const DcmTagKey& tagKey,
             /* put value */
             status = elem->putFloat32(value);
             /* insert into dataset/item */
-            if (status == EC_Normal)
+            if (status.good())
                 status = insert(elem, replaceOld);
             /* could not be inserted, therefore, delete it immediately */
-            if (status != EC_Normal)
+            if (status.bad())
                 delete elem;
         } else
             status = EC_MemoryExhausted;
@@ -2468,12 +2458,11 @@ DcmItem::putAndInsertFloat32(const DcmTagKey& tagKey,
 
 
 OFCondition
-DcmItem::putAndInsertFloat64(const DcmTagKey& tagKey,
+DcmItem::putAndInsertFloat64(const DcmTag& tag,
                              const Float64 value,
                              const OFBool replaceOld)
 {
     OFCondition status = EC_IllegalCall;
-    DcmTag tag(tagKey);
     /* create new element */
     if (tag.getEVR() == EVR_FD)
     {
@@ -2483,10 +2472,10 @@ DcmItem::putAndInsertFloat64(const DcmTagKey& tagKey,
             /* put value */
             status = elem->putFloat64(value);
             /* insert into dataset/item */
-            if (status == EC_Normal)
+            if (status.good())
                 status = insert(elem, replaceOld);
             /* could not be inserted, therefore, delete it immediately */
-            if (status != EC_Normal)
+            if (status.bad())
                 delete elem;
         } else
             status = EC_MemoryExhausted;
@@ -2498,7 +2487,12 @@ DcmItem::putAndInsertFloat64(const DcmTagKey& tagKey,
 /*
 ** CVS/RCS Log:
 ** $Log: dcitem.cc,v $
-** Revision 1.59  2001-10-02 11:48:01  joergr
+** Revision 1.60  2001-10-10 15:19:51  joergr
+** Changed parameter DcmTagKey to DcmTag in DcmItem::putAndInsert... methods
+** to support elements which are not in the data dictionary (e.g. private
+** extensions).
+**
+** Revision 1.59  2001/10/02 11:48:01  joergr
 ** Added functions to get/put 8 bit values/arrays from/to an item/dataset.
 **
 ** Revision 1.58  2001/10/01 15:04:14  joergr
