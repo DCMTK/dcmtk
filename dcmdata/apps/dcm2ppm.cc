@@ -9,8 +9,8 @@
  * Implementation of a DICOM-Image to ppm file format converter
  *
  *
- * Last Update:   $Author: andreas $
- * Revision:	  $Revision: 1.3 $
+ * Last Update:   $Author: hewett $
+ * Revision:	  $Revision: 1.4 $
  * Status:	  $State: Exp $
  *
  */
@@ -27,10 +27,13 @@
 #include "dcmutils.h"
 #include "dcimapix.h"
 
+#include "cmdlnarg.h"
 
 int main(int argc, char *argv[])
 {
     SetDebugLevel(( 0 ));
+
+    prepareCmdLineArgs(argc, argv);
 
     /* parse cmd line */
     if (argc != 3) {

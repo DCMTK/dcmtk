@@ -9,10 +9,10 @@
 ** List the contents of a dicom file to stdout
 **
 **
-** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1996-01-05 13:29:34 $
+** Last Update:		$Author: hewett $
+** Update Date:		$Date: 1996-03-12 15:11:38 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/apps/dcmdump.cc,v $
-** CVS/RCS Revision:	$Revision: 1.3 $
+** CVS/RCS Revision:	$Revision: 1.4 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -28,30 +28,9 @@
 #include <string.h>
 #include "dctk.h"
 #include "dcdebug.h"
+#include "cmdlnarg.h"
 
-
-#ifdef HAVE_EMPTY_ARGC_ARGV
-static void prepareCmdLineArgs(int& argc, char* argv[])
-{
-    char buf[2024];
-
-    argv[0] = "dcmdump";
-    argc = 1;
-	
-    cout << "CmdLineArgs-> ";
-    cin >> buf;
-    argv[1] = new char[strlen(buf)+1];
-    strcpy(argv[1], buf);
-    argc++;
-	
-}
-#else
-static void prepareCmdLineArgs(int& /* argc */, char** /* argv */)
-{
-    /* do nothing */
-}
-#endif
-
+static int dumpFile(const char* fname);
 
 int main(int argc, char *argv[])
 {
@@ -65,8 +44,8 @@ int main(int argc, char *argv[])
     prepareCmdLineArgs(argc, argv);
     
     /* parse cmd line */
-    if (argc != 2) {
-        fprintf(stderr, "usage: dcmdump dicom-file-format\n");
+    if (argc < 2) {
+        fprintf(stderr, "usage: dcmdump dicom-file-format ...\n");
         return 0;
     }
 
@@ -76,8 +55,15 @@ int main(int argc, char *argv[])
 		DCM_DICT_ENVIRONMENT_VARIABLE);
     }
 
-    char* ifname = argv[1];
+    for (int i=1; i<argc; i++) {
+	dumpFile(argv[i]);
+    }
 
+    return 0;
+}
+
+static int dumpFile(const char* ifname)
+{
     DcmFileStream myin(ifname, DCM_ReadMode);
     if ( myin.GetError() != EC_Normal ) {
         fprintf(stderr, "dcmdump: cannot open file: %s\n", ifname);
@@ -90,9 +76,8 @@ int main(int argc, char *argv[])
     dfile.transferEnd();
 
     if (dfile.error() != EC_Normal) {
-	fprintf(stderr, "Error: %s: reading file: %s\n", 
+	fprintf(stderr, "dcmdump: error: %s: reading file: %s\n", 
 		dcmErrorConditionToString(dfile.error()), ifname);
-//	return 1;
     }
 
     dfile.print();
@@ -100,10 +85,15 @@ int main(int argc, char *argv[])
     return 0;
 }
 
+
 /*
 ** CVS/RCS Log:
 ** $Log: dcmdump.cc,v $
-** Revision 1.3  1996-01-05 13:29:34  andreas
+** Revision 1.4  1996-03-12 15:11:38  hewett
+** Added call to prepareCmdLineArgs to enable command line arguments
+** in environments which do not provide them.
+**
+** Revision 1.3  1996/01/05 13:29:34  andreas
 ** - new streaming facilities
 ** - unique read/write methods for block and file transfer
 ** - more cleanups

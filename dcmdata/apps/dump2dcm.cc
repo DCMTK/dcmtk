@@ -50,10 +50,10 @@
 **
 **
 **
-** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1996-01-29 13:36:38 $
+** Last Update:		$Author: hewett $
+** Update Date:		$Date: 1996-03-12 15:11:39 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/apps/dump2dcm.cc,v $
-** CVS/RCS Revision:	$Revision: 1.1 $
+** CVS/RCS Revision:	$Revision: 1.2 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -62,11 +62,14 @@
 
 #include "osconfig.h"
 #include <stdio.h>
+#ifdef HAVE_STDLIB_H
 #include <stdlib.h>
+#endif
 #include <iostream.h>
 #include <ctype.h>
 #include "dctk.h"
 #include "dcdebug.h"
+#include "cmdlnarg.h"
 
 // Maximum Line Size
 
@@ -606,12 +609,12 @@ readDumpFile(DcmMetaInfo * metaheader, DcmDataset * dataset,
 
 // ********************************************
 
-
 int main(int argc, char *argv[])
 {
     SetDebugLevel(( 0 ));
 
-    
+    prepareCmdLineArgs(argc, argv);
+        
     if (argc < 3) {
 	usage();
         return 1;
@@ -838,7 +841,11 @@ int main(int argc, char *argv[])
 /*
 ** CVS/RCS Log:
 ** $Log: dump2dcm.cc,v $
-** Revision 1.1  1996-01-29 13:36:38  andreas
+** Revision 1.2  1996-03-12 15:11:39  hewett
+** Added call to prepareCmdLineArgs to enable command line arguments
+** in environments which do not provide them.
+**
+** Revision 1.1  1996/01/29 13:36:38  andreas
 ** dump2dcm added convert ASCII descriptions into DICOM files
 **
 **

@@ -9,9 +9,9 @@
 **
 **
 ** Last Update:		$Author: hewett $
-** Update Date:		$Date: 1996-01-09 14:10:13 $
+** Update Date:		$Date: 1996-03-12 15:11:37 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/apps/dcmconv.cc,v $
-** CVS/RCS Revision:	$Revision: 1.4 $
+** CVS/RCS Revision:	$Revision: 1.5 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -21,12 +21,16 @@
 
 #include "osconfig.h"    /* make sure OS specific configuration is included first */
 
+#ifdef HAVE_STDLIB_H
 #include <stdlib.h>
+#endif
 #include <stdio.h>
 #include <string.h>
 
 #include "dctk.h"
 #include "dcdebug.h"
+#include "cmdlnarg.h"
+
 
 // ********************************************
 
@@ -101,6 +105,7 @@ int main(int argc, char *argv[])
 {
     SetDebugLevel(( 0 ));
 
+    prepareCmdLineArgs(argc, argv);
     
     if (argc < 3) {
 	usage();
@@ -323,7 +328,11 @@ int main(int argc, char *argv[])
 /*
 ** CVS/RCS Log:
 ** $Log: dcmconv.cc,v $
-** Revision 1.4  1996-01-09 14:10:13  hewett
+** Revision 1.5  1996-03-12 15:11:37  hewett
+** Added call to prepareCmdLineArgs to enable command line arguments
+** in environments which do not provide them.
+**
+** Revision 1.4  1996/01/09 14:10:13  hewett
 ** Added check for presence of input and output files on command line.
 **
 ** Revision 1.3  1996/01/09 11:05:59  andreas

@@ -8,10 +8,10 @@
 ** Convert a dicom dataset to a dicom file encoding
 **
 **
-** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1996-01-05 13:29:36 $
+** Last Update:		$Author: hewett $
+** Update Date:		$Date: 1996-03-12 15:11:38 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/apps/Attic/ds2file.cc,v $
-** CVS/RCS Revision:	$Revision: 1.3 $
+** CVS/RCS Revision:	$Revision: 1.4 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -23,7 +23,7 @@
 #include <iostream.h>
 #include "dctk.h"
 #include "dcdebug.h"
-
+#include "cmdlnarg.h"
 
 
 // ********************************************
@@ -108,6 +108,8 @@ int main(int argc, char *argv[])
 #endif
 
     SetDebugLevel(( 0 ));
+
+    prepareCmdLineArgs(argc, argv);
 
     if (argc < 3) {
 	usage();
@@ -277,7 +279,11 @@ int main(int argc, char *argv[])
 /*
 ** CVS/RCS Log:
 ** $Log: ds2file.cc,v $
-** Revision 1.3  1996-01-05 13:29:36  andreas
+** Revision 1.4  1996-03-12 15:11:38  hewett
+** Added call to prepareCmdLineArgs to enable command line arguments
+** in environments which do not provide them.
+**
+** Revision 1.3  1996/01/05 13:29:36  andreas
 ** - new streaming facilities
 ** - unique read/write methods for block and file transfer
 ** - more cleanups

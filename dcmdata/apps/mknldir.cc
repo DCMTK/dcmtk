@@ -10,7 +10,7 @@
 #include <time.h>
 #include "dctk.h"
 #include "dcdebug.h"
-
+#include "cmdlnarg.h"
 
 int main(int argc, char *argv[])
 {
@@ -29,6 +29,8 @@ int main(int argc, char *argv[])
 	cerr << "Warning: no data dictionary loaded, check environment variable: " << DCM_DICT_ENVIRONMENT_VARIABLE << endl;
 	return 1; /* DcmDicomDir class dumps core when no data dictionary */
     }
+
+    prepareCmdLineArgs(argc, argv);
 
     /* parse cmd line */
     if (argc != 3) {
