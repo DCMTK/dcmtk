@@ -22,9 +22,9 @@
  *  Purpose: convert VeriLUM CCx_xx.dat files to DCMTK display files
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-02-08 12:35:23 $
+ *  Update Date:      $Date: 1999-02-11 16:55:23 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/apps/dconvlum.cc,v $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -50,7 +50,7 @@ int main(int argc, char *argv[])
 {
     if (argc == 3)
     {
-        ifstream input(argv[1]);
+        ifstream input(argv[1], ios::in|ios::nocreate);
         if (input)
         {
             ofstream output(argv[2]);
@@ -102,7 +102,11 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dconvlum.cc,v $
- * Revision 1.2  1999-02-08 12:35:23  joergr
+ * Revision 1.3  1999-02-11 16:55:23  joergr
+ * Added mode ios::nocreate when opening file streams for reading to avoid
+ * implicit creation of non-existing files.
+ *
+ * Revision 1.2  1999/02/08 12:35:23  joergr
  * Corrected some typos and formatting.
  *
  * Revision 1.1  1999/02/05 15:16:16  joergr
