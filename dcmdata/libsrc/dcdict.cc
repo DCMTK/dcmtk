@@ -9,10 +9,10 @@
 ** Loadable DICOM data dictionary
 ** 
 **
-** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1996-01-09 11:06:44 $
+** Last Update:		$Author: hewett $
+** Update Date:		$Date: 1996-03-12 15:21:22 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcdict.cc,v $
-** CVS/RCS Revision:	$Revision: 1.3 $
+** CVS/RCS Revision:	$Revision: 1.4 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -83,11 +83,17 @@ void DcmDataDictionary::clear()
    }
    dict.clear();
 
-   for (p = repeatingDict.first(); p != NULL; repeatingDict.next(p)) {
-       e = repeatingDict(p);
+   for (p = repElementDict.first(); p != NULL; repElementDict.next(p)) {
+       e = repElementDict(p);
        delete e;
    }
-   repeatingDict.clear();
+   repElementDict.clear();
+
+   for (p = repGroupDict.first(); p != NULL; repGroupDict.next(p)) {
+       e = repGroupDict(p);
+       delete e;
+   }
+   repGroupDict.clear();
 }
 
 
@@ -439,7 +445,8 @@ void
 DcmDataDictionary::balance()
 {
     dict.balance();
-    repeatingDict.balance();
+    repElementDict.balance();
+    repGroupDict.balance();
 }
     
 void 
@@ -454,10 +461,15 @@ DcmDataDictionary::addEntry(DcmDictEntry* e)
      * entries seems reasonable.
      */
 
-    if (e->isRepeating()) {
-        repeatingDict.add(e, TRUE);
-        if ((repeatingDict.length() % DCM_DICT_BALANCE_RATE) == 0) {
-            repeatingDict.balance();
+    if (e->isRepeatingGroup()) {
+        repGroupDict.add(e, TRUE);
+        if ((repGroupDict.length() % DCM_DICT_BALANCE_RATE) == 0) {
+            repGroupDict.balance();
+        }
+    } else if (e->isRepeatingElement()) {
+        repElementDict.add(e, TRUE);
+        if ((repElementDict.length() % DCM_DICT_BALANCE_RATE) == 0) {
+            repElementDict.balance();
         }
     } else {
         dict.add(e, TRUE);
@@ -474,8 +486,11 @@ DcmDataDictionary::deleteEntry(const DcmDictEntry& entry)
 
     e = (DcmDictEntry*)findEntry(entry);
     if (e != NULL) {
-        if (e->isRepeating()) {
-	    repeatingDict.del(e);
+        if (e->isRepeatingGroup()) {
+	    repGroupDict.del(e);
+            delete e;
+	} else if (e->isRepeatingElement()) {
+	    repElementDict.del(e);
             delete e;
         } else {
 	    dict.del(e);
@@ -490,10 +505,15 @@ DcmDataDictionary::findEntry(const DcmDictEntry& entry)
     const DcmDictEntry* e = NULL;
     Pix p = NULL;
 
-    if (entry.isRepeating()) {
-	p = repeatingDict.seek((DcmDictEntry*)&entry);
+    if (entry.isRepeatingGroup()) {
+	p = repGroupDict.seek((DcmDictEntry*)&entry);
 	if (p != NULL) {
-	    e = repeatingDict(p);
+	    e = repGroupDict(p);
+        }
+    } else if (entry.isRepeatingElement()) {
+	p = repElementDict.seek((DcmDictEntry*)&entry);
+	if (p != NULL) {
+	    e = repElementDict(p);
         }
     } else {
         p = dict.seek((DcmDictEntry*)&entry);
@@ -512,16 +532,22 @@ DcmDataDictionary::findEntry(const DcmTagKey& key)
     Pix p = NULL;
 
     /* search first in the normal tags dictionary, then
-     * in the repeating tags dictionary 
+     * in the repeating element dictionary and then in
+     * the repeating group dictionary.
      */
     p = dict.seek(&keyEntry);
     if (p != NULL) {
         e = dict(p);
     } else {
-	p = repeatingDict.seek(&keyEntry);
+	p = repElementDict.seek(&keyEntry);
 	if (p != NULL) {
-	    e = repeatingDict(p);
-        }
+	    e = repElementDict(p);
+        } else {
+	    p = repGroupDict.seek(&keyEntry);
+	    if (p != NULL) {
+		e = repGroupDict(p);
+	    }
+	}
     }
     return e;
 }
@@ -529,7 +555,14 @@ DcmDataDictionary::findEntry(const DcmTagKey& key)
 /*
 ** CVS/RCS Log:
 ** $Log: dcdict.cc,v $
-** Revision 1.3  1996-01-09 11:06:44  andreas
+** Revision 1.4  1996-03-12 15:21:22  hewett
+** The repeating sub-dictionary has been split into a repeatingElement and
+** a repeatingGroups dictionary.  This is a temporary measure to reduce the
+** problem of overlapping dictionary entries.  A full solution will require
+** more radical changes to the data dictionary insertion and search
+** mechanims.
+**
+** Revision 1.3  1996/01/09 11:06:44  andreas
 ** New Support for Visual C++
 ** Correct problems with inconsistent const declarations
 ** Correct error in reading Item Delimitation Elements

@@ -8,9 +8,9 @@
 ** Generate a C++ header defining symbolic names for DICOM Tags.
 **
 ** Last Update:		$Author: hewett $
-** Update Date:		$Date: 1995-11-23 17:03:16 $
+** Update Date:		$Date: 1996-03-12 15:21:23 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/mkdeftag.cc,v $
-** CVS/RCS Revision:	$Revision: 1.1 $
+** CVS/RCS Revision:	$Revision: 1.2 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -147,16 +147,38 @@ int main(int argc, char* argv[])
     fputs("\n", fout);
 #endif
     /* generate the entries themselves */
+    fputs("\n/*\n", fout);
+    fputs("** Fixed Tags in assending (gggg,eeee) order.\n", fout);
+    fputs("** Tags with a repeating component (repeating tags) are listed later.\n", fout);
+    fputs("*/\n", fout);
+
     for (p = dcmDataDict.first(); p != 0; dcmDataDict.next(p)) {
 	e = dcmDataDict.contents(p);
 	printDefined(fout, e);
     }
 
-    for (p=dcmDataDict.repeatingFirst(); 
-	 p!=0; dcmDataDict.repeatingNext(p)) {
-	e = dcmDataDict.repeatingContents(p);
+    fputs("\n/*\n", fout);
+    fputs("** Tags where the element number can vary (repeating elements).\n", 
+	  fout);
+    fputs("*/\n", fout);
+
+    for (p=dcmDataDict.repElementFirst(); 
+	 p!=0; dcmDataDict.repElementNext(p)) {
+	e = dcmDataDict.repElementContents(p);
 	printDefined(fout, e);
     }
+
+    fputs("\n/*\n", fout);
+    fputs("** Tags where the group number can vary (repeating groups).\n", 
+	  fout);
+    fputs("*/\n", fout);
+
+    for (p=dcmDataDict.repGroupFirst(); 
+	 p!=0; dcmDataDict.repGroupNext(p)) {
+	e = dcmDataDict.repGroupContents(p);
+	printDefined(fout, e);
+    }
+
 
     fputs("\n#endif /* !DCDEFTAG_H */\n", fout);
 
@@ -166,7 +188,14 @@ int main(int argc, char* argv[])
 /*
 ** CVS/RCS Log:
 ** $Log: mkdeftag.cc,v $
-** Revision 1.1  1995-11-23 17:03:16  hewett
+** Revision 1.2  1996-03-12 15:21:23  hewett
+** The repeating sub-dictionary has been split into a repeatingElement and
+** a repeatingGroups dictionary.  This is a temporary measure to reduce the
+** problem of overlapping dictionary entries.  A full solution will require
+** more radical changes to the data dictionary insertion and search
+** mechanims.
+**
+** Revision 1.1  1995/11/23 17:03:16  hewett
 ** Updated for loadable data dictionary.  Some cleanup (more to do).
 **
 **

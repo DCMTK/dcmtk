@@ -9,9 +9,9 @@
 ** the dcmdata library.  
 **
 ** Last Update:		$Author: hewett $
-** Update Date:		$Date: 1995-11-23 17:03:16 $
+** Update Date:		$Date: 1996-03-12 15:21:24 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/mkdictbi.cc,v $
-** CVS/RCS Revision:	$Revision: 1.1 $
+** CVS/RCS Revision:	$Revision: 1.2 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -132,11 +132,22 @@ main(int argc, char* argv[])
         printSimpleEntry(fout, e, lastEntry);
     }
 
-    for (p = dcmDataDict.repeatingFirst(); p != 0; 
-	 dcmDataDict.repeatingNext(p)) {
-        e = dcmDataDict.repeatingContents(p);
+    for (p = dcmDataDict.repElementFirst(); p != 0; 
+	 dcmDataDict.repElementNext(p)) {
+        e = dcmDataDict.repElementContents(p);
         pp = p;
-        dcmDataDict.repeatingNext(pp);
+        dcmDataDict.repElementNext(pp);
+        if (pp == 0) {
+            lastEntry = TRUE;
+        }
+        printSimpleEntry(fout, e, lastEntry);
+    }
+
+    for (p = dcmDataDict.repGroupFirst(); p != 0; 
+	 dcmDataDict.repGoupNext(p)) {
+        e = dcmDataDict.repGroupContents(p);
+        pp = p;
+        dcmDataDict.repGroupNext(pp);
         if (pp == 0) {
             lastEntry = TRUE;
         }
@@ -173,7 +184,14 @@ main(int argc, char* argv[])
 /*
 ** CVS/RCS Log:
 ** $Log: mkdictbi.cc,v $
-** Revision 1.1  1995-11-23 17:03:16  hewett
+** Revision 1.2  1996-03-12 15:21:24  hewett
+** The repeating sub-dictionary has been split into a repeatingElement and
+** a repeatingGroups dictionary.  This is a temporary measure to reduce the
+** problem of overlapping dictionary entries.  A full solution will require
+** more radical changes to the data dictionary insertion and search
+** mechanims.
+**
+** Revision 1.1  1995/11/23 17:03:16  hewett
 ** Updated for loadable data dictionary.  Some cleanup (more to do).
 **
 **
