@@ -68,9 +68,9 @@
 **
 **
 ** Last Update:		$Author: meichel $
-** Update Date:		$Date: 1999-04-19 08:39:27 $
+** Update Date:		$Date: 1999-04-21 13:01:23 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/include/Attic/assoc.h,v $
-** CVS/RCS Revision:	$Revision: 1.7 $
+** CVS/RCS Revision:	$Revision: 1.8 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -130,8 +130,11 @@ typedef struct {
 */
 
 
-/* not defined anywhere (I think) but a hard limitation for now */
-#define DICOM_MAXTRANSFERSYNTAXES	25
+/* not defined anywhere (I think) but a hard limitation for now.
+ * DICOM (1998) defines 22 transfer syntaxes, this upper limit
+ * should allow for sufficiently many private transfer syntaxes.
+ */
+#define DICOM_MAXTRANSFERSYNTAXES	50
 
 
 typedef DUL_PRESENTATIONCONTEXTID T_ASC_PresentationContextID;
@@ -491,7 +494,11 @@ ASC_destroyAssociation(T_ASC_Association ** association);
 /*
 ** CVS Log
 ** $Log: assoc.h,v $
-** Revision 1.7  1999-04-19 08:39:27  meichel
+** Revision 1.8  1999-04-21 13:01:23  meichel
+** Increased max. number of transfer syntaxes that
+**   can be managed in an A-ASSOCIATE packet from 25 to 50.
+**
+** Revision 1.7  1999/04/19 08:39:27  meichel
 ** Added experimental support for extended SOP class negotiation.
 **
 ** Revision 1.6  1997/08/05 07:38:08  andreas
