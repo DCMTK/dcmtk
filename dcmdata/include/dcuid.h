@@ -10,9 +10,9 @@
 ** routines for finding and creating UIDs.
 **
 ** Last Update:		$Author: hewett $
-** Update Date:		$Date: 1997-06-09 13:28:15 $
+** Update Date:		$Date: 1997-09-22 14:56:46 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcuid.h,v $
-** CVS/RCS Revision:	$Revision: 1.18 $
+** CVS/RCS Revision:	$Revision: 1.19 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -59,6 +59,18 @@ const char * dcmFindUIDFromName(const char * name);
 
 extern const char* dcmStorageSOPClassUIDs[];
 extern const int numberOfDcmStorageSOPClassUIDs;
+
+/*
+** The global variable dcmImageSOPClassUIDs is an array of 
+** string pointers containing the UIDs of all known Image SOP
+** Classes.  The global variable numberOfDcmImageSOPClassUIDs
+** defines the size of the array.
+** NOTE: this list represets a subset of the dcmStorageSOPClassUIDs list
+*/
+
+extern const char* dcmImageSOPClassUIDs[];
+extern const int numberOfDcmImageSOPClassUIDs;
+
 
 /*		
 ** char* generateUniqueIdentifer(char* uid)
@@ -282,7 +294,12 @@ char* dcmGenerateUniqueIdentifer(char* uid, const char* prefix=NULL);
 /*
 ** CVS/RCS Log:
 ** $Log: dcuid.h,v $
-** Revision 1.18  1997-06-09 13:28:15  hewett
+** Revision 1.19  1997-09-22 14:56:46  hewett
+** Added a global list of Image SOP Classes UIDs (dcmImageSOPClassUIDs)
+** which is used by dcmgpdir to identify SOP Classes which can be
+** referenced from a DICOMDIR IMAGE record.
+**
+** Revision 1.18  1997/06/09 13:28:15  hewett
 ** Updated Version Number and Implementation Version Name to reflect the
 ** current public release (3.2.1)
 **

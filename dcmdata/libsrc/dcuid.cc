@@ -10,9 +10,9 @@
 ** routines for finding and created UIDs.
 **
 ** Last Update:		$Author: hewett $
-** Update Date:		$Date: 1997-05-13 13:54:27 $
+** Update Date:		$Date: 1997-09-22 14:56:56 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcuid.cc,v $
-** CVS/RCS Revision:	$Revision: 1.9 $
+** CVS/RCS Revision:	$Revision: 1.10 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -249,6 +249,63 @@ const int numberOfDcmStorageSOPClassUIDs =
     (sizeof(dcmStorageSOPClassUIDs) / sizeof(const char*)) - 1;
 
 
+/*
+** The global variable dcmImageSOPClassUIDs is an array of 
+** string pointers containing the UIDs of all known Image SOP
+** Classes.  The global variable numberOfDcmImageSOPClassUIDs
+** defines the size of the array.
+** NOTE: this list represets a subset of the dcmStorageSOPClassUIDs list
+*/
+
+const char* dcmImageSOPClassUIDs[] = {
+    UID_ComputedRadiographyImageStorage, 
+    UID_CTImageStorage,
+    UID_UltrasoundMultiframeImageStorage,
+    UID_MRImageStorage,
+    UID_NuclearMedicineImageStorage,
+    UID_UltrasoundImageStorage,
+    UID_SecondaryCaptureImageStorage,
+
+// The Standalone objects are not really images
+//    UID_StandaloneOverlayStorage,
+//    UID_StandaloneCurveStorage,
+//    UID_StandaloneModalityLUTStorage,
+//    UID_StandaloneVOILUTStorage,
+
+    UID_RETIRED_NuclearMedicineImageStorage,
+    UID_RETIRED_UltrasoundImageStorage,
+    UID_RETIRED_UltrasoundMultiframeImageStorage,
+
+    UID_XRayAngiographicImageStorage,
+    UID_XRayAngiographicBiPlaneImageStorage,
+    UID_XRayFluoroscopyImageStorage,
+    
+    UID_RTImageStorage,
+// The other RT objects are not images and therefore cannot be put 
+// in DICOMDIR IMAGE records
+//    UID_RTDoseStorage,
+//    UID_RTStructureSetStorage,
+//    UID_RTPlanStorage,
+
+    UID_PETImageStorage,
+// Curves are not images
+//    UID_PETCurveStorage,
+
+    UID_VLImageStorage,
+    UID_VLMultiFrameImageStorage,
+
+// The print objects are not really images
+//    UID_BasicGrayscalePrintStorageSOPClass, 
+//    UID_BasicColorPrintStorageSOPClass, 
+//    UID_ReferencedGrayscalePrintStorageSOPClass, 
+//    UID_ReferencedColorPrintStorageSOPClass, 
+
+    NULL
+};
+
+const int numberOfDcmImageSOPClassUIDs = 
+    (sizeof(dcmImageSOPClassUIDs) / sizeof(const char*)) - 1;
+
 
 /*
 ** dcmFindNameOfUID(const char* uid)
@@ -456,7 +513,12 @@ char* dcmGenerateUniqueIdentifer(char* uid, const char* prefix)
 /*
 ** CVS/RCS Log:
 ** $Log: dcuid.cc,v $
-** Revision 1.9  1997-05-13 13:54:27  hewett
+** Revision 1.10  1997-09-22 14:56:56  hewett
+** Added a global list of Image SOP Classes UIDs (dcmImageSOPClassUIDs)
+** which is used by dcmgpdir to identify SOP Classes which can be
+** referenced from a DICOMDIR IMAGE record.
+**
+** Revision 1.9  1997/05/13 13:54:27  hewett
 ** Added UIDs and data dictionary attributes for the draft supplements 12 (PET),
 ** 13 (Queue Management), 15 (Visible Light), 17 (Modality Performed Procedure
 ** Step), 22 (User Preference LUT) and 24 (Print Storage).  Updated UID tables
