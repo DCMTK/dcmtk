@@ -22,9 +22,9 @@
  *  Purpose: DicomMonochromeImage (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-02-08 12:39:05 $
+ *  Update Date:      $Date: 1999-02-11 16:34:36 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/dimoimg.h,v $
- *  CVS/RCS Revision: $Revision: 1.12 $
+ *  CVS/RCS Revision: $Revision: 1.13 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -40,6 +40,7 @@
 
 #include "diimage.h"
 #include "dimopx.h"
+#include "dimoopx.h"
 #include "diovlay.h"
 #include "diluptab.h"
 #include "didispfn.h"
@@ -50,7 +51,6 @@
  *------------------------*/
 
 class DiColorImage;
-class DiMonoOutputPixel;
 
 
 /*---------------------*
@@ -95,6 +95,11 @@ class DiMonoImage
     inline int deleteBartenLUT(const int bits)
     {
         return (DisplayFunction != NULL) ? DisplayFunction->deleteBartenLUT(bits) : 0;
+    }
+
+    inline int isValueUnused(const unsigned long value)
+    {
+        return (OutputData != NULL) ? OutputData->isUnused(value) : 0;
     }
 
     int convertPValueToDDL(const Uint16 pvalue,
@@ -294,7 +299,11 @@ class DiMonoImage
  *
  * CVS/RCS Log:
  * $Log: dimoimg.h,v $
- * Revision 1.12  1999-02-08 12:39:05  joergr
+ * Revision 1.13  1999-02-11 16:34:36  joergr
+ * Added routine to check whether particular grayscale values are unused in
+ * the output data.
+ *
+ * Revision 1.12  1999/02/08 12:39:05  joergr
  * Changed implementation of removeAllOverlays().
  *
  * Revision 1.11  1999/02/05 16:43:13  joergr

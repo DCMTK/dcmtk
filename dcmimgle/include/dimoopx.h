@@ -22,9 +22,9 @@
  *  Purpose: DicomMonoOutputPixel (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-02-03 17:30:30 $
+ *  Update Date:      $Date: 1999-02-11 16:37:56 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/dimoopx.h,v $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -65,7 +65,8 @@ class DiMonoOutputPixel
  public:
 
     DiMonoOutputPixel(const DiMonoPixel *pixel,
-                      const unsigned long frames);
+                      const unsigned long frames,
+                      const unsigned long max);
 
     virtual ~DiMonoOutputPixel();
     
@@ -84,10 +85,26 @@ class DiMonoOutputPixel
         return Count;
     }
 
+    int isUnused(const unsigned long value);
+
 
  protected:
  
-    const unsigned long Count;
+    virtual void determineUsedValues() = 0;
+
+
+    const unsigned long Count;              // number of pixels
+    
+    Uint8 *UsedValues;                      // array of used pixel values
+    const unsigned long MaxValue;           // maximum output value
+
+
+ private:
+
+ // --- declarations to avoid compiler warnings
+ 
+    DiMonoOutputPixel(const DiMonoOutputPixel &);
+    DiMonoOutputPixel &operator=(const DiMonoOutputPixel &);
 };
 
 
@@ -98,7 +115,11 @@ class DiMonoOutputPixel
  *
  * CVS/RCS Log:
  * $Log: dimoopx.h,v $
- * Revision 1.3  1999-02-03 17:30:30  joergr
+ * Revision 1.4  1999-02-11 16:37:56  joergr
+ * Added routine to check whether particular grayscale values are unused in
+ * the output data.
+ *
+ * Revision 1.3  1999/02/03 17:30:30  joergr
  * Added BEGIN_EXTERN_C and END_EXTERN_C to some C includes.
  *
  * Revision 1.2  1999/01/20 15:07:02  joergr
