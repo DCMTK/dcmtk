@@ -23,8 +23,8 @@
  *    classes: DSRDocumentTreeNode
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-10-06 09:52:58 $
- *  CVS/RCS Revision: $Revision: 1.17 $
+ *  Update Date:      $Date: 2003-10-30 17:53:02 $
+ *  CVS/RCS Revision: $Revision: 1.18 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -237,6 +237,14 @@ class DSRDocumentTreeNode
         return (Down != NULL);
     }
 
+    /** check whether the current content item has any siblings
+     ** @return OFTrue if there are any sibling nodes, OFFalse otherwise
+     */
+    inline OFBool hasSiblingNodes() const
+    {
+        return (Prev != NULL) || (Next != NULL);
+    }
+
     /** get ID of the current tree node
      ** @return ID of the current tree node (should never be 0)
      */
@@ -306,6 +314,30 @@ class DSRDocumentTreeNode
      ** @return status, EC_Normal if successful, an error code otherwise
      */
     virtual OFCondition setObservationDateTime(const OFString &observationDateTime);
+
+    /** get template identifier and mapping resource.
+     *  This value pair identifies the template that was used to create this content item
+     *  (and its children).  According to the DICOM standard it is "required if a template
+     *  was used to define the content of this Item, and the template consists of a single
+     *  CONTAINER with nested content, and it is the outermost invocation of a set of
+     *  nested templates that start with the same CONTAINER."  The identification is valid
+     *  if both values are either present (non-empty) or absent (empty).
+     ** @param  templateIdentifier  identifier of the template (might be empty)
+     *  @param  mappingResource     mapping resource that defines the template (might be empty)
+     ** @return status, EC_Normal if successful, an error code otherwise
+     */
+    OFCondition getTemplateIdentification(OFString &templateIdentifier,
+                                          OFString &mappingResource) const;
+
+    /** set template identifier and mapping resource.
+     *  The identification is valid if both values are either present (non-empty) or absent
+     *  (empty).  See getTemplateIdentification() for details.
+     ** @param  templateIdentifier  identifier of the template to be set (VR=CS)
+     *  @param  mappingResource     mapping resource that defines the template (VR=CS)
+     ** @return status, EC_Normal if successful, an error code otherwise
+     */
+    virtual OFCondition setTemplateIdentification(const OFString &templateIdentifier,
+                                                  const OFString &mappingResource);
 
     /** remove digital signatures from content item.
      *  This method clears the MACParametersSequence and the DigitalSignaturesSequence for
@@ -559,6 +591,11 @@ class DSRDocumentTreeNode
     /// observation date and time (VR=DT, conditional)
     OFString                 ObservationDateTime;
 
+    /// template identifier (VR=CS, mandatory in ContentTemplateSequence)
+    OFString                 TemplateIdentifier;
+    /// mapping resource (VR=CS, mandatory in ContentTemplateSequence)
+    OFString                 MappingResource;
+
     /// MAC parameters sequence (VR=SQ, optional)
     DcmSequenceOfItems       MACParameters;
     /// digital signatures sequence (VR=SQ, optional)
@@ -579,7 +616,11 @@ class DSRDocumentTreeNode
 /*
  *  CVS/RCS Log:
  *  $Log: dsrdoctn.h,v $
- *  Revision 1.17  2003-10-06 09:52:58  joergr
+ *  Revision 1.18  2003-10-30 17:53:02  joergr
+ *  Added full support for the ContentTemplateSequence (read/write, get/set
+ *  template identification). Template constraints are not checked yet.
+ *
+ *  Revision 1.17  2003/10/06 09:52:58  joergr
  *  Added new flag which allows to ignore content item errors when reading an SR
  *  document (e.g. missing value type specific attributes).
  *

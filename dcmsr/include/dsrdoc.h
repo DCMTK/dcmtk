@@ -23,8 +23,8 @@
  *    classes: DSRDocument
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-10-09 13:18:16 $
- *  CVS/RCS Revision: $Revision: 1.31 $
+ *  Update Date:      $Date: 2003-10-30 17:53:23 $
+ *  CVS/RCS Revision: $Revision: 1.32 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -135,7 +135,12 @@ class DSRDocument
     OFCondition read(DcmItem &dataset,
                      const size_t flags = 0);
 
-    /** write current SR document to DICOM dataset
+    /** write current SR document to DICOM dataset.
+     *  Please note that the ContentTemplateSequence for the root content item is not written
+     *  automatically for particular SOP Classes (e.g. Key Object Selection Document).
+     *  Instead, the template identification has to be set manually for the root CONTAINER
+     *  (see DSRDocumentTreeNode::setTemplateIdentification()).  This is because the template
+     *  constraints cannot be checked yet.
      ** @param  dataset      reference to DICOM dataset to which the current document should be
      *                       written
      *  @param  markedItems  optional stack where pointers to all 'marked' content items
@@ -1152,7 +1157,11 @@ class DSRDocument
 /*
  *  CVS/RCS Log:
  *  $Log: dsrdoc.h,v $
- *  Revision 1.31  2003-10-09 13:18:16  joergr
+ *  Revision 1.32  2003-10-30 17:53:23  joergr
+ *  Added full support for the ContentTemplateSequence (read/write, get/set
+ *  template identification). Template constraints are not checked yet.
+ *
+ *  Revision 1.31  2003/10/09 13:18:16  joergr
  *  Added text from Supplement 66 to getCurrentRequestedProcedureEvidence() API
  *  comment.
  *

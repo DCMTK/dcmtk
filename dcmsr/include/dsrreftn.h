@@ -23,8 +23,8 @@
  *    classes: DSRByReferenceTreeNode
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-09-15 14:18:54 $
- *  CVS/RCS Revision: $Revision: 1.8 $
+ *  Update Date:      $Date: 2003-10-30 17:53:02 $
+ *  CVS/RCS Revision: $Revision: 1.9 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -113,9 +113,18 @@ class DSRByReferenceTreeNode
     /** set observation date time
      ** @param  observationDateTime  dummy parameter
      ** @return always returns EC_IllegalCall, since this content item has no observation
-     *          date and time
+     *          date and time (part of Document Relationship Macro)
      */
     virtual OFCondition setObservationDateTime(const OFString &observationDateTime);
+
+    /** set template identifier and mapping resource
+     ** @param  templateIdentifier  dummy parameter
+     *  @param  mappingResource     dummy parameter
+     ** @return always returns EC_IllegalCall, since this content item has no template
+     *          identification (part of Document Relationship Macro)
+     */
+    virtual OFCondition setTemplateIdentification(const OFString &templateIdentifier,
+                                                  const OFString &mappingResource);
 
     /** get ID of the referenced node
      ** @return ID of the referenced node if valid, 0 otherwise
@@ -194,7 +203,11 @@ class DSRByReferenceTreeNode
 /*
  *  CVS/RCS Log:
  *  $Log: dsrreftn.h,v $
- *  Revision 1.8  2003-09-15 14:18:54  joergr
+ *  Revision 1.9  2003-10-30 17:53:02  joergr
+ *  Added full support for the ContentTemplateSequence (read/write, get/set
+ *  template identification). Template constraints are not checked yet.
+ *
+ *  Revision 1.8  2003/09/15 14:18:54  joergr
  *  Introduced new class to facilitate checking of SR IOD relationship content
  *  constraints. Replaced old implementation distributed over numerous classes.
  *

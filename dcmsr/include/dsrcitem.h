@@ -23,8 +23,8 @@
  *    classes: DSRContentItem
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-08-07 12:18:57 $
- *  CVS/RCS Revision: $Revision: 1.15 $
+ *  Update Date:      $Date: 2003-10-30 17:54:09 $
+ *  CVS/RCS Revision: $Revision: 1.16 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -370,6 +370,32 @@ class DSRContentItem
      */
     OFCondition setObservationDateTime(const OFString &observationDateTime);
 
+    /** get template identifier and mapping resource.
+     *  This value pair identifies the template that was used to create this content item
+     *  (and its children).  According to the DICOM standard is is "required if a template
+     *  was used to define the content of this Item, and the template consists of a single
+     *  CONTAINER with nested content, and it is the outermost invocation of a set of
+     *  nested templates that start with the same CONTAINER."  The identification is valid
+     *  if both values are either present (non-empty) or absent (empty).
+     *  Applicable to all content items (by-value only, optional attribute).
+     ** @param  templateIdentifier  identifier of the template (might be empty)
+     *  @param  mappingResource     mapping resource that defines the template (might be empty)
+     ** @return status, EC_Normal if successful, an error code otherwise
+     */
+    OFCondition getTemplateIdentification(OFString &templateIdentifier,
+                                          OFString &mappingResource) const;
+
+    /** set template identifier and mapping resource.
+     *  The identification is valid if both values are either present (non-empty) or absent
+     *  (empty).  See getTemplateIdentification() for details.
+     *  Applicable to all content items (by-value only).
+     ** @param  templateIdentifier  identifier of the template to be set (VR=CS)
+     *  @param  mappingResource     mapping resource that defines the template (VR=CS)
+     ** @return status, EC_Normal if successful, an error code otherwise
+     */
+    OFCondition setTemplateIdentification(const OFString &templateIdentifier,
+                                          const OFString &mappingResource);
+
 
   protected:
 
@@ -422,7 +448,11 @@ class DSRContentItem
 /*
  *  CVS/RCS Log:
  *  $Log: dsrcitem.h,v $
- *  Revision 1.15  2003-08-07 12:18:57  joergr
+ *  Revision 1.16  2003-10-30 17:54:09  joergr
+ *  Added full support for the ContentTemplateSequence (read/write, get/set
+ *  template identification). Template constraints are not checked yet.
+ *
+ *  Revision 1.15  2003/08/07 12:18:57  joergr
  *  Updated documentation to get rid of doxygen warnings.
  *
  *  Revision 1.14  2001/09/26 13:04:04  meichel
