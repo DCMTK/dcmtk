@@ -22,9 +22,9 @@
  *  Purpose: Storage Service Class User (C-STORE operation)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-12-06 14:11:13 $
+ *  Update Date:      $Date: 2002-01-08 10:27:29 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/apps/storescu.cc,v $
- *  CVS/RCS Revision: $Revision: 1.43 $
+ *  CVS/RCS Revision: $Revision: 1.44 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -991,7 +991,7 @@ makeUID(OFString basePrefix, int counter)
 {
     OFString prefix = basePrefix + "." + intToString(counter);
     char uidbuf[65];
-    OFString uid = dcmGenerateUniqueIdentifer(uidbuf, prefix.c_str());
+    OFString uid = dcmGenerateUniqueIdentifier(uidbuf, prefix.c_str());
     return uid;
 }
 
@@ -1289,7 +1289,10 @@ cstore(T_ASC_Association * assoc, const OFString& fname)
 /*
 ** CVS Log
 ** $Log: storescu.cc,v $
-** Revision 1.43  2001-12-06 14:11:13  joergr
+** Revision 1.44  2002-01-08 10:27:29  joergr
+** Corrected spelling of function dcmGenerateUniqueIdentifier().
+**
+** Revision 1.43  2001/12/06 14:11:13  joergr
 ** Made description and layout of command line options more consistent.
 **
 ** Revision 1.42  2001/11/09 15:56:25  joergr

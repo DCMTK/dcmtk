@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DcmSignature
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-12-04 18:41:08 $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2002-01-08 10:28:16 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -365,7 +365,7 @@ OFCondition DcmSignature::createSignature(
       if (result.good())
       {
         char newUID[66];
-        dcmGenerateUniqueIdentifer(newUID);
+        dcmGenerateUniqueIdentifier(newUID);
         DcmUniqueIdentifier *elemSigUID = new DcmUniqueIdentifier(DCM_DigitalSignatureUID);
         if (elemSigUID)
         {
@@ -845,7 +845,10 @@ void dcmsign_cc_dummy_to_keep_linker_from_moaning()
 
 /*
  *  $Log: dcmsign.cc,v $
- *  Revision 1.7  2001-12-04 18:41:08  meichel
+ *  Revision 1.8  2002-01-08 10:28:16  joergr
+ *  Corrected spelling of function dcmGenerateUniqueIdentifier().
+ *
+ *  Revision 1.7  2001/12/04 18:41:08  meichel
  *  Updated DcmItem::insert() calls to always remove old element if present
  *    (which should never be the case anyway).
  *

@@ -23,8 +23,8 @@
  *    classes: DVPSImageBoxContent_PList
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-11-28 13:56:57 $
- *  CVS/RCS Revision: $Revision: 1.23 $
+ *  Update Date:      $Date: 2002-01-08 10:35:45 $
+ *  CVS/RCS Revision: $Revision: 1.24 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -481,7 +481,7 @@ OFBool DVPSImageBoxContent_PList::printSCPCreate(
     box = new DVPSImageBoxContent();
     if (box)
     {
-      if ((EC_Normal == box->setSOPInstanceUID(dcmGenerateUniqueIdentifer(uid))) &&
+      if ((EC_Normal == box->setSOPInstanceUID(dcmGenerateUniqueIdentifier(uid))) &&
           (EC_Normal == box->setUIDsAndAETitle(studyUID, seriesUID, aetitle)))
       {
       	box->setLog(logstream, verboseMode, debugMode);
@@ -618,7 +618,10 @@ OFBool DVPSImageBoxContent_PList::emptyPageWarning()
 
 /*
  *  $Log: dvpsibl.cc,v $
- *  Revision 1.23  2001-11-28 13:56:57  joergr
+ *  Revision 1.24  2002-01-08 10:35:45  joergr
+ *  Corrected spelling of function dcmGenerateUniqueIdentifier().
+ *
+ *  Revision 1.23  2001/11/28 13:56:57  joergr
  *  Check return value of DcmItem::insert() statements where appropriate to
  *  avoid memory leaks when insert procedure fails.
  *

@@ -21,10 +21,10 @@
  *
  *  Purpose: Abstract base class for IJG JPEG decoder
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-12-20 10:41:49 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2002-01-08 10:29:07 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmjpeg/libsrc/djcodecd.cc,v $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -531,7 +531,7 @@ OFCondition DJCodecDecoder::newInstance(DcmItem *dataset)
     DcmElement *elem = new DcmUniqueIdentifier(DCM_SOPInstanceUID);
     if (elem)
     {
-      result = elem->putString(dcmGenerateUniqueIdentifer(new_uid));
+      result = elem->putString(dcmGenerateUniqueIdentifier(new_uid));
       if (result.good())
         dataset->insert(elem, OFTrue); // replace SOP Instance UID
         else delete elem;
@@ -631,7 +631,10 @@ OFBool DJCodecDecoder::requiresPlanarConfiguration(
 /*
  * CVS/RCS Log
  * $Log: djcodecd.cc,v $
- * Revision 1.3  2001-12-20 10:41:49  meichel
+ * Revision 1.4  2002-01-08 10:29:07  joergr
+ * Corrected spelling of function dcmGenerateUniqueIdentifier().
+ *
+ * Revision 1.3  2001/12/20 10:41:49  meichel
  * Fixed warnings reported by Sun CC 2.0.1
  *
  * Revision 1.2  2001/11/28 13:48:15  joergr

@@ -23,8 +23,8 @@
  *    definitions of constants and macros for pstat module
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-11-28 13:59:31 $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  Update Date:      $Date: 2002-01-08 10:32:12 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -174,14 +174,17 @@ if (rqDataset && (EC_Normal == rqDataset->search((DcmTagKey &)a_name.getTag(), s
 #define SET_UID(a_name)                                             \
 if (result==EC_Normal)                                              \
 {                                                                   \
-     if (a_name.getLength()==0) result = a_name.putString(dcmGenerateUniqueIdentifer(uid)); \
+     if (a_name.getLength()==0) result = a_name.putString(dcmGenerateUniqueIdentifier(uid)); \
 }
 
 #endif
 
 /*
  *  $Log: dvpsdef.h,v $
- *  Revision 1.6  2001-11-28 13:59:31  joergr
+ *  Revision 1.7  2002-01-08 10:32:12  joergr
+ *  Corrected spelling of function dcmGenerateUniqueIdentifier().
+ *
+ *  Revision 1.6  2001/11/28 13:59:31  joergr
  *  Check return value of DcmItem::insert() statements where appropriate to
  *  avoid memory leaks when insert procedure fails.
  *

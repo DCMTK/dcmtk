@@ -23,8 +23,8 @@
  *    classes: DVPSImageBoxContent
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-11-28 13:56:56 $
- *  CVS/RCS Revision: $Revision: 1.28 $
+ *  Update Date:      $Date: 2002-01-08 10:35:45 $
+ *  CVS/RCS Revision: $Revision: 1.29 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1513,7 +1513,7 @@ OFBool DVPSImageBoxContent::printSCPEvaluateBasicGrayscaleImageSequence(
     // SOP Common Module
     if (EC_Normal==writeresult) writeresult = DVPSHelper::putStringValue(rspDataset, DCM_SOPClassUID, UID_HardcopyGrayscaleImageStorage);
     if (EC_Normal==writeresult) writeresult = referencedSOPClassUID.putString(UID_HardcopyGrayscaleImageStorage);
-    dcmGenerateUniqueIdentifer(newuid);
+    dcmGenerateUniqueIdentifier(newuid);
     if (EC_Normal==writeresult) writeresult = DVPSHelper::putStringValue(rspDataset, DCM_SOPInstanceUID, newuid);
     if (EC_Normal==writeresult) writeresult = referencedSOPInstanceUID.putString(newuid);
     DVPSHelper::currentDate(aString);
@@ -1550,7 +1550,10 @@ void DVPSImageBoxContent::setLog(OFConsole *stream, OFBool verbMode, OFBool dbgM
 
 /*
  *  $Log: dvpsib.cc,v $
- *  Revision 1.28  2001-11-28 13:56:56  joergr
+ *  Revision 1.29  2002-01-08 10:35:45  joergr
+ *  Corrected spelling of function dcmGenerateUniqueIdentifier().
+ *
+ *  Revision 1.28  2001/11/28 13:56:56  joergr
  *  Check return value of DcmItem::insert() statements where appropriate to
  *  avoid memory leaks when insert procedure fails.
  *

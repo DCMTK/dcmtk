@@ -21,10 +21,10 @@
  *
  *  Purpose: Presentation State Viewer - Network Receive Component (Store SCP)
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-10-12 13:46:49 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2002-01-08 10:31:46 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmpstat/apps/dcmpsrcv.cc,v $
- *  CVS/RCS Revision: $Revision: 1.33 $
+ *  CVS/RCS Revision: $Revision: 1.34 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1344,7 +1344,7 @@ int main(int argc, char *argv[])
               // Adding it to the PRNG seed guarantees that we have different seeds for
               // different child processes.
               char randomUID[65];
-              dcmGenerateUniqueIdentifer(randomUID);              
+              dcmGenerateUniqueIdentifier(randomUID);              
               if (tLayer) tLayer->addPRNGseed(randomUID, strlen(randomUID));
 #endif
               handleClient(&assoc, dbfolder, opt_verbose, networkBitPreserving, useTLS);
@@ -1384,7 +1384,7 @@ int main(int argc, char *argv[])
               // Adding it to the PRNG seed guarantees that we have different seeds for
               // different child processes.
               char randomUID[65];
-              dcmGenerateUniqueIdentifer(randomUID);              
+              dcmGenerateUniqueIdentifier(randomUID);              
               if (tLayer) tLayer->addPRNGseed(randomUID, strlen(randomUID));
 #endif
               handleClient(&assoc, dbfolder, opt_verbose, networkBitPreserving, useTLS);
@@ -1462,7 +1462,10 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmpsrcv.cc,v $
- * Revision 1.33  2001-10-12 13:46:49  meichel
+ * Revision 1.34  2002-01-08 10:31:46  joergr
+ * Corrected spelling of function dcmGenerateUniqueIdentifier().
+ *
+ * Revision 1.33  2001/10/12 13:46:49  meichel
  * Adapted dcmpstat to OFCondition based dcmnet module (supports strict mode).
  *
  * Revision 1.32  2001/09/28 13:48:20  joergr

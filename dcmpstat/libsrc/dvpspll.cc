@@ -23,8 +23,8 @@
  *    classes: DVPSImageBoxContent_PList
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-11-28 13:56:58 $
- *  CVS/RCS Revision: $Revision: 1.11 $
+ *  Update Date:      $Date: 2002-01-08 10:35:46 $
+ *  CVS/RCS Revision: $Revision: 1.12 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -247,7 +247,7 @@ const char *DVPSPresentationLUT_PList::addPresentationLUT(DVPSPresentationLUT *n
     
   // no match, store new LUT
   char uid[100];
-  dcmGenerateUniqueIdentifer(uid);
+  dcmGenerateUniqueIdentifier(uid);
   myLUT->setSOPInstanceUID(uid);
   push_back(myLUT);
   result = myLUT->getSOPInstanceUID();
@@ -286,7 +286,10 @@ void DVPSPresentationLUT_PList::printSCPDelete(T_DIMSE_Message& rq, T_DIMSE_Mess
 
 /*
  *  $Log: dvpspll.cc,v $
- *  Revision 1.11  2001-11-28 13:56:58  joergr
+ *  Revision 1.12  2002-01-08 10:35:46  joergr
+ *  Corrected spelling of function dcmGenerateUniqueIdentifier().
+ *
+ *  Revision 1.11  2001/11/28 13:56:58  joergr
  *  Check return value of DcmItem::insert() statements where appropriate to
  *  avoid memory leaks when insert procedure fails.
  *
