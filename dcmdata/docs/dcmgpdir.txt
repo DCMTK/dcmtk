@@ -1,0 +1,76 @@
+NAME
+
+    dcmgpdir
+
+SYNOPSIS
+
+    dcmgpdir [options] referenced-dicom-file ...
+
+SUMMARY
+
+The dcmgpdir utility creates a DICOMDIR file from the specified
+referenced dicom files using the General Purpose CD-R Image
+Interchange Profile (Supplement 19).
+
+USAGE
+
+usage: dcmgpdir [options] referenced-dicom-file ...
+options are:
+  output options
+    +D<dicomdir-path>  generate specific DICOMDIR file (default: DICOMDIR
+                       in current directory)
+    +F<file-set-id>    use specific file set ID (default: DEMO CAR 97)
+    +R[<desc-file>]    add a file set descriptor file ID (e.g. README)
+                       (default: add nothing)
+    +C<char-set>       add a specific character set for descriptor
+                       (default: if descriptor file presend add "ISO_IR 100")
+    +I                 invent DICOMDIR type 1 attributes if missing in
+                       image file (default: exit with error)
+    +m                 map to DICOM filenames [lowercase -> uppercase,
+                       and remove trailing period] (default: expect
+                       filenames to already be in DICOM format)
+    -w                 do not write out dicomdir (default: do write)
+    +A                 append to existing dicomdir (default: create new)
+    +r                 recurse within filesystem directories
+  group length encoding:
+    -g                 write without group lengths (default)
+    +g                 write with group lengths
+  length encoding in sequences and items:
+    +e                 write with explicit lengths (default)
+    -e                 write with undefined lengths
+  other test/debug options:
+    -u    disable generation of unknown VR (UN)
+    +V    verbose mode
+    +dn   set debug level to n (n=1..9)
+
+BEHAVIOUR
+
+All files specified on the command line (or discovered by recursivly
+examining the contents of directories with the +r option) are first 
+evaluated for their compatibility with the General Purpose CD-R Image 
+Interchange Profile (Supplement 19).  Only appropriate files encoded
+using the Explicit VR Little Endian Uncompressed Transfer Syntax will
+be accepted.  File having invalid filenames will be rejected (the rules
+can be relaxed via the +m option).  Files missing required attributes
+will be rejected (the +I option can relax this behaviour).
+
+A DICOMDIR file will only be constructed if all files have passed 
+initial tests.  
+
+ENVIRONMENT
+
+The dcmgpdir utility will attempt to load DICOM data dictionaries
+specified in the DCMDICTPATH environment variable.  By default, if
+the DCMDICTPATH environment variable is not set, the file
+/usr/local/dicom/lib/dicom.dic will be loaded.  The default behaviour
+should be preferred and the DCMDICTPATH environment variable only used
+when alternative data dictionaries are required.  The DCMDICTPATH 
+environment variable has the same format as the shell PATH variable in
+that a colon (":") separates entries.  The data dictionary code will
+attempt to load each file specified in the DCMDICTPATH environment 
+variable.  It is an error if no data dictionary can be loaded.
+
+AUTHOR
+
+Andrew Hewett, Kuratorium OFFIS e.V., Oldenburg, Germany
+
