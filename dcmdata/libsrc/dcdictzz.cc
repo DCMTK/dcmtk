@@ -3,8 +3,8 @@
 ** It was generated automatically by:
 **
 **   User: meichel
-**   Host: sulla
-**   Date: Wed Jul 14 12:55:16 1999
+**   Host: livius
+**   Date: Wed Jul 14 16:23:48 1999
 **   Prog: /home/meichel/dicom/dcmtk/dcmdata/libsrc/mkdictbi
 **
 ** From: /home/meichel/dicom/dcmtk/dcmdata/libsrc/dicom.dic
@@ -13,7 +13,7 @@
 
 #include "dcdict.h"
 
-char* dcmBuiltinDictBuildDate = "Wed Jul 14 12:55:16 1999";
+char* dcmBuiltinDictBuildDate = "Wed Jul 14 16:23:48 1999";
 
 struct DBI_SimpleEntry {
     Uint16 group;
@@ -2081,6 +2081,9 @@ static DBI_SimpleEntry simpleBuiltinDict[] = {
       DcmDictRange_Unspecified, DcmDictRange_Unspecified },
     { 0x0028, 0x3010, 0x0028, 0x3010,
       EVR_SQ, "VOILUTSequence", 1, 1, "dicom98",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified },
+    { 0x0028, 0x3110, 0x0028, 0x3110,
+      EVR_SQ, "SoftcopyVOILUTSequence", 1, 1, "Supp33_lb",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified },
     { 0x0028, 0x4000, 0x0028, 0x4000,
       EVR_LT, "ImagePresentationComments", 1, -1, "ACR/NEMA2",

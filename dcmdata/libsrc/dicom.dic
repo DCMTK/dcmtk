@@ -23,9 +23,9 @@
 #  class library.
 #
 #  Last Update:      $Author: meichel $
-#  Update Date:      $Date: 1999-07-14 12:02:37 $
+#  Update Date:      $Date: 1999-07-14 16:26:46 $
 #  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/Attic/dicom.dic,v $
-#  CVS/RCS Revision: $Revision: 1.31 $
+#  CVS/RCS Revision: $Revision: 1.32 $
 #  Status:           $State: Exp $
 #
 #  The dictionary contains
@@ -1879,7 +1879,7 @@
 #---------------------------------------------------------------------------
 #
 # Supplement 33: Grayscale Softcopy Presentation State Storage
-# Letter Ballot Text - 1 July 1999
+# Letter Ballot Text - 1 July 1999 (revised 14 July 1999)
 #
 # WARNING: These data dictionary attributes come from a DRAFT 
 # document and are likely to change.  Included for experimental
@@ -1895,8 +1895,7 @@
 
 (0018,1622)	US	ShutterPresentationValue	1	Supp33_lb
 (0018,1623)	US	ShutterOverlayGroup	1	Supp33_lb
-# SoftcopyVOILUTSequence conflicts with VOILUTSequence.
-#(0028,3010)	SQ	SoftcopyVOILUTSequence	1	Supp33_lb
+(0028,3110)	SQ	SoftcopyVOILUTSequence	1	Supp33_lb
 (0070,0001)	SQ	GraphicAnnotationSequence	1	Supp33_lb
 (0070,0002)	CS	GraphicLayer	1	Supp33_lb
 (0070,0003)	CS	BoundingBoxAnnotationUnits	1	Supp33_lb
@@ -1939,5 +1938,3 @@
 #
 # EOF
 #
-
-

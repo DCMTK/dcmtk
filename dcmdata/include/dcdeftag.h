@@ -3,8 +3,8 @@
 ** It was generated automatically by:
 **
 **   User: meichel
-**   Host: sulla
-**   Date: Wed Jul 14 12:54:43 1999
+**   Host: livius
+**   Date: Wed Jul 14 16:23:27 1999
 **   Prog: /home/meichel/dicom/dcmtk/dcmdata/libsrc/mkdeftag
 **
 ** From: /home/meichel/dicom/dcmtk/dcmdata/libsrc/dicom.dic
@@ -16,12 +16,12 @@
 
 #include "dctagkey.h"
 
-#define DCM_DICT_DEFTAG_BUILD_DATE "Wed Jul 14 12:54:43 1999"
+#define DCM_DICT_DEFTAG_BUILD_DATE "Wed Jul 14 16:23:27 1999"
 
 
 /*
 ** Fixed Tags in ascending (gggg,eeee) order.
-** Number of entries: 1628
+** Number of entries: 1629
 ** Tags with a repeating component (repeating tags) are listed later.
 */
 #define DCM_CommandGroupLength                   DcmTagKey(0x0000, 0x0000)
@@ -708,6 +708,7 @@
 #define DCM_ModalityLUTType                      DcmTagKey(0x0028, 0x3004)
 #define DCM_LUTData                              DcmTagKey(0x0028, 0x3006)
 #define DCM_VOILUTSequence                       DcmTagKey(0x0028, 0x3010)
+#define DCM_SoftcopyVOILUTSequence               DcmTagKey(0x0028, 0x3110)
 #define DCM_ImagePresentationComments            DcmTagKey(0x0028, 0x4000)
 #define DCM_BiPlaneAcquisitionSequence           DcmTagKey(0x0028, 0x5000)
 #define DCM_RepresentativeFrameNumber            DcmTagKey(0x0028, 0x6010)
