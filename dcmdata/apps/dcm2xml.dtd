@@ -1,3 +1,6 @@
+<!-- Document Type Definition for DCMTK tools dcm2xml and xml2cm.
+     Copyright (C) 2002-2003 OFFIS. See COPYRIGHT file for details. -->
+
 <!ELEMENT file-format ( meta-header, data-set ) >
 
 <!ELEMENT meta-header ( element+ ) >
