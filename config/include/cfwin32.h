@@ -552,6 +552,12 @@
 /* Define if your system has a prototype for socklen_t */
 #undef HAVE_DECLARATION_SOCKLEN_T
 
+/* Define if your system has a prototype for std::_Ios_Openmode */
+#undef HAVE_DECLARATION_STD___IOS_OPENMODE
+
+/* Define if your system defines ios::nocreate in iostream.h */
+#define HAVE_IOS_NOCREATE 1
+
 /* Define if your C++ compiler can work with class templates */
 #define HAVE_CLASS_TEMPLATE 1
  

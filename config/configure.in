@@ -31,7 +31,7 @@ if test -f /bin/uname ; then
 	rev=`uname -r`
 	if test \( "$os" = SunOS \) ; then
 		case "$rev" in
-			# only use the -pedantic compiler option on 
+			# only use the -pedantic compiler option on
 			# Solaris 2 machines.
 			5.*) pedantic="-pedantic" ;;
 		esac
@@ -39,17 +39,17 @@ if test -f /bin/uname ; then
 fi
 if test "${CXXFLAGS}set" = set ; then
 	case "$CXX" in
-		c++|g++|gcc) 
-		  CXXFLAGS="-Wall $pedantic" 
+		c++|g++|gcc)
+		  CXXFLAGS="-Wall $pedantic"
 		  CFLAGS="-Wall $pedantic"
 		  ;;
-		cc++) 
-		  CXXFLAGS="-Wall" 
-		  CFLAGS="-Wall" 
+		cc++)
+		  CXXFLAGS="-Wall"
+		  CFLAGS="-Wall"
 		  ;;
-		*) 
-		  CXXFLAGS="" 
-		  CFLAGS="" 
+		*)
+		  CXXFLAGS=""
+		  CFLAGS=""
 		  ;;
 	esac
 fi
@@ -57,7 +57,7 @@ fi
 AC_PROG_CXXCPP
 dnl The next test is equivalent to AC_PROG_RANLIB
 dnl Do not use AC_PROG_RANLIB because this produces
-dnl an error on LINUX-systems in the configure script 
+dnl an error on LINUX-systems in the configure script
 AC_CHECK_PROGS(RANLIB, ranlib, :)
 
 dnl Check for "ar" and "libtool". On certain systems, e.g. NeXTStep, we must
@@ -126,7 +126,7 @@ AC_ARG_ENABLE(debug,
     AC_MSG_RESULT(yes)
     DEBUGCXXFLAGS="-g"
     DEBUGCFLAGS="-g"
-    DEBUG="-DDEBUG"          
+    DEBUG="-DDEBUG"
     ;;
   *)
     AC_MSG_RESULT(no)
@@ -290,9 +290,9 @@ fi
 if test $THREADSUPPORT = posix ; then
   dnl
   dnl check Posix MT libraries -lrt and -lpthread
-  dnl OSF/1 re-#defines most of the pthread function names. 
+  dnl OSF/1 re-#defines most of the pthread function names.
   dnl This is why we use pthread_key_create for the test.
-  dnl 
+  dnl
   AC_CHECK_LIB(pthread, pthread_key_create, [
   ac_tr_lib=HAVE_LIBPTHREAD
   AC_DEFINE_UNQUOTED($ac_tr_lib)
@@ -311,7 +311,7 @@ if test $THREADSUPPORT = posix ; then
   dnl This is true on FreeBSD.
   dnl
   AC_CHECK_PTHREAD_OPTION()
-  
+
   dnl
   dnl check whether Posix read/write locks are available
   dnl
@@ -326,7 +326,7 @@ if test $THREADSUPPORT = posix ; then
     dnl
     POSIXRWLOCKSAVAILABLE="yes"
     CXXFLAGS="-D_XOPEN_SOURCE_EXTENDED -D_XOPEN_SOURCE=500 -D_BSD_SOURCE -D_BSD_COMPAT -D_OSF_SOURCE -D_POSIX_C_SOURCE=199506L $CXXFLAGS"
-    CFLAGS="-D_XOPEN_SOURCE_EXTENDED -D_XOPEN_SOURCE=500 -D_BSD_SOURCE -D_BSD_COMPAT -D_OSF_SOURCE -D_POSIX_C_SOURCE=199506L $CFLAGS"   
+    CFLAGS="-D_XOPEN_SOURCE_EXTENDED -D_XOPEN_SOURCE=500 -D_BSD_SOURCE -D_BSD_COMPAT -D_OSF_SOURCE -D_POSIX_C_SOURCE=199506L $CFLAGS"
   ],
   [
     dnl
@@ -346,8 +346,8 @@ if test $THREADSUPPORT = posix ; then
     dnl
     POSIXRWLOCKSAVAILABLE="yes"
     CXXFLAGS="-D_XOPEN_SOURCE_EXTENDED -D_XOPEN_SOURCE=500 -D_BSD_SOURCE -D_BSD_COMPAT -D_OSF_SOURCE -D_POSIX_C_SOURCE=199506L $CXXFLAGS"
-    CFLAGS="-D_XOPEN_SOURCE_EXTENDED -D_XOPEN_SOURCE=500 -D_BSD_SOURCE -D_BSD_COMPAT -D_OSF_SOURCE -D_POSIX_C_SOURCE=199506L $CFLAGS"   
-    ], AC_MSG_RESULT(no))    
+    CFLAGS="-D_XOPEN_SOURCE_EXTENDED -D_XOPEN_SOURCE=500 -D_BSD_SOURCE -D_BSD_COMPAT -D_OSF_SOURCE -D_POSIX_C_SOURCE=199506L $CFLAGS"
+    ], AC_MSG_RESULT(no))
   ]
   )
 fi
@@ -373,7 +373,7 @@ case "$THREADSUPPORT" in
   *)
     AC_MSG_RESULT(none)
     ;;
-esac 
+esac
 
 dnl -------------------------------------------------------
 dnl Checks for typedefs, structures, and compiler characteristics.
@@ -424,7 +424,7 @@ dnl -------------------------------------------------------
 dnl Checks for prototypes
 dnl -------------------------------------------------------
 dnl
-dnl The following AC_CHECK_* macros _must_ have corresponding entries in 
+dnl The following AC_CHECK_* macros _must_ have corresponding entries in
 dnl the acconfig.h file.  This is because the macros are specific to the
 dnl DCMTK project and are not supported by GNU autoheader.
 
@@ -467,8 +467,10 @@ AC_CHECK_PROTOTYPE(waitpid, sys/wait.h sys/time.h sys/resource.h)
 
 AC_CHECK_DECLARATION(union semun, sys/types.h sys/ipc.h sys/sem.h)
 AC_CHECK_DECLARATION(struct sembuf, sys/types.h sys/ipc.h sys/sem.h)
-AC_CHECK_DECLARATION(struct utimbuf, sys/types.h utime.h)                          
-AC_CHECK_DECLARATION(socklen_t, sys/types.h sys/socket.h)                          
+AC_CHECK_DECLARATION(struct utimbuf, sys/types.h utime.h)
+AC_CHECK_DECLARATION(socklen_t, sys/types.h sys/socket.h)
+AC_CHECK_DECLARATION(std::_Ios_Openmode, , iostream.h)
+AC_CHECK_IOS_NOCREATE
 
 AC_CHECK_CLASS_TEMPLATE
 AC_CHECK_STATIC_TEMPLATE_METHOD
@@ -510,7 +512,7 @@ AC_ARG_WITH(openssl,
           fi
 
           CFLAGS="-I${with_opensslinc}/include $CFLAGS"
-          CXXFLAGS="-I${with_opensslinc}/include $CXXFLAGS"          
+          CXXFLAGS="-I${with_opensslinc}/include $CXXFLAGS"
           LDFLAGS="-L${with_opensslinc}/lib $LDFLAGS"
         ;;
         esac

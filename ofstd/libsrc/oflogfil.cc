@@ -21,10 +21,10 @@
  *
  *  Purpose: Define general purpose facility for log file output
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-09-28 12:41:58 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2001-11-02 12:04:10 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/libsrc/Attic/oflogfil.cc,v $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -45,7 +45,7 @@ END_EXTERN_C
 
 
 OFLogFile::OFLogFile(const char *filename, int flags)
-#ifdef HAVE_STD_IOS_OPENMODE
+#ifdef HAVE_DECLARATION_STD___IOS_OPENMODE
   : File(filename, (std::_Ios_Openmode)flags)
 #else
   : File(filename, flags)
@@ -117,7 +117,11 @@ void OFLogFile::writeMessage(const char *message, int indent)
  *
  * CVS/RCS Log:
  * $Log: oflogfil.cc,v $
- * Revision 1.4  2001-09-28 12:41:58  joergr
+ * Revision 1.5  2001-11-02 12:04:10  meichel
+ * Added new configure tests for std::_Ios_Openmode and ios::nocreate,
+ *   required for gcc 3.0.x.
+ *
+ * Revision 1.4  2001/09/28 12:41:58  joergr
  * Use typecast std::_Ios_Openmode when available (required for gcc 3.0).
  *
  * Revision 1.3  2001/06/01 15:51:39  meichel

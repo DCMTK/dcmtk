@@ -1015,7 +1015,7 @@ if test -f /bin/uname ; then
 	rev=`uname -r`
 	if test \( "$os" = SunOS \) ; then
 		case "$rev" in
-			# only use the -pedantic compiler option on 
+			# only use the -pedantic compiler option on
 			# Solaris 2 machines.
 			5.*) pedantic="-pedantic" ;;
 		esac
@@ -1023,17 +1023,17 @@ if test -f /bin/uname ; then
 fi
 if test "${CXXFLAGS}set" = set ; then
 	case "$CXX" in
-		c++|g++|gcc) 
-		  CXXFLAGS="-Wall $pedantic" 
+		c++|g++|gcc)
+		  CXXFLAGS="-Wall $pedantic"
 		  CFLAGS="-Wall $pedantic"
 		  ;;
-		cc++) 
-		  CXXFLAGS="-Wall" 
-		  CFLAGS="-Wall" 
+		cc++)
+		  CXXFLAGS="-Wall"
+		  CFLAGS="-Wall"
 		  ;;
-		*) 
-		  CXXFLAGS="" 
-		  CFLAGS="" 
+		*)
+		  CXXFLAGS=""
+		  CFLAGS=""
 		  ;;
 	esac
 fi
@@ -1588,7 +1588,7 @@ if test "${enable_debug+set}" = set; then
     echo "$ac_t""yes" 1>&6
     DEBUGCXXFLAGS="-g"
     DEBUGCFLAGS="-g"
-    DEBUG="-DDEBUG"          
+    DEBUG="-DDEBUG"
     ;;
   *)
     echo "$ac_t""no" 1>&6
@@ -5334,7 +5334,7 @@ else
   echo "$ac_t""no" 1>&6
 fi
 
-  
+
         POSIXRWLOCKSAVAILABLE="no"
   echo $ac_n "checking for pthread_rwlock_init in -lpthread""... $ac_c" 1>&6
 echo "configure:5341: checking for pthread_rwlock_init in -lpthread" >&5
@@ -5382,7 +5382,7 @@ EOF
 
                         POSIXRWLOCKSAVAILABLE="yes"
     CXXFLAGS="-D_XOPEN_SOURCE_EXTENDED -D_XOPEN_SOURCE=500 -D_BSD_SOURCE -D_BSD_COMPAT -D_OSF_SOURCE -D_POSIX_C_SOURCE=199506L $CXXFLAGS"
-    CFLAGS="-D_XOPEN_SOURCE_EXTENDED -D_XOPEN_SOURCE=500 -D_BSD_SOURCE -D_BSD_COMPAT -D_OSF_SOURCE -D_POSIX_C_SOURCE=199506L $CFLAGS"   
+    CFLAGS="-D_XOPEN_SOURCE_EXTENDED -D_XOPEN_SOURCE=500 -D_BSD_SOURCE -D_BSD_COMPAT -D_OSF_SOURCE -D_POSIX_C_SOURCE=199506L $CFLAGS"
   
 else
   echo "$ac_t""no" 1>&6
@@ -5409,7 +5409,7 @@ EOF
 
                         POSIXRWLOCKSAVAILABLE="yes"
     CXXFLAGS="-D_XOPEN_SOURCE_EXTENDED -D_XOPEN_SOURCE=500 -D_BSD_SOURCE -D_BSD_COMPAT -D_OSF_SOURCE -D_POSIX_C_SOURCE=199506L $CXXFLAGS"
-    CFLAGS="-D_XOPEN_SOURCE_EXTENDED -D_XOPEN_SOURCE=500 -D_BSD_SOURCE -D_BSD_COMPAT -D_OSF_SOURCE -D_POSIX_C_SOURCE=199506L $CFLAGS"   
+    CFLAGS="-D_XOPEN_SOURCE_EXTENDED -D_XOPEN_SOURCE=500 -D_BSD_SOURCE -D_BSD_COMPAT -D_OSF_SOURCE -D_POSIX_C_SOURCE=199506L $CFLAGS"
     
 else
   echo "configure: failed program was:" >&5
@@ -5417,7 +5417,7 @@ else
   rm -rf conftest*
   echo "$ac_t""no" 1>&6
 fi
-rm -f conftest*    
+rm -f conftest*
   
   
 fi
@@ -5452,7 +5452,7 @@ EOF
   *)
     echo "$ac_t""none" 1>&6
     ;;
-esac 
+esac
 
 
 echo $ac_n "checking for size_t""... $ac_c" 1>&6
@@ -9357,20 +9357,25 @@ else
 fi
 
 
+
 echo $ac_n "checking declaration for union semun (in sys/types.h sys/ipc.h sys/sem.h)""... $ac_c" 1>&6
-echo "configure:9362: checking declaration for union semun (in sys/types.h sys/ipc.h sys/sem.h)" >&5
+echo "configure:9363: checking declaration for union semun (in sys/types.h sys/ipc.h sys/sem.h)" >&5
 ac_includes=""
 for ac_header in sys/types.h sys/ipc.h sys/sem.h
 do
   ac_includes="$ac_includes
 #include<$ac_header>"
 done
-ac_cv_declaration=`echo 'ac_cv_declaration_union semun' | tr ' ' '_'`
+
+ac_cpp_includes=""
+
+ac_cv_declaration=`echo 'ac_cv_declaration_union semun' | tr ' :' '__'`
+
 if eval "test \"`echo '$''{'$ac_cv_declaration'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
   cat > conftest.$ac_ext <<EOF
-#line 9374 "configure"
+#line 9379 "configure"
 #include "confdefs.h"
 #ifdef __cplusplus
 extern "C" {
@@ -9381,6 +9386,8 @@ $ac_includes
 #ifdef __cplusplus
 }
 #endif
+
+$ac_cpp_includes
 
 union semun dummy;
 
@@ -9389,7 +9396,7 @@ int main() {
 
 ; return 0; }
 EOF
-if { (eval echo configure:9393: \"$ac_compile\") 1>&5; (eval $ac_compile) 2>&5; }; then
+if { (eval echo configure:9400: \"$ac_compile\") 1>&5; (eval $ac_compile) 2>&5; }; then
   rm -rf conftest*
   eval "$ac_cv_declaration=yes"
 else
@@ -9402,7 +9409,7 @@ rm -f conftest*
 fi
 if eval "test \"\$$ac_cv_declaration\" = yes"; then
   echo "$ac_t""yes" 1>&6
-  ac_tr_declaration=HAVE_DECLARATION_`echo union semun | tr ' [a-z]' '_[A-Z]'`
+  ac_tr_declaration=HAVE_DECLARATION_`echo union semun | tr ' :[a-z]' '__[A-Z]'`
   cat >> confdefs.h <<EOF
 #define $ac_tr_declaration 1
 EOF
@@ -9413,20 +9420,25 @@ else
 fi
 unset ac_cv_declaration
 
+
 echo $ac_n "checking declaration for struct sembuf (in sys/types.h sys/ipc.h sys/sem.h)""... $ac_c" 1>&6
-echo "configure:9418: checking declaration for struct sembuf (in sys/types.h sys/ipc.h sys/sem.h)" >&5
+echo "configure:9426: checking declaration for struct sembuf (in sys/types.h sys/ipc.h sys/sem.h)" >&5
 ac_includes=""
 for ac_header in sys/types.h sys/ipc.h sys/sem.h
 do
   ac_includes="$ac_includes
 #include<$ac_header>"
 done
-ac_cv_declaration=`echo 'ac_cv_declaration_struct sembuf' | tr ' ' '_'`
+
+ac_cpp_includes=""
+
+ac_cv_declaration=`echo 'ac_cv_declaration_struct sembuf' | tr ' :' '__'`
+
 if eval "test \"`echo '$''{'$ac_cv_declaration'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
   cat > conftest.$ac_ext <<EOF
-#line 9430 "configure"
+#line 9442 "configure"
 #include "confdefs.h"
 #ifdef __cplusplus
 extern "C" {
@@ -9437,6 +9449,8 @@ $ac_includes
 #ifdef __cplusplus
 }
 #endif
+
+$ac_cpp_includes
 
 struct sembuf dummy;
 
@@ -9445,7 +9459,7 @@ int main() {
 
 ; return 0; }
 EOF
-if { (eval echo configure:9449: \"$ac_compile\") 1>&5; (eval $ac_compile) 2>&5; }; then
+if { (eval echo configure:9463: \"$ac_compile\") 1>&5; (eval $ac_compile) 2>&5; }; then
   rm -rf conftest*
   eval "$ac_cv_declaration=yes"
 else
@@ -9458,7 +9472,7 @@ rm -f conftest*
 fi
 if eval "test \"\$$ac_cv_declaration\" = yes"; then
   echo "$ac_t""yes" 1>&6
-  ac_tr_declaration=HAVE_DECLARATION_`echo struct sembuf | tr ' [a-z]' '_[A-Z]'`
+  ac_tr_declaration=HAVE_DECLARATION_`echo struct sembuf | tr ' :[a-z]' '__[A-Z]'`
   cat >> confdefs.h <<EOF
 #define $ac_tr_declaration 1
 EOF
@@ -9469,20 +9483,25 @@ else
 fi
 unset ac_cv_declaration
 
+
 echo $ac_n "checking declaration for struct utimbuf (in sys/types.h utime.h)""... $ac_c" 1>&6
-echo "configure:9474: checking declaration for struct utimbuf (in sys/types.h utime.h)" >&5
+echo "configure:9489: checking declaration for struct utimbuf (in sys/types.h utime.h)" >&5
 ac_includes=""
 for ac_header in sys/types.h utime.h
 do
   ac_includes="$ac_includes
 #include<$ac_header>"
 done
-ac_cv_declaration=`echo 'ac_cv_declaration_struct utimbuf' | tr ' ' '_'`
+
+ac_cpp_includes=""
+
+ac_cv_declaration=`echo 'ac_cv_declaration_struct utimbuf' | tr ' :' '__'`
+
 if eval "test \"`echo '$''{'$ac_cv_declaration'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
   cat > conftest.$ac_ext <<EOF
-#line 9486 "configure"
+#line 9505 "configure"
 #include "confdefs.h"
 #ifdef __cplusplus
 extern "C" {
@@ -9493,6 +9512,8 @@ $ac_includes
 #ifdef __cplusplus
 }
 #endif
+
+$ac_cpp_includes
 
 struct utimbuf dummy;
 
@@ -9501,7 +9522,7 @@ int main() {
 
 ; return 0; }
 EOF
-if { (eval echo configure:9505: \"$ac_compile\") 1>&5; (eval $ac_compile) 2>&5; }; then
+if { (eval echo configure:9526: \"$ac_compile\") 1>&5; (eval $ac_compile) 2>&5; }; then
   rm -rf conftest*
   eval "$ac_cv_declaration=yes"
 else
@@ -9514,7 +9535,7 @@ rm -f conftest*
 fi
 if eval "test \"\$$ac_cv_declaration\" = yes"; then
   echo "$ac_t""yes" 1>&6
-  ac_tr_declaration=HAVE_DECLARATION_`echo struct utimbuf | tr ' [a-z]' '_[A-Z]'`
+  ac_tr_declaration=HAVE_DECLARATION_`echo struct utimbuf | tr ' :[a-z]' '__[A-Z]'`
   cat >> confdefs.h <<EOF
 #define $ac_tr_declaration 1
 EOF
@@ -9524,21 +9545,26 @@ else
   echo "$ac_t""no" 1>&6
 fi
 unset ac_cv_declaration
-                          
+
+
 echo $ac_n "checking declaration for socklen_t (in sys/types.h sys/socket.h)""... $ac_c" 1>&6
-echo "configure:9530: checking declaration for socklen_t (in sys/types.h sys/socket.h)" >&5
+echo "configure:9552: checking declaration for socklen_t (in sys/types.h sys/socket.h)" >&5
 ac_includes=""
 for ac_header in sys/types.h sys/socket.h
 do
   ac_includes="$ac_includes
 #include<$ac_header>"
 done
-ac_cv_declaration=`echo 'ac_cv_declaration_socklen_t' | tr ' ' '_'`
+
+ac_cpp_includes=""
+
+ac_cv_declaration=`echo 'ac_cv_declaration_socklen_t' | tr ' :' '__'`
+
 if eval "test \"`echo '$''{'$ac_cv_declaration'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
   cat > conftest.$ac_ext <<EOF
-#line 9542 "configure"
+#line 9568 "configure"
 #include "confdefs.h"
 #ifdef __cplusplus
 extern "C" {
@@ -9550,6 +9576,8 @@ $ac_includes
 }
 #endif
 
+$ac_cpp_includes
+
 socklen_t dummy;
 
 
@@ -9557,7 +9585,7 @@ int main() {
 
 ; return 0; }
 EOF
-if { (eval echo configure:9561: \"$ac_compile\") 1>&5; (eval $ac_compile) 2>&5; }; then
+if { (eval echo configure:9589: \"$ac_compile\") 1>&5; (eval $ac_compile) 2>&5; }; then
   rm -rf conftest*
   eval "$ac_cv_declaration=yes"
 else
@@ -9570,7 +9598,7 @@ rm -f conftest*
 fi
 if eval "test \"\$$ac_cv_declaration\" = yes"; then
   echo "$ac_t""yes" 1>&6
-  ac_tr_declaration=HAVE_DECLARATION_`echo socklen_t | tr ' [a-z]' '_[A-Z]'`
+  ac_tr_declaration=HAVE_DECLARATION_`echo socklen_t | tr ' :[a-z]' '__[A-Z]'`
   cat >> confdefs.h <<EOF
 #define $ac_tr_declaration 1
 EOF
@@ -9580,16 +9608,120 @@ else
   echo "$ac_t""no" 1>&6
 fi
 unset ac_cv_declaration
-                          
+
+
+echo $ac_n "checking declaration for std::_Ios_Openmode (in iostream.h)""... $ac_c" 1>&6
+echo "configure:9615: checking declaration for std::_Ios_Openmode (in iostream.h)" >&5
+ac_includes=""
+
+ac_cpp_includes=""
+for ac_header in iostream.h
+do
+  ac_cpp_includes="$ac_cpp_includes
+#include<$ac_header>"
+done
+
+ac_cv_declaration=`echo 'ac_cv_declaration_std::_Ios_Openmode' | tr ' :' '__'`
+
+if eval "test \"`echo '$''{'$ac_cv_declaration'+set}'`\" = set"; then
+  echo $ac_n "(cached) $ac_c" 1>&6
+else
+  cat > conftest.$ac_ext <<EOF
+#line 9631 "configure"
+#include "confdefs.h"
+#ifdef __cplusplus
+extern "C" {
+#endif
+
+$ac_includes
+
+#ifdef __cplusplus
+}
+#endif
+
+$ac_cpp_includes
+
+std::_Ios_Openmode dummy;
+
+
+int main() {
+
+; return 0; }
+EOF
+if { (eval echo configure:9652: \"$ac_compile\") 1>&5; (eval $ac_compile) 2>&5; }; then
+  rm -rf conftest*
+  eval "$ac_cv_declaration=yes"
+else
+  echo "configure: failed program was:" >&5
+  cat conftest.$ac_ext >&5
+  rm -rf conftest*
+  eval "$ac_cv_declaration=no"
+fi
+rm -f conftest*
+fi
+if eval "test \"\$$ac_cv_declaration\" = yes"; then
+  echo "$ac_t""yes" 1>&6
+  ac_tr_declaration=HAVE_DECLARATION_`echo std::_Ios_Openmode | tr ' :[a-z]' '__[A-Z]'`
+  cat >> confdefs.h <<EOF
+#define $ac_tr_declaration 1
+EOF
+
+  :
+else
+  echo "$ac_t""no" 1>&6
+fi
+unset ac_cv_declaration
+
+
+echo $ac_n "checking declaration of ios::nocreate""... $ac_c" 1>&6
+echo "configure:9678: checking declaration of ios::nocreate" >&5
+ac_cv_declaration=ac_cv_declaration_ios_nocreate
+if eval "test \"`echo '$''{'$ac_cv_declaration'+set}'`\" = set"; then
+  echo $ac_n "(cached) $ac_c" 1>&6
+else
+  cat > conftest.$ac_ext <<EOF
+#line 9684 "configure"
+#include "confdefs.h"
+
+#include <fstream.h>
+
+int main() {
+ifstream file("name", ios::nocreate) 
+; return 0; }
+EOF
+if { (eval echo configure:9693: \"$ac_compile\") 1>&5; (eval $ac_compile) 2>&5; }; then
+  rm -rf conftest*
+  eval "$ac_cv_declaration=yes"
+else
+  echo "configure: failed program was:" >&5
+  cat conftest.$ac_ext >&5
+  rm -rf conftest*
+  eval "$ac_cv_declaration=no"
+fi
+rm -f conftest*
+fi
+if eval "test \"\$$ac_cv_declaration\" = yes"; then
+  echo "$ac_t""yes" 1>&6
+  ac_tr_declaration=HAVE_IOS_NOCREATE
+  cat >> confdefs.h <<EOF
+#define $ac_tr_declaration 1
+EOF
+
+  :
+else
+  echo "$ac_t""no" 1>&6
+fi
+unset ac_cv_declaration
+
 
 echo $ac_n "checking for C++ class template""... $ac_c" 1>&6
-echo "configure:9587: checking for C++ class template" >&5
+echo "configure:9719: checking for C++ class template" >&5
 if eval "test \"`echo '$''{'ac_cv_check_class_template'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
   ac_link_o='${CXX-g++} -o conftest $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.o $LIBS 1>&5'
 cat > conftest.$ac_ext <<EOF
-#line 9593 "configure"
+#line 9725 "configure"
 #include "confdefs.h"
 
 template <class T>
@@ -9614,8 +9746,8 @@ int main() {
 
 ; return 0; }
 EOF
-if { (eval echo configure:9618: \"$ac_compile\") 1>&5; (eval $ac_compile) 2>&5; }; then
-  if { (eval echo configure:9619: \"$ac_link_o\") 1>&5; (eval $ac_link_o) 2>&5; }; then
+if { (eval echo configure:9750: \"$ac_compile\") 1>&5; (eval $ac_compile) 2>&5; }; then
+  if { (eval echo configure:9751: \"$ac_link_o\") 1>&5; (eval $ac_link_o) 2>&5; }; then
     rm -rf conftest*
     eval "ac_cv_check_class_template=yes"
   else
@@ -9644,13 +9776,13 @@ else
 fi
 
 echo $ac_n "checking for C++ static methods in class templates""... $ac_c" 1>&6
-echo "configure:9648: checking for C++ static methods in class templates" >&5
+echo "configure:9780: checking for C++ static methods in class templates" >&5
 if eval "test \"`echo '$''{'ac_cv_check_static_template_method'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
   ac_link_o='${CXX-g++} -o conftest $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.o $LIBS 1>&5'
 cat > conftest.$ac_ext <<EOF
-#line 9654 "configure"
+#line 9786 "configure"
 #include "confdefs.h"
 
 void additive(int & i)
@@ -9675,8 +9807,8 @@ int main() {
 
 ; return 0; }
 EOF
-if { (eval echo configure:9679: \"$ac_compile\") 1>&5; (eval $ac_compile) 2>&5; }; then
-  if { (eval echo configure:9680: \"$ac_link_o\") 1>&5; (eval $ac_link_o) 2>&5; }; then
+if { (eval echo configure:9811: \"$ac_compile\") 1>&5; (eval $ac_compile) 2>&5; }; then
+  if { (eval echo configure:9812: \"$ac_link_o\") 1>&5; (eval $ac_link_o) 2>&5; }; then
     rm -rf conftest*
     eval "ac_cv_check_static_template_method=yes"
   else
@@ -9705,13 +9837,13 @@ else
 fi
 
 echo $ac_n "checking for C++ function template""... $ac_c" 1>&6
-echo "configure:9709: checking for C++ function template" >&5
+echo "configure:9841: checking for C++ function template" >&5
 if eval "test \"`echo '$''{'ac_cv_check_function_template'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
   ac_link_o='${CXX-g++} -o conftest $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.o $LIBS 1>&5'
 cat > conftest.$ac_ext <<EOF
-#line 9715 "configure"
+#line 9847 "configure"
 #include "confdefs.h"
 
 template <class T>
@@ -9728,8 +9860,8 @@ int main() {
 
 ; return 0; }
 EOF
-if { (eval echo configure:9732: \"$ac_compile\") 1>&5; (eval $ac_compile) 2>&5; }; then
-  if { (eval echo configure:9733: \"$ac_link_o\") 1>&5; (eval $ac_link_o) 2>&5; }; then
+if { (eval echo configure:9864: \"$ac_compile\") 1>&5; (eval $ac_compile) 2>&5; }; then
+  if { (eval echo configure:9865: \"$ac_link_o\") 1>&5; (eval $ac_link_o) 2>&5; }; then
     rm -rf conftest*
     eval "ac_cv_check_function_template=yes"
   else
@@ -9758,12 +9890,12 @@ else
 fi
 
 echo $ac_n "checking for C++ explicit template specialization syntax""... $ac_c" 1>&6
-echo "configure:9762: checking for C++ explicit template specialization syntax" >&5
+echo "configure:9894: checking for C++ explicit template specialization syntax" >&5
 if eval "test \"`echo '$''{'ac_cv_check_explicit_template_specialization'+set}'`\" = set"; then
   echo $ac_n "(cached) $ac_c" 1>&6
 else
   cat > conftest.$ac_ext <<EOF
-#line 9767 "configure"
+#line 9899 "configure"
 #include "confdefs.h"
 
 template<class T>
@@ -9783,7 +9915,7 @@ int main() {
 X<int> x
 ; return 0; }
 EOF
-if { (eval echo configure:9787: \"$ac_compile\") 1>&5; (eval $ac_compile) 2>&5; }; then
+if { (eval echo configure:9919: \"$ac_compile\") 1>&5; (eval $ac_compile) 2>&5; }; then
   rm -rf conftest*
   eval "ac_cv_check_explicit_template_specialization=yes"
 else
@@ -9815,7 +9947,7 @@ fi
 
 OPENSSLLIBS=""
 echo $ac_n "checking whether to include OpenSSL support""... $ac_c" 1>&6
-echo "configure:9819: checking whether to include OpenSSL support" >&5
+echo "configure:9951: checking whether to include OpenSSL support" >&5
 # Check whether --with-openssl or --without-openssl was given.
 if test "${with_openssl+set}" = set; then
   withval="$with_openssl"
@@ -9841,7 +9973,7 @@ EOF
           fi
 
           CFLAGS="-I${with_opensslinc}/include $CFLAGS"
-          CXXFLAGS="-I${with_opensslinc}/include $CXXFLAGS"          
+          CXXFLAGS="-I${with_opensslinc}/include $CXXFLAGS"
           LDFLAGS="-L${with_opensslinc}/lib $LDFLAGS"
         ;;
         esac

@@ -7,13 +7,17 @@ dnl
 dnl Authors: Andreas Barth, Marco Eichelberg
 dnl
 dnl Last Update:  $Author: meichel $
-dnl Revision:     $Revision: 1.15 $
+dnl Revision:     $Revision: 1.16 $
 dnl Status:       $State: Exp $
 dnl
-dnl $Id: aclocal.m4,v 1.15 2001-08-23 16:29:11 meichel Exp $
+dnl $Id: aclocal.m4,v 1.16 2001-11-02 12:03:42 meichel Exp $
 dnl
 dnl $Log: aclocal.m4,v $
-dnl Revision 1.15  2001-08-23 16:29:11  meichel
+dnl Revision 1.16  2001-11-02 12:03:42  meichel
+dnl Added new configure tests for std::_Ios_Openmode and ios::nocreate,
+dnl   required for gcc 3.0.x.
+dnl
+dnl Revision 1.15  2001/08/23 16:29:11  meichel
 dnl Added configure tests required by dcmjpeg module
 dnl
 dnl Revision 1.14  2000/12/20 09:54:29  meichel
@@ -173,8 +177,9 @@ ifelse([$4], , , [$4
 fi
 ])
 
-dnl AC_CHECK_DECLARATION checks if a certain type is declared in the
-dnl   include files given as argument 2.
+dnl AC_CHECK_DECLARATION checks if a certain type is declared in the include files given as argument 2 or 3.
+dnl   Files given as argument 2 are included extern "C" in C++ mode,
+dnl   files given as argument 3 are included "as is".
 dnl Note:
 dnl   Since GNU autoheader does not support this macro, you must create entries
 dnl   in your acconfig.h for each function which is tested.
@@ -183,10 +188,11 @@ dnl   in configure.in:
 dnl     AC_CHECK_DECLARATION(struct sembuf, sys/types.h sys/ipc.h sys/sem.h)
 dnl   in acconfig.h:
 dnl     #undef HAVE_DECLARATION_STRUCT_SEMBUF
-
-dnl AC_CHECK_DECLARATION(FUNCTION, HEADER-FILE..., ACTION-IF-FOUND [, ACTION-IF-NOT-FOUND])
+dnl
+dnl AC_CHECK_DECLARATION(FUNCTION, C-HEADER-FILE..., C++-HEADER-FILE..., ACTION-IF-FOUND [, ACTION-IF-NOT-FOUND])
 AC_DEFUN(AC_CHECK_DECLARATION,
-[AC_MSG_CHECKING([ifelse([$2], , [predefined type $1], [declaration for $1 (in $2)])])
+[
+AC_MSG_CHECKING([ifelse([$2 $3], , [predefined type $1], [ifelse([$2], , [declaration for $1 (in $3)], [ifelse([$3], , [declaration for $1 (in $2)], [declaration for $1 (in $2 $3)])])])])
 ifelse([$2], , [ac_includes=""
 ],
 [ac_includes=""
@@ -195,7 +201,18 @@ do
   ac_includes="$ac_includes
 #include<$ac_header>"
 done
-ac_cv_declaration=`echo 'ac_cv_declaration_$1' | tr ' ' '_'`])
+])
+ifelse([$3], , [ac_cpp_includes=""
+],
+[ac_cpp_includes=""
+for ac_header in $3
+do
+  ac_cpp_includes="$ac_cpp_includes
+#include<$ac_header>"
+done
+])
+[ac_cv_declaration=`echo 'ac_cv_declaration_$1' | tr ' :' '__'`
+]
 AC_CACHE_VAL($ac_cv_declaration,
 [AC_TRY_COMPILE(
 ifelse(AC_LANG, CPLUSPLUS, [#ifdef __cplusplus
@@ -208,19 +225,21 @@ ifelse(AC_LANG, CPLUSPLUS, [#ifdef __cplusplus
 }
 #endif
 ])
+[$ac_cpp_includes
+]
 [$1 dummy;
 ]
 , ,eval "$ac_cv_declaration=yes", eval "$ac_cv_declaration=no")])dnl
 if eval "test \"\$$ac_cv_declaration\" = yes"; then
   AC_MSG_RESULT(yes)
 changequote(, )dnl
-  ac_tr_declaration=HAVE_DECLARATION_`echo $1 | tr ' [a-z]' '_[A-Z]'`
+  ac_tr_declaration=HAVE_DECLARATION_`echo $1 | tr ' :[a-z]' '__[A-Z]'`
 changequote([, ])dnl
   AC_DEFINE_UNQUOTED($ac_tr_declaration)
-  ifelse([$3], , :, [$3])
+  ifelse([$4], , :, [$4])
 else
   AC_MSG_RESULT(no)
-ifelse([$4], , , [$4
+ifelse([$5], , , [$5
 ])dnl
 fi
 unset ac_cv_declaration
@@ -930,4 +949,39 @@ int main()
 if test $ac_cv_my_c_rightshift_unsigned = yes ; then
   AC_DEFINE(C_CHAR_UNSIGNED)
 fi
+])
+
+
+dnl AC_CHECK_IOS_NOCREATE checks if the flag ios::nocreate is defined.
+dnl Note:
+dnl   Since GNU autoheader does not support this macro, you must create entries
+dnl   in your acconfig.h manually
+dnl Examples:
+dnl   in configure.in: 
+dnl     AC_CHECK_IOS_NOCREATE
+dnl   in acconfig.h:
+dnl     #undef HAVE_IOS_NOCREATE
+dnl
+dnl AC_CHECK_IOS_NOCREATE(ACTION-IF-FOUND [, ACTION-IF-NOT-FOUND])
+AC_DEFUN(AC_CHECK_IOS_NOCREATE,
+[
+AC_MSG_CHECKING([declaration of ios::nocreate])
+ac_cv_declaration=ac_cv_declaration_ios_nocreate
+AC_CACHE_VAL($ac_cv_declaration,
+[AC_TRY_COMPILE([
+#include <fstream.h>
+], [ifstream file("name", ios::nocreate)] ,eval "$ac_cv_declaration=yes", eval "$ac_cv_declaration=no")])dnl
+if eval "test \"\$$ac_cv_declaration\" = yes"; then
+  AC_MSG_RESULT(yes)
+changequote(, )dnl
+  ac_tr_declaration=HAVE_IOS_NOCREATE
+changequote([, ])dnl
+  AC_DEFINE_UNQUOTED($ac_tr_declaration)
+  ifelse([$1], , :, [$1])
+else
+  AC_MSG_RESULT(no)
+ifelse([$2], , , [$2
+])dnl
+fi
+unset ac_cv_declaration
 ])
