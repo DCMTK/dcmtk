@@ -24,9 +24,9 @@
  *  routines for finding and creating UIDs.
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2004-04-14 11:49:28 $
+ *  Update Date:      $Date: 2004-05-27 10:31:39 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcuid.h,v $
- *  CVS/RCS Revision: $Revision: 1.63 $
+ *  CVS/RCS Revision: $Revision: 1.64 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -139,7 +139,7 @@ unsigned long dcmGuessModalityBytes(const char *sopClassUID);
 
 /*
 ** OFFIS UID is: 1.2.276.0.7230010
-** UID Root for dcmtk DICOM project:   1.2.276.0.7230010.3
+** UID root for OFFIS DCMTK project:   1.2.276.0.7230010.3
 **          for OFFIS GO-Kard project: 1.2.276.0.7230010.8
 */
 
@@ -147,14 +147,14 @@ unsigned long dcmGuessModalityBytes(const char *sopClassUID);
  *       The second name is used to identify files written without dcmdata
  *       (i.e. using the --bit-preserving switch in various tools)
  */
-#define OFFIS_DTK_IMPLEMENTATION_VERSION_NAME   "OFFIS_DCMTK_352"
-#define OFFIS_DTK_IMPLEMENTATION_VERSION_NAME2  "OFFIS_DCMBP_352"
-#define OFFIS_DCMTK_RELEASEDATE                 "2003-11-07"
+#define OFFIS_DTK_IMPLEMENTATION_VERSION_NAME   "OFFIS_DCMTK_353"
+#define OFFIS_DTK_IMPLEMENTATION_VERSION_NAME2  "OFFIS_DCMBP_353"
+#define OFFIS_DCMTK_RELEASEDATE                 "2004-05-27"
 
 #define OFFIS_UID_ROOT                          "1.2.276.0.7230010.3"
-#define OFFIS_DCMTK_VERSION_NUMBER              352
-#define OFFIS_DCMTK_VERSION_STRING              "3.5.2"
-#define OFFIS_DCMTK_VERSION_SUFFIX              "a"
+#define OFFIS_DCMTK_VERSION_NUMBER              353
+#define OFFIS_DCMTK_VERSION_STRING              "3.5.3"
+#define OFFIS_DCMTK_VERSION_SUFFIX              ""
 #define OFFIS_DCMTK_VERSION                     OFFIS_DCMTK_VERSION_STRING OFFIS_DCMTK_VERSION_SUFFIX
 #define OFFIS_IMPLEMENTATION_CLASS_UID          OFFIS_UID_ROOT ".0." OFFIS_DCMTK_VERSION_STRING
 #define OFFIS_INSTANCE_CREATOR_UID              OFFIS_IMPLEMENTATION_CLASS_UID
@@ -481,7 +481,10 @@ unsigned long dcmGuessModalityBytes(const char *sopClassUID);
 /*
 ** CVS/RCS Log:
 ** $Log: dcuid.h,v $
-** Revision 1.63  2004-04-14 11:49:28  joergr
+** Revision 1.64  2004-05-27 10:31:39  joergr
+** Updated version name and implementation name to reflect release 3.5.3.
+**
+** Revision 1.63  2004/04/14 11:49:28  joergr
 ** Replaced non-Unix newline characters.
 **
 ** Revision 1.62  2004/04/06 18:02:25  joergr
