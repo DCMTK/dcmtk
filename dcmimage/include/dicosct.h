@@ -21,10 +21,10 @@
  *
  *  Purpose: DicomColorScaleTemplate (Header)
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-06-01 15:49:30 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2001-11-09 16:45:23 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/include/Attic/dicosct.h,v $
- *  CVS/RCS Revision: $Revision: 1.10 $
+ *  CVS/RCS Revision: $Revision: 1.11 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -56,6 +56,21 @@ class DiColorScaleTemplate
 
  public:
 
+    /** constructor
+     *
+     ** @param  pixel        pointer to intermediate pixel representation
+     *  @param  columns      width of source image
+     *  @param  rows         height of source image
+     *  @param  left         left coordinate of clipping area
+     *  @param  top          top coordinate of clipping area
+     *  @param  src_cols     width of clipping area
+     *  @param  src_rows     height of clipping area
+     *  @param  dest_cols    width of destination image (scaled image)
+     *  @param  dest_rows    height of destination image
+     *  @param  frames       number of frames 
+     *  @param  bits         number of bits per plane/pixel
+     *  @param  interpolate  use of interpolation when scaling
+     */     
     DiColorScaleTemplate(const DiColorPixel *pixel,
                          const Uint16 columns,
                          const Uint16 rows,
@@ -85,6 +100,8 @@ class DiColorScaleTemplate
         }
     }
     
+    /** destructor
+     */
     virtual ~DiColorScaleTemplate()
     {
     }
@@ -92,6 +109,11 @@ class DiColorScaleTemplate
 
  private:
 
+    /** scale pixel data
+     *
+     ** @param  pixel        pointer to pixel data (3 components9 to be scaled
+     *  @param  interpolate  use of interpolation when scaling
+     */
     inline void scale(const T *pixel[3],
                       const int interpolate)
     {
@@ -108,7 +130,10 @@ class DiColorScaleTemplate
  *
  * CVS/RCS Log:
  * $Log: dicosct.h,v $
- * Revision 1.10  2001-06-01 15:49:30  meichel
+ * Revision 1.11  2001-11-09 16:45:23  joergr
+ * Updated/Enhanced comments.
+ *
+ * Revision 1.10  2001/06/01 15:49:30  meichel
  * Updated copyright header
  *
  * Revision 1.9  2000/12/08 14:06:02  joergr

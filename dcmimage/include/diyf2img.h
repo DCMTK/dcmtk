@@ -21,10 +21,10 @@
  *
  *  Purpose: DicomYBR422Image (Header)
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-06-01 15:49:32 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2001-11-09 16:46:01 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/include/Attic/diyf2img.h,v $
- *  CVS/RCS Revision: $Revision: 1.8 $
+ *  CVS/RCS Revision: $Revision: 1.9 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -52,9 +52,16 @@ class DiYBR422Image
 
  public:
 
+    /** constructor
+     *
+     ** @param  docu    pointer to dataset (encapsulated)
+     *  @param  status  current image status
+     */
     DiYBR422Image(const DiDocument *docu,
                   const EI_Status status);
 
+    /** destructor
+     */
     virtual ~DiYBR422Image();
 };
 
@@ -66,7 +73,10 @@ class DiYBR422Image
  *
  * CVS/RCS Log:
  * $Log: diyf2img.h,v $
- * Revision 1.8  2001-06-01 15:49:32  meichel
+ * Revision 1.9  2001-11-09 16:46:01  joergr
+ * Updated/Enhanced comments.
+ *
+ * Revision 1.8  2001/06/01 15:49:32  meichel
  * Updated copyright header
  *
  * Revision 1.7  2000/04/27 13:15:15  joergr

@@ -21,10 +21,10 @@
  *
  *  Purpose: DicomColorCopyTemplate (Header)
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-06-01 15:49:27 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2001-11-09 16:40:45 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/include/Attic/dicocpt.h,v $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -54,6 +54,13 @@ class DiColorCopyTemplate
  
  public:
  
+    /** constructor
+     *
+     ** @param  pixel   pointer to color intermediate representation of pixel data
+     *  @param  fstart  first frame to be copied
+     *  @param  fcount  number of frames to be copied
+     *  @param  fsize   size of one frame (in bytes)
+     */
     DiColorCopyTemplate(const DiColorPixel *pixel,
                         const unsigned long fstart,
                         const unsigned long fcount,
@@ -67,6 +74,8 @@ class DiColorCopyTemplate
         }
     }
 
+    /** destructor
+     */
     ~DiColorCopyTemplate()
     {
     }
@@ -74,6 +83,11 @@ class DiColorCopyTemplate
  
  private:
     
+    /** copy specified amount of pixel data
+     *
+     ** @param  pixel   array of pixel data (3 color components) to be copied
+     *  @param  offset  offset to the first pixel to be copied
+     */
     inline void copy(const T *pixel[3],
                      const unsigned long offset)
     {
@@ -93,7 +107,10 @@ class DiColorCopyTemplate
  *
  * CVS/RCS Log:
  * $Log: dicocpt.h,v $
- * Revision 1.6  2001-06-01 15:49:27  meichel
+ * Revision 1.7  2001-11-09 16:40:45  joergr
+ * Updated/Enhanced comments.
+ *
+ * Revision 1.6  2001/06/01 15:49:27  meichel
  * Updated copyright header
  *
  * Revision 1.5  2000/12/08 14:06:01  joergr

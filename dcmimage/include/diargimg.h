@@ -21,10 +21,10 @@
  *
  *  Purpose: DiARGBImage (Header)
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-06-01 15:49:26 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2001-11-09 16:39:10 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/include/Attic/diargimg.h,v $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -52,9 +52,16 @@ class DiARGBImage
 
  public:
 
+    /** constructor
+     *
+     ** @param  docu    pointer to dataset (encapsulated)
+     *  @param  status  current image status
+     */
     DiARGBImage(const DiDocument *docu,
                 const EI_Status status);
 
+    /** destructor
+     */
     virtual ~DiARGBImage();
 };
 
@@ -66,7 +73,10 @@ class DiARGBImage
  *
  * CVS/RCS Log:
  * $Log: diargimg.h,v $
- * Revision 1.6  2001-06-01 15:49:26  meichel
+ * Revision 1.7  2001-11-09 16:39:10  joergr
+ * Updated/Enhanced comments.
+ *
+ * Revision 1.6  2001/06/01 15:49:26  meichel
  * Updated copyright header
  *
  * Revision 1.5  2000/03/08 16:21:48  meichel

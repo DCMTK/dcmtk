@@ -21,10 +21,10 @@
  *
  *  Purpose: DicomYBRImage (Header)
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-06-01 15:49:32 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2001-11-09 16:46:01 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/include/Attic/diybrimg.h,v $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -52,9 +52,16 @@ class DiYBRImage
 
  public:
 
+    /** constructor
+     *
+     ** @param  docu    pointer to dataset (encapsulated)
+     *  @param  status  current image status
+     */
     DiYBRImage(const DiDocument *docu,
                const EI_Status status);
 
+    /** destructor
+     */
     virtual ~DiYBRImage();
 };
 
@@ -66,7 +73,10 @@ class DiYBRImage
  *
  * CVS/RCS Log:
  * $Log: diybrimg.h,v $
- * Revision 1.6  2001-06-01 15:49:32  meichel
+ * Revision 1.7  2001-11-09 16:46:01  joergr
+ * Updated/Enhanced comments.
+ *
+ * Revision 1.6  2001/06/01 15:49:32  meichel
  * Updated copyright header
  *
  * Revision 1.5  2000/03/08 16:21:54  meichel

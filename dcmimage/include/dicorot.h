@@ -21,10 +21,10 @@
  *
  *  Purpose: DicomColorRotateTemplate (Header)
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-06-01 15:49:30 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2001-11-09 16:45:00 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/include/Attic/dicorot.h,v $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -57,6 +57,16 @@ class DiColorRotateTemplate
 
  public:
 
+    /** constructor
+     *
+     ** @param  pixel      pointer to intermediate pixel representation
+     *  @param  src_cols   width of clipping area
+     *  @param  src_rows   height of clipping area
+     *  @param  dest_cols  width of destination image (scaled image)
+     *  @param  dest_rows  height of destination image
+     *  @param  frames     number of frames
+     *  @param  degree     angle by which the pixel data should be rotated
+     */
     DiColorRotateTemplate(const DiColorPixel *pixel,
                           const Uint16 src_cols,
                           const Uint16 src_rows,
@@ -81,6 +91,8 @@ class DiColorRotateTemplate
         }
     }
 
+    /** destructor
+     */
     ~DiColorRotateTemplate()
     {
     }
@@ -88,6 +100,11 @@ class DiColorRotateTemplate
 
  private:
 
+    /** rotate pixel data
+     *
+     ** @param  pixel   pointer to pixel data (3 components) to be rotated
+     *  @param  degree  angle by which the pixel data should be rotated
+     */
     inline void rotate(const T *pixel[3],
                        const int degree)
     {
@@ -111,7 +128,10 @@ class DiColorRotateTemplate
  *
  * CVS/RCS Log:
  * $Log: dicorot.h,v $
- * Revision 1.5  2001-06-01 15:49:30  meichel
+ * Revision 1.6  2001-11-09 16:45:00  joergr
+ * Updated/Enhanced comments.
+ *
+ * Revision 1.5  2001/06/01 15:49:30  meichel
  * Updated copyright header
  *
  * Revision 1.4  2000/12/08 14:06:01  joergr
