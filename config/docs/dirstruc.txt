@@ -9,7 +9,6 @@ dcmtk
     module1
         apps            # application programs
         docs            # documentation
-        htmldocs        # optional HTML documentation
         include         # include directory
         libsrc          # library sources
         tests           # test programs
