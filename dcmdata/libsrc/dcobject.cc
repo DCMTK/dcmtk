@@ -9,8 +9,8 @@
 ** Implementation of the base class object
 **
 **
-** Last Update:   $Author: hewett $
-** Revision:      $Revision: 1.13 $
+** Last Update:   $Author: andreas $
+** Revision:      $Revision: 1.14 $
 ** Status:	  $State: Exp $
 **
 */
@@ -366,7 +366,10 @@ E_Condition DcmObject::writeTagAndLength(DcmStream & outStream,
       DcmXfer oxferSyn(oxfer);
       const E_ByteOrder oByteOrder = oxferSyn.getByteOrder();
       if (oByteOrder == EBO_unknown)
+      {
+	  Edebug(());
 	  return EC_IllegalCall;
+      }
 
       if (oxferSyn.isExplicitVR())
 	{

@@ -10,10 +10,10 @@
 ** Implementation of the class DcmSequenceOfItems
 **
 **
-** Last Update:		$Author: hewett $
-** Update Date:		$Date: 1996-09-13 12:04:13 $
+** Last Update:		$Author: andreas $
+** Update Date:		$Date: 1997-04-18 08:08:54 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcsequen.cc,v $
-** CVS/RCS Revision:	$Revision: 1.12 $
+** CVS/RCS Revision:	$Revision: 1.13 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -318,7 +318,10 @@ E_Condition DcmSequenceOfItems::readTagAndLength(DcmStream & inStream,
 	DcmXfer iXfer(xfer);
 	const E_ByteOrder iByteOrder = iXfer.getByteOrder();
 	if (iByteOrder == EBO_unknown)
+	{
+	    Edebug(());
 	    return EC_IllegalCall;
+	}
 	inStream.SetPutbackMark();
 	inStream.ReadBytes(&groupTag, 2);
 	inStream.ReadBytes(&elementTag, 2);
@@ -1105,7 +1108,10 @@ E_Condition DcmSequenceOfItems::loadAllDataIntoMemory()
 /*
 ** CVS/RCS Log:
 ** $Log: dcsequen.cc,v $
-** Revision 1.12  1996-09-13 12:04:13  hewett
+** Revision 1.13  1997-04-18 08:08:54  andreas
+** - Corrected debugging code
+**
+** Revision 1.12  1996/09/13 12:04:13  hewett
 ** Corrected missing () in function call (stack.card()) used in nextObject(...)
 **
 ** Revision 1.11  1996/08/08 10:15:10  andreas
