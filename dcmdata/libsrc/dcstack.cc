@@ -10,7 +10,7 @@
  * 
  * 
  * Last Update:	  $Author: andreas $
- * Revision:      $Revision: 1.4 $
+ * Revision:      $Revision: 1.5 $
  * Status:        $State: Exp $
  *
  */
@@ -19,6 +19,7 @@
 #include "osconfig.h"    /* make sure OS specific configuration is included first */
 
 #include <iostream.h>
+#include <stdlib.h>
 
 #include "dcstack.h"
 #include "dcdebug.h"
