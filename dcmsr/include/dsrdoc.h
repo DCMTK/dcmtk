@@ -23,8 +23,8 @@
  *    classes: DSRDocument
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-11-16 13:31:27 $
- *  CVS/RCS Revision: $Revision: 1.17 $
+ *  Update Date:      $Date: 2000-12-08 13:42:40 $
+ *  CVS/RCS Revision: $Revision: 1.18 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -709,7 +709,7 @@ class DSRDocument
      ** @param  studyUID  study instance UID to be set (should be a valid UID)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    E_Condition createNewSeries(const OFString &studyUID);
+    E_Condition createNewSeriesInStudy(const OFString &studyUID);
 
     /** create a new SOP instance.
      *  Generate a new SOP instance UID, set the instance creation date/time.
@@ -959,7 +959,10 @@ class DSRDocument
 /*
  *  CVS/RCS Log:
  *  $Log: dsrdoc.h,v $
- *  Revision 1.17  2000-11-16 13:31:27  joergr
+ *  Revision 1.18  2000-12-08 13:42:40  joergr
+ *  Renamed createNewSeries(studyUID) to createNewSeriesInStudy(studyUID).
+ *
+ *  Revision 1.17  2000/11/16 13:31:27  joergr
  *  Corrected behaviour of updateDicomAttributes().
  *
  *  Revision 1.16  2000/11/14 17:27:25  joergr

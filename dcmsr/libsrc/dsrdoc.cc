@@ -23,8 +23,8 @@
  *    classes: DSRDocument
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-11-16 13:33:03 $
- *  CVS/RCS Revision: $Revision: 1.18 $
+ *  Update Date:      $Date: 2000-12-08 13:45:38 $
+ *  CVS/RCS Revision: $Revision: 1.19 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -541,7 +541,6 @@ E_Condition DSRDocument::writeXML(ostream &stream,
             }
             stream << "</predecessor>" << endl;
         }
-        stream << "</document>" << endl;
 
         // --- write document content/tree to stream ---
 
@@ -550,6 +549,7 @@ E_Condition DSRDocument::writeXML(ostream &stream,
         writeStringFromElementToXML(stream, ContentTime, "time", flags & XF_writeEmptyTags);
         result = DocumentTree.writeXML(stream, flags);
         stream << "</content>" << endl;
+        stream << "</document>" << endl;
 
         // --- XML document structure (end) ---
 
@@ -1508,7 +1508,7 @@ void DSRDocument::createNewSeries()
 }
 
 
-E_Condition DSRDocument::createNewSeries(const OFString &studyUID)
+E_Condition DSRDocument::createNewSeriesInStudy(const OFString &studyUID)
 {
     E_Condition result = EC_IllegalCall;
     if (studyUID.length() > 0)
@@ -1762,7 +1762,10 @@ void DSRDocument::updateAttributes(const OFBool updateAll)
 /*
  *  CVS/RCS Log:
  *  $Log: dsrdoc.cc,v $
- *  Revision 1.18  2000-11-16 13:33:03  joergr
+ *  Revision 1.19  2000-12-08 13:45:38  joergr
+ *  Renamed createNewSeries(studyUID) to createNewSeriesInStudy(studyUID).
+ *
+ *  Revision 1.18  2000/11/16 13:33:03  joergr
  *  Corrected behaviour of updateDicomAttributes().
  *
  *  Revision 1.17  2000/11/14 17:27:29  joergr
