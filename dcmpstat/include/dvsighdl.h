@@ -23,8 +23,8 @@
  *    classes: DVSignatureHandler
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-01-25 15:18:05 $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  Update Date:      $Date: 2001-01-25 17:37:43 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -54,15 +54,6 @@ public:
    *  @param cfg system configuration
    */
   DVSignatureHandler(DVConfiguration& cfg);
-  
-  /// copy constructor
-  DVSignatureHandler(const DVSignatureHandler& copy);
-
-  /** clone method.
-   *  @return a pointer to a new DVSignatureHandler object containing
-   *  a copy of this object.
-   */
-  DVSignatureHandler *clone() { return new DVSignatureHandler(*this); }
 
   /// destructor
   virtual ~DVSignatureHandler();
@@ -105,6 +96,9 @@ public:
   DVPSSignatureStatus getCombinedImagePStateSignatureStatus() const;
     
 private:
+
+  /// private undefined copy constructor
+  DVSignatureHandler(const DVSignatureHandler& copy);
 
   /// private undefined assignment operator
   DVSignatureHandler& operator=(const DVSignatureHandler&);
@@ -174,7 +168,10 @@ private:
 
 /*
  *  $Log: dvsighdl.h,v $
- *  Revision 1.1  2001-01-25 15:18:05  meichel
+ *  Revision 1.2  2001-01-25 17:37:43  meichel
+ *  Fixed problem with undefined copy constructor
+ *
+ *  Revision 1.1  2001/01/25 15:18:05  meichel
  *  Added initial support for verification of digital signatures
  *    in presentation states, images and structured reports to module dcmpstat.
  *
