@@ -22,9 +22,9 @@
  *  Purpose: DicomImage (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-04-28 15:01:44 $
+ *  Update Date:      $Date: 1999-07-23 13:38:13 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/libsrc/diimage.cc,v $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -53,6 +53,7 @@ DiImage::DiImage(const DiDocument *docu,
     Document(docu),
     FirstFrame(0),
     NumberOfFrames(0),
+    RepresentativeFrame(0),
     Rows(0),
     Columns(0),
     PixelWidth(1),
@@ -63,6 +64,7 @@ DiImage::DiImage(const DiDocument *docu,
     BitsPerSample(0),
     hasSignedRepresentation(0),
     hasPixelSpacing(0),
+    hasImagerPixelSpacing(0),
     hasPixelAspectRatio(0),
     isOriginal(1),
     InputData(NULL)
@@ -89,11 +91,34 @@ DiImage::DiImage(const DiDocument *docu,
         FirstFrame = (docu->getFrameStart() < NumberOfFrames) ? docu->getFrameStart() : NumberOfFrames - 1;
         if ((docu->getFrameCount() > 0) && (NumberOfFrames > docu->getFrameCount()))
             NumberOfFrames = docu->getFrameCount();
+        Uint16 us = 0;
+        if (Document->getValue(DCM_RepresentativeFrameNumber, us))
+        {
+            if (us <= FirstFrame)
+            {
+                if (DicomImageClass::DebugLevel & DicomImageClass::DL_Warnings)
+                {
+                    cerr << "WARNING: invalid value for 'RepresentativeFrameNumber' (" << sl << ")" << endl;
+                    cerr << "         ... assuming first frame !" << endl;
+                }
+                RepresentativeFrame = FirstFrame;
+            }
+            else if (us > NumberOfFrames)
+            {
+                if (DicomImageClass::DebugLevel & DicomImageClass::DL_Warnings)
+                {
+                    cerr << "WARNING: invalid value for 'RepresentativeFrameNumber' (" << sl << ")" << endl;
+                    cerr << "         ... assuming last frame !" << endl;
+                }
+                RepresentativeFrame = NumberOfFrames - 1;
+            }
+            else
+                RepresentativeFrame = us - 1;
+        }
         int ok = (Document->getValue(DCM_Rows, Rows) > 0);
         ok &= (Document->getValue(DCM_Columns, Columns) > 0);
         if (!ok || ((Rows > 0) && (Columns > 0)))
-        {
-            Uint16 us;
+        {            
             ok &= (Document->getValue(DCM_BitsAllocated, BitsAllocated) > 0);
             ok &= (Document->getValue(DCM_BitsStored, BitsStored) > 0);
             ok &= (Document->getValue(DCM_HighBit, HighBit) > 0);
@@ -108,22 +133,54 @@ DiImage::DiImage(const DiDocument *docu,
                     cerr << "... assuming 'unsigned' (0) !" << endl;
                 }
             }
-            hasPixelSpacing = (Document->getValue(DCM_PixelSpacing, PixelHeight, 0) > 0);
-            hasPixelSpacing &= (Document->getValue(DCM_PixelSpacing, PixelWidth, 1) > 0);
-            if (!hasPixelSpacing)
+            if (!(Document->getFlags() & CIF_UsePresentationState))
             {
-                Sint32 sl2;
-                hasPixelAspectRatio = (Document->getValue(DCM_PixelAspectRatio, sl2, 0) > 0);
-                PixelHeight = sl2;
-                hasPixelAspectRatio &= (Document->getValue(DCM_PixelAspectRatio, sl2, 1) > 0);
-                PixelWidth = sl2;
-                if (!hasPixelAspectRatio)
+                hasPixelSpacing = (Document->getValue(DCM_PixelSpacing, PixelHeight, 0) > 0);
+                if (hasPixelSpacing)
                 {
-                    PixelWidth = 1;
-                    PixelHeight = 1;
+                    if (Document->getValue(DCM_PixelSpacing, PixelWidth, 1) < 2)
+                    {
+                        if (DicomImageClass::DebugLevel & DicomImageClass::DL_Warnings)
+                        {
+                            cerr << "WARNING: missing second value for 'PixelSpacing' ... ";
+                            cerr << "assuming 'Width' = " << PixelWidth << " !" << endl;
+                        }
+                    }
+                } else {
+                    hasImagerPixelSpacing = (Document->getValue(DCM_ImagerPixelSpacing, PixelHeight, 0) > 0);
+                    if (hasImagerPixelSpacing)
+                    {
+                        if (Document->getValue(DCM_ImagerPixelSpacing, PixelWidth, 1) < 2)
+                        {
+                            if (DicomImageClass::DebugLevel & DicomImageClass::DL_Warnings)
+                            {
+                                cerr << "WARNING: missing second value for 'ImagerPixelSpacing' ... ";
+                                cerr << "assuming 'Width' = " << PixelWidth << " !" << endl;
+                            }
+                        }
+                    } else {
+                        Sint32 sl2;
+                        hasPixelAspectRatio = (Document->getValue(DCM_PixelAspectRatio, sl2, 0) > 0);
+                        PixelHeight = sl2;
+                        if (hasPixelAspectRatio)
+                        {
+                            if (Document->getValue(DCM_PixelAspectRatio, sl2, 1) < 2)
+                            {
+                                if (DicomImageClass::DebugLevel & DicomImageClass::DL_Warnings)
+                                {
+                                    cerr << "WARNING: missing second value for 'PixelAspectRatio' ... ";
+                                    cerr << "assuming 'Width' = " << PixelWidth << " !" << endl;
+                                }
+                            } else
+                                PixelWidth = sl2;
+                        } else {
+                            PixelWidth = 1;
+                            PixelHeight = 1;
+                        }
+                    }
                 }
+                checkPixelExtension();
             }
-            checkPixelExtension();
             DcmStack pstack;
             if (ok && Document->search(DCM_PixelData, pstack))
             {
@@ -166,6 +223,7 @@ DiImage::DiImage(const DiDocument *docu,
     Document(docu),
     FirstFrame(0),
     NumberOfFrames(0),
+    RepresentativeFrame(0),
     Rows(0),
     Columns(0),
     PixelWidth(1),
@@ -176,6 +234,7 @@ DiImage::DiImage(const DiDocument *docu,
     BitsPerSample(0),
     hasSignedRepresentation(0),
     hasPixelSpacing(0),
+    hasImagerPixelSpacing(0),
     hasPixelAspectRatio(0),
     isOriginal(1),
     InputData(NULL)
@@ -190,6 +249,7 @@ DiImage::DiImage(const DiImage *image,
     Document(image->Document),
     FirstFrame(image->FirstFrame + fstart),
     NumberOfFrames(fcount),
+    RepresentativeFrame(image->RepresentativeFrame),
     Rows(image->Rows), 
     Columns(image->Columns),
     PixelWidth(image->PixelWidth),
@@ -200,6 +260,7 @@ DiImage::DiImage(const DiImage *image,
     BitsPerSample(image->BitsPerSample),
     hasSignedRepresentation(image->hasSignedRepresentation),
     hasPixelSpacing(image->hasPixelSpacing),
+    hasImagerPixelSpacing(image->hasImagerPixelSpacing),
     hasPixelAspectRatio(image->hasPixelAspectRatio),
     isOriginal(0),
     InputData(NULL)
@@ -215,6 +276,7 @@ DiImage::DiImage(const DiImage *image,
     Document(image->Document),
     FirstFrame(image->FirstFrame),
     NumberOfFrames(image->NumberOfFrames),
+    RepresentativeFrame(image->RepresentativeFrame),
     Rows(rows), 
     Columns(columns),
     PixelWidth((aspect) ? 1 : image->PixelWidth),
@@ -225,6 +287,7 @@ DiImage::DiImage(const DiImage *image,
     BitsPerSample(image->BitsPerSample),
     hasSignedRepresentation(image->hasSignedRepresentation),
     hasPixelSpacing(image->hasPixelSpacing),
+    hasImagerPixelSpacing(image->hasImagerPixelSpacing),
     hasPixelAspectRatio((aspect) ? 0 : image->hasPixelAspectRatio),
     isOriginal(0),
     InputData(NULL)
@@ -238,6 +301,7 @@ DiImage::DiImage(const DiImage *image,
     Document(image->Document),
     FirstFrame(image->FirstFrame),
     NumberOfFrames(image->NumberOfFrames),
+    RepresentativeFrame(image->RepresentativeFrame),
     Rows(((degree == 90) ||(degree == 270)) ? image->Columns : image->Rows),
     Columns(((degree == 90) ||(degree == 270)) ? image->Rows : image->Columns),
     PixelWidth(((degree == 90) ||(degree == 270)) ? image->PixelHeight : image->PixelWidth),
@@ -248,6 +312,7 @@ DiImage::DiImage(const DiImage *image,
     BitsPerSample(image->BitsPerSample),
     hasSignedRepresentation(image->hasSignedRepresentation),
     hasPixelSpacing(image->hasPixelSpacing),
+    hasImagerPixelSpacing(image->hasImagerPixelSpacing),
     hasPixelAspectRatio(image->hasPixelAspectRatio),
     isOriginal(0),
     InputData(NULL)
@@ -296,7 +361,7 @@ void DiImage::deleteInputData()
 
 void DiImage::checkPixelExtension()
 {
-    if (hasPixelSpacing || hasPixelAspectRatio)
+    if (hasPixelSpacing || hasImagerPixelSpacing || hasPixelAspectRatio)
     {
         if (PixelHeight == 0)
         {
@@ -419,7 +484,7 @@ int DiImage::detachPixelData()
         {
             if (DicomImageClass::DebugLevel & DicomImageClass::DL_Informationals)
                 cerr << "INFO: detach pixel data" << endl;
-            pixel->detachValueField();
+            pixel->putUint16Array(NULL, 0);                       // remove pixeldata from memory/dataset
             return 1;
         }
     }
@@ -427,11 +492,38 @@ int DiImage::detachPixelData()
 }
 
 
+int DiImage::setColumnRowRatio(const double ratio)
+{
+    hasPixelAspectRatio = 1;
+    PixelWidth = ratio;
+    PixelHeight = 1;
+    checkPixelExtension();
+    return 1;
+}
+
+
+int DiImage::setRowColumnRatio(const double ratio)
+{
+    hasPixelAspectRatio = 1;
+    PixelWidth = 1;
+    PixelHeight = ratio;
+    checkPixelExtension();
+    return 1;
+}
+
+
 /*
  *
  * CVS/RCS Log:
  * $Log: diimage.cc,v $
- * Revision 1.2  1999-04-28 15:01:44  joergr
+ * Revision 1.3  1999-07-23 13:38:13  joergr
+ * Added support for attribute 'ImagerPixelSpacing'.
+ * Added support for attribute 'RepresentativeFrameNumber'.
+ * Reading of attribute 'PixelAspectRatio' and 'PixelSpacing' now depends on
+ * Flag 'CIF_UwePresentationState'.
+ * Added methods to set 'PixelApsectRatio'.
+ *
+ * Revision 1.2  1999/04/28 15:01:44  joergr
  * Introduced new scheme for the debug level variable: now each level can be
  * set separately (there is no "include" relationship).
  *
