@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2001, OFFIS
+ *  Copyright (C) 1996-2002, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose: DicomDocument (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-11-29 16:56:51 $
+ *  Update Date:      $Date: 2002-06-26 16:01:07 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/didocu.h,v $
- *  CVS/RCS Revision: $Revision: 1.12 $
+ *  CVS/RCS Revision: $Revision: 1.13 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -158,7 +158,7 @@ class DiDocument
     {
         return Flags;
     }
-    
+
     /** get transfer syntax of the DICOM dataset
      *
      ** @return transfer syntax
@@ -275,23 +275,27 @@ class DiDocument
      *
      ** @param  tag        tag to search for
      *  @param  returnVal  reference to the storage area for the resulting value
+     *  @param  item       element in the dataset where the search should start (default: root)
      *
      ** @return VM if successful, 0 otherwise
      */
     unsigned long getValue(const DcmTagKey &tag,
-                           const char *&returnVal) const;
+                           const char *&returnVal,
+                           DcmObject *item = NULL) const;
 
     /** get value of given tag (OFString)
      *
      ** @param  tag        tag to search for
      *  @param  returnVal  reference to the storage area for the resulting value
      *  @param  pos        position in muti-valued elements (starting with 0)
+     *  @param  item       element in the dataset where the search should start (default: root)
      *
      ** @return VM if successful, 0 otherwise
      */
     unsigned long getValue(const DcmTagKey &tag,
                            OFString &returnVal,
-                           const unsigned long pos = 0) const;
+                           const unsigned long pos = 0,
+                           DcmObject *item = NULL) const;
 
     /** get sequence of given tag
      *
@@ -391,7 +395,11 @@ class DiDocument
  *
  * CVS/RCS Log:
  * $Log: didocu.h,v $
- * Revision 1.12  2001-11-29 16:56:51  joergr
+ * Revision 1.13  2002-06-26 16:01:07  joergr
+ * Added new methods to get the explanation string of stored VOI windows and
+ * LUTs (not only of the currently selected VOI transformation).
+ *
+ * Revision 1.12  2001/11/29 16:56:51  joergr
  * Fixed bug in dcmimgle that caused incorrect decoding of some JPEG compressed
  * images (certain DICOM attributes, e.g. photometric interpretation, might
  * change during decompression process).
