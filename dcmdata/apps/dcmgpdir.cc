@@ -11,9 +11,9 @@
 **
 **
 ** Last Update:		$Author: hewett $
-** Update Date:		$Date: 1997-10-09 11:26:30 $
+** Update Date:		$Date: 1998-01-14 14:40:33 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/apps/dcmgpdir.cc,v $
-** CVS/RCS Revision:	$Revision: 1.21 $
+** CVS/RCS Revision:	$Revision: 1.22 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -163,7 +163,7 @@ usage()
 "    +e                 write with explicit lengths (default)\n"
 "    -e                 write with undefined lengths\n"
 "  other test/debug options:\n"
-"    -u    disable generation of unknown VR (UN)\n"
+"    -u    disable generation of new VRs (UN/UT/VS)\n"
 "    +V    verbose mode\n"
 "    +dn   set debug level to n (n=1..9)\n";
 }
@@ -318,6 +318,8 @@ int main(int argc, char *argv[])
 	    case 'u':
 		if (arg[0] == '-' && arg[2] == '\0') {
 		    dcmEnableUnknownVRGeneration = OFFalse;
+		    dcmEnableUnlimitedTextVRGeneration = OFFalse;
+		    dcmEnableVirtualStringVRGeneration = OFFalse;
 		} else {
 		    cerr << "unknown option: " << arg << endl;
 		    return 1;
@@ -1490,25 +1492,8 @@ warnAboutInconsistantAttributes(DcmDirectoryRecord *rec,
 		** This is not a huge problem since all the DICOMDIR
 		** attributes we generate are strings.
 		*/
-		switch (re->getVR()) {
-		case EVR_AE:
-		case EVR_AS:
-		case EVR_CS:
-		case EVR_DA:
-		case EVR_DS:
-		case EVR_DT:
-		case EVR_IS:
-		case EVR_LO:
-		case EVR_LT:
-		case EVR_PN:
-		case EVR_SH:
-		case EVR_ST:
-		case EVR_TM:
-		case EVR_UI:
+		if (re->isaString()) {
 		    compareStringAttributes(tag, rec, dataset, sourceFileName);
-		    break;
-		default:
-		    break;
 		}
 	    }
 	}
@@ -2300,7 +2285,12 @@ expandFileNames(OFList<OFString>& fileNames, OFList<OFString>& expandedNames)
 /*
 ** CVS/RCS Log:
 ** $Log: dcmgpdir.cc,v $
-** Revision 1.21  1997-10-09 11:26:30  hewett
+** Revision 1.22  1998-01-14 14:40:33  hewett
+** Added support for the VRs UT (Unlimited Text) and VS (Virtual String).
+** Modified existing -u command line option to also disable generation
+** of UT and VS (previously just disabled generation of UN).
+**
+** Revision 1.21  1997/10/09 11:26:30  hewett
 ** Fixed dcmgpdir bug related to unlinking a DICOMDIR backup file.
 **
 ** Revision 1.20  1997/10/07 10:12:59  meichel
