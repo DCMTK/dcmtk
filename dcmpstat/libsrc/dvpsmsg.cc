@@ -23,8 +23,8 @@
  *    classes: DVPSIPCMessage
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-11-08 18:38:23 $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  Update Date:      $Date: 2000-11-14 13:27:15 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -42,6 +42,9 @@ BEGIN_EXTERN_C
 #endif
 #ifdef HAVE_NETDB_H
 #include <netdb.h>
+#endif
+#ifdef HAVE_NETINET_IN_H
+#include <netinet/in.h>  /* for struct sockaddr_in on Linux */
 #endif
 #ifdef _WIN32
 #include <windows.h>
@@ -433,7 +436,10 @@ void DVPSIPCClient::notifySentDICOMObject(Uint32 status, const char *txt)
 
 /*
  *  $Log: dvpsmsg.cc,v $
- *  Revision 1.5  2000-11-08 18:38:23  meichel
+ *  Revision 1.6  2000-11-14 13:27:15  meichel
+ *  Fixed system include files for Linux.
+ *
+ *  Revision 1.5  2000/11/08 18:38:23  meichel
  *  Updated dcmpstat IPC protocol for additional message parameters
  *
  *  Revision 1.4  2000/10/23 12:19:52  joergr
