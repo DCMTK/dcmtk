@@ -54,9 +54,9 @@
 ** Author, Date:	Stephen M. Moore, 14-Apr-93
 ** Intent:		This module contains the public entry points for the
 **			DICOM Upper Layer (DUL) protocol package.
-** Last Update:		$Author: meichel $, $Date: 2000-03-03 14:11:22 $
+** Last Update:		$Author: meichel $, $Date: 2000-03-06 16:11:46 $
 ** Source File:		$RCSfile: dul.cc,v $
-** Revision:		$Revision: 1.24 $
+** Revision:		$Revision: 1.25 $
 ** Status:		$State: Exp $
 */
 
@@ -86,9 +86,7 @@ END_EXTERN_C
 #ifdef HAVE_SYS_TYPES_H
 #include <sys/types.h>
 #endif
-#ifdef HAVE_SYS_SOCKET_H
-#include <sys/socket.h>  /* for socklen_t */
-#endif
+/* sys/socket.h included via dcompat.h - needed for Ultrix */
 #ifdef HAVE_SYS_SELECT_H
 #include <sys/select.h>
 #endif
@@ -105,6 +103,7 @@ END_EXTERN_C
 #include <GUSI.h>	/* Use the Grand Unified Sockets Interface (GUSI) on Macintosh */
 #endif
 
+#include "dcompat.h"
 #include "dicom.h"
 #include "cond.h"
 #include "lst.h"
@@ -2331,7 +2330,11 @@ clearPresentationContext(LST_HEAD ** l)
 /*
 ** CVS Log
 ** $Log: dul.cc,v $
-** Revision 1.24  2000-03-03 14:11:22  meichel
+** Revision 1.25  2000-03-06 16:11:46  meichel
+** Avoiding to include <sys/socket.h> directly, using dcompat.h instead.
+**   <sys/socket.h> is not protected against multiple inclusion on Ultrix.
+**
+** Revision 1.24  2000/03/03 14:11:22  meichel
 ** Implemented library support for redirecting error messages into memory
 **   instead of printing them to stdout/stderr for GUI applications.
 **
