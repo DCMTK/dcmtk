@@ -40,9 +40,9 @@
 **
 **
 ** Last Update:		$Author: hewett $
-** Update Date:		$Date: 1996-09-24 16:18:41 $
+** Update Date:		$Date: 1997-01-13 15:39:23 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/cmdlnarg.cc,v $
-** CVS/RCS Revision:	$Revision: 1.1 $
+** CVS/RCS Revision:	$Revision: 1.2 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -51,6 +51,7 @@
 
 #include "osconfig.h"    /* make sure OS specific configuration is included first */
 
+#include "cmdlnarg.h"
 
 /*
 ** prepareCmdLineArgs 
@@ -112,7 +113,10 @@ void prepareCmdLineArgs(int& /* argc */, char** /* argv */,
 /*
 ** CVS/RCS Log:
 ** $Log: cmdlnarg.cc,v $
-** Revision 1.1  1996-09-24 16:18:41  hewett
+** Revision 1.2  1997-01-13 15:39:23  hewett
+** Now includes cmdlnarg.h
+**
+** Revision 1.1  1996/09/24 16:18:41  hewett
 ** Moved from dcmdata/apps and dcmnet/apps to be part of the dcmdata library.
 **
 ** Revision 1.2  1996/09/03 11:39:00  hewett
