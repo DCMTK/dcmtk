@@ -23,9 +23,9 @@
  *           of an arbitrary type.
  *
  *  Last Update:      $Author: wilkens $
- *  Update Date:      $Date: 2002-12-13 12:26:50 $
+ *  Update Date:      $Date: 2002-12-16 10:40:24 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/include/Attic/ofoset.h,v $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -35,6 +35,8 @@
 #ifndef OFOrderedSet_h
 #define OFOrderedSet_h
 
+#include "osconfig.h"
+#include "oftypes.h"
 #include "ofset.h"
 
 /** This template class provides a data structure and operations for administrating an
@@ -507,7 +509,10 @@ template <class T> const OFOrderedSet<T> &OFOrderedSet<T>::operator=( const OFOr
 /*
 ** CVS/RCS Log:
 ** $Log: ofoset.h,v $
-** Revision 1.6  2002-12-13 12:26:50  wilkens
+** Revision 1.7  2002-12-16 10:40:24  wilkens
+** Removed superfluous implementation files and modified header and make files.
+**
+** Revision 1.6  2002/12/13 12:26:50  wilkens
 ** Modified code to keep Sun CC 2.0.1 happy on Solaris 2.5.1 (template errors).
 **
 ** Revision 1.5  2002/12/09 13:03:55  joergr

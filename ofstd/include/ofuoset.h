@@ -23,9 +23,9 @@
  *           of an arbitrary type.
  *
  *  Last Update:      $Author: wilkens $
- *  Update Date:      $Date: 2002-07-09 18:29:47 $
+ *  Update Date:      $Date: 2002-12-16 10:40:25 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/include/Attic/ofuoset.h,v $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -35,6 +35,8 @@
 #ifndef OFUnorderedSet_h
 #define OFUnorderedSet_h
 
+#include "osconfig.h"
+#include "oftypes.h"
 #include "ofset.h"
 
 /** This template class provides a data structure and operations for administrating an
@@ -449,7 +451,10 @@ template <class T> class OFUnorderedSet : public OFSet<T>
 /*
 ** CVS/RCS Log:
 ** $Log: ofuoset.h,v $
-** Revision 1.3  2002-07-09 18:29:47  wilkens
+** Revision 1.4  2002-12-16 10:40:25  wilkens
+** Removed superfluous implementation files and modified header and make files.
+**
+** Revision 1.3  2002/07/09 18:29:47  wilkens
 ** Added some more functionality.
 **
 **

@@ -23,9 +23,9 @@
  *           arbitrary type.
  *
  *  Last Update:      $Author: wilkens $
- *  Update Date:      $Date: 2002-12-13 12:26:51 $
+ *  Update Date:      $Date: 2002-12-16 10:40:25 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/include/Attic/ofset.h,v $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -34,6 +34,9 @@
 
 #ifndef OFSet_h
 #define OFSet_h
+
+#include "osconfig.h"
+#include "oftypes.h"
 
 #define STARTING_SIZE 8
 
@@ -245,7 +248,10 @@ template <class T> OFSet<T>::OFSet( const OFSet<T> &src )
 /*
 ** CVS/RCS Log:
 ** $Log: ofset.h,v $
-** Revision 1.5  2002-12-13 12:26:51  wilkens
+** Revision 1.6  2002-12-16 10:40:25  wilkens
+** Removed superfluous implementation files and modified header and make files.
+**
+** Revision 1.5  2002/12/13 12:26:51  wilkens
 ** Modified code to keep Sun CC 2.0.1 happy on Solaris 2.5.1 (template errors).
 **
 ** Revision 1.4  2002/12/09 13:07:03  joergr
