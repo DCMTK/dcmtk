@@ -18,7 +18,7 @@ dcmnetdir=$(top_srcdir)/../dcmnet
 LOCALINCLUDES=-I$(dcmdatadir)/include -I$(dcmnetdir)/include -I$(ofstddir)/include \
 	-I$(includedir)/dcmdata -I$(includedir)/dcmnet -I$(includedir)/ofstd
 
-LOCALDEFS= 
+LOCALDEFS=
 
 include $(configdir)/@common_makefile@
 
@@ -34,12 +34,12 @@ install: all
 
 
 clean:
-	rm -f $(objs) 
+	rm -f $(objs)
 	rm -f $(LIB)
 	rm -f $(TRASH)
 
 distclean: clean
-	rm -f $(DISTTRASH) 
+	rm -f $(DISTTRASH)
 
 
 $(LIB): $(objs)
@@ -51,8 +51,5 @@ $(LIB): $(objs)
 
 dependencies:
 	$(CXX) -MM $(defines) $(includes) $(CPPFLAGS) $(CXXFLAGS) *.cc  > $(DEP)
-
-$(objs): config.h
-
 
 include $(DEP)
