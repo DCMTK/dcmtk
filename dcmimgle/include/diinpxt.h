@@ -21,10 +21,10 @@
  *
  *  Purpose: DicomInputPixelTemplate (Header)
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-04-28 14:48:39 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 1999-04-30 16:23:59 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/diinpxt.h,v $
- *  CVS/RCS Revision: $Revision: 1.10 $
+ *  CVS/RCS Revision: $Revision: 1.11 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -406,8 +406,8 @@ class DiInputPixelTemplate
 
  // --- declarations to avoid compiler warnings
  
-    DiInputPixelTemplate(const DiInputPixelTemplate &);
-    DiInputPixelTemplate &operator=(const DiInputPixelTemplate &);
+    DiInputPixelTemplate(const DiInputPixelTemplate<T1,T2> &);
+    DiInputPixelTemplate &operator=(const DiInputPixelTemplate<T1,T2> &);
 };
 
 
@@ -418,7 +418,10 @@ class DiInputPixelTemplate
  *
  * CVS/RCS Log:
  * $Log: diinpxt.h,v $
- * Revision 1.10  1999-04-28 14:48:39  joergr
+ * Revision 1.11  1999-04-30 16:23:59  meichel
+ * Minor code purifications to keep IBM xlC quiet
+ *
+ * Revision 1.10  1999/04/28 14:48:39  joergr
  * Introduced new scheme for the debug level variable: now each level can be
  * set separately (there is no "include" relationship).
  *
