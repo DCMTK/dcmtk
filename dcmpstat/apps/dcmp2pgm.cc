@@ -25,16 +25,16 @@
  *    of the presentation state. Non-grayscale transformations are
  *    ignored. If no presentation state is loaded, a default is created.
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-09-01 16:13:53 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 1999-10-20 10:44:51 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmpstat/apps/dcmp2pgm.cc,v $
- *  CVS/RCS Revision: $Revision: 1.16 $
+ *  CVS/RCS Revision: $Revision: 1.17 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
  *
  */
- 
+
 
 #include "osconfig.h"    /* make sure OS specific configuration is included first */
 
@@ -66,7 +66,6 @@ int main(int argc, char *argv[])
 {
     OFString str;
     OFCmdUnsignedInt opt_debugMode      = 0;           /* default: no debug */
-    OFBool           opt_suppressOutput = OFFalse;     /* default: create output */
     OFBool           opt_dump_pstate    = OFFalse;     /* default: do not dump presentation state */
     OFBool           opt_dicom_mode     = OFFalse;     /* default: create PGM, not DICOM SC */
     const char *opt_pstName = NULL;                    /* pstate read file name */
@@ -74,22 +73,22 @@ int main(int argc, char *argv[])
     const char *opt_pgmName = NULL;                    /* pgm save file name */
     const char *opt_savName = NULL;                    /* pstate save file name */
     const char *opt_cfgName = NULL;                    /* config read file name */
-    
+
     SetDebugLevel(( 0 ));
     DicomImageClass::DebugLevel = DicomImageClass::DL_NoMessages;
 
-    OFConsoleApplication app(OFFIS_CONSOLE_APPLICATION , "Read DICOM image and presentation state and render bitmap", rcsid);
+    OFConsoleApplication app(OFFIS_CONSOLE_APPLICATION, "Read DICOM image and presentation state and render bitmap", rcsid);
     OFCommandLine cmd;
-    cmd.setOptionColumns(LONGCOL, SHORTCOL+2);
-    cmd.setParamColumn(LONGCOL + SHORTCOL + 4);
-  
-    cmd.addParam("dcmimage_in",  "input DICOM image");
-    cmd.addParam("bitmap_out",   "output DICOM image or PGM bitmap");
-      
+    cmd.setOptionColumns(LONGCOL, SHORTCOL);
+    cmd.setParamColumn(LONGCOL + SHORTCOL + 2);
+
+    cmd.addParam("dcmimage_in",              "input DICOM image");
+    cmd.addParam("bitmap_out",               "output DICOM image or PGM bitmap", OFCmdParam::PM_Optional);
+
     cmd.addGroup("general options:");
-     cmd.addOption("--help",                      "-h",        "print this help text and exit");
-     cmd.addOption("--verbose",                   "-v",        "verbose mode, dump presentation state contents");
-     cmd.addOption("--debug",                     "-d",        "debug mode, print debug information");
+     cmd.addOption("--help",        "-h",    "print this help text and exit");
+     cmd.addOption("--verbose",     "-v",    "verbose mode, dump presentation state contents");
+     cmd.addOption("--debug",       "-d",    "debug mode, print debug information");
 
     cmd.addGroup("processing options:");
      cmd.addOption("--pstate",      "-p", 1, "[f]ilename: string",
@@ -101,25 +100,24 @@ int main(int argc, char *argv[])
      cmd.addOption("--dicom",       "+D",    "save image as DICOM secondary capture");
 
     cmd.addGroup("output options:");
-     cmd.addOption("--no-output",            "do not write bitmap");
      cmd.addOption("--save-pstate", "+S", 1, "[f]ilename: string",
                                              "save presentation state to file");
-    /* evaluate command line */                           
+    /* evaluate command line */
     prepareCmdLineArgs(argc, argv, OFFIS_CONSOLE_APPLICATION);
     if (app.parseCommandLine(cmd, argc, argv, OFCommandLine::ExpandWildcards))
     {
       cmd.getParam(1, opt_imgName);
-      cmd.getParam(2, opt_pgmName);
+      if (cmd.getParamCount() > 1)
+        cmd.getParam(2, opt_pgmName);
       if (cmd.findOption("--verbose"))     opt_dump_pstate=OFTrue;
       if (cmd.findOption("--debug"))       opt_debugMode = 3;
       if (cmd.findOption("--pstate"))      app.checkValue(cmd.getValue(opt_pstName));
       if (cmd.findOption("--config"))      app.checkValue(cmd.getValue(opt_cfgName));
       if (cmd.findOption("--pgm"))         opt_dicom_mode = OFFalse;
       if (cmd.findOption("--dicom"))       opt_dicom_mode = OFTrue;
-      if (cmd.findOption("--no-output"))   opt_suppressOutput = OFTrue;
       if (cmd.findOption("--save-pstate")) app.checkValue(cmd.getValue(opt_savName));
     }
-    
+
     SetDebugLevel(((int)opt_debugMode));
     DicomImageClass::DebugLevel = (int)opt_debugMode;
 
@@ -152,7 +150,7 @@ int main(int argc, char *argv[])
     if (status == EC_Normal)
     {
     	if (opt_dump_pstate) dumpPresentationState(dvi);
-        if (!opt_suppressOutput)
+        if (opt_pgmName != NULL)
         {
             const void *pixelData = NULL;
             unsigned long width = 0;
@@ -168,7 +166,7 @@ int main(int argc, char *argv[])
                 {
                   cerr << "error during creation of DICOM file" << endl;
                 }
-              } else {  
+              } else {
                 FILE *outfile = fopen(opt_pgmName, "wb");
                 if (outfile)
                 {
@@ -190,7 +188,7 @@ int main(int argc, char *argv[])
         }
     } else
         app.printError("Can't open input file(s).");
-    
+
 #ifdef DEBUG
     dcmDataDict.clear();  /* useful for debugging with dmalloc */
 #endif
@@ -206,7 +204,7 @@ void dumpPresentationState(DVInterface& dvi)
   DVPresentationState &ps = dvi.getCurrentPState();
   size_t i, j, max;
   const char *c;
-    
+
   cout << "DUMPING PRESENTATION STATE" << endl
        << "--------------------------" << endl << endl;
 
@@ -226,15 +224,15 @@ void dumpPresentationState(DVInterface& dvi)
     cout << "window center=" << center << " width=" << width << " description=\"";
     c = ps.getCurrentVOIDescription();
     if (c) cout << c << "\"" << endl; else cout << "(none)\"" << endl;
-  }   
+  }
   else if (ps.haveActiveVOILUT())
   {
     cout << "lut description=\"";
     c = ps.getCurrentVOIDescription();
     if (c) cout << c << "\"" << endl; else cout << "(none)\"" << endl;
-  }   
+  }
   else cout << "none" << endl;
-  
+
   cout << "Rotation: ";
   switch (ps.getRotation())
   {
@@ -254,13 +252,13 @@ void dumpPresentationState(DVInterface& dvi)
   cout << endl;
   cout << "Flip: ";
   if (ps.getFlip()) cout << "yes" << endl; else cout << "no" << endl;
-  
+
   Sint32 tlhcX=0;
   Sint32 tlhcY=0;
   Sint32 brhcX=0;
   Sint32 brhcY=0;
   cout << "Displayed area:" << endl;
-  
+
   DVPSPresentationSizeMode sizemode = ps.getDisplayedAreaPresentationSizeMode();
   double factor=1.0;
   switch (sizemode)
@@ -274,7 +272,7 @@ void dumpPresentationState(DVInterface& dvi)
     case DVPSD_magnify:
       ps.getDisplayedAreaPresentationPixelMagnificationRatio(factor);
       cout << "  presentation size mode: MAGNIFY factor=" << factor << endl;
-      break;    
+      break;
   }
   ps.getDisplayedArea(tlhcX, tlhcY, brhcX, brhcY);
   cout << "  displayed area TLHC=" << tlhcX << "\\" << tlhcY << " BRHC=" << brhcX << "\\" << brhcY << endl;
@@ -286,7 +284,7 @@ void dumpPresentationState(DVInterface& dvi)
   } else {
     cout << "  presentation pixel aspect ratio: " << ps.getDisplayedAreaPresentationPixelAspectRatio() << endl;
   }
-    
+
   cout << "Rectangular shutter: ";
   if (ps.haveShutter(DVPSU_rectangular))
   {
@@ -294,14 +292,14 @@ void dumpPresentationState(DVInterface& dvi)
          << " RV=" << ps.getRectShutterRV()
          << " UH=" << ps.getRectShutterUH()
          << " LH=" << ps.getRectShutterLH() << endl;
-   
+
   } else cout << "none" << endl;
   cout << "Circular shutter: ";
   if (ps.haveShutter(DVPSU_circular))
   {
     cout << "center=" << ps.getCenterOfCircularShutter_x()
          << "\\" << ps.getCenterOfCircularShutter_y()
-         << " radius=" << ps.getRadiusOfCircularShutter() << endl;  
+         << " radius=" << ps.getRadiusOfCircularShutter() << endl;
   } else cout << "none" << endl;
   cout << "Polygonal shutter: ";
   if (ps.haveShutter(DVPSU_polygonal))
@@ -309,7 +307,7 @@ void dumpPresentationState(DVInterface& dvi)
      cout << "points=" << ps.getNumberOfPolyShutterVertices() << " coordinates=";
      j = ps.getNumberOfPolyShutterVertices();
      Sint32 polyX, polyY;
-     for (i=0; i<j; i++) 
+     for (i=0; i<j; i++)
      {
      	if (EC_Normal == ps.getPolyShutterVertex(i, polyX, polyY))
      	{
@@ -325,7 +323,7 @@ void dumpPresentationState(DVInterface& dvi)
   } else cout << "none" << endl;
   cout << "Shutter presentation value: 0x" << hex << ps.getShutterPresentationValue() << dec << endl;
   cout << endl;
-  
+
   ps.sortGraphicLayers();  // to order of display
   for (size_t layer=0; layer<ps.getNumberOfGraphicLayers(); layer++)
   {
@@ -378,7 +376,7 @@ void dumpPresentationState(DVInterface& dvi)
                << " BRHC=" << ptext->getBoundingBoxBRHC_x() << "\\" << ptext->getBoundingBoxBRHC_y()
                << " units=";
           if (ptext->getBoundingBoxAnnotationUnits()==DVPSA_display) cout << "display"; else cout << "pixel";
-          
+
           DVPSTextJustification justification = ptext->getBoundingBoxHorizontalJustification();
           cout << " justification=";
           switch (justification)
@@ -408,7 +406,7 @@ void dumpPresentationState(DVInterface& dvi)
       if (pgraphic)
       {
       	// display contents of graphic object
-        cout << "      graphic " << graphicidx+1 << ": points=" << pgraphic->getNumberOfPoints() 
+        cout << "      graphic " << graphicidx+1 << ": points=" << pgraphic->getNumberOfPoints()
              << " type=";
         switch (pgraphic->getGraphicType())
         {
@@ -433,7 +431,7 @@ void dumpPresentationState(DVInterface& dvi)
         cout << endl;
       }
     }
-    
+
     // curve objects
     max = ps.getNumberOfCurves(layer);
     cout << "  Number of activated curves: " << max << endl;
@@ -444,7 +442,7 @@ void dumpPresentationState(DVInterface& dvi)
       if (pcurve)
       {
       	// display contents of curve
-        cout << "      curve " << curveidx+1 << ": points=" << pcurve->getNumberOfPoints() 
+        cout << "      curve " << curveidx+1 << ": points=" << pcurve->getNumberOfPoints()
              << " type=";
         switch (pcurve->getTypeOfData())
         {
@@ -457,7 +455,7 @@ void dumpPresentationState(DVInterface& dvi)
         if (c && (strlen(c)>0)) cout << c << endl; else cout << "(none)" << endl;
         cout << "        label=";
         c = pcurve->getCurveLabel();
-        if (c && (strlen(c)>0)) cout << c << " description="; else cout << "(none) description=";        
+        if (c && (strlen(c)>0)) cout << c << " description="; else cout << "(none) description=";
         c = pcurve->getCurveDescription();
         if (c && (strlen(c)>0)) cout << c << endl; else cout << "(none)" << endl;
         cout << "        coordinates: ";
@@ -474,20 +472,19 @@ void dumpPresentationState(DVInterface& dvi)
       } else cout << "      curve " << curveidx+1 << " not present in image." << endl;
     }
 
-    
     // overlay objects
     const void *overlayData=NULL;
     unsigned int overlayWidth=0, overlayHeight=0, overlayLeft=0, overlayTop=0;
     OFBool overlayROI=OFFalse;
-    Uint8 overlayTransp=0;
+    Uint16 overlayTransp=0;
     char overlayfile[100];
     FILE *ofile=NULL;
-    
+
     max = ps.getNumberOfActiveOverlays(layer);
     cout << "  Number of activated overlays: " << max << endl;
     for (size_t ovlidx=0; ovlidx<max; ovlidx++)
     {
-      cout << "      overlay " << ovlidx+1 << ": group=0x" << hex 
+      cout << "      overlay " << ovlidx+1 << ": group=0x" << hex
            << ps.getActiveOverlayGroup(layer, ovlidx) << dec << " label=\"";
       c=ps.getActiveOverlayLabel(layer, ovlidx);
       if (c) cout << c; else cout << "(none)";
@@ -497,7 +494,7 @@ void dumpPresentationState(DVInterface& dvi)
       cout << "\" type=";
       if (ps.activeOverlayIsROI(layer, ovlidx)) cout << "ROI"; else cout << "graphic";
       cout << endl;
-      
+
       /* get overlay data */
       if (EC_Normal == ps.getOverlayData(layer, ovlidx, overlayData, overlayWidth, overlayHeight,
           overlayLeft, overlayTop, overlayROI, overlayTransp))
@@ -506,7 +503,7 @@ void dumpPresentationState(DVInterface& dvi)
       	<< overlayLeft << " top=" << overlayTop << endl;
       	sprintf(overlayfile, "ovl_%02d%02d.pgm", (int)layer+1, (int)ovlidx+1);
       	cout << "        filename=\"" << overlayfile << "\"";
-      	
+
         ofile = fopen(overlayfile, "wb");
         if (ofile)
         {
@@ -514,7 +511,7 @@ void dumpPresentationState(DVInterface& dvi)
            fwrite(overlayData, overlayWidth, overlayHeight, ofile);
            fclose(ofile);
            cout << " - written." << endl;
-        } else cout << " -write error-" << endl;     	
+        } else cout << " -write error-" << endl;
       } else {
       	cout << "        unable to access overlay data!" << endl;
       }
@@ -522,7 +519,7 @@ void dumpPresentationState(DVInterface& dvi)
   }
 
   cout << endl;
-  
+
   max = ps.getNumberOfVOILUTsInImage();
   cout << "VOI LUTs available in attached image: " << max << endl;
   for (size_t lutidx=0; lutidx<max; lutidx++)
@@ -540,7 +537,7 @@ void dumpPresentationState(DVInterface& dvi)
     c=ps.getDescriptionOfVOIWindowsInImage(winidx);
     if (c) cout << c << endl; else cout << "(none)" << endl;
   }
-  
+
   max = ps.getNumberOfOverlaysInImage();
   cout << "Overlays available (non-shadowed) in attached image: " << max << endl;
   for (size_t oidx=0; oidx<max; oidx++)
@@ -556,22 +553,27 @@ void dumpPresentationState(DVInterface& dvi)
     cout << endl;
   }
   cout << endl;
-  
+
   Uint32 numberOfPeers = dvi.getNumberOfTargets();
   cout << "Communication peers (defined in config file): " << numberOfPeers << endl;
   for (Uint32 cpi=0; cpi<numberOfPeers; cpi++)
   {
-    cout << "  Peer " << cpi+1 << ": ID='" << dvi.getTargetID(cpi) << "' description='" 
+    cout << "  Peer " << cpi+1 << ": ID='" << dvi.getTargetID(cpi) << "' description='"
          << dvi.getTargetDescription(dvi.getTargetID(cpi)) << "'" << endl;
   }
   cout << endl;
-  
+
 }
+
 
 /*
  * CVS/RCS Log:
  * $Log: dcmp2pgm.cc,v $
- * Revision 1.16  1999-09-01 16:13:53  meichel
+ * Revision 1.17  1999-10-20 10:44:51  joergr
+ * Replaced option --no-output by an optional output parameter (filename).
+ * Minor corrections.
+ *
+ * Revision 1.16  1999/09/01 16:13:53  meichel
  * Fixed pixel aspect ratio computation in dcmp2pgm for rotated images.
  *
  * Revision 1.15  1999/07/27 15:41:32  meichel
@@ -607,7 +609,7 @@ void dumpPresentationState(DVInterface& dvi)
  * Revision 1.6  1999/01/20 19:24:42  meichel
  * Implemented access methods for network communication
  *   related config file entries.
- * 
+ *
  * Revision 1.5  1999/01/15 17:36:03  meichel
  * added configuration file facility (derived from dcmprint)
  *   and a sample config file.
