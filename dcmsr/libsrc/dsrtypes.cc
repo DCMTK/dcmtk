@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DSRTypes
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2004-11-22 16:35:40 $
- *  CVS/RCS Revision: $Revision: 1.45 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2004-11-29 17:11:37 $
+ *  CVS/RCS Revision: $Revision: 1.46 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -344,19 +344,21 @@ static const S_VerificationFlagNameMap VerificationFlagNameMap[] =
 
 static const S_CharacterSetNameMap CharacterSetNameMap[] =
 {
+    // columns: enum, DICOM, HTML, XML (if "?" a warning is reported)
     {DSRTypes::CS_invalid,  "",           "",           ""},
     {DSRTypes::CS_ASCII,    "ISO_IR 6",   "",           "UTF-8"},
     {DSRTypes::CS_Latin1,   "ISO_IR 100", "ISO-8859-1", "ISO-8859-1"},
     {DSRTypes::CS_Latin2,   "ISO_IR 101", "ISO-8859-2", "ISO-8859-2"},
     {DSRTypes::CS_Latin3,   "ISO_IR 109", "ISO-8859-3", "ISO-8859-3"},
     {DSRTypes::CS_Latin4,   "ISO_IR 110", "ISO-8859-4", "ISO-8859-4"},
-    {DSRTypes::CS_Latin5,   "ISO_IR 148", "ISO-8859-9", "ISO-8859-9"},
     {DSRTypes::CS_Cyrillic, "ISO_IR 144", "ISO-8859-5", "ISO-8859-5"},
     {DSRTypes::CS_Arabic,   "ISO_IR 127", "ISO-8859-6", "ISO-8859-6"},
     {DSRTypes::CS_Greek,    "ISO_IR 126", "ISO-8859-7", "ISO-8859-7"},
     {DSRTypes::CS_Hebrew,   "ISO_IR 138", "ISO-8859-8", "ISO-8859-8"},
-    {DSRTypes::CS_Thai,     "ISO_IR 166", "",           ""},
-    {DSRTypes::CS_Japanese, "ISO_IR 13",  "",           ""}
+    {DSRTypes::CS_Latin5,   "ISO_IR 148", "ISO-8859-9", "ISO-8859-9"},
+    {DSRTypes::CS_Japanese, "ISO_IR 13",  "?",          "?"},  /* JIS_X0201 ? */
+    {DSRTypes::CS_Thai,     "ISO_IR 166", "?",          "?"},  /* TIS-620 ? */
+    {DSRTypes::CS_UTF8,     "ISO_IR 192", "UTF-8",      "UTF-8"}
 };
 
 
@@ -1509,7 +1511,11 @@ OFBool DSRTypes::elementContainsExtendedCharacters(DcmElement &elem)
 /*
  *  CVS/RCS Log:
  *  $Log: dsrtypes.cc,v $
- *  Revision 1.45  2004-11-22 16:35:40  meichel
+ *  Revision 1.46  2004-11-29 17:11:37  joergr
+ *  Added warning message when character set is unknown, unsupported  or cannot
+ *  be mapped to the output format. Added support for UTF-8 character set.
+ *
+ *  Revision 1.45  2004/11/22 16:35:40  meichel
  *  Added helper methods to check strings and DICOM elements for presence of
  *    extended (non-ASCII) characters
  *

@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DSRDocument
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2004-11-22 16:39:12 $
- *  CVS/RCS Revision: $Revision: 1.53 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2004-11-29 17:15:29 $
+ *  CVS/RCS Revision: $Revision: 1.54 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -567,7 +567,7 @@ OFCondition DSRDocument::readXMLDocumentHeader(DSRXMLDocument &doc,
                     /* check for known character set */
                     setSpecificCharacterSet(doc.getStringFromNodeContent(cursor, tmpString));
                     const char *encString = characterSetToXMLName(SpecificCharacterSetEnum);
-                    if (doc.setEncodingHandler(encString).bad())
+                    if ((encString == "?") || doc.setEncodingHandler(encString).bad())
                     {
                         OFString message = "Character set '";
                         message += tmpString;
@@ -950,7 +950,12 @@ OFCondition DSRDocument::writeXML(ostream &stream,
         /* optional character set */
         tmpString = characterSetToXMLName(SpecificCharacterSetEnum);
         if (!tmpString.empty())
-            stream << " encoding=\"" << tmpString << "\"";
+        {
+            if (tmpString != "?")
+                stream << " encoding=\"" << tmpString << "\"";
+            else
+                printWarningMessage(LogStream, "cannot map SpecificCharacterSet to equivalent XML encoding");
+        }
         stream << "?>" << endl;
 
         stream << "<report";
@@ -1280,8 +1285,12 @@ OFCondition DSRDocument::renderHTML(ostream &stream,
             tmpString = characterSetToHTMLName(SpecificCharacterSetEnum);
             if (!tmpString.empty())
             {
-                stream << "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=";
-                stream << tmpString << "\">" << endl;
+                if (tmpString != "?")
+                {
+                    stream << "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=";
+                    stream << tmpString << "\">" << endl;
+                } else
+                    printWarningMessage(LogStream, "cannot map SpecificCharacterSet to equivalent HTML charset");
             }
         }
         stream << "</head>" << endl;
@@ -2284,7 +2293,7 @@ OFBool DSRDocument::containsExtendedCharacters()
     result = result || DSRTypes::elementContainsExtendedCharacters(PatientsName);
     result = result || DSRTypes::elementContainsExtendedCharacters(PatientID);
     result = result || DSRTypes::elementContainsExtendedCharacters(Manufacturer);
-    result = result || DSRTypes::elementContainsExtendedCharacters(ReferencedPerformedProcedureStepSequence);    
+    result = result || DSRTypes::elementContainsExtendedCharacters(ReferencedPerformedProcedureStepSequence);
     result = result || DSRTypes::elementContainsExtendedCharacters(CompletionFlagDescription);
     result = result || DSRTypes::elementContainsExtendedCharacters(PatientsName);
     result = result || DSRTypes::elementContainsExtendedCharacters(VerifyingObserver);
@@ -2300,7 +2309,11 @@ OFBool DSRDocument::containsExtendedCharacters()
 /*
  *  CVS/RCS Log:
  *  $Log: dsrdoc.cc,v $
- *  Revision 1.53  2004-11-22 16:39:12  meichel
+ *  Revision 1.54  2004-11-29 17:15:29  joergr
+ *  Added warning message when character set is unknown, unsupported  or cannot
+ *  be mapped to the output format. Added support for UTF-8 character set.
+ *
+ *  Revision 1.53  2004/11/22 16:39:12  meichel
  *  Added method that checks if the SR document contains non-ASCII characters
  *    in any of the strings affected by SpecificCharacterSet.
  *
