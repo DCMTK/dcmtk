@@ -39,10 +39,10 @@
 ** for OS environments which cannot pass arguments on the command line.
 **
 **
-** Last Update:		$Author: hewett $
-** Update Date:		$Date: 1997-01-13 15:39:23 $
+** Last Update:		$Author: meichel $
+** Update Date:		$Date: 1999-03-17 11:09:21 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/cmdlnarg.cc,v $
-** CVS/RCS Revision:	$Revision: 1.2 $
+** CVS/RCS Revision:	$Revision: 1.3 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -63,10 +63,11 @@
 
 #ifdef HAVE_EMPTY_ARGC_ARGV
 
+#include <stdio.h>
+#include <string.h>
 #ifdef HAVE_STDLIB_H
 #include <stdlib.h>
 #endif
-#include <string.h>
 #include <iostream.h>
 #include <sstream.h>
 
@@ -101,10 +102,51 @@ void prepareCmdLineArgs(int& argc, char* argv[],
 
 #else
 
+#include <stdio.h>
+#include <string.h>
+#ifdef HAVE_STDLIB_H
+#include <stdlib.h>
+#endif
+#include <string.h>
+#include <iostream.h>
+#ifdef HAVE_IO_H
+#include <io.h>
+#endif
+
 void prepareCmdLineArgs(int& /* argc */, char** /* argv */, 
 			const char* /* progname */)
 {
-    /* do nothing */
+#ifdef windows
+    /* Map stderr onto stdout (cannot redirect stderr under windows).
+     * Remove any buffering (windows uses a 2k buffer for stdout when not
+     * writing to the console.  since dcmtk uses mixed stdout, stderr 
+     * cout and cerr, this results in _very_ mixed up output).
+     */
+
+    /* duplicate the stderr file descriptor be the same as stdout */ 
+    close(fileno(stderr));
+    int fderr = dup(fileno(stdout));
+    if (fderr != fileno(stderr)) {
+        fprintf(stderr, "INTERNAL ERROR: cannot map stderr to stdout: ");
+        perror(NULL);
+    }
+    /* make cout refer to cerr */
+    cout = cerr;
+    /* make stdout the same as stderr */
+    *stdout = *stderr;
+
+    /* make sure the buffering is removed */
+    if (setvbuf(stdout, NULL, _IONBF, 0 ) != 0 ) {
+        fprintf(stderr, "INTERNAL ERROR: cannot unbuffer stdout: ");
+        perror(NULL);
+    }
+    if (setvbuf(stderr, NULL, _IONBF, 0 ) != 0 ) {
+        fprintf(stderr, "INTERNAL ERROR: cannot unbuffer stderr: ");
+        perror(NULL);
+    }
+#endif
+
+    /* no need to process the arguments */
 }
 
 #endif
@@ -113,7 +155,12 @@ void prepareCmdLineArgs(int& /* argc */, char** /* argv */,
 /*
 ** CVS/RCS Log:
 ** $Log: cmdlnarg.cc,v $
-** Revision 1.2  1997-01-13 15:39:23  hewett
+** Revision 1.3  1999-03-17 11:09:21  meichel
+** Added code to prepareCmdLineArgs() to redirect stderr, cout,
+**   cerr to stdout on Windows and make output unbuffered.
+**   This allows to redirect the output of DCMTK tools to file on Windows.
+**
+** Revision 1.2  1997/01/13 15:39:23  hewett
 ** Now includes cmdlnarg.h
 **
 ** Revision 1.1  1996/09/24 16:18:41  hewett
