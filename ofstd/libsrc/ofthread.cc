@@ -26,9 +26,9 @@
  *           multi-thread APIs.
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-03-29 16:41:26 $
+ *  Update Date:      $Date: 2000-04-11 15:24:45 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/libsrc/ofthread.cc,v $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -262,7 +262,7 @@ OFThreadSpecificData::OFThreadSpecificData()
   }
 #else
 #ifdef DEBUG
-  CERR << "DCMTK warning: dummy thread specific data object created." << endl;
+  COUT << "DCMTK warning: dummy thread specific data object created." << endl;
 #endif  
 #endif
 }
@@ -901,7 +901,10 @@ void OFReadWriteLock::errorstr(OFString& description, int /* code */ )
  *
  * CVS/RCS Log:
  * $Log: ofthread.cc,v $
- * Revision 1.1  2000-03-29 16:41:26  meichel
+ * Revision 1.2  2000-04-11 15:24:45  meichel
+ * Changed debug output to COUT instead of CERR
+ *
+ * Revision 1.1  2000/03/29 16:41:26  meichel
  * Added new classes providing an operating system independent abstraction
  *   for threads, thread specific data, semaphores, mutexes and read/write locks.
  *
