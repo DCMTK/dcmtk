@@ -23,8 +23,8 @@
  *    classes: DSRXMLCursor
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-08-07 12:16:37 $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  Update Date:      $Date: 2003-08-29 12:52:02 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -39,9 +39,8 @@
 
 #include "oftypes.h"    /* for definition of OFBool */
 
-#ifdef HAVE_UNISTD_H
-#include <unistd.h>     /* for definition of NULL */
-#endif
+#define INCLUDE_CSTDDEF
+#include "ofstdinc.h"
 
 #ifdef WITH_LIBXML
 #include <libxml/parser.h>
@@ -149,7 +148,11 @@ class DSRXMLCursor
 /*
  *  CVS/RCS Log:
  *  $Log: dsrxmlc.h,v $
- *  Revision 1.1  2003-08-07 12:16:37  joergr
+ *  Revision 1.2  2003-08-29 12:52:02  joergr
+ *  Replaced inclusion of unistd.h by cstddef/stddef.h to compile under Windows
+ *  with libxml support (required for definition of NULL).
+ *
+ *  Revision 1.1  2003/08/07 12:16:37  joergr
  *  Added interface classes hiding the access to libxml (document and cursor
  *  class).
  *
