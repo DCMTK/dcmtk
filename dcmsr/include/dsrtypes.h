@@ -23,8 +23,8 @@
  *    classes: DSRTypes
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-10-06 09:52:58 $
- *  CVS/RCS Revision: $Revision: 1.36 $
+ *  Update Date:      $Date: 2003-10-09 12:53:12 $
+ *  CVS/RCS Revision: $Revision: 1.37 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -323,8 +323,10 @@ class DSRTypes
         DT_MammographyCadSR,
         /// DICOM SOP Class: Chest CAD SR
         DT_ChestCadSR,
+        /// DICOM SOP Class: Procedure Log
+        DT_ProcedureLog,
         /// internal type used to mark the last entry
-        DT_last = DT_ChestCadSR
+        DT_last = DT_ProcedureLog
     };
 
     /** SR relationship types
@@ -1186,7 +1188,10 @@ class DSRTypes
 /*
  *  CVS/RCS Log:
  *  $Log: dsrtypes.h,v $
- *  Revision 1.36  2003-10-06 09:52:58  joergr
+ *  Revision 1.37  2003-10-09 12:53:12  joergr
+ *  Added support for Procedure Log.
+ *
+ *  Revision 1.36  2003/10/06 09:52:58  joergr
  *  Added new flag which allows to ignore content item errors when reading an SR
  *  document (e.g. missing value type specific attributes).
  *
