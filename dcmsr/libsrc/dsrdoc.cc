@@ -23,8 +23,8 @@
  *    classes: DSRDocument
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-10-16 16:32:18 $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  Update Date:      $Date: 2000-10-17 12:37:14 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -176,26 +176,26 @@ E_Condition DSRDocument::print(ostream &stream,
         stream << "Completion Flag    : " << completionFlagToEnumeratedValue(CompletionFlagEnum) << endl;
         if (CompletionFlagDescription.getLength() > 0)
             stream << "                     " << getStringValueFromElement(CompletionFlagDescription, string) << endl;
+        /* predecessor documents */
+        if (getNumberOfPredecessorDocuments() > 0)
+            stream << "Predecessor Doc's  : " << getNumberOfPredecessorDocuments() << endl;
         /* verification flag */
         stream << "Verification Flag  : " << verificationFlagToEnumeratedValue(VerificationFlagEnum) << endl;
         /* verifying observer */
-        if (VerifyingObserver.card() > 0)
-        {
-            const unsigned long count = VerifyingObserver.card();
-            for (unsigned long i = 0; i < count; i++)
+        const size_t obsCount = getNumberOfVerifyingObservers();
+        for (size_t i = 1; i <= obsCount; i++)
+        {            
+            OFString dateTime, obsName, organization;
+            DSRCodedEntryValue obsCode;
+            if (getVerifyingObserver(i, dateTime, obsName, obsCode, organization) == EC_Normal)
             {
-                DcmItem *ditem = VerifyingObserver.getItem(i);
-                if (ditem != NULL)
+                stream << "                     " << dateTime << ": " << obsName;
+                if (obsCode.isValid())
                 {
-                    stream << "                     ";
-                    if (getStringValueFromDataset(*ditem, DCM_VerificationDateTime, string) == EC_Normal)
-                        stream << string << ": ";
-                    if (getStringValueFromDataset(*ditem, DCM_VerifyingObserverName, string) == EC_Normal)
-                        stream << string << ", ";
-                    if (getStringValueFromDataset(*ditem, DCM_VerifyingOrganization, string) == EC_Normal)
-                        stream << string;
-                    stream << endl;
+                    stream << " ";
+                    obsCode.print(stream, flags & PF_printAllCodes /* printCodeValue */);
                 }
+                stream << ", " << organization << endl;
             }
         }
         /* content date and time */        
@@ -479,32 +479,39 @@ E_Condition DSRDocument::renderHTML(ostream &stream,
             stream << "<td>" << getStringValueFromElement(CompletionFlagDescription, string) << "</td>" << endl;
             stream << "</tr>" << endl;
         }
+        /* predecessor documents */
+        if (getNumberOfPredecessorDocuments() > 0)
+        {
+            stream << "<tr>" << endl;
+            stream << "<td><b>Predecessor Doc's:</b></td>" << endl;
+            stream << "<td>" << getNumberOfPredecessorDocuments() << "</td>" << endl;
+            stream << "</tr>" << endl;
+        }
         /* verification flag */
         stream << "<tr>" << endl;
         stream << "<td><b>Verification Flag:</b></td>" << endl;
         stream << "<td>" << verificationFlagToEnumeratedValue(VerificationFlagEnum) << "</td>" << endl;
         stream << "</tr>" << endl;
         /* verifying observer */
-        if (VerifyingObserver.card() > 0)
+        const size_t obsCount = getNumberOfVerifyingObservers();
+        for (size_t i = 1; i <= obsCount; i++)
         {
-            const unsigned long count = VerifyingObserver.card();
-            for (unsigned long i = 0; i < count; i++)
+            OFString dateTime, obsName, organization;
+            DSRCodedEntryValue obsCode;
+            if (getVerifyingObserver(i, dateTime, obsName, obsCode, organization) == EC_Normal)
             {
-                DcmItem *ditem = VerifyingObserver.getItem(i);
-                if (ditem != NULL)
+                stream << "<tr>" << endl;
+                stream << "<td></td>" << endl;
+                stream << "<td>";
+                stream << dateTime << ": " << obsName;
+                if (obsCode.isValid() && (flags & HF_renderAllCodes))
                 {
-                    stream << "<tr>" << endl;
-                    stream << "<td></td>" << endl;
-                    stream << "<td>";
-                    if (getStringValueFromDataset(*ditem, DCM_VerificationDateTime, string) == EC_Normal)
-                        stream << string << ": ";
-                    if (getStringValueFromDataset(*ditem, DCM_VerifyingObserverName, string) == EC_Normal)
-                        stream << string << ", ";
-                    if (getStringValueFromDataset(*ditem, DCM_VerifyingOrganization, string) == EC_Normal)
-                        stream << string;
-                    stream << "</td>" << endl;
-                    stream << "</tr>" << endl;
+                    stream << " ";
+                    obsCode.print(stream, OFTrue /* printCodeValue */);
                 }
+                stream << ", " << organization;
+                stream << "</td>" << endl;
+                stream << "</tr>" << endl;
             }
         }
         /* content date and time */        
@@ -573,6 +580,94 @@ const OFString &DSRDocument::getCompletionFlagDescription(OFString &string) cons
 DSRTypes::E_VerificationFlag DSRDocument::getVerificationFlag() const
 {
     return VerificationFlagEnum;
+}
+
+
+size_t DSRDocument::getNumberOfVerifyingObservers()
+{
+    return (size_t)VerifyingObserver.card();
+}
+
+    
+E_Condition DSRDocument::getVerifyingObserver(const size_t idx,
+                                              OFString &dateTime,
+                                              OFString &observerName,
+                                              OFString &organization)
+{
+    DSRCodedEntryValue dummyCode;
+    return getVerifyingObserver(idx, dateTime, observerName, dummyCode, organization);
+}
+
+
+E_Condition DSRDocument::getVerifyingObserver(const size_t idx,
+                                              OFString &dateTime,
+                                              OFString &observerName,
+                                              DSRCodedEntryValue &observerCode,
+                                              OFString &organization)
+{
+    E_Condition result = EC_IllegalCall;
+    /* clear all reference variables */
+    dateTime.clear();
+    observerName.clear();
+    observerCode.clear();
+    organization.clear();
+    /* get specified entry */
+    if ((idx > 0) && (idx <= getNumberOfVerifyingObservers()))
+    {
+        DcmItem *ditem = VerifyingObserver.getItem((unsigned long)(idx - 1));
+        if (ditem != NULL)
+        {
+            result = getStringValueFromDataset(*ditem, DCM_VerificationDateTime, dateTime);
+            if (result == EC_Normal)
+                result = getStringValueFromDataset(*ditem, DCM_VerifyingObserverName, observerName);
+            if (result == EC_Normal)
+            {
+                /* code is optional */
+                observerCode.readSequence(*ditem, DCM_VerifyingObserverIdentificationCodeSequence, LogStream);
+                result = getStringValueFromDataset(*ditem, DCM_VerifyingOrganization, organization);
+            }
+            if (result == EC_Normal)
+            {
+                if ((dateTime.length() == 0) || (observerName.length() == 0) || (organization.length() == 0))
+                    result = EC_CorruptedData;
+            }
+        }
+    }
+    return result;
+}
+
+
+size_t DSRDocument::getNumberOfPredecessorDocuments()
+{
+    return (size_t)PredecessorDocuments.card();
+}
+
+    
+E_Condition DSRDocument::getPredecessorDocument(const size_t idx,
+                                                OFString &sopClassUID,
+                                                OFString &sopInstanceUID)
+{
+    E_Condition result = EC_IllegalCall;
+    /* clear all reference variables */
+    sopClassUID.clear();
+    sopInstanceUID.clear();
+    /* get specified entry */
+    if ((idx > 0) && (idx <= getNumberOfPredecessorDocuments()))
+    {
+        DcmItem *ditem = PredecessorDocuments.getItem((unsigned long)(idx - 1));
+        if (ditem != NULL)
+        {
+            result = getStringValueFromDataset(*ditem, DCM_SOPClassUID, sopClassUID);
+            if (result == EC_Normal)
+                result = getStringValueFromDataset(*ditem, DCM_SOPInstanceUID, sopInstanceUID);
+            if (result == EC_Normal)
+            {
+                if ((sopClassUID.length() == 0) || (sopInstanceUID.length() == 0))
+                    result = EC_CorruptedData;
+            }
+        }
+    }
+    return result;
 }
 
 
@@ -1021,10 +1116,11 @@ E_Condition DSRDocument::createRevisedVersion()
         DcmItem *ditem = new DcmItem();
         if (ditem != NULL)
         {
-            /* write current document UIDs (replace old ones) */
-            ditem->insert(new DcmUniqueIdentifier(SOPClassUID), OFTrue /* replaceOld */);
-            ditem->insert(new DcmUniqueIdentifier(SOPInstanceUID), OFTrue  /* replaceOld */);
-            /* insert items into sequence */
+            /* write current document UIDs */
+            ditem->insert(new DcmUniqueIdentifier(SOPClassUID));
+            ditem->insert(new DcmUniqueIdentifier(SOPInstanceUID));
+            /* insert item into sequence (replace old ones) */
+            PredecessorDocuments.clear();
             PredecessorDocuments.insert(ditem);
             /* create new instance UID and update creation date/time */
             createNewSOPInstance();
@@ -1155,7 +1251,13 @@ void DSRDocument::updateAttributes()
 /*
  *  CVS/RCS Log:
  *  $Log: dsrdoc.cc,v $
- *  Revision 1.3  2000-10-16 16:32:18  joergr
+ *  Revision 1.4  2000-10-17 12:37:14  joergr
+ *  Added methods to retrieve information on predecessor documents and
+ *  verifying observers.
+ *  Changed behaviour of createRevisedVersion(): replace all existing sequence
+ *  items.
+ *
+ *  Revision 1.3  2000/10/16 16:32:18  joergr
  *  Added missing get/setSeriesDescription() methods.
  *
  *  Revision 1.2  2000/10/16 12:02:48  joergr
