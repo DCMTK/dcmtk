@@ -22,9 +22,9 @@
  *  Purpose: Convert the contents of a DICOM file to XML format
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-04-25 14:56:35 $
+ *  Update Date:      $Date: 2002-05-07 12:47:41 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/apps/dcm2xml.cc,v $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -76,7 +76,7 @@ static OFCondition writeFile(ostream &out,
             result = dfile->loadFile(ifname, xfer);
         if (result.bad())
         {
-            CERR << OFFIS_CONSOLE_APPLICATION << ": error (" << dfile->error().text()
+            CERR << OFFIS_CONSOLE_APPLICATION << ": error (" << result.text()
                  << ") reading file: "<< ifname << endl;
         }
     } else
@@ -273,7 +273,10 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcm2xml.cc,v $
- * Revision 1.2  2002-04-25 14:56:35  joergr
+ * Revision 1.3  2002-05-07 12:47:41  joergr
+ * Fixed bug in an error message.
+ *
+ * Revision 1.2  2002/04/25 14:56:35  joergr
  * Removed unused function parameter to keep Sun CC 2.0.1 quiet.
  *
  * Revision 1.1  2002/04/25 10:08:35  joergr

@@ -23,9 +23,9 @@
  *           XML format
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-04-16 13:49:52 $
+ *  Update Date:      $Date: 2002-05-07 12:47:59 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmsr/apps/dsr2xml.cc,v $
- *  CVS/RCS Revision: $Revision: 1.11 $
+ *  CVS/RCS Revision: $Revision: 1.12 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -78,7 +78,7 @@ static OFCondition writeFile(ostream &out,
             result = dfile->loadFile(ifname, xfer);
         if (result.bad())
         {
-            CERR << OFFIS_CONSOLE_APPLICATION << ": error (" << dfile->error().text()
+            CERR << OFFIS_CONSOLE_APPLICATION << ": error (" << result.text()
                  << ") reading file: "<< ifname << endl;
         }
     } else
@@ -243,7 +243,10 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dsr2xml.cc,v $
- * Revision 1.11  2002-04-16 13:49:52  joergr
+ * Revision 1.12  2002-05-07 12:47:59  joergr
+ * Fixed bug in an error message.
+ *
+ * Revision 1.11  2002/04/16 13:49:52  joergr
  * Added configurable support for C++ ANSI standard includes (e.g. streams).
  * Thanks to Andreas Barth <Andreas.Barth@bruker-biospin.de> for his
  * contribution.
