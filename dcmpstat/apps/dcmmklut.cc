@@ -25,9 +25,9 @@
  *    file.
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-10-16 12:26:05 $
+ *  Update Date:      $Date: 2000-12-11 18:18:09 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmpstat/apps/dcmmklut.cc,v $
- *  CVS/RCS Revision: $Revision: 1.18 $
+ *  CVS/RCS Revision: $Revision: 1.19 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -954,10 +954,10 @@ int main(int argc, char *argv[])
             if (result == EC_Normal)
             {
                 if (opt_inverseGSDF)
-                    applyInverseGSDF((unsigned int)opt_bits, opt_entries, opt_byteAlign, opt_minDensity, opt_maxDensity,
-                        opt_illumination, opt_reflection, outputData, headerStr, explStr);
+                    applyInverseGSDF((unsigned int)opt_bits, opt_entries, opt_byteAlign, (unsigned int)opt_minDensity, (unsigned int)opt_maxDensity,
+                        (unsigned int)opt_illumination, (unsigned int)opt_reflection, outputData, headerStr, explStr);
                 if (opt_randomCount > 0)
-                    mixingUpLUT(opt_entries, opt_byteAlign, opt_randomCount, opt_randomSeed, outputData, explStr);
+                    mixingUpLUT(opt_entries, opt_byteAlign, opt_randomCount, (unsigned int)opt_randomSeed, outputData, explStr);
                 result = createLUT((unsigned int)opt_bits, opt_entries, opt_firstMapped, opt_byteAlign, opt_lutVR, *ditem,
                     outputData, explStr);
             }
@@ -1083,7 +1083,10 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmmklut.cc,v $
- * Revision 1.18  2000-10-16 12:26:05  joergr
+ * Revision 1.19  2000-12-11 18:18:09  joergr
+ * Added explicit typecast to keep SunCC 2.0.1 quiet.
+ *
+ * Revision 1.18  2000/10/16 12:26:05  joergr
  * Added new feature: create inverse GSDF (useful for printer output).
  *
  * Revision 1.17  2000/07/04 16:09:22  joergr
