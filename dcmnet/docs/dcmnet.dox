@@ -1,0 +1,27 @@
+/*!
+
+\defgroup dcmnet dcmnet
+
+This module contains ...
+
+The main interface classes and functions are:
+\li \b ...
+
+\section Tools
+
+This module contains the following command line tools:
+\li \b echoscu:  \ref echoscu
+\li \b findscu:  \ref findscu
+\li \b movescu:  \ref movescu
+\li \b storescp: \ref storescp
+\li \b storescu: \ref storescu
+
+\section Examples
+
+The following example shows ...:
+
+\code
+...
+\endcode
+
+*/

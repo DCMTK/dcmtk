@@ -1,0 +1,19 @@
+/*!
+
+\defgroup dcmtls dcmtls
+
+This module contains ...
+
+The main interface classes are:
+\li \b DcmTLSTransportLayer
+\li \b DcmTLSConnection
+
+\section Examples
+
+The following example shows ...:
+
+\code
+...
+\endcode
+
+*/

@@ -1,0 +1,25 @@
+/*!
+
+\defgroup dcmwlm dcmwlm
+
+This module contains ...
+
+The main interface classes are:
+\li \b WlmActivityManager
+\li \b WlmDataSourceFileSystem
+\li \b WlmFileSystemInteractionManager
+
+\section Tools
+
+This module contains the following command line tool:
+\li \b wlmscpfs: \ref wlmscpfs
+
+\section Examples
+
+The following example shows ...:
+
+\code
+...
+\endcode
+
+*/

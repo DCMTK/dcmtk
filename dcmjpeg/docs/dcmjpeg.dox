@@ -1,0 +1,26 @@
+/*!
+
+\defgroup dcmjpeg dcmjpeg
+
+This module contains ...
+
+The main interface classes are:
+\li \b ...
+
+\section Tools
+
+This module contains the following command line tools:
+\li \b dcmcjpeg: \ref dcmcjpeg
+\li \b dcmdjpeg: \ref dcmdjpeg
+\li \b dcmj2pnm: \ref dcmj2pnm
+\li \b dcmmkdir: \ref dcmmkdir
+
+\section Examples
+
+The following example shows ...:
+
+\code
+...
+\endcode
+
+*/

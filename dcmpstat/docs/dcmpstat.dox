@@ -1,0 +1,34 @@
+/*!
+
+\defgroup dcmpstat dcmpstat
+
+This module contains ...
+
+The main interface classes are:
+\li \b DVInterface
+\li \b DVPresentationState
+\li \b DVPSStoredPrint
+
+\section Tools
+
+This module contains the following command line tools:
+\li \b dcmmkcrv: \ref dcmmkcrv
+\li \b dcmmklut: \ref dcmmklut
+\li \b dcmp2pgm: \ref dcmp2pgm
+\li \b dcmprscp: \ref dcmprscp
+\li \b dcmprscu: \ref dcmprscu
+\li \b dcmpschk: \ref dcmpschk
+\li \b dcmpsmk:  \ref dcmpsmk
+\li \b dcmpsprt: \ref dcmpsprt
+\li \b dcmpsrcv: \ref dcmpsrcv
+\li \b dcmpssnd: \ref dcmpssnd
+
+\section Examples
+
+The following example shows ...:
+
+\code
+...
+\endcode
+
+*/

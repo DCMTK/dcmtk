@@ -1,0 +1,27 @@
+/*!
+
+\defgroup dcmsign dcmsign
+
+This module contains ...
+
+The main interface classes are:
+\li \b DcmSignature
+\li \b SiSecurityProfile
+\li \b SiCertificate
+\li \b SiPrivateKey
+\li \b SiMAC
+
+\section Tools
+
+This module contains the following command line tool:
+\li \b dcmsign: \ref dcmsign_app
+
+\section Examples
+
+The following example shows ...:
+
+\code
+...
+\endcode
+
+*/
