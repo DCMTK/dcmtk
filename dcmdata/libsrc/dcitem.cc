@@ -11,9 +11,9 @@
 **
 **
 ** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1997-07-03 15:09:59 $
+** Update Date:		$Date: 1997-07-07 07:43:59 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcitem.cc,v $
-** CVS/RCS Revision:	$Revision: 1.29 $
+** CVS/RCS Revision:	$Revision: 1.30 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -610,8 +610,8 @@ E_Condition DcmItem::readTagAndLength(DcmStream & inStream,
     inStream.SetPutbackMark();
     inStream.ReadBytes(&groupTag, 2);
     inStream.ReadBytes(&elementTag, 2);
-    this -> swapIfNecessary(gLocalByteOrder, byteOrder, &groupTag, 2, 2);
-    this -> swapIfNecessary(gLocalByteOrder, byteOrder, &elementTag, 2, 2);
+    swapIfNecessary(gLocalByteOrder, byteOrder, &groupTag, 2, 2);
+    swapIfNecessary(gLocalByteOrder, byteOrder, &elementTag, 2, 2);
     // Tag ist gelesen
     bytesRead = 4;
     DcmTag newTag(groupTag, elementTag );
@@ -647,7 +647,7 @@ E_Condition DcmItem::readTagAndLength(DcmStream & inStream,
 	nxtobj == EVR_na)	    // DelimitationItems besitzen keine VR!
     {
 	inStream.ReadBytes(&valueLength, 4);
-	this->swapIfNecessary(gLocalByteOrder, byteOrder, &valueLength, 4, 4);
+	swapIfNecessary(gLocalByteOrder, byteOrder, &valueLength, 4, 4);
 	bytesRead += 4;
     }
     else if (xferSyn.isExplicitVR())
@@ -659,7 +659,7 @@ E_Condition DcmItem::readTagAndLength(DcmStream & inStream,
 	    Uint16 reserved;
 	    inStream.ReadBytes(&reserved, 2);  // 2 Byte Laenge
 	    inStream.ReadBytes(&valueLength, 4);
-	    this -> swapIfNecessary(gLocalByteOrder, byteOrder, 
+	    swapIfNecessary(gLocalByteOrder, byteOrder, 
 				    &valueLength, 4, 4);
 	    bytesRead += 6;
 	}
@@ -667,8 +667,7 @@ E_Condition DcmItem::readTagAndLength(DcmStream & inStream,
 	{
 	    Uint16 tmpValueLength;
 	    inStream.ReadBytes(&tmpValueLength, 2);
-	    this -> swapIfNecessary(gLocalByteOrder, byteOrder,  
-				    &tmpValueLength, 2, 2);
+	    swapIfNecessary(gLocalByteOrder, byteOrder, &tmpValueLength, 2, 2);
 	    bytesRead += 2;
 	    valueLength = tmpValueLength;
 	}
@@ -853,15 +852,14 @@ E_Condition DcmItem::write(DcmStream & outStream,
 		    else
 			Length = DCM_UndefinedLength;
 
-		    errorFlag = this -> writeTag(outStream, *Tag, oxfer);
+		    errorFlag = this -> writeTag(outStream, Tag, oxfer);
 		    Uint32 valueLength = Length;
 		    DcmXfer outXfer(oxfer);
 		    const E_ByteOrder oByteOrder = outXfer.getByteOrder();
 		    if (oByteOrder == EBO_unknown)
 			return EC_IllegalCall;
-		    this -> swapIfNecessary(oByteOrder, 
-					    gLocalByteOrder, 
-					    &valueLength, 4, 4);
+		    swapIfNecessary(oByteOrder, gLocalByteOrder, 
+				    &valueLength, 4, 4);
 		    outStream.WriteBytes(&valueLength, 4); // 4 Byte Laenge
 		    fTransferState = ERW_inWork;
 		    elementList->seek( ELP_first );
@@ -1166,7 +1164,7 @@ DcmElement* DcmItem::remove( DcmObject* elem )
 // ********************************
 
 
-DcmElement* DcmItem::remove( const DcmTag& tag )
+DcmElement* DcmItem::remove(const DcmTagKey & tag)
 {
     errorFlag = EC_TagNotFound;
     DcmObject *dO = (DcmObject*)NULL;
@@ -1219,7 +1217,7 @@ E_Condition DcmItem::verify(const BOOL autocorrect )
 {
     debug(3, ( "DcmItem::verify() Tag=(0x%4.4x,0x%4.4x) \"%s\" \"%s\"",
 	    getGTag(), getETag(),
-	    DcmVR(getVR()).getVRName(), Tag->getTagName() ));
+	    DcmVR(getVR()).getVRName(), Tag.getTagName() ));
 
     errorFlag = EC_Normal;
     if ( !elementList->empty() )
@@ -1249,7 +1247,7 @@ E_Condition DcmItem::verify(const BOOL autocorrect )
     //		     starte dann Sub-Suche
 
 
-E_Condition DcmItem::searchSubFromHere( const DcmTag &tag,
+E_Condition DcmItem::searchSubFromHere( const DcmTagKey &tag,
 					DcmStack &resultStack,
 					BOOL searchIntoSub )
 {
@@ -1282,9 +1280,9 @@ E_Condition DcmItem::searchSubFromHere( const DcmTag &tag,
                 }
             }
         } while ( l_error != EC_Normal && elementList->seek( ELP_next ) );
-	Cdebug(4, l_error==EC_Normal && dO->getTag()==tag, ("DcmItem::searchSubFromHere() Search-Tag=(%4.4x,%4.4x)"
-		" \"%s\" found!", tag.getGTag(), tag.getETag(),
-		tag.getVR().getVRName() ));
+	Cdebug(4, l_error==EC_Normal && dO->getTag()==tag, 
+	       ("DcmItem::searchSubFromHere() Search-Tag=(%4.4x,%4.4x)"
+		" found!", tag.getGroup(), tag.getElement()));
 
     }
     return l_error;
@@ -1294,16 +1292,16 @@ E_Condition DcmItem::searchSubFromHere( const DcmTag &tag,
 // ********************************
 
 
-E_Condition DcmItem::search( const DcmTag &tag,
-			     DcmStack &resultStack,
-			     E_SearchMode mode,
-			     BOOL searchIntoSub )
+E_Condition DcmItem::search(const DcmTagKey &tag,
+			    DcmStack &resultStack,
+			    E_SearchMode mode,
+			    BOOL searchIntoSub)
 {
     DcmObject *dO = (DcmObject*)NULL;
     E_Condition l_error = EC_TagNotFound;
     if ( mode == ESM_afterStackTop && resultStack.top() == this )
     {
-        l_error = searchSubFromHere( tag, resultStack, searchIntoSub );
+        l_error = searchSubFromHere(tag, resultStack, searchIntoSub);
 	debug(5, ( "DcmItem::search() mode=ESM_afterStackTop && resultStack.top()=this" ));
 
     }
@@ -1416,20 +1414,6 @@ E_Condition DcmItem::search( const DcmTag &tag,
 // ********************************
 
 
-E_Condition DcmItem::search( const DcmTagKey &xtag,
-			     DcmStack &resultStack,
-			     E_SearchMode mode,
-			     BOOL searchIntoSub )
-{
-    DcmTag tag( xtag );
-    E_Condition l_error = search( tag, resultStack, mode, searchIntoSub );
-    return l_error;
-}
-
-
-// ********************************
-
-
 E_Condition DcmItem::searchErrors( DcmStack &resultStack )
 {
     E_Condition l_error = errorFlag;
@@ -1485,6 +1469,7 @@ DcmElement * newDicomElement(const DcmTag & tag,
     newDicomElement(newElement, tag, length);
     return newElement;
 }
+
 
 // ********************************
 
@@ -1739,7 +1724,14 @@ DcmItem::findLong(const DcmTagKey& xtag,
 /*
 ** CVS/RCS Log:
 ** $Log: dcitem.cc,v $
-** Revision 1.29  1997-07-03 15:09:59  andreas
+** Revision 1.30  1997-07-07 07:43:59  andreas
+** - Changed type for Tag attribute in DcmObject from prointer to value
+** - Changed parameter type DcmTag & to DcmTagKey & in all search functions
+**   in DcmItem, DcmSequenceOfItems, DcmDirectoryRecord and DcmObject
+** - Enhanced (faster) byte swapping routine. swapIfNecessary moved from
+**   a method in DcmObject to a general function.
+**
+** Revision 1.29  1997/07/03 15:09:59  andreas
 ** - removed debugging functions Bdebug() and Edebug() since
 **   they write a static array and are not very useful at all.
 **   Cdebug and Vdebug are merged since they have the same semantics.
