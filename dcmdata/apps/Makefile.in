@@ -28,51 +28,43 @@ all: $(progs)
 
 # Note: dcmftest does not need LOCALLIBS on most platforms, but on OSF1 it is required.
 dcmftest: dcmftest.o
-	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ $@.o $(LOCALLIBS) $(LIBS)  
+	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ $@.o $(LOCALLIBS) $(LIBS)
 
 dcmconv: dcmconv.o
-	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ $@.o $(LOCALLIBS) $(LIBS)  
+	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ $@.o $(LOCALLIBS) $(LIBS)
 
 dcmdump: dcmdump.o
-	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ $@.o $(LOCALLIBS) $(LIBS)  
+	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ $@.o $(LOCALLIBS) $(LIBS)
 
-dump2dcm: dump2dcm.o 
-	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ $@.o $(LOCALLIBS) $(LIBS)  
+dump2dcm: dump2dcm.o
+	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ $@.o $(LOCALLIBS) $(LIBS)
 
-dcmgpdir: dcmgpdir.o 
-	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ $@.o $(LOCALLIBS) $(LIBS)  
+dcmgpdir: dcmgpdir.o
+	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ $@.o $(LOCALLIBS) $(LIBS)
 
-dcmcrle: dcmcrle.o 
-	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ $@.o $(LOCALLIBS) $(LIBS)  
+dcmcrle: dcmcrle.o
+	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ $@.o $(LOCALLIBS) $(LIBS)
 
-dcmdrle: dcmdrle.o 
-	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ $@.o $(LOCALLIBS) $(LIBS)  
+dcmdrle: dcmdrle.o
+	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ $@.o $(LOCALLIBS) $(LIBS)
 
-dcm2xml: dcm2xml.o 
-	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ $@.o $(LOCALLIBS) $(LIBS)  
+dcm2xml: dcm2xml.o
+	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ $@.o $(LOCALLIBS) $(LIBS)
 
 install: all
 	$(configdir)/mkinstalldirs $(bindir)
 	for prog in $(progs); do \
-		$(INSTALL_PROGRAM) $$prog $(bindir); strip $(bindir)/$$prog ;\
+		$(INSTALL_PROGRAM) $$prog$(BINEXT) $(bindir); strip $(bindir)/$$prog$(BINEXT) ;\
 	done
 
 clean:
 	rm -f $(objs) $(progs) $(TRASH)
 
-distclean: 
+distclean:
 	rm -f $(objs) $(progs) $(DISTTRASH)
 
 
 dependencies:
 	$(CXX) -MM $(defines) $(includes) $(CPPFLAGS) $(CXXFLAGS) *.cc  > $(DEP)
 
-$(objs): config.h
-
-
 include $(DEP)
-
-
-
-
-
