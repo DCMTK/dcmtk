@@ -22,8 +22,8 @@
  *  Purpose: DVPresentationState
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-09-18 11:52:18 $
- *  CVS/RCS Revision: $Revision: 1.144 $
+ *  Update Date:      $Date: 2003-11-03 10:56:07 $
+ *  CVS/RCS Revision: $Revision: 1.145 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -52,7 +52,7 @@
 #include "dvsighdl.h"    /* for class DVSignatureHandler */
 #include "dcsignat.h"    /* for class DcmSignature */
 #include "dsrdoc.h"      /* for class DSRDocument */
-#include "dsrcodvl.h"
+#include "dsrcodvl.h"    /* for class DSRCodedEntryValue */
 
 #include "dvpsib.h"      /* for DVPSImageBoxContent, needed by MSVC5 with STL */
 #include "dvpsab.h"      /* for DVPSAnnotationContent, needed by MSVC5 with STL */
@@ -240,7 +240,7 @@ DVInterface::DVInterface(const char *config_file, OFBool useLog)
             } else
                 logFile = new OFLogFile(filename);
             if (logFile != NULL)
-                logFile->setFilter(OFstatic_cast(OFLogFile::LF_Level, getLogLevel()));
+                logFile->setFilter(OFstatic_cast(OFLogFile::LF_Level, OFstatic_cast(int, getLogLevel())));
             writeLogMessage(DVPSM_informational, "DCMPSTAT", "---------------------------\n--- Application started ---\n---------------------------");
         }
     }
@@ -3990,16 +3990,16 @@ void DVInterface::setLog(OFConsole *stream, OFBool verbMode, OFBool dbgMode)
 void DVInterface::setLogFilter(DVPSLogMessageLevel level)
 {
   if (logFile != NULL)
-    logFile->setFilter(OFstatic_cast(OFLogFile::LF_Level, level));
+    logFile->setFilter(OFstatic_cast(OFLogFile::LF_Level, OFstatic_cast(int, level)));
 }
 
 OFCondition DVInterface::writeLogMessage(DVPSLogMessageLevel level, const char *module, const char *message)
 {
   if ((logFile != NULL) && (logFile->good()))
   {
-    if (logFile->checkFilter(OFstatic_cast(OFLogFile::LF_Level, level)))
+    if (logFile->checkFilter(OFstatic_cast(OFLogFile::LF_Level, OFstatic_cast(int, level))))
     {
-      logFile->lockFile(OFstatic_cast(OFLogFile::LF_Level, level), module);
+      logFile->lockFile(OFstatic_cast(OFLogFile::LF_Level, OFstatic_cast(int, level)), module);
       logFile->writeMessage(message);
       logFile->unlockFile();
     }
@@ -4321,7 +4321,11 @@ void DVInterface::disableImageAndPState()
 /*
  *  CVS/RCS Log:
  *  $Log: dviface.cc,v $
- *  Revision 1.144  2003-09-18 11:52:18  joergr
+ *  Revision 1.145  2003-11-03 10:56:07  joergr
+ *  Modified static type casts on DVPSLogMessageLevel variables to compile with
+ *  gcc 2.95.
+ *
+ *  Revision 1.144  2003/09/18 11:52:18  joergr
  *  Call addPrivateDcmtkCodingScheme() when saving a structured report.
  *  Fixed wrong "assert" (pointer check) statement in saveStructuredReport().
  *  Adapted type casts to new-style typecast operators defined in ofcast.h.
