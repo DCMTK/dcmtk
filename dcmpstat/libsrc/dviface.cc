@@ -22,8 +22,8 @@
  *  Purpose: DVPresentationState
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-02-24 20:23:05 $
- *  CVS/RCS Revision: $Revision: 1.42 $
+ *  Update Date:      $Date: 1999-02-25 18:44:08 $
+ *  CVS/RCS Revision: $Revision: 1.43 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -199,12 +199,12 @@ E_Condition DVInterface::loadImage(const char *imgName)
               }
               if (EC_Normal == status) exchangeImageAndPState(newState, image);
             } else status = EC_CorruptedData;
-            if (status != EC_Normal)
-            {
-              delete newState;
-              delete image;
-            }
         } else status = EC_IllegalCall;
+    }
+    if (status != EC_Normal)
+    {
+        delete newState;
+        delete image;
     }
     return status;
 }
@@ -290,13 +290,13 @@ E_Condition DVInterface::loadPState(const char *pstName,
                 status = newState->attachImage(image, OFFalse);
               if (EC_Normal == status) exchangeImageAndPState(newState, image, pstate);
             } else status = EC_CorruptedData;
-            if (status != EC_Normal)
-            {
-              delete newState;
-              delete image;
-              delete pstate;
-            }
         } else status = EC_IllegalCall;
+    }
+    if (status != EC_Normal)
+    {
+       delete newState;
+       if (image != pDicomImage) delete image;
+       delete pstate;
     }
     return status;
 }
@@ -362,12 +362,11 @@ E_Condition DVInterface::savePState(const char *filename, OFBool explicitVR)
             // replace the stored data for resetPresentationState()
             if (pDicomPState) delete pDicomPState;
             pDicomPState = fileformat;
-          } else {
-            status = EC_MemoryExhausted;
-            delete dataset;
-          }
-        } else delete dataset;
+          } else status = EC_MemoryExhausted;
+        }
     } else status = EC_MemoryExhausted;
+    if (status != EC_Normal)
+        delete dataset;
     return status;
 }
 
@@ -392,11 +391,14 @@ E_Condition DVInterface::exchangeImageAndPState(DVPresentationState *newState, D
     if (image==NULL) return EC_IllegalCall;
     if (pState) delete pState;
     if (pStoredPState) delete pStoredPState;
-    if (pDicomImage != image) delete pDicomImage;       // only delete if different
     if (pDicomPState) delete pDicomPState;
+    if (pDicomImage != image)
+    {
+        delete pDicomImage;       // only delete if different
+        pDicomImage = image;
+    }
     pState = newState;
     pStoredPState = NULL;
-    pDicomImage = image;
     pDicomPState = state;
     return EC_Normal;
 }
@@ -420,7 +422,7 @@ E_Condition DVInterface::resetPresentationState()
                 if (pState) delete pState;
                 if (pStoredPState) delete pStoredPState;
                 pState = newState;
-                pStoredPState = NULL;
+                pStoredPState = NULL;                   // return to original pstate
             } 
         } else status = EC_IllegalCall;
     } 
@@ -509,37 +511,38 @@ const char *DVInterface::getPStateDescription(Uint32 idx)
 }
 
     
-E_Condition DVInterface::disablePresentationState()
+E_Condition DVInterface::disablePState()
 {
     E_Condition status = EC_IllegalCall;
     if ((pState != NULL) && (pStoredPState == NULL))
     {
-        pStoredPState = pState;
         if (pDicomImage != NULL)
         {
             DcmDataset *dataset = pDicomImage->getDataset();
             if (dataset != NULL)
             {
-                pState = new DVPresentationState(displayFunction);
-                if (pState != NULL)
+                DVPresentationState *newState = new DVPresentationState(displayFunction);
+                if (newState != NULL)
                 {
-                    if ((status = pState->createFromImage(*dataset)) == EC_Normal)
+                    if ((status = newState->createFromImage(*dataset)) == EC_Normal)
                     {
-                        if ((status = pState->attachImage(pDicomImage, OFFalse)) == EC_Normal)
+                        if ((status = newState->attachImage(pDicomImage, OFFalse)) == EC_Normal)
+                        {
+                            pStoredPState = pState;
+                            pState = newState;
                             return EC_Normal;
+                        }
                     }
-                    delete pState;
+                    delete newState;
                 }
-                pState = pStoredPState;                 // reset to old state
             }
         }
-        pStoredPState = NULL;                           // disable additional one
     }
     return status;
 }
 
 
-E_Condition DVInterface::enablePresentationState()
+E_Condition DVInterface::enablePState()
 {
     if ((pState != NULL) && (pStoredPState != NULL))
     {
@@ -2032,7 +2035,12 @@ void DVInterface::cleanChildren()
 /*
  *  CVS/RCS Log:
  *  $Log: dviface.cc,v $
- *  Revision 1.42  1999-02-24 20:23:05  joergr
+ *  Revision 1.43  1999-02-25 18:44:08  joergr
+ *  Renamed methods enable/disablePState().
+ *  Performed some modifications in the implementation of enable/disablePState
+ *  to avoid dmalloc warnings (not yet finished).
+ *
+ *  Revision 1.42  1999/02/24 20:23:05  joergr
  *  Added methods to get a list of presentation states referencing the
  *  currently selected image.
  *  Added support for exchanging current presentation state (load from file)
