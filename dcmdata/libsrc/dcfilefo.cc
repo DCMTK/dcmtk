@@ -22,9 +22,9 @@
  *  Purpose: class DcmFileFormat
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-04-25 10:15:35 $
+ *  Update Date:      $Date: 2002-05-14 08:21:14 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcfilefo.cc,v $
- *  CVS/RCS Revision: $Revision: 1.28 $
+ *  CVS/RCS Revision: $Revision: 1.29 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -154,8 +154,8 @@ OFCondition DcmFileFormat::writeXML(ostream &out,
                                     const size_t flags)
 {
     OFCondition result = EC_CorruptedData;
-    /* XML start tag for "fileformat" */
-    out << "<fileformat>" << endl;
+    /* XML start tag for "file-format" */
+    out << "<file-format>" << endl;
     if (!itemList->empty())
     {
         /* write content of all children */
@@ -168,8 +168,8 @@ OFCondition DcmFileFormat::writeXML(ostream &out,
         } while (itemList->seek(ELP_next));
         result = EC_Normal;
     }
-    /* XML end tag for "fileformat" */
-    out << "</fileformat>" << endl;
+    /* XML end tag for "file-format" */
+    out << "</file-format>" << endl;
     return result;
 }
 
@@ -856,7 +856,10 @@ DcmDataset* DcmFileFormat::getAndRemoveDataset()
 /*
 ** CVS/RCS Log:
 ** $Log: dcfilefo.cc,v $
-** Revision 1.28  2002-04-25 10:15:35  joergr
+** Revision 1.29  2002-05-14 08:21:14  joergr
+** Renamed some element names.
+**
+** Revision 1.28  2002/04/25 10:15:35  joergr
 ** Added support for XML output of DICOM objects.
 **
 ** Revision 1.27  2002/04/16 13:43:17  joergr

@@ -22,9 +22,9 @@
  *  Purpose: class DcmDataset
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-04-25 10:14:12 $
+ *  Update Date:      $Date: 2002-05-14 08:20:53 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcdatset.cc,v $
- *  CVS/RCS Revision: $Revision: 1.26 $
+ *  CVS/RCS Revision: $Revision: 1.27 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -141,8 +141,8 @@ OFCondition DcmDataset::writeXML(ostream &out,
 {
     OFString xmlString;
     DcmXfer xfer(Xfer);
-    /* XML start tag for "dataset" */
-    out << "<dataset xfer=\"" << xfer.getXferID() << "\"";
+    /* XML start tag for "data-set" */
+    out << "<data-set xfer=\"" << xfer.getXferID() << "\"";
     out << " name=\"" << OFStandard::convertToMarkupString(xfer.getXferName(), xmlString) << "\">" << endl;
     if (!elementList->empty())
     {
@@ -155,8 +155,8 @@ OFCondition DcmDataset::writeXML(ostream &out,
             dO->writeXML(out, flags);
         } while (elementList->seek(ELP_next));
     }
-    /* XML end tag for "dataset" */
-    out << "</dataset>" << endl;
+    /* XML end tag for "data-set" */
+    out << "</data-set>" << endl;
     /* always report success */
     return EC_Normal;
 }
@@ -525,7 +525,10 @@ DcmDataset::removeAllButOriginalRepresentations()
 /*
 ** CVS/RCS Log:
 ** $Log: dcdatset.cc,v $
-** Revision 1.26  2002-04-25 10:14:12  joergr
+** Revision 1.27  2002-05-14 08:20:53  joergr
+** Renamed some element names.
+**
+** Revision 1.26  2002/04/25 10:14:12  joergr
 ** Added support for XML output of DICOM objects.
 **
 ** Revision 1.25  2002/04/16 13:43:15  joergr
