@@ -22,9 +22,9 @@
  *  Purpose: class DcmTime
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-11-01 16:16:01 $
+ *  Update Date:      $Date: 2001-12-18 10:42:25 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcvrtm.cc,v $
- *  CVS/RCS Revision: $Revision: 1.15 $
+ *  CVS/RCS Revision: $Revision: 1.16 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -148,7 +148,7 @@ DcmTime::getCurrentTime(
                 struct timeval tv;
                 if (gettimeofday(&tv, NULL) == 0)
                     /* format: .FFFFFF */
-                    sprintf(strchr(buf, 0), ".%06li", tv.tv_usec);
+                    sprintf(strchr(buf, 0), ".%06li", (long)tv.tv_usec);
                 else
                     /* format: .FFFFFF */
                     strcat(buf, ".000000");
@@ -280,7 +280,10 @@ DcmTime::getISOFormattedTimeFromString(
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrtm.cc,v $
-** Revision 1.15  2001-11-01 16:16:01  meichel
+** Revision 1.16  2001-12-18 10:42:25  meichel
+** Added typecasts to avoid warning on gcc 2.95.3 on OSF/1 (Alpha)
+**
+** Revision 1.15  2001/11/01 16:16:01  meichel
 ** Including <sys/time.h> if present, needed on Linux.
 **
 ** Revision 1.14  2001/10/10 15:20:42  joergr
