@@ -22,8 +22,8 @@
  *  Purpose: DVConfiguration
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-09-27 10:41:27 $
- *  CVS/RCS Revision: $Revision: 1.8 $
+ *  Update Date:      $Date: 1999-09-27 12:49:27 $
+ *  CVS/RCS Revision: $Revision: 1.9 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -660,7 +660,12 @@ const char *DVConfiguration::getLUTID(Uint32 idx)
        pConfig->first_section(1);
        while ((! found)&&(pConfig->section_valid(1)))
        {
-         if (idx==0) found=OFTrue; else idx--;
+         if (idx==0) found=OFTrue; 
+         else 
+         {
+         	idx--;
+            pConfig->next_section(1);
+         }
        }
        if (pConfig->section_valid(1)) result = pConfig->get_keyword(1);
     }
@@ -774,7 +779,10 @@ Uint16 DVConfiguration::getDefaultPrintReflection()
 /*
  *  CVS/RCS Log:
  *  $Log: dvpscf.cc,v $
- *  Revision 1.8  1999-09-27 10:41:27  meichel
+ *  Revision 1.9  1999-09-27 12:49:27  meichel
+ *  Fixed index bug in getLUTID, always returned first index.
+ *
+ *  Revision 1.8  1999/09/27 10:41:27  meichel
  *  Fixed index bug in getTargetPrinterConfigurationSetting.
  *
  *  Revision 1.7  1999/09/24 15:24:33  meichel
