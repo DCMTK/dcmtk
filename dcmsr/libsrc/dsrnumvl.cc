@@ -23,8 +23,8 @@
  *    classes: DSRNumericMeasurementValue
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-08-07 13:40:01 $
- *  CVS/RCS Revision: $Revision: 1.15 $
+ *  Update Date:      $Date: 2003-08-07 15:21:53 $
+ *  CVS/RCS Revision: $Revision: 1.16 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -158,7 +158,7 @@ OFCondition DSRNumericMeasurementValue::writeXML(ostream &stream,
                                                  const size_t flags,
                                                  OFConsole *logStream) const
 {
-    DSRTypes::writeStringValueToXML(stream, NumericValue, "value", flags & DSRTypes::XF_writeEmptyTags > 0);
+    DSRTypes::writeStringValueToXML(stream, NumericValue, "value", (flags & DSRTypes::XF_writeEmptyTags) > 0);
     /* write measurement unit */
     if (flags & DSRTypes::XF_codeComponentsAsAttribute)
         stream << "<unit";     // bracket ">" is closed in the next writeXML() routine
@@ -292,9 +292,9 @@ OFCondition DSRNumericMeasurementValue::renderHTML(ostream &docStream,
             ((flags & DSRTypes::HF_renderInlineCodes) || (flags & DSRTypes::HF_renderItemsSeparately));
         if (!fullCode)
             docStream << "<u>";
-        docStream << DSRTypes::convertToMarkupString(NumericValue, htmlString, flags & DSRTypes::HF_convertNonASCIICharacters > 0) << " ";
+        docStream << DSRTypes::convertToMarkupString(NumericValue, htmlString, (flags & DSRTypes::HF_convertNonASCIICharacters) > 0) << " ";
         /* render full code of the measurement unit (value first?) or code value only */
-        MeasurementUnit.renderHTML(docStream, flags, logStream, fullCode, flags & DSRTypes::HF_useCodeMeaningAsUnit == 0 /*valueFirst*/);
+        MeasurementUnit.renderHTML(docStream, flags, logStream, fullCode, (flags & DSRTypes::HF_useCodeMeaningAsUnit) == 0 /*valueFirst*/);
         if (!fullCode)
             docStream << "</u>";
     }
@@ -302,7 +302,7 @@ OFCondition DSRNumericMeasurementValue::renderHTML(ostream &docStream,
     {
         /* render optional numeric value qualifier */
         docStream << " [";
-        ValueQualifier.renderHTML(docStream, flags, logStream, flags & DSRTypes::HF_renderInlineCodes > 0 /*fullCode*/);
+        ValueQualifier.renderHTML(docStream, flags, logStream, (flags & DSRTypes::HF_renderInlineCodes) > 0 /*fullCode*/);
         docStream << "]";
     }
     return EC_Normal;
@@ -419,7 +419,11 @@ OFBool DSRNumericMeasurementValue::checkNumericValueQualifier(const DSRCodedEntr
 /*
  *  CVS/RCS Log:
  *  $Log: dsrnumvl.cc,v $
- *  Revision 1.15  2003-08-07 13:40:01  joergr
+ *  Revision 1.16  2003-08-07 15:21:53  joergr
+ *  Added brackets around "bitwise and" operator/operands to avoid warnings
+ *  reported by MSVC5.
+ *
+ *  Revision 1.15  2003/08/07 13:40:01  joergr
  *  Added readXML functionality.
  *
  *  Revision 1.14  2002/12/10 13:20:37  joergr

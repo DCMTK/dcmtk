@@ -24,8 +24,8 @@
  *             - InstanceStruct, SeriesStruct, StudyStruct
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-08-07 13:51:53 $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  Update Date:      $Date: 2003-08-07 15:21:53 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -251,7 +251,7 @@ OFCondition DSRSOPInstanceReferenceList::SeriesStruct::writeXML(ostream &stream,
 {
     /* write the series level attributes */
     stream << "<series uid=\"" << SeriesUID << "\">" << endl;
-    writeStringValueToXML(stream, RetrieveAETitle, "aetitle", flags & XF_writeEmptyTags > 0);
+    writeStringValueToXML(stream, RetrieveAETitle, "aetitle", (flags & XF_writeEmptyTags) > 0);
     if ((flags & XF_writeEmptyTags) || !StorageMediaFileSetUID.empty() || !StorageMediaFileSetID.empty())
     {
         stream << "<fileset";
@@ -1373,7 +1373,11 @@ OFCondition DSRSOPInstanceReferenceList::setStorageMediaFileSetUID(const OFStrin
 /*
  *  CVS/RCS Log:
  *  $Log: dsrsoprf.cc,v $
- *  Revision 1.4  2003-08-07 13:51:53  joergr
+ *  Revision 1.5  2003-08-07 15:21:53  joergr
+ *  Added brackets around "bitwise and" operator/operands to avoid warnings
+ *  reported by MSVC5.
+ *
+ *  Revision 1.4  2003/08/07 13:51:53  joergr
  *  Added readXML functionality.
  *  Enhanced class DSRSOPInstanceReferenceList: empty/incomplete items (e.g.
  *  series with no instances or studies with no series) are automatically

@@ -23,8 +23,8 @@
  *    classes: DSRTextTreeNode
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-08-07 14:09:19 $
- *  CVS/RCS Revision: $Revision: 1.16 $
+ *  Update Date:      $Date: 2003-08-07 15:21:53 $
+ *  CVS/RCS Revision: $Revision: 1.17 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -102,7 +102,7 @@ OFCondition DSRTextTreeNode::writeXML(ostream &stream,
     OFCondition result = EC_Normal;
     writeXMLItemStart(stream, flags);
     result = DSRDocumentTreeNode::writeXML(stream, flags, logStream);
-    writeStringValueToXML(stream, getValue(), "value", flags & XF_writeEmptyTags > 0);
+    writeStringValueToXML(stream, getValue(), "value", (flags & XF_writeEmptyTags) > 0);
     writeXMLItemEnd(stream, flags);
     return result;
 }
@@ -144,9 +144,9 @@ OFCondition DSRTextTreeNode::renderHTMLContentItem(ostream &docStream,
     OFCondition result = renderHTMLConceptName(docStream, flags, logStream);
     /* render TextValue */
     if (flags & HF_renderItemInline)
-        docStream << "\"" << convertToMarkupString(getValue(), htmlString, flags & HF_convertNonASCIICharacters > 0) << "\"" << endl;
+        docStream << "\"" << convertToMarkupString(getValue(), htmlString, (flags & HF_convertNonASCIICharacters) > 0) << "\"" << endl;
     else
-        docStream << convertToMarkupString(getValue(), htmlString, flags & HF_convertNonASCIICharacters > 0, OFTrue /*newlineAllowed*/) << endl;
+        docStream << convertToMarkupString(getValue(), htmlString, (flags & HF_convertNonASCIICharacters) > 0, OFTrue /*newlineAllowed*/) << endl;
     return result;
 }
 
@@ -220,7 +220,11 @@ OFBool DSRTextTreeNode::canAddNode(const E_DocumentType documentType,
 /*
  *  CVS/RCS Log:
  *  $Log: dsrtextn.cc,v $
- *  Revision 1.16  2003-08-07 14:09:19  joergr
+ *  Revision 1.17  2003-08-07 15:21:53  joergr
+ *  Added brackets around "bitwise and" operator/operands to avoid warnings
+ *  reported by MSVC5.
+ *
+ *  Revision 1.16  2003/08/07 14:09:19  joergr
  *  Added readXML functionality.
  *  Distinguish more strictly between OFBool and int (required when HAVE_CXX_BOOL
  *  is defined).

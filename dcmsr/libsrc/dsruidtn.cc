@@ -23,8 +23,8 @@
  *    classes: DSRUIDRefTreeNode
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-08-07 14:15:38 $
- *  CVS/RCS Revision: $Revision: 1.14 $
+ *  Update Date:      $Date: 2003-08-07 15:21:53 $
+ *  CVS/RCS Revision: $Revision: 1.15 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -92,7 +92,7 @@ OFCondition DSRUIDRefTreeNode::writeXML(ostream &stream,
     OFCondition result = EC_Normal;
     writeXMLItemStart(stream, flags);
     result = DSRDocumentTreeNode::writeXML(stream, flags, logStream);
-    writeStringValueToXML(stream, getValue(), "value", flags & XF_writeEmptyTags > 0);
+    writeStringValueToXML(stream, getValue(), "value", (flags & XF_writeEmptyTags) > 0);
     writeXMLItemEnd(stream, flags);
     return result;
 }
@@ -159,7 +159,11 @@ OFBool DSRUIDRefTreeNode::canAddNode(const E_DocumentType documentType,
 /*
  *  CVS/RCS Log:
  *  $Log: dsruidtn.cc,v $
- *  Revision 1.14  2003-08-07 14:15:38  joergr
+ *  Revision 1.15  2003-08-07 15:21:53  joergr
+ *  Added brackets around "bitwise and" operator/operands to avoid warnings
+ *  reported by MSVC5.
+ *
+ *  Revision 1.14  2003/08/07 14:15:38  joergr
  *  Added readXML functionality.
  *  Distinguish more strictly between OFBool and int (required when HAVE_CXX_BOOL
  *  is defined).

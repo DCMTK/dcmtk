@@ -23,8 +23,8 @@
  *    classes: DSRDocumentTreeNode
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-08-07 13:29:43 $
- *  CVS/RCS Revision: $Revision: 1.24 $
+ *  Update Date:      $Date: 2003-08-07 15:21:53 $
+ *  CVS/RCS Revision: $Revision: 1.25 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -90,7 +90,7 @@ OFCondition DSRDocumentTreeNode::print(ostream &stream,
         stream << relationshipTypeToReadableName(RelationshipType) << " ";
     stream << valueTypeToDefinedTerm(ValueType) << ":";
     if (ConceptName.isValid())
-        ConceptName.print(stream, flags & PF_printConceptNameCodes);
+        ConceptName.print(stream, (flags & PF_printConceptNameCodes) > 0);
     return EC_Normal;
 }
 
@@ -209,7 +209,7 @@ OFCondition DSRDocumentTreeNode::writeXML(ostream &stream,
         printInvalidContentItemMessage(logStream, "Writing to XML", this);
     /* relationship type */
     if ((RelationshipType != RT_isRoot) && !(flags & XF_relationshipTypeAsAttribute))
-        writeStringValueToXML(stream, relationshipTypeToDefinedTerm(RelationshipType), "relationship", flags & XF_writeEmptyTags > 0);
+        writeStringValueToXML(stream, relationshipTypeToDefinedTerm(RelationshipType), "relationship", (flags & XF_writeEmptyTags) > 0);
     /* concept name */
     if (ConceptName.isValid())
     {
@@ -607,7 +607,7 @@ OFCondition DSRDocumentTreeNode::readContentSequence(DcmItem &dataset,
                                 if (valueType == VT_unknown)
                                     printUnknownValueWarningMessage(logStream, "ValueType", tmpString.c_str());
                                 /* create new node (by-value) */
-                                result = createAndAppendNewNode(node, documentType, relationshipType, valueType, flags & RF_ignoreRelationshipConstraints == 0);
+                                result = createAndAppendNewNode(node, documentType, relationshipType, valueType, (flags & RF_ignoreRelationshipConstraints) == 0);
                                 /* read RelationshipMacro */
                                 if (result.good())
                                     result = node->readDocumentRelationshipMacro(*ditem, documentType, location, flags, logStream);
@@ -774,7 +774,7 @@ OFCondition DSRDocumentTreeNode::renderHTMLChildNodes(ostream &docStream,
     if (cursor.isValid())
     {
         /* flag used to format the relationship reference texts */
-        OFBool paragraphFlag = (flags & HF_createFootnoteReferences > 0);
+        OFBool paragraphFlag = (flags & HF_createFootnoteReferences) > 0;
         /* local version of flags */
         size_t newFlags = flags;
         /* footnote counter */
@@ -922,7 +922,11 @@ const OFString &DSRDocumentTreeNode::getRelationshipText(const E_RelationshipTyp
 /*
  *  CVS/RCS Log:
  *  $Log: dsrdoctn.cc,v $
- *  Revision 1.24  2003-08-07 13:29:43  joergr
+ *  Revision 1.25  2003-08-07 15:21:53  joergr
+ *  Added brackets around "bitwise and" operator/operands to avoid warnings
+ *  reported by MSVC5.
+ *
+ *  Revision 1.24  2003/08/07 13:29:43  joergr
  *  Added readXML functionality.
  *  Adapted type casts to new-style typecast operators defined in ofcast.h.
  *  Distinguish more strictly between OFBool and int (required when HAVE_CXX_BOOL

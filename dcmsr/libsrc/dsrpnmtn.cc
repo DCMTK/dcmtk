@@ -23,8 +23,8 @@
  *    classes: DSRPNameTreeNode
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-08-07 13:41:36 $
- *  CVS/RCS Revision: $Revision: 1.16 $
+ *  Update Date:      $Date: 2003-08-07 15:21:53 $
+ *  CVS/RCS Revision: $Revision: 1.17 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -182,7 +182,7 @@ OFCondition DSRPNameTreeNode::renderHTMLContentItem(ostream &docStream,
         OFString tmpString, htmlString;
         if (!(flags & DSRTypes::HF_renderItemsSeparately))
             docStream << "<u>";
-        docStream << convertToMarkupString(dicomToReadablePersonName(getValue(), tmpString), htmlString, flags & HF_convertNonASCIICharacters > 0);
+        docStream << convertToMarkupString(dicomToReadablePersonName(getValue(), tmpString), htmlString, (flags & HF_convertNonASCIICharacters) > 0);
         if (!(flags & DSRTypes::HF_renderItemsSeparately))
             docStream << "</u>";
         docStream << endl;
@@ -209,7 +209,11 @@ OFBool DSRPNameTreeNode::canAddNode(const E_DocumentType documentType,
 /*
  *  CVS/RCS Log:
  *  $Log: dsrpnmtn.cc,v $
- *  Revision 1.16  2003-08-07 13:41:36  joergr
+ *  Revision 1.17  2003-08-07 15:21:53  joergr
+ *  Added brackets around "bitwise and" operator/operands to avoid warnings
+ *  reported by MSVC5.
+ *
+ *  Revision 1.16  2003/08/07 13:41:36  joergr
  *  Added readXML functionality.
  *  Renamed parameters/variables "string" to avoid name clash with STL class.
  *

@@ -23,8 +23,8 @@
  *    classes: DSRCodedEntryValue
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-08-07 13:13:02 $
- *  CVS/RCS Revision: $Revision: 1.13 $
+ *  Update Date:      $Date: 2003-08-07 15:21:53 $
+ *  CVS/RCS Revision: $Revision: 1.14 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -316,12 +316,12 @@ OFCondition DSRCodedEntryValue::writeXML(ostream &stream,
         stream << ">";      // close open bracket from calling routine
         stream << DSRTypes::convertToMarkupString(CodeMeaning, tmpString, OFFalse /*convertNonASCII*/, OFFalse /*newlineAllowed*/, OFTrue /*xmlMode*/);
     } else {
-        DSRTypes::writeStringValueToXML(stream, CodeValue, "value", flags & DSRTypes::XF_writeEmptyTags > 0);
+        DSRTypes::writeStringValueToXML(stream, CodeValue, "value", (flags & DSRTypes::XF_writeEmptyTags) > 0);
         stream << "<scheme>" << endl;
-        DSRTypes::writeStringValueToXML(stream, CodingSchemeDesignator, "designator", flags & DSRTypes::XF_writeEmptyTags > 0);
-        DSRTypes::writeStringValueToXML(stream, CodingSchemeVersion, "version", flags & DSRTypes::XF_writeEmptyTags > 0);
+        DSRTypes::writeStringValueToXML(stream, CodingSchemeDesignator, "designator", (flags & DSRTypes::XF_writeEmptyTags) > 0);
+        DSRTypes::writeStringValueToXML(stream, CodingSchemeVersion, "version", (flags & DSRTypes::XF_writeEmptyTags) > 0);
         stream << "</scheme>" << endl;
-        DSRTypes::writeStringValueToXML(stream, CodeMeaning, "meaning", flags & DSRTypes::XF_writeEmptyTags > 0);
+        DSRTypes::writeStringValueToXML(stream, CodeMeaning, "meaning", (flags & DSRTypes::XF_writeEmptyTags) > 0);
     }
     return EC_Normal;
 }
@@ -334,7 +334,7 @@ OFCondition DSRCodedEntryValue::renderHTML(ostream &stream,
                                            const OFBool valueFirst) const
 {
     OFString htmlString;
-    const OFBool convertNonASCII = (flags & DSRTypes::HF_convertNonASCIICharacters > 0);
+    const OFBool convertNonASCII = (flags & DSRTypes::HF_convertNonASCIICharacters) > 0;
     if (valueFirst)
         stream << DSRTypes::convertToMarkupString(CodeValue, htmlString, convertNonASCII);
     else
@@ -412,7 +412,11 @@ OFBool DSRCodedEntryValue::checkCode(const OFString &codeValue,
 /*
  *  CVS/RCS Log:
  *  $Log: dsrcodvl.cc,v $
- *  Revision 1.13  2003-08-07 13:13:02  joergr
+ *  Revision 1.14  2003-08-07 15:21:53  joergr
+ *  Added brackets around "bitwise and" operator/operands to avoid warnings
+ *  reported by MSVC5.
+ *
+ *  Revision 1.13  2003/08/07 13:13:02  joergr
  *  Added readXML functionality.
  *
  *  Revision 1.12  2003/06/04 14:26:54  meichel

@@ -23,8 +23,8 @@
  *    classes: DSRXMLDocument
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-08-07 14:49:36 $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  Update Date:      $Date: 2003-08-07 15:21:53 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -363,7 +363,7 @@ OFBool DSRXMLDocument::hasAttribute(const DSRXMLCursor &cursor,
     {
         /* check whether attribute exists */
         if ((name != NULL) && (strlen(name) > 0))
-            result = xmlHasProp(cursor.Node, OFreinterpret_cast(const xmlChar *, name));
+            result = (xmlHasProp(cursor.Node, OFreinterpret_cast(const xmlChar *, name)) != NULL);
     }
 #endif
     return result;
@@ -620,7 +620,11 @@ void DSRXMLDocument::printGeneralNodeError(const DSRXMLCursor &cursor,
 /*
  *  CVS/RCS Log:
  *  $Log: dsrxmld.cc,v $
- *  Revision 1.1  2003-08-07 14:49:36  joergr
+ *  Revision 1.2  2003-08-07 15:21:53  joergr
+ *  Added brackets around "bitwise and" operator/operands to avoid warnings
+ *  reported by MSVC5.
+ *
+ *  Revision 1.1  2003/08/07 14:49:36  joergr
  *  Added interface classes hiding the access to libxml (document and cursor
  *  class).
  *

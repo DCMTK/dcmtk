@@ -23,8 +23,8 @@
  *    classes: DSRDocument
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-08-07 13:27:31 $
- *  CVS/RCS Revision: $Revision: 1.41 $
+ *  Update Date:      $Date: 2003-08-07 15:21:53 $
+ *  CVS/RCS Revision: $Revision: 1.42 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -230,7 +230,7 @@ OFCondition DSRDocument::print(ostream &stream,
                         if (obsCode.isValid())
                         {
                             stream << " ";
-                            obsCode.print(stream, flags & PF_printAllCodes > 0 /*printCodeValue*/);
+                            obsCode.print(stream, (flags & PF_printAllCodes) > 0 /*printCodeValue*/);
                         }
                         stream << ", " << organization << endl;
                     }
@@ -941,49 +941,49 @@ OFCondition DSRDocument::writeXML(ostream &stream,
         if (sopClass != NULL)
             stream << sopClass;
         stream << "</sopclass>" << endl;
-        writeStringFromElementToXML(stream, SpecificCharacterSet, "charset", flags & XF_writeEmptyTags > 0);
-        writeStringFromElementToXML(stream, Modality, "modality", flags & XF_writeEmptyTags > 0);
-        writeStringFromElementToXML(stream, Manufacturer, "manufacturer", flags & XF_writeEmptyTags > 0);
+        writeStringFromElementToXML(stream, SpecificCharacterSet, "charset", (flags & XF_writeEmptyTags) > 0);
+        writeStringFromElementToXML(stream, Modality, "modality", (flags & XF_writeEmptyTags) > 0);
+        writeStringFromElementToXML(stream, Manufacturer, "manufacturer", (flags & XF_writeEmptyTags) > 0);
 
         if ((flags & XF_writeEmptyTags) || (ReferringPhysiciansName.getLength() > 0))
         {
             stream << "<referringphysician>" << endl;
-            writeStringFromElementToXML(stream, ReferringPhysiciansName, "name", flags & XF_writeEmptyTags > 0);
+            writeStringFromElementToXML(stream, ReferringPhysiciansName, "name", (flags & XF_writeEmptyTags) > 0);
             stream << "</referringphysician>" << endl;
         }
 
         stream << "<patient>" << endl;
-        writeStringFromElementToXML(stream, PatientID, "id", flags & XF_writeEmptyTags > 0);
-        writeStringFromElementToXML(stream, PatientsName, "name", flags & XF_writeEmptyTags > 0);
+        writeStringFromElementToXML(stream, PatientID, "id", (flags & XF_writeEmptyTags) > 0);
+        writeStringFromElementToXML(stream, PatientsName, "name", (flags & XF_writeEmptyTags) > 0);
         if ((flags & XF_writeEmptyTags) || (PatientsBirthDate.getLength() > 0))
         {
             stream << "<birthday>" << endl;
-            writeStringFromElementToXML(stream, PatientsBirthDate, "date", flags & XF_writeEmptyTags > 0);
+            writeStringFromElementToXML(stream, PatientsBirthDate, "date", (flags & XF_writeEmptyTags) > 0);
             stream << "</birthday>" << endl;
         }
-        writeStringFromElementToXML(stream, PatientsSex, "sex", flags & XF_writeEmptyTags > 0);
+        writeStringFromElementToXML(stream, PatientsSex, "sex", (flags & XF_writeEmptyTags) > 0);
         stream << "</patient>" << endl;
 
         stream << "<study uid=\"" << getMarkupStringFromElement(StudyInstanceUID, tmpString) << "\">" << endl;
-        writeStringFromElementToXML(stream, StudyID, "id", flags & XF_writeEmptyTags > 0);
-        writeStringFromElementToXML(stream, StudyDate, "date", flags & XF_writeEmptyTags > 0);
-        writeStringFromElementToXML(stream, StudyTime, "time", flags & XF_writeEmptyTags > 0);
+        writeStringFromElementToXML(stream, StudyID, "id", (flags & XF_writeEmptyTags) > 0);
+        writeStringFromElementToXML(stream, StudyDate, "date", (flags & XF_writeEmptyTags) > 0);
+        writeStringFromElementToXML(stream, StudyTime, "time", (flags & XF_writeEmptyTags) > 0);
         if ((flags & XF_writeEmptyTags) || (AccessionNumber.getLength() > 0))
         {
             stream << "<accession>" << endl;
-            writeStringFromElementToXML(stream, AccessionNumber, "number", flags & XF_writeEmptyTags > 0);
+            writeStringFromElementToXML(stream, AccessionNumber, "number", (flags & XF_writeEmptyTags) > 0);
             stream << "</accession>" << endl;
         }
-        writeStringFromElementToXML(stream, StudyDescription, "description", flags & XF_writeEmptyTags > 0);
+        writeStringFromElementToXML(stream, StudyDescription, "description", (flags & XF_writeEmptyTags) > 0);
         stream << "</study>" << endl;
 
         stream << "<series uid=\"" << getMarkupStringFromElement(SeriesInstanceUID, tmpString) << "\">" << endl;
-        writeStringFromElementToXML(stream, SeriesNumber, "number", flags & XF_writeEmptyTags > 0);
-        writeStringFromElementToXML(stream, SeriesDescription, "description", flags & XF_writeEmptyTags > 0);
+        writeStringFromElementToXML(stream, SeriesNumber, "number", (flags & XF_writeEmptyTags) > 0);
+        writeStringFromElementToXML(stream, SeriesDescription, "description", (flags & XF_writeEmptyTags) > 0);
         stream << "</series>" << endl;
 
         stream << "<instance uid=\"" << getMarkupStringFromElement(SOPInstanceUID, tmpString) << "\">" << endl;
-        writeStringFromElementToXML(stream, InstanceNumber, "number", flags & XF_writeEmptyTags > 0);
+        writeStringFromElementToXML(stream, InstanceNumber, "number", (flags & XF_writeEmptyTags) > 0);
         if ((flags & XF_writeEmptyTags) || (InstanceCreatorUID.getLength() > 0) ||
             (InstanceCreationDate.getLength() > 0) || (InstanceCreationTime.getLength() > 0))
         {
@@ -991,8 +991,8 @@ OFCondition DSRDocument::writeXML(ostream &stream,
             if (InstanceCreatorUID.getLength() > 0)
                 stream << " uid=\"" << getMarkupStringFromElement(InstanceCreatorUID, tmpString) << "\"";
             stream << ">" << endl;
-            writeStringFromElementToXML(stream, InstanceCreationDate, "date", flags & XF_writeEmptyTags > 0);
-            writeStringFromElementToXML(stream, InstanceCreationTime, "time", flags & XF_writeEmptyTags > 0);
+            writeStringFromElementToXML(stream, InstanceCreationDate, "date", (flags & XF_writeEmptyTags) > 0);
+            writeStringFromElementToXML(stream, InstanceCreationTime, "time", (flags & XF_writeEmptyTags) > 0);
             stream << "</creation>" << endl;
         }
         stream << "</instance>" << endl;
@@ -1017,7 +1017,7 @@ OFCondition DSRDocument::writeXML(ostream &stream,
         if (getDocumentType() != DT_KeyObjectDoc)
         {
             stream << "<completion flag=\"" << completionFlagToEnumeratedValue(CompletionFlagEnum) << "\">" << endl;
-            writeStringFromElementToXML(stream, CompletionFlagDescription, "description", flags & XF_writeEmptyTags > 0);
+            writeStringFromElementToXML(stream, CompletionFlagDescription, "description", (flags & XF_writeEmptyTags) > 0);
             stream << "</completion>" << endl;
 
             stream << "<verification flag=\"" << verificationFlagToEnumeratedValue(VerificationFlagEnum) << "\">" << endl;
@@ -1030,7 +1030,7 @@ OFCondition DSRDocument::writeXML(ostream &stream,
                 OFString dateTime, obsName, organization;
                 if (getVerifyingObserver(i, dateTime, obsName, obsCode, organization).good())
                 {
-                    writeStringValueToXML(stream, dateTime, "datetime", flags & XF_writeEmptyTags > 0);
+                    writeStringValueToXML(stream, dateTime, "datetime", (flags & XF_writeEmptyTags) > 0);
                     if (!obsName.empty() || (flags & XF_writeEmptyTags))
                         stream << "<name>" << endl << dicomToXMLPersonName(obsName, tmpString) << endl << "</name>" << endl;
                     if (obsCode.isValid())
@@ -1042,7 +1042,7 @@ OFCondition DSRDocument::writeXML(ostream &stream,
                         obsCode.writeXML(stream, flags, LogStream);
                         stream << "</code>" << endl;
                     }
-                    writeStringValueToXML(stream, organization, "organization", flags & XF_writeEmptyTags > 0);
+                    writeStringValueToXML(stream, organization, "organization", (flags & XF_writeEmptyTags) > 0);
                 }
                 stream << "</observer>" << endl;
             }
@@ -1059,8 +1059,8 @@ OFCondition DSRDocument::writeXML(ostream &stream,
         // --- write document content/tree to stream ---
 
         stream << "<content>" << endl;
-        writeStringFromElementToXML(stream, ContentDate, "date", flags & XF_writeEmptyTags > 0);
-        writeStringFromElementToXML(stream, ContentTime, "time", flags & XF_writeEmptyTags > 0);
+        writeStringFromElementToXML(stream, ContentDate, "date", (flags & XF_writeEmptyTags) > 0);
+        writeStringFromElementToXML(stream, ContentTime, "time", (flags & XF_writeEmptyTags) > 0);
         result = DocumentTree.writeXML(stream, flags);
         stream << "</content>" << endl;
         stream << "</document>" << endl;
@@ -2201,7 +2201,11 @@ void DSRDocument::updateAttributes(const OFBool updateAll)
 /*
  *  CVS/RCS Log:
  *  $Log: dsrdoc.cc,v $
- *  Revision 1.41  2003-08-07 13:27:31  joergr
+ *  Revision 1.42  2003-08-07 15:21:53  joergr
+ *  Added brackets around "bitwise and" operator/operands to avoid warnings
+ *  reported by MSVC5.
+ *
+ *  Revision 1.41  2003/08/07 13:27:31  joergr
  *  Added readXML functionality. Made method isFinalized() const.
  *  Added new option --add-schema-reference to command line tool dsr2xml. XML
  *  Schema not yet completed!

@@ -23,8 +23,8 @@
  *    classes: DSRStringValue
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-08-07 13:53:01 $
- *  CVS/RCS Revision: $Revision: 1.10 $
+ *  Update Date:      $Date: 2003-08-07 15:21:53 $
+ *  CVS/RCS Revision: $Revision: 1.11 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -136,7 +136,7 @@ OFCondition DSRStringValue::renderHTML(ostream &docStream,
     OFString htmlString;
     if (!(flags & DSRTypes::HF_renderItemsSeparately))
         docStream << "<u>";
-    docStream << DSRTypes::convertToMarkupString(Value, htmlString, flags & DSRTypes::HF_convertNonASCIICharacters > 0);
+    docStream << DSRTypes::convertToMarkupString(Value, htmlString, (flags & DSRTypes::HF_convertNonASCIICharacters) > 0);
     if (!(flags & DSRTypes::HF_renderItemsSeparately))
         docStream << "</u>";
     return EC_Normal;
@@ -164,7 +164,11 @@ OFBool DSRStringValue::checkValue(const OFString &stringValue) const
 /*
  *  CVS/RCS Log:
  *  $Log: dsrstrvl.cc,v $
- *  Revision 1.10  2003-08-07 13:53:01  joergr
+ *  Revision 1.11  2003-08-07 15:21:53  joergr
+ *  Added brackets around "bitwise and" operator/operands to avoid warnings
+ *  reported by MSVC5.
+ *
+ *  Revision 1.10  2003/08/07 13:53:01  joergr
  *  Added readXML functionality.
  *  Distinguish more strictly between OFBool and int (required when HAVE_CXX_BOOL
  *  is defined).
