@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2002, OFFIS
+ *  Copyright (C) 1996-2003, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,8 @@
  *  Purpose: DicomMonochromePixel (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-06-26 16:13:25 $
- *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/libsrc/dimopx.cc,v $
- *  CVS/RCS Revision: $Revision: 1.9 $
+ *  Update Date:      $Date: 2003-12-08 17:43:04 $
+ *  CVS/RCS Revision: $Revision: 1.10 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -101,7 +100,10 @@ DiMonoPixel::~DiMonoPixel()
  *
  * CVS/RCS Log:
  * $Log: dimopx.cc,v $
- * Revision 1.9  2002-06-26 16:13:25  joergr
+ * Revision 1.10  2003-12-08 17:43:04  joergr
+ * Updated copyright header.
+ *
+ * Revision 1.9  2002/06/26 16:13:25  joergr
  * Enhanced handling of corrupted pixel data and/or length.
  *
  * Revision 1.8  2001/06/01 15:49:58  meichel
