@@ -22,9 +22,9 @@
  *  Purpose: (Partially) abstract class for connecting to an arbitrary data source.
  *
  *  Last Update:      $Author: wilkens $
- *  Update Date:      $Date: 2002-07-17 13:10:42 $
+ *  Update Date:      $Date: 2002-08-12 10:56:14 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmwlm/libsrc/wlds.cc,v $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -61,8 +61,8 @@ WlmDataSource::WlmDataSource()
 // Task         : Constructor.
 // Parameters   : none.
 // Return Value : none.
-  : failOnInvalidQuery( OFTrue ), calledApplicationEntityTitle( NULL ),
-    verbose( OFFalse ), identifiers( NULL ), objlist( NULL ), errorElements( NULL ), offendingElements( NULL ),
+  : failOnInvalidQuery( OFTrue ), calledApplicationEntityTitle( NULL ), verbose( OFFalse ), debug( OFFalse ),
+    identifiers( NULL ), objlist( NULL ), errorElements( NULL ), offendingElements( NULL ),
     errorComment( NULL ), foundUnsupportedOptionalKey( OFFalse ), readLockSetOnDataSource( OFFalse ),
     logStream( NULL ), noSequenceExpansion( OFFalse ), returnedCharacterSet( RETURN_NO_CHARACTER_SET )
 {
@@ -154,6 +154,18 @@ void WlmDataSource::SetVerbose( OFBool value )
 // Return Value : none.
 {
   verbose = value;
+}
+
+// ----------------------------------------------------------------------------
+
+void WlmDataSource::SetDebug( OFBool value )
+// Date         : December 10, 2001
+// Author       : Thomas Wilkens
+// Task         : Set member variable that determines if information shall be dumped at processing time or not.
+// Parameters   : value - Value for verbose.
+// Return Value : none.
+{
+  debug = value;
 }
 
 // ----------------------------------------------------------------------------
@@ -1494,7 +1506,12 @@ OFBool WlmDataSource::IsSupportedReturnKeyAttribute( DcmElement *element, DcmSeq
 /*
 ** CVS Log
 ** $Log: wlds.cc,v $
-** Revision 1.7  2002-07-17 13:10:42  wilkens
+** Revision 1.8  2002-08-12 10:56:14  wilkens
+** Made some modifications in in order to be able to create a new application
+** which contains both wlmscpdb and ppsscpdb and another application which
+** contains both wlmscpfs and ppsscpfs.
+**
+** Revision 1.7  2002/07/17 13:10:42  wilkens
 ** Corrected some minor logical errors in the wlmscpdb sources and completely
 ** updated the wlmscpfs so that it does not use the original wlistctn sources
 ** any more but standard wlm sources which are now used by all three variants

@@ -22,9 +22,9 @@
 *  Purpose: Class for managing file system interaction.
 *
 *  Last Update:      $Author: wilkens $
-*  Update Date:      $Date: 2002-08-05 09:09:58 $
+*  Update Date:      $Date: 2002-08-12 10:56:08 $
 *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmwlm/include/Attic/wlfsim.h,v $
-*  CVS/RCS Revision: $Revision: 1.1 $
+*  CVS/RCS Revision: $Revision: 1.2 $
 *  Status:           $State: Exp $
 *
 *  CVS/RCS Log at end of file
@@ -47,6 +47,7 @@ class WlmFileSystemInteractionManager
 {
   protected:
     OFBool verboseMode;
+    OFBool debugMode;
     OFConsole *logStream;
     char *dfPath;
     char *calledApplicationEntityTitle;
@@ -93,6 +94,11 @@ class WlmFileSystemInteractionManager
        *  @param value The value to set.
        */
     void SetVerbose( OFBool value );
+
+      /**  Set value in member variable.
+       *  @param value The value to set.
+       */
+    void SetDebug( OFBool value );
 
       /** Connects to the worklist file system database.
        *  @param dfPath Path to worklist file system database.
@@ -143,7 +149,12 @@ class WlmFileSystemInteractionManager
 /*
 ** CVS Log
 ** $Log: wlfsim.h,v $
-** Revision 1.1  2002-08-05 09:09:58  wilkens
+** Revision 1.2  2002-08-12 10:56:08  wilkens
+** Made some modifications in in order to be able to create a new application
+** which contains both wlmscpdb and ppsscpdb and another application which
+** contains both wlmscpfs and ppsscpfs.
+**
+** Revision 1.1  2002/08/05 09:09:58  wilkens
 ** Modfified the project's structure in order to be able to create a new
 ** application which contains both wlmscpdb and ppsscpdb.
 **

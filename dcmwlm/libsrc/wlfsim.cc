@@ -22,9 +22,9 @@
 *  Purpose: Class for managing file system interaction.
 *
 *  Last Update:      $Author: wilkens $
-*  Update Date:      $Date: 2002-08-05 09:10:12 $
+*  Update Date:      $Date: 2002-08-12 10:56:17 $
 *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmwlm/libsrc/wlfsim.cc,v $
-*  CVS/RCS Revision: $Revision: 1.1 $
+*  CVS/RCS Revision: $Revision: 1.2 $
 *  Status:           $State: Exp $
 *
 *  CVS/RCS Log at end of file
@@ -76,7 +76,7 @@ WlmFileSystemInteractionManager::WlmFileSystemInteractionManager()
 // Task         : Constructor.
 // Parameters   : none.
 // Return Value : none.
-  : verboseMode( OFFalse ), logStream( NULL ), dfPath( NULL ), calledApplicationEntityTitle( NULL ),
+  : verboseMode( OFFalse ), debugMode( OFFalse ), logStream( NULL ), dfPath( NULL ), calledApplicationEntityTitle( NULL ),
     matchingRecords( NULL ), numOfMatchingRecords( 0 )
 {
 }
@@ -115,6 +115,18 @@ void WlmFileSystemInteractionManager::SetVerbose( OFBool value )
 // Return Value : none.
 {
   verboseMode = value;
+}
+
+// ----------------------------------------------------------------------------
+
+void WlmFileSystemInteractionManager::SetDebug( OFBool value )
+// Date         : July 11, 2002
+// Author       : Thomas Wilkens
+// Task         : Set value in member variable.
+// Parameters   : value - [in] The value to set.
+// Return Value : none.
+{
+  debugMode = value;
 }
 
 // ----------------------------------------------------------------------------
@@ -1465,7 +1477,12 @@ void WlmFileSystemInteractionManager::ExtractValuesFromRange( const char *range,
 /*
 ** CVS Log
 ** $Log: wlfsim.cc,v $
-** Revision 1.1  2002-08-05 09:10:12  wilkens
+** Revision 1.2  2002-08-12 10:56:17  wilkens
+** Made some modifications in in order to be able to create a new application
+** which contains both wlmscpdb and ppsscpdb and another application which
+** contains both wlmscpfs and ppsscpfs.
+**
+** Revision 1.1  2002/08/05 09:10:12  wilkens
 ** Modfified the project's structure in order to be able to create a new
 ** application which contains both wlmscpdb and ppsscpdb.
 **

@@ -22,9 +22,9 @@
  *  Purpose: (Partially) abstract class for connecting to an arbitrary data source.
  *
  *  Last Update:      $Author: wilkens $
- *  Update Date:      $Date: 2002-07-17 13:10:36 $
+ *  Update Date:      $Date: 2002-08-12 10:56:07 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmwlm/include/Attic/wlds.h,v $
- *  CVS/RCS Revision: $Revision: 1.8 $
+ *  CVS/RCS Revision: $Revision: 1.9 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -53,6 +53,7 @@ class WlmDataSource
     OFBool failOnInvalidQuery;
     char *calledApplicationEntityTitle;
     OFBool verbose;
+    OFBool debug;
     DcmDataset *identifiers;
     DcmList *objlist;
     DcmAttributeTag *errorElements;
@@ -134,6 +135,11 @@ class WlmDataSource
        *  @param value The value to set.
        */
     void SetVerbose( OFBool value );
+
+      /** Set value in member variable.
+       *  @param value The value to set.
+       */
+    void SetDebug( OFBool value );
 
       /** Set value in a member variable in a derived class.
        *  @param value The value to set.
@@ -247,7 +253,12 @@ class WlmDataSource
 /*
 ** CVS Log
 ** $Log: wlds.h,v $
-** Revision 1.8  2002-07-17 13:10:36  wilkens
+** Revision 1.9  2002-08-12 10:56:07  wilkens
+** Made some modifications in in order to be able to create a new application
+** which contains both wlmscpdb and ppsscpdb and another application which
+** contains both wlmscpfs and ppsscpfs.
+**
+** Revision 1.8  2002/07/17 13:10:36  wilkens
 ** Corrected some minor logical errors in the wlmscpdb sources and completely
 ** updated the wlmscpfs so that it does not use the original wlistctn sources
 ** any more but standard wlm sources which are now used by all three variants

@@ -23,9 +23,9 @@
  *           class providers.
  *
  *  Last Update:      $Author: wilkens $
- *  Update Date:      $Date: 2002-08-05 09:10:13 $
+ *  Update Date:      $Date: 2002-08-12 10:56:18 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmwlm/libsrc/wlmactmg.cc,v $
- *  CVS/RCS Revision: $Revision: 1.9 $
+ *  CVS/RCS Revision: $Revision: 1.10 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -120,7 +120,7 @@ WlmActivityManager::WlmActivityManager( WlmDataSource *dataSourcev, OFCmdUnsigne
     supportedAbstractSyntaxes( NULL ), numberOfSupportedAbstractSyntaxes( 0 ),
     logStream( logStreamv ), processTable( processTable )
 {
-  // Initialize supported abstract transfer syntaxes.
+  // initialize supported abstract transfer syntaxes.
   supportedAbstractSyntaxes = new char*[2];
   supportedAbstractSyntaxes[0] = new char[ strlen( UID_VerificationSOPClass ) + 1 ];
   strcpy( supportedAbstractSyntaxes[0], UID_VerificationSOPClass );
@@ -128,25 +128,25 @@ WlmActivityManager::WlmActivityManager( WlmDataSource *dataSourcev, OFCmdUnsigne
   strcpy( supportedAbstractSyntaxes[1], UID_FINDModalityWorklistInformationModel );
   numberOfSupportedAbstractSyntaxes = 2;
 
-  // Make sure not to let dcmdata remove tailing blank padding or perform other
+  // make sure not to let dcmdata remove tailing blank padding or perform other
   // manipulations. We want to see the real data.
-  dcmEnableAutomaticInputDataCorrection.set(OFFalse);
-  DumpMessage( "NOTICE: Dcmdata auto correction disabled!!\n" );
+  dcmEnableAutomaticInputDataCorrection.set( OFFalse );
+  DumpMessage( "\n(notice: dcmdata auto correction disabled.)\n" );
 
 #ifdef HAVE_GUSI_H
-  // Needed for Macintosh.
+  // needed for Macintosh.
   GUSISetup( GUSIwithSIOUXSockets );
   GUSISetup( GUSIwithInternetSockets );
 #endif
 
 #ifdef HAVE_WINSOCK_H
   WSAData winSockData;
-  // We need at least version 1.1.
+  // we need at least version 1.1.
   WORD winSockVersionNeeded = MAKEWORD( 1, 1 );
   WSAStartup(winSockVersionNeeded, &winSockData);
 #endif
 
-  // Initialize table that manages subprocesses.
+  // initialize table that manages subprocesses.
   processTable.pcnt = 0;
   processTable.plist = NULL;
 }
@@ -1274,7 +1274,12 @@ static void FindCallback( void *callbackData, OFBool cancelled, T_DIMSE_C_FindRQ
 /*
 ** CVS Log
 ** $Log: wlmactmg.cc,v $
-** Revision 1.9  2002-08-05 09:10:13  wilkens
+** Revision 1.10  2002-08-12 10:56:18  wilkens
+** Made some modifications in in order to be able to create a new application
+** which contains both wlmscpdb and ppsscpdb and another application which
+** contains both wlmscpfs and ppsscpfs.
+**
+** Revision 1.9  2002/08/05 09:10:13  wilkens
 ** Modfified the project's structure in order to be able to create a new
 ** application which contains both wlmscpdb and ppsscpdb.
 **

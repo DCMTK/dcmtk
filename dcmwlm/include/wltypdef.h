@@ -22,9 +22,9 @@
  *  Purpose: Type definitions and macros for dcmwlm project.
  *
  *  Last Update:      $Author: wilkens $
- *  Update Date:      $Date: 2002-07-17 13:10:37 $
+ *  Update Date:      $Date: 2002-08-12 10:56:09 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmwlm/include/Attic/wltypdef.h,v $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -60,8 +60,8 @@ enum WlmDataSourceType
    */
 enum WlmDatabaseType
 {
-  DATABASE_TYPE_UNKNOWN,
-  DATABASE_ORACLE
+  WLM_DATABASE_TYPE_UNKNOWN,
+  WLM_DATABASE_ORACLE
 };
 
   /** Returned Character Set types
@@ -107,26 +107,26 @@ enum WlmRefuseReasonType
 };
 
   // const objects for error objects below
-const OFConditionConst ECC_InsufficientPortPrivileges              ( OFM_dcmwlm,  1, OF_error, "Insufficient privileges to listen to port.");
-const OFConditionConst ECC_InitializationOfNetworkConnectionFailed ( OFM_dcmwlm,  2, OF_error, "Initialization of network connection failed.");
-const OFConditionConst ECC_TerminationOfNetworkConnectionFailed    ( OFM_dcmwlm,  3, OF_error, "Termination of network connection failed.");
-const OFConditionConst ECC_DatabaseStatementConfigFilesNotExistent ( OFM_dcmwlm,  4, OF_error, "Database statement configuration files not existent.");
-const OFConditionConst ECC_CannotConnectToDataSource               ( OFM_dcmwlm,  5, OF_error, "Cannot connect to data source.");
+const OFConditionConst WLM_ECC_InsufficientPortPrivileges              ( OFM_dcmwlm,  1, OF_error, "Insufficient privileges to listen to port.");
+const OFConditionConst WLM_ECC_InitializationOfNetworkConnectionFailed ( OFM_dcmwlm,  2, OF_error, "Initialization of network connection failed.");
+const OFConditionConst WLM_ECC_TerminationOfNetworkConnectionFailed    ( OFM_dcmwlm,  3, OF_error, "Termination of network connection failed.");
+const OFConditionConst WLM_ECC_DatabaseStatementConfigFilesNotExistent ( OFM_dcmwlm,  4, OF_error, "Database statement configuration files not existent.");
+const OFConditionConst WLM_ECC_CannotConnectToDataSource               ( OFM_dcmwlm,  5, OF_error, "Cannot connect to data source.");
 
   /// error: Insufficient privileges to listen to port.
-const OFCondition WLM_EC_InsufficientPortPrivileges                ( ECC_InsufficientPortPrivileges );
+const OFCondition WLM_EC_InsufficientPortPrivileges                ( WLM_ECC_InsufficientPortPrivileges );
 
   /// error: Initialization of network connection failed.
-const OFCondition WLM_EC_InitializationOfNetworkConnectionFailed   ( ECC_InitializationOfNetworkConnectionFailed );
+const OFCondition WLM_EC_InitializationOfNetworkConnectionFailed   ( WLM_ECC_InitializationOfNetworkConnectionFailed );
 
   /// error: Termination of network connection failed.
-const OFCondition WLM_EC_TerminationOfNetworkConnectionFailed      ( ECC_TerminationOfNetworkConnectionFailed );
+const OFCondition WLM_EC_TerminationOfNetworkConnectionFailed      ( WLM_ECC_TerminationOfNetworkConnectionFailed );
 
   /// error: Database statement configuration files not existent.
-const OFCondition WLM_EC_DatabaseStatementConfigFilesNotExistent   ( ECC_DatabaseStatementConfigFilesNotExistent );
+const OFCondition WLM_EC_DatabaseStatementConfigFilesNotExistent   ( WLM_ECC_DatabaseStatementConfigFilesNotExistent );
 
   /// error: Cannot connect to data source.
-const OFCondition WLM_EC_CannotConnectToDataSource                 ( ECC_CannotConnectToDataSource );
+const OFCondition WLM_EC_CannotConnectToDataSource                 ( WLM_ECC_CannotConnectToDataSource );
 
 
   // number of currently supported matching key attributes
@@ -138,7 +138,12 @@ const OFCondition WLM_EC_CannotConnectToDataSource                 ( ECC_CannotC
 /*
 ** CVS Log
 ** $Log: wltypdef.h,v $
-** Revision 1.4  2002-07-17 13:10:37  wilkens
+** Revision 1.5  2002-08-12 10:56:09  wilkens
+** Made some modifications in in order to be able to create a new application
+** which contains both wlmscpdb and ppsscpdb and another application which
+** contains both wlmscpfs and ppsscpfs.
+**
+** Revision 1.4  2002/07/17 13:10:37  wilkens
 ** Corrected some minor logical errors in the wlmscpdb sources and completely
 ** updated the wlmscpfs so that it does not use the original wlistctn sources
 ** any more but standard wlm sources which are now used by all three variants

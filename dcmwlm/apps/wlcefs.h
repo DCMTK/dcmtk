@@ -23,9 +23,9 @@
  *           management service class providers based on the file system.
  *
  *  Last Update:      $Author: wilkens $
- *  Update Date:      $Date: 2002-08-05 09:09:17 $
+ *  Update Date:      $Date: 2002-08-12 10:55:48 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmwlm/apps/wlcefs.h,v $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -64,6 +64,12 @@ class WlmConsoleEngineFileSystem
     OFConsoleApplication *app;
     OFCommandLine *cmd;
     WlmDataSource *dataSource;
+
+      /** This function dumps the given information on a stream.
+       *  Used for dumping information in normal, debug and verbose mode.
+       *  @param message The message to dump.
+       */
+    void DumpMessage( const char *message );
 
       /** Protected undefined copy-constructor. Shall never be called.
        *  @param Src Source object.

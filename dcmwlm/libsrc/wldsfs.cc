@@ -22,9 +22,9 @@
  *  Purpose: Class for connecting to a file-based data source.
  *
  *  Last Update:      $Author: wilkens $
- *  Update Date:      $Date: 2002-08-05 09:10:11 $
+ *  Update Date:      $Date: 2002-08-12 10:56:16 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmwlm/libsrc/wldsfs.cc,v $
- *  CVS/RCS Revision: $Revision: 1.8 $
+ *  CVS/RCS Revision: $Revision: 1.9 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -97,6 +97,7 @@ OFCondition WlmDataSourceFileSystem::ConnectToDataSource()
   // set variables in fileSystemInteractionManager object
   fileSystemInteractionManager->SetLogStream( logStream );
   fileSystemInteractionManager->SetVerbose( verbose );
+  fileSystemInteractionManager->SetDebug( debug );
 
   // connect to file system
   OFCondition cond = fileSystemInteractionManager->ConnectToFileSystem( dfPath );
@@ -686,7 +687,12 @@ int WlmDataSourceFileSystem::ReleaseReadlock()
 /*
 ** CVS Log
 ** $Log: wldsfs.cc,v $
-** Revision 1.8  2002-08-05 09:10:11  wilkens
+** Revision 1.9  2002-08-12 10:56:16  wilkens
+** Made some modifications in in order to be able to create a new application
+** which contains both wlmscpdb and ppsscpdb and another application which
+** contains both wlmscpfs and ppsscpfs.
+**
+** Revision 1.8  2002/08/05 09:10:11  wilkens
 ** Modfified the project's structure in order to be able to create a new
 ** application which contains both wlmscpdb and ppsscpdb.
 **

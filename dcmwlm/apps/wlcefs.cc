@@ -23,9 +23,9 @@
  *           management service class providers based on the file system.
  *
  *  Last Update:      $Author: wilkens $
- *  Update Date:      $Date: 2002-08-05 09:09:17 $
+ *  Update Date:      $Date: 2002-08-12 10:55:47 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmwlm/apps/wlcefs.cc,v $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -82,6 +82,10 @@ WlmConsoleEngineFileSystem::WlmConsoleEngineFileSystem( int argc, char *argv[], 
   // Initialize application identification string.
   sprintf( rcsid, "$dcmtk: %s v%s %s $", applicationName, OFFIS_DCMTK_VERSION, OFFIS_DCMTK_RELEASEDATE );
 
+  // dump application information
+  DumpMessage( rcsid );
+  DumpMessage( "" );
+
   // Initialize starting values for variables pertaining to program options.
   opt_dfPath = "/home/www/wlist";
 
@@ -114,6 +118,10 @@ WlmConsoleEngineFileSystem::WlmConsoleEngineFileSystem( int argc, char *argv[], 
   opt5 += opt_dfPath;
   opt5 += ")";
   cmd->addOption("--data-files-path",           "-dfp",    1, "[p]ath: string", opt5.c_str() );
+
+  cmd->addGroup("returned character set options:", LONGCOL, SHORTCOL+2);
+    cmd->addOption("--return-no-char-set",        "-cs0",       "return no specific character set (default)");
+    cmd->addOption("--return-iso-ir-100",         "-cs1",       "return specific character set ISO IR 100");
 
   cmd->addGroup("network options:");
     cmd->addSubGroup("preferred network transfer syntaxes:");
@@ -175,6 +183,10 @@ WlmConsoleEngineFileSystem::WlmConsoleEngineFileSystem( int argc, char *argv[], 
     if( cmd->findOption("--no-sq-expansion") ) opt_noSequenceExpansion = OFTrue;
     if( cmd->findOption("--data-files-path") ) app->checkValue(cmd->getValue(opt_dfPath));
     cmd->beginOptionBlock();
+    if( cmd->findOption("--return-no-char-set") )  opt_returnedCharacterSet = RETURN_NO_CHARACTER_SET;
+    if( cmd->findOption("--return-iso-ir-100") )  opt_returnedCharacterSet = RETURN_CHARACTER_SET_ISO_IR_100;
+    cmd->endOptionBlock();
+    cmd->beginOptionBlock();
     if( cmd->findOption("--prefer-uncompr") )  opt_networkTransferSyntax = EXS_Unknown;
     if( cmd->findOption("--prefer-little") )   opt_networkTransferSyntax = EXS_LittleEndianExplicit;
     if( cmd->findOption("--prefer-big") )      opt_networkTransferSyntax = EXS_BigEndianExplicit;
@@ -204,6 +216,7 @@ WlmConsoleEngineFileSystem::WlmConsoleEngineFileSystem( int argc, char *argv[], 
   // set general parameters in data source object
   dataSource->SetLogStream( &ofConsole );
   dataSource->SetVerbose( opt_verbose );
+  dataSource->SetDebug( opt_debug );
   dataSource->SetNoSequenceExpansion( opt_noSequenceExpansion );
 
   // set specific parameters in data source object
@@ -242,9 +255,7 @@ int WlmConsoleEngineFileSystem::StartProvidingService()
   if( cond.bad() )
   {
     // in case something unexpected happened, dump a corresponding message
-    ofConsole.lockCout();
-    ofConsole.getCout() << cond.text() << endl;
-    ofConsole.unlockCout();
+    DumpMessage( cond.text() );
 
     // return error
     return( 1 );
@@ -263,12 +274,10 @@ int WlmConsoleEngineFileSystem::StartProvidingService()
   if( cond.bad() )
   {
     // in case something unexpected happened, dump a corresponding message
-    ofConsole.lockCout();
-    ofConsole.getCout() << cond.text() << endl;
-    ofConsole.unlockCout();
+    DumpMessage( cond.text() );
 
     // disconnect from data source
-    cond = dataSource->DisconnectFromDataSource();
+    dataSource->DisconnectFromDataSource();
 
     // free memory
     delete activityManager;
@@ -285,9 +294,7 @@ int WlmConsoleEngineFileSystem::StartProvidingService()
   if( cond.bad() )
   {
     // in case something unexpected happened, dump a corresponding message
-    ofConsole.lockCout();
-    ofConsole.getCout() << cond.text() << endl;
-    ofConsole.unlockCout();
+    DumpMessage( cond.text() );
 
     // return error
     return( 1 );
@@ -299,10 +306,33 @@ int WlmConsoleEngineFileSystem::StartProvidingService()
 
 // ----------------------------------------------------------------------------
 
+void WlmConsoleEngineFileSystem::DumpMessage( const char *message )
+// Date         : August 6, 2002
+// Author       : Thomas Wilkens
+// Task         : This function dumps the given (runtime) information on the out stream.
+//                Used for dumping information in normal, debug and verbose mode.
+// Parameters   : message - [in] The message to dump.
+// Return Value : none.
+{
+  if( message != NULL )
+  {
+    ofConsole.lockCout();
+    ofConsole.getCout() << message << endl;
+    ofConsole.unlockCout();
+  }
+}
+
+// ----------------------------------------------------------------------------
+
 /*
 ** CVS Log
 ** $Log: wlcefs.cc,v $
-** Revision 1.1  2002-08-05 09:09:17  wilkens
+** Revision 1.2  2002-08-12 10:55:47  wilkens
+** Made some modifications in in order to be able to create a new application
+** which contains both wlmscpdb and ppsscpdb and another application which
+** contains both wlmscpfs and ppsscpfs.
+**
+** Revision 1.1  2002/08/05 09:09:17  wilkens
 ** Modfified the project's structure in order to be able to create a new
 ** application which contains both wlmscpdb and ppsscpdb.
 **
