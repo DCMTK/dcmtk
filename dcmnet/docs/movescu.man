@@ -14,11 +14,11 @@ movescu [options] peer port [dcmfile_in...]
 
 \section description DESCRIPTION
 
-The \b movescu application implements both an SCU for the Query/Retrieve Service
-Class and an SCP for the Storage Service Class.  \b Movescu supports retrieve
-functionality using the C-MOVE message.  It sends query keys to an SCP and
-awaits responses.  It will accept associations for the purpose of receiving
-images sent as a result of the C-MOVE request. The application can be used to
+The \b movescu application implements both an SCU for the Query/Retrieve
+Service Class and an SCP for the Storage Service Class.  \b movescu supports
+retrieve functionality using the C-MOVE message.  It sends query keys to an SCP
+and awaits responses.  It will accept associations for the purpose of receiving
+images sent as a result of the C-MOVE request.  The application can be used to
 test SCPs of the Query/Retrieve Service Class.  The \b movescu application can
 initiate the transfer of images to a third party or can retrieve images to
 itself.  Note that the use of the term "move" is a misnomer.  The C-MOVE
@@ -26,13 +26,17 @@ operation actually performs an image copy (no images will be deleted from the
 SCP).
 
 \section parameters PARAMETERS
+
 \verbatim
 peer        hostname of DICOM peer
+
 port        tcp/ip port number of peer
+
 dcmfile_in  DICOM query file(s)
 \endverbatim
 
 \section options OPTIONS
+
 \subsection general_options general options
 \verbatim
   -h    --help
@@ -75,7 +79,7 @@ application entity titles:
           set called AE title of peer (default: ANY-SCP)
 
   -aem  --move  aetitle: string
-          set move destinat. AE title (default: MOVESCU)
+          set move destination AE title (default: MOVESCU)
 
 preferred network transfer syntaxes (incoming associations):
 
@@ -176,7 +180,7 @@ output file format:
   -F    --write-dataset
           write data set without file meta information
 
-output transfer syntax 
+output transfer syntax
 (not with --bit-preserving or compressed transmission):
 
   +t=   --write-xfer-same
@@ -207,7 +211,8 @@ group length encoding (not with --bit-preserving):
   +g    --group-length-create
           always write with group length elements
 
-  -g    --group-length-remove  always write without group length elements
+  -g    --group-length-remove
+          always write without group length elements
 
 length encoding in sequences and items (not with --bit-preserving):
 
@@ -217,39 +222,50 @@ length encoding in sequences and items (not with --bit-preserving):
   -e    --length-undefined
           write with undefined lengths
 
-data set trailing padding (not with --write-dataset or --bit-preserving):
+data set trailing padding
+(not with --write-dataset or --bit-preserving):
 
   -p    --padding-off
           no padding (default)
 
   +p    --padding-create  [f]ile-pad [i]tem-pad: integer
-          align file on multiple of f bytes
-          and items on multiple of i bytes
+          align file on multiple of f bytes and items on
+          multiple of i bytes
 \endverbatim
 
 \section notes NOTES
 
 Each file supplied on the command line will be sent to the SCP as part of a
 C-MOVE request.  The query file must be a valid DICOM data set containing
-the dataset part of a C-MOVE-RQ message. The query file could, for instance,
+the dataset part of a C-MOVE-RQ message.  The query file could, for instance,
 be created with the \b dump2dcm utility from a script like the following
 example:
+
 \verbatim
 # request all images for the patient with ID=PAT001
 (0008,0052) CS [PATIENT]     # QueryRetrieveLevel
 (0010,0020) LO [PAT001]      # PatientID
 \endverbatim
+\if MANPAGES
+.fi
+\endif
+
 Individual attributes of each file sent can be modified or supplemented
 using the "-k key" option.  For example the command:
 
-    movescu -k '0010,0020=PAT002' caesar 5678 patqry.dcm
+\verbatim
+movescu -k '0010,0020=PAT002' caesar 5678 patqry.dcm
+\endverbatim
+\if MANPAGES
+.fi
+\endif
 
 will, when sent to the SCP caesar at TCP/IP port 5678, cause any PatientID
-attribute in patqry.dcm to have the value 'PAT002'. If such an attribute is
-present it will be replaced, if absent it will be inserted. The \e -k option can
-be present more than once.  The value part (after the =) may be absent causing
-the attribute to be sent with zero length.  It is not possible to replace or
-insert attributes within sequences using the \e -k option.
+attribute in patqry.dcm to have the value 'PAT002'.  If such an attribute is
+present it will be replaced, if absent it will be inserted.  The \e -k option
+can be present more than once.  The value part (after the '=') may be absent
+causing the attribute to be sent with zero length.  It is not possible to
+replace or insert attributes within sequences using the \e -k option.
 
 If no file is specified on the command line, the query must be specified
 completely with one or more "-k key" options.
@@ -263,149 +279,173 @@ actually send the images over a separate association.
 The C-MOVE operation of the Query/Retrieve Service Class is able retrieve
 images or to initiate a copy of images to a third party.
 
-\subsection known_problems KNOWN PROBLEMS
+\subsection known_problems Known Problems
 
 \b movescu is intended to be used as a testing tool for DICOM software
-developers. The query keys file must be created by hand based upon the contents
-of the SCP.
+developers.  The query keys file must be created by hand based upon the
+contents of the SCP.
 
 Even when using a third-party move it may be necessary to set the TCP/IP port
-number to a reasonable value (via the \e --port option). Per default, port
-number 104 is used which is a restricted port on many systems. \b movescu
+number to a reasonable value (via the \e --port option).  Per default, port
+number 104 is used which is a restricted port on many systems.  \b movescu
 always tries to listen for incoming associations.
 
-The \b movescu application makes no attempt to prevent incorrect queries. In
+The \b movescu application makes no attempt to prevent incorrect queries.  In
 particular, the query keys of a C-MOVE request should only contain the
 QueryRetrieveLevel attribute and one or more of the so-called "unique key
 attributes" (PatientID, StudyInstanceUID, SeriesInstanceUID and
 SOPInstanceUID).
 
-
-\subsection dicom_conformance DICOM CONFORMANCE
+\subsection dicom_conformance DICOM Conformance
 
 The \b movescu application supports the following SOP Classes as an SCU:
+
 \verbatim
-    MOVEPatientRootQueryRetrieveInformationModel        "1.2.840.10008.5.1.4.1.2.1.2"
-    MOVEStudyRootQueryRetrieveInformationModel          "1.2.840.10008.5.1.4.1.2.2.2"
-    MOVEPatientStudyOnlyQueryRetrieveInformationModel   "1.2.840.10008.5.1.4.1.2.3.2"
+MOVEPatientRootQueryRetrieveInformationModel         1.2.840.10008.5.1.4.1.2.1.2
+MOVEStudyRootQueryRetrieveInformationModel           1.2.840.10008.5.1.4.1.2.2.2
+MOVEPatientStudyOnlyQueryRetrieveInformationModel    1.2.840.10008.5.1.4.1.2.3.2
 \endverbatim
+\if MANPAGES
+.fi
+\endif
+
 The \b movescu application will propose presentation contexts for one of the
-abovementioned supported SOP Classes depending on command line options (-P, -S,
-or -O).  Each proposed presentation context will propose the transfer syntaxes:
+abovementioned supported SOP Classes depending on command line options (\e -P,
+\e -S, or \e -O).  Each proposed presentation context will propose the transfer
+syntaxes:
+
 \verbatim
-    LittleEndianImplicitTransferSyntax                   "1.2.840.10008.1.2"
-    LittleEndianExplicitTransferSyntax                   "1.2.840.10008.1.2.1"
-    BigEndianExplicitTransferSyntax                      "1.2.840.10008.1.2.2"
+LittleEndianImplicitTransferSyntax                   1.2.840.10008.1.2
+LittleEndianExplicitTransferSyntax                   1.2.840.10008.1.2.1
+BigEndianExplicitTransferSyntax                      1.2.840.10008.1.2.2
 \endverbatim
+\if MANPAGES
+.fi
+\endif
+
 This behaviour can be changed with the \e --propose options.
 
 The \b movescu application supports the following SOP Classes as an SCP:
-\verbatim
-    VerificationSOPClass                                 "1.2.840.10008.1.1"
 
-    StoredPrintStorage                                   "1.2.840.10008.5.1.1.27"
-    HardcopyGrayscaleImageStorage                        "1.2.840.10008.5.1.1.29"
-    HardcopyColorImageStorage                            "1.2.840.10008.5.1.1.30"
-    ComputedRadiographyImageStorage                      "1.2.840.10008.5.1.4.1.1.1"
-    DigitalXRayImageStorageForPresentation               "1.2.840.10008.5.1.4.1.1.1.1"
-    DigitalXRayImageStorageForProcessing                 "1.2.840.10008.5.1.4.1.1.1.1.1"
-    DigitalMammographyXRayImageStorageForPresentation    "1.2.840.10008.5.1.4.1.1.1.2"
-    DigitalMammographyXRayImageStorageForProcessing      "1.2.840.10008.5.1.4.1.1.1.2.1"
-    DigitalIntraOralXRayImageStorageForPresentation      "1.2.840.10008.5.1.4.1.1.1.3"
-    DigitalIntraOralXRayImageStorageForProcessing        "1.2.840.10008.5.1.4.1.1.1.3.1"
-    CTImageStorage                                       "1.2.840.10008.5.1.4.1.1.2"
-    RETIRED_UltrasoundMultiframeImageStorage             "1.2.840.10008.5.1.4.1.1.3"
-    UltrasoundMultiframeImageStorage                     "1.2.840.10008.5.1.4.1.1.3.1"
-    MRImageStorage                                       "1.2.840.10008.5.1.4.1.1.4"
-    EnhancedMRImageStorage                               "1.2.840.10008.5.1.4.1.1.4.1"
-    MRSpectroscopyStorage                                "1.2.840.10008.5.1.4.1.1.4.2"
-    RETIRED_NuclearMedicineImageStorage                  "1.2.840.10008.5.1.4.1.1.5"
-    RETIRED_UltrasoundImageStorage                       "1.2.840.10008.5.1.4.1.1.6"
-    UltrasoundImageStorage                               "1.2.840.10008.5.1.4.1.1.6.1"
-    SecondaryCaptureImageStorage                         "1.2.840.10008.5.1.4.1.1.7"
-    MultiframeSingleBitSecondaryCaptureImageStorage      "1.2.840.10008.5.1.4.1.1.7.1"
-    MultiframeGrayscaleByteSecondaryCaptureImageStorage  "1.2.840.10008.5.1.4.1.1.7.2"
-    MultiframeGrayscaleWordSecondaryCaptureImageStorage  "1.2.840.10008.5.1.4.1.1.7.3"
-    MultiframeTrueColorSecondaryCaptureImageStorage      "1.2.840.10008.5.1.4.1.1.7.4"
-    StandaloneOverlayStorage                             "1.2.840.10008.5.1.4.1.1.8"
-    StandaloneCurveStorage                               "1.2.840.10008.5.1.4.1.1.9"
-    TwelveLeadECGWaveformStorage                         "1.2.840.10008.5.1.4.1.1.9.1.1"
-    GeneralECGWaveformStorage                            "1.2.840.10008.5.1.4.1.1.9.1.2"
-    AmbulatoryECGWaveformStorage                         "1.2.840.10008.5.1.4.1.1.9.1.3"
-    HemodynamicWaveformStorage                           "1.2.840.10008.5.1.4.1.1.9.2.1"
-    CardiacElectrophysiologyWaveformStorage              "1.2.840.10008.5.1.4.1.1.9.3.1"
-    BasicVoiceAudioWaveformStorage                       "1.2.840.10008.5.1.4.1.1.9.4.1"
-    StandaloneModalityLUTStorage                         "1.2.840.10008.5.1.4.1.1.10"
-    StandaloneVOILUTStorage                              "1.2.840.10008.5.1.4.1.1.11"
-    GrayscaleSoftcopyPresentationStateStorage            "1.2.840.10008.5.1.4.1.1.11.1"
-    XRayAngiographicImageStorage                         "1.2.840.10008.5.1.4.1.1.12.1"
-    XRayFluoroscopyImageStorage                          "1.2.840.10008.5.1.4.1.1.12.2"
-    RETIRED_XRayAngiographicBiPlaneImageStorage          "1.2.840.10008.5.1.4.1.1.12.3"
-    NuclearMedicineImageStorage                          "1.2.840.10008.5.1.4.1.1.20"
-    RawDataStorage                                       "1.2.840.10008.5.1.4.1.1.66"
-    VLEndoscopicImageStorage                             "1.2.840.10008.5.1.4.1.1.77.1.1"
-    VLMicroscopicImageStorage                            "1.2.840.10008.5.1.4.1.1.77.1.2"
-    VLSlideCoordinatesMicroscopicImageStorage            "1.2.840.10008.5.1.4.1.1.77.1.3"
-    VLPhotographicImageStorage                           "1.2.840.10008.5.1.4.1.1.77.1.4"
-    BasicTextSR                                          "1.2.840.10008.5.1.4.1.1.88.11"
-    EnhancedSR                                           "1.2.840.10008.5.1.4.1.1.88.22"
-    ComprehensiveSR                                      "1.2.840.10008.5.1.4.1.1.88.33"
-    ProcedureLog                                         "1.2.840.10008.5.1.4.1.1.88.40"
-    MammographyCADSR                                     "1.2.840.10008.5.1.4.1.1.88.50"
-    KeyObjectSelectionDocument                           "1.2.840.10008.5.1.4.1.1.88.59"
-    ChestCADSR                                           "1.2.840.10008.5.1.4.1.1.88.65"
-    PETImageStorage                                      "1.2.840.10008.5.1.4.1.1.128"
-    PETCurveStorage                                      "1.2.840.10008.5.1.4.1.1.129"
-    RTImageStorage                                       "1.2.840.10008.5.1.4.1.1.481.1"
-    RTDoseStorage                                        "1.2.840.10008.5.1.4.1.1.481.2"
-    RTStructureSetStorage                                "1.2.840.10008.5.1.4.1.1.481.3"
-    RTBeamsTreatmentRecordStorage                        "1.2.840.10008.5.1.4.1.1.481.4"
-    RTPlanStorage                                        "1.2.840.10008.5.1.4.1.1.481.5"
-    RTBrachyTreatmentRecordStorage                       "1.2.840.10008.5.1.4.1.1.481.6"
-    RTTreatmentSummaryRecordStorage                      "1.2.840.10008.5.1.4.1.1.481.7"
+\verbatim
+VerificationSOPClass                                 1.2.840.10008.1.1
+
+StoredPrintStorage                                   1.2.840.10008.5.1.1.27
+HardcopyGrayscaleImageStorage                        1.2.840.10008.5.1.1.29
+HardcopyColorImageStorage                            1.2.840.10008.5.1.1.30
+ComputedRadiographyImageStorage                      1.2.840.10008.5.1.4.1.1.1
+DigitalXRayImageStorageForPresentation               1.2.840.10008.5.1.4.1.1.1.1
+DigitalXRayImageStorageForProcessing                 1.2.840.10008.5.1.4.1.1.1.1.1
+DigitalMammographyXRayImageStorageForPresentation    1.2.840.10008.5.1.4.1.1.1.2
+DigitalMammographyXRayImageStorageForProcessing      1.2.840.10008.5.1.4.1.1.1.2.1
+DigitalIntraOralXRayImageStorageForPresentation      1.2.840.10008.5.1.4.1.1.1.3
+DigitalIntraOralXRayImageStorageForProcessing        1.2.840.10008.5.1.4.1.1.1.3.1
+CTImageStorage                                       1.2.840.10008.5.1.4.1.1.2
+RETIRED_UltrasoundMultiframeImageStorage             1.2.840.10008.5.1.4.1.1.3
+UltrasoundMultiframeImageStorage                     1.2.840.10008.5.1.4.1.1.3.1
+MRImageStorage                                       1.2.840.10008.5.1.4.1.1.4
+EnhancedMRImageStorage                               1.2.840.10008.5.1.4.1.1.4.1
+MRSpectroscopyStorage                                1.2.840.10008.5.1.4.1.1.4.2
+RETIRED_NuclearMedicineImageStorage                  1.2.840.10008.5.1.4.1.1.5
+RETIRED_UltrasoundImageStorage                       1.2.840.10008.5.1.4.1.1.6
+UltrasoundImageStorage                               1.2.840.10008.5.1.4.1.1.6.1
+SecondaryCaptureImageStorage                         1.2.840.10008.5.1.4.1.1.7
+MultiframeSingleBitSecondaryCaptureImageStorage      1.2.840.10008.5.1.4.1.1.7.1
+MultiframeGrayscaleByteSecondaryCaptureImageStorage  1.2.840.10008.5.1.4.1.1.7.2
+MultiframeGrayscaleWordSecondaryCaptureImageStorage  1.2.840.10008.5.1.4.1.1.7.3
+MultiframeTrueColorSecondaryCaptureImageStorage      1.2.840.10008.5.1.4.1.1.7.4
+StandaloneOverlayStorage                             1.2.840.10008.5.1.4.1.1.8
+StandaloneCurveStorage                               1.2.840.10008.5.1.4.1.1.9
+TwelveLeadECGWaveformStorage                         1.2.840.10008.5.1.4.1.1.9.1.1
+GeneralECGWaveformStorage                            1.2.840.10008.5.1.4.1.1.9.1.2
+AmbulatoryECGWaveformStorage                         1.2.840.10008.5.1.4.1.1.9.1.3
+HemodynamicWaveformStorage                           1.2.840.10008.5.1.4.1.1.9.2.1
+CardiacElectrophysiologyWaveformStorage              1.2.840.10008.5.1.4.1.1.9.3.1
+BasicVoiceAudioWaveformStorage                       1.2.840.10008.5.1.4.1.1.9.4.1
+StandaloneModalityLUTStorage                         1.2.840.10008.5.1.4.1.1.10
+StandaloneVOILUTStorage                              1.2.840.10008.5.1.4.1.1.11
+GrayscaleSoftcopyPresentationStateStorage            1.2.840.10008.5.1.4.1.1.11.1
+XRayAngiographicImageStorage                         1.2.840.10008.5.1.4.1.1.12.1
+XRayFluoroscopyImageStorage                          1.2.840.10008.5.1.4.1.1.12.2
+RETIRED_XRayAngiographicBiPlaneImageStorage          1.2.840.10008.5.1.4.1.1.12.3
+NuclearMedicineImageStorage                          1.2.840.10008.5.1.4.1.1.20
+RawDataStorage                                       1.2.840.10008.5.1.4.1.1.66
+VLEndoscopicImageStorage                             1.2.840.10008.5.1.4.1.1.77.1.1
+VLMicroscopicImageStorage                            1.2.840.10008.5.1.4.1.1.77.1.2
+VLSlideCoordinatesMicroscopicImageStorage            1.2.840.10008.5.1.4.1.1.77.1.3
+VLPhotographicImageStorage                           1.2.840.10008.5.1.4.1.1.77.1.4
+BasicTextSR                                          1.2.840.10008.5.1.4.1.1.88.11
+EnhancedSR                                           1.2.840.10008.5.1.4.1.1.88.22
+ComprehensiveSR                                      1.2.840.10008.5.1.4.1.1.88.33
+ProcedureLog                                         1.2.840.10008.5.1.4.1.1.88.40
+MammographyCADSR                                     1.2.840.10008.5.1.4.1.1.88.50
+KeyObjectSelectionDocument                           1.2.840.10008.5.1.4.1.1.88.59
+ChestCADSR                                           1.2.840.10008.5.1.4.1.1.88.65
+PETImageStorage                                      1.2.840.10008.5.1.4.1.1.128
+PETCurveStorage                                      1.2.840.10008.5.1.4.1.1.129
+RTImageStorage                                       1.2.840.10008.5.1.4.1.1.481.1
+RTDoseStorage                                        1.2.840.10008.5.1.4.1.1.481.2
+RTStructureSetStorage                                1.2.840.10008.5.1.4.1.1.481.3
+RTBeamsTreatmentRecordStorage                        1.2.840.10008.5.1.4.1.1.481.4
+RTPlanStorage                                        1.2.840.10008.5.1.4.1.1.481.5
+RTBrachyTreatmentRecordStorage                       1.2.840.10008.5.1.4.1.1.481.6
+RTTreatmentSummaryRecordStorage                      1.2.840.10008.5.1.4.1.1.481.7
 \endverbatim
+\if MANPAGES
+.fi
+\endif
+
 The \b movescu application will accept presentation contexts for all of the
 abovementioned supported SOP Classes using any of the transfer syntaxes:
+
 \verbatim
-    LittleEndianImplicitTransferSyntax                   "1.2.840.10008.1.2"
-    LittleEndianExplicitTransferSyntax                   "1.2.840.10008.1.2.1"
-    BigEndianExplicitTransferSyntax                      "1.2.840.10008.1.2.2"
+LittleEndianImplicitTransferSyntax                   1.2.840.10008.1.2
+LittleEndianExplicitTransferSyntax                   1.2.840.10008.1.2.1
+BigEndianExplicitTransferSyntax                      1.2.840.10008.1.2.2
 \endverbatim
+\if MANPAGES
+.fi
+\endif
+
 When acting as an SCP, the \b movescu application will prefer transfer syntaxes
 having an explicit encoding over the default implicit transfer syntax.  If
-\b movescu is running on big-endian hardware it will prefer BigEndianExplicit-
-TransferSyntax to LittleEndianExplicitTransferSyntax (and vice versa).  This
-behaviour can be changed with the \e --prefer options (see above).
+\b movescu is running on big-endian hardware it will prefer
+BigEndianExplicitTransferSyntax to LittleEndianExplicitTransferSyntax (and vice
+versa).  This behaviour can be changed with the \e --prefer options (see above).
 
 The \b movescu application does not support extended negotiation.
 
-
-ACCESS CONTROL
+\subsection access_control Access Control
 
 When compiled on Unix platforms with TCP wrapper support, host-based access
-control can be enabled with the --access-control command line option. In
+control can be enabled with the \e --access-control command line option.  In
 this case the access control rules defined in the system's host access
-control tables for \b movescu are enforced. The default locations of the
-host access control tables are /etc/hosts.allow and /etc/hosts.deny.
-Further details are described in hosts_access(5).
+control tables for \b movescu are enforced.  The default locations of the
+host access control tables are \e /etc/hosts.allow and \e /etc/hosts.deny.
+Further details are described in <b>hosts_access</b>(5).
 
 \section examples EXAMPLES
 
-   movescu --patient --port 9876 --move TEST_AE --call ARCHIVE caesar 104 q.dcm
+\verbatim
+movescu --patient --port 9876 --move TEST_AE --call ARCHIVE caesar 104 q.dcm
+\endverbatim
+\if MANPAGES
+.fi
+\endif
 
-sends the attributes contained in the dicom file q.dcm as part of a C-MOVE
+sends the attributes contained in the DICOM file "q.dcm" as part of a C-MOVE
 request to application entity ARCHIVE on the host caesar at port 104 using the
-Patient Root query model. \b movescu itself uses the default AE title MOVESCU.
+Patient Root query model.  \b movescu itself uses the default AE title MOVESCU.
 The C-MOVE request will specifiy that images should be transferred to the
-destination AE title TEST_AE (via the \e --move option).  How the SCP interprets
-this request depends on its configuration.  \b movescu will listen on part 9876
-for incoming associations in order to receive the requested images from the
-SCP.
+destination AE title TEST_AE (via the \e --move option).  How the SCP
+interprets this request depends on its configuration.  \b movescu will listen
+on part 9876 for incoming associations in order to receive the requested images
+from the SCP.
+
 Images can be copied to a third party by using a different destination AE title
-(e.g. \b --move ANOTHER_AE).  Of course the SCP must "know" this AE title and
+(e.g. \b --move ANOTHER_AE).  Of course, the SCP must "know" this AE title and
 the destination must be acting as an SCP of the Storage Service Class (the
 \b storescp application can be used for this purpose).
-
 
 \section command_line COMMAND LINE
 
@@ -424,18 +464,16 @@ prefix to the filename (e.g. <em>\@command.txt</em>).  Such a command argument
 is replaced by the content of the corresponding text file (multiple
 whitespaces are treated as a single separator) prior to any further
 evaluation.  Please note that a command file cannot contain another command
-file. This simple but effective approach allows to summarize common
+file.  This simple but effective approach allows to summarize common
 combinations of options/parameters and avoids longish and confusing command
-lines (an example is provided in file <em>dcmdata/apps/dumppat.txt</em>).
-
+lines (an example is provided in file <em>data/dumppat.txt</em>).
 
 \section environment ENVIRONMENT
 
 The \b movescu utility will attempt to load DICOM data dictionaries specified
 in the \e DCMDICTPATH environment variable.  By default, i.e. if the
 \e DCMDICTPATH environment variable is not set, the file
-<em>/usr/local/dicom/lib/dicom.dic</em> (in fact the \e PREFIX as defined
-during \b configure is used) will be loaded unless the dictionary is built
+<em>\<PREFIX\>/lib/dicom.dic</em> will be loaded unless the dictionary is built
 into the application (default for Windows).
 
 The default behaviour should be preferred and the \e DCMDICTPATH environment
@@ -444,6 +482,10 @@ variable only used when alternative data dictionaries are required.  The
 \e PATH variable in that a colon (":") separates entries.  The data dictionary
 code will attempt to load each file specified in the \e DCMDICTPATH
 environment variable.  It is an error if no data dictionary can be loaded.
+
+\section see_also SEE ALSO
+
+<b>findscu</b>(1), <b>dump2dcm</b>(1)
 
 \section copyright COPYRIGHT
 
