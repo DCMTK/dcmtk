@@ -22,9 +22,9 @@
  *  Purpose: DicomMonochromeImage (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-10-20 10:33:15 $
+ *  Update Date:      $Date: 1999-12-09 17:26:24 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/dimoimg.h,v $
- *  CVS/RCS Revision: $Revision: 1.23 $
+ *  CVS/RCS Revision: $Revision: 1.24 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -714,6 +714,42 @@ class DiMonoImage
      */
     void Init(DiMonoModality *modality);
 
+    /** initialize internal data structures (for Uint8)
+     *
+     ** @param  modality  pointer to object handling the modality transform
+     */
+    void InitUint8(DiMonoModality *modality);
+
+    /** initialize internal data structures (for Sint8)
+     *
+     ** @param  modality  pointer to object handling the modality transform
+     */
+    void InitSint8(DiMonoModality *modality);
+
+    /** initialize internal data structures (for Uint16)
+     *
+     ** @param  modality  pointer to object handling the modality transform
+     */
+    void InitUint16(DiMonoModality *modality);
+
+    /** initialize internal data structures (for Sint16)
+     *
+     ** @param  modality  pointer to object handling the modality transform
+     */
+    void InitSint16(DiMonoModality *modality);
+
+    /** initialize internal data structures (for Uint32)
+     *
+     ** @param  modality  pointer to object handling the modality transform
+     */
+    void InitUint32(DiMonoModality *modality);
+
+    /** initialize internal data structures (for Sint32)
+     *
+     ** @param  modality  pointer to object handling the modality transform
+     */
+    void InitSint32(DiMonoModality *modality);
+
     /** check intermediate pixel representation for consistency
      *
      ** @param  mode  check number of pixels stored in the dataset if true
@@ -739,6 +775,119 @@ class DiMonoImage
                   const int planar,
                   const int negative);
 
+    /** get pixel data with specified format for Uint8 input (helper function).
+     *  (memory is handled externally)
+     *
+     ** @param  buffer   untyped pointer to the externally allocated memory buffer
+     *  @param  disp     pointer to current display function object
+     *  @param  samples  number of samples per pixel
+     *  @param  frame    number of frame to be rendered
+     *  @param  bits     number of bits for the output pixel data (depth)
+     *  @param  low      output pixel value to which 0 is mapped (min)
+     *  @param  high     output pixel value to which 2^bits-1 is mapped (max)
+     */
+    void getDataUint8(void *buffer,
+                      DiDisplayFunction *disp,
+                      const int samples,
+                      const unsigned long frame,
+                      const int bits,
+                      const Uint32 low,
+                      const Uint32 high);
+
+    /** get pixel data with specified format for Sint8 input (helper function).
+     *  (memory is handled externally)
+     *
+     ** @param  buffer   untyped pointer to the externally allocated memory buffer
+     *  @param  disp     pointer to current display function object
+     *  @param  samples  number of samples per pixel
+     *  @param  frame    number of frame to be rendered
+     *  @param  bits     number of bits for the output pixel data (depth)
+     *  @param  low      output pixel value to which 0 is mapped (min)
+     *  @param  high     output pixel value to which 2^bits-1 is mapped (max)
+     */
+    void getDataSint8(void *buffer,
+                      DiDisplayFunction *disp,
+                      const int samples,
+                      const unsigned long frame,
+                      const int bits,
+                      const Uint32 low,
+                      const Uint32 high);
+
+    /** get pixel data with specified format for Uint16 input (helper function).
+     *  (memory is handled externally)
+     *
+     ** @param  buffer   untyped pointer to the externally allocated memory buffer
+     *  @param  disp     pointer to current display function object
+     *  @param  samples  number of samples per pixel
+     *  @param  frame    number of frame to be rendered
+     *  @param  bits     number of bits for the output pixel data (depth)
+     *  @param  low      output pixel value to which 0 is mapped (min)
+     *  @param  high     output pixel value to which 2^bits-1 is mapped (max)
+     */
+    void getDataUint16(void *buffer,
+                       DiDisplayFunction *disp,
+                       const int samples,
+                       const unsigned long frame,
+                       const int bits,
+                       const Uint32 low,
+                       const Uint32 high);
+
+    /** get pixel data with specified format for Sint16 input (helper function).
+     *  (memory is handled externally)
+     *
+     ** @param  buffer   untyped pointer to the externally allocated memory buffer
+     *  @param  disp     pointer to current display function object
+     *  @param  samples  number of samples per pixel
+     *  @param  frame    number of frame to be rendered
+     *  @param  bits     number of bits for the output pixel data (depth)
+     *  @param  low      output pixel value to which 0 is mapped (min)
+     *  @param  high     output pixel value to which 2^bits-1 is mapped (max)
+     */
+    void getDataSint16(void *buffer,
+                       DiDisplayFunction *disp,
+                       const int samples,
+                       const unsigned long frame,
+                       const int bits,
+                       const Uint32 low,
+                       const Uint32 high);
+
+    /** get pixel data with specified format for Uint32 input (helper function).
+     *  (memory is handled externally)
+     *
+     ** @param  buffer   untyped pointer to the externally allocated memory buffer
+     *  @param  disp     pointer to current display function object
+     *  @param  samples  number of samples per pixel
+     *  @param  frame    number of frame to be rendered
+     *  @param  bits     number of bits for the output pixel data (depth)
+     *  @param  low      output pixel value to which 0 is mapped (min)
+     *  @param  high     output pixel value to which 2^bits-1 is mapped (max)
+     */
+    void getDataUint32(void *buffer,
+                       DiDisplayFunction *disp,
+                       const int samples,
+                       const unsigned long frame,
+                       const int bits,
+                       const Uint32 low,
+                       const Uint32 high);
+
+    /** get pixel data with specified format for Sint32 input (helper function).
+     *  (memory is handled externally)
+     *
+     ** @param  buffer   untyped pointer to the externally allocated memory buffer
+     *  @param  disp     pointer to current display function object
+     *  @param  samples  number of samples per pixel
+     *  @param  frame    number of frame to be rendered
+     *  @param  bits     number of bits for the output pixel data (depth)
+     *  @param  low      output pixel value to which 0 is mapped (min)
+     *  @param  high     output pixel value to which 2^bits-1 is mapped (max)
+     */
+    void getDataSint32(void *buffer,
+                       DiDisplayFunction *disp,
+                       const int samples,
+                       const unsigned long frame,
+                       const int bits,
+                       const Uint32 low,
+                       const Uint32 high);
 
     /// center of current VOI-window
     double WindowCenter;
@@ -792,7 +941,11 @@ class DiMonoImage
  *
  * CVS/RCS Log:
  * $Log: dimoimg.h,v $
- * Revision 1.23  1999-10-20 10:33:15  joergr
+ * Revision 1.24  1999-12-09 17:26:24  joergr
+ * Split source file dimoimg.cc into 4 parts to avoid compiler problems
+ * with gcc and additional optimization options.
+ *
+ * Revision 1.23  1999/10/20 10:33:15  joergr
  * Enhanced method getOverlayData to support 12 bit data for print.
  *
  * Revision 1.22  1999/10/06 13:38:46  joergr

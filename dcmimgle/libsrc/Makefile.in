@@ -20,7 +20,8 @@ LOCALINCLUDES = -I@top_srcdir@/../ofstd/include -I@top_srcdir@/../dcmdata/includ
 include $(configdir)/@common_makefile@
 
 objs = dcmimage.o didocu.o diimage.o diinpx.o diutils.o \
-	dimoimg.o dimo1img.o dimo2img.o dimomod.o dimopx.o dimoopx.o \
+	dimoimg.o dimoimg3.o dimoimg4.o dimoimg5.o \
+	dimo1img.o dimo2img.o dimomod.o dimopx.o dimoopx.o \
 	diovlay.o diovdat.o diovpln.o diovlimg.o dibaslut.o diluptab.o \
 	didispfn.o didislut.o digsdfn.o digsdlut.o diciefn.o dicielut.o
 
