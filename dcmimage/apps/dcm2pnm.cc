@@ -22,9 +22,9 @@
  *  Purpose: Convert DICOM Images to PPM or PGM using the dcmimage library.
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1998-12-22 13:16:27 $
+ *  Update Date:      $Date: 1999-01-20 14:34:25 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/apps/dcm2pnm.cc,v $
- *  CVS/RCS Revision: $Revision: 1.20 $
+ *  CVS/RCS Revision: $Revision: 1.21 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -49,6 +49,9 @@
 #include "dcuid.h"      /* for dcmtk version name */
 
 #include "ofcmdln.h"
+#ifdef DEBUG
+ #include "oftimer.h"
+#endif
 
 //#include "diregist.h"   /* include to use color images */
 
@@ -119,7 +122,8 @@ int main(int argc, char *argv[])
     int                 opt_readAsDataset = 0;            /* default: fileformat or dataset */
     E_TransferSyntax    opt_transferSyntax = EXS_Unknown; /* default: xfer syntax recognition */
 
-    unsigned long       opt_compatibilityMode = 0;        /* default: no compatibility option */
+    unsigned long       opt_compatibilityMode = CIF_MayDetachPixelData;
+                                                          /* default: pixel data may detached if no longer needed */
     OFCmdUnsignedInt    opt_Frame = 1;                    /* default: first frame */
     OFCmdUnsignedInt    opt_FrameCount = 1;               /* default: one frame */
     int                 opt_MultiFrame = 0;               /* default: no multiframes */
@@ -301,9 +305,9 @@ int main(int argc, char *argv[])
                 cmd.endOptionBlock();
 
                 if (cmd.findOption("--accept-acr-nema"))
-                    opt_compatibilityMode = CIF_AcrNemaCompatibility;
+                    opt_compatibilityMode |= CIF_AcrNemaCompatibility;
                 if (cmd.findOption("--accept-incorrect-palettes"))
-                    opt_compatibilityMode = CIF_WrongPaletteAttributeTags;
+                    opt_compatibilityMode |= CIF_WrongPaletteAttributeTags;
 
                 cmd.beginOptionBlock();
                 if (cmd.findOption("--frame"))
@@ -499,7 +503,7 @@ int main(int argc, char *argv[])
     if (!dcmDataDict.isDictionaryLoaded())
         fprintf(stderr, "Warning: no data dictionary loaded, check environment variable: %s\n", DCM_DICT_ENVIRONMENT_VARIABLE);
         
-    SetDebugLevel(( (int)opt_debugMode ));
+//    SetDebugLevel(( (int)opt_debugMode ));
     DicomImageClass::DebugLevel = opt_debugMode;
 
     if (opt_verboseMode > 0)
@@ -807,7 +811,13 @@ int main(int argc, char *argv[])
         if (opt_verboseMode)
             fprintf(stderr, "rotating image by %i degrees.\n", opt_rotateDegree);
 
+#ifdef DEBUG
+ OFTimer timer;
+#endif
         di->rotateImage(opt_rotateDegree);
+#ifdef DEBUG
+ fprintf(stderr, "time for rotation: %fs\n", (float)timer.getDiff()); 
+#endif
 /*
         DicomImage *newimage = di->createRotatedImage(opt_rotateDegree);
         if (newimage != NULL)
@@ -824,6 +834,9 @@ int main(int argc, char *argv[])
     {
         if (opt_verboseMode)
             fprintf(stderr, "flipping image");
+#ifdef DEBUG
+ OFTimer timer;
+#endif
         switch (opt_flipType)
         {
             case 1:
@@ -845,6 +858,9 @@ int main(int argc, char *argv[])
                 if (opt_verboseMode)
                     fprintf(stderr, "\n");
         }
+#ifdef DEBUG
+ fprintf(stderr, "time for flipping: %fs\n", timer.getDiff());
+#endif
     }
 
 
@@ -932,6 +948,19 @@ int main(int argc, char *argv[])
     for (i = 0; i < (int)di->getFrameCount(); i++)
         cout << "Frame: " << i << endl;
 */
+#ifdef DEBUG
+ OFTimer timer;
+#endif
+/*
+    unsigned long width = di->getWidth();
+    unsigned long height = di->getHeight();
+    Uint8 *buffer = new Uint8[width * height];
+    if ((buffer != NULL) && (di->getOutputData(buffer, width * height, 8)))
+    {
+        fprintf(ofile, "P5\n%ld %ld 255\n", width, height);
+        fwrite(buffer, width, height, ofile);
+    }
+*/
     switch (opt_fileType)
     {
         case 2:
@@ -945,6 +974,9 @@ int main(int argc, char *argv[])
             di->writeRawPPM(ofile, 8);
             break;
     }
+#ifdef DEBUG
+ fprintf(stderr, "time for writing file (incl. rendering): %fs\n", timer.getDiff());
+#endif
 
     if (opt_ofname) fclose(ofile);
 
@@ -960,7 +992,11 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcm2pnm.cc,v $
- * Revision 1.20  1998-12-22 13:16:27  joergr
+ * Revision 1.21  1999-01-20 14:34:25  joergr
+ * Added debug code to measure time of some routines.
+ * Changed default value for compatibility flag.
+ *
+ * Revision 1.20  1998/12/22 13:16:27  joergr
  * Corrected spelling of option used for scaling without interpolation.
  * Use presentation LUT shape only when set explicitly.
  *
