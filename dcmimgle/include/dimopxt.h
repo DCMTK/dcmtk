@@ -22,9 +22,9 @@
  *  Purpose: DicomMonochromePixelTemplate (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-05-31 12:35:16 $
+ *  Update Date:      $Date: 1999-09-17 12:42:40 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/dimopxt.h,v $
- *  CVS/RCS Revision: $Revision: 1.8 $
+ *  CVS/RCS Revision: $Revision: 1.9 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -60,6 +60,10 @@ class DiMonoPixelTemplate
 
  public:
 
+    /** constructor
+     *
+     ** @param  count  number of pixels
+     */
     DiMonoPixelTemplate(const unsigned long count)
       : DiMonoPixel(count),
         Data(NULL)
@@ -73,6 +77,11 @@ class DiMonoPixelTemplate
             OFBitmanipTemplate<T>::zeroMem(Data, Count);
     }
 
+    /** constructor
+     *
+     ** @param  pixel     pointer to input pixel data
+     *  @param  modality  pointer to object managing modality transform
+     */
     DiMonoPixelTemplate(const DiInputPixel *pixel,
                         DiMonoModality *modality)
       : DiMonoPixel(pixel, modality),
@@ -84,26 +93,47 @@ class DiMonoPixelTemplate
         MaxValue[1] = 0;
     }
 
+    /** destructor
+     */
     virtual ~DiMonoPixelTemplate()
     {
         delete[] Data;
     }
 
+    /** get integer representation
+     *
+     ** @return integer representation
+     */
     inline EP_Representation getRepresentation() const
     {
         return DiPixelRepresentationTemplate<T>::getRepresentation();
     }
 
+    /** get pointer to pixel data
+     *
+     ** @return pointer to pixel data
+     */
     inline void *getData() const
     {
         return (void *)Data;
     }
 
+    /** get reference to pointer to pixel data
+     *
+     ** @return reference to pointer to pixel data
+     */
     inline void *getDataPtr()
     {
         return (void *)(&Data);
     }
     
+    /** get minimum and maximum pixel values
+     *
+     ** @param  min  reference to storage area for minimum pixel value
+     *  @param  max  reference to storage area for maximum pixel value
+     *
+     ** @return status, true if successful, false otherwise
+     */
     inline int getMinMaxValues(double &min,
                                double &max) const
     {
@@ -112,6 +142,14 @@ class DiMonoPixelTemplate
         return 1; 
     }
 
+    /** get automatically computed min-max window
+     *
+     ** @param  idx     ignore global min/max pixel values if > 0
+     *  @param  center  reference to storage area for window center value
+     *  @param  width   reference to storage area for window width value
+     *
+     ** @return status, true if successful, false otherwise
+     */
     inline int getMinMaxWindow(const int idx,
                                double &center,
                                double &width)
@@ -119,6 +157,8 @@ class DiMonoPixelTemplate
         int result = 0; 
         if ((idx >= 0) && (idx <= 1))
         { 
+            if ((idx == 1) && (MinValue[1] == 0) && (MaxValue[1] == 0))            
+                determineMinMax(0, 0, 0x2);                                     // determine on demand
             center = ((double)MinValue[idx] + (double)MaxValue[idx]) / 2;       // type cast to avoid overflows !
             width = (double)MaxValue[idx] - (double)MinValue[idx];
             result = (width > 0);
@@ -126,7 +166,15 @@ class DiMonoPixelTemplate
         return result;
     }
 
-    int getHistogramWindow(const double thresh,
+    /** get automatically computed histogram window
+     *
+     ** @param  thresh  ignore certain percentage of pixels at lower and upper boundaries
+     *  @param  center  reference to storage area for window center value
+     *  @param  width   reference to storage area for window width value
+     *
+     ** @return status, true if successful, false otherwise
+     */
+    int getHistogramWindow(const double thresh,                 // could be optimized if necessary (see diinpxt.h)!
                            double &center,
                            double &width)
     {
@@ -174,6 +222,11 @@ class DiMonoPixelTemplate
 
  protected:
 
+    /** constructor
+     *
+     ** @param  pixel     pointer to intermediate pixel data (not necessarily monochrome)
+     *  @param  modality  pointer to object managing modality transform
+     */
     DiMonoPixelTemplate(const DiPixel *pixel,
                         DiMonoModality *modality)
       : DiMonoPixel(pixel, modality),
@@ -185,6 +238,11 @@ class DiMonoPixelTemplate
         MaxValue[1] = 0;
     }
 
+    /** constructor
+     *
+     ** @param  pixel  pointer to intermediate monochrome pixel data
+     *  @param  count  number of pixels
+     */
     DiMonoPixelTemplate(const DiMonoPixel *pixel,
                         const unsigned long count)
       : DiMonoPixel(pixel, count),
@@ -196,57 +254,79 @@ class DiMonoPixelTemplate
         MaxValue[1] = 0;
     }
 
+    /** determine minimum and maximum pixelvalues
+     *
+     ** @param  minvalue  starting global minimum value (0 = invalid)
+     *  @param  maxvalue  starting global maximum value (0 = invalid)
+     *  @param  mode      calculate global min/max if 0x1 bit is set (default),
+     *                    calculate next min/max if 0x2 bit is set
+     */
     void determineMinMax(T minvalue = 0,
-                         T maxvalue = 0)
+                         T maxvalue = 0,
+                         const int mode = 0x1)
     {
         if (Data != NULL)
         {
-            if ((minvalue == 0) && (maxvalue == 0))
+            if (mode & 0x1)
+            {
+                if ((minvalue == 0) && (maxvalue == 0))
+                {
+                    register T *p = Data;
+                    register T value = *p;
+                    register unsigned long i;
+                    minvalue = value;
+                    maxvalue = value;
+                    for (i = Count; i > 1; i--)                 // could be optimized if necessary (see diinpxt.h) !
+                    {
+                        value = *(++p);
+                        if (value < minvalue)
+                            minvalue = value;
+                        if (value > maxvalue)
+                            maxvalue = value;
+                    }
+                }
+                MinValue[0] = minvalue;                         // global minimum
+                MaxValue[0] = maxvalue;                         // global maximum
+                MinValue[1] = 0;
+                MaxValue[1] = 0;
+            } else {
+                minvalue = MinValue[0];
+                maxvalue = MaxValue[0];
+            }
+            if (mode & 0x2)
             {
                 register T *p = Data;
-                register T value = *p;
+                register T value;
+                register int firstmin = 1;
+                register int firstmax = 1;
                 register unsigned long i;
-                minvalue = value;
-                maxvalue = value;
-                for (i = 1; i < Count; i++)
+                for (i = Count; i != 0; i--)                    // could be optimized if necessary (see diinpxt.h) !
                 {
-                    value = *(++p);
-                    if (value < minvalue)
-                        minvalue = value;
-                    if (value > maxvalue)
-                        maxvalue = value;
-                }
-            }
-            MinValue[0] = minvalue;                         // global minimum
-            MaxValue[0] = maxvalue;                         // global maximum
-            register T *p = Data;
-            register T value;
-            register int firstmin = 1;
-            register int firstmax = 1;
-            register unsigned long i;
-            for (i = 0; i < Count; i++)
-            {
-                value = *(p++);
-                if ((value > minvalue) && ((value < MinValue[1]) || firstmin))
-                {
-                    MinValue[1] = value;
-                    firstmin = 0;
-                }
-                if ((value < maxvalue) && ((value > MaxValue[1]) || firstmax))
-                {
-                    MaxValue[1] = value;
-                    firstmax = 0;
+                    value = *(p++);
+                    if ((value > minvalue) && ((value < MinValue[1]) || firstmin))
+                    {
+                        MinValue[1] = value;
+                        firstmin = 0;
+                    }
+                    if ((value < maxvalue) && ((value > MaxValue[1]) || firstmax))
+                    {
+                        MaxValue[1] = value;
+                        firstmax = 0;
+                    }
                 }
             }
         }
     }
 
+    /// pointer to pixel data
     T *Data;
     
 
  private:
 
+    /// minimum pixel values (0 = global, 1 = ignoring global)
     T MinValue[2];
+    /// maximum pixel values
     T MaxValue[2];
 
  // --- declarations to avoid compiler warnings
@@ -263,7 +343,12 @@ class DiMonoPixelTemplate
  *
  * CVS/RCS Log:
  * $Log: dimopxt.h,v $
- * Revision 1.8  1999-05-31 12:35:16  joergr
+ * Revision 1.9  1999-09-17 12:42:40  joergr
+ * Added/changed/completed DOC++ style comments in the header files.
+ * Enhanced efficiency of the implementation to determine min/max values of
+ * the input pixels.
+ *
+ * Revision 1.8  1999/05/31 12:35:16  joergr
  * Corrected bug concerning the conversion of color images to grayscale.
  *
  * Revision 1.7  1999/04/30 16:10:51  meichel
