@@ -5,7 +5,7 @@ NAME
 
 SYNOPSIS
 
-   dcmp2pgm [options] dcmimage_in bitmap_out
+   dcmp2pgm [options] dcmimage_in [bitmap_out]
 
 SUMMARY
 
@@ -24,28 +24,27 @@ and defined in the configuration file.
 USAGE
 
 dcmp2pgm: Read DICOM image and presentation state and render bitmap
-usage: dcmp2pgm [options] dcmimage_in bitmap_out
+usage: dcmp2pgm [options] dcmimage_in [bitmap_out]
 
 parameters:
-  dcmimage_in          input DICOM image
-  bitmap_out           output DICOM image or PGM bitmap
+  dcmimage_in        input DICOM image
+  bitmap_out         output DICOM image or PGM bitmap
 
 general options:
-  -h    --help         print this help text and exit
-  -v    --verbose      verbose mode, dump presentation state contents
-  -d    --debug        debug mode, print debug information
+  -h  --help         print this help text and exit
+  -v  --verbose      verbose mode, dump presentation state contents
+  -d  --debug        debug mode, print debug information
 processing options:
-  -p    --pstate       [f]ilename: string
-                       process using presentation state file
-  -c    --config       [f]ilename: string
-                       process using settings from configuration file
+  -p  --pstate       [f]ilename: string
+                     process using presentation state file
+  -c  --config       [f]ilename: string
+                     process using settings from configuration file
 output format:
-  -D    --pgm          save image as PGM (default)
-  +D    --dicom        save image as DICOM secondary capture
+  -D  --pgm          save image as PGM (default)
+  +D  --dicom        save image as DICOM secondary capture
 output options:
-        --no-output    do not write bitmap
-  +S    --save-pstate  [f]ilename: string
-                       save presentation state to file
+  +S  --save-pstate  [f]ilename: string
+                     save presentation state to file
 
 ENVIRONMENT
 
