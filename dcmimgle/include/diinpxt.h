@@ -22,9 +22,9 @@
  *  Purpose: DicomInputPixelTemplate (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-09-28 13:04:59 $
+ *  Update Date:      $Date: 2001-10-10 15:25:09 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/diinpxt.h,v $
- *  CVS/RCS Revision: $Revision: 1.21 $
+ *  CVS/RCS Revision: $Revision: 1.22 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -219,7 +219,7 @@ class DiInputPixelTemplate
                     } else {                                           // calculate min/max for selected range
                         OFBitmanipTemplate<Uint8>::zeroMem(lut, ocnt);
                         p = Data + PixelStart;
-                        register Uint8 *q = lut - (T2)getAbsMinimum();
+                        q = lut - (T2)getAbsMinimum();
                         for (i = PixelCount; i != 0; i--)                  // fill lookup table
                             *(q + *(p++)) = 1;
                         q = lut;
@@ -262,7 +262,7 @@ class DiInputPixelTemplate
                     MaxValue[1] = MaxValue[0];
                 } else {                                               // calculate min/max for selected range
                     p = Data + PixelStart;
-                    register T2 value = *p;
+                    value = *p;
                     MinValue[1] = value;
                     MaxValue[1] = value;
                     for (i = PixelCount; i > 1; i--)
@@ -592,7 +592,11 @@ class DiInputPixelTemplate
  *
  * CVS/RCS Log:
  * $Log: diinpxt.h,v $
- * Revision 1.21  2001-09-28 13:04:59  joergr
+ * Revision 1.22  2001-10-10 15:25:09  joergr
+ * Removed redundant variable declarations to avoid compiler warnings
+ * ("declaration of ... shadows previous local").
+ *
+ * Revision 1.21  2001/09/28 13:04:59  joergr
  * Enhanced algorithm to determine the min and max value.
  *
  * Revision 1.20  2001/06/01 15:49:42  meichel
