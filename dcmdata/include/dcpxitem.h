@@ -21,10 +21,10 @@
  *
  *  Purpose: Interface of class DcmPixelItem
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-04-25 09:41:46 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2002-05-24 14:51:42 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcpxitem.h,v $
- *  CVS/RCS Revision: $Revision: 1.15 $
+ *  CVS/RCS Revision: $Revision: 1.16 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -35,19 +35,16 @@
 #define DCPXITEM_H
 
 #include "osconfig.h"    /* make sure OS specific configuration is included first */
-
 #include "ofconsol.h"
 #include "dctypes.h"
 #include "dcvrobow.h"
+#include "dcofsetl.h"    /* for class DcmOffsetList */
 
-
-//
 // CLASS DcmPixelItem
 // This is a pseudo item, that has a value with representation OB 
 // and has no sub elements. Since a DcmOtherByteOtherWord is defined as a 
 // Dicom structure with a value of representation OW/OB it is better to
 // derive this class from DcmOtherByteOtherWord.
-
 
 class DcmPixelItem : public DcmOtherByteOtherWord
 
@@ -69,6 +66,13 @@ class DcmPixelItem : public DcmOtherByteOtherWord
                        const int level = 0, const char *pixelFileName = NULL,
 		               size_t *pixelCounter = NULL);
 
+    /** creates in this object an offset table for a compressed pixel sequence.
+     *  @param offsetList list of size entries for each individual encoded frame
+     *    provided by the compression codec
+     *  @return EC_Normal if successful, an error code otherwise
+     */   
+    virtual OFCondition createOffsetTable(const DcmOffsetList& offsetList);
+    
     /** write object in XML format
      *  @param out output stream to which the XML document is written
      *  @param flags optional flag used to customize the output (see DCMTypes::XF_xxx)
@@ -76,6 +80,7 @@ class DcmPixelItem : public DcmOtherByteOtherWord
      */
     virtual OFCondition writeXML(ostream &out,
                                  const size_t flags = 0);
+
 };
 
 
@@ -84,7 +89,11 @@ class DcmPixelItem : public DcmOtherByteOtherWord
 /*
 ** CVS/RCS Log:
 ** $Log: dcpxitem.h,v $
-** Revision 1.15  2002-04-25 09:41:46  joergr
+** Revision 1.16  2002-05-24 14:51:42  meichel
+** Moved helper methods that are useful for different compression techniques
+**   from module dcmjpeg to module dcmdata
+**
+** Revision 1.15  2002/04/25 09:41:46  joergr
 ** Added support for XML output of DICOM objects.
 **
 ** Revision 1.14  2001/11/16 15:54:39  meichel

@@ -21,10 +21,10 @@
  *
  *  Purpose: class DcmPixelItem
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-05-14 08:21:52 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2002-05-24 14:51:51 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcpxitem.cc,v $
- *  CVS/RCS Revision: $Revision: 1.21 $
+ *  CVS/RCS Revision: $Revision: 1.22 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -122,6 +122,39 @@ DcmPixelItem::print(
 }
 
 
+OFCondition DcmPixelItem::createOffsetTable(const DcmOffsetList& offsetList)
+{
+  OFCondition result = EC_Normal;
+
+  unsigned long numEntries = offsetList.size();
+  if (numEntries > 0)
+  {
+    Uint32 current = 0;
+    Uint32 *array = new Uint32[numEntries];
+    if (array)
+    {
+      OFListIterator(Uint32) first = offsetList.begin();
+      OFListIterator(Uint32) last = offsetList.end();
+      unsigned long idx = 0;
+      while (first != last)
+      {
+        array[idx++] = current;
+        current += *first; 
+        ++first;        
+      }
+      result = swapIfNecessary(EBO_LittleEndian, gLocalByteOrder, 
+        array, numEntries * sizeof(Uint32), sizeof(Uint32));
+      if (result.good())
+      {
+        result = putUint8Array((Uint8 *)array, numEntries * sizeof(Uint32));
+      }
+      delete[] array;      
+    } else result = EC_MemoryExhausted;
+  }
+  return result;
+}
+
+
 OFCondition
 DcmPixelItem::writeXML(ostream &out,
                        const size_t flags)
@@ -166,7 +199,11 @@ DcmPixelItem::writeXML(ostream &out,
 /*
 ** CVS/RCS Log:
 ** $Log: dcpxitem.cc,v $
-** Revision 1.21  2002-05-14 08:21:52  joergr
+** Revision 1.22  2002-05-24 14:51:51  meichel
+** Moved helper methods that are useful for different compression techniques
+**   from module dcmjpeg to module dcmdata
+**
+** Revision 1.21  2002/05/14 08:21:52  joergr
 ** Added support for Base64 (MIME) encoded binary data.
 **
 ** Revision 1.20  2002/04/25 10:25:49  joergr

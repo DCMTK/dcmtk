@@ -22,9 +22,9 @@
  *  Purpose: Interface of class DcmPixelSequence
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-09-25 17:19:28 $
+ *  Update Date:      $Date: 2002-05-24 14:51:42 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcpixseq.h,v $
- *  CVS/RCS Revision: $Revision: 1.22 $
+ *  CVS/RCS Revision: $Revision: 1.23 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -35,11 +35,11 @@
 #define DCPIXSEQ_H
 
 #include "osconfig.h"    /* make sure OS specific configuration is included first */
-
 #include "ofconsol.h"
 #include "dctypes.h"
 #include "dcsequen.h"
 #include "dcerror.h"
+#include "dcofsetl.h"    /* for class DcmOffsetList */
 
 class DcmPixelItem;
 
@@ -120,6 +120,20 @@ public:
 					 const E_EncodingType enctype 
 					 = EET_UndefinedLength);
 
+  /** appends a single compressed frame to this DICOM pixel sequence
+   *  @param offsetList list containing offset table entries.
+   *    Upon success, an entry is appended to the list
+   *  @param compressedData pointer to compressed image data, must not be NULL
+   *  @param compressedLen number of bytes of compressed image data
+   *  @param fragmentSize maximum fragment size (in kbytes) for compression, 0 for unlimited.
+   *  @return EC_Normal if successful, an error code otherwise
+   */  
+  virtual OFCondition storeCompressedFrame(
+        DcmOffsetList& offsetList, 
+        Uint8 *compressedData, 
+        Uint32 compressedLen,
+        Uint32 fragmentSize);
+
 };
 
 #endif // DCPIXSEQ_H
@@ -127,7 +141,11 @@ public:
 /*
 ** CVS/RCS Log:
 ** $Log: dcpixseq.h,v $
-** Revision 1.22  2001-09-25 17:19:28  meichel
+** Revision 1.23  2002-05-24 14:51:42  meichel
+** Moved helper methods that are useful for different compression techniques
+**   from module dcmjpeg to module dcmdata
+**
+** Revision 1.22  2001/09/25 17:19:28  meichel
 ** Adapted dcmdata to class OFCondition
 **
 ** Revision 1.21  2001/06/01 15:48:42  meichel

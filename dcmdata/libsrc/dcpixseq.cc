@@ -21,10 +21,10 @@
  *
  *  Purpose: class DcmPixelSequence
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-04-16 13:43:19 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2002-05-24 14:51:50 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcpixseq.cc,v $
- *  CVS/RCS Revision: $Revision: 1.26 $
+ *  CVS/RCS Revision: $Revision: 1.27 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -319,10 +319,52 @@ OFCondition DcmPixelSequence::writeSignatureFormat(DcmStream & outStream,
 }
 
 
+OFCondition DcmPixelSequence::storeCompressedFrame(
+        DcmOffsetList& offsetList, 
+        Uint8 *compressedData, 
+        Uint32 compressedLen,
+        Uint32 fragmentSize)
+{
+  if (compressedData == NULL) return EC_IllegalCall;
+
+  OFCondition result = EC_Normal;
+  if (fragmentSize >= 0x400000) fragmentSize = 0; // prevent overflow
+  else fragmentSize <<= 10; // unit is kbytes
+  if (fragmentSize == 0) fragmentSize = compressedLen;
+
+  Uint32 offset = 0;
+  Uint32 currentSize = 0;
+  Uint32 numFragments = 0;
+  DcmPixelItem *fragment = NULL;
+
+  while ((offset < compressedLen) && (result.good()))
+  {
+    fragment = new DcmPixelItem(DcmTag(DCM_Item,EVR_OB));
+    if (fragment == NULL) result = EC_MemoryExhausted;
+    else 
+    {
+      insert(fragment);
+      numFragments++;
+      currentSize = fragmentSize;
+      if (offset + currentSize > compressedLen) currentSize = compressedLen - offset;
+      result = fragment->putUint8Array(compressedData+offset, currentSize);
+      if (result.good()) offset += currentSize;
+    }
+  }
+
+  currentSize = offset + (numFragments << 3); // 8 bytes extra for each item header
+  offsetList.push_back(currentSize);
+  return result;
+}        
+
 /*
 ** CVS/RCS Log:
 ** $Log: dcpixseq.cc,v $
-** Revision 1.26  2002-04-16 13:43:19  joergr
+** Revision 1.27  2002-05-24 14:51:50  meichel
+** Moved helper methods that are useful for different compression techniques
+**   from module dcmjpeg to module dcmdata
+**
+** Revision 1.26  2002/04/16 13:43:19  joergr
 ** Added configurable support for C++ ANSI standard includes (e.g. streams).
 ** Thanks to Andreas Barth <Andreas.Barth@bruker-biospin.de> for his
 ** contribution.

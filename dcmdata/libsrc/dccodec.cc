@@ -22,9 +22,9 @@
  *  Purpose: abstract class DcmCodec and the class DcmCodecStruct
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-02-27 14:21:35 $
+ *  Update Date:      $Date: 2002-05-24 14:51:50 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dccodec.cc,v $
- *  CVS/RCS Revision: $Revision: 1.9 $
+ *  CVS/RCS Revision: $Revision: 1.10 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -35,6 +35,10 @@
 #include "dccodec.h"
 #include "oflist.h"
 #include "ofthread.h"
+#include "dcdeftag.h"  /* for tag constants */
+#include "dcuid.h"     /* for dcmGenerateUniqueIdentifer()*/
+#include "dcitem.h"    /* for class DcmItem */
+#include "dcsequen.h"  /* for DcmSequenceOfItems */
 
 // static member variables
 OFList<DcmCodecList *> DcmCodecList::registeredCodecs;
@@ -43,6 +47,145 @@ OFList<DcmCodecList *> DcmCodecList::registeredCodecs;
 OFReadWriteLock DcmCodecList::codecLock;
 #endif
 
+/* --------------------------------------------------------------- */
+
+// DcmCodec static helper methods
+
+OFCondition DcmCodec::insertStringIfMissing(DcmItem *dataset, const DcmTagKey& tag, const char *val)
+{
+  DcmStack stack;
+  if ((dataset->search(tag, stack, ESM_fromHere, OFFalse)).bad())
+  {
+    return dataset->putAndInsertString(tag, val, OFTrue);
+  }
+  return EC_Normal;
+}
+
+OFCondition DcmCodec::convertToSecondaryCapture(DcmItem *dataset)
+{
+  if (dataset == NULL) return EC_IllegalCall;
+
+  OFCondition result = EC_Normal;
+  char buf[70];
+  
+  // SOP Class UID - always replace
+  if (result.good()) result = dataset->putAndInsertString(DCM_SOPClassUID, UID_SecondaryCaptureImageStorage);
+
+  // SOP Instance UID - only insert if missing.
+  dcmGenerateUniqueIdentifier(buf);
+  if (result.good()) result = insertStringIfMissing(dataset, DCM_SOPInstanceUID, buf);
+
+  // Type 1 attributes - insert with value if missing
+  dcmGenerateUniqueIdentifier(buf, SITE_STUDY_UID_ROOT);
+  if (result.good()) result = insertStringIfMissing(dataset, DCM_StudyInstanceUID, buf);
+  dcmGenerateUniqueIdentifier(buf, SITE_SERIES_UID_ROOT);
+  if (result.good()) result = insertStringIfMissing(dataset, DCM_SeriesInstanceUID, buf);
+  if (result.good()) result = insertStringIfMissing(dataset, DCM_ConversionType, "WSD");
+  if (result.good()) result = insertStringIfMissing(dataset, DCM_Modality, "OT");
+
+  // Type 2 attributes - insert without value if missing
+  if (result.good()) result = insertStringIfMissing(dataset, DCM_PatientsName, NULL);
+  if (result.good()) result = insertStringIfMissing(dataset, DCM_PatientID, NULL);
+  if (result.good()) result = insertStringIfMissing(dataset, DCM_PatientsBirthDate, NULL);
+  if (result.good()) result = insertStringIfMissing(dataset, DCM_PatientsSex, NULL);
+  if (result.good()) result = insertStringIfMissing(dataset, DCM_StudyDate, NULL);
+  if (result.good()) result = insertStringIfMissing(dataset, DCM_StudyTime, NULL);
+  if (result.good()) result = insertStringIfMissing(dataset, DCM_ReferringPhysiciansName, NULL);
+  if (result.good()) result = insertStringIfMissing(dataset, DCM_StudyID, NULL);
+  if (result.good()) result = insertStringIfMissing(dataset, DCM_AccessionNumber, NULL);
+  if (result.good()) result = insertStringIfMissing(dataset, DCM_SeriesNumber, NULL);
+  if (result.good()) result = insertStringIfMissing(dataset, DCM_InstanceNumber, NULL);
+
+  return result;    
+}
+
+OFCondition DcmCodec::newInstance(DcmItem *dataset)
+{
+  if (dataset == NULL) return EC_IllegalCall;
+  OFCondition result = EC_Normal;
+
+  // look up current SOP Class UID and SOP Instance UID
+  const char *classUID = NULL;
+  const char *instanceUID = NULL;
+
+  // search for existing SOP Class UID / SOP Instance UID
+  OFCondition tempResult = dataset->findAndGetString(DCM_SOPClassUID, classUID);
+  if (tempResult.good()) tempResult = dataset->findAndGetString(DCM_SOPInstanceUID, instanceUID);
+  if (tempResult.good() && classUID && instanceUID)
+  {
+    // create source image sequence
+    DcmSequenceOfItems *dseq = new DcmSequenceOfItems(DCM_SourceImageSequence);
+    if (dseq)
+    {
+      DcmItem *ditem = new DcmItem();
+      if (ditem)
+      {
+        dseq->insert(ditem);
+        DcmElement *elem1 = new DcmUniqueIdentifier(DCM_ReferencedSOPClassUID);
+        if (elem1)
+        {
+          result = elem1->putString(classUID);
+          ditem->insert(elem1, OFTrue /*replaceOld*/);
+          if (result.good())
+          {
+            DcmElement *elem2 = new DcmUniqueIdentifier(DCM_ReferencedSOPInstanceUID);
+            if (elem2)
+            {
+              result = elem2->putString(instanceUID);
+              ditem->insert(elem2, OFTrue /*replaceOld*/);
+            } else result = EC_MemoryExhausted;
+          }
+        } else result = EC_MemoryExhausted;
+      } else result = EC_MemoryExhausted;
+      if (result.good()) dataset->insert(dseq, OFTrue); else delete dseq;
+    } else result = EC_MemoryExhausted;
+  }
+
+  // create new SOP instance UID
+  if (result.good())
+  {  
+    char new_uid[100];
+    DcmElement *elem = new DcmUniqueIdentifier(DCM_SOPInstanceUID);
+    if (elem)
+    {
+      if (EC_Normal == (result = elem->putString(dcmGenerateUniqueIdentifier(new_uid))))
+        dataset->insert(elem, OFTrue); // replace SOP Instance UID
+        else delete elem;
+    } else result = EC_MemoryExhausted;
+  }
+
+  return result;
+}
+
+
+OFCondition DcmCodec::updateImageType(DcmItem *dataset)
+{
+  if (dataset == NULL) return EC_IllegalCall;
+
+  DcmStack stack;
+  OFString imageType("DERIVED\\SECONDARY");
+  OFString a;
+
+  /* find existing Image Type element */
+  OFCondition status = dataset->search(DCM_ImageType, stack, ESM_fromHere, OFFalse);
+  if (status.good())
+  {
+    DcmElement *elem = (DcmElement *)stack.top();
+    unsigned long pos = 2;
+
+    // append old image type information beginning with third entry
+    while ((elem->getOFString(a, pos++)).good())
+    {
+      imageType += "\\";
+      imageType += a;      
+    }
+  }
+
+  // insert new Image Type, replace old value
+  return dataset->putAndInsertString(DCM_ImageType, imageType.c_str(), OFTrue);
+}
+
+/* --------------------------------------------------------------- */
 
 DcmCodecList::DcmCodecList(
     const DcmCodec *aCodec,  
@@ -308,7 +451,11 @@ OFBool DcmCodecList::canChangeCoding(
 /*
 ** CVS/RCS Log:
 ** $Log: dccodec.cc,v $
-** Revision 1.9  2002-02-27 14:21:35  meichel
+** Revision 1.10  2002-05-24 14:51:50  meichel
+** Moved helper methods that are useful for different compression techniques
+**   from module dcmjpeg to module dcmdata
+**
+** Revision 1.9  2002/02/27 14:21:35  meichel
 ** Declare dcmdata read/write locks only when compiled in multi-thread mode
 **
 ** Revision 1.8  2001/11/08 16:19:42  meichel
