@@ -23,8 +23,8 @@
  *    classes: DSRStringValue
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-10-18 17:22:44 $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  Update Date:      $Date: 2000-10-19 16:07:14 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -98,7 +98,7 @@ E_Condition DSRStringValue::read(DcmItem &dataset,
                                  OFConsole *logStream)
 {
     /* tbd: check value */
-    return DSRTypes::getAndCheckStringValueFromDataset(dataset, tagKey, Value, "1", "1", logStream);
+    return DSRTypes::getAndCheckStringValueFromDataset(dataset, tagKey, Value, "1", "1", logStream, "content item");
 }
 
 
@@ -132,7 +132,11 @@ OFBool DSRStringValue::checkValue(const OFString & /* stringValue */) const
 /*
  *  CVS/RCS Log:
  *  $Log: dsrstrvl.cc,v $
- *  Revision 1.2  2000-10-18 17:22:44  joergr
+ *  Revision 1.3  2000-10-19 16:07:14  joergr
+ *  Added optional module name to read method to provide more detailed warning
+ *  messages.
+ *
+ *  Revision 1.2  2000/10/18 17:22:44  joergr
  *  Added read and write methods.
  *  Added check for read methods (VM and type).
  *

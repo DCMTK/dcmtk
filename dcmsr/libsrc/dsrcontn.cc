@@ -23,8 +23,8 @@
  *    classes: DSRContainerTreeNode
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-10-18 17:14:30 $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  Update Date:      $Date: 2000-10-19 16:03:48 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -84,7 +84,7 @@ E_Condition DSRContainerTreeNode::readContentItem(DcmItem &dataset,
 {
     OFString string;
     /* read ContinuityOfContent */
-    E_Condition result = getAndCheckStringValueFromDataset(dataset, DCM_ContinuityOfContent, string, "1", "1", logStream);
+    E_Condition result = getAndCheckStringValueFromDataset(dataset, DCM_ContinuityOfContent, string, "1", "1", logStream, "CONTAINER content item");
     if (result == EC_Normal)
         result = setContinuityOfContent(enumeratedValueToContinuityOfContent(string));
     return result;
@@ -263,7 +263,11 @@ E_Condition DSRContainerTreeNode::setContinuityOfContent(const E_ContinuityOfCon
 /*
  *  CVS/RCS Log:
  *  $Log: dsrcontn.cc,v $
- *  Revision 1.3  2000-10-18 17:14:30  joergr
+ *  Revision 1.4  2000-10-19 16:03:48  joergr
+ *  Added optional module name to read method to provide more detailed warning
+ *  messages.
+ *
+ *  Revision 1.3  2000/10/18 17:14:30  joergr
  *  Added check for read methods (VM and type).
  *
  *  Revision 1.2  2000/10/16 12:01:56  joergr

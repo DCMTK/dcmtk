@@ -23,8 +23,8 @@
  *    classes: DSRGraphicDataList
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-10-18 17:21:40 $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  Update Date:      $Date: 2000-10-19 16:06:19 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -90,7 +90,7 @@ E_Condition DSRGraphicDataList::read(DcmItem &dataset,
 {
     /* get floating point string from dataset */
     DcmFloatingPointSingle delem(DCM_GraphicData);
-    E_Condition result = DSRTypes::getAndCheckElementFromDataset(dataset, delem, "2-2n", "1", logStream);
+    E_Condition result = DSRTypes::getAndCheckElementFromDataset(dataset, delem, "2-2n", "1", logStream, "SCOORD content item");
     if (result == EC_Normal)
     {
         /* clear internal list */
@@ -164,7 +164,11 @@ void DSRGraphicDataList::addItem(const Float32 column,
 /*
  *  CVS/RCS Log:
  *  $Log: dsrscogr.cc,v $
- *  Revision 1.2  2000-10-18 17:21:40  joergr
+ *  Revision 1.3  2000-10-19 16:06:19  joergr
+ *  Added optional module name to read method to provide more detailed warning
+ *  messages.
+ *
+ *  Revision 1.2  2000/10/18 17:21:40  joergr
  *  Added comments.
  *
  *  Revision 1.1  2000/10/13 07:52:24  joergr

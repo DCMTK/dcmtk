@@ -23,8 +23,8 @@
  *    classes: DSRWaveformChannelList
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-10-18 17:24:50 $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  Update Date:      $Date: 2000-10-19 16:07:14 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -90,7 +90,7 @@ E_Condition DSRWaveformChannelList::read(DcmItem &dataset,
 {
     /* get integer string from dataset */
     DcmUnsignedShort delem(DCM_ReferencedWaveformChannels);
-    E_Condition result = DSRTypes::getAndCheckElementFromDataset(dataset, delem, "2-2n", "1C", logStream);
+    E_Condition result = DSRTypes::getAndCheckElementFromDataset(dataset, delem, "2-2n", "1C", logStream, "WAVEFORM content item");
     if (result == EC_Normal)
     {
         /* clear internal list */
@@ -164,7 +164,11 @@ void DSRWaveformChannelList::addItem(const Uint16 multiplexGroupNumber,
 /*
  *  CVS/RCS Log:
  *  $Log: dsrwavch.cc,v $
- *  Revision 1.3  2000-10-18 17:24:50  joergr
+ *  Revision 1.4  2000-10-19 16:07:14  joergr
+ *  Added optional module name to read method to provide more detailed warning
+ *  messages.
+ *
+ *  Revision 1.3  2000/10/18 17:24:50  joergr
  *  Added comments.
  *
  *  Revision 1.2  2000/10/16 12:10:53  joergr
