@@ -23,8 +23,8 @@
  *    classes: DSRListOfItems
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-10-26 14:19:38 $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  Update Date:      $Date: 2000-12-12 14:17:13 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -136,7 +136,7 @@ class DSRListOfItems
     const T &getItem(const size_t idx) const
     {
         OFListIterator(T) iterator = OFList<T>::begin();
-        if (gotoItem(idx, iterator))
+        if (gotoItemPos(idx, iterator))
             return *iterator;
         else
             return EmptyItem;
@@ -153,7 +153,7 @@ class DSRListOfItems
     {
         E_Condition result = EC_IllegalCall;
         OFListIterator(T) iterator = OFList<T>::begin();
-        if (gotoItem(idx, iterator))
+        if (gotoItemPos(idx, iterator))
         {
             item = *iterator;
             result = EC_Normal;
@@ -186,7 +186,7 @@ class DSRListOfItems
     {
         E_Condition result = EC_IllegalCall;
         OFListIterator(T) iterator = OFList<T>::begin();
-        if (gotoItem(idx, iterator))
+        if (gotoItemPos(idx, iterator))
         {
             OFList<T>::erase(iterator);
             result = EC_Normal;
@@ -202,13 +202,13 @@ class DSRListOfItems
 
   protected:
 
-    /** goto specified item
+    /** goto specified item position
      ** @param  idx       index of the item to go to (starting from 1)
      *  @param  iterator  list iterator storing the positition of the item
      ** @return OFTrue if specified item was found, OFFalse otherwise
      */
-    OFBool gotoItem(size_t idx,
-                    OFListIterator(T) &iterator) const
+    OFBool gotoItemPos(size_t idx,
+                       OFListIterator(T) &iterator) const
     {
         OFBool result = OFFalse;
         if (idx > 0)
@@ -245,7 +245,10 @@ class DSRListOfItems
 /*
  *  CVS/RCS Log:
  *  $Log: dsrtlist.h,v $
- *  Revision 1.3  2000-10-26 14:19:38  joergr
+ *  Revision 1.4  2000-12-12 14:17:13  joergr
+ *  Renamed method to avoid ambiguity reported by gcc 2.7.
+ *
+ *  Revision 1.3  2000/10/26 14:19:38  joergr
  *  Fixed bug: index in search routine was starting from 0 not 1.
  *
  *  Revision 1.2  2000/10/18 17:08:44  joergr
