@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2001, OFFIS
+ *  Copyright (C) 1996-2003, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose: DicomMonochromeModality (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-09-28 13:17:24 $
+ *  Update Date:      $Date: 2003-05-20 09:25:08 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/libsrc/dimomod.cc,v $
- *  CVS/RCS Revision: $Revision: 1.15 $
+ *  CVS/RCS Revision: $Revision: 1.16 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -61,7 +61,8 @@ DiMonoModality::DiMonoModality(const DiDocument *docu,
 {
     if (Init(docu, pixel))
     {
-        if (!(docu->getFlags() & CIF_UsePresentationState))             // ignore modality LUT and rescaling
+        if (!(docu->getFlags() & CIF_UsePresentationState) &&           // ignore modality LUT and rescaling
+            !(docu->getFlags() & CIF_IgnoreModalityTransformation))
         {
             const char *sopClassUID = NULL;                             // check for XA and XRF image (ignore MLUT)
             if ((docu->getValue(DCM_SOPClassUID, sopClassUID) == 0) || (sopClassUID == NULL) ||
@@ -79,6 +80,12 @@ DiMonoModality::DiMonoModality(const DiDocument *docu,
                     ofConsole.lockCerr() << "INFO: processing XA or XRF image ... ignoring possible modality transform !" << endl;
                     ofConsole.unlockCerr();
                 }
+            }
+        } else {
+            if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Informationals))
+            {
+                ofConsole.lockCerr() << "INFO: configuration flag set ... ignoring possible modality transform !" << endl;
+                ofConsole.unlockCerr();
             }
         }
         Representation = DicomImageClass::determineRepresentation(MinValue, MaxValue);
@@ -258,7 +265,11 @@ void DiMonoModality::checkRescaling(const DiInputPixel *pixel)
  *
  * CVS/RCS Log:
  * $Log: dimomod.cc,v $
- * Revision 1.15  2001-09-28 13:17:24  joergr
+ * Revision 1.16  2003-05-20 09:25:08  joergr
+ * Added new configuration/compatibility flag that allows to ignore the
+ * modality transform stored in the dataset.
+ *
+ * Revision 1.15  2001/09/28 13:17:24  joergr
  * Enhanced algorithm to determine the min and max value.
  *
  * Revision 1.14  2001/06/01 15:49:58  meichel
