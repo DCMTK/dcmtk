@@ -22,9 +22,9 @@
  *  Purpose: List the contents of database index file
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-02-19 09:50:06 $
+ *  Update Date:      $Date: 1999-02-25 18:36:04 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmpstat/apps/Attic/listdb.cc,v $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -42,6 +42,7 @@
 #include "ofcmdln.h"
 
 #include "dviface.h"
+#include "diutils.h"
 
 
 // ********************************************
@@ -123,6 +124,7 @@ int main(int argc, char *argv[])
     }
 
     SetDebugLevel(((int)opt_debugMode));
+    DicomImageClass::DebugLevel = opt_debugMode;
 
     FILE *cfgfile = fopen(opt_cfgName, "rb");
     if (cfgfile) fclose(cfgfile); else
@@ -240,6 +242,7 @@ int main(int argc, char *argv[])
          }
        }
     }
+    
     dvi.releaseDatabase();
 #ifdef DEBUG
     dcmDataDict.clear();  /* useful for debugging with dmalloc */
@@ -251,7 +254,10 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: listdb.cc,v $
- * Revision 1.5  1999-02-19 09:50:06  joergr
+ * Revision 1.6  1999-02-25 18:36:04  joergr
+ * Added setting of debug level in DicomImageClass (avoids compiler warnings).
+ *
+ * Revision 1.5  1999/02/19 09:50:06  joergr
  * Changed some comments, corrected typos and formatting.
  * Added method getFilename() to get filename of currently selected instance.
  *
