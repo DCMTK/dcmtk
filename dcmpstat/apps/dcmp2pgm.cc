@@ -25,10 +25,10 @@
  *    of the presentation state. Non-grayscale transformations are
  *    ignored. If no presentation state is loaded, a default is created.
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-04-30 16:40:45 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 1999-05-03 14:16:37 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmpstat/apps/dcmp2pgm.cc,v $
- *  CVS/RCS Revision: $Revision: 1.13 $
+ *  CVS/RCS Revision: $Revision: 1.14 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -121,7 +121,7 @@ int main(int argc, char *argv[])
     }
     
     SetDebugLevel(((int)opt_debugMode));
-    DicomImageClass::DebugLevel = opt_debugMode;
+    DicomImageClass::DebugLevel = (int)opt_debugMode;
 
     if (opt_cfgName)
     {
@@ -176,7 +176,7 @@ int main(int argc, char *argv[])
                     if (opt_debugMode > 0)
                         cerr << "writing PGM file: " << opt_pgmName << endl;
                     fprintf(outfile, "P5\n%ld %ld 255\n", width, height);
-                    fwrite(pixelData, width, height, outfile);
+                    fwrite(pixelData, (size_t)width, (size_t)height, outfile);
                     fclose(outfile);
                 } else app.printError("Can't create output file.");
               }
@@ -533,9 +533,9 @@ void dumpPresentationState(DVInterface& dvi)
   }
   cout << endl;
   
-  size_t numberOfPeers = dvi.getNumberOfTargets();
+  Uint32 numberOfPeers = dvi.getNumberOfTargets();
   cout << "Communication peers (defined in config file): " << numberOfPeers << endl;
-  for (size_t cpi=0; cpi<numberOfPeers; cpi++)
+  for (Uint32 cpi=0; cpi<numberOfPeers; cpi++)
   {
     cout << "  Peer " << cpi+1 << ": ID='" << dvi.getTargetID(cpi) << "' description='" 
          << dvi.getTargetDescription(cpi) << "'" << endl;
@@ -547,7 +547,10 @@ void dumpPresentationState(DVInterface& dvi)
 /*
  * CVS/RCS Log:
  * $Log: dcmp2pgm.cc,v $
- * Revision 1.13  1999-04-30 16:40:45  meichel
+ * Revision 1.14  1999-05-03 14:16:37  joergr
+ * Minor code purifications to keep Sun CC 2.0.1 quiet.
+ *
+ * Revision 1.13  1999/04/30 16:40:45  meichel
  * Minor code purifications to keep Sun CC 2.0.1 quiet
  *
  * Revision 1.12  1999/04/28 15:45:06  meichel

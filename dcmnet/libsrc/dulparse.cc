@@ -45,9 +45,9 @@
 ** Intent:		This file contains functions for parsing Dicom
 **			Upper Layer (DUL) Protocol Data Units (PDUs)
 **			into logical in-memory structures.
-** Last Update:		$Author: meichel $, $Date: 1999-04-19 08:39:00 $
+** Last Update:		$Author: joergr $, $Date: 1999-05-03 14:12:32 $
 ** Source File:		$RCSfile: dulparse.cc,v $
-** Revision:		$Revision: 1.7 $
+** Revision:		$Revision: 1.8 $
 ** Status:		$State: Exp $
 */
 
@@ -188,6 +188,8 @@ parseAssociate(unsigned char *buf, unsigned long pduLength,
 	(void) fprintf(DEBUG_DEVICE, "Called AP Title:  %s\n", assoc->calledAPTitle);
 	(void) fprintf(DEBUG_DEVICE, "Calling AP Title: %s\n", assoc->callingAPTitle);
     }
+#else
+    if (debug);     /* avoid compiler warnings on Sun CC 2.0.1 */
 #endif
     cond = DUL_NORMAL;
     while ((cond == DUL_NORMAL) && (pduLength > 0)) {
@@ -770,7 +772,7 @@ parseExtNeg(SOPClassExtendedNegotiationSubItem* extNeg, unsigned char *buf,
 
     *length = 2 + 2 + extNeg->itemLength;
 
-    int remain = *length - (buf - bufStart);
+    int remain = (int)(*length - (buf - bufStart));
 
     extNeg->serviceClassAppInfoLength = remain;
     extNeg->serviceClassAppInfo = new unsigned char[remain];
@@ -833,7 +835,10 @@ trim_trailing_spaces(char *s)
 /*
 ** CVS Log
 ** $Log: dulparse.cc,v $
-** Revision 1.7  1999-04-19 08:39:00  meichel
+** Revision 1.8  1999-05-03 14:12:32  joergr
+** Minor code purifications to keep Sun CC 2.0.1 quiet.
+**
+** Revision 1.7  1999/04/19 08:39:00  meichel
 ** Added experimental support for extended SOP class negotiation.
 **
 ** Revision 1.6  1999/03/29 11:20:07  meichel

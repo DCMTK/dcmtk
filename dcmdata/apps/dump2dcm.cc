@@ -22,9 +22,9 @@
  *  Purpose: create a Dicom FileFormat or DataSet from an ASCII-dump
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-04-27 17:50:53 $
+ *  Update Date:      $Date: 1999-05-03 14:13:40 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/apps/dump2dcm.cc,v $
- *  CVS/RCS Revision: $Revision: 1.25 $
+ *  CVS/RCS Revision: $Revision: 1.26 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -422,7 +422,7 @@ putFileContentsIntoElement(DcmElement* elem, const char* filename)
     if (buf == NULL) {
         cerr << "ERROR: out of memory reading binary data file: " << filename << endl;
         ec = EC_MemoryExhausted;
-    } else if (fread(buf, 1, len, f) != len) {
+    } else if (fread(buf, 1, (size_t)len, f) != len) {
         cerr << "ERROR: error reading binary data file: " << filename << ": ";
         perror(NULL);
         ec = EC_CorruptedData;
@@ -943,7 +943,10 @@ int main(int argc, char *argv[])
 /*
 ** CVS/RCS Log:
 ** $Log: dump2dcm.cc,v $
-** Revision 1.25  1999-04-27 17:50:53  joergr
+** Revision 1.26  1999-05-03 14:13:40  joergr
+** Minor code purifications to keep Sun CC 2.0.1 quiet.
+**
+** Revision 1.25  1999/04/27 17:50:53  joergr
 ** Adapted console applications to new OFCommandLine and OFConsoleApplication
 ** functionality.
 **

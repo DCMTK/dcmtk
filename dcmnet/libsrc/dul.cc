@@ -54,9 +54,9 @@
 ** Author, Date:	Stephen M. Moore, 14-Apr-93
 ** Intent:		This module contains the public entry points for the
 **			DICOM Upper Layer (DUL) protocol package.
-** Last Update:		$Author: meichel $, $Date: 1999-04-19 08:38:57 $
+** Last Update:		$Author: joergr $, $Date: 1999-05-03 14:12:31 $
 ** Source File:		$RCSfile: dul.cc,v $
-** Revision:		$Revision: 1.18 $
+** Revision:		$Revision: 1.19 $
 ** Status:		$State: Exp $
 */
 
@@ -2115,9 +2115,9 @@ void dumpExtNegList(SOPClassExtendedNegotiationSubItemList& list)
         const char* uidName = dcmFindNameOfUID(extNeg->sopClassUID.c_str());
         printf("  =%s (%s)\n", (uidName)?(uidName):("Unknown-UID"), extNeg->sopClassUID.c_str());
         printf("    [");
-        for (int k=0; k<extNeg->serviceClassAppInfoLength; k++) {
+        for (int k=0; k<(int)extNeg->serviceClassAppInfoLength; k++) {
             printf("0x%02x", extNeg->serviceClassAppInfo[k]);
-            if (k<(extNeg->serviceClassAppInfoLength-1)) {
+            if (k<(int)(extNeg->serviceClassAppInfoLength-1)) {
                 printf(", ");
             }
         }
@@ -2313,7 +2313,10 @@ clearPresentationContext(LST_HEAD ** l)
 /*
 ** CVS Log
 ** $Log: dul.cc,v $
-** Revision 1.18  1999-04-19 08:38:57  meichel
+** Revision 1.19  1999-05-03 14:12:31  joergr
+** Minor code purifications to keep Sun CC 2.0.1 quiet.
+**
+** Revision 1.18  1999/04/19 08:38:57  meichel
 ** Added experimental support for extended SOP class negotiation.
 **
 ** Revision 1.17  1999/03/29 11:20:04  meichel

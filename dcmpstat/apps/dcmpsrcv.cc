@@ -21,10 +21,10 @@
  *
  *  Purpose: Presentation State Viewer - Network Receive Component (Store SCP)
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-04-30 16:36:56 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 1999-05-03 14:16:38 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmpstat/apps/dcmpsrcv.cc,v $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -834,7 +834,8 @@ int main(int argc, char *argv[])
           case assoc_success:
 #ifdef HAVE_FORK
             // Unix version - call fork()
-            int pid = (int)(fork());
+            int pid;
+            pid = (int)(fork());
             if (pid < 0)
             {
               cerr << "Cannot create association sub-process: " << strerror(errno) << endl;
@@ -895,7 +896,10 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmpsrcv.cc,v $
- * Revision 1.7  1999-04-30 16:36:56  meichel
+ * Revision 1.8  1999-05-03 14:16:38  joergr
+ * Minor code purifications to keep Sun CC 2.0.1 quiet.
+ *
+ * Revision 1.7  1999/04/30 16:36:56  meichel
  * Renamed all flock calls to dcmtk_flock to avoid name clash between flock()
  * emulation based on fcntl() and a constructor for struct flock.
  *

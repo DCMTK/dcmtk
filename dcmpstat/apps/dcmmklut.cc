@@ -22,10 +22,10 @@
  *  Purpose: This application reads a DICOM image, adds a Modality LUT or
  *    a VOI LUT to the image and writes it back. The LUT has a gamma curve shape.
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-04-28 15:45:05 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 1999-05-03 14:16:37 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmpstat/apps/dcmmklut.cc,v $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -116,7 +116,7 @@ E_Condition createLUT16(
   
   // create LUT
   Uint16 maxValue = 0xFFFF >> (16-numberOfBits);
-  double step = (double)maxValue / (double)(descriptor_numEntries-1);
+  double step = (double)maxValue / ((double)descriptor_numEntries-1.0);
   double gammaExp = 1.0/gammaValue;
   double factor = (double)maxValue / pow(maxValue, gammaExp);
   double val;
@@ -195,7 +195,7 @@ E_Condition createLUT8(
   if (result==EC_Normal) result = lutDescriptor.putUint16(8,2);
   
   // create LUT
-  double step = 255.0 / (double)(descriptor_numEntries-1);
+  double step = 255.0 / ((double)descriptor_numEntries-1.0);
   double gammaExp = 1.0/gammaValue;
   double factor = 255.0 / pow(255.0, gammaExp);
   double val;
@@ -216,7 +216,7 @@ E_Condition createLUT8(
   if (result==EC_Normal) result = swapIfNecessary(gLocalByteOrder, 
     EBO_LittleEndian, array, descriptor_numEntries+1, sizeof(Uint16));
   
-  if (result==EC_Normal) result = lutData.putUint16Array((Uint16 *)array,(descriptor_numEntries+1)/2);
+  if (result==EC_Normal) result = lutData.putUint16Array((Uint16 *)array,((unsigned long)descriptor_numEntries+1)/2);
   
   // create LUT explanation
   char buf[100];
@@ -359,7 +359,7 @@ int main(int argc, char *argv[])
       result = createLUT8(windowCenter, windowWidth, gammaValue,
         lutDescriptor, lutData, lutExplanation);
     } else {
-      result = createLUT16(windowCenter, windowWidth, bits, gammaValue,
+      result = createLUT16(windowCenter, windowWidth, (Uint16)bits, gammaValue,
         lutDescriptor, lutData, lutExplanation);
     }
     if (EC_Normal != result) 
@@ -455,7 +455,10 @@ int main(int argc, char *argv[])
 /*
 ** CVS/RCS Log:
 ** $Log: dcmmklut.cc,v $
-** Revision 1.2  1999-04-28 15:45:05  meichel
+** Revision 1.3  1999-05-03 14:16:37  joergr
+** Minor code purifications to keep Sun CC 2.0.1 quiet.
+**
+** Revision 1.2  1999/04/28 15:45:05  meichel
 ** Cleaned up module dcmpstat apps, adapted to new command line class
 **   and added short documentation.
 **

@@ -21,10 +21,10 @@
  *
  *  Purpose: This application reads a DICOM image, adds a Curve and writes it back.
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-04-28 15:45:05 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 1999-05-03 14:16:36 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmpstat/apps/dcmmkcrv.cc,v $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -219,32 +219,32 @@ int main(int argc, char *argv[])
       return 1;
     }
     
-    curveDimensions->setGTag(0x5000+2*opt_group);
+    curveDimensions->setGTag((Uint16)(0x5000+2*opt_group));
     curveDimensions->putUint16(2,0);
     dataset->insert(curveDimensions, OFTrue);
 
-    numberOfPoints->setGTag(0x5000+2*opt_group);
+    numberOfPoints->setGTag((Uint16)(0x5000+2*opt_group));
     numberOfPoints->putUint16((Uint16)(idx/2),0);
     dataset->insert(numberOfPoints, OFTrue);
     
-    typeOfData->setGTag(0x5000+2*opt_group);
+    typeOfData->setGTag((Uint16)(0x5000+2*opt_group));
     if (opt_poly) typeOfData->putString("POLY"); else typeOfData->putString("ROI");
     dataset->insert(typeOfData, OFTrue);
 
-    dataValueRepresentation->setGTag(0x5000+2*opt_group);
+    dataValueRepresentation->setGTag((Uint16)(0x5000+2*opt_group));
     dataValueRepresentation->putUint16((Uint16)opt_data_vr,0);
     dataset->insert(dataValueRepresentation, OFTrue);
     
     if (opt_description)
     {
-      curveDescription->setGTag(0x5000+2*opt_group);
+      curveDescription->setGTag((Uint16)(0x5000+2*opt_group));
       curveDescription->putString(opt_description);
       dataset->insert(curveDescription, OFTrue);  
     }
 
     if (opt_label)
     {
-      curveLabel->setGTag(0x5000+2*opt_group);
+      curveLabel->setGTag((Uint16)(0x5000+2*opt_group));
       curveLabel->putString(opt_label);
       dataset->insert(curveLabel, OFTrue);  
     }
@@ -254,7 +254,7 @@ int main(int argc, char *argv[])
       OFString aString(opt_axis_x);
       aString += "\\";
       aString += opt_axis_y;
-      axisUnits->setGTag(0x5000+2*opt_group);
+      axisUnits->setGTag((Uint16)(0x5000+2*opt_group));
       axisUnits->putString(aString.c_str());
       dataset->insert(axisUnits, OFTrue);  
     }
@@ -352,7 +352,7 @@ int main(int argc, char *argv[])
             cerr << "unknown data VR, bailing out" << endl;
             return 1;
         }
-        element->setGTag(0x5000+2*opt_group);
+        element->setGTag((Uint16)(0x5000+2*opt_group));
         dataset->insert(element, OFTrue);
         break;
       case 1: // OB
@@ -361,7 +361,7 @@ int main(int argc, char *argv[])
         swapIfNecessary(EBO_LittleEndian, gLocalByteOrder, rawData, byteLength, align);
         element = new DcmOtherByteOtherWord(DCM_CurveData);
         if (element==NULL) { cerr << "out of memory" << endl; return 1; }
-        element->setGTag(0x5000+2*opt_group);
+        element->setGTag((Uint16)(0x5000+2*opt_group));
         element->setVR(EVR_OB);
         element->putUint8Array((Uint8 *)rawData, byteLength);
         dataset->insert(element, OFTrue);
@@ -376,7 +376,7 @@ int main(int argc, char *argv[])
         }
         element = new DcmOtherByteOtherWord(DCM_CurveData);
         if (element==NULL) { cerr << "out of memory" << endl; return 1; }
-        element->setGTag(0x5000+2*opt_group);
+        element->setGTag((Uint16)(0x5000+2*opt_group));
         element->setVR(EVR_OW);
         element->putUint16Array((Uint16 *)rawData, byteLength/sizeof(Uint16));
         dataset->insert(element, OFTrue);
@@ -414,7 +414,10 @@ int main(int argc, char *argv[])
 /*
 ** CVS/RCS Log:
 ** $Log: dcmmkcrv.cc,v $
-** Revision 1.2  1999-04-28 15:45:05  meichel
+** Revision 1.3  1999-05-03 14:16:36  joergr
+** Minor code purifications to keep Sun CC 2.0.1 quiet.
+**
+** Revision 1.2  1999/04/28 15:45:05  meichel
 ** Cleaned up module dcmpstat apps, adapted to new command line class
 **   and added short documentation.
 **
