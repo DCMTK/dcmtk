@@ -76,6 +76,9 @@ fi
 AC_SUBST(ARFLAGS)
 AC_SUBST(LIBEXT)
 
+dnl Perform remaining tests with C++ compiler
+AC_LANG_CPLUSPLUS
+
 dnl Check special systems
 AC_AIX
 AC_ISC_POSIX
@@ -85,7 +88,6 @@ dnl Check X11 paths
 AC_PATH_XTRA
 
 dnl Checks for libraries.
-AC_LANG_CPLUSPLUS
 AC_CHECK_GXXLIB
 AC_CHECK_LIB(iostream, main)
 dnl Some C++ compilers have problems with recursive main calls
