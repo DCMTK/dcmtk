@@ -1,6 +1,29 @@
 
 Changes between releases are documented here.
 
+**** Changes from 1999.07.23 (riesmeier)
+
+- Added new interpolation algorithm for scaling.
+  Affects: dcmimage/apps/dcm2pnm.cc
+  
+- Added command line option '--quiet'.
+  Affects: dcmimage/apps/dcm2pnm.cc
+
+- Added support for frame selection.
+  Affects: dcmimage/apps/dcm2pnm.cc
+
+- Added support for 2..32 bit pnm/pgm export
+  Affects: dcmimage/apps/dcm2pnm.cc
+
+- Enhanced handling of corrupted pixel data (wrong length).
+  Affects: dcmimage/libsrc/dicoimg.cc
+           dcmimage/libsrc/dicoopx.cc
+           dcmimage/include/dicoopx.h
+           dcmimage/include/dicoopxt.h
+           
+- Removed inline method 'removeSign'which is no longer needed.
+  Affects: dcmimage/include/dicopxt.h
+
 +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 
 Release 1.1.0 (Release date - 1999-05-31)
