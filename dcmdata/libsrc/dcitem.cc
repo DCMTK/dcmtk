@@ -11,9 +11,9 @@
 **
 **
 ** Last Update:		$Author: hewett $
-** Update Date:		$Date: 1997-03-26 17:15:57 $
+** Update Date:		$Date: 1997-03-27 15:52:50 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcitem.cc,v $
-** CVS/RCS Revision:	$Revision: 1.20 $
+** CVS/RCS Revision:	$Revision: 1.21 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -690,7 +690,8 @@ E_Condition DcmItem::readTagAndLength(DcmStream & inStream,
     }
     else if (xferSyn.isExplicitVR())
     {
-	if (nxtobj == EVR_OB || nxtobj == EVR_OW || nxtobj == EVR_SQ)
+	if (nxtobj == EVR_OB || nxtobj == EVR_OW 
+	    || nxtobj == EVR_SQ || nxtobj == EVR_UN)
 	{
 	    Uint16 reserved;
 	    inStream.ReadBytes(&reserved, 2);  // 2 Byte Laenge
@@ -1721,7 +1722,14 @@ E_Condition newDicomElement(DcmElement * & newElement,
 
     case EVR_OB :
     case EVR_OW :
-	newElement = new DcmOtherByteOtherWord(tag, length);
+	if (length == DCM_UndefinedLength) {
+	    // The attribute is OB or OW but is encoded with undefined
+	    // length.  Assume it is really a sequence so that we can
+	    // catch the sequence delimitation item.
+	    newElement = new DcmSequenceOfItems(tag, length);
+	} else {
+	    newElement = new DcmOtherByteOtherWord(tag, length);
+	}
 	break;
 
     // Gekapselte Pixeldaten als spezielle Sequenz:
@@ -1738,7 +1746,14 @@ E_Condition newDicomElement(DcmElement * & newElement,
     case EVR_UNKNOWN :
     case EVR_UN :
     default :
-	newElement = new DcmOtherByteOtherWord(tag, length);
+	if (length == DCM_UndefinedLength) {
+	    // The attribute is unknown but is encoded with undefined
+	    // length.  Assume it is really a sequence so that we can
+	    // catch the sequence delimitation item.
+	    newElement = new DcmSequenceOfItems(tag, length);
+	} else {
+	    newElement = new DcmOtherByteOtherWord(tag, length);
+	}
 	debug((1, 
 	       "Warning: newDicomElement(): unknown Tag detected: (%04x,%04x)",
 	       tag.getGTag(), tag.getETag()));
@@ -1847,7 +1862,12 @@ DcmItem::findLong(const DcmTagKey& xtag,
 /*
 ** CVS/RCS Log:
 ** $Log: dcitem.cc,v $
-** Revision 1.20  1997-03-26 17:15:57  hewett
+** Revision 1.21  1997-03-27 15:52:50  hewett
+** Extended preliminary support for Unknown VR (UN) described in
+** Supplement 14.  Attributes with undefined length should now
+** be handled as a sequence.
+**
+** Revision 1.20  1997/03/26 17:15:57  hewett
 ** Added very preliminary support for Unknown VR (UN) described in
 ** Supplement 14.  WARNING: handling of unknown attributes with undefined
 ** length is not yet supported.

@@ -10,7 +10,7 @@
 **
 **
 ** Last Update:   $Author: hewett $
-** Revision:      $Revision: 1.4 $
+** Revision:      $Revision: 1.5 $
 ** Status:	  $State: Exp $
 **
 */
@@ -195,7 +195,7 @@ DcmVR::getValidEVR() const
 	}
 	/*
 	** If the generation of UN is not globally enabled then use OB instead.
-	** We may not want to generate UN if software other software cannot handle it.
+	** We may not want to generate UN if other software cannot handle it.
 	*/
 	if ((evr == EVR_UN) && (dcmEnableUnknownVRGeneration == FALSE)) {
 	    evr = EVR_OB; /* handle UN as if OB */

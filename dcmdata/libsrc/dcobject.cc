@@ -10,7 +10,7 @@
 **
 **
 ** Last Update:   $Author: hewett $
-** Revision:      $Revision: 1.12 $
+** Revision:      $Revision: 1.13 $
 ** Status:	  $State: Exp $
 **
 */
@@ -371,13 +371,15 @@ E_Condition DcmObject::writeTagAndLength(DcmStream & outStream,
       if (oxferSyn.isExplicitVR())
 	{
 	  // Umwandlung in gueltige VR
-	  DcmEVR vr = Tag->getVR().getValidEVR();
-	  // Umwandlung in gueltige Strings
-	  const char *vrname = Tag->getVR().getValidVRName();
-	  outStream.WriteBytes(vrname, 2);    // 2 Byte Laenge:VR als string
+	  DcmVR myvr(this->ident()); // what VR should it be
+	  // getValidEVR() will convert UN to OB if generation of UN disabled
+	  DcmEVR vr = myvr.getValidEVR();
+	  // convert to a valid string
+	  const char *vrname = myvr.getValidVRName();
+	  outStream.WriteBytes(vrname, 2);    // 2 Bytes of VR name 
 	  writtenBytes += 2;
 
-	  if (vr == EVR_OB || vr == EVR_OW || vr == EVR_SQ)
+	  if (vr == EVR_OB || vr == EVR_OW || vr == EVR_SQ || vr == EVR_UN)
 	    {
 	      Uint16 reserved = 0;
 	      outStream.WriteBytes(&reserved, 2); // 2 Byte Laenge
