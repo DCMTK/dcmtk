@@ -27,15 +27,15 @@ dicoimg.o: dicoimg.cc ../../config/include/osconfig.h \
  ../../dcmimgle/include/dimoimg.h ../../dcmimgle/include/dimopx.h \
  ../../dcmimgle/include/dipixel.h ../../dcmimgle/include/dimomod.h \
  ../../dcmimgle/include/diluptab.h ../../dcmdata/include/dctagkey.h \
- ../../dcmimgle/include/dibaslut.h ../../dcmimgle/include/didispfn.h \
- ../../dcmimgle/include/dibarlut.h ../include/dicopxt.h \
- ../include/dicopx.h ../../dcmimgle/include/dipxrept.h \
- ../include/dicocpt.h ../../ofstd/include/ofbmanip.h \
- ../include/dicosct.h ../../dcmimgle/include/discalet.h \
- ../../dcmimgle/include/ditranst.h ../include/dicoflt.h \
- ../../dcmimgle/include/diflipt.h ../include/dicorot.h \
- ../../dcmimgle/include/dirotat.h ../include/dicoopxt.h \
- ../include/dicoopx.h
+ ../../dcmimgle/include/dibaslut.h ../../dcmimgle/include/dimoopx.h \
+ ../../dcmimgle/include/didispfn.h ../../dcmimgle/include/dibarlut.h \
+ ../include/dicopxt.h ../include/dicopx.h \
+ ../../dcmimgle/include/dipxrept.h ../include/dicocpt.h \
+ ../../ofstd/include/ofbmanip.h ../include/dicosct.h \
+ ../../dcmimgle/include/discalet.h ../../dcmimgle/include/ditranst.h \
+ ../include/dicoflt.h ../../dcmimgle/include/diflipt.h \
+ ../include/dicorot.h ../../dcmimgle/include/dirotat.h \
+ ../include/dicoopxt.h ../include/dicoopx.h
 dicoopx.o: dicoopx.cc ../../config/include/osconfig.h \
  ../include/dicoopx.h ../../dcmimgle/include/diutils.h \
  ../../dcmdata/include/dctypes.h ../../ofstd/include/oftypes.h \
