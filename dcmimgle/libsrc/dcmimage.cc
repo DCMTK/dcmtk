@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2002, OFFIS
+ *  Copyright (C) 1996-2003, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,10 +21,9 @@
  *
  *  Purpose: DicomImage-Interface (Source)
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2003-06-04 10:20:33 $
- *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/libsrc/dcmimage.cc,v $
- *  CVS/RCS Revision: $Revision: 1.23 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2003-12-08 15:06:37 $
+ *  CVS/RCS Revision: $Revision: 1.24 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -224,7 +223,7 @@ void DicomImage::Init()
                 *q = '\0';                                          // end of c-string
             }
             else
-                cstr = (char *)str;
+                cstr = OFconst_cast(char *, str);
             const SP_Interpretation *pin = PhotometricInterpretationNames;
             while ((pin->Name != NULL) && (strcmp(pin->Name, cstr) != 0))
                 pin++;
@@ -402,8 +401,8 @@ DicomImage *DicomImage::createScaledImage(const double xfactor,
                                           const int interpolate,
                                           const int aspect) const
 {
-    return createScaledImage(0, 0, getWidth(), getHeight(), (unsigned long)(xfactor * getWidth()),
-        (unsigned long)(yfactor * getHeight()), interpolate, aspect);
+    return createScaledImage(0, 0, getWidth(), getHeight(), OFstatic_cast(unsigned long, xfactor * getWidth()),
+        OFstatic_cast(unsigned long, yfactor * getHeight()), interpolate, aspect);
 }
 
 
@@ -435,18 +434,18 @@ DicomImage *DicomImage::createScaledImage(const signed long left_pos,
         if (aspect)                                                  // maintain pixel aspect ratio
         {
             if (scale_width == 0)
-                scale_width = (unsigned long)(getWidthHeightRatio() * (double)(scale_height * gw) / gh);
+                scale_width = OFstatic_cast(unsigned long, getWidthHeightRatio() * OFstatic_cast(double, scale_height * gw) / gh);
             else if (scale_height == 0)
-                scale_height = (unsigned long)(getHeightWidthRatio() * (double)(scale_width * gh) / gw);
+                scale_height = OFstatic_cast(unsigned long, getHeightWidthRatio() * OFstatic_cast(double, scale_width * gh) / gw);
             else
                 aspect = 0;                                           // ignore pixel aspect ratio
         }
         else                                                          // ignore pixel aspect ratio
         {
             if (scale_width == 0)
-                scale_width = (unsigned long)((double)(scale_height * gw) / gh);
+                scale_width = OFstatic_cast(unsigned long, OFstatic_cast(double, scale_height * gw) / gh);
             else if (scale_height == 0)
-                scale_height = (unsigned long)((double)(scale_width * gh) / gw);
+                scale_height = OFstatic_cast(unsigned long, OFstatic_cast(double, scale_width * gh) / gw);
         }
         const unsigned long maxvalue = DicomImageClass::maxval(bitsof(Uint16));
         if (scale_width > maxvalue)
@@ -456,8 +455,8 @@ DicomImage *DicomImage::createScaledImage(const signed long left_pos,
 
         /* need to limit clipping region ... !? */
 
-        if (((left_pos < 0) || (top_pos < 0) || ((unsigned long)(left_pos + clip_width) > gw) ||
-            ((unsigned long)(top_pos + clip_height) > gh)) &&
+        if (((left_pos < 0) || (top_pos < 0) || (OFstatic_cast(unsigned long, left_pos + clip_width) > gw) ||
+            (OFstatic_cast(unsigned long, top_pos + clip_height) > gh)) &&
             ((clip_width != scale_width) || (clip_height != scale_height)))
         {
             if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Errors))
@@ -501,8 +500,8 @@ DicomImage *DicomImage::createScaledImage(const signed long left_pos,
             width = gw - left_pos;
         if (height == 0)                                    // same for 'height'
             height = gh - top_pos;
-        return createScaledImage(left_pos, top_pos, width, height, (unsigned long)(xfactor * width),
-            (unsigned long)(yfactor * height), interpolate, aspect, pvalue);
+        return createScaledImage(left_pos, top_pos, width, height, OFstatic_cast(unsigned long, xfactor * width),
+            OFstatic_cast(unsigned long, yfactor * height), interpolate, aspect, pvalue);
     }
     return NULL;
 }
@@ -517,7 +516,8 @@ DicomImage *DicomImage::createClippedImage(const signed long left_pos,
                                            unsigned long height,
                                            const Uint16 pvalue) const
 {
-    return createScaledImage(left_pos, top_pos, width, height, (unsigned long)0, (unsigned long)0, 0, 0, pvalue);
+    return createScaledImage(left_pos, top_pos, width, height, OFstatic_cast(unsigned long, 0),
+        OFstatic_cast(unsigned long, 0), 0, 0, pvalue);
 }
 
 
@@ -605,7 +605,7 @@ int DicomImage::rotateImage(signed int degree) const
         if ((degree == 0) || (getWidth() * getHeight() <= 1))       // nothing to do
             return 2;
         else
-            return Image->rotate((int)degree);
+            return Image->rotate(OFstatic_cast(int, degree));
     }
     return 0;
 }
@@ -617,7 +617,7 @@ DicomImage *DicomImage::createRotatedImage(signed int degree) const
 {
     if ((Image != NULL) && normalizeDegreeValue(degree))
     {
-        DiImage *image = Image->createRotate((int)degree);
+        DiImage *image = Image->createRotate(OFstatic_cast(int, degree));
         if (image != NULL)
         {
             DicomImage *dicom = new DicomImage(this, image);
@@ -820,7 +820,10 @@ int DicomImage::writePluginFormat(const DiPluginFormat *plugin,
  *
  * CVS/RCS Log:
  * $Log: dcmimage.cc,v $
- * Revision 1.23  2003-06-04 10:20:33  meichel
+ * Revision 1.24  2003-12-08 15:06:37  joergr
+ * Adapted type casts to new-style typecast operators defined in ofcast.h.
+ *
+ * Revision 1.23  2003/06/04 10:20:33  meichel
  * Fixed incorrect include
  *
  * Revision 1.22  2003/06/03 09:30:41  meichel

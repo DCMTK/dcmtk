@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2002, OFFIS
+ *  Copyright (C) 1996-2003, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,8 @@
  *  Purpose: DicomOverlay (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-12-09 13:34:52 $
- *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/libsrc/diovlay.cc,v $
- *  CVS/RCS Revision: $Revision: 1.22 $
+ *  Update Date:      $Date: 2003-12-08 15:02:33 $
+ *  CVS/RCS Revision: $Revision: 1.23 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -96,8 +95,8 @@ DiOverlay::DiOverlay(const DiOverlay *overlay,
                      const double yfactor)
   : Left(left_pos),
     Top(top_pos),
-    Width((Uint16)(xfactor * overlay->Width)),
-    Height((Uint16)(yfactor * overlay->Height)),
+    Width(OFstatic_cast(Uint16, xfactor * overlay->Width)),
+    Height(OFstatic_cast(Uint16, yfactor * overlay->Height)),
     Frames(overlay->Frames),
     AdditionalPlanes(overlay->AdditionalPlanes),
     Data(NULL)
@@ -112,7 +111,7 @@ DiOverlay::DiOverlay(const DiOverlay *overlay,
                 Data->Planes[i]->setScaling(xfactor, yfactor);
         }
         DiScaleTemplate<Uint16> scale(1, overlay->Width, overlay->Height, Width, Height, Frames);
-        scale.scaleData((const Uint16 **)&temp, &(Data->DataBuffer), 0);
+        scale.scaleData(OFconst_cast(const Uint16 **, &temp), &(Data->DataBuffer), 0);
         if (temp != overlay->Data->DataBuffer)
             delete[] temp;
     }
@@ -138,14 +137,17 @@ DiOverlay::DiOverlay(const DiOverlay *overlay,
     if (temp != NULL)
     {
         DiFlipTemplate<Uint16> flip(1, Width, Height, Frames);
-        flip.flipData((const Uint16 **)&temp, &(Data->DataBuffer), horz, vert);
+        flip.flipData(OFconst_cast(const Uint16 **, &temp), &(Data->DataBuffer), horz, vert);
         if (temp != overlay->Data->DataBuffer)
             delete[] temp;
         register unsigned int i;
         for (i = 0; i < Data->ArrayEntries; i++)
         {
             if (Data->Planes[i] != NULL)
-                Data->Planes[i]->setFlipping(horz, vert, (signed long)columns + overlay->Left, (signed long)rows + overlay->Top);
+            {
+                Data->Planes[i]->setFlipping(horz, vert, OFstatic_cast(signed long, columns) + overlay->Left,
+                    OFstatic_cast(signed long, rows) + overlay->Top);
+            }
         }
     }
 }
@@ -169,7 +171,7 @@ DiOverlay::DiOverlay(const DiOverlay *overlay,
     if (temp != NULL)
     {
         DiRotateTemplate<Uint16> rotate(1, overlay->Width, overlay->Height, Width, Height, Frames);
-        rotate.rotateData((const Uint16 **)&temp, &(Data->DataBuffer), degree);
+        rotate.rotateData(OFconst_cast(const Uint16 **, &temp), &(Data->DataBuffer), degree);
         if (temp != overlay->Data->DataBuffer)
             delete[] temp;
         register unsigned int i;
@@ -204,11 +206,12 @@ Uint16 *DiOverlay::Init(const DiOverlay *overlay)
             Data = new DiOverlayData(overlay->Data->ArrayEntries);      // use same array size
         else
             Data = new DiOverlayData(overlay->Data->Count);             // shrink array size to minimal size
-        const unsigned long count = (unsigned long)overlay->Width * (unsigned long)overlay->Height * overlay->Frames;
+        const unsigned long count = OFstatic_cast(unsigned long, overlay->Width) *
+            OFstatic_cast(unsigned long, overlay->Height) * overlay->Frames;
         if ((Data != NULL) && (Data->Planes != NULL) && (count > 0))
         {
             register unsigned int i;
-            Data->DataBuffer = new Uint16[(unsigned long)Width * (unsigned long)Height * Frames];
+            Data->DataBuffer = new Uint16[OFstatic_cast(unsigned long, Width) * OFstatic_cast(unsigned long, Height) * Frames];
             if (Data->DataBuffer != NULL)
             {
                 Uint16 *temp = NULL;
@@ -606,7 +609,10 @@ unsigned long DiOverlay::create6xxx3000PlaneData(Uint8 *&buffer,
  *
  * CVS/RCS Log:
  * $Log: diovlay.cc,v $
- * Revision 1.22  2002-12-09 13:34:52  joergr
+ * Revision 1.23  2003-12-08 15:02:33  joergr
+ * Adapted type casts to new-style typecast operators defined in ofcast.h.
+ *
+ * Revision 1.22  2002/12/09 13:34:52  joergr
  * Renamed parameter/local variable to avoid name clashes with global
  * declaration left and/or right (used for as iostream manipulators).
  *

@@ -21,10 +21,9 @@
  *
  *  Purpose: DicomDisplayFunction (Source)
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2003-04-14 14:27:27 $
- *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/libsrc/didispfn.cc,v $
- *  CVS/RCS Revision: $Revision: 1.39 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2003-12-08 15:10:08 $
+ *  CVS/RCS Revision: $Revision: 1.40 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -106,7 +105,7 @@ DiDisplayFunction::DiDisplayFunction(const double *val_tab,             // UNTES
 {
     OFBitmanipTemplate<DiDisplayLUT *>::zeroMem(LookupTable, MAX_NUMBER_OF_TABLES);
     /* check number of entries */
-    if ((ValueCount > 0) && (ValueCount == (unsigned long)MaxDDLValue + 1))
+    if ((ValueCount > 0) && (ValueCount == OFstatic_cast(unsigned long, MaxDDLValue) + 1))
     {
         /* copy value table */
         DDLValue = new Uint16[ValueCount];
@@ -116,7 +115,7 @@ DiDisplayFunction::DiDisplayFunction(const double *val_tab,             // UNTES
             register unsigned int i;
             for (i = 0; i <= MaxDDLValue; i++)
             {
-                DDLValue[i] = (Uint16)i;                    // set DDL values
+                DDLValue[i] = OFstatic_cast(Uint16, i);     // set DDL values
                 LODValue[i] = val_tab[i];                   // copy table
             }
             Valid = calculateMinMax();
@@ -176,13 +175,13 @@ DiDisplayFunction::DiDisplayFunction(const double val_min,
     if ((ValueCount > 1) && (ValueCount <= MAX_TABLE_ENTRY_COUNT) && (MinValue < MaxValue))
     {
         /* create value tables */
-        MaxDDLValue = (Uint16)(count - 1);
+        MaxDDLValue = OFstatic_cast(Uint16, count - 1);
         DDLValue = new Uint16[ValueCount];
         LODValue = new double[ValueCount];
         if ((DDLValue != NULL) && (LODValue != NULL))
         {
             register Uint16 i;
-            const double val = (val_max - val_min) / (double)MaxDDLValue;
+            const double val = (val_max - val_min) / OFstatic_cast(double, MaxDDLValue);
             DDLValue[0] = 0;
             LODValue[0] = val_min;
             for (i = 1; i < MaxDDLValue; i++)
@@ -232,17 +231,17 @@ Uint16 DiDisplayFunction::getDDLforValue(const double value) const
         if ((DeviceType == EDT_Printer) || (DeviceType == EDT_Scanner))
         {
             /* hardcopy device: descending values */
-            while ((j + 1 < ValueCount) && (LODValue[j] > value))  
+            while ((j + 1 < ValueCount) && (LODValue[j] > value))
                 j++;
         } else {
             /* softcopy device: ascending values */
-            while ((j + 1 < ValueCount) && (LODValue[j] < value))  
+            while ((j + 1 < ValueCount) && (LODValue[j] < value))
                 j++;
         }
         /* check which value is closer, the upper or the lower */
         if ((j > 0) && (fabs(LODValue[j - 1] - value) < fabs(LODValue[j] - value)))
             j--;
-        return (Uint16)j;
+        return OFstatic_cast(Uint16, j);
     }
     return 0;
 }
@@ -371,8 +370,8 @@ int DiDisplayFunction::readConfigFile(const char *filename)
                             file >> MaxDDLValue;
                             if (MaxDDLValue > 0)
                             {
-                                DDLValue = new Uint16[(unsigned long)MaxDDLValue + 1];
-                                LODValue = new double[(unsigned long)MaxDDLValue + 1];
+                                DDLValue = new Uint16[OFstatic_cast(unsigned long, MaxDDLValue) + 1];
+                                LODValue = new double[OFstatic_cast(unsigned long, MaxDDLValue) + 1];
                                 if ((DDLValue == NULL) || (LODValue == NULL))
                                     return 0;
                             } else {
@@ -467,7 +466,7 @@ int DiDisplayFunction::readConfigFile(const char *filename)
                             return 0;                                       // abort
                         }
                     } else {
-                        if (ValueCount <= (unsigned long)MaxDDLValue)
+                        if (ValueCount <= OFstatic_cast(unsigned long, MaxDDLValue))
                         {
                             file >> DDLValue[ValueCount];                   // read DDL value
                             file >> LODValue[ValueCount];                   // read luminance/OD value
@@ -533,7 +532,7 @@ int DiDisplayFunction::createSortedTable(const Uint16 *ddl_tab,
     double *old_val = LODValue;
     if ((ValueCount > 0) && (ddl_tab != NULL) && (val_tab != NULL))
     {
-        const unsigned long count = (unsigned long)MaxDDLValue + 1;
+        const unsigned long count = OFstatic_cast(unsigned long, MaxDDLValue) + 1;
         DDLValue = new Uint16[ValueCount];
         LODValue = new double[ValueCount];
         Sint32 *sort_tab = new Sint32[count];                                       // auxilliary array (temporary)
@@ -595,7 +594,7 @@ int DiDisplayFunction::createSortedTable(const Uint16 *ddl_tab,
 
 int DiDisplayFunction::interpolateValues()
 {
-    if (ValueCount <= (unsigned long)MaxDDLValue)                         // interpolation necessary ?
+    if (ValueCount <= OFstatic_cast(unsigned long, MaxDDLValue))        // interpolation necessary ?
     {
         int status = 0;
         if (Order > 0)
@@ -603,14 +602,14 @@ int DiDisplayFunction::interpolateValues()
             /* use polynomial curve fitting */
             double *coeff = new double[Order + 1];
             /* compute coefficients */
-            if ((coeff != NULL) &&
-                DiCurveFitting<Uint16, double>::calculateCoefficients(DDLValue, LODValue, (unsigned int)ValueCount, Order, coeff))
+            if ((coeff != NULL) && DiCurveFitting<Uint16, double>::calculateCoefficients(DDLValue, LODValue,
+                    OFstatic_cast(unsigned int, ValueCount), Order, coeff))
             {
                 /* delete old data arrays */
                 delete[] DDLValue;
                 delete[] LODValue;
                 /* create new data arrays */
-                ValueCount = (unsigned long)MaxDDLValue + 1;
+                ValueCount = OFstatic_cast(unsigned long, MaxDDLValue) + 1;
                 DDLValue = new Uint16[ValueCount];
                 LODValue = new double[ValueCount];
                 if ((DDLValue != NULL) && (LODValue != NULL))
@@ -618,9 +617,10 @@ int DiDisplayFunction::interpolateValues()
                     /* set x values linearly */
                     register unsigned int i;
                     for (i = 0; i <= MaxDDLValue; i++)
-                        DDLValue[i] = (Uint16)i;
+                        DDLValue[i] = OFstatic_cast(Uint16, i);
                     /* compute new y values */
-                    status = DiCurveFitting<Uint16, double>::calculateValues(0, MaxDDLValue, LODValue, (unsigned int)ValueCount, Order, coeff);
+                    status = DiCurveFitting<Uint16, double>::calculateValues(0, MaxDDLValue, LODValue,
+                        OFstatic_cast(unsigned int, ValueCount), Order, coeff);
                 }
             }
             delete[] coeff;
@@ -628,14 +628,14 @@ int DiDisplayFunction::interpolateValues()
             /* use cubic spline interpolation */
             double *spline = new double[ValueCount];
             if ((spline != NULL) &&
-                DiCubicSpline<Uint16, double>::Function(DDLValue, LODValue, (unsigned int)ValueCount, spline))
+                DiCubicSpline<Uint16, double>::Function(DDLValue, LODValue, OFstatic_cast(unsigned int, ValueCount), spline))
             {
                 /* save old values */
                 const unsigned long count = ValueCount;
                 Uint16 *old_ddl = DDLValue;
                 double *old_val = LODValue;
                 /* create new data arrays */
-                ValueCount = (unsigned long)MaxDDLValue + 1;
+                ValueCount = OFstatic_cast(unsigned long, MaxDDLValue) + 1;
                 DDLValue = new Uint16[ValueCount];
                 LODValue = new double[ValueCount];
                 if ((DDLValue != NULL) && (LODValue != NULL))
@@ -643,10 +643,10 @@ int DiDisplayFunction::interpolateValues()
                     /* set x values linearly */
                     register unsigned int i;
                     for (i = 0; i <= MaxDDLValue; i++)
-                        DDLValue[i] = (Uint16)i;
+                        DDLValue[i] = OFstatic_cast(Uint16, i);
                     /* compute new y values */
-                    status = DiCubicSpline<Uint16, double>::Interpolation(old_ddl, old_val, spline, (unsigned int)count,
-                                                                          DDLValue, LODValue, (unsigned int)ValueCount);
+                    status = DiCubicSpline<Uint16, double>::Interpolation(old_ddl, old_val, spline,
+                        OFstatic_cast(unsigned int, count), DDLValue, LODValue, OFstatic_cast(unsigned int, ValueCount));
                 }
                 /* delete old data arrays */
                 delete[] old_ddl;
@@ -726,11 +726,11 @@ double *DiDisplayFunction::convertODtoLumTable(const double *od_tab,
             if (useAmb)
             {
                 for (i = 0; i < count; i++)
-                    lum_tab[i] = AmbientLight + Illumination * pow((double)10, -od_tab[i]);
+                    lum_tab[i] = AmbientLight + Illumination * pow(OFstatic_cast(double, 10), -od_tab[i]);
             } else {
                 /* ambient light is added later */
                 for (i = 0; i < count; i++)
-                    lum_tab[i] = Illumination * pow((double)10, -od_tab[i]);
+                    lum_tab[i] = Illumination * pow(OFstatic_cast(double, 10), -od_tab[i]);
             }
         }
     }
@@ -751,7 +751,8 @@ double DiDisplayFunction::convertODtoLum(const double value,
                                          const double illum)
 {
     /* formula from DICOM PS3.14: L = La + L0 * 10^-D */
-    return (value >= 0) && (ambient >= 0) && (illum >= 0) ? ambient + illum * pow((double)10, -value) : -1 /*invalid*/;
+    return (value >= 0) && (ambient >= 0) && (illum >= 0) ?
+        ambient + illum * pow(OFstatic_cast(double, 10), -value) : -1 /*invalid*/;
 }
 
 
@@ -759,7 +760,10 @@ double DiDisplayFunction::convertODtoLum(const double value,
  *
  * CVS/RCS Log:
  * $Log: didispfn.cc,v $
- * Revision 1.39  2003-04-14 14:27:27  meichel
+ * Revision 1.40  2003-12-08 15:10:08  joergr
+ * Adapted type casts to new-style typecast operators defined in ofcast.h.
+ *
+ * Revision 1.39  2003/04/14 14:27:27  meichel
  * Added explicit typecasts in calls to pow(). Needed by Visual C++ .NET 2003.
  *
  * Revision 1.38  2003/02/12 11:37:14  joergr

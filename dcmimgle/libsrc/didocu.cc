@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2002, OFFIS
+ *  Copyright (C) 1996-2003, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,10 +21,9 @@
  *
  *  Purpose: DicomDocument (Source)
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-08-21 09:51:47 $
- *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/libsrc/didocu.cc,v $
- *  CVS/RCS Revision: $Revision: 1.14 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2003-12-08 15:13:18 $
+ *  CVS/RCS Revision: $Revision: 1.15 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -57,7 +56,7 @@ DiDocument::DiDocument(const char *filename,
 {
     if (FileFormat)
     {
-        
+
         if (FileFormat->loadFile(filename).bad())
         {
             if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Errors))
@@ -71,7 +70,7 @@ DiDocument::DiDocument(const char *filename,
             Object = FileFormat->getDataset();
             if (Object != NULL)
             {
-                Xfer = ((DcmDataset *)Object)->getOriginalXfer();
+                Xfer = OFstatic_cast(DcmDataset *, Object)->getOriginalXfer();
                 convertPixelData();
             }
         }
@@ -97,14 +96,14 @@ DiDocument::DiDocument(DcmObject *object,
         {
             /* store reference to DICOM file format to be deleted on object destruction */
             if (Flags & CIF_TakeOverExternalDataset)
-                FileFormat = (DcmFileFormat *)object;
-            Object = ((DcmFileFormat *)object)->getDataset();
+                FileFormat = OFstatic_cast(DcmFileFormat *, object);
+            Object = OFstatic_cast(DcmFileFormat *, object)->getDataset();
         } else
             Object = object;
         if (Object != NULL)
         {
             if (Xfer == EXS_Unknown)
-                Xfer = ((DcmDataset *)Object)->getOriginalXfer();
+                Xfer = OFstatic_cast(DcmDataset *, Object)->getOriginalXfer();
             convertPixelData();
         }
     }
@@ -119,7 +118,7 @@ void DiDocument::convertPixelData()
     // convert pixel data to uncompressed format if required
     if (search(DCM_PixelData, pstack))
     {
-        DcmPixelData *pixel = (DcmPixelData *)pstack.top();
+        DcmPixelData *pixel = OFstatic_cast(DcmPixelData *, pstack.top());
         pstack.clear();
         // push reference to DICOM dataset on the stack (required for decompression process)
         pstack.push(Object);
@@ -171,7 +170,9 @@ DcmElement *DiDocument::search(const DcmTagKey &tag,
         obj = Object;
     if ((obj != NULL) && (obj->search(tag, stack, ESM_fromHere, OFFalse /* searchIntoSub */) == EC_Normal) &&
         (stack.top()->getLength(Xfer) > 0))
-            return (DcmElement *)stack.top();
+    {
+        return OFstatic_cast(DcmElement *, stack.top());
+    }
     return NULL;
 }
 
@@ -308,7 +309,7 @@ unsigned long DiDocument::getSequence(const DcmTagKey &tag,
 {
     DcmElement *elem = search(tag);
     if ((elem != NULL) && (elem->ident() == EVR_SQ))
-        return (seq =(DcmSequenceOfItems *)elem)->card();
+        return (seq = OFstatic_cast(DcmSequenceOfItems *, elem))->card();
     return 0;
 }
 
@@ -319,8 +320,8 @@ unsigned long DiDocument::getElemValue(const DcmElement *elem,
 {
     if (elem != NULL)
     {
-        ((DcmElement *)elem)->getUint16(returnVal, pos);   // remove 'const' to use non-const methods
-        return ((DcmElement *)elem)->getVM();
+        OFconst_cast(DcmElement *, elem)->getUint16(returnVal, pos);   // remove 'const' to use non-const methods
+        return OFconst_cast(DcmElement *, elem)->getVM();
     }
     return 0;
 }
@@ -331,12 +332,12 @@ unsigned long DiDocument::getElemValue(const DcmElement *elem,
 {
     if (elem != NULL)
     {
-        Uint16 *val;                                    // parameter has no 'const' qualifier
-        ((DcmElement *)elem)->getUint16Array(val);      // remove 'const' to use non-const methods
+        Uint16 *val;                                            // parameter has no 'const' qualifier
+        OFconst_cast(DcmElement *, elem)->getUint16Array(val); // remove 'const' to use non-const methods
         returnVal = val;
-        if (((DcmElement *)elem)->getVR() == EVR_OW)
-            return ((DcmElement *)elem)->getLength(/*Xfer*/) / sizeof(Uint16);
-        return ((DcmElement *)elem)->getVM();
+        if (OFconst_cast(DcmElement *, elem)->getVR() == EVR_OW)
+            return OFconst_cast(DcmElement *, elem)->getLength(/*Xfer*/) / sizeof(Uint16);
+        return OFconst_cast(DcmElement *, elem)->getVM();
     }
     return 0;
 }
@@ -347,10 +348,10 @@ unsigned long DiDocument::getElemValue(const DcmElement *elem,
 {
     if (elem != NULL)
     {
-        char *val;                                        // parameter has no 'const' qualifier
-        ((DcmElement *)elem)->getString(val);             // remove 'const' to use non-const methods
+        char *val;                                         // parameter has no 'const' qualifier
+        OFconst_cast(DcmElement *, elem)->getString(val); // remove 'const' to use non-const methods
         returnVal = val;
-        return ((DcmElement *)elem)->getVM();
+        return OFconst_cast(DcmElement *, elem)->getVM();
     }
     return 0;
 }
@@ -362,8 +363,8 @@ unsigned long DiDocument::getElemValue(const DcmElement *elem,
 {
     if (elem != NULL)
     {
-        ((DcmElement *)elem)->getOFString(returnVal, pos);      // remove 'const' to use non-const methods
-        return ((DcmElement *)elem)->getVM();
+        OFconst_cast(DcmElement *, elem)->getOFString(returnVal, pos); // remove 'const' to use non-const methods
+        return OFconst_cast(DcmElement *, elem)->getVM();
     }
     return 0;
 }
@@ -373,7 +374,10 @@ unsigned long DiDocument::getElemValue(const DcmElement *elem,
  *
  * CVS/RCS Log:
  * $Log: didocu.cc,v $
- * Revision 1.14  2002-08-21 09:51:47  meichel
+ * Revision 1.15  2003-12-08 15:13:18  joergr
+ * Adapted type casts to new-style typecast operators defined in ofcast.h.
+ *
+ * Revision 1.14  2002/08/21 09:51:47  meichel
  * Removed DicomImage and DiDocument constructors that take a DcmStream
  *   parameter
  *

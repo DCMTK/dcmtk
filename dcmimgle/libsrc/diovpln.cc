@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2002, OFFIS
+ *  Copyright (C) 1996-2003, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,8 @@
  *  Purpose: DicomOverlayPlane (Source) - Multiframe Overlays UNTESTED !
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-12-09 13:34:52 $
- *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/libsrc/diovpln.cc,v $
- *  CVS/RCS Revision: $Revision: 1.26 $
+ *  Update Date:      $Date: 2003-12-08 15:00:23 $
+ *  CVS/RCS Revision: $Revision: 1.27 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -97,7 +96,7 @@ DiOverlayPlane::DiOverlayPlane(const DiDocument *docu,
         /* multi-frame overlays */
         tag.setElement(DCM_NumberOfFramesInOverlay.getElement());
         docu->getValue(tag, sl);
-        NumberOfFrames = (sl < 1) ? 1 : (Uint32)sl;
+        NumberOfFrames = (sl < 1) ? 1 : OFstatic_cast(Uint32, sl);
         tag.setElement(DCM_ImageFrameOrigin.getElement());
         docu->getValue(tag, ImageFrameOrigin);
         if (ImageFrameOrigin > 0)                                   // image frame origin is numbered from 1
@@ -176,8 +175,8 @@ DiOverlayPlane::DiOverlayPlane(const DiDocument *docu,
                 BitPosition = BitsAllocated - 1;
             }
             /* expected length of overlay data */
-            const unsigned long expLen = ((unsigned long)NumberOfFrames * (unsigned long)Rows * (unsigned long)Columns *
-                                          (unsigned long)BitsAllocated + 7) / 8;
+            const unsigned long expLen = (OFstatic_cast(unsigned long, NumberOfFrames) * OFstatic_cast(unsigned long, Rows) *
+                                          OFstatic_cast(unsigned long, Columns) * OFstatic_cast(unsigned long, BitsAllocated) + 7) / 8;
             if ((length == 0) || (length < expLen))
             {
                 if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Errors))
@@ -232,13 +231,13 @@ DiOverlayPlane::DiOverlayPlane(const unsigned int group,
     StartPtr(NULL),
     Data(NULL)
 {
-    DiDocument::getElemValue((const DcmElement *)&label, Label);
-    DiDocument::getElemValue((const DcmElement *)&description, Description);
+    DiDocument::getElemValue(OFreinterpret_cast(const DcmElement *, &label), Label);
+    DiDocument::getElemValue(OFreinterpret_cast(const DcmElement *, &description), Description);
     if ((Columns > 0) && (Rows > 0))
     {
-        const unsigned long length = DiDocument::getElemValue((const DcmElement *)&data, Data) * 2 /* Bytes */;
+        const unsigned long length = DiDocument::getElemValue(OFreinterpret_cast(const DcmElement *, &data), Data) * 2 /* Bytes */;
         /* expected length of overlay data */
-        const unsigned long expLen = ((unsigned long)Rows * (unsigned long)Columns + 7) / 8;
+        const unsigned long expLen = (OFstatic_cast(unsigned long, Rows) * OFstatic_cast(unsigned long, Columns) + 7) / 8;
         if ((length == 0) || (length < expLen))
         {
             if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Errors))
@@ -300,7 +299,7 @@ DiOverlayPlane::DiOverlayPlane(DiOverlayPlane *plane,
         register Uint16 *q = temp;
         register const Uint16 mask = 1 << bit;
         const Uint16 skip_x = width - plane->Columns;
-        const unsigned long skip_f = (unsigned long)(height - plane->Rows) * (unsigned long)width;
+        const unsigned long skip_f = OFstatic_cast(unsigned long, height - plane->Rows) * OFstatic_cast(unsigned long, width);
         for (unsigned long f = 0; f < NumberOfFrames; f++)
         {
             if (plane->reset(f + ImageFrameOrigin))
@@ -345,10 +344,10 @@ void *DiOverlayPlane::getData(const unsigned long frame,
                               const Uint16 fore,
                               const Uint16 back)
 {
-    const unsigned long count = (unsigned long)(xmax - xmin) * (unsigned long)(ymax - ymin);
+    const unsigned long count = OFstatic_cast(unsigned long, xmax - xmin) * OFstatic_cast(unsigned long, ymax - ymin);
     if (Valid && (count > 0))
     {
-        const Uint16 mask = (Uint16)DicomImageClass::maxval(bits);
+        const Uint16 mask = OFstatic_cast(Uint16, DicomImageClass::maxval(bits));
         if (bits == 1)
         {
             const unsigned long count8 = (count + 7) / 8;           // round value: 8 bit padding
@@ -393,15 +392,15 @@ void *DiOverlayPlane::getData(const unsigned long frame,
                     OFBitmanipTemplate<Uint8>::setMem(data, (fore) ? 0xff : 0x0, count8);
                 }
             }
-            return (void *)data;
+            return OFstatic_cast(void *, data);
         }
         else if ((bits > 1) && (bits <= 8))
         {
             Uint8 *data = new Uint8[count];
             if (data != NULL)
             {
-                const Uint8 fore8 = (Uint8)(fore & mask);
-                const Uint8 back8 = (Uint8)(back & mask);
+                const Uint8 fore8 = OFstatic_cast(Uint8, fore & mask);
+                const Uint8 back8 = OFstatic_cast(Uint8, back & mask);
                 OFBitmanipTemplate<Uint8>::setMem(data, back8, count);
                 if (fore8 != back8)                                     // optimization
                 {
@@ -422,7 +421,7 @@ void *DiOverlayPlane::getData(const unsigned long frame,
                     }
                 }
             }
-            return (void *)data;
+            return OFstatic_cast(void *, data);
         }
         else if ((bits > 8) && (bits <= 16))
         {
@@ -451,7 +450,7 @@ void *DiOverlayPlane::getData(const unsigned long frame,
                     }
                 }
             }
-            return (void *)data;
+            return OFstatic_cast(void *, data);
         }
     }
     return NULL;
@@ -467,7 +466,7 @@ unsigned long DiOverlayPlane::create6xxx3000Data(Uint8 *&buffer,
     width = Width;
     height = Height;
     frames = NumberOfFrames;
-    const unsigned long count = (unsigned long)Width * (unsigned long)Height * NumberOfFrames;
+    const unsigned long count = OFstatic_cast(unsigned long, Width) * OFstatic_cast(unsigned long, Height) * NumberOfFrames;
     if (Valid && (count > 0))
     {
         const unsigned long count8 = ((count + 15) / 16) * 2;           // round value: 16 bit padding
@@ -537,10 +536,10 @@ int DiOverlayPlane::show(const Uint16 pvalue)
 void DiOverlayPlane::setScaling(const double xfactor,
                                 const double yfactor)
 {
-    Left = (Sint16)(xfactor * Left);
-    Top = (Sint16)(yfactor * Top);
-    Width = (Uint16)(xfactor * Width);
-    Height = (Uint16)(yfactor * Height);
+    Left = OFstatic_cast(Sint16, xfactor * Left);
+    Top = OFstatic_cast(Sint16, yfactor * Top);
+    Width = OFstatic_cast(Uint16, xfactor * Width);
+    Height = OFstatic_cast(Uint16, yfactor * Height);
 }
 
 
@@ -551,13 +550,13 @@ void DiOverlayPlane::setFlipping(const int horz,
 {
     if (horz)
     {
-        Left = (Sint16)(columns - Width - Left);
-        StartLeft = (Uint16)((signed long)Columns - Width - StartLeft);
+        Left = OFstatic_cast(Sint16, columns - Width - Left);
+        StartLeft = OFstatic_cast(Uint16, OFstatic_cast(signed long, Columns) - Width - StartLeft);
     }
     if (vert)
     {
-        Top = (Sint16)(rows - Height - Top);
-        StartTop = (Uint16)((signed long)Rows - Height - StartTop);
+        Top = OFstatic_cast(Sint16, rows - Height - Top);
+        StartTop = OFstatic_cast(Uint16, OFstatic_cast(signed long, Rows) - Height - StartTop);
     }
 }
 
@@ -584,17 +583,17 @@ void DiOverlayPlane::setRotation(const int degree,
         {
             Sint16 ss = Left;
             us = StartLeft;
-            Left = (Sint16)((signed long)columns - Width - Top + top_pos);
-            StartLeft = (Uint16)((signed long)Columns - Width - StartTop);
-            Top = (Sint16)(ss - left_pos);
+            Left = OFstatic_cast(Sint16, OFstatic_cast(signed long, columns) - Width - Top + top_pos);
+            StartLeft = OFstatic_cast(Uint16, OFstatic_cast(signed long, Columns) - Width - StartTop);
+            Top = OFstatic_cast(Sint16, ss - left_pos);
             StartTop = us;
         } else {                                // rotate left
             Sint16 ss = Left;
             us = StartLeft;
-            Left = (Sint16)(Top - top_pos);
+            Left = OFstatic_cast(Sint16, Top - top_pos);
             StartLeft = StartTop;
-            Top = (Sint16)((signed long)rows - Height - ss + left_pos);
-            StartTop = (Uint16)((signed long)Rows - Height - us);
+            Top = OFstatic_cast(Sint16, OFstatic_cast(signed long, rows) - Height - ss + left_pos);
+            StartTop = OFstatic_cast(Uint16, OFstatic_cast(signed long, Rows) - Height - us);
         }
     }
 }
@@ -604,7 +603,10 @@ void DiOverlayPlane::setRotation(const int degree,
  *
  * CVS/RCS Log:
  * $Log: diovpln.cc,v $
- * Revision 1.26  2002-12-09 13:34:52  joergr
+ * Revision 1.27  2003-12-08 15:00:23  joergr
+ * Adapted type casts to new-style typecast operators defined in ofcast.h.
+ *
+ * Revision 1.26  2002/12/09 13:34:52  joergr
  * Renamed parameter/local variable to avoid name clashes with global
  * declaration left and/or right (used for as iostream manipulators).
  *
