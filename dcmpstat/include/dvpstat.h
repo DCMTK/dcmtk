@@ -23,8 +23,8 @@
  *    classes: DVPresentationState
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-10-20 10:49:20 $
- *  CVS/RCS Revision: $Revision: 1.27 $
+ *  Update Date:      $Date: 1999-11-03 10:36:32 $
+ *  CVS/RCS Revision: $Revision: 1.28 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1171,8 +1171,8 @@ public:
    *  @param idx index of the overlay activation on the given layer,
    *    must be < getNumberOfActiveOverlays(layer).
    *  @param overlayData upon success a pointer to the overlay plane is passed back
-   *    in this parameter. The overlay plane is organized as one byte per pixel.
-   *    The byte values are already transform from pvalues to DDLs.
+   *    in this parameter. The overlay plane is organized as one byte or one word per pixel.
+   *    The byte/word values are already transformed from pvalues to DDLs.
    *  @param width upon success the width of the overlay bitmap in pixels is returned in this parameter.
    *  @param height upon success the height of the overlay bitmap in pixels is returned in this parameter.
    *  @param left upon success the horizontal position of the overlay relative to the image 
@@ -1440,9 +1440,9 @@ public:
    *  to digital driving levels of the graphics board. The pointer to the pixel
    *  data remains valid until the next call to this function, or until the
    *  image is detached or the presentation state is deleted.
-   *  @param pixelData in this parameter a pointer to the pixel data is
-   *    returned. The storage area allocated for this pointer must not be
-   *    freed by the caller. If the return value is an error code, 
+   *  @param pixelData in this parameter a pointer to the pixel data is returned
+   *    (array of 8 bit values). The storage area allocated for this pointer must
+   *    not be freed by the caller. If the return value is an error code, 
    *    no valid pixel data pointer may be assumed.
    *  @param width returns the width of the bitmap in pixels
    *  @param height returns the height of the bitmap in pixels
@@ -1455,8 +1455,9 @@ public:
   
   /** same as method above apart from the fact that the storage area is handled
    *  externally.
-   *  @param pixelData pointer to storage area where the pixel data is copied to.
-   *    The storage area must be allocated and deleted from the calling method.
+   *  @param pixelData pointer to storage area where the pixel data is copied to
+   *    (array of 8 bit values). The storage area must be allocated and deleted
+   *    from the calling method.
    *  @param size specifies size of the storage area in bytes.
    *  @return EC_Normal upon success, an error code otherwise.
    */
@@ -1614,7 +1615,7 @@ public:
 
    /** writes the bitmap data of the preview image into the given buffer.
     *  The storage area must be allocated and deleted from the calling method.
-    *  @param bitmap pointer to storage area where the pixel data is copied to
+    *  @param bitmap pointer to storage area where the pixel data is copied to (array of 8 bit values)
     *  @param size specifies size of the storage area in bytes
     *  @return EC_Normal upon success, an error code otherwise
     */
@@ -2123,7 +2124,10 @@ private:
 
 /*
  *  $Log: dvpstat.h,v $
- *  Revision 1.27  1999-10-20 10:49:20  joergr
+ *  Revision 1.28  1999-11-03 10:36:32  joergr
+ *  Enhanced comments for methods dealing with arrays of pixel data.
+ *
+ *  Revision 1.27  1999/10/20 10:49:20  joergr
  *  Enhanced method getOverlayData to support 12 bit data for print.
  *  Enhanced method convertPValueToDDL to support 12 bit data for print.
  *  Added support for a down-scaled preview image of the current DICOM image
