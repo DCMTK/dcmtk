@@ -1,3 +1,19 @@
+**** Changes from 1998.06.23 (riesmeier)
+
+- Print 'maximum/minimum pixel value' (verbose mode) only for
+  monochrome images.
+  Affects: dcmimage/apps/dcm2pnm.cc
+
+- Added compatibility mode to support ACR-NEMA images and wrong
+  palette attribute tags.
+  Affects: dcmimage/apps/dcm2pnm.cc
+           dcmimage/libsrc/dcmimage.cc
+           dcmimage/libsrc/didocu.cc
+           dcmimage/libsrc/dipalimg.cc
+           dcmimage/include/dcmimage.h
+           dcmimage/include/didocu.h
+           dcmimage/include/diutils.h
+
 **** Changes from 1998.05.11 (riesmeier)
 
 - Minor changes to some comments.

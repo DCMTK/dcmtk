@@ -8,15 +8,15 @@
 ** Purpose: Convert DICOM Images to PPM or PGM using the dcmimage library.
 **
 ** Last Update:      $Author: joergr $
-** Update Date:      $Date: 1998-05-11 15:00:04 $
+** Update Date:      $Date: 1998-06-25 08:48:15 $
 ** Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/apps/dcm2pnm.cc,v $
-** CVS/RCS Revision: $Revision: 1.12 $
+** CVS/RCS Revision: $Revision: 1.13 $
 ** Status:           $State: Exp $
 **
 ** CVS/RCS Log at end of file
 **
 */
-                        
+ 
 
 #include "osconfig.h"    /* make sure OS specific configuration is included first */
 
@@ -67,6 +67,9 @@ usage()
       "  +ti      read with little-endian implicit transfer syntax\n"
       "  +te      read with little-endian explicit transfer syntax\n"
       "  +tb      read with big-endian explicit transfer syntax\n"
+      "compatibility options:\n"
+      "  +Ma      compatibility with ACR-NEMA\n"
+      "  +Mp      wrong palette attribute tags\n"
       "image processing options:\n"
       "  +F n     select frame n (default: 1)\n"
       "  +G       convert to grayscale if necessary\n"
@@ -180,6 +183,7 @@ int main(int argc, char *argv[])
 {
   int              opt_readAsDataset = 0;            /* default: fileformat or dataset */
   E_TransferSyntax opt_transferSyntax = EXS_Unknown; /* default: xfer syntax recognition */
+  unsigned long    opt_compatibilityMode = 0;        /* default: no compatibility option */
   unsigned long    opt_Frame = 1;                    /* default: first frame */
   int              opt_ConvertToGrayscale = 0;       /* default: color or grayscale */
   int              opt_useAspectRatio = 1;           /* default: use aspect ratio for scaling */
@@ -263,6 +267,26 @@ int main(int argc, char *argv[])
                  break;
                case 'b':
                  opt_transferSyntax = EXS_BigEndianExplicit;
+                 break;
+               default:
+                 fprintf(stderr, "unknown option: %s\n", arg);
+                 return 1;
+             }
+           } else {
+             fprintf(stderr, "unknown option: %s\n", arg);
+             return 1;
+           }
+           break;
+         case 'M': /* +Ma, +Mp */
+           if ((strlen(arg)==3)&&(arg[0]=='+'))
+           {
+             switch (arg[2])
+             {
+               case 'a':
+                 opt_compatibilityMode = CIF_AcrNemaCompatibility;
+                 break;
+               case 'p':
+                 opt_compatibilityMode = CIF_WrongPaletteAttributeTags;
                  break;
                default:
                  fprintf(stderr, "unknown option: %s\n", arg);
@@ -665,7 +689,7 @@ int main(int argc, char *argv[])
   else
       xfer = ((DcmFileFormat *)dfile)->getDataset()->getOriginalXfer();
 
-  DicomImage *di = new DicomImage(dfile, xfer); /* warning: dfile is Dataset or Fileformat! */
+  DicomImage *di = new DicomImage(dfile, xfer, opt_compatibilityMode); /* warning: dfile is Dataset or Fileformat! */
   
   if (di == NULL)
   {
@@ -695,7 +719,7 @@ int main(int argc, char *argv[])
     char *SOPInstanceUID=NULL;
     const char *SOPClassText=NULL;
     
-    di->getMinMaxValues(minVal, maxVal);
+    int minmaxValid = di->getMinMaxValues(minVal, maxVal);
     switch (di->getPhotometricInterpretation())
     {
       case EPI_Monochrome1:
@@ -747,8 +771,6 @@ int main(int argc, char *argv[])
       "color model         : %s\n"
       "pixel aspect ratio  : %.2f\n"
       "number of frames    : %lu\n\n"
-      "maximum pixel value : %.0f\n"
-      "minimum pixel value : %.0f\n\n"
       "VOI windows in file : %lu\n"
       "VOI LUTs in file    : %lu\n"
       "Overlays in file    : %u\n\n",
@@ -760,12 +782,19 @@ int main(int argc, char *argv[])
         colorModel,
         di->getHeightWidthRatio(),
         di->getFrameCount(),
-        maxVal,
-        minVal,
         di->getWindowCount(),
         di->getVoiLutCount(),
         di->getOverlayCount()
-    );		
+    );
+    if (minmaxValid)
+    {
+      fprintf(stderr,
+        "maximum pixel value : %.0f\n"
+        "minimum pixel value : %.0f\n\n",
+          maxVal,
+          minVal
+      );
+    }
   }
   
   if (opt_suppressOutput) return 0;
@@ -1075,7 +1104,13 @@ int main(int argc, char *argv[])
 /*
 ** CVS/RCS Log:
 ** $Log: dcm2pnm.cc,v $
-** Revision 1.12  1998-05-11 15:00:04  joergr
+** Revision 1.13  1998-06-25 08:48:15  joergr
+** Print 'maximum/minimum pixel value' (verbose mode) only for
+** monochrome images.
+** Added compatibility mode to support ACR-NEMA images and wrong
+** palette attribute tags.
+**
+** Revision 1.12  1998/05/11 15:00:04  joergr
 ** Minor changes to some comments.
 **
 ** Revision 1.11  1998/03/09 08:15:50  joergr
