@@ -57,9 +57,9 @@
 **	Module Prefix: DIMSE_
 **
 ** Last Update:		$Author: meichel $
-** Update Date:		$Date: 1998-01-27 10:51:46 $
+** Update Date:		$Date: 1998-01-28 17:38:13 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/libsrc/dimse.cc,v $
-** CVS/RCS Revision:	$Revision: 1.13 $
+** CVS/RCS Revision:	$Revision: 1.14 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -161,7 +161,11 @@ DIMSE_readNextPDV(T_ASC_Association * assoc,
 
     if (cond != DUL_NORMAL) {
 	/* there is no pdv waiting to be picked up */
+
+#ifdef PUT_DUL_NOPDVS_ON_CONDITION_STACK
+        /* see DUL_NextPDV in dul.cc for a description */
 	COND_PopCondition(OFFalse);
+#endif
 
 	/* try to read new pdv's */
 	cond = DUL_ReadPDVs(&assoc->DULassociation, NULL, blk, timeout);
@@ -1306,7 +1310,13 @@ void DIMSE_warning(T_ASC_Association *assoc,
 /*
 ** CVS Log
 ** $Log: dimse.cc,v $
-** Revision 1.13  1998-01-27 10:51:46  meichel
+** Revision 1.14  1998-01-28 17:38:13  meichel
+** Removed minor bug from DICOM Upper Layer / DIMSE modules.
+**   For each PDV received, an error condition was pushed on the error stack
+**   and then again pulled from it. If a callback function was registered
+**   with the condition stack, it was flooded with error messages.
+**
+** Revision 1.13  1998/01/27 10:51:46  meichel
 ** Removed some unused variables, meaningless const modifiers
 **   and unreached statements.
 **

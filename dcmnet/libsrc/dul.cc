@@ -54,9 +54,9 @@
 ** Author, Date:	Stephen M. Moore, 14-Apr-93
 ** Intent:		This module contains the public entry points for the
 **			DICOM Upper Layer (DUL) protocol package.
-** Last Update:		$Author: hewett $, $Date: 1997-09-11 15:58:46 $
+** Last Update:		$Author: meichel $, $Date: 1998-01-28 17:38:15 $
 ** Source File:		$RCSfile: dul.cc,v $
-** Revision:		$Revision: 1.12 $
+** Revision:		$Revision: 1.13 $
 ** Status:		$State: Exp $
 */
 
@@ -1262,7 +1262,17 @@ DUL_NextPDV(DUL_ASSOCIATIONKEY ** callerAssociation, DUL_PDV * pdv)
 	return cond;
 
     if ((*association)->pdvIndex == -1)
+#ifdef PUT_DUL_NOPDVS_ON_CONDITION_STACK
 	return COND_PushCondition(DUL_NOPDVS, DUL_Message(DUL_NOPDVS));
+#else
+     /* in this special case we want to avoid a message on the
+        condition stack because this is no real error, but normal
+        behaviour - A callback function registered in the condition stack
+        would (unnecessarily) be called once for each PDV. 
+        the #ifdef allows to mimick the old behaviour.
+      */
+	return DUL_NOPDVS;
+#endif 
 
     *pdv = (*association)->currentPDV;
 
@@ -2252,7 +2262,13 @@ clearPresentationContext(LST_HEAD ** l)
 /*
 ** CVS Log
 ** $Log: dul.cc,v $
-** Revision 1.12  1997-09-11 15:58:46  hewett
+** Revision 1.13  1998-01-28 17:38:15  meichel
+** Removed minor bug from DICOM Upper Layer / DIMSE modules.
+**   For each PDV received, an error condition was pushed on the error stack
+**   and then again pulled from it. If a callback function was registered
+**   with the condition stack, it was flooded with error messages.
+**
+** Revision 1.12  1997/09/11 15:58:46  hewett
 ** DUL code now only tries to set the send/receive TCP buffer length
 ** socket options if the SO_SNDBUF and SO_RCVBUF preprocessor macros
 ** are defined.  Attempts to set these socket options will generate an
