@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000, OFFIS
+ *  Copyright (C) 2000-2001, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,8 +23,8 @@
  *    classes: DSRDocument
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-01-25 11:49:42 $
- *  CVS/RCS Revision: $Revision: 1.22 $
+ *  Update Date:      $Date: 2001-01-29 17:37:44 $
+ *  CVS/RCS Revision: $Revision: 1.23 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -42,6 +42,7 @@
 DSRDocument::DSRDocument(const E_DocumentType documentType)
   : DocumentTree(documentType),
     LogStream(NULL),
+    FinalizedFlag(OFFalse),
     CompletionFlagEnum(CF_invalid),
     VerificationFlagEnum(VF_invalid),
     SpecificCharacterSetEnum(CS_invalid),
@@ -92,6 +93,7 @@ void DSRDocument::clear()
 {
     /* clear SR document tree */
     DocumentTree.clear();
+    FinalizedFlag = OFFalse;
     /* clear enumerated values */
     CompletionFlagEnum = CF_invalid;
     VerificationFlagEnum = VF_invalid;
@@ -136,6 +138,12 @@ OFBool DSRDocument::isValid()
 {
     /* document is valid if document tree is valid and ... */
     return DocumentTree.isValid() && (SOPClassUID.getLength() > 0) && (SOPInstanceUID.getLength() > 0);
+}
+
+
+OFBool DSRDocument::isFinalized()
+{
+    return FinalizedFlag;
 }
 
 
@@ -1538,6 +1546,8 @@ E_Condition DSRDocument::createNewSeriesInStudy(const OFString &studyUID)
 void DSRDocument::createNewSOPInstance()
 {
     SOPInstanceUID.clear();
+    /* reset FinalizedFlag */
+    FinalizedFlag = OFFalse;
     /* update all DICOM attributes (incl. empty UIDs) */
     updateAttributes();
 }
@@ -1556,7 +1566,7 @@ E_Condition DSRDocument::createNewDocument(const E_DocumentType documentType)
     E_Condition result = DocumentTree.changeDocumentType(documentType);
     if (result == EC_Normal)
     {
-        /* clear object */
+        /* clear object (all member variables) */
         clear();
         /* set initial values for a new SOP instance */
         createNewSOPInstance();
@@ -1618,7 +1628,9 @@ E_Condition DSRDocument::createRevisedVersion()
                     /* insert item into sequence (replace old ones) */
                     PredecessorDocuments.clear();
                     PredecessorDocuments.insert(ditem);
-                    /* create new instance UID, update creation date/time and remove verifying observer */
+                    /* remove digital signatures from document tree */
+                    DocumentTree.removeSignatures();
+                    /* create new instance UID, update creation date/time and reset finalized flag */
                     createNewSOPInstance();
                 }
             } else {
@@ -1692,6 +1704,8 @@ E_Condition DSRDocument::verifyDocument(const OFString &observerName,
                 VerifyingObserver.insert(ditem);
                 /* set VerificationFlag to VERIFIED */
                 VerificationFlagEnum = VF_Verified;
+                /* reset FinalizedFlag */
+                FinalizedFlag = OFFalse;
             } else
                 result = EC_MemoryExhausted;
             result = EC_Normal;
@@ -1706,6 +1720,22 @@ void DSRDocument::removeVerification()
     /* clear list of verifying observers and set flag to UNVERIFIED */
     VerifyingObserver.clear();
     VerificationFlagEnum = VF_Unverified;    
+    /* reset FinalizedFlag */
+    FinalizedFlag = OFFalse;
+}
+
+
+E_Condition DSRDocument::finalizeDocument()
+{
+    E_Condition result = EC_IllegalCall;
+    /* document can only be finalized if it is already completed */
+    if (CompletionFlagEnum == CF_Complete)
+    {
+        /* set FinalizedFlag */
+        FinalizedFlag = OFTrue;
+        result = EC_Normal;
+    }
+    return result;
 }
 
 
@@ -1775,7 +1805,10 @@ void DSRDocument::updateAttributes(const OFBool updateAll)
 /*
  *  CVS/RCS Log:
  *  $Log: dsrdoc.cc,v $
- *  Revision 1.22  2001-01-25 11:49:42  joergr
+ *  Revision 1.23  2001-01-29 17:37:44  joergr
+ *  Added methods to support a new state of finalized and unfinalized documents.
+ *
+ *  Revision 1.22  2001/01/25 11:49:42  joergr
  *  Always remove signature sequences from certain dataset sequences (e.g.
  *  VerifyingObserver or PredecessorDocuments).
  *

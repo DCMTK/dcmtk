@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000, OFFIS
+ *  Copyright (C) 2000-2001, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,8 +23,8 @@
  *    classes: DSRDocument
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-01-25 11:48:43 $
- *  CVS/RCS Revision: $Revision: 1.20 $
+ *  Update Date:      $Date: 2001-01-29 17:37:14 $
+ *  CVS/RCS Revision: $Revision: 1.21 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -81,6 +81,15 @@ class DSRDocument
      ** @return OFTrue if valid, OFFalse otherwise
      */
     OFBool isValid();
+
+    /** check whether the document is finalized.
+     *  A new document is originally not finalized but can be finalized using the method
+     *  finalizeDocument().  This flag is e.g. used to indicate whether the entire document
+     *  is digitally signed and, therefore, each newly added verifying observer would corrupt
+     *  all previous signatures.
+     ** @return OFTrue if finalized, OFFalse otherwise
+     */
+    OFBool isFinalized();
 
     /** set the log stream.
      *  The log stream is used to report any warnings and error messages.
@@ -728,7 +737,8 @@ class DSRDocument
     E_Condition createNewSeriesInStudy(const OFString &studyUID);
 
     /** create a new SOP instance.
-     *  Generate a new SOP instance UID, set the instance creation date/time.
+     *  Generate a new SOP instance UID, set the instance creation date/time and reset the
+     *  finalized flag (OFFalse).
      *  This method is used internally for createNewDocument(), createRevisedVersion()
      *  and during object initialization.
      *  It could also be used explicitly from the calling application if a new UID should
@@ -760,11 +770,12 @@ class DSRDocument
      *  predecessor documents sequence (possible existing references are automatically
      *  replaced, i.e. there is never more than one reference in this sequence).  If all
      *  revised versions of a SR document are stored (written to datasets/files) it is
-     *  possible to track back the full chain of previous versions.
+     *  possible to trace back the full chain of previous versions.
      *  A new SOP instance is created and the content date/time are set automatically.
      *  Furthermore the verifying observer sequence is deleted, the verifcation flag is set
-     *  to UNVERIFIED, the completion flag is set to PARTIAL (i.e. not complete) and the
-     *  completion flag description is deleted.
+     *  to UNVERIFIED, the completion flag is set to PARTIAL (i.e. not complete), the
+     *  completion flag description is deleted, all digital signatures contained in the
+     *  document tree are deleted and the finalized flag is reset (OFFalse).
      ** @return status, EC_Normal if successful, an error code otherwise
      */
     E_Condition createRevisedVersion();
@@ -790,8 +801,10 @@ class DSRDocument
     /** verify the current document by a specific observer.
      *  A document can be verified more than once.  The observer information is added to a
      *  sequence stored in the dataset.  The verification flag is automatically set to
-     *  VERIFIED (if not already done).
-     *  Please note that only completed documents (see completion flag) can be verified.
+     *  VERIFIED (if not already done) and the finalized flag is reset (OFFalse).
+     *  Please note that only completed documents (see completion flag) can be verified and that
+     *  a new SOP instance UID has to be generated (manually) according to the DICOM standard when
+     *  creating a dataset/file from this document.
      ** @param  observerName  name of the person who has verified this document (required, VR=PN)
      *  @param  organization  name of the organization to which the observer belongs (required, VR=LO)
      ** @return status, EC_Normal if successful, an error code otherwise
@@ -802,8 +815,10 @@ class DSRDocument
     /** verify the current document by a specific observer.
      *  A document can be verified more than once.  The observer information is added to a
      *  sequence stored in the dataset.  The verification flag is automatically set to
-     *  VERIFIED (if not already done).
-     *  Please note that only completed documents (see completion flag) can be verified.
+     *  VERIFIED (if not already done) and the finalized flag is reset (OFFalse).
+     *  Please note that only completed documents (see completion flag) can be verified and that
+     *  a new SOP instance UID has to be generated (manually) according to the DICOM standard when
+     *  creating a dataset/file from this document.
      ** @param  observerName  name of the person who has verified this document (required, VR=PN)
      *  @param  observerCode  code identifying the verifying observer (optional, see previous method)
      *  @param  organization  name of the organization to which the observer belongs (required, VR=LO)
@@ -814,12 +829,26 @@ class DSRDocument
                                const OFString &organization);
 
     /** remove verification information.
-     *  The list of verifying observers is cleared and the verification flag is set to UNVERIFIED.
+     *  The list of verifying observers is cleared, the verification flag is set to UNVERIFIED and
+     *  the finalized flag is reset (OFFalse).
      *  Normally, there should be no need to use this method.  On the other hand it is useful to
      *  guarantee a consistent state when processing documents which have not been created with this
      *  toolkit.
      */
     void removeVerification();
+
+    /** finalize the current state of the document.
+     *  A new document is originally not finalized but can be finalized using the method
+     *  finalizeDocument().  This flag is e.g. used to indicate whether the entire document
+     *  is digitally signed and, therefore, each newly added verifying observer would corrupt
+     *  all previous signatures.
+     *  NB: A document needs to be completed first in order to be finalized.  Some of the above
+     *      document management functions do reset the flag (i.e. set the FinalizedFlag to OFFalse),
+     *      other methods (e.g. the setXXX) do not change the flag though the state of the document
+     *      is not finalized any more after they have been called.
+     ** @return status, EC_Normal if successful, an error code otherwise
+     */
+    E_Condition finalizeDocument();
 
 
   protected:
@@ -855,6 +884,9 @@ class DSRDocument
 
     /// output stream for error messages, NULL for no messages
     OFConsole *LogStream;
+    
+    /// flag indicating whether is document is finalized or not
+    OFBool             FinalizedFlag;
 
     /// enumerated value: partial, complete
     E_CompletionFlag   CompletionFlagEnum;
@@ -974,7 +1006,10 @@ class DSRDocument
 /*
  *  CVS/RCS Log:
  *  $Log: dsrdoc.h,v $
- *  Revision 1.20  2001-01-25 11:48:43  joergr
+ *  Revision 1.21  2001-01-29 17:37:14  joergr
+ *  Added methods to support a new state of finalized and unfinalized documents.
+ *
+ *  Revision 1.20  2001/01/25 11:48:43  joergr
  *  Corrected typos / enhanced comments.
  *
  *  Revision 1.19  2001/01/18 15:53:33  joergr
