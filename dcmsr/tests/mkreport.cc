@@ -22,8 +22,8 @@
  *  Purpose: Create sample structured reports using the dcmsr API
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-04-16 13:51:59 $
- *  CVS/RCS Revision: $Revision: 1.18 $
+ *  Update Date:      $Date: 2002-05-07 13:02:12 $
+ *  CVS/RCS Revision: $Revision: 1.19 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -175,9 +175,9 @@ int main(int argc, char *argv[])
 
                     DcmFileFormat *fileformat = new DcmFileFormat();
                     DcmDataset *dataset = NULL;
-                    if (fileformat)
+                    if (fileformat != NULL)
                         dataset = fileformat->getDataset();
-                    if (dataset)
+                    if (dataset != NULL)
                     {
                         if (doc->write(*dataset).good())
                         {
@@ -304,6 +304,10 @@ static void generate_fk(DSRDocument *doc)
     doc->getTree().addContentItem(DSRTypes::RT_contains, DSRTypes::VT_Image, DSRTypes::AM_belowCurrent);
     doc->getTree().getCurrentContentItem().setConceptName(DSRCodedEntryValue("CH_1.1", OFFIS_CODING_SCHEME_DESIGNATOR, "Image of the Author"));
     doc->getTree().getCurrentContentItem().setImageReference(DSRImageReferenceValue(UID_SecondaryCaptureImageStorage, "1.2.276.0.7230010.3.4.1915765545.18030.917282194.11.1.1", UID_GrayscaleSoftcopyPresentationStateStorage, "1.2.276.0.7230010.3.1.4.1707840890.221.974385531.18"));
+    doc->getCurrentRequestedProcedureEvidence().addItem("1.2.276.0.7230010.3.4.1915765545.18030.917282194.11", "1.2.276.0.7230010.3.4.1915765545.18030.917282194.11.1", UID_SecondaryCaptureImageStorage, "1.2.276.0.7230010.3.4.1915765545.18030.917282194.11.1.1");
+    doc->getCurrentRequestedProcedureEvidence().setRetrieveAETitle("DCMPSTATE");
+    doc->getPertinentOtherEvidence().addItem("1.2.276.0.7230010.3.4.1915765545.18030.917282194.11", "1.2.276.0.7230010.3.1.4.1707840890.221.974385403.16", UID_GrayscaleSoftcopyPresentationStateStorage, "1.2.276.0.7230010.3.1.4.1707840890.221.974385531.18");
+    doc->getPertinentOtherEvidence().setRetrieveAETitle("DCMPSTATE");
 
     doc->getTree().addContentItem(DSRTypes::RT_contains, DSRTypes::VT_Container);
     doc->getTree().getCurrentContentItem().setConceptName(DSRCodedEntryValue("CH_2.1", OFFIS_CODING_SCHEME_DESIGNATOR, "Liber primus"));
@@ -712,6 +716,7 @@ static void generate_06(DSRDocument *doc)
     doc->getTree().addContentItem(DSRTypes::RT_contains, DSRTypes::VT_Image);
     doc->getTree().getCurrentContentItem().setConceptName(DSRCodedEntryValue("CODE_27", OFFIS_CODING_SCHEME_DESIGNATOR, "Teeth Present"));
     doc->getTree().getCurrentContentItem().setImageReference(DSRImageReferenceValue(UID_SecondaryCaptureImageStorage, "1.2.276.0.7230010.3.1.4.123456.1.1"));
+    doc->getCurrentRequestedProcedureEvidence().addItem("1.2.276.0.7230010.3.1.4.123456", "1.2.276.0.7230010.3.1.4.123456.1", UID_SecondaryCaptureImageStorage, "1.2.276.0.7230010.3.1.4.123456.1.1");
 
     doc->getTree().addContentItem(DSRTypes::RT_contains, DSRTypes::VT_Text);
     doc->getTree().getCurrentContentItem().setConceptName(DSRCodedEntryValue("CODE_28", OFFIS_CODING_SCHEME_DESIGNATOR, "Orthodontic/Pediatric Assessment"));
@@ -751,6 +756,8 @@ static void generate_07(DSRDocument *doc)
     doc->getTree().addContentItem(DSRTypes::RT_contains, DSRTypes::VT_Image);
     doc->getTree().getCurrentContentItem().setConceptName(DSRCodedEntryValue("CODE_27", OFFIS_CODING_SCHEME_DESIGNATOR, "Teeth Present"));
     doc->getTree().getCurrentContentItem().setImageReference(DSRImageReferenceValue(UID_SecondaryCaptureImageStorage, "1.2.276.0.7230010.3.1.4.123456.1.2", UID_GrayscaleSoftcopyPresentationStateStorage, "1.2.276.0.7230010.3.1.4.123456.2.2"));
+    doc->getCurrentRequestedProcedureEvidence().addItem("1.2.276.0.7230010.3.1.4.123456", "1.2.276.0.7230010.3.1.4.123456.1", UID_SecondaryCaptureImageStorage, "1.2.276.0.7230010.3.1.4.123456.1.2");
+    doc->getCurrentRequestedProcedureEvidence().addItem("1.2.276.0.7230010.3.1.4.123456", "1.2.276.0.7230010.3.1.4.123456.2", UID_GrayscaleSoftcopyPresentationStateStorage, "1.2.276.0.7230010.3.1.4.123456.2.2");
 
     doc->getTree().addContentItem(DSRTypes::RT_contains, DSRTypes::VT_Text);
     doc->getTree().getCurrentContentItem().setConceptName(DSRCodedEntryValue("CODE_28", OFFIS_CODING_SCHEME_DESIGNATOR, "Orthodontic/Pediatric Assessment"));
@@ -790,6 +797,7 @@ static void generate_08(DSRDocument *doc)
     doc->getTree().addContentItem(DSRTypes::RT_contains, DSRTypes::VT_Composite);
     doc->getTree().getCurrentContentItem().setConceptName(DSRCodedEntryValue("CODE_27", OFFIS_CODING_SCHEME_DESIGNATOR, "Teeth Present"));
     doc->getTree().getCurrentContentItem().setCompositeReference(DSRCompositeReferenceValue(UID_GrayscaleSoftcopyPresentationStateStorage, "1.2.276.0.7230010.3.1.4.123456.2.2"));
+    doc->getCurrentRequestedProcedureEvidence().addItem("1.2.276.0.7230010.3.1.4.123456", "1.2.276.0.7230010.3.1.4.123456.2", UID_GrayscaleSoftcopyPresentationStateStorage, "1.2.276.0.7230010.3.1.4.123456.2.2");
 
     doc->getTree().addContentItem(DSRTypes::RT_contains, DSRTypes::VT_Text);
     doc->getTree().getCurrentContentItem().setConceptName(DSRCodedEntryValue("CODE_28", OFFIS_CODING_SCHEME_DESIGNATOR, "Orthodontic/Pediatric Assessment"));
@@ -836,6 +844,7 @@ static void generate_09(DSRDocument *doc)
     doc->getTree().addContentItem(DSRTypes::RT_contains, DSRTypes::VT_Image);
     doc->getTree().getCurrentContentItem().setConceptName(DSRCodedEntryValue("IR.02", OFFIS_CODING_SCHEME_DESIGNATOR, "Best illustration of finding"));
     doc->getTree().getCurrentContentItem().setImageReference(DSRImageReferenceValue(UID_CTImageStorage, "2.16.840.1.113662.2.1.12345.19950126.112629.1900"));
+    doc->getCurrentRequestedProcedureEvidence().addItem("2.16.840.1.113662.2.1.53544936282433.12345.336.16650", "2.16.840.1.113662.2.1.53544936282433.12345.336.1665.9990", UID_CTImageStorage, "2.16.840.1.113662.2.1.12345.19950126.112629.1900");
 }
 
 
@@ -882,6 +891,7 @@ static void generate_10(DSRDocument *doc)
     doc->getTree().addContentItem(DSRTypes::RT_contains, DSRTypes::VT_Image);
     doc->getTree().getCurrentContentItem().setConceptName(DSRCodedEntryValue("IR.02", OFFIS_CODING_SCHEME_DESIGNATOR, "Best illustration of finding"));
     doc->getTree().getCurrentContentItem().setImageReference(DSRImageReferenceValue(UID_MRImageStorage, "2.16.840.1.113662.4.8796818069641.806010667.274350678564784069"));
+    doc->getCurrentRequestedProcedureEvidence().addItem("2.16.840.1.113662.4.8796818069641.798806497.93296077602350.10", "2.16.840.1.113662.4.8796818069641.806010667.284225018829304176", UID_MRImageStorage, "2.16.840.1.113662.4.8796818069641.806010667.274350678564784069");
 }
 
 
@@ -920,6 +930,7 @@ static void generate_11(DSRDocument *doc)
     doc->getTree().addContentItem(DSRTypes::RT_contains, DSRTypes::VT_Image);
     doc->getTree().getCurrentContentItem().setConceptName(DSRCodedEntryValue("IR.02", OFFIS_CODING_SCHEME_DESIGNATOR, "Best illustration of finding"));
     doc->getTree().getCurrentContentItem().setImageReference(DSRImageReferenceValue(UID_ComputedRadiographyImageStorage, "1.2.840.113654.2.4.4.3.6.1.119950730.1807310414"));
+    doc->getCurrentRequestedProcedureEvidence().addItem("1.2.840.113654.2.4.4.3.4.119950730134200", "1.2.840.113654.2.4.4.3.5.119950730134200", UID_ComputedRadiographyImageStorage, "1.2.840.113654.2.4.4.3.6.1.119950730.1807310414");
 }
 
 
@@ -966,6 +977,7 @@ static void generate_12(DSRDocument *doc)
     doc->getTree().addContentItem(DSRTypes::RT_contains, DSRTypes::VT_Image);
     doc->getTree().getCurrentContentItem().setConceptName(DSRCodedEntryValue("IR.02", OFFIS_CODING_SCHEME_DESIGNATOR, "Best illustration of finding"));
     doc->getTree().getCurrentContentItem().setImageReference(DSRImageReferenceValue(UID_RETIRED_UltrasoundImageStorage, "1.2.840.113680.3.103.775.2873347909.282313.2"));
+    doc->getCurrentRequestedProcedureEvidence().addItem("1.2.840.113680.3.103.775.2873347909.282313", "1.2.840.113680.3.103.775.2873347909.282313", UID_RETIRED_UltrasoundImageStorage, "1.2.840.113680.3.103.775.2873347909.282313.2");
 }
 
 
@@ -1002,6 +1014,7 @@ static void generate_13(DSRDocument *doc)
     doc->getTree().addContentItem(DSRTypes::RT_contains, DSRTypes::VT_Image);
     doc->getTree().getCurrentContentItem().setConceptName(DSRCodedEntryValue("IR.02", OFFIS_CODING_SCHEME_DESIGNATOR, "Best illustration of finding"));
     doc->getTree().getCurrentContentItem().setImageReference(DSRImageReferenceValue(UID_CTImageStorage, "1.2.840.113674.950809132337081.100"));
+    doc->getCurrentRequestedProcedureEvidence().addItem("1.2.840.113674.514.212.200", "1.2.840.113674.514.212.82.300", UID_CTImageStorage, "1.2.840.113674.950809132337081.100");
 }
 
 
@@ -1038,6 +1051,7 @@ static void generate_14(DSRDocument *doc)
     doc->getTree().addContentItem(DSRTypes::RT_contains, DSRTypes::VT_Image);
     doc->getTree().getCurrentContentItem().setConceptName(DSRCodedEntryValue("IR.02", OFFIS_CODING_SCHEME_DESIGNATOR, "Best illustration of finding"));
     doc->getTree().getCurrentContentItem().setImageReference(DSRImageReferenceValue(UID_MRImageStorage, "1.2.840.113674.950809133202037.100"));
+    doc->getCurrentRequestedProcedureEvidence().addItem("1.2.840.113674.1140.196.200", "1.2.840.113674.1140.196.180.300", UID_MRImageStorage, "1.2.840.113674.950809133202037.100");
 }
 
 
@@ -1067,6 +1081,7 @@ static void generate_15(DSRDocument *doc)
     doc->getTree().addContentItem(DSRTypes::RT_contains, DSRTypes::VT_Image);
     doc->getTree().getCurrentContentItem().setConceptName(DSRCodedEntryValue("IR.02", OFFIS_CODING_SCHEME_DESIGNATOR, "Best illustration of finding"));
     doc->getTree().getCurrentContentItem().setImageReference(DSRImageReferenceValue(UID_MRImageStorage, "1.3.12.2.1107.5.8.1.123456789.199507271758050707765"));
+    doc->getCurrentRequestedProcedureEvidence().addItem("1.3.12.2.1107.5.8.1.123456789.199507271758050705910", "1.3.12.2.1107.5.8.1.123456789.199507271758050706635", UID_MRImageStorage, "1.3.12.2.1107.5.8.1.123456789.199507271758050707765");
 }
 
 
@@ -1104,6 +1119,7 @@ static void generate_16(DSRDocument *doc)
     doc->getTree().addContentItem(DSRTypes::RT_contains, DSRTypes::VT_Image);
     doc->getTree().getCurrentContentItem().setConceptName(DSRCodedEntryValue("IR.02", OFFIS_CODING_SCHEME_DESIGNATOR, "Best illustration of finding"));
     doc->getTree().getCurrentContentItem().setImageReference(DSRImageReferenceValue(UID_SecondaryCaptureImageStorage, "1.3.12.2.1107.5.8.1.123456789.199507271807160009128"));
+    doc->getCurrentRequestedProcedureEvidence().addItem("1.3.12.2.1107.5.8.1.123456789.199507271807160007134", "1.3.12.2.1107.5.8.1.123456789.199507271807160007847", UID_SecondaryCaptureImageStorage, "1.3.12.2.1107.5.8.1.123456789.199507271807160009128");
 }
 
 
@@ -1151,6 +1167,7 @@ static void generate_17(DSRDocument *doc)
     doc->getTree().addContentItem(DSRTypes::RT_contains, DSRTypes::VT_Image);
     doc->getTree().getCurrentContentItem().setConceptName(DSRCodedEntryValue("IR.02", OFFIS_CODING_SCHEME_DESIGNATOR, "Best illustration of finding"));
     doc->getTree().getCurrentContentItem().setImageReference(DSRImageReferenceValue(UID_SecondaryCaptureImageStorage, "1.3.12.2.1107.5.8.1.123456789.199507271803030521934"));
+    doc->getCurrentRequestedProcedureEvidence().addItem("1.3.12.2.1107.5.8.1.123456789.199507271803030520282", "1.3.12.2.1107.5.8.1.123456789.199507271803030521007", UID_SecondaryCaptureImageStorage, "1.3.12.2.1107.5.8.1.123456789.199507271803030521934");
 }
 
 
@@ -1197,6 +1214,7 @@ static void generate_18(DSRDocument *doc)
     doc->getTree().addContentItem(DSRTypes::RT_contains, DSRTypes::VT_Image);
     doc->getTree().getCurrentContentItem().setConceptName(DSRCodedEntryValue("IR.02", OFFIS_CODING_SCHEME_DESIGNATOR, "Best illustration of finding"));
     doc->getTree().getCurrentContentItem().setImageReference(DSRImageReferenceValue(UID_ComputedRadiographyImageStorage, "1.2.392.200036.9125.0.19950720093509"));
+    doc->getCurrentRequestedProcedureEvidence().addItem("1.2.392.200036.9125.0.198811291108.7", "1.2.392.200036.9125.0.198811291108.7", UID_ComputedRadiographyImageStorage, "1.2.392.200036.9125.0.19950720093509");
 }
 
 
@@ -1229,13 +1247,18 @@ static void generate_19(DSRDocument *doc)
     doc->getTree().addContentItem(DSRTypes::RT_contains, DSRTypes::VT_Image);
     doc->getTree().getCurrentContentItem().setConceptName(DSRCodedEntryValue("IR.02", OFFIS_CODING_SCHEME_DESIGNATOR, "Best illustration of finding"));
     doc->getTree().getCurrentContentItem().setImageReference(DSRImageReferenceValue(UID_RETIRED_UltrasoundImageStorage, "1.2.840.113663.19950725083017.0.0.0"));
+    doc->getCurrentRequestedProcedureEvidence().addItem("1.2.840.113663.19950725.1.0", "1.2.840.113663.19950725.1.0.0", UID_RETIRED_UltrasoundImageStorage, "1.2.840.113663.19950725083017.0.0.0");
 }
 
 
 /*
  *  CVS/RCS Log:
  *  $Log: mkreport.cc,v $
- *  Revision 1.18  2002-04-16 13:51:59  joergr
+ *  Revision 1.19  2002-05-07 13:02:12  joergr
+ *  Added support for the Current Requested Procedure Evidence Sequence and the
+ *  Pertinent Other Evidence Sequence to the dcmsr module.
+ *
+ *  Revision 1.18  2002/04/16 13:51:59  joergr
  *  Added configurable support for C++ ANSI standard includes (e.g. streams).
  *  Thanks to Andreas Barth <Andreas.Barth@bruker-biospin.de> for his
  *  contribution.
