@@ -22,9 +22,9 @@
  *  Purpose: Image Server Central Test Node (ctn) Main Program
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2005-03-30 13:34:44 $
+ *  Update Date:      $Date: 2005-04-04 10:05:43 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmqrdb/apps/Attic/dcmqrdb.cc,v $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -90,7 +90,9 @@ END_EXTERN_C
 #include <zlib.h>        /* for zlibVersion() */
 #endif
 
+#ifndef OFFIS_CONSOLE_APPLICATION
 #define OFFIS_CONSOLE_APPLICATION "dcmqrdb"
+#endif
 
 static char rcsid[] = "$dcmtk: " OFFIS_CONSOLE_APPLICATION " v"
   OFFIS_DCMTK_VERSION " " OFFIS_DCMTK_RELEASEDATE " $";
@@ -495,7 +497,7 @@ main(int argc, char *argv[])
 
 #ifdef WITH_SQL_DATABASE
     // use SQL database
-    DcmQueryRetrieveSQLDatabaseHandleFactory factory(&config);
+    DcmQueryRetrieveSQLDatabaseHandleFactory factory;
 #else
     // use linear index database (index.dat)
     DcmQueryRetrieveIndexDatabaseHandleFactory factory(&config);
@@ -529,7 +531,10 @@ main(int argc, char *argv[])
 /*
  * CVS Log
  * $Log: dcmqrdb.cc,v $
- * Revision 1.1  2005-03-30 13:34:44  meichel
+ * Revision 1.2  2005-04-04 10:05:43  meichel
+ * Minor corrections for use with external DB interface
+ *
+ * Revision 1.1  2005/03/30 13:34:44  meichel
  * Initial release of module dcmqrdb that will replace module imagectn.
  *   It provides a clear interface between the Q/R DICOM front-end and the
  *   database back-end. The imagectn code has been re-factored into a minimal
