@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2003, OFFIS
+ *  Copyright (C) 1997-2004, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,10 +21,10 @@
  *
  *  Purpose: Hash table interface for DICOM data dictionary
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2003-06-02 16:58:01 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2004-02-04 16:33:02 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dchashdi.cc,v $
- *  CVS/RCS Revision: $Revision: 1.18 $
+ *  CVS/RCS Revision: $Revision: 1.19 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -78,24 +78,24 @@ DcmDictEntryList::insertAndReplace(DcmDictEntry* e)
             {
                 if (e->privateCreatorMatch(**iter))
                 {
-                    // entry is already there so replace it 
+                    // entry is already there so replace it
                     DcmDictEntry* oldEntry = *iter;
                     *iter = e;
                     return oldEntry;
                 }
-                else 
+                else
                 {
                     // insert before listEntry
                     insert(iter, e);
                     return NULL;
                 }
-            } 
+            }
             else if (eHash < iterHash)
             {
                 // insert before listEntry
                 insert(iter, e);
                 return NULL;
-            }           
+            }
         }
         // add to end
         push_back(e);
@@ -117,7 +117,7 @@ DcmDictEntry *DcmDictEntryList::find(const DcmTagKey& k, const char *privCreator
             {
                 return *iter;
             } else if (iterHash > kHash) {
-                return NULL; // not there 
+                return NULL; // not there
             }
         }
     }
@@ -188,7 +188,7 @@ DcmHashDictIterator::stepUp()
 ** DcmHashDict
 */
 
-void 
+void
 DcmHashDict::_init(int hashTabLen)
 {
     hashTab = new DcmDictEntryList*[hashTabLen];
@@ -218,14 +218,14 @@ DcmHashDict::clear()
     }
     lowestBucket = hashTabLength-1;
     highestBucket = 0;
-    entryCount = 0;    
+    entryCount = 0;
 }
 
 int
 DcmHashDict::hash(const DcmTagKey* k) const
 {
     /*
-    ** Use a hash function based upon the relative number of 
+    ** Use a hash function based upon the relative number of
     ** data dictionary entries in each group by splitting
     ** the hash table into proportional sections .
     */
@@ -397,7 +397,7 @@ DcmHashDict::hash(const DcmTagKey* k) const
     int span = upper - lower;
     int offset = 0;
     if (span > 0) {
-        offset = (int)((k->hash() & 0x7FFFFFFF) % span);
+        offset = OFstatic_cast(int, (k->hash() & 0x7FFFFFFF) % span);
     }
     h =  lower + offset;
 
@@ -406,7 +406,7 @@ DcmHashDict::hash(const DcmTagKey* k) const
     return h;
 }
 
-DcmDictEntry*  
+DcmDictEntry*
 DcmHashDict::insertInList(DcmDictEntryList& l, DcmDictEntry* e)
 {
     return l.insertAndReplace(e);
@@ -428,7 +428,7 @@ DcmHashDict::put(DcmDictEntry* e)
     DcmDictEntry* old = insertInList(*bucket, e);
     if (old != NULL) {
         /* an old entry has been replaced */
-#ifdef PRINT_REPLACED_DICTIONARY_ENTRIES 
+#ifdef PRINT_REPLACED_DICTIONARY_ENTRIES
         ofConsole.lockCerr() << "replacing " << *old << endl;
         ofConsole.unlockCerr();
 #endif
@@ -446,7 +446,7 @@ DcmDictEntry *DcmHashDict::findInList(DcmDictEntryList& l, const DcmTagKey& k, c
     return l.find(k, privCreator);
 }
 
-const DcmDictEntry* 
+const DcmDictEntry*
 DcmHashDict::get(const DcmTagKey& k, const char *privCreator) const
 {
     const DcmDictEntry* entry = NULL;
@@ -459,7 +459,7 @@ DcmHashDict::get(const DcmTagKey& k, const char *privCreator) const
     if ((entry == NULL) && privCreator)
     {
       // As a second guess, we look for a private tag with flexible element number.
-      DcmTagKey tk(k.getGroup(), (unsigned short)(k.getElement() & 0xff));
+      DcmTagKey tk(k.getGroup(), OFstatic_cast(unsigned short, k.getElement() & 0xff));
       idx = hash(&tk);
       bucket = hashTab[idx];
       if (bucket) entry = findInList(*bucket, tk, privCreator);
@@ -477,7 +477,7 @@ DcmHashDict::removeInList(DcmDictEntryList& l, const DcmTagKey& k, const char *p
 }
 
 void
-DcmHashDict::del(const DcmTagKey& k, const char *privCreator) 
+DcmHashDict::del(const DcmTagKey& k, const char *privCreator)
 {
     Uint32 idx = hash(&k);
 
@@ -488,10 +488,10 @@ DcmHashDict::del(const DcmTagKey& k, const char *privCreator)
     }
 }
 
-ostream& 
+ostream&
 DcmHashDict::loadSummary(ostream& out)
 {
-    out << "DcmHashDict: size=" << hashTabLength << 
+    out << "DcmHashDict: size=" << hashTabLength <<
         ", total entries=" << size() << endl;
     DcmDictEntryList* bucket = NULL;
     int largestBucket = 0;
@@ -533,10 +533,14 @@ DcmHashDict::loadSummary(ostream& out)
     return out;
 }
 
+
 /*
 ** CVS/RCS Log:
 ** $Log: dchashdi.cc,v $
-** Revision 1.18  2003-06-02 16:58:01  meichel
+** Revision 1.19  2004-02-04 16:33:02  joergr
+** Adapted type casts to new-style typecast operators defined in ofcast.h.
+**
+** Revision 1.18  2003/06/02 16:58:01  meichel
 ** Renamed local variables to avoid name clashes with STL
 **
 ** Revision 1.17  2003/03/21 13:08:04  meichel

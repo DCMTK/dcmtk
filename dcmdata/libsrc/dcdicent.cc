@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2002, OFFIS
+ *  Copyright (C) 1994-2004, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,10 +21,10 @@
  *
  *  Purpose: a dictionary entry in the loadable DICOM data dictionary
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-11-27 12:06:44 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2004-02-04 16:26:07 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcdicent.cc,v $
- *  CVS/RCS Revision: $Revision: 1.12 $
+ *  CVS/RCS Revision: $Revision: 1.13 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -130,9 +130,9 @@ DcmDictEntry::~DcmDictEntry()
 {
     if (stringsAreCopies) {
         /* we have allocated them so it is ok to deallocate them */
-        delete[] (char*)tagName;
-        delete[] (char*)standardVersion;
-        delete[] (char*)privateCreator;
+        delete[] OFconst_cast(char *, tagName);
+        delete[] OFconst_cast(char *, standardVersion);
+        delete[] OFconst_cast(char *, privateCreator);
     }
 }
 
@@ -188,7 +188,10 @@ ostream& operator<<(ostream& s, const DcmDictEntry& e) {
 /*
 ** CVS/RCS Log:
 ** $Log: dcdicent.cc,v $
-** Revision 1.12  2002-11-27 12:06:44  meichel
+** Revision 1.13  2004-02-04 16:26:07  joergr
+** Adapted type casts to new-style typecast operators defined in ofcast.h.
+**
+** Revision 1.12  2002/11/27 12:06:44  meichel
 ** Adapted module dcmdata to use of new header file ofstdinc.h
 **
 ** Revision 1.11  2002/07/23 14:21:29  meichel

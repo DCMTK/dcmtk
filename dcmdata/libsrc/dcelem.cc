@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2003, OFFIS
+ *  Copyright (C) 1994-2004, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,10 +21,10 @@
  *
  *  Purpose: Implementation of class DcmElement
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2003-12-11 13:40:46 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2004-02-04 16:29:00 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcelem.cc,v $
- *  CVS/RCS Revision: $Revision: 1.47 $
+ *  CVS/RCS Revision: $Revision: 1.48 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -73,7 +73,7 @@ DcmElement::DcmElement(const DcmElement &elem)
     if (elem.fValue)
     {
         DcmVR vr(elem.getVR());
-        const unsigned short pad = (vr.isaString()) ? (unsigned short)1 : (unsigned short)0;
+        const unsigned short pad = (vr.isaString()) ? OFstatic_cast(unsigned short, 1) : OFstatic_cast(unsigned short, 0);
 
         // The next lines are a special version of newValueField().
         // newValueField() cannot be used because it is virtual and it does
@@ -113,7 +113,7 @@ DcmElement &DcmElement::operator=(const DcmElement &obj)
     if (obj.fValue)
     {
         DcmVR vr(obj.getVR());
-        const unsigned short pad = (vr.isaString()) ? (unsigned short)1 : (unsigned short)0;
+        const unsigned short pad = (vr.isaString()) ? OFstatic_cast(unsigned short, 1) : OFstatic_cast(unsigned short, 0);
 
         // The next lines are a special version of newValueField().
         // newValueField() cannot be used because it is virtual and it does
@@ -306,7 +306,7 @@ OFCondition DcmElement::getOFStringArray(OFString &value,
         if (i == 0)
         {
             /* reserve number of bytes expected (heuristic) */
-            value.reserve((unsigned int)getLength());
+            value.reserve(OFstatic_cast(unsigned int, getLength()));
             value.clear();
         } else
             value += '\\';
@@ -589,7 +589,7 @@ OFCondition DcmElement::changeValue(const void *value,
                 // copy old value in the beginning of new value
                 memcpy(newValue, fValue, size_t(Length));
                 // set parameter value in the extension
-                memcpy(&newValue[Length], (const Uint8*)value, size_t(num));
+                memcpy(&newValue[Length], OFstatic_cast(const Uint8 *, value), size_t(num));
                 delete[] fValue;
                 fValue = newValue;
                 Length += num;
@@ -603,7 +603,7 @@ OFCondition DcmElement::changeValue(const void *value,
         // swap to local byte order
         swapIfNecessary(gLocalByteOrder, fByteOrder, fValue,
                         Length, Tag.getVR().getValueWidth());
-        memcpy(&fValue[position], (const Uint8 *)value, size_t(num));
+        memcpy(&fValue[position], OFstatic_cast(const Uint8 *, value), size_t(num));
         fByteOrder = gLocalByteOrder;
     }
     return errorFlag;
@@ -931,7 +931,7 @@ OFCondition DcmElement::write(DcmOutputStream &outStream,
             DcmXfer outXfer(oxfer);
             /* get this element's value. Mind the byte ordering (little */
             /* or big endian) of the transfer syntax which shall be used */
-            Uint8 *value = (Uint8 *)getValue(outXfer.getByteOrder());
+            Uint8 *value = OFstatic_cast(Uint8 *, getValue(outXfer.getByteOrder()));
             /* if this element's transfer state is ERW_init (i.e. it has not yet been written to */
             /* the stream) and if the outstream provides enough space for tag and length information */
             /* write tag and length information to it, do something */
@@ -1062,7 +1062,10 @@ OFCondition DcmElement::writeXML(ostream &out,
 /*
 ** CVS/RCS Log:
 ** $Log: dcelem.cc,v $
-** Revision 1.47  2003-12-11 13:40:46  meichel
+** Revision 1.48  2004-02-04 16:29:00  joergr
+** Adapted type casts to new-style typecast operators defined in ofcast.h.
+**
+** Revision 1.47  2003/12/11 13:40:46  meichel
 ** newValueField() now uses std::nothrow new if available
 **
 ** Revision 1.46  2003/10/15 16:55:43  meichel

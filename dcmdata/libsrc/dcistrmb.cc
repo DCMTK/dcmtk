@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2002, OFFIS
+ *  Copyright (C) 2002-2004, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,9 +23,8 @@
  *    implements input to blocks of memory as needed in the dcmnet module.
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-09-19 08:32:29 $
- *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcistrmb.cc,v $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  Update Date:      $Date: 2004-02-04 16:33:40 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -96,13 +95,13 @@ Uint32 DcmBufferProducer::read(void *buf, Uint32 buflen)
   Uint32 result = 0;
   if (status_.good() && buflen && buf)
   {
-    unsigned char *target = (unsigned char *)buf;
+    unsigned char *target = OFstatic_cast(unsigned char *, buf);
     if (backupIndex_ < DCMBUFFERPRODUCER_BUFSIZE)
     {
       // we have data in the backup buffer, read first
       result = DCMBUFFERPRODUCER_BUFSIZE - backupIndex_;
       if (result > buflen) result = buflen;
-      memcpy(target, backup_ + backupIndex_, (size_t)result);
+      memcpy(target, backup_ + backupIndex_, OFstatic_cast(size_t, result));
       backupIndex_ += result;
       target += result;
       buflen -= result;
@@ -113,7 +112,7 @@ Uint32 DcmBufferProducer::read(void *buf, Uint32 buflen)
       // read data from user buffer
       Uint32 numbytes = bufSize_ - bufIndex_;
       if (numbytes > buflen) numbytes = buflen;
-      memcpy(target, buffer_ + bufIndex_, (size_t)numbytes);
+      memcpy(target, buffer_ + bufIndex_, OFstatic_cast(size_t, numbytes));
       bufIndex_ += numbytes;
       result += numbytes;
     }
@@ -208,7 +207,7 @@ void DcmBufferProducer::setBuffer(const void *buf, Uint32 buflen)
     }
     else if (buf && buflen)
     {
-      buffer_   = (unsigned char *)buf;
+      buffer_   = OFstatic_cast(unsigned char *, OFconst_cast(void *, buf));
       bufSize_  = buflen;
       bufIndex_ = 0;
     }
@@ -243,7 +242,7 @@ void DcmBufferProducer::releaseBuffer()
         // move (DCMBUFFERPRODUCER_BUFSIZE - numBytes) bytes from end of backup buffer
         // to start of backup buffer. Everything else will be overwritten from the
         // user buffer.
-        memmove(backup_, backup_ + numBytes, (size_t)(DCMBUFFERPRODUCER_BUFSIZE - numBytes));
+        memmove(backup_, backup_ + numBytes, OFstatic_cast(size_t, DCMBUFFERPRODUCER_BUFSIZE - numBytes));
 
         // adjust backupStart_
         if (backupStart_ < numBytes) backupStart_ = 0; else backupStart_ -= numBytes;
@@ -255,7 +254,7 @@ void DcmBufferProducer::releaseBuffer()
       }
 
       // copy (numBytes) bytes from the end of the user buffer to the end of the backup buffer
-      memcpy(backup_ + DCMBUFFERPRODUCER_BUFSIZE - numBytes, buffer_ + bufSize_ - numBytes, (size_t)numBytes);
+      memcpy(backup_ + DCMBUFFERPRODUCER_BUFSIZE - numBytes, buffer_ + bufSize_ - numBytes, OFstatic_cast(size_t, numBytes));
 
       // adjust backupIndex_
       if (backupIndex_ == DCMBUFFERPRODUCER_BUFSIZE)
@@ -340,11 +339,13 @@ void DcmInputBufferStream::setEos()
 }
 
 
-
 /*
  * CVS/RCS Log:
  * $Log: dcistrmb.cc,v $
- * Revision 1.2  2002-09-19 08:32:29  joergr
+ * Revision 1.3  2004-02-04 16:33:40  joergr
+ * Adapted type casts to new-style typecast operators defined in ofcast.h.
+ *
+ * Revision 1.2  2002/09/19 08:32:29  joergr
  * Added explicit type casts to keep Sun CC 2.0.1 quiet.
  *
  * Revision 1.1  2002/08/27 16:55:48  meichel

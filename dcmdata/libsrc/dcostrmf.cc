@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2002, OFFIS
+ *  Copyright (C) 2002-2004, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,10 +22,9 @@
  *  Purpose: DcmOutputFileStream and related classes,
  *    implements streamed output to files.
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2003-11-07 13:49:09 $
- *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcostrmf.cc,v $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2004-02-04 16:36:47 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -60,7 +59,7 @@ DcmFileConsumer::DcmFileConsumer(FILE *file)
 : DcmConsumer()
 , file_(file)
 , status_(EC_Normal)
-{ 
+{
 }
 
 DcmFileConsumer::~DcmFileConsumer()
@@ -85,7 +84,7 @@ OFBool DcmFileConsumer::isFlushed() const
 
 Uint32 DcmFileConsumer::avail() const
 {
-  return (Uint32) -1; // assume unlimited file size
+  return OFstatic_cast(Uint32, -1); // assume unlimited file size
 }
 
 Uint32 DcmFileConsumer::write(const void *buf, Uint32 buflen)
@@ -93,7 +92,7 @@ Uint32 DcmFileConsumer::write(const void *buf, Uint32 buflen)
   Uint32 result = 0;
   if (status_.good() && file_ && buf && buflen)
   {
-    result = (Uint32) fwrite(buf, 1, (size_t)buflen, file_);
+    result = OFstatic_cast(Uint32, fwrite(buf, 1, OFstatic_cast(size_t, buflen), file_));
   }
   return result;
 }
@@ -134,7 +133,10 @@ DcmOutputFileStream::~DcmOutputFileStream()
 /*
  * CVS/RCS Log:
  * $Log: dcostrmf.cc,v $
- * Revision 1.4  2003-11-07 13:49:09  meichel
+ * Revision 1.5  2004-02-04 16:36:47  joergr
+ * Adapted type casts to new-style typecast operators defined in ofcast.h.
+ *
+ * Revision 1.4  2003/11/07 13:49:09  meichel
  * Added constructor taking an open FILE* instead of a file name string
  *
  * Revision 1.3  2002/11/27 12:06:50  meichel

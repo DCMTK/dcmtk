@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2002, OFFIS
+ *  Copyright (C) 2002-2004, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,10 +22,9 @@
  *  Purpose: DcmInputFileStream and related classes,
  *    implements streamed input from files.
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-11-27 12:06:48 $
- *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcistrmf.cc,v $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2004-02-04 16:34:09 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -40,6 +39,7 @@
 #define INCLUDE_CERRNO
 #include "ofstdinc.h"
 
+
 DcmFileProducer::DcmFileProducer(const char *filename, Uint32 offset)
 : DcmProducer()
 , file_(NULL)
@@ -51,7 +51,7 @@ DcmFileProducer::DcmFileProducer(const char *filename, Uint32 offset)
   {
      // Get number of bytes in file
      fseek(file_, 0L, SEEK_END);
-     size_ = (Uint32)ftell(file_);
+     size_ = OFstatic_cast(Uint32, ftell(file_));
      if (0 != fseek(file_, offset, SEEK_SET))
      {
        const char *text = strerror(errno);
@@ -86,14 +86,14 @@ OFBool DcmFileProducer::eos() const
 {
   if (file_)
   {
-    return (feof(file_) || (size_ == (Uint32)ftell(file_)));
+    return (feof(file_) || (size_ == OFstatic_cast(Uint32, ftell(file_))));
   }
   else return OFTrue;
 }
 
 Uint32 DcmFileProducer::avail() const
 {
-  if (file_) return size_ - (Uint32)ftell(file_); else return 0;
+  if (file_) return size_ - OFstatic_cast(Uint32, ftell(file_)); else return 0;
 }
 
 Uint32 DcmFileProducer::read(void *buf, Uint32 buflen)
@@ -101,7 +101,7 @@ Uint32 DcmFileProducer::read(void *buf, Uint32 buflen)
   Uint32 result = 0;
   if (status_.good() && file_ && buf && buflen)
   {
-    result = (Uint32) fread(buf, 1, (size_t)buflen, file_);
+    result = OFstatic_cast(Uint32, fread(buf, 1, OFstatic_cast(size_t, buflen), file_));
   }
   return result;
 }
@@ -111,7 +111,7 @@ Uint32 DcmFileProducer::skip(Uint32 skiplen)
   Uint32 result = 0;
   if (status_.good() && file_ && skiplen)
   {
-    Uint32 pos = (Uint32)ftell(file_);
+    Uint32 pos = OFstatic_cast(Uint32, ftell(file_));
     result = (size_ - pos < skiplen) ? (size_ - pos) : skiplen;
     if (fseek(file_, result, SEEK_CUR))
     {
@@ -127,7 +127,7 @@ void DcmFileProducer::putback(Uint32 num)
 {
   if (status_.good() && file_ && num)
   {
-    Uint32 pos = (Uint32)ftell(file_);
+    Uint32 pos = OFstatic_cast(Uint32, ftell(file_));
     if (num <= pos)
     {
       if (fseek(file_, -Sint32(num), SEEK_CUR))
@@ -197,7 +197,10 @@ DcmInputStreamFactory *DcmInputFileStream::newFactory() const
 /*
  * CVS/RCS Log:
  * $Log: dcistrmf.cc,v $
- * Revision 1.3  2002-11-27 12:06:48  meichel
+ * Revision 1.4  2004-02-04 16:34:09  joergr
+ * Adapted type casts to new-style typecast operators defined in ofcast.h.
+ *
+ * Revision 1.3  2002/11/27 12:06:48  meichel
  * Adapted module dcmdata to use of new header file ofstdinc.h
  *
  * Revision 1.2  2002/09/19 08:32:29  joergr

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2002, OFFIS
+ *  Copyright (C) 2002-2004, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,9 +23,8 @@
  *    implements output to blocks of memory as needed in the dcmnet module.
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-09-19 08:32:28 $
- *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcostrmb.cc,v $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  Update Date:      $Date: 2004-02-04 16:36:47 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -40,7 +39,7 @@
 
 DcmBufferConsumer::DcmBufferConsumer(void *buf, Uint32 bufLen)
 : DcmConsumer()
-, buffer_((unsigned char *)buf)
+, buffer_(OFstatic_cast(unsigned char *, buf))
 , bufSize_(bufLen)
 , filled_(0)
 , status_(EC_Normal)
@@ -79,7 +78,7 @@ Uint32 DcmBufferConsumer::write(const void *buf, Uint32 buflen)
   {
     result = bufSize_ - filled_;
     if (result > buflen) result = buflen;
-    memcpy(buffer_+ filled_, buf, (size_t)result);
+    memcpy(buffer_+ filled_, buf, OFstatic_cast(size_t, result));
     filled_ += result;
   }
   return result;
@@ -125,7 +124,10 @@ void DcmOutputBufferStream::flushBuffer(void *& buffer, Uint32& length)
 /*
  * CVS/RCS Log:
  * $Log: dcostrmb.cc,v $
- * Revision 1.2  2002-09-19 08:32:28  joergr
+ * Revision 1.3  2004-02-04 16:36:47  joergr
+ * Adapted type casts to new-style typecast operators defined in ofcast.h.
+ *
+ * Revision 1.2  2002/09/19 08:32:28  joergr
  * Added explicit type casts to keep Sun CC 2.0.1 quiet.
  *
  * Revision 1.1  2002/08/27 16:55:53  meichel
