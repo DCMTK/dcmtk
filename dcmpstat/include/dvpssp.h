@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DVPSStoredPrint
  *
- *  Last Update:      $Author: thiel $
- *  Update Date:      $Date: 1999-09-09 14:57:33 $
- *  CVS/RCS Revision: $Revision: 1.8 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 1999-09-10 12:46:47 $
+ *  CVS/RCS Revision: $Revision: 1.9 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -169,7 +169,7 @@ class DVPSStoredPrint
    */
   E_Condition setRequestedDecimateCropBehaviour(DVPSDecimateCropBehaviour value); 
 
-  /** UNIMPLEMENTED - sets the (optional) border density.
+  /** sets the (optional) border density.
    *  @param value new attribute value, may be NULL.
    *    The caller is responsible for making sure
    *    that the value is valid for the selected printer.
@@ -177,7 +177,7 @@ class DVPSStoredPrint
    */
   E_Condition setBorderDensity(const char *value);
 
-  /** UNIMPLEMENTED - sets the (optional) empty image density.
+  /** sets the (optional) empty image density.
    *  @param value new attribute value, may be NULL.
    *    The caller is responsible for making sure
    *    that the value is valid for the selected printer.
@@ -249,12 +249,12 @@ class DVPSStoredPrint
    */
   const char *getResolutionID();
 
-  /** UNIMPLEMENTED - gets the (optional) border density.
+  /** gets the (optional) border density.
    *  @return border density, may be NULL.
    */
   const char *getBorderDensity();
 
-  /** UNIMPLEMENTED - gets the (optional) empty image density.
+  /** gets the (optional) empty image density.
    *  @return empty image density, may be NULL.
    */
   const char *getEmtpyImageDensity();
@@ -286,57 +286,78 @@ class DVPSStoredPrint
     return imageBoxContentList.deleteMultipleImages(number);
   }
 
-  /** UNIMPLEMENTED - checks if one of the registered images has additional settings that are not
+  /** checks if one of the registered images has additional settings that are not
    *  default values on the image box level.
    *  @param idx index, must be < getNumberOfImages()
    *  @return EC_Normal if successful, an error code otherwise.
    */
-  OFBool imageHasAdditionalSettings(size_t idx);
+  OFBool imageHasAdditionalSettings(size_t idx)
+  {
+    return imageBoxContentList.imageHasAdditionalSettings(idx);
+  }
 
-  /** UNIMPLEMENTED - sets the (optional) magnification type for the given registered image box.
+  /** sets the (optional) magnification type for the given registered image box.
    *  @param idx index, must be < getNumberOfImages()
    *  @param value new attribute value, may be NULL.
    *    The caller is responsible for making sure
    *    that the value is valid for the selected printer.
    *  @return EC_Normal if successful, an error code otherwise.
    */
-  E_Condition setImageMagnificationType(size_t idx, const char *value);
+  E_Condition setImageMagnificationType(size_t idx, const char *value)
+  {
+    return imageBoxContentList.setImageMagnificationType(idx, value);
+  }
   
-  /** UNIMPLEMENTED - sets the (optional) smoothing type for the given registered image box.
+  /** sets the (optional) smoothing type for the given registered image box.
    *  @param idx index, must be < getNumberOfImages()
    *  @param value new attribute value, may be NULL.
    *    The caller is responsible for making sure
    *    that the value is valid for the selected printer.
    *  @return EC_Normal if successful, an error code otherwise.
    */
-  E_Condition setImageSmoothingType(size_t idx, const char *value);
+  E_Condition setImageSmoothingType(size_t idx, const char *value)
+  {
+    return imageBoxContentList.setImageSmoothingType(idx, value);
+  }
   
-  /** UNIMPLEMENTED - sets the (optional) configuration information for the given registered image box.
+  /** sets the (optional) configuration information for the given registered image box.
    *  @param idx index, must be < getNumberOfImages()
    *  @param value new attribute value, may be NULL.
    *    The caller is responsible for making sure
    *    that the value is valid for the selected printer.
    *  @return EC_Normal if successful, an error code otherwise.
    */
-  E_Condition setImageConfigurationInformation(size_t idx, const char *value);
+  E_Condition setImageConfigurationInformation(size_t idx, const char *value)
+  {
+    return imageBoxContentList.setImageConfigurationInformation(idx, value);
+  }
 
-  /** UNIMPLEMENTED - gets the (optional) magnification type for the given registered image box.
+  /** gets the (optional) magnification type for the given registered image box.
    *  @param idx index, must be < getNumberOfImages()
    *  @return magnification type, may be NULL.
    */
-  const char *getImageMagnificationType(size_t idx);
+  const char *getImageMagnificationType(size_t idx)
+  {
+    return imageBoxContentList.getImageMagnificationType(idx);
+  }
 
-  /** UNIMPLEMENTED - gets the (optional) smoothing type for the given registered image box.
+  /** gets the (optional) smoothing type for the given registered image box.
    *  @param idx index, must be < getNumberOfImages()
    *  @return smoothing type, may be NULL.
    */
-  const char *getImageSmoothingType(size_t idx);
+  const char *getImageSmoothingType(size_t idx)
+  {
+    return imageBoxContentList.getImageSmoothingType(idx);
+  }
 
-  /** UNIMPLEMENTED - gets the (optional) configuration information for the given registered image box.
+  /** gets the (optional) configuration information for the given registered image box.
    *  @param idx index, must be < getNumberOfImages()
    *  @return configuration information, may be NULL.
    */
-  const char *getImageConfigurationInformation(size_t idx);
+  const char *getImageConfigurationInformation(size_t idx)
+  {
+    return imageBoxContentList.getImageConfigurationInformation(idx);
+  }
   
   /** writes the general study and series module attributes for a grayscale hardcopy image
    *  that is related to this stored print object to a DICOM dataset.
@@ -652,7 +673,10 @@ class DVPSStoredPrint
 
 /*
  *  $Log: dvpssp.h,v $
- *  Revision 1.8  1999-09-09 14:57:33  thiel
+ *  Revision 1.9  1999-09-10 12:46:47  meichel
+ *  Added implementations for a number of print API methods.
+ *
+ *  Revision 1.8  1999/09/09 14:57:33  thiel
  *  Added methods for print spooler
  *
  *  Revision 1.7  1999/09/09 12:20:47  meichel

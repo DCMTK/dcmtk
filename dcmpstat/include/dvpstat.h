@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DVPresentationState
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-09-10 09:02:32 $
- *  CVS/RCS Revision: $Revision: 1.22 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 1999-09-10 12:46:48 $
+ *  CVS/RCS Revision: $Revision: 1.23 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -68,12 +68,21 @@ class DVPresentationState
 {
 public:
   /** default constructor
-   *  @param displayFunction list of object describing the display
-   *    characteristic of the monitor. Used to implement the standard display function.
+   *  @param displayFunction list of objects describing the display
+   *    characteristics of the monitor. Used to implement the standard display function.
    *    The parameter should be an array with DVPSD_max entries (see DVInterface).
    *    If absent, no display transform is performed.
-   **/
-  DVPresentationState(DiDisplayFunction **dispFunction=NULL);
+   *  @param minPrintBitmapX default value for minimum print bitmap size X
+   *  @param minPrintBitmapY default value for minimum print bitmap size Y
+   *  @param maxPrintBitmapX default value for maximum print bitmap size X
+   *  @param maxPrintBitmapY default value for maximum print bitmap size Y
+   */
+  DVPresentationState(
+    DiDisplayFunction **dispFunction=NULL,
+    unsigned long minPrintBitmapX=0,
+    unsigned long minPrintBitmapY=0,
+    unsigned long maxPrintBitmapX=0,
+    unsigned long maxPrintBitmapY=0);
   
   /// destructor
   virtual ~DVPresentationState();
@@ -1989,7 +1998,10 @@ private:
 
 /*
  *  $Log: dvpstat.h,v $
- *  Revision 1.22  1999-09-10 09:02:32  joergr
+ *  Revision 1.23  1999-09-10 12:46:48  meichel
+ *  Added implementations for a number of print API methods.
+ *
+ *  Revision 1.22  1999/09/10 09:02:32  joergr
  *  Added support for CIELAB display function. New methods to handle display
  *  functions. Old methods are marked as retired and should be removed asap.
  *

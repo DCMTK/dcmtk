@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DVPSStoredPrint
  *
- *  Last Update:      $Author: thiel $
- *  Update Date:      $Date: 1999-09-10 07:32:43 $
- *  CVS/RCS Revision: $Revision: 1.11 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 1999-09-10 12:46:57 $
+ *  CVS/RCS Revision: $Revision: 1.12 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -425,7 +425,7 @@ E_Condition DVPSStoredPrint::createFromItem(DcmItem &dset)
 	}
 	//###Missing Film Box 
 		imageBoxContentList.addImage(dset,"DCMPRTSV");
-		if (EC_Normal==result) result = imageBoxContentList.createDefaultValues(true); // renumber if limitImages is true
+		if (EC_Normal==result) result = imageBoxContentList.createDefaultValues(OFTrue); // renumber if limitImages is true
 	//###
 	return result;
 }
@@ -1573,64 +1573,42 @@ OFBool DVPSStoredPrint::printPending()
 
 E_Condition DVPSStoredPrint::setBorderDensity(const char *value)
 {
-  return EC_IllegalCall; // UNIMPLEMENTED
+  if ((value==NULL)||(strlen(value)==0)) 
+  {
+    borderDensity.clear();
+    return EC_Normal;
+  }
+  return borderDensity.putString(value);
 }
 
 E_Condition DVPSStoredPrint::setEmtpyImageDensity(const char *value)
 {
-  return EC_IllegalCall; // UNIMPLEMENTED
+  if ((value==NULL)||(strlen(value)==0)) 
+  {
+    emptyImageDensity.clear();
+    return EC_Normal;
+  }
+  return emptyImageDensity.putString(value);
 }
 
 const char *DVPSStoredPrint::getBorderDensity()
 {
-  return NULL; // UNIMPLEMENTED
+  char *c = NULL;
+  if (EC_Normal == borderDensity.getString(c)) return c; else return NULL;
 }
 
 const char *DVPSStoredPrint::getEmtpyImageDensity()
 {
-  return NULL; // UNIMPLEMENTED
+  char *c = NULL;
+  if (EC_Normal == emptyImageDensity.getString(c)) return c; else return NULL;
 }
-
-OFBool DVPSStoredPrint::imageHasAdditionalSettings(size_t idx)
-{
-  return OFFalse; // UNIMPLEMENTED
-}
-
-E_Condition DVPSStoredPrint::setImageMagnificationType(size_t idx, const char *value)
-{
-  return EC_IllegalCall; // UNIMPLEMENTED
-}
-
-E_Condition DVPSStoredPrint::setImageSmoothingType(size_t idx, const char *value)
-{
-  return EC_IllegalCall; // UNIMPLEMENTED
-}
-
-E_Condition DVPSStoredPrint::setImageConfigurationInformation(size_t idx, const char *value)
-{
-  return EC_IllegalCall; // UNIMPLEMENTED
-}
-
-const char *DVPSStoredPrint::getImageMagnificationType(size_t idx)
-{
-  return NULL; // UNIMPLEMENTED
-}
-
-const char *DVPSStoredPrint::getImageSmoothingType(size_t idx)
-{
-  return NULL; // UNIMPLEMENTED
-}
-
-const char *DVPSStoredPrint::getImageConfigurationInformation(size_t idx)
-{
-  return NULL; // UNIMPLEMENTED
-}
-
-
 
 /*
  *  $Log: dvpssp.cc,v $
- *  Revision 1.11  1999-09-10 07:32:43  thiel
+ *  Revision 1.12  1999-09-10 12:46:57  meichel
+ *  Added implementations for a number of print API methods.
+ *
+ *  Revision 1.11  1999/09/10 07:32:43  thiel
  *  Added Presentation LUT Shape LIN OD
  *
  *  Revision 1.10  1999/09/09 14:57:50  thiel

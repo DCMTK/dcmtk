@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DVInterface
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-09-10 09:37:29 $
- *  CVS/RCS Revision: $Revision: 1.46 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 1999-09-10 12:46:44 $
+ *  CVS/RCS Revision: $Revision: 1.47 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -911,20 +911,20 @@ class DVInterface: public DVConfiguration
 
     /* print related methods */
    
-    /** UNIMPLEMENTED - selects the current printer. No further
+    /** selects the current printer. No further
      *  adjustments are made within the Stored Print object.
      *  @param targetID one of the printer target IDs returned by getTargetID().
      *  @return EC_Normal if successful, an error code otherwise.
      */
     E_Condition setCurrentPrinter(const char *targetID);
 
-    /** UNIMPLEMENTED - gets the current printer's target ID.
+    /** gets the current printer's target ID.
      *  @return printer target ID, can be NULL if no printer is defined
      *   in the configuration file.
      */
     const char *getCurrentPrinter();
 
-    /** UNIMPLEMENTED - sets the (optional) print medium type.
+    /** sets the (optional) print medium type.
      *  @param value new attribute value, may be NULL.
      *    The caller is responsible for making sure
      *    that the value is valid for the selected printer.
@@ -932,12 +932,12 @@ class DVInterface: public DVConfiguration
      */
     E_Condition setPrinterMediumType(const char *value);
 
-    /** UNIMPLEMENTED - gets the (optional) print medium type.
+    /** gets the (optional) print medium type.
      *  @return medium type, may be NULL.
      */
     const char *getPrinterMediumType();
 
-    /** UNIMPLEMENTED - sets the illumination to be used
+    /** sets the illumination to be used
      *  with the print Presentation LUT SOP Class.
      *  @param value new attribute value, in cd/m2.
      *    The caller is responsible for making sure
@@ -946,13 +946,13 @@ class DVInterface: public DVConfiguration
      */
     E_Condition setPrintIllumination(Uint16 value);
 
-    /** UNIMPLEMENTED - gets the current illumination setting
+    /** gets the current illumination setting
      *  used with the print Presentation LUT SOP Class.
      *  @return illumination in cd/m2
      */
     Uint16 getPrintIllumination();
 
-    /** UNIMPLEMENTED - sets the reflected ambient light to be used
+    /** sets the reflected ambient light to be used
      *  with the print Presentation LUT SOP Class.
      *  @param value new attribute value, in cd/m2.
      *    The caller is responsible for making sure
@@ -961,7 +961,7 @@ class DVInterface: public DVConfiguration
      */
     E_Condition setPrintReflectedAmbientLight(Uint16 value);
 
-    /** UNIMPLEMENTED - gets the current reflected ambient light setting
+    /** gets the current reflected ambient light setting
      *  used with the print Presentation LUT SOP Class.
      *  @return reflected ambient light in cd/m2
      */
@@ -1218,6 +1218,38 @@ private:
      *  parameters)
      */
     E_Condition instanceReviewed(int pos);
+
+    /** minimum width of print bitmap (used for implicit scaling)
+     */
+    unsigned long minimumPrintBitmapWidth;
+
+    /** minimum height of print bitmap (used for implicit scaling)
+     */
+    unsigned long minimumPrintBitmapHeight;
+
+    /** maximum width of print bitmap (used for implicit scaling)
+     */
+    unsigned long maximumPrintBitmapWidth;
+
+    /** maximum height of print bitmap (used for implicit scaling)
+     */
+    unsigned long maximumPrintBitmapHeight;
+
+    /** target ID of current printer, NULL if no printer exists in config file
+     */
+    const char *currentPrinter;
+
+    /** printer medium type identifier, may be NULL.
+     */
+    const char *printerMediumType;
+
+    /** printer illumination setting for Presentation LUT, cd/m2
+     */
+    Uint16 printIllumination;
+    
+    /** printer reflected ambient light setting for Presentation LUT, cd/m2
+     */
+    Uint16 printReflectedAmbientLight;
 };
 
 
@@ -1227,7 +1259,10 @@ private:
 /*
  *  CVS/RCS Log:
  *  $Log: dviface.h,v $
- *  Revision 1.46  1999-09-10 09:37:29  joergr
+ *  Revision 1.47  1999-09-10 12:46:44  meichel
+ *  Added implementations for a number of print API methods.
+ *
+ *  Revision 1.46  1999/09/10 09:37:29  joergr
  *  Re-added automatically removed method declarations (maybe a problem with
  *  CVS's merge algorithm).
  *

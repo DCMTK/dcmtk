@@ -22,8 +22,8 @@
  *  Purpose: DVConfiguration
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-09-09 12:20:52 $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  Update Date:      $Date: 1999-09-10 12:46:54 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -42,13 +42,20 @@
 /* default path for database folder */
 #define PSTAT_DBFOLDER "."
 
+#define PSTAT_DEFAULT_ILLUMINATION 2000
+#define PSTAT_DEFAULT_REFLECTION 10
+
 /* keywords for configuration file */
 #define L0_AETITLE           "AETITLE"
 #define L0_BITPRESERVINGMODE "BITPRESERVINGMODE"
+#define L0_BORDERDENSITY     "BORDERDENSITY"
 #define L0_CHARACTERISTICS   "CHARACTERISTICS"
+#define L0_DEFAULTILLUMINATION "DEFAULTILLUMINATION"
+#define L0_DEFAULTREFLECTION "DEFAULTREFLECTION"
 #define L0_DESCRIPTION       "DESCRIPTION"
 #define L0_DIRECTORY         "DIRECTORY"
 #define L0_DISABLENEWVRS     "DISABLENEWVRS"
+#define L0_EMPTYIMAGEDENSITY "EMPTYIMAGEDENSITY"
 #define L0_FILENAME          "FILENAME"
 #define L0_FILMSIZEID        "FILMSIZEID"
 #define L0_HOSTNAME          "HOSTNAME"
@@ -56,8 +63,10 @@
 #define L0_MAGNIFICATIONTYPE "MAGNIFICATIONTYPE"
 #define L0_MAXCOLUMNS        "MAXCOLUMNS"
 #define L0_MAXPDU            "MAXPDU"
+#define L0_MAXPRINTRESOLUTION "MAXPRINTRESOLUTION"
 #define L0_MAXROWS           "MAXROWS"
 #define L0_MEDIUMTYPE        "MEDIUMTYPE"
+#define L0_MINPRINTRESOLUTION "MINPRINTRESOLUTION"
 #define L0_PORT              "PORT"
 #define L0_RECEIVER          "RECEIVER"
 #define L0_RESOLUTION        "RESOLUTION"
@@ -75,6 +84,7 @@
 #define L1_GUI               "GUI"
 #define L1_MONITOR           "MONITOR"
 #define L1_NETWORK           "NETWORK"
+#define L1_PRINT             "PRINT"
 #define L2_COMMUNICATION     "COMMUNICATION"
 #define L2_GENERAL           "GENERAL"
 #define L2_HIGHENDSYSTEM     "HIGHENDSYSTEM"
@@ -621,59 +631,104 @@ const char *DVConfiguration::getLUTFilename(const char *lutID)
 
 Uint32 DVConfiguration::getTargetPrinterNumberOfBorderDensities(const char *targetID)
 {
-  return 0; // UNIMPLEMENTED
+  return countValues(getConfigEntry(L2_COMMUNICATION, targetID, L0_BORDERDENSITY));
 }
 
 const char *DVConfiguration::getTargetPrinterBorderDensity(const char *targetID, Uint32 idx, OFString& value)
 {
-  return NULL; // UNIMPLEMENTED
+  copyValue(getConfigEntry(L2_COMMUNICATION, targetID, L0_BORDERDENSITY), idx, value);
+  if (value.length()) return value.c_str(); else return NULL;
 }
 
 Uint32 DVConfiguration::getTargetPrinterNumberOfEmptyImageDensities(const char *targetID)
 {
-  return 0; // UNIMPLEMENTED
+  return countValues(getConfigEntry(L2_COMMUNICATION, targetID, L0_EMPTYIMAGEDENSITY));
 }
 
 const char *DVConfiguration::getTargetPrinterEmptyImageDensity(const char *targetID, Uint32 idx, OFString& value)
 {
-  return NULL; // UNIMPLEMENTED
+  copyValue(getConfigEntry(L2_COMMUNICATION, targetID, L0_EMPTYIMAGEDENSITY), idx, value);
+  if (value.length()) return value.c_str(); else return NULL;
 }
 
 Uint32 DVConfiguration::getMinPrintResolutionX()
 {
-  return 0; // UNIMPLEMENTED
+  const char *c = getConfigEntry(L2_GENERAL, L1_PRINT, L0_MINPRINTRESOLUTION);
+  if (c)
+  {
+    Uint32 result = 0;
+    Uint32 dummy = 0;
+    if (2 == sscanf(c, "%lu\\%lu", &result, &dummy)) return result;
+  }
+  return 0;
 }
 
 Uint32 DVConfiguration::getMinPrintResolutionY()
 {
-  return 0; // UNIMPLEMENTED
+  const char *c = getConfigEntry(L2_GENERAL, L1_PRINT, L0_MINPRINTRESOLUTION);
+  if (c)
+  {
+    Uint32 result = 0;
+    Uint32 dummy = 0;
+    if (2 == sscanf(c, "%lu\\%lu", &dummy, &result)) return result;
+  }
+  return 0;
 }
 
 Uint32 DVConfiguration::getMaxPrintResolutionX()
 {
-  return 0; // UNIMPLEMENTED
+  const char *c = getConfigEntry(L2_GENERAL, L1_PRINT, L0_MAXPRINTRESOLUTION);
+  if (c)
+  {
+    Uint32 result = 0;
+    Uint32 dummy = 0;
+    if (2 == sscanf(c, "%lu\\%lu", &result, &dummy)) return result;
+  }
+  return 0;
 }
 
 Uint32 DVConfiguration::getMaxPrintResolutionY()
 {
-  return 0; // UNIMPLEMENTED
+  const char *c = getConfigEntry(L2_GENERAL, L1_PRINT, L0_MAXPRINTRESOLUTION);
+  if (c)
+  {
+    Uint32 result = 0;
+    Uint32 dummy = 0;
+    if (2 == sscanf(c, "%lu\\%lu", &dummy, &result)) return result;
+  }
+  return 0;
 }
 
 Uint16 DVConfiguration::getDefaultPrintIllumination()
 {
-  return 0; // UNIMPLEMENTED
+  const char *c = getConfigEntry(L2_GENERAL, L1_PRINT, L0_DEFAULTILLUMINATION);
+  if (c)
+  {
+    Uint16 result = 0;
+    if (1 == sscanf(c, "%hu", &result)) return result;
+  }
+  return PSTAT_DEFAULT_ILLUMINATION;
 }
 
 Uint16 DVConfiguration::getDefaultPrintReflection()
 {
-  return 0; // UNIMPLEMENTED
+  const char *c = getConfigEntry(L2_GENERAL, L1_PRINT, L0_DEFAULTREFLECTION);
+  if (c)
+  {
+    Uint16 result = 0;
+    if (1 == sscanf(c, "%hu", &result)) return result;
+  }
+  return PSTAT_DEFAULT_REFLECTION;
 }
 
 
 /*
  *  CVS/RCS Log:
  *  $Log: dvpscf.cc,v $
- *  Revision 1.2  1999-09-09 12:20:52  meichel
+ *  Revision 1.3  1999-09-10 12:46:54  meichel
+ *  Added implementations for a number of print API methods.
+ *
+ *  Revision 1.2  1999/09/09 12:20:52  meichel
  *  Added print API method declarations and implementations (empty for now).
  *
  *  Revision 1.1  1999/09/08 16:41:42  meichel

@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DVPSImageBoxContent
  *
- *  Last Update:      $Author: thiel $
- *  Update Date:      $Date: 1999-09-09 14:57:32 $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 1999-09-10 12:46:46 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -143,6 +143,56 @@ public:
    */
   DVPSDecimateCropBehaviour getRequestedDecimateCropBehaviour();
 
+  /** checks whether image box has additional settings 
+   *  that are not default.
+   *  @return OFTrue if additional settings exist, OFFalse otherwise.
+   */
+  OFBool hasAdditionalSettings();
+
+  /** gets the (optional) magnification type.
+   *  @return magnification type, may be NULL.
+   */
+  const char *getMagnificationType();
+
+  /** gets the (optional) smoothing type.
+   *  @return smoothing type, may be NULL.
+   */
+  const char *getSmoothingType();
+
+  /** gets the (optional) configuration information.
+   *  @return configuration information, may be NULL.
+   */
+  const char *getConfigurationInformation();
+
+  /** sets the (optional) magnification type.
+   *  @param value new attribute value, may be NULL.
+   *    The caller is responsible for making sure
+   *    that the value is valid for the selected printer.
+   *  @return EC_Normal if successful, an error code otherwise.
+   */
+  E_Condition setMagnificationType(const char *value);
+  
+  /** sets the (optional) smoothing type.
+   *  @param value new attribute value, may be NULL.
+   *    The caller is responsible for making sure
+   *    that the value is valid for the selected printer.
+   *  @return EC_Normal if successful, an error code otherwise.
+   */
+  E_Condition setSmoothingType(const char *value);
+  
+  /** sets the (optional) configuration information.
+   *  @param value new attribute value, may be NULL.
+   *    The caller is responsible for making sure
+   *    that the value is valid for the selected printer.
+   *  @return EC_Normal if successful, an error code otherwise.
+   */
+  E_Condition setConfigurationInformation(const char *value);
+
+  /** sets magnification type, smoothing type and configuration information back to default.
+   *  @return EC_Normal if successful, an error code otherwise.
+   */
+  E_Condition setDefault();
+
   /** gets the next needed image reference, used in combination with setImage
    *  @param aETitle  AETitle where the image can be found
    *  @param patID Patient ID of the image
@@ -152,10 +202,6 @@ public:
    *  @return EC_Normal if successful, an error code otherwise.
    */
   E_Condition getImageReference(char *&aETitle,char *&patID,char *&studyUID,char *&seriesUID,char *&instanceUID);
-  
- 
-
-
  
 private:
   /// private undefined assignment operator
@@ -205,7 +251,10 @@ private:
 
 /*
  *  $Log: dvpsib.h,v $
- *  Revision 1.6  1999-09-09 14:57:32  thiel
+ *  Revision 1.7  1999-09-10 12:46:46  meichel
+ *  Added implementations for a number of print API methods.
+ *
+ *  Revision 1.6  1999/09/09 14:57:32  thiel
  *  Added methods for print spooler
  *
  *  Revision 1.5  1999/09/01 16:14:40  meichel

@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DVPresentationState
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-09-10 09:16:44 $
- *  CVS/RCS Revision: $Revision: 1.33 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 1999-09-10 12:46:58 $
+ *  CVS/RCS Revision: $Revision: 1.34 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -125,7 +125,12 @@ static void currentTime(OFString &str)
 
 /* --------------- class DVPresentationState --------------- */
 
-DVPresentationState::DVPresentationState(DiDisplayFunction **dispFunction)
+DVPresentationState::DVPresentationState(
+    DiDisplayFunction **dispFunction,
+    unsigned long minPrintBitmapX,
+    unsigned long minPrintBitmapY,
+    unsigned long maxPrintBitmapX,
+    unsigned long maxPrintBitmapY)
 : patientName(DCM_PatientsName)
 , patientID(DCM_PatientID)
 , patientBirthDate(DCM_PatientsBirthDate)
@@ -210,10 +215,10 @@ DVPresentationState::DVPresentationState(DiDisplayFunction **dispFunction)
 , displayTransform(DVPSD_GSDF)
 , imageInverse(OFFalse)
 , displayFunction(dispFunction)
-, minimumPrintBitmapWidth(0)
-, minimumPrintBitmapHeight(0)
-, maximumPrintBitmapWidth(0)
-, maximumPrintBitmapHeight(0)
+, minimumPrintBitmapWidth(minPrintBitmapX)
+, minimumPrintBitmapHeight(minPrintBitmapY)
+, maximumPrintBitmapWidth(maxPrintBitmapX)
+, maximumPrintBitmapHeight(maxPrintBitmapY)
 {
 }
 
@@ -3629,7 +3634,10 @@ E_Condition DVPresentationState::getPrintBitmapRequestedImageSize(OFString& requ
 
 /*
  *  $Log: dvpstat.cc,v $
- *  Revision 1.33  1999-09-10 09:16:44  joergr
+ *  Revision 1.34  1999-09-10 12:46:58  meichel
+ *  Added implementations for a number of print API methods.
+ *
+ *  Revision 1.33  1999/09/10 09:16:44  joergr
  *  Added support for CIELAB display function. New methods to handle display
  *  functions. Old methods are marked as retired and should be removed asap.
  *

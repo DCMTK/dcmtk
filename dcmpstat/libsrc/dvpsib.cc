@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DVPSImageBoxContent
  *
- *  Last Update:      $Author: thiel $
- *  Update Date:      $Date: 1999-09-09 14:57:50 $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 1999-09-10 12:46:55 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -462,7 +462,7 @@ E_Condition DVPSImageBoxContent::addImage(DcmItem & dset,char * aETitle,unsigned
 
     READ_FROM_DATASET(DcmLongString, patientID)
     //READ_FROM_DATASET(DcmIntegerString, referencedFrameNumber)
- 	createDefaultValues(true,number);
+ 	createDefaultValues(OFTrue,number);
 
 	return result;
 }
@@ -516,9 +516,76 @@ DVPSDecimateCropBehaviour DVPSImageBoxContent::getRequestedDecimateCropBehaviour
   return result;
 }
 
+const char *DVPSImageBoxContent::getMagnificationType()
+{
+  char *c = NULL;
+  if (EC_Normal == magnificationType.getString(c)) return c; else return NULL;
+}
+
+const char *DVPSImageBoxContent::getSmoothingType()
+{
+  char *c = NULL;
+  if (EC_Normal == smoothingType.getString(c)) return c; else return NULL;
+}
+
+const char *DVPSImageBoxContent::getConfigurationInformation()
+{
+  char *c = NULL;
+  if (EC_Normal == configurationInformation.getString(c)) return c; else return NULL;
+}
+
+E_Condition DVPSImageBoxContent::setMagnificationType(const char *value)
+{
+  if ((value==NULL)||(strlen(value)==0)) 
+  {
+    magnificationType.clear();
+    return EC_Normal;
+  }
+  return magnificationType.putString(value);
+}
+
+E_Condition DVPSImageBoxContent::setSmoothingType(const char *value)
+{
+  if ((value==NULL)||(strlen(value)==0)) 
+  {
+    smoothingType.clear();
+    return EC_Normal;
+  }
+  return smoothingType.putString(value);
+}
+
+E_Condition DVPSImageBoxContent::setConfigurationInformation(const char *value)
+{
+  if ((value==NULL)||(strlen(value)==0)) 
+  {
+    configurationInformation.clear();
+    return EC_Normal;
+  }
+  return configurationInformation.putString(value);
+}
+
+E_Condition DVPSImageBoxContent::setDefault()
+{
+  magnificationType.clear();
+  smoothingType.clear();
+  configurationInformation.clear();
+  return EC_Normal;
+}
+
+OFBool DVPSImageBoxContent::hasAdditionalSettings()
+{
+  if (magnificationType.getLength() > 0) return OFTrue;
+  if (smoothingType.getLength() > 0) return OFTrue;
+  if (configurationInformation.getLength() > 0) return OFTrue;
+  return OFFalse;
+}
+
 /*
  *  $Log: dvpsib.cc,v $
- *  Revision 1.7  1999-09-09 14:57:50  thiel
+ *  Revision 1.8  1999-09-10 12:46:55  meichel
+ *  Added implementations for a number of print API methods.
+ *
+ *  Revision 1.7  1999/09/09 14:57:50  thiel
  *  Added methods for print spooler
  *
  *  Revision 1.6  1999/09/08 16:46:14  meichel

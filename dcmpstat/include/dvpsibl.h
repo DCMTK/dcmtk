@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DVPSImageBoxContent_PList
  *
- *  Last Update:      $Author: thiel $
- *  Update Date:      $Date: 1999-09-09 14:57:33 $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 1999-09-10 12:46:47 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -178,6 +178,73 @@ public:
    *  @return EC_Normal if successful, an error code otherwise.
    */
   E_Condition deleteMultipleImages(size_t number);
+
+  /** checks if one of the registered images has additional settings that are not
+   *  default values on the image box level.
+   *  @param idx index, must be < getNumberOfImages()
+   *  @return EC_Normal if successful, an error code otherwise.
+   */
+  OFBool imageHasAdditionalSettings(size_t idx);
+
+  /** sets the (optional) magnification type for the given registered image box.
+   *  @param idx index, must be < getNumberOfImages()
+   *  @param value new attribute value, may be NULL.
+   *    The caller is responsible for making sure
+   *    that the value is valid for the selected printer.
+   *  @return EC_Normal if successful, an error code otherwise.
+   */
+  E_Condition setImageMagnificationType(size_t idx, const char *value);
+  
+  /** sets the (optional) smoothing type for the given registered image box.
+   *  @param idx index, must be < getNumberOfImages()
+   *  @param value new attribute value, may be NULL.
+   *    The caller is responsible for making sure
+   *    that the value is valid for the selected printer.
+   *  @return EC_Normal if successful, an error code otherwise.
+   */
+  E_Condition setImageSmoothingType(size_t idx, const char *value);
+  
+  /** sets the (optional) configuration information for the given registered image box.
+   *  @param idx index, must be < getNumberOfImages()
+   *  @param value new attribute value, may be NULL.
+   *    The caller is responsible for making sure
+   *    that the value is valid for the selected printer.
+   *  @return EC_Normal if successful, an error code otherwise.
+   */
+  E_Condition setImageConfigurationInformation(size_t idx, const char *value);
+
+  /** sets magnification type, smoothing type and configuration information back to default
+   *  for all registered images.
+   *  @return EC_Normal if successful, an error code otherwise.
+   */
+  E_Condition setAllImagesToDefault();
+
+  /** gets the (optional) magnification type for the given registered image box.
+   *  @param idx index, must be < getNumberOfImages()
+   *  @return magnification type, may be NULL.
+   */
+  const char *getImageMagnificationType(size_t idx);
+
+  /** gets the (optional) smoothing type for the given registered image box.
+   *  @param idx index, must be < getNumberOfImages()
+   *  @return smoothing type, may be NULL.
+   */
+  const char *getImageSmoothingType(size_t idx);
+
+  /** gets the (optional) configuration information for the given registered image box.
+   *  @param idx index, must be < getNumberOfImages()
+   *  @return configuration information, may be NULL.
+   */
+  const char *getImageConfigurationInformation(size_t idx);
+
+private:
+
+  /** returns a pointer to the image box with the given
+   *  index or NULL if it does not exist.
+   *  @param idx index, must be < size()
+   *  @return pointer to image box object or NULL
+   */
+  DVPSImageBoxContent *getImageBox(size_t idx); 
   
 };
 
@@ -186,7 +253,10 @@ public:
 
 /*
  *  $Log: dvpsibl.h,v $
- *  Revision 1.6  1999-09-09 14:57:33  thiel
+ *  Revision 1.7  1999-09-10 12:46:47  meichel
+ *  Added implementations for a number of print API methods.
+ *
+ *  Revision 1.6  1999/09/09 14:57:33  thiel
  *  Added methods for print spooler
  *
  *  Revision 1.5  1999/09/01 16:14:40  meichel

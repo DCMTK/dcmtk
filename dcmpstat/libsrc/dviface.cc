@@ -21,9 +21,9 @@
  *
  *  Purpose: DVPresentationState
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-09-10 09:36:28 $
- *  CVS/RCS Revision: $Revision: 1.66 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 1999-09-10 12:46:53 $
+ *  CVS/RCS Revision: $Revision: 1.67 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -162,6 +162,14 @@ DVInterface::DVInterface(const char *config_file)
 , idxRec()
 , idxRecPos(-1)
 , imageInDatabase(OFFalse)
+, minimumPrintBitmapWidth(0)
+, minimumPrintBitmapHeight(0)
+, maximumPrintBitmapWidth(0)
+, maximumPrintBitmapHeight(0)
+, currentPrinter(NULL)
+, printerMediumType(NULL)
+, printIllumination(0)
+, printReflectedAmbientLight(0)
 {
     clearIndexRecord(idxRec, idxRecPos);
     if (config_file) configPath = config_file;
@@ -193,11 +201,20 @@ DVInterface::DVInterface(const char *config_file)
     }
 
     pPrint = new DVPSStoredPrint();
-    pState = new DVPresentationState((DiDisplayFunction **)displayFunction);
+    pState = new DVPresentationState((DiDisplayFunction **)displayFunction, minimumPrintBitmapWidth, 
+      minimumPrintBitmapHeight, maximumPrintBitmapWidth, maximumPrintBitmapHeight);
   
     /* initialize reference time with "yesterday" */
     referenceTime = (unsigned long)time(NULL);
     if (referenceTime >= 86400) referenceTime -= 86400; // subtract one day
+    
+    minimumPrintBitmapWidth  = getMinPrintResolutionX();
+    minimumPrintBitmapHeight = getMinPrintResolutionY();
+    maximumPrintBitmapWidth  = getMaxPrintResolutionX();
+    maximumPrintBitmapHeight = getMaxPrintResolutionY();    
+    currentPrinter = getTargetID(0, DVPSE_print);
+    printIllumination = getDefaultPrintIllumination();
+    printReflectedAmbientLight = getDefaultPrintReflection();
 }
 
 
@@ -242,7 +259,8 @@ E_Condition DVInterface::loadImage(const char *imgName)
 {
     E_Condition status = EC_IllegalCall;
     DcmFileFormat *image = NULL;
-    DVPresentationState *newState = new DVPresentationState((DiDisplayFunction **)displayFunction);
+    DVPresentationState *newState = new DVPresentationState((DiDisplayFunction **)displayFunction, minimumPrintBitmapWidth, 
+      minimumPrintBitmapHeight, maximumPrintBitmapWidth, maximumPrintBitmapHeight);
     if (newState==NULL) return EC_MemoryExhausted;
     if ((status = loadFileFormat(imgName, image)) == EC_Normal)
     {
@@ -286,7 +304,8 @@ E_Condition DVInterface::loadPState(const char *studyUID,
     
     // load the presentation state
     DcmFileFormat *pstate = NULL;
-    DVPresentationState *newState = new DVPresentationState((DiDisplayFunction **)displayFunction);
+    DVPresentationState *newState = new DVPresentationState((DiDisplayFunction **)displayFunction, minimumPrintBitmapWidth, 
+      minimumPrintBitmapHeight, maximumPrintBitmapWidth, maximumPrintBitmapHeight);
     if (newState==NULL) return EC_MemoryExhausted;
     
     if ((EC_Normal == (status = loadFileFormat(filename, pstate)))&&(pstate))
@@ -352,7 +371,8 @@ E_Condition DVInterface::loadPState(const char *pstName,
     E_Condition status = EC_IllegalCall;
     DcmFileFormat *pstate = NULL;
     DcmFileFormat *image = pDicomImage;     // default: do not replace image if image filename is NULL
-    DVPresentationState *newState = new DVPresentationState((DiDisplayFunction **)displayFunction);
+    DVPresentationState *newState = new DVPresentationState((DiDisplayFunction **)displayFunction, minimumPrintBitmapWidth, 
+      minimumPrintBitmapHeight, maximumPrintBitmapWidth, maximumPrintBitmapHeight);
     if (newState==NULL) return EC_MemoryExhausted;
     if (((status = loadFileFormat(pstName, pstate)) == EC_Normal) &&
         ((imgName == NULL) || ((status = loadFileFormat(imgName, image)) == EC_Normal)))
@@ -516,7 +536,8 @@ E_Condition DVInterface::exchangeImageAndPState(DVPresentationState *newState, D
 
 E_Condition DVInterface::resetPresentationState()
 {
-    DVPresentationState *newState = new DVPresentationState(displayFunction);
+    DVPresentationState *newState = new DVPresentationState(displayFunction, minimumPrintBitmapWidth, 
+      minimumPrintBitmapHeight, maximumPrintBitmapWidth, maximumPrintBitmapHeight);
     if (newState==NULL) return EC_MemoryExhausted;        
 
     E_Condition status = EC_Normal;
@@ -666,7 +687,8 @@ E_Condition DVInterface::disablePState()
             DcmDataset *dataset = pDicomImage->getDataset();
             if (dataset != NULL)
             {
-                DVPresentationState *newState = new DVPresentationState(displayFunction);
+                DVPresentationState *newState = new DVPresentationState(displayFunction, minimumPrintBitmapWidth, 
+                  minimumPrintBitmapHeight, maximumPrintBitmapWidth, maximumPrintBitmapHeight);
                 if (newState != NULL)
                 {
                     if ((status = newState->createFromImage(*dataset)) == EC_Normal)
@@ -2302,42 +2324,48 @@ void DVInterface::cleanChildren()
 
 E_Condition DVInterface::setCurrentPrinter(const char *targetID)
 {
-  return EC_IllegalCall; // UNIMPLEMENTED
+  if (targetID == NULL) return EC_IllegalCall;
+  if (getTargetHostname(targetID) == NULL) return EC_IllegalCall; // Printer seems to be unknown
+  currentPrinter = targetID;
+  return EC_Normal;
 }
 
 const char *DVInterface::getCurrentPrinter()
 {
-  return NULL; // UNIMPLEMENTED
+  return currentPrinter;
 }
 
 E_Condition DVInterface::setPrinterMediumType(const char *value)
 {
-  return EC_IllegalCall; // UNIMPLEMENTED
+  printerMediumType = value;
+  return EC_Normal;
 }
 
 const char *DVInterface::getPrinterMediumType()
 {
-  return NULL; // UNIMPLEMENTED
+  return printerMediumType;
 }
 
 E_Condition DVInterface::setPrintIllumination(Uint16 value)
 {
-  return EC_IllegalCall; // UNIMPLEMENTED
+  printIllumination = value;
+  return EC_Normal;
 }
 
 Uint16 DVInterface::getPrintIllumination()
 {
-  return 0; // UNIMPLEMENTED
+  return printIllumination;
 }
 
 E_Condition DVInterface::setPrintReflectedAmbientLight(Uint16 value)
 {
-  return EC_IllegalCall; // UNIMPLEMENTED
+  printReflectedAmbientLight = value;
+  return EC_Normal;
 }
 
 Uint16 DVInterface::getPrintReflectedAmbientLight()
 {
-  return 0; // UNIMPLEMENTED
+  return printReflectedAmbientLight;
 }
 
 E_Condition DVInterface::selectPrintPresentationLUT(const char *lutID)
@@ -2379,7 +2407,10 @@ E_Condition DVInterface::spoolStoredPrintFromDB(const char *studyUID, const char
 /*
  *  CVS/RCS Log:
  *  $Log: dviface.cc,v $
- *  Revision 1.66  1999-09-10 09:36:28  joergr
+ *  Revision 1.67  1999-09-10 12:46:53  meichel
+ *  Added implementations for a number of print API methods.
+ *
+ *  Revision 1.66  1999/09/10 09:36:28  joergr
  *  Added support for CIELAB display function. New methods to handle display
  *  functions. Old methods are marked as retired and should be removed asap.
  *

@@ -23,8 +23,8 @@
  *    classes: DVPSImageBoxContent_PList
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-09-01 16:15:08 $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  Update Date:      $Date: 1999-09-10 12:46:56 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -297,9 +297,88 @@ E_Condition DVPSImageBoxContent_PList::deleteMultipleImages(size_t number)
   return EC_Normal;
 }
 
+DVPSImageBoxContent *DVPSImageBoxContent_PList::getImageBox(size_t idx)
+{
+  OFListIterator(DVPSImageBoxContent *) first = begin();
+  OFListIterator(DVPSImageBoxContent *) last = end();
+  while (first != last)
+  {
+    if (idx==0) return *first;
+    idx--;
+    ++first;
+  }
+  return NULL;
+}
+
+OFBool DVPSImageBoxContent_PList::imageHasAdditionalSettings(size_t idx)
+{
+  DVPSImageBoxContent *box = getImageBox(idx);
+  if (box) return box->hasAdditionalSettings();
+  return OFFalse; 
+}
+
+E_Condition DVPSImageBoxContent_PList::setImageMagnificationType(size_t idx, const char *value)
+{
+  DVPSImageBoxContent *box = getImageBox(idx);
+  if (box) return box->setMagnificationType(value);
+  return EC_IllegalCall; 
+}
+
+E_Condition DVPSImageBoxContent_PList::setImageSmoothingType(size_t idx, const char *value)
+{
+  DVPSImageBoxContent *box = getImageBox(idx);
+  if (box) return box->setSmoothingType(value);
+  return EC_IllegalCall; 
+}
+
+E_Condition DVPSImageBoxContent_PList::setImageConfigurationInformation(size_t idx, const char *value)
+{
+  DVPSImageBoxContent *box = getImageBox(idx);
+  if (box) return box->setConfigurationInformation(value);
+  return EC_IllegalCall; 
+}
+
+const char *DVPSImageBoxContent_PList::getImageMagnificationType(size_t idx)
+{
+  DVPSImageBoxContent *box = getImageBox(idx);
+  if (box) return box->getMagnificationType();
+  return NULL; 
+}
+
+const char *DVPSImageBoxContent_PList::getImageSmoothingType(size_t idx)
+{
+  DVPSImageBoxContent *box = getImageBox(idx);
+  if (box) return box->getSmoothingType();
+  return NULL; 
+}
+
+const char *DVPSImageBoxContent_PList::getImageConfigurationInformation(size_t idx)
+{
+  DVPSImageBoxContent *box = getImageBox(idx);
+  if (box) return box->getConfigurationInformation();
+  return NULL; 
+}
+
+E_Condition DVPSImageBoxContent_PList::setAllImagesToDefault()
+{
+  E_Condition result = EC_Normal;
+  OFListIterator(DVPSImageBoxContent *) first = begin();
+  OFListIterator(DVPSImageBoxContent *) last = end();
+  while (first != last)
+  {
+    result = (*first)->setDefault();
+    ++first;
+    if (EC_Normal != result) return result;
+  }
+  return result;  
+}
+
 /*
  *  $Log: dvpsibl.cc,v $
- *  Revision 1.5  1999-09-01 16:15:08  meichel
+ *  Revision 1.6  1999-09-10 12:46:56  meichel
+ *  Added implementations for a number of print API methods.
+ *
+ *  Revision 1.5  1999/09/01 16:15:08  meichel
  *  Added support for requested image size to print routines
  *
  *  Revision 1.4  1999/08/31 14:09:27  meichel

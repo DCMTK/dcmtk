@@ -23,8 +23,8 @@
  *    classes: DVConfiguration
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-09-08 16:42:02 $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  Update Date:      $Date: 1999-09-10 12:46:45 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -313,7 +313,7 @@ class DVConfiguration
      */
     const char *getTargetPrinterConfigurationSetting(const char *targetID, Uint32 idx);
 
-    /** UNIMPLEMENTED - returns the number of distinct values (separated by backslash characters)
+    /** returns the number of distinct values (separated by backslash characters)
      *  in the BORDERDENSITY entry for the printer with the given
      *  target ID from the configuration file.
      *  @param targetID communication target ID, must be one of the target 
@@ -322,7 +322,7 @@ class DVConfiguration
      */     
     Uint32 getTargetPrinterNumberOfBorderDensities(const char *targetID);
 
-    /** UNIMPLEMENTED - returns one value from the BORDERDENSITY entry for the printer 
+    /** returns one value from the BORDERDENSITY entry for the printer 
      *  with the given target ID from the configuration file.
      *  @param targetID communication target ID, must be one of the target 
      *    identifiers returned by getTargetID() for peer type DVPSE_printer.
@@ -332,7 +332,7 @@ class DVConfiguration
      */     
     const char *getTargetPrinterBorderDensity(const char *targetID, Uint32 idx, OFString& value);
 
-    /** UNIMPLEMENTED - returns the number of distinct values (separated by backslash characters)
+    /** returns the number of distinct values (separated by backslash characters)
      *  in the EMPTYIMAGEDENSITY entry for the printer with the given
      *  target ID from the configuration file.
      *  @param targetID communication target ID, must be one of the target 
@@ -341,7 +341,7 @@ class DVConfiguration
      */     
     Uint32 getTargetPrinterNumberOfEmptyImageDensities(const char *targetID);
 
-    /** UNIMPLEMENTED - returns one value from the EMPTYIMAGEDENSITY entry for the printer 
+    /** returns one value from the EMPTYIMAGEDENSITY entry for the printer 
      *  with the given target ID from the configuration file.
      *  @param targetID communication target ID, must be one of the target 
      *    identifiers returned by getTargetID() for peer type DVPSE_printer.
@@ -479,37 +479,37 @@ class DVConfiguration
 
     /* general print settings */
 
-    /** UNIMPLEMENTED - returns the minimum horizontal bitmap resolution for print, from
+    /** returns the minimum horizontal bitmap resolution for print, from
      *  GENERAL/PRINT/MINPRINTRESOLUTION in the config file. Default: 0.
      *  @return minimum horizontal bitmap resolution
      */
     Uint32 getMinPrintResolutionX();
 
-    /** UNIMPLEMENTED - returns the minimum vertical bitmap resolution for print, from
+    /** returns the minimum vertical bitmap resolution for print, from
      *  GENERAL/PRINT/MINPRINTRESOLUTION in the config file. Default: 0.
      *  @return minimum vertical bitmap resolution
      */
     Uint32 getMinPrintResolutionY();
 
-    /** UNIMPLEMENTED - returns the maximum horizontal bitmap resolution for print, from
+    /** returns the maximum horizontal bitmap resolution for print, from
      *  GENERAL/PRINT/MAXPRINTRESOLUTION in the config file. Default: 0.
      *  @return maximum horizontal bitmap resolution
      */
     Uint32 getMaxPrintResolutionX();
 
-    /** UNIMPLEMENTED - returns the maximum vertical bitmap resolution for print, from
+    /** returns the maximum vertical bitmap resolution for print, from
      *  GENERAL/PRINT/MAXPRINTRESOLUTION in the config file. Default: 0.
      *  @return maximum vertical bitmap resolution
      */
     Uint32 getMaxPrintResolutionY();
 
-    /** UNIMPLEMENTED - returns the default illumination for print, from
+    /** returns the default illumination for print, from
      *  GENERAL/PRINT/DEFAULTILLUMINATION in the config file. Default: 2000.
      *  @return default illumination for print
      */
     Uint16 getDefaultPrintIllumination();
 
-    /** UNIMPLEMENTED - returns the default reflection for print, from
+    /** returns the default reflection for print, from
      *  GENERAL/PRINT/DEFAULTREFLECTION in the config file. Default: 10.
      *  @return default reflection for print
      */
@@ -556,7 +556,10 @@ private:
 /*
  *  CVS/RCS Log:
  *  $Log: dvpscf.h,v $
- *  Revision 1.1  1999-09-08 16:42:02  meichel
+ *  Revision 1.2  1999-09-10 12:46:45  meichel
+ *  Added implementations for a number of print API methods.
+ *
+ *  Revision 1.1  1999/09/08 16:42:02  meichel
  *  Moved configuration file evaluation to separate class.
  *
  *
