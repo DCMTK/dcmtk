@@ -22,9 +22,9 @@
  *  Purpose: Interface of class DcmPixelData
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-04-14 15:31:33 $
+ *  Update Date:      $Date: 2000-09-27 08:19:55 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcpixel.h,v $
- *  CVS/RCS Revision: $Revision: 1.10 $
+ *  CVS/RCS Revision: $Revision: 1.11 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -137,7 +137,7 @@ private:
     E_Condition decode(
         const DcmXfer & fromType,
         const DcmRepresentationParameter * fromParam,
-        const DcmPixelSequence * fromPixSeq,
+        DcmPixelSequence * fromPixSeq,
         DcmStack & pixelStack);
 
 
@@ -145,7 +145,7 @@ private:
     E_Condition encode(
         const DcmXfer & fromType, 
         const DcmRepresentationParameter * fromParam, 
-        const DcmPixelSequence * fromPixSeq, 
+        DcmPixelSequence * fromPixSeq, 
         const DcmXfer & toType, 
         const DcmRepresentationParameter *toParam,
         DcmStack & pixelStack);
@@ -305,7 +305,10 @@ public:
 /*
 ** CVS/RCS Log:
 ** $Log: dcpixel.h,v $
-** Revision 1.10  2000-04-14 15:31:33  meichel
+** Revision 1.11  2000-09-27 08:19:55  meichel
+** Minor changes in DcmCodec interface, required for future dcmjpeg module.
+**
+** Revision 1.10  2000/04/14 15:31:33  meichel
 ** Removed default value from output stream passed to print() method.
 **   Required for use in multi-thread environments.
 **

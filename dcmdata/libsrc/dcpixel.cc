@@ -22,9 +22,9 @@
  *  Purpose: class DcmPixelData
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-04-14 16:09:16 $
+ *  Update Date:      $Date: 2000-09-27 08:19:58 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcpixel.cc,v $
- *  CVS/RCS Revision: $Revision: 1.13 $
+ *  CVS/RCS Revision: $Revision: 1.14 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -365,7 +365,7 @@ E_Condition
 DcmPixelData::decode(
     const DcmXfer & fromType,
     const DcmRepresentationParameter * fromParam,
-    const DcmPixelSequence * fromPixSeq,
+    DcmPixelSequence * fromPixSeq,
     DcmStack & pixelStack)
 {
     if (existUnencapsulated) return EC_Normal;
@@ -401,7 +401,7 @@ E_Condition
 DcmPixelData::encode(
     const DcmXfer & fromType, 
     const DcmRepresentationParameter * fromParam, 
-    const DcmPixelSequence * fromPixSeq, 
+    DcmPixelSequence * fromPixSeq, 
     const DcmXfer & toType, 
     const DcmRepresentationParameter *toParam,
     DcmStack & pixelStack)
@@ -969,7 +969,10 @@ E_Condition DcmPixelData::loadAllDataIntoMemory(void)
 /*
 ** CVS/RCS Log:
 ** $Log: dcpixel.cc,v $
-** Revision 1.13  2000-04-14 16:09:16  meichel
+** Revision 1.14  2000-09-27 08:19:58  meichel
+** Minor changes in DcmCodec interface, required for future dcmjpeg module.
+**
+** Revision 1.13  2000/04/14 16:09:16  meichel
 ** Made function DcmCodec and related functions thread safe.
 **   registerGlobalCodec() should not be called anymore from the constructor
 **   of global objects.

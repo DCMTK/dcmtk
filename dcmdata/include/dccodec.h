@@ -22,9 +22,9 @@
  *  Purpose: Interface of abstract class DcmCodec and the class DcmCodecStruct
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-04-14 16:09:12 $
+ *  Update Date:      $Date: 2000-09-27 08:19:54 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dccodec.h,v $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -54,7 +54,7 @@ public:
     // decompress pixSeq in an uncompressed transfer syntax
     virtual E_Condition decode(
         const DcmRepresentationParameter * fromRepParam,
-        const DcmPixelSequence * pixSeq,
+        DcmPixelSequence * pixSeq,
         Uint16 * & pixelData,
         Uint32 & length,
         const DcmCodecParameter * cp,
@@ -73,12 +73,11 @@ public:
     virtual E_Condition encode(
         const E_TransferSyntax fromRepType,
         const DcmRepresentationParameter * fromRepParam,
-        const DcmPixelSequence * fromPixSeq,
+        DcmPixelSequence * fromPixSeq,
         const DcmRepresentationParameter * toRepParam,
         DcmPixelSequence * & toPixSeq,
         const DcmCodecParameter * cp,
         DcmStack & objStack) const = 0;
-
 
     // check if a change of coding pixel data is possible
     virtual OFBool canChangeCoding(
@@ -115,6 +114,8 @@ public:
       getDefaultRepresentationParameter() const { return defaultRepParam; }
     const DcmCodecParameter * 
       getCodecParameter() const { return codecParameter; }
+    void setCodecParameter(DcmCodecParameter *cp) { codecParameter = cp; }
+
 };
 
 /* the following functions should NOT be called before main() is started,
@@ -128,7 +129,10 @@ const DcmCodecStruct * searchGlobalCodec(const E_TransferSyntax repType);
 /*
 ** CVS/RCS Log:
 ** $Log: dccodec.h,v $
-** Revision 1.6  2000-04-14 16:09:12  meichel
+** Revision 1.7  2000-09-27 08:19:54  meichel
+** Minor changes in DcmCodec interface, required for future dcmjpeg module.
+**
+** Revision 1.6  2000/04/14 16:09:12  meichel
 ** Made function DcmCodec and related functions thread safe.
 **   registerGlobalCodec() should not be called anymore from the constructor
 **   of global objects.

@@ -22,9 +22,9 @@
  *  Purpose: abstract class DcmCodec and the class DcmCodecStruct
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-04-14 16:09:16 $
+ *  Update Date:      $Date: 2000-09-27 08:19:57 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dccodec.cc,v $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -62,7 +62,8 @@ void registerGlobalCodec(const DcmCodecStruct * codecStruct)
     globalCodecMutex.lock();
     // search to a codec with this repType
     DcmCodecIterator it(findInsertionPoint(codecStruct->getRepresentationType()));
-    if ((*it)->getRepresentationType() == codecStruct->getRepresentationType()) it = globalCodecList.erase(it);
+    if ((it != globalCodecList.end()) && ((*it)->getRepresentationType() == codecStruct->getRepresentationType()))
+      it = globalCodecList.erase(it);
     globalCodecList.insert(it, codecStruct);
     globalCodecMutex.unlock();
 }
@@ -87,7 +88,10 @@ const DcmCodecStruct * searchGlobalCodec(const E_TransferSyntax repType)
 /*
 ** CVS/RCS Log:
 ** $Log: dccodec.cc,v $
-** Revision 1.4  2000-04-14 16:09:16  meichel
+** Revision 1.5  2000-09-27 08:19:57  meichel
+** Minor changes in DcmCodec interface, required for future dcmjpeg module.
+**
+** Revision 1.4  2000/04/14 16:09:16  meichel
 ** Made function DcmCodec and related functions thread safe.
 **   registerGlobalCodec() should not be called anymore from the constructor
 **   of global objects.
