@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2001, OFFIS
+ *  Copyright (C) 1996-2003, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,8 @@
  *  Purpose: DicomColorMonochromeTemplate (Header)
  *
  *  Last Update:         $Author: joergr $
- *  Update Date:         $Date: 2001-11-09 16:41:34 $
- *  Source File:         $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/include/Attic/dicomot.h,v $
- *  CVS/RCS Revision:    $Revision: 1.11 $
+ *  Update Date:         $Date: 2003-12-23 11:21:12 $
+ *  CVS/RCS Revision:    $Revision: 1.12 $
  *  Status:              $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -32,8 +31,8 @@
  */
 
 
-#ifndef __DICOMOT_H
-#define __DICOMOT_H
+#ifndef DICOMOT_H
+#define DICOMOT_H
 
 #include "osconfig.h"
 
@@ -55,6 +54,14 @@ class DiColorMonoTemplate
 
  public:
 
+    /** constructor
+     *
+     ** @param  pixel     intermediate representation of color pixel data
+     *  @param  modality  pointer to object managing modality transform
+     *  @param  red       coefficient of red pixel component
+     *  @param  green     coefficient of green pixel component
+     *  @param  blue      coefficient of blue pixel component
+     */
     DiColorMonoTemplate(const DiColorPixel *pixel,
                         DiMonoModality *modality,
                         const double red,
@@ -64,11 +71,13 @@ class DiColorMonoTemplate
     {
         if ((pixel != NULL) && (pixel->getCount() > 0))
         {
-            convert((const T **)pixel->getData(), red, green, blue);
+            convert(OFstatic_cast(const T **, pixel->getData()), red, green, blue);
             determineMinMax();
         }
     }
-    
+
+    /** destructor
+     */
     virtual ~DiColorMonoTemplate()
     {
     }
@@ -76,6 +85,13 @@ class DiColorMonoTemplate
 
  private:
 
+    /** convert color pixel data to monochrome format
+     *
+     ** @param  pixel  intermediate representation of color pixel data
+     *  @param  red    coefficient of red pixel component
+     *  @param  green  coefficient of green pixel component
+     *  @param  blue   coefficient of blue pixel component
+     */
     void convert(const T *pixel[3],
                  const double red,
                  const double green,
@@ -92,7 +108,11 @@ class DiColorMonoTemplate
                 register T *q = Data;
                 register unsigned long i;
                 for (i = Count; i != 0; i--)
-                    *(q++) = (T)((double)*(r++) * red + (double)*(g++) * green + (double)*(b++) * blue);
+                {
+                    *(q++) = OFstatic_cast(T, OFstatic_cast(double, *(r++)) * red +
+                                              OFstatic_cast(double, *(g++)) * green +
+                                              OFstatic_cast(double, *(b++)) * blue);
+                }
             }
         }
     }
@@ -106,7 +126,12 @@ class DiColorMonoTemplate
  *
  * CVS/RCS Log:
  * $Log: dicomot.h,v $
- * Revision 1.11  2001-11-09 16:41:34  joergr
+ * Revision 1.12  2003-12-23 11:21:12  joergr
+ * Adapted type casts to new-style typecast operators defined in ofcast.h.
+ * Removed leading underscore characters from preprocessor symbols (reserved
+ * symbols). Added missing API documentation. Updated copyright header.
+ *
+ * Revision 1.11  2001/11/09 16:41:34  joergr
  * Removed 'inline' specifier from certain methods.
  *
  * Revision 1.10  2001/06/01 15:49:28  meichel
