@@ -22,9 +22,9 @@
  *  Purpose: Hash table interface for DICOM data dictionary
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-03-08 16:26:36 $
+ *  Update Date:      $Date: 2000-04-14 16:16:22 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dchashdi.cc,v $
- *  CVS/RCS Revision: $Revision: 1.10 $
+ *  CVS/RCS Revision: $Revision: 1.11 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -409,7 +409,8 @@ DcmHashDict::put(DcmDictEntry* e)
     if (old != NULL) {
         /* an old entry has been replaced */
 #ifdef PRINT_REPLACED_DICTIONARY_ENTRIES 
-        CERR << "replacing " << *old << endl;
+        ofConsole.lockCerr() << "replacing " << *old << endl;
+        ofConsole.unlockCerr();
 #endif
         delete old;
     } else {
@@ -507,7 +508,10 @@ DcmHashDict::loadSummary(ostream& out)
 /*
 ** CVS/RCS Log:
 ** $Log: dchashdi.cc,v $
-** Revision 1.10  2000-03-08 16:26:36  meichel
+** Revision 1.11  2000-04-14 16:16:22  meichel
+** Dcmdata library code now consistently uses ofConsole for error output.
+**
+** Revision 1.10  2000/03/08 16:26:36  meichel
 ** Updated copyright header.
 **
 ** Revision 1.9  2000/03/03 14:05:33  meichel
