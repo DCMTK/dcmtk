@@ -52,10 +52,10 @@
  *  Caveat 2: The direct use of the COUT and CERR macros is unsafe
  *  in multithread applications. Use ofConsole instead.
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-06-01 15:51:33 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2002-04-16 13:36:02 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/include/Attic/ofconsol.h,v $
- *  CVS/RCS Revision: $Revision: 1.8 $
+ *  CVS/RCS Revision: $Revision: 1.9 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -67,7 +67,7 @@
 #define __OFCONSOL_H
 
 #include "osconfig.h"
-#include <iostream.h>
+#include "ofstream.h"
 #include "ofthread.h"
 
 #ifdef HAVE_STDLIB_H
@@ -266,22 +266,13 @@ extern OFConsole ofConsole;
 
 #ifdef DCMTK_GUI
 
-#ifdef HAVE_SSTREAM_H
-#include <sstream.h>
+#if defined(HAVE_SSTREAM_H) && !defined(USE_STD_CXX_INCLUDES)
   extern ostringstream COUT;
   extern ostringstream CERR;
-#else /* HAVE_SSTREAM_H */
-
-#ifdef HAVE_STRSTREAM_H
-#include <strstream.h>
-#else
-#include <strstrea.h>
-#endif
-
+#else 
   extern ostrstream COUT;
   extern ostrstream CERR;
-
-#endif /* HAVE_SSTREAM_H */
+#endif
 
 #else /* DCMTK_GUI */
 
@@ -296,7 +287,12 @@ extern OFConsole ofConsole;
  *
  * CVS/RCS Log:
  * $Log: ofconsol.h,v $
- * Revision 1.8  2001-06-01 15:51:33  meichel
+ * Revision 1.9  2002-04-16 13:36:02  joergr
+ * Added configurable support for C++ ANSI standard includes (e.g. streams).
+ * Thanks to Andreas Barth <Andreas.Barth@bruker-biospin.de> for his
+ * contribution.
+ *
+ * Revision 1.8  2001/06/01 15:51:33  meichel
  * Updated copyright header
  *
  * Revision 1.7  2000/12/13 15:14:25  joergr

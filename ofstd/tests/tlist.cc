@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1997-2001, OFFIS
+ *  Copyright (C) 1997-2002, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,10 +21,10 @@
  *
  *  Purpose: test programm for classes OFList and OFListIterator
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-06-01 15:51:40 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2002-04-16 13:37:00 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/tests/tlist.cc,v $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -32,12 +32,14 @@
  */
 
 
+#include "osconfig.h"
+
 #include <assert.h>
 
 #define tassert(ex) {if ((ex)) CERR << #ex << "\n"; \
                        else _assert(#ex, __FILE__,__LINE__); }
 
-#include <iostream.h>
+#include "ofstream.h"
 #include "oflist.h"
 #include "ofalgo.h"
 #include "ofconsol.h"
@@ -178,7 +180,12 @@ int main()
 **
 ** CVS/RCS Log:
 ** $Log: tlist.cc,v $
-** Revision 1.5  2001-06-01 15:51:40  meichel
+** Revision 1.6  2002-04-16 13:37:00  joergr
+** Added configurable support for C++ ANSI standard includes (e.g. streams).
+** Thanks to Andreas Barth <Andreas.Barth@bruker-biospin.de> for his
+** contribution.
+**
+** Revision 1.5  2001/06/01 15:51:40  meichel
 ** Updated copyright header
 **
 ** Revision 1.4  2000/03/08 16:36:07  meichel

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2001, OFFIS
+ *  Copyright (C) 1994-2002, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose: create a Dicom FileFormat or DataSet from an ASCII-dump
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-12-11 14:00:39 $
+ *  Update Date:      $Date: 2002-04-16 13:38:55 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/apps/dump2dcm.cc,v $
- *  CVS/RCS Revision: $Revision: 1.38 $
+ *  CVS/RCS Revision: $Revision: 1.39 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -98,7 +98,6 @@ END_EXTERN_C
 #endif
 #endif
 
-#include <iostream.h>
 #include <ctype.h>
 
 #ifdef HAVE_SYS_TYPES_H
@@ -115,6 +114,7 @@ END_EXTERN_C
 #include <GUSI.h>
 #endif
 
+#include "ofstream.h"
 #include "dctk.h"
 #include "dcdebug.h"
 #include "cmdlnarg.h"
@@ -973,7 +973,12 @@ int main(int argc, char *argv[])
 /*
 ** CVS/RCS Log:
 ** $Log: dump2dcm.cc,v $
-** Revision 1.38  2001-12-11 14:00:39  joergr
+** Revision 1.39  2002-04-16 13:38:55  joergr
+** Added configurable support for C++ ANSI standard includes (e.g. streams).
+** Thanks to Andreas Barth <Andreas.Barth@bruker-biospin.de> for his
+** contribution.
+**
+** Revision 1.38  2001/12/11 14:00:39  joergr
 ** Fixed bug in 'dump2dcm' parser causing AT attribute values to be ignored.
 ** Thanks to Anders Gustafsson <agustafsson@mds.nordion.com> for the bug
 ** report.

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2001, OFFIS
+ *  Copyright (C) 1994-2002, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -30,9 +30,9 @@
  *  dcmjpeg/apps/dcmmkdir.cc.
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-04-11 12:35:54 $
+ *  Update Date:      $Date: 2002-04-16 13:38:54 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/apps/dcmgpdir.cc,v $
- *  CVS/RCS Revision: $Revision: 1.59 $
+ *  CVS/RCS Revision: $Revision: 1.60 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -44,8 +44,6 @@
 #ifdef HAVE_WINDOWS_H
 #include <windows.h>
 #endif
-
-#include <iostream.h>
 
 #ifdef HAVE_STDLIB_H
 #ifndef  _BCB4
@@ -97,6 +95,7 @@ END_EXTERN_C
 #include <GUSI.h>
 #endif
 
+#include "ofstream.h"
 #include "ofconapp.h"
 #include "ofstring.h"
 #include "oflist.h"
@@ -3905,7 +3904,12 @@ expandFileNames(OFList<OFString>& fileNames, OFList<OFString>& expandedNames)
 /*
  * CVS/RCS Log:
  * $Log: dcmgpdir.cc,v $
- * Revision 1.59  2002-04-11 12:35:54  joergr
+ * Revision 1.60  2002-04-16 13:38:54  joergr
+ * Added configurable support for C++ ANSI standard includes (e.g. streams).
+ * Thanks to Andreas Barth <Andreas.Barth@bruker-biospin.de> for his
+ * contribution.
+ *
+ * Revision 1.59  2002/04/11 12:35:54  joergr
  * Replaced direct call of system routines by new standard date and time
  * functions.
  * Use the new standard file system routines like fileExists() etc.

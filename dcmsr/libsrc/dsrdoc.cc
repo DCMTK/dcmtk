@@ -23,8 +23,8 @@
  *    classes: DSRDocument
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-01-08 10:26:49 $
- *  CVS/RCS Revision: $Revision: 1.32 $
+ *  Update Date:      $Date: 2002-04-16 13:51:37 $
+ *  CVS/RCS Revision: $Revision: 1.33 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -34,9 +34,9 @@
 
 #include "osconfig.h"    /* make sure OS specific configuration is included first */
 
+#include "ofstream.h"
 #include "dsrdoc.h"
 
-#include <fstream.h>
 
 
 DSRDocument::DSRDocument(const E_DocumentType documentType)
@@ -1818,7 +1818,12 @@ void DSRDocument::updateAttributes(const OFBool updateAll)
 /*
  *  CVS/RCS Log:
  *  $Log: dsrdoc.cc,v $
- *  Revision 1.32  2002-01-08 10:26:49  joergr
+ *  Revision 1.33  2002-04-16 13:51:37  joergr
+ *  Added configurable support for C++ ANSI standard includes (e.g. streams).
+ *  Thanks to Andreas Barth <Andreas.Barth@bruker-biospin.de> for his
+ *  contribution.
+ *
+ *  Revision 1.32  2002/01/08 10:26:49  joergr
  *  Corrected spelling of function dcmGenerateUniqueIdentifier().
  *  Changed prefix of UIDs created for series and studies (now using constants
  *  SITE_SERIES_UID_ROOT and SITE_STUDY_UID_ROOT which are supposed to be used

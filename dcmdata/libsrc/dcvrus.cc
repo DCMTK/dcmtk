@@ -21,10 +21,10 @@
  *
  *  Purpose: class DcmUnsignedShort
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-09-25 17:20:02 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2002-04-16 13:43:27 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcvrus.cc,v $
- *  CVS/RCS Revision: $Revision: 1.19 $
+ *  CVS/RCS Revision: $Revision: 1.20 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -33,8 +33,8 @@
 
 #include <stdio.h>
 #include <string.h>
-#include <iostream.h>
 
+#include "ofstream.h"
 #include "dcvrus.h"
 #include "dcdebug.h"
 #include "dcvm.h"
@@ -247,7 +247,12 @@ OFCondition DcmUnsignedShort::verify(const OFBool autocorrect )
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrus.cc,v $
-** Revision 1.19  2001-09-25 17:20:02  meichel
+** Revision 1.20  2002-04-16 13:43:27  joergr
+** Added configurable support for C++ ANSI standard includes (e.g. streams).
+** Thanks to Andreas Barth <Andreas.Barth@bruker-biospin.de> for his
+** contribution.
+**
+** Revision 1.19  2001/09/25 17:20:02  meichel
 ** Adapted dcmdata to class OFCondition
 **
 ** Revision 1.18  2001/06/01 15:49:22  meichel

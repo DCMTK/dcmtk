@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2001, OFFIS
+ *  Copyright (C) 2000-2002, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,8 +23,8 @@
  *    classes: DSRTypes
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-04-11 13:02:35 $
- *  CVS/RCS Revision: $Revision: 1.23 $
+ *  Update Date:      $Date: 2002-04-16 13:50:52 $
+ *  CVS/RCS Revision: $Revision: 1.24 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -39,15 +39,9 @@
 
 #include "dctk.h"
 
+#include "ofstream.h"
 #include "oftypes.h"
 #include "ofcond.h"
-
-#ifdef HAVE_STRSTREA_H
-#include <strstrea.h>      /* for ostrstream */
-#endif
-#ifdef HAVE_STRSTREAM_H
-#include <strstream.h>     /* for ostrstream */
-#endif
 
 
 /*---------------------*
@@ -1108,7 +1102,12 @@ class DSRTypes
 /*
  *  CVS/RCS Log:
  *  $Log: dsrtypes.h,v $
- *  Revision 1.23  2002-04-11 13:02:35  joergr
+ *  Revision 1.24  2002-04-16 13:50:52  joergr
+ *  Added configurable support for C++ ANSI standard includes (e.g. streams).
+ *  Thanks to Andreas Barth <Andreas.Barth@bruker-biospin.de> for his
+ *  contribution.
+ *
+ *  Revision 1.23  2002/04/11 13:02:35  joergr
  *  Corrected typo and/or enhanced documentation.
  *
  *  Revision 1.22  2001/11/09 16:10:54  joergr

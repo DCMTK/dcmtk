@@ -21,10 +21,10 @@
  *
  *  Purpose: class DcmUnsignedLong
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-09-25 17:20:01 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2002-04-16 13:43:26 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcvrul.cc,v $
- *  CVS/RCS Revision: $Revision: 1.19 $
+ *  CVS/RCS Revision: $Revision: 1.20 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -33,8 +33,8 @@
 
 #include <stdio.h>
 #include <string.h>
-#include <iostream.h>
 
+#include "ofstream.h"
 #include "dcvrul.h"
 #include "dcvm.h"
 #include "dcdebug.h"
@@ -255,7 +255,12 @@ OFCondition DcmUnsignedLong::verify(const OFBool autocorrect )
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrul.cc,v $
-** Revision 1.19  2001-09-25 17:20:01  meichel
+** Revision 1.20  2002-04-16 13:43:26  joergr
+** Added configurable support for C++ ANSI standard includes (e.g. streams).
+** Thanks to Andreas Barth <Andreas.Barth@bruker-biospin.de> for his
+** contribution.
+**
+** Revision 1.19  2001/09/25 17:20:01  meichel
 ** Adapted dcmdata to class OFCondition
 **
 ** Revision 1.18  2001/06/01 15:49:21  meichel

@@ -22,10 +22,10 @@
  *  Purpose: Provide prototype of command line argument gathering routine
  *  for OS environments which cannot pass arguments on the command line.
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-06-01 15:48:57 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2002-04-16 13:43:14 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/cmdlnarg.cc,v $
- *  CVS/RCS Revision: $Revision: 1.13 $
+ *  CVS/RCS Revision: $Revision: 1.14 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -59,11 +59,7 @@ END_EXTERN_C
 
 #include <stdio.h>
 #include <string.h>
-#include <iostream.h>
-
-#ifdef HAVE_SSTREAM_H
-#include <sstream.h>
-#endif
+#include "ofstream.h"
 
 void prepareCmdLineArgs(int& argc, char* argv[], 
 			const char* progname)
@@ -111,10 +107,11 @@ END_EXTERN_C
 #include <stdio.h>
 #include <string.h>
 #include <string.h>
-#include <iostream.h>
 #ifdef HAVE_IO_H
 #include <io.h>
 #endif
+
+#include "ofstream.h"
 
 void prepareCmdLineArgs(int& /* argc */, char** /* argv */, 
 			const char* /* progname */)
@@ -169,7 +166,12 @@ void prepareCmdLineArgs(int& /* argc */, char** /* argv */,
 /*
 ** CVS/RCS Log:
 ** $Log: cmdlnarg.cc,v $
-** Revision 1.13  2001-06-01 15:48:57  meichel
+** Revision 1.14  2002-04-16 13:43:14  joergr
+** Added configurable support for C++ ANSI standard includes (e.g. streams).
+** Thanks to Andreas Barth <Andreas.Barth@bruker-biospin.de> for his
+** contribution.
+**
+** Revision 1.13  2001/06/01 15:48:57  meichel
 ** Updated copyright header
 **
 ** Revision 1.12  2000/04/14 15:55:02  meichel

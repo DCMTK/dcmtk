@@ -1,24 +1,27 @@
 cmdlnarg.o: cmdlnarg.cc ../../config/include/osconfig.h \
  ../include/cmdlnarg.h ../../ofstd/include/ofconsol.h \
- ../../ofstd/include/ofthread.h ../../ofstd/include/oftypes.h
+ ../../ofstd/include/ofstream.h ../../ofstd/include/ofthread.h \
+ ../../ofstd/include/oftypes.h
 dcbuf.o: dcbuf.cc ../../config/include/osconfig.h ../include/dcbuf.h \
  ../include/dctypes.h ../../ofstd/include/oftypes.h \
  ../include/dcdefine.h
 dcbytstr.o: dcbytstr.cc ../../config/include/osconfig.h \
- ../../ofstd/include/ofstring.h ../../ofstd/include/oftypes.h \
- ../include/dcbytstr.h ../../ofstd/include/ofconsol.h \
- ../../ofstd/include/ofthread.h ../include/dcerror.h \
- ../../ofstd/include/ofcond.h ../include/dctypes.h ../include/dcelem.h \
- ../include/dcobject.h ../../ofstd/include/ofglobal.h \
- ../include/dcxfer.h ../include/dcvr.h ../include/dcstream.h \
- ../include/dctag.h ../include/dctagkey.h ../include/dcdicent.h \
- ../include/dclist.h ../include/dcstack.h ../include/dcdebug.h
+ ../../ofstd/include/ofstream.h ../../ofstd/include/ofstring.h \
+ ../../ofstd/include/oftypes.h ../include/dcbytstr.h \
+ ../../ofstd/include/ofconsol.h ../../ofstd/include/ofthread.h \
+ ../include/dcerror.h ../../ofstd/include/ofcond.h \
+ ../include/dctypes.h ../include/dcelem.h ../include/dcobject.h \
+ ../../ofstd/include/ofglobal.h ../include/dcxfer.h ../include/dcvr.h \
+ ../include/dcstream.h ../include/dctag.h ../include/dctagkey.h \
+ ../include/dcdicent.h ../include/dclist.h ../include/dcstack.h \
+ ../include/dcdebug.h
 dcchrstr.o: dcchrstr.cc ../../config/include/osconfig.h \
  ../include/dcchrstr.h ../include/dcbytstr.h \
- ../../ofstd/include/ofconsol.h ../../ofstd/include/ofthread.h \
- ../../ofstd/include/oftypes.h ../include/dcerror.h \
- ../../ofstd/include/ofcond.h ../../ofstd/include/ofstring.h \
- ../include/dctypes.h ../include/dcelem.h ../include/dcobject.h \
+ ../../ofstd/include/ofconsol.h ../../ofstd/include/ofstream.h \
+ ../../ofstd/include/ofthread.h ../../ofstd/include/oftypes.h \
+ ../include/dcerror.h ../../ofstd/include/ofcond.h \
+ ../../ofstd/include/ofstring.h ../include/dctypes.h \
+ ../include/dcelem.h ../include/dcobject.h \
  ../../ofstd/include/ofglobal.h ../include/dcxfer.h ../include/dcvr.h \
  ../include/dcstream.h ../include/dctag.h ../include/dctagkey.h \
  ../include/dcdicent.h ../include/dclist.h ../include/dcstack.h
@@ -26,14 +29,16 @@ dccodec.o: dccodec.cc ../../config/include/osconfig.h \
  ../include/dccodec.h ../include/dctypes.h \
  ../../ofstd/include/oftypes.h ../include/dcerror.h \
  ../../ofstd/include/ofcond.h ../../ofstd/include/ofstring.h \
- ../include/dcxfer.h ../include/dcvr.h ../../ofstd/include/ofglobal.h \
- ../../ofstd/include/ofthread.h ../../ofstd/include/oflist.h
+ ../../ofstd/include/ofstream.h ../include/dcxfer.h ../include/dcvr.h \
+ ../../ofstd/include/ofglobal.h ../../ofstd/include/ofthread.h \
+ ../../ofstd/include/oflist.h
 dcdatset.o: dcdatset.cc ../../config/include/osconfig.h \
- ../../ofstd/include/ofstack.h ../../ofstd/include/oftypes.h \
- ../include/dcdatset.h ../../ofstd/include/ofconsol.h \
- ../../ofstd/include/ofthread.h ../include/dcerror.h \
- ../../ofstd/include/ofcond.h ../../ofstd/include/ofstring.h \
- ../include/dctypes.h ../include/dcitem.h ../include/dcobject.h \
+ ../../ofstd/include/ofstream.h ../../ofstd/include/ofstack.h \
+ ../../ofstd/include/oftypes.h ../include/dcdatset.h \
+ ../../ofstd/include/ofconsol.h ../../ofstd/include/ofthread.h \
+ ../include/dcerror.h ../../ofstd/include/ofcond.h \
+ ../../ofstd/include/ofstring.h ../include/dctypes.h \
+ ../include/dcitem.h ../include/dcobject.h \
  ../../ofstd/include/ofglobal.h ../include/dcxfer.h ../include/dcvr.h \
  ../include/dcstream.h ../include/dctag.h ../include/dctagkey.h \
  ../include/dcdicent.h ../include/dclist.h ../include/dcstack.h \
@@ -42,14 +47,14 @@ dcdatset.o: dcdatset.cc ../../config/include/osconfig.h \
  ../include/dcvrpobw.h ../include/dcvrobow.h \
  ../../ofstd/include/oflist.h ../include/dcdeftag.h
 dcdebug.o: dcdebug.cc ../../config/include/osconfig.h \
- ../include/dcdebug.h ../../ofstd/include/ofglobal.h \
- ../../ofstd/include/ofthread.h ../../ofstd/include/oftypes.h \
- ../../ofstd/include/ofconsol.h
+ ../include/dcdebug.h ../../ofstd/include/ofstream.h \
+ ../../ofstd/include/ofglobal.h ../../ofstd/include/ofthread.h \
+ ../../ofstd/include/oftypes.h ../../ofstd/include/ofconsol.h
 dcdicdir.o: dcdicdir.cc ../../config/include/osconfig.h \
- ../include/dcdefine.h ../include/dcdicdir.h \
- ../../ofstd/include/ofconsol.h ../../ofstd/include/ofthread.h \
- ../../ofstd/include/oftypes.h ../include/dctypes.h \
- ../include/dcitem.h ../include/dcobject.h \
+ ../../ofstd/include/ofstream.h ../include/dcdefine.h \
+ ../include/dcdicdir.h ../../ofstd/include/ofconsol.h \
+ ../../ofstd/include/ofthread.h ../../ofstd/include/oftypes.h \
+ ../include/dctypes.h ../include/dcitem.h ../include/dcobject.h \
  ../../ofstd/include/ofglobal.h ../include/dcerror.h \
  ../../ofstd/include/ofcond.h ../../ofstd/include/ofstring.h \
  ../include/dcxfer.h ../include/dcvr.h ../include/dcstream.h \
@@ -73,35 +78,39 @@ dcdicdir.o: dcdicdir.cc ../../config/include/osconfig.h \
  ../include/dcvrss.h ../include/dcvrus.h ../include/dcvrsl.h \
  ../include/dcvrfl.h ../include/dcvrfd.h ../include/cmdlnarg.h
 dcdicent.o: dcdicent.cc ../../config/include/osconfig.h \
- ../include/dcdicent.h ../include/dctagkey.h ../include/dctypes.h \
+ ../include/dcdicent.h ../../ofstd/include/ofstream.h \
+ ../include/dctagkey.h ../include/dctypes.h \
  ../../ofstd/include/oftypes.h ../../ofstd/include/ofstring.h \
  ../include/dcvr.h ../../ofstd/include/ofglobal.h \
  ../../ofstd/include/ofthread.h
 dcdict.o: dcdict.cc ../../config/include/osconfig.h \
- ../../ofstd/include/ofconsol.h ../../ofstd/include/ofthread.h \
- ../../ofstd/include/oftypes.h ../include/dcdict.h \
- ../include/dchashdi.h ../../ofstd/include/oflist.h \
- ../include/dcdicent.h ../include/dctagkey.h ../include/dctypes.h \
+ ../../ofstd/include/ofconsol.h ../../ofstd/include/ofstream.h \
+ ../../ofstd/include/ofthread.h ../../ofstd/include/oftypes.h \
+ ../include/dcdict.h ../include/dchashdi.h \
+ ../../ofstd/include/oflist.h ../include/dcdicent.h \
+ ../include/dctagkey.h ../include/dctypes.h \
  ../../ofstd/include/ofstring.h ../include/dcvr.h \
  ../../ofstd/include/ofglobal.h ../include/dcdefine.h
 dcdictbi.o: dcdictbi.cc ../include/dcdict.h \
  ../../config/include/osconfig.h ../include/dchashdi.h \
  ../../ofstd/include/oflist.h ../../ofstd/include/oftypes.h \
- ../include/dcdicent.h ../include/dctagkey.h ../include/dctypes.h \
+ ../include/dcdicent.h ../../ofstd/include/ofstream.h \
+ ../include/dctagkey.h ../include/dctypes.h \
  ../../ofstd/include/ofstring.h ../include/dcvr.h \
  ../../ofstd/include/ofglobal.h ../../ofstd/include/ofthread.h
 dcdictzz.o: dcdictzz.cc ../include/dcdict.h \
  ../../config/include/osconfig.h ../include/dchashdi.h \
  ../../ofstd/include/oflist.h ../../ofstd/include/oftypes.h \
- ../include/dcdicent.h ../include/dctagkey.h ../include/dctypes.h \
+ ../include/dcdicent.h ../../ofstd/include/ofstream.h \
+ ../include/dctagkey.h ../include/dctypes.h \
  ../../ofstd/include/ofstring.h ../include/dcvr.h \
  ../../ofstd/include/ofglobal.h ../../ofstd/include/ofthread.h
 dcdirrec.o: dcdirrec.cc ../../config/include/osconfig.h \
- ../include/dcdirrec.h ../../ofstd/include/ofconsol.h \
- ../../ofstd/include/ofthread.h ../../ofstd/include/oftypes.h \
- ../include/dcerror.h ../../ofstd/include/ofcond.h \
- ../../ofstd/include/ofstring.h ../include/dctypes.h \
- ../include/dcitem.h ../include/dcobject.h \
+ ../../ofstd/include/ofstream.h ../include/dcdirrec.h \
+ ../../ofstd/include/ofconsol.h ../../ofstd/include/ofthread.h \
+ ../../ofstd/include/oftypes.h ../include/dcerror.h \
+ ../../ofstd/include/ofcond.h ../../ofstd/include/ofstring.h \
+ ../include/dctypes.h ../include/dcitem.h ../include/dcobject.h \
  ../../ofstd/include/ofglobal.h ../include/dcxfer.h ../include/dcvr.h \
  ../include/dcstream.h ../include/dctag.h ../include/dctagkey.h \
  ../include/dcdicent.h ../include/dclist.h ../include/dcstack.h \
@@ -126,40 +135,43 @@ dcdirrec.o: dcdirrec.cc ../../config/include/osconfig.h \
 dcelem.o: dcelem.cc ../../config/include/osconfig.h \
  ../include/dcelem.h ../include/dcerror.h ../../ofstd/include/ofcond.h \
  ../../ofstd/include/oftypes.h ../../ofstd/include/ofstring.h \
- ../include/dctypes.h ../include/dcobject.h \
- ../../ofstd/include/ofconsol.h ../../ofstd/include/ofthread.h \
- ../../ofstd/include/ofglobal.h ../include/dcxfer.h ../include/dcvr.h \
- ../include/dcstream.h ../include/dctag.h ../include/dctagkey.h \
- ../include/dcdicent.h ../include/dclist.h ../include/dcstack.h \
- ../include/dcdefine.h ../include/dcswap.h ../include/dcdebug.h
+ ../../ofstd/include/ofstream.h ../include/dctypes.h \
+ ../include/dcobject.h ../../ofstd/include/ofconsol.h \
+ ../../ofstd/include/ofthread.h ../../ofstd/include/ofglobal.h \
+ ../include/dcxfer.h ../include/dcvr.h ../include/dcstream.h \
+ ../include/dctag.h ../include/dctagkey.h ../include/dcdicent.h \
+ ../include/dclist.h ../include/dcstack.h ../include/dcdefine.h \
+ ../include/dcswap.h ../include/dcdebug.h
 dcerror.o: dcerror.cc ../../config/include/osconfig.h \
  ../include/dcerror.h ../../ofstd/include/ofcond.h \
- ../../ofstd/include/oftypes.h ../../ofstd/include/ofstring.h
+ ../../ofstd/include/oftypes.h ../../ofstd/include/ofstring.h \
+ ../../ofstd/include/ofstream.h
 dcfilefo.o: dcfilefo.cc ../../config/include/osconfig.h \
- ../include/dcfilefo.h ../../ofstd/include/ofconsol.h \
- ../../ofstd/include/ofthread.h ../../ofstd/include/oftypes.h \
- ../include/dctypes.h ../include/dcerror.h \
- ../../ofstd/include/ofcond.h ../../ofstd/include/ofstring.h \
- ../include/dcsequen.h ../include/dcobject.h \
- ../../ofstd/include/ofglobal.h ../include/dcxfer.h ../include/dcvr.h \
- ../include/dcstream.h ../include/dctag.h ../include/dctagkey.h \
- ../include/dcdicent.h ../include/dclist.h ../include/dcstack.h \
- ../include/dcitem.h ../include/dcvrui.h ../include/dcbytstr.h \
- ../include/dcelem.h ../include/dcdatset.h ../include/dcvrobow.h \
- ../include/dcvrul.h ../include/dcvrus.h ../include/dcvrae.h \
- ../include/dcvrsh.h ../include/dcchrstr.h ../include/dcmetinf.h \
- ../include/dcdebug.h ../include/dcdeftag.h ../include/dcuid.h
+ ../../ofstd/include/ofstream.h ../include/dcfilefo.h \
+ ../../ofstd/include/ofconsol.h ../../ofstd/include/ofthread.h \
+ ../../ofstd/include/oftypes.h ../include/dctypes.h \
+ ../include/dcerror.h ../../ofstd/include/ofcond.h \
+ ../../ofstd/include/ofstring.h ../include/dcsequen.h \
+ ../include/dcobject.h ../../ofstd/include/ofglobal.h \
+ ../include/dcxfer.h ../include/dcvr.h ../include/dcstream.h \
+ ../include/dctag.h ../include/dctagkey.h ../include/dcdicent.h \
+ ../include/dclist.h ../include/dcstack.h ../include/dcitem.h \
+ ../include/dcvrui.h ../include/dcbytstr.h ../include/dcelem.h \
+ ../include/dcdatset.h ../include/dcvrobow.h ../include/dcvrul.h \
+ ../include/dcvrus.h ../include/dcvrae.h ../include/dcvrsh.h \
+ ../include/dcchrstr.h ../include/dcmetinf.h ../include/dcdebug.h \
+ ../include/dcdeftag.h ../include/dcuid.h
 dchashdi.o: dchashdi.cc ../../config/include/osconfig.h \
  ../include/dchashdi.h ../../ofstd/include/oflist.h \
  ../../ofstd/include/oftypes.h ../include/dcdicent.h \
- ../include/dctagkey.h ../include/dctypes.h \
- ../../ofstd/include/ofstring.h ../include/dcvr.h \
+ ../../ofstd/include/ofstream.h ../include/dctagkey.h \
+ ../include/dctypes.h ../../ofstd/include/ofstring.h ../include/dcvr.h \
  ../../ofstd/include/ofglobal.h ../../ofstd/include/ofthread.h
 dcitem.o: dcitem.cc ../../config/include/osconfig.h \
- ../../ofstd/include/ofstring.h ../../ofstd/include/oftypes.h \
- ../include/dctk.h ../include/dctypes.h ../include/dcswap.h \
- ../include/dcerror.h ../../ofstd/include/ofcond.h ../include/dcxfer.h \
- ../include/dcvr.h ../../ofstd/include/ofglobal.h \
+ ../../ofstd/include/ofstream.h ../../ofstd/include/ofstring.h \
+ ../../ofstd/include/oftypes.h ../include/dctk.h ../include/dctypes.h \
+ ../include/dcswap.h ../include/dcerror.h ../../ofstd/include/ofcond.h \
+ ../include/dcxfer.h ../include/dcvr.h ../../ofstd/include/ofglobal.h \
  ../../ofstd/include/ofthread.h ../include/dcstream.h \
  ../include/dcuid.h ../include/dcvm.h ../include/dcdefine.h \
  ../include/dcdebug.h ../include/dctagkey.h ../include/dctag.h \
@@ -183,14 +195,16 @@ dcitem.o: dcitem.cc ../../config/include/osconfig.h \
  ../include/dcvrus.h ../include/dcvrsl.h ../include/dcvrfl.h \
  ../include/dcvrfd.h ../include/cmdlnarg.h
 dclist.o: dclist.cc ../../config/include/osconfig.h \
- ../include/dclist.h ../include/dcerror.h ../../ofstd/include/ofcond.h \
+ ../../ofstd/include/ofstream.h ../include/dclist.h \
+ ../include/dcerror.h ../../ofstd/include/ofcond.h \
  ../../ofstd/include/oftypes.h ../../ofstd/include/ofstring.h \
  ../include/dctypes.h ../include/dcdebug.h \
  ../../ofstd/include/ofglobal.h ../../ofstd/include/ofthread.h
 dcmetinf.o: dcmetinf.cc ../../config/include/osconfig.h \
- ../include/dcmetinf.h ../../ofstd/include/ofconsol.h \
- ../../ofstd/include/ofthread.h ../../ofstd/include/oftypes.h \
- ../include/dctypes.h ../include/dcitem.h ../include/dcobject.h \
+ ../../ofstd/include/ofstream.h ../include/dcmetinf.h \
+ ../../ofstd/include/ofconsol.h ../../ofstd/include/ofthread.h \
+ ../../ofstd/include/oftypes.h ../include/dctypes.h \
+ ../include/dcitem.h ../include/dcobject.h \
  ../../ofstd/include/ofglobal.h ../include/dcerror.h \
  ../../ofstd/include/ofcond.h ../../ofstd/include/ofstring.h \
  ../include/dcxfer.h ../include/dcvr.h ../include/dcstream.h \
@@ -199,18 +213,20 @@ dcmetinf.o: dcmetinf.cc ../../config/include/osconfig.h \
  ../include/dcbytstr.h ../include/dcelem.h ../include/dcvrul.h \
  ../include/dcdebug.h ../include/dcdeftag.h ../include/dcdefine.h
 dcobject.o: dcobject.cc ../../config/include/osconfig.h \
- ../include/dcobject.h ../../ofstd/include/ofconsol.h \
- ../../ofstd/include/ofthread.h ../../ofstd/include/oftypes.h \
- ../../ofstd/include/ofglobal.h ../include/dcerror.h \
- ../../ofstd/include/ofcond.h ../../ofstd/include/ofstring.h \
- ../include/dctypes.h ../include/dcxfer.h ../include/dcvr.h \
- ../include/dcstream.h ../include/dctag.h ../include/dctagkey.h \
- ../include/dcdicent.h ../include/dclist.h ../include/dcstack.h \
- ../include/dcswap.h ../include/dcdebug.h
+ ../../ofstd/include/ofstream.h ../include/dcobject.h \
+ ../../ofstd/include/ofconsol.h ../../ofstd/include/ofthread.h \
+ ../../ofstd/include/oftypes.h ../../ofstd/include/ofglobal.h \
+ ../include/dcerror.h ../../ofstd/include/ofcond.h \
+ ../../ofstd/include/ofstring.h ../include/dctypes.h \
+ ../include/dcxfer.h ../include/dcvr.h ../include/dcstream.h \
+ ../include/dctag.h ../include/dctagkey.h ../include/dcdicent.h \
+ ../include/dclist.h ../include/dcstack.h ../include/dcswap.h \
+ ../include/dcdebug.h
 dcpixel.o: dcpixel.cc ../../config/include/osconfig.h \
  ../include/dcpixel.h ../../ofstd/include/ofconsol.h \
- ../../ofstd/include/ofthread.h ../../ofstd/include/oftypes.h \
- ../include/dcvrpobw.h ../include/dcvrobow.h ../include/dcerror.h \
+ ../../ofstd/include/ofstream.h ../../ofstd/include/ofthread.h \
+ ../../ofstd/include/oftypes.h ../include/dcvrpobw.h \
+ ../include/dcvrobow.h ../include/dcerror.h \
  ../../ofstd/include/ofcond.h ../../ofstd/include/ofstring.h \
  ../include/dctypes.h ../include/dcelem.h ../include/dcobject.h \
  ../../ofstd/include/ofglobal.h ../include/dcxfer.h ../include/dcvr.h \
@@ -220,9 +236,10 @@ dcpixel.o: dcpixel.cc ../../config/include/osconfig.h \
  ../include/dcpixseq.h ../include/dcsequen.h ../include/dcitem.h \
  ../include/dcvrui.h ../include/dcbytstr.h
 dcpixseq.o: dcpixseq.cc ../../config/include/osconfig.h \
- ../include/dcpixseq.h ../../ofstd/include/ofconsol.h \
- ../../ofstd/include/ofthread.h ../../ofstd/include/oftypes.h \
- ../include/dctypes.h ../include/dcsequen.h ../include/dcerror.h \
+ ../../ofstd/include/ofstream.h ../include/dcpixseq.h \
+ ../../ofstd/include/ofconsol.h ../../ofstd/include/ofthread.h \
+ ../../ofstd/include/oftypes.h ../include/dctypes.h \
+ ../include/dcsequen.h ../include/dcerror.h \
  ../../ofstd/include/ofcond.h ../../ofstd/include/ofstring.h \
  ../include/dcobject.h ../../ofstd/include/ofglobal.h \
  ../include/dcxfer.h ../include/dcvr.h ../include/dcstream.h \
@@ -232,9 +249,10 @@ dcpixseq.o: dcpixseq.cc ../../config/include/osconfig.h \
  ../include/dcpxitem.h ../include/dcvrobow.h ../include/dcdebug.h \
  ../include/dcdeftag.h
 dcpxitem.o: dcpxitem.cc ../../config/include/osconfig.h \
- ../include/dcpxitem.h ../../ofstd/include/ofconsol.h \
- ../../ofstd/include/ofthread.h ../../ofstd/include/oftypes.h \
- ../include/dctypes.h ../include/dcvrobow.h ../include/dcerror.h \
+ ../../ofstd/include/ofstream.h ../include/dcpxitem.h \
+ ../../ofstd/include/ofconsol.h ../../ofstd/include/ofthread.h \
+ ../../ofstd/include/oftypes.h ../include/dctypes.h \
+ ../include/dcvrobow.h ../include/dcerror.h \
  ../../ofstd/include/ofcond.h ../../ofstd/include/ofstring.h \
  ../include/dcelem.h ../include/dcobject.h \
  ../../ofstd/include/ofglobal.h ../include/dcxfer.h ../include/dcvr.h \
@@ -242,60 +260,65 @@ dcpxitem.o: dcpxitem.cc ../../config/include/osconfig.h \
  ../include/dcdicent.h ../include/dclist.h ../include/dcstack.h \
  ../include/dcswap.h ../include/dcdebug.h
 dcsequen.o: dcsequen.cc ../../config/include/osconfig.h \
- ../include/dcsequen.h ../../ofstd/include/ofconsol.h \
- ../../ofstd/include/ofthread.h ../../ofstd/include/oftypes.h \
- ../include/dcerror.h ../../ofstd/include/ofcond.h \
- ../../ofstd/include/ofstring.h ../include/dctypes.h \
- ../include/dcobject.h ../../ofstd/include/ofglobal.h \
- ../include/dcxfer.h ../include/dcvr.h ../include/dcstream.h \
- ../include/dctag.h ../include/dctagkey.h ../include/dcdicent.h \
- ../include/dclist.h ../include/dcstack.h ../include/dcitem.h \
- ../include/dcvrui.h ../include/dcbytstr.h ../include/dcelem.h \
- ../include/dcdirrec.h ../include/dcfilefo.h ../include/dcdatset.h \
- ../include/dcpxitem.h ../include/dcvrobow.h ../include/dcswap.h \
- ../include/dcdebug.h ../include/dcmetinf.h ../include/dcdeftag.h
-dcstack.o: dcstack.cc ../../config/include/osconfig.h \
- ../include/dcstack.h ../include/dctypes.h \
- ../../ofstd/include/oftypes.h ../include/dcdebug.h \
- ../../ofstd/include/ofglobal.h ../../ofstd/include/ofthread.h
-dcstream.o: dcstream.cc ../../config/include/osconfig.h \
+ ../../ofstd/include/ofstream.h ../include/dcsequen.h \
  ../../ofstd/include/ofconsol.h ../../ofstd/include/ofthread.h \
- ../../ofstd/include/oftypes.h ../include/dcstream.h \
- ../include/dcerror.h ../../ofstd/include/ofcond.h \
- ../../ofstd/include/ofstring.h ../include/dctypes.h \
- ../include/dcbuf.h ../include/dcdefine.h
+ ../../ofstd/include/oftypes.h ../include/dcerror.h \
+ ../../ofstd/include/ofcond.h ../../ofstd/include/ofstring.h \
+ ../include/dctypes.h ../include/dcobject.h \
+ ../../ofstd/include/ofglobal.h ../include/dcxfer.h ../include/dcvr.h \
+ ../include/dcstream.h ../include/dctag.h ../include/dctagkey.h \
+ ../include/dcdicent.h ../include/dclist.h ../include/dcstack.h \
+ ../include/dcitem.h ../include/dcvrui.h ../include/dcbytstr.h \
+ ../include/dcelem.h ../include/dcdirrec.h ../include/dcfilefo.h \
+ ../include/dcdatset.h ../include/dcpxitem.h ../include/dcvrobow.h \
+ ../include/dcswap.h ../include/dcdebug.h ../include/dcmetinf.h \
+ ../include/dcdeftag.h
+dcstack.o: dcstack.cc ../../config/include/osconfig.h \
+ ../../ofstd/include/ofstream.h ../include/dcstack.h \
+ ../include/dctypes.h ../../ofstd/include/oftypes.h \
+ ../include/dcdebug.h ../../ofstd/include/ofglobal.h \
+ ../../ofstd/include/ofthread.h
+dcstream.o: dcstream.cc ../../config/include/osconfig.h \
+ ../../ofstd/include/ofstream.h ../../ofstd/include/ofconsol.h \
+ ../../ofstd/include/ofthread.h ../../ofstd/include/oftypes.h \
+ ../include/dcstream.h ../include/dcerror.h \
+ ../../ofstd/include/ofcond.h ../../ofstd/include/ofstring.h \
+ ../include/dctypes.h ../include/dcbuf.h ../include/dcdefine.h
 dcswap.o: dcswap.cc ../../config/include/osconfig.h \
  ../include/dcswap.h ../include/dctypes.h \
  ../../ofstd/include/oftypes.h ../include/dcerror.h \
  ../../ofstd/include/ofcond.h ../../ofstd/include/ofstring.h \
- ../include/dcxfer.h ../include/dcvr.h ../../ofstd/include/ofglobal.h \
- ../../ofstd/include/ofthread.h
+ ../../ofstd/include/ofstream.h ../include/dcxfer.h ../include/dcvr.h \
+ ../../ofstd/include/ofglobal.h ../../ofstd/include/ofthread.h
 dctag.o: dctag.cc ../../config/include/osconfig.h \
- ../../ofstd/include/ofconsol.h ../../ofstd/include/ofthread.h \
- ../../ofstd/include/oftypes.h ../include/dcdict.h \
- ../include/dchashdi.h ../../ofstd/include/oflist.h \
- ../include/dcdicent.h ../include/dctagkey.h ../include/dctypes.h \
+ ../../ofstd/include/ofstream.h ../../ofstd/include/ofconsol.h \
+ ../../ofstd/include/ofthread.h ../../ofstd/include/oftypes.h \
+ ../include/dcdict.h ../include/dchashdi.h \
+ ../../ofstd/include/oflist.h ../include/dcdicent.h \
+ ../include/dctagkey.h ../include/dctypes.h \
  ../../ofstd/include/ofstring.h ../include/dcvr.h \
  ../../ofstd/include/ofglobal.h ../include/dctag.h \
  ../include/dcerror.h ../../ofstd/include/ofcond.h \
  ../include/dcdeftag.h
 dctagkey.o: dctagkey.cc ../../config/include/osconfig.h \
- ../include/dctagkey.h ../include/dctypes.h \
- ../../ofstd/include/oftypes.h ../../ofstd/include/ofstring.h
-dcuid.o: dcuid.cc ../../config/include/osconfig.h ../include/dcuid.h \
+ ../include/dctagkey.h ../../ofstd/include/ofstream.h \
+ ../include/dctypes.h ../../ofstd/include/oftypes.h \
+ ../../ofstd/include/ofstring.h
+dcuid.o: dcuid.cc ../../config/include/osconfig.h \
+ ../../ofstd/include/ofstream.h ../include/dcuid.h \
  ../include/dctypes.h ../../ofstd/include/oftypes.h \
  ../../ofstd/include/ofthread.h ../../ofstd/include/ofcrc32.h
 dcutils.o: dcutils.cc ../../config/include/osconfig.h \
- ../../ofstd/include/ofstring.h ../../ofstd/include/oftypes.h \
- ../include/dcutils.h ../include/dctypes.h ../include/dctagkey.h \
- ../include/dctk.h ../include/dcswap.h ../include/dcerror.h \
- ../../ofstd/include/ofcond.h ../include/dcxfer.h ../include/dcvr.h \
- ../../ofstd/include/ofglobal.h ../../ofstd/include/ofthread.h \
- ../include/dcstream.h ../include/dcuid.h ../include/dcvm.h \
- ../include/dcdefine.h ../include/dcdebug.h ../include/dctag.h \
- ../include/dcdicent.h ../include/dchashdi.h \
- ../../ofstd/include/oflist.h ../include/dcdict.h \
- ../include/dcdeftag.h ../include/dcobject.h \
+ ../../ofstd/include/ofstring.h ../../ofstd/include/ofstream.h \
+ ../../ofstd/include/oftypes.h ../include/dcutils.h \
+ ../include/dctypes.h ../include/dctagkey.h ../include/dctk.h \
+ ../include/dcswap.h ../include/dcerror.h ../../ofstd/include/ofcond.h \
+ ../include/dcxfer.h ../include/dcvr.h ../../ofstd/include/ofglobal.h \
+ ../../ofstd/include/ofthread.h ../include/dcstream.h \
+ ../include/dcuid.h ../include/dcvm.h ../include/dcdefine.h \
+ ../include/dcdebug.h ../include/dctag.h ../include/dcdicent.h \
+ ../include/dchashdi.h ../../ofstd/include/oflist.h \
+ ../include/dcdict.h ../include/dcdeftag.h ../include/dcobject.h \
  ../../ofstd/include/ofconsol.h ../include/dclist.h \
  ../include/dcstack.h ../include/dcelem.h ../include/dcitem.h \
  ../include/dcvrui.h ../include/dcbytstr.h ../include/dcmetinf.h \
@@ -314,99 +337,103 @@ dcutils.o: dcutils.cc ../../config/include/osconfig.h \
  ../include/dcvrfd.h ../include/cmdlnarg.h
 dcvm.o: dcvm.cc ../../config/include/osconfig.h ../include/dcvm.h
 dcvr.o: dcvr.cc ../../config/include/osconfig.h \
- ../../ofstd/include/ofconsol.h ../../ofstd/include/ofthread.h \
- ../../ofstd/include/oftypes.h ../include/dcvr.h ../include/dctypes.h \
- ../../ofstd/include/ofglobal.h
+ ../../ofstd/include/ofconsol.h ../../ofstd/include/ofstream.h \
+ ../../ofstd/include/ofthread.h ../../ofstd/include/oftypes.h \
+ ../include/dcvr.h ../include/dctypes.h ../../ofstd/include/ofglobal.h
 dcvrae.o: dcvrae.cc ../../config/include/osconfig.h \
  ../include/dcvrae.h ../include/dctypes.h \
  ../../ofstd/include/oftypes.h ../include/dcbytstr.h \
- ../../ofstd/include/ofconsol.h ../../ofstd/include/ofthread.h \
- ../include/dcerror.h ../../ofstd/include/ofcond.h \
- ../../ofstd/include/ofstring.h ../include/dcelem.h \
- ../include/dcobject.h ../../ofstd/include/ofglobal.h \
- ../include/dcxfer.h ../include/dcvr.h ../include/dcstream.h \
- ../include/dctag.h ../include/dctagkey.h ../include/dcdicent.h \
- ../include/dclist.h ../include/dcstack.h ../include/dcdebug.h
+ ../../ofstd/include/ofconsol.h ../../ofstd/include/ofstream.h \
+ ../../ofstd/include/ofthread.h ../include/dcerror.h \
+ ../../ofstd/include/ofcond.h ../../ofstd/include/ofstring.h \
+ ../include/dcelem.h ../include/dcobject.h \
+ ../../ofstd/include/ofglobal.h ../include/dcxfer.h ../include/dcvr.h \
+ ../include/dcstream.h ../include/dctag.h ../include/dctagkey.h \
+ ../include/dcdicent.h ../include/dclist.h ../include/dcstack.h \
+ ../include/dcdebug.h
 dcvras.o: dcvras.cc ../../config/include/osconfig.h \
  ../include/dcvras.h ../include/dctypes.h \
  ../../ofstd/include/oftypes.h ../include/dcbytstr.h \
- ../../ofstd/include/ofconsol.h ../../ofstd/include/ofthread.h \
- ../include/dcerror.h ../../ofstd/include/ofcond.h \
- ../../ofstd/include/ofstring.h ../include/dcelem.h \
- ../include/dcobject.h ../../ofstd/include/ofglobal.h \
- ../include/dcxfer.h ../include/dcvr.h ../include/dcstream.h \
- ../include/dctag.h ../include/dctagkey.h ../include/dcdicent.h \
- ../include/dclist.h ../include/dcstack.h ../include/dcdebug.h
-dcvrat.o: dcvrat.cc ../../config/include/osconfig.h \
- ../include/dcvrat.h ../../ofstd/include/ofconsol.h \
- ../../ofstd/include/ofthread.h ../../ofstd/include/oftypes.h \
- ../include/dctypes.h ../include/dcelem.h ../include/dcerror.h \
+ ../../ofstd/include/ofconsol.h ../../ofstd/include/ofstream.h \
+ ../../ofstd/include/ofthread.h ../include/dcerror.h \
  ../../ofstd/include/ofcond.h ../../ofstd/include/ofstring.h \
- ../include/dcobject.h ../../ofstd/include/ofglobal.h \
- ../include/dcxfer.h ../include/dcvr.h ../include/dcstream.h \
- ../include/dctag.h ../include/dctagkey.h ../include/dcdicent.h \
- ../include/dclist.h ../include/dcstack.h ../include/dcvm.h \
+ ../include/dcelem.h ../include/dcobject.h \
+ ../../ofstd/include/ofglobal.h ../include/dcxfer.h ../include/dcvr.h \
+ ../include/dcstream.h ../include/dctag.h ../include/dctagkey.h \
+ ../include/dcdicent.h ../include/dclist.h ../include/dcstack.h \
  ../include/dcdebug.h
+dcvrat.o: dcvrat.cc ../../config/include/osconfig.h \
+ ../../ofstd/include/ofstream.h ../include/dcvrat.h \
+ ../../ofstd/include/ofconsol.h ../../ofstd/include/ofthread.h \
+ ../../ofstd/include/oftypes.h ../include/dctypes.h \
+ ../include/dcelem.h ../include/dcerror.h ../../ofstd/include/ofcond.h \
+ ../../ofstd/include/ofstring.h ../include/dcobject.h \
+ ../../ofstd/include/ofglobal.h ../include/dcxfer.h ../include/dcvr.h \
+ ../include/dcstream.h ../include/dctag.h ../include/dctagkey.h \
+ ../include/dcdicent.h ../include/dclist.h ../include/dcstack.h \
+ ../include/dcvm.h ../include/dcdebug.h
 dcvrcs.o: dcvrcs.cc ../../config/include/osconfig.h \
  ../include/dcvrcs.h ../include/dctypes.h \
  ../../ofstd/include/oftypes.h ../include/dcbytstr.h \
- ../../ofstd/include/ofconsol.h ../../ofstd/include/ofthread.h \
- ../include/dcerror.h ../../ofstd/include/ofcond.h \
- ../../ofstd/include/ofstring.h ../include/dcelem.h \
- ../include/dcobject.h ../../ofstd/include/ofglobal.h \
- ../include/dcxfer.h ../include/dcvr.h ../include/dcstream.h \
- ../include/dctag.h ../include/dctagkey.h ../include/dcdicent.h \
- ../include/dclist.h ../include/dcstack.h ../include/dcdebug.h
+ ../../ofstd/include/ofconsol.h ../../ofstd/include/ofstream.h \
+ ../../ofstd/include/ofthread.h ../include/dcerror.h \
+ ../../ofstd/include/ofcond.h ../../ofstd/include/ofstring.h \
+ ../include/dcelem.h ../include/dcobject.h \
+ ../../ofstd/include/ofglobal.h ../include/dcxfer.h ../include/dcvr.h \
+ ../include/dcstream.h ../include/dctag.h ../include/dctagkey.h \
+ ../include/dcdicent.h ../include/dclist.h ../include/dcstack.h \
+ ../include/dcdebug.h
 dcvrda.o: dcvrda.cc ../../config/include/osconfig.h \
  ../include/dcvrda.h ../include/dctypes.h \
  ../../ofstd/include/oftypes.h ../include/dcbytstr.h \
- ../../ofstd/include/ofconsol.h ../../ofstd/include/ofthread.h \
- ../include/dcerror.h ../../ofstd/include/ofcond.h \
- ../../ofstd/include/ofstring.h ../include/dcelem.h \
- ../include/dcobject.h ../../ofstd/include/ofglobal.h \
- ../include/dcxfer.h ../include/dcvr.h ../include/dcstream.h \
- ../include/dctag.h ../include/dctagkey.h ../include/dcdicent.h \
- ../include/dclist.h ../include/dcstack.h ../../ofstd/include/ofdate.h \
- ../include/dcdebug.h
+ ../../ofstd/include/ofconsol.h ../../ofstd/include/ofstream.h \
+ ../../ofstd/include/ofthread.h ../include/dcerror.h \
+ ../../ofstd/include/ofcond.h ../../ofstd/include/ofstring.h \
+ ../include/dcelem.h ../include/dcobject.h \
+ ../../ofstd/include/ofglobal.h ../include/dcxfer.h ../include/dcvr.h \
+ ../include/dcstream.h ../include/dctag.h ../include/dctagkey.h \
+ ../include/dcdicent.h ../include/dclist.h ../include/dcstack.h \
+ ../../ofstd/include/ofdate.h ../include/dcdebug.h
 dcvrds.o: dcvrds.cc ../../config/include/osconfig.h \
  ../include/dcvrds.h ../include/dctypes.h \
  ../../ofstd/include/oftypes.h ../include/dcbytstr.h \
- ../../ofstd/include/ofconsol.h ../../ofstd/include/ofthread.h \
- ../include/dcerror.h ../../ofstd/include/ofcond.h \
- ../../ofstd/include/ofstring.h ../include/dcelem.h \
- ../include/dcobject.h ../../ofstd/include/ofglobal.h \
- ../include/dcxfer.h ../include/dcvr.h ../include/dcstream.h \
- ../include/dctag.h ../include/dctagkey.h ../include/dcdicent.h \
- ../include/dclist.h ../include/dcstack.h ../include/dcdebug.h
+ ../../ofstd/include/ofconsol.h ../../ofstd/include/ofstream.h \
+ ../../ofstd/include/ofthread.h ../include/dcerror.h \
+ ../../ofstd/include/ofcond.h ../../ofstd/include/ofstring.h \
+ ../include/dcelem.h ../include/dcobject.h \
+ ../../ofstd/include/ofglobal.h ../include/dcxfer.h ../include/dcvr.h \
+ ../include/dcstream.h ../include/dctag.h ../include/dctagkey.h \
+ ../include/dcdicent.h ../include/dclist.h ../include/dcstack.h \
+ ../include/dcdebug.h
 dcvrdt.o: dcvrdt.cc ../../config/include/osconfig.h \
  ../include/dcvrdt.h ../include/dctypes.h \
  ../../ofstd/include/oftypes.h ../include/dcbytstr.h \
- ../../ofstd/include/ofconsol.h ../../ofstd/include/ofthread.h \
- ../include/dcerror.h ../../ofstd/include/ofcond.h \
- ../../ofstd/include/ofstring.h ../include/dcelem.h \
- ../include/dcobject.h ../../ofstd/include/ofglobal.h \
- ../include/dcxfer.h ../include/dcvr.h ../include/dcstream.h \
- ../include/dctag.h ../include/dctagkey.h ../include/dcdicent.h \
- ../include/dclist.h ../include/dcstack.h \
+ ../../ofstd/include/ofconsol.h ../../ofstd/include/ofstream.h \
+ ../../ofstd/include/ofthread.h ../include/dcerror.h \
+ ../../ofstd/include/ofcond.h ../../ofstd/include/ofstring.h \
+ ../include/dcelem.h ../include/dcobject.h \
+ ../../ofstd/include/ofglobal.h ../include/dcxfer.h ../include/dcvr.h \
+ ../include/dcstream.h ../include/dctag.h ../include/dctagkey.h \
+ ../include/dcdicent.h ../include/dclist.h ../include/dcstack.h \
  ../../ofstd/include/ofdatime.h ../../ofstd/include/ofdate.h \
  ../../ofstd/include/oftime.h ../include/dcvrda.h ../include/dcvrtm.h \
  ../include/dcdebug.h
 dcvrfd.o: dcvrfd.cc ../../config/include/osconfig.h \
- ../include/dcvrfd.h ../../ofstd/include/ofconsol.h \
- ../../ofstd/include/ofthread.h ../../ofstd/include/oftypes.h \
- ../include/dcerror.h ../../ofstd/include/ofcond.h \
- ../../ofstd/include/ofstring.h ../include/dctypes.h \
- ../include/dcelem.h ../include/dcobject.h \
+ ../../ofstd/include/ofstream.h ../include/dcvrfd.h \
+ ../../ofstd/include/ofconsol.h ../../ofstd/include/ofthread.h \
+ ../../ofstd/include/oftypes.h ../include/dcerror.h \
+ ../../ofstd/include/ofcond.h ../../ofstd/include/ofstring.h \
+ ../include/dctypes.h ../include/dcelem.h ../include/dcobject.h \
  ../../ofstd/include/ofglobal.h ../include/dcxfer.h ../include/dcvr.h \
  ../include/dcstream.h ../include/dctag.h ../include/dctagkey.h \
  ../include/dcdicent.h ../include/dclist.h ../include/dcstack.h \
  ../include/dcvm.h ../include/dcdebug.h
 dcvrfl.o: dcvrfl.cc ../../config/include/osconfig.h \
- ../include/dcvrfl.h ../../ofstd/include/ofconsol.h \
- ../../ofstd/include/ofthread.h ../../ofstd/include/oftypes.h \
- ../include/dcerror.h ../../ofstd/include/ofcond.h \
- ../../ofstd/include/ofstring.h ../include/dctypes.h \
- ../include/dcelem.h ../include/dcobject.h \
+ ../../ofstd/include/ofstream.h ../include/dcvrfl.h \
+ ../../ofstd/include/ofconsol.h ../../ofstd/include/ofthread.h \
+ ../../ofstd/include/oftypes.h ../include/dcerror.h \
+ ../../ofstd/include/ofcond.h ../../ofstd/include/ofstring.h \
+ ../include/dctypes.h ../include/dcelem.h ../include/dcobject.h \
  ../../ofstd/include/ofglobal.h ../include/dcxfer.h ../include/dcvr.h \
  ../include/dcstream.h ../include/dctag.h ../include/dctagkey.h \
  ../include/dcdicent.h ../include/dclist.h ../include/dcstack.h \
@@ -414,41 +441,42 @@ dcvrfl.o: dcvrfl.cc ../../config/include/osconfig.h \
 dcvris.o: dcvris.cc ../../config/include/osconfig.h \
  ../include/dcvris.h ../include/dctypes.h \
  ../../ofstd/include/oftypes.h ../include/dcbytstr.h \
- ../../ofstd/include/ofconsol.h ../../ofstd/include/ofthread.h \
+ ../../ofstd/include/ofconsol.h ../../ofstd/include/ofstream.h \
+ ../../ofstd/include/ofthread.h ../include/dcerror.h \
+ ../../ofstd/include/ofcond.h ../../ofstd/include/ofstring.h \
+ ../include/dcelem.h ../include/dcobject.h \
+ ../../ofstd/include/ofglobal.h ../include/dcxfer.h ../include/dcvr.h \
+ ../include/dcstream.h ../include/dctag.h ../include/dctagkey.h \
+ ../include/dcdicent.h ../include/dclist.h ../include/dcstack.h \
+ ../include/dcdebug.h
+dcvrlo.o: dcvrlo.cc ../../config/include/osconfig.h \
+ ../include/dcvrlo.h ../include/dctypes.h \
+ ../../ofstd/include/oftypes.h ../include/dcchrstr.h \
+ ../include/dcbytstr.h ../../ofstd/include/ofconsol.h \
+ ../../ofstd/include/ofstream.h ../../ofstd/include/ofthread.h \
  ../include/dcerror.h ../../ofstd/include/ofcond.h \
  ../../ofstd/include/ofstring.h ../include/dcelem.h \
  ../include/dcobject.h ../../ofstd/include/ofglobal.h \
  ../include/dcxfer.h ../include/dcvr.h ../include/dcstream.h \
  ../include/dctag.h ../include/dctagkey.h ../include/dcdicent.h \
  ../include/dclist.h ../include/dcstack.h ../include/dcdebug.h
-dcvrlo.o: dcvrlo.cc ../../config/include/osconfig.h \
- ../include/dcvrlo.h ../include/dctypes.h \
- ../../ofstd/include/oftypes.h ../include/dcchrstr.h \
- ../include/dcbytstr.h ../../ofstd/include/ofconsol.h \
- ../../ofstd/include/ofthread.h ../include/dcerror.h \
- ../../ofstd/include/ofcond.h ../../ofstd/include/ofstring.h \
- ../include/dcelem.h ../include/dcobject.h \
- ../../ofstd/include/ofglobal.h ../include/dcxfer.h ../include/dcvr.h \
- ../include/dcstream.h ../include/dctag.h ../include/dctagkey.h \
- ../include/dcdicent.h ../include/dclist.h ../include/dcstack.h \
- ../include/dcdebug.h
 dcvrlt.o: dcvrlt.cc ../../config/include/osconfig.h \
  ../include/dcvrlt.h ../include/dctypes.h \
  ../../ofstd/include/oftypes.h ../include/dcchrstr.h \
  ../include/dcbytstr.h ../../ofstd/include/ofconsol.h \
- ../../ofstd/include/ofthread.h ../include/dcerror.h \
- ../../ofstd/include/ofcond.h ../../ofstd/include/ofstring.h \
- ../include/dcelem.h ../include/dcobject.h \
- ../../ofstd/include/ofglobal.h ../include/dcxfer.h ../include/dcvr.h \
- ../include/dcstream.h ../include/dctag.h ../include/dctagkey.h \
- ../include/dcdicent.h ../include/dclist.h ../include/dcstack.h \
- ../include/dcdebug.h
-dcvrobow.o: dcvrobow.cc ../../config/include/osconfig.h \
- ../include/dcvrobow.h ../../ofstd/include/ofconsol.h \
- ../../ofstd/include/ofthread.h ../../ofstd/include/oftypes.h \
+ ../../ofstd/include/ofstream.h ../../ofstd/include/ofthread.h \
  ../include/dcerror.h ../../ofstd/include/ofcond.h \
- ../../ofstd/include/ofstring.h ../include/dctypes.h \
- ../include/dcelem.h ../include/dcobject.h \
+ ../../ofstd/include/ofstring.h ../include/dcelem.h \
+ ../include/dcobject.h ../../ofstd/include/ofglobal.h \
+ ../include/dcxfer.h ../include/dcvr.h ../include/dcstream.h \
+ ../include/dctag.h ../include/dctagkey.h ../include/dcdicent.h \
+ ../include/dclist.h ../include/dcstack.h ../include/dcdebug.h
+dcvrobow.o: dcvrobow.cc ../../config/include/osconfig.h \
+ ../../ofstd/include/ofstream.h ../include/dcvrobow.h \
+ ../../ofstd/include/ofconsol.h ../../ofstd/include/ofthread.h \
+ ../../ofstd/include/oftypes.h ../include/dcerror.h \
+ ../../ofstd/include/ofcond.h ../../ofstd/include/ofstring.h \
+ ../include/dctypes.h ../include/dcelem.h ../include/dcobject.h \
  ../../ofstd/include/ofglobal.h ../include/dcxfer.h ../include/dcvr.h \
  ../include/dcstream.h ../include/dctag.h ../include/dctagkey.h \
  ../include/dcdicent.h ../include/dclist.h ../include/dcstack.h \
@@ -458,19 +486,20 @@ dcvrpn.o: dcvrpn.cc ../include/dcvrpn.h \
  ../../config/include/osconfig.h ../include/dctypes.h \
  ../../ofstd/include/oftypes.h ../include/dcchrstr.h \
  ../include/dcbytstr.h ../../ofstd/include/ofconsol.h \
- ../../ofstd/include/ofthread.h ../include/dcerror.h \
- ../../ofstd/include/ofcond.h ../../ofstd/include/ofstring.h \
- ../include/dcelem.h ../include/dcobject.h \
- ../../ofstd/include/ofglobal.h ../include/dcxfer.h ../include/dcvr.h \
- ../include/dcstream.h ../include/dctag.h ../include/dctagkey.h \
- ../include/dcdicent.h ../include/dclist.h ../include/dcstack.h \
- ../include/dcdebug.h
+ ../../ofstd/include/ofstream.h ../../ofstd/include/ofthread.h \
+ ../include/dcerror.h ../../ofstd/include/ofcond.h \
+ ../../ofstd/include/ofstring.h ../include/dcelem.h \
+ ../include/dcobject.h ../../ofstd/include/ofglobal.h \
+ ../include/dcxfer.h ../include/dcvr.h ../include/dcstream.h \
+ ../include/dctag.h ../include/dctagkey.h ../include/dcdicent.h \
+ ../include/dclist.h ../include/dcstack.h ../include/dcdebug.h
 dcvrpobw.o: dcvrpobw.cc ../../config/include/osconfig.h \
  ../include/dcvrpobw.h ../include/dcvrobow.h \
- ../../ofstd/include/ofconsol.h ../../ofstd/include/ofthread.h \
- ../../ofstd/include/oftypes.h ../include/dcerror.h \
- ../../ofstd/include/ofcond.h ../../ofstd/include/ofstring.h \
- ../include/dctypes.h ../include/dcelem.h ../include/dcobject.h \
+ ../../ofstd/include/ofconsol.h ../../ofstd/include/ofstream.h \
+ ../../ofstd/include/ofthread.h ../../ofstd/include/oftypes.h \
+ ../include/dcerror.h ../../ofstd/include/ofcond.h \
+ ../../ofstd/include/ofstring.h ../include/dctypes.h \
+ ../include/dcelem.h ../include/dcobject.h \
  ../../ofstd/include/ofglobal.h ../include/dcxfer.h ../include/dcvr.h \
  ../include/dcstream.h ../include/dctag.h ../include/dctagkey.h \
  ../include/dcdicent.h ../include/dclist.h ../include/dcstack.h
@@ -478,29 +507,29 @@ dcvrsh.o: dcvrsh.cc ../include/dcvrsh.h \
  ../../config/include/osconfig.h ../include/dctypes.h \
  ../../ofstd/include/oftypes.h ../include/dcchrstr.h \
  ../include/dcbytstr.h ../../ofstd/include/ofconsol.h \
- ../../ofstd/include/ofthread.h ../include/dcerror.h \
- ../../ofstd/include/ofcond.h ../../ofstd/include/ofstring.h \
- ../include/dcelem.h ../include/dcobject.h \
- ../../ofstd/include/ofglobal.h ../include/dcxfer.h ../include/dcvr.h \
- ../include/dcstream.h ../include/dctag.h ../include/dctagkey.h \
- ../include/dcdicent.h ../include/dclist.h ../include/dcstack.h \
- ../include/dcdebug.h
-dcvrsl.o: dcvrsl.cc ../include/dcvrsl.h \
- ../../config/include/osconfig.h ../../ofstd/include/ofconsol.h \
- ../../ofstd/include/ofthread.h ../../ofstd/include/oftypes.h \
+ ../../ofstd/include/ofstream.h ../../ofstd/include/ofthread.h \
  ../include/dcerror.h ../../ofstd/include/ofcond.h \
- ../../ofstd/include/ofstring.h ../include/dctypes.h \
- ../include/dcelem.h ../include/dcobject.h \
+ ../../ofstd/include/ofstring.h ../include/dcelem.h \
+ ../include/dcobject.h ../../ofstd/include/ofglobal.h \
+ ../include/dcxfer.h ../include/dcvr.h ../include/dcstream.h \
+ ../include/dctag.h ../include/dctagkey.h ../include/dcdicent.h \
+ ../include/dclist.h ../include/dcstack.h ../include/dcdebug.h
+dcvrsl.o: dcvrsl.cc ../../ofstd/include/ofstream.h \
+ ../../config/include/osconfig.h ../include/dcvrsl.h \
+ ../../ofstd/include/ofconsol.h ../../ofstd/include/ofthread.h \
+ ../../ofstd/include/oftypes.h ../include/dcerror.h \
+ ../../ofstd/include/ofcond.h ../../ofstd/include/ofstring.h \
+ ../include/dctypes.h ../include/dcelem.h ../include/dcobject.h \
  ../../ofstd/include/ofglobal.h ../include/dcxfer.h ../include/dcvr.h \
  ../include/dcstream.h ../include/dctag.h ../include/dctagkey.h \
  ../include/dcdicent.h ../include/dclist.h ../include/dcstack.h \
  ../include/dcvm.h ../include/dcdebug.h
-dcvrss.o: dcvrss.cc ../include/dcvrss.h \
- ../../config/include/osconfig.h ../../ofstd/include/ofconsol.h \
- ../../ofstd/include/ofthread.h ../../ofstd/include/oftypes.h \
- ../include/dcerror.h ../../ofstd/include/ofcond.h \
- ../../ofstd/include/ofstring.h ../include/dctypes.h \
- ../include/dcelem.h ../include/dcobject.h \
+dcvrss.o: dcvrss.cc ../../ofstd/include/ofstream.h \
+ ../../config/include/osconfig.h ../include/dcvrss.h \
+ ../../ofstd/include/ofconsol.h ../../ofstd/include/ofthread.h \
+ ../../ofstd/include/oftypes.h ../include/dcerror.h \
+ ../../ofstd/include/ofcond.h ../../ofstd/include/ofstring.h \
+ ../include/dctypes.h ../include/dcelem.h ../include/dcobject.h \
  ../../ofstd/include/ofglobal.h ../include/dcxfer.h ../include/dcvr.h \
  ../include/dcstream.h ../include/dctag.h ../include/dctagkey.h \
  ../include/dcdicent.h ../include/dclist.h ../include/dcstack.h \
@@ -509,60 +538,61 @@ dcvrst.o: dcvrst.cc ../include/dcvrst.h \
  ../../config/include/osconfig.h ../include/dctypes.h \
  ../../ofstd/include/oftypes.h ../include/dcchrstr.h \
  ../include/dcbytstr.h ../../ofstd/include/ofconsol.h \
+ ../../ofstd/include/ofstream.h ../../ofstd/include/ofthread.h \
+ ../include/dcerror.h ../../ofstd/include/ofcond.h \
+ ../../ofstd/include/ofstring.h ../include/dcelem.h \
+ ../include/dcobject.h ../../ofstd/include/ofglobal.h \
+ ../include/dcxfer.h ../include/dcvr.h ../include/dcstream.h \
+ ../include/dctag.h ../include/dctagkey.h ../include/dcdicent.h \
+ ../include/dclist.h ../include/dcstack.h ../include/dcdebug.h
+dcvrtm.o: dcvrtm.cc ../../config/include/osconfig.h \
+ ../include/dcvrtm.h ../include/dctypes.h \
+ ../../ofstd/include/oftypes.h ../include/dcbytstr.h \
+ ../../ofstd/include/ofconsol.h ../../ofstd/include/ofstream.h \
  ../../ofstd/include/ofthread.h ../include/dcerror.h \
  ../../ofstd/include/ofcond.h ../../ofstd/include/ofstring.h \
  ../include/dcelem.h ../include/dcobject.h \
  ../../ofstd/include/ofglobal.h ../include/dcxfer.h ../include/dcvr.h \
  ../include/dcstream.h ../include/dctag.h ../include/dctagkey.h \
  ../include/dcdicent.h ../include/dclist.h ../include/dcstack.h \
- ../include/dcdebug.h
-dcvrtm.o: dcvrtm.cc ../../config/include/osconfig.h \
- ../include/dcvrtm.h ../include/dctypes.h \
- ../../ofstd/include/oftypes.h ../include/dcbytstr.h \
- ../../ofstd/include/ofconsol.h ../../ofstd/include/ofthread.h \
- ../include/dcerror.h ../../ofstd/include/ofcond.h \
- ../../ofstd/include/ofstring.h ../include/dcelem.h \
- ../include/dcobject.h ../../ofstd/include/ofglobal.h \
- ../include/dcxfer.h ../include/dcvr.h ../include/dcstream.h \
- ../include/dctag.h ../include/dctagkey.h ../include/dcdicent.h \
- ../include/dclist.h ../include/dcstack.h ../../ofstd/include/oftime.h \
- ../include/dcdebug.h
+ ../../ofstd/include/oftime.h ../include/dcdebug.h
 dcvrui.o: dcvrui.cc ../include/dcvrui.h \
  ../../config/include/osconfig.h ../../ofstd/include/ofconsol.h \
- ../../ofstd/include/ofthread.h ../../ofstd/include/oftypes.h \
- ../include/dctypes.h ../include/dcbytstr.h ../include/dcerror.h \
+ ../../ofstd/include/ofstream.h ../../ofstd/include/ofthread.h \
+ ../../ofstd/include/oftypes.h ../include/dctypes.h \
+ ../include/dcbytstr.h ../include/dcerror.h \
  ../../ofstd/include/ofcond.h ../../ofstd/include/ofstring.h \
  ../include/dcelem.h ../include/dcobject.h \
  ../../ofstd/include/ofglobal.h ../include/dcxfer.h ../include/dcvr.h \
  ../include/dcstream.h ../include/dctag.h ../include/dctagkey.h \
  ../include/dcdicent.h ../include/dclist.h ../include/dcstack.h \
  ../include/dcuid.h ../include/dcdebug.h
-dcvrul.o: dcvrul.cc ../include/dcvrul.h \
- ../../config/include/osconfig.h ../../ofstd/include/ofconsol.h \
- ../../ofstd/include/ofthread.h ../../ofstd/include/oftypes.h \
- ../include/dctypes.h ../include/dcelem.h ../include/dcerror.h \
- ../../ofstd/include/ofcond.h ../../ofstd/include/ofstring.h \
- ../include/dcobject.h ../../ofstd/include/ofglobal.h \
- ../include/dcxfer.h ../include/dcvr.h ../include/dcstream.h \
- ../include/dctag.h ../include/dctagkey.h ../include/dcdicent.h \
- ../include/dclist.h ../include/dcstack.h ../include/dcvm.h \
- ../include/dcdebug.h
-dcvrulup.o: dcvrulup.cc ../include/dcvrulup.h \
- ../../config/include/osconfig.h ../../ofstd/include/ofconsol.h \
- ../../ofstd/include/ofthread.h ../../ofstd/include/oftypes.h \
- ../include/dctypes.h ../include/dcvrul.h ../include/dcelem.h \
- ../include/dcerror.h ../../ofstd/include/ofcond.h \
+dcvrul.o: dcvrul.cc ../../ofstd/include/ofstream.h \
+ ../../config/include/osconfig.h ../include/dcvrul.h \
+ ../../ofstd/include/ofconsol.h ../../ofstd/include/ofthread.h \
+ ../../ofstd/include/oftypes.h ../include/dctypes.h \
+ ../include/dcelem.h ../include/dcerror.h ../../ofstd/include/ofcond.h \
  ../../ofstd/include/ofstring.h ../include/dcobject.h \
  ../../ofstd/include/ofglobal.h ../include/dcxfer.h ../include/dcvr.h \
  ../include/dcstream.h ../include/dctag.h ../include/dctagkey.h \
  ../include/dcdicent.h ../include/dclist.h ../include/dcstack.h \
- ../include/dcdebug.h
-dcvrus.o: dcvrus.cc ../include/dcvrus.h \
- ../../config/include/osconfig.h ../../ofstd/include/ofconsol.h \
- ../../ofstd/include/ofthread.h ../../ofstd/include/oftypes.h \
- ../include/dcerror.h ../../ofstd/include/ofcond.h \
- ../../ofstd/include/ofstring.h ../include/dctypes.h \
- ../include/dcelem.h ../include/dcobject.h \
+ ../include/dcvm.h ../include/dcdebug.h
+dcvrulup.o: dcvrulup.cc ../../ofstd/include/ofstream.h \
+ ../../config/include/osconfig.h ../include/dcvrulup.h \
+ ../../ofstd/include/ofconsol.h ../../ofstd/include/ofthread.h \
+ ../../ofstd/include/oftypes.h ../include/dctypes.h \
+ ../include/dcvrul.h ../include/dcelem.h ../include/dcerror.h \
+ ../../ofstd/include/ofcond.h ../../ofstd/include/ofstring.h \
+ ../include/dcobject.h ../../ofstd/include/ofglobal.h \
+ ../include/dcxfer.h ../include/dcvr.h ../include/dcstream.h \
+ ../include/dctag.h ../include/dctagkey.h ../include/dcdicent.h \
+ ../include/dclist.h ../include/dcstack.h ../include/dcdebug.h
+dcvrus.o: dcvrus.cc ../../ofstd/include/ofstream.h \
+ ../../config/include/osconfig.h ../include/dcvrus.h \
+ ../../ofstd/include/ofconsol.h ../../ofstd/include/ofthread.h \
+ ../../ofstd/include/oftypes.h ../include/dcerror.h \
+ ../../ofstd/include/ofcond.h ../../ofstd/include/ofstring.h \
+ ../include/dctypes.h ../include/dcelem.h ../include/dcobject.h \
  ../../ofstd/include/ofglobal.h ../include/dcxfer.h ../include/dcvr.h \
  ../include/dcstream.h ../include/dctag.h ../include/dctagkey.h \
  ../include/dcdicent.h ../include/dclist.h ../include/dcstack.h \
@@ -571,22 +601,24 @@ dcvrut.o: dcvrut.cc ../../config/include/osconfig.h \
  ../include/dcvrut.h ../include/dctypes.h \
  ../../ofstd/include/oftypes.h ../include/dcchrstr.h \
  ../include/dcbytstr.h ../../ofstd/include/ofconsol.h \
- ../../ofstd/include/ofthread.h ../include/dcerror.h \
- ../../ofstd/include/ofcond.h ../../ofstd/include/ofstring.h \
- ../include/dcelem.h ../include/dcobject.h \
- ../../ofstd/include/ofglobal.h ../include/dcxfer.h ../include/dcvr.h \
- ../include/dcstream.h ../include/dctag.h ../include/dctagkey.h \
- ../include/dcdicent.h ../include/dclist.h ../include/dcstack.h \
- ../include/dcdebug.h
+ ../../ofstd/include/ofstream.h ../../ofstd/include/ofthread.h \
+ ../include/dcerror.h ../../ofstd/include/ofcond.h \
+ ../../ofstd/include/ofstring.h ../include/dcelem.h \
+ ../include/dcobject.h ../../ofstd/include/ofglobal.h \
+ ../include/dcxfer.h ../include/dcvr.h ../include/dcstream.h \
+ ../include/dctag.h ../include/dctagkey.h ../include/dcdicent.h \
+ ../include/dclist.h ../include/dcstack.h ../include/dcdebug.h
 dcxfer.o: dcxfer.cc ../include/dcxfer.h \
  ../../config/include/osconfig.h ../include/dctypes.h \
  ../../ofstd/include/oftypes.h ../include/dcvr.h \
  ../../ofstd/include/ofglobal.h ../../ofstd/include/ofthread.h \
- ../include/dcuid.h ../include/dcdebug.h
+ ../include/dcuid.h ../include/dcdebug.h \
+ ../../ofstd/include/ofstream.h
 mkdeftag.o: mkdeftag.cc ../../config/include/osconfig.h \
  ../include/dcdict.h ../include/dchashdi.h \
  ../../ofstd/include/oflist.h ../../ofstd/include/oftypes.h \
- ../include/dcdicent.h ../include/dctagkey.h ../include/dctypes.h \
+ ../include/dcdicent.h ../../ofstd/include/ofstream.h \
+ ../include/dctagkey.h ../include/dctypes.h \
  ../../ofstd/include/ofstring.h ../include/dcvr.h \
  ../../ofstd/include/ofglobal.h ../../ofstd/include/ofthread.h \
  ../include/cmdlnarg.h ../../ofstd/include/ofdatime.h \
@@ -594,7 +626,8 @@ mkdeftag.o: mkdeftag.cc ../../config/include/osconfig.h \
 mkdictbi.o: mkdictbi.cc ../../config/include/osconfig.h \
  ../include/dcdict.h ../include/dchashdi.h \
  ../../ofstd/include/oflist.h ../../ofstd/include/oftypes.h \
- ../include/dcdicent.h ../include/dctagkey.h ../include/dctypes.h \
+ ../include/dcdicent.h ../../ofstd/include/ofstream.h \
+ ../include/dctagkey.h ../include/dctypes.h \
  ../../ofstd/include/ofstring.h ../include/dcvr.h \
  ../../ofstd/include/ofglobal.h ../../ofstd/include/ofthread.h \
  ../include/cmdlnarg.h ../../ofstd/include/ofdatime.h \

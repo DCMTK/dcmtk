@@ -21,10 +21,10 @@
  *
  *  Purpose: class DcmDirectoryRecord
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-09-25 17:19:48 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2002-04-16 13:43:16 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcdirrec.cc,v $
- *  CVS/RCS Revision: $Revision: 1.38 $
+ *  CVS/RCS Revision: $Revision: 1.39 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -52,9 +52,9 @@ END_EXTERN_C
 #ifdef HAVE_UNISTD_H
 #include <unistd.h>
 #endif
-#include <iostream.h>
 #include <ctype.h>
 
+#include "ofstream.h"
 #include "dcdirrec.h"
 #include "dctk.h"
 #include "dcxfer.h"
@@ -1483,7 +1483,12 @@ DcmDirectoryRecord::getRecordsOriginFile()
 /*
  * CVS/RCS Log:
  * $Log: dcdirrec.cc,v $
- * Revision 1.38  2001-09-25 17:19:48  meichel
+ * Revision 1.39  2002-04-16 13:43:16  joergr
+ * Added configurable support for C++ ANSI standard includes (e.g. streams).
+ * Thanks to Andreas Barth <Andreas.Barth@bruker-biospin.de> for his
+ * contribution.
+ *
+ * Revision 1.38  2001/09/25 17:19:48  meichel
  * Adapted dcmdata to class OFCondition
  *
  * Revision 1.37  2001/06/20 14:58:38  joergr

@@ -21,10 +21,10 @@
  *
  *  Purpose: Handle console applications (Header)
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-06-01 15:51:33 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2002-04-16 13:36:02 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/include/Attic/ofconapp.h,v $
- *  CVS/RCS Revision: $Revision: 1.12 $
+ *  CVS/RCS Revision: $Revision: 1.13 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -39,8 +39,6 @@
 
 #include "oftypes.h"
 #include "ofcmdln.h"
-
-#include <iostream.h>
 
 
 /*------------------------*
@@ -200,7 +198,12 @@ class OFConsoleApplication
  *
  * CVS/RCS Log:
  * $Log: ofconapp.h,v $
- * Revision 1.12  2001-06-01 15:51:33  meichel
+ * Revision 1.13  2002-04-16 13:36:02  joergr
+ * Added configurable support for C++ ANSI standard includes (e.g. streams).
+ * Thanks to Andreas Barth <Andreas.Barth@bruker-biospin.de> for his
+ * contribution.
+ *
+ * Revision 1.12  2001/06/01 15:51:33  meichel
  * Updated copyright header
  *
  * Revision 1.11  2000/10/10 12:01:20  meichel

@@ -23,8 +23,8 @@
  *    classes: DSRDocument
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-11-09 16:10:48 $
- *  CVS/RCS Revision: $Revision: 1.24 $
+ *  Update Date:      $Date: 2002-04-16 13:50:52 $
+ *  CVS/RCS Revision: $Revision: 1.25 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -37,9 +37,10 @@
 
 #include "osconfig.h"   /* make sure OS specific configuration is included first */
 
+#include "ofstream.h"
 #include "dsrdoctr.h"
 
-#include <iostream.h>    /* for class ostream */
+
 
 
 /*---------------------*
@@ -1007,7 +1008,12 @@ class DSRDocument
 /*
  *  CVS/RCS Log:
  *  $Log: dsrdoc.h,v $
- *  Revision 1.24  2001-11-09 16:10:48  joergr
+ *  Revision 1.25  2002-04-16 13:50:52  joergr
+ *  Added configurable support for C++ ANSI standard includes (e.g. streams).
+ *  Thanks to Andreas Barth <Andreas.Barth@bruker-biospin.de> for his
+ *  contribution.
+ *
+ *  Revision 1.24  2001/11/09 16:10:48  joergr
  *  Added preliminary support for Mammography CAD SR.
  *
  *  Revision 1.23  2001/09/26 13:04:06  meichel

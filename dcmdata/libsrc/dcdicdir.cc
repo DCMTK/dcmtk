@@ -21,10 +21,10 @@
  *
  *  Purpose: class DcmDicomDir
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-11-01 16:14:55 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2002-04-16 13:43:15 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcdicdir.cc,v $
- *  CVS/RCS Revision: $Revision: 1.34 $
+ *  CVS/RCS Revision: $Revision: 1.35 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -68,8 +68,8 @@ char * mktemp(char *);
 #ifdef HAVE_UNISTD_H
 #include <unistd.h>
 #endif
-#include <iostream.h>
 
+#include "ofstream.h"
 #include "dcdefine.h"
 #include "dcdicdir.h"
 #include "dctk.h"
@@ -1337,7 +1337,12 @@ Cdebug(1, refCounter[k].fileOffset==refMRDR->numberOfReferences,
 /*
 ** CVS/RCS Log:
 ** $Log: dcdicdir.cc,v $
-** Revision 1.34  2001-11-01 16:14:55  meichel
+** Revision 1.35  2002-04-16 13:43:15  joergr
+** Added configurable support for C++ ANSI standard includes (e.g. streams).
+** Thanks to Andreas Barth <Andreas.Barth@bruker-biospin.de> for his
+** contribution.
+**
+** Revision 1.34  2001/11/01 16:14:55  meichel
 ** Fixed bug in dcmdata affecting the creation of a temporary file for a
 **   DICOMDIR when an explicit path is given.
 **

@@ -21,10 +21,10 @@
  *
  *  Purpose: class DcmPixelItem
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-11-16 15:55:04 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2002-04-16 13:43:20 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcpxitem.cc,v $
- *  CVS/RCS Revision: $Revision: 1.18 $
+ *  CVS/RCS Revision: $Revision: 1.19 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -46,8 +46,8 @@ END_EXTERN_C
 
 #include <string.h>
 #include <stdio.h>
-#include <iostream.h>
 
+#include "ofstream.h"
 #include "dcpxitem.h"
 #include "dcswap.h"
 #include "dcdebug.h"
@@ -124,7 +124,12 @@ DcmPixelItem::print(
 /*
 ** CVS/RCS Log:
 ** $Log: dcpxitem.cc,v $
-** Revision 1.18  2001-11-16 15:55:04  meichel
+** Revision 1.19  2002-04-16 13:43:20  joergr
+** Added configurable support for C++ ANSI standard includes (e.g. streams).
+** Thanks to Andreas Barth <Andreas.Barth@bruker-biospin.de> for his
+** contribution.
+**
+** Revision 1.18  2001/11/16 15:55:04  meichel
 ** Adapted digital signature code to final text of supplement 41.
 **
 ** Revision 1.17  2001/09/25 17:19:53  meichel

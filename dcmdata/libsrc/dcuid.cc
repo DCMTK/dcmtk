@@ -24,9 +24,9 @@
  *  routines for finding and creating UIDs.
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-01-08 11:16:58 $
+ *  Update Date:      $Date: 2002-04-16 13:43:22 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcuid.cc,v $
- *  CVS/RCS Revision: $Revision: 1.36 $
+ *  CVS/RCS Revision: $Revision: 1.37 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -61,7 +61,6 @@ END_EXTERN_C
 #include <stdio.h>
 #include <string.h>
 #include <time.h>
-#include <iostream.h>
 
 #ifdef HAVE_UNISTD_H
 #include <unistd.h>
@@ -95,6 +94,7 @@ BEGIN_EXTERN_C
 #endif
 END_EXTERN_C
 
+#include "ofstream.h"
 #include "dcuid.h"
 #include "ofthread.h"
 #include "ofcrc32.h"
@@ -1041,7 +1041,12 @@ char* dcmGenerateUniqueIdentifier(char* uid, const char* prefix)
 /*
 ** CVS/RCS Log:
 ** $Log: dcuid.cc,v $
-** Revision 1.36  2002-01-08 11:16:58  joergr
+** Revision 1.37  2002-04-16 13:43:22  joergr
+** Added configurable support for C++ ANSI standard includes (e.g. streams).
+** Thanks to Andreas Barth <Andreas.Barth@bruker-biospin.de> for his
+** contribution.
+**
+** Revision 1.36  2002/01/08 11:16:58  joergr
 ** Enhanced algorithm to create unique identifiers (i.e. a unique suffix for
 ** DICOM UIDs) on Windows systems where gethostid() is not available. Fixed
 ** some minor inconsistencies regarding the creation of unique identifiers.

@@ -21,10 +21,10 @@
  *
  *  Purpose: class DcmMetaInfo
  *
- *  Last Update:      $Author: wilkens $
- *  Update Date:      $Date: 2001-11-01 14:55:40 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2002-04-16 13:43:18 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcmetinf.cc,v $
- *  CVS/RCS Revision: $Revision: 1.26 $
+ *  CVS/RCS Revision: $Revision: 1.27 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -44,9 +44,9 @@ END_EXTERN_C
 #endif
 #endif
 
-#include <iostream.h>
 #include <string.h>
 
+#include "ofstream.h"
 #include "dcmetinf.h"
 #include "dcitem.h"
 #include "dcxfer.h"
@@ -579,7 +579,12 @@ OFCondition DcmMetaInfo::write(DcmStream & outStream,
 /*
 ** CVS/RCS Log:
 ** $Log: dcmetinf.cc,v $
-** Revision 1.26  2001-11-01 14:55:40  wilkens
+** Revision 1.27  2002-04-16 13:43:18  joergr
+** Added configurable support for C++ ANSI standard includes (e.g. streams).
+** Thanks to Andreas Barth <Andreas.Barth@bruker-biospin.de> for his
+** contribution.
+**
+** Revision 1.26  2001/11/01 14:55:40  wilkens
 ** Added lots of comments.
 **
 ** Revision 1.25  2001/09/26 15:49:30  meichel

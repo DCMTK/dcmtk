@@ -22,9 +22,9 @@
  *  Purpose: List the contents of a dicom file
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-01-11 14:34:20 $
+ *  Update Date:      $Date: 2002-04-16 13:38:53 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/apps/dcmdump.cc,v $
- *  CVS/RCS Revision: $Revision: 1.35 $
+ *  CVS/RCS Revision: $Revision: 1.36 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -44,8 +44,8 @@ END_EXTERN_C
 #endif
 #endif
 
-#include <iostream.h>
 #include <string.h>
+#include "ofstream.h"
 #include "dctk.h"
 #include "dcdebug.h"
 #include "cmdlnarg.h"
@@ -443,7 +443,12 @@ static int dumpFile(ostream & out,
 /*
  * CVS/RCS Log:
  * $Log: dcmdump.cc,v $
- * Revision 1.35  2002-01-11 14:34:20  joergr
+ * Revision 1.36  2002-04-16 13:38:53  joergr
+ * Added configurable support for C++ ANSI standard includes (e.g. streams).
+ * Thanks to Andreas Barth <Andreas.Barth@bruker-biospin.de> for his
+ * contribution.
+ *
+ * Revision 1.35  2002/01/11 14:34:20  joergr
  * Added new option to dcmdump tool which prints a header with the filename.
  *
  * Revision 1.34  2001/09/28 14:18:45  joergr

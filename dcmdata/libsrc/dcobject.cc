@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2001, OFFIS
+ *  Copyright (C) 1994-2002, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -24,9 +24,9 @@
  *  DICOM object encoding/decoding, search and lookup facilities.
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-04-11 12:27:10 $
+ *  Update Date:      $Date: 2002-04-16 13:43:19 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcobject.cc,v $
- *  CVS/RCS Revision: $Revision: 1.32 $
+ *  CVS/RCS Revision: $Revision: 1.33 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -34,7 +34,7 @@
  */
 
 #include "osconfig.h"    /* make sure OS specific configuration is included first */
-#include <iostream.h>
+#include "ofstream.h"
 #include "dcobject.h"
 #include "dcvr.h"
 #include "dcxfer.h"
@@ -382,7 +382,12 @@ OFBool DcmObject::containsUnknownVR() const
 /*
  * CVS/RCS Log:
  * $Log: dcobject.cc,v $
- * Revision 1.32  2002-04-11 12:27:10  joergr
+ * Revision 1.33  2002-04-16 13:43:19  joergr
+ * Added configurable support for C++ ANSI standard includes (e.g. streams).
+ * Thanks to Andreas Barth <Andreas.Barth@bruker-biospin.de> for his
+ * contribution.
+ *
+ * Revision 1.32  2002/04/11 12:27:10  joergr
  * Added new methods for loading and saving DICOM files.
  *
  * Revision 1.31  2001/11/16 15:55:03  meichel

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2001, OFFIS
+ *  Copyright (C) 1994-2002, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,10 +21,10 @@
  *
  *  Purpose: Basis class for dicom tags.
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-11-19 15:23:11 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2002-04-16 13:41:44 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dctagkey.h,v $
- *  CVS/RCS Revision: $Revision: 1.11 $
+ *  CVS/RCS Revision: $Revision: 1.12 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -36,8 +36,7 @@
 
 #include "osconfig.h"    /* make sure OS specific configuration is included first */
 
-#include <iostream.h>
-
+#include "ofstream.h"
 #include "dctypes.h"
 #include "ofstring.h"
 
@@ -262,7 +261,12 @@ DcmTagKey::operator >= (const DcmTagKey& key) const
 /*
 ** CVS/RCS Log:
 ** $Log: dctagkey.h,v $
-** Revision 1.11  2001-11-19 15:23:11  meichel
+** Revision 1.12  2002-04-16 13:41:44  joergr
+** Added configurable support for C++ ANSI standard includes (e.g. streams).
+** Thanks to Andreas Barth <Andreas.Barth@bruker-biospin.de> for his
+** contribution.
+**
+** Revision 1.11  2001/11/19 15:23:11  meichel
 ** Cleaned up signature code to avoid some gcc warnings.
 **
 ** Revision 1.10  2001/11/16 15:54:40  meichel

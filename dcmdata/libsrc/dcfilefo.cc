@@ -22,9 +22,9 @@
  *  Purpose: class DcmFileFormat
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-04-11 12:27:10 $
+ *  Update Date:      $Date: 2002-04-16 13:43:17 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcfilefo.cc,v $
- *  CVS/RCS Revision: $Revision: 1.26 $
+ *  CVS/RCS Revision: $Revision: 1.27 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -46,13 +46,12 @@ END_EXTERN_C
 
 #include <stdio.h>
 #include <time.h>
-#include <iostream.h>
-#include <iomanip.h>
 
 #ifdef HAVE_UNISTD_H
 #include <unistd.h>
 #endif
 
+#include "ofstream.h"
 #include "dcfilefo.h"
 #include "dcitem.h"
 #include "dcxfer.h"
@@ -834,7 +833,12 @@ DcmDataset* DcmFileFormat::getAndRemoveDataset()
 /*
 ** CVS/RCS Log:
 ** $Log: dcfilefo.cc,v $
-** Revision 1.26  2002-04-11 12:27:10  joergr
+** Revision 1.27  2002-04-16 13:43:17  joergr
+** Added configurable support for C++ ANSI standard includes (e.g. streams).
+** Thanks to Andreas Barth <Andreas.Barth@bruker-biospin.de> for his
+** contribution.
+**
+** Revision 1.26  2002/04/11 12:27:10  joergr
 ** Added new methods for loading and saving DICOM files.
 **
 ** Revision 1.25  2002/01/08 10:43:45  joergr

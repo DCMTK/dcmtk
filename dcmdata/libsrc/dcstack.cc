@@ -21,10 +21,10 @@
  *
  *  Purpose: stack class
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-06-01 15:49:09 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2002-04-16 13:43:21 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcstack.cc,v $
- *  CVS/RCS Revision: $Revision: 1.13 $
+ *  CVS/RCS Revision: $Revision: 1.14 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -32,8 +32,6 @@
  */
 
 #include "osconfig.h"    /* make sure OS specific configuration is included first */
-
-#include <iostream.h>
 
 #ifdef HAVE_STDLIB_H
 #ifndef  _BCB4
@@ -46,6 +44,7 @@ END_EXTERN_C
 #endif
 #endif
 
+#include "ofstream.h"
 #include "dcstack.h"
 #include "dcdebug.h"
 
@@ -230,7 +229,12 @@ OFBool DcmStack::empty()
 /*
  * CVS/RCS Log:
  * $Log: dcstack.cc,v $
- * Revision 1.13  2001-06-01 15:49:09  meichel
+ * Revision 1.14  2002-04-16 13:43:21  joergr
+ * Added configurable support for C++ ANSI standard includes (e.g. streams).
+ * Thanks to Andreas Barth <Andreas.Barth@bruker-biospin.de> for his
+ * contribution.
+ *
+ * Revision 1.13  2001/06/01 15:49:09  meichel
  * Updated copyright header
  *
  * Revision 1.12  2000/03/08 16:26:41  meichel

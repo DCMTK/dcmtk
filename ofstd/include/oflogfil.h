@@ -21,10 +21,10 @@
  *
  *  Purpose: Define general purpose facility for log file output
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-06-01 15:51:34 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2002-04-16 13:36:03 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/include/Attic/oflogfil.h,v $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -37,9 +37,8 @@
 
 #include "osconfig.h"
 #include "ofthread.h"
+#include "ofstream.h"
 
-#include <iostream.h>
-#include <fstream.h>
 
 #ifdef HAVE_STDLIB_H
 #ifndef  _BCB4
@@ -206,7 +205,12 @@ class OFLogFile
  *
  * CVS/RCS Log:
  * $Log: oflogfil.h,v $
- * Revision 1.4  2001-06-01 15:51:34  meichel
+ * Revision 1.5  2002-04-16 13:36:03  joergr
+ * Added configurable support for C++ ANSI standard includes (e.g. streams).
+ * Thanks to Andreas Barth <Andreas.Barth@bruker-biospin.de> for his
+ * contribution.
+ *
+ * Revision 1.4  2001/06/01 15:51:34  meichel
  * Updated copyright header
  *
  * Revision 1.3  2000/12/12 17:19:57  joergr

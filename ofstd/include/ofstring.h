@@ -21,10 +21,10 @@
  *
  *  Purpose: A simple string class
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-12-04 16:48:16 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2002-04-16 13:36:03 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/include/Attic/ofstring.h,v $
- *  CVS/RCS Revision: $Revision: 1.11 $
+ *  CVS/RCS Revision: $Revision: 1.12 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -82,8 +82,7 @@ BEGIN_EXTERN_C
 #endif
 END_EXTERN_C
 
-#include <iostream.h>
-
+#include "ofstream.h"
 #include "oftypes.h"
 
 /*
@@ -1096,7 +1095,12 @@ OFBool operator>= (const OFString& lhs, char rhs);
 /*
 ** CVS/RCS Log:
 ** $Log: ofstring.h,v $
-** Revision 1.11  2001-12-04 16:48:16  meichel
+** Revision 1.12  2002-04-16 13:36:03  joergr
+** Added configurable support for C++ ANSI standard includes (e.g. streams).
+** Thanks to Andreas Barth <Andreas.Barth@bruker-biospin.de> for his
+** contribution.
+**
+** Revision 1.11  2001/12/04 16:48:16  meichel
 ** Completed doc++ documentation, fixed bug in OFString::copy.
 **
 ** Revision 1.10  2001/11/02 13:18:53  meichel

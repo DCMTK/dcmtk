@@ -21,10 +21,10 @@
  *
  *  Purpose: streaming classes for file and buffer input/output
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-09-25 17:19:54 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2002-04-16 13:43:21 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/Attic/dcstream.cc,v $
- *  CVS/RCS Revision: $Revision: 1.21 $
+ *  CVS/RCS Revision: $Revision: 1.22 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -37,9 +37,9 @@
 #include <unistd.h>
 #endif
 
-#include <iostream.h>
 #include <string.h>
 
+#include "ofstream.h"
 #include "ofconsol.h"
 #include "dcstream.h"
 #include "dcbuf.h"
@@ -743,7 +743,12 @@ DcmFileStreamConstructor::Copy(void)
 /*
 ** CVS/RCS Log:
 ** $Log: dcstream.cc,v $
-** Revision 1.21  2001-09-25 17:19:54  meichel
+** Revision 1.22  2002-04-16 13:43:21  joergr
+** Added configurable support for C++ ANSI standard includes (e.g. streams).
+** Thanks to Andreas Barth <Andreas.Barth@bruker-biospin.de> for his
+** contribution.
+**
+** Revision 1.21  2001/09/25 17:19:54  meichel
 ** Adapted dcmdata to class OFCondition
 **
 ** Revision 1.20  2001/06/01 15:49:10  meichel

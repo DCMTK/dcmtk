@@ -21,10 +21,10 @@
  *
  *  Purpose: class DcmVR: Value Representation
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-11-02 13:18:52 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2002-04-16 13:43:23 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcvr.cc,v $
- *  CVS/RCS Revision: $Revision: 1.24 $
+ *  CVS/RCS Revision: $Revision: 1.25 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -147,7 +147,7 @@ static const int DcmVRDict_DIM = sizeof(DcmVRDict) / sizeof(DcmVREntry);
 
 #ifdef DEBUG
 
-#include <iostream.h>
+#include "ofstream.h"
 
 class DcmVRDict_checker {
 private:
@@ -363,7 +363,12 @@ int DcmVR::isEquivalent(const DcmVR& avr) const
 /*
  * CVS/RCS Log:
  * $Log: dcvr.cc,v $
- * Revision 1.24  2001-11-02 13:18:52  meichel
+ * Revision 1.25  2002-04-16 13:43:23  joergr
+ * Added configurable support for C++ ANSI standard includes (e.g. streams).
+ * Thanks to Andreas Barth <Andreas.Barth@bruker-biospin.de> for his
+ * contribution.
+ *
+ * Revision 1.24  2001/11/02 13:18:52  meichel
  * Removed character sequences that could be interpreted as ISO C++ trigraphs
  *
  * Revision 1.23  2001/09/28 14:21:40  joergr

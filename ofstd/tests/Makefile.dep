@@ -1,26 +1,22 @@
-tlist.o: tlist.cc ../include/oflist.h ../../config/include/osconfig.h \
- ../include/oftypes.h ../include/ofalgo.h ../include/ofconsol.h \
- ../include/ofthread.h
+tlist.o: tlist.cc ../../config/include/osconfig.h \
+ ../include/ofstream.h ../include/oflist.h ../include/oftypes.h \
+ ../include/ofalgo.h ../include/ofconsol.h ../include/ofthread.h
 tofdatim.o: tofdatim.cc ../../config/include/osconfig.h \
- ../include/ofdate.h ../include/ofstring.h ../include/oftypes.h \
- ../include/oftime.h ../include/ofdatime.h ../include/ofconsol.h \
- ../include/ofthread.h
+ ../include/ofdate.h ../include/ofstring.h ../include/ofstream.h \
+ ../include/oftypes.h ../include/oftime.h ../include/ofdatime.h \
+ ../include/ofconsol.h ../include/ofthread.h
 tofstd.o: tofstd.cc ../../config/include/osconfig.h ../include/ofstd.h \
- ../include/ofstring.h ../include/oftypes.h ../include/ofconsol.h \
- ../include/ofthread.h
-tstcmdln.o: tstcmdln.cc ../include/ofcmdln.h \
- ../../config/include/osconfig.h ../include/oftypes.h \
- ../include/oflist.h ../include/ofstring.h ../include/ofconsol.h \
- ../include/ofthread.h
-tstlist.o: tstlist.cc ../include/ofalgo.h \
- ../../config/include/osconfig.h ../include/oftypes.h \
+ ../include/ofstring.h ../include/ofstream.h ../include/oftypes.h \
+ ../include/ofconsol.h ../include/ofthread.h
+tstlist.o: tstlist.cc ../../config/include/osconfig.h \
+ ../include/ofstream.h ../include/ofalgo.h ../include/oftypes.h \
  ../include/oflist.h ../include/ofconsol.h ../include/ofthread.h
 tstring.o: tstring.cc ../include/ofstring.h \
- ../../config/include/osconfig.h ../include/oftypes.h \
- ../include/ofconsol.h ../include/ofthread.h
-tststack.o: tststack.cc ../include/ofstack.h \
- ../../config/include/osconfig.h ../include/oftypes.h \
+ ../../config/include/osconfig.h ../include/ofstream.h \
+ ../include/oftypes.h ../include/ofconsol.h ../include/ofthread.h
+tststack.o: tststack.cc ../../config/include/osconfig.h \
+ ../include/ofstream.h ../include/ofstack.h ../include/oftypes.h \
  ../include/ofconsol.h ../include/ofthread.h
 tstthred.o: tstthred.cc ../../config/include/osconfig.h \
- ../include/ofconsol.h ../include/ofthread.h ../include/oftypes.h \
- ../include/ofstring.h
+ ../include/ofconsol.h ../include/ofstream.h ../include/ofthread.h \
+ ../include/oftypes.h ../include/ofstring.h

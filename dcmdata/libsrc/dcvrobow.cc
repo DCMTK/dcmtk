@@ -22,9 +22,9 @@
  *  Purpose: class DcmOtherByteOtherWord for data VR OB or OW
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-10-02 11:48:33 $
+ *  Update Date:      $Date: 2002-04-16 13:43:25 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcvrobow.cc,v $
- *  CVS/RCS Revision: $Revision: 1.34 $
+ *  CVS/RCS Revision: $Revision: 1.35 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -46,8 +46,8 @@ END_EXTERN_C
 
 #include <string.h>
 #include <stdio.h>
-#include <iostream.h>
 
+#include "ofstream.h"
 #include "dcvrobow.h"
 #include "dcdeftag.h"
 #include "dcswap.h"
@@ -489,7 +489,12 @@ OFCondition DcmOtherByteOtherWord::writeSignatureFormat(DcmStream & outStream,
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrobow.cc,v $
-** Revision 1.34  2001-10-02 11:48:33  joergr
+** Revision 1.35  2002-04-16 13:43:25  joergr
+** Added configurable support for C++ ANSI standard includes (e.g. streams).
+** Thanks to Andreas Barth <Andreas.Barth@bruker-biospin.de> for his
+** contribution.
+**
+** Revision 1.34  2001/10/02 11:48:33  joergr
 ** Added getUint8/16 routines to class DcmOtherByteOtherWord.
 **
 ** Revision 1.33  2001/09/25 17:19:58  meichel

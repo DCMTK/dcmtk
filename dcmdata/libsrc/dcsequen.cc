@@ -21,10 +21,10 @@
  *
  *  Purpose: class DcmSequenceOfItems
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-03-15 13:58:39 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2002-04-16 13:43:20 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcsequen.cc,v $
- *  CVS/RCS Revision: $Revision: 1.44 $
+ *  CVS/RCS Revision: $Revision: 1.45 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -45,9 +45,8 @@ END_EXTERN_C
 #endif
 
 #include <stdio.h>
-#include <iostream.h>
-#include <iomanip.h>
 
+#include "ofstream.h"
 #include "dcsequen.h"
 #include "dcitem.h"
 #include "dcdirrec.h"
@@ -1192,7 +1191,12 @@ OFBool DcmSequenceOfItems::containsUnknownVR() const
 /*
 ** CVS/RCS Log:
 ** $Log: dcsequen.cc,v $
-** Revision 1.44  2002-03-15 13:58:39  meichel
+** Revision 1.45  2002-04-16 13:43:20  joergr
+** Added configurable support for C++ ANSI standard includes (e.g. streams).
+** Thanks to Andreas Barth <Andreas.Barth@bruker-biospin.de> for his
+** contribution.
+**
+** Revision 1.44  2002/03/15 13:58:39  meichel
 ** Fixed incorrect debug message.
 **
 ** Revision 1.43  2001/11/16 15:55:04  meichel

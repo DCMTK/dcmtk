@@ -22,8 +22,8 @@
  *  Purpose: Create sample structured reports using the dcmsr API
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-04-11 13:06:08 $
- *  CVS/RCS Revision: $Revision: 1.17 $
+ *  Update Date:      $Date: 2002-04-16 13:51:59 $
+ *  CVS/RCS Revision: $Revision: 1.18 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -33,12 +33,11 @@
 
 #include "osconfig.h"
 
+#include "ofstream.h"
 #include "dsrdoc.h"
-
 #include "dcuid.h"
 #include "dcfilefo.h"
 
-#include <iostream.h>
 
 // forward declarations
 static void generate_ki(DSRDocument *doc, OFString &);
@@ -1236,7 +1235,12 @@ static void generate_19(DSRDocument *doc)
 /*
  *  CVS/RCS Log:
  *  $Log: mkreport.cc,v $
- *  Revision 1.17  2002-04-11 13:06:08  joergr
+ *  Revision 1.18  2002-04-16 13:51:59  joergr
+ *  Added configurable support for C++ ANSI standard includes (e.g. streams).
+ *  Thanks to Andreas Barth <Andreas.Barth@bruker-biospin.de> for his
+ *  contribution.
+ *
+ *  Revision 1.17  2002/04/11 13:06:08  joergr
  *  Use the new loadFile() and saveFile() routines from the dcmdata library.
  *
  *  Revision 1.16  2001/12/14 10:37:53  joergr

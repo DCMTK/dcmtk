@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1997-2001, OFFIS
+ *  Copyright (C) 1997-2002, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -24,9 +24,9 @@
  *
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-04-11 12:17:19 $
+ *  Update Date:      $Date: 2002-04-16 13:37:02 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/tests/tstthred.cc,v $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -34,6 +34,7 @@
  */
 
 #include "osconfig.h"
+
 #include "ofconsol.h"
 #include "ofthread.h"
 #include "ofstring.h"
@@ -472,7 +473,12 @@ int main()
  *
  * CVS/RCS Log:
  * $Log: tstthred.cc,v $
- * Revision 1.5  2002-04-11 12:17:19  joergr
+ * Revision 1.6  2002-04-16 13:37:02  joergr
+ * Added configurable support for C++ ANSI standard includes (e.g. streams).
+ * Thanks to Andreas Barth <Andreas.Barth@bruker-biospin.de> for his
+ * contribution.
+ *
+ * Revision 1.5  2002/04/11 12:17:19  joergr
  * Removed obsolete return statements to keep Sun CC 2.0.1 quiet.
  *
  * Revision 1.4  2001/09/28 12:42:39  joergr

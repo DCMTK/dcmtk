@@ -23,9 +23,9 @@
  *           XML format
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-04-11 13:05:02 $
+ *  Update Date:      $Date: 2002-04-16 13:49:52 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmsr/apps/dsr2xml.cc,v $
- *  CVS/RCS Revision: $Revision: 1.10 $
+ *  CVS/RCS Revision: $Revision: 1.11 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -36,14 +36,12 @@
 #include "osconfig.h"    /* make sure OS specific configuration is included first */
 
 #include "dsrdoc.h"
-
 #include "dcdebug.h"
 #include "cmdlnarg.h"
+#include "ofstream.h"
 #include "ofconapp.h"
-#include "dcuid.h"    /* for dcmtk version name */
+#include "dcuid.h"      /* for dcmtk version name */
 
-#include <iostream.h>
-#include <fstream.h>
 
 
 #define OFFIS_CONSOLE_APPLICATION "dsr2xml"
@@ -245,7 +243,12 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dsr2xml.cc,v $
- * Revision 1.10  2002-04-11 13:05:02  joergr
+ * Revision 1.11  2002-04-16 13:49:52  joergr
+ * Added configurable support for C++ ANSI standard includes (e.g. streams).
+ * Thanks to Andreas Barth <Andreas.Barth@bruker-biospin.de> for his
+ * contribution.
+ *
+ * Revision 1.10  2002/04/11 13:05:02  joergr
  * Use the new loadFile() and saveFile() routines from the dcmdata library.
  *
  * Revision 1.9  2001/11/09 16:09:35  joergr

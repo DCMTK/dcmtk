@@ -21,10 +21,10 @@
  *
  *  Purpose: class DcmPixelSequence
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-09-25 17:19:52 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2002-04-16 13:43:19 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcpixseq.cc,v $
- *  CVS/RCS Revision: $Revision: 1.25 $
+ *  CVS/RCS Revision: $Revision: 1.26 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -45,8 +45,8 @@ END_EXTERN_C
 #endif
 
 #include <stdio.h>
-#include <iostream.h>
 
+#include "ofstream.h"
 #include "dcpixseq.h"
 #include "dcpxitem.h"
 #include "dcitem.h"
@@ -322,7 +322,12 @@ OFCondition DcmPixelSequence::writeSignatureFormat(DcmStream & outStream,
 /*
 ** CVS/RCS Log:
 ** $Log: dcpixseq.cc,v $
-** Revision 1.25  2001-09-25 17:19:52  meichel
+** Revision 1.26  2002-04-16 13:43:19  joergr
+** Added configurable support for C++ ANSI standard includes (e.g. streams).
+** Thanks to Andreas Barth <Andreas.Barth@bruker-biospin.de> for his
+** contribution.
+**
+** Revision 1.25  2001/09/25 17:19:52  meichel
 ** Adapted dcmdata to class OFCondition
 **
 ** Revision 1.24  2001/06/01 15:49:07  meichel
