@@ -1,6 +1,11 @@
 
 Changes between releases are documented here.
 
+**** Changes from 1999.10.08 (riesmeier)
+
+- Corrected typo. Handled 'quiet' mode more restrictive.
+  Affects: dcmimage/apps/dcm2pnm.cc
+
 **** Changes from 1999.09.30 (riesmeier)
 
 - Added missing directory entries to make file.
