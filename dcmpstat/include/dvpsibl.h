@@ -23,8 +23,8 @@
  *    classes: DVPSImageBoxContent_PList
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-03-08 16:28:53 $
- *  CVS/RCS Revision: $Revision: 1.13 $
+ *  Update Date:      $Date: 2000-05-31 12:56:39 $
+ *  CVS/RCS Revision: $Revision: 1.14 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -85,9 +85,11 @@ public:
    *    e. g. because they are not supported by the target printer.
    *  @param numItems the number of items (from the beginning of the list) to be written.
    *    Default: all items are written.
+   *  @param ignoreEmptyImages if true, all image boxes without image box position are ignored
+   *    when writing.
    *  @return EC_Normal if successful, an error code otherwise.
    */
-  E_Condition write(DcmItem &dset, OFBool writeRequestedImageSize, size_t numItems=0);
+  E_Condition write(DcmItem &dset, OFBool writeRequestedImageSize, size_t numItems, OFBool ignoreEmptyImages);
 
   /** reset the object to initial state.
    *  After this call, the object is in the same state as after
@@ -102,10 +104,11 @@ public:
 
   /** create default values for all missing type 1 elements.
    *  Called before a stored print object is written.
-   *  @renumber if true, new imageBoxPosition values are created 
+   *  @param renumber if true, new imageBoxPosition values are created 
+   *  @param ignoreEmptyImages if true, an empty image box position does not cause an error.
    *  @return EC_Normal if successful, an error code otherwise.
    */
-  E_Condition createDefaultValues(OFBool renumber);
+  E_Condition createDefaultValues(OFBool renumber, OFBool ignoreEmptyImages);
   
   /** adds all image SOP classes referenced in the image box list to
    *  the given sequence. Duplicate entries are suppressed.
@@ -282,6 +285,59 @@ public:
    *  @return UID of Presentation LUT if found, NULL or empty string otherwise.
    */
   const char *haveSinglePresentationLUTUsed(const char *filmBox);
+
+  /** creates a number of image boxes as part of a Print SCP N-CREATE operation. 
+   *  The previous content of the list is deleted.
+   *  @param numBoxes number of boxes to be created
+   *  @param studyUID study instance UID under which Hardcopy Grayscale images will be saved
+   *  @param seriesUID series instance UID under which Hardcopy Grayscale images will be saved
+   *  @param aetitle retrieve AE title for Hardcopy Grayscale images
+   *  @return OFTrue if successful, OFFalse otherwise.
+   */
+  OFBool printSCPCreate(
+    unsigned long numBoxes,
+    DcmUniqueIdentifier& studyUID, 
+    DcmUniqueIdentifier& seriesUID, 
+    const char *aetitle);
+
+  /** writes a Referenced Image Box Sequence for the image boxes
+   *  managed by this object. Used in a Print SCP N-CREATE operation.
+   *  @param dset the dataset to which the data is written
+   *  @return EC_Normal if successful, an error code otherwise.
+   */
+  E_Condition writeReferencedImageBoxSQ(DcmItem &dset);
+
+  /** checks whether the given Presentation LUT type could be used together
+   *  with all image boxes in this list on a Print SCP that requires a matching 
+   *  alignment between a Presentation LUT and the image pixel data.
+   *  @param align LUT alignment type
+   *  @return OFTrue if matching, OFFalse otherwise
+   */
+  OFBool matchesPresentationLUT(DVPSPrintPresentationLUTAlignment align);
+
+  /** looks up the image box with the given SOP instance UID in this list
+   *  and returns a pointer to a new object containing a copy of this
+   *  image box. If the object is not found, NULL is returned.
+   *  @param uid SOP instance UID of the image box to be looked up
+   *  @return pointer to copied image box object, may be NULL.
+   */
+  DVPSImageBoxContent *duplicateImageBox(const char *uid);
+
+  /** checks whether any of the image boxes managed by this list
+   *  has the same position as the given one, but a different
+   *  SOP instance UID.  This is used during an Print SCP N-SET operation
+   *  to check whether a position clash exists.
+   *  @param uid SOP instance UID of the image box to be looked up
+   *  @param position image position to be looked up
+   */
+  OFBool haveImagePositionClash(const char *uid, Uint16 position);
+
+  /** adds the given image box object to this list. Any other object existing
+   *  in the list with the same SOP instance UID is removed.
+   *  Used during a Print SCP image box N-SET operation.
+   *  @param newImageBox new image box object to be added to the list.
+   */
+  void replace(DVPSImageBoxContent *newImageBox);
   
 private:
 
@@ -307,7 +363,10 @@ private:
 
 /*
  *  $Log: dvpsibl.h,v $
- *  Revision 1.13  2000-03-08 16:28:53  meichel
+ *  Revision 1.14  2000-05-31 12:56:39  meichel
+ *  Added initial Print SCP support
+ *
+ *  Revision 1.13  2000/03/08 16:28:53  meichel
  *  Updated copyright header.
  *
  *  Revision 1.12  1999/10/19 14:46:03  meichel

@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DVInterface
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-05-31 07:54:23 $
- *  CVS/RCS Revision: $Revision: 1.61 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2000-05-31 12:56:37 $
+ *  CVS/RCS Revision: $Revision: 1.62 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -47,15 +47,6 @@
 #include "ofstring.h"   /* for class OFString */
 #include "imagedb.h"    /* for DB_UpperMaxBytesPerStudy */
 #include "dvcache.h"    /* for index file caching */
-
-/* max study count for DB handle creation */
-#define PSTAT_MAXSTUDYCOUNT 200
-/* study size for DB handle creation */
-#define PSTAT_STUDYSIZE DB_UpperMaxBytesPerStudy
-/* filename suffixes for print jobs */
-#define PRINTJOB_SUFFIX      ".job"
-#define PRINTJOB_DONE_SUFFIX ".old"
-#define PRINTJOB_TEMP_SUFFIX ".tmp"
 
 class DVPSConfig;
 class DicomImage;
@@ -746,7 +737,7 @@ class DVInterface: public DVConfiguration
      */
     E_Condition dumpIOD(const char *studyUID, const char *seriesUID, const char *instanceUID);
 
-    /** checks the contents of a DICOM file and displays an evaluation report on the screen.
+    /** NOT YET IMPLEMENTED - checks the contents of a DICOM file and displays an evaluation report on the screen.
      *  A separate application or process is launched to handle the evaluation and display.
      *  This call returns when the check operation has successfully been launched.
      *  No information about the status or success of the process itself is being made
@@ -758,7 +749,7 @@ class DVInterface: public DVConfiguration
      */
     E_Condition checkIOD(const char *filename);
 
-    /** checks the contents of a DICOM file and displays an evaluation report on the screen.
+    /** NOT YET IMPLEMENTED - checks the contents of a DICOM file and displays an evaluation report on the screen.
      *  A separate application or process is launched to handle the evaluation and display.
      *  This call returns when the check operation has successfully been launched.
      *  No information about the status or success of the process itself is being made
@@ -866,6 +857,17 @@ class DVInterface: public DVConfiguration
       unsigned long width,
       unsigned long height,
       double aspectRatio=1.0);
+
+    /** saves a DICOM object into a file in the same directory in which the 
+     *  database index file resides. The object must contain a SOP Class 
+     *  UID and SOP Instance UID. The filename is generated automatically. 
+     *  When the image is stored successfully, the database index is 
+     *  updated to include the new object. This method releases under any 
+     *  circumstances the database lock if it exists.
+     *  @param fileformat the complete DICOM file object to be written
+     *  @return EC_Normal upon success, an error code otherwise.
+     */
+    E_Condition saveFileFormatToDB(DcmFileFormat &fileformat);
 
     /** loads a Stored Print object which is contained in the database into memory.
      *  Attention: The current print job (Stored Print object) will be deleted by doing this.
@@ -1142,14 +1144,14 @@ class DVInterface: public DVConfiguration
      */
     const char *getDisplayPresentationLUTID();
 
-    /** sets the presentation LUT shape to be applied to all printed images.
+    /** NOT YET IMPLEMENTED - sets the presentation LUT shape to be applied to all printed images.
      *  This presentation LUT shape overrides the individual settings for each image.
      *  @param shape the new presentation LUT shape.
      *  @return EC_Normal if successful, an error code otherwise.
      */
     E_Condition setPrintPresentationLUTShape(DVPSPresentationLUTType shape);
    
-    /** sets a presentation lookup table to be applied to all printed images.
+    /** NOT YET IMPLEMENTED - sets a presentation lookup table to be applied to all printed images.
      *  This presentation LUT overrides the individual settings for each image.
      *  @param lutDescriptor the LUT Descriptor in DICOM format (VM=3)
      *  @param lutData the LUT Data in DICOM format
@@ -1161,7 +1163,7 @@ class DVInterface: public DVConfiguration
       DcmUnsignedShort& lutData,
       DcmLongString& lutExplanation);
   
-    /** sets a presentation lookup table to be applied to all printed images.
+    /** NOT YET IMPLEMENTED - sets a presentation lookup table to be applied to all printed images.
      *  This presentation LUT overrides the individual settings for each image.
      *  @param dset dataset from which the Presentation LUT SQ or Shape is read.
      *  @return EC_Normal if successful, an error code otherwise.
@@ -1301,7 +1303,7 @@ class DVInterface: public DVConfiguration
      */
     void setLog(ostream *o);
 
-    /** sets a filter to specify which messages are actually written to the application
+    /** NOT YET IMPLEMENTED - sets a filter to specify which messages are actually written to the application
      *  wide log file.
      *  There are five different levels (in ascending order): none, informational, warning,
      *  error, debug. All messages which belong to a 'lower' level are included in the
@@ -1310,7 +1312,7 @@ class DVInterface: public DVConfiguration
      */
     void setLogFilter(DVPSLogMessageLevel level);
 
-    /** writes a message into the application wide log file.
+    /** NOT YET IMPLEMENTED - writes a message into the application wide log file.
      *  @param level status level of the message (also used to filter the messages),
      *    DVPSM_none should only be used for setLogFilter() and not to write a log message
      *    since it has no meaning for this method.
@@ -1390,11 +1392,6 @@ private:
     /** pointer to the stored presentation state object (if any)
      */
     DVPresentationState *pStoredPState;
-
-    /** pointer to the current DICOM dataset containing the loaded stored print object.
-     *  Is NULL when the stored print object has been created in memory.
-     */
-    DcmFileFormat *pDicomPrint;
 
     /** pointer to the current DICOM image attached to the presentation state
      */
@@ -1620,7 +1617,10 @@ private:
 /*
  *  CVS/RCS Log:
  *  $Log: dviface.h,v $
- *  Revision 1.61  2000-05-31 07:54:23  joergr
+ *  Revision 1.62  2000-05-31 12:56:37  meichel
+ *  Added initial Print SCP support
+ *
+ *  Revision 1.61  2000/05/31 07:54:23  joergr
  *  Added support for Stored Print attributes Originator and Destination
  *  application entity title.
  *

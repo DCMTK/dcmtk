@@ -23,8 +23,8 @@
  *    classes: DVPSImageBoxContent_PList
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-03-08 16:29:08 $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  Update Date:      $Date: 2000-05-31 12:58:16 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -252,9 +252,36 @@ const char *DVPSPresentationLUT_PList::addPresentationLUT(DVPSPresentationLUT *n
 }
 
 
+void DVPSPresentationLUT_PList::printSCPDelete(T_DIMSE_Message& rq, T_DIMSE_Message& rsp)
+{
+  OFListIterator(DVPSPresentationLUT *) first = begin();
+  OFListIterator(DVPSPresentationLUT *) last = end();
+  OFBool found = OFFalse;
+  OFString theUID(rq.msg.NDeleteRQ.RequestedSOPInstanceUID);
+  while ((first != last) && (!found))
+  {     
+    if (theUID == (*first)->getSOPInstanceUID()) found = OFTrue;
+    else ++first;
+  }
+
+  if (found)
+  {
+    delete (*first);
+    erase(first);
+  } else {
+    // presentation LUT does not exist or wrong instance UID
+    *logstream << "error: cannot delete presentation LUT with instance UID '" << rq.msg.NDeleteRQ.RequestedSOPInstanceUID << "': object does not exist." << endl;
+    rsp.msg.NDeleteRSP.DimseStatus = 0x0112; // no such object instance
+  }
+}
+
+
 /*
  *  $Log: dvpspll.cc,v $
- *  Revision 1.5  2000-03-08 16:29:08  meichel
+ *  Revision 1.6  2000-05-31 12:58:16  meichel
+ *  Added initial Print SCP support
+ *
+ *  Revision 1.5  2000/03/08 16:29:08  meichel
  *  Updated copyright header.
  *
  *  Revision 1.4  2000/03/03 14:14:02  meichel

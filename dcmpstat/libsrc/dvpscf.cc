@@ -21,9 +21,9 @@
  *
  *  Purpose: DVConfiguration
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-05-30 13:57:11 $
- *  CVS/RCS Revision: $Revision: 1.22 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2000-05-31 12:58:14 $
+ *  CVS/RCS Revision: $Revision: 1.23 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -37,18 +37,8 @@
 #include "ofconsol.h"    /* for CERR, COUT */
 #include <stdio.h>
 #include <ctype.h>       /* for toupper() */
+#include "dvpsdef.h"     /* for constants */
 
-/* default AETitle for the Presentation State viewer */
-#define PSTAT_AETITLE "DCMPSTAT"
-/* default path for database folder */
-#define PSTAT_DBFOLDER "."
-/* default path for LUT folder */
-#define PSTAT_LUTFOLDER "."
-/* default path for spool folder */
-#define PSTAT_SPOOLFOLDER "."
-
-#define PSTAT_DEFAULT_ILLUMINATION 2000
-#define PSTAT_DEFAULT_REFLECTION 10
 
 /* keywords for configuration file */
 
@@ -71,6 +61,7 @@
 #define L0_DUMP                         "DUMP"
 #define L0_EMPTYIMAGEDENSITY            "EMPTYIMAGEDENSITY"
 #define L0_FILENAME                     "FILENAME"
+#define L0_FILMDESTINATION              "FILMDESTINATION"
 #define L0_FILMSIZEID                   "FILMSIZEID"
 #define L0_HOSTNAME                     "HOSTNAME"
 #define L0_IMPLICITONLY                 "IMPLICITONLY"
@@ -117,7 +108,7 @@
 #define L1_PRINT                        "PRINT"
 #define L2_COMMUNICATION                "COMMUNICATION"
 #define L2_GENERAL                      "GENERAL"
-#define L2_HIGHRESOLUTIONGRAPHICS       "HIGHRESOLUTIONGRAPHICS"
+//      L2_HIGHRESOLUTIONGRAPHICS       is defined in dvpsdef.h
 #define L2_LUT                          "LUT"
 #define L2_VOI                          "VOI"
 
@@ -144,7 +135,8 @@ static DVPSPeerType getConfigTargetType(const char *val, ostream * /* logstream 
     else if ((c>='0') && (c <= '9')) ostring += c;
     else if (c=='_')  ostring += c;
   }
-  if (ostring=="PRINTER")  result=DVPSE_print; else
+  if (ostring=="PRINTER")  result=DVPSE_printRemote; else
+  if (ostring=="LOCALPRINTER")  result=DVPSE_printLocal; else
   if (ostring=="STORAGE")  result=DVPSE_storage; else
   {
 #ifdef DEBUG
@@ -229,8 +221,15 @@ Uint32 DVConfiguration::getNumberOfTargets(DVPSPeerType peerType)
            case DVPSE_storage:
              if (currentType==DVPSE_storage) result++;
              break;
-           case DVPSE_print:
-             if (currentType==DVPSE_print) result++;
+           case DVPSE_printRemote:
+             if (currentType==DVPSE_printRemote) result++;
+             break;
+           case DVPSE_printLocal:
+             if (currentType==DVPSE_printLocal) result++;
+             break;
+           case DVPSE_printAny:
+             if (currentType==DVPSE_printRemote) result++;
+             else if (currentType==DVPSE_printLocal) result++;
              break;
            case DVPSE_any:
              result++;
@@ -267,8 +266,20 @@ const char *DVConfiguration::getTargetID(Uint32 idx, DVPSPeerType peerType)
              	if (idx==0) found=OFTrue; else idx--;
              }
              break;
-           case DVPSE_print:
-             if (currentType==DVPSE_print)
+           case DVPSE_printRemote:
+             if (currentType==DVPSE_printRemote)
+             {
+             	if (idx==0) found=OFTrue; else idx--;
+             }
+             break;
+           case DVPSE_printLocal:
+             if (currentType==DVPSE_printLocal)
+             {
+             	if (idx==0) found=OFTrue; else idx--;
+             }
+             break;
+           case DVPSE_printAny:
+             if ((currentType==DVPSE_printRemote)||(currentType==DVPSE_printLocal))
              {
              	if (idx==0) found=OFTrue; else idx--;
              }
@@ -674,6 +685,17 @@ const char *DVConfiguration::getTargetPrinterMediumType(const char *targetID, Ui
   if (value.length()) return value.c_str(); else return NULL;
 }
 
+Uint32 DVConfiguration::getTargetPrinterNumberOfFilmDestinations(const char *targetID)
+{
+  return countValues(getConfigEntry(L2_COMMUNICATION, targetID, L0_FILMDESTINATION));
+}
+
+const char *DVConfiguration::getTargetPrinterFilmDestination(const char *targetID, Uint32 idx, OFString& value)
+{
+  copyValue(getConfigEntry(L2_COMMUNICATION, targetID, L0_FILMDESTINATION), idx, value);
+  if (value.length()) return value.c_str(); else return NULL;
+}
+
 Uint32 DVConfiguration::getTargetPrinterNumberOfPrinterResolutionIDs(const char *targetID)
 {
   return countValues(getConfigEntry(L2_COMMUNICATION, targetID, L0_RESOLUTIONID));
@@ -891,7 +913,7 @@ Uint16 DVConfiguration::getDefaultPrintIllumination()
     Uint16 result = 0;
     if (1 == sscanf(c, "%hu", &result)) return result;
   }
-  return PSTAT_DEFAULT_ILLUMINATION;
+  return DEFAULT_illumination;
 }
 
 Uint16 DVConfiguration::getDefaultPrintReflection()
@@ -902,7 +924,7 @@ Uint16 DVConfiguration::getDefaultPrintReflection()
     Uint16 result = 0;
     if (1 == sscanf(c, "%hu", &result)) return result;
   }
-  return PSTAT_DEFAULT_REFLECTION;
+  return DEFAULT_reflectedAmbientLight;
 }
 
 Uint32 DVConfiguration::getNumberOfVOIPresets(const char *modality)
@@ -1078,7 +1100,10 @@ Uint16 DVConfiguration::getTargetPrinterAnnotationPosition(const char *targetID)
 /*
  *  CVS/RCS Log:
  *  $Log: dvpscf.cc,v $
- *  Revision 1.22  2000-05-30 13:57:11  joergr
+ *  Revision 1.23  2000-05-31 12:58:14  meichel
+ *  Added initial Print SCP support
+ *
+ *  Revision 1.22  2000/05/30 13:57:11  joergr
  *  Added new section to the config file describing the query/retrieve server
  *  settings.
  *

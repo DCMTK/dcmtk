@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DVPSStoredPrint
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-05-31 07:56:22 $
- *  CVS/RCS Revision: $Revision: 1.26 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2000-05-31 12:58:16 $
+ *  CVS/RCS Revision: $Revision: 1.27 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -32,57 +32,18 @@
  */
 
 #include "osconfig.h"    /* make sure OS specific configuration is included first */
-#include "ofstring.h"
 #include "dvpssp.h"
+#include "dvpsdef.h"     /* for constants and macros */
+#include "ofstring.h"
 #include "dcuid.h"
 #include "dvpsib.h"
 #include "dvpshlp.h"
 #include "dcmimage.h"
+#include "dvpscf.h"
 
 #ifdef HAVE_TIME_H
 #include <time.h>
 #endif
-
-
-/* some defaults for creating Stored Print objects */
-#define DEFAULT_imageDisplayFormat        "STANDARD\\1,1"
-#define DEFAULT_patientName               "^^^^"
-
-/* --------------- a few macros avoiding copy/paste --------------- */
-
-#define SET_UID(a_name)                                             \
-if (result==EC_Normal)                                              \
-{                                                                   \
-     if (a_name.getLength()==0) result = a_name.putString(dcmGenerateUniqueIdentifer(uid)); \
-}
-#undef ADD_TO_DATASET
-#define ADD_TO_DATASET(a_type, a_name)                              \
-if (result==EC_Normal)                                              \
-{                                                                   \
-  delem = new a_type(a_name);                                       \
-  if (delem) dset.insert(delem); else result=EC_MemoryExhausted;    \
-}
-
-#define ADD_TO_DATASET2(a_type, a_name)                             \
-if (result==EC_Normal)                                              \
-{                                                                   \
-  delem = new a_type(a_name);                                       \
-  if (delem) ditem->insert(delem); else result=EC_MemoryExhausted;  \
-}
-
-#define READ_FROM_DATASET(a_type, a_name)                           \
-stack.clear();                                                      \
-if (EC_Normal == dset.search((DcmTagKey &)a_name.getTag(), stack, ESM_fromHere, OFFalse)) \
-{                                                                   \
-  a_name = *((a_type *)(stack.top()));     \
-}
-
-#define READ_FROM_DATASET2(a_type, a_name)                           \
-stack.clear();                                                      \
-if (EC_Normal == item->search((DcmTagKey &)a_name.getTag(), stack, ESM_fromHere, OFFalse)) \
-{                                                                   \
-  a_name = *((a_type *)(stack.top()));                              \
-}
 
 /* --------------- class DVPSStoredPrint --------------- */
 
@@ -120,6 +81,7 @@ DVPSStoredPrint::DVPSStoredPrint(Uint16 illumin, Uint16 reflection, const char *
 , reflectedAmbientLight(DCM_ReflectedAmbientLight)
 , requestedResolutionID(DCM_RequestedResolutionID)
 , referencedPresentationLUTInstanceUID(DCM_ReferencedSOPInstanceUID)
+, referencedPresentationLUTAlignment(DVPSK_other)
 , imageBoxContentList()
 , annotationContentList()
 , presentationLUTList()
@@ -180,6 +142,7 @@ DVPSStoredPrint::DVPSStoredPrint(const DVPSStoredPrint& copy)
 , reflectedAmbientLight(copy.reflectedAmbientLight)
 , requestedResolutionID(copy.requestedResolutionID)
 , referencedPresentationLUTInstanceUID(copy.referencedPresentationLUTInstanceUID)
+, referencedPresentationLUTAlignment(copy.referencedPresentationLUTAlignment)
 , imageBoxContentList(copy.imageBoxContentList)
 , annotationContentList(copy.annotationContentList)
 , presentationLUTList(copy.presentationLUTList)  
@@ -241,6 +204,7 @@ void DVPSStoredPrint::clear()
   reflectedAmbientLight.clear();
   requestedResolutionID.clear();
   referencedPresentationLUTInstanceUID.clear();
+  referencedPresentationLUTAlignment = DVPSK_other;
   imageBoxContentList.clear();
   annotationContentList.clear();
   presentationLUTList.clear();  
@@ -282,7 +246,7 @@ void DVPSStoredPrint::updateCache()
     {
       currentNumCols = columns;
       currentNumRows = rows;
-      currentValuesValid = OFTrue;
+      if ((columns > 0)&&(rows > 0)) currentValuesValid = OFTrue;
     } else {
 #ifdef DEBUG
       *logstream << "Warning: cannot parse image display format '" << aString.c_str() << "'" << endl;
@@ -397,7 +361,7 @@ E_Condition DVPSStoredPrint::read(DcmItem &dset)
          // check referenced presentation LUT sequence
          // if there is any reference, it must refer to one of the presentation LUTs we are managing.
          stack.clear();
-         if (EC_Normal == dset.search(DCM_ReferencedPresentationLUTSequence, stack, ESM_fromHere, OFFalse))
+         if (EC_Normal == item->search(DCM_ReferencedPresentationLUTSequence, stack, ESM_fromHere, OFFalse))
          {
            seq=(DcmSequenceOfItems *)stack.top();
            if (seq->card() ==1)
@@ -607,7 +571,7 @@ E_Condition DVPSStoredPrint::createDefaultValues()
 
   if ((result==EC_Normal)&&(patientName.getLength()==0))
   {
-  	result = patientName.putString(DEFAULT_patientName);
+        result = patientName.putString(DEFAULT_patientName);
   }
 
   if ((result==EC_Normal)&&(sOPInstanceUID.getLength()==0))
@@ -632,15 +596,20 @@ E_Condition DVPSStoredPrint::createDefaultValues()
   return result;
 }
 
-E_Condition DVPSStoredPrint::write(DcmItem &dset, OFBool writeRequestedImageSize, OFBool limitImages)
+E_Condition DVPSStoredPrint::write(
+  DcmItem &dset, 
+  OFBool writeRequestedImageSize, 
+  OFBool limitImages, 
+  OFBool updateDecimateCrop, 
+  OFBool ignoreEmptyImages)
 {
   DcmElement *delem=NULL;
   DcmSequenceOfItems *dseq=NULL;
   DcmItem *ditem=NULL;
   
   E_Condition result = createDefaultValues();
-  if (EC_Normal==result) result = imageBoxContentList.setRequestedDecimateCropBehaviour(decimateCropBehaviour); // set in all image boxes
-  if (EC_Normal==result) result = imageBoxContentList.createDefaultValues(limitImages); // renumber if limitImages is true
+  if ((EC_Normal==result)&& updateDecimateCrop) result = imageBoxContentList.setRequestedDecimateCropBehaviour(decimateCropBehaviour); // set in all image boxes
+  if (EC_Normal==result) result = imageBoxContentList.createDefaultValues(limitImages, ignoreEmptyImages); // renumber if limitImages is true
    
   ADD_TO_DATASET(DcmPersonName, patientName)
   ADD_TO_DATASET(DcmLongString, patientID)
@@ -735,7 +704,7 @@ E_Condition DVPSStoredPrint::write(DcmItem &dset, OFBool writeRequestedImageSize
   if (EC_Normal == result) result = presentationLUTList.write(dset);
  
   // write imageBoxContentList
-  if (EC_Normal == result) result = imageBoxContentList.write(dset, writeRequestedImageSize, (size_t)writeImageBoxes);
+  if (EC_Normal == result) result = imageBoxContentList.write(dset, writeRequestedImageSize, (size_t)writeImageBoxes, ignoreEmptyImages);
 
   // write annotationContentList
   if (EC_Normal == result) result = annotationContentList.write(dset);
@@ -984,9 +953,9 @@ E_Condition DVPSStoredPrint::setRequestedDecimateCropBehaviour(DVPSDecimateCropB
   decimateCropBehaviour = value;
   return EC_Normal;
 }
-  
-  
-E_Condition DVPSStoredPrint::newPrinter(const char *name)
+
+
+E_Condition DVPSStoredPrint::newPrinter(const char *name, const char *destinationAE)
 {
   filmSizeID.clear();
   magnificationType.clear();
@@ -1000,6 +969,7 @@ E_Condition DVPSStoredPrint::newPrinter(const char *name)
   maxDensity.clear();
   
   setPrinterName(name);
+  setDestination(destinationAE);
 
   E_Condition result = setRequestedDecimateCropBehaviour(DVPSI_default);
   if (EC_Normal == result) result = imageBoxContentList.setAllImagesToDefault();
@@ -1191,7 +1161,7 @@ E_Condition DVPSStoredPrint::deleteSpooledImages()
   updateCache();
   if (currentValuesValid) 
   {
-  	deleteImageBoxes = currentNumCols * currentNumRows;
+        deleteImageBoxes = currentNumCols * currentNumRows;
     if (deleteImageBoxes > imageBoxContentList.size()) deleteImageBoxes = imageBoxContentList.size();
     result = imageBoxContentList.deleteMultipleImages((size_t)deleteImageBoxes);
   }
@@ -1264,9 +1234,9 @@ E_Condition DVPSStoredPrint::printSCUpreparePresentationLUT(
       }
     } else transmitImagesIn12Bit = printerSupports12Bit;
   } else {
-  	transmitImagesIn12Bit = printerSupports12Bit;
-  	*logstream << "spooler: warning: printer does not support Presentation LUT SOP Class," << endl
-  	     << "  presentation LUT related print job settings will be ignored." << endl;
+        transmitImagesIn12Bit = printerSupports12Bit;
+        *logstream << "spooler: warning: printer does not support Presentation LUT SOP Class," << endl
+             << "  presentation LUT related print job settings will be ignored." << endl;
   }
 
   E_Condition result = EC_Normal;  
@@ -1288,7 +1258,7 @@ E_Condition DVPSStoredPrint::printSCUpreparePresentationLUT(
       CONDITION cond = printHandler.createRQ(UID_PresentationLUTSOPClass, presentationLUTInstanceUID, &dset, status, attributeListOut);
       if ((SUCCESS(cond))&&((status==0)||((status & 0xf000)==0xb000)))
       {
-      	/* nothing */
+        /* nothing */
       } else {
         presentationLUTInstanceUID.clear();
         result = EC_IllegalCall;
@@ -1426,7 +1396,7 @@ E_Condition DVPSStoredPrint::printSCUcreateBasicFilmBox(DVPSPrintMessageHandler&
   if (requestedResolutionID.getLength() > 0)     { ADD_TO_DATASET(DcmCodeString, requestedResolutionID) }
   if ((printHandler.printerSupportsAnnotationBox())&&(annotationDisplayFormatID.getLength() > 0)) 
   { 
-  	ADD_TO_DATASET(DcmCodeString, annotationDisplayFormatID)	
+        ADD_TO_DATASET(DcmCodeString, annotationDisplayFormatID)        
   }
   
   // add Referenced Film Session SQ
@@ -1468,8 +1438,8 @@ E_Condition DVPSStoredPrint::printSCUcreateBasicFilmBox(DVPSPrintMessageHandler&
 
   if (result==EC_Normal)
   {
-  	size_t numItems = 0;
-  	size_t i;
+        size_t numItems = 0;
+        size_t i;
     CONDITION cond = printHandler.createRQ(UID_BasicFilmBoxSOPClass, filmBoxInstanceUID, &dset, status, attributeListOut);
     if ((SUCCESS(cond))&&((status==0)||((status & 0xf000)==0xb000))&& attributeListOut)
     {
@@ -1490,7 +1460,7 @@ E_Condition DVPSStoredPrint::printSCUcreateBasicFilmBox(DVPSPrintMessageHandler&
            if ((EC_Normal==result) && c && (grayscaleIB == c))
            {
              result = refsopinstanceuid.getString(c);
-           	 if (EC_Normal==result) result = imageBoxContentList.setImageSOPInstanceUID(i, c);
+                 if (EC_Normal==result) result = imageBoxContentList.setImageSOPInstanceUID(i, c);
            } else result = EC_IllegalCall; /* wrong SOP class or unable to read UID */     
         }
       } else result=EC_TagNotFound;
@@ -1513,7 +1483,7 @@ E_Condition DVPSStoredPrint::printSCUcreateBasicFilmBox(DVPSPrintMessageHandler&
            if ((EC_Normal==result) && c && (annotationB == c))
            {
              result = refsopinstanceuid.getString(c);
-           	 if (EC_Normal==result) result = annotationContentList.setAnnotationSOPInstanceUID(i, c);
+                 if (EC_Normal==result) result = annotationContentList.setAnnotationSOPInstanceUID(i, c);
            } else result = EC_IllegalCall; /* wrong SOP class or unable to read UID */     
         }
       }
@@ -1550,7 +1520,7 @@ E_Condition DVPSStoredPrint::printSCUdelete(DVPSPrintMessageHandler& printHandle
   // delete basic film box
   if (filmBoxInstanceUID.size() > 0)
   {
-  	cond = printHandler.deleteRQ(UID_BasicFilmBoxSOPClass, filmBoxInstanceUID.c_str(), status);
+        cond = printHandler.deleteRQ(UID_BasicFilmBoxSOPClass, filmBoxInstanceUID.c_str(), status);
     if ((! SUCCESS(cond))||((status!=0)&&((status & 0xf000)!=0xb000))) result = EC_IllegalCall;
     filmBoxInstanceUID.clear();
   }
@@ -1558,7 +1528,7 @@ E_Condition DVPSStoredPrint::printSCUdelete(DVPSPrintMessageHandler& printHandle
   // delete basic film session
   if (filmSessionInstanceUID.size() > 0)
   {
-  	cond = printHandler.deleteRQ(UID_BasicFilmSessionSOPClass, filmSessionInstanceUID.c_str(), status);
+        cond = printHandler.deleteRQ(UID_BasicFilmSessionSOPClass, filmSessionInstanceUID.c_str(), status);
     if ((! SUCCESS(cond))||((status!=0)&&((status & 0xf000)!=0xb000))) result = EC_IllegalCall;
     filmSessionInstanceUID.clear();
   }
@@ -1595,7 +1565,7 @@ E_Condition DVPSStoredPrint::printSCUsetBasicImageBox(
   /* any presentation LUT to render on SCU side? */
   if (! renderPresentationLUTinSCP)
   {
-  	/* look for referenced Presentation LUT in image box */
+        /* look for referenced Presentation LUT in image box */
     const char *imageplutuid = imageBoxContentList.getReferencedPresentationLUTInstanceUID(idx);
     char *filmplutuid = NULL;
     if (EC_Normal != referencedPresentationLUTInstanceUID.getString(filmplutuid)) filmplutuid=NULL;
@@ -1649,7 +1619,7 @@ E_Condition DVPSStoredPrint::printSCUsetBasicImageBox(
           if (EC_Normal==result)
           {
              pxDataVoid = image.getOutputData(12);
-          	 pxData = new DcmPolymorphOBOW(DCM_PixelData);
+                 pxData = new DcmPolymorphOBOW(DCM_PixelData);
              if (pxData && pxDataVoid)
              {
                result = pxData->putUint16Array((Uint16 *)pxDataVoid, (width*height));
@@ -1663,7 +1633,7 @@ E_Condition DVPSStoredPrint::printSCUsetBasicImageBox(
           if (EC_Normal==result)
           {
              pxDataVoid = image.getOutputData(8);
-          	 pxData = new DcmPolymorphOBOW(DCM_PixelData);
+                 pxData = new DcmPolymorphOBOW(DCM_PixelData);
              if (pxData && pxDataVoid)
              {
                result = pxData->putUint8Array((Uint8 *)pxDataVoid, (width*height));
@@ -1687,7 +1657,7 @@ E_Condition DVPSStoredPrint::printSCUsetBasicImageBox(
         delete ditem;
         result = EC_MemoryExhausted;
       }
-  	} else result = EC_MemoryExhausted;
+        } else result = EC_MemoryExhausted;
   }
   
   if (EC_Normal == result)
@@ -1736,9 +1706,9 @@ void DVPSStoredPrint::setLog(ostream *o)
 {
   if (o)
   {
-  	logstream = o;
-  	imageBoxContentList.setLog(o);
-  	presentationLUTList.setLog(o);
+        logstream = o;
+        imageBoxContentList.setLog(o);
+        presentationLUTList.setLog(o);
   }
 }
 
@@ -1779,11 +1749,11 @@ E_Condition DVPSStoredPrint::setMaxDensity(const char *value)
   E_Condition result = EC_Normal;
   if (value && (strlen(value)>0))
   {
-  	Uint16 density = 0;
-  	if (1 == (sscanf(value, "%hu", &density)))
-  	{
-  	  result = maxDensity.putUint16(density, 0);
-  	} else result = EC_IllegalCall;
+        Uint16 density = 0;
+        if (1 == (sscanf(value, "%hu", &density)))
+        {
+          result = maxDensity.putUint16(density, 0);
+        } else result = EC_IllegalCall;
   } else maxDensity.clear();
   return result;
 }
@@ -1793,11 +1763,11 @@ E_Condition DVPSStoredPrint::setMinDensity(const char *value)
   E_Condition result = EC_Normal;
   if (value && (strlen(value)>0))
   {
-  	Uint16 density = 0;
-  	if (1 == (sscanf(value, "%hu", &density)))
-  	{
-  	  result = minDensity.putUint16(density, 0);
-  	} else result = EC_IllegalCall;
+        Uint16 density = 0;
+        if (1 == (sscanf(value, "%hu", &density)))
+        {
+          result = minDensity.putUint16(density, 0);
+        } else result = EC_IllegalCall;
   } else minDensity.clear();
   return result;
 }
@@ -1826,9 +1796,1265 @@ void DVPSStoredPrint::deleteAnnotations()
   return;
 }
 
+
+
+OFBool DVPSStoredPrint::printSCPCreate(
+  DVConfiguration& cfg, 
+  const char *cfgname, 
+  DcmDataset *rqDataset, 
+  T_DIMSE_Message& rsp, 
+  DcmDataset *& rspDataset, 
+  OFBool presentationLUTnegotiated,
+  DVPSPresentationLUT_PList& globalPresentationLUTList,
+  const char *filmSessionUID,
+  DcmUniqueIdentifier& study, 
+  DcmUniqueIdentifier& psSeries, 
+  DcmUniqueIdentifier& imgSeries)
+{
+  studyInstanceUID = study;
+  seriesInstanceUID = psSeries;
+  imageSeriesInstanceUID = imgSeries;
+
+  OFBool result = OFTrue;
+  DcmStack stack;
+  filmBoxInstanceUID = rsp.msg.NCreateRSP.AffectedSOPInstanceUID;
+
+  // filmOrientation
+  if (result)
+  {
+    READ_FROM_PDATASET(DcmCodeString, filmOrientation)
+    if (filmOrientation.getLength() == 0) filmOrientation.putString(DEFAULT_filmOrientation);
+    else
+    {
+      OFString aString;
+      filmOrientation.getOFString(aString, 0, OFTrue);
+      if ((aString != "PORTRAIT")&&(aString != "LANDSCAPE"))
+      {
+        *logstream << "cannot create Basic Film Box: illegal film orientation: '" << aString.c_str() << "'" << endl;
+        rsp.msg.NCreateRSP.DimseStatus = 0x0106; // invalid attribute value
+        result = OFFalse;
+      }
+    }
+  }
+    
+  // imageDisplayFormat
+  if (result)
+  {
+    READ_FROM_PDATASET(DcmShortText, imageDisplayFormat)
+    if (imageDisplayFormat.getLength() == 0) 
+    {
+        *logstream << "cannot create Basic Film Box: image display format missing or empty" << endl;
+        rsp.msg.NCreateRSP.DimseStatus = 0x0120; // missing attribute 
+        result = OFFalse;
+    } else {
+      currentValuesValid = OFFalse;
+      updateCache(); // evaluates image display format and computes number of columns and rows
+      if (currentValuesValid)
+      {
+        // now we check whether this is a supported layout as per the config file
+        Uint32 numPortraitDisplayFormats = cfg.getTargetPrinterNumberOfPortraitDisplayFormats(cfgname);
+        if (numPortraitDisplayFormats > 0)
+        {
+          OFBool found = OFFalse;
+          DVPSFilmOrientation orientation = getFilmOrientation();
+          Uint32 col=0;
+          Uint32 row=0;
+          for (Uint32 i=0; i<numPortraitDisplayFormats; i++)
+          {
+             col=cfg.getTargetPrinterPortraitDisplayFormatColumns(cfgname,i);
+             row=cfg.getTargetPrinterPortraitDisplayFormatRows(cfgname,i);
+             if (orientation == DVPSF_landscape)
+             {
+               if ((col==currentNumRows)&&(row==currentNumCols))
+               {
+                 found = OFTrue;
+                 break;
+               }        
+             } else {
+               if ((col==currentNumCols)&&(row==currentNumRows))
+               {
+                 found = OFTrue;
+                 break;
+               }        
+             }        
+          }
+          if (! found)
+          {
+            OFString aString;
+            imageDisplayFormat.getOFStringArray(aString);
+            *logstream << "cannot create Basic Film Box: unsupported image display format: '" << aString.c_str() << "'" << endl;
+            rsp.msg.NCreateRSP.DimseStatus = 0x0106; // invalid attribute value
+            result = OFFalse;
+          }
+        }
+      } else {
+        OFString aString;
+        imageDisplayFormat.getOFStringArray(aString);
+        *logstream << "cannot create Basic Film Box: illegal image display format: '" << aString.c_str() << "'" << endl;
+        rsp.msg.NCreateRSP.DimseStatus = 0x0106; // invalid attribute value
+        result = OFFalse;
+      }
+    }
+  }
+
+  // filmSizeID
+  if (result)
+  {
+    Uint32 numFilmSizes = cfg.getTargetPrinterNumberOfFilmSizeIDs(cfgname);     
+    READ_FROM_PDATASET(DcmCodeString, filmSizeID)
+    if (filmSizeID.getLength() == 0) 
+    {
+      if (numFilmSizes > 0)
+      {
+        OFString aString;
+        cfg.getTargetPrinterFilmSizeID(cfgname, 0, aString);            
+        filmSizeID.putString(aString.c_str());
+      } else {
+        filmSizeID.putString(DEFAULT_filmSizeID);
+      }
+    } else {
+      // check whether we can accept the proposed medium type
+      OFString theSizeID;
+      OFString aString;
+      OFBool found = OFFalse;
+      filmSizeID.getOFString(theSizeID, 0, OFTrue);
+      for (Uint32 i=0; i<numFilmSizes; i++)
+      {
+        cfg.getTargetPrinterFilmSizeID(cfgname, i, aString);
+        if (theSizeID == aString) 
+        {
+          found = OFTrue;
+          break;
+        }       
+      }
+      if (! found)
+      {
+        *logstream << "cannot create Basic Film Box: illegal film size ID: '" << theSizeID.c_str() << "'" << endl;
+        rsp.msg.NCreateRSP.DimseStatus = 0x0106; // invalid attribute value
+        result = OFFalse;
+      }
+    }
+  }
+
+  // magnificationType
+  if (result)
+  {
+    Uint32 numMagnifications = cfg.getTargetPrinterNumberOfMagnificationTypes(cfgname);         
+    READ_FROM_PDATASET(DcmCodeString, magnificationType)
+    if (magnificationType.getLength() == 0) 
+    {
+      if (numMagnifications > 0)
+      {
+        OFString aString;
+        cfg.getTargetPrinterMagnificationType(cfgname, 0, aString);             
+        magnificationType.putString(aString.c_str());
+      } else {
+        magnificationType.putString(DEFAULT_magnificationType);
+      }
+    } else {
+      // check whether we can accept the proposed medium type
+      OFString theMagnification;
+      OFString aString;
+      OFBool found = OFFalse;
+      magnificationType.getOFString(theMagnification, 0, OFTrue);
+      for (Uint32 i=0; i<numMagnifications; i++)
+      {
+        cfg.getTargetPrinterMagnificationType(cfgname, i, aString);
+        if (theMagnification == aString) 
+        {
+          found = OFTrue;
+          break;
+        }       
+      }
+      if (! found)
+      {
+        *logstream << "cannot create Basic Film Box: illegal magnification type: '" << theMagnification.c_str() << "'" << endl;
+        rsp.msg.NCreateRSP.DimseStatus = 0x0106; // invalid attribute value
+        result = OFFalse;
+      }
+    }
+  }
+
+  // smoothingType
+  if (result)
+  {
+    Uint32 numSmoothings = cfg.getTargetPrinterNumberOfSmoothingTypes(cfgname);         
+    READ_FROM_PDATASET(DcmCodeString, smoothingType)
+    if (smoothingType.getLength() == 0) 
+    {
+      if (numSmoothings > 0)
+      {
+        OFString aString;
+        cfg.getTargetPrinterSmoothingType(cfgname, 0, aString);         
+        smoothingType.putString(aString.c_str());
+      }
+    } else {
+      // check whether we can accept the proposed smoothing type
+      OFString theSmoothing;
+      OFString aString;
+      OFBool found = OFFalse;
+      smoothingType.getOFString(theSmoothing, 0, OFTrue);
+      for (Uint32 i=0; i<numSmoothings; i++)
+      {
+        cfg.getTargetPrinterSmoothingType(cfgname, i, aString);
+        if (theSmoothing == aString) 
+        {
+          found = OFTrue;
+          break;
+        }       
+      }
+      if (numSmoothings == 0)
+      {
+        *logstream << "cannot create Basic Film Box: smoothing type requested but not supported." << endl;
+        rsp.msg.NCreateRSP.DimseStatus = 0x0107; //attribute list error
+        result = OFFalse;
+      } 
+      else if (! found)
+      {
+        *logstream << "cannot create Basic Film Box: illegal smoothing type: '" << theSmoothing.c_str() << "'" << endl;
+        rsp.msg.NCreateRSP.DimseStatus = 0x0106; // invalid attribute value
+        result = OFFalse;
+      }
+    }
+  }
+
+
+  // borderDensity
+  if (result)
+  {
+    Uint32 numBorderDensities = cfg.getTargetPrinterNumberOfBorderDensities(cfgname);   
+    READ_FROM_PDATASET(DcmCodeString, borderDensity)
+    if (borderDensity.getLength() == 0) 
+    {
+      if (numBorderDensities > 0)
+      {
+        OFString aString;
+        cfg.getTargetPrinterBorderDensity(cfgname, 0, aString);         
+        borderDensity.putString(aString.c_str());
+      }
+    } else {
+      // check whether we can accept the proposed border density
+      if (numBorderDensities == 0) // we don't support border density
+      {
+        *logstream << "cannot create Basic Film Box: border density requested but not supported." << endl;
+        rsp.msg.NCreateRSP.DimseStatus = 0x0107; //attribute list error        
+        result = OFFalse;
+      } else {
+        OFString theBorderDensity;
+        OFString aString;
+        OFBool found = OFFalse;
+        OFBool supportsNumericDensity = OFFalse;
+        unsigned long l;
+        borderDensity.getOFString(theBorderDensity, 0, OFTrue);
+        for (Uint32 i=0; i<numBorderDensities; i++)
+        {
+          cfg.getTargetPrinterBorderDensity(cfgname, i, aString);
+          if (theBorderDensity == aString) 
+          {
+            found = OFTrue;
+            break;
+          } else {
+            if (1 == sscanf(aString.c_str(), "%ld", &l)) supportsNumericDensity = OFTrue;
+          }
+        }
+        if ((! found) && supportsNumericDensity)
+        {
+          // the density was not found in the list; check whether it is numerical
+          if (1 == sscanf(theBorderDensity.c_str(), "%ld", &l)) found = OFTrue;
+        }
+          
+        if (! found)
+        {
+          *logstream << "cannot create Basic Film Box: illegal border density: '" << theBorderDensity.c_str() << "'" << endl;
+          rsp.msg.NCreateRSP.DimseStatus = 0x0106; // invalid attribute value
+          result = OFFalse;
+        }        
+      }
+    }
+  }
+
+  // emptyImageDensity
+  if (result)
+  {
+    Uint32 numEmptyImageDensities = cfg.getTargetPrinterNumberOfEmptyImageDensities(cfgname);   
+    READ_FROM_PDATASET(DcmCodeString, emptyImageDensity)
+    if (emptyImageDensity.getLength() == 0) 
+    {
+      if (numEmptyImageDensities > 0)
+      {
+        OFString aString;
+        cfg.getTargetPrinterEmptyImageDensity(cfgname, 0, aString);         
+        emptyImageDensity.putString(aString.c_str());
+      }
+    } else {
+      // check whether we can accept the proposed empty image density
+      if (numEmptyImageDensities == 0) // we don't support empty image density
+      {
+        *logstream << "cannot create Basic Film Box: empty image density requested but not supported." << endl;
+        rsp.msg.NCreateRSP.DimseStatus = 0x0107; //attribute list error        
+        result = OFFalse;
+      } else {
+        OFString theEIDensity;
+        OFString aString;
+        OFBool found = OFFalse;
+        OFBool supportsNumericDensity = OFFalse;
+        unsigned long l;
+        emptyImageDensity.getOFString(theEIDensity, 0, OFTrue);
+        for (Uint32 i=0; i<numEmptyImageDensities; i++)
+        {
+          cfg.getTargetPrinterEmptyImageDensity(cfgname, i, aString);
+          if (theEIDensity == aString) 
+          {
+            found = OFTrue;
+            break;
+          } else {
+            if (1 == sscanf(aString.c_str(), "%ld", &l)) supportsNumericDensity = OFTrue;
+          }
+        }
+        if ((! found) && supportsNumericDensity)
+        {
+          // the density was not found in the list; check whether it is numerical
+          if (1 == sscanf(theEIDensity.c_str(), "%ld", &l)) found = OFTrue;
+        }
+          
+        if (! found)
+        {
+          *logstream << "cannot create Basic Film Box: illegal empty image density: '" << theEIDensity.c_str() << "'" << endl;
+          rsp.msg.NCreateRSP.DimseStatus = 0x0106; // invalid attribute value
+          result = OFFalse;
+        }        
+      }
+    }
+  }
+
+  // maxDensity
+  if (result)
+  {
+    Uint32 numMaxDensities = cfg.getTargetPrinterNumberOfMaxDensities(cfgname);   
+    READ_FROM_PDATASET(DcmUnsignedShort, maxDensity)
+    if (maxDensity.getLength() == 0) 
+    {
+      if (numMaxDensities > 0)
+      {
+        OFString aString;
+        cfg.getTargetPrinterMaxDensity(cfgname, 0, aString);         
+        if (EC_Normal != setMaxDensity(aString.c_str())) maxDensity.putUint16(DEFAULT_maxDensity, 0);
+      }
+    } // we don't check a max density set by the user (for now)
+  }
+
+  // minDensity
+  if (result)
+  {
+    Uint32 numMinDensities = cfg.getTargetPrinterNumberOfMinDensities(cfgname);   
+    READ_FROM_PDATASET(DcmUnsignedShort, minDensity)
+    if (minDensity.getLength() == 0) 
+    {
+      if (numMinDensities > 0)
+      {
+        OFString aString;
+        cfg.getTargetPrinterMinDensity(cfgname, 0, aString);         
+        if (EC_Normal != setMinDensity(aString.c_str())) minDensity.putUint16(DEFAULT_minDensity, 0);
+      }
+    } else {
+      if (numMinDensities == 0) // we don't support min density
+      {
+        *logstream << "cannot create Basic Film Box: min density requested but not supported." << endl;
+        rsp.msg.NCreateRSP.DimseStatus = 0x0107; //attribute list error        
+        result = OFFalse;
+      }
+      // we don't check a min density set by the user (for now)
+    }
+  }
+
+  // trim
+  if (result)
+  {
+    READ_FROM_PDATASET(DcmCodeString, trim)
+    if (trim.getLength() == 0) 
+    {
+      if (cfg.getTargetPrinterSupportsTrim(cfgname)) trim.putString(DEFAULT_trim);
+    }
+    else
+    {
+      if (cfg.getTargetPrinterSupportsTrim(cfgname))
+      {
+        OFString aString;
+        trim.getOFString(aString, 0, OFTrue);
+        if ((aString != "YES")&&(aString != "NO"))
+        {
+          *logstream << "cannot create Basic Film Box: illegal trim: '" << aString.c_str() << "'" << endl;
+          rsp.msg.NCreateRSP.DimseStatus = 0x0106; // invalid attribute value
+          result = OFFalse;
+        }
+      } else {
+        *logstream << "cannot create Basic Film Box: trim requested but not supported." << endl;
+        rsp.msg.NCreateRSP.DimseStatus = 0x0107; //attribute list error        
+        result = OFFalse;
+      }
+    }
+  }
+
+  // configurationInformation
+  if (result)
+  {
+    READ_FROM_PDATASET(DcmShortText, configurationInformation)
+    if (configurationInformation.getLength() > 0) 
+    {
+      // check whether we can accept the proposed configuration information
+      Uint32 numConfigurationInformation = cfg.getTargetPrinterNumberOfConfigurationSettings(cfgname);   
+      if (numConfigurationInformation == 0) // we don't support configuration information
+      {
+        *logstream << "cannot create Basic Film Box: configuration information requested but not supported." << endl;
+        rsp.msg.NCreateRSP.DimseStatus = 0x0107; //attribute list error        
+        result = OFFalse;
+      } else {
+        OFString theConfiguration;
+        OFBool found = OFFalse;
+        configurationInformation.getOFString(theConfiguration, 0, OFTrue);
+        for (Uint32 i=0; i<numConfigurationInformation; i++)
+        {
+          if (theConfiguration == cfg.getTargetPrinterConfigurationSetting(cfgname, i)) 
+          {
+            found = OFTrue;
+            break;
+          }
+        }          
+        if (! found)
+        {
+          *logstream << "cannot create Basic Film Box: illegal configuration information: '" << theConfiguration.c_str() << "'" << endl;
+          rsp.msg.NCreateRSP.DimseStatus = 0x0106; // invalid attribute value
+          result = OFFalse;
+        }        
+      }
+    }
+  }
+
+  // requestedResolutionID
+  if (result)
+  {
+    Uint32 numResolutionIDs = cfg.getTargetPrinterNumberOfPrinterResolutionIDs(cfgname);   
+    READ_FROM_PDATASET(DcmCodeString, requestedResolutionID)
+    if (requestedResolutionID.getLength() == 0) 
+    {
+      if (numResolutionIDs > 0)
+      {
+        OFString aString;
+        cfg.getTargetPrinterResolutionID(cfgname, 0, aString);         
+        requestedResolutionID.putString(aString.c_str());
+      }
+    } else {
+      // check whether we can accept the requested resolution ID
+      if (numResolutionIDs == 0) // we don't support requested resolution ID
+      {
+        *logstream << "cannot create Basic Film Box: requested resolution ID present but not supported." << endl;
+        rsp.msg.NCreateRSP.DimseStatus = 0x0107; //attribute list error        
+        result = OFFalse;
+      } else {
+        OFString theResolutionID;
+        OFString aString;
+        OFBool found = OFFalse;
+        requestedResolutionID.getOFString(theResolutionID, 0, OFTrue);
+        for (Uint32 i=0; i<numResolutionIDs; i++)
+        {
+          cfg.getTargetPrinterResolutionID(cfgname, i, aString);
+          if (theResolutionID == aString) 
+          {
+            found = OFTrue;
+            break;
+          }
+        }          
+        if (! found)
+        {
+          *logstream << "cannot create Basic Film Box: illegal requested resolution ID: '" << theResolutionID.c_str() << "'" << endl;
+          rsp.msg.NCreateRSP.DimseStatus = 0x0106; // invalid attribute value
+          result = OFFalse;
+        }        
+      }
+    }
+  }
+
+  if (presentationLUTnegotiated)
+  {
+
+    // illumination
+    if (result)
+    {
+      READ_FROM_PDATASET(DcmUnsignedShort, illumination)
+      if (illumination.getLength() == 0) illumination.putUint16(DEFAULT_illumination, 0);
+      // we don't check illumination set by the user (for now)
+    }
+
+    // reflectedAmbientLight
+    if (result)
+    {
+      READ_FROM_PDATASET(DcmUnsignedShort, reflectedAmbientLight)
+      if (reflectedAmbientLight.getLength() == 0) illumination.putUint16(DEFAULT_reflectedAmbientLight, 0);
+      // we don't check reflected ambient light set by the user (for now)
+    }
+
+    // referenced presentation LUT sequence
+    if (result)
+    {
+      stack.clear();
+
+      if (rqDataset && (EC_Normal == rqDataset->search(DCM_ReferencedPresentationLUTSequence, stack, ESM_fromHere, OFFalse)))
+      {
+        DcmSequenceOfItems *seq=(DcmSequenceOfItems *)stack.top();
+        if (seq->card() ==1)
+        {
+           OFString aString;
+           DcmItem *item = seq->getItem(0);
+           stack.clear();
+           READ_FROM_DATASET2(DcmUniqueIdentifier, referencedPresentationLUTInstanceUID)
+           if (referencedPresentationLUTInstanceUID.getLength() > 0)
+           {
+             referencedPresentationLUTInstanceUID.getOFString(aString,0);
+             DVPSPresentationLUT *currentPLUT = globalPresentationLUTList.findPresentationLUT(aString.c_str());
+             if (NULL == currentPLUT)
+             {
+               *logstream << "cannot create Basic Film Box: presentation LUT reference cannot be resolved" << endl;
+               rsp.msg.NCreateRSP.DimseStatus = 0x0106; // invalid attribute value
+               result = OFFalse;
+             } else {
+               // check referenced SOP class UID
+               DcmUniqueIdentifier refClassUID(DCM_ReferencedSOPClassUID);
+               stack.clear();
+               READ_FROM_DATASET2(DcmUniqueIdentifier, refClassUID)
+               if (refClassUID.getLength() > 0)
+               {     
+                  aString.clear();
+                  refClassUID.getOFString(aString,0, OFTrue);
+                  if (aString != UID_PresentationLUTSOPClass)
+                  {
+                    *logstream << "cannot create Basic Film Box: referenced SOP class UID in referenced presentation LUT sequence incorrect:" << endl;
+                    (stack.top())->print(*logstream, OFFalse);
+                    rsp.msg.NCreateRSP.DimseStatus = 0x0106; // invalid attribute value
+                    result = OFFalse;
+                  } else {
+                    referencedPresentationLUTAlignment = currentPLUT->getAlignment();
+                  }
+               } else {
+                  *logstream << "cannot create Basic Film Box: no referenced SOP class UID in referenced presentation LUT sequence" << endl;
+                  rsp.msg.NCreateRSP.DimseStatus = 0x0106; // invalid attribute value
+                  result = OFFalse;
+               }
+             }
+           } else {
+             *logstream << "cannot create Basic Film Box: no referenced SOP instance UID in referenced presentation LUT sequence" << endl;
+             rsp.msg.NCreateRSP.DimseStatus = 0x0106; // invalid attribute value
+             result = OFFalse;
+           }
+        } else {
+          *logstream << "cannot create Basic Film Box: referenced presentation LUT sequence number of items != 1" << endl;
+          rsp.msg.NCreateRSP.DimseStatus = 0x0106; // invalid attribute value
+          result = OFFalse;
+        }
+      }
+    }    
+    
+  } /* if presentationLUTnegotiated */
+
+  DcmSequenceOfItems *refFilmSessionSequence = NULL;
+  
+  // referenced film session sequence
+  if (result)
+  {
+    stack.clear();
+
+    if (rqDataset && (EC_Normal == rqDataset->search(DCM_ReferencedFilmSessionSequence, stack, ESM_fromHere, OFFalse)))
+    {
+      DcmUniqueIdentifier classUID(DCM_ReferencedSOPClassUID);
+      DcmUniqueIdentifier instanceUID(DCM_ReferencedSOPInstanceUID);
+      refFilmSessionSequence =(DcmSequenceOfItems *)stack.top();
+      if (refFilmSessionSequence->card() ==1)
+      {
+         OFString aString;
+         DcmItem *item = refFilmSessionSequence->getItem(0);
+         stack.clear();
+         READ_FROM_DATASET2(DcmUniqueIdentifier, instanceUID)
+         if (instanceUID.getLength() > 0)
+         {
+           instanceUID.getOFString(aString,0);
+           if (aString != filmSessionUID)
+           {
+             *logstream << "cannot create Basic Film Box: referenced film session instance UID incorrect" << endl;
+             rsp.msg.NCreateRSP.DimseStatus = 0x0106; // invalid attribute value
+             result = OFFalse;
+           } else {
+             // check referenced SOP class UID
+             stack.clear();
+             READ_FROM_DATASET2(DcmUniqueIdentifier, classUID)
+             if (classUID.getLength() > 0)
+             {     
+                aString.clear();
+                classUID.getOFString(aString,0, OFTrue);
+                if (aString != UID_BasicFilmSessionSOPClass)
+                {
+                  *logstream << "cannot create Basic Film Box: referenced SOP class UID in referenced film session sequence incorrect:" << endl;
+                  (stack.top())->print(*logstream, OFFalse);
+                  rsp.msg.NCreateRSP.DimseStatus = 0x0106; // invalid attribute value
+                  result = OFFalse;
+                }
+             } else {
+                *logstream << "cannot create Basic Film Box: no referenced SOP class UID in referenced film session sequence" << endl;
+                rsp.msg.NCreateRSP.DimseStatus = 0x0106; // invalid attribute value
+                result = OFFalse;
+             }
+           }
+         } else {
+           *logstream << "cannot create Basic Film Box: no referenced SOP instance UID in referenced film session sequence" << endl;
+           rsp.msg.NCreateRSP.DimseStatus = 0x0106; // invalid attribute value
+           result = OFFalse;
+         }
+      } else {
+        *logstream << "cannot create Basic Film Box: referenced film session sequence number of items != 1" << endl;
+        rsp.msg.NCreateRSP.DimseStatus = 0x0106; // invalid attribute value
+        result = OFFalse;
+      }
+    } else {
+      *logstream << "cannot create Basic Film Box: referenced film session sequence absent" << endl;
+      rsp.msg.NCreateRSP.DimseStatus = 0x0120; // missing attribute 
+      result = OFFalse;
+    }
+  }    
+
+  // browse through rqDataset and check for unsupported attributes
+  if (result && rqDataset)
+  {
+    stack.clear();
+    while (EC_Normal == rqDataset->nextObject(stack, OFFalse))
+    {
+      const DcmTagKey& currentTag = (stack.top())->getTag();
+      if (currentTag == DCM_ImageDisplayFormat) /* OK */ ;
+      else if (currentTag == DCM_FilmOrientation) /* OK */ ;
+      else if (currentTag == DCM_FilmSizeID) /* OK */ ;
+      else if (currentTag == DCM_MagnificationType) /* OK */ ;
+      else if (currentTag == DCM_SmoothingType) /* OK */ ;
+      else if (currentTag == DCM_BorderDensity) /* OK */ ;
+      else if (currentTag == DCM_EmptyImageDensity) /* OK */ ;
+      else if (currentTag == DCM_MinDensity) /* OK */ ;
+      else if (currentTag == DCM_MaxDensity) /* OK */ ;
+      else if (currentTag == DCM_Trim) /* OK */ ;
+      else if (currentTag == DCM_ConfigurationInformation) /* OK */ ;
+      else if (currentTag == DCM_RequestedResolutionID) /* OK */ ;
+      else if (currentTag == DCM_ReferencedFilmSessionSequence) /* OK */ ;
+      else if (currentTag == DCM_Illumination)
+      {
+        if (! presentationLUTnegotiated)
+        {
+          *logstream << "cannot create Basic Film Box: illumination received but Presentation LUT SOP class not negotiated:" << endl;
+          (stack.top())->print(*logstream, OFFalse);
+          rsp.msg.NCreateRSP.DimseStatus = 0x0107; // attribute list error          
+          result = OFFalse;
+        }
+      }
+      else if (currentTag == DCM_ReflectedAmbientLight)
+      {
+        if (! presentationLUTnegotiated)
+        {
+          *logstream << "cannot create Basic Film Box: reflected ambient light received but Presentation LUT SOP class not negotiated:" << endl;
+          (stack.top())->print(*logstream, OFFalse);
+          rsp.msg.NCreateRSP.DimseStatus = 0x0107; // attribute list error          
+          result = OFFalse;
+        }
+      }
+      else if (currentTag == DCM_ReferencedPresentationLUTSequence)
+      {
+        if (! presentationLUTnegotiated)
+        {
+          *logstream << "cannot create Basic Film Box: referenced presentation LUT sequence received but Presentation LUT SOP class not negotiated:" << endl;
+          (stack.top())->print(*logstream, OFFalse);
+          rsp.msg.NCreateRSP.DimseStatus = 0x0107; // attribute list error          
+          result = OFFalse;
+        }
+      }
+      else
+      {
+        *logstream << "cannot create Basic Film Box: unsupported attribute received:" << endl;
+        (stack.top())->print(*logstream, OFFalse);
+        rsp.msg.NCreateRSP.DimseStatus = 0x0107; // attribute list error
+        result = OFFalse;
+      }
+    }
+  }
+  
+  // if n-create was successful, create response dataset
+  if (result)
+  {
+    rspDataset = new DcmDataset;    
+    if (rspDataset)
+    {
+      E_Condition writeresult = EC_Normal;
+      DcmElement *delem = NULL;
+
+      if (refFilmSessionSequence) // should never be NULL if we get this far
+      {      
+        DcmSequenceOfItems *newRefFilmSessionSequence = new DcmSequenceOfItems(*refFilmSessionSequence);
+        if (newRefFilmSessionSequence) rspDataset->insert(newRefFilmSessionSequence);
+        else writeresult = EC_MemoryExhausted;
+      }
+
+      ADD_TO_PDATASET(DcmShortText, imageDisplayFormat)
+      ADD_TO_PDATASET(DcmCodeString, filmOrientation)
+      ADD_TO_PDATASET(DcmCodeString, filmSizeID)
+      ADD_TO_PDATASET(DcmCodeString, magnificationType)
+      ADD_TO_PDATASET(DcmUnsignedShort, maxDensity)     
+      ADD_TO_PDATASET(DcmShortText, configurationInformation)
+      if (smoothingType.getLength() > 0) { ADD_TO_PDATASET(DcmCodeString, smoothingType) }
+      if (borderDensity.getLength() > 0) { ADD_TO_PDATASET(DcmCodeString, borderDensity) }
+      if (emptyImageDensity.getLength() > 0) { ADD_TO_PDATASET(DcmCodeString, emptyImageDensity) }
+      if (minDensity.getLength() > 0) { ADD_TO_PDATASET(DcmUnsignedShort, minDensity) }
+      if (trim.getLength() > 0) { ADD_TO_PDATASET(DcmCodeString, trim) }
+      if (requestedResolutionID.getLength() > 0) { ADD_TO_PDATASET(DcmCodeString, requestedResolutionID) }
+
+      if (presentationLUTnegotiated)
+      {
+        if (referencedPresentationLUTInstanceUID.getLength() == 0)
+        {
+          referencedPresentationLUTInstanceUID.putString(WELLKNOWN_IDENTITY_PLUT_UID);
+          if (NULL == globalPresentationLUTList.findPresentationLUT(WELLKNOWN_IDENTITY_PLUT_UID))
+          {
+            DVPSPresentationLUT *wellknownlut = new DVPSPresentationLUT();
+            if (wellknownlut)
+            {
+              writeresult = wellknownlut->setType(DVPSP_identity);
+              if (EC_Normal == writeresult) writeresult = wellknownlut->setSOPInstanceUID(WELLKNOWN_IDENTITY_PLUT_UID);
+              if (EC_Normal == writeresult) globalPresentationLUTList.insert(wellknownlut);              
+            } else writeresult = EC_MemoryExhausted;
+          }
+        }
+        if (EC_Normal == writeresult) writeresult = addPresentationLUTReference(*rspDataset);
+      }
+
+      // create image boxes and referenced image box sequence
+      if (imageBoxContentList.printSCPCreate(currentNumRows * currentNumCols, studyInstanceUID, imageSeriesInstanceUID, cfg.getNetworkAETitle()))
+      {
+        if (EC_Normal == writeresult) writeresult = imageBoxContentList.writeReferencedImageBoxSQ(*rspDataset);      	
+      } else writeresult = EC_MemoryExhausted;
+            
+      if (EC_Normal == writeresult)
+      {
+        rsp.msg.NCreateRSP.DataSetType = DIMSE_DATASET_PRESENT;
+      } else {
+        delete rspDataset;
+        rspDataset = NULL;
+        rsp.msg.NCreateRSP.DimseStatus = 0x0110; // processing failure
+        result = OFFalse;
+      }     
+    } else {
+      rsp.msg.NCreateRSP.DimseStatus = 0x0110; // processing failure
+      result = OFFalse;
+    }
+  }
+  return result;
+}
+
+
+
+
+OFBool DVPSStoredPrint::printSCPSet(
+  DVConfiguration& cfg, 
+  const char *cfgname, 
+  DcmDataset *rqDataset, 
+  T_DIMSE_Message& rsp, 
+  DcmDataset *& rspDataset, 
+  OFBool presentationLUTnegotiated,
+  DVPSPresentationLUT_PList& globalPresentationLUTList)
+{
+  OFBool result = OFTrue;
+  DcmStack stack;
+  E_Condition writeresult = EC_Normal;
+  DcmElement *delem = NULL;
+
+  rspDataset = new DcmDataset;    
+  if ((rqDataset == NULL)||(rspDataset == NULL))
+  {
+    rsp.msg.NSetRSP.DimseStatus = 0x0110; // processing failure
+    result = OFFalse;
+  }
+
+  // magnificationType
+  if (result)
+  {
+    stack.clear();
+    if (rqDataset && (EC_Normal == rqDataset->search((DcmTagKey &)magnificationType.getTag(), stack, ESM_fromHere, OFFalse)))
+    {
+      magnificationType = *((DcmCodeString *)(stack.top()));
+      Uint32 numMagnifications = cfg.getTargetPrinterNumberOfMagnificationTypes(cfgname);         
+      OFString theMagnification;
+      OFString aString;
+      OFBool found = OFFalse;
+      magnificationType.getOFString(theMagnification, 0, OFTrue);
+      for (Uint32 i=0; i<numMagnifications; i++)
+      {
+        cfg.getTargetPrinterMagnificationType(cfgname, i, aString);
+        if (theMagnification == aString) 
+        {
+          found = OFTrue;
+          break;
+        }       
+      }
+      if (! found)
+      {
+        *logstream << "cannot update Basic Film Box: illegal magnification type: '" << theMagnification.c_str() << "'" << endl;
+        rsp.msg.NSetRSP.DimseStatus = 0x0106; // invalid attribute value
+        result = OFFalse;
+      } else {
+        ADD_TO_PDATASET(DcmCodeString, magnificationType)
+      }
+    }
+  }
+
+  // smoothingType
+  if (result)
+  {
+
+    stack.clear();
+    if (rqDataset && (EC_Normal == rqDataset->search((DcmTagKey &)smoothingType.getTag(), stack, ESM_fromHere, OFFalse)))
+    {
+      smoothingType = *((DcmCodeString *)(stack.top()));
+      Uint32 numSmoothings = cfg.getTargetPrinterNumberOfSmoothingTypes(cfgname);         
+      OFString theSmoothing;
+      OFString aString;
+      OFBool found = OFFalse;
+      smoothingType.getOFString(theSmoothing, 0, OFTrue);
+      for (Uint32 i=0; i<numSmoothings; i++)
+      {
+        cfg.getTargetPrinterSmoothingType(cfgname, i, aString);
+        if (theSmoothing == aString) 
+        {
+          found = OFTrue;
+          break;
+        }       
+      }
+      if (numSmoothings == 0)
+      {
+        *logstream << "cannot update Basic Film Box: smoothing type requested but not supported." << endl;
+        rsp.msg.NSetRSP.DimseStatus = 0x0107; //attribute list error
+        result = OFFalse;
+      } 
+      else if (! found)
+      {
+        *logstream << "cannot update Basic Film Box: illegal smoothing type: '" << theSmoothing.c_str() << "'" << endl;
+        rsp.msg.NSetRSP.DimseStatus = 0x0106; // invalid attribute value
+        result = OFFalse;
+      }
+      else
+      {
+        ADD_TO_PDATASET(DcmCodeString, smoothingType)
+      }
+    }
+  }
+
+
+  // borderDensity
+  if (result)
+  {
+
+    stack.clear();
+    if (rqDataset && (EC_Normal == rqDataset->search((DcmTagKey &)borderDensity.getTag(), stack, ESM_fromHere, OFFalse)))
+    {
+      borderDensity = *((DcmCodeString *)(stack.top()));
+      Uint32 numBorderDensities = cfg.getTargetPrinterNumberOfBorderDensities(cfgname);   
+      if (numBorderDensities == 0) // we don't support border density
+      {
+        *logstream << "cannot update Basic Film Box: border density requested but not supported." << endl;
+        rsp.msg.NSetRSP.DimseStatus = 0x0107; //attribute list error        
+        result = OFFalse;
+      } else {
+        OFString theBorderDensity;
+        OFString aString;
+        OFBool found = OFFalse;
+        OFBool supportsNumericDensity = OFFalse;
+        unsigned long l;
+        borderDensity.getOFString(theBorderDensity, 0, OFTrue);
+        for (Uint32 i=0; i<numBorderDensities; i++)
+        {
+          cfg.getTargetPrinterBorderDensity(cfgname, i, aString);
+          if (theBorderDensity == aString) 
+          {
+            found = OFTrue;
+            break;
+          } else {
+            if (1 == sscanf(aString.c_str(), "%ld", &l)) supportsNumericDensity = OFTrue;
+          }
+        }
+        if ((! found) && supportsNumericDensity)
+        {
+          // the density was not found in the list; check whether it is numerical
+          if (1 == sscanf(theBorderDensity.c_str(), "%ld", &l)) found = OFTrue;
+        }
+          
+        if (! found)
+        {
+          *logstream << "cannot update Basic Film Box: illegal border density: '" << theBorderDensity.c_str() << "'" << endl;
+          rsp.msg.NSetRSP.DimseStatus = 0x0106; // invalid attribute value
+          result = OFFalse;
+        }
+        else
+        {
+          ADD_TO_PDATASET(DcmCodeString, borderDensity)
+        }
+      }
+    }
+  }
+
+  // emptyImageDensity
+  if (result)
+  {
+    stack.clear();
+    if (rqDataset && (EC_Normal == rqDataset->search((DcmTagKey &)emptyImageDensity.getTag(), stack, ESM_fromHere, OFFalse)))
+    {
+      emptyImageDensity = *((DcmCodeString *)(stack.top()));
+      Uint32 numEmptyImageDensities = cfg.getTargetPrinterNumberOfEmptyImageDensities(cfgname);   
+      if (numEmptyImageDensities == 0) // we don't support empty image density
+      {
+        *logstream << "cannot update Basic Film Box: empty image density requested but not supported." << endl;
+        rsp.msg.NSetRSP.DimseStatus = 0x0107; //attribute list error        
+        result = OFFalse;
+      } else {
+        OFString theEIDensity;
+        OFString aString;
+        OFBool found = OFFalse;
+        OFBool supportsNumericDensity = OFFalse;
+        unsigned long l;
+        emptyImageDensity.getOFString(theEIDensity, 0, OFTrue);
+        for (Uint32 i=0; i<numEmptyImageDensities; i++)
+        {
+          cfg.getTargetPrinterEmptyImageDensity(cfgname, i, aString);
+          if (theEIDensity == aString) 
+          {
+            found = OFTrue;
+            break;
+          } else {
+            if (1 == sscanf(aString.c_str(), "%ld", &l)) supportsNumericDensity = OFTrue;
+          }
+        }
+        if ((! found) && supportsNumericDensity)
+        {
+          // the density was not found in the list; check whether it is numerical
+          if (1 == sscanf(theEIDensity.c_str(), "%ld", &l)) found = OFTrue;
+        }
+          
+        if (! found)
+        {
+          *logstream << "cannot update Basic Film Box: illegal empty image density: '" << theEIDensity.c_str() << "'" << endl;
+          rsp.msg.NSetRSP.DimseStatus = 0x0106; // invalid attribute value
+          result = OFFalse;
+        }        
+        else
+        {
+          ADD_TO_PDATASET(DcmCodeString, emptyImageDensity)
+        }
+      }
+    }
+  }
+
+  // maxDensity
+  if (result)
+  {
+    stack.clear();
+    if (rqDataset && (EC_Normal == rqDataset->search((DcmTagKey &)maxDensity.getTag(), stack, ESM_fromHere, OFFalse)))
+    {
+      maxDensity = *((DcmUnsignedShort *)(stack.top()));
+      // we don't check a max density set by the user (for now)
+      ADD_TO_PDATASET(DcmUnsignedShort, maxDensity)
+    }
+  }
+
+  // minDensity
+  if (result)
+  {
+    stack.clear();
+    if (rqDataset && (EC_Normal == rqDataset->search((DcmTagKey &)minDensity.getTag(), stack, ESM_fromHere, OFFalse)))
+    {
+      minDensity = *((DcmUnsignedShort *)(stack.top()));
+      Uint32 numMinDensities = cfg.getTargetPrinterNumberOfMinDensities(cfgname);   
+      if (numMinDensities == 0) // we don't support min density
+      {
+        *logstream << "cannot update Basic Film Box: min density requested but not supported." << endl;
+        rsp.msg.NSetRSP.DimseStatus = 0x0107; //attribute list error        
+        result = OFFalse;
+      } 
+      else
+      {      
+        // we don't check a min density set by the user (for now)
+        ADD_TO_PDATASET(DcmUnsignedShort, minDensity)
+      }
+    }
+  }
+
+  // trim
+  if (result)
+  {
+    stack.clear();
+    if (rqDataset && (EC_Normal == rqDataset->search((DcmTagKey &)trim.getTag(), stack, ESM_fromHere, OFFalse)))
+    {
+      trim = *((DcmCodeString *)(stack.top()));
+
+      if (cfg.getTargetPrinterSupportsTrim(cfgname))
+      {
+        OFString aString;
+        trim.getOFString(aString, 0, OFTrue);
+        if ((aString != "YES")&&(aString != "NO"))
+        {
+          *logstream << "cannot update Basic Film Box: illegal trim: '" << aString.c_str() << "'" << endl;
+          rsp.msg.NSetRSP.DimseStatus = 0x0106; // invalid attribute value
+          result = OFFalse;
+        } else {
+          ADD_TO_PDATASET(DcmCodeString, trim)
+        }
+      } else {
+        *logstream << "cannot update Basic Film Box: trim requested but not supported." << endl;
+        rsp.msg.NSetRSP.DimseStatus = 0x0107; //attribute list error        
+        result = OFFalse;
+      }
+    }
+  }
+
+  // configurationInformation
+  if (result)
+  {
+    stack.clear();
+    if (rqDataset && (EC_Normal == rqDataset->search((DcmTagKey &)configurationInformation.getTag(), stack, ESM_fromHere, OFFalse)))
+    {
+      configurationInformation = *((DcmShortText *)(stack.top()));
+      Uint32 numConfigurationInformation = cfg.getTargetPrinterNumberOfConfigurationSettings(cfgname);   
+      if (numConfigurationInformation == 0) // we don't support configuration information
+      {
+        *logstream << "cannot update Basic Film Box: configuration information requested but not supported." << endl;
+        rsp.msg.NSetRSP.DimseStatus = 0x0107; //attribute list error        
+        result = OFFalse;
+      } else {
+        OFString theConfiguration;
+        OFBool found = OFFalse;
+        configurationInformation.getOFString(theConfiguration, 0, OFTrue);
+        for (Uint32 i=0; i<numConfigurationInformation; i++)
+        {
+          if (theConfiguration ==  cfg.getTargetPrinterConfigurationSetting(cfgname, i)) 
+          {
+            found = OFTrue;
+            break;
+          }
+        }          
+        if (! found)
+        {
+          *logstream << "cannot update Basic Film Box: illegal configuration information: '" << theConfiguration.c_str() << "'" << endl;
+          rsp.msg.NSetRSP.DimseStatus = 0x0106; // invalid attribute value
+          result = OFFalse;
+        }
+        else
+        {
+          ADD_TO_PDATASET(DcmShortText, configurationInformation)
+        }
+      }
+    }
+  }
+
+  if (presentationLUTnegotiated)
+  {
+
+    // illumination
+    if (result)
+    {
+      stack.clear();
+      if (rqDataset && (EC_Normal == rqDataset->search((DcmTagKey &)illumination.getTag(), stack, ESM_fromHere, OFFalse)))
+      {
+        illumination = *((DcmUnsignedShort *)(stack.top()));
+        // we don't check illumination set by the user (for now)
+        ADD_TO_PDATASET(DcmUnsignedShort, illumination)
+      }
+    }
+
+    // reflectedAmbientLight
+    if (result)
+    {
+      stack.clear();
+      if (rqDataset && (EC_Normal == rqDataset->search((DcmTagKey &)reflectedAmbientLight.getTag(), stack, ESM_fromHere, OFFalse)))
+      {
+        reflectedAmbientLight = *((DcmUnsignedShort *)(stack.top()));
+        // we don't check reflected ambient light set by the user (for now)
+        ADD_TO_PDATASET(DcmUnsignedShort, reflectedAmbientLight)
+      }
+    }
+
+    // referenced presentation LUT sequence
+    if (result)
+    {
+      stack.clear();
+
+      if (rqDataset && (EC_Normal == rqDataset->search(DCM_ReferencedPresentationLUTSequence, stack, ESM_fromHere, OFFalse)))
+      {
+        DcmSequenceOfItems *seq=(DcmSequenceOfItems *)stack.top();
+        if (seq->card() ==1)
+        {
+           OFString aString;
+           DcmItem *item = seq->getItem(0);
+           stack.clear();
+           READ_FROM_DATASET2(DcmUniqueIdentifier, referencedPresentationLUTInstanceUID)
+           if (referencedPresentationLUTInstanceUID.getLength() > 0)
+           {
+             referencedPresentationLUTInstanceUID.getOFString(aString,0);
+             DVPSPresentationLUT *currentPLUT = globalPresentationLUTList.findPresentationLUT(aString.c_str());
+             if (NULL == currentPLUT)
+             {
+               *logstream << "cannot update Basic Film Box: presentation LUT reference cannot be resolved" << endl;
+               rsp.msg.NSetRSP.DimseStatus = 0x0106; // invalid attribute value
+               result = OFFalse;
+             } else {
+               // check referenced SOP class UID
+               DcmUniqueIdentifier refClassUID(DCM_ReferencedSOPClassUID);
+               stack.clear();
+               READ_FROM_DATASET2(DcmUniqueIdentifier, refClassUID)
+               if (refClassUID.getLength() > 0)
+               {     
+                  aString.clear();
+                  refClassUID.getOFString(aString,0, OFTrue);
+                  if (aString != UID_PresentationLUTSOPClass)
+                  {
+                    *logstream << "cannot update Basic Film Box: referenced SOP class UID in referenced presentation LUT sequence incorrect:" << endl;
+                    (stack.top())->print(*logstream, OFFalse);
+                    rsp.msg.NSetRSP.DimseStatus = 0x0106; // invalid attribute value
+                    result = OFFalse;
+                  } else {
+                    referencedPresentationLUTAlignment = currentPLUT->getAlignment();
+                    if ((cfg.getTargetPrinterPresentationLUTMatchRequired(cfgname)) &&
+                        (! imageBoxContentList.matchesPresentationLUT(referencedPresentationLUTAlignment)))
+                    {
+                      *logstream << "cannot update Basic Film Box: referenced presentation LUT number of entries does not match image bit depth." << endl;
+                      rsp.msg.NSetRSP.DimseStatus = 0x0106; // invalid attribute value
+                      result = OFFalse;
+                    } else {
+                      DcmSequenceOfItems *newSeq = new DcmSequenceOfItems(*seq);
+                      if (newSeq) rspDataset->insert(newSeq);
+                      else 
+                      {
+                        writeresult = EC_MemoryExhausted;
+                      }
+                    }
+                  }
+               } else {
+                  *logstream << "cannot update Basic Film Box: no referenced SOP class UID in referenced presentation LUT sequence" << endl;
+                  rsp.msg.NSetRSP.DimseStatus = 0x0106; // invalid attribute value
+                  result = OFFalse;
+               }
+             }
+           } else {
+             *logstream << "cannot update Basic Film Box: no referenced SOP instance UID in referenced presentation LUT sequence" << endl;
+             rsp.msg.NSetRSP.DimseStatus = 0x0106; // invalid attribute value
+             result = OFFalse;
+           }
+        } else {
+          *logstream << "cannot update Basic Film Box: referenced presentation LUT sequence number of items != 1" << endl;
+          rsp.msg.NSetRSP.DimseStatus = 0x0106; // invalid attribute value
+          result = OFFalse;
+        }
+      }
+    }    
+    
+  } /* if presentationLUTnegotiated */
+
+
+  // browse through rqDataset and check for unsupported attributes
+  if (result && rqDataset)
+  {
+    stack.clear();
+    while (EC_Normal == rqDataset->nextObject(stack, OFFalse))
+    {
+      const DcmTagKey& currentTag = (stack.top())->getTag();
+      if (currentTag == DCM_MagnificationType) /* OK */ ;
+      else if (currentTag == DCM_SmoothingType) /* OK */ ;
+      else if (currentTag == DCM_BorderDensity) /* OK */ ;
+      else if (currentTag == DCM_EmptyImageDensity) /* OK */ ;
+      else if (currentTag == DCM_MinDensity) /* OK */ ;
+      else if (currentTag == DCM_MaxDensity) /* OK */ ;
+      else if (currentTag == DCM_Trim) /* OK */ ;
+      else if (currentTag == DCM_ConfigurationInformation) /* OK */ ;
+      else if (currentTag == DCM_ReferencedFilmSessionSequence) /* OK */ ;
+      else if (currentTag == DCM_Illumination)
+      {
+        if (! presentationLUTnegotiated)
+        {
+          *logstream << "cannot update Basic Film Box: illumination received but Presentation LUT SOP class not negotiated:" << endl;
+          (stack.top())->print(*logstream, OFFalse);
+          rsp.msg.NSetRSP.DimseStatus = 0x0107; // attribute list error          
+          result = OFFalse;
+        }
+      }
+      else if (currentTag == DCM_ReflectedAmbientLight)
+      {
+        if (! presentationLUTnegotiated)
+        {
+          *logstream << "cannot update Basic Film Box: reflected ambient light received but Presentation LUT SOP class not negotiated:" << endl;
+          (stack.top())->print(*logstream, OFFalse);
+          rsp.msg.NSetRSP.DimseStatus = 0x0107; // attribute list error          
+          result = OFFalse;
+        }
+      }
+      else if (currentTag == DCM_ReferencedPresentationLUTSequence)
+      {
+        if (! presentationLUTnegotiated)
+        {
+          *logstream << "cannot update Basic Film Box: referenced presentation LUT sequence received but Presentation LUT SOP class not negotiated:" << endl;
+          (stack.top())->print(*logstream, OFFalse);
+          rsp.msg.NSetRSP.DimseStatus = 0x0107; // attribute list error          
+          result = OFFalse;
+        }
+      }
+      else
+      {
+        *logstream << "cannot update Basic Film Box: unsupported attribute received:" << endl;
+        (stack.top())->print(*logstream, OFFalse);
+        rsp.msg.NSetRSP.DimseStatus = 0x0107; // attribute list error
+        result = OFFalse;
+      }
+    }
+  }
+
+  // if n-set was successful, send back response dataset
+  if (result && (EC_Normal == writeresult))
+  {
+    rsp.msg.NSetRSP.DataSetType = DIMSE_DATASET_PRESENT;
+  } else {
+    delete rspDataset;
+    rspDataset = NULL;
+    if (rsp.msg.NSetRSP.DimseStatus == 0) rsp.msg.NSetRSP.DimseStatus = 0x0110; // processing failure
+    result = OFFalse;
+  }
+  return result;
+}
+
+
+OFBool DVPSStoredPrint::usesPresentationLUT(const char *c)
+{ 
+  char *plut = NULL;  
+  if (c && (EC_Normal == referencedPresentationLUTInstanceUID.getString(plut)) && plut)
+  {
+    OFString aString(plut);
+    if (aString == c) return OFTrue;
+  }
+  return OFFalse;
+}
+
+void DVPSStoredPrint::updatePresentationLUTList(DVPSPresentationLUT_PList& globalPresentationLUTList)
+{
+  presentationLUTList.clear();
+  if (referencedPresentationLUTInstanceUID.getLength() > 0)
+  {
+    OFString aString;
+    referencedPresentationLUTInstanceUID.getOFString(aString,0);
+    DVPSPresentationLUT *currentPLUT = globalPresentationLUTList.findPresentationLUT(aString.c_str());
+    if (currentPLUT) presentationLUTList.insert(currentPLUT->clone()); else referencedPresentationLUTInstanceUID.clear();
+  }
+}
+
 /*
  *  $Log: dvpssp.cc,v $
- *  Revision 1.26  2000-05-31 07:56:22  joergr
+ *  Revision 1.27  2000-05-31 12:58:16  meichel
+ *  Added initial Print SCP support
+ *
+ *  Revision 1.26  2000/05/31 07:56:22  joergr
  *  Added support for Stored Print attributes Originator and Destination
  *  application entity title.
  *

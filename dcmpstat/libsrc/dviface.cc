@@ -21,9 +21,9 @@
  *
  *  Purpose: DVPresentationState
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-05-31 07:56:20 $
- *  CVS/RCS Revision: $Revision: 1.88 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2000-05-31 12:58:13 $
+ *  CVS/RCS Revision: $Revision: 1.89 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -33,6 +33,7 @@
 
 #include "osconfig.h"    /* make sure OS specific configuration is included first */
 #include "dviface.h"
+#include "dvpsdef.h"     /* for constants */
 #include "ofstring.h"    /* for class OFString */
 #include "dvpsconf.h"    /* for class DVPSConfig */
 #include "ofbmanip.h"    /* for OFBitmanipTemplate */
@@ -83,17 +84,12 @@ END_EXTERN_C
 #include <winbase.h>     /* for CreateProcess */
 #endif
 
-#define DEFAULT_MAXPDU 16384
-
-#define L2_HIGHRESOLUTIONGRAPHICS       "HIGHRESOLUTIONGRAPHICS"
-
 
 DVInterface::DVInterface(const char *config_file)
 : DVConfiguration(config_file)
 , pPrint(NULL)
 , pState(NULL)
 , pStoredPState(NULL)
-, pDicomPrint(NULL)
 , pDicomImage(NULL)
 , pDicomPState(NULL)
 , pHardcopyImage(NULL)
@@ -178,8 +174,7 @@ DVInterface::DVInterface(const char *config_file)
     printJobIdentifier = buf;
     /* initialize reference time with "yesterday" */
     if (referenceTime >= 86400) referenceTime -= 86400; // subtract one day
-
-    setCurrentPrinter(getTargetID(0, DVPSE_print));
+    setCurrentPrinter(getTargetID(0, DVPSE_printAny));
 }
 
 
@@ -188,7 +183,6 @@ DVInterface::~DVInterface()
     delete pPrint;
     delete pState;
     delete pStoredPState;
-    delete pDicomPrint;
     delete pDicomImage;
     delete pDicomPState;
     delete pHardcopyImage;
@@ -2144,6 +2138,7 @@ E_Condition DVInterface::saveDICOMImage(
   return result;
 }
 
+
 E_Condition DVInterface::saveHardcopyGrayscaleImage(
   const char *filename,
   const void *pixelData,
@@ -2250,6 +2245,7 @@ E_Condition DVInterface::saveHardcopyGrayscaleImage(
     return status;
 }
 
+
 E_Condition DVInterface::saveHardcopyGrayscaleImage(
   const void *pixelData,
   unsigned long width,
@@ -2290,6 +2286,61 @@ E_Condition DVInterface::saveHardcopyGrayscaleImage(
   return result;
 }
 
+
+E_Condition DVInterface::saveFileFormatToDB(DcmFileFormat &fileformat)
+{
+  // release database lock since we are using the DB module directly
+  releaseDatabase();
+
+  // get SOP class and instance UID from dataset
+  char *classUID = NULL;
+  char *instanceUID = NULL;
+  DcmStack stack;
+  DcmDataset *dset = fileformat.getDataset();
+  if (dset)
+  {
+    if (EC_Normal == dset->search(DCM_SOPInstanceUID, stack, ESM_fromHere, OFFalse))
+    {
+      ((DcmElement *)(stack.top()))->getString(instanceUID);
+    }
+    stack.clear();
+    if (EC_Normal == dset->search(DCM_SOPClassUID, stack, ESM_fromHere, OFFalse))
+    {
+      ((DcmElement *)(stack.top()))->getString(classUID);
+    }
+  }    
+  if ((instanceUID==NULL)||(classUID==NULL)) return EC_IllegalCall;
+
+  DB_Status dbStatus;
+  dbStatus.status = STATUS_Success;
+  dbStatus.statusDetail = NULL;
+  DB_Handle *handle = NULL;
+  char imageFileName[MAXPATHLEN+1];
+  if (DB_createHandle(getDatabaseFolder(), PSTAT_MAXSTUDYCOUNT, PSTAT_STUDYSIZE, &handle) != DB_NORMAL) return EC_IllegalCall;
+
+  E_Condition result=EC_Normal;
+  if (DB_NORMAL == DB_makeNewStoreFileName(handle, classUID, instanceUID, imageFileName))
+  {
+     // save image file
+     result = DVPSHelper::saveFileFormat(imageFileName, &fileformat, OFTrue);
+     if (EC_Normal==result)
+     {
+       if (DB_NORMAL != DB_storeRequest(handle, classUID, instanceUID, imageFileName, &dbStatus))
+       {
+         result = EC_IllegalCall;
+#ifdef DEBUG
+         *logstream << "unable to register grayscale hardcopy image '" << imageFileName << "' in database." << endl;
+         COND_DumpConditions();
+#endif
+       }
+     }
+  }
+  DB_destroyHandle(&handle);
+  COND_PopCondition(OFTrue); // clear condition stack
+  return result;
+}
+
+
 E_Condition DVInterface::loadStoredPrint(const char *studyUID, const char *seriesUID, const char *instanceUID)
 {
     if (studyUID && seriesUID && instanceUID)
@@ -2320,21 +2371,20 @@ E_Condition DVInterface::loadStoredPrint(const char *filename)
                 if (EC_Normal == (status = print->read(*dataset)))
                 {
                     delete pPrint;
-                    delete pDicomPrint;
                     pPrint = print;
-                    pDicomPrint = fileformat;
                     clearFilmSessionSettings();
                 }
             } else status = EC_CorruptedData;
+            delete fileformat;
         } else status = EC_IllegalCall;
     }
     if (status != EC_Normal)
     {
         delete print;
-        delete fileformat;
     }
     return status;
 }
+
 
 E_Condition DVInterface::saveStoredPrint(
   const char *filename,
@@ -2406,17 +2456,13 @@ E_Condition DVInterface::saveStoredPrint(
         dcmGenerateUniqueIdentifer(newuid);
         status = pPrint->setInstanceUID(newuid);
       }
-      if (EC_Normal == status) status = pPrint->write(*dataset, writeRequestedImageSize, OFTrue);
+      if (EC_Normal == status) status = pPrint->write(*dataset, writeRequestedImageSize, OFTrue, OFTrue, OFFalse);
 
       // save file
       if (EC_Normal == status) status = DVPSHelper::saveFileFormat(filename, fileformat, explicitVR);
     } else status = EC_MemoryExhausted;
 
-    if (status == EC_Normal)
-    {
-      delete pDicomPrint;
-      pDicomPrint = fileformat;
-    }
+    delete fileformat;
     return status;
 }
 
@@ -2731,10 +2777,10 @@ E_Condition DVInterface::startPrintSpooler()
 
   DVPSHelper::cleanChildren(); // clean up old child processes before creating new ones
 
-  Uint32 numberOfPrinters = getNumberOfTargets(DVPSE_print);
+  Uint32 numberOfPrinters = getNumberOfTargets(DVPSE_printAny);
   if (numberOfPrinters > 0) for (Uint32 i=0; i < numberOfPrinters; i++)
   {
-  	printer = getTargetID(i, DVPSE_print);
+  	printer = getTargetID(i, DVPSE_printAny);
 
 #ifdef HAVE_FORK
     // Unix version - call fork() and execl()
@@ -2822,10 +2868,10 @@ E_Condition DVInterface::terminatePrintSpooler()
   OFString tempFilename;
   const char *prt = NULL;
 
-  Uint32 numberOfPrinters = getNumberOfTargets(DVPSE_print);
+  Uint32 numberOfPrinters = getNumberOfTargets(DVPSE_printAny);
   if (numberOfPrinters > 0) for (Uint32 i=0; i < numberOfPrinters; i++)
   {
-    prt = getTargetID(i, DVPSE_print);
+    prt = getTargetID(i, DVPSE_printAny);
   	if (EC_Normal != createPrintJobFilenames(prt, tempFilename, spoolFilename)) return EC_IllegalCall;
   	FILE *outf = fopen(tempFilename.c_str(),"wb");
   	if (outf)
@@ -3110,7 +3156,10 @@ E_Condition DVInterface::checkIOD(const char *studyUID, const char *seriesUID, c
 /*
  *  CVS/RCS Log:
  *  $Log: dviface.cc,v $
- *  Revision 1.88  2000-05-31 07:56:20  joergr
+ *  Revision 1.89  2000-05-31 12:58:13  meichel
+ *  Added initial Print SCP support
+ *
+ *  Revision 1.88  2000/05/31 07:56:20  joergr
  *  Added support for Stored Print attributes Originator and Destination
  *  application entity title.
  *

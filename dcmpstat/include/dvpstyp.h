@@ -24,9 +24,9 @@
  *           DVPSPresentationLUTType, DVPSRotationType, 
  *           DVPSShutterType
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-05-30 13:48:00 $
- *  CVS/RCS Revision: $Revision: 1.9 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2000-05-31 12:56:40 $
+ *  CVS/RCS Revision: $Revision: 1.10 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -38,9 +38,6 @@
 
 #include "osconfig.h"    /* make sure OS specific configuration is included first */
 #include <stdio.h>       /* for size_t */
-
-/// size_t value indicating that no index is active or available.
-#define DVPS_IDX_NONE ((size_t)-1)
 
 /** describes how to handle overlays when creating a default presentation state
  *  for an image. 
@@ -155,6 +152,31 @@ enum DVPSPrintPresentationLUTType
   /** Presentation LUT Shape with value 'IDENTITY'
    */
   DVPSQ_lin_od 
+};
+
+/** some Print SCPs which support Presentation LUTs require that the number
+ *  of entries in a Presentation LUT matches the bit depth of the image pixel
+ *  data (4096 entries for 12 bit pixel data, 256 entries for 8 bit pixel 
+ *  data). An instance of this enumeration describes the characteristics
+ *  of a Presentation LUT with regard to this matching rule.
+ */
+enum DVPSPrintPresentationLUTAlignment
+{
+  /** Presentation LUT Shape, matches all kinds of image data
+   */
+  DVPSK_shape,
+  /** Presentation LUT with 256 entries and first entry mapped to 0, 
+   *  matches 8 bit image data
+   */
+  DVPSK_table8,
+  /** Presentation LUT with 4096 entries and first entry mapped to 0, 
+   *  matches 12 bit image data
+   */
+  DVPSK_table12,
+  /** Presentation LUT Shape with number of entries other than 256 or 4096
+   *  or with first entry mapped to anything but 0.
+   */
+  DVPSK_other
 };
 
 /** describes the rotation status of a presentation state.
@@ -335,9 +357,15 @@ enum DVPSPeerType
   /** Storage SCP peer
    */
   DVPSE_storage,
-  /** Print Management SCP peer
+  /** remote Print Management SCP
    */
-  DVPSE_print,
+  DVPSE_printRemote,
+  /** local Print Management SCP
+   */
+  DVPSE_printLocal,
+  /** local or remote Print Management SCP
+   */
+  DVPSE_printAny,
   /** any type of peer
    */
   DVPSE_any
@@ -433,12 +461,44 @@ enum DVPSLogMessageLevel
   DVPSM_debug
 };
 
+/** describes the result of an association negotiation
+ */
+enum DVPSAssociationNegotiationResult
+{
+  /** negotiation was successful
+   */
+  DVPSJ_success,
+  /** negotiation was unsuccessful
+   */
+  DVPSJ_error,
+  /** peer requests termination of server process
+   */
+  DVPSJ_terminate
+};
+
+/** describes the bit depth of a Basic Grayscale Image Box
+ */
+enum DVPSImageDepth
+{
+  /** not yet assigned
+   */
+  DVPSN_undefined,
+  /** 8 bit
+   */
+  DVPSN_8bit,
+  /** 12 bit
+   */
+  DVPSN_12bit
+};
 
 #endif
 
 /*
  *  $Log: dvpstyp.h,v $
- *  Revision 1.9  2000-05-30 13:48:00  joergr
+ *  Revision 1.10  2000-05-31 12:56:40  meichel
+ *  Added initial Print SCP support
+ *
+ *  Revision 1.9  2000/05/30 13:48:00  joergr
  *  Added interface methods to support the following new features:
  *    - write/filter log messages (not yet implemented)
  *

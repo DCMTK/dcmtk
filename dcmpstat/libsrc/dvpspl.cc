@@ -23,8 +23,8 @@
  *    classes: DVPSPresentationLUT
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-03-08 16:29:07 $
- *  CVS/RCS Revision: $Revision: 1.9 $
+ *  Update Date:      $Date: 2000-05-31 12:58:15 $
+ *  CVS/RCS Revision: $Revision: 1.10 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -35,22 +35,7 @@
 #include "ofstring.h"
 #include "dvpspl.h"
 #include "dcmimage.h"    /* for class DiLookupTable, DicomImage */
-
-/* --------------- a few macros avoiding copy/paste --------------- */
-
-#define ADD_TO_DATASET(a_type, a_name)                              \
-if (result==EC_Normal)                                              \
-{                                                                   \
-  delem = new a_type(a_name);                                       \
-  if (delem) dset.insert(delem); else result=EC_MemoryExhausted;    \
-}
-
-#define READ_FROM_DATASET(a_type, a_name)                           \
-stack.clear();                                                      \
-if (EC_Normal == dset.search((DcmTagKey &)a_name.getTag(), stack, ESM_fromHere, OFFalse)) \
-{                                                                   \
-  a_name = *((a_type *)(stack.top()));                              \
-}
+#include "dvpsdef.h"     /* for constants and macros */
 
 /* --------------- class DVPSPresentationLUT --------------- */
 
@@ -487,9 +472,120 @@ OFBool DVPSPresentationLUT::matchesImageDepth(OFBool is12bit)
   return result;
 }
 
+DVPSPrintPresentationLUTAlignment DVPSPresentationLUT::getAlignment()
+{
+  if (presentationLUT == DVPSP_table)
+  {
+    Uint16 numberOfEntries = 0;
+    Uint16 firstEntryMapped = 0xFFFF;
+    if (EC_Normal != presentationLUTDescriptor.getUint16(numberOfEntries, 0)) numberOfEntries = 0;
+    if (EC_Normal != presentationLUTDescriptor.getUint16(firstEntryMapped, 1)) firstEntryMapped = 0xFFFF;
+    if ((numberOfEntries == 256)||(firstEntryMapped == 0)) return DVPSK_table8;
+    if ((numberOfEntries == 4096)||(firstEntryMapped == 0)) return DVPSK_table12;
+    return DVPSK_other;
+  }
+  return DVPSK_shape;
+}
+
+
+OFBool DVPSPresentationLUT::printSCPCreate(
+  DcmDataset *rqDataset, 
+  T_DIMSE_Message& rsp, 
+  DcmDataset *& rspDataset, 
+  OFBool matchRequired,
+  OFBool supports12Bit)
+{
+  OFBool result = OFTrue;
+  DcmStack stack;
+  
+  if ((rqDataset==NULL)||(EC_Normal != read(*rqDataset, OFFalse)))
+  {
+    *logstream << "cannot create Presentation LUT: attribute list error." << endl;
+    rsp.msg.NCreateRSP.DimseStatus = 0x0107; // attribute list error
+    result = OFFalse;
+  }
+
+  // read() has cleared sOPInstanceUID; assign UID now.
+  if (EC_Normal != setSOPInstanceUID(rsp.msg.NCreateRSP.AffectedSOPInstanceUID))
+  {
+    rsp.msg.NCreateRSP.DimseStatus = 0x0110; // processing failure
+    result = OFFalse;
+  }
+
+  // browse through rqDataset and check for unsupported attributes
+  if (result && rqDataset)
+  {
+    stack.clear();
+    while (EC_Normal == rqDataset->nextObject(stack, OFFalse))
+    {
+      const DcmTagKey& currentTag = (stack.top())->getTag();
+      if (currentTag == DCM_PresentationLUTShape) /* OK */ ;
+      else if (currentTag == DCM_PresentationLUTSequence) /* OK */ ;
+      else
+      {
+        *logstream << "cannot create Presentation LUT: unsupported attribute received:" << endl;
+        (stack.top())->print(*logstream, OFFalse);
+      	rsp.msg.NCreateRSP.DimseStatus = 0x0107; // attribute list error
+        result = OFFalse;
+      }
+    }
+  }
+  
+  // if match between LUT and pixel data required, enforce rule
+  if (result && matchRequired)
+  {
+    OFBool matches = OFTrue;
+    switch (getAlignment())
+    {
+      case DVPSK_shape:
+      case DVPSK_table8:
+        break; // always OK
+      case DVPSK_table12:
+        // is OK if printer supports 12 bit
+        matches = supports12Bit;
+        break;
+      case DVPSK_other: // never fits
+        matches = OFFalse;
+        break;  
+    }
+    if (!matches)
+    {
+        *logstream << "cannot create Presentation LUT: Mismatch between LUT entries and image pixel depth." << endl;
+      	rsp.msg.NCreateRSP.DimseStatus = 0x0107; // attribute list error
+        result = OFFalse;
+    }
+  }
+
+  // if n-create was successful, create response dataset
+  if (result)
+  {
+    rspDataset = new DcmDataset;    
+    if (rspDataset)
+    {
+      if (EC_Normal == write(*rspDataset, OFFalse))
+      {
+        rsp.msg.NCreateRSP.DataSetType = DIMSE_DATASET_PRESENT;
+      } else {
+      	delete rspDataset;
+      	rspDataset = NULL;
+        rsp.msg.NCreateRSP.DimseStatus = 0x0110; // processing failure
+        result = OFFalse;
+      }     
+    } else {
+      rsp.msg.NCreateRSP.DimseStatus = 0x0110; // processing failure
+      result = OFFalse;
+    }
+  }
+  return result;
+}
+
+
 /*
  *  $Log: dvpspl.cc,v $
- *  Revision 1.9  2000-03-08 16:29:07  meichel
+ *  Revision 1.10  2000-05-31 12:58:15  meichel
+ *  Added initial Print SCP support
+ *
+ *  Revision 1.9  2000/03/08 16:29:07  meichel
  *  Updated copyright header.
  *
  *  Revision 1.8  2000/03/03 14:14:02  meichel

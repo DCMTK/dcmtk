@@ -23,8 +23,8 @@
  *    classes: DVPSImageBoxContent_PList
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-03-08 16:29:07 $
- *  CVS/RCS Revision: $Revision: 1.14 $
+ *  Update Date:      $Date: 2000-05-31 12:58:15 $
+ *  CVS/RCS Revision: $Revision: 1.15 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -104,7 +104,7 @@ E_Condition DVPSImageBoxContent_PList::read(DcmItem &dset, DVPSPresentationLUT_P
   return result;
 }
 
-E_Condition DVPSImageBoxContent_PList::write(DcmItem &dset, OFBool writeRequestedImageSize, size_t numItems)
+E_Condition DVPSImageBoxContent_PList::write(DcmItem &dset, OFBool writeRequestedImageSize, size_t numItems, OFBool ignoreEmptyImages)
 {
   if (size()==0) return EC_IllegalCall; // can't write if sequence is empty
 
@@ -120,7 +120,7 @@ E_Condition DVPSImageBoxContent_PList::write(DcmItem &dset, OFBool writeRequeste
     OFListIterator(DVPSImageBoxContent *) last = end();
     while ((first != last) && working)
     {
-      if (result==EC_Normal)
+      if ((result==EC_Normal) && ((! ignoreEmptyImages)||((*first)->getImageBoxPosition() > 0)))
       {
         ditem = new DcmItem();
         if (ditem)
@@ -137,7 +137,7 @@ E_Condition DVPSImageBoxContent_PList::write(DcmItem &dset, OFBool writeRequeste
   return result;
 }
 
-E_Condition DVPSImageBoxContent_PList::createDefaultValues(OFBool renumber)
+E_Condition DVPSImageBoxContent_PList::createDefaultValues(OFBool renumber, OFBool ignoreEmptyImages)
 {
   if (size()==0) return EC_IllegalCall; // can't write if sequence is empty
   E_Condition result = EC_Normal;
@@ -147,7 +147,7 @@ E_Condition DVPSImageBoxContent_PList::createDefaultValues(OFBool renumber)
   OFListIterator(DVPSImageBoxContent *) last = end();
   while ((first != last)&&(EC_Normal == result))
   {     
-    result = (*first)->createDefaultValues(renumber, counter++);
+    result = (*first)->createDefaultValues(renumber, counter++, ignoreEmptyImages);
     ++first;
   }
   return result;
@@ -423,9 +423,149 @@ const char *DVPSImageBoxContent_PList::haveSinglePresentationLUTUsed(const char 
   return NULL;
 }
 
+
+OFBool DVPSImageBoxContent_PList::printSCPCreate(
+  unsigned long numBoxes,
+  DcmUniqueIdentifier& studyUID, 
+  DcmUniqueIdentifier& seriesUID, 
+  const char *aetitle)
+{
+  clear();
+  DVPSImageBoxContent *box = NULL;
+  char uid[100];
+  for (unsigned long i=0; i<numBoxes; i++)
+  {
+    box = new DVPSImageBoxContent();
+    if (box)
+    {
+      if ((EC_Normal == box->setSOPInstanceUID(dcmGenerateUniqueIdentifer(uid))) &&
+          (EC_Normal == box->setUIDsAndAETitle(studyUID, seriesUID, aetitle)))
+      {
+        push_back(box);
+      }
+      else
+      {
+      	delete box;
+      	return OFFalse;
+      }
+    } else return OFFalse;
+  }
+  return OFTrue;
+}
+
+
+E_Condition DVPSImageBoxContent_PList::writeReferencedImageBoxSQ(DcmItem &dset)
+{
+  if (size()==0) return EC_IllegalCall; // can't write if sequence is empty
+
+  E_Condition result = EC_Normal;
+  DcmSequenceOfItems *dseq=NULL;
+  DcmItem *ditem=NULL;
+  DcmUniqueIdentifier *uid=NULL;
+  const char *instanceUID=NULL;
+    
+  dseq = new DcmSequenceOfItems(DCM_ReferencedImageBoxSequence);
+  if (dseq)
+  {
+    OFListIterator(DVPSImageBoxContent *) first = begin();
+    OFListIterator(DVPSImageBoxContent *) last = end();
+    while (first != last)
+    {
+      if (result==EC_Normal)
+      {
+        ditem = new DcmItem();
+        if (ditem)
+        {
+          uid = new DcmUniqueIdentifier(DCM_ReferencedSOPClassUID);
+          if (uid) result = uid->putString(UID_BasicGrayscaleImageBoxSOPClass); else result = EC_MemoryExhausted; 
+          if (EC_Normal == result) result = ditem->insert(uid); else delete uid;
+           
+          uid = new DcmUniqueIdentifier(DCM_ReferencedSOPInstanceUID);
+          instanceUID = (*first)->getSOPInstanceUID();
+          if (uid && instanceUID) result = uid->putString(instanceUID); else result = EC_MemoryExhausted; 
+          if (EC_Normal == result) result = ditem->insert(uid); else delete uid;
+
+          if (result==EC_Normal) dseq->insert(ditem); else delete ditem;
+        } else result = EC_MemoryExhausted;
+      }
+      ++first;
+    }
+    if (result==EC_Normal) dset.insert(dseq); else delete dseq;
+  } else result = EC_MemoryExhausted;
+  return result;
+}
+
+
+OFBool DVPSImageBoxContent_PList::matchesPresentationLUT(DVPSPrintPresentationLUTAlignment align)
+{
+  OFBool result = OFTrue;
+  OFListIterator(DVPSImageBoxContent *) first = begin();
+  OFListIterator(DVPSImageBoxContent *) last = end();  
+  while (first != last)
+  {
+    result = result & (*first)->matchesPresentationLUT(align);
+    ++first;
+  }  
+  return result;
+}
+
+
+DVPSImageBoxContent *DVPSImageBoxContent_PList::duplicateImageBox(const char *uid)
+{
+  if (uid == NULL) return NULL;
+  
+  OFString aString(uid);
+  OFListIterator(DVPSImageBoxContent *) first = begin();
+  OFListIterator(DVPSImageBoxContent *) last = end();  
+  while (first != last)
+  {
+    if (aString == (*first)->getSOPInstanceUID()) return (*first)->clone();
+    ++first;
+  }  
+  return NULL;
+}
+
+OFBool DVPSImageBoxContent_PList::haveImagePositionClash(const char *uid, Uint16 position)
+{
+  if (uid == NULL) return OFFalse;
+  
+  OFString aString(uid);
+  OFListIterator(DVPSImageBoxContent *) first = begin();
+  OFListIterator(DVPSImageBoxContent *) last = end();  
+  while (first != last)
+  {
+    if (((*first)->getImageBoxPosition() == position)&&(aString != (*first)->getSOPInstanceUID())) return OFTrue; //clash
+    ++first;
+  }  
+  return OFFalse;
+}
+
+
+void DVPSImageBoxContent_PList::replace(DVPSImageBoxContent *newImageBox)
+{
+  if (! newImageBox) return;
+
+  OFString aString(newImageBox->getSOPInstanceUID());
+  OFListIterator(DVPSImageBoxContent *) first = begin();
+  OFListIterator(DVPSImageBoxContent *) last = end();  
+  while (first != last)
+  {
+    if (aString == (*first)->getSOPInstanceUID())
+    {
+      delete (*first);
+      first = erase(first);
+    }
+    else ++first;
+  }  
+  push_back(newImageBox);
+}
+
 /*
  *  $Log: dvpsibl.cc,v $
- *  Revision 1.14  2000-03-08 16:29:07  meichel
+ *  Revision 1.15  2000-05-31 12:58:15  meichel
+ *  Added initial Print SCP support
+ *
+ *  Revision 1.14  2000/03/08 16:29:07  meichel
  *  Updated copyright header.
  *
  *  Revision 1.13  2000/03/07 16:23:37  joergr

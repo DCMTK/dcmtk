@@ -23,8 +23,8 @@
  *    classes: DVPSPresentationLUT
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-03-08 16:28:54 $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  Update Date:      $Date: 2000-05-31 12:56:39 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -38,6 +38,7 @@
 #include "ofstring.h"
 #include "dctk.h"
 #include "dvpstyp.h"     /* for enum types */
+#include "dimse.h"
 
 class DicomImage;
 class DiLookupTable;
@@ -100,6 +101,14 @@ public:
    */
   DVPSPresentationLUTType getType() { return presentationLUT; }
 
+  /** gets a description of the Presentation LUT in terms of
+   *  its restrictions for use with a Print SCP that requires
+   *  Presentation LUT number of entries to match the bit depth
+   *  of the image pixel data.
+   *  @return the current presentation LUT alignment type
+   */
+  DVPSPrintPresentationLUTAlignment getAlignment();
+  
   /** checks if a real Presentation LUT (not shape) is available.
    *  @return OFTrue if this object contains
    *    a presentation LUT, no matter if it is activated or not.
@@ -201,6 +210,27 @@ public:
    */
   OFBool matchesImageDepth(OFBool is12bit);
 
+  /** performs a Print SCP N-CREATE operation on a newly created instance of 
+   *  this class. The results of the operation are stored in the objects 
+   *  passed as rsp and rspDataset.
+   *  @param rqDataset N-CREATE request dataset, may be NULL
+   *  @param rsp N-CREATE response message
+   *  @param rspDataset N-CREATE response dataset passed back in this parameter
+   *  @param matchRequired boolean flag specifying whether the SCP should
+   *    enforce a rule that all Presentation LUTs must match with the
+   *    bit depth of the image pixel data.
+   *  @param supports12Bit boolean flag specifying whether the SCP should
+   *    allow 12 bit/pixel image data transmission. Affects handling of 
+   *    matching rule.
+   *  @return OFTrue if operation was successful, OFFalse otherwise.
+   */
+  OFBool printSCPCreate(
+    DcmDataset *rqDataset, 
+    T_DIMSE_Message& rsp, 
+    DcmDataset *& rspDataset, 
+    OFBool matchRequired,
+    OFBool supports12Bit);
+
 private:
   /// private undefined assignment operator
   DVPSPresentationLUT& operator=(const DVPSPresentationLUT&);
@@ -227,7 +257,10 @@ private:
 
 /*
  *  $Log: dvpspl.h,v $
- *  Revision 1.4  2000-03-08 16:28:54  meichel
+ *  Revision 1.5  2000-05-31 12:56:39  meichel
+ *  Added initial Print SCP support
+ *
+ *  Revision 1.4  2000/03/08 16:28:54  meichel
  *  Updated copyright header.
  *
  *  Revision 1.3  1999/10/07 17:21:49  meichel

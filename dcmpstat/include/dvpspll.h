@@ -23,8 +23,8 @@
  *    classes: DVPSPresentationLUT_PList
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-03-08 16:28:54 $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  Update Date:      $Date: 2000-05-31 12:56:39 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -38,6 +38,7 @@
 #include "oflist.h"
 #include "dctk.h"
 #include "dvpstyp.h"     /* for enum types */
+#include "dimse.h"
 
 class DVPSPresentationLUT;
 class DVPSImageBoxContent_PList;
@@ -120,7 +121,20 @@ public:
    *  @return UID of referenced Presentation LUT. May be NULL (if input was NULL).
    */
   const char *addPresentationLUT(DVPSPresentationLUT *newLUT, OFBool inversePLUT);
-  
+
+  /** adds a Presentation LUT to the list of managed LUT. The LUT object becomes
+   *  owned by this object and is destroyed upon destruction of the list.
+   *  @param newLUT LUT to be added.
+   */
+  void insert(DVPSPresentationLUT *newLUT) { if (newLUT) push_back(newLUT); }
+
+  /** performs a Print SCP Presentation LUT N-DELETE operation.
+   *  The results of the N-DELETE operation are stored in the object passed as rsp.
+   *  @param rq N-DELETE request message
+   *  @param rsp N-DELETE response message
+   */
+  void printSCPDelete(T_DIMSE_Message& rq, T_DIMSE_Message& rsp);
+
 private:
 
   /** private undefined assignment operator
@@ -138,7 +152,10 @@ private:
 
 /*
  *  $Log: dvpspll.h,v $
- *  Revision 1.3  2000-03-08 16:28:54  meichel
+ *  Revision 1.4  2000-05-31 12:56:39  meichel
+ *  Added initial Print SCP support
+ *
+ *  Revision 1.3  2000/03/08 16:28:54  meichel
  *  Updated copyright header.
  *
  *  Revision 1.2  2000/02/29 12:16:15  meichel

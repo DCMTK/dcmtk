@@ -23,8 +23,8 @@
  *    classes: DVPSImageBoxContent
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-03-08 16:28:53 $
- *  CVS/RCS Revision: $Revision: 1.12 $
+ *  Update Date:      $Date: 2000-05-31 12:56:38 $
+ *  CVS/RCS Revision: $Revision: 1.13 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -38,8 +38,10 @@
 #include "ofstring.h"
 #include "dctk.h"
 #include "dvpstyp.h"     /* for enum types */
+#include "dimse.h"
 
 class DVPSPresentationLUT_PList;
+class DVConfiguration;
 
 /** the representation of a Image Box Content SQ item for Stored Print
  */  
@@ -94,9 +96,10 @@ public:
    *  Called before a stored print object is written.
    *  @param renumber if true, a new imageBoxPosition values is created 
    *  @param number new imageBoxPosition to be assigned
+   *  @param ignoreEmptyImages if true, an empty image box position does not cause an error.
    *  @return EC_Normal if successful, an error code otherwise.
    */
-  E_Condition createDefaultValues(OFBool renumber, unsigned long number);
+  E_Condition createDefaultValues(OFBool renumber, unsigned long number, OFBool ignoreEmptyImages);
   
   /** returns the referencedSOPClassUID from the ReferencedImageSequence
    *  @return referencedSOPClassUID string
@@ -171,6 +174,11 @@ public:
    */
   const char *getSOPInstanceUID();
 
+  /** gets the current image box position, 0 if none is set.
+   *  @return image box position
+   */
+  Uint16 getImageBoxPosition();
+  
   /** sets the (optional) magnification type.
    *  @param value new attribute value, may be NULL.
    *    The caller is responsible for making sure
@@ -230,7 +238,53 @@ public:
   {
     if (o) logstream = o;
   }
+
+  /** checks whether the given Presentation LUT type could be used together
+   *  with this image box on a Print SCP that requires a matching alignment
+   *  between a Presentation LUT and the image pixel data.
+   *  @param align LUT alignment type
+   *  @return OFTrue if matching, OFFalse otherwise
+   */
+  OFBool matchesPresentationLUT(DVPSPrintPresentationLUTAlignment align);
+
+  /** performs a Print SCP Basic Grayscale Image Box N-SET operation.
+   *  The results of the N-SET operation are stored in the objects passed as 
+   *  rsp and rspDataset.
+   *  @param cfg config file facility
+   *  @param cfgname symbolic printer name in config file
+   *  @param rqDataset N-SET request dataset
+   *  @param rsp N-SET response message
+   *  @param rspDataset N-SET response dataset passed back in this parameter
+   *  @param imageDataset a hardcopy grayscale image (without general study
+   *     and general series modules which must be added by the caller) 
+   *     containing the image data from the N-SET request is written to 
+   *     this dataset if the method returns successfully.
+   *  @param align describes the current Presentation LUT. Used if the Print
+   *     SCP has been configured to enforce a matching of Presentation LUT
+   *     and pixel data bit depth.
+   *  @return OFTrue if N-SET operation was successful, OFFalse otherwise.
+   */
+  OFBool printSCPSet(
+    DVConfiguration& cfg,
+    const char *cfgname,
+    DcmDataset *rqDataset,
+    T_DIMSE_Message& rsp,
+    DcmDataset *& rspDataset,
+    DcmDataset &imageDataset,
+    DVPSPrintPresentationLUTAlignment align);
  
+  /** assigns new values for study instance UID, series instance UID
+   *  and retrieve aetitle.
+   *  @param studyUID new studyUID
+   *  @param seriesUID new seriesUID
+   *  @param aetitle new retrieve aetitle, must not be NULL.
+   *  @return EC_Normal if successful, an error code otherwise.
+   */   
+  E_Condition setUIDsAndAETitle(
+    DcmUniqueIdentifier& studyUID, 
+    DcmUniqueIdentifier& seriesUID, 
+    const char *aetitle);
+
 private:
   /// private undefined assignment operator
   DVPSImageBoxContent& operator=(const DVPSImageBoxContent&);
@@ -241,6 +295,30 @@ private:
    *  @return EC_Normal if successful, an error code otherwise.
    */
   E_Condition addReferencedPLUTSQ(DcmItem &dset);
+
+  /** evaluates the contents of the Basic Grayscale Image Sequence during a
+   *  Print SCP Basic Grayscale Image Box N-SET operation.
+   *  The results of the N-SET operation are stored in the object passed as rsp.
+   *  @param cfg config file facility
+   *  @param cfgname symbolic printer name in config file
+   *  @param rqDataset first item of the Basic Grayscale Image Sequence
+   *  @param rsp N-SET response message
+   *  @param imageDataset a hardcopy grayscale image (without general study
+   *     and general series modules which must be added by the caller) 
+   *     containing the image data from the N-SET request is written to 
+   *     this dataset if the method returns successfully.
+   *  @param align describes the current Presentation LUT. Used if the Print
+   *     SCP has been configured to enforce a matching of Presentation LUT
+   *     and pixel data bit depth.
+   *  @return OFTrue if N-SET operation was successful, OFFalse otherwise.
+   */
+  OFBool printSCPEvaluateBasicGrayscaleImageSequence(
+   DVConfiguration& cfg,
+   const char *cfgname,
+   DcmItem *rqDataset,
+   T_DIMSE_Message& rsp,
+   DcmDataset &imageDataset,
+   DVPSPrintPresentationLUTAlignment align);
 
   /// Module=Image_Box_List, VR=UI, VM=1, Type 1(c) 
   DcmUniqueIdentifier      sOPInstanceUID;
@@ -282,6 +360,9 @@ private:
   // the ReferencedPresentationLUTSequence is only created/read on the fly
   DcmUniqueIdentifier      referencedPresentationLUTInstanceUID;
 
+  /// describes whether the image depth is 8 bit or 12 bit.
+  DVPSImageDepth           imageDepth;
+
   /** output stream for error messages, never NULL
    */
   ostream *logstream;
@@ -292,7 +373,10 @@ private:
 
 /*
  *  $Log: dvpsib.h,v $
- *  Revision 1.12  2000-03-08 16:28:53  meichel
+ *  Revision 1.13  2000-05-31 12:56:38  meichel
+ *  Added initial Print SCP support
+ *
+ *  Revision 1.12  2000/03/08 16:28:53  meichel
  *  Updated copyright header.
  *
  *  Revision 1.11  1999/10/07 17:21:47  meichel
