@@ -1,0 +1,26 @@
+
+HISTORY
+
+In 1993, Institute OFFIS & Oldenburg University, Germany 
+together with CERIUM, Rennes, France agreed to jointly develop a DICOM 
+implementation on behalf of CEN/TC251/WG4 as part of a DICOM demonstration
+at RSNA'93.  The software was based on a early version of the DICOM
+Upper Layer Protocol software library developed by the Mallinckrodt
+Institute of Radiology in St. Louis, USA.  The rest of this software
+was developed independently and successfully demonstrated at RSNA'93.
+Interoperability was demonstrated with around 20 implementations from 
+vendors of medical imaging equipment with both this software and the 
+Mallinckrodt Institute of Radiology's own implementation.
+
+This implementation became known as the European CTN (Central Test Node).
+
+The European CTN software was then used as part of DICOM demonstrations
+at EuroPACS'94 in Geneva, ECR'95 in Vienna and CAR'95 in Berlin.
+
+During 1996 the software has been partly rewritten to use a new C++
+based DICOM encoding/decoding library.  It has also been supplemented
+with a Modality Worklist CTN to be demonstrated for the first time
+at CAR'96 in Paris.
+
+This software package has been renamed DCMTK (DICOM ToolKit).
+

@@ -1,0 +1,35 @@
+
+DCMTK
+
+This DICOM ToolKit (DCMTK) package consists of source code,
+documentation and installation instructions for a set of 
+software libraries and applications implementing part
+of the DICOM/MEDICOM Standard.
+
+DCMTK contains the following sub-packages, each in its
+own sub-directory:
+
+    config - configuration utilities for dcmtk
+    dcmdata - a data encoding/decoding library and utility apps
+    dcmnet - a networking library and utility apps
+    imagectn - an image database server
+    wlistctn - a modality worklist database server
+    ctndisp - a graphical monitor for imagectn and wlistctn 
+
+Each sub-directory (except config) contains futher sub-directories for
+application source code (apps), library source code (libsrc), 
+library include files (include), documentation (docs) and 
+options test programs (tests).
+
+To build and install the DCMTK package see the INSTALL file.
+For copyright information see the COPYRIGHT file.
+For information about the history of this software see the HISTORY file.
+
+If you find bugs or other problems with this software we
+would appreciate hearing about them.  Please send electronic
+mail to:
+ 
+        dicom-bugs@offis.uni-oldenburg.de
+ 
+Please try to describe the problem in detail and if possible
+give a suggested fix.
