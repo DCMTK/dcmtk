@@ -22,9 +22,9 @@
  *  Purpose: Template class for command line arguments (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-09-06 16:48:32 $
+ *  Update Date:      $Date: 1999-09-13 16:38:18 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/libsrc/ofcmdln.cc,v $
- *  CVS/RCS Revision: $Revision: 1.16 $
+ *  CVS/RCS Revision: $Revision: 1.17 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -517,10 +517,12 @@ OFBool OFCommandLine::findOption(const char *longOpt,
     if (findParam(abs(pos), param_iter))                               // go to specified parameter position
     {
         if (((*param_iter)->OptionCount == 0) ||                       // no options in front of specified parameter or
-            ((pos < 0) && (!(*param_iter)->DirectOption)))             // no 'direct' option ...
+            ((pos < 0) && ((*param_iter)->DirectOption == 0)))         // no 'direct' option ...
                 return OFFalse;
         pos_iter = (*param_iter)->OptionIter;                          // first option in front of parameter
+        pos_iter++;                                                    // goto next to facilitate loop condition
     }
+    int diropt = (*param_iter)->DirectOption;                          // number of direct predecessors
     while (pos_iter != pos_first)
     {
         ArgumentIterator = *(--pos_iter);
@@ -533,7 +535,7 @@ OFBool OFCommandLine::findOption(const char *longOpt,
                 OptionBlockIterator = pos_iter;
             return OFTrue;
         }
-        else if (pos < 0)                                              // search only for the direct predecessor
+        else if ((pos < 0) && (--diropt <= 0))                         // search only for the direct predecessor
             return OFFalse;
     }
     return OFFalse;
@@ -738,10 +740,11 @@ const OFCmdOption *OFCommandLine::findCmdOption(const char *option) const
 
 
 void OFCommandLine::storeParameter(const char *param,
-                                   const OFBool directOpt)
+                                   const int directOpt)
 {
     ArgumentList.push_back((OFString)param);
-    OFCmdParamPos *parm = new OFCmdParamPos(--ArgumentList.end(), OptionPosList.end(), OptionPosList.size(), directOpt);
+    const OFListIterator(OFListIterator_OFString) iter = (OptionPosList.size() == 0) ? OptionPosList.end() : --OptionPosList.end();
+    OFCmdParamPos *parm = new OFCmdParamPos(--ArgumentList.end(), iter, OptionPosList.size(), directOpt);
     if (parm != NULL)
         ParamPosList.push_back(parm);
 }
@@ -769,7 +772,7 @@ void OFCommandLine::unpackColumnValues(const int value,
 
 #ifdef HAVE_WINDOWS_H
 void OFCommandLine::expandWildcards(const char *param,
-                                    OFBool directOpt)
+                                    int directOpt)
 {
     if (param != NULL)
     {
@@ -800,7 +803,7 @@ void OFCommandLine::expandWildcards(const char *param,
                             if (GetFileAttributes(name.c_str()) != 0xFFFFFFFF)
                             {
                                 storeParameter(name.c_str(), directOpt);   // file/dir does exist
-                                directOpt = OFFalse;                       // only valid for first expanded parameter (tbt!)
+                                directOpt = 0;                             // only valid for first expanded parameter (tbt!)
                             } else
                                 expandWildcards(name.c_str(), directOpt);  // recursively expand further wildcards
                         }
@@ -871,7 +874,7 @@ OFCommandLine::E_ParseStatus OFCommandLine::parseLine(int argCount,
         ArgumentList.clear();                                            // initialize lists
         ParamPosList.clear();
         OptionPosList.clear();
-        OFBool directOption = OFFalse;                                   // status flag: is direct predecessor an option?
+        int directOption = 0;                                            // number of direct predecessor
         for (int i = startPos; i < argCount; i++)                        // skip program name (argValue[0])
         {
             if (!checkOption(argValue[i], OFFalse))                      // arg = parameter
@@ -882,14 +885,14 @@ OFCommandLine::E_ParseStatus OFCommandLine::parseLine(int argCount,
                 else
 #endif
                     storeParameter(argValue[i], directOption);
-                directOption = OFFalse;
+                directOption = 0;
             } else {                                                     // arg = option
                 const OFCmdOption *opt = findCmdOption(argValue[i]);
                 if (opt != NULL)
                 {
                     ArgumentList.push_back((OFString)(opt->LongOption)); // convert argument to long format
                     OptionPosList.push_back(--ArgumentList.end());
-                    directOption = OFTrue;
+                    directOption++;
                     int j = opt->ValueCount;
                     if (i + j >= argCount)                               // expecting more values than present
                         return PS_MissingValue;
@@ -1215,7 +1218,11 @@ void OFCommandLine::getStatusString(const E_ValueStatus status,
  *
  * CVS/RCS Log:
  * $Log: ofcmdln.cc,v $
- * Revision 1.16  1999-09-06 16:48:32  joergr
+ * Revision 1.17  1999-09-13 16:38:18  joergr
+ * Corrected bug in OFCommandLine::findOption() regarding the optional
+ * parameter 'pos' specifying a reference command line parameter.
+ *
+ * Revision 1.16  1999/09/06 16:48:32  joergr
  * Added support to method 'findOption()' to detect options which are
  * 'direct' predecessors of an optionally specified reference parameter.
  *

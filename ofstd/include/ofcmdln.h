@@ -22,9 +22,9 @@
  *  Purpose: Handle command line arguments (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-09-06 16:48:25 $
+ *  Update Date:      $Date: 1999-09-13 16:36:54 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/include/Attic/ofcmdln.h,v $
- *  CVS/RCS Revision: $Revision: 1.17 $
+ *  CVS/RCS Revision: $Revision: 1.18 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -183,12 +183,12 @@ struct OFCmdParamPos
      ** @param  parIter    iterator pointing to a specific parameter
      *  @param  optIter    iterator pointing to first option iterator in front of the parameter
      *  @param  optCount   number of options in front of the parameter
-     *  @param  directOpt  status whether the direct predecessor in the argument list is an option
+     *  @param  directOpt  number of options which are direct predecessor in the argument list
      */
     OFCmdParamPos(const OFListIterator(OFString) &parIter,
                   const OFListIterator(OFListIterator_OFString) &optIter,
                   const int optCount,
-                  const OFBool directOpt)
+                  const int directOpt)
       : ParamIter(parIter),
         OptionIter(optIter),
         OptionCount(optCount),
@@ -202,8 +202,8 @@ struct OFCmdParamPos
     const OFListIterator(OFListIterator_OFString) OptionIter;
     /// number of options in front of the parameter
     const int OptionCount;
-    /// status whether there the direct predecessor in argument list is an option
-    OFBool DirectOption;
+    /// number of options which are direct predecessor in the argument list
+    const int DirectOption;
 };
 
 
@@ -892,7 +892,7 @@ class OFCommandLine
     /** stored the specified parameter in the argument/parameter list
      */
     void storeParameter(const char *param,
-                        const OFBool directOption = OFFalse);
+                        const int directOption = 0);
 
     /** packs the two 16 bit values into one 32 bit value
      */
@@ -910,7 +910,7 @@ class OFCommandLine
      *  Very similar to Unix environments, stores each resulting parameter in the argument/parameter list
      */
     void expandWildcards(const char *param,
-                         const OFBool directOption = OFFalse);
+                         int directOption = 0);
 #endif
 
     /** checks whether number of parameters in parsed command line is within the range of min/max (see below)
@@ -972,7 +972,11 @@ class OFCommandLine
  *
  * CVS/RCS Log:
  * $Log: ofcmdln.h,v $
- * Revision 1.17  1999-09-06 16:48:25  joergr
+ * Revision 1.18  1999-09-13 16:36:54  joergr
+ * Corrected bug in OFCommandLine::findOption() regarding the optional
+ * parameter 'pos' specifying a reference command line parameter.
+ *
+ * Revision 1.17  1999/09/06 16:48:25  joergr
  * Added support to method 'findOption()' to detect options which are
  * 'direct' predecessors of an optionally specified reference parameter.
  *
