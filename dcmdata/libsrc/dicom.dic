@@ -22,9 +22,9 @@
 #  This is the global DICOM data dictionary for the dcmtk class library.
 #
 #  Last Update:      $Author: wilkens $
-#  Update Date:      $Date: 2002-11-29 08:47:50 $
+#  Update Date:      $Date: 2002-12-10 08:31:54 $
 #  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/Attic/dicom.dic,v $
-#  CVS/RCS Revision: $Revision: 1.43 $
+#  CVS/RCS Revision: $Revision: 1.44 $
 #  Status:           $State: Exp $
 #
 #  This dictionary contains
@@ -527,12 +527,12 @@
 (0018,6032)	UL	PulseRepetitionFrequency	1	dicom98
 (0018,6034)	FD	DopplerCorrectionAngle	1	dicom98
 (0018,6036)	FD	SteeringAngle	1	dicom98
-(0018,6038)	UL	DopplerSampleVolumeXPosition	1	dicom98
-(0018,603A)	UL	DopplerSampleVolumeYPosition	1	dicom98
-(0018,603C)	UL	TMLinePositionX0	1	dicom98
-(0018,603E)	UL	TMLinePositionY0	1	dicom98
-(0018,6040)	UL	TMLinePositionX1	1	dicom98
-(0018,6042)	UL	TMLinePositionY1	1	dicom98
+# (0018,6038)	UL	DopplerSampleVolumeXPosition	1	dicom98
+# (0018,603A)	UL	DopplerSampleVolumeYPosition	1	dicom98
+# (0018,603C)	UL	TMLinePositionX0	1	dicom98
+# (0018,603E)	UL	TMLinePositionY0	1	dicom98
+# (0018,6040)	UL	TMLinePositionX1	1	dicom98
+# (0018,6042)	UL	TMLinePositionY1	1	dicom98
 (0018,6044)	US	PixelComponentOrganization	1	dicom98
 (0018,6046)	UL	PixelComponentMask	1	dicom98
 (0018,6048)	UL	PixelComponentRangeStart	1	dicom98
@@ -809,8 +809,8 @@
 (0040,0250)	DA	PerformedProcedureStepEndDate	1	dicom98
 (0040,0251)	TM	PerformedProcedureStepEndTime	1	dicom98
 (0040,0252)	CS	PerformedProcedureStepStatus	1	dicom98
-(0040,0253)	SH	PerformedProcedureStepID	1	dicom99
 # VR for (0040,0253) PerformedProcedureStepID was CS in DICOM98. Changed in DICOM99.
+(0040,0253)	SH	PerformedProcedureStepID	1	dicom99
 (0040,0254)	LO	PerformedProcedureStepDescription	1	dicom98
 (0040,0255)	LO	PerformedProcedureTypeDescription	1	dicom98
 # attribute renamed in CP 201, name was PerformedActionItemSequence before
@@ -955,11 +955,11 @@
 (0040,A730)	SQ	ContentSequence	1	dicom2000
 (0040,B020)	SQ	AnnotationSequence	1	dicom2000
 (0040,DB00)	CS	TemplateIdentifier	1	dicom2000
-(0040,DB06)	DT	TemplateVersion	1	dicom2000
-(0040,DB07)	DT	TemplateLocalVersion	1	dicom2000
-(0040,DB0B)	CS	TemplateExtensionFlag	1	dicom2000
-(0040,DB0C)	UI	TemplateExtensionOrganizationUID	1	dicom2000
-(0040,DB0D)	UI	TemplateExtensionCreatorUID	1	dicom2000
+# (0040,DB06)	DT	TemplateVersion	1	dicom2000
+# (0040,DB07)	DT	TemplateLocalVersion	1	dicom2000
+# (0040,DB0B)	CS	TemplateExtensionFlag	1	dicom2000
+# (0040,DB0C)	UI	TemplateExtensionOrganizationUID	1	dicom2000
+# (0040,DB0D)	UI	TemplateExtensionCreatorUID	1	dicom2000
 (0040,DB73)	UL	ReferencedContentItemIdentifier	1-n	dicom2000
 (0050,0000)	UL	XRayAngioDeviceGroupLength	1	dicom98
 # name for (0050,0004) was CalibrationObject in DICOM96. Name changed to CalibrationImage in DICOM98.
@@ -1705,8 +1705,8 @@
 (5000-50ff,0106)	SH	CurveRange	1-n	dicom98
 # VM for (5000-50ff,0110) CurveDataDescriptor was 1 in DICOM93. Changed in DICOM96.
 (5000-50ff,0110)	US	CurveDataDescriptor	1-n	dicom98
-(5000-50ff,0112)	US	CoordinateStartValue	1	dicom98
-(5000-50ff,0114)	US	CoordinateStepValue	1	dicom98
+# (5000-50ff,0112)	US	CoordinateStartValue	1	dicom98
+# (5000-50ff,0114)	US	CoordinateStepValue	1	dicom98
 (5000-50ff,1001)	CS	CurveActivationLayer	1	dicom2000
 (5000-50ff,2000)	US	AudioType	1	dicom98
 (5000-50ff,2002)	US	AudioSampleFormat	1	dicom98
@@ -1959,8 +1959,10 @@
 #
 # CP Packet 14, final text
 #
+# CP 251:
+(0040,0281)	SQ	PerformedProcedureStepDiscontinuationReasonCodeSequence	1	cp14
 # CP 260: 
-(0040,A301)	SQ	NumberQualifierCodeSequence	1	cp14
+(0040,A301)	SQ	NumericValueQualifierCodeSequence	1	cp14
 #
 #---------------------------------------------------------------------------
 #
@@ -1974,11 +1976,70 @@
 #
 # CP Packet 16, final text
 #
-# ATTENTION: CP 247 is missing - tag numbers are not assigned in CP16 text!
+# CP 247:
+(0008,0096)	SQ	ReferringPhysicianIdentificationSequence	1	cp16
+(0008,1049)	SQ	PhysiciansOfRecordIdentificationSequence	1	cp16
+(0008,1052)	SQ	PerformingPhysicianIdentificationSequence	1	cp16
+(0008,1062)	SQ	PhysiciansReadingStudyIdentificationSequence	1	cp16
+(0008,1072)	SQ	OperatorIdentificationSequence	1	cp16
+(0032,1031)	SQ	RequestingPhysicianIdentificationSequence	1	cp16
+(0040,000B)	SQ	ScheduledPerformingPhysicianIdentificationSequence	1	cp16
+(0040,1011)	SQ	IntendedRecipientsOfResultsIdentificationSequence	1	cp16
+(0040,1101)	SQ	PersonIdentificationCodeSequence	1	cp16
+(0040,1102)	ST	PersonsAddress	1	cp16
+(0040,1103)	LO	PersonsTelephoneNumbers	1-n	cp16
 #
-# CP 279
+# CP 279:
 # VR of ColumnAngulation was CS in DICOM98. Changed in CP 279.
 (0018,1450)	DS	ColumnAngulation	1	cp16
+#
+#---------------------------------------------------------------------------
+#
+# CP Packet 17, final text
+#
+# CP 223:
+(300A,00FB)	CS	BlockMountingPosition	1	cp17
+(300A,02E0)	CS	CompensatorDivergence	1	cp17
+(300A,02E1)	CS	CompensatorMountingPosition	1	cp17
+(300A,02E2)	DS	SourceToCompensatorDistance	1-n	cp17
+#
+# CP 275:
+# retired in CP 275 (2001)
+(0040,DB06)	DT	RETIRED_TemplateVersion	1	cp17
+# retired in CP 275 (2001)
+(0040,DB07)	DT	RETIRED_TemplateLocalVersion	1	cp17
+# retired in CP 275 (2001)
+(0040,DB0B)	CS	RETIRED_TemplateExtensionFlag	1	cp17
+# retired in CP 275 (2001)
+(0040,DB0C)	UI	RETIRED_TemplateExtensionOrganizationUID	1	cp17
+# retired in CP 275 (2001)
+(0040,DB0D)	UI	RETIRED_TemplateExtensionCreatorUID	1	cp17
+#
+# CP 293:
+# VM for (5000-50ff,0112) CoordinateStartValue was 1 in DICOM98. Changed in CP 293 (2001).
+(5000-50ff,0112)	US	CoordinateStartValue	1-n	cp17
+# VM for (5000-50ff,0114) CoordinateStepValue was 1 in DICOM98. Changed in CP 293 (2001).
+(5000-50ff,0114)	US	CoordinateStepValue	1-n	cp17
+#
+# CP 303:
+# retired in CP 303 (2001)
+(0018,6038)	UL	RETIRED_DopplerSampleVolumeXPosition	1	cp17
+(0018,6039)	SL	DopplerSampleVolumeXPosition	1	cp17
+# retired in CP 303 (2001)
+(0018,603A)	UL	RETIRED_DopplerSampleVolumeYPosition	1	cp17
+(0018,603B)	SL	DopplerSampleVolumeYPosition	1	cp17
+# retired in CP 303 (2001)
+(0018,603C)	UL	RETIRED_TMLinePositionX0	1	cp17
+(0018,603D)	SL	TMLinePositionX0	1	cp17
+# retired in CP 303 (2001)
+(0018,603E)	UL	RETIRED_TMLinePositionY0	1	cp17
+(0018,603F)	SL	TMLinePositionY0	1	cp17
+# retired in CP 303 (2001)
+(0018,6040)	UL	RETIRED_TMLinePositionX1	1	cp17
+(0018,6041)	SL	TMLinePositionX1	1	cp17
+# retired in CP 303 (2001)
+(0018,6042)	UL	RETIRED_TMLinePositionY1	1	cp17
+(0018,6043)	SL	TMLinePositionY1	1	cp17
 #
 #---------------------------------------------------------------------------
 #
@@ -2188,11 +2249,8 @@
 (0040,9225)	FD	RealWorldValueSlope	1	sup49_ft
 (5200,9229)	SQ	SharedFunctionalGroupsSequence	1	sup49_ft
 (5200,9230)	SQ	PerFrameFunctionalGroupsSequence	1	sup49_ft
-# (5600,0010)	OF	FirstOrderPhaseCorrectionAngle	1	sup49_ft
-# (5600,0020)	OF	SpectroscopyData	1	sup49_ft
-# Temporary solution: these two attributes should be OF, but OF is not yet supported
-(5600,0010)	OB	FirstOrderPhaseCorrectionAngle	1	sup49_ft
-(5600,0020)	OB	SpectroscopyData	1	sup49_ft
+(5600,0010)	OF	FirstOrderPhaseCorrectionAngle	1	sup49_ft
+(5600,0020)	OF	SpectroscopyData	1	sup49_ft
 #
 # EOF
 #
