@@ -57,9 +57,9 @@
 **	Module Prefix: DIMSE_
 **
 ** Last Update:		$Author: meichel $
-** Update Date:		$Date: 2002-09-10 16:00:47 $
+** Update Date:		$Date: 2003-08-27 15:03:33 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/include/Attic/dimse.h,v $
-** CVS/RCS Revision:	$Revision: 1.13 $
+** CVS/RCS Revision:	$Revision: 1.14 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -264,7 +264,7 @@ typedef enum {
 
 /* C-STORE */
 
-typedef struct {
+struct T_DIMSE_C_StoreRQ {
 	DIC_US          MessageID;				/* M */
 	DIC_UI          AffectedSOPClassUID;			/* M */
 	T_DIMSE_Priority Priority;				/* M */
@@ -282,9 +282,9 @@ typedef struct {
          * dcmEnableAutomaticInputDataCorrection is false.
          */
 #define O_STORE_RQ_BLANK_PADDING			0x0008
-} T_DIMSE_C_StoreRQ;
+};
 
-typedef struct {
+struct T_DIMSE_C_StoreRSP {
 	DIC_US          MessageIDBeingRespondedTo;		/* M */
 	DIC_UI          AffectedSOPClassUID;			/* U(=) */
 	T_DIMSE_DataSetType DataSetType;			/* M */
@@ -300,36 +300,36 @@ typedef struct {
 #define O_STORE_PEER_REQUIRES_EXACT_UID_COPY    0x0004
         /* SOP instance UID in C-STORE-RQ was space padded. */
 #define O_STORE_RSP_BLANK_PADDING		0x0008
-} T_DIMSE_C_StoreRSP;
+} ;
 
 /* C-ECHO */
 
-typedef struct {
+struct T_DIMSE_C_EchoRQ {
 	DIC_US          MessageID;				/* M */
 	DIC_UI          AffectedSOPClassUID;			/* M */
 	T_DIMSE_DataSetType DataSetType;			/* M */
-} T_DIMSE_C_EchoRQ;
+} ;
 
-typedef struct {
+struct T_DIMSE_C_EchoRSP {
 	DIC_US          MessageIDBeingRespondedTo;		/* M */
 	DIC_UI          AffectedSOPClassUID;			/* U(=) */
 	T_DIMSE_DataSetType DataSetType;			/* M */
 	DIC_US          DimseStatus;				/* M */
 	unsigned int	opts; /* which optional items are set */
 #define O_ECHO_AFFECTEDSOPCLASSUID		0x0001
-} T_DIMSE_C_EchoRSP;
+} ;
 
 /* C-FIND */
 
-typedef struct {
+struct T_DIMSE_C_FindRQ {
 	DIC_US          MessageID;				/* M */
 	DIC_UI          AffectedSOPClassUID;			/* M */
 	T_DIMSE_Priority Priority;				/* M */
 	T_DIMSE_DataSetType DataSetType;			/* M */
 	/* Identifier provided as argument to DIMSE functions *//* M */
-} T_DIMSE_C_FindRQ;
+} ;
 
-typedef struct {
+struct T_DIMSE_C_FindRSP {
 	DIC_US          MessageIDBeingRespondedTo;		/* M */
 	DIC_UI          AffectedSOPClassUID;			/* U(=) */
 	T_DIMSE_DataSetType DataSetType;			/* M */
@@ -337,19 +337,19 @@ typedef struct {
 	/* Identifier provided as argument to DIMSE functions *//* C */
 	unsigned int	opts; /* which optional items are set */
 #define O_FIND_AFFECTEDSOPCLASSUID		0x0001
-} T_DIMSE_C_FindRSP;
+} ;
 
 /* C-GET */
 
-typedef struct {
+struct T_DIMSE_C_GetRQ {
 	DIC_US          MessageID;				/* M */
 	DIC_UI          AffectedSOPClassUID;			/* M */
 	T_DIMSE_Priority Priority;				/* M */
 	T_DIMSE_DataSetType DataSetType;			/* M */
 	/* Identifier provided as argument to DIMSE functions *//* M */
-} T_DIMSE_C_GetRQ;
+} ;
 
-typedef struct {
+struct T_DIMSE_C_GetRSP {
 	DIC_US          MessageIDBeingRespondedTo;		/* M */
 	DIC_UI          AffectedSOPClassUID;			/* U(=) */
 	T_DIMSE_DataSetType DataSetType;			/* M */
@@ -364,20 +364,20 @@ typedef struct {
 #define O_GET_NUMBEROFCOMPLETEDSUBOPERATIONS	0x0004
 #define O_GET_NUMBEROFFAILEDSUBOPERATIONS	0x0008
 #define O_GET_NUMBEROFWARNINGSUBOPERATIONS	0x0010
-} T_DIMSE_C_GetRSP;
+} ;
 
 /* C-MOVE */
 
-typedef struct {
+struct T_DIMSE_C_MoveRQ {
 	DIC_US          MessageID;				/* M */
 	DIC_UI          AffectedSOPClassUID;			/* M */
 	T_DIMSE_Priority Priority;				/* M */
 	T_DIMSE_DataSetType DataSetType;			/* M */
 	DIC_AE          MoveDestination;			/* M */
 	/* Identifier provided as argument to DIMSE functions *//* M */
-} T_DIMSE_C_MoveRQ;
+} ;
 
-typedef struct {
+struct T_DIMSE_C_MoveRSP {
 	DIC_US          MessageIDBeingRespondedTo;		/* M */
 	DIC_UI          AffectedSOPClassUID;			/* U(=) */
 	T_DIMSE_DataSetType DataSetType;			/* M */
@@ -392,29 +392,29 @@ typedef struct {
 #define O_MOVE_NUMBEROFCOMPLETEDSUBOPERATIONS	0x0004
 #define O_MOVE_NUMBEROFFAILEDSUBOPERATIONS	0x0008
 #define O_MOVE_NUMBEROFWARNINGSUBOPERATIONS	0x0010
-} T_DIMSE_C_MoveRSP;
+} ;
 
 
 /* C-CANCEL */
 
-typedef struct {
+struct T_DIMSE_C_CancelRQ {
 	DIC_US          MessageIDBeingRespondedTo;		/* M */
 	T_DIMSE_DataSetType DataSetType;			/* M */
-} T_DIMSE_C_CancelRQ;
+} ;
 
 
 /* N-EVENT-REPORT */
 
-typedef struct {
+struct T_DIMSE_N_EventReportRQ {
 	DIC_US          MessageID;				/* M */
 	DIC_UI          AffectedSOPClassUID;			/* M */
 	DIC_UI          AffectedSOPInstanceUID;			/* M */
 	T_DIMSE_DataSetType DataSetType;			/* M */
 	DIC_US		EventTypeID;				/* M */
 	/* EventInformation provided as argument to DIMSE functions *//* U */
-} T_DIMSE_N_EventReportRQ;
+} ;
 
-typedef struct {
+struct T_DIMSE_N_EventReportRSP {
 	DIC_US          MessageIDBeingRespondedTo;		/* M */
 	DIC_UI          AffectedSOPClassUID;			/* U(=) */
 	DIC_US          DimseStatus;				/* M */
@@ -426,11 +426,11 @@ typedef struct {
 #define O_NEVENTREPORT_AFFECTEDSOPCLASSUID		0x0001
 #define O_NEVENTREPORT_AFFECTEDSOPINSTANCEUID		0x0002
 #define O_NEVENTREPORT_EVENTTYPEID			0x0004
-} T_DIMSE_N_EventReportRSP;
+} ;
 
 /* N-GET */
 
-typedef struct {
+struct T_DIMSE_N_GetRQ {
 	DIC_US          MessageID;				/* M */
 	DIC_UI          RequestedSOPClassUID;			/* M */
 	DIC_UI          RequestedSOPInstanceUID;		/* M */
@@ -443,9 +443,9 @@ typedef struct {
 	 */
 	int		ListCount;
 	DIC_US		*AttributeIdentifierList;		/* U */
-} T_DIMSE_N_GetRQ;
+} ;
 
-typedef struct {
+struct T_DIMSE_N_GetRSP {
 	DIC_US          MessageIDBeingRespondedTo;		/* M */
 	DIC_UI          AffectedSOPClassUID;			/* U */
 	DIC_US          DimseStatus;				/* M */
@@ -455,19 +455,19 @@ typedef struct {
 	unsigned int	opts; /* which optional items are set */
 #define O_NGET_AFFECTEDSOPCLASSUID		0x0001
 #define O_NGET_AFFECTEDSOPINSTANCEUID		0x0002
-} T_DIMSE_N_GetRSP;
+} ;
 
 /* N-SET */
 
-typedef struct {
+struct T_DIMSE_N_SetRQ {
 	DIC_US          MessageID;				/* M */
 	DIC_UI          RequestedSOPClassUID;			/* M */
 	DIC_UI          RequestedSOPInstanceUID;		/* M */
 	T_DIMSE_DataSetType DataSetType;			/* M */
 	/* ModificationList provided as argument to DIMSE functions *//* M */
-} T_DIMSE_N_SetRQ;
+} ;
 
-typedef struct {
+struct T_DIMSE_N_SetRSP {
 	DIC_US          MessageIDBeingRespondedTo;		/* M */
 	DIC_UI          AffectedSOPClassUID;			/* U */
 	DIC_US          DimseStatus;				/* M */
@@ -477,20 +477,20 @@ typedef struct {
 	unsigned int	opts; /* which optional items are set */
 #define O_NSET_AFFECTEDSOPCLASSUID		0x0001
 #define O_NSET_AFFECTEDSOPINSTANCEUID		0x0002
-} T_DIMSE_N_SetRSP;
+} ;
 
 /* N-ACTION */
 
-typedef struct {
+struct T_DIMSE_N_ActionRQ {
 	DIC_US          MessageID;				/* M */
 	DIC_UI          RequestedSOPClassUID;			/* M */
 	DIC_UI          RequestedSOPInstanceUID;		/* M */
 	DIC_US		ActionTypeID;				/* M */
 	T_DIMSE_DataSetType DataSetType;			/* M */
 	/* ActionInformation provided as argument to DIMSE functions *//* U */
-} T_DIMSE_N_ActionRQ;
+} ;
 
-typedef struct {
+struct T_DIMSE_N_ActionRSP {
 	DIC_US          MessageIDBeingRespondedTo;		/* M */
 	DIC_UI          AffectedSOPClassUID;			/* U */
 	DIC_US          DimseStatus;				/* M */
@@ -502,11 +502,11 @@ typedef struct {
 #define O_NACTION_AFFECTEDSOPCLASSUID		0x0001
 #define O_NACTION_AFFECTEDSOPINSTANCEUID	0x0002
 #define O_NACTION_ACTIONTYPEID			0x0004
-} T_DIMSE_N_ActionRSP;
+} ;
 
 /* N-CREATE */
 
-typedef struct {
+struct T_DIMSE_N_CreateRQ {
 	DIC_US          MessageID;				/* M */
 	DIC_UI          AffectedSOPClassUID;			/* M */
 	DIC_UI          AffectedSOPInstanceUID;			/* U */
@@ -514,9 +514,9 @@ typedef struct {
 	/* AttributeList provided as argument to DIMSE functions *//* M */
 	unsigned int	opts; /* which optional items are set */
 #define O_NCREATE_AFFECTEDSOPINSTANCEUID	0x0002
-} T_DIMSE_N_CreateRQ;
+} ;
 
-typedef struct {
+struct T_DIMSE_N_CreateRSP {
 	DIC_US          MessageIDBeingRespondedTo;		/* M */
 	DIC_UI          AffectedSOPClassUID;			/* U(=) */
 	DIC_US          DimseStatus;				/* M */
@@ -526,18 +526,18 @@ typedef struct {
 	unsigned int	opts; /* which optional items are set */
 #define O_NCREATE_AFFECTEDSOPCLASSUID		0x0001
 #define O_NCREATE_AFFECTEDSOPINSTANCEUID	0x0002
-} T_DIMSE_N_CreateRSP;
+} ;
 
 /* N-DELETE */
 
-typedef struct {
+struct T_DIMSE_N_DeleteRQ {
 	DIC_US          MessageID;				/* M */
 	DIC_UI          RequestedSOPClassUID;			/* M */
 	DIC_UI          RequestedSOPInstanceUID;		/* M */
 	T_DIMSE_DataSetType DataSetType;			/* M */
-} T_DIMSE_N_DeleteRQ;
+} ;
 
-typedef struct {
+struct T_DIMSE_N_DeleteRSP {
 	DIC_US          MessageIDBeingRespondedTo;		/* M */
 	DIC_UI          AffectedSOPClassUID;			/* U */
 	DIC_US          DimseStatus;				/* M */
@@ -546,7 +546,7 @@ typedef struct {
 	unsigned int	opts; /* which optional items are set */
 #define O_NDELETE_AFFECTEDSOPCLASSUID		0x0001
 #define O_NDELETE_AFFECTEDSOPINSTANCEUID	0x0002
-} T_DIMSE_N_DeleteRSP;
+} ;
 
 
 
@@ -554,7 +554,7 @@ typedef struct {
  * Composite  DIMSE Message 
  */
 
-typedef struct {
+struct T_DIMSE_Message {
 	T_DIMSE_Command CommandField;	/* M */
 
 	union {
@@ -586,7 +586,7 @@ typedef struct {
 		T_DIMSE_N_DeleteRSP NDeleteRSP;
 	} msg;
 
-} T_DIMSE_Message;
+};
 
 
 /*
@@ -670,12 +670,12 @@ typedef enum {
     DIMSE_StoreEnd		/* after data set */
 } T_DIMSE_StoreProgressState;
 
-typedef struct { /* progress structure for store callback routines */
+struct T_DIMSE_StoreProgress { /* progress structure for store callback routines */
     T_DIMSE_StoreProgressState state;	/* current state */
     long callbackCount;	/* callback execution count */
     long progressBytes;	/* sent/received so far */
     long totalBytes;		/* total/estimated total to send/receive */
-} T_DIMSE_StoreProgress;
+} ;
 
 
 typedef void (*DIMSE_StoreUserCallback)(
@@ -684,11 +684,11 @@ typedef void (*DIMSE_StoreUserCallback)(
     T_DIMSE_C_StoreRQ *request	/* original store request */
    );
 
-typedef struct {
+struct T_DIMSE_DetectedCancelParameters {
     OFBool cancelEncountered;
     T_ASC_PresentationContextID presId;
     T_DIMSE_C_CancelRQ req;
-} T_DIMSE_DetectedCancelParameters;
+} ;
 
 OFCondition
 DIMSE_storeUser(
@@ -1025,7 +1025,10 @@ void DIMSE_printMessage(ostream& outstream, T_DIMSE_Message &msg, DcmItem *datas
 /*
 ** CVS Log
 ** $Log: dimse.h,v $
-** Revision 1.13  2002-09-10 16:00:47  meichel
+** Revision 1.14  2003-08-27 15:03:33  meichel
+** Changed anonymous struct typedefs into struct declarations
+**
+** Revision 1.13  2002/09/10 16:00:47  meichel
 ** Added global flag dcmMaxOutgoingPDUSize that allows to restrict the maximum
 **   size of outgoiung P-DATA PDUs to a value less than the maximum supported by
 **   the remote application entity or this library.  May be useful if there is an
