@@ -21,9 +21,9 @@
  *
  *  Purpose: DVConfiguration
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-03-08 16:29:02 $
- *  CVS/RCS Revision: $Revision: 1.21 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2000-05-30 13:57:11 $
+ *  CVS/RCS Revision: $Revision: 1.22 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -55,6 +55,7 @@
 #define L0_AETITLE                      "AETITLE"
 #define L0_ANNOTATION                   "ANNOTATION"
 #define L0_ALWAYSDELETETERMINATEJOBS    "ALWAYSDELETETERMINATEJOBS"
+#define L0_AUTOCREATECONFIGFILE         "AUTOCREATECONFIGFILE"
 #define L0_BITPRESERVINGMODE            "BITPRESERVINGMODE"
 #define L0_BORDERDENSITY                "BORDERDENSITY"
 #define L0_CENTER                       "CENTER"
@@ -75,6 +76,7 @@
 #define L0_IMPLICITONLY                 "IMPLICITONLY"
 #define L0_LOGDIRECTORY                 "LOGDIRECTORY"
 #define L0_MAGNIFICATIONTYPE            "MAGNIFICATIONTYPE"
+#define L0_MAXASSOCIATIONS              "MAXASSOCIATIONS"
 #define L0_MAXCOLUMNS                   "MAXCOLUMNS"
 #define L0_MAXDENSITY                   "MAXDENSITY"
 #define L0_MAXPDU                       "MAXPDU"
@@ -94,6 +96,7 @@
 #define L0_RESOLUTIONID                 "RESOLUTIONID"
 #define L0_SCREENSIZE                   "SCREENSIZE"
 #define L0_SENDER                       "SENDER"
+#define L0_SERVER                       "SERVER"
 #define L0_SESSIONLABELANNOTATION       "SESSIONLABELANNOTATION"
 #define L0_SLEEP                        "SLEEP"
 #define L0_SMOOTHINGTYPE                "SMOOTHINGTYPE"
@@ -110,6 +113,7 @@
 #define L1_LUT                          "LUT"
 #define L1_MONITOR                      "MONITOR"
 #define L1_NETWORK                      "NETWORK"
+#define L1_QUERY_RETRIEVE               "QUERY_RETRIEVE"
 #define L1_PRINT                        "PRINT"
 #define L2_COMMUNICATION                "COMMUNICATION"
 #define L2_GENERAL                      "GENERAL"
@@ -405,6 +409,51 @@ unsigned long DVConfiguration::getNetworkMaxPDU()
   return result;
 }
 
+OFBool DVConfiguration::getQueryRetrieveAutoCreateConfigFile()
+{
+  return getConfigBoolEntry(L2_GENERAL, L1_QUERY_RETRIEVE, L0_AUTOCREATECONFIGFILE, OFTrue);
+}
+
+const char *DVConfiguration::getQueryRetrieveAETitle()
+{
+  const char *result = getConfigEntry(L2_GENERAL, L1_QUERY_RETRIEVE, L0_AETITLE);
+  if (result==NULL) result = PSTAT_AETITLE;
+  return result;
+}
+
+unsigned short DVConfiguration::getQueryRetrievePort()
+{
+  const char *c = getConfigEntry(L2_GENERAL, L1_QUERY_RETRIEVE, L0_PORT);
+  unsigned short result = 0;
+  if (c)
+  {
+    if (1 != sscanf(c, "%hu", &result)) result=0;
+  }
+  return result;
+}
+
+unsigned long DVConfiguration::getQueryRetrieveMaxPDU()
+{
+  const char *c = getConfigEntry(L2_GENERAL, L1_QUERY_RETRIEVE, L0_MAXPDU);
+  unsigned long result = 0;
+  if (c)
+  {
+    if (1 != sscanf(c, "%lu", &result)) result=0;
+  }
+  return result;
+}
+
+unsigned long DVConfiguration::getQueryRetrieveMaxAssociations()
+{
+  const char *c = getConfigEntry(L2_GENERAL, L1_QUERY_RETRIEVE, L0_MAXASSOCIATIONS);
+  unsigned long result = 0;
+  if (c)
+  {
+    if (1 != sscanf(c, "%lu", &result)) result=0;
+  }
+  return result;
+}
+
 const char *DVConfiguration::getDatabaseFolder()
 {
   const char *result = getConfigEntry(L2_GENERAL, L1_DATABASE, L0_DIRECTORY);
@@ -467,6 +516,11 @@ const char *DVConfiguration::getSenderName()
 const char *DVConfiguration::getReceiverName()
 {
   return getConfigEntry(L2_GENERAL, L1_NETWORK, L0_RECEIVER);
+}
+
+const char *DVConfiguration::getQueryRetrieveServerName()
+{
+  return getConfigEntry(L2_GENERAL, L1_QUERY_RETRIEVE, L0_SERVER);
 }
 
 const char *DVConfiguration::getSpoolerName()
@@ -596,30 +650,6 @@ OFBool DVConfiguration::getTargetPrinterSupportsDecimateCrop(const char *targetI
 OFBool DVConfiguration::getTargetPrinterSupportsTrim(const char *targetID)
 {
   return getConfigBoolEntry(L2_COMMUNICATION, targetID, L0_SUPPORTSTRIM, OFFalse);
-}
-
-Uint32 DVConfiguration::getTargetPrinterMaxDisplayFormatColumns(const char *targetID)
-{
-  Uint32 result = (Uint32) -1;
-  unsigned long val = 0;
-  const char *c = getConfigEntry(L2_COMMUNICATION, targetID, L0_MAXCOLUMNS);
-  if (c)
-  {
-    if (1 == sscanf(c, "%lu", &val)) result=(Uint32)val;
-  }
-  return result;
-}
-
-Uint32 DVConfiguration::getTargetPrinterMaxDisplayFormatRows(const char *targetID)
-{
-  Uint32 result = (Uint32) -1;
-  unsigned long val = 0;
-  const char *c = getConfigEntry(L2_COMMUNICATION, targetID, L0_MAXROWS);
-  if (c)
-  {
-    if (1 == sscanf(c, "%lu", &val)) result=(Uint32)val;
-  }
-  return result;
 }
 
 Uint32 DVConfiguration::getTargetPrinterNumberOfFilmSizeIDs(const char *targetID)
@@ -1048,7 +1078,11 @@ Uint16 DVConfiguration::getTargetPrinterAnnotationPosition(const char *targetID)
 /*
  *  CVS/RCS Log:
  *  $Log: dvpscf.cc,v $
- *  Revision 1.21  2000-03-08 16:29:02  meichel
+ *  Revision 1.22  2000-05-30 13:57:11  joergr
+ *  Added new section to the config file describing the query/retrieve server
+ *  settings.
+ *
+ *  Revision 1.21  2000/03/08 16:29:02  meichel
  *  Updated copyright header.
  *
  *  Revision 1.20  2000/03/06 16:08:08  meichel
