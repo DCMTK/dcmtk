@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DSRTreeNode, DSRTree
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-08-07 12:56:22 $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2003-12-17 17:40:17 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -102,8 +102,8 @@ class DSRTreeNode
 /** Class managing a tree of nodes
  */
 class DSRTree
-  : protected DSRTypes,
-    public DSRTreeNodeCursor
+  : public DSRTreeNodeCursor,
+    protected DSRTypes
 {
 
   public:
@@ -202,7 +202,10 @@ class DSRTree
 /*
  *  CVS/RCS Log:
  *  $Log: dsrtree.h,v $
- *  Revision 1.7  2003-08-07 12:56:22  joergr
+ *  Revision 1.8  2003-12-17 17:40:17  meichel
+ *  Changed order of inheritance to avoid internal compiler error on Borland Builder.
+ *
+ *  Revision 1.7  2003/08/07 12:56:22  joergr
  *  Updated documentation to get rid of doxygen warnings.
  *
  *  Revision 1.6  2002/04/11 13:02:34  joergr
