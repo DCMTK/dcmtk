@@ -46,9 +46,6 @@
 (0000,1005)	AT	AttributeIdentifierList	1-n	DICOM3
 (0000,1007)	AT	ModificationList	1-n	DICOM3
 (0000,1008)	US	ActionTypeID	1	DICOM3
-(0000,1013)	UI	SuccessfulSOPInstanceUIDList	1-n	DICOM3
-(0000,1014)	UI	FailedSOPInstanceUIDList	1-n	DICOM3
-(0000,1015)	UI	WarningSOPInstanceUIDList	1-n	DICOM3
 (0000,1020)	US	NumberOfRemainingSuboperations	1	DICOM3
 (0000,1021)	US	NumberOfCompletedSuboperations	1	DICOM3
 (0000,1022)	US	NumberOfFailedSuboperations	1	DICOM3
@@ -127,7 +124,7 @@
 (0008,0050)	SH	AccessionNumber	1	DICOM3
 (0008,0052)	CS	QueryRetrieveLevel	1	DICOM3
 (0008,0054)	AE	RetrieveAETitle	1-n	DICOM3
-(0008,0058)	UI	DataSetFailedSOPInstanceUIDList	1-n	DICOM3
+(0008,0058)	UI	FailedSOPInstanceUIDList	1-n	DICOM3
 (0008,0060)	CS	Modality	1	DICOM3
 (0008,0064)	CS	ConversionType	1	DICOM3
 (0008,0070)	LO	Manufacturer	1	DICOM3

@@ -4,7 +4,7 @@
 **
 **   User: hewett
 **   Host: caesar
-**   Date: Mon Apr 22 11:16:01 1996
+**   Date: Thu Apr 25 16:48:51 1996
 **   Prog: /home/hewett/dicom/dcmtk/dcmdata/libsrc/mkdeftag
 **
 ** From: /home/hewett/dicom/dcmtk/dcmdata/libsrc/dicom.dic
@@ -16,12 +16,12 @@
 
 #include "dctagkey.h"
 
-#define DCM_DICT_DEFTAG_BUILD_DATE "Mon Apr 22 11:16:01 1996"
+#define DCM_DICT_DEFTAG_BUILD_DATE "Thu Apr 25 16:48:51 1996"
 
 
 /*
 ** Fixed Tags in assending (gggg,eeee) order.
-** Number of entries: 890
+** Number of entries: 887
 ** Tags with a repeating component (repeating tags) are listed later.
 */
 #define DCM_CommandGroupLength                   DcmTagKey(0x0000, 0x0000)
@@ -50,9 +50,6 @@
 #define DCM_AttributeIdentifierList              DcmTagKey(0x0000, 0x1005)
 #define DCM_ModificationList                     DcmTagKey(0x0000, 0x1007)
 #define DCM_ActionTypeID                         DcmTagKey(0x0000, 0x1008)
-#define DCM_SuccessfulSOPInstanceUIDList         DcmTagKey(0x0000, 0x1013)
-#define DCM_FailedSOPInstanceUIDList             DcmTagKey(0x0000, 0x1014)
-#define DCM_WarningSOPInstanceUIDList            DcmTagKey(0x0000, 0x1015)
 #define DCM_NumberOfRemainingSuboperations       DcmTagKey(0x0000, 0x1020)
 #define DCM_NumberOfCompletedSuboperations       DcmTagKey(0x0000, 0x1021)
 #define DCM_NumberOfFailedSuboperations          DcmTagKey(0x0000, 0x1022)
@@ -131,7 +128,7 @@
 #define DCM_AccessionNumber                      DcmTagKey(0x0008, 0x0050)
 #define DCM_QueryRetrieveLevel                   DcmTagKey(0x0008, 0x0052)
 #define DCM_RetrieveAETitle                      DcmTagKey(0x0008, 0x0054)
-#define DCM_DataSetFailedSOPInstanceUIDList      DcmTagKey(0x0008, 0x0058)
+#define DCM_FailedSOPInstanceUIDList             DcmTagKey(0x0008, 0x0058)
 #define DCM_Modality                             DcmTagKey(0x0008, 0x0060)
 #define DCM_ConversionType                       DcmTagKey(0x0008, 0x0064)
 #define DCM_Manufacturer                         DcmTagKey(0x0008, 0x0070)
