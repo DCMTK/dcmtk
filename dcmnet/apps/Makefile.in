@@ -20,26 +20,26 @@ LOCALINCLUDES=-I$(dcmdatadir)/include -I$(includedir)/dcmdata
 LIBDIRS = -L$(top_srcdir)/libsrc -L$(dcmdatadir)/libsrc -L$(libdir)
 LOCALLIBS = -ldcmnet -ldcmdata
 
-objs= echoscu.o storescu.o storescp.o findscu.o movescu.o cmdlnarg.o
+objs= echoscu.o storescu.o storescp.o findscu.o movescu.o
 
 progs= echoscu storescu storescp findscu movescu
 
 all: $(progs)
 
-echoscu: echoscu.o cmdlnarg.o
-	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ $@.o cmdlnarg.o $(LOCALLIBS) $(LIBS)  
+echoscu: echoscu.o
+	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ $@.o $(LOCALLIBS) $(LIBS)  
 
-storescu: storescu.o cmdlnarg.o
-	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ $@.o cmdlnarg.o  $(LOCALLIBS) $(LIBS)  
+storescu: storescu.o
+	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ $@.o $(LOCALLIBS) $(LIBS)  
 
-storescp: storescp.o cmdlnarg.o
-	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ $@.o cmdlnarg.o  $(LOCALLIBS) $(LIBS)  
+storescp: storescp.o
+	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ $@.o $(LOCALLIBS) $(LIBS)  
 
-findscu: findscu.o cmdlnarg.o
-	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ $@.o cmdlnarg.o  $(LOCALLIBS) $(LIBS)  
+findscu: findscu.o
+	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ $@.o $(LOCALLIBS) $(LIBS)  
 
-movescu: movescu.o cmdlnarg.o
-	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ $@.o cmdlnarg.o  $(LOCALLIBS) $(LIBS)  
+movescu: movescu.o
+	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ $@.o $(LOCALLIBS) $(LIBS)  
 
 install: all
 	$(configdir)/mkinstalldirs $(bindir)

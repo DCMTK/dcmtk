@@ -36,7 +36,7 @@ objs= 	dcpixseq.o dcpxitem.o dcuid.o dcerror.o dcbuf.o \
 	dcchrstr.o dcvrlo.o dcvrlt.o dcvrpn.o dcvrsh.o dcvrst.o dcvrobow.o \
 	dcvrat.o dcvrss.o dcvrus.o dcvrsl.o dcvrul.o dcvrulup.o dcvrfl.o \
 	dcvrfd.o dcdirrec.o dcdirrcf.o dcdicdir.o dcvm.o \
-	$(dictobjs)
+	$(dictobjs) cmdlnarg.o
 
 
 all: libdcmdata.a
@@ -75,17 +75,22 @@ libdcmdata.a: $(objs)
 	$(RANLIB) $@
 
 
-mkdeftag:	mkdeftag.o $(dictobjs)
-	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ $@.o $(dictobjs) $(LOCALLIBS) $(LIBS)
+mkdeftag:	mkdeftag.o $(dictobjs) cmdlnarg.o
+	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ $@.o $(dictobjs) cmdlnarg.o $(LOCALLIBS) $(LIBS)
 
-mkdictbi:	mkdictbi.o $(dictobjs)
-	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ $@.o $(dictobjs) $(LOCALLIBS) $(LIBS)
+mkdictbi:	mkdictbi.o $(dictobjs) cmdlnarg.o
+	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ $@.o $(dictobjs) cmdlnarg.o $(LOCALLIBS) $(LIBS)
 
 
 # Generate a new include file of defined tags
 
 gendeftag:	mkdeftag $(DICTFILE)
 	`pwd`/mkdeftag `pwd`/$(DICTFILE) > $(top_srcdir)/include/dcdeftag.h
+
+# Generate a file which can be used as a builtin dictionary
+
+dcdictzz.cc:	mkdictbi $(DICTFILE)
+	`pwd`/mkdictbi `pwd`/$(DICTFILE) > dcdictzz.cc
 
 # Generate a builtin data dictionary from $(DICTFILE)
 
