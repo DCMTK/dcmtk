@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: OFFilenameCreator
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-10-10 12:01:07 $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2000-10-12 08:13:17 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -159,13 +159,16 @@ int OFFilenameCreator::myrand_r(unsigned int *seed)
 {
   unsigned long val = (unsigned long) *seed;  
   val = val * 1103515245 + 12345;
-  *seed = val %((unsigned long)0x80000000);
+  *seed = (unsigned int)(val %((unsigned long)0x80000000));
   return (int) *seed;
 }
 
 /*
  *  $Log: offname.cc,v $
- *  Revision 1.6  2000-10-10 12:01:07  meichel
+ *  Revision 1.7  2000-10-12 08:13:17  joergr
+ *  Added explicit typecast to avoid compiler warnings.
+ *
+ *  Revision 1.6  2000/10/10 12:01:07  meichel
  *  Implemented thread safe random number generator, needed on systems
  *    where threads but no Posix rand_r function are available.
  *
