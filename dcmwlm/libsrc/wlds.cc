@@ -22,9 +22,9 @@
  *  Purpose: (Partially) abstract class for connecting to an arbitrary data source.
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-01-08 16:32:46 $
+ *  Update Date:      $Date: 2002-01-08 17:02:55 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmwlm/libsrc/wlds.cc,v $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -49,14 +49,15 @@
 
 // ----------------------------------------------------------------------------
 
-WlmDataSource::WlmDataSource( OFConsole *logStreamv )
+WlmDataSource::WlmDataSource( OFConsole *logStreamv, const OFBool verbosev )
 // Date         : December 10, 2001
 // Author       : Thomas Wilkens
 // Task         : Constructor.
 // Parameters   : logStreamv - [in] Stream that can be used to dump information.
+//                verbosev   - [in] Verbose mode.
 // Return Value : none.
   : objectStatus( WLM_STATUS_UNKNOWN ), failOnInvalidQuery( OFTrue ), calledApplicationEntityTitle( NULL ),
-    verbose( OFFalse ), identifiers( NULL ), objlist( NULL ), errorElements( NULL ), offendingElements( NULL ),
+    verbose( verbosev ), identifiers( NULL ), objlist( NULL ), errorElements( NULL ), offendingElements( NULL ),
     errorComment( NULL ), foundUnsupportedOptionalKey( OFFalse ), readLockSetOnDataSource( OFFalse ),
     logStream( logStreamv )
 {
@@ -813,7 +814,11 @@ void WlmDataSource::DumpMessage( const char *message )
 /*
 ** CVS Log
 ** $Log: wlds.cc,v $
-** Revision 1.1  2002-01-08 16:32:46  joergr
+** Revision 1.2  2002-01-08 17:02:55  joergr
+** Added preliminary database support using OTL interface library (modified by
+** MC/JR on 2001-12-21).
+**
+** Revision 1.1  2002/01/08 16:32:46  joergr
 ** Added new module "dcmwlm" developed by Thomas Wilkens (initial release for
 ** Windows, dated 2001-12-20).
 **

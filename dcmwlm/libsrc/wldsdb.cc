@@ -22,9 +22,9 @@
  *  Purpose: Class for connecting to a database-based data source.
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-01-08 16:32:47 $
+ *  Update Date:      $Date: 2002-01-08 17:01:17 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmwlm/libsrc/Attic/wldsdb.cc,v $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -50,17 +50,18 @@
 
 // ----------------------------------------------------------------------------
 
-WlmDataSourceDatabase::WlmDataSourceDatabase( OFConsole *logStreamv, char *dbDsnv, char *dbUserNamev, char *dbUserPasswordv, char *dbSchemav )
+WlmDataSourceDatabase::WlmDataSourceDatabase( OFConsole *logStreamv, const OFBool verbosev, char *dbDsnv, char *dbUserNamev, char *dbUserPasswordv, char *dbSchemav )
 // Date         : December 10, 2001
 // Author       : Thomas Wilkens
 // Task         : Constructor.
 // Parameters   : logStreamv      - [in] Stream that can be used to dump information.
+//                verbosev        - [in] Verbose mode.
 //                dbDsnv          - [in] The data source name of the database that shall be used.
 //                dbUserNamev     - [in] The database user name that shall be used for querying information.
 //                dbUserPasswordv - [in] The password that belongs to the database user name.
 //                dbSchemav       - [in] The data schema that holds the tables which shall be queried.
 // Return Value : none.
-  : WlmDataSource( logStreamv ), dbDsn( NULL ), dbUserName( NULL ), dbUserPassword( NULL ), dbSchema( NULL ),
+  : WlmDataSource( logStreamv, verbosev ), dbDsn( NULL ), dbUserName( NULL ), dbUserPassword( NULL ), dbSchema( NULL ),
     databaseInteractionManager( NULL ), matchingDatasets( NULL ), numOfMatchingDatasets( 0 )
 {
   // Check parameters
@@ -82,7 +83,7 @@ WlmDataSourceDatabase::WlmDataSourceDatabase( OFConsole *logStreamv, char *dbDsn
     strcpy( dbSchema, dbSchemav );
 
     // create an WlmDatabaseInteractionManager object
-    databaseInteractionManager = new WlmDatabaseInteractionManager( logStream, dbDsn, dbUserName, dbUserPassword, dbSchema );
+    databaseInteractionManager = new WlmDatabaseInteractionManager( logStream, verbosev, dbDsn, dbUserName, dbUserPassword, dbSchema );
     if( !databaseInteractionManager->IsObjectStatusOk() )
       objectStatus = WLM_STATUS_INIT_FAILED;
   }
@@ -694,7 +695,11 @@ OFBool WlmDataSourceDatabase::IsSupportedReturnKeyAttribute( const DcmTagKey &ke
 /*
 ** CVS Log
 ** $Log: wldsdb.cc,v $
-** Revision 1.1  2002-01-08 16:32:47  joergr
+** Revision 1.2  2002-01-08 17:01:17  joergr
+** Added preliminary database support using OTL interface library (modified by
+** MC/JR on 2001-12-21).
+**
+** Revision 1.1  2002/01/08 16:32:47  joergr
 ** Added new module "dcmwlm" developed by Thomas Wilkens (initial release for
 ** Windows, dated 2001-12-20).
 **

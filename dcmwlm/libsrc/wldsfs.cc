@@ -22,9 +22,9 @@
  *  Purpose: Class for connecting to a file-based data source.
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-01-08 16:32:47 $
+ *  Update Date:      $Date: 2002-01-08 16:59:06 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmwlm/libsrc/wldsfs.cc,v $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -61,14 +61,15 @@ END_EXTERN_C
 
 // ----------------------------------------------------------------------------
 
-WlmDataSourceFiles::WlmDataSourceFiles( OFConsole *logStreamv, char *dfPathv )
+WlmDataSourceFiles::WlmDataSourceFiles( OFConsole *logStreamv, const OFBool verbosev, char *dfPathv )
 // Date         : December 10, 2001
 // Author       : Thomas Wilkens
 // Task         : Constructor.
 // Parameters   : logStreamv - [in] Stream that can be used to dump information.
+//                verbosev   - [in] Verbose mode.
 //                dfPathv    - [in] Path to sub-directories that contain file-based data sources.
 // Return Value : none.
-  : WlmDataSource( logStreamv ), dfPath( NULL ), handleToReadLockFile( 0 )
+  : WlmDataSource( logStreamv, verbosev ), dfPath( NULL ), handleToReadLockFile( 0 )
 {
   // Check parameter
   if( dfPathv == NULL )
@@ -2171,7 +2172,11 @@ OFBool WlmDataSourceFiles::IsSupportedReturnKeyAttribute( const DcmTagKey &key, 
 /*
 ** CVS Log
 ** $Log: wldsfs.cc,v $
-** Revision 1.1  2002-01-08 16:32:47  joergr
+** Revision 1.2  2002-01-08 16:59:06  joergr
+** Added preliminary database support using OTL interface library (modified by
+** MC/JR on 2001-12-21).
+**
+** Revision 1.1  2002/01/08 16:32:47  joergr
 ** Added new module "dcmwlm" developed by Thomas Wilkens (initial release for
 ** Windows, dated 2001-12-20).
 **
