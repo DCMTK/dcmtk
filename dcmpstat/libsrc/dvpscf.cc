@@ -21,9 +21,9 @@
  *
  *  Purpose: DVConfiguration
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-10-20 10:54:42 $
- *  CVS/RCS Revision: $Revision: 1.15 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 1999-10-22 13:05:33 $
+ *  CVS/RCS Revision: $Revision: 1.16 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -116,7 +116,11 @@
 
 /* --------------- static helper functions --------------- */
 
+#ifdef DEBUG
 static DVPSPeerType getConfigTargetType(const char *val, ostream *logstream)
+#else
+static DVPSPeerType getConfigTargetType(const char *val, ostream * /* logstream */)
+#endif
 {
   DVPSPeerType result = DVPSE_storage; /* default */
 
@@ -1025,7 +1029,10 @@ Uint16 DVConfiguration::getTargetPrinterAnnotationPosition(const char *targetID)
 /*
  *  CVS/RCS Log:
  *  $Log: dvpscf.cc,v $
- *  Revision 1.15  1999-10-20 10:54:42  joergr
+ *  Revision 1.16  1999-10-22 13:05:33  meichel
+ *  Added conditional define to prevent compiler warning
+ *
+ *  Revision 1.15  1999/10/20 10:54:42  joergr
  *  Added support for a down-scaled preview image of the current DICOM image
  *  (e.g. useful for online-windowing or print preview).
  *
