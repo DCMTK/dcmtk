@@ -21,10 +21,10 @@
  *
  *  Purpose: Presentation State Viewer - Print Spooler
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-03-03 14:13:26 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2000-03-06 18:21:45 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmpstat/apps/Attic/dcmprtsv.cc,v $
- *  CVS/RCS Revision: $Revision: 1.16 $
+ *  CVS/RCS Revision: $Revision: 1.17 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -542,7 +542,7 @@ static E_Condition updateJobList(
   E_Condition result = EC_Normal;
   const char *spoolFolder = dvi.getSpoolFolder();
   
-#ifdef _WIN32
+#ifdef HAVE_WINDOWS_H
   WIN32_FIND_DATA stWin32FindData;
   OFString currentdir = spoolFolder;
   currentdir += "\\*";
@@ -590,7 +590,7 @@ static E_Condition updateJobList(
         } else result = EC_MemoryExhausted;
       }
 
-#ifdef _WIN32
+#ifdef HAVE_WINDOWS_H
       ret = FindNextFile(hFile, &stWin32FindData);
   } /* while */
   if(hFile != INVALID_HANDLE_VALUE)
@@ -682,13 +682,13 @@ int main(int argc, char *argv[])
     prepareCmdLineArgs(argc, argv, OFFIS_CONSOLE_APPLICATION);
     if (app.parseCommandLine(cmd, argc, argv, OFCommandLine::ExpandWildcards))
     {
-      if (cmd.findOption("--verbose"))     opt_verbose=OFTrue;
-      if (cmd.findOption("--debug"))       opt_debugMode = 3;
-      if (cmd.findOption("--dump"))        opt_dumpMode = OFTrue;
-      if (cmd.findOption("--noprint"))     opt_noPrint = OFTrue;
+      if (cmd.findOption("--verbose")) opt_verbose = OFTrue;
+      if (cmd.findOption("--debug"))   opt_debugMode = 3;
+      if (cmd.findOption("--dump"))    opt_dumpMode = OFTrue;
+      if (cmd.findOption("--noprint")) opt_noPrint = OFTrue;
 
       cmd.beginOptionBlock();
-      if (cmd.findOption("--print"))     opt_spoolMode=OFFalse;
+      if (cmd.findOption("--print"))   opt_spoolMode = OFFalse;
       if (cmd.findOption("--spool"))
       {
         opt_spoolMode=OFTrue;
@@ -737,8 +737,8 @@ int main(int argc, char *argv[])
       }
     }
 
-    SetDebugLevel(((int)opt_debugMode));
-    DicomImageClass::DebugLevel = (int)opt_debugMode;
+    SetDebugLevel((opt_debugMode));
+    DicomImageClass::DebugLevel = opt_debugMode;
 
     if (opt_cfgName)
     {
@@ -965,7 +965,10 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmprtsv.cc,v $
- * Revision 1.16  2000-03-03 14:13:26  meichel
+ * Revision 1.17  2000-03-06 18:21:45  joergr
+ * Avoid empty statement in the body of if-statements (MSVC6 reports warnings).
+ *
+ * Revision 1.16  2000/03/03 14:13:26  meichel
  * Implemented library support for redirecting error messages into memory
  *   instead of printing them to stdout/stderr for GUI applications.
  *

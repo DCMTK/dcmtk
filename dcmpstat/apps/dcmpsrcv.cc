@@ -21,10 +21,10 @@
  *
  *  Purpose: Presentation State Viewer - Network Receive Component (Store SCP)
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-03-03 14:13:27 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2000-03-06 18:21:46 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmpstat/apps/dcmpsrcv.cc,v $
- *  CVS/RCS Revision: $Revision: 1.14 $
+ *  CVS/RCS Revision: $Revision: 1.15 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -647,6 +647,7 @@ int main(int argc, char *argv[])
 #endif
         
     OFString str;
+    int         opt_debugMode   = 0;                   /* default: no debug */
     int         opt_verbose     = 0;                   /* default: not verbose */
     const char *opt_cfgName     = NULL;                /* config file name */
 
@@ -670,7 +671,7 @@ int main(int argc, char *argv[])
     {
       cmd.getParam(1, opt_cfgName);
       if (cmd.findOption("--verbose")) opt_verbose = 1;
-      if (cmd.findOption("--debug")) SetDebugLevel(3);
+      if (cmd.findOption("--debug")) opt_debugMode = 3;
     }
   
     if (opt_verbose)
@@ -690,6 +691,8 @@ int main(int argc, char *argv[])
         CERR << "error: missing configuration file name" << endl;
         return 10;
     }
+
+    SetDebugLevel((opt_debugMode));
 
     /* make sure data dictionary is loaded */
     if (!dcmDataDict.isDictionaryLoaded())
@@ -900,7 +903,10 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmpsrcv.cc,v $
- * Revision 1.14  2000-03-03 14:13:27  meichel
+ * Revision 1.15  2000-03-06 18:21:46  joergr
+ * Avoid empty statement in the body of if-statements (MSVC6 reports warnings).
+ *
+ * Revision 1.14  2000/03/03 14:13:27  meichel
  * Implemented library support for redirecting error messages into memory
  *   instead of printing them to stdout/stderr for GUI applications.
  *

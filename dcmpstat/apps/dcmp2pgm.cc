@@ -25,10 +25,10 @@
  *    of the presentation state. Non-grayscale transformations are
  *    ignored. If no presentation state is loaded, a default is created.
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-03-03 14:13:25 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2000-03-06 18:21:45 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmpstat/apps/dcmp2pgm.cc,v $
- *  CVS/RCS Revision: $Revision: 1.18 $
+ *  CVS/RCS Revision: $Revision: 1.19 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -65,9 +65,9 @@ void dumpPresentationState(DVInterface& dvi);
 int main(int argc, char *argv[])
 {
     OFString str;
-    OFCmdUnsignedInt opt_debugMode      = 0;           /* default: no debug */
-    OFBool           opt_dump_pstate    = OFFalse;     /* default: do not dump presentation state */
-    OFBool           opt_dicom_mode     = OFFalse;     /* default: create PGM, not DICOM SC */
+    int    opt_debugMode    = 0;                       /* default: no debug */
+    OFBool opt_dump_pstate  = OFFalse;                 /* default: do not dump presentation state */
+    OFBool opt_dicom_mode   = OFFalse;                 /* default: create PGM, not DICOM SC */
     const char *opt_pstName = NULL;                    /* pstate read file name */
     const char *opt_imgName = NULL;                    /* image read file name */
     const char *opt_pgmName = NULL;                    /* pgm save file name */
@@ -118,8 +118,8 @@ int main(int argc, char *argv[])
       if (cmd.findOption("--save-pstate")) app.checkValue(cmd.getValue(opt_savName));
     }
 
-    SetDebugLevel(((int)opt_debugMode));
-    DicomImageClass::DebugLevel = (int)opt_debugMode;
+    SetDebugLevel((opt_debugMode));
+    DicomImageClass::DebugLevel = opt_debugMode;
 
     if (opt_cfgName)
     {
@@ -569,7 +569,10 @@ void dumpPresentationState(DVInterface& dvi)
 /*
  * CVS/RCS Log:
  * $Log: dcmp2pgm.cc,v $
- * Revision 1.18  2000-03-03 14:13:25  meichel
+ * Revision 1.19  2000-03-06 18:21:45  joergr
+ * Avoid empty statement in the body of if-statements (MSVC6 reports warnings).
+ *
+ * Revision 1.18  2000/03/03 14:13:25  meichel
  * Implemented library support for redirecting error messages into memory
  *   instead of printing them to stdout/stderr for GUI applications.
  *

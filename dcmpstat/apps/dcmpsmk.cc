@@ -23,9 +23,9 @@
  *    sample application that reads a DICOM image and creates 
  *    a matching presentation state.
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-03-03 14:13:26 $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2000-03-06 18:21:46 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -78,13 +78,15 @@ int main(int argc, char *argv[])
     GUSISetup(GUSIwithInternetSockets);
 #endif
 
+    int opt_debugMode = 0;
+
     // Variables for input parameters
-    const char*	opt_ifname = NULL;
+    const char* opt_ifname = NULL;
     OFBool opt_iDataset = OFFalse;
     E_TransferSyntax opt_ixfer = EXS_Unknown;
 
     // Variables for output parameters
-    const char*	opt_ofname = NULL;
+    const char* opt_ofname = NULL;
     OFBool verbosemode = OFFalse;
     E_TransferSyntax opt_oxfer = EXS_Unknown;
     OFBool opt_oDataset = OFFalse;                 // currently not available as command line option
@@ -106,66 +108,66 @@ int main(int argc, char *argv[])
     const char *          opt_filesetID          = NULL;
     const char *          opt_filesetUID         = NULL;
 
-    SetDebugLevel(0);
+    SetDebugLevel((0));
 
-  OFConsoleApplication app(OFFIS_CONSOLE_APPLICATION , "Create DICOM grayscale softcopy presentation state", rcsid);
-  OFCommandLine cmd;
-  cmd.setOptionColumns(LONGCOL, SHORTCOL);
-  cmd.setParamColumn(LONGCOL + SHORTCOL + 4);
+    OFConsoleApplication app(OFFIS_CONSOLE_APPLICATION , "Create DICOM grayscale softcopy presentation state", rcsid);
+    OFCommandLine cmd;
+    cmd.setOptionColumns(LONGCOL, SHORTCOL);
+    cmd.setParamColumn(LONGCOL + SHORTCOL + 4);
+    
+    cmd.addParam("dcmfile-in",  "DICOM image file to be read");
+    cmd.addParam("dcmfile-out", "DICOM presentation state file to be created");
+    
+    cmd.addGroup("general options:", LONGCOL, SHORTCOL + 2);
+      cmd.addOption("--help",                     "-h",        "print this help text and exit");
+      cmd.addOption("--verbose",                  "-v",        "verbose mode, print processing details");
+      cmd.addOption("--debug",                    "-d",        "debug mode, print debug information");
+   
+    cmd.addGroup("input options:");
+      cmd.addSubGroup("input file format:");
+       cmd.addOption("--read-file",               "+f",        "read file format or data set (default)");
+       cmd.addOption("--read-dataset",            "-f",        "read data set without file meta information");
+      cmd.addSubGroup("input transfer syntax (only with --read-dataset):", LONGCOL, SHORTCOL);
+       cmd.addOption("--read-xfer-auto",          "-t=",       "use TS recognition (default)");
+       cmd.addOption("--read-xfer-little",        "-te",       "read with explicit VR little endian TS");
+       cmd.addOption("--read-xfer-big",           "-tb",       "read with explicit VR big endian TS");
+       cmd.addOption("--read-xfer-implicit",      "-ti",       "read with implicit VR little endian TS");
   
-  cmd.addParam("dcmfile-in",  "DICOM image file to be read");
-  cmd.addParam("dcmfile-out", "DICOM presentation state file to be created");
+    cmd.addGroup("processing options:");
+      cmd.addSubGroup("VOI transform handling:");
+       cmd.addOption("--voi-lut",                 "+Vl",       "use first VOI LUT if present (default)");
+       cmd.addOption("--voi-window",              "+Vw",       "use first window center/width if present");
+       cmd.addOption("--voi-ignore",              "-V",        "ignore VOI LUT and window center/width");
+      cmd.addSubGroup("curve handling:");
+       cmd.addOption("--curve-activate",          "+c",        "activate curve data if present (default)");
+       cmd.addOption("--curve-ignore",            "-c",        "ignore curve data");
+      cmd.addSubGroup("overlay handling:");
+       cmd.addOption("--overlay-copy",            "+oc",       "copy overlays if not embedded,\nactivate otherwise (default)");
+       cmd.addOption("--overlay-activate",        "+oa",       "activate overlays");
+       cmd.addOption("--overlay-ignore",          "-o",        "ignore overlays");
+      cmd.addSubGroup("shutter handling:");
+       cmd.addOption("--shutter-activate",        "+s",        "use shutter if present in image (default)");
+       cmd.addOption("--shutter-ignore",          "-s",        "ignore shutter");
+      cmd.addSubGroup("presentation LUT shape handling:");
+       cmd.addOption("--plut-activate",           "+p",        "use presentation LUT shape if present (default)");
+       cmd.addOption("--plut-ignore",             "-p",        "ignore presentation LUT shape");
+      cmd.addSubGroup("layering:");
+       cmd.addOption("--layer-single",            "+l1",       "all curves and overlays are in one layer");
+       cmd.addOption("--layer-double",            "+l2",       "one layer for curves, one for overlays (default)");
+       cmd.addOption("--layer-separate",          "+ls",       "separate layers for each curve and overlay");
+      cmd.addSubGroup("location of referenced image:");
+       cmd.addOption("--location-none",           "-lx",       "image reference without location (default)");
+       cmd.addOption("--location-network",        "-ln",    1, "[a]etitle: string",
+                                                               "image located at application entity a");
+       cmd.addOption("--location-media",          "-lm",    2, "[f]ilesetID, fileset[UID]: string",
+                                                               "image located on storage medium");
   
-  cmd.addGroup("general options:", LONGCOL, SHORTCOL + 2);
-   cmd.addOption("--help",                      "-h",        "print this help text and exit");
-   cmd.addOption("--verbose",                   "-v",        "verbose mode, print processing details");
-   cmd.addOption("--debug",                     "-d",        "debug mode, print debug information");
- 
-  cmd.addGroup("input options:");
-    cmd.addSubGroup("input file format:");
-      cmd.addOption("--read-file",              "+f",        "read file format or data set (default)");
-      cmd.addOption("--read-dataset",           "-f",        "read data set without file meta information");
-    cmd.addSubGroup("input transfer syntax (only with --read-dataset):", LONGCOL, SHORTCOL);
-     cmd.addOption("--read-xfer-auto",          "-t=",       "use TS recognition (default)");
-     cmd.addOption("--read-xfer-little",        "-te",       "read with explicit VR little endian TS");
-     cmd.addOption("--read-xfer-big",           "-tb",       "read with explicit VR big endian TS");
-     cmd.addOption("--read-xfer-implicit",      "-ti",       "read with implicit VR little endian TS");
-
-  cmd.addGroup("processing options:");
-    cmd.addSubGroup("VOI transform handling:");
-     cmd.addOption("--voi-lut",                 "+Vl",       "use first VOI LUT if present (default)");
-     cmd.addOption("--voi-window",              "+Vw",       "use first window center/width if present");
-     cmd.addOption("--voi-ignore",              "-V",        "ignore VOI LUT and window center/width");
-    cmd.addSubGroup("curve handling:");
-     cmd.addOption("--curve-activate",          "+c",        "activate curve data if present (default)");
-     cmd.addOption("--curve-ignore",            "-c",        "ignore curve data");
-    cmd.addSubGroup("overlay handling:");
-     cmd.addOption("--overlay-copy",            "+oc",       "copy overlays if not embedded,\nactivate otherwise (default)");
-     cmd.addOption("--overlay-activate",        "+oa",       "activate overlays");
-     cmd.addOption("--overlay-ignore",          "-o",        "ignore overlays");
-    cmd.addSubGroup("shutter handling:");
-     cmd.addOption("--shutter-activate",        "+s",        "use shutter if present in image (default)");
-     cmd.addOption("--shutter-ignore",          "-s",        "ignore shutter");
-    cmd.addSubGroup("presentation LUT shape handling:");
-     cmd.addOption("--plut-activate",           "+p",        "use presentation LUT shape if present (default)");
-     cmd.addOption("--plut-ignore",             "-p",        "ignore presentation LUT shape");
-    cmd.addSubGroup("layering:");
-     cmd.addOption("--layer-single",            "+l1",       "all curves and overlays are in one layer");
-     cmd.addOption("--layer-double",            "+l2",       "one layer for curves, one for overlays (default)");
-     cmd.addOption("--layer-separate",          "+ls",       "separate layers for each curve and overlay");
-    cmd.addSubGroup("location of referenced image:");
-     cmd.addOption("--location-none",           "-lx",       "image reference without location (default)");
-     cmd.addOption("--location-network",        "-ln",    1, "[a]etitle: string",
-                                                             "image located at application entity a");
-     cmd.addOption("--location-media",          "-lm",    2, "[f]ilesetID, fileset[UID]: string",
-                                                             "image located on storage medium");
-
-  cmd.addGroup("output options:");
-    cmd.addSubGroup("output transfer syntax:");
-      cmd.addOption("--write-xfer-same",        "+t=",       "write with same TS as image file (default)");
-      cmd.addOption("--write-xfer-little",      "+te",       "write with explicit VR little endian TS");
-      cmd.addOption("--write-xfer-big",         "+tb",       "write with explicit VR big endian TS");
-      cmd.addOption("--write-xfer-implicit",    "+ti",       "write with implicit VR little endian TS");
+    cmd.addGroup("output options:");
+      cmd.addSubGroup("output transfer syntax:");
+       cmd.addOption("--write-xfer-same",         "+t=",       "write with same TS as image file (default)");
+       cmd.addOption("--write-xfer-little",       "+te",       "write with explicit VR little endian TS");
+       cmd.addOption("--write-xfer-big",          "+tb",       "write with explicit VR big endian TS");
+       cmd.addOption("--write-xfer-implicit",     "+ti",       "write with implicit VR little endian TS");
 
     /* evaluate command line */                           
     prepareCmdLineArgs(argc, argv, OFFIS_CONSOLE_APPLICATION);
@@ -175,7 +177,7 @@ int main(int argc, char *argv[])
       cmd.getParam(2, opt_ofname);
 
       if (cmd.findOption("--verbose")) verbosemode=OFTrue;
-      if (cmd.findOption("--debug")) SetDebugLevel(3);
+      if (cmd.findOption("--debug")) opt_debugMode=3;
       
       cmd.beginOptionBlock();
       if (cmd.findOption("--read-file")) opt_iDataset = OFFalse;
@@ -185,23 +187,23 @@ int main(int argc, char *argv[])
       cmd.beginOptionBlock();
       if (cmd.findOption("--read-xfer-auto"))
       {
-      	if (! opt_iDataset) app.printError("--read-xfer-auto only allowed with --read-dataset");
-      	opt_ixfer = EXS_Unknown;
+        if (! opt_iDataset) app.printError("--read-xfer-auto only allowed with --read-dataset");
+        opt_ixfer = EXS_Unknown;
       }
       if (cmd.findOption("--read-xfer-little"))
       {
-      	if (! opt_iDataset) app.printError("--read-xfer-little only allowed with --read-dataset");
-      	opt_ixfer = EXS_LittleEndianExplicit;
+        if (! opt_iDataset) app.printError("--read-xfer-little only allowed with --read-dataset");
+        opt_ixfer = EXS_LittleEndianExplicit;
       }
       if (cmd.findOption("--read-xfer-big"))
       {
-      	if (! opt_iDataset) app.printError("--read-xfer-big only allowed with --read-dataset");
-      	opt_ixfer = EXS_BigEndianExplicit;
+        if (! opt_iDataset) app.printError("--read-xfer-big only allowed with --read-dataset");
+        opt_ixfer = EXS_BigEndianExplicit;
       }
       if (cmd.findOption("--read-xfer-implicit"))
       {
-      	if (! opt_iDataset) app.printError("--read-xfer-implicit only allowed with --read-dataset");
-      	opt_ixfer = EXS_LittleEndianImplicit;
+        if (! opt_iDataset) app.printError("--read-xfer-implicit only allowed with --read-dataset");
+        opt_ixfer = EXS_LittleEndianImplicit;
       }
       cmd.endOptionBlock();
 
@@ -226,7 +228,7 @@ int main(int argc, char *argv[])
       if (cmd.findOption("--shutter-activate")) shutterActivation = OFTrue;
       if (cmd.findOption("--shutter-ignore")) shutterActivation = OFFalse;
       cmd.endOptionBlock();
-		    
+            
       cmd.beginOptionBlock();
       if (cmd.findOption("--plut-activate")) presentationActivation = OFTrue;
       if (cmd.findOption("--plut-ignore")) presentationActivation = OFFalse;
@@ -272,20 +274,24 @@ int main(int argc, char *argv[])
         return 1;
     }
 
+    SetDebugLevel((opt_debugMode));
+
     /* make sure data dictionary is loaded */
-    if (!dcmDataDict.isDictionaryLoaded()) {
-	CERR << "Warning: no data dictionary loaded, "
-	     << "check environment variable: "
-	     << DCM_DICT_ENVIRONMENT_VARIABLE << endl;
+    if (!dcmDataDict.isDictionaryLoaded())
+    {
+        CERR << "Warning: no data dictionary loaded, "
+             << "check environment variable: "
+             << DCM_DICT_ENVIRONMENT_VARIABLE << endl;
     }
-	
+    
     // open input file
     if (verbosemode) 
-	COUT << "open input file " << opt_ifname << endl;
+        COUT << "open input file " << opt_ifname << endl;
 
     DcmFileStream inf(opt_ifname, DCM_ReadMode);
-    if ( inf.Fail() ) {
-	CERR << "cannot open file: " << opt_ifname << endl;
+    if ( inf.Fail() )
+    {
+        CERR << "cannot open file: " << opt_ifname << endl;
         return 1;
     }
 
@@ -295,150 +301,143 @@ int main(int argc, char *argv[])
 
     if (opt_iDataset)
     {
-	dataset = new DcmDataset;
-	if (!dataset)
-	{
-	    CERR << "memory exhausted\n";
-	    return 1;
-	}
-	if (verbosemode)
-	    COUT << "read and interpret DICOM dataset " << opt_ifname << endl;
-	dataset->transferInit();
-	error = dataset -> read(inf, opt_ixfer, EGL_noChange);
-	dataset->transferEnd();
-    }
-    else
-    {
-	fileformat = new DcmFileFormat;
-	if (!fileformat)
-	{
-	    CERR << "memory exhausted\n";
-	    return 1;
-	}
-	if (verbosemode)
-	    COUT << "read and interpret DICOM file with metaheader " 
-		 << opt_ifname << endl;
-	fileformat->transferInit();
-	error = fileformat -> read(inf, opt_ixfer, EGL_noChange);
-	fileformat->transferEnd();
+        dataset = new DcmDataset;
+        if (!dataset)
+        {
+            CERR << "memory exhausted\n";
+            return 1;
+        }
+        if (verbosemode)
+            COUT << "read and interpret DICOM dataset " << opt_ifname << endl;
+        dataset->transferInit();
+        error = dataset -> read(inf, opt_ixfer, EGL_noChange);
+        dataset->transferEnd();
+    } else {
+        fileformat = new DcmFileFormat;
+        if (!fileformat)
+        {
+            CERR << "memory exhausted\n";
+            return 1;
+        }
+        if (verbosemode)
+            COUT << "read and interpret DICOM file with metaheader " 
+                 << opt_ifname << endl;
+        fileformat->transferInit();
+        error = fileformat -> read(inf, opt_ixfer, EGL_noChange);
+        fileformat->transferEnd();
     }
 
     if (error != EC_Normal) 
     {
-	CERR << "Error: "  
-	     << dcmErrorConditionToString(error)
-	     << ": reading file: " <<  opt_ifname << endl;
-	return 1;
+        CERR << "Error: "  
+             << dcmErrorConditionToString(error)
+             << ": reading file: " <<  opt_ifname << endl;
+        return 1;
     }
 
     if (fileformat)
     {
-	dataset = fileformat -> getDataset();
+        dataset = fileformat -> getDataset();
     }
 
     /* create presentation state */
     DVPresentationState state;
     if (verbosemode)
     {
-      COUT << "creating presentation state object" << endl;
+        COUT << "creating presentation state object" << endl;
     }
         
     error = state.createFromImage(*dataset, overlayActivation, voiActivation, 
       curveActivation, shutterActivation, presentationActivation, layering, opt_aetitle, opt_filesetID, opt_filesetUID);
     if (error != EC_Normal) 
     {
-	CERR << "Error: "  
-	     << dcmErrorConditionToString(error)
-	     << ": creating presentation state from image file: " << opt_ifname << endl;
-	return 1;
+        CERR << "Error: "  
+             << dcmErrorConditionToString(error)
+             << ": creating presentation state from image file: " << opt_ifname << endl;
+        return 1;
     }
     
     DcmDataset *dataset2 = new DcmDataset();
     error = state.write(*dataset2);
     if (error != EC_Normal) 
     {
-	CERR << "Error: "  
-	     << dcmErrorConditionToString(error)
-	     << ": re-encoding presentation state : " <<  opt_ifname << endl;
-	return 1;
+        CERR << "Error: "  
+             << dcmErrorConditionToString(error)
+             << ": re-encoding presentation state : " <<  opt_ifname << endl;
+        return 1;
     }
 
     DcmFileFormat *fileformat2 = NULL;
     
     if (!fileformat2 && !opt_oDataset)
     {
-	if (verbosemode)
-	    COUT << "create new Metaheader for dataset\n";
-	fileformat2 = new DcmFileFormat(dataset2);
+        if (verbosemode)
+            COUT << "create new Metaheader for dataset\n";
+        fileformat2 = new DcmFileFormat(dataset2);
     }
 
     if (verbosemode)
-	COUT << "create output file " << opt_ofname << endl;
+        COUT << "create output file " << opt_ofname << endl;
  
     DcmFileStream outf( opt_ofname, DCM_WriteMode );
-    if ( outf.Fail() ) {
-	CERR << "cannot create file: " << opt_ofname << endl;
-	return 1;
+    if ( outf.Fail() )
+    {
+        CERR << "cannot create file: " << opt_ofname << endl;
+        return 1;
     }
 
     if (opt_oxfer == EXS_Unknown)
     {
-	if (verbosemode)
-	    COUT << "set output transfersyntax to input transfer syntax\n";
-	opt_oxfer = dataset->getOriginalXfer();
+        if (verbosemode)
+            COUT << "set output transfersyntax to input transfer syntax\n";
+        opt_oxfer = dataset->getOriginalXfer();
     }
 
-   if (verbosemode)
-       COUT << "Check if new output transfer syntax is possible\n";
+    if (verbosemode)
+        COUT << "Check if new output transfer syntax is possible\n";
 
-   DcmXfer oxferSyn(opt_oxfer);
+    DcmXfer oxferSyn(opt_oxfer);
 
-   dataset2->chooseRepresentation(opt_oxfer, NULL);
+    dataset2->chooseRepresentation(opt_oxfer, NULL);
 
-   if (dataset2->canWriteXfer(opt_oxfer))
-   {
-       if (verbosemode)
-	   COUT << "Output transfer syntax " << oxferSyn.getXferName() 
-		<< " can be written\n";
-   }
-   else
-   {
-       CERR << "No conversion to transfer syntax " << oxferSyn.getXferName()
-	    << " possible!\n";
-       return 1;
-   }
-
-   if (opt_oDataset)
-   {
-	if (verbosemode) 
-	    COUT << "write converted DICOM dataset\n";
-	
-	dataset2->transferInit();
-	error = dataset2->write(outf, opt_oxfer, oenctype, oglenc, 
-			       EPD_withoutPadding);
-	dataset2->transferEnd();
-    }
-    else
+    if (dataset2->canWriteXfer(opt_oxfer))
     {
-	if (verbosemode)
-	    COUT << "write converted DICOM file with metaheader\n";
+        if (verbosemode)
+           COUT << "Output transfer syntax " << oxferSyn.getXferName() 
+                << " can be written\n";
+    } else {
+        CERR << "No conversion to transfer syntax " << oxferSyn.getXferName()
+             << " possible!\n";
+        return 1;
+    }
 
-	fileformat2->transferInit();
-	error = fileformat2->write(outf, opt_oxfer, oenctype, oglenc,
-				  opadenc, padlen, subPadlen);
-	fileformat2->transferEnd();
+    if (opt_oDataset)
+    {
+        if (verbosemode) 
+            COUT << "write converted DICOM dataset\n";
+    
+        dataset2->transferInit();
+        error = dataset2->write(outf, opt_oxfer, oenctype, oglenc, EPD_withoutPadding);
+        dataset2->transferEnd();
+    } else {
+        if (verbosemode)
+            COUT << "write converted DICOM file with metaheader\n";
+
+        fileformat2->transferInit();
+        error = fileformat2->write(outf, opt_oxfer, oenctype, oglenc, opadenc, padlen, subPadlen);
+        fileformat2->transferEnd();
     }
 
     if (error != EC_Normal) 
     {
-	CERR << "Error: "  
-	     << dcmErrorConditionToString(error)
-	     << ": writing file: " <<  opt_ifname << endl;
-	return 1;
+        CERR << "Error: "  
+             << dcmErrorConditionToString(error)
+             << ": writing file: " <<  opt_ifname << endl;
+        return 1;
     }
 
     if (verbosemode) 
-	COUT << "conversion successful\n";
+        COUT << "conversion successful\n";
 
     return 0;
 }
@@ -447,7 +446,10 @@ int main(int argc, char *argv[])
 /*
 ** CVS/RCS Log:
 ** $Log: dcmpsmk.cc,v $
-** Revision 1.7  2000-03-03 14:13:26  meichel
+** Revision 1.8  2000-03-06 18:21:46  joergr
+** Avoid empty statement in the body of if-statements (MSVC6 reports warnings).
+**
+** Revision 1.7  2000/03/03 14:13:26  meichel
 ** Implemented library support for redirecting error messages into memory
 **   instead of printing them to stdout/stderr for GUI applications.
 **

@@ -25,10 +25,10 @@
  *    stored print and hardcopy grayscale images.
  *    Non-grayscale transformations in the presentation state are ignored. 
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-03-03 14:13:27 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2000-03-06 18:21:46 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmpstat/apps/dcmpsprt.cc,v $
- *  CVS/RCS Revision: $Revision: 1.13 $
+ *  CVS/RCS Revision: $Revision: 1.14 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -61,7 +61,7 @@ static char rcsid[] = "$dcmtk: " OFFIS_CONSOLE_APPLICATION " v"
 
 int main(int argc, char *argv[])
 {
-    OFCmdUnsignedInt          opt_debugMode      = 0;           /* default: no debug */
+    int                       opt_debugMode      = 0;           /* default: no debug */
     OFBool                    opt_verbose        = OFFalse;     /* default: do not dump presentation state */
     const char *              opt_printerID = NULL;             /* printer ID */
     const char *              opt_cfgName = NULL;               /* config read file name */
@@ -216,12 +216,12 @@ int main(int argc, char *argv[])
     prepareCmdLineArgs(argc, argv, OFFIS_CONSOLE_APPLICATION);
     if (app.parseCommandLine(cmd, argc, argv, OFCommandLine::ExpandWildcards))
     {
-      if (cmd.findOption("--verbose"))     opt_verbose=OFTrue;
-      if (cmd.findOption("--debug"))       opt_debugMode = 3;
+      if (cmd.findOption("--verbose"))   opt_verbose=OFTrue;
+      if (cmd.findOption("--debug"))     opt_debugMode = 3;
 
       cmd.beginOptionBlock();
       if (cmd.findOption("--portrait"))  opt_filmorientation = DVPSF_portrait;
-      if (cmd.findOption("--landscape"))  opt_filmorientation = DVPSF_landscape;
+      if (cmd.findOption("--landscape")) opt_filmorientation = DVPSF_landscape;
       if (cmd.findOption("--default-orientation"))  opt_filmorientation = DVPSF_default;
       cmd.endOptionBlock();
 
@@ -350,8 +350,8 @@ int main(int argc, char *argv[])
       }
     }
     
-    SetDebugLevel(((int)opt_debugMode));
-    DicomImageClass::DebugLevel = (int)opt_debugMode;
+    SetDebugLevel((opt_debugMode));
+    DicomImageClass::DebugLevel = opt_debugMode;
 
     if (opt_cfgName)
     {
@@ -570,7 +570,10 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmpsprt.cc,v $
- * Revision 1.13  2000-03-03 14:13:27  meichel
+ * Revision 1.14  2000-03-06 18:21:46  joergr
+ * Avoid empty statement in the body of if-statements (MSVC6 reports warnings).
+ *
+ * Revision 1.13  2000/03/03 14:13:27  meichel
  * Implemented library support for redirecting error messages into memory
  *   instead of printing them to stdout/stderr for GUI applications.
  *

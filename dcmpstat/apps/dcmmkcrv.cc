@@ -21,10 +21,10 @@
  *
  *  Purpose: This application reads a DICOM image, adds a Curve and writes it back.
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-03-03 14:13:24 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2000-03-06 18:21:44 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmpstat/apps/dcmmkcrv.cc,v $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -61,6 +61,7 @@ OFBool opt_verbose = OFFalse;
 int main(int argc, char *argv[])
 {
     OFString str;   
+    int opt_debugMode = 0;
     const char *opt_inName = NULL;                     /* in file name */
     const char *opt_outName = NULL;                    /* out file name */
     const char *opt_curveName = NULL;                  /* curve file name */
@@ -119,7 +120,7 @@ int main(int argc, char *argv[])
       cmd.getParam(3, opt_outName);
 
       if (cmd.findOption("--verbose")) opt_verbose=OFTrue;
-      if (cmd.findOption("--debug")) SetDebugLevel(3);
+      if (cmd.findOption("--debug")) opt_debugMode = 3;
       cmd.beginOptionBlock();
       if (cmd.findOption("--roi")) opt_poly = OFFalse;
       if (cmd.findOption("--poly")) opt_poly = OFTrue;                
@@ -138,6 +139,8 @@ int main(int argc, char *argv[])
       }
     }
   
+    SetDebugLevel((opt_debugMode));
+
     /* make sure data dictionary is loaded */
     if (!dcmDataDict.isDictionaryLoaded()) {
 	CERR << "Warning: no data dictionary loaded, "
@@ -414,7 +417,10 @@ int main(int argc, char *argv[])
 /*
 ** CVS/RCS Log:
 ** $Log: dcmmkcrv.cc,v $
-** Revision 1.4  2000-03-03 14:13:24  meichel
+** Revision 1.5  2000-03-06 18:21:44  joergr
+** Avoid empty statement in the body of if-statements (MSVC6 reports warnings).
+**
+** Revision 1.4  2000/03/03 14:13:24  meichel
 ** Implemented library support for redirecting error messages into memory
 **   instead of printing them to stdout/stderr for GUI applications.
 **

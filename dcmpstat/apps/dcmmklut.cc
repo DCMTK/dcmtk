@@ -24,10 +24,10 @@
  *    The LUT has a gamma curve shape or can be imported from an external
  *    file.
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-03-03 14:13:24 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2000-03-06 18:21:44 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmpstat/apps/dcmmklut.cc,v $
- *  CVS/RCS Revision: $Revision: 1.11 $
+ *  CVS/RCS Revision: $Revision: 1.12 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -60,10 +60,11 @@ BEGIN_EXTERN_C
 #endif
 END_EXTERN_C
 
-#ifdef _WIN32
-#include <strstrea.h>     /* for ostrstream */
-#else
-#include <strstream.h>    /* for ostrstream */
+#ifdef HAVE_STRSTREA_H
+#include <strstrea.h>      /* for ostrstream */
+#endif
+#ifdef HAVE_STRSTREAM_H
+#include <strstream.h>     /* for ostrstream */
 #endif
 
 #define OFFIS_CONSOLE_APPLICATION "dcmmklut"
@@ -594,6 +595,7 @@ E_Condition createLUT(const unsigned int numberOfBits,
 int main(int argc, char *argv[])
 {
     OFString str;
+    int opt_debugMode = 0;
     const char *opt_inName = NULL;                     /* in file name */
     const char *opt_outName = NULL;                    /* out file name */
     const char *opt_outText = NULL;
@@ -668,11 +670,8 @@ int main(int argc, char *argv[])
 
         if (cmd.findOption("--verbose"))
             opt_verbose = OFTrue;
-        if (cmd.findOption("--debug"))
-        {
-            SetDebugLevel(3);
-            opt_debug = OFTrue;
-        }
+        if (cmd.findOption("--debug")) 
+            opt_debugMode = 3;
 
         cmd.beginOptionBlock();
         if (cmd.findOption("--modality"))
@@ -748,6 +747,8 @@ int main(int argc, char *argv[])
         CERR << "Error: --byte-align cannot be used with --bits other than 8" << endl;
         return 1;
     }
+
+    SetDebugLevel(( opt_debugMode ));
 
     /* make sure data dictionary is loaded */
     if (!dcmDataDict.isDictionaryLoaded())
@@ -938,7 +939,10 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmmklut.cc,v $
- * Revision 1.11  2000-03-03 14:13:24  meichel
+ * Revision 1.12  2000-03-06 18:21:44  joergr
+ * Avoid empty statement in the body of if-statements (MSVC6 reports warnings).
+ *
+ * Revision 1.11  2000/03/03 14:13:24  meichel
  * Implemented library support for redirecting error messages into memory
  *   instead of printing them to stdout/stderr for GUI applications.
  *
