@@ -7,9 +7,9 @@ dcimapix.o: dcimapix.cc ../../config/include/osconfig.h \
  ../include/dctagkey.h ../include/dcdict.h ../include/dcdicent.h \
  ../include/dcentbst.h ../include/dcentset.h ../include/pix.h \
  ../include/dcentdef.h ../include/dcentlst.h ../include/dctag.h \
- ../include/dcdeftag.h ../include/dcobject.h ../include/dcstack.h \
- ../include/dcelem.h ../include/dcitem.h ../include/dcvrui.h \
- ../include/dcbytstr.h ../include/dclist.h ../include/dcmetinf.h \
+ ../include/dcdeftag.h ../include/dcobject.h ../include/dclist.h \
+ ../include/dcstack.h ../include/dcelem.h ../include/dcitem.h \
+ ../include/dcvrui.h ../include/dcbytstr.h ../include/dcmetinf.h \
  ../include/dcdatset.h ../include/dcsequen.h ../include/dcfilefo.h \
  ../include/dcdicdir.h ../include/dcdirrec.h ../include/dcvrulup.h \
  ../include/dcvrul.h ../include/dcpixseq.h ../include/dcvrae.h \
@@ -29,8 +29,8 @@ dcm2ppm.o: dcm2ppm.cc ../../config/include/osconfig.h \
  ../include/dcdicent.h ../include/dcentbst.h ../include/dcentset.h \
  ../include/pix.h ../include/dcentdef.h ../include/dcentlst.h \
  ../include/dctag.h ../include/dcdeftag.h ../include/dcobject.h \
- ../include/dcstack.h ../include/dcelem.h ../include/dcitem.h \
- ../include/dcvrui.h ../include/dcbytstr.h ../include/dclist.h \
+ ../include/dclist.h ../include/dcstack.h ../include/dcelem.h \
+ ../include/dcitem.h ../include/dcvrui.h ../include/dcbytstr.h \
  ../include/dcmetinf.h ../include/dcdatset.h ../include/dcsequen.h \
  ../include/dcfilefo.h ../include/dcdicdir.h ../include/dcdirrec.h \
  ../include/dcvrulup.h ../include/dcvrul.h ../include/dcpixseq.h \
@@ -51,8 +51,8 @@ dcmconv.o: dcmconv.cc ../../config/include/osconfig.h \
  ../include/dcdicent.h ../include/dcentbst.h ../include/dcentset.h \
  ../include/pix.h ../include/dcentdef.h ../include/dcentlst.h \
  ../include/dctag.h ../include/dcdeftag.h ../include/dcobject.h \
- ../include/dcstack.h ../include/dcelem.h ../include/dcitem.h \
- ../include/dcvrui.h ../include/dcbytstr.h ../include/dclist.h \
+ ../include/dclist.h ../include/dcstack.h ../include/dcelem.h \
+ ../include/dcitem.h ../include/dcvrui.h ../include/dcbytstr.h \
  ../include/dcmetinf.h ../include/dcdatset.h ../include/dcsequen.h \
  ../include/dcfilefo.h ../include/dcdicdir.h ../include/dcdirrec.h \
  ../include/dcvrulup.h ../include/dcvrul.h ../include/dcpixseq.h \
@@ -72,8 +72,8 @@ dcmdump.o: dcmdump.cc ../../config/include/osconfig.h \
  ../include/dcdicent.h ../include/dcentbst.h ../include/dcentset.h \
  ../include/pix.h ../include/dcentdef.h ../include/dcentlst.h \
  ../include/dctag.h ../include/dcdeftag.h ../include/dcobject.h \
- ../include/dcstack.h ../include/dcelem.h ../include/dcitem.h \
- ../include/dcvrui.h ../include/dcbytstr.h ../include/dclist.h \
+ ../include/dclist.h ../include/dcstack.h ../include/dcelem.h \
+ ../include/dcitem.h ../include/dcvrui.h ../include/dcbytstr.h \
  ../include/dcmetinf.h ../include/dcdatset.h ../include/dcsequen.h \
  ../include/dcfilefo.h ../include/dcdicdir.h ../include/dcdirrec.h \
  ../include/dcvrulup.h ../include/dcvrul.h ../include/dcpixseq.h \
@@ -93,8 +93,8 @@ dcmutils.o: dcmutils.cc ../../config/include/osconfig.h dcmutils.h \
  ../include/dcdicent.h ../include/dcentbst.h ../include/dcentset.h \
  ../include/pix.h ../include/dcentdef.h ../include/dcentlst.h \
  ../include/dctag.h ../include/dcdeftag.h ../include/dcobject.h \
- ../include/dcstack.h ../include/dcelem.h ../include/dcitem.h \
- ../include/dcvrui.h ../include/dcbytstr.h ../include/dclist.h \
+ ../include/dclist.h ../include/dcstack.h ../include/dcelem.h \
+ ../include/dcitem.h ../include/dcvrui.h ../include/dcbytstr.h \
  ../include/dcmetinf.h ../include/dcdatset.h ../include/dcsequen.h \
  ../include/dcfilefo.h ../include/dcdicdir.h ../include/dcdirrec.h \
  ../include/dcvrulup.h ../include/dcvrul.h ../include/dcpixseq.h \
@@ -114,8 +114,8 @@ ds2file.o: ds2file.cc ../../config/include/osconfig.h \
  ../include/dcdicent.h ../include/dcentbst.h ../include/dcentset.h \
  ../include/pix.h ../include/dcentdef.h ../include/dcentlst.h \
  ../include/dctag.h ../include/dcdeftag.h ../include/dcobject.h \
- ../include/dcstack.h ../include/dcelem.h ../include/dcitem.h \
- ../include/dcvrui.h ../include/dcbytstr.h ../include/dclist.h \
+ ../include/dclist.h ../include/dcstack.h ../include/dcelem.h \
+ ../include/dcitem.h ../include/dcvrui.h ../include/dcbytstr.h \
  ../include/dcmetinf.h ../include/dcdatset.h ../include/dcsequen.h \
  ../include/dcfilefo.h ../include/dcdicdir.h ../include/dcdirrec.h \
  ../include/dcvrulup.h ../include/dcvrul.h ../include/dcpixseq.h \
@@ -135,8 +135,8 @@ dump2dcm.o: dump2dcm.cc ../../config/include/osconfig.h \
  ../include/dcdicent.h ../include/dcentbst.h ../include/dcentset.h \
  ../include/pix.h ../include/dcentdef.h ../include/dcentlst.h \
  ../include/dctag.h ../include/dcdeftag.h ../include/dcobject.h \
- ../include/dcstack.h ../include/dcelem.h ../include/dcitem.h \
- ../include/dcvrui.h ../include/dcbytstr.h ../include/dclist.h \
+ ../include/dclist.h ../include/dcstack.h ../include/dcelem.h \
+ ../include/dcitem.h ../include/dcvrui.h ../include/dcbytstr.h \
  ../include/dcmetinf.h ../include/dcdatset.h ../include/dcsequen.h \
  ../include/dcfilefo.h ../include/dcdicdir.h ../include/dcdirrec.h \
  ../include/dcvrulup.h ../include/dcvrul.h ../include/dcpixseq.h \
@@ -156,8 +156,8 @@ file2ds.o: file2ds.cc ../../config/include/osconfig.h \
  ../include/dcdicent.h ../include/dcentbst.h ../include/dcentset.h \
  ../include/pix.h ../include/dcentdef.h ../include/dcentlst.h \
  ../include/dctag.h ../include/dcdeftag.h ../include/dcobject.h \
- ../include/dcstack.h ../include/dcelem.h ../include/dcitem.h \
- ../include/dcvrui.h ../include/dcbytstr.h ../include/dclist.h \
+ ../include/dclist.h ../include/dcstack.h ../include/dcelem.h \
+ ../include/dcitem.h ../include/dcvrui.h ../include/dcbytstr.h \
  ../include/dcmetinf.h ../include/dcdatset.h ../include/dcsequen.h \
  ../include/dcfilefo.h ../include/dcdicdir.h ../include/dcdirrec.h \
  ../include/dcvrulup.h ../include/dcvrul.h ../include/dcpixseq.h \
@@ -177,8 +177,8 @@ mknldir.o: mknldir.cc ../../config/include/osconfig.h \
  ../include/dcdicent.h ../include/dcentbst.h ../include/dcentset.h \
  ../include/pix.h ../include/dcentdef.h ../include/dcentlst.h \
  ../include/dctag.h ../include/dcdeftag.h ../include/dcobject.h \
- ../include/dcstack.h ../include/dcelem.h ../include/dcitem.h \
- ../include/dcvrui.h ../include/dcbytstr.h ../include/dclist.h \
+ ../include/dclist.h ../include/dcstack.h ../include/dcelem.h \
+ ../include/dcitem.h ../include/dcvrui.h ../include/dcbytstr.h \
  ../include/dcmetinf.h ../include/dcdatset.h ../include/dcsequen.h \
  ../include/dcfilefo.h ../include/dcdicdir.h ../include/dcdirrec.h \
  ../include/dcvrulup.h ../include/dcvrul.h ../include/dcpixseq.h \
@@ -198,8 +198,8 @@ ppm2dcm.o: ppm2dcm.cc ../../config/include/osconfig.h \
  ../include/dcdicent.h ../include/dcentbst.h ../include/dcentset.h \
  ../include/pix.h ../include/dcentdef.h ../include/dcentlst.h \
  ../include/dctag.h ../include/dcdeftag.h ../include/dcobject.h \
- ../include/dcstack.h ../include/dcelem.h ../include/dcitem.h \
- ../include/dcvrui.h ../include/dcbytstr.h ../include/dclist.h \
+ ../include/dclist.h ../include/dcstack.h ../include/dcelem.h \
+ ../include/dcitem.h ../include/dcvrui.h ../include/dcbytstr.h \
  ../include/dcmetinf.h ../include/dcdatset.h ../include/dcsequen.h \
  ../include/dcfilefo.h ../include/dcdicdir.h ../include/dcdirrec.h \
  ../include/dcvrulup.h ../include/dcvrul.h ../include/dcpixseq.h \

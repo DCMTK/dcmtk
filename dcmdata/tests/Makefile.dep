@@ -6,9 +6,9 @@ bspblock.o: bspblock.cc ../include/dctk.h \
  ../include/dcdict.h ../include/dcdicent.h ../include/dcentbst.h \
  ../include/dcentset.h ../include/pix.h ../include/dcentdef.h \
  ../include/dcentlst.h ../include/dctag.h ../include/dcdeftag.h \
- ../include/dcobject.h ../include/dcstack.h ../include/dcelem.h \
- ../include/dcitem.h ../include/dcvrui.h ../include/dcbytstr.h \
- ../include/dclist.h ../include/dcmetinf.h ../include/dcdatset.h \
+ ../include/dcobject.h ../include/dclist.h ../include/dcstack.h \
+ ../include/dcelem.h ../include/dcitem.h ../include/dcvrui.h \
+ ../include/dcbytstr.h ../include/dcmetinf.h ../include/dcdatset.h \
  ../include/dcsequen.h ../include/dcfilefo.h ../include/dcdicdir.h \
  ../include/dcdirrec.h ../include/dcvrulup.h ../include/dcvrul.h \
  ../include/dcpixseq.h ../include/dcvrae.h ../include/dcvras.h \
@@ -26,9 +26,9 @@ bspdir.o: bspdir.cc ../include/dctk.h ../../config/include/osconfig.h \
  ../include/dctagkey.h ../include/dcdict.h ../include/dcdicent.h \
  ../include/dcentbst.h ../include/dcentset.h ../include/pix.h \
  ../include/dcentdef.h ../include/dcentlst.h ../include/dctag.h \
- ../include/dcdeftag.h ../include/dcobject.h ../include/dcstack.h \
- ../include/dcelem.h ../include/dcitem.h ../include/dcvrui.h \
- ../include/dcbytstr.h ../include/dclist.h ../include/dcmetinf.h \
+ ../include/dcdeftag.h ../include/dcobject.h ../include/dclist.h \
+ ../include/dcstack.h ../include/dcelem.h ../include/dcitem.h \
+ ../include/dcvrui.h ../include/dcbytstr.h ../include/dcmetinf.h \
  ../include/dcdatset.h ../include/dcsequen.h ../include/dcfilefo.h \
  ../include/dcdicdir.h ../include/dcdirrec.h ../include/dcvrulup.h \
  ../include/dcvrul.h ../include/dcpixseq.h ../include/dcvrae.h \
@@ -68,9 +68,9 @@ bspobj.o: bspobj.cc ../include/dctk.h ../../config/include/osconfig.h \
  ../include/dctagkey.h ../include/dcdict.h ../include/dcdicent.h \
  ../include/dcentbst.h ../include/dcentset.h ../include/pix.h \
  ../include/dcentdef.h ../include/dcentlst.h ../include/dctag.h \
- ../include/dcdeftag.h ../include/dcobject.h ../include/dcstack.h \
- ../include/dcelem.h ../include/dcitem.h ../include/dcvrui.h \
- ../include/dcbytstr.h ../include/dclist.h ../include/dcmetinf.h \
+ ../include/dcdeftag.h ../include/dcobject.h ../include/dclist.h \
+ ../include/dcstack.h ../include/dcelem.h ../include/dcitem.h \
+ ../include/dcvrui.h ../include/dcbytstr.h ../include/dcmetinf.h \
  ../include/dcdatset.h ../include/dcsequen.h ../include/dcfilefo.h \
  ../include/dcdicdir.h ../include/dcdirrec.h ../include/dcvrulup.h \
  ../include/dcvrul.h ../include/dcpixseq.h ../include/dcvrae.h \
@@ -87,8 +87,8 @@ bspstack.o: bspstack.cc ../include/dcstack.h \
  ../include/dcobject.h ../include/dcerror.h ../include/dcxfer.h \
  ../include/dcstream.h ../include/dcbuf.h ../include/dcdefine.h \
  ../include/dctag.h ../include/dctagkey.h ../include/dcvr.h \
- ../include/dcdicent.h ../include/dcvrus.h ../include/dcelem.h \
- ../include/dcdeftag.h
+ ../include/dcdicent.h ../include/dclist.h ../include/dcvrus.h \
+ ../include/dcelem.h ../include/dcdeftag.h
 bsptag.o: bsptag.cc ../include/dctag.h ../../config/include/osconfig.h \
  ../include/dctypes.h ../include/dcerror.h ../include/dctagkey.h \
  ../include/dcvr.h ../include/dcdicent.h ../include/dcdeftag.h
@@ -97,8 +97,8 @@ tstblock.o: tstblock.cc ../../config/include/osconfig.h \
  ../include/dcitem.h ../include/dcobject.h ../include/dcxfer.h \
  ../include/dcstream.h ../include/dcbuf.h ../include/dcdefine.h \
  ../include/dctag.h ../include/dctagkey.h ../include/dcvr.h \
- ../include/dcdicent.h ../include/dcstack.h ../include/dcvrui.h \
- ../include/dcbytstr.h ../include/dcelem.h ../include/dclist.h \
+ ../include/dcdicent.h ../include/dclist.h ../include/dcstack.h \
+ ../include/dcvrui.h ../include/dcbytstr.h ../include/dcelem.h \
  ../include/dcdict.h ../include/dcentbst.h ../include/dcentset.h \
  ../include/pix.h ../include/dcentdef.h ../include/dcentlst.h \
  ../include/dcdebug.h
@@ -111,9 +111,9 @@ tstdir.o: tstdir.cc ../../config/include/osconfig.h ../include/dctk.h \
  ../include/dctagkey.h ../include/dcdict.h ../include/dcdicent.h \
  ../include/dcentbst.h ../include/dcentset.h ../include/pix.h \
  ../include/dcentdef.h ../include/dcentlst.h ../include/dctag.h \
- ../include/dcdeftag.h ../include/dcobject.h ../include/dcstack.h \
- ../include/dcelem.h ../include/dcitem.h ../include/dcvrui.h \
- ../include/dcbytstr.h ../include/dclist.h ../include/dcmetinf.h \
+ ../include/dcdeftag.h ../include/dcobject.h ../include/dclist.h \
+ ../include/dcstack.h ../include/dcelem.h ../include/dcitem.h \
+ ../include/dcvrui.h ../include/dcbytstr.h ../include/dcmetinf.h \
  ../include/dcdatset.h ../include/dcsequen.h ../include/dcfilefo.h \
  ../include/dcdicdir.h ../include/dcdirrec.h ../include/dcvrulup.h \
  ../include/dcvrul.h ../include/dcpixseq.h ../include/dcvrae.h \
@@ -132,34 +132,13 @@ tstlist.o: tstlist.cc ../../config/include/osconfig.h \
  ../include/dcdefine.h ../include/dctag.h ../include/dctagkey.h \
  ../include/dcvr.h ../include/dcdicent.h ../include/dcstack.h \
  ../include/dcdebug.h ../include/dcdeftag.h
-tstput.o: tstput.cc ../../config/include/osconfig.h \
- ../include/dcdebug.h ../include/dctk.h ../include/dctypes.h \
- ../include/dcswap.h ../include/dcstream.h ../include/dcerror.h \
- ../include/dcbuf.h ../include/dcdefine.h ../include/dcvr.h \
- ../include/dcxfer.h ../include/dcuid.h ../include/dctagkey.h \
- ../include/dcdict.h ../include/dcdicent.h ../include/dcentbst.h \
- ../include/dcentset.h ../include/pix.h ../include/dcentdef.h \
- ../include/dcentlst.h ../include/dctag.h ../include/dcdeftag.h \
- ../include/dcobject.h ../include/dcstack.h ../include/dcelem.h \
- ../include/dcitem.h ../include/dcvrui.h ../include/dcbytstr.h \
- ../include/dclist.h ../include/dcmetinf.h ../include/dcdatset.h \
- ../include/dcsequen.h ../include/dcfilefo.h ../include/dcdicdir.h \
- ../include/dcdirrec.h ../include/dcvrulup.h ../include/dcvrul.h \
- ../include/dcpixseq.h ../include/dcvrae.h ../include/dcvras.h \
- ../include/dcvrcs.h ../include/dcvrda.h ../include/dcvrds.h \
- ../include/dcvrdt.h ../include/dcvris.h ../include/dcvrtm.h \
- ../include/dcchrstr.h ../include/dcvrlo.h ../include/dcvrlt.h \
- ../include/dcvrpn.h ../include/dcvrsh.h ../include/dcvrst.h \
- ../include/dcvrobow.h ../include/dcpxitem.h ../include/dcvrat.h \
- ../include/dcvrss.h ../include/dcvrus.h ../include/dcvrsl.h \
- ../include/dcvrfl.h ../include/dcvrfd.h
 tststack.o: tststack.cc ../../config/include/osconfig.h \
  ../include/dcstack.h ../include/dctypes.h ../include/dcobject.h \
  ../include/dcerror.h ../include/dcxfer.h ../include/dcstream.h \
  ../include/dcbuf.h ../include/dcdefine.h ../include/dctag.h \
  ../include/dctagkey.h ../include/dcvr.h ../include/dcdicent.h \
- ../include/dcvrus.h ../include/dcelem.h ../include/dcdebug.h \
- ../include/dcdeftag.h
+ ../include/dclist.h ../include/dcvrus.h ../include/dcelem.h \
+ ../include/dcdebug.h ../include/dcdeftag.h
 tststream.o: tststream.cc ../../config/include/osconfig.h \
  ../include/dcstream.h ../include/dcerror.h ../include/dctypes.h \
  ../include/dcbuf.h ../include/dcdefine.h
