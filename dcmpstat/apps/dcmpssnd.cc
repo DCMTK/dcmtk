@@ -21,10 +21,10 @@
  *
  *  Purpose: Presentation State Viewer - Network Send Component (Store SCU)
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-02-08 12:52:17 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 1999-02-25 18:34:25 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmpstat/apps/dcmpssnd.cc,v $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -595,6 +595,10 @@ int main(int argc, char *argv[])
     WSACleanup();
 #endif
 
+#ifdef DEBUG
+    dcmDataDict.clear();  /* useful for debugging with dmalloc */
+#endif
+
     return 0;    
 }
 
@@ -602,7 +606,10 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmpssnd.cc,v $
- * Revision 1.3  1999-02-08 12:52:17  meichel
+ * Revision 1.4  1999-02-25 18:34:25  joergr
+ * Added debug code (explicitly delete data dictionary).
+ *
+ * Revision 1.3  1999/02/08 12:52:17  meichel
  * Removed dummy parameter from DVInterface constructor.
  *
  * Revision 1.2  1999/01/25 13:05:47  meichel
