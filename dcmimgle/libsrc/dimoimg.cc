@@ -22,9 +22,9 @@
  *  Purpose: DicomMonochromeImage (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-12-09 13:34:51 $
+ *  Update Date:      $Date: 2002-12-10 19:00:26 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/libsrc/dimoimg.cc,v $
- *  CVS/RCS Revision: $Revision: 1.51 $
+ *  CVS/RCS Revision: $Revision: 1.52 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1743,7 +1743,6 @@ unsigned long DiMonoImage::createAWTBitmap(void *&data,
     if (bits == 8)                                      // for idx color model (byte)
     {
         getOutputData(frame, 8);                        // create output data with 8 bit depth
-        void *data = NULL;
         if ((OutputData != NULL) && (OutputData->getData() != NULL))
         {
             bytes = (unsigned long)Columns * (unsigned long)Rows;
@@ -1754,7 +1753,6 @@ unsigned long DiMonoImage::createAWTBitmap(void *&data,
     else if (bits == 32)                                // for direct color model (long int)
     {
         getOutputData(frame, 8);                        // create output data with 8 bit depth
-        Uint32 *data = NULL;
         if ((OutputData != NULL) && (OutputData->getData() != NULL))
         {
             const unsigned long count = (unsigned long)Columns * (unsigned long)Rows;
@@ -1762,7 +1760,7 @@ unsigned long DiMonoImage::createAWTBitmap(void *&data,
             if (data != NULL)
             {
                 register const Uint8 *p = (const Uint8 *)(OutputData->getData());
-                register Uint32 *q = data;
+                register Uint32 *q = (Uint32 *)data;
                 register Uint32 value;
                 register unsigned long i;
                 for (i = count; i != 0; i--)
@@ -2092,7 +2090,10 @@ int DiMonoImage::writeBMP(FILE *stream,
  *
  * CVS/RCS Log:
  * $Log: dimoimg.cc,v $
- * Revision 1.51  2002-12-09 13:34:51  joergr
+ * Revision 1.52  2002-12-10 19:00:26  joergr
+ * Fixed bug that caused createAWTBitmap() to return always empty pixel data.
+ *
+ * Revision 1.51  2002/12/09 13:34:51  joergr
  * Renamed parameter/local variable to avoid name clashes with global
  * declaration left and/or right (used for as iostream manipulators).
  *
