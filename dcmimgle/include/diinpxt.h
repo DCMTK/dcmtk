@@ -21,10 +21,10 @@
  *
  *  Purpose: DicomInputPixelTemplate (Header)
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-06-01 15:49:42 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2001-09-28 13:04:59 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/diinpxt.h,v $
- *  CVS/RCS Revision: $Revision: 1.20 $
+ *  CVS/RCS Revision: $Revision: 1.21 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -146,10 +146,12 @@ class DiInputPixelTemplate
                          const unsigned long start,
                          const unsigned long count)
       : DiInputPixel(stored, start, count),
-        Data(NULL),
-        MinValue(0),
-        MaxValue(0)
+        Data(NULL)
     {
+        MinValue[0] = 0;
+        MinValue[1] = 0;
+        MaxValue[0] = 0;
+        MaxValue[1] = 0;
         if (isSigned())
         {
             AbsMinimum = -(double)DicomImageClass::maxval(Bits - 1, 0);
@@ -190,24 +192,53 @@ class DiInputPixelTemplate
                 {
                     OFBitmanipTemplate<Uint8>::zeroMem(lut, ocnt);
                     register Uint8 *q = lut - (T2)getAbsMinimum();
-                    for (i = Count; i != 0; i--)                        // fill lookup table
+                    for (i = Count; i != 0; i--)                       // fill lookup table
                         *(q + *(p++)) = 1;
                     q = lut;
                     for (i = 0; i < ocnt; i++)                         // search for minimum
                     {
                         if (*(q++) != 0)
                         {
-                            MinValue = (T2)((double)i + getAbsMinimum());
+                            MinValue[0] = (T2)((double)i + getAbsMinimum());
                             break;
                         }
                     }
                     q = lut + ocnt;
-                    for (i = ocnt; i != 0; i--)                         // search for maximum
+                    for (i = ocnt; i != 0; i--)                        // search for maximum
                     {
                         if (*(--q) != 0)
                         {
-                            MaxValue = (T2)((double)(i - 1) + getAbsMinimum());
+                            MaxValue[0] = (T2)((double)(i - 1) + getAbsMinimum());
                             break;
+                        }
+                    }
+                    if (Count == PixelCount)                           // use global min/max value
+                    {
+                        MinValue[1] = MinValue[0];
+                        MaxValue[1] = MaxValue[0];
+                    } else {                                           // calculate min/max for selected range
+                        OFBitmanipTemplate<Uint8>::zeroMem(lut, ocnt);
+                        p = Data + PixelStart;
+                        register Uint8 *q = lut - (T2)getAbsMinimum();
+                        for (i = PixelCount; i != 0; i--)                  // fill lookup table
+                            *(q + *(p++)) = 1;
+                        q = lut;
+                        for (i = 0; i < ocnt; i++)                         // search for minimum
+                        {
+                            if (*(q++) != 0)
+                            {
+                                MinValue[1] = (T2)((double)i + getAbsMinimum());
+                                break;
+                            }
+                        }
+                        q = lut + ocnt;
+                        for (i = ocnt; i != 0; i--)                         // search for maximum
+                        {
+                            if (*(--q) != 0)
+                            {
+                                MaxValue[1] = (T2)((double)(i - 1) + getAbsMinimum());
+                                break;
+                            }
                         }
                     }
                 }
@@ -215,15 +246,33 @@ class DiInputPixelTemplate
             if (lut == NULL)                                           // use conventional method
             {
                 register T2 value = *p;
-                MinValue = value;
-                MaxValue = value;
+                MinValue[0] = value;
+                MaxValue[0] = value;
                 for (i = Count; i > 1; i--)
                 {
                     value = *(++p);
-                    if (value < MinValue)
-                        MinValue = value;
-                    if (value > MaxValue)
-                        MaxValue = value;
+                    if (value < MinValue[0])
+                        MinValue[0] = value;
+                    else if (value > MaxValue[0])
+                        MaxValue[0] = value;
+                }
+                if (Count == PixelCount)                               // use global min/max value
+                {
+                    MinValue[1] = MinValue[0];
+                    MaxValue[1] = MaxValue[0];
+                } else {                                               // calculate min/max for selected range
+                    p = Data + PixelStart;
+                    register T2 value = *p;
+                    MinValue[1] = value;
+                    MaxValue[1] = value;
+                    for (i = PixelCount; i > 1; i--)
+                    {
+                        value = *(++p);
+                        if (value < MinValue[1])
+                            MinValue[1] = value;
+                        else if (value > MaxValue[1])
+                            MaxValue[1] = value;
+                    }
                 }
             }
             delete[] lut;
@@ -259,20 +308,26 @@ class DiInputPixelTemplate
 
     /** get minimum pixel value
      *
+     ** @param  idx  specifies whether to return the global minimum (0) or
+     *               the minimum of the selected pixel range (1, see PixelStart/Range)
+     *
      ** @return minimum pixel value
      */
-    inline double getMinValue() const
+    inline double getMinValue(const int idx) const
     {
-        return (double)MinValue;
+        return (idx == 0) ? (double)MinValue[0] : (double)MinValue[1];
     }
 
     /** get maximum pixel value
      *
+     ** @param  idx  specifies whether to return the global maximum (0) or
+     *               the maximum of the selected pixel range (1, see PixelStart/Range)
+     *
      ** @return maximum pixel value
      */
-    inline double getMaxValue() const
+    inline double getMaxValue(const int idx) const
     {
-        return (double)MaxValue;
+        return (idx == 0) ? (double)MaxValue[0] : (double)MaxValue[1];
     }
 
 
@@ -518,10 +573,10 @@ class DiInputPixelTemplate
     /// pointer to pixel data
     T2 *Data;
 
-    /// minimum pixel value
-    T2 MinValue;
-    /// maximum pixel value
-    T2 MaxValue;
+    /// minimum pixel value ([0] = global, [1] = selected pixel range) 
+    T2 MinValue[2];
+    /// maximum pixel value ([0] = global, [1] = selected pixel range)
+    T2 MaxValue[2];
 
  // --- declarations to avoid compiler warnings
  
@@ -537,7 +592,10 @@ class DiInputPixelTemplate
  *
  * CVS/RCS Log:
  * $Log: diinpxt.h,v $
- * Revision 1.20  2001-06-01 15:49:42  meichel
+ * Revision 1.21  2001-09-28 13:04:59  joergr
+ * Enhanced algorithm to determine the min and max value.
+ *
+ * Revision 1.20  2001/06/01 15:49:42  meichel
  * Updated copyright header
  *
  * Revision 1.19  2000/05/03 09:46:28  joergr

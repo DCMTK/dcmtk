@@ -21,10 +21,10 @@
  *
  *  Purpose: DicomInputPixel (Header)
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-06-01 15:49:42 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2001-09-28 13:04:58 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/diinpx.h,v $
- *  CVS/RCS Revision: $Revision: 1.12 $
+ *  CVS/RCS Revision: $Revision: 1.13 $
  *  Status:           $State: Exp $
  *
  *   CVS/RCS Log at end of file
@@ -93,15 +93,21 @@ class DiInputPixel
 
     /** get minimum pixel value (abstract)
      *
+     ** @param  idx  specifies whether to return the global minimum (0) or
+     *               the minimum of the selected pixel range (1, see PixelStart/Range)
+     *
      ** @return minimum pixel value
      */
-    virtual double getMinValue() const = 0;
+    virtual double getMinValue(const int idx) const = 0;
 
     /** get maximum pixel value (abstract)
      *
+     ** @param  idx  specifies whether to return the global maximum (0) or
+     *               the maximum of the selected pixel range (1, see PixelStart/Range)
+     *
      ** @return maximum pixel value
      */
-    virtual double getMaxValue() const = 0;
+    virtual double getMaxValue(const int idx) const = 0;
 
     /** get number of bits per pixel
      *
@@ -194,7 +200,10 @@ class DiInputPixel
  *
  * CVS/RCS Log:
  * $Log: diinpx.h,v $
- * Revision 1.12  2001-06-01 15:49:42  meichel
+ * Revision 1.13  2001-09-28 13:04:58  joergr
+ * Enhanced algorithm to determine the min and max value.
+ *
+ * Revision 1.12  2001/06/01 15:49:42  meichel
  * Updated copyright header
  *
  * Revision 1.11  2000/04/27 13:08:38  joergr
