@@ -21,10 +21,10 @@
  *
  *  Purpose: Handle console applications (Header)
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-03-22 09:00:49 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 1999-04-21 12:41:03 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/include/Attic/ofconapp.h,v $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -125,6 +125,13 @@ class OFConsoleApplication
     void checkValue(const OFCommandLine::E_ValueStatus status,
                     OFCommandLine *cmd = NULL);
 
+    /** check parameter status and print error message if necessary
+     *
+     ** @param  status  status of OFCommandLine::getParam() call
+     *  @param  cmd     reference to command line class (default: object used for parsing)
+     */
+    void checkParam(const OFCommandLine::E_ParamValueStatus status,
+                    OFCommandLine *cmd = NULL);
 
  private:
 
@@ -150,7 +157,10 @@ class OFConsoleApplication
  *
  * CVS/RCS Log:
  * $Log: ofconapp.h,v $
- * Revision 1.2  1999-03-22 09:00:49  joergr
+ * Revision 1.3  1999-04-21 12:41:03  meichel
+ * Added method OFConsoleApplication::checkParam()
+ *
+ * Revision 1.2  1999/03/22 09:00:49  joergr
  * Added/Changed comments.
  *
  * Revision 1.1  1999/02/08 12:00:41  joergr
