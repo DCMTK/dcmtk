@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1997-2001, OFFIS
+ *  Copyright (C) 1998-2002, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose: Handle command line arguments (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-11-09 15:46:42 $
+ *  Update Date:      $Date: 2002-09-19 08:30:20 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/include/Attic/ofcmdln.h,v $
- *  CVS/RCS Revision: $Revision: 1.28 $
+ *  CVS/RCS Revision: $Revision: 1.29 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -50,13 +50,13 @@
 
 /// signed integer value
 typedef signed long OFCmdSignedInt;
-    
+
 /// unsigned integer value
 typedef unsigned long OFCmdUnsignedInt;
-    
+
 /// floating point value
 typedef double OFCmdFloat;
-    
+
 /// dynamic string value
 typedef OFString OFCmdString;
 
@@ -82,17 +82,21 @@ struct OFCmdOption
      *  @param  valueCount  number of additional values
      *  @param  valueDescr  description of optional values
      *  @param  optDescr    description of command line option
+     *  @param  exclusive   exclusive option which cannot be combined with any other command
+     *                      line argument if OFTrue, e.g. "--help" or "--version"
      */
     OFCmdOption(const char *longOpt,
                 const char *shortOpt,
                 const int valueCount,
                 const char *valueDescr,
-                const char *optDescr)
+                const char *optDescr,
+                const OFBool exclusive)
       : LongOption(longOpt),
         ShortOption(shortOpt),
         ValueCount(valueCount),
         ValueDescription(valueDescr),
         OptionDescription(optDescr),
+        ExclusiveOption(exclusive),
         Checked(OFFalse)
     {
     }
@@ -120,6 +124,8 @@ struct OFCmdOption
     const OFString ValueDescription;
     /// description of command line option
     const OFString OptionDescription;
+    /// exclusive option cannot be combined with any other command line argument
+    const OFBool ExclusiveOption;
     /// OFTrue if findOption has been applied to this option
     OFBool Checked;
 
@@ -224,14 +230,14 @@ private:
  *---------------------*/
 
 /** handles command line arguments.
- *  This class is the interface to this module. 
+ *  This class is the interface to this module.
  *  All methods which can be used from outside are defined here.
  */
 class OFCommandLine
 {
 
  public:
- 
+
  // --- enumerations
 
     /** status of command line parsing
@@ -289,7 +295,7 @@ class OFCommandLine
         /// converted value exceeds maximum
         PVS_Overflow
     };
-    
+
     /** mode for findOption method
      */
     enum E_FindOptionMode
@@ -299,7 +305,7 @@ class OFCommandLine
         /// find first option
         FOM_First,
         /// find next option
-        FOM_Next 
+        FOM_Next
     };
 
 
@@ -312,7 +318,7 @@ class OFCommandLine
     /** destructor
      */
     virtual ~OFCommandLine();
-    
+
 
  // --- initialization
 
@@ -321,7 +327,7 @@ class OFCommandLine
      ** @param  chars  string containing all valid option characters (default: "+-")
      */
     void setOptionChars(const char *chars);
-    
+
     /** sets default width of option columns
      *
      *  @param  longCols   minimum width of the long option column
@@ -344,6 +350,9 @@ class OFCommandLine
      *  @param  valueCount  number of additional values
      *  @param  valueDescr  description of optional values
      *  @param  optDescr    description of command line option (use '\n' for line break)
+     *  @param  exclusive   exclusive option which cannot be combined with any other command
+     *                      line argument (if OFTrue). "--help" is always considered an
+     *                      exclusive option.
      *
      ** @return OFTrue if succesfully added
      */
@@ -351,21 +360,26 @@ class OFCommandLine
                      const char *shortOpt,
                      const int valueCount,
                      const char *valueDescr,
-                     const char *optDescr);
- 
+                     const char *optDescr,
+                     const OFBool exclusive = OFFalse);
+
     /** adds an item to the list of valid options
      *  (without additional values)
      *
      ** @param  longOpt     long option name
      *  @param  shortOpt    short option name
      *  @param  optDescr    description of command line option (use '\n' for line break)
+     *  @param  exclusive   exclusive option which cannot be combined with any other command
+     *                      line argument (if OFTrue). "--help" is always considered an
+     *                      exclusive option.
      *
      ** @return OFTrue if succesfully added
      */
     OFBool addOption(const char *longOpt,
                      const char *shortOpt,
-                     const char *optDescr);
- 
+                     const char *optDescr,
+                     const OFBool exclusive = OFFalse);
+
     /** adds an item to the list of valid options
      *  (without short name)
      *
@@ -373,25 +387,33 @@ class OFCommandLine
      *  @param  valueCount  number of additional values
      *  @param  valueDescr  description of optional values
      *  @param  optDescr    description of command line option (use '\n' for line break)
+     *  @param  exclusive   exclusive option which cannot be combined with any other command
+     *                      line argument (if OFTrue). "--help" is always considered an
+     *                      exclusive option.
      *
      ** @return OFTrue if succesfully added
      */
     OFBool addOption(const char *longOpt,
                      const int valueCount,
                      const char *valueDescr,
-                     const char *optDescr);
- 
+                     const char *optDescr,
+                     const OFBool exclusive = OFFalse);
+
     /** adds an item to the list of valid options
      *  (without short name and additional values)
      *
-     ** @param  longOpt   long option name
-     *  @param  optDescr  description of command line option (use '\n' for line break)
+     ** @param  longOpt    long option name
+     *  @param  optDescr   description of command line option (use '\n' for line break)
+     *  @param  exclusive   exclusive option which cannot be combined with any other command
+     *                      line argument (if OFTrue). "--help" is always considered an
+     *                      exclusive option.
      *
      ** @return OFTrue if succesfully added
      */
     OFBool addOption(const char *longOpt,
-                     const char *optDescr);
-                   
+                     const char *optDescr,
+                     const OFBool exclusive = OFFalse);
+
     /** adds a new group (top-level).
      *  all following options belong to this group
      *
@@ -450,7 +472,7 @@ class OFCommandLine
     {
         return ArgumentList.size();
     }
-    
+
     /** gets current command line argument as a C string
      *  This is the argument which is currently parsed.
      *
@@ -513,6 +535,17 @@ class OFCommandLine
     int getMaxParamCount() const
     {
         return MaxParamCount;
+    }
+
+    /** checks whether the parsed command line contains any "exclusive" option
+     *  which does not require any mandatory parameter.  Examples for typical
+     *  exclusive options are "--help" and "--version".
+     *
+     ** @return OFTrue if an exclusive option is used
+     */
+    OFBool hasExclusiveOption() const
+    {
+        return ExclusiveOption;
     }
 
 
@@ -709,7 +742,7 @@ class OFCommandLine
     /** starts an option block which can be used to support mutually exclusive options.
      */
     void beginOptionBlock();
-    
+
     /** ends an option block which can be used to support mutually exclusive options.
      */
     void endOptionBlock();
@@ -906,7 +939,7 @@ class OFCommandLine
 
 
  protected:
- 
+
     /** checks whether given option is valid (starting with an option char and not followed by a number)
      */
     OFBool checkOption(const char *string,
@@ -920,7 +953,7 @@ class OFCommandLine
     /** finds specified option and returns reference to its describing structure
      */
     const OFCmdOption *findCmdOption(const char *option) const;
-    
+
     /** stores the specified parameter in the argument/parameter list
      */
     void storeParameter(const char *param,
@@ -952,7 +985,7 @@ class OFCommandLine
     /** returns name of parameter which is missed in the parsed command line (used for error output)
      */
     OFBool getMissingParam(OFString &arg);
-    
+
 
  private:
 
@@ -965,7 +998,7 @@ class OFCommandLine
     OFList<OFString> ArgumentList;
     /// current position in argument list
     OFListIterator(OFString) ArgumentIterator;
-    
+
     /// list of parameter positions within argument list
     OFList<OFCmdParamPos *> ParamPosList;
     /// list of option positions within argument list
@@ -980,13 +1013,16 @@ class OFCommandLine
     /// C++ string conisting of all valid characters introducing an option
     OFString OptionChars;
 
+    /// OFTrue if an "exclusive" option is used in the command line, OFFalse otherwise
+    OFBool ExclusiveOption;
+
     /// width of column for long option names
     int LongColumn;
     /// width of column for short option names
     int ShortColumn;
     /// width of column for parameter names
     int ParamColumn;
-    
+
     /// minimum number of parameters which should be accepted
     int MinParamCount;
     /// maximum number of parameter which should be accepted
@@ -1009,7 +1045,11 @@ private:
  *
  * CVS/RCS Log:
  * $Log: ofcmdln.h,v $
- * Revision 1.28  2001-11-09 15:46:42  joergr
+ * Revision 1.29  2002-09-19 08:30:20  joergr
+ * Added general support for "exclusive" command line options besides "--help",
+ * e.g. "--version".
+ *
+ * Revision 1.28  2001/11/09 15:46:42  joergr
  * Renamed some of the getValue/getParam methods to avoid ambiguities reported
  * by certain compilers.
  *

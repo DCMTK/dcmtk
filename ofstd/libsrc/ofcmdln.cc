@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1997-2001, OFFIS
+ *  Copyright (C) 1998-2002, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,10 +21,10 @@
  *
  *  Purpose: Template class for command line arguments (Source)
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-06-20 12:04:36 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2002-09-19 08:30:32 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/libsrc/ofcmdln.cc,v $
- *  CVS/RCS Revision: $Revision: 1.29 $
+ *  CVS/RCS Revision: $Revision: 1.30 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -65,6 +65,7 @@ OFCommandLine::OFCommandLine()
     OptionBlockIterator(),
     OptionBlockMode(OFFalse),
     OptionChars("+-"),
+    ExclusiveOption(OFFalse),
     LongColumn(0),
     ShortColumn(0),
     ParamColumn(0),
@@ -80,21 +81,21 @@ OFCommandLine::~OFCommandLine()
     OFListIterator(OFCmdOption *) first_o = ValidOptionList.begin();
     OFListIterator(OFCmdOption *) last_o = ValidOptionList.end();
     while (first_o != last_o)
-    {     
+    {
         delete (*first_o);
         first_o = ValidOptionList.erase(first_o);
     }
     OFListIterator(OFCmdParam *) first_p = ValidParamList.begin();
     OFListIterator(OFCmdParam *) last_p = ValidParamList.end();
     while (first_p != last_p)
-    {     
+    {
         delete (*first_p);
         first_p = ValidParamList.erase(first_p);
     }
     OFListIterator(OFCmdParamPos *) first_pp = ParamPosList.begin();
     OFListIterator(OFCmdParamPos *) last_pp = ParamPosList.end();
     while (first_pp != last_pp)
-    {     
+    {
         delete (*first_pp);
         first_pp = ParamPosList.erase(first_pp);
     }
@@ -144,10 +145,11 @@ OFBool OFCommandLine::addOption(const char *longOpt,
                                 const char *shortOpt,
                                 const int valueCount,
                                 const char *valueDescr,
-                                const char *optDescr)
+                                const char *optDescr,
+                                const OFBool exclusive)
 {
     if (checkOption(longOpt) && checkOption(shortOpt))
-    {    
+    {
 #ifdef DEBUG
         if (strlen(longOpt) > 0)
         {
@@ -172,7 +174,9 @@ OFBool OFCommandLine::addOption(const char *longOpt,
             }
         }
 #endif
-        OFCmdOption *opt = new OFCmdOption(longOpt, shortOpt, valueCount, valueDescr, optDescr);
+        /* consider "--help" always an exclusive option */
+        const OFBool exclMode = (longOpt != NULL) && (strcmp(longOpt, "--help") == 0) ? OFTrue : exclusive;
+        OFCmdOption *opt = new OFCmdOption(longOpt, shortOpt, valueCount, valueDescr, optDescr, exclMode);
         if (opt != NULL)
         {
             ValidOptionList.push_back(opt);
@@ -189,25 +193,28 @@ OFBool OFCommandLine::addOption(const char *longOpt,
 
 OFBool OFCommandLine::addOption(const char *longOpt,
                                 const char *shortOpt,
-                                const char *optDescr)
+                                const char *optDescr,
+                                const OFBool exclusive)
 {
-    return addOption(longOpt, shortOpt, 0, "", optDescr);
+    return addOption(longOpt, shortOpt, 0, "", optDescr, exclusive);
 }
 
 
 OFBool OFCommandLine::addOption(const char *longOpt,
                                 const int valueCount,
                                 const char *valueDescr,
-                                const char *optDescr)
+                                const char *optDescr,
+                                const OFBool exclusive)
 {
-    return addOption(longOpt, "", valueCount, valueDescr, optDescr);
+    return addOption(longOpt, "", valueCount, valueDescr, optDescr, exclusive);
 }
 
 
 OFBool OFCommandLine::addOption(const char *longOpt,
-                                const char *optDescr)
+                                const char *optDescr,
+                                const OFBool exclusive)
 {
-    return addOption(longOpt, "", 0, "", optDescr);
+    return addOption(longOpt, "", 0, "", optDescr, exclusive);
 }
 
 
@@ -247,7 +254,7 @@ OFBool OFCommandLine::addParam(const char *param,
 /*
             case OFCmdParam::PM_MultiMandatory:
                 {
-                    ofConsole.lockCerr() << "WARNING: " << ValidParamList.size() << ". parameter is multi_mandatory => hides " 
+                    ofConsole.lockCerr() << "WARNING: " << ValidParamList.size() << ". parameter is multi_mandatory => hides "
                                          << param << " !" << endl;
                     ofConsole.unlockCerr();
                 }
@@ -255,7 +262,7 @@ OFBool OFCommandLine::addParam(const char *param,
 */
             case OFCmdParam::PM_MultiOptional:
                 {
-                    ofConsole.lockCerr() << "WARNING: " << ValidParamList.size() << ". parameter is multi_optional => hides " 
+                    ofConsole.lockCerr() << "WARNING: " << ValidParamList.size() << ". parameter is multi_optional => hides "
                                          << param << " !" << endl;
                     ofConsole.unlockCerr();
                 }
@@ -499,7 +506,7 @@ OFCommandLine::E_ParamValueStatus OFCommandLine::getParam(const int pos,
     if (findParam(pos))
     {
         param = *ArgumentIterator;
-        
+
         if (param.length() > 0)
             return PVS_Normal;
         return PVS_Empty;
@@ -529,7 +536,7 @@ OFBool OFCommandLine::findOption(const char *longOpt,
         ofConsole.lockCerr() << "WARNING: unknown option " << longOpt << " in 'OFCommandLine::findOption()' !" << endl;
         ofConsole.unlockCerr();
         return OFFalse;
-    }    
+    }
 #endif
     OFListIterator(OFListIterator_OFString) pos_iter = (mode == FOM_Next) ? OptionPosIterator : OptionPosList.end();
     OFListIterator(OFListIterator_OFString) pos_first = OptionPosList.begin();
@@ -771,7 +778,7 @@ void OFCommandLine::storeParameter(const char *param,
         ParamPosList.push_back(parm);
 }
 
-                    
+
 int OFCommandLine::packColumnValues(int longCols,
                                     int shortCols) const
 {
@@ -838,8 +845,8 @@ void OFCommandLine::expandWildcards(const char *param,
     }
 }
 #endif
-                    
-                    
+
+
 OFCommandLine::E_ParseStatus OFCommandLine::checkParamCount()
 {
     MinParamCount = 0;
@@ -872,7 +879,7 @@ OFCommandLine::E_ParseStatus OFCommandLine::checkParamCount()
         }
         iter++;
     }
-    if ((getArgCount() == 0) || ((getArgCount() == 1) && findOption("--help")))
+    if ((getArgCount() == 0) || ((getArgCount() == 1) && hasExclusiveOption()))
         return PS_NoArguments;
     else if (getParamCount() < MinParamCount)
         return PS_MissingParameter;
@@ -894,6 +901,7 @@ OFCommandLine::E_ParseStatus OFCommandLine::parseLine(int argCount,
     ArgumentList.clear();                                                // initialize lists
     ParamPosList.clear();
     OptionPosList.clear();
+    ExclusiveOption = OFFalse;
     if (argCount > startPos)                                             // any command line arguments?
     {
         int directOption = 0;                                            // number of direct predecessor
@@ -914,6 +922,8 @@ OFCommandLine::E_ParseStatus OFCommandLine::parseLine(int argCount,
                 {
                     ArgumentList.push_back((OFString)(opt->LongOption)); // convert argument to long format
                     OptionPosList.push_back(--ArgumentList.end());
+                    if (opt->ExclusiveOption)                            // check for an "exclusive" option
+                        ExclusiveOption = OFTrue;
                     directOption++;
                     int j = opt->ValueCount;
                     if (i + j >= argCount)                               // expecting more values than present
@@ -1025,7 +1035,7 @@ void OFCommandLine::getOptionString(OFString &string) const
                     str.resize(shortSize, ' ');
                     string += str;
                     string.append(columnSpace, ' ');
-                }                    
+                }
                 str = (*iter)->LongOption;
                 str.resize(longSize, ' ');
                 string += str;
@@ -1175,7 +1185,7 @@ void OFCommandLine::getStatusString(const E_ParamValueStatus status,
             break;
         default:
             string = "";
-            break;        
+            break;
     }
 }
 
@@ -1239,7 +1249,11 @@ void OFCommandLine::getStatusString(const E_ValueStatus status,
  *
  * CVS/RCS Log:
  * $Log: ofcmdln.cc,v $
- * Revision 1.29  2002-06-20 12:04:36  meichel
+ * Revision 1.30  2002-09-19 08:30:32  joergr
+ * Added general support for "exclusive" command line options besides "--help",
+ * e.g. "--version".
+ *
+ * Revision 1.29  2002/06/20 12:04:36  meichel
  * Changed toolkit to use OFStandard::atof instead of atof, strtod or
  *   sscanf for all string to double conversions that are supposed to
  *   be locale independent

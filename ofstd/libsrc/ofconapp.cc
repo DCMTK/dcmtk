@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1997-2001, OFFIS
+ *  Copyright (C) 1999-2002, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,10 +21,10 @@
  *
  *  Purpose: Handle console applications (Source)
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-06-01 15:51:37 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2002-09-19 08:30:33 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/libsrc/ofconapp.cc,v $
- *  CVS/RCS Revision: $Revision: 1.15 $
+ *  CVS/RCS Revision: $Revision: 1.16 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -69,10 +69,11 @@ OFBool OFConsoleApplication::parseCommandLine(OFCommandLine &cmd,
     CmdLine = &cmd;                                                     // store reference to cmdline object
     OFCommandLine::E_ParseStatus status = cmd.parseLine(argCount, argValue, flags, startPos);
     OFBool result = OFFalse;
-    switch (status)    
+    switch (status)
     {
         case OFCommandLine::PS_NoArguments:
-            if ((cmd.getMinParamCount() > 0) || cmd.findOption("--help"))
+            /* check whether to print the "usage text" or not */
+            if (((cmd.getMinParamCount() > 0) && !cmd.hasExclusiveOption()) || cmd.findOption("--help"))
                 printUsage();
             else
                 result = OFTrue;
@@ -231,7 +232,11 @@ void OFConsoleApplication::checkConflict(const char *firstOpt,
  *
  * CVS/RCS Log:
  * $Log: ofconapp.cc,v $
- * Revision 1.15  2001-06-01 15:51:37  meichel
+ * Revision 1.16  2002-09-19 08:30:33  joergr
+ * Added general support for "exclusive" command line options besides "--help",
+ * e.g. "--version".
+ *
+ * Revision 1.15  2001/06/01 15:51:37  meichel
  * Updated copyright header
  *
  * Revision 1.14  2000/04/14 15:17:16  meichel
