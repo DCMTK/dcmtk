@@ -64,9 +64,9 @@
 ** 
 **
 ** Last Update:		$Author: hewett $
-** Update Date:		$Date: 1996-09-27 14:03:48 $
+** Update Date:		$Date: 1997-02-06 12:17:11 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/libsrc/dcompat.cc,v $
-** CVS/RCS Revision:	$Revision: 1.6 $
+** CVS/RCS Revision:	$Revision: 1.7 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -86,7 +86,12 @@
 #include <unistd.h>
 #endif
 #ifdef HAVE_UNIX_H
-#include <unix.h>
+#if defined(macintosh) && defined (HAVE_WINSOCK_H)
+/* unix.h defines timeval incompatible with winsock.h */
+#define timeval _UNWANTED_timeval
+#endif
+#include <unix.h>	/* for unlink() under Metrowerks C++ (Macintosh) */
+#undef timeval
 #endif
 #include <errno.h>
 #ifdef HAVE_FCNTL_H
@@ -313,7 +318,11 @@ tempnam(char *dir, char *pfx)
 /*
 ** CVS Log
 ** $Log: dcompat.cc,v $
-** Revision 1.6  1996-09-27 14:03:48  hewett
+** Revision 1.7  1997-02-06 12:17:11  hewett
+** Updated for Macintosh CodeWarrior 11.  Corrected for incompatibilities
+** in the timeval structure between unix.h and winsock.h
+**
+** Revision 1.6  1996/09/27 14:03:48  hewett
 ** Added simple version of access(...) for Win32.  This needs improvement.
 **
 ** Revision 1.5  1996/09/27 09:18:02  hewett

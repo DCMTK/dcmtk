@@ -57,9 +57,9 @@
 **	Module Prefix: DIMSE_
 **
 ** Last Update:		$Author: hewett $
-** Update Date:		$Date: 1996-09-03 11:40:25 $
+** Update Date:		$Date: 1997-02-06 12:21:14 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/libsrc/dimse.cc,v $
-** CVS/RCS Revision:	$Revision: 1.4 $
+** CVS/RCS Revision:	$Revision: 1.5 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -80,7 +80,12 @@
 #include <unistd.h>
 #endif
 #ifdef HAVE_UNIX_H
-#include <unix.h>
+#if defined(macintosh) && defined (HAVE_WINSOCK_H)
+/* unix.h defines timeval incompatible with winsock.h */
+#define timeval _UNWANTED_timeval
+#endif
+#include <unix.h>	/* for unlink() under Metrowerks C++ (Macintosh) */
+#undef timeval
 #endif
 #ifdef HAVE_FCNTL_H
 #include <fcntl.h>
@@ -1196,7 +1201,11 @@ void DIMSE_warning(T_ASC_Association *assoc,
 /*
 ** CVS Log
 ** $Log: dimse.cc,v $
-** Revision 1.4  1996-09-03 11:40:25  hewett
+** Revision 1.5  1997-02-06 12:21:14  hewett
+** Updated for Macintosh CodeWarrior 11.  Corrected for incompatibilities
+** in the timeval structure between unix.h and winsock.h
+**
+** Revision 1.4  1996/09/03 11:40:25  hewett
 ** Added automatic tests in the DIMSE level network code to check
 ** that a data dictionary is loaded.  Calls to DIMSE routines will
 ** now fail if no data dictionary is loaded.  Previously, the lack of

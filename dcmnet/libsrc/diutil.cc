@@ -58,9 +58,9 @@
 **
 **
 ** Last Update:		$Author: hewett $
-** Update Date:		$Date: 1996-09-24 15:59:20 $
+** Update Date:		$Date: 1997-02-06 12:21:15 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/libsrc/diutil.cc,v $
-** CVS/RCS Revision:	$Revision: 1.2 $
+** CVS/RCS Revision:	$Revision: 1.3 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -76,7 +76,12 @@
 #include <stdlib.h>
 #endif
 #ifdef HAVE_UNIX_H
-#include <unix.h>
+#if defined(macintosh) && defined (HAVE_WINSOCK_H)
+/* unix.h defines timeval incompatible with winsock.h */
+#define timeval _UNWANTED_timeval
+#endif
+#include <unix.h>	/* for unlink() under Metrowerks C++ (Macintosh) */
+#undef timeval
 #endif
 #ifdef HAVE_SYS_TYPES_H
 #include <sys/types.h>
@@ -540,7 +545,11 @@ DU_cgetStatusString(Uint16 statusCode)
 /*
 ** CVS Log
 ** $Log: diutil.cc,v $
-** Revision 1.2  1996-09-24 15:59:20  hewett
+** Revision 1.3  1997-02-06 12:21:15  hewett
+** Updated for Macintosh CodeWarrior 11.  Corrected for incompatibilities
+** in the timeval structure between unix.h and winsock.h
+**
+** Revision 1.2  1996/09/24 15:59:20  hewett
 ** Added Support for the SOP Class UIDs of Radiotherapy Objects.
 **
 ** Revision 1.1.1.1  1996/03/26 18:38:46  hewett
