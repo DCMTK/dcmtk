@@ -23,8 +23,8 @@
  *    classes: DVPSStoredPrint
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-09-08 16:46:32 $
- *  CVS/RCS Revision: $Revision: 1.8 $
+ *  Update Date:      $Date: 1999-09-09 12:20:53 $
+ *  CVS/RCS Revision: $Revision: 1.9 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1162,10 +1162,68 @@ const char *DVPSStoredPrint::getCurrentPresentationLUTExplanation()
   return NULL;
 }
 
+E_Condition DVPSStoredPrint::setBorderDensity(const char *value)
+{
+  return EC_IllegalCall; // UNIMPLEMENTED
+}
+
+E_Condition DVPSStoredPrint::setEmtpyImageDensity(const char *value)
+{
+  return EC_IllegalCall; // UNIMPLEMENTED
+}
+
+const char *DVPSStoredPrint::getBorderDensity()
+{
+  return NULL; // UNIMPLEMENTED
+}
+
+const char *DVPSStoredPrint::getEmtpyImageDensity()
+{
+  return NULL; // UNIMPLEMENTED
+}
+
+OFBool DVPSStoredPrint::imageHasAdditionalSettings(size_t idx)
+{
+  return OFFalse; // UNIMPLEMENTED
+}
+
+E_Condition DVPSStoredPrint::setImageMagnificationType(size_t idx, const char *value)
+{
+  return EC_IllegalCall; // UNIMPLEMENTED
+}
+
+E_Condition DVPSStoredPrint::setImageSmoothingType(size_t idx, const char *value)
+{
+  return EC_IllegalCall; // UNIMPLEMENTED
+}
+
+E_Condition DVPSStoredPrint::setImageConfigurationInformation(size_t idx, const char *value)
+{
+  return EC_IllegalCall; // UNIMPLEMENTED
+}
+
+const char *DVPSStoredPrint::getImageMagnificationType(size_t idx)
+{
+  return NULL; // UNIMPLEMENTED
+}
+
+const char *DVPSStoredPrint::getImageSmoothingType(size_t idx)
+{
+  return NULL; // UNIMPLEMENTED
+}
+
+const char *DVPSStoredPrint::getImageConfigurationInformation(size_t idx)
+{
+  return NULL; // UNIMPLEMENTED
+}
+
 
 /*
  *  $Log: dvpssp.cc,v $
- *  Revision 1.8  1999-09-08 16:46:32  meichel
+ *  Revision 1.9  1999-09-09 12:20:53  meichel
+ *  Added print API method declarations and implementations (empty for now).
+ *
+ *  Revision 1.8  1999/09/08 16:46:32  meichel
  *  Added print API method declarations
  *
  *  Revision 1.7  1999/09/01 16:15:09  meichel

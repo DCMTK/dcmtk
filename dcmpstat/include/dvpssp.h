@@ -23,8 +23,8 @@
  *    classes: DVPSStoredPrint
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-09-08 16:46:44 $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  Update Date:      $Date: 1999-09-09 12:20:47 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -185,10 +185,12 @@ class DVPSStoredPrint
    */
   E_Condition setEmtpyImageDensity(const char *value);
     
-  /** deletes all optional attribute values that might not be
+  /** UNIMPLEMENTED NEEDS UPDATE - deletes all optional attribute values that might not be
    *  supported by all printers. Film size ID, magnification and smoothing type,
-   *  configuration information, requested resolution ID, film orientation,
-   *  trim and requested decimate/crop behaviour are reset to default.
+   *  configuration information, requested resolution ID,
+   *  trim and requested decimate/crop behaviour, border and empty image density
+   *  are reset to default. For all registered images, magnification, smoothing type
+   *  and configuration information are also set back to default.
    *  @return EC_Normal if successful, an error code otherwise.
    */   
   E_Condition newPrinter(); // short cut, delete all optional settings
@@ -628,7 +630,10 @@ class DVPSStoredPrint
 
 /*
  *  $Log: dvpssp.h,v $
- *  Revision 1.6  1999-09-08 16:46:44  meichel
+ *  Revision 1.7  1999-09-09 12:20:47  meichel
+ *  Added print API method declarations and implementations (empty for now).
+ *
+ *  Revision 1.6  1999/09/08 16:46:44  meichel
  *  Added print API method declarations
  *
  *  Revision 1.5  1999/09/01 16:14:41  meichel

@@ -22,8 +22,8 @@
  *  Purpose: DVConfiguration
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-09-08 16:41:42 $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  Update Date:      $Date: 1999-09-09 12:20:52 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -619,10 +619,64 @@ const char *DVConfiguration::getLUTFilename(const char *lutID)
   return getConfigEntry(L2_LUT, lutID, L0_FILENAME);
 }
 
+Uint32 DVConfiguration::getTargetPrinterNumberOfBorderDensities(const char *targetID)
+{
+  return 0; // UNIMPLEMENTED
+}
+
+const char *DVConfiguration::getTargetPrinterBorderDensity(const char *targetID, Uint32 idx, OFString& value)
+{
+  return NULL; // UNIMPLEMENTED
+}
+
+Uint32 DVConfiguration::getTargetPrinterNumberOfEmptyImageDensities(const char *targetID)
+{
+  return 0; // UNIMPLEMENTED
+}
+
+const char *DVConfiguration::getTargetPrinterEmptyImageDensity(const char *targetID, Uint32 idx, OFString& value)
+{
+  return NULL; // UNIMPLEMENTED
+}
+
+Uint32 DVConfiguration::getMinPrintResolutionX()
+{
+  return 0; // UNIMPLEMENTED
+}
+
+Uint32 DVConfiguration::getMinPrintResolutionY()
+{
+  return 0; // UNIMPLEMENTED
+}
+
+Uint32 DVConfiguration::getMaxPrintResolutionX()
+{
+  return 0; // UNIMPLEMENTED
+}
+
+Uint32 DVConfiguration::getMaxPrintResolutionY()
+{
+  return 0; // UNIMPLEMENTED
+}
+
+Uint16 DVConfiguration::getDefaultPrintIllumination()
+{
+  return 0; // UNIMPLEMENTED
+}
+
+Uint16 DVConfiguration::getDefaultPrintReflection()
+{
+  return 0; // UNIMPLEMENTED
+}
+
+
 /*
  *  CVS/RCS Log:
  *  $Log: dvpscf.cc,v $
- *  Revision 1.1  1999-09-08 16:41:42  meichel
+ *  Revision 1.2  1999-09-09 12:20:52  meichel
+ *  Added print API method declarations and implementations (empty for now).
+ *
+ *  Revision 1.1  1999/09/08 16:41:42  meichel
  *  Moved configuration file evaluation to separate class.
  *
  *

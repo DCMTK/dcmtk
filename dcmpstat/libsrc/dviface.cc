@@ -21,9 +21,9 @@
  *
  *  Purpose: DVPresentationState
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-09-08 17:11:43 $
- *  CVS/RCS Revision: $Revision: 1.64 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 1999-09-09 12:20:51 $
+ *  CVS/RCS Revision: $Revision: 1.65 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -2275,10 +2275,89 @@ void DVInterface::cleanChildren()
 }
 
 
+E_Condition DVInterface::setCurrentPrinter(const char *targetID)
+{
+  return EC_IllegalCall; // UNIMPLEMENTED
+}
+
+const char *DVInterface::getCurrentPrinter()
+{
+  return NULL; // UNIMPLEMENTED
+}
+
+E_Condition DVInterface::setPrinterMediumType(const char *value)
+{
+  return EC_IllegalCall; // UNIMPLEMENTED
+}
+
+const char *DVInterface::getPrinterMediumType()
+{
+  return NULL; // UNIMPLEMENTED
+}
+
+E_Condition DVInterface::setPrintIllumination(Uint16 value)
+{
+  return EC_IllegalCall; // UNIMPLEMENTED
+}
+
+Uint16 DVInterface::getPrintIllumination()
+{
+  return 0; // UNIMPLEMENTED
+}
+
+E_Condition DVInterface::setPrintReflectedAmbientLight(Uint16 value)
+{
+  return EC_IllegalCall; // UNIMPLEMENTED
+}
+
+Uint16 DVInterface::getPrintReflectedAmbientLight()
+{
+  return 0; // UNIMPLEMENTED
+}
+
+E_Condition DVInterface::selectPrintPresentationLUT(const char *lutID)
+{
+  return EC_IllegalCall; // UNIMPLEMENTED
+}
+
+const char *DVInterface::getPrintPresentationLUTID()
+{
+  return NULL; // UNIMPLEMENTED
+}
+
+E_Condition DVInterface::spoolPrintJob(OFBool deletePrintedImages=OFTrue)
+{
+  return EC_IllegalCall; // UNIMPLEMENTED
+}
+
+E_Condition DVInterface::startPrintSpooler()
+{
+  return EC_IllegalCall; // UNIMPLEMENTED
+}
+
+E_Condition DVInterface::terminatePrintSpooler()
+{
+  return EC_IllegalCall; // UNIMPLEMENTED
+}
+
+E_Condition DVInterface::addToPrintHardcopyFromDB(const char *studyUID, const char *seriesUID, const char *instanceUID)
+{
+  return EC_IllegalCall; // UNIMPLEMENTED
+}
+
+E_Condition DVInterface::spoolStoredPrintFromDB(const char *studyUID, const char *seriesUID, const char *instanceUID)
+{
+  return EC_IllegalCall; // UNIMPLEMENTED
+}
+
+
 /*
  *  CVS/RCS Log:
  *  $Log: dviface.cc,v $
- *  Revision 1.64  1999-09-08 17:11:43  joergr
+ *  Revision 1.65  1999-09-09 12:20:51  meichel
+ *  Added print API method declarations and implementations (empty for now).
+ *
+ *  Revision 1.64  1999/09/08 17:11:43  joergr
  *  Added support for new instance types in database (grayscale hardcopy and
  *  stored print).
  *
