@@ -1,4 +1,4 @@
-.TH "dcmodify" 1 "13 Feb 2004" "OFFIS DCMTK" \" -*- nroff -*-
+.TH "dcmodify" 1 "27 May 2004" "OFFIS DCMTK" \" -*- nroff -*-
 .nh
 .SH NAME
 dcmodify \- Modify DICOM files
@@ -11,11 +11,11 @@ dcmodify [options] [dcmfile-in...]
 .PP
 .SH "DESCRIPTION"
 .PP
-\fBdcmodify\fP is a tool that allows to modify, insert and delete tags in DICOM files. The special cases sequences, items and tags with a value multiplicity > 1 are also supported.
+\fBdcmodify\fP is a tool that allows to modify, insert and delete tags in DICOM files. The special cases sequences, items and tags with a value multiplicity > 1 are also supported. Metaheader information can not be modified.
 .PP
-In case multiple modifications are to be performed, \fBdcmodify\fP does the modifications in the same order as they appear on commandline. Please note that \fBdcmodify\fP does not check whether given values are of the right value representation (VR). Usually, an error message is printed but generally the user should take care of the right VR usage.
+In case multiple modifications are to be performed, \fBdcmodify\fP does the modifications in the same order as they appear on the command line. Please note that \fBdcmodify\fP does not check whether given values are of the right value representation (VR). Usually, an error message is printed but generally the user should take care of the right VR usage.
 .PP
-\fBdcmodify\fP is able to work on so called tag paths to describe tags in sequences. The syntax is
+\fBdcmodify\fP is able to work with so-called tag paths to describe tags in sequences. The syntax is
 .PP
 .PP
 .nf
@@ -23,7 +23,9 @@ In case multiple modifications are to be performed, \fBdcmodify\fP does the modi
   {sequence[item-no].}*element
 .PP
 .PP
-where 'sequence' is a sequence tag like (0008,1111) or a dictionary name for a tag. 'item-no' describes the item number to access (counting from zero). 'element' defines the target tag to work on. You also can specify either the tag directly as (0010,0010) or through the dictionary name PatientsName. The denotes, that you can repeat sequence statements to access deeper levels in dicom files. For examples take a look at the EXAMPLES section.
+.fi
+.PP
+where 'sequence' is a sequence tag like (0008,1111) or a dictionary name for a tag. 'item-no' describes the item number to be accessed (counting from zero). 'element' defines the target tag to work on. You can either specify the tag directly as (0010,0010) or through the dictionary name PatientsName. The '*' denotes that you can repeat sequence statements to access deeper levels in DICOM files (see EXAMPLES section).
 .SH "PARAMETERS"
 .PP
 .PP
@@ -51,7 +53,6 @@ dcmfile-in  DICOM input filename(s) to be modified
 
   -ie  --ignore-errors
          continue with file, if modify error occurs
-
 .PP
 .SS "insert-mode options"
 .PP
@@ -88,34 +89,34 @@ dcmfile-in  DICOM input filename(s) to be modified
 -i  --insert-tag:
 
       dcmodify -i "(0010,0010)=A Name" file.dcm
-      Inserts the PatientsName tag into file.dcm at 1. level.
-      If tag already exists, -i will overwrite it!
-      If you want to insert an element with value multiplicity > 1
-      (e.g. 4) you can do this with: dcmodify -i "0018,1310=1\\2\\3\\4"
+      Inserts the PatientsName tag into 'file.dcm' at 1st level.
+      If tag already exists, -i will overwrite it!  If you want to
+      insert an element with value multiplicity > 1 (e.g. 4) you
+      can do this with: dcmodify -i "(0018,1310)=1\\2\\3\\4"
 
       dcmodify -i "(0008,1111)[0].PatientsName=Another Name" *.dcm
       Inserts PatientsName tag into the first item of sequence
-      (0008,1111). Note that the use of wildcards for files is
-      possible. You can specify longer tag paths, too.
-      (e.g. (0008,1111)[0].(0008,1111)[1].(0010,0010)=A Third One")
+      (0008,1111).  Note that the use of wildcards for files is
+      possible.  You can specify longer tag paths, too (e.g.
+      "(0008,1111)[0].(0008,1111)[1].(0010,0010)=A Third One").
 
 -m  --modify-tag:
       dcmodify -m "(0010,0010)=A Name" file.dcm
-      Changes tag 0010,0010 on 1. level to "A Name".
+      Changes tag (0010,0010) on 1st level to "A Name".
 
-      This option also allows longer tag paths as demonstrated above
-      for -i.
+      This option also allows longer tag paths as demonstrated
+      above for -i.
 
 -ma --modify-all-tags:
       dcmodify -ma "(0010,0010)=New Name" file.dcm
       Does the same as -m but works on all matching tags found in
-      file.dcm. Therefore it searches the whole dataset including
+      'file.dcm'.  Therefore, it searches the whole dataset including
       sequences for tag (0010,0010) and changes them to "New Name"
 
 -e  --erase-tag:
       dcmodify -e "(0010,0010)" *.dcm
-      Erases tag (0010,0010) in all *.dcm files at 1. level.
-      Note: You also can erase whole sequences by using this
+      Erases tag (0010,0010) in all *.dcm files at 1st level.
+      Note: You can also erase whole sequences by using this
       option with a sequence tag, but in this version it's not
       possible to delete a single item in a sequence.
 
@@ -124,8 +125,7 @@ dcmfile-in  DICOM input filename(s) to be modified
 
 -ea --erase-all-tags:
       dcmodify -ea "(0010,0010)" *.dcm
-      Same as -e, but also searches in sequences and items, so
-      with this commando you could "anonymize" your files e.g.
+      Same as -e, but also searches in sequences and items.
 .PP
 .SH "COMMAND LINE"
 .PP

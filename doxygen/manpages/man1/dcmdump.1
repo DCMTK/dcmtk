@@ -1,4 +1,4 @@
-.TH "dcmdump" 1 "13 Feb 2004" "OFFIS DCMTK" \" -*- nroff -*-
+.TH "dcmdump" 1 "27 May 2004" "OFFIS DCMTK" \" -*- nroff -*-
 .nh
 .SH NAME
 dcmdump \- Dump DICOM file and data set
@@ -11,7 +11,7 @@ dcmdump [options] dcmfile-in...
 .PP
 .SH "DESCRIPTION"
 .PP
-The \fBdcmdump\fP utility dumps the contents of a DICOM file (file format or raw data set) to stdout in textual form. Attributes with very large value fields (e.g. pixel data) can be described as '(not loaded)'. String value fields will be delimited with square breackets ([]). Known UIDs will be displayed by their names prefixed by an equals sign (e.g. '=MRImageStorage'). Empty value fields are described as '(no value available)'.
+The \fBdcmdump\fP utility dumps the contents of a DICOM file (file format or raw data set) to stdout in textual form. Attributes with very large value fields (e.g. pixel data) can be described as '(not loaded)'. String value fields will be delimited with square brackets ([]). Known UIDs will be displayed by their names prefixed by an equals sign (e.g. '=MRImageStorage'). Empty value fields are described as '(no value available)'.
 .PP
 If \fBdcmdump\fP reads a raw data set (DICOM data without a file format meta- header) it will attempt to guess the transfer syntax by examining the first few bytes of the file. It is not always possible to correctly guess the transfer syntax and it is better to convert a data set to a file format whenever possible (using the \fBdcmconv\fP utility). It is also possible to use the \fI-f\fP and \fI-t[ieb]\fP options to force \fBdcmdump\fP to read a dataset with a particular transfer syntax.
 .SH "PARAMETERS"
