@@ -25,8 +25,8 @@
 #    DCMTK DICOM Tools.
 #
 #  Last Update:      $Author: meichel $
-#  Update Date:      $Date: 2001-06-01 15:51:14 $
-#  CVS/RCS Revision: $Revision: 1.2 $
+#  Update Date:      $Date: 2001-06-01 16:51:53 $
+#  CVS/RCS Revision: $Revision: 1.3 $
 #  Status:           $State: Exp $
 #
 #  CVS/RCS Log at end of file
@@ -192,8 +192,8 @@ sub createNewCertificate
   {
     system ("$const_openssl dsaparam -out ${ca_directory}/private/tempdh.pem $bits");
   }
-  system ("$const_openssl req -config ${ca_directory}/$const_ca_config $encryption $keytype -keyout $certkey -out ${ca_directory}/private/tempreq.pem $days");
-  system ("$const_openssl ca -config ${ca_directory}/$const_ca_config -policy policy_anything -in ${ca_directory}/private/tempreq.pem -out $certfile");
+  system ("$const_openssl req -config ${ca_directory}/$const_ca_config $encryption $keytype -keyout $certkey -out ${ca_directory}/private/tempreq.pem");
+  system ("$const_openssl ca -config ${ca_directory}/$const_ca_config -policy policy_anything -in ${ca_directory}/private/tempreq.pem -out $certfile $days");
   if ($type eq 'dsa')
   {
     unlink "${ca_directory}/private/tempdh.pem";
@@ -474,7 +474,10 @@ END_OF_CONFIGURATION_FILE
 
 #
 #  $Log: dcmtk_ca.pl,v $
-#  Revision 1.2  2001-06-01 15:51:14  meichel
+#  Revision 1.3  2001-06-01 16:51:53  meichel
+#  Fixed bug in CA perl script. mkcert -days option now works.
+#
+#  Revision 1.2  2001/06/01 15:51:14  meichel
 #  Updated copyright header
 #
 #  Revision 1.1  2000/11/14 13:36:33  meichel
