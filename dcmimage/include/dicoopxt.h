@@ -1,21 +1,35 @@
 /*
-**
-** Author:  Joerg Riesmeier
-** Created: 19.12.96
-**
-** Module:  dicoopxt.h
-**
-** Purpose: DicomColorOutputPixelTemplate (Header)
-**
-** Last Update:      $Author: joergr $
-** Update Date:      $Date: 1998-07-01 08:39:19 $
-** Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/include/Attic/dicoopxt.h,v $
-** CVS/RCS Revision: $Revision: 1.5 $
-** Status:           $State: Exp $
-**
-** CVS/RCS Log at end of file
-**
-*/
+ *
+ *  Copyright (C) 1996-99, OFFIS
+ *
+ *  This software and supporting documentation were developed by
+ *
+ *    Kuratorium OFFIS e.V.
+ *    Healthcare Information and Communication Systems
+ *    Escherweg 2
+ *    D-26121 Oldenburg, Germany
+ *
+ *  THIS SOFTWARE IS MADE AVAILABLE,  AS IS,  AND OFFIS MAKES NO  WARRANTY
+ *  REGARDING  THE  SOFTWARE,  ITS  PERFORMANCE,  ITS  MERCHANTABILITY  OR
+ *  FITNESS FOR ANY PARTICULAR USE, FREEDOM FROM ANY COMPUTER DISEASES  OR
+ *  ITS CONFORMITY TO ANY SPECIFICATION. THE ENTIRE RISK AS TO QUALITY AND
+ *  PERFORMANCE OF THE SOFTWARE IS WITH THE USER.
+ *
+ *  Module:  dcmimage
+ *
+ *  Author:  Joerg Riesmeier
+ *
+ *  Purpose: DicomColorOutputPixelTemplate (Header)
+ *
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 1998-11-27 13:46:00 $
+ *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/include/Attic/dicoopxt.h,v $
+ *  CVS/RCS Revision: $Revision: 1.6 $
+ *  Status:           $State: Exp $
+ *
+ *  CVS/RCS Log at end of file
+ *
+ */
 
 
 #ifndef __DICOOPXT_H
@@ -49,7 +63,7 @@ class DiColorOutputPixelTemplate : public DiColorOutputPixel, public DiPixelRepr
 
     virtual ~DiColorOutputPixelTemplate()
     {
-        delete Data;
+        delete[] Data;
     }
 
     inline EP_Representation getRepresentation() const
@@ -201,7 +215,10 @@ class DiColorOutputPixelTemplate : public DiColorOutputPixel, public DiPixelRepr
 **
 ** CVS/RCS Log:
 ** $Log: dicoopxt.h,v $
-** Revision 1.5  1998-07-01 08:39:19  joergr
+** Revision 1.6  1998-11-27 13:46:00  joergr
+** Added copyright message. Replaced delete by delete[] for array types.
+**
+** Revision 1.5  1998/07/01 08:39:19  joergr
 ** Minor changes to avoid compiler warnings (gcc 2.8.1 with additional
 ** options), e.g. add copy constructors.
 **
