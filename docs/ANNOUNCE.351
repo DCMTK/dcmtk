@@ -1,0 +1,68 @@
+
+ANNOUNCEMENT
+
+Version 3.5.1 of the OFFIS DCMTK (DICOM ToolKit) software is now available
+for public release.  This release includes the following main changes 
+over the previous version (Version 3.5.0):
+
+- The DICOM data dictionary has been re-worked based on the 2001 edition of 
+  the DICOM standard and latest supplements and correction proposals, as 
+  usual.
+
+- A new module dcmjpeg has been added that enables JPEG compression and 
+  decompression of DICOM images. The supported lossy JPEG processes are: 
+  baseline, extended sequential, spectral selection and progressive. The 
+  lossless processes with selection value 1 and arbitrary selection values 
+  are also supported (with bits/pixel up to 16). The JPEG compression / 
+  decompression code is based on an adapted version of the Independent JPEG 
+  Group's JPEG library which is shipped with DCMTK.
+
+- The new utility dcmmkdir extends the existing tool dcmgpdir with the 
+  ability to create DICOMDIRs conforming to the Basic Cardiac X-Ray 
+  Angiography and 1024 X-Ray Angiography application profiles, including 
+  the required icons.
+
+- The new utility dcmj2pnm extends the existing tool dcm2pnm with the 
+  ability to convert JPEG-compressed images and to export JPEG. Both tools 
+  now support BMP and TIFF export (requires libtiff).  
+
+- The digital signature module dcmsign has been adapted to the final text 
+  of supplement 41.
+
+- The storescp tool has received a number of additional options which allow 
+  to sort images and to execute user defined commands upon reception.
+
+- The old, Xlib-based database monitor tool "ctndisp" has been phased out
+  and removed from the toolkit.
+
+- Under the hood: Most of the various condition enumerations and defines in 
+  the various DCMTK modules have been replaced by a unified condition 
+  class. Doc++ documentation for various classes has been added.
+
+- Many bug fixes and minor improvements as usual - See the dcmtk/CHANGES 
+  file for more details.
+
+
+Many people have contributed to this new release of DCMTK, appearing here 
+in alphabetical order. Thank you very much for your support!
+
+  Andreas Barth <andreas.barth@medical.bruker.de>
+  Alexander Blum <Alexander.Blum@kewbee.de>
+  Anders Gustafsson <agustafsson@mds.nordion.com>
+  Ben <ruthenium@altavista.net>
+  Gilles Mevel <Gilles.Mevel@etiam.com>
+  Bernd Kuemmerlen <bkuemmer@mevis.de>
+  Markus Mertens <markus.mertens@uni-muenster.de>
+  Merlijn van Minderhout <Merlijn.van.Minderhout@philips.com>
+  Thomas Moeller <Thomas.Moeller@sms.siemens.com>
+
+OFFIS staff who have worked on this release are:
+  Marco Eichelberg <eichelberg@offis.de>
+  Joerg Riesmeier <riesmeier@offis.de>
+  Thomas Wilkens
+  
+The DCMTK software can be downloaded via:
+  http://dicom.offis.de/dcmtk/
+
+
+Kuratorium OFFIS e.V., Oldenburg, Germany, 2001-12-21
