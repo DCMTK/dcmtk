@@ -110,6 +110,38 @@ SOURCE=.\libsrc\cond.cxx
 # End Source File
 # Begin Source File
 
+SOURCE=.\libsrc\dcasccff.cxx
+# End Source File
+# Begin Source File
+
+SOURCE=.\libsrc\dcasccfg.cxx
+# End Source File
+# Begin Source File
+
+SOURCE=.\libsrc\dccfenmp.cxx
+# End Source File
+# Begin Source File
+
+SOURCE=.\libsrc\dccfpcmp.cxx
+# End Source File
+# Begin Source File
+
+SOURCE=.\libsrc\dccfprmp.cxx
+# End Source File
+# Begin Source File
+
+SOURCE=.\libsrc\dccfrsmp.cxx
+# End Source File
+# Begin Source File
+
+SOURCE=.\libsrc\dccftsmp.cxx
+# End Source File
+# Begin Source File
+
+SOURCE=.\libsrc\dccfuidh.cxx
+# End Source File
+# Begin Source File
+
 SOURCE=.\libsrc\dcmlayer.cxx
 # End Source File
 # Begin Source File
