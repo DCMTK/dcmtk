@@ -10,10 +10,10 @@
 ** Implementation of class DcmMetaInfo
 **
 **
-** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1996-01-29 13:38:27 $
+** Last Update:		$Author: hewett $
+** Update Date:		$Date: 1996-04-27 14:04:56 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcmetinf.cc,v $
-** CVS/RCS Revision:	$Revision: 1.5 $
+** CVS/RCS Revision:	$Revision: 1.6 $
 ** Status:		$State: Exp $
 **
 */
@@ -463,11 +463,17 @@ void DcmMetaInfo::transferEnd()
 
 // ********************************
 
-
+#ifdef DEBUG
 E_Condition DcmMetaInfo::write(DcmStream & outStream,
 			       const E_TransferSyntax oxfer,
 			       const E_EncodingType enctype,
 			       const E_GrpLenEncoding gltype)
+#else
+E_Condition DcmMetaInfo::write(DcmStream & outStream,
+			       const E_TransferSyntax /*oxfer*/,
+			       const E_EncodingType enctype,
+			       const E_GrpLenEncoding gltype)
+#endif
 {
     Bdebug((3, "DcmMetaInfo::writeBlock(oxfer=%d,enctype=%d,gltype=%d)",
 	    oxfer, enctype, gltype ));
@@ -542,7 +548,11 @@ E_Condition DcmMetaInfo::write(DcmStream & outStream,
 /*
 ** CVS/RCS Log:
 ** $Log: dcmetinf.cc,v $
-** Revision 1.5  1996-01-29 13:38:27  andreas
+** Revision 1.6  1996-04-27 14:04:56  hewett
+** Eliminated compiler warnings when compiling without -DDEBUG.  Very
+** minor corrections, mostly unused parameters and uninitialized variables.
+**
+** Revision 1.5  1996/01/29 13:38:27  andreas
 ** - new put method for every VR to put value as a string
 ** - better and unique print methods
 **

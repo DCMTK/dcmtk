@@ -10,7 +10,7 @@
  *
  *
  * Last Update:   $Author: hewett $
- * Revision:	  $Revision: 1.1 $
+ * Revision:	  $Revision: 1.2 $
  * Status:	  $State: Exp $
  *
  */
@@ -42,9 +42,13 @@
 
 // PENDING
 
-
+#ifdef DEBUG
 E_Condition DcmDirectoryRecord::fillTypeElements( E_DirRecType type,
 						  DcmFileFormat *fromFile )
+#else
+E_Condition DcmDirectoryRecord::fillTypeElements( E_DirRecType /*type*/,
+						  DcmFileFormat *fromFile )
+#endif
 {
 Bdebug((3, "dcdirrec:DcmDirectoryRecord::fillTypeElements(type=%d,DcmFileFormat*)",
 	   type ));

@@ -9,10 +9,10 @@
 ** 	This file tests the DcmFileStream and DcmMemoryStream 
 ** 
 ** 
-** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1996-04-12 13:19:12 $
+** Last Update:		$Author: hewett $
+** Update Date:		$Date: 1996-04-27 14:05:08 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/tests/Attic/tststream.cc,v $
-** CVS/RCS Revision:	$Revision: 1.4 $
+** CVS/RCS Revision:	$Revision: 1.5 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -57,7 +57,7 @@ void ReadTest(DcmStream * stream, FILE * inFile, BOOL putback)
     Sint16 ss[10];
     Float32 fl[10];
     Float64 fd[10];
-    char * uc;
+    char * uc = NULL;
     size_t uc_len;
     int times = putback ? 2 : 1;
     int k;
@@ -490,7 +490,11 @@ int main(int argc, char * argv[])
 /*
 ** CVS/RCS Log:
 ** $Log: tststream.cc,v $
-** Revision 1.4  1996-04-12 13:19:12  andreas
+** Revision 1.5  1996-04-27 14:05:08  hewett
+** Eliminated compiler warnings when compiling without -DDEBUG.  Very
+** minor corrections, mostly unused parameters and uninitialized variables.
+**
+** Revision 1.4  1996/04/12 13:19:12  andreas
 ** Minor changes to support DEC ALPHA and DEC MIPS
 **
 ** Revision 1.3  1996/01/05 13:31:40  andreas

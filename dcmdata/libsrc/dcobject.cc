@@ -9,8 +9,8 @@
 ** Implementation of the base class object
 **
 **
-** Last Update:   $Author: andreas $
-** Revision:      $Revision: 1.7 $
+** Last Update:   $Author: hewett $
+** Revision:      $Revision: 1.8 $
 ** Status:	  $State: Exp $
 **
 */
@@ -174,11 +174,17 @@ void DcmObject::transferEnd()
 
 // ********************************
 
-
+#ifdef DEBUG
 E_Condition DcmObject::search( const DcmTag &tag,
 			       DcmStack &resultStack,
 			       E_SearchMode mode,
 			       BOOL searchIntoSub )
+#else
+E_Condition DcmObject::search( const DcmTag &/*tag*/,
+			       DcmStack &/*resultStack*/,
+			       E_SearchMode /*mode*/,
+			       BOOL /*searchIntoSub*/ )
+#endif
 {
   Bdebug((5, "dcobject:DcmObject::search(tag=(%4.4x,%4.4x),Stack&(%ld),mode=%d,"
 	  "sub=%d)", tag.getGTag(), tag.getETag(), resultStack.card(),

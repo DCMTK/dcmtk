@@ -10,10 +10,10 @@
 ** Implementation of the class DcmItem
 **
 **
-** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1996-04-16 16:04:54 $
+** Last Update:		$Author: hewett $
+** Update Date:		$Date: 1996-04-27 14:04:55 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcitem.cc,v $
-** CVS/RCS Revision:	$Revision: 1.10 $
+** CVS/RCS Revision:	$Revision: 1.11 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -1506,7 +1506,7 @@ E_Condition DcmItem::loadAllDataIntoMemory(void)
 {
     Bdebug((3, "dcitem:DcmItem::loadAllDataIntoMemory()"));
 
-    E_Condition l_error;
+    E_Condition l_error = EC_Normal;
     if (!elementList -> empty())
     {
 	elementList -> seek(ELP_first);
@@ -1756,7 +1756,11 @@ DcmItem::findInt(const DcmTagKey& xtag,
 /*
 ** CVS/RCS Log:
 ** $Log: dcitem.cc,v $
-** Revision 1.10  1996-04-16 16:04:54  andreas
+** Revision 1.11  1996-04-27 14:04:55  hewett
+** Eliminated compiler warnings when compiling without -DDEBUG.  Very
+** minor corrections, mostly unused parameters and uninitialized variables.
+**
+** Revision 1.10  1996/04/16 16:04:54  andreas
 ** - const tag Parameter in newDicomElement
 **
 ** Revision 1.9  1996/03/28 18:52:39  hewett
