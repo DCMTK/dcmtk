@@ -23,8 +23,8 @@
  *    classes: DVSignatureHandler
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-01-29 17:34:01 $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  Update Date:      $Date: 2001-02-13 09:55:45 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -504,11 +504,11 @@ void DVSignatureHandler::updateSignatureValidationOverview()
   const char *htmlHead     = "<html>\n<head><title>Overview</title></head><body>\n";
   const char *htmlFoot     = "</body></html>\n\n";
   const char *htmlEndl     = "</td></tr>\n";
-  const char *htmlTitle    = "<tr><td colspan=\"2\">";
-  const char *htmlVfyUns   = "<tr><td colspan=\"2\" bgcolor=\"#A0A0A0\">";
-  const char *htmlVfySig   = "<tr><td colspan=\"2\" bgcolor=\"#50ff50\">";
-  const char *htmlVfyCA    = "<tr><td colspan=\"2\" bgcolor=\"yellow\">";
-  const char *htmlVfyErr   = "<tr><td colspan=\"2\" bgcolor=\"#FF5050\">";  
+  const char *htmlTitle    = "<tr><td colspan=\"3\">";
+  const char *htmlVfyUns   = "<tr><td colspan=\"3\" bgcolor=\"#A0A0A0\">";
+  const char *htmlVfySig   = "<tr><td colspan=\"3\" bgcolor=\"#50ff50\">";
+  const char *htmlVfyCA    = "<tr><td colspan=\"3\" bgcolor=\"yellow\">";
+  const char *htmlVfyErr   = "<tr><td colspan=\"3\" bgcolor=\"#FF5050\">";  
   const char *htmlLine1    = "<tr><td width=\"20\" nowrap>&nbsp;</td><td nowrap>";
   const char *htmlNext     = "</td><td>";
   const char *htmlTableUns = "<p><table cellspacing=\"0\" bgcolor=\"#E0E0E0\">\n";
@@ -545,16 +545,16 @@ void DVSignatureHandler::updateSignatureValidationOverview()
   switch (status)
   {
     case DVPSW_unsigned:
-      os << htmlVfyUns << "Status: unsigned" << htmlEndl;
+      os << htmlVfyUns << "<b>Status: unsigned</b>" << htmlEndl;
       break;
     case DVPSW_signed_OK:
-      os << htmlVfySig << "Status: signed" << htmlEndl;
+      os << htmlVfySig << "<b>Status: signed</b>" << htmlEndl;
       break;
     case DVPSW_signed_unknownCA:
-      os << htmlVfyCA  << "Status: signed but untrustworthy: certificate could not be verified" << htmlEndl;
+      os << htmlVfyCA  << "<b>Status: signed but untrustworthy: certificate could not be verified</b>" << htmlEndl;
       break;
     case DVPSW_signed_corrupt:
-      os << htmlVfyErr << "Status: contains corrupt signatures" << htmlEndl;
+      os << htmlVfyErr << "<b>Status: contains corrupt signatures</b>" << htmlEndl;
       break;
   }
   os << htmlTableE;
@@ -583,16 +583,16 @@ void DVSignatureHandler::updateSignatureValidationOverview()
   switch (status)
   {
     case DVPSW_unsigned:
-      os << htmlVfyUns << "Status: unsigned" << htmlEndl;
+      os << htmlVfyUns << "<b>Status: unsigned</b>" << htmlEndl;
       break;
     case DVPSW_signed_OK:
-      os << htmlVfySig << "Status: signed" << htmlEndl;
+      os << htmlVfySig << "<b>Status: signed</b>" << htmlEndl;
       break;
     case DVPSW_signed_unknownCA:
-      os << htmlVfyCA  << "Status: signed but untrustworthy: certificate could not be verified" << htmlEndl;
+      os << htmlVfyCA  << "<b>Status: signed but untrustworthy: certificate could not be verified</b>" << htmlEndl;
       break;
     case DVPSW_signed_corrupt:
-      os << htmlVfyErr << "Status: contains corrupt signatures" << htmlEndl;
+      os << htmlVfyErr << "<b>Status: contains corrupt signatures</b>" << htmlEndl;
       break;
   }
   os << htmlTableE;
@@ -614,23 +614,23 @@ void DVSignatureHandler::updateSignatureValidationOverview()
       os << htmlTableErr;
       break;
   }
-  os << htmlTitle << "<b>Structured Report</b>"<< htmlEndl;
+  os << htmlTitle << "<b>Presentation State</b>"<< htmlEndl;
   os << htmlLine1 << "Number of correct signatures" << htmlNext << correctSignaturesPState << htmlEndl;
   os << htmlLine1 << "Number of corrupt signatures" << htmlNext << corruptSignaturesPState << htmlEndl;
   os << htmlLine1 << "Number of untrusted signatures" << htmlNext << untrustSignaturesPState << htmlEndl;
   switch (status)
   {
     case DVPSW_unsigned:
-      os << htmlVfyUns << "Status: unsigned" << htmlEndl;
+      os << htmlVfyUns << "<b>Status: unsigned</b>" << htmlEndl;
       break;
     case DVPSW_signed_OK:
-      os << htmlVfySig << "Status: signed" << htmlEndl;
+      os << htmlVfySig << "<b>Status: signed</b>" << htmlEndl;
       break;
     case DVPSW_signed_unknownCA:
-      os << htmlVfyCA  << "Status: signed but untrustworthy: certificate could not be verified" << htmlEndl;
+      os << htmlVfyCA  << "<b>Status: signed but untrustworthy: certificate could not be verified</b>" << htmlEndl;
       break;
     case DVPSW_signed_corrupt:
-      os << htmlVfyErr << "Status: contains corrupt signatures" << htmlEndl;
+      os << htmlVfyErr << "<b>Status: contains corrupt signatures</b>" << htmlEndl;
       break;
   }
   os << htmlTableE;
@@ -843,7 +843,10 @@ E_Condition DVSignatureHandler::createSignature(
 
 /*
  *  $Log: dvsighdl.cc,v $
- *  Revision 1.4  2001-01-29 17:34:01  joergr
+ *  Revision 1.5  2001-02-13 09:55:45  joergr
+ *  Minor purifications in "signature validation overview" HTML page.
+ *
+ *  Revision 1.4  2001/01/29 17:34:01  joergr
  *  Fixed bug in createSignature method.
  *
  *  Revision 1.3  2001/01/29 14:55:47  meichel
