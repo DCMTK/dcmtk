@@ -51,7 +51,6 @@ clean:
 	(cd libsrc; $(MAKE) clean)
 	(cd apps; $(MAKE) clean)
 	(cd docs; $(MAKE) clean)
-	(cd htmldocs; $(MAKE) clean)
 	rm -f $(TRASH)
 
 distclean:
@@ -59,13 +58,8 @@ distclean:
 	(cd libsrc; $(MAKE) distclean)
 	(cd apps; $(MAKE) distclean)
 	(cd docs; $(MAKE) distclean)
-	(cd htmldocs; $(MAKE) distclean)
 	rm -f $(DISTTRASH)
-
-html:
-	(doc++ -d htmldocs -p -B /dev/null include/*.h libsrc/*.cc apps/*.h apps/*.cc)
 
 dependencies:
 	(cd libsrc; touch $(DEP); $(MAKE) dependencies)
 	(cd apps; touch $(DEP); $(MAKE) dependencies)
-
