@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2002, OFFIS
+ *  Copyright (C) 1994-2003, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose: Interface of class DcmPersonName
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-12-06 12:49:17 $
+ *  Update Date:      $Date: 2003-05-20 08:56:20 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcvrpn.h,v $
- *  CVS/RCS Revision: $Revision: 1.14 $
+ *  CVS/RCS Revision: $Revision: 1.15 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -129,6 +129,23 @@ class DcmPersonName
                                  const unsigned int componentGroup = 0);
 
 
+    /** put element value from specified name components.
+     *  The stored format is "[lastName[^firstName[^middleName[^namePrefix[^nameSuffix]]]]]",
+     *  i.e. a DICOM Person Name (PN). Component groups are not (yet) supported.
+     *  If this function fails the currently stored value is not modified.
+     *  @param lastName reference to string variable where the "last name" is stored
+     *  @param firstName reference to string variable where the "first name" is stored
+     *  @param middleName reference to string variable where the "middle name" is stored
+     *  @param namePrefix reference to string variable where the "name prefix" is stored
+     *  @param nameSuffix reference to string variable where the "name suffix" is stored
+     *  @return EC_Normal upon success, an error code otherwise
+     */
+    OFCondition putNameComponents(const OFString &lastName,
+                                  const OFString &firstName,
+                                  const OFString &middleName,
+                                  const OFString &namePrefix,
+                                  const OFString &nameSuffix);
+
     /* --- static helper functions --- */
 
     /** get name components from specified DICOM person name.
@@ -191,6 +208,25 @@ class DcmPersonName
                                                       const OFString &namePrefix,
                                                       const OFString &nameSuffix,
                                                       OFString &formattedName);
+
+    /** get DICOM Person Name (PN) from specified name components.
+     *  The output format is "[lastName[^firstName[^middleName[^namePrefix[^nameSuffix]]]]]".
+     *  Component groups are not (yet) supported.
+     *  If this function fails the result variable 'dicomName' is cleared automatically.
+     *  @param lastName reference to string variable where the "last name" is stored
+     *  @param firstName reference to string variable where the "first name" is stored
+     *  @param middleName reference to string variable where the "middle name" is stored
+     *  @param namePrefix reference to string variable where the "name prefix" is stored
+     *  @param nameSuffix reference to string variable where the "name suffix" is stored
+     *  @param dicomName reference to string variable where the result is stored
+     *  @return always returns EC_Normal
+     */
+    static OFCondition getStringFromNameComponents(const OFString &lastName,
+                                                   const OFString &firstName,
+                                                   const OFString &middleName,
+                                                   const OFString &namePrefix,
+                                                   const OFString &nameSuffix,
+                                                   OFString &dicomName);
 };
 
 
@@ -200,7 +236,11 @@ class DcmPersonName
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrpn.h,v $
-** Revision 1.14  2002-12-06 12:49:17  joergr
+** Revision 1.15  2003-05-20 08:56:20  joergr
+** Added methods and static functions to compose a DICOM Person Name from five
+** name components.
+**
+** Revision 1.14  2002/12/06 12:49:17  joergr
 ** Enhanced "print()" function by re-working the implementation and replacing
 ** the boolean "showFullData" parameter by a more general integer flag.
 ** Added doc++ documentation.
