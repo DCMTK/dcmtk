@@ -39,7 +39,7 @@ dcmjpeglib=-ldcmjpeg -lijg8 -lijg12 -lijg16
 
 LOCALINCLUDES=$(dcmjpeginc) $(ofstdinc) $(dcmdatainc) $(dcmimageinc) $(dcmimgleinc)
 LIBDIRS = -L$(top_srcdir)/libsrc $(dcmjpeglibdir) $(dcmimagelibdir) $(dcmimglelibdir) $(dcmdatalibdir) $(ofstdlibdir) -L$(libdir)
-LOCALLIBS = $(dcmjpeglib) $(dcmimagelib) $(dcmimglelib) $(dcmdatalib) $(ofstdlib)
+LOCALLIBS = $(dcmjpeglib) $(dcmimagelib) $(dcmimglelib) $(dcmdatalib) $(ofstdlib) $(ZLIBLIBS)
 
 objs= dcmdjpeg.o dcmcjpeg.o dcmj2pnm.o dcmmkdir.o
 
