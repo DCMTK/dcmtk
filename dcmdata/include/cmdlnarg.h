@@ -40,14 +40,17 @@
 **
 **
 ** Last Update:		$Author: hewett $
-** Update Date:		$Date: 1996-09-24 16:17:59 $
+** Update Date:		$Date: 1996-09-27 08:22:21 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/cmdlnarg.h,v $
-** CVS/RCS Revision:	$Revision: 1.1 $
+** CVS/RCS Revision:	$Revision: 1.2 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
 **
 */
+
+#ifndef CMDLNARG_H
+#define CMDLNARG_H
 
 #include "osconfig.h"    /* make sure OS specific configuration is included first */
 
@@ -62,11 +65,15 @@ void prepareCmdLineArgs(int& argc, char** argv,
 			const char* progname = "aProgram");
 
 
+#endif
 
 /*
 ** CVS/RCS Log:
 ** $Log: cmdlnarg.h,v $
-** Revision 1.1  1996-09-24 16:17:59  hewett
+** Revision 1.2  1996-09-27 08:22:21  hewett
+** Added defines to protect from multiple inclusion.
+**
+** Revision 1.1  1996/09/24 16:17:59  hewett
 ** Moved from dcmdata/apps and dcmnet/apps (now part of the dcmdata library).
 **
 ** Revision 1.2  1996/09/03 11:39:01  hewett
