@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2001, OFFIS
+ *  Copyright (C) 2000-2003, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,8 +23,8 @@
  *    classes: DSRWaveformReferenceValue
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-10-10 15:30:08 $
- *  CVS/RCS Revision: $Revision: 1.14 $
+ *  Update Date:      $Date: 2003-08-07 14:18:30 $
+ *  CVS/RCS Revision: $Revision: 1.15 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -35,6 +35,7 @@
 #include "osconfig.h"    /* make sure OS specific configuration is included first */
 
 #include "dsrwavvl.h"
+#include "dsrxmld.h"
 
 
 DSRWaveformReferenceValue::DSRWaveformReferenceValue()
@@ -92,10 +93,10 @@ OFBool DSRWaveformReferenceValue::isShort(const size_t flags) const
 OFCondition DSRWaveformReferenceValue::print(ostream &stream,
                                              const size_t flags) const
 {
-    const char *string = dcmFindNameOfUID(SOPClassUID.c_str());
+    const char *className = dcmFindNameOfUID(SOPClassUID.c_str());
     stream << "(";
-    if (string != NULL)
-        stream << string;
+    if (className != NULL)
+        stream << className;
     else
         stream << "\"" << SOPClassUID << "\"";
     stream << ",";
@@ -111,6 +112,27 @@ OFCondition DSRWaveformReferenceValue::print(ostream &stream,
 }
 
 
+OFCondition DSRWaveformReferenceValue::readXML(const DSRXMLDocument &doc,
+                                               DSRXMLCursor cursor)
+{
+    /* first read general composite reference information */
+    OFCondition result = DSRCompositeReferenceValue::readXML(doc, cursor);
+    /* then read waveform related XML tags */
+    if (result.good())
+    {
+        /* channel list (optional) */
+        cursor = doc.getNamedNode(cursor.getChild(), "channels");
+        if (cursor.valid())
+        {
+            OFString tmpString;
+            /* put element content to the channel list */
+            result = ChannelList.putString(doc.getStringFromNodeContent(cursor, tmpString).c_str());
+        }
+    }
+    return result;
+}
+
+
 OFCondition DSRWaveformReferenceValue::writeXML(ostream &stream,
                                                 const size_t flags,
                                                 OFConsole *logStream) const
@@ -119,8 +141,8 @@ OFCondition DSRWaveformReferenceValue::writeXML(ostream &stream,
     if ((flags & DSRTypes::XF_writeEmptyTags) || !ChannelList.isEmpty())
     {
         stream << "<channels>";
-        ChannelList.print(stream);        
-        stream << "</channels>" << endl;        
+        ChannelList.print(stream);
+        stream << "</channels>" << endl;
     }
     return result;
 }
@@ -157,7 +179,7 @@ OFCondition DSRWaveformReferenceValue::renderHTML(ostream &docStream,
                                                   ostream &annexStream,
                                                   size_t &annexNumber,
                                                   const size_t flags,
-                                                  OFConsole * /* logStream */) const
+                                                  OFConsole * /*logStream*/) const
 {
     /* render reference */
     docStream << "<a href=\"" << HTML_HYPERLINK_PREFIX_FOR_CGI;
@@ -165,12 +187,12 @@ OFCondition DSRWaveformReferenceValue::renderHTML(ostream &docStream,
     if (!ChannelList.isEmpty())
     {
         docStream << "&channels=";
-        ChannelList.print(docStream, 0 /* flags */, '+', '+');
+        ChannelList.print(docStream, 0 /*flags*/, '+', '+');
     }
     docStream << "\">";
-    const char *string = dcmFindNameOfUID(SOPClassUID.c_str());
-    if (string != NULL)
-        docStream << string;
+    const char *className = dcmFindNameOfUID(SOPClassUID.c_str());
+    if (className != NULL)
+        docStream << className;
     else
         docStream << "unknown waveform";
     docStream << "</a>";
@@ -228,7 +250,7 @@ OFBool DSRWaveformReferenceValue::checkSOPClassUID(const OFString &sopClassUID) 
     OFBool result = OFFalse;
     if (DSRCompositeReferenceValue::checkSOPClassUID(sopClassUID))
     {
-        /* check for all valid/known SOP classes (according to supplement 30) */
+        /* check for all valid/known SOP classes (according to DICOM PS 3.x 2003) */
         if ((sopClassUID == UID_TwelveLeadECGWaveformStorage) ||
             (sopClassUID == UID_GeneralECGWaveformStorage) ||
             (sopClassUID == UID_AmbulatoryECGWaveformStorage) ||
@@ -246,7 +268,11 @@ OFBool DSRWaveformReferenceValue::checkSOPClassUID(const OFString &sopClassUID) 
 /*
  *  CVS/RCS Log:
  *  $Log: dsrwavvl.cc,v $
- *  Revision 1.14  2001-10-10 15:30:08  joergr
+ *  Revision 1.15  2003-08-07 14:18:30  joergr
+ *  Added readXML functionality.
+ *  Renamed parameters/variables "string" to avoid name clash with STL class.
+ *
+ *  Revision 1.14  2001/10/10 15:30:08  joergr
  *  Additonal adjustments for new OFCondition class.
  *
  *  Revision 1.13  2001/09/26 13:04:31  meichel
