@@ -11,8 +11,8 @@
 ** Author: Andrew Hewett, Kuratorium OFFIS e.V., Oldenburg, Germany
 **
 ** 
-** Last Update:		$Author: meichel $
-** Update Date:		$Date: 1997-07-07 11:52:18 $
+** Last Update:		$Author: hewett $
+** Update Date:		$Date: 1997-07-07 14:05:24 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/include/Attic/ofstring.h,v $
 ** CVS/RCS Revision:	$Revision
 ** Status:		$State: Exp $
@@ -35,7 +35,7 @@
 #include <string>
 
 #define OFString string
-#define OFnpos string::npos
+#define OFString_npos string::npos
 
 #else /* not HAVE_STD_STRING */
 
@@ -81,7 +81,7 @@ END_EXTERN_C
 ** npos is a value larger than any "reasonable" string and is
 ** used to denote "until the end" when a length is required.
 */
-static const size_t OFnpos = ((size_t)-1);
+static const size_t OFString_npos = ((size_t)-1);
 
 /*
 ** The string class itself
@@ -97,7 +97,7 @@ public:
     ** The SunOS C++ 2.0.1 does not allow static const members.
     ** We would like to define:
     **    static const size_t npos = ((size_t)-1);
-    ** but cannot so an alternative OFnpos is defined outside 
+    ** but cannot so an alternative OFString_npos is defined outside 
     ** the class (see above).
     */
 
@@ -113,7 +113,7 @@ public:
     ** characters starting at position pos of the input string str. The 
     ** function throws an out-of-range error if pos > str.size().
     */
-    OFString(const OFString& str, size_t pos = 0, size_t n = OFnpos);
+    OFString(const OFString& str, size_t pos = 0, size_t n = OFString_npos);
 
     /*
     ** The input pointer s is assumed to point to an array of char of
@@ -170,7 +170,7 @@ public:
     ** All of the overloaded append functions  construct a string object from 
     ** the input s and append it to the current string.
     */
-    OFString& append (const OFString& str, size_t pos = 0, size_t n = OFnpos);
+    OFString& append (const OFString& str, size_t pos = 0, size_t n = OFString_npos);
     OFString& append (const char* s, size_t n);
     OFString& append (const char* s);
     OFString& append (size_t rep, char c);
@@ -183,7 +183,7 @@ public:
     ** All of the overloaded assign functions construct a string object
     ** from the input s and assign it to the current string.
     */
-    OFString& assign (const OFString& str, size_t pos = 0, size_t n = OFnpos);
+    OFString& assign (const OFString& str, size_t pos = 0, size_t n = OFString_npos);
     OFString& assign (const char* s, size_t n);
     OFString& assign (const char* s);
     OFString& assign (size_t rep, char c);
@@ -196,7 +196,7 @@ public:
     ** the input s and insert it into the current string.
     */
     OFString& insert (size_t pos1, const OFString& str, 
-		      size_t pos2 = 0, size_t n = OFnpos);
+		      size_t pos2 = 0, size_t n = OFString_npos);
     OFString& insert (size_t pos, const char* s, size_t n);
     OFString& insert (size_t pos, const char* s);
     OFString& insert (size_t pos, size_t rep, char s);
@@ -204,7 +204,7 @@ public:
     /*
     ** Removes up to n characters from the string starting from position pos.
     */
-    OFString& erase (size_t pos = 0, size_t n = OFnpos);
+    OFString& erase (size_t pos = 0, size_t n = OFString_npos);
 
     /*
     ** This function replaces a range of characters in the current string
@@ -220,7 +220,7 @@ public:
     ** the constructed string.
     */
     OFString& replace (size_t pos1, size_t n1, const OFString& str, 
-		       size_t pos2 = 0, size_t n2 = OFnpos);
+		       size_t pos2 = 0, size_t n2 = OFString_npos);
     OFString& replace (size_t pos, size_t n, const char* s, size_t n2);
     OFString& replace (size_t pos, size_t n, const char* s);
     OFString& replace (size_t pos, size_t n, size_t rep, char s);
@@ -305,7 +305,7 @@ public:
 
     /*
     ** If n <= size(), truncates the string to length n else it pads the
-    ** extra locations with c. Reports a length error if n equals OFnpos.
+    ** extra locations with c. Reports a length error if n equals OFString_npos.
     */
     void resize (size_t n, char c = '\0');
 
@@ -323,7 +323,7 @@ public:
     */
     size_t max_size() const
     {
-	return ((OFnpos - 1)/sizeof(char));
+	return ((OFString_npos - 1)/sizeof(char));
     }
 
     /*
@@ -356,7 +356,7 @@ public:
     ** This function returns a copy the substring consisting of at most n
     ** characters starting at position pos of the current string.
     */
-    OFString substr (size_t pos = 0, size_t n = OFnpos) const;
+    OFString substr (size_t pos = 0, size_t n = OFString_npos) const;
 
     /*
     ** This function swaps the contents of the two strings. The time 
@@ -381,7 +381,7 @@ public:
 		 size_t pos2, size_t n2) const;
     int compare (const char* s) const;
     int compare (size_t pos1, size_t n1,
-		 const char* s, size_t n2 = OFnpos) const;
+		 const char* s, size_t n2 = OFString_npos) const;
 
     /*
     ** This member function determines the earliest occurrence of the
@@ -407,10 +407,10 @@ public:
     ** pattern, and then call rfind on the current string with the 
     ** constructed input.
     */
-    size_t rfind (const OFString& pattern, size_t pos = OFnpos) const;
+    size_t rfind (const OFString& pattern, size_t pos = OFString_npos) const;
     size_t rfind (const char* pattern, size_t pos, size_t n) const;
-    size_t rfind (const char* pattern, size_t pos = OFnpos) const;
-    size_t rfind (char pattern, size_t pos = OFnpos) const;
+    size_t rfind (const char* pattern, size_t pos = OFString_npos) const;
+    size_t rfind (char pattern, size_t pos = OFString_npos) const;
 
     /*
     ** This function determines the first location, loc, between pos and
@@ -436,10 +436,10 @@ public:
     ** input s, and then call find_last_of on the current string with the
     ** constructed input.
     */
-    size_t find_last_of (const OFString& str, size_t pos = OFnpos) const;
+    size_t find_last_of (const OFString& str, size_t pos = OFString_npos) const;
     size_t find_last_of (const char* s, size_t pos, size_t n) const;
-    size_t find_last_of (const char* s, size_t pos = OFnpos) const;
-    size_t find_last_of (char s, size_t pos = OFnpos) const;
+    size_t find_last_of (const char* s, size_t pos = OFString_npos) const;
+    size_t find_last_of (char s, size_t pos = OFString_npos) const;
 
     /*
     ** This function determines the first location loc, between pos and
@@ -465,10 +465,10 @@ public:
     ** and then call find_last_not_of on the current string with the
     ** constructed input.
     */
-    size_t find_last_not_of (const OFString& str, size_t pos = OFnpos) const;
+    size_t find_last_not_of (const OFString& str, size_t pos = OFString_npos) const;
     size_t find_last_not_of (const char* s, size_t pos, size_t n) const;
-    size_t find_last_not_of (const char* s, size_t pos = OFnpos) const;
-    size_t find_last_not_of (char c, size_t pos = OFnpos) const;
+    size_t find_last_not_of (const char* s, size_t pos = OFString_npos) const;
+    size_t find_last_not_of (char c, size_t pos = OFString_npos) const;
 
 };
 
@@ -566,7 +566,11 @@ OFBool operator>= (const OFString& lhs, char rhs);
 /*
 ** CVS/RCS Log:
 ** $Log: ofstring.h,v $
-** Revision 1.1  1997-07-07 11:52:18  meichel
+** Revision 1.2  1997-07-07 14:05:24  hewett
+** Renamed the constant OFnpos to OFString_npos to look more like
+** the real ANSI constant string::npos.
+**
+** Revision 1.1  1997/07/07 11:52:18  meichel
 ** Added string class OFString to ofstd library.
 ** This class implements a subset of the ANSI C++ "string" class.
 **

@@ -10,8 +10,8 @@
 ** Author: Andrew Hewett, Kuratorium OFFIS e.V., Oldenburg, Germany
 **
 ** 
-** Last Update:		$Author: meichel $
-** Update Date:		$Date: 1997-07-07 11:52:22 $
+** Last Update:		$Author: hewett $
+** Update Date:		$Date: 1997-07-07 14:05:33 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/libsrc/ofstring.cc,v $
 ** CVS/RCS Revision:	$Revision
 ** Status:		$State: Exp $
@@ -245,8 +245,8 @@ OFString::erase (size_t pos, size_t n)
 {
     OFString a(*this, 0, pos);
     OFString b;
-    if (n != OFnpos) {
-	b.assign(*this, pos + n, OFnpos);
+    if (n != OFString_npos) {
+	b.assign(*this, pos + n, OFString_npos);
     }
     return this->assign(a).append(b);
 }
@@ -261,8 +261,8 @@ OFString::replace (size_t pos1, size_t n1, const OFString& str,
 {
     OFString a(*this, (size_t)0, pos1);
     OFString b;
-    if ((n1 < OFnpos) && ((pos1 + n1) < this->size())) {
-	b.assign(*this, pos1 + n1, OFnpos);
+    if ((n1 < OFString_npos) && ((pos1 + n1) < this->size())) {
+	b.assign(*this, pos1 + n1, OFString_npos);
     }
     OFString i(str, pos2, n2);
     return this->assign(a).append(i).append(b);
@@ -309,7 +309,7 @@ OFString::data () const
 void 
 OFString::resize (size_t n, char c)
 {
-    OFSTRING_LENGTHERROR(n == OFnpos);
+    OFSTRING_LENGTHERROR(n == OFString_npos);
 
     reserve(n);
     size_t len = this->size();
@@ -444,12 +444,12 @@ size_t
 OFString::find (const OFString& pattern, size_t pos) const
 {
     if (pattern.size() == 0) {
-	return OFnpos;
+	return OFString_npos;
     }
     for (size_t i=pos; i<this->size(); i++) {
 	/* is there enought space for the pattern? */
 	if ((i + pattern.size()) > this->size()) {
-	    return OFnpos;
+	    return OFString_npos;
 	}
 	int match = 1; /* assume there is a match */
 	for (size_t j=0; (j<pattern.size()) && match; j++) {
@@ -461,7 +461,7 @@ OFString::find (const OFString& pattern, size_t pos) const
 	    return i;
 	}
     }
-    return OFnpos;
+    return OFString_npos;
 }
 
 size_t 
@@ -493,7 +493,7 @@ size_t
 OFString::rfind (const OFString& pattern, size_t pos) const
 {
     if (pattern.size() == 0) {
-	return OFnpos;
+	return OFString_npos;
     }
     int above = ((this->size()-pattern.size()) < pos)?
 		 (this->size()-pattern.size()):(pos);
@@ -509,7 +509,7 @@ OFString::rfind (const OFString& pattern, size_t pos) const
 	    return i;
 	}
     }
-    return OFnpos;
+    return OFString_npos;
 }
 
 size_t 
@@ -541,7 +541,7 @@ size_t
 OFString::find_first_of (const OFString& str, size_t pos) const
 {
     if (str.size() == 0) {
-	return OFnpos;
+	return OFString_npos;
     }
     for (size_t i=pos; i<this->size(); i++) {
 	for (size_t j=0; j<str.size(); j++) {
@@ -550,7 +550,7 @@ OFString::find_first_of (const OFString& str, size_t pos) const
 	    }
 	}
     }
-    return OFnpos;
+    return OFString_npos;
 }
 
 size_t 
@@ -582,7 +582,7 @@ size_t
 OFString::find_last_of (const OFString& str, size_t pos) const
 {
     if (str.size() == 0) {
-	return OFnpos;
+	return OFString_npos;
     }
     for (size_t i=this->size()-1; i>=pos; i--) {
 	for (size_t j=0; j<str.size(); j++) {
@@ -591,7 +591,7 @@ OFString::find_last_of (const OFString& str, size_t pos) const
 	    }
 	}
     }
-    return OFnpos;
+    return OFString_npos;
 }
 
 size_t 
@@ -623,7 +623,7 @@ size_t
 OFString::find_first_not_of (const OFString& str, size_t pos) const
 {
     if (str.size() == 0) {
-	return OFnpos;
+	return OFString_npos;
     }
     for (size_t i=pos; i<this->size(); i++) {
 	for (size_t j=0; j<str.size(); j++) {
@@ -632,7 +632,7 @@ OFString::find_first_not_of (const OFString& str, size_t pos) const
 	    }
 	}
     }
-    return OFnpos;
+    return OFString_npos;
 }
 
 size_t 
@@ -664,7 +664,7 @@ size_t
 OFString::find_last_not_of (const OFString& str, size_t pos) const
 {
     if (str.size() == 0) {
-	return OFnpos;
+	return OFString_npos;
     }
     for (size_t i=this->size()-1; i>=pos; i--) {
 	for (size_t j=0; j<str.size(); j++) {
@@ -673,7 +673,7 @@ OFString::find_last_not_of (const OFString& str, size_t pos) const
 	    }
 	}
     }
-    return OFnpos;
+    return OFString_npos;
 }
 
 size_t 
@@ -955,7 +955,11 @@ OFBool operator>= (const OFString& lhs, char rhs)
 /*
 ** CVS/RCS Log:
 ** $Log: ofstring.cc,v $
-** Revision 1.1  1997-07-07 11:52:22  meichel
+** Revision 1.2  1997-07-07 14:05:33  hewett
+** Renamed the constant OFnpos to OFString_npos to look more like
+** the real ANSI constant string::npos.
+**
+** Revision 1.1  1997/07/07 11:52:22  meichel
 ** Added string class OFString to ofstd library.
 ** This class implements a subset of the ANSI C++ "string" class.
 **
