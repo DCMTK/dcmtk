@@ -21,9 +21,9 @@
  *
  *  Purpose: DVPresentationState
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-10-19 16:24:56 $
- *  CVS/RCS Revision: $Revision: 1.78 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 1999-10-20 10:54:13 $
+ *  CVS/RCS Revision: $Revision: 1.79 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -107,6 +107,8 @@ DVInterface::DVInterface(const char *config_file)
 , minimumPrintBitmapHeight(0)
 , maximumPrintBitmapWidth(0)
 , maximumPrintBitmapHeight(0)
+, maximumPreviewImageWidth(0)
+, maximumPreviewImageHeight(0)
 , currentPrinter()
 , displayCurrentLUTID()
 , printerMediumType()
@@ -150,9 +152,17 @@ DVInterface::DVInterface(const char *config_file)
         }
     }
 
+    minimumPrintBitmapWidth   = getMinPrintResolutionX();
+    minimumPrintBitmapHeight  = getMinPrintResolutionY();
+    maximumPrintBitmapWidth   = getMaxPrintResolutionX();
+    maximumPrintBitmapHeight  = getMaxPrintResolutionY();
+    maximumPreviewImageWidth  = getMaxPreviewResolutionX();
+    maximumPreviewImageHeight = getMaxPreviewResolutionY();
+
     pPrint = new DVPSStoredPrint(getDefaultPrintIllumination(), getDefaultPrintReflection());
-    pState = new DVPresentationState((DiDisplayFunction **)displayFunction, minimumPrintBitmapWidth,
-      minimumPrintBitmapHeight, maximumPrintBitmapWidth, maximumPrintBitmapHeight);
+    pState = new DVPresentationState((DiDisplayFunction **)displayFunction,
+      minimumPrintBitmapWidth, minimumPrintBitmapHeight, maximumPrintBitmapWidth, maximumPrintBitmapHeight,
+      maximumPreviewImageWidth, maximumPreviewImageHeight);
 
     referenceTime = (unsigned long)time(NULL);
     /* initialize printJobIdentifier with a string comprising the current time */
@@ -162,10 +172,6 @@ DVInterface::DVInterface(const char *config_file)
     /* initialize reference time with "yesterday" */
     if (referenceTime >= 86400) referenceTime -= 86400; // subtract one day
 
-    minimumPrintBitmapWidth  = getMinPrintResolutionX();
-    minimumPrintBitmapHeight = getMinPrintResolutionY();
-    maximumPrintBitmapWidth  = getMaxPrintResolutionX();
-    maximumPrintBitmapHeight = getMaxPrintResolutionY();
     const char *cPrinter = getTargetID(0, DVPSE_print);
     if (cPrinter) 
     {
@@ -216,8 +222,9 @@ E_Condition DVInterface::loadImage(const char *imgName)
 {
     E_Condition status = EC_IllegalCall;
     DcmFileFormat *image = NULL;
-    DVPresentationState *newState = new DVPresentationState((DiDisplayFunction **)displayFunction, minimumPrintBitmapWidth,
-      minimumPrintBitmapHeight, maximumPrintBitmapWidth, maximumPrintBitmapHeight);
+    DVPresentationState *newState = new DVPresentationState((DiDisplayFunction **)displayFunction,
+      minimumPrintBitmapWidth, minimumPrintBitmapHeight, maximumPrintBitmapWidth, maximumPrintBitmapHeight,
+      maximumPreviewImageWidth, maximumPreviewImageHeight);
     if (newState==NULL) return EC_MemoryExhausted;
     if ((status = DVPSHelper::loadFileFormat(imgName, image)) == EC_Normal)
     {
@@ -261,8 +268,9 @@ E_Condition DVInterface::loadPState(const char *studyUID,
 
     // load the presentation state
     DcmFileFormat *pstate = NULL;
-    DVPresentationState *newState = new DVPresentationState((DiDisplayFunction **)displayFunction, minimumPrintBitmapWidth,
-      minimumPrintBitmapHeight, maximumPrintBitmapWidth, maximumPrintBitmapHeight);
+    DVPresentationState *newState = new DVPresentationState((DiDisplayFunction **)displayFunction,
+      minimumPrintBitmapWidth, minimumPrintBitmapHeight, maximumPrintBitmapWidth, maximumPrintBitmapHeight,
+      maximumPreviewImageWidth, maximumPreviewImageHeight);
     if (newState==NULL) return EC_MemoryExhausted;
 
     if ((EC_Normal == (status = DVPSHelper::loadFileFormat(filename, pstate)))&&(pstate))
@@ -328,8 +336,9 @@ E_Condition DVInterface::loadPState(const char *pstName,
     E_Condition status = EC_IllegalCall;
     DcmFileFormat *pstate = NULL;
     DcmFileFormat *image = pDicomImage;     // default: do not replace image if image filename is NULL
-    DVPresentationState *newState = new DVPresentationState((DiDisplayFunction **)displayFunction, minimumPrintBitmapWidth,
-      minimumPrintBitmapHeight, maximumPrintBitmapWidth, maximumPrintBitmapHeight);
+    DVPresentationState *newState = new DVPresentationState((DiDisplayFunction **)displayFunction,
+      minimumPrintBitmapWidth, minimumPrintBitmapHeight, maximumPrintBitmapWidth, maximumPrintBitmapHeight,
+      maximumPreviewImageWidth, maximumPreviewImageHeight);
     if (newState==NULL) return EC_MemoryExhausted;
     if (((status = DVPSHelper::loadFileFormat(pstName, pstate)) == EC_Normal) &&
         ((imgName == NULL) || ((status = DVPSHelper::loadFileFormat(imgName, image)) == EC_Normal)))
@@ -493,8 +502,9 @@ E_Condition DVInterface::exchangeImageAndPState(DVPresentationState *newState, D
 
 E_Condition DVInterface::resetPresentationState()
 {
-    DVPresentationState *newState = new DVPresentationState(displayFunction, minimumPrintBitmapWidth,
-      minimumPrintBitmapHeight, maximumPrintBitmapWidth, maximumPrintBitmapHeight);
+    DVPresentationState *newState = new DVPresentationState(displayFunction,
+      minimumPrintBitmapWidth, minimumPrintBitmapHeight, maximumPrintBitmapWidth, maximumPrintBitmapHeight,
+      maximumPreviewImageWidth, maximumPreviewImageHeight);
     if (newState==NULL) return EC_MemoryExhausted;
 
     E_Condition status = EC_Normal;
@@ -644,8 +654,9 @@ E_Condition DVInterface::disablePState()
             DcmDataset *dataset = pDicomImage->getDataset();
             if (dataset != NULL)
             {
-                DVPresentationState *newState = new DVPresentationState(displayFunction, minimumPrintBitmapWidth,
-                  minimumPrintBitmapHeight, maximumPrintBitmapWidth, maximumPrintBitmapHeight);
+                DVPresentationState *newState = new DVPresentationState(displayFunction,
+                  minimumPrintBitmapWidth, minimumPrintBitmapHeight, maximumPrintBitmapWidth, maximumPrintBitmapHeight,
+                  maximumPreviewImageWidth, maximumPreviewImageHeight);
                 if (newState != NULL)
                 {
                     if ((status = newState->createFromImage(*dataset)) == EC_Normal)
@@ -2631,7 +2642,14 @@ void DVInterface::setAnnotationText(const char *value)
 /*
  *  CVS/RCS Log:
  *  $Log: dviface.cc,v $
- *  Revision 1.78  1999-10-19 16:24:56  meichel
+ *  Revision 1.79  1999-10-20 10:54:13  joergr
+ *  Added support for a down-scaled preview image of the current DICOM image
+ *  (e.g. useful for online-windowing or print preview).
+ *  Corrected bug concerning the minimum and maximum print bitmap size (first
+ *  presentation state created in the constructor of DVInterface never used the
+ *  correct values from the config file).
+ *
+ *  Revision 1.78  1999/10/19 16:24:56  meichel
  *  Corrected handling of MONOCHROME1 images when used with P-LUTs
  *
  *  Revision 1.77  1999/10/19 14:48:21  meichel
