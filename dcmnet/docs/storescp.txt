@@ -36,7 +36,10 @@ general options:
                                  write output-files to (existing) directory p
                                  (default: .)
 network options:
-  preferred network transfer syntaxes:
+  association negotiation profile from configuration file:
+    -xf   --config-file          [f]ilename, [p]rofile: string
+                                 use profile p from config file f
+  preferred network transfer syntaxes (not with --config-file):
     +x=   --prefer-uncompr       prefer explicit VR local byte order (default)
     +xe   --prefer-little        prefer explicit VR little endian TS
     +xb   --prefer-big           prefer explicit VR big endian TS
@@ -66,6 +69,7 @@ network options:
                                  (but before sending response)
           --abort-during         abort association during receipt of C-STORE-RQ
     -pm   --promiscuous          promiscuous mode, accept unknown SOP classes
+                                 (not with --config-file)
     -up   --uid-padding          silently correct space-padded UIDs
 output options:
   bit preserving mode:
@@ -323,6 +327,15 @@ this case the access control rules defined in the system's host access
 control tables for "storescp" are enforced. The default locations of the 
 host access control tables are /etc/hosts.allow and /etc/hosts.deny.
 Further details are described in hosts_access(5).
+
+
+ASSOCIATION NEGOTIATION PROFILES AND CONFIGURATION FILES
+
+storescp supports a flexible mechanism for specifying the DICOM network 
+association negotiation behaviour, based on so-called "association 
+negotiation profiles" which may be read from a configuration file.
+The format and semantics of this configuration file are documented in
+"asconfig.txt".
 
 
 ENVIRONMENT

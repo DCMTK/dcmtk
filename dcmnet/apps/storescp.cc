@@ -22,9 +22,9 @@
  *  Purpose: Storage Service Class Provider (C-STORE operation)
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2003-06-10 14:17:35 $
+ *  Update Date:      $Date: 2003-06-11 15:46:24 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/apps/storescp.cc,v $
- *  CVS/RCS Revision: $Revision: 1.63 $
+ *  CVS/RCS Revision: $Revision: 1.64 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -67,6 +67,8 @@ END_EXTERN_C
 #include "dicom.h"         /* for DICOM_APPLICATION_ACCEPTOR */
 #include "dcdeftag.h"      /* for DCM_StudyInstanceUID */
 #include "dcostrmz.h"      /* for dcmZlibCompressionLevel */
+#include "dcasccfg.h"      /* for class DcmAssociationConfiguration */
+#include "dcasccff.h"      /* for class DcmAssociationConfigurationFile */
 
 #ifdef WITH_OPENSSL
 #include "tlstrans.h"
@@ -89,10 +91,7 @@ static char rcsid[] = "$dcmtk: " OFFIS_CONSOLE_APPLICATION " v" OFFIS_DCMTK_VERS
 #define CALLED_AETITLE_PLACEHOLDER "#c"
 
 static OFCondition processCommands(T_ASC_Association *assoc);
-
-static OFCondition acceptAssociation(T_ASC_Network *net);
-
-
+static OFCondition acceptAssociation(T_ASC_Network *net, DcmAssociationConfiguration& asccfg);
 static OFCondition echoSCP(T_ASC_Association * assoc, T_DIMSE_Message * msg, T_ASC_PresentationContextID presID);
 static OFCondition storeSCP(T_ASC_Association * assoc, T_DIMSE_Message * msg, T_ASC_PresentationContextID presID);
 static void executeOnReception();
@@ -148,6 +147,8 @@ static char *      lastStudySubdirectoryPathAndName = NULL;
 static OFBool      opt_renameOnEndOfStudy = OFFalse;  // default: don't rename any files on end of study
 static long        opt_endOfStudyTimeout = -1;        // default: no end of study timeout
 static OFBool      endOfStudyThroughTimeoutEvent = OFFalse;
+static const char *opt_configFile = NULL;
+static const char *opt_profileName = NULL;
 
 #ifdef WITH_OPENSSL
 static int         opt_keyFileFormat = SSL_FILETYPE_PEM;
@@ -168,6 +169,7 @@ static const char *opt_dhparam = NULL;
 int main(int argc, char *argv[])
 {
   T_ASC_Network *net;
+  DcmAssociationConfiguration asccfg;
 
 #ifdef HAVE_GUSI_H
   /* needed for Macintosh */
@@ -202,7 +204,10 @@ int main(int argc, char *argv[])
                                                              opt0.c_str());
 
   cmd.addGroup("network options:");
-    cmd.addSubGroup("preferred network transfer syntaxes:");
+    cmd.addSubGroup("association negotiation profile from configuration file:");
+      cmd.addOption("--config-file",            "-xf",    2, "[f]ilename, [p]rofile: string",
+                                                             "use profile p from config file f");
+    cmd.addSubGroup("preferred network transfer syntaxes (not with --config-file):");
       cmd.addOption("--prefer-uncompr",         "+x=",       "prefer explicit VR local byte order (default)");
       cmd.addOption("--prefer-little",          "+xe",       "prefer explicit VR little endian TS");
       cmd.addOption("--prefer-big",             "+xb",       "prefer explicit VR big endian TS");
@@ -249,7 +254,7 @@ int main(int argc, char *argv[])
                                                              "sleep s seconds during store (default: 0)");
       cmd.addOption("--abort-after",                         "abort association after receipt of C-STORE-RQ\n(but before sending response)");
       cmd.addOption("--abort-during",                        "abort association during receipt of C-STORE-RQ");
-      cmd.addOption("--promiscuous",            "-pm",       "promiscuous mode, accept unknown SOP classes");
+      cmd.addOption("--promiscuous",            "-pm",       "promiscuous mode, accept unknown SOP classes\n(not with --config-file)");
       cmd.addOption("--uid-padding",            "-up",       "silently correct space-padded UIDs");
 
   cmd.addGroup("output options:");
@@ -394,7 +399,7 @@ int main(int argc, char *argv[])
     cmd.endOptionBlock();
 
     if (cmd.findOption("--aetitle")) app.checkValue(cmd.getValue(opt_respondingaetitle));
-    if (cmd.findOption("--max-pdu")) app.checkValue(cmd.getValueAndCheckMin(opt_maxPDU, ASC_MINIMUMPDUSIZE, ASC_MAXIMUMPDUSIZE));
+    if (cmd.findOption("--max-pdu")) app.checkValue(cmd.getValueAndCheckMinMax(opt_maxPDU, ASC_MINIMUMPDUSIZE, ASC_MAXIMUMPDUSIZE));
     if (cmd.findOption("--disable-host-lookup")) dcmDisableGethostbyaddr.set(OFTrue);
     if (cmd.findOption("--refuse")) opt_refuseAssociation = OFTrue;
     if (cmd.findOption("--reject")) opt_rejectWithoutImplementationUID = OFTrue;
@@ -405,6 +410,50 @@ int main(int argc, char *argv[])
     if (cmd.findOption("--abort-during")) opt_abortDuringStore = OFTrue;
     if (cmd.findOption("--promiscuous")) opt_promiscuous = OFTrue;
     if (cmd.findOption("--uid-padding")) opt_correctUIDPadding = OFTrue;
+
+    if (cmd.findOption("--config-file"))
+    {
+      app.checkValue(cmd.getValue(opt_configFile));
+      app.checkValue(cmd.getValue(opt_profileName));        
+
+      // check conflicts with other command line options
+      app.checkConflict("--config-file", "--prefer-little", (opt_networkTransferSyntax == EXS_LittleEndianExplicit));
+      app.checkConflict("--config-file", "--prefer-big", (opt_networkTransferSyntax == EXS_BigEndianExplicit));
+      app.checkConflict("--config-file", "--prefer-lossless", (opt_networkTransferSyntax == EXS_JPEGProcess14SV1TransferSyntax));
+      app.checkConflict("--config-file", "--prefer-jpeg8", (opt_networkTransferSyntax == EXS_JPEGProcess1TransferSyntax));
+      app.checkConflict("--config-file", "--prefer-jpeg12", (opt_networkTransferSyntax == EXS_JPEGProcess2_4TransferSyntax));
+      app.checkConflict("--config-file", "--prefer-rle", (opt_networkTransferSyntax == EXS_RLELossless));
+#ifdef WITH_ZLIB
+      app.checkConflict("--config-file", "--prefer-deflated", (opt_networkTransferSyntax == EXS_DeflatedLittleEndianExplicit));
+#endif
+      app.checkConflict("--config-file", "--implicit", (opt_networkTransferSyntax == EXS_LittleEndianImplicit));
+      app.checkConflict("--config-file", "--promiscuous", opt_promiscuous);
+
+      // read configuration file
+      OFCondition cond = DcmAssociationConfigurationFile::initialize(asccfg, opt_configFile);
+      if (cond.bad())
+      {
+        CERR << "error reading config file: "
+             << cond.text() << endl;
+        return 1;
+      }
+
+      /* perform name mangling for config file key */
+      OFString sprofile;
+      const char *c = opt_profileName;
+      while (*c)
+      {
+        if (! isspace(*c)) sprofile += (char) (toupper(*c));
+        ++c;
+      }
+
+      if (!asccfg.isKnownProfile(sprofile.c_str()))
+      {
+        CERR << "unknown configuration profile name: "
+             << sprofile << endl;
+        return 1;
+      }
+    }
 
 #ifdef WITH_TCPWRAPPER
     cmd.beginOptionBlock();
@@ -527,7 +576,6 @@ int main(int argc, char *argv[])
     cmd.beginOptionBlock();
     if (cmd.findOption("--compression-level"))
     {
-
         if (opt_writeTransferSyntax != EXS_DeflatedLittleEndianExplicit && opt_writeTransferSyntax != EXS_Unknown)
           app.printError("--compression-level only allowed with --write-xfer-deflated or --write-xfer-same");
         app.checkValue(cmd.getValueAndCheckMinMax(opt_compressionLevel, 0, 9));
@@ -803,7 +851,7 @@ int main(int argc, char *argv[])
   {
     /* receive an association and acknowledge or reject it. If the association was */
     /* acknowledged, offer corresponding services and invoke one or more if required. */
-    cond = acceptAssociation(net);
+    cond = acceptAssociation(net, asccfg);
 
     /* remove zombie child processes */
     cleanChildren();
@@ -871,7 +919,7 @@ int main(int argc, char *argv[])
 
 
 
-static OFCondition acceptAssociation(T_ASC_Network *net)
+static OFCondition acceptAssociation(T_ASC_Network *net, DcmAssociationConfiguration& asccfg)
 {
   char buf[BUFSIZ];
   T_ASC_Association *assoc;
@@ -1052,6 +1100,27 @@ static OFCondition acceptAssociation(T_ASC_Network *net)
       break;
   }
 
+  if (opt_profileName)
+  {
+    /* perform name mangling for config file key */
+    OFString sprofile;
+    const char *c = opt_profileName;
+    while (*c)
+    {
+      if (! isspace(*c)) sprofile += (char) (toupper(*c));
+      ++c;
+    }
+
+    /* set presentation contexts as defined in config file */
+    cond = asccfg.evaluateAssociationParameters(sprofile.c_str(), *assoc);
+    if (cond.bad())
+    {
+      if (opt_verbose) DimseCondition::dump(cond);
+      goto cleanup;
+    }
+  }
+  else
+  {
     /* accept the Verification SOP Class if presented */
     cond = ASC_acceptContextsWithPreferredTransferSyntaxes( assoc->params, knownAbstractSyntaxes, DIM_OF(knownAbstractSyntaxes), transferSyntaxes, numTransferSyntaxes);
     if (cond.bad())
@@ -1079,6 +1148,7 @@ static OFCondition acceptAssociation(T_ASC_Network *net)
         goto cleanup;
       }
     }
+  }
 
   /* set our app title */
   ASC_setAPTitles(assoc->params, NULL, NULL, opt_respondingaetitle);
@@ -1374,8 +1444,8 @@ storeSCPCallback(
   DIC_UI sopInstance;
 
   // determine if the association shall be aborted
-  if( (opt_abortDuringStore > 0 && progress->state != DIMSE_StoreBegin) ||
-      (opt_abortAfterStore > 0  && progress->state == DIMSE_StoreEnd) )
+  if( (opt_abortDuringStore && progress->state != DIMSE_StoreBegin) ||
+      (opt_abortAfterStore && progress->state == DIMSE_StoreEnd) )
   {
     if (opt_verbose)
       printf("ABORT initiated (due to command line options)\n");
@@ -2187,7 +2257,11 @@ static OFCondition acceptUnknownContextsWithPreferredTransferSyntaxes(
 /*
 ** CVS Log
 ** $Log: storescp.cc,v $
-** Revision 1.63  2003-06-10 14:17:35  meichel
+** Revision 1.64  2003-06-11 15:46:24  meichel
+** Added support for configuration file based association negotiation
+**   profiles
+**
+** Revision 1.63  2003/06/10 14:17:35  meichel
 ** Added option to create unique filenames, even if receiving the same
 **   SOP instance multiple times. Exec options now allow to pass the calling
 **   and called aetitle on the command line.
