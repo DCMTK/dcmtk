@@ -22,9 +22,9 @@
  *  Purpose: Provides main interface to the "DICOM image toolkit"
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-11-19 12:36:55 $
+ *  Update Date:      $Date: 2000-03-06 18:16:02 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/dcmimage.h,v $
- *  CVS/RCS Revision: $Revision: 1.26 $
+ *  CVS/RCS Revision: $Revision: 1.27 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -970,17 +970,17 @@ class DicomImage
      *
      ** @return pointer to overlay plane data (internal memory buffer)
      */
-    inline const void *getOverlayData(const unsigned int plane,
-                                      unsigned int &left,
-                                      unsigned int &top,
-                                      unsigned int &width,
-                                      unsigned int &height,
-                                      EM_Overlay &mode,
-                                      const unsigned long frame = 0,
-                                      const int bits = 8,
-                                      const Uint16 fore = 0xff,
-                                      const Uint16 back = 0x0,
-                                      const unsigned int idx = 2) const
+    const void *getOverlayData(const unsigned int plane,
+                               unsigned int &left,
+                               unsigned int &top,
+                               unsigned int &width,
+                               unsigned int &height,
+                               EM_Overlay &mode,
+                               const unsigned long frame = 0,
+                               const int bits = 8,
+                               const Uint16 fore = 0xff,
+                               const Uint16 back = 0x0,
+                               const unsigned int idx = 2) const
     {
         return ((Image != NULL) && (Image->getMonoImagePtr() != NULL)) ?
             Image->getMonoImagePtr()->getOverlayData(frame, plane, left, top, width, height, mode, idx, bits, fore, back) : NULL;
@@ -1379,7 +1379,10 @@ class DicomImage
  *
  * CVS/RCS Log:
  * $Log: dcmimage.h,v $
- * Revision 1.26  1999-11-19 12:36:55  joergr
+ * Revision 1.27  2000-03-06 18:16:02  joergr
+ * Removed inline specifier from a 'large' method (reported by Sun CC 4.2).
+ *
+ * Revision 1.26  1999/11/19 12:36:55  joergr
  * Added explicit type cast to avoid compiler warnings (reported by gcc
  * 2.7.2.1 on Linux).
  *
