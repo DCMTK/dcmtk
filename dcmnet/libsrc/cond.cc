@@ -96,10 +96,10 @@
 **  for new release of DUL code from MIR.
 **
 **
-** Last Update:		$Author: meichel $
-** Update Date:		$Date: 2000-03-03 14:11:19 $
+** Last Update:		$Author: joergr $
+** Update Date:		$Date: 2000-03-07 16:01:10 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/libsrc/cond.cc,v $
-** CVS/RCS Revision:	$Revision: 1.5 $
+** CVS/RCS Revision:	$Revision: 1.6 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -115,6 +115,7 @@
 
 #include <stdio.h>
 #include <string.h>
+#include <iostream.h>    /* needed for Sun CC 2.01, declaration of class ios */
 #include <iomanip.h>
 
 #ifdef HAVE_STDARG_H
@@ -411,7 +412,10 @@ void COND_DumpConditions(void)
 /*
 ** CVS Log
 ** $Log: cond.cc,v $
-** Revision 1.5  2000-03-03 14:11:19  meichel
+** Revision 1.6  2000-03-07 16:01:10  joergr
+** Added include statement required for Sun CC 2.0.1.
+**
+** Revision 1.5  2000/03/03 14:11:19  meichel
 ** Implemented library support for redirecting error messages into memory
 **   instead of printing them to stdout/stderr for GUI applications.
 **
