@@ -43,9 +43,9 @@
 ** Author, Date:	Stephen M. Moore, 15-Apr-93
 ** Intent:		This module contains routines for the user to
 **			build and manipulate the public DUL structures.
-** Last Update:		$Author: hewett $, $Date: 1996-04-25 16:11:21 $
+** Last Update:		$Author: hewett $, $Date: 1996-05-03 10:31:56 $
 ** Source File:		$RCSfile: dulpres.cc,v $
-** Revision:		$Revision: 1.2 $
+** Revision:		$Revision: 1.3 $
 ** Status:		$State: Exp $
 */
 
@@ -61,25 +61,6 @@
 #include <stdarg.h>
 #endif
 #include <signal.h>
-#ifdef HAVE_SYS_TYPES_H
-#include <sys/types.h>
-#endif
-#ifdef HAVE_SYS_SOCKET_H
-#ifndef _SYS_SOCKET_H_
-#define _SYS_SOCKET_H_
-/* some systems don't protect sys/socket.h (e.g. DEC Ultrix) */
-#include <sys/socket.h>
-#endif
-#endif
-#ifdef HAVE_SYS_TIME_H
-#include <sys/time.h>
-#endif
-#ifdef HAVE_NETINET_IN_H
-#include <netinet/in.h>
-#endif
-#ifdef HAVE_NETDB_H
-#include <netdb.h>
-#endif
 #ifdef HAVE_MALLOC_H
 #include <malloc.h>
 #endif
@@ -181,7 +162,11 @@ DUL_MakePresentationCtx(DUL_PRESENTATIONCONTEXT ** ctx,
 /*
 ** CVS Log
 ** $Log: dulpres.cc,v $
-** Revision 1.2  1996-04-25 16:11:21  hewett
+** Revision 1.3  1996-05-03 10:31:56  hewett
+** Move some common system include files out to include/dcompat.h which were
+** causing problems due to multiple inclusion on some machines.
+**
+** Revision 1.2  1996/04/25 16:11:21  hewett
 ** Added parameter casts to char* for bzero calls.  Replaced some declarations
 ** of DIC_UL with unsigned long (reduces mismatch problems with 32 & 64 bit
 ** architectures).  Added some protection to inclusion of sys/socket.h (due

@@ -46,9 +46,9 @@
 ** Author, Date:	Stephen M. Moore, 15-Apr-93
 ** Intent:		Define tables and provide functions that implement
 **			the DICOM Upper Layer (DUL) finite state machine.
-** Last Update:		$Author: hewett $, $Date: 1996-04-27 12:57:59 $
+** Last Update:		$Author: hewett $, $Date: 1996-05-03 10:31:55 $
 ** Source File:		$RCSfile: dulfsm.cc,v $
-** Revision:		$Revision: 1.3 $
+** Revision:		$Revision: 1.4 $
 ** Status:		$State: Exp $
 */
 
@@ -73,22 +73,6 @@
 #endif
 #ifdef HAVE_SYS_FILE_H
 #include <sys/file.h>
-#endif
-#ifdef HAVE_SYS_SOCKET_H
-#ifndef _SYS_SOCKET_H_
-#define _SYS_SOCKET_H_
-/* some systems don't protect sys/socket.h (e.g. DEC Ultrix) */
-#include <sys/socket.h>
-#endif
-#endif
-#ifdef HAVE_SYS_TIME_H
-#include <sys/time.h>
-#endif
-#ifdef HAVE_NETINET_IN_H
-#include <netinet/in.h>
-#endif
-#ifdef HAVE_NETDB_H
-#include <netdb.h>
 #endif
 #ifdef HAVE_SYS_SELECT_H
 #include <sys/select.h>
@@ -3976,7 +3960,11 @@ DULPRV_translateAssocReq(unsigned char *buffer,
 /*
 ** CVS Log
 ** $Log: dulfsm.cc,v $
-** Revision 1.3  1996-04-27 12:57:59  hewett
+** Revision 1.4  1996-05-03 10:31:55  hewett
+** Move some common system include files out to include/dcompat.h which were
+** causing problems due to multiple inclusion on some machines.
+**
+** Revision 1.3  1996/04/27 12:57:59  hewett
 ** Corrected cause of warnings when compiling under "c++ -O -g -Wall"
 ** under Solaris 2.4.  Mostly due to unintialized variables.
 **

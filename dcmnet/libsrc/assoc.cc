@@ -68,9 +68,9 @@
 **
 **
 ** Last Update:		$Author: hewett $
-** Update Date:		$Date: 1996-04-27 12:57:57 $
+** Update Date:		$Date: 1996-05-03 10:31:52 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/libsrc/assoc.cc,v $
-** CVS/RCS Revision:	$Revision: 1.4 $
+** CVS/RCS Revision:	$Revision: 1.5 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -97,21 +97,6 @@
 #endif
 #ifdef HAVE_SYS_FILE_H
 #include <sys/file.h>
-#endif
-#ifdef HAVE_SYS_SOCKET_H
-#ifndef _SYS_SOCKET_H_
-#define _SYS_SOCKET_H_
-#include <sys/socket.h>
-#endif
-#endif
-#ifdef HAVE_SYS_TIME_H
-#include <sys/time.h>
-#endif
-#ifdef HAVE_NETINET_IN_H
-#include <netinet/in.h>
-#endif
-#ifdef HAVE_NETDB_H
-#include <netdb.h>
 #endif
 
 #include "dicom.h"
@@ -1789,7 +1774,11 @@ ASC_dropAssociation(T_ASC_Association * association)
 /*
 ** CVS Log
 ** $Log: assoc.cc,v $
-** Revision 1.4  1996-04-27 12:57:57  hewett
+** Revision 1.5  1996-05-03 10:31:52  hewett
+** Move some common system include files out to include/dcompat.h which were
+** causing problems due to multiple inclusion on some machines.
+**
+** Revision 1.4  1996/04/27 12:57:57  hewett
 ** Corrected cause of warnings when compiling under "c++ -O -g -Wall"
 ** under Solaris 2.4.  Mostly due to unintialized variables.
 **

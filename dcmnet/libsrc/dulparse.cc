@@ -45,9 +45,9 @@
 ** Intent:		This file contains functions for parsing Dicom
 **			Upper Layer (DUL) Protocol Data Units (PDUs)
 **			into logical in-memory structures.
-** Last Update:		$Author: hewett $, $Date: 1996-03-26 18:38:46 $
+** Last Update:		$Author: hewett $, $Date: 1996-05-03 10:31:56 $
 ** Source File:		$RCSfile: dulparse.cc,v $
-** Revision:		$Revision: 1.1 $
+** Revision:		$Revision: 1.2 $
 ** Status:		$State: Exp $
 */
 
@@ -63,7 +63,7 @@
 #include <sys/time.h>
 #endif
 #ifdef HAVE_MALLOC_H
-#include "malloc.h"
+#include <malloc.h>
 #endif
 #include "dicom.h"
 #include "cond.h"
@@ -768,8 +768,12 @@ trim_trailing_spaces(char *s)
 /*
 ** CVS Log
 ** $Log: dulparse.cc,v $
-** Revision 1.1  1996-03-26 18:38:46  hewett
-** Initial revision
+** Revision 1.2  1996-05-03 10:31:56  hewett
+** Move some common system include files out to include/dcompat.h which were
+** causing problems due to multiple inclusion on some machines.
+**
+** Revision 1.1.1.1  1996/03/26 18:38:46  hewett
+** Initial Release.
 **
 **
 */
