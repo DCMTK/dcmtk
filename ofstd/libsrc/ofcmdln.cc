@@ -22,9 +22,9 @@
  *  Purpose: Template class for command line arguments (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-05-30 12:55:01 $
+ *  Update Date:      $Date: 2000-06-02 12:39:56 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/libsrc/ofcmdln.cc,v $
- *  CVS/RCS Revision: $Revision: 1.25 $
+ *  CVS/RCS Revision: $Revision: 1.26 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -243,6 +243,7 @@ OFBool OFCommandLine::addParam(const char *param,
                     ofConsole.unlockCerr();
                 }
                 break;
+/*
             case OFCmdParam::PM_MultiMandatory:
                 {
                     ofConsole.lockCerr() << "WARNING: " << ValidParamList.size() << ". parameter is multi_mandatory => hides " 
@@ -250,6 +251,7 @@ OFBool OFCommandLine::addParam(const char *param,
                     ofConsole.unlockCerr();
                 }
                 break;
+*/
             case OFCmdParam::PM_MultiOptional:
                 {
                     ofConsole.lockCerr() << "WARNING: " << ValidParamList.size() << ". parameter is multi_optional => hides " 
@@ -1234,7 +1236,10 @@ void OFCommandLine::getStatusString(const E_ValueStatus status,
  *
  * CVS/RCS Log:
  * $Log: ofcmdln.cc,v $
- * Revision 1.25  2000-05-30 12:55:01  joergr
+ * Revision 1.26  2000-06-02 12:39:56  joergr
+ * Removed unnecessary warning message/condition (only in debug mode).
+ *
+ * Revision 1.25  2000/05/30 12:55:01  joergr
  * Adapted error output (avoid compiler warnings reported by gcc with
  * additional flags).
  *
