@@ -23,8 +23,8 @@
  *    classes: DSRDocument
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-10-10 15:29:52 $
- *  CVS/RCS Revision: $Revision: 1.30 $
+ *  Update Date:      $Date: 2001-11-09 16:14:55 $
+ *  CVS/RCS Revision: $Revision: 1.31 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -549,7 +549,10 @@ OFCondition DSRDocument::writeXML(ostream &stream,
                     stream << "<name>" << endl << dicomToXMLPersonName(obsName, string) << "</name>" << endl;
                 if (obsCode.isValid())
                 {
-                    stream << "<code>" << endl;
+                    if (flags & DSRTypes::XF_codeComponentsAsAttribute)
+                        stream << "<code";     // bracket ">" is closed in next writeXML() routine
+                    else
+                        stream << "<code>" << endl;
                     obsCode.writeXML(stream, flags, LogStream);
                     stream << "</code>" << endl;
                 }
@@ -1815,7 +1818,11 @@ void DSRDocument::updateAttributes(const OFBool updateAll)
 /*
  *  CVS/RCS Log:
  *  $Log: dsrdoc.cc,v $
- *  Revision 1.30  2001-10-10 15:29:52  joergr
+ *  Revision 1.31  2001-11-09 16:14:55  joergr
+ *  Added new command line option allowing to encode codes as XML attributes
+ *  (instead of tags).
+ *
+ *  Revision 1.30  2001/10/10 15:29:52  joergr
  *  Additonal adjustments for new OFCondition class.
  *
  *  Revision 1.29  2001/10/02 12:07:07  joergr

@@ -23,8 +23,8 @@
  *    classes: DSRNumericMeasurementValue
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-10-10 15:29:58 $
- *  CVS/RCS Revision: $Revision: 1.12 $
+ *  Update Date:      $Date: 2001-11-09 16:17:13 $
+ *  CVS/RCS Revision: $Revision: 1.13 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -117,7 +117,10 @@ OFCondition DSRNumericMeasurementValue::writeXML(ostream &stream,
                                                  OFConsole *logStream) const
 {
     DSRTypes::writeStringValueToXML(stream, NumericValue, "value", flags & DSRTypes::XF_writeEmptyTags);
-    stream << "<unit>" << endl;
+    if (flags & DSRTypes::XF_codeComponentsAsAttribute)
+        stream << "<unit";     // bracket ">" is closed in the next writeXML() routine
+    else
+        stream << "<unit>" << endl;
     MeasurementUnit.writeXML(stream, flags, logStream);
     stream << "</unit>" << endl;
     return EC_Normal;
@@ -309,7 +312,11 @@ OFBool DSRNumericMeasurementValue::checkMeasurementUnit(const DSRCodedEntryValue
 /*
  *  CVS/RCS Log:
  *  $Log: dsrnumvl.cc,v $
- *  Revision 1.12  2001-10-10 15:29:58  joergr
+ *  Revision 1.13  2001-11-09 16:17:13  joergr
+ *  Added new command line option allowing to encode codes as XML attributes
+ *  (instead of tags).
+ *
+ *  Revision 1.12  2001/10/10 15:29:58  joergr
  *  Additonal adjustments for new OFCondition class.
  *
  *  Revision 1.11  2001/10/02 12:07:10  joergr

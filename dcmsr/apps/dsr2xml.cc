@@ -23,9 +23,9 @@
  *           XML format
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-10-10 15:26:33 $
+ *  Update Date:      $Date: 2001-11-09 16:09:35 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmsr/apps/dsr2xml.cc,v $
- *  CVS/RCS Revision: $Revision: 1.8 $
+ *  CVS/RCS Revision: $Revision: 1.9 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -167,8 +167,9 @@ int main(int argc, char *argv[])
 
     cmd.addGroup("output options:");
       cmd.addSubGroup("encoding:");
-        cmd.addOption("--attr-value-type",     "+Ev",       "encode value type as XML attribute");
+        cmd.addOption("--attr-code",           "+Ec",       "encode code value, coding scheme designator and\ncoding scheme version as XML attribute");
         cmd.addOption("--attr-relationship",   "+Er",       "encode relationship type as XML attribute");
+        cmd.addOption("--attr-value-type",     "+Ev",       "encode value type as XML attribute");
       cmd.addSubGroup("writing:");
         cmd.addOption("--write-empty-tags",    "+We",       "write all tags even if their value is empty");
 
@@ -214,10 +215,12 @@ int main(int argc, char *argv[])
         }
         cmd.endOptionBlock();
 
-        if (cmd.findOption("--attr-value-type"))
-            opt_writeFlags |= DSRTypes::XF_valueTypeAsAttribute;
+        if (cmd.findOption("--attr-code"))
+            opt_writeFlags |= DSRTypes::XF_codeComponentsAsAttribute;
         if (cmd.findOption("--attr-relationship"))
             opt_writeFlags |= DSRTypes::XF_relationshipTypeAsAttribute;
+        if (cmd.findOption("--attr-value-type"))
+            opt_writeFlags |= DSRTypes::XF_valueTypeAsAttribute;
 
         if (cmd.findOption("--write-empty-tags"))
             opt_writeFlags |= DSRTypes::XF_writeEmptyTags;
@@ -259,7 +262,11 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dsr2xml.cc,v $
- * Revision 1.8  2001-10-10 15:26:33  joergr
+ * Revision 1.9  2001-11-09 16:09:35  joergr
+ * Added new command line option allowing to encode codes as XML attributes
+ * (instead of tags).
+ *
+ * Revision 1.8  2001/10/10 15:26:33  joergr
  * Additonal adjustments for new OFCondition class.
  *
  * Revision 1.7  2001/10/02 11:56:00  joergr

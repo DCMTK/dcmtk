@@ -23,8 +23,8 @@
  *    classes: DSRDocumentTreeNode
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-10-10 15:29:53 $
- *  CVS/RCS Revision: $Revision: 1.18 $
+ *  Update Date:      $Date: 2001-11-09 16:15:19 $
+ *  CVS/RCS Revision: $Revision: 1.19 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -129,7 +129,10 @@ OFCondition DSRDocumentTreeNode::writeXML(ostream &stream,
     /* concept name */
     if (ConceptName.isValid())
     {
-        stream << "<concept>" << endl;
+        if (flags & DSRTypes::XF_codeComponentsAsAttribute)
+            stream << "<concept";     // bracket ">" is closed in the next writeXML() routine
+        else
+            stream << "<concept>" << endl;
         ConceptName.writeXML(stream, flags, logStream);
         stream << "</concept>" << endl;
     }
@@ -825,7 +828,11 @@ const OFString &DSRDocumentTreeNode::getRelationshipText(const E_RelationshipTyp
 /*
  *  CVS/RCS Log:
  *  $Log: dsrdoctn.cc,v $
- *  Revision 1.18  2001-10-10 15:29:53  joergr
+ *  Revision 1.19  2001-11-09 16:15:19  joergr
+ *  Added new command line option allowing to encode codes as XML attributes
+ *  (instead of tags).
+ *
+ *  Revision 1.18  2001/10/10 15:29:53  joergr
  *  Additonal adjustments for new OFCondition class.
  *
  *  Revision 1.17  2001/10/02 12:07:08  joergr

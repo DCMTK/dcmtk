@@ -23,8 +23,8 @@
  *    classes: DSRCodedEntryValue
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-10-10 15:29:48 $
- *  CVS/RCS Revision: $Revision: 1.10 $
+ *  Update Date:      $Date: 2001-11-09 16:13:16 $
+ *  CVS/RCS Revision: $Revision: 1.11 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -267,12 +267,23 @@ OFCondition DSRCodedEntryValue::writeXML(ostream &stream,
                                          const size_t flags,
                                          OFConsole * /* logStream */) const
 {
-    DSRTypes::writeStringValueToXML(stream, CodeValue, "value", flags & DSRTypes::XF_writeEmptyTags);
-    stream << "<scheme>" << endl;
-    DSRTypes::writeStringValueToXML(stream, CodingSchemeDesignator, "designator", flags & DSRTypes::XF_writeEmptyTags);
-    DSRTypes::writeStringValueToXML(stream, CodingSchemeVersion, "version", flags & DSRTypes::XF_writeEmptyTags);
-    stream << "</scheme>" << endl;
-    DSRTypes::writeStringValueToXML(stream, CodeMeaning, "meaning", flags & DSRTypes::XF_writeEmptyTags);
+    if (flags & DSRTypes::XF_codeComponentsAsAttribute)
+    {
+        OFString string;
+        stream << " codValue=\"" << DSRTypes::convertToMarkupString(CodeValue, string, OFFalse /* convertNonASCII */, OFFalse /* newlineAllowed */, OFTrue /* xmlMode */) << "\"";
+        stream << " codScheme=\"" << DSRTypes::convertToMarkupString(CodingSchemeDesignator, string, OFFalse /* convertNonASCII */, OFFalse /* newlineAllowed */, OFTrue /* xmlMode */) << "\"";
+        if ((CodingSchemeVersion.length() > 0) || (flags & DSRTypes::XF_writeEmptyTags))
+            stream << " codVersion=\"" << DSRTypes::convertToMarkupString(CodingSchemeVersion, string, OFFalse /* convertNonASCII */, OFFalse /* newlineAllowed */, OFTrue /* xmlMode */) << "\"";
+        stream << ">";      // close open bracket from calling routine
+        stream << DSRTypes::convertToMarkupString(CodeMeaning, string, OFFalse /* convertNonASCII */, OFFalse /* newlineAllowed */, OFTrue /* xmlMode */);
+    } else {
+        DSRTypes::writeStringValueToXML(stream, CodeValue, "value", flags & DSRTypes::XF_writeEmptyTags);
+        stream << "<scheme>" << endl;
+        DSRTypes::writeStringValueToXML(stream, CodingSchemeDesignator, "designator", flags & DSRTypes::XF_writeEmptyTags);
+        DSRTypes::writeStringValueToXML(stream, CodingSchemeVersion, "version", flags & DSRTypes::XF_writeEmptyTags);
+        stream << "</scheme>" << endl;
+        DSRTypes::writeStringValueToXML(stream, CodeMeaning, "meaning", flags & DSRTypes::XF_writeEmptyTags);
+    }
     return EC_Normal;
 }
 
@@ -362,7 +373,11 @@ OFBool DSRCodedEntryValue::checkCode(const OFString &codeValue,
 /*
  *  CVS/RCS Log:
  *  $Log: dsrcodvl.cc,v $
- *  Revision 1.10  2001-10-10 15:29:48  joergr
+ *  Revision 1.11  2001-11-09 16:13:16  joergr
+ *  Added new command line option allowing to encode codes as XML attributes
+ *  (instead of tags).
+ *
+ *  Revision 1.10  2001/10/10 15:29:48  joergr
  *  Additonal adjustments for new OFCondition class.
  *
  *  Revision 1.9  2001/10/02 12:07:06  joergr
