@@ -1,5 +1,22 @@
+**** Changes from 1999.02.18 (riesmeier)
 
-**** Changes from 1999.02.17 (eichelberg)
+- Re-implemented methods to access index file (delete methods are still
+  missing).
+  Affects: dcmpstat/include/dviface.h
+           dcmpstat/libsrc/dviface.cc
+  Added:   dcmpstat/include/dvcache.h
+
+- Removed parameter 'deletefile' from delete methods. This parameter is
+  not necessary because the decision whether a images file is deleted only
+  depends on the directory where the file is stored (see comments).
+  Affects: dcmpstat/include/dviface.h
+           dcmpstat/libsrc/dviface.cc
+
+- Rebuilt Makefile dependencies.
+  Affects: dcmpstat/apps/Makefile.dep
+           dcmpstat/libsrc/Makefile.dep
+
+**** Changes from 1999.02.18 (eichelberg)
 
 - Added new parameter explicitVR to interface methods savePState, saveDICOMImage.
   Allows to choose between explicit VR and implicit VR little endian format.
