@@ -23,10 +23,10 @@
  *  Definitions of "well known" DICOM Unique Indentifiers,
  *  routines for finding and creating UIDs.
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-12-14 12:47:41 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2000-12-20 10:18:23 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcuid.h,v $
- *  CVS/RCS Revision: $Revision: 1.40 $
+ *  CVS/RCS Revision: $Revision: 1.41 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -152,12 +152,12 @@ unsigned long dcmGuessModalityBytes(const char *sopClassUID);
  *   The second name is used to identify files written without dcmdata
  *   (i.e. using the --bit-preserving switch in various tools)
  */
-#define OFFIS_DTK_IMPLEMENTATION_VERSION_NAME   "OFFIS_DCMTK_341"
-#define OFFIS_DTK_IMPLEMENTATION_VERSION_NAME2  "OFFIS_DCMBP_341"
-#define OFFIS_DCMTK_RELEASEDATE                 "2000/03/10"
+#define OFFIS_DTK_IMPLEMENTATION_VERSION_NAME   "OFFIS_DCMTK_342"
+#define OFFIS_DTK_IMPLEMENTATION_VERSION_NAME2  "OFFIS_DCMBP_342"
+#define OFFIS_DCMTK_RELEASEDATE                 "2000-12-20"
 
 #define OFFIS_UID_ROOT                          "1.2.276.0.7230010.3"
-#define OFFIS_DCMTK_VERSION                     "3.4.1"
+#define OFFIS_DCMTK_VERSION                     "3.4.2"
 #define OFFIS_IMPLEMENTATION_CLASS_UID          OFFIS_UID_ROOT ".0." OFFIS_DCMTK_VERSION
 #define OFFIS_INSTANCE_CREATOR_UID              OFFIS_IMPLEMENTATION_CLASS_UID
 
@@ -370,13 +370,15 @@ unsigned long dcmGuessModalityBytes(const char *sopClassUID);
 #define UID_DetachedStudyManagementMetaSOPClass                    "1.2.840.10008.3.1.2.5.5"
 #define UID_DetachedInterpretationManagementSOPClass               "1.2.840.10008.3.1.2.6.1"
 
-// other
-/* new (?) official name in DICOM standard: Media Storage Directory Storage */
+// Other
 #define UID_VerificationSOPClass                                   "1.2.840.10008.1.1"
+// official name in DICOM standard: Media Storage Directory Storage
 #define UID_BasicDirectoryStorageSOPClass                          "1.2.840.10008.1.3.10"
 #define UID_BasicStudyContentNotificationSOPClass                  "1.2.840.10008.1.9"
 #define UID_StudyComponentManagementSOPClass                       "1.2.840.10008.3.1.2.3.2"
-/* private SOP Class UID used to shutdown external network applications */
+
+// Private DCMTK UIDs
+// Private SOP Class UID used to shutdown external network applications 
 #define UID_PrivateShutdownSOPClass                                "1.2.276.0.7230010.3.4.1915765545.18030.917282194.0"
 
 
@@ -403,7 +405,11 @@ unsigned long dcmGuessModalityBytes(const char *sopClassUID);
 /*
 ** CVS/RCS Log:
 ** $Log: dcuid.h,v $
-** Revision 1.40  2000-12-14 12:47:41  joergr
+** Revision 1.41  2000-12-20 10:18:23  meichel
+** Updated Version Number and Implementation Version Name to reflect the
+**   current public release (3.4.2)
+**
+** Revision 1.40  2000/12/14 12:47:41  joergr
 ** Updated SOP Class and Transfer Syntax UIDs for 2000 edition of the DICOM
 ** standard.
 **
