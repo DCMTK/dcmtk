@@ -22,8 +22,8 @@
  *  Purpose: Template class for command line arguments (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-12-05 10:35:24 $
- *  CVS/RCS Revision: $Revision: 1.34 $
+ *  Update Date:      $Date: 2003-12-05 13:58:28 $
+ *  CVS/RCS Revision: $Revision: 1.35 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -101,7 +101,7 @@ struct OFCmdOption
 #ifdef DEBUG
         if (!Checked && !ExclusiveOption && (LongOption.length() > 0))
         {
-            ofConsole.lockCerr() << "WARNING: option " << LongOption << " has never been checked !" << endl;
+            ofConsole.lockCerr() << "WARNING: option " << LongOption << " has possibly never been checked !" << endl;
             ofConsole.unlockCerr();
         }
 #endif
@@ -703,14 +703,25 @@ OFBool OFCommandLine::findOption(const char *longOpt,
 OFBool OFCommandLine::gotoFirstOption()
 {
     OptionPosIterator = OptionPosList.begin();
-    return OptionPosIterator != OptionPosList.end();
+    if (OptionPosIterator != OptionPosList.end())
+    {
+        ArgumentIterator = *OptionPosIterator;
+        return OFTrue;
+    }
+    return OFFalse;
 }
 
 
 OFBool OFCommandLine::gotoNextOption()
 {
     if (OptionPosIterator != OptionPosList.end())
-        return ++OptionPosIterator != OptionPosList.end();
+    {
+        if (++OptionPosIterator != OptionPosList.end())
+        {
+            ArgumentIterator = *OptionPosIterator;
+            return OFTrue;
+        }
+    }
     return OFFalse;
 }
 
@@ -1451,7 +1462,10 @@ void OFCommandLine::getStatusString(const E_ValueStatus status,
  *
  * CVS/RCS Log:
  * $Log: ofcmdln.cc,v $
- * Revision 1.34  2003-12-05 10:35:24  joergr
+ * Revision 1.35  2003-12-05 13:58:28  joergr
+ * Fixed problem with retrieving option values using the new iteration feature.
+ *
+ * Revision 1.34  2003/12/05 10:35:24  joergr
  * Added support for iterating over command line arguments and options.
  *
  * Revision 1.33  2003/07/09 13:58:04  meichel

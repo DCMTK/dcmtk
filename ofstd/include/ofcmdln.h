@@ -22,8 +22,8 @@
  *  Purpose: Handle command line arguments (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-12-05 10:36:03 $
- *  CVS/RCS Revision: $Revision: 1.35 $
+ *  Update Date:      $Date: 2003-12-05 13:59:33 $
+ *  CVS/RCS Revision: $Revision: 1.36 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -662,7 +662,7 @@ class OFCommandLine
 
  // --- get value (used for option values)
 
-    /** returns current argument as a signed integer value.
+    /** returns next argument as a signed integer value
      *
      ** @param  value  reference to signed integer variable where the value should be stored
      *
@@ -670,7 +670,7 @@ class OFCommandLine
      */
     E_ValueStatus getValue(OFCmdSignedInt &value);
 
-    /** returns current argument as a signed integer value and checks for given boundary
+    /** returns next argument as a signed integer value and checks for given boundary
      *
      ** @param  value  reference to signed integer variable where the value should be stored
      *  @param  low    minimum boundary for value (used for range check)
@@ -682,7 +682,7 @@ class OFCommandLine
                                       const OFCmdSignedInt low,
                                       const OFBool incl = OFTrue);
 
-    /** returns current argument as a signed integer value and checks for given boundaries
+    /** returns next argument as a signed integer value and checks for given boundaries
      *
      ** @param  value  reference to signed integer variable where the value should be stored
      *  @param  low    minimum boundary for value (used for range check, boundary included)
@@ -694,7 +694,7 @@ class OFCommandLine
                                          const OFCmdSignedInt low,
                                          const OFCmdSignedInt high);
 
-    /** returns current argument as an unsigned integer value
+    /** returns next argument as an unsigned integer value
      *
      ** @param  value  reference to unsigned integer variable where the value should be stored
      *
@@ -702,7 +702,7 @@ class OFCommandLine
      */
     E_ValueStatus getValue(OFCmdUnsignedInt &value);
 
-    /** returns current argument as an unsigned integer value and checks for given boundary
+    /** returns next argument as an unsigned integer value and checks for given boundary
      *
      ** @param  value  reference to unsigned integer variable where the value should be stored
      *  @param  low    minimum boundary for value (used for range check)
@@ -714,7 +714,7 @@ class OFCommandLine
                                       const OFCmdUnsignedInt low,
                                       const OFBool incl = OFTrue);
 
-    /** returns current argument as an unsigned integer value and checks for given boundaries
+    /** returns next argument as an unsigned integer value and checks for given boundaries
      *
      ** @param  value  reference to unsigned integer variable where the value should be stored
      *  @param  low    minimum boundary for value (used for range check, boundary included)
@@ -726,7 +726,7 @@ class OFCommandLine
                                          const OFCmdUnsignedInt low,
                                          const OFCmdUnsignedInt high);
 
-    /** returns current argument as a floating point value
+    /** returns next argument as a floating point value
      *
      ** @param  value  reference to floating point variable where the value should be stored
      *
@@ -734,7 +734,7 @@ class OFCommandLine
      */
     E_ValueStatus getValue(OFCmdFloat &value);
 
-    /** returns current argument as a floating point value and checks for given boundary
+    /** returns next argument as a floating point value and checks for given boundary
      *
      ** @param  value  reference to floating point variable where the value should be stored
      *  @param  low    minimum boundary for value (used for range check)
@@ -746,7 +746,7 @@ class OFCommandLine
                                       const OFCmdFloat low,
                                       const OFBool incl = OFTrue);
 
-    /** returns current argument as a floating point value and checks for given boundaries
+    /** returns next argument as a floating point value and checks for given boundaries
      *
      ** @param  value  reference to floating point variable where the value should be stored
      *  @param  low    minimum boundary for value (used for range check, boundary included)
@@ -758,7 +758,7 @@ class OFCommandLine
                                          const OFCmdFloat low,
                                          const OFCmdFloat high);
 
-    /** returns current argument as a C string
+    /** returns next argument as a C string
      *
      ** @param  value  reference to C string variable where the value should be stored
      *
@@ -766,7 +766,7 @@ class OFCommandLine
      */
     E_ValueStatus getValue(const char *&value);
 
-    /** returns current argument as a C++ string
+    /** returns next argument as a C++ string
      *
      ** @param  value  reference to C++ string variable where the value should be stored
      *
@@ -969,7 +969,10 @@ class OFCommandLine
  *
  * CVS/RCS Log:
  * $Log: ofcmdln.h,v $
- * Revision 1.35  2003-12-05 10:36:03  joergr
+ * Revision 1.36  2003-12-05 13:59:33  joergr
+ * Fixed problem with retrieving option values using the new iteration feature.
+ *
+ * Revision 1.35  2003/12/05 10:36:03  joergr
  * Added support for iterating over command line arguments and options.
  * Removed leading underscore characters from preprocessor symbols (reserved
  * symbols). Updated copyright date where appropriate.
