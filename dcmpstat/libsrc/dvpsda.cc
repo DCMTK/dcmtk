@@ -23,8 +23,8 @@
  *    classes: DVPSDisplayedArea
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-06-02 16:00:59 $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  Update Date:      $Date: 2000-11-23 09:47:24 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -362,9 +362,11 @@ E_Condition DVPSDisplayedArea::setDisplayedAreaPixelSpacing(const char *spacing)
     Float64 fl=0.0; 
     presentationPixelSpacing.getFloat64(fl, 0);
     if (fl == 0.0) result = EC_IllegalCall;
+    else if (fl < 0) presentationPixelSpacing.putFloat64(-fl, 0); // silently correct negative values
     fl =0.0;
     presentationPixelSpacing.getFloat64(fl, 1);
     if (fl == 0.0) result = EC_IllegalCall;
+    else if (fl < 0) presentationPixelSpacing.putFloat64(-fl, 1); // silently correct negative values
   }
   if (EC_Normal != result) presentationPixelSpacing.clear();
   return result;
@@ -388,9 +390,11 @@ E_Condition DVPSDisplayedArea::setDisplayedAreaPixelAspectRatio(const char *rati
     Sint32 si=0;
     presentationPixelAspectRatio.getSint32(si, 0);
     if (si == 0) result = EC_IllegalCall;
+    else if (si < 0) presentationPixelAspectRatio.putSint32(-si, 0); // silently correct negative values
     si = 0;
     presentationPixelAspectRatio.getSint32(si, 1);
     if (si == 0) result = EC_IllegalCall;
+    else if (si < 0) presentationPixelAspectRatio.putSint32(-si, 1); // silently correct negative values
   }
   if (EC_Normal != result) presentationPixelAspectRatio.clear();
   return result;
@@ -441,7 +445,10 @@ void DVPSDisplayedArea::setLog(OFConsole *stream, OFBool verbMode, OFBool dbgMod
 
 /*
  *  $Log: dvpsda.cc,v $
- *  Revision 1.6  2000-06-02 16:00:59  meichel
+ *  Revision 1.7  2000-11-23 09:47:24  meichel
+ *  Silently correct negative pixel aspect ratio or pixel spacing values
+ *
+ *  Revision 1.6  2000/06/02 16:00:59  meichel
  *  Adapted all dcmpstat classes to use OFConsole for log and error output
  *
  *  Revision 1.5  2000/05/31 13:02:36  meichel
