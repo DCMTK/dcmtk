@@ -30,5 +30,7 @@ dcm2pnm.o: dcm2pnm.cc ../../config/include/osconfig.h \
  ../../dcmdata/include/dcvrss.h ../../dcmdata/include/dcvrus.h \
  ../../dcmdata/include/dcvrsl.h ../../dcmdata/include/dcvrfl.h \
  ../../dcmdata/include/dcvrfd.h ../../dcmdata/include/cmdlnarg.h \
- ../../dcmdata/include/dcutils.h ../include/dcmimage.h \
- ../include/diimage.h ../include/diutils.h
+ ../../dcmdata/include/dcutils.h ../../dcmimgle/include/dcmimage.h \
+ ../../dcmimgle/include/diimage.h ../../dcmimgle/include/diutils.h \
+ ../../ofstd/include/ofcmdln.h ../../ofstd/include/ofstring.h \
+ ../include/diregist.h ../../dcmimgle/include/diregbas.h
