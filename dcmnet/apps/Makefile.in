@@ -20,9 +20,9 @@ LOCALINCLUDES=-I$(dcmdatadir)/include -I$(includedir)/dcmdata
 LIBDIRS = -L$(top_srcdir)/libsrc -L$(dcmdatadir)/libsrc -L$(libdir)
 LOCALLIBS = -ldcmnet -ldcmdata
 
-objs= echoscu.o storescu.o storescp.o cmdlnarg.o
+objs= echoscu.o storescu.o storescp.o findscu.o cmdlnarg.o
 
-progs= echoscu storescu storescp
+progs= echoscu storescu storescp findscu
 
 all: $(progs)
 
@@ -33,6 +33,8 @@ storescu: storescu.o cmdlnarg.o
 	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ $^ $(LOCALLIBS) $(LIBS)  
 
 storescp: storescp.o cmdlnarg.o
+	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ $^ $(LOCALLIBS) $(LIBS)  
+findscu: findscu.o cmdlnarg.o
 	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ $^ $(LOCALLIBS) $(LIBS)  
 
 install: all
