@@ -22,9 +22,9 @@
  *  Purpose: DicomInputPixel (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-01-20 15:00:54 $
+ *  Update Date:      $Date: 1999-02-03 17:03:47 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/diinpx.h,v $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  * 
  *   CVS/RCS Log at end of file
@@ -50,16 +50,25 @@ class DiInputPixel
 
  public:
 
-    DiInputPixel();
+    DiInputPixel(const unsigned int bits);
+
     virtual ~DiInputPixel();
     
     virtual int determineMinMax() = 0;
     
     virtual EP_Representation getRepresentation() const = 0;
+
     virtual void *getData() const = 0;
+
     virtual double getMinValue() const = 0;
+
     virtual double getMaxValue() const = 0;
 
+    inline unsigned int getBits() const
+    {
+        return Bits;
+    }
+    
     inline double getAbsMinimum() const
     {
         return AbsMinimum;
@@ -85,6 +94,7 @@ class DiInputPixel
 
     unsigned long Count;
     
+    unsigned int Bits;
     double AbsMinimum;
     double AbsMaximum;
 };
@@ -94,25 +104,29 @@ class DiInputPixel
 
 
 /*
-**
-** CVS/RCS Log:
-** $Log: diinpx.h,v $
-** Revision 1.4  1999-01-20 15:00:54  joergr
-** Added routine to calculate absolute range of pixel data.
-**
-** Revision 1.3  1998/12/22 14:18:40  joergr
-** Added implementation of methods to return member variables AbsMinimum/
-** Maximum.
-**
-** Revision 1.2  1998/12/16 16:30:34  joergr
-** Added methods to determine absolute minimum and maximum value for given
-** value representation.
-**
-** Revision 1.1  1998/11/27 15:06:38  joergr
-** Added copyright message.
-**
-** Revision 1.3  1998/05/11 14:53:17  joergr
-** Added CVS/RCS header to each file.
-**
-**
-*/
+ *
+ * CVS/RCS Log:
+ * $Log: diinpx.h,v $
+ * Revision 1.5  1999-02-03 17:03:47  joergr
+ * Added member variable and related methods to store number of bits used for
+ * pixel data.
+ *
+ * Revision 1.4  1999/01/20 15:00:54  joergr
+ * Added routine to calculate absolute range of pixel data.
+ *
+ * Revision 1.3  1998/12/22 14:18:40  joergr
+ * Added implementation of methods to return member variables AbsMinimum/
+ * Maximum.
+ *
+ * Revision 1.2  1998/12/16 16:30:34  joergr
+ * Added methods to determine absolute minimum and maximum value for given
+ * value representation.
+ *
+ * Revision 1.1  1998/11/27 15:06:38  joergr
+ * Added copyright message.
+ *
+ * Revision 1.3  1998/05/11 14:53:17  joergr
+ * Added CVS/RCS header to each file.
+ *
+ *
+ */
