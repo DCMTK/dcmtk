@@ -25,9 +25,9 @@
  *    file.
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-12-04 10:41:33 $
+ *  Update Date:      $Date: 2003-04-14 14:28:02 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmpstat/apps/dcmmklut.cc,v $
- *  CVS/RCS Revision: $Revision: 1.34 $
+ *  CVS/RCS Revision: $Revision: 1.35 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -433,7 +433,7 @@ void gammaLUT(const unsigned int numberOfBits,
         Uint16 maxValue = 0xFFFF >> (16 - numberOfBits);
         double step = (double)maxValue / ((double)numberOfEntries - 1.0);
         double gammaExp = 1.0 / gammaValue;
-        double factor = (double)maxValue / pow(maxValue, gammaExp);
+        double factor = (double)maxValue / pow((double)maxValue, gammaExp);
         double val;
         unsigned long i = 0;
         if (byteAlign)
@@ -482,8 +482,8 @@ void applyInverseGSDF(const unsigned int numberOfBits,
         const double la = (double)reflection;
         const double dmin = (double)minDensity / 100;
         const double dmax = (double)maxDensity / 100;
-        const double lmin = la + l0 * pow(10, -dmax);
-        const double lmax = la + l0 * pow(10, -dmin);
+        const double lmin = la + l0 * pow((double)10, -dmax);
+        const double lmax = la + l0 * pow((double)10, -dmin);
         const double jmin = DiGSDFunction::getJNDIndex(lmin);
         const double jmax = DiGSDFunction::getJNDIndex(lmax);
         const double factor = (double)DicomImageClass::maxval(numberOfBits) / (jmax - jmin);
@@ -493,10 +493,10 @@ void applyInverseGSDF(const unsigned int numberOfBits,
         {
             Uint8 *data8 = (Uint8 *)outputData;
             for (i = 0; i < numberOfEntries; i++)
-                data8[i] = (Uint8)((DiGSDFunction::getJNDIndex(la + l0 * pow(10, -(dmin + (double)data8[i] * density))) - jmin) * factor);
+                data8[i] = (Uint8)((DiGSDFunction::getJNDIndex(la + l0 * pow((double)10, -(dmin + (double)data8[i] * density))) - jmin) * factor);
         } else {
             for (i = 0; i < numberOfEntries; i++)
-                outputData[i] = (Uint16)((DiGSDFunction::getJNDIndex(la + l0 * pow(10, -(dmin + (double)outputData[i] * density))) - jmin) * factor);
+                outputData[i] = (Uint16)((DiGSDFunction::getJNDIndex(la + l0 * pow((double)10, -(dmin + (double)outputData[i] * density))) - jmin) * factor);
         }
         oss << "# applied inverse GSDF with Dmin/max = " << minDensity << "/" << maxDensity << ", L0/La = "
             << illumination << "/" << reflection << endl;
@@ -1092,7 +1092,10 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmmklut.cc,v $
- * Revision 1.34  2002-12-04 10:41:33  meichel
+ * Revision 1.35  2003-04-14 14:28:02  meichel
+ * Added explicit typecasts in calls to pow(). Needed by Visual C++ .NET 2003.
+ *
+ * Revision 1.34  2002/12/04 10:41:33  meichel
  * Changed toolkit to use OFStandard::ftoa instead of sprintf for all
  *   double to string conversions that are supposed to be locale independent
  *

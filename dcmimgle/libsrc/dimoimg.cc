@@ -21,10 +21,10 @@
  *
  *  Purpose: DicomMonochromeImage (Source)
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-12-10 19:00:26 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2003-04-14 14:27:27 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/libsrc/dimoimg.cc,v $
- *  CVS/RCS Revision: $Revision: 1.52 $
+ *  CVS/RCS Revision: $Revision: 1.53 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1871,15 +1871,15 @@ int DiMonoImage::createLinODPresentationLut(const unsigned long count, const int
             const double la = (double)Reflection;
             const double dmin = (double)MinDensity / 100;
             const double dmax = (double)MaxDensity / 100;
-            const double lmin = la + l0 * pow(10, -dmax);
-            const double lmax = la + l0 * pow(10, -dmin);
+            const double lmin = la + l0 * pow((double)10, -dmax);
+            const double lmax = la + l0 * pow((double)10, -dmin);
             const double jmin = DiGSDFunction::getJNDIndex(lmin);
             const double jmax = DiGSDFunction::getJNDIndex(lmax);
             const double factor = (double)DicomImageClass::maxval(bits) / (jmax - jmin);
             const double density = (dmax - dmin) / (double)(count - 1);
             Uint16 *p = data;
             for (unsigned long i = 0; i < count; i++)
-                *(p++) = (Uint16)((DiGSDFunction::getJNDIndex(la + l0 * pow(10, -(dmin + (double)i * density))) - jmin) * factor);
+                *(p++) = (Uint16)((DiGSDFunction::getJNDIndex(la + l0 * pow((double)10, -(dmin + (double)i * density))) - jmin) * factor);
             PresLutData = new DiLookupTable(data, count, bits);
             return (PresLutData != NULL) && (PresLutData->isValid());
         }
@@ -2090,7 +2090,10 @@ int DiMonoImage::writeBMP(FILE *stream,
  *
  * CVS/RCS Log:
  * $Log: dimoimg.cc,v $
- * Revision 1.52  2002-12-10 19:00:26  joergr
+ * Revision 1.53  2003-04-14 14:27:27  meichel
+ * Added explicit typecasts in calls to pow(). Needed by Visual C++ .NET 2003.
+ *
+ * Revision 1.52  2002/12/10 19:00:26  joergr
  * Fixed bug that caused createAWTBitmap() to return always empty pixel data.
  *
  * Revision 1.51  2002/12/09 13:34:51  joergr

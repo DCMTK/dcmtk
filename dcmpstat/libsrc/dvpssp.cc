@@ -23,8 +23,8 @@
  *    classes: DVPSStoredPrint
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2003-03-12 17:34:22 $
- *  CVS/RCS Revision: $Revision: 1.49 $
+ *  Update Date:      $Date: 2003-04-14 14:28:05 $
+ *  CVS/RCS Revision: $Revision: 1.50 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -922,12 +922,12 @@ Sint32 DVPSStoredPrint::convertODtoPValue(Uint16 density, unsigned int bits)
       const double d0 = (double)density / 100;
       const double dmin = (double)min / 100;
       const double dmax = (double)max / 100;
-      const double lmin = la + l0 * pow(10, -dmax);
-      const double lmax = la + l0 * pow(10, -dmin);
+      const double lmin = la + l0 * pow((double)10, -dmax);
+      const double lmax = la + l0 * pow((double)10, -dmin);
       const double jmin = DiGSDFunction::getJNDIndex(lmin);
       const double jmax = DiGSDFunction::getJNDIndex(lmax);
       const double factor = (double)DicomImageClass::maxval(bits) / (jmax - jmin);
-      return (Sint32)((DiGSDFunction::getJNDIndex(la + l0 * pow(10, -d0)) - jmin) * factor);
+      return (Sint32)((DiGSDFunction::getJNDIndex(la + l0 * pow((double)10, -d0)) - jmin) * factor);
     }
   }
   return -1;
@@ -3533,7 +3533,10 @@ void DVPSStoredPrint::overridePresentationLUTSettings(
 
 /*
  *  $Log: dvpssp.cc,v $
- *  Revision 1.49  2003-03-12 17:34:22  meichel
+ *  Revision 1.50  2003-04-14 14:28:05  meichel
+ *  Added explicit typecasts in calls to pow(). Needed by Visual C++ .NET 2003.
+ *
+ *  Revision 1.49  2003/03/12 17:34:22  meichel
  *  Updated DcmObject::print() flags
  *
  *  Revision 1.48  2002/11/27 15:48:13  meichel

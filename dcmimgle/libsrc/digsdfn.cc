@@ -21,10 +21,10 @@
  *
  *  Purpose: DicomGSDFunction (Source)
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-03-12 14:54:19 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2003-04-14 14:27:27 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/libsrc/digsdfn.cc,v $
- *  CVS/RCS Revision: $Revision: 1.24 $
+ *  CVS/RCS Revision: $Revision: 1.25 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -375,7 +375,7 @@ int DiGSDFunction::calculateGSDF()
             ln2 = ln * ln;
             ln3 = ln2 * ln;
             ln4 = ln3 * ln;
-            GSDFValue[i] = pow(10, (a + c*ln + e*ln2 + g*ln3 + m*ln4) / (1 + b*ln + d*ln2 + f*ln3 + h*ln4 + k*(ln4*ln)));
+            GSDFValue[i] = pow((double)10, (a + c*ln + e*ln2 + g*ln3 + m*ln4) / (1 + b*ln + d*ln2 + f*ln3 + h*ln4 + k*(ln4*ln)));
         }
         return 1;
     }
@@ -461,7 +461,10 @@ double DiGSDFunction::getJNDIndex(const double lum)
  *
  * CVS/RCS Log:
  * $Log: digsdfn.cc,v $
- * Revision 1.24  2003-03-12 14:54:19  joergr
+ * Revision 1.25  2003-04-14 14:27:27  meichel
+ * Added explicit typecasts in calls to pow(). Needed by Visual C++ .NET 2003.
+ *
+ * Revision 1.24  2003/03/12 14:54:19  joergr
  * Fixed bug in GSDF calibration routines. Ambient light value was added twice
  * in case of OD input data (i.e. for hardcopy devices).
  *

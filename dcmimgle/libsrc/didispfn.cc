@@ -21,10 +21,10 @@
  *
  *  Purpose: DicomDisplayFunction (Source)
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-02-12 11:37:14 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2003-04-14 14:27:27 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/libsrc/didispfn.cc,v $
- *  CVS/RCS Revision: $Revision: 1.38 $
+ *  CVS/RCS Revision: $Revision: 1.39 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -726,11 +726,11 @@ double *DiDisplayFunction::convertODtoLumTable(const double *od_tab,
             if (useAmb)
             {
                 for (i = 0; i < count; i++)
-                    lum_tab[i] = AmbientLight + Illumination * pow(10, -od_tab[i]);
+                    lum_tab[i] = AmbientLight + Illumination * pow((double)10, -od_tab[i]);
             } else {
                 /* ambient light is added later */
                 for (i = 0; i < count; i++)
-                    lum_tab[i] = Illumination * pow(10, -od_tab[i]);
+                    lum_tab[i] = Illumination * pow((double)10, -od_tab[i]);
             }
         }
     }
@@ -751,7 +751,7 @@ double DiDisplayFunction::convertODtoLum(const double value,
                                          const double illum)
 {
     /* formula from DICOM PS3.14: L = La + L0 * 10^-D */
-    return (value >= 0) && (ambient >= 0) && (illum >= 0) ? ambient + illum * pow(10, -value) : -1 /*invalid*/;
+    return (value >= 0) && (ambient >= 0) && (illum >= 0) ? ambient + illum * pow((double)10, -value) : -1 /*invalid*/;
 }
 
 
@@ -759,7 +759,10 @@ double DiDisplayFunction::convertODtoLum(const double value,
  *
  * CVS/RCS Log:
  * $Log: didispfn.cc,v $
- * Revision 1.38  2003-02-12 11:37:14  joergr
+ * Revision 1.39  2003-04-14 14:27:27  meichel
+ * Added explicit typecasts in calls to pow(). Needed by Visual C++ .NET 2003.
+ *
+ * Revision 1.38  2003/02/12 11:37:14  joergr
  * Added Dmin/max support to CIELAB calibration routines.
  *
  * Revision 1.37  2003/02/11 16:32:15  joergr

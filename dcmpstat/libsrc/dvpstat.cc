@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DVPresentationState
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-12-09 13:28:16 $
- *  CVS/RCS Revision: $Revision: 1.74 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2003-04-14 14:28:05 $
+ *  CVS/RCS Revision: $Revision: 1.75 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -3075,7 +3075,7 @@ OFCondition DVPresentationState::setGammaVOILUT(double gammaValue, DVPSObjectApp
       const Uint16 maxValue = 0xFFFF >> (16 - numberOfBits);
       double step = (double)maxValue / ((double)numberOfEntries - 1.0);
       double gammaExp = 1.0 / gammaValue;
-      double factor = (double)maxValue / pow(maxValue, gammaExp);
+      double factor = (double)maxValue / pow((double)maxValue, gammaExp);
       unsigned long i;
       for (i = 0; i < numberOfEntries; i++)
         data[i]= (Uint16)(factor * pow(i * step, gammaExp));
@@ -4141,7 +4141,10 @@ const char *DVPresentationState::getAttachedImageSOPInstanceUID()
 
 /*
  *  $Log: dvpstat.cc,v $
- *  Revision 1.74  2002-12-09 13:28:16  joergr
+ *  Revision 1.75  2003-04-14 14:28:05  meichel
+ *  Added explicit typecasts in calls to pow(). Needed by Visual C++ .NET 2003.
+ *
+ *  Revision 1.74  2002/12/09 13:28:16  joergr
  *  Renamed parameter/local variable to avoid name clashes with global
  *  declaration left and/or right (used for as iostream manipulators).
  *
