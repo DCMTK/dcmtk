@@ -41,7 +41,7 @@ apps-all: libsrc-all
 	(cd apps; $(MAKE) ARCH="$(ARCH)" all)
 
 tests-all:
-	(cd tests; $(MAKE) all)
+	(cd tests; $(MAKE) ARCH="$(ARCH)" all)
 
 
 include-install:
