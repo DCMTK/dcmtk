@@ -10,8 +10,8 @@
 ** Implementation of the DcmVR class for Value Representation
 **
 **
-** Last Update:   $Author: joergr $
-** Revision:      $Revision: 1.13 $
+** Last Update:   $Author: meichel $
+** Revision:      $Revision: 1.14 $
 ** Status:        $State: Exp $
 **
 */
@@ -86,7 +86,7 @@ static DcmVREntry DcmVRDict[] = {
     { EVR_UL, "UL", sizeof(Uint32), DCMVR_PROP_NONE, 4, 4 },
     { EVR_US, "US", sizeof(Uint16), DCMVR_PROP_NONE, 2, 2 },
 
-    { EVR_ox, "ox", sizeof(Uint8), DCMVR_PROP_NONSTANDARD, 0, DCM_UndefinedLength },
+    { EVR_ox, "ox", sizeof(Uint8), DCMVR_PROP_NONSTANDARD | DCMVR_PROP_EXTENDEDLENGTHENCODING, 0, DCM_UndefinedLength },
     { EVR_xs, "xs", sizeof(Uint16), DCMVR_PROP_NONSTANDARD, 2, 2 },
     { EVR_na, "na", 0, DCMVR_PROP_NONSTANDARD, 0, 0 },
     { EVR_up, "up", sizeof(Uint32), DCMVR_PROP_NONSTANDARD, 4, 4 },
@@ -110,8 +110,9 @@ static DcmVREntry DcmVRDict[] = {
     { EVR_pixelItem, "pi_EVR_pixelItem", sizeof(Uint8), 
       DCMVR_PROP_NONSTANDARD | DCMVR_PROP_INTERNAL, 0, DCM_UndefinedLength },
     
-    { EVR_UNKNOWN, "??", sizeof(Uint8), /* EVR_UNKNOWN should be mapped to UN or OB */
-      DCMVR_PROP_NONSTANDARD | DCMVR_PROP_INTERNAL | DCMVR_PROP_EXTENDEDLENGTHENCODING, 0, DCM_UndefinedLength },
+    { EVR_UNKNOWN, "??", sizeof(Uint8), /* EVR_UNKNOWN - if someone uses illegal VRs,
+      we assume that he does not use extended length coding */
+      DCMVR_PROP_NONSTANDARD | DCMVR_PROP_INTERNAL , 0, DCM_UndefinedLength },
 
     /* Unknown Value Representation - Supplement 14 */
     { EVR_UN, "UN", sizeof(Uint8), DCMVR_PROP_EXTENDEDLENGTHENCODING, 0, DCM_UndefinedLength },
