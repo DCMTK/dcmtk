@@ -23,8 +23,8 @@
  *    classes: DVPSPrintMessageHandler
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-09-24 15:24:08 $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  Update Date:      $Date: 1999-10-13 14:10:49 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -815,9 +815,10 @@ CONDITION DVPSPrintMessageHandler::negotiateAssociation(
       transferSyntaxCount = 3;
   }
 
-  /* we always propose basic grayscale and presentation LUT */
+  /* we always propose basic grayscale, presentation LUT and annotation box*/
   if (SUCCESS(cond)) cond = ASC_addPresentationContext(params, 1, UID_BasicGrayscalePrintManagementMetaSOPClass, transferSyntaxes, transferSyntaxCount);
   if (SUCCESS(cond)) cond = ASC_addPresentationContext(params, 3, UID_PresentationLUTSOPClass, transferSyntaxes, transferSyntaxCount);
+  if (SUCCESS(cond)) cond = ASC_addPresentationContext(params, 5, UID_BasicAnnotationBoxSOPClass, transferSyntaxes, transferSyntaxCount);
 
   /* create association */
   if (verbose) *logstream << "Requesting Association" << endl;
@@ -873,9 +874,18 @@ OFBool DVPSPrintMessageHandler::printerSupportsPresentationLUT()
   return OFFalse;
 }
 
+OFBool DVPSPrintMessageHandler::printerSupportsAnnotationBox()
+{
+  if ((assoc)&&(0 != ASC_findAcceptedPresentationContextID(assoc, UID_BasicAnnotationBoxSOPClass))) return OFTrue;
+  return OFFalse;
+}
+
 /*
  *  $Log: dvpspr.cc,v $
- *  Revision 1.4  1999-09-24 15:24:08  meichel
+ *  Revision 1.5  1999-10-13 14:10:49  meichel
+ *  Now negotiation Basic Annotation Box SOP Class
+ *
+ *  Revision 1.4  1999/09/24 15:24:08  meichel
  *  Print spooler (dcmprtsv) now logs diagnostic messages in log files
  *    when operating in spool mode.
  *

@@ -23,8 +23,8 @@
  *    classes: DVPSPrintMessageHandler
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-09-24 15:23:47 $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  Update Date:      $Date: 1999-10-13 14:10:47 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -223,6 +223,12 @@ public:
    */
   OFBool printerSupportsPresentationLUT();
 
+  /** checks if the remote printer supports the Basic Annotation Box SOP class.
+   *  May only be called if association in place. 
+   *  @return true if presentation context for Basic Annotation Box exists, false otherwise.
+   */
+  OFBool printerSupportsAnnotationBox();
+
   /** sets an ostream to which all network communication is dumped.
    *  @param stream output stream, default: no output
    */
@@ -311,7 +317,10 @@ private:
 
 /*
  *  $Log: dvpspr.h,v $
- *  Revision 1.3  1999-09-24 15:23:47  meichel
+ *  Revision 1.4  1999-10-13 14:10:47  meichel
+ *  Now negotiation Basic Annotation Box SOP Class
+ *
+ *  Revision 1.3  1999/09/24 15:23:47  meichel
  *  Print spooler (dcmprtsv) now logs diagnostic messages in log files
  *    when operating in spool mode.
  *
