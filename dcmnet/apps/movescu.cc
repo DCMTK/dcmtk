@@ -22,9 +22,9 @@
  *  Purpose: Query/Retrieve Service Class User (C-MOVE operation)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-11-09 15:56:24 $
+ *  Update Date:      $Date: 2002-04-11 12:45:50 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/apps/movescu.cc,v $
- *  CVS/RCS Revision: $Revision: 1.39 $
+ *  CVS/RCS Revision: $Revision: 1.40 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -213,7 +213,7 @@ addPresentationContext(T_ASC_Parameters *params,
 			T_ASC_PresentationContextID pid,
 			const char* abstractSyntax);
 
-#define SHORTCOL 3
+#define SHORTCOL 4
 #define LONGCOL 21
 
 int
@@ -1336,7 +1336,10 @@ cmove(T_ASC_Association * assoc, const char *fname)
 ** CVS Log
 **
 ** $Log: movescu.cc,v $
-** Revision 1.39  2001-11-09 15:56:24  joergr
+** Revision 1.40  2002-04-11 12:45:50  joergr
+** Adapted layout of command line help.
+**
+** Revision 1.39  2001/11/09 15:56:24  joergr
 ** Renamed some of the getValue/getParam methods to avoid ambiguities reported
 ** by certain compilers.
 **

@@ -29,85 +29,85 @@ movescu: DICOM retrieve (C-MOVE) SCU
 usage: movescu [options] peer port [dcmfile_in...]
 
 parameters:
-  peer                          hostname of DICOM peer
-  port                          tcp/ip port number of peer
-  dcmfile_in                    DICOM query file(s)
+  peer                           hostname of DICOM peer
+  port                           tcp/ip port number of peer
+  dcmfile_in                     DICOM query file(s)
 
 general options:
-  -h     --help                 print this help text and exit
-  -v     --verbose              verbose mode, print processing details
-  -d     --debug                debug mode, print debug information
+  -h      --help                 print this help text and exit
+  -v      --verbose              verbose mode, print processing details
+  -d      --debug                debug mode, print debug information
 network options:
   override matching keys:
-    -k   --key                  key: gggg,eeee="string"
-                                override matching key
+    -k    --key                  key: gggg,eeee="string"
+                                 override matching key
   query information model:
-    -P   --patient              use patient root information model (default)
-    -S   --study                use study root information model
-    -O   --psonly               use patient/study only information model
+    -P    --patient              use patient root information model (default)
+    -S    --study                use study root information model
+    -O    --psonly               use patient/study only information model
   application entity titles:
-    -aet  --aetitle             aetitle: string
-                                set my calling AE title (default: MOVESCU)
-    -aec  --call                aetitle: string
-                                set called AE title of peer (default: ANY-SCP)
-    -aem  --move                aetitle: string
-                                set move destinat. AE title (default: MOVESCU)
+    -aet  --aetitle              aetitle: string
+                                 set my calling AE title (default: MOVESCU)
+    -aec  --call                 aetitle: string
+                                 set called AE title of peer (default: ANY-SCP)
+    -aem  --move                 aetitle: string
+                                 set move destinat. AE title (default: MOVESCU)
   preferred network transfer syntaxes (incoming associations):
-    +x=  --prefer-uncompr       prefer explicit VR local byte order (default)
-    +xe  --prefer-little        prefer explicit VR little endian TS
-    +xb  --prefer-big           prefer explicit VR big endian TS
-    +xs  --prefer-lossless      prefer default JPEG lossless TS
-    +xy  --prefer-jpeg8         prefer default JPEG lossy TS for 8 bit data
-    +xx  --prefer-jpeg12        prefer default JPEG lossy TS for 12 bit data
-    +xr  --prefer-rle           prefer RLE lossless TS
-    +xi  --implicit             accept implicit VR little endian TS only
+    +x=   --prefer-uncompr       prefer explicit VR local byte order (default)
+    +xe   --prefer-little        prefer explicit VR little endian TS
+    +xb   --prefer-big           prefer explicit VR big endian TS
+    +xs   --prefer-lossless      prefer default JPEG lossless TS
+    +xy   --prefer-jpeg8         prefer default JPEG lossy TS for 8 bit data
+    +xx   --prefer-jpeg12        prefer default JPEG lossy TS for 12 bit data
+    +xr   --prefer-rle           prefer RLE lossless TS
+    +xi   --implicit             accept implicit VR little endian TS only
   proposed transmission transfer syntaxes (outgoing associations):
-    -x=  --propose-uncompr      propose all uncompressed TS, explicit VR
-                                with local byte ordering first (default)
-    -xe  --propose-little       propose all uncompressed TS, explicit VR
-                                little endian first
-    -xb  --propose-big          propose all uncompressed TS, explicit VR
-                                big endian first
-    -xi  --propose-implicit     propose implicit VR little endian TS only
+    -x=   --propose-uncompr      propose all uncompressed TS, explicit VR
+                                 with local byte ordering first (default)
+    -xe   --propose-little       propose all uncompressed TS, explicit VR
+                                 little endian first
+    -xb   --propose-big          propose all uncompressed TS, explicit VR
+                                 big endian first
+    -xi   --propose-implicit     propose implicit VR little endian TS only
   other network options:
-    +P    --port                [n]umber: integer (default: 104)
-                                port number for incoming associations
-    -pdu  --max-pdu             [n]umber of bytes: integer [4096..131072]
-                                set max receive pdu to n bytes (default: 16384)
+    +P    --port                 [n]umber: integer (default: 104)
+                                 port number for incoming associations
+    -pdu  --max-pdu              [n]umber of bytes: integer [4096..131072]
+                                 set max receive pdu to n bytes (default: 16384)
     -dhl  --disable-host-lookup disable hostname lookup
-          --repeat              [n]umber: integer
-                                repeat n times
-          --abort               abort association instead of releasing it
-          --ignore              ignore store data, receive but do not store
-          --cancel              [n]umber: integer
-                                cancel after n responses (default: never)
+          --repeat               [n]umber: integer
+                                 repeat n times
+          --abort                abort association instead of releasing it
+          --ignore               ignore store data, receive but do not store
+          --cancel               [n]umber: integer
+                                 cancel after n responses (default: never)
 output options:
   bit preserving mode:
-    -B   --normal               allow implicit format conversions (default)
-    +B   --bit-preserving       write data exactly as read
+    -B    --normal               allow implicit format conversions (default)
+    +B    --bit-preserving       write data exactly as read
   output file format:
-    +F   --write-file           write file format (default)
-    -F   --write-dataset        write data set without file meta information
+    +F    --write-file           write file format (default)
+    -F    --write-dataset        write data set without file meta information
   output transfer syntax (not with --bit-preserving or compressed transmission):
-    +t=  --write-xfer-same      write with same TS as input (default)
-    +te  --write-xfer-little    write with explicit VR little endian TS
-    +tb  --write-xfer-big       write with explicit VR big endian TS
-    +ti  --write-xfer-implicit  write with implicit VR little endian TS
+    +t=   --write-xfer-same      write with same TS as input (default)
+    +te   --write-xfer-little    write with explicit VR little endian TS
+    +tb   --write-xfer-big       write with explicit VR big endian TS
+    +ti   --write-xfer-implicit  write with implicit VR little endian TS
   post-1993 value representations (not with --bit-preserving):
-    +u   --enable-new-vr        enable support for new VRs (UN/UT) (default)
-    -u   --disable-new-vr       disable support for new VRs, convert to OB
+    +u    --enable-new-vr        enable support for new VRs (UN/UT) (default)
+    -u    --disable-new-vr       disable support for new VRs, convert to OB
   group length encoding (not with --bit-preserving):
-    +g=  --group-length-recalc  recalculate group lengths if present (default)
-    +g   --group-length-create  always write with group length elements
-    -g   --group-length-remove  always write without group length elements
+    +g=   --group-length-recalc  recalculate group lengths if present (default)
+    +g    --group-length-create  always write with group length elements
+    -g    --group-length-remove  always write without group length elements
   length encoding in sequences and items (not with --bit-preserving):
-    +e   --length-explicit      write with explicit lengths (default)
-    -e   --length-undefined     write with undefined lengths
+    +e    --length-explicit      write with explicit lengths (default)
+    -e    --length-undefined     write with undefined lengths
   data set trailing padding (not with --write-dataset or --bit-preserving):
-    -p   --padding-off          no padding (default)
-    +p   --padding-create       [f]ile-pad [i]tem-pad: integer
-                                align file on multiple of f bytes
-                                and items on multiple of i bytes
+    -p    --padding-off          no padding (default)
+    +p    --padding-create       [f]ile-pad [i]tem-pad: integer
+                                 align file on multiple of f bytes
+                                 and items on multiple of i bytes
 
 
 NOTES
