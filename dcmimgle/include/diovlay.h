@@ -22,9 +22,9 @@
  *  Purpose: DicomOverlay (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1998-12-14 17:27:35 $
+ *  Update Date:      $Date: 1998-12-16 16:37:50 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/diovlay.h,v $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -65,7 +65,7 @@ class DiOverlayData
     unsigned int ArrayEntries;          // number of array entries (allocated memory)
     
     DiOverlayPlane **Planes;            // points to an array of planes
-    Uint16 *Data;                       // points to overlay data (if scaled, flipped or rotated)
+    Uint16 *DataBuffer;                 // points to overlay data (if scaled, flipped or rotated)
 
  // --- declarations to avoid compiler warnings
  
@@ -93,10 +93,14 @@ class DiOverlay
     
     DiOverlay(const DiOverlay *overlay,
               const int horz,
-              const int vert);
+              const int vert,
+              const Uint16 columns,
+              const Uint16 rows);
 
     DiOverlay(const DiOverlay *overlay,
-              const int degree);
+              const int degree,
+              const Uint16 columns,
+              const Uint16 rows);
 
     virtual ~DiOverlay();
     
@@ -169,15 +173,22 @@ class DiOverlay
         return (convertToPlaneNumber(plane, AdditionalPlanes)) && (!visible || Data->Planes[plane]->isVisible());
     }
     
+    Uint8 *getPlaneData(const unsigned long frame,
+                        unsigned int plane,
+                        unsigned int &width,
+                        unsigned int &height,
+                        unsigned int &left,
+                        unsigned int &top,
+                        const Uint16 columns,
+                        const Uint16 rows);
+
     static const unsigned int MaxOverlayCount;
     static const unsigned int FirstOverlayGroup;
 
 
  protected:
 
-    Uint16 *Init(const DiOverlay *overlay,
-                 const double xfactor = 1,
-                 const double yfactor = 1);
+    Uint16 *Init(const DiOverlay *overlay);
 
     int convertToPlaneNumber(unsigned int &plane,
                              const int mode) const;
@@ -219,7 +230,11 @@ class DiOverlay
 **
 ** CVS/RCS Log:
 ** $Log: diovlay.h,v $
-** Revision 1.3  1998-12-14 17:27:35  joergr
+** Revision 1.4  1998-12-16 16:37:50  joergr
+** Added method to export overlay planes (create 8-bit bitmap).
+** Implemented flipping and rotation of overlay planes.
+**
+** Revision 1.3  1998/12/14 17:27:35  joergr
 ** Added methods to add and remove additional overlay planes (still untested).
 ** Added methods to support overlay labels and descriptions.
 **

@@ -22,9 +22,9 @@
  *  Purpose: DicomOverlayPlane (Header) - Multiframe Overlays UNTESTED !
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1998-12-14 17:28:18 $
+ *  Update Date:      $Date: 1998-12-16 16:37:51 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/diovpln.h,v $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -78,62 +78,111 @@ class DiOverlayPlane
                    const DcmLongString &label,
                    const DcmLongString &description);
 
-    DiOverlayPlane(DiOverlayPlane *,
-                   const unsigned int,
-                   Uint16 *,
-                   Uint16 *,
-                   const Uint16,
-                   const Uint16,
-                   const Uint16,
-                   const Uint16,
-                   const double = 1,
-                   const double = 1);
+    DiOverlayPlane(DiOverlayPlane *plane,
+                   const unsigned int bit,
+                   Uint16 *data,
+                   Uint16 *temp,
+                   const Uint16 width,
+                   const Uint16 height,
+                   const Uint16 columns,
+                   const Uint16 rows);
                    
     ~DiOverlayPlane();
     
     inline Sint16 getLeft(const Uint16 left = 0) const
-        { return (Sint16)((Sint32)Left - (Sint32)left); }
+    {
+        return (Sint16)((Sint32)Left - (Sint32)left);
+    }
+
     inline Sint16 getTop(const Uint16 top = 0) const
-        { return (Sint16)((Sint32)Top - (Sint32)top); }
+    {
+        return (Sint16)((Sint32)Top - (Sint32)top);
+    }
+
     inline Uint16 getWidth() const
-        { return Width; }
+    {
+        return Width;
+    }
+
     inline Uint16 getHeight() const
-        { return Height; }
+    {
+        return Height;
+    }
+
     inline Uint16 getRight(const Uint16 left = 0) const
-        { return ((Sint32)Left + (Sint32)Width - (Sint32)left > 0) ? (Uint16)((Sint32)Left + (Sint32)Width -
-            (Sint32)left) : 0; }
+    {
+        return ((Sint32)Left + (Sint32)Width - (Sint32)left > 0) ? (Uint16)((Sint32)Left + (Sint32)Width - (Sint32)left) : 0;
+    }
+
     inline Uint16 getBottom(const Uint16 top = 0) const
-        { return ((Sint32)Top + (Sint32)Height - (Sint32)top > 0) ? (Uint16)((Sint32)Top + (Sint32)Height -
-            (Sint32)top) : 0; }
+    {
+        return ((Sint32)Top + (Sint32)Height - (Sint32)top > 0) ? (Uint16)((Sint32)Top + (Sint32)Height - (Sint32)top) : 0;
+    }
 
     inline int isValid() const
-        { return Valid; }
+    {
+        return Valid;
+    }
+
     inline int isVisible() const
-        { return Visible; }
+    {
+        return Visible;
+    }
+
     inline void show()
-        { Visible = 1; }
+    {
+        Visible = 1;
+    }
+
     inline void hide()
-        { Visible = 0; }
-    inline void place(const signed int left, const signed int top)
-        { Left = left; Top = top; }
+    {
+        Visible = 0;
+    }
     
-    void flipOrigin(const int horz,
-                    const int vert);
+    inline void place(const signed int left,
+                      const signed int top)
+    {
+        Left = left; Top = top;
+    }
+    
+    void setScaling(const double xfactor,
+                    const double yfactor);
+
+    void setFlipping(const int horz,
+                     const int vert,
+                     const Uint16 columns,
+                     const Uint16 rows);
                     
-//    void rotate(const int degree);
+    void setRotation(const int degree,
+                     const Uint16 columns,
+                     const Uint16 rows);
 
     void show(const double, const double, const EM_Overlay);
 
     inline unsigned long getNumberOfFrames() const
-        { return NumberOfFrames; }
+    {
+        return NumberOfFrames;
+    }
+
     inline double getForeground() const
-        { return Foreground; }
+    {
+        return Foreground;
+    }
+
     inline double getThreshold() const
-        { return Threshold; }
+    {
+        return Threshold;
+    }
+
     inline EM_Overlay getMode() const
-        { return Mode; }
+    {
+        return Mode;
+    }
+
     inline int isEmbedded() const
-        { return EmbeddedData; }
+    {
+        return EmbeddedData;
+    }
     
     const char *getLabel() const
     {
@@ -145,14 +194,24 @@ class DiOverlayPlane
         return Description.c_str();
     }
 
-    const Uint8 getGroupNumber() const
+    const Uint16 getGroupNumber() const
     {
         return GroupNumber;
     }
 
+    Uint8 *getData(const unsigned long frame,
+                   const Uint16 xmin,
+                   const Uint16 ymin,
+                   const Uint16 xmax,
+                   const Uint16 ymax,
+                   const Uint8 value = 0xff);
+
     inline int reset(const unsigned long);
+
     inline int getNextBit();
-    inline void setStart(const Uint16, const Uint16);
+
+    inline void setStart(const Uint16 x,
+                         const Uint16 y);
 
 
  protected:
@@ -167,7 +226,7 @@ class DiOverlayPlane
     Uint16 Rows;                    // number of (stored) rows
     Uint16 Columns;                 // number of (stored) columns
     Uint16 BitsAllocated;           // number of allocated bits per pixel
-    Uint16 BitPosition;             // position of overlay plane bit
+    Uint16 BitPosition;             // position of overlay plane bit    
     
     double Foreground;              // color of overlay plane ('0.0' = dark, '1.0' = bright)
     double Threshold;               // threshold value
@@ -185,6 +244,9 @@ class DiOverlayPlane
  private:
     unsigned long BitPos;           // current bit position
     unsigned long StartBitPos;      // starting bit position of current frame
+
+    unsigned int StartLeft;         // x-coordinate of first pixel in surrounding memory buffer
+    unsigned int StartTop;          // y-coordinate of first pixel in surrounding memory buffer
     
     int EmbeddedData;               // true, if overlay data in embedded in pixel data
     
@@ -207,7 +269,8 @@ inline int DiOverlayPlane::reset(const unsigned long frame)
     int result = 0;
     if (Valid && (Data != NULL) && (frame >= ImageFrameOrigin) && (frame < ImageFrameOrigin + NumberOfFrames))
     {
-        const unsigned long bits = frame * (unsigned long)Rows * (unsigned long)Columns * (unsigned long)BitsAllocated;
+        const unsigned long bits = ((unsigned long)StartLeft + (unsigned long)StartTop * (unsigned long)Columns +
+            frame * (unsigned long)Rows * (unsigned long)Columns) * (unsigned long)BitsAllocated;
         StartBitPos = BitPos = (unsigned long)BitPosition + bits;
         StartPtr = Ptr = Data + (bits >> 4);
         result = (getRight() > 0) && (getBottom() > 0);
@@ -231,13 +294,13 @@ inline int DiOverlayPlane::getNextBit()
 }
 
 
-inline void DiOverlayPlane::setStart(const Uint16 x, const Uint16 y)
+inline void DiOverlayPlane::setStart(const Uint16 x,
+                                     const Uint16 y)
 {
     if (BitsAllocated == 16)
         Ptr = StartPtr + (unsigned long)(y - Top) * (unsigned long)Columns + (unsigned long)(x - Left);
     else
-        BitPos = StartBitPos + ((unsigned long)(y - Top) * (unsigned long)Columns + (unsigned long)(x - Left)) *
-            (unsigned long)BitsAllocated;
+        BitPos = StartBitPos + ((unsigned long)(y - Top) * (unsigned long)Columns + (unsigned long)(x - Left)) * (unsigned long)BitsAllocated;
 }
 
 
@@ -248,7 +311,11 @@ inline void DiOverlayPlane::setStart(const Uint16 x, const Uint16 y)
 **
 ** CVS/RCS Log:
 ** $Log: diovpln.h,v $
-** Revision 1.2  1998-12-14 17:28:18  joergr
+** Revision 1.3  1998-12-16 16:37:51  joergr
+** Added method to export overlay planes (create 8-bit bitmap).
+** Implemented flipping and rotation of overlay planes.
+**
+** Revision 1.2  1998/12/14 17:28:18  joergr
 ** Added methods to add and remove additional overlay planes (still untested).
 ** Added methods to support overlay labels and descriptions.
 **
