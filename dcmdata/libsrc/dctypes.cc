@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2002, OFFIS
+ *  Copyright (C) 2002-2003, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose: global type and constant definitions
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-12-06 12:21:35 $
+ *  Update Date:      $Date: 2003-04-01 14:57:20 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dctypes.cc,v $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -38,20 +38,24 @@
 
 
 /* print flags */
-const size_t DCMTypes::PF_shortenLongTagValues = 1;
-const size_t DCMTypes::PF_showTreeStructure    = 2;
-const size_t DCMTypes::PF_lastEntry            = 4;
+const size_t DCMTypes::PF_shortenLongTagValues = 1 << 0;
+const size_t DCMTypes::PF_showTreeStructure    = 1 << 1;
+const size_t DCMTypes::PF_lastEntry            = 1 << 2;
 
 /* writeXML flags */
-const size_t DCMTypes::XF_addDocumentType = 1;
-const size_t DCMTypes::XF_writeBinaryData = 2;
-const size_t DCMTypes::XF_encodeBase64    = 4;
+const size_t DCMTypes::XF_addDocumentType   = 1 << 0;
+const size_t DCMTypes::XF_writeBinaryData   = 1 << 1;
+const size_t DCMTypes::XF_encodeBase64      = 1 << 2;
+const size_t DCMTypes::XF_useDcmtkNamespace = 1 << 3;
 
 
 /*
  * CVS/RCS Log:
  * $Log: dctypes.cc,v $
- * Revision 1.3  2002-12-06 12:21:35  joergr
+ * Revision 1.4  2003-04-01 14:57:20  joergr
+ * Added support for XML namespaces.
+ *
+ * Revision 1.3  2002/12/06 12:21:35  joergr
  * Enhanced "print()" function by re-working the implementation and replacing
  * the boolean "showFullData" parameter by a more general integer flag.
  *

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2002, OFFIS
+ *  Copyright (C) 1994-2003, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose: global type and constant definitions
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-12-06 12:21:00 $
+ *  Update Date:      $Date: 2003-04-01 14:57:08 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dctypes.h,v $
- *  CVS/RCS Revision: $Revision: 1.17 $
+ *  CVS/RCS Revision: $Revision: 1.18 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -41,6 +41,18 @@
 #define INCLUDE_CSTDLIB
 #include "ofstdinc.h"
 
+
+/*
+** Macro Definitions
+*/
+
+// XML namespace URI for the dcmtk
+#define DCMTK_XML_NAMESPACE_URI "http://dicom.offis.de/dcmtk"
+
+
+/*
+** Type Definitions
+*/
 
 typedef Uint8		    BYTE;
 typedef Sint8		    SBYTE;
@@ -122,6 +134,9 @@ struct DCMTypes
 
     /// encode binary data as Base64 (MIME)
     static const size_t XF_encodeBase64;
+    
+    /// XML namespace URI for dcmsr module
+    static const size_t XF_useDcmtkNamespace;
     //@}
 };
 
@@ -136,7 +151,10 @@ const Uint32 DCM_UndefinedLength = 0xffffffff;
 /*
  * CVS/RCS Log:
  * $Log: dctypes.h,v $
- * Revision 1.17  2002-12-06 12:21:00  joergr
+ * Revision 1.18  2003-04-01 14:57:08  joergr
+ * Added support for XML namespaces.
+ *
+ * Revision 1.17  2002/12/06 12:21:00  joergr
  * Enhanced "print()" function by re-working the implementation and replacing
  * the boolean "showFullData" parameter by a more general integer flag.
  *

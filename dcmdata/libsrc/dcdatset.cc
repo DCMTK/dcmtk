@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2002, OFFIS
+ *  Copyright (C) 1994-2003, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,10 +21,10 @@
  *
  *  Purpose: Implementation of class DcmDataset
  *
- *  Last Update:      $Author: wilkens $
- *  Update Date:      $Date: 2002-12-09 09:30:49 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2003-04-01 14:57:20 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcdatset.cc,v $
- *  CVS/RCS Revision: $Revision: 1.32 $
+ *  CVS/RCS Revision: $Revision: 1.33 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -160,7 +160,10 @@ OFCondition DcmDataset::writeXML(ostream &out,
     DcmXfer xfer(Xfer);
     /* XML start tag for "data-set" */
     out << "<data-set xfer=\"" << xfer.getXferID() << "\"";
-    out << " name=\"" << OFStandard::convertToMarkupString(xfer.getXferName(), xmlString) << "\">" << endl;
+    out << " name=\"" << OFStandard::convertToMarkupString(xfer.getXferName(), xmlString) << "\"";
+    if (flags & DCMTypes::XF_useDcmtkNamespace)
+        out << " xmlns=\"" << DCMTK_XML_NAMESPACE_URI << "\"";
+    out << ">" << endl;
     if (!elementList->empty())
     {
         /* write content of all children */
@@ -168,7 +171,7 @@ OFCondition DcmDataset::writeXML(ostream &out,
         elementList->seek(ELP_first);
         do {
             dO = elementList->get();
-            dO->writeXML(out, flags);
+            dO->writeXML(out, flags & ~DCMTypes::XF_useDcmtkNamespace);
         } while (elementList->seek(ELP_next));
     }
     /* XML end tag for "data-set" */
@@ -557,7 +560,10 @@ void DcmDataset::removeAllButOriginalRepresentations()
 /*
 ** CVS/RCS Log:
 ** $Log: dcdatset.cc,v $
-** Revision 1.32  2002-12-09 09:30:49  wilkens
+** Revision 1.33  2003-04-01 14:57:20  joergr
+** Added support for XML namespaces.
+**
+** Revision 1.32  2002/12/09 09:30:49  wilkens
 ** Modified/Added doc++ documentation.
 **
 ** Revision 1.31  2002/12/06 13:09:26  joergr

@@ -54,6 +54,8 @@ output options:
                                coding scheme version as XML attribute
     +Er  --attr-relationship   encode relationship type as XML attribute
     +Ev  --attr-value-type     encode value type as XML attribute
+  XML structure:
+    +Xn  --use-xml-namespace   add XML namespace declaration to root element
   writing:
     +We  --write-empty-tags    write all tags even if their value is empty
 

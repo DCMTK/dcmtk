@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2002, OFFIS
+ *  Copyright (C) 2000-2003, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DSRTypes
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-11-27 14:36:18 $
- *  CVS/RCS Revision: $Revision: 1.30 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2003-04-01 14:59:41 $
+ *  CVS/RCS Revision: $Revision: 1.31 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -102,6 +102,7 @@ const size_t DSRTypes::XF_writeEmptyTags                 = 1 << 0;
 const size_t DSRTypes::XF_codeComponentsAsAttribute      = 1 << 1;
 const size_t DSRTypes::XF_relationshipTypeAsAttribute    = 1 << 2;
 const size_t DSRTypes::XF_valueTypeAsAttribute           = 1 << 3;
+const size_t DSRTypes::XF_useDcmsrNamespace              = 1 << 4;
 
 /* print flags */
 const size_t DSRTypes::PF_printItemPosition              = 1 << 0;
@@ -1344,7 +1345,10 @@ OFCondition DSRTypes::appendStream(ostream &mainStream,
 /*
  *  CVS/RCS Log:
  *  $Log: dsrtypes.cc,v $
- *  Revision 1.30  2002-11-27 14:36:18  meichel
+ *  Revision 1.31  2003-04-01 14:59:41  joergr
+ *  Added support for XML namespaces.
+ *
+ *  Revision 1.30  2002/11/27 14:36:18  meichel
  *  Adapted module dcmsr to use of new header file ofstdinc.h
  *
  *  Revision 1.29  2002/08/20 12:53:57  meichel

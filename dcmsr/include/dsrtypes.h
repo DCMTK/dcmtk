@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2002, OFFIS
+ *  Copyright (C) 2000-2003, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,8 +23,8 @@
  *    classes: DSRTypes
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-08-02 12:38:32 $
- *  CVS/RCS Revision: $Revision: 1.29 $
+ *  Update Date:      $Date: 2003-04-01 14:59:13 $
+ *  CVS/RCS Revision: $Revision: 1.30 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -53,6 +53,9 @@
 
 // protocol, hostname and CGI script name used for HTML hyperlinks to composite objects
 #define HTML_HYPERLINK_PREFIX_FOR_CGI "http://localhost/dicom.cgi"
+
+// XML namespace URI for dcmsr module
+#define DCMSR_XML_NAMESPACE_URI "http://dicom.offis.de/dcmsr"
 
 
 /*-----------------------*
@@ -233,6 +236,8 @@ class DSRTypes
     /// encode value type as attribute instead of element text
     static const size_t XF_valueTypeAsAttribute;
 
+    /// add DCMSR namespace declaration to the XML output
+    static const size_t XF_useDcmsrNamespace;
     //@}
 
 
@@ -1118,7 +1123,10 @@ class DSRTypes
 /*
  *  CVS/RCS Log:
  *  $Log: dsrtypes.h,v $
- *  Revision 1.29  2002-08-02 12:38:32  joergr
+ *  Revision 1.30  2003-04-01 14:59:13  joergr
+ *  Added support for XML namespaces.
+ *
+ *  Revision 1.29  2002/08/02 12:38:32  joergr
  *  Enhanced debug output of dcmsr::read() routines (e.g. add position string
  *  of invalid content items to error messages).
  *

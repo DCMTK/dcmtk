@@ -23,8 +23,8 @@
  *    classes: DSRDocument
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-01-06 10:30:28 $
- *  CVS/RCS Revision: $Revision: 1.39 $
+ *  Update Date:      $Date: 2003-04-01 14:59:41 $
+ *  CVS/RCS Revision: $Revision: 1.40 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -505,7 +505,11 @@ OFCondition DSRDocument::writeXML(ostream &stream,
             stream << " encoding=\"" << string << "\"";
         stream << "?>" << endl;
 
-        stream << "<report type=\"" << documentTypeToReadableName(getDocumentType()) << "\">" << endl;
+        stream << "<report type=\"" << documentTypeToReadableName(getDocumentType()) << "\"";
+        /* optional namespace declaration */
+        if (flags & XF_useDcmsrNamespace)
+            stream << " xmlns=\"" << DCMSR_XML_NAMESPACE_URI << "\""; 
+        stream << ">" << endl;
 
         // --- write some general document information ---
 
@@ -1884,7 +1888,10 @@ void DSRDocument::updateAttributes(const OFBool updateAll)
 /*
  *  CVS/RCS Log:
  *  $Log: dsrdoc.cc,v $
- *  Revision 1.39  2003-01-06 10:30:28  joergr
+ *  Revision 1.40  2003-04-01 14:59:41  joergr
+ *  Added support for XML namespaces.
+ *
+ *  Revision 1.39  2003/01/06 10:30:28  joergr
  *  Updated URL to dcmtk homepage.
  *
  *  Revision 1.38  2002/12/05 13:52:27  joergr

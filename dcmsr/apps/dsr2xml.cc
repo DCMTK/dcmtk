@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2002, OFFIS
+ *  Copyright (C) 2000-2003, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,10 +22,10 @@
  *  Purpose: Convert the contents of a DICOM structured reporting file to
  *           XML format
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-11-26 08:45:34 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2003-04-01 14:58:32 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmsr/apps/dsr2xml.cc,v $
- *  CVS/RCS Revision: $Revision: 1.14 $
+ *  CVS/RCS Revision: $Revision: 1.15 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -154,6 +154,8 @@ int main(int argc, char *argv[])
         cmd.addOption("--attr-code",           "+Ec",       "encode code value, coding scheme designator and\ncoding scheme version as XML attribute");
         cmd.addOption("--attr-relationship",   "+Er",       "encode relationship type as XML attribute");
         cmd.addOption("--attr-value-type",     "+Ev",       "encode value type as XML attribute");
+      cmd.addSubGroup("XML structure:");
+        cmd.addOption("--use-xml-namespace",   "+Xn",       "add XML namespace declaration to root element");
       cmd.addSubGroup("writing:");
         cmd.addOption("--write-empty-tags",    "+We",       "write all tags even if their value is empty");
 
@@ -223,6 +225,9 @@ int main(int argc, char *argv[])
         if (cmd.findOption("--attr-value-type"))
             opt_writeFlags |= DSRTypes::XF_valueTypeAsAttribute;
 
+        if (cmd.findOption("--use-xml-namespace"))
+            opt_writeFlags |= DSRTypes::XF_useDcmsrNamespace;
+
         if (cmd.findOption("--write-empty-tags"))
             opt_writeFlags |= DSRTypes::XF_writeEmptyTags;
     }
@@ -263,7 +268,10 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dsr2xml.cc,v $
- * Revision 1.14  2002-11-26 08:45:34  meichel
+ * Revision 1.15  2003-04-01 14:58:32  joergr
+ * Added support for XML namespaces.
+ *
+ * Revision 1.14  2002/11/26 08:45:34  meichel
  * Replaced all includes for "zlib.h" with <zlib.h>
  *   to avoid inclusion of zlib.h in the makefile dependencies.
  *

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2002, OFFIS
+ *  Copyright (C) 2002-2003, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,10 +21,10 @@
  *
  *  Purpose: Convert the contents of a DICOM file to XML format
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-11-26 08:42:58 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2003-04-01 14:56:14 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/apps/dcm2xml.cc,v $
- *  CVS/RCS Revision: $Revision: 1.9 $
+ *  CVS/RCS Revision: $Revision: 1.10 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -177,6 +177,7 @@ int main(int argc, char *argv[])
     cmd.addGroup("output options:");
       cmd.addSubGroup("XML structure:");
         cmd.addOption("--add-document-type",   "+Xd",    "add reference to document type definition (DTD)");
+        cmd.addOption("--use-xml-namespace",   "+Xn",    "add XML namespace declaration to root element");
       cmd.addSubGroup("DICOM elements:");
         cmd.addOption("--write-binary-data",   "+Wb",    "write binary data of OB and OW elements\n(default: off, be careful with --load-all)");
         cmd.addOption("--encode-base64",       "+Eb",    "encode binary data as Base64 (RFC 2045, MIME)");
@@ -246,6 +247,9 @@ int main(int argc, char *argv[])
 
         if (cmd.findOption("--add-document-type"))
             opt_writeFlags |= DCMTypes::XF_addDocumentType;
+        if (cmd.findOption("--use-xml-namespace"))
+            opt_writeFlags |= DCMTypes::XF_useDcmtkNamespace;
+
         if (cmd.findOption("--write-binary-data"))
             opt_writeFlags |= DCMTypes::XF_writeBinaryData;
         if (cmd.findOption("--encode-base64"))
@@ -290,7 +294,10 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcm2xml.cc,v $
- * Revision 1.9  2002-11-26 08:42:58  meichel
+ * Revision 1.10  2003-04-01 14:56:14  joergr
+ * Added support for XML namespaces.
+ *
+ * Revision 1.9  2002/11/26 08:42:58  meichel
  * Replaced all includes for "zlib.h" with <zlib.h>
  *   to avoid inclusion of zlib.h in the makefile dependencies.
  *

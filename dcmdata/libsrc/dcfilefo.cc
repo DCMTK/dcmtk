@@ -21,10 +21,10 @@
  *
  *  Purpose: class DcmFileFormat
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2003-03-21 13:08:04 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2003-04-01 14:57:20 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcfilefo.cc,v $
- *  CVS/RCS Revision: $Revision: 1.34 $
+ *  CVS/RCS Revision: $Revision: 1.35 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -155,7 +155,10 @@ OFCondition DcmFileFormat::writeXML(ostream &out,
 {
     OFCondition result = EC_CorruptedData;
     /* XML start tag for "file-format" */
-    out << "<file-format>" << endl;
+    out << "<file-format";
+    if (flags & DCMTypes::XF_useDcmtkNamespace)
+        out << " xmlns=\"" << DCMTK_XML_NAMESPACE_URI << "\""; 
+    out << ">" << endl;
     if (!itemList->empty())
     {
         /* write content of all children */
@@ -163,7 +166,7 @@ OFCondition DcmFileFormat::writeXML(ostream &out,
         itemList->seek(ELP_first);
         do {
             dO = itemList->get();
-            dO->writeXML(out, flags);
+            dO->writeXML(out, flags & ~DCMTypes::XF_useDcmtkNamespace);
         } while (itemList->seek(ELP_next));
         result = EC_Normal;
     }
@@ -860,7 +863,10 @@ DcmDataset *DcmFileFormat::getAndRemoveDataset()
 /*
 ** CVS/RCS Log:
 ** $Log: dcfilefo.cc,v $
-** Revision 1.34  2003-03-21 13:08:04  meichel
+** Revision 1.35  2003-04-01 14:57:20  joergr
+** Added support for XML namespaces.
+**
+** Revision 1.34  2003/03/21 13:08:04  meichel
 ** Minor code purifications for warnings reported by MSVC in Level 4
 **
 ** Revision 1.33  2002/12/06 13:09:26  joergr
