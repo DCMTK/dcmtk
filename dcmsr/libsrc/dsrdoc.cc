@@ -23,8 +23,8 @@
  *    classes: DSRDocument
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-10-26 14:28:54 $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  Update Date:      $Date: 2000-11-01 16:33:09 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -36,12 +36,15 @@
 
 #include "dsrdoc.h"
 
+#include <fstream.h>
+
 
 DSRDocument::DSRDocument(const E_DocumentType documentType)
   : DocumentTree(documentType),
     LogStream(NULL),
     CompletionFlagEnum(CF_invalid),
     VerificationFlagEnum(VF_invalid),
+    SpecificCharacterSetEnum(CS_invalid),
     SOPClassUID(DCM_SOPClassUID),
     SOPInstanceUID(DCM_SOPInstanceUID),
     SpecificCharacterSet(DCM_SpecificCharacterSet),
@@ -49,7 +52,7 @@ DSRDocument::DSRDocument(const E_DocumentType documentType)
     InstanceCreationTime(DCM_InstanceCreationTime),
     InstanceCreatorUID(DCM_InstanceCreatorUID),
     StudyInstanceUID(DCM_StudyInstanceUID),
-    StudyDate(DCM_StudyInstanceUID),
+    StudyDate(DCM_StudyDate),
     StudyTime(DCM_StudyTime),
     ReferringPhysiciansName(DCM_ReferringPhysiciansName),
     StudyID(DCM_StudyID),
@@ -91,6 +94,7 @@ void DSRDocument::clear()
     /* clear enumerated values */
     CompletionFlagEnum = CF_invalid;
     VerificationFlagEnum = VF_invalid;
+    SpecificCharacterSetEnum = CS_invalid;
     /* clear all DICOM attributes */
     SOPClassUID.clear();
     SOPInstanceUID.clear();
@@ -150,32 +154,32 @@ E_Condition DSRDocument::print(ostream &stream,
         /* patient related information */
         if (PatientsName.getLength() > 0)
         {
-            stream << "Patient            : " << getStringValueFromElement(PatientsName, string);
+            stream << "Patient            : " << getPrintStringFromElement(PatientsName, string);
             if ((PatientsSex.getLength() > 0) || (PatientsBirthDate.getLength() > 0))
             {
                 stream << " (";
                 if (PatientsSex.getLength() > 0)
                 {
-                    stream << getStringValueFromElement(PatientsSex, string);
+                    stream << getPrintStringFromElement(PatientsSex, string);
                     if (PatientsBirthDate.getLength() > 0)
                         stream << ", ";
                 }
                 if (PatientsBirthDate.getLength() > 0)
-                    stream << getStringValueFromElement(PatientsBirthDate, string);
+                    stream << getPrintStringFromElement(PatientsBirthDate, string);
                 stream << ")";
             }
             stream << endl;
         }
         /* referring physician */
         if (ReferringPhysiciansName.getLength() > 0)
-            stream << "Referring Physician: " << getStringValueFromElement(ReferringPhysiciansName, string) << endl;
+            stream << "Referring Physician: " << getPrintStringFromElement(ReferringPhysiciansName, string) << endl;
         /* manufacturer */
         if (Manufacturer.getLength() > 0)
-            stream << "Manufacturer       : " << getStringValueFromElement(Manufacturer, string) << endl;
+            stream << "Manufacturer       : " << getPrintStringFromElement(Manufacturer, string) << endl;
         /* completion flag */
         stream << "Completion Flag    : " << completionFlagToEnumeratedValue(CompletionFlagEnum) << endl;
         if (CompletionFlagDescription.getLength() > 0)
-            stream << "                     " << getStringValueFromElement(CompletionFlagDescription, string) << endl;
+            stream << "                     " << getPrintStringFromElement(CompletionFlagDescription, string) << endl;
         /* predecessor documents */
         if (getNumberOfPredecessorDocuments() > 0)
             stream << "Predecessor Doc's  : " << getNumberOfPredecessorDocuments() << endl;
@@ -199,8 +203,8 @@ E_Condition DSRDocument::print(ostream &stream,
             }
         }
         /* content date and time */
-        stream << "Content Date/Time  : " << getStringValueFromElement(ContentDate, string) << ", ";
-        stream <<                            getStringValueFromElement(ContentTime, string) << endl << endl;
+        stream << "Content Date/Time  : " << getPrintStringFromElement(ContentDate, string) << ", ";
+        stream <<                            getPrintStringFromElement(ContentTime, string) << endl << endl;
 
         // --- dump document tree to stream ---
         result = DocumentTree.print(stream, flags);
@@ -311,6 +315,7 @@ E_Condition DSRDocument::read(DcmItem &dataset)
         OFString string;
         CompletionFlagEnum = enumeratedValueToCompletionFlag(getStringValueFromElement(CompletionFlag, string));
         VerificationFlagEnum = enumeratedValueToVerificationFlag(getStringValueFromElement(VerificationFlag, string));
+        SpecificCharacterSetEnum = definedTermToCharacterSet(getStringValueFromElement(SpecificCharacterSet, string));
 
         /* read SR document tree */
         if (result == EC_Normal)
@@ -397,21 +402,156 @@ E_Condition DSRDocument::write(DcmItem &dataset)
 }
 
 
-E_Condition DSRDocument::writeXML(ostream & /* stream */)
+E_Condition DSRDocument::writeXML(ostream &stream,
+                                  const size_t flags)
 {
-    /* not yet implemented */
-    return EC_IllegalCall;
+    E_Condition result = EC_CorruptedData;
+    /* only write valid documents */
+    if (isValid())
+    {
+        /* used for multiple purposes */
+        OFString string;
+        /* update DICOM attributes */
+        updateAttributes();
+
+        // --- XML document structure (start) ---
+
+        stream << "<?xml version=\"1.0\"";
+        /* optional character set */
+        string = characterSetToXMLName(SpecificCharacterSetEnum);
+        if (string.length() > 0)
+            stream << " encoding=\"" << string << "\"";
+        stream << "?>" << endl;
+
+        stream << "<report type=\"" << documentTypeToReadableName(getDocumentType()) << "\">" << endl;
+
+        // --- write some general document information ---
+
+        stream << "<sopclass uid=\"" << getMarkupStringFromElement(SOPClassUID, string) << "\"/>" << endl;
+        writeStringFromElementToXML(stream, Modality, "modality", flags & XF_writeEmptyTags);
+        writeStringFromElementToXML(stream, Manufacturer, "manufacturer", flags & XF_writeEmptyTags);
+        
+        if ((flags & XF_writeEmptyTags) || (ReferringPhysiciansName.getLength() > 0))
+        {
+            stream << "<referringphysician>" << endl;
+            writeStringFromElementToXML(stream, ReferringPhysiciansName, "name", flags & XF_writeEmptyTags);
+            stream << "</referringphysician>" << endl;
+        }
+
+        stream << "<patient>" << endl;
+        writeStringFromElementToXML(stream, PatientID, "id", flags & XF_writeEmptyTags);
+        writeStringFromElementToXML(stream, PatientsName, "name", flags & XF_writeEmptyTags);
+        if ((flags & XF_writeEmptyTags) || (PatientsBirthDate.getLength() > 0))
+        {
+            stream << "<birthday>" << endl;
+            writeStringFromElementToXML(stream, PatientsBirthDate, "date", flags & XF_writeEmptyTags);
+            stream << "</birthday>" << endl;
+        }
+        writeStringFromElementToXML(stream, PatientsSex, "sex", flags & XF_writeEmptyTags);
+        stream << "</patient>" << endl;
+
+        stream << "<study uid=\"" << getMarkupStringFromElement(StudyInstanceUID, string) << "\">" << endl;
+        writeStringFromElementToXML(stream, StudyID, "id", flags & XF_writeEmptyTags);
+        writeStringFromElementToXML(stream, StudyDate, "date", flags & XF_writeEmptyTags);
+        writeStringFromElementToXML(stream, StudyTime, "time", flags & XF_writeEmptyTags);
+        if ((flags & XF_writeEmptyTags) || (AccessionNumber.getLength() > 0))
+        {
+            stream << "<accession>" << endl;
+            writeStringFromElementToXML(stream, AccessionNumber, "number", flags & XF_writeEmptyTags);
+            stream << "</accession>" << endl;
+        }
+        writeStringFromElementToXML(stream, StudyDescription, "description", flags & XF_writeEmptyTags);
+        stream << "</study>" << endl;
+
+        stream << "<series uid=\"" << getMarkupStringFromElement(SeriesInstanceUID, string) << "\">" << endl;
+        writeStringFromElementToXML(stream, SeriesNumber, "number", flags & XF_writeEmptyTags);
+        writeStringFromElementToXML(stream, SeriesDescription, "description", flags & XF_writeEmptyTags);
+        stream << "</series>" << endl;
+
+        stream << "<instance uid=\"" << getMarkupStringFromElement(SOPInstanceUID, string) << "\">" << endl;
+        writeStringFromElementToXML(stream, InstanceNumber, "number", flags & XF_writeEmptyTags);
+        if ((flags & XF_writeEmptyTags) || (InstanceCreatorUID.getLength() > 0) ||
+            (InstanceCreationDate.getLength() > 0) || (InstanceCreationTime.getLength() > 0))
+        {
+            stream << "<creation>" << endl;
+            writeStringFromElementToXML(stream, InstanceCreatorUID, "uid", flags & XF_writeEmptyTags);
+            writeStringFromElementToXML(stream, InstanceCreationDate, "date", flags & XF_writeEmptyTags);
+            writeStringFromElementToXML(stream, InstanceCreationTime, "time", flags & XF_writeEmptyTags);
+            stream << "</creation>" << endl;
+        }
+        stream << "</instance>" << endl;
+
+        stream << "<document>" << endl;
+        stream << "<completion flag=\"" << completionFlagToEnumeratedValue(CompletionFlagEnum) << "\">" << endl;
+        writeStringFromElementToXML(stream, CompletionFlagDescription, "description", flags & XF_writeEmptyTags);
+        stream << "</completion>" << endl;
+
+        stream << "<verification flag=\"" << verificationFlagToEnumeratedValue(VerificationFlagEnum) << "\">" << endl;
+        size_t i = 0;
+        const size_t obsCount = getNumberOfVerifyingObservers();
+        for (i = 1; i <= obsCount; i++)
+        {
+            stream << "<observer pos=\"" << i << "\">" << endl;
+            OFString dateTime, obsName, organization;
+            DSRCodedEntryValue obsCode;
+            if (getVerifyingObserver(i, dateTime, obsName, obsCode, organization) == EC_Normal)
+            {
+                writeStringValueToXML(stream, dateTime, "datetime", flags & XF_writeEmptyTags);
+                writeStringValueToXML(stream, obsName, "name", flags & XF_writeEmptyTags);
+                if (obsCode.isValid())
+                {
+                    stream << "<code>" << endl;
+                    obsCode.writeXML(stream, flags, LogStream);
+                    stream << "</code>" << endl;
+                }
+                writeStringValueToXML(stream, organization, "organization", flags & XF_writeEmptyTags);
+            }
+            stream << "</observer>" << endl;
+        }
+        stream << "</verification>" << endl;
+
+        const size_t predCount = getNumberOfPredecessorDocuments();
+        for (i = 1; i <= predCount; i++)
+        {
+            stream << "<predecessor pos=\"" << i << "\">" << endl;
+            OFString sopClassUID, sopInstanceUID;
+            if (getPredecessorDocument(i, sopClassUID, sopInstanceUID) == EC_Normal)
+            {
+                stream << "<sopclass uid=\"" << sopClassUID << "\"/>" << endl;
+                stream << "<instance uid=\"" << sopInstanceUID << "\"/>" << endl;
+            }
+            stream << "</predecessor>" << endl;
+        }
+        stream << "</document>" << endl;
+
+        // --- write document content/tree to stream ---
+
+        stream << "<content>" << endl;
+        writeStringFromElementToXML(stream, ContentDate, "date", flags & XF_writeEmptyTags);
+        writeStringFromElementToXML(stream, ContentTime, "time", flags & XF_writeEmptyTags);
+        result = DocumentTree.writeXML(stream, flags);
+        stream << "</content>" << endl;
+
+        // --- XML document structure (end) ---
+
+        stream << "</report>" << endl;
+    }
+    return result;
 }
 
 
 E_Condition DSRDocument::renderHTML(ostream &stream,
-                                    const size_t flags)
+                                    const size_t flags,
+                                    const char *styleSheet)
 {
     E_Condition result = EC_CorruptedData;
     /* only render valid documents */
     if (isValid())
     {
+        /* used for multiple purposes */
         OFString string;
+        /* used for HTML string conversion */
+        OFString htmlString;
         /* update DICOM attributes */
         updateAttributes();
 
@@ -420,20 +560,10 @@ E_Condition DSRDocument::renderHTML(ostream &stream,
         stream << "<html>" << endl;
         stream << "<head>" << endl;
         /* document type/title */
-        stream << "<title>" << documentTypeToReadableName(getDocumentType()) << " Document</title>" << endl;
-        stream << "</head>" << endl;
-        stream << "<body>" << endl;
-
-        // --- render some general document information ---
-
-        /* create a table for this purpose */
-        stream << "<table>" << endl;
-        /* patient related information */
-        if (PatientsName.getLength() > 0)
+        stream << "<title>";
+        if (flags & HF_renderPatientTitle)        
         {
-            stream << "<tr>" << endl;
-            stream << "<td><b>Patient:</b></td>" << endl;
-            stream << "<td>" << getStringValueFromElement(PatientsName, string);
+            stream << convertToMarkupString(getStringValueFromElement(PatientsName, string), htmlString);
             if ((PatientsSex.getLength() > 0) || (PatientsBirthDate.getLength() > 0))
             {
                 stream << " (";
@@ -447,85 +577,167 @@ E_Condition DSRDocument::renderHTML(ostream &stream,
                     stream << getStringValueFromElement(PatientsBirthDate, string);
                 stream << ")";
             }
-            stream << "</td>" << endl;
-            stream << "</tr>" << endl;
-        }
-        /* referring physician */
-        if (ReferringPhysiciansName.getLength() > 0)
+        } else
+            stream << documentTypeToReadableName(getDocumentType()) << " Document";
+        stream << "</title>" << endl;
+        /* optional cascading style sheet */
+        if (styleSheet != NULL)
         {
-            stream << "<tr>" << endl;
-            stream << "<td><b>Referring Physician:</b></td>" << endl;
-            stream << "<td>" << getStringValueFromElement(ReferringPhysiciansName, string) << "</td>" << endl;
-            stream << "</tr>" << endl;
+            if (flags & HF_copyStyleSheetContent)
+            {
+                /* copy content from CSS file */
+#ifdef NO_IOS_NOCREATE
+                ifstream cssFile(styleSheet, ios::in);
+#else
+                ifstream cssFile(styleSheet, ios::in|ios::nocreate);
+#endif
+                if (cssFile)
+                {
+                    char c;
+                    stream << "<style type=\"text/css\">" << endl;
+                    stream << "<!--" << endl;
+                    /* copy all characters */
+                    while (cssFile.get(c))
+                        stream << c;
+                    stream << "//-->" << endl;
+                    stream << "</style>" << endl;
+                } else {
+                    OFString message = "Could not open CSS file \"";
+                    message += styleSheet;
+                    message += "\" ... ignoring";
+                    printWarningMessage(LogStream, message.c_str());                    
+                }
+            } else {
+                /* just add a reference to the CSS file (might be an URL) */
+                stream << "<link rel=stylesheet type=\"text/css\" href=\"" << styleSheet << "\">" << endl;
+            }
         }
-        /* manufacturer */
-        if (Manufacturer.getLength() > 0)
+        /* optional character set (HTML 4.0) */
+        string = characterSetToHTMLName(SpecificCharacterSetEnum);
+        if (string.length() > 0)
         {
-            stream << "<tr>" << endl;
-            stream << "<td><b>Manufacturer:</b></td>" << endl;
-            stream << "<td>" << getStringValueFromElement(Manufacturer, string) << "</td>" << endl;
-            stream << "</tr>" << endl;
+            stream << "<meta http-equiv=\"Content-Type\" content=\"text/html; charset=";
+            stream << string << "\">" << endl;
         }
-        /* completion flag */
-        stream << "<tr>" << endl;
-        stream << "<td><b>Completion Flag:</b></td>" << endl;
-        stream << "<td>" << completionFlagToEnumeratedValue(CompletionFlagEnum) << "</td>" << endl;
-        stream << "</tr>" << endl;
-        /* completion flag description */
-        if (CompletionFlagDescription.getLength() > 0)
+        stream << "</head>" << endl;
+        stream << "<body>" << endl;
+
+        // --- render some general document information ---
+
+        if (!(flags & HF_renderNoDocumentHeader))
         {
-            stream << "<tr>" << endl;
-            stream << "<td></td>" << endl;
-            stream << "<td>" << getStringValueFromElement(CompletionFlagDescription, string) << "</td>" << endl;
-            stream << "</tr>" << endl;
-        }
-        /* predecessor documents */
-        if (getNumberOfPredecessorDocuments() > 0)
-        {
-            stream << "<tr>" << endl;
-            stream << "<td><b>Predecessor Doc's:</b></td>" << endl;
-            stream << "<td>" << getNumberOfPredecessorDocuments() << "</td>" << endl;
-            stream << "</tr>" << endl;
-        }
-        /* verification flag */
-        stream << "<tr>" << endl;
-        stream << "<td><b>Verification Flag:</b></td>" << endl;
-        stream << "<td>" << verificationFlagToEnumeratedValue(VerificationFlagEnum) << "</td>" << endl;
-        stream << "</tr>" << endl;
-        /* verifying observer */
-        const size_t obsCount = getNumberOfVerifyingObservers();
-        for (size_t i = 1; i <= obsCount; i++)
-        {
-            OFString dateTime, obsName, organization;
-            DSRCodedEntryValue obsCode;
-            if (getVerifyingObserver(i, dateTime, obsName, obsCode, organization) == EC_Normal)
+            /* create a table for this purpose */
+            stream << "<table>" << endl;
+            /* patient related information */
+            if (PatientsName.getLength() > 0)
             {
                 stream << "<tr>" << endl;
-                stream << "<td></td>" << endl;
-                stream << "<td>";
-                stream << dateTime << ": " << obsName;
-                if (obsCode.isValid() && (flags & HF_renderAllCodes))
+                stream << "<td><b>Patient:</b></td>" << endl;
+                stream << "<td>" << convertToMarkupString(getStringValueFromElement(PatientsName, string), htmlString);
+                if ((PatientsSex.getLength() > 0) || (PatientsBirthDate.getLength() > 0))
                 {
-                    stream << " ";
-                    obsCode.print(stream, OFTrue /* printCodeValue */);
+                    stream << " (";
+                    if (PatientsSex.getLength() > 0)
+                    {
+                        stream << getStringValueFromElement(PatientsSex, string);
+                        if (PatientsBirthDate.getLength() > 0)
+                            stream << ", ";
+                    }
+                    if (PatientsBirthDate.getLength() > 0)
+                        stream << getStringValueFromElement(PatientsBirthDate, string);
+                    stream << ")";
                 }
-                stream << ", " << organization;
                 stream << "</td>" << endl;
                 stream << "</tr>" << endl;
             }
+            /* referring physician */
+            if (ReferringPhysiciansName.getLength() > 0)
+            {
+                stream << "<tr>" << endl;
+                stream << "<td><b>Referring Physician:</b></td>" << endl;
+                stream << "<td>" << convertToMarkupString(getStringValueFromElement(ReferringPhysiciansName, string), htmlString);
+                stream << "</td>" << endl;
+                stream << "</tr>" << endl;
+            }
+            /* manufacturer */
+            if (Manufacturer.getLength() > 0)
+            {
+                stream << "<tr>" << endl;
+                stream << "<td><b>Manufacturer:</b></td>" << endl;
+                stream << "<td>" << convertToMarkupString(getStringValueFromElement(Manufacturer, string), htmlString);
+                stream << "</td>" << endl;
+                stream << "</tr>" << endl;
+            }
+            /* completion flag */
+            stream << "<tr>" << endl;
+            stream << "<td><b>Completion Flag:</b></td>" << endl;
+            stream << "<td>" << completionFlagToEnumeratedValue(CompletionFlagEnum) << "</td>" << endl;
+            stream << "</tr>" << endl;
+            /* completion flag description */
+            if (CompletionFlagDescription.getLength() > 0)
+            {
+                stream << "<tr>" << endl;
+                stream << "<td></td>" << endl;
+                stream << "<td>" << convertToMarkupString(getStringValueFromElement(CompletionFlagDescription, string), htmlString);
+                stream << "</td>" << endl;
+                stream << "</tr>" << endl;
+            }
+            /* predecessor documents */
+            if (getNumberOfPredecessorDocuments() > 0)
+            {
+                stream << "<tr>" << endl;
+                stream << "<td><b>Predecessor Doc's:</b></td>" << endl;
+                stream << "<td>" << getNumberOfPredecessorDocuments() << "</td>" << endl;
+                stream << "</tr>" << endl;
+            }
+            /* verification flag */
+            stream << "<tr>" << endl;
+            stream << "<td><b>Verification Flag:</b></td>" << endl;
+            stream << "<td>" << verificationFlagToEnumeratedValue(VerificationFlagEnum) << "</td>" << endl;
+            stream << "</tr>" << endl;
+            /* verifying observer */
+            const size_t obsCount = getNumberOfVerifyingObservers();
+            for (size_t i = 1; i <= obsCount; i++)
+            {
+                OFString dateTime, obsName, organization;
+                DSRCodedEntryValue obsCode;
+                if (getVerifyingObserver(i, dateTime, obsName, obsCode, organization) == EC_Normal)
+                {
+                    stream << "<tr>" << endl;
+                    stream << "<td></td>" << endl;
+                    stream << "<td>";
+                    stream << dateTime << ": " << convertToMarkupString(obsName, htmlString);
+                    /* optional observer code */
+                    if (obsCode.isValid() && ((flags & HF_renderAllCodes) == HF_renderAllCodes))
+                    {
+                        stream << " ";
+                        if (obsCode.isValid())
+                        {
+                            stream << "(" << convertToMarkupString(obsCode.getCodeValue(), htmlString);
+                            stream << "," << convertToMarkupString(obsCode.getCodingSchemeDesignator(), htmlString) << ",";
+                            if (obsCode.getCodingSchemeVersion().length() > 0)
+                                stream << convertToMarkupString(obsCode.getCodingSchemeVersion(), htmlString) << ",";
+                            stream << "\"" << convertToMarkupString(obsCode.getCodeMeaning(), htmlString) << "\")";
+                        }
+                    }
+                    stream << ", " << organization;
+                    stream << "</td>" << endl;
+                    stream << "</tr>" << endl;
+                }
+            }
+            /* content date and time */
+            stream << "<tr>" << endl;
+            stream << "<td><b>Content Date/Time:</b></td>" << endl;
+            stream << "<td>" << getStringValueFromElement(ContentDate, string) << ", ";
+            stream << getStringValueFromElement(ContentTime, string) << "</td>" << endl;
+            stream << "</tr>" << endl;
+            /* end of table */
+            stream << "</table>" << endl;
+
+            stream << "<hr>" << endl;
         }
-        /* content date and time */
-        stream << "<tr>" << endl;
-        stream << "<td><b>Content Date/Time:</b></td>" << endl;
-        stream << "<td>" << getStringValueFromElement(ContentDate, string) << ", ";
-        stream << getStringValueFromElement(ContentTime, string) << "</td>" << endl;
-        stream << "</tr>" << endl;
-        /* end of table */
-        stream << "</table>" << endl;
 
         // --- render document tree to stream ---
-
-        stream << "<hr>" << endl;
 
         /* create memory output stream for the annex */
         ostrstream annexStream;
@@ -540,10 +752,10 @@ E_Condition DSRDocument::renderHTML(ostream &stream,
         if (flags & HF_renderDcmtkFootnote)
         {
             stream << "<hr>" << endl;
+            
             stream << "<small>" << endl;
-            stream << "This page has been created automatically by 'dsr2html' from the ";
-            stream << "<a href=\"http://www.offis.de/projekte/dicom/\">OFFIS dcmtk</a> package";
-            stream << " (version " << OFFIS_DCMTK_VERSION << ")." << endl;
+            stream << "This page was generated from a DICOM Structured Reporting document by ";
+            stream << "<a href=\"http://www.offis.de/projekte/dicom/\">OFFIS dcmtk</a> " << OFFIS_DCMTK_VERSION << "." << endl;
             stream << "</small>" << endl;
         }
 
@@ -559,6 +771,20 @@ E_Condition DSRDocument::renderHTML(ostream &stream,
 DSRTypes::E_DocumentType DSRDocument::getDocumentType() const
 {
     return DocumentTree.getDocumentType();
+}
+
+
+
+DSRTypes::E_CharacterSet DSRDocument::getSpecificCharacterSetType() const
+{
+    return SpecificCharacterSetEnum;
+}
+
+
+E_Condition DSRDocument::setSpecificCharacterSetType(const E_CharacterSet characterSet)
+{
+    SpecificCharacterSetEnum = characterSet;
+    return SpecificCharacterSet.putString(characterSetToDefinedTerm(SpecificCharacterSetEnum));
 }
 
 
@@ -982,6 +1208,7 @@ const OFString &DSRDocument::getAccessionNumber(OFString &string) const
 
 E_Condition DSRDocument::setSpecificCharacterSet(const OFString &string)
 {
+    SpecificCharacterSetEnum = definedTermToCharacterSet(string);
     /* might add check for correct format (VR) later on */
     return SpecificCharacterSet.putString(string.c_str());
 }
@@ -1254,7 +1481,13 @@ void DSRDocument::updateAttributes()
 /*
  *  CVS/RCS Log:
  *  $Log: dsrdoc.cc,v $
- *  Revision 1.7  2000-10-26 14:28:54  joergr
+ *  Revision 1.8  2000-11-01 16:33:09  joergr
+ *  Added support for conversion to XML.
+ *  Added support for Cascading Style Sheet (CSS) used optionally for HTML
+ *  rendering. Optimized HTML rendering.
+ *  Enhanced support for specific character sets.
+ *
+ *  Revision 1.7  2000/10/26 14:28:54  joergr
  *  Added new flag specifying whether to add a "dcmtk" footnote to the rendered
  *  HTML document or not.
  *
