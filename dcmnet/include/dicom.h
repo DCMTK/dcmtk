@@ -68,9 +68,9 @@
 **
 **
 ** Last Update:		$Author: hewett $
-** Update Date:		$Date: 1996-03-26 18:38:45 $
+** Update Date:		$Date: 1996-09-27 08:29:42 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/include/Attic/dicom.h,v $
-** CVS/RCS Revision:	$Revision: 1.1 $
+** CVS/RCS Revision:	$Revision: 1.2 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -115,7 +115,7 @@ typedef unsigned long CONDITION;
 #define SUCCESS(A)	(((A)&0xf) == SEV_SUCC)
 #define INFORM(A)	(((A)&0xf) == SEV_INFORM)
 #define WARNING(A)	(((A)&0xf) == SEV_WARN)
-#define ERROR(A)	(((A)&0xf) == SEV_ERROR)
+#define CONDERROR(A)	(((A)&0xf) == SEV_ERROR)
 #define FATAL(A)	(((A)&0xf) == SEV_FATAL)
 
 #define	FACILITY(A)	((unsigned long)(A)>>4) & 0xfff
@@ -150,7 +150,10 @@ typedef unsigned long CONDITION;
 typedef Uint16	U_SHORT;	/* normal unsigned short*/
 typedef Uint32	U_LONG;		/* normal unsigned long */
 typedef Uint32	MASK_32;	/* For bit masks	*/
+#ifndef HAVE_WINSOCK_H
+/* The Windows include files define their own version of BOOLEAN */
 typedef BOOL	BOOLEAN;	/* for boolean ops	*/
+#endif
 typedef BOOL    CTNBOOLEAN;
 
 
@@ -216,8 +219,13 @@ typedef char	DIC_NODENAME[DIC_NODENAME_LEN + 1];
 /*
 ** CVS Log
 ** $Log: dicom.h,v $
-** Revision 1.1  1996-03-26 18:38:45  hewett
-** Initial revision
+** Revision 1.2  1996-09-27 08:29:42  hewett
+** Support for Win32.  Now does not define a type BOOLEAN if <WINSOCK.H>
+** is included.  Renames the ERROR(A) macro to be CONDERROR(A) macro due
+** to a clash with Windows include files.
+**
+** Revision 1.1.1.1  1996/03/26 18:38:45  hewett
+** Initial Release.
 **
 **
 */
