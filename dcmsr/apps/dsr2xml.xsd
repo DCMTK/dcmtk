@@ -184,6 +184,7 @@
             <!-- open question: is at least one child content item required? -->
             <xsd:group ref="dsr:ContentItem" minOccurs="0" maxOccurs="unbounded"/>
           </xsd:sequence>
+          <xsd:attribute name="id" type="xsd:nonNegativeInteger"/>
           <xsd:attribute name="flag" type="dsr:ContinuityFlag" use="required"/>
         </xsd:complexType>
       </xsd:element>
@@ -231,6 +232,13 @@
         </xsd:complexType>
       </xsd:element>
       <xsd:element name="meaning" type="dsr:LongString"/>
+    </xsd:sequence>
+  </xsd:group>
+
+  <xsd:group name="NumericGroup">
+    <xsd:sequence>
+      <xsd:element name="value" type="dsr:DecimalString"/>
+      <xsd:element name="unit" type="dsr:Code"/>
     </xsd:sequence>
   </xsd:group>
 
@@ -327,8 +335,7 @@
             <xsd:element name="concept" type="dsr:Code"/>
             <xsd:element name="observation" type="dsr:Observation" minOccurs="0"/>
             <xsd:group ref="dsr:ContentItem" minOccurs="0" maxOccurs="unbounded"/>
-            <xsd:element name="value" type="dsr:DecimalString"/>
-            <xsd:element name="unit" type="dsr:Code"/>
+            <xsd:group ref="dsr:NumericGroup" minOccurs="0"/>
             <xsd:element name="qualifier" type="dsr:Code" minOccurs="0"/>
           </xsd:sequence>
           <xsd:attribute name="id" type="xsd:nonNegativeInteger"/>
@@ -746,13 +753,13 @@
 
   <xsd:simpleType name="Time">
     <xsd:restriction base="xsd:time">
-      <xsd:pattern value="[0-9]{2}\:[0-9]{2}(\:[0-9]{2})*"/>
+      <xsd:pattern value="[0-9]{2}:[0-9]{2}(:[0-9]{2})*"/>
     </xsd:restriction>
   </xsd:simpleType>
 
   <xsd:simpleType name="DateTime">
     <xsd:restriction base="xsd:dateTime">
-      <xsd:pattern value="[0-9]{4}\-[0-9]{2}\-[0-9]{2}T[0-9]{2}\:[0-9]{2}(\:[0-9]{2})*"/>
+      <xsd:pattern value="[0-9]{4}\-[0-9]{2}\-[0-9]{2}T[0-9]{2}:[0-9]{2}(:[0-9]{2})*"/>
     </xsd:restriction>
   </xsd:simpleType>
 
