@@ -22,9 +22,9 @@
  *  Purpose: Handle console applications (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-04-26 16:36:22 $
+ *  Update Date:      $Date: 1999-04-27 16:27:09 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/libsrc/ofconapp.cc,v $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -64,36 +64,25 @@ OFConsoleApplication::~OFConsoleApplication()
 OFBool OFConsoleApplication::parseCommandLine(OFCommandLine &cmd,
                                               int argCount,
                                               char *argValue[],
-                                              const char *parmDesc,
-                                              const int minCount,
-                                              const int maxCount,
                                               const int flags,
                                               const int startPos)
 {
     CmdLine = &cmd;                                                     // store reference to cmdline object
-    OFString str;
-    switch (cmd.parseLine(argCount, argValue, flags, startPos))    
+    OFCommandLine::E_ParseStatus status = cmd.parseLine(argCount, argValue, flags, startPos);
+    switch (status)    
     {
         case OFCommandLine::PS_NoArguments:
-            printUsage(parmDesc);
-            break;
-        case OFCommandLine::PS_UnknownOption:
-            cmd.getStatusString(OFCommandLine::PS_UnknownOption, str);
-            printError(str.c_str());
-            break;
-        case OFCommandLine::PS_MissingValue:
-            cmd.getStatusString(OFCommandLine::PS_MissingValue, str);
-            printError(str.c_str());
+            printUsage();
             break;
         case OFCommandLine::PS_Normal:
             if ((cmd.getArgCount() == 1) && cmd.findOption("--help"))
-                printUsage(parmDesc);
-            else if (cmd.getParamCount() < minCount)
-                printError("Missing arguments");
-            else if ((maxCount >= 0) && (cmd.getParamCount() > maxCount))
-                printError("Too many arguments");
-            else 
-                return OFTrue;
+                printUsage();
+            return OFTrue;
+        default:
+            OFString str;
+            cmd.getStatusString(status, str);
+            printError(str.c_str());
+            break;
     }
     return OFFalse;
 }
@@ -110,22 +99,24 @@ void OFConsoleApplication::printHeader()
 }
 
 
-void OFConsoleApplication::printUsage(const char *parm,
-                                      const OFCommandLine *cmd)
+void OFConsoleApplication::printUsage(const OFCommandLine *cmd)
 {
     if (cmd == NULL)
         cmd = CmdLine;
     printHeader();
     (*Output) << "usage: " << Name;
-    if ((cmd != NULL) && (cmd->hasOptions()))
-        (*Output) << " [options]";
-    (*Output) << " " << parm << endl << endl;
     if (cmd != NULL)
     {
         OFString str;
+        cmd->getSyntaxString(str);
+        (*Output) << str << endl << endl;
+        cmd->getParamString(str);
+        if (str.length() > 0)
+            (*Output) << str << endl;
         cmd->getOptionString(str);
-        (*Output) << str << endl;
+        (*Output) << str;
     }
+    (*Output) << endl;
     exit(0);
 }
 
@@ -182,11 +173,30 @@ void OFConsoleApplication::checkDependence(const char *subOpt,
 }
 
 
+void OFConsoleApplication::checkConflict(const char *firstOpt,
+                                         const char *secondOpt,
+                                         OFBool condition)
+{
+    if (condition)
+    {
+        OFString str = firstOpt;
+        str += " not allowed with ";
+        str += secondOpt;
+        printError(str.c_str());
+    }
+}
+
+
 /*
  *
  * CVS/RCS Log:
  * $Log: ofconapp.cc,v $
- * Revision 1.4  1999-04-26 16:36:22  joergr
+ * Revision 1.5  1999-04-27 16:27:09  joergr
+ * Introduced list of valid parameters used for syntax output and error
+ * checking.
+ * Added method to check conflicts between two options (incl. error output).
+ *
+ * Revision 1.4  1999/04/26 16:36:22  joergr
  * Added support to check dependences between different options and report
  * error messages if necessary.
  *

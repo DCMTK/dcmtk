@@ -22,9 +22,9 @@
  *  Purpose: Handle console applications (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-04-26 16:34:34 $
+ *  Update Date:      $Date: 1999-04-27 16:24:53 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/include/Attic/ofconapp.h,v $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -85,9 +85,6 @@ class OFConsoleApplication
      ** @param  cmd       application name
      *  @param  argCount  number of arguments (argc)
      *  @param  argValue  pointer to argument arry (argv[])
-     *  @param  parmDesc  parameter description
-     *  @param  minCount  minimum number of parameters
-     *  @param  maxCount  maximum number of parameter (default: -1 = unlimited)
      *  @param  flags     flags to be used for parsing (e.g. OFCommandLine::ExpandWildcards)
      *  @param  startPos  first argument to be parsed (default: 1, omit program name)
      *
@@ -96,9 +93,6 @@ class OFConsoleApplication
     OFBool parseCommandLine(OFCommandLine &cmd,
                             int argCount,
                             char *argValue[],
-                            const char *parmDesc = "parameters",
-                            const int minCount = 0,
-                            const int maxCount = -1,
                             const int flags = 0,
                             const int startPos = 1);
 
@@ -108,11 +102,9 @@ class OFConsoleApplication
 
     /** print usage (syntax of command line options)
      *
-     ** @param  parm  application name
-     *  @param  cmd   reference to command line class (default: object used for parsing)
+     ** @param  cmd   reference to command line class (default: object used for parsing)
      */
-    void printUsage(const char *parm,
-                    const OFCommandLine *cmd = NULL);
+    void printUsage(const OFCommandLine *cmd = NULL);
 
     /** print error message (incl. header)
      *
@@ -146,6 +138,16 @@ class OFConsoleApplication
                          const char *baseOpt,
                          OFBool condition);
 
+    /** check conflict between two options
+     *
+     ** @param  firstOpt   first option to be checked
+     *  @param  secondOpt  second option to be checked
+     *  @param  condition  if true error message is printed (i.e. a conflict exists)
+     */
+    void checkConflict(const char *firstOpt,
+                       const char *secondOpt,
+                       OFBool condition);
+
 
  private:
 
@@ -176,7 +178,12 @@ class OFConsoleApplication
  *
  * CVS/RCS Log:
  * $Log: ofconapp.h,v $
- * Revision 1.4  1999-04-26 16:34:34  joergr
+ * Revision 1.5  1999-04-27 16:24:53  joergr
+ * Introduced list of valid parameters used for syntax output and error
+ * checking.
+ * Added method to check conflicts between two options (incl. error output).
+ *
+ * Revision 1.4  1999/04/26 16:34:34  joergr
  * Added support to check dependences between different options and report
  * error messages if necessary.
  *
