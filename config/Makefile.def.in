@@ -9,7 +9,7 @@
 exec_prefix = @exec_prefix@
 prefix = @prefix@
 
-INSTALL= @INSTALL@
+INSTALL = @INSTALL@
 INSTALL_DATA = @INSTALL_DATA@
 INSTALL_PROGRAM = @INSTALL_PROGRAM@
 

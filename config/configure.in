@@ -13,7 +13,7 @@ fi
 dnl Include general file
 sinclude(general.m4)dnl
 
-AC_CONFIG_AUX_DIR(.)
+AC_CONFIG_AUX_DIR(`pwd`)
 
 dnl Checks for programs.
 AC_PROG_INSTALL
