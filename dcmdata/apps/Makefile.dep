@@ -113,4 +113,4 @@ dump2dcm.o: dump2dcm.cc ../../config/include/osconfig.h \
  ../include/dcvrat.h ../include/dcvrss.h ../include/dcvrus.h \
  ../include/dcvrsl.h ../include/dcvrfl.h ../include/dcvrfd.h \
  ../include/cmdlnarg.h ../../ofstd/include/ofconapp.h \
- ../../ofstd/include/ofcmdln.h
+ ../../ofstd/include/ofcmdln.h ../../ofstd/include/ofstd.h
