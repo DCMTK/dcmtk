@@ -80,13 +80,15 @@ VOI windowing options:
            may be encoded in the DICOM file. This option selects one of these
            values. Allowed only if VOI LUTs are encoded in the DICOM file
            (check with +V).
-  +Wm n    Compute VOI window using min-max algorithm, ignoring n extreme values
+  +Wm      Compute VOI window using min-max algorithm
            This heuristic tries to compute an "acceptable" VOI window by
            setting the VOI window to cover the whole range of values
-           found in the image data (except n extreme values).
-           Since medical images often contain an unused
+           found in the image data.
+  +Wn      Compute VOI window using min-max algorithm, ignoring n extreme values
+           This heuristic works simiral to +Wm but ignores the smallest and largest
+           value from the image data. Since medical images often contain a
            black background and white graphical overlays (e.g. patient names)
-           encoded in the pixel data, it makes sense to ignore a few extreme values.
+           encoded in the pixel data, it makes sense to ignore the extreme values.
   +Wh n    Compute VOI window using Histogram algorithm, ignoring n percent
            Similar to +Wm, this heuristic tries to compute an "acceptable"
            VOI window by computing an image histogram and ignoring
@@ -107,7 +109,7 @@ overlay options:
            With +O n (1..16) single overlay planes can be activated.
            It is possible to use the +O n option multiple times, e.g.
            +O 1 +O 2 +O 3 activates only overlay planes 1..3.
-  +mr      use overlay mode "Replace" (default)
+  +mr      use overlay mode "Replace" (default for Graphic overlays)
            The overlay replaces the underlying image. The overlay is displayed
            with "foreground density" (see +of).
   +mt      use overlay mode "Threshold-Replace"
@@ -115,13 +117,15 @@ overlay options:
            the overlay is set to "foreground density", otherwise to white.
   +mc      use overlay mode "Complement"
            The overlay complements the underlying image.
-  +mi      use overlay mode "Region of Interest"
+  +mi      use overlay mode "Region of Interest" (default for ROI overlays)
            The overlay defines a "region of interest". Areas outside the
            region of interest are darkened. 
   +of r    set overlay foreground density to r (float, 0..1, default: 1)
            where 0 is black and 1 is white.
+           must be used together with +mr, +mt, +mc or +mi.
   +ot r    set overlay threshold density to r (float, 0..1, default: 0.5)
            where 0 is black and 1 is white.
+           must be used together with +mr, +mt, +mc or +mi.
 
 output options:
   +V       verbose mode, print image details

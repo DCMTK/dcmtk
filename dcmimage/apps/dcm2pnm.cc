@@ -8,9 +8,9 @@
 ** Convert DICOM Images to PPM or PGM using the dcmimage library. 
 **
 ** Last Update:		$Author: meichel $
-** Update Date:		$Date: 1997-05-28 08:02:14 $
+** Update Date:		$Date: 1997-05-28 09:32:15 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/apps/dcm2pnm.cc,v $
-** CVS/RCS Revision:	$Revision: 1.4 $
+** CVS/RCS Revision:	$Revision: 1.5 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -68,18 +68,21 @@ usage()
       "  -W       no VOI windowing (default)\n"
       "  +Wi n    use the n-th VOI window from the image file\n"
       "  +Wl n    use the n-th VOI look up table from the image file\n"
-      "  +Wm n    Compute VOI window using min-max algorithm, ignoring n extreme values\n"
+      "  +Wm      Compute VOI window using min-max algorithm\n"
+      "  +Wn      Compute VOI window using min-max algorithm, ignoring extreme values\n"
       "  +Wh n    Compute VOI window using Histogram algorithm, ignoring n percent\n"
       "  +Ww r s  Compute VOI window using center r and width s\n"
       "overlay options:\n"
       "  -O       do not display overlays\n"
       "  +O n     display overlay n (0..16, 0=all, default: +O 0)\n"
-      "  +mr      use overlay mode \"Replace\" (default)\n"
+      "  +mr      use overlay mode \"Replace\" (default for Graphic overlays)\n"
       "  +mt      use overlay mode \"Threshold-Replace\"\n"
       "  +mc      use overlay mode \"Complement\"\n"
-      "  +mi      use overlay mode \"Region of Interest\"\n"
+      "  +mi      use overlay mode \"Region of Interest\" (default for ROI overlays)\n"
       "  +of r    set overlay foreground density to r (float, 0..1, default: 1)\n"
+      "           must be used together with +mr, +mt, +mc or +mi.\n"
       "  +ot r    set overlay threshold density to r (float, 0..1, default: 0.5)\n"
+      "           must be used together with +mr, +mt, +mc or +mi.\n"
       "output options:\n"
       "  +V       verbose mode, print image details\n"
       "  +d n     set debug level to n (0..9, default: 0)\n"
@@ -168,14 +171,14 @@ int main(int argc, char *argv[])
   double           opt_scale_factor = 1.0;
   unsigned long    opt_scale_size = 1;
   int              opt_windowType = 0;               /* default: no windowing */
-                   /* 1=Wi, 2=Wl, 3=Wm, 4=Wh, 5=Ww */
+                   /* 1=Wi, 2=Wl, 3=Wm, 4=Wh, 5=Ww, 6=Wn */
   unsigned long    opt_windowParameter = 0;
   double           opt_windowCenter=0.0, opt_windowWidth=0.0;
   
   int              opt_Overlay[16];
   int              opt_O_used = 0;                   /* flag for +O parameter */
-  int              opt_OverlayMode = 1;              /* default: replace */
-                   /* 2=threshold-replace, 3=complement, 4=ROI */
+  int              opt_OverlayMode = 0;              /* default: Replace or ROI */
+                   /* 1=replace, 2=threshold-replace, 3=complement, 4=ROI */
                    
   double           opt_foregroundDensity = 1.0;
   double           opt_thresholdDensity  = 0.5;
@@ -360,7 +363,7 @@ int main(int argc, char *argv[])
              return 1;
            }
            break;
-         case 'W': /* -W, +Wi n, +Wl n, +Wm n, +Wh n, +Ww r s */
+         case 'W': /* -W, +Wi n, +Wl n, +Wm, +Wn, +Wh n, +Ww r s */
            if ((arg[2]=='\0')&&(arg[0]=='-'))
            {
              opt_windowType = 0;
@@ -391,14 +394,10 @@ int main(int argc, char *argv[])
                  }
                  break;
                case 'm':
-                 if (extract_unsigned_long(opt_windowParameter, argc, argv, i+1))                    
-                 {
-                   opt_windowType = 3;
-                   i++;
-                 } else {
-                   fprintf(stderr, "illegal parameter in %s option\n", arg);
-                   return 1;
-                 }
+                 opt_windowType = 3;
+                 break;
+               case 'n':
+                 opt_windowType = 6;
                  break;
                case 'h':
                  if ((extract_unsigned_long(opt_windowParameter, argc, argv, i+1))
@@ -808,9 +807,17 @@ int main(int argc, char *argv[])
         {
           fprintf(stderr, "activating overlay plane %lu\n", k+1);
         }
-        if (! di->showOverlay(k, overlayMode, opt_foregroundDensity, opt_thresholdDensity))
+        if (opt_OverlayMode)
         {
-          fprintf(stderr,"dcm2pnm: warning: cannot display overlay plane %lu\n",k+1);
+          if (! di->showOverlay(k, overlayMode, opt_foregroundDensity, opt_thresholdDensity))
+          {
+            fprintf(stderr,"dcm2pnm: warning: cannot display overlay plane %lu\n",k+1);
+          }
+        } else {
+          if (! di->showOverlay(k)) /* use default values */
+          {
+            fprintf(stderr,"dcm2pnm: warning: cannot display overlay plane %lu\n",k+1);
+          }
         }
       }
     }
@@ -851,12 +858,12 @@ int main(int argc, char *argv[])
         fprintf(stderr,"dcm2pnm: warning: cannot select VOI LUT no. %lu\n", opt_windowParameter);
       }
       break;
-    case 3: /* Compute VOI window using min-max algorithm, ignoring n extreme values */
+    case 3: /* Compute VOI window using min-max algorithm */
       if (opt_debugMode > 0)
       {
-        fprintf(stderr, "activating VOI window min-max algorithm, ignoring %lu extreme values\n", opt_windowParameter);
+        fprintf(stderr, "activating VOI window min-max algorithm\n");
       }
-      if (! di->setMinMaxWindow(opt_windowParameter))
+      if (! di->setMinMaxWindow(0))
       {
         fprintf(stderr,"dcm2pnm: warning: cannot compute min/max VOI window\n");
       }
@@ -881,6 +888,16 @@ int main(int argc, char *argv[])
         fprintf(stderr,"dcm2pnm: warning: cannot set VOI window center=%f width=%f\n",opt_windowCenter, opt_windowWidth);
       }
       break;
+    case 6: /* Compute VOI window using min-max algorithm ignoring extremes */
+      if (opt_debugMode > 0)
+      {
+        fprintf(stderr, "activating VOI window min-max algorithm, ignoring extreme values\n");
+      }
+      if (! di->setMinMaxWindow(1))
+      {
+        fprintf(stderr,"dcm2pnm: warning: cannot compute min/max VOI window\n");
+      }
+      break;     
     default: /* no VOI windowing */
       if (di->isMonochrome())
       {
@@ -888,7 +905,7 @@ int main(int argc, char *argv[])
         {
           fprintf(stderr, "disabling VOI window computation\n");
         }
-        if (! di->setWindow(0, 0))  /* window width 0 is defined as "ignore VOI window"! */
+        if (! di->setWindow()) 
         {
           fprintf(stderr,"dcm2pnm: warning: cannot ignore VOI window\n");
         }
@@ -917,7 +934,7 @@ int main(int argc, char *argv[])
      } 
      else
      {
-	   delete di;
+       delete di;
        di = newimage;
      }
   }
@@ -993,7 +1010,7 @@ int main(int argc, char *argv[])
   FILE *ofile = stdout;
   if (opt_ofname)
   {
-    ofile = fopen(opt_ofname, "w");
+    ofile = fopen(opt_ofname, "wb");
     if (ofile==NULL)   
     {
       fprintf(stderr, "dcm2pnm: error: cannot create file %s\n",opt_ofname);
@@ -1032,7 +1049,13 @@ int main(int argc, char *argv[])
 /*
 ** CVS/RCS Log:
 ** $Log: dcm2pnm.cc,v $
-** Revision 1.4  1997-05-28 08:02:14  meichel
+** Revision 1.5  1997-05-28 09:32:15  meichel
+** Changed dcm2pnm options for MinMax VOI window computation
+** to match functionality of the toolkit.
+** Default mode for overlays is now Replace for Graphic overlays
+** and ROI for ROI overlays. Updated documentation.
+**
+** Revision 1.4  1997/05/28 08:02:14  meichel
 ** New method DicomImage::setWindow() allows to disable VOI windowing.
 ** New method DiDocument::getVM().
 ** Default mode for grayscale images changed from "setMinMaxWindow(0)"

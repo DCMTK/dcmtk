@@ -1,4 +1,13 @@
 
+**** Unreleased Changes from 97.05.28 (eichelberg)
+
+- Changed dcm2pnm options for MinMax VOI window computation
+  to match functionality of the toolkit.
+  Default mode for overlays is now Replace for Graphic overlays
+  and ROI for ROI overlays. Updated documentation.
+  Affects: dcmimage/apps/dcm2pnm.cc
+           dcmimage/docs/dcm2pnm.txt
+
 **** Unreleased Changes from 97.05.26 (riesmeier)
 
 - new method DicomImage::setWindow() allows to disable VOI windowing
@@ -9,17 +18,17 @@
   images containing overlay planes were copied/scaled/clipped and the
   originals deleted before the copy.
 - removed workaround in dcm2pnm for the bug mentioned above.
-Affects: dcmimage/apps/Makefile.dep
-         dcmimage/apps/dcm2pnm.cc
-         dcmimage/include/dcmimage.h
-         dcmimage/include/didocu.h
-         dcmimage/include/diobjcou.h
-         dcmimage/include/diovlay.h
-         dcmimage/libsrc/Makefile.dep
-         dcmimage/libsrc/dcmimage.cc
-         dcmimage/libsrc/didocu.cc
-         dcmimage/libsrc/dimoimg.cc
-         dcmimage/libsrc/diovlay.cc
+  Affects: dcmimage/apps/Makefile.dep
+           dcmimage/apps/dcm2pnm.cc
+           dcmimage/include/dcmimage.h
+           dcmimage/include/didocu.h
+           dcmimage/include/diobjcou.h
+           dcmimage/include/diovlay.h
+           dcmimage/libsrc/Makefile.dep
+           dcmimage/libsrc/dcmimage.cc
+           dcmimage/libsrc/didocu.cc
+           dcmimage/libsrc/dimoimg.cc
+           dcmimage/libsrc/diovlay.cc
 
 **** Unreleased Changes from 97.05.23 (eichelberg)
 
