@@ -2,10 +2,15 @@
 
 \page mod_dcmwlm dcmwlm: a modality worklist database server
 
-This module contains ...
+This module contains classes which provide support for applications that
+implement the DICOM Modality Worklist Management Service as an SCP. SCPs
+that are based on these classes can retrieve information that is returned
+in C-Find-RSP messages from worklist files that are existent in a certain
+directory on an accessible hard drive.
 
 The main interface classes are:
 \li \b WlmActivityManager
+\li \b WlmDataSource
 \li \b WlmDataSourceFileSystem
 \li \b WlmFileSystemInteractionManager
 
@@ -16,10 +21,9 @@ This module contains the following command line tool:
 
 \section Examples
 
-The following example shows ...:
-
-\code
-...
-\endcode
+For an example of how to use the main interface classes of this module, see
+file 'wlmscpfs.cc' (containing the main function of the corresponding tool) and
+file 'wlcefs.cc' (making use of the WlmActivityManager class that manages all
+activities a corresponding SCP has to manage).
 
 */
