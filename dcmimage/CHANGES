@@ -1,3 +1,9 @@
+
+- Added function DicomImage::writeRawPPM(FILE *, const int, const unsigned long)
+  which takes an open stream instead of a file name as first argument.
+  Affects: dcmimage/include/dcmimage.h
+           dcmimage/libsrc/dcmimage.cc
+
 - Include function getFloat64 into DcmDecimalString and getSint32 into
   DcmIntegerString. Remove derived classes for this purpose in the dcmimage
   module.

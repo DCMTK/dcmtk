@@ -395,3 +395,14 @@ int DicomImage::writeRawPPM(const char *filename, const int bits, const unsigned
 	}
 	return 0;
 }
+
+// --- same for C 'FILE'
+
+int DicomImage::writeRawPPM(FILE *stream, const int bits, const unsigned long frame
+)
+{
+        if ((stream != NULL) && (Image != NULL))
+                return Image->writeRawPPM(stream, frame, Image->getBits(bits));
+        return 0;
+}
+

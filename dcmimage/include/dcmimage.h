@@ -177,6 +177,7 @@ class DicomImage
 	int writePPM(ostream &, const int = 0, const unsigned long = 0);
 	int writePPM(FILE *, const int = 0, const unsigned long = 0);
 	int writeRawPPM(const char *, const int = 0, const unsigned long = 0);
+	int writeRawPPM(FILE *, const int = 0, const unsigned long = 0);
 
  protected:
     DicomImage(const DicomImage *, DiImage *, const EP_Interpretation);
