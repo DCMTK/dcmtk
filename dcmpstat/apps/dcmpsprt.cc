@@ -23,18 +23,18 @@
  *    sample application that reads multiple images and (optionally)
  *    presentation states and creates a print job consisting of
  *    stored print and hardcopy grayscale images.
- *    Non-grayscale transformations in the presentation state are ignored. 
+ *    Non-grayscale transformations in the presentation state are ignored.
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-06-09 10:19:56 $
+ *  Update Date:      $Date: 2000-06-14 11:30:15 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmpstat/apps/dcmpsprt.cc,v $
- *  CVS/RCS Revision: $Revision: 1.19 $
+ *  CVS/RCS Revision: $Revision: 1.20 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
  *
  */
- 
+
 
 #include "osconfig.h"    /* make sure OS specific configuration is included first */
 
@@ -71,19 +71,21 @@ int main(int argc, char *argv[])
     OFCmdUnsignedInt          opt_columns = 1;
     OFCmdUnsignedInt          opt_rows = 1;
     OFCmdUnsignedInt          opt_copies = 0;
-    const char *              opt_filmsize = NULL;     
-    const char *              opt_magnification = NULL;   
-    const char *              opt_smoothing = NULL;   
-    const char *              opt_configuration = NULL;   
-    const char *              opt_img_magnification = NULL;   
-    const char *              opt_img_smoothing = NULL;   
-    const char *              opt_img_configuration = NULL;   
-    const char *              opt_resolution = NULL;   
-    const char *              opt_border = NULL;   
+    const char *              opt_filmsize = NULL;
+    const char *              opt_magnification = NULL;
+    const char *              opt_smoothing = NULL;
+    const char *              opt_configuration = NULL;
+    const char *              opt_img_polarity = NULL;
+    const char *              opt_img_request_size = NULL;
+    const char *              opt_img_magnification = NULL;
+    const char *              opt_img_smoothing = NULL;
+    const char *              opt_img_configuration = NULL;
+    const char *              opt_resolution = NULL;
+    const char *              opt_border = NULL;
     const char *              opt_emptyimage = NULL;
     const char *              opt_maxdensity = NULL;
-    const char *              opt_mindensity = NULL;       
-    const char *              opt_plutname = NULL;     
+    const char *              opt_mindensity = NULL;
+    const char *              opt_plutname = NULL;
     OFList<char *>            opt_filenames;
     OFBool                    opt_linearLUTshape = OFFalse;
     OFBool                    opt_inverse_plut = OFFalse;
@@ -99,12 +101,12 @@ int main(int argc, char *argv[])
     OFBool                    opt_annotationPrinter = OFTrue;
     OFBool                    opt_annotationIllumination = OFTrue;
     const char *              opt_annotationString = NULL;
-   
+
     OFCmdUnsignedInt          opt_illumination = (OFCmdUnsignedInt)-1;
     OFCmdUnsignedInt          opt_reflection = (OFCmdUnsignedInt)-1;
-        
+
     OFString str;
-              
+
     SetDebugLevel(( 0 ));
     DicomImageClass::setDebugLevel(DicomImageClass::DL_NoMessages);
 
@@ -112,9 +114,9 @@ int main(int argc, char *argv[])
     OFCommandLine cmd;
     cmd.setOptionColumns(LONGCOL, SHORTCOL+2);
     cmd.setParamColumn(LONGCOL + SHORTCOL + 4);
-  
+
     cmd.addParam("imagefile_in",   "DICOM image file(s) to be printed", OFCmdParam::PM_MultiOptional);
-      
+
     cmd.addGroup("general options:");
      cmd.addOption("--help",                      "-h",        "print this help text and exit");
      cmd.addOption("--verbose",                   "-v",        "verbose mode, print actions");
@@ -122,12 +124,12 @@ int main(int argc, char *argv[])
 
     cmd.addGroup("processing options:");
      cmd.addOption("--pstate",      "+p", 1, "[p]state-file: string",
-                                             "render the following image with pres. state [p]");
+                                             "render the following image with pres. state p");
      cmd.addOption("--config",      "-c", 1, "[f]ilename: string",
-                                             "process using settings from configuration file");
+                                             "process using settings from configuration file f");
      cmd.addOption("--printer",     "-p", 1, "[n]ame: string (default: 1st printer in cfg file)",
-                                             "select printer with identifier [n] from cfg file");
-                                             
+                                             "select printer with identifier n from cfg file");
+
     cmd.addGroup("spooling options:");
      cmd.addOption("--spool",       "-s",    "spool print job to DICOM printer");
      cmd.addOption("--nospool",              "do not spool print job to DICOM printer (default)");
@@ -155,28 +157,28 @@ int main(int argc, char *argv[])
                                              "add LUT [l] to print job");
      cmd.addOption("--inverse-plut",         "render the inverse presentation LUT into the\nbitmap of the hardcopy grayscale image");
      cmd.addOption("--illumination",      1, "[v]alue: integer (0..65535)",
-                                             "set illumination to [v] cd/m^2");
+                                             "set illumination to v (in cd/m^2)");
      cmd.addOption("--reflection",        1, "[v]alue: integer (0..65535)",
-                                             "set reflected ambient light to [v] cd/m^2");
+                                             "set reflected ambient light to v (in cd/m^2)");
 
     cmd.addGroup("basic film session options (only with --spool):");
      cmd.addOption("--copies",            1, "[v]alue: integer (1..100, default: 1)",
-                                             "set number of copies to [v]");
+                                             "set number of copies to v");
      cmd.addOption("--medium-type",       1, "[v]alue: string",
-                                             "set medium type to [v]");
+                                             "set medium type to v");
      cmd.addOption("--destination",       1, "[v]alue: string",
-                                             "set film destination to [v]");
+                                             "set film destination to v");
      cmd.addOption("--label",             1, "[v]alue: string",
-                                             "set film session label to [v]");
+                                             "set film session label to v");
      cmd.addOption("--priority",          1, "[v]alue: string",
-                                             "set print priority to [v]");
+                                             "set print priority to v");
      cmd.addOption("--owner",             1, "[v]alue: string",
-                                             "set film session owner ID to [v]");
+                                             "set film session owner ID to v");
 
-    cmd.addGroup("annotation options:");    
+    cmd.addGroup("annotation options:");
      cmd.addOption("--no-annotation",        "do not create annotation (default)");
      cmd.addOption("--annotation",  "-a", 1, "[t]ext: string",
-                                             "create annotation with text [t]");
+                                             "create annotation with text t");
      cmd.addOption("--print-date",        "+pd",  "prepend date/time to annotation (default)");
      cmd.addOption("--print-no-date",     "-pd",  "do not prepend date/time to annotation");
 
@@ -187,34 +189,38 @@ int main(int argc, char *argv[])
      cmd.addOption("--print-no-lighting", "-pl",  "do not prepend illumination to annotation");
 
     cmd.addGroup("other print options:");
-     cmd.addOption("--layout",      "-l", 2, "[c]olumns, [r]ows: integer (default: 1,1)",
+     cmd.addOption("--layout",      "-l", 2, "[c]olumns [r]ows: integer (default: 1 1)",
                                              "use 'STANDARD\\c,r' image display format");
      cmd.addOption("--filmsize",          1, "[v]alue: string",
-                                             "set film size ID to [v]");
+                                             "set film size ID to v");
      cmd.addOption("--magnification",     1, "[v]alue: string",
-                                             "set magnification type to [v]");
+                                             "set magnification type to v");
      cmd.addOption("--smoothing",         1, "[v]alue: string",
-                                             "set smoothing type to [v]");
+                                             "set smoothing type to v");
      cmd.addOption("--configinfo",        1, "[v]alue: string",
-                                             "set configuration information to [v]");
+                                             "set configuration information to v");
      cmd.addOption("--resolution",        1, "[v]alue: string",
-                                             "set requested resolution ID to [v]");
+                                             "set requested resolution ID to v");
      cmd.addOption("--border",            1, "[v]alue: string",
-                                             "set border density to [v]");
+                                             "set border density to v");
      cmd.addOption("--empty-image",       1, "[v]alue: string",
-                                             "set empty image density to [v]");
+                                             "set empty image density to v");
      cmd.addOption("--max-density",       1, "[v]alue: string",
-                                             "set max density to [v]");
+                                             "set max density to v");
      cmd.addOption("--min-density",       1, "[v]alue: string",
-                                             "set min density to [v]");
+                                             "set min density to v");
+     cmd.addOption("--img-polarity",      1, "[v]alue: string",
+                                             "set image box polarity to v (NORMAL or REVERSE)");
+     cmd.addOption("--img-request-size",  1, "[v]alue: string",
+                                             "set requested image size to v (width in mm)");
      cmd.addOption("--img-magnification", 1, "[v]alue: string",
-                                             "set image box magnification type to [v]");
+                                             "set image box magnification type to v");
      cmd.addOption("--img-smoothing",     1, "[v]alue: string",
-                                             "set image box smoothing type to [v]");
+                                             "set image box smoothing type to v");
      cmd.addOption("--img-configinfo",    1, "[v]alue: string",
-                                             "set image box configuration information to [v]");
+                                             "set image box configuration information to v");
 
-    /* evaluate command line */                           
+    /* evaluate command line */
     prepareCmdLineArgs(argc, argv, OFFIS_CONSOLE_APPLICATION);
     if (app.parseCommandLine(cmd, argc, argv, OFCommandLine::ExpandWildcards))
     {
@@ -256,7 +262,7 @@ int main(int argc, char *argv[])
       if (cmd.findOption("--no-annotation")) opt_annotation = OFFalse;
       if (cmd.findOption("--annotation"))
       {
-      	opt_annotation = OFTrue;
+        opt_annotation = OFTrue;
         app.checkValue(cmd.getValue(opt_annotationString));
       }
       cmd.endOptionBlock();
@@ -276,17 +282,19 @@ int main(int argc, char *argv[])
       if (cmd.findOption("--print-no-lighting"))      opt_annotationIllumination = OFFalse;
       cmd.endOptionBlock();
 
-      if (cmd.findOption("--filmsize"))      app.checkValue(cmd.getValue(opt_filmsize));
-      if (cmd.findOption("--magnification")) app.checkValue(cmd.getValue(opt_magnification));
-      if (cmd.findOption("--smoothing"))     app.checkValue(cmd.getValue(opt_smoothing));
-      if (cmd.findOption("--configinfo"))    app.checkValue(cmd.getValue(opt_configuration));
-      if (cmd.findOption("--resolution"))    app.checkValue(cmd.getValue(opt_resolution));
-      if (cmd.findOption("--border"))        app.checkValue(cmd.getValue(opt_border));
-      if (cmd.findOption("--empty-image"))   app.checkValue(cmd.getValue(opt_emptyimage));
-      if (cmd.findOption("--max-density"))   app.checkValue(cmd.getValue(opt_maxdensity));
-      if (cmd.findOption("--min-density"))   app.checkValue(cmd.getValue(opt_mindensity));
-      if (cmd.findOption("--config"))        app.checkValue(cmd.getValue(opt_cfgName));
-      if (cmd.findOption("--printer"))       app.checkValue(cmd.getValue(opt_printerID));
+      if (cmd.findOption("--filmsize"))          app.checkValue(cmd.getValue(opt_filmsize));
+      if (cmd.findOption("--magnification"))     app.checkValue(cmd.getValue(opt_magnification));
+      if (cmd.findOption("--smoothing"))         app.checkValue(cmd.getValue(opt_smoothing));
+      if (cmd.findOption("--configinfo"))        app.checkValue(cmd.getValue(opt_configuration));
+      if (cmd.findOption("--resolution"))        app.checkValue(cmd.getValue(opt_resolution));
+      if (cmd.findOption("--border"))            app.checkValue(cmd.getValue(opt_border));
+      if (cmd.findOption("--empty-image"))       app.checkValue(cmd.getValue(opt_emptyimage));
+      if (cmd.findOption("--max-density"))       app.checkValue(cmd.getValue(opt_maxdensity));
+      if (cmd.findOption("--min-density"))       app.checkValue(cmd.getValue(opt_mindensity));
+      if (cmd.findOption("--config"))            app.checkValue(cmd.getValue(opt_cfgName));
+      if (cmd.findOption("--printer"))           app.checkValue(cmd.getValue(opt_printerID));
+      if (cmd.findOption("--img-polarity"))      app.checkValue(cmd.getValue(opt_img_polarity));
+      if (cmd.findOption("--img-request-size"))  app.checkValue(cmd.getValue(opt_img_request_size));
       if (cmd.findOption("--img-magnification")) app.checkValue(cmd.getValue(opt_img_magnification));
       if (cmd.findOption("--img-smoothing"))     app.checkValue(cmd.getValue(opt_img_smoothing));
       if (cmd.findOption("--img-configinfo"))    app.checkValue(cmd.getValue(opt_img_configuration));
@@ -331,13 +339,13 @@ int main(int argc, char *argv[])
         app.checkConflict("--copies", "--nospool", (! opt_spool));
         app.checkValue(cmd.getValue(opt_copies, (OFCmdUnsignedInt)1, (OFCmdUnsignedInt)100));
       }
-      
+
       if (cmd.findOption("--pstate")) { /* prevent warning - this option is only checked if image filenames are really specified */ }
 
       if (cmd.findOption("--layout"))
       {
-      	 app.checkValue(cmd.getValue(opt_columns, (OFCmdUnsignedInt)1));
-      	 app.checkValue(cmd.getValue(opt_rows, (OFCmdUnsignedInt)1));
+         app.checkValue(cmd.getValue(opt_columns, (OFCmdUnsignedInt)1));
+         app.checkValue(cmd.getValue(opt_rows, (OFCmdUnsignedInt)1));
       }
 
       const char *imageFile=NULL;
@@ -346,13 +354,13 @@ int main(int argc, char *argv[])
       for (int param=1; param<=paramCount; param++)
       {
         cmd.getParam(param, imageFile);
-      	pstateFile = NULL;
+        pstateFile = NULL;
         if (cmd.findOption("--pstate", -param)) app.checkValue(cmd.getValue(pstateFile));
         opt_filenames.push_back((char *)imageFile);
         opt_filenames.push_back((char *)pstateFile);
       }
     }
-    
+
     SetDebugLevel((opt_debugMode));
     DicomImageClass::setDebugLevel(opt_debugMode);
 
@@ -366,16 +374,19 @@ int main(int argc, char *argv[])
       }
     }
     DVInterface dvi(opt_cfgName);
-    
+
     if (opt_printerID && (EC_Normal != dvi.setCurrentPrinter(opt_printerID)))
       CERR << "warning: unable to select printer '" << opt_printerID << "', ignoring." << endl;
 
     /* dump printer characteristics if requested */
     const char *currentPrinter = dvi.getCurrentPrinter();
 
+	if ((opt_img_request_size) && (!dvi.getTargetPrinterSupportsRequestedImageSize(opt_printerID)))
+      CERR << "warning: printer does not support requested image size" << endl;
+
     if (EC_Normal != dvi.getPrintHandler().setImageDisplayFormat(opt_columns, opt_rows))
       CERR << "warning: cannot set image display format to columns=" << opt_columns
-           << ", rows=" << opt_rows << ", ignoring." << endl;  
+           << ", rows=" << opt_rows << ", ignoring." << endl;
     if ((opt_filmsize)&&(EC_Normal != dvi.getPrintHandler().setFilmSizeID(opt_filmsize)))
       CERR << "warning: cannot set film size ID to '" << opt_filmsize << "', ignoring." << endl;
     if ((opt_magnification)&&(EC_Normal != dvi.getPrintHandler().setMagnificationType(opt_magnification)))
@@ -419,7 +430,7 @@ int main(int argc, char *argv[])
       CERR << "warning: cannot set film session owner ID to '" << opt_ownerID << "', ignoring." << endl;
     if ((opt_spool)&&(EC_Normal != dvi.startPrintSpooler()))
       CERR << "warning: unable to start print spooler, ignoring." << endl;
-    
+
     OFListIterator(char *) first = opt_filenames.begin();
     OFListIterator(char *) last = opt_filenames.end();
     const char *currentImage = NULL;
@@ -430,30 +441,30 @@ int main(int argc, char *argv[])
     unsigned long height = 0;
     unsigned long bitmapSize = 0;
     double pixelAspectRatio;
-        
+
     while ((EC_Normal == status)&&(first != last))
     {
       currentImage = *first;
       ++first;
       if (first != last)
       {
-      	currentPState = *first;
-      	++first;
+        currentPState = *first;
+        ++first;
         if (currentPState)
         {
           if (opt_verbose) CERR << "loading image file '" << currentImage << "' with presentation state '" << currentPState << "'" << endl;
           status = dvi.loadPState(currentPState, currentImage);
-          if (EC_Normal != status) 
+          if (EC_Normal != status)
           {
             CERR << "error: loading image file '" << currentImage << "' with presentation state '" << currentPState << "' failed." << endl;
             return 10;
           }
         }
-        else 
+        else
         {
           if (opt_verbose) CERR << "loading image file '" << currentImage << "'" << endl;
           status = dvi.loadImage(currentImage);
-          if (EC_Normal != status) 
+          if (EC_Normal != status)
           {
             CERR << "error: loading image file '" << currentImage << "' failed." << endl;
             return 10;
@@ -485,7 +496,7 @@ int main(int argc, char *argv[])
               return 10;
             }
             pixelAspectRatio = dvi.getCurrentPState().getPrintBitmapPixelAspectRatio();
-            
+
             if (opt_verbose) CERR << "writing DICOM grayscale hardcopy image to database." << endl;
             if (EC_Normal != dvi.saveHardcopyGrayscaleImage(pixelData, width, height, pixelAspectRatio))
             {
@@ -508,19 +519,19 @@ int main(int argc, char *argv[])
     {
       if (opt_annotation)
       {
-      	if (dvi.getTargetPrinterSupportsAnnotation(currentPrinter))
-      	{
+        if (dvi.getTargetPrinterSupportsAnnotation(currentPrinter))
+        {
           dvi.setActiveAnnotation(OFTrue);
           dvi.setPrependDateTime(opt_annotationDatetime);
           dvi.setPrependPrinterName(opt_annotationPrinter);
           dvi.setPrependLighting(opt_annotationIllumination);
-          dvi.setAnnotationText(opt_annotationString);        
+          dvi.setAnnotationText(opt_annotationString);
         } else {
           CERR << "warning: printer '" << currentPrinter << "' does not support annotations, ignoring." << endl;
           dvi.setActiveAnnotation(OFFalse);
         }
       } else {
-      	dvi.setActiveAnnotation(OFFalse);
+        dvi.setActiveAnnotation(OFFalse);
       }
     }
 
@@ -529,6 +540,10 @@ int main(int argc, char *argv[])
       size_t numImages = dvi.getPrintHandler().getNumberOfImages();
       for (size_t i=0; i<numImages; i++)
       {
+        if ((opt_img_polarity)&&(EC_Normal != dvi.getPrintHandler().setImagePolarity(i, opt_img_polarity)))
+          CERR << "warning: cannot set polarity for image #" << i+1 << " (of " << numImages << ") to '" << opt_img_polarity << "', ignoring." << endl;
+        if ((opt_img_request_size)&&(EC_Normal != dvi.getPrintHandler().setImageRequestedSize(i, opt_img_request_size)))
+          CERR << "warning: cannot set requested size for image #" << i+1 << " (of " << numImages << ") to '" << opt_img_request_size << "', ignoring." << endl;
         if ((opt_img_magnification)&&(EC_Normal != dvi.getPrintHandler().setImageMagnificationType(i, opt_img_magnification)))
           CERR << "warning: cannot set magnification type for image #" << i+1 << " (of " << numImages << ") to '" << opt_img_magnification << "', ignoring." << endl;
         if ((opt_img_smoothing)&&(EC_Normal != dvi.getPrintHandler().setImageSmoothingType(i, opt_img_smoothing)))
@@ -538,7 +553,7 @@ int main(int argc, char *argv[])
       }
       if ((numImages > 0)&&(! opt_spool))
       {
-      	// no need to do this manually if we are spooling - spoolPrintJob() will do this anyway.
+        // no need to do this manually if we are spooling - spoolPrintJob() will do this anyway.
         if (opt_verbose) CERR << "writing DICOM stored print object to database." << endl;
         if (EC_Normal != dvi.saveStoredPrint(dvi.getTargetPrinterSupportsRequestedImageSize(opt_printerID)))
         {
@@ -546,7 +561,7 @@ int main(int argc, char *argv[])
         }
       }
     }
-    
+
     if ((status == EC_Normal) && opt_spool)
     {
       if (currentPrinter)
@@ -561,7 +576,7 @@ int main(int argc, char *argv[])
 
     if ((opt_spool)&&(EC_Normal != dvi.terminatePrintSpooler()))
       CERR << "warning: unable to stop print spooler, ignoring." << endl;
-    
+
 #ifdef DEBUG
     dcmDataDict.clear();  /* useful for debugging with dmalloc */
 #endif
@@ -573,7 +588,10 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmpsprt.cc,v $
- * Revision 1.19  2000-06-09 10:19:56  joergr
+ * Revision 1.20  2000-06-14 11:30:15  joergr
+ * Added methods to access the attributes Polarity and Requested Image Size.
+ *
+ * Revision 1.19  2000/06/09 10:19:56  joergr
  * Added support for rendering inverse presentation LUT into print bitmaps.
  *
  * Revision 1.18  2000/05/30 14:01:59  joergr

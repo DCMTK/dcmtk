@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DVPSStoredPrint
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-06-08 10:44:29 $
- *  CVS/RCS Revision: $Revision: 1.26 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2000-06-14 11:28:15 $
+ *  CVS/RCS Revision: $Revision: 1.27 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -402,6 +402,26 @@ class DVPSStoredPrint
     return imageBoxContentList.imageHasAdditionalSettings(idx);
   }
 
+  /** sets the polarity for the given registered image box.
+   *  @param idx index, must be < getNumberOfImages()
+   *  @param value new attribute value (NORMAL or REVERSE), may be NULL.
+   *  @return EC_Normal if successful, an error code otherwise.
+   */
+  E_Condition setImagePolarity(size_t idx, const char *value)
+  {
+    return imageBoxContentList.setImagePolarity(idx, value);
+  }
+  
+  /** sets the requested size for the given registered image box.
+   *  @param idx index, must be < getNumberOfImages()
+   *  @param value new attribute value (in mm), may be NULL.
+   *  @return EC_Normal if successful, an error code otherwise.
+   */
+  E_Condition setImageRequestedSize(size_t idx, const char *value)
+  {
+    return imageBoxContentList.setImageRequestedSize(idx, value);
+  }
+  
   /** sets the (optional) magnification type for the given registered image box.
    *  @param idx index, must be < getNumberOfImages()
    *  @param value new attribute value, may be NULL.
@@ -440,11 +460,20 @@ class DVPSStoredPrint
 
   /** gets the polarity for the given registered image box.
    *  @param idx index, must be < getNumberOfImages()
-   *  @return polarity, may be NULL.
+   *  @return polarity (NORMAL or REVERSE), may be NULL.
    */
   const char *getImagePolarity(size_t idx)
   {
     return imageBoxContentList.getImagePolarity(idx);
+  }
+
+  /** gets the requested size for the given registered image box.
+   *  @param idx index, must be < getNumberOfImages()
+   *  @return requested size (in mm), may be NULL.
+   */
+  const char *getImageRequestedSize(size_t idx)
+  {
+    return imageBoxContentList.getImageRequestedSize(idx);
   }
 
   /** gets the (optional) magnification type for the given registered image box.
@@ -1056,7 +1085,10 @@ class DVPSStoredPrint
 
 /*
  *  $Log: dvpssp.h,v $
- *  Revision 1.26  2000-06-08 10:44:29  meichel
+ *  Revision 1.27  2000-06-14 11:28:15  joergr
+ *  Added methods to access the attributes Polarity and Requested Image Size.
+ *
+ *  Revision 1.26  2000/06/08 10:44:29  meichel
  *  Implemented Referenced Presentation LUT Sequence on Basic Film Session level.
  *    Empty film boxes (pages) are not written to file anymore.
  *

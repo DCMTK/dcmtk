@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DVPSImageBoxContent
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-06-08 10:44:29 $
- *  CVS/RCS Revision: $Revision: 1.16 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2000-06-14 11:28:13 $
+ *  CVS/RCS Revision: $Revision: 1.17 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -159,6 +159,11 @@ public:
    */
   const char *getPolarity();
 
+  /** gets the requested image size.
+   *  @return requested image size, may be NULL.
+   */
+  const char *getRequestedImageSize();
+
   /** gets the (optional) magnification type.
    *  @return magnification type, may be NULL.
    */
@@ -184,6 +189,18 @@ public:
    */
   Uint16 getImageBoxPosition();
   
+  /** sets the polarity.
+   *  @param value new attribute value (NORMAL or REVERSE), may be NULL.
+   *  @return EC_Normal if successful, an error code otherwise.
+   */
+  E_Condition setPolarity(const char *value);
+
+  /** sets the requested image size.
+   *  @param value new attribute value, may be NULL.
+   *  @return EC_Normal if successful, an error code otherwise.
+   */
+  E_Condition setRequestedImageSize(const char *value);
+
   /** sets the (optional) magnification type.
    *  @param value new attribute value, may be NULL.
    *    The caller is responsible for making sure
@@ -393,7 +410,10 @@ private:
 
 /*
  *  $Log: dvpsib.h,v $
- *  Revision 1.16  2000-06-08 10:44:29  meichel
+ *  Revision 1.17  2000-06-14 11:28:13  joergr
+ *  Added methods to access the attributes Polarity and Requested Image Size.
+ *
+ *  Revision 1.16  2000/06/08 10:44:29  meichel
  *  Implemented Referenced Presentation LUT Sequence on Basic Film Session level.
  *    Empty film boxes (pages) are not written to file anymore.
  *

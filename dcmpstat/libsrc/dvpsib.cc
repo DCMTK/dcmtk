@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DVPSImageBoxContent
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-06-08 10:44:35 $
- *  CVS/RCS Revision: $Revision: 1.20 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2000-06-14 11:28:59 $
+ *  CVS/RCS Revision: $Revision: 1.21 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -598,6 +598,12 @@ const char *DVPSImageBoxContent::getPolarity()
   if (EC_Normal == polarity.getString(c)) return c; else return NULL;
 }
 
+const char *DVPSImageBoxContent::getRequestedImageSize()
+{
+  char *c = NULL;
+  if (EC_Normal == requestedImageSize.getString(c)) return c; else return NULL;
+}
+
 const char *DVPSImageBoxContent::getMagnificationType()
 {
   char *c = NULL;
@@ -620,6 +626,37 @@ const char *DVPSImageBoxContent::getReferencedPresentationLUTInstanceUID()
 {
   char *c = NULL;
   if (EC_Normal == referencedPresentationLUTInstanceUID.getString(c)) return c; else return NULL;
+}
+
+E_Condition DVPSImageBoxContent::setPolarity(const char *value)
+{
+  E_Condition result = EC_IllegalCall;
+  if ((value==NULL)||(strlen(value)==0))
+  {
+    polarity.clear();
+    result = EC_Normal;
+  } else {
+    if ((result = polarity.putString(value)) == EC_Normal)
+    {
+      OFString str;
+      if ((result = polarity.getOFString(str, 0, OFTrue)) == EC_Normal)
+      {
+      	if ((str == "NORMAL") || (str == "REVERSE"))
+      	  result = EC_Normal;
+      }
+    }
+  }
+  return result;
+}
+
+E_Condition DVPSImageBoxContent::setRequestedImageSize(const char *value)
+{
+  if ((value==NULL)||(strlen(value)==0))
+  {
+    requestedImageSize.clear();
+    return EC_Normal;
+  }
+  return requestedImageSize.putString(value);
 }
 
 E_Condition DVPSImageBoxContent::setMagnificationType(const char *value)
@@ -1511,7 +1548,10 @@ void DVPSImageBoxContent::setLog(OFConsole *stream, OFBool verbMode, OFBool dbgM
 
 /*
  *  $Log: dvpsib.cc,v $
- *  Revision 1.20  2000-06-08 10:44:35  meichel
+ *  Revision 1.21  2000-06-14 11:28:59  joergr
+ *  Added methods to access the attributes Polarity and Requested Image Size.
+ *
+ *  Revision 1.20  2000/06/08 10:44:35  meichel
  *  Implemented Referenced Presentation LUT Sequence on Basic Film Session level.
  *    Empty film boxes (pages) are not written to file anymore.
  *

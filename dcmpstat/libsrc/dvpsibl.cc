@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DVPSImageBoxContent_PList
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-06-08 10:44:35 $
- *  CVS/RCS Revision: $Revision: 1.18 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2000-06-14 11:29:00 $
+ *  CVS/RCS Revision: $Revision: 1.19 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -273,6 +273,20 @@ OFBool DVPSImageBoxContent_PList::imageHasAdditionalSettings(size_t idx)
   return OFFalse; 
 }
 
+E_Condition DVPSImageBoxContent_PList::setImagePolarity(size_t idx, const char *value)
+{
+  DVPSImageBoxContent *box = getImageBox(idx);
+  if (box) return box->setPolarity(value);
+  return EC_IllegalCall; 
+}
+
+E_Condition DVPSImageBoxContent_PList::setImageRequestedSize(size_t idx, const char *value)
+{
+  DVPSImageBoxContent *box = getImageBox(idx);
+  if (box) return box->setRequestedImageSize(value);
+  return EC_IllegalCall; 
+}
+
 E_Condition DVPSImageBoxContent_PList::setImageMagnificationType(size_t idx, const char *value)
 {
   DVPSImageBoxContent *box = getImageBox(idx);
@@ -305,6 +319,13 @@ const char *DVPSImageBoxContent_PList::getImagePolarity(size_t idx)
 {
   DVPSImageBoxContent *box = getImageBox(idx);
   if (box) return box->getPolarity();
+  return NULL; 
+}
+
+const char *DVPSImageBoxContent_PList::getImageRequestedSize(size_t idx)
+{
+  DVPSImageBoxContent *box = getImageBox(idx);
+  if (box) return box->getRequestedImageSize();
   return NULL; 
 }
 
@@ -592,7 +613,10 @@ OFBool DVPSImageBoxContent_PList::emptyPageWarning()
 
 /*
  *  $Log: dvpsibl.cc,v $
- *  Revision 1.18  2000-06-08 10:44:35  meichel
+ *  Revision 1.19  2000-06-14 11:29:00  joergr
+ *  Added methods to access the attributes Polarity and Requested Image Size.
+ *
+ *  Revision 1.18  2000/06/08 10:44:35  meichel
  *  Implemented Referenced Presentation LUT Sequence on Basic Film Session level.
  *    Empty film boxes (pages) are not written to file anymore.
  *

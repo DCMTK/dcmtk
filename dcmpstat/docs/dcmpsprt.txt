@@ -9,11 +9,11 @@ SYNOPSIS
 
 SUMMARY
 
-The dcmpsprt utility reads one or more DICOM images and presentation states 
-and creates a print job.  The print job consists of one Stored Print object 
-and one or more Hardcopy Grayscale images and is written to the database 
-specified in the configuration file. The print job can optionally be 
-spooled to the printer. In this case, dcmpsprt calls the dcmprtsv 
+The dcmpsprt utility reads one or more DICOM images and presentation states
+and creates a print job.  The print job consists of one Stored Print object
+and one or more Hardcopy Grayscale images and is written to the database
+specified in the configuration file. The print job can optionally be
+spooled to the printer. In this case, dcmpsprt calls the dcmprtsv
 application which performs communication with the printer.
 
 USAGE
@@ -30,11 +30,11 @@ general options:
   -d    --debug                debug mode, print debug information
 processing options:
   +p    --pstate               [p]state-file: string
-                               render the following image with pres. state [p]
+                               render the following image with pres. state p
   -c    --config               [f]ilename: string
-                               process using settings from configuration file
+                               process using settings from configuration file f
   -p    --printer              [n]ame: string (default: 1st printer in cfg file)
-                               select printer with identifier [n] from cfg file
+                               select printer with identifier n from cfg file
 spooling options:
   -s    --spool                spool print job to DICOM printer
         --nospool              do not spool print job to DICOM printer (default)
@@ -55,26 +55,26 @@ print presentation LUT options:
         --default-plut         do not create presentation LUT (default)
         --identity             set IDENTITY presentation LUT shape
         --plut                 [l]ut identifier: string
-                               add LUT [l] to print job
+                               add LUT l to print job
         --inverse-plut         render the inverse presentation LUT into the
                                bitmap of the hardcopy grayscale image
         --illumination         [v]alue: integer (0..65535)
-                               set illumination to [v] cd/m^2
+                               set illumination to v (in cd/m^2)
         --reflection           [v]alue: integer (0..65535)
-                               set reflected ambient light to [v] cd/m^2
+                               set reflected ambient light to v (in cd/m^2)
 basic film session options (only with --spool):
         --copies               [v]alue: integer (1..100, default: 1)
-                               set number of copies to [v]
+                               set number of copies to v
         --medium-type          [v]alue: string
-                               set medium type to [v]
+                               set medium type to v
         --destination          [v]alue: string
-                               set film destination to [v]
+                               set film destination to v
         --label                [v]alue: string
-                               set film session label to [v]
+                               set film session label to v
         --priority             [v]alue: string
-                               set print priority to [v]
+                               set print priority to v
         --owner                [v]alue: string
-                               set film session owner ID to [v]
+                               set film session owner ID to v
 annotation options:
         --no-annotation        do not create annotation (default)
   -a    --annotation           [t]ext: string
@@ -86,32 +86,36 @@ annotation options:
   +pl   --print-lighting       prepend illumination to annotation (default)
   -pl   --print-no-lighting    do not prepend illumination to annotation
 other print options:
-  -l    --layout               [c]olumns, [r]ows: integer (default: 1,1)
+  -l    --layout               [c]olumns [r]ows: integer (default: 1 1)
                                use 'STANDARD\c,r' image display format
         --filmsize             [v]alue: string
-                               set film size ID to [v]
+                               set film size ID to v
         --magnification        [v]alue: string
-                               set magnification type to [v]
+                               set magnification type to v
         --smoothing            [v]alue: string
-                               set smoothing type to [v]
+                               set smoothing type to v
         --configinfo           [v]alue: string
-                               set configuration information to [v]
+                               set configuration information to v
         --resolution           [v]alue: string
-                               set requested resolution ID to [v]
+                               set requested resolution ID to v
         --border               [v]alue: string
-                               set border density to [v]
+                               set border density to v
         --empty-image          [v]alue: string
-                               set empty image density to [v]
+                               set empty image density to v
         --max-density          [v]alue: string
-                               set max density to [v]
+                               set max density to v
         --min-density          [v]alue: string
-                               set min density to [v]
+                               set min density to v
+        --img-polarity         [v]alue: string
+                               set image box polarity to v (NORMAL or REVERSE)
+        --img-request-size     [v]alue: string
+                               set requested image size to v (width in mm)
         --img-magnification    [v]alue: string
-                               set image box magnification type to [v]
+                               set image box magnification type to v
         --img-smoothing        [v]alue: string
-                               set image box smoothing type to [v]
+                               set image box smoothing type to v
         --img-configinfo       [v]alue: string
-                               set image box configuration information to [v]
+                               set image box configuration information to v
 
 
 ENVIRONMENT
@@ -121,9 +125,9 @@ specified in the DCMDICTPATH environment variable.  By default, if
 the DCMDICTPATH environment variable is not set, the file
 /usr/local/dicom/lib/dicom.dic will be loaded.  The default behaviour
 should be preferred and the DCMDICTPATH environment variable only used
-when alternative data dictionaries are required.  The DCMDICTPATH 
+when alternative data dictionaries are required.  The DCMDICTPATH
 environment variable has the same format as the shell PATH variable in
 that a colon (":") separates entries.  The data dictionary code will
-attempt to load each file specified in the DCMDICTPATH environment 
+attempt to load each file specified in the DCMDICTPATH environment
 variable.  It is an error if no data dictionary can be loaded.
 
