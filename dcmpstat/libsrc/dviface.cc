@@ -22,8 +22,8 @@
  *  Purpose: DVPresentationState
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-07-12 12:52:00 $
- *  CVS/RCS Revision: $Revision: 1.105 $
+ *  Update Date:      $Date: 2000-07-14 11:59:05 $
+ *  CVS/RCS Revision: $Revision: 1.106 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -778,11 +778,11 @@ Uint32 DVInterface::getNumberOfPStates()
 
 
 Uint32 DVInterface::getNumberOfPStates(const char *studyUID, const char *seriesUID, const char *instanceUID)
-{
-    if (createPStateCache())
+{    
+    DVInstanceCache::ItemStruct *instance = getInstanceStruct(studyUID, seriesUID, instanceUID);
+    if ((instance != NULL) && (instance->Type == DVPSI_image))
     {
-        DVInstanceCache::ItemStruct *instance = getInstanceStruct(studyUID, seriesUID, instanceUID);
-        if ((instance != NULL) && (instance->Type == DVPSI_image))
+        if (createPStateCache())
             return instance->List.size();
     }
     return 0;
@@ -3730,7 +3730,10 @@ E_Condition DVInterface::checkIOD(const char *studyUID, const char *seriesUID, c
 /*
  *  CVS/RCS Log:
  *  $Log: dviface.cc,v $
- *  Revision 1.105  2000-07-12 12:52:00  joergr
+ *  Revision 1.106  2000-07-14 11:59:05  joergr
+ *  Fixed bug in getNumberOfPStates(study,series,instance) method.
+ *
+ *  Revision 1.105  2000/07/12 12:52:00  joergr
  *  Fixed bug in loadPrintPreview routine.
  *
  *  Revision 1.104  2000/07/07 14:15:13  joergr
