@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DVInterface
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1998-12-22 17:57:03 $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  Last Update:      $Author: vorwerk $
+ *  Update Date:      $Date: 1999-01-04 13:02:26 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -152,7 +152,7 @@ class DVInterface
     const char *getSeriesDescription();
   /** returns the series performing physicians name of a series which is 
     selected by the methods  selectStudy and selectSeries */
-    const char *getSeriesPerformingPhysicainsName();
+    const char *getSeriesPerformingPhysiciansName();
   /** returns the series protocol name of a series which is selected by the 
     methods  selectStudy and selectSeries */
     const char *getSeriesProtocolName();
@@ -281,7 +281,10 @@ private:
 
 /*
  *  $Log: dviface.h,v $
- *  Revision 1.4  1998-12-22 17:57:03  meichel
+ *  Revision 1.5  1999-01-04 13:02:26  vorwerk
+ *  getSeriesPerformingPhysicainsName() changed in getSeriesPerformingPhysiciansName()
+ *
+ *  Revision 1.4  1998/12/22 17:57:03  meichel
  *  Implemented Presentation State interface for overlays,
  *    VOI LUTs, VOI windows, curves. Added test program that
  *    allows to add curve data to DICOM images.
