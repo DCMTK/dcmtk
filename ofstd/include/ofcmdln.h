@@ -22,9 +22,9 @@
  *  Purpose: Handle command line arguments (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-05-04 08:38:26 $
+ *  Update Date:      $Date: 1999-09-06 16:48:25 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/include/Attic/ofcmdln.h,v $
- *  CVS/RCS Revision: $Revision: 1.16 $
+ *  CVS/RCS Revision: $Revision: 1.17 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -180,16 +180,19 @@ struct OFCmdParamPos
 
     /** constructor
      *
-     ** @param  parIter   iterator pointing to a specific parameter
-     *  @param  optIter   iterator pointing to first option iterator in front of the parameter
-     *  @param  optCount  number of options in front of the parameter
+     ** @param  parIter    iterator pointing to a specific parameter
+     *  @param  optIter    iterator pointing to first option iterator in front of the parameter
+     *  @param  optCount   number of options in front of the parameter
+     *  @param  directOpt  status whether the direct predecessor in the argument list is an option
      */
     OFCmdParamPos(const OFListIterator(OFString) &parIter,
                   const OFListIterator(OFListIterator_OFString) &optIter,
-                  const int optCount)
+                  const int optCount,
+                  const OFBool directOpt)
       : ParamIter(parIter),
         OptionIter(optIter),
-        OptionCount(optCount)
+        OptionCount(optCount),
+        DirectOption(directOpt)
     {
     }
 
@@ -199,6 +202,8 @@ struct OFCmdParamPos
     const OFListIterator(OFListIterator_OFString) OptionIter;
     /// number of options in front of the parameter
     const int OptionCount;
+    /// status whether there the direct predecessor in argument list is an option
+    OFBool DirectOption;
 };
 
 
@@ -640,13 +645,16 @@ class OFCommandLine
      *  first one.
      *
      ** @param  longOpt  name of option (in long format) to be checked
-     *  @param  pos      position of reference parameter (default: all parameters)
+     *  @param  pos      position of reference parameter
+     *                   (default: all parameters; if value is negative option must be a direct
+     *                    predecessor of the specified reference parameter '-pos', no further
+     *                    search processes will be performed)
      *  @param  mode     find option mode (used to support option blocks)
      *
      ** @return OFTrue if option exists, OFFalse otherwise
      */
     OFBool findOption(const char *longOpt,
-                      const int pos = 0,
+                      const signed int pos = 0,
                       const E_FindOptionMode mode = FOM_Normal);
 
     /** returns current option as a C string.
@@ -883,7 +891,8 @@ class OFCommandLine
     
     /** stored the specified parameter in the argument/parameter list
      */
-    void storeParameter(const char *param);
+    void storeParameter(const char *param,
+                        const OFBool directOption = OFFalse);
 
     /** packs the two 16 bit values into one 32 bit value
      */
@@ -900,7 +909,8 @@ class OFCommandLine
     /** expands wildcards in specified parameter.
      *  Very similar to Unix environments, stores each resulting parameter in the argument/parameter list
      */
-    void expandWildcards(const char *param);
+    void expandWildcards(const char *param,
+                         const OFBool directOption = OFFalse);
 #endif
 
     /** checks whether number of parameters in parsed command line is within the range of min/max (see below)
@@ -962,7 +972,11 @@ class OFCommandLine
  *
  * CVS/RCS Log:
  * $Log: ofcmdln.h,v $
- * Revision 1.16  1999-05-04 08:38:26  joergr
+ * Revision 1.17  1999-09-06 16:48:25  joergr
+ * Added support to method 'findOption()' to detect options which are
+ * 'direct' predecessors of an optionally specified reference parameter.
+ *
+ * Revision 1.16  1999/05/04 08:38:26  joergr
  * Added DOC++ comments to header file.
  *
  * Revision 1.15  1999/04/29 15:21:45  joergr
