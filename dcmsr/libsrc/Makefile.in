@@ -1,0 +1,63 @@
+#
+#	Makefile for dcmsr/libsrc
+#
+
+
+@SET_MAKE@
+
+SHELL = /bin/sh
+VPATH=@srcdir@:@top_srcdir@/include:@top_srcdir@/@configdir@/include
+srcdir=@srcdir@
+top_srcdir=@top_srcdir@
+configdir=@top_srcdir@/@configdir@
+
+ofstddir=$(top_srcdir)/../ofstd
+dcmdatadir=$(top_srcdir)/../dcmdata
+
+LOCALINCLUDES=-I$(ofstddir)/include -I$(dcmdatadir)/include \
+  -I$(includedir)/ofstd -I$(includedir)/dcmdata
+
+
+LOCALDEFS= 
+
+include $(configdir)/@common_makefile@
+
+objs = dsrdoc.o dsrtree.o dsrtncsr.o dsrdoctn.o dsrdoctr.o \
+    dsrcitem.o dsrtypes.o dsrimgfr.o dsrscogr.o dsrwavch.o dsrscovl.o \
+    dsrcodvl.o dsrnumvl.o dsrimgvl.o dsrrefvl.o dsrstrvl.o dsrwavvl.o \
+    dsrtextn.o dsrcodtn.o dsrnumtn.o dsrdtitn.o dsrdattn.o dsrtimtn.o \
+    dsruidtn.o dsrpnmtn.o dsrcomtn.o dsrimgtn.o dsrwavtn.o dsrscotn.o \
+    dsrcontn.o 
+
+all: libdcmsr.$(LIBEXT)
+
+
+install: all
+	$(configdir)/mkinstalldirs $(libdir)
+	$(INSTALL_DATA) libdcmsr.$(LIBEXT) $(libdir)/libdcmsr.$(LIBEXT)
+
+
+clean:
+	rm -f $(objs) 
+	rm -f libdcmsr.$(LIBEXT) 
+	rm -f $(TRASH)
+
+distclean: clean
+	rm -f $(DISTTRASH) 
+
+
+libdcmsr.$(LIBEXT): $(objs)
+	$(AR) $(ARFLAGS) $@ $(objs)
+	$(RANLIB) $@
+
+
+# Dependencies
+
+dependencies:
+	$(CXX) -MM $(defines) $(includes) $(CPPFLAGS) $(CXXFLAGS) *.cc  > $(DEP)
+
+$(objs): config.h
+
+
+include $(DEP)
+

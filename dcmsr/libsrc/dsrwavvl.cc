@@ -1,0 +1,211 @@
+/*
+ *
+ *  Copyright (C) 2000, OFFIS
+ *
+ *  This software and supporting documentation were developed by
+ *
+ *    Kuratorium OFFIS e.V.
+ *    Healthcare Information and Communication Systems
+ *    Escherweg 2
+ *    D-26121 Oldenburg, Germany
+ *
+ *  THIS SOFTWARE IS MADE AVAILABLE,  AS IS,  AND OFFIS MAKES NO  WARRANTY
+ *  REGARDING  THE  SOFTWARE,  ITS  PERFORMANCE,  ITS  MERCHANTABILITY  OR
+ *  FITNESS FOR ANY PARTICULAR USE, FREEDOM FROM ANY COMPUTER DISEASES  OR
+ *  ITS CONFORMITY TO ANY SPECIFICATION. THE ENTIRE RISK AS TO QUALITY AND
+ *  PERFORMANCE OF THE SOFTWARE IS WITH THE USER.
+ *
+ *  Module:  dcmsr
+ *
+ *  Author:  Joerg Riesmeier
+ *
+ *  Purpose:
+ *    classes: DSRWaveformReferenceValue
+ *
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2000-10-13 07:52:30 $
+ *  CVS/RCS Revision: $Revision: 1.1 $
+ *  Status:           $State: Exp $
+ *
+ *  CVS/RCS Log at end of file
+ *
+ */
+
+
+#include "osconfig.h"    /* make sure OS specific configuration is included first */
+
+#include "dsrwavvl.h"
+
+
+DSRWaveformReferenceValue::DSRWaveformReferenceValue()
+  : DSRReferenceValue(),
+    ChannelList()
+{
+}
+
+
+DSRWaveformReferenceValue::DSRWaveformReferenceValue(const OFString &sopClassUID,
+                                                     const OFString &sopInstanceUID)
+  : DSRReferenceValue(),
+    ChannelList()
+{
+    /* check for appropriate SOP class UID */
+    DSRReferenceValue::setValue(sopClassUID, sopInstanceUID);
+}
+
+
+DSRWaveformReferenceValue::DSRWaveformReferenceValue(const DSRWaveformReferenceValue &referenceValue)
+  : DSRReferenceValue(referenceValue),
+    ChannelList(referenceValue.ChannelList)
+{
+    /* do not check since this would unexpected to the user */
+}
+
+
+DSRWaveformReferenceValue::~DSRWaveformReferenceValue()
+{
+}
+
+
+DSRWaveformReferenceValue &DSRWaveformReferenceValue::operator=(const DSRWaveformReferenceValue &referenceValue)
+{
+    DSRReferenceValue::operator=(referenceValue);
+    /* do not check since this would unexpected to the user */
+    ChannelList = referenceValue.ChannelList;
+    return *this;
+}
+
+
+void DSRWaveformReferenceValue::clear()
+{
+    DSRReferenceValue::clear();
+    ChannelList.clear();
+}
+
+
+OFBool DSRWaveformReferenceValue::isShort(const size_t flags) const
+{
+    return (ChannelList.isEmpty()) || !(flags & DSRTypes::HF_renderFullData);
+}
+
+
+E_Condition DSRWaveformReferenceValue::print(ostream &stream,
+                                             const size_t flags) const
+{
+    E_Condition result = DSRReferenceValue::print(stream, flags);
+    if (result == EC_Normal)
+    {
+        if (!ChannelList.isEmpty())
+        {
+            stream << ", \"";
+            result = ChannelList.print(stream, flags);
+            stream << "\"";
+        }
+    }
+    return result;
+}
+
+
+E_Condition DSRWaveformReferenceValue::readItem(DcmItem &dataset,
+                                                OFConsole *logStream)
+{
+    /* read ReferencedSOPClassUID and ReferencedSOPInstanceUID */
+    E_Condition result = DSRReferenceValue::readItem(dataset, logStream);
+    /* read ReferencedWaveformChannels (conditional) */
+    if (result == EC_Normal)
+        ChannelList.read(dataset, logStream);
+    return result;
+}
+
+
+E_Condition DSRWaveformReferenceValue::writeItem(DcmItem &dataset,
+                                                 OFConsole *logStream) const
+{
+    /* write ReferencedSOPClassUID and ReferencedSOPInstanceUID */
+    E_Condition result = DSRReferenceValue::writeItem(dataset, logStream);
+    /* write ReferencedWaveformChannels (conditional) */
+    if (result == EC_Normal)
+    {
+        if (!ChannelList.isEmpty())
+            result = ChannelList.write(dataset, logStream);
+    }
+    return result;
+}
+
+
+E_Condition DSRWaveformReferenceValue::renderHTML(ostream &docStream,
+                                                  ostream &annexStream,
+                                                  size_t &annexNumber,
+                                                  const size_t flags,
+                                                  OFConsole *logStream) const
+{
+    /* render reference */
+    E_Condition result = DSRReferenceValue::renderHTML(docStream, annexStream, annexNumber, flags, logStream);
+    /* render (optional) channel list */
+    if (!ChannelList.isEmpty() && (flags & DSRTypes::HF_renderFullData))
+    {
+        if (flags & DSRTypes::HF_currentlyInsideAnnex)
+        {
+            docStream << "<p>" << endl;
+            /* render channel list (= print)*/
+            docStream << "<b>Referenced Waveform Channels:</b><br>";
+            ChannelList.print(docStream);
+            docStream << "</p>" << endl;
+        } else {
+            DSRTypes::createHTMLAnnexEntry(docStream, annexStream, "for more details see", annexNumber);
+            annexStream << "<p>" << endl;
+            /* render channel list (= print)*/
+            annexStream << "<b>Referenced Waveform Channels:</b><br>";
+            ChannelList.print(annexStream);
+            annexStream << "</p>" << endl;
+        }
+    }
+    return result;
+}
+
+
+E_Condition DSRWaveformReferenceValue::getValue(DSRWaveformReferenceValue &referenceValue) const
+{
+    referenceValue = *this;
+    return EC_Normal;
+}
+
+
+E_Condition DSRWaveformReferenceValue::setValue(const DSRWaveformReferenceValue &referenceValue)
+{
+    E_Condition result = DSRReferenceValue::setValue(referenceValue.SOPClassUID, referenceValue.SOPInstanceUID);
+    if (result == EC_Normal)
+        ChannelList = referenceValue.ChannelList;
+    return result;
+}
+
+
+OFBool DSRWaveformReferenceValue::checkSOPClassUID(const OFString &sopClassUID) const
+{
+    OFBool result = OFFalse;
+    if (DSRReferenceValue::checkSOPClassUID(sopClassUID))
+    {
+        /* check for all valid/known SOP classes (according to supplement 30) */
+        if ((sopClassUID == UID_TwelveLeadECGWaveformStorage) ||
+            (sopClassUID == UID_GeneralECGWaveformStorage) ||
+            (sopClassUID == UID_AmbulatoryECGWaveformStorage) ||
+            (sopClassUID == UID_HemodynamicWaveformStorage) ||
+            (sopClassUID == UID_CardiacElectrophysiologyWaveformStorage) ||
+            (sopClassUID == UID_BasicVoiceAudioWaveformStorage))
+        {
+            result = OFTrue;
+        }
+    }
+    return result;
+}
+
+
+/*
+ *  CVS/RCS Log:
+ *  $Log: dsrwavvl.cc,v $
+ *  Revision 1.1  2000-10-13 07:52:30  joergr
+ *  Added new module 'dcmsr' providing access to DICOM structured reporting
+ *  documents (supplement 23).  Doc++ documentation not yet completed.
+ *
+ *
+ */

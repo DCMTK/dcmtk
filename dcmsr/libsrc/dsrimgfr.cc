@@ -1,0 +1,146 @@
+/*
+ *
+ *  Copyright (C) 2000, OFFIS
+ *
+ *  This software and supporting documentation were developed by
+ *
+ *    Kuratorium OFFIS e.V.
+ *    Healthcare Information and Communication Systems
+ *    Escherweg 2
+ *    D-26121 Oldenburg, Germany
+ *
+ *  THIS SOFTWARE IS MADE AVAILABLE,  AS IS,  AND OFFIS MAKES NO  WARRANTY
+ *  REGARDING  THE  SOFTWARE,  ITS  PERFORMANCE,  ITS  MERCHANTABILITY  OR
+ *  FITNESS FOR ANY PARTICULAR USE, FREEDOM FROM ANY COMPUTER DISEASES  OR
+ *  ITS CONFORMITY TO ANY SPECIFICATION. THE ENTIRE RISK AS TO QUALITY AND
+ *  PERFORMANCE OF THE SOFTWARE IS WITH THE USER.
+ *
+ *  Module:  dcmsr
+ *
+ *  Author:  Joerg Riesmeier
+ *
+ *  Purpose:
+ *    classes: DSRImageFrameList
+ *
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2000-10-13 07:52:20 $
+ *  CVS/RCS Revision: $Revision: 1.1 $
+ *  Status:           $State: Exp $
+ *
+ *  CVS/RCS Log at end of file
+ *
+ */
+
+
+#include "osconfig.h"    /* make sure OS specific configuration is included first */
+
+#include "dsrimgfr.h"
+
+
+DSRImageFrameList::DSRImageFrameList()
+  : DSRListOfItems<Sint32>()
+{
+}
+
+
+DSRImageFrameList::DSRImageFrameList(const DSRImageFrameList &list)
+  : DSRListOfItems<Sint32>(list)
+{
+}
+
+
+DSRImageFrameList::~DSRImageFrameList()
+{
+}
+
+
+DSRImageFrameList &DSRImageFrameList::operator=(const DSRImageFrameList &list)
+{
+    DSRListOfItems<Sint32>::operator=(list);
+    return *this;
+}
+
+
+E_Condition DSRImageFrameList::print(ostream &stream,
+                                     const size_t flags) const
+{
+    const OFListIterator(Sint32) endPos = OFList<Sint32>::end();
+    OFListIterator(Sint32) iterator = OFList<Sint32>::begin();
+    while (iterator != endPos)
+    {
+        stream << (*iterator);
+        iterator++;
+        if (flags & DSRTypes::PF_shortenLongItemValues)
+        {
+            stream << ",...";
+            iterator = endPos;
+        } else if (iterator != endPos)
+            stream << ",";
+    }
+    return EC_Normal;
+}
+
+
+E_Condition DSRImageFrameList::read(DcmItem &dataset,
+                                    OFConsole * /* logStream */)
+{
+    /* get integer string from dataset */
+    DcmIntegerString delem(DCM_ReferencedFrameNumber);
+    E_Condition result = DSRTypes::getElementFromDataset(dataset, delem);
+    if (result == EC_Normal)
+    {
+        /* clear internal list */
+        clear();
+        Sint32 value = 0;
+        const unsigned long count = delem.getVM();
+        /* fill list with values from integer string */
+        for (unsigned long i = 0; i < count; i++)
+        {
+            if (delem.getSint32(value, i) == EC_Normal)
+                addItem(value);
+        }
+    }
+    return result;
+}
+
+
+E_Condition DSRImageFrameList::write(DcmItem &dataset,
+                                     OFConsole * /* logStream */) const
+{
+    E_Condition result = EC_Normal;
+    /* fill string with values from list */
+    OFString string;
+    char buffer[16];
+    const OFListIterator(Sint32) endPos = OFList<Sint32>::end();
+    OFListIterator(Sint32) iterator = OFList<Sint32>::begin();
+    while (iterator != endPos)
+    {
+        if (string.length() > 0)
+            string += '\\';
+#if SIZEOF_LONG == 8
+    	sprintf(buffer, "%d", *iterator);
+#else
+    	sprintf(buffer, "%ld", *iterator);
+#endif
+        string += buffer;
+        iterator++;
+    }
+    /* set integer string */
+    DcmIntegerString delem(DCM_ReferencedFrameNumber);
+    result = delem.putOFStringArray(string);
+    /* add to dataset */
+    if (result == EC_Normal)
+        result = DSRTypes::addElementToDataset(result, dataset, new DcmIntegerString(delem));
+    return result;
+}
+
+
+/*
+ *  CVS/RCS Log:
+ *  $Log: dsrimgfr.cc,v $
+ *  Revision 1.1  2000-10-13 07:52:20  joergr
+ *  Added new module 'dcmsr' providing access to DICOM structured reporting
+ *  documents (supplement 23).  Doc++ documentation not yet completed.
+ *
+ *
+ */
