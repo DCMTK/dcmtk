@@ -10,9 +10,9 @@
 ** Implementation of class DcmElement
 **
 ** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1997-07-24 13:10:51 $
+** Update Date:		$Date: 1997-07-31 06:58:04 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcelem.cc,v $
-** CVS/RCS Revision:	$Revision: 1.18 $
+** CVS/RCS Revision:	$Revision: 1.19 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -716,6 +716,21 @@ E_Condition DcmElement::read(DcmStream & inStream,
     return errorFlag;
 }
 
+
+void DcmElement::swapValueField(
+    size_t valueWidth)
+{
+    if (Length != 0)
+    {
+	if (!fValue)
+	    errorFlag = this -> loadValue();
+	
+	if (errorFlag == EC_Normal)
+	    swapBytes(fValue, Length, valueWidth);
+
+    }
+}
+
 void DcmElement::transferInit(void)
 {
     DcmObject::transferInit();
@@ -786,7 +801,10 @@ E_Condition DcmElement::write(DcmStream & outStream,
 /*
 ** CVS/RCS Log:
 ** $Log: dcelem.cc,v $
-** Revision 1.18  1997-07-24 13:10:51  andreas
+** Revision 1.19  1997-07-31 06:58:04  andreas
+** new protected method swapValueField for DcmElement
+**
+** Revision 1.18  1997/07/24 13:10:51  andreas
 ** - Removed Warnings from SUN CC 2.0.1
 **
 ** Revision 1.17  1997/07/21 07:57:57  andreas

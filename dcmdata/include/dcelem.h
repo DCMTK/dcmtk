@@ -11,9 +11,9 @@
 **
 **
 ** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1997-07-21 07:57:53 $
+** Update Date:		$Date: 1997-07-31 06:57:59 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcelem.h,v $
-** CVS/RCS Revision:	$Revision: 1.10 $
+** CVS/RCS Revision:	$Revision: 1.11 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -57,6 +57,8 @@ protected:
     virtual void postLoadValue(void);
 
     virtual Uint8 * newValueField(void);
+
+    void swapValueField(size_t valueWidth);
 
 public:
     DcmElement(const DcmTag & tag, const Uint32 len = 0);
@@ -167,7 +169,10 @@ public:
 /*
 ** CVS/RCS Log:
 ** $Log: dcelem.h,v $
-** Revision 1.10  1997-07-21 07:57:53  andreas
+** Revision 1.11  1997-07-31 06:57:59  andreas
+** new protected method swapValueField for DcmElement
+**
+** Revision 1.10  1997/07/21 07:57:53  andreas
 ** - New method DcmElement::detachValueField to give control over the
 **   value field to the calling part (see dcelem.h)
 ** - Replace all boolean types (BOOLEAN, CTNBOOLEAN, DICOM_BOOL, BOOL)
