@@ -22,9 +22,9 @@
  *  Purpose: DicomInputPixel (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1998-12-22 14:18:40 $
+ *  Update Date:      $Date: 1999-01-20 15:00:54 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/diinpx.h,v $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  * 
  *   CVS/RCS Log at end of file
@@ -70,6 +70,11 @@ class DiInputPixel
         return AbsMaximum;
     }
     
+    inline double getAbsMaxRange() const
+    {
+        return AbsMaximum - AbsMinimum + 1;
+    }
+    
     inline unsigned long getCount() const
     {
         return Count;
@@ -92,7 +97,10 @@ class DiInputPixel
 **
 ** CVS/RCS Log:
 ** $Log: diinpx.h,v $
-** Revision 1.3  1998-12-22 14:18:40  joergr
+** Revision 1.4  1999-01-20 15:00:54  joergr
+** Added routine to calculate absolute range of pixel data.
+**
+** Revision 1.3  1998/12/22 14:18:40  joergr
 ** Added implementation of methods to return member variables AbsMinimum/
 ** Maximum.
 **
