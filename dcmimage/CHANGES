@@ -24,11 +24,16 @@
 
 - Corrected some typos and formatting.
   Affects: dcmimgle/include/diimage.h
+           dcmimgle/include/dimoimg.h
 
 - Changed behaviour of getLabel/Description/Explanation() methods: return
   NULL if string empty, no empty string "".
   Affects: dcmimgle/include/diluptab.h
            dcmimgle/include/diovpln.h
+
+- Removed unused parameter (BitsPerSample).
+  Affects: dcmimgle/include/dimoopxt.h
+           dcmimgle/libsrc/dimoimg.cc
 
 **** Changes from 1998.12.22 (riesmeier)
 
