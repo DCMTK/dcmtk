@@ -1,0 +1,611 @@
+/*
+ *
+ *  Copyright (C) 1998-99, OFFIS
+ *
+ *  This software and supporting documentation were developed by
+ *
+ *    Kuratorium OFFIS e.V.
+ *    Healthcare Information and Communication Systems
+ *    Escherweg 2
+ *    D-26121 Oldenburg, Germany
+ *
+ *  THIS SOFTWARE IS MADE AVAILABLE,  AS IS,  AND OFFIS MAKES NO  WARRANTY
+ *  REGARDING  THE  SOFTWARE,  ITS  PERFORMANCE,  ITS  MERCHANTABILITY  OR
+ *  FITNESS FOR ANY PARTICULAR USE, FREEDOM FROM ANY COMPUTER DISEASES  OR
+ *  ITS CONFORMITY TO ANY SPECIFICATION. THE ENTIRE RISK AS TO QUALITY AND
+ *  PERFORMANCE OF THE SOFTWARE IS WITH THE USER.
+ *
+ *  Module:  dcmpstat
+ *
+ *  Authors: Marco Eichelberg
+ *
+ *  Purpose: Presentation State Viewer - Network Send Component (Store SCU)
+ *
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 1999-01-20 19:26:17 $
+ *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmpstat/apps/dcmpssnd.cc,v $
+ *  CVS/RCS Revision: $Revision: 1.1 $
+ *  Status:           $State: Exp $
+ *
+ *  CVS/RCS Log at end of file
+ *
+ */
+ 
+
+#include "osconfig.h"    /* make sure OS specific configuration is included first */
+
+#ifdef HAVE_GUSI_H
+#include <GUSI.h>
+#endif
+
+BEGIN_EXTERN_C
+#ifdef HAVE_FCNTL_H
+#include <fcntl.h>    /* for O_RDONLY */
+#endif
+END_EXTERN_C
+
+#include "cmdlnarg.h"
+#include "ofcmdln.h"
+#include "dviface.h"
+#include "ofbmanip.h" /* for OFBitmanipTemplate */
+#include "dcuid.h"    /* for dcmtk version name */
+#include "diutil.h"
+
+static char rcsid[] = "$dcmtk: dcmpssnd v" OFFIS_DCMTK_VERSION " " OFFIS_DCMTK_RELEASEDATE " $";
+
+/* default Max PDU size to be used when no different value is defined in the configuration file */
+#define DEFAULT_MAXPDU 16384
+
+static void
+printHeader()
+{
+    cerr << "dcmpssnd: network send for presentation state viewer" << endl;
+}
+
+
+static void
+printUsage(const OFCommandLine &cmd)
+{
+    OFString str;
+    cmd.getOptionString(str);
+    printHeader();
+    cerr << "usage: dcmpssnd [options] config-file target study [series] [instance]" << endl;
+    cerr << "options are:" << endl << endl;
+    cerr << str << endl;
+    exit(0);
+}
+
+static void
+printError(const OFString &str)
+{
+    printHeader();
+    cerr << "error: " << str << endl;
+    exit(1);
+}
+
+/** sends a single DICOM instance over an association which must be already established.
+ *  @param assoc DICOM network association
+ *  @param sopClass SOP Class UID of the image (used for the C-Store-RQ)
+ *  @param sopInstance SOP Instance UID of the image (used for the C-Store-RQ)
+ *  @param imgFile path to the image file to be transmitted
+ *  @param opt_verbose flag indicating whether "verbose mode" is active.
+ *  @return DIMSE_NORMAL if successful, a different DIMSE code otherwise.
+ */
+static CONDITION sendImage(T_ASC_Association *assoc, const char *sopClass, const char *sopInstance, const char *imgFile, int opt_verbose)
+{
+    DcmDataset *statusDetail = NULL;
+    T_ASC_PresentationContextID presId=0;
+    T_DIMSE_C_StoreRQ req;
+    T_DIMSE_C_StoreRSP rsp;
+    int lockfd = 0;
+    
+    if (assoc == NULL) return DIMSE_NULLKEY;
+    if ((sopClass == NULL)||(strlen(sopClass) == 0)) return DIMSE_NULLKEY;
+    if ((sopInstance == NULL)||(strlen(sopInstance) == 0)) return DIMSE_NULLKEY;
+    if ((imgFile == NULL)||(strlen(imgFile) == 0)) return DIMSE_NULLKEY;
+        
+    /* shared lock image file */
+#ifdef O_BINARY
+    lockfd = open(imgFile, O_RDONLY | O_BINARY, 0666);
+#else
+    lockfd = open(imgFile, O_RDONLY, 0666);
+#endif
+    if (lockfd < 0)
+    {
+      if (opt_verbose) cerr << "error: unable to lock image file '" << imgFile << "'" << endl;
+      return DIMSE_BADDATA;
+    }
+    flock(lockfd, LOCK_SH);
+
+    /* which presentation context should be used */
+    presId = ASC_findAcceptedPresentationContextID(assoc, sopClass);
+    if (presId == 0)
+    {
+      if (opt_verbose) cerr << "error: no presentation context for: (" << DU_sopClassToModality(sopClass) << ") " << sopClass << endl;
+      return DIMSE_NOVALIDPRESENTATIONCONTEXTID;
+    }
+
+    /* start store */
+    OFBitmanipTemplate<char>::zeroMem((char *)&req, sizeof(req));
+    req.MessageID = assoc->nextMsgID++;
+    strcpy(req.AffectedSOPClassUID, sopClass);
+    strcpy(req.AffectedSOPInstanceUID, sopInstance);
+    req.DataSetType = DIMSE_DATASET_PRESENT;
+    req.Priority = DIMSE_PRIORITY_MEDIUM;
+
+    CONDITION cond = DIMSE_storeUser(assoc, presId, &req,
+        imgFile, NULL, NULL, NULL, DIMSE_BLOCKING, 0, &rsp, &statusDetail);
+
+    /* unlock image file */
+    flock(lockfd, LOCK_UN);
+    close(lockfd);
+
+    if (cond == DIMSE_NORMAL) 
+    {
+       if (opt_verbose) cerr << "[MsgID " << req.MessageID << "] Complete [Status: " 
+          << DU_cstoreStatusString(rsp.DimseStatus) << "]" << endl;
+    } else {
+       if (opt_verbose) 
+       { 
+          cerr << "[MsgID " << req.MessageID << "] Failed [Status: " 
+          << DU_cstoreStatusString(rsp.DimseStatus) << "]" << endl;
+          COND_DumpConditions();
+       }
+       COND_PopCondition(OFTrue);
+    }
+    if (statusDetail) delete statusDetail;
+    return cond;
+}
+
+/** sends a complete DICOM study, series or a single instance
+ *  over an association which must be already established.
+ *  The instances (files) to be transmitted are derived from the database.
+ *  @param handle open database handle
+ *  @param assoc DICOM network association
+ *  @param studyUID Study Instance UID of the study/series/image to be transmitted.
+ *  @param seriesUID Series Instance UID of the series/image to be transmitted.
+ *    If NULL, a complete study is transmitted.
+ *  @param instanceUID SOP Instance UID of the image to be transmitted.
+ *    If NULL, a complete series is transmitted.
+ *  @param opt_verbose flag indicating whether "verbose mode" is active.
+ *  @return DIMSE_NORMAL if successful, a different DIMSE code otherwise.
+ */
+
+static CONDITION sendStudy(
+  DB_Handle *handle,
+  T_ASC_Association *assoc, 
+  const char *studyUID,
+  const char *seriesUID,
+  const char *instanceUID,
+  int opt_verbose)
+{
+    if ((handle==NULL)||(assoc==NULL)||(studyUID==NULL)) return DIMSE_NULLKEY;
+    
+    /* build query */
+    DcmDataset query;
+    if (EC_Normal != DVInterface::putStringValue(&query, DCM_StudyInstanceUID, studyUID)) return DIMSE_BUILDFAILED;
+    if (seriesUID && instanceUID)
+    {
+      if (EC_Normal != DVInterface::putStringValue(&query, DCM_QueryRetrieveLevel, "IMAGE")) return DIMSE_BUILDFAILED;
+      if (EC_Normal != DVInterface::putStringValue(&query, DCM_SeriesInstanceUID, seriesUID)) return DIMSE_BUILDFAILED;
+      if (EC_Normal != DVInterface::putStringValue(&query, DCM_SOPInstanceUID, instanceUID)) return DIMSE_BUILDFAILED;
+      if (opt_verbose)
+      {
+        cerr << "Sending at IMAGE level:" << endl
+             << "  Study Instance UID : " << studyUID << endl
+             << "  Series Instance UID: " << seriesUID << endl
+             << "  SOP Instance UID   : " << instanceUID << endl << endl;            
+      }   
+    } 
+    else if (seriesUID)
+    {
+      if (EC_Normal != DVInterface::putStringValue(&query, DCM_QueryRetrieveLevel, "SERIES")) return DIMSE_BUILDFAILED;
+      if (EC_Normal != DVInterface::putStringValue(&query, DCM_SeriesInstanceUID, seriesUID)) return DIMSE_BUILDFAILED;
+      if (opt_verbose)
+      {
+        cerr << "Sending at SERIES level:" << endl
+             << "  Study Instance UID : " << studyUID << endl
+             << "  Series Instance UID: " << seriesUID << endl << endl;    
+      }   
+    }
+    else
+    {
+      if (EC_Normal != DVInterface::putStringValue(&query, DCM_QueryRetrieveLevel, "STUDY")) return DIMSE_BUILDFAILED;
+      if (opt_verbose)
+      {
+        cerr << "Sending at STUDY level:" << endl
+             << "  Study Instance UID : " << studyUID << endl << endl;  
+      }   
+    }
+
+    DB_Status dbStatus;
+    DIC_UI sopClass;
+    DIC_UI sopInstance;
+    char imgFile[MAXPATHLEN+1];
+    DIC_US nRemaining = 0;
+
+    dbStatus.status = STATUS_Pending;
+    dbStatus.statusDetail = NULL;
+
+    CONDITION cond = DB_startMoveRequest(handle, UID_MOVEStudyRootQueryRetrieveInformationModel, &query, &dbStatus);
+    if (cond != DB_NORMAL) return cond;
+
+    while (dbStatus.status == STATUS_Pending)
+    {
+      cond = DB_nextMoveResponse(handle, sopClass, sopInstance, imgFile, &nRemaining, &dbStatus);
+      if (cond != DB_NORMAL) return cond;
+        
+      if (dbStatus.status == STATUS_Pending)
+      {
+        cond = sendImage(assoc, sopClass, sopInstance, imgFile, opt_verbose);
+        if (cond != DIMSE_NORMAL)
+        {
+          DB_cancelMoveRequest(handle, &dbStatus);
+          return cond;
+        }
+      }
+    }
+    return cond;
+}
+
+/** adds presentation contexts for all storage SOP classes
+ *  to the association parameters.
+ *  If the opt_implicitOnly flag is set, only Implicit VR Little Endian
+ *  is offered as transfer syntax. Otherwise, three xfer syntaxes are offered:
+ *  first the explicit VR with local byte ordering, followed by explicit VR
+ *  with opposite byte ordering, followed by implicit VR little endian.
+ *  @param params parameter set to which presentation contexts are added
+ *  @param opt_implicitOnly flag defining whether only Implicit VR Little Endian
+ *    should be offered as xfer syntax.
+ *  @return ASC_NORMAL upon success, an error code otherwise.
+ */
+static CONDITION addAllStoragePresentationContexts(T_ASC_Parameters *params, int opt_implicitOnly)
+{
+    CONDITION cond = ASC_NORMAL;
+    int pid = 1;
+
+    const char* transferSyntaxes[3];
+    int transferSyntaxCount = 0;
+
+    if (opt_implicitOnly)
+    {
+	transferSyntaxes[0] = UID_LittleEndianImplicitTransferSyntax;
+	transferSyntaxCount = 1;
+    } else {
+	/* gLocalByteOrder is defined in dcxfer.h */
+	if (gLocalByteOrder == EBO_LittleEndian) {
+	    /* we are on a little endian machine */
+	    transferSyntaxes[0] = UID_LittleEndianExplicitTransferSyntax;
+	    transferSyntaxes[1] = UID_BigEndianExplicitTransferSyntax;
+	} else {
+	    /* we are on a big endian machine */
+	    transferSyntaxes[0] = UID_BigEndianExplicitTransferSyntax;
+	    transferSyntaxes[1] = UID_LittleEndianExplicitTransferSyntax;
+	}
+	transferSyntaxes[2] = UID_LittleEndianImplicitTransferSyntax;
+	transferSyntaxCount = 3;
+    }
+
+    for (int i=0; i<numberOfDcmStorageSOPClassUIDs && SUCCESS(cond); i++) {
+	cond = ASC_addPresentationContext(
+	    params, pid, dcmStorageSOPClassUIDs[i],
+	    transferSyntaxes, transferSyntaxCount);
+	pid += 2;	/* only odd presentation context id's */
+    }
+
+    return cond;
+}
+
+// ********************************************
+
+int main(int argc, char *argv[])
+{
+        
+#ifdef HAVE_GUSI_H
+    GUSISetup(GUSIwithSIOUXSockets);
+    GUSISetup(GUSIwithInternetSockets);
+#endif
+
+#ifdef HAVE_WINSOCK_H
+    WSAData winSockData;
+    /* we need at least version 1.1 */
+    WORD winSockVersionNeeded = MAKEWORD( 1, 1 );
+    WSAStartup(winSockVersionNeeded, &winSockData);
+#endif
+        
+    OFCommandLine cmd;
+    OFString str;
+
+    int         opt_verbose     = 0;                   /* default: not verbose */
+    const char *opt_cfgName     = NULL;                /* config file name */
+    const char *opt_target      = NULL;                /* send target name */
+    const char *opt_studyUID    = NULL;                /* study instance UID */
+    const char *opt_seriesUID   = NULL;                /* series instance UID */
+    const char *opt_instanceUID = NULL;                /* instance instance UID */
+
+    SetDebugLevel(( 0 ));
+  
+    prepareCmdLineArgs(argc, argv, "dcmp2pgm");
+      
+    cmd.addGroup("options:");
+     cmd.addOption("--help",        "-h",    "print this help screen");
+     cmd.addOption("--verbose",     "+V",    "verbose mode, print image details");
+     
+    switch (cmd.parseLine(argc, argv))    
+    {
+        case OFCommandLine::PS_NoArguments:
+            printUsage(cmd);
+            break;
+        case OFCommandLine::PS_UnknownOption:
+            cmd.getStatusString(OFCommandLine::PS_UnknownOption, str);
+            printError(str);
+            break;
+        case OFCommandLine::PS_MissingValue:
+            cmd.getStatusString(OFCommandLine::PS_MissingValue, str);
+            printError(str);
+            break;
+        case OFCommandLine::PS_Normal:
+            if ((cmd.getArgCount() == 1) && cmd.findOption("--help"))
+                printUsage(cmd);
+            else if (cmd.getParamCount() == 0)
+                printError("Missing configuration file name");
+            else if (cmd.getParamCount() == 1)
+                printError("Missing send target");
+            else if (cmd.getParamCount() == 2)
+                printError("Missing study instance UID");
+            else if (cmd.getParamCount() > 5)
+                printError("Too many arguments");
+            else 
+            {
+                cmd.getParam(1, opt_cfgName);
+                cmd.getParam(2, opt_target);
+                cmd.getParam(3, opt_studyUID);
+                if (cmd.getParamCount() >= 4) cmd.getParam(4, opt_seriesUID);
+                if (cmd.getParamCount() >= 5) cmd.getParam(5, opt_instanceUID);
+                if (cmd.findOption("--verbose")) opt_verbose = 1;
+            }
+    }
+
+    if (opt_verbose)
+    {
+      cerr << rcsid << endl << endl;
+    }
+    
+    if (opt_cfgName)
+    {
+      FILE *cfgfile = fopen(opt_cfgName, "rb");
+      if (cfgfile) fclose(cfgfile); else
+      {
+        cerr << "error: can't open configuration file '" << opt_cfgName << "'" << endl;
+        return 10;
+      }
+    } else {
+        cerr << "error: missing configuration file name" << endl;
+        return 10;
+    }
+
+    /* make sure data dictionary is loaded */
+    if (!dcmDataDict.isDictionaryLoaded())
+    {
+	cerr << "Warning: no data dictionary loaded, check environment variable: " << DCM_DICT_ENVIRONMENT_VARIABLE << endl;
+    }
+    
+    DVInterface dvi(0, opt_cfgName);
+
+    /* get send target from configuration file */
+    const char *targetHostname    = dvi.getTargetHostname(opt_target);
+    const char *targetDescription = dvi.getTargetDescription(opt_target);
+    const char *targetAETitle     = dvi.getTargetAETitle(opt_target);
+    unsigned short targetPort     = dvi.getTargetPort(opt_target);
+    unsigned long  targetMaxPDU   = dvi.getTargetMaxPDU(opt_target);
+    OFBool targetImplicitOnly     = dvi.getTargetImplicitOnly(opt_target);
+    OFBool targetDisableNewVRs    = dvi.getTargetDisableNewVRs(opt_target);
+
+    if (targetHostname==NULL)
+    {
+        cerr << "error: no hostname for send target '" << opt_target << "'" << endl;
+        return 10;
+    }
+
+    if (targetAETitle==NULL)
+    {
+        cerr << "error: no aetitle for send target '" << opt_target << "'" << endl;
+        return 10;
+    }
+
+    if (targetPort==0)
+    {
+        cerr << "error: no or invalid port number for send target '" << opt_target << "'" << endl;
+        return 10;
+    }
+
+    if (targetMaxPDU==0) targetMaxPDU = DEFAULT_MAXPDU;
+    else if (targetMaxPDU > 65536)
+    {
+        cerr << "warning: max PDU size " << targetMaxPDU << " too big for send target '" 
+             << opt_target << "', using default: " << DEFAULT_MAXPDU << endl;
+        targetMaxPDU = DEFAULT_MAXPDU;
+    }
+    
+    if (targetDisableNewVRs)
+    {
+      dcmEnableUnknownVRGeneration = OFFalse;
+      dcmEnableUnlimitedTextVRGeneration = OFFalse;
+      dcmEnableVirtualStringVRGeneration = OFFalse;
+    }
+    
+    if (opt_verbose)
+    {
+      cerr << "Send target parameters:" << endl
+           << "  hostname   : " << targetHostname << endl
+           << "  port       : " << targetPort << endl
+           << "  description: ";
+      if (targetDescription) cerr << targetDescription; else cerr << "(none)";
+      cerr << endl
+           << "  aetitle    : " << targetAETitle << endl
+           << "  max pdu    : " << targetMaxPDU << endl
+           << "  options    : ";
+      if (targetImplicitOnly && targetDisableNewVRs) cerr << "implicit xfer syntax only, disable post-1998 VRs";
+      else if (targetImplicitOnly) cerr << "implicit xfer syntax only";
+      else if (targetDisableNewVRs) cerr << "disable post-1998 VRs";
+      else cerr << "none.";
+      cerr << endl << endl;
+    }
+    
+    /* open database */
+    const char *dbfolder = dvi.getDatabaseFolder();
+    DB_Handle *dbhandle = NULL; 
+
+    if (opt_verbose)
+    {
+      cerr << "Opening database in directory '" << dbfolder << "'" << endl;
+    }
+    if (DB_NORMAL != DB_createHandle(dbfolder, PSTAT_MAXSTUDYCOUNT, PSTAT_STUDYSIZE, &dbhandle))
+    {
+      cerr << "Unable to access database '" << dbfolder << "'" << endl;
+      COND_DumpConditions();
+      return 1;
+    }
+
+    /* open network connection */
+    T_ASC_Network *net=NULL;
+    T_ASC_Parameters *params=NULL;
+    DIC_NODENAME localHost;
+    DIC_NODENAME peerHost;
+    T_ASC_Association *assoc=NULL;
+
+    CONDITION cond = ASC_initializeNetwork(NET_REQUESTOR, 0, 1000, &net);
+    if (!SUCCESS(cond))
+    {
+      COND_DumpConditions();
+      return 1;
+    }
+    cond = ASC_createAssociationParameters(&params, targetMaxPDU);
+    if (!SUCCESS(cond))
+    {
+      COND_DumpConditions();
+      return 1;
+    }
+
+    ASC_setAPTitles(params, dvi.getMyAETitle(), targetAETitle, NULL);
+
+    gethostname(localHost, sizeof(localHost) - 1);
+    sprintf(peerHost, "%s:%d", targetHostname, (int)targetPort);
+    ASC_setPresentationAddresses(params, localHost, peerHost);
+
+    cond = addAllStoragePresentationContexts(params, targetImplicitOnly);
+    if (!SUCCESS(cond))
+    {
+      COND_DumpConditions();
+      return 1;
+    }
+
+    /* create association */
+    if (opt_verbose) cerr << "Requesting Association" << endl;
+    
+    cond = ASC_requestAssociation(net, params, &assoc);
+    if (cond != ASC_NORMAL)
+    {
+	if (cond == ASC_ASSOCIATIONREJECTED)
+	{
+	    T_ASC_RejectParameters rej;
+
+	    ASC_getRejectParameters(params, &rej);
+            cerr << "Association Rejected" << endl;
+	    ASC_printRejectParameters(stderr, &rej);
+	    return 1;
+	} else {
+            cerr << "Association Request Failed" << endl;
+	    COND_DumpConditions();
+	    return 1;
+	}
+    }
+    
+    if (ASC_countAcceptedPresentationContexts(params) == 0)
+    {
+      cerr << "No Acceptable Presentation Contexts" << endl;
+      return 1;
+    }
+
+    if (opt_verbose) cerr << "Association accepted (Max Send PDV: " << assoc->sendPDVLength << ")" << endl;
+
+    /* do the real work */
+    cond = sendStudy(dbhandle, assoc, opt_studyUID, opt_seriesUID, opt_instanceUID, opt_verbose);
+
+    /* tear down association */
+    switch (cond)
+    {
+      case DIMSE_NORMAL:
+      case DB_NORMAL:
+	/* release association */
+	if (opt_verbose) cerr << "Releasing Association" << endl;
+	cond = ASC_releaseAssociation(assoc);
+	if (cond != ASC_NORMAL && cond != ASC_RELEASECONFIRMED)
+	{
+          cerr << "Association Release Failed" << endl;
+	  COND_DumpConditions();
+          return 1;
+	}
+	break;
+      case DIMSE_PEERREQUESTEDRELEASE:
+        cerr << "Protocol Error: peer requested release (Aborting)" << endl;
+	if (opt_verbose) cerr << "Aborting Association" << endl;
+	cond = ASC_abortAssociation(assoc);
+	if (!SUCCESS(cond))
+	{
+            cerr << "Association Abort Failed" << endl;
+	    COND_DumpConditions();
+            return 1;
+	}
+	break;
+      case DIMSE_PEERABORTEDASSOCIATION:
+	if (opt_verbose) cerr << "Peer Aborted Association" << endl;
+	break;
+      default:
+        cerr << "SCU Failed" << endl;
+	COND_DumpConditions();
+	if (opt_verbose) cerr << "Aborting Association" << endl;
+	cond = ASC_abortAssociation(assoc);
+	if (!SUCCESS(cond))
+	{
+            cerr << "Association Abort Failed" << endl;
+	    COND_DumpConditions();
+            return 1;
+	}
+	break;
+    }
+
+    cond = ASC_destroyAssociation(&assoc);
+    if (!SUCCESS(cond))
+    {
+      COND_DumpConditions();
+      return 1;
+    }
+    cond = ASC_dropNetwork(&net);
+    if (!SUCCESS(cond))
+    {
+      COND_DumpConditions();
+      return 1;
+    }
+
+    /* clean up DB handle */
+    DB_destroyHandle(&dbhandle);
+    
+#ifdef HAVE_WINSOCK_H
+    WSACleanup();
+#endif
+
+    return 0;    
+}
+
+
+/*
+ * CVS/RCS Log:
+ * $Log: dcmpssnd.cc,v $
+ * Revision 1.1  1999-01-20 19:26:17  meichel
+ * Implemented DICOM network send application "dcmpssnd" which sends studies/
+ *   series/images contained in the local database to a remote DICOM
+ *   communication peer.
+ *
+ *
+ */
