@@ -24,9 +24,9 @@
  *  routines for finding and creating UIDs.
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-06-14 14:04:06 $
+ *  Update Date:      $Date: 2001-11-02 15:44:02 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcuid.h,v $
- *  CVS/RCS Revision: $Revision: 1.45 $
+ *  CVS/RCS Revision: $Revision: 1.46 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -158,6 +158,7 @@ unsigned long dcmGuessModalityBytes(const char *sopClassUID);
 
 #define OFFIS_UID_ROOT                          "1.2.276.0.7230010.3"
 #define OFFIS_DCMTK_VERSION                     "3.5.0"
+#define OFFIS_DCMTK_VERSION_NUMBER              350
 #define OFFIS_IMPLEMENTATION_CLASS_UID          OFFIS_UID_ROOT ".0." OFFIS_DCMTK_VERSION
 #define OFFIS_INSTANCE_CREATOR_UID              OFFIS_IMPLEMENTATION_CLASS_UID
 
@@ -426,7 +427,10 @@ unsigned long dcmGuessModalityBytes(const char *sopClassUID);
 /*
 ** CVS/RCS Log:
 ** $Log: dcuid.h,v $
-** Revision 1.45  2001-06-14 14:04:06  meichel
+** Revision 1.46  2001-11-02 15:44:02  meichel
+** Introduced DCMTK version number macro OFFIS_DCMTK_VERSION_NUMBER in dcuid.h
+**
+** Revision 1.45  2001/06/14 14:04:06  meichel
 ** Updated Version Number and Implementation Version Name to reflect the
 **   current public release (3.5.0)
 **
