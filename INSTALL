@@ -241,6 +241,27 @@ On Windows, the Visual C++ project files provided as part of the toolkit
 expect a directory named ...
 
 
+TCP WRAPPER (LIBWRAP) SUPPORT
+=============================
+
+Starting with release 3.5.3, DCMTK supports Wietse Venema's TCP wrappers 
+library (libwrap) which is freely available for most Unix platforms and 
+part of the default installation of most recent Linux distributions. 
+This library allows to enforce host-based access control via the 
+/etc/hosts_deny and /etc/hosts_allow configuration files. See 
+hosts_access(5) for details.  This release of DCMTK is known to compile 
+with the current TCP wrappers release 7.6, although older releases may 
+work as well.  The TCP wrappers library is available for download from
+ftp://ftp.porcupine.org/pub/security/tcp_wrappers_7.6.tar.gz
+
+On Unix platforms, if support for TCP wrappers is desired, a compiled 
+version of the libwrap library and include file (tcpd.h) must be available 
+during compilation of DCMTK, and the libwrap support must be switched on 
+explicitly.  By default, DCMTK compiles without libwrap support.
+
+On Windows, TCP wrappers are currently not supported.
+
+
 BUILDING (Unix)
 ===============
 
@@ -289,11 +310,12 @@ Configure will assume that the OpenSSL include files are installed in
 /usr/local/apps/openssl-0.9.6h/lib. Appropriate options will be passed 
 to the compiler and the linker.
 
-Support for libtiff, libpng and libxml can be enabled in a similar way:
+Support for libtiff, libpng, libxml and libwrap can be enabled in a similar way:
 
     ./configure --with-libtiff --with-libtiffinc=/usr/local/apps/libtiff-3.5.7
                 --with-libpng --with-libpnginc=/usr/local/apps/libpng-1.2.5
                 --with-libxml --with-libxmlinc=/usr/local/apps/libxml-2.5.5
+                --with-libwrap --with-libwrapinc=/usr/local/apps/tcp_wrappers-7.6
 
 Different configure options can be combined in any order. configure --help
 will print a list of all existing configure options.  Useful configure
