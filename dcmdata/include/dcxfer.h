@@ -22,9 +22,9 @@
  *  Purpose: Handling of transfer syntaxes
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-04-14 16:01:23 $
+ *  Update Date:      $Date: 2001-01-17 10:20:36 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcxfer.h,v $
- *  CVS/RCS Revision: $Revision: 1.11 $
+ *  CVS/RCS Revision: $Revision: 1.12 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -67,7 +67,9 @@ typedef enum {
     EXS_JPEGProcess28TransferSyntax = 19,
     EXS_JPEGProcess29TransferSyntax = 20,
     EXS_JPEGProcess14SV1TransferSyntax = 21,
-    EXS_RLELossless = 22
+    EXS_RLELossless = 22,
+    EXS_JPEGLSLossless = 23,
+    EXS_JPEGLSLossy = 24
 } E_TransferSyntax;
 
 
@@ -151,7 +153,10 @@ extern const E_ByteOrder gLocalByteOrder;
 /*
  * CVS/RCS Log:
  * $Log: dcxfer.h,v $
- * Revision 1.11  2000-04-14 16:01:23  meichel
+ * Revision 1.12  2001-01-17 10:20:36  meichel
+ * Added toolkit support for JPEG-LS transfer syntaxes
+ *
+ * Revision 1.11  2000/04/14 16:01:23  meichel
  * Minor changes for thread safety.
  *
  * Revision 1.10  2000/03/08 16:26:28  meichel
