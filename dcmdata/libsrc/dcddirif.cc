@@ -22,8 +22,8 @@
  *  Purpose: Interface class for simplified creation of a DICOMDIR
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2004-02-13 11:48:13 $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  Update Date:      $Date: 2004-02-13 14:16:41 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -580,6 +580,12 @@ static OFString recordTypeToName(const E_DirRecType recordType)
         case ERT_KeyObjectDoc:
             recordName = "KeyObjectDoc";
             break;
+        case ERT_Registration:
+            recordName = "Registration";
+            break;
+        case ERT_Fiducial:
+            recordName = "Fiducial";
+            break;
         default:
             recordName = "(unknown-directory-record-type)";
             break;
@@ -609,7 +615,8 @@ static E_DirRecType sopClassToRecordType(const OFString &sopClass)
              compare(sopClass, UID_EnhancedSR) ||
              compare(sopClass, UID_ComprehensiveSR) ||
              compare(sopClass, UID_MammographyCADSR) ||
-             compare(sopClass, UID_ChestCADSR))
+             compare(sopClass, UID_ChestCADSR) ||
+             compare(sopClass, UID_ProcedureLogStorage))
     {
         result = ERT_StructReport;
     }
@@ -640,6 +647,10 @@ static E_DirRecType sopClassToRecordType(const OFString &sopClass)
         result = ERT_StoredPrint;
     else if (compare(sopClass, UID_KeyObjectSelectionDocument))
         result = ERT_KeyObjectDoc;
+    else if (compare(sopClass, UID_SpatialRegistrationStorage))
+        result = ERT_Registration;
+    else if (compare(sopClass, UID_SpatialFiducialsStorage))
+        result = ERT_Fiducial;
     return result;
 }
 
@@ -777,6 +788,8 @@ static OFCondition insertSortedUnder(DcmDirectoryRecord *parent,
             case ERT_RTTreatRecord:
             case ERT_StoredPrint:
             case ERT_KeyObjectDoc:
+            case ERT_Registration:
+            case ERT_Fiducial:
                 /* try to insert based on InstanceNumber */
                 result = insertWithISCriterion(parent, child, DCM_InstanceNumber);
                 break;
@@ -1242,8 +1255,9 @@ OFCondition DicomDirInterface::checkSOPClassAndXfer(DcmMetaInfo *metainfo,
                     found = found || compare(mediaSOPClassUID, UID_EnhancedSR);
                     found = found || compare(mediaSOPClassUID, UID_ComprehensiveSR);
                     found = found || compare(mediaSOPClassUID, UID_MammographyCADSR);
-                    found = found || compare(mediaSOPClassUID, UID_KeyObjectSelectionDocument);
                     found = found || compare(mediaSOPClassUID, UID_ChestCADSR);
+                    found = found || compare(mediaSOPClassUID, UID_ProcedureLogStorage);
+                    found = found || compare(mediaSOPClassUID, UID_KeyObjectSelectionDocument);
                     /* is it one of the waveform SOP Classes? */
                     found = found || compare(mediaSOPClassUID, UID_TwelveLeadECGWaveformStorage);
                     found = found || compare(mediaSOPClassUID, UID_GeneralECGWaveformStorage);
@@ -1251,6 +1265,9 @@ OFCondition DicomDirInterface::checkSOPClassAndXfer(DcmMetaInfo *metainfo,
                     found = found || compare(mediaSOPClassUID, UID_HemodynamicWaveformStorage);
                     found = found || compare(mediaSOPClassUID, UID_CardiacElectrophysiologyWaveformStorage);
                     found = found || compare(mediaSOPClassUID, UID_BasicVoiceAudioWaveformStorage);
+                    /* is it one of the spatial registration SOP Classes? */
+                    found = found || compare(mediaSOPClassUID, UID_SpatialRegistrationStorage);
+                    found = found || compare(mediaSOPClassUID, UID_SpatialFiducialsStorage);
                     /* a detached patient mgmt sop class is also ok */
                     found = found || compare(mediaSOPClassUID, UID_DetachedPatientManagementSOPClass);
                 }
@@ -1931,6 +1948,26 @@ OFCondition DicomDirInterface::checkMandatoryAttributes(DcmMetaInfo *metainfo,
                 if (!checkExistsWithValue(dataset, DCM_ConceptNameCodeSequence, filename))
                     result = EC_InvalidTag;
                 break;
+            case ERT_Registration:
+                if (!checkExistsWithValue(dataset, DCM_InstanceNumber, filename))
+                    result = EC_InvalidTag;
+                if (!checkExistsWithValue(dataset, DCM_ContentDate, filename))
+                    result = EC_InvalidTag;
+                if (!checkExistsWithValue(dataset, DCM_ContentTime, filename))
+                    result = EC_InvalidTag;
+                if (!checkExistsWithValue(dataset, DCM_ContentLabel, filename))
+                    result = EC_InvalidTag;
+                break;
+            case ERT_Fiducial:
+                if (!checkExistsWithValue(dataset, DCM_InstanceNumber, filename))
+                    result = EC_InvalidTag;
+                if (!checkExistsWithValue(dataset, DCM_ContentDate, filename))
+                    result = EC_InvalidTag;
+                if (!checkExistsWithValue(dataset, DCM_ContentTime, filename))
+                    result = EC_InvalidTag;
+                if (!checkExistsWithValue(dataset, DCM_ContentLabel, filename))
+                    result = EC_InvalidTag;
+                break;
             default:
                 /* it can only be an image */
                 if (ApplicationProfile == AP_BasicCardiac)
@@ -2115,6 +2152,8 @@ OFBool DicomDirInterface::recordMatchesDataset(DcmDirectoryRecord *record,
             case ERT_RTTreatRecord:
             case ERT_StoredPrint:
             case ERT_KeyObjectDoc:
+            case ERT_Registration:
+            case ERT_Fiducial:
                 /* The attribute ReferencedSOPInstanceUID is automatically
                  * put into a Directory Record when a filename is present.
                 */
@@ -2225,7 +2264,6 @@ DcmDirectoryRecord *DicomDirInterface::buildSeriesRecord(DcmItem *dataset,
         /* check whether new record is ok */
         if (record->error().good())
         {
-            OFString tmpString;
             /* copy attribute values from dataset to series record */
             copyElement(dataset, DCM_SpecificCharacterSet, record, OFTrue /*optional*/);
             copyElement(dataset, DCM_Modality, record);
@@ -2262,7 +2300,6 @@ DcmDirectoryRecord *DicomDirInterface::buildOverlayRecord(DcmItem *dataset,
         /* check whether new record is ok */
         if (record->error().good())
         {
-            OFString tmpString;
             /* copy attribute values from dataset to overlay record */
             copyElement(dataset, DCM_SpecificCharacterSet, record, OFTrue /*optional*/);
             copyElement(dataset, DCM_OverlayNumber, record);
@@ -2290,7 +2327,6 @@ DcmDirectoryRecord *DicomDirInterface::buildModalityLutRecord(DcmItem *dataset,
         /* check whether new record is ok */
         if (record->error().good())
         {
-            OFString tmpString;
             /* copy attribute values from dataset to modality lut record */
             copyElement(dataset, DCM_SpecificCharacterSet, record, OFTrue /*optional*/);
             copyElement(dataset, DCM_LookupTableNumber, record);
@@ -2318,7 +2354,6 @@ DcmDirectoryRecord *DicomDirInterface::buildVoiLutRecord(DcmItem *dataset,
         /* check whether new record is ok */
         if (record->error().good())
         {
-            OFString tmpString;
             /* copy attribute values from dataset to voi lut record */
             copyElement(dataset, DCM_SpecificCharacterSet, record, OFTrue /*optional*/);
             copyElement(dataset, DCM_LookupTableNumber, record);
@@ -2346,7 +2381,6 @@ DcmDirectoryRecord *DicomDirInterface::buildCurveRecord(DcmItem *dataset,
         /* check whether new record is ok */
         if (record->error().good())
         {
-            OFString tmpString;
             /* copy attribute values from dataset to curve record */
             copyElement(dataset, DCM_SpecificCharacterSet, record, OFTrue /*optional*/);
             copyElement(dataset, DCM_CurveNumber, record);
@@ -2416,7 +2450,6 @@ DcmDirectoryRecord *DicomDirInterface::buildPresentationRecord(DcmItem *dataset,
         /* check whether new record is ok */
         if (record->error().good())
         {
-            OFString tmpString;
             /* copy attribute values from dataset to presentation record */
             copyElement(dataset, DCM_SpecificCharacterSet, record, OFTrue /*optional*/);
             copyElement(dataset, DCM_InstanceNumber, record);
@@ -2450,7 +2483,6 @@ DcmDirectoryRecord *DicomDirInterface::buildWaveformRecord(DcmItem *dataset,
         /* check whether new record is ok */
         if (record->error().good())
         {
-            OFString tmpString;
             /* copy attribute values from dataset to waveform record */
             copyElement(dataset, DCM_SpecificCharacterSet, record, OFTrue /*optional*/);
             copyElement(dataset, DCM_InstanceNumber, record);
@@ -2480,7 +2512,6 @@ DcmDirectoryRecord *DicomDirInterface::buildRTDoseRecord(DcmItem *dataset,
         /* check whether new record is ok */
         if (record->error().good())
         {
-            OFString tmpString;
             /* copy attribute values from dataset to rt dose record */
             copyElement(dataset, DCM_SpecificCharacterSet, record, OFTrue /*optional*/);
             copyElement(dataset, DCM_InstanceNumber, record);
@@ -2511,7 +2542,6 @@ DcmDirectoryRecord *DicomDirInterface::buildRTStructureSetRecord(DcmItem *datase
         /* check whether new record is ok */
         if (record->error().good())
         {
-            OFString tmpString;
             /* copy attribute values from dataset to rt structure set record */
             copyElement(dataset, DCM_SpecificCharacterSet, record, OFTrue /*optional*/);
             copyElement(dataset, DCM_InstanceNumber, record);
@@ -2542,7 +2572,6 @@ DcmDirectoryRecord *DicomDirInterface::buildRTPlanRecord(DcmItem *dataset,
         /* check whether new record is ok */
         if (record->error().good())
         {
-            OFString tmpString;
             /* copy attribute values from dataset to rt plan record */
             copyElement(dataset, DCM_SpecificCharacterSet, record, OFTrue /*optional*/);
             copyElement(dataset, DCM_InstanceNumber, record);
@@ -2573,7 +2602,6 @@ DcmDirectoryRecord *DicomDirInterface::buildRTTreatmentRecord(DcmItem *dataset,
         /* check whether new record is ok */
         if (record->error().good())
         {
-            OFString tmpString;
             /* copy attribute values from dataset to rt treatment record */
             copyElement(dataset, DCM_SpecificCharacterSet, record, OFTrue /*optional*/);
             copyElement(dataset, DCM_InstanceNumber, record);
@@ -2603,7 +2631,6 @@ DcmDirectoryRecord *DicomDirInterface::buildStoredPrintRecord(DcmItem *dataset,
         /* check whether new record is ok */
         if (record->error().good())
         {
-            OFString tmpString;
             /* copy attribute values from dataset to stored print record */
             copyElement(dataset, DCM_SpecificCharacterSet, record, OFTrue /*optional*/);
             copyElement(dataset, DCM_InstanceNumber, record);
@@ -2632,7 +2659,6 @@ DcmDirectoryRecord *DicomDirInterface::buildKeyObjectDocRecord(DcmItem *dataset,
         /* check whether new record is ok */
         if (record->error().good())
         {
-            OFString tmpString;
             /* copy attribute values from dataset to key object doc record */
             copyElement(dataset, DCM_SpecificCharacterSet, record, OFTrue /*optional*/);
             copyElement(dataset, DCM_InstanceNumber, record);
@@ -2648,6 +2674,70 @@ DcmDirectoryRecord *DicomDirInterface::buildKeyObjectDocRecord(DcmItem *dataset,
         }
     } else
         printRecordErrorMessage(EC_MemoryExhausted, ERT_KeyObjectDoc, "create");
+    return record;
+}
+
+
+// create new registration record and copy required values from dataset
+DcmDirectoryRecord *DicomDirInterface::buildRegistrationRecord(DcmItem *dataset,
+                                                               const OFString &referencedFileID,
+                                                               const OFString &sourceFilename)
+{
+    /* create new registration record */
+    DcmDirectoryRecord *record = new DcmDirectoryRecord(ERT_Registration, referencedFileID.c_str(), sourceFilename.c_str());
+    if (record != NULL)
+    {
+        /* check whether new record is ok */
+        if (record->error().good())
+        {
+            /* copy attribute values from dataset to presentation record */
+            copyElement(dataset, DCM_SpecificCharacterSet, record, OFTrue /*optional*/);
+            copyElement(dataset, DCM_ContentDate, record);
+            copyElement(dataset, DCM_ContentTime, record);
+            copyElement(dataset, DCM_InstanceNumber, record);
+            copyElement(dataset, DCM_ContentLabel, record);
+            copyElement(dataset, DCM_ContentDescription, record, OFTrue /*optional*/);
+            copyElement(dataset, DCM_ContentCreatorsName, record, OFTrue /*optional*/);
+        } else {
+            printRecordErrorMessage(record->error(), ERT_Registration, "create");
+            /* free memory */
+            delete record;
+            record = NULL;
+        }
+    } else
+        printRecordErrorMessage(EC_MemoryExhausted, ERT_Registration, "create");
+    return record;
+}
+
+
+// create new fiducial record and copy required values from dataset
+DcmDirectoryRecord *DicomDirInterface::buildFiducialRecord(DcmItem *dataset,
+                                                           const OFString &referencedFileID,
+                                                           const OFString &sourceFilename)
+{
+    /* create new fiducial record */
+    DcmDirectoryRecord *record = new DcmDirectoryRecord(ERT_Fiducial, referencedFileID.c_str(), sourceFilename.c_str());
+    if (record != NULL)
+    {
+        /* check whether new record is ok */
+        if (record->error().good())
+        {
+            /* copy attribute values from dataset to presentation record */
+            copyElement(dataset, DCM_SpecificCharacterSet, record, OFTrue /*optional*/);
+            copyElement(dataset, DCM_ContentDate, record);
+            copyElement(dataset, DCM_ContentTime, record);
+            copyElement(dataset, DCM_InstanceNumber, record);
+            copyElement(dataset, DCM_ContentLabel, record);
+            copyElement(dataset, DCM_ContentDescription, record, OFTrue /*optional*/);
+            copyElement(dataset, DCM_ContentCreatorsName, record, OFTrue /*optional*/);
+        } else {
+            printRecordErrorMessage(record->error(), ERT_Fiducial, "create");
+            /* free memory */
+            delete record;
+            record = NULL;
+        }
+    } else
+        printRecordErrorMessage(EC_MemoryExhausted, ERT_Fiducial, "create");
     return record;
 }
 
@@ -3021,6 +3111,12 @@ DcmDirectoryRecord *DicomDirInterface::addRecord(DcmDirectoryRecord *parent,
                 case ERT_KeyObjectDoc:
                     record = buildKeyObjectDocRecord(dataset, referencedFileID, sourceFilename);
                     break;
+                case ERT_Registration:
+                    record = buildRegistrationRecord(dataset, referencedFileID, sourceFilename);
+                    break;
+                case ERT_Fiducial:
+                    record = buildFiducialRecord(dataset, referencedFileID, sourceFilename);
+                    break;
                 default:
                     /* it can only be an image */
                     record = buildImageRecord(dataset, referencedFileID, sourceFilename);
@@ -3148,6 +3244,8 @@ void DicomDirInterface::inventMissingInstanceLevelAttributes(DcmDirectoryRecord 
                 case ERT_Waveform:
                 case ERT_RTTreatRecord:
                 case ERT_KeyObjectDoc:
+                case ERT_Registration:
+                case ERT_Fiducial:
                     /* nothing to do */
                     break;
                 default:
@@ -4081,7 +4179,12 @@ void DicomDirInterface::setDefaultValue(DcmDirectoryRecord *record,
 /*
  *  CVS/RCS Log:
  *  $Log: dcddirif.cc,v $
- *  Revision 1.4  2004-02-13 11:48:13  joergr
+ *  Revision 1.5  2004-02-13 14:16:41  joergr
+ *  Added support for new directory records REGISTRATION and FIDUCIAL introduced
+ *  with supplement 73 (Spatial Registration Storage SOP Classes).
+ *  Added support for Procedure Log Storage SOP class (supplement 66).
+ *
+ *  Revision 1.4  2004/02/13 11:48:13  joergr
  *  Adapted code for changed tag names (e.g. PresentationLabel -> ContentLabel).
  *
  *  Revision 1.3  2003/11/10 10:39:49  joergr
