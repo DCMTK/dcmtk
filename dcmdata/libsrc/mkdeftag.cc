@@ -7,10 +7,10 @@
 ** Purpose:
 ** Generate a C++ header defining symbolic names for DICOM Tags.
 **
-** Last Update:         $Author: joergr $
-** Update Date:         $Date: 1998-07-15 14:08:49 $
+** Last Update:         $Author: meichel $
+** Update Date:         $Date: 1998-07-28 15:53:04 $
 ** Source File:         $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/mkdeftag.cc,v $
-** CVS/RCS Revision:    $Revision: 1.8 $
+** CVS/RCS Revision:    $Revision: 1.9 $
 ** Status:              $State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -263,7 +263,7 @@ int main(int argc, char* argv[])
 #endif
     /* generate the entries themselves */
     fputs("\n/*\n", fout);
-    fputs("** Fixed Tags in assending (gggg,eeee) order.\n", fout);
+    fputs("** Fixed Tags in ascending (gggg,eeee) order.\n", fout);
     fprintf(fout, "** Number of entries: %d\n", 
            dcmDataDict.numberOfNormalTagEntries());
     fputs("** Tags with a repeating component (repeating tags) are listed later.\n", fout);
@@ -307,7 +307,10 @@ int main(int argc, char* argv[])
 /*
 ** CVS/RCS Log:
 ** $Log: mkdeftag.cc,v $
-** Revision 1.8  1998-07-15 14:08:49  joergr
+** Revision 1.9  1998-07-28 15:53:04  meichel
+** Corrected typo in mkdeftag.
+**
+** Revision 1.8  1998/07/15 14:08:49  joergr
 ** Including of <libc.h> to support getlogin() on NeXTSTEP.
 ** Replaced tabs by spaces. Added const to char pointer to avoid warnings
 ** (gcc 2.8.1 with additional options).
