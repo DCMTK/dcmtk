@@ -22,9 +22,9 @@
  *  Purpose: codec parameter class for dcmjpeg codecs
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-11-19 15:13:30 $
+ *  Update Date:      $Date: 2001-12-18 10:26:28 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmjpeg/libsrc/djcparam.cc,v $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -110,6 +110,7 @@ DJCodecParameter::DJCodecParameter(const DJCodecParameter& arg)
 , roiHeight(arg.roiHeight)
 , usePixelValues(arg.usePixelValues)
 , useModalityRescale(arg.useModalityRescale)
+, verboseMode(arg.verboseMode)
 {
 }
 
@@ -131,7 +132,10 @@ const char *DJCodecParameter::className() const
 /*
  * CVS/RCS Log
  * $Log: djcparam.cc,v $
- * Revision 1.2  2001-11-19 15:13:30  meichel
+ * Revision 1.3  2001-12-18 10:26:28  meichel
+ * Added missing initialization in copy constructor
+ *
+ * Revision 1.2  2001/11/19 15:13:30  meichel
  * Introduced verbose mode in module dcmjpeg. If enabled, warning
  *   messages from the IJG library are printed on ofConsole, otherwise
  *   the library remains quiet.
