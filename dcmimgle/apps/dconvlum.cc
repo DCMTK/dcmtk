@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-99, OFFIS
+ *  Copyright (C) 1999, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose: convert VeriLUM CCx_xx.dat files to DCMTK display files
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-02-05 15:16:16 $
+ *  Update Date:      $Date: 1999-02-08 12:35:23 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/apps/dconvlum.cc,v $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -102,10 +102,12 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dconvlum.cc,v $
- * Revision 1.1  1999-02-05 15:16:16  joergr
+ * Revision 1.2  1999-02-08 12:35:23  joergr
+ * Corrected some typos and formatting.
+ *
+ * Revision 1.1  1999/02/05 15:16:16  joergr
  * Added console application to convert VeriLUM LUT files to dcmtk DISPLAY
  * file used for Barten transformation.
- *
  *
  *
  */
