@@ -1,4 +1,11 @@
 
+**** Unreleased Changes from 97.05.29 (eichelberg)
+
+- All dcmtk applications now contain a version string
+  which is displayed with the command line options ("usage" message)
+  and which can be queried in the binary with the "ident" command.
+  Affects: dcmimage/apps/dcm2pnm.cc
+
 **** Unreleased Changes from 97.05.28 (eichelberg)
 
 - Changed dcm2pnm options for MinMax VOI window computation

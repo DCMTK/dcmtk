@@ -8,9 +8,9 @@
 ** Convert DICOM Images to PPM or PGM using the dcmimage library. 
 **
 ** Last Update:		$Author: meichel $
-** Update Date:		$Date: 1997-05-28 09:32:15 $
+** Update Date:		$Date: 1997-05-29 17:06:31 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/apps/dcm2pnm.cc,v $
-** CVS/RCS Revision:	$Revision: 1.5 $
+** CVS/RCS Revision:	$Revision: 1.6 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -31,6 +31,11 @@
 #include "dcdebug.h"
 #include "cmdlnarg.h"
 #include "dcmimage.h"
+#include "dcuid.h"    /* for dcmtk version name */
+
+static char rcsid[] = "$dcmtk: dcm2pnm v"
+  OFFIS_DCMTK_VERSION " " OFFIS_DCMTK_RELEASEDATE " $";
+
 
 // ********************************************
 
@@ -38,6 +43,7 @@ static void
 usage()
 {
     fprintf(stderr, 
+      "%s\n\n"
       "dcm2pnm: Convert DICOM file to PGM or PPM\n"
       "usage: dcm2pnm [options] dcmfile-in [pnmfile-out]\n"
       "options are:\n"
@@ -89,7 +95,8 @@ usage()
       "  -f       do not create any output (useful with +V)\n"
       "  +fb      write 8-bit binary PGM/PPM (default)\n"
       "  +fa      write 8-bit ASCII PGM/PPM\n"
-      "  +fA      write 16-bit ASCII PGM/PPM\n"
+      "  +fA      write 16-bit ASCII PGM/PPM\n",
+      rcsid
   );
 }
 
@@ -1049,7 +1056,12 @@ int main(int argc, char *argv[])
 /*
 ** CVS/RCS Log:
 ** $Log: dcm2pnm.cc,v $
-** Revision 1.5  1997-05-28 09:32:15  meichel
+** Revision 1.6  1997-05-29 17:06:31  meichel
+** All dcmtk applications now contain a version string
+** which is displayed with the command line options ("usage" message)
+** and which can be queried in the binary with the "ident" command.
+**
+** Revision 1.5  1997/05/28 09:32:15  meichel
 ** Changed dcm2pnm options for MinMax VOI window computation
 ** to match functionality of the toolkit.
 ** Default mode for overlays is now Replace for Graphic overlays
