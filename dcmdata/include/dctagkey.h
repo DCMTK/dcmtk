@@ -22,9 +22,9 @@
  *  Purpose: Basis class for dicom tags.
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-03-31 09:24:49 $
+ *  Update Date:      $Date: 2000-02-07 14:45:16 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dctagkey.h,v $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -89,7 +89,7 @@ public:
 
     friend ostream&   operator<<(ostream& s, const DcmTagKey& k);
 
-    const OFString toString() const;
+    OFString toString() const;
 };
 
 
@@ -256,7 +256,10 @@ DcmTagKey::operator >= (const DcmTagKey& key) const
 /*
 ** CVS/RCS Log:
 ** $Log: dctagkey.h,v $
-** Revision 1.5  1999-03-31 09:24:49  meichel
+** Revision 1.6  2000-02-07 14:45:16  meichel
+** Removed const qualifier from DcmTagKey::toString(), avoids warning on Irix.
+**
+** Revision 1.5  1999/03/31 09:24:49  meichel
 ** Updated copyright header in module dcmdata
 **
 ** Revision 1.4  1999/03/17 11:08:54  meichel
