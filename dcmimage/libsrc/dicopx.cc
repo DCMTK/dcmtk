@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2001, OFFIS
+ *  Copyright (C) 1996-2002, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose: DicomColorPixel (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-11-09 16:49:38 $
+ *  Update Date:      $Date: 2002-06-26 16:29:45 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/libsrc/dicopx.cc,v $
- *  CVS/RCS Revision: $Revision: 1.11 $
+ *  CVS/RCS Revision: $Revision: 1.12 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -50,7 +50,7 @@ DiColorPixel::DiColorPixel(const DiDocument *docu,
                            const DiInputPixel *pixel,
                            const Uint16 samples,
                            EI_Status &status,
-                           const Uint16 /*sample_rate*/)
+                           const Uint16 sample_rate)
   : DiPixel(0),
     PlanarConfiguration(0)
 {
@@ -92,8 +92,12 @@ DiColorPixel::DiColorPixel(const DiDocument *docu,
                 return;
             }
             if (pixel != NULL)
-//                Count = pixel->getCount() / ((sample_rate == 0) ? samples : sample_rate);
-                Count = pixel->getPixelCount();
+            {
+                // number of pixels (per plane) computed from the length of the PixelData attribute
+                InputCount = pixel->getPixelCount() / ((sample_rate == 0) ? samples : sample_rate);
+                // number of pixels allocated for the intermediate buffer
+                Count = pixel->getComputedCount() / ((sample_rate == 0) ? samples : sample_rate);
+            }
         }
         else
         {
@@ -109,7 +113,7 @@ DiColorPixel::DiColorPixel(const DiDocument *docu,
 
 DiColorPixel::DiColorPixel(const DiColorPixel *pixel,
                            const unsigned long count)
-  : DiPixel(count),
+  : DiPixel(count, pixel->InputCount),
     PlanarConfiguration(pixel->PlanarConfiguration)
 {
 }
@@ -128,7 +132,10 @@ DiColorPixel::~DiColorPixel()
  *
  * CVS/RCS Log:
  * $Log: dicopx.cc,v $
- * Revision 1.11  2001-11-09 16:49:38  joergr
+ * Revision 1.12  2002-06-26 16:29:45  joergr
+ * Enhanced handling of corrupted pixel data and/or length.
+ *
+ * Revision 1.11  2001/11/09 16:49:38  joergr
  * Removed unused constructor.
  *
  * Revision 1.10  2001/06/01 15:49:35  meichel
