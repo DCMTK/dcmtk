@@ -30,7 +30,7 @@ dcmnetlib=-ldcmnet
 
 LOCALINCLUDES=$(dcmnetinc) $(dcmdatainc) $(ofstdinc)
 LIBDIRS = -L$(top_srcdir)/libsrc $(dcmnetlibdir) $(dcmdatalibdir) $(ofstdlibdir) -L$(libdir)
-LOCALLIBS = -ldcmwlm $(dcmnetlib) $(dcmdatalib) $(ofstdlib) $(ZLIBLIBS)
+LOCALLIBS = -ldcmwlm $(dcmnetlib) $(dcmdatalib) $(ofstdlib) $(ZLIBLIBS) $(TCPWRAPPERLIBS)
 
 objs= wlcefs.o wlmscpfs.o
 

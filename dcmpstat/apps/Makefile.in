@@ -63,7 +63,7 @@ LIBDIRS = -L$(top_srcdir)/libsrc $(dcmpstatlibdir) $(imagectnlibdir) $(dcmnetlib
   $(dcmtlslibdir) $(dcmsignlibdir) $(dcmsrlibdir) $(dcmdatalibdir) $(ofstdlibdir) \
   $(dcmimglelibdir) -L$(libdir)
 LOCALLIBS = $(dcmpstatlib) $(dcmsignlib) $(dcmimglelib) $(dcmsrlib) $(imagectnlib) $(dcmnetlib) \
-  $(dcmdatalib) $(ofstdlib)  $(ZLIBLIBS) $(OPENSSLLIBS)
+  $(dcmdatalib) $(ofstdlib)  $(ZLIBLIBS) $(TCPWRAPPERLIBS) $(OPENSSLLIBS)
 
 objs= dcmpsmk.o dcmp2pgm.o dcmmklut.o dcmmkcrv.o dcmpssnd.o dcmpsrcv.o \
       dcmpsprt.o dcmprscu.o dcmprscp.o vrscan.o dcmpschk.o
