@@ -1,4 +1,12 @@
 
+**** Changes from 1999.01.25 (eichelberg)
+
+- Implemented DVInterface::startReceiver()
+  and several config file related methods.
+  Affects: dcmpstat/apps/dcmpssnd.cc
+           dcmpstat/include/dviface.h
+           dcmpstat/libsrc/dviface.cc
+           
 **** Changes from 1999.01.20 (eichelberg)
 
 - Implemented access methods for network communication

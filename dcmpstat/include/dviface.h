@@ -23,8 +23,8 @@
  *    classes: DVInterface
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-01-20 19:25:25 $
- *  CVS/RCS Revision: $Revision: 1.10 $
+ *  Update Date:      $Date: 1999-01-25 13:05:55 $
+ *  CVS/RCS Revision: $Revision: 1.11 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -100,6 +100,8 @@ class DVInterface
     
     /** resets the presentation state object to the status
      *  it had immediately after the last successful operation of "loadImage" or "loadPState".
+     *  Attention: The last reference returned by getCurrentPState() becomes invalid
+     *  when this method is called.
      *  @return EC_Normal upon success, an error code otherwise.
      */
     E_Condition resetPresentationState();
@@ -259,7 +261,33 @@ class DVInterface
     
     /* here follow the Network interface methods */
 
-    /** UNIMPLEMENTED - sends a complete study over network to a different DICOM peer.
+    /** starts the network receiver process (Storage Service Class SCP).
+     *  The receiver process will wait for incoming DICOM associations, receive images
+     *  and presentation states. Data will be stored in file and registered in the
+     *  database index file. Attention: Successful return of this method is no guarantee
+     *  that the network receiver has successfully started, because certain errors
+     *  (i.e. incorrect settings in the config file) will only be noted in the network
+     *  receiver process when running. On Unix platform, successful return of this method
+     *  means that the fork() used to start the receiver was successful.
+     *  On Win32 platforms, it means that the CreateProcess() call was successful.
+     *  @return EC_Normal if the receiver process could be started, an error code otherwise.
+     */      
+    E_Condition startReceiver();
+  
+    /** UNIMPLEMENTED - terminates the network receiver process (Storage Service Class SCP).
+     *  This method attempts to terminate the network receiver process by
+     *  requesting a DICOM association with it and delivering a special "shutdown" command.
+     *  If for some reason the network receiver cannot be found (i.e. because it has
+     *  terminated abnormally), a TCP/IP timeout (several seconds) may occur before this method returns.
+     */
+    E_Condition terminateReceiver();
+
+    /** UNIMPLEMENTED - tests whether new DICOM objects have been received and
+     *  added to the database since the last call to this method.
+     */
+    OFBool newInstancesReceived();
+    
+    /** sends a complete study over network to a different DICOM peer.
      *  A separate application or process is launched to handle the send operation.
      *  This call returns when the send operation has successfully been launched.
      *  No information about the status or success of the transfer itself is being made
@@ -276,7 +304,7 @@ class DVInterface
       return sendIOD(targetID, studyUID, NULL, NULL);
     }
 
-    /** UNIMPLEMENTED - sends a complete series over network to a different DICOM peer.
+    /** sends a complete series over network to a different DICOM peer.
      *  A separate application or process is launched to handle the send operation.
      *  This call returns when the send operation has successfully been launched.
      *  No information about the status or success of the transfer itself is being made
@@ -295,7 +323,7 @@ class DVInterface
       return sendIOD(targetID, studyUID, seriesUID, NULL);
     }
 
-    /** UNIMPLEMENTED - sends a single instance (image or presentation state)
+    /** sends a single instance (image or presentation state)
      *  over network to a different DICOM peer.
      *  A separate application or process is launched to handle the send operation.
      *  This call returns when the send operation has successfully been launched.
@@ -350,7 +378,7 @@ class DVInterface
      *  target ID from the configuration file. 
      *  @param targetID communication target ID, must be one of the target 
      *    identifiers returned by getTargetID().
-     *  @return entry if present and parsable in the config file, 0.
+     *  @return entry if present and parsable in the config file, 0 otherwise.
      */
     unsigned short getTargetPort(const char *targetID);
 
@@ -366,7 +394,7 @@ class DVInterface
      *  target ID from the configuration file. 
      *  @param targetID communication target ID, must be one of the target 
      *    identifiers returned by getTargetID().
-     *  @return entry if present and parsable in the config file, 0.
+     *  @return entry if present and parsable in the config file, 0 otherwise.
      */
     unsigned long getTargetMaxPDU(const char *targetID);
 
@@ -387,12 +415,42 @@ class DVInterface
     OFBool getTargetDisableNewVRs(const char *targetID);
 
     /** returns the AETitle with which this application should identify itself.
-     *  The AETitle is taken from the section GENERAL/NETWORK/AETITLE in the
+     *  The AETitle is taken from the section GENERAL/NETWORK in the
      *  config file. If absent, a default value is returned.
      *  @return AETitle for this application. Never returns NULL.
      */
-    const char *getMyAETitle();
-    
+    const char *getNetworkAETitle();
+
+    /** returns the IMPLICITONLY entry for the network receiver
+     *  from the section GENERAL/NETWORK in the config file.
+     *  @return entry if present in the config file, OFFalse otherwise.
+     */
+    OFBool getNetworkImplicitVROnly();
+
+    /** returns the DISABLENEWVRS entry for the network receiver
+     *  from the section GENERAL/NETWORK in the config file.
+     *  @return entry if present in the config file, OFFalse otherwise.
+     */
+    OFBool getNetworkDisableNewVRs();
+
+    /** returns the BITPRESERVINGMODE entry for the network receiver
+     *  from the section GENERAL/NETWORK in the config file.
+     *  @return entry if present in the config file, OFFalse otherwise.
+     */
+    OFBool getNetworkBitPreserving();
+
+    /** returns the PORT entry for the network receiver
+     *  from the section GENERAL/NETWORK in the config file.
+     *  @return entry if present and parsable in the config file, 0 otherwise.
+     */
+    unsigned short getNetworkPort();
+
+    /** returns the MAXPDU entry for the network receiver
+     *  from the section GENERAL/NETWORK in the config file.
+     *  @return entry if present and parsable in the config file, 0 otherwise.
+     */
+    unsigned long getNetworkMaxPDU();
+     
     /** returns the database folder to be used for sending/receiving/browsing.
      *  Value is taken from the section GENERAL/DATABASE/DIRECTORY
      *  in the config file. If absent, a default value is returned.
@@ -414,6 +472,24 @@ class DVInterface
      */
     const char *getReceiverName();
    
+    /** returns the value of configuration file entry key=value
+     *  in the section GENERAL/GUI of the config file.
+     *  If the entry is absent, NULL is returned.
+     *  @param key the entry key
+     *  @return entry value or NULL.
+     */
+    const char *getGUIConfigEntry(const char *key);
+
+    /** returns the value of configuration file entry key=value
+     *  in the section GENERAL/GUI of the config file.
+     *  If the entry is absent or cannot be parsed, the default dfl
+     *  is returned.
+     *  @param key the entry key
+     *  @param dfl the default to be used if the value is absent or incorrect
+     *  @return entry value or default.
+     */
+    OFBool getGUIConfigEntryBool(const char *key, OFBool dfl);
+    
     /** saves a monochrome bitmap as a DICOM Secondary Capture image.
      *  The bitmap must use one byte per pixel, left to right, top to bottom
      *  order of the pixels. 0 is interpreted as black, 255 as white.
@@ -480,24 +556,22 @@ private:
      */
     E_Condition exchangeImageAndPState(DVPresentationState *newState, DcmFileFormat *image, DcmFileFormat *state=NULL);
  
-    /** returns the entry with the given key for the given target ID.
-     *  @param targetID name of target ID, must correspond to a section
-     *    (level 1 key) in the config file [[COMMUNICATION]] area.
-     *  @param entryName name of the entry (level 0 key)
-     *    to be looked up.
+    /** returns the entry with the given keys.
+     *  @param l2_key level 2 key
+     *  @param l1_key level 1 key
+     *  @param l0_key level 0 key (entry name)
      *  @return value assigned to the key if present, NULL otherwise.
      */
-    const char *getTargetEntry(const char *targetID, const char *entryName);
+    const char *getConfigEntry(const char *l2_key, const char *l1_key, const char *l0_key);
 
-    /** returns the entry with the given key for the given target ID as bool.
-     *  @param targetID name of target ID, must correspond to a section
-     *    (level 1 key) in the config file [[COMMUNICATION]] area.
-     *  @param entryName name of the entry (level 0 key)
-     *    to be looked up.
-     *  @param default default to be returned if entry is not present or syntax error.
+    /** returns the entry with the given keys as bool.
+     *  @param l2_key level 2 key
+     *  @param l1_key level 1 key
+     *  @param l0_key level 0 key (entry name)
+     *  @param deflt default to be returned if entry is not present or syntax error.
      *  @return value assigned to the key if present, default otherwise.
      */
-    OFBool getTargetBoolEntry(const char *targetID, const char *entryName, OFBool deflt);
+    OFBool getConfigBoolEntry(const char *l2_key, const char *l1_key, const char *l0_key, OFBool deflt);
 
     /** helper function that cleans up pending processes under Unix.
      *  No function if used on Windows.
@@ -536,7 +610,6 @@ private:
     Uint32 SeriesNumber, StudyNumber;  
     DB_Private_Handle *phandle;  
     StudyDescRecord *pStudyDesc;
-    DB_Handle *handle;
     IdxRecord idxRec;
 
     /* private methods for database */
@@ -567,7 +640,11 @@ private:
 
 /*
  *  $Log: dviface.h,v $
- *  Revision 1.10  1999-01-20 19:25:25  meichel
+ *  Revision 1.11  1999-01-25 13:05:55  meichel
+ *  Implemented DVInterface::startReceiver()
+ *    and several config file related methods.
+ *
+ *  Revision 1.10  1999/01/20 19:25:25  meichel
  *  Implemented sendIOD method which creates a separate process for trans-
  *    mitting images from the local database to a remote communication peer.
  *

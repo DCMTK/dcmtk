@@ -22,8 +22,8 @@
  *  Purpose: DVPresentationState
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-01-20 19:25:30 $
- *  CVS/RCS Revision: $Revision: 1.16 $
+ *  Update Date:      $Date: 1999-01-25 13:05:57 $
+ *  CVS/RCS Revision: $Revision: 1.17 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -72,7 +72,6 @@ DVInterface::DVInterface(int /* dummy */, const char *config_file)
 , StudyNumber(0)
 , phandle(NULL)
 , pStudyDesc(NULL)
-, handle(NULL)
 , idxRec()
 {
   strcpy(selectedStudy,"");
@@ -347,6 +346,7 @@ const char *DVInterface::getFilename(const char * studyUID, const char * seriesU
 
 E_Condition DVInterface::lockDatabase()
 {
+  DB_Handle *handle = NULL;
   DB_createHandle(getDatabaseFolder(), PSTAT_MAXSTUDYCOUNT, PSTAT_STUDYSIZE, &handle);
   phandle = (DB_Private_Handle *) handle;
   if (DB_lock(phandle, OFTrue)==DB_ERROR) return EC_IllegalCall;
@@ -936,22 +936,73 @@ E_Condition DVInterface::sendIOD(const char * targetID,
 }
 
 
+E_Condition DVInterface::startReceiver()
+{
+  const char *receiver_application = getReceiverName();
+  if (receiver_application==NULL) return EC_IllegalCall;
+  if (configPath.length()==0) return EC_IllegalCall;
+  
+  cleanChildren(); // clean up old child processes before creating new ones
+  
+#ifdef HAVE_FORK
+  // Unix version - call fork() and execl()
+  pid_t pid = fork();
+  if (pid < 0)
+  {
+    // fork failed - return error code
+    return EC_IllegalCall;
+  } else if (pid > 0)
+  {
+    // we are the parent process
+    return EC_Normal;
+  } else {
+    // we are the child process
+    if (execl(receiver_application, receiver_application, configPath.c_str(), NULL) < 0)
+    {
+      cerr << "error: unable to execute '" << receiver_application << "'" << endl;
+    }
+    // if execl succeeds, this part will not get executed.
+    // if execl fails, there is not much we can do except bailing out.
+    abort();
+  }
+#else
+  // Windows version - call CreateProcess()
+  // initialize startup info
+  PROCESS_INFORMATION procinfo;
+  STARTUPINFO sinfo;  
+  OFBitmanipTemplate<char>::zeroMem((char *)&sinfo, sizeof(sinfo));
+  sinfo.cb = sizeof(sinfo);
+  char commandline[4096];
+  sprintf(commandline, "%s %s", receiver_application, configPath.c_str());
+  if (CreateProcess(NULL, commandline, NULL, NULL, 0, 0, NULL, NULL, &sinfo, &procinfo))
+  {
+    return EC_Normal;
+  } else {
+      cerr << "error: unable to execute '" << receiver_application << "'" << endl;
+  }
+#endif  
+  return EC_IllegalCall; 
+}
+
+
 /* keyword for configuration file */
 
-#define L2_COMMUNICATION "COMMUNICATION"
-#define L2_GENERAL       "GENERAL"
-#define L1_NETWORK       "NETWORK"
-#define L1_DATABASE      "DATABASE"
-#define L0_DIRECTORY     "DIRECTORY"
-#define L0_HOSTNAME      "HOSTNAME"
-#define L0_PORT          "PORT"
-#define L0_DESCRIPTION   "DESCRIPTION"
-#define L0_AETITLE       "AETITLE"
-#define L0_IMPLICITONLY  "IMPLICITONLY"
-#define L0_DISABLENEWVRS "DISABLENEWVRS"
-#define L0_MAXPDU        "MAXPDU"
-#define L0_SENDER        "SENDER"
-#define L0_RECEIVER      "RECEIVER"
+#define L2_COMMUNICATION     "COMMUNICATION"
+#define L2_GENERAL           "GENERAL"
+#define L1_NETWORK           "NETWORK"
+#define L1_DATABASE          "DATABASE"
+#define L1_GUI               "GUI"
+#define L0_DIRECTORY         "DIRECTORY"
+#define L0_HOSTNAME          "HOSTNAME"
+#define L0_PORT              "PORT"
+#define L0_DESCRIPTION       "DESCRIPTION"
+#define L0_AETITLE           "AETITLE"
+#define L0_IMPLICITONLY      "IMPLICITONLY"
+#define L0_DISABLENEWVRS     "DISABLENEWVRS"
+#define L0_MAXPDU            "MAXPDU"
+#define L0_SENDER            "SENDER"
+#define L0_RECEIVER          "RECEIVER"
+#define L0_BITPRESERVINGMODE "BITPRESERVINGMODE"
 
 Uint32 DVInterface::getNumberOfTargets()
 {
@@ -1015,26 +1066,26 @@ const char *DVInterface::getTargetDescription(Uint32 idx)
 }
 
 
-const char *DVInterface::getTargetEntry(const char *targetID, const char *entryName)
+const char *DVInterface::getConfigEntry(const char *l2_key, const char *l1_key, const char *l0_key)
 {
   const char *result=NULL; 
-  if (targetID && entryName && pConfig)
+  if (l2_key && l1_key && l0_key && pConfig)
   {
-    pConfig->select_section(targetID, L2_COMMUNICATION);
-    if (pConfig->section_valid(1)) result = pConfig->get_entry(entryName);
+    pConfig->select_section(l1_key, l2_key);
+    if (pConfig->section_valid(1)) result = pConfig->get_entry(l0_key);
   }
   return result;
 }
 
-OFBool DVInterface::getTargetBoolEntry(const char *targetID, const char *entryName, OFBool deflt)
+OFBool DVInterface::getConfigBoolEntry(const char *l2_key, const char *l1_key, const char *l0_key, OFBool deflt)
 {
   OFBool result=deflt; 
-  if (targetID && entryName && pConfig)
+  if (l2_key && l1_key && l0_key && pConfig)
   {
-    pConfig->select_section(targetID, L2_COMMUNICATION);
+    pConfig->select_section(l1_key, l2_key);
     if (pConfig->section_valid(1)) 
     {
-      pConfig->set_section(0,entryName);
+      pConfig->set_section(0,l0_key);
       result = pConfig->get_bool_value(deflt);
     }
   }
@@ -1043,17 +1094,17 @@ OFBool DVInterface::getTargetBoolEntry(const char *targetID, const char *entryNa
 
 const char *DVInterface::getTargetDescription(const char *targetID)
 {
-  return getTargetEntry(targetID, L0_DESCRIPTION);
+  return getConfigEntry(L2_COMMUNICATION, targetID, L0_DESCRIPTION);
 }
 
 const char *DVInterface::getTargetHostname(const char *targetID)
 {
-  return getTargetEntry(targetID, L0_HOSTNAME);
+  return getConfigEntry(L2_COMMUNICATION, targetID, L0_HOSTNAME);
 }
 
 unsigned short DVInterface::getTargetPort(const char *targetID)
 {
-  const char *c = getTargetEntry(targetID, L0_PORT);
+  const char *c = getConfigEntry(L2_COMMUNICATION, targetID, L0_PORT);
   unsigned short result = 0;
   if (c)
   {
@@ -1064,12 +1115,12 @@ unsigned short DVInterface::getTargetPort(const char *targetID)
 
 const char *DVInterface::getTargetAETitle(const char *targetID)
 {
-  return getTargetEntry(targetID, L0_AETITLE);
+  return getConfigEntry(L2_COMMUNICATION, targetID, L0_AETITLE);
 }
 
 unsigned long DVInterface::getTargetMaxPDU(const char *targetID)
 {
-  const char *c = getTargetEntry(targetID, L0_MAXPDU);
+  const char *c = getConfigEntry(L2_COMMUNICATION, targetID, L0_MAXPDU);
   unsigned long result = 0;
   if (c)
   {
@@ -1080,59 +1131,87 @@ unsigned long DVInterface::getTargetMaxPDU(const char *targetID)
 
 OFBool DVInterface::getTargetImplicitOnly(const char *targetID)
 {
-  return getTargetBoolEntry(targetID, L0_IMPLICITONLY, OFFalse);
+  return getConfigBoolEntry(L2_COMMUNICATION, targetID, L0_IMPLICITONLY, OFFalse);
 }
 
 OFBool DVInterface::getTargetDisableNewVRs(const char *targetID)
 {
-  return getTargetBoolEntry(targetID, L0_DISABLENEWVRS, OFFalse);
+  return getConfigBoolEntry(L2_COMMUNICATION, targetID, L0_DISABLENEWVRS, OFFalse);
 }
 
-const char *DVInterface::getMyAETitle()
+const char *DVInterface::getNetworkAETitle()
 {
-  const char *result;
-  if (pConfig)
-  {
-    pConfig->select_section(L1_NETWORK, L2_GENERAL);
-    if (pConfig->section_valid(1)) result = pConfig->get_entry(L0_AETITLE);
-  }
+  const char *result = getConfigEntry(L2_GENERAL, L1_NETWORK, L0_AETITLE);
   if (result==NULL) result = PSTAT_AETITLE;
   return result;
 }
 
+
+OFBool DVInterface::getNetworkImplicitVROnly()
+{
+  return getConfigBoolEntry(L2_GENERAL, L1_NETWORK, L0_IMPLICITONLY, OFFalse);
+}
+
+OFBool DVInterface::getNetworkDisableNewVRs()
+{
+  return getConfigBoolEntry(L2_GENERAL, L1_NETWORK, L0_DISABLENEWVRS, OFFalse);
+}
+
+OFBool DVInterface::getNetworkBitPreserving()
+{
+  return getConfigBoolEntry(L2_GENERAL, L1_NETWORK, L0_BITPRESERVINGMODE, OFFalse);
+}
+
+unsigned short DVInterface::getNetworkPort()
+{
+  const char *c = getConfigEntry(L2_GENERAL, L1_NETWORK, L0_PORT);
+  unsigned short result = 0;
+  if (c)
+  {
+    if (1 != sscanf(c, "%hu", &result)) result=0;
+  }
+  return result;
+}
+
+unsigned long DVInterface::getNetworkMaxPDU()
+{
+  const char *c = getConfigEntry(L2_GENERAL, L1_NETWORK, L0_MAXPDU);
+  unsigned long result = 0;
+  if (c)
+  {
+    if (1 != sscanf(c, "%lu", &result)) result=0;
+  }
+  return result;
+}
+
+
 const char *DVInterface::getDatabaseFolder()
 {
-  const char *result;
-  if (pConfig)
-  {
-    pConfig->select_section(L1_DATABASE, L2_GENERAL);
-    if (pConfig->section_valid(1)) result = pConfig->get_entry(L0_DIRECTORY);
-  }
+  const char *result = getConfigEntry(L2_GENERAL, L1_DATABASE, L0_DIRECTORY);
   if (result==NULL) result = PSTAT_DBFOLDER;
   return result;
 }
 
 const char *DVInterface::getSenderName()
 {
-  const char *result;
-  if (pConfig)
-  {
-    pConfig->select_section(L1_NETWORK, L2_GENERAL);
-    if (pConfig->section_valid(1)) result = pConfig->get_entry(L0_SENDER);
-  }
-  return result;
+  return getConfigEntry(L2_GENERAL, L1_NETWORK, L0_SENDER);
 }
 
 const char *DVInterface::getReceiverName()
 {
-  const char *result;
-  if (pConfig)
-  {
-    pConfig->select_section(L1_NETWORK, L2_GENERAL);
-    if (pConfig->section_valid(1)) result = pConfig->get_entry(L0_RECEIVER);
-  }
-  return result;
+  return getConfigEntry(L2_GENERAL, L1_NETWORK, L0_RECEIVER);
 }
+
+const char *DVInterface::getGUIConfigEntry(const char *key)
+{
+  return getConfigEntry(L2_GENERAL, L1_GUI, key);
+}
+
+OFBool DVInterface::getGUIConfigEntryBool(const char *key, OFBool dfl)
+{
+  return getConfigBoolEntry(L2_GENERAL, L1_GUI, key, dfl);
+}
+
 
 E_Condition DVInterface::loadFileFormat(const char *filename,
                                         DcmFileFormat *&fileformat)
@@ -1335,7 +1414,11 @@ void DVInterface::cleanChildren()
 /*
  *  CVS/RCS Log:
  *  $Log: dviface.cc,v $
- *  Revision 1.16  1999-01-20 19:25:30  meichel
+ *  Revision 1.17  1999-01-25 13:05:57  meichel
+ *  Implemented DVInterface::startReceiver()
+ *    and several config file related methods.
+ *
+ *  Revision 1.16  1999/01/20 19:25:30  meichel
  *  Implemented sendIOD method which creates a separate process for trans-
  *    mitting images from the local database to a remote communication peer.
  *

@@ -22,9 +22,9 @@
  *  Purpose: Presentation State Viewer - Network Send Component (Store SCU)
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-01-20 19:26:17 $
+ *  Update Date:      $Date: 1999-01-25 13:05:47 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmpstat/apps/dcmpssnd.cc,v $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -445,9 +445,9 @@ int main(int argc, char *argv[])
            << "  aetitle    : " << targetAETitle << endl
            << "  max pdu    : " << targetMaxPDU << endl
            << "  options    : ";
-      if (targetImplicitOnly && targetDisableNewVRs) cerr << "implicit xfer syntax only, disable post-1998 VRs";
+      if (targetImplicitOnly && targetDisableNewVRs) cerr << "implicit xfer syntax only, disable post-1993 VRs";
       else if (targetImplicitOnly) cerr << "implicit xfer syntax only";
-      else if (targetDisableNewVRs) cerr << "disable post-1998 VRs";
+      else if (targetDisableNewVRs) cerr << "disable post-1993 VRs";
       else cerr << "none.";
       cerr << endl << endl;
     }
@@ -487,7 +487,7 @@ int main(int argc, char *argv[])
       return 1;
     }
 
-    ASC_setAPTitles(params, dvi.getMyAETitle(), targetAETitle, NULL);
+    ASC_setAPTitles(params, dvi.getNetworkAETitle(), targetAETitle, NULL);
 
     gethostname(localHost, sizeof(localHost) - 1);
     sprintf(peerHost, "%s:%d", targetHostname, (int)targetPort);
@@ -602,7 +602,11 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmpssnd.cc,v $
- * Revision 1.1  1999-01-20 19:26:17  meichel
+ * Revision 1.2  1999-01-25 13:05:47  meichel
+ * Implemented DVInterface::startReceiver()
+ *   and several config file related methods.
+ *
+ * Revision 1.1  1999/01/20 19:26:17  meichel
  * Implemented DICOM network send application "dcmpssnd" which sends studies/
  *   series/images contained in the local database to a remote DICOM
  *   communication peer.
