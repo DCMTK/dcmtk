@@ -22,9 +22,9 @@
  *  Purpose: List the contents of a dicom file
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-02-10 10:47:16 $
+ *  Update Date:      $Date: 2000-02-10 11:05:25 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/apps/dcmdump.cc,v $
- *  CVS/RCS Revision: $Revision: 1.24 $
+ *  CVS/RCS Revision: $Revision: 1.25 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -185,7 +185,7 @@ int main(int argc, char *argv[])
 
     cmd.addSubGroup("writing:");
       cmd.addOption("--write-pixel",            "+W",    1,  "[d]irectory : string",
-                                                             "write pixel data to a .raw file stored in d");
+                                                             "write pixel data to a .raw file stored in d\n(little endian, filename created automatically)");
 
     /* evaluate command line */                           
     prepareCmdLineArgs(argc, argv, OFFIS_CONSOLE_APPLICATION);
@@ -423,9 +423,8 @@ static int dumpFile(ostream & out,
 /*
  * CVS/RCS Log:
  * $Log: dcmdump.cc,v $
- * Revision 1.24  2000-02-10 10:47:16  joergr
- * Added new feature to dcmdump (enhanced print method of dcmdata): write
- * pixel data/item value fields to raw files.
+ * Revision 1.25  2000-02-10 11:05:25  joergr
+ * Modified help text for new command line option.
  *
  * Revision 1.23  2000/02/01 10:11:57  meichel
  * Avoiding to include <stdlib.h> as extern "C" on Borland C++ Builder 4,
