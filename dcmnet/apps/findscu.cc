@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2001, OFFIS
+ *  Copyright (C) 1994-2002, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,15 +21,15 @@
  *
  *  Purpose: Query/Retrieve Service Class User (C-FIND operation)
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-08-20 12:21:21 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2002-09-23 17:53:46 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/apps/findscu.cc,v $
- *  CVS/RCS Revision: $Revision: 1.34 $
+ *  CVS/RCS Revision: $Revision: 1.35 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
  *
- */                        
+ */
 
 #include "osconfig.h" /* make sure OS specific configuration is included first */
 
@@ -70,14 +70,18 @@ END_EXTERN_C
 #include "ofconapp.h"
 #include "dcuid.h"    /* for dcmtk version name */
 
+#ifdef WITH_ZLIB
+#include "zlib.h"     /* for zlibVersion() */
+#endif
+
 #define OFFIS_CONSOLE_APPLICATION "findscu"
 
 static char rcsid[] = "$dcmtk: " OFFIS_CONSOLE_APPLICATION " v"
   OFFIS_DCMTK_VERSION " " OFFIS_DCMTK_RELEASEDATE " $";
 
 /* default application titles */
-#define APPLICATIONTITLE	"FINDSCU"
-#define PEERAPPLICATIONTITLE	"ANY-SCP"
+#define APPLICATIONTITLE        "FINDSCU"
+#define PEERAPPLICATIONTITLE    "ANY-SCP"
 
 
 static OFBool           opt_verbose = OFFalse;
@@ -90,7 +94,7 @@ static const char *     opt_abstractSyntax = UID_FINDModalityWorklistInformation
 
 static DcmDataset *overrideKeys = NULL;
 
-static void 
+static void
 errmsg(const char *msg,...)
 {
     va_list args;
@@ -115,7 +119,7 @@ addOverrideKey(OFConsoleApplication& app, const char* s)
 
     val[0] = '\0';
     n = sscanf(s, "%x,%x=%s", &g, &e, val);
-    
+
     if (n < 2) {
       msg = "bad key format: ";
       msg += s;
@@ -131,7 +135,7 @@ addOverrideKey(OFConsoleApplication& app, const char* s)
       if (ccc == 0) { spos = NULL; break; }
       spos++;
     } while(1);
-        
+
     if (spos && *(spos+1)) {
         strcpy(val, spos+1);
     }
@@ -147,15 +151,15 @@ addOverrideKey(OFConsoleApplication& app, const char* s)
         app.printError(msg2);
     }
     if (strlen(val) > 0) {
-	elem->putString(val);
-	if (elem->error() != EC_Normal)
-	{
+        elem->putString(val);
+        if (elem->error() != EC_Normal)
+        {
             sprintf(msg2, "cannot put tag value: (%04x,%04x)=\"", g, e);
             msg = msg2;
             msg += val;
             msg += "\"";
             app.printError(msg.c_str());
-	}
+        }
     }
 
     if (overrideKeys == NULL) overrideKeys = new DcmDataset;
@@ -169,7 +173,7 @@ addOverrideKey(OFConsoleApplication& app, const char* s)
 static OFCondition
 addPresentationContexts(T_ASC_Parameters *params);
 
-static OFCondition 
+static OFCondition
 cfind(T_ASC_Association *assoc, const char* fname);
 
 #define SHORTCOL 4
@@ -220,25 +224,26 @@ main(int argc, char *argv[])
   cmd.setOptionColumns(LONGCOL, SHORTCOL);
   cmd.addGroup("general options:", LONGCOL, SHORTCOL+2);
    cmd.addOption("--help",                      "-h",        "print this help text and exit");
+   cmd.addOption("--version",                                "print version information and exit", OFTrue /* exclusive */);
    cmd.addOption("--verbose",                   "-v",        "verbose mode, print processing details");
    cmd.addOption("--debug",                     "-d",        "debug mode, print debug information");
   cmd.addGroup("network options:");
     cmd.addSubGroup("override matching keys:");
-      cmd.addOption("--key",              "-k",   1,   "key: gggg,eeee=\"string\"", "override matching key");
+      cmd.addOption("--key",                    "-k",    1,  "key: gggg,eeee=\"string\"", "override matching key");
     cmd.addSubGroup("query information model:");
-      cmd.addOption("--worklist",         "-W",        "use modality worklist information model (default)");
-      cmd.addOption("--patient",          "-P",        "use patient root information model");
-      cmd.addOption("--study",            "-S",        "use study root information model");
-      cmd.addOption("--psonly",           "-O",        "use patient/study only information model");
+      cmd.addOption("--worklist",               "-W",        "use modality worklist information model (default)");
+      cmd.addOption("--patient",                "-P",        "use patient root information model");
+      cmd.addOption("--study",                  "-S",        "use study root information model");
+      cmd.addOption("--psonly",                 "-O",        "use patient/study only information model");
     cmd.addSubGroup("application entity titles:");
       OFString opt1 = "set my calling AE title (default: ";
       opt1 += APPLICATIONTITLE;
       opt1 += ")";
-      cmd.addOption("--aetitle",                "-aet",   1, "aetitle: string", opt1.c_str());
+      cmd.addOption("--aetitle",                "-aet",  1,  "aetitle: string", opt1.c_str());
       OFString opt2 = "set called AE title of peer (default: ";
       opt2 += PEERAPPLICATIONTITLE;
       opt2 += ")";
-      cmd.addOption("--call",                   "-aec",   1, "aetitle: string", opt2.c_str());
+      cmd.addOption("--call",                   "-aec",  1,  "aetitle: string", opt2.c_str());
     cmd.addSubGroup("post-1993 value representations:");
       cmd.addOption("--enable-new-vr",          "+u",        "enable support for new VRs (UN/UT) (default)");
       cmd.addOption("--disable-new-vr",         "-u",        "disable support for new VRs, convert to OB");
@@ -254,39 +259,55 @@ main(int argc, char *argv[])
       sprintf(tempstr, "%ld", (long)ASC_MAXIMUMPDUSIZE);
       opt4 += tempstr;
       opt4 += "]";
-      cmd.addOption("--max-pdu",                "-pdu",   1,  opt4.c_str(), opt3.c_str());
-      cmd.addOption("--repeat",                           1,  "[n]umber: integer", "repeat n times");
-      cmd.addOption("--abort",                                "abort association instead of releasing it");
-      cmd.addOption("--extract",                "-X",         "extract responses to file (rsp0001.dcm, ...)");
+      cmd.addOption("--max-pdu",                "-pdu",  1,  opt4.c_str(), opt3.c_str());
+      cmd.addOption("--repeat",                          1,  "[n]umber: integer", "repeat n times");
+      cmd.addOption("--abort",                               "abort association instead of releasing it");
+      cmd.addOption("--extract",                "-X",        "extract responses to file (rsp0001.dcm, ...)");
 
-    /* evaluate command line */                           
+    /* evaluate command line */
     prepareCmdLineArgs(argc, argv, OFFIS_CONSOLE_APPLICATION);
     if (app.parseCommandLine(cmd, argc, argv, OFCommandLine::ExpandWildcards))
     {
-      /* check for --help first */
-      if (cmd.findOption("--help")) app.printUsage();
+      /* check exclusive options first */
+
+      if (cmd.getParamCount() == 0)
+      {
+        if (cmd.findOption("--version"))
+        {
+            app.printHeader(OFTrue /*print host identifier*/);          // uses ofConsole.lockCerr()
+            CERR << endl << "External libraries used:";
+#ifdef WITH_ZLIB
+            CERR << endl << "- ZLIB, Version " << zlibVersion() << endl;
+#else
+            CERR << " none" << endl;
+#endif
+            return 0;
+         }
+      }
+
+      /* command line parameters */
 
       cmd.getParam(1, opt_peer);
       app.checkParam(cmd.getParamAndCheckMinMax(2, opt_port, 1, 65535));
 
       if (cmd.findOption("--verbose")) opt_verbose=OFTrue;
-      if (cmd.findOption("--debug")) 
+      if (cmd.findOption("--debug"))
       {
-      	opt_debug = OFTrue;
+        opt_debug = OFTrue;
         DUL_Debug(OFTrue);
         DIMSE_debug(OFTrue);
-      	SetDebugLevel(3);
+        SetDebugLevel(3);
       }
-      
+
       if (cmd.findOption("--key", 0, OFCommandLine::FOM_First))
       {
-      	const char *ovKey = NULL;
-      	do {
-      	  app.checkValue(cmd.getValue(ovKey));
-      	  addOverrideKey(app, ovKey);
-      	} while (cmd.findOption("--key", 0, OFCommandLine::FOM_Next));
-      }    
-      
+        const char *ovKey = NULL;
+        do {
+          app.checkValue(cmd.getValue(ovKey));
+          addOverrideKey(app, ovKey);
+        } while (cmd.findOption("--key", 0, OFCommandLine::FOM_Next));
+      }
+
       cmd.beginOptionBlock();
       if (cmd.findOption("--worklist")) opt_abstractSyntax = UID_FINDModalityWorklistInformationModel;
       if (cmd.findOption("--patient"))  opt_abstractSyntax = UID_FINDPatientRootQueryRetrieveInformationModel;
@@ -296,7 +317,7 @@ main(int argc, char *argv[])
       if (cmd.findOption("--aetitle")) app.checkValue(cmd.getValue(opt_ourTitle));
       if (cmd.findOption("--call")) app.checkValue(cmd.getValue(opt_peerTitle));
       cmd.beginOptionBlock();
-      if (cmd.findOption("--enable-new-vr")) 
+      if (cmd.findOption("--enable-new-vr"))
       {
         dcmEnableUnknownVRGeneration.set(OFTrue);
         dcmEnableUnlimitedTextVRGeneration.set(OFTrue);
@@ -312,7 +333,7 @@ main(int argc, char *argv[])
       if (cmd.findOption("--repeat"))  app.checkValue(cmd.getValueAndCheckMin(opt_repeatCount, 1));
       if (cmd.findOption("--abort"))   opt_abortAssociation = OFTrue;
       if (cmd.findOption("--extract")) opt_extractResponsesToFile = OFTrue;
-      
+
       /* finally parse filenames */
       int paramCount = cmd.getParamCount();
       const char *currentFilename = NULL;
@@ -320,7 +341,7 @@ main(int argc, char *argv[])
 
       for (int i=3; i <= paramCount; i++)
       {
-      	cmd.getParam(i, currentFilename);
+        cmd.getParam(i, currentFilename);
         if (access(currentFilename, R_OK) < 0)
         {
           errormsg = "cannot access file: ";
@@ -338,22 +359,22 @@ main(int argc, char *argv[])
 
     /* make sure data dictionary is loaded */
     if (!dcmDataDict.isDictionaryLoaded()) {
-	fprintf(stderr, "Warning: no data dictionary loaded, check environment variable: %s\n",
-		DCM_DICT_ENVIRONMENT_VARIABLE);
+        fprintf(stderr, "Warning: no data dictionary loaded, check environment variable: %s\n",
+                DCM_DICT_ENVIRONMENT_VARIABLE);
     }
 
     /* initialize network, i.e. create an instance of T_ASC_Network*. */
     OFCondition cond = ASC_initializeNetwork(NET_REQUESTOR, 0, 1000, &net);
     if (cond.bad()) {
-	DimseCondition::dump(cond);
-	exit(1);
+        DimseCondition::dump(cond);
+        exit(1);
     }
 
     /* initialize asscociation parameters, i.e. create an instance of T_ASC_Parameters*. */
     cond = ASC_createAssociationParameters(&params, opt_maxReceivePDULength);
     if (cond.bad()) {
-	DimseCondition::dump(cond);
-	exit(1);
+        DimseCondition::dump(cond);
+        exit(1);
     }
 
     /* sets this application's title and the called application's title in the params */
@@ -370,53 +391,53 @@ main(int argc, char *argv[])
     /* when the network connection will be established */
     cond = addPresentationContexts(params);
     if (cond.bad()) {
-	DimseCondition::dump(cond);
-	exit(1);
+        DimseCondition::dump(cond);
+        exit(1);
     }
 
     /* dump presentation contexts if required */
     if (opt_debug) {
-	printf("Request Parameters:\n");
-	ASC_dumpParameters(params, COUT);
+        printf("Request Parameters:\n");
+        ASC_dumpParameters(params, COUT);
     }
 
     /* create association, i.e. try to establish a network connection to another */
     /* DICOM application. This call creates an instance of T_ASC_Association*. */
     if (opt_verbose)
-	printf("Requesting Association\n");
+        printf("Requesting Association\n");
     cond = ASC_requestAssociation(net, params, &assoc);
     if (cond.bad()) {
-	if (cond == DUL_ASSOCIATIONREJECTED) {
-	    T_ASC_RejectParameters rej;
+        if (cond == DUL_ASSOCIATIONREJECTED) {
+            T_ASC_RejectParameters rej;
 
-	    ASC_getRejectParameters(params, &rej);
-	    errmsg("Association Rejected:");
-	    ASC_printRejectParameters(stderr, &rej);
-	    exit(1);
-	} else {
-	    errmsg("Association Request Failed:");
-	    DimseCondition::dump(cond);
-	    exit(1);
-	}
+            ASC_getRejectParameters(params, &rej);
+            errmsg("Association Rejected:");
+            ASC_printRejectParameters(stderr, &rej);
+            exit(1);
+        } else {
+            errmsg("Association Request Failed:");
+            DimseCondition::dump(cond);
+            exit(1);
+        }
     }
 
     /* dump the presentation contexts which have been accepted/refused */
     if (opt_debug) {
-	printf("Association Parameters Negotiated:\n");
-	ASC_dumpParameters(params, COUT);
+        printf("Association Parameters Negotiated:\n");
+        ASC_dumpParameters(params, COUT);
     }
 
     /* count the presentation contexts which have been accepted by the SCP */
     /* If there are none, finish the execution */
     if (ASC_countAcceptedPresentationContexts(params) == 0) {
-	errmsg("No Acceptable Presentation Contexts");
-	exit(1);
+        errmsg("No Acceptable Presentation Contexts");
+        exit(1);
     }
 
     /* dump general information concerning the establishment of the network connection if required */
     if (opt_verbose) {
-	printf("Association Accepted (Max Send PDV: %lu)\n",
-		assoc->sendPDVLength);
+        printf("Association Accepted (Max Send PDV: %lu)\n",
+                assoc->sendPDVLength);
     }
 
     /* do the real work, i.e. for all files which were specified in the command line, send a */
@@ -424,87 +445,87 @@ main(int argc, char *argv[])
     cond = EC_Normal;
     if (fileNameList.empty())
     {
-	/* no files provided on command line */
-	cond = cfind(assoc, NULL);
+        /* no files provided on command line */
+        cond = cfind(assoc, NULL);
     } else {
       OFListIterator(OFString) iter = fileNameList.begin();
-      OFListIterator(OFString) enditer = fileNameList.end();    
+      OFListIterator(OFString) enditer = fileNameList.end();
       while ((iter != enditer) && (cond == EC_Normal)) // compare with EC_Normal since DUL_PEERREQUESTEDRELEASE is also good()
       {
           cond = cfind(assoc, (*iter).c_str());
           ++iter;
-      }    	
+      }
     }
 
     /* tear down association, i.e. terminate network connection to SCP */
     if (cond == EC_Normal)
     {
-	if (opt_abortAssociation) {
-	    if (opt_verbose)
-		printf("Aborting Association\n");
-	    cond = ASC_abortAssociation(assoc);
-	    if (cond.bad()) {
-		errmsg("Association Abort Failed:");
-		DimseCondition::dump(cond);
-		exit(1);
-	    }
-	} else {
-	    /* release association */
-	    if (opt_verbose)
-		printf("Releasing Association\n");
-	    cond = ASC_releaseAssociation(assoc);
-	    if (cond.bad())
-	    {
-		errmsg("Association Release Failed:");
-		DimseCondition::dump(cond);
-		exit(1);
-	    }
-	}
+        if (opt_abortAssociation) {
+            if (opt_verbose)
+                printf("Aborting Association\n");
+            cond = ASC_abortAssociation(assoc);
+            if (cond.bad()) {
+                errmsg("Association Abort Failed:");
+                DimseCondition::dump(cond);
+                exit(1);
+            }
+        } else {
+            /* release association */
+            if (opt_verbose)
+                printf("Releasing Association\n");
+            cond = ASC_releaseAssociation(assoc);
+            if (cond.bad())
+            {
+                errmsg("Association Release Failed:");
+                DimseCondition::dump(cond);
+                exit(1);
+            }
+        }
     }
     else if (cond == DUL_PEERREQUESTEDRELEASE)
     {
-	errmsg("Protocol Error: peer requested release (Aborting)");
-	if (opt_verbose)
-	    printf("Aborting Association\n");
-	cond = ASC_abortAssociation(assoc);
-	if (cond.bad()) {
-	    errmsg("Association Abort Failed:");
-	    DimseCondition::dump(cond);
-	    exit(1);
-	}
+        errmsg("Protocol Error: peer requested release (Aborting)");
+        if (opt_verbose)
+            printf("Aborting Association\n");
+        cond = ASC_abortAssociation(assoc);
+        if (cond.bad()) {
+            errmsg("Association Abort Failed:");
+            DimseCondition::dump(cond);
+            exit(1);
+        }
     }
     else if (cond == DUL_PEERABORTEDASSOCIATION)
     {
-	if (opt_verbose) printf("Peer Aborted Association\n");
+        if (opt_verbose) printf("Peer Aborted Association\n");
     }
-    else 
+    else
     {
-	errmsg("SCU Failed:");
-	DimseCondition::dump(cond);
-	if (opt_verbose)
-	    printf("Aborting Association\n");
-	cond = ASC_abortAssociation(assoc);
-	if (cond.bad()) {
-	    errmsg("Association Abort Failed:");
-	    DimseCondition::dump(cond);
-	    exit(1);
-	}
+        errmsg("SCU Failed:");
+        DimseCondition::dump(cond);
+        if (opt_verbose)
+            printf("Aborting Association\n");
+        cond = ASC_abortAssociation(assoc);
+        if (cond.bad()) {
+            errmsg("Association Abort Failed:");
+            DimseCondition::dump(cond);
+            exit(1);
+        }
     }
 
     /* destroy the association, i.e. free memory of T_ASC_Association* structure. This */
     /* call is the counterpart of ASC_requestAssociation(...) which was called above. */
     cond = ASC_destroyAssociation(&assoc);
     if (cond.bad()) {
-	DimseCondition::dump(cond);
-	exit(1);
+        DimseCondition::dump(cond);
+        exit(1);
     }
 
     /* drop the network, i.e. free memory of T_ASC_Network* structure. This call */
     /* is the counterpart of ASC_initializeNetwork(...) which was called above. */
     cond = ASC_dropNetwork(&net);
     if (cond.bad()) {
-	DimseCondition::dump(cond);
-	exit(1);
+        DimseCondition::dump(cond);
+        exit(1);
     }
 
 #ifdef HAVE_WINSOCK_H
@@ -519,9 +540,9 @@ addPresentationContexts(T_ASC_Parameters *params)
 {
     OFCondition cond = EC_Normal;
 
-    /* 
+    /*
     ** We prefer to accept Explicitly encoded transfer syntaxes.
-    ** If we are running on a Little Endian machine we prefer 
+    ** If we are running on a Little Endian machine we prefer
     ** LittleEndianExplicitTransferSyntax to BigEndianTransferSyntax.
     ** Some SCP implementations will just select the first transfer
     ** syntax they support (this is not part of the standard) so
@@ -529,23 +550,23 @@ addPresentationContexts(T_ASC_Parameters *params)
     ** of such behaviour.
     */
 
-    const char* transferSyntaxes[] = { 
-	NULL, NULL, UID_LittleEndianImplicitTransferSyntax };
+    const char* transferSyntaxes[] = {
+        NULL, NULL, UID_LittleEndianImplicitTransferSyntax };
 
     /* gLocalByteOrder is defined in dcxfer.h */
     if (gLocalByteOrder == EBO_LittleEndian) {
-	/* we are on a little endian machine */
-	transferSyntaxes[0] = UID_LittleEndianExplicitTransferSyntax;
-	transferSyntaxes[1] = UID_BigEndianExplicitTransferSyntax;
+        /* we are on a little endian machine */
+        transferSyntaxes[0] = UID_LittleEndianExplicitTransferSyntax;
+        transferSyntaxes[1] = UID_BigEndianExplicitTransferSyntax;
     } else {
-	/* we are on a big endian machine */
-	transferSyntaxes[0] = UID_BigEndianExplicitTransferSyntax;
-	transferSyntaxes[1] = UID_LittleEndianExplicitTransferSyntax;
+        /* we are on a big endian machine */
+        transferSyntaxes[0] = UID_BigEndianExplicitTransferSyntax;
+        transferSyntaxes[1] = UID_LittleEndianExplicitTransferSyntax;
     }
 
     cond = ASC_addPresentationContext(
-	params, 1, opt_abstractSyntax,
-	transferSyntaxes, DIM_OF(transferSyntaxes));
+        params, 1, opt_abstractSyntax,
+        transferSyntaxes, DIM_OF(transferSyntaxes));
 
     return cond;
 }
@@ -554,7 +575,7 @@ static void
 substituteOverrideKeys(DcmDataset *dset)
 {
     if (overrideKeys == NULL) {
-	return; /* nothing to do */
+        return; /* nothing to do */
     }
 
     /* copy the override keys */
@@ -563,9 +584,9 @@ substituteOverrideKeys(DcmDataset *dset)
     /* put the override keys into dset replacing existing tags */
     unsigned long elemCount = keys.card();
     for (unsigned long i=0; i<elemCount; i++) {
-	DcmElement *elem = keys.remove((unsigned long)0);
+        DcmElement *elem = keys.remove((unsigned long)0);
 
-	dset->insert(elem, OFTrue);
+        dset->insert(elem, OFTrue);
     }
 }
 
@@ -591,16 +612,16 @@ static OFBool writeToFile(const char* ofname, DcmDataset *dataset)
 
 static void
 progressCallback(
-	void * /*callbackData*/ , 
-	T_DIMSE_C_FindRQ * /*request*/ , 
-	int responseCount, 
-	T_DIMSE_C_FindRSP *rsp,
-	DcmDataset *responseIdentifiers 
-	)
+        void * /*callbackData*/ ,
+        T_DIMSE_C_FindRQ * /*request*/ ,
+        int responseCount,
+        T_DIMSE_C_FindRSP *rsp,
+        DcmDataset *responseIdentifiers
+        )
     /*
      * This function.is used to indicate progress when findscu receives search results over the
      * network. This function will simply cause some information to be dumped to stdout.
-     * 
+     *
      * Parameters:
      *   callbackData        - [in] data for this callback function
      *   request             - [in] The original find request message.
@@ -629,7 +650,7 @@ progressCallback(
     }
 }
 
-static OFCondition 
+static OFCondition
 findSCU(T_ASC_Association * assoc, const char *fname)
     /*
      * This function will read all the information from the given file
@@ -659,13 +680,13 @@ findSCU(T_ASC_Association * assoc, const char *fname)
         /* will be available through the DcmFileFormat object. In detail, it will be available */
         /* through calls to DcmFileFormat::getMetaInfo() (for meta header information) and */
         /* DcmFileFormat::getDataset() (for data set information). */
-	OFCondition cond = dcmff.loadFile(fname);
+        OFCondition cond = dcmff.loadFile(fname);
 
         /* figure out if an error occured while the file was read*/
-	if (cond.bad()) {
-	    errmsg("Bad DICOM file: %s: %s", fname, cond.text());
-	    return cond;
-	}
+        if (cond.bad()) {
+            errmsg("Bad DICOM file: %s: %s", fname, cond.text());
+            return cond;
+        }
     }
 
     /* replace specific keys by those in overrideKeys */
@@ -673,10 +694,10 @@ findSCU(T_ASC_Association * assoc, const char *fname)
 
     /* figure out which of the accepted presentation contexts should be used */
     presId = ASC_findAcceptedPresentationContextID(
-	assoc, opt_abstractSyntax);
+        assoc, opt_abstractSyntax);
     if (presId == 0) {
-	errmsg("No presentation context"); 
-	return DIMSE_NOVALIDPRESENTATIONCONTEXTID;
+        errmsg("No presentation context");
+        return DIMSE_NOVALIDPRESENTATIONCONTEXTID;
     }
 
     /* prepare the transmission of data */
@@ -688,43 +709,43 @@ findSCU(T_ASC_Association * assoc, const char *fname)
 
     /* if required, dump some more general information */
     if (opt_verbose) {
-	printf("Find SCU RQ: MsgID %d\n", msgId);
-	printf("REQUEST:\n");
-	dcmff.getDataset()->print(COUT);
-	printf("--------\n");
+        printf("Find SCU RQ: MsgID %d\n", msgId);
+        printf("REQUEST:\n");
+        dcmff.getDataset()->print(COUT);
+        printf("--------\n");
     }
 
     /* finally conduct transmission of data */
-    OFCondition cond = DIMSE_findUser(assoc, presId, &req, dcmff.getDataset(), 
-			  progressCallback, NULL, 
-			  DIMSE_BLOCKING, 0, 
-			  &rsp, &statusDetail);
-	
-	
+    OFCondition cond = DIMSE_findUser(assoc, presId, &req, dcmff.getDataset(),
+                          progressCallback, NULL,
+                          DIMSE_BLOCKING, 0,
+                          &rsp, &statusDetail);
+
+
     /* dump some more general information */
     if (cond == EC_Normal) {
         if (opt_verbose) {
-	    DIMSE_printCFindRSP(stdout, &rsp);
+            DIMSE_printCFindRSP(stdout, &rsp);
         } else {
-	    if (rsp.DimseStatus != STATUS_Success) {
-		printf("Response: %s\n", DU_cfindStatusString(rsp.DimseStatus));
-	    }
-	}
+            if (rsp.DimseStatus != STATUS_Success) {
+                printf("Response: %s\n", DU_cfindStatusString(rsp.DimseStatus));
+            }
+        }
     } else {
-	if (fname) {
-	    errmsg("Find Failed, file: %s:", fname);
-	} else {
-	    errmsg("Find Failed, query keys:");
-	    dcmff.getDataset()->print(COUT);
-	}
-	DimseCondition::dump(cond);
+        if (fname) {
+            errmsg("Find Failed, file: %s:", fname);
+        } else {
+            errmsg("Find Failed, query keys:");
+            dcmff.getDataset()->print(COUT);
+        }
+        DimseCondition::dump(cond);
     }
 
     /* dump status detail information if there is some */
     if (statusDetail != NULL) {
         printf("  Status Detail:\n");
-	statusDetail->print(COUT);
-	delete statusDetail;
+        statusDetail->print(COUT);
+        delete statusDetail;
     }
 
     /* return */
@@ -751,7 +772,7 @@ cfind(T_ASC_Association * assoc, const char *fname)
     /* as long as no error occured and the counter does not equal 0 */
     while (cond == EC_Normal && n--) {
         /* process file (read file, send C-FIND-RQ, receive C-FIND-RSP messages) */
-	cond = findSCU(assoc, fname);
+        cond = findSCU(assoc, fname);
     }
 
     /* return result value */
@@ -761,7 +782,12 @@ cfind(T_ASC_Association * assoc, const char *fname)
 /*
 ** CVS Log
 ** $Log: findscu.cc,v $
-** Revision 1.34  2002-08-20 12:21:21  meichel
+** Revision 1.35  2002-09-23 17:53:46  joergr
+** Added new command line option "--version" which prints the name and version
+** number of external libraries used (incl. preparation for future support of
+** 'config.guess' host identifiers).
+**
+** Revision 1.34  2002/08/20 12:21:21  meichel
 ** Adapted code to new loadFile and saveFile methods, thus removing direct
 **   use of the DICOM stream classes.
 **

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2001, OFFIS
+ *  Copyright (C) 1994-2002, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,10 +21,10 @@
  *
  *  Purpose: Storage Service Class Provider (C-STORE operation)
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-09-10 16:04:33 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2002-09-23 17:53:47 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/apps/storescp.cc,v $
- *  CVS/RCS Revision: $Revision: 1.56 $
+ *  CVS/RCS Revision: $Revision: 1.57 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -59,7 +59,7 @@ END_EXTERN_C
 #endif
 
 #ifdef HAVE_WINDOWS_H
-#include <direct.h>        // for _mkdir()
+#include <direct.h>        /* for _mkdir() */
 #endif
 
 
@@ -73,14 +73,18 @@ END_EXTERN_C
 #include "ofconapp.h"
 #include "ofstd.h"
 #include "ofdatime.h"
-#include "dcuid.h"    /* for dcmtk version name */
-#include "dicom.h"    /* for DICOM_APPLICATION_ACCEPTOR */
-#include "dcdeftag.h" // for DCM_StudyInstanceUID
-#include "dcostrmz.h"    /* for dcmZlibCompressionLevel */
+#include "dcuid.h"         /* for dcmtk version name */
+#include "dicom.h"         /* for DICOM_APPLICATION_ACCEPTOR */
+#include "dcdeftag.h"      /* for DCM_StudyInstanceUID */
+#include "dcostrmz.h"      /* for dcmZlibCompressionLevel */
 
 #ifdef WITH_OPENSSL
 #include "tlstrans.h"
 #include "tlslayer.h"
+#endif
+
+#ifdef WITH_ZLIB
+#include "zlib.h"          /* for zlibVersion() */
 #endif
 
 #define OFFIS_CONSOLE_APPLICATION "storescp"
@@ -105,7 +109,7 @@ static void executeCommand( const OFString &cmd );
 static void cleanChildren();
 static OFCondition acceptUnknownContextsWithPreferredTransferSyntaxes(
          T_ASC_Parameters * params,
-         const char* transferSyntaxes[], 
+         const char* transferSyntaxes[],
          int transferSyntaxCount,
          T_ASC_SC_ROLE acceptedRole = ASC_SC_ROLE_DEFAULT);
 
@@ -189,6 +193,7 @@ int main(int argc, char *argv[])
   cmd.setOptionColumns(LONGCOL, SHORTCOL);
   cmd.addGroup("general options:", LONGCOL, SHORTCOL+2);
     cmd.addOption("--help",                      "-h",       "print this help text and exit");
+    cmd.addOption("--version",                               "print version information and exit", OFTrue /* exclusive */);
     cmd.addOption("--verbose",                   "-v",       "verbose mode, print processing details");
     cmd.addOption("--debug",                     "-d",       "debug mode, print debug information");
     OFString opt0 = "write output-files to (existing) directory p\n(default: ";
@@ -216,7 +221,7 @@ int main(int argc, char *argv[])
       OFString opt1 = "set my AE title (default: ";
       opt1 += APPLICATIONTITLE;
       opt1 += ")";
-      cmd.addOption("--aetitle",                "-aet",   1, "aetitle: string", opt1.c_str());
+      cmd.addOption("--aetitle",                "-aet",  1,  "aetitle: string", opt1.c_str());
       OFString opt3 = "set max receive pdu to n bytes (def.: ";
       sprintf(tempstr, "%ld", (long)ASC_DEFAULTMAXPDU);
       opt3 += tempstr;
@@ -228,14 +233,14 @@ int main(int argc, char *argv[])
       sprintf(tempstr, "%ld", (long)ASC_MAXIMUMPDUSIZE);
       opt4 += tempstr;
       opt4 += "]";
-      cmd.addOption("--max-pdu",                "-pdu",   1, opt4.c_str(), opt3.c_str());
+      cmd.addOption("--max-pdu",                "-pdu",  1,  opt4.c_str(), opt3.c_str());
       cmd.addOption("--disable-host-lookup",    "-dhl",      "disable hostname lookup");
       cmd.addOption("--refuse",                              "refuse association");
       cmd.addOption("--reject",                              "reject association if no implement. class UID");
       cmd.addOption("--ignore",                              "ignore store data, receive but do not store");
-      cmd.addOption("--sleep-after",                      1, "[s]econds: integer",
+      cmd.addOption("--sleep-after",                     1,  "[s]econds: integer",
                                                              "sleep s seconds after store (default: 0)");
-      cmd.addOption("--sleep-during",                     1, "[s]econds: integer",
+      cmd.addOption("--sleep-during",                    1,  "[s]econds: integer",
                                                              "sleep s seconds during store (default: 0)");
       cmd.addOption("--abort-after",                         "abort association after receipt of C-STORE-RQ\n(but before sending response)");
       cmd.addOption("--abort-during",                        "abort association during receipt of C-STORE-RQ");
@@ -292,44 +297,66 @@ int main(int argc, char *argv[])
   cmd.addGroup("transport layer security (TLS) options:");
     cmd.addSubGroup("transport protocol stack options:");
       cmd.addOption("--disable-tls",            "-tls",      "use normal TCP/IP connection (default)");
-      cmd.addOption("--enable-tls",             "+tls", 2,   "[p]rivate key file, [c]ertificate file: string",
+      cmd.addOption("--enable-tls",             "+tls",  2,  "[p]rivate key file, [c]ertificate file: string",
                                                              "use authenticated secure TLS connection");
     cmd.addSubGroup("private key password options (only with --enable-tls):");
       cmd.addOption("--std-passwd",             "+ps",       "prompt user to type password on stdin (default)");
-      cmd.addOption("--use-passwd",             "+pw",  1,   "[p]assword: string ",
+      cmd.addOption("--use-passwd",             "+pw",   1,  "[p]assword: string ",
                                                              "use specified password");
       cmd.addOption("--null-passwd",            "-pw",       "use empty string as password");
     cmd.addSubGroup("key and certificate file format options:");
       cmd.addOption("--pem-keys",               "-pem",      "read keys and certificates as PEM file (def.)");
       cmd.addOption("--der-keys",               "-der",      "read keys and certificates as DER file");
     cmd.addSubGroup("certification authority options:");
-      cmd.addOption("--add-cert-file",         "+cf",   1,   "[c]ertificate filename: string",
+      cmd.addOption("--add-cert-file",         "+cf",    1,  "[c]ertificate filename: string",
                                                              "add certificate file to list of certificates");
-      cmd.addOption("--add-cert-dir",          "+cd",   1,   "[c]ertificate directory: string",
+      cmd.addOption("--add-cert-dir",          "+cd",    1,  "[c]ertificate directory: string",
                                                              "add certificates in d to list of certificates");
     cmd.addSubGroup("ciphersuite options:");
-      cmd.addOption("--cipher",                "+cs",   1,   "[c]iphersuite name: string",
+      cmd.addOption("--cipher",                "+cs",    1,  "[c]iphersuite name: string",
                                                              "add ciphersuite to list of negotiated suites");
-      cmd.addOption("--dhparam",               "+dp",   1,   "[f]ilename: string",
+      cmd.addOption("--dhparam",               "+dp",    1,  "[f]ilename: string",
                                                              "read DH parameters for DH/DSS ciphersuites");
     cmd.addSubGroup("pseudo random generator options:");
-      cmd.addOption("--seed",                 "+rs",   1,    "[f]ilename: string",
+      cmd.addOption("--seed",                  "+rs",    1,  "[f]ilename: string",
                                                              "seed random generator with contents of f");
-      cmd.addOption("--write-seed",           "+ws",         "write back modified seed (only with --seed)");
-      cmd.addOption("--write-seed-file",      "+wf",   1,    "[f]ilename: string (only with --seed)",
+      cmd.addOption("--write-seed",            "+ws",        "write back modified seed (only with --seed)");
+      cmd.addOption("--write-seed-file",       "+wf",    1,  "[f]ilename: string (only with --seed)",
                                                              "write modified seed to file f");
     cmd.addSubGroup("peer authentication options:");
-      cmd.addOption("--require-peer-cert",    "-rc",         "verify peer certificate, fail if absent (def.)");
-      cmd.addOption("--verify-peer-cert",     "-vc",         "verify peer certificate if present");
-      cmd.addOption("--ignore-peer-cert",     "-ic",         "don't verify peer certificate");
+      cmd.addOption("--require-peer-cert",     "-rc",        "verify peer certificate, fail if absent (def.)");
+      cmd.addOption("--verify-peer-cert",      "-vc",        "verify peer certificate if present");
+      cmd.addOption("--ignore-peer-cert",      "-ic",        "don't verify peer certificate");
 #endif
 
   /* evaluate command line */
   prepareCmdLineArgs(argc, argv, OFFIS_CONSOLE_APPLICATION);
   if (app.parseCommandLine(cmd, argc, argv, OFCommandLine::ExpandWildcards))
   {
-    /* check for --help first */
-    if (cmd.findOption("--help")) app.printUsage();
+    /* check exclusive options first */
+
+    if (cmd.getParamCount() == 0)
+    {
+        if (cmd.findOption("--version"))
+        {
+            app.printHeader(OFTrue /*print host identifier*/);          // uses ofConsole.lockCerr()
+            CERR << endl << "External libraries used:";
+#if !defined(WITH_ZLIB) && !defined(WITH_OPENSSL)
+            CERR << " none" << endl;
+#else
+            CERR << endl;
+#endif
+#ifdef WITH_ZLIB
+            CERR << "- ZLIB, Version " << zlibVersion() << endl;
+#endif
+#ifdef WITH_OPENSSL
+            CERR << "- " << OPENSSL_VERSION_TEXT << endl;
+#endif
+            return 0;
+        }
+    }
+
+    /* command line parameters */
 
     app.checkParam(cmd.getParamAndCheckMinMax(1, opt_port, 1, 65535));
 
@@ -484,7 +511,7 @@ int main(int argc, char *argv[])
     if (cmd.findOption("--compression-level"))
     {
 
-        if (opt_writeTransferSyntax != EXS_DeflatedLittleEndianExplicit && opt_writeTransferSyntax != EXS_Unknown) 
+        if (opt_writeTransferSyntax != EXS_DeflatedLittleEndianExplicit && opt_writeTransferSyntax != EXS_Unknown)
           app.printError("--compression-level only allowed with --write-xfer-deflated or --write-xfer-same");
         app.checkValue(cmd.getValueAndCheckMinMax(opt_compressionLevel, 0, 9));
         dcmZlibCompressionLevel.set((int) opt_compressionLevel);
@@ -1510,7 +1537,7 @@ storeSCPCallback(
       E_TransferSyntax xfer = opt_writeTransferSyntax;
       if (xfer == EXS_Unknown) xfer = (*imageDataSet)->getOriginalXfer();
 
-      // store file either with meta header or as pure dataset      
+      // store file either with meta header or as pure dataset
       OFCondition cond = cbdata->dcmff->saveFile(fileName, xfer, opt_sequenceType, opt_groupLength, opt_paddingType, (Uint32)opt_filepad, (Uint32)opt_itempad, !opt_useMetaheader);
       if (cond.bad())
       {
@@ -1995,7 +2022,7 @@ findPresentationContextID(LST_HEAD * head,
  */
 static OFCondition acceptUnknownContextsWithTransferSyntax(
     T_ASC_Parameters * params,
-    const char* transferSyntax, 
+    const char* transferSyntax,
     T_ASC_SC_ROLE acceptedRole)
 {
     OFCondition cond = EC_Normal;
@@ -2040,8 +2067,8 @@ static OFCondition acceptUnknownContextsWithTransferSyntax(
             dpc = findPresentationContextID(
                               params->DULparams.acceptedPresentationContext,
                                             pc.presentationContextID);
-            if ((dpc == NULL) || 
-                ((dpc != NULL) && (dpc->result != ASC_P_ACCEPTANCE))) 
+            if ((dpc == NULL) ||
+                ((dpc != NULL) && (dpc->result != ASC_P_ACCEPTANCE)))
             {
 
                 if (abstractOK) {
@@ -2053,7 +2080,7 @@ static OFCondition acceptUnknownContextsWithTransferSyntax(
                  * If previously this presentation context was refused
                  * because of bad transfer syntax let it stay that way.
                  */
-                if ((dpc != NULL) && 
+                if ((dpc != NULL) &&
                     (dpc->result == ASC_P_TRANSFERSYNTAXESNOTSUPPORTED))
                     reason = ASC_P_TRANSFERSYNTAXESNOTSUPPORTED;
 
@@ -2082,7 +2109,7 @@ static OFCondition acceptUnknownContextsWithPreferredTransferSyntaxes(
     T_ASC_SC_ROLE acceptedRole)
 {
     OFCondition cond = EC_Normal;
-    /* 
+    /*
     ** Accept in the order "least wanted" to "most wanted" transfer
     ** syntax.  Accepting a transfer syntax will override previously
     ** accepted transfer syntaxes.
@@ -2099,7 +2126,12 @@ static OFCondition acceptUnknownContextsWithPreferredTransferSyntaxes(
 /*
 ** CVS Log
 ** $Log: storescp.cc,v $
-** Revision 1.56  2002-09-10 16:04:33  meichel
+** Revision 1.57  2002-09-23 17:53:47  joergr
+** Added new command line option "--version" which prints the name and version
+** number of external libraries used (incl. preparation for future support of
+** 'config.guess' host identifiers).
+**
+** Revision 1.56  2002/09/10 16:04:33  meichel
 ** Added experimental "promiscuous" mode to storescp. In this mode,
 **   activated by the --promiscuous command line option, all presentation
 **   contexts not known not to be Storage SOP Classes are accepted.

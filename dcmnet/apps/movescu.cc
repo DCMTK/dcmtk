@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2001, OFFIS
+ *  Copyright (C) 1994-2002, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,15 +21,15 @@
  *
  *  Purpose: Query/Retrieve Service Class User (C-MOVE operation)
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-08-21 10:18:27 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2002-09-23 17:53:46 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/apps/movescu.cc,v $
- *  CVS/RCS Revision: $Revision: 1.42 $
+ *  CVS/RCS Revision: $Revision: 1.43 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
  *
- */                        
+ */
 
 #include "osconfig.h" /* make sure OS specific configuration is included first */
 
@@ -68,14 +68,18 @@ END_EXTERN_C
 #include "ofconapp.h"
 #include "dcuid.h"    /* for dcmtk version name */
 
+#ifdef WITH_ZLIB
+#include "zlib.h"     /* for zlibVersion() */
+#endif
+
 #define OFFIS_CONSOLE_APPLICATION "movescu"
 
 static char rcsid[] = "$dcmtk: " OFFIS_CONSOLE_APPLICATION " v"
   OFFIS_DCMTK_VERSION " " OFFIS_DCMTK_RELEASEDATE " $";
 
 /* default application titles */
-#define APPLICATIONTITLE	"MOVESCU"
-#define PEERAPPLICATIONTITLE	"ANY-SCP"
+#define APPLICATIONTITLE        "MOVESCU"
+#define PEERAPPLICATIONTITLE    "ANY-SCP"
 
 typedef enum {
      QMPatientRoot = 0,
@@ -103,15 +107,15 @@ E_GrpLenEncoding  opt_groupLength = EGL_recalcGL;
 E_EncodingType    opt_sequenceType = EET_ExplicitLength;
 E_PaddingEncoding opt_paddingType = EPD_withoutPadding;
 OFCmdUnsignedInt  opt_filepad = 0;
-OFCmdUnsignedInt  opt_itempad = 0; 
+OFCmdUnsignedInt  opt_itempad = 0;
 OFBool            opt_verbose = OFFalse;
 OFBool            opt_debug = OFFalse;
 OFBool            opt_bitPreserving = OFFalse;
 OFBool            opt_ignore = OFFalse;
 OFBool            opt_abortDuringStore = OFFalse;
 OFBool            opt_abortAfterStore = OFFalse;
-OFCmdUnsignedInt  opt_repeatCount = 1; 
-OFCmdUnsignedInt  opt_retrievePort = 104; 
+OFCmdUnsignedInt  opt_repeatCount = 1;
+OFCmdUnsignedInt  opt_retrievePort = 104;
 E_TransferSyntax  opt_in_networkTransferSyntax = EXS_Unknown;
 E_TransferSyntax  opt_out_networkTransferSyntax = EXS_Unknown;
 OFBool            opt_abortAssociation = OFFalse;
@@ -122,16 +126,16 @@ QueryModel        opt_queryModel = QMPatientRoot;
 static T_ASC_Network *net = NULL; /* the global DICOM network */
 static DcmDataset *overrideKeys = NULL;
 static QuerySyntax querySyntax[3] = {
-    { UID_FINDPatientRootQueryRetrieveInformationModel, 
+    { UID_FINDPatientRootQueryRetrieveInformationModel,
       UID_MOVEPatientRootQueryRetrieveInformationModel },
-    { UID_FINDStudyRootQueryRetrieveInformationModel, 
+    { UID_FINDStudyRootQueryRetrieveInformationModel,
       UID_MOVEStudyRootQueryRetrieveInformationModel },
-    { UID_FINDPatientStudyOnlyQueryRetrieveInformationModel, 
+    { UID_FINDPatientStudyOnlyQueryRetrieveInformationModel,
       UID_MOVEPatientStudyOnlyQueryRetrieveInformationModel }
 };
 
 
-static void 
+static void
 errmsg(const char *msg,...)
 {
     va_list args;
@@ -155,7 +159,7 @@ addOverrideKey(OFConsoleApplication& app, const char* s)
 
     val[0] = '\0';
     n = sscanf(s, "%x,%x=%s", &g, &e, val);
-    
+
     if (n < 2) {
       msg = "bad key format: ";
       msg += s;
@@ -187,15 +191,15 @@ addOverrideKey(OFConsoleApplication& app, const char* s)
         app.printError(msg2);
     }
     if (strlen(val) > 0) {
-	elem->putString(val);
-	if (elem->error() != EC_Normal)
-	{
+        elem->putString(val);
+        if (elem->error() != EC_Normal)
+        {
             sprintf(msg2, "cannot put tag value: (%04x,%04x)=\"", g, e);
             msg = msg2;
             msg += val;
             msg += "\"";
             app.printError(msg.c_str());
-	}
+        }
     }
 
     if (overrideKeys == NULL) overrideKeys = new DcmDataset;
@@ -209,9 +213,9 @@ addOverrideKey(OFConsoleApplication& app, const char* s)
 static OFCondition cmove(T_ASC_Association *assoc, const char *fname);
 
 static OFCondition
-addPresentationContext(T_ASC_Parameters *params, 
-			T_ASC_PresentationContextID pid,
-			const char* abstractSyntax);
+addPresentationContext(T_ASC_Parameters *params,
+                        T_ASC_PresentationContextID pid,
+                        const char* abstractSyntax);
 
 #define SHORTCOL 4
 #define LONGCOL 21
@@ -229,7 +233,7 @@ main(int argc, char *argv[])
     const char *opt_ourTitle = APPLICATIONTITLE;
     OFList<OFString> fileNameList;
 
-    SetDebugLevel((0));	/* stop dcmdata debugging messages */
+    SetDebugLevel((0)); /* stop dcmdata debugging messages */
 
 #ifdef HAVE_GUSI_H
     /* needed for Macintosh */
@@ -256,28 +260,30 @@ main(int argc, char *argv[])
   cmd.setOptionColumns(LONGCOL, SHORTCOL);
   cmd.addGroup("general options:", LONGCOL, SHORTCOL+2);
    cmd.addOption("--help",                      "-h",        "print this help text and exit");
+   cmd.addOption("--version",                                "print version information and exit", OFTrue /* exclusive */);
    cmd.addOption("--verbose",                   "-v",        "verbose mode, print processing details");
    cmd.addOption("--debug",                     "-d",        "debug mode, print debug information");
   cmd.addGroup("network options:");
     cmd.addSubGroup("override matching keys:");
-      cmd.addOption("--key",              "-k",   1,   "key: gggg,eeee=\"string\"", "override matching key");
+      cmd.addOption("--key",                    "-k",    1,  "key: gggg,eeee=\"string\"",
+                                                             "override matching key");
     cmd.addSubGroup("query information model:");
-      cmd.addOption("--patient",          "-P",        "use patient root information model (default)");
-      cmd.addOption("--study",            "-S",        "use study root information model");
-      cmd.addOption("--psonly",           "-O",        "use patient/study only information model");
+      cmd.addOption("--patient",                "-P",        "use patient root information model (default)");
+      cmd.addOption("--study",                  "-S",        "use study root information model");
+      cmd.addOption("--psonly",                 "-O",        "use patient/study only information model");
     cmd.addSubGroup("application entity titles:");
       OFString opt1 = "set my calling AE title (default: ";
       opt1 += APPLICATIONTITLE;
       opt1 += ")";
-      cmd.addOption("--aetitle",                "-aet",   1, "aetitle: string", opt1.c_str());
+      cmd.addOption("--aetitle",                "-aet",  1,  "aetitle: string", opt1.c_str());
       OFString opt2 = "set called AE title of peer (default: ";
       opt2 += PEERAPPLICATIONTITLE;
       opt2 += ")";
-      cmd.addOption("--call",                   "-aec",   1, "aetitle: string", opt2.c_str());
+      cmd.addOption("--call",                   "-aec",  1,  "aetitle: string", opt2.c_str());
       OFString opt5 = "set move destinat. AE title (default: ";
       opt5 += APPLICATIONTITLE;
       opt5 += ")";
-      cmd.addOption("--move",                   "-aem",   1, "aetitle: string", opt5.c_str());
+      cmd.addOption("--move",                   "-aem",  1,  "aetitle: string", opt5.c_str());
     cmd.addSubGroup("preferred network transfer syntaxes (incoming associations):");
       cmd.addOption("--prefer-uncompr",         "+x=",       "prefer explicit VR local byte order (default)");
       cmd.addOption("--prefer-little",          "+xe",       "prefer explicit VR little endian TS");
@@ -297,7 +303,8 @@ main(int argc, char *argv[])
       sprintf(tempstr, "%ld", (long)opt_retrievePort);
       opt6 += tempstr;
       opt6 += ")";
-      cmd.addOption("--port",                   "+P",    1,  opt6.c_str(), "port number for incoming associations");
+      cmd.addOption("--port",                   "+P",    1,  opt6.c_str(),
+                                                             "port number for incoming associations");
       OFString opt3 = "set max receive pdu to n bytes (default: ";
       sprintf(tempstr, "%ld", (long)ASC_DEFAULTMAXPDU);
       opt3 += tempstr;
@@ -309,12 +316,13 @@ main(int argc, char *argv[])
       sprintf(tempstr, "%ld", (long)ASC_MAXIMUMPDUSIZE);
       opt4 += tempstr;
       opt4 += "]";
-      cmd.addOption("--max-pdu",                "-pdu",   1,  opt4.c_str(), opt3.c_str());
+      cmd.addOption("--max-pdu",                "-pdu",  1,  opt4.c_str(), opt3.c_str());
       cmd.addOption("--disable-host-lookup",    "-dhl",      "disable hostname lookup");
-      cmd.addOption("--repeat",                           1,  "[n]umber: integer", "repeat n times");
-      cmd.addOption("--abort",                                "abort association instead of releasing it");
-      cmd.addOption("--ignore",                               "ignore store data, receive but do not store");
-      cmd.addOption("--cancel",                           1,  "[n]umber: integer", "cancel after n responses (default: never)");
+      cmd.addOption("--repeat",                          1,  "[n]umber: integer", "repeat n times");
+      cmd.addOption("--abort",                               "abort association instead of releasing it");
+      cmd.addOption("--ignore",                              "ignore store data, receive but do not store");
+      cmd.addOption("--cancel",                          1,  "[n]umber: integer",
+                                                             "cancel after n responses (default: never)");
   cmd.addGroup("output options:");
     cmd.addSubGroup("bit preserving mode:");
       cmd.addOption("--normal",                 "-B",        "allow implicit format conversions (default)");
@@ -339,35 +347,52 @@ main(int argc, char *argv[])
       cmd.addOption("--length-undefined",       "-e",        "write with undefined lengths");
     cmd.addSubGroup("data set trailing padding (not with --write-dataset or --bit-preserving):");
       cmd.addOption("--padding-off",            "-p",        "no padding (default)");
-      cmd.addOption("--padding-create",         "+p",    2,  "[f]ile-pad [i]tem-pad: integer", "align file on multiple of f bytes\nand items on multiple of i bytes");
+      cmd.addOption("--padding-create",         "+p",    2,  "[f]ile-pad [i]tem-pad: integer",
+                                                             "align file on multiple of f bytes\nand items on multiple of i bytes");
 
-    /* evaluate command line */                           
+    /* evaluate command line */
     prepareCmdLineArgs(argc, argv, OFFIS_CONSOLE_APPLICATION);
     if (app.parseCommandLine(cmd, argc, argv, OFCommandLine::ExpandWildcards))
     {
-      /* check for --help first */
-      if (cmd.findOption("--help")) app.printUsage();
+      /* check exclusive options first */
+
+      if (cmd.getParamCount() == 0)
+      {
+        if (cmd.findOption("--version"))
+        {
+            app.printHeader(OFTrue /*print host identifier*/);          // uses ofConsole.lockCerr()
+            CERR << endl << "External libraries used:";
+#ifdef WITH_ZLIB
+            CERR << endl << "- ZLIB, Version " << zlibVersion() << endl;
+#else
+            CERR << " none" << endl;
+#endif
+            return 0;
+         }
+      }
+
+      /* command line parameters */
 
       cmd.getParam(1, opt_peer);
       app.checkParam(cmd.getParamAndCheckMinMax(2, opt_port, 1, 65535));
 
       if (cmd.findOption("--verbose")) opt_verbose=OFTrue;
-      if (cmd.findOption("--debug")) 
+      if (cmd.findOption("--debug"))
       {
-      	opt_debug = OFTrue;
+        opt_debug = OFTrue;
         DUL_Debug(OFTrue);
         DIMSE_debug(OFTrue);
-      	SetDebugLevel(3);
+        SetDebugLevel(3);
       }
-      
+
       if (cmd.findOption("--key", 0, OFCommandLine::FOM_First))
       {
-      	const char *ovKey = NULL;
-      	do {
-      	  app.checkValue(cmd.getValue(ovKey));
-      	  addOverrideKey(app, ovKey);
-      	} while (cmd.findOption("--key", 0, OFCommandLine::FOM_Next));
-      }      
+        const char *ovKey = NULL;
+        do {
+          app.checkValue(cmd.getValue(ovKey));
+          addOverrideKey(app, ovKey);
+        } while (cmd.findOption("--key", 0, OFCommandLine::FOM_Next));
+      }
       cmd.beginOptionBlock();
       if (cmd.findOption("--patient"))  opt_queryModel = QMPatientRoot;
       if (cmd.findOption("--study"))    opt_queryModel = QMStudyRoot;
@@ -400,7 +425,7 @@ main(int argc, char *argv[])
       if (cmd.findOption("--abort"))   opt_abortAssociation = OFTrue;
       if (cmd.findOption("--ignore"))  opt_ignore = OFTrue;
       if (cmd.findOption("--cancel"))  app.checkValue(cmd.getValueAndCheckMin(opt_cancelAfterNResponses, 0));
-      
+
       cmd.beginOptionBlock();
       if (cmd.findOption("--normal")) opt_bitPreserving = OFFalse;
       if (cmd.findOption("--bit-preserving")) opt_bitPreserving = OFTrue;
@@ -415,91 +440,91 @@ main(int argc, char *argv[])
       if (cmd.findOption("--write-xfer-same")) opt_writeTransferSyntax = EXS_Unknown;
       if (cmd.findOption("--write-xfer-little"))
       {
-      	app.checkConflict("--write-xfer-little", "--bit-preserving", opt_bitPreserving);
-      	app.checkConflict("--write-xfer-little", "--prefer-lossless", opt_networkTransferSyntax==EXS_JPEGProcess14SV1TransferSyntax);
-      	app.checkConflict("--write-xfer-little", "--prefer-jpeg8", opt_networkTransferSyntax==EXS_JPEGProcess1TransferSyntax);
-      	app.checkConflict("--write-xfer-little", "--prefer-jpeg12", opt_networkTransferSyntax==EXS_JPEGProcess2_4TransferSyntax);
-      	app.checkConflict("--write-xfer-little", "--prefer-rle", opt_networkTransferSyntax==EXS_RLELossless);
+        app.checkConflict("--write-xfer-little", "--bit-preserving", opt_bitPreserving);
+        app.checkConflict("--write-xfer-little", "--prefer-lossless", opt_networkTransferSyntax==EXS_JPEGProcess14SV1TransferSyntax);
+        app.checkConflict("--write-xfer-little", "--prefer-jpeg8", opt_networkTransferSyntax==EXS_JPEGProcess1TransferSyntax);
+        app.checkConflict("--write-xfer-little", "--prefer-jpeg12", opt_networkTransferSyntax==EXS_JPEGProcess2_4TransferSyntax);
+        app.checkConflict("--write-xfer-little", "--prefer-rle", opt_networkTransferSyntax==EXS_RLELossless);
         opt_writeTransferSyntax = EXS_LittleEndianExplicit;
       }
       if (cmd.findOption("--write-xfer-big"))
       {
-      	app.checkConflict("--write-xfer-big", "--bit-preserving", opt_bitPreserving);
-      	app.checkConflict("--write-xfer-big", "--prefer-lossless", opt_networkTransferSyntax==EXS_JPEGProcess14SV1TransferSyntax);
-      	app.checkConflict("--write-xfer-big", "--prefer-jpeg8", opt_networkTransferSyntax==EXS_JPEGProcess1TransferSyntax);
-      	app.checkConflict("--write-xfer-big", "--prefer-jpeg12", opt_networkTransferSyntax==EXS_JPEGProcess2_4TransferSyntax);
-      	app.checkConflict("--write-xfer-big", "--prefer-rle", opt_networkTransferSyntax==EXS_RLELossless);
+        app.checkConflict("--write-xfer-big", "--bit-preserving", opt_bitPreserving);
+        app.checkConflict("--write-xfer-big", "--prefer-lossless", opt_networkTransferSyntax==EXS_JPEGProcess14SV1TransferSyntax);
+        app.checkConflict("--write-xfer-big", "--prefer-jpeg8", opt_networkTransferSyntax==EXS_JPEGProcess1TransferSyntax);
+        app.checkConflict("--write-xfer-big", "--prefer-jpeg12", opt_networkTransferSyntax==EXS_JPEGProcess2_4TransferSyntax);
+        app.checkConflict("--write-xfer-big", "--prefer-rle", opt_networkTransferSyntax==EXS_RLELossless);
         opt_writeTransferSyntax = EXS_BigEndianExplicit;
       }
       if (cmd.findOption("--write-xfer-implicit"))
       {
-      	app.checkConflict("--write-xfer-implicit", "--bit-preserving", opt_bitPreserving);
-      	app.checkConflict("--write-xfer-implicit", "--prefer-lossless", opt_networkTransferSyntax==EXS_JPEGProcess14SV1TransferSyntax);
-      	app.checkConflict("--write-xfer-implicit", "--prefer-jpeg8", opt_networkTransferSyntax==EXS_JPEGProcess1TransferSyntax);
-      	app.checkConflict("--write-xfer-implicit", "--prefer-jpeg12", opt_networkTransferSyntax==EXS_JPEGProcess2_4TransferSyntax);
-      	app.checkConflict("--write-xfer-implicit", "--prefer-rle", opt_networkTransferSyntax==EXS_RLELossless);
+        app.checkConflict("--write-xfer-implicit", "--bit-preserving", opt_bitPreserving);
+        app.checkConflict("--write-xfer-implicit", "--prefer-lossless", opt_networkTransferSyntax==EXS_JPEGProcess14SV1TransferSyntax);
+        app.checkConflict("--write-xfer-implicit", "--prefer-jpeg8", opt_networkTransferSyntax==EXS_JPEGProcess1TransferSyntax);
+        app.checkConflict("--write-xfer-implicit", "--prefer-jpeg12", opt_networkTransferSyntax==EXS_JPEGProcess2_4TransferSyntax);
+        app.checkConflict("--write-xfer-implicit", "--prefer-rle", opt_networkTransferSyntax==EXS_RLELossless);
         opt_writeTransferSyntax = EXS_LittleEndianImplicit;
       }
       cmd.endOptionBlock();
 
       cmd.beginOptionBlock();
-      if (cmd.findOption("--enable-new-vr")) 
+      if (cmd.findOption("--enable-new-vr"))
       {
-      	app.checkConflict("--enable-new-vr", "--bit-preserving", opt_bitPreserving);
+        app.checkConflict("--enable-new-vr", "--bit-preserving", opt_bitPreserving);
         dcmEnableUnknownVRGeneration.set(OFTrue);
         dcmEnableUnlimitedTextVRGeneration.set(OFTrue);
       }
       if (cmd.findOption("--disable-new-vr"))
       {
-      	app.checkConflict("--disable-new-vr", "--bit-preserving", opt_bitPreserving);
+        app.checkConflict("--disable-new-vr", "--bit-preserving", opt_bitPreserving);
         dcmEnableUnknownVRGeneration.set(OFFalse);
         dcmEnableUnlimitedTextVRGeneration.set(OFFalse);
       }
       cmd.endOptionBlock();
 
       cmd.beginOptionBlock();
-      if (cmd.findOption("--group-length-recalc")) 
+      if (cmd.findOption("--group-length-recalc"))
       {
-      	app.checkConflict("--group-length-recalc", "--bit-preserving", opt_bitPreserving);
-      	opt_groupLength = EGL_recalcGL;
+        app.checkConflict("--group-length-recalc", "--bit-preserving", opt_bitPreserving);
+        opt_groupLength = EGL_recalcGL;
       }
-      if (cmd.findOption("--group-length-create")) 
+      if (cmd.findOption("--group-length-create"))
       {
-      	app.checkConflict("--group-length-create", "--bit-preserving", opt_bitPreserving);
-      	opt_groupLength = EGL_withGL;
+        app.checkConflict("--group-length-create", "--bit-preserving", opt_bitPreserving);
+        opt_groupLength = EGL_withGL;
       }
-      if (cmd.findOption("--group-length-remove")) 
+      if (cmd.findOption("--group-length-remove"))
       {
-      	app.checkConflict("--group-length-remove", "--bit-preserving", opt_bitPreserving);
-      	opt_groupLength = EGL_withoutGL;
+        app.checkConflict("--group-length-remove", "--bit-preserving", opt_bitPreserving);
+        opt_groupLength = EGL_withoutGL;
       }
       cmd.endOptionBlock();
 
       cmd.beginOptionBlock();
-      if (cmd.findOption("--length-explicit")) 
+      if (cmd.findOption("--length-explicit"))
       {
-      	app.checkConflict("--length-explicit", "--bit-preserving", opt_bitPreserving);
-      	opt_sequenceType = EET_ExplicitLength;
+        app.checkConflict("--length-explicit", "--bit-preserving", opt_bitPreserving);
+        opt_sequenceType = EET_ExplicitLength;
       }
-      if (cmd.findOption("--length-undefined")) 
+      if (cmd.findOption("--length-undefined"))
       {
-      	app.checkConflict("--length-undefined", "--bit-preserving", opt_bitPreserving);
-      	opt_sequenceType = EET_UndefinedLength;
+        app.checkConflict("--length-undefined", "--bit-preserving", opt_bitPreserving);
+        opt_sequenceType = EET_UndefinedLength;
       }
       cmd.endOptionBlock();
 
       cmd.beginOptionBlock();
       if (cmd.findOption("--padding-off")) opt_paddingType = EPD_withoutPadding;
-      if (cmd.findOption("--padding-create")) 
+      if (cmd.findOption("--padding-create"))
       {
-      	app.checkConflict("--padding-create", "--write-dataset", ! opt_useMetaheader);
-      	app.checkConflict("--padding-create", "--bit-preserving", opt_bitPreserving);
+        app.checkConflict("--padding-create", "--write-dataset", ! opt_useMetaheader);
+        app.checkConflict("--padding-create", "--bit-preserving", opt_bitPreserving);
         app.checkValue(cmd.getValueAndCheckMin(opt_filepad, 0));
         app.checkValue(cmd.getValueAndCheckMin(opt_itempad, 0));
         opt_paddingType = EPD_withPadding;
       }
       cmd.endOptionBlock();
-      
+
       /* finally parse filenames */
       int paramCount = cmd.getParamCount();
       const char *currentFilename = NULL;
@@ -507,7 +532,7 @@ main(int argc, char *argv[])
 
       for (int i=3; i <= paramCount; i++)
       {
-      	cmd.getParam(i, currentFilename);
+        cmd.getParam(i, currentFilename);
         if (access(currentFilename, R_OK) < 0)
         {
           errormsg = "cannot access file: ";
@@ -526,33 +551,33 @@ main(int argc, char *argv[])
   /* make sure data dictionary is loaded */
   if (!dcmDataDict.isDictionaryLoaded())
   {
-	fprintf(stderr, "Warning: no data dictionary loaded, check environment variable: %s\n",
-	  DCM_DICT_ENVIRONMENT_VARIABLE);
+        fprintf(stderr, "Warning: no data dictionary loaded, check environment variable: %s\n",
+          DCM_DICT_ENVIRONMENT_VARIABLE);
   }
 
 #ifdef HAVE_GETEUID
     /* if retrieve port is privileged we must be as well */
     if (opt_retrievePort < 1024) {
         if (geteuid() != 0) {
-	    errmsg("cannot listen on port %d, insufficient privileges", opt_retrievePort);
+            errmsg("cannot listen on port %d, insufficient privileges", opt_retrievePort);
             return 1;
-	}
+        }
     }
 #endif
 
     /* network for move request and responses */
-    OFCondition cond = ASC_initializeNetwork(NET_ACCEPTORREQUESTOR, (int)opt_retrievePort, 
-				 1000, &net);
+    OFCondition cond = ASC_initializeNetwork(NET_ACCEPTORREQUESTOR, (int)opt_retrievePort,
+                                 1000, &net);
     if (cond.bad())
     {
-	errmsg("cannot create network:");
-	DimseCondition::dump(cond);
+        errmsg("cannot create network:");
+        DimseCondition::dump(cond);
         return 1;
     }
 
 #ifdef HAVE_GETUID
   /* return to normal uid so that we can't do too much damage in case
-   * things go very wrong.   Only does someting if the program is setuid 
+   * things go very wrong.   Only does someting if the program is setuid
    * root, and run by another user.  Running as root user may be
    * potentially disasterous if this program screws up badly.
    */
@@ -562,8 +587,8 @@ main(int argc, char *argv[])
     /* set up main association */
     cond = ASC_createAssociationParameters(&params, opt_maxPDU);
     if (cond.bad()) {
-	DimseCondition::dump(cond);
-	exit(1);
+        DimseCondition::dump(cond);
+        exit(1);
     }
     ASC_setAPTitles(params, opt_ourTitle, opt_peerTitle, NULL);
 
@@ -575,136 +600,136 @@ main(int argc, char *argv[])
      * We also add a presentation context for the corresponding
      * find sop class.
      */
-    cond = addPresentationContext(params, 1, 
+    cond = addPresentationContext(params, 1,
         querySyntax[opt_queryModel].findSyntax);
 
-    cond = addPresentationContext(params, 3, 
+    cond = addPresentationContext(params, 3,
         querySyntax[opt_queryModel].moveSyntax);
     if (cond.bad()) {
-	DimseCondition::dump(cond);
-	exit(1);
+        DimseCondition::dump(cond);
+        exit(1);
     }
     if (opt_debug) {
-	printf("Request Parameters:\n");
-	ASC_dumpParameters(params, COUT);
+        printf("Request Parameters:\n");
+        ASC_dumpParameters(params, COUT);
     }
 
     /* create association */
     if (opt_verbose)
-	printf("Requesting Association\n");
+        printf("Requesting Association\n");
     cond = ASC_requestAssociation(net, params, &assoc);
     if (cond.bad()) {
-	if (cond == DUL_ASSOCIATIONREJECTED) {
-	    T_ASC_RejectParameters rej;
+        if (cond == DUL_ASSOCIATIONREJECTED) {
+            T_ASC_RejectParameters rej;
 
-	    ASC_getRejectParameters(params, &rej);
-	    errmsg("Association Rejected:");
-	    ASC_printRejectParameters(stderr, &rej);
-	    exit(1);
-	} else {
-	    errmsg("Association Request Failed:");
-	    DimseCondition::dump(cond);
-	    exit(1);
-	}
+            ASC_getRejectParameters(params, &rej);
+            errmsg("Association Rejected:");
+            ASC_printRejectParameters(stderr, &rej);
+            exit(1);
+        } else {
+            errmsg("Association Request Failed:");
+            DimseCondition::dump(cond);
+            exit(1);
+        }
     }
     /* what has been accepted/refused ? */
     if (opt_debug) {
-	printf("Association Parameters Negotiated:\n");
-	ASC_dumpParameters(params, COUT);
+        printf("Association Parameters Negotiated:\n");
+        ASC_dumpParameters(params, COUT);
     }
 
     if (ASC_countAcceptedPresentationContexts(params) == 0) {
-	errmsg("No Acceptable Presentation Contexts");
-	exit(1);
+        errmsg("No Acceptable Presentation Contexts");
+        exit(1);
     }
 
     if (opt_verbose) {
-	printf("Association Accepted (Max Send PDV: %lu)\n",
-		assoc->sendPDVLength);
+        printf("Association Accepted (Max Send PDV: %lu)\n",
+                assoc->sendPDVLength);
     }
 
     /* do the real work */
     cond = EC_Normal;
     if (fileNameList.empty())
     {
-	/* no files provided on command line */
-	cond = cmove(assoc, NULL);
+        /* no files provided on command line */
+        cond = cmove(assoc, NULL);
     } else {
       OFListIterator(OFString) iter = fileNameList.begin();
-      OFListIterator(OFString) enditer = fileNameList.end();    
+      OFListIterator(OFString) enditer = fileNameList.end();
       while ((iter != enditer) && (cond == EC_Normal)) // compare with EC_Normal since DUL_PEERREQUESTEDRELEASE is also good()
       {
           cond = cmove(assoc, (*iter).c_str());
           ++iter;
-      }    	
+      }
     }
 
     /* tear down association */
     if (cond == EC_Normal)
     {
-	if (opt_abortAssociation) {
-	    if (opt_verbose)
-		printf("Aborting Association\n");
-	    cond = ASC_abortAssociation(assoc);
-	    if (cond.bad()) {
-		errmsg("Association Abort Failed:");
-		DimseCondition::dump(cond);
-		exit(1);
-	    }
-	} else {
-	    /* release association */
-	    if (opt_verbose)
-		printf("Releasing Association\n");
-	    cond = ASC_releaseAssociation(assoc);
-	    if (cond.bad())
-	    {
-		errmsg("Association Release Failed:");
-		DimseCondition::dump(cond);
-		exit(1);
-	    }
-	}
+        if (opt_abortAssociation) {
+            if (opt_verbose)
+                printf("Aborting Association\n");
+            cond = ASC_abortAssociation(assoc);
+            if (cond.bad()) {
+                errmsg("Association Abort Failed:");
+                DimseCondition::dump(cond);
+                exit(1);
+            }
+        } else {
+            /* release association */
+            if (opt_verbose)
+                printf("Releasing Association\n");
+            cond = ASC_releaseAssociation(assoc);
+            if (cond.bad())
+            {
+                errmsg("Association Release Failed:");
+                DimseCondition::dump(cond);
+                exit(1);
+            }
+        }
     }
     else if (cond == DUL_PEERREQUESTEDRELEASE)
     {
-	errmsg("Protocol Error: peer requested release (Aborting)");
-	if (opt_verbose)
-	    printf("Aborting Association\n");
-	cond = ASC_abortAssociation(assoc);
-	if (cond.bad()) {
-	    errmsg("Association Abort Failed:");
-	    DimseCondition::dump(cond);
-	    exit(1);
-	}
+        errmsg("Protocol Error: peer requested release (Aborting)");
+        if (opt_verbose)
+            printf("Aborting Association\n");
+        cond = ASC_abortAssociation(assoc);
+        if (cond.bad()) {
+            errmsg("Association Abort Failed:");
+            DimseCondition::dump(cond);
+            exit(1);
+        }
     }
     else if (cond == DUL_PEERABORTEDASSOCIATION)
     {
-	if (opt_verbose) printf("Peer Aborted Association\n");
+        if (opt_verbose) printf("Peer Aborted Association\n");
     }
-    else 
+    else
     {
-	errmsg("SCU Failed:");
-	DimseCondition::dump(cond);
-	if (opt_verbose)
-	    printf("Aborting Association\n");
-	cond = ASC_abortAssociation(assoc);
-	if (cond.bad()) {
-	    errmsg("Association Abort Failed:");
-	    DimseCondition::dump(cond);
-	    exit(1);
-	}
+        errmsg("SCU Failed:");
+        DimseCondition::dump(cond);
+        if (opt_verbose)
+            printf("Aborting Association\n");
+        cond = ASC_abortAssociation(assoc);
+        if (cond.bad()) {
+            errmsg("Association Abort Failed:");
+            DimseCondition::dump(cond);
+            exit(1);
+        }
     }
 
     cond = ASC_destroyAssociation(&assoc);
     if (cond.bad()) {
-	DimseCondition::dump(cond);
-	exit(1);
+        DimseCondition::dump(cond);
+        exit(1);
     }
     cond = ASC_dropNetwork(&net);
     if (cond.bad()) {
-	DimseCondition::dump(cond);
-	exit(1);
+        DimseCondition::dump(cond);
+        exit(1);
     }
-    
+
 #ifdef HAVE_WINSOCK_H
     WSACleanup();
 #endif
@@ -714,13 +739,13 @@ main(int argc, char *argv[])
 
 
 static OFCondition
-addPresentationContext(T_ASC_Parameters *params, 
-			T_ASC_PresentationContextID pid,
-			const char* abstractSyntax)
+addPresentationContext(T_ASC_Parameters *params,
+                        T_ASC_PresentationContextID pid,
+                        const char* abstractSyntax)
 {
-    /* 
+    /*
     ** We prefer to use Explicitly encoded transfer syntaxes.
-    ** If we are running on a Little Endian machine we prefer 
+    ** If we are running on a Little Endian machine we prefer
     ** LittleEndianExplicitTransferSyntax to BigEndianTransferSyntax.
     ** Some SCP implementations will just select the first transfer
     ** syntax they support (this is not part of the standard) so
@@ -756,8 +781,8 @@ addPresentationContext(T_ASC_Parameters *params,
         numTransferSyntaxes = 3;
         break;
     default:
-        /* We prefer explicit transfer syntaxes. 
-         * If we are running on a Little Endian machine we prefer 
+        /* We prefer explicit transfer syntaxes.
+         * If we are running on a Little Endian machine we prefer
          * LittleEndianExplicitTransferSyntax to BigEndianTransferSyntax.
          */
         if (gLocalByteOrder == EBO_LittleEndian)  /* defined in dcxfer.h */
@@ -774,15 +799,15 @@ addPresentationContext(T_ASC_Parameters *params,
     }
 
     return ASC_addPresentationContext(
-	params, pid, abstractSyntax,
-	transferSyntaxes, numTransferSyntaxes);
+        params, pid, abstractSyntax,
+        transferSyntaxes, numTransferSyntaxes);
 }
 
 static OFCondition
 acceptSubAssoc(T_ASC_Network * aNet, T_ASC_Association ** assoc)
 {
     const char* knownAbstractSyntaxes[] = {
-	UID_VerificationSOPClass
+        UID_VerificationSOPClass
     };
     const char* transferSyntaxes[] = { NULL, NULL, NULL, NULL };
     int numTransferSyntaxes;
@@ -844,8 +869,8 @@ acceptSubAssoc(T_ASC_Network * aNet, T_ASC_Association ** assoc)
           numTransferSyntaxes = 4;
           break;
         default:
-          /* We prefer explicit transfer syntaxes. 
-           * If we are running on a Little Endian machine we prefer 
+          /* We prefer explicit transfer syntaxes.
+           * If we are running on a Little Endian machine we prefer
            * LittleEndianExplicitTransferSyntax to BigEndianTransferSyntax.
            */
           if (gLocalByteOrder == EBO_LittleEndian)  /* defined in dcxfer.h */
@@ -864,17 +889,17 @@ acceptSubAssoc(T_ASC_Network * aNet, T_ASC_Association ** assoc)
 
         /* accept the Verification SOP Class if presented */
         cond = ASC_acceptContextsWithPreferredTransferSyntaxes(
-	    (*assoc)->params, 
-	    knownAbstractSyntaxes, DIM_OF(knownAbstractSyntaxes),
-	    transferSyntaxes, numTransferSyntaxes);
-        
+            (*assoc)->params,
+            knownAbstractSyntaxes, DIM_OF(knownAbstractSyntaxes),
+            transferSyntaxes, numTransferSyntaxes);
+
         if (cond.good())
         {
             /* the array of Storage SOP Class UIDs comes from dcuid.h */
             cond = ASC_acceptContextsWithPreferredTransferSyntaxes(
-	        (*assoc)->params, 
-	        dcmStorageSOPClassUIDs, numberOfDcmStorageSOPClassUIDs,
-	        transferSyntaxes, numTransferSyntaxes);
+                (*assoc)->params,
+                dcmStorageSOPClassUIDs, numberOfDcmStorageSOPClassUIDs,
+                transferSyntaxes, numTransferSyntaxes);
         }
     }
     if (cond.good()) cond = ASC_acknowledgeAssociation(*assoc);
@@ -913,10 +938,10 @@ struct StoreCallbackData
   T_ASC_Association* assoc;
 };
 
-static void 
+static void
 storeSCPCallback(
     /* in */
-    void *callbackData, 
+    void *callbackData,
     T_DIMSE_StoreProgress *progress,    /* progress state */
     T_DIMSE_C_StoreRQ *req,             /* original store request */
     char *imageFileName, DcmDataset **imageDataSet, /* being received into */
@@ -941,12 +966,12 @@ storeSCPCallback(
     {
       sleep((unsigned int)opt_sleepDuring);
     }
-    
+
     if (opt_verbose)
     {
       switch (progress->state)
       {
-        case DIMSE_StoreBegin:    
+        case DIMSE_StoreBegin:
           printf("RECV:");
           break;
         case DIMSE_StoreEnd:
@@ -958,13 +983,13 @@ storeSCPCallback(
       }
       fflush(stdout);
     }
-    
+
     if (progress->state == DIMSE_StoreEnd)
     {
        *statusDetail = NULL;    /* no status detail */
 
        /* could save the image somewhere else, put it in database, etc */
-       /* 
+       /*
         * An appropriate status code is already set in the resp structure, it need not be success.
         * For example, if the caller has already detected an out of resources problem then the
         * status will reflect this.  The callback function is still called to allow cleanup.
@@ -986,7 +1011,7 @@ storeSCPCallback(
            fprintf(stderr, "storescp: Cannot write image file: %s\n", fileName);
            rsp->DimseStatus = STATUS_STORE_Refused_OutOfResources;
          }
-      
+
         /* should really check the image to make sure it is consistent,
          * that its sopClass and sopInstance correspond with those in
          * the request.
@@ -1032,9 +1057,9 @@ static OFCondition storeSCP(
         strcpy(imageFileName, NULL_DEVICE_NAME);
 #endif
     } else {
-	sprintf(imageFileName, "%s.%s", 
-	    dcmSOPClassUIDToModality(req->AffectedSOPClassUID),
-	    req->AffectedSOPInstanceUID);
+        sprintf(imageFileName, "%s.%s",
+            dcmSOPClassUIDToModality(req->AffectedSOPClassUID),
+            req->AffectedSOPInstanceUID);
     }
 
     if (opt_verbose)
@@ -1067,7 +1092,7 @@ static OFCondition storeSCP(
       /* remove file */
       if (!opt_ignore)
       {
-      	if (strcmp(imageFileName, NULL_DEVICE_NAME) != 0) unlink(imageFileName);
+        if (strcmp(imageFileName, NULL_DEVICE_NAME) != 0) unlink(imageFileName);
       }
 #ifdef _WIN32
     } else if (opt_ignore) {
@@ -1088,42 +1113,42 @@ subOpSCP(T_ASC_Association **subAssoc)
     T_DIMSE_Message     msg;
     T_ASC_PresentationContextID presID;
 
-    if (!ASC_dataWaiting(*subAssoc, 0))	/* just in case */
-	return DIMSE_NODATAAVAILABLE;
+    if (!ASC_dataWaiting(*subAssoc, 0)) /* just in case */
+        return DIMSE_NODATAAVAILABLE;
 
     OFCondition cond = DIMSE_receiveCommand(*subAssoc, DIMSE_BLOCKING, 0, &presID,
-	    &msg, NULL);
+            &msg, NULL);
 
     if (cond == EC_Normal) {
-	switch (msg.CommandField) {
-	case DIMSE_C_STORE_RQ:
-	    cond = storeSCP(*subAssoc, &msg, presID);
-	    break;
-	case DIMSE_C_ECHO_RQ:
-	    cond = echoSCP(*subAssoc, &msg, presID);
-	    break;
-	default:
-	    cond = DIMSE_BADCOMMANDTYPE;
-	    break;
-	}
+        switch (msg.CommandField) {
+        case DIMSE_C_STORE_RQ:
+            cond = storeSCP(*subAssoc, &msg, presID);
+            break;
+        case DIMSE_C_ECHO_RQ:
+            cond = echoSCP(*subAssoc, &msg, presID);
+            break;
+        default:
+            cond = DIMSE_BADCOMMANDTYPE;
+            break;
+        }
     }
     /* clean up on association termination */
     if (cond == DUL_PEERREQUESTEDRELEASE)
     {
-	cond = ASC_acknowledgeRelease(*subAssoc);
+        cond = ASC_acknowledgeRelease(*subAssoc);
         ASC_dropSCPAssociation(*subAssoc);
         ASC_destroyAssociation(subAssoc);
         return cond;
-    } 
+    }
     else if (cond == DUL_PEERABORTEDASSOCIATION)
     {
-    } 
+    }
     else if (cond != EC_Normal)
     {
-	errmsg("DIMSE Failure (aborting sub-association):\n");
-	DimseCondition::dump(cond);
+        errmsg("DIMSE Failure (aborting sub-association):\n");
+        DimseCondition::dump(cond);
         /* some kind of error so abort the association */
-	cond = ASC_abortAssociation(*subAssoc);
+        cond = ASC_abortAssociation(*subAssoc);
     }
 
     if (cond != EC_Normal)
@@ -1135,23 +1160,23 @@ subOpSCP(T_ASC_Association **subAssoc)
 }
 
 static void
-subOpCallback(void * /*subOpCallbackData*/ , 
-	T_ASC_Network *aNet, T_ASC_Association **subAssoc)
+subOpCallback(void * /*subOpCallbackData*/ ,
+        T_ASC_Network *aNet, T_ASC_Association **subAssoc)
 {
 
-    if (aNet == NULL) return;	/* help no net ! */
+    if (aNet == NULL) return;   /* help no net ! */
 
     if (*subAssoc == NULL) {
         /* negotiate association */
-	acceptSubAssoc(aNet, subAssoc);
+        acceptSubAssoc(aNet, subAssoc);
     } else {
         /* be a service class provider */
-	subOpSCP(subAssoc);
+        subOpSCP(subAssoc);
     }
 }
 
-static void 
-moveCallback(void *callbackData, T_DIMSE_C_MoveRQ *request, 
+static void
+moveCallback(void *callbackData, T_DIMSE_C_MoveRQ *request,
     int responseCount, T_DIMSE_C_MoveRSP *response)
 {
     OFCondition cond = EC_Normal;
@@ -1161,20 +1186,20 @@ moveCallback(void *callbackData, T_DIMSE_C_MoveRQ *request,
 
     if (opt_verbose) {
         printf("Move Response %d: ", responseCount);
-	DIMSE_printCMoveRSP(stdout, response);
+        DIMSE_printCMoveRSP(stdout, response);
     }
     /* should we send a cancel back ?? */
     if (opt_cancelAfterNResponses == responseCount) {
-	if (opt_verbose) {
-	    printf("Sending Cancel RQ, MsgId: %d, PresId: %d\n",
-	        request->MessageID, myCallbackData->presId);
-	}
+        if (opt_verbose) {
+            printf("Sending Cancel RQ, MsgId: %d, PresId: %d\n",
+                request->MessageID, myCallbackData->presId);
+        }
         cond = DIMSE_sendCancelRequest(myCallbackData->assoc,
-	    myCallbackData->presId, request->MessageID);
+            myCallbackData->presId, request->MessageID);
         if (cond != EC_Normal) {
-	    errmsg("Cancel RQ Failed:");
-	    DimseCondition::dump(cond);
-	}
+            errmsg("Cancel RQ Failed:");
+            DimseCondition::dump(cond);
+        }
     }
 }
 
@@ -1183,7 +1208,7 @@ static void
 substituteOverrideKeys(DcmDataset *dset)
 {
     if (overrideKeys == NULL) {
-	return; /* nothing to do */
+        return; /* nothing to do */
     }
 
     /* copy the override keys */
@@ -1192,9 +1217,9 @@ substituteOverrideKeys(DcmDataset *dset)
     /* put the override keys into dset replacing existing tags */
     unsigned long elemCount = keys.card();
     for (unsigned long i=0; i<elemCount; i++) {
-	DcmElement *elem = keys.remove((unsigned long)0);
+        DcmElement *elem = keys.remove((unsigned long)0);
 
-	dset->insert(elem, OFTrue);
+        dset->insert(elem, OFTrue);
     }
 }
 
@@ -1203,43 +1228,43 @@ static  OFCondition
 moveSCU(T_ASC_Association * assoc, const char *fname)
 {
     T_ASC_PresentationContextID presId;
-    T_DIMSE_C_MoveRQ	req;
+    T_DIMSE_C_MoveRQ    req;
     T_DIMSE_C_MoveRSP   rsp;
-    DIC_US      	msgId = assoc->nextMsgID++;
-    DcmDataset		*rspIds = NULL;
+    DIC_US              msgId = assoc->nextMsgID++;
+    DcmDataset          *rspIds = NULL;
     const char          *sopClass;
-    DcmDataset		*statusDetail = NULL;
-    MyCallbackInfo	callbackData;
+    DcmDataset          *statusDetail = NULL;
+    MyCallbackInfo      callbackData;
 
     if (opt_verbose) {
-	printf("================================\n");
-	if (fname) printf("Sending query file: %s\n", fname); else printf("Sending query\n");
+        printf("================================\n");
+        if (fname) printf("Sending query file: %s\n", fname); else printf("Sending query\n");
     }
 
     DcmFileFormat dcmff;
 
     if (fname != NULL) {
-	if (dcmff.loadFile(fname).bad()) {
-	    errmsg("Bad DICOM file: %s: %s", fname, dcmff.error().text());
-	    return DIMSE_BADDATA;
-	}
+        if (dcmff.loadFile(fname).bad()) {
+            errmsg("Bad DICOM file: %s: %s", fname, dcmff.error().text());
+            return DIMSE_BADDATA;
+        }
     }
 
     /* replace specific keys by those in overrideKeys */
     substituteOverrideKeys(dcmff.getDataset());
 
     sopClass = querySyntax[opt_queryModel].moveSyntax;
-    
+
     /* which presentation context should be used */
     presId = ASC_findAcceptedPresentationContextID(assoc, sopClass);
     if (presId == 0) return DIMSE_NOVALIDPRESENTATIONCONTEXTID;
 
     if (opt_verbose) {
-	printf("Move SCU RQ: MsgID %d\n", msgId);
-	printf("Request:\n");
-	dcmff.getDataset()->print(COUT);
+        printf("Move SCU RQ: MsgID %d\n", msgId);
+        printf("Request:\n");
+        dcmff.getDataset()->print(COUT);
     }
-    
+
     callbackData.assoc = assoc;
     callbackData.presId = presId;
 
@@ -1249,37 +1274,37 @@ moveSCU(T_ASC_Association * assoc, const char *fname)
     req.DataSetType = DIMSE_DATASET_PRESENT;
     if (opt_moveDestination == NULL) {
         /* set the destination to be me */
-        ASC_getAPTitles(assoc->params, req.MoveDestination, 
-	    NULL, NULL);
+        ASC_getAPTitles(assoc->params, req.MoveDestination,
+            NULL, NULL);
     } else {
-	strcpy(req.MoveDestination, opt_moveDestination);
+        strcpy(req.MoveDestination, opt_moveDestination);
     }
 
     OFCondition cond = DIMSE_moveUser(assoc, presId, &req, dcmff.getDataset(),
-        moveCallback, &callbackData, DIMSE_BLOCKING, 0, 
-	net, subOpCallback, NULL,
-	&rsp, &statusDetail, &rspIds);
-        
+        moveCallback, &callbackData, DIMSE_BLOCKING, 0,
+        net, subOpCallback, NULL,
+        &rsp, &statusDetail, &rspIds);
+
     if (cond == EC_Normal) {
         if (opt_verbose) {
-	    DIMSE_printCMoveRSP(stdout, &rsp); 
-	    if (rspIds != NULL) {
-	        printf("Response Identifiers:\n");
-		rspIds->print(COUT);
-	    }
+            DIMSE_printCMoveRSP(stdout, &rsp);
+            if (rspIds != NULL) {
+                printf("Response Identifiers:\n");
+                rspIds->print(COUT);
+            }
         }
     } else {
         errmsg("Move Failed:");
-	DimseCondition::dump(cond);
+        DimseCondition::dump(cond);
     }
     if (statusDetail != NULL) {
         printf("  Status Detail:\n");
-	statusDetail->print(COUT);
-	delete statusDetail;
+        statusDetail->print(COUT);
+        delete statusDetail;
     }
 
     if (rspIds != NULL) delete rspIds;
-    
+
     return cond;
 }
 
@@ -1292,7 +1317,7 @@ cmove(T_ASC_Association * assoc, const char *fname)
 
     while (cond.good() && n--)
     {
-	cond = moveSCU(assoc, fname);
+        cond = moveSCU(assoc, fname);
     }
     return cond;
 }
@@ -1301,7 +1326,12 @@ cmove(T_ASC_Association * assoc, const char *fname)
 ** CVS Log
 **
 ** $Log: movescu.cc,v $
-** Revision 1.42  2002-08-21 10:18:27  meichel
+** Revision 1.43  2002-09-23 17:53:46  joergr
+** Added new command line option "--version" which prints the name and version
+** number of external libraries used (incl. preparation for future support of
+** 'config.guess' host identifiers).
+**
+** Revision 1.42  2002/08/21 10:18:27  meichel
 ** Adapted code to new loadFile and saveFile methods, thus removing direct
 **   use of the DICOM stream classes.
 **

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2001, OFFIS
+ *  Copyright (C) 1994-2002, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,14 +22,14 @@
  *  Purpose: Verification Service Class User (C-ECHO operation)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-11-09 15:56:22 $
+ *  Update Date:      $Date: 2002-09-23 17:53:46 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/apps/echoscu.cc,v $
- *  CVS/RCS Revision: $Revision: 1.26 $
+ *  CVS/RCS Revision: $Revision: 1.27 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
  *
- */                        
+ */
 
 #include "osconfig.h"    /* make sure OS specific configuration is included first */
 
@@ -62,14 +62,18 @@ END_EXTERN_C
 #include "ofconapp.h"
 #include "dcuid.h"    /* for dcmtk version name */
 
+#ifdef WITH_ZLIB
+#include "zlib.h"     /* for zlibVersion() */
+#endif
+
 #define OFFIS_CONSOLE_APPLICATION "echoscu"
 
 static char rcsid[] = "$dcmtk: " OFFIS_CONSOLE_APPLICATION " v"
   OFFIS_DCMTK_VERSION " " OFFIS_DCMTK_RELEASEDATE " $";
 
 /* default application titles */
-#define APPLICATIONTITLE	"ECHOSCU"
-#define PEERAPPLICATIONTITLE	"ANY-SCP"
+#define APPLICATIONTITLE        "ECHOSCU"
+#define PEERAPPLICATIONTITLE    "ANY-SCP"
 
 static OFBool opt_verbose = OFFalse;
 static OFBool opt_debug = OFFalse;
@@ -113,7 +117,7 @@ static const char* transferSyntaxes[] = {
 
 int
 main(int argc, char *argv[])
-{    
+{
     const char *     opt_peer                = NULL;
     OFCmdUnsignedInt opt_port                = 104;
     const char *     opt_peerTitle           = PEERAPPLICATIONTITLE;
@@ -124,8 +128,8 @@ main(int argc, char *argv[])
     OFCmdUnsignedInt opt_numXferSyntaxes     = 1;
     OFCmdUnsignedInt opt_numPresentationCtx  = 1;
     OFCmdUnsignedInt maxXferSyntaxes         = (OFCmdUnsignedInt)(DIM_OF(transferSyntaxes));
-    
-    
+
+
     T_ASC_Network *net;
     T_ASC_Parameters *params;
     DIC_NODENAME localHost;
@@ -155,28 +159,29 @@ main(int argc, char *argv[])
 
   cmd.setOptionColumns(LONGCOL, SHORTCOL);
   cmd.addGroup("general options:", LONGCOL, SHORTCOL+2);
-   cmd.addOption("--help",                      "-h",        "print this help text and exit");
-   cmd.addOption("--verbose",                   "-v",        "verbose mode, print processing details");
-   cmd.addOption("--debug",                     "-d",        "debug mode, print debug information");
- 
+   cmd.addOption("--help",          "-h",      "print this help text and exit");
+   cmd.addOption("--version",                  "print version information and exit", OFTrue /* exclusive */);
+   cmd.addOption("--verbose",       "-v",      "verbose mode, print processing details");
+   cmd.addOption("--debug",         "-d",      "debug mode, print debug information");
+
   cmd.addGroup("network options:");
     cmd.addSubGroup("application entity titles:");
       OFString opt1 = "set my calling AE title (default: ";
       opt1 += APPLICATIONTITLE;
       opt1 += ")";
-      cmd.addOption("--aetitle",                "-aet",   1, "aetitle: string", opt1.c_str());
+      cmd.addOption("--aetitle",    "-aet", 1, "aetitle: string", opt1.c_str());
       OFString opt2 = "set called AE title of peer (default: ";
       opt2 += PEERAPPLICATIONTITLE;
       opt2 += ")";
-      cmd.addOption("--call",                   "-aec",   1, "aetitle: string", opt2.c_str());
+      cmd.addOption("--call",       "-aec", 1, "aetitle: string", opt2.c_str());
     cmd.addSubGroup("association negotiation debugging:");
       OFString opt5 = "[n]umber: integer (1..";
       sprintf(tempstr, "%ld", (long)maxXferSyntaxes);
       opt5 += tempstr;
       opt5 += ")";
-      cmd.addOption("--propose-ts",                   "-pts",   1, opt5.c_str(), "propose n transfer syntaxes");
-      cmd.addOption("--propose-pc",                   "-ppc",   1, "[n]umber: integer (1..128)", "propose n presentation contexts");
-      
+      cmd.addOption("--propose-ts", "-pts", 1, opt5.c_str(), "propose n transfer syntaxes");
+      cmd.addOption("--propose-pc", "-ppc", 1, "[n]umber: integer (1..128)", "propose n presentation contexts");
+
     cmd.addSubGroup("other network options:");
       OFString opt3 = "set max receive pdu to n bytes (default: ";
       sprintf(tempstr, "%ld", (long)ASC_DEFAULTMAXPDU);
@@ -189,27 +194,43 @@ main(int argc, char *argv[])
       sprintf(tempstr, "%ld", (long)ASC_MAXIMUMPDUSIZE);
       opt4 += tempstr;
       opt4 += "]";
-      cmd.addOption("--max-pdu",                "-pdu",   1,  opt4.c_str(), opt3.c_str());
-      cmd.addOption("--repeat",                           1,  "[n]umber: integer", "repeat n times");
-      cmd.addOption("--abort",                                "abort association instead of releasing it");
+      cmd.addOption("--max-pdu",    "-pdu", 1, opt4.c_str(), opt3.c_str());
+      cmd.addOption("--repeat",             1, "[n]umber: integer", "repeat n times");
+      cmd.addOption("--abort",                 "abort association instead of releasing it");
 
-    /* evaluate command line */                           
+    /* evaluate command line */
     prepareCmdLineArgs(argc, argv, OFFIS_CONSOLE_APPLICATION);
     if (app.parseCommandLine(cmd, argc, argv, OFCommandLine::ExpandWildcards))
     {
-      /* check for --help first */
-      if (cmd.findOption("--help")) app.printUsage();
+      /* check exclusive options first */
+
+      if (cmd.getParamCount() == 0)
+      {
+        if (cmd.findOption("--version"))
+        {
+            app.printHeader(OFTrue /*print host identifier*/);          // uses ofConsole.lockCerr()
+            CERR << endl << "External libraries used:";
+#ifdef WITH_ZLIB
+            CERR << endl << "- ZLIB, Version " << zlibVersion() << endl;
+#else
+            CERR << " none" << endl;
+#endif
+            return 0;
+         }
+      }
+
+      /* command line parameters */
 
       cmd.getParam(1, opt_peer);
       app.checkParam(cmd.getParamAndCheckMinMax(2, opt_port, 1, 65535));
 
       if (cmd.findOption("--verbose")) opt_verbose=OFTrue;
-      if (cmd.findOption("--debug")) 
+      if (cmd.findOption("--debug"))
       {
-      	opt_debug = OFTrue;
+        opt_debug = OFTrue;
         DUL_Debug(OFTrue);
         DIMSE_debug(OFTrue);
-      	SetDebugLevel(5);
+        SetDebugLevel(5);
       }
 
       if (cmd.findOption("--aetitle")) app.checkValue(cmd.getValue(opt_ourTitle));
@@ -223,22 +244,22 @@ main(int argc, char *argv[])
 
     /* make sure data dictionary is loaded */
     if (!dcmDataDict.isDictionaryLoaded()) {
-	fprintf(stderr, "Warning: no data dictionary loaded, check environment variable: %s\n",
-		DCM_DICT_ENVIRONMENT_VARIABLE);
+        fprintf(stderr, "Warning: no data dictionary loaded, check environment variable: %s\n",
+                DCM_DICT_ENVIRONMENT_VARIABLE);
     }
 
     /* initialize network, i.e. create an instance of T_ASC_Network*. */
     OFCondition cond = ASC_initializeNetwork(NET_REQUESTOR, 0, 1000, &net);
     if (cond.bad()) {
-	DimseCondition::dump(cond);
-	exit(1);
+        DimseCondition::dump(cond);
+        exit(1);
     }
 
     /* initialize asscociation parameters, i.e. create an instance of T_ASC_Parameters*. */
     cond = ASC_createAssociationParameters(&params, opt_maxReceivePDULength);
     if (cond.bad()) {
-	DimseCondition::dump(cond);
-	exit(1);
+        DimseCondition::dump(cond);
+        exit(1);
     }
 
     /* sets this application's title and the called application's title in the params */
@@ -257,59 +278,59 @@ main(int argc, char *argv[])
     for (unsigned long ii=0; ii<opt_numPresentationCtx; ii++)
     {
       cond = ASC_addPresentationContext(params, presentationContextID, UID_VerificationSOPClass,
-	         transferSyntaxes, (int)opt_numXferSyntaxes);
+                 transferSyntaxes, (int)opt_numXferSyntaxes);
       presentationContextID += 2;
       if (cond.bad())
       {
-	    DimseCondition::dump(cond);
-	    exit(1);
+            DimseCondition::dump(cond);
+            exit(1);
       }
     }
 
     /* dump presentation contexts if required */
     if (opt_debug) {
-	printf("Request Parameters:\n");
-	ASC_dumpParameters(params, COUT);
+        printf("Request Parameters:\n");
+        ASC_dumpParameters(params, COUT);
     }
 
     /* create association, i.e. try to establish a network connection to another */
     /* DICOM application. This call creates an instance of T_ASC_Association*. */
     if (opt_verbose)
-	printf("Requesting Association\n");
+        printf("Requesting Association\n");
     cond = ASC_requestAssociation(net, params, &assoc);
     if (cond.bad()) {
-	if (cond == DUL_ASSOCIATIONREJECTED)
-	{
-	    T_ASC_RejectParameters rej;
+        if (cond == DUL_ASSOCIATIONREJECTED)
+        {
+            T_ASC_RejectParameters rej;
 
-	    ASC_getRejectParameters(params, &rej);
-	    errmsg("Association Rejected:");
-	    ASC_printRejectParameters(stderr, &rej);
-	    exit(1);
-	} else {
-	    errmsg("Association Request Failed:");
-	    DimseCondition::dump(cond);
-	    exit(1);
-	}
+            ASC_getRejectParameters(params, &rej);
+            errmsg("Association Rejected:");
+            ASC_printRejectParameters(stderr, &rej);
+            exit(1);
+        } else {
+            errmsg("Association Request Failed:");
+            DimseCondition::dump(cond);
+            exit(1);
+        }
     }
 
     /* dump the presentation contexts which have been accepted/refused */
     if (opt_debug) {
-	printf("Association Parameters Negotiated:\n");
-	ASC_dumpParameters(params, COUT);
+        printf("Association Parameters Negotiated:\n");
+        ASC_dumpParameters(params, COUT);
     }
 
     /* count the presentation contexts which have been accepted by the SCP */
     /* If there are none, finish the execution */
     if (ASC_countAcceptedPresentationContexts(params) == 0) {
-	errmsg("No Acceptable Presentation Contexts");
-	exit(1);
+        errmsg("No Acceptable Presentation Contexts");
+        exit(1);
     }
 
     /* dump general information concerning the establishment of the network connection if required */
     if (opt_verbose) {
-	printf("Association Accepted (Max Send PDV: %lu)\n",
-		assoc->sendPDVLength);
+        printf("Association Accepted (Max Send PDV: %lu)\n",
+                assoc->sendPDVLength);
     }
 
 
@@ -320,73 +341,73 @@ main(int argc, char *argv[])
     /* tear down association, i.e. terminate network connection to SCP */
     if (cond == EC_Normal)
     {
-	if (opt_abortAssociation) {
-	    if (opt_verbose)
-		printf("Aborting Association\n");
-	    cond = ASC_abortAssociation(assoc);
-	    if (cond.bad())
-	    {
-		errmsg("Association Abort Failed:");
-		DimseCondition::dump(cond);
-		exit(1);
-	    }
-	} else {
-	    /* release association */
-	    if (opt_verbose)
-		printf("Releasing Association\n");
-	    cond = ASC_releaseAssociation(assoc);
-	    if (cond.bad())
-	    {
-		errmsg("Association Release Failed:");
-		DimseCondition::dump(cond);
-		exit(1);
-	    }
-	}
+        if (opt_abortAssociation) {
+            if (opt_verbose)
+                printf("Aborting Association\n");
+            cond = ASC_abortAssociation(assoc);
+            if (cond.bad())
+            {
+                errmsg("Association Abort Failed:");
+                DimseCondition::dump(cond);
+                exit(1);
+            }
+        } else {
+            /* release association */
+            if (opt_verbose)
+                printf("Releasing Association\n");
+            cond = ASC_releaseAssociation(assoc);
+            if (cond.bad())
+            {
+                errmsg("Association Release Failed:");
+                DimseCondition::dump(cond);
+                exit(1);
+            }
+        }
     }
     else if (cond == DUL_PEERREQUESTEDRELEASE)
     {
-	errmsg("Protocol Error: peer requested release (Aborting)");
-	if (opt_verbose)
-	    printf("Aborting Association\n");
-	cond = ASC_abortAssociation(assoc);
-	if (cond.bad()) {
-	    errmsg("Association Abort Failed:");
-	    DimseCondition::dump(cond);
-	    exit(1);
-	}
+        errmsg("Protocol Error: peer requested release (Aborting)");
+        if (opt_verbose)
+            printf("Aborting Association\n");
+        cond = ASC_abortAssociation(assoc);
+        if (cond.bad()) {
+            errmsg("Association Abort Failed:");
+            DimseCondition::dump(cond);
+            exit(1);
+        }
     }
     else if (cond == DUL_PEERABORTEDASSOCIATION)
     {
-	if (opt_verbose) printf("Peer Aborted Association\n");
+        if (opt_verbose) printf("Peer Aborted Association\n");
     }
-    else 
+    else
     {
-	errmsg("SCU Failed:");
-	DimseCondition::dump(cond);
-	if (opt_verbose)
-	    printf("Aborting Association\n");
-	cond = ASC_abortAssociation(assoc);
-	if (cond.bad()) {
-	    errmsg("Association Abort Failed:");
-	    DimseCondition::dump(cond);
-	    exit(1);
-	}
+        errmsg("SCU Failed:");
+        DimseCondition::dump(cond);
+        if (opt_verbose)
+            printf("Aborting Association\n");
+        cond = ASC_abortAssociation(assoc);
+        if (cond.bad()) {
+            errmsg("Association Abort Failed:");
+            DimseCondition::dump(cond);
+            exit(1);
+        }
     }
 
     /* destroy the association, i.e. free memory of T_ASC_Association* structure. This */
     /* call is the counterpart of ASC_requestAssociation(...) which was called above. */
     cond = ASC_destroyAssociation(&assoc);
     if (cond.bad()) {
-	DimseCondition::dump(cond);
-	exit(1);
+        DimseCondition::dump(cond);
+        exit(1);
     }
 
     /* drop the network, i.e. free memory of T_ASC_Network* structure. This call */
     /* is the counterpart of ASC_initializeNetwork(...) which was called above. */
     cond = ASC_dropNetwork(&net);
     if (cond.bad()) {
-	DimseCondition::dump(cond);
-	exit(1);
+        DimseCondition::dump(cond);
+        exit(1);
     }
 
 #ifdef HAVE_WINSOCK_H
@@ -396,7 +417,7 @@ main(int argc, char *argv[])
     return 0;
 }
 
-static OFCondition 
+static OFCondition
 echoSCU(T_ASC_Association * assoc)
     /*
      * This function will send a C-ECHO-RQ over the network to another DICOM application
@@ -412,29 +433,29 @@ echoSCU(T_ASC_Association * assoc)
 
     /* dump information if required */
     if (opt_verbose) {
-	printf("Echo [%d], ", msgId);
-	fflush(stdout);
+        printf("Echo [%d], ", msgId);
+        fflush(stdout);
     }
 
     /* send C-ECHO-RQ and handle response */
     OFCondition cond = DIMSE_echoUser(assoc, msgId, DIMSE_BLOCKING, 0,
-    	&status, &statusDetail);
+        &status, &statusDetail);
 
     /* depending on if a response was received, dump some information */
     if (cond.good()) {
         if (opt_verbose) {
-	    printf("Complete [Status: %s]\n",
-	        DU_cstoreStatusString(status));
+            printf("Complete [Status: %s]\n",
+                DU_cstoreStatusString(status));
         }
     } else {
         errmsg("Failed:");
-	DimseCondition::dump(cond);
+        DimseCondition::dump(cond);
     }
 
     /* check for status detail information, there should never be any */
     if (statusDetail != NULL) {
         printf("  Status Detail (should never be any):\n");
-	statusDetail->print(COUT);
+        statusDetail->print(COUT);
         delete statusDetail;
     }
 
@@ -466,7 +487,12 @@ cecho(T_ASC_Association * assoc, unsigned long num_repeat)
 /*
 ** CVS Log
 ** $Log: echoscu.cc,v $
-** Revision 1.26  2001-11-09 15:56:22  joergr
+** Revision 1.27  2002-09-23 17:53:46  joergr
+** Added new command line option "--version" which prints the name and version
+** number of external libraries used (incl. preparation for future support of
+** 'config.guess' host identifiers).
+**
+** Revision 1.26  2001/11/09 15:56:22  joergr
 ** Renamed some of the getValue/getParam methods to avoid ambiguities reported
 ** by certain compilers.
 **
