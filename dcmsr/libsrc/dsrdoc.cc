@@ -23,8 +23,8 @@
  *    classes: DSRDocument
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-11-14 11:45:55 $
- *  CVS/RCS Revision: $Revision: 1.15 $
+ *  Update Date:      $Date: 2000-11-14 16:36:24 $
+ *  CVS/RCS Revision: $Revision: 1.16 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1430,6 +1430,20 @@ E_Condition DSRDocument::setManufacturer(const OFString &string)
 }
 
 
+E_Condition DSRDocument::setContentDate(const OFString &string)
+{
+    /* might add check for correct format (VR) later on */
+    return ContentDate.putString(string.c_str());
+}
+
+
+E_Condition DSRDocument::setContentTime(const OFString &string)
+{
+    /* might add check for correct format (VR) later on */
+    return ContentTime.putString(string.c_str());
+}
+
+
 E_Condition DSRDocument::setStudyID(const OFString &string)
 {
     /* might add check for correct format (VR) later on */
@@ -1726,7 +1740,10 @@ void DSRDocument::updateAttributes()
 /*
  *  CVS/RCS Log:
  *  $Log: dsrdoc.cc,v $
- *  Revision 1.15  2000-11-14 11:45:55  joergr
+ *  Revision 1.16  2000-11-14 16:36:24  joergr
+ *  Added methods to set the content date/time.
+ *
+ *  Revision 1.15  2000/11/14 11:45:55  joergr
  *  Corrected behaviour of method createRevisedVersion().
  *
  *  Revision 1.14  2000/11/13 14:19:12  joergr

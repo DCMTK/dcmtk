@@ -23,8 +23,8 @@
  *    classes: DSRDocument
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-11-14 11:45:50 $
- *  CVS/RCS Revision: $Revision: 1.14 $
+ *  Update Date:      $Date: 2000-11-14 16:36:21 $
+ *  CVS/RCS Revision: $Revision: 1.15 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -622,6 +622,20 @@ class DSRDocument
      */
     E_Condition setManufacturer(const OFString &string);
 
+    /** set content date.
+     *  The passed string must be a valid DICOM Date (DA).
+     ** @param  string  character string specifying the value to be set
+     ** @return status, EC_Normal if successful, an error code otherwise
+     */
+    E_Condition setContentDate(const OFString &string);
+
+    /** set content time.
+     *  The passed string must be a valid DICOM Time (TM).
+     ** @param  string  character string specifying the value to be set
+     ** @return status, EC_Normal if successful, an error code otherwise
+     */
+    E_Condition setContentTime(const OFString &string);
+
     /** set study ID.
      *  The passed string must be a valid DICOM Short String (SH).
      ** @param  string  character string specifying the value to be set
@@ -919,7 +933,10 @@ class DSRDocument
 /*
  *  CVS/RCS Log:
  *  $Log: dsrdoc.h,v $
- *  Revision 1.14  2000-11-14 11:45:50  joergr
+ *  Revision 1.15  2000-11-14 16:36:21  joergr
+ *  Added methods to set the content date/time.
+ *
+ *  Revision 1.14  2000/11/14 11:45:50  joergr
  *  Corrected behaviour of method createRevisedVersion().
  *
  *  Revision 1.13  2000/11/13 14:19:06  joergr
