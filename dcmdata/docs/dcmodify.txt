@@ -141,7 +141,7 @@ EXAMPLES
 
 ENVIRONMENT
 
-The dcmdump utility will attempt to load DICOM data dictionaries specified in
+The dcmodify utility will attempt to load DICOM data dictionaries specified in
 the DCMDICTPATH environment variable.  By default, if the DCMDICTPATH
 environment variable is not set, the file /usr/local/dicom/lib/dicom.dic will
 be loaded.  The default behaviour should be preferred and the DCMDICTPATH
