@@ -21,10 +21,10 @@
  *
  *  Purpose: Presentation State Viewer - Print Spooler
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-06-14 10:44:17 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2002-09-23 18:26:06 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmpstat/apps/dcmprscu.cc,v $
- *  CVS/RCS Revision: $Revision: 1.11 $
+ *  CVS/RCS Revision: $Revision: 1.12 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -60,10 +60,10 @@ BEGIN_EXTERN_C
 #include <io.h>
 #endif
 #ifdef HAVE_FCNTL_H
-#include <fcntl.h>    /* for O_RDONLY */
+#include <fcntl.h>      /* for O_RDONLY */
 #endif
 #ifdef HAVE_CTYPE_H
-#include <ctype.h>    /* for isspace() */
+#include <ctype.h>      /* for isspace() */
 #endif
 END_EXTERN_C
 
@@ -80,6 +80,10 @@ END_EXTERN_C
 #include "dvpspr.h"
 #include "dvpssp.h"
 #include "dvpshlp.h"     /* for class DVPSHelper */
+
+#ifdef WITH_ZLIB
+#include "zlib.h"        /* for zlibVersion() */
+#endif
 
 #define OFFIS_CONSOLE_APPLICATION "dcmprscu"
 
@@ -229,13 +233,13 @@ static OFCondition spoolStoredPrintFile(const char *filename, DVInterface &dvi)
   {
     // we have successfully read the Stored Print, now open connection to printer
     DVPSPrintMessageHandler printHandler;
-    if (opt_dumpMode) 
+    if (opt_dumpMode)
     {
       printHandler.setDumpStream(logstream);
-      printHandler.setLog(&ofConsole, opt_verbose, opt_debugMode);      
+      printHandler.setLog(&ofConsole, opt_verbose, opt_debugMode);
     }
     result = printHandler.negotiateAssociation(dvi.getNetworkAETitle(),
-      targetAETitle, targetHostname, targetPort, targetMaxPDU, 
+      targetAETitle, targetHostname, targetPort, targetMaxPDU,
       targetSupportsPLUT, targetSupportsAnnotation, targetImplicitOnly);
     if (result.bad())
     {
@@ -296,7 +300,7 @@ static OFCondition spoolStoredPrintFile(const char *filename, DVInterface &dvi)
           }
         } else result = EC_IllegalCall;
       }
-      
+
       size_t numberOfAnnotations = stprint.getNumberOfAnnotations();
       for (size_t currentAnnotation=0; currentAnnotation<numberOfAnnotations; currentAnnotation++)
       {
@@ -309,7 +313,7 @@ static OFCondition spoolStoredPrintFile(const char *filename, DVInterface &dvi)
           }
         }
       }
-                  
+
       if (! opt_noPrint)
       {
         if (opt_sessionPrint)
@@ -483,7 +487,7 @@ static OFCondition readJobFile(
     else if (key == "study") job.studyUID = value;
     else if (key == "series") job.seriesUID = value;
     else if (key == "instance") job.instanceUID = value;
-    else if (key == "terminate") 
+    else if (key == "terminate")
     {
       terminateFlag=OFTrue;
       thisIsTerminate = OFTrue;
@@ -548,7 +552,7 @@ static OFCondition updateJobList(
   OFBool currentTerminate = OFFalse;
   OFCondition result = EC_Normal;
   const char *spoolFolder = dvi.getSpoolFolder();
-  
+
 #ifdef HAVE_WINDOWS_H
   WIN32_FIND_DATA stWin32FindData;
   OFString currentdir = spoolFolder;
@@ -655,6 +659,7 @@ int main(int argc, char *argv[])
 
     cmd.addGroup("general options:");
      cmd.addOption("--help",        "-h",    "print this help text and exit");
+     cmd.addOption("--version",              "print version information and exit", OFTrue /* exclusive */);
      cmd.addOption("--verbose",     "-v",    "verbose mode, print actions");
      cmd.addOption("--debug",       "-d",    "debug mode, print debug information");
      cmd.addOption("--dump",        "+d",    "dump all DIMSE messages to stdout");
@@ -692,6 +697,23 @@ int main(int argc, char *argv[])
     prepareCmdLineArgs(argc, argv, OFFIS_CONSOLE_APPLICATION);
     if (app.parseCommandLine(cmd, argc, argv, OFCommandLine::ExpandWildcards))
     {
+      /* check exclusive options first */
+      if (cmd.getParamCount() == 0)
+      {
+        if (cmd.findOption("--version"))
+        {
+            app.printHeader(OFTrue /*print host identifier*/);          // uses ofConsole.lockCerr()
+            CERR << endl << "External libraries used:";
+#ifdef WITH_ZLIB
+            CERR << endl << "- ZLIB, Version " << zlibVersion() << endl;
+#else
+            CERR << " none" << endl;
+#endif
+            return 0;
+         }
+      }
+
+      /* options */
       if (cmd.findOption("--verbose")) opt_verbose = OFTrue;
       if (cmd.findOption("--debug"))   opt_debugMode = 3;
       if (cmd.findOption("--dump"))    opt_dumpMode = OFTrue;
@@ -783,7 +805,7 @@ int main(int argc, char *argv[])
     }
 
     OFString logfilename;
-    
+
     if (opt_spoolMode)
     {
       if (dvi.getLogFolder() != NULL)
@@ -798,7 +820,7 @@ int main(int argc, char *argv[])
       ofstream *newstream = new ofstream(logfilename.c_str());
       if (newstream && (newstream->good()))
       {
-        logstream=newstream; 
+        logstream=newstream;
         ofConsole.setCout(logstream);
         ofConsole.join();
       }
@@ -811,7 +833,7 @@ int main(int argc, char *argv[])
     }
 
     dvi.setLog(&ofConsole, opt_verbose, opt_debugMode);
-    
+
     /* make sure data dictionary is loaded */
     if (!dcmDataDict.isDictionaryLoaded())
         *logstream << "Warning: no data dictionary loaded, check environment variable: " << DCM_DICT_ENVIRONMENT_VARIABLE << endl;
@@ -971,20 +993,25 @@ int main(int argc, char *argv[])
     dcmDataDict.clear();  /* useful for debugging with dmalloc */
 #endif
     closeLog();
-    
+
     if (deleteUnusedLogs && (! haveRenderedPrintJobs))
     {
       // log unused, attempt to delete file
-      unlink(logfilename.c_str());      
+      unlink(logfilename.c_str());
     }
-        
+
     return 0;
 }
 
 /*
  * CVS/RCS Log:
  * $Log: dcmprscu.cc,v $
- * Revision 1.11  2002-06-14 10:44:17  meichel
+ * Revision 1.12  2002-09-23 18:26:06  joergr
+ * Added new command line option "--version" which prints the name and version
+ * number of external libraries used (incl. preparation for future support of
+ * 'config.guess' host identifiers).
+ *
+ * Revision 1.11  2002/06/14 10:44:17  meichel
  * Adapted log file handling to ofConsole singleton
  *
  * Revision 1.10  2002/04/16 14:01:26  joergr

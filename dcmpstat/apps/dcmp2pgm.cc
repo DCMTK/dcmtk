@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2001, OFFIS
+ *  Copyright (C) 1998-2002, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -26,9 +26,9 @@
  *    ignored. If no presentation state is loaded, a default is created.
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-04-16 14:01:25 $
+ *  Update Date:      $Date: 2002-09-23 18:26:06 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmpstat/apps/dcmp2pgm.cc,v $
- *  CVS/RCS Revision: $Revision: 1.29 $
+ *  CVS/RCS Revision: $Revision: 1.30 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -52,6 +52,10 @@
 #include "ofcmdln.h"
 #include "ofconapp.h"
 #include "dcuid.h"    /* for dcmtk version name */
+
+#ifdef WITH_ZLIB
+#include "zlib.h"     /* for zlibVersion() */
+#endif
 
 #define OFFIS_CONSOLE_APPLICATION "dcmp2pgm"
 
@@ -88,6 +92,7 @@ int main(int argc, char *argv[])
 
     cmd.addGroup("general options:");
      cmd.addOption("--help",        "-h",    "print this help text and exit");
+     cmd.addOption("--version",              "print version information and exit", OFTrue /* exclusive */);
      cmd.addOption("--verbose",     "-v",    "verbose mode, dump presentation state contents");
      cmd.addOption("--debug",       "-d",    "debug mode, print debug information");
 
@@ -97,7 +102,7 @@ int main(int argc, char *argv[])
      cmd.addOption("--config",      "-c", 1, "[f]ilename: string",
                                              "process using settings from configuration file");
      cmd.addOption("--frame",       "-f", 1, "[f]rame: integer",
-                                             "process using image frame f (default: 1)");    
+                                             "process using image frame f (default: 1)");
 
     cmd.addGroup("output format:");
      cmd.addOption("--pgm",         "-D",    "save image as PGM (default)");
@@ -110,6 +115,23 @@ int main(int argc, char *argv[])
     prepareCmdLineArgs(argc, argv, OFFIS_CONSOLE_APPLICATION);
     if (app.parseCommandLine(cmd, argc, argv, OFCommandLine::ExpandWildcards))
     {
+      /* check exclusive options first */
+      if (cmd.getParamCount() == 0)
+      {
+        if (cmd.findOption("--version"))
+        {
+            app.printHeader(OFTrue /*print host identifier*/);          // uses ofConsole.lockCerr()
+            CERR << endl << "External libraries used:";
+#ifdef WITH_ZLIB
+            CERR << endl << "- ZLIB, Version " << zlibVersion() << endl;
+#else
+            CERR << " none" << endl;
+#endif
+            return 0;
+         }
+      }
+
+      /* command line parameters and options */
       cmd.getParam(1, opt_imgName);
       if (cmd.getParamCount() > 1)
         cmd.getParam(2, opt_pgmName);
@@ -576,7 +598,12 @@ void dumpPresentationState(DVInterface& dvi)
 /*
  * CVS/RCS Log:
  * $Log: dcmp2pgm.cc,v $
- * Revision 1.29  2002-04-16 14:01:25  joergr
+ * Revision 1.30  2002-09-23 18:26:06  joergr
+ * Added new command line option "--version" which prints the name and version
+ * number of external libraries used (incl. preparation for future support of
+ * 'config.guess' host identifiers).
+ *
+ * Revision 1.29  2002/04/16 14:01:25  joergr
  * Added configurable support for C++ ANSI standard includes (e.g. streams).
  * Thanks to Andreas Barth <Andreas.Barth@bruker-biospin.de> for his
  * contribution.

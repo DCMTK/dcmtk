@@ -3,9 +3,11 @@ NAME
 
    dcmpsprt
 
+
 SYNOPSIS
 
    dcmpsprt [options] [imagefile_in...]
+
 
 SUMMARY
 
@@ -15,6 +17,7 @@ and one or more Hardcopy Grayscale images and is written to the database
 specified in the configuration file. The print job can optionally be
 spooled to the printer. In this case, dcmpsprt calls the dcmprtsv
 application which performs communication with the printer.
+
 
 USAGE
 
@@ -26,6 +29,7 @@ parameters:
 
 general options:
   -h    --help                 print this help text and exit
+        --version              print version information and exit
   -v    --verbose              verbose mode, print actions
   -d    --debug                debug mode, print debug information
 processing options:
@@ -136,4 +140,3 @@ environment variable has the same format as the shell PATH variable in
 that a colon (":") separates entries.  The data dictionary code will
 attempt to load each file specified in the DCMDICTPATH environment
 variable.  It is an error if no data dictionary can be loaded.
-

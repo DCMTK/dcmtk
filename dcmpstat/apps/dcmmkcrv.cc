@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2001, OFFIS
+ *  Copyright (C) 1998-2002, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,16 +21,16 @@
  *
  *  Purpose: This application reads a DICOM image, adds a Curve and writes it back.
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-08-20 12:21:52 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2002-09-23 18:26:04 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmpstat/apps/dcmmkcrv.cc,v $
- *  CVS/RCS Revision: $Revision: 1.13 $
+ *  CVS/RCS Revision: $Revision: 1.14 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
  *
  */
- 
+
 
 #include "osconfig.h"    /* make sure OS specific configuration is included first */
 
@@ -42,7 +42,11 @@
 #include "dctk.h"
 #include "cmdlnarg.h"
 #include "ofconapp.h"
-#include "dcuid.h"    /* for dcmtk version name */
+#include "dcuid.h"       /* for dcmtk version name */
+
+#ifdef WITH_ZLIB
+#include "zlib.h"        /* for zlibVersion() */
+#endif
 
 #define OFFIS_CONSOLE_APPLICATION "dcmmkcrv"
 
@@ -72,7 +76,7 @@ int main(int argc, char *argv[])
     const char *opt_axis_x = NULL;
     const char *opt_axis_y = NULL;
     OFCmdUnsignedInt opt_curve_vr = 0;
-    
+
     SetDebugLevel(( 0 ));
 
     OFConsoleApplication app(OFFIS_CONSOLE_APPLICATION , "Add 2D curve data to image", rcsid);
@@ -86,11 +90,12 @@ int main(int argc, char *argv[])
 
     cmd.addGroup("general options:", LONGCOL, SHORTCOL + 2);
      cmd.addOption("--help",                      "-h",        "print this help text and exit");
+     cmd.addOption("--version",                                "print version information and exit", OFTrue /* exclusive */);
      cmd.addOption("--verbose",                   "-v",        "verbose mode, print processing details");
      cmd.addOption("--debug",                     "-d",        "debug mode, print debug information");
     cmd.addGroup("curve creation options:");
       cmd.addSubGroup("curve type:");
-        cmd.addOption("--poly",        "-r",     "create as POLY curve (default)");                                         
+        cmd.addOption("--poly",        "-r",     "create as POLY curve (default)");
         cmd.addOption("--roi",         "+r",     "create as ROI curve");
 
       cmd.addSubGroup("curve value representation:");
@@ -110,10 +115,27 @@ int main(int argc, char *argv[])
         cmd.addOption("--axis",        "-a", 2,  "x: string, y: string",
                                                  "set Axis Units to x\\y (default: absent)");
 
-    /* evaluate command line */                           
+    /* evaluate command line */
     prepareCmdLineArgs(argc, argv, OFFIS_CONSOLE_APPLICATION);
     if (app.parseCommandLine(cmd, argc, argv, OFCommandLine::ExpandWildcards))
     {
+      /* check exclusive options first */
+      if (cmd.getParamCount() == 0)
+      {
+        if (cmd.findOption("--version"))
+        {
+            app.printHeader(OFTrue /*print host identifier*/);          // uses ofConsole.lockCerr()
+            CERR << endl << "External libraries used:";
+#ifdef WITH_ZLIB
+            CERR << endl << "- ZLIB, Version " << zlibVersion() << endl;
+#else
+            CERR << " none" << endl;
+#endif
+            return 0;
+         }
+      }
+
+      /* command line parameters */
       cmd.getParam(1, opt_inName);
       cmd.getParam(2, opt_curveName);
       cmd.getParam(3, opt_outName);
@@ -122,7 +144,7 @@ int main(int argc, char *argv[])
       if (cmd.findOption("--debug")) opt_debugMode = 3;
       cmd.beginOptionBlock();
       if (cmd.findOption("--roi")) opt_poly = OFFalse;
-      if (cmd.findOption("--poly")) opt_poly = OFTrue;                
+      if (cmd.findOption("--poly")) opt_poly = OFTrue;
       cmd.endOptionBlock();
 
 
@@ -137,7 +159,7 @@ int main(int argc, char *argv[])
           app.checkValue(cmd.getValue(opt_axis_y));
       }
     }
-  
+
     SetDebugLevel((opt_debugMode));
 
     /* make sure data dictionary is loaded */
@@ -157,15 +179,15 @@ int main(int argc, char *argv[])
     OFCondition error = fileformat->loadFile(opt_inName);
     if (! error.good())
     {
-	CERR << "Error: "  
+	CERR << "Error: "
 	     << error.text()
 	     << ": reading file: " <<  opt_inName << endl;
 	return 1;
     }
 
     DcmDataset *dataset = fileformat->getDataset();
-    
-    /* read curve data */    
+
+    /* read curve data */
 
     ifstream curvefile(opt_curveName);
     if (!curvefile)
@@ -173,14 +195,14 @@ int main(int argc, char *argv[])
       CERR << "cannot open curve file: " << opt_curveName << endl;
       return 1;
     }
-    
+
     double *array = new double[MAX_POINTS*2];
     if (array==NULL)
     {
       CERR << "out of memory" << endl;
       return 1;
     }
-    
+
     size_t idx=0;
     double d;
     OFBool done = OFFalse;
@@ -195,7 +217,7 @@ int main(int argc, char *argv[])
       	if (curvefile.good()) array[idx++] = d;
       }
     }
-    
+
     /* create curve description data */
     DcmUnsignedShort *curveDimensions = new DcmUnsignedShort(DCM_CurveDimensions);
     DcmUnsignedShort *numberOfPoints = new DcmUnsignedShort(DCM_NumberOfPoints);
@@ -204,14 +226,14 @@ int main(int argc, char *argv[])
     DcmLongString    *curveDescription = new DcmLongString(DCM_CurveDescription);
     DcmShortString   *axisUnits = new DcmShortString(DCM_AxisUnits);
     DcmLongString    *curveLabel = new DcmLongString(DCM_CurveLabel);
-    
+
     if ((!curveDimensions)||(!numberOfPoints)||(!typeOfData)||(!dataValueRepresentation)
        ||(!curveDescription)||(!axisUnits)||(!curveLabel))
     {
       CERR << "out of memory" << endl;
       return 1;
     }
-    
+
     curveDimensions->setGTag((Uint16)(0x5000+2*opt_group));
     curveDimensions->putUint16(2,0);
     dataset->insert(curveDimensions, OFTrue);
@@ -219,7 +241,7 @@ int main(int argc, char *argv[])
     numberOfPoints->setGTag((Uint16)(0x5000+2*opt_group));
     numberOfPoints->putUint16((Uint16)(idx/2),0);
     dataset->insert(numberOfPoints, OFTrue);
-    
+
     typeOfData->setGTag((Uint16)(0x5000+2*opt_group));
     if (opt_poly) typeOfData->putString("POLY"); else typeOfData->putString("ROI");
     dataset->insert(typeOfData, OFTrue);
@@ -227,21 +249,21 @@ int main(int argc, char *argv[])
     dataValueRepresentation->setGTag((Uint16)(0x5000+2*opt_group));
     dataValueRepresentation->putUint16((Uint16)opt_data_vr,0);
     dataset->insert(dataValueRepresentation, OFTrue);
-    
+
     if (opt_description)
     {
       curveDescription->setGTag((Uint16)(0x5000+2*opt_group));
       curveDescription->putString(opt_description);
-      dataset->insert(curveDescription, OFTrue);  
+      dataset->insert(curveDescription, OFTrue);
     }
 
     if (opt_label)
     {
       curveLabel->setGTag((Uint16)(0x5000+2*opt_group));
       curveLabel->putString(opt_label);
-      dataset->insert(curveLabel, OFTrue);  
+      dataset->insert(curveLabel, OFTrue);
     }
-    
+
     if (opt_axis_x && opt_axis_y)
     {
       OFString aString(opt_axis_x);
@@ -249,15 +271,15 @@ int main(int argc, char *argv[])
       aString += opt_axis_y;
       axisUnits->setGTag((Uint16)(0x5000+2*opt_group));
       axisUnits->putString(aString.c_str());
-      dataset->insert(axisUnits, OFTrue);  
+      dataset->insert(axisUnits, OFTrue);
     }
-    
+
     /* now create the curve itself */
     void *rawData;
     size_t i;
     size_t byteLength = 0;
     size_t align=0;
-    
+
     switch (opt_data_vr)
     {
       case 0: // US
@@ -304,14 +326,14 @@ int main(int argc, char *argv[])
         CERR << "unknown data VR, bailing out" << endl;
         return 1;
     }
-    
+
     DcmElement *element = NULL;
     switch (opt_curve_vr)
     {
       case 0: // explicit VR
         switch (opt_data_vr)
         {
-          case 0: // US            
+          case 0: // US
             if (opt_verbose) CERR << "encoding curve data element as VR=US" << endl;
             element = new DcmUnsignedShort(DcmTag(DCM_CurveData, EVR_US));
             if (element==NULL) { CERR << "out of memory" << endl; return 1; }
@@ -379,11 +401,11 @@ int main(int argc, char *argv[])
         return 1;
     }
     /* write back */
-       
+
     error = fileformat->saveFile(opt_outName, dataset->getOriginalXfer());
-    if (error != EC_Normal) 
+    if (error != EC_Normal)
     {
-	CERR << "Error: "  
+	CERR << "Error: "
 	     << error.text()
 	     << ": writing file: " <<  opt_outName << endl;
 	return 1;
@@ -397,7 +419,12 @@ int main(int argc, char *argv[])
 /*
 ** CVS/RCS Log:
 ** $Log: dcmmkcrv.cc,v $
-** Revision 1.13  2002-08-20 12:21:52  meichel
+** Revision 1.14  2002-09-23 18:26:04  joergr
+** Added new command line option "--version" which prints the name and version
+** number of external libraries used (incl. preparation for future support of
+** 'config.guess' host identifiers).
+**
+** Revision 1.13  2002/08/20 12:21:52  meichel
 ** Adapted code to new loadFile and saveFile methods, thus removing direct
 **   use of the DICOM stream classes.
 **

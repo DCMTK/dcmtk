@@ -3,34 +3,37 @@ NAME
 
    dcmpschk
 
+
 SYNOPSIS
 
    dcmpschk [options] [filename_in...]
 
+
 SUMMARY
 
-The dcmpschk utility checks DICOM Grayscale Softcopy Presentation State 
+The dcmpschk utility checks DICOM Grayscale Softcopy Presentation State
 objects for conformance with the standard.  The test is performed in three
 phases:
 
-- Phase 1 checks the Meta-header of the DICOM file. It is tested whether 
-  all required attributes are present, whether the SOP class and instance 
-  UIDs match the UIDs in the main object and whether the group length 
+- Phase 1 checks the Meta-header of the DICOM file. It is tested whether
+  all required attributes are present, whether the SOP class and instance
+  UIDs match the UIDs in the main object and whether the group length
   attribute contains a correct value.  The Transfer Syntax of the Meta-
   header is also checked.
 
-- Phase 2 performs a syntactic check of the values, value representations 
-  and value multiplicities for each attribute in the object. The values 
-  present in the object under test are compared with the definitions of the 
+- Phase 2 performs a syntactic check of the values, value representations
+  and value multiplicities for each attribute in the object. The values
+  present in the object under test are compared with the definitions of the
   DICOM data dictionary.
 
-- Phase 3 performs a semantic check of the integrity of the Presentation 
-  State. This phase is omitted when objects of other SOP Classes are 
-  encountered. Phase 1 and 2 can also be applied to other DICOM objects of 
+- Phase 3 performs a semantic check of the integrity of the Presentation
+  State. This phase is omitted when objects of other SOP Classes are
+  encountered. Phase 1 and 2 can also be applied to other DICOM objects of
   arbitrary SOP class.
   It should be noted that dcmpschk does not support Presentation States
   which contain the Mask Module. These will be rejected with a message
   that the Mask Module is not supported.
+
 
 USAGE
 
@@ -42,6 +45,7 @@ parameters:
 
 general options:
   -h  --help          print this help text and exit
+      --version       print version information and exit
   -v  --verbose       verbose mode, print actions
   -d  --debug         debug mode, print debug information
   -l  --logfile       [f]ilename: string
@@ -54,9 +58,8 @@ specified in the DCMDICTPATH environment variable.  By default, if
 the DCMDICTPATH environment variable is not set, the file
 /usr/local/dicom/lib/dicom.dic will be loaded.  The default behaviour
 should be preferred and the DCMDICTPATH environment variable only used
-when alternative data dictionaries are required.  The DCMDICTPATH 
+when alternative data dictionaries are required.  The DCMDICTPATH
 environment variable has the same format as the shell PATH variable in
 that a colon (":") separates entries.  The data dictionary code will
-attempt to load each file specified in the DCMDICTPATH environment 
+attempt to load each file specified in the DCMDICTPATH environment
 variable.  It is an error if no data dictionary can be loaded.
-

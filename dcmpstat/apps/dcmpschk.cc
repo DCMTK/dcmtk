@@ -21,11 +21,11 @@
  *
  *  Purpose:
  *    VR and IOD checker for Presentation States
- *    
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-08-20 12:21:53 $
- *  CVS/RCS Revision: $Revision: 1.9 $
+ *
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2002-09-23 18:26:07 $
+ *  CVS/RCS Revision: $Revision: 1.10 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -53,11 +53,15 @@ END_EXTERN_C
 #endif
 
 #include "ofstream.h"
-#include "dctk.h"      /* for class DcmDataset */
-#include "ofstring.h"  /* for class OFString */
+#include "dctk.h"        /* for class DcmDataset */
+#include "ofstring.h"    /* for class OFString */
 #include "vrscan.h"
-#include "ofconapp.h"   /* for OFConsoleApplication */
+#include "ofconapp.h"    /* for OFConsoleApplication */
 #include "dvpstat.h"
+
+#ifdef WITH_ZLIB
+#include "zlib.h"        /* for zlibVersion() */
+#endif
 
 #define OFFIS_CONSOLE_APPLICATION "dcmpschk"
 
@@ -78,8 +82,8 @@ enum ErrorMode
 {
   EM_ok,
   EM_informational,
-  EM_warning, 
-  EM_error 
+  EM_warning,
+  EM_error
 };
 
 #define MSG_invalidVR      "Error: Unsupported Value Representation."
@@ -96,7 +100,7 @@ enum ErrorMode
 #define MSGw_wrongDType    "Warning: Attribute value uses retired ACR-NEMA form."
 
 void printVRError(
-  ostream& out, 
+  ostream& out,
   ErrorMode mode,
   const char *elementDescription,
   const DcmDictEntry* dictRef,
@@ -125,7 +129,7 @@ void printVRError(
   }
   out << endl;
 }
-  
+
 void printResult(ostream& out, DcmStack& stack, OFBool showFullData)
 {
     unsigned long n = stack.card();
@@ -137,14 +141,14 @@ void printResult(ostream& out, DcmStack& stack, OFBool showFullData)
     for (unsigned long i=n-1; i>=1; i--)
     {
         DcmObject *dobj = stack.elem(i);
-        /* do not print if a DCM_Item as this is not 
+        /* do not print if a DCM_Item as this is not
          * very helpful to distinguish instances.
          */
         if (dobj != NULL && dobj->getTag().getXTag() != DCM_Item)
         {
             char buf[128];
-            sprintf(buf, "(%04x,%04x).", 
-                    (unsigned)dobj->getGTag(), 
+            sprintf(buf, "(%04x,%04x).",
+                    (unsigned)dobj->getGTag(),
                     (unsigned)dobj->getETag());
             out << buf;
         }
@@ -153,7 +157,7 @@ void printResult(ostream& out, DcmStack& stack, OFBool showFullData)
     /* print the tag and its value */
     DcmObject *dobj = stack.top();
     dobj->print(out, showFullData);
-    
+
 }
 
 OFBool isaStringVR(DcmVR& vr)
@@ -216,7 +220,7 @@ const char* streamLengthOfValue(DcmVR& vr)
         }
     } else {
         sprintf(buf, "range %d-%d bytes length", (int)min, (int)max);
-    }      
+    }
     return buf;
 }
 
@@ -237,7 +241,7 @@ splitFields(char* line, char* fields[], Uint32 maxFields, char splitChar)
         fields[foundFields] = new char[len+1];
         strncpy(fields[foundFields], line, len);
         fields[foundFields][len] = '\0';
-        
+
         foundFields++;
         line = p + 1;
     } while ((foundFields < maxFields) && (p != NULL));
@@ -251,10 +255,10 @@ OFBool isaKnownPointer(DcmTag& t)
     ** The DICOMDIR code automatically converts any pointers
     ** to have VR=up even if when the data has an explicit VR encoding.
     ** If this attribute is a known pointer then it is ok for it to
-    ** have the internal VR=up.  
+    ** have the internal VR=up.
     */
 
-    OFBool result = OFFalse;    
+    OFBool result = OFFalse;
     const DcmDataDictionary& globalDataDict = dcmDataDict.rdlock();
     const DcmDictEntry *dictRef = globalDataDict.findEntry(t, NULL);
 
@@ -274,7 +278,7 @@ int scanValue(istream& scannerInput)
    return firstResult;
 }
 
-int checkelem(ostream & out, DcmElement *elem,  DcmXfer& oxfer, 
+int checkelem(ostream & out, DcmElement *elem,  DcmXfer& oxfer,
         DcmStack& stack, OFBool showFullData,
         int& dderrors, OFBool /* verbose */)
 {
@@ -292,7 +296,7 @@ int checkelem(ostream & out, DcmElement *elem,  DcmXfer& oxfer,
     }
 */
 
-    /* 
+    /*
     ** if the data was encoded in explicit VR then check that the given VR matches
     ** the value in the data dictionary.
     */
@@ -305,10 +309,10 @@ int checkelem(ostream & out, DcmElement *elem,  DcmXfer& oxfer,
             out << endl << "   Affected attribute: ";
             printResult(out, stack, showFullData);
             out << endl;
-            dderrors++;    
+            dderrors++;
         } else if (dictRef && !vr.isEquivalent(dictRef->getVR())) {
             out << MSG_unexpectedVR << endl
-                << "   Affected VR       : [" << vr.getVRName() << "], should be [" 
+                << "   Affected VR       : [" << vr.getVRName() << "], should be ["
                 << dictRef->getVR().getVRName() << "] according to data dictionary." << endl
                 << "   Affected attribute: ";
             printResult(out, stack, showFullData);
@@ -319,32 +323,32 @@ int checkelem(ostream & out, DcmElement *elem,  DcmXfer& oxfer,
 
     if (len) /* type 2 attributes can be empty. */
     {
-    
+
        /*
        ** Check value multiplicity
        */
        if ((dictRef)&&(vm < (Uint32)dictRef->getVMMin()))
        {
            out << MSG_vmtoosmall << endl
-               << "   Affected VM       : " << vm << ", should be " 
-               << streamvm(dictRef) << " according to data dictionary." 
+               << "   Affected VM       : " << vm << ", should be "
+               << streamvm(dictRef) << " according to data dictionary."
                << endl << "   Affected attribute: ";
            printResult(out, stack, showFullData);
            out << endl;
            dderrors++;
        }
-   
+
        if ((dictRef)&&(vm > (Uint32)dictRef->getVMMax()))
        {
            out << MSG_vmtoolarge << endl
-               << "   Affected VM       : " << vm << ", should be " 
-               << streamvm(dictRef) << " according to data dictionary." 
+               << "   Affected VM       : " << vm << ", should be "
+               << streamvm(dictRef) << " according to data dictionary."
                << endl << "   Affected attribute: ";
            printResult(out, stack, showFullData);
            out << endl;
            dderrors++;
        }
-   
+
        /*
        ** Check length of attribute
        */
@@ -353,16 +357,16 @@ int checkelem(ostream & out, DcmElement *elem,  DcmXfer& oxfer,
            /* only strings have variable length components */
            char* value = NULL;
         ((DcmByteString*)elem)->getString(value);
-           
+
            char **fields = new char*[vm+1];
            if (fields == NULL) {
                printResult(out, stack, showFullData);
-               out << "Internal error: out of memory (value multiplicity too large)" << endl;     
+               out << "Internal error: out of memory (value multiplicity too large)" << endl;
            } else {
                int nfields = splitFields(value, fields, vm, '\\');
                if ((Uint32)nfields != vm) {
                    printResult(out, stack, showFullData);
-                   out << "Internal error: splitFields inconsistency (" 
+                   out << "Internal error: splitFields inconsistency ("
                        << nfields << "!=" << vm << ")" << endl;
                    exit(1);
                }
@@ -371,25 +375,25 @@ int checkelem(ostream & out, DcmElement *elem,  DcmXfer& oxfer,
                    int slen = strlen(s);
                    if ((Uint32)slen > vr.getMaxValueLength()) {
                        out << MSG_lengthtoolarge << endl
-                           << "   Affected length   : " << slen << " bytes, should be " 
+                           << "   Affected length   : " << slen << " bytes, should be "
                            << streamLengthOfValue(vr) << " for " << vr.getVRName() << "." << endl;
                     if (vm > 1) out << "   Affected value [" << i << "]: \"" << s << "\"" << endl;
-                       out << "   Affected attribute: ";                    
+                       out << "   Affected attribute: ";
                        printResult(out, stack, showFullData);
                     dderrors++;
                     out << endl;
                    }
                    if ((Uint32)slen < vr.getMinValueLength()) {
                        out << MSG_lengthtoosmall << endl
-                           << "   Affected length   : " << slen << " bytes, should be " 
+                           << "   Affected length   : " << slen << " bytes, should be "
                            << streamLengthOfValue(vr) << " for " << vr.getVRName() << "." << endl;
                     if (vm > 1) out << "   Affected value [" << i << "]: \"" << s << "\"" << endl;
-                       out << "   Affected attribute: ";                    
+                       out << "   Affected attribute: ";
                        printResult(out, stack, showFullData);
                     dderrors++;
                     out << endl;
                    }
-                   
+
                    delete[] fields[i];
                    fields[i] = NULL;
                }
@@ -400,30 +404,30 @@ int checkelem(ostream & out, DcmElement *elem,  DcmXfer& oxfer,
            if (vm>0) componentSize = len/vm;
            if (componentSize > vr.getMaxValueLength()) {
                out << MSG_lengthtoolarge << endl
-                   << "   Affected length   : " << componentSize << " bytes, should be " 
+                   << "   Affected length   : " << componentSize << " bytes, should be "
                    << streamLengthOfValue(vr) << " for " << vr.getVRName() << "." << endl
-                   << "   Affected attribute: ";                    
+                   << "   Affected attribute: ";
                printResult(out, stack, showFullData);
             dderrors++;
             out << endl;
         }
            if (componentSize < vr.getMinValueLength()) {
                out << MSG_lengthtoosmall << endl
-                   << "   Affected length   : " << componentSize << " bytes, should be " 
+                   << "   Affected length   : " << componentSize << " bytes, should be "
                    << streamLengthOfValue(vr) << " for " << vr.getVRName() << "." << endl
-                   << "   Affected attribute: ";                    
+                   << "   Affected attribute: ";
                printResult(out, stack, showFullData);
             dderrors++;
             out << endl;
            }
        }
-   
+
       /*
       **  check, wether the value of the element is suitable to the data type.
       */
-      
-      
-      /*** differenciate all value representations */        
+
+
+      /*** differenciate all value representations */
        if (isaStringVR(vr))
        {
          char* value = NULL;
@@ -443,7 +447,7 @@ int checkelem(ostream & out, DcmElement *elem,  DcmXfer& oxfer,
               }
              break;
            case EVR_AS:
-              {   
+              {
                 OFString vrAndValue("as");
                 vrAndValue += value;
                 OFIStringStream input((char*)(vrAndValue.c_str()));
@@ -456,7 +460,7 @@ int checkelem(ostream & out, DcmElement *elem,  DcmXfer& oxfer,
               }
               break;
            case EVR_CS:
-              {   
+              {
                 OFString vrAndValue("cs");
                 vrAndValue += value;
                 OFIStringStream input((char*)(vrAndValue.c_str()));
@@ -469,7 +473,7 @@ int checkelem(ostream & out, DcmElement *elem,  DcmXfer& oxfer,
              }
              break;
            case EVR_DA:
-              {   
+              {
                 OFString vrAndValue("da");
                 vrAndValue += value;
                 OFIStringStream input((char*)(vrAndValue.c_str()));
@@ -488,7 +492,7 @@ int checkelem(ostream & out, DcmElement *elem,  DcmXfer& oxfer,
               }
               break;
            case EVR_DS:
-              {   
+              {
                 OFString vrAndValue("ds");
                 vrAndValue += value;
                 OFIStringStream input((char*)(vrAndValue.c_str()));
@@ -501,7 +505,7 @@ int checkelem(ostream & out, DcmElement *elem,  DcmXfer& oxfer,
            }
            break;
         case EVR_DT:
-           {   
+           {
              OFString vrAndValue("dt");
              vrAndValue += value;
              OFIStringStream input((char*)(vrAndValue.c_str()));
@@ -514,7 +518,7 @@ int checkelem(ostream & out, DcmElement *elem,  DcmXfer& oxfer,
            }
            break;
         case EVR_IS:
-           {   
+           {
              OFString vrAndValue("is");
              vrAndValue += value;
              OFIStringStream input((char*)(vrAndValue.c_str()));
@@ -528,7 +532,7 @@ int checkelem(ostream & out, DcmElement *elem,  DcmXfer& oxfer,
            break;
         case EVR_SH:
         case EVR_LO:
-           {   
+           {
              OFString vrAndValue("lo");
              vrAndValue += value;
              OFIStringStream input((char*)(vrAndValue.c_str()));
@@ -542,7 +546,7 @@ int checkelem(ostream & out, DcmElement *elem,  DcmXfer& oxfer,
            break;
         case EVR_ST:
         case EVR_LT:
-           {   
+           {
              OFString vrAndValue("lt");
              vrAndValue += value;
              OFIStringStream input((char*)(vrAndValue.c_str()));
@@ -555,7 +559,7 @@ int checkelem(ostream & out, DcmElement *elem,  DcmXfer& oxfer,
            }
            break;
         case EVR_PN:
-           {   
+           {
              OFString vrAndValue("pn");
              vrAndValue += value;
              OFIStringStream input((char*)(vrAndValue.c_str()));
@@ -568,7 +572,7 @@ int checkelem(ostream & out, DcmElement *elem,  DcmXfer& oxfer,
            }
            break;
         case EVR_TM:
-           {   
+           {
              OFString vrAndValue("tm");
              vrAndValue += value;
              OFIStringStream input((char*)(vrAndValue.c_str()));
@@ -587,7 +591,7 @@ int checkelem(ostream & out, DcmElement *elem,  DcmXfer& oxfer,
            }
            break;
         case EVR_UI:
-           {   
+           {
              OFString vrAndValue("ui");
              vrAndValue += value;
              OFIStringStream input((char*)(vrAndValue.c_str()));
@@ -602,18 +606,18 @@ int checkelem(ostream & out, DcmElement *elem,  DcmXfer& oxfer,
         default:
            break;
         }
-        
+
       } //end of if (isaStringVR(vr))
 
-    }    
+    }
     dcmDataDict.unlock();
     return 0;
 }
 
-int checkitem(ostream & out, DcmItem *item,  DcmXfer& oxfer, 
+int checkitem(ostream & out, DcmItem *item,  DcmXfer& oxfer,
         DcmStack& stack, OFBool showFullData, int& dderrors, OFBool verbose)
 {
-    
+
     if (item == NULL) {
         return 0;
     }
@@ -624,11 +628,11 @@ int checkitem(ostream & out, DcmItem *item,  DcmXfer& oxfer,
     unsigned long count = item->card();
     for (unsigned long i=0; i<count; i++) {
         DcmElement *elem = item->getElement(i);
-        
+
         stack.push(elem);
         checkelem(out, elem, oxfer, stack, showFullData, dderrors, verbose);
         stack.pop();
-        
+
         if (elem->ident() == EVR_SQ) {
             DcmSequenceOfItems *seq = (DcmSequenceOfItems*)elem;
             unsigned long nitems = seq->card();
@@ -638,19 +642,19 @@ int checkitem(ostream & out, DcmItem *item,  DcmXfer& oxfer,
                 checkitem(out, seq->getItem(j), oxfer, stack, showFullData, dderrors, verbose);
                 stack.pop();
             }
-        }    
+        }
     }
     return 0;
 }
 
 int dcmchk(
-  ostream & out, 
-  const char* ifname, 
-  OFBool isDataset, 
-  E_TransferSyntax xfer, 
-  OFBool showFullData, 
+  ostream & out,
+  const char* ifname,
+  OFBool isDataset,
+  E_TransferSyntax xfer,
+  OFBool showFullData,
   OFBool loadAllDataInMemory,
-  int& dderrors, 
+  int& dderrors,
   OFBool verbose)
 {
     DcmFileFormat *ds = new DcmFileFormat();
@@ -665,7 +669,7 @@ int dcmchk(
         ds->loadAllDataIntoMemory();
         if (ds->error() != EC_Normal)
         {
-           out << "Error: " << ds->error().text() 
+           out << "Error: " << ds->error().text()
                 << " reading file: " << ifname << endl;
             return 1;
         }
@@ -673,7 +677,7 @@ int dcmchk(
 
     DcmStack stack;
     DcmXfer oxfer(META_HEADER_DEFAULT_TRANSFERSYNTAX);
-        
+
     // oxfer = META_HEADER_DEFAULT_TRANSFERSYNTAX;
 
     DcmMetaInfo *mi = ds->getMetaInfo();
@@ -685,7 +689,7 @@ int dcmchk(
 
     oxfer = ds->getDataset()->getOriginalXfer();
     checkitem(out, ds->getDataset(),  oxfer, stack, showFullData, dderrors, verbose);
-    
+
     delete ds;
 
     return 0;
@@ -693,7 +697,7 @@ int dcmchk(
 
 //*********************************************************
 
-static void 
+static void
 printAttribute(ostream& out, DcmItem* dset,
                const DcmTagKey& key)
 {
@@ -707,14 +711,14 @@ printAttribute(ostream& out, DcmItem* dset,
 }
 
 static OFBool
-chkType1AttributeExistance(ostream& out, DcmItem* dset, 
+chkType1AttributeExistance(ostream& out, DcmItem* dset,
                       const DcmTagKey& key)
 {
     OFBool found = OFTrue;
     if (!dset->tagExistsWithValue(key)) {
         DcmTag t(key);
         out << MSGe_missingAtt << endl
-            << "   Affected attribute: " << t.getXTag() 
+            << "   Affected attribute: " << t.getXTag()
             << " " << t.getTagName() << endl;
         out << endl;
         found = OFFalse;
@@ -747,7 +751,7 @@ int dcmchkMetaHeader(ostream& out, DcmMetaInfo* meta, DcmDataset* dset)
     /*
     ** Check the meta-header contents
     */
-    
+
     // examine the FileMetaInformationVersion
     DcmTagKey fmiv(DCM_FileMetaInformationVersion);
     if (chkType1AttributeExistance(out, meta, fmiv)) {
@@ -796,7 +800,7 @@ int dcmchkMetaHeader(ostream& out, DcmMetaInfo* meta, DcmDataset* dset)
             printAttribute(out, meta, msscuid);
             out << endl;
             nErrs++;
-        }           
+        }
     } else {
         nErrs++;
     }
@@ -850,7 +854,7 @@ int dcmchkMetaHeader(ostream& out, DcmMetaInfo* meta, DcmDataset* dset)
                     << "   Dataset not encoded using specified transfer syntax"
                     << endl << "   Affected attribute: " << endl << "      ";
                 printAttribute(out, meta, tsuid);
-                out << "   Dataset encoded using: " << used.getXferName() 
+                out << "   Dataset encoded using: " << used.getXferName()
                     << endl << endl;
                 nErrs++;
             }
@@ -872,7 +876,7 @@ int dcmchkMetaHeader(ostream& out, DcmMetaInfo* meta, DcmDataset* dset)
 
         if (len != expectedLength) {
             out << MSGe_wrongAtt << endl
-                << "   Invalid meta-header group length (expected: " 
+                << "   Invalid meta-header group length (expected: "
                 <<  expectedLength  << ")"
                 << endl << "   Affected attribute: " << endl << "      ";
             printAttribute(out, meta, gltag);
@@ -887,7 +891,7 @@ int dcmchkMetaHeader(ostream& out, DcmMetaInfo* meta, DcmDataset* dset)
 }
 
 int checkfile(const char *filename, OFBool verbose, ostream& out, OFConsole *outconsole, OFBool opt_debug)
-{    
+{
     DcmFileFormat *dfile = new DcmFileFormat();
     if (dfile == NULL)
     {
@@ -903,12 +907,12 @@ int checkfile(const char *filename, OFBool verbose, ostream& out, OFConsole *out
       return -1;
     }
 
-    int numberOfErrors = 0;          
+    int numberOfErrors = 0;
     OFBool test_passed = OFTrue;
-    
+
     DcmDataset *DataSet = dfile->getDataset();
     DcmMetaInfo *MetaInfo = dfile->getMetaInfo();
-    
+
     if (verbose)
     {
       out << "=========================================================" << endl;
@@ -918,7 +922,7 @@ int checkfile(const char *filename, OFBool verbose, ostream& out, OFConsole *out
     {
       out << "=========================================================" << endl << endl;
     } else out << endl;
-    
+
     if (MetaInfo)
     {
       if (verbose)
@@ -929,7 +933,7 @@ int checkfile(const char *filename, OFBool verbose, ostream& out, OFConsole *out
       }
       numberOfErrors += dcmchkMetaHeader(out, MetaInfo, DataSet);
     }
-        
+
     if (verbose)
     {
       out << "-------------------------------------------------------------" << endl
@@ -937,7 +941,7 @@ int checkfile(const char *filename, OFBool verbose, ostream& out, OFConsole *out
           << "-------------------------------------------------------------" << endl << endl;
     }
 
-    dcmchk(out, opt_filename, OFFalse, EXS_Unknown, 
+    dcmchk(out, opt_filename, OFFalse, EXS_Unknown,
           OFFalse /* showFullData */, OFTrue /* loadAllDataInMemory */,
           numberOfErrors, verbose);
 
@@ -967,7 +971,7 @@ int checkfile(const char *filename, OFBool verbose, ostream& out, OFConsole *out
         out << endl;
       }
     } else {
-      if (verbose) out << "Not a Grayscale Softcopy Presentation State, skipping pass 3." << endl <<endl;      
+      if (verbose) out << "Not a Grayscale Softcopy Presentation State, skipping pass 3." << endl <<endl;
     }
     if (numberOfErrors > 0) test_passed = OFFalse;
 
@@ -1019,6 +1023,7 @@ int main(int argc, char *argv[])
 
     cmd.addGroup("general options:");
      cmd.addOption("--help",        "-h",    "print this help text and exit");
+     cmd.addOption("--version",              "print version information and exit", OFTrue /* exclusive */);
      cmd.addOption("--verbose",     "-v",    "verbose mode, print actions");
      cmd.addOption("--debug",       "-d",    "debug mode, print debug information");
 
@@ -1029,6 +1034,23 @@ int main(int argc, char *argv[])
     prepareCmdLineArgs(argc, argv, OFFIS_CONSOLE_APPLICATION);
     if (app.parseCommandLine(cmd, argc, argv, OFCommandLine::ExpandWildcards))
     {
+      /* check exclusive options first */
+      if (cmd.getParamCount() == 0)
+      {
+        if (cmd.findOption("--version"))
+        {
+            app.printHeader(OFTrue /*print host identifier*/);          // uses ofConsole.lockCerr()
+            CERR << endl << "External libraries used:";
+#ifdef WITH_ZLIB
+            CERR << endl << "- ZLIB, Version " << zlibVersion() << endl;
+#else
+            CERR << " none" << endl;
+#endif
+            return 0;
+         }
+      }
+
+      /* options */
       if (cmd.findOption("--verbose")) opt_verbose = OFTrue;
       if (cmd.findOption("--debug"))   opt_debugMode = 3;
       if (cmd.findOption("--logfile"))
@@ -1043,7 +1065,7 @@ int main(int argc, char *argv[])
       ofstream *newstream = new ofstream(opt_logfilename);
       if (newstream && (newstream->good()))
       {
-        logstream=newstream; 
+        logstream=newstream;
         ofConsole.setCout(logstream);
         ofConsole.join();
       }
@@ -1061,17 +1083,22 @@ int main(int argc, char *argv[])
     }
 
     closeLog();
-          
+
 #ifdef DEBUG
     dcmDataDict.clear();  /* useful for debugging with dmalloc */
-#endif         
+#endif
     return 0;
-}      
-       
-/*     
+}
+
+/*
  * CVS/RCS Log:
  * $Log: dcmpschk.cc,v $
- * Revision 1.9  2002-08-20 12:21:53  meichel
+ * Revision 1.10  2002-09-23 18:26:07  joergr
+ * Added new command line option "--version" which prints the name and version
+ * number of external libraries used (incl. preparation for future support of
+ * 'config.guess' host identifiers).
+ *
+ * Revision 1.9  2002/08/20 12:21:53  meichel
  * Adapted code to new loadFile and saveFile methods, thus removing direct
  *   use of the DICOM stream classes.
  *
@@ -1106,5 +1133,5 @@ int main(int argc, char *argv[])
  * Revision 1.1  2000/06/21 15:40:32  meichel
  * Added initial version of Presentation State Checker.
  *
- *     
- */    
+ *
+ */

@@ -3,23 +3,26 @@ NAME
 
    dcmprscp
 
+
 SYNOPSIS
 
    dcmprscp [options]
 
+
 SUMMARY
 
-The dcmprscp utility implements the DICOM Basic Grayscale Print Management 
-Service Class as SCP. It also supports the optional Presentation LUT SOP 
+The dcmprscp utility implements the DICOM Basic Grayscale Print Management
+Service Class as SCP. It also supports the optional Presentation LUT SOP
 Class. The utility is intended for use within the DICOMscope viewer.
 
-The dcmprscp utility accepts print jobs from a remote Print SCU. It does not 
-create real hardcopies but stores print jobs in the local DICOMscope 
-database as a set of Stored Print objects (one per page) and Hardcopy 
-Grayscale images (one per film box N-SET). The DICOMscope application allows 
-to load a Stored Print object created by dcmprscp and to render a screen 
-preview of the hardcopy. The dcmprscp utility reads the characteristics of 
-the printer to be emulated from the configuration file. 
+The dcmprscp utility accepts print jobs from a remote Print SCU. It does not
+create real hardcopies but stores print jobs in the local DICOMscope
+database as a set of Stored Print objects (one per page) and Hardcopy
+Grayscale images (one per film box N-SET). The DICOMscope application allows
+to load a Stored Print object created by dcmprscp and to render a screen
+preview of the hardcopy. The dcmprscp utility reads the characteristics of
+the printer to be emulated from the configuration file.
+
 
 USAGE
 
@@ -28,6 +31,7 @@ usage: dcmprscp [options]
 
 general options:
   -h  --help          print this help text and exit
+      --version       print version information and exit
   -v  --verbose       verbose mode, print actions
   -d  --debug         debug mode, print debug information
 processing options:
@@ -45,8 +49,8 @@ specified in the DCMDICTPATH environment variable.  By default, if
 the DCMDICTPATH environment variable is not set, the file
 /usr/local/dicom/lib/dicom.dic will be loaded.  The default behaviour
 should be preferred and the DCMDICTPATH environment variable only used
-when alternative data dictionaries are required.  The DCMDICTPATH 
+when alternative data dictionaries are required.  The DCMDICTPATH
 environment variable has the same format as the shell PATH variable in
 that a colon (":") separates entries.  The data dictionary code will
-attempt to load each file specified in the DCMDICTPATH environment 
+attempt to load each file specified in the DCMDICTPATH environment
 variable.  It is an error if no data dictionary can be loaded.

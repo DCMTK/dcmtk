@@ -3,21 +3,24 @@ NAME
 
    dcmpsrcv
 
+
 SYNOPSIS
 
    dcmpsrcv [options] config-file
 
+
 SUMMARY
 
-The dcmpsrcv application is invoked by the Grayscale Softcopy Presentation 
-State Viewer and is not intended to be invoked manually. The application 
-reads the common configuration file which is shared between the different 
-components of the viewer and opens a TCP/IP socket on which incoming 
-association requests are accepted. The application sparks a separate 
-process for each DICOM connection. It supports the same storage SOP classes 
-as the storescp utility as SCP, but does not support encapsulated transfer 
-syntaxes. Incoming images are stored in the common viewer database. See the 
+The dcmpsrcv application is invoked by the Grayscale Softcopy Presentation
+State Viewer and is not intended to be invoked manually. The application
+reads the common configuration file which is shared between the different
+components of the viewer and opens a TCP/IP socket on which incoming
+association requests are accepted. The application sparks a separate
+process for each DICOM connection. It supports the same storage SOP classes
+as the storescp utility as SCP, but does not support encapsulated transfer
+syntaxes. Incoming images are stored in the common viewer database. See the
 full conformance statement for further details.
+
 
 USAGE
 
@@ -29,9 +32,11 @@ parameters:
 
 general options:
   -h    --help       print this help text and exit
+        --version    print version information and exit
   -v    --verbose    verbose mode, print processing details
   -d    --debug      debug mode, print debug information
   -t    --terminate  terminate all running receivers
+
 
 ENVIRONMENT
 
@@ -40,9 +45,8 @@ specified in the DCMDICTPATH environment variable.  By default, if
 the DCMDICTPATH environment variable is not set, the file
 /usr/local/dicom/lib/dicom.dic will be loaded.  The default behaviour
 should be preferred and the DCMDICTPATH environment variable only used
-when alternative data dictionaries are required.  The DCMDICTPATH 
+when alternative data dictionaries are required.  The DCMDICTPATH
 environment variable has the same format as the shell PATH variable in
 that a colon (":") separates entries.  The data dictionary code will
-attempt to load each file specified in the DCMDICTPATH environment 
+attempt to load each file specified in the DCMDICTPATH environment
 variable.  It is an error if no data dictionary can be loaded.
-

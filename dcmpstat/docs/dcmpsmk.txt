@@ -3,20 +3,23 @@ NAME
 
    dcmpsmk
 
+
 SYNOPSIS
 
    dcmpsmk [options] dcmfile-in dcmfile-out
 
+
 SUMMARY
 
-The dcmpsmk utility reads a DICOM image file and creates a grayscale 
-softcopy presentation state object according to Supplement 33. The 
-presentation state object is written back to file. A number of command line 
-options allow to specify how certain constructs that might be present in 
-the image file should be referenced or activated in the presentation state. 
-The newly created presentation state references the source image and 
-contains values that should allow for a "reasonable" display of the image 
+The dcmpsmk utility reads a DICOM image file and creates a grayscale
+softcopy presentation state object according to Supplement 33. The
+presentation state object is written back to file. A number of command line
+options allow to specify how certain constructs that might be present in
+the image file should be referenced or activated in the presentation state.
+The newly created presentation state references the source image and
+contains values that should allow for a "reasonable" display of the image
 when rendered under control of the presentation state.
+
 
 USAGE
 
@@ -29,6 +32,7 @@ parameters:
 
 general options:
   -h     --help                 print this help text and exit
+         --version              print version information and exit
   -v     --verbose              verbose mode, print processing details
   -d     --debug                debug mode, print debug information
 input options:
@@ -84,9 +88,8 @@ specified in the DCMDICTPATH environment variable.  By default, if
 the DCMDICTPATH environment variable is not set, the file
 /usr/local/dicom/lib/dicom.dic will be loaded.  The default behaviour
 should be preferred and the DCMDICTPATH environment variable only used
-when alternative data dictionaries are required.  The DCMDICTPATH 
+when alternative data dictionaries are required.  The DCMDICTPATH
 environment variable has the same format as the shell PATH variable in
 that a colon (":") separates entries.  The data dictionary code will
-attempt to load each file specified in the DCMDICTPATH environment 
+attempt to load each file specified in the DCMDICTPATH environment
 variable.  It is an error if no data dictionary can be loaded.
-

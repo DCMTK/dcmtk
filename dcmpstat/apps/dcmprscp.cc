@@ -21,16 +21,16 @@
  *
  *  Purpose: Presentation State Viewer - Network Receive Component (Store SCP)
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-06-14 10:44:17 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2002-09-23 18:26:06 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmpstat/apps/dcmprscp.cc,v $
- *  CVS/RCS Revision: $Revision: 1.10 $
+ *  CVS/RCS Revision: $Revision: 1.11 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
  *
  */
- 
+
 #include "osconfig.h"    /* make sure OS specific configuration is included first */
 
 #ifdef HAVE_GUSI_H
@@ -39,7 +39,7 @@
 
 BEGIN_EXTERN_C
 #ifdef HAVE_FCNTL_H
-#include <fcntl.h>    /* for O_RDONLY */
+#include <fcntl.h>       /* for O_RDONLY */
 #endif
 END_EXTERN_C
 
@@ -54,6 +54,10 @@ END_EXTERN_C
 #include "ofconapp.h"
 #include "dvpsprt.h"
 #include "dvpshlp.h"
+
+#ifdef WITH_ZLIB
+#include "zlib.h"        /* for zlibVersion() */
+#endif
 
 #define OFFIS_CONSOLE_APPLICATION "dcmprscp"
 
@@ -79,8 +83,8 @@ static OFBool         deleteUnusedLogs      = OFTrue;
 static int errorCond(OFCondition cond, const char *message)
 {
   int result = (cond.bad());
-  if (result) 
-  {  
+  if (result)
+  {
     CERR << message << endl;
     DimseCondition::dump(cond);
   }
@@ -160,6 +164,7 @@ int main(int argc, char *argv[])
 
     cmd.addGroup("general options:");
      cmd.addOption("--help",        "-h",    "print this help text and exit");
+     cmd.addOption("--version",              "print version information and exit", OFTrue /* exclusive */);
      cmd.addOption("--verbose",     "-v",    "verbose mode, print actions");
      cmd.addOption("--debug",       "-d",    "debug mode, print debug information");
 
@@ -175,6 +180,23 @@ int main(int argc, char *argv[])
     prepareCmdLineArgs(argc, argv, OFFIS_CONSOLE_APPLICATION);
     if (app.parseCommandLine(cmd, argc, argv, OFCommandLine::ExpandWildcards))
     {
+      /* check exclusive options first */
+      if (cmd.getParamCount() == 0)
+      {
+        if (cmd.findOption("--version"))
+        {
+            app.printHeader(OFTrue /*print host identifier*/);          // uses ofConsole.lockCerr()
+            CERR << endl << "External libraries used:";
+#ifdef WITH_ZLIB
+            CERR << endl << "- ZLIB, Version " << zlibVersion() << endl;
+#else
+            CERR << " none" << endl;
+#endif
+            return 0;
+         }
+      }
+
+      /* options */
       if (cmd.findOption("--verbose")) opt_verbose = OFTrue;
       if (cmd.findOption("--debug"))   opt_debugMode = 3;
       if (cmd.findOption("--dump"))    opt_dumpMode = OFTrue;
@@ -222,7 +244,7 @@ int main(int argc, char *argv[])
     OFString aString;
     unsigned long logcounter = 0;
     char logcounterbuf[20];
-    
+
     if (dvi.getLogFolder() != NULL)
         logfileprefix = dvi.getLogFolder();
     else
@@ -237,17 +259,17 @@ int main(int argc, char *argv[])
     logfileprefix += "_";
     DVPSHelper::currentTime(aString);
     logfileprefix += aString;
-    
+
     OFString logfilename;
     if (opt_logFile)
     {
       logfilename = logfileprefix;
       logfilename += ".log";
-    
+
       ofstream *newstream = new ofstream(logfilename.c_str());
       if (newstream && (newstream->good()))
       {
-        logstream=newstream; 
+        logstream=newstream;
         ofConsole.setCout(logstream);
         ofConsole.join();
       }
@@ -261,14 +283,14 @@ int main(int argc, char *argv[])
     *logstream << rcsid << endl << OFDateTime::getCurrentDateTime() << endl << "started" << endl;
 
     dvi.setLog(&ofConsole, opt_verbose, opt_debugMode);
-    
+
     /* make sure data dictionary is loaded */
     if (!dcmDataDict.isDictionaryLoaded())
         *logstream << "Warning: no data dictionary loaded, check environment variable: " << DCM_DICT_ENVIRONMENT_VARIABLE << endl;
 
     /* check if we can get access to the database */
     const char *dbfolder = dvi.getDatabaseFolder();
-    DB_Handle *dbhandle = NULL; 
+    DB_Handle *dbhandle = NULL;
 
     if (opt_verbose)
     {
@@ -301,7 +323,7 @@ int main(int argc, char *argv[])
     T_ASC_Network *net = NULL; /* the DICOM network and listen port */
     OFBool finished = OFFalse;
     int connected = 0;
-    
+
     /* open listen socket */
     OFCondition cond = ASC_initializeNetwork(NET_ACCEPTOR, targetPort, 10, &net);
     if (errorCond(cond, "Error initialising network:")) return 1;
@@ -323,10 +345,10 @@ int main(int argc, char *argv[])
 
     while (!finished)
     {
-      DVPSPrintSCP printSCP(dvi, opt_printer); // use new print SCP object for each association     
-      
+      DVPSPrintSCP printSCP(dvi, opt_printer); // use new print SCP object for each association
+
       printSCP.setLog(&ofConsole, opt_verbose, opt_debugMode, opt_dumpMode);
-      
+
       if (opt_binaryLog)
       {
         aString = logfileprefix;
@@ -336,7 +358,7 @@ int main(int argc, char *argv[])
         aString += ".dcm";
         printSCP.setDimseLogPath(aString.c_str());
       }
-      
+
       connected = 0;
       while (!connected)
       {
@@ -360,7 +382,7 @@ int main(int argc, char *argv[])
       }
     } // finished
     cleanChildren();
-    
+
 #ifdef HAVE_WINSOCK_H
     WSACleanup();
 #endif
@@ -370,20 +392,25 @@ int main(int argc, char *argv[])
 #endif
 
     closeLog();
-    
+
     if (deleteUnusedLogs && (! haveHandledClients))
     {
       // log unused, attempt to delete file
-      if (logfilename.size() > 0) unlink(logfilename.c_str());      
+      if (logfilename.size() > 0) unlink(logfilename.c_str());
     }
-        
+
     return 0;
 }
 
 /*
  * CVS/RCS Log:
  * $Log: dcmprscp.cc,v $
- * Revision 1.10  2002-06-14 10:44:17  meichel
+ * Revision 1.11  2002-09-23 18:26:06  joergr
+ * Added new command line option "--version" which prints the name and version
+ * number of external libraries used (incl. preparation for future support of
+ * 'config.guess' host identifiers).
+ *
+ * Revision 1.10  2002/06/14 10:44:17  meichel
  * Adapted log file handling to ofConsole singleton
  *
  * Revision 1.9  2002/04/16 14:01:26  joergr

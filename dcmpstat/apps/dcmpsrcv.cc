@@ -21,16 +21,16 @@
  *
  *  Purpose: Presentation State Viewer - Network Receive Component (Store SCP)
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-08-20 12:21:54 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2002-09-23 18:26:09 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmpstat/apps/dcmpsrcv.cc,v $
- *  CVS/RCS Revision: $Revision: 1.38 $
+ *  CVS/RCS Revision: $Revision: 1.39 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
  *
  */
- 
+
 #include "osconfig.h"    /* make sure OS specific configuration is included first */
 
 #ifdef HAVE_GUSI_H
@@ -39,7 +39,7 @@
 
 BEGIN_EXTERN_C
 #ifdef HAVE_FCNTL_H
-#include <fcntl.h>    /* for O_RDONLY */
+#include <fcntl.h>       /* for O_RDONLY */
 #endif
 #ifdef HAVE_SYS_TYPES_H
 #include <sys/types.h>   /* required for sys/stat.h */
@@ -49,10 +49,10 @@ BEGIN_EXTERN_C
 #endif
 END_EXTERN_C
 
-#include "dvpsdef.h"  /* for constants */
-#include "dvpscf.h"   /* for class DVConfiguration */
-#include "ofbmanip.h" /* for OFBitmanipTemplate */
-#include "dcuid.h"    /* for dcmtk version name */
+#include "dvpsdef.h"     /* for constants */
+#include "dvpscf.h"      /* for class DVConfiguration */
+#include "ofbmanip.h"    /* for OFBitmanipTemplate */
+#include "dcuid.h"       /* for dcmtk version name */
 #include "diutil.h"
 #include "cmdlnarg.h"
 #include "ofconapp.h"
@@ -61,12 +61,17 @@ END_EXTERN_C
 #include "dcmlayer.h"
 #include "dcfilefo.h"
 #include "dvpstat.h"
+
 #ifdef WITH_OPENSSL
 #include "tlstrans.h"
 #include "tlslayer.h"
 #endif
 
 #include "ofstream.h"
+
+#ifdef WITH_ZLIB
+#include "zlib.h"        /* for zlibVersion() */
+#endif
 
 #define OFFIS_CONSOLE_APPLICATION "dcmpsrcv"
 
@@ -97,10 +102,10 @@ enum refuseReason
 static int errorCond(OFCondition cond, const char *message)
 {
   int result = (cond.bad());
-  if (result) 
-  {  
+  if (result)
+  {
     CERR << message << endl;
-    DimseCondition::dump(cond); 
+    DimseCondition::dump(cond);
   }
   return result;
 }
@@ -195,21 +200,21 @@ refuseAssociation(T_ASC_Association *assoc, refuseReason reason)
 }
 
 static associationType negotiateAssociation(
-  T_ASC_Network *net, 
-  T_ASC_Association **assoc, 
+  T_ASC_Network *net,
+  T_ASC_Association **assoc,
   const char *aetitle,
-  unsigned long maxPDU, 
+  unsigned long maxPDU,
   OFBool opt_networkImplicitVROnly,
   OFBool opt_verbose,
   OFBool useTLS)
 {
     associationType result = assoc_success;
-    char buf[BUFSIZ];    
+    char buf[BUFSIZ];
     OFBool dropAssoc = OFFalse;
-    
+
     OFCondition cond = ASC_receiveAssociation(net, assoc, maxPDU, NULL, NULL, useTLS);
 
-    if (errorCond(cond, "Failed to receive association:")) 
+    if (errorCond(cond, "Failed to receive association:"))
     {
       dropAssoc = OFTrue;
       result = assoc_error;
@@ -220,20 +225,20 @@ static associationType negotiateAssociation(
         OFOStringStream out;
         out << "Unable to Receive DIMSE Association Request:" << endl << cond.text() << endl << OFStringStream_ends;
         OFSTRINGSTREAM_GETSTR(out, theString)
-        if (useTLS) 
+        if (useTLS)
           messageClient->notifyReceivedEncryptedDICOMConnection(DVPSIPCMessage::statusError, theString);
           else messageClient->notifyReceivedUnencryptedDICOMConnection(DVPSIPCMessage::statusError, theString);
         OFSTRINGSTREAM_FREESTR(theString)
       }
     }
-    else 
+    else
     {
 
       if (opt_verbose)
       {
           time_t t = time(NULL);
           CERR << "Association Received (" << (*assoc)->params->DULparams.callingPresentationAddress
-             << ":" << (*assoc)->params->DULparams.callingAPTitle << " -> " 
+             << ":" << (*assoc)->params->DULparams.callingAPTitle << " -> "
              << (*assoc)->params->DULparams.calledAPTitle
              << ") " << ctime(&t);
       }
@@ -259,7 +264,7 @@ static associationType negotiateAssociation(
             ASC_dumpConnectionParameters(*assoc, out);
             out << OFStringStream_ends;
             OFSTRINGSTREAM_GETSTR(out, theString)
-            if (useTLS) 
+            if (useTLS)
               messageClient->notifyReceivedEncryptedDICOMConnection(DVPSIPCMessage::statusError, theString);
               else messageClient->notifyReceivedUnencryptedDICOMConnection(DVPSIPCMessage::statusError, theString);
             OFSTRINGSTREAM_FREESTR(theString)
@@ -267,7 +272,7 @@ static associationType negotiateAssociation(
           dropAssoc = OFTrue;
           result = assoc_error;
       } else {
-        
+
         const char *nonStorageSyntaxes[] =
         {
           UID_VerificationSOPClass,
@@ -297,21 +302,21 @@ static associationType negotiateAssociation(
 
         /*  accept any of the non-storage syntaxes */
         cond = ASC_acceptContextsWithPreferredTransferSyntaxes(
-          (*assoc)->params, 
+          (*assoc)->params,
           (const char**)nonStorageSyntaxes, DIM_OF(nonStorageSyntaxes),
           (const char**)transferSyntaxes, numTransferSyntaxes);
         errorCond(cond, "Cannot accept presentation contexts:");
 
         /*  accept any of the storage syntaxes */
         cond = ASC_acceptContextsWithPreferredTransferSyntaxes(
-          (*assoc)->params, 
+          (*assoc)->params,
           dcmStorageSOPClassUIDs, numberOfDcmStorageSOPClassUIDs,
           (const char**)transferSyntaxes, numTransferSyntaxes);
         errorCond(cond, "Cannot accept presentation contexts:");
       }
 
-      /* check if we have negotiated the private "shutdown" SOP Class */      
-      if (0 != ASC_findAcceptedPresentationContextID(*assoc, UID_PrivateShutdownSOPClass)) 
+      /* check if we have negotiated the private "shutdown" SOP Class */
+      if (0 != ASC_findAcceptedPresentationContextID(*assoc, UID_PrivateShutdownSOPClass))
       {
       	// we don't notify the IPC server about this incoming connection
         cond = refuseAssociation(*assoc, ref_NoReason);
@@ -319,7 +324,7 @@ static associationType negotiateAssociation(
         result = assoc_terminate;
       }
     } /* receiveAssociation successful */
-    
+
     if (dropAssoc) dropAssociation(assoc);
     return result;
 }
@@ -332,13 +337,13 @@ public:
   DcmDataset *statusDetail;
   const char *fileName;
   DcmFileFormat *dcmff;
-  
+
   StoreContext(DB_Handle *handle, DIC_US aStatus, const char *fname, DcmFileFormat *ff)
   : dbHandle(handle), status(aStatus), statusDetail(NULL), fileName(fname), dcmff(ff)
   {}
-  
+
   ~StoreContext() {}
-  
+
 private:
   /* unimplemented */ StoreContext(const StoreContext&);
   /* unimplemented */ StoreContext& operator=(const StoreContext&);
@@ -367,12 +372,12 @@ checkRequestAgainstDataset(
     /* which SOP class and SOP instance ? */
     DIC_UI sopClass;
     DIC_UI sopInstance;
-    
+
     if (!DU_findSOPClassAndInstanceInDataSet(dataSet, sopClass, sopInstance))
     {
       CERR << "Bad image file: " << fname << endl;
       rsp->DimseStatus = STATUS_STORE_Error_CannotUnderstand;
-    } 
+    }
     else if (strcmp(sopClass, req->AffectedSOPClassUID) != 0)
     {
       rsp->DimseStatus = STATUS_STORE_Error_DataSetDoesNotMatchSOPClass;
@@ -394,7 +399,7 @@ checkRequestAgainstDataset(
     return;
 }
 
-static void 
+static void
 saveImageToDB(
     StoreContext *context,
     T_DIMSE_C_StoreRQ *req,             /* original store request */
@@ -406,15 +411,15 @@ saveImageToDB(
     DB_Status dbStatus;
     dbStatus.status = STATUS_Success;
     dbStatus.statusDetail = NULL;
-    
-    /* Store image */    
+
+    /* Store image */
     if (context->status == STATUS_Success)
     {
       if (DB_storeRequest(context->dbHandle,
           req->AffectedSOPClassUID, req->AffectedSOPInstanceUID,
           imageFileName, &dbStatus).bad())
       {
-        CERR << "storeSCP: Database: DB_storeRequest Failed (" 
+        CERR << "storeSCP: Database: DB_storeRequest Failed ("
              << DU_cstoreStatusString(dbStatus.status) << ")" << endl;
       }
     }
@@ -433,10 +438,10 @@ saveImageToDB(
 static void
 storeProgressCallback(
     /* in */
-    void *callbackData, 
+    void *callbackData,
     T_DIMSE_StoreProgress *progress,    /* progress state */
     T_DIMSE_C_StoreRQ *req,             /* original store request */
-    char *imageFileName,                /* being received into */ 
+    char *imageFileName,                /* being received into */
     DcmDataset **imageDataSet,          /* being received into */
     /* out */
     T_DIMSE_C_StoreRSP *rsp,            /* final store response */
@@ -459,13 +464,13 @@ storeProgressCallback(
     {
       if ((imageDataSet)&&(*imageDataSet))
       {
-        OFCondition cond = context->dcmff->saveFile(context->fileName, EXS_LittleEndianExplicit, 
+        OFCondition cond = context->dcmff->saveFile(context->fileName, EXS_LittleEndianExplicit,
           EET_ExplicitLength, EGL_recalcGL);
         if (! cond.good())
         {
           CERR << "Cannot write image file: " << context->fileName << endl;
           rsp->DimseStatus = STATUS_STORE_Refused_OutOfResources;
-        }        
+        }
       }
       saveImageToDB(context, req, context->fileName, rsp, statusDetail);
     }
@@ -482,47 +487,47 @@ static OFCondition echoSCP(T_ASC_Association *assoc, T_DIMSE_C_EchoRQ *req, T_AS
 
 
 static OFCondition storeSCP(
-  T_ASC_Association *assoc, 
+  T_ASC_Association *assoc,
   T_DIMSE_C_StoreRQ *request,
   T_ASC_PresentationContextID presId,
   const char *dbfolder,
-  OFBool opt_verbose, 
+  OFBool opt_verbose,
   OFBool opt_bitpreserving)
 {
-    if (opt_verbose) 
+    if (opt_verbose)
     {
       fprintf(stderr, "Received Store SCP: ");
       DIMSE_printCStoreRQ(stderr, request);
       fflush(stderr);
     }
-    
+
     OFCondition cond = EC_Normal;
     char imageFileName[MAXPATHLEN+1];
     DcmFileFormat dcmff;
     DcmDataset *dset = dcmff.getDataset();
     DIC_US status = STATUS_Success;
     DB_Handle *dbhandle = NULL;
-        
+
     if (!dcmIsaStorageSOPClassUID(request->AffectedSOPClassUID))
     {
-        /* callback will send back sop class not supported status */ 
+        /* callback will send back sop class not supported status */
         status = STATUS_STORE_Refused_SOPClassNotSupported;
         /* must still receive data */
         strcpy(imageFileName, NULL_DEVICE_NAME);
-    } 
+    }
     else
     {
       if (DB_createHandle(dbfolder, PSTAT_MAXSTUDYCOUNT, PSTAT_STUDYSIZE, &dbhandle).bad())
       {
         CERR << "Unable to access database '" << dbfolder << "'" << endl;
         /* must still receive data */
-        strcpy(imageFileName, NULL_DEVICE_NAME);     
-        /* callback will send back out of resources status */ 
+        strcpy(imageFileName, NULL_DEVICE_NAME);
+        /* callback will send back out of resources status */
         status = STATUS_STORE_Refused_OutOfResources;
         DB_destroyHandle(&dbhandle);
         dbhandle = NULL;
-      } 
-      else 
+      }
+      else
       {
         if (DB_makeNewStoreFileName(dbhandle,
             request->AffectedSOPClassUID,
@@ -531,8 +536,8 @@ static OFCondition storeSCP(
         {
             CERR << "storeSCP: Database: DB_makeNewStoreFileName Failed" << endl;
             /* must still receive data */
-            strcpy(imageFileName, NULL_DEVICE_NAME); 
-            /* callback will send back out of resources status */ 
+            strcpy(imageFileName, NULL_DEVICE_NAME);
+            /* callback will send back out of resources status */
             status = STATUS_STORE_Refused_OutOfResources;
         }
       }
@@ -552,16 +557,16 @@ static OFCondition storeSCP(
 #endif
 
     /* we must still retrieve the data set even if some error has occured */
-    StoreContext context(dbhandle, status, imageFileName, &dcmff);    
-    
+    StoreContext context(dbhandle, status, imageFileName, &dcmff);
+
     if (opt_bitpreserving)
     {
         cond = DIMSE_storeProvider(assoc, presId, request, imageFileName, 1,
-                                   NULL, storeProgressCallback, 
+                                   NULL, storeProgressCallback,
                                    (void*)&context, DIMSE_BLOCKING, 0);
     } else {
         cond = DIMSE_storeProvider(assoc, presId, request, (char *)NULL, 1,
-                                   &dset, storeProgressCallback, 
+                                   &dset, storeProgressCallback,
                                    (void*)&context, DIMSE_BLOCKING, 0);
     }
     errorCond(cond, "Store SCP Failed:");
@@ -569,7 +574,7 @@ static OFCondition storeSCP(
     if (cond.bad() || (context.status != STATUS_Success))
     {
         /* remove file */
-        if (strcpy(imageFileName, NULL_DEVICE_NAME) != 0) 
+        if (strcpy(imageFileName, NULL_DEVICE_NAME) != 0)
         {
           if (opt_verbose) CERR << "Store SCP: Deleting Image File: " << imageFileName << endl;
           unlink(imageFileName);
@@ -582,7 +587,7 @@ static OFCondition storeSCP(
     dcmtk_flock(lockfd, LOCK_UN);
     close(lockfd);
 #endif
-    
+
     /* free DB handle */
     if (dbhandle) DB_destroyHandle(&dbhandle);
 
@@ -592,8 +597,8 @@ static OFCondition storeSCP(
       Uint32 operationStatus = DVPSIPCMessage::statusError;
       if (cond.good())
       {
-        if (context.status == STATUS_Success) operationStatus = DVPSIPCMessage::statusOK; 
-        else operationStatus = DVPSIPCMessage::statusWarning;        
+        if (context.status == STATUS_Success) operationStatus = DVPSIPCMessage::statusOK;
+        else operationStatus = DVPSIPCMessage::statusWarning;
       }
       const char *sopClassName = dcmFindNameOfUID(request->AffectedSOPClassUID);
       const char *successName = "failed";
@@ -607,12 +612,12 @@ static OFCondition storeSCP(
       if (operationStatus == DVPSIPCMessage::statusOK)
       {
         unsigned long fileSize = 0;
-        struct stat fileStat;      
-        if (0 == stat(imageFileName, &fileStat)) fileSize = fileStat.st_size;      
+        struct stat fileStat;
+        if (0 == stat(imageFileName, &fileStat)) fileSize = fileStat.st_size;
         out
           << "\tTarget file path       : " << imageFileName << endl
           << "\tTarget file size (kB)  : " << (fileSize+1023)/1024 << endl;
-      }      
+      }
 
       out << "\tDIMSE presentation ctx : " << (int)presId << endl
           << "\tDIMSE message ID       : " << request->MessageID << endl
@@ -650,7 +655,7 @@ static void handleClient(T_ASC_Association **assoc, const char *dbfolder, OFBool
       ASC_dumpConnectionParameters(*assoc, out);
       out << OFStringStream_ends;
       OFSTRINGSTREAM_GETSTR(out, theString)
-      if (useTLS) 
+      if (useTLS)
         messageClient->notifyReceivedEncryptedDICOMConnection(DVPSIPCMessage::statusOK, theString);
         else messageClient->notifyReceivedUnencryptedDICOMConnection(DVPSIPCMessage::statusOK, theString);
       OFSTRINGSTREAM_FREESTR(theString)
@@ -659,7 +664,7 @@ static void handleClient(T_ASC_Association **assoc, const char *dbfolder, OFBool
     T_DIMSE_Message msg;
     T_ASC_PresentationContextID presID;
     cond = EC_Normal;
-    
+
     /* do real work */
     while (cond.good())
     {
@@ -682,11 +687,11 @@ static void handleClient(T_ASC_Association **assoc, const char *dbfolder, OFBool
               CERR << "Cannot handle command: 0x" << hex << (unsigned)msg.CommandField << dec << endl;
               break;
           }
-      }      
+      }
       else
       {
          /* finish processing loop */
-      }      
+      }
     } /* while */
 
     /* close association */
@@ -696,12 +701,12 @@ static void handleClient(T_ASC_Association **assoc, const char *dbfolder, OFBool
       cond = ASC_acknowledgeRelease(*assoc);
       errorCond(cond, "Cannot release association:");
       if (messageClient) messageClient->notifyConnectionClosed(DVPSIPCMessage::statusOK);
-    } 
+    }
     else if (cond == DUL_PEERABORTEDASSOCIATION)
     {
       if (opt_verbose) CERR << "Association Aborted" << endl;
       if (messageClient) messageClient->notifyConnectionAborted(DVPSIPCMessage::statusWarning, "DIMSE association aborted by remote peer.");
-    } 
+    }
     else
     {
       errorCond(cond, "DIMSE Failure (aborting association):");
@@ -729,7 +734,7 @@ static void terminateAllReceivers(DVConfiguration& dvi, OFBool opt_verbose)
   T_ASC_Association *assoc=NULL;
   OFBool prepared = OFTrue;
   const char *xfer = UID_LittleEndianImplicitTransferSyntax;
-  
+
 #ifdef WITH_OPENSSL
   /* TLS directory */
   const char *current = NULL;
@@ -739,7 +744,7 @@ static void terminateAllReceivers(DVConfiguration& dvi, OFBool opt_verbose)
   /* key file format */
   int keyFileFormat = SSL_FILETYPE_PEM;
   if (! dvi.getTLSPEMFormat()) keyFileFormat = SSL_FILETYPE_ASN1;
-#endif  
+#endif
 
   if ((ASC_initializeNetwork(NET_REQUESTOR, 0, 1000, &net).bad())) return;
 
@@ -751,7 +756,7 @@ static void terminateAllReceivers(DVConfiguration& dvi, OFBool opt_verbose)
     recPort = dvi.getTargetPort(recID);
     recUseTLS = dvi.getTargetUseTLS(recID);
     recAETitle = dvi.getTargetAETitle(recID);
-    if (opt_verbose) 
+    if (opt_verbose)
     {
       CERR << "Receiver " << recID << " on port " << recPort;
       if (recUseTLS) CERR << " with TLS" << endl; else CERR << endl;
@@ -765,36 +770,36 @@ static void terminateAllReceivers(DVConfiguration& dvi, OFBool opt_verbose)
       tlsCertificateFile += PATH_SEPARATOR;
       current = dvi.getTargetCertificate(recID);
       if (current) tlsCertificateFile += current; else tlsCertificateFile += "sitecert.pem";
-    
-      /* private key file */    
+
+      /* private key file */
       OFString tlsPrivateKeyFile(tlsFolder);
       tlsPrivateKeyFile += PATH_SEPARATOR;
       current = dvi.getTargetPrivateKey(recID);
       if (current) tlsPrivateKeyFile += current; else tlsPrivateKeyFile += "sitekey.pem";
-    
+
       /* private key password */
       const char *tlsPrivateKeyPassword = dvi.getTargetPrivateKeyPassword(recID);
-    
+
       /* DH parameter file */
       OFString tlsDHParametersFile;
       current = dvi.getTargetDiffieHellmanParameters(recID);
-      if (current) 
+      if (current)
       {
         tlsDHParametersFile = tlsFolder;
         tlsDHParametersFile += PATH_SEPARATOR;
         tlsDHParametersFile += current;
       }
-    
+
       /* random seed file */
       OFString tlsRandomSeedFile(tlsFolder);
       tlsRandomSeedFile += PATH_SEPARATOR;
       current = dvi.getTargetRandomSeed(recID);
       if (current) tlsRandomSeedFile += current; else tlsRandomSeedFile += "siteseed.bin";
-    
+
       /* CA certificate directory */
       const char *tlsCACertificateFolder = dvi.getTLSCACertificateFolder();
       if (tlsCACertificateFolder==NULL) tlsCACertificateFolder = ".";
-    
+
       /* ciphersuites */
       OFString tlsCiphersuites(SSL3_TXT_RSA_DES_192_CBC3_SHA);
       Uint32 tlsNumberOfCiphersuites = dvi.getTargetNumberOfCipherSuites(recID);
@@ -815,13 +820,13 @@ static void terminateAllReceivers(DVConfiguration& dvi, OFBool opt_verbose)
       }
       DcmTLSTransportLayer *tLayer = new DcmTLSTransportLayer(DICOM_APPLICATION_REQUESTOR, tlsRandomSeedFile.c_str());
       if (tLayer)
-      {    
+      {
         if (tlsCACertificateFolder) tLayer->addTrustedCertificateDir(tlsCACertificateFolder, keyFileFormat);
         if (tlsDHParametersFile.size() > 0) tLayer->setTempDHParameters(tlsDHParametersFile.c_str());
         tLayer->setPrivateKeyPasswd(tlsPrivateKeyPassword); // never prompt on console
         tLayer->setPrivateKeyFile(tlsPrivateKeyFile.c_str(), keyFileFormat);
         tLayer->setCertificateFile(tlsCertificateFile.c_str(), keyFileFormat);
-        tLayer->setCipherSuites(tlsCiphersuites.c_str());    
+        tLayer->setCipherSuites(tlsCiphersuites.c_str());
         tLayer->setCertificateVerification(DCV_ignoreCertificate);
         ASC_setTransportLayer(net, tLayer, 1);
       }
@@ -851,7 +856,7 @@ static void terminateAllReceivers(DVConfiguration& dvi, OFBool opt_verbose)
     }
   } /* for loop */
 
-  ASC_dropNetwork(&net);      
+  ASC_dropNetwork(&net);
 #ifdef HAVE_WINSOCK_H
   WSACleanup();
 #endif
@@ -866,7 +871,7 @@ static void terminateAllReceivers(DVConfiguration& dvi, OFBool opt_verbose)
 
 int main(int argc, char *argv[])
 {
-        
+
 #ifdef HAVE_GUSI_H
     GUSISetup(GUSIwithSIOUXSockets);
     GUSISetup(GUSIwithInternetSockets);
@@ -878,7 +883,7 @@ int main(int argc, char *argv[])
     WORD winSockVersionNeeded = MAKEWORD( 1, 1 );
     WSAStartup(winSockVersionNeeded, &winSockData);
 #endif
-        
+
     int         opt_debugMode   = 0;                   /* default: no debug */
     int         opt_verbose     = 0;                   /* default: not verbose */
     int         opt_terminate   = 0;                   /* default: no terminate mode */
@@ -892,38 +897,62 @@ int main(int argc, char *argv[])
     OFCommandLine cmd;
     cmd.setOptionColumns(LONGCOL, SHORTCOL);
     cmd.setParamColumn(LONGCOL + SHORTCOL + 4);
-  
+
     cmd.addParam("config-file",  "configuration file to be read");
     cmd.addParam("receiver-id",  "identifier of receiver in config file", OFCmdParam::PM_Optional);
 
     cmd.addGroup("general options:", LONGCOL, SHORTCOL + 2);
      cmd.addOption("--help",                      "-h",        "print this help text and exit");
+     cmd.addOption("--version",                                "print version information and exit", OFTrue /* exclusive */);
      cmd.addOption("--verbose",                   "-v",        "verbose mode, print processing details");
      cmd.addOption("--debug",                     "-d",        "debug mode, print debug information");
      cmd.addOption("--terminate",                 "-t",        "terminate all running receivers");
- 
-    /* evaluate command line */                           
+
+    /* evaluate command line */
     prepareCmdLineArgs(argc, argv, OFFIS_CONSOLE_APPLICATION);
     if (app.parseCommandLine(cmd, argc, argv, OFCommandLine::ExpandWildcards))
     {
+      /* check exclusive options first */
+      if (cmd.getParamCount() == 0)
+      {
+        if (cmd.findOption("--version"))
+        {
+            app.printHeader(OFTrue /*print host identifier*/);          // uses ofConsole.lockCerr()
+            CERR << endl << "External libraries used:";
+#ifdef !defined(WITH_ZLIB) && !defined(WITH_OPENSSL)
+            CERR << " none" << endl;
+#else
+            CERR << endl;
+#endif
+#ifdef WITH_ZLIB
+            CERR << "- ZLIB, Version " << zlibVersion() << endl;
+#endif
+#ifdef WITH_OPENSSL
+            CERR << "- " << OPENSSL_VERSION_TEXT << endl;
+#endif
+            return 0;
+         }
+      }
+
+      /* command line parameters and options */
       cmd.getParam(1, opt_cfgName);
       if (cmd.getParamCount() >= 2) cmd.getParam(2, opt_cfgID);
       if (cmd.findOption("--verbose")) opt_verbose = 1;
       if (cmd.findOption("--debug")) opt_debugMode = 3;
       if (cmd.findOption("--terminate")) opt_terminate = 1;
     }
-   
+
     if ((opt_cfgID == 0)&&(! opt_terminate))
     {
         CERR << "error: paramter receiver-id required unless --terminate is specified." << endl;
         return 10;
     }
-  
+
     if (opt_verbose)
     {
       CERR << rcsid << endl << endl;
     }
-    
+
     if (opt_cfgName)
     {
       FILE *cfgfile = fopen(opt_cfgName, "rb");
@@ -944,7 +973,7 @@ int main(int argc, char *argv[])
     {
         CERR << "Warning: no data dictionary loaded, check environment variable: " << DCM_DICT_ENVIRONMENT_VARIABLE << endl;
     }
-    
+
     DVConfiguration dvi(opt_cfgName);
     if (opt_terminate)
     {
@@ -961,7 +990,7 @@ int main(int argc, char *argv[])
     const char *networkAETitle    = dvi.getTargetAETitle(opt_cfgID);
     if (networkAETitle==NULL) networkAETitle = dvi.getNetworkAETitle();
     unsigned short messagePort    = dvi.getMessagePort();   /* port number for IPC */
-    OFBool keepMessagePortOpen    = dvi.getMessagePortKeepOpen(); 
+    OFBool keepMessagePortOpen    = dvi.getMessagePortKeepOpen();
     OFBool useTLS = dvi.getTargetUseTLS(opt_cfgID);
     OFBool notifyTermination      = OFTrue;  // notify IPC server of application termination
 #ifdef WITH_OPENSSL
@@ -976,7 +1005,7 @@ int main(int argc, char *argv[])
     current = dvi.getTargetCertificate(opt_cfgID);
     if (current) tlsCertificateFile += current; else tlsCertificateFile += "sitecert.pem";
 
-    /* private key file */    
+    /* private key file */
     OFString tlsPrivateKeyFile(tlsFolder);
     tlsPrivateKeyFile += PATH_SEPARATOR;
     current = dvi.getTargetPrivateKey(opt_cfgID);
@@ -988,8 +1017,8 @@ int main(int argc, char *argv[])
     /* certificate verification */
     DcmCertificateVerification tlsCertVerification = DCV_requireCertificate;
     switch (dvi.getTargetPeerAuthentication(opt_cfgID))
-    {  
-      case DVPSQ_require:  
+    {
+      case DVPSQ_require:
         tlsCertVerification = DCV_requireCertificate;
         break;
       case DVPSQ_verify:
@@ -1003,7 +1032,7 @@ int main(int argc, char *argv[])
     /* DH parameter file */
     OFString tlsDHParametersFile;
     current = dvi.getTargetDiffieHellmanParameters(opt_cfgID);
-    if (current) 
+    if (current)
     {
       tlsDHParametersFile = tlsFolder;
       tlsDHParametersFile += PATH_SEPARATOR;
@@ -1055,9 +1084,9 @@ int main(int argc, char *argv[])
     {
         CERR << "error: not compiled with OpenSSL, cannot use TLS." << endl;
         return 10;
-    }    
+    }
 #endif
-    
+
     if (networkAETitle==NULL)
     {
         CERR << "error: no application entity title" << endl;
@@ -1085,7 +1114,7 @@ int main(int argc, char *argv[])
         CERR << "warning: max PDU size " << networkMaxPDU << " too big, using default: " << DEFAULT_MAXPDU << endl;
         networkMaxPDU = DEFAULT_MAXPDU;
     }
-    
+
     if (networkDisableNewVRs)
     {
       dcmEnableUnknownVRGeneration.set(OFFalse);
@@ -1093,7 +1122,7 @@ int main(int argc, char *argv[])
     }
 
     OFOStringStream verboseParameters;
-        
+
     OFBool comma=OFFalse;
     verboseParameters << "Network parameters:" << endl
          << "  port            : " << networkPort << endl
@@ -1150,10 +1179,10 @@ int main(int argc, char *argv[])
     verboseParameters << OFStringStream_ends;
     OFSTRINGSTREAM_GETSTR(verboseParameters, verboseParametersString)
     if (opt_verbose) CERR << verboseParametersString << endl;
-    
+
     /* check if we can get access to the database */
     const char *dbfolder = dvi.getDatabaseFolder();
-    DB_Handle *dbhandle = NULL; 
+    DB_Handle *dbhandle = NULL;
 
     if (opt_verbose)
     {
@@ -1165,7 +1194,7 @@ int main(int argc, char *argv[])
       return 1;
     }
     DB_destroyHandle(&dbhandle);
-    
+
     T_ASC_Network *net = NULL; /* the DICOM network and listen port */
     T_ASC_Association *assoc = NULL; /* the DICOM association */
     OFBool finished1 = OFFalse;
@@ -1177,7 +1206,7 @@ int main(int argc, char *argv[])
 
     DcmTLSTransportLayer *tLayer = NULL;
     if (useTLS)
-    {    
+    {
       tLayer = new DcmTLSTransportLayer(DICOM_APPLICATION_ACCEPTOR, tlsRandomSeedFile.c_str());
       if (tLayer == NULL)
       {
@@ -1208,7 +1237,7 @@ int main(int argc, char *argv[])
       {
         CERR << "private key '" << tlsPrivateKeyFile << "' and certificate '" << tlsCertificateFile << "' do not match" << endl;
         return 1;
-      }      
+      }
       if (TCS_ok != tLayer->setCipherSuites(tlsCiphersuites.c_str()))
       {
         CERR << "unable to set selected cipher suites" << endl;
@@ -1216,16 +1245,16 @@ int main(int argc, char *argv[])
       }
 
       tLayer->setCertificateVerification(tlsCertVerification);
-        
+
     }
 
 #endif
-    
+
     while (!finished1)
     {
       /* open listen socket */
       cond = ASC_initializeNetwork(NET_ACCEPTOR, networkPort, 10, &net);
-      if (errorCond(cond, "Error initialising network:")) 
+      if (errorCond(cond, "Error initialising network:"))
       {
       	return 1;
       }
@@ -1258,7 +1287,7 @@ int main(int argc, char *argv[])
 #endif
       while (!finished2)
       {
-        /* now we connect to the IPC server and request an application ID */    
+        /* now we connect to the IPC server and request an application ID */
         if (messageClient) // on Unix, re-initialize for each connect which is later inherited by the forked child
         {
           delete messageClient;
@@ -1312,7 +1341,7 @@ int main(int argc, char *argv[])
                 ASC_dumpConnectionParameters(assoc, out);
                 out << OFStringStream_ends;
                 OFSTRINGSTREAM_GETSTR(out, theString)
-                if (useTLS) 
+                if (useTLS)
                   messageClient->notifyReceivedEncryptedDICOMConnection(DVPSIPCMessage::statusError, theString);
                   else messageClient->notifyReceivedUnencryptedDICOMConnection(DVPSIPCMessage::statusError, theString);
                 OFSTRINGSTREAM_FREESTR(theString)
@@ -1330,20 +1359,20 @@ int main(int argc, char *argv[])
               // Adding it to the PRNG seed guarantees that we have different seeds for
               // different child processes.
               char randomUID[65];
-              dcmGenerateUniqueIdentifier(randomUID);              
+              dcmGenerateUniqueIdentifier(randomUID);
               if (tLayer) tLayer->addPRNGseed(randomUID, strlen(randomUID));
 #endif
               handleClient(&assoc, dbfolder, opt_verbose, networkBitPreserving, useTLS);
               finished2=OFTrue;
               finished1=OFTrue;
-            }  
+            }
 #else
             // Windows version - call CreateProcess()
             finished2=OFTrue;
             cond = ASC_dropNetwork(&net);
-            if (errorCond(cond, "Error dropping network:")) 
+            if (errorCond(cond, "Error dropping network:"))
             {
-              if (messageClient) 
+              if (messageClient)
               {
               	messageClient->notifyApplicationTerminates(DVPSIPCMessage::statusError);
                 delete messageClient;
@@ -1354,7 +1383,7 @@ int main(int argc, char *argv[])
             // initialize startup info
             const char *receiver_application = dvi.getReceiverName();
             PROCESS_INFORMATION procinfo;
-            STARTUPINFO sinfo;  
+            STARTUPINFO sinfo;
             OFBitmanipTemplate<char>::zeroMem((char *)&sinfo, sizeof(sinfo));
             sinfo.cb = sizeof(sinfo);
             char commandline[4096];
@@ -1370,11 +1399,11 @@ int main(int argc, char *argv[])
               // Adding it to the PRNG seed guarantees that we have different seeds for
               // different child processes.
               char randomUID[65];
-              dcmGenerateUniqueIdentifier(randomUID);              
+              dcmGenerateUniqueIdentifier(randomUID);
               if (tLayer) tLayer->addPRNGseed(randomUID, strlen(randomUID));
 #endif
               handleClient(&assoc, dbfolder, opt_verbose, networkBitPreserving, useTLS);
-              finished1=OFTrue;              
+              finished1=OFTrue;
             } else {
               CERR << "Cannot execute command line: " << commandline << endl;
               refuseAssociation(assoc, ref_CannotFork);
@@ -1391,7 +1420,7 @@ int main(int argc, char *argv[])
                 ASC_dumpConnectionParameters(assoc, out);
                 out << OFStringStream_ends;
                 OFSTRINGSTREAM_GETSTR(out, theString)
-                if (useTLS) 
+                if (useTLS)
                   messageClient->notifyReceivedEncryptedDICOMConnection(DVPSIPCMessage::statusError, theString);
                   else messageClient->notifyReceivedUnencryptedDICOMConnection(DVPSIPCMessage::statusError, theString);
                 OFSTRINGSTREAM_FREESTR(theString)
@@ -1405,15 +1434,15 @@ int main(int argc, char *argv[])
       } // finished2
     } // finished1
     cleanChildren();
- 
+
     // tell the IPC server that we're going to terminate.
     // We need to do this before we shutdown WinSock.
-    if (messageClient && notifyTermination) 
+    if (messageClient && notifyTermination)
     {
       messageClient->notifyApplicationTerminates(DVPSIPCMessage::statusOK);
       delete messageClient;
     }
-   
+
 #ifdef HAVE_WINSOCK_H
     WSACleanup();
 #endif
@@ -1440,14 +1469,19 @@ int main(int argc, char *argv[])
     dcmDataDict.clear();  /* useful for debugging with dmalloc */
 #endif
 
-    return 0;    
+    return 0;
 }
 
 
 /*
  * CVS/RCS Log:
  * $Log: dcmpsrcv.cc,v $
- * Revision 1.38  2002-08-20 12:21:54  meichel
+ * Revision 1.39  2002-09-23 18:26:09  joergr
+ * Added new command line option "--version" which prints the name and version
+ * number of external libraries used (incl. preparation for future support of
+ * 'config.guess' host identifiers).
+ *
+ * Revision 1.38  2002/08/20 12:21:54  meichel
  * Adapted code to new loadFile and saveFile methods, thus removing direct
  *   use of the DICOM stream classes.
  *

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2001, OFFIS
+ *  Copyright (C) 1998-2002, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -20,12 +20,12 @@
  *  Author: Marco Eichelberg
  *
  *  Purpose:
- *    sample application that reads a DICOM image and creates 
+ *    sample application that reads a DICOM image and creates
  *    a matching presentation state.
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-08-20 12:21:53 $
- *  CVS/RCS Revision: $Revision: 1.14 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2002-09-23 18:26:08 $
+ *  CVS/RCS Revision: $Revision: 1.15 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -59,7 +59,11 @@ END_EXTERN_C
 #include "dvpshlp.h"
 #include "cmdlnarg.h"
 #include "ofconapp.h"
-#include "dcuid.h"    /* for dcmtk version name */
+#include "dcuid.h"       /* for dcmtk version name */
+
+#ifdef WITH_ZLIB
+#include "zlib.h"        /* for zlibVersion() */
+#endif
 
 #define OFFIS_CONSOLE_APPLICATION "dcmpsmk"
 
@@ -115,15 +119,16 @@ int main(int argc, char *argv[])
     OFCommandLine cmd;
     cmd.setOptionColumns(LONGCOL, SHORTCOL);
     cmd.setParamColumn(LONGCOL + SHORTCOL + 4);
-    
+
     cmd.addParam("dcmfile-in",  "DICOM image file(s) to be read", OFCmdParam::PM_MultiMandatory);
     cmd.addParam("dcmfile-out", "DICOM presentation state file to be created");
-    
+
     cmd.addGroup("general options:", LONGCOL, SHORTCOL + 2);
       cmd.addOption("--help",                     "-h",        "print this help text and exit");
+      cmd.addOption("--version",                               "print version information and exit", OFTrue /* exclusive */);
       cmd.addOption("--verbose",                  "-v",        "verbose mode, print processing details");
       cmd.addOption("--debug",                    "-d",        "debug mode, print debug information");
-   
+
     cmd.addGroup("input options:");
       cmd.addSubGroup("input file format:");
        cmd.addOption("--read-file",               "+f",        "read file format or data set (default)");
@@ -133,7 +138,7 @@ int main(int argc, char *argv[])
        cmd.addOption("--read-xfer-little",        "-te",       "read with explicit VR little endian TS");
        cmd.addOption("--read-xfer-big",           "-tb",       "read with explicit VR big endian TS");
        cmd.addOption("--read-xfer-implicit",      "-ti",       "read with implicit VR little endian TS");
-  
+
     cmd.addGroup("processing options:");
       cmd.addSubGroup("VOI transform handling:");
        cmd.addOption("--voi-lut",                 "+Vl",       "use first VOI LUT if present (default)");
@@ -162,7 +167,7 @@ int main(int argc, char *argv[])
                                                                "image located at application entity a");
        cmd.addOption("--location-media",          "-lm",    2, "[f]ilesetID, fileset[UID]: string",
                                                                "image located on storage medium");
-  
+
     cmd.addGroup("output options:");
       cmd.addSubGroup("output transfer syntax:");
        cmd.addOption("--write-xfer-same",         "+t=",       "write with same TS as image file (default)");
@@ -170,16 +175,33 @@ int main(int argc, char *argv[])
        cmd.addOption("--write-xfer-big",          "+tb",       "write with explicit VR big endian TS");
        cmd.addOption("--write-xfer-implicit",     "+ti",       "write with implicit VR little endian TS");
 
-    /* evaluate command line */                           
+    /* evaluate command line */
     prepareCmdLineArgs(argc, argv, OFFIS_CONSOLE_APPLICATION);
     if (app.parseCommandLine(cmd, argc, argv, OFCommandLine::ExpandWildcards))
     {
+      /* check exclusive options first */
+      if (cmd.getParamCount() == 0)
+      {
+        if (cmd.findOption("--version"))
+        {
+            app.printHeader(OFTrue /*print host identifier*/);          // uses ofConsole.lockCerr()
+            CERR << endl << "External libraries used:";
+#ifdef WITH_ZLIB
+            CERR << endl << "- ZLIB, Version " << zlibVersion() << endl;
+#else
+            CERR << " none" << endl;
+#endif
+            return 0;
+         }
+      }
+
+      /* command line parameters and options */
       cmd.getParam(1, opt_ifname);
       cmd.getParam(cmd.getParamCount(), opt_ofname);
 
       if (cmd.findOption("--verbose")) verbosemode=OFTrue;
       if (cmd.findOption("--debug")) opt_debugMode=3;
-      
+
       cmd.beginOptionBlock();
       if (cmd.findOption("--read-file")) opt_iDataset = OFFalse;
       if (cmd.findOption("--read-dataset")) opt_iDataset = OFTrue;
@@ -229,7 +251,7 @@ int main(int argc, char *argv[])
       if (cmd.findOption("--shutter-activate")) shutterActivation = OFTrue;
       if (cmd.findOption("--shutter-ignore")) shutterActivation = OFFalse;
       cmd.endOptionBlock();
-            
+
       cmd.beginOptionBlock();
       if (cmd.findOption("--plut-activate")) presentationActivation = OFTrue;
       if (cmd.findOption("--plut-ignore")) presentationActivation = OFFalse;
@@ -284,19 +306,19 @@ int main(int argc, char *argv[])
              << "check environment variable: "
              << DCM_DICT_ENVIRONMENT_VARIABLE << endl;
     }
-    
+
     // open input file
     DcmFileFormat fileformat;
 
     if (verbosemode)
-        COUT << "read and interpret DICOM file " 
+        COUT << "read and interpret DICOM file "
              << opt_ifname << endl;
 
 
     OFCondition error = fileformat.loadFile(opt_ifname, opt_ixfer, EGL_noChange, DCM_MaxReadLength, opt_iDataset);
     if (error.bad())
     {
-        CERR << "Error: "  
+        CERR << "Error: "
              << error.text()
              << ": reading file: " <<  opt_ifname << endl;
         return 1;
@@ -310,17 +332,17 @@ int main(int argc, char *argv[])
     {
         COUT << "creating presentation state object" << endl;
     }
-        
-    error = state.createFromImage(*dataset, overlayActivation, voiActivation, 
+
+    error = state.createFromImage(*dataset, overlayActivation, voiActivation,
       curveActivation, shutterActivation, presentationActivation, layering, opt_aetitle, opt_filesetID, opt_filesetUID);
-    if (error != EC_Normal) 
+    if (error != EC_Normal)
     {
-        CERR << "Error: "  
+        CERR << "Error: "
              << error.text()
              << ": creating presentation state from image file: " << opt_ifname << endl;
         return 1;
     }
-    
+
     /* add additional image references to pstate */
     if (cmd.getParamCount() > 2)
     {
@@ -351,9 +373,9 @@ int main(int argc, char *argv[])
     DcmDataset *dataset2 = fileformat2.getDataset();
 
     error = state.write(*dataset2, OFTrue);
-    if (error != EC_Normal) 
+    if (error != EC_Normal)
     {
-        CERR << "Error: "  
+        CERR << "Error: "
              << error.text()
              << ": re-encoding presentation state : " <<  opt_ifname << endl;
         return 1;
@@ -376,7 +398,7 @@ int main(int argc, char *argv[])
     if (dataset2->canWriteXfer(opt_oxfer))
     {
         if (verbosemode)
-           COUT << "Output transfer syntax " << oxferSyn.getXferName() 
+           COUT << "Output transfer syntax " << oxferSyn.getXferName()
                 << " can be written\n";
     } else {
         CERR << "No conversion to transfer syntax " << oxferSyn.getXferName()
@@ -390,13 +412,13 @@ int main(int argc, char *argv[])
     error = fileformat2.saveFile(opt_ofname, opt_oxfer, oenctype, oglenc, opadenc, padlen, subPadlen, opt_oDataset);
     if (error.bad())
     {
-        CERR << "Error: "  
+        CERR << "Error: "
              << error.text()
              << ": writing file: " <<  opt_ofname << endl;
         return 1;
     }
 
-    if (verbosemode) 
+    if (verbosemode)
         COUT << "conversion successful\n";
 
     return 0;
@@ -406,7 +428,12 @@ int main(int argc, char *argv[])
 /*
 ** CVS/RCS Log:
 ** $Log: dcmpsmk.cc,v $
-** Revision 1.14  2002-08-20 12:21:53  meichel
+** Revision 1.15  2002-09-23 18:26:08  joergr
+** Added new command line option "--version" which prints the name and version
+** number of external libraries used (incl. preparation for future support of
+** 'config.guess' host identifiers).
+**
+** Revision 1.14  2002/08/20 12:21:53  meichel
 ** Adapted code to new loadFile and saveFile methods, thus removing direct
 **   use of the DICOM stream classes.
 **

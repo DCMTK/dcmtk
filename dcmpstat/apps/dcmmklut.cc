@@ -24,10 +24,10 @@
  *    The LUT has a gamma curve shape or can be imported from an external
  *    file.
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-08-20 12:21:52 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2002-09-23 18:26:05 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmpstat/apps/dcmmklut.cc,v $
- *  CVS/RCS Revision: $Revision: 1.30 $
+ *  CVS/RCS Revision: $Revision: 1.31 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -64,6 +64,10 @@ BEGIN_EXTERN_C
 END_EXTERN_C
 
 #include "ofstream.h"
+
+#ifdef WITH_ZLIB
+#include "zlib.h"        /* for zlibVersion() */
+#endif
 
 #define OFFIS_CONSOLE_APPLICATION "dcmmklut"
 
@@ -241,7 +245,7 @@ OFCondition readTextFile(const char *filename,
                                 } else {
                                     xmax = inputXData[count];
                                     if (inputYData[count] > ymax)
-                                        ymax = inputYData[count];                                
+                                        ymax = inputYData[count];
                                     if ((inputXMax != 0) && (inputXData[count] > inputXMax))
                                     {
                                         if (opt_debug)
@@ -497,7 +501,7 @@ void applyInverseGSDF(const unsigned int numberOfBits,
             for (i = 0; i < numberOfEntries; i++)
                 outputData[i] = (Uint16)((DiGSDFunction::getJNDIndex(la + l0 * pow(10, -(dmin + (double)outputData[i] * density))) - jmin) * factor);
         }
-        oss << "# applied inverse GSDF with Dmin/max = " << minDensity << "/" << maxDensity << ", L0/La = " 
+        oss << "# applied inverse GSDF with Dmin/max = " << minDensity << "/" << maxDensity << ", L0/La = "
             << illumination << "/" << reflection << endl;
         oss << OFStringStream_ends;
         OFSTRINGSTREAM_GETSTR(oss, tmpString)
@@ -735,6 +739,7 @@ int main(int argc, char *argv[])
 
     cmd.addGroup("general options:", LONGCOL, SHORTCOL + 2);
      cmd.addOption("--help",           "-h",     "print this help text and exit");
+     cmd.addOption("--version",                  "print version information and exit", OFTrue /* exclusive */);
      cmd.addOption("--verbose",        "-v",     "verbose mode, print processing details");
      cmd.addOption("--debug",          "-d",     "debug mode, print debug information");
     cmd.addGroup("LUT creation options:");
@@ -792,11 +797,28 @@ int main(int argc, char *argv[])
     prepareCmdLineArgs(argc, argv, OFFIS_CONSOLE_APPLICATION);
     if (app.parseCommandLine(cmd, argc, argv, OFCommandLine::ExpandWildcards))
     {
+        /* check exclusive options first */
+        if (cmd.getParamCount() == 0)
+        {
+          if (cmd.findOption("--version"))
+          {
+              app.printHeader(OFTrue /*print host identifier*/);          // uses ofConsole.lockCerr()
+              CERR << endl << "External libraries used:";
+#ifdef WITH_ZLIB
+              CERR << endl << "- ZLIB, Version " << zlibVersion() << endl;
+#else
+              CERR << " none" << endl;
+#endif
+              return 0;
+           }
+        }
+
+        /* command line parameters */
         cmd.getParam(1, opt_outName);
 
         if (cmd.findOption("--verbose"))
             opt_verbose = OFTrue;
-        if (cmd.findOption("--debug")) 
+        if (cmd.findOption("--debug"))
             opt_debugMode = 3;
 
         cmd.beginOptionBlock();
@@ -1048,13 +1070,13 @@ int main(int argc, char *argv[])
                     break;
             }
         }
-    
+
         if (result != EC_Normal)
         {
             CERR << "error while adding LUT to image dataset. Bailing out."<< endl;
             return 1;
         }
-    
+
         if (opt_verbose)
             CERR << "writing DICOM file ..." << endl;
 
@@ -1073,7 +1095,12 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmmklut.cc,v $
- * Revision 1.30  2002-08-20 12:21:52  meichel
+ * Revision 1.31  2002-09-23 18:26:05  joergr
+ * Added new command line option "--version" which prints the name and version
+ * number of external libraries used (incl. preparation for future support of
+ * 'config.guess' host identifiers).
+ *
+ * Revision 1.30  2002/08/20 12:21:52  meichel
  * Adapted code to new loadFile and saveFile methods, thus removing direct
  *   use of the DICOM stream classes.
  *
