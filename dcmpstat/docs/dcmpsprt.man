@@ -250,7 +250,7 @@ whitespaces are treated as a single separator) prior to any further
 evaluation.  Please note that a command file cannot contain another command
 file.  This simple but effective approach allows to summarize common
 combinations of options/parameters and avoids longish and confusing command
-lines (an example is provided in file <em>data/dumppat.txt</em>).
+lines (an example is provided in file <em>share/data/dumppat.txt</em>).
 
 \section environment ENVIRONMENT
 
@@ -269,7 +269,7 @@ environment variable.  It is an error if no data dictionary can be loaded.
 
 \section files FILES
 
-<em>etc/test.cfg</em>  sample configuration file
+<em>etc/test.cfg</em>, <em>etc/printers.cfg</em> - sample configuration file
 
 \section see_also SEE ALSO
 
