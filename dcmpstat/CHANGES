@@ -1,9 +1,23 @@
+
+**** Changes from 1999.01.29 (eichelberg)
+
+- Reworked index file handle acquisition and locking code.
+  Affects: dcmpstat/include/dviface.h
+           dcmpstat/libsrc/dviface.cc
+
+- Implemented small sample application that lists the
+  contents of the database using DVInterface methods.
+  Added:   dcmpstat/apps/listdb.cc
+  Affects: dcmpstat/apps/Makefile.in
+           dcmpstat/apps/Makefile.dep
+  
 **** Changes from 1999.01.28 (vorwerk)
 
 - added shared or exclusive locking mechanism to all browser
   methods.
   Affects: dcmpstat/include/dviface.h
            dcmpstat/libsrc/dviface.cc
+
 **** Changes from 1999.01.27 (vorwerk)
 
 - implemented error handling for index files of length zero.

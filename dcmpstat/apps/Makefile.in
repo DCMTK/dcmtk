@@ -48,9 +48,9 @@ LIBDIRS = -L$(top_srcdir)/libsrc $(dcmpstatlibdir) $(imagectnlibdir) $(dcmnetlib
 	$(dcmdatalibdir) $(ofstdlibdir) $(dcmimglelibdir) -L$(libdir)
 LOCALLIBS = $(dcmpstatlib) $(dcmimglelib) $(imagectnlib) $(dcmnetlib) $(dcmdatalib) $(ofstdlib) 
 
-objs= dcmpsrw.o dcmpsmk.o dcmpstst.o dcmp2pgm.o dcmmklut.o dcmmkcrv.o dcmpssnd.o runsend.o dcmpsrcv.o
+objs= dcmpsrw.o dcmpsmk.o dcmpstst.o dcmp2pgm.o dcmmklut.o dcmmkcrv.o dcmpssnd.o runsend.o dcmpsrcv.o listdb.o
 
-progs= dcmpsrw dcmpsmk dcmpstst dcmp2pgm dcmmklut dcmmkcrv dcmpssnd runsend dcmpsrcv
+progs= dcmpsrw dcmpsmk dcmpstst dcmp2pgm dcmmklut dcmmkcrv dcmpssnd runsend dcmpsrcv listdb
 
 all: $(progs)
 
@@ -80,6 +80,9 @@ runsend: runsend.o
 
 dcmpsrcv: dcmpsrcv.o
 	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ dcmpsrcv.o $(LOCALLIBS) $(LIBS)  
+
+listdb: listdb.o
+	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ listdb.o $(LOCALLIBS) $(LIBS)  
 
 install: all
 	$(configdir)/mkinstalldirs $(bindir)
