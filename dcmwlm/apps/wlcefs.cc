@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2001, OFFIS
+ *  Copyright (C) 1996-2002, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,10 +22,10 @@
  *  Purpose: Class representing a console engine for basic worklist
  *           management service class providers based on the file system.
  *
- *  Last Update:      $Author: wilkens $
- *  Update Date:      $Date: 2002-08-12 10:55:47 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2002-09-23 18:36:58 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmwlm/apps/wlcefs.cc,v $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -52,6 +52,10 @@
 #include "wlmactmg.h"
 
 #include "wlcefs.h"
+
+#ifdef WITH_ZLIB
+#include "zlib.h"        /* for zlibVersion() */
+#endif
 
 // ----------------------------------------------------------------------------
 
@@ -82,10 +86,6 @@ WlmConsoleEngineFileSystem::WlmConsoleEngineFileSystem( int argc, char *argv[], 
   // Initialize application identification string.
   sprintf( rcsid, "$dcmtk: %s v%s %s $", applicationName, OFFIS_DCMTK_VERSION, OFFIS_DCMTK_RELEASEDATE );
 
-  // dump application information
-  DumpMessage( rcsid );
-  DumpMessage( "" );
-
   // Initialize starting values for variables pertaining to program options.
   opt_dfPath = "/home/www/wlist";
 
@@ -107,6 +107,7 @@ WlmConsoleEngineFileSystem::WlmConsoleEngineFileSystem( int argc, char *argv[], 
   cmd->setOptionColumns(LONGCOL, SHORTCOL);
   cmd->addGroup("general options:", LONGCOL, SHORTCOL+2);
     cmd->addOption("--help",                      "-h",        "print this help text and exit");
+    cmd->addOption("--version",                                "print version information and exit", OFTrue /* exclusive */);
     cmd->addOption("--verbose",                   "-v",        "verbose mode, print processing details");
     cmd->addOption("--debug",                     "-d",        "debug mode, print debug information");
 #ifdef HAVE_FORK
@@ -165,9 +166,22 @@ WlmConsoleEngineFileSystem::WlmConsoleEngineFileSystem( int argc, char *argv[], 
   prepareCmdLineArgs( argc, argv, applicationName );
   if( app->parseCommandLine( *cmd, argc, argv, OFCommandLine::ExpandWildcards ) )
   {
-    // Check for --help first
-    if( cmd->findOption("--help") ) app->printUsage();
-
+    /* check exclusive options first */
+    if (cmd->getParamCount() == 0)
+    {
+      if (cmd->findOption("--version"))
+      {
+        app->printHeader(OFTrue /*print host identifier*/);          // uses ofConsole.lockCerr()
+        CERR << endl << "External libraries used:";
+#ifdef WITH_ZLIB
+        CERR << endl << "- ZLIB, Version " << zlibVersion() << endl;
+#else
+        CERR << " none" << endl;
+#endif
+        exit(0);
+      }
+    }
+    /* command line parameters and options */
     app->checkParam(cmd->getParamAndCheckMinMax(1, opt_port, 1, 65535));
     if( cmd->findOption("--verbose") ) opt_verbose = OFTrue;
     if( cmd->findOption("--debug") )
@@ -212,6 +226,10 @@ WlmConsoleEngineFileSystem::WlmConsoleEngineFileSystem( int argc, char *argv[], 
     }
     cmd->endOptionBlock();
   }
+
+  // dump application information
+  DumpMessage( rcsid );
+  DumpMessage( "" );
 
   // set general parameters in data source object
   dataSource->SetLogStream( &ofConsole );
@@ -327,7 +345,12 @@ void WlmConsoleEngineFileSystem::DumpMessage( const char *message )
 /*
 ** CVS Log
 ** $Log: wlcefs.cc,v $
-** Revision 1.2  2002-08-12 10:55:47  wilkens
+** Revision 1.3  2002-09-23 18:36:58  joergr
+** Added new command line option "--version" which prints the name and version
+** number of external libraries used (incl. preparation for future support of
+** 'config.guess' host identifiers).
+**
+** Revision 1.2  2002/08/12 10:55:47  wilkens
 ** Made some modifications in in order to be able to create a new application
 ** which contains both wlmscpdb and ppsscpdb and another application which
 ** contains both wlmscpfs and ppsscpfs.
