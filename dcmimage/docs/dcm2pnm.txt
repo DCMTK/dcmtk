@@ -15,9 +15,9 @@ The dcm2pnm utility reads a DICOM image, converts the pixel data according to
 the selected image processing options and writes back an image in the well-
 known PPM/PGM file format (portable pix map / portable gray map), Windows BMP
 or TIFF format.
-This utility only supports uncompressed DICOM images.  The command line tool
-dcmj2pnm (located in dcmjpeg/apps) also supports a number of JPEG compression
-schemes.
+This utility only supports uncompressed and RLE compressed DICOM images.  The
+command line tool dcmj2pnm (located in dcmjpeg/apps) also supports a number of
+JPEG compression schemes.
 
 
 USAGE
