@@ -24,9 +24,9 @@
  *  routines for finding and creating UIDs.
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-11-27 12:06:53 $
+ *  Update Date:      $Date: 2002-12-09 13:03:22 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcuid.cc,v $
- *  CVS/RCS Revision: $Revision: 1.41 $
+ *  CVS/RCS Revision: $Revision: 1.42 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -229,8 +229,8 @@ static const UIDNameMap uidNameMap[] = {
     { UID_VOILUTBoxSOPClass,                                  "VOILUTBoxSOPClass" },
 
     // Storage Commitment
-    { UID_StorageCommitmentPullModelSOPClass,                 "StorageCommitmentPullModelSOPClass" },
-    { UID_StorageCommitmentPullModelSOPInstance,              "StorageCommitmentPullModelSOPInstance" },
+    { UID_RETIRED_StorageCommitmentPullModelSOPClass,         "RETIRED_StorageCommitmentPullModelSOPClass" },
+    { UID_RETIRED_StorageCommitmentPullModelSOPInstance,      "RETIRED_StorageCommitmentPullModelSOPInstance" },
     { UID_StorageCommitmentPushModelSOPClass,                 "StorageCommitmentPushModelSOPClass" },
     { UID_StorageCommitmentPushModelSOPInstance,              "StorageCommitmentPushModelSOPInstance" },
 
@@ -259,6 +259,9 @@ static const UIDNameMap uidNameMap[] = {
     { UID_BasicStudyContentNotificationSOPClass,              "BasicStudyContentNotificationSOPClass" },
     { UID_StudyComponentManagementSOPClass,                   "StudyComponentManagementSOPClass" },
     { UID_VerificationSOPClass,                               "VerificationSOPClass" },
+
+    // DICOM Controlled Terminology
+    { UID_DICOMControlledTerminologyCodingScheme,             "DICOMControlledTerminologyCodingScheme" },
 
     // supplements
     { UID_DRAFT_SRTextStorage,                                "DRAFT_SRTextStorage" },
@@ -1065,7 +1068,10 @@ char* dcmGenerateUniqueIdentifier(char* uid, const char* prefix)
 /*
 ** CVS/RCS Log:
 ** $Log: dcuid.cc,v $
-** Revision 1.41  2002-11-27 12:06:53  meichel
+** Revision 1.42  2002-12-09 13:03:22  meichel
+** Updated list of UIDs
+**
+** Revision 1.41  2002/11/27 12:06:53  meichel
 ** Adapted module dcmdata to use of new header file ofstdinc.h
 **
 ** Revision 1.40  2002/08/27 16:55:14  meichel

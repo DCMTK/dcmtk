@@ -24,9 +24,9 @@
  *  routines for finding and creating UIDs.
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-11-27 12:07:23 $
+ *  Update Date:      $Date: 2002-12-09 13:03:19 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcuid.h,v $
- *  CVS/RCS Revision: $Revision: 1.51 $
+ *  CVS/RCS Revision: $Revision: 1.52 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -374,8 +374,8 @@ unsigned long dcmGuessModalityBytes(const char *sopClassUID);
 // Storage Commitment
 #define UID_StorageCommitmentPushModelSOPClass                     "1.2.840.10008.1.20.1"
 #define UID_StorageCommitmentPushModelSOPInstance                  "1.2.840.10008.1.20.1.1"
-#define UID_StorageCommitmentPullModelSOPClass                     "1.2.840.10008.1.20.2"
-#define UID_StorageCommitmentPullModelSOPInstance                  "1.2.840.10008.1.20.2.1"
+#define UID_RETIRED_StorageCommitmentPullModelSOPClass             "1.2.840.10008.1.20.2"
+#define UID_RETIRED_StorageCommitmentPullModelSOPInstance          "1.2.840.10008.1.20.2.1"
 
 // MPPS
 #define UID_ModalityPerformedProcedureStepSOPClass                 "1.2.840.10008.3.1.2.3.3"
@@ -403,6 +403,9 @@ unsigned long dcmGuessModalityBytes(const char *sopClassUID);
 #define UID_BasicDirectoryStorageSOPClass                          "1.2.840.10008.1.3.10"
 #define UID_BasicStudyContentNotificationSOPClass                  "1.2.840.10008.1.9"
 #define UID_StudyComponentManagementSOPClass                       "1.2.840.10008.3.1.2.3.2"
+
+// UID for DICOM Controlled Terminology, defined in CP 324
+#define UID_DICOMControlledTerminologyCodingScheme                 "1.2.840.10008.2.16.4"
 
 // Private DCMTK UIDs
 // Private SOP Class UID used to shutdown external network applications 
@@ -432,7 +435,10 @@ unsigned long dcmGuessModalityBytes(const char *sopClassUID);
 /*
 ** CVS/RCS Log:
 ** $Log: dcuid.h,v $
-** Revision 1.51  2002-11-27 12:07:23  meichel
+** Revision 1.52  2002-12-09 13:03:19  meichel
+** Updated list of UIDs
+**
+** Revision 1.51  2002/11/27 12:07:23  meichel
 ** Adapted module dcmdata to use of new header file ofstdinc.h
 **
 ** Revision 1.50  2002/06/19 15:35:55  meichel
