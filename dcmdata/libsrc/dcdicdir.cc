@@ -11,9 +11,9 @@
 **
 **
 ** Last Update:		$Author: hewett $
-** Update Date:		$Date: 1997-03-26 17:03:40 $
+** Update Date:		$Date: 1997-04-15 16:12:09 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcdicdir.cc,v $
-** CVS/RCS Revision:	$Revision: 1.8 $
+** CVS/RCS Revision:	$Revision: 1.9 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -114,8 +114,8 @@ DcmDicomDir::DcmDicomDir(char *fileName,
     DcmFileStream inStream(dicomDirFileName, DCM_ReadMode);
     if (inStream.GetError() != EC_Normal)
     {
-	cerr << "Info: DcmDicomDir() creating new DicomDir ["
-	     << dicomDirFileName << "]" << endl;
+	debug(( 3, "dcdicdir:DcmDicomDir() creating new DicomDir [%s]",
+		dicomDirFileName ));
 	mustCreateNewDir = TRUE;
 	DirFile = new DcmFileFormat();
     }
@@ -1406,7 +1406,11 @@ Edebug(());
 /*
 ** CVS/RCS Log:
 ** $Log: dcdicdir.cc,v $
-** Revision 1.8  1997-03-26 17:03:40  hewett
+** Revision 1.9  1997-04-15 16:12:09  hewett
+** Modified code which printed a message on stderr when creating a new DICOM
+** to use the debug routines instead.
+**
+** Revision 1.8  1997/03/26 17:03:40  hewett
 ** Smoothed out some poor indentation.
 **
 ** Revision 1.7  1997/02/06 12:11:20  hewett
