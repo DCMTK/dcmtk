@@ -16,25 +16,13 @@ LOCALINCLUDES = -I../../dcmdata/include
 LIBDIRS = -L$(top_srcdir)/libsrc -L../../dcmdata/libsrc -L$(libdir)
 LOCALLIBS = -ldcmimage -ldcmdata
 
-objs = diclip.o discale.o disize.o di2mono.o di2ppm.o
+objs = dcm2pnm.o
 
-progs = diclip discale disize di2mono di2ppm 
+progs = dcm2pnm 
 
 all: $(progs)
 
-diclip: diclip.o
-	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ $@.o $(LOCALLIBS) $(LIBS)  
-
-discale: discale.o
-	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ $@.o $(LOCALLIBS) $(LIBS)  
-
-disize: disize.o
-	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ $@.o $(LOCALLIBS) $(LIBS)  
-
-di2mono: di2mono.o 
-	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ $@.o $(LOCALLIBS) $(LIBS)  
-
-di2ppm: di2ppm.o
+dcm2pnm: dcm2pnm.o
 	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ $@.o $(LOCALLIBS) $(LIBS)  
 
 install: all

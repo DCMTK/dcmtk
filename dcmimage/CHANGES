@@ -1,5 +1,20 @@
 
-- Added function DicomImage::writeRawPPM(FILE *, const int, const unsigned long)
+- Added new application dcm2pnm.
+  dcm2pnm allows to convert DICOM images to the widely used
+  PPM/PGM general purpose image format.
+  dcm2pnm gives access to most functionality offered by the dcmimage
+  library. It replaces the older (and far less powerful) applications
+  di2mono, di2ppm, diclip, discale and disize.  
+  Affects: dcmimage/apps/Makefile.dep
+           dcmimage/apps/Makefile.in
+  Added:   dcmimage/apps/dcm2pnm.cc
+  Removed: dcmimage/apps/di2mono.cc
+           dcmimage/apps/di2ppm.cc
+           dcmimage/apps/diclip.cc
+           dcmimage/apps/discale.cc
+           dcmimage/apps/disize.cc
+
+- Added function DicomImage::writeRawPPM()
   which takes an open stream instead of a file name as first argument.
   Affects: dcmimage/include/dcmimage.h
            dcmimage/libsrc/dcmimage.cc
