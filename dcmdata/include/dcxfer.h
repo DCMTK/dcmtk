@@ -22,9 +22,9 @@
  *  Purpose: Handling of transfer syntaxes
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-06-01 15:48:55 $
+ *  Update Date:      $Date: 2001-11-08 16:17:30 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcxfer.h,v $
- *  CVS/RCS Revision: $Revision: 1.13 $
+ *  CVS/RCS Revision: $Revision: 1.14 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -69,7 +69,10 @@ typedef enum {
     EXS_JPEGProcess14SV1TransferSyntax = 21,
     EXS_RLELossless = 22,
     EXS_JPEGLSLossless = 23,
-    EXS_JPEGLSLossy = 24
+    EXS_JPEGLSLossy = 24,
+    EXS_DeflatedLittleEndianExplicit = 25,
+    EXS_JPEG2000LosslessOnly = 26,
+    EXS_JPEG2000 = 27    
 } E_TransferSyntax;
 
 
@@ -153,7 +156,10 @@ extern const E_ByteOrder gLocalByteOrder;
 /*
  * CVS/RCS Log:
  * $Log: dcxfer.h,v $
- * Revision 1.13  2001-06-01 15:48:55  meichel
+ * Revision 1.14  2001-11-08 16:17:30  meichel
+ * Updated data dictionary, UIDs and transfer syntaxes for DICOM 2001 edition.
+ *
+ * Revision 1.13  2001/06/01 15:48:55  meichel
  * Updated copyright header
  *
  * Revision 1.12  2001/01/17 10:20:36  meichel

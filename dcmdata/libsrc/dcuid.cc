@@ -23,10 +23,10 @@
  *  Definitions of "well known" DICOM Unique Indentifiers,
  *  routines for finding and creating UIDs.
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-06-05 10:08:16 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2001-11-08 16:17:34 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcuid.cc,v $
- *  CVS/RCS Revision: $Revision: 1.34 $
+ *  CVS/RCS Revision: $Revision: 1.35 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -134,6 +134,8 @@ static const UIDNameMap uidNameMap[] = {
     { UID_JPEGLSLossy,                                        "JPEGLSLossy" },
     { UID_RLELossless,                                        "RLELossless" },
     { UID_DeflatedExplicitVRLittleEndianTransferSyntax,       "DeflatedLittleEndianExplicit" },
+    { UID_JPEG2000LosslessOnlyTransferSyntax,                 "JPEG2000LosslessOnly" },
+    { UID_JPEG2000TransferSyntax,                             "JPEG2000" },
 
     // Storage
     { UID_AmbulatoryECGWaveformStorage,                       "AmbulatoryECGWaveformStorage" },
@@ -493,7 +495,7 @@ static const DcmModalityTable modalities[] = {
     { UID_MultiframeGrayscaleByteSecondaryCaptureImageStorage, "SCb",  1 * 512 * 512 },
     { UID_MultiframeGrayscaleWordSecondaryCaptureImageStorage, "SCw",  2 * 512 * 512 },
     { UID_MultiframeTrueColorSecondaryCaptureImageStorage,     "SCc",  3 * 512 * 512 },
-    { UID_KeyObjectSelectionDocument,                           "SRk", 4096 }
+    { UID_KeyObjectSelectionDocument,                          "SRk", 4096 }
 
 };
 
@@ -781,7 +783,10 @@ char* dcmGenerateUniqueIdentifer(char* uid, const char* prefix)
 /*
 ** CVS/RCS Log:
 ** $Log: dcuid.cc,v $
-** Revision 1.34  2001-06-05 10:08:16  joergr
+** Revision 1.35  2001-11-08 16:17:34  meichel
+** Updated data dictionary, UIDs and transfer syntaxes for DICOM 2001 edition.
+**
+** Revision 1.34  2001/06/05 10:08:16  joergr
 ** Replaced some #ifdef _WIN32 statements by #ifdef HAVE_WINDOWS_H or #ifdef
 ** __CYGWIN__ respectively to reflect the fact that the latest Cygwin/gcc
 ** version does not define _WIN32 any more.

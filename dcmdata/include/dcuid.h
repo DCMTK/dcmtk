@@ -24,9 +24,9 @@
  *  routines for finding and creating UIDs.
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-11-02 15:44:02 $
+ *  Update Date:      $Date: 2001-11-08 16:17:29 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcuid.h,v $
- *  CVS/RCS Revision: $Revision: 1.46 $
+ *  CVS/RCS Revision: $Revision: 1.47 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -256,9 +256,14 @@ unsigned long dcmGuessModalityBytes(const char *sopClassUID);
 #define UID_RLELossless                         "1.2.840.10008.1.2.5"
 /* Deflated Explicit VR Little Endian */
 #define UID_DeflatedExplicitVRLittleEndianTransferSyntax "1.2.840.10008.1.2.1.99"
+/* JPEG 2000 Image Compression (Lossless Only) */
+#define UID_JPEG2000LosslessOnlyTransferSyntax  "1.2.840.10008.1.2.4.90"
+/* JPEG 2000 Image Compression (Lossless or Lossy) */
+#define UID_JPEG2000TransferSyntax              "1.2.840.10008.1.2.4.91"
+
 
 /*
-** Defined SOP UIDs according to 2000 DICOM edition
+** Defined SOP UIDs according to 2001 DICOM edition
 */
 
 // Storage
@@ -340,6 +345,7 @@ unsigned long dcmGuessModalityBytes(const char *sopClassUID);
 #define UID_FINDModalityWorklistInformationModel                   "1.2.840.10008.5.1.4.31"
 // Supplement 52 (final text)
 #define UID_FINDGeneralPurposeWorklistInformationModel "1.2.840.10008.5.1.4.32.1" 
+
 
 // Print
 #define UID_BasicFilmSessionSOPClass                               "1.2.840.10008.5.1.1.1"
@@ -427,7 +433,10 @@ unsigned long dcmGuessModalityBytes(const char *sopClassUID);
 /*
 ** CVS/RCS Log:
 ** $Log: dcuid.h,v $
-** Revision 1.46  2001-11-02 15:44:02  meichel
+** Revision 1.47  2001-11-08 16:17:29  meichel
+** Updated data dictionary, UIDs and transfer syntaxes for DICOM 2001 edition.
+**
+** Revision 1.46  2001/11/02 15:44:02  meichel
 ** Introduced DCMTK version number macro OFFIS_DCMTK_VERSION_NUMBER in dcuid.h
 **
 ** Revision 1.45  2001/06/14 14:04:06  meichel

@@ -22,9 +22,9 @@
  *  Purpose: handling of transfer syntaxes
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-06-01 15:49:23 $
+ *  Update Date:      $Date: 2001-11-08 16:17:34 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcxfer.cc,v $
- *  CVS/RCS Revision: $Revision: 1.16 $
+ *  CVS/RCS Revision: $Revision: 1.17 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -226,6 +226,30 @@ const S_XferNames XferNames[] =
     { UID_JPEGLSLossy,
       "JPEG-LS Lossy (Near-lossless)",
       EXS_JPEGLSLossy,
+      EBO_LittleEndian,
+      EVT_Explicit,
+      EJE_Encapsulated,
+      0L, 0L },
+
+    { UID_DeflatedExplicitVRLittleEndianTransferSyntax,
+      "Deflated Explicit VR Little Endian",
+      EXS_DeflatedLittleEndianExplicit,
+      EBO_LittleEndian,
+      EVT_Explicit,
+      EJE_NotEncapsulated,
+      0L, 0L },
+
+    { UID_JPEG2000LosslessOnlyTransferSyntax,
+      "JPEG 200 (Lossless only)",
+      EXS_JPEG2000LosslessOnly,
+      EBO_LittleEndian,
+      EVT_Explicit,
+      EJE_Encapsulated,
+      0L, 0L },
+
+    { UID_JPEG2000TransferSyntax,
+      "JPEG 200 (Lossless or Lossy)",
+      EXS_JPEG2000,
       EBO_LittleEndian,
       EVT_Explicit,
       EJE_Encapsulated,
@@ -469,7 +493,10 @@ const E_ByteOrder gLocalByteOrder = FindMachineTransferSyntax();
 /*
  * CVS/RCS Log:
  * $Log: dcxfer.cc,v $
- * Revision 1.16  2001-06-01 15:49:23  meichel
+ * Revision 1.17  2001-11-08 16:17:34  meichel
+ * Updated data dictionary, UIDs and transfer syntaxes for DICOM 2001 edition.
+ *
+ * Revision 1.16  2001/06/01 15:49:23  meichel
  * Updated copyright header
  *
  * Revision 1.15  2001/01/17 10:20:38  meichel

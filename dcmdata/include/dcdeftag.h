@@ -4,7 +4,7 @@
 **
 **   User: meichel
 **   Host: sulla
-**   Date: Wed May 23 10:28:39 2001
+**   Date: Mon Nov  5 17:35:45 2001
 **   Prog: /home/meichel/dicom/dcmtk/dcmdata/libsrc/mkdeftag
 **
 ** From: /home/meichel/dicom/dcmtk/dcmdata/libsrc/dicom.dic
@@ -16,12 +16,12 @@
 
 #include "dctagkey.h"
 
-#define DCM_DICT_DEFTAG_BUILD_DATE "Wed May 23 10:28:39 2001"
+#define DCM_DICT_DEFTAG_BUILD_DATE "Mon Nov  5 17:35:45 2001"
 
 
 /*
 ** Fixed Tags in ascending (gggg,eeee) order.
-** Number of entries: 1730
+** Number of entries: 1731
 ** Tags with a repeating component (repeating tags) are listed later.
 */
 #define DCM_CommandGroupLength                   DcmTagKey(0x0000, 0x0000)
@@ -221,6 +221,8 @@
 #define DCM_PatientsBirthTime                    DcmTagKey(0x0010, 0x0032)
 #define DCM_PatientsSex                          DcmTagKey(0x0010, 0x0040)
 #define DCM_PatientsInsurancePlanCodeSequence    DcmTagKey(0x0010, 0x0050)
+#define DCM_PatientsPrimaryLanguageCodeSequence  DcmTagKey(0x0010, 0x0101)
+#define DCM_PatientsPrimaryLanguageCodeModifierSequence DcmTagKey(0x0010, 0x0102)
 #define DCM_OtherPatientIDs                      DcmTagKey(0x0010, 0x1000)
 #define DCM_OtherPatientNames                    DcmTagKey(0x0010, 0x1001)
 #define DCM_PatientsBirthName                    DcmTagKey(0x0010, 0x1005)
@@ -269,7 +271,7 @@
 #define DCM_InterventionDrugName                 DcmTagKey(0x0018, 0x0034)
 #define DCM_InterventionDrugStartTime            DcmTagKey(0x0018, 0x0035)
 #define DCM_InterventionalTherapySequence        DcmTagKey(0x0018, 0x0036)
-#define DCM_TherapyType                          DcmTagKey(0x0018, 0x0037)
+#define DCM_RETIRED_TherapyType                  DcmTagKey(0x0018, 0x0037)
 #define DCM_InterventionalStatus                 DcmTagKey(0x0018, 0x0038)
 #define DCM_TherapyDescription                   DcmTagKey(0x0018, 0x0039)
 #define DCM_CineRate                             DcmTagKey(0x0018, 0x0040)
@@ -748,7 +750,7 @@
 #define DCM_RepresentativeFrameNumber            DcmTagKey(0x0028, 0x6010)
 #define DCM_FrameNumbersOfInterestFOI            DcmTagKey(0x0028, 0x6020)
 #define DCM_FramesOfInterestDescription          DcmTagKey(0x0028, 0x6022)
-#define DCM_MaskPointers                         DcmTagKey(0x0028, 0x6030)
+#define DCM_RETIRED_MaskPointers                 DcmTagKey(0x0028, 0x6030)
 #define DCM_RWavePointer                         DcmTagKey(0x0028, 0x6040)
 #define DCM_MaskSubtractionSequence              DcmTagKey(0x0028, 0x6100)
 #define DCM_MaskOperation                        DcmTagKey(0x0028, 0x6101)
@@ -872,7 +874,7 @@
 #define DCM_EntranceDose                         DcmTagKey(0x0040, 0x0302)
 #define DCM_ExposedArea                          DcmTagKey(0x0040, 0x0303)
 #define DCM_DistanceSourceToEntrance             DcmTagKey(0x0040, 0x0306)
-#define DCM_DistanceSourceToSupport              DcmTagKey(0x0040, 0x0307)
+#define DCM_RETIRED_DistanceSourceToSupport      DcmTagKey(0x0040, 0x0307)
 #define DCM_ExposureDoseSequence                 DcmTagKey(0x0040, 0x030e)
 #define DCM_CommentsOnRadiationDose              DcmTagKey(0x0040, 0x0310)
 #define DCM_XRayOutput                           DcmTagKey(0x0040, 0x0312)
@@ -882,7 +884,7 @@
 #define DCM_BillingProcedureStepSequence         DcmTagKey(0x0040, 0x0320)
 #define DCM_FilmConsumptionSequence              DcmTagKey(0x0040, 0x0321)
 #define DCM_BillingSuppliesAndDevicesSequence    DcmTagKey(0x0040, 0x0324)
-#define DCM_ReferencedProcedureStepSequence      DcmTagKey(0x0040, 0x0330)
+#define DCM_RETIRED_ReferencedProcedureStepSequence DcmTagKey(0x0040, 0x0330)
 #define DCM_PerformedSeriesSequence              DcmTagKey(0x0040, 0x0340)
 #define DCM_CommentsOnTheScheduledProcedureStep  DcmTagKey(0x0040, 0x0400)
 #define DCM_SpecimenAccessionNumber              DcmTagKey(0x0040, 0x050a)
@@ -980,6 +982,7 @@
 #define DCM_AnnotationGroupNumber                DcmTagKey(0x0040, 0xa180)
 #define DCM_ModifierCodeSequence                 DcmTagKey(0x0040, 0xa195)
 #define DCM_MeasuredValueSequence                DcmTagKey(0x0040, 0xa300)
+#define DCM_NumberQualifierCodeSequence          DcmTagKey(0x0040, 0xa301)
 #define DCM_NumericValue                         DcmTagKey(0x0040, 0xa30a)
 #define DCM_PredecessorDocumentsSequence         DcmTagKey(0x0040, 0xa360)
 #define DCM_ReferencedRequestSequence            DcmTagKey(0x0040, 0xa370)
@@ -1154,10 +1157,8 @@
 #define DCM_CertificateType                      DcmTagKey(0x0400, 0x0110)
 #define DCM_CertificateOfSigner                  DcmTagKey(0x0400, 0x0115)
 #define DCM_Signature                            DcmTagKey(0x0400, 0x0120)
-#define DCM_TimestampType                        DcmTagKey(0x0400, 0x0305)
-#define DCM_Timestamp                            DcmTagKey(0x0400, 0x0310)
-#define DCM_RevisionUID                          DcmTagKey(0x0400, 0x0500)
-#define DCM_RevisionDateTime                     DcmTagKey(0x0400, 0x0510)
+#define DCM_CertifiedTimestampType               DcmTagKey(0x0400, 0x0305)
+#define DCM_CertifiedTimestamp                   DcmTagKey(0x0400, 0x0310)
 #define DCM_CodeTableGroupLength                 DcmTagKey(0x1000, 0x0000)
 #define DCM_EscapeTriplet                        DcmTagKey(0x1000, 0x0010)
 #define DCM_RunLengthTriplet                     DcmTagKey(0x1000, 0x0011)
