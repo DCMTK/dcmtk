@@ -10,10 +10,10 @@
 ** Implementation of class DcmDicomDir
 **
 **
-** Last Update:         $Author: joergr $
-** Update Date:         $Date: 1998-07-15 15:51:49 $
+** Last Update:         $Author: meichel $
+** Update Date:         $Date: 1999-03-22 09:58:55 $
 ** Source File:         $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcdicdir.cc,v $
-** CVS/RCS Revision:    $Revision: 1.21 $
+** CVS/RCS Revision:    $Revision: 1.22 $
 ** Status:              $State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -198,13 +198,13 @@ E_Condition DcmDicomDir::createNewElements( const char* fileSetID )
     // not created or inserted:                            // (0004,1141)
                                                            // (0004,1142)
 
-    DcmTag firstRecTag( DCM_RootDirectoryFirstRecord );
+    DcmTag firstRecTag( DCM_OffsetOfTheFirstDirectoryRecordOfTheRootDirectoryEntity );
     uloP = new DcmUnsignedLongOffset( firstRecTag );       // (0004,1200)
     uloP->putUint32(Uint32(0));
     if ( dset.insert( uloP, OFFalse ) != EC_Normal )
         delete uloP;
 
-    DcmTag lastRecTag( DCM_RootDirectoryLastRecord );
+    DcmTag lastRecTag( DCM_OffsetOfTheLastDirectoryRecordOfTheRootDirectoryEntity );
     uloP = new DcmUnsignedLongOffset( lastRecTag );        // (0004,1202)
     uloP->putUint32(Uint32(0));
     if ( dset.insert( uloP, OFFalse ) != EC_Normal )
@@ -359,16 +359,16 @@ debug(3, ( "DcmDicomDir::resolveAllOffsets() Item-Offset[%d]=0x%8.8lx", i, fileP
 
     }
     resolveGivenOffsets( &dset, itOffsets, maxitems,
-        DCM_RootDirectoryFirstRecord );
+        DCM_OffsetOfTheFirstDirectoryRecordOfTheRootDirectoryEntity );
     resolveGivenOffsets( &dset, itOffsets, maxitems,
-        DCM_RootDirectoryLastRecord );
+        DCM_OffsetOfTheLastDirectoryRecordOfTheRootDirectoryEntity );
 
     resolveGivenOffsets( &localDirRecSeq, itOffsets, maxitems,
-        DCM_NextDirectoryRecordOffset );
+        DCM_OffsetOfTheNextDirectoryRecord );
     resolveGivenOffsets( &localDirRecSeq, itOffsets, maxitems,
-        DCM_LowerLevelDirectoryOffset );
+        DCM_OffsetOfReferencedLowerLevelDirectoryEntity );
     resolveGivenOffsets( &localDirRecSeq, itOffsets, maxitems,
-        DCM_DirectoryRecordOffset );
+        DCM_MRDRDirectoryRecordOffset );
 
     delete itOffsets;
 
@@ -414,11 +414,11 @@ E_Condition DcmDicomDir::moveRecordToTree( DcmDirectoryRecord *startRec,
 
         DcmUnsignedLongOffset *offElem;
         offElem = lookForOffsetElem( startRec,
-                               DCM_LowerLevelDirectoryOffset );
+                               DCM_OffsetOfReferencedLowerLevelDirectoryEntity );
         if ( offElem != (DcmUnsignedLongOffset*)NULL )
             lowerRec = (DcmDirectoryRecord*)offElem->getNextRecord();
         offElem = lookForOffsetElem( startRec,
-                               DCM_NextDirectoryRecordOffset );
+                               DCM_OffsetOfTheNextDirectoryRecord );
         if ( offElem != (DcmUnsignedLongOffset*)NULL )
             nextRec = (DcmDirectoryRecord*)offElem->getNextRecord();
 
@@ -488,7 +488,7 @@ E_Condition DcmDicomDir::convertLinearToTree()
     // Suche ersten Directory Record:
     DcmDirectoryRecord *firstRootRecord = (DcmDirectoryRecord*)NULL;
     DcmUnsignedLongOffset *offElem = lookForOffsetElem( &dset,
-                   DCM_RootDirectoryFirstRecord );
+                   DCM_OffsetOfTheFirstDirectoryRecordOfTheRootDirectoryEntity );
     if ( offElem != (DcmUnsignedLongOffset*)NULL )
                 firstRootRecord = (DcmDirectoryRecord*)offElem->getNextRecord();
 
@@ -628,16 +628,16 @@ E_Condition DcmDicomDir::convertAllPointer( DcmDataset &dset,          // inout
 
     E_Condition e1, e2, e3, e4, e5;
     e1 = convertGivenPointer( &dset, itOffsets, num,
-               DCM_RootDirectoryFirstRecord );
+               DCM_OffsetOfTheFirstDirectoryRecordOfTheRootDirectoryEntity );
     e2 = convertGivenPointer( &dset, itOffsets, num,
-               DCM_RootDirectoryLastRecord );
+               DCM_OffsetOfTheLastDirectoryRecordOfTheRootDirectoryEntity );
 
     e3 = convertGivenPointer( &localDirRecSeq, itOffsets, num,
-               DCM_NextDirectoryRecordOffset );
+               DCM_OffsetOfTheNextDirectoryRecord );
     e4 = convertGivenPointer( &localDirRecSeq, itOffsets, num,
-               DCM_LowerLevelDirectoryOffset );
+               DCM_OffsetOfReferencedLowerLevelDirectoryEntity );
     e5 = convertGivenPointer( &localDirRecSeq, itOffsets, num,
-               DCM_DirectoryRecordOffset );
+               DCM_MRDRDirectoryRecordOffset );
     if (    e1 == EC_InvalidVR
          || e2 == EC_InvalidVR
          || e3 == EC_InvalidVR
@@ -677,7 +677,7 @@ E_Condition DcmDicomDir::copyRecordPtrToSQ( DcmDirectoryRecord *record,
                 if ( i == lastIndex )
                     lastReturnItem = subRecord;         // letztes Item merken
                                                         // nextPointer anpassen
-                DcmTag nextRecTag( DCM_NextDirectoryRecordOffset );
+                DcmTag nextRecTag( DCM_OffsetOfTheNextDirectoryRecord );
                 uloP = new DcmUnsignedLongOffset( nextRecTag );
                 uloP->putUint32(Uint32(0));
                 uloP->setNextRecord( nextRec );
@@ -692,7 +692,7 @@ debug(2, ( "DcmDicomDir::copyRecordPtrToSQ() Next Offset-Element(0x%4.4hx,0x%4.4
                 copyRecordPtrToSQ( subRecord, toDirSQ, firstRec, lastRec );
 
                                                         // lowerPointer anpassen
-                DcmTag lowerRefTag( DCM_LowerLevelDirectoryOffset );
+                DcmTag lowerRefTag( DCM_OffsetOfReferencedLowerLevelDirectoryEntity );
                 uloP = new DcmUnsignedLongOffset( lowerRefTag );
                 uloP->putUint32(Uint32(0));
                 uloP->setNextRecord( *firstRec );
@@ -753,13 +753,13 @@ debug(5, ( "DcmDicomDir::convertTreeToLinear() copied %d pointer of unresolvedRe
 
     // Setze Zeiger auf ersten Directory Record:
     DcmUnsignedLongOffset *offElem = lookForOffsetElem( &dset,
-                   DCM_RootDirectoryFirstRecord );
+                   DCM_OffsetOfTheFirstDirectoryRecordOfTheRootDirectoryEntity );
     if ( offElem != (DcmUnsignedLongOffset*)NULL )
         offElem->setNextRecord( *firstRootRecord );
 
     // Setze Zeiger auf letzen Directory Record:
     offElem = lookForOffsetElem( &dset,
-                    DCM_RootDirectoryLastRecord );
+                    DCM_OffsetOfTheLastDirectoryRecordOfTheRootDirectoryEntity );
     if ( offElem != (DcmUnsignedLongOffset*)NULL )
         offElem->setNextRecord( *lastRootRecord );
 
@@ -1309,7 +1309,12 @@ Cdebug(1, refCounter[k].fileOffset==refMRDR->numberOfReferences,
 /*
 ** CVS/RCS Log:
 ** $Log: dcdicdir.cc,v $
-** Revision 1.21  1998-07-15 15:51:49  joergr
+** Revision 1.22  1999-03-22 09:58:55  meichel
+** Reworked data dictionary based on the 1998 DICOM edition and the latest
+**   supplement versions. Corrected dcmtk applications for minor changes
+**   in attribute name constants.
+**
+** Revision 1.21  1998/07/15 15:51:49  joergr
 ** Removed several compiler warnings reported by gcc 2.8.1 with
 ** additional options, e.g. missing copy constructors and assignment
 ** operators, initialization of member variables in the body of a

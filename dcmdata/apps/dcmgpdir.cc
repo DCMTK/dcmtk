@@ -10,10 +10,10 @@
 ** CD-R Image Interchange Profile (Supplement 19).
 **
 **
-** Last Update:		$Author: joergr $
-** Update Date:		$Date: 1998-07-15 15:55:04 $
+** Last Update:		$Author: meichel $
+** Update Date:		$Date: 1999-03-22 09:58:48 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/apps/dcmgpdir.cc,v $
-** CVS/RCS Revision:	$Revision: 1.25 $
+** CVS/RCS Revision:	$Revision: 1.26 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -949,8 +949,8 @@ checkImage(const OFString& fname, DcmFileFormat *ff)
     if (!inventAttributes) {
 	if (!checkExistsWithValue(d, DCM_PatientID, fname)) ok = OFFalse;
     }
-    /* PatientName is type 2 in DICOMDIR and images */
-    if (!checkExists(d, DCM_PatientName, fname)) ok = OFFalse;
+    /* PatientsName is type 2 in DICOMDIR and images */
+    if (!checkExists(d, DCM_PatientsName, fname)) ok = OFFalse;
     /* StudyDate is type 1 in DICOMDIR and type 2 in images */
     if (!inventAttributes) {
 	if (!checkExistsWithValue(d, DCM_StudyDate, fname)) ok = OFFalse;
@@ -991,13 +991,13 @@ checkImage(const OFString& fname, DcmFileFormat *ff)
     } else if (cmp(mediaSOPClassUID, UID_StandaloneModalityLUTStorage)) {
 	/* a modality lut */
 	if (!inventAttributes) {
-	    if (!checkExistsWithValue(d, DCM_LUTNumber, fname)) 
+	    if (!checkExistsWithValue(d, DCM_LookupTableNumber, fname)) 
 		ok = OFFalse;
 	}
     } else if (cmp(mediaSOPClassUID, UID_StandaloneVOILUTStorage)) {
 	/* a voi lut */
 	if (!inventAttributes) {
-	    if (!checkExistsWithValue(d, DCM_LUTNumber, fname)) 
+	    if (!checkExistsWithValue(d, DCM_LookupTableNumber, fname)) 
 		ok = OFFalse;
 	}
     } else if (cmp(mediaSOPClassUID, UID_StandaloneCurveStorage) ||
@@ -1040,7 +1040,7 @@ DcmDirectoryRecord* buildPatientRecord(
     
     dcmCopyOptString(rec, DCM_SpecificCharacterSet, d);
     dcmCopyString(rec, DCM_PatientID, d);
-    dcmCopyString(rec, DCM_PatientName, d);
+    dcmCopyString(rec, DCM_PatientsName, d);
 
     return rec;
 }
@@ -1195,7 +1195,7 @@ buildModalityLutRecord(
     }
     
     dcmCopyOptString(rec, DCM_SpecificCharacterSet, d);
-    dcmCopyString(rec, DCM_LUTNumber, d);
+    dcmCopyString(rec, DCM_LookupTableNumber, d);
 
     return rec;
 }
@@ -1221,7 +1221,7 @@ buildVoiLutRecord(
     }
     
     dcmCopyOptString(rec, DCM_SpecificCharacterSet, d);
-    dcmCopyString(rec, DCM_LUTNumber, d);
+    dcmCopyString(rec, DCM_LookupTableNumber, d);
 
     return rec;
 }
@@ -1295,10 +1295,10 @@ recordMatchesDataset(DcmDirectoryRecord *rec, DcmItem* dataset)
 			dcmFindString(dataset, DCM_PatientID));
 	} else {
 	    /* if there is no value for PatientID in the dataset
-	    ** try using the PatientName
+	    ** try using the PatientsName
 	    */
-	    match = cmp(dcmFindString(rec, DCM_PatientName),
-			dcmFindString(dataset, DCM_PatientName));
+	    match = cmp(dcmFindString(rec, DCM_PatientsName),
+			dcmFindString(dataset, DCM_PatientsName));
 	}
 	break;
     case ERT_Study:
@@ -1563,7 +1563,7 @@ insertSortedUnder(DcmDirectoryRecord *parent, DcmDirectoryRecord *child)
     case ERT_ModalityLut:
     case ERT_VoiLut:
 	/* try to insert based on LUTNumber */
-	cond = insertWithISCriterion(parent, child, DCM_LUTNumber);
+	cond = insertWithISCriterion(parent, child, DCM_LookupTableNumber);
 	break;
     case ERT_Series:
 	/* try to insert based on SeriesNumber */
@@ -1942,13 +1942,13 @@ inventMissingImageLevelAttributes(DcmDirectoryRecord *parent)
 	    break;
 	case ERT_ModalityLut:
 	case ERT_VoiLut:
-	    if (!dcmTagExistsWithValue(rec, DCM_LUTNumber)) {
+	    if (!dcmTagExistsWithValue(rec, DCM_LookupTableNumber)) {
 		OFString defNum = defaultNumber(lutNumber++);
 		cerr << "Warning: " <<  recordTypeToName(rec->getRecordType())
 		     << "Record (origin: " << rec->getRecordsOriginFile() 
 		     << ") inventing LutNumber: "
 		     << defNum << endl;
-		dcmInsertString(rec, DCM_LUTNumber, defNum);
+		dcmInsertString(rec, DCM_LookupTableNumber, defNum);
 	    }
 	    break;
 	case ERT_Curve:
@@ -2150,7 +2150,7 @@ createDicomdirFromFiles(OFList<OFString>& fileNames)
 	dcmInsertString(dicomdir->getDirFileFormat().getDataset(), 
 			DCM_FileSetDescriptorFileID, fsdfid);
 	dcmInsertString(dicomdir->getDirFileFormat().getDataset(), 
-			DCM_FileSetCharacterSet, scsfsdf);
+			DCM_SpecificCharacterSetOfFileSetDescriptorFile, scsfsdf);
     }
 
     iter = goodFileNames.begin();
@@ -2284,7 +2284,12 @@ expandFileNames(OFList<OFString>& fileNames, OFList<OFString>& expandedNames)
 /*
 ** CVS/RCS Log:
 ** $Log: dcmgpdir.cc,v $
-** Revision 1.25  1998-07-15 15:55:04  joergr
+** Revision 1.26  1999-03-22 09:58:48  meichel
+** Reworked data dictionary based on the 1998 DICOM edition and the latest
+**   supplement versions. Corrected dcmtk applications for minor changes
+**   in attribute name constants.
+**
+** Revision 1.25  1998/07/15 15:55:04  joergr
 ** Removed compiler warnings reported by gcc 2.8.1 with additional
 ** options, e.g. missing const declaration of char pointers. Replaced
 ** tabs by spaces.

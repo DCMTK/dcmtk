@@ -8,10 +8,10 @@
 ** Implementation of class DcmDirectoryRecord
 **
 **
-** Last Update:         $Author: joergr $
-** Update Date:         $Date: 1998-07-15 15:51:53 $
+** Last Update:         $Author: meichel $
+** Update Date:         $Date: 1999-03-22 09:58:59 $
 ** Source File:         $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcdirrec.cc,v $
-** CVS/RCS Revision:    $Revision: 1.23 $
+** CVS/RCS Revision:    $Revision: 1.24 $
 ** Status:              $State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -577,7 +577,7 @@ DcmDirectoryRecord* DcmDirectoryRecord::lookForReferencedMRDR()
     if ( !elementList->empty() )
     {
         DcmStack stack;
-        if ( this->search( DCM_DirectoryRecordOffset,
+        if ( this->search( DCM_MRDRDirectoryRecordOffset,
                            stack, ESM_fromHere, OFFalse ) == EC_Normal )
         {
             if ( stack.top()->ident() == EVR_up )
@@ -852,7 +852,7 @@ E_Condition DcmDirectoryRecord::fillElementsAndReadSOP(
     DcmUnsignedLongOffset *uloP;
     DcmUniqueIdentifier *uiP;
 
-    DcmTag nextOffTag( DCM_NextDirectoryRecordOffset ); // (0004,1400)
+    DcmTag nextOffTag( DCM_OffsetOfTheNextDirectoryRecord ); // (0004,1400)
     uloP = new DcmUnsignedLongOffset( nextOffTag );
     uloP->putUint32(Uint32(0));
     if ( insert( uloP, OFFalse ) != EC_Normal )
@@ -860,7 +860,7 @@ E_Condition DcmDirectoryRecord::fillElementsAndReadSOP(
 
     this->setRecordInUseFlag( 0xffff );                     // (0004,1410)
 
-    DcmTag lowerOffTag( DCM_LowerLevelDirectoryOffset );
+    DcmTag lowerOffTag( DCM_OffsetOfReferencedLowerLevelDirectoryEntity );
     uloP = new DcmUnsignedLongOffset( lowerOffTag );        // (0004,1420)
     uloP->putUint32(Uint32(0));
     if ( insert( uloP, OFFalse ) != EC_Normal )
@@ -886,7 +886,7 @@ E_Condition DcmDirectoryRecord::fillElementsAndReadSOP(
         delete this->remove( refFileTag );
     }
 
-    DcmTag mrdrOffTag( DCM_DirectoryRecordOffset );         // (0004,1504)
+    DcmTag mrdrOffTag( DCM_MRDRDirectoryRecordOffset );         // (0004,1504)
     if ( indirectViaMRDR )
     {
         // erzeuge Zeiger-Attribut auf MRDR
