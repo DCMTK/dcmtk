@@ -21,10 +21,9 @@
  *
  *  Purpose: DicomDocument (Header)
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2003-07-04 13:25:54 $
- *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/didocu.h,v $
- *  CVS/RCS Revision: $Revision: 1.17 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2003-12-08 18:20:13 $
+ *  CVS/RCS Revision: $Revision: 1.18 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -32,8 +31,8 @@
  */
 
 
-#ifndef __DIDOCU_H
-#define __DIDOCU_H
+#ifndef DIDOCU_H
+#define DIDOCU_H
 
 #include "osconfig.h"
 #include "dctypes.h"
@@ -61,7 +60,10 @@ class DcmSequenceOfItems;
  *  class declaration  *
  *---------------------*/
 
-/** Interface class to DICOM data management (dcmdata)
+/** Interface class to DICOM data management (dcmdata).
+ *  NB: This is an internal class of module dcmimgle/dcmimage.  Please do not
+ *      use it for accessing DICOM data structures.  Instead use the classes
+ *      and functions provided by dcmdata (e.g. class DcmFileFormat, DcmItem).
  */
 class DiDocument
   : public DiObjectCounter
@@ -374,7 +376,12 @@ class DiDocument
  *
  * CVS/RCS Log:
  * $Log: didocu.h,v $
- * Revision 1.17  2003-07-04 13:25:54  meichel
+ * Revision 1.18  2003-12-08 18:20:13  joergr
+ * Added comment that class DiDocument is meant for internal purposes only.
+ * Removed leading underscore characters from preprocessor symbols (reserved
+ * symbols). Updated CVS header.
+ *
+ * Revision 1.17  2003/07/04 13:25:54  meichel
  * Replaced forward declarations for OFString with explicit includes,
  *   needed when compiling with HAVE_STD_STRING
  *
