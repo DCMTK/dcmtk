@@ -22,9 +22,9 @@
  *  Purpose: export display curves to a text file
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-02-11 16:31:56 $
+ *  Update Date:      $Date: 2003-02-11 16:38:50 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/apps/dcmdspfn.cc,v $
- *  CVS/RCS Revision: $Revision: 1.14 $
+ *  CVS/RCS Revision: $Revision: 1.15 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -275,18 +275,6 @@ int main(int argc, char *argv[])
                     OUTPUT << "writing output file: " << opt_ofname << endl;
                 if (!disp->writeCurveData(opt_ofname, opt_ifname != NULL))
                     app.printError("can't write output file");
-/*
-cout << disp->getDDLforValue(-1.0) << endl;
-cout << disp->getDDLforValue(0.0) << endl;
-cout << disp->getDDLforValue(1.0) << endl;
-cout << disp->getDDLforValue(3.0) << endl;
-cout << disp->getDDLforValue(4.0) << endl;
-
-cout << disp->getValueforDDL(0) << endl;
-cout << disp->getValueforDDL(150) << endl;
-cout << disp->getValueforDDL(255) << endl;
-cout << disp->getValueforDDL(256) << endl;
-*/
             } else
                 app.printError("can't create display curve");
             delete disp;
@@ -331,7 +319,10 @@ cout << disp->getValueforDDL(256) << endl;
  *
  * CVS/RCS Log:
  * $Log: dcmdspfn.cc,v $
- * Revision 1.14  2003-02-11 16:31:56  joergr
+ * Revision 1.15  2003-02-11 16:38:50  joergr
+ * Removed debug/test code.
+ *
+ * Revision 1.14  2003/02/11 16:31:56  joergr
  * Added two new functions to determine the luminance/OD value of a particular
  * DDL according to the device's characteristic curve and vice versa.
  *
