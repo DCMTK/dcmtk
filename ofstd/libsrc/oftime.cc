@@ -22,8 +22,8 @@
  *  Purpose: Class for time functions (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-12-17 15:23:18 $
- *  CVS/RCS Revision: $Revision: 1.11 $
+ *  Update Date:      $Date: 2003-12-18 16:28:22 $
+ *  CVS/RCS Revision: $Revision: 1.12 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -334,6 +334,11 @@ OFBool OFTime::setCurrentTime(const time_t &tt)
         {
             /* retrieve and store the time zone */
             TimeZone = (lt->tm_hour - gt->tm_hour) + OFstatic_cast(double, lt->tm_min - gt->tm_min) / 60;
+            /* correct for "day overflow" */
+            if (TimeZone < -12)
+                TimeZone += 24;
+            else if (TimeZone > 12)
+                TimeZone -= 24;
         } else {
             /* could not retrieve the time zone */
             TimeZone = 0;
@@ -565,7 +570,10 @@ ostream& operator<<(ostream& stream, const OFTime &timeVal)
  *
  * CVS/RCS Log:
  * $Log: oftime.cc,v $
- * Revision 1.11  2003-12-17 15:23:18  joergr
+ * Revision 1.12  2003-12-18 16:28:22  joergr
+ * Fixed bug in timezone calculation (difference of local time from UTC).
+ *
+ * Revision 1.11  2003/12/17 15:23:18  joergr
  * Fixed bug/inconsistency in comparison operators of class OFTime. Now the
  * "time overflow" is handled correctly.
  *
