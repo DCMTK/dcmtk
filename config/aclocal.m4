@@ -7,13 +7,17 @@ dnl
 dnl Authors: Andreas Barth, Marco Eichelberg
 dnl
 dnl Last Update:  $Author: meichel $
-dnl Revision:     $Revision: 1.21 $
+dnl Revision:     $Revision: 1.22 $
 dnl Status:       $State: Exp $
 dnl
-dnl $Id: aclocal.m4,v 1.21 2002-12-16 11:00:57 meichel Exp $
+dnl $Id: aclocal.m4,v 1.22 2002-12-16 16:19:25 meichel Exp $
 dnl
 dnl $Log: aclocal.m4,v $
-dnl Revision 1.21  2002-12-16 11:00:57  meichel
+dnl Revision 1.22  2002-12-16 16:19:25  meichel
+dnl Added configure test that checks if extern "C" inclusion
+dnl   of <math.h> fails, e.g. on HP/UX 10 and WIN32
+dnl
+dnl Revision 1.21  2002/12/16 11:00:57  meichel
 dnl Added configure test that checks if signal handler functions
 dnl   require ellipse (...) parameters, for example on Irix5.
 dnl
@@ -1249,6 +1253,53 @@ if eval "test \"`echo $ac_cv_signal_handler_with_ellipse`\" = yes"; then
   AC_MSG_RESULT(yes)
 changequote(, )dnl
   ac_tr_prototype=SIGNAL_HANDLER_WITH_ELLIPSE
+changequote([, ])dnl
+  AC_DEFINE_UNQUOTED($ac_tr_prototype)
+  ifelse([$2], , :, [$2])
+else
+  AC_MSG_RESULT(no)
+  ifelse([$3], , , [$3])
+fi
+])
+
+
+
+dnl AC_INCLUDE_MATH_H_AS_CXX checks if <math.h> must be included as a C++ 
+dnl   include file (i.e. without extern "C"). Some sytems (Win32, HP/UX 10)
+dnl   use C++ language features in <math.h>
+dnl
+dnl Note:
+dnl   Since GNU autoheader does not support this macro, you must create
+dnl   an entry in your acconfig.h.
+dnl Examples:
+dnl   in configure.in: 
+dnl     AC_INCLUDE_MATH_H_AS_CXX
+dnl   in acconfig.h:
+dnl     #undef INCLUDE_MATH_H_AS_CXX
+
+dnl AC_INCLUDE_MATH_H_AS_CXX(HEADER-FILE..., ACTION-IF-FOUND [, ACTION-IF-NOT-FOUND])
+AC_DEFUN(AC_INCLUDE_MATH_H_AS_CXX,
+[AC_MSG_CHECKING([if <math.h> fails if included extern "C"])
+AC_CACHE_VAL(ac_cv_include_math_h_as_cxx,
+[AC_TRY_COMPILE([
+extern "C"
+{
+#include<math.h>
+}
+],
+[
+],
+eval "ac_cv_include_math_h_as_cxx=no", 
+[AC_TRY_COMPILE([
+#include<math.h>
+],
+[
+],
+eval "ac_cv_include_math_h_as_cxx=yes", eval "ac_cv_include_math_h_as_cxx=no")])])
+if eval "test \"`echo $ac_cv_include_math_h_as_cxx`\" = yes"; then
+  AC_MSG_RESULT(yes)
+changequote(, )dnl
+  ac_tr_prototype=INCLUDE_MATH_H_AS_CXX
 changequote([, ])dnl
   AC_DEFINE_UNQUOTED($ac_tr_prototype)
   ifelse([$2], , :, [$2])

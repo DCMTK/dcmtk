@@ -22,9 +22,9 @@
  *  Purpose: encapsulation of old style vs. ISO C++ standard includes
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-12-11 15:54:47 $
+ *  Update Date:      $Date: 2002-12-16 16:20:45 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/include/Attic/ofstdinc.h,v $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -177,12 +177,12 @@ END_EXTERN_C
 #ifdef USE_STD_CXX_INCLUDES
 #include <cmath>
 #elif defined(HAVE_MATH_H)
-#ifndef _WIN32
-// MSVC declares C++ templates in <math.h>, don't include as extern "C"
+#ifndef INCLUDE_MATH_H_AS_CXX
+// some systems use C++ language features in <math.h>
 BEGIN_EXTERN_C
 #endif
 #include <math.h>
-#ifndef _WIN32
+#ifndef INCLUDE_MATH_H_AS_CXX
 END_EXTERN_C
 #endif
 #endif
@@ -303,7 +303,11 @@ END_EXTERN_C
 /*
  * CVS/RCS Log:
  * $Log: ofstdinc.h,v $
- * Revision 1.5  2002-12-11 15:54:47  meichel
+ * Revision 1.6  2002-12-16 16:20:45  meichel
+ * Added configure test that checks if extern "C" inclusion
+ *   of <math.h> fails, e.g. on HP/UX 10 and WIN32
+ *
+ * Revision 1.5  2002/12/11 15:54:47  meichel
  * Added empty namespace std declaration, needed on MSVC.
  *
  * Revision 1.4  2002/11/28 17:16:39  meichel

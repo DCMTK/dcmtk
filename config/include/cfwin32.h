@@ -642,6 +642,9 @@
 /* Define if signal handlers need ellipse (...) parameters */
 /* #undef SIGNAL_HANDLER_WITH_ELLIPSE */
 
+/* Define if <math.h> fails if included extern "C" */
+#define INCLUDE_MATH_H_AS_CXX 1
+
 #endif /* _WIN32 */
 
 #endif /* CFWIN32_H */
