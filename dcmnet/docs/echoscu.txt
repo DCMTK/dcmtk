@@ -43,6 +43,8 @@ network options:
     -ppc  --propose-pc  [n]umber: integer (1..128)
                         propose n presentation contexts
   other network options:
+    -to   --timeout     [s]econds: integer (default: unlimited)
+                        timeout for connection requests
     -pdu  --max-pdu     [n]umber of bytes: integer [4096..131072]
                         set max receive pdu to n bytes (default: 16384)
           --repeat      [n]umber: integer

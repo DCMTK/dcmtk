@@ -22,9 +22,9 @@
  *  Purpose: Query/Retrieve Service Class User (C-MOVE operation)
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-11-27 13:04:30 $
+ *  Update Date:      $Date: 2002-11-29 09:15:50 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/apps/movescu.cc,v $
- *  CVS/RCS Revision: $Revision: 1.46 $
+ *  CVS/RCS Revision: $Revision: 1.47 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -287,6 +287,8 @@ main(int argc, char *argv[])
       cmd.addOption("--propose-big",            "-xb",       "propose all uncompressed TS, explicit VR\nbig endian first");
       cmd.addOption("--propose-implicit",       "-xi",       "propose implicit VR little endian TS only");
     cmd.addSubGroup("other network options:");
+      cmd.addOption("--timeout",                "-to", 1,    "[s]econds: integer (default: unlimited)", "timeout for connection requests");
+
       OFString opt6 = "[n]umber: integer (default: ";
       sprintf(tempstr, "%ld", (long)opt_retrievePort);
       opt6 += tempstr;
@@ -406,6 +408,13 @@ main(int argc, char *argv[])
       if (cmd.findOption("--propose-big"))      opt_out_networkTransferSyntax = EXS_BigEndianExplicit;
       if (cmd.findOption("--propose-implicit")) opt_out_networkTransferSyntax = EXS_LittleEndianImplicit;
       cmd.endOptionBlock();
+
+      if (cmd.findOption("--timeout")) 
+      {
+        OFCmdSignedInt opt_timeout = 0;
+        app.checkValue(cmd.getValueAndCheckMin(opt_timeout, 1));
+        dcmConnectionTimeout.set((Sint32) opt_timeout);
+      }
 
       if (cmd.findOption("--port"))    app.checkValue(cmd.getValueAndCheckMinMax(opt_retrievePort, 1, 65535));
       if (cmd.findOption("--max-pdu")) app.checkValue(cmd.getValueAndCheckMinMax(opt_maxPDU, ASC_MINIMUMPDUSIZE, ASC_MAXIMUMPDUSIZE));
@@ -1316,7 +1325,11 @@ cmove(T_ASC_Association * assoc, const char *fname)
 ** CVS Log
 **
 ** $Log: movescu.cc,v $
-** Revision 1.46  2002-11-27 13:04:30  meichel
+** Revision 1.47  2002-11-29 09:15:50  meichel
+** Introduced new command line option --timeout for controlling the
+**   connection request timeout.
+**
+** Revision 1.46  2002/11/27 13:04:30  meichel
 ** Adapted module dcmnet to use of new header file ofstdinc.h
 **
 ** Revision 1.45  2002/11/26 08:43:21  meichel

@@ -71,6 +71,8 @@ network options:
                                  big endian first
     -xi   --propose-implicit     propose implicit VR little endian TS only
   other network options:
+    -to   --timeout              [s]econds: integer (default: unlimited)
+                                 timeout for connection requests
     +P    --port                 [n]umber: integer (default: 104)
                                  port number for incoming associations
     -pdu  --max-pdu              [n]umber of bytes: integer [4096..131072]

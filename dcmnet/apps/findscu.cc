@@ -22,9 +22,9 @@
  *  Purpose: Query/Retrieve Service Class User (C-FIND operation)
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-11-27 13:04:30 $
+ *  Update Date:      $Date: 2002-11-29 09:15:49 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/apps/findscu.cc,v $
- *  CVS/RCS Revision: $Revision: 1.37 $
+ *  CVS/RCS Revision: $Revision: 1.38 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -249,6 +249,7 @@ main(int argc, char *argv[])
       sprintf(tempstr, "%ld", (long)ASC_MAXIMUMPDUSIZE);
       opt4 += tempstr;
       opt4 += "]";
+      cmd.addOption("--timeout",                "-to",   1, "[s]econds: integer (default: unlimited)", "timeout for connection requests");
       cmd.addOption("--max-pdu",                "-pdu",  1,  opt4.c_str(), opt3.c_str());
       cmd.addOption("--repeat",                          1,  "[n]umber: integer", "repeat n times");
       cmd.addOption("--abort",                               "abort association instead of releasing it");
@@ -318,6 +319,13 @@ main(int argc, char *argv[])
         dcmEnableUnlimitedTextVRGeneration.set(OFFalse);
       }
       cmd.endOptionBlock();
+
+      if (cmd.findOption("--timeout")) 
+      {
+        OFCmdSignedInt opt_timeout = 0;
+        app.checkValue(cmd.getValueAndCheckMin(opt_timeout, 1));
+        dcmConnectionTimeout.set((Sint32) opt_timeout);
+      }
 
       if (cmd.findOption("--max-pdu")) app.checkValue(cmd.getValueAndCheckMinMax(opt_maxReceivePDULength, ASC_MINIMUMPDUSIZE, ASC_MAXIMUMPDUSIZE));
       if (cmd.findOption("--repeat"))  app.checkValue(cmd.getValueAndCheckMin(opt_repeatCount, 1));
@@ -772,7 +780,11 @@ cfind(T_ASC_Association * assoc, const char *fname)
 /*
 ** CVS Log
 ** $Log: findscu.cc,v $
-** Revision 1.37  2002-11-27 13:04:30  meichel
+** Revision 1.38  2002-11-29 09:15:49  meichel
+** Introduced new command line option --timeout for controlling the
+**   connection request timeout.
+**
+** Revision 1.37  2002/11/27 13:04:30  meichel
 ** Adapted module dcmnet to use of new header file ofstdinc.h
 **
 ** Revision 1.36  2002/11/26 08:43:20  meichel

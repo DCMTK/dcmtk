@@ -22,9 +22,9 @@
  *  Purpose: Verification Service Class User (C-ECHO operation)
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-11-28 16:58:35 $
+ *  Update Date:      $Date: 2002-11-29 09:15:49 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/apps/echoscu.cc,v $
- *  CVS/RCS Revision: $Revision: 1.30 $
+ *  CVS/RCS Revision: $Revision: 1.31 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -228,7 +228,7 @@ main(int argc, char *argv[])
       if (cmd.findOption("--timeout")) 
       {
         OFCmdSignedInt opt_timeout = 0;
-        app.checkValue(cmd.getValueAndCheckMin(opt_timeout, 0));
+        app.checkValue(cmd.getValueAndCheckMin(opt_timeout, 1));
         dcmConnectionTimeout.set((Sint32) opt_timeout);
       }
 
@@ -484,7 +484,11 @@ cecho(T_ASC_Association * assoc, unsigned long num_repeat)
 /*
 ** CVS Log
 ** $Log: echoscu.cc,v $
-** Revision 1.30  2002-11-28 16:58:35  meichel
+** Revision 1.31  2002-11-29 09:15:49  meichel
+** Introduced new command line option --timeout for controlling the
+**   connection request timeout.
+**
+** Revision 1.30  2002/11/28 16:58:35  meichel
 ** Introduced new command line option --timeout for controlling the
 **   connection request timeout.
 **

@@ -22,9 +22,9 @@
  *  Purpose: Storage Service Class User (C-STORE operation)
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-11-27 13:04:32 $
+ *  Update Date:      $Date: 2002-11-29 09:15:51 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/apps/storescu.cc,v $
- *  CVS/RCS Revision: $Revision: 1.51 $
+ *  CVS/RCS Revision: $Revision: 1.52 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -65,6 +65,14 @@ END_EXTERN_C
 #include "dcuid.h"    /* for dcmtk version name */
 #include "dicom.h"    /* for DICOM_APPLICATION_REQUESTOR */
 #include "dcostrmz.h"    /* for dcmZlibCompressionLevel */
+
+#ifdef ON_THE_FLY_COMPRESSION
+#include "djdecode.h"  /* for dcmjpeg decoders */
+#include "djencode.h"  /* for dcmjpeg encoders */
+#include "dcrledrg.h"  /* for DcmRLEDecoderRegistration */
+#include "dcrleerg.h"  /* for DcmRLEEncoderRegistration */
+#endif
+
 
 #ifdef WITH_OPENSSL
 #include "tlstrans.h"
@@ -229,6 +237,8 @@ main(int argc, char *argv[])
 #endif
 
     cmd.addSubGroup("other network options:");
+      cmd.addOption("--timeout",     "-to", 1, "[s]econds: integer (default: unlimited)", "timeout for connection requests");
+
       OFString opt3 = "set max receive pdu to n bytes (default: ";
       sprintf(tempstr, "%ld", (long)ASC_DEFAULTMAXPDU);
       opt3 += tempstr;
@@ -391,6 +401,13 @@ main(int argc, char *argv[])
         dcmEnableUnlimitedTextVRGeneration.set(OFFalse);
       }
       cmd.endOptionBlock();
+
+      if (cmd.findOption("--timeout")) 
+      {
+        OFCmdSignedInt opt_timeout = 0;
+        app.checkValue(cmd.getValueAndCheckMin(opt_timeout, 1));
+        dcmConnectionTimeout.set((Sint32) opt_timeout);
+      }
 
       if (cmd.findOption("--max-pdu")) app.checkValue(cmd.getValueAndCheckMinMax(opt_maxReceivePDULength, ASC_MINIMUMPDUSIZE, ASC_MAXIMUMPDUSIZE));
 
@@ -565,6 +582,21 @@ main(int argc, char *argv[])
         fileNameList.push_back(currentFilename);
       }
    }
+
+#ifdef ON_THE_FLY_COMPRESSION
+    // register global JPEG decompression codecs
+    DJDecoderRegistration::registerCodecs();
+
+    // register global JPEG compression codecs
+    DJEncoderRegistration::registerCodecs();
+
+    // register RLE compression codec
+    DcmRLEEncoderRegistration::registerCodecs();
+
+    // register RLE decompression codec
+    DcmRLEDecoderRegistration::registerCodecs();
+#endif
+
 
     /* make sure data dictionary is loaded */
     if (!dcmDataDict.isDictionaryLoaded()) {
@@ -850,6 +882,16 @@ main(int argc, char *argv[])
             exitCode = (lastStatusCode >> 8); // only the least significant byte is relevant as exit code
         }
     }
+
+#ifdef ON_THE_FLY_COMPRESSION
+    // deregister JPEG codecs
+    DJDecoderRegistration::cleanup();
+    DJEncoderRegistration::cleanup();
+
+    // deregister RLE codecs
+    DcmRLEDecoderRegistration::cleanup();
+    DcmRLEEncoderRegistration::cleanup();
+#endif
 
 #ifdef DEBUG
     dcmDataDict.clear();  /* useful for debugging with dmalloc */
@@ -1351,7 +1393,11 @@ cstore(T_ASC_Association * assoc, const OFString& fname)
 /*
 ** CVS Log
 ** $Log: storescu.cc,v $
-** Revision 1.51  2002-11-27 13:04:32  meichel
+** Revision 1.52  2002-11-29 09:15:51  meichel
+** Introduced new command line option --timeout for controlling the
+**   connection request timeout.
+**
+** Revision 1.51  2002/11/27 13:04:32  meichel
 ** Adapted module dcmnet to use of new header file ofstdinc.h
 **
 ** Revision 1.50  2002/11/26 08:43:22  meichel

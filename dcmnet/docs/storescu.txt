@@ -68,6 +68,8 @@ network options:
     +cl   --compression-level  compression level: 0-9 (default 6)
                                0=uncompressed, 1=fastest, 9=best compression
   other network options:
+    -to   --timeout            [s]econds: integer (default: unlimited)
+                               timeout for connection requests
     -pdu  --max-pdu            [n]umber of bytes: integer [4096..131072]
                                set max receive pdu to n bytes (default: 16384)
           --max-send-pdu       [n]umber of bytes: integer [4096..131072]
