@@ -61,10 +61,10 @@
 ** Module Prefix: none 
 ** 
 **
-** Last Update:		$Author: hewett $
-** Update Date:		$Date: 1997-09-11 16:02:15 $
+** Last Update:		$Author: meichel $
+** Update Date:		$Date: 1999-04-19 08:42:35 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/include/Attic/dcompat.h,v $
-** CVS/RCS Revision:	$Revision: 1.10 $
+** CVS/RCS Revision:	$Revision: 1.11 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -154,6 +154,12 @@ BEGIN_EXTERN_C
 #include <errno.h>
 
 END_EXTERN_C
+
+#ifdef windows
+#include <process.h>
+#include <io.h>
+#include <sys/locking.h>
+#endif
 
 #ifndef EINTR
 /* The WinSock header on Macintosh does not define an EINTR error code */
@@ -355,7 +361,11 @@ END_EXTERN_C
 
 #ifndef HAVE_GETPID
 #ifndef getpid
+#ifdef windows
+#define getpid()	(_getpid())
+#else
 #define getpid()	((int) 9000)
+#endif
 #endif
 #endif
 
@@ -380,7 +390,19 @@ END_EXTERN_C
 #endif
 
 int access(const char* path, int amode);
-#endif
+#else /* HAVE_ACCESS */
+
+#ifdef WIN32
+/* windows defines access but not the constants */
+#ifndef R_OK
+#define W_OK 02 /* Write permission */
+#define R_OK 04 /* Read permission */
+#define F_OK 00 /* Existance only */
+#define X_OK 00 /* execute permission has no meaning under windows, treat as existance */
+#endif /* R_OK */
+#endif /* WIN32 */
+
+#endif /* HAVE_ACCESS */
 
 #ifndef HAVE_STRERROR
 char *strerror(int e);
@@ -395,7 +417,10 @@ char *tempnam(char *dir, char *pfx);
 /*
 ** CVS Log
 ** $Log: dcompat.h,v $
-** Revision 1.10  1997-09-11 16:02:15  hewett
+** Revision 1.11  1999-04-19 08:42:35  meichel
+** Added constants for access() on Win32.
+**
+** Revision 1.10  1997/09/11 16:02:15  hewett
 ** Conditionally included more standard header files into the
 ** the dcmnet compatibility header file to allow appropriate
 ** declarations to be picked up.  For Signus GnuWin32.
