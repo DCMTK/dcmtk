@@ -22,9 +22,9 @@
  *  Purpose: Convert DICOM Images to PPM or PGM using the dcmimage library.
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-02-03 16:46:48 $
+ *  Update Date:      $Date: 1999-02-08 13:12:57 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/apps/dcm2pnm.cc,v $
- *  CVS/RCS Revision: $Revision: 1.22 $
+ *  CVS/RCS Revision: $Revision: 1.23 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -50,7 +50,9 @@ END_EXTERN_C
 #include "dcmimage.h"
 #include "dcuid.h"      /* for dcmtk version name */
 
+#include "ofconapp.h"
 #include "ofcmdln.h"
+
 #ifdef DEBUG
  #include "oftimer.h"
 #endif
@@ -62,7 +64,9 @@ END_EXTERN_C
 #define LICENSE_CONTRACTOR ""
 #define LICENSE_EXPIRY     ""
 
-static char rcsid[] = "$dcmtk: dcm2pnm v"
+#define OFFIS_CONSOLE_APPLICATION "dcm2pnm"
+
+static char rcsid[] = "$dcmtk: " OFFIS_CONSOLE_APPLICATION " v"
   OFFIS_DCMIMAGE_VERSION " " OFFIS_DCMIMAGE_RELEASEDATE 
   " using dcmtk v" OFFIS_DCMTK_VERSION " $"
 #ifdef USE_LICENSE
@@ -73,51 +77,9 @@ static char rcsid[] = "$dcmtk: dcm2pnm v"
 
 // ********************************************
 
-
-static void
-printHeader()
-{
-    cerr << rcsid << endl << endl;
-    cerr << "dcm2pnm: Convert DICOM file to PGM or PPM" << endl;
-}
-
-
-static void
-printUsage(const OFCommandLine &cmd)
-{
-    OFString str;
-    cmd.getOptionString(str);
-    printHeader();
-    cerr << "usage: dcm2pnm [options] dcmfile-in [pnmfile-out]" << endl;
-    cerr << "options are:" << endl << endl;
-    cerr << str << endl;
-    exit(0);
-}
-
-static void
-printError(const OFString &str)
-{
-    printHeader();
-    cerr << "error: " << str << endl;
-    exit(1);
-}
-
-static void
-checkValue(OFCommandLine &cmd,
-           const OFCommandLine::E_ValueStatus status)
-{
-    OFString str;
-    if (status != OFCommandLine::VS_Normal)
-    {
-        cmd.getStatusString(status, str);
-        printError(str);
-    }
-}
-
-// ********************************************
-
 int main(int argc, char *argv[])
 {
+    OFConsoleApplication app(OFFIS_CONSOLE_APPLICATION , "Convert DICOM images to PGM or PNM", rcsid);
     OFCommandLine cmd;
     OFString str;
 
@@ -266,246 +228,228 @@ int main(int argc, char *argv[])
      cmd.addOption("--write-8-bit-pnm",  "+fa",   "write 8-bit ASCII PGM/PPM");
      cmd.addOption("--write-16-bit-pnm", "+fA",   "write 16-bit ASCII PGM/PPM");
 
-    switch (cmd.parseLine(argc, argv))    
+    if (app.parseCommandLine(cmd, argc, argv, "dcm-in [ppm-out]", 1, 2))
     {
-        case OFCommandLine::PS_NoArguments:
-            printUsage(cmd);
-            break;
-        case OFCommandLine::PS_UnknownOption:
-            cmd.getStatusString(OFCommandLine::PS_UnknownOption, str);
-            printError(str);
-            break;
-        case OFCommandLine::PS_MissingValue:
-            cmd.getStatusString(OFCommandLine::PS_MissingValue, str);
-            printError(str);
-            break;
-        case OFCommandLine::PS_Normal:
-            if ((cmd.getArgCount() == 1) && cmd.findOption("--help"))
-                printUsage(cmd);
-            else if (cmd.getParamCount() == 0)
-                printError("Missing input file");
-            else if ((cmd.getParamCount() == 1) && (!cmd.findOption("--no-output")))
-                printError("Missing output file");
-            else if (cmd.getParamCount() > 2)
-                printError("Too many arguments");
-            else 
+        if ((cmd.getParamCount() == 1) && (!cmd.findOption("--no-output")))
+            app.printError("Missing output file");
+        else 
+        {
+            cmd.getParam(1, opt_ifname);
+            cmd.getParam(2, opt_ofname);
+
+            cmd.beginOptionBlock();
+            if (cmd.findOption("--read-as-dataset"))
+                opt_readAsDataset = 1;
+            if (cmd.findOption("--auto-read-mode"))
+                opt_readAsDataset = 0;
+            cmd.endOptionBlock();
+
+            cmd.beginOptionBlock();
+            if (cmd.findOption("--transfer-syntax-recognition"))
+                opt_transferSyntax = EXS_Unknown;
+            if (cmd.findOption("--little-endian-implicit"))
+                opt_transferSyntax = EXS_LittleEndianImplicit;
+            if (cmd.findOption("--little-endian-explicit"))
+                opt_transferSyntax = EXS_LittleEndianExplicit;
+            if (cmd.findOption("--big-endian-explicit"))
+                opt_transferSyntax = EXS_BigEndianExplicit;
+            cmd.endOptionBlock();
+
+            if (cmd.findOption("--accept-acr-nema"))
+                opt_compatibilityMode |= CIF_AcrNemaCompatibility;
+            if (cmd.findOption("--accept-incorrect-palettes"))
+                opt_compatibilityMode |= CIF_WrongPaletteAttributeTags;
+
+            cmd.beginOptionBlock();
+            if (cmd.findOption("--frame"))
+                app.checkValue(cmd.getValue(opt_Frame, 1));
+            if (cmd.findOption("--frame-range"))
             {
-                cmd.getParam(1, opt_ifname);
-                cmd.getParam(2, opt_ofname);
-
-                cmd.beginOptionBlock();
-                if (cmd.findOption("--read-as-dataset"))
-                    opt_readAsDataset = 1;
-                if (cmd.findOption("--auto-read-mode"))
-                    opt_readAsDataset = 0;
-                cmd.endOptionBlock();
-
-                cmd.beginOptionBlock();
-                if (cmd.findOption("--transfer-syntax-recognition"))
-                    opt_transferSyntax = EXS_Unknown;
-                if (cmd.findOption("--little-endian-implicit"))
-                    opt_transferSyntax = EXS_LittleEndianImplicit;
-                if (cmd.findOption("--little-endian-explicit"))
-                    opt_transferSyntax = EXS_LittleEndianExplicit;
-                if (cmd.findOption("--big-endian-explicit"))
-                    opt_transferSyntax = EXS_BigEndianExplicit;
-                cmd.endOptionBlock();
-
-                if (cmd.findOption("--accept-acr-nema"))
-                    opt_compatibilityMode |= CIF_AcrNemaCompatibility;
-                if (cmd.findOption("--accept-incorrect-palettes"))
-                    opt_compatibilityMode |= CIF_WrongPaletteAttributeTags;
-
-                cmd.beginOptionBlock();
-                if (cmd.findOption("--frame"))
-                    checkValue(cmd, cmd.getValue(opt_Frame, 1));
-                if (cmd.findOption("--frame-range"))
-                {
-                    checkValue(cmd, cmd.getValue(opt_Frame, 1));
-                    checkValue(cmd, cmd.getValue(opt_FrameCount, 1));
-                    opt_MultiFrame = 1;
-                }
-                if (cmd.findOption("--all-frames"))
-                {
-                    opt_FrameCount = 0;
-                    opt_MultiFrame = 1;
-                }
-                cmd.endOptionBlock();
-                
-                if (cmd.findOption("--grayscale"))
-                    opt_ConvertToGrayscale = 1;
-
-                if (cmd.findOption("--clip-region"))
-                {
-                    checkValue(cmd, cmd.getValue(opt_left));
-                    checkValue(cmd, cmd.getValue(opt_top));
-                    checkValue(cmd, cmd.getValue(opt_width, 1));
-                    checkValue(cmd, cmd.getValue(opt_height,1));
-                    opt_useClip = 1;
-                }
-
-                cmd.beginOptionBlock();
-                if (cmd.findOption("--rotate-left"))
-                    opt_rotateDegree = 270;
-                if (cmd.findOption("--rotate-right"))
-                    opt_rotateDegree = 90;
-                if (cmd.findOption("--rotate-top-down"))
-                    opt_rotateDegree = 180;                
-                cmd.endOptionBlock();
-
-                cmd.beginOptionBlock();
-                if (cmd.findOption("--flip-horizontally"))
-                    opt_flipType = 1;
-                if (cmd.findOption("--flip-vertically"))
-                    opt_flipType = 2;
-                if (cmd.findOption("--flip-both-axes"))
-                    opt_flipType = 3;
-                cmd.endOptionBlock();
-
-                cmd.beginOptionBlock();
-                if (cmd.findOption("--pixel-aspect-ratio"))
-                    opt_useAspectRatio = 1;
-                if (cmd.findOption("--ignore-pixel-aspect"))
-                    opt_useAspectRatio = 0;
-                cmd.endOptionBlock();
-
-                cmd.beginOptionBlock();
-                if (cmd.findOption("--interpolate"))
-                    opt_useInterpolation = 1;
-                if (cmd.findOption("--no-interpolation"))
-                    opt_useInterpolation = 0;
-                cmd.endOptionBlock();
-
-                cmd.beginOptionBlock();
-                if (cmd.findOption("--no-scaling"))
-                    opt_scaleType = 0;
-                if (cmd.findOption("--scale-x-factor"))
-                {
-                    opt_scaleType = 1;
-                    checkValue(cmd, cmd.getValue(opt_scale_factor, 0.0, OFFalse));
-                }
-                if (cmd.findOption("--scale-y-factor"))
-                {
-                    opt_scaleType = 2;
-                    checkValue(cmd, cmd.getValue(opt_scale_factor, 0.0, OFFalse));
-                }
-                if (cmd.findOption("--scale-x-size"))
-                {
-                    opt_scaleType = 3;
-                    checkValue(cmd, cmd.getValue(opt_scale_size, 1));
-                }
-                if (cmd.findOption("--scale-y-size"))
-                {
-                    opt_scaleType = 4;
-                    checkValue(cmd, cmd.getValue(opt_scale_size, 1));
-                }
-                cmd.endOptionBlock();
-
-                cmd.beginOptionBlock();
-                if (cmd.findOption("--no-windowing"))
-                    opt_windowType = 0;
-                if (cmd.findOption("--use-window"))
-                {
-                    opt_windowType = 1;
-                    checkValue(cmd, cmd.getValue(opt_windowParameter, 1));
-                }
-                if (cmd.findOption("--use-voi-lut"))
-                {
-                    opt_windowType = 2;
-                    checkValue(cmd, cmd.getValue(opt_windowParameter, 1));
-                }
-                if (cmd.findOption("--min-max-window"))
-                    opt_windowType = 3;
-                if (cmd.findOption("--min-max-window-n"))
-                    opt_windowType = 6;
-                if (cmd.findOption("--histogram-window"))
-                {
-                    opt_windowType = 4;
-                    checkValue(cmd, cmd.getValue(opt_windowParameter, 0, 100));
-                }
-                if (cmd.findOption("--set-window"))
-                {
-                    opt_windowType = 5;
-                    checkValue(cmd, cmd.getValue(opt_windowCenter));
-                    checkValue(cmd, cmd.getValue(opt_windowWidth, 0.0, OFFalse));
-                }
-                cmd.endOptionBlock();
-
-                cmd.beginOptionBlock();
-                if (cmd.findOption("--identity-shape"))
-                {
-                    opt_usePresShape = 1;
-                    opt_presShape = ESP_Identity;
-                }
-                if (cmd.findOption("--inverse-shape"))
-                {
-                    opt_usePresShape = 1;
-                    opt_presShape = ESP_Inverse;
-                }
-                cmd.endOptionBlock();
-                
-                if (cmd.findOption("--display-file"))
-                    checkValue(cmd, cmd.getValue(opt_displayFile));
-
-                cmd.beginOptionBlock();
-                if (cmd.findOption("--no-overlays"))
-                {
-                    opt_O_used = 1;
-                    for (i = 0; i < 16; i++) opt_Overlay[i] = 0;
-                }
-                if (cmd.findOption("--display-overlay", 0, 1))
-                {
-                    do {
-                        unsigned long l;
-                        checkValue(cmd, cmd.getValue(l, 1, 16));
-// cout << "overlay: " << l << endl;
-                        if (!opt_O_used)
-                        {
-                            for (i = 0; i < 16; i++) opt_Overlay[i] = 0; 
-                            opt_O_used = 1;
-                        }
-                        if (l > 0)
-                            opt_Overlay[l - 1]=1;
-                        else
-                            for (i = 0; i < 16; i++) opt_Overlay[i] = 2; 
-                    } while (cmd.findOption("--display-overlay", 0, 2));
-                }
-                cmd.endOptionBlock();
-
-                cmd.beginOptionBlock();
-                if (cmd.findOption("--overlay-replace"))
-                    opt_OverlayMode = 1;
-                if (cmd.findOption("--overlay-threshold-replace"))
-                    opt_OverlayMode = 2;
-                if (cmd.findOption("--overlay-complement"))
-                    opt_OverlayMode = 3;
-                if (cmd.findOption("--overlay-roi"))
-                    opt_OverlayMode = 4;
-                cmd.endOptionBlock();
-
-                if (cmd.findOption("--overlay-foreground"))
-                    checkValue(cmd, cmd.getValue(opt_foregroundDensity, 0.0, 1.0));
-                if (cmd.findOption("--overlay-threshold"))
-                    checkValue(cmd, cmd.getValue(opt_thresholdDensity, 0.0, 1.0));
-
-                if (cmd.findOption("--verbose"))
-                    opt_verboseMode = 1;
-                if (cmd.findOption("--image-info"))
-                    opt_imageInfo = 1;
-                if (cmd.findOption("--debug-level"))
-                    checkValue(cmd, cmd.getValue(opt_debugMode, 0, 9));
-
-                cmd.beginOptionBlock();
-                if (cmd.findOption("--no-output"))
-                    opt_suppressOutput = 1;
-                if (cmd.findOption("--write-raw-pnm"))
-                    opt_fileType = 1;
-                if (cmd.findOption("--write-8-bit-pnm"))
-                    opt_fileType = 2;
-                if (cmd.findOption("--write-16-bit-pnm"))
-                    opt_fileType = 3;
-                cmd.endOptionBlock();
+                app.checkValue(cmd.getValue(opt_Frame, 1));
+                app.checkValue(cmd.getValue(opt_FrameCount, 1));
+                opt_MultiFrame = 1;
             }
+            if (cmd.findOption("--all-frames"))
+            {
+                opt_FrameCount = 0;
+                opt_MultiFrame = 1;
+            }
+            cmd.endOptionBlock();
+            
+            if (cmd.findOption("--grayscale"))
+                opt_ConvertToGrayscale = 1;
+
+            if (cmd.findOption("--clip-region"))
+            {
+                app.checkValue(cmd.getValue(opt_left));
+                app.checkValue(cmd.getValue(opt_top));
+                app.checkValue(cmd.getValue(opt_width, 1));
+                app.checkValue(cmd.getValue(opt_height,1));
+                opt_useClip = 1;
+            }
+
+            cmd.beginOptionBlock();
+            if (cmd.findOption("--rotate-left"))
+                opt_rotateDegree = 270;
+            if (cmd.findOption("--rotate-right"))
+                opt_rotateDegree = 90;
+            if (cmd.findOption("--rotate-top-down"))
+                opt_rotateDegree = 180;                
+            cmd.endOptionBlock();
+
+            cmd.beginOptionBlock();
+            if (cmd.findOption("--flip-horizontally"))
+                opt_flipType = 1;
+            if (cmd.findOption("--flip-vertically"))
+                opt_flipType = 2;
+            if (cmd.findOption("--flip-both-axes"))
+                opt_flipType = 3;
+            cmd.endOptionBlock();
+
+            cmd.beginOptionBlock();
+            if (cmd.findOption("--pixel-aspect-ratio"))
+                opt_useAspectRatio = 1;
+            if (cmd.findOption("--ignore-pixel-aspect"))
+                opt_useAspectRatio = 0;
+            cmd.endOptionBlock();
+
+            cmd.beginOptionBlock();
+            if (cmd.findOption("--interpolate"))
+                opt_useInterpolation = 1;
+            if (cmd.findOption("--no-interpolation"))
+                opt_useInterpolation = 0;
+            cmd.endOptionBlock();
+
+            cmd.beginOptionBlock();
+            if (cmd.findOption("--no-scaling"))
+                opt_scaleType = 0;
+            if (cmd.findOption("--scale-x-factor"))
+            {
+                opt_scaleType = 1;
+                app.checkValue(cmd.getValue(opt_scale_factor, 0.0, OFFalse));
+            }
+            if (cmd.findOption("--scale-y-factor"))
+            {
+                opt_scaleType = 2;
+                app.checkValue(cmd.getValue(opt_scale_factor, 0.0, OFFalse));
+            }
+            if (cmd.findOption("--scale-x-size"))
+            {
+                opt_scaleType = 3;
+                app.checkValue(cmd.getValue(opt_scale_size, 1));
+            }
+            if (cmd.findOption("--scale-y-size"))
+            {
+                opt_scaleType = 4;
+                app.checkValue(cmd.getValue(opt_scale_size, 1));
+            }
+            cmd.endOptionBlock();
+
+            cmd.beginOptionBlock();
+            if (cmd.findOption("--no-windowing"))
+                opt_windowType = 0;
+            if (cmd.findOption("--use-window"))
+            {
+                opt_windowType = 1;
+                app.checkValue(cmd.getValue(opt_windowParameter, 1));
+            }
+            if (cmd.findOption("--use-voi-lut"))
+            {
+                opt_windowType = 2;
+                app.checkValue(cmd.getValue(opt_windowParameter, 1));
+            }
+            if (cmd.findOption("--min-max-window"))
+                opt_windowType = 3;
+            if (cmd.findOption("--min-max-window-n"))
+                opt_windowType = 6;
+            if (cmd.findOption("--histogram-window"))
+            {
+                opt_windowType = 4;
+                app.checkValue(cmd.getValue(opt_windowParameter, 0, 100));
+            }
+            if (cmd.findOption("--set-window"))
+            {
+                opt_windowType = 5;
+                app.checkValue(cmd.getValue(opt_windowCenter));
+                app.checkValue(cmd.getValue(opt_windowWidth, 0.0, OFFalse));
+            }
+            cmd.endOptionBlock();
+
+            cmd.beginOptionBlock();
+            if (cmd.findOption("--identity-shape"))
+            {
+                opt_usePresShape = 1;
+                opt_presShape = ESP_Identity;
+            }
+            if (cmd.findOption("--inverse-shape"))
+            {
+                opt_usePresShape = 1;
+                opt_presShape = ESP_Inverse;
+            }
+            cmd.endOptionBlock();
+            
+            if (cmd.findOption("--display-file"))
+                app.checkValue(cmd.getValue(opt_displayFile));
+
+            cmd.beginOptionBlock();
+            if (cmd.findOption("--no-overlays"))
+            {
+                opt_O_used = 1;
+                for (i = 0; i < 16; i++) opt_Overlay[i] = 0;
+            }
+            if (cmd.findOption("--display-overlay", 0, 1))
+            {
+                do {
+                    unsigned long l;
+                    app.checkValue(cmd.getValue(l, 1, 16));
+// cout << "overlay: " << l << endl;
+                    if (!opt_O_used)
+                    {
+                        for (i = 0; i < 16; i++) opt_Overlay[i] = 0; 
+                        opt_O_used = 1;
+                    }
+                    if (l > 0)
+                        opt_Overlay[l - 1]=1;
+                    else
+                        for (i = 0; i < 16; i++) opt_Overlay[i] = 2; 
+                } while (cmd.findOption("--display-overlay", 0, 2));
+            }
+            cmd.endOptionBlock();
+
+            cmd.beginOptionBlock();
+            if (cmd.findOption("--overlay-replace"))
+                opt_OverlayMode = 1;
+            if (cmd.findOption("--overlay-threshold-replace"))
+                opt_OverlayMode = 2;
+            if (cmd.findOption("--overlay-complement"))
+                opt_OverlayMode = 3;
+            if (cmd.findOption("--overlay-roi"))
+                opt_OverlayMode = 4;
+            cmd.endOptionBlock();
+
+            if (cmd.findOption("--overlay-foreground"))
+                app.checkValue(cmd.getValue(opt_foregroundDensity, 0.0, 1.0));
+            if (cmd.findOption("--overlay-threshold"))
+                app.checkValue(cmd.getValue(opt_thresholdDensity, 0.0, 1.0));
+
+            if (cmd.findOption("--verbose"))
+                opt_verboseMode = 1;
+            if (cmd.findOption("--image-info"))
+                opt_imageInfo = 1;
+            if (cmd.findOption("--debug-level"))
+                app.checkValue(cmd.getValue(opt_debugMode, 0, 9));
+
+            cmd.beginOptionBlock();
+            if (cmd.findOption("--no-output"))
+                opt_suppressOutput = 1;
+            if (cmd.findOption("--write-raw-pnm"))
+                opt_fileType = 1;
+            if (cmd.findOption("--write-8-bit-pnm"))
+                opt_fileType = 2;
+            if (cmd.findOption("--write-16-bit-pnm"))
+                opt_fileType = 3;
+            cmd.endOptionBlock();
+        }
     }
 
 
@@ -553,10 +497,10 @@ int main(int argc, char *argv[])
     DicomImage *di = new DicomImage(dfile, xfer, opt_compatibilityMode); /* warning: dfile is Dataset or Fileformat! */
 //    DicomImage *di = new DicomImage(dfile, xfer, opt_compatibilityMode, opt_Frame - 1, opt_FrameCount);
     if (di == NULL)
-        printError("Out of memory");
+        app.printError("Out of memory");
 
     if (di->getStatus() != EIS_Normal)
-        printError(DicomImage::getString(di->getStatus()));
+        app.printError(DicomImage::getString(di->getStatus()));
 
 
 /* ---------------------------- */
@@ -656,9 +600,9 @@ int main(int argc, char *argv[])
 
          DicomImage *newimage = di->createMonochromeImage();
          if (newimage==NULL)
-             printError("Out of memory.\n");
+             app.printError("Out of memory.\n");
          else if (newimage->getStatus() != EIS_Normal)
-             printError(DicomImage::getString(newimage->getStatus()));
+             app.printError(DicomImage::getString(newimage->getStatus()));
          else
          {
              delete di; 
@@ -814,7 +758,7 @@ int main(int argc, char *argv[])
                  opt_left, opt_top, opt_width, opt_height);
              return 1;
          } else if (newimage->getStatus() != EIS_Normal)
-             printError(DicomImage::getString(newimage->getStatus()));
+             app.printError(DicomImage::getString(newimage->getStatus()));
          else
          {
              delete di;
@@ -937,13 +881,13 @@ int main(int argc, char *argv[])
                 break;
         }
         if (newimage==NULL)
-            printError("Out of memory.\n");
+            app.printError("Out of memory.\n");
         else if (newimage->getStatus() != EIS_Normal)
-            printError(DicomImage::getString(newimage->getStatus()));
+            app.printError(DicomImage::getString(newimage->getStatus()));
         else
         {
-             delete di; 
-             di = newimage;
+            delete di; 
+            di = newimage;
         }
     }
 
@@ -1010,7 +954,10 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcm2pnm.cc,v $
- * Revision 1.22  1999-02-03 16:46:48  joergr
+ * Revision 1.23  1999-02-08 13:12:57  joergr
+ * Moved output/checking functionality to new OFConsoleApplication class.
+ *
+ * Revision 1.22  1999/02/03 16:46:48  joergr
  * Added new option to select a display file (for calibration).
  *
  * Revision 1.21  1999/01/20 14:34:25  joergr
