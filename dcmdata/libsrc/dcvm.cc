@@ -8,10 +8,10 @@
 ** 	Functions to get the VM and values from a string
 **
 **
-** Last Update:		$Author: meichel $
-** Update Date:		$Date: 1996-03-26 09:59:33 $
+** Last Update:		$Author: savonge $
+** Update Date:		$Date: 1996-04-29 13:35:27 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcvm.cc,v $
-** CVS/RCS Revision:	$Revision: 1.2 $
+** CVS/RCS Revision:	$Revision: 1.3 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -27,10 +27,13 @@
 unsigned long getVMFromString(const char * val)
 {
     unsigned long vm = 1;
-   
-    for(const char * s = strchr(val, '\\'); s; s = strchr(++s, '\\'))
-	vm++;
-
+    if (val == NULL)
+	vm = 0; 
+    else
+    {
+	for(const char * s = strchr(val, '\\'); s; s = strchr(++s, '\\'))
+	    vm++;
+    }
     return vm;
 }
 
@@ -67,7 +70,10 @@ char * getFirstValueFromString(const char * & s)
 /*
 ** CVS/RCS Log:
 ** $Log: dcvm.cc,v $
-** Revision 1.2  1996-03-26 09:59:33  meichel
+** Revision 1.3  1996-04-29 13:35:27  savonge
+** -checking NULL string in getVMFromString
+**
+** Revision 1.2  1996/03/26 09:59:33  meichel
 ** corrected bug (deletion of const char *) which prevented compilation on NeXT
 **
 ** Revision 1.1  1996/01/29 13:38:30  andreas
