@@ -22,9 +22,9 @@
  *  Purpose: Implements TIFF interface for plugable image formats
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-11-30 16:47:56 $
+ *  Update Date:      $Date: 2001-12-06 10:10:59 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/include/Attic/dipitiff.h,v $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -41,12 +41,7 @@
 
 #include "diplugin.h"
 
-BEGIN_EXTERN_C
-#include <tiffconf.h>  /* for SUPPORT macros */
-END_EXTERN_C
-
 class DiImage;
-
 
 /** describes the different types of compression supported by
  *  the TIFF plugin.  Enumeration depends on capabilities
@@ -54,20 +49,14 @@ class DiImage;
  */
 enum DiTIFFCompression
 {
-
-#ifdef PACKBITS_SUPPORT
   /// PackBits compression (RLE)
   E_tiffPackBitsCompression,
-#endif
   
-#ifdef LZW_SUPPORT
   /// LZW compression
   E_tiffLZWCompression,
-#endif
 
   /// uncompressed
   E_tiffNoCompression
-
 };
 
 /** describes the optional predictor used with TIFF LZW compression
@@ -147,7 +136,10 @@ class DiTIFFPlugin
  *
  * CVS/RCS Log:
  * $Log: dipitiff.h,v $
- * Revision 1.1  2001-11-30 16:47:56  meichel
+ * Revision 1.2  2001-12-06 10:10:59  meichel
+ * Removed references to tiffconf.h which does not exist on all installations
+ *
+ * Revision 1.1  2001/11/30 16:47:56  meichel
  * Added TIFF export option to dcm2pnm and dcmj2pnm
  *
  *

@@ -22,9 +22,9 @@
  *  Purpose: Implements TIFF interface for plugable image formats
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-11-30 16:47:57 $
+ *  Update Date:      $Date: 2001-12-06 10:11:00 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/libsrc/dipitiff.cc,v $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -47,14 +47,7 @@ END_EXTERN_C
 
 DiTIFFPlugin::DiTIFFPlugin()
 : DiPluginFormat()
-// compression defaults to the best algorithm we have
-#ifdef LZW_SUPPORT
 , compressionType(E_tiffLZWCompression)
-#elif defined(PACKBITS_SUPPORT)
-, compressionType(E_tiffPackBitsCompression)
-#else
-, compressionType(E_tiffNoCompression)
-#endif
 , predictor(E_tiffLZWPredictorDefault)
 , rowsPerStrip(0)
 {
@@ -106,16 +99,12 @@ int DiTIFFPlugin::write(
         unsigned short opt_compression = COMPRESSION_NONE;
         switch (compressionType)
         {
-#ifdef PACKBITS_SUPPORT
-          case E_tiffPackBitsCompression:
-            opt_compression = COMPRESSION_PACKBITS;
-            break;
-#endif
-#ifdef LZW_SUPPORT
           case E_tiffLZWCompression:
             opt_compression = COMPRESSION_LZW;
             break;
-#endif
+          case E_tiffPackBitsCompression:
+            opt_compression = COMPRESSION_PACKBITS;
+            break;
           case E_tiffNoCompression:
             opt_compression = COMPRESSION_NONE;
             break;          
@@ -127,7 +116,7 @@ int DiTIFFPlugin::write(
 
         OFBool OK = OFTrue;
         unsigned char *bytedata = (unsigned char *)data;
-        TIFF *tif = TIFFFdOpen(stream_fd, "(unnamed)", "w");
+        TIFF *tif = TIFFFdOpen(stream_fd, "TIFF", "w");
         if (tif)
         {
           /* Set TIFF parameters. */
@@ -193,7 +182,10 @@ const int dipitiff_cc_dummy_to_keep_linker_from_moaning = 0;
  *
  * CVS/RCS Log:
  * $Log: dipitiff.cc,v $
- * Revision 1.1  2001-11-30 16:47:57  meichel
+ * Revision 1.2  2001-12-06 10:11:00  meichel
+ * Removed references to tiffconf.h which does not exist on all installations
+ *
+ * Revision 1.1  2001/11/30 16:47:57  meichel
  * Added TIFF export option to dcm2pnm and dcmj2pnm
  *
  *

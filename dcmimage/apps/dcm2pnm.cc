@@ -22,9 +22,9 @@
  *  Purpose: Convert DICOM Images to PPM or PGM using the dcmimage library.
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-11-30 16:47:53 $
+ *  Update Date:      $Date: 2001-12-06 10:10:56 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/apps/dcm2pnm.cc,v $
- *  CVS/RCS Revision: $Revision: 1.55 $
+ *  CVS/RCS Revision: $Revision: 1.56 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -144,14 +144,8 @@ int main(int argc, char *argv[])
 
 #ifdef WITH_LIBTIFF
     // TIFF parameters  
-#ifdef LZW_SUPPORT
     DiTIFFCompression   opt_tiffCompression = E_tiffLZWCompression;
     DiTIFFLZWPredictor  opt_lzwPredictor = E_tiffLZWPredictorDefault;
-#elif defined(PACKBITS_SUPPORT)
-    DiTIFFCompression   opt_tiffCompression = E_tiffPackBitsCompression;
-#else
-    DiTIFFCompression   opt_tiffCompression = E_tiffNoCompression;
-#endif
     OFCmdUnsignedInt    opt_rowsPerStrip = 0;
 #endif
 
@@ -300,21 +294,12 @@ int main(int argc, char *argv[])
 
 #ifdef WITH_LIBTIFF
      cmd.addSubGroup("TIFF options:");
-#ifdef LZW_SUPPORT
-     // LZW variant of dialogue
       cmd.addOption("--compr-lzw",          "+Tl",     "LZW compression (default)");
-#ifdef PACKBITS_SUPPORT
       cmd.addOption("--compr-rle",          "+Tr",     "RLE compression");
-#endif
       cmd.addOption("--compr-none",         "+Tn",     "uncompressed");
       cmd.addOption("--predictor-default",  "+Pd",     "no LZW predictor (default)");
       cmd.addOption("--predictor-none",     "+Pn",     "LZW predictor 1 (no prediction)");
       cmd.addOption("--predictor-horz",     "+Ph",     "LZW predictor 2 (horizontal differencing)");
-#elif defined(PACKBITS_SUPPORT)
-     // RLE variant of dialogue
-      cmd.addOption("--compr-rle",          "+Tr",     "RLE compression (default)");
-      cmd.addOption("--compr-none",         "+Tn",     "uncompressed");
-#endif
       cmd.addOption("--rows-per-strip",     "+Rs",  1, "[r]ows : integer (default: 0)",
                                                        "rows per strip, default 8K per strip");
 #endif
@@ -598,12 +583,9 @@ int main(int argc, char *argv[])
             app.checkValue(cmd.getValueAndCheckMinMax(opt_thresholdDensity, 0.0, 1.0));
 
 #ifdef WITH_LIBTIFF
-#ifdef LZW_SUPPORT
         cmd.beginOptionBlock();
         if (cmd.findOption("--compr-lzw")) opt_tiffCompression = E_tiffLZWCompression;
-#ifdef PACKBITS_SUPPORT
         if (cmd.findOption("--compr-rle")) opt_tiffCompression = E_tiffPackBitsCompression;
-#endif
         if (cmd.findOption("--compr-none")) opt_tiffCompression = E_tiffNoCompression;
         cmd.endOptionBlock();
 
@@ -611,12 +593,8 @@ int main(int argc, char *argv[])
         if (cmd.findOption("--predictor-default")) opt_lzwPredictor = E_tiffLZWPredictorDefault;
         if (cmd.findOption("--predictor-none")) opt_lzwPredictor = E_tiffLZWPredictorNoPrediction;
         if (cmd.findOption("--predictor-horz")) opt_lzwPredictor = E_tiffLZWPredictorHDifferencing;
-#elif defined(PACKBITS_SUPPORT)
-        cmd.beginOptionBlock();
-        if (cmd.findOption("--compr-rle")) opt_tiffCompression = E_tiffPackBitsCompression;
-        if (cmd.findOption("--compr-none")) opt_tiffCompression = E_tiffNoCompression;
         cmd.endOptionBlock();
-#endif
+
         if (cmd.findOption("--rows-per-strip"))
             app.checkValue(cmd.getValueAndCheckMinMax(opt_rowsPerStrip,0,65535));
 #endif
@@ -1241,7 +1219,10 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcm2pnm.cc,v $
- * Revision 1.55  2001-11-30 16:47:53  meichel
+ * Revision 1.56  2001-12-06 10:10:56  meichel
+ * Removed references to tiffconf.h which does not exist on all installations
+ *
+ * Revision 1.55  2001/11/30 16:47:53  meichel
  * Added TIFF export option to dcm2pnm and dcmj2pnm
  *
  * Revision 1.54  2001/11/29 16:54:09  joergr
