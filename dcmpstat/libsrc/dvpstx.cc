@@ -23,8 +23,8 @@
  *    classes: DVPSTextObject
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1998-12-22 17:57:19 $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  Update Date:      $Date: 1999-01-11 13:35:24 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -300,13 +300,13 @@ E_Condition DVPSTextObject::setBoundingBox(double TLHC_x, double TLHC_y, double 
   boundingBoxTLHC.clear();
   boundingBoxBRHC.clear();
   
-  aPoint[0] = TLHC_x;
-  aPoint[1] = TLHC_y;  
+  aPoint[0] = (Float32)TLHC_x;
+  aPoint[1] = (Float32)TLHC_y;  
   E_Condition result = boundingBoxTLHC.putFloat32Array(aPoint, 2);
   if (result==EC_Normal) 
   {
-    aPoint[0] = BRHC_x;
-    aPoint[1] = BRHC_y;  
+    aPoint[0] = (Float32)BRHC_x;
+    aPoint[1] = (Float32)BRHC_y;  
     result = boundingBoxBRHC.putFloat32Array(aPoint, 2);
   }
   if (result==EC_Normal) 
@@ -510,7 +510,10 @@ const char *DVPSTextObject::getCharsetString()
 
 /*
  *  $Log: dvpstx.cc,v $
- *  Revision 1.3  1998-12-22 17:57:19  meichel
+ *  Revision 1.4  1999-01-11 13:35:24  meichel
+ *  added some explicit type conversions to avoid compiler warnings with VC++.
+ *
+ *  Revision 1.3  1998/12/22 17:57:19  meichel
  *  Implemented Presentation State interface for overlays,
  *    VOI LUTs, VOI windows, curves. Added test program that
  *    allows to add curve data to DICOM images.
