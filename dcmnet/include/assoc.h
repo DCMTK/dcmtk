@@ -68,9 +68,9 @@
 **
 **
 ** Last Update:		$Author: meichel $
-** Update Date:		$Date: 2004-04-07 10:22:09 $
+** Update Date:		$Date: 2004-07-15 08:10:45 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/include/Attic/assoc.h,v $
-** CVS/RCS Revision:	$Revision: 1.22 $
+** CVS/RCS Revision:	$Revision: 1.23 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -487,7 +487,7 @@ OFCondition
 ASC_abortAssociation(T_ASC_Association * association);
 
 OFCondition 
-ASC_dropSCPAssociation(T_ASC_Association * association);
+ASC_dropSCPAssociation(T_ASC_Association * association, int timeout = DUL_TIMEOUT);
 
 OFCondition 
 ASC_dropAssociation(T_ASC_Association * association);
@@ -501,7 +501,10 @@ ASC_destroyAssociation(T_ASC_Association ** association);
 /*
 ** CVS Log
 ** $Log: assoc.h,v $
-** Revision 1.22  2004-04-07 10:22:09  meichel
+** Revision 1.23  2004-07-15 08:10:45  meichel
+** Added optional timeout parameter to ASC_dropSCPAssociation().
+**
+** Revision 1.22  2004/04/07 10:22:09  meichel
 ** Added optional parameter to ASC_initializeNetwork that allows to pass
 **   the DUL_FULLDOMAINNAME option to the DUL layer
 **

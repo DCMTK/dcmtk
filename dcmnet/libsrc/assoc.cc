@@ -68,9 +68,9 @@
 **
 **
 ** Last Update:         $Author: meichel $
-** Update Date:         $Date: 2004-04-07 10:22:10 $
+** Update Date:         $Date: 2004-07-15 08:10:46 $
 ** Source File:         $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/libsrc/assoc.cc,v $
-** CVS/RCS Revision:    $Revision: 1.43 $
+** CVS/RCS Revision:    $Revision: 1.44 $
 ** Status:              $State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -1911,14 +1911,15 @@ ASC_abortAssociation(T_ASC_Association * association)
 }
 
 
+
 OFCondition
-ASC_dropSCPAssociation(T_ASC_Association * association)
+ASC_dropSCPAssociation(T_ASC_Association * association, int timeout)
 {
     /* if already dead don't worry */
     if (association == NULL) return EC_Normal;
     if (association->DULassociation == NULL) return EC_Normal;
 
-    ASC_dataWaiting(association, DUL_TIMEOUT);
+    ASC_dataWaiting(association, timeout);
     OFCondition cond = DUL_DropAssociation(&association->DULassociation);
 
     return cond;
@@ -1977,7 +1978,10 @@ void ASC_activateCallback(T_ASC_Parameters *params, DUL_ModeCallback *cb)
 /*
 ** CVS Log
 ** $Log: assoc.cc,v $
-** Revision 1.43  2004-04-07 10:22:10  meichel
+** Revision 1.44  2004-07-15 08:10:46  meichel
+** Added optional timeout parameter to ASC_dropSCPAssociation().
+**
+** Revision 1.43  2004/04/07 10:22:10  meichel
 ** Added optional parameter to ASC_initializeNetwork that allows to pass
 **   the DUL_FULLDOMAINNAME option to the DUL layer
 **
