@@ -10,9 +10,9 @@
 ** Interface of class DcmFileFormat
 **
 ** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1996-01-05 13:22:55 $
+** Update Date:		$Date: 1996-01-09 11:06:15 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcfilefo.h,v $
-** CVS/RCS Revision:	$Revision: 1.3 $
+** CVS/RCS Revision:	$Revision: 1.4 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -70,8 +70,8 @@ public:
 // stubs are defined that create an error.
 
     virtual E_Condition  insertItem(DcmItem* item,
-				    unsigned long where = DCM_EndOfListIndex);
-    virtual DcmItem*	 remove(unsigned long num);
+				    const unsigned long where = DCM_EndOfListIndex);
+    virtual DcmItem*	 remove(const unsigned long num);
     virtual DcmItem*     remove(DcmItem* item);
     virtual E_Condition  clear();
 };
@@ -82,7 +82,11 @@ public:
 /*
 ** CVS/RCS Log:
 ** $Log: dcfilefo.h,v $
-** Revision 1.3  1996-01-05 13:22:55  andreas
+** Revision 1.4  1996-01-09 11:06:15  andreas
+** New Support for Visual C++
+** Correct problems with inconsistent const declarations
+**
+** Revision 1.3  1996/01/05 13:22:55  andreas
 ** - changed to support new streaming facilities
 ** - more cleanups
 ** - merged read / write methods for block and file transfer

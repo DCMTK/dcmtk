@@ -11,9 +11,9 @@
 **
 **
 ** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1996-01-05 13:22:52 $
+** Update Date:		$Date: 1996-01-09 11:06:14 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcdatset.h,v $
-** CVS/RCS Revision:	$Revision: 1.3 $
+** CVS/RCS Revision:	$Revision: 1.4 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -46,7 +46,7 @@ public:
     inline E_TransferSyntax getOriginalXfer(void) { return Xfer; }
 
     virtual DcmEVR ident() const { return EVR_dataset; }
-    virtual void print(int level = 0);
+    virtual void print(const int level = 0);
 
     virtual E_Condition read(DcmStream & inStream,
 			     const E_TransferSyntax xfer = EXS_Unknown,
@@ -67,7 +67,11 @@ public:
 /*
 ** CVS/RCS Log:
 ** $Log: dcdatset.h,v $
-** Revision 1.3  1996-01-05 13:22:52  andreas
+** Revision 1.4  1996-01-09 11:06:14  andreas
+** New Support for Visual C++
+** Correct problems with inconsistent const declarations
+**
+** Revision 1.3  1996/01/05 13:22:52  andreas
 ** - changed to support new streaming facilities
 ** - more cleanups
 ** - merged read / write methods for block and file transfer

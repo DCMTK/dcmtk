@@ -20,7 +20,7 @@
 #ifndef DCM_DICT_DEFAULT_PATH
 #if defined(unix)
 #define DCM_DICT_DEFAULT_PATH	"/usr/local/dicom/lib/dicom.dic"
-#elif defined(dos)
+#elif defined(dos) || defined(win31)
 #define DCM_DICT_DEFAULT_PATH	"\\dicom.dic"
 #elif defined(macintosh)
 #define DCM_DICT_DEFAULT_PATH	"dicom.dic"

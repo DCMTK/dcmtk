@@ -11,9 +11,9 @@
 ** 
 ** 
 ** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1996-01-05 13:22:51 $
+** Update Date:		$Date: 1996-01-09 11:06:13 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcbuf.h,v $
-** CVS/RCS Revision:	$Revision: 1.1 $
+** CVS/RCS Revision:	$Revision: 1.2 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -25,6 +25,7 @@
 
 #include "osconfig.h"
 #include "dctypes.h"
+#include "dcdefine.h"
 
 
 #define MAIN 	0
@@ -233,7 +234,11 @@ public:
 /*
 ** CVS/RCS Log:
 ** $Log: dcbuf.h,v $
-** Revision 1.1  1996-01-05 13:22:51  andreas
+** Revision 1.2  1996-01-09 11:06:13  andreas
+** New Support for Visual C++
+** Correct problems with inconsistent const declarations
+**
+** Revision 1.1  1996/01/05 13:22:51  andreas
 ** - changed to support new streaming facilities
 ** - more cleanups
 ** - merged read / write methods for block and file transfer

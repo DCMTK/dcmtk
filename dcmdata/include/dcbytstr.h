@@ -10,9 +10,9 @@
 ** Interface of class DcmByteString
 **
 ** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1996-01-05 13:22:52 $
+** Update Date:		$Date: 1996-01-09 11:06:13 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcbytstr.h,v $
-** CVS/RCS Revision:	$Revision: 1.3 $
+** CVS/RCS Revision:	$Revision: 1.4 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -60,8 +60,8 @@ public:
 
     virtual ~DcmByteString();
 
-    virtual DcmEVR ident() const { return EVR_UNKNOWN; } 
-    virtual void print(int level = 0);
+    virtual DcmEVR ident(void) const { return EVR_UNKNOWN; } 
+    virtual void print(const int level = 0);
     virtual unsigned long getVM();
 
 	Uint32 getRealLength(void);
@@ -78,7 +78,7 @@ public:
     char * get();
 
     virtual E_Condition clear();
-    virtual E_Condition verify(BOOL autocorrect = FALSE);
+    virtual E_Condition verify(const BOOL autocorrect = FALSE);
 };
 
 
@@ -87,7 +87,11 @@ public:
 /*
 ** CVS/RCS Log:
 ** $Log: dcbytstr.h,v $
-** Revision 1.3  1996-01-05 13:22:52  andreas
+** Revision 1.4  1996-01-09 11:06:13  andreas
+** New Support for Visual C++
+** Correct problems with inconsistent const declarations
+**
+** Revision 1.3  1996/01/05 13:22:52  andreas
 ** - changed to support new streaming facilities
 ** - more cleanups
 ** - merged read / write methods for block and file transfer

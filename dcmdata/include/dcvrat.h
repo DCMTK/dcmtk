@@ -10,9 +10,9 @@
 ** Interface of class DcmAttributeTag
 **
 ** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1996-01-05 13:23:03 $
+** Update Date:		$Date: 1996-01-09 11:06:17 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcvrat.h,v $
-** CVS/RCS Revision:	$Revision: 1.3 $
+** CVS/RCS Revision:	$Revision: 1.4 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -37,7 +37,7 @@ class DcmAttributeTag : public DcmElement
     virtual ~DcmAttributeTag();
 
     virtual DcmEVR ident() const { return EVR_AT; }
-    virtual void print(int level = 0);
+    virtual void print(const int level = 0);
     virtual unsigned long getVM();
 
     virtual E_Condition put(const Uint16 * attrValue,	// Tags
@@ -62,7 +62,11 @@ class DcmAttributeTag : public DcmElement
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrat.h,v $
-** Revision 1.3  1996-01-05 13:23:03  andreas
+** Revision 1.4  1996-01-09 11:06:17  andreas
+** New Support for Visual C++
+** Correct problems with inconsistent const declarations
+**
+** Revision 1.3  1996/01/05 13:23:03  andreas
 ** - changed to support new streaming facilities
 ** - more cleanups
 ** - merged read / write methods for block and file transfer

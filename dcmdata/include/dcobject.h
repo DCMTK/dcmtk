@@ -10,7 +10,7 @@
 ** DICOM object encoding/decoding, search and lookup facilities.
 **
 ** Last Update:   $Author: andreas $
-** Revision:      $Revision: 1.3 $
+** Revision:      $Revision: 1.4 $
 ** Status:	  $State: Exp $
 **
 */
@@ -50,9 +50,9 @@ protected:
     E_TransferState fTransferState;
     Uint32 fTransferredBytes;
 
-    virtual void printInfoLine(int level, const char *info );
-    virtual void printInfoLine(int level, const DcmTag &tag,
-			       Uint32 length, const char *info );
+    virtual void printInfoLine(const int level, const char *info );
+    virtual void printInfoLine(const int level, const DcmTag &tag,
+			       const Uint32 length, const char *info );
 
     E_Condition writeTag(DcmStream & outStream,	const DcmTag & tag,
 			 const E_TransferSyntax oxfer); // in
@@ -72,8 +72,8 @@ public:
 
     virtual ~DcmObject();
 
-    virtual DcmEVR ident() const = 0;
-    virtual void print(int level = 0) = 0;
+    virtual DcmEVR ident(void) const = 0;
+    virtual void print(const int level = 0) = 0;
     inline E_Condition error(void) const { return errorFlag; }
 
     inline E_TransferState transferState(void) const { return fTransferState; }
@@ -102,7 +102,7 @@ public:
 			      const E_GrpLenEncoding gltype = EGL_withoutGL) = 0;
 
     virtual E_Condition clear() = 0;
-    virtual E_Condition verify(BOOL autocorrect = FALSE) = 0;
+    virtual E_Condition verify(const BOOL autocorrect = FALSE) = 0;
 
     virtual E_Condition search(const DcmTag &tag,                 // in
 			       DcmStack &resultStack,	       // inout

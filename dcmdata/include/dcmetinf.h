@@ -11,9 +11,9 @@
 **
 **
 ** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1996-01-05 13:22:57 $
+** Update Date:		$Date: 1996-01-09 11:06:16 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcmetinf.h,v $
-** CVS/RCS Revision:	$Revision: 1.3 $
+** CVS/RCS Revision:	$Revision: 1.4 $
 ** Status:		$State: Exp $
 **
 */
@@ -60,8 +60,8 @@ public:
     DcmMetaInfo(const DcmMetaInfo &old);
     virtual ~DcmMetaInfo();
 
-    virtual DcmEVR ident() const { return EVR_metainfo; }
-    virtual void print(int level = 0);
+    virtual DcmEVR ident(void) const { return EVR_metainfo; }
+    virtual void print(const int level = 0);
 
     virtual	void transferInit(void);
     virtual void transferEnd(void);
@@ -82,7 +82,11 @@ public:
 /*
 ** CVS/RCS Log:
 ** $Log: dcmetinf.h,v $
-** Revision 1.3  1996-01-05 13:22:57  andreas
+** Revision 1.4  1996-01-09 11:06:16  andreas
+** New Support for Visual C++
+** Correct problems with inconsistent const declarations
+**
+** Revision 1.3  1996/01/05 13:22:57  andreas
 ** - changed to support new streaming facilities
 ** - more cleanups
 ** - merged read / write methods for block and file transfer

@@ -11,9 +11,9 @@
 **
 **
 ** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1996-01-05 13:22:59 $
+** Update Date:		$Date: 1996-01-09 11:06:16 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcsequen.h,v $
-** CVS/RCS Revision:	$Revision: 1.3 $
+** CVS/RCS Revision:	$Revision: 1.4 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -101,8 +101,8 @@ public:
     virtual DcmItem*	remove(const unsigned long num);
     virtual DcmItem*    remove(DcmItem* item);
     virtual E_Condition clear();
-    virtual E_Condition verify(  BOOL autocorrect = FALSE );
-    virtual E_Condition search(  const DcmTag &tag,                    // in
+    virtual E_Condition verify(const BOOL autocorrect = FALSE);
+    virtual E_Condition search(const DcmTag &tag,                    // in
 				 DcmStack &resultStack, 	       // inout
 				 E_SearchMode mode = ESM_fromHere,     // in
 				 BOOL searchIntoSub = TRUE );	       // in
@@ -125,7 +125,11 @@ public:
 /*
 ** CVS/RCS Log:
 ** $Log: dcsequen.h,v $
-** Revision 1.3  1996-01-05 13:22:59  andreas
+** Revision 1.4  1996-01-09 11:06:16  andreas
+** New Support for Visual C++
+** Correct problems with inconsistent const declarations
+**
+** Revision 1.3  1996/01/05 13:22:59  andreas
 ** - changed to support new streaming facilities
 ** - more cleanups
 ** - merged read / write methods for block and file transfer

@@ -11,9 +11,9 @@
 **
 **
 ** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1996-01-05 13:22:56 $
+** Update Date:		$Date: 1996-01-09 11:06:15 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcitem.h,v $
-** CVS/RCS Revision:	$Revision: 1.3 $
+** CVS/RCS Revision:	$Revision: 1.4 $
 ** Status:		$State: Exp $
 **
 */
@@ -74,7 +74,7 @@ public:
     virtual ~DcmItem();
 
     virtual DcmEVR 	ident() const;
-    virtual void	print(int level = 0);
+    virtual void	print(const int level = 0);
 
     virtual unsigned long getVM();
     virtual Uint32 getLength(const E_TransferSyntax xfer 
@@ -101,8 +101,8 @@ public:
     virtual unsigned long card();
     virtual E_Condition insert(DcmElement* elem,
 			       BOOL replaceOld = FALSE);
-    virtual DcmElement* getElement(unsigned long num);
-    virtual DcmElement* remove(unsigned long num);
+    virtual DcmElement* getElement(const unsigned long num);
+    virtual DcmElement* remove(const unsigned long num);
     virtual DcmElement* remove(DcmObject* elem);
     virtual DcmElement* remove(const DcmTag& tag);
     virtual E_Condition clear();
@@ -129,7 +129,11 @@ public:
 /*
 ** CVS/RCS Log:
 ** $Log: dcitem.h,v $
-** Revision 1.3  1996-01-05 13:22:56  andreas
+** Revision 1.4  1996-01-09 11:06:15  andreas
+** New Support for Visual C++
+** Correct problems with inconsistent const declarations
+**
+** Revision 1.3  1996/01/05 13:22:56  andreas
 ** - changed to support new streaming facilities
 ** - more cleanups
 ** - merged read / write methods for block and file transfer
