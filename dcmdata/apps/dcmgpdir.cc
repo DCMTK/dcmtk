@@ -24,9 +24,9 @@
  *  CD-R Image Interchange Profile (former Supplement 19).
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-03-31 09:24:20 $
+ *  Update Date:      $Date: 1999-04-22 13:32:52 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/apps/dcmgpdir.cc,v $
- *  CVS/RCS Revision: $Revision: 1.29 $
+ *  CVS/RCS Revision: $Revision: 1.30 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -34,6 +34,10 @@
  */
 
 #include "osconfig.h"    /* make sure OS specific configuration is included first */
+
+#ifdef _WIN32
+#include <windows.h>
+#endif
 
 #include <iostream.h>
 #ifdef HAVE_STDLIB_H
@@ -2575,7 +2579,11 @@ createDicomdirFromFiles(OFList<OFString>& fileNames)
     return ok;
 }
 
-
+/* All versions of the expandFileNames routine expect that no
+ * wildcard characters be present in the fileNames list.
+ * On Unix, these are expanded by the shell.
+ * On Windows, this should be handled by the OFCommandLine class.
+ */
 
 #if HAVE__FINDFIRST
 /*
@@ -2588,7 +2596,8 @@ createDicomdirFromFiles(OFList<OFString>& fileNames)
  * The new version below directly uses Win32 API calls and is, therefore,
  * more portable.
  */
-static OFBool
+
+ static OFBool
 expandFileNames(OFList<OFString>& fileNames, OFList<OFString>& expandedNames)
 {
     OFBool ok = OFTrue;
@@ -2666,13 +2675,13 @@ expandFileNames(OFList<OFString>& fileNames, OFList<OFString>& expandedNames)
 
       while(ret)
       {
-        if (!stWin32FindData.dwFileAttributes & FILE_ATTRIBUTE_DIRECTORY)
-        {
+		if (!cmp(stWin32FindData.cFileName, ".") && !cmp(stWin32FindData.cFileName, ".."))
+		{
           OFString subname(fname);
           subname += PATH_SEPARATOR;
           subname += stWin32FindData.cFileName;
           subList.push_back(subname);
-        }
+		}
         ret = FindNextFile(hFile, &stWin32FindData);
       }
 
@@ -2680,9 +2689,9 @@ expandFileNames(OFList<OFString>& fileNames, OFList<OFString>& expandedNames)
       {
         FindClose(hFile);
         expandFileNames(subList, expandedNames);
-      } else {
-        expandedNames.push_back(fname);
-      }
+	  }
+    } else {
+      expandedNames.push_back(fname);
     }
   }
 
@@ -2736,7 +2745,10 @@ expandFileNames(OFList<OFString>& fileNames, OFList<OFString>& expandedNames)
 /*
 ** CVS/RCS Log:
 ** $Log: dcmgpdir.cc,v $
-** Revision 1.29  1999-03-31 09:24:20  meichel
+** Revision 1.30  1999-04-22 13:32:52  meichel
+** Corrected Win32 API version of expandFileNames routine in dcmgpdir
+**
+** Revision 1.29  1999/03/31 09:24:20  meichel
 ** Updated copyright header in module dcmdata
 **
 ** Revision 1.28  1999/03/29 10:14:14  meichel
