@@ -11,9 +11,9 @@
 **
 **
 ** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1997-05-16 08:23:55 $
+** Update Date:		$Date: 1997-05-27 13:49:02 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcsequen.cc,v $
-** CVS/RCS Revision:	$Revision: 1.15 $
+** CVS/RCS Revision:	$Revision: 1.16 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -175,6 +175,29 @@ void DcmSequenceOfItems::print(ostream & out, const BOOL showFullData,
 
 // ********************************
 
+
+BOOL DcmSequenceOfItems::canWriteXfer(const E_TransferSyntax newXfer, 
+				      const E_TransferSyntax oldXfer)
+{
+    BOOL canWrite = TRUE;
+
+    if (newXfer == EXS_Unknown || oldXfer == EXS_Unknown)
+	canWrite = FALSE;
+    else if ( !itemList->empty() )
+    {
+	DcmObject *dO;
+	itemList->seek( ELP_first );
+	do 
+	{
+	    dO = itemList->get();
+	    canWrite = dO -> canWriteXfer(newXfer, oldXfer);
+	} while (itemList->seek( ELP_next )  && canWrite);
+    }
+
+    return canWrite;
+}
+
+// ********************************
 
 Uint32 DcmSequenceOfItems::calcElementLength(const E_TransferSyntax xfer,
 					     const E_EncodingType enctype)
@@ -1125,7 +1148,14 @@ E_Condition DcmSequenceOfItems::loadAllDataIntoMemory()
 /*
 ** CVS/RCS Log:
 ** $Log: dcsequen.cc,v $
-** Revision 1.15  1997-05-16 08:23:55  andreas
+** Revision 1.16  1997-05-27 13:49:02  andreas
+** - Add method canWriteXfer to class DcmObject and all derived classes.
+**   This method checks whether it is possible to convert the original
+**   transfer syntax to an new transfer syntax. The check is used in the
+**   dcmconv utility to prohibit the change of a compressed transfer
+**   syntax to a uncompressed.
+**
+** Revision 1.15  1997/05/16 08:23:55  andreas
 ** - Revised handling of GroupLength elements and support of
 **   DataSetTrailingPadding elements. The enumeratio E_GrpLenEncoding
 **   got additional enumeration values (for a description see dctypes.h).

@@ -10,9 +10,9 @@
 ** Implementation of class DcmElement
 **
 ** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1997-05-16 08:23:53 $
+** Update Date:		$Date: 1997-05-27 13:48:58 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcelem.cc,v $
-** CVS/RCS Revision:	$Revision: 1.13 $
+** CVS/RCS Revision:	$Revision: 1.14 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -204,6 +204,12 @@ Uint32 DcmElement::calcElementLength(const E_TransferSyntax xfer,
     return getLength(xfer, enctype) + xferSyn.sizeofTagHeader(getVR());
 }
 
+
+BOOL DcmElement::canWriteXfer(const E_TransferSyntax newXfer,
+			      const E_TransferSyntax /*oldXfer*/)
+{
+    return newXfer != EXS_Unknown;
+}
 
 E_Condition DcmElement::getUint8(Uint8 & /*val*/, const unsigned long /*pos*/)
 {
@@ -777,7 +783,14 @@ E_Condition DcmElement::write(DcmStream & outStream,
 /*
 ** CVS/RCS Log:
 ** $Log: dcelem.cc,v $
-** Revision 1.13  1997-05-16 08:23:53  andreas
+** Revision 1.14  1997-05-27 13:48:58  andreas
+** - Add method canWriteXfer to class DcmObject and all derived classes.
+**   This method checks whether it is possible to convert the original
+**   transfer syntax to an new transfer syntax. The check is used in the
+**   dcmconv utility to prohibit the change of a compressed transfer
+**   syntax to a uncompressed.
+**
+** Revision 1.13  1997/05/16 08:23:53  andreas
 ** - Revised handling of GroupLength elements and support of
 **   DataSetTrailingPadding elements. The enumeratio E_GrpLenEncoding
 **   got additional enumeration values (for a description see dctypes.h).

@@ -294,8 +294,8 @@ dcvrobow.o: dcvrobow.cc ../../config/include/osconfig.h \
  ../include/dcelem.h ../include/dcobject.h ../include/dcxfer.h \
  ../include/dcvr.h ../include/dcstream.h ../include/dctag.h \
  ../include/dctagkey.h ../include/dcdicent.h ../include/dclist.h \
- ../include/dcstack.h ../include/dcswap.h ../include/dcvm.h \
- ../include/dcdebug.h
+ ../include/dcstack.h ../include/dcdeftag.h ../include/dcswap.h \
+ ../include/dcvm.h ../include/dcdebug.h
 dcvrpn.o: dcvrpn.cc ../include/dcvrpn.h \
  ../../config/include/osconfig.h ../include/dctypes.h \
  ../include/dcchrstr.h ../include/dcbytstr.h ../include/dcerror.h \

@@ -10,7 +10,7 @@
 ** DICOM object encoding/decoding, search and lookup facilities.
 **
 ** Last Update:   $Author: andreas $
-** Revision:      $Revision: 1.11 $
+** Revision:      $Revision: 1.12 $
 ** Status:	  $State: Exp $
 **
 */
@@ -117,7 +117,10 @@ public:
 			     const E_EncodingType enctype 
 			     = EET_UndefinedLength) = 0;
 
-     virtual E_Condition read(DcmStream & inStream,
+    virtual BOOL canWriteXfer(const E_TransferSyntax newXfer,
+				 const E_TransferSyntax oldXfer) = 0;
+
+    virtual E_Condition read(DcmStream & inStream,
 			     const E_TransferSyntax ixfer,
 			     const E_GrpLenEncoding glenc = EGL_noChange,
 			     const Uint32 maxReadLength = DCM_MaxReadLength) = 0;

@@ -11,9 +11,9 @@
 **
 **
 ** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1997-05-22 16:57:10 $
+** Update Date:		$Date: 1997-05-27 13:48:29 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcpixseq.h,v $
-** CVS/RCS Revision:	$Revision: 1.8 $
+** CVS/RCS Revision:	$Revision: 1.9 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -33,6 +33,9 @@ class DcmPixelItem;
 
 class DcmPixelSequence : public DcmSequenceOfItems 
 {
+private:
+    E_TransferSyntax xfer;
+
 protected:
     virtual E_Condition makeSubObject(DcmObject * & newObject, // out
 				      const DcmTag & newTag,
@@ -51,6 +54,18 @@ public:
     virtual E_Condition getItem(DcmPixelItem * & item, const unsigned long num);
     virtual E_Condition remove(DcmPixelItem * & item, const unsigned long num);
     virtual E_Condition remove(DcmPixelItem* item);
+
+
+    E_Condition changeXfer(const E_TransferSyntax newXfer);
+
+    virtual BOOL canWriteXfer(const E_TransferSyntax newXfer,
+			      const E_TransferSyntax oldXfer);
+
+    virtual E_Condition read(DcmStream & inStream,
+			     const E_TransferSyntax ixfer,
+			     const E_GrpLenEncoding glenc = EGL_noChange,
+			     const Uint32 maxReadLength 
+			     = DCM_MaxReadLength);
 
     virtual E_Condition write(DcmStream & outStream,
 			      const E_TransferSyntax oxfer,
@@ -76,7 +91,14 @@ public:
 /*
 ** CVS/RCS Log:
 ** $Log: dcpixseq.h,v $
-** Revision 1.8  1997-05-22 16:57:10  andreas
+** Revision 1.9  1997-05-27 13:48:29  andreas
+** - Add method canWriteXfer to class DcmObject and all derived classes.
+**   This method checks whether it is possible to convert the original
+**   transfer syntax to an new transfer syntax. The check is used in the
+**   dcmconv utility to prohibit the change of a compressed transfer
+**   syntax to a uncompressed.
+**
+** Revision 1.8  1997/05/22 16:57:10  andreas
 ** - Corrected errors for writing of pixel sequences for encapsulated
 **   transfer syntaxes.
 **

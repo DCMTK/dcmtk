@@ -10,9 +10,9 @@
 ** Interface of class DcmFileFormat
 **
 ** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1997-05-16 08:23:47 $
+** Update Date:		$Date: 1997-05-27 13:48:27 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcfilefo.h,v $
-** CVS/RCS Revision:	$Revision: 1.7 $
+** CVS/RCS Revision:	$Revision: 1.8 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -57,6 +57,9 @@ public:
     virtual Uint32  calcElementLength(const E_TransferSyntax xfer,
 				      const E_EncodingType enctype);
 
+    virtual BOOL canWriteXfer(const E_TransferSyntax newXfer,
+			      const E_TransferSyntax oldXfer = EXS_Unknown);
+
     virtual E_Condition read(DcmStream & inStream,
 			     const E_TransferSyntax xfer = EXS_Unknown,
 			     const E_GrpLenEncoding glenc = EGL_noChange,
@@ -98,7 +101,14 @@ public:
 /*
 ** CVS/RCS Log:
 ** $Log: dcfilefo.h,v $
-** Revision 1.7  1997-05-16 08:23:47  andreas
+** Revision 1.8  1997-05-27 13:48:27  andreas
+** - Add method canWriteXfer to class DcmObject and all derived classes.
+**   This method checks whether it is possible to convert the original
+**   transfer syntax to an new transfer syntax. The check is used in the
+**   dcmconv utility to prohibit the change of a compressed transfer
+**   syntax to a uncompressed.
+**
+** Revision 1.7  1997/05/16 08:23:47  andreas
 ** - Revised handling of GroupLength elements and support of
 **   DataSetTrailingPadding elements. The enumeratio E_GrpLenEncoding
 **   got additional enumeration values (for a description see dctypes.h).

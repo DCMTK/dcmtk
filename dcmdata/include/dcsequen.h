@@ -11,9 +11,9 @@
 **
 **
 ** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1997-05-16 08:23:48 $
+** Update Date:		$Date: 1997-05-27 13:48:29 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcsequen.h,v $
-** CVS/RCS Revision:	$Revision: 1.10 $
+** CVS/RCS Revision:	$Revision: 1.11 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -99,6 +99,9 @@ public:
     virtual void transferInit(void);
     virtual void transferEnd(void);
 
+    virtual BOOL canWriteXfer(const E_TransferSyntax oldXfer,
+			      const E_TransferSyntax newXfer);
+
     virtual E_Condition read(DcmStream & inStream,
 			     const E_TransferSyntax xfer,
 			     const E_GrpLenEncoding glenc = EGL_noChange,
@@ -144,7 +147,14 @@ public:
 /*
 ** CVS/RCS Log:
 ** $Log: dcsequen.h,v $
-** Revision 1.10  1997-05-16 08:23:48  andreas
+** Revision 1.11  1997-05-27 13:48:29  andreas
+** - Add method canWriteXfer to class DcmObject and all derived classes.
+**   This method checks whether it is possible to convert the original
+**   transfer syntax to an new transfer syntax. The check is used in the
+**   dcmconv utility to prohibit the change of a compressed transfer
+**   syntax to a uncompressed.
+**
+** Revision 1.10  1997/05/16 08:23:48  andreas
 ** - Revised handling of GroupLength elements and support of
 **   DataSetTrailingPadding elements. The enumeratio E_GrpLenEncoding
 **   got additional enumeration values (for a description see dctypes.h).

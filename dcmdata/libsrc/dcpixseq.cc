@@ -11,9 +11,9 @@
 **
 **
 ** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1997-05-26 15:08:15 $
+** Update Date:		$Date: 1997-05-27 13:49:01 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcpixseq.cc,v $
-** CVS/RCS Revision:	$Revision: 1.7 $
+** CVS/RCS Revision:	$Revision: 1.8 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -47,6 +47,7 @@ Bdebug((5, "dcpixseq:DcmPixelSequence::DcmPixelSequence(DcmTag&,len=%ld)",
 debug(( 8, "Object pointer this=0x%p", this ));
 
     Tag->setVR(EVR_pixelSQ);
+    xfer = EXS_Unknown;
 Edebug(());
 
 }
@@ -58,14 +59,9 @@ Edebug(());
 DcmPixelSequence::DcmPixelSequence(const DcmPixelSequence &old)
 : DcmSequenceOfItems( old )
 {
-Bdebug((5, "dcpixseq:DcmPixelSequence::DcmPixelSequence(DcmPixelSequence&)" ));
-debug(( 8, "Object pointer this=0x%p", this ));
-
-debug(( 5, "ident()=%d", old.ident() ));
+    xfer = old.xfer;
 
     /* everything gets handled in DcmSequenceOfItems constructor */
-Edebug(());
-
 }
 
 
@@ -246,22 +242,68 @@ E_Condition DcmPixelSequence::remove(DcmPixelItem* item)
 
 // ********************************
 
+E_Condition DcmPixelSequence::changeXfer(const E_TransferSyntax newXfer)
+{
+    if (xfer == EXS_Unknown || canWriteXfer(newXfer, xfer))
+    {
+	xfer = newXfer;
+	return EC_Normal;
+    }
+    else
+	return EC_IllegalCall;
+}
+	
+
+// ********************************
+
+BOOL DcmPixelSequence::canWriteXfer(const E_TransferSyntax newXfer,
+				       const E_TransferSyntax oldXfer)
+{
+    DcmXfer newXferSyn(newXfer);
+
+    return newXferSyn.isEncapsulated() && 
+	newXfer == oldXfer && oldXfer == xfer;
+}
+
+// ********************************
+
+E_Condition DcmPixelSequence::read(DcmStream & inStream,
+				   const E_TransferSyntax ixfer,
+				   const E_GrpLenEncoding glenc,
+				   const Uint32 maxReadLength)
+{
+    E_Condition l_error = changeXfer(ixfer);
+    if (l_error == EC_Normal)
+	return DcmSequenceOfItems::read(inStream, ixfer, glenc, maxReadLength);
+    else
+	return l_error;
+}
+
+// ********************************
+
 E_Condition DcmPixelSequence::write(DcmStream & outStream,
 				      const E_TransferSyntax oxfer,
 				      const E_EncodingType /*enctype*/)
 {
-    DcmXfer oxferSyn(oxfer);
-    if (!oxferSyn.isEncapsulated())
-	return EC_NotImplemented;
-    else
+    E_Condition l_error = changeXfer(oxfer);
+    if (l_error == EC_Normal)
 	return DcmSequenceOfItems::write(outStream, oxfer, EET_UndefinedLength);
+    else
+	return l_error;
 }
 
 
 /*
 ** CVS/RCS Log:
 ** $Log: dcpixseq.cc,v $
-** Revision 1.7  1997-05-26 15:08:15  andreas
+** Revision 1.8  1997-05-27 13:49:01  andreas
+** - Add method canWriteXfer to class DcmObject and all derived classes.
+**   This method checks whether it is possible to convert the original
+**   transfer syntax to an new transfer syntax. The check is used in the
+**   dcmconv utility to prohibit the change of a compressed transfer
+**   syntax to a uncompressed.
+**
+** Revision 1.7  1997/05/26 15:08:15  andreas
 ** - Corrected typo in write method
 **
 ** Revision 1.6  1997/05/22 16:57:15  andreas

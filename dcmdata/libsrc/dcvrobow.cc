@@ -11,9 +11,9 @@
 **
 **
 ** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1997-05-22 16:54:20 $
+** Update Date:		$Date: 1997-05-27 13:49:03 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcvrobow.cc,v $
-** CVS/RCS Revision:	$Revision: 1.13 $
+** CVS/RCS Revision:	$Revision: 1.14 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -28,6 +28,7 @@
 #include <iostream.h>
 
 #include "dcvrobow.h"
+#include "dcdeftag.h"
 #include "dcswap.h"
 #include "dcstream.h"
 #include "dcvm.h"
@@ -367,6 +368,16 @@ E_Condition DcmOtherByteOtherWord::verify(const BOOL autocorrect)
 
 // ********************************
 
+BOOL DcmOtherByteOtherWord::canWriteXfer(const E_TransferSyntax newXfer,
+					 const E_TransferSyntax /*oldXfer*/)
+{
+    DcmXfer newXferSyn(newXfer);
+    return *Tag != DCM_PixelData || !newXferSyn.isEncapsulated();
+}
+    
+
+// ********************************
+
 E_Condition DcmOtherByteOtherWord::write(DcmStream & outStream,
 					 const E_TransferSyntax oxfer,
 					 const E_EncodingType enctype)
@@ -388,7 +399,14 @@ E_Condition DcmOtherByteOtherWord::write(DcmStream & outStream,
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrobow.cc,v $
-** Revision 1.13  1997-05-22 16:54:20  andreas
+** Revision 1.14  1997-05-27 13:49:03  andreas
+** - Add method canWriteXfer to class DcmObject and all derived classes.
+**   This method checks whether it is possible to convert the original
+**   transfer syntax to an new transfer syntax. The check is used in the
+**   dcmconv utility to prohibit the change of a compressed transfer
+**   syntax to a uncompressed.
+**
+** Revision 1.13  1997/05/22 16:54:20  andreas
 ** - Corrected wrong output length in print routine
 **
 ** Revision 1.12  1997/05/16 08:31:28  andreas

@@ -10,9 +10,9 @@
 ** Implementation of class DcmFileFormat
 **
 ** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1997-05-16 08:23:54 $
+** Update Date:		$Date: 1997-05-27 13:48:59 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcfilefo.cc,v $
-** CVS/RCS Revision:	$Revision: 1.9 $
+** CVS/RCS Revision:	$Revision: 1.10 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -443,11 +443,26 @@ E_TransferSyntax DcmFileFormat::lookForXfer(DcmMetaInfo* metainfo)
 
 
 Uint32 DcmFileFormat::calcElementLength(const E_TransferSyntax xfer,
-				      const E_EncodingType enctype)
+					const E_EncodingType enctype)
 {
     return getMetaInfo() -> calcElementLength(xfer, enctype) + 
 	getDataset() -> calcElementLength(xfer, enctype);
 }
+
+// ********************************
+
+
+BOOL DcmFileFormat::canWriteXfer(const E_TransferSyntax newXfer,
+				 const E_TransferSyntax oldXfer)
+{
+    DcmDataset * dataset = getDataset();
+
+    if (dataset)
+	return dataset -> canWriteXfer(newXfer, oldXfer);
+    else
+	return FALSE;
+}
+	   
 
 // ********************************
 
@@ -713,7 +728,14 @@ DcmDataset* DcmFileFormat::getAndRemoveDataset()
 /*
 ** CVS/RCS Log:
 ** $Log: dcfilefo.cc,v $
-** Revision 1.9  1997-05-16 08:23:54  andreas
+** Revision 1.10  1997-05-27 13:48:59  andreas
+** - Add method canWriteXfer to class DcmObject and all derived classes.
+**   This method checks whether it is possible to convert the original
+**   transfer syntax to an new transfer syntax. The check is used in the
+**   dcmconv utility to prohibit the change of a compressed transfer
+**   syntax to a uncompressed.
+**
+** Revision 1.9  1997/05/16 08:23:54  andreas
 ** - Revised handling of GroupLength elements and support of
 **   DataSetTrailingPadding elements. The enumeratio E_GrpLenEncoding
 **   got additional enumeration values (for a description see dctypes.h).

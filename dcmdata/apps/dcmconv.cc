@@ -8,10 +8,10 @@
 ** Convert dicom file encoding
 **
 **
-** Last Update:		$Author: hewett $
-** Update Date:		$Date: 1997-05-22 13:26:22 $
+** Last Update:		$Author: andreas $
+** Update Date:		$Date: 1997-05-27 13:47:40 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/apps/dcmconv.cc,v $
-** CVS/RCS Revision:	$Revision: 1.10 $
+** CVS/RCS Revision:	$Revision: 1.11 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -377,17 +377,17 @@ int main(int argc, char *argv[])
 	return 1;
     }
 
-    if (oDataset && fileformat)
+    if (fileformat)
     {
-	if (verbosemode)
+	if (oDataset && verbosemode)
 	    cout << "get dataset of DICOM file with metaheader\n";
 	dataset = fileformat -> getDataset();
-
     }
-    else if (!oDataset && dataset)
+    
+    if (!fileformat && !oDataset)
     {
 	if (verbosemode)
-	    cout << "get dataset of DICOM file with metaheader\n";
+	    cout << "create new Metaheader for dataset\n";
 	fileformat = new DcmFileFormat(dataset);
     }
 
@@ -404,16 +404,29 @@ int main(int argc, char *argv[])
     {
 	if (verbosemode)
 	    cout << "set output transfersyntax to input transfer syntax\n";
-
-	if (dataset) 
-	    oxfer = dataset->getOriginalXfer();
-	else
-	    oxfer = fileformat->getDataset()->getOriginalXfer();
+	oxfer = dataset->getOriginalXfer();
     }
-	
 
-    if (oDataset)
-    {
+   if (verbosemode)
+       cout << "Check if new output transfer syntax is possible\n";
+
+   DcmXfer oxferSyn(oxfer);
+
+   if (dataset->canWriteXfer(oxfer))
+   {
+       if (verbosemode)
+	   cout << "Output transfer syntax " << oxferSyn.getXferName() 
+		<< " can be written\n";
+   }
+   else
+   {
+       cerr << "No conversion to transfer syntax " << oxferSyn.getXferName()
+	    << " possible!\n";
+       return 1;
+   }
+
+   if (oDataset)
+   {
 	if (verbosemode) 
 	    cout << "write converted DICOM dataset\n";
 	
@@ -451,7 +464,14 @@ int main(int argc, char *argv[])
 /*
 ** CVS/RCS Log:
 ** $Log: dcmconv.cc,v $
-** Revision 1.10  1997-05-22 13:26:22  hewett
+** Revision 1.11  1997-05-27 13:47:40  andreas
+** - Add method canWriteXfer to class DcmObject and all derived classes.
+**   This method checks whether it is possible to convert the original
+**   transfer syntax to an new transfer syntax. The check is used in the
+**   dcmconv utility to prohibit the change of a compressed transfer
+**   syntax to a uncompressed.
+**
+** Revision 1.10  1997/05/22 13:26:22  hewett
 ** Modified the test for presence of a data dictionary to use the
 ** method DcmDataDictionary::isDictionaryLoaded().
 **
