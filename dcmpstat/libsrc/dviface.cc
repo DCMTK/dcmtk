@@ -22,8 +22,8 @@
  *  Purpose: DVPresentationState
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-11-14 16:35:21 $
- *  CVS/RCS Revision: $Revision: 1.119 $
+ *  Update Date:      $Date: 2000-11-20 13:22:41 $
+ *  CVS/RCS Revision: $Revision: 1.120 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -756,11 +756,14 @@ E_Condition DVInterface::saveStructuredReport()
     // release database lock since we are using the DB module directly
     releaseDatabase();
 
-    if (pReport==NULL) return EC_IllegalCall;
-    const char *sopClassUID = pReport->getSOPClassUID();
-    const char *instanceUID = pReport->getSOPInstanceUID();
-    if (sopClassUID==NULL) return EC_IllegalCall;
-    if (instanceUID==NULL) return EC_IllegalCall;
+    if (pReport == NULL)
+        return EC_IllegalCall;
+    OFString sopClassUID;
+    if (pReport->getSOPClassUID(sopClassUID).length() == 0)
+        return EC_IllegalCall;
+    OFString instanceUID;
+    if (pReport->getSOPInstanceUID(instanceUID).length() == 0)
+        return EC_IllegalCall;
 
     DB_Status dbStatus;
     dbStatus.status = STATUS_Success;
@@ -773,14 +776,14 @@ E_Condition DVInterface::saveStructuredReport()
         return EC_IllegalCall;
     }
 
-    E_Condition result=EC_Normal;
-    if (DB_NORMAL == DB_makeNewStoreFileName(handle, sopClassUID, instanceUID, filename))
+    E_Condition result = EC_Normal;
+    if (DB_NORMAL == DB_makeNewStoreFileName(handle, sopClassUID.c_str(), instanceUID.c_str(), filename))
     {
         // now store presentation state as filename
         result = saveStructuredReport(filename);
-        if (EC_Normal==result)
+        if (EC_Normal == result)
         {
-            if (DB_NORMAL != DB_storeRequest(handle, sopClassUID, instanceUID, filename, &dbStatus))
+            if (DB_NORMAL != DB_storeRequest(handle, sopClassUID.c_str(), instanceUID.c_str(), filename, &dbStatus))
             {
                 result = EC_IllegalCall;
                 writeLogMessage(DVPSM_error, "DCMPSTAT", "Save structured report to database failed: could not register in index file.");
@@ -4138,7 +4141,10 @@ OFBool DVInterface::verifyUserPassword(const char *userID, const char *passwd)
 /*
  *  CVS/RCS Log:
  *  $Log: dviface.cc,v $
- *  Revision 1.119  2000-11-14 16:35:21  joergr
+ *  Revision 1.120  2000-11-20 13:22:41  joergr
+ *  Fixed minor bugs (string related memory problems when used with JNI).
+ *
+ *  Revision 1.119  2000/11/14 16:35:21  joergr
  *  Added creation of new UIDs and setting of content date/time when starting
  *  a new SR document from a "template".
  *

@@ -23,8 +23,8 @@
  *    classes: DSRContentItem
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-11-07 18:26:45 $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  Update Date:      $Date: 2000-11-20 13:22:23 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -119,12 +119,17 @@ const OFString &DSRContentItem::getStringValue() const
         switch (TreeNode->getValueType())
         {
             case VT_Text:
+                return ((DSRTextTreeNode *)TreeNode)->getValue();
             case VT_DateTime:
+                return ((DSRDateTimeTreeNode *)TreeNode)->getValue();
             case VT_Date:
+                return ((DSRDateTreeNode *)TreeNode)->getValue();
             case VT_Time:
+                return ((DSRTimeTreeNode *)TreeNode)->getValue();
             case VT_UIDRef:
+                return ((DSRUIDRefTreeNode *)TreeNode)->getValue();
             case VT_PName:
-                return ((DSRStringValue *)TreeNode)->getValue();
+                return ((DSRPNameTreeNode *)TreeNode)->getValue();
             default:
                 break;
         }
@@ -606,7 +611,10 @@ E_Condition DSRContentItem::setObservationDateTime(const OFString &observationDa
 /*
  *  CVS/RCS Log:
  *  $Log: dsrcitem.cc,v $
- *  Revision 1.7  2000-11-07 18:26:45  joergr
+ *  Revision 1.8  2000-11-20 13:22:23  joergr
+ *  Fixed minor bugs (string related memory problems when used with JNI).
+ *
+ *  Revision 1.7  2000/11/07 18:26:45  joergr
  *  Enhanced support for by-reference relationships.
  *
  *  Revision 1.6  2000/10/26 14:26:00  joergr
