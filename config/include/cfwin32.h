@@ -572,6 +572,16 @@
 /* Define to `long' if <sys/types.h> doesn't define.  */
 #define ssize_t long
 
+/* by default, enable ANSI standard C++ includes on Visual C++ 6 and newer */
+#ifdef _MSC_VER
+#if _MSC_VER >= 1200
+/* _MSC_VER == 1100 on Microsoft Visual C++ 5.0 */
+/* _MSC_VER == 1200 on Microsoft Visual C++ 6.0 */
+/* _MSC_VER == 1300 on Microsoft Visual C++ 7.0 (.NET) */
+#define USE_STD_CXX_INCLUDES
+#endif
+#endif
+
 /* Define if ANSI standard C++ includes are used */
 /* must be explicitly defined in Makefile/Project File */
 
