@@ -23,8 +23,8 @@
  *    classes: DSRBasicTextSRConstraintChecker
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-09-15 14:22:04 $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  Update Date:      $Date: 2003-10-09 12:56:42 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -70,6 +70,11 @@ class DSRBasicTextSRConstraintChecker
      */
     virtual OFBool isTemplateSupportRequired() const;
 
+    /** get identifier of the root template
+     ** @return always returns NULL (no template required)
+     */
+    virtual const char *getRootTemplateIdentifier() const;
+
     /** get the associated document type of the SR IOD
      ** @return document type (DSRTypes::DT_BasicTextSR)
      */
@@ -96,10 +101,11 @@ class DSRBasicTextSRConstraintChecker
 /*
  *  CVS/RCS Log:
  *  $Log: dsrbascc.h,v $
- *  Revision 1.1  2003-09-15 14:22:04  joergr
+ *  Revision 1.2  2003-10-09 12:56:42  joergr
+ *  Added check for root template identifier when reading an SR document.
+ *
+ *  Revision 1.1  2003/09/15 14:22:04  joergr
  *  Introduced new class to facilitate checking of SR IOD relationship content
  *  constraints. Replaced old implementation distributed over numerous classes.
- *
- *
  *
  */

@@ -23,8 +23,8 @@
  *    classes: DSREnhancedSRConstraintChecker
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-09-15 14:16:50 $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  Update Date:      $Date: 2003-10-09 13:00:41 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -57,6 +57,12 @@ OFBool DSREnhancedSRConstraintChecker::isByReferenceAllowed() const
 OFBool DSREnhancedSRConstraintChecker::isTemplateSupportRequired() const
 {
     return OFFalse;
+}
+
+
+const char *DSREnhancedSRConstraintChecker::getRootTemplateIdentifier() const
+{
+    return NULL;
 }
 
 
@@ -133,10 +139,11 @@ OFBool DSREnhancedSRConstraintChecker::checkContentRelationship(const E_ValueTyp
 /*
  *  CVS/RCS Log:
  *  $Log: dsrenhcc.cc,v $
- *  Revision 1.1  2003-09-15 14:16:50  joergr
+ *  Revision 1.2  2003-10-09 13:00:41  joergr
+ *  Added check for root template identifier when reading an SR document.
+ *
+ *  Revision 1.1  2003/09/15 14:16:50  joergr
  *  Introduced new class to facilitate checking of SR IOD relationship content
  *  constraints. Replaced old implementation distributed over numerous classes.
- *
- *
  *
  */

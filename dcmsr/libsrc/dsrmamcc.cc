@@ -23,8 +23,8 @@
  *    classes: DSRMammographyCadSRConstraintChecker
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-09-15 14:15:36 $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  Update Date:      $Date: 2003-10-09 13:00:41 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -57,6 +57,12 @@ OFBool DSRMammographyCadSRConstraintChecker::isByReferenceAllowed() const
 OFBool DSRMammographyCadSRConstraintChecker::isTemplateSupportRequired() const
 {
     return OFTrue;
+}
+
+
+const char *DSRMammographyCadSRConstraintChecker::getRootTemplateIdentifier() const
+{
+    return "4000";
 }
 
 
@@ -126,10 +132,11 @@ OFBool DSRMammographyCadSRConstraintChecker::checkContentRelationship(const E_Va
 /*
  *  CVS/RCS Log:
  *  $Log: dsrmamcc.cc,v $
- *  Revision 1.1  2003-09-15 14:15:36  joergr
+ *  Revision 1.2  2003-10-09 13:00:41  joergr
+ *  Added check for root template identifier when reading an SR document.
+ *
+ *  Revision 1.1  2003/09/15 14:15:36  joergr
  *  Added content relationship constraint checking support for Mammography CAD
  *  SR and Chest CAD SR.
- *
- *
  *
  */

@@ -23,8 +23,8 @@
  *    classes: DSRDocumentTreeNode
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-10-06 09:55:35 $
- *  CVS/RCS Revision: $Revision: 1.29 $
+ *  Update Date:      $Date: 2003-10-09 13:00:41 $
+ *  CVS/RCS Revision: $Revision: 1.30 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -403,9 +403,43 @@ OFCondition DSRDocumentTreeNode::readDocumentRelationshipMacro(DcmItem &dataset,
     }
     /* read ObservationDateTime (conditional) */
     getAndCheckStringValueFromDataset(dataset, DCM_ObservationDateTime, ObservationDateTime, "1", "1C", logStream);
-    /* tbd: read ContentTemplateSequence */
-    if (dataset.tagExists(DCM_ContentTemplateSequence))
-        printWarningMessage(logStream, "ContentTemplateSequence detected - template identification not yet supported");
+    /* determine template identifier expected for this document */
+    const OFString expectedTemplateIdentifier = (constraintChecker != NULL) ? constraintChecker->getRootTemplateIdentifier() : "";
+    /* only check template identifier on dataset level (root node) */
+    if ((dataset.ident() == EVR_dataset) && !expectedTemplateIdentifier.empty())
+    {
+        /* read ContentTemplateSequence */
+        DcmItem *ditem = NULL;
+        if (dataset.findAndGetSequenceItem(DCM_ContentTemplateSequence, ditem, 0 /*itemNum*/).good())
+        {
+            OFString templateIdentifier, mappingResource;
+            getAndCheckStringValueFromDataset(*ditem, DCM_MappingResource, mappingResource, "1", "1", logStream, "ContentTemplateSequence");
+            getAndCheckStringValueFromDataset(*ditem, DCM_TemplateIdentifier, templateIdentifier, "1", "1", logStream, "ContentTemplateSequence");
+            /* check for DICOM Content Mapping Resource */
+            if (mappingResource == "DCMR")
+            {
+                /* compare with expected TID */
+                if (templateIdentifier != expectedTemplateIdentifier)
+                {
+                    OFString message = "Unexpected value for TemplateIdentifier (";
+                    if (templateIdentifier.empty())
+                        message += "<empty>";
+                    else
+                        message += templateIdentifier;
+                    message += "), TID ";
+                    message += expectedTemplateIdentifier;
+                    message += " expected";
+                    printErrorMessage(logStream, message.c_str());
+                }
+            } else
+                printUnknownValueWarningMessage(logStream, "MappingResource", mappingResource.c_str());
+        } else {
+            OFString message = "TemplateIdentifier missing in ContentTemplateSequence, TID ";
+            message += expectedTemplateIdentifier;
+            message += " expected";
+            printErrorMessage(logStream, message.c_str());
+        }
+    }
     /* read ContentSequence */
     if (result.good())
         result = readContentSequence(dataset, constraintChecker, posString, flags, logStream);
@@ -431,8 +465,14 @@ OFCondition DSRDocumentTreeNode::writeDocumentRelationshipMacro(DcmItem &dataset
         markedItems->push(&dataset);
     /* write ObservationDateTime (conditional) */
     result = putStringValueToDataset(dataset, DCM_ObservationDateTime, ObservationDateTime, OFFalse /*allowEmpty*/);
-    /* tbd: write ContentTemplateSequence */
 
+    /* tbd: write ContentTemplateSequence - requires, however, template constraint checking!
+    
+       PS 3.3 Table C.17.3-4 states: "Required if a template was used to define the content of
+       this Item, and the template consists of a single CONTAINER with nested content, and it is
+       the outermost invocation of a set of nested templates that start with the same CONTAINER."
+    */
+    
     /* write ContentSequence */
     if (result.good())
         result = writeContentSequence(dataset, markedItems, logStream);
@@ -923,7 +963,10 @@ const OFString &DSRDocumentTreeNode::getRelationshipText(const E_RelationshipTyp
 /*
  *  CVS/RCS Log:
  *  $Log: dsrdoctn.cc,v $
- *  Revision 1.29  2003-10-06 09:55:35  joergr
+ *  Revision 1.30  2003-10-09 13:00:41  joergr
+ *  Added check for root template identifier when reading an SR document.
+ *
+ *  Revision 1.29  2003/10/06 09:55:35  joergr
  *  Added new flag which allows to ignore content item errors when reading an SR
  *  document (e.g. missing value type specific attributes).
  *

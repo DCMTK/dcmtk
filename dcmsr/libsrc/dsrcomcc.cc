@@ -23,8 +23,8 @@
  *    classes: DSRComprehensiveSRConstraintChecker
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-09-17 09:21:08 $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  Update Date:      $Date: 2003-10-09 13:00:41 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -57,6 +57,12 @@ OFBool DSRComprehensiveSRConstraintChecker::isByReferenceAllowed() const
 OFBool DSRComprehensiveSRConstraintChecker::isTemplateSupportRequired() const
 {
     return OFFalse;
+}
+
+
+const char *DSRComprehensiveSRConstraintChecker::getRootTemplateIdentifier() const
+{
+    return NULL;
 }
 
 
@@ -136,13 +142,14 @@ OFBool DSRComprehensiveSRConstraintChecker::checkContentRelationship(const E_Val
 /*
  *  CVS/RCS Log:
  *  $Log: dsrcomcc.cc,v $
- *  Revision 1.2  2003-09-17 09:21:08  joergr
+ *  Revision 1.3  2003-10-09 13:00:41  joergr
+ *  Added check for root template identifier when reading an SR document.
+ *
+ *  Revision 1.2  2003/09/17 09:21:08  joergr
  *  Implemented CP 359, i.e. forbid HAS CONCEPT MOD relationship by-reference.
  *
  *  Revision 1.1  2003/09/15 14:16:50  joergr
  *  Introduced new class to facilitate checking of SR IOD relationship content
  *  constraints. Replaced old implementation distributed over numerous classes.
- *
- *
  *
  */
