@@ -21,10 +21,10 @@
  *
  *  Purpose: Storage Service Class Provider (C-STORE operation)
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-06-01 15:50:02 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2001-09-28 13:21:41 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/apps/storescp.cc,v $
- *  CVS/RCS Revision: $Revision: 1.37 $
+ *  CVS/RCS Revision: $Revision: 1.38 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -475,11 +475,11 @@ int main(int argc, char *argv[])
           app.checkValue(cmd.getValue(current));
           if (NULL == (currentOpenSSL = DcmTLSTransportLayer::findOpenSSLCipherSuiteName(current)))
           {
-            cerr << "ciphersuite '" << current << "' is unknown. Known ciphersuites are:" << endl;
+            CERR << "ciphersuite '" << current << "' is unknown. Known ciphersuites are:" << endl;
             unsigned long numSuites = DcmTLSTransportLayer::getNumberOfCipherSuites();
             for (unsigned long cs=0; cs < numSuites; cs++)
             {
-              cerr << "    " << DcmTLSTransportLayer::getTLSCipherSuiteName(cs) << endl;
+              CERR << "    " << DcmTLSTransportLayer::getTLSCipherSuiteName(cs) << endl;
             }
             return 1;
           } else {
@@ -545,7 +545,7 @@ int main(int argc, char *argv[])
           app.checkValue(cmd.getValue(current));
           if (TCS_ok != tLayer->addTrustedCertificateFile(current, opt_keyFileFormat))
           {
-            cerr << "warning unable to load certificate file '" << current << "', ignoring" << endl;
+            CERR << "warning unable to load certificate file '" << current << "', ignoring" << endl;
           }
         } while (cmd.findOption("--add-cert-file", 0, OFCommandLine::FOM_Next));
       }
@@ -557,37 +557,37 @@ int main(int argc, char *argv[])
           app.checkValue(cmd.getValue(current));
           if (TCS_ok != tLayer->addTrustedCertificateDir(current, opt_keyFileFormat))
           {
-            cerr << "warning unable to certificates from directory '" << current << "', ignoring" << endl;
+            CERR << "warning unable to certificates from directory '" << current << "', ignoring" << endl;
           }
         } while (cmd.findOption("--add-cert-dir", 0, OFCommandLine::FOM_Next));
       }
 
       if (opt_dhparam && ! (tLayer->setTempDHParameters(opt_dhparam)))
       {
-        cerr << "warning unable to load temporary DH parameter file '" << opt_dhparam << "', ignoring" << endl;
+        CERR << "warning unable to load temporary DH parameter file '" << opt_dhparam << "', ignoring" << endl;
       }
   
       if (opt_passwd) tLayer->setPrivateKeyPasswd(opt_passwd);
     
       if (TCS_ok != tLayer->setPrivateKeyFile(opt_privateKeyFile, opt_keyFileFormat))
       {
-        cerr << "unable to load private TLS key from '" << opt_privateKeyFile << "'" << endl;
+        CERR << "unable to load private TLS key from '" << opt_privateKeyFile << "'" << endl;
         return 1;
       }
       if (TCS_ok != tLayer->setCertificateFile(opt_certificateFile, opt_keyFileFormat))
       {
-        cerr << "unable to load certificate from '" << opt_certificateFile << "'" << endl;
+        CERR << "unable to load certificate from '" << opt_certificateFile << "'" << endl;
         return 1;
       }
       if (! tLayer->checkPrivateKeyMatchesCertificate())
       {
-        cerr << "private key '" << opt_privateKeyFile << "' and certificate '" << opt_certificateFile << "' do not match" << endl;
+        CERR << "private key '" << opt_privateKeyFile << "' and certificate '" << opt_certificateFile << "' do not match" << endl;
         return 1;
       }
       
       if (TCS_ok != tLayer->setCipherSuites(opt_ciphersuites.c_str()))
       {
-        cerr << "unable to set selected cipher suites" << endl;
+        CERR << "unable to set selected cipher suites" << endl;
         return 1;
       }
 
@@ -617,10 +617,10 @@ int main(int argc, char *argv[])
       {
         if (!tLayer->writeRandomSeed(opt_writeSeedFile))
         {
-          cerr << "Error while writing random seed file '" << opt_writeSeedFile << "', ignoring." << endl;
+          CERR << "Error while writing random seed file '" << opt_writeSeedFile << "', ignoring." << endl;
         }
       } else {
-        cerr << "Warning: cannot write random seed, ignoring." << endl;
+        CERR << "Warning: cannot write random seed, ignoring." << endl;
       }
     }
 #endif
@@ -1189,7 +1189,10 @@ static CONDITION storeSCP(
 /*
 ** CVS Log
 ** $Log: storescp.cc,v $
-** Revision 1.37  2001-06-01 15:50:02  meichel
+** Revision 1.38  2001-09-28 13:21:41  joergr
+** Replaced "cerr" by "CERR".
+**
+** Revision 1.37  2001/06/01 15:50:02  meichel
 ** Updated copyright header
 **
 ** Revision 1.36  2001/06/01 11:01:57  meichel
