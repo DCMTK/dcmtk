@@ -9,10 +9,10 @@
 ** Perform very simple checking of a dicom file for encoding errors
 **
 **
-** Last Update:		$Author: hewett $
-** Update Date:		$Date: 1997-03-26 17:38:14 $
+** Last Update:		$Author: andreas $
+** Update Date:		$Date: 1997-04-18 08:06:54 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/apps/Attic/dcmchk.cc,v $
-** CVS/RCS Revision:	$Revision: 1.1 $
+** CVS/RCS Revision:	$Revision: 1.2 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -225,14 +225,14 @@ static void printResult(ostream& out, DcmStack& stack, BOOL showFullData, BOOL& 
         return;
     }
     
-    int n = stack.card();
+    unsigned long n = stack.card();
     if (n == 0) {
 	return;
     }
 
     if (prependSequenceHierachy) {
 	/* print the path leading up to the top stack elem */
-	for (int i=n-1; i>=1; i--) {
+	for (unsigned long i=n-1; i>=1; i--) {
 	    DcmObject *dobj = stack.elem(i);
 	    /* do not print if a DCM_Item as this is not 
 	     * very helpful to distinguish instances.
@@ -418,7 +418,8 @@ static int checkelem(ostream & out, DcmElement *elem,  DcmXfer& oxfer,
     /* Need to split the value into its components if VM>1 */
     if (isaStringVR(vr)) {
         /* only strings have variable length components */
-        char* value = ((DcmByteString*)elem)->get();
+        char* value = NULL;
+	((DcmByteString*)elem)->getString(value);
         
         char **fields = new char*[vm+1];
         if (fields == NULL) {
@@ -485,7 +486,7 @@ static int checkitem(ostream & out, DcmItem *item,  DcmXfer& oxfer,
     ** Step through each attribute and check it.
     */
 
-    int count = item->card();
+    unsigned long count = item->card();
     for (int i=0; i<count; i++) {
     	DcmElement *elem = item->getElement(i);
     	BOOL alreadyOutput = FALSE;
@@ -496,7 +497,7 @@ static int checkitem(ostream & out, DcmItem *item,  DcmXfer& oxfer,
     	
     	if (elem->ident() == EVR_SQ) {
     	    DcmSequenceOfItems *seq = (DcmSequenceOfItems*)elem;
-    	    int nitems = seq->card();
+    	    unsigned long nitems = seq->card();
     	    for (int j=0; j<nitems; j++) {
     	        /* check each item.  an item is just another dataset */
     	        stack.push(seq);
@@ -567,7 +568,23 @@ static int dcmchk(ostream & out, const char* ifname, BOOL isDataset,
 /*
 ** CVS/RCS Log:
 ** $Log: dcmchk.cc,v $
-** Revision 1.1  1997-03-26 17:38:14  hewett
+** Revision 1.2  1997-04-18 08:06:54  andreas
+** - Minor corrections: correct some warnings of the SUN-C++ Compiler
+**   concerning the assignments of wrong types and inline compiler
+**   errors
+** - The put/get-methods for all VRs did not conform to the C++-Standard
+**   draft. Some Compilers (e.g. SUN-C++ Compiler, Metroworks
+**   CodeWarrier, etc.) create many warnings concerning the hiding of
+**   overloaded get methods in all derived classes of DcmElement.
+**   So the interface of all value representation classes in the
+**   library are changed rapidly, e.g.
+**   E_Condition get(Uint16 & value, const unsigned long pos);
+**   becomes
+**   E_Condition getUint16(Uint16 & value, const unsigned long pos);
+**   All (retired) "returntype get(...)" methods are deleted.
+**   For more information see dcmdata/include/dcelem.h
+**
+** Revision 1.1  1997/03/26 17:38:14  hewett
 ** Initial version.
 **
 **

@@ -50,10 +50,10 @@
 **
 **
 **
-** Last Update:		$Author: hewett $
-** Update Date:		$Date: 1997-03-27 15:47:25 $
+** Last Update:		$Author: andreas $
+** Update Date:		$Date: 1997-04-18 08:06:56 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/apps/dump2dcm.cc,v $
-** CVS/RCS Revision:	$Revision: 1.8 $
+** CVS/RCS Revision:	$Revision: 1.9 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -405,7 +405,7 @@ insertIntoSet(DcmStack & stack, DcmTagKey tagkey, DcmEVR vr, char * value)
 	    {
 		// fill value
 		if (value)
-		    l_error = newElement->put(value);
+		    l_error = newElement->putString(value);
 
 		// insert element into hierarchy
 		if (l_error == EC_Normal)
@@ -520,7 +520,7 @@ readDumpFile(DcmMetaInfo * metaheader, DcmDataset * dataset,
 
     datasetStack.push(dataset);
 
-    while(getLine(lineBuf, maxLineLength, infile, lineNumber+1))
+    while(getLine(lineBuf, int(maxLineLength), infile, lineNumber+1))
     {
 	lineNumber++;
 
@@ -862,7 +862,23 @@ int main(int argc, char *argv[])
 /*
 ** CVS/RCS Log:
 ** $Log: dump2dcm.cc,v $
-** Revision 1.8  1997-03-27 15:47:25  hewett
+** Revision 1.9  1997-04-18 08:06:56  andreas
+** - Minor corrections: correct some warnings of the SUN-C++ Compiler
+**   concerning the assignments of wrong types and inline compiler
+**   errors
+** - The put/get-methods for all VRs did not conform to the C++-Standard
+**   draft. Some Compilers (e.g. SUN-C++ Compiler, Metroworks
+**   CodeWarrier, etc.) create many warnings concerning the hiding of
+**   overloaded get methods in all derived classes of DcmElement.
+**   So the interface of all value representation classes in the
+**   library are changed rapidly, e.g.
+**   E_Condition get(Uint16 & value, const unsigned long pos);
+**   becomes
+**   E_Condition getUint16(Uint16 & value, const unsigned long pos);
+**   All (retired) "returntype get(...)" methods are deleted.
+**   For more information see dcmdata/include/dcelem.h
+**
+** Revision 1.8  1997/03/27 15:47:25  hewett
 ** Added command line switche to allow generation of UN to be
 ** disabled (it is enabled by default).
 **

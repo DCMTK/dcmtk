@@ -10,10 +10,10 @@
 ** CD-R Image Interchange Profile (Supplement 19).
 **
 **
-** Last Update:		$Author: hewett $
-** Update Date:		$Date: 1997-03-27 18:17:25 $
+** Last Update:		$Author: andreas $
+** Update Date:		$Date: 1997-04-18 08:06:56 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/apps/dcmgpdir.cc,v $
-** CVS/RCS Revision:	$Revision: 1.3 $
+** CVS/RCS Revision:	$Revision: 1.4 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -292,7 +292,7 @@ dcmFindString(DcmItem* d, const DcmTagKey& xtag, BOOL searchIntoSub = FALSE)
     ec = d->search(xtag, stack, ESM_fromHere, searchIntoSub);
     elem = (DcmElement*) stack.top();
     if (ec == EC_Normal && elem != NULL) {
-	ec = elem->get(s);
+	ec = elem->getString(s);
     }
 
     return s;
@@ -339,7 +339,7 @@ dcmFindStringInFile(const char* fname, const DcmTagKey& xtag,
     ec = d->search(xtag, stack, ESM_fromHere, searchIntoSub);
     elem = (DcmElement*) stack.top();
     if (ec == EC_Normal && elem != NULL) {
-	ec = elem->get(s);
+	ec = elem->getString(s);
     }
 
     static char* staticstr = NULL;
@@ -378,7 +378,7 @@ dcmInsertString(DcmItem* d, const DcmTagKey& xtag,
 	return FALSE;
     }
     if (s != NULL) {
-	cond = elem->put(s);
+	cond = elem->putString(s);
 	if (cond != EC_Normal) {
 	    cerr << progname << 
 		": error: dcmInsertString: cannot put string" << endl;
@@ -856,7 +856,7 @@ findExistingRecord(DcmDirectoryRecord *root, E_DirRecType dirtype,
     }
 
     DcmDirectoryRecord* r = NULL;
-    int n = root->cardSub();
+    unsigned long n = root->cardSub();
     BOOL found = FALSE;
     for (int i=0; i<n && !found; i++) {
 	r = root->getSub(i);
@@ -1157,7 +1157,23 @@ createDicomdirFromFiles(char* fileNames[], int numberOfFileNames)
 /*
 ** CVS/RCS Log:
 ** $Log: dcmgpdir.cc,v $
-** Revision 1.3  1997-03-27 18:17:25  hewett
+** Revision 1.4  1997-04-18 08:06:56  andreas
+** - Minor corrections: correct some warnings of the SUN-C++ Compiler
+**   concerning the assignments of wrong types and inline compiler
+**   errors
+** - The put/get-methods for all VRs did not conform to the C++-Standard
+**   draft. Some Compilers (e.g. SUN-C++ Compiler, Metroworks
+**   CodeWarrier, etc.) create many warnings concerning the hiding of
+**   overloaded get methods in all derived classes of DcmElement.
+**   So the interface of all value representation classes in the
+**   library are changed rapidly, e.g.
+**   E_Condition get(Uint16 & value, const unsigned long pos);
+**   becomes
+**   E_Condition getUint16(Uint16 & value, const unsigned long pos);
+**   All (retired) "returntype get(...)" methods are deleted.
+**   For more information see dcmdata/include/dcelem.h
+**
+** Revision 1.3  1997/03/27 18:17:25  hewett
 ** Added checks for attributes required in input files.
 **
 ** Revision 1.2  1997/03/27 15:47:24  hewett
