@@ -10,10 +10,10 @@
 ** Implementation of class DcmOtherByteOtherWord
 **
 **
-** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1996-01-29 13:38:33 $
+** Last Update:		$Author: meichel $
+** Update Date:		$Date: 1996-03-26 09:59:36 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcvrobow.cc,v $
-** CVS/RCS Revision:	$Revision: 1.5 $
+** CVS/RCS Revision:	$Revision: 1.6 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -268,7 +268,7 @@ E_Condition DcmOtherByteOtherWord::put(const char * val)
 	    
 	for(unsigned long i = 0; i < vm && errorFlag == EC_Normal; i++)
 	{
-	    const char * value = getFirstValueFromString(s);
+	    char * value = getFirstValueFromString(s);
 	    if (value) 
 	    {
 		if (sscanf(value, "%hx", &intVal) != 1)
@@ -394,7 +394,10 @@ E_Condition DcmOtherByteOtherWord::write(DcmStream & outStream,
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrobow.cc,v $
-** Revision 1.5  1996-01-29 13:38:33  andreas
+** Revision 1.6  1996-03-26 09:59:36  meichel
+** corrected bug (deletion of const char *) which prevented compilation on NeXT
+**
+** Revision 1.5  1996/01/29 13:38:33  andreas
 ** - new put method for every VR to put value as a string
 ** - better and unique print methods
 **

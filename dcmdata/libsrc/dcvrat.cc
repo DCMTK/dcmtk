@@ -9,10 +9,10 @@
 ** Purpose:
 ** Implementation of class DcmAttributeTag
 **
-** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1996-01-29 13:38:31 $
+** Last Update:		$Author: meichel $
+** Update Date:		$Date: 1996-03-26 09:59:34 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcvrat.cc,v $
-** CVS/RCS Revision:	$Revision: 1.4 $
+** CVS/RCS Revision:	$Revision: 1.5 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -189,7 +189,7 @@ E_Condition DcmAttributeTag::put(const char * val)
 	    
 	for(unsigned long i = 0; i < 2*vm && errorFlag == EC_Normal; i+=2)
 	{
-	    const char * value = getFirstValueFromString(s);
+	    char * value = getFirstValueFromString(s);
 	    if (!value || sscanf(value, "(%hx,%hx)", &field[i], &field[i+1]) != 2)
 		errorFlag = EC_CorruptedData;
 	    else if (value)
@@ -286,7 +286,10 @@ E_Condition DcmAttributeTag::verify(const BOOL autocorrect)
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrat.cc,v $
-** Revision 1.4  1996-01-29 13:38:31  andreas
+** Revision 1.5  1996-03-26 09:59:34  meichel
+** corrected bug (deletion of const char *) which prevented compilation on NeXT
+**
+** Revision 1.4  1996/01/29 13:38:31  andreas
 ** - new put method for every VR to put value as a string
 ** - better and unique print methods
 **

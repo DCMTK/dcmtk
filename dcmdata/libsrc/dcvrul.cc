@@ -9,10 +9,10 @@
 ** Purpose:
 ** Implementation of class DcmUnsignedLong
 **
-** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1996-01-29 13:38:35 $
+** Last Update:		$Author: meichel $
+** Update Date:		$Date: 1996-03-26 09:59:38 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcvrul.cc,v $
-** CVS/RCS Revision:	$Revision: 1.4 $
+** CVS/RCS Revision:	$Revision: 1.5 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -183,7 +183,7 @@ E_Condition DcmUnsignedLong::put(const char * val)
 	    
 	for(unsigned long i = 0; i < vm && errorFlag == EC_Normal; i++)
 	{
-	    const char * value = getFirstValueFromString(s);
+	    char * value = getFirstValueFromString(s);
 	    if (!value || 
 #if SIZEOF_LONG == 8
 		sscanf(value, "%u", &field[i]) != 1)
@@ -275,7 +275,10 @@ E_Condition DcmUnsignedLong::verify(const BOOL autocorrect )
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrul.cc,v $
-** Revision 1.4  1996-01-29 13:38:35  andreas
+** Revision 1.5  1996-03-26 09:59:38  meichel
+** corrected bug (deletion of const char *) which prevented compilation on NeXT
+**
+** Revision 1.4  1996/01/29 13:38:35  andreas
 ** - new put method for every VR to put value as a string
 ** - better and unique print methods
 **

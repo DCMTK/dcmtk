@@ -8,10 +8,10 @@
 ** 	Functions to get the VM and values from a string
 **
 **
-** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1996-01-29 13:38:30 $
+** Last Update:		$Author: meichel $
+** Update Date:		$Date: 1996-03-26 09:59:33 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcvm.cc,v $
-** CVS/RCS Revision:	$Revision: 1.1 $
+** CVS/RCS Revision:	$Revision: 1.2 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -36,7 +36,7 @@ unsigned long getVMFromString(const char * val)
 
 // get first value stored in string, set the parameter to beginning of the
 // next value
-const char * getFirstValueFromString(const char * & s)
+char * getFirstValueFromString(const char * & s)
 {
     if (s)
     {
@@ -67,7 +67,10 @@ const char * getFirstValueFromString(const char * & s)
 /*
 ** CVS/RCS Log:
 ** $Log: dcvm.cc,v $
-** Revision 1.1  1996-01-29 13:38:30  andreas
+** Revision 1.2  1996-03-26 09:59:33  meichel
+** corrected bug (deletion of const char *) which prevented compilation on NeXT
+**
+** Revision 1.1  1996/01/29 13:38:30  andreas
 ** - new put method for every VR to put value as a string
 ** - better and unique print methods
 **
