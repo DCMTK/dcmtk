@@ -41,9 +41,9 @@
  *  dcmjpeg/apps/dcmmkdir.cc.
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-09-23 13:50:41 $
+ *  Update Date:      $Date: 2002-09-23 17:52:03 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/apps/dcmgpdir.cc,v $
- *  CVS/RCS Revision: $Revision: 1.66 $
+ *  CVS/RCS Revision: $Revision: 1.67 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -387,8 +387,13 @@ int main(int argc, char *argv[])
       {
           if (cmd.findOption("--version"))
           {
-              app.printHeader();          // uses ofConsole.lockCerr()
-              CERR << endl << "External libraries used:" << endl;
+              app.printHeader(OFTrue /*print host identifier*/);          // uses ofConsole.lockCerr()
+              CERR << endl << "External libraries used:";
+#if !defined(WITH_ZLIB) && !defined(BUILD_DCMGPDIR_AS_DCMMKDIR)
+              CERR << " none" << endl;
+#else
+              CERR << endl;
+#endif
 #ifdef WITH_ZLIB
               CERR << "- ZLIB, Version " << zlibVersion() << endl;
 #endif
@@ -4420,7 +4425,10 @@ expandFileNames(OFList<OFString>& fileNames, OFList<OFString>& expandedNames)
 /*
  * CVS/RCS Log:
  * $Log: dcmgpdir.cc,v $
- * Revision 1.66  2002-09-23 13:50:41  joergr
+ * Revision 1.67  2002-09-23 17:52:03  joergr
+ * Prepared code for future support of 'config.guess' host identifiers.
+ *
+ * Revision 1.66  2002/09/23 13:50:41  joergr
  * Added new command line option "--version" which prints the name and version
  * number of external libraries used.
  *

@@ -22,9 +22,9 @@
  *  Purpose: create a Dicom FileFormat or DataSet from an ASCII-dump
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-09-23 13:50:42 $
+ *  Update Date:      $Date: 2002-09-23 17:52:04 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/apps/dump2dcm.cc,v $
- *  CVS/RCS Revision: $Revision: 1.41 $
+ *  CVS/RCS Revision: $Revision: 1.42 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -816,10 +816,12 @@ int main(int argc, char *argv[])
       {
         if (cmd.findOption("--version"))
         {
-            app.printHeader();          // uses ofConsole.lockCerr()
-            CERR << endl << "External libraries used:" << endl;
+            app.printHeader(OFTrue /*print host identifier*/);          // uses ofConsole.lockCerr()
+            CERR << endl << "External libraries used:";
 #ifdef WITH_ZLIB
-            CERR << "- ZLIB, Version " << zlibVersion() << endl;
+            CERR << endl << "- ZLIB, Version " << zlibVersion() << endl;
+#else
+            CERR << " none" << endl;
 #endif
             return 0;
          }
@@ -949,7 +951,10 @@ int main(int argc, char *argv[])
 /*
 ** CVS/RCS Log:
 ** $Log: dump2dcm.cc,v $
-** Revision 1.41  2002-09-23 13:50:42  joergr
+** Revision 1.42  2002-09-23 17:52:04  joergr
+** Prepared code for future support of 'config.guess' host identifiers.
+**
+** Revision 1.41  2002/09/23 13:50:42  joergr
 ** Added new command line option "--version" which prints the name and version
 ** number of external libraries used.
 **

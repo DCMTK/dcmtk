@@ -22,9 +22,9 @@
  *  Purpose: List the contents of a dicom file
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-09-23 13:50:41 $
+ *  Update Date:      $Date: 2002-09-23 17:52:02 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/apps/dcmdump.cc,v $
- *  CVS/RCS Revision: $Revision: 1.41 $
+ *  CVS/RCS Revision: $Revision: 1.42 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -221,10 +221,12 @@ int main(int argc, char *argv[])
       {
         if (cmd.findOption("--version"))
         {
-            app.printHeader();          // uses ofConsole.lockCerr()
-            CERR << endl << "External libraries used:" << endl;
+            app.printHeader(OFTrue /*print host identifier*/);          // uses ofConsole.lockCerr()
+            CERR << endl << "External libraries used:";
 #ifdef WITH_ZLIB
-            CERR << "- ZLIB, Version " << zlibVersion() << endl;
+            CERR << endl << "- ZLIB, Version " << zlibVersion() << endl;
+#else
+            CERR << " none" << endl;
 #endif
             return 0;
          }
@@ -511,7 +513,10 @@ static int dumpFile(ostream & out,
 /*
  * CVS/RCS Log:
  * $Log: dcmdump.cc,v $
- * Revision 1.41  2002-09-23 13:50:41  joergr
+ * Revision 1.42  2002-09-23 17:52:02  joergr
+ * Prepared code for future support of 'config.guess' host identifiers.
+ *
+ * Revision 1.41  2002/09/23 13:50:41  joergr
  * Added new command line option "--version" which prints the name and version
  * number of external libraries used.
  *
