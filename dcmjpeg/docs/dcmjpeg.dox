@@ -2,10 +2,17 @@
 
 \defgroup dcmjpeg dcmjpeg
 
-This module contains ...
+This module contains classes that convert between uncompressed and JPEG 
+compressed representations (transfer syntaxes) of a DICOM image object.
+Both lossless and lossy JPEG processes are supported. This module implements
+a family of codecs that are derived from class DcmCodec and can be registered
+in the codec list maintained in module dcmdata.
 
 The main interface classes are:
-\li \b ...
+\li \b DJEncoderRegistration
+\li \b DJDecoderRegistration
+\li \b DJCodecEncoder
+\li \b DJCodecDecoder
 
 \section Tools
 
@@ -17,10 +24,54 @@ This module contains the following command line tools:
 
 \section Examples
 
-The following example shows ...:
+The following example shows how to compress a DICOM image file with lossless JPEG:
 
 \code
-...
+DJEncoderRegistration::registerCodecs(); // register JPEG codecs
+DcmFileFormat fileformat;
+if (fileformat.loadFile("test.dcm").good())
+{
+  DcmDataset *dataset = fileformat.getDataset();
+  DcmItem *metaInfo = fileformat.getMetaInfo();
+  DJ_RPLossless params; // codec parameters, we use the defaults
+
+  // this causes the lossless JPEG version of the dataset to be created
+  dataset->chooseRepresentation(EXS_JPEGProcess14SV1TransferSyntax, &params);
+
+  // check if everything went well
+  if (dataset->canWriteXfer(EXS_JPEGProcess14SV1TransferSyntax))
+  {
+    // force the meta-header UIDs to be re-generated when storing the file 
+    // since the UIDs in the data set may have changed 
+    delete metaInfo->remove(DCM_MediaStorageSOPClassUID);
+    delete metaInfo->remove(DCM_MediaStorageSOPInstanceUID);
+
+    // store in lossless JPEG format
+    fileformat.saveFile("test_jpeg.dcm", EXS_JPEGProcess14SV1TransferSyntax);
+  }
+}    
+DJEncoderRegistration::cleanup(); // deregister JPEG codecs
+\endcode
+
+The following example shows how to decompress a JPEG-compressed DICOM image file:
+
+\code
+DJDecoderRegistration::registerCodecs(); // register JPEG codecs
+DcmFileFormat fileformat;
+if (fileformat.loadFile("test_jpeg.dcm").good())
+{
+  DcmDataset *dataset = fileformat.getDataset();
+
+  // decompress data set if compressed
+  dataset->chooseRepresentation(EXS_LittleEndianExplicit, NULL);
+
+  // check if everything went well
+  if (dataset->canWriteXfer(EXS_LittleEndianExplicit))
+  {
+    fileformat.saveFile("test_decompressed.dcm", EXS_LittleEndianExplicit);
+  }
+}    
+DJDecoderRegistration::cleanup(); // deregister JPEG codecs
 \endcode
 
 */
