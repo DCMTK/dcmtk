@@ -651,6 +651,12 @@
 /* Define if <math.h> fails if included extern "C" */
 #define INCLUDE_MATH_H_AS_CXX 1
 
+/* Define if bool is a built-in type */
+#define HAVE_CXX_BOOL 1
+
+/* Define if volatile is a known keyword */
+#define HAVE_CXX_VOLATILE 1
+
 #endif /* _WIN32 */
 
 #endif /* CFWIN32_H */

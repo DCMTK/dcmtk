@@ -7,13 +7,16 @@ dnl
 dnl Authors: Andreas Barth, Marco Eichelberg
 dnl
 dnl Last Update:  $Author: meichel $
-dnl Revision:     $Revision: 1.23 $
+dnl Revision:     $Revision: 1.24 $
 dnl Status:       $State: Exp $
 dnl
-dnl $Id: aclocal.m4,v 1.23 2003-05-13 09:55:30 meichel Exp $
+dnl $Id: aclocal.m4,v 1.24 2003-06-06 10:23:41 meichel Exp $
 dnl
 dnl $Log: aclocal.m4,v $
-dnl Revision 1.23  2003-05-13 09:55:30  meichel
+dnl Revision 1.24  2003-06-06 10:23:41  meichel
+dnl Added configure tests for bool and volatile keywords
+dnl
+dnl Revision 1.23  2003/05/13 09:55:30  meichel
 dnl Fixed minor issue in AC_CHECK_INTP_SELECT configure macro
 dnl
 dnl Revision 1.22  2002/12/16 16:19:25  meichel
@@ -1312,3 +1315,73 @@ else
 fi
 ])
 
+
+dnl AC_CHECK_CXX_BOOL checks if bool is a built-in C++ type
+dnl   (which is not the case on older compilers).
+dnl
+dnl Note:
+dnl   Since GNU autoheader does not support this macro, you must create
+dnl   an entry in your acconfig.h.
+dnl Examples:
+dnl   in configure.in: 
+dnl     AC_CHECK_CXX_BOOL
+dnl   in acconfig.h:
+dnl     #undef HAVE_CXX_BOOL
+
+dnl AC_CHECK_CXX_BOOL(ACTION-IF-FOUND [, ACTION-IF-NOT-FOUND])
+AC_DEFUN(AC_CHECK_CXX_BOOL,
+[AC_MSG_CHECKING([if bool is built-in type])
+AC_CACHE_VAL(ac_cv_have_cxx_bool,
+[AC_TRY_COMPILE([],[
+bool b1 = true;
+bool b2 = false;
+],
+eval "ac_cv_have_cxx_bool=yes", 
+eval "ac_cv_have_cxx_bool=no")])
+if eval "test \"`echo $ac_cv_have_cxx_bool`\" = yes"; then
+  AC_MSG_RESULT(yes)
+changequote(, )dnl
+  ac_tr_prototype=HAVE_CXX_BOOL
+changequote([, ])dnl
+  AC_DEFINE_UNQUOTED($ac_tr_prototype)
+  ifelse([$1], , :, [$1])
+else
+  AC_MSG_RESULT(no)
+  ifelse([$2], , , [$2])
+fi
+])
+
+
+dnl AC_CHECK_CXX_VOLATILE checks if volatile is a built-in C++ keyword
+dnl   (which is not the case on older compilers).
+dnl
+dnl Note:
+dnl   Since GNU autoheader does not support this macro, you must create
+dnl   an entry in your acconfig.h.
+dnl Examples:
+dnl   in configure.in: 
+dnl     AC_CHECK_CXX_VOLATILE
+dnl   in acconfig.h:
+dnl     #undef HAVE_CXX_VOLATILE
+
+dnl AC_CHECK_CXX_VOLATILE(ACTION-IF-FOUND [, ACTION-IF-NOT-FOUND])
+AC_DEFUN(AC_CHECK_CXX_VOLATILE,
+[AC_MSG_CHECKING([if volatile is known keyword])
+AC_CACHE_VAL(ac_cv_have_cxx_volatile,
+[AC_TRY_COMPILE([],[
+volatile int i=0;
+],
+eval "ac_cv_have_cxx_volatile=yes", 
+eval "ac_cv_have_cxx_volatile=no")])
+if eval "test \"`echo $ac_cv_have_cxx_volatile`\" = yes"; then
+  AC_MSG_RESULT(yes)
+changequote(, )dnl
+  ac_tr_prototype=HAVE_CXX_VOLATILE
+changequote([, ])dnl
+  AC_DEFINE_UNQUOTED($ac_tr_prototype)
+  ifelse([$1], , :, [$1])
+else
+  AC_MSG_RESULT(no)
+  ifelse([$2], , , [$2])
+fi
+])

@@ -600,4 +600,10 @@
 /* Define if <math.h> fails if included extern "C" */
 #undef INCLUDE_MATH_H_AS_CXX
 
+/* Define if bool is a built-in type */
+#undef HAVE_CXX_BOOL
+
+/* Define if volatile is a known keyword */
+#undef HAVE_CXX_VOLATILE
+
 #endif
