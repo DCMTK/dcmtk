@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DVPSReferencedImage_PList
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-03-03 14:14:04 $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2000-03-06 18:24:08 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -276,7 +276,7 @@ void DVPSReferencedImage_PList::removeImageReference(
   {
     OFString seriesUID;
     OFString sopclassUID;
-    OFString instanceUID;
+    OFString sopinstanceUID;
     OFString frames;
     OFString aetitle;
     OFString filesetID;
@@ -287,13 +287,13 @@ void DVPSReferencedImage_PList::removeImageReference(
     for (size_t i=0; i<numberOfReferences; i++)
     {
       sopclassUID.clear();
-      instanceUID.clear();
+      sopinstanceUID.clear();
       frames.clear();
-      if (EC_Normal == allReferences.getImageReference(i, seriesUID, sopclassUID, instanceUID, frames,
+      if (EC_Normal == allReferences.getImageReference(i, seriesUID, sopclassUID, sopinstanceUID, frames,
         aetitle, filesetID, filesetUID))
       {
       	if (frames.size() > 0) cframes=frames.c_str(); else cframes=NULL;
-      	addImageReference(sopclassUID.c_str(), instanceUID.c_str(), cframes);
+      	addImageReference(sopclassUID.c_str(), sopinstanceUID.c_str(), cframes);
       }
     }
   }
@@ -343,7 +343,10 @@ OFBool DVPSReferencedImage_PList::matchesApplicability(const char *instanceUID, 
 
 /*
  *  $Log: dvpsril.cc,v $
- *  Revision 1.5  2000-03-03 14:14:04  meichel
+ *  Revision 1.6  2000-03-06 18:24:08  joergr
+ *  Renamed local variable hiding a member variable (reported by Sun CC 4.2).
+ *
+ *  Revision 1.5  2000/03/03 14:14:04  meichel
  *  Implemented library support for redirecting error messages into memory
  *    instead of printing them to stdout/stderr for GUI applications.
  *
