@@ -9552,11 +9552,54 @@ else
   
 fi
 
+echo $ac_n "checking whether the compiler recognizes typename""... $ac_c" 1>&6
+echo "configure:9557: checking whether the compiler recognizes typename" >&5
+if eval "test \"`echo '$''{'ac_cv_cxx_typename'+set}'`\" = set"; then
+  echo $ac_n "(cached) $ac_c" 1>&6
+else
+  
+ ac_ext=C
+# CXXFLAGS is not in ac_cpp because -g, -O, etc. are not valid cpp options.
+ac_cpp='$CXXCPP $CPPFLAGS'
+ac_compile='${CXX-g++} -c $CXXFLAGS $CPPFLAGS conftest.$ac_ext 1>&5'
+ac_link='${CXX-g++} -o conftest $CXXFLAGS $CPPFLAGS $LDFLAGS conftest.$ac_ext $LIBS 1>&5'
+cross_compiling=$ac_cv_prog_cxx_cross
+
+ cat > conftest.$ac_ext <<EOF
+#line 9570 "configure"
+#include "confdefs.h"
+template<typename T>class X {public:X(){}};
+int main() {
+X<float> z; return 0;
+; return 0; }
+EOF
+if { (eval echo configure:9577: \"$ac_compile\") 1>&5; (eval $ac_compile) 2>&5; }; then
+  rm -rf conftest*
+  ac_cv_cxx_typename=yes
+else
+  echo "configure: failed program was:" >&5
+  cat conftest.$ac_ext >&5
+  rm -rf conftest*
+  ac_cv_cxx_typename=no
+fi
+rm -f conftest*
+ 
+
+fi
+
+echo "$ac_t""$ac_cv_cxx_typename" 1>&6
+if test "$ac_cv_cxx_typename" = yes; then
+  cat >> confdefs.h <<\EOF
+#define HAVE_TYPENAME 1
+EOF
+
+fi
+
 
 
 INSTALL_PRIVATE_DICTIONARY="NO"
 echo $ac_n "checking whether to install private tag dictionary""... $ac_c" 1>&6
-echo "configure:9560: checking whether to install private tag dictionary" >&5
+echo "configure:9603: checking whether to install private tag dictionary" >&5
 # Check whether --with-private-tags or --without-private-tags was given.
 if test "${with_private_tags+set}" = set; then
   withval="$with_private_tags"
@@ -9583,7 +9626,7 @@ fi
 
 OPENSSLLIBS=""
 echo $ac_n "checking whether to include OpenSSL support""... $ac_c" 1>&6
-echo "configure:9587: checking whether to include OpenSSL support" >&5
+echo "configure:9630: checking whether to include OpenSSL support" >&5
 # Check whether --with-openssl or --without-openssl was given.
 if test "${with_openssl+set}" = set; then
   withval="$with_openssl"
@@ -9629,7 +9672,7 @@ fi
 
 TIFFLIBS=""
 echo $ac_n "checking whether to include libtiff support""... $ac_c" 1>&6
-echo "configure:9633: checking whether to include libtiff support" >&5
+echo "configure:9676: checking whether to include libtiff support" >&5
 # Check whether --with-libtiff or --without-libtiff was given.
 if test "${with_libtiff+set}" = set; then
   withval="$with_libtiff"
@@ -9674,7 +9717,7 @@ fi
 
 ZLIBLIBS=""
 echo $ac_n "checking whether to include zlib support""... $ac_c" 1>&6
-echo "configure:9678: checking whether to include zlib support" >&5
+echo "configure:9721: checking whether to include zlib support" >&5
 # Check whether --with-zlib or --without-zlib was given.
 if test "${with_zlib+set}" = set; then
   withval="$with_zlib"
@@ -9719,7 +9762,7 @@ fi
 
 PNGLIBS=""
 echo $ac_n "checking whether to include libpng support""... $ac_c" 1>&6
-echo "configure:9723: checking whether to include libpng support" >&5
+echo "configure:9766: checking whether to include libpng support" >&5
 # Check whether --with-libpng or --without-libpng was given.
 if test "${with_libpng+set}" = set; then
   withval="$with_libpng"
@@ -9767,7 +9810,7 @@ fi
 
 XMLLIBS=""
 echo $ac_n "checking whether to include libxml support""... $ac_c" 1>&6
-echo "configure:9771: checking whether to include libxml support" >&5
+echo "configure:9814: checking whether to include libxml support" >&5
 # Check whether --with-libxml or --without-libxml was given.
 if test "${with_libxml+set}" = set; then
   withval="$with_libxml"
@@ -9812,7 +9855,7 @@ fi
 
 TCPWRAPPERLIBS=""
 echo $ac_n "checking whether to include libwrap support""... $ac_c" 1>&6
-echo "configure:9816: checking whether to include libwrap support" >&5
+echo "configure:9859: checking whether to include libwrap support" >&5
 # Check whether --with-libwrap or --without-libwrap was given.
 if test "${with_libwrap+set}" = set; then
   withval="$with_libwrap"

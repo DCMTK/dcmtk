@@ -7,13 +7,16 @@ dnl
 dnl Authors: Andreas Barth, Marco Eichelberg
 dnl
 dnl Last Update:  $Author: meichel $
-dnl Revision:     $Revision: 1.25 $
+dnl Revision:     $Revision: 1.26 $
 dnl Status:       $State: Exp $
 dnl
-dnl $Id: aclocal.m4,v 1.25 2003-07-03 14:49:05 meichel Exp $
+dnl $Id: aclocal.m4,v 1.26 2003-07-03 15:00:55 meichel Exp $
 dnl
 dnl $Log: aclocal.m4,v $
-dnl Revision 1.25  2003-07-03 14:49:05  meichel
+dnl Revision 1.26  2003-07-03 15:00:55  meichel
+dnl Added configure test for "typename" C++ keyword
+dnl
+dnl Revision 1.25  2003/07/03 14:49:05  meichel
 dnl Fixed AC_CHECK_DECLARATION macro
 dnl
 dnl Revision 1.24  2003/06/06 10:23:41  meichel
@@ -1396,3 +1399,23 @@ else
   ifelse([$2], , , [$2])
 fi
 ])
+
+
+dnl Available from the GNU Autoconf Macro Archive at:
+dnl http://www.gnu.org/software/ac-archive/htmldoc/ac_cxx_typename.html
+dnl
+AC_DEFUN([AC_CXX_TYPENAME],
+[AC_CACHE_CHECK(whether the compiler recognizes typename,
+ac_cv_cxx_typename,
+[AC_LANG_SAVE
+ AC_LANG_CPLUSPLUS
+ AC_TRY_COMPILE([template<typename T>class X {public:X(){}};],
+[X<float> z; return 0;],
+ ac_cv_cxx_typename=yes, ac_cv_cxx_typename=no)
+ AC_LANG_RESTORE
+])
+if test "$ac_cv_cxx_typename" = yes; then
+  AC_DEFINE(HAVE_TYPENAME,,[define if the compiler recognizes typename])
+fi
+])
+

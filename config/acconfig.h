@@ -203,6 +203,9 @@
 /* Define if bool is a built-in type */
 #undef HAVE_CXX_BOOL
 
+/* Define if typename is a known keyword */
+#undef HAVE_TYPENAME
+
 /* Define if volatile is a known keyword */
 #undef HAVE_CXX_VOLATILE
 
