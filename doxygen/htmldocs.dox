@@ -8,31 +8,29 @@ implementing part of the DICOM/MEDICOM Standard.
 
 DCMTK contains the following sub-packages, each in its own sub-directory:
 
-\verbatim
-  config   - configuration utilities for dcmtk
-  dcmdata  - a data encoding/decoding library and utility apps
-  dcmimage - adds support for color images to dcmimgle
-  dcmimgle - an image processing library and utility apps
-  dcmjpeg  - a compression/decompression library and utility apps
-  dcmnet   - a networking library and utility apps
-  dcmpstat - a presentation state library and utility apps
-  dcmsign  - a digital signature library and utility apps
-  dcmsr    - a structured report library and utility apps
-  dcmtls   - security extensions for the network library
-  dcmwlm   - a modality worklist database server
-  imagectn - an image database server
-  ofstd    - a library of general purpose classes
-\endverbatim
+\li \ref config - configuration utilities for dcmtk
+\li \ref dcmdata - a data encoding/decoding library and utility apps
+\li \ref dcmimage - adds support for color images to dcmimgle
+\li \ref dcmimgle - an image processing library and utility apps
+\li \ref dcmjpeg - a compression/decompression library and utility apps
+\li \ref dcmnet - a networking library and utility apps
+\li \ref dcmpstat - a presentation state library and utility apps
+\li \ref dcmsign - a digital signature library and utility apps
+\li \ref dcmsr - a structured report library and utility apps
+\li \ref dcmtls - security extensions for the network library
+\li \ref dcmwlm - a modality worklist database server
+\li \ref imagectn - an image database server
+\li \ref ofstd - a library of general purpose classes
 
 Each sub-directory (except config) contains further sub-directories for
 application source code (apps), library source code (libsrc), library
 include files (include), documentation (docs) and optional test programs
 (tests).
 
-To build and install the DCMTK package see the \ref install file.  For
-copyright information see the \ref copyright file.  For information about the
-history of this software see the \ref history.  For answers to some frequently
-asked questions see the \ref faq file.
+To build and install the DCMTK package see the \ref install_file.  For 
+copyright information see the \ref copyright_file.  For information about 
+the history of this software see the \ref history_file.  For answers to
+some frequently asked questions see the \ref faq_file.
 
 If you find bugs or other problems with this software we would appreciate
 hearing about them.  Please send electronic mail to \b dicom-bugs@offis.de.
@@ -42,22 +40,22 @@ fix.
 */
 
 /*!
-    \page readme README
+    \page readme_file README file
     \verbinclude README
 */
 /*!
-    \page install INSTALL
+    \page install_file INSTALL file
     \verbinclude INSTALL
 */
 /*!
-    \page copyright COPYRIGHT
+    \page copyright_file COPYRIGHT file
     \verbinclude COPYRIGHT
 */
 /*!
-    \page history HISTORY
+    \page history_file HISTORY file
     \verbinclude HISTORY
 */
 /*!
-    \page faq FAQ
+    \page faq_file FAQ file
     \verbinclude FAQ
 */
