@@ -23,9 +23,9 @@
  *          Defines a template list class with interfaces similar to the C++ Standard
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-11-27 11:23:05 $
+ *  Update Date:      $Date: 2003-06-03 10:20:00 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/include/Attic/oflist.h,v $
- *  CVS/RCS Revision: $Revision: 1.14 $
+ *  CVS/RCS Revision: $Revision: 1.15 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -64,8 +64,15 @@
 // variable within a namespace using a class of the STL shall have a name
 // of one class of the STL
 #include <list>
+
+#ifdef HAVE_STD_NAMESPACE
+#define OFList std::list
+#define OFListIterator(x) std::list<x>::iterator
+#else
 #define OFList list
 #define OFListIterator(x) list<x>::iterator
+#endif
+
 #define OFListInsert(InputIterator, T, c, pos, first, last) (c).insert((pos), (first), (last))
 #define OFListRemoveIf(Predicate, T, c, pred) (c).remove_if((pred))
 #else
@@ -530,7 +537,10 @@ void OF_ListRemoveIf(OFList<T>& c, Predicate pred)
 /*
 ** CVS/RCS Log:
 ** $Log: oflist.h,v $
-** Revision 1.14  2002-11-27 11:23:05  meichel
+** Revision 1.15  2003-06-03 10:20:00  meichel
+** OFList now explicitly defined as std::list if std namespace present
+**
+** Revision 1.14  2002/11/27 11:23:05  meichel
 ** Adapted module ofstd to use of new header file ofstdinc.h
 **
 ** Revision 1.13  2001/08/23 16:05:52  meichel
