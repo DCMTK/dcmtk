@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2001, OFFIS
+ *  Copyright (C) 1996-2003, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,8 @@
  *  Purpose: DicomPaletteImage (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-06-26 16:30:43 $
- *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/libsrc/dipalimg.cc,v $
- *  CVS/RCS Revision: $Revision: 1.16 $
+ *  Update Date:      $Date: 2003-12-17 16:21:47 $
+ *  CVS/RCS Revision: $Revision: 1.17 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -61,11 +60,11 @@ DiPaletteImage::DiPaletteImage(const DiDocument *docu,
             if (Document->getFlags() & CIF_WrongPaletteAttributeTags)
             {
                 palette[0] = new DiLookupTable(Document, DcmTagKey(0x0028, 0x1111), DcmTagKey(0x0028, 0x1211),
-                    DcmTagKey(0,0) /*explanation*/, &ImageStatus);
+                    DcmTagKey(0,0) /*explanation*/, OFFalse /*ignoreDepth*/, &ImageStatus);
                 palette[1] = new DiLookupTable(Document, DcmTagKey(0x0028, 0x1112), DcmTagKey(0x0028, 0x1212),
-                    DcmTagKey(0,0) /*explanation*/, &ImageStatus);
+                    DcmTagKey(0,0) /*explanation*/, OFFalse /*ignoreDepth*/, &ImageStatus);
                 palette[2] = new DiLookupTable(Document, DcmTagKey(0x0028, 0x1113), DcmTagKey(0x0028, 0x1213),
-                    DcmTagKey(0,0) /*explanation*/, &ImageStatus);
+                    DcmTagKey(0,0) /*explanation*/, OFFalse /*ignoreDepth*/, &ImageStatus);
             } else {
                 const Uint16 *dummy = NULL;
                 /* check for (non-empty) segmented palette */
@@ -81,11 +80,11 @@ DiPaletteImage::DiPaletteImage(const DiDocument *docu,
                 }
                 /* read data from non-segmented palettes (if present) */
                 palette[0] = new DiLookupTable(Document, DCM_RedPaletteColorLookupTableDescriptor,
-                    DCM_RedPaletteColorLookupTableData, DcmTagKey(0,0) /*explanation*/, &ImageStatus);
+                    DCM_RedPaletteColorLookupTableData, DcmTagKey(0,0) /*explanation*/, OFFalse /*ignoreDepth*/, &ImageStatus);
                 palette[1] = new DiLookupTable(Document, DCM_GreenPaletteColorLookupTableDescriptor,
-                    DCM_GreenPaletteColorLookupTableData, DcmTagKey(0,0) /*explanation*/, &ImageStatus);
+                    DCM_GreenPaletteColorLookupTableData, DcmTagKey(0,0) /*explanation*/, OFFalse /*ignoreDepth*/, &ImageStatus);
                 palette[2] = new DiLookupTable(Document, DCM_BluePaletteColorLookupTableDescriptor,
-                    DCM_BluePaletteColorLookupTableData, DcmTagKey(0,0) /*explanation*/, &ImageStatus);
+                    DCM_BluePaletteColorLookupTableData, DcmTagKey(0,0) /*explanation*/, OFFalse /*ignoreDepth*/, &ImageStatus);
             }
             if ((ImageStatus == EIS_Normal) && (palette[0] != NULL) && (palette[1] != NULL) && (palette[2] != NULL))
             {
@@ -93,7 +92,7 @@ DiPaletteImage::DiPaletteImage(const DiDocument *docu,
                 /* determine the maximum value for bits stored of the three lookup tables */
                 for (int jj = 0; jj < 3; jj++)
                 {
-                    if (palette[jj]->getBits() > (Uint16)BitsPerSample)
+                    if (palette[jj]->getBits() > OFstatic_cast(Uint16, BitsPerSample))
                         BitsPerSample = palette[jj]->getBits();
                 }
                 if ((BitsPerSample < 1) || (BitsPerSample > MAX_TABLE_ENTRY_SIZE))
@@ -173,7 +172,12 @@ DiPaletteImage::~DiPaletteImage()
  *
  * CVS/RCS Log:
  * $Log: dipalimg.cc,v $
- * Revision 1.16  2002-06-26 16:30:43  joergr
+ * Revision 1.17  2003-12-17 16:21:47  joergr
+ * Added new compatibility flag that allows to ignore the third value of LUT
+ * descriptors and to determine the bits per table entry automatically.
+ * Adapted type casts to new-style typecast operators defined in ofcast.h.
+ *
+ * Revision 1.16  2002/06/26 16:30:43  joergr
  * Corrected decoding of multi-frame, planar images.
  *
  * Revision 1.15  2002/01/25 17:49:04  joergr
