@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2001, OFFIS
+ *  Copyright (C) 1996-2002, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose: Provides main interface to the "DICOM image toolkit"
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-01-29 17:05:49 $
+ *  Update Date:      $Date: 2002-06-26 16:00:25 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/dcmimage.h,v $
- *  CVS/RCS Revision: $Revision: 1.39 $
+ *  CVS/RCS Revision: $Revision: 1.40 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -71,8 +71,8 @@ class DicomImage
  // --- constructors and destructor
 
     /** constructor, open a DICOM file.
-     *  opens specified file and reads image related data, creates internal representation of image data.
-     *  use getStatus() to obtain detailed information about any errors.
+     *  opens specified file and reads image related data, creates internal representation
+     *  of image data. use getStatus() to obtain detailed information about any errors.
      *
      ** @param  filename  the DICOM file
      *  @param  flags     configuration flags (see diutils.h, CIF_MayDetachPixelData is set automatically)
@@ -102,9 +102,11 @@ class DicomImage
     /** constructor, use a given DcmObject
      *
      ** @param  object  pointer to DICOM data structures
-     *                  (do not delete while referenced, not deleted within dcmimage)
+     *                  (do not delete while referenced, i.e. while this image object or any
+     *                   descendant exists; not deleted within dcmimage unless configuration flag
+     *                   CIF_TakeOverExternalDataset is set - in this case do not delete it at all)
      *  @param  xfer    transfer syntax
-     *  @param  flags   configuration flags (see diutils.h)
+     *  @param  flags   configuration flags (CIF_xxx, see diutils.h)
      *  @param  fstart  first frame to be processed (optional, 0 = 1st frame), all subsequent use
      *                  of parameters labeled 'frame' in this class refers to this start frame.
      *  @param  fcount  number of frames (optional, 0 = all frames)
@@ -118,11 +120,13 @@ class DicomImage
     /** constructor, use a given DcmObject with specified rescale/slope
      *
      ** @param  object     pointer to DICOM data structures
-     *                     (do not delete while referenced, not deleted within dcmimage)
+     *                     (do not delete while referenced, i.e. while this image object or any
+     *                      descendant exists; not deleted within dcmimage unless configuration flag
+     *                      CIF_TakeOverExternalDataset is set - in this case do not delete it at all)
      *  @param  xfer       transfer syntax
      *  @param  slope      rescale slope (modality transformation)
      *  @param  intercept  rescale intercept (modality transformation)
-     *  @param  flags      configuration flags (see diutils.h)
+     *  @param  flags      configuration flags (CIF_xxx, see diutils.h)
      *  @param  fstart     first frame to be processed (optional, 0 = 1st frame), all subsequent use
      *                     of parameters labeled 'frame' in this class refers to this start frame.
      *  @param  fcount     number of frames (optional, 0 = all frames)
@@ -138,11 +142,13 @@ class DicomImage
     /** constructor, use a given DcmObject with specified modality LUT
      *
      ** @param  object      pointer to DICOM data structures
-     *                      (do not delete while referenced, not deleted within dcmimage)
+     *                      (do not delete while referenced, i.e. while this image object or any
+     *                       descendant exists; not deleted within dcmimage unless configuration flag
+     *                       CIF_TakeOverExternalDataset is set - in this case do not delete it at all)
      *  @param  xfer        transfer syntax
      *  @param  data        dataset element containing modality LUT data
      *  @param  descriptor  dataset element containing modality LUT descriptor
-     *  @param  flags       configuration flags (see diutils.h)
+     *  @param  flags       configuration flags (CIF_xxx, see diutils.h)
      *  @param  fstart      first frame to be processed (optional, 0 = 1st frame), all subsequent use
      *                      of parameters labeled 'frame' in this class refers to this start frame.
      *  @param  fcount      number of frames (optional, 0 = all frames)
@@ -339,7 +345,8 @@ class DicomImage
      *  apply VOI/PLUT transformation and (visible) overlay planes.
      *  internal memory buffer will be delete for the next getBitmap/Output operation.
      *  output data is always padded to 8, 16, 32, ... bits (bits allocated).
-     *  Supported output color models: monochrome, RGB (and YCbCr_Full if flag CIF_KeepYCbCrColorModel set).
+     *  Supported output color models: Monochrome 2, RGB (and YCbCr_Full if flag
+     *  CIF_KeepYCbCrColorModel set).
      *
      ** @param  bits    number of bits per sample (image depth, 1..MAX_BITS)
      *                  (MI_PastelColor = -1 for true color pastel mode, EXPERIMENTAL)
@@ -348,7 +355,8 @@ class DicomImage
      *                  1 = color-by-plane (R1R2R3...G1G2G3...B1B2B3...)
      *                  (only applicable for multi-planar/color images, otherwise ignored)
      *
-     ** @return pointer to internal memory buffer containing rendered pixel data (if successful, NULL otherwise)
+     ** @return pointer to internal memory buffer containing rendered pixel data
+     *          (if successful, NULL otherwise)
      */
     inline const void *getOutputData(const int bits = 0,
                                      const unsigned long frame = 0,
@@ -361,7 +369,8 @@ class DicomImage
     /** render pixel data and output to given memory buffer.
      *  apply VOI/PLUT transformation and (visible) overlay planes
      *  output data is always padded to 8, 16, 32, ... bits (bits allocated).
-     *  Supported output color models: monochrome, RGB (and YCbCr_Full if flag CIF_KeepYCbCrColorModel set).
+     *  Supported output color models: Monochrome 2, RGB (and YCbCr_Full if flag
+     *  CIF_KeepYCbCrColorModel set).
      *
      ** @param  buffer  pointer to memory buffer (must already be allocated)
      *  @param  size    size of memory buffer (will be checked whether it is sufficient)
@@ -387,11 +396,13 @@ class DicomImage
     /** render pixel data and return pointer to given plane (internal memory buffer).
      *  apply VOI/PLUT transformation and (visible) overlay planes
      *  internal memory buffer will be delete for the next getBitmap/Output operation.
-     *  Supported output color models: monochrome, RGB (and YCbCr_Full if flag CIF_KeepYCbCrColorModel set).
+     *  Supported output color models: Monochrome 2, RGB (and YCbCr_Full if flag
+     *  CIF_KeepYCbCrColorModel set).
      *
      ** @param  plane  number of plane to be rendered
      *
-     ** @return pointer to internal memory buffer containing rendered pixel data (if successful, NULL otherwise)
+     ** @return pointer to internal memory buffer containing rendered pixel data
+     *          (if successful, NULL otherwise)
      */
     inline const void *getOutputPlane(const int plane) const
     {
@@ -578,6 +589,7 @@ class DicomImage
 
     /** set specified window (given by index to window width/center sequence stored in image file).
      *  possibly active VOI LUT is implicitly disabled.
+     *  NB: This function does nothing if the flag CIF_UsePresentationState is set.
      *
      ** @param  window  index to window width/center sequence
      *
@@ -620,7 +632,8 @@ class DicomImage
             Image->getMonoImagePtr()->getWindow(center, width) : 0;
     }
 
-    /** get number of VOI windows (stored in image file)
+    /** get number of VOI windows (stored in image file).
+     *  NB: This function does nothing if the flag CIF_UsePresentationState is set.
      *
      ** @return number of VOI windows
      */
@@ -649,6 +662,7 @@ class DicomImage
 
     /** set VOI LUT (given by index to VOI LUT sequence stored in image file).
      *  possibly active window/center is implicitly disabled.
+     *  NB: This function does nothing if the flag CIF_UsePresentationState is set.
      *
      ** @param  table  index to VOI LUT sequence
      *
@@ -674,36 +688,64 @@ class DicomImage
      *
      ** @return pointer to description text (NULL if absent)
      */
-    inline const char *getVoiTransformationExplanation()
+    inline const char *getVoiTransformationExplanation() const
     {
         return ((Image != NULL) && (Image->getMonoImagePtr() != NULL)) ?
             Image->getMonoImagePtr()->getVoiTransformationExplanation() : (const char *)NULL;
+    }
+
+    /** get description of specified VOI window (stored in the image file)
+     *
+     ** @param  window       index of the stored VOI window (0..n-1)
+     *  @param  explanation  variable in which the explanation string is stored
+     *
+     ** @return pointer to description text (NULL if absent or index invalid)
+     */
+    inline const char *getVoiWindowExplanation(const unsigned long window,
+                                               OFString &explanation) const
+    {
+        return ((Image != NULL) && (Image->getMonoImagePtr() != NULL)) ?
+            Image->getMonoImagePtr()->getVoiWindowExplanation(window, explanation) : (const char *)NULL;
+    }
+
+    /** get description of specified VOI LUT (stored in the image file)
+     *
+     ** @param  table        index of the stored VOI LUT (0..n-1)
+     *  @param  explanation  variable in which the explanation string is stored
+     *
+     ** @return pointer to description text (NULL if absent or index invalid)
+     */
+    inline const char *getVoiLutExplanation(const unsigned long table,
+                                            OFString &explanation) const
+    {
+        return ((Image != NULL) && (Image->getMonoImagePtr() != NULL)) ?
+            Image->getMonoImagePtr()->getVoiLutExplanation(table, explanation) : (const char *)NULL;
     }
 
     /** get description of performed modality LUT transformation
      *
      ** @return pointer to description text (NULL if absent)
      */
-    inline const char *getModalityLutExplanation()
+    inline const char *getModalityLutExplanation() const
     {
         return ((Image != NULL) && (Image->getMonoImagePtr() != NULL)) ?
             Image->getMonoImagePtr()->getModalityLutExplanation() : (const char *)NULL;
     }
 
- // --- hardcopy parameters: only applicable for grayscale images
+ // --- hardcopy parameters
 
-    /** get polarity.
+    /** get polarity. applicable to monochrome and color images.
      *  possible values are EPP_Normal and EPP_Reverse
      *
      ** @return currently active polarity mode or EPP_Normal if not applicable
      */
     inline EP_Polarity getPolarity() const
     {
-        return ((Image != NULL) && (Image->getMonoImagePtr() != NULL)) ?
-            Image->getMonoImagePtr()->getPolarity() : EPP_Normal;
+        return (Image != NULL) ?
+            Image->getPolarity() : EPP_Normal;
     }
 
-    /** set polarity.
+    /** set polarity. applicable to monochrome and color images.
      *
      ** @param  polarity  polarity (normal or reverse)
      *
@@ -713,11 +755,12 @@ class DicomImage
      */
     inline int setPolarity(const EP_Polarity polarity)
     {
-        return ((Image != NULL) && (Image->getMonoImagePtr() != NULL)) ?
-            Image->getMonoImagePtr()->setPolarity(polarity) : 0;
+        return (Image != NULL) ?
+            Image->setPolarity(polarity) : 0;
     }
 
-    /** set hardcopy parameters. (used to display LinOD images)
+    /** set hardcopy parameters. only applicable to monochrome images.
+     *  used to display LinOD images
      *
      ** @param  min      minimum density of the print-out (in hundreds of Optical Density, e.g. 150 means 1.5 OD)
      *  @param  max      maximum density of the print-out (ditto)
@@ -1382,7 +1425,7 @@ class DicomImage
      *  32-bit address (if 'padding' is true); 32 bit images store 32 bits per pixel (RGB), but only
      *  use the upper 24 bits. The sample order for color images is (i.e. reverse): Blue, Green, Red.
      *  The memory buffer can be allocated both externally (from the calling program) and internally
-     *  (inside this class/module). If the 'data' parameter is not NULL and the 'size' parameter, which 
+     *  (inside this class/module). If the 'data' parameter is not NULL and the 'size' parameter, which
      *  describes the size (in bytes) of the allocated buffer, is suffiently large, the bitmap is stored
      *  in this buffer. Otherwise (i.e. 'data' is NULL) the memory is allocated internally. Please note
      *  that in both cases the memory is not handled internally after this method has finished and,
@@ -1458,11 +1501,43 @@ class DicomImage
     DicomImage *createMonoOutputImage(const unsigned long frame,
                                       const int bits);
 
- // --- output ppm file: return true ('1') if successful
+ // --- output image file: return true ('1') if successful
+
+    /** render pixel data and write image related attributes to DICOM dataset.
+     *  Applies VOI/PLUT transformation and (visible) overlay planes, output data is
+     *  always padded to 8, 16, 32, ... bits (bits allocated).
+     *  Writes the following DICOM attributes:
+     *    - Photometric Interpretation, Samples per Pixel
+     *    - Columns, Rows, Number of Frames
+     *    - Pixel Aspect Ratio (only if pixels are non-square)
+     *    - Bits Allocated, Bits Stored, High Bit
+     *    - Planar Configuration (only if "Samples per Pixel" is greater than 1)
+     *    - Pixel Representation, Pixel Data
+     *  Supported output color models: Monochrome 2, RGB (and YCbCr_Full if flag
+     *  CIF_KeepYCbCrColorModel set).
+     *
+     ** @param  dataset  reference to DICOM dataset where the image attributes are stored
+     *  @param  bits     number of bits per sample (image depth, 1..MAX_BITS)
+     *  @param  frame    number of frame to be rendered (0..n-1)
+     *  @param  planar   0 = color-by-pixel (R1G1B1...R2G2B2...R3G2B2...)
+     *                   1 = color-by-plane (R1R2R3...G1G2G3...B1B2B3...)
+     *                   (only applicable for multi-planar/color images, otherwise ignored)
+     *
+     ** @return true if successful, false otherwise
+     */
+    inline int writeToDataset(DcmItem &dataset,
+                              const int bits = 0,
+                              const unsigned long frame = 0,
+                              const int planar = 0)
+    {
+        return (Image != NULL) ?
+            Image->writeToDataset(dataset, frame, bits, planar) : 0;
+    }
 
     /** write pixel data to PPM file (specified by filename).
      *  pixel data is written in ASCII format.
-     *  This method does not work if original YCbCr color model is retained (see CIF_KeepYCbCrColorModel).
+     *  This method does not work if original YCbCr color model is retained
+     *  (see CIF_KeepYCbCrColorModel).
      *
      ** @param  filename  name of output file (%d is replaced by frame number if present)
      *  @param  bits      number of bits used for output of pixel data
@@ -1478,7 +1553,8 @@ class DicomImage
 
     /** write pixel data to PPM file (specified by open C++ stream).
      *  pixel data is written in ASCII format.
-     *  This method does not work if original YCbCr color model is retained (see CIF_KeepYCbCrColorModel).
+     *  This method does not work if original YCbCr color model is retained
+     *  (see CIF_KeepYCbCrColorModel).
      *
      ** @param  stream  open C++ output stream
      *  @param  bits    number of bits used for output of pixel data
@@ -1494,7 +1570,8 @@ class DicomImage
 
     /** write pixel data to PPM file (specified by open C stream).
      *  pixel data is written in ASCII format.
-     *  This method does not work if original YCbCr color model is retained (see CIF_KeepYCbCrColorModel).
+     *  This method does not work if original YCbCr color model is retained
+     *  (see CIF_KeepYCbCrColorModel).
      *
      ** @param  stream  open C output stream
      *  @param  bits    number of bits used for output of pixel data
@@ -1510,7 +1587,8 @@ class DicomImage
 
     /** write pixel data to raw PPM file (specified by filename).
      *  pixel data is written in binary format.
-     *  This method does not work if original YCbCr color model is retained (see CIF_KeepYCbCrColorModel).
+     *  This method does not work if original YCbCr color model is retained
+     *  (see CIF_KeepYCbCrColorModel).
      *
      ** @param  filename  name of output file (%d is replaced by frame number if present)
      *  @param  bits      number of bits used for output of pixel data
@@ -1526,7 +1604,8 @@ class DicomImage
 
     /** write pixel data to raw PPM file (specified by open C stream).
      *  pixel data is written in binary format.
-     *  This method does not work if original YCbCr color model is retained (see CIF_KeepYCbCrColorModel).
+     *  This method does not work if original YCbCr color model is retained
+     *  (see CIF_KeepYCbCrColorModel).
      *
      ** @param  stream  open C output stream (binary mode required!)
      *  @param  bits    number of bits used for output of pixel data
@@ -1542,7 +1621,8 @@ class DicomImage
 
     /** write pixel data to BMP file (specified by open C stream).
      *  pixel data is written in palette or truecolor mode.
-     *  This method does not work if original YCbCr color model is retained (see CIF_KeepYCbCrColorModel).
+     *  This method does not work if original YCbCr color model is retained
+     *  (see CIF_KeepYCbCrColorModel).
      *
      ** @param  stream  open C output stream (binary mode required!)
      *  @param  bits    number of bits used for output of pixel data
@@ -1557,7 +1637,8 @@ class DicomImage
 
     /** write pixel data to BMP file (specified by filename).
      *  pixel data is written in palette or truecolor mode.
-     *  This method does not work if original YCbCr color model is retained (see CIF_KeepYCbCrColorModel).
+     *  This method does not work if original YCbCr color model is retained
+     *  (see CIF_KeepYCbCrColorModel).
      *
      ** @param  filename  name of output file (%d is replaced by frame number if present)
      *  @param  bits      number of bits used for output of pixel data
@@ -1663,7 +1744,14 @@ class DicomImage
  *
  * CVS/RCS Log:
  * $Log: dcmimage.h,v $
- * Revision 1.39  2002-01-29 17:05:49  joergr
+ * Revision 1.40  2002-06-26 16:00:25  joergr
+ * Added support for polarity flag to color images.
+ * Added new method to write a selected frame to a DICOM dataset (incl. required
+ * attributes from the "Image Pixel Module").
+ * Added new methods to get the explanation string of stored VOI windows and
+ * LUTs (not only of the currently selected VOI transformation).
+ *
+ * Revision 1.39  2002/01/29 17:05:49  joergr
  * Added optional flag to the "Windows DIB" methods allowing to switch off the
  * scanline padding.
  *
