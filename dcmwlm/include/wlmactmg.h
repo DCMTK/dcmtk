@@ -23,9 +23,9 @@
  *           class provider engines.
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-01-08 16:31:00 $
+ *  Update Date:      $Date: 2002-01-08 17:35:39 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmwlm/include/Attic/wlmactmg.h,v $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -54,7 +54,6 @@ class WlmActivityManager
     char *opt_dbDsn;
     char *opt_dbUserName;
     char *opt_dbUserPassword;
-    char *opt_dbSchema;
     char *opt_dfPath;
     OFCmdUnsignedInt opt_port;
     OFBool opt_refuseAssociation;
@@ -71,6 +70,7 @@ class WlmActivityManager
     OFBool opt_singleProcess;
     int opt_maxAssociations;
     OFConsole *logStream;
+    const int opt_serialNumber;
 
     void DumpMessage( const char *message );
     void WaitForAssociation( T_ASC_Network *net );
@@ -87,7 +87,7 @@ class WlmActivityManager
 
   public:
     //Constructor/Destructor
-    WlmActivityManager( WlmDataSourceType dataSourceTypev, const char *opt_dbDsnv, const char *opt_dbUserNamev, const char *opt_dbUserPasswordv, const char *opt_dbSchemav, const char *opt_dfPathv, OFCmdUnsignedInt opt_port, OFBool opt_refuseAssociation, OFBool opt_rejectWithoutImplementationUID, OFCmdUnsignedInt opt_sleepAfterFind, OFCmdUnsignedInt opt_sleepDuringFind, OFCmdUnsignedInt opt_maxPDU, E_TransferSyntax opt_networkTransferSyntax, E_GrpLenEncoding opt_groupLength, E_EncodingType opt_sequenceType, OFBool opt_verbose, OFBool opt_debug, OFBool opt_failInvalidQuery, OFBool opt_singleProcess, int opt_maxAssociations, OFConsole *logStreamv );
+    WlmActivityManager( WlmDataSourceType dataSourceTypev, const char *opt_dbDsnv, const char *opt_dbUserNamev, const char *opt_dbUserPasswordv, const char *opt_dfPathv, OFCmdUnsignedInt opt_port, OFBool opt_refuseAssociation, OFBool opt_rejectWithoutImplementationUID, OFCmdUnsignedInt opt_sleepAfterFind, OFCmdUnsignedInt opt_sleepDuringFind, OFCmdUnsignedInt opt_maxPDU, E_TransferSyntax opt_networkTransferSyntax, E_GrpLenEncoding opt_groupLength, E_EncodingType opt_sequenceType, OFBool opt_verbose, OFBool opt_debug, OFBool opt_failInvalidQuery, OFBool opt_singleProcess, int opt_maxAssociations, OFConsole *logStreamv, const int serialNumberv );
     ~WlmActivityManager();
 
     OFCondition StartProvidingService();
@@ -103,9 +103,9 @@ class WlmActivityManager
 /*
 ** CVS Log
 ** $Log: wlmactmg.h,v $
-** Revision 1.1  2002-01-08 16:31:00  joergr
-** Added new module "dcmwlm" developed by Thomas Wilkens (initial release for
-** Windows, dated 2001-12-20).
+** Revision 1.2  2002-01-08 17:35:39  joergr
+** Reworked database support after trials at the hospital (modfied by MC/JR on
+** 2002-01-08).
 **
 **
 */

@@ -22,9 +22,9 @@
  *  Purpose: Class for connecting to a database-based data source.
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-01-08 17:01:17 $
+ *  Update Date:      $Date: 2002-01-08 17:31:23 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmwlm/libsrc/Attic/wldsdb.cc,v $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -50,7 +50,7 @@
 
 // ----------------------------------------------------------------------------
 
-WlmDataSourceDatabase::WlmDataSourceDatabase( OFConsole *logStreamv, const OFBool verbosev, char *dbDsnv, char *dbUserNamev, char *dbUserPasswordv, char *dbSchemav )
+WlmDataSourceDatabase::WlmDataSourceDatabase( OFConsole *logStreamv, const OFBool verbosev, char *dbDsnv, char *dbUserNamev, char *dbUserPasswordv, const int serialNumberv)
 // Date         : December 10, 2001
 // Author       : Thomas Wilkens
 // Task         : Constructor.
@@ -59,13 +59,12 @@ WlmDataSourceDatabase::WlmDataSourceDatabase( OFConsole *logStreamv, const OFBoo
 //                dbDsnv          - [in] The data source name of the database that shall be used.
 //                dbUserNamev     - [in] The database user name that shall be used for querying information.
 //                dbUserPasswordv - [in] The password that belongs to the database user name.
-//                dbSchemav       - [in] The data schema that holds the tables which shall be queried.
 // Return Value : none.
-  : WlmDataSource( logStreamv, verbosev ), dbDsn( NULL ), dbUserName( NULL ), dbUserPassword( NULL ), dbSchema( NULL ),
-    databaseInteractionManager( NULL ), matchingDatasets( NULL ), numOfMatchingDatasets( 0 )
+  : WlmDataSource( logStreamv, verbosev ), dbDsn( NULL ), dbUserName( NULL ), dbUserPassword( NULL ),
+    databaseInteractionManager( NULL ), matchingDatasets( NULL ), numOfMatchingDatasets( 0 ), opt_serialNumber ( serialNumberv )
 {
   // Check parameters
-  if( dbDsnv == NULL || dbUserNamev == NULL || dbUserPasswordv == NULL || dbSchemav == NULL )
+  if( dbDsnv == NULL || dbUserNamev == NULL || dbUserPasswordv == NULL )
   {
     // Indicate that the initialization could not be performed properly
     objectStatus = WLM_STATUS_INIT_FAILED;
@@ -79,11 +78,9 @@ WlmDataSourceDatabase::WlmDataSourceDatabase( OFConsole *logStreamv, const OFBoo
     strcpy( dbUserName, dbUserNamev );
     dbUserPassword = new char[ strlen(dbUserPasswordv) + 1 ];
     strcpy( dbUserPassword, dbUserPasswordv );
-    dbSchema = new char[ strlen(dbSchemav) + 1 ];
-    strcpy( dbSchema, dbSchemav );
 
     // create an WlmDatabaseInteractionManager object
-    databaseInteractionManager = new WlmDatabaseInteractionManager( logStream, verbosev, dbDsn, dbUserName, dbUserPassword, dbSchema );
+    databaseInteractionManager = new WlmDatabaseInteractionManager( logStream, verbosev, dbDsn, dbUserName, dbUserPassword, opt_serialNumber);
     if( !databaseInteractionManager->IsObjectStatusOk() )
       objectStatus = WLM_STATUS_INIT_FAILED;
   }
@@ -102,7 +99,6 @@ WlmDataSourceDatabase::~WlmDataSourceDatabase()
   if( dbDsn != NULL ) delete dbDsn;
   if( dbUserName != NULL ) delete dbUserName;
   if( dbUserPassword != NULL ) delete dbUserPassword;
-  if( dbSchema != NULL ) delete dbSchema;
   if( databaseInteractionManager != NULL ) delete databaseInteractionManager;
 }
 
@@ -381,10 +377,15 @@ void WlmDataSourceDatabase::HandleNonSequenceElementInResultDataset( DcmItem *ma
     char *value = NULL;
     databaseInteractionManager->GetAttributeValueForMatchingRecord( tag, matchingRecordID, value );
 
-    // put value in element
-    OFCondition cond = element->putString( value );
-    if( cond.bad() )
-      DumpMessage( "WlmDataSourceDatabase::HandleNonSequenceElementInResultDataset: Could not set value in result element.\n" );
+	// JR/MC: 20020104, work-around for pki interface
+	if (((value == NULL) || (strlen(value) == 0)) && ((tag == DCM_ScheduledStationAETitle) || (tag == DCM_Modality)))
+		/* do nothing and keep value from the search mask */;
+	else {
+	    // put value in element
+	  OFCondition cond = element->putString( value );
+	  if( cond.bad() )
+		DumpMessage( "WlmDataSourceDatabase::HandleNonSequenceElementInResultDataset: Could not set value in result element.\n" );
+	}
 
     // free memory
     delete value;
@@ -695,13 +696,9 @@ OFBool WlmDataSourceDatabase::IsSupportedReturnKeyAttribute( const DcmTagKey &ke
 /*
 ** CVS Log
 ** $Log: wldsdb.cc,v $
-** Revision 1.2  2002-01-08 17:01:17  joergr
-** Added preliminary database support using OTL interface library (modified by
-** MC/JR on 2001-12-21).
-**
-** Revision 1.1  2002/01/08 16:32:47  joergr
-** Added new module "dcmwlm" developed by Thomas Wilkens (initial release for
-** Windows, dated 2001-12-20).
+** Revision 1.3  2002-01-08 17:31:23  joergr
+** Reworked database support after trials at the hospital (modfied by MC/JR on
+** 2002-01-08).
 **
 **
 */

@@ -23,9 +23,9 @@
  *           class providers.
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-01-08 16:57:07 $
+ *  Update Date:      $Date: 2002-01-08 17:30:03 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmwlm/libsrc/wlmactmg.cc,v $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -94,7 +94,7 @@ void AddStatusDetail( DcmDataset **statusDetail, const DcmElement *elem, OFConso
 
 // ----------------------------------------------------------------------------
 
-WlmActivityManager::WlmActivityManager( WlmDataSourceType dataSourceTypev, const char *opt_dbDsnv, const char *opt_dbUserNamev, const char *opt_dbUserPasswordv, const char *opt_dbSchemav, const char *opt_dfPathv, OFCmdUnsignedInt opt_portv, OFBool opt_refuseAssociationv, OFBool opt_rejectWithoutImplementationUIDv, OFCmdUnsignedInt opt_sleepAfterFindv, OFCmdUnsignedInt opt_sleepDuringFindv, OFCmdUnsignedInt opt_maxPDUv, E_TransferSyntax opt_networkTransferSyntaxv, E_GrpLenEncoding opt_groupLengthv, E_EncodingType opt_sequenceTypev, OFBool opt_verbosev, OFBool opt_debugv, OFBool opt_failInvalidQueryv, OFBool opt_singleProcessv, int opt_maxAssociationsv, OFConsole *logStreamv )
+WlmActivityManager::WlmActivityManager( WlmDataSourceType dataSourceTypev, const char *opt_dbDsnv, const char *opt_dbUserNamev, const char *opt_dbUserPasswordv, const char *opt_dfPathv, OFCmdUnsignedInt opt_portv, OFBool opt_refuseAssociationv, OFBool opt_rejectWithoutImplementationUIDv, OFCmdUnsignedInt opt_sleepAfterFindv, OFCmdUnsignedInt opt_sleepDuringFindv, OFCmdUnsignedInt opt_maxPDUv, E_TransferSyntax opt_networkTransferSyntaxv, E_GrpLenEncoding opt_groupLengthv, E_EncodingType opt_sequenceTypev, OFBool opt_verbosev, OFBool opt_debugv, OFBool opt_failInvalidQueryv, OFBool opt_singleProcessv, int opt_maxAssociationsv, OFConsole *logStreamv, const int serialNumberv )
 // Date         : December 10, 2001
 // Author       : Thomas Wilkens
 // Task         : Constructor.
@@ -102,7 +102,6 @@ WlmActivityManager::WlmActivityManager( WlmDataSourceType dataSourceTypev, const
 //                opt_dbDsnv                          - [in] If the data source is based on a database, the data source name. Valid pointer expected.
 //                opt_dbUserNamev                     - [in] If the data source is based on a database, the database user name. Valid pointer expected.
 //                opt_dbUserPasswordv                 - [in] If the data source is based on a database, the database user password. Valid pointer expected.
-//                opt_dbSchemav                       - [in] If the data source is based on a database, the datavase schema which shall be quried. Valid pointer expected.
 //                opt_dfPathv                         - [in] If the data source is based on files, the path to these files. Valid pointer expected.
 //                opt_portv                           - [in] The port on which the application is supposed to listen.
 //                opt_refuseAssociationv              - [in] Specifies if an association shall always be refused by the SCP.
@@ -119,9 +118,10 @@ WlmActivityManager::WlmActivityManager( WlmDataSourceType dataSourceTypev, const
 //                opt_singleProcessv                  - [in] Specifies if the application shall run in a single process.
 //                opt_maxAssociationsv                - [in] Specifies many concurrent associations the application shall be able to handle.
 //                logStreamv                          - [in] A stream information can be dumped to.
+//                opt_serialNumber                    - [in] Serial number used to create the UID prefix
 // Return Value : none.
   : dataSourceType( dataSourceTypev ), opt_dbDsn( NULL ), opt_dbUserName( NULL ),
-    opt_dbUserPassword( NULL ), opt_dbSchema( NULL ), opt_dfPath( NULL ),
+    opt_dbUserPassword( NULL ), opt_dfPath( NULL ),
     opt_port( opt_portv ), opt_refuseAssociation( opt_refuseAssociationv ),
     opt_rejectWithoutImplementationUID( opt_rejectWithoutImplementationUIDv ),
     opt_sleepAfterFind( opt_sleepAfterFindv ), opt_sleepDuringFind( opt_sleepDuringFindv ),
@@ -130,7 +130,7 @@ WlmActivityManager::WlmActivityManager( WlmDataSourceType dataSourceTypev, const
     opt_debug( opt_debugv ), opt_failInvalidQuery( opt_failInvalidQueryv ),
     opt_singleProcess( opt_singleProcessv ), opt_maxAssociations( opt_maxAssociationsv ),
     supportedAbstractSyntaxes( NULL ), numberOfSupportedAbstractSyntaxes( 0 ), dataSource( NULL ),
-    logStream( logStreamv )
+    logStream( logStreamv ), opt_serialNumber ( serialNumberv )
 {
   // Initialize supported abstract transfer syntaxes.
   supportedAbstractSyntaxes = new char*[2];
@@ -148,8 +148,6 @@ WlmActivityManager::WlmActivityManager( WlmDataSourceType dataSourceTypev, const
     strcpy( opt_dbUserName, opt_dbUserNamev );
     opt_dbUserPassword = new char[ strlen( opt_dbUserPasswordv ) + 1 ];
     strcpy( opt_dbUserPassword, opt_dbUserPasswordv );
-    opt_dbSchema = new char[ strlen( opt_dbSchemav ) + 1 ];
-    strcpy( opt_dbSchema, opt_dbSchemav );
   }
   else if( dataSourceType == DATA_SOURCE_IS_DATA_FILES )
   {
@@ -182,7 +180,7 @@ WlmActivityManager::WlmActivityManager( WlmDataSourceType dataSourceTypev, const
   // Initialize object that makes the data source available
   dataSource = NULL;
   if( dataSourceType == DATA_SOURCE_IS_DATABASE )
-    dataSource = new WlmDataSourceDatabase( logStream, opt_verbose, opt_dbDsn, opt_dbUserName, opt_dbUserPassword, opt_dbSchema );
+    dataSource = new WlmDataSourceDatabase( logStream, opt_verbose, opt_dbDsn, opt_dbUserName, opt_dbUserPassword, opt_serialNumber );
   else if( dataSourceType == DATA_SOURCE_IS_DATA_FILES )
     dataSource = new WlmDataSourceFiles( logStream, opt_verbose, opt_dfPath );
 }
@@ -206,7 +204,6 @@ WlmActivityManager::~WlmActivityManager()
     delete opt_dbDsn;
     delete opt_dbUserName;
     delete opt_dbUserPassword;
-    delete opt_dbSchema;
   }
   else if( dataSourceType == DATA_SOURCE_IS_DATA_FILES )
   {
@@ -1338,12 +1335,9 @@ static void FindCallback( void *callbackData, OFBool cancelled, T_DIMSE_C_FindRQ
 /*
 ** CVS Log
 ** $Log: wlmactmg.cc,v $
-** Revision 1.2  2002-01-08 16:57:07  joergr
-** *** empty log message ***
-**
-** Revision 1.1  2002/01/08 16:32:49  joergr
-** Added new module "dcmwlm" developed by Thomas Wilkens (initial release for
-** Windows, dated 2001-12-20).
+** Revision 1.3  2002-01-08 17:30:03  joergr
+** Reworked database support after trials at the hospital (modfied by MC/JR on
+** 2002-01-08).
 **
 **
 */

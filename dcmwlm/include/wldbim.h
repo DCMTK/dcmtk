@@ -1,35 +1,35 @@
 /*
- *
- *  Copyright (C) 1996-2001, OFFIS
- *
- *  This software and supporting documentation were developed by
- *
- *    Kuratorium OFFIS e.V.
- *    Healthcare Information and Communication Systems
- *    Escherweg 2
- *    D-26121 Oldenburg, Germany
- *
- *  THIS SOFTWARE IS MADE AVAILABLE,  AS IS,  AND OFFIS MAKES NO  WARRANTY
- *  REGARDING  THE  SOFTWARE,  ITS  PERFORMANCE,  ITS  MERCHANTABILITY  OR
- *  FITNESS FOR ANY PARTICULAR USE, FREEDOM FROM ANY COMPUTER DISEASES  OR
- *  ITS CONFORMITY TO ANY SPECIFICATION. THE ENTIRE RISK AS TO QUALITY AND
- *  PERFORMANCE OF THE SOFTWARE IS WITH THE USER.
- *
- *  Module:  dcmwlm
- *
- *  Author:  Thomas Wilkens
- *
- *  Purpose: Class for managing database interaction.
- *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-01-08 16:54:01 $
- *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmwlm/include/Attic/wldbim.h,v $
- *  CVS/RCS Revision: $Revision: 1.2 $
- *  Status:           $State: Exp $
- *
- *  CVS/RCS Log at end of file
- *
- */
+*
+*  Copyright (C) 1996-2001, OFFIS
+*
+*  This software and supporting documentation were developed by
+*
+*    Kuratorium OFFIS e.V.
+*    Healthcare Information and Communication Systems
+*    Escherweg 2
+*    D-26121 Oldenburg, Germany
+*
+*  THIS SOFTWARE IS MADE AVAILABLE,  AS IS,  AND OFFIS MAKES NO  WARRANTY
+*  REGARDING  THE  SOFTWARE,  ITS  PERFORMANCE,  ITS  MERCHANTABILITY  OR
+*  FITNESS FOR ANY PARTICULAR USE, FREEDOM FROM ANY COMPUTER DISEASES  OR
+*  ITS CONFORMITY TO ANY SPECIFICATION. THE ENTIRE RISK AS TO QUALITY AND
+*  PERFORMANCE OF THE SOFTWARE IS WITH THE USER.
+*
+*  Module:  dcmwlm
+*
+*  Author:  Thomas Wilkens
+*
+*  Purpose: Class for managing database interaction.
+*
+*  Last Update:      $Author: joergr $
+*  Update Date:      $Date: 2002-01-08 17:40:06 $
+*  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmwlm/include/Attic/wldbim.h,v $
+*  CVS/RCS Revision: $Revision: 1.3 $
+*  Status:           $State: Exp $
+*
+*  CVS/RCS Log at end of file
+*
+*/
 
 class DcmTagKey;
 
@@ -43,13 +43,17 @@ class WlmDatabaseInteractionManager
   protected:
     WlmObjectStatusType objectStatus;
     OFBool verboseMode;
+    OFBool useDBConnect;
     OFConsole *logStream;
+    const int opt_serialNumber;
+    char uidPrefix[65];
 
     void DumpMessage( const char *message );
 
   public:
     // Constructor/Destructor
-    WlmDatabaseInteractionManager( OFConsole *logStreamv, const OFBool verbosev, char *dbDsnv, char *dbUserNamev, char *dbUserPasswordv);
+    WlmDatabaseInteractionManager( OFConsole *logStreamv, const OFBool verbosev, char *dbDsnv, char *dbUserNamev, char *dbUserPasswordv, const int serialNumberv);
+
     ~WlmDatabaseInteractionManager();
 
     OFBool IsObjectStatusOk();
@@ -98,13 +102,9 @@ class WlmDatabaseInteractionManager
 /*
 ** CVS Log
 ** $Log: wldbim.h,v $
-** Revision 1.2  2002-01-08 16:54:01  joergr
-** Added preliminary database support using OTL interface library (modified by
-** MC/JR on 2001-12-21).
-**
-** Revision 1.1  2002/01/08 16:30:58  joergr
-** Added new module "dcmwlm" developed by Thomas Wilkens (initial release for
-** Windows, dated 2001-12-20).
+** Revision 1.3  2002-01-08 17:40:06  joergr
+** Reworked database support after trials at the hospital (modfied by MC/JR on
+** 2002-01-08).
 **
 **
 */
