@@ -22,8 +22,8 @@
  *  Purpose: DVPresentationState
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-07-18 16:05:08 $
- *  CVS/RCS Revision: $Revision: 1.110 $
+ *  Update Date:      $Date: 2000-08-31 15:56:14 $
+ *  CVS/RCS Revision: $Revision: 1.111 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -2912,7 +2912,7 @@ E_Condition DVInterface::loadPrintPreview(size_t idx, OFBool printLUT, OFBool ch
       const char *filename = getFilename(studyUID, seriesUID, instanceUID);
       if (filename)
       {
-        DicomImage *image = new DicomImage(filename, CIF_UsePresentationState /* ignore all grayscale transforms */);
+        DicomImage *image = new DicomImage(filename);
         if (image != NULL)
         {
           if (image->getStatus() == EIS_Normal)
@@ -2920,15 +2920,19 @@ E_Condition DVInterface::loadPrintPreview(size_t idx, OFBool printLUT, OFBool ch
             unsigned long width = maximumPrintPreviewWidth;
             unsigned long height = maximumPrintPreviewHeight;
             /* consider aspect ratio of the image and the display */
-            double ratio = (getMonitorPixelHeight() > 0) ? image->getWidthHeightRatio() * (getMonitorPixelWidth() / getMonitorPixelHeight()) : 1.0;
-            if (ratio == 0)
+            double ratio = image->getWidthHeightRatio();
+            const double mpWidth = getMonitorPixelWidth();
+            const double mpHeight = getMonitorPixelHeight();
+            if ((mpWidth > 0) && (mpHeight > 0))
+              ratio *= (mpWidth / mpHeight);
+            if (ratio == 0.0)
               ratio = 1.0;
             if ((double)image->getWidth() / (double)width * ratio < (double)image->getHeight() / (double)height)
               width = 0;
             else
               height = 0;
             image->setWidthHeightRatio(ratio);
-            pHardcopyImage = image->createScaledImage(width, height, 1 /*interpolate*/, 1 /*aspect ratio*/);
+            pHardcopyImage = image->createScaledImage(width, height, 0 /*interpolate*/, 1 /*aspect ratio*/);
             if (pHardcopyImage != NULL)
             {
               if (pHardcopyImage->getStatus() == EIS_Normal)
@@ -3829,7 +3833,13 @@ E_Condition DVInterface::checkIOD(const char *studyUID, const char *seriesUID, c
 /*
  *  CVS/RCS Log:
  *  $Log: dviface.cc,v $
- *  Revision 1.110  2000-07-18 16:05:08  joergr
+ *  Revision 1.111  2000-08-31 15:56:14  joergr
+ *  Switched off interpolation for scaling of print preview images (this caused
+ *  problems with "scrambled" presentation LUTs in stored print objects).
+ *  Correct bug: pixel aspect ratio and photometric interpretation were ignored
+ *  for print preview.
+ *
+ *  Revision 1.110  2000/07/18 16:05:08  joergr
  *  Moved method convertODtoLum/PValue from class DVInterface to DVPSStoredPrint
  *  and corrected implementation.
  *  Changed behaviour of methods getMin/MaxDensityValue (return default value if
