@@ -22,9 +22,9 @@
  *  Purpose: Implements JPEG interface for plugable image formats
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-11-27 15:39:59 $
+ *  Update Date:      $Date: 2002-12-11 13:37:14 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmjpeg/libsrc/dipijpeg.cc,v $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -150,6 +150,13 @@ int DiJPEGPlugin::write(DiImage *image,
         if (data != NULL)
         {
             const OFBool isMono = (image->getInternalColorModel() == EPI_Monochrome1) || (image->getInternalColorModel() == EPI_Monochrome2);
+
+            /* taking the address of the variable prevents register allocation
+             * which is needed here because otherwise longjmp might clobber
+             * the content of the variable 
+             */
+            if (& isMono) /* nothing */ ;
+
             /* code derived from "cjpeg.c" (IJG) and "djeijg8.cc" (DCMJPEG) */
             struct jpeg_compress_struct cinfo;
             struct DIEIJG8ErrorStruct jerr;
@@ -247,7 +254,11 @@ OFString DiJPEGPlugin::getLibraryVersionString()
  *
  * CVS/RCS Log:
  * $Log: dipijpeg.cc,v $
- * Revision 1.4  2002-11-27 15:39:59  meichel
+ * Revision 1.5  2002-12-11 13:37:14  meichel
+ * Minor code correction fixing a warning re setjmp and variable
+ *   register allocation issued by gcc 3.2 -Wuninitialized
+ *
+ * Revision 1.4  2002/11/27 15:39:59  meichel
  * Adapted module dcmjpeg to use of new header file ofstdinc.h
  *
  * Revision 1.3  2002/09/19 08:35:51  joergr
