@@ -3,6 +3,11 @@ Changes between releases are documented here.
 
 **** Changes from 2002.05.08 (wilkens)
 
+- Added documentation files for wlmscpki, wlmscpfs and wlmscpdb.
+  Added: dcmwlm/docs/wlmscpki.txt
+         dcmwlm/docs/wlmscpfs.txt
+         dcmwlm/docs/wlmscpdb.txt
+
 - Added new command line option -nse to wlmscpki and wlmscpdb.
   Affects: dcmwlm/apps/wldsdb.cc
            dcmwlm/apps/wldsdb.h

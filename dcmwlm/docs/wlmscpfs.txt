@@ -1,0 +1,106 @@
+
+NAME
+
+   wlmscpfs
+
+
+SYNOPSIS
+
+   wlmscpfs [options] port
+
+
+SUMMARY
+
+The wlmscpfs application implements a Service Class Provider (SCP) for the
+Basic Worklist Management Service. The application will listen on a specified
+TCP/IP port for incoming association requests from a Worklist Management SCU.
+In case an association was acknowledged and a worklist query was received, the
+wlmscpfs application will query particular files in a certain directory (which
+can be specified through corresponding program options) on the file system for
+corresponding worklist information, and it will send this information back to
+the calling Worklist Management SCU. Aside from dealing with Worklist
+Management queries, the wlmscpfs application also supports the Verification
+Service Class as an SCP.
+
+
+USAGE
+
+wlmscpfs: DICOM Basic Worklist Management SCP (based on data files)
+usage: wlmscpfs [options] port
+
+parameters:
+  port                           tcp/ip port number to listen on
+
+general options:
+  -h      --help                 print this help text and exit
+  -v      --verbose              verbose mode, print processing details
+  -d      --debug                debug mode, print debug information
+  -s      --single-process       single process mode
+  -dfp    --data-files-path      [p]ath: string
+                                 path to worklist data files
+                                 (default: /home/www/wlist)
+network options:
+  preferred network transfer syntaxes:
+    +x=   --prefer-uncompr       prefer explicit VR local byte order (default)
+    +xe   --prefer-little        prefer explicit VR little endian TS
+    +xb   --prefer-big           prefer explicit VR big endian TS
+    +xi   --implicit             accept implicit VR little endian TS only
+  other network options:
+          --refuse               refuse association
+          --reject               reject association if no implement. class UID
+          --no-fail              don't fail on an invalid query
+          --sleep-after          [s]econds: integer
+                                 sleep s seconds after find (default: 0)
+          --sleep-during         [s]econds: integer
+                                 sleep s seconds during find (default: 0)
+    -pdu  --max-pdu              [n]umber of bytes: integer [4096..131072]
+                                 set max receive pdu to n bytes (default: 16384)
+    -dhl  --disable-host-lookup  disable hostname lookup
+  group length encoding (when sending C-FIND response data):
+    +g=   --group-length-recalc  recalculate group lengths if present (default)
+    +g    --group-length-create  always write with group length elements
+    -g    --group-length-remove  always write without group length elements
+  length encoding in sequences and items (when sending C-FIND response data):
+    +e    --length-explicit      write with explicit lengths (default)
+    -e    --length-undefined     write with undefined lengths
+encoding options:
+  post-1993 value representations:
+    +u    --enable-new-vr        enable support for new VRs (UN/UT) (default)
+    -u    --disable-new-vr       disable support for new VRs, convert to OB
+
+
+DICOM CONFORMANCE
+
+The wlmscpfs application supports the following SOP Classes as an SCP:
+
+    VerificationSOPClass                             "1.2.840.10008.1.1"
+
+    FINDModalityWorklistInformationModel             "1.2.840.10008.5.1.4.31"
+
+The wlmscpfs application will accept presentation contexts for all of the
+abovementioned supported SOP Classes using any of the transfer syntaxes:
+
+    LittleEndianImplicitTransferSyntax               "1.2.840.10008.1.2"
+    LittleEndianExplicitTransferSyntax               "1.2.840.10008.1.2.1"
+    BigEndianExplicitTransferSyntax                  "1.2.840.10008.1.2.2"
+
+The default behaviour of the wlmscpfs application is to prefer transfer
+syntaxes having an explicit encoding over the default implicit transfer syntax.
+If wlmscpfs is running on big-endian hardware it will prefer BigEndianExplicit-
+TransferSyntax over LittleEndianExplicitTransferSyntax (and vice versa). This
+behaviour can be changed with the --prefer options (see above).
+
+The wlmscpfs application does not support extended negotiation.
+
+
+ENVIRONMENT
+
+The wlmscpfs application will attempt to load DICOM data dictionaries specified
+in the DCMDICTPATH environment variable.  By default, if the DCMDICTPATH
+environment variable is not set, the file /usr/local/dicom/lib/dicom.dic will
+be loaded.  The default behaviour should be preferred and the DCMDICTPATH
+environment variable only used when alternative data dictionaries are required.
+The DCMDICTPATH environment variable has the same format as the shell PATH
+variable in that a colon (":") separates entries.  The data dictionary code
+will attempt to load each file specified in the DCMDICTPATH environment
+variable.  It is an error if no data dictionary can be loaded.
