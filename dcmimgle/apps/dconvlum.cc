@@ -22,8 +22,8 @@
  *  Purpose: convert VeriLUM CCx_xx.dat files to DCMTK display files
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-12-08 19:24:24 $
- *  CVS/RCS Revision: $Revision: 1.17 $
+ *  Update Date:      $Date: 2003-12-23 15:40:13 $
+ *  CVS/RCS Revision: $Revision: 1.18 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -95,7 +95,7 @@ int main(int argc, char *argv[])
                     output.width(12);
                     output.setf(ios::fixed, ios::floatfield);
                     output << lum << endl;                                          // write luminance value
-                    i++;
+                    ++i;
                 }
                 if (i <= maxddl)
                     CERR << "ERROR: can't convert input file ... error in line #" << i << " !" << endl;
@@ -124,7 +124,11 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dconvlum.cc,v $
- * Revision 1.17  2003-12-08 19:24:24  joergr
+ * Revision 1.18  2003-12-23 15:40:13  joergr
+ * Replaced post-increment/decrement operators by pre-increment/decrement
+ * operators where appropriate (e.g. 'i++' by '++i').
+ *
+ * Revision 1.17  2003/12/08 19:24:24  joergr
  * Updated copyright header.
  *
  * Revision 1.16  2002/11/27 14:08:00  meichel

@@ -22,8 +22,8 @@
  *  Purpose: export display curves to a text file
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-12-08 19:23:33 $
- *  CVS/RCS Revision: $Revision: 1.17 $
+ *  Update Date:      $Date: 2003-12-23 15:40:13 $
+ *  CVS/RCS Revision: $Revision: 1.18 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -207,9 +207,9 @@ int main(int argc, char *argv[])
         }
 
         if (cmd.findOption("--gsdf"))
-            opt_outputMode++;
+            ++opt_outputMode;
         if (cmd.findOption("--cielab"))
-            opt_outputMode++;
+            ++opt_outputMode;
     }
 
     /* init verbose and debug mode */
@@ -341,7 +341,11 @@ int main(int argc, char *argv[])
  *
  * CVS/RCS Log:
  * $Log: dcmdspfn.cc,v $
- * Revision 1.17  2003-12-08 19:23:33  joergr
+ * Revision 1.18  2003-12-23 15:40:13  joergr
+ * Replaced post-increment/decrement operators by pre-increment/decrement
+ * operators where appropriate (e.g. 'i++' by '++i').
+ *
+ * Revision 1.17  2003/12/08 19:23:33  joergr
  * Adapted type casts to new-style typecast operators defined in ofcast.h.
  * Updated CVS header.
  *

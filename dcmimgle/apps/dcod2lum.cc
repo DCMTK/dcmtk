@@ -22,8 +22,8 @@
  *  Purpose: convert hardcopy characteristic curve file to softcopy format
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-12-08 19:24:03 $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  Update Date:      $Date: 2003-12-23 15:40:13 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -156,7 +156,7 @@ int main(int argc, char *argv[])
                                 output << ddlval << "\t";
                                 output.setf(ios::fixed, ios::floatfield);
                                 output << DiDisplayFunction::convertODtoLum(odval, amb, lum) << endl;
-                                i++;
+                                ++i;
                             } else
                                 error = 1;
                         }
@@ -188,7 +188,11 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcod2lum.cc,v $
- * Revision 1.3  2003-12-08 19:24:03  joergr
+ * Revision 1.4  2003-12-23 15:40:13  joergr
+ * Replaced post-increment/decrement operators by pre-increment/decrement
+ * operators where appropriate (e.g. 'i++' by '++i').
+ *
+ * Revision 1.3  2003/12/08 19:24:03  joergr
  * Updated copyright header.
  *
  * Revision 1.2  2002/11/27 14:08:00  meichel
