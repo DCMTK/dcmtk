@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2001, OFFIS
+ *  Copyright (C) 2000-2003, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DSRWaveformChannelItem, DSRWaveformChannelList
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2003-06-04 12:33:13 $
- *  CVS/RCS Revision: $Revision: 1.10 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2003-08-07 13:06:29 $
+ *  CVS/RCS Revision: $Revision: 1.11 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -187,6 +187,14 @@ class DSRWaveformChannelList
      */
     void addItem(const Uint16 multiplexGroupNumber,
                  const Uint16 channelNumber);
+
+    /** put list of waveform channels as a string.
+     *  This function expects the same input format as created by print(), i.e. a comma
+     *  separated list of numerical value pairs.
+     ** @param  stringValue  string value to be set
+     ** @return status, EC_Normal if successful, an error code otherwise
+     */
+    OFCondition putString(const char *stringValue);
 };
 
 
@@ -196,7 +204,10 @@ class DSRWaveformChannelList
 /*
  *  CVS/RCS Log:
  *  $Log: dsrwavch.h,v $
- *  Revision 1.10  2003-06-04 12:33:13  meichel
+ *  Revision 1.11  2003-08-07 13:06:29  joergr
+ *  Added new putString() method.
+ *
+ *  Revision 1.10  2003/06/04 12:33:13  meichel
  *  Added comparison operators, needed by MSVC5 with STL
  *
  *  Revision 1.9  2003/06/03 10:16:44  meichel
