@@ -21,10 +21,10 @@
  *
  *  Purpose: A simple string class
  * 
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-11-26 16:43:20 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2001-12-04 16:48:18 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/libsrc/ofstring.cc,v $
- *  CVS/RCS Revision: $Revision: 1.14 $
+ *  CVS/RCS Revision: $Revision: 1.15 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -402,8 +402,9 @@ size_t
 OFString::copy (char* s, size_t n, size_t pos) const
 {
     OFString sub(this->substr(pos, n));
-    strcpy(s, sub.theCString);
-    return sub.size();
+    size_t result = sub.size();
+    strncpy(s, sub.theCString, result);
+    return result;
 }
 
 /*
@@ -1007,7 +1008,10 @@ OFBool operator>= (const OFString& lhs, char rhs)
 /*
 ** CVS/RCS Log:
 ** $Log: ofstring.cc,v $
-** Revision 1.14  2001-11-26 16:43:20  joergr
+** Revision 1.15  2001-12-04 16:48:18  meichel
+** Completed doc++ documentation, fixed bug in OFString::copy.
+**
+** Revision 1.14  2001/11/26 16:43:20  joergr
 ** Fixed bug in OFString constructor.
 **
 ** Revision 1.13  2001/06/01 15:51:39  meichel
