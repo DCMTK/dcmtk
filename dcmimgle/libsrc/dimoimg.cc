@@ -22,9 +22,9 @@
  *  Purpose: DicomMonochromeImage (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-11-29 16:59:54 $
+ *  Update Date:      $Date: 2001-12-11 14:12:35 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/libsrc/dimoimg.cc,v $
- *  CVS/RCS Revision: $Revision: 1.45 $
+ *  CVS/RCS Revision: $Revision: 1.46 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1652,7 +1652,7 @@ unsigned long DiMonoImage::createDIB(void *&data,
             else if (bits == 24)                            // -- for direct color model (24 bits/pixel)
             {
                 const unsigned long col3 = (unsigned long)Columns * 3;
-                const int gap = (4 - col3 & 0x3) & 0x3;        // each line has to start at 32-bit-address!
+                const int gap = (int)((4 - col3 & 0x3) & 0x3); // each line has to start at 32-bit-address!
                 const unsigned long count = (col3 + gap) * (unsigned long)Rows;
                 if ((data == NULL) || (size >= count))
                 {
@@ -1977,7 +1977,10 @@ int DiMonoImage::writeBMP(FILE *stream,
  *
  * CVS/RCS Log:
  * $Log: dimoimg.cc,v $
- * Revision 1.45  2001-11-29 16:59:54  joergr
+ * Revision 1.46  2001-12-11 14:12:35  joergr
+ * Added type cast to keep old Sun compilers quiet.
+ *
+ * Revision 1.45  2001/11/29 16:59:54  joergr
  * Fixed bug in dcmimgle that caused incorrect decoding of some JPEG compressed
  * images (certain DICOM attributes, e.g. photometric interpretation, might
  * change during decompression process).
