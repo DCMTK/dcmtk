@@ -54,9 +54,9 @@
 ** Author, Date:	Stephen M. Moore, 14-Apr-93
 ** Intent:		This module contains the public entry points for the
 **			DICOM Upper Layer (DUL) protocol package.
-** Last Update:		$Author: meichel $, $Date: 1999-01-07 14:25:02 $
+** Last Update:		$Author: meichel $, $Date: 1999-02-05 14:35:09 $
 ** Source File:		$RCSfile: dul.cc,v $
-** Revision:		$Revision: 1.15 $
+** Revision:		$Revision: 1.16 $
 ** Status:		$State: Exp $
 */
 
@@ -267,6 +267,7 @@ DUL_DropNetwork(DUL_NETWORKKEY ** callerNetworkKey)
     if ((*networkKey)->applicationFunction & PRV_APPLICATION_ACCEPTOR) {
 	if (strcmp((*networkKey)->networkType, DUL_NETWORK_TCP) == 0) {
 #ifdef HAVE_WINSOCK_H
+            (void) shutdown((*networkKey)->networkSpecific.TCP.listenSocket, 1 /* SD_SEND */);
 	    (void) closesocket((*networkKey)->networkSpecific.TCP.listenSocket);
 #else
 	    (void) close((*networkKey)->networkSpecific.TCP.listenSocket);
@@ -750,6 +751,7 @@ DUL_DropAssociation(DUL_ASSOCIATIONKEY ** callerAssociation)
 
     if (strcmp((*association)->networkType, DUL_NETWORK_TCP) == 0) {
 #ifdef HAVE_WINSOCK_H
+        (void) shutdown((*association)->networkSpecific.TCP.socket,  1 /* SD_SEND */);
 	(void) closesocket((*association)->networkSpecific.TCP.socket);
 #else
 	(void) close((*association)->networkSpecific.TCP.socket);
@@ -2265,7 +2267,13 @@ clearPresentationContext(LST_HEAD ** l)
 /*
 ** CVS Log
 ** $Log: dul.cc,v $
-** Revision 1.15  1999-01-07 14:25:02  meichel
+** Revision 1.16  1999-02-05 14:35:09  meichel
+** Added a call to shutdown() immediately before closesocket() on Win32.
+**   This causes any pending data to be sent before the socket is destroyed.
+**   Fixes a problem causing A-RELEASE-RSP messages to get lost under certain
+**   circumstances when the SCP runs on Win32.
+**
+** Revision 1.15  1999/01/07 14:25:02  meichel
 ** Changed sequence of include files in some dcmnet modules
 **   to keep the Unixware compiler happy.
 **

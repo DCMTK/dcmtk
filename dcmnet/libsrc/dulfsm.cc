@@ -46,9 +46,9 @@
 ** Author, Date:	Stephen M. Moore, 15-Apr-93
 ** Intent:		Define tables and provide functions that implement
 **			the DICOM Upper Layer (DUL) finite state machine.
-** Last Update:		$Author: meichel $, $Date: 1999-01-07 14:25:04 $
+** Last Update:		$Author: meichel $, $Date: 1999-02-05 14:35:10 $
 ** Source File:		$RCSfile: dulfsm.cc,v $
-** Revision:		$Revision: 1.22 $
+** Revision:		$Revision: 1.23 $
 ** Status:		$State: Exp $
 */
 
@@ -2422,6 +2422,7 @@ requestAssociationTCP(PRIVATE_NETWORKKEY ** /*network*/,
 
     if (connect(s, (struct sockaddr *) & server, sizeof(server)) < 0) {
 #ifdef HAVE_WINSOCK_H
+        (void) shutdown(s,  1 /* SD_SEND */); 
 	(void) closesocket(s);
 #else
 	(void) close(s);
@@ -3139,6 +3140,7 @@ closeTransportTCP(PRIVATE_ASSOCIATIONKEY ** association)
 {
     if ((*association)->networkSpecific.TCP.socket != 0)
 #ifdef HAVE_WINSOCK_H
+        (void) shutdown((*association)->networkSpecific.TCP.socket,  1 /* SD_SEND */);
 	(void) closesocket((*association)->networkSpecific.TCP.socket);
 #else
 	(void) close((*association)->networkSpecific.TCP.socket);
@@ -4159,7 +4161,13 @@ DULPRV_translateAssocReq(unsigned char *buffer,
 /*
 ** CVS Log
 ** $Log: dulfsm.cc,v $
-** Revision 1.22  1999-01-07 14:25:04  meichel
+** Revision 1.23  1999-02-05 14:35:10  meichel
+** Added a call to shutdown() immediately before closesocket() on Win32.
+**   This causes any pending data to be sent before the socket is destroyed.
+**   Fixes a problem causing A-RELEASE-RSP messages to get lost under certain
+**   circumstances when the SCP runs on Win32.
+**
+** Revision 1.22  1999/01/07 14:25:04  meichel
 ** Changed sequence of include files in some dcmnet modules
 **   to keep the Unixware compiler happy.
 **
