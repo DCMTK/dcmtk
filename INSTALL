@@ -5,15 +5,15 @@ PRE-REQUISITES
 
 The DICOM ToolKit (DCMTK) needs to be compiled with a C++ compiler.
 We recommend using the GNU-C++ compiler in versions higher than 2.7
-(most of the development was done using GNU-C++ 2.8.1 on Solaris 2.5.1).
-The software is also known to compile using the SUNPro C++ compiler,  the
-IBM C Set++ compiler and the Microsoft Visual C++ compiler.
+(most of the development was done using GNU-C++ 2.95 on Solaris 7).
+The software is also known to compile using the SUNPro C++ compiler,
+the IBM C Set++ compiler and the Microsoft Visual C++ compiler.
 
 Compatibility with other C++ compilers is unknown, however, we have
 tried to keep language demands to a minimum (newer C++ features such
 as ANSI C++ Library, Exceptions and RTTI have been avoided).
 
-You will need around 70Mb of disk space to compile all the software.
+You will need around 100Mb of disk space to compile all the software.
 
 SUPPORTED SYSTEMS
 
@@ -26,6 +26,7 @@ directory.
 
     Windows9x     / Intel x86 / Microsoft Visual C++ 5.0
     WindowsNT 4.0 / Intel x86 / Microsoft Visual C++ 5.0
+    WindowsNT 4.0 / Intel x86 / Microsoft Visual C++ 6.0
 
 The imagectn and wlistctn have been ported to Windows, but do not support 
 multi-processing (i.e. multiple clients concurrently) under Windows. The 
@@ -37,50 +38,49 @@ not work).
 
 - Unix (or lookalikes)
 
-The current DCMTK software release successfully compiles on the
-following operating system / hardware / compiler combinations 
-using the instructions given below:
+The current DCMTK software release successfully compiles on the following 
+operating system / hardware / compiler combinations using the instructions 
+given below:
 
+    Solaris 7     / Sun Sparc       / Gnu gcc 2.95
+    Solaris 7     / Sun Sparc       / SunPro CC 4.2
+    Solaris 7     / Sun Sparc       / Sun SC 2.0.1 (SunPro C++ 3.0.1)    
     Solaris 2.5.1 / Sun Sparc       / Gnu egcs 1.1.2 (egcs-2.91.66)
-    Solaris 2.5.1 / Sun Sparc       / Gnu gcc 2.8.1 and 2.7.2.2
-    Solaris 2.5.1 / Sun Sparc       / Sun SC 2.0.1 (SunPro C++ 3.0.1)
-    Solaris 2.5.1 / Sun Sparc       / SunPro CC 4.2
-    SunOS 4.1.3   / Sun Sparc       / Gnu gcc 2.7.2
+    Linux 2.2.10  / Intel x86       / Gnu egcs 1.1.2 (egcs-2.91.66)
     Linux 2.0.33  / Intel x86       / Gnu gcc 2.7.2.1
-    NeXTStep 3.3  / Intel x86       / NeXT/Gnu gcc 2.5.8 (*)
-    OSF/1 4.0     / DEC Alpha       / Gnu egcs 1.1.2 (egcs-2.91.66)
+    SunOS 4.1.3   / Sun Sparc       / Gnu gcc 2.7.2
+    OSF/1 4.0     / DEC Alpha       / Gnu gcc 2.95.2
     OSF/1 4.0     / DEC Alpha       / DEC C++ V6.0
-    HP-UX 9.05    / HP PA 1.1       / Gnu gcc 2.7.2.1
     IBM AIX 3.2   / RS 6000         / IBM AIX XL C++ Compiler/6000 V1.0
+    NeXTStep 3.3  / Intel x86       / NeXT/Gnu gcc 2.5.8 (*1)
+    Ultrix 4.4    / DECstation MIPS / Gnu gcc 2.95.2
     WindowsNT 4.0 / Intel x86       / Cygwin b20.1 (Unix shell & dev tools)
+    IRIX 6.5.6m   / SGI Onyx        / Gnu gcc 2.95.2
+    IRIX 5.3      / SGI Indy        / Gnu gcc 2.8.1 (*2)
 
-Earlier releases are known to also compile on the following platforms
-which are not available to us for testing purposes:
+Earlier releases are known to also compile on the following platforms which 
+are not available to us for testing purposes:
 
-    IRIX 5.3      / SGI Indy        / Gnu gcc 2.7.2
-    IRIX 6.3      / SGI O2          / Gnu gcc 2.7.2
-    IRIX 6.3      / SGI O2          / SGI C++ (2.29 ?)
-    Ultrix 4.4    / DECstation MIPS / Gnu gcc 2.7.2.1
+    HP-UX 9.05    / HP PA 1.1       / Gnu gcc 2.7.2.1
 
-(*) The NeXT gcc 2.5.8 compiler provides only very limited support for C++ 
-templates and, therefore, fails to compile the dcmimgle module. However, 
-modules and applications that were present in earlier releases of DCMTK 
-still compile.
- 
+(*1) The NeXT gcc 2.5.8 compiler provides only very limited support for C++ 
+     templates and, therefore, fails to compile the dcmimgle module. 
+     However, modules and applications that were present in earlier 
+     releases of DCMTK still compile.
+(*2) requires -DSIGNAL_HANDLER_WITH_ELLIPSE
+
 Please Note: Due to resource limitations it is not practical for us to 
 ensure that the newest release of DCMTK is problem free under all the above 
-combinations.  Our main development environment is SUN Solaris 2.5.1 using 
-GNU C++ 2.8.1 and EGCS 1.1.2 and DCMTK should always compile on this 
-platform.
+combinations.  Our main development environment is SUN Solaris 7 using GNU 
+C++ 2.95 and DCMTK should always compile on this platform.
 
 BUILDING
 
-GNU autoconf is used to configure the software for the hardware /
-operating system you are using.  You do not need to obtain GNU 
-autoconf to compile and install this software.  All the neccessary 
-configure scripts are included in this distribution.  The configure 
-scripts examine your system capabilities and automatically generate
-include files and Makefiles.
+GNU autoconf is used to configure the software for the hardware / operating 
+system you are using.  You do not need to obtain GNU autoconf to compile 
+and install this software.  All the neccessary configure scripts are 
+included in this distribution.  The configure scripts examine your system 
+capabilities and automatically generate include files and Makefiles.
 
 Perform the following steps from the top level (dcmtk) directory
 to compile and install the software:
@@ -167,7 +167,7 @@ is rest of the documentation?"
 
 Have fun.
 
-Marco Eichelberg, Joerg Riesmeier
+Marco Eichelberg, Joerg Riesmeier, Andreas Thiel
 Kuratorium OFFIS e.V., Oldenburg, Germany.
 
-Last revised: 99.05.04 (eichelberg).
+Last revised: 2000-03-10 (eichelberg).
