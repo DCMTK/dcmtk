@@ -1,6 +1,47 @@
 DCMTK FAQ - Frequently Asked Questions
 
 ----
+1998.01.27
+
+Q: I am trying to compile DCMTK on a SGI IRIX 6.x machine with gcc 2.7.2.
+   The configure script terminates with the following error messsage:
+
+     checking whether the C compiler (gcc  ) works... no
+     configure: error: installation or configuration problem:
+     C compiler cannot create executables.
+
+   The dcmtk/config/config.log file contains:
+
+     configure:747: gcc -o conftest    conftest.c  1>&5
+     collect2: ld returned 1 exit status
+     ld: Segmentation fault.  Removing output file...
+
+A: You use a gcc compiled on a SGI IRIX 5.x machine.
+   On IRIX 6.x the -old_ld must be specified on all compiler
+   calls which involve linking. The flag must be specified before
+   any -o option. We have created a shell script which 
+   patches "configure" to allow the -old_ld option to work. 
+   In the dcmtk directory, type:
+     config/mvldflags config/configure
+     setenv LDFLAGS -old_ld
+   After that, configure will create appropriate Makefiles.
+
+----
+1998.01.27
+
+Q: I am compiling DCMTK on a SGI IRIX 6.x machine, and I receive
+   many warnings of the type
+
+     /usr/bin/ld: 
+     The shared object /usr/lib/libsocket.so did not resolve any symbols.
+     You may want to remove it from your link line.
+
+A: On some IRIX machines, the BSD socket functions are contained both
+   in the libnsl/libsocket libraries and in libc. You can ignore the warnings
+   (they will do no harm) or remove "-lsocket -lnsl" from the "LIBS=..." line
+   in config/Makefile.def after the configure process.
+
+----
 1997.10.01
 
 Q: I am trying to compile DCMTK on Solaris with Sun Workshop 4.x.

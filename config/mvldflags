@@ -1,0 +1,35 @@
+#! /bin/sh
+#
+# This script changes the "configure" script so that
+# $LDFLAGS preceed the "-o" option in compiler calls which involve linking.
+# Required for systems which need to specify a flag which may only be
+# used during linking and which must be used before "-o",
+# e.g. certain gcc installations on SGI IRIX 6.x systems which need "-old_ld".
+#
+# The script should be called as:
+#   ./mvldflags configure
+#
+# Author: Marco Eichelberg, (C) 1998 Kuratorium OFFIS e.V.
+#
+
+script=${1-"/dev/null"}
+
+if [ "$script" = "/dev/null" ]; then
+  echo "usage: ./mvldflags configure"
+  echo "   This script changes the 'configure' script so that"
+  echo "   \$LDFLAGS preceed the '-o' option in compiler calls which involve linking."  
+  exit;
+fi
+
+if [ ! -x $script ]; then
+  echo "file '$script' not found."
+  exit;
+fi
+
+echo "copying $script to $script.original"
+cp $script $script.original
+
+echo "patching $script"
+sed -e "s/^\(.*ac_link.*=.*\)\(-o.*\)\(\$LDFLAGS\)\(.*\)$/\1 \3 \2 \4/g;" $script.original >$script
+
+echo "done."
