@@ -15,30 +15,30 @@ dcmdspfn.o: dcmdspfn.cc ../../config/include/osconfig.h \
  ../../dcmdata/include/dclist.h ../../dcmdata/include/dcstack.h \
  ../../dcmdata/include/dcelem.h ../../dcmdata/include/dcitem.h \
  ../../dcmdata/include/dcvrui.h ../../dcmdata/include/dcbytstr.h \
- ../../dcmdata/include/dcmetinf.h ../../dcmdata/include/dcdatset.h \
- ../../dcmdata/include/dcsequen.h ../../dcmdata/include/dcfilefo.h \
- ../../dcmdata/include/dcdicdir.h ../../dcmdata/include/dcdirrec.h \
- ../../dcmdata/include/dcvrulup.h ../../dcmdata/include/dcvrul.h \
- ../../dcmdata/include/dcpixseq.h ../../dcmdata/include/dcofsetl.h \
- ../../dcmdata/include/dcvrae.h ../../dcmdata/include/dcvras.h \
- ../../dcmdata/include/dcvrcs.h ../../dcmdata/include/dcvrda.h \
- ../../ofstd/include/ofdate.h ../../dcmdata/include/dcvrds.h \
- ../../dcmdata/include/dcvrdt.h ../../ofstd/include/ofdatime.h \
- ../../ofstd/include/oftime.h ../../dcmdata/include/dcvris.h \
- ../../dcmdata/include/dcvrtm.h ../../dcmdata/include/dcchrstr.h \
- ../../dcmdata/include/dcvrlo.h ../../dcmdata/include/dcvrlt.h \
- ../../dcmdata/include/dcvrpn.h ../../dcmdata/include/dcvrsh.h \
- ../../dcmdata/include/dcvrst.h ../../dcmdata/include/dcvrut.h \
- ../../dcmdata/include/dcvrobow.h ../../dcmdata/include/dcpixel.h \
- ../../dcmdata/include/dcvrpobw.h ../../dcmdata/include/dcovlay.h \
- ../../dcmdata/include/dcvrat.h ../../dcmdata/include/dcvrss.h \
- ../../dcmdata/include/dcvrus.h ../../dcmdata/include/dcvrsl.h \
- ../../dcmdata/include/dcvrfl.h ../../dcmdata/include/dcvrfd.h \
- ../../dcmdata/include/cmdlnarg.h ../../ofstd/include/ofconapp.h \
- ../../ofstd/include/ofcmdln.h ../include/digsdfn.h \
- ../include/didispfn.h ../include/didislut.h ../include/dibaslut.h \
- ../include/diutils.h ../include/digsdlut.h ../include/diciefn.h \
- ../include/dicielut.h
+ ../../dcmdata/include/dcpcache.h ../../dcmdata/include/dcmetinf.h \
+ ../../dcmdata/include/dcdatset.h ../../dcmdata/include/dcsequen.h \
+ ../../dcmdata/include/dcfilefo.h ../../dcmdata/include/dcdicdir.h \
+ ../../dcmdata/include/dcdirrec.h ../../dcmdata/include/dcvrulup.h \
+ ../../dcmdata/include/dcvrul.h ../../dcmdata/include/dcpixseq.h \
+ ../../dcmdata/include/dcofsetl.h ../../dcmdata/include/dcvrae.h \
+ ../../dcmdata/include/dcvras.h ../../dcmdata/include/dcvrcs.h \
+ ../../dcmdata/include/dcvrda.h ../../ofstd/include/ofdate.h \
+ ../../dcmdata/include/dcvrds.h ../../dcmdata/include/dcvrdt.h \
+ ../../ofstd/include/ofdatime.h ../../ofstd/include/oftime.h \
+ ../../dcmdata/include/dcvris.h ../../dcmdata/include/dcvrtm.h \
+ ../../dcmdata/include/dcchrstr.h ../../dcmdata/include/dcvrlo.h \
+ ../../dcmdata/include/dcvrlt.h ../../dcmdata/include/dcvrpn.h \
+ ../../dcmdata/include/dcvrsh.h ../../dcmdata/include/dcvrst.h \
+ ../../dcmdata/include/dcvrut.h ../../dcmdata/include/dcvrobow.h \
+ ../../dcmdata/include/dcpixel.h ../../dcmdata/include/dcvrpobw.h \
+ ../../dcmdata/include/dcovlay.h ../../dcmdata/include/dcvrat.h \
+ ../../dcmdata/include/dcvrss.h ../../dcmdata/include/dcvrus.h \
+ ../../dcmdata/include/dcvrsl.h ../../dcmdata/include/dcvrfl.h \
+ ../../dcmdata/include/dcvrfd.h ../../dcmdata/include/cmdlnarg.h \
+ ../../ofstd/include/ofconapp.h ../../ofstd/include/ofcmdln.h \
+ ../include/digsdfn.h ../include/didispfn.h ../include/didislut.h \
+ ../include/dibaslut.h ../include/diutils.h ../include/digsdlut.h \
+ ../include/diciefn.h ../include/dicielut.h
 dcod2lum.o: dcod2lum.cc ../../config/include/osconfig.h \
  ../../ofstd/include/ofstream.h ../../ofstd/include/ofconsol.h \
  ../../ofstd/include/ofthread.h ../../ofstd/include/oftypes.h \
