@@ -22,9 +22,9 @@
  *  Purpose: DicomColorPixelTemplate (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-09-12 14:10:37 $
+ *  Update Date:      $Date: 2002-12-09 13:37:24 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/include/Attic/dicopxt.h,v $
- *  CVS/RCS Revision: $Revision: 1.18 $
+ *  CVS/RCS Revision: $Revision: 1.19 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -364,7 +364,7 @@ class DiColorPixelTemplate
         if ((Data[0] != NULL) && (Data[1] != NULL) && (Data[2] != NULL) && (toBits <= 8))
         {
             const unsigned long count = (unsigned long)width * (unsigned long)height;
-            Uint32 *data = new Uint32[count];
+            data = new Uint32[count];
             if (data != NULL)
             {
                 const unsigned long start = count * frame;
@@ -461,6 +461,14 @@ class DiColorPixelTemplate
     }
 
     T *Data[3];
+
+
+ private:
+
+ // --- declarations to avoid compiler warnings
+
+    DiColorPixelTemplate(const DiColorPixelTemplate<T> &);
+    DiColorPixelTemplate<T> &operator=(const DiColorPixelTemplate<T> &);
 };
 
 
@@ -471,7 +479,12 @@ class DiColorPixelTemplate
  *
  * CVS/RCS Log:
  * $Log: dicopxt.h,v $
- * Revision 1.18  2002-09-12 14:10:37  joergr
+ * Revision 1.19  2002-12-09 13:37:24  joergr
+ * Added private undefined copy constructor and/or assignment operator.
+ * Fixed bug that caused method createAWTBitmap() to return always empty pixel
+ * data.
+ *
+ * Revision 1.18  2002/09/12 14:10:37  joergr
  * Replaced "createPixelData" by "getPixelData" which uses a new dcmdata
  * routine and is therefore more efficient.
  *
