@@ -22,9 +22,9 @@
  *  Purpose: DicomBaseLUT (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-10-20 10:34:43 $
+ *  Update Date:      $Date: 2000-03-06 18:17:59 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/dibaslut.h,v $
- *  CVS/RCS Revision: $Revision: 1.10 $
+ *  CVS/RCS Revision: $Revision: 1.11 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -143,6 +143,17 @@ class DiBaseLUT
         return (Sint32)((Sint16)FirstEntry) + Count - 1;
     }
 
+    /** get value of specified LUT entry
+     *
+     ** @param  pos  position in the LUT to be returned
+     *
+     ** @return value of specified LUT entry
+     */
+    inline Uint16 getValue(const Uint16 pos) const
+    {
+        return Data[pos];
+    }
+
     /** get value of specified LUT entry.
      *  FIV in LUT descriptor is US -> 16 bit unsigned.
      *  ... or the previous pixel transformation requires an unsigned LUT input value.
@@ -248,7 +259,7 @@ class DiBaseLUT
      *
      ** @return OFTrue if LUTs are equal, OFFalse otherwise
      */
-    OFBool operator==(const DiBaseLUT &lut);
+    virtual OFBool operator==(const DiBaseLUT &lut);
 
 
  protected:
@@ -314,7 +325,11 @@ class DiBaseLUT
  *
  * CVS/RCS Log:
  * $Log: dibaslut.h,v $
- * Revision 1.10  1999-10-20 10:34:43  joergr
+ * Revision 1.11  2000-03-06 18:17:59  joergr
+ * Moved get-method to base class and made method virtual to avoid hiding of
+ * methods (reported by Sun CC 4.2).
+ *
+ * Revision 1.10  1999/10/20 10:34:43  joergr
  * Enhanced method invertTable to distinguish between copy of LUT data and
  * original (referenced) LUT data.
  *
