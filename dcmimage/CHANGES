@@ -1,4 +1,14 @@
 
+**** Changes from 1999.04.29 (riesmeier)
+
+- Moved color related image files back to non-public part.
+  Affects: dcmimage/libsrc/Makefile.dep
+           dcmimage/libsrc/Makefile.in
+  Added:   dcmimage/include/dicoopx.h
+           dcmimage/include/dicoopxt.h
+           dcmimage/include/dicopx.h
+           dcmimage/libsrc/dicoopx.cc
+
 **** Changes from 1999.04.28 (riesmeier)
 
 - Merged change log for module dcmimgle into main change log. Removed
