@@ -1,0 +1,6 @@
+#
+# Worklist query
+#
+(0010,0010) PN    []                                            #     6,  1  PatientName
+(0040,0100) SQ                                                  #   250,  1  ScheduledProcedureStepSequence
+(fffe,e0dd) na    (SequenceDelimitationItem for re-enc.)        #     0,  1  SequenceDelimitationItem

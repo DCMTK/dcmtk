@@ -1,0 +1,11 @@
+#
+# Worklist query
+#
+(0010,0010) PN    []                                                #     6,  1  PatientName
+(0032,1064) SQ    (Sequence with explicit Length #=0)               #     0,  1  RequestedProcedureCodeSequence
+    (fffe,e000) na    (Item with explicit Length  #=12)                 #     0,  1  Item
+    (0008,0100) SH []                                                   # Code Value
+    (0008,0102) SH []                                                   # Coding Scheme Designator
+    (0008,0104) LO []                                                   # Code Meaning
+    (fffe,e00d) na    (ItemDelimitationItem for re-encoding)        #     0,  1  ItemDelimitationItem
+(fffe,e0dd) na    (SequenceDelimitationItem for re-enc.)            #     0,  1  SequenceDelimitationItem

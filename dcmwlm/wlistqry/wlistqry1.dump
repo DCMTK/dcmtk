@@ -1,0 +1,18 @@
+#
+# Worklist query
+#
+(0008,0050) SH    []                                        #     6,  1  AccessionNumber
+(0010,0010) PN    []                                        #     6,  1  PatientName
+(0010,0020) LO    []                                        #     6,  1  PatientID
+(0010,0030) DA    []                                        #     8,  1  PatientBirthDate
+(0010,0040) CS    []                                        #     2,  1  PatientSex
+(0010,2000) LO    []                                        #    18,  2  MedicalAlerts
+(0010,2110) LO    []                                        #    12,  2  ContrastAllergies
+(0020,000d) UI    []                                        #    38,  1  StudyInstanceUID
+(0032,1032) PN    []                                        #    10,  1  RequestingPhysician
+(0032,1060) LO    []                                        #     8,  1  RequestedProcedureDescription
+(0040,0100) SQ                                              #   250,  1  ScheduledProcedureStepSequence
+(fffe,e0dd) na    (SequenceDelimitationItem for re-enc.)    #     0,  1  SequenceDelimitationItem
+(0040,1001) SH    []                                        #     6,  1  RequestedProcedureID
+(0040,1003) SH    []                                        #     4,  1  RequestedProcedurePriority
+

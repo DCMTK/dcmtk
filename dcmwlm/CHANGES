@@ -1,6 +1,86 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2002.12.03 (wilkens)
+
+- Added files und functionality from the dcmtk/wlisctn folder to dcmtk/dcmwlm
+  so that dcmwlm can now completely replace wlistctn in the public domain part
+  of dcmtk. Pertaining to this replacement requirement, another optional return
+  key attribute was integrated into the wlm utilities.
+  Affects: dcmwlm/Makefile.in
+           dcmwlm/libsrc/wlds.cc
+           dcmwlm/tests/Makefile.in
+  Added:   dcmwlm/docs/wwwapp.doc
+           dcmwlm/docs/wwwapp.txt
+           dcmwlm/images/
+           dcmwlm/images/offis.gif
+           dcmwlm/perl/
+           dcmwlm/perl/changepw.pl
+           dcmwlm/perl/checkvr.ph
+           dcmwlm/perl/isocode.ph
+           dcmwlm/perl/layout.ph
+           dcmwlm/perl/lock.ph
+           dcmwlm/perl/log.ph
+           dcmwlm/perl/main.pl
+           dcmwlm/perl/password.ph
+           dcmwlm/perl/patidel.pl
+           dcmwlm/perl/patiedit.pl
+           dcmwlm/perl/patient.pl
+           dcmwlm/perl/prefs.ph
+           dcmwlm/perl/procdel.pl
+           dcmwlm/perl/procedit.pl
+           dcmwlm/perl/procedur.pl
+           dcmwlm/perl/procstep.pl
+           dcmwlm/perl/prstdel.pl
+           dcmwlm/perl/prstedit.pl
+           dcmwlm/perl/statdel.pl
+           dcmwlm/perl/statedit.pl
+           dcmwlm/perl/station.pl
+           dcmwlm/perl/urldecod.ph
+           dcmwlm/perl/workdel.pl
+           dcmwlm/perl/workedit.pl
+           dcmwlm/perl/worklist.pl
+           dcmwlm/perl/write.ph
+           dcmwlm/tests/Makefile.dep
+           dcmwlm/tests/wltest.cc
+           dcmwlm/wlistdb/
+           dcmwlm/wlistdb/README
+           dcmwlm/wlistdb/OFFIS/
+           dcmwlm/wlistdb/OFFIS/
+           dcmwlm/wlistdb/OFFIS/lockfile
+           dcmwlm/wlistdb/OFFIS/wklist1.dump
+           dcmwlm/wlistdb/OFFIS/wklist10.dump
+           dcmwlm/wlistdb/OFFIS/wklist2.dump
+           dcmwlm/wlistdb/OFFIS/wklist3.dump
+           dcmwlm/wlistdb/OFFIS/wklist4.dump
+           dcmwlm/wlistdb/OFFIS/wklist5.dump
+           dcmwlm/wlistdb/OFFIS/wklist6.dump
+           dcmwlm/wlistdb/OFFIS/wklist7.dump
+           dcmwlm/wlistdb/OFFIS/wklist8.dump
+           dcmwlm/wlistdb/OFFIS/wklist9.dump
+           dcmwlm/wlistqry/
+           dcmwlm/wlistqry/README/
+           dcmwlm/wlistqry/wlistqry0.dump
+           dcmwlm/wlistqry/wlistqry1.dump
+           dcmwlm/wlistqry/wlistqry10.dump
+           dcmwlm/wlistqry/wlistqry11.dump
+           dcmwlm/wlistqry/wlistqry12.dump
+           dcmwlm/wlistqry/wlistqry2.dump
+           dcmwlm/wlistqry/wlistqry3.dump
+           dcmwlm/wlistqry/wlistqry4.dump
+           dcmwlm/wlistqry/wlistqry5.dump
+           dcmwlm/wlistqry/wlistqry6.dump
+           dcmwlm/wlistqry/wlistqry7.dump
+           dcmwlm/wlistqry/wlistqry8.dump
+           dcmwlm/wlistqry/wlistqry9.dump
+           dcmwlm/wwwapps/
+           dcmwlm/wwwapps/Makefile.dep
+           dcmwlm/wwwapps/Makefile.in
+           dcmwlm/wwwapps/preplock.cc
+           dcmwlm/wwwapps/readoviw.cc
+           dcmwlm/wwwapps/readwlst.cc
+           dcmwlm/wwwapps/writwlst.cc
+
 **** Changes from 2002.11.28 (eichelberg)
 
 - Adapted module dcmwlm to use of new header file ofstdinc.h
@@ -104,8 +184,7 @@ Changes between releases are documented here.
            dcmwlm/tests/dcmTagsStmt.txt
            dcmwlm/tests/pki.txt
            dcmwlm/tests/searchStmt.txt
-  Affects: dcmwlm/CHANGES
-           dcmwlm/Makefile.in
+  Affects: dcmwlm/Makefile.in
            dcmwlm/configure
            dcmwlm/dcmwlm.dsp
            dcmwlm/apps/Makefile.dep
@@ -292,8 +371,7 @@ Changes between releases are documented here.
 
 - Added new module "dcmwlm" developed by Thomas Wilkens (initial release for
   Windows, dated 2001-12-20).
-  Added:   dcmwlm/CHANGES
-           dcmwlm/Makefile.in
+  Added:   dcmwlm/Makefile.in
            dcmwlm/apps/Makefile.dep
            dcmwlm/apps/Makefile.in
            dcmwlm/apps/wlmceng.cc

@@ -12,11 +12,11 @@ top_srcdir=@top_srcdir@
 include @configdir@/@common_makefile@
 
 
-all: include-all libsrc-all apps-all docs-all tests-all
+all: include-all libsrc-all apps-all wwwapps-all docs-all tests-all
 
 install: install-bin
 
-install-bin: apps-install tests-install
+install-bin: apps-install wwwapps-install tests-install
 
 install-lib: libsrc-install-lib install-include
 
@@ -33,6 +33,9 @@ libsrc-all: include-all
 apps-all: libsrc-all
 	(cd apps; $(MAKE) ARCH="$(ARCH)" all)
 
+wwwapps-all: libsrc-all
+	(cd wwwapps; $(MAKE) ARCH="$(ARCH)" all)
+
 tests-all: libsrc-all
 	(cd tests; $(MAKE) ARCH="$(ARCH)" all)
 
@@ -48,6 +51,9 @@ libsrc-install-lib: include-all
 apps-install: libsrc-all
 	(cd apps; $(MAKE) ARCH="$(ARCH)" install)
 
+wwwapps-install: libsrc-all
+	(cd wwwapps; $(MAKE) ARCH="$(ARCH)" install)
+
 tests-install: libsrc-all
 	(cd tests; $(MAKE) ARCH="$(ARCH)" install)
 
@@ -58,6 +64,7 @@ clean:
 	(cd include; $(MAKE) clean)
 	(cd libsrc; $(MAKE) clean)
 	(cd apps; $(MAKE) clean)
+	(cd wwwapps; $(MAKE) clean)
 	(cd docs; $(MAKE) clean)
 	(cd tests; $(MAKE) clean)
 	(cd htmldocs; $(MAKE) clean)
@@ -67,6 +74,7 @@ distclean:
 	(cd include; $(MAKE) distclean)
 	(cd libsrc; $(MAKE) distclean)
 	(cd apps; $(MAKE) distclean)
+	(cd wwwapps; $(MAKE) distclean)
 	(cd docs; $(MAKE) distclean)
 	(cd tests; $(MAKE) distclean)
 	(cd htmldocs; $(MAKE) distclean)
@@ -75,6 +83,8 @@ distclean:
 dependencies:
 	(cd libsrc; touch $(DEP); $(MAKE) dependencies)
 	(cd apps; touch $(DEP); $(MAKE) dependencies)
+	(cd wwwapps; touch $(DEP); $(MAKE) dependencies)
+	(cd tests; touch $(DEP); $(MAKE) dependencies)
 
 html:
 	(doc++ -d htmldocs -p -i -B /dev/null include/*.h libsrc/*.cc apps/*.h apps/*.cc)

@@ -1,0 +1,10 @@
+#
+# Worklist entry
+#
+(0010,0010) PN    []                                        #     6,  1  PatientName
+(0040,0100) SQ                                              #   250,  1  ScheduledProcedureStepSequence
+    (fffe,e000) na                                              #   242,  1  Item
+        (0008,0060) CS    [DD]                                      #     2,  1  Modality
+    (fffe,e00d) na    (ItemDelimitationItem for re-encoding)    #     0,  1  ItemDelimitationItem
+(fffe,e0dd) na    (SequenceDelimitationItem for re-enc.)    #     0,  1  SequenceDelimitationItem
+
