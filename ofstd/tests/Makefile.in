@@ -21,6 +21,7 @@ objs= tststack.o tstlist.o tlist.o tstring.o
 
 progs= tststack tstlist tlist tstring
 
+LOCALTRASH= *.out
 
 all: $(progs)
 
@@ -36,11 +37,34 @@ tlist: tlist.o
 tstring: tstring.o
 	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ $@.o $(LOCALLIBS) $(LIBS)
 
+
+tests: all test-list test-stack test-string
+
+test-list: tlist tstlist
+	@echo '--Testing OFList (part 1)'
+	./tlist > tlist.out
+	diff tlist.exp tlist.out
+	@echo '--Testing OFList (part 2)'
+	./tstlist > tstlist.out
+	diff tstlist.exp tstlist.out
+
+
+test-stack: tststack
+	@echo '--Testing OFStack'
+	./tststack > tststack.out
+	diff tststack.exp tststack.out
+
+test-string: tstring
+	@echo '--Testing OFString'
+	./tstring < tstring.inp > tstring.out
+	diff tstring.exp tstring.out
+
+
 install: 
 	echo "Nothing to install (ofstd/tests)"
 
 clean:
-	rm -f $(objs) $(progs) $(TRASH)
+	rm -f $(objs) $(progs) $(LOCALTRASH) $(TRASH)
 
 distclean: clean
 	rm -f $(DISTTRASH)
