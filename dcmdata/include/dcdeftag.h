@@ -4,7 +4,7 @@
 **
 **   User: meichel
 **   Host: sulla
-**   Date: Wed Nov 18 15:44:47 1998
+**   Date: Wed Dec 23 14:56:27 1998
 **   Prog: /home/meichel/dicom/dcmtk/dcmdata/libsrc/mkdeftag
 **
 ** From: /home/meichel/dicom/dcmtk/dcmdata/libsrc/dicom.dic
@@ -16,12 +16,12 @@
 
 #include "dctagkey.h"
 
-#define DCM_DICT_DEFTAG_BUILD_DATE "Wed Nov 18 15:44:47 1998"
+#define DCM_DICT_DEFTAG_BUILD_DATE "Wed Dec 23 14:56:27 1998"
 
 
 /*
 ** Fixed Tags in ascending (gggg,eeee) order.
-** Number of entries: 1682
+** Number of entries: 1683
 ** Tags with a repeating component (repeating tags) are listed later.
 */
 #define DCM_CommandGroupLength                   DcmTagKey(0x0000, 0x0000)
@@ -592,6 +592,7 @@
 #define DCM_ImageLaterality                      DcmTagKey(0x0020, 0x0062)
 #define DCM_ImageGeometryType                    DcmTagKey(0x0020, 0x0070)
 #define DCM_MaskingImage                         DcmTagKey(0x0020, 0x0080)
+#define DCM_ReportNumber                         DcmTagKey(0x0020, 0x00aa)
 #define DCM_TemporalPositionIdentifier           DcmTagKey(0x0020, 0x0100)
 #define DCM_NumberOfTemporalPositions            DcmTagKey(0x0020, 0x0105)
 #define DCM_TemporalResolution                   DcmTagKey(0x0020, 0x0110)
@@ -940,7 +941,7 @@
 #define DCM_ObjectDirectoryStringIdentifier      DcmTagKey(0x0040, 0xa088)
 #define DCM_ObjectDirectoryBinaryIdentifier      DcmTagKey(0x0040, 0xa089)
 #define DCM_HistoryReliabilityQualifier          DcmTagKey(0x0040, 0xa090)
-#define DCM_ReferencedTypeofData                 DcmTagKey(0x0040, 0xa0a0)
+#define DCM_ReferencedTypeOfData                 DcmTagKey(0x0040, 0xa0a0)
 #define DCM_ReferencedWaveformChannels           DcmTagKey(0x0040, 0xa0b0)
 #define DCM_DateOfDocumentOrVerbalTransaction    DcmTagKey(0x0040, 0xa110)
 #define DCM_TimeOfDocumentCreationOrVerbalTransaction DcmTagKey(0x0040, 0xa112)

@@ -2,7 +2,7 @@
 # This is the global DICOM data dictionary for the dcm toolkit dcmdata
 # class library.
 #
-# Last update: $Date: 1998-11-18 14:53:08 $
+# Last update: $Date: 1998-12-23 13:59:23 $
 #
 # Status: The dictionary contains
 #   - the complete dictionary from the 1996 DICOM publication
@@ -1543,6 +1543,7 @@
 #
 # Version: 0.97, Frozen Draft, November 20, 1997
 #
+(0020,00AA)	IS	ReportNumber	1	DICOM3
 (0040,A007)	CS	FindingsFlag	1	DICOM3
 (0040,A020)	SQ	FindingsSequence	1	DICOM3
 (0040,A021)	UI	FindingsGroupUID	1	DICOM3
@@ -1626,6 +1627,7 @@
 #(0040,A992)	ST	UniformResourceLocator	1	DICOM3
 (0040,DB73)	SQ	RelationshipTypeCodeSequenceModifier	1	DICOM3
 (4008,00FF)	CS	ReportProductionStatus	1	DICOM3
+
 #
 #---------------------------------------------------------------------------
 #
@@ -1804,7 +1806,7 @@
 (003A,0222)	DS	NotchFilterFrequency	1	DICOM3
 (003A,0223)	DS	NotchFilterBandwidth	1	DICOM3
 (003A,1000)	OB	WaveformData	1	DICOM3
-(0040,A0A0)	CS	ReferencedTypeofData	1	DICOM3
+(0040,A0A0)	CS	ReferencedTypeOfData	1	DICOM3
 (0040,A0B0)	US	ReferencedWaveformChannels	2-2n	DICOM3
 (0040,A130)	CS	TemporalRangeType	1	DICOM3
 (0040,A132)	UL	ReferencedSampleOffsets	1-n	DICOM3

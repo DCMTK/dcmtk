@@ -4,7 +4,7 @@
 **
 **   User: meichel
 **   Host: sulla
-**   Date: Wed Nov 18 15:43:49 1998
+**   Date: Wed Dec 23 14:55:54 1998
 **   Prog: /home/meichel/dicom/dcmtk/dcmdata/libsrc/mkdictbi
 **
 ** From: /home/meichel/dicom/dcmtk/dcmdata/libsrc/dicom.dic
@@ -13,7 +13,7 @@
 
 #include "dcdict.h"
 
-char* dcmBuiltinDictBuildDate = "Wed Nov 18 15:43:49 1998";
+char* dcmBuiltinDictBuildDate = "Wed Dec 23 14:55:54 1998";
 
 struct DBI_SimpleEntry {
     Uint16 group;
@@ -1734,6 +1734,9 @@ static DBI_SimpleEntry simpleBuiltinDict[] = {
     { 0x0020, 0x0080, 0x0020, 0x0080,
       EVR_CS, "MaskingImage", 1, -1, "ACR/NEMA2",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified },
+    { 0x0020, 0x00aa, 0x0020, 0x00aa,
+      EVR_IS, "ReportNumber", 1, 1, "DICOM3",
+      DcmDictRange_Unspecified, DcmDictRange_Unspecified },
     { 0x0020, 0x0100, 0x0020, 0x0100,
       EVR_IS, "TemporalPositionIdentifier", 1, 1, "DICOM3",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified },
@@ -2779,7 +2782,7 @@ static DBI_SimpleEntry simpleBuiltinDict[] = {
       EVR_CS, "HistoryReliabilityQualifier", 1, 1, "DICOM3",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified },
     { 0x0040, 0xa0a0, 0x0040, 0xa0a0,
-      EVR_CS, "ReferencedTypeofData", 1, 1, "DICOM3",
+      EVR_CS, "ReferencedTypeOfData", 1, 1, "DICOM3",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified },
     { 0x0040, 0xa0b0, 0x0040, 0xa0b0,
       EVR_US, "ReferencedWaveformChannels", 2, -1, "DICOM3",
