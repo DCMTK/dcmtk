@@ -12,8 +12,10 @@ top_srcdir=@top_srcdir@
 configdir=@top_srcdir@/@configdir@
 
 dcmdatadir=$(top_srcdir)/../dcmdata
+ofstddir=$(top_srcdir)/../ofstd
 
-LOCALINCLUDES=-I$(dcmdatadir)/include -I$(includedir)/dcmdata
+LOCALINCLUDES=-I$(ofstddir)/include -I$(dcmdatadir)/include -I$(includedir)/ofstd -I$(includedir)/dcmdata
+
 
 LOCALDEFS= 
 

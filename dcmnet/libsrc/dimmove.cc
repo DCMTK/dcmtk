@@ -56,10 +56,10 @@
 **
 **	Module Prefix: DIMSE_
 **
-** Last Update:		$Author: hewett $
-** Update Date:		$Date: 1996-04-25 16:11:16 $
+** Last Update:		$Author: andreas $
+** Update Date:		$Date: 1997-07-21 08:47:18 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/libsrc/dimmove.cc,v $
-** CVS/RCS Revision:	$Revision: 1.2 $
+** CVS/RCS Revision:	$Revision: 1.3 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -356,7 +356,7 @@ DIMSE_moveProvider(
     DcmDataset *statusDetail = NULL;
     DcmDataset *reqIds = NULL;
     DcmDataset *rspIds = NULL;
-    BOOLEAN cancelled = FALSE;
+    OFBool cancelled = OFFalse;
     int responseCount = 0;
     T_DIMSE_C_MoveRSP rsp;
 
@@ -384,10 +384,10 @@ DIMSE_moveProvider(
 	    /* cancel received */
 	    rsp.Status = 
 	      STATUS_MOVE_Cancel_SubOperationsTerminatedDueToCancelIndication;
-	    cancelled = TRUE;	    
+	    cancelled = OFTrue;	    
 	} else if (cond == DIMSE_NODATAAVAILABLE) {
 	    /* get rid of timeout on condition stack */
-	    COND_PopCondition(FALSE);	
+	    COND_PopCondition(OFFalse);	
 	} else {
 	    /* some execption condition occured */
 	    goto providerCleanup;
@@ -440,7 +440,11 @@ providerCleanup:
 /*
 ** CVS Log
 ** $Log: dimmove.cc,v $
-** Revision 1.2  1996-04-25 16:11:16  hewett
+** Revision 1.3  1997-07-21 08:47:18  andreas
+** - Replace all boolean types (BOOLEAN, CTNBOOLEAN, DICOM_BOOL, BOOL)
+**   with one unique boolean type OFBool.
+**
+** Revision 1.2  1996/04/25 16:11:16  hewett
 ** Added parameter casts to char* for bzero calls.  Replaced some declarations
 ** of DIC_UL with unsigned long (reduces mismatch problems with 32 & 64 bit
 ** architectures).  Added some protection to inclusion of sys/socket.h (due

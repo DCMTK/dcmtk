@@ -55,10 +55,10 @@
 **
 **	Module Prefix: DIMSE_
 **
-** Last Update:		$Author: hewett $
-** Update Date:		$Date: 1996-03-26 18:38:45 $
+** Last Update:		$Author: andreas $
+** Update Date:		$Date: 1997-07-21 08:47:17 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/libsrc/dimcmd.h,v $
-** CVS/RCS Revision:	$Revision: 1.1 $
+** CVS/RCS Revision:	$Revision: 1.2 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -85,7 +85,7 @@ DIMSE_buildCmdObject(T_DIMSE_Message *msg, DcmDataset **obj);
 CONDITION
 DIMSE_parseCmdObject(T_DIMSE_Message *msg, DcmDataset *obj);
 
-BOOLEAN
+OFBool
 DIMSE_isDataSetPresent(T_DIMSE_Message *msg);
 
 unsigned long
@@ -96,8 +96,12 @@ DIMSE_countElements(DcmDataset *obj);
 /*
 ** CVS Log
 ** $Log: dimcmd.h,v $
-** Revision 1.1  1996-03-26 18:38:45  hewett
-** Initial revision
+** Revision 1.2  1997-07-21 08:47:17  andreas
+** - Replace all boolean types (BOOLEAN, CTNBOOLEAN, DICOM_BOOL, BOOL)
+**   with one unique boolean type OFBool.
+**
+** Revision 1.1.1.1  1996/03/26 18:38:45  hewett
+** Initial Release.
 **
 **
 */

@@ -55,10 +55,10 @@
 **
 **	Module Prefix: DIMSE_
 **
-** Last Update:		$Author: meichel $
-** Update Date:		$Date: 1997-06-30 14:07:00 $
+** Last Update:		$Author: andreas $
+** Update Date:		$Date: 1997-07-21 08:47:16 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/libsrc/dimcmd.cc,v $
-** CVS/RCS Revision:	$Revision: 1.5 $
+** CVS/RCS Revision:	$Revision: 1.6 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -164,7 +164,7 @@ deleteElem(DcmDataset *obj, DcmTagKey t)
 {
     DcmTag tag(t);
     DcmElement *e = NULL;
-    BOOLEAN ok = TRUE;
+    OFBool ok = OFTrue;
 
     e = obj->remove(tag);
     ok = (e != NULL);
@@ -189,7 +189,7 @@ addString(DcmDataset *obj, DcmTagKey t, char *s)
         ec = e->putString(s);
     }
     if (ec == EC_Normal) {
-        ec = obj->insert(e, TRUE);
+        ec = obj->insert(e, OFTrue);
     }
 
     return (ec == EC_Normal)?(DIMSE_NORMAL):
@@ -252,7 +252,7 @@ addUS(DcmDataset *obj, DcmTagKey t, Uint16 us)
         ec = e->putUint16(us);
     }
     if (ec == EC_Normal) {
-        ec = obj->insert(e, TRUE);
+        ec = obj->insert(e, OFTrue);
     }
     return (ec == EC_Normal)?(DIMSE_NORMAL):
         (buildErrorWithMsg("dimcmd:addUS: Cannot add Uint16", t));
@@ -307,7 +307,7 @@ addUL(DcmDataset *obj, DcmTagKey t, Uint32 ul)
         ec = e->putUint32(ul);
     }
     if (ec == EC_Normal) {
-        ec = obj->insert(e, TRUE);
+        ec = obj->insert(e, OFTrue);
     }
     return (ec == EC_Normal)?(DIMSE_NORMAL):
         (buildErrorWithMsg("dimcmd:addUL: Cannot add Uint32", t));
@@ -372,7 +372,7 @@ addAttributeList(DcmDataset *obj, DcmTagKey t, Uint16 *list, int listCount)
         ec = e->putUint16Array(list, (listCount / 2));
     }
     if (ec == EC_Normal) {
-        ec = obj->insert(e, TRUE);
+        ec = obj->insert(e, OFTrue);
     }
     return (ec == EC_Normal)?(DIMSE_NORMAL):
         (buildErrorWithMsg("dimcmd:addAttributeList: Cannot add list", t));
@@ -1998,10 +1998,10 @@ DIMSE_parseCmdObject(T_DIMSE_Message *msg, DcmDataset *obj)
     return cond;
 }
 
-BOOLEAN
+OFBool
 DIMSE_isDataSetPresent(T_DIMSE_Message *msg)
 {
-    BOOLEAN present = FALSE;
+    OFBool present = OFFalse;
 
     switch (msg->CommandField) {
     case DIMSE_C_ECHO_RQ:
@@ -2075,7 +2075,7 @@ DIMSE_isDataSetPresent(T_DIMSE_Message *msg)
 	break;
 
     default:
-	present = FALSE;
+	present = OFFalse;
 	break;
     }
 
@@ -2095,7 +2095,11 @@ DIMSE_countElements(DcmDataset *obj)
 /*
 ** CVS Log
 ** $Log: dimcmd.cc,v $
-** Revision 1.5  1997-06-30 14:07:00  meichel
+** Revision 1.6  1997-07-21 08:47:16  andreas
+** - Replace all boolean types (BOOLEAN, CTNBOOLEAN, DICOM_BOOL, BOOL)
+**   with one unique boolean type OFBool.
+**
+** Revision 1.5  1997/06/30 14:07:00  meichel
 ** Fixed bug in DIMSE module - the mandatory tag (0000,0000)
 ** (command group length) was created only for DIMSE-RQ messages
 ** but not for DIMSE-RSP messages.

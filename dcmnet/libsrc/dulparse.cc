@@ -45,9 +45,9 @@
 ** Intent:		This file contains functions for parsing Dicom
 **			Upper Layer (DUL) Protocol Data Units (PDUs)
 **			into logical in-memory structures.
-** Last Update:		$Author: meichel $, $Date: 1997-07-04 09:24:56 $
+** Last Update:		$Author: andreas $, $Date: 1997-07-21 08:47:24 $
 ** Source File:		$RCSfile: dulparse.cc,v $
-** Revision:		$Revision: 1.4 $
+** Revision:		$Revision: 1.5 $
 ** Status:		$State: Exp $
 */
 
@@ -88,7 +88,7 @@ parseSCUSCPRole(PRV_SCUSCPROLE * role, unsigned char *buf,
 static void trim_trailing_spaces(char *s);
 
 
-static CTNBOOLEAN debug = FALSE;
+static OFBool debug = OFFalse;
 
 /* parseAssociate
 **
@@ -265,10 +265,10 @@ parseAssociate(unsigned char *buf, unsigned long pduLength,
 /* parseDebug
 **
 ** Purpose:
-**	Set global 'debug' flag for this module (TRUE or FALSE).
+**	Set global 'debug' flag for this module (OFTrue or OFFalse).
 **
 ** Parameter Dictionary:
-**	flag	CTNBOOLEAN flag to be copied to global 'debug'
+**	flag	OFBool flag to be copied to global 'debug'
 **
 ** Return Values:
 **	None
@@ -277,7 +277,7 @@ parseAssociate(unsigned char *buf, unsigned long pduLength,
 */
 
 void
-parseDebug(CTNBOOLEAN flag)
+parseDebug(OFBool flag)
 {
     debug = flag;
 }
@@ -763,7 +763,11 @@ trim_trailing_spaces(char *s)
 /*
 ** CVS Log
 ** $Log: dulparse.cc,v $
-** Revision 1.4  1997-07-04 09:24:56  meichel
+** Revision 1.5  1997-07-21 08:47:24  andreas
+** - Replace all boolean types (BOOLEAN, CTNBOOLEAN, DICOM_BOOL, BOOL)
+**   with one unique boolean type OFBool.
+**
+** Revision 1.4  1997/07/04 09:24:56  meichel
 ** Simplified some sizeof() constructs to avoid compiler warnings
 **   on the IBM xlC compiler (AIX 3.x).
 **

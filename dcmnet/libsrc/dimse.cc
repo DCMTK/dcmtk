@@ -56,10 +56,10 @@
 **
 **	Module Prefix: DIMSE_
 **
-** Last Update:		$Author: meichel $
-** Update Date:		$Date: 1997-05-28 12:04:46 $
+** Last Update:		$Author: andreas $
+** Update Date:		$Date: 1997-07-21 08:47:19 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/libsrc/dimse.cc,v $
-** CVS/RCS Revision:	$Revision: 1.9 $
+** CVS/RCS Revision:	$Revision: 1.10 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -126,7 +126,7 @@ static int debug = 0;
 */
 
 
-static BOOLEAN
+static OFBool
 isDataDictPresent()
 {
     /* is a data dictionary present */
@@ -161,7 +161,7 @@ DIMSE_readNextPDV(T_ASC_Association * assoc,
 
     if (cond != DUL_NORMAL) {
 	/* there is no pdv waiting to be picked up */
-	COND_PopCondition(FALSE);
+	COND_PopCondition(OFFalse);
 
 	/* try to read new pdv's */
 	cond = DUL_ReadPDVs(&assoc->DULassociation, NULL, blk, timeout);
@@ -493,7 +493,7 @@ sendDcmDataset(T_ASC_Association * assoc, DcmDataset * obj,
     E_Condition econd;
     unsigned char *buf;
     unsigned long bufLen;
-    int last = FALSE;
+    int last = OFFalse;
     Uint32 rtnLength;
     unsigned int bytesTransmitted = 0;
     DUL_PDVLIST pdvList;
@@ -520,10 +520,10 @@ sendDcmDataset(T_ASC_Association * assoc, DcmDataset * obj,
     	econd = obj->write(outBuf, xferSyntax, EET_ExplicitLength, 
 			   EGL_recalcGL, EPD_withoutPadding);
 	if (econd == EC_Normal) {
-	    last = TRUE;	/* all contents have been written */
+	    last = OFTrue;	/* all contents have been written */
 	} else if (econd == EC_StreamNotifyClient) {
 	    /* ok,just no more space in streambuf */
-	    last = FALSE;
+	    last = OFFalse;
 	} else {
 	    /* some error has occurred */
 	    DIMSE_warning(assoc, "writeBlock Failed (%s)", 
@@ -612,7 +612,7 @@ DIMSE_sendMessage(T_ASC_Association *assoc,
     {
       /* move the status detail to the command */
       DcmElement* e;
-      while ((e = statusDetail->remove((unsigned long)0)) != NULL) cmdObj->insert(e, TRUE);
+      while ((e = statusDetail->remove((unsigned long)0)) != NULL) cmdObj->insert(e, OFTrue);
     }
     
     if (SUCCESS(cond) && DIMSE_isDataSetPresent(msg))
@@ -740,7 +740,7 @@ ignoreDataSet(T_ASC_Association * assoc,
 {
     CONDITION           cond = DIMSE_NORMAL;
     DUL_PDV             pdv;
-    BOOLEAN             last = FALSE;
+    OFBool             last = OFFalse;
 
     while (!last) {
 	cond = DIMSE_readNextPDV(assoc, blocking, timeout, &pdv);
@@ -771,7 +771,7 @@ DIMSE_receiveCommand(T_ASC_Association * assoc,
     unsigned long pdvCount;
 
     DUL_DATAPDV type;
-    BOOLEAN last;
+    OFBool last;
     DUL_PDV pdv;
 
     DIC_UL elemsLeft;
@@ -808,7 +808,7 @@ DIMSE_receiveCommand(T_ASC_Association * assoc,
 	    "DIMSE: receiveCommand: Failed to initialize cmdBuf(DCM_ReadMode)");
     }
 
-    for (last = FALSE, bytesRead = 0, type = DUL_COMMANDPDV;
+    for (last = OFFalse, bytesRead = 0, type = DUL_COMMANDPDV;
 	 type == DUL_COMMANDPDV && !last;) {
 	 
 	cmdBuf.ReleaseBuffer();	/* make the stream remember any unread bytes */
@@ -968,40 +968,40 @@ CONDITION DIMSE_createFilestream(
     }
     if (NULL != (elem = new DcmUnsignedLong(metaElementGroupLength)))
     {
-      metainfo->insert(elem, TRUE);
+      metainfo->insert(elem, OFTrue);
       Uint32 temp = 0;
       ((DcmUnsignedLong*)elem)->putUint32Array(&temp, 1);
     } else cond = DIMSE_OUTOFRESOURCES;
     if (NULL != (elem = new DcmOtherByteOtherWord(fileMetaInformationVersion)))
     {
-      metainfo->insert(elem, TRUE);
+      metainfo->insert(elem, OFTrue);
       Uint8 version[2] = {0,1};
       ((DcmOtherByteOtherWord*)elem)->putUint8Array( version, 2 );
     } else cond = DIMSE_OUTOFRESOURCES;
     if (NULL != (elem = new DcmUniqueIdentifier(mediaStorageSOPClassUID)))
     {
-      metainfo->insert(elem, TRUE);
+      metainfo->insert(elem, OFTrue);
       ((DcmUniqueIdentifier*)elem)->putString(request->AffectedSOPClassUID);
     } else cond = DIMSE_OUTOFRESOURCES;
     if (NULL != (elem = new DcmUniqueIdentifier(mediaStorageSOPInstanceUID)))
     {
-      metainfo->insert(elem, TRUE);
+      metainfo->insert(elem, OFTrue);
       ((DcmUniqueIdentifier*)elem)->putString(request->AffectedSOPInstanceUID);
     } else cond = DIMSE_OUTOFRESOURCES;
     if (NULL != (elem = new DcmUniqueIdentifier(transferSyntaxUID)))
     {
-      metainfo->insert(elem, TRUE);
+      metainfo->insert(elem, OFTrue);
       elem->putString(presentationContext.acceptedTransferSyntax);
     } else cond = DIMSE_OUTOFRESOURCES;
     if (NULL != (elem = new DcmUniqueIdentifier(implementationClassUID)))
     {
-      metainfo->insert(elem, TRUE);
+      metainfo->insert(elem, OFTrue);
       const char *uid = OFFIS_IMPLEMENTATION_CLASS_UID;
       ((DcmUniqueIdentifier*)elem)->putString(uid);
     } else cond = DIMSE_OUTOFRESOURCES;
     if (NULL != (elem = new DcmShortString(implementationVersionName)))
     {
-      metainfo->insert(elem, TRUE);
+      metainfo->insert(elem, OFTrue);
       char *version = OFFIS_DTK_IMPLEMENTATION_VERSION_NAME2;
       ((DcmShortString*)elem)->putString(version);
     } else cond = DIMSE_OUTOFRESOURCES;
@@ -1064,7 +1064,7 @@ DIMSE_receiveDataSetInFile(T_ASC_Association *assoc,
     DUL_PDV pdv;
     T_ASC_PresentationContextID pid = 0;
     E_TransferSyntax xferSyntax; 
-    BOOLEAN last = FALSE;
+    OFBool last = OFFalse;
     DIC_UL pdvCount = 0;
     DIC_UL bytesRead = 0;
 
@@ -1161,7 +1161,7 @@ DIMSE_receiveDataSetInMemory(T_ASC_Association * assoc,
     DUL_PDV pdv;
     T_ASC_PresentationContextID pid = 0;
     E_TransferSyntax xferSyntax;
-    BOOLEAN last = FALSE;
+    OFBool last = OFFalse;
     DIC_UL pdvCount = 0;
     DIC_UL bytesRead = 0;
 
@@ -1304,7 +1304,11 @@ void DIMSE_warning(T_ASC_Association *assoc,
 /*
 ** CVS Log
 ** $Log: dimse.cc,v $
-** Revision 1.9  1997-05-28 12:04:46  meichel
+** Revision 1.10  1997-07-21 08:47:19  andreas
+** - Replace all boolean types (BOOLEAN, CTNBOOLEAN, DICOM_BOOL, BOOL)
+**   with one unique boolean type OFBool.
+**
+** Revision 1.9  1997/05/28 12:04:46  meichel
 ** DIMSE_sendMessage() now checks whether the dataset to be sent
 ** can be converted to the requested transfer syntax prior to
 ** transmitting the message and dataset. If the test fails,

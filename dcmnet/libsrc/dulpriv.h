@@ -51,9 +51,9 @@
 **  the public definitions and prototypes on purpose so that they
 **  exist in only one location.
 **
-** Last Update:		$Author: hewett $, $Date: 1997-01-13 15:53:13 $
+** Last Update:		$Author: andreas $, $Date: 1997-07-21 08:47:25 $
 ** Source File:		$RCSfile: dulpriv.h,v $
-** Revision:		$Revision: 1.2 $
+** Revision:		$Revision: 1.3 $
 ** Status:		$State: Exp $
 */
 
@@ -88,7 +88,7 @@ constructAbortPDU(unsigned char src, unsigned char reason,
 		  DUL_REJECTRELEASEABORTPDU * pdu);
 CONDITION
 constructDataPDU(void *buf, unsigned long length, DUL_DATAPDV type,
-       DUL_PRESENTATIONCONTEXTID ctxID, CTNBOOLEAN last, DUL_DATAPDU * pdu);
+       DUL_PRESENTATIONCONTEXTID ctxID, OFBool last, DUL_DATAPDU * pdu);
 CONDITION
 streamAssociatePDU(PRV_ASSOCIATEPDU * assoc, unsigned char *b,
 		   unsigned long maxLength, unsigned long *rtnLen);
@@ -109,20 +109,24 @@ CONDITION
 DULPRV_translateAssocReq(unsigned char *buffer,
 	  unsigned long pduLength, DUL_ASSOCIATESERVICEPARAMETERS * service);
 
-void fsmDebug(CTNBOOLEAN flag);
-void constructDebug(CTNBOOLEAN flag);
-void parseDebug(CTNBOOLEAN flag);
+void fsmDebug(OFBool flag);
+void constructDebug(OFBool flag);
+void parseDebug(OFBool flag);
 #ifdef SNOOP
-void snoopDebug(CTNBOOLEAN flag);
+void snoopDebug(OFBool flag);
 #endif
-void fsmBlog(CTNBOOLEAN flag);
+void fsmBlog(OFBool flag);
 
 #endif
 
 /*
 ** CVS Log
 ** $Log: dulpriv.h,v $
-** Revision 1.2  1997-01-13 15:53:13  hewett
+** Revision 1.3  1997-07-21 08:47:25  andreas
+** - Replace all boolean types (BOOLEAN, CTNBOOLEAN, DICOM_BOOL, BOOL)
+**   with one unique boolean type OFBool.
+**
+** Revision 1.2  1997/01/13 15:53:13  hewett
 ** Added missing function prototypes (required for CodeWarrior 10).
 **
 ** Revision 1.1.1.1  1996/03/26 18:38:46  hewett

@@ -58,9 +58,9 @@
 **
 **
 ** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1997-05-16 08:31:38 $
+** Update Date:		$Date: 1997-07-21 08:47:19 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/libsrc/diutil.cc,v $
-** CVS/RCS Revision:	$Revision: 1.6 $
+** CVS/RCS Revision:	$Revision: 1.7 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -99,6 +99,7 @@
 
 #include "dcdatset.h"
 #include "dcfilefo.h"
+#include "dcmetinf.h"
 #include "dcdeftag.h"
 #include "dcuid.h"
 
@@ -185,20 +186,20 @@ char* DU_sopClassToModality(const char *sopClassUID)
     return NULL;
 }
 
-BOOLEAN 
+OFBool 
 DU_isStorageSOPClass(const char *sopClassUID)
 {
     int i = 0;
 
-    if (sopClassUID == NULL) return FALSE;
+    if (sopClassUID == NULL) return OFFalse;
 
     for (i=0; i < (int)DIM_OF(modalities); i++) {
 	if (strcmp(modalities[i].sopClass, sopClassUID) == 0) {
-	    return TRUE;
+	    return OFTrue;
 	}
     }
 
-    return FALSE;
+    return OFFalse;
 }
 
 unsigned long
@@ -264,7 +265,7 @@ DU_stripLeadingAndTrailingSpaces(char *s)
     return s;
 }
 
-BOOLEAN
+OFBool
 DU_getStringDOElement(DcmItem *obj, DcmTagKey t, char *s)
 {
     DcmByteString *elem;
@@ -285,7 +286,7 @@ DU_getStringDOElement(DcmItem *obj, DcmTagKey t, char *s)
     return (ec == EC_Normal);
 }
 
-BOOLEAN
+OFBool
 DU_putStringDOElement(DcmItem *obj, DcmTagKey t, char *s)
 {
     E_Condition ec = EC_Normal;
@@ -297,13 +298,13 @@ DU_putStringDOElement(DcmItem *obj, DcmTagKey t, char *s)
         ec = e->putString(s);
     }
     if (ec == EC_Normal) {
-        ec = obj->insert(e, TRUE);
+        ec = obj->insert(e, OFTrue);
     }
 
     return (ec == EC_Normal);
 }
 
-BOOLEAN
+OFBool
 DU_getShortDOElement(DcmItem *obj, DcmTagKey t, Uint16 *us)
 {
     DcmElement *elem;
@@ -319,7 +320,7 @@ DU_getShortDOElement(DcmItem *obj, DcmTagKey t, Uint16 *us)
     return (ec == EC_Normal);
 }
 
-BOOLEAN
+OFBool
 DU_putShortDOElement(DcmItem *obj, DcmTagKey t, Uint16 us)
 {
     E_Condition ec = EC_Normal;
@@ -331,18 +332,18 @@ DU_putShortDOElement(DcmItem *obj, DcmTagKey t, Uint16 us)
         ec = e->putUint16(us);
     }
     if (ec == EC_Normal) {
-        ec = obj->insert(e, TRUE);
+        ec = obj->insert(e, OFTrue);
     }
     return (ec == EC_Normal);
 }
 
-BOOLEAN
+OFBool
 DU_findSOPClassAndInstanceInDataSet(DcmItem *obj,
 			      char* sopClass, char* sopInstance)
 {
 #ifdef TOLERATE_SPACE_PADDED_UIDS
     int slength;
-    BOOLEAN result;
+    OFBool result;
     result = (DU_getStringDOElement(obj, DCM_SOPClassUID, sopClass) &&
 	DU_getStringDOElement(obj, DCM_SOPInstanceUID, sopInstance));
     /* gracefully correct space-padded UID strings */
@@ -357,23 +358,23 @@ DU_findSOPClassAndInstanceInDataSet(DcmItem *obj,
 #endif
 }
 
-BOOLEAN
+OFBool
 DU_findSOPClassAndInstanceInFile(const char *fname,
 			      char* sopClass, char* sopInstance)
 {
     if (fname == NULL) {
-	return FALSE;
+	return OFFalse;
     }
 
     DcmFileStream istrm(fname, DCM_ReadMode);
     if ( istrm.Fail() )
-        return FALSE;
+        return OFFalse;
 
     DcmFileFormat ff;
     ff.read(istrm, EXS_Unknown, EGL_noChange );
 
     /* look in the meta-header first */
-    BOOLEAN found = DU_findSOPClassAndInstanceInDataSet(
+    OFBool found = DU_findSOPClassAndInstanceInDataSet(
         ff.getMetaInfo(), sopClass, sopInstance);
 
     if (!found) {
@@ -556,7 +557,11 @@ DU_cgetStatusString(Uint16 statusCode)
 /*
 ** CVS Log
 ** $Log: diutil.cc,v $
-** Revision 1.6  1997-05-16 08:31:38  andreas
+** Revision 1.7  1997-07-21 08:47:19  andreas
+** - Replace all boolean types (BOOLEAN, CTNBOOLEAN, DICOM_BOOL, BOOL)
+**   with one unique boolean type OFBool.
+**
+** Revision 1.6  1997/05/16 08:31:38  andreas
 ** - Revised handling of GroupLength elements and support of
 **   DataSetTrailingPadding elements. The enumeratio E_GrpLenEncoding
 **   got additional enumeration values (for a description see dctypes.h).

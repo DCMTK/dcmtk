@@ -49,9 +49,9 @@
 ** Author, Date:	Stephen M. Moore, 14-Apr-1993
 ** Intent:		This file contains functions for construction of
 **			DICOM Upper Layer (DUL) Protocol Data Units (PDUs).
-** Last Update:		$Author: meichel $, $Date: 1997-07-04 09:24:54 $
+** Last Update:		$Author: andreas $, $Date: 1997-07-21 08:47:21 $
 ** Source File:		$RCSfile: dulconst.cc,v $
-** Revision:		$Revision: 1.3 $
+** Revision:		$Revision: 1.4 $
 ** Status:		$State: Exp $
 */
 
@@ -113,7 +113,7 @@ static CONDITION
 streamSCUSCPRole(PRV_SCUSCPROLE * scuscpRole, unsigned char *b,
 		 unsigned long *len);
 
-static CTNBOOLEAN debug = FALSE;
+static OFBool debug = OFFalse;
 
 /* constructAssociatePDU
 **
@@ -423,7 +423,7 @@ constructAbortPDU(unsigned char src, unsigned char reason,
 CONDITION
 constructDataPDU(void *buf, unsigned long length,
 	  DUL_DATAPDV type, DUL_PRESENTATIONCONTEXTID presentationContextID,
-		 CTNBOOLEAN last, DUL_DATAPDU * pdu)
+		 OFBool last, DUL_DATAPDU * pdu)
 {
     unsigned char
         u;
@@ -655,7 +655,7 @@ streamDataPDUHead(DUL_DATAPDU * pdu, unsigned char *buf,
 **	Description of the algorithm (optional) and any other notes.
 */
 void
-constructDebug(CTNBOOLEAN flag)
+constructDebug(OFBool flag)
 {
     debug = flag;
 }
@@ -1399,7 +1399,11 @@ streamSCUSCPRole(PRV_SCUSCPROLE * scuscpRole, unsigned char *b,
 /*
 ** CVS Log
 ** $Log: dulconst.cc,v $
-** Revision 1.3  1997-07-04 09:24:54  meichel
+** Revision 1.4  1997-07-21 08:47:21  andreas
+** - Replace all boolean types (BOOLEAN, CTNBOOLEAN, DICOM_BOOL, BOOL)
+**   with one unique boolean type OFBool.
+**
+** Revision 1.3  1997/07/04 09:24:54  meichel
 ** Simplified some sizeof() constructs to avoid compiler warnings
 **   on the IBM xlC compiler (AIX 3.x).
 **

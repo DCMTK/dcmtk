@@ -67,10 +67,10 @@
 **	Module Prefix: ASC_
 **
 **
-** Last Update:		$Author: meichel $
-** Update Date:		$Date: 1997-07-04 11:44:31 $
+** Last Update:		$Author: andreas $
+** Update Date:		$Date: 1997-07-21 08:47:14 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/libsrc/assoc.cc,v $
-** CVS/RCS Revision:	$Revision: 1.12 $
+** CVS/RCS Revision:	$Revision: 1.13 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -648,7 +648,7 @@ findPresentationContextID(LST_HEAD * head,
 {
     DUL_PRESENTATIONCONTEXT *pc;
     LST_HEAD **l;
-    BOOLEAN found = FALSE;
+    OFBool found = OFFalse;
 
     if (head == NULL)
 	return NULL;
@@ -662,7 +662,7 @@ findPresentationContextID(LST_HEAD * head,
 
     while (pc && !found) {
 	if (pc->presentationContextID == presentationContextID) {
-	    found = TRUE;
+	    found = OFTrue;
 	} else {
 	    pc = (DUL_PRESENTATIONCONTEXT*) LST_Next(l);
 	}
@@ -1104,7 +1104,7 @@ ASC_findAcceptedPresentationContextID(
      */
     DUL_PRESENTATIONCONTEXT *pc;
     LST_HEAD **l;
-    BOOLEAN found = FALSE;
+    OFBool found = OFFalse;
 
     l = &assoc->params->DULparams.acceptedPresentationContext;
     pc = (DUL_PRESENTATIONCONTEXT*) LST_Head(l);
@@ -1137,22 +1137,22 @@ ASC_acceptContextsWithTransferSyntax(
     int n, i, j, k;
     DUL_PRESENTATIONCONTEXT *dpc;
     T_ASC_PresentationContext pc;
-    BOOLEAN accepted = FALSE;
-    BOOLEAN abstractOK = FALSE;
+    OFBool accepted = OFFalse;
+    OFBool abstractOK = OFFalse;
 
     n = ASC_countPresentationContexts(params);
     for (i = 0; i < n; i++) {
 	cond = ASC_getPresentationContext(params, i, &pc);
 	if (cond != ASC_NORMAL) return cond;
-	abstractOK = FALSE;
-	accepted = FALSE;
+	abstractOK = OFFalse;
+	accepted = OFFalse;
 	for (j = 0; j < abstractSyntaxCount && !accepted; j++) {
 	    if (strcmp(pc.abstractSyntax, abstractSyntaxes[j]) == 0) {
-		abstractOK = TRUE;
+		abstractOK = OFTrue;
 		/* check the transfer syntax */
 		for (k = 0; (k < (int)pc.transferSyntaxCount) && !accepted; k++) {
 		    if (strcmp(pc.proposedTransferSyntaxes[k], transferSyntax) == 0) {
-			accepted = TRUE;
+			accepted = OFTrue;
 		    }
 		}
 	    }
@@ -1341,7 +1341,7 @@ DUL_associationSocket(DUL_ASSOCIATIONKEY * callerAssociation);
 extern int 
 DUL_networkSocket(DUL_NETWORKKEY * callerNet);
 
-BOOLEAN
+OFBool
 ASC_selectReadableAssociation(T_ASC_Association* assocs[], 
 	int assocCount, int timeout)
 {
@@ -1371,7 +1371,7 @@ ASC_selectReadableAssociation(T_ASC_Association* assocs[],
 #else
     nfound = select(maxs + 1, &fdset, NULL, NULL, &t);
 #endif
-    if (nfound<=0) return FALSE;	/* none available for reading */
+    if (nfound<=0) return OFFalse;	/* none available for reading */
 
     for (i=0; i<assocCount; i++) {
 	a = assocs[i];
@@ -1381,10 +1381,10 @@ ASC_selectReadableAssociation(T_ASC_Association* assocs[],
             if (!FD_ISSET(s, &fdset)) assocs[i] = NULL;
 	}
     }
-    return TRUE;
+    return OFTrue;
 }
 
-BOOLEAN
+OFBool
 ASC_dataWaiting(T_ASC_Association * association, int timeout)
 {
     int s;
@@ -1392,11 +1392,11 @@ ASC_dataWaiting(T_ASC_Association * association, int timeout)
     fd_set fdset;
     int nfound;
 
-    if (association == NULL) return FALSE;
+    if (association == NULL) return OFFalse;
 
     s = DUL_associationSocket(association->DULassociation);
     if (s < 0)
-	return FALSE;
+	return OFFalse;
 
     FD_ZERO(&fdset);
     FD_SET(s, &fdset);
@@ -1410,7 +1410,7 @@ ASC_dataWaiting(T_ASC_Association * association, int timeout)
     return nfound > 0;
 }
 
-BOOLEAN
+OFBool
 ASC_associationWaiting(T_ASC_Network * network, int timeout)
 {
     int s;
@@ -1418,11 +1418,11 @@ ASC_associationWaiting(T_ASC_Network * network, int timeout)
     fd_set fdset;
     int nfound;
 
-    if (network == NULL) return FALSE;
+    if (network == NULL) return OFFalse;
 
     s = DUL_networkSocket(network->network);
     if (s < 0)
-	return FALSE;
+	return OFFalse;
 
     FD_ZERO(&fdset);
     FD_SET(s, &fdset);
@@ -1811,7 +1811,11 @@ ASC_dropAssociation(T_ASC_Association * association)
 /*
 ** CVS Log
 ** $Log: assoc.cc,v $
-** Revision 1.12  1997-07-04 11:44:31  meichel
+** Revision 1.13  1997-07-21 08:47:14  andreas
+** - Replace all boolean types (BOOLEAN, CTNBOOLEAN, DICOM_BOOL, BOOL)
+**   with one unique boolean type OFBool.
+**
+** Revision 1.12  1997/07/04 11:44:31  meichel
 ** Configure now also tests <sys/select.h> if available
 **   when searching for a select() prototype.
 **   Updated files using select() to include <sys/select.h> and

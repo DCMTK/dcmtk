@@ -54,9 +54,9 @@
 ** Author, Date:	Stephen M. Moore, 14-Apr-93
 ** Intent:		This module contains the public entry points for the
 **			DICOM Upper Layer (DUL) protocol package.
-** Last Update:		$Author: meichel $, $Date: 1997-07-04 11:44:33 $
+** Last Update:		$Author: andreas $, $Date: 1997-07-21 08:47:20 $
 ** Source File:		$RCSfile: dul.cc,v $
-** Revision:		$Revision: 1.8 $
+** Revision:		$Revision: 1.9 $
 ** Status:		$State: Exp $
 */
 
@@ -98,9 +98,9 @@
 #endif
 
 static int networkInitialized = 0;
-static CTNBOOLEAN debug = 0;
+static OFBool debug = 0;
 #ifdef BLOG
-static CTNBOOLEAN blog = 0;
+static OFBool blog = 0;
 #endif
 
 static CONDITION
@@ -676,7 +676,7 @@ DUL_RejectAssociationRQ(DUL_ASSOCIATIONKEY ** callerAssociation,
     {
 	unsigned char diagtable[] = {0x01, 0x02, 0x03, 0x07};
 	int index;
-	CTNBOOLEAN found = FALSE;
+	OFBool found = OFFalse;
 	for (index = 0; index < (int) DIM_OF(diagtable) && !found; index++)
 	    found = (localParams.reason == diagtable[index]);
 
@@ -687,7 +687,7 @@ DUL_RejectAssociationRQ(DUL_ASSOCIATIONKEY ** callerAssociation,
     {
 	unsigned char resulttable[] = {0x01, 0x02};
 	int index;
-	CTNBOOLEAN found = FALSE;
+	OFBool found = OFFalse;
 	for (index = 0; index < (int) DIM_OF(resulttable) && !found; index++)
 	    found = (localParams.result == resulttable[index]);
 
@@ -925,7 +925,7 @@ DUL_AbortAssociation(DUL_ASSOCIATIONKEY ** callerAssociation)
         event;
     unsigned char
         pduType;
-    CTNBOOLEAN
+    OFBool
 	done;
 
     association = (PRIVATE_ASSOCIATIONKEY **) callerAssociation;
@@ -939,7 +939,7 @@ DUL_AbortAssociation(DUL_ASSOCIATIONKEY ** callerAssociation)
     if (cond != DUL_NORMAL)
 	return cond;
 
-    done = FALSE;
+    done = OFFalse;
     while (!done) {
 	cond = PRV_NextPDUType(association, DUL_NOBLOCK, PRV_DEFAULTTIMEOUT, &pduType);
 	if (cond == DUL_NETWORKCLOSED)
@@ -979,7 +979,7 @@ DUL_AbortAssociation(DUL_ASSOCIATIONKEY ** callerAssociation)
 				(*association)->protocolState, NULL);
 
 	if (cond == DUL_NORMAL)
-	    done = TRUE;
+	    done = OFTrue;
     }
     return DUL_NORMAL;
 }
@@ -1135,7 +1135,7 @@ DUL_ReadPDVs(DUL_ASSOCIATIONKEY ** callerAssociation,
 */
 
 void
-DUL_Debug(CTNBOOLEAN flag)
+DUL_Debug(OFBool flag)
 {
     debug = flag;
     fsmDebug(flag);
@@ -1148,10 +1148,10 @@ DUL_Debug(CTNBOOLEAN flag)
 
 #ifdef BLOG
 void
-DUL_Blog(CTNBOOLEAN flag)
+DUL_Blog(OFBool flag)
 #else
 void
-DUL_Blog(CTNBOOLEAN)
+DUL_Blog(OFBool)
 #endif
 {
 #ifdef BLOG
@@ -1280,9 +1280,9 @@ DUL_NextPDV(DUL_ASSOCIATIONKEY ** callerAssociation, DUL_PDV * pdv)
 
 	u = p[5];
 	if (u & 2)
-	    (*association)->currentPDV.lastPDV = TRUE;
+	    (*association)->currentPDV.lastPDV = OFTrue;
 	else
-	    (*association)->currentPDV.lastPDV = FALSE;
+	    (*association)->currentPDV.lastPDV = OFFalse;
 
 	if (u & 1)
 	    (*association)->currentPDV.pdvType = DUL_COMMANDPDV;
@@ -2240,7 +2240,11 @@ clearPresentationContext(LST_HEAD ** l)
 /*
 ** CVS Log
 ** $Log: dul.cc,v $
-** Revision 1.8  1997-07-04 11:44:33  meichel
+** Revision 1.9  1997-07-21 08:47:20  andreas
+** - Replace all boolean types (BOOLEAN, CTNBOOLEAN, DICOM_BOOL, BOOL)
+**   with one unique boolean type OFBool.
+**
+** Revision 1.8  1997/07/04 11:44:33  meichel
 ** Configure now also tests <sys/select.h> if available
 **   when searching for a select() prototype.
 **   Updated files using select() to include <sys/select.h> and

@@ -34,10 +34,10 @@
 ** Author: 	Marco Eichelberg
 **		Kuratorium OFFIS e.V., Oldenburg, Germany
 **
-** Last Update:		$Author: meichel $
-** Update Date:		$Date: 1997-05-29 17:13:52 $
+** Last Update:		$Author: andreas $
+** Update Date:		$Date: 1997-07-21 08:48:27 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/tests/Attic/assctest.cc,v $
-** CVS/RCS Revision:	$Revision: 1.5 $
+** CVS/RCS Revision:	$Revision: 1.6 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -75,9 +75,9 @@ static char rcsid[] = "$dcmtk: assctest v"
 #define PEERAPPLICATIONTITLE	"ANY-SCP"
 
 static char *progname = NULL;
-static BOOLEAN verbose = FALSE;
-static BOOLEAN debug = FALSE;
-static BOOLEAN abortAssociation = FALSE;
+static OFBool verbose = OFFalse;
+static OFBool debug = OFFalse;
+static OFBool abortAssociation = OFFalse;
 static unsigned int numAbstractSyntaxes = 1;
 static unsigned int numTransferSyntaxes = 1;
 static int maxReceivePDULength = ASC_DEFAULTMAXPDU;
@@ -297,14 +297,14 @@ main(int argc, char *argv[])
 	    }
 	    break;
 	case 'v':
-	    verbose = TRUE;
+	    verbose = OFTrue;
 	    break;
 	case 'd':
-	    debug = TRUE;
-	    verbose = TRUE;
+	    debug = OFTrue;
+	    verbose = OFTrue;
 	    break;
 	case 'a':
-	    abortAssociation = TRUE;
+	    abortAssociation = OFTrue;
 	    break;
 	case 'r':
 	    if (((i + 1) < argc) && (argv[i + 1][0] != '-') &&
@@ -573,7 +573,11 @@ cecho(T_ASC_Association * assoc)
 /*
 ** CVS Log
 ** $Log: assctest.cc,v $
-** Revision 1.5  1997-05-29 17:13:52  meichel
+** Revision 1.6  1997-07-21 08:48:27  andreas
+** - Replace all boolean types (BOOLEAN, CTNBOOLEAN, DICOM_BOOL, BOOL)
+**   with one unique boolean type OFBool.
+**
+** Revision 1.5  1997/05/29 17:13:52  meichel
 ** fixed printf format problem leading to a warning on 64bit machines.
 **
 ** Revision 1.4  1997/05/29 15:52:59  meichel

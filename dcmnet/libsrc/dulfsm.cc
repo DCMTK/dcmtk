@@ -46,9 +46,9 @@
 ** Author, Date:	Stephen M. Moore, 15-Apr-93
 ** Intent:		Define tables and provide functions that implement
 **			the DICOM Upper Layer (DUL) finite state machine.
-** Last Update:		$Author: meichel $, $Date: 1997-07-04 11:44:35 $
+** Last Update:		$Author: andreas $, $Date: 1997-07-21 08:47:23 $
 ** Source File:		$RCSfile: dulfsm.cc,v $
-** Revision:		$Revision: 1.12 $
+** Revision:		$Revision: 1.13 $
 ** Status:		$State: Exp $
 */
 
@@ -85,9 +85,9 @@
 #include "blg.h"
 #endif
 
-static CTNBOOLEAN debug = FALSE;
+static OFBool debug = OFFalse;
 #ifdef BLOG
-static CTNBOOLEAN blog = FALSE;
+static OFBool blog = OFFalse;
 #endif
 
 static CONDITION
@@ -242,7 +242,7 @@ readPDUBodyTCP(PRIVATE_ASSOCIATIONKEY ** association,
 static CONDITION
 defragmentTCP(int socket, DUL_BLOCKOPTIONS block, time_t timerStart,
 	      int timeout, void *b, unsigned long l, unsigned long *rtnLen);
-static CTNBOOLEAN networkDataAvailable(int s, int timeout);
+static OFBool networkDataAvailable(int s, int timeout);
 #ifdef DEBUG
 static void recordOutGoing(void *buf, unsigned long length);
 #endif
@@ -752,20 +752,20 @@ PRV_StateMachine(PRIVATE_NETWORKKEY ** network,
 **	Description of the algorithm (optional) and any other notes.
 */
 void
-fsmDebug(CTNBOOLEAN flag)
+fsmDebug(OFBool flag)
 {
     debug = flag;
 }
 
 #ifdef BLOG
 void
-fsmBlog(CTNBOOLEAN flag)
+fsmBlog(OFBool flag)
 {
     blog = flag;
 }
 #else
 void 
-fsmBlog(CTNBOOLEAN)
+fsmBlog(OFBool)
 {
 }
 #endif
@@ -1509,9 +1509,9 @@ DT_2_IndicatePData(PRIVATE_NETWORKKEY ** /*network*/,
 
 	u = p[5];
 	if (u & 2)
-	    (*association)->currentPDV.lastPDV = TRUE;
+	    (*association)->currentPDV.lastPDV = OFTrue;
 	else
-	    (*association)->currentPDV.lastPDV = FALSE;
+	    (*association)->currentPDV.lastPDV = OFFalse;
 
 	if (u & 1)
 	    (*association)->currentPDV.pdvType = DUL_COMMANDPDV;
@@ -1539,9 +1539,9 @@ DT_2_IndicatePData(PRIVATE_NETWORKKEY ** /*network*/,
 
 	u = p[5];
 	if (u & 2)
-	    scratchPDV->lastPDV = TRUE;
+	    scratchPDV->lastPDV = OFTrue;
 	else
-	    scratchPDV->lastPDV = FALSE;
+	    scratchPDV->lastPDV = OFFalse;
 
 	if (u & 1)
 	    scratchPDV->pdvType = DUL_COMMANDPDV;
@@ -2917,7 +2917,7 @@ sendPDataTCP(PRIVATE_ASSOCIATIONKEY ** association,
        *p;
     DUL_DATAPDU
 	dataPDU;
-    CTNBOOLEAN
+    OFBool
 	firstTrip;
 
     count = pdvList->count;
@@ -2927,9 +2927,9 @@ sendPDataTCP(PRIVATE_ASSOCIATIONKEY ** association,
     while (cond == DUL_NORMAL && count-- > 0) {
 	length = pdv->fragmentLength;
 	p = (unsigned char *) pdv->data;
-	firstTrip = TRUE;
+	firstTrip = OFTrue;
 	while ((firstTrip || (length > 0)) && (cond == DUL_NORMAL)) {
-	    firstTrip = FALSE;
+	    firstTrip = OFFalse;
 	    pdvLength = (length <= (*association)->maxPDV - 6) ?
 		length : (*association)->maxPDV - 6;
 	    localLast = ((pdvLength == length) && pdv->lastPDV);
@@ -3613,8 +3613,8 @@ defragmentTCP(int sock, DUL_BLOCKOPTIONS block, time_t timerStart,
 **			available to read
 **
 ** Return Values:
-**	TRUE
-**	FALSE
+**	OFTrue
+**	OFFalse
 **
 ** Notes:
 **
@@ -3622,7 +3622,7 @@ defragmentTCP(int sock, DUL_BLOCKOPTIONS block, time_t timerStart,
 **	Description of the algorithm (optional) and any other notes.
 */
 
-static CTNBOOLEAN
+static OFBool
 networkDataAvailable(int s, int timeout)
 {
     struct timeval
@@ -3644,12 +3644,12 @@ networkDataAvailable(int s, int timeout)
     nfound = select(s + 1, &fdset, NULL, NULL, &t);
 #endif
     if (nfound <= 0)
-	return FALSE;
+	return OFFalse;
     else {
 	if (FD_ISSET(s, &fdset))
-	    return TRUE;
+	    return OFTrue;
 	else			/* This one should not really happen */
-	    return FALSE;
+	    return OFFalse;
     }
 }
 
@@ -4076,7 +4076,11 @@ DULPRV_translateAssocReq(unsigned char *buffer,
 /*
 ** CVS Log
 ** $Log: dulfsm.cc,v $
-** Revision 1.12  1997-07-04 11:44:35  meichel
+** Revision 1.13  1997-07-21 08:47:23  andreas
+** - Replace all boolean types (BOOLEAN, CTNBOOLEAN, DICOM_BOOL, BOOL)
+**   with one unique boolean type OFBool.
+**
+** Revision 1.12  1997/07/04 11:44:35  meichel
 ** Configure now also tests <sys/select.h> if available
 **   when searching for a select() prototype.
 **   Updated files using select() to include <sys/select.h> and

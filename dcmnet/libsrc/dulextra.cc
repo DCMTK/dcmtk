@@ -53,10 +53,10 @@
 ** Purpose: 
 **	Supplementary DUL functions.
 **
-** Last Update:		$Author: meichel $
-** Update Date:		$Date: 1997-07-04 11:44:34 $
+** Last Update:		$Author: andreas $
+** Update Date:		$Date: 1997-07-21 08:47:22 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/libsrc/dulextra.cc,v $
-** CVS/RCS Revision:	$Revision: 1.6 $
+** CVS/RCS Revision:	$Revision: 1.7 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -102,18 +102,18 @@ DUL_associationSocket(DUL_ASSOCIATIONKEY * callerAssociation)
     return s;
 }
 
-BOOLEAN 
+OFBool 
 DUL_dataWaiting(DUL_ASSOCIATIONKEY * callerAssociation, int timeout)
 {
     PRIVATE_ASSOCIATIONKEY *association;
     int                 s;
-    BOOLEAN             dataWaiting = FALSE;
+    OFBool             dataWaiting = OFFalse;
     struct timeval      t;
     fd_set              fdset;
     int                 nfound;
 
     if (callerAssociation == NULL)
-	return FALSE;
+	return OFFalse;
 
     association = (PRIVATE_ASSOCIATIONKEY *)callerAssociation;
 
@@ -130,16 +130,16 @@ DUL_dataWaiting(DUL_ASSOCIATIONKEY * callerAssociation, int timeout)
 	nfound = select(s + 1, &fdset, NULL, NULL, &t);
 #endif
 	if (nfound <= 0)
-	    dataWaiting = FALSE;
+	    dataWaiting = OFFalse;
 	else {
 	    if (FD_ISSET(s, &fdset))
-		dataWaiting = TRUE;
+		dataWaiting = OFTrue;
 	    else		/* This one should not really happen */
-		dataWaiting = FALSE;
+		dataWaiting = OFFalse;
 	}
 
     } else {
-	dataWaiting = FALSE;
+	dataWaiting = OFFalse;
     }
     return dataWaiting;
 }
@@ -161,18 +161,18 @@ DUL_networkSocket(DUL_NETWORKKEY * callerNet)
     return s;
 }
 
-BOOLEAN 
+OFBool 
 DUL_associationWaiting(DUL_NETWORKKEY * callerNet, int timeout)
 {
     PRIVATE_NETWORKKEY *net;
     int                 s;
-    BOOLEAN             assocWaiting = FALSE;
+    OFBool             assocWaiting = OFFalse;
     struct timeval      t;
     fd_set              fdset;
     int                 nfound;
 
     if (callerNet == NULL)
-	return FALSE;
+	return OFFalse;
 
     net = (PRIVATE_NETWORKKEY*)callerNet;
 
@@ -189,16 +189,16 @@ DUL_associationWaiting(DUL_NETWORKKEY * callerNet, int timeout)
 	nfound = select(s + 1, &fdset, NULL, NULL, &t);
 #endif
 	if (nfound <= 0)
-	    assocWaiting = FALSE;
+	    assocWaiting = OFFalse;
 	else {
 	    if (FD_ISSET(s, &fdset))
-		assocWaiting = TRUE;
+		assocWaiting = OFTrue;
 	    else		/* This one should not really happen */
-		assocWaiting = FALSE;
+		assocWaiting = OFFalse;
 	}
 
     } else {
-	assocWaiting = FALSE;
+	assocWaiting = OFFalse;
     }
     return assocWaiting;
 }
@@ -206,7 +206,11 @@ DUL_associationWaiting(DUL_NETWORKKEY * callerNet, int timeout)
 /*
 ** CVS Log
 ** $Log: dulextra.cc,v $
-** Revision 1.6  1997-07-04 11:44:34  meichel
+** Revision 1.7  1997-07-21 08:47:22  andreas
+** - Replace all boolean types (BOOLEAN, CTNBOOLEAN, DICOM_BOOL, BOOL)
+**   with one unique boolean type OFBool.
+**
+** Revision 1.6  1997/07/04 11:44:34  meichel
 ** Configure now also tests <sys/select.h> if available
 **   when searching for a select() prototype.
 **   Updated files using select() to include <sys/select.h> and

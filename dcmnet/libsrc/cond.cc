@@ -96,10 +96,10 @@
 **  for new release of DUL code from MIR.
 **
 **
-** Last Update:		$Author: hewett $
-** Update Date:		$Date: 1996-03-26 18:38:46 $
+** Last Update:		$Author: andreas $
+** Update Date:		$Date: 1997-07-21 08:47:15 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/libsrc/cond.cc,v $
-** CVS/RCS Revision:	$Revision: 1.1 $
+** CVS/RCS Revision:	$Revision: 1.2 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -228,7 +228,7 @@ CONDITION COND_PushCondition(CONDITION cond, char *controlString, ...)
 **--
 */
 
-CONDITION COND_ExtractConditions(BOOLEAN (*callback)(CONDITION cond, char *str)) 
+CONDITION COND_ExtractConditions(OFBool (*callback)(CONDITION cond, char *str)) 
 {
   int
     index,
@@ -314,7 +314,7 @@ CONDITION COND_TopCondition(CONDITION *code,char *text,unsigned long maxlength)
 **
 */
 
-CONDITION COND_PopCondition(BOOLEAN clearstack)
+CONDITION COND_PopCondition(OFBool clearstack)
 {
   CONDITION
     value;
@@ -407,8 +407,12 @@ void COND_DumpConditions(void)
 /*
 ** CVS Log
 ** $Log: cond.cc,v $
-** Revision 1.1  1996-03-26 18:38:46  hewett
-** Initial revision
+** Revision 1.2  1997-07-21 08:47:15  andreas
+** - Replace all boolean types (BOOLEAN, CTNBOOLEAN, DICOM_BOOL, BOOL)
+**   with one unique boolean type OFBool.
+**
+** Revision 1.1.1.1  1996/03/26 18:38:46  hewett
+** Initial Release.
 **
 **
 */
