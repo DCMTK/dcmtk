@@ -17,9 +17,9 @@ LIBDIRS = -L@top_srcdir@/libsrc -L@top_srcdir@/../dcmimgle/libsrc \
 	-L@top_srcdir@/../dcmdata/libsrc -L@top_srcdir@/../ofstd/libsrc -L$(libdir)
 LOCALLIBS = -ldcmimage -ldcmimgle -ldcmdata -lofstd
 
-objs = dcm2pnm.o dcmquant.o
+objs = dcm2pnm.o dcmquant.o dcmscale.o
 
-progs = dcm2pnm dcmquant
+progs = dcm2pnm dcmquant dcmscale
 
 all: $(progs)
 
@@ -27,6 +27,9 @@ dcm2pnm: dcm2pnm.o
 	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ $@.o $(LOCALLIBS) $(TIFFLIBS) $(MATHLIBS) $(LIBS)
 
 dcmquant: dcmquant.o
+	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ $@.o $(LOCALLIBS) $(TIFFLIBS) $(MATHLIBS) $(LIBS)
+
+dcmscale: dcmscale.o
 	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ $@.o $(LOCALLIBS) $(TIFFLIBS) $(MATHLIBS) $(LIBS)
 
 install: all
@@ -38,7 +41,7 @@ install: all
 clean:
 	rm -f $(objs) $(progs) $(TRASH)
 
-distclean: 
+distclean:
 	rm -f $(objs) $(progs) $(DISTTRASH)
 
 dependencies:
