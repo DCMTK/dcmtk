@@ -22,9 +22,9 @@
  *  Purpose: DicomBartenLUT (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-02-03 17:48:36 $
+ *  Update Date:      $Date: 1999-02-08 13:07:30 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/libsrc/Attic/dibarlut.cc,v $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -128,7 +128,7 @@ int DiBartenLUT::createLUT(const Uint16 *ddl_tab,
                                     j++;
                                 if ((j > 0) && (fabs(lum_tab[j - 1] - *r) < fabs(lum_tab[j] - *r)))
                                     j--;
-// cerr << "lut[" << i << "] = " << j << "  " << "lum: " << *r << "  " << lum_tab[j] << "  " << fabs(lum_tab[j] - *r) << endl;
+//cerr << "lut[" << i << "] = " << j << "  " << "lum: " << *r << "  " << lum_tab[j] << "  " << fabs(lum_tab[j] - *r) << endl;
                                 *(q++) = j;
                             }
                             Data = DataBuffer;
@@ -151,10 +151,12 @@ int DiBartenLUT::createLUT(const Uint16 *ddl_tab,
  *
  * CVS/RCS Log:
  * $Log: dibarlut.cc,v $
- * Revision 1.1  1999-02-03 17:48:36  joergr
+ * Revision 1.2  1999-02-08 13:07:30  joergr
+ * Corrected some typos and formatting.
+ *
+ * Revision 1.1  1999/02/03 17:48:36  joergr
  * Added support for calibration according to Barten transformation (incl.
  * a DISPLAY file describing the monitor characteristic).
- *
  *
  *
  */
