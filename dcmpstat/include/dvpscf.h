@@ -23,8 +23,8 @@
  *    classes: DVConfiguration
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-06-01 15:50:12 $
- *  CVS/RCS Revision: $Revision: 1.28 $
+ *  Update Date:      $Date: 2002-11-25 18:27:39 $
+ *  CVS/RCS Revision: $Revision: 1.29 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -152,6 +152,14 @@ class DVConfiguration
    *  @return entry if present in the config file, OFFalse otherwise.
    */
   OFBool getTargetBitPreservingMode(const char *targetID);
+
+  /** returns the CORRECTUIDPADDING entry for the storage peer with the given
+   *  target ID from the configuration file.
+   *  @param targetID communication target ID, must be one of the target
+   *    identifiers returned by getTargetID().
+   *  @return entry if present in the config file, OFFalse otherwise.
+   */
+  OFBool getTargetCorrectUIDPadding(const char *targetID);
 
   /** returns the USETLS entry for the storage peer with the given
    *  target ID from the configuration file.
@@ -1109,7 +1117,11 @@ private:
 /*
  *  CVS/RCS Log:
  *  $Log: dvpscf.h,v $
- *  Revision 1.28  2001-06-01 15:50:12  meichel
+ *  Revision 1.29  2002-11-25 18:27:39  meichel
+ *  Converted compile time option to leniently handle space padded UIDs
+ *    in the Storage Service Class into command line / config file option.
+ *
+ *  Revision 1.28  2001/06/01 15:50:12  meichel
  *  Updated copyright header
  *
  *  Revision 1.27  2000/11/13 14:20:54  joergr

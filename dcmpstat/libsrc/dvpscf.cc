@@ -21,9 +21,9 @@
  *
  *  Purpose: DVConfiguration
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-06-26 17:21:10 $
- *  CVS/RCS Revision: $Revision: 1.38 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2002-11-25 18:27:41 $
+ *  CVS/RCS Revision: $Revision: 1.39 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -69,6 +69,7 @@ extern "C" int strncasecmp(const char *s1, const char *s2, size_t n);
 #define L0_CHECK                        "CHECK"
 #define L0_CIPHERSUITES                 "CIPHERSUITES"              
 #define L0_CODE                         "CODE"
+#define L0_CORRECTUIDPADDING            "CORRECTUIDPADDING"
 #define L0_DEFAULTILLUMINATION          "DEFAULTILLUMINATION"
 #define L0_DEFAULTREFLECTION            "DEFAULTREFLECTION"
 #define L0_DELETEPRINTJOBS              "DELETEPRINTJOBS"
@@ -1316,6 +1317,11 @@ OFBool DVConfiguration::getTargetBitPreservingMode(const char *targetID)
   return getConfigBoolEntry(L2_COMMUNICATION, targetID, L0_BITPRESERVINGMODE, OFFalse);
 }
 
+OFBool DVConfiguration::getTargetCorrectUIDPadding(const char *targetID)
+{
+  return getConfigBoolEntry(L2_COMMUNICATION, targetID, L0_CORRECTUIDPADDING, OFFalse);
+}
+
 OFBool DVConfiguration::getTargetUseTLS(const char *targetID)
 {
   return getConfigBoolEntry(L2_COMMUNICATION, targetID, L0_USETLS, OFFalse);
@@ -1480,7 +1486,11 @@ const char *DVConfiguration::getUserCodeMeaning(const char *userID, OFString& va
 /*
  *  CVS/RCS Log:
  *  $Log: dvpscf.cc,v $
- *  Revision 1.38  2002-06-26 17:21:10  joergr
+ *  Revision 1.39  2002-11-25 18:27:41  meichel
+ *  Converted compile time option to leniently handle space padded UIDs
+ *    in the Storage Service Class into command line / config file option.
+ *
+ *  Revision 1.38  2002/06/26 17:21:10  joergr
  *  Removed superfluous semicolon at very awkward positions (this is a bug
  *  fix!).
  *

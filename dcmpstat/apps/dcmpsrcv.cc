@@ -21,10 +21,10 @@
  *
  *  Purpose: Presentation State Viewer - Network Receive Component (Store SCP)
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-09-23 19:06:31 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2002-11-25 18:27:34 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmpstat/apps/dcmpsrcv.cc,v $
- *  CVS/RCS Revision: $Revision: 1.40 $
+ *  CVS/RCS Revision: $Revision: 1.41 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -337,9 +337,15 @@ public:
   DcmDataset *statusDetail;
   const char *fileName;
   DcmFileFormat *dcmff;
+  OFBool opt_correctUIDPadding;
 
-  StoreContext(DB_Handle *handle, DIC_US aStatus, const char *fname, DcmFileFormat *ff)
-  : dbHandle(handle), status(aStatus), statusDetail(NULL), fileName(fname), dcmff(ff)
+  StoreContext(DB_Handle *handle, DIC_US aStatus, const char *fname, DcmFileFormat *ff, OFBool correctUID)
+  : dbHandle(handle)
+  , status(aStatus)
+  , statusDetail(NULL)
+  , fileName(fname)
+  , dcmff(ff)
+  , opt_correctUIDPadding(correctUID)
   {}
 
   ~StoreContext() {}
@@ -354,7 +360,8 @@ checkRequestAgainstDataset(
     T_DIMSE_C_StoreRQ *req,     /* original store request */
     const char* fname,          /* filename of dataset */
     DcmDataset *dataSet,        /* dataset to check */
-    T_DIMSE_C_StoreRSP *rsp)    /* final store response */
+    T_DIMSE_C_StoreRSP *rsp,    /* final store response */
+    OFBool opt_correctUIDPadding)
 {
     DcmFileFormat ff;
     if (dataSet == NULL)
@@ -373,7 +380,7 @@ checkRequestAgainstDataset(
     DIC_UI sopClass;
     DIC_UI sopInstance;
 
-    if (!DU_findSOPClassAndInstanceInDataSet(dataSet, sopClass, sopInstance))
+    if (!DU_findSOPClassAndInstanceInDataSet(dataSet, sopClass, sopInstance, opt_correctUIDPadding))
     {
       CERR << "Bad image file: " << fname << endl;
       rsp->DimseStatus = STATUS_STORE_Error_CannotUnderstand;
@@ -454,9 +461,9 @@ storeProgressCallback(
     {
       if ((imageDataSet)&&(*imageDataSet))
       {
-        checkRequestAgainstDataset(req, NULL, *imageDataSet, rsp);
+        checkRequestAgainstDataset(req, NULL, *imageDataSet, rsp, context->opt_correctUIDPadding);
       } else {
-        checkRequestAgainstDataset(req, imageFileName, NULL, rsp);
+        checkRequestAgainstDataset(req, imageFileName, NULL, rsp, context->opt_correctUIDPadding);
       }
     }
 
@@ -492,7 +499,8 @@ static OFCondition storeSCP(
   T_ASC_PresentationContextID presId,
   const char *dbfolder,
   OFBool opt_verbose,
-  OFBool opt_bitpreserving)
+  OFBool opt_bitpreserving,
+  OFBool opt_correctUIDPadding)
 {
     if (opt_verbose)
     {
@@ -557,7 +565,7 @@ static OFCondition storeSCP(
 #endif
 
     /* we must still retrieve the data set even if some error has occured */
-    StoreContext context(dbhandle, status, imageFileName, &dcmff);
+    StoreContext context(dbhandle, status, imageFileName, &dcmff, opt_correctUIDPadding);
 
     if (opt_bitpreserving)
     {
@@ -631,7 +639,13 @@ static OFCondition storeSCP(
     return cond;
 }
 
-static void handleClient(T_ASC_Association **assoc, const char *dbfolder, OFBool opt_verbose, OFBool opt_bitpreserving, OFBool useTLS)
+static void handleClient(
+  T_ASC_Association **assoc, 
+  const char *dbfolder, 
+  OFBool opt_verbose, 
+  OFBool opt_bitpreserving, 
+  OFBool useTLS,
+  OFBool opt_correctUIDPadding)
 {
   OFCondition cond = ASC_acknowledgeAssociation(*assoc);
   if (! errorCond(cond, "Cannot acknowledge association:"))
@@ -680,7 +694,7 @@ static void handleClient(T_ASC_Association **assoc, const char *dbfolder, OFBool
               cond = echoSCP(*assoc, &msg.msg.CEchoRQ, presID, opt_verbose);
               break;
             case DIMSE_C_STORE_RQ:
-              cond = storeSCP(*assoc, &msg.msg.CStoreRQ, presID, dbfolder, opt_verbose, opt_bitpreserving);
+              cond = storeSCP(*assoc, &msg.msg.CStoreRQ, presID, dbfolder, opt_verbose, opt_bitpreserving, opt_correctUIDPadding);
               break;
             default:
               cond = DIMSE_BADCOMMANDTYPE; /* unsupported command */
@@ -884,11 +898,11 @@ int main(int argc, char *argv[])
     WSAStartup(winSockVersionNeeded, &winSockData);
 #endif
 
-    int         opt_debugMode   = 0;                   /* default: no debug */
-    int         opt_verbose     = 0;                   /* default: not verbose */
-    int         opt_terminate   = 0;                   /* default: no terminate mode */
-    const char *opt_cfgName     = NULL;                /* config file name */
-    const char *opt_cfgID       = NULL;                /* name of entry in config file */
+    int         opt_debugMode    = 0;         /* default: no debug */
+    int         opt_verbose      = 0;         /* default: not verbose */
+    int         opt_terminate    = 0;         /* default: no terminate mode */
+    const char *opt_cfgName      = NULL;      /* config file name */
+    const char *opt_cfgID        = NULL;      /* name of entry in config file */
 
     SetDebugLevel(( 0 ));
     dcmDisableGethostbyaddr.set(OFTrue);               // disable hostname lookup
@@ -984,6 +998,7 @@ int main(int argc, char *argv[])
     /* get network configuration from configuration file */
     OFBool networkImplicitVROnly  = dvi.getTargetImplicitOnly(opt_cfgID);
     OFBool networkBitPreserving   = dvi.getTargetBitPreservingMode(opt_cfgID);
+    OFBool opt_correctUIDPadding  = dvi.getTargetCorrectUIDPadding(opt_cfgID);
     OFBool networkDisableNewVRs   = dvi.getTargetDisableNewVRs(opt_cfgID);
     unsigned short networkPort    = dvi.getTargetPort(opt_cfgID);
     unsigned long  networkMaxPDU  = dvi.getTargetMaxPDU(opt_cfgID);
@@ -1362,7 +1377,7 @@ int main(int argc, char *argv[])
               dcmGenerateUniqueIdentifier(randomUID);
               if (tLayer) tLayer->addPRNGseed(randomUID, strlen(randomUID));
 #endif
-              handleClient(&assoc, dbfolder, opt_verbose, networkBitPreserving, useTLS);
+              handleClient(&assoc, dbfolder, opt_verbose, networkBitPreserving, useTLS, opt_correctUIDPadding);
               finished2=OFTrue;
               finished1=OFTrue;
             }
@@ -1402,7 +1417,7 @@ int main(int argc, char *argv[])
               dcmGenerateUniqueIdentifier(randomUID);
               if (tLayer) tLayer->addPRNGseed(randomUID, strlen(randomUID));
 #endif
-              handleClient(&assoc, dbfolder, opt_verbose, networkBitPreserving, useTLS);
+              handleClient(&assoc, dbfolder, opt_verbose, networkBitPreserving, useTLS, opt_correctUIDPadding);
               finished1=OFTrue;
             } else {
               CERR << "Cannot execute command line: " << commandline << endl;
@@ -1476,7 +1491,11 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmpsrcv.cc,v $
- * Revision 1.40  2002-09-23 19:06:31  joergr
+ * Revision 1.41  2002-11-25 18:27:34  meichel
+ * Converted compile time option to leniently handle space padded UIDs
+ *   in the Storage Service Class into command line / config file option.
+ *
+ * Revision 1.40  2002/09/23 19:06:31  joergr
  * Fixed typo in pre-processor directive.
  *
  * Revision 1.39  2002/09/23 18:26:09  joergr
