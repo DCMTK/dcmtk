@@ -1292,7 +1292,8 @@ dsrtypes.o: dsrtypes.cc ../../config/include/osconfig.h \
  ../include/dsrtcoto.h ../include/dsrcomvl.h ../include/dsrimgvl.h \
  ../include/dsrimgfr.h ../include/dsrwavvl.h ../include/dsrwavch.h \
  ../include/dsrtcotn.h ../include/dsrcomtn.h ../include/dsrimgtn.h \
- ../include/dsrwavtn.h ../include/dsrcontn.h ../include/dsrreftn.h
+ ../include/dsrwavtn.h ../include/dsrcontn.h ../include/dsrreftn.h \
+ ../../ofstd/include/ofstd.h
 dsruidtn.o: dsruidtn.cc ../../config/include/osconfig.h \
  ../include/dsruidtn.h ../include/dsrdoctn.h ../include/dsrtree.h \
  ../include/dsrtypes.h ../../dcmdata/include/dctk.h \

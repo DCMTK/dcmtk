@@ -5,7 +5,7 @@ NAME
 
 SYNOPSIS
 
-    dsr2xml: Convert DICOM SR file and data set to XML
+    dsr2xml [options] dsrfile-in [xmlfile-out]
 
 
 SUMMARY

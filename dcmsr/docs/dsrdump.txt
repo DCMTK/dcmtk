@@ -5,7 +5,7 @@ NAME
 
 SYNOPSIS
 
-    dsrdump: Dump DICOM SR file and data set
+    dsrdump [options] dsrfile-in...
 
 
 SUMMARY

@@ -6,7 +6,7 @@ NAME
 
 SYNOPSIS
 
-    dsr2html: Render DICOM SR file and data set to HTML
+    dsr2html [options] dsrfile-in [htmlfile-out]
 
 
 SUMMARY
