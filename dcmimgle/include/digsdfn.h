@@ -22,9 +22,9 @@
  *  Purpose: DicomGSDFunction (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-09-10 08:50:23 $
+ *  Update Date:      $Date: 1999-09-10 12:17:56 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/digsdfn.h,v $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  * 
  *  CVS/RCS Log at end of file
@@ -95,8 +95,8 @@ class DiGSDFunction
 
  // --- declarations to avoid compiler warnings
  
-    DiGSDFunction(const DiDisplayFunction &);
-    DiGSDFunction &operator=(const DiDisplayFunction &);
+    DiGSDFunction(const DiGSDFunction &);
+    DiGSDFunction &operator=(const DiGSDFunction &);
 };
 
 
@@ -107,7 +107,11 @@ class DiGSDFunction
  *
  * CVS/RCS Log:
  * $Log: digsdfn.h,v $
- * Revision 1.1  1999-09-10 08:50:23  joergr
+ * Revision 1.2  1999-09-10 12:17:56  joergr
+ * Changed parameter type of copy constructor and assignment operator to avoid
+ * compiler warnings reported by gcc/ecgs on Solaris (with additional flags).
+ *
+ * Revision 1.1  1999/09/10 08:50:23  joergr
  * Added support for CIELAB display function. Restructured class hierarchy
  * for display functions.
  *
