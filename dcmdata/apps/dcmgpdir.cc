@@ -11,9 +11,9 @@
 **
 **
 ** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1997-07-21 08:02:11 $
+** Update Date:		$Date: 1997-08-06 12:20:02 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/apps/dcmgpdir.cc,v $
-** CVS/RCS Revision:	$Revision: 1.15 $
+** CVS/RCS Revision:	$Revision: 1.16 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -2153,11 +2153,11 @@ copyFile(const char* fromfname, const char* tofname)
 {
     FILE* fromf = NULL;
     FILE* tof = NULL;
-    if ((fromf = fopen(fromfname, "r")) == NULL) {
+    if ((fromf = fopen(fromfname, "rb")) == NULL) {
 	cerr << "error: copying files: cannot open: " << fromfname << endl;
 	return OFFalse;
     }
-    if ((tof = fopen(tofname, "w")) == NULL) {
+    if ((tof = fopen(tofname, "wb")) == NULL) {
 	cerr << "error: copying files: cannot create: " << tofname << endl;
 	fclose(fromf);
 	return OFFalse;
@@ -2403,7 +2403,13 @@ expandFileNames(StrList& fileNames, StrList& expandedNames)
 /*
 ** CVS/RCS Log:
 ** $Log: dcmgpdir.cc,v $
-** Revision 1.15  1997-07-21 08:02:11  andreas
+** Revision 1.16  1997-08-06 12:20:02  andreas
+** - Using Windows NT with Visual C++ 4.x the standard open mode for files
+**   is TEXT with conversions. For binary files (image files, imagectn database
+**   index) this must be changed (e.g. fopen(filename, "...b"); or
+**   open(filename, ..... |O_BINARY);)
+**
+** Revision 1.15  1997/07/21 08:02:11  andreas
 ** - DcmDirectoryRecord can be build with a referenced Name and a source
 **   filename. These name now can differ (lower case - upper case
 **   characters).

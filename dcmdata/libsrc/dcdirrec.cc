@@ -9,9 +9,9 @@
 **
 **
 ** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1997-07-21 08:00:50 $
+** Update Date:		$Date: 1997-08-06 12:20:12 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcdirrec.cc,v $
-** CVS/RCS Revision:	$Revision: 1.17 $
+** CVS/RCS Revision:	$Revision: 1.18 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -258,13 +258,13 @@ char* DcmDirectoryRecord::buildFileName(const char * origName,
     ** If the filename does not exist then try appending a '.'
     */
     FILE* f = NULL;
-    if ((f = fopen(destName, "r")) != NULL) {
+    if ((f = fopen(destName, "rb")) != NULL) {
 	fclose(f);
     } else {
 	char* newname = new char[strlen(destName) + 2];
 	strcpy(newname, destName);
 	strcat(newname, ".");
-	if ((f = fopen(newname, "r")) != NULL) {
+	if ((f = fopen(newname, "rb")) != NULL) {
 	    fclose(f);
 	    strcpy(destName, newname);
 	} else {

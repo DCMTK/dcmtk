@@ -46,9 +46,9 @@
 ** Author, Date:	Stephen M. Moore, 15-Apr-93
 ** Intent:		Define tables and provide functions that implement
 **			the DICOM Upper Layer (DUL) finite state machine.
-** Last Update:		$Author: andreas $, $Date: 1997-08-05 07:38:58 $
+** Last Update:		$Author: andreas $, $Date: 1997-08-06 12:20:14 $
 ** Source File:		$RCSfile: dulfsm.cc,v $
-** Revision:		$Revision: 1.15 $
+** Revision:		$Revision: 1.16 $
 ** Status:		$State: Exp $
 */
 
@@ -2487,7 +2487,11 @@ sendAssociationRQTCP(PRIVATE_NETWORKKEY ** /*network*/,
     {
 	int fd;
 	if (debug) {
+#ifdef O_BINARY
+	    fd = open("associate_rq", O_WRONLY | O_CREAT | O_BINARY, 0666);
+#else
 	    fd = open("associate_rq", O_WRONLY | O_CREAT, 0666);
+#endif
 	    (void) write(fd, (char*)b, associateRequest.length + 6);
 	    (void) fprintf(DEBUG_DEVICE, "%d %d\n", length, associateRequest.length + 6);
 	    (void) close(fd);
@@ -2585,7 +2589,11 @@ sendAssociationACTCP(PRIVATE_NETWORKKEY ** /*network*/,
     {
 	int fd;
 	if (debug) {
-	    fd = open("associate_rp", O_WRONLY | O_CREAT, 0666);
+#ifdef O_BINARY
+	    fd = open("associate_rp", O_WRONLY | O_CREAT , 0666);
+#else
+	    fd = open("associate_rp", O_WRONLY | O_CREAT | O_BINARY, 0666);
+#endif
 	    (void) write(fd, (char*)b, associateReply.length + 6);
 	    (void) fprintf(DEBUG_DEVICE, "%d %d\n", length, associateReply.length + 6);
 	    (void) close(fd);
@@ -3717,7 +3725,11 @@ recordOutGoing(
     if (debug) {
 	static int fd = -1;
 	if (fd < 0) {
+#ifdef O_BINARY
+	    fd = open("outgoing.pdu", O_CREAT | O_WRONLY | O_BINARY, 0666);
+#else
 	    fd = open("outgoing.pdu", O_CREAT | O_WRONLY, 0666);
+#endif
 	    if (fd < 0)
 		return;
 	}
@@ -4107,7 +4119,13 @@ DULPRV_translateAssocReq(unsigned char *buffer,
 /*
 ** CVS Log
 ** $Log: dulfsm.cc,v $
-** Revision 1.15  1997-08-05 07:38:58  andreas
+** Revision 1.16  1997-08-06 12:20:14  andreas
+** - Using Windows NT with Visual C++ 4.x the standard open mode for files
+**   is TEXT with conversions. For binary files (image files, imagectn database
+**   index) this must be changed (e.g. fopen(filename, "...b"); or
+**   open(filename, ..... |O_BINARY);)
+**
+** Revision 1.15  1997/08/05 07:38:58  andreas
 ** - Corrected error in DUL: The A-Associate-RQ PDU was not read
 **   completely. The bytes 7-10 were left on the socket. This created no
 **   problems since it was the last read operation on the socket but no

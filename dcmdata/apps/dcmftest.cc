@@ -10,9 +10,9 @@
 **
 **
 ** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1997-07-21 08:25:00 $
+** Update Date:		$Date: 1997-08-06 12:20:01 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/apps/dcmftest.cc,v $
-** CVS/RCS Revision:	$Revision: 1.4 $
+** CVS/RCS Revision:	$Revision: 1.5 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -63,7 +63,7 @@ int main(int argc, char *argv[])
     for (int i=1; i<argc; i++) {
 	char* fname = argv[i];
 	OFBool ok = OFFalse;
-	FILE* f = fopen(fname, "r");
+	FILE* f = fopen(fname, "rb");
 
 	if (f == 0) {
 	    ok = OFFalse;
@@ -98,7 +98,13 @@ int main(int argc, char *argv[])
 /*
 ** CVS/RCS Log:
 ** $Log: dcmftest.cc,v $
-** Revision 1.4  1997-07-21 08:25:00  andreas
+** Revision 1.5  1997-08-06 12:20:01  andreas
+** - Using Windows NT with Visual C++ 4.x the standard open mode for files
+**   is TEXT with conversions. For binary files (image files, imagectn database
+**   index) this must be changed (e.g. fopen(filename, "...b"); or
+**   open(filename, ..... |O_BINARY);)
+**
+** Revision 1.4  1997/07/21 08:25:00  andreas
 ** - Replace all boolean types (BOOLEAN, CTNBOOLEAN, DICOM_BOOL, BOOL)
 **   with one unique boolean type OFBool.
 **
