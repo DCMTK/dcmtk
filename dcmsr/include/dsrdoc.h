@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2002, OFFIS
+ *  Copyright (C) 2000-2003, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,8 +23,8 @@
  *    classes: DSRDocument
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-05-14 08:15:24 $
- *  CVS/RCS Revision: $Revision: 1.27 $
+ *  Update Date:      $Date: 2003-08-07 12:31:46 $
+ *  CVS/RCS Revision: $Revision: 1.28 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -37,9 +37,11 @@
 
 #include "osconfig.h"   /* make sure OS specific configuration is included first */
 
-#include "ofstream.h"
+#include "dsrxmlc.h"
 #include "dsrdoctr.h"
 #include "dsrsoprf.h"
+
+#include "ofstream.h"
 
 
 /*---------------------*
@@ -47,8 +49,9 @@
  *---------------------*/
 
 /** Interface class for 'dcmsr' (DICOM Structured Reporting Documents).
- *  This class supports reading, writing, creation, printing and rendering of
- *  DICOM SR documents (according to supplement 23 final text, PS 3.x - 2001).
+ *  This class supports reading, writing, creation, printing and rendering of DICOM
+ *  SR documents (according to DICOM PS 3.x 2003, formerly known as Supplement 23).
+ *  The list of supported SOP classes is available in file "dsrtypes.h".
  */
 class DSRDocument
   : protected DSRTypes
@@ -58,7 +61,7 @@ class DSRDocument
 
   // --- constructors and destructor ---
 
-    /** default constructor.
+    /** (default) constructor.
      *  The parameter 'documentType' is optional and has a default value.
      ** @param  documentType  type of the SR document (see DSRTypes::E_DocumentType)
      */
@@ -89,10 +92,12 @@ class DSRDocument
      *  all previous signatures.
      ** @return OFTrue if finalized, OFFalse otherwise
      */
-    OFBool isFinalized();
+    OFBool isFinalized() const;
 
     /** set the log stream.
-     *  The log stream is used to report any warnings and error messages.
+     *  The log stream is used to report warning and error messages.  Unfortunately, the
+     *  stream cannot be used for 'libxml' messages.  Therefore, the error output of 'libxml'
+     *  is disabled by default (see readXML() for details).
      ** @param  stream  pointer to the log stream (might be NULL = no messages)
      */
     void setLogStream(OFConsole *stream);
@@ -100,8 +105,9 @@ class DSRDocument
 
   // --- input and output ---
 
-    /** print current SR document to specified output stream
-     ** @param  stream  output stream
+    /** print current SR document to specified output stream.
+     *  The output format is identical to that of the dsrdump command line tool.
+     ** @param  stream  output stream (e.g. COUT from "ofconsol.h")
      *  @param  flags   optional flag used to customize the output (see DSRTypes::PF_xxx)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
@@ -109,10 +115,10 @@ class DSRDocument
                       const size_t flags = 0);
 
     /** read SR document from DICOM dataset.
-     *  Please note that the current document is also deleted if the reading fails.
+     *  Please note that the current document is also deleted if the reading process fails.
      *  If the log stream is set and valid the reason for any error might be obtained
      *  from the error/warning output.
-     ** @param  dataset  reference to DICOM dataset where the document should be read from
+     ** @param  dataset  reference to DICOM dataset from which the document should be read
      *  @param  flags    optional flag used to customize the reading process (see DSRTypes::RF_xxx).
      *                   E.g. RF_readDigitalSignatures indicates whether to read the digital
      *                   signatures from the dataset or not.  If set the MACParametersSequence
@@ -130,8 +136,8 @@ class DSRDocument
                      const size_t flags = 0);
 
     /** write current SR document to DICOM dataset
-     ** @param  dataset      reference to DICOM dataset where the current document should be
-     *                       written to
+     ** @param  dataset      reference to DICOM dataset to which the current document should be
+     *                       written
      *  @param  markedItems  optional stack where pointers to all 'marked' content items
      *                       (DICOM datasets/items) are added to during the write process.
      *                       Can be used to digitally sign parts of the document tree.
@@ -140,7 +146,23 @@ class DSRDocument
     OFCondition write(DcmItem &dataset,
                       DcmStack *markedItems = NULL);
 
-    /** write current SR document in XML format
+    /** read SR document from XML file.
+     *  The format (Schema) of the XML document is expected to conform to the output format
+     *  of the writeXML() method.  In addition, the document can be validated against an XML
+     *  Schema by setting the flag XF_validateSchema.  For debug output (errors, warnings,
+     *  etc.) from 'libxml' the flag XF_enableLibxmlErrorOutput has to be set.
+     *  Digital signatures in the XML document are not yet supported.
+     *  Please note that the current document is also deleted if the parsing process fails.
+     ** @param  filename  name of the file from which the XML document is read ("-" for stdin)
+     *  @param  flags     optional flag used to customize the reading process (see DSRTypes::XF_xxx)
+     ** @return status, EC_Normal if successful, an error code otherwise
+     */
+    OFCondition readXML(const OFString &filename,
+                        const size_t flags = 0);
+
+    /** write current SR document in XML format.
+     *  The output format is identical to that of the dsr2xml command line tool.  Digital
+     *  signatures in the XML document are not yet supported.
      ** @param  stream  output stream to which the XML document is written
      *  @param  flags   optional flag used to customize the output (see DSRTypes::XF_xxx)
      ** @return status, EC_Normal if successful, an error code otherwise
@@ -148,7 +170,8 @@ class DSRDocument
     OFCondition writeXML(ostream &stream,
                          const size_t flags = 0);
 
-    /** render current SR document in HTML format
+    /** render current SR document in HTML format.
+     *  The output format is identical to that of the dsr2html command line tool.
      ** @param  stream      output stream to which the HTML document is written
      *  @param  flags       optional flag used to customize the output (see DSRTypes::HF_xxx)
      *  @param  styleSheet  optional filename/URL of a Cascading Style Sheet (CSS)
@@ -178,7 +201,7 @@ class DSRDocument
      *  If the type is unknown the original DICOM defined term can be retrieved
      *  with the method getSpecificCharacterSet().  Please note that only the
      *  first of possibly multiple values is used to determine the type from the
-     *  DICOM code string (multiple character sets are not supported).
+     *  DICOM code string (multiple character sets are not yet supported).
      ** @return character set (might be CS_invalid/unknown if not supported)
      */
     E_CharacterSet getSpecificCharacterSetType() const;
@@ -189,23 +212,27 @@ class DSRDocument
      */
     OFCondition setSpecificCharacterSetType(const E_CharacterSet characterSet);
 
-    /** get document completion flag
+    /** get document completion flag.
+     *  Not applicable to Key Object Selection Documents.
      ** @return completion flag (might be CF_invalid if read from dataset)
      */
     E_CompletionFlag getCompletionFlag() const;
 
-    /** get document completion flag description
+    /** get document completion flag description.
+     *  Not applicable to Key Object Selection Documents.
      ** @return pointer to string value (might be NULL)
      */
     const char *getCompletionFlagDescription() const;
 
-    /** get document completion flag description
+    /** get document completion flag description.
+     *  Not applicable to Key Object Selection Documents.
      ** @param  description  reference to character string in which the value should be stored
      ** @return character string (might be empty)
      */
     const OFString &getCompletionFlagDescription(OFString &description) const;
 
-    /** get document verification flag
+    /** get document verification flag.
+     *  Not applicable to Key Object Selection Documents.
      ** @return verification flag (might be VF_invalid if read from dataset)
      */
     E_VerificationFlag getVerificationFlag() const;
@@ -214,13 +241,15 @@ class DSRDocument
      *  A document can be verified more than once.  The verification flag should be VERIFIED
      *  if any verifying observer is specified.  The details on the observer can be retrieved
      *  using the getVerifyingObserver() methods.
+     *  Not applicable to Key Object Selection Documents.
      ** @return number of verifying observers (if any), 0 otherwise
      */
     size_t getNumberOfVerifyingObservers();
 
     /** get information about a verifying observer.
      *  All reference variables are cleared before the information is retrieved, i.e. if an error
-     *  occurs (return value != EC_Normal) non-empty variables do contain correct data.
+     *  occurs (return value != EC_Normal) non-empty variables do contain valid (empty) data.
+     *  Not applicable to Key Object Selection Documents.
      ** @param  idx           index of the verifying observer to be retrieved (starting with 1).
      *                        Use getNumberOfVerifyingObservers() to get the maximum value.
      *  @param  dateTime      reference to variable where the date and time when this document
@@ -238,7 +267,8 @@ class DSRDocument
 
     /** get information about a verifying observer.
      *  All reference variables are cleared before the information is retrieved, i.e. if an error
-     *  occurs (return value != EC_Normal) non-empty variables do contain correct data.
+     *  occurs (return value != EC_Normal) non-empty variables do contain valid (empty) data.
+     *  Not applicable to Key Object Selection Documents.
      ** @param  idx           index of the verifying observer to be retrieved (starting with 1).
      *                        Use getNumberOfVerifyingObservers() to get the maximum value.
      *  @param  dateTime      reference to variable where the date and time when this document
@@ -257,65 +287,52 @@ class DSRDocument
                                      DSRCodedEntryValue &observerCode,
                                      OFString &organization);
 
-    /** get number of predecessor documents.
-     *  A document can have more than one (direct) predecessor document.  This is the case
-     *  when two or more documents have been merged to created it.  The corresponding method
-     *  createRevisedVersion() creates only one reference to the current document (and
-     *  replaces any existing referenced).
-     ** @return number of predecessor documents (if any), 0 otherwise
+    /** get list of predecessor documents.
+     *  A document can have more than one (direct) predecessor document.  This is e.g. the case
+     *  when two or more documents have been merged to create it.  The corresponding method
+     *  createRevisedVersion() automatically adds a reference to the current document.
+     *  PS 3.3 - 2003 states: "[The Predecessor Documents Sequence] Shall refer to SR SOP Instances
+     *  (e.g. prior or provisional reports) whose content has been wholly or partially included in
+     *  this document with or without modification." and "[...] the use of the Predecessor Document
+     *  Sequence allows tracing back to the input SR Document, which in this case is the previous
+     *  version."
+     *  Not applicable to Key Object Selection Documents.
+     ** @return reference to list object
      */
-    size_t getNumberOfPredecessorDocuments();
+    DSRSOPInstanceReferenceList &getPredecessorDocuments();
 
-    /** get information about a predecessor document.
-     *  All reference variables are cleared before the information is retrieved, i.e. if an error
-     *  occurs (return value != EC_Normal) non-empty variables do contain correct data.
-     ** @param  idx             index of the predecessor document to be retrieved (starting with 1).
-     *                          Use getNumberOfPredecessorDocuments() to get the maximum value.
-     *  @param  sopClassUID     reference to variable where the SOP class UID of the predecessor
-     *                          document should be stored (required)
-     *  @param  sopInstanceUID  reference to variable where the SOP instance UID of the predecessor
-     *                          document should be stored (required)
-     ** @return status, EC_Normal if successful, an error code otherwise
+    /** get list of identical documents.
+     *  Please note that currently the user is responsible for filling and modifying the content of
+     *  this list.  However, the list is automatically cleared when a new instance is created (incl.
+     *  a revised version of the current document).  Possibly, there will be a createDuplicate()
+     *  method or the like in the future which creates an identical copy of the current document in
+     *  a new study/series.
+     *  PS 3.3 - 2003 states: "If identical copies of an SR Document are to be included in multiple
+     *  Studies then the entire SR Document shall be duplicated with appropriate changes for
+     *  inclusion into the different Studies (i.e. Study Instance UID, Series Instance UID, SOP
+     *  Instance UID, Identical Documents Sequence etc.). The Identical Documents Sequence Attribute
+     *  in each SOP Instance shall contain references to all other duplicate SOP Instances."
+     ** @return reference to list object
      */
-    OFCondition getPredecessorDocument(const size_t idx,
-                                       OFString &sopClassUID,
-                                       OFString &sopInstanceUID);
-
-    /** get information about a predecessor document.
-     *  All reference variables are cleared before the information is retrieved, i.e. if an error
-     *  occurs (return value != EC_Normal) non-empty variables do contain correct data.
-     ** @param  idx                index of the predecessor document to be retrieved (starting with 1).
-     *                             Use getNumberOfPredecessorDocuments() to get the maximum value.
-     *  @param  studyInstanceUID   reference to variable where the study instance UID of the predecessor
-     *                             document should be stored (required)
-     *  @param  seriesInstanceUID  reference to variable where the series instance UID of the predecessor
-     *                             document should be stored (required)
-     *  @param  sopClassUID        reference to variable where the SOP class UID of the predecessor
-     *                             document should be stored (required)
-     *  @param  sopInstanceUID     reference to variable where the SOP instance UID of the predecessor
-     *                             document should be stored (required)
-     ** @return status, EC_Normal if successful, an error code otherwise
-     */
-    OFCondition getPredecessorDocument(const size_t idx,
-                                       OFString &studyInstanceUID,
-                                       OFString &seriesInstanceUID,
-                                       OFString &sopClassUID,
-                                       OFString &sopInstanceUID);
+    DSRSOPInstanceReferenceList &getIdenticalDocuments();
 
     /** get list of referenced SOP instances (Current Requested Procedure Evidence).
-     *  PS 3.3 - 2001 states: "The intent of the Current Requested Procedure Evidence Sequence
+     *  PS 3.3 - 2003 states: "The intent of the Current Requested Procedure Evidence Sequence
      *  is to reference all evidence created in order to satisfy the current Requested Procedure(s)
      *  for this SR Document. This shall include, but is not limited to, all current evidence
-     *  referenced in the content tree."
+     *  referenced in the content tree." and "In the context of the Key Object Selection, the
+     *  current evidence is considered to be only the set of instances referenced within the Key
+     *  Object Selection."
      ** @return reference to list object
      */
     DSRSOPInstanceReferenceList &getCurrentRequestedProcedureEvidence();
 
     /** get list of referenced SOP instances (Pertinent Other Evidence).
-     *  PS 3.3 - 2001 states: "The Pertinent Other Evidence Sequence attribute is used to reference
+     *  PS 3.3 - 2003 states: "The Pertinent Other Evidence Sequence attribute is used to reference
      *  all other evidence considered pertinent for this SR Document that is not listed in the Current
      *  Requested Procedure Evidence Sequence. This requires that the same SOP Instance shall not be
      *  referenced in both of these Sequences."
+     *  Not applicable to Key Object Selection Documents.
      ** @return reference to list object
      */
     DSRSOPInstanceReferenceList &getPertinentOtherEvidence();
@@ -456,154 +473,154 @@ class DSRDocument
   // ---  component of multi-valued attributes)
 
     /** get modality
-     ** @param  string  reference to character string in which the value should be stored
+     ** @param  value  reference to character string in which the value should be stored
      ** @return character string (might empty)
      */
-    const OFString &getModality(OFString &string) const;
+    const OFString &getModality(OFString &value) const;
 
     /** get SOP class UID
-     ** @param  string  reference to character string in which the value should be stored
+     ** @param  value  reference to character string in which the value should be stored
      ** @return character string (might empty)
      */
-    const OFString &getSOPClassUID(OFString &string) const;
+    const OFString &getSOPClassUID(OFString &value) const;
 
     /** get study instance UID
-     ** @param  string  reference to character string in which the value should be stored
+     ** @param  value  reference to character string in which the value should be stored
      ** @return character string (might empty)
      */
-    const OFString &getStudyInstanceUID(OFString &string) const;
+    const OFString &getStudyInstanceUID(OFString &value) const;
 
     /** get series instance UID
-     ** @param  string  reference to character string in which the value should be stored
+     ** @param  value  reference to character string in which the value should be stored
      ** @return character string (might empty)
      */
-    const OFString &getSeriesInstanceUID(OFString &string) const;
+    const OFString &getSeriesInstanceUID(OFString &value) const;
 
     /** get SOP instance UID
-     ** @param  string  reference to character string in which the value should be stored
+     ** @param  value  reference to character string in which the value should be stored
      ** @return character string (might empty)
      */
-    const OFString &getSOPInstanceUID(OFString &string) const;
+    const OFString &getSOPInstanceUID(OFString &value) const;
 
     /** get instance creator UID
-     ** @param  string  reference to character string in which the value should be stored
+     ** @param  value  reference to character string in which the value should be stored
      ** @return character string (might empty)
      */
-    const OFString &getInstanceCreatorUID(OFString &string) const;
+    const OFString &getInstanceCreatorUID(OFString &value) const;
 
     /** get specific character set
-     ** @param  string  reference to character string in which the value should be stored
+     ** @param  value  reference to character string in which the value should be stored
      ** @return character string (might empty)
      */
-    const OFString &getSpecificCharacterSet(OFString &string) const;
+    const OFString &getSpecificCharacterSet(OFString &value) const;
 
     /** get patient's name
-     ** @param  string  reference to character string in which the value should be stored
+     ** @param  value  reference to character string in which the value should be stored
      ** @return character string (might empty)
      */
-    const OFString &getPatientsName(OFString &string) const;
+    const OFString &getPatientsName(OFString &value) const;
 
     /** get patient's birth date
-     ** @param  string  reference to character string in which the value should be stored
+     ** @param  value  reference to character string in which the value should be stored
      ** @return character string (might empty)
      */
-    const OFString &getPatientsBirthDate(OFString &string) const;
+    const OFString &getPatientsBirthDate(OFString &value) const;
 
     /** get patient's sex
-     ** @param  string  reference to character string in which the value should be stored
+     ** @param  value  reference to character string in which the value should be stored
      ** @return character string (might empty)
      */
-    const OFString &getPatientsSex(OFString &string) const;
+    const OFString &getPatientsSex(OFString &value) const;
 
     /** get referring physicians name
-     ** @param  string  reference to character string in which the value should be stored
+     ** @param  value  reference to character string in which the value should be stored
      ** @return character string (might empty)
      */
-    const OFString &getReferringPhysiciansName(OFString &string) const;
+    const OFString &getReferringPhysiciansName(OFString &value) const;
 
     /** get study description
-     ** @param  string  reference to character string in which the value should be stored
+     ** @param  value  reference to character string in which the value should be stored
      ** @return character string (might empty)
      */
-    const OFString &getStudyDescription(OFString &string) const;
+    const OFString &getStudyDescription(OFString &value) const;
 
     /** get series description
-     ** @param  string  reference to character string in which the value should be stored
+     ** @param  value  reference to character string in which the value should be stored
      ** @return character string (might empty)
      */
-    const OFString &getSeriesDescription(OFString &string) const;
+    const OFString &getSeriesDescription(OFString &value) const;
 
     /** get manufacturer
-     ** @param  string  reference to character string in which the value should be stored
+     ** @param  value  reference to character string in which the value should be stored
      ** @return character string (might empty)
      */
-    const OFString &getManufacturer(OFString &string) const;
+    const OFString &getManufacturer(OFString &value) const;
 
     /** get study date
-     ** @param  string  reference to character string in which the value should be stored
+     ** @param  value  reference to character string in which the value should be stored
      ** @return character string (might empty)
      */
-    const OFString &getStudyDate(OFString &string) const;
+    const OFString &getStudyDate(OFString &value) const;
 
     /** get study time
-     ** @param  string  reference to character string in which the value should be stored
+     ** @param  value  reference to character string in which the value should be stored
      ** @return character string (might empty)
      */
-    const OFString &getStudyTime(OFString &string) const;
+    const OFString &getStudyTime(OFString &value) const;
 
     /** get instance creation date
-     ** @param  string  reference to character string in which the value should be stored
+     ** @param  value  reference to character string in which the value should be stored
      ** @return character string (might empty)
      */
-    const OFString &getInstanceCreationDate(OFString &string) const;
+    const OFString &getInstanceCreationDate(OFString &value) const;
 
     /** get instance creation time
-     ** @param  string  reference to character string in which the value should be stored
+     ** @param  value  reference to character string in which the value should be stored
      ** @return character string (might empty)
      */
-    const OFString &getInstanceCreationTime(OFString &string) const;
+    const OFString &getInstanceCreationTime(OFString &value) const;
 
     /** get content date
-     ** @param  string  reference to character string in which the value should be stored
+     ** @param  value  reference to character string in which the value should be stored
      ** @return character string (might empty)
      */
-    const OFString &getContentDate(OFString &string) const;
+    const OFString &getContentDate(OFString &value) const;
 
     /** get content time
-     ** @param  string  reference to character string in which the value should be stored
+     ** @param  value  reference to character string in which the value should be stored
      ** @return character string (might empty)
      */
-    const OFString &getContentTime(OFString &string) const;
+    const OFString &getContentTime(OFString &value) const;
 
     /** get study ID
-     ** @param  string  reference to character string in which the value should be stored
+     ** @param  value  reference to character string in which the value should be stored
      ** @return character string (might empty)
      */
-    const OFString &getStudyID(OFString &string) const;
+    const OFString &getStudyID(OFString &value) const;
 
     /** get patient ID
-     ** @param  string  reference to character string in which the value should be stored
+     ** @param  value  reference to character string in which the value should be stored
      ** @return character string (might empty)
      */
-    const OFString &getPatientID(OFString &string) const;
+    const OFString &getPatientID(OFString &value) const;
 
     /** get series number
-     ** @param  string  reference to character string in which the value should be stored
+     ** @param  value  reference to character string in which the value should be stored
      ** @return character string (might empty)
      */
-    const OFString &getSeriesNumber(OFString &string) const;
+    const OFString &getSeriesNumber(OFString &value) const;
 
     /** get instance number
-     ** @param  string  reference to character string in which the value should be stored
+     ** @param  value  reference to character string in which the value should be stored
      ** @return character string (might empty)
      */
-    const OFString &getInstanceNumber(OFString &string) const;
+    const OFString &getInstanceNumber(OFString &value) const;
 
     /** get accession number
-     ** @param  string  reference to character string in which the value should be stored
+     ** @param  value  reference to character string in which the value should be stored
      ** @return character string (might empty)
      */
-    const OFString &getAccessionNumber(OFString &string) const;
+    const OFString &getAccessionNumber(OFString &value) const;
 
 
   // --- set DICOM string attributes ---
@@ -611,124 +628,124 @@ class DSRDocument
     /** set specific character set.
      *  The passed string must be a valid DICOM Code String (CS).  The internal enumerated
      *  value is set accordingly.
-     ** @param  string  character string specifying the value to be set
+     ** @param  value  character string specifying the value to be set
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    OFCondition setSpecificCharacterSet(const OFString &string);
+    OFCondition setSpecificCharacterSet(const OFString &value);
 
     /** set document completion flag description.
      *  The description can be removed from the DICOM dataset (type 3) by setting an empty
      *  string.
-     ** @param  string  explanation of the value set for completion flag (optional, VR=LO)
+     ** @param  value  explanation of the value set for completion flag (optional, VR=LO)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    OFCondition setCompletionFlagDescription(const OFString &string);
+    OFCondition setCompletionFlagDescription(const OFString &value);
 
     /** set patient's name.
      *  The passed string must be a valid DICOM Person Name (PN).
-     ** @param  string  character string specifying the value to be set
+     ** @param  value  character string specifying the value to be set
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    OFCondition setPatientsName(const OFString &string);
+    OFCondition setPatientsName(const OFString &value);
 
     /** set patient's birth date.
      *  The passed string must be a valid DICOM Date (DA).
-     ** @param  string  character string specifying the value to be set
+     ** @param  value  character string specifying the value to be set
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    OFCondition setPatientsBirthDate(const OFString &string);
+    OFCondition setPatientsBirthDate(const OFString &value);
 
     /** set patient's sex.
      *  The passed string must be a valid DICOM Code String (CS).
-     ** @param  string  character string specifying the value to be set
+     ** @param  value  character string specifying the value to be set
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    OFCondition setPatientsSex(const OFString &string);
+    OFCondition setPatientsSex(const OFString &value);
 
     /** set referring physicians name.
      *  The passed string must be a valid DICOM Person Name (PN).
-     ** @param  string  character string specifying the value to be set
+     ** @param  value  character string specifying the value to be set
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    OFCondition setReferringPhysiciansName(const OFString &string);
+    OFCondition setReferringPhysiciansName(const OFString &value);
 
     /** set study description.
      *  The passed string must be a valid DICOM Long String (LO).
-     ** @param  string  character string specifying the value to be set
+     ** @param  value  character string specifying the value to be set
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    OFCondition setStudyDescription(const OFString &string);
+    OFCondition setStudyDescription(const OFString &value);
 
     /** set series description.
      *  The passed string must be a valid DICOM Long String (LO).
-     ** @param  string  character string specifying the value to be set
+     ** @param  value  character string specifying the value to be set
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    OFCondition setSeriesDescription(const OFString &string);
+    OFCondition setSeriesDescription(const OFString &value);
 
     /** set manufacturer.
      *  The passed string must be a valid DICOM Long String (LO).
-     ** @param  string  character string specifying the value to be set
+     ** @param  value  character string specifying the value to be set
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    OFCondition setManufacturer(const OFString &string);
+    OFCondition setManufacturer(const OFString &value);
 
     /** set content date.
      *  The passed string must be a valid DICOM Date (DA).  If an empty string
      *  is passed the current date is set when displaying or writing the document
      *  since the corresponding DICOM attribute is type 1 (= mandatory).
-     ** @param  string  character string specifying the value to be set
+     ** @param  value  character string specifying the value to be set
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    OFCondition setContentDate(const OFString &string);
+    OFCondition setContentDate(const OFString &value);
 
     /** set content time.
      *  The passed string must be a valid DICOM Time (TM).  If an empty string
      *  is passed the current time is set when displaying or writing the document
      *  since the corresponding DICOM attribute is type 1 (= mandatory).
-     ** @param  string  character string specifying the value to be set
+     ** @param  value  character string specifying the value to be set
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    OFCondition setContentTime(const OFString &string);
+    OFCondition setContentTime(const OFString &value);
 
     /** set study ID.
      *  The passed string must be a valid DICOM Short String (SH).
-     ** @param  string  character string specifying the value to be set
+     ** @param  value  character string specifying the value to be set
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    OFCondition setStudyID(const OFString &string);
+    OFCondition setStudyID(const OFString &value);
 
     /** set patient ID.
      *  The passed string must be a valid DICOM Long String (LO).
-     ** @param  string  character string specifying the value to be set
+     ** @param  value  character string specifying the value to be set
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    OFCondition setPatientID(const OFString &string);
+    OFCondition setPatientID(const OFString &value);
 
     /** set series number.
      *  The passed string must be a valid DICOM Short String (SH).  If an empty
      *  string is passed the value "1" is set when displaying or writing the
      *  document since the corresponding DICOM attribute is type 1 (= mandatory).
-     ** @param  string  character string specifying the value to be set
+     ** @param  value  character string specifying the value to be set
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    OFCondition setSeriesNumber(const OFString &string);
+    OFCondition setSeriesNumber(const OFString &value);
 
     /** set instance number.
      *  The passed string must be a valid DICOM Integer String (IS).  If an empty
      *  string is passed the value "1" is set when displaying or writing the
      *  document since the corresponding DICOM attribute is type 1 (= mandatory).
-     ** @param  string  character string specifying the value to be set
+     ** @param  value  character string specifying the value to be set
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    OFCondition setInstanceNumber(const OFString &string);
+    OFCondition setInstanceNumber(const OFString &value);
 
     /** set accession number.
      *  The passed string must be a valid DICOM Short String (SH).
-     ** @param  string  character string specifying the value to be set
+     ** @param  value  character string specifying the value to be set
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    OFCondition setAccessionNumber(const OFString &string);
+    OFCondition setAccessionNumber(const OFString &value);
 
 
   // --- document management functions ---
@@ -736,21 +753,21 @@ class DSRDocument
     /** create new study.
      *  After generating a new study instance UID the method createNewSeries() is called,
      *  i.e. also a new series instance UID and SOP instance UID are generated.  This is
-     *  a requirement according to DICOM Supplement 23.
+     *  a requirement of the DICOM standard.
      */
     void createNewStudy();
 
     /** create a new series.
      *  After generating a new series instance UID the method createNewSOPInstance() is
-     *  called, i.e. also a SOP instance UID is generated.  This is a requirement according
-     *  to DICOM Supplement 23.
+     *  called, i.e. also a SOP instance UID is generated.  This is a requirement of the
+     *  DICOM standard.
      */
     void createNewSeries();
 
     /** create a new series within a given study.
      *  After generating a new series instance UID within the given study the method
      *  createNewSOPInstance() is called, i.e. also a SOP instance UID is generated.
-     *  This is a requirement according to DICOM Supplement 23.
+     *  This is a requirement of the DICOM standard.
      ** @param  studyUID  study instance UID to be set (should be a valid UID)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
@@ -764,21 +781,21 @@ class DSRDocument
      *  It could also be used explicitly from the calling application if a new UID should
      *  be created (this is the case if the study instance UID or series instance UID has
      *  changed as well as any other attribute within the SR Document General Module or
-     *  SR Document Content Module, see DICOM Supplement 23).
+     *  SR Document Content Module, see DICOM standard for details).
      *  This method also updates the other DICOM header attributes (calling updateAttributes()).
      */
     void createNewSOPInstance();
 
     /** create a new document.
      *  A new SOP instance is only created if the current document type was valid/supported.
-     *  Please note that the current document is deleted.
+     *  Please note that the current document is deleted (cleared).
      ** @return status, EC_Normal if successful, an error code otherwise
      */
     OFCondition createNewDocument();
 
     /** create a new document of the specified type.
      *  A new SOP instance is only created if the current document type was valid/supported.
-     *  Please note that the current document is deleted.
+     *  Please note that the current document is deleted by this method.
      ** @param  documentType  type of the SR document (see DSRTypes::E_DocumentType)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
@@ -786,33 +803,38 @@ class DSRDocument
 
     /** create a revised version of the current document.
      *  A revised version can only be created if the current document is already completed
-     *  (see completion flag).  If so a reference to the current document is included in the
-     *  predecessor documents sequence (possible existing references are automatically
-     *  replaced, i.e. there is never more than one reference in this sequence).  If all
-     *  revised versions of a SR document are stored (written to datasets/files) it is
-     *  possible to trace back the full chain of previous versions.
+     *  (see completion flag).  If so, a reference to the current document is added to the
+     *  predecessor documents sequence.  If all revised versions of a SR document are
+     *  stored (written to datasets/files) it is possible to trace back the full chain of
+     *  previous versions.
      *  A new SOP instance is created and the content date/time are set automatically.
-     *  Furthermore the verifying observer sequence is deleted, the verifcation flag is set
-     *  to UNVERIFIED, the completion flag is set to PARTIAL (i.e. not complete), the
-     *  completion flag description is deleted, all digital signatures contained in the
-     *  document tree are deleted and the finalized flag is reset (OFFalse).
+     *  Furthermore, the verifying observer and identical documents sequence are deleted,
+     *  the verification flag is set to UNVERIFIED, the completion flag is set to PARTIAL
+     *  (i.e. not complete), the completion flag description is deleted, all digital
+     *  signatures contained in the document tree are deleted and the finalized flag is
+     *  reset (OFFalse).
+     *  Not applicable to Key Object Selection Documents.
+     *  @param clearList clear list of predecessor documents before adding the current
+     *    document if OFTrue. Append current document to existing list otherwise.
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    OFCondition createRevisedVersion();
+    OFCondition createRevisedVersion(const OFBool clearList = OFTrue);
 
     /** complete the current document.
      *  Sets the completion flag to COMPLETE if not already done (fails otherwise).
      *  The completion flag description is set to an empty string (i.e. absent in DICOM
      *  dataset).
+     *  Not applicable to Key Object Selection Documents.
      ** @return status, EC_Normal if successful, an error code otherwise
      */
     OFCondition completeDocument();
 
-    /** complete the current document and set completion description.
+    /** complete the current document and set a completion description.
      *  Sets the completion flag to COMPLETE if not already done (fails otherwise).
      *  The completion flag description can be modified independently from the flag by means
      *  of the method setCompletionFlagDescription() - see above.
-     ** @param  description  explanation of the value set for completion flag (optional, see
+     *  Not applicable to Key Object Selection Documents.
+     ** @param  description  explanation of the value set for completion flag. (optional, see
      *                       previous method, VR=LO)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
@@ -821,56 +843,136 @@ class DSRDocument
     /** verify the current document by a specific observer.
      *  A document can be verified more than once.  The observer information is added to a
      *  sequence stored in the dataset.  The verification flag is automatically set to
-     *  VERIFIED (if not already done) and the finalized flag is reset (OFFalse).
+     *  VERIFIED (if not already done) and the finalized flag is reset (set to OFFalse).
      *  Please note that only completed documents (see completion flag) can be verified and that
      *  a new SOP instance UID has to be generated (manually) according to the DICOM standard when
      *  creating a dataset/file from this document.
+     *  Not applicable to Key Object Selection Documents.
      ** @param  observerName  name of the person who has verified this document (required, VR=PN)
      *  @param  organization  name of the organization to which the observer belongs (required, VR=LO)
+     *  @param  dateTime      verification date time (optional). If empty/absent the current date and
+     *                        time are used.
      ** @return status, EC_Normal if successful, an error code otherwise
      */
     OFCondition verifyDocument(const OFString &observerName,
-                               const OFString &organization);
+                               const OFString &organization,
+                               const OFString &dateTime = "");
 
     /** verify the current document by a specific observer.
      *  A document can be verified more than once.  The observer information is added to a
      *  sequence stored in the dataset.  The verification flag is automatically set to
-     *  VERIFIED (if not already done) and the finalized flag is reset (OFFalse).
+     *  VERIFIED (if not already done) and the finalized flag is reset (set to OFFalse).
      *  Please note that only completed documents (see completion flag) can be verified and that
      *  a new SOP instance UID has to be generated (manually) according to the DICOM standard when
      *  creating a dataset/file from this document.
+     *  Not applicable to Key Object Selection Documents.
      ** @param  observerName  name of the person who has verified this document (required, VR=PN)
      *  @param  observerCode  code identifying the verifying observer (optional, see previous method)
      *  @param  organization  name of the organization to which the observer belongs (required, VR=LO)
+     *  @param  dateTime      verification date time (optional). If empty/absent the current date and
+     *                        time are used.
      ** @return status, EC_Normal if successful, an error code otherwise
      */
     OFCondition verifyDocument(const OFString &observerName,
                                const DSRCodedEntryValue &observerCode,
-                               const OFString &organization);
+                               const OFString &organization,
+                               const OFString &dateTime = "");
 
     /** remove verification information.
      *  The list of verifying observers is cleared, the verification flag is set to UNVERIFIED and
-     *  the finalized flag is reset (OFFalse).
-     *  Normally, there should be no need to use this method.  On the other hand it is useful to
+     *  the finalized flag is reset (set to OFFalse).
+     *  Normally, there should be no need to call this method.  On the other hand, it is useful to
      *  guarantee a consistent state when processing documents which have not been created with this
-     *  toolkit.
+     *  module/toolkit.
      */
     void removeVerification();
 
     /** finalize the current state of the document.
      *  A new document is originally not finalized but can be finalized using this method.
-     *  The flag is e.g. used to indicate whether the entire document is digitally signed and,
-     *  therefore, each newly added verifying observer would corrupt all previous signatures.
+     *  This internal flag is e.g. used to indicate whether the entire document is digitally signed
+     *  and, therefore, each newly added verifying observer would corrupt all previous signatures.
      *  NB: A document needs to be completed first in order to be finalized.  Some of the above
      *      document management functions do reset the flag (i.e. set the FinalizedFlag to OFFalse),
-     *      other methods (e.g. the setXXX) do not change the flag though the state of the document
-     *      is not finalized any more after they have been called.
+     *      other methods (e.g. setXXX) do not change the flag though the state of the document is
+     *      not finalized any more after they have been called.
+     *  Not applicable to Key Object Selection Documents since there's no Completion Flag in this
+     *  type of SR document.
      ** @return status, EC_Normal if successful, an error code otherwise
      */
     OFCondition finalizeDocument();
 
 
   protected:
+
+    /** read XML document header
+     ** @param  doc     document containing the XML file content
+     *  @param  cursor  cursor pointing to the starting node
+     *  @param  flags   optional flag used to customize the reading process (see DSRTypes::XF_xxx)
+     ** @return status, EC_Normal if successful, an error code otherwise
+     */
+    OFCondition readXMLDocumentHeader(DSRXMLDocument &doc,
+                                      DSRXMLCursor cursor,
+                                      const size_t flags);
+
+    /** read XML "patient" data
+     ** @param  doc     document containing the XML file content
+     *  @param  cursor  cursor pointing to the starting node
+     *  @param  flags   optional flag used to customize the reading process (see DSRTypes::XF_xxx)
+     ** @return status, EC_Normal if successful, an error code otherwise
+     */
+    OFCondition readXMLPatientData(const DSRXMLDocument &doc,
+                                   DSRXMLCursor cursor,
+                                   const size_t flags);
+
+    /** read XML "study" data
+     ** @param  doc     document containing the XML file content
+     *  @param  cursor  cursor pointing to the starting node
+     *  @param  flags   optional flag used to customize the reading process (see DSRTypes::XF_xxx)
+     ** @return status, EC_Normal if successful, an error code otherwise
+     */
+    OFCondition readXMLStudyData(const DSRXMLDocument &doc,
+                                 DSRXMLCursor cursor,
+                                 const size_t flags);
+
+    /** read XML "series" data
+     ** @param  doc     document containing the XML file content
+     *  @param  cursor  cursor pointing to the starting node
+     *  @param  flags   optional flag used to customize the reading process (see DSRTypes::XF_xxx)
+     ** @return status, EC_Normal if successful, an error code otherwise
+     */
+    OFCondition readXMLSeriesData(const DSRXMLDocument &doc,
+                                  DSRXMLCursor cursor,
+                                  const size_t flags);
+
+    /** read XML "instance" data
+     ** @param  doc     document containing the XML file content
+     *  @param  cursor  cursor pointing to the starting node
+     *  @param  flags   optional flag used to customize the reading process (see DSRTypes::XF_xxx)
+     ** @return status, EC_Normal if successful, an error code otherwise
+     */
+    OFCondition readXMLInstanceData(const DSRXMLDocument &doc,
+                                    DSRXMLCursor cursor,
+                                    const size_t flags);
+
+    /** read XML "document" data
+     ** @param  doc     document containing the XML file content
+     *  @param  cursor  cursor pointing to the starting node
+     *  @param  flags   optional flag used to customize the reading process (see DSRTypes::XF_xxx)
+     ** @return status, EC_Normal if successful, an error code otherwise
+     */
+    OFCondition readXMLDocumentData(const DSRXMLDocument &doc,
+                                    DSRXMLCursor cursor,
+                                    const size_t flags);
+
+    /** read XML verifying observer data
+     ** @param  doc     document containing the XML file content
+     *  @param  cursor  cursor pointing to the starting node
+     *  @param  flags   optional flag used to customize the reading process (see DSRTypes::XF_xxx)
+     ** @return status, EC_Normal if successful, an error code otherwise
+     */
+    OFCondition readXMLVerifyingObserverData(const DSRXMLDocument &doc,
+                                             DSRXMLCursor cursor,
+                                             const size_t flags);
 
     /** render patient name, sex, birthdate and ID in HTML format
      ** @param  stream  output stream to which the HTML document is written
@@ -879,17 +981,28 @@ class DSRDocument
     void renderHTMLPatientData(ostream &stream,
                                const size_t flags);
 
+    /** render list of referenced SOP instances in HTML format
+     ** @param  stream   output stream to which the HTML document is written
+     *  @param  refList  list of referenced SOP instances to be rendered
+     *  @param  flags    flag used to customize the output (see DSRTypes::HF_xxx)
+     */
+    void renderHTMLReferenceList(ostream &stream,
+                                 DSRSOPInstanceReferenceList &refList,
+                                 const size_t flags);
+
     /** check the given dataset before reading.
      *  This methods checks whether the dataset contains at least the DICOM attributes SOP class UID
      *  and modality.  Any incorrectness regarding these two attributes is reported to the log stream
      *  (if valid).  Currently unsupported SOP classes are also reported as an error.
-     ** @param  dataset  DICOM dataset to be checked
+     ** @param  dataset       DICOM dataset to be checked
+     *  @param  documentType  SR document type retrieved from the SOP class UID
      ** @return status, EC_Normal if successful, an error code otherwise
      */
-    OFCondition checkDatasetForReading(DcmItem &dataset);
+    OFCondition checkDatasetForReading(DcmItem &dataset,
+                                       E_DocumentType &documentType);
 
     /** update several DICOM attributes.
-     *  (e.g. set the modality to 'SR', generate a new SOP instance UID if required, set date/time, etc.)
+     *  (e.g. set the modality attribute, generate a new SOP instance UID if required, set date/time, etc.)
      ** @param  updateAll  flag indicating whether all DICOM attributes should be updated or only the
      *                     completion and verification flag. (set DICOM defined terms from enum values)
      */
@@ -906,16 +1019,17 @@ class DSRDocument
 
     /// flag indicating whether is document is finalized or not
     OFBool             FinalizedFlag;
-
     /// enumerated value: partial, complete
     E_CompletionFlag   CompletionFlagEnum;
     /// enumerated value: unverified, verified
     E_VerificationFlag VerificationFlagEnum;
-    /// defined term: see DSRTypes
+    /// defined term: see class DSRTypes
     E_CharacterSet     SpecificCharacterSetEnum;
 
     // DICOM attributes are listed ordered by module.
     // The comments for each attribute describe "Name: (VR, VM, Type)".
+    // Please note that for particular SR documents (e.g. Key Object Selection)
+    // other rules might apply.  See DICOM standard for further reference.
 
     // --- SOP Common Module (M) ---
     // (see SR Document General Module)
@@ -980,8 +1094,8 @@ class DSRDocument
     DcmUniqueIdentifier SeriesInstanceUID;
     /// Series Number: (IS, 1, 1)
     DcmIntegerString    SeriesNumber;
-    /// Referenced Study Component Sequence: (SQ, 1, 2)
-    DcmSequenceOfItems  ReferencedStudyComponent;
+    /// Referenced Performed Procedure Step Sequence: (SQ, 1, 2)
+    DcmSequenceOfItems  ReferencedPerformedProcedureStepSequence;
 
     // --- SR Document General Module (M) ---
 
@@ -1000,12 +1114,12 @@ class DSRDocument
     /// Verifying Observer Sequence: (SQ, 1, 1C)
     DcmSequenceOfItems  VerifyingObserver;
     /// Predecessor Documents Sequence: (SQ, 1, 1C)
-    DcmSequenceOfItems  PredecessorDocuments;
-    //  Identical Documents Sequence: (SQ, 1, 1C)
-        // -- not supported --
+    DSRSOPInstanceReferenceList PredecessorDocuments;
+    /// Identical Documents Sequence: (SQ, 1, 1C)
+    DSRSOPInstanceReferenceList IdenticalDocuments;
     //  Referenced Request Sequence: (SQ, 1, 1C)
-        // -- not supported --
-    //  Performed Procedure Code Sequence: (SQ, 1, 2)
+        // -- not yet supported --
+    /// Performed Procedure Code Sequence: (SQ, 1, 2)
     DcmSequenceOfItems  PerformedProcedureCode;
     /// Current Requested Procedure Evidence Sequence: (SQ, 1, 1C)
     DSRSOPInstanceReferenceList CurrentRequestedProcedureEvidence;
@@ -1025,7 +1139,18 @@ class DSRDocument
 /*
  *  CVS/RCS Log:
  *  $Log: dsrdoc.h,v $
- *  Revision 1.27  2002-05-14 08:15:24  joergr
+ *  Revision 1.28  2003-08-07 12:31:46  joergr
+ *  Added readXML functionality.
+ *  Updated documentation to get rid of doxygen warnings.
+ *  Made method isFinalized() const.
+ *  Added new option to createRevisedVersion() which allows to keep the current
+ *  list of predecessor documents.
+ *  Changed interface to access the list of predecessor documents. Now using the
+ *  existing class DSRSOPInstanceReferenceList.
+ *  Added preliminary support for the Identical Documents Sequence.
+ *  Renamed parameters/variables "string" to avoid name clash with STL class.
+ *
+ *  Revision 1.27  2002/05/14 08:15:24  joergr
  *  Updated comments.
  *
  *  Revision 1.26  2002/05/07 12:49:31  joergr
