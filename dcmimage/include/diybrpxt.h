@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2002, OFFIS
+ *  Copyright (C) 1998-2003, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,8 @@
  *  Purpose: DicomYBRPixelTemplate (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-06-26 16:20:19 $
- *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/include/Attic/diybrpxt.h,v $
- *  CVS/RCS Revision: $Revision: 1.13 $
+ *  Update Date:      $Date: 2003-12-23 12:30:34 $
+ *  CVS/RCS Revision: $Revision: 1.14 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -32,8 +31,8 @@
  */
 
 
-#ifndef __DIYBRPXT_H
-#define __DIYBRPXT_H
+#ifndef DIYBRPXT_H
+#define DIYBRPXT_H
 
 #include "osconfig.h"
 
@@ -72,7 +71,7 @@ class DiYBRPixelTemplate
       : DiColorPixelTemplate<T2>(docu, pixel, 3, status)
     {
         if ((pixel != NULL) && (Count > 0) && (status == EIS_Normal))
-            convert((const T1 *)pixel->getData() + pixel->getPixelStart(), planeSize, bits, rgb);
+            convert(OFstatic_cast(const T1 *, pixel->getData()) + pixel->getPixelStart(), planeSize, bits, rgb);
     }
 
     /** destructor
@@ -98,7 +97,7 @@ class DiYBRPixelTemplate
     {
         if (Init(pixel))
         {
-            const T1 offset = (T1)DicomImageClass::maxval(bits - 1);
+            const T1 offset = OFstatic_cast(T1, DicomImageClass::maxval(bits - 1));
             // use the number of input pixels derived from the length of the 'PixelData'
             // attribute), but not more than the size of the intermediate buffer
             const unsigned long count = (InputCount < Count) ? InputCount : Count;
@@ -107,8 +106,7 @@ class DiYBRPixelTemplate
                 register T2 *r = Data[0];
                 register T2 *g = Data[1];
                 register T2 *b = Data[2];
-                const T2 maxvalue = (T2)DicomImageClass::maxval(bits);
-
+                const T2 maxvalue = OFstatic_cast(T2, DicomImageClass::maxval(bits));
                 DiPixelRepresentationTemplate<T1> rep;
                 if (bits == 8 && !rep.isSigned())          // only for unsigned 8 bit
                 {
@@ -116,16 +114,16 @@ class DiYBRPixelTemplate
                     Sint16 gcb_tab[256];
                     Sint16 gcr_tab[256];
                     Sint16 bcb_tab[256];
-                    const double r_const = 0.7010 * double(maxvalue);
-                    const double g_const = 0.5291 * double(maxvalue);
-                    const double b_const = 0.8859 * double(maxvalue);
+                    const double r_const = 0.7010 * OFstatic_cast(double, maxvalue);
+                    const double g_const = 0.5291 * OFstatic_cast(double, maxvalue);
+                    const double b_const = 0.8859 * OFstatic_cast(double, maxvalue);
                     register unsigned long l;
-                    for (l = 0; l < 256; l++)
+                    for (l = 0; l < 256; ++l)
                     {
-                        rcr_tab[l] = (Sint16)(1.4020 * (double)l - r_const);
-                        gcb_tab[l] = (Sint16)(0.3441 * (double)l);
-                        gcr_tab[l] = (Sint16)(0.7141 * (double)l - g_const);
-                        bcb_tab[l] = (Sint16)(1.7720 * (double)l - b_const);
+                        rcr_tab[l] = OFstatic_cast(Sint16, 1.4020 * OFstatic_cast(double, l) - r_const);
+                        gcb_tab[l] = OFstatic_cast(Sint16, 0.3441 * OFstatic_cast(double, l));
+                        gcr_tab[l] = OFstatic_cast(Sint16, 0.7141 * OFstatic_cast(double, l) - g_const);
+                        bcb_tab[l] = OFstatic_cast(Sint16, 1.7720 * OFstatic_cast(double, l) - b_const);
                     }
                     register Sint32 sr;
                     register Sint32 sg;
@@ -136,14 +134,14 @@ class DiYBRPixelTemplate
                         register const T1 *y = pixel;
                         register const T1 *cb = y + InputCount;
                         register const T1 *cr = cb + InputCount;
-                        for (i = count; i != 0; i--, y++, cb++, cr++)
+                        for (i = count; i != 0; --i, ++y, ++cb, ++cr)
                         {
-                         	sr = (Sint32)*y + (Sint32)rcr_tab[*cr];
-                        	sg = (Sint32)*y - (Sint32)gcb_tab[*cb] - (Sint32)gcr_tab[*cr];
-                        	sb = (Sint32)*y + (Sint32)bcb_tab[*cb];
-                            *(r++) = (sr < 0) ? 0 : (sr > (Sint32)maxvalue) ? maxvalue : (T2)sr;
-                            *(g++) = (sg < 0) ? 0 : (sg > (Sint32)maxvalue) ? maxvalue : (T2)sg;
-                            *(b++) = (sb < 0) ? 0 : (sb > (Sint32)maxvalue) ? maxvalue : (T2)sb;
+                         	sr = OFstatic_cast(Sint32, *y) + OFstatic_cast(Sint32, rcr_tab[*cr]);
+                        	sg = OFstatic_cast(Sint32, *y) - OFstatic_cast(Sint32, gcb_tab[*cb]) - OFstatic_cast(Sint32, gcr_tab[*cr]);
+                        	sb = OFstatic_cast(Sint32, *y) + OFstatic_cast(Sint32, bcb_tab[*cb]);
+                            *(r++) = (sr < 0) ? 0 : (sr > OFstatic_cast(Sint32, maxvalue)) ? maxvalue : OFstatic_cast(T2, sr);
+                            *(g++) = (sg < 0) ? 0 : (sg > OFstatic_cast(Sint32, maxvalue)) ? maxvalue : OFstatic_cast(T2, sg);
+                            *(b++) = (sb < 0) ? 0 : (sb > OFstatic_cast(Sint32, maxvalue)) ? maxvalue : OFstatic_cast(T2, sb);
                         }
 */
                         register const T1 *y = pixel;
@@ -153,14 +151,14 @@ class DiYBRPixelTemplate
                         while (i != 0)
                         {
                             /* convert a single frame */
-                            for (l = planeSize; (l != 0) && (i != 0); l--, i--, y++, cb++, cr++)
+                            for (l = planeSize; (l != 0) && (i != 0); --l, --i, ++y, ++cb, ++cr)
                             {
-                             	sr = (Sint32)*y + (Sint32)rcr_tab[*cr];
-                            	sg = (Sint32)*y - (Sint32)gcb_tab[*cb] - (Sint32)gcr_tab[*cr];
-                            	sb = (Sint32)*y + (Sint32)bcb_tab[*cb];
-                                *(r++) = (sr < 0) ? 0 : (sr > (Sint32)maxvalue) ? maxvalue : (T2)sr;
-                                *(g++) = (sg < 0) ? 0 : (sg > (Sint32)maxvalue) ? maxvalue : (T2)sg;
-                                *(b++) = (sb < 0) ? 0 : (sb > (Sint32)maxvalue) ? maxvalue : (T2)sb;
+                             	sr = OFstatic_cast(Sint32, *y) + OFstatic_cast(Sint32, rcr_tab[*cr]);
+                            	sg = OFstatic_cast(Sint32, *y) - OFstatic_cast(Sint32, gcb_tab[*cb]) - OFstatic_cast(Sint32, gcr_tab[*cr]);
+                            	sb = OFstatic_cast(Sint32, *y) + OFstatic_cast(Sint32, bcb_tab[*cb]);
+                                *(r++) = (sr < 0) ? 0 : (sr > OFstatic_cast(Sint32, maxvalue)) ? maxvalue : OFstatic_cast(T2, sr);
+                                *(g++) = (sg < 0) ? 0 : (sg > OFstatic_cast(Sint32, maxvalue)) ? maxvalue : OFstatic_cast(T2, sg);
+                                *(b++) = (sb < 0) ? 0 : (sb > OFstatic_cast(Sint32, maxvalue)) ? maxvalue : OFstatic_cast(T2, sb);
                             }
                             /* jump to next frame start (skip 2 planes) */
                             y += 2 * planeSize;
@@ -175,17 +173,17 @@ class DiYBRPixelTemplate
                         register T1 cb;
                         register T1 cr;
                         register unsigned long i;
-                        for (i = count; i != 0; i--)
+                        for (i = count; i != 0; --i)
                         {
                             y  = *(p++);
                             cb = *(p++);
                             cr = *(p++);
-                        	sr = (Sint32)y + (Sint32)rcr_tab[cr];
-                        	sg = (Sint32)y - (Sint32)gcb_tab[cb] - (Sint32)gcr_tab[cr];
-                        	sb = (Sint32)y + (Sint32)bcb_tab[cb];
-                            *(r++) = (sr < 0) ? 0 : (sr > (Sint32)maxvalue) ? maxvalue : (T2)sr;
-                            *(g++) = (sg < 0) ? 0 : (sg > (Sint32)maxvalue) ? maxvalue : (T2)sg;
-                            *(b++) = (sb < 0) ? 0 : (sb > (Sint32)maxvalue) ? maxvalue : (T2)sb;
+                        	sr = OFstatic_cast(Sint32, y) + OFstatic_cast(Sint32, rcr_tab[cr]);
+                        	sg = OFstatic_cast(Sint32, y) - OFstatic_cast(Sint32, gcb_tab[cb]) - OFstatic_cast(Sint32, gcr_tab[cr]);
+                        	sb = OFstatic_cast(Sint32, y) + OFstatic_cast(Sint32, bcb_tab[cb]);
+                            *(r++) = (sr < 0) ? 0 : (sr > OFstatic_cast(Sint32, maxvalue)) ? maxvalue : OFstatic_cast(T2, sr);
+                            *(g++) = (sg < 0) ? 0 : (sg > OFstatic_cast(Sint32, maxvalue)) ? maxvalue : OFstatic_cast(T2, sg);
+                            *(b++) = (sb < 0) ? 0 : (sb > OFstatic_cast(Sint32, maxvalue)) ? maxvalue : OFstatic_cast(T2, sb);
                         }
                     }
                 }
@@ -197,7 +195,7 @@ class DiYBRPixelTemplate
                         register const T1 *y = pixel;
                         register const T1 *cb = y + InputCount;
                         register const T1 *cr = cb + InputCount;
-                        for (i = count; i != 0; i--)
+                        for (i = count; i != 0; --i)
                             convertValue(*(r++), *(g++), *(b++), removeSign(*(y++), offset), removeSign(*(cb++), offset),
                                 removeSign(*(cr++), offset), maxvalue);
 */
@@ -209,7 +207,7 @@ class DiYBRPixelTemplate
                         while (i != 0)
                         {
                             /* convert a single frame */
-                            for (l = planeSize; (l != 0) && (i != 0); l--, i--)
+                            for (l = planeSize; (l != 0) && (i != 0); --l, --i)
                             {
                                 convertValue(*(r++), *(g++), *(b++), removeSign(*(y++), offset), removeSign(*(cb++), offset),
                                     removeSign(*(cr++), offset), maxvalue);
@@ -227,7 +225,7 @@ class DiYBRPixelTemplate
                         register T2 cb;
                         register T2 cr;
                         register unsigned long i;
-                        for (i = count; i != 0; i--)
+                        for (i = count; i != 0; --i)
                         {
                             y = removeSign(*(p++), offset);
                             cb = removeSign(*(p++), offset);
@@ -245,10 +243,10 @@ class DiYBRPixelTemplate
                     // number of pixels to be skipped (only applicable if 'PixelData' contains more
                     // pixels than expected)
                     const unsigned long skip = (InputCount > Count) ? (InputCount - Count) : 0;
-                    for (int j = 0; j < 3; j++)
+                    for (int j = 0; j < 3; ++j)
                     {
                         q = Data[j];
-                        for (i = count; i != 0; i--)
+                        for (i = count; i != 0; --i)
                             *(q++) = removeSign(*(p++), offset);
                         // skip to beginning of next plane
                         p += skip;
@@ -260,10 +258,10 @@ class DiYBRPixelTemplate
                     {
                         /* store current pixel index */
                         const unsigned long iStart = i;
-                        for (int j = 0; j < 3; j++)
+                        for (int j = 0; j < 3; ++j)
                         {
                             /* convert a single plane */
-                            for (l = planeSize, i = iStart; (l != 0) && (i < count); l--, i++)
+                            for (l = planeSize, i = iStart; (l != 0) && (i < count); --l, ++i)
                                 Data[j][i] = removeSign(*(p++), offset);
                         }
                     }
@@ -272,8 +270,8 @@ class DiYBRPixelTemplate
                 {
                     register int j;
                     register unsigned long i;
-                    for (i = 0; i < count; i++)                         /* for all pixel ... */
-                        for (j = 0; j < 3; j++)
+                    for (i = 0; i < count; ++i)                         /* for all pixel ... */
+                        for (j = 0; j < 3; ++j)
                             Data[j][i] = removeSign(*(p++), offset);    /* ... copy planes */
                 }
             }
@@ -284,12 +282,12 @@ class DiYBRPixelTemplate
      */
     inline void convertValue(T2 &red, T2 &green, T2 &blue, const T2 y, const T2 cb, const T2 cr, const T2 maxvalue)
     {
-        double dr = (double)y + 1.4020 * (double)cr - 0.7010 * double(maxvalue);
-        double dg = (double)y - 0.3441 * (double)cb - 0.7141 * (double)cr + 0.5291 * double(maxvalue);
-        double db = (double)y + 1.7720 * (double)cb - 0.8859 * double(maxvalue);
-        red   = (dr < 0.0) ? 0 : (dr > (double)maxvalue) ? maxvalue : (T2)dr;
-        green = (dg < 0.0) ? 0 : (dg > (double)maxvalue) ? maxvalue : (T2)dg;
-        blue  = (db < 0.0) ? 0 : (db > (double)maxvalue) ? maxvalue : (T2)db;
+        double dr = OFstatic_cast(double, y) + 1.4020 * OFstatic_cast(double, cr) - 0.7010 * OFstatic_cast(double, maxvalue);
+        double dg = OFstatic_cast(double, y) - 0.3441 * OFstatic_cast(double, cb) - 0.7141 * OFstatic_cast(double, cr) + 0.5291 * OFstatic_cast(double, maxvalue);
+        double db = OFstatic_cast(double, y) + 1.7720 * OFstatic_cast(double, cb) - 0.8859 * OFstatic_cast(double, maxvalue);
+        red   = (dr < 0.0) ? 0 : (dr > OFstatic_cast(double, maxvalue)) ? maxvalue : OFstatic_cast(T2, dr);
+        green = (dg < 0.0) ? 0 : (dg > OFstatic_cast(double, maxvalue)) ? maxvalue : OFstatic_cast(T2, dg);
+        blue  = (db < 0.0) ? 0 : (db > OFstatic_cast(double, maxvalue)) ? maxvalue : OFstatic_cast(T2, db);
     }
 };
 
@@ -301,7 +299,14 @@ class DiYBRPixelTemplate
  *
  * CVS/RCS Log:
  * $Log: diybrpxt.h,v $
- * Revision 1.13  2002-06-26 16:20:19  joergr
+ * Revision 1.14  2003-12-23 12:30:34  joergr
+ * Adapted type casts to new-style typecast operators defined in ofcast.h.
+ * Removed leading underscore characters from preprocessor symbols (reserved
+ * symbols). Updated copyright header.
+ * Replaced post-increment/decrement operators by pre-increment/decrement
+ * operators where appropriate (e.g. 'i++' by '++i').
+ *
+ * Revision 1.13  2002/06/26 16:20:19  joergr
  * Enhanced handling of corrupted pixel data and/or length.
  * Corrected decoding of multi-frame, planar images.
  *
