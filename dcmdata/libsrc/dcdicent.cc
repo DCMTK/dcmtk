@@ -9,10 +9,10 @@
 ** A dictionary entry in the loadable DICOM data dictionary
 ** 
 **
-** Last Update:		$Author: meichel $
-** Update Date:		$Date: 1997-07-31 14:40:36 $
+** Last Update:		$Author: hewett $
+** Update Date:		$Date: 1997-08-26 13:48:27 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcdicent.cc,v $
-** CVS/RCS Revision:	$Revision: 1.4 $
+** CVS/RCS Revision:	$Revision: 1.5 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -38,15 +38,17 @@ DcmDictEntry::DcmDictEntry()
     valueMultiplicityMin = valueMultiplicityMax = 0;
     standardVersion = (char*)NULL;
     groupRangeRestriction = elementRangeRestriction = DcmDictRange_Unspecified;
+    stringsAreCopies = OFFalse;
 }
 
-DcmDictEntry::DcmDictEntry(DcmTagKey k) : DcmTagKey(k)
+DcmDictEntry::DcmDictEntry(const DcmTagKey& k) : DcmTagKey(k)
 {
     upperKey.set(k);
     tagName = (char*)NULL;
     valueMultiplicityMin = valueMultiplicityMax = 0;
     standardVersion = (char*)NULL;
     groupRangeRestriction = elementRangeRestriction = DcmDictRange_Unspecified;
+    stringsAreCopies = OFFalse;
 }
 
 static
@@ -98,23 +100,23 @@ DcmDictEntry::DcmDictEntry(Uint16 g, Uint16 e, Uint16 ug, Uint16 ue, DcmVR vr,
     groupRangeRestriction = elementRangeRestriction = DcmDictRange_Unspecified;
 }
 
-DcmDictEntry::DcmDictEntry(DcmDictEntry &dict)
-: DcmTagKey(dict)
-, upperKey(dict.upperKey)
-, valueRepresentation(dict.valueRepresentation)
-, groupRangeRestriction(dict.groupRangeRestriction)
-, elementRangeRestriction(dict.elementRangeRestriction)
+DcmDictEntry::DcmDictEntry(const DcmDictEntry& e)
+    : DcmTagKey(e)
+    , upperKey(e.upperKey)
+    , valueRepresentation(e.valueRepresentation)
+    , groupRangeRestriction(e.groupRangeRestriction)
+    , elementRangeRestriction(e.elementRangeRestriction)
 {
-    valueMultiplicityMin = dict.valueMultiplicityMin;
-    valueMultiplicityMax = dict.valueMultiplicityMax;
-    stringsAreCopies = dict.stringsAreCopies;
+    valueMultiplicityMin = e.valueMultiplicityMin;
+    valueMultiplicityMax = e.valueMultiplicityMax;
+    stringsAreCopies = e.stringsAreCopies;
     if (stringsAreCopies)
     {
-        tagName = strdup_new(dict.tagName);
-	standardVersion = strdup_new(dict.standardVersion);
+        tagName = strdup_new(e.tagName);
+	standardVersion = strdup_new(e.standardVersion);
     } else {
-        tagName = dict.tagName;
-        standardVersion = dict.standardVersion;
+        tagName = e.tagName;
+        standardVersion = e.standardVersion;
     }
 }
 
@@ -176,7 +178,10 @@ ostream& operator<<(ostream& s, const DcmDictEntry& e) {
 /*
 ** CVS/RCS Log:
 ** $Log: dcdicent.cc,v $
-** Revision 1.4  1997-07-31 14:40:36  meichel
+** Revision 1.5  1997-08-26 13:48:27  hewett
+** Modified constructors to take const reference parameters.
+**
+** Revision 1.4  1997/07/31 14:40:36  meichel
 ** Created copy constructor for class DcmDictEntry, required by dcmcheck.
 **
 ** Revision 1.3  1997/07/21 08:25:24  andreas
