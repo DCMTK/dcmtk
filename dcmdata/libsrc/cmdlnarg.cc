@@ -23,9 +23,9 @@
  *  for OS environments which cannot pass arguments on the command line.
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-03-31 09:25:14 $
+ *  Update Date:      $Date: 1999-04-21 15:45:10 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/cmdlnarg.cc,v $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -98,7 +98,7 @@ void prepareCmdLineArgs(int& argc, char* argv[],
 void prepareCmdLineArgs(int& /* argc */, char** /* argv */, 
 			const char* /* progname */)
 {
-#ifdef windows
+#ifdef _WIN32
     /* Map stderr onto stdout (cannot redirect stderr under windows).
      * Remove any buffering (windows uses a 2k buffer for stdout when not
      * writing to the console.  since dcmtk uses mixed stdout, stderr 
@@ -137,7 +137,11 @@ void prepareCmdLineArgs(int& /* argc */, char** /* argv */,
 /*
 ** CVS/RCS Log:
 ** $Log: cmdlnarg.cc,v $
-** Revision 1.4  1999-03-31 09:25:14  meichel
+** Revision 1.5  1999-04-21 15:45:10  meichel
+** Now always including <windows.h> instead of <winsock.h> on Win32 platforms.
+**   This makes sure that <winsock2.h> is used if available.
+**
+** Revision 1.4  1999/03/31 09:25:14  meichel
 ** Updated copyright header in module dcmdata
 **
 ** Revision 1.3  1999/03/17 11:09:21  meichel
