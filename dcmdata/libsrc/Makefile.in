@@ -29,7 +29,7 @@ support_progs= mkdeftag mkdictbi
 support_objs= mkdeftag.o mkdictbi.o
 
 dictobjs=	dctagkey.o dcdicent.o dcdict.o dcdictbi.o \
-		dcentset.o dcentbst.o dcvr.o
+		dcentset.o dcentbst.o dcentlst.o dcvr.o
 
 objs= 	dcpixseq.o dcpxitem.o dcuid.o dcerror.o dcbuf.o \
 	dcstack.o dclist.o dcswap.o dcstream.o dctag.o dcxfer.o \

@@ -1,3 +1,23 @@
+/*
+**
+** Author: Andrew Hewett	Created: 4.11.95
+** Kuratorium OFFIS e.V.
+**
+** Module: dcdicent.cc
+**
+** Purpose:
+** A dictionary entry in the loadable DICOM data dictionary
+** 
+**
+** Last Update:		$Author: hewett $
+** Update Date:		$Date: 1996-03-20 16:44:04 $
+** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcdicent.cc,v $
+** CVS/RCS Revision:	$Revision: 1.2 $
+** Status:		$State: Exp $
+**
+** CVS/RCS Log at end of file
+**
+*/
 
 #include "osconfig.h"    /* make sure OS specific configuration is included first */
 
@@ -17,14 +37,16 @@ DcmDictEntry::DcmDictEntry()
     tagName = (char*)NULL;
     valueMultiplicityMin = valueMultiplicityMax = 0;
     standardVersion = (char*)NULL;
+    groupRangeRestriction = elementRangeRestriction = DcmDictRange_Unspecified;
 }
 
-DcmDictEntry::DcmDictEntry(DcmTagKey k) : DcmTagKey(k) 
+DcmDictEntry::DcmDictEntry(DcmTagKey k) : DcmTagKey(k)
 {
     upperKey.set(k);
     tagName = (char*)NULL;
     valueMultiplicityMin = valueMultiplicityMax = 0;
     standardVersion = (char*)NULL;
+    groupRangeRestriction = elementRangeRestriction = DcmDictRange_Unspecified;
 }
 
 static
@@ -54,6 +76,7 @@ DcmDictEntry::DcmDictEntry(Uint16 g, Uint16 e, DcmVR vr,
 	standardVersion = vers;
     }
     stringsAreCopies = doCopyStrings;
+    groupRangeRestriction = elementRangeRestriction = DcmDictRange_Unspecified;
 }
 
 DcmDictEntry::DcmDictEntry(Uint16 g, Uint16 e, Uint16 ug, Uint16 ue, DcmVR vr, 
@@ -72,6 +95,7 @@ DcmDictEntry::DcmDictEntry(Uint16 g, Uint16 e, Uint16 ug, Uint16 ue, DcmVR vr,
 	standardVersion = vers;
     }
     stringsAreCopies = doCopyStrings;
+    groupRangeRestriction = elementRangeRestriction = DcmDictRange_Unspecified;
 }
     
 DcmDictEntry::~DcmDictEntry()
@@ -127,3 +151,15 @@ ostream& operator<<(ostream& s, const DcmDictEntry& e) {
     }
     return s;
 }
+
+/*
+** CVS/RCS Log:
+** $Log: dcdicent.cc,v $
+** Revision 1.2  1996-03-20 16:44:04  hewett
+** Updated for revised data dictionary.  Repeating tags are now handled better.
+** A linear list of repeating tags has been introduced with a subset ordering
+** mechanism to ensure that dictionary searches locate the most precise
+** dictionary entry.
+**
+**
+*/

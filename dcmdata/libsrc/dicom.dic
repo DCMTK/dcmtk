@@ -1,13 +1,20 @@
 #
 # This is the global DICOM data dictionary for the dcm toolkit dcmdata
 # class library.
+#
 # Each line represents an entry in the data dictionary.  Each line
 # has 5 fields (Tag, VR, Name, VM, Version).  Entries need not be
 # in assending tag order.
+#
 # Each field must be separated by a single tab.  The tag values (gggg,eeee) 
 # must be in hexedecimal and must be surrounded by parentheses.  Repeating 
-# groups are represented by indicating the range (gggg-gggg,eeee).
-# Comments must have a '#' at the beginning of the line.
+# groups are represented by indicating the range (gggg-gggg,eeee).  By default
+# the repeating notation only represents even numbers.  A range where only
+# odd numbers are valid is represented using the notation (gggg-o-gggg,eeee).
+# A range can represent both even and odd numbers using the notation
+# (gggg-u-gggg,eeee).  The element part of the tag can also be a range.
+#
+# Comments have a '#' at the beginning of the line.
 #
 # Tag		VR	Name			VM	Version
 #
@@ -816,29 +823,16 @@
 #----------------------------------------------------------------------------
 #
 # Private Creator Data Elements
-#    There are certainly many more possibilities but these 
-#    are the ones I have seen (1996.3.8 - Andrew Hewett).
 #
-(0009,0000)	UL	GroupLength0009	1	PRIVATE
-(0009,0010-00ff)	LO	PrivateCreatorGroup0009	1	PRIVATE
-(0011,0000)	UL	GroupLength0011	1	PRIVATE
-(0011,0010-00ff)	LO	PrivateCreatorGroup0011	1	PRIVATE
-(0013,0000)	UL	GroupLength0013	1	PRIVATE
-(0013,0010-00ff)	LO	PrivateCreatorGroup0013	1	PRIVATE
-(0019,0000)	UL	GroupLength0019	1	PRIVATE
-(0019,0010-00ff)	LO	PrivateCreatorGroup0019	1	PRIVATE
-(0021,0000)	UL	GroupLength0021	1	PRIVATE
-(0021,0010-00ff)	LO	PrivateCreatorGroup0021	1	PRIVATE
-(0029,0000)	UL	GroupLength0029	1	PRIVATE
-(0029,0010-00ff)	LO	PrivateCreatorGroup0029	1	PRIVATE
-(0041,0000)	UL	GroupLength0041	1	PRIVATE
-(0041,0010-00ff)	LO	PrivateCreatorGroup0041	1	PRIVATE
-(0051,0000)	UL	GroupLength0051	1	PRIVATE
-(0051,0010-00ff)	LO	PrivateCreatorGroup0051	1	PRIVATE
-(009b,0000)	UL	GroupLength009b	1	PRIVATE
-(009b,0010-00ff)	LO	PrivateCreatorGroup009b	1	PRIVATE
-(6001,0000)	UL	GroupLength6001	1	PRIVATE
-(6001,0010-00ff)	LO	PrivateCreatorGroup6001	1	PRIVATE
-(7001,0000)	UL	GroupLength7001	1	PRIVATE
-(7001,0010-00ff)	LO	PrivateCreatorGroup7001	1	PRIVATE
-
+(0009-o-ffff,0000)	UL	PrivateGroupLength	1	PRIVATE
+(0009-o-ffff,0001)	UL	PrivateGroupLengthToEnd	1	PRIVATE
+(0009-o-ffff,0010-00ff)	LO	PrivateCreator	1	PRIVATE
+(0001-o-0007,0000)	UL	IllegalGroupLength	1	ILLEGAL
+(0001-o-0007,0001)	UL	IllegalGroupLengthToEnd	1	ILLEGAL
+#
+#----------------------------------------------------------------------------
+#
+# A "catch all" for group length elements.
+#
+(0000-u-ffff,0000)	UL	GenericGroupLength	1	GENERIC
+(0000-u-ffff,0001)	UL	GenericGroupLengthToEnd	1	GENERIC

@@ -1,3 +1,23 @@
+/*
+**
+** Author: Andrew Hewett	Created: 4.11.95
+** Kuratorium OFFIS e.V.
+**
+** Module: dcdicent.h
+**
+** Purpose:
+** Interface for a dictionary entry in the loadable DICOM data dictionary
+** 
+**
+** Last Update:		$Author: hewett $
+** Update Date:		$Date: 1996-03-20 16:43:49 $
+** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcdicent.h,v $
+** CVS/RCS Revision:	$Revision: 1.3 $
+** Status:		$State: Exp $
+**
+** CVS/RCS Log at end of file
+**
+*/
 
 #ifndef DCDICENT_H
 #define DCDICENT_H 1
@@ -13,11 +33,18 @@
 #define DcmVariableVM	-1
 
 #define DCM_INRANGE(x,a,b) (((x) >= (a)) && ((x) <= (b)))
-
+#define DCM_IS_ODD(x) (((x) % 2) == 1)
+#define DCM_IS_EVEN(x) (((x) % 2) == 0)
 
 /*
  * DcmDictEntry is an entry in the DICOM Data Dictionary
  */ 
+
+enum DcmDictRangeRestriction {
+    DcmDictRange_Unspecified,
+    DcmDictRange_Odd,
+    DcmDictRange_Even
+};
 
 class DcmDictEntry : public DcmTagKey {
 private:
@@ -28,6 +55,8 @@ private:
     int		valueMultiplicityMax;
     const char*	standardVersion;
     BOOL	stringsAreCopies;
+    DcmDictRangeRestriction groupRangeRestriction;
+    DcmDictRangeRestriction elementRangeRestriction;
 
 public:
     /* constructors */
@@ -61,26 +90,25 @@ public:
     void setUpperElement(Uint16 ue);
     Uint16 getUpperGroup() const;
     Uint16 getUpperElement() const;
+
+    DcmTagKey getKey();
+    DcmTagKey getUpperKey();
     
     int isRepeatingGroup() const;
     int isRepeatingElement() const;
     int isRepeating() const;
 
-    /* comparisons */
-    int groupLT(const DcmDictEntry& key) const;
-    int groupGT(const DcmDictEntry& key) const; 
-    int groupEQ(const DcmDictEntry& key) const;
-    int elementLT(const DcmDictEntry& key) const;
-    int elementGT(const DcmDictEntry& key) const;
-    int elementEQ(const DcmDictEntry& key) const;
+    DcmDictRangeRestriction getGroupRangeRestriction() const;
+    void setGroupRangeRestriction(DcmDictRangeRestriction rr);
+    DcmDictRangeRestriction getElementRangeRestriction() const;
+    void setElementRangeRestriction(DcmDictRangeRestriction rr);
 
-    /* operators */
-    int operator == (const DcmDictEntry& key) const;
-    int operator != (const DcmDictEntry& key) const;
-    int operator < (const DcmDictEntry& key) const;
-    int operator > (const DcmDictEntry& key) const;
-    int operator <= (const DcmDictEntry& key) const;
-    int operator >= (const DcmDictEntry& key) const;
+    /* containment */
+    int contains(const DcmTagKey& key) const; /* this contains key */
+
+    /* set relations */
+    int subset(const DcmDictEntry& e) const; /* this is a subset of key */
+    int setEQ(const DcmDictEntry& e) const; /* this is set equal to key */
 
     friend  ostream& operator<<(ostream& s, const DcmDictEntry& e);
 };
@@ -176,7 +204,19 @@ DcmDictEntry::getUpperElement() const
 { 
     return upperKey.getElement(); 
 }
-    
+
+inline DcmTagKey 
+DcmDictEntry::getKey()
+{
+    return *(DcmTagKey*)(this);
+}
+
+inline DcmTagKey 
+DcmDictEntry::getUpperKey()
+{
+    return upperKey;
+}
+
 inline int 
 DcmDictEntry::isRepeatingGroup() const 
 { 
@@ -195,84 +235,86 @@ DcmDictEntry::isRepeating() const
     return (isRepeatingGroup() || isRepeatingElement()); 
 }
 
-/* comparisons */
-
-inline int 
-DcmDictEntry::groupLT(const DcmDictEntry& key) const
-{ 
-    return (getUpperGroup() < key.getGroup()); 
-}
-
-inline int 
-DcmDictEntry::groupGT(const DcmDictEntry& key) const
-{ 
-    return (getGroup() > key.getUpperGroup()); 
-}
-
-inline int 
-DcmDictEntry::groupEQ(const DcmDictEntry& key) const
+inline DcmDictRangeRestriction 
+DcmDictEntry::getGroupRangeRestriction() const
 {
-    return (
-	DCM_INRANGE(key.getGroup(), getGroup(), getUpperGroup()) ||
-	DCM_INRANGE(getGroup(), key.getGroup(), key.getUpperGroup()) ); 
+    return groupRangeRestriction;
 }
 
-inline int 
-DcmDictEntry::elementLT(const DcmDictEntry& key) const
-{ 
-    return (getUpperElement() < key.getElement()); 
-}
-
-inline int 
-DcmDictEntry::elementGT(const DcmDictEntry& key) const
-{ 
-    return (getElement() > key.getUpperElement()); 
-}
-
-inline int 
-DcmDictEntry::elementEQ(const DcmDictEntry& key) const
+inline void 
+DcmDictEntry::setGroupRangeRestriction(DcmDictRangeRestriction rr)
 {
-    return (
-	DCM_INRANGE(key.getElement(), getElement(), getUpperElement()) ||
-	DCM_INRANGE(getElement(), key.getElement(), key.getUpperElement()) ); 
+    groupRangeRestriction = rr;
 }
 
-    /* operators */
-inline int 
-DcmDictEntry::operator == (const DcmDictEntry& key) const
-{ 
-    return ( groupEQ(key) && elementEQ(key) ); 
+inline DcmDictRangeRestriction 
+DcmDictEntry::getElementRangeRestriction() const
+{
+    return elementRangeRestriction;
 }
 
-inline int 
-DcmDictEntry::operator != (const DcmDictEntry& key) const
-{ 
-    return !(*this == key); 
+inline void 
+DcmDictEntry::setElementRangeRestriction(DcmDictRangeRestriction rr)
+{
+    elementRangeRestriction = rr;
 }
 
+/* containment */
 inline int 
-DcmDictEntry::operator < (const DcmDictEntry& key) const
-{ 
-    return (groupLT(key) || (groupEQ(key) && elementLT(key)) ); 
+DcmDictEntry::contains(const DcmTagKey& key) const
+{
+    if ((getGroupRangeRestriction() == DcmDictRange_Even) && 
+	DCM_IS_ODD(getGroup()))
+	return FALSE;
+    if ((getGroupRangeRestriction() == DcmDictRange_Odd) &&
+	DCM_IS_EVEN(getGroup())) 
+	return FALSE;
+    if ((getElementRangeRestriction() == DcmDictRange_Even) &&
+	DCM_IS_ODD(getElement()))
+	return FALSE;
+    if ((getElementRangeRestriction() == DcmDictRange_Odd) &&
+	DCM_IS_EVEN(getElement()))
+	return FALSE;
+
+    return 
+	DCM_INRANGE(key.getGroup(), getGroup(), getUpperGroup()) &&
+	DCM_INRANGE(key.getElement(), getElement(), getUpperElement());
 }
 
+/* set relations */
 inline int 
-DcmDictEntry::operator > (const DcmDictEntry& key) const
-{ 
-    return (groupGT(key) || (groupEQ(key) && elementGT(key)) ); 
+DcmDictEntry::subset(const DcmDictEntry& e) const
+{
+    return ( (getGroup() >= e.getGroup()) &&
+	     (getUpperGroup() <= e.getUpperGroup()) &&
+	     (getElement() >= e.getElement()) &&
+	     (getUpperElement() <= e.getUpperElement())
+	); 
 }
 
-inline int 
-DcmDictEntry::operator <= (const DcmDictEntry& key) const
-{  
-    return (*this < key) || (*this == key); 
+inline int
+DcmDictEntry::setEQ(const DcmDictEntry& e) const
+{
+    return ( (getGroup() == e.getGroup()) &&
+	     (getUpperGroup() == e.getUpperGroup()) &&
+	     (getElement() == e.getElement()) &&
+	     (getUpperElement() == e.getUpperElement()) &&
+	     (getGroupRangeRestriction() == e.getGroupRangeRestriction()) &&
+	     (getElementRangeRestriction() == e.getElementRangeRestriction())
+	); 
 }
 
-inline int 
-DcmDictEntry::operator >= (const DcmDictEntry& key) const
-{ 
-    return (*this > key) || (*this == key); 
-}
 
 #endif /* !DCDICENT_H */
 
+/*
+** CVS/RCS Log:
+** $Log: dcdicent.h,v $
+** Revision 1.3  1996-03-20 16:43:49  hewett
+** Updated for revised data dictionary.  Repeating tags are now handled better.
+** A linear list of repeating tags has been introduced with a subset ordering
+** mechanism to ensure that dictionary searches locate the most precise
+** dictionary entry.
+**
+**
+*/

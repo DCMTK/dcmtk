@@ -1,3 +1,23 @@
+/*
+**
+** Author: Andrew Hewett	Created: 4.11.95
+** Kuratorium OFFIS e.V.
+**
+** Module: dcdict.h
+**
+** Purpose:
+** Interface for loadable DICOM data dictionary
+** 
+**
+** Last Update:		$Author: hewett $
+** Update Date:		$Date: 1996-03-20 16:43:49 $
+** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcdict.h,v $
+** CVS/RCS Revision:	$Revision: 1.4 $
+** Status:		$State: Exp $
+**
+** CVS/RCS Log at end of file
+**
+*/
 
 #ifndef DCMDICT_H
 #define DCMDICT_H 1
@@ -6,6 +26,7 @@
 
 #include "dcdicent.h"
 #include "dcentbst.h"
+#include "dcentlst.h"
 
 
 /*
@@ -37,8 +58,7 @@
 class DcmDataDictionary {
 private:
     DcmDictEntryPtrBSTSet dict;    /* dictionary of normal tags */
-    DcmDictEntryPtrBSTSet repElementDict; /* dictionary of repeating element tags */
-    DcmDictEntryPtrBSTSet repGroupDict; /* dictionary of repeating group tags */
+    DcmDictEntryList repDict; /* dictionary of repeating tags */
 
 protected:
     /* Load external dictionaries defined via environment variables */
@@ -58,10 +78,9 @@ public:
     DcmDataDictionary(BOOL loadBuiltin=FALSE, BOOL loadExternal=FALSE);
     ~DcmDataDictionary();
 
-    /* the number of entries in the complete dictionary */
-    int numberOfEntries() { 
-	return dict.length() + repElementDict.length() + 
-	    repGroupDict.length(); }
+    /* the number of normal/repeating tag entries  */
+    int numberOfNormalTagEntries() { return dict.length(); }
+    int numberOfRepeatingTagEntries() { return repDict.length(); }
 
     /*
      * Load a particular dictionary from file.
@@ -73,8 +92,7 @@ public:
     /* 
      * Dictionary lookups are performed by looking for a key. 
      * First the normal tag dictionary is searched.  If not found
-     * then the repeating element dictionary is searched, then the
-     * repeating group dictionary.
+     * then the repeating tag dictionary is searched.
      */
     const DcmDictEntry* findEntry(const DcmTagKey& key);
 
@@ -96,27 +114,19 @@ public:
      * for (Pix p = D.first(); p != NULL; D.next(p)) 
      *     WHATEVER(D.contents(p)); 
      */
-    Pix first() { return dict.first(); }
-    void next(Pix& i) { dict.next(i); }
-    const DcmDictEntry* contents(Pix i) { return dict(i); }
-
-    /* 
-     * For stepping through the repeating element tags of dictionary D use:
-     * for (Pix p = D.repElementFirst(); p != NULL; D.repElementNext(p)) 
-     *     WHATEVER(D.repElementContents(p)); 
-     */
-    Pix repElementFirst() { return repElementDict.first(); }
-    void repElementNext(Pix& i) { repElementDict.next(i); }
-    const DcmDictEntry* repElementContents(Pix i) { return repElementDict(i); }
+    Pix normalFirst() { return dict.first(); }
+    void normalNext(Pix& i) { dict.next(i); }
+    const DcmDictEntry* normalContents(Pix i) { return dict(i); }
 
     /*
-     * For stepping through the repeating group tags of dictionary D use:
-     * for (Pix p = D.repGroupFirst(); p != NULL; D.repGroupNext(p)) 
-     *     WHATEVER(D.repGroupContents(p)); 
+     * For stepping through the repeating tags of dictionary D use:
+     * for (Pix p = D.repFirst(); p != NULL; D.repNext(p)) 
+     *     WHATEVER(D.repContents(p)); 
      */
-    Pix repGroupFirst() { return repGroupDict.first(); }
-    void repGroupNext(Pix& i) { repGroupDict.next(i); }
-    const DcmDictEntry* repGroupContents(Pix i) { return repGroupDict(i); }
+    Pix repeatingFirst() { return repDict.first(); }
+    void repeatingNext(Pix& i) { repDict.next(i); }
+    const DcmDictEntry* repeatingContents(Pix i) { return repDict.contents(i); }
+
 };
 
 
@@ -125,7 +135,7 @@ public:
 **
 ** Will be created before main() starts.  
 **
-** Tries to load a builtin data dictionary (if compiled in)
+** Tries to load a builtin data dictionary (if compiled in).
 ** Tries to load data dictionaries from files specified by
 ** the DCMDICTPATH environment variable.  If this environment
 ** variable does not exist then a default file is loaded (if
@@ -139,3 +149,17 @@ public:
 extern DcmDataDictionary dcmDataDict;
 
 #endif
+
+
+/*
+** CVS/RCS Log:
+** $Log: dcdict.h,v $
+** Revision 1.4  1996-03-20 16:43:49  hewett
+** Updated for revised data dictionary.  Repeating tags are now handled better.
+** A linear list of repeating tags has been introduced with a subset ordering
+** mechanism to ensure that dictionary searches locate the most precise
+** dictionary entry.
+**
+**
+*/
+

@@ -9,21 +9,51 @@
 ** the dcmdata library.  
 **
 ** Last Update:		$Author: hewett $
-** Update Date:		$Date: 1996-03-12 15:21:24 $
+** Update Date:		$Date: 1996-03-20 16:44:07 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/mkdictbi.cc,v $
-** CVS/RCS Revision:	$Revision: 1.2 $
+** CVS/RCS Revision:	$Revision: 1.3 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
 **
 */
 
+
+#include "osconfig.h"    /* make sure OS specific configuration is included first */
+
 #include <stdio.h>
+#ifdef HAVE_STDLIB_H
 #include <stdlib.h>
+#endif
+#include <string.h>
+#include <ctype.h>
 #include <time.h>
+#ifdef HAVE_SYS_UTSNAME_H
+#include <sys/utsname.h>
+#endif
 
 #include "dcdict.h"
 
+static const char*
+rr2s(DcmDictRangeRestriction rr)
+{
+    const char* s;
+    switch (rr) {
+    case DcmDictRange_Unspecified:
+	s = "DcmDictRange_Unspecified";
+	break;
+    case DcmDictRange_Odd:
+	s = "DcmDictRange_Odd";
+	break;
+    case DcmDictRange_Even:
+	s = "DcmDictRange_Even";
+	break;
+    default:
+	s = "DcmDictRange_GENERATOR_ERROR";
+	break;
+    }
+    return s;
+}
 
 static void 
 printSimpleEntry(FILE* fout, const DcmDictEntry* e, int lastEntry)
@@ -31,11 +61,13 @@ printSimpleEntry(FILE* fout, const DcmDictEntry* e, int lastEntry)
     fprintf(fout, "    { 0x%04x, 0x%04x, 0x%04x, 0x%04x,\n",
 	    e->getGroup(), e->getElement(), 
 	    e->getUpperGroup(), e->getUpperElement());
-    fprintf(fout, "      ((DcmEVR)(%d)) /*%s*/, \"%s\", %d, %d, \"%s\" }",
+    fprintf(fout, "      ((DcmEVR)(%d)) /*%s*/, \"%s\", %d, %d, \"%s\",\n",
 	    int(e->getVR().getEVR()), e->getVR().getVRName(),
 	    e->getTagName(), 
 	    e->getVMMin(), e->getVMMax(),
 	    e->getStandardVersion());
+    fprintf(fout, "      %s, %s }", rr2s(e->getGroupRangeRestriction()),
+	    rr2s(e->getElementRangeRestriction()));
     if (!lastEntry) {
     	fprintf(fout, ",\n");
     } else {
@@ -57,15 +89,65 @@ stripTrailing(char* s, char c)
 }
 
 static char*
-getDateString(char* dateString)
+getDateString(char* dateString, int maxLen)
 {
     time_t systime = time(NULL);
     const char *ct = ctime(&systime);
-    strcpy(dateString, ct);
+    strncpy(dateString, ct, maxLen);
     stripTrailing(dateString, '\n');
     return dateString;
 }
 
+
+#ifdef HAVE_CUSERID
+static char*
+getUserName(char* userString, int maxLen)
+{
+    char* s;
+    s = cuserid(NULL);
+    return strncpy(userString, s, maxLen);
+}
+#elif HAVE_GETLOGIN
+static char*
+getUserName(char* userString, int maxLen)
+{
+    char* s;
+    s = getlogin();
+    if (s == NULL) s = "<no-utmp-entry>";
+    return strncpy(userString, s, maxLen);
+}
+#else
+static char*
+getUserName(char* userString, int maxLen)
+{
+    char* s = "<unknown-user>";
+    return strncpy(userString, s, maxLen);
+}
+#endif
+
+#ifdef HAVE_UNAME
+static char*
+getHostName(char* hostString, int maxLen)
+{
+    struct utsname n;
+    uname(&n);
+    strncpy(hostString, n.nodename, maxLen);
+    return hostString;
+}
+#elif HAVE_GETHOSTNAME
+static char*
+getHostName(char* userString, int maxLen)
+{
+    gethostname(userString, maxLen);
+    return userString;
+}
+#else
+static char*
+getHostName(char* hostString, int maxLen)
+{
+    return strncpy(hostString, "localhost", maxLen);
+}
+#endif    
 
 int 
 main(int argc, char* argv[])
@@ -85,17 +167,30 @@ main(int argc, char* argv[])
     
     fout = stdout;
 
-    /* generate c++ code for static dictionary */
+    char dateString[512];
+    getDateString(dateString, 512);
 
-    char dateString[128];
-    getDateString(dateString);
+    /* generate c++ code for static dictionary */
 
     fprintf(fout, "/*\n");
     fprintf(fout, "** DO NOT EDIT\n");
     fprintf(fout, "** This file is generated automatically by:\n");
-    fprintf(fout, "** Prog: %s\n", progname);
+#ifndef SUPRESS_CREATE_STAMP
+    /* 
+     * Putting the date in the file will confuse CVS/RCS 
+     * if nothing has changed except the generation date.
+     * This is only an issue if the header file is continually 
+     * generated new.
+     */
     fputs("**\n", fout);
-    fprintf(fout, "** Date: %s\n", dateString);
+    char tmpString[512];
+    getUserName(tmpString, 512);
+    fprintf(fout, "**   User: %s\n", tmpString);
+    getHostName(tmpString, 512);
+    fprintf(fout, "**   Host: %s\n", tmpString);
+    fprintf(fout, "**   Date: %s\n", dateString);
+#endif
+    fprintf(fout, "**   Prog: %s\n", progname);
     fputs("**\n", fout);
     if (argc > 1) {
 	fprintf(fout, "** From: %s\n", argv[1]);
@@ -120,6 +215,8 @@ main(int argc, char* argv[])
     fprintf(fout, "    int vmMin;\n");
     fprintf(fout, "    int vmMax;\n");
     fprintf(fout, "    const char* standardVersion;\n");
+    fprintf(fout, "    DcmDictRangeRestriction groupRestriction;\n");
+    fprintf(fout, "    DcmDictRangeRestriction elementRestriction;\n");
     fprintf(fout, "};\n");
     fprintf(fout, "\n");
     fprintf(fout, "static DBI_SimpleEntry simpleBuiltinDict[] = {\n");
@@ -127,27 +224,16 @@ main(int argc, char* argv[])
     Pix p = NULL;
     Pix pp = NULL;
     int lastEntry = FALSE;
-    for (p = dcmDataDict.first(); p != 0; dcmDataDict.next(p)) {
-        e = dcmDataDict.contents(p);
+    for (p = dcmDataDict.normalFirst(); p != 0; dcmDataDict.normalNext(p)) {
+        e = dcmDataDict.normalContents(p);
         printSimpleEntry(fout, e, lastEntry);
     }
 
-    for (p = dcmDataDict.repElementFirst(); p != 0; 
-	 dcmDataDict.repElementNext(p)) {
-        e = dcmDataDict.repElementContents(p);
+    for (p = dcmDataDict.repeatingFirst(); p != 0; 
+	 dcmDataDict.repeatingNext(p)) {
+        e = dcmDataDict.repeatingContents(p);
         pp = p;
-        dcmDataDict.repElementNext(pp);
-        if (pp == 0) {
-            lastEntry = TRUE;
-        }
-        printSimpleEntry(fout, e, lastEntry);
-    }
-
-    for (p = dcmDataDict.repGroupFirst(); p != 0; 
-	 dcmDataDict.repGoupNext(p)) {
-        e = dcmDataDict.repGroupContents(p);
-        pp = p;
-        dcmDataDict.repGroupNext(pp);
+        dcmDataDict.repeatingNext(pp);
         if (pp == 0) {
             lastEntry = TRUE;
         }
@@ -172,6 +258,8 @@ main(int argc, char* argv[])
     fprintf(fout, "            b->upperGroup, b->upperElement, b->evr,\n");
     fprintf(fout, "            b->tagName, b->vmMin, b->vmMax,\n");
     fprintf(fout, "            b->standardVersion, FALSE);\n");
+    fprintf(fout, "        e->setGroupRangeRestriction(b->groupRestriction);\n");
+    fprintf(fout, "        e->setElementRangeRestriction(b->elementRestriction);\n");
     fprintf(fout, "        addEntry(e);\n");
     fprintf(fout, "    }\n");
     fprintf(fout, "}\n");
@@ -184,7 +272,13 @@ main(int argc, char* argv[])
 /*
 ** CVS/RCS Log:
 ** $Log: mkdictbi.cc,v $
-** Revision 1.2  1996-03-12 15:21:24  hewett
+** Revision 1.3  1996-03-20 16:44:07  hewett
+** Updated for revised data dictionary.  Repeating tags are now handled better.
+** A linear list of repeating tags has been introduced with a subset ordering
+** mechanism to ensure that dictionary searches locate the most precise
+** dictionary entry.
+**
+** Revision 1.2  1996/03/12 15:21:24  hewett
 ** The repeating sub-dictionary has been split into a repeatingElement and
 ** a repeatingGroups dictionary.  This is a temporary measure to reduce the
 ** problem of overlapping dictionary entries.  A full solution will require

@@ -10,9 +10,9 @@
 ** 
 **
 ** Last Update:		$Author: hewett $
-** Update Date:		$Date: 1996-03-12 15:21:22 $
+** Update Date:		$Date: 1996-03-20 16:44:04 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcdict.cc,v $
-** CVS/RCS Revision:	$Revision: 1.4 $
+** CVS/RCS Revision:	$Revision: 1.5 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -83,17 +83,10 @@ void DcmDataDictionary::clear()
    }
    dict.clear();
 
-   for (p = repElementDict.first(); p != NULL; repElementDict.next(p)) {
-       e = repElementDict(p);
+   while ((p = repDict.head()) != NULL) {
+       e = repDict.remove(p);
        delete e;
    }
-   repElementDict.clear();
-
-   for (p = repGroupDict.first(); p != NULL; repGroupDict.next(p)) {
-       e = repGroupDict(p);
-       delete e;
-   }
-   repGroupDict.clear();
 }
 
 
@@ -179,33 +172,92 @@ splitFields(char* line, char* fields[], int maxFields, char splitChar)
 }
 
 static BOOL
-parseWholeTagField(char* s, DcmTagKey& key, DcmTagKey& upperKey)
+parseTagPart(char *s, unsigned int& l, unsigned int& h,
+	     DcmDictRangeRestriction& r)
 {
     BOOL ok = TRUE;
-    unsigned int gl, gh, el, eh;
+    char restrictor = ' ';
     
-    stripWhitespace(s);
+    r = DcmDictRange_Unspecified; /* by default */
 
-    if (sscanf(s, "(%x-%x,%x-%x)", &gl, &gh, &el, &eh) == 4) {
-	/* repeating group and element */
-	key.set(gl,el);
-	upperKey.set(gh,eh);
-    } else if (sscanf(s, "(%x-%x,%x)", &gl, &gh, &el) == 3) {
-	/* only repeating group */
-	key.set(gl,el);
-	upperKey.set(gh, el);
-    } else if (sscanf(s, "(%x,%x-%x)", &gl, &el, &eh) == 3) {
-	/* only repeating element */
-	key.set(gl,el);
-	upperKey.set(gl,eh);
-    } else if (sscanf(s, "(%x,%x)", &gl, &el) == 2) {
-	/* normal element */
-        key.set(gl, el);
-	upperKey.set(gl, el);
+    if (sscanf(s, "%x-%c-%x", &l, &restrictor, &h) == 3) {
+	switch (restrictor) {
+	case 'o':
+	case 'O':
+	    r = DcmDictRange_Odd;
+	    break;
+	case 'e':
+	case 'E':
+	    r = DcmDictRange_Even;
+	    break;
+	case 'u':
+	case 'U':
+	    r = DcmDictRange_Unspecified;
+	    break;
+	default:
+	    cerr << "unknown range restrictor: " << restrictor << endl;
+	    ok = FALSE;
+	    break;
+	}
+    } else if (sscanf(s, "%x-%x", &l, &h) == 2) {
+	r = DcmDictRange_Even; /* by default */
+    } else if (sscanf(s, "%x", &l) == 1) {
+	h = l;
     } else {
-        ok = FALSE;
+	ok = FALSE;
     }
     return ok;
+}
+
+static BOOL
+parseWholeTagField(char* s, DcmTagKey& key, 
+		   DcmTagKey& upperKey,
+		   DcmDictRangeRestriction& groupRestriction,
+		   DcmDictRangeRestriction& elementRestriction)
+{
+    unsigned int gl, gh, el, eh;
+    groupRestriction = DcmDictRange_Unspecified;
+    elementRestriction = DcmDictRange_Unspecified;
+
+    stripWhitespace(s);
+    char gs[64];
+    char es[64];
+    int slen = strlen(s);
+
+    if (s[0] != '(') return FALSE;
+    if (s[slen-1] != ')') return FALSE;
+    if (strchr(s, ',') == NULL) return FALSE;
+
+    /* separate the group and element parts */
+    int i = 1; /* after the '(' */
+    int gi = 0;
+    for (; s[i] != ',' && s[i] != '\0'; i++) {
+	gs[gi] = s[i];
+	gi++;
+    }
+    gs[gi] = '\0';
+    
+    if (s[i] == '\0') return FALSE; /* element part missing */
+    
+    i++; /* after the ',' */
+    int ei = 0;
+    for (; s[i] != ')' && s[i] != '\0'; i++) {
+	es[ei] = s[i];
+	ei++;
+    }
+    es[ei] = '\0';
+
+    /* parse the tag parts into their components */
+    if (parseTagPart(gs, gl, gh, groupRestriction) == FALSE)
+	return FALSE;
+
+    if (parseTagPart(es, el, eh, elementRestriction) == FALSE)
+	return FALSE;
+
+    key.set(gl,el);
+    upperKey.set(gh,eh);
+
+    return TRUE;
 }
 
 static BOOL
@@ -261,6 +313,8 @@ DcmDataDictionary::loadDictionary(const char* fileName, BOOL errorIfAbsent)
     Uint16 groupNumber, elementNumber;
     Uint16 upperGroupNumber, upperElementNumber;
     DcmTagKey key, upperKey;
+    DcmDictRangeRestriction groupRestriction;
+    DcmDictRangeRestriction elementRestriction;
     DcmVR vr;
     char* vrName;
     char* tagName;
@@ -328,7 +382,8 @@ DcmDataDictionary::loadDictionary(const char* fileName, BOOL errorIfAbsent)
 	    }
 	    /* drop through to next case label */
 	case 3:
-	    if (!parseWholeTagField(lineFields[0], key, upperKey)) {
+	    if (!parseWholeTagField(lineFields[0], key, upperKey, 
+				    groupRestriction, elementRestriction)) {
 		cerr << "DcmDataDictionary: " << fileName << ": "
 		     << "bad Tag field (line " 
 		     << lineNumber << "): " << lineFields[0] << endl;
@@ -355,7 +410,8 @@ DcmDataDictionary::loadDictionary(const char* fileName, BOOL errorIfAbsent)
 	    e = new DcmDictEntry(key.getGroup(), key.getElement(), 
 				 upperKey.getGroup(), upperKey.getElement(),
 				 vr, tagName, vmMin, vmMax, standardVersion);
-
+	    e->setGroupRangeRestriction(groupRestriction);
+	    e->setElementRangeRestriction(elementRestriction);
 	    addEntry(e);
 	}
 
@@ -445,34 +501,51 @@ void
 DcmDataDictionary::balance()
 {
     dict.balance();
-    repElementDict.balance();
-    repGroupDict.balance();
 }
     
 void 
 DcmDataDictionary::addEntry(DcmDictEntry* e)
 {
-    /*
-     * The dictionaries are implemented as binary trees.
-     * Since the entries are often added in assending
-     * order, we would get a pathalogically unbalanced
-     * tree.  It is thus worthwhile to perform a
-     * rebalance every once in a while.  Every DCM_DICT_BALANCE_RATE
-     * entries seems reasonable.
-     */
-
-    if (e->isRepeatingGroup()) {
-        repGroupDict.add(e, TRUE);
-        if ((repGroupDict.length() % DCM_DICT_BALANCE_RATE) == 0) {
-            repGroupDict.balance();
-        }
-    } else if (e->isRepeatingElement()) {
-        repElementDict.add(e, TRUE);
-        if ((repElementDict.length() % DCM_DICT_BALANCE_RATE) == 0) {
-            repElementDict.balance();
-        }
+    if (e->isRepeating()) {
+	/* 
+	 * Find the best position in repeating tag list 
+	 * Existing entries are replaced if the ranges and repetition
+	 * constraints are the same.
+	 * If a range represents a subset of an existing range then it 
+	 * will be placed before it in the list.  This ensures that a 
+	 * search will find the subset rather than the superset.
+	 * Otherwise entries are appended to the end of the list.
+	 */
+	BOOL inserted = FALSE;
+	Pix p = NULL;
+	const DcmDictEntry* pe = NULL;
+	for (p = repDict.first(); !inserted && p != NULL; repDict.next(p)) {
+	    pe = repDict.contents(p);
+	    if (e->setEQ(*pe)) {
+		/* replace the old entry with the new */
+		DcmDictEntry *old = repDict.replace(p,e);
+		delete old;
+		inserted = TRUE;
+	    } else if (e->subset(*pe)) {
+		/* e is a subset of the current list position, insert before */
+		repDict.insertBefore(p, e);
+		inserted = TRUE;
+	    }
+	}
+	if (!inserted) {
+	    /* insert at end */
+	    repDict.insertAfter(repDict.tail(), e);
+	}
     } else {
         dict.add(e, TRUE);
+	/*
+	 * The normal tag dictionary is implemented as a binary tree.
+	 * Since the entries are often added in assending
+	 * order, we would get a pathalogically unbalanced
+	 * tree.  It is thus worthwhile to perform a
+	 * rebalance every once in a while.  Every DCM_DICT_BALANCE_RATE
+	 * entries seems reasonable.
+	 */
         if ((dict.length() % DCM_DICT_BALANCE_RATE) == 0) {
             dict.balance();
         }
@@ -486,12 +559,9 @@ DcmDataDictionary::deleteEntry(const DcmDictEntry& entry)
 
     e = (DcmDictEntry*)findEntry(entry);
     if (e != NULL) {
-        if (e->isRepeatingGroup()) {
-	    repGroupDict.del(e);
-            delete e;
-	} else if (e->isRepeatingElement()) {
-	    repElementDict.del(e);
-            delete e;
+	if (e->isRepeating()) {
+	    repDict.del(e);
+	    delete e;
         } else {
 	    dict.del(e);
 	    delete e;
@@ -505,16 +575,14 @@ DcmDataDictionary::findEntry(const DcmDictEntry& entry)
     const DcmDictEntry* e = NULL;
     Pix p = NULL;
 
-    if (entry.isRepeatingGroup()) {
-	p = repGroupDict.seek((DcmDictEntry*)&entry);
-	if (p != NULL) {
-	    e = repGroupDict(p);
-        }
-    } else if (entry.isRepeatingElement()) {
-	p = repElementDict.seek((DcmDictEntry*)&entry);
-	if (p != NULL) {
-	    e = repElementDict(p);
-        }
+    if (entry.isRepeating()) {
+	BOOL found = FALSE;
+	for (p = repDict.first(); !found && p != NULL; repDict.next(p)) {
+	    if (entry.setEQ(*repDict.contents(p))) {
+		found = TRUE;
+		e = repDict.contents(p);
+	    }
+	}
     } else {
         p = dict.seek((DcmDictEntry*)&entry);
         if (p != NULL) {
@@ -539,13 +607,12 @@ DcmDataDictionary::findEntry(const DcmTagKey& key)
     if (p != NULL) {
         e = dict(p);
     } else {
-	p = repElementDict.seek(&keyEntry);
-	if (p != NULL) {
-	    e = repElementDict(p);
-        } else {
-	    p = repGroupDict.seek(&keyEntry);
-	    if (p != NULL) {
-		e = repGroupDict(p);
+	/* search in the repeating tags dictionary */
+	BOOL found = FALSE;
+	for (p = repDict.first(); !found && p!=NULL; repDict.next(p)) {
+	    if (repDict.contents(p)->contains(key)) {
+		found = TRUE;
+		e = repDict.contents(p);
 	    }
 	}
     }
@@ -555,7 +622,13 @@ DcmDataDictionary::findEntry(const DcmTagKey& key)
 /*
 ** CVS/RCS Log:
 ** $Log: dcdict.cc,v $
-** Revision 1.4  1996-03-12 15:21:22  hewett
+** Revision 1.5  1996-03-20 16:44:04  hewett
+** Updated for revised data dictionary.  Repeating tags are now handled better.
+** A linear list of repeating tags has been introduced with a subset ordering
+** mechanism to ensure that dictionary searches locate the most precise
+** dictionary entry.
+**
+** Revision 1.4  1996/03/12 15:21:22  hewett
 ** The repeating sub-dictionary has been split into a repeatingElement and
 ** a repeatingGroups dictionary.  This is a temporary measure to reduce the
 ** problem of overlapping dictionary entries.  A full solution will require
