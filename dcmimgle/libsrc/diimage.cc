@@ -22,9 +22,9 @@
  *  Purpose: DicomImage (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-09-17 13:15:20 $
+ *  Update Date:      $Date: 1999-10-06 13:45:55 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/libsrc/diimage.cc,v $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -320,6 +320,33 @@ DiImage::DiImage(const DiImage *image,
 }
 
 
+DiImage::DiImage(const DiImage *image,
+                 const unsigned long frame,
+                 const int stored,
+                 const int alloc)
+  : ImageStatus(image->ImageStatus),
+    Document(image->Document),
+    FirstFrame(frame),
+    NumberOfFrames(1),
+    RepresentativeFrame(0),
+    Rows(image->Rows),
+    Columns(image->Columns),
+    PixelWidth(image->PixelWidth),
+    PixelHeight(image->PixelHeight),
+    BitsAllocated(alloc),
+    BitsStored(stored),
+    HighBit(stored - 1),
+    BitsPerSample(image->BitsPerSample),
+    hasSignedRepresentation(0),
+    hasPixelSpacing(image->hasPixelSpacing),
+    hasImagerPixelSpacing(image->hasImagerPixelSpacing),
+    hasPixelAspectRatio(image->hasPixelAspectRatio),
+    isOriginal(0),
+    InputData(NULL)
+{
+}
+
+
 /*--------------*
  *  destructor  *
  *--------------*/
@@ -517,7 +544,13 @@ int DiImage::setRowColumnRatio(const double ratio)
  *
  * CVS/RCS Log:
  * $Log: diimage.cc,v $
- * Revision 1.5  1999-09-17 13:15:20  joergr
+ * Revision 1.6  1999-10-06 13:45:55  joergr
+ * Corrected creation of PrintBitmap pixel data: VOI windows should be applied
+ * before clipping to avoid that the region outside the image (border) is also
+ * windowed (this requires a new method in dcmimgle to create a DicomImage
+ * with the grayscale transformations already applied).
+ *
+ * Revision 1.5  1999/09/17 13:15:20  joergr
  * Corrected typos and formatting.
  *
  * Revision 1.4  1999/07/23 14:21:31  joergr

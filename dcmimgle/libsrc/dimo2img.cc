@@ -22,9 +22,9 @@
  *  Purpose: DicomMonochrome2Image (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-08-25 16:43:07 $
+ *  Update Date:      $Date: 1999-10-06 13:45:55 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/libsrc/dimo2img.cc,v $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -124,6 +124,16 @@ DiMono2Image::DiMono2Image(const DiMonoImage *image,
 }
 
 
+DiMono2Image::DiMono2Image(const DiMonoImage *image,
+                           const DiMonoOutputPixel *pixel,
+                           const unsigned long frame,
+                           const int stored,
+                           const int alloc)
+  : DiMonoImage(image, pixel, frame, stored, alloc)
+{
+}
+
+
 /*--------------*
  *  destructor  *
  *--------------*/
@@ -205,7 +215,13 @@ DiImage *DiMono2Image::createMono(const double,
  *
  * CVS/RCS Log:
  * $Log: dimo2img.cc,v $
- * Revision 1.6  1999-08-25 16:43:07  joergr
+ * Revision 1.7  1999-10-06 13:45:55  joergr
+ * Corrected creation of PrintBitmap pixel data: VOI windows should be applied
+ * before clipping to avoid that the region outside the image (border) is also
+ * windowed (this requires a new method in dcmimgle to create a DicomImage
+ * with the grayscale transformations already applied).
+ *
+ * Revision 1.6  1999/08/25 16:43:07  joergr
  * Added new feature: Allow clipping region to be outside the image
  * (overlapping).
  *

@@ -22,9 +22,9 @@
  *  Purpose: DicomMonochromeImage (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-09-17 12:24:47 $
+ *  Update Date:      $Date: 1999-10-06 13:38:46 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/dimoimg.h,v $
- *  CVS/RCS Revision: $Revision: 1.21 $
+ *  CVS/RCS Revision: $Revision: 1.22 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -560,6 +560,17 @@ class DiMonoImage
                                     const int alloc,
                                     const int stored);
 
+    /** create new single frame DiImage with applied grayscale transformations.
+     *  The method getOutputData() is used internally for the new bitmap.
+     *
+     ** @param  frame  index of frame to be converted
+     *  @param  bits   number of bits per pixel used for the output bitmap
+     *
+     ** @return pointer to new DiImage object (NULL if an error occurred)
+     */
+    DiImage *createOutputImage(const unsigned long frame,
+                               const int bits);
+
     /** write pixel data to PPM file.
      *  pixel data is written in ASCII format.
      *
@@ -681,6 +692,20 @@ class DiMonoImage
     DiMonoImage(const DiMonoImage *image,
                 const int degree);
 
+    /** constructor, createMonoOutput
+     *
+     ** @param  image   pointer to reference image
+     *  @param  pixel   pointer to output pixel data used for the new image
+     *  @param  frame   number of frame stored in the new image object
+     *  @param  stored  number of bits stored
+     *  @param  alloc   number of bits allocated
+     */
+     DiMonoImage(const DiMonoImage *image,
+                 const DiMonoOutputPixel *pixel,
+                 const unsigned long frame,
+                 const int stored,
+                 const int alloc);
+
     /** initialize internal data structures and member variables
      *
      ** @param  modality  pointer to object handling the modality transform
@@ -765,7 +790,13 @@ class DiMonoImage
  *
  * CVS/RCS Log:
  * $Log: dimoimg.h,v $
- * Revision 1.21  1999-09-17 12:24:47  joergr
+ * Revision 1.22  1999-10-06 13:38:46  joergr
+ * Corrected creation of PrintBitmap pixel data: VOI windows should be applied
+ * before clipping to avoid that the region outside the image (border) is also
+ * windowed (this requires a new method in dcmimgle to create a DicomImage
+ * with the grayscale transformations already applied).
+ *
+ * Revision 1.21  1999/09/17 12:24:47  joergr
  * Added/changed/completed DOC++ style comments in the header files.
  *
  * Revision 1.20  1999/09/10 08:45:18  joergr

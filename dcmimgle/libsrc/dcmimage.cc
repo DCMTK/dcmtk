@@ -22,9 +22,9 @@
  *  Purpose: DicomImage-Interface (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-08-25 16:43:06 $
+ *  Update Date:      $Date: 1999-10-06 13:45:54 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/libsrc/dcmimage.cc,v $
- *  CVS/RCS Revision: $Revision: 1.9 $
+ *  CVS/RCS Revision: $Revision: 1.10 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -653,6 +653,24 @@ DicomImage *DicomImage::createMonochromeImage(const double red,
 }
 
 
+// --- create monochrome output image of specified frame (incl. windowing)
+
+DicomImage *DicomImage::createMonoOutputImage(const unsigned long frame,
+                                              const int bits)
+{
+    if ((Image != NULL) && (Image->getMonoImagePtr() != NULL))
+    {
+        DiImage *image = Image->getMonoImagePtr()->createOutputImage(frame, bits);
+        if (image != NULL)
+        {
+            DicomImage *dicom = new DicomImage(this, image, EPI_Monochrome2);
+            return dicom;
+        }
+    }
+    return NULL;
+}
+
+
 /*********************************************************************/
 
 
@@ -738,7 +756,13 @@ int DicomImage::writeRawPPM(FILE *stream,
  *
  * CVS/RCS Log:
  * $Log: dcmimage.cc,v $
- * Revision 1.9  1999-08-25 16:43:06  joergr
+ * Revision 1.10  1999-10-06 13:45:54  joergr
+ * Corrected creation of PrintBitmap pixel data: VOI windows should be applied
+ * before clipping to avoid that the region outside the image (border) is also
+ * windowed (this requires a new method in dcmimgle to create a DicomImage
+ * with the grayscale transformations already applied).
+ *
+ * Revision 1.9  1999/08/25 16:43:06  joergr
  * Added new feature: Allow clipping region to be outside the image
  * (overlapping).
  *

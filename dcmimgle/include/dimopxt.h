@@ -22,9 +22,9 @@
  *  Purpose: DicomMonochromePixelTemplate (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-09-17 12:42:40 $
+ *  Update Date:      $Date: 1999-10-06 13:44:35 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/dimopxt.h,v $
- *  CVS/RCS Revision: $Revision: 1.9 $
+ *  CVS/RCS Revision: $Revision: 1.10 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -44,6 +44,7 @@
 #include "dipxrept.h"
 #include "dimomod.h"
 #include "diinpx.h"
+#include "dimoopx.h"
 
 
 /*---------------------*
@@ -86,6 +87,22 @@ class DiMonoPixelTemplate
                         DiMonoModality *modality)
       : DiMonoPixel(pixel, modality),
         Data(NULL)
+    {
+        MinValue[0] = 0;
+        MinValue[1] = 0;
+        MaxValue[0] = 0;
+        MaxValue[1] = 0;
+    }
+
+    /** constructor
+     *
+     ** @param  pixel     pointer to output pixel data used for intermediate representation
+     *  @param  modality  pointer to object managing modality transform
+     */
+    DiMonoPixelTemplate(const DiMonoOutputPixel *pixel,
+                        DiMonoModality *modality)
+      : DiMonoPixel(pixel, modality),
+        Data((T *)pixel->getData())
     {
         MinValue[0] = 0;
         MinValue[1] = 0;
@@ -343,7 +360,13 @@ class DiMonoPixelTemplate
  *
  * CVS/RCS Log:
  * $Log: dimopxt.h,v $
- * Revision 1.9  1999-09-17 12:42:40  joergr
+ * Revision 1.10  1999-10-06 13:44:35  joergr
+ * Corrected creation of PrintBitmap pixel data: VOI windows should be applied
+ * before clipping to avoid that the region outside the image (border) is also
+ * windowed (this requires a new method in dcmimgle to create a DicomImage
+ * with the grayscale transformations already applied).
+ *
+ * Revision 1.9  1999/09/17 12:42:40  joergr
  * Added/changed/completed DOC++ style comments in the header files.
  * Enhanced efficiency of the implementation to determine min/max values of
  * the input pixels.

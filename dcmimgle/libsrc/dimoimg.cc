@@ -22,9 +22,9 @@
  *  Purpose: DicomMonochromeImage (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-09-17 13:17:36 $
+ *  Update Date:      $Date: 1999-10-06 13:45:56 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/libsrc/dimoimg.cc,v $
- *  CVS/RCS Revision: $Revision: 1.23 $
+ *  CVS/RCS Revision: $Revision: 1.24 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -494,6 +494,54 @@ DiMonoImage::DiMonoImage(const DiMonoImage &)
     if (DicomImageClass::DebugLevel & DicomImageClass::DL_Errors)
         cerr << "ERROR in DiMonoImage copy-constructor !!!" << endl;
     abort();
+}
+
+
+/*
+ *   createMonoOutputImage
+ */
+
+DiMonoImage::DiMonoImage(const DiMonoImage *image,
+                         const DiMonoOutputPixel *pixel,
+                         const unsigned long frame,
+                         const int stored,
+                         const int alloc)
+  : DiImage(image, frame, stored, alloc),
+    WindowCenter(0),
+    WindowWidth(0),
+    WindowCount(0),
+    VoiLutCount(0),
+    ValidWindow(0),
+    VoiExplanation(),
+    PresLutShape(ESP_Identity),
+    VoiLutData(NULL),
+    PresLutData(NULL),
+    InterData(NULL),
+    DisplayFunction(NULL),
+    OutputData(NULL),
+    OverlayData(NULL)
+{
+    Overlays[0] = NULL;
+    Overlays[1] = NULL;
+    if (pixel->getData() != NULL)
+    {
+        DiMonoModality *modality = new DiMonoModality(stored);
+        switch (pixel->getRepresentation())
+        {
+            case EPR_Uint8:
+                InterData = new DiMonoPixelTemplate<Uint8>(pixel, modality);
+                break;
+            case EPR_Uint16:
+                InterData = new DiMonoPixelTemplate<Uint16>(pixel, modality);
+                break;
+            case EPR_Uint32:
+                InterData = new DiMonoPixelTemplate<Uint32>(pixel, modality);
+                break;
+            default:
+                break;
+        }
+    }
+    checkInterData(0);
 }
 
 
@@ -1460,6 +1508,22 @@ void *DiMonoImage::createPackedBitmap(const void *buffer,
 }
 
 
+DiImage *DiMonoImage::createOutputImage(const unsigned long frame,
+                                        const int bits)
+{
+    getOutputData(frame, bits);
+    if ((OutputData != NULL) && (OutputData->getData() != NULL))
+    {
+
+        DiImage *image = new DiMono2Image(this, OutputData, frame, bits, OutputData->getItemSize() * 8);
+        if (image != NULL)
+            OutputData->removeDataReference();              // output data is now handled by new mono image
+        return image;
+    }
+    return NULL;
+}
+
+
 /*********************************************************************/
 
 
@@ -1548,7 +1612,13 @@ int DiMonoImage::writeRawPPM(FILE *stream,
  *
  * CVS/RCS Log:
  * $Log: dimoimg.cc,v $
- * Revision 1.23  1999-09-17 13:17:36  joergr
+ * Revision 1.24  1999-10-06 13:45:56  joergr
+ * Corrected creation of PrintBitmap pixel data: VOI windows should be applied
+ * before clipping to avoid that the region outside the image (border) is also
+ * windowed (this requires a new method in dcmimgle to create a DicomImage
+ * with the grayscale transformations already applied).
+ *
+ * Revision 1.23  1999/09/17 13:17:36  joergr
  * Enhanced efficiency of some "for" loops.
  *
  * Revision 1.22  1999/09/10 08:54:50  joergr

@@ -22,9 +22,9 @@
  *  Purpose: DicomMonochromePixel (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-05-31 12:35:59 $
+ *  Update Date:      $Date: 1999-10-06 13:45:57 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/libsrc/dimopx.cc,v $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -37,6 +37,7 @@
 #include "dimopx.h"
 #include "dimomod.h"
 #include "diinpx.h"
+#include "dimoopx.h"
 
 
 /*----------------*
@@ -76,6 +77,14 @@ DiMonoPixel::DiMonoPixel(const DiMonoPixel *pixel,
 }
 
 
+DiMonoPixel::DiMonoPixel(const DiMonoOutputPixel *pixel,
+                         DiMonoModality *modality)
+  : DiPixel(pixel->getCount()),
+    Modality(modality)
+{
+}
+
+
 /*--------------*
  *  destructor  *
  *--------------*/
@@ -91,7 +100,13 @@ DiMonoPixel::~DiMonoPixel()
  *
  * CVS/RCS Log:
  * $Log: dimopx.cc,v $
- * Revision 1.4  1999-05-31 12:35:59  joergr
+ * Revision 1.5  1999-10-06 13:45:57  joergr
+ * Corrected creation of PrintBitmap pixel data: VOI windows should be applied
+ * before clipping to avoid that the region outside the image (border) is also
+ * windowed (this requires a new method in dcmimgle to create a DicomImage
+ * with the grayscale transformations already applied).
+ *
+ * Revision 1.4  1999/05/31 12:35:59  joergr
  * Corrected bug concerning the conversion of color images to grayscale.
  *
  * Revision 1.3  1999/01/20 14:54:59  joergr
