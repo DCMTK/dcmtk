@@ -22,9 +22,9 @@
  *  Purpose: DicomMonochromeScaleTemplate (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1998-11-27 15:39:32 $
+ *  Update Date:      $Date: 1998-12-16 16:36:11 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/dimosct.h,v $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -51,7 +51,9 @@ class DiMonoScaleTemplate
   : public DiMonoPixelTemplate<T>,
     protected DiScaleTemplate<T>
 {
+
  public:
+
     DiMonoScaleTemplate(const DiMonoPixel *pixel,
                         const Uint16 columns,
                         const Uint16 rows,
@@ -100,7 +102,10 @@ class DiMonoScaleTemplate
 **
 ** CVS/RCS Log:
 ** $Log: dimosct.h,v $
-** Revision 1.1  1998-11-27 15:39:32  joergr
+** Revision 1.2  1998-12-16 16:36:11  joergr
+** *** empty log message ***
+**
+** Revision 1.1  1998/11/27 15:39:32  joergr
 ** Added copyright message.
 ** Combined clipping and scaling methods.
 **

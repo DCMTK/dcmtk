@@ -1,3 +1,79 @@
+**** Changes from 1998.12.16 (riesmeier)
+
+- Rebuilt Makefile dependencies.
+  Affects: dcmimage/apps/Makefile.dep
+           dcmimage/libsrc/Makefile.dep
+           dcmimgle/libsrc/Makefile.dep
+
+- Added explanation string to LUT class (retrieved from dataset).
+  Affects: dcmimage/libsrc/diargimg.cc
+           dcmimage/libsrc/dipalimg.cc
+           dcmimgle/include/dcmimage.h
+           dcmimgle/include/diluptab.h
+           dcmimgle/include/dimo2img.h
+           dcmimgle/include/dimoimg.h
+           dcmimgle/include/dimomod.h
+           dcmimgle/include/dimopx.h
+           dcmimgle/libsrc/diluptab.cc
+           dcmimgle/libsrc/dimo2img.cc
+           dcmimgle/libsrc/dimoimg.cc
+           dcmimgle/libsrc/dimomod.cc
+
+- Added explanation string for VOI transformations.
+  Affects: dcmimgle/include/dcmimage.h
+           dcmimgle/include/dimoimg.h
+           dcmimgle/libsrc/dimoimg.cc
+
+- Added method to export overlay planes (create 8-bit bitmap).
+  Affects: dcmimgle/include/dcmimage.h
+           dcmimgle/include/dimoimg.h
+           dcmimgle/include/diovlay.h
+           dcmimgle/include/diovpln.h
+           dcmimgle/libsrc/dimoimg.cc
+           dcmimgle/libsrc/diovlay.cc
+           dcmimgle/libsrc/diovpln.cc
+
+- Added (debug) code to test new explanation strings and export of overlay
+  planes.
+  Affects: dcmimage/apps/dcm2pnm.cc
+
+- Implemented combined clipping and scaling for pixel replication and
+  suppression.
+  Affects: dcmimgle/include/discalet.h
+           dcmimgle/libsrc/dcmimage.cc
+
+- Added methods to use getOFString from class DcmElement (incl. multi value
+  fields).
+  Affects: dcmimgle/include/didocu.h
+           dcmimgle/libsrc/didocu.cc
+           
+- Renamed 'setNoVoiLutTransformation' method ('Voi' instead of 'VOI').
+  Affects: dcmimgle/include/dcmimage.h
+           dcmimgle/include/dimoimg.h
+           dcmimgle/libsrc/dimoimg.cc
+
+- Implemented flipping and rotation of overlay planes.
+  Affects: dcmimgle/include/diovlay.h
+           dcmimgle/include/diovpln.h
+           dcmimgle/libsrc/diovlay.cc
+           dcmimgle/libsrc/diovpln.cc
+
+- Removed several methods used for monochrome images only in base class
+  'DiImage'. Introduced mechanism to use the methods directly.
+  Affects: dcmimgle/include/dcmimage.h
+           dcmimgle/include/diimage.h
+           dcmimgle/include/dimoimg.h
+
+- Added additional case to copy pixels.
+  Affects: dcmimgle/include/diflipt.h
+           dcmimgle/include/dirotat.h
+
+- Added methods to determine absolute minimum and maximum value for given
+  value representation.
+  Affects: dcmimgle/include/diinpx.h
+           dcmimgle/include/diinpxt.h
+           dcmimgle/include/dipxrept.h
+
 **** Changes from 1998.12.14 (riesmeier)
 
 - Rebuilt Makefile dependencies.
