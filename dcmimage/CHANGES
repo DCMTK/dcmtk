@@ -1,3 +1,82 @@
+**** Changes from 1999.02.03 (riesmeier)
+
+- Rebuilt Makefile dependencies.
+  Affects: dcmimage/apps/Makefile.dep
+           dcmimage/libsrc/Makefile.dep
+           dcmimgle/libsrc/Makefile.dep
+
+- Moved global functions maxval() and determineRepresentation() to class
+  DicomImageClass (as static methods).
+  Affects: dcmimage/include/diargpxt.h
+           dcmimage/include/dicmypxt.h
+           dcmimage/include/dihsvpxt.h
+           dcmimage/include/dirgbpxt.h
+           dcmimage/include/diybrpxt.h
+           dcmimage/include/diyf2pxt.h
+           dcmimage/include/diyp2pxt.h
+           dcmimage/libsrc/dicoimg.cc
+           dcmimgle/include/diinpxt.h
+           dcmimgle/include/discalet.h
+           dcmimgle/include/diutils.h
+           dcmimgle/libsrc/diluptab.cc
+           dcmimgle/libsrc/dimoimg.cc
+           dcmimgle/libsrc/dimomod.cc
+           dcmimgle/libsrc/diutils.cc
+  
+- Added new option to select a display file (for calibration).
+  Affects: dcmimage/apps/dcm2pnm.cc
+  
+- Added BEGIN_EXTERN_C and END_EXTERN_C to some C includes.
+  Affects: dcmimage/include/dicoopx.h
+           dcmimgle/include/didocu.h
+           dcmimgle/include/diimage.h
+           dcmimgle/include/dimoopx.h
+           dcmimgle/include/diovpln.h
+           dcmimgle/include/diutils.h
+           dcmimgle/libsrc/dcmimage.cc
+  
+- Added support for calibration according to Barten transformation (incl.
+  a DISPLAY file describing the monitor characteristic).
+  Affects: dcmimgle/include/dcmimage.h
+           dcmimgle/include/dimoimg.h
+           dcmimgle/include/dimoopxt.h
+           dcmimgle/include/diovlay.h
+           dcmimgle/include/diovpln.h
+           dcmimgle/libsrc/Makefile.in
+           dcmimgle/libsrc/dimoimg.cc
+           dcmimgle/libsrc/diovlay.cc
+           dcmimgle/libsrc/diovpln.cc
+  Added:   dcmimgle/include/dibarlut.h
+           dcmimgle/include/didispfn.h
+           dcmimgle/libsrc/dibarlut.cc
+           dcmimgle/libsrc/didispfn.cc
+
+- Removed some debug code.
+  Affects: dcmimgle/include/diflipt.h
+  
+- Added member variable and related methods to store number of bits used for
+  pixel data.
+  Affects: dcmimgle/include/diinpx.h
+           dcmimgle/include/dimomod.h
+           dcmimgle/include/dimopx.h
+           dcmimgle/include/diinpx.cc
+           dcmimgle/libsrc/dimomod.cc
+  
+- Added base class for look-up tables (moved main functionality of class
+  DiLookupTable to DiBaseLUT).
+  Affects: dcmimgle/include/diluptab.h
+           dcmimgle/libsrc/Makefile.in
+           dcmimgle/libsrc/diluptab.cc
+  Added:   dcmimgle/include/dibaslut.h
+           dcmimgle/libsrc/dibaslut.cc
+  
+- Added optimization LUT to transform pixel data.
+  Affects: dcmimgle/include/dimoipxt.h
+           dcmimgle/include/dimoopxt.h
+
+- Corrected some typos and formatting.
+  Affects: dcmimgle/libsrc/diovlimg.cc
+
 **** Changes from 1999.01.20 (riesmeier)
 
 - Rebuilt Makefile dependencies.
