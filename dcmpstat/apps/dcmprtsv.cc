@@ -21,10 +21,10 @@
  *
  *  Purpose: Presentation State Viewer - Print Spooler
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-11-03 13:05:27 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2000-02-02 14:38:25 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmpstat/apps/Attic/dcmprtsv.cc,v $
- *  CVS/RCS Revision: $Revision: 1.12 $
+ *  CVS/RCS Revision: $Revision: 1.13 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -34,7 +34,7 @@
 #include "osconfig.h"    /* make sure OS specific configuration is included first */
 
 #ifdef HAVE_GUSI_H
- #include <GUSI.h>
+#include <GUSI.h>
 #endif
 
 BEGIN_EXTERN_C
@@ -967,7 +967,10 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmprtsv.cc,v $
- * Revision 1.12  1999-11-03 13:05:27  meichel
+ * Revision 1.13  2000-02-02 14:38:25  joergr
+ * Removed space characters before preprocessor directives.
+ *
+ * Revision 1.12  1999/11/03 13:05:27  meichel
  * Added support for transmitting annotations in the film session label.
  *   Added support for dump tool launched from DVInterface.
  *

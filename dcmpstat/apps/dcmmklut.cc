@@ -25,9 +25,9 @@
  *    file.
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-10-18 10:21:31 $
+ *  Update Date:      $Date: 2000-02-02 14:38:24 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmpstat/apps/dcmmklut.cc,v $
- *  CVS/RCS Revision: $Revision: 1.9 $
+ *  CVS/RCS Revision: $Revision: 1.10 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -56,14 +56,14 @@
 
 BEGIN_EXTERN_C
 #ifdef HAVE_CTYPE_H
- #include <ctype.h>
+#include <ctype.h>
 #endif
 END_EXTERN_C
 
 #ifdef _WIN32
- #include <strstrea.h>     /* for ostrstream */
+#include <strstrea.h>     /* for ostrstream */
 #else
- #include <strstream.h>    /* for ostrstream */
+#include <strstream.h>    /* for ostrstream */
 #endif
 
 #define OFFIS_CONSOLE_APPLICATION "dcmmklut"
@@ -934,7 +934,10 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmmklut.cc,v $
- * Revision 1.9  1999-10-18 10:21:31  joergr
+ * Revision 1.10  2000-02-02 14:38:24  joergr
+ * Removed space characters before preprocessor directives.
+ *
+ * Revision 1.9  1999/10/18 10:21:31  joergr
  * Enlarged string buffer for output text file header.
  *
  * Revision 1.8  1999/10/15 09:35:05  joergr
