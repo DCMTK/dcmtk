@@ -23,8 +23,8 @@
  *    classes: DSRTypes
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-04-01 14:59:41 $
- *  CVS/RCS Revision: $Revision: 1.31 $
+ *  Update Date:      $Date: 2003-08-07 14:14:46 $
+ *  CVS/RCS Revision: $Revision: 1.32 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -50,6 +50,7 @@
 #include "dsrwavtn.h"
 #include "dsrcontn.h"
 #include "dsrreftn.h"
+
 #include "ofstd.h"
 
 #define INCLUDE_CSTDIO
@@ -97,12 +98,19 @@ const size_t DSRTypes::HF_internalUseOnly                = DSRTypes::HF_renderIt
                                                            DSRTypes::HF_createFootnoteReferences |
                                                            DSRTypes::HF_convertNonASCIICharacters;
 
-/* writeXML flags */
+/* read/writeXML flags */
 const size_t DSRTypes::XF_writeEmptyTags                 = 1 << 0;
 const size_t DSRTypes::XF_codeComponentsAsAttribute      = 1 << 1;
 const size_t DSRTypes::XF_relationshipTypeAsAttribute    = 1 << 2;
 const size_t DSRTypes::XF_valueTypeAsAttribute           = 1 << 3;
 const size_t DSRTypes::XF_useDcmsrNamespace              = 1 << 4;
+const size_t DSRTypes::XF_addSchemaReference             = 1 << 5;
+const size_t DSRTypes::XF_validateSchema                 = 1 << 6;
+const size_t DSRTypes::XF_enableLibxmlErrorOutput        = 1 << 7;
+/* shortcuts */
+const size_t DSRTypes::XF_encodeEverythingAsAttribute    = DSRTypes::XF_codeComponentsAsAttribute |
+                                                           DSRTypes::XF_relationshipTypeAsAttribute |
+                                                           DSRTypes::XF_valueTypeAsAttribute;
 
 /* print flags */
 const size_t DSRTypes::PF_printItemPosition              = 1 << 0;
@@ -206,6 +214,7 @@ const OFConditionConst ECC_InvalidByValueRelationship       (OFM_dcmsr,  9, OF_e
 const OFConditionConst ECC_InvalidByReferenceRelationship   (OFM_dcmsr, 10, OF_error, "Invalid by-reference Relationship");
 const OFConditionConst ECC_SOPInstanceNotFound              (OFM_dcmsr, 11, OF_error, "SOP Instance not found");
 const OFConditionConst ECC_DifferentSOPClassesForAnInstance (OFM_dcmsr, 12, OF_error, "Different SOP Classes for an Instance");
+const OFConditionConst ECC_CorruptedXMLStructure            (OFM_dcmsr, 13, OF_error, "Corrupted XML structure");
 
 const OFCondition SR_EC_UnknownDocumentType                 (ECC_UnknownDocumentType);
 const OFCondition SR_EC_InvalidDocument                     (ECC_InvalidDocument);
@@ -219,6 +228,7 @@ const OFCondition SR_EC_InvalidByValueRelationship          (ECC_InvalidByValueR
 const OFCondition SR_EC_InvalidByReferenceRelationship      (ECC_InvalidByReferenceRelationship);
 const OFCondition SR_EC_SOPInstanceNotFound                 (ECC_SOPInstanceNotFound);
 const OFCondition SR_EC_DifferentSOPClassesForAnInstance    (ECC_DifferentSOPClassesForAnInstance);
+const OFCondition SR_EC_CorruptedXMLStructure               (ECC_CorruptedXMLStructure);
 
 
 static const S_DocumentTypeNameMap DocumentTypeNameMap[] =
@@ -228,7 +238,8 @@ static const S_DocumentTypeNameMap DocumentTypeNameMap[] =
     {DSRTypes::DT_EnhancedSR,       UID_EnhancedSR,                  "SR", "Enhanced SR"},
     {DSRTypes::DT_ComprehensiveSR,  UID_ComprehensiveSR,             "SR", "Comprehensive SR"},
     {DSRTypes::DT_KeyObjectDoc,     UID_KeyObjectSelectionDocument,  "KO", "Key Object Selection Document"},
-    {DSRTypes::DT_MammographyCadSR, UID_MammographyCADSR,            "SR", "Mammography CAD SR"}
+    {DSRTypes::DT_MammographyCadSR, UID_MammographyCADSR,            "SR", "Mammography CAD SR"},
+    {DSRTypes::DT_ChestCadSR,       UID_ChestCADSR,                  "SR", "Chest CAD SR"}
 };
 
 
@@ -366,7 +377,7 @@ const char *DSRTypes::documentTypeToDocumentTitle(const E_DocumentType documentT
                                                   OFString &documentTitle)
 {
     documentTitle = documentTypeToReadableName(documentType);
-    if ((documentTitle.length() > 0) && (documentType != DT_KeyObjectDoc))  // avoid doubling of term "Document"
+    if (!documentTitle.empty() && (documentType != DT_KeyObjectDoc))  // avoid doubling of term "Document"
         documentTitle += " Document";
     return documentTitle.c_str();
 }
@@ -543,6 +554,18 @@ DSRTypes::E_ValueType DSRTypes::definedTermToValueType(const OFString &definedTe
 }
 
 
+DSRTypes::E_ValueType DSRTypes::xmlTagNameToValueType(const OFString &xmlTagName)
+{
+    E_ValueType type = VT_invalid;
+    const S_ValueTypeNameMap *iterator = ValueTypeNameMap;
+    while ((iterator->Type != VT_last) && (xmlTagName != iterator->XMLTagName))
+        iterator++;
+    if (xmlTagName == iterator->XMLTagName)
+        type = iterator->Type;
+    return type;
+}
+
+
 DSRTypes::E_GraphicType DSRTypes::enumeratedValueToGraphicType(const OFString &enumeratedValue)
 {
     E_GraphicType type = GT_invalid;
@@ -623,7 +646,17 @@ OFBool DSRTypes::isDocumentTypeSupported(const E_DocumentType documentType)
 
 OFBool DSRTypes::isConstraintCheckingSupported(const E_DocumentType documentType)
 {
-    return (documentType != DT_invalid) && (documentType != DT_MammographyCadSR);
+    return (documentType != DT_invalid) &&
+           (documentType != DT_MammographyCadSR) &&
+           (documentType != DT_ChestCadSR);
+}
+
+
+OFBool DSRTypes::isByReferenceAllowed(const E_DocumentType documentType)
+{
+    return (documentType == DT_ComprehensiveSR) ||
+           (documentType == DT_MammographyCadSR) ||
+           (documentType == DT_ChestCadSR);
 }
 
 
@@ -634,7 +667,7 @@ OFCondition DSRTypes::addElementToDataset(OFCondition &result,
     if (result.good())
     {
         if (delem != NULL)
-            result = dataset.insert(delem, OFTrue /* replaceOld */);
+            result = dataset.insert(delem, OFTrue /*replaceOld*/);
         else
             result = EC_MemoryExhausted;
     }
@@ -647,15 +680,16 @@ void DSRTypes::removeAttributeFromSequence(DcmSequenceOfItems &sequence,
 {
     DcmStack stack;
     DcmItem *item = NULL;
-    const size_t count = (size_t)sequence.card();
+    const size_t count = OFstatic_cast(size_t, sequence.card());
     for (size_t i = 0; i < count; i++)
     {
+        /* not very efficient, should be replaced by nextObject() */
         item = sequence.getItem(i);
         if (item != NULL)
         {
             /* should not be necessary, but is more secure */
             stack.clear();
-            if (item->search(tagKey, stack, ESM_fromHere, OFTrue /* searchIntoSub */).good())
+            if (item->search(tagKey, stack, ESM_fromHere, OFTrue /*searchIntoSub*/).good())
             {
                 while (!stack.empty())
                     delete item->remove(stack.pop());
@@ -669,9 +703,9 @@ OFCondition DSRTypes::getElementFromDataset(DcmItem &dataset,
                                             DcmElement &delem)
 {
     DcmStack stack;
-    OFCondition result = dataset.search((DcmTagKey &)delem.getTag(), stack, ESM_fromHere, OFFalse /* searchIntoSub */);
+    OFCondition result = dataset.search(delem.getTag(), stack, ESM_fromHere, OFFalse /*searchIntoSub*/);
     if (result.good())
-        delem = *((DcmElement *)stack.top());
+        delem = *OFstatic_cast(DcmElement *, stack.top());
     return result;
 }
 
@@ -680,26 +714,26 @@ OFCondition DSRTypes::getSequenceFromDataset(DcmItem &dataset,
                                              DcmSequenceOfItems &dseq)
 {
     DcmStack stack;
-    OFCondition result = dataset.search((DcmTagKey &)dseq.getTag(), stack, ESM_fromHere, OFFalse /* searchIntoSub */);
+    OFCondition result = dataset.search(dseq.getTag(), stack, ESM_fromHere, OFFalse /*searchIntoSub*/);
     if (result.good())
-        dseq = *((DcmSequenceOfItems *)stack.top());
+        dseq = *OFstatic_cast(DcmSequenceOfItems *, stack.top());
     return result;
 }
 
 
 const char *DSRTypes::getStringValueFromElement(const DcmElement &delem)
 {
-    char *string = NULL;
-    if (((DcmElement &)delem).getString(string).bad())
-        string = NULL;
-    return string;
+    char *stringValue = NULL;
+    if (OFconst_cast(DcmElement &, delem).getString(stringValue).bad())
+        stringValue = NULL;
+    return stringValue;
 }
 
 
 const OFString &DSRTypes::getStringValueFromElement(const DcmElement &delem,
                                                     OFString &stringValue)
 {
-    if (((DcmElement &)delem).getOFString(stringValue, 0).bad())
+    if (OFconst_cast(DcmElement &, delem).getOFString(stringValue, 0).bad())
         stringValue.clear();
     return stringValue;
 }
@@ -726,7 +760,7 @@ OFCondition DSRTypes::getStringValueFromDataset(DcmItem &dataset,
                                                 const DcmTagKey &tagKey,
                                                 OFString &stringValue)
 {
-    return dataset.findAndGetOFString(tagKey, stringValue, 0, OFFalse /* searchIntoSub */);
+    return dataset.findAndGetOFString(tagKey, stringValue, 0, OFFalse /*searchIntoSub*/);
 }
 
 
@@ -734,7 +768,7 @@ OFCondition DSRTypes::putStringValueToDataset(DcmItem &dataset,
                                               const DcmTag &tag,
                                               const OFString &stringValue)
 {
-    return dataset.putAndInsertString(tag, stringValue.c_str(), OFTrue /* replaceOld */);
+    return dataset.putAndInsertString(tag, stringValue.c_str(), OFTrue /*replaceOld*/);
 }
 
 
@@ -756,7 +790,7 @@ OFBool DSRTypes::checkElementValue(DcmElement &delem,
     /* special case: sequence of items */
     if (delem.getVR() == EVR_SQ)
     {
-        lenNum = vmNum = ((DcmSequenceOfItems &)delem).card();
+        lenNum = vmNum = OFstatic_cast(DcmSequenceOfItems &, delem).card();
         vmText = " #items";
     } else {
         lenNum = delem.getLength();
@@ -809,7 +843,7 @@ OFBool DSRTypes::checkElementValue(DcmElement &delem,
         result = (vmNum >= 2);
     } else
         print = OFFalse;
-    if (print && (stream != NULL) && (message.length() > 0))
+    if (print && (stream != NULL) && !message.empty())
         printWarningMessage(stream, message.c_str());
     return result;
 }
@@ -837,10 +871,10 @@ OFCondition DSRTypes::getAndCheckStringValueFromDataset(DcmItem &dataset,
                                                         const char *moduleName)
 {
     DcmStack stack;
-    OFCondition result = dataset.search(tagKey, stack, ESM_fromHere, OFFalse /* searchIntoSub */);
+    OFCondition result = dataset.search(tagKey, stack, ESM_fromHere, OFFalse /*searchIntoSub*/);
     if (result.good())
     {
-        DcmElement *delem = (DcmElement *)stack.top();
+        DcmElement *delem = OFstatic_cast(DcmElement *, stack.top());
         if (delem != NULL)
         {
             checkElementValue(*delem, vm, type, stream, result, moduleName);
@@ -863,6 +897,8 @@ OFCondition DSRTypes::getAndCheckStringValueFromDataset(DcmItem &dataset,
     return result;
 }
 
+
+// --- misc helper functions ---
 
 const OFString &DSRTypes::currentDate(OFString &dateString)
 {
@@ -896,7 +932,7 @@ const OFString &DSRTypes::dicomToReadableDate(const OFString &dicomDate,
 const OFString &DSRTypes::dicomToReadableTime(const OFString &dicomTime,
                                               OFString &readableTime)
 {
-    DcmTime::getISOFormattedTimeFromString(dicomTime, readableTime, OFTrue /*seconds*/, OFFalse /*fraction*/, OFFalse /* createMissingPart */);
+    DcmTime::getISOFormattedTimeFromString(dicomTime, readableTime, OFTrue /*seconds*/, OFFalse /*fraction*/, OFFalse /*createMissingPart*/);
     return readableTime;
 }
 
@@ -904,7 +940,7 @@ const OFString &DSRTypes::dicomToReadableTime(const OFString &dicomTime,
 const OFString &DSRTypes::dicomToReadableDateTime(const OFString &dicomDateTime,
                                                   OFString &readableDateTime)
 {
-    DcmDateTime::getISOFormattedDateTimeFromString(dicomDateTime, readableDateTime, OFTrue /*seconds*/, OFFalse /*fraction*/, OFTrue /*timeZone*/, OFFalse /* createMissingPart */);
+    DcmDateTime::getISOFormattedDateTimeFromString(dicomDateTime, readableDateTime, OFTrue /*seconds*/, OFFalse /*fraction*/, OFTrue /*timeZone*/, OFFalse /*createMissingPart*/);
     return readableDateTime;
 }
 
@@ -929,7 +965,7 @@ const OFString &DSRTypes::dicomToXMLPersonName(const OFString &dicomPersonName,
         OFString xmlString;
         xmlPersonName.clear();
         /* prefix */
-        if (writeEmptyValue || (str4.length() > 0))
+        if (writeEmptyValue || !str4.empty())
         {
             xmlPersonName += "<prefix>";
             xmlPersonName += convertToMarkupString(str4, xmlString);
@@ -937,7 +973,7 @@ const OFString &DSRTypes::dicomToXMLPersonName(const OFString &dicomPersonName,
             newLine = OFTrue;
         }
         /* first name */
-        if (writeEmptyValue || (str2.length() > 0))
+        if (writeEmptyValue || !str2.empty())
         {
             if (newLine)
             {
@@ -950,7 +986,7 @@ const OFString &DSRTypes::dicomToXMLPersonName(const OFString &dicomPersonName,
             newLine = OFTrue;
         }
         /* middle name */
-        if (writeEmptyValue || (str3.length() > 0))
+        if (writeEmptyValue || !str3.empty())
         {
             if (newLine)
             {
@@ -963,7 +999,7 @@ const OFString &DSRTypes::dicomToXMLPersonName(const OFString &dicomPersonName,
             newLine = OFTrue;
         }
         /* last name */
-        if (writeEmptyValue || (str1.length() > 0))
+        if (writeEmptyValue || !str1.empty())
         {
             if (newLine)
             {
@@ -976,7 +1012,7 @@ const OFString &DSRTypes::dicomToXMLPersonName(const OFString &dicomPersonName,
             newLine = OFTrue;
         }
         /* suffix */
-        if (writeEmptyValue || (str5.length() > 0))
+        if (writeEmptyValue || !str5.empty())
         {
             if (newLine)
             {
@@ -995,26 +1031,26 @@ const OFString &DSRTypes::dicomToXMLPersonName(const OFString &dicomPersonName,
 
 
 const char *DSRTypes::numberToString(const size_t number,
-                                     char *string)
+                                     char *stringValue)
 {
-    if (string != NULL)
+    if (stringValue != NULL)
     {
         /* unsigned long */
-        sprintf(string, "%lu", (unsigned long)number);
+        sprintf(stringValue, "%lu", OFstatic_cast(unsigned long, number));
     }
-    return string;
+    return stringValue;
 }
 
 
-size_t DSRTypes::stringToNumber(const char *string)
+size_t DSRTypes::stringToNumber(const char *stringValue)
 {
     size_t result = 0;
-    if (string != NULL)
+    if (stringValue != NULL)
     {
         unsigned long lu_value = 0;
         /* unsigned long */
-        if (sscanf(string, "%lu", &lu_value) == 1)
-            result = (size_t)lu_value;
+        if (sscanf(stringValue, "%lu", &lu_value) == 1)
+            result = OFstatic_cast(size_t, lu_value);
     }
     return result;
 }
@@ -1061,13 +1097,13 @@ const OFString &DSRTypes::convertToMarkupString(const OFString &sourceString,
 }
 
 
-OFBool DSRTypes::checkForValidUIDFormat(const OFString &string)
+OFBool DSRTypes::checkForValidUIDFormat(const OFString &stringValue)
 {
     OFBool result = OFFalse;
     /* empty strings are invalid */
-    if (string.length() > 0)
+    if (!stringValue.empty())
     {
-        const char *p = string.c_str();
+        const char *p = stringValue.c_str();
         if (p != NULL)
         {
             /* check for leading number */
@@ -1156,6 +1192,17 @@ DSRDocumentTreeNode *DSRTypes::createDocumentTreeNode(const E_RelationshipType r
 }
 
 
+void DSRTypes::printMessage(OFConsole *stream,
+                            const char *message)
+{
+    if ((stream != NULL) && (message != NULL))
+    {
+        stream->lockCerr() << message << endl;
+        stream->unlockCerr();
+    }
+}
+
+
 void DSRTypes::printWarningMessage(OFConsole *stream,
                                    const char *message)
 {
@@ -1213,7 +1260,7 @@ void DSRTypes::printContentItemErrorMessage(OFConsole *stream,
                                             const DSRDocumentTreeNode *node,
                                             const char *location)
 {
-    if ((stream != NULL) && (result.bad()))
+    if ((stream != NULL) && result.bad())
     {
         OFString message;
         if (action != NULL)
@@ -1240,17 +1287,42 @@ void DSRTypes::printContentItemErrorMessage(OFConsole *stream,
 }
 
 
+void DSRTypes::printUnknownValueWarningMessage(OFConsole *stream,
+                                               const char *valueName,
+                                               const char *readValue,
+                                               const char *action)
+{
+    if ((stream != NULL) && (valueName != NULL))
+    {
+        OFString message;
+        if (action != NULL)
+            message += action;
+        else
+            message += "Processing";
+        message += " unknown/unsupported ";
+        message += valueName;
+        if ((readValue != NULL) && (strlen(readValue) > 0))
+        {
+            message += " (";
+            message += readValue;
+            message += ")";
+        }
+        printWarningMessage(stream, message.c_str());
+    }
+}
+
+
 OFBool DSRTypes::writeStringValueToXML(ostream &stream,
                                        const OFString &stringValue,
                                        const OFString &tagName,
                                        const OFBool writeEmptyValue)
 {
     OFBool result = OFFalse;
-    if ((stringValue.length() > 0) || writeEmptyValue)
+    if (!stringValue.empty() || writeEmptyValue)
     {
-        OFString string;
+        OFString tmpString;
         stream << "<" << tagName << ">";
-        stream << convertToMarkupString(stringValue, string, OFFalse /* convertNonASCII */, OFFalse /* newlineAllowed */, OFTrue /* xmlMode */);
+        stream << convertToMarkupString(stringValue, tmpString, OFFalse /*convertNonASCII*/, OFFalse /*newlineAllowed*/, OFTrue /*xmlMode*/);
         stream << "</" << tagName << ">" << endl;
         result = OFTrue;
     }
@@ -1266,14 +1338,14 @@ OFBool DSRTypes::writeStringFromElementToXML(ostream &stream,
     OFBool result = OFFalse;
     if ((delem.getLength() > 0) || writeEmptyValue)
     {
-        OFString string;
+        OFString tmpString;
         stream << "<" << tagName << ">";
         if (delem.getVR() == EVR_PN)        // special formatting for person names
         {
             OFString xmlString;
-            stream << endl << dicomToXMLPersonName(getStringValueFromElement(delem, string), xmlString, writeEmptyValue) << endl;
+            stream << endl << dicomToXMLPersonName(getStringValueFromElement(delem, tmpString), xmlString, writeEmptyValue) << endl;
         } else
-            stream << getMarkupStringFromElement(delem, string);
+            stream << getMarkupStringFromElement(delem, tmpString);
         stream << "</" << tagName << ">" << endl;
         result = OFTrue;
     }
@@ -1288,7 +1360,7 @@ size_t DSRTypes::createHTMLAnnexEntry(ostream &docStream,
 {
     /* hyperlink to corresponding annex */
     docStream << "[";
-    if (referenceText.length() > 0)
+    if (!referenceText.empty())
         docStream << referenceText << " ";
     docStream << "<a name=\"annex_src_" << annexNumber << "\" href=\"#annex_dst_" << annexNumber << "\">Annex " << annexNumber << "</a>]" << endl;
     /* create new annex */
@@ -1322,20 +1394,20 @@ OFCondition DSRTypes::appendStream(ostream &mainStream,
     /* add final 0 byte (if required) */
     tempStream << OFStringStream_ends;
     /* freeze/get string (now we have full control over the array) */
-    OFSTRINGSTREAM_GETSTR(tempStream, string)
+    OFSTRINGSTREAM_GETSTR(tempStream, tempString)
     /* should never be NULL */
-    if (string != NULL)
+    if (tempString != NULL)
     {
-        if (strlen(string) > 0)
+        if (strlen(tempString) > 0)
         {
             /* append optional heading */
             if (heading != NULL)
                 mainStream << heading << endl;
             /* append temporal document to main document */
-            mainStream << string;
+            mainStream << tempString;
         }
         /* very important! since we have full control we are responsible for deleting the array */
-        OFSTRINGSTREAM_FREESTR(string)
+        OFSTRINGSTREAM_FREESTR(tempString)
         result = EC_Normal;
     }
     return result;
@@ -1345,7 +1417,13 @@ OFCondition DSRTypes::appendStream(ostream &mainStream,
 /*
  *  CVS/RCS Log:
  *  $Log: dsrtypes.cc,v $
- *  Revision 1.31  2003-04-01 14:59:41  joergr
+ *  Revision 1.32  2003-08-07 14:14:46  joergr
+ *  Added readXML functionality. Added support for Chest CAD SR.
+ *  Added new option --add-schema-reference to command line tool dsr2xml.
+ *  Renamed parameters/variables "string" to avoid name clash with STL class.
+ *  Adapted type casts to new-style typecast operators defined in ofcast.h.
+ *
+ *  Revision 1.31  2003/04/01 14:59:41  joergr
  *  Added support for XML namespaces.
  *
  *  Revision 1.30  2002/11/27 14:36:18  meichel
