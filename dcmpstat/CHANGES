@@ -1,3 +1,12 @@
+
+**** Changes from 1999.02.17 (eichelberg)
+
+- Added new parameter explicitVR to interface methods savePState, saveDICOMImage.
+  Allows to choose between explicit VR and implicit VR little endian format.
+  Added new method saveCurrentImage that allows to save the current image to file.
+  Affects: dcmpstat/include/dviface.h
+           dcmpstat/libsrc/dviface.cc
+
 **** Changes from 1999.02.17 (vorwerk)
 
 - removed bug in strippidxarray() that occurs in certain entries in database

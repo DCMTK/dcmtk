@@ -23,8 +23,8 @@
  *    classes: DVInterface
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-02-17 10:05:30 $
- *  CVS/RCS Revision: $Revision: 1.24 $
+ *  Update Date:      $Date: 1999-02-18 11:07:26 $
+ *  CVS/RCS Revision: $Revision: 1.25 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -135,9 +135,22 @@ class DVInterface
      *  This method does not acquire a database lock and does not register
      *  the saved presentation state in the database.
      *  @param filename path and filename under which the presentation state is to be saved
+     *  @param explicitVR selects the transfer syntax to be written. True (the default) selects
+     *    Explicit VR Little Endian, False selects Implicit VR Little Endian.
      *  @return EC_Normal upon success, an error code otherwise.
      */
-    E_Condition savePState(const char *filename);
+    E_Condition savePState(const char *filename, OFBool explicitVR=OFTrue);
+    
+    /** saves the DICOM image that is currently attached to the presentation state
+     *  in a file with the given path and filename.
+     *  This method does not acquire a database lock and does not register
+     *  the saved presentation state in the database.
+     *  @param filename path and filename under which the image is to be saved
+     *  @param explicitVR selects the transfer syntax to be written. True (the default) selects
+     *    Explicit VR Little Endian, False selects Implicit VR Little Endian.
+     *  @return EC_Normal upon success, an error code otherwise.
+     */
+    E_Condition saveCurrentImage(const char *filename, OFBool explicitVR=OFTrue);
     
     /** returns a reference to the current presentation state.
      *  This reference will become invalid when the DVInterface object is deleted,
@@ -781,7 +794,11 @@ class DVInterface
      *  @param height the height of the image, must be <= 0xFFFF
      *  @aspectRatio the pixel aspect ratio as width/height. If omitted, a pixel
      *    aspect ratio of 1/1 is assumed.
+     *  @param explicitVR selects the transfer syntax to be written. 
+     *    True selects Explicit VR Little Endian, False selects Implicit VR Little Endian.
      *  @param instanceUID optional parameter containing the SOP Instance UID to be written.
+     *    This parameter should be omitted unless the SOP Instance UID needs to be controlled
+     *    externally.
      *  @return EC_Normal upon success, an error code otherwise.
      */
     E_Condition saveDICOMImage(
@@ -790,6 +807,7 @@ class DVInterface
       unsigned long width,
       unsigned long height,
       double aspectRatio=1.0,
+      OFBool explicitVR=OFTrue,
       const char *instanceUID=NULL);
 
     /** saves a monochrome bitmap as a DICOM Secondary Capture image
@@ -855,10 +873,12 @@ private:
     /** helper function which saves a DICOM object to file.
      *  @param filename name of DICOM file to be created
      *  @param fileformat DICOM object to be saved
+     *  @param explicitVR selects the transfer syntax to be written. 
+     *    True selects Explicit VR Little Endian, False selects Implicit VR Little Endian.
      *  @return EC_Normal upon success, an error code otherwise.
      */
     E_Condition saveFileFormat(const char *filename,
-                               DcmFileFormat *fileformat);
+                               DcmFileFormat *fileformat, OFBool explicitVR);
 
     /** helper function that exchanges the current presentation state and image
      *  by the pointers passed and frees the old ones.
@@ -1003,7 +1023,13 @@ private:
 
 /*
  *  $Log: dviface.h,v $
- *  Revision 1.24  1999-02-17 10:05:30  meichel
+ *  Revision 1.25  1999-02-18 11:07:26  meichel
+ *  Added new parameter explicitVR to interface methods savePState,
+ *    saveDICOMImage.  Allows to choose between explicit VR and implicit VR
+ *    little endian format.  Added new method saveCurrentImage that allows to
+ *    save the current image to file.
+ *
+ *  Revision 1.24  1999/02/17 10:05:30  meichel
  *  Moved creation of Display Function object from DVPresentationState to
  *    DVInterface to avoid unnecessary re-reads.
  *

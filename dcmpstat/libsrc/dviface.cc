@@ -21,9 +21,9 @@
  *
  *  Purpose: DVPresentationState
  *
- *  Last Update:      $Author: vorwerk $
- *  Update Date:      $Date: 1999-02-17 12:46:10 $
- *  CVS/RCS Revision: $Revision: 1.34 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 1999-02-18 11:07:28 $
+ *  CVS/RCS Revision: $Revision: 1.35 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -347,7 +347,7 @@ E_Condition DVInterface::savePState()
 }
 
 
-E_Condition DVInterface::savePState(const char *filename)
+E_Condition DVInterface::savePState(const char *filename, OFBool explicitVR)
 {
     if (pState==NULL) return EC_IllegalCall;
     if (filename==NULL) return EC_IllegalCall;
@@ -361,7 +361,7 @@ E_Condition DVInterface::savePState(const char *filename)
           DcmFileFormat *fileformat = new DcmFileFormat(dataset);
           if (fileformat != NULL) 
           {
-            status = saveFileFormat(filename, fileformat);
+            status = saveFileFormat(filename, fileformat, explicitVR);
             
             // replace the stored data for resetPresentationState()
             if (pDicomPState) delete pDicomPState;
@@ -373,6 +373,14 @@ E_Condition DVInterface::savePState(const char *filename)
         } else delete dataset;
     } else status = EC_MemoryExhausted;
     return status;
+}
+
+
+E_Condition DVInterface::saveCurrentImage(const char *filename, OFBool explicitVR)
+{
+    if (filename==NULL) return EC_IllegalCall;
+    if (pDicomImage==NULL) return EC_IllegalCall;
+    return saveFileFormat(filename, pDicomImage, explicitVR);
 }
 
 
@@ -1677,8 +1685,11 @@ E_Condition DVInterface::loadFileFormat(const char *filename,
 
 
 E_Condition DVInterface::saveFileFormat(const char *filename,
-                                        DcmFileFormat *fileformat)
+                                        DcmFileFormat *fileformat, OFBool explicitVR)
 {
+    E_TransferSyntax xfer = EXS_LittleEndianImplicit;
+    if (explicitVR) xfer = EXS_LittleEndianExplicit;
+    
     DcmFileStream stream(filename, DCM_WriteMode);
     if (!stream.Fail())
     {
@@ -1686,7 +1697,7 @@ E_Condition DVInterface::saveFileFormat(const char *filename,
         {
             E_Condition status;
             fileformat->transferInit();
-            status = fileformat->write(stream, EXS_LittleEndianExplicit, EET_ExplicitLength, EGL_recalcGL, EPD_withoutPadding);
+            status = fileformat->write(stream, xfer, EET_ExplicitLength, EGL_recalcGL, EPD_withoutPadding);
             fileformat->transferEnd();
             return status;
         }
@@ -1748,6 +1759,7 @@ E_Condition DVInterface::saveDICOMImage(
   unsigned long width,
   unsigned long height,
   double aspectRatio,
+  OFBool explicitVR,
   const char *instanceUID)
 {
     if ((width<1)||(width > 0xFFFF)) return EC_IllegalCall;
@@ -1810,7 +1822,7 @@ E_Condition DVInterface::saveDICOMImage(
           DcmFileFormat *fileformat = new DcmFileFormat(dataset);
           if (fileformat) 
           {
-            status = saveFileFormat(filename, fileformat);
+            status = saveFileFormat(filename, fileformat, explicitVR);
             delete fileformat;
           } else {
             status = EC_MemoryExhausted;
@@ -1845,7 +1857,7 @@ E_Condition DVInterface::saveDICOMImage(
   if (DB_NORMAL == DB_makeNewStoreFileName(handle, UID_SecondaryCaptureImageStorage, uid, imageFileName))
   {
      // now store presentation state as filename
-     result = saveDICOMImage(imageFileName, pixelData, width, height, aspectRatio, uid);
+     result = saveDICOMImage(imageFileName, pixelData, width, height, aspectRatio, OFTrue, uid);
      if (EC_Normal==result)
      {
        if (DB_NORMAL != DB_storeRequest(handle, UID_SecondaryCaptureImageStorage, uid, imageFileName, &dbStatus))
@@ -1900,7 +1912,13 @@ void DVInterface::cleanChildren()
 /*
  *  CVS/RCS Log:
  *  $Log: dviface.cc,v $
- *  Revision 1.34  1999-02-17 12:46:10  vorwerk
+ *  Revision 1.35  1999-02-18 11:07:28  meichel
+ *  Added new parameter explicitVR to interface methods savePState,
+ *    saveDICOMImage.  Allows to choose between explicit VR and implicit VR
+ *    little endian format.  Added new method saveCurrentImage that allows to
+ *    save the current image to file.
+ *
+ *  Revision 1.34  1999/02/17 12:46:10  vorwerk
  *  bug fixed in strippidxarray.
  *
  *  Revision 1.33  1999/02/17 10:05:33  meichel
