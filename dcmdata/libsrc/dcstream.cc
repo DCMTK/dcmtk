@@ -21,10 +21,10 @@
  *
  *  Purpose: streaming classes for file and buffer input/output
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-02-02 14:32:54 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2000-02-29 12:21:11 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/Attic/dcstream.cc,v $
- *  CVS/RCS Revision: $Revision: 1.15 $
+ *  CVS/RCS Revision: $Revision: 1.16 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -356,9 +356,7 @@ E_Condition DcmBufferStream::Avail(const Uint32 numBytes)
     E_Condition l_error = fErrorCond;
     if (fErrorCond == EC_Normal || fErrorCond == EC_StreamNotifyClient)
     {
-        if (numBytes > fBuffer->GetLength())
-            l_error = EC_IllegalCall;
-        else if (fReadMode && numBytes > fBuffer->AvailRead())
+       if (fReadMode && numBytes > fBuffer->AvailRead())
         {
             if(fBuffer->EndOfBufferMarkSet())
                 l_error = EC_EndOfStream;
@@ -367,13 +365,12 @@ E_Condition DcmBufferStream::Avail(const Uint32 numBytes)
         }
         else if (!fReadMode && numBytes > fBuffer->AvailWrite())
         {
-            if (fBuffer->GetLength() == 0)
+            if (fBuffer->GetLength() < numBytes)  // fail because the buffer is too small even if flushed
                 l_error = EC_IllegalCall;
             else
                 l_error = EC_StreamNotifyClient;
         }
     }
-
     return l_error;
 }
 
@@ -744,7 +741,11 @@ DcmFileStreamConstructor::Copy(void)
 /*
 ** CVS/RCS Log:
 ** $Log: dcstream.cc,v $
-** Revision 1.15  2000-02-02 14:32:54  joergr
+** Revision 1.16  2000-02-29 12:21:11  meichel
+** Fixed bug in dcmdata that could cause the parser to return
+**   an EC_IllegalCall flag when parsing very small packets.
+**
+** Revision 1.15  2000/02/02 14:32:54  joergr
 ** Replaced 'delete' statements by 'delete[]' for objects created with 'new[]'.
 **
 ** Revision 1.14  1999/03/31 09:25:40  meichel
