@@ -10,9 +10,9 @@
 ** routines for finding and creating UIDs.
 **
 ** Last Update:		$Author: hewett $
-** Update Date:		$Date: 1997-05-09 13:07:27 $
+** Update Date:		$Date: 1997-05-13 13:57:42 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcuid.h,v $
-** CVS/RCS Revision:	$Revision: 1.13 $
+** CVS/RCS Revision:	$Revision: 1.14 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -224,25 +224,61 @@ char* dcmGenerateUniqueIdentifer(char* uid, const char* prefix=NULL);
 #define UID_MOVEPatientStudyOnlyQueryRetrieveInformationModel	"1.2.840.10008.5.1.4.1.2.3.2"
 #define UID_GETPatientStudyOnlyQueryRetrieveInformationModel	"1.2.840.10008.5.1.4.1.2.3.3"
 
-#define UID_StorageCommitmentPushModelSOPClass			"1.2.840.10008.1.20.1"
-#define UID_StorageCommitmentPushModelSOPInstance		"1.2.840.10008.1.20.1.1"
-#define UID_StorageCommitmentPullModelSOPClass			"1.2.840.10008.1.20.2"
-#define UID_StorageCommitmentPullModelSOPInstance		"1.2.840.10008.1.20.2.1"
+/* Supplement 8 (Storage Commitment) */
+#define UID_StorageCommitmentPushModelSOPClass		"1.2.840.10008.1.20.1"
+#define UID_StorageCommitmentPushModelSOPInstance	"1.2.840.10008.1.20.1.1"
+#define UID_StorageCommitmentPullModelSOPClass		"1.2.840.10008.1.20.2"
+#define UID_StorageCommitmentPullModelSOPInstance	"1.2.840.10008.1.20.2.1"
 
-#define UID_FINDModalityWorklistInformationModel		"1.2.840.10008.5.1.4.31"
+/* Supplement 10 (Modality Worklist) */
+#define UID_FINDModalityWorklistInformationModel	"1.2.840.10008.5.1.4.31"
 
+/* Supplement 11 (Radio-Therapy Object) */
 #define UID_RTImageStorage		"1.2.840.10008.5.1.4.1.1.481.1"
 #define UID_RTDoseStorage		"1.2.840.10008.5.1.4.1.1.481.2"
 #define UID_RTStructureSetStorage	"1.2.840.10008.5.1.4.1.1.481.3"
-#define UID_RTTreatmentRecordStorage	"1.2.840.10008.5.1.4.1.1.481.4"
 #define UID_RTPlanStorage		"1.2.840.10008.5.1.4.1.1.481.5"
+
+/* Supplement 12 (PET Object)*/
+#define UID_PETImageStorage		"1.2.840.10008.5.1.4.1.1.128"
+#define UID_PETCurveStorage		"1.2.840.10008.5.1.4.1.1.129"
+
+/* Supplement 13 (Queue Management) */
+#define UID_PrintQueueSOPInstance	"1.2.840.10008.5.1.1.25"
+#define UID_PrintQueueManagementSOPClass "1.2.840.10008.5.1.1.26"
+
+/* DRAFT Supplement 15 (Visible Light) */
+#define UID_VLImageStorage		"1.2.840.10008.5.1.4.1.1.77.1" 
+#define UID_VLMultiFrameImageStorage	"1.2.840.10008.5.1.4.1.1.77.2"
+
+/* DRAFT Supplement 17 (Performed Procedure Step) */
+#define UID_ModalityPerformedProcedureStepSOPClass "1.2.840.10008.3.1.2.3.3"
+#define UID_ModalityManagementMetaSOPClass	   "1.2.840.10008.3.1.2.3.4"
+
+/* DRAFT Supplement 22 (User Preference LUT) */
+#define UID_UserPreferenceLUTSOPClass	"1.2.840.10008.5.1.1.23"
+
+/* DRAFT Supplement 23 (Structured Reporting) */
+/* as of 97.04.10 no UIDs assigned */
+
+/* DRAFT Supplement 24 (Print Storage) */
+#define UID_BasicGrayscalePrintStorageSOPClass	"1.2.840.10008.5.1.4.1.1.27"
+#define UID_BasicColorPrintStorageSOPClass	"1.2.840.10008.5.1.4.1.1.28"
+#define UID_ReferencedGrayscalePrintStorageSOPClass "1.2.840.10008.5.1.4.1.1.29"
+#define UID_ReferencedColorPrintStorageSOPClass "1.2.840.10008.5.1.4.1.1.30"
 
 #endif /* DCUID_H */
 
 /*
 ** CVS/RCS Log:
 ** $Log: dcuid.h,v $
-** Revision 1.13  1997-05-09 13:07:27  hewett
+** Revision 1.14  1997-05-13 13:57:42  hewett
+** Added UIDs for the draft supplements 12 (PET), 13 (Queue Management),
+** 15 (Visible Light), 17 (Modality Performed Procedure Step), 22 (User
+** Preference LUT) and 24 (Print Storage).  Updated UID tables so that
+** recompiled Storage SCP/SCU's will handle the new SOPs.
+**
+** Revision 1.13  1997/05/09 13:07:27  hewett
 ** Updated version name.
 **
 ** Revision 1.12  1997/03/27 16:10:43  hewett
