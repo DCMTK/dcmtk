@@ -57,9 +57,9 @@
 **	Module Prefix: DIMSE_
 **
 ** Last Update:		$Author: hewett $
-** Update Date:		$Date: 1996-04-22 10:02:59 $
+** Update Date:		$Date: 1996-04-25 16:11:15 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/libsrc/dimfind.cc,v $
-** CVS/RCS Revision:	$Revision: 1.2 $
+** CVS/RCS Revision:	$Revision: 1.3 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -118,8 +118,8 @@ DIMSE_findUser(
 	    "DIMSE_findUser: No Request Identifiers Supplied");
     }
 
-    bzero(&req, sizeof(req));
-    bzero(&rsp, sizeof(rsp));
+    bzero((char*)&req, sizeof(req));
+    bzero((char*)&rsp, sizeof(rsp));
 
     req.CommandField = DIMSE_C_FIND_RQ;
     request->DataSetType = DIMSE_DATASET_PRESENT;
@@ -141,7 +141,7 @@ DIMSE_findUser(
     while (cond == DIMSE_NORMAL && DICOM_PENDING_STATUS(status)) {
 
 	/* initialise the response to collect */
-        bzero(&rsp, sizeof(rsp));
+        bzero((char*)&rsp, sizeof(rsp));
 	if (rspIds != NULL) {
 	    delete rspIds;
 	    rspIds = NULL;
@@ -229,7 +229,7 @@ DIMSE_sendFindResponse(T_ASC_Association * assoc,
     DIC_US	dtype;
     T_DIMSE_Message rsp;
 
-    bzero(&rsp, sizeof(rsp));
+    bzero((char*)&rsp, sizeof(rsp));
     rsp.CommandField = DIMSE_C_FIND_RSP;
     rsp.msg.CFindRSP = *response;
     rsp.msg.CFindRSP.MessageIDBeingRespondedTo = request->MessageID;
@@ -283,7 +283,7 @@ DIMSE_findProvider(
 	goto providerCleanup;
     }
 
-    bzero(&rsp, sizeof(rsp));
+    bzero((char*)&rsp, sizeof(rsp));
     rsp.Status = STATUS_Pending;
     
     while (cond == DIMSE_NORMAL && DICOM_PENDING_STATUS(rsp.Status)) {
@@ -344,7 +344,13 @@ providerCleanup:
 /*
 ** CVS Log
 ** $Log: dimfind.cc,v $
-** Revision 1.2  1996-04-22 10:02:59  hewett
+** Revision 1.3  1996-04-25 16:11:15  hewett
+** Added parameter casts to char* for bzero calls.  Replaced some declarations
+** of DIC_UL with unsigned long (reduces mismatch problems with 32 & 64 bit
+** architectures).  Added some protection to inclusion of sys/socket.h (due
+** to MIPS/Ultrix).
+**
+** Revision 1.2  1996/04/22 10:02:59  hewett
 ** Corrected memory leak whereby response ids where not being deleted.
 **
 ** Revision 1.1.1.1  1996/03/26 18:38:46  hewett

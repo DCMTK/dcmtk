@@ -57,9 +57,9 @@
 **	Module Prefix: DIMSE_
 **
 ** Last Update:		$Author: hewett $
-** Update Date:		$Date: 1996-03-26 18:38:46 $
+** Update Date:		$Date: 1996-04-25 16:11:16 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/libsrc/dimmove.cc,v $
-** CVS/RCS Revision:	$Revision: 1.1 $
+** CVS/RCS Revision:	$Revision: 1.2 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -162,8 +162,8 @@ DIMSE_moveUser(
 	    "DIMSE_moveUser: No Request Identifiers Supplied");
     }
 
-    bzero(&req, sizeof(req));
-    bzero(&rsp, sizeof(rsp));
+    bzero((char*)&req, sizeof(req));
+    bzero((char*)&rsp, sizeof(rsp));
     
     req.CommandField = DIMSE_C_MOVE_RQ;
     request->DataSetType = DIMSE_DATASET_PRESENT;
@@ -208,7 +208,7 @@ DIMSE_moveUser(
 	    break;
 	}
 
-        bzero(&rsp, sizeof(rsp));
+        bzero((char*)&rsp, sizeof(rsp));
 
 	cond = DIMSE_receiveCommand(assoc, blockMode, timeout, &presID, 
 		&rsp, statusDetail);
@@ -286,7 +286,7 @@ DIMSE_sendMoveResponse(T_ASC_Association * assoc,
     T_DIMSE_Message rsp;
     unsigned int opts;
 
-    bzero(&rsp, sizeof(rsp));
+    bzero((char*)&rsp, sizeof(rsp));
     rsp.CommandField = DIMSE_C_MOVE_RSP;
     rsp.msg.CMoveRSP = *response;
     /* copy over stuff from request */
@@ -373,7 +373,7 @@ DIMSE_moveProvider(
 	goto providerCleanup;
     }
 
-    bzero(&rsp, sizeof(rsp));
+    bzero((char*)&rsp, sizeof(rsp));
     rsp.Status = STATUS_Pending;	/* assume */
     
     while (cond == DIMSE_NORMAL && rsp.Status == STATUS_Pending) {
@@ -440,8 +440,14 @@ providerCleanup:
 /*
 ** CVS Log
 ** $Log: dimmove.cc,v $
-** Revision 1.1  1996-03-26 18:38:46  hewett
-** Initial revision
+** Revision 1.2  1996-04-25 16:11:16  hewett
+** Added parameter casts to char* for bzero calls.  Replaced some declarations
+** of DIC_UL with unsigned long (reduces mismatch problems with 32 & 64 bit
+** architectures).  Added some protection to inclusion of sys/socket.h (due
+** to MIPS/Ultrix).
+**
+** Revision 1.1.1.1  1996/03/26 18:38:46  hewett
+** Initial Release.
 **
 **
 */

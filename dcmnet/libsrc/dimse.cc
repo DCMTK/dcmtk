@@ -57,9 +57,9 @@
 **	Module Prefix: DIMSE_
 **
 ** Last Update:		$Author: hewett $
-** Update Date:		$Date: 1996-03-26 18:38:46 $
+** Update Date:		$Date: 1996-04-25 16:11:16 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/libsrc/dimse.cc,v $
-** CVS/RCS Revision:	$Revision: 1.1 $
+** CVS/RCS Revision:	$Revision: 1.2 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -482,8 +482,8 @@ sendDcmDataset(T_ASC_Association * assoc, DcmDataset * obj,
     unsigned char *buf;
     unsigned long bufLen;
     int last = FALSE;
-    unsigned long rtnLength;
-    unsigned long bytesTransmitted = 0;
+    Uint32 rtnLength;
+    unsigned int bytesTransmitted = 0;
     DUL_PDVLIST pdvList;
     DUL_PDV pdv;
     unsigned long pdvCount = 0;
@@ -1167,8 +1167,14 @@ void DIMSE_warning(T_ASC_Association *assoc,
 /*
 ** CVS Log
 ** $Log: dimse.cc,v $
-** Revision 1.1  1996-03-26 18:38:46  hewett
-** Initial revision
+** Revision 1.2  1996-04-25 16:11:16  hewett
+** Added parameter casts to char* for bzero calls.  Replaced some declarations
+** of DIC_UL with unsigned long (reduces mismatch problems with 32 & 64 bit
+** architectures).  Added some protection to inclusion of sys/socket.h (due
+** to MIPS/Ultrix).
+**
+** Revision 1.1.1.1  1996/03/26 18:38:46  hewett
+** Initial Release.
 **
 **
 */

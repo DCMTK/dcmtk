@@ -68,9 +68,9 @@
 **
 **
 ** Last Update:		$Author: hewett $
-** Update Date:		$Date: 1996-04-22 10:00:54 $
+** Update Date:		$Date: 1996-04-25 16:11:11 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/libsrc/assoc.cc,v $
-** CVS/RCS Revision:	$Revision: 1.2 $
+** CVS/RCS Revision:	$Revision: 1.3 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -99,7 +99,10 @@
 #include <sys/file.h>
 #endif
 #ifdef HAVE_SYS_SOCKET_H
+#ifndef _SYS_SOCKET_H_
+#define _SYS_SOCKET_H_
 #include <sys/socket.h>
+#endif
 #endif
 #ifdef HAVE_SYS_TIME_H
 #include <sys/time.h>
@@ -338,7 +341,7 @@ ASC_dropNetwork(T_ASC_Network ** network)
 /* create association parameters and initialize with default values */
 CONDITION 
 ASC_createAssociationParameters(T_ASC_Parameters ** params,
-	DIC_UL maxReceivePDUSize)
+	long maxReceivePDUSize)
 {
 
     *params = (T_ASC_Parameters *) malloc(sizeof(**params));
@@ -346,7 +349,7 @@ ASC_createAssociationParameters(T_ASC_Parameters ** params,
 	return COND_PushCondition(ASC_MALLOCERROR,
 	   ASC_Message(ASC_MALLOCERROR), "ASC_createAssociationParameters");
     }
-    bzero(*params, sizeof(**params));
+    bzero((char*)*params, sizeof(**params));
 
     strncpy((*params)->ourImplementationClassUID,
 	    DIC_EURO_IMPLEMENTATIONCLASSUID,
@@ -837,7 +840,7 @@ ASC_getPresentationContext(T_ASC_Parameters * params,
     int count = 0;
 
     /* make the presentation context structure clean */
-    bzero(presentationContext, sizeof(*presentationContext));
+    bzero((char*)presentationContext, sizeof(*presentationContext));
 
     if (params->DULparams.requestedPresentationContext == NULL) {
 	return COND_PushCondition(ASC_BADPRESENTATIONCONTEXTPOSITION,
@@ -1467,7 +1470,7 @@ ASC_destroyAssociation(T_ASC_Association ** association)
 CONDITION
 ASC_receiveAssociation(T_ASC_Network * network,
 		       T_ASC_Association ** assoc,
-			DIC_UL maxReceivePDUSize)
+			long maxReceivePDUSize)
 {
     CONDITION cond;
     T_ASC_Parameters *params;
@@ -1484,7 +1487,7 @@ ASC_receiveAssociation(T_ASC_Network * network,
 	return COND_PushCondition(ASC_MALLOCERROR,
 		    ASC_Message(ASC_MALLOCERROR), "ASC_receiveAssociation");
     }
-    bzero(*assoc, sizeof(**assoc));
+    bzero((char*)*assoc, sizeof(**assoc));
 
     (*assoc)->params = params;
     (*assoc)->nextMsgID = 1;
@@ -1581,7 +1584,7 @@ ASC_requestAssociation(T_ASC_Network * network,
 	return COND_PushCondition(ASC_MALLOCERROR,
 		    ASC_Message(ASC_MALLOCERROR), "ASC_requestAssociation");
     }
-    bzero(*assoc, sizeof(**assoc));
+    bzero((char*)*assoc, sizeof(**assoc));
 
     (*assoc)->params = params;
     (*assoc)->nextMsgID = 1;
@@ -1786,7 +1789,13 @@ ASC_dropAssociation(T_ASC_Association * association)
 /*
 ** CVS Log
 ** $Log: assoc.cc,v $
-** Revision 1.2  1996-04-22 10:00:54  hewett
+** Revision 1.3  1996-04-25 16:11:11  hewett
+** Added parameter casts to char* for bzero calls.  Replaced some declarations
+** of DIC_UL with unsigned long (reduces mismatch problems with 32 & 64 bit
+** architectures).  Added some protection to inclusion of sys/socket.h (due
+** to MIPS/Ultrix).
+**
+** Revision 1.2  1996/04/22 10:00:54  hewett
 ** Corrected incorrect translation of reject reason from DUL to ASC.
 **
 ** Revision 1.1.1.1  1996/03/26 18:38:45  hewett

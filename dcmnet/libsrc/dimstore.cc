@@ -57,9 +57,9 @@
 **	Module Prefix: DIMSE_
 **
 ** Last Update:		$Author: hewett $
-** Update Date:		$Date: 1996-03-26 18:38:46 $
+** Update Date:		$Date: 1996-04-25 16:11:17 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/libsrc/dimstore.cc,v $
-** CVS/RCS Revision:	$Revision: 1.1 $
+** CVS/RCS Revision:	$Revision: 1.2 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -103,7 +103,7 @@ typedef struct {
 
 
 static void 
-privateUserCallback(void *callbackData, DIC_UL bytes)
+privateUserCallback(void *callbackData, unsigned long bytes)
 {
     DIMSE_PrivateUserContext *ctx;
     ctx = (DIMSE_PrivateUserContext*)callbackData;
@@ -139,8 +139,8 @@ DIMSE_storeUser(
 	    "DIMSE_storeUser: no imageFileName or imageDataSet provided");
     }
     
-    bzero(&req, sizeof(req));
-    bzero(&rsp, sizeof(rsp));
+    bzero((char*)&req, sizeof(req));
+    bzero((char*)&rsp, sizeof(rsp));
 
     req.CommandField = DIMSE_C_STORE_RQ;
     request->DataSetType = DIMSE_DATASET_PRESENT;
@@ -226,7 +226,7 @@ DIMSE_sendStoreResponse(T_ASC_Association * assoc,
     CONDITION           cond = DIMSE_NORMAL;
     T_DIMSE_Message     rsp;
 
-    bzero(&rsp, sizeof(rsp));
+    bzero((char*)&rsp, sizeof(rsp));
     rsp.CommandField = DIMSE_C_STORE_RSP;
     response->MessageIDBeingRespondedTo = request->MessageID;
     strcpy(response->AffectedSOPClassUID, request->AffectedSOPClassUID);
@@ -255,7 +255,7 @@ typedef struct {
 } DIMSE_PrivateProviderContext;
 
 static void 
-privateProviderCallback(void *callbackData, DIC_UL bytes)
+privateProviderCallback(void *callbackData, unsigned long bytes)
 {
     DIMSE_PrivateProviderContext *ctx;
     ctx = (DIMSE_PrivateProviderContext*)callbackData;
@@ -288,7 +288,7 @@ DIMSE_storeProvider(/* in */
     DcmDataset *statusDetail = NULL;
     T_DIMSE_StoreProgress progress;
 
-    bzero(&response, sizeof(response));
+    bzero((char*)&response, sizeof(response));
     response.Status = STATUS_Success;	/* assume */
 
     /* set up callback routine */
@@ -360,8 +360,14 @@ DIMSE_storeProvider(/* in */
 /*
 ** CVS Log
 ** $Log: dimstore.cc,v $
-** Revision 1.1  1996-03-26 18:38:46  hewett
-** Initial revision
+** Revision 1.2  1996-04-25 16:11:17  hewett
+** Added parameter casts to char* for bzero calls.  Replaced some declarations
+** of DIC_UL with unsigned long (reduces mismatch problems with 32 & 64 bit
+** architectures).  Added some protection to inclusion of sys/socket.h (due
+** to MIPS/Ultrix).
+**
+** Revision 1.1.1.1  1996/03/26 18:38:46  hewett
+** Initial Release.
 **
 **
 */

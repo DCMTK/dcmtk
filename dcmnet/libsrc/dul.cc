@@ -54,9 +54,9 @@
 ** Author, Date:	Stephen M. Moore, 14-Apr-93
 ** Intent:		This module contains the public entry points for the
 **			DICOM Upper Layer (DUL) protocol package.
-** Last Update:		$Author: hewett $, $Date: 1996-03-26 18:38:46 $
+** Last Update:		$Author: hewett $, $Date: 1996-04-25 16:11:18 $
 ** Source File:		$RCSfile: dul.cc,v $
-** Revision:		$Revision: 1.1 $
+** Revision:		$Revision: 1.2 $
 ** Status:		$State: Exp $
 */
 
@@ -83,7 +83,11 @@
 #include <sys/file.h>
 #endif
 #ifdef HAVE_SYS_SOCKET_H
+#ifndef _SYS_SOCKET_H_
+#define _SYS_SOCKET_H_
+/* some systems don't protect sys/socket.h (e.g. DEC Ultrix) */
 #include <sys/socket.h>
+#endif
 #endif
 #ifdef HAVE_SYS_TIME_H
 #include <sys/time.h>
@@ -216,7 +220,7 @@ DUL_InitializeNetwork(char *networkType, char *mode,
 		       networkType, mode);
 #endif
 
-    (void) signal(SIGPIPE, SIG_IGN);
+    (void) signal(SIGPIPE, (void (*)(int))SIG_IGN);
     (void) DUL_InitializeFSM();
 
     *networkKey = NULL;
@@ -2222,8 +2226,14 @@ clearPresentationContext(LST_HEAD ** l)
 /*
 ** CVS Log
 ** $Log: dul.cc,v $
-** Revision 1.1  1996-03-26 18:38:46  hewett
-** Initial revision
+** Revision 1.2  1996-04-25 16:11:18  hewett
+** Added parameter casts to char* for bzero calls.  Replaced some declarations
+** of DIC_UL with unsigned long (reduces mismatch problems with 32 & 64 bit
+** architectures).  Added some protection to inclusion of sys/socket.h (due
+** to MIPS/Ultrix).
+**
+** Revision 1.1.1.1  1996/03/26 18:38:46  hewett
+** Initial Release.
 **
 **
 */

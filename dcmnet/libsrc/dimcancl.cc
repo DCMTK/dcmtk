@@ -58,9 +58,9 @@
 **
 **
 ** Last Update:		$Author: hewett $
-** Update Date:		$Date: 1996-03-26 18:38:45 $
+** Update Date:		$Date: 1996-04-25 16:11:13 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/libsrc/dimcancl.cc,v $
-** CVS/RCS Revision:	$Revision: 1.1 $
+** CVS/RCS Revision:	$Revision: 1.2 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -95,7 +95,7 @@ DIMSE_sendCancelRequest(T_ASC_Association * assoc,
     CONDITION           cond;
     T_DIMSE_Message	req;
 
-    bzero(&req, sizeof(req));
+    bzero((char*)&req, sizeof(req));
 	
     req.CommandField = DIMSE_C_CANCEL_RQ;
     req.msg.CCancelRQ.MessageIDBeingRespondedTo = msgId;
@@ -144,8 +144,14 @@ DIMSE_checkForCancelRQ(T_ASC_Association * assoc,
 /*
 ** CVS Log
 ** $Log: dimcancl.cc,v $
-** Revision 1.1  1996-03-26 18:38:45  hewett
-** Initial revision
+** Revision 1.2  1996-04-25 16:11:13  hewett
+** Added parameter casts to char* for bzero calls.  Replaced some declarations
+** of DIC_UL with unsigned long (reduces mismatch problems with 32 & 64 bit
+** architectures).  Added some protection to inclusion of sys/socket.h (due
+** to MIPS/Ultrix).
+**
+** Revision 1.1.1.1  1996/03/26 18:38:45  hewett
+** Initial Release.
 **
 **
 */

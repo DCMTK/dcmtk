@@ -64,9 +64,9 @@
 ** 
 **
 ** Last Update:		$Author: hewett $
-** Update Date:		$Date: 1996-03-26 18:38:45 $
+** Update Date:		$Date: 1996-04-25 16:11:12 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/libsrc/dcompat.cc,v $
-** CVS/RCS Revision:	$Revision: 1.1 $
+** CVS/RCS Revision:	$Revision: 1.2 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -301,20 +301,18 @@ tempnam(char *dir, char *pfx)
 
 #endif /* ! HAVE_TEMPNAM */
 
-#ifndef HAVE_STRDUP
-
-char *strdup(char* s)
-{
-    return strcpy((char*)malloc(strlen(s)+1), s);
-}
-
-#endif /* ! HAVE_STRDUP */
 
 /*
 ** CVS Log
 ** $Log: dcompat.cc,v $
-** Revision 1.1  1996-03-26 18:38:45  hewett
-** Initial revision
+** Revision 1.2  1996-04-25 16:11:12  hewett
+** Added parameter casts to char* for bzero calls.  Replaced some declarations
+** of DIC_UL with unsigned long (reduces mismatch problems with 32 & 64 bit
+** architectures).  Added some protection to inclusion of sys/socket.h (due
+** to MIPS/Ultrix).
+**
+** Revision 1.1.1.1  1996/03/26 18:38:45  hewett
+** Initial Release.
 **
 **
 */
