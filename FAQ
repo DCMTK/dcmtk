@@ -1,6 +1,47 @@
 DCMTK FAQ - Frequently Asked Questions
 
 ----
+2003-07-09
+
+Q: Why do the C++ source files use a ".cc" extension in the Unix version 
+   of DCMTK, but a ".cxx" extension in the Windows version?
+
+A: The ".cc" extension is there mostly for historical reasons - this is 
+   the naming scheme we adopted when we initialized our code maintenance 
+   system. Unfortunately, not all C++ compilers accept ".cc" as a valid 
+   extension for C++ files. Two noteworthy exceptions are the IBM AIX XL 
+   C++ Compiler which requires ".C" with an uppercase "C" as extension 
+   and Microsoft Visual C++, which expects ".cxx" or ".cpp".
+
+   On Unix platforms, the file name extension can easily be changed 
+   using the "changext" shell script which is located in the config 
+   directory of the DCMTK source distribution.  A call to 
+   "config/changext C cc" will rename all ".cc" files within the DCMTK 
+   tree to ".C" and will also update makefiles, dependency files etc. 
+   For Win32 users, we provide a source code distribution in which 
+   extensions have been changed to ".cxx" for convenience. 
+
+   Alternatively, the ".cc" extension can be added to Visual C++'s 
+   settings in the system registry under the following position (note 
+   that for other versions of Visual C++ than 6.0, the registry position 
+   might be different). Append ";*.cc" to the value for the Input_Spec 
+   key, which defaults to "*.c;*.cpp;*.cxx". Thanks to Norbert 
+   Lindlbauer <norbert.lindlbauer@web.de> for this useful hint.
+   
+   HKEY_CURRENT_USER 
+   + Software 
+    + Microsoft 
+     + DevStudio 
+      + 6.0 
+       + Build System 
+        + Components 
+         + Platforms 
+          + Win32 (x86) 
+           + Tools 
+            + 32-Bit C/C++-Compiler for 80x86 
+             + Input_Spec
+
+----
 2002-07-15
 
 Q: Using dcm2pnm to convert a DICOM image I get the following error message:
