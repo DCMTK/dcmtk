@@ -392,7 +392,7 @@ dsrdoctr.o: dsrdoctr.cc ../../config/include/osconfig.h \
  ../include/dsrtcovl.h ../include/dsrtcodt.h ../include/dsrtcosp.h \
  ../include/dsrtcoto.h ../include/dsrcomvl.h ../include/dsrimgvl.h \
  ../include/dsrimgfr.h ../include/dsrwavvl.h ../include/dsrwavch.h \
- ../include/dsrcontn.h
+ ../include/dsrcontn.h ../include/dsrreftn.h
 dsrdtitn.o: dsrdtitn.cc ../../config/include/osconfig.h \
  ../include/dsrdtitn.h ../include/dsrdoctn.h ../include/dsrtree.h \
  ../include/dsrtypes.h ../../dcmdata/include/dctk.h \
@@ -649,7 +649,7 @@ dsrpnmtn.o: dsrpnmtn.cc ../../config/include/osconfig.h \
  ../include/dsrtncsr.h ../../ofstd/include/ofstack.h \
  ../include/dsrcodvl.h ../include/dsrstrvl.h
 dsrreftn.o: dsrreftn.cc ../../config/include/osconfig.h \
- ../include/dsrreftn.h ../include/dsrdoctn.h ../include/dsrtree.h \
+ ../include/dsrreftn.h ../include/dsrdoctr.h ../include/dsrtree.h \
  ../include/dsrtypes.h ../../dcmdata/include/dctk.h \
  ../../dcmdata/include/dctypes.h ../../ofstd/include/oftypes.h \
  ../../dcmdata/include/dcswap.h ../../dcmdata/include/dcerror.h \
@@ -684,7 +684,12 @@ dsrreftn.o: dsrreftn.cc ../../config/include/osconfig.h \
  ../../dcmdata/include/dcvrsl.h ../../dcmdata/include/dcvrfl.h \
  ../../dcmdata/include/dcvrfd.h ../../dcmdata/include/cmdlnarg.h \
  ../include/dsrtncsr.h ../../ofstd/include/ofstack.h \
- ../include/dsrcodvl.h ../include/dsrstrvl.h
+ ../include/dsrdoctn.h ../include/dsrcodvl.h ../include/dsrcitem.h \
+ ../include/dsrnumvl.h ../include/dsrscovl.h ../include/dsrscogr.h \
+ ../include/dsrtlist.h ../include/dsrtcovl.h ../include/dsrtcodt.h \
+ ../include/dsrtcosp.h ../include/dsrtcoto.h ../include/dsrcomvl.h \
+ ../include/dsrimgvl.h ../include/dsrimgfr.h ../include/dsrwavvl.h \
+ ../include/dsrwavch.h
 dsrscogr.o: dsrscogr.cc ../../config/include/osconfig.h \
  ../include/dsrscogr.h ../include/dsrtypes.h \
  ../../dcmdata/include/dctk.h ../../dcmdata/include/dctypes.h \
