@@ -23,8 +23,8 @@
  *    classes: DVPSPrintSCP
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-11-28 13:56:59 $
- *  CVS/RCS Revision: $Revision: 1.12 $
+ *  Update Date:      $Date: 2002-01-08 10:38:56 $
+ *  CVS/RCS Revision: $Revision: 1.13 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -635,7 +635,7 @@ OFCondition DVPSPrintSCP::handleNCreate(T_DIMSE_Message& rq, T_ASC_PresentationC
     strncpy(rsp.msg.NCreateRSP.AffectedSOPInstanceUID, rq.msg.NCreateRQ.AffectedSOPInstanceUID, sizeof(DIC_UI));
   } else {
     // we generate our own instance UID
-    dcmGenerateUniqueIdentifer(rsp.msg.NCreateRSP.AffectedSOPInstanceUID);
+    dcmGenerateUniqueIdentifier(rsp.msg.NCreateRSP.AffectedSOPInstanceUID);
   }
   rsp.msg.NCreateRSP.DataSetType = DIMSE_DATASET_NULL;
   OFBool omitFlag = dviface.getTargetPrintSCPOmitSOPClassUIDFromCreateResponse(cfgname);
@@ -934,9 +934,9 @@ void DVPSPrintSCP::filmSessionNCreate(DcmDataset *rqDataset, T_DIMSE_Message& rs
           peerTitle, usePLUTinFilmSession, presentationLUTList)) 
           filmSession = newSession;
       char uid[100];
-      studyInstanceUID.putString(dcmGenerateUniqueIdentifer(uid));
-      psSeriesInstanceUID.putString(dcmGenerateUniqueIdentifer(uid));
-      imageSeriesInstanceUID.putString(dcmGenerateUniqueIdentifer(uid));
+      studyInstanceUID.putString(dcmGenerateUniqueIdentifier(uid, SITE_STUDY_UID_ROOT));
+      psSeriesInstanceUID.putString(dcmGenerateUniqueIdentifier(uid, SITE_SERIES_UID_ROOT));
+      imageSeriesInstanceUID.putString(dcmGenerateUniqueIdentifier(uid));
     } else {
       if (verboseMode)
       {
@@ -1196,7 +1196,7 @@ void DVPSPrintSCP::saveDimseLog()
   }
     
   DVPSHelper::putStringValue(dset, DCM_SOPClassUID, PSTAT_DIMSE_LOG_STORAGE_UID);
-  DVPSHelper::putStringValue(dset, DCM_SOPInstanceUID, dcmGenerateUniqueIdentifer(uid));  
+  DVPSHelper::putStringValue(dset, DCM_SOPInstanceUID, dcmGenerateUniqueIdentifier(uid));  
   DVPSHelper::currentDate(aString);
   DVPSHelper::putStringValue(dset, DCM_InstanceCreationDate, aString.c_str());
   DVPSHelper::currentTime(aString);
@@ -1237,7 +1237,13 @@ void DVPSPrintSCP::dumpNMessage(T_DIMSE_Message &msg, DcmItem *dataset, OFBool o
 
 /*
  *  $Log: dvpsprt.cc,v $
- *  Revision 1.12  2001-11-28 13:56:59  joergr
+ *  Revision 1.13  2002-01-08 10:38:56  joergr
+ *  Corrected spelling of function dcmGenerateUniqueIdentifier().
+ *  Changed prefix of UIDs created for series and studies (now using constants
+ *  SITE_SERIES_UID_ROOT and SITE_STUDY_UID_ROOT which are supposed to be used
+ *  in these cases).
+ *
+ *  Revision 1.12  2001/11/28 13:56:59  joergr
  *  Check return value of DcmItem::insert() statements where appropriate to
  *  avoid memory leaks when insert procedure fails.
  *

@@ -22,8 +22,8 @@
  *  Purpose: DVPresentationState
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-11-28 13:56:50 $
- *  CVS/RCS Revision: $Revision: 1.135 $
+ *  Update Date:      $Date: 2002-01-08 10:37:34 $
+ *  CVS/RCS Revision: $Revision: 1.136 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -2642,11 +2642,11 @@ OFCondition DVInterface::saveDICOMImage(
       if (EC_Normal==status) status = DVPSHelper::putStringValue(dataset, DCM_Modality, "OT");
       if (EC_Normal==status) status = DVPSHelper::putStringValue(dataset, DCM_ConversionType, "WSD");
       if (EC_Normal==status) status = DVPSHelper::putStringValue(dataset, DCM_PhotometricInterpretation, "MONOCHROME2");
-      dcmGenerateUniqueIdentifer(newuid);
+      dcmGenerateUniqueIdentifier(newuid);
       if (EC_Normal==status) status = DVPSHelper::putStringValue(dataset, DCM_SOPInstanceUID, (instanceUID ? instanceUID : newuid));
-      dcmGenerateUniqueIdentifer(newuid);
+      dcmGenerateUniqueIdentifier(newuid, SITE_SERIES_UID_ROOT);
       if (EC_Normal==status) status = DVPSHelper::putStringValue(dataset, DCM_SeriesInstanceUID, newuid);
-      dcmGenerateUniqueIdentifer(newuid);
+      dcmGenerateUniqueIdentifier(newuid, SITE_STUDY_UID_ROOT);
       if (EC_Normal==status) status = DVPSHelper::putStringValue(dataset, DCM_StudyInstanceUID, newuid);
       if (EC_Normal==status) status = DVPSHelper::putUint16Value(dataset, DCM_SamplesPerPixel, 1);
       if (EC_Normal==status) status = DVPSHelper::putUint16Value(dataset, DCM_Rows, rows);
@@ -2696,7 +2696,7 @@ OFCondition DVInterface::saveDICOMImage(
   releaseDatabase();
 
   char uid[100];
-  dcmGenerateUniqueIdentifer(uid);
+  dcmGenerateUniqueIdentifier(uid);
 
   DB_Status dbStatus;
   dbStatus.status = STATUS_Success;
@@ -2782,7 +2782,7 @@ OFCondition DVInterface::saveHardcopyGrayscaleImage(
 
       // SOP Common Module
       if (EC_Normal==status) status = DVPSHelper::putStringValue(dataset, DCM_SOPClassUID, UID_HardcopyGrayscaleImageStorage);
-      dcmGenerateUniqueIdentifer(newuid);
+      dcmGenerateUniqueIdentifier(newuid);
       theInstanceUID = (instanceUID ? instanceUID : newuid);
       if (EC_Normal==status) status = DVPSHelper::putStringValue(dataset, DCM_SOPInstanceUID, theInstanceUID.c_str());
       DVPSHelper::currentDate(aString);
@@ -2862,7 +2862,7 @@ OFCondition DVInterface::saveHardcopyGrayscaleImage(
   releaseDatabase();
 
   char uid[100];
-  dcmGenerateUniqueIdentifer(uid);
+  dcmGenerateUniqueIdentifier(uid);
 
   DB_Status dbStatus;
   dbStatus.status = STATUS_Success;
@@ -3089,7 +3089,7 @@ OFCondition DVInterface::saveStoredPrint(
     {
       if (instanceUID) status = pPrint->setInstanceUID(instanceUID); else
       {
-        dcmGenerateUniqueIdentifer(newuid);
+        dcmGenerateUniqueIdentifier(newuid);
         status = pPrint->setInstanceUID(newuid);
       }
       if (EC_Normal == status) status = pPrint->write(*dataset, writeRequestedImageSize, OFTrue, OFTrue, OFFalse);
@@ -3114,7 +3114,7 @@ OFCondition DVInterface::saveStoredPrint(OFBool writeRequestedImageSize)
   releaseDatabase();
 
   char uid[100];
-  dcmGenerateUniqueIdentifer(uid);
+  dcmGenerateUniqueIdentifier(uid);
 
   DB_Status dbStatus;
   dbStatus.status = STATUS_Success;
@@ -4284,7 +4284,13 @@ void DVInterface::disableImageAndPState()
 /*
  *  CVS/RCS Log:
  *  $Log: dviface.cc,v $
- *  Revision 1.135  2001-11-28 13:56:50  joergr
+ *  Revision 1.136  2002-01-08 10:37:34  joergr
+ *  Corrected spelling of function dcmGenerateUniqueIdentifier().
+ *  Changed prefix of UIDs created for series and studies (now using constants
+ *  SITE_SERIES_UID_ROOT and SITE_STUDY_UID_ROOT which are supposed to be used
+ *  in these cases).
+ *
+ *  Revision 1.135  2001/11/28 13:56:50  joergr
  *  Check return value of DcmItem::insert() statements where appropriate to
  *  avoid memory leaks when insert procedure fails.
  *

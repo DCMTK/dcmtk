@@ -23,8 +23,8 @@
  *    classes: DVPresentationState
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-11-28 13:57:05 $
- *  CVS/RCS Revision: $Revision: 1.69 $
+ *  Update Date:      $Date: 2002-01-08 10:40:58 $
+ *  CVS/RCS Revision: $Revision: 1.70 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -293,7 +293,7 @@ const char *DVPresentationState::createInstanceUID()
   OFString aString;
   char *puid = NULL;
 
-  OFCondition result = sOPInstanceUID.putString(dcmGenerateUniqueIdentifer(uid));
+  OFCondition result = sOPInstanceUID.putString(dcmGenerateUniqueIdentifier(uid));
   DVPSHelper::currentDate(aString);
   DVPSHelper::setDefault(result, instanceCreationDate, aString.c_str());
   DVPSHelper::currentTime(aString);
@@ -353,7 +353,7 @@ OFCondition DVPresentationState::createDummyValues(OFBool replaceSOPInstanceUID)
 
   if ((result==EC_Normal)&&(replaceSOPInstanceUID ||(sOPInstanceUID.getLength()==0)))
   {
-    sOPInstanceUID.putString(dcmGenerateUniqueIdentifer(uid));
+    sOPInstanceUID.putString(dcmGenerateUniqueIdentifier(uid));
     DVPSHelper::currentDate(aString);
     DVPSHelper::setDefault(result, instanceCreationDate, aString.c_str() );
     DVPSHelper::currentTime(aString);
@@ -1241,8 +1241,8 @@ OFCondition DVPresentationState::createFromImage(
     DVPSHelper::currentTime(aString);
     result = presentationCreationTime.putString(aString.c_str());
   }
-  if (result==EC_Normal) result = seriesInstanceUID.putString(dcmGenerateUniqueIdentifer(uid));
-  if (result==EC_Normal) result = sOPInstanceUID.putString(dcmGenerateUniqueIdentifer(uid));
+  if (result==EC_Normal) result = seriesInstanceUID.putString(dcmGenerateUniqueIdentifier(uid, SITE_SERIES_UID_ROOT));
+  if (result==EC_Normal) result = sOPInstanceUID.putString(dcmGenerateUniqueIdentifier(uid));
   if (result==EC_Normal) result = seriesNumber.putString(DEFAULT_seriesNumber);
   if (result==EC_Normal) result = specificCharacterSet.putString(DEFAULT_specificCharacterSet);
 
@@ -4143,7 +4143,13 @@ const char *DVPresentationState::getAttachedImageSOPInstanceUID()
 
 /*
  *  $Log: dvpstat.cc,v $
- *  Revision 1.69  2001-11-28 13:57:05  joergr
+ *  Revision 1.70  2002-01-08 10:40:58  joergr
+ *  Corrected spelling of function dcmGenerateUniqueIdentifier().
+ *  Changed prefix of UIDs created for series and studies (now using constants
+ *  SITE_SERIES_UID_ROOT and SITE_STUDY_UID_ROOT which are supposed to be used
+ *  in these cases).
+ *
+ *  Revision 1.69  2001/11/28 13:57:05  joergr
  *  Check return value of DcmItem::insert() statements where appropriate to
  *  avoid memory leaks when insert procedure fails.
  *

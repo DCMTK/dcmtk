@@ -23,8 +23,8 @@
  *    classes: DVPSStoredPrint
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-11-28 13:57:01 $
- *  CVS/RCS Revision: $Revision: 1.46 $
+ *  Update Date:      $Date: 2002-01-08 10:39:56 $
+ *  CVS/RCS Revision: $Revision: 1.47 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -625,7 +625,7 @@ OFCondition DVPSStoredPrint::createDefaultValues()
 
   if ((result==EC_Normal)&&(sOPInstanceUID.getLength()==0))
   {
-    result = sOPInstanceUID.putString(dcmGenerateUniqueIdentifer(uid));
+    result = sOPInstanceUID.putString(dcmGenerateUniqueIdentifier(uid));
     DVPSHelper::currentDate(aString);
     if (result==EC_Normal) result = instanceCreationDate.putString(aString.c_str());
     DVPSHelper::currentTime(aString);
@@ -634,7 +634,7 @@ OFCondition DVPSStoredPrint::createDefaultValues()
 
   if ((result==EC_Normal)&&(studyInstanceUID.getLength()==0))
   {
-    result = studyInstanceUID.putString(dcmGenerateUniqueIdentifer(uid));
+    result = studyInstanceUID.putString(dcmGenerateUniqueIdentifier(uid, SITE_STUDY_UID_ROOT));
     DVPSHelper::currentDate(aString);
     if (result==EC_Normal) result = studyDate.putString(aString.c_str());
     DVPSHelper::currentTime(aString);
@@ -710,7 +710,7 @@ OFCondition DVPSStoredPrint::write(
           {
               // generate a new UID for the "global" presentation LUT
               char uid[100];
-              dcmGenerateUniqueIdentifer(uid);
+              dcmGenerateUniqueIdentifier(uid);
               globalPresentationLUT.setSOPInstanceUID(uid);
               result = referencedPresentationLUTInstanceUID.putString(uid);
           }
@@ -948,7 +948,7 @@ OFCondition DVPSStoredPrint::addImageBox(
 {  
   char instanceuid[100];
   const char *lutUID = presentationLUTList.addPresentationLUT(presentationlut, inversePLUT);
-  return imageBoxContentList.addImageBox(dcmGenerateUniqueIdentifer(instanceuid), 
+  return imageBoxContentList.addImageBox(dcmGenerateUniqueIdentifier(instanceuid), 
      retrieveaetitle, refstudyuid, refseriesuid, refsopclassuid, 
      refsopinstanceuid, requestedimagesize, patientid, lutUID);
 }
@@ -1996,7 +1996,7 @@ OFCondition DVPSStoredPrint::setSingleAnnotation(
   if (displayformat && text)
   {
     char newuid[70];
-    dcmGenerateUniqueIdentifer(newuid);
+    dcmGenerateUniqueIdentifier(newuid);
     deleteAnnotations();
     result = annotationContentList.addAnnotationBox(newuid, text, position);
     if (EC_Normal==result) result = annotationDisplayFormatID.putString(displayformat);
@@ -3535,7 +3535,13 @@ void DVPSStoredPrint::overridePresentationLUTSettings(
 
 /*
  *  $Log: dvpssp.cc,v $
- *  Revision 1.46  2001-11-28 13:57:01  joergr
+ *  Revision 1.47  2002-01-08 10:39:56  joergr
+ *  Corrected spelling of function dcmGenerateUniqueIdentifier().
+ *  Changed prefix of UIDs created for series and studies (now using constants
+ *  SITE_SERIES_UID_ROOT and SITE_STUDY_UID_ROOT which are supposed to be used
+ *  in these cases).
+ *
+ *  Revision 1.46  2001/11/28 13:57:01  joergr
  *  Check return value of DcmItem::insert() statements where appropriate to
  *  avoid memory leaks when insert procedure fails.
  *
