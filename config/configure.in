@@ -499,6 +499,48 @@ AC_ARG_WITH(openssl,
 )
 
 dnl -------------------------------------------------------
+dnl Check for libtiff support
+dnl -------------------------------------------------------
+
+TIFFLIBS=""
+AC_MSG_CHECKING(whether to include libtiff support)
+AC_ARG_WITH(openssl,
+[  --with-libtiff          include libtiff support
+  --without-libtiff       don't include libtiff support  (default)
+  --with-libtiffinc=DIR   location of libtiff includes and libraries],
+[ case "$withval" in
+  yes)
+    AC_MSG_RESULT(yes)
+    AC_DEFINE(WITH_LIBTIFF)
+    TIFFLIBS="-ltiff"
+
+    if test "${with_libtiffinc+set}" = set; then
+
+        case "$with_libtiffinc" in
+        yes|no)
+          echo "configure: warning: --with-libtiffinc called without argument - will use default" 1>&2
+        ;;
+        * )
+          if test ! -d ${with_libtiffinc}; then
+            echo "configure: warning: called with --with-libtiffinc, but libtiff base directory ${withval} does not exist or is not a directory." 1>&2
+            exit 1
+          fi
+          CFLAGS="-I${with_libtiffinc}/include $CFLAGS"
+          CXXFLAGS="-I${with_libtiffinc}/include $CXXFLAGS"
+          LDFLAGS="-L${with_libtiffinc}/lib $LDFLAGS"
+        ;;
+        esac
+
+    fi
+    ;;
+  *)
+    AC_MSG_RESULT(no)
+    ;;
+  esac ],
+  AC_MSG_RESULT(no)
+)
+
+dnl -------------------------------------------------------
 dnl Set optimizer and debug compiler flags
 dnl -------------------------------------------------------
 CFLAGS="$DEBUGCFLAGS $CFLAGS"
@@ -509,6 +551,7 @@ dnl Special Definitions for output
 dnl -------------------------------------------------------
 AC_SUBST(CXXFLAGS)
 AC_SUBST(OPENSSLLIBS)
+AC_SUBST(TIFFLIBS)
 AC_SUBST(MATHLIBS)
 AC_SUBST(DEBUG)
 

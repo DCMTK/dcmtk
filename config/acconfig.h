@@ -132,6 +132,9 @@
 /* Define if we are compiling with OpenSSL support */
 #undef WITH_OPENSSL
 
+/* Define if we are compiling with libtiff support */
+#undef WITH_LIBTIFF
+
 /* Define if we are compiling with any type of Multi-thread support */
 #undef WITH_THREADS
 
