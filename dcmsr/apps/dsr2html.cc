@@ -23,9 +23,9 @@
  *           HTML format
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-11-01 16:08:04 $
+ *  Update Date:      $Date: 2000-11-07 18:09:48 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmsr/apps/dsr2html.cc,v $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -170,6 +170,8 @@ int main(int argc, char *argv[])
         cmd.addOption("--render-inline-codes", "+Ci",    "render codes in continuous text blocks");
         cmd.addOption("--concept-name-codes",  "+Cn",    "render code of concept names");
         cmd.addOption("--numeric-unit-codes",  "+Cu",    "render code of numeric measurement units");
+        cmd.addOption("--code-value-unit",     "+Cv",    "use code value as measurement unit (default)");
+        cmd.addOption("--code-meaning-unit",   "+Cm",    "use code meaning as measurement unit");
         cmd.addOption("--render-all-codes",    "+Ca",    "render all codes (+Ci, +Cn, +Cu)");
       cmd.addSubGroup("general rendering:");
         cmd.addOption("--expand-inline",       "+Ri",    "expand short content items inline (default)");
@@ -234,6 +236,10 @@ int main(int argc, char *argv[])
             opt_renderFlags |= DSRTypes::HF_renderConceptNameCodes;
         if (cmd.findOption("--numeric-unit-codes"))
             opt_renderFlags |= DSRTypes::HF_renderNumericUnitCodes;
+        if (cmd.findOption("--code-value-unit"))
+            opt_renderFlags &= ~DSRTypes::HF_useCodeMeaningAsUnit;
+        if (cmd.findOption("--code-meaning-unit"))
+            opt_renderFlags |= DSRTypes::HF_useCodeMeaningAsUnit;
         if (cmd.findOption("--render-all-codes"))
             opt_renderFlags |= DSRTypes::HF_renderAllCodes;
 
@@ -297,7 +303,11 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dsr2html.cc,v $
- * Revision 1.3  2000-11-01 16:08:04  joergr
+ * Revision 1.4  2000-11-07 18:09:48  joergr
+ * Added new command line option allowing to choose code value or meaning to be
+ * rendered as the numeric measurement unit.
+ *
+ * Revision 1.3  2000/11/01 16:08:04  joergr
  * Added support for Cascading Style Sheet (CSS) used optionally for HTML
  * rendering. Optimized HTML rendering.
  *
