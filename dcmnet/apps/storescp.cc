@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2003, OFFIS
+ *  Copyright (C) 1994-2004, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,10 +21,10 @@
  *
  *  Purpose: Storage Service Class Provider (C-STORE operation)
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2003-08-14 10:58:47 $
+ *  Last Update:      $Author: wilkens $
+ *  Update Date:      $Date: 2004-02-12 14:05:17 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/apps/storescp.cc,v $
- *  CVS/RCS Revision: $Revision: 1.66 $
+ *  CVS/RCS Revision: $Revision: 1.67 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -261,7 +261,7 @@ int main(int argc, char *argv[])
   cmd.addGroup("output options:");
     cmd.addSubGroup("bit preserving mode:");
       cmd.addOption("--normal",                 "-B",        "allow implicit format conversions (default)");
-      cmd.addOption("--bit-preserving",         "+B",        "write data exactly as read");
+      cmd.addOption("--bit-preserving",         "+B",        "write data exactly as read (not with -ss)");
     cmd.addSubGroup("output file format:");
       cmd.addOption("--write-file",             "+F",        "write file format (default)");
       cmd.addOption("--write-dataset",          "-F",        "write data set without file meta information");
@@ -1497,6 +1497,9 @@ storeSCPCallback(
     // do not send status detail information
     *statusDetail = NULL;
 
+    // remember callback data
+    StoreCallbackData *cbdata = OFstatic_cast(StoreCallbackData *, callbackData);
+
     // Concerning the following line: an appropriate status code is already set in the resp structure,
     // it need not be success. For example, if the caller has already detected an out of resources problem
     // then the status will reflect this.  The callback function is still called to allow cleanup.
@@ -1506,7 +1509,6 @@ storeSCPCallback(
     // is present and the options opt_bitPreserving and opt_ignore are not set.
     if ((imageDataSet)&&(*imageDataSet)&&(!opt_bitPreserving)&&(!opt_ignore))
     {
-      StoreCallbackData *cbdata = OFstatic_cast(StoreCallbackData *, callbackData);
       char *fileName = NULL;
 
       // in case option --sort-conc-studies is set, we need to perform some particular
@@ -1693,6 +1695,24 @@ storeSCPCallback(
       // free memory
       delete fileName;
     }
+
+    // in case opt_bitPreserving is set, do some other things
+    if( opt_bitPreserving )
+    {
+      // we need to set outputFileNameArray and outputFileNameArrayCnt to be
+      // able to perform the placeholder substitution in executeOnReception()
+      char *tmpstr7 = strrchr( cbdata->imageFileName, PATH_SEPARATOR );
+      tmpstr7++;
+      if( outputFileNameArrayCnt == 0 )
+      {
+        outputFileNameArray = new char*[1];
+        outputFileNameArrayCnt = 1;
+      }
+      else  // this always means outputFileNameArrayCnt == 1, since opt_bitPreserving cannot be used together with opt_sortConcerningStudies
+        delete outputFileNameArray[0];
+      outputFileNameArray[0] = new char[ strlen( tmpstr7 ) + 1 ];
+      strcpy( outputFileNameArray[0], tmpstr7 );
+    }
   }
 
   // return
@@ -1872,16 +1892,20 @@ static void executeOnReception()
 {
   OFString cmd = opt_execOnReception;
 
-  // perform substitution for placeholder #p; note that
-  //  - in case option --sort-conc-studies is set, #p will be substituted by subdirectoryPathAndName
-  //  - and in case option --sort-conc-studies is not set, #p will be substituted by opt_outputDirectory
-  OFString dir = (opt_sortConcerningStudies == NULL) ? OFString(opt_outputDirectory) : OFString(subdirectoryPathAndName);
-  cmd = replaceChars( cmd, OFString(PATH_PLACEHOLDER), dir );
+  // in case a file was actually written
+  if( !opt_ignore )
+  {
+    // perform substitution for placeholder #p; note that
+    //  - in case option --sort-conc-studies is set, #p will be substituted by subdirectoryPathAndName
+    //  - and in case option --sort-conc-studies is not set, #p will be substituted by opt_outputDirectory
+    OFString dir = (opt_sortConcerningStudies == NULL) ? OFString(opt_outputDirectory) : OFString(subdirectoryPathAndName);
+    cmd = replaceChars( cmd, OFString(PATH_PLACEHOLDER), dir );
 
-  // perform substitution for placeholder #f; note that the variable outputFileNameArray[outputFileNameArrayCnt-1]
-  // always contains the name of the file (without path) which was written last.
-  OFString outputFileName = outputFileNameArray[outputFileNameArrayCnt-1];
-  cmd = replaceChars( cmd, OFString(FILENAME_PLACEHOLDER), outputFileName );
+    // perform substitution for placeholder #f; note that the variable outputFileNameArray[outputFileNameArrayCnt-1]
+    // always contains the name of the file (without path) which was written last.
+    OFString outputFileName = outputFileNameArray[outputFileNameArrayCnt-1];
+    cmd = replaceChars( cmd, OFString(FILENAME_PLACEHOLDER), outputFileName );
+  }
 
   // perform substitution for placeholder #a
   cmd = replaceChars( cmd, OFString(CALLING_AETITLE_PLACEHOLDER), callingaetitle );
@@ -2272,7 +2296,12 @@ static OFCondition acceptUnknownContextsWithPreferredTransferSyntaxes(
 /*
 ** CVS Log
 ** $Log: storescp.cc,v $
-** Revision 1.66  2003-08-14 10:58:47  meichel
+** Revision 1.67  2004-02-12 14:05:17  wilkens
+** Corrected bug in storescp that options "-xcr" and "+B" (or "--ignore") could
+** not be used together. Now they can. Thanks to Philippe Puech
+** <puech@inviweb.com> for the bug report.
+**
+** Revision 1.66  2003/08/14 10:58:47  meichel
 ** Added check if association configuration profile is valid for SCP use
 **
 ** Revision 1.65  2003/08/11 18:31:15  joergr
