@@ -1,6 +1,27 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2000.04.27 (riesmeier)
+
+- Dcmimage library code now consistently uses ofConsole for error output.
+  Affects: dcmimage/include/diargpxt.h
+           dcmimage/include/dicmypxt.h
+           dcmimage/include/dihsvpxt.h
+           dcmimage/include/dipalpxt.h
+           dcmimage/include/dirgbpxt.h
+           dcmimage/include/diybrpxt.h
+           dcmimage/include/diyf2img.h
+           dcmimage/include/diyf2pxt.h
+           dcmimage/include/diyp2pxt.h
+           dcmimage/libsrc/diargimg.cc
+           dcmimage/libsrc/dicoimg.cc
+           dcmimage/libsrc/dicopx.cc
+           dcmimage/libsrc/dipalimg.cc
+           
+- Adapted output method to new behaviour of dcmimgle library supporting the
+  specification of a start frame and the number of frames to be converted.
+  Affects: dcmimage/apps/dcm2pnm.cc
+
 **** Changes from 2000.04.14 (eichelberg)
 
 - Adapted to changed parameter list for command line class
