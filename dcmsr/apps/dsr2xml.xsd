@@ -1,0 +1,795 @@
+<?xml version="1.0"?>
+
+<xsd:schema xmlns:xsd="http://www.w3.org/2001/XMLSchema"
+            xmlns:dsr="http://dicom.offis.de/dcmsr"
+            targetNamespace="http://dicom.offis.de/dcmsr"
+            elementFormDefault="qualified">
+
+  <!-- Copyright Comment -->
+
+  <xsd:annotation>
+    <xsd:documentation xml:lang="en">
+      XML Schema for DCMTK tools dsr2xml and xml2dsr.
+      Copyright (C) 2003 OFFIS. See COPYRIGHT file for details.
+    </xsd:documentation>
+  </xsd:annotation>
+
+  <!-- Starting Element -->
+
+  <xsd:element name="report" type="dsr:Report"/>
+
+  <!-- Complex Types (1st level) -->
+
+  <xsd:complexType name="Report">
+    <xsd:sequence>
+      <xsd:element name="sopclass" type="dsr:SOPClass"/>
+      <xsd:element name="charset" type="dsr:Charset" minOccurs="0"/>
+      <xsd:element name="modality" type="dsr:Modality" minOccurs="0"/>
+      <xsd:element name="manufacturer" type="xsd:string" minOccurs="0"/>
+      <xsd:element name="referringphysician" type="dsr:ReferringPhysician" minOccurs="0"/>
+      <xsd:element name="patient" type="dsr:Patient"/>
+      <xsd:element name="study" type="dsr:Study"/>
+      <xsd:element name="series" type="dsr:Series"/>
+      <xsd:element name="instance" type="dsr:Instance"/>
+      <xsd:element name="coding" type="dsr:Coding" minOccurs="0"/>
+      <xsd:element name="evidence" type="dsr:Evidence" minOccurs="0" maxOccurs="2"/>
+      <xsd:element name="document" type="dsr:Document"/>
+    </xsd:sequence>
+    <xsd:attribute name="type" type="dsr:ReportType" use="required"/>
+  </xsd:complexType>
+
+  <!-- Complex Types (2nd level) -->
+
+  <xsd:complexType name="SOPClass">
+    <xsd:simpleContent>
+      <xsd:extension base="xsd:string">
+        <xsd:attribute name="uid" type="dsr:UniqueIdentifier" use="required"/>
+      </xsd:extension>
+    </xsd:simpleContent>
+  </xsd:complexType>
+
+  <xsd:complexType name="ReferringPhysician">
+    <xsd:sequence>
+      <xsd:element name="name" type="dsr:PersonName" minOccurs="0"/>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <xsd:complexType name="Patient">
+    <xsd:sequence>
+      <xsd:element name="id" type="dsr:LongString" minOccurs="0"/>
+      <xsd:element name="name" type="dsr:PersonName" minOccurs="0"/>
+      <xsd:element name="birthday" minOccurs="0">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="date" type="dsr:Date" minOccurs="0"/>
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:element name="sex" type="dsr:Sex" minOccurs="0"/>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <xsd:complexType name="Study">
+    <xsd:sequence>
+      <xsd:element name="id" type="dsr:ShortString" minOccurs="0"/>
+      <xsd:element name="date" type="dsr:Date" minOccurs="0"/>
+      <xsd:element name="time" type="dsr:Time" minOccurs="0"/>
+      <xsd:element name="accession" minOccurs="0">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="number" type="dsr:ShortString" minOccurs="0"/>
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:element name="description" type="dsr:LongString" minOccurs="0"/>
+    </xsd:sequence>
+    <xsd:attribute name="uid" type="dsr:UniqueIdentifier" use="required"/>
+  </xsd:complexType>
+
+  <xsd:complexType name="Series">
+    <xsd:sequence>
+      <xsd:element name="number" type="dsr:IntegerString" minOccurs="0"/>
+      <xsd:element name="description" type="dsr:LongString" minOccurs="0"/>
+    </xsd:sequence>
+    <xsd:attribute name="uid" type="dsr:UniqueIdentifier" use="required"/>
+  </xsd:complexType>
+
+  <xsd:complexType name="Instance">
+    <xsd:sequence>
+      <xsd:element name="number" type="dsr:IntegerString" minOccurs="0"/>
+      <xsd:element name="creation" minOccurs="0">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="date" type="dsr:Date" minOccurs="0"/>
+          <xsd:element name="time" type="dsr:Time" minOccurs="0"/>
+        </xsd:sequence>
+        <xsd:attribute name="uid" type="dsr:UniqueIdentifier"/>
+      </xsd:complexType>
+    </xsd:element>
+    </xsd:sequence>
+    <xsd:attribute name="uid" type="dsr:UniqueIdentifier" use="required"/>
+  </xsd:complexType>
+
+  <xsd:complexType name="Coding">
+    <xsd:sequence>
+      <xsd:element name="scheme" minOccurs="0" maxOccurs="unbounded">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="registry" type="dsr:LongString"/>
+            <xsd:element name="uid" type="dsr:UniqueIdentifier"/>
+            <xsd:element name="id" type="dsr:ShortText"/>
+            <xsd:element name="name" type="dsr:ShortText"/>
+            <xsd:element name="version" type="dsr:ShortString"/>
+            <xsd:element name="organization" type="dsr:ShortText"/>
+          </xsd:sequence>
+          <xsd:attribute name="designator" type="dsr:ShortString" use="required"/>
+        </xsd:complexType>
+      </xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <xsd:complexType name="Evidence">
+    <xsd:group ref="dsr:ReferencedSOPInstancesGroup"/>
+    <xsd:attribute name="type" type="dsr:EvidenceType" use="required"/>
+  </xsd:complexType>
+
+  <xsd:complexType name="Document">
+    <xsd:sequence>
+      <xsd:element name="completion" minOccurs="0">
+        <!-- made "completion" optional to match 'KO', too -->
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="description" type="dsr:LongString" minOccurs="0"/>
+          </xsd:sequence>
+          <xsd:attribute name="flag" type="dsr:CompletionFlag" use="required"/>
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:element name="verification" minOccurs="0">
+        <!-- made "verification" optional to match 'KO', too -->
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="observer" minOccurs="0" maxOccurs="unbounded">
+              <xsd:complexType>
+                <xsd:sequence>
+                  <xsd:element name="datetime" type="dsr:DateTime"/>
+                  <xsd:element name="name" type="dsr:PersonName"/>
+                  <xsd:element name="code" type="dsr:Code" minOccurs="0"/>
+                  <xsd:element name="organization" type="dsr:LongString"/>
+                </xsd:sequence>
+                <xsd:attribute name="pos" type="xsd:positiveInteger"/>
+              </xsd:complexType>
+            </xsd:element>          
+          </xsd:sequence>
+          <xsd:attribute name="flag" type="dsr:VerificationFlag" use="required"/>
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:element name="predecessor" type="dsr:ReferencedSOPInstances" minOccurs="0"/>
+      <xsd:element name="identical" type="dsr:ReferencedSOPInstances" minOccurs="0"/>
+      <xsd:element name="content" type="dsr:Content"/>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <!-- Complex Types (3rd level) -->
+
+  <xsd:complexType name="Content">
+    <xsd:sequence>
+      <xsd:element name="date" type="dsr:Date"/>
+      <xsd:element name="time" type="dsr:Time"/>
+      <xsd:element name="container">
+        <!-- special handling for root content item -->
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="concept" type="dsr:Code"/>
+            <xsd:element name="observation" type="dsr:Observation" minOccurs="0"/>
+            <!-- open question: is at least one child content item required? -->
+            <xsd:group ref="dsr:ContentItem" minOccurs="0" maxOccurs="unbounded"/>
+          </xsd:sequence>
+          <xsd:attribute name="flag" type="dsr:ContinuityFlag" use="required"/>
+        </xsd:complexType>
+      </xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <xsd:complexType name="ReferencedSOPInstances">
+    <xsd:group ref="dsr:ReferencedSOPInstancesGroup"/>
+  </xsd:complexType>
+
+  <xsd:complexType name="Code">
+    <xsd:group ref="dsr:CodeGroup"/>
+  </xsd:complexType>
+
+  <!-- Complex Types (4th level) -->
+
+  <xsd:complexType name="Observation">
+    <xsd:sequence>
+      <xsd:element name="datetime" type="dsr:DateTime"/>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <xsd:complexType name="ReferencedSOP">
+    <xsd:sequence>
+      <xsd:element name="sopclass" type="dsr:SOPClass"/>
+      <xsd:element name="instance">
+        <xsd:complexType>
+          <xsd:attribute name="uid" type="dsr:UniqueIdentifier" use="required"/>
+        </xsd:complexType>
+      </xsd:element>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <!-- Groups -->
+
+  <xsd:group name="CodeGroup">
+    <xsd:sequence>
+      <xsd:element name="value" type="dsr:ShortString"/>
+      <xsd:element name="scheme">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="designator" type="dsr:ShortString"/>
+            <xsd:element name="version" type="dsr:ShortString" minOccurs="0"/>
+          </xsd:sequence>
+        </xsd:complexType>
+      </xsd:element>
+      <xsd:element name="meaning" type="dsr:LongString"/>
+    </xsd:sequence>
+  </xsd:group>
+
+  <xsd:group name="ReferencedSOPInstancesGroup">
+    <xsd:sequence>
+      <xsd:element name="study" minOccurs="0" maxOccurs="unbounded">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="series" minOccurs="1" maxOccurs="unbounded">
+              <xsd:complexType>
+                <xsd:sequence>
+                  <xsd:element name="aetitle" type="dsr:ApplicationEntity" minOccurs="0"/>
+                  <xsd:element name="fileset" minOccurs="0">
+                    <xsd:complexType>
+                      <xsd:simpleContent>
+                        <xsd:extension base="dsr:ShortString">
+                          <xsd:attribute name="uid" type="dsr:UniqueIdentifier"/>
+                        </xsd:extension>
+                      </xsd:simpleContent>
+                    </xsd:complexType>
+                  </xsd:element>
+                  <xsd:element name="value" type="dsr:ReferencedSOP" minOccurs="1" maxOccurs="unbounded"/>
+                </xsd:sequence>
+                <xsd:attribute name="uid" type="dsr:UniqueIdentifier" use="required"/>
+              </xsd:complexType>
+            </xsd:element>
+          </xsd:sequence>
+          <xsd:attribute name="uid" type="dsr:UniqueIdentifier" use="required"/>
+        </xsd:complexType>
+      </xsd:element>
+    </xsd:sequence>
+  </xsd:group>
+
+  <xsd:group name="ContentItem">
+    <xsd:choice>
+      <xsd:group ref="dsr:TextItem"/>
+      <xsd:group ref="dsr:CodeItem"/>
+      <xsd:group ref="dsr:NumItem"/>
+      <xsd:group ref="dsr:DateTimeItem"/>
+      <xsd:group ref="dsr:DateItem"/>
+      <xsd:group ref="dsr:TimeItem"/>
+      <xsd:group ref="dsr:UIDRefItem"/>
+      <xsd:group ref="dsr:PNameItem"/>
+      <xsd:group ref="dsr:SCoordItem"/>
+      <xsd:group ref="dsr:TCoordItem"/>
+      <xsd:group ref="dsr:CompositeItem"/>
+      <xsd:group ref="dsr:ImageItem"/>
+      <xsd:group ref="dsr:WaveformItem"/>
+      <xsd:group ref="dsr:ContainerItem"/>
+      <xsd:group ref="dsr:ReferenceItem"/>
+    </xsd:choice>
+  </xsd:group>
+
+  <xsd:group name="TextItem">
+    <xsd:sequence>
+      <xsd:element name="text">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="relationship" type="dsr:RelationshipType"/>
+            <xsd:element name="concept" type="dsr:Code"/>
+            <xsd:element name="observation" type="dsr:Observation" minOccurs="0"/>
+            <xsd:group ref="dsr:ContentItem" minOccurs="0" maxOccurs="unbounded"/>
+            <xsd:element name="value" type="dsr:UnlimitedText"/>
+          </xsd:sequence>
+          <xsd:attribute name="id" type="xsd:nonNegativeInteger"/>
+        </xsd:complexType>
+      </xsd:element>
+    </xsd:sequence>
+  </xsd:group>
+
+  <xsd:group name="CodeItem">
+    <xsd:sequence>
+      <xsd:element name="code">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="relationship" type="dsr:RelationshipType"/>
+            <xsd:element name="concept" type="dsr:Code"/>
+            <xsd:element name="observation" type="dsr:Observation" minOccurs="0"/>
+            <xsd:group ref="dsr:ContentItem" minOccurs="0" maxOccurs="unbounded"/>
+            <xsd:group ref="dsr:CodeGroup"/>
+          </xsd:sequence>
+          <xsd:attribute name="id" type="xsd:nonNegativeInteger"/>
+        </xsd:complexType>
+      </xsd:element>
+    </xsd:sequence>
+  </xsd:group>
+
+  <xsd:group name="NumItem">
+    <xsd:sequence>
+      <xsd:element name="num">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="relationship" type="dsr:RelationshipType"/>
+            <xsd:element name="concept" type="dsr:Code"/>
+            <xsd:element name="observation" type="dsr:Observation" minOccurs="0"/>
+            <xsd:group ref="dsr:ContentItem" minOccurs="0" maxOccurs="unbounded"/>
+            <xsd:element name="value" type="dsr:DecimalString"/>
+            <xsd:element name="unit" type="dsr:Code"/>
+            <xsd:element name="qualifier" type="dsr:Code" minOccurs="0"/>
+          </xsd:sequence>
+          <xsd:attribute name="id" type="xsd:nonNegativeInteger"/>
+        </xsd:complexType>
+      </xsd:element>
+    </xsd:sequence>
+  </xsd:group>
+
+  <xsd:group name="DateTimeItem">
+    <xsd:sequence>
+      <xsd:element name="datetime">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="relationship" type="dsr:RelationshipType"/>
+            <xsd:element name="concept" type="dsr:Code"/>
+            <xsd:element name="observation" type="dsr:Observation" minOccurs="0"/>
+            <xsd:group ref="dsr:ContentItem" minOccurs="0" maxOccurs="unbounded"/>
+            <xsd:element name="value" type="dsr:DateTime"/>
+          </xsd:sequence>
+          <xsd:attribute name="id" type="xsd:nonNegativeInteger"/>
+        </xsd:complexType>
+      </xsd:element>
+    </xsd:sequence>
+  </xsd:group>
+
+  <xsd:group name="DateItem">
+    <xsd:sequence>
+      <xsd:element name="date">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="relationship" type="dsr:RelationshipType"/>
+            <xsd:element name="concept" type="dsr:Code"/>
+            <xsd:element name="observation" type="dsr:Observation" minOccurs="0"/>
+            <xsd:group ref="dsr:ContentItem" minOccurs="0" maxOccurs="unbounded"/>
+            <xsd:element name="value" type="dsr:Date"/>
+          </xsd:sequence>
+          <xsd:attribute name="id" type="xsd:nonNegativeInteger"/>
+        </xsd:complexType>
+      </xsd:element>
+    </xsd:sequence>
+  </xsd:group>
+
+  <xsd:group name="TimeItem">
+    <xsd:sequence>
+      <xsd:element name="time">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="relationship" type="dsr:RelationshipType"/>
+            <xsd:element name="concept" type="dsr:Code"/>
+            <xsd:element name="observation" type="dsr:Observation" minOccurs="0"/>
+            <xsd:group ref="dsr:ContentItem" minOccurs="0" maxOccurs="unbounded"/>
+            <xsd:element name="value" type="dsr:Time"/>
+          </xsd:sequence>
+          <xsd:attribute name="id" type="xsd:nonNegativeInteger"/>
+        </xsd:complexType>
+      </xsd:element>
+    </xsd:sequence>
+  </xsd:group>
+
+  <xsd:group name="UIDRefItem">
+    <xsd:sequence>
+      <xsd:element name="uidref">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="relationship" type="dsr:RelationshipType"/>
+            <xsd:element name="concept" type="dsr:Code"/>
+            <xsd:element name="observation" type="dsr:Observation" minOccurs="0"/>
+            <xsd:group ref="dsr:ContentItem" minOccurs="0" maxOccurs="unbounded"/>
+            <xsd:element name="value" type="dsr:UniqueIdentifier"/>
+          </xsd:sequence>
+          <xsd:attribute name="id" type="xsd:nonNegativeInteger"/>
+        </xsd:complexType>
+      </xsd:element>
+    </xsd:sequence>
+  </xsd:group>
+
+  <xsd:group name="PNameItem">
+    <xsd:sequence>
+      <xsd:element name="pname">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="relationship" type="dsr:RelationshipType"/>
+            <xsd:element name="concept" type="dsr:Code"/>
+            <xsd:element name="observation" type="dsr:Observation" minOccurs="0"/>
+            <xsd:group ref="dsr:ContentItem" minOccurs="0" maxOccurs="unbounded"/>
+            <xsd:element name="value" type="dsr:PersonName"/>
+          </xsd:sequence>
+          <xsd:attribute name="id" type="xsd:nonNegativeInteger"/>
+        </xsd:complexType>
+      </xsd:element>
+    </xsd:sequence>
+  </xsd:group>
+
+  <xsd:group name="SCoordItem">
+    <xsd:sequence>
+      <xsd:element name="scoord">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="relationship" type="dsr:RelationshipType"/>
+            <xsd:element name="concept" type="dsr:Code"/>
+            <xsd:element name="observation" type="dsr:Observation" minOccurs="0"/>
+            <xsd:group ref="dsr:ContentItem" minOccurs="0" maxOccurs="unbounded"/>
+            <xsd:element name="data" type="dsr:FloatPairList"/>
+          </xsd:sequence>
+          <xsd:attribute name="type" type="dsr:SCoordType" use="required"/>
+          <xsd:attribute name="id" type="xsd:nonNegativeInteger"/>
+        </xsd:complexType>
+      </xsd:element>
+    </xsd:sequence>
+  </xsd:group>
+
+  <xsd:group name="TCoordItem">
+    <xsd:sequence>
+      <xsd:element name="tcoord">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="relationship" type="dsr:RelationshipType"/>
+            <xsd:element name="concept" type="dsr:Code"/>
+            <xsd:element name="observation" type="dsr:Observation" minOccurs="0"/>
+            <xsd:group ref="dsr:ContentItem" minOccurs="0" maxOccurs="unbounded"/>
+            <xsd:element name="data">
+              <xsd:complexType>
+                <xsd:simpleContent>
+                  <!-- need to further specialize the data type (depending on 'type') -->
+                  <xsd:extension base="xsd:string">
+                    <xsd:attribute name="type" type="dsr:TCoordDataType" use="required"/>
+                  </xsd:extension>
+                </xsd:simpleContent>
+              </xsd:complexType>
+            </xsd:element>
+          </xsd:sequence>
+          <xsd:attribute name="type" type="dsr:TCoordType" use="required"/>
+          <xsd:attribute name="id" type="xsd:nonNegativeInteger"/>
+        </xsd:complexType>
+      </xsd:element>
+    </xsd:sequence>
+  </xsd:group>
+
+  <xsd:group name="CompositeItem">
+    <xsd:sequence>
+      <xsd:element name="composite">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="relationship" type="dsr:RelationshipType"/>
+            <xsd:element name="concept" type="dsr:Code" minOccurs="0"/>
+            <xsd:element name="observation" type="dsr:Observation" minOccurs="0"/>
+            <xsd:group ref="dsr:ContentItem" minOccurs="0" maxOccurs="unbounded"/>
+            <xsd:element name="value" type="dsr:ReferencedSOP"/>
+          </xsd:sequence>
+          <xsd:attribute name="id" type="xsd:nonNegativeInteger"/>
+        </xsd:complexType>
+      </xsd:element>
+    </xsd:sequence>
+  </xsd:group>
+
+  <xsd:group name="ImageItem">
+    <xsd:sequence>
+      <xsd:element name="image">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="relationship" type="dsr:RelationshipType"/>
+            <xsd:element name="concept" type="dsr:Code" minOccurs="0"/>
+            <xsd:element name="observation" type="dsr:Observation" minOccurs="0"/>
+            <xsd:group ref="dsr:ContentItem" minOccurs="0" maxOccurs="unbounded"/>
+            <xsd:element name="value">
+              <xsd:complexType>
+                <xsd:complexContent>
+                  <xsd:extension base="dsr:ReferencedSOP">
+                    <xsd:sequence>
+                      <xsd:element name="frames" type="dsr:IntegerList" minOccurs="0"/>
+                      <xsd:element name="pstate" type="dsr:ReferencedSOP" minOccurs="0"/>
+                    </xsd:sequence>
+                  </xsd:extension>
+                </xsd:complexContent>
+              </xsd:complexType>
+            </xsd:element>
+          </xsd:sequence>
+          <xsd:attribute name="id" type="xsd:nonNegativeInteger"/>
+        </xsd:complexType>
+      </xsd:element>
+    </xsd:sequence>
+  </xsd:group>
+
+  <xsd:group name="WaveformItem">
+    <xsd:sequence>
+      <xsd:element name="waveform">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="relationship" type="dsr:RelationshipType"/>
+            <xsd:element name="concept" type="dsr:Code" minOccurs="0"/>
+            <xsd:element name="observation" type="dsr:Observation" minOccurs="0"/>
+            <xsd:group ref="dsr:ContentItem" minOccurs="0" maxOccurs="unbounded"/>
+            <xsd:element name="value">
+              <xsd:complexType>
+                <xsd:complexContent>
+                  <xsd:extension base="dsr:ReferencedSOP">
+                    <xsd:sequence>
+                      <xsd:element name="channels" type="dsr:IntegerPairList" minOccurs="0"/>
+                    </xsd:sequence>
+                  </xsd:extension>
+                </xsd:complexContent>
+              </xsd:complexType>
+            </xsd:element>
+          </xsd:sequence>
+          <xsd:attribute name="id" type="xsd:nonNegativeInteger"/>
+        </xsd:complexType>
+      </xsd:element>
+    </xsd:sequence>
+  </xsd:group>
+
+  <xsd:group name="ContainerItem">
+    <xsd:sequence>
+      <xsd:element name="container">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="relationship" type="dsr:RelationshipType"/>
+            <xsd:element name="concept" type="dsr:Code" minOccurs="0"/>
+            <xsd:element name="observation" type="dsr:Observation" minOccurs="0"/>
+            <xsd:group ref="dsr:ContentItem" maxOccurs="unbounded"/>
+          </xsd:sequence>
+          <xsd:attribute name="flag" type="dsr:ContinuityFlag" use="required"/>
+          <xsd:attribute name="id" type="xsd:nonNegativeInteger"/>
+        </xsd:complexType>
+      </xsd:element>
+    </xsd:sequence>
+  </xsd:group>
+
+  <xsd:group name="ReferenceItem">
+    <xsd:sequence>
+      <xsd:element name="reference">
+        <xsd:complexType>
+          <xsd:sequence>
+            <xsd:element name="relationship" type="dsr:RelationshipType"/>
+          </xsd:sequence>
+          <xsd:attribute name="ref_id" type="xsd:nonNegativeInteger" use="required"/>
+        </xsd:complexType>
+      </xsd:element>
+    </xsd:sequence>
+  </xsd:group>
+
+  <!-- Defined Terms / Enumerated Values -->
+
+  <xsd:simpleType name="ReportType">
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="Basic Text SR"/>
+      <xsd:enumeration value="Enhanced SR"/>
+      <xsd:enumeration value="Comprehensive SR"/>
+      <xsd:enumeration value="Key Object Selection Document"/>
+      <xsd:enumeration value="Mammography CAD SR"/>
+      <xsd:enumeration value="Chest CAD SR"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:simpleType name="EvidenceType">
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="Current Requested Procedure"/>
+      <xsd:enumeration value="Pertinent Other"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:simpleType name="RelationshipType">
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="CONTAINS"/>
+      <xsd:enumeration value="HAS OBS CONTEXT"/>
+      <xsd:enumeration value="HAS ACQ CONTEXT"/>
+      <xsd:enumeration value="HAS CONCEPT MOD"/>
+      <xsd:enumeration value="HAS PROPERTIES"/>
+      <xsd:enumeration value="INFERRED FROM"/>
+      <xsd:enumeration value="SELECTED FROM"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:simpleType name="SCoordType">
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="POINT"/>
+      <xsd:enumeration value="MULTIPOINT"/>
+      <xsd:enumeration value="POLYLINE"/>
+      <xsd:enumeration value="CIRCLE"/>
+      <xsd:enumeration value="ELLIPSE"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:simpleType name="TCoordType">
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="POINT"/>
+      <xsd:enumeration value="MULTIPOINT"/>
+      <xsd:enumeration value="SEGMENT"/>
+      <xsd:enumeration value="MULTISEGMENT"/>
+      <xsd:enumeration value="BEGIN"/>
+      <xsd:enumeration value="END"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:simpleType name="TCoordDataType">
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="SAMPLE POSITION"/>
+      <xsd:enumeration value="TIME OFFSET"/>
+      <xsd:enumeration value="DATETIME"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:simpleType name="CompletionFlag">
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="PARTIAL"/>
+      <xsd:enumeration value="COMPLETE"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:simpleType name="VerificationFlag">
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="VERIFIED"/>
+      <xsd:enumeration value="UNVERIFIED"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:simpleType name="ContinuityFlag">
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="SEPARATE"/>
+      <xsd:enumeration value="CONTINUOUS"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:simpleType name="Charset">
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="ISO_IR 6"/>
+      <xsd:enumeration value="ISO_IR 100"/>
+      <xsd:enumeration value="ISO_IR 101"/>
+      <xsd:enumeration value="ISO_IR 109"/>
+      <xsd:enumeration value="ISO_IR 110"/>
+      <xsd:enumeration value="ISO_IR 148"/>
+      <xsd:enumeration value="ISO_IR 144"/>
+      <xsd:enumeration value="ISO_IR 127"/>
+      <xsd:enumeration value="ISO_IR 126"/>
+      <xsd:enumeration value="ISO_IR 138"/>
+      <xsd:enumeration value="ISO_IR 166"/>
+      <xsd:enumeration value="ISO_IR 13"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:simpleType name="Modality">
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="SR"/>
+      <xsd:enumeration value="KO"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:simpleType name="Sex">
+    <xsd:restriction base="xsd:string">
+      <xsd:enumeration value="M"/>
+      <xsd:enumeration value="F"/>
+      <xsd:enumeration value="O"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <!-- Value Representations -->
+
+  <xsd:simpleType name="IntegerString">
+    <xsd:restriction base="xsd:integer">
+      <xsd:totalDigits value="12"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:simpleType name="DecimalString">
+    <xsd:restriction base="xsd:decimal">
+      <xsd:totalDigits value="16"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:simpleType name="ShortString">
+    <xsd:restriction base="xsd:string">
+      <xsd:maxLength value="16"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:simpleType name="LongString">
+    <xsd:restriction base="xsd:string">
+      <xsd:maxLength value="64"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:simpleType name="ShortText">
+    <xsd:restriction base="xsd:string">
+      <xsd:maxLength value="1024"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:simpleType name="UnlimitedText">
+    <xsd:restriction base="xsd:string"/>
+  </xsd:simpleType>
+
+  <xsd:simpleType name="CodeString">
+    <xsd:restriction base="xsd:string">
+      <xsd:pattern value="[A-Za-z0-9_ ]{0,16}"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:simpleType name="ApplicationEntity">
+    <xsd:restriction base="xsd:string">
+      <xsd:maxLength value="16"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:simpleType name="UniqueIdentifier">
+    <xsd:restriction base="xsd:string">
+      <xsd:maxLength value="64"/>
+      <xsd:pattern value="\d+(\.\d+)*"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:simpleType name="Date">
+    <xsd:restriction base="xsd:string">
+      <xsd:pattern value="\d{8}"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:simpleType name="Time">
+    <xsd:restriction base="xsd:string">
+      <xsd:pattern value="\d{4,6}"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:simpleType name="DateTime">
+    <xsd:restriction base="xsd:string">
+      <xsd:pattern value="\d{12,14}"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:complexType name="PersonName">
+    <xsd:sequence>
+      <xsd:element name="prefix" type="xsd:string" minOccurs="0"/>
+      <xsd:element name="first" type="xsd:string" minOccurs="0"/>
+      <xsd:element name="middle" type="xsd:string" minOccurs="0"/>
+      <xsd:element name="last" type="xsd:string" minOccurs="0"/>
+      <xsd:element name="suffix" type="xsd:string" minOccurs="0"/>
+    </xsd:sequence>
+  </xsd:complexType>
+
+  <!-- Other Data Types -->
+
+  <xsd:simpleType name="IntegerList">
+    <xsd:restriction base="xsd:string">
+      <xsd:pattern value="\d+(,\d+)*"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:simpleType name="IntegerPairList">
+    <xsd:restriction base="xsd:string">
+      <xsd:pattern value="\d+/\d+(,\d+/\d+)*"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:simpleType name="FloatList">
+    <xsd:restriction base="xsd:string">
+      <xsd:pattern value="[-+]?\d+(\.\d+)?(,[-+]?\d+(\.\d+)?)*"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+
+  <xsd:simpleType name="FloatPairList">
+    <xsd:restriction base="xsd:string">
+      <xsd:pattern value="[-+]?\d+(\.\d+)?/[-+]?\d+(\.\d+)?(,[-+]?\d+(\.\d+)?/[-+]?\d+(\.\d+)?)*"/>
+    </xsd:restriction>
+  </xsd:simpleType>
+
+</xsd:schema>
