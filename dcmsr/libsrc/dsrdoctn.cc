@@ -23,8 +23,8 @@
  *    classes: DSRDocumentTreeNode
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-08-02 12:39:06 $
- *  CVS/RCS Revision: $Revision: 1.21 $
+ *  Update Date:      $Date: 2002-08-02 15:06:02 $
+ *  CVS/RCS Revision: $Revision: 1.22 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -482,7 +482,7 @@ OFCondition DSRDocumentTreeNode::readContentSequence(DcmItem &dataset,
                     OFString location = posString;
                     if (!location.empty())
                         location += ".";
-                    location += numberToString(i + 1, buffer);
+                    location += numberToString((size_t)(i + 1), buffer);
                     if ((logStream != NULL) && (flags & RF_showCurrentlyProcessedItem))
                     {
                         logStream->lockCerr() << "Processing content item " << location << endl;
@@ -838,7 +838,10 @@ const OFString &DSRDocumentTreeNode::getRelationshipText(const E_RelationshipTyp
 /*
  *  CVS/RCS Log:
  *  $Log: dsrdoctn.cc,v $
- *  Revision 1.21  2002-08-02 12:39:06  joergr
+ *  Revision 1.22  2002-08-02 15:06:02  joergr
+ *  Fixed problems reported by Sun CC 2.0.1.
+ *
+ *  Revision 1.21  2002/08/02 12:39:06  joergr
  *  Enhanced debug output of dcmsr::read() routines (e.g. add position string
  *  of invalid content items to error messages).
  *

@@ -22,9 +22,9 @@
  *  Purpose: class DcmItem
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-08-02 08:42:33 $
+ *  Update Date:      $Date: 2002-08-02 15:06:33 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcitem.cc,v $
- *  CVS/RCS Revision: $Revision: 1.75 $
+ *  CVS/RCS Revision: $Revision: 1.76 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -2790,10 +2790,10 @@ DcmItem::putAndInsertUint16(const DcmTag& tag,
         if (elem != NULL)
         {
             /* put value */
-            status = elem->putUint16(value);
+            status = elem->putUint16(value, pos);
             /* insert into dataset/item */
             if (status.good())
-                status = insert(elem, replaceOld, pos);
+                status = insert(elem, replaceOld);
             /* could not be inserted, therefore, delete it immediately */
             if (status.bad())
                 delete elem;
@@ -3038,7 +3038,7 @@ DcmItem::putAndInsertFloat64(const DcmTag& tag,
         if (elem != NULL)
         {
             /* put value */
-            status = elem->putFloat64(value);
+            status = elem->putFloat64(value, pos);
             /* insert into dataset/item */
             if (status.good())
                 status = insert(elem, replaceOld);
@@ -3154,7 +3154,10 @@ OFBool DcmItem::containsUnknownVR() const
 /*
 ** CVS/RCS Log:
 ** $Log: dcitem.cc,v $
-** Revision 1.75  2002-08-02 08:42:33  joergr
+** Revision 1.76  2002-08-02 15:06:33  joergr
+** Fixed problems reported by Sun CC 2.0.1.
+**
+** Revision 1.75  2002/08/02 08:42:33  joergr
 ** Added optional 'pos' parameter to the putAndInsertXXX() methods.
 **
 ** Revision 1.74  2002/07/23 14:21:33  meichel
