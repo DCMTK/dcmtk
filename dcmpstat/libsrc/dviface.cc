@@ -22,8 +22,8 @@
  *  Purpose: DVPresentationState
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-06-08 17:38:01 $
- *  CVS/RCS Revision: $Revision: 1.96 $
+ *  Update Date:      $Date: 2000-06-09 10:14:55 $
+ *  CVS/RCS Revision: $Revision: 1.97 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -769,6 +769,18 @@ Uint32 DVInterface::getNumberOfPStates()
     if (createPStateCache())
     {
         DVInstanceCache::ItemStruct *instance = getInstanceStruct();
+        if ((instance != NULL) && (instance->Type == DVPSI_image))
+            return instance->List.size();
+    }
+    return 0;
+}
+
+
+Uint32 DVInterface::getNumberOfPStates(const char *studyUID, const char *seriesUID, const char *instanceUID)
+{
+    if (createPStateCache())
+    {
+        DVInstanceCache::ItemStruct *instance = getInstanceStruct(studyUID, seriesUID, instanceUID);
         if ((instance != NULL) && (instance->Type == DVPSI_image))
             return instance->List.size();
     }
@@ -3609,7 +3621,11 @@ E_Condition DVInterface::checkIOD(const char *studyUID, const char *seriesUID, c
 /*
  *  CVS/RCS Log:
  *  $Log: dviface.cc,v $
- *  Revision 1.96  2000-06-08 17:38:01  joergr
+ *  Revision 1.97  2000-06-09 10:14:55  joergr
+ *  Added method to get number of presentation states referencing an image
+ *  (specified by the three UIDs).
+ *
+ *  Revision 1.96  2000/06/08 17:38:01  joergr
  *  Corrected bug and added log messages in addImageReferenceToPState().
  *  Added method convertODtoLum().
  *

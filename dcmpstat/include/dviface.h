@@ -23,8 +23,8 @@
  *    classes: DVInterface
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-06-08 17:36:23 $
- *  CVS/RCS Revision: $Revision: 1.68 $
+ *  Update Date:      $Date: 2000-06-09 10:13:54 $
+ *  CVS/RCS Revision: $Revision: 1.69 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1010,6 +1010,14 @@ class DVInterface: public DVConfiguration
      */
     Uint32 getNumberOfPStates();
 
+    /** returns number of presentation states referencing the specified image.
+     *  @param studyUID study instance UID of the image
+     *  @param seriesUID series instance UID of the image
+     *  @param instanceUID SOP instance UID of the image
+     *  @return number of presentation states, 0 if none available or an error occurred
+     */
+    Uint32 getNumberOfPStates(const char *studyUID, const char *seriesUID, const char *instanceUID);
+
     /** selects and loads specified presentation state referencing the currently selected
      *  image.
      *  @param idx index to be selected, must be < getNumberOfPStates()
@@ -1636,7 +1644,11 @@ private:
 /*
  *  CVS/RCS Log:
  *  $Log: dviface.h,v $
- *  Revision 1.68  2000-06-08 17:36:23  joergr
+ *  Revision 1.69  2000-06-09 10:13:54  joergr
+ *  Added method to get number of presentation states referencing an image
+ *  (specified by the three UIDs).
+ *
+ *  Revision 1.68  2000/06/08 17:36:23  joergr
  *  Added method convertODtoLum().
  *
  *  Revision 1.67  2000/06/07 14:15:52  joergr
