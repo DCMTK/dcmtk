@@ -22,9 +22,9 @@
  *  Purpose: DicomDisplayFunction (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-03-03 11:47:42 $
+ *  Update Date:      $Date: 1999-03-24 17:19:20 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/didispfn.h,v $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  * 
  *  CVS/RCS Log at end of file
@@ -44,7 +44,7 @@
  *  macro definitions  *
  *---------------------*/
 
-#define MAX_NUMBER_OF_TABLES  9
+#define MAX_NUMBER_OF_TABLES 15
 #define WIDTH_OF_PVALUES     16
 
 
@@ -52,6 +52,9 @@
  *  class declaration  *
  *---------------------*/
 
+/** Class to handle monitor characteristics file 
+ *  and manage Barten LUTs (for calibration)
+ */
 class DiDisplayFunction
 {
 
@@ -151,7 +154,11 @@ class DiDisplayFunction
  *
  * CVS/RCS Log:
  * $Log: didispfn.h,v $
- * Revision 1.5  1999-03-03 11:47:42  joergr
+ * Revision 1.6  1999-03-24 17:19:20  joergr
+ * Added/Modified comments and formatting.
+ * Added support for Barten transformation from 2 to 7 bits input (now: 2-16).
+ *
+ * Revision 1.5  1999/03/03 11:47:42  joergr
  * Added support to specify ambient light value (re: Barten transformation).
  *
  * Revision 1.4  1999/02/23 16:55:32  joergr
