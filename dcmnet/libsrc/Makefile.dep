@@ -1,406 +1,189 @@
-asccond.o: asccond.cc \
- /home/andreas/Source/dcmtk/config/include/osconfig.h \
- /home/andreas/Source/dcmtk/dcmnet/include/assoc.h \
- /home/andreas/Source/dcmtk/dcmnet/include/dicom.h \
- /home/andreas/Source/dcmtk/dcmnet/include/dcompat.h \
- /home/andreas/Source/dcmtk/dcmnet/../dcmdata/include/dctypes.h \
- /home/andreas/Source/dcmtk/dcmnet/../dcmdata/include/dcuid.h \
- /home/andreas/Source/dcmtk/dcmnet/include/lst.h \
- /home/andreas/Source/dcmtk/dcmnet/include/dul.h asccond.h \
- /home/andreas/Source/dcmtk/dcmnet/include/cond.h
-assoc.o: assoc.cc /home/andreas/Source/dcmtk/config/include/osconfig.h \
- /home/andreas/Source/dcmtk/dcmnet/include/dicom.h \
- /home/andreas/Source/dcmtk/dcmnet/include/dcompat.h \
- /home/andreas/Source/dcmtk/dcmnet/../dcmdata/include/dctypes.h \
- /home/andreas/Source/dcmtk/dcmnet/../dcmdata/include/dcuid.h \
- /home/andreas/Source/dcmtk/dcmnet/include/cond.h asccond.h \
- /home/andreas/Source/dcmtk/dcmnet/include/assoc.h \
- /home/andreas/Source/dcmtk/dcmnet/include/lst.h \
- /home/andreas/Source/dcmtk/dcmnet/include/dul.h
-cond.o: cond.cc /home/andreas/Source/dcmtk/config/include/osconfig.h \
- /home/andreas/Source/dcmtk/dcmnet/include/dicom.h \
- /home/andreas/Source/dcmtk/dcmnet/include/dcompat.h \
- /home/andreas/Source/dcmtk/dcmnet/../dcmdata/include/dctypes.h \
- /home/andreas/Source/dcmtk/dcmnet/../dcmdata/include/dcuid.h \
- /home/andreas/Source/dcmtk/dcmnet/include/cond.h
-dcompat.o: dcompat.cc \
- /home/andreas/Source/dcmtk/config/include/osconfig.h \
- /home/andreas/Source/dcmtk/dcmnet/include/dcompat.h \
- /home/andreas/Source/dcmtk/dcmnet/include/dicom.h \
- /home/andreas/Source/dcmtk/dcmnet/../dcmdata/include/dctypes.h \
- /home/andreas/Source/dcmtk/dcmnet/../dcmdata/include/dcuid.h
-dimcancl.o: dimcancl.cc \
- /home/andreas/Source/dcmtk/config/include/osconfig.h \
- /home/andreas/Source/dcmtk/dcmnet/include/diutil.h \
- /home/andreas/Source/dcmtk/dcmnet/include/dicom.h \
- /home/andreas/Source/dcmtk/dcmnet/include/dcompat.h \
- /home/andreas/Source/dcmtk/dcmnet/../dcmdata/include/dctypes.h \
- /home/andreas/Source/dcmtk/dcmnet/../dcmdata/include/dcuid.h \
- /home/andreas/Source/dcmtk/dcmnet/../dcmdata/include/dcdatset.h \
- /home/andreas/Source/dcmtk/dcmnet/../dcmdata/include/dcerror.h \
- /home/andreas/Source/dcmtk/dcmnet/../dcmdata/include/dcitem.h \
- /home/andreas/Source/dcmtk/dcmnet/../dcmdata/include/dcobject.h \
- /home/andreas/Source/dcmtk/dcmnet/../dcmdata/include/dcxfer.h \
- /home/andreas/Source/dcmtk/dcmnet/../dcmdata/include/dcstream.h \
- /home/andreas/Source/dcmtk/dcmnet/../dcmdata/include/dcbuf.h \
- /home/andreas/Source/dcmtk/dcmnet/../dcmdata/include/dcdefine.h \
- /home/andreas/Source/dcmtk/dcmnet/../dcmdata/include/dctag.h \
- /home/andreas/Source/dcmtk/dcmnet/../dcmdata/include/dctagkey.h \
- /home/andreas/Source/dcmtk/dcmnet/../dcmdata/include/dcvr.h \
- /home/andreas/Source/dcmtk/dcmnet/../dcmdata/include/dcdicent.h \
- /home/andreas/Source/dcmtk/dcmnet/../dcmdata/include/dcstack.h \
- /home/andreas/Source/dcmtk/dcmnet/../dcmdata/include/dcvrui.h \
- /home/andreas/Source/dcmtk/dcmnet/../dcmdata/include/dcbytstr.h \
- /home/andreas/Source/dcmtk/dcmnet/../dcmdata/include/dcelem.h \
- /home/andreas/Source/dcmtk/dcmnet/../dcmdata/include/dclist.h \
- /home/andreas/Source/dcmtk/dcmnet/include/dimse.h \
- /home/andreas/Source/dcmtk/dcmnet/include/lst.h \
- /home/andreas/Source/dcmtk/dcmnet/include/cond.h \
- /home/andreas/Source/dcmtk/dcmnet/include/dul.h \
- /home/andreas/Source/dcmtk/dcmnet/include/assoc.h dimcond.h
-dimcmd.o: dimcmd.cc \
- /home/andreas/Source/dcmtk/config/include/osconfig.h \
- /home/andreas/Source/dcmtk/dcmnet/../dcmdata/include/dcdatset.h \
- /home/andreas/Source/dcmtk/dcmnet/../dcmdata/include/dcerror.h \
- /home/andreas/Source/dcmtk/dcmnet/../dcmdata/include/dctypes.h \
- /home/andreas/Source/dcmtk/dcmnet/../dcmdata/include/dcitem.h \
- /home/andreas/Source/dcmtk/dcmnet/../dcmdata/include/dcobject.h \
- /home/andreas/Source/dcmtk/dcmnet/../dcmdata/include/dcxfer.h \
- /home/andreas/Source/dcmtk/dcmnet/../dcmdata/include/dcstream.h \
- /home/andreas/Source/dcmtk/dcmnet/../dcmdata/include/dcbuf.h \
- /home/andreas/Source/dcmtk/dcmnet/../dcmdata/include/dcdefine.h \
- /home/andreas/Source/dcmtk/dcmnet/../dcmdata/include/dctag.h \
- /home/andreas/Source/dcmtk/dcmnet/../dcmdata/include/dctagkey.h \
- /home/andreas/Source/dcmtk/dcmnet/../dcmdata/include/dcvr.h \
- /home/andreas/Source/dcmtk/dcmnet/../dcmdata/include/dcdicent.h \
- /home/andreas/Source/dcmtk/dcmnet/../dcmdata/include/dcstack.h \
- /home/andreas/Source/dcmtk/dcmnet/../dcmdata/include/dcvrui.h \
- /home/andreas/Source/dcmtk/dcmnet/../dcmdata/include/dcbytstr.h \
- /home/andreas/Source/dcmtk/dcmnet/../dcmdata/include/dcelem.h \
- /home/andreas/Source/dcmtk/dcmnet/../dcmdata/include/dclist.h \
- /home/andreas/Source/dcmtk/dcmnet/../dcmdata/include/dcdeftag.h \
- /home/andreas/Source/dcmtk/dcmnet/include/diutil.h \
- /home/andreas/Source/dcmtk/dcmnet/include/dicom.h \
- /home/andreas/Source/dcmtk/dcmnet/include/dcompat.h \
- /home/andreas/Source/dcmtk/dcmnet/../dcmdata/include/dcuid.h \
- /home/andreas/Source/dcmtk/dcmnet/include/dimse.h \
- /home/andreas/Source/dcmtk/dcmnet/include/lst.h \
- /home/andreas/Source/dcmtk/dcmnet/include/cond.h \
- /home/andreas/Source/dcmtk/dcmnet/include/dul.h \
- /home/andreas/Source/dcmtk/dcmnet/include/assoc.h dimcmd.h
-dimcond.o: dimcond.cc \
- /home/andreas/Source/dcmtk/config/include/osconfig.h \
- /home/andreas/Source/dcmtk/dcmnet/include/dimse.h \
- /home/andreas/Source/dcmtk/dcmnet/include/dicom.h \
- /home/andreas/Source/dcmtk/dcmnet/include/dcompat.h \
- /home/andreas/Source/dcmtk/dcmnet/../dcmdata/include/dctypes.h \
- /home/andreas/Source/dcmtk/dcmnet/../dcmdata/include/dcuid.h \
- /home/andreas/Source/dcmtk/dcmnet/include/lst.h \
- /home/andreas/Source/dcmtk/dcmnet/include/cond.h \
- /home/andreas/Source/dcmtk/dcmnet/include/dul.h \
- /home/andreas/Source/dcmtk/dcmnet/include/assoc.h \
- /home/andreas/Source/dcmtk/dcmnet/../dcmdata/include/dcdatset.h \
- /home/andreas/Source/dcmtk/dcmnet/../dcmdata/include/dcerror.h \
- /home/andreas/Source/dcmtk/dcmnet/../dcmdata/include/dcitem.h \
- /home/andreas/Source/dcmtk/dcmnet/../dcmdata/include/dcobject.h \
- /home/andreas/Source/dcmtk/dcmnet/../dcmdata/include/dcxfer.h \
- /home/andreas/Source/dcmtk/dcmnet/../dcmdata/include/dcstream.h \
- /home/andreas/Source/dcmtk/dcmnet/../dcmdata/include/dcbuf.h \
- /home/andreas/Source/dcmtk/dcmnet/../dcmdata/include/dcdefine.h \
- /home/andreas/Source/dcmtk/dcmnet/../dcmdata/include/dctag.h \
- /home/andreas/Source/dcmtk/dcmnet/../dcmdata/include/dctagkey.h \
- /home/andreas/Source/dcmtk/dcmnet/../dcmdata/include/dcvr.h \
- /home/andreas/Source/dcmtk/dcmnet/../dcmdata/include/dcdicent.h \
- /home/andreas/Source/dcmtk/dcmnet/../dcmdata/include/dcstack.h \
- /home/andreas/Source/dcmtk/dcmnet/../dcmdata/include/dcvrui.h \
- /home/andreas/Source/dcmtk/dcmnet/../dcmdata/include/dcbytstr.h \
- /home/andreas/Source/dcmtk/dcmnet/../dcmdata/include/dcelem.h \
- /home/andreas/Source/dcmtk/dcmnet/../dcmdata/include/dclist.h \
+asccond.o: asccond.cc ../../config/include/osconfig.h \
+ ../include/assoc.h ../include/dicom.h ../include/dcompat.h \
+ ../../dcmdata/include/dctypes.h ../../dcmdata/include/dcuid.h \
+ ../include/lst.h ../include/dul.h asccond.h ../include/cond.h
+assoc.o: assoc.cc ../../config/include/osconfig.h ../include/dicom.h \
+ ../include/dcompat.h ../../dcmdata/include/dctypes.h \
+ ../../dcmdata/include/dcuid.h ../include/cond.h asccond.h \
+ ../include/assoc.h ../include/lst.h ../include/dul.h
+cond.o: cond.cc ../../config/include/osconfig.h ../include/dicom.h \
+ ../include/dcompat.h ../../dcmdata/include/dctypes.h \
+ ../../dcmdata/include/dcuid.h ../include/cond.h
+dcompat.o: dcompat.cc ../../config/include/osconfig.h \
+ ../include/dcompat.h ../include/dicom.h \
+ ../../dcmdata/include/dctypes.h ../../dcmdata/include/dcuid.h
+dimcancl.o: dimcancl.cc ../../config/include/osconfig.h \
+ ../include/diutil.h ../include/dicom.h ../include/dcompat.h \
+ ../../dcmdata/include/dctypes.h ../../dcmdata/include/dcuid.h \
+ ../../dcmdata/include/dcdatset.h ../../dcmdata/include/dcerror.h \
+ ../../dcmdata/include/dcitem.h ../../dcmdata/include/dcobject.h \
+ ../../dcmdata/include/dcxfer.h ../../dcmdata/include/dcstream.h \
+ ../../dcmdata/include/dcbuf.h ../../dcmdata/include/dcdefine.h \
+ ../../dcmdata/include/dctag.h ../../dcmdata/include/dctagkey.h \
+ ../../dcmdata/include/dcvr.h ../../dcmdata/include/dcdicent.h \
+ ../../dcmdata/include/dcstack.h ../../dcmdata/include/dcvrui.h \
+ ../../dcmdata/include/dcbytstr.h ../../dcmdata/include/dcelem.h \
+ ../../dcmdata/include/dclist.h ../include/dimse.h ../include/lst.h \
+ ../include/cond.h ../include/dul.h ../include/assoc.h dimcond.h
+dimcmd.o: dimcmd.cc ../../config/include/osconfig.h \
+ ../../dcmdata/include/dcdatset.h ../../dcmdata/include/dcerror.h \
+ ../../dcmdata/include/dctypes.h ../../dcmdata/include/dcitem.h \
+ ../../dcmdata/include/dcobject.h ../../dcmdata/include/dcxfer.h \
+ ../../dcmdata/include/dcstream.h ../../dcmdata/include/dcbuf.h \
+ ../../dcmdata/include/dcdefine.h ../../dcmdata/include/dctag.h \
+ ../../dcmdata/include/dctagkey.h ../../dcmdata/include/dcvr.h \
+ ../../dcmdata/include/dcdicent.h ../../dcmdata/include/dcstack.h \
+ ../../dcmdata/include/dcvrui.h ../../dcmdata/include/dcbytstr.h \
+ ../../dcmdata/include/dcelem.h ../../dcmdata/include/dclist.h \
+ ../../dcmdata/include/dcdeftag.h ../include/diutil.h \
+ ../include/dicom.h ../include/dcompat.h ../../dcmdata/include/dcuid.h \
+ ../include/dimse.h ../include/lst.h ../include/cond.h \
+ ../include/dul.h ../include/assoc.h dimcmd.h
+dimcond.o: dimcond.cc ../../config/include/osconfig.h \
+ ../include/dimse.h ../include/dicom.h ../include/dcompat.h \
+ ../../dcmdata/include/dctypes.h ../../dcmdata/include/dcuid.h \
+ ../include/lst.h ../include/cond.h ../include/dul.h \
+ ../include/assoc.h ../../dcmdata/include/dcdatset.h \
+ ../../dcmdata/include/dcerror.h ../../dcmdata/include/dcitem.h \
+ ../../dcmdata/include/dcobject.h ../../dcmdata/include/dcxfer.h \
+ ../../dcmdata/include/dcstream.h ../../dcmdata/include/dcbuf.h \
+ ../../dcmdata/include/dcdefine.h ../../dcmdata/include/dctag.h \
+ ../../dcmdata/include/dctagkey.h ../../dcmdata/include/dcvr.h \
+ ../../dcmdata/include/dcdicent.h ../../dcmdata/include/dcstack.h \
+ ../../dcmdata/include/dcvrui.h ../../dcmdata/include/dcbytstr.h \
+ ../../dcmdata/include/dcelem.h ../../dcmdata/include/dclist.h \
  dimcond.h
-dimdump.o: dimdump.cc \
- /home/andreas/Source/dcmtk/config/include/osconfig.h \
- /home/andreas/Source/dcmtk/dcmnet/include/diutil.h \
- /home/andreas/Source/dcmtk/dcmnet/include/dicom.h \
- /home/andreas/Source/dcmtk/dcmnet/include/dcompat.h \
- /home/andreas/Source/dcmtk/dcmnet/../dcmdata/include/dctypes.h \
- /home/andreas/Source/dcmtk/dcmnet/../dcmdata/include/dcuid.h \
- /home/andreas/Source/dcmtk/dcmnet/../dcmdata/include/dcdatset.h \
- /home/andreas/Source/dcmtk/dcmnet/../dcmdata/include/dcerror.h \
- /home/andreas/Source/dcmtk/dcmnet/../dcmdata/include/dcitem.h \
- /home/andreas/Source/dcmtk/dcmnet/../dcmdata/include/dcobject.h \
- /home/andreas/Source/dcmtk/dcmnet/../dcmdata/include/dcxfer.h \
- /home/andreas/Source/dcmtk/dcmnet/../dcmdata/include/dcstream.h \
- /home/andreas/Source/dcmtk/dcmnet/../dcmdata/include/dcbuf.h \
- /home/andreas/Source/dcmtk/dcmnet/../dcmdata/include/dcdefine.h \
- /home/andreas/Source/dcmtk/dcmnet/../dcmdata/include/dctag.h \
- /home/andreas/Source/dcmtk/dcmnet/../dcmdata/include/dctagkey.h \
- /home/andreas/Source/dcmtk/dcmnet/../dcmdata/include/dcvr.h \
- /home/andreas/Source/dcmtk/dcmnet/../dcmdata/include/dcdicent.h \
- /home/andreas/Source/dcmtk/dcmnet/../dcmdata/include/dcstack.h \
- /home/andreas/Source/dcmtk/dcmnet/../dcmdata/include/dcvrui.h \
- /home/andreas/Source/dcmtk/dcmnet/../dcmdata/include/dcbytstr.h \
- /home/andreas/Source/dcmtk/dcmnet/../dcmdata/include/dcelem.h \
- /home/andreas/Source/dcmtk/dcmnet/../dcmdata/include/dclist.h \
- /home/andreas/Source/dcmtk/dcmnet/include/dimse.h \
- /home/andreas/Source/dcmtk/dcmnet/include/lst.h \
- /home/andreas/Source/dcmtk/dcmnet/include/cond.h \
- /home/andreas/Source/dcmtk/dcmnet/include/dul.h \
- /home/andreas/Source/dcmtk/dcmnet/include/assoc.h
-dimecho.o: dimecho.cc \
- /home/andreas/Source/dcmtk/config/include/osconfig.h \
- /home/andreas/Source/dcmtk/dcmnet/include/diutil.h \
- /home/andreas/Source/dcmtk/dcmnet/include/dicom.h \
- /home/andreas/Source/dcmtk/dcmnet/include/dcompat.h \
- /home/andreas/Source/dcmtk/dcmnet/../dcmdata/include/dctypes.h \
- /home/andreas/Source/dcmtk/dcmnet/../dcmdata/include/dcuid.h \
- /home/andreas/Source/dcmtk/dcmnet/../dcmdata/include/dcdatset.h \
- /home/andreas/Source/dcmtk/dcmnet/../dcmdata/include/dcerror.h \
- /home/andreas/Source/dcmtk/dcmnet/../dcmdata/include/dcitem.h \
- /home/andreas/Source/dcmtk/dcmnet/../dcmdata/include/dcobject.h \
- /home/andreas/Source/dcmtk/dcmnet/../dcmdata/include/dcxfer.h \
- /home/andreas/Source/dcmtk/dcmnet/../dcmdata/include/dcstream.h \
- /home/andreas/Source/dcmtk/dcmnet/../dcmdata/include/dcbuf.h \
- /home/andreas/Source/dcmtk/dcmnet/../dcmdata/include/dcdefine.h \
- /home/andreas/Source/dcmtk/dcmnet/../dcmdata/include/dctag.h \
- /home/andreas/Source/dcmtk/dcmnet/../dcmdata/include/dctagkey.h \
- /home/andreas/Source/dcmtk/dcmnet/../dcmdata/include/dcvr.h \
- /home/andreas/Source/dcmtk/dcmnet/../dcmdata/include/dcdicent.h \
- /home/andreas/Source/dcmtk/dcmnet/../dcmdata/include/dcstack.h \
- /home/andreas/Source/dcmtk/dcmnet/../dcmdata/include/dcvrui.h \
- /home/andreas/Source/dcmtk/dcmnet/../dcmdata/include/dcbytstr.h \
- /home/andreas/Source/dcmtk/dcmnet/../dcmdata/include/dcelem.h \
- /home/andreas/Source/dcmtk/dcmnet/../dcmdata/include/dclist.h \
- /home/andreas/Source/dcmtk/dcmnet/include/dimse.h \
- /home/andreas/Source/dcmtk/dcmnet/include/lst.h \
- /home/andreas/Source/dcmtk/dcmnet/include/cond.h \
- /home/andreas/Source/dcmtk/dcmnet/include/dul.h \
- /home/andreas/Source/dcmtk/dcmnet/include/assoc.h dimcond.h
-dimfind.o: dimfind.cc \
- /home/andreas/Source/dcmtk/config/include/osconfig.h \
- /home/andreas/Source/dcmtk/dcmnet/include/diutil.h \
- /home/andreas/Source/dcmtk/dcmnet/include/dicom.h \
- /home/andreas/Source/dcmtk/dcmnet/include/dcompat.h \
- /home/andreas/Source/dcmtk/dcmnet/../dcmdata/include/dctypes.h \
- /home/andreas/Source/dcmtk/dcmnet/../dcmdata/include/dcuid.h \
- /home/andreas/Source/dcmtk/dcmnet/../dcmdata/include/dcdatset.h \
- /home/andreas/Source/dcmtk/dcmnet/../dcmdata/include/dcerror.h \
- /home/andreas/Source/dcmtk/dcmnet/../dcmdata/include/dcitem.h \
- /home/andreas/Source/dcmtk/dcmnet/../dcmdata/include/dcobject.h \
- /home/andreas/Source/dcmtk/dcmnet/../dcmdata/include/dcxfer.h \
- /home/andreas/Source/dcmtk/dcmnet/../dcmdata/include/dcstream.h \
- /home/andreas/Source/dcmtk/dcmnet/../dcmdata/include/dcbuf.h \
- /home/andreas/Source/dcmtk/dcmnet/../dcmdata/include/dcdefine.h \
- /home/andreas/Source/dcmtk/dcmnet/../dcmdata/include/dctag.h \
- /home/andreas/Source/dcmtk/dcmnet/../dcmdata/include/dctagkey.h \
- /home/andreas/Source/dcmtk/dcmnet/../dcmdata/include/dcvr.h \
- /home/andreas/Source/dcmtk/dcmnet/../dcmdata/include/dcdicent.h \
- /home/andreas/Source/dcmtk/dcmnet/../dcmdata/include/dcstack.h \
- /home/andreas/Source/dcmtk/dcmnet/../dcmdata/include/dcvrui.h \
- /home/andreas/Source/dcmtk/dcmnet/../dcmdata/include/dcbytstr.h \
- /home/andreas/Source/dcmtk/dcmnet/../dcmdata/include/dcelem.h \
- /home/andreas/Source/dcmtk/dcmnet/../dcmdata/include/dclist.h \
- /home/andreas/Source/dcmtk/dcmnet/include/dimse.h \
- /home/andreas/Source/dcmtk/dcmnet/include/lst.h \
- /home/andreas/Source/dcmtk/dcmnet/include/cond.h \
- /home/andreas/Source/dcmtk/dcmnet/include/dul.h \
- /home/andreas/Source/dcmtk/dcmnet/include/assoc.h dimcond.h
-dimmove.o: dimmove.cc \
- /home/andreas/Source/dcmtk/config/include/osconfig.h \
- /home/andreas/Source/dcmtk/dcmnet/include/diutil.h \
- /home/andreas/Source/dcmtk/dcmnet/include/dicom.h \
- /home/andreas/Source/dcmtk/dcmnet/include/dcompat.h \
- /home/andreas/Source/dcmtk/dcmnet/../dcmdata/include/dctypes.h \
- /home/andreas/Source/dcmtk/dcmnet/../dcmdata/include/dcuid.h \
- /home/andreas/Source/dcmtk/dcmnet/../dcmdata/include/dcdatset.h \
- /home/andreas/Source/dcmtk/dcmnet/../dcmdata/include/dcerror.h \
- /home/andreas/Source/dcmtk/dcmnet/../dcmdata/include/dcitem.h \
- /home/andreas/Source/dcmtk/dcmnet/../dcmdata/include/dcobject.h \
- /home/andreas/Source/dcmtk/dcmnet/../dcmdata/include/dcxfer.h \
- /home/andreas/Source/dcmtk/dcmnet/../dcmdata/include/dcstream.h \
- /home/andreas/Source/dcmtk/dcmnet/../dcmdata/include/dcbuf.h \
- /home/andreas/Source/dcmtk/dcmnet/../dcmdata/include/dcdefine.h \
- /home/andreas/Source/dcmtk/dcmnet/../dcmdata/include/dctag.h \
- /home/andreas/Source/dcmtk/dcmnet/../dcmdata/include/dctagkey.h \
- /home/andreas/Source/dcmtk/dcmnet/../dcmdata/include/dcvr.h \
- /home/andreas/Source/dcmtk/dcmnet/../dcmdata/include/dcdicent.h \
- /home/andreas/Source/dcmtk/dcmnet/../dcmdata/include/dcstack.h \
- /home/andreas/Source/dcmtk/dcmnet/../dcmdata/include/dcvrui.h \
- /home/andreas/Source/dcmtk/dcmnet/../dcmdata/include/dcbytstr.h \
- /home/andreas/Source/dcmtk/dcmnet/../dcmdata/include/dcelem.h \
- /home/andreas/Source/dcmtk/dcmnet/../dcmdata/include/dclist.h \
- /home/andreas/Source/dcmtk/dcmnet/include/dimse.h \
- /home/andreas/Source/dcmtk/dcmnet/include/lst.h \
- /home/andreas/Source/dcmtk/dcmnet/include/cond.h \
- /home/andreas/Source/dcmtk/dcmnet/include/dul.h \
- /home/andreas/Source/dcmtk/dcmnet/include/assoc.h dimcond.h
-dimse.o: dimse.cc /home/andreas/Source/dcmtk/config/include/osconfig.h \
- /home/andreas/Source/dcmtk/dcmnet/include/diutil.h \
- /home/andreas/Source/dcmtk/dcmnet/include/dicom.h \
- /home/andreas/Source/dcmtk/dcmnet/include/dcompat.h \
- /home/andreas/Source/dcmtk/dcmnet/../dcmdata/include/dctypes.h \
- /home/andreas/Source/dcmtk/dcmnet/../dcmdata/include/dcuid.h \
- /home/andreas/Source/dcmtk/dcmnet/../dcmdata/include/dcdatset.h \
- /home/andreas/Source/dcmtk/dcmnet/../dcmdata/include/dcerror.h \
- /home/andreas/Source/dcmtk/dcmnet/../dcmdata/include/dcitem.h \
- /home/andreas/Source/dcmtk/dcmnet/../dcmdata/include/dcobject.h \
- /home/andreas/Source/dcmtk/dcmnet/../dcmdata/include/dcxfer.h \
- /home/andreas/Source/dcmtk/dcmnet/../dcmdata/include/dcstream.h \
- /home/andreas/Source/dcmtk/dcmnet/../dcmdata/include/dcbuf.h \
- /home/andreas/Source/dcmtk/dcmnet/../dcmdata/include/dcdefine.h \
- /home/andreas/Source/dcmtk/dcmnet/../dcmdata/include/dctag.h \
- /home/andreas/Source/dcmtk/dcmnet/../dcmdata/include/dctagkey.h \
- /home/andreas/Source/dcmtk/dcmnet/../dcmdata/include/dcvr.h \
- /home/andreas/Source/dcmtk/dcmnet/../dcmdata/include/dcdicent.h \
- /home/andreas/Source/dcmtk/dcmnet/../dcmdata/include/dcstack.h \
- /home/andreas/Source/dcmtk/dcmnet/../dcmdata/include/dcvrui.h \
- /home/andreas/Source/dcmtk/dcmnet/../dcmdata/include/dcbytstr.h \
- /home/andreas/Source/dcmtk/dcmnet/../dcmdata/include/dcelem.h \
- /home/andreas/Source/dcmtk/dcmnet/../dcmdata/include/dclist.h \
- /home/andreas/Source/dcmtk/dcmnet/include/dimse.h \
- /home/andreas/Source/dcmtk/dcmnet/include/lst.h \
- /home/andreas/Source/dcmtk/dcmnet/include/cond.h \
- /home/andreas/Source/dcmtk/dcmnet/include/dul.h \
- /home/andreas/Source/dcmtk/dcmnet/include/assoc.h dimcond.h dimcmd.h \
- /home/andreas/Source/dcmtk/dcmnet/../dcmdata/include/dcfilefo.h \
- /home/andreas/Source/dcmtk/dcmnet/../dcmdata/include/dcsequen.h \
- /home/andreas/Source/dcmtk/dcmnet/../dcmdata/include/dcmetinf.h
-dimstore.o: dimstore.cc \
- /home/andreas/Source/dcmtk/config/include/osconfig.h \
- /home/andreas/Source/dcmtk/dcmnet/include/diutil.h \
- /home/andreas/Source/dcmtk/dcmnet/include/dicom.h \
- /home/andreas/Source/dcmtk/dcmnet/include/dcompat.h \
- /home/andreas/Source/dcmtk/dcmnet/../dcmdata/include/dctypes.h \
- /home/andreas/Source/dcmtk/dcmnet/../dcmdata/include/dcuid.h \
- /home/andreas/Source/dcmtk/dcmnet/../dcmdata/include/dcdatset.h \
- /home/andreas/Source/dcmtk/dcmnet/../dcmdata/include/dcerror.h \
- /home/andreas/Source/dcmtk/dcmnet/../dcmdata/include/dcitem.h \
- /home/andreas/Source/dcmtk/dcmnet/../dcmdata/include/dcobject.h \
- /home/andreas/Source/dcmtk/dcmnet/../dcmdata/include/dcxfer.h \
- /home/andreas/Source/dcmtk/dcmnet/../dcmdata/include/dcstream.h \
- /home/andreas/Source/dcmtk/dcmnet/../dcmdata/include/dcbuf.h \
- /home/andreas/Source/dcmtk/dcmnet/../dcmdata/include/dcdefine.h \
- /home/andreas/Source/dcmtk/dcmnet/../dcmdata/include/dctag.h \
- /home/andreas/Source/dcmtk/dcmnet/../dcmdata/include/dctagkey.h \
- /home/andreas/Source/dcmtk/dcmnet/../dcmdata/include/dcvr.h \
- /home/andreas/Source/dcmtk/dcmnet/../dcmdata/include/dcdicent.h \
- /home/andreas/Source/dcmtk/dcmnet/../dcmdata/include/dcstack.h \
- /home/andreas/Source/dcmtk/dcmnet/../dcmdata/include/dcvrui.h \
- /home/andreas/Source/dcmtk/dcmnet/../dcmdata/include/dcbytstr.h \
- /home/andreas/Source/dcmtk/dcmnet/../dcmdata/include/dcelem.h \
- /home/andreas/Source/dcmtk/dcmnet/../dcmdata/include/dclist.h \
- /home/andreas/Source/dcmtk/dcmnet/include/dimse.h \
- /home/andreas/Source/dcmtk/dcmnet/include/lst.h \
- /home/andreas/Source/dcmtk/dcmnet/include/cond.h \
- /home/andreas/Source/dcmtk/dcmnet/include/dul.h \
- /home/andreas/Source/dcmtk/dcmnet/include/assoc.h dimcond.h
-diutil.o: diutil.cc \
- /home/andreas/Source/dcmtk/config/include/osconfig.h \
- /home/andreas/Source/dcmtk/dcmnet/include/diutil.h \
- /home/andreas/Source/dcmtk/dcmnet/include/dicom.h \
- /home/andreas/Source/dcmtk/dcmnet/include/dcompat.h \
- /home/andreas/Source/dcmtk/dcmnet/../dcmdata/include/dctypes.h \
- /home/andreas/Source/dcmtk/dcmnet/../dcmdata/include/dcuid.h \
- /home/andreas/Source/dcmtk/dcmnet/../dcmdata/include/dcdatset.h \
- /home/andreas/Source/dcmtk/dcmnet/../dcmdata/include/dcerror.h \
- /home/andreas/Source/dcmtk/dcmnet/../dcmdata/include/dcitem.h \
- /home/andreas/Source/dcmtk/dcmnet/../dcmdata/include/dcobject.h \
- /home/andreas/Source/dcmtk/dcmnet/../dcmdata/include/dcxfer.h \
- /home/andreas/Source/dcmtk/dcmnet/../dcmdata/include/dcstream.h \
- /home/andreas/Source/dcmtk/dcmnet/../dcmdata/include/dcbuf.h \
- /home/andreas/Source/dcmtk/dcmnet/../dcmdata/include/dcdefine.h \
- /home/andreas/Source/dcmtk/dcmnet/../dcmdata/include/dctag.h \
- /home/andreas/Source/dcmtk/dcmnet/../dcmdata/include/dctagkey.h \
- /home/andreas/Source/dcmtk/dcmnet/../dcmdata/include/dcvr.h \
- /home/andreas/Source/dcmtk/dcmnet/../dcmdata/include/dcdicent.h \
- /home/andreas/Source/dcmtk/dcmnet/../dcmdata/include/dcstack.h \
- /home/andreas/Source/dcmtk/dcmnet/../dcmdata/include/dcvrui.h \
- /home/andreas/Source/dcmtk/dcmnet/../dcmdata/include/dcbytstr.h \
- /home/andreas/Source/dcmtk/dcmnet/../dcmdata/include/dcelem.h \
- /home/andreas/Source/dcmtk/dcmnet/../dcmdata/include/dclist.h \
- /home/andreas/Source/dcmtk/dcmnet/include/dimse.h \
- /home/andreas/Source/dcmtk/dcmnet/include/lst.h \
- /home/andreas/Source/dcmtk/dcmnet/include/cond.h \
- /home/andreas/Source/dcmtk/dcmnet/include/dul.h \
- /home/andreas/Source/dcmtk/dcmnet/include/assoc.h \
- /home/andreas/Source/dcmtk/dcmnet/../dcmdata/include/dcfilefo.h \
- /home/andreas/Source/dcmtk/dcmnet/../dcmdata/include/dcsequen.h \
- /home/andreas/Source/dcmtk/dcmnet/../dcmdata/include/dcmetinf.h \
- /home/andreas/Source/dcmtk/dcmnet/../dcmdata/include/dcdeftag.h
-dul.o: dul.cc /home/andreas/Source/dcmtk/config/include/osconfig.h \
- /home/andreas/Source/dcmtk/dcmnet/include/dicom.h \
- /home/andreas/Source/dcmtk/dcmnet/include/dcompat.h \
- /home/andreas/Source/dcmtk/dcmnet/../dcmdata/include/dctypes.h \
- /home/andreas/Source/dcmtk/dcmnet/../dcmdata/include/dcuid.h \
- /home/andreas/Source/dcmtk/dcmnet/include/cond.h \
- /home/andreas/Source/dcmtk/dcmnet/include/lst.h \
- /home/andreas/Source/dcmtk/dcmnet/include/dul.h dulstruc.h dulpriv.h \
- dulfsm.h
-dulcond.o: dulcond.cc \
- /home/andreas/Source/dcmtk/config/include/osconfig.h \
- /home/andreas/Source/dcmtk/dcmnet/include/dicom.h \
- /home/andreas/Source/dcmtk/dcmnet/include/dcompat.h \
- /home/andreas/Source/dcmtk/dcmnet/../dcmdata/include/dctypes.h \
- /home/andreas/Source/dcmtk/dcmnet/../dcmdata/include/dcuid.h \
- /home/andreas/Source/dcmtk/dcmnet/include/lst.h \
- /home/andreas/Source/dcmtk/dcmnet/include/dul.h dulstruc.h
-dulconst.o: dulconst.cc \
- /home/andreas/Source/dcmtk/config/include/osconfig.h \
- /home/andreas/Source/dcmtk/dcmnet/include/dicom.h \
- /home/andreas/Source/dcmtk/dcmnet/include/dcompat.h \
- /home/andreas/Source/dcmtk/dcmnet/../dcmdata/include/dctypes.h \
- /home/andreas/Source/dcmtk/dcmnet/../dcmdata/include/dcuid.h \
- /home/andreas/Source/dcmtk/dcmnet/include/cond.h \
- /home/andreas/Source/dcmtk/dcmnet/include/lst.h \
- /home/andreas/Source/dcmtk/dcmnet/include/dul.h dulstruc.h dulpriv.h
-dulextra.o: dulextra.cc \
- /home/andreas/Source/dcmtk/config/include/osconfig.h \
- /home/andreas/Source/dcmtk/dcmnet/include/dicom.h \
- /home/andreas/Source/dcmtk/dcmnet/include/dcompat.h \
- /home/andreas/Source/dcmtk/dcmnet/../dcmdata/include/dctypes.h \
- /home/andreas/Source/dcmtk/dcmnet/../dcmdata/include/dcuid.h \
- /home/andreas/Source/dcmtk/dcmnet/include/lst.h \
- /home/andreas/Source/dcmtk/dcmnet/include/cond.h \
- /home/andreas/Source/dcmtk/dcmnet/include/dul.h dulstruc.h dulpriv.h
-dulfsm.o: dulfsm.cc \
- /home/andreas/Source/dcmtk/config/include/osconfig.h \
- /home/andreas/Source/dcmtk/dcmnet/include/dicom.h \
- /home/andreas/Source/dcmtk/dcmnet/include/dcompat.h \
- /home/andreas/Source/dcmtk/dcmnet/../dcmdata/include/dctypes.h \
- /home/andreas/Source/dcmtk/dcmnet/../dcmdata/include/dcuid.h \
- /home/andreas/Source/dcmtk/dcmnet/include/lst.h \
- /home/andreas/Source/dcmtk/dcmnet/include/cond.h \
- /home/andreas/Source/dcmtk/dcmnet/include/dul.h dulstruc.h dulpriv.h \
- dulfsm.h
-dulparse.o: dulparse.cc \
- /home/andreas/Source/dcmtk/config/include/osconfig.h \
- /usr/include/malloc.h \
- /home/andreas/Source/dcmtk/dcmnet/include/dicom.h \
- /home/andreas/Source/dcmtk/dcmnet/include/dcompat.h \
- /home/andreas/Source/dcmtk/dcmnet/../dcmdata/include/dctypes.h \
- /home/andreas/Source/dcmtk/dcmnet/../dcmdata/include/dcuid.h \
- /home/andreas/Source/dcmtk/dcmnet/include/cond.h \
- /home/andreas/Source/dcmtk/dcmnet/include/lst.h \
- /home/andreas/Source/dcmtk/dcmnet/include/dul.h dulstruc.h dulpriv.h
-dulpres.o: dulpres.cc \
- /home/andreas/Source/dcmtk/config/include/osconfig.h \
- /home/andreas/Source/dcmtk/dcmnet/include/dicom.h \
- /home/andreas/Source/dcmtk/dcmnet/include/dcompat.h \
- /home/andreas/Source/dcmtk/dcmnet/../dcmdata/include/dctypes.h \
- /home/andreas/Source/dcmtk/dcmnet/../dcmdata/include/dcuid.h \
- /home/andreas/Source/dcmtk/dcmnet/include/cond.h \
- /home/andreas/Source/dcmtk/dcmnet/include/lst.h \
- /home/andreas/Source/dcmtk/dcmnet/include/dul.h dulstruc.h dulpriv.h \
- dulfsm.h
-lst.o: lst.cc /home/andreas/Source/dcmtk/config/include/osconfig.h \
- /home/andreas/Source/dcmtk/dcmnet/include/dicom.h \
- /home/andreas/Source/dcmtk/dcmnet/include/dcompat.h \
- /home/andreas/Source/dcmtk/dcmnet/../dcmdata/include/dctypes.h \
- /home/andreas/Source/dcmtk/dcmnet/../dcmdata/include/dcuid.h \
- lstpriv.h /home/andreas/Source/dcmtk/dcmnet/include/lst.h
-lstcond.o: lstcond.cc \
- /home/andreas/Source/dcmtk/config/include/osconfig.h \
- /home/andreas/Source/dcmtk/dcmnet/include/dicom.h \
- /home/andreas/Source/dcmtk/dcmnet/include/dcompat.h \
- /home/andreas/Source/dcmtk/dcmnet/../dcmdata/include/dctypes.h \
- /home/andreas/Source/dcmtk/dcmnet/../dcmdata/include/dcuid.h \
- lstpriv.h /home/andreas/Source/dcmtk/dcmnet/include/lst.h
+dimdump.o: dimdump.cc ../../config/include/osconfig.h \
+ ../include/diutil.h ../include/dicom.h ../include/dcompat.h \
+ ../../dcmdata/include/dctypes.h ../../dcmdata/include/dcuid.h \
+ ../../dcmdata/include/dcdatset.h ../../dcmdata/include/dcerror.h \
+ ../../dcmdata/include/dcitem.h ../../dcmdata/include/dcobject.h \
+ ../../dcmdata/include/dcxfer.h ../../dcmdata/include/dcstream.h \
+ ../../dcmdata/include/dcbuf.h ../../dcmdata/include/dcdefine.h \
+ ../../dcmdata/include/dctag.h ../../dcmdata/include/dctagkey.h \
+ ../../dcmdata/include/dcvr.h ../../dcmdata/include/dcdicent.h \
+ ../../dcmdata/include/dcstack.h ../../dcmdata/include/dcvrui.h \
+ ../../dcmdata/include/dcbytstr.h ../../dcmdata/include/dcelem.h \
+ ../../dcmdata/include/dclist.h ../include/dimse.h ../include/lst.h \
+ ../include/cond.h ../include/dul.h ../include/assoc.h
+dimecho.o: dimecho.cc ../../config/include/osconfig.h \
+ ../include/diutil.h ../include/dicom.h ../include/dcompat.h \
+ ../../dcmdata/include/dctypes.h ../../dcmdata/include/dcuid.h \
+ ../../dcmdata/include/dcdatset.h ../../dcmdata/include/dcerror.h \
+ ../../dcmdata/include/dcitem.h ../../dcmdata/include/dcobject.h \
+ ../../dcmdata/include/dcxfer.h ../../dcmdata/include/dcstream.h \
+ ../../dcmdata/include/dcbuf.h ../../dcmdata/include/dcdefine.h \
+ ../../dcmdata/include/dctag.h ../../dcmdata/include/dctagkey.h \
+ ../../dcmdata/include/dcvr.h ../../dcmdata/include/dcdicent.h \
+ ../../dcmdata/include/dcstack.h ../../dcmdata/include/dcvrui.h \
+ ../../dcmdata/include/dcbytstr.h ../../dcmdata/include/dcelem.h \
+ ../../dcmdata/include/dclist.h ../include/dimse.h ../include/lst.h \
+ ../include/cond.h ../include/dul.h ../include/assoc.h dimcond.h
+dimfind.o: dimfind.cc ../../config/include/osconfig.h \
+ ../include/diutil.h ../include/dicom.h ../include/dcompat.h \
+ ../../dcmdata/include/dctypes.h ../../dcmdata/include/dcuid.h \
+ ../../dcmdata/include/dcdatset.h ../../dcmdata/include/dcerror.h \
+ ../../dcmdata/include/dcitem.h ../../dcmdata/include/dcobject.h \
+ ../../dcmdata/include/dcxfer.h ../../dcmdata/include/dcstream.h \
+ ../../dcmdata/include/dcbuf.h ../../dcmdata/include/dcdefine.h \
+ ../../dcmdata/include/dctag.h ../../dcmdata/include/dctagkey.h \
+ ../../dcmdata/include/dcvr.h ../../dcmdata/include/dcdicent.h \
+ ../../dcmdata/include/dcstack.h ../../dcmdata/include/dcvrui.h \
+ ../../dcmdata/include/dcbytstr.h ../../dcmdata/include/dcelem.h \
+ ../../dcmdata/include/dclist.h ../include/dimse.h ../include/lst.h \
+ ../include/cond.h ../include/dul.h ../include/assoc.h dimcond.h
+dimmove.o: dimmove.cc ../../config/include/osconfig.h \
+ ../include/diutil.h ../include/dicom.h ../include/dcompat.h \
+ ../../dcmdata/include/dctypes.h ../../dcmdata/include/dcuid.h \
+ ../../dcmdata/include/dcdatset.h ../../dcmdata/include/dcerror.h \
+ ../../dcmdata/include/dcitem.h ../../dcmdata/include/dcobject.h \
+ ../../dcmdata/include/dcxfer.h ../../dcmdata/include/dcstream.h \
+ ../../dcmdata/include/dcbuf.h ../../dcmdata/include/dcdefine.h \
+ ../../dcmdata/include/dctag.h ../../dcmdata/include/dctagkey.h \
+ ../../dcmdata/include/dcvr.h ../../dcmdata/include/dcdicent.h \
+ ../../dcmdata/include/dcstack.h ../../dcmdata/include/dcvrui.h \
+ ../../dcmdata/include/dcbytstr.h ../../dcmdata/include/dcelem.h \
+ ../../dcmdata/include/dclist.h ../include/dimse.h ../include/lst.h \
+ ../include/cond.h ../include/dul.h ../include/assoc.h dimcond.h
+dimse.o: dimse.cc ../../config/include/osconfig.h ../include/diutil.h \
+ ../include/dicom.h ../include/dcompat.h \
+ ../../dcmdata/include/dctypes.h ../../dcmdata/include/dcuid.h \
+ ../../dcmdata/include/dcdatset.h ../../dcmdata/include/dcerror.h \
+ ../../dcmdata/include/dcitem.h ../../dcmdata/include/dcobject.h \
+ ../../dcmdata/include/dcxfer.h ../../dcmdata/include/dcstream.h \
+ ../../dcmdata/include/dcbuf.h ../../dcmdata/include/dcdefine.h \
+ ../../dcmdata/include/dctag.h ../../dcmdata/include/dctagkey.h \
+ ../../dcmdata/include/dcvr.h ../../dcmdata/include/dcdicent.h \
+ ../../dcmdata/include/dcstack.h ../../dcmdata/include/dcvrui.h \
+ ../../dcmdata/include/dcbytstr.h ../../dcmdata/include/dcelem.h \
+ ../../dcmdata/include/dclist.h ../include/dimse.h ../include/lst.h \
+ ../include/cond.h ../include/dul.h ../include/assoc.h dimcond.h \
+ dimcmd.h ../../dcmdata/include/dcfilefo.h \
+ ../../dcmdata/include/dcsequen.h ../../dcmdata/include/dcmetinf.h
+dimstore.o: dimstore.cc ../../config/include/osconfig.h \
+ ../include/diutil.h ../include/dicom.h ../include/dcompat.h \
+ ../../dcmdata/include/dctypes.h ../../dcmdata/include/dcuid.h \
+ ../../dcmdata/include/dcdatset.h ../../dcmdata/include/dcerror.h \
+ ../../dcmdata/include/dcitem.h ../../dcmdata/include/dcobject.h \
+ ../../dcmdata/include/dcxfer.h ../../dcmdata/include/dcstream.h \
+ ../../dcmdata/include/dcbuf.h ../../dcmdata/include/dcdefine.h \
+ ../../dcmdata/include/dctag.h ../../dcmdata/include/dctagkey.h \
+ ../../dcmdata/include/dcvr.h ../../dcmdata/include/dcdicent.h \
+ ../../dcmdata/include/dcstack.h ../../dcmdata/include/dcvrui.h \
+ ../../dcmdata/include/dcbytstr.h ../../dcmdata/include/dcelem.h \
+ ../../dcmdata/include/dclist.h ../include/dimse.h ../include/lst.h \
+ ../include/cond.h ../include/dul.h ../include/assoc.h dimcond.h
+diutil.o: diutil.cc ../../config/include/osconfig.h \
+ ../include/diutil.h ../include/dicom.h ../include/dcompat.h \
+ ../../dcmdata/include/dctypes.h ../../dcmdata/include/dcuid.h \
+ ../../dcmdata/include/dcdatset.h ../../dcmdata/include/dcerror.h \
+ ../../dcmdata/include/dcitem.h ../../dcmdata/include/dcobject.h \
+ ../../dcmdata/include/dcxfer.h ../../dcmdata/include/dcstream.h \
+ ../../dcmdata/include/dcbuf.h ../../dcmdata/include/dcdefine.h \
+ ../../dcmdata/include/dctag.h ../../dcmdata/include/dctagkey.h \
+ ../../dcmdata/include/dcvr.h ../../dcmdata/include/dcdicent.h \
+ ../../dcmdata/include/dcstack.h ../../dcmdata/include/dcvrui.h \
+ ../../dcmdata/include/dcbytstr.h ../../dcmdata/include/dcelem.h \
+ ../../dcmdata/include/dclist.h ../include/dimse.h ../include/lst.h \
+ ../include/cond.h ../include/dul.h ../include/assoc.h \
+ ../../dcmdata/include/dcfilefo.h ../../dcmdata/include/dcsequen.h \
+ ../../dcmdata/include/dcmetinf.h ../../dcmdata/include/dcdeftag.h
+dul.o: dul.cc ../../config/include/osconfig.h ../include/dicom.h \
+ ../include/dcompat.h ../../dcmdata/include/dctypes.h \
+ ../../dcmdata/include/dcuid.h ../include/cond.h ../include/lst.h \
+ ../include/dul.h dulstruc.h dulpriv.h dulfsm.h
+dulcond.o: dulcond.cc ../../config/include/osconfig.h \
+ ../include/dicom.h ../include/dcompat.h \
+ ../../dcmdata/include/dctypes.h ../../dcmdata/include/dcuid.h \
+ ../include/lst.h ../include/dul.h dulstruc.h
+dulconst.o: dulconst.cc ../../config/include/osconfig.h \
+ ../include/dicom.h ../include/dcompat.h \
+ ../../dcmdata/include/dctypes.h ../../dcmdata/include/dcuid.h \
+ ../include/cond.h ../include/lst.h ../include/dul.h dulstruc.h \
+ dulpriv.h
+dulextra.o: dulextra.cc ../../config/include/osconfig.h \
+ ../include/dicom.h ../include/dcompat.h \
+ ../../dcmdata/include/dctypes.h ../../dcmdata/include/dcuid.h \
+ ../include/lst.h ../include/cond.h ../include/dul.h dulstruc.h \
+ dulpriv.h
+dulfsm.o: dulfsm.cc ../../config/include/osconfig.h ../include/dicom.h \
+ ../include/dcompat.h ../../dcmdata/include/dctypes.h \
+ ../../dcmdata/include/dcuid.h ../include/lst.h ../include/cond.h \
+ ../include/dul.h dulstruc.h dulpriv.h dulfsm.h
+dulparse.o: dulparse.cc ../../config/include/osconfig.h \
+ /usr/include/malloc.h ../include/dicom.h ../include/dcompat.h \
+ ../../dcmdata/include/dctypes.h ../../dcmdata/include/dcuid.h \
+ ../include/cond.h ../include/lst.h ../include/dul.h dulstruc.h \
+ dulpriv.h
+dulpres.o: dulpres.cc ../../config/include/osconfig.h \
+ ../include/dicom.h ../include/dcompat.h \
+ ../../dcmdata/include/dctypes.h ../../dcmdata/include/dcuid.h \
+ ../include/cond.h ../include/lst.h ../include/dul.h dulstruc.h \
+ dulpriv.h dulfsm.h
+lst.o: lst.cc ../../config/include/osconfig.h ../include/dicom.h \
+ ../include/dcompat.h ../../dcmdata/include/dctypes.h \
+ ../../dcmdata/include/dcuid.h lstpriv.h ../include/lst.h
+lstcond.o: lstcond.cc ../../config/include/osconfig.h \
+ ../include/dicom.h ../include/dcompat.h \
+ ../../dcmdata/include/dctypes.h ../../dcmdata/include/dcuid.h \
+ lstpriv.h ../include/lst.h
