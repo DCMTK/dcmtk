@@ -1,0 +1,53 @@
+NAME
+
+    dcmconv
+
+SYNOPSIS
+
+    dcmconv [options] dicomfile-in dcmfile-out
+
+SUMMARY
+
+The dcmconv utility reads a dicomfile (dicomfile-in),
+performs an encoding conversion and writes the converted
+data an output file (dicomfile-out).
+
+USAGE
+
+usage: dcmconv [options] dcmfile-in dcmfile-out
+options are:
+  group length encoding:
+    +g    write with group lengths (default)
+    -g    write without group lengths
+  length encoding in sequences and items:
+    +e    write with explicit lengths (default)
+    -e    write with undefined lengths
+  output transfer syntax:
+    +t=   write with same transfer syntax as input (default)
+    +ti   write with little-endian implicit transfer syntax
+    +te   write with little-endian explicit transfer syntax
+    +tb   write with big-endian explicit transfer syntax
+  other test/debug options:
+    +V    verbose mode, print actions
+    +l    force load of all input data into memory
+    +v    validate input data (currently almost useless)
+    +c    copy all input data before writing output
+    +dn   set debug level to n (n=1..9)
+
+ENVIRONMENT
+
+The dcmdump utility will attempt to load DICOM data dictionaries
+specified in the DCMDICTPATH environment variable.  By default, if
+the DCMDICTPATH environment variable is not set, the file
+/usr/local/dicom/lib/dicom.dic will be loaded.  The default behaviour
+should be preferred and the DCMDICTPATH environment variable only used
+when alternative data dictionaries are required.  The DCMDICTPATH 
+environment variable has the same format as the shell PATH variable in
+that a colon (":") separates entries.  The data dictionary code will
+attempt to load each file specified in the DCMDICTPATH environment 
+variable.  It is an error if no data dictionary can be loaded.
+
+AUTHOR
+
+Andrew Hewett, Kuratorium OFFIS e.V., Oldenburg, Germany
+
