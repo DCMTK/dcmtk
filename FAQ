@@ -242,21 +242,6 @@ A: You need to make sure that your PATH environment variable is set up
    will be used.
 
 ----
-1997.09.16
-
-Q: I've compiled DCMTK using the Cygnus GNU-Win32 development environment
-   for Windows95/NT but some of the programs behave strangely.
-
-A: At the time of writing the Cygnus GNU-Win32 development environment is
-   beta code and may not correctly emulate all Unix features.  In particular,
-   we know that the imagectn application does not currently work because
-   of problems with file locking.  We have not done any extensive testing in
-   this environment but thought that it might be very useful to easily and
-   cheaply use the storescu and storescp program on Windows95/NT.
-   If this version is interesting for you or if you find any other problems
-   please let us know.
-
-----
 1997.09.12
 
 Q: All of the programs print the message
@@ -339,30 +324,6 @@ A: This means that the configure script has failed to create the
    and that environment variables must be set before the compiler can be
    used (e.g. the LD_LIBRARY_PATH environment variable).
 
-
-----
-1996.09.24
-
-Q: Does DCMTK compile on Apple Macintosh ?
-
-A: Yes.  Parts (dcmdata and dcmnet) compile using the Metrowerks
-   CodeWarrior C++ compiler.
-
-   No real testing has yet been done.
-
-   You will also need an appropriate version of GUSI (Grand Unified
-   Socket Interface) which is a socket implementation for Macintosh.
-   This is can be obtained via
-        http://www.iis.ee.ethz.ch/~neeri/macintosh/gusi-qa.html
-
-   You need to set appropriate include paths (e.g. dcmtk/dcmnet/include,
-   dcmtk/dcmdata/include, dcmtk/config/include, .../GUSI/include)
-
-   If you need an example project file, please ask.
-
-   Please note, there are no normal Macintosh applications in DCMTK.  You
-   have to use a simulated Unix command line interface (via the
-   CodeWarrior SIOUX library).
 
 ----
 1996.09.24
