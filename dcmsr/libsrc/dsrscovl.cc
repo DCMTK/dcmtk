@@ -23,8 +23,8 @@
  *    classes: DSRSpatialCoordinatesValue
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-08-07 15:21:53 $
- *  CVS/RCS Revision: $Revision: 1.14 $
+ *  Update Date:      $Date: 2003-10-17 16:10:43 $
+ *  CVS/RCS Revision: $Revision: 1.15 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -263,7 +263,7 @@ OFBool DSRSpatialCoordinatesValue::checkData(const DSRTypes::E_GraphicType graph
                 break;
             case DSRTypes::GT_Multipoint:
                 if (count < 1)
-                    DSRTypes::printWarningMessage(logStream, "GraphicData has too less entries, at least one entry expected");
+                    DSRTypes::printWarningMessage(logStream, "GraphicData has too few entries, at least one entry expected");
                 result = OFTrue;
                 break;
             case DSRTypes::GT_Polyline:
@@ -275,7 +275,7 @@ OFBool DSRSpatialCoordinatesValue::checkData(const DSRTypes::E_GraphicType graph
                 break;
             case DSRTypes::GT_Circle:
                 if (count < 2)
-                    DSRTypes::printWarningMessage(logStream, "GraphicData has too less entries, exactly two entries expected");
+                    DSRTypes::printWarningMessage(logStream, "GraphicData has too few entries, exactly two entries expected");
                 else
                 {
                     if (count > 2)
@@ -285,7 +285,7 @@ OFBool DSRSpatialCoordinatesValue::checkData(const DSRTypes::E_GraphicType graph
                 break;
             case DSRTypes::GT_Ellipse:
                 if (count < 4)
-                    DSRTypes::printWarningMessage(logStream, "GraphicData has too less entries, exactly four entries expected");
+                    DSRTypes::printWarningMessage(logStream, "GraphicData has too few entries, exactly four entries expected");
                 else
                 {
                     if (count > 4)
@@ -305,7 +305,10 @@ OFBool DSRSpatialCoordinatesValue::checkData(const DSRTypes::E_GraphicType graph
 /*
  *  CVS/RCS Log:
  *  $Log: dsrscovl.cc,v $
- *  Revision 1.14  2003-08-07 15:21:53  joergr
+ *  Revision 1.15  2003-10-17 16:10:43  joergr
+ *  Fixed wrong wording in a warning message ("too less" -> "too few").
+ *
+ *  Revision 1.14  2003/08/07 15:21:53  joergr
  *  Added brackets around "bitwise and" operator/operands to avoid warnings
  *  reported by MSVC5.
  *
