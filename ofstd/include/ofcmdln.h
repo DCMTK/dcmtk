@@ -22,9 +22,9 @@
  *  Purpose: Handle command line arguments (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-04-26 16:32:47 $
+ *  Update Date:      $Date: 1999-04-27 16:23:11 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/include/Attic/ofcmdln.h,v $
- *  CVS/RCS Revision: $Revision: 1.10 $
+ *  CVS/RCS Revision: $Revision: 1.11 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -99,8 +99,19 @@ struct OFCmdOption
         ValueCount(valueCount),
         ValueDescription(valueDescr),
         OptionDescription(optDescr)
+#ifdef DEBUG
+       ,Checked(OFFalse)
+#endif        
     {
     }
+
+#ifdef DEBUG
+    ~OFCmdOption()
+    {
+        if (!Checked && (LongOption.length() > 0) && (LongOption != "--help"))
+            cerr << "WARNING: option " << LongOption << " has never been checked !" << endl;
+    }
+#endif
 
     /// long option name
     const OFString LongOption;
@@ -112,13 +123,60 @@ struct OFCmdOption
     const OFString ValueDescription;
     /// description of command line option
     const OFString OptionDescription;
+#ifdef DEBUG
+    OFBool Checked;
+#endif
 };
 
 
-/** Internal structure to handle command line parameters.
+/** Internal structure to store valid command line parameters.
  *  Parameters are all command line arguments which are no options (e.g. file names).
  */
 struct OFCmdParam
+{
+
+    /** mode specifying parameter's cardinality
+     */
+    enum E_ParamMode
+    {
+        /// parameter is required (# = 1)
+        PM_Mandatory,
+        /// parameter is optional (# = 0..1)
+        PM_Optional,
+        /// parameter is required, more than one value is allowed (# = 1..n)
+        PM_MultiMandatory,
+        /// parameter is optional, more than one value is allowed (# = 0..n)
+        PM_MultiOptional
+    };
+
+    /** constructor
+     *
+     ** @param  param  parameter name
+     *  @param  descr  parameter description
+     *  @param  mode   parameter's cardinality mode
+     */
+    OFCmdParam(const char *param,
+               const char *descr,
+               const E_ParamMode mode)
+      : ParamName(param),
+        ParamDescription(descr),
+        ParamMode(mode)
+    {
+    }
+
+    /// parameter name
+    const OFString ParamName;
+    /// parameter description
+    const OFString ParamDescription;
+    /// parameter's cardinality mode
+    const E_ParamMode ParamMode;
+};
+
+
+/** Internal structure to handle position of command line parameters.
+ *  Parameters are all command line arguments which are no options (e.g. file names).
+ */
+struct OFCmdParamPos
 {
 
     /** constructor
@@ -127,9 +185,9 @@ struct OFCmdParam
      *  @param  optIter   iterator pointing to first option iterator in front of the parameter
      *  @param  optCount  number of options in front of the parameter
      */
-    OFCmdParam(const OFListIterator(OFString) &parIter,
-               const OFListIterator(OFListIterator_OFString) &optIter,
-               const int optCount)
+    OFCmdParamPos(const OFListIterator(OFString) &parIter,
+                  const OFListIterator(OFListIterator_OFString) &optIter,
+                  const int optCount)
       : ParamIter(parIter),
         OptionIter(optIter),
         OptionCount(optCount)
@@ -170,7 +228,11 @@ class OFCommandLine
         /// unknown option detected
         PS_UnknownOption,
         /// missing value(s) for an option
-        PS_MissingValue
+        PS_MissingValue,
+        /// missing parameter
+        PS_MissingParameter,
+        /// too many parameters
+        PS_TooManyParameters
     };
 
 
@@ -251,6 +313,12 @@ class OFCommandLine
     void setOptionColumns(const int longCols,
                           const int shortCols);
 
+    /** sets default width of param column
+     *
+     *  @param  column  minimum width of the long option column
+     */
+    void setParamColumn(const int column);
+
     /** adds an item to the list of valid options
      *  (full version)
      *
@@ -329,6 +397,26 @@ class OFCommandLine
                      const int longCols = 0,
                      const int shortCols = 0);
 
+    /** adds an item to the list of valid parameters
+     *  (full version)
+     *
+     ** @param  param  parameter name
+     *  @param  descr  parameter description
+     *  @param  mode   parameter's cardinality (see above)
+     */
+    OFBool addParam(const char *param,
+                    const char *descr,
+                    const OFCmdParam::E_ParamMode mode = OFCmdParam::PM_Mandatory);
+
+    /** adds an item to the list of valid parameters
+     *  (without description)
+     *
+     ** @param  param  parameter name
+     *  @param  mode   parameter's cardinality (see above)
+     */
+    OFBool addParam(const char *param,
+                    const OFCmdParam::E_ParamMode mode = OFCmdParam::PM_Mandatory);
+
 
  // --- get information
 
@@ -348,11 +436,6 @@ class OFCommandLine
     int getParamCount() const
     {
         return ParamPosList.size();
-    }
-    
-    OFBool hasOptions() const
-    {
-        return !ValidOptionList.empty();
     }
 
 
@@ -468,7 +551,11 @@ class OFCommandLine
 
  // --- get usage/status strings
 
+    void getSyntaxString(OFString &string) const;
+
     void getOptionString(OFString &string) const;
+
+    void getParamString(OFString &string) const;
 
     void getStatusString(const E_ParseStatus status,
                          OFString &string);
@@ -491,7 +578,7 @@ class OFCommandLine
                        const OFBool mode = OFTrue) const;
 
     OFBool findParam(int pos,
-                     OFListIterator(OFCmdParam *) &pos_iter);
+                     OFListIterator(OFCmdParamPos *) &pos_iter);
 
     const OFCmdOption *findCmdOption(const char *option) const;
     
@@ -508,15 +595,20 @@ class OFCommandLine
     void expandWildcards(const char *param);
 #endif
 
+    E_ParseStatus checkParamCount();
+
+    OFBool getMissingParam(OFString &arg);
+    
 
  private:
 
     OFList<OFCmdOption *> ValidOptionList;
+    OFList<OFCmdParam *> ValidParamList;
 
     OFList<OFString> ArgumentList;
     OFListIterator(OFString) ArgumentIterator;
     
-    OFList<OFCmdParam *> ParamPosList;
+    OFList<OFCmdParamPos *> ParamPosList;
     OFList<OFListIterator_OFString> OptionPosList;
     OFListIterator(OFListIterator_OFString) OptionPosIterator;
     OFListIterator(OFListIterator_OFString) OptionBlockIterator;
@@ -526,6 +618,14 @@ class OFCommandLine
 
     int LongColumn;
     int ShortColumn;
+    int ParamColumn;
+    
+    int MinParamCount;
+    int MaxParamCount;
+
+#ifdef DEBUG
+    OFCmdParam::E_ParamMode LastParamMode;
+#endif
 };
 
 
@@ -536,7 +636,12 @@ class OFCommandLine
  *
  * CVS/RCS Log:
  * $Log: ofcmdln.h,v $
- * Revision 1.10  1999-04-26 16:32:47  joergr
+ * Revision 1.11  1999-04-27 16:23:11  joergr
+ * Introduced list of valid parameters used for syntax output and error
+ * checking.
+ * Added some useful debugging checks.
+ *
+ * Revision 1.10  1999/04/26 16:32:47  joergr
  * Added support to define minimum width of short and long option columns.
  * Removed bug: empty parameters have always been interpreted as options.
  * Enhanced support of wildcard expansion under Windows (now very similar
