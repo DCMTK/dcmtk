@@ -21,9 +21,9 @@
  *
  *  Purpose: DicomColorPixelTemplate (Header)
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-12-23 11:43:03 $
- *  CVS/RCS Revision: $Revision: 1.21 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2004-01-21 12:59:43 $
+ *  CVS/RCS Revision: $Revision: 1.22 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -157,7 +157,7 @@ class DiColorPixelTemplate
      */
     inline void *getData() const
     {
-        return OFstatic_cast(void *, Data);
+        return OFconst_cast(void *, OFstatic_cast(const void *, Data));
     }
 
     /** get reference to pointer to pixel data
@@ -552,7 +552,10 @@ class DiColorPixelTemplate
  *
  * CVS/RCS Log:
  * $Log: dicopxt.h,v $
- * Revision 1.21  2003-12-23 11:43:03  joergr
+ * Revision 1.22  2004-01-21 12:59:43  meichel
+ * Added OFconst_cast, needed for Visual C++ 6
+ *
+ * Revision 1.21  2003/12/23 11:43:03  joergr
  * Adapted type casts to new-style typecast operators defined in ofcast.h.
  * Removed leading underscore characters from preprocessor symbols (reserved
  * symbols). Updated copyright header. Added missing API documentation.
