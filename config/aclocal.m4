@@ -6,7 +6,7 @@ dnl
 dnl Authors: Andreas Barth, Marco Eichelberg
 dnl
 dnl Last Update:  $Author: meichel $
-dnl Revision:     $Revision: 1.33 $
+dnl Revision:     $Revision: 1.34 $
 dnl Status:       $State: Exp $
 dnl
 
@@ -1411,8 +1411,8 @@ $ac_includes
 #ifdef __cplusplus
 }
 #endif
-],[$1 p; void *v = p],
-eval "ac_cv_pointer_type_$tmp_save_1=yes", eval "ac_cv_pointer_type_$tmp_save_1=no")])dnl
+],[$1 p; unsigned long l = p],
+eval "ac_cv_pointer_type_$tmp_save_1=no", eval "ac_cv_pointer_type_$tmp_save_1=yes")])dnl
 if eval "test \"`echo '$''{'ac_cv_pointer_type_$tmp_save_1'}'`\" = yes"; then
   AC_MSG_RESULT(yes)
 changequote(, )dnl
@@ -1427,7 +1427,12 @@ fi
 
 dnl
 dnl $Log: aclocal.m4,v $
-dnl Revision 1.33  2004-08-03 16:28:40  meichel
+dnl Revision 1.34  2004-08-04 14:50:45  meichel
+dnl Fixed configure test that checks if pthread_t is a pointer type to
+dnl   correctly work on compilers such as gcc 2.95 where assignment from
+dnl   int to void pointer does not cause a compiler error.
+dnl
+dnl Revision 1.33  2004/08/03 16:28:40  meichel
 dnl Added configure test to check if pthread_t is a pointer type
 dnl
 dnl Revision 1.32  2004/08/03 11:29:04  meichel

@@ -13991,7 +13991,7 @@ $ac_includes
 int
 main ()
 {
-pthread_t p; void *v = p
+pthread_t p; unsigned long l = p
   ;
   return 0;
 }
@@ -14008,11 +14008,11 @@ if { (eval echo "$as_me:$LINENO: \"$ac_compile\"") >&5
   ac_status=$?
   echo "$as_me:$LINENO: \$? = $ac_status" >&5
   (exit $ac_status); }; }; then
-  eval "ac_cv_pointer_type_$tmp_save_1=yes"
+  eval "ac_cv_pointer_type_$tmp_save_1=no"
 else
   echo "$as_me: failed program was:" >&5
 cat conftest.$ac_ext >&5
-eval "ac_cv_pointer_type_$tmp_save_1=no"
+eval "ac_cv_pointer_type_$tmp_save_1=yes"
 fi
 rm -f conftest.$ac_objext conftest.$ac_ext
 fi
