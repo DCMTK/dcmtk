@@ -11,9 +11,9 @@
 **
 **
 ** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1997-05-16 08:31:28 $
+** Update Date:		$Date: 1997-05-22 16:54:20 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcvrobow.cc,v $
-** CVS/RCS Revision:	$Revision: 1.12 $
+** CVS/RCS Revision:	$Revision: 1.13 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -132,8 +132,8 @@ void DcmOtherByteOtherWord::print(ostream & out, const BOOL showFullData,
 	    if (evr == EVR_OW)
 	    {
 		maxCount = 
-		    !showFullData && DCM_OptPrintLineLength/5 < Length ? 
-		    DCM_OptPrintLineLength/5 : Length;
+		    !showFullData && DCM_OptPrintLineLength/5 < Length/sizeof(Uint16) ? 
+		    DCM_OptPrintLineLength/5 : Length/sizeof(Uint8);
 		tmp = ch_words = new char[maxCount*5+6];
 	    }
 	    else
@@ -146,10 +146,7 @@ void DcmOtherByteOtherWord::print(ostream & out, const BOOL showFullData,
 		
 	    if (tmp)
 	    {
-		const size_t bytePerValue = 
-		    (evr == EVR_OW ? sizeof(Uint16) : sizeof(Uint8));
-
-		for (unsigned int i=0; i<maxCount/bytePerValue; i++)
+		for (unsigned int i=0; i<maxCount; i++)
 		{
 		    if (evr == EVR_OW)
 		    {
@@ -165,7 +162,7 @@ void DcmOtherByteOtherWord::print(ostream & out, const BOOL showFullData,
 		    }
 		}
 
-		if (maxCount/bytePerValue> 0 )
+		if (maxCount > 0 )
 		    tmp--;
 		*tmp = '\0';
 		if (maxCount < Length)
@@ -391,7 +388,10 @@ E_Condition DcmOtherByteOtherWord::write(DcmStream & outStream,
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrobow.cc,v $
-** Revision 1.12  1997-05-16 08:31:28  andreas
+** Revision 1.13  1997-05-22 16:54:20  andreas
+** - Corrected wrong output length in print routine
+**
+** Revision 1.12  1997/05/16 08:31:28  andreas
 ** - Revised handling of GroupLength elements and support of
 **   DataSetTrailingPadding elements. The enumeratio E_GrpLenEncoding
 **   got additional enumeration values (for a description see dctypes.h).
