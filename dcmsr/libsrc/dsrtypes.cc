@@ -23,8 +23,8 @@
  *    classes: DSRTypes
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2004-01-20 15:37:39 $
- *  CVS/RCS Revision: $Revision: 1.42 $
+ *  Update Date:      $Date: 2004-02-11 15:58:32 $
+ *  CVS/RCS Revision: $Revision: 1.43 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -253,7 +253,7 @@ static const S_DocumentTypeNameMap DocumentTypeNameMap[] =
     {DSRTypes::DT_KeyObjectDoc,     UID_KeyObjectSelectionDocument,  "KO", "Key Object Selection Document"},
     {DSRTypes::DT_MammographyCadSR, UID_MammographyCADSR,            "SR", "Mammography CAD SR"},
     {DSRTypes::DT_ChestCadSR,       UID_ChestCADSR,                  "SR", "Chest CAD SR"},
-    {DSRTypes::DT_ProcedureLog,     UID_ProcedureLog,                "SR", "Procedure Log"}
+    {DSRTypes::DT_ProcedureLog,     UID_ProcedureLogStorage,         "SR", "Procedure Log"}
 };
 
 
@@ -1457,7 +1457,10 @@ OFCondition DSRTypes::appendStream(ostream &mainStream,
 /*
  *  CVS/RCS Log:
  *  $Log: dsrtypes.cc,v $
- *  Revision 1.42  2004-01-20 15:37:39  joergr
+ *  Revision 1.43  2004-02-11 15:58:32  joergr
+ *  Renamed UID_ProcedureLog to UID_ProcedureLogStorage.
+ *
+ *  Revision 1.42  2004/01/20 15:37:39  joergr
  *  Added new command line option which allows to write the item identifier "id"
  *  (XML attribute) even if it is not required (because the item is not referenced
  *  by any other item). Useful for debugging purposes.
