@@ -9,10 +9,10 @@
 ** Purpose:
 ** Implementation of class DcmElement
 **
-** Last Update:		$Author: hewett $
-** Update Date:		$Date: 1996-03-11 13:11:05 $
+** Last Update:		$Author: andreas $
+** Update Date:		$Date: 1996-04-16 16:04:05 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcelem.cc,v $
-** CVS/RCS Revision:	$Revision: 1.6 $
+** CVS/RCS Revision:	$Revision: 1.7 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -326,7 +326,9 @@ void * DcmElement::getValue(const E_ByteOrder newByteOrder)
 				    Tag->getVR().getValueWidth());
 	    fByteOrder = newByteOrder;
 	}
-	value = fValue;
+
+	if (errorFlag == EC_Normal)
+	    value = fValue;
     }
     return value;
 }
@@ -518,7 +520,7 @@ E_Condition DcmElement::put(const Float64 /*val*/)
 }
 
 
-E_Condition DcmElement::put(const DcmTag & /*val*/)
+E_Condition DcmElement::put(const DcmTagKey & /*val*/)
 {
     errorFlag = EC_IllegalCall;
     return errorFlag;
@@ -567,7 +569,7 @@ E_Condition DcmElement::put(const Float64 /*val*/, const unsigned long /*pos*/)
 }
 
 
-E_Condition DcmElement::put(const DcmTag & /*val*/, const unsigned long /*pos*/)
+E_Condition DcmElement::put(const DcmTagKey & /*val*/, const unsigned long /*pos*/)
 {
     errorFlag = EC_IllegalCall;
     return errorFlag;
@@ -637,13 +639,16 @@ E_Condition DcmElement::putValue(const void * newValue,
     fLoadValue = NULL;
 
     Length = length;
-    fValue = this -> newValueField();
 
-    if (fValue)
-	memcpy(fValue, newValue, length);
-    else
-	errorFlag = EC_MemoryExhausted;
+    if (length != 0)
+    {
+	fValue = this -> newValueField();
 
+	if (fValue)
+	    memcpy(fValue, newValue, length);
+	else
+	    errorFlag = EC_MemoryExhausted;
+    }
     fByteOrder = gLocalByteOrder;
     return errorFlag;
 }
@@ -776,7 +781,11 @@ E_Condition DcmElement::write(DcmStream & outStream,
 /*
 ** CVS/RCS Log:
 ** $Log: dcelem.cc,v $
-** Revision 1.6  1996-03-11 13:11:05  hewett
+** Revision 1.7  1996-04-16 16:04:05  andreas
+** - new put parameter DcmTagKey for DcmAttributeTag elements
+** - better support for NULL element value
+**
+** Revision 1.6  1996/03/11 13:11:05  hewett
 ** Changed prototypes to allow get() and put() of char strings.
 **
 ** Revision 1.5  1996/01/09 11:06:45  andreas
