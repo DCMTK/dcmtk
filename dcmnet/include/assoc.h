@@ -67,10 +67,10 @@
 **	Module Prefix: ASC_
 **
 **
-** Last Update:		$Author: hewett $
-** Update Date:		$Date: 1996-04-25 16:06:27 $
+** Last Update:		$Author: meichel $
+** Update Date:		$Date: 1997-05-05 10:30:08 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/include/Attic/assoc.h,v $
-** CVS/RCS Revision:	$Revision: 1.2 $
+** CVS/RCS Revision:	$Revision: 1.3 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -132,7 +132,7 @@ typedef struct {
 
 /* not defined anywhere (I think) but are hard limitations for now */
 #define DICOM_MAXPRESENTATIONCONTEXTS	32
-#define DICOM_MAXTRANSFERSYNTAXES	5
+#define DICOM_MAXTRANSFERSYNTAXES	25
 
 
 typedef DUL_PRESENTATIONCONTEXTID T_ASC_PresentationContextID;
@@ -483,7 +483,12 @@ ASC_destroyAssociation(T_ASC_Association ** association);
 /*
 ** CVS Log
 ** $Log: assoc.h,v $
-** Revision 1.2  1996-04-25 16:06:27  hewett
+** Revision 1.3  1997-05-05 10:30:08  meichel
+** Fixed bugs related to association negotiation in the DICOM upper layer module.
+** Added application tests/assctest.cc to examine handling of large A-ASSOCIATE
+** PDUs. See CHANGES file for details.
+**
+** Revision 1.2  1996/04/25 16:06:27  hewett
 ** Replaced declarations of DIC_UL with unsigned long.
 **
 ** Revision 1.1.1.1  1996/03/26 18:38:44  hewett

@@ -46,9 +46,9 @@
 ** Author, Date:	Stephen M. Moore, 15-Apr-93
 ** Intent:		Define tables and provide functions that implement
 **			the DICOM Upper Layer (DUL) finite state machine.
-** Last Update:		$Author: meichel $, $Date: 1996-12-03 15:29:49 $
+** Last Update:		$Author: meichel $, $Date: 1997-05-05 10:30:16 $
 ** Source File:		$RCSfile: dulfsm.cc,v $
-** Revision:		$Revision: 1.8 $
+** Revision:		$Revision: 1.9 $
 ** Status:		$State: Exp $
 */
 
@@ -212,7 +212,7 @@ readPDUHead(PRIVATE_ASSOCIATIONKEY ** association,
 	    unsigned long *PDULength);
 static CONDITION
 readPDU(PRIVATE_ASSOCIATIONKEY ** association, DUL_BLOCKOPTIONS block,
-	int timeout, unsigned char *buffer, unsigned long maxLength,
+	int timeout, unsigned char **buffer,
 	unsigned char *pduType, unsigned char *pduReserved,
 	unsigned long *pduLength);
 static CONDITION
@@ -904,7 +904,7 @@ AE_3_AssociateConfirmationAccept(PRIVATE_NETWORKKEY ** /*network*/,
     CONDITION
 	cond;
     unsigned char
-        buffer[8192],
+        *buffer=NULL,
         pduType,
         pduReserve;
     unsigned long
@@ -922,16 +922,23 @@ AE_3_AssociateConfirmationAccept(PRIVATE_NETWORKKEY ** /*network*/,
 	* scuscpRole;
 
     service = (DUL_ASSOCIATESERVICEPARAMETERS *) params;
-    cond = readPDU(association, DUL_BLOCK, 0, buffer, sizeof(buffer),
+    cond = readPDU(association, DUL_BLOCK, 0, &buffer,
 		   &pduType, &pduReserve, &pduLength);
-    if (cond != DUL_NORMAL)
-	return cond;
+ 
+    if (cond != DUL_NORMAL) 
+    {
+       if (buffer) free(buffer);
+       return cond;
+    }
+ 
+    /* cond is DUL_NORMAL so we know that buffer exists */
 
     if (debug)
 	dump_pdu("Associate Accept", buffer, pduLength + 6);
 
     if (pduType == DUL_TYPEASSOCIATEAC) {
 	cond = parseAssociate(buffer, pduLength, &assoc);
+        /* free(buffer); */
 	if (debug) {
 	    (void) fflush(DEBUG_DEVICE);
 	}
@@ -1176,7 +1183,7 @@ AE_6_ExamineAssociateRequest(PRIVATE_NETWORKKEY ** /*network*/,
     CONDITION
 	cond;
     unsigned char
-        buffer[8192],
+        *buffer=NULL,
         pduType,
         pduReserve;
     unsigned long
@@ -1186,10 +1193,17 @@ AE_6_ExamineAssociateRequest(PRIVATE_NETWORKKEY ** /*network*/,
 
     (*association)->timerStart = 0;
     service = (DUL_ASSOCIATESERVICEPARAMETERS *) params;
-    cond = readPDU(association, DUL_BLOCK, 0, buffer, sizeof(buffer),
+    cond = readPDU(association, DUL_BLOCK, 0, &buffer,
 		   &pduType, &pduReserve, &pduLength);
-    if (cond != DUL_NORMAL)
-	return cond;
+ 
+    if (cond != DUL_NORMAL) 
+    {
+       if (buffer) free(buffer);
+       return cond;
+    }
+ 
+    /* cond is DUL_NORMAL so we know that buffer exists */
+
 #ifdef BLOG
     memcpy((*association)->fragmentBuffer, buffer, pduLength);
     (*association)->nextPDUType = pduType;
@@ -1202,6 +1216,8 @@ AE_6_ExamineAssociateRequest(PRIVATE_NETWORKKEY ** /*network*/,
 	if (debug)
 	    dump_pdu("Associate Request", buffer, pduLength + 6);
 	cond = parseAssociate(buffer, pduLength, &assoc);
+        /* free(buffer); */
+
 	if (debug) {
 	    (void) fflush(DEBUG_DEVICE);
 	}
@@ -2414,18 +2430,18 @@ sendAssociationRQTCP(PRIVATE_NETWORKKEY ** /*network*/,
 				 &associateRequest);
     if (cond != DUL_NORMAL)
 	return cond;
-    if (associateRequest.length + 2 <= sizeof(buffer))
+    if (associateRequest.length + 6 <= sizeof(buffer))
 	b = buffer;
     else {
-	b = (unsigned char*)malloc(associateRequest.length + 2);
+	b = (unsigned char*)malloc(associateRequest.length + 6);
 	if (b == NULL) {
 	    return COND_PushCondition(DUL_MALLOCERROR,
 		       DUL_Message(DUL_MALLOCERROR), "sendAssociationRQTCP",
-				      associateRequest.length + 2);
+				      associateRequest.length + 6);
 	}
     }
     cond = streamAssociatePDU(&associateRequest, b,
-			      associateRequest.length + 2, &length);
+			      associateRequest.length + 6, &length);
     destroyPresentationContextList(&associateRequest.presentationContextList);
     destroyUserInformationLists(&associateRequest.userInfo);
     if (cond != DUL_NORMAL)
@@ -3132,8 +3148,7 @@ PRV_NextPDUType(PRIVATE_ASSOCIATIONKEY ** association, DUL_BLOCKOPTIONS block,
 **	association	Handle to the Association
 **	block		Blocking/non-blocking options for reading
 **	timeout		Timeout interval for reading
-**	buffer		Buffer holding the PDU
-**	maxLength	Maximum allowable length of the body
+**	buffer		Buffer holding the PDU (returned to the caller)
 **	PDUType		Type of the PDU (returned to the caller)
 **	PDUReserved	Reserved field of the PDU (returned to caller)
 **	PDULength	Length of PDU read (returned to caller)
@@ -3148,8 +3163,13 @@ PRV_NextPDUType(PRIVATE_ASSOCIATIONKEY ** association, DUL_BLOCKOPTIONS block,
 **	DUL_READTIMEOUT
 **	DUL_UNRECOGNIZEDPDUTYPE
 **	DUL_UNSUPPORTEDNETWORK
+**	DUL_MALLOCERROR
 **
 ** Notes:
+**    Interface changed 970428 by meichel.
+**    The buffer is allocated (malloc) when the PDU size is known.
+**    If malloc fails, DUL_MALLOCERROR is returned.
+**    Otherwise, the buffer must be released (free) by the caller!
 **
 ** Algorithm:
 **	Description of the algorithm (optional) and any other notes.
@@ -3157,14 +3177,14 @@ PRV_NextPDUType(PRIVATE_ASSOCIATIONKEY ** association, DUL_BLOCKOPTIONS block,
 
 static CONDITION
 readPDU(PRIVATE_ASSOCIATIONKEY ** association, DUL_BLOCKOPTIONS block,
-	int timeout, unsigned char *buffer, unsigned long maxLength,
+	int timeout, unsigned char **buffer, 
 	unsigned char *pduType, unsigned char *pduReserved,
 	unsigned long *pduLength)
 {
-    CONDITION
-    cond;
+    CONDITION cond;
+    unsigned long maxLength;
 
-
+    *buffer = NULL;
     if ((*association)->inputPDU == NO_PDU) {
 	cond = readPDUHead(association, (*association)->pduHead,
 			   sizeof((*association)->pduHead),
@@ -3175,14 +3195,21 @@ readPDU(PRIVATE_ASSOCIATIONKEY ** association, DUL_BLOCKOPTIONS block,
 	    return cond;
 	(*association)->inputPDU = PDU_HEAD;
     }
-    (void) memcpy(buffer, (*association)->pduHead,
-		  sizeof((*association)->pduHead));
-    cond = readPDUBody(association, block, timeout,
-		       buffer + sizeof((*association)->pduHead),
-		       maxLength - sizeof((*association)->pduHead),
-		       pduType, pduReserved, pduLength);
+
+    maxLength = ((*association)->nextPDULength)+100;
+    *buffer = (unsigned char *)malloc(maxLength);
+    if (*buffer)
+    {
+      (void) memcpy(*buffer, (*association)->pduHead, sizeof((*association)->pduHead));
+      cond = readPDUBody(association, block, timeout,
+        (*buffer) + sizeof((*association)->pduHead),
+        maxLength - sizeof((*association)->pduHead),
+        pduType, pduReserved, pduLength);
+    } else cond = COND_PushCondition(DUL_MALLOCERROR,
+	DUL_Message(DUL_MALLOCERROR), "readPDU", maxLength);
     return cond;
 }
+
 
 /* readPDUHead
 **
@@ -3242,10 +3269,12 @@ readPDUHead(PRIVATE_ASSOCIATIONKEY ** association,
 	*PDUType = (*association)->nextPDUType;
 	*PDUReserved = (*association)->nextPDUReserved;
 	*PDULength = (*association)->nextPDULength;
-	if (*PDULength > (*association)->maxPDVInput)
-	    cond = COND_PushCondition(DUL_ILLEGALPDULENGTH,
-			      DUL_Message(DUL_ILLEGALPDULENGTH), *PDULength,
-				(*association)->maxPDVInput, "readPDUHead");
+
+        /* bugfix - thanks to B. Gorissen, Philips Medical Systems */
+        if ((*PDUType == DUL_TYPEDATA) && (*PDULength > (*association)->maxPDVInput))
+	  cond = COND_PushCondition(DUL_ILLEGALPDULENGTH,
+            DUL_Message(DUL_ILLEGALPDULENGTH), *PDULength,
+	    (*association)->maxPDVInput, "readPDUHead");
     }
     return cond;
 }
@@ -3433,7 +3462,7 @@ readPDUHeadTCP(PRIVATE_ASSOCIATIONKEY ** association,
 static CONDITION
 readPDUBodyTCP(PRIVATE_ASSOCIATIONKEY ** association,
 	       DUL_BLOCKOPTIONS block, int timeout,
-	       unsigned char *buffer, unsigned long /*maxLength*/,
+	       unsigned char *buffer, unsigned long maxLength,
 	       unsigned char *pduType, unsigned char *pduReserved,
 	       unsigned long *pduLength)
 {
@@ -3458,9 +3487,17 @@ readPDUBodyTCP(PRIVATE_ASSOCIATIONKEY ** association,
     if (timeout == PRV_DEFAULTTIMEOUT)
 	timeout = (*association)->timeout;
 
-    cond = defragmentTCP((*association)->networkSpecific.TCP.socket,
+    /* bugfix by meichel 97/04/28: test if PDU fits into buffer */
+    if (*pduLength > maxLength)
+    {
+      cond = COND_PushCondition(DUL_ILLEGALPDULENGTH,
+			DUL_Message(DUL_ILLEGALPDULENGTH));
+
+    } else {
+      cond = defragmentTCP((*association)->networkSpecific.TCP.socket,
 			 block, (*association)->timerStart, timeout,
 			 buffer, (*association)->nextPDULength, &length);
+    }
     return cond;
 }
 
@@ -4015,7 +4052,12 @@ DULPRV_translateAssocReq(unsigned char *buffer,
 /*
 ** CVS Log
 ** $Log: dulfsm.cc,v $
-** Revision 1.8  1996-12-03 15:29:49  meichel
+** Revision 1.9  1997-05-05 10:30:16  meichel
+** Fixed bugs related to association negotiation in the DICOM upper layer module.
+** Added application tests/assctest.cc to examine handling of large A-ASSOCIATE
+** PDUs. See CHANGES file for details.
+**
+** Revision 1.8  1996/12/03 15:29:49  meichel
 ** Added support for HP-UX 9.05 systems using GCC 2.7.2.1
 **
 ** Revision 1.7  1996/09/27 08:38:41  hewett
