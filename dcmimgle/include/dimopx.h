@@ -22,9 +22,9 @@
  *  Purpose: DicomMonochromePixel (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-01-11 09:35:56 $
+ *  Update Date:      $Date: 1999-02-03 17:33:18 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/dimopx.h,v $
- *  CVS/RCS Revision: $Revision: 1.4 $ 
+ *  CVS/RCS Revision: $Revision: 1.5 $ 
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -83,6 +83,11 @@ class DiMonoPixel
                                    double &center,
                                    double &width) = 0;
                                    
+    inline unsigned int getBits() const
+    {
+        return (Modality != NULL) ? Modality->getBits() : 0;
+    }
+
     inline double getAbsMinimum() const
     {
         return (Modality != NULL) ? Modality->getAbsMinimum() : 0;
@@ -135,7 +140,11 @@ class DiMonoPixel
  *
  * CVS/RCS Log:
  * $Log: dimopx.h,v $
- * Revision 1.4  1999-01-11 09:35:56  joergr
+ * Revision 1.5  1999-02-03 17:33:18  joergr
+ * Added member variable and related methods to store number of bits used for
+ * pixel data.
+ *
+ * Revision 1.4  1999/01/11 09:35:56  joergr
  * Corrected some typos and formatting.
  *
  * Revision 1.3  1998/12/22 14:33:45  joergr

@@ -22,9 +22,9 @@
  *  Purpose: DicomMonochromeModality (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1998-12-22 14:31:01 $
+ *  Update Date:      $Date: 1999-02-03 17:30:00 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/dimomod.h,v $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -91,6 +91,11 @@ class DiMonoModality : public DiObjectCounter
         return MaxValue;
     }
     
+    inline unsigned int getBits() const
+    {
+        return Bits;
+    }
+    
     inline double getAbsMinimum() const
     {
         return AbsMinimum;
@@ -149,6 +154,7 @@ class DiMonoModality : public DiObjectCounter
     double MinValue;
     double MaxValue;
 
+    unsigned int Bits;
     double AbsMinimum;
     double AbsMaximum;
     
@@ -174,7 +180,11 @@ class DiMonoModality : public DiObjectCounter
  *
  * CVS/RCS Log:
  * $Log: dimomod.h,v $
- * Revision 1.4  1998-12-22 14:31:01  joergr
+ * Revision 1.5  1999-02-03 17:30:00  joergr
+ * Added member variable and related methods to store number of bits used for
+ * pixel data.
+ *
+ * Revision 1.4  1998/12/22 14:31:01  joergr
  * Changed calculation of AbsMinimum/Maximum.
  * Removed member variable and method for isPotentiallySigned.
  *
