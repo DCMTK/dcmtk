@@ -23,8 +23,8 @@
  *    classes: DSRSpatialCoordinatesValue
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-10-13 07:52:25 $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  Update Date:      $Date: 2000-10-16 12:08:29 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -95,14 +95,14 @@ E_Condition DSRSpatialCoordinatesValue::print(ostream &stream,
 {
     E_Condition result = EC_Normal;
     /* GraphicType */
-    stream << " = " << DSRTypes::graphicTypeToEnumeratedValue(GraphicType);
+    stream << "(" << DSRTypes::graphicTypeToEnumeratedValue(GraphicType);
     /* GraphicData */
     if (!GraphicDataList.isEmpty())
     {
-        stream << ", \"";
+        stream << ",";
         result = GraphicDataList.print(stream, flags);
-        stream << "\"";
     }
+    stream << ")";
     return EC_Normal;
 }
 
@@ -241,7 +241,10 @@ OFBool DSRSpatialCoordinatesValue::checkData(OFConsole *logStream) const
 /*
  *  CVS/RCS Log:
  *  $Log: dsrscovl.cc,v $
- *  Revision 1.1  2000-10-13 07:52:25  joergr
+ *  Revision 1.2  2000-10-16 12:08:29  joergr
+ *  Reformatted print output.
+ *
+ *  Revision 1.1  2000/10/13 07:52:25  joergr
  *  Added new module 'dcmsr' providing access to DICOM structured reporting
  *  documents (supplement 23).  Doc++ documentation not yet completed.
  *

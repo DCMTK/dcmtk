@@ -23,8 +23,8 @@
  *    classes: DSRDocumentTreeNode
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-10-13 07:52:19 $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  Update Date:      $Date: 2000-10-16 12:03:29 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -82,11 +82,9 @@ E_Condition DSRDocumentTreeNode::print(ostream &stream,
 #ifdef DEBUG
     stream << " #" << Ident;
 #endif
+    stream << ":";
     if (ConceptName.isValid())
-    {
-        stream << ": ";
         ConceptName.print(stream, flags & PF_printConceptNameCodes);
-    }
     return EC_Normal;
 }
 
@@ -646,7 +644,10 @@ const OFString &DSRDocumentTreeNode::getRelationshipText(const E_RelationshipTyp
 /*
  *  CVS/RCS Log:
  *  $Log: dsrdoctn.cc,v $
- *  Revision 1.1  2000-10-13 07:52:19  joergr
+ *  Revision 1.2  2000-10-16 12:03:29  joergr
+ *  Reformatted print output.
+ *
+ *  Revision 1.1  2000/10/13 07:52:19  joergr
  *  Added new module 'dcmsr' providing access to DICOM structured reporting
  *  documents (supplement 23).  Doc++ documentation not yet completed.
  *

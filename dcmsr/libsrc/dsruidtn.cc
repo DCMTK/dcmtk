@@ -23,8 +23,8 @@
  *    classes: DSRUIDRefTreeNode
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-10-13 07:52:28 $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  Update Date:      $Date: 2000-10-16 12:10:23 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -67,8 +67,13 @@ OFBool DSRUIDRefTreeNode::isValid() const
 E_Condition DSRUIDRefTreeNode::print(ostream &stream,
                                      const size_t flags) const
 {
-    /* output might be later enhanced/specialized */
-    return DSRDocumentTreeNode::print(stream, flags);
+    E_Condition result = DSRDocumentTreeNode::print(stream, flags);
+    if (result ==EC_Normal)
+    {
+        stream << "=";
+        DSRStringValue::print(stream);
+    }
+    return result;
 }
 
 
@@ -124,7 +129,10 @@ OFBool DSRUIDRefTreeNode::canAddNode(const E_DocumentType /* documentType */,
 /*
  *  CVS/RCS Log:
  *  $Log: dsruidtn.cc,v $
- *  Revision 1.1  2000-10-13 07:52:28  joergr
+ *  Revision 1.2  2000-10-16 12:10:23  joergr
+ *  Reformatted print output.
+ *
+ *  Revision 1.1  2000/10/13 07:52:28  joergr
  *  Added new module 'dcmsr' providing access to DICOM structured reporting
  *  documents (supplement 23).  Doc++ documentation not yet completed.
  *

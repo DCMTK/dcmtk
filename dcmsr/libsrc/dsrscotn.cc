@@ -23,8 +23,8 @@
  *    classes: DSRSCoordTreeNode
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-10-13 07:52:24 $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  Update Date:      $Date: 2000-10-16 12:07:29 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -73,7 +73,10 @@ E_Condition DSRSCoordTreeNode::print(ostream &stream,
 {
     E_Condition result = DSRDocumentTreeNode::print(stream, flags);
     if (result == EC_Normal)
+    {
+        stream << "=";
         result = DSRSpatialCoordinatesValue::print(stream, flags);
+    }
     return result;
 }
 
@@ -135,7 +138,10 @@ OFBool DSRSCoordTreeNode::canAddNode(const E_DocumentType documentType,
 /*
  *  CVS/RCS Log:
  *  $Log: dsrscotn.cc,v $
- *  Revision 1.1  2000-10-13 07:52:24  joergr
+ *  Revision 1.2  2000-10-16 12:07:29  joergr
+ *  Reformatted print output.
+ *
+ *  Revision 1.1  2000/10/13 07:52:24  joergr
  *  Added new module 'dcmsr' providing access to DICOM structured reporting
  *  documents (supplement 23).  Doc++ documentation not yet completed.
  *

@@ -23,8 +23,8 @@
  *    classes: DSRTextTreeNode
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-10-13 07:52:26 $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  Update Date:      $Date: 2000-10-16 12:00:39 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -77,9 +77,9 @@ E_Condition DSRTextTreeNode::print(ostream &stream,
     E_Condition result = DSRDocumentTreeNode::print(stream, flags);
     if (result == EC_Normal)
     {
-        stream << " = ";
+        stream << "=";
         if (flags & PF_shortenLongItemValues)
-            DSRStringValue::print(stream, 40);      // text output is limited to 40 characters
+            DSRStringValue::print(stream, 40);     // text output is limited to 40 characters
         else
             DSRStringValue::print(stream);
     }
@@ -187,7 +187,10 @@ OFBool DSRTextTreeNode::checkValue(const OFString &stringValue) const
 /*
  *  CVS/RCS Log:
  *  $Log: dsrtextn.cc,v $
- *  Revision 1.1  2000-10-13 07:52:26  joergr
+ *  Revision 1.2  2000-10-16 12:00:39  joergr
+ *  Reformatted print output.
+ *
+ *  Revision 1.1  2000/10/13 07:52:26  joergr
  *  Added new module 'dcmsr' providing access to DICOM structured reporting
  *  documents (supplement 23).  Doc++ documentation not yet completed.
  *

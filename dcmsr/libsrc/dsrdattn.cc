@@ -23,8 +23,8 @@
  *    classes: DSRDateTreeNode
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-10-13 07:52:18 $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  Update Date:      $Date: 2000-10-16 12:01:56 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -70,7 +70,7 @@ E_Condition DSRDateTreeNode::print(ostream &stream,
     E_Condition result = DSRDocumentTreeNode::print(stream, flags);
     if (result == EC_Normal)
     {
-        stream << " = ";
+        stream << "=";
         DSRStringValue::print(stream);
     }
     return result;
@@ -129,7 +129,10 @@ OFBool DSRDateTreeNode::canAddNode(const E_DocumentType /* documentType */,
 /*
  *  CVS/RCS Log:
  *  $Log: dsrdattn.cc,v $
- *  Revision 1.1  2000-10-13 07:52:18  joergr
+ *  Revision 1.2  2000-10-16 12:01:56  joergr
+ *  Reformatted print output.
+ *
+ *  Revision 1.1  2000/10/13 07:52:18  joergr
  *  Added new module 'dcmsr' providing access to DICOM structured reporting
  *  documents (supplement 23).  Doc++ documentation not yet completed.
  *

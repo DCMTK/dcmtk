@@ -23,8 +23,8 @@
  *    classes: DSRCodeTreeNode
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-10-13 07:52:16 $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  Update Date:      $Date: 2000-10-16 12:01:55 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -62,7 +62,7 @@ E_Condition DSRCodeTreeNode::print(ostream &stream,
     E_Condition result = DSRDocumentTreeNode::print(stream, flags);
     if (result == EC_Normal)
     {
-        stream << " = ";
+        stream << "=";
         DSRCodedEntryValue::print(stream, OFTrue /* printCodeValue */, OFTrue /* printInvalid */);
     }
     return result;
@@ -172,7 +172,10 @@ OFBool DSRCodeTreeNode::canAddNode(const E_DocumentType documentType,
 /*
  *  CVS/RCS Log:
  *  $Log: dsrcodtn.cc,v $
- *  Revision 1.1  2000-10-13 07:52:16  joergr
+ *  Revision 1.2  2000-10-16 12:01:55  joergr
+ *  Reformatted print output.
+ *
+ *  Revision 1.1  2000/10/13 07:52:16  joergr
  *  Added new module 'dcmsr' providing access to DICOM structured reporting
  *  documents (supplement 23).  Doc++ documentation not yet completed.
  *
