@@ -57,9 +57,9 @@
 **	Module Prefix: DIMSE_
 **
 ** Last Update:		$Author: meichel $
-** Update Date:		$Date: 2000-11-10 16:25:03 $
+** Update Date:		$Date: 2000-11-10 18:07:45 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/libsrc/dimstore.cc,v $
-** CVS/RCS Revision:	$Revision: 1.11 $
+** CVS/RCS Revision:	$Revision: 1.12 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -358,7 +358,7 @@ DIMSE_storeProvider(/* in */
           delete filestream;
           if (cond != DIMSE_NORMAL)
           {
-            if (strcpy(imageFileName, NULL_DEVICE_NAME) != 0) unlink(imageFileName);
+            if (strcmp(imageFileName, NULL_DEVICE_NAME) != 0) unlink(imageFileName);
           }
         }
     } else if (imageDataSet != NULL) {
@@ -401,7 +401,10 @@ DIMSE_storeProvider(/* in */
 /*
 ** CVS Log
 ** $Log: dimstore.cc,v $
-** Revision 1.11  2000-11-10 16:25:03  meichel
+** Revision 1.12  2000-11-10 18:07:45  meichel
+** Mixed up strcmp and strcpy - oops.
+**
+** Revision 1.11  2000/11/10 16:25:03  meichel
 ** Fixed problem with DIMSE routines which attempted to delete /dev/null
 **   under certain circumstances, which could lead to disastrous results if
 **   tools were run with root permissions (what they shouldn't).

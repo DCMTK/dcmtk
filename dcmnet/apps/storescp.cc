@@ -22,9 +22,9 @@
  *  Purpose: Storage Service Class Provider (C-STORE operation)
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-11-10 16:25:04 $
+ *  Update Date:      $Date: 2000-11-10 18:07:43 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/apps/storescp.cc,v $
- *  CVS/RCS Revision: $Revision: 1.33 $
+ *  CVS/RCS Revision: $Revision: 1.34 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1154,11 +1154,11 @@ static CONDITION storeSCP(
       /* remove file */
       if (!opt_ignore)
       {
-        if (strcpy(imageFileName, NULL_DEVICE_NAME) != 0) unlink(imageFileName);
+        if (strcmp(imageFileName, NULL_DEVICE_NAME) != 0) unlink(imageFileName);
       }
 #ifdef _WIN32
     } else if (opt_ignore) {
-        if (strcpy(imageFileName, NULL_DEVICE_NAME) != 0) unlink(imageFileName); // delete the temporary file
+        if (strcmp(imageFileName, NULL_DEVICE_NAME) != 0) unlink(imageFileName); // delete the temporary file
 #endif
     }
 
@@ -1173,7 +1173,10 @@ static CONDITION storeSCP(
 /*
 ** CVS Log
 ** $Log: storescp.cc,v $
-** Revision 1.33  2000-11-10 16:25:04  meichel
+** Revision 1.34  2000-11-10 18:07:43  meichel
+** Mixed up strcmp and strcpy - oops.
+**
+** Revision 1.33  2000/11/10 16:25:04  meichel
 ** Fixed problem with DIMSE routines which attempted to delete /dev/null
 **   under certain circumstances, which could lead to disastrous results if
 **   tools were run with root permissions (what they shouldn't).
