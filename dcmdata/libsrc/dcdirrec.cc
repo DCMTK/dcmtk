@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2001, OFFIS
+ *  Copyright (C) 1994-2002, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,10 +21,10 @@
  *
  *  Purpose: class DcmDirectoryRecord
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-10-10 16:39:25 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2002-11-27 12:06:45 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcdirrec.cc,v $
- *  CVS/RCS Revision: $Revision: 1.42 $
+ *  CVS/RCS Revision: $Revision: 1.43 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -33,28 +33,20 @@
 
 #include "osconfig.h"    /* make sure OS specific configuration is included first */
 
-#ifdef HAVE_STDLIB_H
-#ifndef  _BCB4
-/* workaround for bug in Borland C++ Builder 4 */
-BEGIN_EXTERN_C
-#endif
-#include <stdlib.h>
-#ifndef  _BCB4
-END_EXTERN_C
-#endif
-#endif
+#define INCLUDE_CSTDLIB
+#define INCLUDE_CSTDIO
+#define INCLUDE_CSTRING
+#define INCLUDE_CERRNO
+#define INCLUDE_CCTYPE
+#include "ofstdinc.h"
 
 BEGIN_EXTERN_C
-#include <stdio.h>
-#include <errno.h>
-#include <string.h>
 #ifdef HAVE_LIBC_H
 #include <libc.h>
 #endif
 #ifdef HAVE_UNISTD_H
 #include <unistd.h>
 #endif
-#include <ctype.h>
 END_EXTERN_C
 
 #include "ofstream.h"
@@ -1477,7 +1469,10 @@ DcmDirectoryRecord::getRecordsOriginFile()
 /*
  * CVS/RCS Log:
  * $Log: dcdirrec.cc,v $
- * Revision 1.42  2002-10-10 16:39:25  joergr
+ * Revision 1.43  2002-11-27 12:06:45  meichel
+ * Adapted module dcmdata to use of new header file ofstdinc.h
+ *
+ * Revision 1.42  2002/10/10 16:39:25  joergr
  * Fixed bug that prevented old frozen draft SR documents from being recognized
  * in DICOMDIR files.
  * Thanks to Judit Verestoy <JVerestoy@tomtec.de> for the bug report and fix.

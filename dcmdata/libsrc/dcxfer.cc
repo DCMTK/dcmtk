@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2001, OFFIS
+ *  Copyright (C) 1994-2002, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,20 +22,22 @@
  *  Purpose: handling of transfer syntaxes
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-08-27 16:56:01 $
+ *  Update Date:      $Date: 2002-11-27 12:07:01 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcxfer.cc,v $
- *  CVS/RCS Revision: $Revision: 1.19 $
+ *  CVS/RCS Revision: $Revision: 1.20 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
  *
  */
 
-#include <string.h>
-
+#include "osconfig.h"    /* make sure OS specific configuration is included first */
 #include "dcxfer.h"
 #include "dcuid.h"
 #include "dcdebug.h"
+
+#define INCLUDE_CSTRING
+#include "ofstdinc.h"
 
 typedef struct {
     const char          *xferID;
@@ -531,7 +533,10 @@ const E_ByteOrder gLocalByteOrder = FindMachineTransferSyntax();
 /*
  * CVS/RCS Log:
  * $Log: dcxfer.cc,v $
- * Revision 1.19  2002-08-27 16:56:01  meichel
+ * Revision 1.20  2002-11-27 12:07:01  meichel
+ * Adapted module dcmdata to use of new header file ofstdinc.h
+ *
+ * Revision 1.19  2002/08/27 16:56:01  meichel
  * Initial release of new DICOM I/O stream classes that add support for stream
  *   compression (deflated little endian explicit VR transfer syntax)
  *

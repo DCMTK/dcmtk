@@ -21,23 +21,25 @@
  *
  *  Purpose: class DcmUnsignedShort
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-04-25 10:35:04 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2002-11-27 12:07:00 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcvrus.cc,v $
- *  CVS/RCS Revision: $Revision: 1.21 $
+ *  CVS/RCS Revision: $Revision: 1.22 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
  *
  */
 
-#include <stdio.h>
-#include <string.h>
-
+#include "osconfig.h"    /* make sure OS specific configuration is included first */
 #include "ofstream.h"
 #include "dcvrus.h"
 #include "dcdebug.h"
 #include "dcvm.h"
+
+#define INCLUDE_CSTDIO
+#define INCLUDE_CSTRING
+#include "ofstdinc.h"
 
 
 // ********************************
@@ -264,7 +266,10 @@ OFCondition DcmUnsignedShort::verify(const OFBool autocorrect )
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrus.cc,v $
-** Revision 1.21  2002-04-25 10:35:04  joergr
+** Revision 1.22  2002-11-27 12:07:00  meichel
+** Adapted module dcmdata to use of new header file ofstdinc.h
+**
+** Revision 1.21  2002/04/25 10:35:04  joergr
 ** Added getOFString() implementation.
 **
 ** Revision 1.20  2002/04/16 13:43:27  joergr

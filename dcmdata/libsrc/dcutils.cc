@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2001, OFFIS
+ *  Copyright (C) 1994-2002, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose: Helper functions for accessing DICOM datasets
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-08-27 16:55:58 $
+ *  Update Date:      $Date: 2002-11-27 12:06:54 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/Attic/dcutils.cc,v $
- *  CVS/RCS Revision: $Revision: 1.12 $
+ *  CVS/RCS Revision: $Revision: 1.13 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -33,22 +33,6 @@
 
 #include "osconfig.h"    /* make sure OS specific configuration is included first */
 #include "dcutils.h"
-
-#ifdef HAVE_STDLIB_H
-#ifndef  _BCB4
-/* workaround for bug in Borland C++ Builder 4 */
-BEGIN_EXTERN_C
-#endif
-#include <stdlib.h>
-#ifndef  _BCB4
-END_EXTERN_C
-#endif
-#endif
-
-BEGIN_EXTERN_C
-#include <ctype.h>
-END_EXTERN_C
-
 #include "ofstring.h"
 #include "dcitem.h"
 #include "dcvrae.h"
@@ -70,6 +54,10 @@ END_EXTERN_C
 #include "dcvrus.h"
 #include "dcvrsl.h"
 #include "dcvrul.h"
+
+#define INCLUDE_CSTDLIB
+#define INCLUDE_CCTYPE
+#include "ofstdinc.h"
 
 // **********************************************
 
@@ -603,7 +591,10 @@ OFBool deleteAttribute( DcmItem *item, DcmObject *attribute )
 /*
  * CVS/RCS Log:
  * $Log: dcutils.cc,v $
- * Revision 1.12  2002-08-27 16:55:58  meichel
+ * Revision 1.13  2002-11-27 12:06:54  meichel
+ * Adapted module dcmdata to use of new header file ofstdinc.h
+ *
+ * Revision 1.12  2002/08/27 16:55:58  meichel
  * Initial release of new DICOM I/O stream classes that add support for stream
  *   compression (deflated little endian explicit VR transfer syntax)
  *

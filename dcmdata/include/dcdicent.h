@@ -22,9 +22,9 @@
  *  Purpose: Interface for a dictionary entry in the loadable DICOM data dictionary
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-07-23 14:21:25 $
+ *  Update Date:      $Date: 2002-11-27 12:07:21 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcdicent.h,v $
- *  CVS/RCS Revision: $Revision: 1.16 $
+ *  CVS/RCS Revision: $Revision: 1.17 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -35,13 +35,11 @@
 #define DCDICENT_H
 
 #include "osconfig.h"    /* make sure OS specific configuration is included first */
-
-BEGIN_EXTERN_C
-#include <string.h>
-END_EXTERN_C
-
 #include "dctagkey.h"
 #include "dcvr.h"
+
+#define INCLUDE_CSTRING
+#include "ofstdinc.h"
 
 /// constant describing an unlimited VM
 #define DcmVariableVM   -1
@@ -414,7 +412,10 @@ private:
 /*
 ** CVS/RCS Log:
 ** $Log: dcdicent.h,v $
-** Revision 1.16  2002-07-23 14:21:25  meichel
+** Revision 1.17  2002-11-27 12:07:21  meichel
+** Adapted module dcmdata to use of new header file ofstdinc.h
+**
+** Revision 1.16  2002/07/23 14:21:25  meichel
 ** Added support for private tag data dictionaries to dcmdata
 **
 ** Revision 1.15  2002/04/16 13:41:44  joergr

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2001, OFFIS
+ *  Copyright (C) 1994-2002, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,15 +22,16 @@
  *  Purpose: 
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-08-27 16:55:45 $
+ *  Update Date:      $Date: 2002-11-27 12:06:45 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcdictbi.cc,v $
- *  CVS/RCS Revision: $Revision: 1.9 $
+ *  CVS/RCS Revision: $Revision: 1.10 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
  *
  */
 
+#include "osconfig.h"    /* make sure OS specific configuration is included first */
 #include "dcdict.h"
 
 /* There is no builtin data dictionary */
@@ -52,7 +53,10 @@ DcmDataDictionary::loadBuiltinDictionary()
 /*
  * CVS/RCS Log:
  * $Log: dcdictbi.cc,v $
- * Revision 1.9  2002-08-27 16:55:45  meichel
+ * Revision 1.10  2002-11-27 12:06:45  meichel
+ * Adapted module dcmdata to use of new header file ofstdinc.h
+ *
+ * Revision 1.9  2002/08/27 16:55:45  meichel
  * Initial release of new DICOM I/O stream classes that add support for stream
  *   compression (deflated little endian explicit VR transfer syntax)
  *

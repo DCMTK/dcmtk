@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2001, OFFIS
+ *  Copyright (C) 1994-2002, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,22 +21,24 @@
  *
  *  Purpose: class DcmUnsignedLongOffset
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-04-16 13:43:27 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2002-11-27 12:07:00 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcvrulup.cc,v $
- *  CVS/RCS Revision: $Revision: 1.22 $
+ *  CVS/RCS Revision: $Revision: 1.23 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
  *
  */
 
-#include <stdio.h>
-#include <string.h>
-
+#include "osconfig.h"
 #include "ofstream.h"
 #include "dcvrulup.h"
 #include "dcdebug.h"
+
+#define INCLUDE_CSTDIO
+#define INCLUDE_CSTRING
+#include "ofstdinc.h"
 
 
 // ********************************
@@ -177,7 +179,10 @@ OFCondition DcmUnsignedLongOffset::verify(const OFBool autocorrect)
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrulup.cc,v $
-** Revision 1.22  2002-04-16 13:43:27  joergr
+** Revision 1.23  2002-11-27 12:07:00  meichel
+** Adapted module dcmdata to use of new header file ofstdinc.h
+**
+** Revision 1.22  2002/04/16 13:43:27  joergr
 ** Added configurable support for C++ ANSI standard includes (e.g. streams).
 ** Thanks to Andreas Barth <Andreas.Barth@bruker-biospin.de> for his
 ** contribution.

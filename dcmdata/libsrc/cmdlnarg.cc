@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2001, OFFIS
+ *  Copyright (C) 1994-2002, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,10 +22,10 @@
  *  Purpose: Provide prototype of command line argument gathering routine
  *  for OS environments which cannot pass arguments on the command line.
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-04-16 13:43:14 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2002-11-27 12:06:42 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/cmdlnarg.cc,v $
- *  CVS/RCS Revision: $Revision: 1.14 $
+ *  CVS/RCS Revision: $Revision: 1.15 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -46,19 +46,11 @@
 
 #ifdef HAVE_EMPTY_ARGC_ARGV
 
-#ifdef HAVE_STDLIB_H
-#ifndef  _BCB4
-/* workaround for bug in Borland C++ Builder 4 */
-BEGIN_EXTERN_C
-#endif
-#include <stdlib.h>
-#ifndef  _BCB4
-END_EXTERN_C
-#endif
-#endif
+#define INCLUDE_CSTDLIB
+#define INCLUDE_CSTDIO
+#define INCLUDE_CSTRING
+#include "ofstdinc.h"
 
-#include <stdio.h>
-#include <string.h>
 #include "ofstream.h"
 
 void prepareCmdLineArgs(int& argc, char* argv[], 
@@ -93,20 +85,11 @@ void prepareCmdLineArgs(int& argc, char* argv[],
 
 #else
 
-#ifdef HAVE_STDLIB_H
-#ifndef  _BCB4
-/* workaround for bug in Borland C++ Builder 4 */
-BEGIN_EXTERN_C
-#endif
-#include <stdlib.h>
-#ifndef  _BCB4
-END_EXTERN_C
-#endif
-#endif
+#define INCLUDE_CSTDLIB
+#define INCLUDE_CSTDIO
+#define INCLUDE_CSTRING
+#include "ofstdinc.h"
 
-#include <stdio.h>
-#include <string.h>
-#include <string.h>
 #ifdef HAVE_IO_H
 #include <io.h>
 #endif
@@ -166,7 +149,10 @@ void prepareCmdLineArgs(int& /* argc */, char** /* argv */,
 /*
 ** CVS/RCS Log:
 ** $Log: cmdlnarg.cc,v $
-** Revision 1.14  2002-04-16 13:43:14  joergr
+** Revision 1.15  2002-11-27 12:06:42  meichel
+** Adapted module dcmdata to use of new header file ofstdinc.h
+**
+** Revision 1.14  2002/04/16 13:43:14  joergr
 ** Added configurable support for C++ ANSI standard includes (e.g. streams).
 ** Thanks to Andreas Barth <Andreas.Barth@bruker-biospin.de> for his
 ** contribution.

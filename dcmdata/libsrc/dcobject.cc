@@ -24,9 +24,9 @@
  *  DICOM object encoding/decoding, search and lookup facilities.
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-08-27 16:55:52 $
+ *  Update Date:      $Date: 2002-11-27 12:06:49 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcobject.cc,v $
- *  CVS/RCS Revision: $Revision: 1.37 $
+ *  CVS/RCS Revision: $Revision: 1.38 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -43,9 +43,8 @@
 #include "dcistrma.h"    /* for class DcmInputStream */
 #include "dcostrma.h"    /* for class DcmOutputStream */
 
-BEGIN_EXTERN_C
-#include <stdio.h>
-END_EXTERN_C
+#define INCLUDE_CSTDIO
+#include "ofstdinc.h"
 
 /*
 ** Should automatic correction be applied to input data (e.g. stripping
@@ -384,7 +383,10 @@ OFBool DcmObject::containsUnknownVR() const
 /*
  * CVS/RCS Log:
  * $Log: dcobject.cc,v $
- * Revision 1.37  2002-08-27 16:55:52  meichel
+ * Revision 1.38  2002-11-27 12:06:49  meichel
+ * Adapted module dcmdata to use of new header file ofstdinc.h
+ *
+ * Revision 1.37  2002/08/27 16:55:52  meichel
  * Initial release of new DICOM I/O stream classes that add support for stream
  *   compression (deflated little endian explicit VR transfer syntax)
  *

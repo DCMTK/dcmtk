@@ -22,9 +22,9 @@
  *  Purpose: global type and constant definitions
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-07-10 11:45:40 $
+ *  Update Date:      $Date: 2002-11-27 12:07:23 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dctypes.h,v $
- *  CVS/RCS Revision: $Revision: 1.15 $
+ *  CVS/RCS Revision: $Revision: 1.16 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -37,16 +37,9 @@
 #include "osconfig.h"    /* make sure OS specific configuration is included first */
 #include "oftypes.h"
 
-#ifdef HAVE_STDLIB_H
-#ifndef  _BCB4
-/* workaround for bug in Borland C++ Builder 4 */
-BEGIN_EXTERN_C
-#endif
-#include <stdlib.h>
-#ifndef  _BCB4
-END_EXTERN_C
-#endif
-#endif
+#define INCLUDE_CSTDLIB
+#include "ofstdinc.h"
+
 
 typedef Uint8		    BYTE;
 typedef Sint8		    SBYTE;
@@ -124,7 +117,10 @@ const Uint32 DCM_UndefinedLength = 0xffffffff;
 /*
  * CVS/RCS Log:
  * $Log: dctypes.h,v $
- * Revision 1.15  2002-07-10 11:45:40  meichel
+ * Revision 1.16  2002-11-27 12:07:23  meichel
+ * Adapted module dcmdata to use of new header file ofstdinc.h
+ *
+ * Revision 1.15  2002/07/10 11:45:40  meichel
  * Moved definitions for Uint8, Sint8 ... Float64 from dcmdata to ofstd
  *   since these types are not DICOM specific
  *

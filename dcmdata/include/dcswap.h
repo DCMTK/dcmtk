@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2001, OFFIS
+ *  Copyright (C) 1994-2002, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,10 +21,10 @@
  *
  *  Purpose: byte order functions
  *
- *  Last Update:      $Author: wilkens $
- *  Update Date:      $Date: 2001-11-01 14:41:43 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2002-11-27 12:07:23 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcswap.h,v $
- *  CVS/RCS Revision: $Revision: 1.13 $
+ *  CVS/RCS Revision: $Revision: 1.14 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -35,21 +35,13 @@
 #define DCSWAP_H
 
 #include "osconfig.h"    /* make sure OS specific configuration is included first */
-
-#ifdef HAVE_STDLIB_H
-#ifndef  _BCB4
-/* workaround for bug in Borland C++ Builder 4 */
-BEGIN_EXTERN_C
-#endif
-#include <stdlib.h>
-#ifndef  _BCB4
-END_EXTERN_C
-#endif
-#endif
-
 #include "dctypes.h"
 #include "dcerror.h"
 #include "dcxfer.h"
+
+#define INCLUDE_CSTDLIB
+#include "ofstdinc.h"
+
 
 // Swap byteLength bytes, if newByteOrder != oldByteOrder. The bytes are
 // parted in valWidth bytes, each swapped separately
@@ -88,7 +80,10 @@ inline void swap4Bytes(Uint8 * toSwap)
 /*
  * CVS/RCS Log:
  * $Log: dcswap.h,v $
- * Revision 1.13  2001-11-01 14:41:43  wilkens
+ * Revision 1.14  2002-11-27 12:07:23  meichel
+ * Adapted module dcmdata to use of new header file ofstdinc.h
+ *
+ * Revision 1.13  2001/11/01 14:41:43  wilkens
  * Added lots of comments.
  *
  * Revision 1.12  2001/09/25 17:19:29  meichel

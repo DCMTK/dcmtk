@@ -22,9 +22,9 @@
  *  Purpose: Generate a C++ header defining symbolic names for DICOM Tags.
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-07-23 14:21:35 $
+ *  Update Date:      $Date: 2002-11-27 12:07:01 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/mkdeftag.cc,v $
- *  CVS/RCS Revision: $Revision: 1.20 $
+ *  CVS/RCS Revision: $Revision: 1.21 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -33,23 +33,15 @@
 
 #include "osconfig.h"    /* make sure OS specific configuration is included first */
 
-#ifdef HAVE_STDLIB_H
-#ifndef  _BCB4
-/* workaround for bug in Borland C++ Builder 4 */
-BEGIN_EXTERN_C
-#endif
-#include <stdlib.h>
-#ifndef  _BCB4
-END_EXTERN_C
-#endif
-#endif
+#define INCLUDE_CSTDLIB
+#define INCLUDE_CSTDIO
+#define INCLUDE_CSTRING
+#define INCLUDE_CCTYPE
+#include "ofstdinc.h"
 
-#include <stdio.h>
 #ifdef HAVE_LIBC_H
 #include <libc.h>
 #endif
-#include <string.h>
-#include <ctype.h>
 #ifdef HAVE_SYS_UTSNAME_H
 #include <sys/utsname.h>
 #endif
@@ -365,7 +357,10 @@ int main(int argc, char* argv[])
 /*
 ** CVS/RCS Log:
 ** $Log: mkdeftag.cc,v $
-** Revision 1.20  2002-07-23 14:21:35  meichel
+** Revision 1.21  2002-11-27 12:07:01  meichel
+** Adapted module dcmdata to use of new header file ofstdinc.h
+**
+** Revision 1.20  2002/07/23 14:21:35  meichel
 ** Added support for private tag data dictionaries to dcmdata
 **
 ** Revision 1.19  2002/04/11 12:31:03  joergr

@@ -22,10 +22,10 @@
  *  Purpose: DcmOutputFileStream and related classes,
  *    implements streamed output to files.
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-09-19 08:32:28 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2002-11-27 12:06:50 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcostrmf.cc,v $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -37,10 +37,10 @@
 #include "ofconsol.h"
 #include "dcerror.h"
 
-BEGIN_EXTERN_C
-#include <stdio.h>
-#include <errno.h>
-END_EXTERN_C
+#define INCLUDE_CSTDIO
+#define INCLUDE_CERRNO
+#include "ofstdinc.h"
+
 
 DcmFileConsumer::DcmFileConsumer(const char *filename)
 : DcmConsumer()
@@ -121,7 +121,10 @@ DcmOutputFileStream::~DcmOutputFileStream()
 /*
  * CVS/RCS Log:
  * $Log: dcostrmf.cc,v $
- * Revision 1.2  2002-09-19 08:32:28  joergr
+ * Revision 1.3  2002-11-27 12:06:50  meichel
+ * Adapted module dcmdata to use of new header file ofstdinc.h
+ *
+ * Revision 1.2  2002/09/19 08:32:28  joergr
  * Added explicit type casts to keep Sun CC 2.0.1 quiet.
  *
  * Revision 1.1  2002/08/27 16:55:53  meichel

@@ -22,9 +22,9 @@
  *  Purpose: class DcmTime
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-08-27 16:56:00 $
+ *  Update Date:      $Date: 2002-11-27 12:06:59 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcvrtm.cc,v $
- *  CVS/RCS Revision: $Revision: 1.23 $
+ *  CVS/RCS Revision: $Revision: 1.24 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -37,9 +37,8 @@
 #include "dcdebug.h"
 #include "ofstd.h"
 
-BEGIN_EXTERN_C
-#include <stdio.h>
-END_EXTERN_C
+#define INCLUDE_CSTDIO
+#include "ofstdinc.h"
 
 // ********************************
 
@@ -338,7 +337,10 @@ DcmTime::getTimeZoneFromString(
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrtm.cc,v $
-** Revision 1.23  2002-08-27 16:56:00  meichel
+** Revision 1.24  2002-11-27 12:06:59  meichel
+** Adapted module dcmdata to use of new header file ofstdinc.h
+**
+** Revision 1.23  2002/08/27 16:56:00  meichel
 ** Initial release of new DICOM I/O stream classes that add support for stream
 **   compression (deflated little endian explicit VR transfer syntax)
 **

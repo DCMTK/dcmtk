@@ -22,9 +22,9 @@
  *  Purpose: class DcmTag
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-07-23 14:21:34 $
+ *  Update Date:      $Date: 2002-11-27 12:06:52 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dctag.cc,v $
- *  CVS/RCS Revision: $Revision: 1.17 $
+ *  CVS/RCS Revision: $Revision: 1.18 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -37,10 +37,9 @@
 #include "dcdict.h"
 #include "dcdicent.h"
 
-BEGIN_EXTERN_C
-#include <stdio.h>       /* for sscanf() */
-#include <string.h>
-END_EXTERN_C
+#define INCLUDE_CSTDIO
+#define INCLUDE_CSTRING
+#include "ofstdinc.h"
 
 
 DcmTag::DcmTag()
@@ -266,7 +265,10 @@ void DcmTag::updatePrivateCreator(const char *c)
 /*
 ** CVS/RCS Log:
 ** $Log: dctag.cc,v $
-** Revision 1.17  2002-07-23 14:21:34  meichel
+** Revision 1.18  2002-11-27 12:06:52  meichel
+** Adapted module dcmdata to use of new header file ofstdinc.h
+**
+** Revision 1.17  2002/07/23 14:21:34  meichel
 ** Added support for private tag data dictionaries to dcmdata
 **
 ** Revision 1.16  2002/05/24 09:49:44  joergr

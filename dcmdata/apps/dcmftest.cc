@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2001, OFFIS
+ *  Copyright (C) 1994-2002, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose: Test if a file uses DICOM Part 10 format.
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-06-01 15:48:28 $
+ *  Update Date:      $Date: 2002-11-27 12:07:17 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/apps/dcmftest.cc,v $
- *  CVS/RCS Revision: $Revision: 1.14 $
+ *  CVS/RCS Revision: $Revision: 1.15 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -33,24 +33,14 @@
 
 #include "osconfig.h"    /* make sure OS specific configuration is included first */
 
-#include <stdio.h>
-#include <string.h>
+#define INCLUDE_CSTDLIB
+#define INCLUDE_CSTDIO
+#define INCLUDE_CSTRING
+#include "ofstdinc.h"
 
 #ifdef HAVE_LIBC_H
 #include <libc.h>
 #endif
-
-#ifdef HAVE_STDLIB_H
-#ifndef  _BCB4
-/* workaround for bug in Borland C++ Builder 4 */
-BEGIN_EXTERN_C
-#endif
-#include <stdlib.h>
-#ifndef  _BCB4
-END_EXTERN_C
-#endif
-#endif
-
 #ifdef HAVE_UNISTD_H
 #include <unistd.h>
 #endif
@@ -117,7 +107,10 @@ int main(int argc, char *argv[])
 /*
 ** CVS/RCS Log:
 ** $Log: dcmftest.cc,v $
-** Revision 1.14  2001-06-01 15:48:28  meichel
+** Revision 1.15  2002-11-27 12:07:17  meichel
+** Adapted module dcmdata to use of new header file ofstdinc.h
+**
+** Revision 1.14  2001/06/01 15:48:28  meichel
 ** Updated copyright header
 **
 ** Revision 1.13  2000/03/08 16:26:05  meichel

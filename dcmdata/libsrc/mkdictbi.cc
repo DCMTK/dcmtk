@@ -24,9 +24,9 @@
  *  the dcmdata library.  
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-08-02 09:47:33 $
+ *  Update Date:      $Date: 2002-11-27 12:07:02 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/mkdictbi.cc,v $
- *  CVS/RCS Revision: $Revision: 1.23 $
+ *  CVS/RCS Revision: $Revision: 1.24 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -35,24 +35,15 @@
 
 #include "osconfig.h"    /* make sure OS specific configuration is included first */
 
-#include <stdio.h>
+#define INCLUDE_CSTDLIB
+#define INCLUDE_CSTDIO
+#define INCLUDE_CSTRING
+#define INCLUDE_CCTYPE
+#include "ofstdinc.h"
 
-#ifdef HAVE_STDLIB_H
-#ifndef  _BCB4
-/* workaround for bug in Borland C++ Builder 4 */
-BEGIN_EXTERN_C
-#endif
-#include <stdlib.h>
-#ifndef  _BCB4
-END_EXTERN_C
-
-#endif
-#endif
 #ifdef HAVE_LIBC_H
 #include <libc.h>
 #endif
-#include <string.h>
-#include <ctype.h>
 #ifdef HAVE_SYS_UTSNAME_H
 #include <sys/utsname.h>
 #endif
@@ -371,7 +362,10 @@ main(int argc, char* argv[])
 /*
 ** CVS/RCS Log:
 ** $Log: mkdictbi.cc,v $
-** Revision 1.23  2002-08-02 09:47:33  meichel
+** Revision 1.24  2002-11-27 12:07:02  meichel
+** Adapted module dcmdata to use of new header file ofstdinc.h
+**
+** Revision 1.23  2002/08/02 09:47:33  meichel
 ** Fixed bug in mkdictbi which would cause the builtin dictionary to fail
 **   to compile if the last dictionary entry was a private tag.
 **

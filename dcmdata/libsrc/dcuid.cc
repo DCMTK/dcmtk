@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2001, OFFIS
+ *  Copyright (C) 1994-2002, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -24,9 +24,9 @@
  *  routines for finding and creating UIDs.
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-08-27 16:55:14 $
+ *  Update Date:      $Date: 2002-11-27 12:06:53 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcuid.cc,v $
- *  CVS/RCS Revision: $Revision: 1.40 $
+ *  CVS/RCS Revision: $Revision: 1.41 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -47,29 +47,19 @@
 #include <process.h>     /* needed for declaration of getpid() */
 #endif
 
-#ifdef HAVE_STDLIB_H
-#ifndef  _BCB4
-/* workaround for bug in Borland C++ Builder 4 */
+#define INCLUDE_CSTDLIB
+#define INCLUDE_CSTDIO
+#define INCLUDE_CSTRING
+#define INCLUDE_CTIME
+#include "ofstdinc.h"
+
 BEGIN_EXTERN_C
-#endif
-#include <stdlib.h>
-#ifndef  _BCB4
-END_EXTERN_C
-#endif
-#endif
-
-#include <stdio.h>
-#include <string.h>
-#include <time.h>
-
 #ifdef HAVE_UNISTD_H
 #include <unistd.h>
 #endif
 #ifdef HAVE_LIBC_H
 #include <libc.h>
 #endif
-
-BEGIN_EXTERN_C
 #ifdef HAVE_SYS_TIME_H
 #include <sys/time.h>
 #endif
@@ -1075,7 +1065,10 @@ char* dcmGenerateUniqueIdentifier(char* uid, const char* prefix)
 /*
 ** CVS/RCS Log:
 ** $Log: dcuid.cc,v $
-** Revision 1.40  2002-08-27 16:55:14  meichel
+** Revision 1.41  2002-11-27 12:06:53  meichel
+** Adapted module dcmdata to use of new header file ofstdinc.h
+**
+** Revision 1.40  2002/08/27 16:55:14  meichel
 ** Restricted list of storage SOP classes to less than 64 to prevent
 **   presentation context overflow in various tools
 **

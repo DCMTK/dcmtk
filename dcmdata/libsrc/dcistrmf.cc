@@ -22,10 +22,10 @@
  *  Purpose: DcmInputFileStream and related classes,
  *    implements streamed input from files.
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-09-19 08:32:29 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2002-11-27 12:06:48 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcistrmf.cc,v $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -36,10 +36,9 @@
 #include "dcistrmf.h"
 #include "dcerror.h"
 
-BEGIN_EXTERN_C
-#include <stdio.h>
-#include <errno.h>
-END_EXTERN_C
+#define INCLUDE_CSTDIO
+#define INCLUDE_CERRNO
+#include "ofstdinc.h"
 
 DcmFileProducer::DcmFileProducer(const char *filename, Uint32 offset)
 : DcmProducer()
@@ -198,7 +197,10 @@ DcmInputStreamFactory *DcmInputFileStream::newFactory() const
 /*
  * CVS/RCS Log:
  * $Log: dcistrmf.cc,v $
- * Revision 1.2  2002-09-19 08:32:29  joergr
+ * Revision 1.3  2002-11-27 12:06:48  meichel
+ * Adapted module dcmdata to use of new header file ofstdinc.h
+ *
+ * Revision 1.2  2002/09/19 08:32:29  joergr
  * Added explicit type casts to keep Sun CC 2.0.1 quiet.
  *
  * Revision 1.1  2002/08/27 16:55:49  meichel

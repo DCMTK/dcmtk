@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2001, OFFIS
+ *  Copyright (C) 1994-2002, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,20 +22,23 @@
  *  Purpose: class DcmUniqueIdentifier
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-09-25 17:20:01 $
+ *  Update Date:      $Date: 2002-11-27 12:06:59 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcvrui.cc,v $
- *  CVS/RCS Revision: $Revision: 1.19 $
+ *  CVS/RCS Revision: $Revision: 1.20 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
  *
  */
 
-#include <string.h>
-#include <ctype.h>
+#include "osconfig.h"
 #include "dcvrui.h"
 #include "dcuid.h"
 #include "dcdebug.h"
+
+#define INCLUDE_CSTRING
+#define INCLUDE_CCTYPE
+#include "ofstdinc.h"
 
 
 // ********************************
@@ -158,7 +161,10 @@ OFCondition DcmUniqueIdentifier::makeMachineByteString(void)
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrui.cc,v $
-** Revision 1.19  2001-09-25 17:20:01  meichel
+** Revision 1.20  2002-11-27 12:06:59  meichel
+** Adapted module dcmdata to use of new header file ofstdinc.h
+**
+** Revision 1.19  2001/09/25 17:20:01  meichel
 ** Adapted dcmdata to class OFCondition
 **
 ** Revision 1.18  2001/06/01 15:49:21  meichel

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2001, OFFIS
+ *  Copyright (C) 1994-2002, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose: Basis class for dicom tags.
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-11-19 15:23:29 $
+ *  Update Date:      $Date: 2002-11-27 12:06:53 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dctagkey.cc,v $
- *  CVS/RCS Revision: $Revision: 1.9 $
+ *  CVS/RCS Revision: $Revision: 1.10 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -32,8 +32,10 @@
  */
 
 #include "osconfig.h"    /* make sure OS specific configuration is included first */
-#include <stdio.h>
 #include "dctagkey.h"
+
+#define INCLUDE_CSTDIO
+#include "ofstdinc.h"
 
 /*
  * DcmTagKey member functions
@@ -93,7 +95,10 @@ ostream& operator<<(ostream& s, const DcmTagKey& k)
 /*
 ** CVS/RCS Log:
 ** $Log: dctagkey.cc,v $
-** Revision 1.9  2001-11-19 15:23:29  meichel
+** Revision 1.10  2002-11-27 12:06:53  meichel
+** Adapted module dcmdata to use of new header file ofstdinc.h
+**
+** Revision 1.9  2001/11/19 15:23:29  meichel
 ** Cleaned up signature code to avoid some gcc warnings.
 **
 ** Revision 1.8  2001/11/02 13:18:52  meichel

@@ -22,9 +22,9 @@
  *  Purpose: class DcmPixelItem
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-08-27 16:55:55 $
+ *  Update Date:      $Date: 2002-11-27 12:06:51 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcpxitem.cc,v $
- *  CVS/RCS Revision: $Revision: 1.23 $
+ *  CVS/RCS Revision: $Revision: 1.24 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -33,19 +33,10 @@
 
 #include "osconfig.h"    /* make sure OS specific configuration is included first */
 
-#ifdef HAVE_STDLIB_H
-#ifndef  _BCB4
-/* workaround for bug in Borland C++ Builder 4 */
-BEGIN_EXTERN_C
-#endif
-#include <stdlib.h>
-#ifndef  _BCB4
-END_EXTERN_C
-#endif
-#endif
-
-#include <string.h>
-#include <stdio.h>
+#define INCLUDE_CSTDLIB
+#define INCLUDE_CSTDIO
+#define INCLUDE_CSTRING
+#include "ofstdinc.h"
 
 #include "ofstream.h"
 #include "dcpxitem.h"
@@ -205,7 +196,10 @@ DcmPixelItem::writeXML(ostream &out,
 /*
 ** CVS/RCS Log:
 ** $Log: dcpxitem.cc,v $
-** Revision 1.23  2002-08-27 16:55:55  meichel
+** Revision 1.24  2002-11-27 12:06:51  meichel
+** Adapted module dcmdata to use of new header file ofstdinc.h
+**
+** Revision 1.23  2002/08/27 16:55:55  meichel
 ** Initial release of new DICOM I/O stream classes that add support for stream
 **   compression (deflated little endian explicit VR transfer syntax)
 **

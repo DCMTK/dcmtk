@@ -21,23 +21,25 @@
  *
  *  Purpose: class DcmUnsignedLong
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-04-25 10:35:04 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2002-11-27 12:06:59 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcvrul.cc,v $
- *  CVS/RCS Revision: $Revision: 1.21 $
+ *  CVS/RCS Revision: $Revision: 1.22 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
  *
  */
 
-#include <stdio.h>
-#include <string.h>
-
+#include "osconfig.h"
 #include "ofstream.h"
 #include "dcvrul.h"
 #include "dcvm.h"
 #include "dcdebug.h"
+
+#define INCLUDE_CSTDIO
+#define INCLUDE_CSTRING
+#include "ofstdinc.h"
 
 
 // ********************************
@@ -276,7 +278,10 @@ OFCondition DcmUnsignedLong::verify(const OFBool autocorrect )
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrul.cc,v $
-** Revision 1.21  2002-04-25 10:35:04  joergr
+** Revision 1.22  2002-11-27 12:06:59  meichel
+** Adapted module dcmdata to use of new header file ofstdinc.h
+**
+** Revision 1.21  2002/04/25 10:35:04  joergr
 ** Added getOFString() implementation.
 **
 ** Revision 1.20  2002/04/16 13:43:26  joergr

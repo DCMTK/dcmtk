@@ -21,10 +21,10 @@
  *
  *  Purpose: RLE compressor
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-07-18 12:16:52 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2002-11-27 12:07:22 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcrleenc.h,v $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -37,11 +37,8 @@
 #include "osconfig.h"
 #include "oflist.h"   /* for class OFList<> */
 
-BEGIN_EXTERN_C
-#ifdef HAVE_STRING_H
-#include <string.h>  /* for memcpy on Win32 */
-#endif
-END_EXTERN_C
+#define INCLUDE_CSTRING
+#include "ofstdinc.h"
 
 #define DcmRLEEncoder_BLOCKSIZE 16384
 
@@ -425,7 +422,10 @@ private:
 /*
  * CVS/RCS Log
  * $Log: dcrleenc.h,v $
- * Revision 1.4  2002-07-18 12:16:52  joergr
+ * Revision 1.5  2002-11-27 12:07:22  meichel
+ * Adapted module dcmdata to use of new header file ofstdinc.h
+ *
+ * Revision 1.4  2002/07/18 12:16:52  joergr
  * Replaced return statement by break in a while loop of an inline function (not
  * supported by Sun CC 2.0.1).
  *

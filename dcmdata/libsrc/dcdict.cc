@@ -22,9 +22,9 @@
  *  Purpose: loadable DICOM data dictionary
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-07-23 14:21:30 $
+ *  Update Date:      $Date: 2002-11-27 12:06:44 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcdict.cc,v $
- *  CVS/RCS Revision: $Revision: 1.27 $
+ *  CVS/RCS Revision: $Revision: 1.28 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -39,23 +39,11 @@
 #include "dcdefine.h"
 #include "dcdicent.h"
 
-#ifdef HAVE_STDLIB_H
-#ifndef  _BCB4
-/* workaround for bug in Borland C++ Builder 4 */
-BEGIN_EXTERN_C
-#endif
-#include <stdlib.h>
-#ifndef  _BCB4
-END_EXTERN_C
-#endif
-#endif
-
-BEGIN_EXTERN_C
-#include <stdio.h>
-#include <ctype.h>
-#include <string.h>
-END_EXTERN_C
-
+#define INCLUDE_CSTDLIB
+#define INCLUDE_CSTDIO
+#define INCLUDE_CSTRING
+#define INCLUDE_CCTYPE
+#include "ofstdinc.h"
 
 /*
 ** The separator character between fields in the data dictionary file(s)
@@ -833,7 +821,10 @@ void GlobalDcmDataDictionary::clear()
 /*
 ** CVS/RCS Log:
 ** $Log: dcdict.cc,v $
-** Revision 1.27  2002-07-23 14:21:30  meichel
+** Revision 1.28  2002-11-27 12:06:44  meichel
+** Adapted module dcmdata to use of new header file ofstdinc.h
+**
+** Revision 1.27  2002/07/23 14:21:30  meichel
 ** Added support for private tag data dictionaries to dcmdata
 **
 ** Revision 1.26  2002/06/12 16:57:52  joergr

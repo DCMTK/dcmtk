@@ -22,9 +22,9 @@
  *  Purpose: a dictionary entry in the loadable DICOM data dictionary
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-07-23 14:21:29 $
+ *  Update Date:      $Date: 2002-11-27 12:06:44 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcdicent.cc,v $
- *  CVS/RCS Revision: $Revision: 1.11 $
+ *  CVS/RCS Revision: $Revision: 1.12 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -33,8 +33,9 @@
 
 #include "osconfig.h"    /* make sure OS specific configuration is included first */
 
-#include <stdio.h>
-#include <string.h>
+#define INCLUDE_CSTDIO
+#define INCLUDE_CSTRING
+#include "ofstdinc.h"
 
 #include "dcdicent.h"
 
@@ -187,7 +188,10 @@ ostream& operator<<(ostream& s, const DcmDictEntry& e) {
 /*
 ** CVS/RCS Log:
 ** $Log: dcdicent.cc,v $
-** Revision 1.11  2002-07-23 14:21:29  meichel
+** Revision 1.12  2002-11-27 12:06:44  meichel
+** Adapted module dcmdata to use of new header file ofstdinc.h
+**
+** Revision 1.11  2002/07/23 14:21:29  meichel
 ** Added support for private tag data dictionaries to dcmdata
 **
 ** Revision 1.10  2001/06/01 15:49:01  meichel

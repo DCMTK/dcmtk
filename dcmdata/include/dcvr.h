@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2001, OFFIS
+ *  Copyright (C) 1994-2002, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose: Definition of the DcmVR class for Value Representation
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-06-01 15:48:47 $
+ *  Update Date:      $Date: 2002-11-27 12:07:24 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcvr.h,v $
- *  CVS/RCS Revision: $Revision: 1.17 $
+ *  CVS/RCS Revision: $Revision: 1.18 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -35,21 +35,11 @@
 #define DCMVR_H 1
 
 #include "osconfig.h"    /* make sure OS specific configuration is included first */
-
-#ifdef HAVE_STDLIB_H
-#ifndef  _BCB4
-/* workaround for bug in Borland C++ Builder 4 */
-BEGIN_EXTERN_C
-#endif
-#include <stdlib.h>
-#ifndef  _BCB4
-END_EXTERN_C
-#endif
-#endif
-
 #include "dctypes.h"
 #include "ofglobal.h"
 
+#define INCLUDE_CSTDLIB
+#include "ofstdinc.h"
 
 /*
 ** Global flag to enable/disable the generation of VR=UN
@@ -167,7 +157,10 @@ public:
 /*
  * CVS/RCS Log:
  * $Log: dcvr.h,v $
- * Revision 1.17  2001-06-01 15:48:47  meichel
+ * Revision 1.18  2002-11-27 12:07:24  meichel
+ * Adapted module dcmdata to use of new header file ofstdinc.h
+ *
+ * Revision 1.17  2001/06/01 15:48:47  meichel
  * Updated copyright header
  *
  * Revision 1.16  2000/04/14 15:42:56  meichel

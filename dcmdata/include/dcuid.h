@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2001, OFFIS
+ *  Copyright (C) 1994-2002, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -24,9 +24,9 @@
  *  routines for finding and creating UIDs.
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-06-19 15:35:55 $
+ *  Update Date:      $Date: 2002-11-27 12:07:23 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcuid.h,v $
- *  CVS/RCS Revision: $Revision: 1.50 $
+ *  CVS/RCS Revision: $Revision: 1.51 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -37,23 +37,17 @@
 #define DCUID_H
 
 #include "osconfig.h"    /* make sure OS specific configuration is included first */
+#include "dctypes.h"
 
-#ifdef HAVE_STDLIB_H
-#ifndef  _BCB4
-/* workaround for bug in Borland C++ Builder 4 */
-BEGIN_EXTERN_C
-#endif
-#include <stdlib.h> /* for NULL */
-#ifndef  _BCB4
-END_EXTERN_C
-#endif
-#endif
+#define INCLUDE_CSTDLIB
+#include "ofstdinc.h"
 
 #ifdef HAVE_UNISTD_H
+BEGIN_EXTERN_C
 #include <unistd.h> /* for NULL */
+END_EXTERN_C
 #endif
 
-#include "dctypes.h"
 
 /*
 ** dcmFindNameOfUID(const char* uid)
@@ -438,7 +432,10 @@ unsigned long dcmGuessModalityBytes(const char *sopClassUID);
 /*
 ** CVS/RCS Log:
 ** $Log: dcuid.h,v $
-** Revision 1.50  2002-06-19 15:35:55  meichel
+** Revision 1.51  2002-11-27 12:07:23  meichel
+** Adapted module dcmdata to use of new header file ofstdinc.h
+**
+** Revision 1.50  2002/06/19 15:35:55  meichel
 ** Updated list of SOP Class UIDs for Supplement 49
 **
 ** Revision 1.49  2002/01/08 10:43:00  joergr

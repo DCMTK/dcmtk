@@ -22,9 +22,9 @@
  *  Purpose: class DcmIntegerString
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-08-27 16:55:59 $
+ *  Update Date:      $Date: 2002-11-27 12:06:57 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcvris.cc,v $
- *  CVS/RCS Revision: $Revision: 1.16 $
+ *  CVS/RCS Revision: $Revision: 1.17 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -32,14 +32,12 @@
  */
 
 #include "osconfig.h"    /* make sure OS specific configuration is included first */
-
 #include "dcvris.h"
 #include "dcdebug.h"
 #include "ofstring.h"
 
-BEGIN_EXTERN_C
-#include <stdio.h>
-END_EXTERN_C
+#define INCLUDE_CSTDIO
+#include "ofstdinc.h"
 
 
 // ********************************
@@ -112,7 +110,10 @@ DcmIntegerString::getOFString(
 /*
 ** CVS/RCS Log:
 ** $Log: dcvris.cc,v $
-** Revision 1.16  2002-08-27 16:55:59  meichel
+** Revision 1.17  2002-11-27 12:06:57  meichel
+** Adapted module dcmdata to use of new header file ofstdinc.h
+**
+** Revision 1.16  2002/08/27 16:55:59  meichel
 ** Initial release of new DICOM I/O stream classes that add support for stream
 **   compression (deflated little endian explicit VR transfer syntax)
 **

@@ -22,9 +22,9 @@
  *  Purpose: Hash table interface for DICOM data dictionary
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-07-23 14:21:33 $
+ *  Update Date:      $Date: 2002-11-27 12:06:47 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dchashdi.cc,v $
- *  CVS/RCS Revision: $Revision: 1.15 $
+ *  CVS/RCS Revision: $Revision: 1.16 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -35,11 +35,9 @@
 #include "dchashdi.h"
 #include "dcdicent.h"
 
-BEGIN_EXTERN_C
-#include <stdio.h>
-#include <assert.h>
-END_EXTERN_C
-
+#define INCLUDE_CSTDIO
+#define INCLUDE_CASSERT
+#include "ofstdinc.h"
 
 #ifdef PRINT_REPLACED_DICTIONARY_ENTRIES
 #include "ofconsol.h"   /* for ofConsole */
@@ -538,7 +536,10 @@ DcmHashDict::loadSummary(ostream& out)
 /*
 ** CVS/RCS Log:
 ** $Log: dchashdi.cc,v $
-** Revision 1.15  2002-07-23 14:21:33  meichel
+** Revision 1.16  2002-11-27 12:06:47  meichel
+** Adapted module dcmdata to use of new header file ofstdinc.h
+**
+** Revision 1.15  2002/07/23 14:21:33  meichel
 ** Added support for private tag data dictionaries to dcmdata
 **
 ** Revision 1.14  2001/06/01 15:49:04  meichel

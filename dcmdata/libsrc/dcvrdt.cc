@@ -22,9 +22,9 @@
  *  Purpose: class DcmDateTime
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-08-27 16:55:59 $
+ *  Update Date:      $Date: 2002-11-27 12:06:56 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcvrdt.cc,v $
- *  CVS/RCS Revision: $Revision: 1.21 $
+ *  CVS/RCS Revision: $Revision: 1.22 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -32,7 +32,6 @@
  */
 
 #include "osconfig.h"    /* make sure OS specific configuration is included first */
-
 #include "dcvrdt.h"
 #include "dcvrda.h"
 #include "dcvrtm.h"
@@ -40,9 +39,9 @@
 #include "ofstring.h"
 #include "ofstd.h"
 
-BEGIN_EXTERN_C
-#include <stdio.h>
-END_EXTERN_C
+#define INCLUDE_CSTDIO
+#include "ofstdinc.h"
+
 
 // ********************************
 
@@ -311,7 +310,10 @@ DcmDateTime::getISOFormattedDateTimeFromString(
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrdt.cc,v $
-** Revision 1.21  2002-08-27 16:55:59  meichel
+** Revision 1.22  2002-11-27 12:06:56  meichel
+** Adapted module dcmdata to use of new header file ofstdinc.h
+**
+** Revision 1.21  2002/08/27 16:55:59  meichel
 ** Initial release of new DICOM I/O stream classes that add support for stream
 **   compression (deflated little endian explicit VR transfer syntax)
 **

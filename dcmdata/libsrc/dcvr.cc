@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2001, OFFIS
+ *  Copyright (C) 1994-2002, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,10 +21,10 @@
  *
  *  Purpose: class DcmVR: Value Representation
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-04-16 13:43:23 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2002-11-27 12:06:54 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcvr.cc,v $
- *  CVS/RCS Revision: $Revision: 1.25 $
+ *  CVS/RCS Revision: $Revision: 1.26 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -32,10 +32,13 @@
  */
 
 #include "osconfig.h"    /* make sure OS specific configuration is included first */
-#include <string.h>
-#include <stdlib.h>
 #include "ofconsol.h"
 #include "dcvr.h"
+
+#define INCLUDE_CSTDLIB
+#define INCLUDE_CSTRING
+#include "ofstdinc.h"
+
 /*
 ** Global flag to enable/disable the generation of VR=UN
 */
@@ -363,7 +366,10 @@ int DcmVR::isEquivalent(const DcmVR& avr) const
 /*
  * CVS/RCS Log:
  * $Log: dcvr.cc,v $
- * Revision 1.25  2002-04-16 13:43:23  joergr
+ * Revision 1.26  2002-11-27 12:06:54  meichel
+ * Adapted module dcmdata to use of new header file ofstdinc.h
+ *
+ * Revision 1.25  2002/04/16 13:43:23  joergr
  * Added configurable support for C++ ANSI standard includes (e.g. streams).
  * Thanks to Andreas Barth <Andreas.Barth@bruker-biospin.de> for his
  * contribution.

@@ -22,9 +22,9 @@
  *  Purpose: class DcmItem
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-08-27 16:55:50 $
+ *  Update Date:      $Date: 2002-11-27 12:06:48 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcitem.cc,v $
- *  CVS/RCS Revision: $Revision: 1.77 $
+ *  CVS/RCS Revision: $Revision: 1.78 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -34,22 +34,11 @@
 #include "osconfig.h"    /* make sure OS specific configuration is included first */
 #include "dcitem.h"
 
-#ifdef HAVE_STDLIB_H
-#ifndef  _BCB4
-/* workaround for bug in Borland C++ Builder 4 */
-BEGIN_EXTERN_C
-#endif
-#include <stdlib.h>
-#ifndef  _BCB4
-END_EXTERN_C
-#endif
-#endif
-
-BEGIN_EXTERN_C
-#include <stdio.h>
-#include <string.h>
-#include <ctype.h>
-END_EXTERN_C
+#define INCLUDE_CSTDLIB
+#define INCLUDE_CSTDIO
+#define INCLUDE_CSTRING
+#define INCLUDE_CCTYPE
+#include "ofstdinc.h"
 
 #include "dcdebug.h"
 #include "dcdefine.h"    /* for memzero() */
@@ -3193,7 +3182,10 @@ OFBool DcmItem::containsUnknownVR() const
 /*
 ** CVS/RCS Log:
 ** $Log: dcitem.cc,v $
-** Revision 1.77  2002-08-27 16:55:50  meichel
+** Revision 1.78  2002-11-27 12:06:48  meichel
+** Adapted module dcmdata to use of new header file ofstdinc.h
+**
+** Revision 1.77  2002/08/27 16:55:50  meichel
 ** Initial release of new DICOM I/O stream classes that add support for stream
 **   compression (deflated little endian explicit VR transfer syntax)
 **
