@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DSRPNameTreeNode
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2003-06-04 14:26:54 $
- *  CVS/RCS Revision: $Revision: 1.15 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2003-08-07 13:41:36 $
+ *  CVS/RCS Revision: $Revision: 1.16 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -92,10 +92,10 @@ OFCondition DSRPNameTreeNode::writeXML(ostream &stream,
     OFCondition result = EC_Normal;
     writeXMLItemStart(stream, flags);
     result = DSRDocumentTreeNode::writeXML(stream, flags, logStream);
-    if ((getValue().length() > 0) || (flags & XF_writeEmptyTags))
+    if (!getValue().empty() || (flags & XF_writeEmptyTags))
     {
-        OFString string;
-        stream << "<value>" << endl << dicomToXMLPersonName(getValue(), string) << "</value>" << endl;
+        OFString tmpString;
+        stream << "<value>" << endl << dicomToXMLPersonName(getValue(), tmpString) << "</value>" << endl;
     }
     writeXMLItemEnd(stream, flags);
     return result;
@@ -118,10 +118,59 @@ OFCondition DSRPNameTreeNode::writeContentItem(DcmItem &dataset,
 }
 
 
+OFCondition DSRPNameTreeNode::readXMLContentItem(const DSRXMLDocument &doc,
+                                                 DSRXMLCursor cursor)
+{
+    OFCondition result = SR_EC_CorruptedXMLStructure;
+    if (cursor.valid())
+    {
+        /* goto sub-node "value" */
+        cursor = doc.getNamedNode(cursor.getChild(), "value").getChild();
+        if (cursor.valid())
+        {
+            /* retrieve person name from XML tag */
+            OFString nameString;
+            getValueFromXMLNodeContent(doc, cursor, nameString);
+            /* set retrieved value */
+            result = DSRStringValue::setValue(nameString);
+        }
+    }
+    return result;
+}
+
+
+OFString &DSRPNameTreeNode::getValueFromXMLNodeContent(const DSRXMLDocument &doc,
+                                                       DSRXMLCursor cursor,
+                                                       OFString &nameValue)
+{
+    nameValue.clear();
+    /* check whether node is valid */
+    if (cursor.valid())
+    {
+        OFString first, middle, last, suffix, prefix;
+        /* iterate over all nodes */
+        while (cursor.valid())
+        {
+            /* check for known element tags */
+            doc.getStringFromNodeContent(cursor, prefix, "prefix", OFTrue /*encoding*/, OFFalse /*clearString*/);
+            doc.getStringFromNodeContent(cursor, first, "first", OFTrue /*encoding*/, OFFalse /*clearString*/);
+            doc.getStringFromNodeContent(cursor, middle, "middle", OFTrue /*encoding*/, OFFalse /*clearString*/);
+            doc.getStringFromNodeContent(cursor, last, "last", OFTrue /*encoding*/, OFFalse /*clearString*/);
+            doc.getStringFromNodeContent(cursor, suffix, "suffix", OFTrue /*encoding*/, OFFalse /*clearString*/);
+            /* proceed with next node */
+            cursor.gotoNext();
+        }
+        /* create DICOM Person Name (PN) from name components */
+        DcmPersonName::getStringFromNameComponents(last, first, middle, prefix, suffix, nameValue);
+    }
+    return nameValue;
+}
+
+
 OFCondition DSRPNameTreeNode::renderHTMLContentItem(ostream &docStream,
-                                                    ostream & /* annexStream */,
-                                                    const size_t /* nestingLevel */,
-                                                    size_t & /* annexNumber */,
+                                                    ostream & /*annexStream*/,
+                                                    const size_t /*nestingLevel*/,
+                                                    size_t & /*annexNumber*/,
                                                     const size_t flags,
                                                     OFConsole *logStream) const
 {
@@ -130,10 +179,10 @@ OFCondition DSRPNameTreeNode::renderHTMLContentItem(ostream &docStream,
     /* render PName */
     if (result.good())
     {
-        OFString string, htmlString;
+        OFString tmpString, htmlString;
         if (!(flags & DSRTypes::HF_renderItemsSeparately))
             docStream << "<u>";
-        docStream << convertToMarkupString(dicomToReadablePersonName(getValue(), string), htmlString, ((flags & HF_convertNonASCIICharacters) ? OFTrue: OFFalse));
+        docStream << convertToMarkupString(dicomToReadablePersonName(getValue(), tmpString), htmlString, flags & HF_convertNonASCIICharacters > 0);
         if (!(flags & DSRTypes::HF_renderItemsSeparately))
             docStream << "</u>";
         docStream << endl;
@@ -160,7 +209,11 @@ OFBool DSRPNameTreeNode::canAddNode(const E_DocumentType documentType,
 /*
  *  CVS/RCS Log:
  *  $Log: dsrpnmtn.cc,v $
- *  Revision 1.15  2003-06-04 14:26:54  meichel
+ *  Revision 1.16  2003-08-07 13:41:36  joergr
+ *  Added readXML functionality.
+ *  Renamed parameters/variables "string" to avoid name clash with STL class.
+ *
+ *  Revision 1.15  2003/06/04 14:26:54  meichel
  *  Simplified include structure to avoid preprocessor limitation
  *    (max 32 #if levels) on MSVC5 with STL.
  *

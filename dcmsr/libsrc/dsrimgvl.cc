@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2001, OFFIS
+ *  Copyright (C) 2000-2003, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,8 +23,8 @@
  *    classes: DSRImageReferenceValue
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-10-10 15:29:56 $
- *  CVS/RCS Revision: $Revision: 1.14 $
+ *  Update Date:      $Date: 2003-08-07 13:38:32 $
+ *  CVS/RCS Revision: $Revision: 1.15 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -35,6 +35,7 @@
 #include "osconfig.h"    /* make sure OS specific configuration is included first */
 
 #include "dsrimgvl.h"
+#include "dsrxmld.h"
 
 
 DSRImageReferenceValue::DSRImageReferenceValue()
@@ -129,10 +130,10 @@ OFBool DSRImageReferenceValue::isShort(const size_t flags) const
 OFCondition DSRImageReferenceValue::print(ostream &stream,
                                           const size_t flags) const
 {
-    const char *string = dcmSOPClassUIDToModality(SOPClassUID.c_str());
+    const char *modality = dcmSOPClassUIDToModality(SOPClassUID.c_str());
     stream << "(";
-    if (string != NULL)
-        stream << string << " image";
+    if (modality != NULL)
+        stream << modality << " image";
     else
         stream << "\"" << SOPClassUID << "\"";
     stream << ",";
@@ -155,6 +156,34 @@ OFCondition DSRImageReferenceValue::print(ostream &stream,
 }
 
 
+OFCondition DSRImageReferenceValue::readXML(const DSRXMLDocument &doc,
+                                            DSRXMLCursor cursor)
+{
+    /* first read general composite reference information */
+    OFCondition result = DSRCompositeReferenceValue::readXML(doc, cursor);
+    /* then read image related XML tags */
+    if (result.good())
+    {
+        /* frame list (optional) */
+        const DSRXMLCursor childCursor = doc.getNamedNode(cursor.getChild(), "frames", OFFalse /*required*/);
+        if (childCursor.valid())
+        {
+            OFString tmpString;
+            /* put element content to the channel list */
+            result = FrameList.putString(doc.getStringFromNodeContent(childCursor, tmpString).c_str());
+        }
+        if (result.good())
+        {
+            /* presentation state (optional) */
+            cursor = doc.getNamedNode(cursor.getChild(), "pstate", OFFalse /*required*/);
+            if (cursor.valid())
+                result = PresentationState.readXML(doc, cursor);
+        }
+    }
+    return result;
+}
+
+
 OFCondition DSRImageReferenceValue::writeXML(ostream &stream,
                                              const size_t flags,
                                              OFConsole *logStream) const
@@ -163,8 +192,8 @@ OFCondition DSRImageReferenceValue::writeXML(ostream &stream,
     if ((flags & DSRTypes::XF_writeEmptyTags) || !FrameList.isEmpty())
     {
         stream << "<frames>";
-        FrameList.print(stream);        
-        stream << "</frames>" << endl;        
+        FrameList.print(stream);
+        stream << "</frames>" << endl;
     }
     if ((flags & DSRTypes::XF_writeEmptyTags) || PresentationState.isValid())
     {
@@ -186,7 +215,7 @@ OFCondition DSRImageReferenceValue::readItem(DcmItem &dataset,
         FrameList.read(dataset, logStream);
     /* read ReferencedSOPSequence (Presentation State, optional) */
     if (result.good())
-        PresentationState.readSequence(dataset, "3" /* type */, logStream);
+        PresentationState.readSequence(dataset, "3" /*type*/, logStream);
     return result;
 }
 
@@ -216,7 +245,7 @@ OFCondition DSRImageReferenceValue::renderHTML(ostream &docStream,
                                                ostream &annexStream,
                                                size_t &annexNumber,
                                                const size_t flags,
-                                               OFConsole * /* logStream */) const
+                                               OFConsole * /*logStream*/) const
 {
     /* reference: image */
     docStream << "<a href=\"" << HTML_HYPERLINK_PREFIX_FOR_CGI;
@@ -231,13 +260,13 @@ OFCondition DSRImageReferenceValue::renderHTML(ostream &docStream,
     if (!FrameList.isEmpty())
     {
         docStream << "&frames=";
-        FrameList.print(docStream, 0 /* flags */, '+');
+        FrameList.print(docStream, 0 /*flags*/, '+');
     }
     docStream << "\">";
     /* text: image */
-    const char *string = dcmSOPClassUIDToModality(SOPClassUID.c_str());
-    if (string != NULL)
-        docStream << string;
+    const char *modality = dcmSOPClassUIDToModality(SOPClassUID.c_str());
+    if (modality != NULL)
+        docStream << modality;
     else
         docStream << "unknown";
     docStream << " image";
@@ -329,7 +358,11 @@ OFBool DSRImageReferenceValue::checkPresentationState(const DSRCompositeReferenc
 /*
  *  CVS/RCS Log:
  *  $Log: dsrimgvl.cc,v $
- *  Revision 1.14  2001-10-10 15:29:56  joergr
+ *  Revision 1.15  2003-08-07 13:38:32  joergr
+ *  Added readXML functionality.
+ *  Renamed parameters/variables "string" to avoid name clash with STL class.
+ *
+ *  Revision 1.14  2001/10/10 15:29:56  joergr
  *  Additonal adjustments for new OFCondition class.
  *
  *  Revision 1.13  2001/09/26 13:04:22  meichel
