@@ -86,7 +86,7 @@ LIB32=link.exe -lib
 # PROP Intermediate_Dir "OpenSSL"
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /MT /W3 /GX /O2 /I "include" /I "..\config\include" /I "..\ofstd\include" /I "..\dcmdata\include" /I "..\dcmimgle\include" /I "..\dcmnet\include" /I "..\imagectn\include" /I "..\dcmsr\include" /I "..\..\..\zlib-1.1.4\include" /D "_WINDOWS" /D "WIN32" /D "NDEBUG" /D "_REENTRANT" /YX /FD /c
-# ADD CPP /nologo /MT /W3 /GX /O2 /I "..\..\openssl-0.9.6g\include" /I "include" /I "..\config\include" /I "..\ofstd\include" /I "..\dcmdata\include" /I "..\dcmimgle\include" /I "..\dcmnet\include" /I "..\imagectn\include" /I "..\dcmsr\include" /I "..\dcmsign\include" /I "..\..\..\zlib-1.1.4\include" /D "NDEBUG" /D "WITH_OPENSSL" /D "_WINDOWS" /D "WIN32" /D "_REENTRANT" /YX /FD /c
+# ADD CPP /nologo /MT /W3 /GX /O2 /I "..\..\openssl-0.9.6h\include" /I "include" /I "..\config\include" /I "..\ofstd\include" /I "..\dcmdata\include" /I "..\dcmimgle\include" /I "..\dcmnet\include" /I "..\imagectn\include" /I "..\dcmsr\include" /I "..\dcmsign\include" /I "..\..\..\zlib-1.1.4\include" /D "NDEBUG" /D "WITH_OPENSSL" /D "_WINDOWS" /D "WIN32" /D "_REENTRANT" /YX /FD /c
 BSC32=bscmake.exe
 # ADD BASE BSC32 /nologo
 # ADD BSC32 /nologo

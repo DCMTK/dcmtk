@@ -85,7 +85,7 @@ LIB32=link.exe -lib
 # PROP Intermediate_Dir "OpenSSL"
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /MT /W3 /GX /O2 /I "include" /I "..\config\include" /I "..\ofstd\include" /I "..\dcmdata\include" /I "..\dcmnet\include" /I "..\..\zlib-1.1.4\include" /D "NDEBUG" /D "WIN32" /D "_WINDOWS" /D "_REENTRANT" /YX /FD /c
-# ADD CPP /nologo /MT /W3 /GX /O2 /I "include" /I "..\config\include" /I "..\ofstd\include" /I "..\dcmdata\include" /I "..\dcmnet\include" /I "..\..\openssl-0.9.6g\include" /I "..\..\zlib-1.1.4\include" /D "_WINDOWS" /D "WITH_OPENSSL" /D "WIN32" /D "NDEBUG" /D "_REENTRANT" /YX /FD /c
+# ADD CPP /nologo /MT /W3 /GX /O2 /I "include" /I "..\config\include" /I "..\ofstd\include" /I "..\dcmdata\include" /I "..\dcmnet\include" /I "..\..\openssl-0.9.6h\include" /I "..\..\zlib-1.1.4\include" /D "_WINDOWS" /D "WITH_OPENSSL" /D "WIN32" /D "NDEBUG" /D "_REENTRANT" /YX /FD /c
 BSC32=bscmake.exe
 # ADD BASE BSC32 /nologo
 # ADD BSC32 /nologo

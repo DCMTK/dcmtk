@@ -96,7 +96,7 @@ LINK32=link.exe
 # PROP Ignore_Export_Lib 0
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /MT /W3 /GX /O2 /I "..\include" /I "..\..\config\include" /I "..\..\ofstd\include" /I "..\..\dcmdata\include" /I "..\..\dcmtls\include" /I "..\..\..\zlib-1.1.4\include" /D "_CONSOLE" /D "_MBCS" /D "WIN32" /D "NDEBUG" /D "_REENTRANT" /YX /FD /c
-# ADD CPP /nologo /MT /W3 /GX /O2 /I "..\include" /I "..\..\config\include" /I "..\..\ofstd\include" /I "..\..\dcmdata\include" /I "..\..\dcmtls\include" /I "..\..\..\openssl-0.9.6g\include" /I "..\..\..\zlib-1.1.4\include" /D "_CONSOLE" /D "_MBCS" /D "WITH_OPENSSL" /D "WIN32" /D "NDEBUG" /D "_REENTRANT" /YX /FD /c
+# ADD CPP /nologo /MT /W3 /GX /O2 /I "..\include" /I "..\..\config\include" /I "..\..\ofstd\include" /I "..\..\dcmdata\include" /I "..\..\dcmtls\include" /I "..\..\..\openssl-0.9.6h\include" /I "..\..\..\zlib-1.1.4\include" /D "_CONSOLE" /D "_MBCS" /D "WITH_OPENSSL" /D "WIN32" /D "NDEBUG" /D "_REENTRANT" /YX /FD /c
 # ADD BASE RSC /l 0x407 /d "NDEBUG"
 # ADD RSC /l 0x407 /d "NDEBUG"
 BSC32=bscmake.exe
@@ -104,7 +104,7 @@ BSC32=bscmake.exe
 # ADD BSC32 /nologo
 LINK32=link.exe
 # ADD BASE LINK32 kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib /nologo /subsystem:console /machine:I386
-# ADD LINK32 ssleay32.lib libeay32.lib netapi32.lib wsock32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib ..\..\..\zlib-1.1.4\release\zlib.lib /nologo /subsystem:console /machine:I386 /libpath:"..\..\..\openssl-0.9.6g\lib"
+# ADD LINK32 ssleay32.lib libeay32.lib netapi32.lib wsock32.lib kernel32.lib user32.lib gdi32.lib winspool.lib comdlg32.lib advapi32.lib shell32.lib ole32.lib oleaut32.lib uuid.lib odbc32.lib odbccp32.lib ..\..\..\zlib-1.1.4\release\zlib.lib /nologo /subsystem:console /machine:I386 /libpath:"..\..\..\openssl-0.9.6h\lib"
 
 !ENDIF 
 
