@@ -22,9 +22,9 @@
  *  Purpose: DicomBaseLUT (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-02-03 17:45:38 $
+ *  Update Date:      $Date: 1999-02-11 15:42:49 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/dibaslut.h,v $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  * 
  *  CVS/RCS Log at end of file
@@ -36,7 +36,6 @@
 #define __DIBASLUT_H
 
 #include "osconfig.h"
-#include "dctypes.h"
 #include "ofstring.h"
 
 #include "diutils.h"
@@ -148,7 +147,10 @@ class DiBaseLUT
  *
  * CVS/RCS Log:
  * $Log: dibaslut.h,v $
- * Revision 1.1  1999-02-03 17:45:38  joergr
+ * Revision 1.2  1999-02-11 15:42:49  joergr
+ * Removed unnecessary include statement.
+ *
+ * Revision 1.1  1999/02/03 17:45:38  joergr
  * Added base class for look-up tables (moved main functionality of class
  * DiLookupTable to DiBaseLUT).
  *
