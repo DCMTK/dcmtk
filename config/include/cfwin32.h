@@ -672,6 +672,19 @@
 /* Define if volatile is a known keyword */
 #define HAVE_CXX_VOLATILE 1
 
+/* Define if the compiler supports const_cast<> */
+#define HAVE_CONST_CAST 1
+
+/* Define if the compiler supports dynamic_cast<> */
+#define HAVE_DYNAMIC_CAST 1
+
+/* Define if the compiler supports reinterpret_cast<> */
+#define HAVE_REINTERPRET_CAST 1
+
+/* Define if the compiler supports static_cast<> */
+#define HAVE_STATIC_CAST 1
+
+
 #endif /* _WIN32 */
 
 #endif /* CFWIN32_H */

@@ -7,13 +7,17 @@ dnl
 dnl Authors: Andreas Barth, Marco Eichelberg
 dnl
 dnl Last Update:  $Author: meichel $
-dnl Revision:     $Revision: 1.26 $
+dnl Revision:     $Revision: 1.27 $
 dnl Status:       $State: Exp $
 dnl
-dnl $Id: aclocal.m4,v 1.26 2003-07-03 15:00:55 meichel Exp $
+dnl $Id: aclocal.m4,v 1.27 2003-07-09 12:22:46 meichel Exp $
 dnl
 dnl $Log: aclocal.m4,v $
-dnl Revision 1.26  2003-07-03 15:00:55  meichel
+dnl Revision 1.27  2003-07-09 12:22:46  meichel
+dnl Added configure test for new-style cast operators such as
+dnl   static_cast<> and const_cast<>.
+dnl
+dnl Revision 1.26  2003/07/03 15:00:55  meichel
 dnl Added configure test for "typename" C++ keyword
 dnl
 dnl Revision 1.25  2003/07/03 14:49:05  meichel
@@ -1419,3 +1423,88 @@ if test "$ac_cv_cxx_typename" = yes; then
 fi
 ])
 
+
+dnl Available from the GNU Autoconf Macro Archive at:
+dnl http://www.gnu.org/software/ac-archive/htmldoc/ac_cxx_const_cast.html
+dnl
+AC_DEFUN([AC_CXX_CONST_CAST],
+[AC_CACHE_CHECK(whether the compiler supports const_cast<>,
+ac_cv_cxx_const_cast,
+[AC_LANG_SAVE
+ AC_LANG_CPLUSPLUS
+ AC_TRY_COMPILE(,[int x = 0;const int& y = x;int& z = const_cast<int&>(y);return z;],
+ ac_cv_cxx_const_cast=yes, ac_cv_cxx_const_cast=no)
+ AC_LANG_RESTORE
+])
+if test "$ac_cv_cxx_const_cast" = yes; then
+  AC_DEFINE(HAVE_CONST_CAST,,[define if the compiler supports const_cast<>])
+fi
+])
+
+
+dnl Available from the GNU Autoconf Macro Archive at:
+dnl http://www.gnu.org/software/ac-archive/htmldoc/ac_cxx_dynamic_cast.html
+dnl
+AC_DEFUN([AC_CXX_DYNAMIC_CAST],
+[AC_CACHE_CHECK(whether the compiler supports dynamic_cast<>,
+ac_cv_cxx_dynamic_cast,
+[AC_LANG_SAVE
+ AC_LANG_CPLUSPLUS
+ AC_TRY_COMPILE([#include <typeinfo>
+class Base { public : Base () {} virtual void f () = 0;};
+class Derived : public Base { public : Derived () {} virtual void f () {} };],[
+Derived d; Base& b=d; return dynamic_cast<Derived*>(&b) ? 0 : 1;],
+ ac_cv_cxx_dynamic_cast=yes, ac_cv_cxx_dynamic_cast=no)
+ AC_LANG_RESTORE
+])
+if test "$ac_cv_cxx_dynamic_cast" = yes; then
+  AC_DEFINE(HAVE_DYNAMIC_CAST,,[define if the compiler supports dynamic_cast<>])
+fi
+])
+
+
+dnl Available from the GNU Autoconf Macro Archive at:
+dnl http://www.gnu.org/software/ac-archive/htmldoc/ac_cxx_reinterpret_cast.html
+dnl
+AC_DEFUN([AC_CXX_REINTERPRET_CAST],
+[AC_CACHE_CHECK(whether the compiler supports reinterpret_cast<>,
+ac_cv_cxx_reinterpret_cast,
+[AC_LANG_SAVE
+ AC_LANG_CPLUSPLUS
+ AC_TRY_COMPILE([#include <typeinfo>
+class Base { public : Base () {} virtual void f () = 0;};
+class Derived : public Base { public : Derived () {} virtual void f () {} };
+class Unrelated { public : Unrelated () {} };
+int g (Unrelated&) { return 0; }],[
+Derived d;Base& b=d;Unrelated& e=reinterpret_cast<Unrelated&>(b);return g(e);],
+ ac_cv_cxx_reinterpret_cast=yes, ac_cv_cxx_reinterpret_cast=no)
+ AC_LANG_RESTORE
+])
+if test "$ac_cv_cxx_reinterpret_cast" = yes; then
+  AC_DEFINE(HAVE_REINTERPRET_CAST,,
+            [define if the compiler supports reinterpret_cast<>])
+fi
+])
+
+
+dnl Available from the GNU Autoconf Macro Archive at:
+dnl http://www.gnu.org/software/ac-archive/htmldoc/ac_cxx_static_cast.html
+dnl
+AC_DEFUN([AC_CXX_STATIC_CAST],
+[AC_CACHE_CHECK(whether the compiler supports static_cast<>,
+ac_cv_cxx_static_cast,
+[AC_LANG_SAVE
+ AC_LANG_CPLUSPLUS
+ AC_TRY_COMPILE([#include <typeinfo>
+class Base { public : Base () {} virtual void f () = 0; };
+class Derived : public Base { public : Derived () {} virtual void f () {} };
+int g (Derived&) { return 0; }],[
+Derived d; Base& b = d; Derived& s = static_cast<Derived&> (b); return g (s);],
+ ac_cv_cxx_static_cast=yes, ac_cv_cxx_static_cast=no)
+ AC_LANG_RESTORE
+])
+if test "$ac_cv_cxx_static_cast" = yes; then
+  AC_DEFINE(HAVE_STATIC_CAST,,
+            [define if the compiler supports static_cast<>])
+fi
+])

@@ -621,4 +621,17 @@
 /* Define if volatile is a known keyword */
 #undef HAVE_CXX_VOLATILE
 
+/* Define if the compiler supports const_cast<> */
+#undef HAVE_CONST_CAST
+
+/* Define if the compiler supports dynamic_cast<> */
+#undef HAVE_DYNAMIC_CAST
+
+/* Define if the compiler supports reinterpret_cast<> */
+#undef HAVE_REINTERPRET_CAST
+
+/* Define if the compiler supports static_cast<> */
+#undef HAVE_STATIC_CAST
+
+
 #endif
