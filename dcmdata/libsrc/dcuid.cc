@@ -24,8 +24,8 @@
  *  routines for finding and creating UIDs.
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2004-08-03 11:41:09 $
- *  CVS/RCS Revision: $Revision: 1.56 $
+ *  Update Date:      $Date: 2004-11-10 12:37:56 $
+ *  CVS/RCS Revision: $Revision: 1.57 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -190,6 +190,9 @@ static const UIDNameMap uidNameMap[] = {
     { UID_VLSlideCoordinatesMicroscopicImageStorage,          "VLSlideCoordinatesMicroscopicImageStorage" },
     { UID_XRayAngiographicImageStorage,                       "XRayAngiographicImageStorage" },
     { UID_XRayFluoroscopyImageStorage,                        "XRayFluoroscopyImageStorage" },
+    { UID_Ophthalmic16BitPhotographyImageStorage,             "Ophthalmic16BitPhotographyImageStorage" },
+    { UID_Ophthalmic8BitPhotographyImageStorage,              "Ophthalmic8BitPhotographyImageStorage" },
+    { UID_StereometricRelationshipStorage,                    "StereometricRelationshipStorage" },
 
     // Worklist and Query/Retrieve
     { UID_FINDModalityWorklistInformationModel,               "FINDModalityWorklistInformationModel" },
@@ -302,6 +305,64 @@ static const UIDNameMap uidNameMap[] = {
     { UID_DRAFT_SRComprehensiveStorage,                       "DRAFT_SRComprehensiveStorage" },
     { UID_DRAFT_WaveformStorage,                              "DRAFT_WaveformStorage" },
 
+    // Relevant Patient Information Query
+    { UID_BreastImagingRelevantPatientInformationQuery,       "BreastImagingRelevantPatientInformationQuery" },
+    { UID_CardiacRelevantPatientInformationQuery,             "CardiacRelevantPatientInformationQuery" },
+    { UID_GeneralRelevantPatientInformationQuery,             "GeneralRelevantPatientInformationQuery" },
+
+    // Instance Availability Notification
+    { UID_InstanceAvailabilityNotificationSOPClass,           "InstanceAvailabilityNotificationSOPClass" },
+
+    // Configuration Management LDAP UIDs
+    { UID_LDAP_dicomAETitle,                                  "LDAP_dicomAETitle" },
+    { UID_LDAP_dicomApplicationCluster,                       "LDAP_dicomApplicationCluster" },
+    { UID_LDAP_dicomAssociationAcceptor,                      "LDAP_dicomAssociationAcceptor" },
+    { UID_LDAP_dicomAssociationInitiator,                     "LDAP_dicomAssociationInitiator" },
+    { UID_LDAP_dicomAuthorizedNodeCertificateReference,       "LDAP_dicomAuthorizedNodeCertificateReference" },
+    { UID_LDAP_dicomConfigurationRoot,                        "LDAP_dicomConfigurationRoot" },
+    { UID_LDAP_dicomDescription,                              "LDAP_dicomDescription" },
+    { UID_LDAP_dicomDevice,                                   "LDAP_dicomDevice" },
+    { UID_LDAP_dicomDeviceName,                               "LDAP_dicomDeviceName" },
+    { UID_LDAP_dicomDeviceSerialNumber,                       "LDAP_dicomDeviceSerialNumber" },
+    { UID_LDAP_dicomDevicesRoot,                              "LDAP_dicomDevicesRoot" },
+    { UID_LDAP_dicomHostname,                                 "LDAP_dicomHostname" },
+    { UID_LDAP_dicomInstalled,                                "LDAP_dicomInstalled" },
+    { UID_LDAP_dicomInstitutionAddress,                       "LDAP_dicomInstitutionAddress" },
+    { UID_LDAP_dicomInstitutionDepartmentName,                "LDAP_dicomInstitutionDepartmentName" },
+    { UID_LDAP_dicomInstitutionName,                          "LDAP_dicomInstitutionName" },
+    { UID_LDAP_dicomIssuerOfPatientID,                        "LDAP_dicomIssuerOfPatientID" },
+    { UID_LDAP_dicomManufacturer,                             "LDAP_dicomManufacturer" },
+    { UID_LDAP_dicomManufacturerModelName,                    "LDAP_dicomManufacturerModelName" },
+    { UID_LDAP_dicomNetworkAE,                                "LDAP_dicomNetworkAE" },
+    { UID_LDAP_dicomNetworkConnection,                        "LDAP_dicomNetworkConnection" },
+    { UID_LDAP_dicomNetworkConnectionReference,               "LDAP_dicomNetworkConnectionReference" },
+    { UID_LDAP_dicomPort,                                     "LDAP_dicomPort" },
+    { UID_LDAP_dicomPreferredCalledAETitle,                   "LDAP_dicomPreferredCalledAETitle" },
+    { UID_LDAP_dicomPreferredCallingAETitle,                  "LDAP_dicomPreferredCallingAETitle" },
+    { UID_LDAP_dicomPrimaryDeviceType,                        "LDAP_dicomPrimaryDeviceType" },
+    { UID_LDAP_dicomRelatedDeviceReference,                   "LDAP_dicomRelatedDeviceReference" },
+    { UID_LDAP_dicomSoftwareVersion,                          "LDAP_dicomSoftwareVersion" },
+    { UID_LDAP_dicomSOPClass,                                 "LDAP_dicomSOPClass" },
+    { UID_LDAP_dicomStationName,                              "LDAP_dicomStationName" },
+    { UID_LDAP_dicomSupportedCharacterSet,                    "LDAP_dicomSupportedCharacterSet" },
+    { UID_LDAP_dicomThisNodeCertificateReference,             "LDAP_dicomThisNodeCertificateReference" },
+    { UID_LDAP_dicomTLSCyphersuite,                           "LDAP_dicomTLSCyphersuite" },
+    { UID_LDAP_dicomTransferCapability,                       "LDAP_dicomTransferCapability" },
+    { UID_LDAP_dicomTransferRole,                             "LDAP_dicomTransferRole" },
+    { UID_LDAP_dicomTransferSyntax,                           "LDAP_dicomTransferSyntax" },
+    { UID_LDAP_dicomUniqueAETitle,                            "LDAP_dicomUniqueAETitle" },
+    { UID_LDAP_dicomUniqueAETitlesRegistryRoot,               "LDAP_dicomUniqueAETitlesRegistryRoot" },
+    { UID_LDAP_dicomVendorData,                               "LDAP_dicomVendorData" },
+
+    // Media Creation Management
+    { UID_MediaCreationManagementSOPClass,                    "MediaCreationManagementSOPClass" },
+
+    // SOP Class Relationship Negotiation
+    { UID_StorageServiceClass,                                "StorageServiceClass" },
+
+    // UTC Synchronization Frame of Reference (CP 432)
+    { UID_UniversalCoordinatedTimeSynchronizationFrameOfReference, "UniversalCoordinatedTimeSynchronizationFrameOfReference" },
+
     { NULL, NULL }
 };
 
@@ -315,11 +376,16 @@ static const int uidNameMap_size = ( sizeof(uidNameMap) / sizeof(UIDNameMap) );
 */
 
 const char* dcmStorageSOPClassUIDs[] = {
-    // basic directory storage is a special case - we cannot
-    // transmit a DICOMDIR by C-STORE because of the absolute
-    // file position offsets within the DICOMDIR.
-    // UID_MediaStorageDirectoryStorage,
-
+    /* this list *must* be limited to 64 SOP classes or less.
+     * If we have more than 64 storage transfer syntaxes, tools
+     * such as storescu will fail because they attempt to negotiate two
+     * presentation contexts for each SOP class, and there is a total limit of
+     * 128 contexts for one association.
+     * Because of this limitation, all draft and retired storage SOP classes
+     * (except for Ultrasound 1993) and the "Standalone" SOP classes 
+     * are removed from this list.
+     * UID_MediaStorageDirectoryStorage should not be present in this list.
+     */
     UID_AmbulatoryECGWaveformStorage,
     UID_BasicTextSR,
     UID_BasicVoiceAudioWaveformStorage,
@@ -328,18 +394,6 @@ const char* dcmStorageSOPClassUIDs[] = {
     UID_ChestCADSR,
     UID_ComprehensiveSR,
     UID_ComputedRadiographyImageStorage,
-/* disabled draft storage SOP classes to keep the number of storage transfer
- * syntaxes <= 64.  If we have more than 64 storage transfer syntaxes, tools
- * such as storescu will fail because they attempt to negotiate two
- * presentation contexts for each SOP class, and there is a total limit of
- * 128 contexts for one association.
- *
-    UID_DRAFT_SRAudioStorage,
-    UID_DRAFT_SRComprehensiveStorage,
-    UID_DRAFT_SRDetailStorage,
-    UID_DRAFT_SRTextStorage,
-    UID_DRAFT_WaveformStorage,
- */
     UID_DigitalIntraOralXRayImageStorageForPresentation,
     UID_DigitalIntraOralXRayImageStorageForProcessing,
     UID_DigitalMammographyXRayImageStorageForPresentation,
@@ -366,19 +420,8 @@ const char* dcmStorageSOPClassUIDs[] = {
     UID_PETCurveStorage,
     UID_PETImageStorage,
     UID_ProcedureLogStorage,
-    UID_RETIRED_NuclearMedicineImageStorage,
     UID_RETIRED_UltrasoundImageStorage,
     UID_RETIRED_UltrasoundMultiframeImageStorage,
-/* disabled draft storage SOP classes to keep the number of storage transfer
- * syntaxes <= 64.  If we have more than 64 storage transfer syntaxes, tools
- * such as storescu will fail because they attempt to negotiate two
- * presentation contexts for each SOP class, and there is a total limit of
- * 128 contexts for one association.
- *
-    UID_RETIRED_VLImageStorage,
-    UID_RETIRED_VLMultiFrameImageStorage,
- */
-    UID_RETIRED_XRayAngiographicBiPlaneImageStorage,
     UID_RTBeamsTreatmentRecordStorage,
     UID_RTBrachyTreatmentRecordStorage,
     UID_RTDoseStorage,
@@ -390,10 +433,6 @@ const char* dcmStorageSOPClassUIDs[] = {
     UID_SecondaryCaptureImageStorage,
     UID_SpatialRegistrationStorage,
     UID_SpatialFiducialsStorage,
-    UID_StandaloneCurveStorage,
-    UID_StandaloneModalityLUTStorage,
-    UID_StandaloneOverlayStorage,
-    UID_StandaloneVOILUTStorage,
     UID_StoredPrintStorage,
     UID_TwelveLeadECGWaveformStorage,
     UID_UltrasoundImageStorage,
@@ -404,16 +443,12 @@ const char* dcmStorageSOPClassUIDs[] = {
     UID_VLSlideCoordinatesMicroscopicImageStorage,
     UID_XRayAngiographicImageStorage,
     UID_XRayFluoroscopyImageStorage,
-/* disabled new image storage SOP classes from supplement 47 to keep the
- * number of storage transfer syntaxes <= 64.  If we have more than 64
- * storage transfer syntaxes, tools such as storescu will fail because
- * they attempt to negotiate two presentation contexts for each SOP class,
- * and there is a total limit of 128 contexts for one association.
- *
     UID_VideoEndoscopicImageStorage,
     UID_MicroscopicImageStorage,
     UID_VideoPhotographicImageStorage,
- */
+    UID_Ophthalmic16BitPhotographyImageStorage,
+    UID_Ophthalmic8BitPhotographyImageStorage,
+    UID_StereometricRelationshipStorage,
     NULL
 };
 
@@ -473,6 +508,8 @@ const char* dcmImageSOPClassUIDs[] = {
     UID_VideoPhotographicImageStorage,
     UID_XRayAngiographicImageStorage,
     UID_XRayFluoroscopyImageStorage,
+    UID_Ophthalmic16BitPhotographyImageStorage,
+    UID_Ophthalmic8BitPhotographyImageStorage,
     NULL
 };
 
@@ -566,7 +603,10 @@ static const DcmModalityTable modalities[] = {
     { UID_VLPhotographicImageStorage,                          "VLp", 768 * 576 * 3 },
     { UID_VLSlideCoordinatesMicroscopicImageStorage,           "VMs", 768 * 576 * 3 },
     { UID_XRayAngiographicImageStorage,                        "XA",  2 * 512 * 512 },
-    { UID_XRayFluoroscopyImageStorage,                         "RF",  2 * 512 * 512 }
+    { UID_XRayFluoroscopyImageStorage,                         "RF",  2 * 512 * 512 },
+    { UID_Ophthalmic16BitPhotographyImageStorage,              "OPw",  6 * 1024 * 1024 },
+    { UID_Ophthalmic8BitPhotographyImageStorage,               "OPb",  3 * 1024 * 1024 },
+    { UID_StereometricRelationshipStorage,                     "OSR",  4096 }
 
 };
 
@@ -1121,7 +1161,12 @@ char* dcmGenerateUniqueIdentifier(char* uid, const char* prefix)
 /*
 ** CVS/RCS Log:
 ** $Log: dcuid.cc,v $
-** Revision 1.56  2004-08-03 11:41:09  meichel
+** Revision 1.57  2004-11-10 12:37:56  meichel
+** Updated directory of UIDs for 2004 DICOM edition. Removed all standalone and
+**   most retired storage SOP classes from list of storage SOP classes for
+**   storescu, storescp, imagectn etc. to keep list shorter than 64 entries.
+**
+** Revision 1.56  2004/08/03 11:41:09  meichel
 ** Headers libc.h and unistd.h are now included via ofstdinc.h
 **
 ** Revision 1.55  2004/04/16 08:38:41  joergr
