@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DVInterface
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-05-31 12:56:37 $
- *  CVS/RCS Revision: $Revision: 1.62 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2000-06-02 12:41:50 $
+ *  CVS/RCS Revision: $Revision: 1.63 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -100,7 +100,7 @@ class DVInterface: public DVConfiguration
     /** loads an image which referenced by the current presentation
      *  state and needs to be contained in the database.
      *  This method acquires a database lock which must be explicitly freed by the user.
-     *  @param idx index of the image to be loaded (< DVPresentationState::numberOfImageReferences())
+     *  @param idx index of the image to be loaded (< getNumberOfImageReferences())
      *  @return EC_Normal upon success, an error code otherwise.
      */
     E_Condition loadReferencedImage(size_t idx);
@@ -1617,7 +1617,10 @@ private:
 /*
  *  CVS/RCS Log:
  *  $Log: dviface.h,v $
- *  Revision 1.62  2000-05-31 12:56:37  meichel
+ *  Revision 1.63  2000-06-02 12:41:50  joergr
+ *  Corrected wrong interface descriptions.
+ *
+ *  Revision 1.62  2000/05/31 12:56:37  meichel
  *  Added initial Print SCP support
  *
  *  Revision 1.61  2000/05/31 07:54:23  joergr

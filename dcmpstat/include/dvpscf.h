@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DVConfiguration
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-05-31 12:56:37 $
- *  CVS/RCS Revision: $Revision: 1.15 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2000-06-02 12:41:51 $
+ *  CVS/RCS Revision: $Revision: 1.16 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -112,7 +112,7 @@ class DVConfiguration
      */
     DVPSPeerType getTargetType(const char *targetID);
 
-    /** returns the HOSTNAME entry for the communication partner with the given
+    /** returns the AETITLE entry for the communication partner with the given
      *  target ID from the configuration file.
      *  @param targetID communication target ID, must be one of the target
      *    identifiers returned by getTargetID().
@@ -841,7 +841,10 @@ private:
 /*
  *  CVS/RCS Log:
  *  $Log: dvpscf.h,v $
- *  Revision 1.15  2000-05-31 12:56:37  meichel
+ *  Revision 1.16  2000-06-02 12:41:51  joergr
+ *  Corrected wrong interface descriptions.
+ *
+ *  Revision 1.15  2000/05/31 12:56:37  meichel
  *  Added initial Print SCP support
  *
  *  Revision 1.14  2000/05/30 13:40:02  joergr
