@@ -23,10 +23,10 @@
  *  Definitions of "well known" DICOM Unique Indentifiers,
  *  routines for finding and creating UIDs.
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2005-02-17 13:09:55 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2005-03-17 16:31:30 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcuid.h,v $
- *  CVS/RCS Revision: $Revision: 1.67 $
+ *  CVS/RCS Revision: $Revision: 1.68 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -521,7 +521,10 @@ unsigned long dcmGuessModalityBytes(const char *sopClassUID);
 /*
 ** CVS/RCS Log:
 ** $Log: dcuid.h,v $
-** Revision 1.67  2005-02-17 13:09:55  joergr
+** Revision 1.68  2005-03-17 16:31:30  meichel
+** Changed CR/LF to LF
+**
+** Revision 1.67  2005/02/17 13:09:55  joergr
 ** Renamed "MicroscopicImageStorage" to "VideoMicroscopicImageStorage".
 **
 ** Revision 1.66  2004/11/10 12:37:55  meichel
