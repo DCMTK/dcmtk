@@ -9,9 +9,9 @@
 **
 **
 ** Last Update:		$Author: hewett $
-** Update Date:		$Date: 1996-03-12 15:11:37 $
+** Update Date:		$Date: 1996-09-24 16:13:49 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/apps/dcmconv.cc,v $
-** CVS/RCS Revision:	$Revision: 1.5 $
+** CVS/RCS Revision:	$Revision: 1.6 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -26,6 +26,10 @@
 #endif
 #include <stdio.h>
 #include <string.h>
+
+#ifdef HAVE_GUSI_H
+#include <GUSI.h>
+#endif
 
 #include "dctk.h"
 #include "dcdebug.h"
@@ -103,9 +107,15 @@ verify(DcmFileFormat& dcmff, BOOL verbosemode, FILE* f)
 
 int main(int argc, char *argv[])
 {
+
+#ifdef HAVE_GUSI_H
+    GUSISetup(GUSIwithSIOUXSockets);
+    GUSISetup(GUSIwithInternetSockets);
+#endif
+
     SetDebugLevel(( 0 ));
 
-    prepareCmdLineArgs(argc, argv);
+    prepareCmdLineArgs(argc, argv, "dcmconv");
     
     if (argc < 3) {
 	usage();
@@ -328,7 +338,10 @@ int main(int argc, char *argv[])
 /*
 ** CVS/RCS Log:
 ** $Log: dcmconv.cc,v $
-** Revision 1.5  1996-03-12 15:11:37  hewett
+** Revision 1.6  1996-09-24 16:13:49  hewett
+** Added preliminary support for the Macintosh environment (GUSI library).
+**
+** Revision 1.5  1996/03/12 15:11:37  hewett
 ** Added call to prepareCmdLineArgs to enable command line arguments
 ** in environments which do not provide them.
 **

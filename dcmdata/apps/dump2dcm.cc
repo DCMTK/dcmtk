@@ -51,9 +51,9 @@
 **
 **
 ** Last Update:		$Author: hewett $
-** Update Date:		$Date: 1996-05-02 17:00:23 $
+** Update Date:		$Date: 1996-09-24 16:13:51 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/apps/dump2dcm.cc,v $
-** CVS/RCS Revision:	$Revision: 1.6 $
+** CVS/RCS Revision:	$Revision: 1.7 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -67,6 +67,11 @@
 #endif
 #include <iostream.h>
 #include <ctype.h>
+
+#ifdef HAVE_GUSI_H
+#include <GUSI.h>
+#endif
+
 #include "dctk.h"
 #include "dcdebug.h"
 #include "cmdlnarg.h"
@@ -613,9 +618,14 @@ readDumpFile(DcmMetaInfo * metaheader, DcmDataset * dataset,
 
 int main(int argc, char *argv[])
 {
+#ifdef HAVE_GUSI_H
+    GUSISetup(GUSIwithSIOUXSockets);
+    GUSISetup(GUSIwithInternetSockets);
+#endif
+
     SetDebugLevel(( 0 ));
 
-    prepareCmdLineArgs(argc, argv);
+    prepareCmdLineArgs(argc, argv, "dump2dcm");
         
     if (argc < 3) {
 	usage();
@@ -843,7 +853,10 @@ int main(int argc, char *argv[])
 /*
 ** CVS/RCS Log:
 ** $Log: dump2dcm.cc,v $
-** Revision 1.6  1996-05-02 17:00:23  hewett
+** Revision 1.7  1996-09-24 16:13:51  hewett
+** Added preliminary support for the Macintosh environment (GUSI library).
+**
+** Revision 1.6  1996/05/02 17:00:23  hewett
 ** Corrected program name in usage description.
 **
 ** Revision 1.5  1996/05/02 15:55:11  hewett

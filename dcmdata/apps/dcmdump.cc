@@ -10,9 +10,9 @@
 **
 **
 ** Last Update:		$Author: hewett $
-** Update Date:		$Date: 1996-09-18 16:34:16 $
+** Update Date:		$Date: 1996-09-24 16:13:50 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/apps/dcmdump.cc,v $
-** CVS/RCS Revision:	$Revision: 1.6 $
+** CVS/RCS Revision:	$Revision: 1.7 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -29,6 +29,11 @@
 #include "dctk.h"
 #include "dcdebug.h"
 #include "cmdlnarg.h"
+
+#ifdef HAVE_GUSI_H
+    /* needed for Macintosh */
+#include <GUSI.h>
+#endif
 
 static int dumpFile(ostream & out,
 		    const char* ifname, const BOOL isDataset, 
@@ -71,7 +76,7 @@ static BOOL addPrintTagName(const char* tagName)
 	printTagDictEntries[printTagCount] = NULL;
     }
 
-    printTagNames[printTagCount] = strdup(tagName);
+    printTagNames[printTagCount] = strcpy((char*)malloc(strlen(tagName)+1),tagName);
     printTagCount++;
     return TRUE;
 }
@@ -122,14 +127,16 @@ int main(int argc, char *argv[])
     BOOL isDataset = FALSE;
     BOOL perr = FALSE;
     E_TransferSyntax xfer = EXS_Unknown;
-#ifdef HAVE_LIBIOSTREAM
-    cin.sync_with_stdio();
-    cout.sync_with_stdio();
-    cerr.sync_with_stdio();
+
+#ifdef HAVE_GUSI_H
+    /* needed for Macintosh */
+    GUSISetup(GUSIwithSIOUXSockets);
+    GUSISetup(GUSIwithInternetSockets);
 #endif
+
     SetDebugLevel(( 0 ));
 
-    prepareCmdLineArgs(argc, argv);
+    prepareCmdLineArgs(argc, argv, "dcmdump");
     
     if (argc < 2) {
 	usage();
@@ -383,7 +390,10 @@ static int dumpFile(ostream & out,
 /*
 ** CVS/RCS Log:
 ** $Log: dcmdump.cc,v $
-** Revision 1.6  1996-09-18 16:34:16  hewett
+** Revision 1.7  1996-09-24 16:13:50  hewett
+** Added preliminary support for the Macintosh environment (GUSI library).
+**
+** Revision 1.6  1996/09/18 16:34:16  hewett
 ** Added optional code to the dcmdump program to restrict its
 ** output to specified named tags.  Based on a suggestion from
 ** Larry V. Streepy, Jr.  (mailto:streepy@healthcare.com).

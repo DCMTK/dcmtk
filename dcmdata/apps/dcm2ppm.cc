@@ -10,7 +10,7 @@
  *
  *
  * Last Update:   $Author: hewett $
- * Revision:	  $Revision: 1.4 $
+ * Revision:	  $Revision: 1.5 $
  * Status:	  $State: Exp $
  *
  */
@@ -21,19 +21,26 @@
 #include <stdlib.h>
 #include <strstream.h>
 
+#ifdef HAVE_GUSI_H
+#include <GUSI.h>
+#endif
+
 #include "dctk.h"
 #include "dcdebug.h"
-
 #include "dcmutils.h"
 #include "dcimapix.h"
-
 #include "cmdlnarg.h"
 
 int main(int argc, char *argv[])
 {
+#ifdef HAVE_GUSI_H
+    GUSISetup(GUSIwithSIOUXSockets);
+    GUSISetup(GUSIwithInternetSockets);
+#endif
+
     SetDebugLevel(( 0 ));
 
-    prepareCmdLineArgs(argc, argv);
+    prepareCmdLineArgs(argc, argv, "dcm2ppm");
 
     /* parse cmd line */
     if (argc != 3) {

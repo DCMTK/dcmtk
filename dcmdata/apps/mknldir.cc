@@ -8,17 +8,24 @@
 #include <stdio.h>
 #include <string.h>
 #include <time.h>
+
+#ifdef HAVE_GUSI_H
+#include <GUSI.h>
+#endif
+
 #include "dctk.h"
 #include "dcdebug.h"
 #include "cmdlnarg.h"
 
 int main(int argc, char *argv[])
 {
-#ifdef HAVE_LIBIOSTREAM
-    cin.sync_with_stdio();
-    cout.sync_with_stdio();
-    cerr.sync_with_stdio();
+
+#ifdef HAVE_GUSI_H
+    GUSISetup(GUSIwithSIOUXSockets);
+    GUSISetup(GUSIwithInternetSockets);
 #endif
+
+    prepareCmdLineArgs(argc, argv, "mknldir");
 
     SetDebugLevel(( 0 ));
 
@@ -33,8 +40,6 @@ int main(int argc, char *argv[])
 	     << DCM_DICT_ENVIRONMENT_VARIABLE << endl;
 	return 1; /* DcmDicomDir class dumps core when no data dictionary */
     }
-
-    prepareCmdLineArgs(argc, argv);
 
     /* parse cmd line */
     if (argc != 3) {

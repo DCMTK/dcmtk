@@ -10,7 +10,7 @@
  *
  *
  * Last Update:   $Author: hewett $
- * Revision:	  $Revision: 1.5 $
+ * Revision:	  $Revision: 1.6 $
  * Status:	  $State: Exp $
  *
  */
@@ -24,6 +24,7 @@
 #ifdef HAVE_LIBC_H
 #include <libc.h>
 #endif
+
 
 #if defined(HAVE_MKTEMP) && !defined(HAVE_PROTOTYPE_MKTEMP)
 extern "C" {
@@ -41,6 +42,10 @@ char * mktemp(char *);
 #include <unistd.h>
 #endif
 
+#ifdef HAVE_GUSI_H
+#include <GUSI.h>
+#endif
+
 #include "dctk.h"
 #include "dcdebug.h"
 #include "dcmutils.h"
@@ -50,9 +55,14 @@ char * mktemp(char *);
 
 int main(int argc, char *argv[])
 {
-  SetDebugLevel(( 0 ));
+#ifdef HAVE_GUSI_H
+    GUSISetup(GUSIwithSIOUXSockets);
+    GUSISetup(GUSIwithInternetSockets);
+#endif
 
-  prepareCmdLineArgs(argc, argv);
+  prepareCmdLineArgs(argc, argv, "ppm2dcm");
+
+  SetDebugLevel(( 0 ));
 
   /* parse cmd line */
   if (argc != 3) {

@@ -9,9 +9,9 @@
 **
 **
 ** Last Update:		$Author: hewett $
-** Update Date:		$Date: 1996-03-12 15:11:39 $
+** Update Date:		$Date: 1996-09-24 16:13:52 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/apps/Attic/file2ds.cc,v $
-** CVS/RCS Revision:	$Revision: 1.4 $
+** CVS/RCS Revision:	$Revision: 1.5 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -21,6 +21,10 @@
 #include "osconfig.h"    /* make sure OS specific configuration is included first */
 
 #include <iostream.h>
+#ifdef HAVE_GUSI_H
+#include <GUSI.h>
+#endif
+
 #include "dctk.h"
 #include "dcdebug.h"
 #include "cmdlnarg.h"
@@ -97,15 +101,14 @@ verify(DcmDataset& dcmds, BOOL verbosemode, FILE* f)
 int main(int argc, char *argv[])
 {
 
-#if HAVE_LIBIOSTREAM
-    cin.sync_with_stdio();
-    cout.sync_with_stdio();
-    cerr.sync_with_stdio();
+#ifdef HAVE_GUSI_H
+    GUSISetup(GUSIwithSIOUXSockets);
+    GUSISetup(GUSIwithInternetSockets);
 #endif
 
     SetDebugLevel(( 0 ));
 
-    prepareCmdLineArgs(argc, argv);
+    prepareCmdLineArgs(argc, argv, "file2ds");
 
     if (argc < 3) {
 	usage();
@@ -274,7 +277,10 @@ int main(int argc, char *argv[])
 /*
 ** CVS/RCS Log:
 ** $Log: file2ds.cc,v $
-** Revision 1.4  1996-03-12 15:11:39  hewett
+** Revision 1.5  1996-09-24 16:13:52  hewett
+** Added preliminary support for the Macintosh environment (GUSI library).
+**
+** Revision 1.4  1996/03/12 15:11:39  hewett
 ** Added call to prepareCmdLineArgs to enable command line arguments
 ** in environments which do not provide them.
 **
