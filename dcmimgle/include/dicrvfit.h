@@ -22,9 +22,9 @@
  *  Purpose: DiCurveFitting (Header/Implementation)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-10-20 18:38:49 $
+ *  Update Date:      $Date: 1999-10-21 08:29:41 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/dicrvfit.h,v $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -41,7 +41,7 @@
 
 
 // SunCC 4.x does not support default values for template types :-/
-#define T3 double
+#define _T3 double
 
 
 /********************************************************************/
@@ -99,7 +99,7 @@ class DiCurveFitting
     /** calculate coefficients for resulting polynomial function.
      *  T1 = type of x coordinates
      *  T2 = type of y coordinates
-     *  T3 = type of coefficients (and for internal calculations)
+     * _T3 = type of coefficients (and for internal calculations)
      *
      ** @param  x  array with x coordinates of given points
      *  @param  y  array with y coordinates of given points
@@ -113,16 +113,16 @@ class DiCurveFitting
                                      const T2 *y,
                                      const unsigned int n,
                                      const unsigned int o,
-                                     T3 *c)
+                                     _T3 *c)
     {
         int result = 0;
         if ((x != NULL) && (y != NULL) && (c !=NULL) && (n > 0))
         {
             const unsigned int order = o + 1;
             const unsigned int order2 = order * order;
-            T3 *basis = new T3[order * n];
-            T3 *alpha = new T3[order2];
-            T3 *beta = new T3[order];
+            _T3 *basis = new _T3[order * n];
+            _T3 *alpha = new _T3[order2];
+            _T3 *beta = new _T3[order];
             if ((basis != NULL) && (alpha != NULL) && (beta != NULL))
             {
                 register unsigned int i;
@@ -136,10 +136,10 @@ class DiCurveFitting
                         if (i == 0)
                             basis[k] = 1;
                         else
-                            basis[k] = (T3)x[j] * basis[k - 1];
+                            basis[k] = (_T3)x[j] * basis[k - 1];
                      }
                 }
-                T3 sum;
+                _T3 sum;
                 for (i = 0; i < order; i++)
                 {
                     const unsigned int i_order = i * order;
@@ -157,7 +157,7 @@ class DiCurveFitting
                 {
                     sum = 0;
                     for (j = 0; j < n; j++)
-                        sum += (T3)y[j] * basis[i + j * order];
+                        sum += (_T3)y[j] * basis[i + j * order];
                     beta[i] = sum;
                 }
                 if (solve(alpha, beta, order))
@@ -179,7 +179,7 @@ class DiCurveFitting
      *  The polynomial function is defined by the specified coefficients.
      *  T1 = type of x coordinates
      *  T2 = type of y coordinates
-     *  T3 = type of coefficients (and for internal calculations)
+     * _T3 = type of coefficients (and for internal calculations)
      *
      ** @param  xs  first x coordinate for computation
      *  @param  xe  last x coordinate for computation
@@ -195,21 +195,21 @@ class DiCurveFitting
                                T2 *y,
                                const unsigned int n,
                                const unsigned int o,
-                               const T3 *c)
+                               const _T3 *c)
     {
         int result = 0;
         if ((y != NULL) && (c != NULL) && (n > 0) && (xs < xe))
         {
             register unsigned int i;
             register unsigned int j;
-            T3 x;
-            T3 x2;
-            T3 w;
-            const T3 xo = (T3)xs;
-            const T3 xi = (T3)(xe - xs) / (T3)(n - 1);
+            _T3 x;
+            _T3 x2;
+            _T3 w;
+            const _T3 xo = (_T3)xs;
+            const _T3 xi = (_T3)(xe - xs) / (_T3)(n - 1);
             for (i = 0; i < n; i++)
             {
-                x = xo + (T3)i * xi;
+                x = xo + (_T3)i * xi;
                 x2 = 1;
                 w = 0;
                 for (j = 0; j <= o; j++)
@@ -228,7 +228,7 @@ class DiCurveFitting
  private:
 
     /** solve the equation given by the two matrixes.
-     *  T3 = type of coefficients (and for internal calculations)
+     * _T3 = type of coefficients (and for internal calculations)
      *
      ** @param  a  first matrix (array of values)
      *  @param  b  second matrix (array of values)
@@ -236,8 +236,8 @@ class DiCurveFitting
      *
      ** @return true if successful, false otherwise
      */
-    static int solve(T3 *a,
-                     T3 *b,
+    static int solve(_T3 *a,
+                     _T3 *b,
                      const unsigned int n)
     {
         int result = 0;
@@ -247,9 +247,9 @@ class DiCurveFitting
             register unsigned int j;
             register unsigned int k;
             signed int pivot;
-            T3 mag;
-            T3 mag2;
-            T3 temp;
+            _T3 mag;
+            _T3 mag2;
+            _T3 temp;
             for (i = 0; i < n; i++)
             {
                 mag = 0;
@@ -313,7 +313,11 @@ class DiCurveFitting
  *
  * CVS/RCS Log:
  * $Log: dicrvfit.h,v $
- * Revision 1.5  1999-10-20 18:38:49  joergr
+ * Revision 1.6  1999-10-21 08:29:41  joergr
+ * Renamed template type definition from 'T3' to '_T3' to avoid naming
+ * conflicts.
+ *
+ * Revision 1.5  1999/10/20 18:38:49  joergr
  * Eliminated default values for template types since this features is not
  * supported by SunCC 4.x (temporarily introduced '#define' instead).
  *
