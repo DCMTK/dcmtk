@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2001, OFFIS
+ *  Copyright (C) 1996-2002, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose: DicomYBR422PixelTemplate (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-11-09 16:47:03 $
+ *  Update Date:      $Date: 2002-05-24 09:53:06 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/include/Attic/diyf2pxt.h,v $
- *  CVS/RCS Revision: $Revision: 1.14 $
+ *  CVS/RCS Revision: $Revision: 1.15 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -38,6 +38,7 @@
 #include "osconfig.h"
 
 #include "dicopxt.h"
+#include "ofconsol.h"
 
 
 /*---------------------*
@@ -155,7 +156,10 @@ class DiYBR422PixelTemplate
  *
  * CVS/RCS Log:
  * $Log: diyf2pxt.h,v $
- * Revision 1.14  2001-11-09 16:47:03  joergr
+ * Revision 1.15  2002-05-24 09:53:06  joergr
+ * Added missing #include "ofconsol.h".
+ *
+ * Revision 1.14  2001/11/09 16:47:03  joergr
  * Removed 'inline' specifier from certain methods.
  *
  * Revision 1.13  2001/09/28 13:55:41  joergr
