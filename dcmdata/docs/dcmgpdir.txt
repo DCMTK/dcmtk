@@ -1,9 +1,8 @@
+/*!
 
-NAME
+\anchor dcmgpdir Create a general purpose DICOMDIR
 
-    dcmgpdir
-
-
+\page dcmgpdir
 SYNOPSIS
 
     dcmgpdir [options] dcmfile-in...
