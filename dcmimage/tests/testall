@@ -1,5 +1,0 @@
-for prog in /Users/joerg/Diplom/DICOM/Data/*.dcm; do \
-  echo $prog ;
-  ./test $prog ;
-  echo ;\
-done

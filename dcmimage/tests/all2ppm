@@ -1,5 +1,0 @@
-for prog in /Users/joerg/Diplom/DICOM/Data/cabinet/*.dio ; do \
-  echo $prog ;
-  ./dcm2ppm $prog $prog.ppm ;
-  echo ;\
-done
