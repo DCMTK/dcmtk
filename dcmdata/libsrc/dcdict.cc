@@ -22,9 +22,9 @@
  *  Purpose: loadable DICOM data dictionary
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2003-03-21 13:08:04 $
+ *  Update Date:      $Date: 2003-07-03 15:38:14 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcdict.cc,v $
- *  CVS/RCS Revision: $Revision: 1.29 $
+ *  CVS/RCS Revision: $Revision: 1.30 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -699,8 +699,8 @@ DcmDataDictionary::findEntry(const DcmDictEntry& entry) const
 
     if (entry.isRepeating()) {
         OFBool found = OFFalse;
-        DcmDictEntryListIterator iter(repDict.begin());
-        DcmDictEntryListIterator last(repDict.end());
+        DcmDictEntryListConstIterator iter(repDict.begin());
+        DcmDictEntryListConstIterator last(repDict.end());
         for (; !found && iter != last; ++iter) {
             if (entry.setEQ(**iter)) {
                 found = OFTrue;
@@ -725,8 +725,8 @@ DcmDataDictionary::findEntry(const DcmTagKey& key, const char *privCreator) cons
     if (e == NULL) {
         /* search in the repeating tags dictionary */
         OFBool found = OFFalse;
-        DcmDictEntryListIterator iter(repDict.begin());
-        DcmDictEntryListIterator last(repDict.end());
+        DcmDictEntryListConstIterator iter(repDict.begin());
+        DcmDictEntryListConstIterator last(repDict.end());
         for (; !found && iter != last; ++iter) {
             if ((*iter)->contains(key, privCreator)) {
                 found = OFTrue;
@@ -754,8 +754,8 @@ DcmDataDictionary::findEntry(const char *name) const
     if (e == NULL) {
         /* search in the repeating tags dictionary */
         OFBool found = OFFalse;
-        DcmDictEntryListIterator iter2(repDict.begin());
-        DcmDictEntryListIterator last(repDict.end());
+        DcmDictEntryListConstIterator iter2(repDict.begin());
+        DcmDictEntryListConstIterator last(repDict.end());
         for (; !found && iter2 != last; ++iter2) {
             if ((*iter2)->contains(name)) {
                 found = OFTrue;
@@ -821,7 +821,10 @@ void GlobalDcmDataDictionary::clear()
 /*
 ** CVS/RCS Log:
 ** $Log: dcdict.cc,v $
-** Revision 1.29  2003-03-21 13:08:04  meichel
+** Revision 1.30  2003-07-03 15:38:14  meichel
+** Introduced DcmDictEntryListConstIterator, needed for compiling with HAVE_STL.
+**
+** Revision 1.29  2003/03/21 13:08:04  meichel
 ** Minor code purifications for warnings reported by MSVC in Level 4
 **
 ** Revision 1.28  2002/11/27 12:06:44  meichel

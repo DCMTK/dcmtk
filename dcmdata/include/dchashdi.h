@@ -21,10 +21,10 @@
  *
  *  Purpose: Hash table interface for DICOM data dictionary
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-06-12 13:35:04 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2003-07-03 15:38:10 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dchashdi.h,v $
- *  CVS/RCS Revision: $Revision: 1.15 $
+ *  CVS/RCS Revision: $Revision: 1.16 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -45,8 +45,9 @@ class DcmHashDict;
 /** the default size for a data dictionary hash table */
 const int DCMHASHDICT_DEFAULT_HASHSIZE = 2047;
 
-/// typedef needed for MSVC5
+/// typedefs needed for MSVC5
 typedef OFListIterator(DcmDictEntry *) OFListIteratorPDcmDictEntry;
+typedef OFListConstIterator(DcmDictEntry *) OFListConstIteratorPDcmDictEntry;
 
 
 /** iterator class for traversing a DcmDictEntryList
@@ -67,6 +68,28 @@ public:
     DcmDictEntryListIterator& operator=(const DcmDictEntryListIterator& i)
     {
       OFListIteratorPDcmDictEntry::operator=(i);
+      return *this;
+    }
+};
+
+/** const_iterator class for traversing a DcmDictEntryList
+ */
+class DcmDictEntryListConstIterator: public OFListConstIteratorPDcmDictEntry
+{
+public:
+    /// default constructor
+    DcmDictEntryListConstIterator() {}
+
+    /** constructor
+     *  @param iter reference to an object of the base class
+     */
+    DcmDictEntryListConstIterator(const OFListConstIterator(DcmDictEntry*)& iter) 
+    : OFListConstIterator(DcmDictEntry*)(iter) {}
+
+    /// copy assignment operator
+    DcmDictEntryListConstIterator& operator=(const DcmDictEntryListConstIterator& i)
+    {
+      OFListConstIteratorPDcmDictEntry::operator=(i);
       return *this;
     }
 };
@@ -297,7 +320,10 @@ private:
 /*
 ** CVS/RCS Log:
 ** $Log: dchashdi.h,v $
-** Revision 1.15  2003-06-12 13:35:04  joergr
+** Revision 1.16  2003-07-03 15:38:10  meichel
+** Introduced DcmDictEntryListConstIterator, needed for compiling with HAVE_STL.
+**
+** Revision 1.15  2003/06/12 13:35:04  joergr
 ** Fixed inconsistent API documentation reported by Doxygen.
 **
 ** Revision 1.14  2003/06/03 10:26:17  meichel
