@@ -22,9 +22,9 @@
  *  Purpose: Convert DICOM Images to PPM or PGM using the dcmimage library.
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-06-07 14:46:08 $
+ *  Update Date:      $Date: 2000-07-07 14:17:23 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/apps/dcm2pnm.cc,v $
- *  CVS/RCS Revision: $Revision: 1.44 $
+ *  CVS/RCS Revision: $Revision: 1.45 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -126,8 +126,7 @@ int main(int argc, char *argv[])
     OFCmdUnsignedInt    opt_windowParameter = 0;
     OFCmdFloat          opt_windowCenter=0.0, opt_windowWidth=0.0;
 
-    int                 opt_usePresShape = 0;
-    ES_PresentationLut  opt_presShape = ESP_Identity;
+    ES_PresentationLut  opt_presShape = ESP_Default;
     OFString            opt_displayFile;
     int                 opt_displayFunction = 0;          /* default: GSDF */
 
@@ -160,7 +159,7 @@ int main(int argc, char *argv[])
     cmd.setOptionColumns(LONGCOL, SHORTCOL);
 
     cmd.addParam("dcmfile-in",  "DICOM input filename to be converted");
-    cmd.addParam("dcmfile-out", "PGM/PNM output file name to be written", OFCmdParam::PM_Optional);
+    cmd.addParam("pnmfile-out", "PGM/PNM output file name to be written", OFCmdParam::PM_Optional);
 
     cmd.addGroup("general options:", LONGCOL, SHORTCOL + 2);
      cmd.addOption("--help",                "-h",      "print this help text and exit");
@@ -230,8 +229,9 @@ int main(int argc, char *argv[])
                                                        "compute VOI window using center c and width w");
 
      cmd.addSubGroup("presentation LUT transformation options:");
-      cmd.addOption("--identity-shape",     "+Pid",    "presentation LUT shape IDENTITY (default)");
+      cmd.addOption("--identity-shape",     "+Pid",    "presentation LUT shape IDENTITY");
       cmd.addOption("--inverse-shape",      "+Piv",    "presentation LUT shape INVERSE");
+      cmd.addOption("--lin-od-shape",       "+Pod",    "presentation LUT shape LIN OD");
 
      cmd.addSubGroup("overlay options:");
       cmd.addOption("--no-overlays",        "-O",      "do not display overlays");
@@ -439,15 +439,11 @@ int main(int argc, char *argv[])
 
             cmd.beginOptionBlock();
             if (cmd.findOption("--identity-shape"))
-            {
-                opt_usePresShape = 1;
                 opt_presShape = ESP_Identity;
-            }
             if (cmd.findOption("--inverse-shape"))
-            {
-                opt_usePresShape = 1;
                 opt_presShape = ESP_Inverse;
-            }
+            if (cmd.findOption("--lin-od-shape"))
+                opt_presShape = ESP_LinOD;
             cmd.endOptionBlock();
 
             if (cmd.findOption("--display-file"))
@@ -803,18 +799,16 @@ int main(int argc, char *argv[])
     }
 
     /* process presentation LUT parameters */
-    if (opt_usePresShape)
+    if (opt_presShape != ESP_Default)
     {
         if (opt_verboseMode > 1)
         {
-            switch (opt_presShape)
-            {
-                case ESP_Inverse:
-                    OUTPUT << "setting presentation LUT shape to INVERSE" << endl;
-                    break;
-                default:
-                    OUTPUT << "setting presentation LUT shape to IDENTITY" << endl;
-            }
+            if (opt_presShape == ESP_Identity)
+                OUTPUT << "setting presentation LUT shape to IDENTITY" << endl;
+            else if (opt_presShape == ESP_Inverse)
+                OUTPUT << "setting presentation LUT shape to INVERSE" << endl;
+            else if (opt_presShape == ESP_LinOD)
+                OUTPUT << "setting presentation LUT shape to LIN OD" << endl;
         }
         di->setPresentationLutShape(opt_presShape);
     }
@@ -1000,7 +994,10 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcm2pnm.cc,v $
- * Revision 1.44  2000-06-07 14:46:08  joergr
+ * Revision 1.45  2000-07-07 14:17:23  joergr
+ * Added support for LIN OD presentation LUT shape.
+ *
+ * Revision 1.44  2000/06/07 14:46:08  joergr
  * Added new command line option to change the polarity.
  *
  * Revision 1.43  2000/04/28 12:35:59  joergr

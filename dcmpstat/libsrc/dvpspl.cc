@@ -23,8 +23,8 @@
  *    classes: DVPSPresentationLUT
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-07-07 13:39:50 $
- *  CVS/RCS Revision: $Revision: 1.16 $
+ *  Update Date:      $Date: 2000-07-07 14:15:14 $
+ *  CVS/RCS Revision: $Revision: 1.17 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -412,8 +412,10 @@ OFBool DVPSPresentationLUT::activate(DicomImage *image, OFBool printLUT)
       }
       break;      
     case DVPSP_lin_od:
-      if (printLUT)
+      if (!printLUT)
         result = image->setPresentationLutShape(ESP_LinOD);
+      else
+        result = 1;
       if ((!result) && verboseMode)
       {
         logstream->lockCerr() << "warning: unable to set linear optical density presentation LUT shape, ignoring." << endl;
@@ -648,7 +650,10 @@ void DVPSPresentationLUT::setLog(OFConsole *stream, OFBool verbMode, OFBool dbgM
 
 /*
  *  $Log: dvpspl.cc,v $
- *  Revision 1.16  2000-07-07 13:39:50  joergr
+ *  Revision 1.17  2000-07-07 14:15:14  joergr
+ *  Added support for LIN OD presentation LUT shape.
+ *
+ *  Revision 1.16  2000/07/07 13:39:50  joergr
  *  Added support for LIN OD presentation LUT shape.
  *
  *  Revision 1.15  2000/06/09 10:15:36  joergr

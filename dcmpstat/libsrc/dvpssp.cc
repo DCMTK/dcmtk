@@ -23,8 +23,8 @@
  *    classes: DVPSStoredPrint
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-07-04 16:06:48 $
- *  CVS/RCS Revision: $Revision: 1.35 $
+ *  Update Date:      $Date: 2000-07-07 14:15:15 $
+ *  CVS/RCS Revision: $Revision: 1.36 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1907,6 +1907,28 @@ const char *DVPSStoredPrint::getMinDensity()
   return NULL;
 }
 
+Uint16 DVPSStoredPrint::getMaxDensityValue()
+{
+  if (maxDensity.getLength() > 0)
+  {
+    Uint16 density=0;
+    if (EC_Normal == maxDensity.getUint16(density,0))
+      return density;
+  }
+  return 0;
+}
+
+Uint16 DVPSStoredPrint::getMinDensityValue()
+{
+  if (minDensity.getLength() > 0)
+  {
+    Uint16 density=0;
+    if (EC_Normal == minDensity.getUint16(density,0))
+      return density;
+  }
+  return 0;
+}
+
 E_Condition DVPSStoredPrint::setMaxDensity(const char *value)
 {
   E_Condition result = EC_Normal;
@@ -3481,7 +3503,10 @@ void DVPSStoredPrint::overridePresentationLUTSettings(
 
 /*
  *  $Log: dvpssp.cc,v $
- *  Revision 1.35  2000-07-04 16:06:48  joergr
+ *  Revision 1.36  2000-07-07 14:15:15  joergr
+ *  Added support for LIN OD presentation LUT shape.
+ *
+ *  Revision 1.35  2000/07/04 16:06:48  joergr
  *  Added support for overriding the presentation LUT settings made for the
  *  image boxes.
  *

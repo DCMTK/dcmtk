@@ -4,18 +4,21 @@ NAME
 
 SYNOPSIS
 
-    dcm2pnm [options] dicomfile-in [pnmfile-out]
+    dcm2pnm [options] dcmfile-in [pnmfile-out]
 
 SUMMARY
 
 The dcm2pnm utility reads a DICOM image, converts the pixel data according
 to the selected image processing options and writes back an image in the
 well-known PPM/PGM file format (portable pix map / portable gray map).
-If no output file name is specified, the PPM/PGM image is written to stdout.
 
 USAGE
 
 usage: dcm2pnm [options] dcmfile-in [pnmfile-out]
+
+parameters:
+  dcmfile-in   DICOM input filename to be converted
+  dcmfile-out  PGM/PNM output file name to be written
 
 general options:
   -h      --help                print this help text and exit
@@ -80,6 +83,7 @@ image processing options:
   presentation LUT transformation options:
     +Pid  --identity-shape      presentation LUT shape IDENTITY (default)
     +Piv  --inverse-shape       presentation LUT shape INVERSE
+    +Pod  --lin-od-shape        presentation LUT shape LIN OD
   overlay options:
     -O    --no-overlays         do not display overlays
     +O    --display-overlay     [n]umber : integer

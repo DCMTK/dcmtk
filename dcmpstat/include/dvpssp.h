@@ -23,8 +23,8 @@
  *    classes: DVPSStoredPrint
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-07-05 12:33:29 $
- *  CVS/RCS Revision: $Revision: 1.31 $
+ *  Update Date:      $Date: 2000-07-07 14:14:24 $
+ *  CVS/RCS Revision: $Revision: 1.32 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -51,7 +51,7 @@ class DicomImage;
 class DVPSPresentationLUT;
 class DVConfiguration;
 /** the representation of a Stored Print object
- */  
+ */
 
 class DVPSStoredPrint
 {
@@ -62,7 +62,7 @@ class DVPSStoredPrint
    *  @param aetitle application entity title of the print originator (SCU)
    */
   DVPSStoredPrint(Uint16 illumin, Uint16 reflection, const char *aetitle = NULL);
-  
+
   /// copy constructor
   DVPSStoredPrint(const DVPSStoredPrint& copy);
 
@@ -91,7 +91,7 @@ class DVPSStoredPrint
    *  @return EC_Normal if successful, an error code otherwise.
    */
   E_Condition read(DcmItem &dset);
-  
+
   /** writes the Stored Print object to a DICOM dataset.
    *  Copies of the DICOM elements managed by this object are inserted into
    *  the DICOM dataset.
@@ -109,14 +109,14 @@ class DVPSStoredPrint
    *  @return EC_Normal if successful, an error code otherwise.
    */
   E_Condition write(
-    DcmItem &dset, 
-    OFBool writeRequestedImageSize, 
-    OFBool limitImages, 
-    OFBool updateDecimateCrop, 
+    DcmItem &dset,
+    OFBool writeRequestedImageSize,
+    OFBool limitImages,
+    OFBool updateDecimateCrop,
     OFBool ignoreEmptyImages);
 
   /** sets the name of the current printer.
-   *  This name is identical to the unique entry used in the configuration file. 
+   *  This name is identical to the unique entry used in the configuration file.
    *  @return name of the current printer
    */
   E_Condition setOriginator(const char *aetitle);
@@ -139,7 +139,7 @@ class DVPSStoredPrint
    *  @return EC_Normal if successful, an error code otherwise.
    */
   E_Condition setImageDisplayFormat(unsigned long columns, unsigned long rows);
-  
+
   /** sets the (optional) film size ID.
    *  @param value new attribute value, may be NULL.
    *    The caller is responsible for making sure
@@ -147,7 +147,7 @@ class DVPSStoredPrint
    *  @return EC_Normal if successful, an error code otherwise.
    */
   E_Condition setFilmSizeID(const char *value);
-  
+
   /** sets the (optional) magnification type.
    *  @param value new attribute value, may be NULL.
    *    The caller is responsible for making sure
@@ -155,7 +155,7 @@ class DVPSStoredPrint
    *  @return EC_Normal if successful, an error code otherwise.
    */
   E_Condition setMagnificationType(const char *value);
-  
+
   /** sets the (optional) smoothing type.
    *  @param value new attribute value, may be NULL.
    *    The caller is responsible for making sure
@@ -163,7 +163,7 @@ class DVPSStoredPrint
    *  @return EC_Normal if successful, an error code otherwise.
    */
   E_Condition setSmoothingType(const char *value);
-  
+
   /** sets the (optional) configuration information.
    *  @param value new attribute value, may be NULL.
    *    The caller is responsible for making sure
@@ -171,7 +171,7 @@ class DVPSStoredPrint
    *  @return EC_Normal if successful, an error code otherwise.
    */
   E_Condition setConfigurationInformation(const char *value);
-  
+
   /** sets the (optional) requested resolution ID.
    *  @param value new attribute value, may be NULL.
    *    The caller is responsible for making sure
@@ -179,15 +179,15 @@ class DVPSStoredPrint
    *  @return EC_Normal if successful, an error code otherwise.
    */
   E_Condition setResolutionID(const char *value);
-  
+
   /** sets the (optional) film orientation.
    *  @param value new enumerated value. The caller is responsible for
    *    making sure that the selected printer supports film orientation
    *    if a non-default value is set.
    *  @return EC_Normal if successful, an error code otherwise.
    */
-  E_Condition setFilmOrientation(DVPSFilmOrientation value);  
-  
+  E_Condition setFilmOrientation(DVPSFilmOrientation value);
+
   /** sets the (optional) trim (printing of borders).
    *  @param value new enumerated value. The caller is responsible for
    *    making sure that the selected printer supports trim
@@ -195,7 +195,7 @@ class DVPSStoredPrint
    *  @return EC_Normal if successful, an error code otherwise.
    */
   E_Condition setTrim(DVPSTrimMode value);
-  
+
   /** sets the (optional) requested decimate/crop behaviour
    *  for all image boxes managed by this stored print object.
    *  @param value new enumerated value. The caller is responsible for
@@ -203,7 +203,7 @@ class DVPSStoredPrint
    *    if a non-default value is set.
    *  @return EC_Normal if successful, an error code otherwise.
    */
-  E_Condition setRequestedDecimateCropBehaviour(DVPSDecimateCropBehaviour value); 
+  E_Condition setRequestedDecimateCropBehaviour(DVPSDecimateCropBehaviour value);
 
   /** sets the (optional) border density.
    *  @param value new attribute value, may be NULL.
@@ -246,7 +246,7 @@ class DVPSStoredPrint
    *  @param name name of the new printer (optional)
    *  @param aetitle of the new printer (optional)
    *  @return EC_Normal if successful, an error code otherwise.
-   */   
+   */
   E_Condition newPrinter(const char *name = NULL, const char *destinationAE = NULL); // short cut, delete all optional settings
 
   /** gets the the application entity title of the print SCU.
@@ -275,7 +275,7 @@ class DVPSStoredPrint
   /** gets the current film orientation.
    *  @return film orientation.
    */
-  DVPSFilmOrientation getFilmOrientation();    
+  DVPSFilmOrientation getFilmOrientation();
 
   /** gets the current trim mode.
    *  @return trim mode.
@@ -354,7 +354,17 @@ class DVPSStoredPrint
    *  @return min density, may be NULL.
    */
   const char *getMinDensity();
-     
+
+  /** gets the (optional) max density.
+   *  @return max density, may be 0.
+   */
+  Uint16 getMaxDensityValue();
+
+  /** gets the (optional) min density.
+   *  @return min density, may be 0.
+   */
+  Uint16 getMinDensityValue();
+
   /** gets the number of images currently registered in this object.
    *  @return number of images.
    */
@@ -370,13 +380,13 @@ class DVPSStoredPrint
   {
     return annotationContentList.size();
   }
-  
+
   /** deletes one of the registered images.
    *  @param idx index, must be < getNumberOfImages()
    *  @return EC_Normal if successful, an error code otherwise.
    */
   E_Condition deleteImage(size_t idx);
-  
+
   /** deletes multiple of the registered
    *  images, starting with the first one.
    *  @param number number of images to delete, must be <= getNumberOfImages()
@@ -411,7 +421,7 @@ class DVPSStoredPrint
   {
     return imageBoxContentList.setImagePolarity(idx, value);
   }
-  
+
   /** sets the requested size for the given registered image box.
    *  @param idx index, must be < getNumberOfImages()
    *  @param value new attribute value (in mm), may be NULL.
@@ -421,7 +431,7 @@ class DVPSStoredPrint
   {
     return imageBoxContentList.setImageRequestedSize(idx, value);
   }
-  
+
   /** sets the (optional) magnification type for the given registered image box.
    *  @param idx index, must be < getNumberOfImages()
    *  @param value new attribute value, may be NULL.
@@ -433,7 +443,7 @@ class DVPSStoredPrint
   {
     return imageBoxContentList.setImageMagnificationType(idx, value);
   }
-  
+
   /** sets the (optional) smoothing type for the given registered image box.
    *  @param idx index, must be < getNumberOfImages()
    *  @param value new attribute value, may be NULL.
@@ -445,7 +455,7 @@ class DVPSStoredPrint
   {
     return imageBoxContentList.setImageSmoothingType(idx, value);
   }
-  
+
   /** sets the (optional) configuration information for the given registered image box.
    *  @param idx index, must be < getNumberOfImages()
    *  @param value new attribute value, may be NULL.
@@ -502,7 +512,7 @@ class DVPSStoredPrint
   {
     return imageBoxContentList.getImageConfigurationInformation(idx);
   }
-  
+
   /** gets the presentation LUT for the given registered image box.
    *  If not available the presentation LUT of the film box is used.
    *  @param idx index, must be < getNumberOfImages()
@@ -528,7 +538,7 @@ class DVPSStoredPrint
    *  @return EC_Normal if successful, an error code otherwise.
    */
   E_Condition setPresentationLUTShape(DVPSPresentationLUTType shape);
- 
+
   /** stores a presentation lookup table in the stored print object.
    *  This method stores a presentation lookup table in the
    *  stored print object and activates it. This LUT overrides the
@@ -536,9 +546,9 @@ class DVPSStoredPrint
    *  LUT is not set.
    *  @param dset dataset from which the Presentation LUT SQ or Shape is read.
    *  @return EC_Normal if successful, an error code otherwise.
-   */ 
+   */
   E_Condition setPresentationLookupTable(DcmItem &dset);
-    
+
   /** writes the general study and series module attributes for a grayscale hardcopy image
    *  that is related to this stored print object to a DICOM dataset.
    *  Copies of the DICOM elements managed by this object are inserted into
@@ -570,7 +580,7 @@ class DVPSStoredPrint
     const char *patientid,
     DVPSPresentationLUT *presentationlut,
     OFBool inversePLUT);
-  
+
   /** creates a new image box object and sets the content of this image box object.
    *  This is a specialized version of the method with the same name and more parameters.
    *  SOP Class is assumed to be Grayscale Hardcopy, Study and Series are derived from
@@ -594,7 +604,7 @@ class DVPSStoredPrint
   /** deletes all existing annotations and creates a new one,
    *  with given text and position. Sets annotation display format
    *  to the given value.
-   *  
+   *
    *  @param displayformat annotation display format
    *  @param text annotation text
    *  @param position annotation position
@@ -604,11 +614,11 @@ class DVPSStoredPrint
     const char *displayformat,
     const char *text,
     Uint16 position);
-  
+
   /** deletes all annotations, clears annotation display format.
    */
   void deleteAnnotations();
-  
+
   /** sets a new SOP Instance UID for the Stored Print object.
    *  @param uid new SOP Instance UID
    *  @return EC_Normal if successful, an error code otherwise.
@@ -619,11 +629,11 @@ class DVPSStoredPrint
    *  a new UID is assigned automatically when writing the object.
    */
   void clearInstanceUID() { sOPInstanceUID.clear(); }
-  
+
   /** returns the image UIDs that are required to look up the referenced image in the database
    *  @param idx index, must be < getNumberOfImages()
    *  @param studyUID Study UID of the image
-   *  @param seriesUID series UID of the image 
+   *  @param seriesUID series UID of the image
    *  @param instanceUID instance UID of the image
    *  @return EC_Normal if successful, an error code otherwise.
    */
@@ -632,16 +642,16 @@ class DVPSStoredPrint
     return imageBoxContentList.getImageReference(idx, studyUID, seriesUID, instanceUID);
   }
 
-  /** returns a description of the currently activated Presentation LUT (if 
-   *  any) in terms of the Presentation LUT matching rule (see description 
+  /** returns a description of the currently activated Presentation LUT (if
+   *  any) in terms of the Presentation LUT matching rule (see description
    *  of enum type for details).
    *  @return Presentation LUT alignment
    */
   DVPSPrintPresentationLUTAlignment getReferencedPresentationLUTAlignment() { return referencedPresentationLUTAlignment; }
-          
+
   /** Requests the properties of the printer (Printer SOP Instance N-GET).
    *  The properties are not returned, but if the message handler is switched to "dump mode",
-   *  the DIMSE communication will be printed. 
+   *  the DIMSE communication will be printed.
    *  @param printHandler print communication handler, association must be open.
    *  @return EC_Normal upon success, an error code otherwise.
    */
@@ -649,10 +659,10 @@ class DVPSStoredPrint
 
   /** checks whether a presentation LUT or LUT shape is active in this stored print object.
    *  In this case, if the printer supports the Presentation LUT SOP class,
-   *  a Presentation LUT SOP Instance is created in the printer.  
+   *  a Presentation LUT SOP Instance is created in the printer.
    *  @param printHandler print communication handler, association must be open.
    *  @param printerRequiresMatchingLUT true if printer requires presentation LUTs matching the image depth
-   *  @param printerLUTRenderingPreferred true if SCP side presentation LUTs should be preferred 
+   *  @param printerLUTRenderingPreferred true if SCP side presentation LUTs should be preferred
    *    even if printer supports 12-bit image transmission.
    *  @param printerSupports12Bit true if printer supports 12 bit transmission
    *  @return EC_Normal upon success, an error code otherwise.
@@ -671,11 +681,11 @@ class DVPSStoredPrint
    *  @return EC_Normal upon success, an error code otherwise.
    */
   E_Condition printSCUcreateBasicFilmSession(
-    DVPSPrintMessageHandler& printHandler, 
+    DVPSPrintMessageHandler& printHandler,
     DcmDataset& dset,
     OFBool plutInSession);
 
-  /** Creates a DICOM Basic Film Box SOP Instance in the printer. 
+  /** Creates a DICOM Basic Film Box SOP Instance in the printer.
    *  This method only allows one basic film box to exist at any time -
    *  collation is not supported.
    *  @param printHandler print communication handler, association must be open.
@@ -709,7 +719,7 @@ class DVPSStoredPrint
   E_Condition printSCUsetBasicAnnotationBox(
     DVPSPrintMessageHandler& printHandler,
     size_t idx);
-    
+
   /** Prints the current DICOM Basic Film Box SOP Instance.
    *  @param printHandler print communication handler, association must be open.
    *  @return EC_Normal upon success, an error code otherwise.
@@ -758,16 +768,16 @@ class DVPSStoredPrint
    */
   Uint16 getPrintReflectedAmbientLight();
 
-  /** performs a Print SCP Basic Film Box N-CREATE operation on a newly 
-   *  created instance of this class. The results of the operation are 
-   *  stored in the objects passed as rsp, rspDataset and 
+  /** performs a Print SCP Basic Film Box N-CREATE operation on a newly
+   *  created instance of this class. The results of the operation are
+   *  stored in the objects passed as rsp, rspDataset and
    *  globalPresentationLUTList.
    *  @param cfg config file facility
    *  @param cfgname symbolic printer name in config file
    *  @param rqDataset N-CREATE request dataset, may be NULL
    *  @param rsp N-CREATE response message
    *  @param rspDataset N-CREATE response dataset passed back in this parameter
-   *  @param presentationLUTnegotiated 
+   *  @param presentationLUTnegotiated
    *    OFTrue if support for the Presentation LUT SOP class
    *    has been negotiated at association negotiation and is supported on
    *    Basic Film Box level
@@ -783,27 +793,27 @@ class DVPSStoredPrint
    *  @return OFTrue if N-CREATE was successful, OFFalse otherwise.
    */
   OFBool printSCPCreate(
-    DVConfiguration& cfg, 
-    const char *cfgname, 
-    DcmDataset *rqDataset, 
-    T_DIMSE_Message& rsp, 
-    DcmDataset *& rspDataset, 
+    DVConfiguration& cfg,
+    const char *cfgname,
+    DcmDataset *rqDataset,
+    T_DIMSE_Message& rsp,
+    DcmDataset *& rspDataset,
     OFBool presentationLUTnegotiated,
     DVPSPresentationLUT_PList& globalPresentationLUTList,
     const char *filmSessionUID,
-    DcmUniqueIdentifier& study, 
-    DcmUniqueIdentifier& psSeries, 
+    DcmUniqueIdentifier& study,
+    DcmUniqueIdentifier& psSeries,
     DcmUniqueIdentifier& imgSeries);
 
-  /** performs a Print SCP Basic Film Box N-SET operation on an instance of 
-   *  this class. The results of the N-SET operation are stored in the 
+  /** performs a Print SCP Basic Film Box N-SET operation on an instance of
+   *  this class. The results of the N-SET operation are stored in the
    *  objects passed as rsp and rspDataset.
    *  @param cfg config file facility
    *  @param cfgname symbolic printer name in config file
    *  @param rqDataset N-SET request dataset
    *  @param rsp N-SET response message
    *  @param rspDataset N-SET response dataset passed back in this parameter
-   *  @param presentationLUTnegotiated 
+   *  @param presentationLUTnegotiated
    *    OFTrue if support for the Presentation LUT SOP class
    *    has been negotiated at association negotiation and is supported on
    *    Basic Film Box level
@@ -812,11 +822,11 @@ class DVPSStoredPrint
    *  @return OFTrue if N-SET was successful, OFFalse otherwise.
    */
   OFBool printSCPSet(
-    DVConfiguration& cfg, 
-    const char *cfgname, 
-    DcmDataset *rqDataset, 
-    T_DIMSE_Message& rsp, 
-    DcmDataset *& rspDataset, 
+    DVConfiguration& cfg,
+    const char *cfgname,
+    DcmDataset *rqDataset,
+    T_DIMSE_Message& rsp,
+    DcmDataset *& rspDataset,
     OFBool presentationLUTnegotiated,
     DVPSPresentationLUT_PList& globalPresentationLUTList);
 
@@ -841,17 +851,17 @@ class DVPSStoredPrint
    *  @return pointer to copied image box object, may be NULL.
    */
   DVPSImageBoxContent *duplicateImageBox(const char *uid) { return imageBoxContentList.duplicateImageBox(uid); }
-  
+
   /** checks whether any of the image boxes managed by the image box list
    *  has the same position as the given one, but a different
-   *  SOP instance UID.  This is used during a Print SCP basic grayscale 
+   *  SOP instance UID.  This is used during a Print SCP basic grayscale
    *  image box N-SET operation to check whether an image position clash exists.
    *  @param uid SOP instance UID of the image box to be looked up
    *  @param position image position to be looked up
    */
   OFBool haveImagePositionClash(const char *uid, Uint16 position)  { return imageBoxContentList.haveImagePositionClash(uid, position); }
-  
-  /** adds the given image box object to the image box list. 
+
+  /** adds the given image box object to the image box list.
    *  Any other object existing in the list with the same SOP instance UID is removed.
    *  Used during a Print SCP basic grayscale image box N-SET operation.
    *  @param newImageBox new image box object to be added to the list.
@@ -866,7 +876,7 @@ class DVPSStoredPrint
    *  @param globalPresentationLUTList list of presentation LUTs managed by the Print SCP
    */
   void updatePresentationLUTList(DVPSPresentationLUT_PList& globalPresentationLUTList);
-  
+
   /** sets a new log stream
    *  @param stream new log stream, NULL for default logstream
    *  @param verbMode verbose mode flag
@@ -875,7 +885,7 @@ class DVPSStoredPrint
   void setLog(OFConsole *stream, OFBool verbMode, OFBool dbgMode);
 
   /** checks whether the given Presentation LUT type could be used together
-   *  with all image boxes in this film box on a Print SCP that requires a matching 
+   *  with all image boxes in this film box on a Print SCP that requires a matching
    *  alignment between a Presentation LUT and the image pixel data.
    *  @param align LUT alignment type
    *  @return OFTrue if matching, OFFalse otherwise
@@ -912,12 +922,12 @@ class DVPSStoredPrint
 
   /// private undefined assignment operator
   DVPSStoredPrint& operator=(const DVPSStoredPrint&);
-	
+
   /* checks if given SOP class UID is an image storage SOP class
    * @return OFTrue if image SOP class, OFFalse otherwise.
    */
   OFBool isImageStorageSOPClass(OFString& sopclassuid);
-  
+
   /** create default values for all missing type 1 elements.
    *  Called before a stored print object is written.
    *  @return EC_Normal if successful, an error code otherwise.
@@ -939,7 +949,7 @@ class DVPSStoredPrint
    *  @return EC_Normal if successful, an error code otherwise.
    */
   E_Condition addPresentationLUTReference(DcmItem& dset);
-  
+
   /** invalidates the cached number of columns and rows
    */
   void invalidateCache();
@@ -947,49 +957,49 @@ class DVPSStoredPrint
   /** updates the cached number of columns and rows
    */
   void updateCache();
-  
+
   /* Module: Patient (M)
    */
-  /// Module=Patient, VR=PN, VM=1, Type 1 
+  /// Module=Patient, VR=PN, VM=1, Type 1
   DcmPersonName            patientName;
-  /// Module=Patient, VR=LO, VM=1, Type 2 
+  /// Module=Patient, VR=LO, VM=1, Type 2
   DcmLongString            patientID;
-  /// Module=Patient, VR=DA, VM=1, Type 2 
+  /// Module=Patient, VR=DA, VM=1, Type 2
   DcmDate                  patientBirthDate;
-  /// Module=Patient, VR=CS, VM=1, Type 2 
+  /// Module=Patient, VR=CS, VM=1, Type 2
   DcmCodeString            patientSex;
 
-  /* Module: General Study (M)  
+  /* Module: General Study (M)
    */
-  /// Module=General_Study, VR=UI, VM=1, Type 1 
+  /// Module=General_Study, VR=UI, VM=1, Type 1
   DcmUniqueIdentifier      studyInstanceUID;
-  /// Module=General_Study, VR=DA, VM=1, Type 2 
+  /// Module=General_Study, VR=DA, VM=1, Type 2
   DcmDate                  studyDate;
-  /// Module=General_Study, VR=TM, VM=1, Type 2 
+  /// Module=General_Study, VR=TM, VM=1, Type 2
   DcmTime                  studyTime;
-  /// Module=General_Study, VR=PN, VM=1, Type 2 
+  /// Module=General_Study, VR=PN, VM=1, Type 2
   DcmPersonName            referringPhysiciansName;
-  /// Module=General_Study, VR=SH, VM=1, Type 2 
+  /// Module=General_Study, VR=SH, VM=1, Type 2
   DcmShortString           studyID;
-  /// Module=General_Study, VR=SH, VM=1, Type 2 
+  /// Module=General_Study, VR=SH, VM=1, Type 2
   DcmShortString           accessionNumber;
 
   /* Module: General Series (M)
    */
-  /// Module=General_Series, VR=UI, VM=1, Type 1 
+  /// Module=General_Series, VR=UI, VM=1, Type 1
   DcmUniqueIdentifier      seriesInstanceUID;
-  /// Module=General_Series, VR=IS, VM=1, Type 2 
+  /// Module=General_Series, VR=IS, VM=1, Type 2
   DcmIntegerString         seriesNumber;
 
   /* Module: General Equipment (M)
    */
-  /// Module=General_Equipment, VR=LO, VM=1, Type 2 
+  /// Module=General_Equipment, VR=LO, VM=1, Type 2
   DcmLongString            manufacturer;
 
   /* Module: Printer Characteristics (M)
    */
   // the PrintManagementCapabilitiesSequence is only created/checked on the fly
-  
+
   // PrinterCharacteristicsSequence
   /// Module=Printer_Characteristics_Module, VR=AE, VM=1, Type 2
   DcmApplicationEntity     originator;
@@ -1001,7 +1011,7 @@ class DVPSStoredPrint
   /* Module: Film Box (M)
    */
   /// Module=Film_Box_Module, VR=IS, VM=1, Type 2
-  DcmIntegerString         instanceNumber; 
+  DcmIntegerString         instanceNumber;
   /* the following attributes belong to the Film Box Content SQ (Type 1) */
   /// Module=Film_Box_Module, VR=ST, VM=1, Type 1
   DcmShortText             imageDisplayFormat;
@@ -1036,13 +1046,13 @@ class DVPSStoredPrint
   /// the ReferencedPresentationLUTSequence is only created/read on the fly
   DcmUniqueIdentifier      referencedPresentationLUTInstanceUID;
 
-  /** The Print SCP can be configured to enforce a rule requiring that the 
-   *  number of entries in a Presentation LUT matches the bit depth of the 
-   *  image pixel data. This member variable describes the type of the 
+  /** The Print SCP can be configured to enforce a rule requiring that the
+   *  number of entries in a Presentation LUT matches the bit depth of the
+   *  image pixel data. This member variable describes the type of the
    *  current presentation LUT (if any).
    */
   DVPSPrintPresentationLUTAlignment referencedPresentationLUTAlignment;
-  
+
   /* Module: Image Box List (M)
    */
   /// Module=Image_Box_List_Module, VR=SQ, VM=1, Type 1
@@ -1052,21 +1062,21 @@ class DVPSStoredPrint
    */
   /// Module=Annotation_List_Module, VR=SQ, VM=1, Type 3
   DVPSAnnotationContent_PList annotationContentList;
-   
-  /* Module: Presentation LUT List (U)
-   */   
-  DVPSPresentationLUT_PList presentationLUTList;  
 
-  /* Module: SOP Common (M) 
+  /* Module: Presentation LUT List (U)
+   */
+  DVPSPresentationLUT_PList presentationLUTList;
+
+  /* Module: SOP Common (M)
    * we don't store the SOP Class UID because it is well known.
    */
-  /// Module=SOP_Common, VR=UI, VM=1, Type 1 
+  /// Module=SOP_Common, VR=UI, VM=1, Type 1
   DcmUniqueIdentifier      sOPInstanceUID;
-  /// Module=SOP_Common, VR=CS, VM=1-n, Type 1C 
+  /// Module=SOP_Common, VR=CS, VM=1-n, Type 1C
   DcmCodeString            specificCharacterSet;
-  /// Module=SOP_Common, VR=DA, VM=1, Type 3 
+  /// Module=SOP_Common, VR=DA, VM=1, Type 3
   DcmDate                  instanceCreationDate;
-  /// Module=SOP_Common, VR=TM, VM=1, Type 3 
+  /// Module=SOP_Common, VR=TM, VM=1, Type 3
   DcmTime                  instanceCreationTime;
 
   /// used when creating hardcopy image objects
@@ -1078,13 +1088,13 @@ class DVPSStoredPrint
   unsigned long currentNumCols;
   /// current number of rows
   unsigned long currentNumRows;
-  
+
   /// requested decimate/crop behaviour used in all image boxes
   DVPSDecimateCropBehaviour decimateCropBehaviour;
 
   /// the current film session instance
   OFString filmSessionInstanceUID;
-			
+
   /// the current film box instance
   OFString filmBoxInstanceUID;
 
@@ -1118,7 +1128,7 @@ class DVPSStoredPrint
   /** flag indicating whether we're operating in verbose mode
    */
   OFBool verboseMode;
-   
+
   /** flag indicating whether we're operating in debug mode
    */
   OFBool debugMode;
@@ -1129,7 +1139,10 @@ class DVPSStoredPrint
 
 /*
  *  $Log: dvpssp.h,v $
- *  Revision 1.31  2000-07-05 12:33:29  joergr
+ *  Revision 1.32  2000-07-07 14:14:24  joergr
+ *  Added support for LIN OD presentation LUT shape.
+ *
+ *  Revision 1.31  2000/07/05 12:33:29  joergr
  *  Corrected documentation of one method.
  *
  *  Revision 1.30  2000/07/04 15:58:03  joergr
