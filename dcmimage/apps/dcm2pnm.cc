@@ -22,9 +22,9 @@
  *  Purpose: Convert DICOM Images to PPM or PGM using the dcmimage library.
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1998-12-14 17:05:02 $
+ *  Update Date:      $Date: 1998-12-16 16:06:12 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/apps/dcm2pnm.cc,v $
- *  CVS/RCS Revision: $Revision: 1.18 $
+ *  CVS/RCS Revision: $Revision: 1.19 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -676,7 +676,22 @@ int main(int argc, char *argv[])
             }
         }
     }
-    
+/*
+ unsigned int us[4];
+ const Uint8 *buf = di->getOverlayData(0x6002, us[0], us[1], us[2], us[3]);
+ if (buf != NULL)
+ {
+     cout << us[0] << " " << us[1] << " " << us[2] << " " << us[3] << endl;
+     FILE *outfile = fopen("/home/joergr/tmp/overlay.pgm", "wb");
+     if (outfile)
+     {
+         fprintf(outfile, "P5\n%d %d 255\n", us[0], us[1]);
+         fwrite(buf, us[0], us[1], outfile);
+         fclose(outfile);
+     } else
+         cerr << "can't create file !" << endl;
+ }
+*/
     /* process VOI parameters */
     switch (opt_windowType)    
     {
@@ -733,12 +748,14 @@ int main(int argc, char *argv[])
             {
                 if (opt_verboseMode)
                     fprintf(stderr, "disabling VOI window computation\n");
-                if (! di->setNoVOITransformation()) 
+                if (! di->setNoVoiTransformation()) 
                     fprintf(stderr,"dcm2pnm: warning: cannot ignore VOI window\n");
             }
             break;
     }
-        
+/*
+ cout << "VOI: " << di->getVoiTransformationExplanation() << endl;
+*/        
     /* process presentation LUT parameters */
     if (opt_verboseMode)
     {
@@ -832,7 +849,7 @@ int main(int argc, char *argv[])
             case 1:
                 if (opt_verboseMode)
                     fprintf(stderr, "scaling image, X factor=%f, Interpolation=%s, Aspect Ratio=%s\n",
-                        opt_scale_factor, (opt_useInterpolation ? "yes" : "no"),    (opt_useAspectRatio ? "yes" : "no"));
+                        opt_scale_factor, (opt_useInterpolation ? "yes" : "no"), (opt_useAspectRatio ? "yes" : "no"));
                 if (opt_useClip)
                     newimage = di->createScaledImage(opt_left, opt_top, opt_width, opt_height, opt_scale_factor, 0.0,
                         opt_useInterpolation, opt_useAspectRatio);
@@ -842,7 +859,7 @@ int main(int argc, char *argv[])
             case 2:
                 if (opt_verboseMode)
                     fprintf(stderr, "scaling image, Y factor=%f, Interpolation=%s, Aspect Ratio=%s\n",
-                        opt_scale_factor, (opt_useInterpolation ? "yes" : "no"),    (opt_useAspectRatio ? "yes" : "no"));
+                        opt_scale_factor, (opt_useInterpolation ? "yes" : "no"), (opt_useAspectRatio ? "yes" : "no"));
                 if (opt_useClip)
                     newimage = di->createScaledImage(opt_left, opt_top, opt_width, opt_height, 0.0, opt_scale_factor,
                         opt_useInterpolation, opt_useAspectRatio);
@@ -852,7 +869,7 @@ int main(int argc, char *argv[])
             case 3:
                 if (opt_verboseMode)
                     fprintf(stderr, "scaling image, X size=%lu, Interpolation=%s, Aspect Ratio=%s\n",
-                        opt_scale_size, (opt_useInterpolation ? "yes" : "no"),    (opt_useAspectRatio ? "yes" : "no"));
+                        opt_scale_size, (opt_useInterpolation ? "yes" : "no"), (opt_useAspectRatio ? "yes" : "no"));
                 if (opt_useClip)
                     newimage = di->createScaledImage(opt_left, opt_top, opt_width, opt_height, opt_scale_size, 0,
                         opt_useInterpolation, opt_useAspectRatio);
@@ -862,7 +879,7 @@ int main(int argc, char *argv[])
             case 4:
                 if (opt_verboseMode)
                     fprintf(stderr, "scaling image, Y size=%lu, Interpolation=%s, Aspect Ratio=%s\n",
-                        opt_scale_size, (opt_useInterpolation ? "yes" : "no"),    (opt_useAspectRatio ? "yes" : "no"));
+                        opt_scale_size, (opt_useInterpolation ? "yes" : "no"), (opt_useAspectRatio ? "yes" : "no"));
                 if (opt_useClip)
                     newimage = di->createScaledImage(opt_left, opt_top, opt_width, opt_height, 0, opt_scale_size,
                         opt_useInterpolation, opt_useAspectRatio);
@@ -933,7 +950,11 @@ int main(int argc, char *argv[])
 /*
 ** CVS/RCS Log:
 ** $Log: dcm2pnm.cc,v $
-** Revision 1.18  1998-12-14 17:05:02  joergr
+** Revision 1.19  1998-12-16 16:06:12  joergr
+** Added (debug) code to test new explanation strings and export of overlay
+** planes.
+**
+** Revision 1.18  1998/12/14 17:05:02  joergr
 ** Added support for presentation shapes.
 ** Changed behaviour of debug and verbose mode.
 **
