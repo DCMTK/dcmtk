@@ -1,8 +1,8 @@
 dcimapix.o: dcimapix.cc ../../config/include/osconfig.h \
  ../include/dcdebug.h ../include/dcutils.h ../include/dcelem.h \
  ../include/dcerror.h ../include/dctypes.h ../include/dcobject.h \
- ../include/dcxfer.h ../include/dcstream.h ../include/dctag.h \
- ../include/dctagkey.h ../include/dcvr.h ../include/dcdicent.h \
+ ../include/dcxfer.h ../include/dcvr.h ../include/dcstream.h \
+ ../include/dctag.h ../include/dctagkey.h ../include/dcdicent.h \
  ../include/dclist.h ../include/dcstack.h ../include/dcitem.h \
  ../include/dcvrui.h ../include/dcbytstr.h dcimapix.h \
  ../include/dctk.h ../include/dcswap.h ../include/dcuid.h \
