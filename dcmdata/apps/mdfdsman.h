@@ -22,9 +22,9 @@
  *  Purpose: Class for modifying DICOM-Files and Datasets
  *
  *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2003-12-17 17:07:22 $
+ *  Update Date:      $Date: 2004-04-19 14:45:07 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/apps/mdfdsman.h,v $
- *  CVS/RCS Revision: $Revision: 1.8 $
+ *  CVS/RCS Revision: $Revision: 1.9 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -40,7 +40,7 @@
 #include "ofcond.h"
 #include "oflist.h"
 #include "dcvrat.h"
-#include "dcdebug.h"
+//#include "dcdebug.h"
 
 /** This class encapsulates data structures and operations for modifying
  *  Dicom-files. Therefore it allows the process of load->modify->save to
@@ -52,7 +52,7 @@ public:
     /** Constructor, initializes member-variables
      *  @param debug enables/disables debug-messages (off per default)
      */
-    MdfDatasetManager(const OFBool &debug=OFFalse);
+    MdfDatasetManager(const OFBool debug);
 
     /** Destructor
      */
@@ -118,17 +118,15 @@ public:
      */
     OFString getFilename();
 
-    /** prints error message to console using global locking mechanism.
-     *  The function handles two strings for more flexibility. The second is
-     *  printed directly after the first. The whole message is terminated by
-     *  newline.
+    /** The function handles three strings, that are directly printed
+     *  after another to CERR. The whole message is then terminated by \n
      *  @param s1 first message string
-     *  @param s2 second message string (default = "")
-     *  @param s2 third message string (default = "")
+     *  @param s2 second message string
+     *  @param s2 third message string
      */
     static void debugMsg(const OFString &s1,
-                         const OFString &s2="",
-                         const OFString &s3="");
+                         const OFString &s2,
+                         const OFString &s3);
 
 protected:
 
@@ -174,7 +172,11 @@ private:
 /*
 ** CVS/RCS Log:
 ** $Log: mdfdsman.h,v $
-** Revision 1.8  2003-12-17 17:07:22  onken
+** Revision 1.9  2004-04-19 14:45:07  onken
+** Restructured code to avoid default parameter values for "complex types" like
+** OFString. Required for Sun CC 2.0.1.
+**
+** Revision 1.8  2003/12/17 17:07:22  onken
 ** MdfDatasetManager now remembers loaded filename. Additional save function
 ** added.
 **

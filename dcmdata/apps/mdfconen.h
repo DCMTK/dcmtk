@@ -22,9 +22,9 @@
  *  Purpose: Class for modifying DICOM-Files from comandline
  *
  *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2003-12-10 16:19:20 $
+ *  Update Date:      $Date: 2004-04-19 14:45:07 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/apps/mdfconen.h,v $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -41,6 +41,28 @@
 #include "oflist.h"
 #include "ofcond.h"
 #include "dctagkey.h"
+
+/** class reflecting a modify operation (called Job in this context)
+ */
+class MdfJob {
+
+public :
+
+    OFString option;
+    OFString path;
+    OFString value;
+
+    /** Comparison-operator between Jobs
+     */
+    OFBool operator==(const MdfJob& j) const;
+
+private :
+
+    /** private undefined copy constructor
+     */
+    MdfJob &operator=(const MdfJob& j);
+};
+
 
 /** This class encapsulates data structures and operations for modifying
  *  Dicom-files from the commandline
@@ -82,16 +104,10 @@ protected:
     OFBool debug_option;
     ///ignore errors option
     OFBool ignore_errors_option;
-    ///struct reflecting a modify operation (called Job in this context)
-    struct Job {
-            OFString option;
-            OFString path;
-            OFString value;
-    };
     ///list of jobs to be executed
-    OFList<Job> *jobs;
+    OFList<MdfJob> *jobs;
     ///list of files to be modified
-    OFList<const char*> *files;
+    OFList<OFString> *files;
 
     /** This function splits a modify-option (inclusive value) as
      *  found on commandline into to parts (path and value)
@@ -108,7 +124,7 @@ protected:
      *  @param job job to be executed
      *  @return returns 0 if no error occured, else the number of errors
      */
-    int executeJob(const Job &job);
+    int executeJob(const MdfJob &job);
 
     /** Parses commandline options into corresponding file- and job-lists and
      *  enables debug/verbose mode. The joblist is built in order of modify
@@ -152,7 +168,11 @@ private:
 /*
 ** CVS/RCS Log:
 ** $Log: mdfconen.h,v $
-** Revision 1.7  2003-12-10 16:19:20  onken
+** Revision 1.8  2004-04-19 14:45:07  onken
+** Restructured code to avoid default parameter values for "complex types" like
+** OFString. Required for Sun CC 2.0.1.
+**
+** Revision 1.7  2003/12/10 16:19:20  onken
 ** Changed API of MdfDatasetManager, so that its transparent for user, whether
 ** he wants to modify itemtags or tags at 1. level.
 **

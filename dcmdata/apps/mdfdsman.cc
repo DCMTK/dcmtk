@@ -21,9 +21,9 @@
  *
  *  Purpose: Class for modifying DICOM-Files and Datasets
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2004-04-07 12:25:53 $
- *  CVS/RCS Revision: $Revision: 1.11 $
+ *  Last Update:      $Author: onken $
+ *  Update Date:      $Date: 2004-04-19 14:45:07 $
+ *  CVS/RCS Revision: $Revision: 1.12 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -42,7 +42,7 @@
 #include "ofstdinc.h"
 
 
-MdfDatasetManager::MdfDatasetManager(const OFBool &debug)
+MdfDatasetManager::MdfDatasetManager(const OFBool debug)
 :act_file(""),dfile(NULL), dset(NULL), debug_option(OFFalse)
 // Date         : May, 13th, 2003
 // Author       : Michael Onken
@@ -68,13 +68,13 @@ OFCondition MdfDatasetManager::loadFile(const char *file_name)
     dfile = new DcmFileFormat();
     //load File into Attribute dfile
     if (debug_option)
-        debugMsg("Loading into Datasetmanager: ", file_name);
+        debugMsg("Loading into Datasetmanager: ", file_name,"");
     cond=dfile->loadFile(file_name);
     //if there are errors:
     if (cond.bad())
     {
         if (debug_option)
-            debugMsg("Failed loading file: ", file_name);
+            debugMsg("Failed loading file: ", file_name,"");
         dset=NULL;
     }
     //file susccessfully loaded into dfile:
@@ -82,7 +82,7 @@ OFCondition MdfDatasetManager::loadFile(const char *file_name)
     {
         //get Dataset from file
         if (debug_option)
-            debugMsg("Getting Dataset from loaded file ", file_name);
+            debugMsg("Getting Dataset from loaded file ", file_name,"");
         dset=dfile->getDataset();
         /*load also pixel-data into memory:
          *Without this command pixel-data wouldn't be included into the file,
@@ -118,7 +118,7 @@ static DcmTagKey getTagKeyFromDictionary(OFString tag)
 
 static int readNextToken(const char *c, int& pos, DcmTagKey& key, Uint32& idx)
 // Date         : November, 26th, 2003
-// Author       : Marco Eichelberg
+// Author       : Eichelberg / Onken
 // Task         : scans a token from the given string and returns it. Ignores
 //                leading whitespace.
 // Parameters   : c - [in] string to parse
@@ -187,7 +187,7 @@ static DcmItem* getItemFromPath(DcmItem &Dataset,
                                 const char *location,
                                 OFString &message)
 // Date         : November, 26th, 2003
-// Author       : Marco Eichelberg/Michael Onken
+// Author       : Michael Onken
 // Task         : locates a specific item within the given Dataset
 // Parameters   : Dataset - [in] Dataset to be searched
 //                location - [in] location string. Format is
@@ -407,7 +407,7 @@ OFCondition MdfDatasetManager::modifyAllTags(OFString tag_path,
     DcmObject *elem;
     //get references to all matching tags in Dataset and store them in stack
     if (debug_option)
-        debugMsg("Looking for occurences of: ", key.toString());
+        debugMsg("Looking for occurences of: ", key.toString(),"");
     result=dset->findAndGetElements(key,result_stack);
     //as long there are matching elements left on the stack
     if (debug_option)
@@ -425,7 +425,7 @@ OFCondition MdfDatasetManager::modifyAllTags(OFString tag_path,
         {
             //and put new value to element
             if (debug_option)
-                debugMsg("Accessing existing tag for modifying");
+                debugMsg("Accessing existing tag for modifying","","");
             result=startModify(OFstatic_cast(DcmElement*,elem),value);
             if (result.good()) count++;
         }
@@ -489,7 +489,7 @@ OFCondition MdfDatasetManager::saveFile(const char *file)
     OFCondition result;
     //save file
     if (debug_option)
-        debugMsg("Saving actual Dataset to file: ", file);
+        debugMsg("Saving actual Dataset to file: ", file,"");
     if (dfile!=NULL)
         result=dfile->saveFile(file);
     return result;
@@ -580,12 +580,11 @@ void MdfDatasetManager::debugMsg(const OFString &s1,
                                  const OFString &s3)
 // Date         : November, 26th, 2003
 // Author       : Michael Onken
-// Task         : prints error message to console using global locking mechanism.
-//                The function handles three strings, that are directly printed
+// Task         : The function handles three strings, that are directly printed
 //                after another. The whole message is then terminated by \n
 // Parameters   : s1 - [in] first message string
-//                s2 - [in] second message string (default = "")
-//                s3 - [in] third message string (default = "")
+//                s2 - [in] second message string
+//                s3 - [in] third message string
 // Return Value : none
 {
         ofConsole.lockCerr() << s1 << s2 << s3 << endl;
@@ -601,7 +600,7 @@ MdfDatasetManager::~MdfDatasetManager()
 // Return Value : none
 {
     if (debug_option)
-        debugMsg("Deleting member-variables from memory");
+        debugMsg("Deleting member-variables from memory","","");
     //cleanup
     delete dfile;
 }
@@ -610,7 +609,11 @@ MdfDatasetManager::~MdfDatasetManager()
 /*
 ** CVS/RCS Log:
 ** $Log: mdfdsman.cc,v $
-** Revision 1.11  2004-04-07 12:25:53  joergr
+** Revision 1.12  2004-04-19 14:45:07  onken
+** Restructured code to avoid default parameter values for "complex types" like
+** OFString. Required for Sun CC 2.0.1.
+**
+** Revision 1.11  2004/04/07 12:25:53  joergr
 ** Changed type of integer variables to unsigned to avoid compiler warnings
 ** reported by gcc.
 **
