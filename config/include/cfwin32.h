@@ -222,7 +222,7 @@
 #undef HAVE_SYSINFO
 
 /* Define if you have the tempnam function.  */
-#define HAVE_TEMPNAM 1
+#undef HAVE_TEMPNAM 
 
 /* Define if you have the uname function.  */
 #undef HAVE_UNAME 
