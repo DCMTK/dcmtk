@@ -22,8 +22,8 @@
  *  Purpose: DVPresentationState
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-12-08 12:46:35 $
- *  CVS/RCS Revision: $Revision: 1.121 $
+ *  Update Date:      $Date: 2000-12-11 18:18:24 $
+ *  CVS/RCS Revision: $Revision: 1.122 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -554,7 +554,11 @@ E_Condition DVInterface::loadStructuredReport(const char *studyUID,
 }
 
 
+#ifdef WITH_DCMSR
 E_Condition DVInterface::loadStructuredReport(const char *filename)
+#else
+E_Condition DVInterface::loadStructuredReport(const char * /*filename*/)
+#endif
 {
     E_Condition status = EC_IllegalCall;
 #ifdef WITH_DCMSR
@@ -598,7 +602,11 @@ E_Condition DVInterface::loadStructuredReport(const char *filename)
 }
 
 
+#ifdef WITH_DCMSR
 E_Condition DVInterface::loadSRTemplate(const char *reportID)
+#else
+E_Condition DVInterface::loadSRTemplate(const char * /*reportID*/)
+#endif
 {
   E_Condition result = EC_IllegalCall;
 #ifdef WITH_DCMSR
@@ -823,7 +831,11 @@ E_Condition DVInterface::saveStructuredReport()
 }
 
 
+#ifdef WITH_DCMSR
 E_Condition DVInterface::saveStructuredReport(const char *filename, OFBool explicitVR)
+#else
+E_Condition DVInterface::saveStructuredReport(const char *filename, OFBool /*explicitVR*/)
+#endif
 {
     if (pState==NULL) return EC_IllegalCall;
     if (filename==NULL) return EC_IllegalCall;
@@ -4117,7 +4129,11 @@ int DVInterfacePasswordCallback(char *buf, int size, int /* rwflag */, void *use
 #endif
 
 
+#ifdef WITH_OPENSSL
 OFBool DVInterface::verifyUserPassword(const char *userID, const char *passwd)
+#else
+OFBool DVInterface::verifyUserPassword(const char * /*userID*/, const char * /*passwd*/)
+#endif
 {
   OFBool result = OFFalse;
 #ifdef WITH_OPENSSL
@@ -4167,7 +4183,11 @@ OFBool DVInterface::verifyUserPassword(const char *userID, const char *passwd)
 /*
  *  CVS/RCS Log:
  *  $Log: dviface.cc,v $
- *  Revision 1.121  2000-12-08 12:46:35  joergr
+ *  Revision 1.122  2000-12-11 18:18:24  joergr
+ *  Removed name of (conditionally) unused method parameters to avoid compiler
+ *  warnings (SunCC 2.0.1).
+ *
+ *  Revision 1.121  2000/12/08 12:46:35  joergr
  *  Separated module dcmsr from dcmpstat (use #define WITH_DCMSR to re-include
  *  it - probably also requires modification of makefiles).
  *
