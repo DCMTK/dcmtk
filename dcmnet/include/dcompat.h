@@ -62,9 +62,9 @@
 ** 
 **
 ** Last Update:		$Author: meichel $
-** Update Date:		$Date: 2003-06-06 09:44:56 $
+** Update Date:		$Date: 2003-12-17 16:33:26 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/include/Attic/dcompat.h,v $
-** CVS/RCS Revision:	$Revision: 1.20 $
+** CVS/RCS Revision:	$Revision: 1.21 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -357,17 +357,6 @@ END_EXTERN_C
 #endif
 #endif
 
-#ifndef HAVE_INDEX
-#ifndef index
-#define index(s, c)	strchr(s, c)
-#endif
-#endif
-#ifndef HAVE_RINDEX
-#ifndef rindex
-#define rindex(s, c)	strrchr(s, c)
-#endif
-#endif
-
 #ifndef HAVE_ACCESS
 
 #ifndef R_OK
@@ -412,7 +401,10 @@ char *tempnam(char *dir, char *pfx);
 /*
 ** CVS Log
 ** $Log: dcompat.h,v $
-** Revision 1.20  2003-06-06 09:44:56  meichel
+** Revision 1.21  2003-12-17 16:33:26  meichel
+** Removed unused macros
+**
+** Revision 1.20  2003/06/06 09:44:56  meichel
 ** Added static sleep function in class OFStandard. This replaces the various
 **   calls to sleep(), Sleep() and usleep() throughout the toolkit.
 **
