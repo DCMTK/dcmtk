@@ -152,7 +152,7 @@ length encoding in sequences and items:
 *) possibly not available on all systems
 \endverbatim
 
-\sections notes NOTES
+\section notes NOTES
 
 All files specified on the command line (or discovered by recursivly examining
 the contents of directories with the +r option) are first evaluated for their
@@ -167,7 +167,7 @@ A DICOMDIR file will only be constructed if all files have passed initial
 tests.
 
 
-COMMAND LINE
+\section command_line COMMAND LINE
 
 All command line tools use the following notation for parameters: square
 brackets enclose optional values (0-1), three trailing dots indicate that
@@ -179,17 +179,18 @@ arbitrary (i.e. they can appear anywhere).  However, if options are mutually
 exclusive the rightmost appearance is used.  This behaviour conforms to the
 standard evaluation rules of common Unix shells.
 
-In addition, one or more command files can be specified using an '@' sign as
-a prefix to the filename (e.g. "@command.txt").  Such a command argument is
-replaced by the content of the corresponding text file (multiple whitespaces
-are treated as a single separator) prior to any further evaluation.  Please
-note that a command file cannot contain another command file.
-This simple but effective approach allows to summarize common combinations of
-options/parameters and avoids longish and confusing command lines (an example
-is provided in file dcmdata/apps/dumppat.txt).
+In addition, one or more command files can be specified using an '@' sign as a
+prefix to the filename (e.g. <em>\@command.txt</em>).  Such a command argument
+is replaced by the content of the corresponding text file (multiple
+whitespaces are treated as a single separator) prior to any further
+evaluation.  Please note that a command file cannot contain another command
+file. This simple but effective approach allows to summarize common
+combinations of options/parameters and avoids longish and confusing command
+lines (an example is provided in file <em>dcmdata/apps/dumppat.txt</em>).
 
 
-ENVIRONMENT
+
+\section environment ENVIRONMENT
 
 The \b dcmgpdir utility will attempt to load DICOM data dictionaries specified
 in the \e DCMDICTPATH environment variable.  By default, i. e. if the \e
