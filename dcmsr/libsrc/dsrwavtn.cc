@@ -23,8 +23,8 @@
  *    classes: DSRWaveformTreeNode
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-11-01 16:37:07 $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  Update Date:      $Date: 2000-11-07 18:33:33 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -86,7 +86,10 @@ E_Condition DSRWaveformTreeNode::writeXML(ostream &stream,
                                           OFConsole *logStream) const
 {
     E_Condition result = EC_Normal;
-    stream << "<waveform>" << endl;
+    stream << "<waveform";
+    if (isReferenceTarget())
+        stream << " id=\"" << getNodeID() << "\"";
+    stream << ">" << endl;
     result = DSRDocumentTreeNode::writeXML(stream, flags, logStream);
     DSRWaveformReferenceValue::writeXML(stream, flags, logStream);
     stream << "</waveform>" << endl;
@@ -131,40 +134,42 @@ E_Condition DSRWaveformTreeNode::renderHTMLContentItem(ostream &docStream,
 
 OFBool DSRWaveformTreeNode::canAddNode(const E_DocumentType documentType,
                                        const E_RelationshipType relationshipType,
-                                       const E_ValueType valueType) const
+                                       const E_ValueType valueType,
+                                       const OFBool byReference) const
 {
     OFBool result = OFFalse;
-    switch (relationshipType)
+    if (!byReference || (documentType == DT_ComprehensiveSR))
     {
-        case RT_hasAcqContext:
-            switch (valueType)
-            {
-                case VT_Text:
-                case VT_Code:
-                case VT_DateTime:
-                case VT_Date:
-                case VT_Time:
-                case VT_UIDRef:
-                case VT_PName:
-                    result = OFTrue;
-                    break;
-                case VT_Num:
-                    result = (documentType == DT_EnhancedSR) || (documentType == DT_ComprehensiveSR);
-                    break;
-/*
-                case VT_Container:
-                    result = (documentType == DT_ComprehensiveSR);  // only by-reference - to be checked !
-                    break;
-*/
-                default:
-                    break;
-            }
-            break;
-        case RT_hasConceptMod:
-            result = (valueType == VT_Text) || (valueType == VT_Code);
-            break;
-        default:
-            break;
+        switch (relationshipType)
+        {
+            case RT_hasAcqContext:
+                switch (valueType)
+                {
+                    case VT_Text:
+                    case VT_Code:
+                    case VT_DateTime:
+                    case VT_Date:
+                    case VT_Time:
+                    case VT_UIDRef:
+                    case VT_PName:
+                        result = OFTrue;
+                        break;
+                    case VT_Num:
+                        result = (documentType == DT_EnhancedSR) || (documentType == DT_ComprehensiveSR);
+                        break;
+                    case VT_Container:
+                        result = byReference;       /* documentType is already checked */
+                        break;
+                    default:
+                        break;
+                }
+                break;
+            case RT_hasConceptMod:
+                result = (valueType == VT_Text) || (valueType == VT_Code);
+                break;
+            default:
+                break;
+        }
     }
     return result;
 }
@@ -173,7 +178,10 @@ OFBool DSRWaveformTreeNode::canAddNode(const E_DocumentType documentType,
 /*
  *  CVS/RCS Log:
  *  $Log: dsrwavtn.cc,v $
- *  Revision 1.6  2000-11-01 16:37:07  joergr
+ *  Revision 1.7  2000-11-07 18:33:33  joergr
+ *  Enhanced support for by-reference relationships.
+ *
+ *  Revision 1.6  2000/11/01 16:37:07  joergr
  *  Added support for conversion to XML. Optimized HTML rendering.
  *
  *  Revision 1.5  2000/10/26 14:37:48  joergr

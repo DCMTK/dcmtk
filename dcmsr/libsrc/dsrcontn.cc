@@ -23,8 +23,8 @@
  *    classes: DSRContainerTreeNode
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-11-01 16:31:17 $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  Update Date:      $Date: 2000-11-07 18:33:29 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -105,7 +105,10 @@ E_Condition DSRContainerTreeNode::writeXML(ostream &stream,
                                            OFConsole *logStream) const
 {
     E_Condition result = EC_Normal;
-    stream << "<container flag=\"" << continuityOfContentToEnumeratedValue(ContinuityOfContent) << "\">" << endl;
+    stream << "<container flag=\"" << continuityOfContentToEnumeratedValue(ContinuityOfContent) << "\"";
+    if (isReferenceTarget())
+        stream << " id=\"" << getNodeID() << "\"";
+    stream << ">" << endl;
     result = DSRDocumentTreeNode::writeXML(stream, flags, logStream);
     stream << "</container>" << endl;
     return result;
@@ -161,84 +164,86 @@ E_Condition DSRContainerTreeNode::renderHTML(ostream &docStream,
 
 OFBool DSRContainerTreeNode::canAddNode(const E_DocumentType documentType,
                                         const E_RelationshipType relationshipType,
-                                        const E_ValueType valueType) const
+                                        const E_ValueType valueType,
+                                        const OFBool byReference) const
 {
     OFBool result = OFFalse;
-    switch (relationshipType)
+    if (!byReference || (documentType == DT_ComprehensiveSR))
     {
-        case RT_contains:
-            switch (valueType)
-            {
-                case VT_Text:                
-                case VT_Code:
-                case VT_DateTime:
-                case VT_Date:
-                case VT_Time:
-                case VT_UIDRef:
-                case VT_PName:
-                case VT_Composite:
-                case VT_Image:
-                case VT_Waveform:
-                case VT_Container:
-                    result = OFTrue;
-                    break;
-                case VT_Num:
-                case VT_SCoord:
-                case VT_TCoord:
-                    result = (documentType == DT_EnhancedSR) || (documentType == DT_ComprehensiveSR);
-                    break;
-                default:
-                    break;
-            }
-            break;
-        case RT_hasObsContext:
-            switch (valueType)
-            {
-                case VT_Text:                
-                case VT_Code:
-                case VT_DateTime:
-                case VT_Date:
-                case VT_Time:
-                case VT_UIDRef:
-                case VT_PName:
-                    result = OFTrue;
-                    break;
-                case VT_Num:
-                    result = (documentType == DT_EnhancedSR) || (documentType == DT_ComprehensiveSR);
-                    break;
-                default:
-                    break;
-            }
-            break;
-        case RT_hasAcqContext:
-            switch (valueType)
-            {
-                case VT_Text:                
-                case VT_Code:
-                case VT_DateTime:
-                case VT_Date:
-                case VT_Time:
-                case VT_UIDRef:
-                case VT_PName:
-                    result = OFTrue;
-                    break;
-                case VT_Num:
-                    result = (documentType == DT_EnhancedSR) || (documentType == DT_ComprehensiveSR);
-                    break;
-/*
-                case VT_Container:
-                    result = (documentType == DT_ComprehensiveSR);  // only by-reference - to be checked !
-                    break;
-*/
-                default:
-                    break;
-            }
-            break;
-        case RT_hasConceptMod:
-            result = (valueType == VT_Text) || (valueType == VT_Code);
-            break;
-        default:
-            break;
+        switch (relationshipType)
+        {
+            case RT_contains:
+                switch (valueType)
+                {
+                    case VT_Text:                
+                    case VT_Code:
+                    case VT_DateTime:
+                    case VT_Date:
+                    case VT_Time:
+                    case VT_UIDRef:
+                    case VT_PName:
+                    case VT_Composite:
+                    case VT_Image:
+                    case VT_Waveform:
+                    case VT_Container:
+                        result = (!byReference);        /* only allowed for by-value relationships */
+                        break;
+                    case VT_Num:
+                    case VT_SCoord:
+                    case VT_TCoord:
+                        result = (documentType == DT_EnhancedSR) || ((documentType == DT_ComprehensiveSR) && !byReference);
+                        break;
+                    default:
+                        break;
+                }
+                break;
+            case RT_hasObsContext:
+                switch (valueType)
+                {
+                    case VT_Text:                
+                    case VT_Code:
+                    case VT_DateTime:
+                    case VT_Date:
+                    case VT_Time:
+                    case VT_UIDRef:
+                    case VT_PName:
+                        result = OFTrue;
+                        break;
+                    case VT_Num:
+                        result = (documentType == DT_EnhancedSR) || (documentType == DT_ComprehensiveSR);
+                        break;
+                    default:
+                        break;
+                }
+                break;
+            case RT_hasAcqContext:
+                switch (valueType)
+                {
+                    case VT_Text:                
+                    case VT_Code:
+                    case VT_DateTime:
+                    case VT_Date:
+                    case VT_Time:
+                    case VT_UIDRef:
+                    case VT_PName:
+                        result = OFTrue;
+                        break;
+                    case VT_Num:
+                        result = (documentType == DT_EnhancedSR) || (documentType == DT_ComprehensiveSR);
+                        break;
+                    case VT_Container:
+                        result = byReference;       /* documentType is already checked */
+                        break;
+                    default:
+                        break;
+                }
+                break;
+            case RT_hasConceptMod:
+                result = (valueType == VT_Text) || (valueType == VT_Code);
+                break;
+            default:
+                break;
+        }
     }
     return result;
 }
@@ -259,7 +264,10 @@ E_Condition DSRContainerTreeNode::setContinuityOfContent(const E_ContinuityOfCon
 /*
  *  CVS/RCS Log:
  *  $Log: dsrcontn.cc,v $
- *  Revision 1.7  2000-11-01 16:31:17  joergr
+ *  Revision 1.8  2000-11-07 18:33:29  joergr
+ *  Enhanced support for by-reference relationships.
+ *
+ *  Revision 1.7  2000/11/01 16:31:17  joergr
  *  Added support for conversion to XML.
  *
  *  Revision 1.6  2000/10/26 14:27:47  joergr

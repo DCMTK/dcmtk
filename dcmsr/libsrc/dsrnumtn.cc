@@ -23,8 +23,8 @@
  *    classes: DSRNumTreeNode
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-11-01 16:37:00 $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  Update Date:      $Date: 2000-11-07 18:33:30 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -81,7 +81,10 @@ E_Condition DSRNumTreeNode::writeXML(ostream &stream,
                                      OFConsole *logStream) const
 {
     E_Condition result = EC_Normal;
-    stream << "<num>" << endl;
+    stream << "<num";
+    if (isReferenceTarget())
+        stream << " id=\"" << getNodeID() << "\"";
+    stream << ">" << endl;
     result = DSRDocumentTreeNode::writeXML(stream, flags, logStream);
     DSRNumericMeasurementValue::writeXML(stream, flags, logStream);
     stream << "</num>" << endl;
@@ -124,61 +127,63 @@ E_Condition DSRNumTreeNode::renderHTMLContentItem(ostream &docStream,
 
 OFBool DSRNumTreeNode::canAddNode(const E_DocumentType documentType,
                                   const E_RelationshipType relationshipType,
-                                  const E_ValueType valueType) const
+                                  const E_ValueType valueType,
+                                  const OFBool byReference) const
 {
     OFBool result = OFFalse;
-    switch (relationshipType)
+    if (!byReference || (documentType == DT_ComprehensiveSR))
     {
-        case RT_hasObsContext:
-            switch (valueType)
-            {
-                case VT_Text:                
-                case VT_Code:
-                case VT_Num:
-                case VT_DateTime:
-                case VT_Date:
-                case VT_Time:
-                case VT_UIDRef:
-                case VT_PName:
-                    result = (documentType == DT_ComprehensiveSR);
-                    break;
-                default:
-                    break;
-            }
-            break;
-        case RT_hasConceptMod:
-            result = (valueType == VT_Text) || (valueType == VT_Code);
-            break;
-        case RT_inferredFrom:
-        case RT_hasProperties:
-            switch (valueType)
-            {
-                case VT_Text:
-                case VT_Code:
-                case VT_Num:
-                case VT_DateTime:
-                case VT_Date:
-                case VT_Time:
-                case VT_UIDRef:
-                case VT_PName:
-                case VT_Composite:
-                case VT_Image:
-                case VT_Waveform:
-                case VT_SCoord:
-                case VT_TCoord:
-                    result = (documentType == DT_ComprehensiveSR);
-                    break;
-/*
-                case VT_Container:
-                    result = (documentType == DT_ComprehensiveSR);  // only by-reference - to be checked !
-                    break;
-*/
-                default:
-                    break;
-            }
-            break;
-        default:
-            break;
+        switch (relationshipType)
+        {
+            case RT_hasObsContext:
+                switch (valueType)
+                {
+                    case VT_Text:                
+                    case VT_Code:
+                    case VT_Num:
+                    case VT_DateTime:
+                    case VT_Date:
+                    case VT_Time:
+                    case VT_UIDRef:
+                    case VT_PName:
+                        result = (documentType == DT_ComprehensiveSR);
+                        break;
+                    default:
+                        break;
+                }
+                break;
+            case RT_hasConceptMod:
+                result = (valueType == VT_Text) || (valueType == VT_Code);
+                break;
+            case RT_inferredFrom:
+            case RT_hasProperties:
+                switch (valueType)
+                {
+                    case VT_Text:
+                    case VT_Code:
+                    case VT_Num:
+                    case VT_DateTime:
+                    case VT_Date:
+                    case VT_Time:
+                    case VT_UIDRef:
+                    case VT_PName:
+                    case VT_Composite:
+                    case VT_Image:
+                    case VT_Waveform:
+                    case VT_SCoord:
+                    case VT_TCoord:
+                        result = (documentType == DT_ComprehensiveSR);
+                        break;
+                    case VT_Container:
+                        result = byReference;       /* documentType is already checked */
+                        break;
+                    default:
+                        break;
+                }
+                break;
+            default:
+                break;
+        }
     }
     return result;
 }
@@ -187,7 +192,10 @@ OFBool DSRNumTreeNode::canAddNode(const E_DocumentType documentType,
 /*
  *  CVS/RCS Log:
  *  $Log: dsrnumtn.cc,v $
- *  Revision 1.5  2000-11-01 16:37:00  joergr
+ *  Revision 1.6  2000-11-07 18:33:30  joergr
+ *  Enhanced support for by-reference relationships.
+ *
+ *  Revision 1.5  2000/11/01 16:37:00  joergr
  *  Added support for conversion to XML. Optimized HTML rendering.
  *
  *  Revision 1.4  2000/10/26 14:32:09  joergr

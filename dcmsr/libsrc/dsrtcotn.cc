@@ -23,8 +23,8 @@
  *    classes: DSRTCoordTreeNode
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-11-01 16:37:04 $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  Update Date:      $Date: 2000-11-07 18:33:31 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -86,7 +86,10 @@ E_Condition DSRTCoordTreeNode::writeXML(ostream &stream,
                                         OFConsole *logStream) const
 {
     E_Condition result = EC_Normal;
-    stream << "<tcoord type=\"" << temporalRangeTypeToEnumeratedValue(getTemporalRangeType()) << "\">" << endl;
+    stream << "<tcoord type=\"" << temporalRangeTypeToEnumeratedValue(getTemporalRangeType()) << "\"";
+    if (isReferenceTarget())
+        stream << " id=\"" << getNodeID() << "\"";
+    stream << ">" << endl;
     result = DSRDocumentTreeNode::writeXML(stream, flags, logStream);
     DSRTemporalCoordinatesValue::writeXML(stream, flags, logStream);
     stream << "</tcoord>" << endl;
@@ -131,27 +134,31 @@ E_Condition DSRTCoordTreeNode::renderHTMLContentItem(ostream &docStream,
 
 OFBool DSRTCoordTreeNode::canAddNode(const E_DocumentType documentType,
                                      const E_RelationshipType relationshipType,
-                                     const E_ValueType valueType) const
+                                     const E_ValueType valueType,
+                                     const OFBool byReference) const
 {
     OFBool result = OFFalse;
-    switch (relationshipType)
+    if (!byReference || (documentType == DT_ComprehensiveSR))
     {
-        case RT_hasConceptMod:
-            result = (valueType == VT_Text) || (valueType == VT_Code);
-            break;
-        case RT_selectedFrom:
-            switch (valueType)
-            {
-                case VT_Image:
-                case VT_Waveform:
-                case VT_SCoord:
-                    result = (documentType == DT_EnhancedSR) || (documentType == DT_ComprehensiveSR);
-                    break;
-                default:
-                    break;
-            }
-        default:
-            break;
+        switch (relationshipType)
+        {
+            case RT_hasConceptMod:
+                result = (valueType == VT_Text) || (valueType == VT_Code);
+                break;
+            case RT_selectedFrom:
+                switch (valueType)
+                {
+                    case VT_Image:
+                    case VT_Waveform:
+                    case VT_SCoord:
+                        result = (documentType == DT_EnhancedSR) || (documentType == DT_ComprehensiveSR);
+                        break;
+                    default:
+                        break;
+                }
+            default:
+                break;
+        }
     }
     return result;
 }
@@ -160,7 +167,10 @@ OFBool DSRTCoordTreeNode::canAddNode(const E_DocumentType documentType,
 /*
  *  CVS/RCS Log:
  *  $Log: dsrtcotn.cc,v $
- *  Revision 1.2  2000-11-01 16:37:04  joergr
+ *  Revision 1.3  2000-11-07 18:33:31  joergr
+ *  Enhanced support for by-reference relationships.
+ *
+ *  Revision 1.2  2000/11/01 16:37:04  joergr
  *  Added support for conversion to XML. Optimized HTML rendering.
  *
  *  Revision 1.1  2000/10/26 14:40:28  joergr

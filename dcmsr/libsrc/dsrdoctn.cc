@@ -23,8 +23,8 @@
  *    classes: DSRDocumentTreeNode
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-11-01 16:33:38 $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  Update Date:      $Date: 2000-11-07 18:33:29 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -41,7 +41,9 @@
 
 DSRDocumentTreeNode::DSRDocumentTreeNode(const E_RelationshipType relationshipType,
                                          const E_ValueType valueType)
- : RelationshipType(relationshipType),
+ : DSRTreeNode(),
+   ReferenceTarget(OFFalse),
+   RelationshipType(relationshipType),
    ValueType(valueType),
    ConceptName(),
    ObservationDateTime()
@@ -56,6 +58,7 @@ DSRDocumentTreeNode::~DSRDocumentTreeNode()
 
 void DSRDocumentTreeNode::clear()
 {
+    ReferenceTarget = OFFalse;
     ConceptName.clear();
     ObservationDateTime.clear();
 }
@@ -156,8 +159,13 @@ E_Condition DSRDocumentTreeNode::renderHTML(ostream &docStream,
     /* check for validity */
     if (!isValid())
         printInvalidContentItemMessage(logStream, "Rendering", this);
+    /* declare hyperlink target */
+    if (ReferenceTarget)
+        docStream << "<a name=\"content_item_" << getNodeID() << "\">" << endl;
     /* render content item */
     E_Condition result = renderHTMLContentItem(docStream, annexStream, nestingLevel, annexNumber, flags, logStream);
+    if (ReferenceTarget)
+        docStream << "</a>" << endl;
     /* render child nodes */
     if (result == EC_Normal)
         result = renderHTMLChildNodes(docStream, annexStream, nestingLevel, annexNumber, flags | HF_renderItemsSeparately, logStream);
@@ -194,7 +202,8 @@ E_Condition DSRDocumentTreeNode::setObservationDateTime(const OFString &observat
 
 OFBool DSRDocumentTreeNode::canAddNode(const E_DocumentType /* documentType */,
                                        const E_RelationshipType /* relationshipType */,
-                                       const E_ValueType /* valueType */) const
+                                       const E_ValueType /* valueType */,
+                                       const OFBool /* byReference */) const
 {
     /* no restrictions */
     return OFTrue;
@@ -339,9 +348,8 @@ E_Condition DSRDocumentTreeNode::createAndAppendNewNode(DSRDocumentTreeNode *&pr
                                                         const E_ValueType valueType)
 {
     E_Condition result = EC_CorruptedData;
-    /* this is just a trick to test by-reference relationships, first line should be removed later on !!! */
-    if (((documentType == DT_ComprehensiveSR) && (relationshipType != RT_contains) && (valueType == VT_byReference)) ||
-        canAddNode(documentType, relationshipType, valueType))
+    /* do not check by-reference relationships here, will be done later (after complete reading) */
+    if ((valueType == VT_byReference) || canAddNode(documentType, relationshipType, valueType))
     {
         DSRDocumentTreeNode *node = createDocumentTreeNode(relationshipType, valueType);
         if (node != NULL)
@@ -591,12 +599,15 @@ E_Condition DSRDocumentTreeNode::renderHTMLChildNodes(ostream &docStream,
                     /* expand short nodes with no children inline */
                     if (!(flags & HF_neverExpandChildrenInline) && !node->hasChildNodes() && node->isShort(flags))
                     {
-                        /* render concept name/code or value type */
-                        if (node->getConceptName().getCodeMeaning().length() > 0)
-                            node->getConceptName().renderHTML(docStream, logStream, (flags & HF_renderConceptNameCodes) && ConceptName.isValid() /* fullCode */);
-                        else
-                            docStream << valueTypeToReadableName(node->getValueType());
-                        docStream << " = ";
+                        if (node->getValueType() != VT_byReference)
+                        {
+                            /* render concept name/code or value type */
+                            if (node->getConceptName().getCodeMeaning().length() > 0)
+                                node->getConceptName().renderHTML(docStream, logStream, (flags & HF_renderConceptNameCodes) && ConceptName.isValid() /* fullCode */);
+                            else
+                                docStream << valueTypeToReadableName(node->getValueType());
+                            docStream << " = ";
+                        }
                         /* render HTML code (directly to the reference text) */
                         result = node->renderHTML(docStream, annexStream, 0 /* nesting level */, annexNumber, newFlags | HF_renderItemInline, logStream);
                     } else {
@@ -703,7 +714,10 @@ const OFString &DSRDocumentTreeNode::getRelationshipText(const E_RelationshipTyp
 /*
  *  CVS/RCS Log:
  *  $Log: dsrdoctn.cc,v $
- *  Revision 1.6  2000-11-01 16:33:38  joergr
+ *  Revision 1.7  2000-11-07 18:33:29  joergr
+ *  Enhanced support for by-reference relationships.
+ *
+ *  Revision 1.6  2000/11/01 16:33:38  joergr
  *  Added support for conversion to XML.
  *
  *  Revision 1.5  2000/10/26 14:29:20  joergr

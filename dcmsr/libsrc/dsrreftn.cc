@@ -23,8 +23,8 @@
  *    classes: DSRByReferenceTreeNode
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-11-01 16:37:02 $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  Update Date:      $Date: 2000-11-07 18:33:31 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -39,18 +39,21 @@
 
 DSRByReferenceTreeNode::DSRByReferenceTreeNode(const E_RelationshipType relationshipType)
  : DSRDocumentTreeNode(relationshipType, VT_byReference),
-   DSRStringValue()
+   ValidReference(OFFalse),
+   ReferencedContentItem(),
+   ReferencedNodeID(0)
 {
 }
 
 
 DSRByReferenceTreeNode::DSRByReferenceTreeNode(const E_RelationshipType relationshipType,
-                                               const OFString &stringValue)
+                                               const size_t referencedNodeID)
  : DSRDocumentTreeNode(relationshipType, VT_byReference),
-   DSRStringValue(stringValue)
+   ValidReference(OFFalse),
+   ReferencedContentItem(),
+   ReferencedNodeID(referencedNodeID)
 {
 }
-
 
 
 DSRByReferenceTreeNode::~DSRByReferenceTreeNode()
@@ -61,31 +64,36 @@ DSRByReferenceTreeNode::~DSRByReferenceTreeNode()
 void DSRByReferenceTreeNode::clear()
 {
     DSRDocumentTreeNode::clear();
-    DSRStringValue::clear();
+    ValidReference = OFFalse;
+    ReferencedContentItem.clear();
+    ReferencedNodeID = 0;
 }
 
 
 OFBool DSRByReferenceTreeNode::isValid() const
 {
     /* ConceptNameCodeSequence not allowed */
-    return DSRDocumentTreeNode::isValid() && DSRStringValue::isValid() && getConceptName().isEmpty();
+    return DSRDocumentTreeNode::isValid() && getConceptName().isEmpty() && ValidReference;
 }
 
 
 E_Condition DSRByReferenceTreeNode::print(ostream &stream,
                                           const size_t /* flags */) const
 {
-    stream << relationshipTypeToReadableName(getRelationshipType()) << " " << getValue();
+    stream << relationshipTypeToReadableName(getRelationshipType()) << " " << ReferencedContentItem;
     return EC_Normal;
 }
 
 
-E_Condition DSRByReferenceTreeNode::writeXML(ostream & /* stream */,
-                                             const size_t /* flags */,
-                                             OFConsole * /* logStream */) const
+E_Condition DSRByReferenceTreeNode::writeXML(ostream &stream,
+                                             const size_t flags,
+                                             OFConsole *logStream) const
 {
-    /* tbd */
-    return EC_Normal;
+    E_Condition result = EC_Normal;
+    stream << "<reference ref_id=\"" << ReferencedNodeID << "\">" << endl;
+    result = DSRDocumentTreeNode::writeXML(stream, flags, logStream);
+    stream << "</reference>" << endl;
+    return result;
 }
 
 
@@ -93,8 +101,10 @@ E_Condition DSRByReferenceTreeNode::readContentItem(DcmItem &dataset,
                                                     OFConsole *logStream)
 {
     DcmUnsignedLong delem(DCM_ReferencedContentItemIdentifier);
+    /* clear before reaidng */
+    ReferencedContentItem.clear();
+    ReferencedNodeID = 0;
     /* read ReferencedContentItemIdentifier */
-    OFString string;
     E_Condition result = getAndCheckElementFromDataset(dataset, delem, "1-n", "1C", logStream);
     if (result == EC_Normal)
     {
@@ -105,13 +115,11 @@ E_Condition DSRByReferenceTreeNode::readContentItem(DcmItem &dataset,
         for (unsigned long i = 0; i < count; i++)
         {
             if (i > 0)
-                string += '.';
+                ReferencedContentItem += '.';
             if (delem.getUint32(value, i) == EC_Normal)
-                string += DSRTypes::numberToString((size_t)value, buffer);
+                ReferencedContentItem += DSRTypes::numberToString((size_t)value, buffer);
         }
     }
-    /* set reference value (might be empty) */
-    setValue(string);
     return result;
 }
 
@@ -120,7 +128,8 @@ E_Condition DSRByReferenceTreeNode::writeContentItem(DcmItem &dataset,
                                                      OFConsole * /* logStream */) const
 {
     E_Condition result = EC_IllegalCall;
-    if (DSRStringValue::isValid())
+    /* only write references with valid format */
+    if (checkForValidUIDFormat(ReferencedContentItem))
     {
         result = EC_Normal;
         DcmUnsignedLong delem(DCM_ReferencedContentItemIdentifier);
@@ -130,12 +139,12 @@ E_Condition DSRByReferenceTreeNode::writeContentItem(DcmItem &dataset,
         unsigned long i = 0;
         do {
             /* search for next separator */
-            posEnd = getValue().find('.', posStart);
+            posEnd = ReferencedContentItem.find('.', posStart);
             /* is last segment? */
             if (posEnd == OFString_npos)
-                delem.putUint32(DSRTypes::stringToNumber(getValue().substr(posStart).c_str()), i);
+                delem.putUint32(DSRTypes::stringToNumber(ReferencedContentItem.substr(posStart).c_str()), i);
             else {
-                delem.putUint32(DSRTypes::stringToNumber(getValue().substr(posStart, posEnd - posStart).c_str()), i);
+                delem.putUint32(DSRTypes::stringToNumber(ReferencedContentItem.substr(posStart, posEnd - posStart).c_str()), i);
                 posStart = posEnd + 1;
             }
             i++;
@@ -155,7 +164,7 @@ E_Condition DSRByReferenceTreeNode::renderHTMLContentItem(ostream &docStream,
                                                           OFConsole * /* logStream */) const
 {
     /* render reference string */
-    docStream << "by-reference (" << getValue() << ")" << endl;
+    docStream << "Content Item <a href=\"#content_item_" << ReferencedNodeID << "\">by-reference</a>" << endl;
     return EC_Normal;
 }
 
@@ -176,29 +185,24 @@ E_Condition DSRByReferenceTreeNode::setObservationDateTime(const OFString & /* o
 
 OFBool DSRByReferenceTreeNode::canAddNode(const E_DocumentType /* documentType */,
                                           const E_RelationshipType /* relationshipType */,
-                                          const E_ValueType /* valueType */) const
+                                          const E_ValueType /* valueType */,
+                                          const OFBool /* byReference */) const
 {
     /* invalid: no child nodes allowed */
     return OFFalse;
 }
 
 
-OFBool DSRByReferenceTreeNode::checkValue(const OFString &stringValue) const
-{
-    /* reference string format is similar to UIDs (1.2.3) */
-    return checkForValidUIDFormat(stringValue);
-}
-
-
 /*
  *  CVS/RCS Log:
  *  $Log: dsrreftn.cc,v $
- *  Revision 1.2  2000-11-01 16:37:02  joergr
+ *  Revision 1.3  2000-11-07 18:33:31  joergr
+ *  Enhanced support for by-reference relationships.
+ *
+ *  Revision 1.2  2000/11/01 16:37:02  joergr
  *  Added support for conversion to XML. Optimized HTML rendering.
  *
  *  Revision 1.1  2000/10/26 14:39:58  joergr
  *  Added support for "Comprehensive SR".
- *
- *
  *
  */

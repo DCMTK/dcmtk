@@ -23,8 +23,8 @@
  *    classes: DSRNumericMeasurementValue
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-11-01 16:37:01 $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  Update Date:      $Date: 2000-11-07 18:33:30 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -226,8 +226,8 @@ E_Condition DSRNumericMeasurementValue::renderHTML(ostream &docStream,
         if (!fullCode)
             docStream << "<u>";
         docStream << DSRTypes::convertToMarkupString(NumericValue, htmlString) << " ";
-        /* render full code of the measurement unit (value first) or code value only */
-        MeasurementUnit.renderHTML(docStream, logStream, fullCode, OFTrue /* valueFirst */);
+        /* render full code of the measurement unit (value first?) or code value only */
+        MeasurementUnit.renderHTML(docStream, logStream, fullCode, !(flags & DSRTypes::HF_useCodeMeaningAsUnit) /* valueFirst */);
         if (!fullCode)
             docStream << "</u>";
     }
@@ -309,7 +309,10 @@ OFBool DSRNumericMeasurementValue::checkMeasurementUnit(const DSRCodedEntryValue
 /*
  *  CVS/RCS Log:
  *  $Log: dsrnumvl.cc,v $
- *  Revision 1.5  2000-11-01 16:37:01  joergr
+ *  Revision 1.6  2000-11-07 18:33:30  joergr
+ *  Enhanced support for by-reference relationships.
+ *
+ *  Revision 1.5  2000/11/01 16:37:01  joergr
  *  Added support for conversion to XML. Optimized HTML rendering.
  *
  *  Revision 1.4  2000/10/19 16:05:09  joergr

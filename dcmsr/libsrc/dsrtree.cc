@@ -23,8 +23,8 @@
  *    classes: DSRTree
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-10-13 07:52:27 $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  Update Date:      $Date: 2000-11-07 18:33:32 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -119,6 +119,7 @@ size_t DSRTree::addNode(DSRTreeNode *node,
                     node->Prev = NodeCursor;
                     node->Next = NodeCursor->Next;
                     NodeCursor->Next = node;
+                    ++Position;
                     break;
                 case AM_beforeCurrent:
                     node->Prev = NodeCursor->Prev;
@@ -126,14 +127,33 @@ size_t DSRTree::addNode(DSRTreeNode *node,
                     NodeCursor->Prev = node;
                     break;
                 case AM_belowCurrent:
-                    node->Down = NodeCursor->Down;
-                    NodeCursor->Down = node;
+                    /* store old position */
+                    if (Position > 0)
+                    {
+                        PositionList.push_back(Position);
+                        Position = 1;
+                    }
                     NodeCursorStack.push(NodeCursor);
+                    /* parent node has already child nodes */
+                    if (NodeCursor->Down != NULL)
+                    {
+                        DSRTreeNode *tempNode = NodeCursor->Down;
+                        /* goto last node (sibling) */
+                        while (tempNode->Next != NULL)
+                        {
+                            tempNode = tempNode->Next;
+                            ++Position;
+                        }
+                        tempNode->Next = node;
+                        node->Prev = tempNode;
+                    } else
+                        NodeCursor->Down = node;
                     break;
             }
             NodeCursor = node;
         } else {
             RootNode = NodeCursor = node;
+            Position = 1;
         }
         nodeID = NodeCursor->Ident;
     }
@@ -150,31 +170,44 @@ size_t DSRTree::removeNode()
         
         /* extract current node (incl. subtree) from tree */
         
+        /* are there any siblings? */
         if ((cursor->Prev != NULL) || (cursor->Next != NULL))
         {
+            /* connect to previous node */
             if (cursor->Prev != NULL)
-            {
                 (cursor->Prev)->Next = cursor->Next;
-                NodeCursor = cursor->Prev;
-            }
+            /* connect to next node */
             if (cursor->Next != NULL)
             {
                 (cursor->Next)->Prev = cursor->Prev;
                 if (NodeCursor == RootNode)
                     RootNode = cursor->Next;        // old root node deleted
                 NodeCursor = cursor->Next;
+            } else {
+                /* set cursor to previous node since there is no next node */
+                NodeCursor = cursor->Prev;
+                --Position;
             }
         } else {
+            /* no siblings: check for child nodes */
             if (!NodeCursorStack.empty())
             {
                 NodeCursor = NodeCursorStack.top();
                 NodeCursorStack.pop();
+                Position = PositionList.back();
+                PositionList.pop_back();
+                /* should never be NULL, but ... */
                 if (NodeCursor != NULL)
                     NodeCursor->Down = NULL;
                 else
+                {
                     RootNode = NULL;                // tree is now empty
+                    Position = 0;
+                }
             } else {
                 RootNode = NodeCursor = NULL;       // tree is now empty
+                Position = 0;
+                PositionList.clear();
             }
         }
 
@@ -212,7 +245,10 @@ size_t DSRTree::removeNode()
 /*
  *  CVS/RCS Log:
  *  $Log: dsrtree.cc,v $
- *  Revision 1.1  2000-10-13 07:52:27  joergr
+ *  Revision 1.2  2000-11-07 18:33:32  joergr
+ *  Enhanced support for by-reference relationships.
+ *
+ *  Revision 1.1  2000/10/13 07:52:27  joergr
  *  Added new module 'dcmsr' providing access to DICOM structured reporting
  *  documents (supplement 23).  Doc++ documentation not yet completed.
  *
