@@ -10,9 +10,9 @@
 ** Implementation of class DcmElement
 **
 ** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1996-04-16 16:04:05 $
+** Update Date:		$Date: 1996-07-29 17:14:26 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcelem.cc,v $
-** CVS/RCS Revision:	$Revision: 1.7 $
+** CVS/RCS Revision:	$Revision: 1.8 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -315,20 +315,23 @@ void * DcmElement::getValue(const E_ByteOrder newByteOrder)
     errorFlag =  EC_Normal;
     Uint8 * value = NULL;
 
-    if (!fValue)
-	errorFlag = this -> loadValue();
-
-    if (errorFlag == EC_Normal)
+    if (Length != 0)
     {
-	if (newByteOrder != fByteOrder)
-	{
-	    this -> swapIfNecessary(newByteOrder, fByteOrder, fValue, Length, 
-				    Tag->getVR().getValueWidth());
-	    fByteOrder = newByteOrder;
-	}
+	if (!fValue)
+	    errorFlag = this -> loadValue();
 
 	if (errorFlag == EC_Normal)
-	    value = fValue;
+	{
+	    if (newByteOrder != fByteOrder)
+	    {
+		this -> swapIfNecessary(newByteOrder, fByteOrder, fValue, 
+					Length, Tag->getVR().getValueWidth());
+		fByteOrder = newByteOrder;
+	    }
+
+	    if (errorFlag == EC_Normal)
+		value = fValue;
+	}
     }
     return value;
 }
@@ -781,7 +784,10 @@ E_Condition DcmElement::write(DcmStream & outStream,
 /*
 ** CVS/RCS Log:
 ** $Log: dcelem.cc,v $
-** Revision 1.7  1996-04-16 16:04:05  andreas
+** Revision 1.8  1996-07-29 17:14:26  andreas
+** Faster Access with empty value fields
+**
+** Revision 1.7  1996/04/16 16:04:05  andreas
 ** - new put parameter DcmTagKey for DcmAttributeTag elements
 ** - better support for NULL element value
 **
