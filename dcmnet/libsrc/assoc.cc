@@ -68,9 +68,9 @@
 **
 **
 ** Last Update:         $Author: meichel $
-** Update Date:         $Date: 2000-02-01 10:24:06 $
+** Update Date:         $Date: 2000-02-02 13:34:29 $
 ** Source File:         $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/libsrc/assoc.cc,v $
-** CVS/RCS Revision:    $Revision: 1.23 $
+** CVS/RCS Revision:    $Revision: 1.24 $
 ** Status:              $State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -1648,10 +1648,16 @@ ASC_receiveAssociation(T_ASC_Network * network,
             pc = (DUL_PRESENTATIONCONTEXT*) LST_Next(l);
         }
     }
-    strcpy(params->theirImplementationClassUID,
-           params->DULparams.callingImplementationClassUID);
-    strcpy(params->theirImplementationVersionName,
-           params->DULparams.callingImplementationVersionName);
+
+    // copy only maximum number of allowed characters
+    // trailing zero is always present because 
+    // ASC_createAssociationParameters zero-initializes the complete struct.
+    strncpy(params->theirImplementationClassUID,
+            params->DULparams.callingImplementationClassUID,
+            sizeof (params->theirImplementationClassUID) - 1);
+    strncpy(params->theirImplementationVersionName,
+            params->DULparams.callingImplementationVersionName,
+            sizeof (params->theirImplementationVersionName) - 1);
 
     /*
      * The params->DULparams.peerMaxPDU parameter contains the 
@@ -1981,7 +1987,12 @@ ASC_dropAssociation(T_ASC_Association * association)
 /*
 ** CVS Log
 ** $Log: assoc.cc,v $
-** Revision 1.23  2000-02-01 10:24:06  meichel
+** Revision 1.24  2000-02-02 13:34:29  meichel
+** Fixed bug in ACSE code that could cause data in memory to be overwritten
+**   if a client sent an A-ASSOCIATE request with a longer ImplementationClassUID
+**   or ImplementationVersionName than allowed.
+**
+** Revision 1.23  2000/02/01 10:24:06  meichel
 ** Avoiding to include <stdlib.h> as extern "C" on Borland C++ Builder 4,
 **   workaround for bug in compiler header files.
 **
