@@ -10,7 +10,7 @@ dump2dcm [options] dumpfile-in dcmfile-out
 
 \section description DESCRIPTION
 
-The \b dump2dcm utility converts an ASCII dumpfile to a dicom file. The
+The \b dump2dcm utility converts an ASCII dumpfile to a dicom file.  The
 dumpfile has the same format as the output of \b dcmdump.  Thus it is possible
 to capture the output of \b dcmdump into a file, modify some attributes and
 create a new dicom file.  However, \b dump2dcm is not really suitable for
@@ -120,43 +120,43 @@ The parts of a line have the following syntax:
 \verbatim
 Tag:   (gggg,eeee)
        with gggg and eeee are 4 character hexadecimal values
-       representing group- and element-tag.  Spaces and Tabs can be
+       representing group and element tag.  Spaces and Tabs can be
        anywhere in a Tag specification
 VR:    Value Representation must be written as 2 characters as in
        Part 6 of the DICOM standard.  No Spaces or Tabs are allowed
-       between the two characters. If the VR can be determined from
+       between the two characters.  If the VR can be determined from
        the Tag, this part of a line is optional.
 Value: There are several rules for writing values:
        1. US, SS, SL, UL, FD, FL are written as decimal strings that
           can be read by scanf.
-       2. AT is written as (gggg,eeee) with additional spaces
+       2. AT is written as '(gggg,eeee)' with additional spaces
           stripped off automatically and gggg and eeee being decimal
           strings that can be read by scanf.
        3. OB, OW values are written as byte or word hexadecimal
           values separated by '\' character.  Alternatively, OB or OW
           values can be read from a separate file by writing the
-          filename prefixed by a '=' character (e.g.
-          =largepixeldata.dat).  The contents of the file will be
-          read as is.  OW data is expected to be little endian
-          ordered and will be swapped if necessary.  No checks will
-          be made to ensure that the amount of data is reasonable in
-          terms of other attributes such as Rows or Columns.
-       4. UI is written as =Name in data dictionary or as
-          unique identifer string (see  6.) , e.g. [1.2.840.....]
+          filename prefixed by a '=' character (e.g. '=largepix.dat').
+          The contents of the file will be read as is.  OW data is
+          expected to be little endian ordered and will be swapped if
+          necessary.  No checks will be made to ensure that the amount
+          of data is reasonable in terms of other attributes such as
+          Rows or Columns.
+       4. UI is written as '=Name' in data dictionary or as unique
+          identifer string (see 6.), e.g. '[1.2.840.....]'.
        5. Strings without () <> [] spaces, tabs and # can be written
-          directly
+          directly.
        6. Other strings with must be surrounded by [ ].  No bracket
-          structure is passed. The value ends at the last ] in the
-          line.  Anything after the ] is interpreted as comment.
-       7. ( < are interpreted special and may not be used when
+          structure is passed.  The value ends at the last ']' in the
+          line.  Anything after the ']' is interpreted as comment.
+       7. '(' and '<' are interpreted special and may not be used when
           writing an input file by hand as beginning characters of a
-          string. Multiple Value are separated by \. The lines need
-          not be sorted into ascending tag order. References in DICOM
-          Directories are not supported. Semantic errors are not
+          string. Multiple Value are separated by '\'.  The lines need
+          not be sorted into ascending tag order.  References in DICOM
+          Directories are not supported.  Semantic errors are not
           detected.
 \endverbatim
 
-\subsection notes_example Examples
+\subsection notes_example Example
 
 \verbatim
  (0008,0020) DA  [19921012]          #     8,  1  StudyDate
@@ -190,7 +190,7 @@ environment variable.  It is an error if no data dictionary can be loaded.
 
 \section copyright COPYRIGHT
 
-Copyright (C) 1994-2003 by Kuratorium OFFIS e.V., Escherweg 2, 26121 Oldenburg,
+Copyright (C) 1996-2003 by Kuratorium OFFIS e.V., Escherweg 2, 26121 Oldenburg,
 Germany.
 
 */

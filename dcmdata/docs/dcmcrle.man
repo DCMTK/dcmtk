@@ -11,7 +11,7 @@ dcmcrle [options] dcmfile-in dcmfile-out
 \section description DESCRIPTION
 
 The \b dcmcrle utility reads an uncompressed DICOM image (\e dicomfile-in),
-performs RLE compression (i. e. conversion to an encapsulated DICOM transfer
+performs RLE compression (i.e. conversion to an encapsulated DICOM transfer
 syntax) and writes the converted image to an output file (\e dicomfile-out).
 
 \section parameters PARAMETERS
@@ -182,7 +182,7 @@ environment variable.  It is an error if no data dictionary can be loaded.
 
 \section copyright COPYRIGHT
 
-Copyright (C) 1994-2003 by Kuratorium OFFIS e.V., Escherweg 2, 26121 Oldenburg,
+Copyright (C) 2002-2003 by Kuratorium OFFIS e.V., Escherweg 2, 26121 Oldenburg,
 Germany.
 
 */
