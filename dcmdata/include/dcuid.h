@@ -10,9 +10,9 @@
 ** routines for finding and creating UIDs.
 **
 ** Last Update:		$Author: hewett $
-** Update Date:		$Date: 1996-09-24 16:01:28 $
+** Update Date:		$Date: 1996-11-27 16:12:17 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcuid.h,v $
-** CVS/RCS Revision:	$Revision: 1.8 $
+** CVS/RCS Revision:	$Revision: 1.9 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -84,11 +84,22 @@ char* dcmGenerateUniqueIdentifer(char* uid, const char* prefix=NULL);
 /* 
 ** OFFIS UID is: 1.2.276.0.7230010
 ** UID Root for dcmtk DICOM project: 1.2.276.0.7230010.3
+** 
+** Private Suffix: .0
 ** Software Suffix: .1
 ** Study Suffix: .2
 ** Series Suffix: .3
-** Instance Suffix: .4
-** 
+** Image Instance Suffix: .4
+** Frame of Reference Suffix: .5
+** Instance Creator Suffix: .6
+** Fileset Suffix: .7
+** Detached Patient Mgmt Suffix: .8
+** Detached Visit Mgmt Suffix: .9
+** Detached Study Mgmt Suffix: .10
+** Study Component Mgmt Suffix: .11
+** Detached Results Mgmt Suffix: .12
+** Detached Interpretation Mgmt Suffix: .13
+** ...
 **/
 
 /* NOTE: Implementation version name may not be longer than 16 chars */
@@ -108,13 +119,20 @@ char* dcmGenerateUniqueIdentifer(char* uid, const char* prefix=NULL);
 /*
 ** Useful UID prefixes. These can be whatever you want.
 */
-#define SITE_STUDY_UID_ROOT		SITE_UID_ROOT ".2"
-#define SITE_SERIES_UID_ROOT		SITE_UID_ROOT ".3"
-#define SITE_INSTANCE_UID_ROOT		SITE_UID_ROOT ".4"
-#define SITE_FRAMEOFREFERENCE_UID_ROOT	SITE_UID_ROOT ".5"
-#define SITE_INSTANCECREATOR_UID_ROOT	SITE_UID_ROOT ".6"
-#define SITE_FILESET_UID_ROOT		SITE_UID_ROOT ".7"
-#define SITE_PRIVATE_UID_ROOT		SITE_UID_ROOT ".99"
+#define SITE_PRIVATE_UID_ROOT				SITE_UID_ROOT ".0"
+#define SITE_STUDY_UID_ROOT				SITE_UID_ROOT ".2"
+#define SITE_SERIES_UID_ROOT				SITE_UID_ROOT ".3"
+#define SITE_INSTANCE_UID_ROOT				SITE_UID_ROOT ".4"
+#define SITE_FRAMEOFREFERENCE_UID_ROOT			SITE_UID_ROOT ".5"
+#define SITE_INSTANCECREATOR_UID_ROOT			SITE_UID_ROOT ".6"
+#define SITE_FILESET_UID_ROOT				SITE_UID_ROOT ".7"
+#define SITE_DETACHED_PATIENT_MGMT_UID_ROOT		SITE_UID_ROOT ".8"
+#define SITE_DETACHED_VISIT_MGMT_UID_ROOT		SITE_UID_ROOT ".9"
+#define SITE_DETACHED_STUDY_MGMT_UID_ROOT		SITE_UID_ROOT ".10"
+#define SITE_STUDY_COMPONENT_MGMT_UID_ROOT		SITE_UID_ROOT ".11"
+#define SITE_DETACHED_RESULTS_MGMT_UID_ROOT		SITE_UID_ROOT ".12"
+#define SITE_DETACHED_INTERPRETATION_MGMT_UID_ROOT	SITE_UID_ROOT ".13"
+
 
 /*
 ** A private SOP Class UID which can be used in a file meta-header when
@@ -234,7 +252,10 @@ char* dcmGenerateUniqueIdentifer(char* uid, const char* prefix=NULL);
 /*
 ** CVS/RCS Log:
 ** $Log: dcuid.h,v $
-** Revision 1.8  1996-09-24 16:01:28  hewett
+** Revision 1.9  1996-11-27 16:12:17  hewett
+** Added recommended uid roots for Patient/Study/Results Management objects.
+**
+** Revision 1.8  1996/09/24 16:01:28  hewett
 ** Added SOP Class UIDs for Radiotherapy Objects.
 ** Added a separate table of Storage SOP Class UIDs (usefull during
 ** association negotiation).
