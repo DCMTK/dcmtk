@@ -21,10 +21,10 @@
  *
  *  Purpose: encoder codec class for RLE
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-06-27 15:15:43 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2002-07-18 12:15:40 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcrlecce.cc,v $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -245,9 +245,9 @@ OFCondition DcmRLECodecEncoder::encode(
               for (pixel = 0; pixel < bytesPerStripe; ++pixel)
               {
                 rleEncoder->add(*pixelPointer);
-                
+
                 // enforce DICOM rule that "Each row of the image shall be encoded
-                // separately and not cross a row boundary." 
+                // separately and not cross a row boundary."
                 // (see DICOM part 5 section G.3.1)
                 if (--columnCounter == 0)
                 {
@@ -347,21 +347,21 @@ OFCondition DcmRLECodecEncoder::encode(
         if (result.good())
         {
             // create new UID if mode is true or if we're converting to Secondary Capture
-            if (djcp->getConvertToSC() || djcp->getUIDCreation()) 
+            if (djcp->getConvertToSC() || djcp->getUIDCreation())
             {
                 result = DcmCodec::newInstance((DcmItem *)dataset);
-                
+
                 // set image type to DERIVED\\SECONDARY
                 if (result.good()) result = updateImageType((DcmItem *)dataset);
-                
+
                 // update derivation description
                 if (result.good())
                 {
                   // compute original image size in bytes, ignoring any padding bits.
                   double compressionRatio = 0.0;
-                  if (compressedSize > 0) compressionRatio = (columns * rows * bitsAllocated * numberOfFrames * samplesPerPixel / 8.0) / compressedSize;
+                  if (compressedSize > 0) compressionRatio = ((double)(columns * rows * bitsAllocated * (Uint32)numberOfFrames * samplesPerPixel) / 8.0) / compressedSize;
                   result = updateDerivationDescription((DcmItem *)dataset, compressionRatio);
-                }                           
+                }
             }
         }
 
@@ -414,7 +414,10 @@ OFCondition DcmRLECodecEncoder::updateDerivationDescription(
 /*
  * CVS/RCS Log
  * $Log: dcrlecce.cc,v $
- * Revision 1.2  2002-06-27 15:15:43  meichel
+ * Revision 1.3  2002-07-18 12:15:40  joergr
+ * Added explicit type casts to keep Sun CC 2.0.1 quiet.
+ *
+ * Revision 1.2  2002/06/27 15:15:43  meichel
  * Modified RLE encoder to make it usable for other purposes than
  *   DICOM encoding as well (e.g. PostScript, TIFF)
  *

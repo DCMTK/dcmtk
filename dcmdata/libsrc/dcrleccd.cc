@@ -21,10 +21,10 @@
  *
  *  Purpose: decoder codec class for RLE
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-06-06 14:52:40 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2002-07-18 12:15:39 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcrleccd.cc,v $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -43,7 +43,7 @@
 #include "dcpxitem.h"  /* for class DcmPixelItem */
 #include "dcvrpobw.h"  /* for class DcmPolymorphOBOW */
 #include "dcswap.h"    /* for swapIfNecessary() */
-#include "dcuid.h"     /* for dcmGenerateUniqueIdentifer()*/ 
+#include "dcuid.h"     /* for dcmGenerateUniqueIdentifer()*/
 
 
 DcmRLECodecDecoder::DcmRLECodecDecoder()
@@ -119,7 +119,7 @@ OFCondition DcmRLECodecDecoder::decode(
     {
       DcmPixelItem *pixItem = NULL;
       Uint8 * rleData = NULL;
-      const Uint32 bytesPerStripe = imageColumns * imageRows;
+      const size_t bytesPerStripe = imageColumns * imageRows;
 
       DcmRLEDecoder rledecoder(bytesPerStripe);
       if (rledecoder.fail()) result = EC_MemoryExhausted;  // RLE decoder failed to initialize
@@ -238,13 +238,13 @@ OFCondition DcmRLECodecDecoder::decode(
                   {
                     // feed complete remaining content of fragment to RLE codec and
                     // switch to next fragment
-                    result = rledecoder.decompress(rleData + byteOffset, fragmentLength - byteOffset);
+                    result = rledecoder.decompress(rleData + byteOffset, (size_t)(fragmentLength - byteOffset));
 
                     // special handling for zero pad byte at the end of the RLE stream
                     // which results in an EC_StreamNotifyClient return code
                     // or trailing garbage data which results in EC_CorruptedData
                     if (rledecoder.size() == bytesPerStripe) result = EC_Normal;
-                                        
+
                     // Check if we're already done. If yes, don't change fragment
                     if (result.good() || result == EC_StreamNotifyClient)
                     {
@@ -260,7 +260,7 @@ OFCondition DcmRLECodecDecoder::decode(
                         }
                       }
                       else byteOffset = fragmentLength;
-                    } 
+                    }
                   } /* while */
                 }
                 else
@@ -276,9 +276,9 @@ OFCondition DcmRLECodecDecoder::decode(
                     {
                       // feed complete remaining content of fragment to RLE codec and
                       // switch to next fragment
-                      result = rledecoder.decompress(rleData + byteOffset, fragmentLength - byteOffset);
+                      result = rledecoder.decompress(rleData + byteOffset, (size_t)(fragmentLength - byteOffset));
 
-                      if (result.good() || result == EC_StreamNotifyClient) 
+                      if (result.good() || result == EC_StreamNotifyClient)
                         result = pixSeq->getItem(pixItem, currentItem++);
                       if (result.good())
                       {
@@ -291,7 +291,7 @@ OFCondition DcmRLECodecDecoder::decode(
                     } /* while */
 
                     // last fragment for this RLE stripe
-                    result = rledecoder.decompress(rleData + byteOffset, inputBytes);
+                    result = rledecoder.decompress(rleData + byteOffset, (size_t)inputBytes);
 
                     // special handling for zero pad byte at the end of the RLE stream
                     // which results in an EC_StreamNotifyClient return code
@@ -315,10 +315,10 @@ OFCondition DcmRLECodecDecoder::decode(
                   // which sample and byte are we currently compressing?
                   sample = i / imageBytesAllocated;
                   byte = i % imageBytesAllocated;
-                
+
                   // raw buffer containing bytesPerStripe bytes of uncompressed data
                   outputBuffer = (Uint8 *) rledecoder.getOutputBuffer();
-                
+
                   // compute byte offsets
                   if (imagePlanarConfiguration == 0)
                   {
@@ -330,17 +330,17 @@ OFCondition DcmRLECodecDecoder::decode(
                      sampleOffset = sample * imageBytesAllocated * imageColumns * imageRows;
                      offsetBetweenSamples = imageBytesAllocated;
                   }
-                
+
                   // initialize pointer to output data
                   pixelPointer = imageData8 + sampleOffset + imageBytesAllocated - byte - 1;
-                               
+
                   // loop through all pixels of the frame
                   for (pixel = 0; pixel < bytesPerStripe; ++pixel)
                   {
                     *pixelPointer = *outputBuffer++;
                     pixelPointer += offsetBetweenSamples;
                   }
-                }   
+                }
               } /* for */
             }
 
@@ -403,7 +403,10 @@ OFCondition DcmRLECodecDecoder::encode(
 /*
  * CVS/RCS Log
  * $Log: dcrleccd.cc,v $
- * Revision 1.1  2002-06-06 14:52:40  meichel
+ * Revision 1.2  2002-07-18 12:15:39  joergr
+ * Added explicit type casts to keep Sun CC 2.0.1 quiet.
+ *
+ * Revision 1.1  2002/06/06 14:52:40  meichel
  * Initial release of the new RLE codec classes
  *   and the dcmcrle/dcmdrle tools in module dcmdata
  *
