@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2002, OFFIS
+ *  Copyright (C) 1994-2003, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,10 +21,10 @@
  *
  *  Purpose: Query/Retrieve Service Class User (C-MOVE operation)
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2003-06-10 14:00:34 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2003-09-04 10:08:32 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/apps/movescu.cc,v $
- *  CVS/RCS Revision: $Revision: 1.49 $
+ *  CVS/RCS Revision: $Revision: 1.50 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -963,8 +963,8 @@ storeSCPCallback(
     DIC_UI sopClass;
     DIC_UI sopInstance;
 
-    if ((opt_abortDuringStore > 0 && progress->state != DIMSE_StoreBegin) ||
-        (opt_abortAfterStore > 0 && progress->state == DIMSE_StoreEnd)) {
+    if ((opt_abortDuringStore && progress->state != DIMSE_StoreBegin) ||
+        (opt_abortAfterStore && progress->state == DIMSE_StoreEnd)) {
         if (opt_verbose) {
             printf("ABORT initiated (due to command line options)\n");
         }
@@ -1337,7 +1337,10 @@ cmove(T_ASC_Association * assoc, const char *fname)
 ** CVS Log
 **
 ** $Log: movescu.cc,v $
-** Revision 1.49  2003-06-10 14:00:34  meichel
+** Revision 1.50  2003-09-04 10:08:32  joergr
+** Fixed wrong use of OFBool/bool variable.
+**
+** Revision 1.49  2003/06/10 14:00:34  meichel
 ** Added support for TCP wrappers based host access control
 **
 ** Revision 1.48  2003/06/06 09:44:40  meichel

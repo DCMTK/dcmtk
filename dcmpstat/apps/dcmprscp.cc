@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2002, OFFIS
+ *  Copyright (C) 1998-2003, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,10 +21,10 @@
  *
  *  Purpose: Presentation State Viewer - Network Receive Component (Store SCP)
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-11-26 08:44:26 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2003-09-04 10:09:16 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmpstat/apps/dcmprscp.cc,v $
- *  CVS/RCS Revision: $Revision: 1.12 $
+ *  CVS/RCS Revision: $Revision: 1.13 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -282,7 +282,7 @@ int main(int argc, char *argv[])
 
     *logstream << rcsid << endl << OFDateTime::getCurrentDateTime() << endl << "started" << endl;
 
-    dvi.setLog(&ofConsole, opt_verbose, opt_debugMode);
+    dvi.setLog(&ofConsole, opt_verbose, opt_debugMode > 0);
 
     /* make sure data dictionary is loaded */
     if (!dcmDataDict.isDictionaryLoaded())
@@ -347,7 +347,7 @@ int main(int argc, char *argv[])
     {
       DVPSPrintSCP printSCP(dvi, opt_printer); // use new print SCP object for each association
 
-      printSCP.setLog(&ofConsole, opt_verbose, opt_debugMode, opt_dumpMode);
+      printSCP.setLog(&ofConsole, opt_verbose, opt_debugMode > 0, opt_dumpMode);
 
       if (opt_binaryLog)
       {
@@ -405,7 +405,10 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmprscp.cc,v $
- * Revision 1.12  2002-11-26 08:44:26  meichel
+ * Revision 1.13  2003-09-04 10:09:16  joergr
+ * Fixed wrong use of OFBool/bool variable.
+ *
+ * Revision 1.12  2002/11/26 08:44:26  meichel
  * Replaced all includes for "zlib.h" with <zlib.h>
  *   to avoid inclusion of zlib.h in the makefile dependencies.
  *

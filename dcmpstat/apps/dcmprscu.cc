@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2002, OFFIS
+ *  Copyright (C) 1998-2003, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,10 +21,10 @@
  *
  *  Purpose: Presentation State Viewer - Print Spooler
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2003-06-06 09:45:23 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2003-09-04 10:09:16 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmpstat/apps/dcmprscu.cc,v $
- *  CVS/RCS Revision: $Revision: 1.16 $
+ *  CVS/RCS Revision: $Revision: 1.17 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -237,7 +237,7 @@ static OFCondition spoolStoredPrintFile(const char *filename, DVInterface &dvi)
     if (opt_dumpMode)
     {
       printHandler.setDumpStream(logstream);
-      printHandler.setLog(&ofConsole, opt_verbose, opt_debugMode);
+      printHandler.setLog(&ofConsole, opt_verbose, opt_debugMode > 0);
     }
     result = printHandler.negotiateAssociation(dvi.getNetworkAETitle(),
       targetAETitle, targetHostname, targetPort, targetMaxPDU,
@@ -833,7 +833,7 @@ int main(int argc, char *argv[])
       *logstream << rcsid << endl << OFDateTime::getCurrentDateTime() << endl << "started" << endl;
     }
 
-    dvi.setLog(&ofConsole, opt_verbose, opt_debugMode);
+    dvi.setLog(&ofConsole, opt_verbose, opt_debugMode > 0);
 
     /* make sure data dictionary is loaded */
     if (!dcmDataDict.isDictionaryLoaded())
@@ -1011,7 +1011,10 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmprscu.cc,v $
- * Revision 1.16  2003-06-06 09:45:23  meichel
+ * Revision 1.17  2003-09-04 10:09:16  joergr
+ * Fixed wrong use of OFBool/bool variable.
+ *
+ * Revision 1.16  2003/06/06 09:45:23  meichel
  * Added static sleep function in class OFStandard. This replaces the various
  *   calls to sleep(), Sleep() and usleep() throughout the toolkit.
  *
