@@ -173,9 +173,6 @@ The basic structure of the XML input expected looks like the following:
   </data-set>
 </file-format>
 \endverbatim
-\if MANPAGES
-.fi
-\endif
 
 The "file-format" and "meta-header" tags maybe absent for DICOM data sets.
 
@@ -198,9 +195,6 @@ Arabic        "ISO_IR 127"  (ISO-8859-6)
 Greek         "ISO_IR 126"  (ISO-8859-7)
 Hebrew        "ISO_IR 138"  (ISO-8859-8)
 \endverbatim
-\if MANPAGES
-.fi
-\endif
 
 Multiple character sets are not supported (only the first value of the
 "Specific Character Set" is used for the character encoding in case of value

@@ -147,9 +147,6 @@ like the following:
   </data-set>
 </file-format>
 \endverbatim
-\if MANPAGES
-.fi
-\endif
 
 The "file-format" and "meta-header" tags are absent for DICOM data sets.
 
@@ -171,9 +168,6 @@ Arabic        "ISO_IR 127"  =>  "ISO-8859-6"
 Greek         "ISO_IR 126"  =>  "ISO-8859-7"
 Hebrew        "ISO_IR 138"  =>  "ISO-8859-8"
 \endverbatim
-\if MANPAGES
-.fi
-\endif
 
 Multiple character sets are not supported (only the first attribute value is
 mapped in case of value multiplicity).

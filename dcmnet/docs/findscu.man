@@ -190,9 +190,6 @@ example:
 (0010,0010) PN []            # PatientsName
 (0010,0020) LO []            # PatientID
 \endverbatim
-\if MANPAGES
-.fi
-\endif
 
 Individual attributes of each file sent can be modified or supplemented
 using the "-k key" option.  For example the command:
@@ -200,9 +197,6 @@ using the "-k key" option.  For example the command:
 \verbatim
 findscu -P -k 0010,0010="HEWETT*" caesar 5678 patqry.dcm
 \endverbatim
-\if MANPAGES
-.fi
-\endif
 
 will, when sent to the SCP caesar at TCP/IP port 5678, cause any PatientsName
 attribute in patqry.dcm to have the value "HEWETT*".  If such an attribute is
@@ -226,9 +220,6 @@ FINDStudyRootQueryRetrieveInformationModel         1.2.840.10008.5.1.4.1.2.2.1
 FINDPatientStudyOnlyQueryRetrieveInformationModel  1.2.840.10008.5.1.4.1.2.3.1
 FINDModalityWorklistInformationModel               1.2.840.10008.5.1.4.31
 \endverbatim
-\if MANPAGES
-.fi
-\endif
 
 The \b findscu application will propose presentation contexts for one of the
 abovementioned supported SOP Classes depending on command line options (\e -P,
@@ -240,9 +231,6 @@ LittleEndianImplicitTransferSyntax                 1.2.840.10008.1.2
 LittleEndianExplicitTransferSyntax                 1.2.840.10008.1.2.1
 BigEndianExplicitTransferSyntax                    1.2.840.10008.1.2.2
 \endverbatim
-\if MANPAGES
-.fi
-\endif
 
 The \b findscu application does not support extended negotiation.
 

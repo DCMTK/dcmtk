@@ -156,9 +156,6 @@ The \b echoscu application supports the following SOP Classes as an SCU:
 \verbatim
 VerificationSOPClass                1.2.840.10008.1.1
 \endverbatim
-\if MANPAGES
-.fi
-\endif
 
 Unless the \e --propose-ts option is used, the echoscu application will only
 propose the transfer syntax

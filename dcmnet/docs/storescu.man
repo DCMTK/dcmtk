@@ -305,9 +305,6 @@ RTPlanStorage                                        1.2.840.10008.5.1.4.1.1.481
 RTBrachyTreatmentRecordStorage                       1.2.840.10008.5.1.4.1.1.481.6
 RTTreatmentSummaryRecordStorage                      1.2.840.10008.5.1.4.1.1.481.7
 \endverbatim
-\if MANPAGES
-.fi
-\endif
 
 The default behaviour of \b storescu is to propose two presentation contexts
 for each supported SOP class (abstract syntax) - one with the preferred

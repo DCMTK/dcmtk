@@ -207,9 +207,6 @@ On the command line, attribute keys are specified as
 --tag "Name"       where 'Name' is a symbolic attribute name from
                    the DICOM dictionary (see below).
 \endverbatim
-\if MANPAGES
-.fi
-\endif
 
 When attribute tags are read from file with the \e --tag-file option, a plain
 text file of max. 64 kbyte is expected.  Tags within the file are either
@@ -223,9 +220,6 @@ following format:
 \verbatim
 SequenceName[index].SequenceName[index].SequenceName[index](...)
 \endverbatim
-\if MANPAGES
-.fi
-\endif
 
 where SequenceName is either a symbolic attribute name from the data dictionary
 or a numeric tag in the format (gggg,eeee) and index is an unsigned decimal
@@ -235,9 +229,6 @@ sequence.  As an example, the following location string
 \verbatim
 ReferencedSeriesSequence[0].ReferencedImageSequence[1]
 \endverbatim
-\if MANPAGES
-.fi
-\endif
 
 would cause a digital signature to be created in the second item of the
 ReferencedImageSequence (0008,1140) which is located in the first item of the

@@ -333,9 +333,6 @@ determination of the subdirectory names pertains to the pattern
 \verbatim
   [prefix]_[YYYYMMDD]_[HHMMSSPPP]
 \endverbatim
-\if MANPAGES
-.fi
-\endif
 
 where YYYY refers to year (4 digits), MM to month (01-12), DD to day (01-31),
 HH to hour (00-23), MM to minute (00-59), SS to second (00-59) and PPP to
@@ -378,9 +375,6 @@ the files are being renamed will be calculated using the pattern
 \verbatim
   [prefix][consecutive numbering]
 \endverbatim
-\if MANPAGES
-.fi
-\endif
 
 where [prefix] is a 2 character prefix that reveals the kind of DICOM object
 stored in the file and [consecutive numbering] is a consecutively numbered,
@@ -477,9 +471,6 @@ RTPlanStorage                                        1.2.840.10008.5.1.4.1.1.481
 RTBrachyTreatmentRecordStorage                       1.2.840.10008.5.1.4.1.1.481.6
 RTTreatmentSummaryRecordStorage                      1.2.840.10008.5.1.4.1.1.481.7
 \endverbatim
-\if MANPAGES
-.fi
-\endif
 
 The \b storescp application will accept presentation contexts for all of the
 abovementioned supported SOP Classes using any of the transfer syntaxes:
@@ -489,9 +480,6 @@ LittleEndianImplicitTransferSyntax                   1.2.840.10008.1.2
 LittleEndianExplicitTransferSyntax                   1.2.840.10008.1.2.1
 BigEndianExplicitTransferSyntax                      1.2.840.10008.1.2.2
 \endverbatim
-\if MANPAGES
-.fi
-\endif
 
 The default behaviour of the \b storescp application is to prefer transfer
 syntaxes having an explicit encoding over the default implicit transfer syntax.

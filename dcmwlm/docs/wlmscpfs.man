@@ -183,9 +183,6 @@ The \b wlmscpfs application supports the following SOP Classes as an SCP:
 VerificationSOPClass                  1.2.840.10008.1.1
 FINDModalityWorklistInformationModel  1.2.840.10008.5.1.4.31
 \endverbatim
-\if MANPAGES
-.fi
-\endif
 
 The \b wlmscpfs application will accept presentation contexts for all of the
 abovementioned supported SOP Classes using any of the transfer syntaxes:
@@ -195,9 +192,6 @@ LittleEndianImplicitTransferSyntax    1.2.840.10008.1.2
 LittleEndianExplicitTransferSyntax    1.2.840.10008.1.2.1
 BigEndianExplicitTransferSyntax       1.2.840.10008.1.2.2
 \endverbatim
-\if MANPAGES
-.fi
-\endif
 
 The default behaviour of the wlmscpfs application is to prefer transfer
 syntaxes having an explicit encoding over the default implicit transfer
@@ -228,9 +222,6 @@ matching keys:
 (0040,1001) RequestedProcedureID
 (0040,1003) RequestedProcedurePriority
 \endverbatim
-\if MANPAGES
-.fi
-\endif
 
 As return keys the following attributes are currently supported by \b wlmscpfs:
 
