@@ -2,6 +2,18 @@
 #define OSCONFIG_H
 
 /*
+** Define enclosures for include files with C linkage (mostly system headers)
+*/
+#ifdef __cplusplus
+#define BEGIN_EXTERN_C extern "C" {
+#define END_EXTERN_C }
+#else
+#define BEGIN_EXTERN_C 
+#define END_EXTERN_C
+#endif
+
+
+/*
 ** This head includes an OS/Compiler specific configuration header.
 ** Add entries for specific non-unix OS/Compiler environments.
 ** Under unix the default <config.h> should be used.
@@ -14,26 +26,24 @@
 */
 #include "cfmwerks.h"
 
-#elif _MSC_VER
-/* NOTE: the symbol _MSC_VER may be incorrect.  Not tested. */
+#elif _WIN32
 /*
-** Visual C++ under Windows 31
+** Visual C++ in a Windows 32 bit environment (WindowsNT/95)
 */
-/* include config header file */ 
+#include "cfwin32.h"
 
-#include "mscw31.h"
-
-#else /* !_MSC_VER */
-
+#elif HAVE_CONFIG_H
 /*
-** Some Unix platform supported by the GNU Configure utility
+** Some sort of Unix platform supported by the GNU Configure utility.
 ** Just include the automatically generated <config.h> 
 */
-#ifdef HAVE_CONFIG_H
 #include <config.h>
-#endif /* HAVE_CONFIG_H */
 
-#endif /* !_MSC_VER */
+#else
+/*
+** Don't know what sort of machine this is 
+*/
+#endif
 
 #endif /* !OSCONFIG_H*/
 
