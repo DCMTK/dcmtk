@@ -22,9 +22,9 @@
  *  Purpose: encapsulation of old style vs. ISO C++ standard includes
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2003-12-11 13:40:22 $
+ *  Update Date:      $Date: 2004-05-07 10:46:32 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/include/Attic/ofstdinc.h,v $
- *  CVS/RCS Revision: $Revision: 1.8 $
+ *  CVS/RCS Revision: $Revision: 1.9 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -36,7 +36,7 @@
 #include "osconfig.h"
 
 #ifdef HAVE_STD_NAMESPACE
-namespace std { };
+namespace std { }
 using namespace std;
 #endif
 
@@ -312,7 +312,10 @@ END_EXTERN_C
 /*
  * CVS/RCS Log:
  * $Log: ofstdinc.h,v $
- * Revision 1.8  2003-12-11 13:40:22  meichel
+ * Revision 1.9  2004-05-07 10:46:32  meichel
+ * Removed unneeded semicolon, reported by gcc 3.4
+ *
+ * Revision 1.8  2003/12/11 13:40:22  meichel
  * Added support for including <new> or <new.h>
  *
  * Revision 1.7  2003/10/13 13:38:44  meichel

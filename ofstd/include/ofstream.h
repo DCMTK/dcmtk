@@ -21,9 +21,9 @@
  *
  *  Purpose: C++ header to handle standard and old stream libraries.
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2004-01-16 10:30:12 $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2004-05-07 10:46:32 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -54,7 +54,7 @@
 #error DCMTK needs stringstream or strstream type
 #endif
 #ifdef HAVE_STD_NAMESPACE
-namespace std { };
+namespace std { }
 using namespace std;
 #endif
 
@@ -125,7 +125,10 @@ typedef istrstream OFIStringStream;
 /*
  * CVS/RCS Log:
  * $Log: ofstream.h,v $
- * Revision 1.5  2004-01-16 10:30:12  joergr
+ * Revision 1.6  2004-05-07 10:46:32  meichel
+ * Removed unneeded semicolon, reported by gcc 3.4
+ *
+ * Revision 1.5  2004/01/16 10:30:12  joergr
  * Removed acknowledgements with e-mail addresses from CVS log.
  *
  * Revision 1.4  2003/12/05 10:37:41  joergr
