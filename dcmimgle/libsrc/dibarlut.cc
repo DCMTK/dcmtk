@@ -21,10 +21,10 @@
  *
  *  Purpose: DicomBartenLUT (Source)
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-02-09 14:22:30 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 1999-02-11 16:46:40 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/libsrc/Attic/dibarlut.cc,v $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -35,7 +35,7 @@
 #include "osconfig.h"
 
 #include "dibarlut.h"
-#include "displine.h"
+#include "displint.h"
 
 //BEGIN_EXTERN_C
  #include <math.h>
@@ -47,6 +47,7 @@
  *----------------*/
 
 DiBartenLUT::DiBartenLUT(const unsigned long count,
+                         const Uint16 max,
                          const Uint16 *ddl_tab,
                          const double *lum_tab,
                          const Uint16 ddl_cnt,
@@ -55,7 +56,7 @@ DiBartenLUT::DiBartenLUT(const unsigned long count,
                          const unsigned int gsdf_cnt,
                          const double jnd_min,
                          const double jnd_max)
-  : DiBaseLUT(count, DicomImageClass::tobits(ddl_cnt))
+  : DiBaseLUT(count, DicomImageClass::tobits(max, 0))
 {
     if ((Count > 0) && (Bits > 0))
     {
@@ -96,7 +97,7 @@ int DiBartenLUT::createLUT(const Uint16 *ddl_tab,
             const double dist = (jnd_max - jnd_min) / (Count - 1);      // distance between two entries
             register unsigned int i;
             register double *r = jidx;
-            register double value = jnd_min;                            // first values is static !
+            register double value = jnd_min;                            // first value is static !
             for (i = 1; i < Count; i++)                                 // initialize scaled JND index array
             {
                 *(r++) = value;
@@ -114,7 +115,7 @@ int DiBartenLUT::createLUT(const Uint16 *ddl_tab,
                 double *gsdf = new double[Count];                       // interpolated GSDF
                 if (gsdf != NULL)
                 {     
-                    if (CubicSplineInterpolation(jnd_idx, gsdf_tab, gsdf_spl, gsdf_cnt, jidx, gsdf, Count))
+                    if (CubicSpline<double, double>::Interpolation(jnd_idx, gsdf_tab, gsdf_spl, gsdf_cnt, jidx, gsdf, Count))
                     {
                         DataBuffer = new Uint16[Count];
                         if (DataBuffer != NULL)
@@ -128,8 +129,8 @@ int DiBartenLUT::createLUT(const Uint16 *ddl_tab,
                                     j++;
                                 if ((j > 0) && (fabs(lum_tab[j - 1] - *r) < fabs(lum_tab[j] - *r)))
                                     j--;
-//cerr << "lut[" << i << "] = " << j << "  " << "lum: " << *r << "  " << lum_tab[j] << "  " << fabs(lum_tab[j] - *r) << endl;
-                                *(q++) = j;
+// cerr << "lut[" << i << "] = " << ddl_tab[j] << "  " << "lum: " << *r << "  " << lum_tab[j] << "  " << fabs(lum_tab[j] - *r) << endl;
+                                *(q++) = ddl_tab[j];
                             }
                             Data = DataBuffer;
                             status = 1;
@@ -151,7 +152,12 @@ int DiBartenLUT::createLUT(const Uint16 *ddl_tab,
  *
  * CVS/RCS Log:
  * $Log: dibarlut.cc,v $
- * Revision 1.3  1999-02-09 14:22:30  meichel
+ * Revision 1.4  1999-02-11 16:46:40  joergr
+ * Removed unused parameter / member variable.
+ * Renamed file to indicate the use of templates. Moved global functions for
+ * cubic spline interpolation to static methods of a separate template class.
+ *
+ * Revision 1.3  1999/02/09 14:22:30  meichel
  * Removed explicit template parameters from template function calls,
  *   required for Sun CC 4.2
  *
