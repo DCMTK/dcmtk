@@ -21,10 +21,10 @@
  *
  *  Purpose: class DcmItem
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-11-16 15:55:02 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2001-12-18 11:37:44 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcitem.cc,v $
- *  CVS/RCS Revision: $Revision: 1.63 $
+ *  CVS/RCS Revision: $Revision: 1.64 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -173,7 +173,7 @@ E_TransferSyntax DcmItem::checkTransferSyntax(DcmStream & inStream)
      * a) Did we encounter a valid tag? and b) Do the last 2 bytes which were read from the stream
      * represent a valid VR? In certain special cases, where the transfer syntax cannot be determined
      * without doubt, we want to guess the most likely transfer syntax (see code).
-     * 
+     *
      * This function is used in the classes DcmDataset and DcmMetaInfo.
      *
      * Parameters:
@@ -535,8 +535,8 @@ OFCondition DcmItem::computeGroupLengthAndPadding
     /*
      * This function takes care of group length and padding elements in the current element list according
      * to what is specified in glenc and padenc. If required, this function does the following two things:
-     *  a) it calculates the group length of all groups which are contained in this item and sets the 
-     *     calculated values in the corresponding group length elements and 
+     *  a) it calculates the group length of all groups which are contained in this item and sets the
+     *     calculated values in the corresponding group length elements and
      *  b) it inserts a corresponding padding element (or, in case of sequences: padding elements)
      *     with a corresponding correct size into the element list.
      *
@@ -548,7 +548,7 @@ OFCondition DcmItem::computeGroupLengthAndPadding
      *   padlen         - [in] The length up to which shall be padded, if padding is desired.
      *   subPadlen      - [in] For sequences (i.e. sub elements), the length up to which shall be padded,
      *                         if padding is desired.
-     *   instanceLength - [in] 
+     *   instanceLength - [in]
      */
 {
     /* if certain conditions are met, this is considered to be an illegal call. */
@@ -953,7 +953,7 @@ OFCondition DcmItem::readSubElement(DcmStream & inStream,
      *   newLength     - [in] The length of the information which is being read.
      *   xfer          - [in] The transfer syntax which was used to encode the information in inStream.
      *   glenc         - [in] Encoding type for group length. Specifies what will be done with group length tags.
-     *   maxReadLength - [in] [optional parameter, default = DCM_MaxReadLength]. 
+     *   maxReadLength - [in] [optional parameter, default = DCM_MaxReadLength].
      */
 {
     DcmElement *subElem = NULL;
@@ -1026,7 +1026,7 @@ OFCondition DcmItem::read(DcmStream & inStream,
      *   xfer          - [in] The transfer syntax which was used to encode the information in inStream.
      *   glenc         - [in] [optional parameter, default = EGL_noChange] Encoding type for group
      *                        length. Specifies what will be done with group length tags.
-     *   maxReadLength - [in] [optional parameter, default = DCM_MaxReadLength]. 
+     *   maxReadLength - [in] [optional parameter, default = DCM_MaxReadLength].
      */
 {
     /* check if this is an illegal call; if so set the error flag and do nothing, else go ahead */
@@ -2945,8 +2945,94 @@ DcmItem::putAndInsertFloat64(const DcmTag& tag,
 }
 
 
+OFCondition DcmItem::insertEmptyElement(const DcmTag& tag,
+                                        const OFBool replaceOld)
+{
+    OFCondition status = EC_Normal;
+    /* create new element */
+    DcmElement *elem = NULL;
+    switch(tag.getEVR())
+    {
+        case EVR_AE:
+            elem = new DcmApplicationEntity(tag);
+            break;
+        case EVR_AS:
+            elem = new DcmAgeString(tag);
+            break;
+        case EVR_AT:
+            elem = new DcmAttributeTag(tag);
+            break;
+        case EVR_CS:
+            elem = new DcmCodeString(tag);
+            break;
+        case EVR_DA:
+            elem = new DcmDate(tag);
+            break;
+        case EVR_DS:
+            elem = new DcmDecimalString(tag);
+            break;
+        case EVR_DT:
+            elem = new DcmDateTime(tag);
+            break;
+        case EVR_FL:
+            elem = new DcmFloatingPointSingle(tag);
+            break;
+        case EVR_FD:
+            elem = new DcmFloatingPointDouble(tag);
+            break;
+        case EVR_IS:
+            elem = new DcmIntegerString(tag);
+            break;
+        case EVR_OB:
+        case EVR_OW:
+            elem = new DcmOtherByteOtherWord(tag);
+            break;
+        case EVR_TM:
+            elem = new DcmTime(tag);
+            break;
+        case EVR_UI:
+            elem = new DcmUniqueIdentifier(tag);
+            break;
+        case EVR_LO:
+            elem = new DcmLongString(tag);
+            break;
+        case EVR_LT:
+            elem = new DcmLongText(tag);
+            break;
+        case EVR_UT:
+            elem = new DcmUnlimitedText(tag);
+            break;
+        case EVR_PN:
+            elem = new DcmPersonName(tag);
+            break;
+        case EVR_SH:
+            elem = new DcmShortString(tag);
+            break;
+        case EVR_SQ :
+            elem = new DcmSequenceOfItems(tag);
+            break;
+        case EVR_ST:
+            elem = new DcmShortText(tag);
+            break;
+        default:
+            status = EC_IllegalCall;
+            break;
+    }
+    if (elem != NULL)
+    {
+        /* insert new element into dataset/item */
+        status = insert(elem, replaceOld);
+        /* could not be inserted, therefore, delete it immediately */
+        if (status.bad())
+            delete elem;
+    } else if (status.good())
+        status = EC_MemoryExhausted;
+    return status;
+}
+
+
 OFBool DcmItem::containsUnknownVR() const
-{ 
+{
   if (!elementList->empty())
   {
     elementList->seek(ELP_first);
@@ -2961,7 +3047,11 @@ OFBool DcmItem::containsUnknownVR() const
 /*
 ** CVS/RCS Log:
 ** $Log: dcitem.cc,v $
-** Revision 1.63  2001-11-16 15:55:02  meichel
+** Revision 1.64  2001-12-18 11:37:44  joergr
+** Added helper method allowing to create and insert empty elements into an
+** item/dataset.
+**
+** Revision 1.63  2001/11/16 15:55:02  meichel
 ** Adapted digital signature code to final text of supplement 41.
 **
 ** Revision 1.62  2001/11/09 15:53:53  joergr

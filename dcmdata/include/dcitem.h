@@ -21,10 +21,10 @@
  *
  *  Purpose: Interface of class DcmItem
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-11-16 15:54:38 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2001-12-18 11:37:24 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcitem.h,v $
- *  CVS/RCS Revision: $Revision: 1.32 $
+ *  CVS/RCS Revision: $Revision: 1.33 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -352,7 +352,7 @@ public:
                                   const OFBool searchIntoSub = OFFalse);
 
     /** looks up and returns a given sequence item, if it exists. Otherwise sets 'item'
-     *  to NULL and returns EC_TagNotFound (specified sequence does not exist) or 
+     *  to NULL and returns EC_TagNotFound (specified sequence does not exist) or
      *  EC_IllegalParameter (specified item does not exist). Only the top-most level of
      *  the dataset/item is examined (i.e. no deep-search is performed).
      *  @param seqTagKey DICOM tag specifying the sequence attribute to be searched for
@@ -363,8 +363,8 @@ public:
     OFCondition findAndGetSequenceItem(const DcmTagKey &seqTagKey,
                                        DcmItem *&item,
                                        const signed long itemNum = 0);
- 
- 
+
+
     /* --- findOrCreate functions: find an element or create a new one --- */
 
     /** looks up the given sequence in the current dataset and returns the given item.
@@ -381,11 +381,11 @@ public:
     OFCondition findOrCreateSequenceItem(const DcmTag& seqTag,
                                          DcmItem *&item,
                                          const signed long itemNum = 0);
- 
- 
+
+
     /* --- putAndInsert functions: put value and insert new element --- */
- 
-    /** create new element, put specified value to it and insert the element into the dataset/item.
+
+    /** create a new element, put specified value to it and insert the element into the dataset/item.
      *  Applicable to the following VRs: AE, AS, CS, DA, DS, DT, FL, FD, IS, LO, LT, PN, SH, ST, TM, UI, UT
      *  @param tag DICOM tag specifying the attribute to be created
      *  @param value value to be set for the new element (might be empty or NULL)
@@ -396,7 +396,7 @@ public:
                                    const char *value,
                                    const OFBool replaceOld = OFTrue);
 
-    /** create new element, put specified value to it and insert the element into the dataset/item.
+    /** create a new element, put specified value to it and insert the element into the dataset/item.
      *  Applicable to the following VRs: AE, AS, CS, DA, DS, DT, IS, LO, LT, PN, SH, ST, TM, UI, UT
      *  @param tag DICOM tag specifying the attribute to be created
      *  @param value value to be set for the new element (might be empty)
@@ -407,7 +407,7 @@ public:
                                           const OFString &value,
                                           const OFBool replaceOld = OFTrue);
 
-    /** create new element, put specified value to it and insert the element into the dataset/item.
+    /** create a new element, put specified value to it and insert the element into the dataset/item.
      *  Applicable to the following VRs: OB
      *  @param tag DICOM tag specifying the attribute to be created
      *  @param value value to be set for the new element (might be NULL)
@@ -420,7 +420,7 @@ public:
                                        const unsigned long count,
                                        const OFBool replaceOld = OFTrue);
 
-    /** create new element, put specified value to it and insert the element into the dataset/item.
+    /** create a new element, put specified value to it and insert the element into the dataset/item.
      *  Applicable to the following VRs: US
      *  @param tag DICOM tag specifying the attribute to be created
      *  @param value value to be set for the new element
@@ -431,7 +431,7 @@ public:
                                    const Uint16 value,
                                    const OFBool replaceOld = OFTrue);
 
-    /** create new element, put specified value to it and insert the element into the dataset/item.
+    /** create a new element, put specified value to it and insert the element into the dataset/item.
      *  Applicable to the following VRs: AT, OW, US
      *  @param tag DICOM tag specifying the attribute to be created
      *  @param value value to be set for the new element (might be NULL)
@@ -444,7 +444,7 @@ public:
                                         const unsigned long count,
                                         const OFBool replaceOld = OFTrue);
 
-    /** create new element, put specified value to it and insert the element into the dataset/item.
+    /** create a new element, put specified value to it and insert the element into the dataset/item.
      *  Applicable to the following VRs: SS
      *  @param tag DICOM tag specifying the attribute to be created
      *  @param value value to be set for the new element
@@ -455,7 +455,7 @@ public:
                                    const Sint16 value,
                                    const OFBool replaceOld = OFTrue);
 
-    /** create new element, put specified value to it and insert the element into the dataset/item.
+    /** create a new element, put specified value to it and insert the element into the dataset/item.
      *  Applicable to the following VRs: SS
      *  @param tag DICOM tag specifying the attribute to be created
      *  @param value value to be set for the new element
@@ -468,7 +468,7 @@ public:
                                         const unsigned long count,
                                         const OFBool replaceOld = OFTrue);
 
-    /** create new element, put specified value to it and insert the element into the dataset/item.
+    /** create a new element, put specified value to it and insert the element into the dataset/item.
      *  Applicable to the following VRs: UL
      *  @param tag DICOM tag specifying the attribute to be created
      *  @param value value to be set for the new element
@@ -479,7 +479,7 @@ public:
                                    const Uint32 value,
                                    const OFBool replaceOld = OFTrue);
 
-    /** create new element, put specified value to it and insert the element into the dataset/item.
+    /** create a new element, put specified value to it and insert the element into the dataset/item.
      *  Applicable to the following VRs: SL
      *  @param tag DICOM tag specifying the attribute to be created
      *  @param value value to be set for the new element
@@ -490,7 +490,7 @@ public:
                                    const Sint32 value,
                                    const OFBool replaceOld = OFTrue);
 
-    /** create new element, put specified value to it and insert the element into the dataset/item.
+    /** create a new element, put specified value to it and insert the element into the dataset/item.
      *  Applicable to the following VRs: FL
      *  @param tag DICOM tag specifying the attribute to be created
      *  @param value value to be set for the new element
@@ -501,7 +501,7 @@ public:
                                     const Float32 value,
                                     const OFBool replaceOld = OFTrue);
 
-    /** create new element, put specified value to it and insert the element into the dataset/item.
+    /** create a new element, put specified value to it and insert the element into the dataset/item.
      *  Applicable to the following VRs: FD
      *  @param tag DICOM tag specifying the attribute to be created
      *  @param value value to be set for the new element
@@ -511,6 +511,15 @@ public:
     OFCondition putAndInsertFloat64(const DcmTag& tag,
                                     const Float64 value,
                                     const OFBool replaceOld = OFTrue);
+
+    /** create a new element (with no value) and insert it into the dataset/item.
+     *  Applicable to the following VRs: AE, AS, AT, CS, DA, DS, DT, FL, FD, IS, LO, OB, OW, LT, PN, SH, SQ, ST, TM, UI, UT
+     *  @param tag DICOM tag specifying the attribute to be created
+     *  @param replaceOld flag indicating whether to replace an existing element or not
+     *  @return EC_Normal upon success, an error code otherwise.
+     */
+    OFCondition insertEmptyElement(const DcmTag& tag,
+                                   const OFBool replaceOld = OFTrue);
 };
 
 
@@ -560,7 +569,11 @@ OFCondition nextUp(DcmStack & stack);
 /*
 ** CVS/RCS Log:
 ** $Log: dcitem.h,v $
-** Revision 1.32  2001-11-16 15:54:38  meichel
+** Revision 1.33  2001-12-18 11:37:24  joergr
+** Added helper method allowing to create and insert empty elements into an
+** item/dataset.
+**
+** Revision 1.32  2001/11/16 15:54:38  meichel
 ** Adapted digital signature code to final text of supplement 41.
 **
 ** Revision 1.31  2001/11/09 15:51:59  joergr
