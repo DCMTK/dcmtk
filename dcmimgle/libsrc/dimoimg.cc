@@ -22,9 +22,9 @@
  *  Purpose: DicomMonochromeImage (Source)
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-03-08 16:24:30 $
+ *  Update Date:      $Date: 2000-03-08 17:14:38 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/libsrc/dimoimg.cc,v $
- *  CVS/RCS Revision: $Revision: 1.31 $
+ *  CVS/RCS Revision: $Revision: 1.32 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -673,8 +673,6 @@ void DiMonoImage::InitSint8(DiMonoModality *modality)
     }
 }
 
-#if 0
-
 void DiMonoImage::InitUint16(DiMonoModality *modality)
 {
     if (modality != NULL)
@@ -789,8 +787,6 @@ void DiMonoImage::InitSint32(DiMonoModality *modality)
         }
     }
 }
-
-#endif
 
 /*********************************************************************/
 
@@ -1599,7 +1595,10 @@ int DiMonoImage::writeRawPPM(FILE *stream,
  *
  * CVS/RCS Log:
  * $Log: dimoimg.cc,v $
- * Revision 1.31  2000-03-08 16:24:30  meichel
+ * Revision 1.32  2000-03-08 17:14:38  meichel
+ * Removed trial code checked in by mistake
+ *
+ * Revision 1.31  2000/03/08 16:24:30  meichel
  * Updated copyright header.
  *
  * Revision 1.30  2000/03/03 14:09:20  meichel
