@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2003, OFFIS
+ *  Copyright (C) 2003-2004, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,8 +23,8 @@
  *    classes: DSRCodingSchemeIdentificationList
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-10-14 15:32:13 $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  Update Date:      $Date: 2004-01-16 10:02:19 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -170,6 +170,7 @@ OFCondition DSRCodingSchemeIdentificationList::readXML(const DSRXMLDocument &doc
     OFCondition result = SR_EC_InvalidDocument;
     ItemStruct *item = NULL;
     OFString codingSchemeDesignator;
+    /* iterate over all nodes */
     while (cursor.valid())
     {
         /* check for known element tags */
@@ -178,10 +179,12 @@ OFCondition DSRCodingSchemeIdentificationList::readXML(const DSRXMLDocument &doc
             /* retrieve coding scheme designator */
             if (!doc.getStringFromAttribute(cursor, codingSchemeDesignator, "designator", OFTrue /*encoding*/).empty())
             {
-                result = addItem(codingSchemeDesignator, item);
+                result = addItem(codingSchemeDesignator, item, doc.getLogStream());
                 if (result.good())
                 {
                     DSRXMLCursor childCursor = cursor.getChild();
+                    /* clear any previously stored information */
+                    item->clear();
                     while (childCursor.valid())
                     {
                         /* check for known element tags */
@@ -572,7 +575,10 @@ OFCondition DSRCodingSchemeIdentificationList::setResponsibleOrganization(const 
 /*
  *  CVS/RCS Log:
  *  $Log: dsrcsidl.cc,v $
- *  Revision 1.4  2003-10-14 15:32:13  joergr
+ *  Revision 1.5  2004-01-16 10:02:19  joergr
+ *  Report more warnings when reading from XML document.
+ *
+ *  Revision 1.4  2003/10/14 15:32:13  joergr
  *  Uncommented name of unused parameter to get rid of a warning reported by
  *  Borland C++ 5.5.
  *
