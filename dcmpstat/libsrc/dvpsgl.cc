@@ -23,8 +23,8 @@
  *    classes: DVPSGraphicLayer
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-09-26 15:36:26 $
- *  CVS/RCS Revision: $Revision: 1.10 $
+ *  Update Date:      $Date: 2002-08-20 12:41:00 $
+ *  CVS/RCS Revision: $Revision: 1.11 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -34,6 +34,10 @@
 #include "osconfig.h"    /* make sure OS specific configuration is included first */
 #include "dvpsgl.h"
 #include "dvpsdef.h"     /* for constants and macros */
+
+BEGIN_EXTERN_C
+#include <stdio.h>
+END_EXTERN_C
 
 /* --------------- class DVPSGraphicLayer --------------- */
 
@@ -303,7 +307,11 @@ void DVPSGraphicLayer::setLog(OFConsole *stream, OFBool verbMode, OFBool dbgMode
 
 /*
  *  $Log: dvpsgl.cc,v $
- *  Revision 1.10  2001-09-26 15:36:26  meichel
+ *  Revision 1.11  2002-08-20 12:41:00  meichel
+ *  Added explicit includes for header files included implicitly
+ *    via dcstream before.
+ *
+ *  Revision 1.10  2001/09/26 15:36:26  meichel
  *  Adapted dcmpstat to class OFCondition
  *
  *  Revision 1.9  2001/06/01 15:50:31  meichel

@@ -23,8 +23,8 @@
  *    classes: DVPSReferencedImage
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-09-26 15:36:31 $
- *  CVS/RCS Revision: $Revision: 1.12 $
+ *  Update Date:      $Date: 2002-08-20 12:41:01 $
+ *  CVS/RCS Revision: $Revision: 1.13 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -35,6 +35,10 @@
 #include "ofstring.h"
 #include "dvpsri.h"
 #include "dvpsdef.h"     /* for constants and macros */
+
+BEGIN_EXTERN_C
+#include <stdio.h>
+END_EXTERN_C
 
 
 /* --------------- class DVPSReferencedImage --------------- */
@@ -300,7 +304,11 @@ void DVPSReferencedImage::setLog(OFConsole *stream, OFBool verbMode, OFBool dbgM
 
 /*
  *  $Log: dvpsri.cc,v $
- *  Revision 1.12  2001-09-26 15:36:31  meichel
+ *  Revision 1.13  2002-08-20 12:41:01  meichel
+ *  Added explicit includes for header files included implicitly
+ *    via dcstream before.
+ *
+ *  Revision 1.12  2001/09/26 15:36:31  meichel
  *  Adapted dcmpstat to class OFCondition
  *
  *  Revision 1.11  2001/06/01 15:50:36  meichel
