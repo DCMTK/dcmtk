@@ -57,9 +57,9 @@
 **      Module Prefix: DIMSE_
 **
 ** Last Update:         $Author: meichel $
-** Update Date:         $Date: 2001-12-19 09:43:46 $
+** Update Date:         $Date: 2002-06-14 10:55:34 $
 ** Source File:         $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/libsrc/dimse.cc,v $
-** CVS/RCS Revision:    $Revision: 1.28 $
+** CVS/RCS Revision:    $Revision: 1.29 $
 ** Status:              $State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -1196,7 +1196,7 @@ DIMSE_receiveCommand(T_ASC_Association * assoc,
     /* dump information if required */
     if (debug) {
         COUT << "DIMSE receiveCommand: " << pdvCount << " pdv's ("
-        << bytesRead << " bytes), presID=" << pid << endl;
+        << bytesRead << " bytes), presID=" << (int) pid << endl;
     }
 
     /* check if this is a valid presentation context */
@@ -1726,7 +1726,10 @@ void DIMSE_warning(T_ASC_Association *assoc,
 /*
 ** CVS Log
 ** $Log: dimse.cc,v $
-** Revision 1.28  2001-12-19 09:43:46  meichel
+** Revision 1.29  2002-06-14 10:55:34  meichel
+** Fixed minor bug in DIMSE debug output
+**
+** Revision 1.28  2001/12/19 09:43:46  meichel
 ** Restructured functions DIMSE_receiveDataSetInMemory and
 **   DIMSE_receiveDataSetInFile to avoid warnings on Sun CC 2.0.1
 **
