@@ -22,9 +22,9 @@
  *  Purpose: DicomMonochromeImage (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-11-19 15:21:47 $
+ *  Update Date:      $Date: 1999-11-24 15:15:41 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/libsrc/dimoimg.cc,v $
- *  CVS/RCS Revision: $Revision: 1.26 $
+ *  CVS/RCS Revision: $Revision: 1.27 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1194,7 +1194,7 @@ void *DiMonoImage::getData(void *buffer,
                 WindowWidth = -1;                           // negative width means no window, saves additional parameter ;)
             Uint32 low;
             Uint32 high;
-            if ((negative && (PresLutShape == ESP_Identity)) || (!negative && (PresLutShape == ESP_Inverse)))
+            if ((PresLutData == NULL) && ((negative && (PresLutShape == ESP_Identity)) || (!negative && (PresLutShape == ESP_Inverse))))
             {
                 low = DicomImageClass::maxval(bits);        // inverse/negative: white to black
                 high = 0;
@@ -1627,7 +1627,11 @@ int DiMonoImage::writeRawPPM(FILE *stream,
  *
  * CVS/RCS Log:
  * $Log: dimoimg.cc,v $
- * Revision 1.26  1999-11-19 15:21:47  joergr
+ * Revision 1.27  1999-11-24 15:15:41  joergr
+ * Fixed bug in method getData() occurred sometimes when inverting
+ * presentation LUTs.
+ *
+ * Revision 1.26  1999/11/19 15:21:47  joergr
  * Removed bugs: deactivating VOI and presentation LUTs should be done
  * by decreasing the reference pointer not by deleting the storage area.
  *
