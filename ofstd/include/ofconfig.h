@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: OFConfigFile
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2003-06-04 12:31:44 $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2003-06-12 13:15:59 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -144,7 +144,7 @@ public:
   }
 
   /** set pointer to next object in tree on lower level
-   *  @param brother pointer to next object in tree
+   *  @param son pointer to next object in tree
    */
   void setSon(OFConfigFileNode *son)
   {
@@ -481,7 +481,10 @@ private:
 
 /*
  *  $Log: ofconfig.h,v $
- *  Revision 1.2  2003-06-04 12:31:44  meichel
+ *  Revision 1.3  2003-06-12 13:15:59  joergr
+ *  Fixed inconsistent API documentation reported by Doxygen.
+ *
+ *  Revision 1.2  2003/06/04 12:31:44  meichel
  *  Added dummy comparison operators, needed by MSVC5 with STL
  *
  *  Revision 1.1  2003/04/29 10:14:16  meichel

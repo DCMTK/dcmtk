@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1999-2002, OFFIS
+ *  Copyright (C) 1999-2003, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,10 +21,10 @@
  *
  *  Purpose: Define general purpose facility for log file output
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2003-06-11 13:26:09 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2003-06-12 13:14:29 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/include/Attic/oflogfil.h,v $
- *  CVS/RCS Revision: $Revision: 1.9 $
+ *  CVS/RCS Revision: $Revision: 1.10 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -128,7 +128,7 @@ class OFLogFile
      *  This method neither locks nor unlocks the stream - the called
      *  must ensure that the stream is locked and unlocked appropriately.
      *  @param message text to be written to the stream (newline with '\n')
-     *  @param number of spaces each line is started with (optional)
+     *  @param indent number of spaces each line is started with (optional)
      */
     void writeMessage(const char *message, int indent = 3);
 
@@ -197,7 +197,10 @@ class OFLogFile
  *
  * CVS/RCS Log:
  * $Log: oflogfil.h,v $
- * Revision 1.9  2003-06-11 13:26:09  meichel
+ * Revision 1.10  2003-06-12 13:14:29  joergr
+ * Fixed inconsistent API documentation reported by Doxygen.
+ *
+ * Revision 1.9  2003/06/11 13:26:09  meichel
  * Cleaned up usage of boolean constants
  *
  * Revision 1.8  2002/11/27 11:23:05  meichel

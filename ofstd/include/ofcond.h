@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1997-2001, OFFIS
+ *  Copyright (C) 1997-2003, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose: class OFCondition and helper classes
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-11-09 15:44:39 $
+ *  Update Date:      $Date: 2003-06-12 13:15:59 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/include/Attic/ofcond.h,v $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -134,7 +134,7 @@ public:
 
 private:
 
-  // private unimplemented copy assignment operator
+  /// private unimplemented copy assignment operator
   OFConditionBase& operator=(const OFConditionBase& arg);
 
 };
@@ -299,10 +299,10 @@ private:
 extern const OFConditionConst ECC_Normal;
 
 
-/* General purpose class for condition codes. Objects of this class can be 
- * efficiently passed by value since they only contain a single pointer and 
- * no virtual methods. The condition code is maintained by the object of class 
- * OFConditionBase pointed to.  
+/** General purpose class for condition codes. Objects of this class can be 
+ *  efficiently passed by value since they only contain a single pointer and 
+ *  no virtual methods. The condition code is maintained by the object of class 
+ *  OFConditionBase pointed to.  
  */
 class OFCondition
 {
@@ -472,7 +472,10 @@ extern const OFCondition EC_MemoryExhausted;
 /*
  * CVS/RCS Log:
  * $Log: ofcond.h,v $
- * Revision 1.4  2001-11-09 15:44:39  joergr
+ * Revision 1.5  2003-06-12 13:15:59  joergr
+ * Fixed inconsistent API documentation reported by Doxygen.
+ *
+ * Revision 1.4  2001/11/09 15:44:39  joergr
  * Removed ";" from macro definition to avoid compiler warnings reported by
  * Sun CC 2.0.1.
  *

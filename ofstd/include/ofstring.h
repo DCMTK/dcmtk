@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1997-2002, OFFIS
+ *  Copyright (C) 1997-2003, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,10 +21,10 @@
  *
  *  Purpose: A simple string class
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-11-27 11:23:06 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2003-06-12 13:13:51 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/include/Attic/ofstring.h,v $
- *  CVS/RCS Revision: $Revision: 1.13 $
+ *  CVS/RCS Revision: $Revision: 1.14 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -178,7 +178,7 @@ public:
      *  object. At most n characters, starting at position pos of str, are
      *  appended.
      *  The function reports an out-of-range error if pos > str.size().
-     *  @param rhs string to append from
+     *  @param str string to append from
      *  @param pos position to start copying from
      *  @param n maximum number of characters to copy
      *  @return reference to this object
@@ -209,7 +209,7 @@ public:
      *  object. At most n characters, starting at position pos of str, are
      *  appended.
      *  The function reports an out-of-range error if pos > str.size().
-     *  @param rhs string to append from
+     *  @param str string to append from
      *  @param pos position to start copying from
      *  @param n maximum number of characters to copy
      *  @return reference to this object
@@ -273,9 +273,10 @@ public:
      *  @param c character to construct from
      *  @return reference to this object
      */
-    OFString& insert(size_t pos, size_t rep, char s);
+    OFString& insert(size_t pos, size_t rep, char c);
 
     /** Removes up to n characters from the string starting from position pos.
+     *  @param pos position to start from
      *  @param n number of characters to remove
      *  @return reference to this object
      */
@@ -751,7 +752,7 @@ public:
      *  the end of the current string, such that the character at loc does not
      *  match the given character. If such a location
      *  is found, it is returned. Otherwise, the function returns string::npos.
-     *  @param s character to find
+     *  @param c character to find
      *  @param pos position to start searching from
      *  @return index of character
      */
@@ -796,7 +797,7 @@ public:
      *  does not match the given character. If such
      *  a location is found, it is returned. Otherwise, the function returns
      *  string::npos.
-     *  @param s character to find
+     *  @param c character to find
      *  @param pos position to start searching from
      *  @return index of character
      */
@@ -1079,7 +1080,10 @@ OFBool operator>= (const OFString& lhs, char rhs);
 /*
 ** CVS/RCS Log:
 ** $Log: ofstring.h,v $
-** Revision 1.13  2002-11-27 11:23:06  meichel
+** Revision 1.14  2003-06-12 13:13:51  joergr
+** Fixed inconsistent API documentation reported by Doxygen.
+**
+** Revision 1.13  2002/11/27 11:23:06  meichel
 ** Adapted module ofstd to use of new header file ofstdinc.h
 **
 ** Revision 1.12  2002/04/16 13:36:03  joergr

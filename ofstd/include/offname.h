@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1997-2001, OFFIS
+ *  Copyright (C) 1997-2003, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: OFFilenameCreator
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-06-01 15:51:34 $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2003-06-12 13:15:59 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -56,6 +56,7 @@ public:
   OFFilenameCreator &operator=(const OFFilenameCreator& copy);
 
   /** creates a new unique filename.
+   *  @param seed seed of random number generator
    *  @param dir directory in which the file name should be located
    *  @param prefix filename prefix
    *  @param postfix filename postfix
@@ -96,7 +97,10 @@ private:
 
 /*
  *  $Log: offname.h,v $
- *  Revision 1.5  2001-06-01 15:51:34  meichel
+ *  Revision 1.6  2003-06-12 13:15:59  joergr
+ *  Fixed inconsistent API documentation reported by Doxygen.
+ *
+ *  Revision 1.5  2001/06/01 15:51:34  meichel
  *  Updated copyright header
  *
  *  Revision 1.4  2000/10/10 12:01:04  meichel
