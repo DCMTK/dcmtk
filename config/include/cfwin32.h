@@ -1,6 +1,6 @@
 /*
-** Configuration definations for the Microsoft Visual C++ Compiler 
-** with Intel i386/i486/Pentium processor environment.
+** Configuration definitions for the Microsoft Visual C++ Compiler 
+** with x86 processor environment.
 ** Created manually.
 ** 
 */
@@ -625,7 +625,7 @@
 #define WITH_ZLIB
 
 /* Define if we are compiling with libxml support */
-/* #undef WITH_LIBXML /
+#define WITH_LIBXML
 
 /* Define if we are compiling with libwrap (TCP wrapper) support */
 /* #undef WITH_TCPWRAPPER*/

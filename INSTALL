@@ -126,7 +126,7 @@ for the underlying cryptographic routines and the TLS protocol
 
 implementation.  This release of DCMTK is known to compile with all
 0.9.6x OpenSSL releases.  Due to security considerations we recommend that
-DCMTK should be compiled with OpenSSL 0.9.6g or 0.9.6h. DCMTK has not
+DCMTK should be compiled with OpenSSL 0.9.6g or 0.9.6h.  DCMTK has not
 yet been tested with OpenSSL 0.9.7.
 
 If support for the security enhancements is desired, a compiled version of
@@ -165,7 +165,7 @@ directory where the DCMTK root directory (dcmtk) also resides. Include
 files are expected in zlib-1.1.4/include. A debug version of the library
 is expected in zlib-1.1.4/debug/zlib.lib, a release version in
 zlib-1.1.4/release/zlib.lib. The debug version must be compiled for the
-multithread debug version of the runtime (/MTd)", the release version
+multithread debug version of the runtime (/MTd), the release version
 must be compiled for the non-debug multithread runtime (/MT). A
 precompiled version of the library can be downloaded from
 http://dicom.offis.de/dcmtk/
@@ -189,8 +189,8 @@ expect a directory named "tiff-3.5.7" to be present in the same
 directory where the DCMTK root directory (dcmtk) also resides. Include
 files are expected in tiff-3.5.7/include. A debug version of the library
 is expected in tiff-3.5.7/debug/libtiff.lib, a release version in
-tiff-3.5.7/release/libtiff.lib. The debug version must be compiled for
-the multithread debug version of the runtime (/MTd)", the release
+tiff-3.5.7/release/libtiff.lib.  The debug version must be compiled for
+the multithread debug version of the runtime (/MTd), the release
 version must be compiled for the non-debug multithread runtime (/MT).
 A precompiled version of the library can be downloaded from
 http://dicom.offis.de/dcmtk/
@@ -217,8 +217,8 @@ expect a directory named "libpng-1.2.5" to be present in the same
 directory where the DCMTK root directory (dcmtk) also resides. Include
 files are expected in libpng-1.2.5/include. A debug version of the library
 is expected in libpng-1.2.5/debug/libpng.lib, a release version in
-libpng-1.2.5/release/libpng.lib. The debug version must be compiled for
-the multithread debug version of the runtime (/MTd)", the release
+libpng-1.2.5/release/libpng.lib.  The debug version must be compiled for
+the multithread debug version of the runtime (/MTd), the release
 version must be compiled for the non-debug multithread runtime (/MT).
 A precompiled version of the library can be downloaded from
 http://dicom.offis.de/dcmtk/
@@ -230,15 +230,25 @@ LIBXML SUPPORT
 Starting with release 3.5.3, DCMTK supports the conversion of XML documents
 to DICOM files.  DCMTK relies on the libxml toolkit (www.xmlsoft.org) for
 this purpose.  This release of DCMTK is known to compile with the current
-libxml release 2.5.5, although older releases may work as well.
+libxml release 2.5.7, although older releases may work as well.
 
-On Unix platforms, if support for XML export is desired, a compiled version
-of the libxml libraries and include files must be available during compilation
-of DCMTK, and the libxml support must be switched on explicitly.  By default,
-DCMTK compiles without libxml support.
+On Unix platforms, if support for XML import is desired, a compiled version
+of the libxml (and possibly iconv) libraries and include files must be
+available during compilation of DCMTK, and the libxml support must be
+switched on explicitly.  By default, DCMTK compiles without libxml support.
 
 On Windows, the Visual C++ project files provided as part of the toolkit
-expect a directory named [...] ### to be continued ###
+expect a directory named "libxml2-2.5.7" to be present in the same directory
+where the DCMTK root directory (dcmtk) also resides.  Include files are
+expected in libxml2-2.5.7/include.  A debug version of the library is expected
+in libxml2-2.5.7/debug/libxml2.lib, a release version in libxml2-2.5.7/release/
+libxml2.lib.  Since the support for character set encodings in libxml relies on
+iconv (www.gnu.org/software/libiconv) both debug and release versions of
+iconv.lib (version 1.8) are also expected to be present in these directories.
+The debug version must be compiled for the multithread debug version of the
+runtime (/MTd), the release version must be compiled for the non-debug
+multithread runtime (/MT).  A precompiled version of the library can be
+downloaded from http://dicom.offis.de/dcmtk/. ### after 3.5.3 release ###
 
 
 TCP WRAPPER (LIBWRAP) SUPPORT
@@ -248,7 +258,7 @@ Starting with release 3.5.3, DCMTK supports Wietse Venema's TCP wrappers
 library (libwrap) which is freely available for most Unix platforms and
 part of the default installation of most recent Linux distributions.
 This library allows to enforce host-based access control via the
-/etc/hosts_deny and /etc/hosts_allow configuration files. See
+/etc/hosts_deny and /etc/hosts_allow configuration files.  See
 hosts_access(5) for details.  This release of DCMTK is known to compile
 with the current TCP wrappers release 7.6, although older releases may
 work as well.  The TCP wrappers library is available for download from
@@ -463,4 +473,4 @@ Have fun.
 Marco Eichelberg, Joerg Riesmeier, Thomas Wilkens
 Kuratorium OFFIS e.V., Oldenburg, Germany.
 
-Last revised: 2003-06-12 (Riesmeier).
+Last revised: 2003-06-17 (Riesmeier).
