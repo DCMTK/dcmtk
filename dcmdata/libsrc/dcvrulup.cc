@@ -9,10 +9,10 @@
 ** Purpose:
 ** Implementation of class DcmUnsignedLongOffset
 **
-** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1996-01-09 11:06:50 $
+** Last Update:		$Author: hewett $
+** Update Date:		$Date: 1996-03-11 13:09:44 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcvrulup.cc,v $
-** CVS/RCS Revision:	$Revision: 1.4 $
+** CVS/RCS Revision:	$Revision: 1.5 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -161,7 +161,7 @@ E_Condition DcmUnsignedLongOffset::verify(const BOOL autocorrect)
 {
 	errorFlag = DcmUnsignedLong::verify(autocorrect);
     if (errorFlag == EC_Normal && 
-		Length != 0 && this->get(0) != 0 && 
+		Length != 0 && this->get() != NULL && *(this->get()) != 0 &&
 		nextRecord == NULL)
 		errorFlag = EC_CorruptedData;
     return errorFlag;
@@ -174,7 +174,10 @@ E_Condition DcmUnsignedLongOffset::verify(const BOOL autocorrect)
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrulup.cc,v $
-** Revision 1.4  1996-01-09 11:06:50  andreas
+** Revision 1.5  1996-03-11 13:09:44  hewett
+** Corrected ambiguous use of this->get(0).
+**
+** Revision 1.4  1996/01/09 11:06:50  andreas
 ** New Support for Visual C++
 ** Correct problems with inconsistent const declarations
 ** Correct error in reading Item Delimitation Elements
