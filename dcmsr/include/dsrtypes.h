@@ -23,8 +23,8 @@
  *    classes: DSRTypes
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-10-18 17:10:25 $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  Update Date:      $Date: 2000-10-26 14:22:09 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -105,6 +105,9 @@ class DSRTypes
     /// external: render concept name codes (otherwise only the code meaning)
     static const size_t HF_renderConceptNameCodes;
 
+    /// external: render dcmtk/dcmsr comment at the end of the document
+    static const size_t HF_renderDcmtkFootnote;
+    
     /// shortcut: render the full data of all content items
     static const size_t HF_renderFullData;
 
@@ -224,7 +227,9 @@ class DSRTypes
         /// DICOM Value Type: CONTAINER
         VT_Container,
         /// internal type used to mark the last entry
-        VT_last = VT_Container
+        VT_last = VT_Container,
+        /// internal type used to indicate by-reference relationships
+        VT_byReference
     };
 
     /** SR graphic types.  Used for content item SCOORD.
@@ -247,6 +252,30 @@ class DSRTypes
         GT_Ellipse,
         /// internal type used to mark the last entry
         GT_last = GT_Ellipse
+    };
+
+    /** SR temporal range types.  Used for content item TCOORD.
+     */
+    enum E_TemporalRangeType
+    {
+        /// internal type used to indicate an error
+        TRT_invalid,
+        /// internal type used to indicate an unknown value type (defined term)
+        TRT_unknown = TRT_invalid,
+        /// DICOM Temporal Range Type: POINT
+        TRT_Point,
+        /// DICOM Temporal Range Type: MULTIPOINT
+        TRT_Multipoint,
+        /// DICOM Temporal Range Type: SEGMENT
+        TRT_Segment,
+        /// DICOM Temporal Range Type: MULTISEGMENT
+        TRT_Multisegment,
+        /// DICOM Temporal Range Type: BEGIN
+        TRT_Begin,
+        /// DICOM Temporal Range Type: END
+        TRT_End,
+        /// internal type used to mark the last entry
+        TRT_last = TRT_End
     };
 
     /** SR continuity of content flag. Used for content item CONTAINER.
@@ -358,6 +387,19 @@ class DSRTypes
      */
     static const char *graphicTypeToReadableName(const E_GraphicType graphicType);
 
+    /** convert temporal range type to DICOM enumerated value
+     ** @param  temporalRangeType  temporal range type to be converted
+     ** @return enumerated value if successful, empty string otherwise (never NULL)
+     */
+    static const char *temporalRangeTypeToEnumeratedValue(const E_TemporalRangeType temporalRangeType);
+
+    /** convert temporal range type to readable name.
+     *  Such a readable name is better suited for printing/rendering.
+     ** @param  temporalRangeType  temporal range type to be converted
+     ** @return readable name if successful, empty string otherwise (never NULL)
+     */
+    static const char *temporalRangeTypeToReadableName(const E_TemporalRangeType temporalRangeType);
+
     /** convert continuity of content flag to DICOM enumerated value
      ** @param  continuityOfContent  continuity of content flag to be converted
      ** @return enumerated value if successful, empty string otherwise (never NULL)
@@ -399,6 +441,12 @@ class DSRTypes
      ** @return graphic type if successful, GT_invalid otherwise
      */
     static E_GraphicType enumeratedValueToGraphicType(const OFString &enumeratedValue);
+
+    /** convert DICOM enumerated value to temporal range type
+     ** @param  enumeratedValue  enumerated value to be converted
+     ** @return temporal range type if successful, GT_invalid otherwise
+     */
+    static E_TemporalRangeType enumeratedValueToTemporalRangeType(const OFString &enumeratedValue);
 
     /** convert DICOM enumerated value to continuity of content flag
      ** @param  enumeratedValue  enumerated value to be converted
@@ -463,6 +511,15 @@ class DSRTypes
      */
     static size_t stringToNumber(const char *string);
 
+    /** check string for valid UID format.
+     *  The string should be non-empty and consist only of interger numbers separated by "." where
+     *  the first and the last character of the string are always figures (0..9). Example: 1 or 1.2.3.
+     *  Please note that this test is not as strict as specified for value representation UI in the
+     *  DICOM standard (e.g. regarding even length padding or leading '0' for the numbers).
+     ** @param  string  character string to be checked 
+     ** @result OFTrue if 'string' conforms to UID format, OFFalse otherwise
+     */
+    static OFBool checkForValidUIDFormat(const OFString &string);
 
     /** create specified document tree node.
      *  This is a shortcut and the only location where document tree nodes are created.
@@ -695,7 +752,14 @@ class DSRTypes
 /*
  *  CVS/RCS Log:
  *  $Log: dsrtypes.h,v $
- *  Revision 1.4  2000-10-18 17:10:25  joergr
+ *  Revision 1.5  2000-10-26 14:22:09  joergr
+ *  Added support for "Comprehensive SR".
+ *  Added support for TCOORD content item.
+ *  Added new flag specifying whether to add a "dcmtk" footnote to the rendered
+ *  HTML document or not.
+ *  Added check routine for valid UID strings.
+ *
+ *  Revision 1.4  2000/10/18 17:10:25  joergr
  *  Added new method allowing to get and check string values from dataset.
  *
  *  Revision 1.3  2000/10/16 16:31:09  joergr
