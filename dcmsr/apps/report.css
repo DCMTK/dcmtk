@@ -1,0 +1,73 @@
+TD {
+	background-color: #CCCCFF;
+	font-family : sans-serif ;
+	padding: 4px;
+}
+
+P SMALL {
+	background : #EEEEEE;
+	width: 100%;
+	color : Black;
+	text-align : left;
+}
+
+P {
+	background : #FAFAFA;
+	text-align : justify;
+}
+
+SMALL {
+	color : Gray;
+}
+
+BODY {
+	background-color: #EEEEEE;
+	font-family : sans-serif ;
+}
+
+HR {
+	color : Silver;
+	border : thin;
+	background : transparent;
+}
+
+A {
+	color: Maroon;
+}
+
+A:Hover {
+	color: red;
+}
+
+SMALL A {
+	color: Gray;
+}
+
+H1,H2,H3,H4,H5,H6 {
+	background-color: #000099;
+	color: white;
+	width: 100%;
+}
+
+H1 {
+	padding: 4px;
+	font-size : 150%;
+	font-weight : bold;
+}
+
+H2 {
+	padding: 3px;
+	font-size : 120%;
+}
+
+H3,H4,H5,H6 {
+	padding: 2px;
+}
+
+H4,H5,H6 {
+	font-size: 100%;
+}
+
+H1,H2 A {
+	color : White;
+}
