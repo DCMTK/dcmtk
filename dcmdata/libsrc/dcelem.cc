@@ -9,10 +9,10 @@
 ** Purpose:
 ** Implementation of class DcmElement
 **
-** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1996-01-09 11:06:45 $
+** Last Update:		$Author: hewett $
+** Update Date:		$Date: 1996-03-11 13:11:05 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcelem.cc,v $
-** CVS/RCS Revision:	$Revision: 1.5 $
+** CVS/RCS Revision:	$Revision: 1.6 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -254,7 +254,7 @@ E_Condition DcmElement::get(DcmTag & /*val*/, const unsigned long /*pos*/)
 }
 
 
-E_Condition DcmElement::get(Sint8 * &/*val*/)
+E_Condition DcmElement::get(char * &/*val*/)
 {
     errorFlag = EC_IllegalCall;
     return errorFlag;
@@ -470,13 +470,6 @@ E_Condition DcmElement::changeValue(const void * value,
 
 
 E_Condition DcmElement::put(const char * /*val*/)
-{
-    errorFlag = EC_IllegalCall;
-    return errorFlag;
-}
-
-
-E_Condition DcmElement::put(const unsigned char * /*val*/)
 {
     errorFlag = EC_IllegalCall;
     return errorFlag;
@@ -783,7 +776,10 @@ E_Condition DcmElement::write(DcmStream & outStream,
 /*
 ** CVS/RCS Log:
 ** $Log: dcelem.cc,v $
-** Revision 1.5  1996-01-09 11:06:45  andreas
+** Revision 1.6  1996-03-11 13:11:05  hewett
+** Changed prototypes to allow get() and put() of char strings.
+**
+** Revision 1.5  1996/01/09 11:06:45  andreas
 ** New Support for Visual C++
 ** Correct problems with inconsistent const declarations
 ** Correct error in reading Item Delimitation Elements
