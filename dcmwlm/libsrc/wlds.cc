@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2001, OFFIS
+ *  Copyright (C) 1996-2004, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,10 +21,10 @@
  *
  *  Purpose: (Partially) abstract class for connecting to an arbitrary data source.
  *
- *  Last Update:      $Author: wilkens $
- *  Update Date:      $Date: 2004-01-07 08:32:34 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2004-04-06 18:19:31 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmwlm/libsrc/wlds.cc,v $
- *  CVS/RCS Revision: $Revision: 1.15 $
+ *  CVS/RCS Revision: $Revision: 1.16 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1473,7 +1473,7 @@ OFBool WlmDataSource::IsSupportedReturnKeyAttribute( DcmElement *element, DcmSeq
 //                   DCM_ConfidentialityCode                               (0040,1008)  LO  O  3  (from the Requested Procedure Module)
 //                   DCM_ReportingPriority                                 (0040,1009)  SH  O  3  (from the Requested Procedure Module)
 //                   DCM_RequestedProcedureComments                        (0040,1400)  LT  O  3  (from the Requested Procedure Module)
-//                   DCM_ReasonForTheImagingServiceRequest                 (0040,2001)  LO  O  3  (from the Imaging Service Request Module)
+//                   DCM_RETIRED_ReasonForTheImagingServiceRequest         (0040,2001)  LO  O  3  (from the Imaging Service Request Module)
 //                   DCM_IssueDateOfImagingServiceRequest                  (0040,2004)  DA  O  3  (from the Imaging Service Request Module)
 //                   DCM_IssueTimeOfImagingServiceRequest                  (0040,2005)  TM  O  3  (from the Imaging Service Request Module)
 //                   DCM_OrderEnteredBy                                    (0040,2008)  PN  O  3  (from the Imaging Service Request Module)
@@ -1592,7 +1592,7 @@ OFBool WlmDataSource::IsSupportedReturnKeyAttribute( DcmElement *element, DcmSeq
         elementKey == DCM_ConfidentialityCode                               ||
         elementKey == DCM_ReportingPriority                                 ||
         elementKey == DCM_RequestedProcedureComments                        ||
-        elementKey == DCM_ReasonForTheImagingServiceRequest                 ||
+        elementKey == DCM_RETIRED_ReasonForTheImagingServiceRequest         ||
         elementKey == DCM_IssueDateOfImagingServiceRequest                  ||
         elementKey == DCM_IssueTimeOfImagingServiceRequest                  ||
         elementKey == DCM_OrderEnteredBy                                    ||
@@ -1614,7 +1614,11 @@ OFBool WlmDataSource::IsSupportedReturnKeyAttribute( DcmElement *element, DcmSeq
 /*
 ** CVS Log
 ** $Log: wlds.cc,v $
-** Revision 1.15  2004-01-07 08:32:34  wilkens
+** Revision 1.16  2004-04-06 18:19:31  joergr
+** Updated data dictionary, UIDs and transfer syntaxes for the latest Final Text
+** Supplements (42 and 47) and Correction Proposals (CP 25).
+**
+** Revision 1.15  2004/01/07 08:32:34  wilkens
 ** Added new sequence type return key attributes to wlmscpfs. Fixed bug that for
 ** equally named attributes in sequences always the same value will be returned.
 ** Added functionality that also more than one item will be returned in sequence

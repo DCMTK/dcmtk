@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2001, OFFIS
+ *  Copyright (C) 1996-2004, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,10 +21,10 @@
  *
  *  Purpose: (Partially) abstract class for connecting to an arbitrary data source.
  *
- *  Last Update:      $Author: wilkens $
- *  Update Date:      $Date: 2004-01-15 12:01:24 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2004-04-06 18:19:28 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmwlm/include/Attic/wlds.h,v $
- *  CVS/RCS Revision: $Revision: 1.19 $
+ *  CVS/RCS Revision: $Revision: 1.20 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -229,7 +229,7 @@ class WlmDataSource
        *    DCM_ConfidentialityCode                               (0040,1008)  LO  O  3  (from the Requested Procedure Module)
        *    DCM_ReportingPriority                                 (0040,1009)  SH  O  3  (from the Requested Procedure Module)
        *    DCM_RequestedProcedureComments                        (0040,1400)  LT  O  3  (from the Requested Procedure Module)
-       *    DCM_ReasonForTheImagingServiceRequest                 (0040,2001)  LO  O  3  (from the Imaging Service Request Module)
+       *    DCM_RETIRED_ReasonForTheImagingServiceRequest         (0040,2001)  LO  O  3  (from the Imaging Service Request Module)
        *    DCM_IssueDateOfImagingServiceRequest                  (0040,2004)  DA  O  3  (from the Imaging Service Request Module)
        *    DCM_IssueTimeOfImagingServiceRequest                  (0040,2005)  TM  O  3  (from the Imaging Service Request Module)
        *    DCM_OrderEnteredBy                                    (0040,2008)  PN  O  3  (from the Imaging Service Request Module)
@@ -545,7 +545,11 @@ class WlmDataSource
 /*
 ** CVS Log
 ** $Log: wlds.h,v $
-** Revision 1.19  2004-01-15 12:01:24  wilkens
+** Revision 1.20  2004-04-06 18:19:28  joergr
+** Updated data dictionary, UIDs and transfer syntaxes for the latest Final Text
+** Supplements (42 and 47) and Correction Proposals (CP 25).
+**
+** Revision 1.19  2004/01/15 12:01:24  wilkens
 ** Added function to Worklist Management Data Source Base Class. This function
 ** is needed in the private part of this toolkit.
 **
