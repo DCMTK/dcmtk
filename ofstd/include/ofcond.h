@@ -21,10 +21,10 @@
  *
  *  Purpose: class OFCondition and helper classes
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-10-12 10:42:26 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2001-11-09 15:44:39 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/include/Attic/ofcond.h,v $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -464,7 +464,7 @@ extern const OFCondition EC_MemoryExhausted;
 
 /** this macro is a shortcut for creating user-specific error messages.
  */
-#define makeOFCondition(A, B, C, D) OFCondition(new OFConditionString((A), (B), (C), (D)));
+#define makeOFCondition(A, B, C, D) OFCondition(new OFConditionString((A), (B), (C), (D)))
 
 
 #endif
@@ -472,7 +472,11 @@ extern const OFCondition EC_MemoryExhausted;
 /*
  * CVS/RCS Log:
  * $Log: ofcond.h,v $
- * Revision 1.3  2001-10-12 10:42:26  meichel
+ * Revision 1.4  2001-11-09 15:44:39  joergr
+ * Removed ";" from macro definition to avoid compiler warnings reported by
+ * Sun CC 2.0.1.
+ *
+ * Revision 1.3  2001/10/12 10:42:26  meichel
  * Introduced conditional define OFCONDITION_STRICT_MODE in which the
  *   compatibility options related to the transition to OFCondition are disabled:
  *   No OFCondition default constructor, no typedefs for E_Condition, CONDITION,
