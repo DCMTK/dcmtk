@@ -9,9 +9,9 @@
 ** Definition of the class DcmTag
 **
 ** Last Update:		$Author: hewett $
-** Update Date:		$Date: 1997-03-26 17:18:01 $
+** Update Date:		$Date: 1997-05-06 09:26:44 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dctag.h,v $
-** CVS/RCS Revision:	$Revision: 1.7 $
+** CVS/RCS Revision:	$Revision: 1.8 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -71,7 +71,7 @@ public:
     Uint16 getETag() const { return getElement(); }
     DcmTagKey getXTag() const { return *((DcmTagKey*)(this)); }
 
-    int getMaxVM() const { return (dictRef)?(dictRef->getVMMax()):(1); }
+    int getMaxVM() const { return (dictRef)?(dictRef->getVMMax()):(0x7fffffff); }
     int getMinVM() const { return (dictRef)?(dictRef->getVMMin()):(1); }
     
     const char*	getTagName() const 
@@ -95,7 +95,11 @@ public:
 /*
 ** CVS/RCS Log:
 ** $Log: dctag.h,v $
-** Revision 1.7  1997-03-26 17:18:01  hewett
+** Revision 1.8  1997-05-06 09:26:44  hewett
+** The DcmTag::getVMMax() method now returns a maximum value if the attribute
+** is unknown.  This makes the default VM=1-n (before it was VM=1).
+**
+** Revision 1.7  1997/03/26 17:18:01  hewett
 ** Added member function to obtain a DcmTag's data dictionary reference.
 **
 ** Revision 1.6  1996/04/19 08:37:21  andreas
