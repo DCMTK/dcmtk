@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2002, OFFIS
+ *  Copyright (C) 1998-2003, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,10 +21,10 @@
  *
  *  Purpose: This application reads a DICOM image, adds a Curve and writes it back.
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-11-26 08:44:24 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2003-08-29 08:41:17 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmpstat/apps/dcmmkcrv.cc,v $
- *  CVS/RCS Revision: $Revision: 1.15 $
+ *  CVS/RCS Revision: $Revision: 1.16 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -42,6 +42,7 @@
 #include "dctk.h"
 #include "cmdlnarg.h"
 #include "ofconapp.h"
+#include "ofcast.h"
 #include "dcuid.h"       /* for dcmtk version name */
 
 #ifdef WITH_ZLIB
@@ -150,7 +151,7 @@ int main(int argc, char *argv[])
 
       if (cmd.findOption("--data-vr")) app.checkValue(cmd.getValueAndCheckMinMax(opt_data_vr, 0, 4));
       if (cmd.findOption("--curve-vr")) app.checkValue(cmd.getValueAndCheckMinMax(opt_curve_vr, 0, 2));
-      if (cmd.findOption("--group")) app.checkValue(cmd.getValueAndCheckMin(opt_group, 0, 15));
+      if (cmd.findOption("--group")) app.checkValue(cmd.getValueAndCheckMinMax(opt_group, 0, 15));
       if (cmd.findOption("--label")) app.checkValue(cmd.getValue(opt_label));
       if (cmd.findOption("--description")) app.checkValue(cmd.getValue(opt_description));
       if (cmd.findOption("--axis"))
@@ -234,32 +235,32 @@ int main(int argc, char *argv[])
       return 1;
     }
 
-    curveDimensions->setGTag((Uint16)(0x5000+2*opt_group));
+    curveDimensions->setGTag(OFstatic_cast(Uint16,0x5000+2*opt_group));
     curveDimensions->putUint16(2,0);
     dataset->insert(curveDimensions, OFTrue);
 
-    numberOfPoints->setGTag((Uint16)(0x5000+2*opt_group));
-    numberOfPoints->putUint16((Uint16)(idx/2),0);
+    numberOfPoints->setGTag(OFstatic_cast(Uint16,0x5000+2*opt_group));
+    numberOfPoints->putUint16(OFstatic_cast(Uint16,idx/2),0);
     dataset->insert(numberOfPoints, OFTrue);
 
-    typeOfData->setGTag((Uint16)(0x5000+2*opt_group));
+    typeOfData->setGTag(OFstatic_cast(Uint16,0x5000+2*opt_group));
     if (opt_poly) typeOfData->putString("POLY"); else typeOfData->putString("ROI");
     dataset->insert(typeOfData, OFTrue);
 
-    dataValueRepresentation->setGTag((Uint16)(0x5000+2*opt_group));
-    dataValueRepresentation->putUint16((Uint16)opt_data_vr,0);
+    dataValueRepresentation->setGTag(OFstatic_cast(Uint16,0x5000+2*opt_group));
+    dataValueRepresentation->putUint16(OFstatic_cast(Uint16,opt_data_vr),0);
     dataset->insert(dataValueRepresentation, OFTrue);
 
     if (opt_description)
     {
-      curveDescription->setGTag((Uint16)(0x5000+2*opt_group));
+      curveDescription->setGTag(OFstatic_cast(Uint16,0x5000+2*opt_group));
       curveDescription->putString(opt_description);
       dataset->insert(curveDescription, OFTrue);
     }
 
     if (opt_label)
     {
-      curveLabel->setGTag((Uint16)(0x5000+2*opt_group));
+      curveLabel->setGTag(OFstatic_cast(Uint16,0x5000+2*opt_group));
       curveLabel->putString(opt_label);
       dataset->insert(curveLabel, OFTrue);
     }
@@ -269,7 +270,7 @@ int main(int argc, char *argv[])
       OFString aString(opt_axis_x);
       aString += "\\";
       aString += opt_axis_y;
-      axisUnits->setGTag((Uint16)(0x5000+2*opt_group));
+      axisUnits->setGTag(OFstatic_cast(Uint16,0x5000+2*opt_group));
       axisUnits->putString(aString.c_str());
       dataset->insert(axisUnits, OFTrue);
     }
@@ -287,7 +288,7 @@ int main(int argc, char *argv[])
         rawData = new Uint16[idx];
         if (rawData==NULL) { CERR << "out of memory" << endl; return 1; }
         byteLength = sizeof(Uint16)*idx;
-        for (i=0; i<idx; i++) ((Uint16 *)rawData)[i] = (Uint16)(array[i]);
+        for (i=0; i<idx; i++) OFstatic_cast(Uint16 *,rawData)[i] = OFstatic_cast(Uint16,array[i]);
         align = sizeof(Uint16);
         break;
       case 1: // SS
@@ -295,7 +296,7 @@ int main(int argc, char *argv[])
         rawData = new Sint16[idx];
         if (rawData==NULL) { CERR << "out of memory" << endl; return 1; }
         byteLength = sizeof(Sint16)*idx;
-        for (i=0; i<idx; i++) ((Sint16 *)rawData)[i] = (Sint16)(array[i]);
+        for (i=0; i<idx; i++) OFstatic_cast(Sint16 *,rawData)[i] = OFstatic_cast(Sint16,array[i]);
         align = sizeof(Sint16);
         break;
       case 2: // FL
@@ -303,7 +304,7 @@ int main(int argc, char *argv[])
         rawData = new Float32[idx];
         if (rawData==NULL) { CERR << "out of memory" << endl; return 1; }
         byteLength = sizeof(Float32)*idx;
-        for (i=0; i<idx; i++) ((Float32 *)rawData)[i] = (Float32)(array[i]);
+        for (i=0; i<idx; i++) OFstatic_cast(Float32 *,rawData)[i] = OFstatic_cast(Float32,array[i]);
         align = sizeof(Float32);
         break;
       case 3: // FD
@@ -311,7 +312,7 @@ int main(int argc, char *argv[])
         rawData = new Float64[idx];
         if (rawData==NULL) { CERR << "out of memory" << endl; return 1; }
         byteLength = sizeof(Float64)*idx;
-        for (i=0; i<idx; i++) ((Float64 *)rawData)[i] = (Float64)(array[i]);
+        for (i=0; i<idx; i++) OFstatic_cast(Float64 *,rawData)[i] = OFstatic_cast(Float64,array[i]);
         align = sizeof(Float64);
         break;
       case 4: // SL
@@ -319,7 +320,7 @@ int main(int argc, char *argv[])
         rawData = new Sint32[idx];
         if (rawData==NULL) { CERR << "out of memory" << endl; return 1; }
         byteLength = sizeof(Sint32)*idx;
-        for (i=0; i<idx; i++) ((Sint32 *)rawData)[i] = (Sint32)(array[i]);
+        for (i=0; i<idx; i++) OFstatic_cast(Sint32 *,rawData)[i] = OFstatic_cast(Sint32,array[i]);
         align = sizeof(Sint32);
         break;
       default:
@@ -337,37 +338,37 @@ int main(int argc, char *argv[])
             if (opt_verbose) CERR << "encoding curve data element as VR=US" << endl;
             element = new DcmUnsignedShort(DcmTag(DCM_CurveData, EVR_US));
             if (element==NULL) { CERR << "out of memory" << endl; return 1; }
-            element->putUint16Array((Uint16 *)rawData, byteLength/sizeof(Uint16));
+            element->putUint16Array(OFstatic_cast(Uint16 *,rawData), byteLength/sizeof(Uint16));
             break;
           case 1: // SS
             if (opt_verbose) CERR << "encoding curve data element as VR=SS" << endl;
             element = new DcmSignedShort(DcmTag(DCM_CurveData, EVR_SS));
             if (element==NULL) { CERR << "out of memory" << endl; return 1; }
-            element->putSint16Array((Sint16 *)rawData, byteLength/sizeof(Sint16));
+            element->putSint16Array(OFstatic_cast(Sint16 *,rawData), byteLength/sizeof(Sint16));
             break;
           case 2: // FL
             if (opt_verbose) CERR << "encoding curve data element as VR=FL" << endl;
             element = new DcmFloatingPointSingle(DcmTag(DCM_CurveData, EVR_FL));
             if (element==NULL) { CERR << "out of memory" << endl; return 1; }
-            element->putFloat32Array((Float32 *)rawData, byteLength/sizeof(Float32));
+            element->putFloat32Array(OFstatic_cast(Float32 *,rawData), byteLength/sizeof(Float32));
             break;
           case 3: // FD
             if (opt_verbose) CERR << "encoding curve data element as VR=FD" << endl;
             element = new DcmFloatingPointDouble(DcmTag(DCM_CurveData, EVR_FD));
             if (element==NULL) { CERR << "out of memory" << endl; return 1; }
-            element->putFloat64Array((Float64 *)rawData, byteLength/sizeof(Float64));
+            element->putFloat64Array(OFstatic_cast(Float64 *,rawData), byteLength/sizeof(Float64));
             break;
           case 4: // SL
             if (opt_verbose) CERR << "encoding curve data element as VR=SL" << endl;
             element = new DcmSignedLong(DcmTag(DCM_CurveData, EVR_SL));
             if (element==NULL) { CERR << "out of memory" << endl; return 1; }
-            element->putSint32Array((Sint32 *)rawData, byteLength/sizeof(Sint32));
+            element->putSint32Array(OFstatic_cast(Sint32 *,rawData), byteLength/sizeof(Sint32));
             break;
           default:
             CERR << "unknown data VR, bailing out" << endl;
             return 1;
         }
-        element->setGTag((Uint16)(0x5000+2*opt_group));
+        element->setGTag(OFstatic_cast(Uint16,0x5000+2*opt_group));
         dataset->insert(element, OFTrue);
         break;
       case 1: // OB
@@ -376,9 +377,9 @@ int main(int argc, char *argv[])
         swapIfNecessary(EBO_LittleEndian, gLocalByteOrder, rawData, byteLength, align);
         element = new DcmOtherByteOtherWord(DCM_CurveData);
         if (element==NULL) { CERR << "out of memory" << endl; return 1; }
-        element->setGTag((Uint16)(0x5000+2*opt_group));
+        element->setGTag(OFstatic_cast(Uint16,0x5000+2*opt_group));
         element->setVR(EVR_OB);
-        element->putUint8Array((Uint8 *)rawData, byteLength);
+        element->putUint8Array(OFstatic_cast(Uint8 *,rawData), byteLength);
         dataset->insert(element, OFTrue);
         break;
       case 2: // OW
@@ -391,9 +392,9 @@ int main(int argc, char *argv[])
         }
         element = new DcmOtherByteOtherWord(DCM_CurveData);
         if (element==NULL) { CERR << "out of memory" << endl; return 1; }
-        element->setGTag((Uint16)(0x5000+2*opt_group));
+        element->setGTag(OFstatic_cast(Uint16,0x5000+2*opt_group));
         element->setVR(EVR_OW);
-        element->putUint16Array((Uint16 *)rawData, byteLength/sizeof(Uint16));
+        element->putUint16Array(OFstatic_cast(Uint16 *,rawData), byteLength/sizeof(Uint16));
         dataset->insert(element, OFTrue);
         break;
       default:
@@ -419,7 +420,11 @@ int main(int argc, char *argv[])
 /*
 ** CVS/RCS Log:
 ** $Log: dcmmkcrv.cc,v $
-** Revision 1.15  2002-11-26 08:44:24  meichel
+** Revision 1.16  2003-08-29 08:41:17  joergr
+** Replaced wrong getValueAndCheckMin() by getValueAndCheckMinMax().
+** Adapted type casts to new-style typecast operators defined in ofcast.h.
+**
+** Revision 1.15  2002/11/26 08:44:24  meichel
 ** Replaced all includes for "zlib.h" with <zlib.h>
 **   to avoid inclusion of zlib.h in the makefile dependencies.
 **
