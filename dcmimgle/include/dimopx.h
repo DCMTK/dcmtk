@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2002, OFFIS
+ *  Copyright (C) 1996-2003, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,8 @@
  *  Purpose: DicomMonochromePixel (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-12-09 13:32:54 $
- *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/dimopx.h,v $
- *  CVS/RCS Revision: $Revision: 1.15 $
+ *  Update Date:      $Date: 2003-12-08 18:45:29 $
+ *  CVS/RCS Revision: $Revision: 1.16 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -32,11 +31,12 @@
  */
 
 
-#ifndef __DIMOPX_H
-#define __DIMOPX_H
+#ifndef DIMOPX_H
+#define DIMOPX_H
 
 #include "osconfig.h"
 #include "dctypes.h"
+#include "ofcast.h"
 
 #include "dipixel.h"
 #include "dimomod.h"
@@ -200,7 +200,7 @@ class DiMonoPixel
      */
     inline const char *getModalityLutExplanation() const
     {
-        return (Modality != NULL) ? Modality->getExplanation() : (const char *)NULL;
+        return (Modality != NULL) ? Modality->getExplanation() : OFstatic_cast(const char *, NULL);
     }
 
     /** check whether pixel data is 'potentially' signed.
@@ -253,7 +253,12 @@ class DiMonoPixel
  *
  * CVS/RCS Log:
  * $Log: dimopx.h,v $
- * Revision 1.15  2002-12-09 13:32:54  joergr
+ * Revision 1.16  2003-12-08 18:45:29  joergr
+ * Adapted type casts to new-style typecast operators defined in ofcast.h.
+ * Removed leading underscore characters from preprocessor symbols (reserved
+ * symbols). Updated copyright header.
+ *
+ * Revision 1.15  2002/12/09 13:32:54  joergr
  * Renamed parameter/local variable to avoid name clashes with global
  * declaration left and/or right (used for as iostream manipulators).
  *

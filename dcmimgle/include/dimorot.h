@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2001, OFFIS
+ *  Copyright (C) 1996-2003, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,10 +21,9 @@
  *
  *  Purpose: DicomMonochromeRotateTemplate (Header)
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-06-01 15:49:48 $
- *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/dimorot.h,v $
- *  CVS/RCS Revision: $Revision: 1.8 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2003-12-08 18:47:49 $
+ *  CVS/RCS Revision: $Revision: 1.9 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -32,11 +31,12 @@
  */
 
 
-#ifndef __DIMOROT_H
-#define __DIMOROT_H
+#ifndef DIMOROT_H
+#define DIMOROT_H
 
 #include "osconfig.h"
 #include "dctypes.h"
+#include "ofcast.h"
 
 #include "dimopxt.h"
 #include "dirotat.h"
@@ -74,13 +74,13 @@ class DiMonoRotateTemplate
                          const Uint16 dest_rows,
                          const Uint32 frames,
                          const int degree)
-      : DiMonoPixelTemplate<T>(pixel, (unsigned long)dest_cols * (unsigned long)dest_rows * frames),
+      : DiMonoPixelTemplate<T>(pixel, OFstatic_cast(unsigned long, dest_cols) * OFstatic_cast(unsigned long, dest_rows) * frames),
         DiRotateTemplate<T>(1, src_cols, src_rows, dest_cols, dest_rows, frames)
     {
         if ((pixel != NULL) && (pixel->getCount() > 0))
         {
-            if (pixel->getCount() == (unsigned long)src_cols * (unsigned long)src_rows * frames)
-                rotate((const T *)pixel->getData(), degree);
+            if (pixel->getCount() == OFstatic_cast(unsigned long, src_cols) * OFstatic_cast(unsigned long, src_rows) * frames)
+                rotate(OFstatic_cast(const T *, pixel->getData()), degree);
             else {
                 if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Warnings))
                 {
@@ -132,7 +132,12 @@ class DiMonoRotateTemplate
  *
  * CVS/RCS Log:
  * $Log: dimorot.h,v $
- * Revision 1.8  2001-06-01 15:49:48  meichel
+ * Revision 1.9  2003-12-08 18:47:49  joergr
+ * Adapted type casts to new-style typecast operators defined in ofcast.h.
+ * Removed leading underscore characters from preprocessor symbols (reserved
+ * symbols). Updated copyright header.
+ *
+ * Revision 1.8  2001/06/01 15:49:48  meichel
  * Updated copyright header
  *
  * Revision 1.7  2000/09/12 10:04:45  joergr

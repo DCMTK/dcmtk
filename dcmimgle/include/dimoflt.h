@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2001, OFFIS
+ *  Copyright (C) 1996-2003, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,22 +21,22 @@
  *
  *  Purpose: DicomMonochromeFlipTemplate (Header)
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-06-01 15:49:44 $
- *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/dimoflt.h,v $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2003-12-08 18:41:55 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
- * 
+ *
  */
 
 
-#ifndef __DIMOFLT_H
-#define __DIMOFLT_H
+#ifndef DIMOFLT_H
+#define DIMOFLT_H
 
 #include "osconfig.h"
 #include "dctypes.h"
+#include "ofcast.h"
 
 #include "dimopxt.h"
 #include "diflipt.h"
@@ -72,13 +72,13 @@ class DiMonoFlipTemplate
                        const Uint32 frames,
                        const int horz,
                        const int vert)
-      : DiMonoPixelTemplate<T>(pixel, (unsigned long)columns * (unsigned long)rows * frames),
+      : DiMonoPixelTemplate<T>(pixel, OFstatic_cast(unsigned long, columns) * OFstatic_cast(unsigned long, rows) * frames),
         DiFlipTemplate<T>(1, columns, rows, frames)
     {
         if ((pixel != NULL) && (pixel->getCount() > 0))
         {
-            if (pixel->getCount() == (unsigned long)columns * (unsigned long)rows * frames)
-                flip((const T *)pixel->getData(), horz, vert);
+            if (pixel->getCount() == OFstatic_cast(unsigned long, columns) * OFstatic_cast(unsigned long, rows) * frames)
+                flip(OFstatic_cast(const T *, pixel->getData()), horz, vert);
             else {
                 if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Warnings))
                 {
@@ -132,7 +132,12 @@ class DiMonoFlipTemplate
  *
  * CVS/RCS Log:
  * $Log: dimoflt.h,v $
- * Revision 1.7  2001-06-01 15:49:44  meichel
+ * Revision 1.8  2003-12-08 18:41:55  joergr
+ * Adapted type casts to new-style typecast operators defined in ofcast.h.
+ * Removed leading underscore characters from preprocessor symbols (reserved
+ * symbols). Updated copyright header.
+ *
+ * Revision 1.7  2001/06/01 15:49:44  meichel
  * Updated copyright header
  *
  * Revision 1.6  2000/09/12 10:04:44  joergr
