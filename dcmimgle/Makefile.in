@@ -22,6 +22,7 @@ install-lib: libsrc-install-lib install-include
 
 install-include: include-install
 
+install-support:
 
 include-all:
 	(cd include; $(MAKE) ARCH="$(ARCH)" all)
