@@ -1,6 +1,25 @@
 DCMTK FAQ - Frequently Asked Questions
 
 ----
+1997.05.22
+
+Q: I'm using a unix system.  I run the configure script and then make but
+   the build stops because the file 'config/Makefile.def' could not be found.
+
+A: This means that the configure script has failed to create the
+   necessary makefile definitions.  There could be several reasons for this.
+   Look at the output of the configure program.  If you see a line like:
+
+	checking whether cross-compiling... yes
+
+   then your compiler seems to be producing code which cannot be executed.
+   You could be using a very old compiler or some (shared) libraries could
+   not be located.  It has been reported that some GNU C++ installations
+   install shared libraries in non-standard places (e.g. /opt/gnu/lib)
+   and that environment variables must be set before the compiler can be
+   used (e.g. the LD_LIBRARY_PATH environment variable).  
+
+----
 1996.09.27
 
 Q: Does DCMTK compile on Microsoft Windows NT/95 ?
