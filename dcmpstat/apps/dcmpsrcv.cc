@@ -22,9 +22,9 @@
  *  Purpose: Presentation State Viewer - Network Receive Component (Store SCP)
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-04-28 15:45:07 $
+ *  Update Date:      $Date: 1999-04-30 16:36:56 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmpstat/apps/dcmpsrcv.cc,v $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -515,7 +515,7 @@ static CONDITION storeSCP(
     int lockfd = open(imageFileName, (O_WRONLY | O_CREAT | O_TRUNC), 0666);
 #endif
 
-    flock(lockfd, LOCK_EX);
+    dcmtk_flock(lockfd, LOCK_EX);
 #endif
 
     /* we must still retrieve the data set even if some error has occured */
@@ -543,7 +543,7 @@ static CONDITION storeSCP(
 
 #ifdef HAVE_FORK
     /* unlock image file */
-    flock(lockfd, LOCK_UN);
+    dcmtk_flock(lockfd, LOCK_UN);
     close(lockfd);
 #endif
     
@@ -895,7 +895,11 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmpsrcv.cc,v $
- * Revision 1.6  1999-04-28 15:45:07  meichel
+ * Revision 1.7  1999-04-30 16:36:56  meichel
+ * Renamed all flock calls to dcmtk_flock to avoid name clash between flock()
+ * emulation based on fcntl() and a constructor for struct flock.
+ *
+ * Revision 1.6  1999/04/28 15:45:07  meichel
  * Cleaned up module dcmpstat apps, adapted to new command line class
  *   and added short documentation.
  *

@@ -64,9 +64,9 @@
 ** 
 **
 ** Last Update:		$Author: meichel $
-** Update Date:		$Date: 1999-04-22 13:35:29 $
+** Update Date:		$Date: 1999-04-30 16:36:30 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/libsrc/dcompat.cc,v $
-** CVS/RCS Revision:	$Revision: 1.17 $
+** CVS/RCS Revision:	$Revision: 1.18 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -136,7 +136,7 @@ char dcompat_functionDefinedOnlyToStopLinkerMoaning;
 #ifndef HAVE_FLOCK
 #ifdef macintosh
 
-int flock(int fd, int operation)
+int dcmtk_flock(int fd, int operation)
 {
   fprintf(stderr, "dcmnet\libsrc\dcompat(mac): WARNING ! \n");
   fprintf(stderr, "Unsupported flock(fd[%d],operation[0x%x]\n");
@@ -155,7 +155,7 @@ int flock(int fd, int operation)
  * would be to re-write the complete file access to Win32 API functions. Have fun!
  */
 
-int flock(int fd, int operation)
+int dcmtk_flock(int fd, int operation)
 {
   HANDLE handle=(void *)_get_osfhandle(fd);
   OVERLAPPED overl;
@@ -205,7 +205,7 @@ int flock(int fd, int operation)
  * is not available since it does not implement shared locks.
  */
 
-int flock(int fd, int operation)
+int dcmtk_flock(int fd, int operation)
 {
     long originalPosition = tell(fd);
     long fileSize = lseek(fd, 0L, SEEK_END);
@@ -238,7 +238,7 @@ int flock(int fd, int operation)
  * using the facilities of fcntl(2)
  */
 
-int flock(int fd, int operation)
+int dcmtk_flock(int fd, int operation)
 {
     struct flock fl;
     int result;
@@ -426,7 +426,11 @@ tempnam(char *dir, char *pfx)
 /*
 ** CVS Log
 ** $Log: dcompat.cc,v $
-** Revision 1.17  1999-04-22 13:35:29  meichel
+** Revision 1.18  1999-04-30 16:36:30  meichel
+** Renamed all flock calls to dcmtk_flock to avoid name clash between flock()
+** emulation based on fcntl() and a constructor for struct flock.
+**
+** Revision 1.17  1999/04/22 13:35:29  meichel
 ** Corrected Win32 API version of flock emulation
 **
 ** Revision 1.16  1999/04/21 13:02:58  meichel

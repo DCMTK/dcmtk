@@ -22,9 +22,9 @@
  *  Purpose: Presentation State Viewer - Network Send Component (Store SCU)
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-04-28 15:45:09 $
+ *  Update Date:      $Date: 1999-04-30 16:36:56 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmpstat/apps/dcmpssnd.cc,v $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -90,7 +90,7 @@ static CONDITION sendImage(T_ASC_Association *assoc, const char *sopClass, const
       if (opt_verbose) cerr << "error: unable to lock image file '" << imgFile << "'" << endl;
       return DIMSE_BADDATA;
     }
-    flock(lockfd, LOCK_SH);
+    dcmtk_flock(lockfd, LOCK_SH);
 
     /* which presentation context should be used */
     presId = ASC_findAcceptedPresentationContextID(assoc, sopClass);
@@ -112,7 +112,7 @@ static CONDITION sendImage(T_ASC_Association *assoc, const char *sopClass, const
         imgFile, NULL, NULL, NULL, DIMSE_BLOCKING, 0, &rsp, &statusDetail);
 
     /* unlock image file */
-    flock(lockfd, LOCK_UN);
+    dcmtk_flock(lockfd, LOCK_UN);
     close(lockfd);
 
     if (cond == DIMSE_NORMAL) 
@@ -571,7 +571,11 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmpssnd.cc,v $
- * Revision 1.5  1999-04-28 15:45:09  meichel
+ * Revision 1.6  1999-04-30 16:36:56  meichel
+ * Renamed all flock calls to dcmtk_flock to avoid name clash between flock()
+ * emulation based on fcntl() and a constructor for struct flock.
+ *
+ * Revision 1.5  1999/04/28 15:45:09  meichel
  * Cleaned up module dcmpstat apps, adapted to new command line class
  *   and added short documentation.
  *

@@ -62,9 +62,9 @@
 ** 
 **
 ** Last Update:		$Author: meichel $
-** Update Date:		$Date: 1999-04-21 13:02:56 $
+** Update Date:		$Date: 1999-04-30 16:36:32 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/include/Attic/dcompat.h,v $
-** CVS/RCS Revision:	$Revision: 1.12 $
+** CVS/RCS Revision:	$Revision: 1.13 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -75,6 +75,7 @@
 #define DCOMPAT_H
 
 #include "osconfig.h"    /* make sure OS specific configuration is included first */
+#include "ofbmanip.h"    /* for bzero workaround */
 
 #ifdef HAVE_GUSI_H
 /* Use the Grand Unified Sockets Interface (GUSI) on Macintosh */
@@ -184,11 +185,16 @@ END_EXTERN_C
 
 #endif /* HAVE_SLEEP */
 
+#ifdef HAVE_PROTOTYPE_FLOCK
+#define dcmtk_flock flock
+#endif
+
 #ifndef HAVE_PROTOTYPE_FLOCK
 #ifdef HAVE_FLOCK
 BEGIN_EXTERN_C
 int flock(int fd, int operation);
 END_EXTERN_C
+#define dcmtk_flock flock
 #else
 /*
  * Simulate the flock function calls 
@@ -200,20 +206,14 @@ END_EXTERN_C
 #define   LOCK_NB   4    /* don't block when locking */
 #define   LOCK_UN   8    /* unlock */
 
-int flock(int fd, int operation);
+int dcmtk_flock(int fd, int operation);
 
 #endif /* !HAVE_FLOCK */
 #endif
 
-#ifndef HAVE_PROTOTYPE_BZERO
-#ifdef HAVE_BZERO
-BEGIN_EXTERN_C
-void bzero(char* s, int len);
-END_EXTERN_C
-#else
+#ifndef HAVE_BZERO
 #ifndef bzero
 #define bzero(p,len) memset((void*)(p), 0, (len));
-#endif
 #endif
 #endif
 
@@ -420,7 +420,11 @@ char *tempnam(char *dir, char *pfx);
 /*
 ** CVS Log
 ** $Log: dcompat.h,v $
-** Revision 1.12  1999-04-21 13:02:56  meichel
+** Revision 1.13  1999-04-30 16:36:32  meichel
+** Renamed all flock calls to dcmtk_flock to avoid name clash between flock()
+** emulation based on fcntl() and a constructor for struct flock.
+**
+** Revision 1.12  1999/04/21 13:02:56  meichel
 ** Now always including <windows.h> instead of <winsock.h> on Win32 platforms.
 **   This makes sure that <winsock2.h> is used if available.
 **
