@@ -22,9 +22,9 @@
  *  Purpose: decompression routines of the IJG JPEG library configured for 8 bits/sample. 
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2004-05-07 10:45:13 $
+ *  Update Date:      $Date: 2004-05-07 12:18:45 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmjpeg/libsrc/djdijg8.cc,v $
- *  CVS/RCS Revision: $Revision: 1.8 $
+ *  CVS/RCS Revision: $Revision: 1.9 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -232,7 +232,7 @@ OFCondition DJDecompressIJG8Bit::init()
       }
       else
       {
-        delete OFconst_cast(DJDIJG12ErrorStruct *, jerr);
+        delete OFconst_cast(DJDIJG8ErrorStruct *, jerr);
         delete cinfo;
         cinfo = NULL;
         return EC_MemoryExhausted;
@@ -440,7 +440,10 @@ void DJDecompressIJG8Bit::outputMessage() const
 /*
  * CVS/RCS Log
  * $Log: djdijg8.cc,v $
- * Revision 1.8  2004-05-07 10:45:13  meichel
+ * Revision 1.9  2004-05-07 12:18:45  meichel
+ * Added explicit typecast to volatile variables, needed for MSVC
+ *
+ * Revision 1.8  2004/05/07 10:45:13  meichel
  * Added explicit typecast to volatile variables, needed for MSVC
  *
  * Revision 1.7  2004/05/05 14:10:24  joergr
