@@ -1,6 +1,13 @@
 tlist.o: tlist.cc ../include/oflist.h ../../config/include/osconfig.h \
  ../include/oftypes.h ../include/ofalgo.h ../include/ofconsol.h \
  ../include/ofthread.h
+tofdatim.o: tofdatim.cc ../../config/include/osconfig.h \
+ ../include/ofdate.h ../include/ofstring.h ../include/oftypes.h \
+ ../include/oftime.h ../include/ofdatime.h ../include/ofconsol.h \
+ ../include/ofthread.h
+tofstd.o: tofstd.cc ../../config/include/osconfig.h ../include/ofstd.h \
+ ../include/ofstring.h ../include/oftypes.h ../include/ofconsol.h \
+ ../include/ofthread.h
 tstcmdln.o: tstcmdln.cc ../include/ofcmdln.h \
  ../../config/include/osconfig.h ../include/oftypes.h \
  ../include/oflist.h ../include/ofstring.h ../include/ofconsol.h \
