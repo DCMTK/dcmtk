@@ -10,9 +10,9 @@
 ** routines for finding and created UIDs.
 **
 ** Last Update:		$Author: hewett $
-** Update Date:		$Date: 1998-01-14 15:15:02 $
+** Update Date:		$Date: 1998-02-06 09:05:16 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcuid.cc,v $
-** CVS/RCS Revision:	$Revision: 1.12 $
+** CVS/RCS Revision:	$Revision: 1.13 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -181,20 +181,28 @@ static UIDNameMap uidNameMap[] = {
     { UID_VLImageStorage, "VLImageStorage" },
     { UID_VLMultiFrameImageStorage, "VLMultiFrameImageStorage" },
 
+    { UID_PageDescriptionStorage, "PageDescriptionStorage" },
+
     { UID_ModalityPerformedProcedureStepSOPClass, "ModalityPerformedProcedureStepSOPClass" },
-    { UID_ModalityManagementMetaSOPClass, "ModalityManagementMetaSOPClass" },
+    { UID_ModalityPerformedProcedureStepRetrieveSOPClass, "ModalityPerformedProcedureStepRetrieveSOPClass" },
+    { UID_ModalityPerformedProcedureStepNotificationSOPClass, "ModalityPerformedProcedureStepNotificationSOPClass" },
 
-    { UID_UserPreferenceLUTSOPClass, "UserPreferenceLUTSOPClass" },
+    { UID_PresentationLUTSOPClass, "PresentationLUTSOPClass" },
 
-    { UID_SRTextStorageSOPClass, "SRTextStorageSOPClass" },
-    { UID_SRAudioStorageSOPClass, "SRAudioStorageSOPClass" },
-    { UID_SRDetailStorageSOPClass, "SRDetailStorageSOPClass" },
-    { UID_SRComprehensiveStorageSOPClass, "SRComprehensiveStorageSOPClass" },
+    { UID_SRTextStorage, "SRTextStorage" },
+    { UID_SRAudioStorage, "SRAudioStorage" },
+    { UID_SRDetailStorage, "SRDetailStorage" },
+    { UID_SRComprehensiveStorage, "SRComprehensiveStorage" },
 
-    { UID_BasicGrayscalePrintStorageSOPClass, "BasicGrayscalePrintStorageSOPClass" },
-    { UID_BasicColorPrintStorageSOPClass, "BasicColorPrintStorageSOPClass" },
-    { UID_ReferencedGrayscalePrintStorageSOPClass, "ReferencedGrayscalePrintStorageSOPClass" },
-    { UID_ReferencedColorPrintStorageSOPClass, "ReferencedColorPrintStorageSOPClass" },
+    { UID_BasicGrayscalePrintStorage, "BasicGrayscalePrintStorage" },
+    { UID_BasicColorPrintStorage, "BasicColorPrintStorage" },
+    { UID_ReferencedGrayscalePrintStorage, "ReferencedGrayscalePrintStorage" },
+    { UID_ReferencedColorPrintStorage, "ReferencedColorPrintStorage" },
+
+    { UID_WaveformStorage, "WaveformStorage" },
+    { UID_ECGWaveformStorage, "ECGWaveformStorage" },
+    { UID_AudioWaveformStorage, "AudioWaveformStorage" },
+
 
     { NULL, NULL }
 };
@@ -241,15 +249,21 @@ const char* dcmStorageSOPClassUIDs[] = {
     UID_VLImageStorage,
     UID_VLMultiFrameImageStorage,
 
-    UID_SRTextStorageSOPClass, 
-    UID_SRAudioStorageSOPClass, 
-    UID_SRDetailStorageSOPClass, 
-    UID_SRComprehensiveStorageSOPClass, 
+    UID_PageDescriptionStorage
 
-    UID_BasicGrayscalePrintStorageSOPClass, 
-    UID_BasicColorPrintStorageSOPClass, 
-    UID_ReferencedGrayscalePrintStorageSOPClass, 
-    UID_ReferencedColorPrintStorageSOPClass, 
+    UID_SRTextStorage, 
+    UID_SRAudioStorage, 
+    UID_SRDetailStorage, 
+    UID_SRComprehensiveStorage, 
+
+    UID_BasicGrayscalePrintStorage, 
+    UID_BasicColorPrintStorage, 
+    UID_ReferencedGrayscalePrintStorage, 
+    UID_ReferencedColorPrintStorage, 
+
+    UID_WaveformStorage, 
+    UID_ECGWaveformStorage, 
+    UID_AudioWaveformStorage, 
 
     NULL
 };
@@ -311,10 +325,11 @@ const char* dcmImageSOPClassUIDs[] = {
     UID_VLMultiFrameImageStorage,
 
 // The print objects are not really images
-//    UID_BasicGrayscalePrintStorageSOPClass, 
-//    UID_BasicColorPrintStorageSOPClass, 
-//    UID_ReferencedGrayscalePrintStorageSOPClass, 
-//    UID_ReferencedColorPrintStorageSOPClass, 
+//    UID_PageDescriptionStorage
+//    UID_BasicGrayscalePrintStorage, 
+//    UID_BasicColorPrintStorage, 
+//    UID_ReferencedGrayscalePrintStorage, 
+//    UID_ReferencedColorPrintStorage, 
 
     NULL
 };
@@ -547,7 +562,13 @@ char* dcmGenerateUniqueIdentifer(char* uid, const char* prefix)
 /*
 ** CVS/RCS Log:
 ** $Log: dcuid.cc,v $
-** Revision 1.12  1998-01-14 15:15:02  hewett
+** Revision 1.13  1998-02-06 09:05:16  hewett
+** Updated support for Supplements 15 (Visible Light),
+** 16 (Postscript Print Management), 17 (Modality Performed Procedure Step),
+** 22 (Presentation Look Up Table (LUT)), 23 (Structured Reporting),
+** 24 (Stored Print), 30 (Waveform Interchange).
+**
+** Revision 1.12  1998/01/14 15:15:02  hewett
 ** Added basic support for the Structured Reporting (SR) SOP Classes.
 **
 ** Revision 1.11  1997/10/13 11:34:49  hewett

@@ -58,9 +58,9 @@
 **
 **
 ** Last Update:		$Author: hewett $
-** Update Date:		$Date: 1998-01-14 14:37:15 $
+** Update Date:		$Date: 1998-02-06 09:09:15 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/libsrc/diutil.cc,v $
-** CVS/RCS Revision:	$Revision: 1.8 $
+** CVS/RCS Revision:	$Revision: 1.9 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -156,17 +156,25 @@ static DU_Modality modalities[] = {
     { UID_VLImageStorage, 				"VL", 512*512*2 },
     { UID_VLMultiFrameImageStorage, 			"VM", 512*512*2*5 },
 
+    /* How big can Postscript Print Object be? */
+    { UID_PageDescriptionStorage,		"PD", 4096 },
+
     /* I've no idea how large Structured Reporting objects typically are */
-    { UID_SRTextStorageSOPClass, 			"SRt", 4096 },
-    { UID_SRAudioStorageSOPClass,  			"SRa", 4096 },
-    { UID_SRDetailStorageSOPClass,  			"SRd", 4096 },
-    { UID_SRComprehensiveStorageSOPClass,  		"SRc", 4096 },
+    { UID_SRTextStorage, 			"SRt", 4096 },
+    { UID_SRAudioStorage,  			"SRa", 4096 },
+    { UID_SRDetailStorage,  			"SRd", 4096 },
+    { UID_SRComprehensiveStorage,  		"SRc", 4096 },
 
     /* How big can Print Storage Objects be? */
-    { UID_BasicGrayscalePrintStorageSOPClass, 		"PBG", 4096 },
-    { UID_BasicColorPrintStorageSOPClass,		"PBC", 4096 },
-    { UID_ReferencedGrayscalePrintStorageSOPClass, 	"PRG", 4096 },
-    { UID_ReferencedColorPrintStorageSOPClass, 		"PRC", 4096 }
+    { UID_BasicGrayscalePrintStorage, 		"PBG", 4096 },
+    { UID_BasicColorPrintStorage,		"PBC", 4096 },
+    { UID_ReferencedGrayscalePrintStorage, 	"PRG", 4096 },
+    { UID_ReferencedColorPrintStorage, 		"PRC", 4096 },
+
+    /* How big can Wafeform Interchange Objects be? */
+    { UID_WaveformStorage, "WV", 4096 },
+    { UID_ECGWaveformStorage, "ECG", 4096 },
+    { UID_AudioWaveformStorage, "AU", 4096 }
 
 };
 
@@ -568,7 +576,13 @@ DU_cgetStatusString(Uint16 statusCode)
 /*
 ** CVS Log
 ** $Log: diutil.cc,v $
-** Revision 1.8  1998-01-14 14:37:15  hewett
+** Revision 1.9  1998-02-06 09:09:15  hewett
+** Updated support for Supplements 15 (Visible Light),
+** 16 (Postscript Print Management), 17 (Modality Performed Procedure Step),
+** 22 (Presentation Look Up Table (LUT)), 23 (Structured Reporting),
+** 24 (Stored Print), 30 (Waveform Interchange).
+**
+** Revision 1.8  1998/01/14 14:37:15  hewett
 ** Added basic support for the Structured Reporting (SR) SOP Classes.
 **
 ** Revision 1.7  1997/07/21 08:47:19  andreas

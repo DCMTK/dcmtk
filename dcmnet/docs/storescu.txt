@@ -60,6 +60,26 @@ Storage SOP Classes as an SCU:
     StandaloneCurveStorage			"1.2.840.10008.5.1.4.1.1.9"
     StandaloneModalityLUTStorage		"1.2.840.10008.5.1.4.1.1.10"
     StandaloneVOILUTStorage			"1.2.840.10008.5.1.4.1.1.11"
+    RTImageStorage				"1.2.840.10008.5.1.4.1.1.481.1"
+    RTDoseStorage				"1.2.840.10008.5.1.4.1.1.481.2"
+    RTStructureSetStorage			"1.2.840.10008.5.1.4.1.1.481.3"
+    RTPlanStorage				"1.2.840.10008.5.1.4.1.1.481.5"
+    PETImageStorage				"1.2.840.10008.5.1.4.1.1.128"
+    PETCurveStorage				"1.2.840.10008.5.1.4.1.1.129"
+    VLImageStorage				"1.2.840.10008.5.1.4.1.1.77.1" 
+    VLMultiFrameImageStorage			"1.2.840.10008.5.1.4.1.1.77.2"
+    PageDescriptionStorage			"1.2.840.10008.5.1.1.50"
+    SRTextStorage				"1.2.840.10008.5.1.4.1.1.88.1"
+    SRAudioStorage				"1.2.840.10008.5.1.4.1.1.88.2" 
+    SRDetailStorage				"1.2.840.10008.5.1.4.1.1.88.3" 
+    SRComprehensiveStorage			"1.2.840.10008.5.1.4.1.1.88.4"
+    BasicGrayscalePrintStorage			"1.2.840.10008.5.1.4.1.1.27"
+    BasicColorPrintStorage			"1.2.840.10008.5.1.4.1.1.28"
+    ReferencedGrayscalePrintStorage		"1.2.840.10008.5.1.4.1.1.29"
+    ReferencedColorPrintStorage			"1.2.840.10008.5.1.4.1.1.30"
+    WaveformStorage				"1.2.840.10008.5.1.4.1.1.9.1" 
+    ECGWaveformStorage				"1.2.840.10008.5.1.4.1.1.9.1.1" 
+    AudioWaveformStorage			"1.2.840.10008.5.1.4.1.1.9.1.2" 
 
 If the -ti option is not specified, the storescu application will 
 propose presentation contexts for all of the abovementioned supported 
@@ -88,3 +108,4 @@ AUTHOR
 
 Andrew Hewett, Kuratorium OFFIS e.V., Oldenburg, Germany
 
+Last Revised: Andrew Hewett, Oldenburg, February 6, 1998

@@ -10,9 +10,9 @@
 ** routines for finding and creating UIDs.
 **
 ** Last Update:		$Author: hewett $
-** Update Date:		$Date: 1998-01-14 15:14:45 $
+** Update Date:		$Date: 1998-02-06 09:03:09 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcuid.h,v $
-** CVS/RCS Revision:	$Revision: 1.22 $
+** CVS/RCS Revision:	$Revision: 1.23 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -282,31 +282,50 @@ char* dcmGenerateUniqueIdentifer(char* uid, const char* prefix=NULL);
 #define UID_VLImageStorage		"1.2.840.10008.5.1.4.1.1.77.1" 
 #define UID_VLMultiFrameImageStorage	"1.2.840.10008.5.1.4.1.1.77.2"
 
-/* DRAFT Supplement 17 (Performed Procedure Step) */
-#define UID_ModalityPerformedProcedureStepSOPClass "1.2.840.10008.3.1.2.3.3"
-#define UID_ModalityManagementMetaSOPClass	   "1.2.840.10008.3.1.2.3.4"
+/* DRAFT Supplement 16 (Postscript Print Management) */
+#define UID_PageDescriptionStorage	"1.2.840.10008.5.1.1.50"
 
-/* DRAFT Supplement 22 (User Preference LUT) */
-#define UID_UserPreferenceLUTSOPClass	"1.2.840.10008.5.1.1.23"
+/* LETTER BALLOT Supplement 17 (Performed Procedure Step) */
+#define UID_ModalityPerformedProcedureStepSOPClass	"1.2.840.10008.3.1.2.3.3"
+#define UID_ModalityPerformedProcedureStepRetrieveSOPClass "1.2.840.10008.3.1.2.3.4"
+#define UID_ModalityPerformedProcedureStepNotificationSOPClass "1.2.840.10008.3.1.2.3.5"
+
+/* LETTER BALLOT Supplement 22 (Presentation Look Up Table (LUT)) */
+#define UID_PresentationLUTSOPClass	"1.2.840.10008.5.1.1.23"
 
 /* DRAFT Supplement 23 (Structured Reporting) - frozen draft - version 0.79 */
-#define UID_SRTextStorageSOPClass "1.2.840.10008.5.1.4.1.1.88.1"
-#define UID_SRAudioStorageSOPClass "1.2.840.10008.5.1.4.1.1.88.2" 
-#define UID_SRDetailStorageSOPClass "1.2.840.10008.5.1.4.1.1.88.3" 
-#define UID_SRComprehensiveStorageSOPClass "1.2.840.10008.5.1.4.1.1.88.4"
+#define UID_SRTextStorage "1.2.840.10008.5.1.4.1.1.88.1"
+#define UID_SRAudioStorage "1.2.840.10008.5.1.4.1.1.88.2" 
+#define UID_SRDetailStorage "1.2.840.10008.5.1.4.1.1.88.3" 
+#define UID_SRComprehensiveStorage "1.2.840.10008.5.1.4.1.1.88.4"
 
 /* DRAFT Supplement 24 (Print Storage) */
-#define UID_BasicGrayscalePrintStorageSOPClass	"1.2.840.10008.5.1.4.1.1.27"
-#define UID_BasicColorPrintStorageSOPClass	"1.2.840.10008.5.1.4.1.1.28"
-#define UID_ReferencedGrayscalePrintStorageSOPClass "1.2.840.10008.5.1.4.1.1.29"
-#define UID_ReferencedColorPrintStorageSOPClass "1.2.840.10008.5.1.4.1.1.30"
+#define UID_BasicGrayscalePrintStorage	"1.2.840.10008.5.1.4.1.1.27"
+#define UID_BasicColorPrintStorage	"1.2.840.10008.5.1.4.1.1.28"
+#define UID_ReferencedGrayscalePrintStorage "1.2.840.10008.5.1.4.1.1.29"
+#define UID_ReferencedColorPrintStorage "1.2.840.10008.5.1.4.1.1.30"
+
+/* DRAFT Supplement 30 (Waveform Interchange) - frozen draft */
+	/* Waveform IOD with WV Modality */
+#define UID_WaveformStorage		"1.2.840.10008.5.1.4.1.1.9.1" 
+	/* Waveform IOD with ECG Modality Subtype */
+#define UID_ECGWaveformStorage		"1.2.840.10008.5.1.4.1.1.9.1.1" 
+	/* Waveform IOD with AU Modality */
+#define UID_AudioWaveformStorage	"1.2.840.10008.5.1.4.1.1.9.1.2" 
+
 
 #endif /* DCUID_H */
 
 /*
 ** CVS/RCS Log:
 ** $Log: dcuid.h,v $
-** Revision 1.22  1998-01-14 15:14:45  hewett
+** Revision 1.23  1998-02-06 09:03:09  hewett
+** Updated support for Supplements 15 (Visible Light),
+** 16 (Postscript Print Management), 17 (Modality Performed Procedure Step),
+** 22 (Presentation Look Up Table (LUT)), 23 (Structured Reporting),
+** 24 (Stored Print), 30 (Waveform Interchange).
+**
+** Revision 1.22  1998/01/14 15:14:45  hewett
 ** Added basic support for the Structured Reporting (SR) SOP Classes.
 **
 ** Revision 1.21  1997/10/07 07:44:20  meichel
