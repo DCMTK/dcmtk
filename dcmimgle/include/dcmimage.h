@@ -22,9 +22,9 @@
  *  Purpose: Provides main interface to the "dicom image toolkit"
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-02-05 16:42:22 $
+ *  Update Date:      $Date: 1999-02-08 12:37:35 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/dcmimage.h,v $
- *  CVS/RCS Revision: $Revision: 1.9 $
+ *  CVS/RCS Revision: $Revision: 1.10 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -632,8 +632,8 @@ class DicomImage
      */
     inline int removeOverlay(const unsigned int group)
     {
-        if ((Image != NULL) && (Image->getMonoImagePtr() != NULL))
-            return Image->getMonoImagePtr()->removeOverlay(group);
+        if ((Image != NULL) && (Image->getOverlayPtr(1) != NULL)) 
+            return Image->getOverlayPtr(1)->removePlane(group);
         return 0;
     }
 
@@ -644,8 +644,8 @@ class DicomImage
      */
     inline int removeAllOverlays()
     {
-        if ((Image != NULL) && (Image->getOverlayPtr() != NULL)) 
-            return Image->getOverlayPtr()->removeAllPlanes();
+        if ((Image != NULL) && (Image->getMonoImagePtr() != NULL))
+            return Image->getMonoImagePtr()->removeAllOverlays();
         return 0;
     }
 
@@ -661,7 +661,7 @@ class DicomImage
                                 const unsigned int idx = 0)
     {
         if ((Image != NULL) && (Image->getOverlayPtr(idx) != NULL)) 
-            return Image->getOverlayPtr()->isPlaneVisible(plane);
+            return Image->getOverlayPtr(idx)->isPlaneVisible(plane);
         return 0;
     }
 
@@ -677,7 +677,7 @@ class DicomImage
                            const unsigned int idx = 0)
     {
         if ((Image != NULL) && (Image->getOverlayPtr(idx) != NULL)) 
-            return Image->getOverlayPtr()->showPlane(plane);
+            return Image->getOverlayPtr(idx)->showPlane(plane);
         return 0;
     }
 
@@ -698,7 +698,7 @@ class DicomImage
                            const unsigned int idx = 0)
     {
         if ((Image != NULL) && (Image->getOverlayPtr(idx) != NULL))
-            return Image->getOverlayPtr()->showPlane(plane, fore, thresh, mode);
+            return Image->getOverlayPtr(idx)->showPlane(plane, fore, thresh, mode);
         return 0;
     }
 
@@ -713,7 +713,7 @@ class DicomImage
                            const Uint16 pvalue)
     {
         if ((Image != NULL) && (Image->getOverlayPtr(1) != NULL))
-            return Image->getOverlayPtr()->showPlane(plane, pvalue);
+            return Image->getOverlayPtr(1)->showPlane(plane, pvalue);
         return 0;
     }
 
@@ -727,7 +727,7 @@ class DicomImage
     inline int showAllOverlays(const unsigned int idx = 0)
     {
         if ((Image != NULL) && (Image->getOverlayPtr(idx) != NULL))
-            return Image->getOverlayPtr()->showAllPlanes();
+            return Image->getOverlayPtr(idx)->showAllPlanes();
         return 0;
     }
 
@@ -747,7 +747,7 @@ class DicomImage
                                const unsigned int idx = 0)
     {
         if ((Image != NULL) && (Image->getOverlayPtr(idx) != NULL))
-            return Image->getOverlayPtr()->showAllPlanes(fore, thresh, mode);
+            return Image->getOverlayPtr(idx)->showAllPlanes(fore, thresh, mode);
         return 0;
     }
         
@@ -763,7 +763,7 @@ class DicomImage
                            const unsigned int idx = 0)
     {
         if ((Image != NULL) && (Image->getOverlayPtr(idx) != NULL))
-            return Image->getOverlayPtr()->hidePlane(plane);
+            return Image->getOverlayPtr(idx)->hidePlane(plane);
         return 0;
     }
 
@@ -777,7 +777,7 @@ class DicomImage
     inline int hideAllOverlays(const unsigned int idx = 0)
     {
         if ((Image != NULL) && (Image->getOverlayPtr(idx) != NULL))
-            return Image->getOverlayPtr()->hideAllPlanes();
+            return Image->getOverlayPtr(idx)->hideAllPlanes();
         return 0;
     }
         
@@ -797,7 +797,7 @@ class DicomImage
                             const unsigned int idx = 0)
     {
         if ((Image != NULL) && (Image->getOverlayPtr(idx) != NULL))
-            return Image->getOverlayPtr()->placePlane(plane, left, top);
+            return Image->getOverlayPtr(idx)->placePlane(plane, left, top);
         return 0;
     }
 
@@ -810,7 +810,7 @@ class DicomImage
     inline unsigned int getOverlayCount(const unsigned int idx = 0) const
     {
         if ((Image != NULL) && (Image->getOverlayPtr(idx) != NULL))
-            return Image->getOverlayPtr()->getCount();
+            return Image->getOverlayPtr(idx)->getCount();
         return 0;
     }
 
@@ -1183,7 +1183,12 @@ class DicomImage
  *
  * CVS/RCS Log:
  * $Log: dcmimage.h,v $
- * Revision 1.9  1999-02-05 16:42:22  joergr
+ * Revision 1.10  1999-02-08 12:37:35  joergr
+ * Changed implementation of removeAllOverlays().
+ * Added parameter 'idx' to some overlay methods to distinguish between
+ * built-in and additional overlay planes.
+ *
+ * Revision 1.9  1999/02/05 16:42:22  joergr
  * Added optional parameter to method convertPValueToDDL to specify width
  * of output data (number of bits).
  *
