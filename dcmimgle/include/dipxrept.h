@@ -22,9 +22,9 @@
  *  Purpose: DicomPixelRepresentationTemplate (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-04-28 14:54:37 $
+ *  Update Date:      $Date: 1999-04-28 17:03:17 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/dipxrept.h,v $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -38,6 +38,12 @@
 #include "osconfig.h"
 
 #include "diutils.h"
+
+#ifdef HAVE_EXPLICIT_TEMPLATE_SPECIALIZATION
+ #define EXPLICIT_SPECIALIZATION template<>
+#else
+ #define EXPLICIT_SPECIALIZATION
+#endif
 
 
 /*---------------------*
@@ -65,84 +71,84 @@ class DiPixelRepresentationTemplate
 /********************************************************************/
 
 
-template<>
+EXPLICIT_SPECIALIZATION
 inline EP_Representation DiPixelRepresentationTemplate<Uint8>::getRepresentation() const
 {
     return EPR_Uint8;
 }
 
 
-template<>
+EXPLICIT_SPECIALIZATION
 inline EP_Representation DiPixelRepresentationTemplate<Sint8>::getRepresentation() const
 {
     return EPR_Sint8;
 }
 
 
-template<>
+EXPLICIT_SPECIALIZATION
 inline EP_Representation DiPixelRepresentationTemplate<Uint16>::getRepresentation() const
 {
     return EPR_Uint16;
 }
 
 
-template<>
+EXPLICIT_SPECIALIZATION
 inline EP_Representation DiPixelRepresentationTemplate<Sint16>::getRepresentation() const
 {
     return EPR_Sint16;
 }
 
 
-template<>
+EXPLICIT_SPECIALIZATION
 inline EP_Representation DiPixelRepresentationTemplate<Uint32>::getRepresentation() const
 {
     return EPR_Uint32;
 }
 
 
-template<>
+EXPLICIT_SPECIALIZATION
 inline EP_Representation DiPixelRepresentationTemplate<Sint32>::getRepresentation() const
 {
     return EPR_Sint32;
 }
 
 
-template<>
+EXPLICIT_SPECIALIZATION
 inline int DiPixelRepresentationTemplate<Uint8>::isSigned() const
 {
     return 0;
 }
 
 
-template<>
+EXPLICIT_SPECIALIZATION
 inline int DiPixelRepresentationTemplate<Uint16>::isSigned() const
 {
     return 0;
 }
 
 
-template<>
+EXPLICIT_SPECIALIZATION
 inline int DiPixelRepresentationTemplate<Uint32>::isSigned() const
 {
     return 0;
 }
 
 
-template<>
+EXPLICIT_SPECIALIZATION
 inline int DiPixelRepresentationTemplate<Sint8>::isSigned() const
 {
     return 1;
 }
 
 
-template<>
+EXPLICIT_SPECIALIZATION
 inline int DiPixelRepresentationTemplate<Sint16>::isSigned() const
 {
     return 1;
 }
 
 
-template<>
+EXPLICIT_SPECIALIZATION
 inline int DiPixelRepresentationTemplate<Sint32>::isSigned() const
 {
     return 1;
@@ -156,7 +162,11 @@ inline int DiPixelRepresentationTemplate<Sint32>::isSigned() const
  *
  * CVS/RCS Log:
  * $Log: dipxrept.h,v $
- * Revision 1.7  1999-04-28 14:54:37  joergr
+ * Revision 1.8  1999-04-28 17:03:17  joergr
+ * Added test whether the compiler supports the new explicit template
+ * specialization syntax (see below).
+ *
+ * Revision 1.7  1999/04/28 14:54:37  joergr
  * Added "template<>" to specialized template functions/methods to avoid
  * compiler warnings reported by gcc version egcs-2.91.66 (conforms with new
  * C++ standard).
