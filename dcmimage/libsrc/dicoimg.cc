@@ -21,10 +21,10 @@
  *
  *  Purpose: DicomColorImage (Source)
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-03-08 16:21:56 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2000-03-30 14:17:07 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/libsrc/dicoimg.cc,v $
- *  CVS/RCS Revision: $Revision: 1.14 $
+ *  CVS/RCS Revision: $Revision: 1.15 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -275,42 +275,41 @@ void *DiColorImage::getData(void *buffer,
         if ((buffer == NULL) || (size >= (unsigned long)Columns * (unsigned long)Rows * 3 * ((bits + 7) / 8)))
         {
             deleteOutputData();                             // delete old image data
-            const Sint16 shift = getBits() - bits;
             const unsigned long count = (unsigned long)Columns * (unsigned long)Rows;
             switch (InterData->getRepresentation())
             {
                 case EPR_Uint8:
                     if (bits <= 8)
                         OutputData = new DiColorOutputPixelTemplate<Uint8, Uint8>(buffer, InterData, count, frame,
-                            getBits(), shift, planar);
+                            getBits(), bits, planar);
                     else if (bits <= 16)
                         OutputData = new DiColorOutputPixelTemplate<Uint8, Uint16>(buffer, InterData, count, frame,
-                            getBits(), shift, planar);
+                            getBits(), bits, planar);
                     else
                         OutputData = new DiColorOutputPixelTemplate<Uint8, Uint32>(buffer, InterData, count, frame,
-                            getBits(), shift, planar);
+                            getBits(), bits, planar);
                     break;
                 case EPR_Uint16:
                     if (bits <= 8)
                         OutputData = new DiColorOutputPixelTemplate<Uint16, Uint8>(buffer, InterData, count, frame,
-                            getBits(), shift, planar);
+                            getBits(), bits, planar);
                     else if (bits <= 16)
                         OutputData = new DiColorOutputPixelTemplate<Uint16, Uint16>(buffer, InterData, count, frame,
-                            getBits(), shift, planar);
+                            getBits(), bits, planar);
                     else
                         OutputData = new DiColorOutputPixelTemplate<Uint16, Uint32>(buffer, InterData, count, frame,
-                            getBits(), shift, planar);
+                            getBits(), bits, planar);
                     break;
                 case EPR_Uint32:
                     if (bits <= 8)
                         OutputData = new DiColorOutputPixelTemplate<Uint32, Uint8>(buffer, InterData, count, frame,
-                            getBits(), shift, planar);
+                            getBits(), bits, planar);
                     else if (bits <= 16)
                         OutputData = new DiColorOutputPixelTemplate<Uint32, Uint16>(buffer, InterData, count, frame,
-                            getBits(), shift, planar);
+                            getBits(), bits, planar);
                     else
                         OutputData = new DiColorOutputPixelTemplate<Uint32, Uint32>(buffer, InterData, count, frame,
-                            getBits(), shift, planar);
+                            getBits(), bits, planar);
                     break;
                 default:
                     if (DicomImageClass::DebugLevel & DicomImageClass::DL_Warnings)
@@ -513,7 +512,11 @@ int DiColorImage::writeRawPPM(FILE *stream,
  *
  * CVS/RCS Log:
  * $Log: dicoimg.cc,v $
- * Revision 1.14  2000-03-08 16:21:56  meichel
+ * Revision 1.15  2000-03-30 14:17:07  joergr
+ * Corrected wrong bit expansion of output pixel data (left shift is not
+ * correct).
+ *
+ * Revision 1.14  2000/03/08 16:21:56  meichel
  * Updated copyright header.
  *
  * Revision 1.13  2000/03/03 14:07:54  meichel

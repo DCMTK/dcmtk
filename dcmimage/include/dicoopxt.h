@@ -21,10 +21,10 @@
  *
  *  Purpose: DicomColorOutputPixelTemplate (Header)
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-03-08 16:21:50 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2000-03-30 14:15:44 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/include/Attic/dicoopxt.h,v $
- *  CVS/RCS Revision: $Revision: 1.15 $
+ *  CVS/RCS Revision: $Revision: 1.16 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -62,8 +62,8 @@ class DiColorOutputPixelTemplate
                                const DiColorPixel *pixel,
                                const unsigned long count,
                                const unsigned long frame,
-                               const int bits,
-                               const Sint16 shift,
+                               const int bits1, /* input depth */
+                               const int bits2, /* output depth */
                                const int planar)
       : DiColorOutputPixel(pixel, count, frame),
         Data(NULL),
@@ -73,7 +73,7 @@ class DiColorOutputPixelTemplate
         if ((pixel != NULL) && (Count > 0) && (FrameSize >= Count))
         {
             Data = (T2 *)buffer;
-            convert((const T1 **)(pixel->getData()), frame * FrameSize, bits, shift, planar);
+            convert((const T1 **)(pixel->getData()), frame * FrameSize, bits1, bits2, planar);
         }
     }
 
@@ -171,8 +171,8 @@ class DiColorOutputPixelTemplate
 
     inline void convert(const T1 *pixel[3],
                         const unsigned long start,
-                        const int /*bits*/,
-                        /*const*/ Sint16 shift,
+                        const int bits1,
+                        const int bits2,
                         const int planar)
     {
         if ((pixel[0] != NULL) && (pixel[1] != NULL) && (pixel[2] != NULL))
@@ -186,7 +186,7 @@ class DiColorOutputPixelTemplate
                 if (planar)
                 {
                     register const T1 *p;
-                    if (shift == 0)
+                    if (bits1 == bits2)
                     {
                         for (int j = 0; j < 3; j++)
                         {
@@ -200,46 +200,21 @@ class DiColorOutputPixelTemplate
                             }
                         }
                     }
-                    else if (shift < 0)
+                    else if (bits1 < bits2)                                     // optimization possible using LUT
                     {
-/*                        
-                        T2 *lut = NULL;
-//                        if (initOptimizationLUT(lut, ocnt))
-                        {                                                       // use LUT for optimization
-                        
-                        }                        
-                        if (lut == NULL)                                        // use "normal" transformation
-                        {
-                            register T2 pv;
-                            register T2 qv;
-                            register int b;
-                            for (int j = 0; j < 3; j++)
-                            {
-                                p = pixel[j] + start;
-                                for (i = Count; i != 0; i--)
-                                {                                               // expand depth: 1001 -> 10011001 !!
-                                    b = -shift;
-                                    pv = qv = (T2)(*(p++));
-                                    while (b >= bits)
-                                    {
-                                        qv = (qv << bits) | pv;
-                                        b -= bits;
-                                    }
-                                    if (b > 0)
-                                        *(q++) = (qv << b) | (pv >> (bits - b));
-                                    else
-                                        *(q++) = qv;
-                                }
-                            }
-                        }
-                        delete[] lut;
-*/
-                        shift = -shift;
+                        const double gradient1 = (double)DicomImageClass::maxval(bits2) / (double)DicomImageClass::maxval(bits1);
+                        const T2 gradient2 = (T2)gradient1;
                         for (int j = 0; j < 3; j++)
                         {
                             p = pixel[j] + start;
-                            for (i = Count; i != 0; i--)
-                                *(q++) = (T2)(*(p++) << shift);                 // expand depth: simple left shift is not correct !!
+                            if (gradient1 == (double)gradient2)                 // integer multiplication?
+                            {
+                                for (i = Count; i != 0; i--)
+                                    *(q++) = (T2)(*(p++)) * gradient2;          // expand depth
+                            } else {
+                                for (i = Count; i != 0; i--)
+                                    *(q++) = (T2)((double)(*(p++)) * gradient1);  // expand depth
+                            }
                             if (Count < FrameSize)
                             {
                                 OFBitmanipTemplate<T2>::zeroMem(q, FrameSize - Count);  // set remaining pixels of frame to zero
@@ -247,13 +222,14 @@ class DiColorOutputPixelTemplate
                             }
                         }                                                       // ... to be enhanced !
                     }
-                    else /* shift > 0 */
+                    else /* bits1 > bits2 */
                     {
+                        const int shift = bits1 - bits2;
                         for (int j = 0; j < 3; j++)
                         {
                             p = pixel[j] + start;
                             for (i = Count; i != 0; i--)
-                                *(q++) = (T2)(*(p++) >> shift);                 // reduce depth: correct ?
+                                *(q++) = (T2)(*(p++) >> shift);                 // reduce depth
                             if (Count < FrameSize)
                             {
                                 OFBitmanipTemplate<T2>::zeroMem(q, FrameSize - Count);  // set remaining pixels of frame to zero
@@ -265,24 +241,33 @@ class DiColorOutputPixelTemplate
                 else
                 {
                     register int j;
-                    if (shift == 0)
+                    if (bits1 == bits2)
                     {
                         for (i = start; i < start + Count; i++)
                             for (j = 0; j < 3; j++)
                                 *(q++) = (T2)pixel[j][i];                       // copy
                     }
-                    else if (shift < 0)
+                    else if (bits1 < bits2)                                     // optimization possible using LUT
                     {
-                        shift = -shift;
+                        const double gradient1 = (double)DicomImageClass::maxval(bits2) / (double)DicomImageClass::maxval(bits1);
+                        const T2 gradient2 = (T2)gradient1;
+                        if (gradient1 == (double)gradient2)                     // integer multiplication?
+                        {
+                            for (i = start; i < start + Count; i++)
+                                for (j = 0; j < 3; j++)
+                                    *(q++) = (T2)(pixel[j][i]) * gradient2;     // expand depth
+                        } else {
+                            for (i = start; i < start + Count; i++)
+                                for (j = 0; j < 3; j++)
+                                    *(q++) = (T2)((double)pixel[j][i] * gradient1);  // expand depth
+                        }
+                    }
+                    else /* bits1 > bits2 */
+                    {
+                        const int shift = bits1 - bits2;
                         for (i = start; i < start + Count; i++)
                             for (j = 0; j < 3; j++)
-                                *(q++) = (T2)(pixel[j][i] << shift);            // expand depth: simple left shift is not correct !!
-                    }                                                           // ... to be enhanced !
-                    else /* shift > 0 */
-                    {
-                        for (i = start; i < start + Count; i++)
-                            for (j = 0; j < 3; j++)
-                                *(q++) = (T2)(pixel[j][i] >> shift);            // reduce depth: correct ?
+                                *(q++) = (T2)(pixel[j][i] >> shift);            // reduce depth
                     }
                     if (Count < FrameSize)
                         OFBitmanipTemplate<T2>::zeroMem(q, 3 * (FrameSize - Count));  // set remaining pixels of frame to zero
@@ -309,7 +294,11 @@ class DiColorOutputPixelTemplate
  *
  * CVS/RCS Log:
  * $Log: dicoopxt.h,v $
- * Revision 1.15  2000-03-08 16:21:50  meichel
+ * Revision 1.16  2000-03-30 14:15:44  joergr
+ * Corrected wrong bit expansion of output pixel data (left shift is not
+ * correct).
+ *
+ * Revision 1.15  2000/03/08 16:21:50  meichel
  * Updated copyright header.
  *
  * Revision 1.14  1999/09/17 14:03:43  joergr
