@@ -68,9 +68,9 @@
 **
 **
 ** Last Update:         $Author: meichel $
-** Update Date:         $Date: 1999-04-26 17:20:58 $
+** Update Date:         $Date: 1999-09-06 13:27:49 $
 ** Source File:         $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/libsrc/assoc.cc,v $
-** CVS/RCS Revision:    $Revision: 1.21 $
+** CVS/RCS Revision:    $Revision: 1.22 $
 ** Status:              $State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -1645,7 +1645,12 @@ ASC_receiveAssociation(T_ASC_Network * network,
     strcpy(params->theirImplementationVersionName,
            params->DULparams.callingImplementationVersionName);
 
-    params->theirMaxPDUReceiveSize = params->DULparams.maxPDU;
+    /*
+     * The params->DULparams.peerMaxPDU parameter contains the 
+     * max-pdu-length value in the a-associate-ac (i.e. the max-pdu-length 
+     * that the remote AE is prepared to accept).
+     */
+    params->theirMaxPDUReceiveSize = params->DULparams.peerMaxPDU;
 
     /* the PDV buffer and length get set when we acknowledge the association */
     (*assoc)->sendPDVLength = 0;
@@ -1755,7 +1760,13 @@ ASC_requestAssociation(T_ASC_Network * network,
                                   &(*assoc)->DULassociation);
 
     if (cond == DUL_NORMAL) {
-        params->theirMaxPDUReceiveSize = params->DULparams.maxPDU;
+       /*
+        * The params->DULparams.peerMaxPDU parameter contains the 
+        * max-pdu-length value in the a-associate-ac (i.e. the max-pdu-length 
+        * that the remote AE is prepared to accept).
+        */
+        params->theirMaxPDUReceiveSize = params->DULparams.peerMaxPDU;
+
         /* create a sendPDVBuffer */
         sendLen = params->theirMaxPDUReceiveSize;
         if (sendLen < 1) {
@@ -1962,7 +1973,12 @@ ASC_dropAssociation(T_ASC_Association * association)
 /*
 ** CVS Log
 ** $Log: assoc.cc,v $
-** Revision 1.21  1999-04-26 17:20:58  meichel
+** Revision 1.22  1999-09-06 13:27:49  meichel
+** Fixed bug in network module: Max receive PDU was used for max send PDU,
+**   under certain circumstances resulting in a very inefficient splitting
+**   of PDUs on the DUL level, severely decreasing network performance.
+**
+** Revision 1.21  1999/04/26 17:20:58  meichel
 ** Added new "transfer syntax aware" variant of the dcmnet function
 **   ASC_findAcceptedPresentationContextID. This variant tries to find an
 **   accepted presentation context that matches both abstract and transfer syntax.
