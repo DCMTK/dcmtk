@@ -20,7 +20,7 @@ dcmnetdir = $(top_srcdir)/../dcmnet
 LOCALINCLUDES = -I$(dcmnetdir)/include -I$(dcmdatadir)/include -I$(ofstddir)/include
 LIBDIRS = -L$(top_srcdir)/libsrc -L$(dcmnetdir)/libsrc -L$(dcmdatadir)/libsrc \
 	-L$(ofstddir)/libsrc
-LOCALLIBS = -ldcmwlm -ldcmnet -ldcmdata -lofstd $(ZLIBLIBS)
+LOCALLIBS = -ldcmwlm -ldcmnet -ldcmdata -lofstd $(ZLIBLIBS) $(TCPWRAPPERLIBS)
 
 objs = wltest.o
 progs = wltest
