@@ -24,8 +24,8 @@
  *
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-11-27 15:47:52 $
- *  CVS/RCS Revision: $Revision: 1.12 $
+ *  Update Date:      $Date: 2003-03-12 17:34:20 $
+ *  CVS/RCS Revision: $Revision: 1.13 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -147,7 +147,7 @@ void printResult(ostream& out, DcmStack& stack, OFBool showFullData)
 
     /* print the tag and its value */
     DcmObject *dobj = stack.top();
-    dobj->print(out, showFullData);
+    dobj->print(out, (showFullData ? 0 : DCMTypes::PF_shortenLongTagValues));
 
 }
 
@@ -698,7 +698,7 @@ printAttribute(ostream& out, DcmItem* dset,
 
     ec = dset->search(key, stack, ESM_fromHere, OFFalse);
     elem = (DcmElement*) stack.top();
-    elem->print(out, OFFalse);
+    elem->print(out, DCMTypes::PF_shortenLongTagValues);
 }
 
 static OFBool
@@ -1084,7 +1084,10 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmpschk.cc,v $
- * Revision 1.12  2002-11-27 15:47:52  meichel
+ * Revision 1.13  2003-03-12 17:34:20  meichel
+ * Updated DcmObject::print() flags
+ *
+ * Revision 1.12  2002/11/27 15:47:52  meichel
  * Adapted module dcmpstat to use of new header file ofstdinc.h
  *
  * Revision 1.11  2002/11/26 08:44:27  meichel

@@ -23,8 +23,8 @@
  *    classes: DVPSStoredPrint
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-11-27 15:48:13 $
- *  CVS/RCS Revision: $Revision: 1.48 $
+ *  Update Date:      $Date: 2003-03-12 17:34:22 $
+ *  CVS/RCS Revision: $Revision: 1.49 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -2624,7 +2624,7 @@ OFBool DVPSStoredPrint::printSCPCreate(
                     {
                       ostream &mycerr = logstream->lockCerr();
                       mycerr << "cannot create Basic Film Box: referenced SOP class UID in referenced presentation LUT sequence incorrect:" << endl;
-                      (stack.top())->print(mycerr, OFFalse);
+                      (stack.top())->print(mycerr, DCMTypes::PF_shortenLongTagValues);
                       logstream->unlockCerr();            
                     }
                     rsp.msg.NCreateRSP.DimseStatus = STATUS_N_InvalidAttributeValue;
@@ -2713,7 +2713,7 @@ OFBool DVPSStoredPrint::printSCPCreate(
                   {
                     ostream &mycerr = logstream->lockCerr();
                     mycerr << "cannot create Basic Film Box: referenced SOP class UID in referenced film session sequence incorrect:" << endl;
-                    (stack.top())->print(mycerr, OFFalse);
+                    (stack.top())->print(mycerr, DCMTypes::PF_shortenLongTagValues);
                     logstream->unlockCerr();            
                   }
                   rsp.msg.NCreateRSP.DimseStatus = STATUS_N_InvalidAttributeValue;
@@ -2789,7 +2789,7 @@ OFBool DVPSStoredPrint::printSCPCreate(
           {
             ostream &mycerr = logstream->lockCerr();
             mycerr << "cannot create Basic Film Box: illumination received:" << endl;
-            (stack.top())->print(mycerr, OFFalse);
+            (stack.top())->print(mycerr, DCMTypes::PF_shortenLongTagValues);
             logstream->unlockCerr();
           }
           rsp.msg.NCreateRSP.DimseStatus = STATUS_N_NoSuchAttribute;          
@@ -2804,7 +2804,7 @@ OFBool DVPSStoredPrint::printSCPCreate(
           {
             ostream &mycerr = logstream->lockCerr();
             mycerr << "cannot create Basic Film Box: reflected ambient light received:" << endl;
-            (stack.top())->print(mycerr, OFFalse);
+            (stack.top())->print(mycerr, DCMTypes::PF_shortenLongTagValues);
             logstream->unlockCerr();
           }
           rsp.msg.NCreateRSP.DimseStatus = STATUS_N_NoSuchAttribute;          
@@ -2819,7 +2819,7 @@ OFBool DVPSStoredPrint::printSCPCreate(
           {
             ostream &mycerr = logstream->lockCerr();
             mycerr << "cannot create Basic Film Box: referenced presentation LUT sequence received:" << endl;
-            (stack.top())->print(mycerr, OFFalse);
+            (stack.top())->print(mycerr, DCMTypes::PF_shortenLongTagValues);
             logstream->unlockCerr();
           }
           rsp.msg.NCreateRSP.DimseStatus = STATUS_N_NoSuchAttribute;          
@@ -2832,7 +2832,7 @@ OFBool DVPSStoredPrint::printSCPCreate(
         {
           ostream &mycerr = logstream->lockCerr();
           mycerr << "cannot create Basic Film Box: unsupported attribute received:" << endl;
-          (stack.top())->print(mycerr, OFFalse);
+          (stack.top())->print(mycerr, DCMTypes::PF_shortenLongTagValues);
           logstream->unlockCerr();
         }
         rsp.msg.NCreateRSP.DimseStatus = STATUS_N_NoSuchAttribute;
@@ -3331,7 +3331,7 @@ OFBool DVPSStoredPrint::printSCPSet(
                     {
                       ostream &mycerr = logstream->lockCerr();
                       mycerr << "cannot update Basic Film Box: referenced SOP class UID in referenced presentation LUT sequence incorrect:" << endl;
-                      (stack.top())->print(mycerr, OFFalse);
+                      (stack.top())->print(mycerr, DCMTypes::PF_shortenLongTagValues);
                       logstream->unlockCerr();
                     }
                     rsp.msg.NSetRSP.DimseStatus = STATUS_N_InvalidAttributeValue;
@@ -3423,7 +3423,7 @@ OFBool DVPSStoredPrint::printSCPSet(
           {
             ostream &mycerr = logstream->lockCerr();
             mycerr << "cannot update Basic Film Box: illumination received:" << endl;
-            (stack.top())->print(mycerr, OFFalse);
+            (stack.top())->print(mycerr, DCMTypes::PF_shortenLongTagValues);
             logstream->unlockCerr();
           }
           rsp.msg.NSetRSP.DimseStatus = STATUS_N_NoSuchAttribute;          
@@ -3438,7 +3438,7 @@ OFBool DVPSStoredPrint::printSCPSet(
           {
             ostream &mycerr = logstream->lockCerr();
             mycerr << "cannot update Basic Film Box: reflected ambient light received:" << endl;
-            (stack.top())->print(mycerr, OFFalse);
+            (stack.top())->print(mycerr, DCMTypes::PF_shortenLongTagValues);
             logstream->unlockCerr();            
           }
           rsp.msg.NSetRSP.DimseStatus = STATUS_N_NoSuchAttribute;          
@@ -3453,7 +3453,7 @@ OFBool DVPSStoredPrint::printSCPSet(
           {
             ostream &mycerr = logstream->lockCerr();
             mycerr << "cannot update Basic Film Box: referenced presentation LUT sequence received:" << endl;
-            (stack.top())->print(mycerr, OFFalse);
+            (stack.top())->print(mycerr, DCMTypes::PF_shortenLongTagValues);
             logstream->unlockCerr();            
           }
           rsp.msg.NSetRSP.DimseStatus = STATUS_N_NoSuchAttribute;          
@@ -3466,7 +3466,7 @@ OFBool DVPSStoredPrint::printSCPSet(
         {
           ostream &mycerr = logstream->lockCerr();
           mycerr << "cannot update Basic Film Box: unsupported attribute received:" << endl;
-          (stack.top())->print(mycerr, OFFalse);
+          (stack.top())->print(mycerr, DCMTypes::PF_shortenLongTagValues);
           logstream->unlockCerr();            
         }
         rsp.msg.NSetRSP.DimseStatus = STATUS_N_NoSuchAttribute;
@@ -3533,7 +3533,10 @@ void DVPSStoredPrint::overridePresentationLUTSettings(
 
 /*
  *  $Log: dvpssp.cc,v $
- *  Revision 1.48  2002-11-27 15:48:13  meichel
+ *  Revision 1.49  2003-03-12 17:34:22  meichel
+ *  Updated DcmObject::print() flags
+ *
+ *  Revision 1.48  2002/11/27 15:48:13  meichel
  *  Adapted module dcmpstat to use of new header file ofstdinc.h
  *
  *  Revision 1.47  2002/01/08 10:39:56  joergr

@@ -23,8 +23,8 @@
  *    classes: DVPSImageBoxContent
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-06-20 12:19:49 $
- *  CVS/RCS Revision: $Revision: 1.30 $
+ *  Update Date:      $Date: 2003-03-12 17:34:22 $
+ *  CVS/RCS Revision: $Revision: 1.31 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1054,7 +1054,7 @@ OFBool DVPSImageBoxContent::printSCPSet(
         {
           ostream &mycerr = logstream->lockCerr();
           mycerr << "cannot update Basic Grayscale Image Box: unsupported attribute received:" << endl;
-          (stack.top())->print(mycerr, OFFalse);
+          (stack.top())->print(mycerr, DCMTypes::PF_shortenLongTagValues);
           logstream->unlockCerr();
         }
         rsp.msg.NSetRSP.DimseStatus = STATUS_N_NoSuchAttribute;
@@ -1478,7 +1478,7 @@ OFBool DVPSImageBoxContent::printSCPEvaluateBasicGrayscaleImageSequence(
         {
           ostream &mycerr = logstream->lockCerr();
           mycerr << "cannot update Basic Grayscale Image Box: unsupported attribute in basic grayscale image sequence:" << endl;
-          (stack.top())->print(mycerr, OFFalse);
+          (stack.top())->print(mycerr, DCMTypes::PF_shortenLongTagValues);
           logstream->unlockCerr();
         }
         rsp.msg.NSetRSP.DimseStatus = STATUS_N_NoSuchAttribute;
@@ -1550,7 +1550,10 @@ void DVPSImageBoxContent::setLog(OFConsole *stream, OFBool verbMode, OFBool dbgM
 
 /*
  *  $Log: dvpsib.cc,v $
- *  Revision 1.30  2002-06-20 12:19:49  meichel
+ *  Revision 1.31  2003-03-12 17:34:22  meichel
+ *  Updated DcmObject::print() flags
+ *
+ *  Revision 1.30  2002/06/20 12:19:49  meichel
  *  Adapted toolkit to name changes in latest data dictionary
  *
  *  Revision 1.29  2002/01/08 10:35:45  joergr

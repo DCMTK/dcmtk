@@ -57,9 +57,9 @@
 **	Module Prefix: DIMSE_
 **
 ** Last Update:		$Author: meichel $
-** Update Date:		$Date: 2002-11-27 13:04:39 $
+** Update Date:		$Date: 2003-03-12 17:35:04 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/libsrc/dimdump.cc,v $
-** CVS/RCS Revision:	$Revision: 1.6 $
+** CVS/RCS Revision:	$Revision: 1.7 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -1315,14 +1315,17 @@ void DIMSE_printMessage(ostream& outstream, T_DIMSE_Message &msg, DcmItem *datas
         break;
     }
 
-    if (dataset) dataset->print(outstream, OFFalse);
+    if (dataset) dataset->print(outstream, DCMTypes::PF_shortenLongTagValues);
     return;
 }
 
 /*
 ** CVS Log
 ** $Log: dimdump.cc,v $
-** Revision 1.6  2002-11-27 13:04:39  meichel
+** Revision 1.7  2003-03-12 17:35:04  meichel
+** Updated DcmObject::print() flags
+**
+** Revision 1.6  2002/11/27 13:04:39  meichel
 ** Adapted module dcmnet to use of new header file ofstdinc.h
 **
 ** Revision 1.5  2000/06/07 08:57:54  meichel

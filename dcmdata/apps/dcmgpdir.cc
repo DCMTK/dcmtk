@@ -41,9 +41,9 @@
  *  dcmjpeg/apps/dcmmkdir.cc.
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-11-27 12:07:17 $
+ *  Update Date:      $Date: 2003-03-12 17:32:38 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/apps/dcmgpdir.cc,v $
- *  CVS/RCS Revision: $Revision: 1.71 $
+ *  CVS/RCS Revision: $Revision: 1.72 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -3373,9 +3373,9 @@ compareSequenceAttributes(DcmTagKey& tag, DcmDirectoryRecord *rec,
         CERR << "    Reason: " << reason << endl;;
         CERR << "    Existing Record (origin: " << rec->getRecordsOriginFile()
              << ") defines: " << endl;
-        sq1->print(CERR, OFTrue, 2);
+        sq1->print(CERR, 0, 2);
         CERR << "    File (" << sourceFileName << ") defines:" << endl;
-        sq2->print(CERR, OFTrue, 2);
+        sq2->print(CERR, 0, 2);
     }
 
     return equals;
@@ -4412,7 +4412,10 @@ expandFileNames(OFList<OFString>& fileNames, OFList<OFString>& expandedNames)
 /*
  * CVS/RCS Log:
  * $Log: dcmgpdir.cc,v $
- * Revision 1.71  2002-11-27 12:07:17  meichel
+ * Revision 1.72  2003-03-12 17:32:38  meichel
+ * Updated DcmObject::print() flags
+ *
+ * Revision 1.71  2002/11/27 12:07:17  meichel
  * Adapted module dcmdata to use of new header file ofstdinc.h
  *
  * Revision 1.70  2002/11/26 14:03:02  joergr

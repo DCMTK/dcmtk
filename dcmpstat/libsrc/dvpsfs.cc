@@ -23,8 +23,8 @@
  *    classes: DVPSFilmSession
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-11-27 15:48:09 $
- *  CVS/RCS Revision: $Revision: 1.11 $
+ *  Update Date:      $Date: 2003-03-12 17:34:22 $
+ *  CVS/RCS Revision: $Revision: 1.12 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -336,7 +336,7 @@ OFBool DVPSFilmSession::printSCPCreate(
                     {
                       ostream &mycerr = logstream->lockCerr();
                       mycerr << "cannot create Basic Film Session: referenced SOP class UID in referenced presentation LUT sequence incorrect:" << endl;
-                      (stack.top())->print(mycerr, OFFalse);
+                      (stack.top())->print(mycerr, DCMTypes::PF_shortenLongTagValues);
                       logstream->unlockCerr();            
                     }
                     rsp.msg.NCreateRSP.DimseStatus = STATUS_N_InvalidAttributeValue;
@@ -400,7 +400,7 @@ OFBool DVPSFilmSession::printSCPCreate(
         {
           ostream &mycerr = logstream->lockCerr();
           mycerr << "warning while creating Basic Film Session: memory allocation not supported" << endl;
-          (stack.top())->print(mycerr, OFFalse);
+          (stack.top())->print(mycerr, DCMTypes::PF_shortenLongTagValues);
           logstream->unlockCerr();
         }
       	if (rsp.msg.NCreateRSP.DimseStatus == 0) rsp.msg.NCreateRSP.DimseStatus = STATUS_N_PRINT_BFS_Warn_MemoryAllocation;
@@ -413,7 +413,7 @@ OFBool DVPSFilmSession::printSCPCreate(
           {
             ostream &mycerr = logstream->lockCerr();
             mycerr << "cannot create Basic Film Session: illumination received:" << endl;
-            (stack.top())->print(mycerr, OFFalse);
+            (stack.top())->print(mycerr, DCMTypes::PF_shortenLongTagValues);
             logstream->unlockCerr();
           }
           rsp.msg.NCreateRSP.DimseStatus = STATUS_N_NoSuchAttribute;          
@@ -428,7 +428,7 @@ OFBool DVPSFilmSession::printSCPCreate(
           {
             ostream &mycerr = logstream->lockCerr();
             mycerr << "cannot create Basic Film Session: reflected ambient light received:" << endl;
-            (stack.top())->print(mycerr, OFFalse);
+            (stack.top())->print(mycerr, DCMTypes::PF_shortenLongTagValues);
             logstream->unlockCerr();
           }
           rsp.msg.NCreateRSP.DimseStatus = STATUS_N_NoSuchAttribute;          
@@ -443,7 +443,7 @@ OFBool DVPSFilmSession::printSCPCreate(
           {
             ostream &mycerr = logstream->lockCerr();
             mycerr << "cannot create Basic Film Session: referenced presentation LUT sequence received:" << endl;
-            (stack.top())->print(mycerr, OFFalse);
+            (stack.top())->print(mycerr, DCMTypes::PF_shortenLongTagValues);
             logstream->unlockCerr();
           }
           rsp.msg.NCreateRSP.DimseStatus = STATUS_N_NoSuchAttribute;          
@@ -456,7 +456,7 @@ OFBool DVPSFilmSession::printSCPCreate(
         {
           ostream &mycerr = logstream->lockCerr();
           mycerr << "cannot create Basic Film Session: unsupported attribute received:" << endl;
-          (stack.top())->print(mycerr, OFFalse);
+          (stack.top())->print(mycerr, DCMTypes::PF_shortenLongTagValues);
           logstream->unlockCerr();
         }
       	rsp.msg.NCreateRSP.DimseStatus = STATUS_N_NoSuchAttribute;
@@ -754,7 +754,7 @@ OFBool DVPSFilmSession::printSCPSet(
                     {
                       ostream &mycerr = logstream->lockCerr();
                       mycerr << "cannot update Basic Film Session: referenced SOP class UID in referenced presentation LUT sequence incorrect:" << endl;
-                      (stack.top())->print(mycerr, OFFalse);
+                      (stack.top())->print(mycerr, DCMTypes::PF_shortenLongTagValues);
                       logstream->unlockCerr();
                     }
                     rsp.msg.NSetRSP.DimseStatus = STATUS_N_InvalidAttributeValue;
@@ -837,7 +837,7 @@ OFBool DVPSFilmSession::printSCPSet(
         {
           ostream &mycerr = logstream->lockCerr();
           mycerr << "warning while updating Basic Film Session: memory allocation not supported" << endl;
-          (stack.top())->print(mycerr, OFFalse);
+          (stack.top())->print(mycerr, DCMTypes::PF_shortenLongTagValues);
           logstream->unlockCerr();
         }
       	if (rsp.msg.NSetRSP.DimseStatus == 0) rsp.msg.NSetRSP.DimseStatus = STATUS_N_PRINT_BFS_Warn_MemoryAllocation;
@@ -850,7 +850,7 @@ OFBool DVPSFilmSession::printSCPSet(
           {
             ostream &mycerr = logstream->lockCerr();
             mycerr << "cannot update Basic Film Session: illumination received:" << endl;
-            (stack.top())->print(mycerr, OFFalse);
+            (stack.top())->print(mycerr, DCMTypes::PF_shortenLongTagValues);
             logstream->unlockCerr();
           }
           rsp.msg.NSetRSP.DimseStatus = STATUS_N_NoSuchAttribute;          
@@ -865,7 +865,7 @@ OFBool DVPSFilmSession::printSCPSet(
           {
             ostream &mycerr = logstream->lockCerr();
             mycerr << "cannot update Basic Film Session: reflected ambient light received:" << endl;
-            (stack.top())->print(mycerr, OFFalse);
+            (stack.top())->print(mycerr, DCMTypes::PF_shortenLongTagValues);
             logstream->unlockCerr();            
           }
           rsp.msg.NSetRSP.DimseStatus = STATUS_N_NoSuchAttribute;          
@@ -880,7 +880,7 @@ OFBool DVPSFilmSession::printSCPSet(
           {
             ostream &mycerr = logstream->lockCerr();
             mycerr << "cannot update Basic Film Session: referenced presentation LUT sequence received:" << endl;
-            (stack.top())->print(mycerr, OFFalse);
+            (stack.top())->print(mycerr, DCMTypes::PF_shortenLongTagValues);
             logstream->unlockCerr();            
           }
           rsp.msg.NSetRSP.DimseStatus = STATUS_N_NoSuchAttribute;          
@@ -893,7 +893,7 @@ OFBool DVPSFilmSession::printSCPSet(
         {
           ostream &mycerr = logstream->lockCerr();
           mycerr << "cannot update Basic Film Session: unsupported attribute received:" << endl;
-          (stack.top())->print(mycerr, OFFalse);
+          (stack.top())->print(mycerr, DCMTypes::PF_shortenLongTagValues);
           logstream->unlockCerr();
         }
       	rsp.msg.NSetRSP.DimseStatus = STATUS_N_NoSuchAttribute;
@@ -970,7 +970,10 @@ void DVPSFilmSession::copyPresentationLUTSettings(DVPSStoredPrint& sp)
 
 /*
  *  $Log: dvpsfs.cc,v $
- *  Revision 1.11  2002-11-27 15:48:09  meichel
+ *  Revision 1.12  2003-03-12 17:34:22  meichel
+ *  Updated DcmObject::print() flags
+ *
+ *  Revision 1.11  2002/11/27 15:48:09  meichel
  *  Adapted module dcmpstat to use of new header file ofstdinc.h
  *
  *  Revision 1.10  2001/11/28 13:56:53  joergr

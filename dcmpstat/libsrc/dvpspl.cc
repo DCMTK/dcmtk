@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DVPSPresentationLUT
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-11-28 13:56:58 $
- *  CVS/RCS Revision: $Revision: 1.23 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2003-03-12 17:34:22 $
+ *  CVS/RCS Revision: $Revision: 1.24 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -578,7 +578,7 @@ OFBool DVPSPresentationLUT::printSCPCreate(
         {
           ostream &mycerr = logstream->lockCerr();
           mycerr << "cannot create Presentation LUT: unsupported attribute received:" << endl;
-          (stack.top())->print(mycerr, OFFalse);
+          (stack.top())->print(mycerr, DCMTypes::PF_shortenLongTagValues);
           logstream->unlockCerr();
         }
       	rsp.msg.NCreateRSP.DimseStatus = STATUS_N_NoSuchAttribute;
@@ -648,7 +648,10 @@ void DVPSPresentationLUT::setLog(OFConsole *stream, OFBool verbMode, OFBool dbgM
 
 /*
  *  $Log: dvpspl.cc,v $
- *  Revision 1.23  2001-11-28 13:56:58  joergr
+ *  Revision 1.24  2003-03-12 17:34:22  meichel
+ *  Updated DcmObject::print() flags
+ *
+ *  Revision 1.23  2001/11/28 13:56:58  joergr
  *  Check return value of DcmItem::insert() statements where appropriate to
  *  avoid memory leaks when insert procedure fails.
  *
