@@ -7,8 +7,8 @@ PRE-REQUISITES
 ==============
 
 The DICOM ToolKit (DCMTK) needs to be compiled with a C++ compiler.
-We recommend using the GNU-C++ compiler in versions higher than 2.7
-(most of the development was done using GNU-C++ 2.95 on Solaris 7).
+We recommend using the GNU C++ compiler in versions higher than 2.7
+(most of the development was done using GNU C++ 3.2 on Linux 2.4).
 The software is also known to compile using the SUNPro C++ compiler,
 the IBM C Set++ compiler and the Microsoft Visual C++ compiler.
 
@@ -112,8 +112,8 @@ Platform Notes
 
 Please note: Due to resource limitations it is not practical for us to
 ensure that the newest release of DCMTK is problem free under all the above
-combinations.  Our main development environment is SUN Solaris 7 using GNU
-C++ 2.95.3 and DCMTK should always compile on this platform.
+combinations.  Our main development environment is Linux 2.4 using GNU C++ 3.2
+and DCMTK should always compile on this platform.
 
 
 OPENSSL SUPPORT
@@ -122,12 +122,10 @@ OPENSSL SUPPORT
 Starting with release 3.4.2, DCMTK supports the "DICOM Security Enhancements
 One", i.e. DICOM network transmission "tunneled" through a secure TLSv1
 transport connection.  DCMTK relies on the OpenSSL toolkit (www.openssl.org)
-for the underlying cryptographic routines and the TLS protocol
-
-implementation.  This release of DCMTK is known to compile with all
-0.9.6x OpenSSL releases.  Due to security considerations we recommend that
-DCMTK should be compiled with OpenSSL 0.9.6g or 0.9.6h.  DCMTK has not
-yet been tested with OpenSSL 0.9.7.
+for the underlying cryptographic routines and the TLS protocol implementation.
+This release of DCMTK is known to compile with all 0.9.6x OpenSSL releases.
+Due to security considerations we recommend that DCMTK should be compiled with
+OpenSSL 0.9.6g or 0.9.6h.  DCMTK has not yet been tested with OpenSSL 0.9.7.
 
 If support for the security enhancements is desired, a compiled version of
 the OpenSSL libraries and include files must be available during compilation
@@ -281,8 +279,8 @@ and install this software.  All the neccessary configure scripts are
 included in this distribution.  The configure scripts examine your system
 capabilities and automatically generate include files and Makefiles.
 
-Perform the following steps from the top level (dcmtk) directory
-to compile and install the software:
+Perform the following steps from the top level (dcmtk) directory to compile
+and install the software:
 
 Step 1:
     cd config
@@ -290,7 +288,8 @@ Step 1:
     cd ..
 
 Step 1 generates a Makefile and a configure script in the top level dcmtk
-directory.
+directory.  Please note that only the modules listed in config/modules are
+processed (default: all).
 
 Step 2:
     ./configure
@@ -363,7 +362,7 @@ Solving configuration and compilation problems:
 
 The configure script might not be able to guess the correct compiler and
 compiler flags to use.  For example, we have noticed that use of the
--pedantic flag to the GNU-C++ compiler causes compilation errors on some
+-pedantic flag to the GNU C++ compiler causes compilation errors on some
 systems (e.g. SunOS 4.1.3) due to system include files with incorrect ANSI
 function prototypes.
 
@@ -441,19 +440,17 @@ Known problems:
 HTML DOCUMENTATION
 ==================
 
-Some DCMTK modules have been documented with DOC++, a free source code
-documentation system similar to javadoc (see http://docpp.sourceforge.net/).
-Users who have doc++ installed can create a hypertext documentation for these
-modules with "make html" in the module subdirectories.  At the current time,
-dcmimgle, dcmjpeg, dcmpstat, dcmsign, dcmsr, dcmtls and ofstd are completely
-documented, dcmdata, dcmimage and dcmwlm are partially documented.  See FAQ
-entry: "Where is rest of the documentation?"
+Some DCMTK modules have been documented with Doxygen (http://www.doxygen.org/),
+a free source code documentation system similar to Javadoc.  Users who have
+Doxygen installed can create a hypertext documentation with "make html" in the
+dcmtk or doxygen directory.  Other output formats (e.g. LaTeX) can be enabled
+manually by changing the configuration file doxygen/doxygen.cfg.
+At the current time, dcmimgle, dcmjpeg, dcmpstat, dcmsign, dcmsr, dcmtls and
+ofstd are completely documented, dcmdata, dcmimage and dcmwlm are partially
+documented.  See FAQ entry: "Where is rest of the documentation?"
 
-Starting with release 3.5.3, DCMTK also provides a configuration file for
-Doxygen (see http://www.doxygen.org/).  Users who have Doxygen installed can
-create a hypertext documentation with "doxygen doxygen.cfg" in the doxygen
-subdirectory.  Other output formats (e.g. LaTeX) can be enabled manually by
-changing the configuration file.
+DOC++ (see http://docpp.sourceforge.net/), another source code documentation
+system, is not actively supported any more.  However, it may still work.
 
 
 COMPILE TIME FLAGS AND ENVIRONMENT VARIABLES
@@ -473,4 +470,4 @@ Have fun.
 Marco Eichelberg, Joerg Riesmeier, Thomas Wilkens
 Kuratorium OFFIS e.V., Oldenburg, Germany.
 
-Last revised: 2003-06-17 (Riesmeier).
+Last revised: 2003-07-02 (Riesmeier).
