@@ -1,6 +1,28 @@
 DCMTK FAQ - Frequently Asked Questions
 
 ----
+2002.04.07
+
+Q: I am using Visual C++.net and the compilation of nearly every source
+   file creates "warning C4995: '_OLD_IOSTREAMS_ARE_DEPRECATED': name
+   was marked as #pragma deprecated".
+
+A: Visual C++ contains two different implementations of iostreams. DCMTK
+   was designed to support many compilers and until now all compilers
+   support the old non-standard iostream interface. Therefore, DCMTK uses
+   the old non-standard interface by default. However, some newer
+   compilers mark the old iostream interface as deprecated and now support
+   the new ANSI C++ iostreams interface.
+   Beginning with DCMTK 3.5.2 the compilation process can be configured
+   to use old or ANSI C++ iostreams. To use ANSI C++ iostreams define
+   the preprocessor symbol USE_STD_CXX_INCLUDES for all projects.
+   CAUTION: Do not mix old and ANSI C++ iostreams in Visual C++ source
+   code. Visual C++ has two completely different and incompatible
+   implementations of iostreams. Mixing these implementations may lead
+   to runtime errors that are very difficult to find.
+   (Contributed by Andreas Barth <andreas.barth@medical.bruker.de>)
+
+----
 2000.12.15
 
 Q: Is DCMTK safe for use in multi-threaded applications?
