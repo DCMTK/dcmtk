@@ -22,9 +22,9 @@
  *  Purpose: (Partially) abstract class for connecting to an arbitrary data source.
  *
  *  Last Update:      $Author: wilkens $
- *  Update Date:      $Date: 2002-08-12 10:56:14 $
+ *  Update Date:      $Date: 2002-12-03 12:15:56 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmwlm/libsrc/wlds.cc,v $
- *  CVS/RCS Revision: $Revision: 1.8 $
+ *  CVS/RCS Revision: $Revision: 1.9 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -516,18 +516,20 @@ void WlmDataSource::ExpandEmptySequenceInSearchMask( DcmElement *&element )
     if( key == DCM_ScheduledProcedureStepSequence )
     {
       // if we are currently dealing with a scheduled procedure step sequence attribute,
-      // we need to insert 11 different attributes (see 2001 DICOM standard, Table K.6-1.)
-      newElement = new DcmApplicationEntity( DcmTag( DCM_ScheduledStationAETitle ) );    if( item->insert( newElement ) != EC_Normal ) delete newElement;
-      newElement = new DcmDate( DcmTag( DCM_ScheduledProcedureStepStartDate ) );         if( item->insert( newElement ) != EC_Normal ) delete newElement;
-      newElement = new DcmTime( DcmTag( DCM_ScheduledProcedureStepStartTime ) );         if( item->insert( newElement ) != EC_Normal ) delete newElement;
-      newElement = new DcmCodeString( DcmTag( DCM_Modality ) );                          if( item->insert( newElement ) != EC_Normal ) delete newElement;
-      newElement = new DcmPersonName( DcmTag( DCM_ScheduledPerformingPhysiciansName ) ); if( item->insert( newElement ) != EC_Normal ) delete newElement;
-      newElement = new DcmLongString( DcmTag( DCM_ScheduledProcedureStepDescription ) ); if( item->insert( newElement ) != EC_Normal ) delete newElement;
-      newElement = new DcmShortString( DcmTag( DCM_ScheduledStationName ) );             if( item->insert( newElement ) != EC_Normal ) delete newElement;
-      newElement = new DcmShortString( DcmTag( DCM_ScheduledProcedureStepLocation ) );   if( item->insert( newElement ) != EC_Normal ) delete newElement;
-      newElement = new DcmLongString( DcmTag( DCM_PreMedication ) );                     if( item->insert( newElement ) != EC_Normal ) delete newElement;
-      newElement = new DcmShortString( DcmTag( DCM_ScheduledProcedureStepID ) );         if( item->insert( newElement ) != EC_Normal ) delete newElement;
-      newElement = new DcmLongString( DcmTag( DCM_RequestedContrastAgent ) );            if( item->insert( newElement ) != EC_Normal ) delete newElement;
+      // we need to insert 11 different required attributes (see 2001 DICOM standard, Table K.6-1.)
+      newElement = new DcmApplicationEntity( DcmTag( DCM_ScheduledStationAETitle ) );      if( item->insert( newElement ) != EC_Normal ) delete newElement;
+      newElement = new DcmDate( DcmTag( DCM_ScheduledProcedureStepStartDate ) );           if( item->insert( newElement ) != EC_Normal ) delete newElement;
+      newElement = new DcmTime( DcmTag( DCM_ScheduledProcedureStepStartTime ) );           if( item->insert( newElement ) != EC_Normal ) delete newElement;
+      newElement = new DcmCodeString( DcmTag( DCM_Modality ) );                            if( item->insert( newElement ) != EC_Normal ) delete newElement;
+      newElement = new DcmPersonName( DcmTag( DCM_ScheduledPerformingPhysiciansName ) );   if( item->insert( newElement ) != EC_Normal ) delete newElement;
+      newElement = new DcmLongString( DcmTag( DCM_ScheduledProcedureStepDescription ) );   if( item->insert( newElement ) != EC_Normal ) delete newElement;
+      newElement = new DcmShortString( DcmTag( DCM_ScheduledStationName ) );               if( item->insert( newElement ) != EC_Normal ) delete newElement;
+      newElement = new DcmShortString( DcmTag( DCM_ScheduledProcedureStepLocation ) );     if( item->insert( newElement ) != EC_Normal ) delete newElement;
+      newElement = new DcmLongString( DcmTag( DCM_PreMedication ) );                       if( item->insert( newElement ) != EC_Normal ) delete newElement;
+      newElement = new DcmShortString( DcmTag( DCM_ScheduledProcedureStepID ) );           if( item->insert( newElement ) != EC_Normal ) delete newElement;
+      newElement = new DcmLongString( DcmTag( DCM_RequestedContrastAgent ) );              if( item->insert( newElement ) != EC_Normal ) delete newElement;
+      // and we also add one supported optional attributes
+      newElement = new DcmLongString( DcmTag( DCM_CommentsOnTheScheduledProcedureStep ) ); if( item->insert( newElement ) != EC_Normal ) delete newElement;
     }
     else if( key == DCM_ReferencedStudySequence )
     {
@@ -1416,6 +1418,9 @@ OFBool WlmDataSource::IsSupportedReturnKeyAttribute( DcmElement *element, DcmSeq
 //                 - DCM_PatientComments                    (from the Patient Demographic Module)    (0010,4000)  LT  O  3
 //                 - DCM_AdditionalPatientHistory           (from the Patient Medical Module)        (0010,21b0)  LT  O  3
 //                 - DCM_LastMenstrualDate                  (from the Patient Medical Module)        (0010,21d0)  DA  O  3
+//                 - DCM_ScheduledProcedureStepSequence
+//                    > DCM_CommentsOnTheScheduledProcedureStep (from the Scheduled Procedure Step Module)  (0040,0400)  LT  O  3
+//
 // Parameters   : element            - [in] Pointer to the element which shall be checked.
 //                supSequenceElement - [in] Pointer to the superordinate sequence element of which
 //                                     the currently processed element is an attribute, or NULL if
@@ -1449,7 +1454,8 @@ OFBool WlmDataSource::IsSupportedReturnKeyAttribute( DcmElement *element, DcmSeq
             elementKey == DCM_ScheduledProcedureStepLocation    ||
             elementKey == DCM_PreMedication                     ||
             elementKey == DCM_ScheduledProcedureStepID          ||
-            elementKey == DCM_RequestedContrastAgent ) )                  ||
+            elementKey == DCM_RequestedContrastAgent            ||
+            elementKey == DCM_CommentsOnTheScheduledProcedureStep ) )     ||
         ( supSequenceElementKey == DCM_ReferencedStudySequence        &&
           ( elementKey == DCM_ReferencedSOPClassUID             ||
             elementKey == DCM_ReferencedSOPInstanceUID ) )                ||
@@ -1506,7 +1512,13 @@ OFBool WlmDataSource::IsSupportedReturnKeyAttribute( DcmElement *element, DcmSeq
 /*
 ** CVS Log
 ** $Log: wlds.cc,v $
-** Revision 1.8  2002-08-12 10:56:14  wilkens
+** Revision 1.9  2002-12-03 12:15:56  wilkens
+** Added files und functionality from the dcmtk/wlisctn folder to dcmtk/dcmwlm
+** so that dcmwlm can now completely replace wlistctn in the public domain part
+** of dcmtk. Pertaining to this replacement requirement, another optional return
+** key attribute was integrated into the wlm utilities.
+**
+** Revision 1.8  2002/08/12 10:56:14  wilkens
 ** Made some modifications in in order to be able to create a new application
 ** which contains both wlmscpdb and ppsscpdb and another application which
 ** contains both wlmscpfs and ppsscpfs.

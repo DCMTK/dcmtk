@@ -1,0 +1,22 @@
+wltest.o: wltest.cc ../../config/include/osconfig.h \
+ ../../config/include/cfunix.h ../../ofstd/include/ofstdinc.h \
+ ../../dcmnet/include/dicom.h ../../dcmnet/include/cond.h \
+ ../../ofstd/include/ofconsol.h ../../ofstd/include/ofstream.h \
+ ../../ofstd/include/ofthread.h ../../ofstd/include/oftypes.h \
+ ../../dcmdata/include/dcerror.h ../../ofstd/include/ofcond.h \
+ ../../ofstd/include/ofstring.h ../../dcmnet/include/dcompat.h \
+ ../../ofstd/include/ofbmanip.h ../../dcmdata/include/dctypes.h \
+ ../../dcmdata/include/dcuid.h ../include/wltypdef.h \
+ ../../dcmdata/include/dcvrlo.h ../../dcmdata/include/dcchrstr.h \
+ ../../dcmdata/include/dcbytstr.h ../../dcmdata/include/dcelem.h \
+ ../../dcmdata/include/dcobject.h ../../ofstd/include/ofglobal.h \
+ ../../dcmdata/include/dcxfer.h ../../dcmdata/include/dcvr.h \
+ ../../dcmdata/include/dctag.h ../../dcmdata/include/dctagkey.h \
+ ../../dcmdata/include/dclist.h ../../dcmdata/include/dcstack.h \
+ ../../dcmdata/include/dcvrat.h ../include/wldsfs.h ../include/wlds.h \
+ ../../dcmdata/include/dcfilefo.h ../../dcmdata/include/dcsequen.h \
+ ../../dcmdata/include/dcitem.h ../../dcmdata/include/dcvrui.h \
+ ../../dcmdata/include/dcpcache.h ../../ofstd/include/oflist.h \
+ ../../dcmdata/include/dcdatset.h ../../dcmdata/include/dcdebug.h \
+ ../../dcmdata/include/dcdict.h ../../dcmdata/include/dchashdi.h \
+ ../../dcmdata/include/cmdlnarg.h ../../ofstd/include/ofstd.h

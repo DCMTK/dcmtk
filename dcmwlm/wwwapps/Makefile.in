@@ -1,0 +1,69 @@
+#
+#	Makefile for dcmwlm/wwwapps
+#
+
+@SET_MAKE@
+
+SHELL = /bin/sh
+VPATH= @srcdir@:@top_srcdir@/include:@top_srcdir@/@configdir@/include
+srcdir= @srcdir@
+top_srcdir= @top_srcdir@
+configdir=@top_srcdir@/@configdir@
+
+#
+# -DNODISPLAY prevents any display code from being called
+#
+LOCALDEFS= -DNODISPLAY
+
+include $(configdir)/@common_makefile@
+
+ofstddir=$(top_srcdir)/../ofstd
+ofstdinc=-I$(ofstddir)/include -I$(includedir)/ofstd
+ofstdlibdir=-L$(ofstddir)/libsrc
+ofstdlib=-lofstd
+
+dcmdatadir=$(top_srcdir)/../dcmdata
+dcmdatainc=-I$(dcmdatadir)/include -I$(includedir)/dcmdata
+dcmdatalibdir=-L$(dcmdatadir)/libsrc
+dcmdatalib=-ldcmdata
+
+LOCALINCLUDES=$(dcmdatainc) $(ofstdinc) -I$(includedir)ofstd -I$(includedir)/dcmdata
+LIBDIRS = $(dcmdatalibdir) $(ofstdlibdir) -L$(libdir)
+LOCALLIBS = $(dcmdatalib) $(ofstdlib) $(ZLIBLIBS)
+
+objs= preplock.o readoviw.o readwlst.o writwlst.o
+progs= preplock readoviw readwlst writwlst
+
+all: $(progs)
+
+# Note: preplock does not need $(LOCALLIBS)
+preplock: preplock.o
+	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ preplock.o $(LIBS)
+
+readoviw: readoviw.o
+	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ readoviw.o $(LOCALLIBS) $(LIBS)
+
+readwlst: readwlst.o
+	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ readwlst.o $(LOCALLIBS) $(LIBS)
+
+writwlst: writwlst.o
+	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ writwlst.o $(LOCALLIBS) $(LIBS)
+
+install: all
+	$(configdir)/mkinstalldirs $(bindir)
+	for prog in $(progs); do \
+		$(INSTALL_PROGRAM) $$prog$(BINEXT) $(bindir); strip $(bindir)/$$prog$(BINEXT) ;\
+	done
+
+
+clean:
+	rm -f $(objs) $(progs) $(TRASH)
+
+distclean:
+	rm -f $(objs) $(progs) $(DISTTRASH)
+
+
+dependencies:
+	$(CXX) -MM $(defines) $(includes) $(CPPFLAGS) $(CXXFLAGS) *.cc > $(DEP)
+
+include $(DEP)
