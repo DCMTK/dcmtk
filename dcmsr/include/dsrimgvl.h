@@ -23,8 +23,8 @@
  *    classes: DSRImageReferenceValue
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-08-07 18:01:42 $
- *  CVS/RCS Revision: $Revision: 1.11 $
+ *  Update Date:      $Date: 2003-10-06 09:52:35 $
+ *  CVS/RCS Revision: $Revision: 1.12 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -279,6 +279,8 @@ class DSRImageReferenceValue
     DSRCompositeReferenceValue PresentationState;
     /// list of referenced frame numbers (associated DICOM VR=IS, VM=1-n, type 1C)
     DSRImageFrameList FrameList;
+    
+    /* IconImageSequence (Type 3) not yet supported */
 };
 
 
@@ -288,7 +290,10 @@ class DSRImageReferenceValue
 /*
  *  CVS/RCS Log:
  *  $Log: dsrimgvl.h,v $
- *  Revision 1.11  2003-08-07 18:01:42  joergr
+ *  Revision 1.12  2003-10-06 09:52:35  joergr
+ *  Added comment that the optional IconImageSequence is not yet supported.
+ *
+ *  Revision 1.11  2003/08/07 18:01:42  joergr
  *  Removed libxml dependency from header files.
  *
  *  Revision 1.10  2003/08/07 12:42:38  joergr
