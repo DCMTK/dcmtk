@@ -22,9 +22,9 @@
  *  Purpose: DicomHSVPixelTemplate (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-02-03 16:54:27 $
+ *  Update Date:      $Date: 1999-04-28 12:47:04 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/include/Attic/dihsvpxt.h,v $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -44,6 +44,8 @@
  *  class declaration  *
  *---------------------*/
 
+/** Template class to handle HSV pixel data
+ */
 template<class T1, class T2>
 class DiHSVPixelTemplate
   : public DiColorPixelTemplate<T2>
@@ -166,7 +168,7 @@ class DiHSVPixelTemplate
                     blue = q;
                     break;
                 default:
-                    if (DicomImageClass::DebugLevel >= DicomImageClass::DL_Warnings)
+                    if (DicomImageClass::DebugLevel & DicomImageClass::DL_Warnings)
                         cerr << "WARNING: invalid value for 'hi' while converting HSV to RGB !" << endl;
             }
         }
@@ -181,7 +183,11 @@ class DiHSVPixelTemplate
  *
  * CVS/RCS Log:
  * $Log: dihsvpxt.h,v $
- * Revision 1.7  1999-02-03 16:54:27  joergr
+ * Revision 1.8  1999-04-28 12:47:04  joergr
+ * Introduced new scheme for the debug level variable: now each level can be
+ * set separately (there is no "include" relationship).
+ *
+ * Revision 1.7  1999/02/03 16:54:27  joergr
  * Moved global functions maxval() and determineRepresentation() to class
  * DicomImageClass (as static methods).
  *

@@ -22,9 +22,9 @@
  *  Purpose: DicomYBR422PixelTemplate (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-02-03 16:55:29 $
+ *  Update Date:      $Date: 1999-04-28 12:45:21 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/include/Attic/diyf2pxt.h,v $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -44,6 +44,8 @@
  *  class declaration  *
  *---------------------*/
 
+/** Template class to handle YCbCr Full 4:2:2 pixel data
+ */
 template<class T1, class T2>
 class DiYBR422PixelTemplate
   : public DiColorPixelTemplate<T2>
@@ -62,7 +64,7 @@ class DiYBR422PixelTemplate
             if (PlanarConfiguration)
             {
                 status = EIS_InvalidValue;
-                if (DicomImageClass::DebugLevel >= DicomImageClass::DL_Errors)
+                if (DicomImageClass::DebugLevel & DicomImageClass::DL_Errors)
                     cerr << "ERROR: invalid value for 'PlanarConfiguration' (" << PlanarConfiguration << ") ! " << endl;
             }
             else
@@ -130,7 +132,11 @@ class DiYBR422PixelTemplate
  *
  * CVS/RCS Log:
  * $Log: diyf2pxt.h,v $
- * Revision 1.5  1999-02-03 16:55:29  joergr
+ * Revision 1.6  1999-04-28 12:45:21  joergr
+ * Introduced new scheme for the debug level variable: now each level can be
+ * set separately (there is no "include" relationship).
+ *
+ * Revision 1.5  1999/02/03 16:55:29  joergr
  * Moved global functions maxval() and determineRepresentation() to class
  * DicomImageClass (as static methods).
  *
