@@ -21,10 +21,9 @@
  *
  *  Purpose: Convert DICOM Images to PPM or PGM using the dcmimage library.
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2003-06-11 11:59:12 $
- *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/apps/dcm2pnm.cc,v $
- *  CVS/RCS Revision: $Revision: 1.75 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2003-12-05 10:48:45 $
+ *  CVS/RCS Revision: $Revision: 1.76 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -672,7 +671,7 @@ int main(int argc, char *argv[])
         if (cmd.findOption("--min-density"))
         {
             app.checkDependence("--min-density", "--printer-file", deviceType == DiDisplayFunction::EDT_Printer);
-            app.checkValue(cmd.getValueAndCheckMin(opt_minDensity, 0));            
+            app.checkValue(cmd.getValueAndCheckMin(opt_minDensity, 0));
         }
         if (cmd.findOption("--max-density"))
         {
@@ -934,7 +933,7 @@ int main(int argc, char *argv[])
         dfile->getDataset()->findAndGetString(DCM_SOPInstanceUID, SOPInstanceUID);
 
         if (SOPInstanceUID == NULL)
-            SOPInstanceUID = (char *)"not present";
+            SOPInstanceUID = "not present";
         if (SOPClassUID == NULL)
             SOPClassText = "not present";
         else
@@ -1131,7 +1130,7 @@ int main(int argc, char *argv[])
             case 4: /* Compute VOI window using Histogram algorithm, ignoring n percent */
                 if (opt_verboseMode > 1)
                     OUTPUT << "activating VOI window histogram algorithm, ignoring " << opt_windowParameter << "%" << endl;
-                if (!di->setHistogramWindow(((double)opt_windowParameter)/100.0))
+                if (!di->setHistogramWindow(OFstatic_cast(double, opt_windowParameter)/100.0))
                     app.printWarning("cannot compute histogram VOI window");
                 break;
             case 5: /* Compute VOI window using center r and width s */
@@ -1262,43 +1261,51 @@ int main(int argc, char *argv[])
             {
                 case 1:
                     if (opt_verboseMode > 1)
-                        OUTPUT << "scaling image, X factor=" << opt_scale_factor << ", Interpolation=" << (int)opt_useInterpolation <<
-                            ", Aspect Ratio=" << (opt_useAspectRatio ? "yes" : "no") << endl;
+                        OUTPUT << "scaling image, X factor=" << opt_scale_factor
+                               << ", Interpolation=" << OFstatic_cast(int, opt_useInterpolation)
+                               << ", Aspect Ratio=" << (opt_useAspectRatio ? "yes" : "no") << endl;
                     if (opt_useClip)
                         newimage = di->createScaledImage(opt_left, opt_top, opt_width, opt_height, opt_scale_factor, 0.0,
-                            (int)opt_useInterpolation, opt_useAspectRatio);
+                            OFstatic_cast(int, opt_useInterpolation), opt_useAspectRatio);
                     else
-                        newimage = di->createScaledImage(opt_scale_factor, 0.0, (int)opt_useInterpolation, opt_useAspectRatio);
+                        newimage = di->createScaledImage(opt_scale_factor, 0.0, OFstatic_cast(int, opt_useInterpolation),
+                            opt_useAspectRatio);
                     break;
                 case 2:
                     if (opt_verboseMode > 1)
-                        OUTPUT << "scaling image, Y factor=" << opt_scale_factor << ", Interpolation=" << (int)opt_useInterpolation <<
-                            ", Aspect Ratio=" << (opt_useAspectRatio ? "yes" : "no") << endl;
+                        OUTPUT << "scaling image, Y factor=" << opt_scale_factor
+                               << ", Interpolation=" << OFstatic_cast(int, opt_useInterpolation)
+                               << ", Aspect Ratio=" << (opt_useAspectRatio ? "yes" : "no") << endl;
                     if (opt_useClip)
                         newimage = di->createScaledImage(opt_left, opt_top, opt_width, opt_height, 0.0, opt_scale_factor,
-                            (int)opt_useInterpolation, opt_useAspectRatio);
+                            OFstatic_cast(int, opt_useInterpolation), opt_useAspectRatio);
                     else
-                        newimage = di->createScaledImage(0.0, opt_scale_factor, (int)opt_useInterpolation, opt_useAspectRatio);
+                        newimage = di->createScaledImage(0.0, opt_scale_factor, OFstatic_cast(int, opt_useInterpolation),
+                            opt_useAspectRatio);
                     break;
                 case 3:
                     if (opt_verboseMode > 1)
-                        OUTPUT << "scaling image, X size=" << opt_scale_size << ", Interpolation=" << (int)opt_useInterpolation <<
-                            ", Aspect Ratio=" << (opt_useAspectRatio ? "yes" : "no") << endl;
+                        OUTPUT << "scaling image, X size=" << opt_scale_size
+                               << ", Interpolation=" << OFstatic_cast(int, opt_useInterpolation)
+                               << ", Aspect Ratio=" << (opt_useAspectRatio ? "yes" : "no") << endl;
                     if (opt_useClip)
                         newimage = di->createScaledImage(opt_left, opt_top, opt_width, opt_height, opt_scale_size, 0,
-                            (int)opt_useInterpolation, opt_useAspectRatio);
+                            OFstatic_cast(int, opt_useInterpolation), opt_useAspectRatio);
                     else
-                        newimage = di->createScaledImage(opt_scale_size, 0, (int)opt_useInterpolation, opt_useAspectRatio);
+                        newimage = di->createScaledImage(opt_scale_size, 0, OFstatic_cast(int, opt_useInterpolation),
+                            opt_useAspectRatio);
                     break;
                 case 4:
                     if (opt_verboseMode > 1)
-                        OUTPUT << "scaling image, Y size=" << opt_scale_size << ", Interpolation=" << (int)opt_useInterpolation <<
-                            ", Aspect Ratio=" << (opt_useAspectRatio ? "yes" : "no") << endl;
+                        OUTPUT << "scaling image, Y size=" << opt_scale_size
+                               << ", Interpolation=" << OFstatic_cast(int, opt_useInterpolation)
+                               << ", Aspect Ratio=" << (opt_useAspectRatio ? "yes" : "no") << endl;
                     if (opt_useClip)
                         newimage = di->createScaledImage(opt_left, opt_top, opt_width, opt_height, 0, opt_scale_size,
-                            (int)opt_useInterpolation, opt_useAspectRatio);
+                            OFstatic_cast(int, opt_useInterpolation), opt_useAspectRatio);
                     else
-                        newimage = di->createScaledImage(0, opt_scale_size, (int)opt_useInterpolation, opt_useAspectRatio);
+                        newimage = di->createScaledImage(0, opt_scale_size, OFstatic_cast(int, opt_useInterpolation),
+                            opt_useAspectRatio);
                     break;
                 default:
                     if (opt_verboseMode > 1)
@@ -1322,7 +1329,7 @@ int main(int argc, char *argv[])
         int result = 0;
         FILE *ofile = NULL;
         char ofname[255];
-        unsigned int fcount = (unsigned int)(((opt_frameCount > 0) && (opt_frameCount <= di->getFrameCount())) ? opt_frameCount : di->getFrameCount());
+        unsigned int fcount = OFstatic_cast(unsigned int, ((opt_frameCount > 0) && (opt_frameCount <= di->getFrameCount())) ? opt_frameCount : di->getFrameCount());
         const char *ofext = NULL;
         /* determine default file extension */
         switch (opt_fileType)
@@ -1389,6 +1396,7 @@ int main(int argc, char *argv[])
             {
                 case EFT_RawPNM:
                     result = di->writeRawPPM(ofile, 8, frame);
+                    break;
                 case EFT_8bitPNM:
                     result = di->writePPM(ofile, 8, frame);
                     break;
@@ -1396,7 +1404,7 @@ int main(int argc, char *argv[])
                     result = di->writePPM(ofile, 16, frame);
                     break;
                 case EFT_NbitPNM:
-                    result = di->writePPM(ofile, (int)opt_fileBits, frame);
+                    result = di->writePPM(ofile, OFstatic_cast(int, opt_fileBits), frame);
                     break;
                 case EFT_BMP:
                     result = di->writeBMP(ofile, 0, frame);
@@ -1482,7 +1490,11 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcm2pnm.cc,v $
- * Revision 1.75  2003-06-11 11:59:12  meichel
+ * Revision 1.76  2003-12-05 10:48:45  joergr
+ * Fixed bug in 8-bit PGM/PPM export (missing "break" in "switch" statement).
+ * Adapted type casts to new-style typecast operators defined in ofcast.h.
+ *
+ * Revision 1.75  2003/06/11 11:59:12  meichel
  * Cleaned up usage of boolean constants
  *
  * Revision 1.74  2003/05/20 09:29:34  joergr
