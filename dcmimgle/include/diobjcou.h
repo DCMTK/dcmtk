@@ -22,9 +22,9 @@
  *  Purpose: DicomObjectCounter (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-05-25 10:35:23 $
+ *  Update Date:      $Date: 2000-07-12 12:47:47 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/diobjcou.h,v $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -75,10 +75,16 @@ class DiObjectCounter
         theMutex.lock();
 #endif
         if (--Counter == 0)
+        {
+#ifdef _REENTRANT
+            theMutex.unlock();
+#endif
             delete this;
 #ifdef _REENTRANT
-        theMutex.unlock();
+        } else {
+            theMutex.unlock();
 #endif
+        }
     }
 
 
@@ -123,7 +129,10 @@ class DiObjectCounter
  *
  * CVS/RCS Log:
  * $Log: diobjcou.h,v $
- * Revision 1.6  2000-05-25 10:35:23  joergr
+ * Revision 1.7  2000-07-12 12:47:47  joergr
+ * Correct bug in destructor of ObjectCounter class.
+ *
+ * Revision 1.6  2000/05/25 10:35:23  joergr
  * Added member variable to member initialization list (avoid compiler
  * warnings).
  *
