@@ -23,8 +23,8 @@
  *    classes: DSRTypes
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-11-01 16:18:34 $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  Update Date:      $Date: 2000-11-06 11:21:04 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -55,6 +55,9 @@
 
 // private coding scheme designator used for internal codes
 #define OFFIS_CODING_SCHEME_DESIGNATOR "99_OFFIS_DCMTK"
+
+// protocol, hostname and CGI script name used for HTML hyperlinks to composite objects
+#define HTML_HYPERLINK_PREFIX_FOR_CGI "http://localhost/dicom.cgi"
 
 
 /*-----------------------*
@@ -906,7 +909,11 @@ class DSRTypes
 /*
  *  CVS/RCS Log:
  *  $Log: dsrtypes.h,v $
- *  Revision 1.6  2000-11-01 16:18:34  joergr
+ *  Revision 1.7  2000-11-06 11:21:04  joergr
+ *  Changes structure of HTML hyperlinks to composite objects (now using pseudo
+ *  CGI script).
+ *
+ *  Revision 1.6  2000/11/01 16:18:34  joergr
  *  Added support for conversion to XML.
  *  Added support for Cascading Style Sheet (CSS) used optionally for HTML
  *  rendering.
