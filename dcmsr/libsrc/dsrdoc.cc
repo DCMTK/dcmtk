@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2002, OFFIS
+ *  Copyright (C) 2000-2003, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,8 +23,8 @@
  *    classes: DSRDocument
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-12-05 13:52:27 $
- *  CVS/RCS Revision: $Revision: 1.38 $
+ *  Update Date:      $Date: 2003-01-06 10:30:28 $
+ *  CVS/RCS Revision: $Revision: 1.39 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -918,7 +918,7 @@ OFCondition DSRDocument::renderHTML(ostream &stream,
 
             stream << "<small>" << endl;
             stream << "This page was generated from a DICOM Structured Reporting document by ";
-            stream << "<a href=\"http://www.offis.de/projekte/dicom/\">OFFIS dcmtk</a> " << OFFIS_DCMTK_VERSION << "." << endl;
+            stream << "<a href=\"http://dicom.offis.de/dcmtk/\">OFFIS dcmtk</a> " << OFFIS_DCMTK_VERSION << "." << endl;
             stream << "</small>" << endl;
         }
 
@@ -1884,7 +1884,10 @@ void DSRDocument::updateAttributes(const OFBool updateAll)
 /*
  *  CVS/RCS Log:
  *  $Log: dsrdoc.cc,v $
- *  Revision 1.38  2002-12-05 13:52:27  joergr
+ *  Revision 1.39  2003-01-06 10:30:28  joergr
+ *  Updated URL to dcmtk homepage.
+ *
+ *  Revision 1.38  2002/12/05 13:52:27  joergr
  *  Added further checks when reading SR documents (e.g. value of VerificationFlag,
  *  CompletionsFlag, ContinuityOfContent and SpecificCharacterSet).
  *
