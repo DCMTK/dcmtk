@@ -23,8 +23,8 @@
  *    classes: DSRDocument
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-11-13 14:19:12 $
- *  CVS/RCS Revision: $Revision: 1.14 $
+ *  Update Date:      $Date: 2000-11-14 11:45:55 $
+ *  CVS/RCS Revision: $Revision: 1.15 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1529,9 +1529,9 @@ E_Condition DSRDocument::createNewDocument(const E_DocumentType documentType)
 
 E_Condition DSRDocument::createRevisedVersion()
 {
-    E_Condition result= EC_Normal;
-    /* check whether document is not yet completed (i.e. PARTIAL) */
-    if (CompletionFlagEnum != CF_Complete)
+    E_Condition result = EC_Normal;
+    /* check whether document is already completed */
+    if (CompletionFlagEnum == CF_Complete)
     {
         DcmItem *ditem = new DcmItem();
         if (ditem != NULL)
@@ -1726,7 +1726,10 @@ void DSRDocument::updateAttributes()
 /*
  *  CVS/RCS Log:
  *  $Log: dsrdoc.cc,v $
- *  Revision 1.14  2000-11-13 14:19:12  joergr
+ *  Revision 1.15  2000-11-14 11:45:55  joergr
+ *  Corrected behaviour of method createRevisedVersion().
+ *
+ *  Revision 1.14  2000/11/13 14:19:12  joergr
  *  Updated comments.
  *
  *  Revision 1.13  2000/11/13 10:27:00  joergr

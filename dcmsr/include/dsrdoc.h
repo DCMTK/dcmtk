@@ -23,8 +23,8 @@
  *    classes: DSRDocument
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-11-13 14:19:06 $
- *  CVS/RCS Revision: $Revision: 1.13 $
+ *  Update Date:      $Date: 2000-11-14 11:45:50 $
+ *  CVS/RCS Revision: $Revision: 1.14 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -711,7 +711,7 @@ class DSRDocument
     E_Condition createNewDocument(const E_DocumentType documentType);
 
     /** create a revised version of the current document.
-     *  A revised version can only be created if the current document is not yet completed
+     *  A revised version can only be created if the current document is already completed
      *  (see completion flag).  If so a reference to the current document is included in the
      *  predecessor documents sequence (possible existing references are automatically
      *  replaced, i.e. there is never more than one reference in this sequence).  If all 
@@ -919,7 +919,10 @@ class DSRDocument
 /*
  *  CVS/RCS Log:
  *  $Log: dsrdoc.h,v $
- *  Revision 1.13  2000-11-13 14:19:06  joergr
+ *  Revision 1.14  2000-11-14 11:45:50  joergr
+ *  Corrected behaviour of method createRevisedVersion().
+ *
+ *  Revision 1.13  2000/11/13 14:19:06  joergr
  *  Updated comments.
  *
  *  Revision 1.12  2000/11/13 10:26:21  joergr
