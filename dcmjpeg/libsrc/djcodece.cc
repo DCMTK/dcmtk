@@ -21,10 +21,10 @@
  *
  *  Purpose: abstract codec class for JPEG encoders.
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-12-09 13:52:17 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2003-10-06 15:57:36 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmjpeg/libsrc/djcodece.cc,v $
- *  CVS/RCS Revision: $Revision: 1.11 $
+ *  CVS/RCS Revision: $Revision: 1.12 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -584,10 +584,19 @@ OFCondition DJCodecEncoder::encodeMonochromeImage(
   // create overlay data for embedded overlays
   if (result.good()) result = adjustOverlays(dataset, dimage);
 
+  // VOI transformations should only be applied on the dataset level, not
+  // in nested items such as the Icon Image Sequence where we don't exect
+  // a VOI window or LUT to be present
+  unsigned long windowType = 0;
+  if (dataset->ident() == EVR_dataset)
+  {
+    windowType = cp->getWindowType();
+  }
+
   // set VOI transformation
   if (result.good())
   {
-    switch (cp->getWindowType())
+    switch (windowType)
     {
       case 0: // no VOI transformation
         {
@@ -718,7 +727,7 @@ OFCondition DJCodecEncoder::encodeMonochromeImage(
     {
       bitsPerSample = jpeg->bitsPerSample();
 
-      if (cp->getWindowType() == 0)
+      if (windowType == 0)
       {
         // perform image computations
         if (mode_usePixelValues)
@@ -833,7 +842,7 @@ OFCondition DJCodecEncoder::encodeMonochromeImage(
   {
     // adapt attributes in image pixel module
     if (result.good()) result = dataset->putAndInsertUint16(DCM_SamplesPerPixel, 1);
-    if (result.good() && (cp->getWindowType() != 0)) result = dataset->putAndInsertString(DCM_PhotometricInterpretation, "MONOCHROME2");
+    if (result.good() && (windowType != 0)) result = dataset->putAndInsertString(DCM_PhotometricInterpretation, "MONOCHROME2");
     if (result.good())
     {
       if (bitsPerSample > 8)
@@ -878,7 +887,7 @@ OFCondition DJCodecEncoder::encodeMonochromeImage(
     delete dataset->remove(DCM_RescaleType);
 
     // update Modality LUT Module and Pixel Intensity Relationship
-    if (cp->getWindowType() == 0)
+    if (windowType == 0)
     {
       if (mode_XA)
       {
@@ -918,7 +927,7 @@ OFCondition DJCodecEncoder::encodeMonochromeImage(
     }
 
     // Adjust VOI LUT and Presentation LUT transformation
-    if (cp->getWindowType() == 0)
+    if (windowType == 0)
     {
       if (deleteVOILUT) delete dataset->remove(DCM_VOILUTSequence);
 
@@ -1049,7 +1058,11 @@ OFCondition DJCodecEncoder::correctVOIWindows(
 /*
  * CVS/RCS Log
  * $Log: djcodece.cc,v $
- * Revision 1.11  2002-12-09 13:52:17  joergr
+ * Revision 1.12  2003-10-06 15:57:36  meichel
+ * Fixed issue with window center/width selection in JPEG encoder
+ *   that prevented "windowed" compression of images containing an Icon Image SQ.
+ *
+ * Revision 1.11  2002/12/09 13:52:17  joergr
  * Renamed parameter/local variable to avoid name clashes with global
  * declaration left and/or right (used for as iostream manipulators).
  *
