@@ -22,9 +22,9 @@
  *  Purpose: Query/Retrieve Service Class User (C-MOVE operation)
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2003-06-06 09:44:40 $
+ *  Update Date:      $Date: 2003-06-10 14:00:34 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/apps/movescu.cc,v $
- *  CVS/RCS Revision: $Revision: 1.48 $
+ *  CVS/RCS Revision: $Revision: 1.49 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -287,6 +287,11 @@ main(int argc, char *argv[])
       cmd.addOption("--propose-little",         "-xe",       "propose all uncompressed TS, explicit VR\nlittle endian first");
       cmd.addOption("--propose-big",            "-xb",       "propose all uncompressed TS, explicit VR\nbig endian first");
       cmd.addOption("--propose-implicit",       "-xi",       "propose implicit VR little endian TS only");
+#ifdef WITH_TCPWRAPPER
+    cmd.addSubGroup("network host access control (tcp wrapper) options:");
+      cmd.addOption("--access-full",            "-ac",       "accept connections from any host (default)");
+      cmd.addOption("--access-control",         "+ac",       "enforce host access control rules");
+#endif
     cmd.addSubGroup("other network options:");
       cmd.addOption("--timeout",                "-to", 1,    "[s]econds: integer (default: unlimited)", "timeout for connection requests");
 
@@ -409,6 +414,12 @@ main(int argc, char *argv[])
       if (cmd.findOption("--propose-big"))      opt_out_networkTransferSyntax = EXS_BigEndianExplicit;
       if (cmd.findOption("--propose-implicit")) opt_out_networkTransferSyntax = EXS_LittleEndianImplicit;
       cmd.endOptionBlock();
+#ifdef WITH_TCPWRAPPER
+      cmd.beginOptionBlock();
+      if (cmd.findOption("--access-full")) dcmTCPWrapperDaemonName.set(NULL);
+      if (cmd.findOption("--access-control")) dcmTCPWrapperDaemonName.set(OFFIS_CONSOLE_APPLICATION);
+      cmd.endOptionBlock();
+#endif
 
       if (cmd.findOption("--timeout")) 
       {
@@ -1326,7 +1337,10 @@ cmove(T_ASC_Association * assoc, const char *fname)
 ** CVS Log
 **
 ** $Log: movescu.cc,v $
-** Revision 1.48  2003-06-06 09:44:40  meichel
+** Revision 1.49  2003-06-10 14:00:34  meichel
+** Added support for TCP wrappers based host access control
+**
+** Revision 1.48  2003/06/06 09:44:40  meichel
 ** Added static sleep function in class OFStandard. This replaces the various
 **   calls to sleep(), Sleep() and usleep() throughout the toolkit.
 **

@@ -70,6 +70,9 @@ network options:
     -xb   --propose-big          propose all uncompressed TS, explicit VR
                                  big endian first
     -xi   --propose-implicit     propose implicit VR little endian TS only
+  network host access control (tcp wrapper) options:
+    -ac   --access-full          accept connections from any host (default)
+    +ac   --access-control       enforce host access control rules
   other network options:
     -to   --timeout              [s]econds: integer (default: unlimited)
                                  timeout for connection requests
@@ -281,6 +284,16 @@ TransferSyntax to LittleEndianExplicitTransferSyntax (and vice versa).  This
 behaviour can be changed with the --prefer options (see above).
 
 The movescu application does not support extended negotiation.
+
+
+ACCESS CONTROL
+
+When compiled on Unix platforms with TCP wrapper support, host-based access 
+control can be enabled with the --access-control command line option. In 
+this case the access control rules defined in the system's host access 
+control tables for "movescu" are enforced. The default locations of the 
+host access control tables are /etc/hosts.allow and /etc/hosts.deny.
+Further details are described in hosts_access(5).
 
 
 ENVIRONMENT
