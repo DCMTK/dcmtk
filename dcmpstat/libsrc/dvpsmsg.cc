@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DVPSIPCMessage
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-10-11 16:16:25 $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2000-10-16 11:43:38 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -205,7 +205,7 @@ OFBool DVPSIPCMessage::send(DcmTransportConnection &connection)
   swapIfNecessary(EBO_BigEndian, gLocalByteOrder, payload, 2*sizeof(Uint32), sizeof(Uint32));
 
   // send
-  if (connection.write(payload, payloadUsed) <= 0) return OFFalse;
+  if (connection.write(payload, (size_t)payloadUsed) <= 0) return OFFalse;
   return OFTrue;
 }
 
@@ -231,7 +231,7 @@ OFBool DVPSIPCMessage::receive(DcmTransportConnection &connection)
   // read payload if any
   if (payloadUsed > 0) 
   {
-    if (connection.read(payload+PAYLOAD_OFFSET, payloadUsed) <= 0) 
+    if (connection.read(payload+PAYLOAD_OFFSET, (size_t)payloadUsed) <= 0) 
     {
       payloadUsed = PAYLOAD_OFFSET;
       return OFFalse;
@@ -405,7 +405,10 @@ void DVPSIPCClient::notifySentDICOMObject()
 
 /*
  *  $Log: dvpsmsg.cc,v $
- *  Revision 1.2  2000-10-11 16:16:25  meichel
+ *  Revision 1.3  2000-10-16 11:43:38  joergr
+ *  Added explicit typecast to avoid compiler warnings (Sun CC 2.0.1).
+ *
+ *  Revision 1.2  2000/10/11 16:16:25  meichel
  *  Updated includes for Win32 environment
  *
  *  Revision 1.1  2000/10/10 12:24:41  meichel
