@@ -23,8 +23,8 @@
  *    classes: DVPSOverlay
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-09-26 15:36:28 $
- *  CVS/RCS Revision: $Revision: 1.12 $
+ *  Update Date:      $Date: 2001-12-18 10:36:41 $
+ *  CVS/RCS Revision: $Revision: 1.13 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -282,8 +282,9 @@ OFBool DVPSOverlay::isSuitableAsShutter(unsigned long x, unsigned long y)
   Uint16 columns=0;
   result = overlayRows.getUint16(rows,0);
   if (result==EC_Normal) result = overlayColumns.getUint16(columns,0);
+
   if (result==EC_Normal) return ((columns==x)&&(rows==y));
-  else return OFFalse;
+  return OFFalse;
 }
 
 const char *DVPSOverlay::getOverlayLabel()
@@ -350,7 +351,10 @@ void DVPSOverlay::setLog(OFConsole *stream, OFBool verbMode, OFBool dbgMode)
 
 /*
  *  $Log: dvpsov.cc,v $
- *  Revision 1.12  2001-09-26 15:36:28  meichel
+ *  Revision 1.13  2001-12-18 10:36:41  meichel
+ *  Minor modifications to avoid warning on Sun CC 2.0.1
+ *
+ *  Revision 1.12  2001/09/26 15:36:28  meichel
  *  Adapted dcmpstat to class OFCondition
  *
  *  Revision 1.11  2001/06/01 15:50:34  meichel
