@@ -123,7 +123,7 @@ for tag in dependencies clean distclean ; do
 	if test $tag = clean ; then
 		echo "	rm -f \$(TRASH)" >> $output
 	elif test $tag = distclean ; then
-		echo "	rm -f \$(DISTTRASH) Makefile configure" >> $output
+		echo "	rm -f \$(DISTTRASH)" >> $output
 	fi
 	echo >> $output
 done
