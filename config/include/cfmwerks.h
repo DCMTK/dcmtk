@@ -99,13 +99,6 @@
 #define HAVE_GUSI_H 1	/* use the GUSI include file */
 #define HAVE_FLOCK 1	/* GUSI defines a version */
 #define HAVE_ACCESS 1	/* GUSI defines a version */
-/***
-#define HAVE_SYS_TYPES_H 1
-#define HAVE_SYS_TIME_H 1
-#define HAVE_SYS_SOCKET_H 1
-#define HAVE_NETINET_IN_H 1
-#define HAVE_NETDB_H 1
-***/
 
 /* User definable section */
 
@@ -113,7 +106,11 @@
 #define PATH_SEPARATOR ':'
 
 /* Define the environment variable path separator */
-/* #undef ENVIRONMENT_PATH_SEPARATOR ':' */
+#define ENVIRONMENT_PATH_SEPARATOR '^'
+
+/* Define the default data dictionary path for the dcmdata library package */
+#define DCM_DICT_DEFAULT_PATH	"dicom.dic"
+
 
 /* Define if your implementation cannot pass command line arguments into main() */
 #define HAVE_EMPTY_ARGC_ARGV 1

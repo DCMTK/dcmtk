@@ -169,6 +169,9 @@
 /* #undef ENVIRONMENT_PATH_SEPARATOR ':' */
 
 
+/* Define the default data dictionary path for the dcmdata library package */
+#define DCM_DICT_DEFAULT_PATH	"\\dicom.dic"
+
 
 /* Define if your implementation cannot pass command line arguments into main() */
 
