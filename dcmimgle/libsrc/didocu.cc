@@ -22,9 +22,9 @@
  *  Purpose: DicomDocument (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1998-11-27 15:53:36 $
+ *  Update Date:      $Date: 1998-12-14 17:33:45 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/libsrc/didocu.cc,v $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -136,24 +136,26 @@ DiDocument::~DiDocument()
 
 /********************************************************************/
 
-DcmObject *DiDocument::search(const DcmTagKey &tag, DcmObject *obj) const
+DcmElement *DiDocument::search(const DcmTagKey &tag,
+                               DcmObject *obj) const
 {
     DcmStack stack;
     if (obj == NULL)
         obj = Object;
     if ((obj != NULL) && (obj->search(tag, stack) == EC_Normal) && (stack.top()->getLength(Xfer) > 0))
-        return stack.top();
+        return (DcmElement *)stack.top();
     return NULL;
 }
 
 
 /********************************************************************/
 
-int DiDocument::search(const DcmTagKey &tag, DcmStack &pstack) const
+int DiDocument::search(const DcmTagKey &tag,
+                       DcmStack &pstack) const
 {
     if (pstack.empty())
         pstack.push(Object);
-    DcmObject * obj = pstack.top();
+    DcmObject *obj = pstack.top();
     if ((obj != NULL) && (obj->search(tag, pstack) == EC_Normal) && (pstack.top()->getLength(Xfer) > 0))
         return 1;
     return 0;
@@ -165,152 +167,179 @@ int DiDocument::search(const DcmTagKey &tag, DcmStack &pstack) const
 
 unsigned long DiDocument::getVM(const DcmTagKey &tag) const 
 {
-    DcmObject *searchedObj = search(tag);
-    if (searchedObj != NULL)
-        return searchedObj->getVM();
+    DcmElement *elem = search(tag);
+    if (elem != NULL)
+        return elem->getVM();
     return 0;
 }
 
 
-unsigned long DiDocument::getValue(const DcmTagKey &tag, Uint16 &returnVal, const unsigned long pos, DcmObject *item) const 
+unsigned long DiDocument::getValue(const DcmTagKey &tag,
+                                   Uint16 &returnVal,
+                                   const unsigned long pos,
+                                   DcmObject *item) const 
 {
-    DcmObject *searchedObj = search(tag, item);
-    if (searchedObj != NULL)
+    return getElemValue(search(tag, item), returnVal, pos);
+}
+
+
+unsigned long DiDocument::getValue(const DcmTagKey &tag,
+                                   Sint16 &returnVal,
+                                   const unsigned long pos) const
+{
+    DcmElement *elem = search(tag);
+    if (elem != NULL)
     {
-        ((DcmElement *)searchedObj)->getUint16(returnVal, pos);
-        return searchedObj->getVM();
+        elem->getSint16(returnVal, pos);
+        return elem->getVM();
     }
     return 0;
 }
 
 
-unsigned long DiDocument::getValue(const DcmTagKey &tag, Sint16 &returnVal, const unsigned long pos) const
+unsigned long DiDocument::getValue(const DcmTagKey &tag,
+                                   Uint32 &returnVal,
+                                   const unsigned long pos) const
 {
-    DcmObject *searchedObj = search(tag);
-    if (searchedObj != NULL)
+    DcmElement *elem = search(tag);
+    if (elem != NULL)
     {
-        ((DcmElement *)searchedObj)->getSint16(returnVal, pos);
-        return searchedObj->getVM();
+        elem->getUint32(returnVal, pos);
+        return elem->getVM();
     }
     return 0;
 }
 
 
-unsigned long DiDocument::getValue(const DcmTagKey &tag, Uint32 &returnVal, const unsigned long pos) const
+unsigned long DiDocument::getValue(const DcmTagKey &tag,
+                                   Sint32 &returnVal,
+                                   const unsigned long pos) const
 {
-    DcmObject *searchedObj = search(tag);
-    if (searchedObj != NULL)
+    DcmElement *elem = search(tag);
+    if (elem != NULL)
     {
-        ((DcmElement *)searchedObj)->getUint32(returnVal, pos);
-        return searchedObj->getVM();
+        elem->getSint32(returnVal, pos);
+        return elem->getVM();
     }
     return 0;
 }
 
 
-unsigned long DiDocument::getValue(const DcmTagKey &tag, Sint32 &returnVal, const unsigned long pos) const
+unsigned long DiDocument::getValue(const DcmTagKey &tag,
+                                   double &returnVal,
+                                   const unsigned long pos) const
 {
-    DcmObject *searchedObj = search(tag);
-    if (searchedObj != NULL)
+    DcmElement *elem = search(tag);
+    if (elem != NULL)
     {
-        ((DcmElement *)searchedObj)->getSint32(returnVal, pos);
-        return searchedObj->getVM();
+        elem->getFloat64(returnVal, pos);
+        return elem->getVM();
     }
     return 0;
 }
 
 
-unsigned long DiDocument::getValue(const DcmTagKey &tag, double &returnVal, const unsigned long pos) const
+unsigned long DiDocument::getValue(const DcmTagKey &tag,
+                                   const Uint16 *&returnVal,
+                                   DcmObject *item) const
 {
-    DcmObject *searchedObj = search(tag);
-    if (searchedObj != NULL)
-    {
-        ((DcmElement *)searchedObj)->getFloat64(returnVal, pos);
-        return searchedObj->getVM();
-    }
-    return 0;
-}
-
-
-unsigned long DiDocument::getValue(const DcmTagKey &tag, const Uint16 *&returnVal, DcmObject *item) const
-{
-    DcmObject *searchedObj = search(tag, item);
-    if (searchedObj != NULL)
+    DcmElement *elem = search(tag, item);
+    if (elem != NULL)
     {
         Uint16 *val;    
-        ((DcmElement *)searchedObj)->getUint16Array(val);
+        elem->getUint16Array(val);
         returnVal = val;
-        if (searchedObj->getVR() == EVR_OW)
-            return searchedObj->getLength(Xfer) / sizeof(Uint16);
-        return searchedObj->getVM();
+        if (elem->getVR() == EVR_OW)
+            return elem->getLength(Xfer) / sizeof(Uint16);
+        return elem->getVM();
     }
     return 0;
 }
 
 
-unsigned long DiDocument::getValue(const DcmTagKey &tag, const char *&returnVal) const
+unsigned long DiDocument::getValue(const DcmTagKey &tag,
+                                   const char *&returnVal) const
 {
-    DcmObject *searchedObj = search(tag);
-    if (searchedObj != NULL)
+    return getElemValue(search(tag), returnVal);
+}
+
+
+unsigned long DiDocument::getSequence(const DcmTagKey &tag,
+                                      DcmSequenceOfItems *&seq) const
+{
+    DcmElement *elem = search(tag);
+    if ((elem != NULL) && (elem->ident() == EVR_SQ))
+        return (seq =(DcmSequenceOfItems *)elem)->card();
+    return 0;
+}
+
+
+unsigned long DiDocument::getElemValue(const DcmElement *elem,
+                                       Uint16 &returnVal,
+                                       const unsigned long pos)
+{
+    if (elem != NULL)
     {
-        char *val;
-        ((DcmElement *)searchedObj)->getString(val);
-        returnVal = val;
-        return searchedObj->getVM();
+        ((DcmElement *)elem)->getUint16(returnVal, pos);   // remove 'const' to use non-const methods
+        return ((DcmElement *)elem)->getVM();
     }
     return 0;
 }
 
 
-unsigned long DiDocument::getSequence(const DcmTagKey &tag, DcmSequenceOfItems *&seq) const
+unsigned long DiDocument::getElemValue(const DcmElement *elem,
+                                       const Uint16 *&returnVal)
 {
-    DcmObject *obj = search(tag);
-    if ((obj != NULL) && (obj->ident() == EVR_SQ))
-        return (seq = (DcmSequenceOfItems *)obj)->card();
+    if (elem != NULL)
+    {
+        Uint16 *val;                                    // parameter has no 'const' qualifier
+        ((DcmElement *)elem)->getUint16Array(val);      // remove 'const' to use non-const methods
+        returnVal = val;
+        if (((DcmElement *)elem)->getVR() == EVR_OW)
+            return ((DcmElement *)elem)->getLength(/*Xfer*/) / sizeof(Uint16);
+        return ((DcmElement *)elem)->getVM();
+    }
     return 0;
 }
 
 
-unsigned long DiDocument::getElemValue(const DcmUnsignedShort &elem, Uint16 &returnVal, const unsigned long pos)
+unsigned long DiDocument::getElemValue(const DcmElement *elem,
+                                       const char *&returnVal)
 {
-    DcmElement *e = (DcmElement *)&elem;             // remove 'const' to use non-const methods
-    e->getUint16(returnVal, pos);
-    return e->getVM();
-}
-
-
-unsigned long DiDocument::getElemValue(const DcmUnsignedShort &elem, const Uint16 *&returnVal)
-{
-    DcmElement *e = (DcmElement *)&elem;             // remove 'const' to use non-const methods
-    Uint16 *val;
-    e->getUint16Array(val);
-    returnVal = val;
-    if (e->getVR() == EVR_OW)
-        return e->getLength() / sizeof(Uint16);
-    return e->getVM();
+    if (elem != NULL)
+    {
+        char *val;                                      // parameter has no 'const' qualifier
+        ((DcmElement *)elem)->getString(val);           // remove 'const' to use non-const methods
+        returnVal = val;
+        return ((DcmElement *)elem)->getVM();
+    }
+    return 0;
 }
 
 
 /*
-**
-** CVS/RCS Log:
-** $Log: didocu.cc,v $
-** Revision 1.1  1998-11-27 15:53:36  joergr
-** Added copyright message.
-** Added static methods to return the value of a given element.
-** Added support of frame start and count for future use (will be explained
-** later if it is fully implemented).
-**
-** Revision 1.9  1998/07/01 08:39:35  joergr
-** Minor changes to avoid compiler warnings (gcc 2.8.1 with additional
-** options), e.g. add copy constructors.
-**
-** Revision 1.8  1998/06/25 08:52:05  joergr
-** Added compatibility mode to support ACR-NEMA images and wrong
-** palette attribute tags.
-**
-** Revision 1.7  1998/05/11 14:52:28  joergr
-** Added CVS/RCS header to each file.
-**
-**
-*/
+ *
+ * CVS/RCS Log:
+ * $Log: didocu.cc,v $
+ * Revision 1.2  1998-12-14 17:33:45  joergr
+ * Added (simplified) methods to return values of a given DcmElement object.
+ *
+ * Revision 1.1  1998/11/27 15:53:36  joergr
+ * Added copyright message.
+ * Added static methods to return the value of a given element.
+ * Added support of frame start and count for future use (will be explained
+ * later if it is fully implemented).
+ *
+ * Revision 1.9  1998/07/01 08:39:35  joergr
+ * Minor changes to avoid compiler warnings (gcc 2.8.1 with additional
+ * options), e.g. add copy constructors.
+ *
+ * Revision 1.8  1998/06/25 08:52:05  joergr
+ * Added compatibility mode to support ACR-NEMA images and wrong
+ * palette attribute tags.
+ *
+ * Revision 1.7  1998/05/11 14:52:28  joergr
+ * Added CVS/RCS header to each file.
+ *
+ *
+ */
