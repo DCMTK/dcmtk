@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2001, OFFIS
+ *  Copyright (C) 2000-2002, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose: List the contents of a dicom structured reporting file
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-01-11 14:35:56 $
+ *  Update Date:      $Date: 2002-04-11 13:05:02 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmsr/apps/dsrdump.cc,v $
- *  CVS/RCS Revision: $Revision: 1.12 $
+ *  CVS/RCS Revision: $Revision: 1.13 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -69,30 +69,17 @@ static OFCondition dumpFile(ostream &out,
         return EC_IllegalParameter;
     }
 
-    DcmFileStream myin(ifname, DCM_ReadMode);
-    if (myin.GetError().bad())
-    {
-        CERR << OFFIS_CONSOLE_APPLICATION << ": cannot open file: " << ifname << endl;
-        return EC_InvalidStream;
-    }
-
-    DcmObject *dfile = NULL;
-    if (isDataset)
-        dfile = new DcmDataset();
-    else
-        dfile = new DcmFileFormat();
-
+    DcmFileFormat *dfile = new DcmFileFormat();
     if (dfile != NULL)
     {
-        dfile->transferInit();
-        dfile->read(myin, xfer, EGL_noChange);
-        dfile->transferEnd();
-
-        if (dfile->error().bad())
+        if (isDataset)
+            result = dfile->getDataset()->loadFile(ifname, xfer);
+        else
+            result = dfile->loadFile(ifname, xfer);
+        if (result.bad())
         {
-            CERR << OFFIS_CONSOLE_APPLICATION << ": error (" << dfile->error().text()
+            CERR << OFFIS_CONSOLE_APPLICATION << ": error (" << result.text()
                  << ") reading file: "<< ifname << endl;
-            result = dfile->error();
         }
     } else
         result = EC_MemoryExhausted;
@@ -100,28 +87,24 @@ static OFCondition dumpFile(ostream &out,
     if (result.good())
     {
         result = EC_CorruptedData;
-        DcmDataset *dset = (isDataset) ? (DcmDataset*)dfile : ((DcmFileFormat *)dfile)->getDataset();
-        if (dset != NULL)
+        DSRDocument *dsrdoc = new DSRDocument();
+        if (dsrdoc != NULL)
         {
-            DSRDocument *dsrdoc = new DSRDocument();
-            if (dsrdoc != NULL)
+            if (debugMode)
+                dsrdoc->setLogStream(&ofConsole);
+            result = dsrdoc->read(*dfile->getDataset(), readFlags);
+            if (result.good())
             {
-                if (debugMode)
-                    dsrdoc->setLogStream(&ofConsole);
-                result = dsrdoc->read(*dset, readFlags);
-                if (result.good())
-                {
-                    result = dsrdoc->print(out, printFlags);
-                    out << endl;
-                }
-                else
-                {
-                    CERR << OFFIS_CONSOLE_APPLICATION << ": error (" << result.text()
-                         << ") parsing file: "<< ifname << endl;
-                }
+                result = dsrdoc->print(out, printFlags);
+                out << endl;
             }
-            delete dsrdoc;
+            else
+            {
+                CERR << OFFIS_CONSOLE_APPLICATION << ": error (" << result.text()
+                     << ") parsing file: "<< ifname << endl;
+            }
         }
+        delete dsrdoc;
     }
     delete dfile;
 
@@ -287,7 +270,10 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dsrdump.cc,v $
- * Revision 1.12  2002-01-11 14:35:56  joergr
+ * Revision 1.13  2002-04-11 13:05:02  joergr
+ * Use the new loadFile() and saveFile() routines from the dcmdata library.
+ *
+ * Revision 1.12  2002/01/11 14:35:56  joergr
  * Made spelling of option --print-filename consistent with other tools.
  *
  * Revision 1.11  2001/10/10 15:26:35  joergr

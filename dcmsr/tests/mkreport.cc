@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2001, OFFIS
+ *  Copyright (C) 2000-2002, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,8 +22,8 @@
  *  Purpose: Create sample structured reports using the dcmsr API
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-12-14 10:37:53 $
- *  CVS/RCS Revision: $Revision: 1.16 $
+ *  Update Date:      $Date: 2002-04-11 13:06:08 $
+ *  CVS/RCS Revision: $Revision: 1.17 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -64,24 +64,6 @@ static void generate_16(DSRDocument *doc);
 static void generate_17(DSRDocument *doc);
 static void generate_18(DSRDocument *doc);
 static void generate_19(DSRDocument *doc);
-
-
-OFCondition saveFileFormat(const char *filename, DcmFileFormat *fileformat)
-{
-    DcmFileStream stream(filename, DCM_WriteMode);
-    if (!stream.Fail())
-    {
-        if (fileformat != NULL)
-        {
-            fileformat->transferInit();
-            OFCondition status = fileformat->write(stream, EXS_LittleEndianExplicit, EET_ExplicitLength, EGL_recalcGL, EPD_withoutPadding);
-            fileformat->transferEnd();
-            return status;
-        }
-        return EC_IllegalParameter;
-    }
-    return stream.GetError();
-}
 
 
 int main(int argc, char *argv[])
@@ -203,7 +185,7 @@ int main(int argc, char *argv[])
                             OFString filename = "report";
                             filename += argv[i];
                             filename += ".dcm";
-                            saveFileFormat(filename.c_str(), fileformat);
+                            fileformat->saveFile(filename.c_str(), EXS_LittleEndianExplicit);
                         } else
                             CERR << "ERROR: could not write SR document into dataset" << endl;
                     }
@@ -1254,7 +1236,10 @@ static void generate_19(DSRDocument *doc)
 /*
  *  CVS/RCS Log:
  *  $Log: mkreport.cc,v $
- *  Revision 1.16  2001-12-14 10:37:53  joergr
+ *  Revision 1.17  2002-04-11 13:06:08  joergr
+ *  Use the new loadFile() and saveFile() routines from the dcmdata library.
+ *
+ *  Revision 1.16  2001/12/14 10:37:53  joergr
  *  Re-structured test program to "co-operate" with gcc on Irix 5.
  *  Thanks to Andreas Barth <andreas.barth@medical.bruker.de> for his support.
  *
