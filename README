@@ -10,13 +10,14 @@ DCMTK contains the following sub-packages, each in its
 own sub-directory:
 
     config   - configuration utilities for dcmtk
+    ctndisp  - a graphical monitor for imagectn and wlistctn 
     dcmdata  - a data encoding/decoding library and utility apps
     dcmimgle - an image processing library and utility apps
     dcmnet   - a networking library and utility apps
     dcmpstat - a presentation state library and utility apps
     imagectn - an image database server
+    ofstd    - a library of general purpose classes
     wlistctn - a modality worklist database server
-    ctndisp  - a graphical monitor for imagectn and wlistctn 
 
 Each sub-directory (except config) contains futher sub-directories for
 application source code (apps), library source code (libsrc), 

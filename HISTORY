@@ -45,14 +45,13 @@ In 1997 a tool allowing to create DICOMDIRs according to the "General Purpose
 CD-R Image Interchange Profile" was added. This tool was used to master
 the CAR' 97 and NEMA '97 DICOM Demonstration CDs.
 
-In 1998/99 new libraries for efficient rendering of DICOM grayscale images,
-display calibration according to DICOM part 14 and an implementation of
-the draft Grayscale Softcopy Presentation State supplement were added
-and demonstrated at ECR '99
-
+Beginning in 1998, new libraries for efficient rendering of DICOM grayscale 
+images, display calibration according to DICOM part 14 and an 
+implementation of the Grayscale Softcopy Presentation State supplement were 
+added and demonstrated at ECR '99 and RSNA InfoRAD '99.
 
 In addition to the freely available DCMTK software, OFFIS have also 
 developed other DICOM software which must be licensed separately. These 
 separate packages build on the facilities provided by DCMTK. 
-See: http://www.offis.uni-oldenburg.de/projekte/dicom/
+See: http://www.offis.de/projekte/dicom/
 

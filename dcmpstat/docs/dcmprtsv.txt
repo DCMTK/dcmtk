@@ -1,0 +1,88 @@
+
+NAME
+
+   dcmprtsv
+
+SYNOPSIS
+
+   dcmprtsv [options] [filename_in...]
+
+SUMMARY
+
+The dcmprtsv utility implements the DICOM Basic Grayscale Print Management 
+Service Class as SCU. It also supports the optional Basic Annotation Box 
+and Presentation LUT SOP Classes. The utility is intended for use within
+the DICOMscope viewer.
+
+The dcmprtsv utility takes complete print jobs consisting of a Stored Print 
+object and one or more Hardcopy Grayscale objects and spools them to the 
+printer.  No attempt is made to check whether the attributes defined in the 
+Stored Print object are supported by the Print SCP. However, the print 
+spooler will not attempt to use the optional Annotation or Presentation LUT 
+services if they are not successfully negotiated with the Print SCP.
+
+The dcmprtsv utility reads the characteristics of the printer to 
+communicate with from the configuration file. Depending on the printer's 
+support for Presentation LUT, any Presentation LUT present in the print job 
+will be rendered into the hardcopy images before they are spooled to the 
+printer if necessary.  If the printer does not support image transmission 
+with 12 bits/pixel (as per the configuration file), the grayscale hardcopy 
+images are down-sampled to 8 bits/pixel before transmission to the printer.
+
+The dcmprtsv utility can be run either in "printer mode", in which case
+the file name of a Stored Print object must be passed, or in "spool mode",
+in which case commands are read periodically from a spool directory.
+
+USAGE
+
+dcmprtsv: Print spooler for presentation state viewer
+usage: dcmprtsv [options] [filename_in...]
+
+parameters:
+  filename_in         stored print file(s) to be spooled
+
+general options:
+  -h  --help          print this help text and exit
+  -v  --verbose       verbose mode, print actions
+  -d  --debug         debug mode, print debug information
+  +d  --dump          dump all DIMSE messages to stdout
+      --noprint       do not create print-out (no n-action-rq)
+mode options:
+  +p  --print         printer mode, print file(s) and terminate (default)
+  +s  --spool         [n]ame: string
+                      spooler mode, use job prefix [n]
+processing options:
+  -c  --config        [f]ilename: string
+                      process using settings from configuration file
+  -p  --printer       [n]ame: string (default: 1st printer in cfg file)
+                      select printer with identifier [n] from cfg file
+spooler options (only with --spool):
+      --sleep         [d]elay: integer (default: 1)
+                      sleep [d] seconds between spooler checks
+basic film session options (not with --spool):
+      --copies        [v]alue: integer (1..100, default: 1)
+                      set number of copies to [v]
+      --medium-type   [v]alue: string
+                      set medium type to [v]
+      --destination   [v]alue: string
+                      set film destination to [v]
+      --label         [v]alue: string
+                      set film session label to [v]
+      --priority      [v]alue: string
+                      set print priority to [v]
+      --owner         [v]alue: string
+                      set film session owner ID to [v]
+
+ENVIRONMENT
+
+The dcmprtsv application will attempt to load DICOM data dictionaries
+specified in the DCMDICTPATH environment variable.  By default, if
+the DCMDICTPATH environment variable is not set, the file
+/usr/local/dicom/lib/dicom.dic will be loaded.  The default behaviour
+should be preferred and the DCMDICTPATH environment variable only used
+when alternative data dictionaries are required.  The DCMDICTPATH 
+environment variable has the same format as the shell PATH variable in
+that a colon (":") separates entries.  The data dictionary code will
+attempt to load each file specified in the DCMDICTPATH environment 
+variable.  It is an error if no data dictionary can be loaded.
+

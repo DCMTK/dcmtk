@@ -10,13 +10,13 @@ SYNOPSIS
 SUMMARY
 
 The dcmpsmk utility reads a DICOM image file and creates a grayscale 
-softcopy presentation state object according to Supplement 33 (frozen 
-draft). The presentation state object is written back to file. A number of 
-command line options allow to specify how certain constructs that might be 
-present in the image file should be referenced or activated in the 
-presentation state. The newly created presentation state references the 
-source image and contains values that should allow for a "reasonable" 
-display of the image when rendered under control of the presentation state.
+softcopy presentation state object according to Supplement 33. The 
+presentation state object is written back to file. A number of command line 
+options allow to specify how certain constructs that might be present in 
+the image file should be referenced or activated in the presentation state. 
+The newly created presentation state references the source image and 
+contains values that should allow for a "reasonable" display of the image 
+when rendered under control of the presentation state.
 
 USAGE
 
@@ -63,6 +63,12 @@ processing options:
     +l1  --layer-single         all curves and overlays are in one layer
     +l2  --layer-double         one layer for curves, one for overlays (default)
     +ls  --layer-separate       separate layers for each curve and overlay
+  location of referenced image:
+    -lx  --location-none        image reference without location (default)
+    -ln  --location-network     [a]etitle: string
+                                image located at application entity a
+    -lm  --location-media       [f]ilesetID, fileset[UID]: string
+                                image located on storage medium
 output options:
   output transfer syntax:
     +t=  --write-xfer-same      write with same TS as image file (default)
