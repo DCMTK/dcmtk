@@ -22,9 +22,9 @@
  *  Purpose: DicomInputPixelTemplate (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1998-11-27 15:08:21 $
+ *  Update Date:      $Date: 1998-12-14 17:18:23 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/diinpxt.h,v $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -48,37 +48,49 @@
 /********************************************************************/
 
 
-static inline Uint8 expandSign(const Uint8 Value, const Uint8, const Uint8)
+static inline Uint8 expandSign(const Uint8 Value,
+                               const Uint8,
+                               const Uint8)
 {
     return Value;
 }
 
 
-static inline Uint16 expandSign(const Uint16 Value, const Uint16, const Uint16)
+static inline Uint16 expandSign(const Uint16 Value,
+                                const Uint16,
+                                const Uint16)
 {
     return Value;
 }
 
 
-static inline Uint32 expandSign(const Uint32 Value, const Uint32, const Uint32)
+static inline Uint32 expandSign(const Uint32 Value,
+                                const Uint32,
+                                const Uint32)
 {
     return Value;
 }
 
 
-static inline Sint8 expandSign(const Sint8 Value, const Sint8 SignBit, const Sint8 SignMask)
+static inline Sint8 expandSign(const Sint8 Value,
+                               const Sint8 SignBit,
+                               const Sint8 SignMask)
 {
     return (Value & SignBit) ? (Value | SignMask) : Value;
 }
 
 
-static inline Sint16 expandSign(const Sint16 Value, const Sint16 SignBit, const Sint16 SignMask)
+static inline Sint16 expandSign(const Sint16 Value,
+                                const Sint16 SignBit,
+                                const Sint16 SignMask)
 {
     return (Value & SignBit) ? (Value | SignMask) : Value;
 }
 
 
-static inline Sint32 expandSign(const Sint32 Value, const Sint32 SignBit, const Sint32 SignMask)
+static inline Sint32 expandSign(const Sint32 Value,
+                                const Sint32 SignBit,
+                                const Sint32 SignMask)
 {
     return (Value & SignBit) ? (Value | SignMask) : Value;
 }
@@ -87,14 +99,16 @@ static inline Sint32 expandSign(const Sint32 Value, const Sint32 SignBit, const 
 /********************************************************************/
 
 
-static Uint32 getPixelData(DcmPixelData *PixelData, Uint8 *&pixel)
+static Uint32 getPixelData(DcmPixelData *PixelData,
+                           Uint8 *&pixel)
 {
     PixelData->getUint8Array(pixel);
     return PixelData->getLength();
 }
 
 
-static Uint32 getPixelData(DcmPixelData *PixelData, Uint16 *&pixel)
+static Uint32 getPixelData(DcmPixelData *PixelData,
+                           Uint16 *&pixel)
 {
     PixelData->getUint16Array(pixel);
     return PixelData->getLength();
@@ -106,11 +120,19 @@ static Uint32 getPixelData(DcmPixelData *PixelData, Uint16 *&pixel)
  *---------------------*/
 
 template<class T1, class T2>
-class DiInputPixelTemplate : public DiInputPixel, public DiPixelRepresentationTemplate<T2>
+class DiInputPixelTemplate
+  : public DiInputPixel,
+    public DiPixelRepresentationTemplate<T2>
 {
+
  public:
-    DiInputPixelTemplate(/*const*/ DcmPixelData *pixel, const Uint16 alloc, const Uint16 stored,
-        const Uint16 high, const unsigned long start, const unsigned long count)
+
+    DiInputPixelTemplate(/*const*/ DcmPixelData *pixel,
+                         const Uint16 alloc,
+                         const Uint16 stored,
+                         const Uint16 high,
+                         const unsigned long start,
+                         const unsigned long count)
       : DiInputPixel(),
         Data(NULL),
         MinValue(0),
@@ -168,8 +190,12 @@ class DiInputPixelTemplate : public DiInputPixel, public DiPixelRepresentationTe
     }
 
  private:
-    inline void convert(/*const*/ DcmPixelData *PixelData, const Uint16 BitsAllocated, const Uint16 BitsStored,
-        const Uint16 HighBit, const unsigned long start, const unsigned long count)
+    inline void convert(/*const*/ DcmPixelData *PixelData,
+                        const Uint16 BitsAllocated,
+                        const Uint16 BitsStored,
+                        const Uint16 HighBit,
+                        const unsigned long start,
+                        const unsigned long count)
     {
         const Uint16 bitsof_T1 = bitsof(T1);
         const Uint16 bitsof_T2 = bitsof(T2);
@@ -394,7 +420,10 @@ class DiInputPixelTemplate : public DiInputPixel, public DiPixelRepresentationTe
 **
 ** CVS/RCS Log:
 ** $Log: diinpxt.h,v $
-** Revision 1.1  1998-11-27 15:08:21  joergr
+** Revision 1.2  1998-12-14 17:18:23  joergr
+** Reformatted source code.
+**
+** Revision 1.1  1998/11/27 15:08:21  joergr
 ** Added copyright message.
 ** Introduced global debug level for dcmimage module to control error output.
 ** Added support for new bit manipulation class.
