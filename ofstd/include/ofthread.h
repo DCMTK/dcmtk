@@ -26,9 +26,9 @@
  *           multi-thread APIs.
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-02-27 14:13:19 $
+ *  Update Date:      $Date: 2003-06-06 10:31:04 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/include/Attic/ofthread.h,v $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -248,6 +248,9 @@ public:
 private:
 
   /** thread specific data key resource */
+#ifdef HAVE_CXX_VOLATILE
+  volatile 
+#endif
   void *theKey;
   
   /** unimplemented private copy constructor */  
@@ -318,6 +321,9 @@ public:
 
 private:
   /** semaphore resource */
+#ifdef HAVE_CXX_VOLATILE
+  volatile 
+#endif
   void * theSemaphore;
   
   /** unimplemented private copy constructor */  
@@ -391,6 +397,9 @@ public:
 
 private:
   /** mutex resource */
+#ifdef HAVE_CXX_VOLATILE
+  volatile 
+#endif
   void * theMutex;
   
   /** unimplemented private copy constructor */  
@@ -478,6 +487,9 @@ public:
 
 private:
   /** read/write lock resource */
+#ifdef HAVE_CXX_VOLATILE
+  volatile 
+#endif
   void * theLock;
   
   /** unimplemented private copy constructor */  
@@ -493,7 +505,10 @@ private:
  *
  * CVS/RCS Log:
  * $Log: ofthread.h,v $
- * Revision 1.4  2002-02-27 14:13:19  meichel
+ * Revision 1.5  2003-06-06 10:31:04  meichel
+ * Added volatile keyword to data pointers in multi-thread wrapper classes
+ *
+ * Revision 1.4  2002/02/27 14:13:19  meichel
  * Changed initialized() methods to const. Fixed some return values when
  *   compiled without thread support.
  *
