@@ -22,9 +22,9 @@
  *  Purpose: DicomMonochromeFlipTemplate (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1998-11-27 14:57:47 $
+ *  Update Date:      $Date: 1999-02-11 16:02:12 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/dimoflt.h,v $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -97,14 +97,16 @@ class DiMonoFlipTemplate
 
 
 /*
-**
-** CVS/RCS Log:
-** $Log: dimoflt.h,v $
-** Revision 1.1  1998-11-27 14:57:47  joergr
-** Added copyright message.
-** Added methods and classes for flipping and rotating, changed for
-** scaling and clipping.
-**
-**
-**
-*/
+ *
+ * CVS/RCS Log:
+ * $Log: dimoflt.h,v $
+ * Revision 1.2  1999-02-11 16:02:12  joergr
+ * Corrected some typos and formatting.
+ *
+ * Revision 1.1  1998/11/27 14:57:47  joergr
+ * Added copyright message.
+ * Added methods and classes for flipping and rotating, changed for
+ * scaling and clipping.
+ *
+ *
+ */

@@ -22,9 +22,9 @@
  *  Purpose: DicomMonochromeCopyTemplate (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1998-11-27 15:15:50 $
+ *  Update Date:      $Date: 1999-02-11 16:01:56 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/dimocpt.h,v $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -47,9 +47,12 @@
  *---------------------*/
 
 template<class T>
-class DiMonoCopyTemplate : public DiMonoPixelTemplate<T>
+class DiMonoCopyTemplate
+  : public DiMonoPixelTemplate<T>
 {
+
  public:
+
     DiMonoCopyTemplate(const DiMonoPixel *pixel,
                        const unsigned long fstart,
                        const unsigned long fcount,
@@ -64,7 +67,9 @@ class DiMonoCopyTemplate : public DiMonoPixelTemplate<T>
     {
     }
 
+
  private:
+ 
     inline void copy(const T *pixel)
     {
         if (pixel != NULL)
@@ -81,14 +86,16 @@ class DiMonoCopyTemplate : public DiMonoPixelTemplate<T>
 
 
 /*
-**
-** CVS/RCS Log:
-** $Log: dimocpt.h,v $
-** Revision 1.1  1998-11-27 15:15:50  joergr
-** Added copyright message.
-** Introduced new method and corresponding classes to create a copy of a
-** dcmimage object (optional parameters: frame start and count).
-**
-**
-**
-*/
+ *
+ * CVS/RCS Log:
+ * $Log: dimocpt.h,v $
+ * Revision 1.2  1999-02-11 16:01:56  joergr
+ * Corrected some typos and formatting.
+ *
+ * Revision 1.1  1998/11/27 15:15:50  joergr
+ * Added copyright message.
+ * Introduced new method and corresponding classes to create a copy of a
+ * dcmimage object (optional parameters: frame start and count).
+ *
+ * 
+ */
