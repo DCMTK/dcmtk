@@ -23,8 +23,8 @@
  *    classes: DVPresentationState
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-10-20 18:41:20 $
- *  CVS/RCS Revision: $Revision: 1.46 $
+ *  Update Date:      $Date: 1999-10-22 09:08:23 $
+ *  CVS/RCS Revision: $Revision: 1.47 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -955,19 +955,23 @@ E_Condition DVPresentationState::createDefaultDisplayedArea(DcmItem &dset)
       if (EC_Normal == result) result = area->setDisplayedArea(DVPSD_scaleToFit, (Sint32)1, (Sint32)1, (Sint32)cols_uint, (Sint32)rows_uint);
       if (EC_Normal == result)
       {
+        OFBool foundRatio = OFFalse;
         if ((imagerPixelSpacing.getVM()==2)&&(EC_Normal==imagerPixelSpacing.getString(pixelspacing)))
         {
           result = area->setDisplayedAreaPixelSpacing(pixelspacing);
+          if (EC_Normal==result) foundRatio = OFTrue;
         }
-        else if ((pixelSpacing.getVM()==2)&&(EC_Normal==pixelSpacing.getString(pixelspacing)))
+        if ((! foundRatio)&&(pixelSpacing.getVM()==2)&&(EC_Normal==pixelSpacing.getString(pixelspacing)))
         {
           result = area->setDisplayedAreaPixelSpacing(pixelspacing);
+          if (EC_Normal==result) foundRatio = OFTrue;
         }
-        else if ((pixelAspectRatio.getVM()==2)&&(EC_Normal==pixelAspectRatio.getString(pixelspacing)))
+        if ((! foundRatio)&&(pixelAspectRatio.getVM()==2)&&(EC_Normal==pixelAspectRatio.getString(pixelspacing)))
         {
           result = area->setDisplayedAreaPixelAspectRatio(pixelspacing);
+          if (EC_Normal==result) foundRatio = OFTrue;
         }
-        else result = area->setDisplayedAreaPixelAspectRatio(1.0);
+        if (! foundRatio) result = area->setDisplayedAreaPixelAspectRatio(1.0);
       }
     } else result = EC_MemoryExhausted;
   }
@@ -3845,7 +3849,12 @@ const char *DVPresentationState::getCurrentImageModality()
 
 /*
  *  $Log: dvpstat.cc,v $
- *  Revision 1.46  1999-10-20 18:41:20  joergr
+ *  Revision 1.47  1999-10-22 09:08:23  joergr
+ *  Added validity check to methods setting pixel aspect ratio and pixel
+ *  spacing (>0). Fixed problems with incorrect pixel spacing (0\0) stored in
+ *  sample images.
+ *
+ *  Revision 1.46  1999/10/20 18:41:20  joergr
  *  Added explicit type cast to make MSVC happy.
  *
  *  Revision 1.45  1999/10/20 11:01:16  joergr

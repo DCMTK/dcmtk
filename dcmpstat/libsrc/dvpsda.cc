@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DVPSDisplayedArea
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-07-22 16:39:55 $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 1999-10-22 09:08:22 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -339,7 +339,18 @@ E_Condition DVPSDisplayedArea::setDisplayedAreaPixelSpacing(const char *spacing)
 {
   if (spacing==NULL) return EC_IllegalCall;
   presentationPixelAspectRatio.clear();
-  return presentationPixelSpacing.putString(spacing);
+  E_Condition result = presentationPixelSpacing.putString(spacing);
+  if (EC_Normal == result)
+  {
+    Float64 fl=0.0; 
+    presentationPixelSpacing.getFloat64(fl, 0);
+    if (fl == 0.0) result = EC_IllegalCall;
+    fl =0.0;
+    presentationPixelSpacing.getFloat64(fl, 1);
+    if (fl == 0.0) result = EC_IllegalCall;
+  }
+  if (EC_Normal != result) presentationPixelSpacing.clear();
+  return result;
 }
 
 E_Condition DVPSDisplayedArea::setDisplayedAreaPixelAspectRatio(double ratio)
@@ -353,7 +364,19 @@ E_Condition DVPSDisplayedArea::setDisplayedAreaPixelAspectRatio(const char *rati
 {
   if (ratio==NULL) return EC_IllegalCall;
   presentationPixelSpacing.clear();
-  return presentationPixelAspectRatio.putString(ratio);
+
+  E_Condition result = presentationPixelAspectRatio.putString(ratio);
+  if (EC_Normal == result)
+  {
+    Sint32 si=0;
+    presentationPixelAspectRatio.getSint32(si, 0);
+    if (si == 0) result = EC_IllegalCall;
+    si = 0;
+    presentationPixelAspectRatio.getSint32(si, 1);
+    if (si == 0) result = EC_IllegalCall;
+  }
+  if (EC_Normal != result) presentationPixelAspectRatio.clear();
+  return result;
 }
 
 E_Condition DVPSDisplayedArea::setDisplayedArea(
@@ -393,7 +416,12 @@ E_Condition DVPSDisplayedArea::setDisplayedArea(
 
 /*
  *  $Log: dvpsda.cc,v $
- *  Revision 1.1  1999-07-22 16:39:55  meichel
+ *  Revision 1.2  1999-10-22 09:08:22  joergr
+ *  Added validity check to methods setting pixel aspect ratio and pixel
+ *  spacing (>0). Fixed problems with incorrect pixel spacing (0\0) stored in
+ *  sample images.
+ *
+ *  Revision 1.1  1999/07/22 16:39:55  meichel
  *  Adapted dcmpstat data structures and API to supplement 33 letter ballot text.
  *
  *
