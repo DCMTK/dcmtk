@@ -22,9 +22,9 @@
  *  Purpose: handling of transfer syntaxes
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-03-08 16:26:53 $
+ *  Update Date:      $Date: 2000-04-14 16:10:35 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcxfer.cc,v $
- *  CVS/RCS Revision: $Revision: 1.13 $
+ *  CVS/RCS Revision: $Revision: 1.14 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -52,7 +52,7 @@ typedef struct {
 #define ERROR_XferName "UnknownTransferSyntax"
 
 
-S_XferNames XferNames[] =
+const S_XferNames XferNames[] =
 {
     { UID_LittleEndianImplicitTransferSyntax,                    
       "LittleEndianImplicit",
@@ -220,8 +220,6 @@ S_XferNames XferNames[] =
 };
 
 const int DIM_OF_XferNames = (sizeof(XferNames) / sizeof(S_XferNames));
-
-
 
 
 // ********************************
@@ -447,17 +445,19 @@ static E_ByteOrder FindMachineTransferSyntax()
     else
         localByteOrderFlag = EBO_unknown;
 
-
     return localByteOrderFlag;
 }
 
-E_ByteOrder gLocalByteOrder = FindMachineTransferSyntax();
+const E_ByteOrder gLocalByteOrder = FindMachineTransferSyntax();
 
 
 /*
  * CVS/RCS Log:
  * $Log: dcxfer.cc,v $
- * Revision 1.13  2000-03-08 16:26:53  meichel
+ * Revision 1.14  2000-04-14 16:10:35  meichel
+ * Minor changes for thread safety.
+ *
+ * Revision 1.13  2000/03/08 16:26:53  meichel
  * Updated copyright header.
  *
  * Revision 1.12  1999/03/31 09:26:05  meichel

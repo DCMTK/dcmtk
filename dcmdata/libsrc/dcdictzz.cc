@@ -4,7 +4,7 @@
 **
 **   User: meichel
 **   Host: sulla
-**   Date: Thu Feb  3 11:58:09 2000
+**   Date: Fri Apr 14 18:12:31 2000
 **   Prog: /home/meichel/dicom/dcmtk/dcmdata/libsrc/mkdictbi
 **
 ** From: /home/meichel/dicom/dcmtk/dcmdata/libsrc/dicom.dic
@@ -13,7 +13,7 @@
 
 #include "dcdict.h"
 
-char* dcmBuiltinDictBuildDate = "Thu Feb  3 11:58:09 2000";
+const char* dcmBuiltinDictBuildDate = "Fri Apr 14 18:12:31 2000";
 
 struct DBI_SimpleEntry {
     Uint16 group;
@@ -29,7 +29,7 @@ struct DBI_SimpleEntry {
     DcmDictRangeRestriction elementRestriction;
 };
 
-static DBI_SimpleEntry simpleBuiltinDict[] = {
+static const DBI_SimpleEntry simpleBuiltinDict[] = {
     { 0x0000, 0x0000, 0x0000, 0x0000,
       EVR_UL, "CommandGroupLength", 1, 1, "dicom98",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified },
@@ -5261,7 +5261,7 @@ static DBI_SimpleEntry simpleBuiltinDict[] = {
       DcmDictRange_Even, DcmDictRange_Unspecified }
 };
 
-static int simpleBuiltinDict_count = 
+static const int simpleBuiltinDict_count = 
     sizeof(simpleBuiltinDict)/sizeof(DBI_SimpleEntry);
 
 
@@ -5269,7 +5269,7 @@ void
 DcmDataDictionary::loadBuiltinDictionary()
 {
     DcmDictEntry* e = NULL;
-    DBI_SimpleEntry* b = simpleBuiltinDict;
+    const DBI_SimpleEntry *b = simpleBuiltinDict;
     for (int i=0; i<simpleBuiltinDict_count; i++) {
         b = simpleBuiltinDict + i;
         e = new DcmDictEntry(b->group, b->element,

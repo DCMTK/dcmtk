@@ -22,9 +22,9 @@
  *  Purpose: 
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-03-08 16:26:33 $
+ *  Update Date:      $Date: 2000-04-14 16:15:46 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcdictbi.cc,v $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -34,7 +34,7 @@
 #include "dcdict.h"
 
 /* There is no builtin data dictionary */
-char* dcmBuiltinDictBuildDate = NULL;
+const char* dcmBuiltinDictBuildDate = NULL;
 
 void
 DcmDataDictionary::loadBuiltinDictionary()
@@ -52,12 +52,14 @@ DcmDataDictionary::loadBuiltinDictionary()
 /*
  * CVS/RCS Log:
  * $Log: dcdictbi.cc,v $
- * Revision 1.5  2000-03-08 16:26:33  meichel
- * Updated copyright header.
+ * Revision 1.6  2000-04-14 16:15:46  meichel
+ * Minor changes for thread safety.
  *
- * Revision 1.4  2000/02/10 10:52:18  joergr
- * Added new feature to dcmdump (enhanced print method of dcmdata): write
- * pixel data/item value fields to raw files.
+ * Revision 1.4  2000/04/14 16:14:46  meichel
+ * Minor changes for thread safety.
+ *
+ * Revision 1.3  2000/03/08 16:26:33  meichel
+ * Updated copyright header.
  *
  * Revision 1.2  1999/03/31 09:25:24  meichel
  * Updated copyright header in module dcmdata

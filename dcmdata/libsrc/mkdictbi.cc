@@ -24,9 +24,9 @@
  *  the dcmdata library.  
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-03-08 16:26:55 $
+ *  Update Date:      $Date: 2000-04-14 16:17:21 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/mkdictbi.cc,v $
- *  CVS/RCS Revision: $Revision: 1.17 $
+ *  CVS/RCS Revision: $Revision: 1.18 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -131,7 +131,7 @@ static char*
 getDateString(char* dateString, int maxLen)
 {
     time_t systime = time(NULL);
-    const char *ct = ctime(&systime);
+    const char *ct = ctime(&systime); // thread unsafe
     strncpy(dateString, ct, maxLen);
     stripTrailing(dateString, '\n');
     return dateString;
@@ -143,7 +143,7 @@ static char*
 getUserName(char* userString, int maxLen)
 {
     char* s;
-    s = cuserid(NULL);
+    s = cuserid(NULL); // thread unsafe
     return strncpy(userString, s, maxLen);
 }
 #elif HAVE_GETLOGIN
@@ -151,7 +151,7 @@ static char*
 getUserName(char* userString, int maxLen)
 {
     char* s;
-    s = getlogin();
+    s = getlogin(); // thread unsafe
     if (s == NULL) s = "<no-utmp-entry>";
     return strncpy(userString, s, maxLen);
 }
@@ -276,7 +276,7 @@ main(int argc, char* argv[])
     fprintf(fout, "\n");
     fprintf(fout, "#include \"dcdict.h\"\n");
     fprintf(fout, "\n");
-    fprintf(fout, "char* dcmBuiltinDictBuildDate = \"%s\";\n", dateString);
+    fprintf(fout, "const char* dcmBuiltinDictBuildDate = \"%s\";\n", dateString);
     fprintf(fout, "\n");
     fprintf(fout, "struct DBI_SimpleEntry {\n");
     fprintf(fout, "    Uint16 group;\n");
@@ -292,7 +292,7 @@ main(int argc, char* argv[])
     fprintf(fout, "    DcmDictRangeRestriction elementRestriction;\n");
     fprintf(fout, "};\n");
     fprintf(fout, "\n");
-    fprintf(fout, "static DBI_SimpleEntry simpleBuiltinDict[] = {\n");
+    fprintf(fout, "static const DBI_SimpleEntry simpleBuiltinDict[] = {\n");
     
     int lastEntry = OFFalse;
 
@@ -329,7 +329,7 @@ main(int argc, char* argv[])
 
     fprintf(fout, "};\n");
     fprintf(fout, "\n");
-    fprintf(fout, "static int simpleBuiltinDict_count = \n");
+    fprintf(fout, "static const int simpleBuiltinDict_count = \n");
     fprintf(fout, "    sizeof(simpleBuiltinDict)/sizeof(DBI_SimpleEntry);\n");
     fprintf(fout, "\n");
 
@@ -338,7 +338,7 @@ main(int argc, char* argv[])
     fprintf(fout, "DcmDataDictionary::loadBuiltinDictionary()\n");
     fprintf(fout, "{\n");
     fprintf(fout, "    DcmDictEntry* e = NULL;\n");
-    fprintf(fout, "    DBI_SimpleEntry* b = simpleBuiltinDict;\n");
+    fprintf(fout, "    const DBI_SimpleEntry *b = simpleBuiltinDict;\n");
     fprintf(fout, "    for (int i=0; i<simpleBuiltinDict_count; i++) {\n");
     fprintf(fout, "        b = simpleBuiltinDict + i;\n");
     fprintf(fout, "        e = new DcmDictEntry(b->group, b->element,\n");
@@ -359,7 +359,10 @@ main(int argc, char* argv[])
 /*
 ** CVS/RCS Log:
 ** $Log: mkdictbi.cc,v $
-** Revision 1.17  2000-03-08 16:26:55  meichel
+** Revision 1.18  2000-04-14 16:17:21  meichel
+** Minor changes for thread safety.
+**
+** Revision 1.17  2000/03/08 16:26:55  meichel
 ** Updated copyright header.
 **
 ** Revision 1.16  2000/02/23 15:12:09  meichel

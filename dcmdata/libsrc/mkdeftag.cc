@@ -22,9 +22,9 @@
  *  Purpose: Generate a C++ header defining symbolic names for DICOM Tags.
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-03-08 16:26:54 $
+ *  Update Date:      $Date: 2000-04-14 16:17:21 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/mkdeftag.cc,v $
- *  CVS/RCS Revision: $Revision: 1.15 $
+ *  CVS/RCS Revision: $Revision: 1.16 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -169,7 +169,7 @@ static char*
 getDateString(char* dateString, int maxLen)
 {
     time_t systime = time(NULL);
-    const char *ct = ctime(&systime);
+    const char *ct = ctime(&systime); // thread unsafe
     strncpy(dateString, ct, maxLen);
     stripTrailing(dateString, '\n');
     return dateString;
@@ -180,7 +180,7 @@ static char*
 getUserName(char* userString, int maxLen)
 {
     char* s;
-    s = cuserid(NULL);
+    s = cuserid(NULL); // thread unsafe
     return strncpy(userString, s, maxLen);
 }
 #elif HAVE_GETLOGIN
@@ -188,7 +188,7 @@ static char*
 getUserName(char* userString, int maxLen)
 {
     char* s;
-    s = getlogin();
+    s = getlogin(); // thread unsafe
     if (s == NULL) s = "<no-utmp-entry>";
     return strncpy(userString, s, maxLen);
 }
@@ -361,7 +361,10 @@ int main(int argc, char* argv[])
 /*
 ** CVS/RCS Log:
 ** $Log: mkdeftag.cc,v $
-** Revision 1.15  2000-03-08 16:26:54  meichel
+** Revision 1.16  2000-04-14 16:17:21  meichel
+** Minor changes for thread safety.
+**
+** Revision 1.15  2000/03/08 16:26:54  meichel
 ** Updated copyright header.
 **
 ** Revision 1.14  2000/02/23 15:12:08  meichel
