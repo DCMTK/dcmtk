@@ -29,7 +29,6 @@ progs = dcmftest dcmconv dcmdump dump2dcm dcmgpdir dcm2xml xml2dcm dcmcrle \
 support_lib = dcm2xml.dtd
 support_data = dumppat.txt
 
-
 all: $(progs)
 
 # Note: dcmftest does not need LOCALLIBS on most platforms, but on OSF1 it is required.
@@ -58,17 +57,10 @@ dcm2xml: dcm2xml.o
 	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ $@.o $(LOCALLIBS) $(MATHLIBS) $(LIBS)
 
 xml2dcm: xml2dcm.o
-	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ $@.o $(LOCALLIBS) $(XMLLIBS) $(MATHLIBS) $(LIBS)
+	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ $@.o $(XMLLIBS) $(LOCALLIBS) $(MATHLIBS) $(LIBS)
 
 dcmodify: dcmodify.o mdfconen.o mdfdsman.o
-	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ $@.o mdfconen.o mdfdsman.o $(LOCALLIBS) $(XMLLIBS) $(MATHLIBS) $(LIBS)
-
-mdfdsman: mdfdsman.o
-	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ $@.o $(LOCALLIBS) $(XMLLIBS) $(MATHLIBS) $(LIBS)
-
-mdfconen: mdfconen.o
-	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ $@.o $(LOCALLIBS) $(XMLLIBS) $(MATHLIBS) $(LIBS)
-
+	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ $@.o mdfconen.o mdfdsman.o $(LOCALLIBS) $(MATHLIBS) $(LIBS)
 
 install: install-bin install-support
 
