@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2001, OFFIS
+ *  Copyright (C) 2000-2003, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DSRReferencedTimeOffsetList
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2003-06-03 10:16:44 $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2003-08-07 12:52:51 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -98,6 +98,14 @@ class DSRReferencedTimeOffsetList
      */
     OFCondition write(DcmItem &dataset,
                       OFConsole *logStream) const;
+
+    /** put list of referenced time offsets as a string.
+     *  This function expects the same input format as created by print(), i.e. a comma
+     *  separated list of numerical values.
+     ** @param  stringValue  string value to be set
+     ** @return status, EC_Normal if successful, an error code otherwise
+     */
+    OFCondition putString(const char *stringValue);
 };
 
 
@@ -107,7 +115,10 @@ class DSRReferencedTimeOffsetList
 /*
  *  CVS/RCS Log:
  *  $Log: dsrtcoto.h,v $
- *  Revision 1.6  2003-06-03 10:16:44  meichel
+ *  Revision 1.7  2003-08-07 12:52:51  joergr
+ *  Added new putString() method.
+ *
+ *  Revision 1.6  2003/06/03 10:16:44  meichel
  *  Renamed local variables to avoid name clashes with STL
  *
  *  Revision 1.5  2001/09/26 13:04:12  meichel
