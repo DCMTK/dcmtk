@@ -23,8 +23,8 @@
  *    classes: DSRImageReferenceValue
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-10-24 15:04:11 $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  Update Date:      $Date: 2000-10-26 14:31:44 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -214,7 +214,7 @@ E_Condition DSRImageReferenceValue::renderHTML(ostream &docStream,
         docStream << PresentationState.getSOPInstanceUID() << "\">";
         docStream << " GSPS</a>" << endl;
     }
-    if (!FrameList.isEmpty() && (flags & DSRTypes::HF_renderFullData))
+    if (!isShort(flags))
     {
         if (flags & DSRTypes::HF_currentlyInsideAnnex)
         {
@@ -298,7 +298,11 @@ OFBool DSRImageReferenceValue::checkPresentationState(const DSRCompositeReferenc
 /*
  *  CVS/RCS Log:
  *  $Log: dsrimgvl.cc,v $
- *  Revision 1.7  2000-10-24 15:04:11  joergr
+ *  Revision 1.8  2000-10-26 14:31:44  joergr
+ *  Use method isShort() to decide whether a content item can be rendered
+ *  "inline" or not.
+ *
+ *  Revision 1.7  2000/10/24 15:04:11  joergr
  *  Changed HTML hyperlinks to referenced objects from "dicom://" to "file://"
  *  to facilitate access from Java.
  *

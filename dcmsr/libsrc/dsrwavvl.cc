@@ -23,8 +23,8 @@
  *    classes: DSRWaveformReferenceValue
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-10-24 15:04:12 $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  Update Date:      $Date: 2000-10-26 14:38:02 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -142,7 +142,7 @@ E_Condition DSRWaveformReferenceValue::renderHTML(ostream &docStream,
                                                   ostream &annexStream,
                                                   size_t &annexNumber,
                                                   const size_t flags,
-                                                  OFConsole *logStream) const
+                                                  OFConsole * /* logStream */) const
 {
     /* render reference */
     docStream << "<a href=\"file://dicom/waveform/" << SOPClassUID << "/" << SOPInstanceUID << "\">";
@@ -153,7 +153,7 @@ E_Condition DSRWaveformReferenceValue::renderHTML(ostream &docStream,
         docStream << "unknown waveform";
     docStream << "</a>" << endl;
     /* render (optional) channel list */
-    if (!ChannelList.isEmpty() && (flags & DSRTypes::HF_renderFullData))
+    if (!isShort(flags))
     {
         if (flags & DSRTypes::HF_currentlyInsideAnnex)
         {
@@ -224,7 +224,11 @@ OFBool DSRWaveformReferenceValue::checkSOPClassUID(const OFString &sopClassUID) 
 /*
  *  CVS/RCS Log:
  *  $Log: dsrwavvl.cc,v $
- *  Revision 1.7  2000-10-24 15:04:12  joergr
+ *  Revision 1.8  2000-10-26 14:38:02  joergr
+ *  Use method isShort() to decide whether a content item can be rendered
+ *  "inline" or not.
+ *
+ *  Revision 1.7  2000/10/24 15:04:12  joergr
  *  Changed HTML hyperlinks to referenced objects from "dicom://" to "file://"
  *  to facilitate access from Java.
  *

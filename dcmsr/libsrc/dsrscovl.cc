@@ -23,8 +23,8 @@
  *    classes: DSRSpatialCoordinatesValue
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-10-19 16:06:42 $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  Update Date:      $Date: 2000-10-26 14:34:39 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -93,14 +93,13 @@ OFBool DSRSpatialCoordinatesValue::isShort(const size_t flags) const
 E_Condition DSRSpatialCoordinatesValue::print(ostream &stream,
                                               const size_t flags) const
 {
-    E_Condition result = EC_Normal;
     /* GraphicType */
     stream << "(" << DSRTypes::graphicTypeToEnumeratedValue(GraphicType);
     /* GraphicData */
     if (!GraphicDataList.isEmpty())
     {
         stream << ",";
-        result = GraphicDataList.print(stream, flags);
+        GraphicDataList.print(stream, flags);
     }
     stream << ")";
     return EC_Normal;
@@ -129,7 +128,7 @@ E_Condition DSRSpatialCoordinatesValue::write(DcmItem &dataset,
                                               OFConsole *logStream) const
 {
     /* write GraphicType */
-    E_Condition result = DSRTypes::putStringValueToDataset(dataset, DCM_GraphicType, DSRTypes::graphicTypeToEnumeratedValue(GraphicType));;
+    E_Condition result = DSRTypes::putStringValueToDataset(dataset, DCM_GraphicType, DSRTypes::graphicTypeToEnumeratedValue(GraphicType));
     /* write GraphicData */
     if (result == EC_Normal)
     {
@@ -151,7 +150,7 @@ E_Condition DSRSpatialCoordinatesValue::renderHTML(ostream &docStream,
     /* render GraphicType */
     docStream << DSRTypes::graphicTypeToReadableName(GraphicType) << endl;
     /* render GraphicData */
-    if (!GraphicDataList.isEmpty() && (flags & DSRTypes::HF_renderFullData))
+    if (!isShort(flags))
     {
         if (flags & DSRTypes::HF_currentlyInsideAnnex)
         {
@@ -267,7 +266,11 @@ OFBool DSRSpatialCoordinatesValue::checkData(const DSRTypes::E_GraphicType graph
 /*
  *  CVS/RCS Log:
  *  $Log: dsrscovl.cc,v $
- *  Revision 1.4  2000-10-19 16:06:42  joergr
+ *  Revision 1.5  2000-10-26 14:34:39  joergr
+ *  Use method isShort() to decide whether a content item can be rendered
+ *  "inline" or not.
+ *
+ *  Revision 1.4  2000/10/19 16:06:42  joergr
  *  Added optional module name to read method to provide more detailed warning
  *  messages.
  *
