@@ -21765,8 +21765,6 @@ cat >>confdefs.h <<\_ACEOF
 _ACEOF
 
       TIFFLIBS="-ltiff"
-      SAVELIBS="$LIBS"
-      LIBS="$LIBS -ltiff"
 
 
 echo "$as_me:$LINENO: checking whether libtiff supports LZW compression" >&5
@@ -21853,7 +21851,6 @@ _ACEOF
 
 fi
 
-      LIBS="$SAVELIBS"
 
 else
   echo "$as_me: failed program was:" >&5

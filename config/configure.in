@@ -745,10 +745,7 @@ AC_ARG_WITH(libtiff,
     [ AC_MSG_RESULT(yes)
       AC_DEFINE(WITH_LIBTIFF, , [Define if we are compiling with libtiff support])
       TIFFLIBS="-ltiff" 
-      SAVELIBS="$LIBS"
-      LIBS="$LIBS -ltiff"
       AC_LIBTIFF_LZW_COMPRESSION
-      LIBS="$SAVELIBS"
     ], 
     [AC_MSG_RESULT(no)])
   LIBS="$SAVELIBS"] )
