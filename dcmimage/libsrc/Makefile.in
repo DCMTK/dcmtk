@@ -13,8 +13,8 @@ configdir=@top_srcdir@/@configdir@
 # Special defines for the Library, define them in LOCALDEFS
 #   REVERSE_OVERLAY_ORIGIN_ORDER
 #	swap order of overlay origin coordinates
+# LOCALDEFS = -DREVERSE_OVERLAY_ORIGIN_ORDER
 
-LOCALDEFS = -DREVERSE_OVERLAY_ORIGIN_ORDER
 LOCALINCLUDES = -I../../ofstd/include -I../../dcmdata/include
 
 include $(configdir)/@common_makefile@

@@ -1,4 +1,10 @@
 
+**** Changes from 97.10.01 (eichelberg)
+
+- Removed -DREVERSE_OVERLAY_ORIGIN_ORDER from default
+  compile options.
+  Affects: dcmimage/libsrc/Makefile.in
+  
 **** Changes from 97.09.18 (eichelberg)
 
 - Minor type conflicts (e.g. long passed as int) solved.
