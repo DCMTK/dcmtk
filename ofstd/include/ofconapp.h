@@ -22,9 +22,9 @@
  *  Purpose: Handle console applications (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-04-27 16:24:53 $
+ *  Update Date:      $Date: 1999-08-17 10:23:10 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/include/Attic/ofconapp.h,v $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -88,7 +88,7 @@ class OFConsoleApplication
      *  @param  flags     flags to be used for parsing (e.g. OFCommandLine::ExpandWildcards)
      *  @param  startPos  first argument to be parsed (default: 1, omit program name)
      *
-     ** @result status of parsing process, true if successful, false otherwise
+     ** @return status of parsing process, true if successful, false otherwise
      */
     OFBool parseCommandLine(OFCommandLine &cmd,
                             int argCount,
@@ -178,7 +178,10 @@ class OFConsoleApplication
  *
  * CVS/RCS Log:
  * $Log: ofconapp.h,v $
- * Revision 1.5  1999-04-27 16:24:53  joergr
+ * Revision 1.6  1999-08-17 10:23:10  joergr
+ * Corrected Doc++ comment.
+ *
+ * Revision 1.5  1999/04/27 16:24:53  joergr
  * Introduced list of valid parameters used for syntax output and error
  * checking.
  * Added method to check conflicts between two options (incl. error output).
