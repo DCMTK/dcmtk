@@ -20,14 +20,11 @@ LOCALINCLUDES=-I$(ofstddir)/include -I$(includedir)/ofstd
 LIBDIRS = -L$(top_srcdir)/libsrc -L$(ofstddir)/libsrc -L$(libdir)
 LOCALLIBS = -ldcmdata -lofstd
 
-objs= dcmgpdir.o dcmftest.o dcmconv.o dcmdump.o dump2dcm.o 
+objs= dcmftest.o dcmconv.o dcmdump.o dump2dcm.o 
 
-progs= dcmgpdir dcmftest dcmconv dcmdump dump2dcm 
+progs= dcmftest dcmconv dcmdump dump2dcm 
 
 all: $(progs)
-
-dcmgpdir: dcmgpdir.o
-	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ $@.o $(LOCALLIBS) $(LIBS)  
 
 # Note: dcmftest does not need LOCALLIBS on most platforms, but on OSF1 it is required.
 dcmftest: dcmftest.o

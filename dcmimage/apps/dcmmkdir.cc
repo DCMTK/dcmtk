@@ -15,18 +15,21 @@
  *  ITS CONFORMITY TO ANY SPECIFICATION. THE ENTIRE RISK AS TO QUALITY AND
  *  PERFORMANCE OF THE SOFTWARE IS WITH THE USER.
  *
- *  Module:  dcmdata
+ *  Module:  dcmimgle
  *
- *  Author:  Andrew Hewett
+ *  Author:  Andrew Hewett, Joerg Riesmeier
  *
  *  Purpose:
- *  Make a General Purpose DICOMDIR according to the General Purpose
- *  CD-R Image Interchange Profile (former Supplement 19).
+ *  Make a DICOMDIR according to the DICOM Part 11 Media Storage Application
+ *  Profiles. Currently supports the following profiles:
+ *  - General Purpose CD-R Interchange (STD-GEN-CD)
+ *  - Basic Cardiac X-Ray Angiographic Studies on CD-R Media (STD-XABC-CD)
+ *  - 1024 X-Ray Angiographic Studies on CD-R Media (STD-XA1K-CD)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-10-01 15:00:26 $
- *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/apps/dcmgpdir.cc,v $
- *  CVS/RCS Revision: $Revision: 1.53 $
+ *  Update Date:      $Date: 2001-11-13 17:57:14 $
+ *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/apps/Attic/dcmmkdir.cc,v $
+ *  CVS/RCS Revision: $Revision: 1.1 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -103,16 +106,20 @@ END_EXTERN_C
 #include <GUSI.h>
 #endif
 
+#include "ofconapp.h"
 #include "ofstring.h"
 #include "oflist.h"
+#include "ofbmanip.h"
+
 #include "dctk.h"
 #include "dcdebug.h"
+#include "dcuid.h"    /* for dcmtk version name */
 #include "cmdlnarg.h"
 
-#include "ofconapp.h"
-#include "dcuid.h"    /* for dcmtk version name */
+#include "dcmimage.h"
+#include "discalet.h"
 
-#define OFFIS_CONSOLE_APPLICATION "dcmgpdir"
+#define OFFIS_CONSOLE_APPLICATION "dcmmkdir"
 
 static char rcsid[] = "$dcmtk: " OFFIS_CONSOLE_APPLICATION " v"
   OFFIS_DCMTK_VERSION " " OFFIS_DCMTK_RELEASEDATE " $";
@@ -129,7 +136,17 @@ static char rcsid[] = "$dcmtk: " OFFIS_CONSOLE_APPLICATION " v"
 /* DICOM only allows max 8 path components in a file name */
 #define MAX_FNAME_COMPONENTS 8
 
+/* list of supported profiles */
+enum E_DicomDirProfile {
+    EDDP_GeneralPurpose,
+    EDDP_BasicCardiac,
+    EDDP_XrayAngiographic
+};
+
 OFString ofname = "DICOMDIR";
+
+/* default profile */
+E_DicomDirProfile dicomdirProfile = EDDP_GeneralPurpose;
 
 /* actual File-Set ID */
 OFString fsid = DEFAULT_FSID;
@@ -137,6 +154,8 @@ OFString fsid = DEFAULT_FSID;
 OFString fsdfid = ""; /* can be set to DEFAULT_FSDFID during option handling */
 /* actual Specific Character Set of File-Set Descriptor File */
 OFString scsfsdf = DEFAULT_SCSFSDF;
+
+OFString iconPrefix = "";
 
 OFBool verbosemode = OFFalse;
 OFBool writeDicomdir = OFTrue;
@@ -148,7 +167,7 @@ OFBool recurseFilesystem = OFFalse;
 E_EncodingType lengthEncoding = EET_ExplicitLength;
 E_GrpLenEncoding groupLengthEncoding = EGL_withoutGL;
 
-#define SHORTCOL 2
+#define SHORTCOL 4
 #define LONGCOL 21
 
 // ********************************************
@@ -160,6 +179,25 @@ static OFBool
 createDicomdirFromFiles(OFList<OFString>& fileNames);
 
 // ********************************************
+
+static const char*
+getProfileName(E_DicomDirProfile profile)
+{
+    const char *result = "";
+    switch(profile)
+    {
+        case EDDP_BasicCardiac:
+            result = "STD-XABC-CD";
+            break;
+        case EDDP_XrayAngiographic:
+            result = "STD-XA1K-CD";
+            break;
+        case EDDP_GeneralPurpose:
+            result = "STD-GEN-CD";
+            break;
+    }
+    return result;
+}
 
 static OFBool
 isaValidCharSetName(const OFString& cs)
@@ -196,7 +234,7 @@ int main(int argc, char *argv[])
     int opt_debugMode = 0;
     SetDebugLevel(( 0 ));
 
-    OFConsoleApplication app(OFFIS_CONSOLE_APPLICATION , "Create a general purpose DICOMDIR", rcsid);
+    OFConsoleApplication app(OFFIS_CONSOLE_APPLICATION , "Create a DICOMDIR file", rcsid);
     OFCommandLine cmd;
 
     OFString opt1 = "[i]d: string (default: ";
@@ -206,45 +244,52 @@ int main(int argc, char *argv[])
     cmd.setOptionColumns(LONGCOL, SHORTCOL);
     cmd.setParamColumn(LONGCOL + SHORTCOL + 4);
 
-    cmd.addParam("dcmfile-in", "referenced DICOM file", OFCmdParam::PM_MultiMandatory);
+    cmd.addParam("dcmfile-in", "referenced DICOM file(s)", OFCmdParam::PM_MultiMandatory);
 
     cmd.addGroup("general options:", LONGCOL, SHORTCOL + 2);
-     cmd.addOption("--help",                      "-h",        "print this help text and exit");
-     cmd.addOption("--verbose",                   "-v",        "verbose mode, print processing details");
-     cmd.addOption("--debug",                     "-d",        "debug mode, print debug information");
+     cmd.addOption("--help",                    "-h",     "print this help text and exit");
+     cmd.addOption("--verbose",                 "-v",     "verbose mode, print processing details");
+     cmd.addOption("--debug",                   "-d",     "debug mode, print debug information");
 
     cmd.addGroup("input options:");
       cmd.addSubGroup("dicomdir identifiers:");
-        cmd.addOption("--output-file",            "+D",    1,  "[f]ilename: string",
-                                                               "generate specific DICOMDIR file\n(default: DICOMDIR in current directory)");
-        cmd.addOption("--fileset-id",             "+F",    1,   opt1.c_str(),
-                                                               "use specific file set ID");
-        cmd.addOption("--descriptor",             "+R",    1,  "[f]ilename: string",
-                                                               "add a file set descriptor file ID\n(e.g. README, default: no descriptor)");
-        cmd.addOption("--char-set",               "+C",    1,  "[c]har-set: string",
-                                                               "add a specific character set for descriptor\n(default: \"ISO_IR 100\" if descriptor present)");
+        cmd.addOption("--output-file",          "+D",  1, "[f]ilename: string",
+                                                          "generate specific DICOMDIR file\n(default: DICOMDIR in current directory)");
+        cmd.addOption("--fileset-id",           "+F",  1, opt1.c_str(),
+                                                          "use specific file set ID");
+        cmd.addOption("--descriptor",           "+R",  1, "[f]ilename: string",
+                                                          "add a file set descriptor file ID\n(e.g. README, default: no descriptor)");
+        cmd.addOption("--char-set",             "+C",  1, "[c]har-set: string",
+                                                          "add a specific character set for descriptor\n(default: \"ISO_IR 100\" if descriptor present)");
       cmd.addSubGroup("type 1 attributes:");
-        cmd.addOption("--strict",                 "-I",        "exit with error if DICOMDIR type 1 attributes\nare missing in DICOM file (default)");
-        cmd.addOption("--invent",                 "+I",        "invent DICOMDIR type 1 attributes\nif missing in DICOM file");
+        cmd.addOption("--strict",               "-I",     "exit with error if DICOMDIR type 1 attributes\nare missing in DICOM file (default)");
+        cmd.addOption("--invent",               "+I",     "invent DICOMDIR type 1 attributes\nif missing in DICOM file");
       cmd.addSubGroup("reading:");
-        cmd.addOption("--keep-filenames",         "-m",        "expect filenames to be in DICOM format (default)");
-        cmd.addOption("--map-filenames",          "+m",        "map to DICOM filenames (lowercase -> uppercase,\nand remove trailing period)");
-        cmd.addOption("--no-recurse",             "-r",        "do not recurse within directories (default)");
-        cmd.addOption("--recurse",                "+r",        "recurse within filesystem directories");
+        cmd.addOption("--keep-filenames",       "-m",     "expect filenames to be in DICOM format\n(default)");
+        cmd.addOption("--map-filenames",        "+m",     "map to DICOM filenames (lowercase->uppercase,\nand remove trailing period)");
+        cmd.addOption("--no-recurse",           "-r",     "do not recurse within directories (default)");
+        cmd.addOption("--recurse",              "+r",     "recurse within filesystem directories");
+      cmd.addSubGroup("external icon images (only with -Pbc or -Pxa):");
+        cmd.addOption("--icon-file-prefix",     "-Xi", 1, "[p]refix: string",
+                                                          "use pgm image 'prefix'+'dcmfile-in' as icon\n(default: create icon from DICOM image)");
     cmd.addGroup("output options:");
+      cmd.addSubGroup("profiles:");
+        cmd.addOption("--general-purpose",      "-Pgp",   "General Purpose CD-R Interchange\n(STD-GEN-CD, default)");
+        cmd.addOption("--basic-cardiac",        "-Pbc",   "Basic Cardiac X-Ray Angiographic Studies on\nCD-R Media (STD-XABC-CD)");
+        cmd.addOption("--xray-angiographic",    "-Pxa",   "1024 X-Ray Angiographic Studies on CD-R Media\n(STD-XA1K-CD)");
       cmd.addSubGroup("writing:");
-        cmd.addOption("--replace",                "-A",        "replace existing dicomdir (default)");
-        cmd.addOption("--append",                 "+A",        "append to existing dicomdir");
-        cmd.addOption("--discard",                "-w",        "do not write out dicomdir");
+        cmd.addOption("--replace",              "-A",     "replace existing dicomdir (default)");
+        cmd.addOption("--append",               "+A",     "append to existing dicomdir");
+        cmd.addOption("--discard",              "-w",     "do not write out dicomdir");
       cmd.addSubGroup("post-1993 value representations:");
-        cmd.addOption("--enable-new-vr",          "+u",        "enable support for new VRs (UN/UT) (default)");
-        cmd.addOption("--disable-new-vr",         "-u",        "disable support for new VRs, convert to OB");
+        cmd.addOption("--enable-new-vr",        "+u",     "enable support for new VRs (UN/UT) (default)");
+        cmd.addOption("--disable-new-vr",       "-u",     "disable support for new VRs, convert to OB");
       cmd.addSubGroup("group length encoding:");
-        cmd.addOption("--group-length-remove",    "-g",        "write without group length elements (default)");
-        cmd.addOption("--group-length-create",    "+g",        "write with group length elements");
+        cmd.addOption("--group-length-remove",  "-g",     "write without group length elements (default)");
+        cmd.addOption("--group-length-create",  "+g",     "write with group length elements");
       cmd.addSubGroup("length encoding in sequences and items:");
-        cmd.addOption("--length-explicit",        "+e",        "write with explicit lengths (default)");
-        cmd.addOption("--length-undefined",       "-e",        "write with undefined lengths");
+        cmd.addOption("--length-explicit",      "+e",     "write with explicit lengths (default)");
+        cmd.addOption("--length-undefined",     "-e",     "write with undefined lengths");
 
     /* evaluate command line */
     prepareCmdLineArgs(argc, argv, OFFIS_CONSOLE_APPLICATION);
@@ -281,6 +326,14 @@ int main(int argc, char *argv[])
       cmd.beginOptionBlock();
       if (cmd.findOption("--no-recurse")) recurseFilesystem = OFFalse;
       if (cmd.findOption("--recurse")) recurseFilesystem = OFTrue;
+      cmd.endOptionBlock();
+
+      if (cmd.findOption("--icon-file-prefix")) app.checkValue(cmd.getValue(iconPrefix));
+
+      cmd.beginOptionBlock();
+      if (cmd.findOption("--general-purpose")) dicomdirProfile = EDDP_GeneralPurpose;
+      if (cmd.findOption("--basic-cardiac")) dicomdirProfile = EDDP_BasicCardiac;
+      if (cmd.findOption("--xray-angiographic")) dicomdirProfile = EDDP_XrayAngiographic;
       cmd.endOptionBlock();
 
       cmd.beginOptionBlock();
@@ -406,6 +459,56 @@ dcmFindString(DcmItem* d, const DcmTagKey& key,
     return s;
 }
 
+static long
+dcmFindInteger(DcmItem* d, const DcmTagKey& key,
+               OFBool searchIntoSub = OFFalse)
+{
+    long i = 0;
+
+    DcmStack stack;
+    E_Condition ec = d->search(key, stack, ESM_fromHere, searchIntoSub);
+    DcmElement *elem = (DcmElement*) stack.top();
+    if (ec == EC_Normal && elem != NULL) {
+        switch (elem->ident()) {
+        case EVR_UL:
+        case EVR_up:
+            Uint32 ul;
+            ec = elem->getUint32(ul, 0 /*which*/);
+            i = ul;
+            break;
+        case EVR_SL:
+        case EVR_IS:
+            Sint32 sl;
+            ec = elem->getSint32(sl, 0 /*which*/);
+            i = sl;
+            break;
+        case EVR_US:
+        case EVR_xs:
+            Uint16 us;
+            ec = elem->getUint16(us, 0 /*which*/);
+            i = us;
+            break;
+        case EVR_SS:
+            Sint16 ss;
+            ec = elem->getSint16(ss, 0 /*which*/);
+            i = ss;
+            break;
+        default:
+            ec = EC_IllegalCall;
+            break;
+        }
+    }
+
+    if (ec != EC_Normal && ec != EC_TagNotFound) {
+        DcmTag tag(key);
+        CERR << "dcmFindInteger: error while finding " << tag.getTagName()
+             << " " << key << ": "
+             << ec.text() << endl;
+    }
+
+    return i;
+}
+
 static OFString
 dcmFindStringInFile(const OFString& fname, const DcmTagKey& key,
                     OFBool searchIntoSub = OFFalse)
@@ -473,6 +576,45 @@ dcmInsertString(DcmItem* d, const DcmTagKey& key,
 }
 
 static OFBool
+dcmInsertInteger(DcmItem* d, const DcmTagKey& key,
+                 const long i, OFBool replaceOld = OFTrue)
+{
+    if (d == NULL) {
+        CERR << "error: dcmInsertInteger: null DcmItem argument" << endl;
+        return OFFalse;
+    }
+
+    DcmTag tag(key);
+    DcmElement *elem = newDicomElement(tag);
+    E_Condition cond = EC_Normal;
+
+    if (elem == NULL) {
+        CERR << "error: dcmInsertInteger: cannot create DcmElement" << endl;
+        return OFFalse;
+    }
+    switch(tag.getEVR())
+    {
+        case EVR_US:
+            cond = elem->putUint16((Uint16)i);
+            break;
+        /* might be extended later: EVR_SS, EVR_IS, ... */
+        default:
+            break;
+    }
+    if (cond != EC_Normal) {
+        CERR << "error: dcmInsertInteger: cannot put integer" << endl;
+        return OFFalse;
+    }
+    cond = d->insert(elem, replaceOld);
+    if (cond != EC_Normal) {
+        CERR << "error: dcmInsertInteger: cannot insert element" << endl;
+        return OFFalse;
+    }
+
+    return (cond == EC_Normal);
+}
+
+static OFBool
 dcmCopyString(DcmItem* sink, const DcmTagKey& key, DcmItem* source)
 {
     return dcmInsertString(sink, key, dcmFindString(source, key));
@@ -488,11 +630,9 @@ dcmCopyOptString(DcmItem* sink, const DcmTagKey& key, DcmItem* source)
     return ok;
 }
 
-#if 0
-/* currently unused */
 static OFBool
 dcmCopyStringWithDefault(DcmItem* sink, const DcmTagKey& key,
-                         DcmItem* source, const char* defaultString)
+                         DcmItem* source, const char* defaultString = "")
 {
     OFBool ok = OFTrue;
     if (dcmTagExistsWithValue(source, key)) {
@@ -502,7 +642,6 @@ dcmCopyStringWithDefault(DcmItem* sink, const DcmTagKey& key,
     }
     return ok;
 }
-#endif
 
 static OFBool
 dcmCopySequence(DcmItem* sink, const DcmTagKey& key, DcmItem* source)
@@ -776,6 +915,59 @@ checkExistsWithValue(DcmItem* d, const DcmTagKey& key, const OFString& fname)
     return OFTrue;
 }
 
+static OFBool
+checkExistsWithStringValue(DcmItem* d, const DcmTagKey& key, const OFString &value, const OFString& fname, OFBool normalize = OFTrue)
+{
+    if (!checkExists(d, key, fname)) {
+        return OFFalse;
+    }
+    OFString s = dcmFindString(d, key);
+    if (normalize)
+        normalizeString(s, OFTrue /* multiPart */, OFTrue /*leading */, OFTrue /* trailing */);
+    if (!cmp(s, value)) {
+        DcmTag tag(key);
+        CERR << "error: attribute " << tag.getTagName()
+             << " " << key << " has other value than expected in file: "
+             << fname << endl;
+        return OFFalse;
+    }
+    return OFTrue;
+}
+
+static OFBool
+checkExistsWithIntegerValue(DcmItem* d, const DcmTagKey& key, const long value, const OFString& fname)
+{
+    if (!checkExists(d, key, fname)) {
+        return OFFalse;
+    }
+    long i = dcmFindInteger(d, key);
+    if (i != value) {
+        DcmTag tag(key);
+        CERR << "error: attribute " << tag.getTagName()
+             << " " << key << " has other value than expected in file: "
+             << fname << endl;
+        return OFFalse;
+    }
+    return OFTrue;
+}
+
+static OFBool
+checkExistsWithMinMaxValue(DcmItem* d, const DcmTagKey& key, const long min, const long max, const OFString& fname)
+{
+    if (!checkExists(d, key, fname)) {
+        return OFFalse;
+    }
+    long i = dcmFindInteger(d, key);
+    if ((i < min) || (i > max)) {
+        DcmTag tag(key);
+        CERR << "error: attribute " << tag.getTagName()
+             << " " << key << " has other value than expected in file: "
+             << fname << endl;
+        return OFFalse;
+    }
+    return OFTrue;
+}
+
 static OFString
 recordTypeToName(E_DirRecType t)
 {
@@ -856,7 +1048,7 @@ checkImage(const OFString& fname, DcmFileFormat *ff)
     /*
     ** Do some sanity checks on the file.
     ** - is this a part 10 file format file?
-    ** - can this file be part of a General Purpose DICOMDIR?
+    ** - can this file be part of a DICOMDIR according to the selected profile?
     ** - does it have the necessary attributes?
     ** - is the transfer syntax valid?
     **
@@ -890,45 +1082,74 @@ checkImage(const OFString& fname, DcmFileFormat *ff)
              << fname << endl;
         ok = OFFalse;
     }
+
     /*
     ** Check if the SOP Class is a known storage SOP class (an image, overlay,
     ** curve, etc.
     */
     OFBool found = OFFalse;
+    OFString expectedTransferSyntax = UID_LittleEndianExplicitTransferSyntax;
 
-    /* is it an image ? */
-    for (int i=0; i<numberOfDcmImageSOPClassUIDs && !found; i++) {
-        found = cmp(mediaSOPClassUID, dcmImageSOPClassUIDs[i]);
+    switch (dicomdirProfile)
+    {
+        case EDDP_BasicCardiac:
+            if (cmp(mediaSOPClassUID, UID_XRayAngiographicImageStorage))
+            {
+                expectedTransferSyntax = UID_JPEGProcess14SV1TransferSyntax;
+                found = OFTrue;
+            } else {
+                found = found || cmp(mediaSOPClassUID, UID_DetachedPatientManagementSOPClass);
+            }
+            break;
+        case EDDP_XrayAngiographic:
+            if (cmp(mediaSOPClassUID, UID_XRayAngiographicImageStorage))
+            {
+                expectedTransferSyntax = UID_JPEGProcess14SV1TransferSyntax;
+                found = OFTrue;
+            } else {
+                found = found || cmp(mediaSOPClassUID, UID_SecondaryCaptureImageStorage);
+                found = found || cmp(mediaSOPClassUID, UID_StandaloneOverlayStorage);
+                found = found || cmp(mediaSOPClassUID, UID_StandaloneCurveStorage);
+                found = found || cmp(mediaSOPClassUID, UID_DetachedPatientManagementSOPClass);
+            }
+            break;
+        case EDDP_GeneralPurpose:
+        {
+            /* is it an image ? */
+            for (int i=0; i<numberOfDcmImageSOPClassUIDs && !found; i++) {
+                found = cmp(mediaSOPClassUID, dcmImageSOPClassUIDs[i]);
+            }
+            /* is it an overlay/curve/modality_lut/voi_lut etc. ? */
+            found = found || cmp(mediaSOPClassUID, UID_StandaloneOverlayStorage);
+            found = found || cmp(mediaSOPClassUID, UID_StandaloneCurveStorage);
+            found = found || cmp(mediaSOPClassUID, UID_StandaloneModalityLUTStorage);
+            found = found || cmp(mediaSOPClassUID, UID_StandaloneVOILUTStorage);
+            found = found || cmp(mediaSOPClassUID, UID_PETCurveStorage);
+            found = found || cmp(mediaSOPClassUID, UID_GrayscaleSoftcopyPresentationStateStorage);
+            found = found || cmp(mediaSOPClassUID, UID_StoredPrintStorage);
+            /* is it one of the RT SOP Classes? */
+            found = found || cmp(mediaSOPClassUID, UID_RTDoseStorage);
+            found = found || cmp(mediaSOPClassUID, UID_RTStructureSetStorage);
+            found = found || cmp(mediaSOPClassUID, UID_RTBeamsTreatmentRecordStorage);
+            found = found || cmp(mediaSOPClassUID, UID_RTPlanStorage);
+            found = found || cmp(mediaSOPClassUID, UID_RTBrachyTreatmentRecordStorage);
+            found = found || cmp(mediaSOPClassUID, UID_RTTreatmentSummaryRecordStorage);
+            /* is it one of the structured reporting SOP Classes? */
+            found = found || cmp(mediaSOPClassUID, UID_BasicTextSR);
+            found = found || cmp(mediaSOPClassUID, UID_EnhancedSR);
+            found = found || cmp(mediaSOPClassUID, UID_ComprehensiveSR);
+            found = found || cmp(mediaSOPClassUID, UID_KeyObjectSelectionDocument);
+            /* is it one of the waveform SOP Classes? */
+            found = found || cmp(mediaSOPClassUID, UID_TwelveLeadECGWaveformStorage);
+            found = found || cmp(mediaSOPClassUID, UID_GeneralECGWaveformStorage);
+            found = found || cmp(mediaSOPClassUID, UID_AmbulatoryECGWaveformStorage);
+            found = found || cmp(mediaSOPClassUID, UID_HemodynamicWaveformStorage);
+            found = found || cmp(mediaSOPClassUID, UID_CardiacElectrophysiologyWaveformStorage);
+            found = found || cmp(mediaSOPClassUID, UID_BasicVoiceAudioWaveformStorage);
+            /* a detached patient mgmt sop class is also ok */
+            found = found || cmp(mediaSOPClassUID, UID_DetachedPatientManagementSOPClass);
+        }
     }
-    /* is it an overlay/curve/modality_lut/voi_lut etc. ? */
-    found = found || cmp(mediaSOPClassUID, UID_StandaloneOverlayStorage);
-    found = found || cmp(mediaSOPClassUID, UID_StandaloneCurveStorage);
-    found = found || cmp(mediaSOPClassUID, UID_StandaloneModalityLUTStorage);
-    found = found || cmp(mediaSOPClassUID, UID_StandaloneVOILUTStorage);
-    found = found || cmp(mediaSOPClassUID, UID_PETCurveStorage);
-    found = found || cmp(mediaSOPClassUID, UID_GrayscaleSoftcopyPresentationStateStorage);
-    found = found || cmp(mediaSOPClassUID, UID_StoredPrintStorage);
-    /* is it one of the RT SOP Classes? */
-    found = found || cmp(mediaSOPClassUID, UID_RTDoseStorage);
-    found = found || cmp(mediaSOPClassUID, UID_RTStructureSetStorage);
-    found = found || cmp(mediaSOPClassUID, UID_RTBeamsTreatmentRecordStorage);
-    found = found || cmp(mediaSOPClassUID, UID_RTPlanStorage);
-    found = found || cmp(mediaSOPClassUID, UID_RTBrachyTreatmentRecordStorage);
-    found = found || cmp(mediaSOPClassUID, UID_RTTreatmentSummaryRecordStorage);
-    /* is it one of the structured reporting SOP Classes? */
-    found = found || cmp(mediaSOPClassUID, UID_BasicTextSR);
-    found = found || cmp(mediaSOPClassUID, UID_EnhancedSR);
-    found = found || cmp(mediaSOPClassUID, UID_ComprehensiveSR);
-    found = found || cmp(mediaSOPClassUID, UID_KeyObjectSelectionDocument);
-    /* is it one of the waveform SOP Classes? */
-    found = found || cmp(mediaSOPClassUID, UID_TwelveLeadECGWaveformStorage);
-    found = found || cmp(mediaSOPClassUID, UID_GeneralECGWaveformStorage);
-    found = found || cmp(mediaSOPClassUID, UID_AmbulatoryECGWaveformStorage);
-    found = found || cmp(mediaSOPClassUID, UID_HemodynamicWaveformStorage);
-    found = found || cmp(mediaSOPClassUID, UID_CardiacElectrophysiologyWaveformStorage);
-    found = found || cmp(mediaSOPClassUID, UID_BasicVoiceAudioWaveformStorage);
-    /* a detached patient mgmt sop class is also ok */
-    found = found || cmp(mediaSOPClassUID, UID_DetachedPatientManagementSOPClass);
 
     if (!found) {
         OFString sopClassName = dcmFindNameOfUID(mediaSOPClassUID.c_str());
@@ -936,7 +1157,7 @@ checkImage(const OFString& fname, DcmFileFormat *ff)
             sopClassName = mediaSOPClassUID;
         }
         CERR << "error: invalid sop class (" << sopClassName
-             << ") for STD-GEN-CD profile: " << fname << endl;
+             << ") for " << getProfileName(dicomdirProfile) << " profile: " << fname << endl;
         /* give up checking */
         return OFFalse;
     }
@@ -950,9 +1171,13 @@ checkImage(const OFString& fname, DcmFileFormat *ff)
              << fname << endl;
         ok = OFFalse;
     }
-    found = cmp(transferSyntax, UID_LittleEndianExplicitTransferSyntax);
+    found = cmp(transferSyntax, expectedTransferSyntax);
     if (!found) {
-        CERR << "error: LittleEndianExplicitTransferSyntax expected: "
+        OFString xferName = dcmFindNameOfUID(expectedTransferSyntax.c_str());
+        if (xferName.empty()) {
+            xferName = expectedTransferSyntax;
+        }
+        CERR << "error: " << xferName << " expected: "
              << fname << endl;
         ok = OFFalse;
     }
@@ -1128,6 +1353,52 @@ checkImage(const OFString& fname, DcmFileFormat *ff)
         }
     } else {
         /* it can only be an image */
+        if ((dicomdirProfile == EDDP_BasicCardiac) &&
+             cmp(mediaSOPClassUID, UID_XRayAngiographicImageStorage)) {
+            /* a XA image */
+            if (!checkExistsWithStringValue(d, DCM_Modality, "XA", fname)) ok = OFFalse;
+            if (!checkExistsWithMinMaxValue(d, DCM_Rows, 1, 512, fname)) ok = OFFalse;
+            if (!checkExistsWithMinMaxValue(d, DCM_Columns, 1, 512, fname)) ok = OFFalse;
+            if (!checkExistsWithIntegerValue(d, DCM_BitsAllocated, 8, fname)) ok = OFFalse;
+            if (!checkExistsWithIntegerValue(d, DCM_BitsStored, 8, fname)) ok = OFFalse;
+            if (cmp(dcmFindString(d, DCM_ImageType), "BIPLANE A") ||
+                cmp(dcmFindString(d, DCM_ImageType), "BIPLANE B"))
+            {
+                CERR << "error: BIPLANE images not allowed for " << getProfileName(dicomdirProfile)
+                     << " profile: " << fname << endl;
+            }
+        } else if ((dicomdirProfile == EDDP_XrayAngiographic) &&
+                    cmp(mediaSOPClassUID, UID_XRayAngiographicImageStorage)) {
+            /* a XA image */
+            if (!checkExistsWithStringValue(d, DCM_Modality, "XA", fname)) ok = OFFalse;
+            if (!checkExistsWithMinMaxValue(d, DCM_Rows, 1, 1024, fname)) ok = OFFalse;
+            if (!checkExistsWithMinMaxValue(d, DCM_Columns, 1, 1024, fname)) ok = OFFalse;
+            if (!checkExists(d, DCM_BitsStored, fname))
+                ok = OFFalse;
+            {
+                long i = dcmFindInteger(d, DCM_BitsStored);
+                if ((i != 8) && (i != 10) && (i != 12))
+                {
+                    CERR << "error: attribute BitsStored"
+                         << " " << DCM_BitsStored << " has other value than expected in file: "
+                         << fname << endl;
+                    ok = OFFalse;
+                }
+            }
+        } else if ((dicomdirProfile == EDDP_XrayAngiographic) &&
+                    cmp(mediaSOPClassUID, UID_SecondaryCaptureImageStorage)) {
+            /* a SC image */
+            if (!checkExistsWithMinMaxValue(d, DCM_Rows, 1, 1024, fname)) ok = OFFalse;
+            if (!checkExistsWithMinMaxValue(d, DCM_Columns, 1, 1024, fname)) ok = OFFalse;
+            if (!checkExistsWithIntegerValue(d, DCM_SamplesPerPixel, 1, fname)) ok = OFFalse;
+            if (!checkExistsWithStringValue(d, DCM_PhotometricInterpretation, "MONOCHROME2", fname)) ok = OFFalse;
+            if (!checkExistsWithIntegerValue(d, DCM_BitsAllocated, 8, fname)) ok = OFFalse;
+            if (!checkExistsWithIntegerValue(d, DCM_BitsStored, 8, fname)) ok = OFFalse;
+            if (!checkExistsWithIntegerValue(d, DCM_HighBit, 7, fname)) ok = OFFalse;
+            if (!checkExistsWithIntegerValue(d, DCM_PixelRepresentation, 0, fname)) ok = OFFalse;
+            /* tbd: check for Overlay Group 60xx -> shall not be present */
+        }
+        /* other images */
         if (!inventAttributes) {
             if (!checkExistsWithValue(d, DCM_InstanceNumber, fname))
                 ok = OFFalse;
@@ -1217,6 +1488,13 @@ DcmDirectoryRecord* buildPatientRecord(
     dcmCopyString(rec, DCM_PatientID, d);
     dcmCopyString(rec, DCM_PatientsName, d);
 
+    if ((dicomdirProfile == EDDP_BasicCardiac) || (dicomdirProfile == EDDP_XrayAngiographic))
+    {
+        /* additional type 2 keys specified by specific profiles */
+        dcmCopyStringWithDefault(rec, DCM_PatientsBirthDate, d);
+        dcmCopyStringWithDefault(rec, DCM_PatientsSex, d);
+    }
+
     return rec;
 }
 
@@ -1290,7 +1568,119 @@ buildSeriesRecord(
     dcmCopyString(rec, DCM_SeriesInstanceUID, d);
     dcmCopyString(rec, DCM_SeriesNumber, d);
 
+    if ((dicomdirProfile == EDDP_BasicCardiac) || (dicomdirProfile == EDDP_XrayAngiographic))
+    {
+        /* additional type 2 keys specified by specific profiles */
+        dcmCopyStringWithDefault(rec, DCM_InstitutionName, d);
+        dcmCopyStringWithDefault(rec, DCM_InstitutionAddress, d);
+        dcmCopyStringWithDefault(rec, DCM_PerformingPhysiciansName, d);
+    }
+
     return rec;
+}
+
+
+OFBool getExternalIcon(const OFString &sourceFileName,
+                       Uint8 *&pixel,
+                       const unsigned long count,
+                       const unsigned long width,
+                       const unsigned long height)
+{
+    OFBool result = OFFalse;
+    OFString filename = iconPrefix + sourceFileName;
+    FILE *file = fopen(filename.c_str(), "rb");
+    if (file != NULL)
+    {
+        /* according to the pgm format no line should be longer than 70 characters */
+        const int maxline = 256;
+        char line[maxline], text[maxline];
+
+        /* read magic number */
+        if ((fgets(line, maxline, file) != NULL) && (sscanf(line, "%s", text) > 0) && (strcmp(text, "P5") == 0))
+        {
+            if ((fgets(line, maxline, file) != NULL) && (sscanf(line, "%s", text) > 0))
+            {
+                unsigned long pgmWidth, pgmHeight = 0;
+                /* skip optional comment line and get width and height */
+                if (((*text != '#') || (fgets(line, maxline, file) != NULL)) &&
+                    (sscanf(line, "%lu %lu", &pgmWidth, &pgmHeight) > 0) && (pgmWidth > 0) && (pgmHeight > 0))
+                {
+                    unsigned int pgmMax = 0;
+                    /* get maximum gray value */
+                    if ((fgets(line, maxline, file) != NULL) && (sscanf(line, "%u", &pgmMax) > 0) && (pgmMax == 255))
+                    {
+                        const unsigned long pgmSize = pgmWidth * pgmHeight;
+                        Uint8 *pgmData = new Uint8[pgmSize];
+                        if (pgmData != NULL)
+                        {
+                            /* get pgm image data */
+                            if (fread(pgmData, sizeof(Uint8), (size_t)pgmSize, file) == pgmSize)
+                            {
+                                /* if already scaled, just copy the bitmap */
+                                if ((width == pgmWidth) && (height == pgmHeight) && (count == pgmSize))
+                                {
+                                    OFBitmanipTemplate<Uint8>::copyMem(pgmData, pixel, count);
+                                } else {
+                                    DiScaleTemplate<Uint8> scale(1, (Uint16)pgmWidth, (Uint16)pgmHeight, (Uint16)width, (Uint16)height, 1);
+                                    scale.scaleData((const Uint8 **)&pgmData, &pixel, 1 /* interpolate */);
+                                }
+                                result = OFTrue;
+                            }
+                            delete[] pgmData;
+                        } else
+                            CERR << "error: memory exhausted" << endl;
+                    }
+                }
+            }
+            if (!result)
+                CERR << "error: corrupt file format for external icon (not pgm binary)" << endl;
+        } else
+            CERR << "error: wrong file format for external icon (pgm required)" << endl;
+        fclose(file);
+    } else
+        CERR << "error: cannot open file for external icon: " << filename << endl;
+    return result;
+}
+
+
+OFBool getIconFromDataset(DcmItem *d,
+                          Uint8 *&pixel,
+                          const unsigned long count,
+                          const unsigned long width,
+                          const unsigned long height)
+{
+    OFBool result = OFFalse;
+    if ((pixel != NULL) && (count >= width * height))
+    {
+        /* choose representitive frame */
+        long fCount = dcmFindInteger(d, DCM_NumberOfFrames);
+        long frame = dcmFindInteger(d, DCM_RepresentativeFrameNumber);
+        if (fCount <= 0)
+            fCount = 1;
+        if (frame <= 0)
+        {
+            if (fCount > 3)
+                frame = fCount / 3;     // recommended in PS3.11
+            else
+                frame = 1;
+        } else if (frame > fCount)
+            frame = fCount;
+        /* open referenced image */
+        DicomImage image(d, EXS_Unknown);
+        if ((image.getStatus() == EIS_Normal) && (image.isMonochrome()))
+        {
+            /* create icon */
+            DicomImage *scaled = image.createScaledImage(width, height, 1 /* interpolate */);
+            if (scaled != NULL)
+            {
+                void *data = (void *)pixel;
+                if (!scaled->getOutputData(data, count, 8, frame - 1))
+                    result = OFTrue;
+                delete scaled;
+            }
+        }
+    }
+    return result;
 }
 
 DcmDirectoryRecord*
@@ -1316,9 +1706,95 @@ buildImageRecord(
     dcmCopyOptString(rec, DCM_SpecificCharacterSet, d);
     dcmCopyString(rec, DCM_InstanceNumber, d);
 
-    /* addition type 1C keys specified by STD-GEN-CD profile */
-    dcmCopyOptString(rec, DCM_ImageType, d);
-    dcmCopyOptSequence(rec, DCM_ReferencedImageSequence, d);
+    if ((dicomdirProfile == EDDP_BasicCardiac) || (dicomdirProfile == EDDP_XrayAngiographic))
+    {
+        /* required: Icon Image Sequence */
+        OFBool ok = OFFalse;
+        const unsigned long width = 128;
+        const unsigned long height = 128;
+        DcmSequenceOfItems *dseq = new DcmSequenceOfItems(DCM_IconImageSequence);
+        if (dseq != NULL)
+        {
+            DcmItem *ditem = new DcmItem();
+            if (ditem != NULL)
+            {
+                /* Image Pixel Module */
+                dcmInsertInteger(ditem, DCM_SamplesPerPixel, 1);
+                dcmInsertString(ditem, DCM_PhotometricInterpretation, "MONOCHROME2");
+                dcmInsertInteger(ditem, DCM_Rows, height);
+                dcmInsertInteger(ditem, DCM_Columns, width);
+                dcmInsertInteger(ditem, DCM_BitsAllocated, 8);
+                dcmInsertInteger(ditem, DCM_BitsStored, 8);
+                dcmInsertInteger(ditem, DCM_HighBit, 7);
+                dcmInsertInteger(ditem, DCM_PixelRepresentation, 0);
+                /* Pixel Data */
+                const unsigned long pCount = width * height;
+                Uint8 *pixel = new Uint8[pCount];
+                if (pixel != NULL)
+                {
+                    OFBool iconOk = OFFalse;
+                    if (iconPrefix.length() > 0)
+                        iconOk = getExternalIcon(sourceFileName, pixel, pCount, width, height);
+                    else
+                        iconOk = getIconFromDataset(d, pixel, pCount, width, height);
+                    /* could not create icon */
+                    if (!iconOk)
+                    {
+                        /* fill with gray ramp */
+                        Uint8 v = 0;
+                        Uint8 *p = pixel;
+                        for (unsigned long y = 0; y < height; y++)
+                            for (unsigned long x = 0; x < width; x++)
+                                *(p++) = v++;
+                    }
+                    DcmPixelData *dpix = new DcmPixelData(DCM_PixelData);
+                    if (dpix != NULL)
+                    {
+                        /* VR=OW is depreciated for Pixel Data */
+                        dpix->setVR(EVR_OB);
+                        if (dpix->putUint8Array(pixel, pCount) == EC_Normal)
+                        {
+                            if ((ditem->insert(dpix) == EC_Normal) && (dseq->insert(ditem) == EC_Normal) &&
+                                (rec->insert(dseq, OFTrue /* replaceOld */) == EC_Normal))
+                            {
+                                ok = OFTrue;
+                            }
+                        } else
+                            delete[] pixel;
+                    }
+                    if (!ok)
+                        delete dpix;
+                }
+                if (!ok)
+                    delete ditem;
+            }
+            if (!ok)
+                delete dseq;
+        }
+        if (!ok)
+            CERR << "error: cannot create IconImageSequence" << endl;
+
+        /* type 1C: required for XA images (type 1 for Basic Cardiac Profile) */
+        if (cmp(dcmFindString(d, DCM_SOPClassUID), UID_XRayAngiographicImageStorage))
+            dcmCopyString(rec, DCM_ImageType, d);
+        else
+            dcmCopyOptString(rec, DCM_ImageType, d);
+
+        /* additional type 2 keys specified by specific profiles */
+        dcmCopyStringWithDefault(rec, DCM_CalibrationImage, d);
+
+        /* type 1C: required if ImageType is "BIPLANE A" or "BIPLANE B" */
+        if (cmp(dcmFindString(d, DCM_ImageType), "BIPLANE A") ||
+            cmp(dcmFindString(d, DCM_ImageType), "BIPLANE B"))
+        {
+            dcmCopySequence(rec, DCM_ReferencedImageSequence, d);
+        } else
+            dcmCopyOptSequence(rec, DCM_ReferencedImageSequence, d);
+    } else {
+        /* type 1C */
+        dcmCopyOptString(rec, DCM_ImageType, d);
+        dcmCopyOptSequence(rec, DCM_ReferencedImageSequence, d);
+    }
 
     return rec;
 }
@@ -3334,246 +3810,13 @@ expandFileNames(OFList<OFString>& fileNames, OFList<OFString>& expandedNames)
 
 #endif
 
+
 /*
-** CVS/RCS Log:
-** $Log: dcmgpdir.cc,v $
-** Revision 1.53  2001-10-01 15:00:26  joergr
-** Introduced new general purpose functions to get/put DICOM element values
-** from/to an item/dataset - removed some old and rarely used functions.
-**
-** Revision 1.52  2001/09/28 14:17:00  joergr
-** Check return value of DcmItem::insert() statements to avoid memory leaks
-** when insert procedure failes.
-**
-** Revision 1.51  2001/09/25 17:21:00  meichel
-** Adapted dcmdata to class OFCondition
-**
-** Revision 1.50  2001/07/02 16:34:12  joergr
-** Fixed small bugs in dcmCopySequence() and addConceptModContentItems().
-**
-** Revision 1.49  2001/06/20 15:00:04  joergr
-** Added support for new SOP class Key Object Selection Document (suppl. 59).
-**
-** Revision 1.48  2001/06/05 10:08:31  joergr
-** Minor code purifications to keep Sun CC 2.0.1 quiet.
-**
-** Revision 1.47  2001/06/01 15:48:29  meichel
-** Updated copyright header
-**
-** Revision 1.46  2000/12/14 12:49:34  joergr
-** Updated for 2000 edition of the DICOM standard (added: SR, PR, WV, SP, RT).
-**
-** Revision 1.45  2000/10/12 10:26:47  meichel
-** Updated data dictionary for 2000 edition of the DICOM standard
-**
-** Revision 1.44  2000/04/14 16:01:01  meichel
-** Restructured class DcmTag. Instances don't keep a permanent pointer
-**   to a data dictionary entry anymore. Required for MT applications.
-**
-** Revision 1.43  2000/03/08 16:26:05  meichel
-** Updated copyright header.
-**
-** Revision 1.42  2000/03/06 18:09:37  joergr
-** Avoid empty statement in the body of if-statements (MSVC6 reports warnings).
-**
-** Revision 1.41  2000/03/03 14:05:16  meichel
-** Implemented library support for redirecting error messages into memory
-**   instead of printing them to stdout/stderr for GUI applications.
-**
-** Revision 1.40  2000/02/29 11:48:50  meichel
-** Removed support for VS value representation. This was proposed in CP 101
-**   but never became part of the standard.
-**
-** Revision 1.39  2000/02/23 15:11:34  meichel
-** Corrected macro for Borland C++ Builder 4 workaround.
-**
-** Revision 1.38  2000/02/03 11:49:05  meichel
-** Updated dcmgpdir to new directory record structure in letter ballot text
-**   of Structured Report.
-**
-** Revision 1.37  2000/02/02 15:17:13  meichel
-** Replaced some #if statements by more robust #ifdef
-**
-** Revision 1.36  2000/02/01 10:11:58  meichel
-** Avoiding to include <stdlib.h> as extern "C" on Borland C++ Builder 4,
-**   workaround for bug in compiler header files.
-**
-** Revision 1.35  1999/07/14 12:02:24  meichel
-** Updated data dictionary for supplement 29, 39, 33_lb, CP packet 4 and 5.
-**   Corrected dcmtk applications for changes in attribute name constants.
-**
-** Revision 1.34  1999/04/30 16:40:02  meichel
-** Minor code purifications to keep Sun CC 2.0.1 quiet
-**
-** Revision 1.33  1999/04/27 17:50:51  joergr
-** Adapted console applications to new OFCommandLine and OFConsoleApplication
-** functionality.
-**
-** Revision 1.32  1999/04/27 12:23:26  meichel
-** Prevented dcmdata applications from opening a file with empty filename,
-**   leads to application crash on Win32.
-**
-** Revision 1.31  1999/04/22 13:43:09  meichel
-** Removed carriage returns that VC++ has put into the source code
-**
-** Revision 1.30  1999/04/22 13:32:52  meichel
-** Corrected Win32 API version of expandFileNames routine in dcmgpdir
-**
-** Revision 1.29  1999/03/31 09:24:20  meichel
-** Updated copyright header in module dcmdata
-**
-** Revision 1.28  1999/03/29 10:14:14  meichel
-** Adapted command line options of dcmdata applications to new scheme.
-**
-** Revision 1.27  1999/03/22 14:10:55  meichel
-** Added support for Structured Reports to dcmgpdir.
-**   Added preliminary support for including sequences into a DICOMDIR.
-**
-** Revision 1.26  1999/03/22 09:58:48  meichel
-** Reworked data dictionary based on the 1998 DICOM edition and the latest
-**   supplement versions. Corrected dcmtk applications for minor changes
-**   in attribute name constants.
-**
-** Revision 1.25  1998/07/15 15:55:04  joergr
-** Removed compiler warnings reported by gcc 2.8.1 with additional
-** options, e.g. missing const declaration of char pointers. Replaced
-** tabs by spaces.
-**
-** Revision 1.24  1998/02/06 15:07:20  meichel
-** Removed many minor problems (name clashes, unreached code)
-**   reported by Sun CC4 with "+w" or Sun CC2.
-**
-** Revision 1.23  1998/01/27 10:49:23  meichel
-** Minor bug corrections (string too short, incorrect return value).
-**   Thanks to Andreas Barth <anba@bruker.de> for the report.
-**
-** Revision 1.22  1998/01/14 14:40:33  hewett
-** Added support for the VRs UT (Unlimited Text) and VS (Virtual String).
-** Modified existing -u command line option to also disable generation
-** of UT and VS (previously just disabled generation of UN).
-**
-** Revision 1.21  1997/10/09 11:26:30  hewett
-** Fixed dcmgpdir bug related to unlinking a DICOMDIR backup file.
-**
-** Revision 1.20  1997/10/07 10:12:59  meichel
-** Corrected passing of pointer instead of reference.
-**
-** Revision 1.19  1997/09/22 16:40:10  hewett
-** Modified to use the new attribute existance tests
-** from DcmItem and the global list dcmImageSOPClassUIDs of SOP
-** Classes which can be referenced from a DICOMDIR IMAGE record.
-**
-** Revision 1.18  1997/09/18 07:35:35  meichel
-** Overloading ambiguity removed. Affects systems on which NULL is defined
-**   as a (typeless) 0. OFString comparisons with a non-casted NULL will
-**   cause compile errors on such systems because 0 is a valid pointer and a
-**   valid char at the same time.
-**
-** Revision 1.17  1997/09/12 11:29:20  hewett
-** Modified to use the OFString and OFList classes.  Removed program
-** specific String and StringList classes.
-**
-** Revision 1.16  1997/08/06 12:20:02  andreas
-** - Using Windows NT with Visual C++ 4.x the standard open mode for files
-**   is TEXT with conversions. For binary files (image files, imagectn database
-**   index) this must be changed (e.g. fopen(filename, "...b"); or
-**   open(filename, ..... |O_BINARY);)
-**
-** Revision 1.15  1997/07/21 08:02:11  andreas
-** - DcmDirectoryRecord can be build with a referenced Name and a source
-**   filename. These name now can differ (lower case - upper case
-**   characters).
-** - Replace all boolean types (BOOLEAN, CTNBOOLEAN, DICOM_BOOL, BOOL)
-**   with one unique boolean type OFBool.
-**
-** Revision 1.14  1997/07/03 15:09:39  andreas
-** - removed debugging functions Bdebug() and Edebug() since
-**   they write a static array and are not very useful at all.
-**   Cdebug and Vdebug are merged since they have the same semantics.
-**   The debugging functions in dcmdata changed their interfaces
-**   (see dcmdata/include/dcdebug.h)
-**
-** Revision 1.13  1997/06/26 12:50:03  andreas
-** - Added function version expandFileNames for Windows NT/95
-** - Include Additional headers (winsock.h, io.h) for Windows NT/95
-**
-** Revision 1.12  1997/05/29 15:52:52  meichel
-** Added constant for dcmtk release date in dcuid.h.
-** All dcmtk applications now contain a version string
-** which is displayed with the command line options ("usage" message)
-** and which can be queried in the binary with the "ident" command.
-**
-** Revision 1.11  1997/05/22 13:26:24  hewett
-** Modified the test for presence of a data dictionary to use the
-** method DcmDataDictionary::isDictionaryLoaded().
-**
-** Revision 1.10  1997/05/16 08:31:05  andreas
-** - Revised handling of GroupLength elements and support of
-**   DataSetTrailingPadding elements. The enumeratio E_GrpLenEncoding
-**   got additional enumeration values (for a description see dctypes.h).
-**   addGroupLength and removeGroupLength methods are replaced by
-**   computeGroupLengthAndPadding. To support Padding, the parameters of
-**   element and sequence write functions changed.
-**
-** Revision 1.9  1997/05/09 13:18:52  hewett
-** Added improved error/warning messages and backup of existing DICOMDIR
-** file (the backup file has the suffix .BAK and is removed if the new
-** DICOMDIR file is sucessfully created).
-**
-** Revision 1.8  1997/05/06 16:43:47  hewett
-** Now possible to invent a value for the PatientID attribute.
-** Invention of missing attributes is now delayed when possible until
-** after all directory records have been constructed.  This allows
-** numbering to be local to the sub-branches of the directory tree.
-**
-** Revision 1.7  1997/05/06 11:52:30  hewett
-** corrected spelling in usage output
-**
-** Revision 1.6  1997/05/06 09:15:57  hewett
-** Added several new capabilities:
-** 1. the +r option now enables resursion of a directory tree searching for
-**    image files to add to the directory.
-** 2. the +m option allows lowercase filenames and filenames with trailing
-**    point ('.') to used.  References within the DICOMDIR will be converted
-**    to uppercase and the trailing point removed.  This allows images to be
-**    read directly from ISO9660 filesystems under Solaris (and probably other
-**    OS's which automatically convert filenames on ISO9660 filesystems).
-** 3. the +I option allows values for missing attributes to be invented.  Some
-**    type 1 attributes in the DICOMDIR are only type 2 in images.  See the
-**    documentation for more details.
-** 4. Series, Image, Curve, Overlay, ModalityLUT and VOILUT records are now
-**    inserted into the DICOMDIR based on the ordering defined by the *Number
-**    (e.g. ImageNumber) attributes (if present).
-**
-** Revision 1.5  1997/04/24 12:16:53  hewett
-** Added extended error checking when parsing images prior to
-** creating a DICOMDIR.  Checks on allowed characters and
-** lengths of file names.
-**
-** Revision 1.4  1997/04/18 08:06:56  andreas
-** - Minor corrections: correct some warnings of the SUN-C++ Compiler
-**   concerning the assignments of wrong types and inline compiler
-**   errors
-** - The put/get-methods for all VRs did not conform to the C++-Standard
-**   draft. Some Compilers (e.g. SUN-C++ Compiler, Metroworks
-**   CodeWarrier, etc.) create many warnings concerning the hiding of
-**   overloaded get methods in all derived classes of DcmElement.
-**   So the interface of all value representation classes in the
-**   library are changed rapidly, e.g.
-**   OFCondition get(Uint16 & value, const unsigned long pos);
-**   becomes
-**   OFCondition getUint16(Uint16 & value, const unsigned long pos);
-**   All (retired) "returntype get(...)" methods are deleted.
-**   For more information see dcmdata/include/dcelem.h
-**
-** Revision 1.3  1997/03/27 18:17:25  hewett
-** Added checks for attributes required in input files.
-**
-** Revision 1.2  1997/03/27 15:47:24  hewett
-** Added command line switche to allow generation of UN to be
-** disabled (it is enabled by default).
-**
-** Revision 1.1  1997/03/26 17:38:14  hewett
-** Initial version.
-**
-*/
+ * CVS/RCS Log:
+ * $Log: dcmmkdir.cc,v $
+ * Revision 1.1  2001-11-13 17:57:14  joergr
+ * Replaced utility dcmgpdir with dcmmkdir which supports other Media Storage
+ * Application Profiles in addition to the General Purpose one.
+ *
+ *
+ */
