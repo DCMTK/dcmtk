@@ -5,6 +5,11 @@
   Removed dummy parameter from constructor.
   Affects: dcmpstat/include/dviface.h
            dcmpstat/libsrc/dviface.cc
+           dcmpstat/apps/dcmp2pgm.cc
+           dcmpstat/apps/dcmpsrcv.cc
+           dcmpstat/apps/dcmpssnd.cc
+           dcmpstat/apps/listdb.cc
+           dcmpstat/apps/runsend.cc
 
 **** Changes from 1999.02.05 (eichelberg)
 

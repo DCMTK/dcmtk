@@ -22,9 +22,9 @@
  *  Purpose: test ...
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-01-20 19:24:42 $
+ *  Update Date:      $Date: 1999-02-08 12:52:16 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmpstat/apps/dcmp2pgm.cc,v $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -532,7 +532,7 @@ int main(int argc, char *argv[])
         return 10;
       }
     }
-    DVInterface dvi(0, opt_cfgName);
+    DVInterface dvi(opt_cfgName);
     E_Condition status = EC_Normal;
 
     if (opt_pstName == NULL)
@@ -599,7 +599,10 @@ int main(int argc, char *argv[])
 /*
 ** CVS/RCS Log:
 ** $Log: dcmp2pgm.cc,v $
-** Revision 1.6  1999-01-20 19:24:42  meichel
+** Revision 1.7  1999-02-08 12:52:16  meichel
+** Removed dummy parameter from DVInterface constructor.
+**
+** Revision 1.6  1999/01/20 19:24:42  meichel
 ** Implemented access methods for network communication
 **   related config file entries.
 **

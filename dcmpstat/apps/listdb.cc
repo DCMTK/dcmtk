@@ -21,10 +21,10 @@
  *
  *  Purpose: test ...
  *
- *  Last Update:      $Author: vorwerk $
- *  Update Date:      $Date: 1999-02-05 11:26:16 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 1999-02-08 12:52:18 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmpstat/apps/Attic/listdb.cc,v $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -73,19 +73,6 @@ printError(const OFString &str)
     cerr << "error: " << str << endl;
     exit(1);
 }
-
-static void
-checkValue(OFCommandLine &cmd,
-           const OFCommandLine::E_ValueStatus status)
-{
-    OFString str;
-    if (status != OFCommandLine::VS_Normal)
-    {
-        cmd.getStatusString(status, str);
-        printError(str);
-    }
-}
-
 
 static const char *guard(const char *c)
 {
@@ -143,7 +130,7 @@ int main(int argc, char *argv[])
       cerr << "error: can't open configuration file '" << opt_cfgName << "'" << endl;
       return 10;
     }
-    DVInterface dvi(0, opt_cfgName);
+    DVInterface dvi(opt_cfgName);
 
     Uint32 numSeries=0;
     Uint32 numInstances=0;
@@ -261,7 +248,10 @@ dvi.releaseDatabase();
 /*
 ** CVS/RCS Log:
 ** $Log: listdb.cc,v $
-** Revision 1.2  1999-02-05 11:26:16  vorwerk
+** Revision 1.3  1999-02-08 12:52:18  meichel
+** Removed dummy parameter from DVInterface constructor.
+**
+** Revision 1.2  1999/02/05 11:26:16  vorwerk
 ** listdb for dviface updated
 **
 ** Revision 1.1  1999/01/29 16:01:37  meichel
