@@ -10,9 +10,9 @@
 ** routines for finding and creating UIDs.
 **
 ** Last Update:		$Author: meichel $
-** Update Date:		$Date: 1997-05-23 10:44:17 $
+** Update Date:		$Date: 1997-05-29 15:52:54 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcuid.h,v $
-** CVS/RCS Revision:	$Revision: 1.15 $
+** CVS/RCS Revision:	$Revision: 1.16 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -24,7 +24,12 @@
 #define DCUID_H
 
 #include "osconfig.h"    /* make sure OS specific configuration is included first */
-
+#ifdef HAVE_STDLIB_H
+#include <stdlib.h> /* for NULL */
+#endif
+#ifdef HAVE_UNISTD_H
+#include <unistd.h> /* for NULL */
+#endif
 
 /*
 ** dcmFindNameOfUID(const char* uid)
@@ -92,7 +97,7 @@ char* dcmGenerateUniqueIdentifer(char* uid, const char* prefix=NULL);
  */
 #define OFFIS_DTK_IMPLEMENTATION_VERSION_NAME	"OFFIS_DCMTK_313B"
 #define OFFIS_DTK_IMPLEMENTATION_VERSION_NAME2  "OFFIS_DCMTK_313b"
-
+#define OFFIS_DCMTK_RELEASEDATE        "1997/05/29"
 
 #define OFFIS_UID_ROOT		       "1.2.276.0.7230010.3"
 #define OFFIS_DCMTK_VERSION	       "3.1.3.2"
@@ -277,7 +282,13 @@ char* dcmGenerateUniqueIdentifer(char* uid, const char* prefix=NULL);
 /*
 ** CVS/RCS Log:
 ** $Log: dcuid.h,v $
-** Revision 1.15  1997-05-23 10:44:17  meichel
+** Revision 1.16  1997-05-29 15:52:54  meichel
+** Added constant for dcmtk release date in dcuid.h.
+** All dcmtk applications now contain a version string
+** which is displayed with the command line options ("usage" message)
+** and which can be queried in the binary with the "ident" command.
+**
+** Revision 1.15  1997/05/23 10:44:17  meichel
 ** Major rewrite of storescp application. See CHANGES for details.
 ** Changes to interfaces of some DIMSE functions.
 **

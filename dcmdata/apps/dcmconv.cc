@@ -8,10 +8,10 @@
 ** Convert dicom file encoding
 **
 **
-** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1997-05-27 13:47:40 $
+** Last Update:		$Author: meichel $
+** Update Date:		$Date: 1997-05-29 15:52:50 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/apps/dcmconv.cc,v $
-** CVS/RCS Revision:	$Revision: 1.11 $
+** CVS/RCS Revision:	$Revision: 1.12 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -35,13 +35,18 @@
 #include "dcdebug.h"
 #include "cmdlnarg.h"
 
+#include "dcuid.h"    /* for dcmtk version name */
+
+static char rcsid[] = "$dcmtk: dcmconv v"
+  OFFIS_DCMTK_VERSION " " OFFIS_DCMTK_RELEASEDATE " $";
 
 // ********************************************
 
 static void
 usage()
 {
-    cerr <<
+    cerr << rcsid 
+         << "\n\n"
 	"dcmconv: convert dicom file encoding\n"
 	"usage: dcmconv [options] dcmfile-in dcmfile-out\n"
 	"options are:\n"
@@ -464,7 +469,13 @@ int main(int argc, char *argv[])
 /*
 ** CVS/RCS Log:
 ** $Log: dcmconv.cc,v $
-** Revision 1.11  1997-05-27 13:47:40  andreas
+** Revision 1.12  1997-05-29 15:52:50  meichel
+** Added constant for dcmtk release date in dcuid.h.
+** All dcmtk applications now contain a version string
+** which is displayed with the command line options ("usage" message)
+** and which can be queried in the binary with the "ident" command.
+**
+** Revision 1.11  1997/05/27 13:47:40  andreas
 ** - Add method canWriteXfer to class DcmObject and all derived classes.
 **   This method checks whether it is possible to convert the original
 **   transfer syntax to an new transfer syntax. The check is used in the

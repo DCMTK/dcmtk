@@ -10,10 +10,10 @@
 ** CD-R Image Interchange Profile (Supplement 19).
 **
 **
-** Last Update:		$Author: hewett $
-** Update Date:		$Date: 1997-05-22 13:26:24 $
+** Last Update:		$Author: meichel $
+** Update Date:		$Date: 1997-05-29 15:52:52 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/apps/dcmgpdir.cc,v $
-** CVS/RCS Revision:	$Revision: 1.11 $
+** CVS/RCS Revision:	$Revision: 1.12 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -78,6 +78,11 @@ END_EXTERN_C
 #include "dctk.h"
 #include "dcdebug.h"
 #include "cmdlnarg.h"
+
+#include "dcuid.h"    /* for dcmtk version name */
+
+static char rcsid[] = "$dcmtk: dcmgpdir v"
+  OFFIS_DCMTK_VERSION " " OFFIS_DCMTK_RELEASEDATE " $";
 
 /* default File-Set ID */
 #define DEFAULT_FSID "DEMO CAR 97"
@@ -224,7 +229,8 @@ createDicomdirFromFiles(StrList& fileNames);
 static void
 usage()
 {
-    cerr << 
+    cerr << rcsid <<
+"\n\n"
 "dcmgpdir: create a general purpose dicomdir\n"
 "usage: dcmgpdir [options] referenced-dicom-file ...\n"
 "options are:\n"
@@ -2317,7 +2323,13 @@ expandFileNames(StrList& fileNames, StrList& expandedNames)
 /*
 ** CVS/RCS Log:
 ** $Log: dcmgpdir.cc,v $
-** Revision 1.11  1997-05-22 13:26:24  hewett
+** Revision 1.12  1997-05-29 15:52:52  meichel
+** Added constant for dcmtk release date in dcuid.h.
+** All dcmtk applications now contain a version string
+** which is displayed with the command line options ("usage" message)
+** and which can be queried in the binary with the "ident" command.
+**
+** Revision 1.11  1997/05/22 13:26:24  hewett
 ** Modified the test for presence of a data dictionary to use the
 ** method DcmDataDictionary::isDictionaryLoaded().
 **

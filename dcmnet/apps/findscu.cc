@@ -35,10 +35,10 @@
 **		Kuratorium OFFIS e.V., Oldenburg, Germany
 ** Created:	03/96
 **
-** Last Update:		$Author: hewett $
-** Update Date:		$Date: 1997-05-22 13:29:58 $
+** Last Update:		$Author: meichel $
+** Update Date:		$Date: 1997-05-29 15:52:56 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/apps/findscu.cc,v $
-** CVS/RCS Revision:	$Revision: 1.11 $
+** CVS/RCS Revision:	$Revision: 1.12 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -73,7 +73,10 @@ END_EXTERN_C
 #include "dcuid.h"
 #include "dcdict.h"
 #include "cmdlnarg.h"
+#include "dcuid.h"    /* for dcmtk version name */
 
+static char rcsid[] = "$dcmtk: findscu v"
+  OFFIS_DCMTK_VERSION " " OFFIS_DCMTK_RELEASEDATE " $";
 
 /* default application titles */
 #define APPLICATIONTITLE	"FINDSCU"
@@ -105,6 +108,7 @@ shortusage()
 static void
 fullusage()
 {
+    fprintf(stderr, "%s\n\n", rcsid);
     shortusage();
     fprintf(stderr,
 "parameters:\n\
@@ -674,7 +678,13 @@ cfind(T_ASC_Association * assoc, const char *fname)
 /*
 ** CVS Log
 ** $Log: findscu.cc,v $
-** Revision 1.11  1997-05-22 13:29:58  hewett
+** Revision 1.12  1997-05-29 15:52:56  meichel
+** Added constant for dcmtk release date in dcuid.h.
+** All dcmtk applications now contain a version string
+** which is displayed with the command line options ("usage" message)
+** and which can be queried in the binary with the "ident" command.
+**
+** Revision 1.11  1997/05/22 13:29:58  hewett
 ** Modified the test for presence of a data dictionary to use the
 ** method DcmDataDictionary::isDictionaryLoaded().
 **

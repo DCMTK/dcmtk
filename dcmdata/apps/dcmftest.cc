@@ -9,10 +9,10 @@
 ** Test if a file uses DICOM Part 10 format.
 **
 **
-** Last Update:		$Author: hewett $
-** Update Date:		$Date: 1997-05-06 11:53:07 $
+** Last Update:		$Author: meichel $
+** Update Date:		$Date: 1997-05-29 15:52:51 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/apps/dcmftest.cc,v $
-** CVS/RCS Revision:	$Revision: 1.1 $
+** CVS/RCS Revision:	$Revision: 1.2 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -32,15 +32,20 @@
 #endif
 
 #include "dcmetinf.h"
+#include "dcuid.h"    /* for dcmtk version name */
+
+static char rcsid[] = "$dcmtk: dcmftest v"
+  OFFIS_DCMTK_VERSION " " OFFIS_DCMTK_RELEASEDATE " $";
 
 // ********************************************
 
 static void
 usage()
 {
-    fprintf(stderr,  
+    fprintf(stderr, 
+"%s\n\n" 
 "dcmftest: test if file uses dicom part 10 format\n"
-"usage: dcmftest file ...\n");
+"usage: dcmftest file ...\n", rcsid);
 }
 
 int main(int argc, char *argv[])
@@ -90,7 +95,13 @@ int main(int argc, char *argv[])
 /*
 ** CVS/RCS Log:
 ** $Log: dcmftest.cc,v $
-** Revision 1.1  1997-05-06 11:53:07  hewett
+** Revision 1.2  1997-05-29 15:52:51  meichel
+** Added constant for dcmtk release date in dcuid.h.
+** All dcmtk applications now contain a version string
+** which is displayed with the command line options ("usage" message)
+** and which can be queried in the binary with the "ident" command.
+**
+** Revision 1.1  1997/05/06 11:53:07  hewett
 ** Added program (dcmftest) to test if a file uses the DICOM Part 10
 ** Format.  The program terminates with exit code 0 if file looks
 ** Part 10 conform.  This program is useful in Unix shell scripts.

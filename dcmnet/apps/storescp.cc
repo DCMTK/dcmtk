@@ -35,9 +35,9 @@
 **		Kuratorium OFFIS e.V., Oldenburg, Germany
 **
 ** Last Update:		$Author: meichel $
-** Update Date:		$Date: 1997-05-27 15:44:53 $
+** Update Date:		$Date: 1997-05-29 15:52:57 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/apps/storescp.cc,v $
-** CVS/RCS Revision:	$Revision: 1.11 $
+** CVS/RCS Revision:	$Revision: 1.12 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -67,6 +67,10 @@ END_EXTERN_C
 #include "dcuid.h"
 #include "dcdict.h"
 #include "cmdlnarg.h"
+#include "dcuid.h"    /* for dcmtk version name */
+
+static char rcsid[] = "$dcmtk: storescp.cc v"
+  OFFIS_DCMTK_VERSION " " OFFIS_DCMTK_RELEASEDATE " $";
 
 #define PATHSEPARATOR PATH_SEPARATOR	/* via osconfig.h" */
 #define APPLICATIONTITLE "STORESCP"     /* our application entity title */
@@ -74,6 +78,7 @@ END_EXTERN_C
 static void usage()
 {
   fprintf(stderr, 
+"%s\n\n"
 "usage: storescp [options] port\n"
 "parameters are:\n"
 "    port      tcp/ip port number to listen on\n"
@@ -116,6 +121,7 @@ static void usage()
 "      +d      debug mode\n"
 "      +B      bypass dcmdata, save C-STORE data directly to file\n"
 "      -i      ignore store data, receive but do not save to disk\n",
+  rcsid,
   (unsigned long)ASC_MINIMUMPDUSIZE, 
   (unsigned long)ASC_MAXIMUMPDUSIZE, 
   (unsigned long)ASC_DEFAULTMAXPDU);
@@ -1078,7 +1084,13 @@ static CONDITION storeSCP(
 /*
 ** CVS Log
 ** $Log: storescp.cc,v $
-** Revision 1.11  1997-05-27 15:44:53  meichel
+** Revision 1.12  1997-05-29 15:52:57  meichel
+** Added constant for dcmtk release date in dcuid.h.
+** All dcmtk applications now contain a version string
+** which is displayed with the command line options ("usage" message)
+** and which can be queried in the binary with the "ident" command.
+**
+** Revision 1.11  1997/05/27 15:44:53  meichel
 ** Corrected typo in storescp help texts.
 **
 ** Revision 1.10  1997/05/23 10:44:20  meichel

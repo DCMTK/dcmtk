@@ -50,10 +50,10 @@
 **
 **
 **
-** Last Update:		$Author: hewett $
-** Update Date:		$Date: 1997-05-22 13:26:25 $
+** Last Update:		$Author: meichel $
+** Update Date:		$Date: 1997-05-29 15:52:52 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/apps/dump2dcm.cc,v $
-** CVS/RCS Revision:	$Revision: 1.12 $
+** CVS/RCS Revision:	$Revision: 1.13 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -75,6 +75,10 @@
 #include "dctk.h"
 #include "dcdebug.h"
 #include "cmdlnarg.h"
+#include "dcuid.h"    /* for dcmtk version name */
+
+static char rcsid[] = "$dcmtk: dump2dcm v"
+  OFFIS_DCMTK_VERSION " " OFFIS_DCMTK_RELEASEDATE " $";
 
 // Maximum Line Size
 
@@ -95,7 +99,7 @@ const unsigned int DCM_DumpMaxLineSize = 4096;
 static void
 usage()
 {
-    cerr <<
+    cerr << rcsid << "\n\n"
 	"dump2dcm: convert dicom dumpfile into dicom-fileformat or -dataset\n"
 	"usage: dump2dcm [options] dumpfile-in dcmfile-out\n"
 	"options are:\n"
@@ -918,7 +922,13 @@ int main(int argc, char *argv[])
 /*
 ** CVS/RCS Log:
 ** $Log: dump2dcm.cc,v $
-** Revision 1.12  1997-05-22 13:26:25  hewett
+** Revision 1.13  1997-05-29 15:52:52  meichel
+** Added constant for dcmtk release date in dcuid.h.
+** All dcmtk applications now contain a version string
+** which is displayed with the command line options ("usage" message)
+** and which can be queried in the binary with the "ident" command.
+**
+** Revision 1.12  1997/05/22 13:26:25  hewett
 ** Modified the test for presence of a data dictionary to use the
 ** method DcmDataDictionary::isDictionaryLoaded().
 **

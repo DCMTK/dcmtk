@@ -34,10 +34,10 @@
 ** Author: 	Marco Eichelberg
 **		Kuratorium OFFIS e.V., Oldenburg, Germany
 **
-** Last Update:		$Author: hewett $
-** Update Date:		$Date: 1997-05-22 13:31:00 $
+** Last Update:		$Author: meichel $
+** Update Date:		$Date: 1997-05-29 15:52:59 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/tests/Attic/assctest.cc,v $
-** CVS/RCS Revision:	$Revision: 1.3 $
+** CVS/RCS Revision:	$Revision: 1.4 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -63,6 +63,10 @@ END_EXTERN_C
 #include "dcdict.h"
 #include "dcuid.h"
 #include "cmdlnarg.h"
+#include "dcuid.h"    /* for dcmtk version name */
+
+static char rcsid[] = "$dcmtk: assctest v"
+  OFFIS_DCMTK_VERSION " " OFFIS_DCMTK_RELEASEDATE " $";
 
 #define PATHSEPARATOR PATH_SEPARATOR	/* via osconfig.h" */
 
@@ -161,6 +165,7 @@ shortusage()
 static void
 fullusage()
 {
+    fprintf(stderr, "%s\n\n", rcsid);
     shortusage();
     fprintf(stderr, "\
 parameters:\n\
@@ -568,7 +573,13 @@ cecho(T_ASC_Association * assoc)
 /*
 ** CVS Log
 ** $Log: assctest.cc,v $
-** Revision 1.3  1997-05-22 13:31:00  hewett
+** Revision 1.4  1997-05-29 15:52:59  meichel
+** Added constant for dcmtk release date in dcuid.h.
+** All dcmtk applications now contain a version string
+** which is displayed with the command line options ("usage" message)
+** and which can be queried in the binary with the "ident" command.
+**
+** Revision 1.3  1997/05/22 13:31:00  hewett
 ** Modified the test for presence of a data dictionary to use the
 ** method DcmDataDictionary::isDictionaryLoaded().
 **

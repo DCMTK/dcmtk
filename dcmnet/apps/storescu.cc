@@ -36,9 +36,9 @@
 **
 **
 ** Last Update:		$Author: meichel $
-** Update Date:		$Date: 1997-05-28 12:03:26 $
+** Update Date:		$Date: 1997-05-29 15:52:58 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/apps/storescu.cc,v $
-** CVS/RCS Revision:	$Revision: 1.14 $
+** CVS/RCS Revision:	$Revision: 1.15 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -73,7 +73,10 @@ END_EXTERN_C
 #include "dcuid.h"
 #include "dcdict.h"
 #include "cmdlnarg.h"
+#include "dcuid.h"    /* for dcmtk version name */
 
+static char rcsid[] = "$dcmtk: storescu v"
+  OFFIS_DCMTK_VERSION " " OFFIS_DCMTK_RELEASEDATE " $";
 
 #define PATHSEPARATOR PATH_SEPARATOR /* via osconfig.h */
 
@@ -101,6 +104,7 @@ usage: %s [-u][-r n][-v][-d][-a][-b n][-t ourAETitle][-c theirAETitle]\n\
 static void
 fullusage()
 {
+    fprintf(stderr, "%s\n\n", rcsid);
     shortusage();
     fprintf(stderr, "\
 parameters:\n\
@@ -579,7 +583,13 @@ cstore(T_ASC_Association * assoc, const char *fname)
 /*
 ** CVS Log
 ** $Log: storescu.cc,v $
-** Revision 1.14  1997-05-28 12:03:26  meichel
+** Revision 1.15  1997-05-29 15:52:58  meichel
+** Added constant for dcmtk release date in dcuid.h.
+** All dcmtk applications now contain a version string
+** which is displayed with the command line options ("usage" message)
+** and which can be queried in the binary with the "ident" command.
+**
+** Revision 1.14  1997/05/28 12:03:26  meichel
 ** Corrected spacing in usage message.
 **
 ** Revision 1.13  1997/05/23 10:43:04  meichel

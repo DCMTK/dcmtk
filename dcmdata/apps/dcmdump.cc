@@ -9,10 +9,10 @@
 ** List the contents of a dicom file to stdout
 **
 **
-** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1997-05-27 13:46:53 $
+** Last Update:		$Author: meichel $
+** Update Date:		$Date: 1997-05-29 15:52:50 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/apps/dcmdump.cc,v $
-** CVS/RCS Revision:	$Revision: 1.14 $
+** CVS/RCS Revision:	$Revision: 1.15 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -29,6 +29,11 @@
 #include "dctk.h"
 #include "dcdebug.h"
 #include "cmdlnarg.h"
+
+#include "dcuid.h"    /* for dcmtk version name */
+
+static char rcsid[] = "$dcmtk: dcmdump v"
+  OFFIS_DCMTK_VERSION " " OFFIS_DCMTK_RELEASEDATE " $";
 
 #ifdef HAVE_GUSI_H
     /* needed for Macintosh */
@@ -87,7 +92,8 @@ static BOOL addPrintTagName(const char* tagName)
 static void
 usage()
 {
-    cerr << 
+    cerr << rcsid
+         << "\n\n"
 	"dcmdump: dump dicom file and data set\n"
 	"usage: dcmdump [options] dcmfile-in [options] dcmfile-in\n"
 	"Options are valid if specified before filename.\n"
@@ -404,7 +410,13 @@ static int dumpFile(ostream & out,
 /*
 ** CVS/RCS Log:
 ** $Log: dcmdump.cc,v $
-** Revision 1.14  1997-05-27 13:46:53  andreas
+** Revision 1.15  1997-05-29 15:52:50  meichel
+** Added constant for dcmtk release date in dcuid.h.
+** All dcmtk applications now contain a version string
+** which is displayed with the command line options ("usage" message)
+** and which can be queried in the binary with the "ident" command.
+**
+** Revision 1.14  1997/05/27 13:46:53  andreas
 ** - Corrected usage string in dcmdump
 **
 ** Revision 1.13  1997/05/22 16:53:32  andreas
