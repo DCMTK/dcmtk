@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2001, OFFIS
+ *  Copyright (C) 1998-2003, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,8 +23,8 @@
  *    classes: DVPSPresentationLUT
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2003-03-12 17:34:22 $
- *  CVS/RCS Revision: $Revision: 1.24 $
+ *  Update Date:      $Date: 2003-08-27 14:59:08 $
+ *  CVS/RCS Revision: $Revision: 1.25 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -34,8 +34,8 @@
 #include "osconfig.h"    /* make sure OS specific configuration is included first */
 #include "ofstring.h"
 #include "dvpspl.h"
-#include "dcmimage.h"    /* for class DiLookupTable, DicomImage */
 #include "dvpsdef.h"     /* for constants and macros */
+#include "dimse.h"
 
 /* --------------- class DVPSPresentationLUT --------------- */
 
@@ -273,29 +273,6 @@ OFCondition DVPSPresentationLUT::write(DcmItem &dset, OFBool withSOPInstance)
 }
 
 
-OFBool DVPSPresentationLUT::isInverse()
-{
-  OFBool result = OFFalse;
-  switch (presentationLUT)
-  {
-    case DVPSP_identity:
-    case DVPSP_lin_od:
-      break;
-    case DVPSP_inverse:
-      result = OFTrue;
-      break;
-    case DVPSP_table:
-      if ((presentationLUTDescriptor.getVM()==3)&&(presentationLUTData.getLength() > 0))
-      {
-        DiLookupTable *lut = new DiLookupTable(presentationLUTData, presentationLUTDescriptor);
-        if (lut && (lut->getFirstValue() > lut->getLastValue())) result = OFTrue;
-        delete lut;
-      }
-      break;
-  }
-  return result;
-}
-
 OFBool DVPSPresentationLUT::haveTable()
 {
   if ((presentationLUTDescriptor.getVM()==3)&&(presentationLUTData.getLength() > 0)) return OFTrue;
@@ -359,95 +336,6 @@ OFCondition DVPSPresentationLUT::setType(DVPSPresentationLUTType newType)
   return EC_Normal;
 }
 
-OFCondition DVPSPresentationLUT::invert()
-{
-  OFCondition status = EC_Normal;
-  switch (presentationLUT)
-  {
-      case DVPSP_identity:
-          presentationLUT = DVPSP_inverse;
-          break;
-      case DVPSP_inverse:
-          presentationLUT = DVPSP_identity;
-          break;
-      case DVPSP_table:
-          status = EC_IllegalCall;
-          if (haveTable())
-          {
-              DiLookupTable *lut = new DiLookupTable(presentationLUTData, presentationLUTDescriptor);
-              if (lut && (lut->mirrorTable(0x2))) status = EC_Normal;       // flag = 0x2: mirror only original LUT data
-              delete lut;
-          }
-          break;
-      case DVPSP_lin_od:
-          status = EC_IllegalCall;
-          break;
-          
-  }
-  return status;
-}
-
-OFBool DVPSPresentationLUT::activate(DicomImage *image, OFBool printLUT)
-{
-  if (image==NULL) return OFFalse;
-
-  int result=0;
-  switch (presentationLUT)
-  {   
-    case DVPSP_identity:
-      result = image->setPresentationLutShape(ESP_Identity);
-      if ((!result) && verboseMode)
-      {
-        logstream->lockCerr() << "warning: unable to set identity presentation LUT shape, ignoring." << endl;
-        logstream->unlockCerr();
-      }
-      break;
-    case DVPSP_inverse:
-      if (!printLUT)
-        result = image->setPresentationLutShape(ESP_Inverse);
-      if ((!result) && verboseMode)
-      {
-        logstream->lockCerr() << "warning: unable to set inverse presentation LUT shape, ignoring." << endl;
-        logstream->unlockCerr();
-      }
-      break;      
-    case DVPSP_lin_od:
-      result = image->setPresentationLutShape(ESP_LinOD);
-      if ((!result) && verboseMode)
-      {
-        logstream->lockCerr() << "warning: unable to set linear optical density presentation LUT shape, ignoring." << endl;
-        logstream->unlockCerr();
-      }
-      break;
-    case DVPSP_table:
-      if (printLUT)
-        result = image->setVoiLut(presentationLUTData, presentationLUTDescriptor, &presentationLUTExplanation);
-      else
-        result = image->setPresentationLut(presentationLUTData, presentationLUTDescriptor, &presentationLUTExplanation);
-      if ((!result) && verboseMode)
-      {
-        logstream->lockCerr() << "warning: unable to set presentation LUT, ignoring." << endl;
-        logstream->unlockCerr();
-      }
-      break;
-  }
-  if (result) return OFTrue; else return OFFalse;
-}
-
-OFBool DVPSPresentationLUT::activateInverseLUT(DicomImage *image)
-{
-  int result = 0;
-  if ((image != NULL) && (presentationLUT == DVPSP_table))
-  {
-      result = image->setInversePresentationLut(presentationLUTData, presentationLUTDescriptor);
-      if ((!result) && verboseMode)
-      {
-        logstream->lockCerr() << "warning: unable to set inverse presentation LUT, ignoring." << endl;
-        logstream->unlockCerr();
-      }
-  }
-  if (result) return OFTrue; else return OFFalse;
-}
 
 OFCondition DVPSPresentationLUT::setSOPInstanceUID(const char *value)
 {
@@ -455,19 +343,6 @@ OFCondition DVPSPresentationLUT::setSOPInstanceUID(const char *value)
   return sOPInstanceUID.putString(value);
 }
 
-DiLookupTable *DVPSPresentationLUT::createDiLookupTable()
-{
-  DiLookupTable *result = NULL;
-  if (presentationLUT == DVPSP_table) result = new DiLookupTable(presentationLUTData, presentationLUTDescriptor);
-  return result;
-}  
-
-OFBool DVPSPresentationLUT::compareDiLookupTable(DiLookupTable *lut)
-{
-  if ((presentationLUT == DVPSP_table) && lut 
-     && (0 == lut->compareLUT(presentationLUTData, presentationLUTDescriptor))) return OFTrue;
-  return OFFalse;
-}
 
 OFBool DVPSPresentationLUT::isLegalPrintPresentationLUT()
 {
@@ -648,7 +523,11 @@ void DVPSPresentationLUT::setLog(OFConsole *stream, OFBool verbMode, OFBool dbgM
 
 /*
  *  $Log: dvpspl.cc,v $
- *  Revision 1.24  2003-03-12 17:34:22  meichel
+ *  Revision 1.25  2003-08-27 14:59:08  meichel
+ *  Moved all methods of class DVPSPresentationLUT that depend on module dcmimgle
+ *    into a separate implementation file
+ *
+ *  Revision 1.24  2003/03/12 17:34:22  meichel
  *  Updated DcmObject::print() flags
  *
  *  Revision 1.23  2001/11/28 13:56:58  joergr

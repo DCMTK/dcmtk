@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2001, OFFIS
+ *  Copyright (C) 1998-2003, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,8 +23,8 @@
  *    classes: DVPSPresentationLUT
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-09-26 15:36:14 $
- *  CVS/RCS Revision: $Revision: 1.10 $
+ *  Update Date:      $Date: 2003-08-27 14:59:09 $
+ *  CVS/RCS Revision: $Revision: 1.11 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -38,7 +38,8 @@
 #include "ofstring.h"
 #include "dctk.h"
 #include "dvpstyp.h"     /* for enum types */
-#include "dimse.h"
+
+struct T_DIMSE_Message;
 
 class DicomImage;
 class DiLookupTable;
@@ -275,7 +276,11 @@ private:
 
 /*
  *  $Log: dvpspl.h,v $
- *  Revision 1.10  2001-09-26 15:36:14  meichel
+ *  Revision 1.11  2003-08-27 14:59:09  meichel
+ *  Moved all methods of class DVPSPresentationLUT that depend on module dcmimgle
+ *    into a separate implementation file
+ *
+ *  Revision 1.10  2001/09/26 15:36:14  meichel
  *  Adapted dcmpstat to class OFCondition
  *
  *  Revision 1.9  2001/06/01 15:50:19  meichel
