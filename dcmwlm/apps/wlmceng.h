@@ -23,9 +23,9 @@
  *           management service class providers.
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-01-08 16:44:04 $
+ *  Update Date:      $Date: 2002-01-08 17:13:16 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmwlm/apps/Attic/wlmceng.h,v $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -48,7 +48,7 @@ class WlmConsoleEngine
     const char *opt_dbDsn;
     const char *opt_dbUserName;
     const char *opt_dbUserPassword;
-    const char *opt_dbSchema;
+    OFCmdUnsignedInt opt_serialNumber;
     const char *opt_dfPath;
     OFCmdUnsignedInt opt_port;
     OFBool opt_refuseAssociation;

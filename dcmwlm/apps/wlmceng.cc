@@ -23,9 +23,9 @@
  *           management service class providers.
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-01-08 16:29:50 $
+ *  Update Date:      $Date: 2002-01-08 17:14:51 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmwlm/apps/Attic/wlmceng.cc,v $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -69,7 +69,7 @@ WlmConsoleEngine::WlmConsoleEngine( int argc, char *argv[], WlmDataSourceType da
 //                applicationName - [in] The name of this console application.
 // Return Value : none.
   : dataSourceType( dataSourceTypev ), opt_dbDsn( NULL ), opt_dbUserName( NULL ), opt_dbUserPassword( NULL ),
-    opt_dbSchema( NULL ), opt_dfPath( NULL ), opt_port( 0 ), opt_refuseAssociation( OFFalse ),
+    opt_serialNumber( 1 ), opt_dfPath( NULL ), opt_port( 0 ), opt_refuseAssociation( OFFalse ),
     opt_rejectWithoutImplementationUID( OFFalse ), opt_sleepAfterFind( 0 ), opt_sleepDuringFind( 0 ),
     opt_maxPDU( ASC_DEFAULTMAXPDU ), opt_networkTransferSyntax( EXS_Unknown ), opt_groupLength( EGL_recalcGL ),
     opt_sequenceType( EET_ExplicitLength ), opt_verbose( OFFalse ), opt_debug( OFFalse ),
@@ -81,10 +81,9 @@ WlmConsoleEngine::WlmConsoleEngine( int argc, char *argv[], WlmDataSourceType da
   // Initialize starting values for variables pertaining to program options.
   if( dataSourceType == DATA_SOURCE_IS_DATABASE )
   {
-    opt_dbDsn = "datasourcename";
-    opt_dbUserName = "willi";
-    opt_dbUserPassword = "willipass";
-    opt_dbSchema = "schemaname";
+    opt_dbDsn = "text";
+    opt_dbUserName = "pki.txt";
+    opt_dbUserPassword = "";
   }
   else if( dataSourceType == DATA_SOURCE_IS_DATA_FILES )
   {
@@ -125,15 +124,12 @@ WlmConsoleEngine::WlmConsoleEngine( int argc, char *argv[], WlmDataSourceType da
     opt7 += ")";
     cmd->addOption("--db-user-name",              "-dbu",    1, "[n]ame: string", opt7.c_str() );
 
-    OFString opt8 = "password for database user\n(default: ";
-    opt8 += opt_dbUserPassword;
-    opt8 += ")";
+    OFString opt8 = "password for database user\n(default: <none>)";
+//    opt8 += opt_dbUserPassword;
+//    opt8 += ")";
     cmd->addOption("--db-user-password",          "-dbp",    1, "[p]assword: string", opt8.c_str() );
-
-    OFString opt9 = "schema name\n(default: ";
-    opt9 += opt_dbSchema;
-    opt9 += ")";
-    cmd->addOption("--db-schema-name",            "-dbs",    1, "[n]ame: string", opt9.c_str() );
+    cmd->addOption("--serial-number",             "-sn",     1, "[s]erial number: integer (1..9999)", 
+                                                                "serial number of this installation,\nwill be added to StudyInstanceUID" );
   }
   else if( dataSourceType == DATA_SOURCE_IS_DATA_FILES )
   {
@@ -205,7 +201,7 @@ WlmConsoleEngine::WlmConsoleEngine( int argc, char *argv[], WlmDataSourceType da
       if( cmd->findOption("--data-source-name") ) app->checkValue(cmd->getValue(opt_dbDsn));
       if( cmd->findOption("--db-user-name") ) app->checkValue(cmd->getValue(opt_dbUserName));
       if( cmd->findOption("--db-user-password") ) app->checkValue(cmd->getValue(opt_dbUserPassword));
-      if( cmd->findOption("--db-schema-name") ) app->checkValue(cmd->getValue(opt_dbSchema));
+      if( cmd->findOption("--serial-number") ) app->checkValue(cmd->getValueAndCheckMinMax(opt_serialNumber, 1, 9999));
     }
     else if( dataSourceType == DATA_SOURCE_IS_DATA_FILES )
     {
@@ -275,7 +271,16 @@ int WlmConsoleEngine::StartProvidingService()
   int result = 0;
 
   // start providing the basic worklist management service
-  WlmActivityManager *activityManager = new WlmActivityManager( dataSourceType, opt_dbDsn, opt_dbUserName, opt_dbUserPassword, opt_dbSchema, opt_dfPath, opt_port, opt_refuseAssociation, opt_rejectWithoutImplementationUID, opt_sleepAfterFind, opt_sleepDuringFind, opt_maxPDU, opt_networkTransferSyntax, opt_groupLength, opt_sequenceType, opt_verbose, opt_debug, opt_failInvalidQuery, opt_singleProcess, opt_maxAssociations, &ofConsole );
+  WlmActivityManager *activityManager = new WlmActivityManager( dataSourceType, opt_dbDsn, opt_dbUserName,
+                                                                opt_dbUserPassword, opt_dfPath, opt_port,
+                                                                opt_refuseAssociation,
+                                                                opt_rejectWithoutImplementationUID,
+                                                                opt_sleepAfterFind, opt_sleepDuringFind,
+                                                                opt_maxPDU, opt_networkTransferSyntax,
+                                                                opt_groupLength, opt_sequenceType, opt_verbose,
+                                                                opt_debug, opt_failInvalidQuery,
+                                                                opt_singleProcess, opt_maxAssociations,
+                                                                &ofConsole, opt_serialNumber );
   OFCondition cond = activityManager->StartProvidingService();
   if( cond.bad() )
   {
@@ -294,3 +299,13 @@ int WlmConsoleEngine::StartProvidingService()
 }
 
 // ----------------------------------------------------------------------------
+
+/*
+** CVS Log
+** $Log: wlmceng.cc,v $
+** Revision 1.2  2002-01-08 17:14:51  joergr
+** Reworked database support after trials at the hospital (modfied by MC/JR on
+** 2002-01-08).
+**
+**
+*/

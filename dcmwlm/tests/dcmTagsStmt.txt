@@ -20,10 +20,16 @@ ScheduledStationAETitle
 select decode(labor, '1', 'VISUB', labor) from k_hk_basis_daten where unr = :PA
 ScheduledProcedureStepStartDate
 select to_char(datum, 'YYYYMMDD') from k_hk_basis_daten where unr = :PA
+ScheduledProcedureStepStartTime
+select to_char(beginn, 'HH24MI') from k_hk_basis_daten where unr = :PA
 AccessionNumber
 select to_char(unr) from k_hk where unr = :PA
 ScheduledProcedureStepDescription
 select 'HK-Untersuchung' from dual
+ScheduledProcedureStepID
+select to_char(pid) from k_3d_therapie where unr = :PA
+RequestedProcedureID
+select to_char(unr) from k_hk where unr = :PA
 Modality
 select 'XA' from dual
 InstitutionName
@@ -35,7 +41,7 @@ select name from a_arzt, k_hk_basis_daten where a_arzt.arztnr = k_hk_basis_daten
 ScheduledPerformingPhysiciansName
 select 'NETZ' from dual
 PatientsName
-select name || '^' || vorname from p_stammdaten, k_3d_therapie where p_stammdaten.pid = k_3d_therapie.pid and unr = :PA
+select name || ',' || vorname from p_stammdaten, k_3d_therapie where p_stammdaten.pid = k_3d_therapie.pid and unr = :PA
 PatientsBirthDate
 select to_char(geboren, 'YYYYMMDD') from p_stammdaten, k_3d_therapie where p_stammdaten.pid = k_3d_therapie.pid and unr = :PA
 PatientsSex
