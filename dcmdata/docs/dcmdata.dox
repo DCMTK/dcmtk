@@ -27,6 +27,7 @@ This module contains the following command line tools:
 \section Examples
 
 The following example shows how to load a DICOM file and output the patient's name:
+
 \code
 DcmFileFormat fileformat;
 OFCondition status = fileformat.loadFile("test.dcm");
@@ -39,10 +40,11 @@ if (status.good())
   } else
     cerr << "Error: cannot access Patient's Name!" << endl;
 } else
-  cerr << "Error: cannot read file (" << status.text() << ")" << endl;
+  cerr << "Error: cannot read DICOM file (" << status.text() << ")" << endl;
 \endcode
 
 The following example shows how to create a DICOM dataset and save it to a file:
+
 \code
 char uid[100];
 DcmFileFormat fileformat;
@@ -54,10 +56,11 @@ dataset->putAndInsertString(DCM_PatientsName, "Doe^John");
 dataset->putAndInsertUint8Array(DCM_PixelData, pixelData, pixelLength);
 OFCondition status = fileformat.saveFile("test.dcm", EXS_LittleEndianExplicit);
 if (status.bad())
-  cerr << "Error: cannot write file (" << status.text() << ")" << endl;
+  cerr << "Error: cannot write DICOM file (" << status.text() << ")" << endl;
 \endcode
 
 The following example shows how to create a general purpose DICOMDIR from multiple files:
+
 \code
 DicomDirInterface dicomdir;
 OFCondition status = dicomdir.createNewDicomDir();
