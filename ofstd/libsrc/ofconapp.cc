@@ -22,9 +22,9 @@
  *  Purpose: Handle console applications (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-04-27 16:27:09 $
+ *  Update Date:      $Date: 1999-04-27 17:48:54 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/libsrc/ofconapp.cc,v $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -75,8 +75,6 @@ OFBool OFConsoleApplication::parseCommandLine(OFCommandLine &cmd,
             printUsage();
             break;
         case OFCommandLine::PS_Normal:
-            if ((cmd.getArgCount() == 1) && cmd.findOption("--help"))
-                printUsage();
             return OFTrue;
         default:
             OFString str;
@@ -109,12 +107,13 @@ void OFConsoleApplication::printUsage(const OFCommandLine *cmd)
     {
         OFString str;
         cmd->getSyntaxString(str);
-        (*Output) << str << endl << endl;
+        (*Output) << str << endl;
         cmd->getParamString(str);
         if (str.length() > 0)
-            (*Output) << str << endl;
+            (*Output) << endl << str;
         cmd->getOptionString(str);
-        (*Output) << str;
+        if (str.length() > 0)
+            (*Output) << endl << str;
     }
     (*Output) << endl;
     exit(0);
@@ -191,7 +190,13 @@ void OFConsoleApplication::checkConflict(const char *firstOpt,
  *
  * CVS/RCS Log:
  * $Log: ofconapp.cc,v $
- * Revision 1.5  1999-04-27 16:27:09  joergr
+ * Revision 1.6  1999-04-27 17:48:54  joergr
+ * Corrected bug: option '--help' could not be used when mandatory parameters
+ * were missing.
+ * Changed output of usage text (moved some newlines to support output when
+ * parameters and/or options are absent).
+ *
+ * Revision 1.5  1999/04/27 16:27:09  joergr
  * Introduced list of valid parameters used for syntax output and error
  * checking.
  * Added method to check conflicts between two options (incl. error output).
