@@ -22,9 +22,9 @@
  *  Purpose: test ...
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-02-23 11:42:08 $
+ *  Update Date:      $Date: 1999-02-25 18:37:15 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmpstat/apps/dcmp2pgm.cc,v $
- *  CVS/RCS Revision: $Revision: 1.8 $
+ *  CVS/RCS Revision: $Revision: 1.9 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -595,44 +595,46 @@ int main(int argc, char *argv[])
 #ifdef DEBUG
     dcmDataDict.clear();  /* useful for debugging with dmalloc */
 #endif
+
     return (status != EC_Normal);
 }
 
 
 /*
-** CVS/RCS Log:
-** $Log: dcmp2pgm.cc,v $
-** Revision 1.8  1999-02-23 11:42:08  joergr
-** Added debug code (exclitly delete data dictionary).
-** Added layer number to filename when extracting overlay planes.
-**
-** Revision 1.7  1999/02/08 12:52:16  meichel
-** Removed dummy parameter from DVInterface constructor.
-**
-** Revision 1.6  1999/01/20 19:24:42  meichel
-** Implemented access methods for network communication
-**   related config file entries.
-**
-** Revision 1.5  1999/01/15 17:36:03  meichel
-** added configuration file facility (derived from dcmprint)
-**   and a sample config file.
-**
-** Revision 1.4  1999/01/14 17:50:55  meichel
-** added new command line option --dicom to test application
-**   dcmp2pgm. This demonstrates DVInterface::saveDICOMImage().
-**
-** Revision 1.3  1998/12/22 17:57:02  meichel
-** Implemented Presentation State interface for overlays,
-**   VOI LUTs, VOI windows, curves. Added test program that
-**   allows to add curve data to DICOM images.
-**
-** Revision 1.2  1998/12/14 16:10:24  meichel
-** Implemented Presentation State interface for graphic layers,
-**   text and graphic annotations, presentation LUTs.
-**
-** Revision 1.1  1998/11/27 14:50:19  meichel
-** Initial Release.
-**
-**
-**
-*/
+ * CVS/RCS Log:
+ * $Log: dcmp2pgm.cc,v $
+ * Revision 1.9  1999-02-25 18:37:15  joergr
+ * Changed formatting of some comments.
+ *
+ * Revision 1.8  1999/02/23 11:42:08  joergr
+ * Added debug code (exclitly delete data dictionary).
+ * Added layer number to filename when extracting overlay planes.
+ *
+ * Revision 1.7  1999/02/08 12:52:16  meichel
+ * Removed dummy parameter from DVInterface constructor.
+ *
+ * Revision 1.6  1999/01/20 19:24:42  meichel
+ * Implemented access methods for network communication
+ *   related config file entries.
+ * 
+ * Revision 1.5  1999/01/15 17:36:03  meichel
+ * added configuration file facility (derived from dcmprint)
+ *   and a sample config file.
+ *
+ * Revision 1.4  1999/01/14 17:50:55  meichel
+ * added new command line option --dicom to test application
+ *   dcmp2pgm. This demonstrates DVInterface::saveDICOMImage().
+ *
+ * Revision 1.3  1998/12/22 17:57:02  meichel
+ * Implemented Presentation State interface for overlays,
+ *   VOI LUTs, VOI windows, curves. Added test program that
+ *   allows to add curve data to DICOM images.
+ *
+ * Revision 1.2  1998/12/14 16:10:24  meichel
+ * Implemented Presentation State interface for graphic layers,
+ *   text and graphic annotations, presentation LUTs.
+ *
+ * Revision 1.1  1998/11/27 14:50:19  meichel
+ * Initial Release.
+ *
+ */
