@@ -22,9 +22,9 @@
  *  Purpose: DicomDisplayFunction (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-10-18 15:06:24 $
+ *  Update Date:      $Date: 1999-10-18 17:24:00 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/libsrc/didispfn.cc,v $
- *  CVS/RCS Revision: $Revision: 1.17 $
+ *  CVS/RCS Revision: $Revision: 1.18 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -94,8 +94,8 @@ DiDisplayFunction::DiDisplayFunction(const double *lum_tab,             // UNTES
         LumValue = new double[ValueCount];
         if ((DDLValue != NULL) && (LumValue != NULL))
         {
-            register unsigned long i;
-            for (i = 0; i < ValueCount; i++)
+            register Uint16 i;
+            for (i = 0; i <= MaxDDLValue; i++)
             {
                 DDLValue[i] = i;                            // set DDL values
                 LumValue[i] = lum_tab[i];                   // copy table
@@ -139,12 +139,12 @@ DiDisplayFunction::DiDisplayFunction(const double lum_min,
     OFBitmanipTemplate<DiDisplayLUT *>::zeroMem(LookupTable, MAX_NUMBER_OF_TABLES);
     if ((ValueCount > 1) && (MinLumValue < MaxLumValue))
     {
-        MaxDDLValue = count - 1;
+        MaxDDLValue = (Uint16)(count - 1);
         DDLValue = new Uint16[ValueCount];
         LumValue = new double[ValueCount];
         if ((DDLValue != NULL) && (LumValue != NULL))
         {
-            register unsigned long i;
+            register Uint16 i;
             const double lum = (lum_max - lum_min) / MaxDDLValue;
             DDLValue[0] = 0;
             LumValue[0] = lum_min;
@@ -254,7 +254,7 @@ int DiDisplayFunction::readConfigFile(const char *filename)
                 if (c == '#')                                               // comment character
                 {
                     while (file.get(c) && (c != '\n') && (c != '\r'));      // skip comments
-                } 
+                }
                 else if (!isspace(c))                                       // skip whitespaces
                 {
                     file.putback(c);
@@ -406,8 +406,8 @@ int DiDisplayFunction::interpolateValues()
             LumValue = new double[ValueCount];
             if ((DDLValue != NULL) && (LumValue != NULL))
             {
-                register unsigned long i;
-                for (i = 0; i < ValueCount; i++)                          // set all DDL values, from 0 to max
+                register Uint16 i;
+                for (i = 0; i <= MaxDDLValue; i++)                          // set all DDL values, from 0 to max
                     DDLValue[i] = i;
                 status = DiCubicSpline<Uint16, double>::Interpolation(old_ddl, old_lum, spline, count, DDLValue, LumValue, ValueCount);
             }
@@ -445,7 +445,10 @@ int DiDisplayFunction::calculateMinMax()
  *
  * CVS/RCS Log:
  * $Log: didispfn.cc,v $
- * Revision 1.17  1999-10-18 15:06:24  joergr
+ * Revision 1.18  1999-10-18 17:24:00  joergr
+ * Added explicit type cast to avoid compiler warnings reported by MSVC.
+ *
+ * Revision 1.17  1999/10/18 15:06:24  joergr
  * Enhanced command line tool dcmdspfn (added new options).
  *
  * Revision 1.16  1999/10/18 10:14:27  joergr
