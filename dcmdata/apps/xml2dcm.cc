@@ -22,8 +22,8 @@
  *  Purpose: Convert XML document to DICOM file or data set
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2004-03-22 16:55:11 $
- *  CVS/RCS Revision: $Revision: 1.8 $
+ *  Update Date:      $Date: 2004-03-25 17:27:36 $
+ *  CVS/RCS Revision: $Revision: 1.9 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -38,6 +38,9 @@
 #include "cmdlnarg.h"
 #include "ofstd.h"
 #include "ofconapp.h"
+
+#define INCLUDE_CSTDARG
+#include "ofstdinc.h"
 
 #ifdef WITH_ZLIB
 #include <zlib.h>        /* for zlibVersion() */
@@ -62,8 +65,23 @@ static char rcsid[] = "$dcmtk: " OFFIS_CONSOLE_APPLICATION " v"
 static xmlCharEncodingHandlerPtr EncodingHandler = NULL;
 
 
+#ifdef HAVE_VPRINTF
+// function required to avoid issue with 'std' namespace
+static void errorFunction(void *ctx, const char *msg, ...)
+{
+    va_list ap;
+    va_start(ap, msg);
+#ifdef HAVE_PROTOTYPE_STD__VFPRINTF
+    std::vfprintf(OFstatic_cast(FILE *, ctx), msg, ap);
+#else
+    vfprintf(OFstatic_cast(FILE *, ctx), msg, ap);
+#endif
+    va_end(ap);
+}
+#endif
+
 // libxml shall be quiet in non-debug mode
-void noErrorFunction(void * /*ctx*/, const char * /*msg*/, ...)
+static void noErrorFunction(void * /*ctx*/, const char * /*msg*/, ...)
 {
     /* do nothing */
 }
@@ -446,8 +464,13 @@ static OFCondition validateXmlDocument(xmlDocPtr doc,
     if (debug)
     {
         cvp.userData = OFstatic_cast(void *, stderr);
+#ifdef HAVE_VPRINTF
+        cvp.error = errorFunction;
+        cvp.warning = errorFunction;
+#else
         cvp.error = OFreinterpret_cast(xmlValidityErrorFunc, fprintf);
         cvp.warning = OFreinterpret_cast(xmlValidityWarningFunc, fprintf);
+#endif
     } else {
         cvp.userData = NULL;
         cvp.error = NULL;
@@ -827,7 +850,10 @@ int main(int, char *[])
 /*
  * CVS/RCS Log:
  * $Log: xml2dcm.cc,v $
- * Revision 1.8  2004-03-22 16:55:11  joergr
+ * Revision 1.9  2004-03-25 17:27:36  joergr
+ * Solved issue with function pointer to std::fprintf or fprintf, respectively.
+ *
+ * Revision 1.8  2004/03/22 16:55:11  joergr
  * Replaced tabs by spaces.
  *
  * Revision 1.7  2004/02/20 18:06:43  joergr
