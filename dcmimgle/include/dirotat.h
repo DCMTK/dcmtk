@@ -22,8 +22,8 @@
  *  Purpose: DicomRotateTemplate (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-12-09 10:14:54 $
- *  CVS/RCS Revision: $Revision: 1.11 $
+ *  Update Date:      $Date: 2003-12-23 15:53:22 $
+ *  CVS/RCS Revision: $Revision: 1.12 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -163,17 +163,17 @@ class DiRotateTemplate
             register T *q;
             register T *r;
             const unsigned long count = OFstatic_cast(unsigned long, Dest_X) * OFstatic_cast(unsigned long, Dest_Y);
-            for (int j = 0; j < Planes; j++)
+            for (int j = 0; j < Planes; ++j)
             {
                 p = src[j];
                 r = dest[j];
-                for (unsigned long f = Frames; f != 0; f--)
+                for (unsigned long f = Frames; f != 0; --f)
                 {
                     r += count;
-                    for (x = Dest_X; x != 0; x--)
+                    for (x = Dest_X; x != 0; --x)
                     {
                         q = r - x;
-                        for (y = Dest_Y; y != 0; y--)
+                        for (y = Dest_Y; y != 0; --y)
                         {
                             *q = *p++;
                             q -= Dest_X;
@@ -200,16 +200,16 @@ class DiRotateTemplate
             register T *q;
             register T *r;
             const unsigned long count = OFstatic_cast(unsigned long, Dest_X) * OFstatic_cast(unsigned long, Dest_Y);
-            for (int j = 0; j < Planes; j++)
+            for (int j = 0; j < Planes; ++j)
             {
                 p = src[j];
                 r = dest[j];
-                for (unsigned long f = Frames; f != 0; f--)
+                for (unsigned long f = Frames; f != 0; --f)
                 {
-                    for (x = Dest_X; x != 0; x--)
+                    for (x = Dest_X; x != 0; --x)
                     {
                         q = r + x - 1;
-                        for (y = Dest_Y; y != 0; y--)
+                        for (y = Dest_Y; y != 0; --y)
                         {
                             *q = *p++;
                             q += Dest_X;
@@ -235,14 +235,14 @@ class DiRotateTemplate
             register const T *p;
             register T *q;
             const unsigned long count = OFstatic_cast(unsigned long, Dest_X) * OFstatic_cast(unsigned long, Dest_Y);
-            for (int j = 0; j < Planes; j++)
+            for (int j = 0; j < Planes; ++j)
             {
                 p = src[j];
                 q = dest[j];
-                for (unsigned long f = Frames; f != 0; f--)
+                for (unsigned long f = Frames; f != 0; --f)
                 {
                     q += count;
-                    for (i = count; i != 0; i--)
+                    for (i = count; i != 0; --i)
                         *--q = *p++;
                     q += count;
                 }
@@ -267,18 +267,18 @@ class DiRotateTemplate
             register const T *p;
             register T *q;
             register T *r;
-            for (int j = 0; j < Planes; j++)
+            for (int j = 0; j < Planes; ++j)
             {
                 r = data[j];
-                for (unsigned long f = Frames; f != 0; f--)
+                for (unsigned long f = Frames; f != 0; --f)
                 {
                     OFBitmanipTemplate<T>::copyMem(OFstatic_cast(const T *, r), temp, count);  // create temporary copy of current frame
                     p = temp;
                     r += count;
-                    for (x = Dest_X; x != 0; x--)
+                    for (x = Dest_X; x != 0; --x)
                     {
                         q = r - x;
-                        for (y = Dest_Y; y != 0; y--)
+                        for (y = Dest_Y; y != 0; --y)
                         {
                             *q = *p++;
                             q -= Dest_X;
@@ -305,17 +305,17 @@ class DiRotateTemplate
             register const T *p;
             register T *q;
             register T *r;
-            for (int j = 0; j < Planes; j++)
+            for (int j = 0; j < Planes; ++j)
             {
                 r = data[j];
-                for (unsigned long f = Frames; f != 0; f--)
+                for (unsigned long f = Frames; f != 0; --f)
                 {
                     OFBitmanipTemplate<T>::copyMem(OFstatic_cast(const T *, r), temp, count);  // create temporary copy of current frame
                     p = temp;
-                    for (x = Dest_X; x != 0; x--)
+                    for (x = Dest_X; x != 0; --x)
                     {
                         q = r + x - 1;
-                        for (y = Dest_Y; y != 0; y--)
+                        for (y = Dest_Y; y != 0; --y)
                         {
                             *q = *p++;
                             q += Dest_X;
@@ -340,14 +340,14 @@ class DiRotateTemplate
         register T t;
         T *s;
         const unsigned long count = OFstatic_cast(unsigned long, Dest_X) * OFstatic_cast(unsigned long, Dest_Y);
-        for (int j = 0; j < Planes; j++)
+        for (int j = 0; j < Planes; ++j)
         {
             s = data[j];
-            for (unsigned long f = Frames; f != 0; f--)
+            for (unsigned long f = Frames; f != 0; --f)
             {
                 p = s;
                 q = s + count;
-                for (i = count / 2; i != 0; i--)
+                for (i = count / 2; i != 0; --i)
                 {
                     t = *p;
                     *p++ = *--q;
@@ -366,7 +366,11 @@ class DiRotateTemplate
  *
  * CVS/RCS Log:
  * $Log: dirotat.h,v $
- * Revision 1.11  2003-12-09 10:14:54  joergr
+ * Revision 1.12  2003-12-23 15:53:22  joergr
+ * Replaced post-increment/decrement operators by pre-increment/decrement
+ * operators where appropriate (e.g. 'i++' by '++i').
+ *
+ * Revision 1.11  2003/12/09 10:14:54  joergr
  * Adapted type casts to new-style typecast operators defined in ofcast.h.
  * Removed leading underscore characters from preprocessor symbols (reserved
  * symbols). Updated copyright header.

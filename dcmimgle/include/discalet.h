@@ -22,8 +22,8 @@
  *  Purpose: DicomScaleTemplates (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-12-09 10:25:06 $
- *  CVS/RCS Revision: $Revision: 1.21 $
+ *  Update Date:      $Date: 2003-12-23 15:53:22 $
+ *  CVS/RCS Revision: $Revision: 1.22 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -69,18 +69,17 @@ static inline void setScaleValues(Uint16 data[],
     if (remainder > OFstatic_cast(Uint16, min / 2))
     {
         remainder = min - remainder;
-        step0++;
-    }
-    else
-        step1++;
+        ++step0;
+    } else
+        ++step1;
     const double count = OFstatic_cast(double, min) / (OFstatic_cast(double, remainder) + 1);
     register Uint16 i;
     register double c = count;
-    for (i = 0; i < min; i++)
+    for (i = 0; i < min; ++i)
     {
         if ((i >= OFstatic_cast(Uint16, c)) && (remainder > 0))
         {
-            remainder--;
+            --remainder;
             c += count;
             data[i] = step1;
         }
@@ -258,15 +257,15 @@ class DiScaleTemplate
         register Uint16 y;
         register const T *p;
         register T *q;
-        for (int j = 0; j < Planes; j++)
+        for (int j = 0; j < Planes; ++j)
         {
             p = src[j] + OFstatic_cast(unsigned long, Top) * OFstatic_cast(unsigned long, Columns) + Left;
             q = dest[j];
-            for (unsigned long f = Frames; f != 0; f--)
+            for (unsigned long f = Frames; f != 0; --f)
             {
-                for (y = Dest_Y; y != 0; y--)
+                for (y = Dest_Y; y != 0; --y)
                 {
-                    for (x = Dest_X; x != 0; x--)
+                    for (x = Dest_X; x != 0; --x)
                         *(q++) = *(p++);
                     p += x_feed;
                 }
@@ -316,35 +315,35 @@ class DiScaleTemplate
         register unsigned long i;
         register const T *p;
         register T *q;
-        for (int j = 0; j < Planes; j++)
+        for (int j = 0; j < Planes; ++j)
         {
             p = src[j] + s_start;
             q = dest[j];
-            for (unsigned long f = Frames; f != 0; f--)
+            for (unsigned long f = Frames; f != 0; --f)
             {
-                for (i = t_feed; i != 0; i--)               // top
+                for (i = t_feed; i != 0; --i)               // top
                     *(q++) = value;
-                for (y = y_count; y != 0; y--)              // middle part:
+                for (y = y_count; y != 0; --y)              // middle part:
                 {
                     x = 0;
                     while (x < d_left)                      // - left
                     {
                         *(q++) = value;
-                        x++;
+                        ++x;
                     }
                     while (x <= d_right)                    // - middle
                     {
                         *(q++) = *(p++);
-                        x++;
+                        ++x;
                     }
                     while (x < Src_X)                       // - right
                     {
                         *(q++) = value;
-                        x++;
+                        ++x;
                     }
                     p += x_feed;
                 }
-                for (i = b_feed; i != 0; i--)               // bottom
+                for (i = b_feed; i != 0; --i)               // bottom
                     *(q++) = value;
                 p += y_feed;
             }
@@ -372,20 +371,20 @@ class DiScaleTemplate
         register const T *p;
         register T *q;
         register T value;
-        for (int j = 0; j < Planes; j++)
+        for (int j = 0; j < Planes; ++j)
         {
             sp = src[j] + OFstatic_cast(unsigned long, Top) * OFstatic_cast(unsigned long, Columns) + Left;
             q = dest[j];
-            for (Uint32 f = Frames; f != 0; f--)
+            for (Uint32 f = Frames; f != 0; --f)
             {
-                for (y = Src_Y; y != 0; y--)
+                for (y = Src_Y; y != 0; --y)
                 {
-                    for (dy = y_factor; dy != 0; dy--)
+                    for (dy = y_factor; dy != 0; --dy)
                     {
-                        for (x = Src_X, p = sp; x != 0; x--)
+                        for (x = Src_X, p = sp; x != 0; --x)
                         {
                             value = *(p++);
-                            for (dx = x_factor; dx != 0; dx--)
+                            for (dx = x_factor; dx != 0; --dx)
                                 *(q++) = value;
                         }
                     }
@@ -412,15 +411,15 @@ class DiScaleTemplate
         register Uint16 y;
         register const T *p;
         register T *q;
-        for (int j = 0; j < Planes; j++)
+        for (int j = 0; j < Planes; ++j)
         {
             p = src[j] + OFstatic_cast(unsigned long, Top) * OFstatic_cast(unsigned long, Columns) + Left;
             q = dest[j];
-            for (Uint32 f = Frames; f != 0; f--)
+            for (Uint32 f = Frames; f != 0; --f)
             {
-                for (y = Dest_Y; y != 0; y--)
+                for (y = Dest_Y; y != 0; --y)
                 {
-                    for (x = Dest_X; x != 0; x--)
+                    for (x = Dest_X; x != 0; --x)
                     {
                         *(q++) = *p;
                         p += x_divisor;
@@ -481,20 +480,20 @@ class DiScaleTemplate
             register const T *p;
             register T *q;
             register T value;
-            for (int j = 0; j < Planes; j++)
+            for (int j = 0; j < Planes; ++j)
             {
                 sp = src[j] + OFstatic_cast(unsigned long, Top) * OFstatic_cast(unsigned long, Columns) + Left;
                 q = dest[j];
-                for (Uint32 f = 0; f < Frames; f++)
+                for (Uint32 f = 0; f < Frames; ++f)
                 {
-                    for (y = 0; y < ymin; y++)
+                    for (y = 0; y < ymin; ++y)
                     {
-                        for (dy = 0; dy < y_fact[y]; dy++)
+                        for (dy = 0; dy < y_fact[y]; ++dy)
                         {
-                            for (x = 0, p = sp; x < xmin; x++)
+                            for (x = 0, p = sp; x < xmin; ++x)
                             {
                                 value = *p;
-                                for (dx = 0; dx < x_fact[x]; dx++)
+                                for (dx = 0; dx < x_fact[x]; ++dx)
                                     *(q++) = value;
                                 p += x_step[x];
                             }
@@ -561,29 +560,29 @@ class DiScaleTemplate
             }
 
             const unsigned long count = OFstatic_cast(unsigned long, Dest_X) * OFstatic_cast(unsigned long, Dest_Y) * Frames;
-            for (int j = 0; j < Planes; j++)
+            for (int j = 0; j < Planes; ++j)
                 OFBitmanipTemplate<T>::zeroMem(dest[j], count);     // delete destination buffer
         }
         else
         {
-            for (int j = 0; j < Planes; j++)
+            for (int j = 0; j < Planes; ++j)
             {
                 fp = src[j];
                 sq = dest[j];
-                for (Uint32 f = Frames; f != 0; f--)
+                for (Uint32 f = Frames; f != 0; --f)
                 {
-                    for (x = 0; x < Src_X; x++)
+                    for (x = 0; x < Src_X; ++x)
                         xvalue[x] = HALFSCALE_FACTOR;
                     register unsigned long yfill = SCALE_FACTOR;
                     register unsigned long yleft = syscale;
                     register int yneed = 1;
                     int ysrc = 0;
-                    for (y = 0; y < Dest_Y; y++)
+                    for (y = 0; y < Dest_Y; ++y)
                     {
                         if (Src_Y == Dest_Y)
                         {
                             sp = fp;
-                            for (x = Src_X, p = sp, q = xtemp; x != 0; x--)
+                            for (x = Src_X, p = sp, q = xtemp; x != 0; --x)
                                 *(q++) = *(p++);
                             fp += Src_X;
                         }
@@ -595,9 +594,9 @@ class DiScaleTemplate
                                 {
                                     sp = fp;
                                     fp += Src_X;
-                                    ysrc++;
+                                    ++ysrc;
                                 }
-                                for (x = 0, p = sp; x < Src_X; x++)
+                                for (x = 0, p = sp; x < Src_X; ++x)
                                     xvalue[x] += yleft * OFstatic_cast(signed long, *(p++));
                                 yfill -= yleft;
                                 yleft = syscale;
@@ -607,10 +606,10 @@ class DiScaleTemplate
                             {
                                 sp = fp;
                                 fp += Src_X;
-                                ysrc++;
+                                ++ysrc;
                                 yneed = 0;
                             }
-                            for (x = 0, p = sp, q = xtemp; x < Src_X; x++)
+                            for (x = 0, p = sp, q = xtemp; x < Src_X; ++x)
                             {
                                 register signed long v = xvalue[x] + yfill * OFstatic_cast(signed long, *(p++));
                                 v /= SCALE_FACTOR;
@@ -627,7 +626,7 @@ class DiScaleTemplate
                         }
                         if (Src_X == Dest_X)
                         {
-                            for (x = Dest_X, p = xtemp, q = sq; x != 0; x--)
+                            for (x = Dest_X, p = xtemp, q = sq; x != 0; --x)
                                 *(q++) = *(p++);
                             sq += Dest_X;
                         }
@@ -638,14 +637,14 @@ class DiScaleTemplate
                             register unsigned long xleft;
                             register int xneed = 0;
                             q = sq;
-                            for (x = 0, p = xtemp; x < Src_X; x++, p++)
+                            for (x = 0, p = xtemp; x < Src_X; ++x, ++p)
                             {
                                 xleft = sxscale;
                                 while (xleft >= xfill)
                                 {
                                     if (xneed)
                                     {
-                                        q++;
+                                        ++q;
                                         v = HALFSCALE_FACTOR;
                                     }
                                     v += xfill * OFstatic_cast(signed long, *p);
@@ -659,7 +658,7 @@ class DiScaleTemplate
                                 {
                                     if (xneed)
                                     {
-                                        q++;
+                                        ++q;
                                         v = HALFSCALE_FACTOR;
                                         xneed = 0;
                                     }
@@ -725,39 +724,41 @@ class DiScaleTemplate
          *   (adapted to be used with signed pixel representation and inverse images - mono1)
          */
 
-        for (int j = 0; j < Planes; j++)
+        for (int j = 0; j < Planes; ++j)
         {
             sp = src[j] + OFstatic_cast(unsigned long, Top) * OFstatic_cast(unsigned long, Columns) + Left;
             q = dest[j];
-            for (Uint32 f = 0; f < Frames; f++)
+            for (Uint32 f = 0; f < Frames; ++f)
             {
-                for (y = 0; y < Dest_Y; y++)
+                for (y = 0; y < Dest_Y; ++y)
                 {
                     by = y_factor * OFstatic_cast(double, y);
                     ey = y_factor * (OFstatic_cast(double, y) + 1.0);
                     byi = OFstatic_cast(int, by);
                     eyi = OFstatic_cast(int, ey);
-                    if (OFstatic_cast(double, eyi) == ey) eyi--;
+                    if (OFstatic_cast(double, eyi) == ey)
+                        --eyi;
                     y_part = OFstatic_cast(double, eyi) / y_factor;
                     b_factor = y_part - OFstatic_cast(double, y);
                     t_factor = (OFstatic_cast(double, y) + 1.0) - y_part;
-                    for (x = 0; x < Dest_X; x++)
+                    for (x = 0; x < Dest_X; ++x)
                     {
                         value = 0;
                         bx = x_factor * OFstatic_cast(double, x);
                         ex = x_factor * (OFstatic_cast(double, x) + 1.0);
                         bxi = OFstatic_cast(int, bx);
                         exi = OFstatic_cast(int, ex);
-                        if (OFstatic_cast(double, exi) == ex) exi--;
+                        if (OFstatic_cast(double, exi) == ex)
+                            --exi;
                         x_part = OFstatic_cast(double, exi) / x_factor;
                         l_factor = x_part - OFstatic_cast(double, x);
                         r_factor = (OFstatic_cast(double, x) + 1.0) - x_part;
                         offset = OFstatic_cast(unsigned long, byi - 1) * OFstatic_cast(unsigned long, Columns);
-                        for (yi = byi; yi <= eyi; yi++)
+                        for (yi = byi; yi <= eyi; ++yi)
                         {
                             offset += Columns;
                             p = sp + offset + OFstatic_cast(unsigned long, bxi);
-                            for (xi = bxi; xi <= exi; xi++)
+                            for (xi = bxi; xi <= exi; ++xi)
                             {
                                 sum = OFstatic_cast(double, *(p++));
                                 if (bxi != exi)
@@ -826,37 +827,39 @@ class DiScaleTemplate
          *   (adapted to be used with signed pixel representation and inverse images - mono1)
          */
 
-        for (int j = 0; j < Planes; j++)
+        for (int j = 0; j < Planes; ++j)
         {
             sp = src[j] + OFstatic_cast(unsigned long, Top) * OFstatic_cast(unsigned long, Columns) + Left;
             q = dest[j];
-            for (Uint32 f = 0; f < Frames; f++)
+            for (Uint32 f = 0; f < Frames; ++f)
             {
-                for (y = 0; y < Dest_Y; y++)
+                for (y = 0; y < Dest_Y; ++y)
                 {
                     by = y_factor * OFstatic_cast(double, y);
                     ey = y_factor * (OFstatic_cast(double, y) + 1.0);
                     byi = OFstatic_cast(int, by);
                     eyi = OFstatic_cast(int, ey);
-                    if (OFstatic_cast(double, eyi) == ey) eyi--;
+                    if (OFstatic_cast(double, eyi) == ey)
+                        --eyi;
                     b_factor = 1 + OFstatic_cast(double, byi) - by;
                     t_factor = ey - OFstatic_cast(double, eyi);
-                    for (x = 0; x < Dest_X; x++)
+                    for (x = 0; x < Dest_X; ++x)
                     {
                         value = 0;
                         bx = x_factor * OFstatic_cast(double, x);
                         ex = x_factor * (OFstatic_cast(double, x) + 1.0);
                         bxi = OFstatic_cast(int, bx);
                         exi = OFstatic_cast(int, ex);
-                        if (OFstatic_cast(double, exi) == ex) exi--;
+                        if (OFstatic_cast(double, exi) == ex)
+                            --exi;
                         l_factor = 1 + OFstatic_cast(double, bxi) - bx;
                         r_factor = ex - OFstatic_cast(double, exi);
                         offset = OFstatic_cast(unsigned long, byi - 1) * OFstatic_cast(unsigned long, Columns);
-                        for (yi = byi; yi <= eyi; yi++)
+                        for (yi = byi; yi <= eyi; ++yi)
                         {
                             offset += Columns;
                             p = sp + offset + OFstatic_cast(unsigned long, bxi);
-                            for (xi = bxi; xi <= exi; xi++)
+                            for (xi = bxi; xi <= exi; ++xi)
                             {
                                 sum = OFstatic_cast(double, *(p++)) / xy_factor;
                                 if (xi == bxi)
@@ -886,7 +889,11 @@ class DiScaleTemplate
  *
  * CVS/RCS Log:
  * $Log: discalet.h,v $
- * Revision 1.21  2003-12-09 10:25:06  joergr
+ * Revision 1.22  2003-12-23 15:53:22  joergr
+ * Replaced post-increment/decrement operators by pre-increment/decrement
+ * operators where appropriate (e.g. 'i++' by '++i').
+ *
+ * Revision 1.21  2003/12/09 10:25:06  joergr
  * Adapted type casts to new-style typecast operators defined in ofcast.h.
  * Removed leading underscore characters from preprocessor symbols (reserved
  * symbols). Updated copyright header.

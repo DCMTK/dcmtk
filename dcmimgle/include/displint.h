@@ -22,8 +22,8 @@
  *  Purpose: DiCubicSpline Function/Interpolation (Header/Implementation)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-12-08 19:20:47 $
- *  CVS/RCS Revision: $Revision: 1.17 $
+ *  Update Date:      $Date: 2003-12-23 15:53:22 $
+ *  CVS/RCS Revision: $Revision: 1.18 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -95,7 +95,7 @@ class DiCubicSpline
                            ((OFstatic_cast(T3_, y[1]) - OFstatic_cast(T3_, y[0])) /
                            (OFstatic_cast(T3_, x[1]) - OFstatic_cast(T3_, x[0])) - yp1);
                 }
-                for (i = 1; i < n - 1; i++)
+                for (i = 1; i < n - 1; ++i)
                 {
                     sig = (OFstatic_cast(T3_, x[i]) - OFstatic_cast(T3_, x[i - 1])) /
                           (OFstatic_cast(T3_, x[i + 1]) - OFstatic_cast(T3_, x[i - 1]));
@@ -118,7 +118,7 @@ class DiCubicSpline
                          (OFstatic_cast(T3_, x[n - 1]) - OFstatic_cast(T3_, x[n - 2])));
                 }
                 y2[n - 1] = (un - qn * u[n - 2]) / (qn * y2[n - 2] + 1.0);
-                for (i = n - 1; i > 0; i--)
+                for (i = n - 1; i > 0; --i)
                     y2[i - 1] = y2[i - 1] * y2[i] + u[i - 1];
                 delete[] u;
                 return 1;
@@ -157,7 +157,7 @@ class DiCubicSpline
             register unsigned int klo = 0;
             register unsigned int khi = na - 1;
             T3_ h, b, a;
-            for (i = 0; i < n; i++)
+            for (i = 0; i < n; ++i)
             {
                 if ((xa[klo] > x[i]) || (xa[khi] < x[i]))       // optimization
                 {
@@ -199,7 +199,11 @@ class DiCubicSpline
  *
  * CVS/RCS Log:
  * $Log: displint.h,v $
- * Revision 1.17  2003-12-08 19:20:47  joergr
+ * Revision 1.18  2003-12-23 15:53:22  joergr
+ * Replaced post-increment/decrement operators by pre-increment/decrement
+ * operators where appropriate (e.g. 'i++' by '++i').
+ *
+ * Revision 1.17  2003/12/08 19:20:47  joergr
  * Adapted type casts to new-style typecast operators defined in ofcast.h.
  * Removed leading underscore characters from preprocessor symbols (reserved
  * symbols). Updated copyright header.

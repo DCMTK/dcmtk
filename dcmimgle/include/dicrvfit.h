@@ -22,8 +22,8 @@
  *  Purpose: DiCurveFitting (header/implementation)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-12-08 18:54:16 $
- *  CVS/RCS Revision: $Revision: 1.15 $
+ *  Update Date:      $Date: 2003-12-23 15:53:22 $
+ *  CVS/RCS Revision: $Revision: 1.16 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -93,9 +93,9 @@ class DiCurveFitting
                 register unsigned int i;
                 register unsigned int j;
                 register unsigned int k;
-                for (i = 0; i < order; i++)
+                for (i = 0; i < order; ++i)
                 {
-                    for (j = 0; j < n; j++)
+                    for (j = 0; j < n; ++j)
                     {
                         k = i + j * order;
                         if (i == 0)
@@ -105,29 +105,29 @@ class DiCurveFitting
                      }
                 }
                 T3_ sum;
-                for (i = 0; i < order; i++)
+                for (i = 0; i < order; ++i)
                 {
                     const unsigned int i_order = i * order;
-                    for (j = 0; j <= i; j++)
+                    for (j = 0; j <= i; ++j)
                     {
                         sum = 0;
-                        for (k = 0; k < n; k++)
+                        for (k = 0; k < n; ++k)
                             sum += basis[i + k * order] * basis[j + k * order];
                         alpha[i + j * order] = sum;
                         if (i != j)
                             alpha[j + i_order] = sum;
                     }
                 }
-                for (i = 0; i < order; i++)
+                for (i = 0; i < order; ++i)
                 {
                     sum = 0;
-                    for (j = 0; j < n; j++)
+                    for (j = 0; j < n; ++j)
                         sum += OFstatic_cast(T3_, y[j]) * basis[i + j * order];
                     beta[i] = sum;
                 }
                 if (solve(alpha, beta, order))
                 {
-                    for (i = 0; i < order; i++)
+                    for (i = 0; i < order; ++i)
                         c[i] = beta[i];
                     result = 1;
                 }
@@ -172,12 +172,12 @@ class DiCurveFitting
             T3_ w;
             const T3_ xo = OFstatic_cast(T3_, xs);
             const T3_ xi = OFstatic_cast(T3_, (OFstatic_cast(T3_, xe) - OFstatic_cast(T3_, xs)) / (n - 1));
-            for (i = 0; i < n; i++)
+            for (i = 0; i < n; ++i)
             {
                 x = xo + OFstatic_cast(T3_, i) * xi;
                 x2 = 1;
                 w = 0;
-                for (j = 0; j <= o; j++)
+                for (j = 0; j <= o; ++j)
                 {
                     w += c[j] * x2;
                     x2 *= x;
@@ -275,11 +275,11 @@ class DiCurveFitting
             T3_ mag;
             T3_ mag2;
             T3_ temp;
-            for (i = 0; i < n; i++)
+            for (i = 0; i < n; ++i)
             {
                 mag = 0;
                 pivot = -1;
-                for (j = i; j < n; j++)
+                for (j = i; j < n; ++j)
                 {
                     mag2 = fabs(a[i + j * n]);
                     if (mag2 > mag)
@@ -297,7 +297,7 @@ class DiCurveFitting
                     if (piv != i)
                     {
                         const unsigned int piv_n = piv * n;
-                        for (j = i; j < n; j++)
+                        for (j = i; j < n; ++j)
                         {
                             temp = a[j + i_n];
                             a[j + i_n] = a[j + piv_n];
@@ -308,16 +308,16 @@ class DiCurveFitting
                         b[piv] = temp;
                     }
                     mag = a[i + i_n];
-                    for (j = i; j < n; j++)
+                    for (j = i; j < n; ++j)
                         a[j + i_n] /= mag;
                     b[i] /= mag;
-                    for (j = 0; j < n; j++)
+                    for (j = 0; j < n; ++j)
                     {
                         if (i == j)
                             continue;
                         const unsigned int j_n = j * n;
                         mag2 = a[i + j_n];
-                        for (k = i; k < n; k++)
+                        for (k = i; k < n; ++k)
                             a[k + j_n] -= mag2 * a[k + i_n];
                         b[j] -= mag2 * b[i];
                     }
@@ -338,7 +338,11 @@ class DiCurveFitting
  *
  * CVS/RCS Log:
  * $Log: dicrvfit.h,v $
- * Revision 1.15  2003-12-08 18:54:16  joergr
+ * Revision 1.16  2003-12-23 15:53:22  joergr
+ * Replaced post-increment/decrement operators by pre-increment/decrement
+ * operators where appropriate (e.g. 'i++' by '++i').
+ *
+ * Revision 1.15  2003/12/08 18:54:16  joergr
  * Adapted type casts to new-style typecast operators defined in ofcast.h.
  * Removed leading underscore characters from preprocessor symbols (reserved
  * symbols). Updated copyright header.

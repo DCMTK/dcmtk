@@ -22,8 +22,8 @@
  *  Purpose: DicomTransTemplate (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-12-08 18:51:26 $
- *  CVS/RCS Revision: $Revision: 1.12 $
+ *  Update Date:      $Date: 2003-12-23 15:53:22 $
+ *  CVS/RCS Revision: $Revision: 1.13 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -97,7 +97,7 @@ class DiTransTemplate
                           T *dest[])
     {
         const unsigned long count = OFstatic_cast(unsigned long, Dest_X) * OFstatic_cast(unsigned long, Dest_Y) * Frames;
-        for (int j = 0; j < Planes; j++)
+        for (int j = 0; j < Planes; ++j)
             OFBitmanipTemplate<T>::copyMem(src[j], dest[j], count);
     }
 
@@ -110,7 +110,7 @@ class DiTransTemplate
                           const T value)
     {
         const unsigned long count = OFstatic_cast(unsigned long, Dest_X) * OFstatic_cast(unsigned long, Dest_Y) * Frames;
-        for (int j = 0; j < Planes; j++)
+        for (int j = 0; j < Planes; ++j)
             OFBitmanipTemplate<T>::setMem(dest[j], value, count);
     }
 
@@ -141,7 +141,11 @@ class DiTransTemplate
  *
  * CVS/RCS Log:
  * $Log: ditranst.h,v $
- * Revision 1.12  2003-12-08 18:51:26  joergr
+ * Revision 1.13  2003-12-23 15:53:22  joergr
+ * Replaced post-increment/decrement operators by pre-increment/decrement
+ * operators where appropriate (e.g. 'i++' by '++i').
+ *
+ * Revision 1.12  2003/12/08 18:51:26  joergr
  * Adapted type casts to new-style typecast operators defined in ofcast.h.
  * Removed leading underscore characters from preprocessor symbols (reserved
  * symbols). Updated copyright header.

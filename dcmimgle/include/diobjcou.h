@@ -22,8 +22,8 @@
  *  Purpose: DicomObjectCounter (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-12-08 19:30:16 $
- *  CVS/RCS Revision: $Revision: 1.9 $
+ *  Update Date:      $Date: 2003-12-23 15:53:22 $
+ *  CVS/RCS Revision: $Revision: 1.10 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -59,7 +59,7 @@ class DiObjectCounter
 #ifdef _REENTRANT
         theMutex.lock();
 #endif
-        Counter++;
+        ++Counter;
 #ifdef _REENTRANT
         theMutex.unlock();
 #endif
@@ -128,7 +128,11 @@ class DiObjectCounter
  *
  * CVS/RCS Log:
  * $Log: diobjcou.h,v $
- * Revision 1.9  2003-12-08 19:30:16  joergr
+ * Revision 1.10  2003-12-23 15:53:22  joergr
+ * Replaced post-increment/decrement operators by pre-increment/decrement
+ * operators where appropriate (e.g. 'i++' by '++i').
+ *
+ * Revision 1.9  2003/12/08 19:30:16  joergr
  * Removed leading underscore characters from preprocessor symbols (reserved
  * symbols). Updated copyright header.
  *

@@ -22,8 +22,8 @@
  *  Purpose: DicomMonoOutputPixelTemplate (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-12-23 10:51:52 $
- *  CVS/RCS Revision: $Revision: 1.42 $
+ *  Update Date:      $Date: 2003-12-23 15:53:22 $
+ *  CVS/RCS Revision: $Revision: 1.43 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -195,7 +195,7 @@ class DiMonoOutputPixelTemplate
         if (Data != NULL)
         {
             register unsigned long i;
-            for (i = 0; i < FrameSize; i++)
+            for (i = 0; i < FrameSize; ++i)
                 stream << OFstatic_cast(unsigned long, Data[i]) << " ";    // typecast to resolve problems with 'char'
             return 1;
         }
@@ -215,7 +215,7 @@ class DiMonoOutputPixelTemplate
         if (Data != NULL)
         {
             register unsigned long i;
-            for (i = 0; i < FrameSize; i++)
+            for (i = 0; i < FrameSize; ++i)
                 fprintf(stream, "%lu ", OFstatic_cast(unsigned long, Data[i]));
             return 1;
         }
@@ -240,7 +240,7 @@ class DiMonoOutputPixelTemplate
                 register const T3 *p = Data;
                 register Uint8 *q = UsedValues;
                 register unsigned long i;
-                for (i = Count; i != 0; i--)
+                for (i = Count; i != 0; --i)
                     *(q + *(p++)) = 1;                                        // mark used entries
             }
         }
@@ -429,7 +429,7 @@ class DiMonoOutputPixelTemplate
                                 if (low > high)                                           // inverse
                                 {
                                     const Uint16 maxvalue = OFstatic_cast(Uint16, plut->getAbsMaxRange() - 1);
-                                    for (i = 0; i < ocnt; i++)
+                                    for (i = 0; i < ocnt; ++i)
                                     {
                                         value = OFstatic_cast(T2, i) + absmin;
                                         if (value <= firstentry)
@@ -441,7 +441,7 @@ class DiMonoOutputPixelTemplate
                                         *(q++) = OFstatic_cast(T3, dlut->getValue(OFstatic_cast(Uint16, maxvalue - plut->getValue(value2))));
                                     }
                                 } else {                                                  // normal
-                                    for (i = 0; i < ocnt; i++)
+                                    for (i = 0; i < ocnt; ++i)
                                     {
                                         value = OFstatic_cast(T2, i) + absmin;
                                         if (value <= firstentry)
@@ -455,7 +455,7 @@ class DiMonoOutputPixelTemplate
                                 }
                             } else {                                                      // don't use display: invalid or absent
                                 const double gradient2 = outrange / OFstatic_cast(double, plut->getAbsMaxRange());
-                                for (i = 0; i < ocnt; i++)
+                                for (i = 0; i < ocnt; ++i)
                                 {
                                     value = OFstatic_cast(T2, i) + absmin;
                                     if (value <= firstentry)
@@ -469,7 +469,7 @@ class DiMonoOutputPixelTemplate
                             }
                             const T3 *lut0 = lut - OFstatic_cast(T2, inter->getAbsMinimum());  // points to 'zero' entry
                             q = Data;
-                            for (i = Count; i != 0; i--)                                  // apply LUT
+                            for (i = Count; i != 0; --i)                                  // apply LUT
                                 *(q++) = *(lut0 + (*(p++)));
                         }
                         if (lut == NULL)                                                  // use "normal" transformation
@@ -479,7 +479,7 @@ class DiMonoOutputPixelTemplate
                                 if (low > high)                                           // inverse
                                 {
                                     const Uint16 maxvalue = OFstatic_cast(Uint16, vlut->getAbsMaxRange() - 1);
-                                    for (i = Count; i != 0; i--)
+                                    for (i = Count; i != 0; --i)
                                     {
                                         value = OFstatic_cast(T2, *(p++));                // pixel value
                                         if (value <= firstentry)
@@ -491,7 +491,7 @@ class DiMonoOutputPixelTemplate
                                         *(q++) = OFstatic_cast(T3, dlut->getValue(OFstatic_cast(Uint16, maxvalue - plut->getValue(value2))));
                                     }
                                 } else {                                                  // normal
-                                    for (i = Count; i != 0; i--)
+                                    for (i = Count; i != 0; --i)
                                     {
                                         value = OFstatic_cast(T2, *(p++));                // pixel value
                                         if (value <= firstentry)
@@ -505,7 +505,7 @@ class DiMonoOutputPixelTemplate
                                 }
                             } else {                                                      // don't use display: invalid or absent
                                 const double gradient2 = outrange / OFstatic_cast(double, plut->getAbsMaxRange());
-                                for (i = Count; i != 0; i--)
+                                for (i = Count; i != 0; --i)
                                 {
                                     value = OFstatic_cast(T2, *(p++));                    // pixel value
                                     if (value <= firstentry)
@@ -531,7 +531,7 @@ class DiMonoOutputPixelTemplate
                                 if (low > high)                                           // inverse
                                 {
                                     const Uint16 maxvalue = OFstatic_cast(Uint16, vlut->getAbsMaxRange() - 1);
-                                    for (i = 0; i < ocnt; i++)
+                                    for (i = 0; i < ocnt; ++i)
                                     {
                                         value = OFstatic_cast(T2, i) + absmin;
                                         if (value < firstentry)
@@ -541,7 +541,7 @@ class DiMonoOutputPixelTemplate
                                         *(q++) = OFstatic_cast(T3, dlut->getValue(OFstatic_cast(Uint16, maxvalue - vlut->getValue(value))));
                                     }
                                 } else {                                                  // normal
-                                    for (i = 0; i < ocnt; i++)
+                                    for (i = 0; i < ocnt; ++i)
                                     {
                                         value = OFstatic_cast(T2, i) + absmin;
                                         if (value < firstentry)
@@ -552,7 +552,7 @@ class DiMonoOutputPixelTemplate
                                     }
                                 }
                             } else {                                                      // don't use display: invalid or absent
-                                for (i = 0; i < ocnt; i++)                                // calculating LUT entries
+                                for (i = 0; i < ocnt; ++i)                                // calculating LUT entries
                                 {
                                     value = OFstatic_cast(T2, i) + absmin;
                                     if (value <= firstentry)
@@ -565,7 +565,7 @@ class DiMonoOutputPixelTemplate
                             }
                             const T3 *lut0 = lut - OFstatic_cast(T2, inter->getAbsMinimum());   // points to 'zero' entry
                             q = Data;
-                            for (i = Count; i != 0; i--)                                  // apply LUT
+                            for (i = Count; i != 0; --i)                                  // apply LUT
                                 *(q++) = *(lut0 + (*(p++)));
                         }
                         if (lut == NULL)                                                  // use "normal" transformation
@@ -575,7 +575,7 @@ class DiMonoOutputPixelTemplate
                                 if (low > high)                                           // inverse
                                 {
                                     const Uint16 maxvalue = OFstatic_cast(Uint16, vlut->getAbsMaxRange() - 1);
-                                    for (i = Count; i != 0; i--)
+                                    for (i = Count; i != 0; --i)
                                     {
                                         value = OFstatic_cast(T2, *(p++));
                                         if (value < firstentry)
@@ -585,7 +585,7 @@ class DiMonoOutputPixelTemplate
                                         *(q++) = OFstatic_cast(T3, dlut->getValue(OFstatic_cast(Uint16, maxvalue - vlut->getValue(value))));
                                     }
                                 } else {                                                  // normal
-                                    for (i = Count; i != 0; i--)
+                                    for (i = Count; i != 0; --i)
                                     {
                                         value = OFstatic_cast(T2, *(p++));
                                         if (value < firstentry)
@@ -596,7 +596,7 @@ class DiMonoOutputPixelTemplate
                                     }
                                 }
                             } else {                                                      // don't use display: invalid or absent
-                                for (i = 0; i < Count; i++)
+                                for (i = 0; i < Count; ++i)
                                 {
                                     value = OFstatic_cast(T2, *(p++));
                                     if (value <= firstentry)
@@ -678,20 +678,20 @@ class DiMonoOutputPixelTemplate
                             if (low > high)                                           // inverse
                             {
                                 const Uint16 maxvalue = OFstatic_cast(Uint16, plut->getAbsMaxRange() - 1);
-                                for (i = 0; i < ocnt; i++)
+                                for (i = 0; i < ocnt; ++i)
                                 {
                                     value = OFstatic_cast(Uint32, OFstatic_cast(double, i) * gradient1);
                                     *(q++) = OFstatic_cast(T3, dlut->getValue(OFstatic_cast(Uint16, maxvalue - plut->getValue(value))));
                                 }
                             } else {                                                  // normal
-                                for (i = 0; i < ocnt; i++)
+                                for (i = 0; i < ocnt; ++i)
                                 {
                                     value = OFstatic_cast(Uint32, OFstatic_cast(double, i) * gradient1);
                                     *(q++) = OFstatic_cast(T3, dlut->getValue(plut->getValue(value)));
                                 }
                             }
                         } else {                                                      // don't use display: invalid or absent
-                            for (i = 0; i < ocnt; i++)
+                            for (i = 0; i < ocnt; ++i)
                             {
                                 value = OFstatic_cast(Uint32, OFstatic_cast(double, i) * gradient1);
                                 *(q++) = OFstatic_cast(T3, OFstatic_cast(double, low) + OFstatic_cast(double, plut->getValue(value)) * gradient2);
@@ -699,7 +699,7 @@ class DiMonoOutputPixelTemplate
                         }
                         const T3 *lut0 = lut - OFstatic_cast(T2, inter->getAbsMinimum());  // points to 'zero' entry
                         q = Data;
-                        for (i = Count; i != 0; i--)                                  // apply LUT
+                        for (i = Count; i != 0; --i)                                  // apply LUT
                             *(q++) = *(lut0 + (*(p++)));
                     }
                     if (lut == NULL)                                                  // use "normal" transformation
@@ -709,20 +709,20 @@ class DiMonoOutputPixelTemplate
                             if (low > high)                                           // inverse
                             {
                                 const Uint16 maxvalue = OFstatic_cast(Uint16, plut->getAbsMaxRange() - 1);
-                                for (i = Count; i != 0; i--)
+                                for (i = Count; i != 0; --i)
                                 {
                                     value = OFstatic_cast(Uint32, (OFstatic_cast(double, *(p++)) - absmin) * gradient1);
                                     *(q++) = OFstatic_cast(T3, dlut->getValue(OFstatic_cast(Uint16, maxvalue - plut->getValue(value))));
                                 }
                             } else {                                                  // normal
-                                for (i = Count; i != 0; i--)
+                                for (i = Count; i != 0; --i)
                                 {
                                     value = OFstatic_cast(Uint32, (OFstatic_cast(double, *(p++)) - absmin) * gradient1);
                                     *(q++) = OFstatic_cast(T3, dlut->getValue(plut->getValue(value)));
                                 }
                             }
                         } else {                                                      // don't use display: invalid or absent
-                            for (i = Count; i != 0; i--)
+                            for (i = Count; i != 0; --i)
                             {
                                 value = OFstatic_cast(Uint32, (OFstatic_cast(double, *(p++)) - absmin) * gradient1);
                                 *(q++) = OFstatic_cast(T3, OFstatic_cast(double, low) + OFstatic_cast(double, plut->getValue(value)) * gradient2);
@@ -739,19 +739,19 @@ class DiMonoOutputPixelTemplate
                         {
                             if (low > high)                                           // inverse
                             {
-                                for (i = ocnt; i != 0; i--)                           // calculating LUT entries
+                                for (i = ocnt; i != 0; --i)                           // calculating LUT entries
                                     *(q++) = OFstatic_cast(T3, dlut->getValue(OFstatic_cast(Uint16, i - 1)));
                             } else {                                                  // normal
-                                for (i = 0; i < ocnt; i++)                            // calculating LUT entries
+                                for (i = 0; i < ocnt; ++i)                            // calculating LUT entries
                                     *(q++) = OFstatic_cast(T3, dlut->getValue(OFstatic_cast(Uint16, i)));
                             }
                         } else {                                                      // don't use display: invalid or absent
-                            for (i = 0; i < ocnt; i++)                                // calculating LUT entries
+                            for (i = 0; i < ocnt; ++i)                                // calculating LUT entries
                                 *(q++) = OFstatic_cast(T3, OFstatic_cast(double, low) + OFstatic_cast(double, i) * gradient);
                         }
                         const T3 *lut0 = lut - OFstatic_cast(T2, inter->getAbsMinimum());  // points to 'zero' entry
                         q = Data;
-                        for (i = Count; i != 0; i--)                                  // apply LUT
+                        for (i = Count; i != 0; --i)                                  // apply LUT
                             *(q++) = *(lut0 + (*(p++)));
                     }
                     if (lut == NULL)                                                  // use "normal" transformation
@@ -760,14 +760,14 @@ class DiMonoOutputPixelTemplate
                         {
                             if (low > high)                                           // inverse
                             {
-                                for (i = Count; i != 0; i--)
+                                for (i = Count; i != 0; --i)
                                     *(q++) = OFstatic_cast(T3, dlut->getValue(OFstatic_cast(Uint16, absmax - (OFstatic_cast(double, *(p++)) - absmin))));
                             } else {                                                  // normal
-                                for (i = Count; i != 0; i--)
+                                for (i = Count; i != 0; --i)
                                     *(q++) = OFstatic_cast(T3, dlut->getValue(OFstatic_cast(Uint16, OFstatic_cast(double, *(p++)) - absmin)));
                             }
                         } else {                                                      // don't use display: invalid or absent
-                            for (i = Count; i != 0; i--)
+                            for (i = Count; i != 0; --i)
                                 *(q++) = OFstatic_cast(T3, OFstatic_cast(double, low) + (OFstatic_cast(double, *(p++)) - absmin) * gradient);
                         }
                     }
@@ -849,7 +849,7 @@ class DiMonoOutputPixelTemplate
                             const double maxvalue = OFstatic_cast(double, dlut->getCount() - 1);
                             const double offset = (low > high) ? maxvalue : 0;
                             const double gradient2 = (low > high) ? (-maxvalue / plutmax_1) : (maxvalue / plutmax_1);
-                            for (i = 0; i < ocnt; i++)
+                            for (i = 0; i < ocnt; ++i)
                             {
                                 value = OFstatic_cast(double, i) + absmin;            // pixel value
                                 if (value <= leftBorder)
@@ -862,7 +862,7 @@ class DiMonoOutputPixelTemplate
                             }
                         } else {                                                      // don't use display: invalid or absent
                             const double gradient2 = outrange / plutmax_1;
-                            for (i = 0; i < ocnt; i++)
+                            for (i = 0; i < ocnt; ++i)
                             {
                                 value = OFstatic_cast(double, i) + absmin;            // pixel value
                                 if (value <= leftBorder)
@@ -876,7 +876,7 @@ class DiMonoOutputPixelTemplate
                         }
                         const T3 *lut0 = lut - OFstatic_cast(T2, absmin);             // points to 'zero' entry
                         q = Data;
-                        for (i = Count; i != 0; i--)                                  // apply LUT
+                        for (i = Count; i != 0; --i)                                  // apply LUT
                             *(q++) = *(lut0 + (*(p++)));
                     }
                     if (lut == NULL)                                                  // use "normal" transformation
@@ -886,7 +886,7 @@ class DiMonoOutputPixelTemplate
                             const double maxvalue = OFstatic_cast(double, dlut->getCount() - 1);
                             const double offset = (low > high) ? maxvalue : 0;
                             const double gradient2 = (low > high) ? (-maxvalue / plutmax_1) : (maxvalue / plutmax_1);
-                            for (i = Count; i != 0; i--)
+                            for (i = Count; i != 0; --i)
                             {
                                 value = OFstatic_cast(double, *(p++));                // pixel value
                                 if (value <= leftBorder)
@@ -899,7 +899,7 @@ class DiMonoOutputPixelTemplate
                             }
                         } else {                                                      // don't use display: invalid or absent
                             const double gradient2 = outrange / plutmax_1;
-                            for (i = Count; i != 0; i--)
+                            for (i = Count; i != 0; --i)
                             {
                                 value = OFstatic_cast(double, *(p++));                // pixel value
                                 if (value <= leftBorder)
@@ -922,7 +922,7 @@ class DiMonoOutputPixelTemplate
                             const double maxvalue = OFstatic_cast(double, dlut->getCount() - 1);
                             const double offset = (low > high) ? maxvalue : 0;
                             const double gradient = (width_1 == 0) ? 0 : ((low > high) ? (-maxvalue / width_1) : (maxvalue / width_1));
-                            for (i = 0; i < ocnt; i++)                                // calculating LUT entries
+                            for (i = 0; i < ocnt; ++i)                                // calculating LUT entries
                             {
                                 value = OFstatic_cast(double, i) + absmin - leftBorder;
                                 if (value < 0)                                               // left border
@@ -934,7 +934,7 @@ class DiMonoOutputPixelTemplate
                         } else {                                                       // don't use display: invalid or absent
                             const double offset = (width_1 == 0) ? 0 : (high - ((center - 0.5) / width_1 + 0.5) * outrange);
                             const double gradient = (width_1 == 0) ? 0 : outrange / width_1;
-                            for (i = 0; i < ocnt; i++)                                 // calculating LUT entries
+                            for (i = 0; i < ocnt; ++i)                                 // calculating LUT entries
                             {
                                 value = OFstatic_cast(double, i) + absmin;
                                 if (value <= leftBorder)
@@ -947,7 +947,7 @@ class DiMonoOutputPixelTemplate
                         }
                         const T3 *lut0 = lut - OFstatic_cast(T2, absmin);             // points to 'zero' entry
                         q = Data;
-                        for (i = Count; i != 0; i--)                                  // apply LUT
+                        for (i = Count; i != 0; --i)                                  // apply LUT
                             *(q++) = *(lut0 + (*(p++)));
                     }
                     if (lut == NULL)                                                  // use "normal" transformation
@@ -957,7 +957,7 @@ class DiMonoOutputPixelTemplate
                             const double maxvalue = OFstatic_cast(double, dlut->getCount() - 1);
                             const double offset = (low > high) ? maxvalue : 0;
                             const double gradient = (width_1 == 0) ? 0 : ((low > high) ? (-maxvalue / width_1) : (maxvalue / width_1));
-                            for (i = Count; i != 0; i--)                              // calculating LUT entries
+                            for (i = Count; i != 0; --i)                              // calculating LUT entries
                             {
                                 value = OFstatic_cast(double, *(p++)) - leftBorder;
                                 if (value < 0)                                               // left border
@@ -969,7 +969,7 @@ class DiMonoOutputPixelTemplate
                         } else {                                                      // don't use display: invalid or absent
                             const double offset = (width_1 == 0) ? 0 : (high - ((center - 0.5) / width_1 + 0.5) * outrange);
                             const double gradient = (width_1 == 0) ? 0 : outrange / width_1;
-                            for (i = Count; i != 0; i--)
+                            for (i = Count; i != 0; --i)
                             {
                                 value = OFstatic_cast(double, *(p++));
                                 if (value <= leftBorder)
@@ -1007,14 +1007,14 @@ class DiMonoOutputPixelTemplate
     {
         if ((Data != NULL) && (overlays != NULL))
         {
-            for (unsigned int j = 0; j < 2; j++)
+            for (unsigned int j = 0; j < 2; ++j)
             {
                 if (overlays[j] != NULL)
                 {
                     const signed long left_pos = overlays[j]->getLeft();
                     const signed long top_pos = overlays[j]->getTop();
                     register DiOverlayPlane *plane;
-                    for (unsigned int i = 0; i < overlays[j]->getCount(); i++)
+                    for (unsigned int i = 0; i < overlays[j]->getCount(); ++i)
                     {
                         plane = overlays[j]->getPlane(i);
                         if ((plane != NULL) && plane->isVisible() && plane->reset(frame))
@@ -1032,11 +1032,11 @@ class DiMonoOutputPixelTemplate
                                 case EMO_Replace:
                                 {
                                     const T3 fore = OFstatic_cast(T3, plane->getForeground() * maxvalue);
-                                    for (y = ymin; y < ymax; y++)
+                                    for (y = ymin; y < ymax; ++y)
                                     {
                                         plane->setStart(OFstatic_cast(Uint16, left_pos + xmin), OFstatic_cast(Uint16, top_pos + y));
                                         q = Data + OFstatic_cast(unsigned long, y) * OFstatic_cast(unsigned long, columns) + OFstatic_cast(unsigned long, xmin);
-                                        for (x = xmin; x < xmax; x++, q++)
+                                        for (x = xmin; x < xmax; ++x, ++q)
                                         {
                                             if (plane->getNextBit())
                                                 *q = fore;
@@ -1048,11 +1048,11 @@ class DiMonoOutputPixelTemplate
                                 {
                                     const T3 fore = OFstatic_cast(T3, plane->getForeground() * maxvalue);
                                     const T3 thresh = OFstatic_cast(T3, plane->getThreshold() * maxvalue);
-                                    for (y = ymin; y < ymax; y++)
+                                    for (y = ymin; y < ymax; ++y)
                                     {
                                         plane->setStart(OFstatic_cast(Uint16, left_pos + xmin), OFstatic_cast(Uint16, top_pos + y));
                                         q = Data + OFstatic_cast(unsigned long, y) * OFstatic_cast(unsigned long, columns) + OFstatic_cast(unsigned long, xmin);
-                                        for (x = xmin; x < xmax; x++, q++)
+                                        for (x = xmin; x < xmax; ++x, ++q)
                                         {
                                             if (plane->getNextBit())
                                                 *q = (*q <= thresh) ? fore : 1;
@@ -1063,11 +1063,11 @@ class DiMonoOutputPixelTemplate
                                 case EMO_Complement:
                                 {
                                     const T3 thresh = OFstatic_cast(T3, DicomImageClass::maxval(bitsof(T3) / 2));
-                                    for (y = ymin; y < ymax; y++)
+                                    for (y = ymin; y < ymax; ++y)
                                     {
                                         plane->setStart(OFstatic_cast(Uint16, left_pos + xmin), OFstatic_cast(Uint16, top_pos + y));
                                         q = Data + OFstatic_cast(unsigned long, y) * OFstatic_cast(unsigned long, columns) + OFstatic_cast(unsigned long, xmin);
-                                        for (x = xmin; x < xmax; x++, q++)
+                                        for (x = xmin; x < xmax; ++x, ++q)
                                         {
                                             if (plane->getNextBit())
                                                 *q = (*q <= thresh) ? maxvalue : 0;
@@ -1078,11 +1078,11 @@ class DiMonoOutputPixelTemplate
                                 case EMO_RegionOfInterest:
                                 {
                                     const int dim = bitsof(T3) / 2;
-                                    for (y = ymin; y < ymax; y++)
+                                    for (y = ymin; y < ymax; ++y)
                                     {
                                         plane->setStart(OFstatic_cast(Uint16, left_pos + xmin), OFstatic_cast(Uint16, top_pos + y));
                                         q = Data + OFstatic_cast(unsigned long, y) * OFstatic_cast(unsigned long, columns) + OFstatic_cast(unsigned long, xmin);
-                                        for (x = xmin; x < xmax; x++, q++)
+                                        for (x = xmin; x < xmax; ++x, ++q)
                                         {
                                             if (!plane->getNextBit())
                                                 *q = *q >> dim;
@@ -1099,11 +1099,11 @@ class DiMonoOutputPixelTemplate
                                         if ((dlut != NULL) && (dlut->isValid()))
                                             fore = OFstatic_cast(T3, dlut->getValue(plane->getPValue()));
                                     }
-                                    for (y = ymin; y < ymax; y++)
+                                    for (y = ymin; y < ymax; ++y)
                                     {
                                         plane->setStart(OFstatic_cast(Uint16, left_pos + xmin), OFstatic_cast(Uint16, top_pos + y));
                                         q = Data + OFstatic_cast(unsigned long, y) * OFstatic_cast(unsigned long, columns) + OFstatic_cast(unsigned long, xmin);
-                                        for (x = xmin; x < xmax; x++, q++)
+                                        for (x = xmin; x < xmax; ++x, ++q)
                                         {
                                             if (plane->getNextBit())
                                                 *q = fore;
@@ -1152,7 +1152,11 @@ class DiMonoOutputPixelTemplate
  *
  * CVS/RCS Log:
  * $Log: dimoopxt.h,v $
- * Revision 1.42  2003-12-23 10:51:52  joergr
+ * Revision 1.43  2003-12-23 15:53:22  joergr
+ * Replaced post-increment/decrement operators by pre-increment/decrement
+ * operators where appropriate (e.g. 'i++' by '++i').
+ *
+ * Revision 1.42  2003/12/23 10:51:52  joergr
  * Updated documentation to get rid of doxygen warnings.
  *
  * Revision 1.41  2003/12/09 16:49:11  joergr

@@ -22,8 +22,8 @@
  *  Purpose: DicomMonochromeInputPixelTemplate (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-12-08 19:13:54 $
- *  CVS/RCS Revision: $Revision: 1.28 $
+ *  Update Date:      $Date: 2003-12-23 15:53:22 $
+ *  CVS/RCS Revision: $Revision: 1.29 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -167,7 +167,7 @@ class DiMonoInputPixelTemplate
                     {                                                                     // use LUT for optimization
                         const T2 absmin = OFstatic_cast(T2, input->getAbsMinimum());
                         q = lut;
-                        for (i = 0; i < ocnt; i++)                                        // calculating LUT entries
+                        for (i = 0; i < ocnt; ++i)                                        // calculating LUT entries
                         {
                             value = OFstatic_cast(T2, i) + absmin;
                             if (value <= firstentry)
@@ -179,12 +179,12 @@ class DiMonoInputPixelTemplate
                         }
                         const T3 *lut0 = lut - OFstatic_cast(T2, absmin);                 // points to 'zero' entry
                         q = Data;
-                        for (i = InputCount; i != 0; i--)                                 // apply LUT
+                        for (i = InputCount; i != 0; --i)                                 // apply LUT
                             *(q++) = *(lut0 + (*(p++)));
                     }
                     if (lut == NULL)                                                      // use "normal" transformation
                     {
-                        for (i = InputCount; i != 0; i--)
+                        for (i = InputCount; i != 0; --i)
                         {
                             value = OFstatic_cast(T2, *(p++));
                             if (value <= firstentry)
@@ -230,7 +230,7 @@ class DiMonoInputPixelTemplate
                     if (!useInputBuffer)
                     {
                         register const T1 *p = pixel + input->getPixelStart();
-                        for (i = InputCount; i != 0; i--)   // copy pixel data: can't use copyMem because T1 isn't always equal to T3
+                        for (i = InputCount; i != 0; --i)   // copy pixel data: can't use copyMem because T1 isn't always equal to T3
                             *(q++) = OFstatic_cast(T3, *(p++));
                     }
                 } else {
@@ -250,36 +250,36 @@ class DiMonoInputPixelTemplate
                         q = lut;
                         if (slope == 1.0)
                         {
-                            for (i = 0; i < ocnt; i++)                                    // calculating LUT entries
+                            for (i = 0; i < ocnt; ++i)                                    // calculating LUT entries
                                 *(q++) = OFstatic_cast(T3, OFstatic_cast(double, i) + absmin + intercept);
                         } else {
                             if (intercept == 0.0)
                             {
-                                for (i = 0; i < ocnt; i++)
+                                for (i = 0; i < ocnt; ++i)
                                     *(q++) = OFstatic_cast(T3, (OFstatic_cast(double, i) + absmin) * slope);
                             } else {
-                                for (i = 0; i < ocnt; i++)
+                                for (i = 0; i < ocnt; ++i)
                                     *(q++) = OFstatic_cast(T3, (OFstatic_cast(double, i) + absmin) * slope + intercept);
                             }
                         }
                         const T3 *lut0 = lut - OFstatic_cast(T2, absmin);                 // points to 'zero' entry
                         q = Data;
-                        for (i = InputCount; i != 0; i--)                                 // apply LUT
+                        for (i = InputCount; i != 0; --i)                                 // apply LUT
                             *(q++) = *(lut0 + (*(p++)));
                     }
                     if (lut == NULL)                                                      // use "normal" transformation
                     {
                         if (slope == 1.0)
                         {
-                            for (i = Count; i != 0; i--)
+                            for (i = Count; i != 0; --i)
                                 *(q++) = OFstatic_cast(T3, OFstatic_cast(double, *(p++)) + intercept);
                         } else {
                             if (intercept == 0.0)
                             {
-                                for (i = InputCount; i != 0; i--)
+                                for (i = InputCount; i != 0; --i)
                                     *(q++) = OFstatic_cast(T3, OFstatic_cast(double, *(p++)) * slope);
                             } else {
-                                for (i = InputCount; i != 0; i--)
+                                for (i = InputCount; i != 0; --i)
                                     *(q++) = OFstatic_cast(T3, OFstatic_cast(double, *(p++)) * slope + intercept);
                             }
                         }
@@ -299,7 +299,11 @@ class DiMonoInputPixelTemplate
  *
  * CVS/RCS Log:
  * $Log: dimoipxt.h,v $
- * Revision 1.28  2003-12-08 19:13:54  joergr
+ * Revision 1.29  2003-12-23 15:53:22  joergr
+ * Replaced post-increment/decrement operators by pre-increment/decrement
+ * operators where appropriate (e.g. 'i++' by '++i').
+ *
+ * Revision 1.28  2003/12/08 19:13:54  joergr
  * Adapted type casts to new-style typecast operators defined in ofcast.h.
  * Removed leading underscore characters from preprocessor symbols (reserved
  * symbols). Updated CVS header.

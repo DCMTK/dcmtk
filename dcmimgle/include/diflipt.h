@@ -22,8 +22,8 @@
  *  Purpose: DicomFlipTemplate (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-12-08 18:55:45 $
- *  CVS/RCS Revision: $Revision: 1.13 $
+ *  Update Date:      $Date: 2003-12-23 15:53:22 $
+ *  CVS/RCS Revision: $Revision: 1.14 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -161,16 +161,16 @@ class DiFlipTemplate
             register const T *p;
             register T *q;
             register T *r;
-            for (int j = 0; j < Planes; j++)
+            for (int j = 0; j < Planes; ++j)
             {
                 p = src[j];
                 r = dest[j];
-                for (Uint32 f = Frames; f != 0; f--)
+                for (Uint32 f = Frames; f != 0; --f)
                 {
-                    for (y = Src_Y; y != 0; y--)
+                    for (y = Src_Y; y != 0; --y)
                     {
                         q = r + Dest_X;
-                        for (x = Src_X; x != 0; x--)
+                        for (x = Src_X; x != 0; --x)
                             *--q = *p++;
                         r += Dest_X;
                     }
@@ -195,17 +195,17 @@ class DiFlipTemplate
             register T *q;
             register T *r;
             const unsigned long count = OFstatic_cast(unsigned long, Dest_X) * OFstatic_cast(unsigned long, Dest_Y);
-            for (int j = 0; j < Planes; j++)
+            for (int j = 0; j < Planes; ++j)
             {
                 p = src[j];
                 r = dest[j];
-                for (Uint32 f = Frames; f != 0; f--)
+                for (Uint32 f = Frames; f != 0; --f)
                 {
                     r += count;
-                    for (y = Src_Y; y != 0; y--)
+                    for (y = Src_Y; y != 0; --y)
                     {
                         q = r - Dest_X;
-                        for (x = Src_X; x != 0; x--)
+                        for (x = Src_X; x != 0; --x)
                             *q++ = *p++;
                         r -= Dest_X;
                     }
@@ -229,14 +229,14 @@ class DiFlipTemplate
             register const T *p;
             register T *q;
             const unsigned long count = OFstatic_cast(unsigned long, Dest_X) * OFstatic_cast(unsigned long, Dest_Y);
-            for (int j = 0; j < Planes; j++)
+            for (int j = 0; j < Planes; ++j)
             {
                 p = src[j];
                 q = dest[j];
-                for (Uint32 f = Frames; f != 0; f--)
+                for (Uint32 f = Frames; f != 0; --f)
                 {
                     q += count;
-                    for (i = count; i != 0; i--)
+                    for (i = count; i != 0; --i)
                         *--q = *p++;
                     q += count;
                 }
@@ -258,17 +258,17 @@ class DiFlipTemplate
         register T *q;
         register T t;
         T *r;
-        for (int j = 0; j < Planes; j++)
+        for (int j = 0; j < Planes; ++j)
         {
             r = data[j];
-            for (Uint32 f = Frames; f != 0; f--)
+            for (Uint32 f = Frames; f != 0; --f)
             {
-                for (y = Src_Y; y != 0; y--)
+                for (y = Src_Y; y != 0; --y)
                 {
                     p = r;
                     r += Dest_X;
                     q = r;
-                    for (x = Src_X / 2; x != 0; x--)
+                    for (x = Src_X / 2; x != 0; --x)
                     {
                         t = *p;
                         *p++ = *--q;
@@ -293,19 +293,19 @@ class DiFlipTemplate
         register T t;
         T *s;
         const unsigned long count = OFstatic_cast(unsigned long, Dest_X) * OFstatic_cast(unsigned long, Dest_Y);
-        for (int j = 0; j < Planes; j++)
+        for (int j = 0; j < Planes; ++j)
         {
             s = data[j];
-            for (Uint32 f = Frames; f != 0; f--)
+            for (Uint32 f = Frames; f != 0; --f)
             {
                 p = s;
                 s += count;
                 r = s;
-                for (y = Src_Y / 2; y != 0; y--)
+                for (y = Src_Y / 2; y != 0; --y)
                 {
                     r -= Dest_X;
                     q = r;
-                    for (x = Src_X; x != 0; x--)
+                    for (x = Src_X; x != 0; --x)
                     {
                         t = *p;
                         *p++ = *q;
@@ -328,14 +328,14 @@ class DiFlipTemplate
         register T t;
         T *s;
         const unsigned long count = OFstatic_cast(unsigned long, Dest_X) * OFstatic_cast(unsigned long, Dest_Y);
-        for (int j = 0; j < Planes; j++)
+        for (int j = 0; j < Planes; ++j)
         {
             s = data[j];
-            for (Uint32 f = Frames; f != 0; f--)
+            for (Uint32 f = Frames; f != 0; --f)
             {
                 p = s;
                 q = s + count;
-                for (i = count / 2; i != 0; i--)
+                for (i = count / 2; i != 0; --i)
                 {
                     t = *p;
                     *p++ = *--q;
@@ -354,7 +354,11 @@ class DiFlipTemplate
  *
  * CVS/RCS Log:
  * $Log: diflipt.h,v $
- * Revision 1.13  2003-12-08 18:55:45  joergr
+ * Revision 1.14  2003-12-23 15:53:22  joergr
+ * Replaced post-increment/decrement operators by pre-increment/decrement
+ * operators where appropriate (e.g. 'i++' by '++i').
+ *
+ * Revision 1.13  2003/12/08 18:55:45  joergr
  * Adapted type casts to new-style typecast operators defined in ofcast.h.
  * Removed leading underscore characters from preprocessor symbols (reserved
  * symbols). Updated copyright header.

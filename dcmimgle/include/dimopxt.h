@@ -22,8 +22,8 @@
  *  Purpose: DicomMonochromePixelTemplate (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-12-09 10:02:04 $
- *  CVS/RCS Revision: $Revision: 1.22 $
+ *  Update Date:      $Date: 2003-12-23 15:53:22 $
+ *  CVS/RCS Revision: $Revision: 1.23 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -223,9 +223,9 @@ class DiMonoPixelTemplate
             register T value = 0;
             register T min = *p;                    // get first pixel as initial value for min ...
             register T max = min;                   // ... and max
-            for (y = top_pos; y < bottom; y++)
+            for (y = top_pos; y < bottom; ++y)
             {
-                for (x = left_pos; x < right_pos; x++)
+                for (x = left_pos; x < right_pos; ++x)
                 {
                     value = *(p++);
                     if (value < min)
@@ -265,10 +265,10 @@ class DiMonoPixelTemplate
             {
                 register unsigned long i;
                 OFBitmanipTemplate<Uint32>::zeroMem(quant, count);                  // initialize array
-                for (i = 0; i < Count; i++)
+                for (i = 0; i < Count; ++i)
                 {
                     if ((Data[i] >= MinValue[0]) && (Data[i] <= MaxValue[0]))       // only for stability !
-                        quant[OFstatic_cast(Uint32, Data[i] - MinValue[0])]++;      // count values
+                        ++quant[OFstatic_cast(Uint32, Data[i] - MinValue[0])];      // count values
 #ifdef DEBUG
                     else if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Warnings))
                     {
@@ -361,7 +361,7 @@ class DiMonoPixelTemplate
                     register unsigned long i;
                     minvalue = value;
                     maxvalue = value;
-                    for (i = Count; i > 1; i--)                 // could be optimized if necessary (see diinpxt.h) !
+                    for (i = Count; i > 1; --i)                 // could be optimized if necessary (see diinpxt.h) !
                     {
                         value = *(++p);
                         if (value < minvalue)
@@ -385,7 +385,7 @@ class DiMonoPixelTemplate
                 register int firstmin = 1;
                 register int firstmax = 1;
                 register unsigned long i;
-                for (i = Count; i != 0; i--)                    // could be optimized if necessary (see diinpxt.h) !
+                for (i = Count; i != 0; --i)                    // could be optimized if necessary (see diinpxt.h) !
                 {
                     value = *(p++);
                     if ((value > minvalue) && ((value < MinValue[1]) || firstmin))
@@ -428,7 +428,11 @@ class DiMonoPixelTemplate
  *
  * CVS/RCS Log:
  * $Log: dimopxt.h,v $
- * Revision 1.22  2003-12-09 10:02:04  joergr
+ * Revision 1.23  2003-12-23 15:53:22  joergr
+ * Replaced post-increment/decrement operators by pre-increment/decrement
+ * operators where appropriate (e.g. 'i++' by '++i').
+ *
+ * Revision 1.22  2003/12/09 10:02:04  joergr
  * Adapted type casts to new-style typecast operators defined in ofcast.h.
  * Removed leading underscore characters from preprocessor symbols (reserved
  * symbols). Updated copyright header.

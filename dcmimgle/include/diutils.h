@@ -22,8 +22,8 @@
  *  Purpose: Utilities (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-12-17 16:17:29 $
- *  CVS/RCS Revision: $Revision: 1.24 $
+ *  Update Date:      $Date: 2003-12-23 15:53:22 $
+ *  CVS/RCS Revision: $Revision: 1.25 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -345,7 +345,7 @@ class DicomImageClass
         register unsigned int tb_bits = 0;
         while (tb_value > 0)
         {
-            tb_bits++;
+            ++tb_bits;
             tb_value >>= 1;
         }
         return tb_bits;
@@ -417,7 +417,11 @@ class DicomImageClass
  *
  * CVS/RCS Log:
  * $Log: diutils.h,v $
- * Revision 1.24  2003-12-17 16:17:29  joergr
+ * Revision 1.25  2003-12-23 15:53:22  joergr
+ * Replaced post-increment/decrement operators by pre-increment/decrement
+ * operators where appropriate (e.g. 'i++' by '++i').
+ *
+ * Revision 1.24  2003/12/17 16:17:29  joergr
  * Added new compatibility flag that allows to ignore the third value of LUT
  * descriptors and to determine the bits per table entry automatically.
  *
