@@ -11,9 +11,9 @@
 **
 **
 ** Last Update:		$Author: hewett $
-** Update Date:		$Date: 1996-04-27 14:04:55 $
+** Update Date:		$Date: 1996-04-29 15:08:14 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcitem.cc,v $
-** CVS/RCS Revision:	$Revision: 1.11 $
+** CVS/RCS Revision:	$Revision: 1.12 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -1669,9 +1669,9 @@ E_Condition newDicomElement(DcmElement * & newElement,
     case EVR_UNKNOWN :
     default :
 	newElement = new DcmOtherByteOtherWord(tag, length);
-
-        cerr << "Warning: newDicomElement(): unknown Tag detected: "
-	     << tag << endl;
+	debug((1, 
+	       "Warning: newDicomElement(): unknown Tag detected: (%04x,%04x)",
+	       tag.getGTag(), tag.getETag()));
 	break;
     }
 
@@ -1698,7 +1698,7 @@ DcmItem::findString(const DcmTagKey& xtag,
     elem = (DcmElement*) stack.top();
     if (ec == EC_Normal && elem != NULL) {
 	if (elem->getLength() != 0) {
-            ec =  elem->get(s);
+            ec = elem->get(s);
 	    if (ec == EC_Normal) {
 		strncpy(aString, s, maxStringLength);
 	    }
@@ -1709,9 +1709,9 @@ DcmItem::findString(const DcmTagKey& xtag,
 }
 
 E_Condition 
-DcmItem::findInt(const DcmTagKey& xtag,
-		 int* anInt, 
-		 BOOL searchIntoSub)
+DcmItem::findLong(const DcmTagKey& xtag,
+		  long& aLong, 
+		  BOOL searchIntoSub)
 {
     DcmElement *elem;
     DcmStack stack;
@@ -1724,22 +1724,22 @@ DcmItem::findInt(const DcmTagKey& xtag,
 	case EVR_UL:
 	    Uint32 ul;
 	    ec = elem->get(ul, 0);
-	    *anInt = ul;
+	    aLong = ul;
 	    break;
 	case EVR_SL:
 	    Sint32 sl;
 	    ec = elem->get(sl, 0);
-	    *anInt = sl;
+	    aLong = sl;
 	    break;
 	case EVR_US:
 	    Uint16 us;
 	    ec = elem->get(us, 0);
-	    *anInt = us;
+	    aLong = us;
 	    break;
 	case EVR_SS:
 	    Sint16 ss;
 	    ec = elem->get(ss, 0);
-	    *anInt = ss;
+	    aLong = ss;
 	    break;
 	default:
 	    ec = EC_IllegalCall;
@@ -1756,7 +1756,10 @@ DcmItem::findInt(const DcmTagKey& xtag,
 /*
 ** CVS/RCS Log:
 ** $Log: dcitem.cc,v $
-** Revision 1.11  1996-04-27 14:04:55  hewett
+** Revision 1.12  1996-04-29 15:08:14  hewett
+** Replaced DcmItem::findInt(...) with the more general DcmItem::findLong(...).
+**
+** Revision 1.11  1996/04/27 14:04:55  hewett
 ** Eliminated compiler warnings when compiling without -DDEBUG.  Very
 ** minor corrections, mostly unused parameters and uninitialized variables.
 **

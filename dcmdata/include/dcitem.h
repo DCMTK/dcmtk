@@ -10,10 +10,10 @@
 ** Interface of class DcmItem
 **
 **
-** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1996-04-16 16:00:05 $
+** Last Update:		$Author: hewett $
+** Update Date:		$Date: 1996-04-29 15:08:53 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcitem.h,v $
-** CVS/RCS Revision:	$Revision: 1.7 $
+** CVS/RCS Revision:	$Revision: 1.8 $
 ** Status:		$State: Exp $
 **
 */
@@ -126,9 +126,9 @@ public:
     virtual E_Condition findString(const DcmTagKey& xtag,
 				   char* aString, int maxStringLength,
 				   BOOL searchIntoSub = FALSE);
-    virtual E_Condition findInt(const DcmTagKey& xtag,
-				int* anInt, 
-				BOOL searchIntoSub = FALSE);
+    virtual E_Condition findLong(const DcmTagKey& xtag,
+				 long& aLong, 
+				 BOOL searchIntoSub = FALSE);
 
 
 };
@@ -177,7 +177,10 @@ DcmElement * newDicomElement(const DcmTag & tag,
 /*
 ** CVS/RCS Log:
 ** $Log: dcitem.h,v $
-** Revision 1.7  1996-04-16 16:00:05  andreas
+** Revision 1.8  1996-04-29 15:08:53  hewett
+** Replaced DcmItem::findInt(...) with the more general DcmItem::findLong(...).
+**
+** Revision 1.7  1996/04/16 16:00:05  andreas
 ** - added const for Tag in newDicomElement
 **
 ** Revision 1.6  1996/03/28 18:52:30  hewett
