@@ -22,8 +22,8 @@
  *  Purpose: DVPresentationState
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-07-07 14:15:13 $
- *  CVS/RCS Revision: $Revision: 1.104 $
+ *  Update Date:      $Date: 2000-07-12 12:52:00 $
+ *  CVS/RCS Revision: $Revision: 1.105 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -2821,25 +2821,29 @@ E_Condition DVInterface::loadPrintPreview(size_t idx, OFBool printLUT)
           {
             /* set display function for calibrated output */
             if (displayFunction != NULL)
-                image->setDisplayFunction(displayFunction[DVPSD_GSDF]);
+              image->setDisplayFunction(displayFunction[DVPSD_GSDF]);
             /* adapt polarity if necessary */
             const char *polarity = pPrint->getImagePolarity(idx);
             if ((polarity != NULL) && (strcmp(polarity, "REVERSE") == 0))
-                image->setPolarity(EPP_Reverse);
+              image->setPolarity(EPP_Reverse);
             /* set (print/display) presentation LUT */
             DVPSPresentationLUT *plut = pPrint->getPresentationLUT();   // first check whether there's a global one
             if (plut == NULL)
-                pPrint->getImagePresentationLUT(idx);                   // ... then check for an image box specific
-            unsigned int min = pPrint->getMinDensityValue();
-            unsigned int max = pPrint->getMaxDensityValue();
-            image->setHardcopyParameters((min) ? min : 20, (max) ? max : 300, pPrint->getPrintReflectedAmbientLight(), pPrint->getPrintIllumination());
+              plut = pPrint->getImagePresentationLUT(idx);              // ... then check for an image box specific
             if (plut != NULL)
-                plut->activate(image, printLUT);
+            {
+              unsigned int min = pPrint->getMinDensityValue();
+              unsigned int max = pPrint->getMaxDensityValue();
+              image->setHardcopyParameters((min) ? min : 20, (max) ? max : 300, pPrint->getPrintReflectedAmbientLight(), pPrint->getPrintIllumination());
+              plut->activate(image, printLUT);
+            }
 
             unsigned long width = maximumPrintPreviewWidth;
             unsigned long height = maximumPrintPreviewHeight;
             /* consider aspect ratio of the image and the display */
-            double ratio = image->getWidthHeightRatio() * (getMonitorPixelWidth() / getMonitorPixelHeight());
+            double ratio = (getMonitorPixelHeight() > 0) ? image->getWidthHeightRatio() * (getMonitorPixelWidth() / getMonitorPixelHeight()) : 1.0;
+            if (ratio == 0)
+              ratio = 1.0;
             if ((double)image->getWidth() / (double)width * ratio < (double)image->getHeight() / (double)height)
               width = 0;
             else
@@ -3726,7 +3730,10 @@ E_Condition DVInterface::checkIOD(const char *studyUID, const char *seriesUID, c
 /*
  *  CVS/RCS Log:
  *  $Log: dviface.cc,v $
- *  Revision 1.104  2000-07-07 14:15:13  joergr
+ *  Revision 1.105  2000-07-12 12:52:00  joergr
+ *  Fixed bug in loadPrintPreview routine.
+ *
+ *  Revision 1.104  2000/07/07 14:15:13  joergr
  *  Added support for LIN OD presentation LUT shape.
  *
  *  Revision 1.103  2000/07/06 09:41:17  joergr
