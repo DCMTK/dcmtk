@@ -52,6 +52,7 @@ output options:
     -M   --load-short          do not load very long values (e.g. pixel data)
     +L   --print-all           print long tag values completely
     -L   --print-short         print long tag values shortened (default)
+    +F   --print-filename      print header with filename for each input file
   error handling:
     -E   --stop-on-error       do not print if file is damaged (default)
     +E   --ignore-errors       attempt to print even if file is damaged

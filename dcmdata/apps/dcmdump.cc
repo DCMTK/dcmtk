@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2001, OFFIS
+ *  Copyright (C) 1994-2002, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose: List the contents of a dicom file
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-09-28 14:18:45 $
+ *  Update Date:      $Date: 2002-01-11 14:34:20 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/apps/dcmdump.cc,v $
- *  CVS/RCS Revision: $Revision: 1.34 $
+ *  CVS/RCS Revision: $Revision: 1.35 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -85,9 +85,8 @@ static const DcmTagKey* printTagKeys[MAX_PRINT_TAG_NAMES];
 static OFBool addPrintTagName(const char* tagName)
 {
     if (printTagCount >= MAX_PRINT_TAG_NAMES) {
-        CERR << "error: too many print Tag options (max: " <<
-                MAX_PRINT_TAG_NAMES << ")\n";
-    return OFFalse;
+        CERR << "error: too many print Tag options (max: " << MAX_PRINT_TAG_NAMES << ")\n";
+        return OFFalse;
     }
 
     unsigned int group = 0xffff;
@@ -96,7 +95,7 @@ static OFBool addPrintTagName(const char* tagName)
     {
     /* it is a name */
         const DcmDataDictionary& globalDataDict = dcmDataDict.rdlock();
-    const DcmDictEntry *dicent = globalDataDict.findEntry(tagName);
+        const DcmDictEntry *dicent = globalDataDict.findEntry(tagName);
     if( dicent == NULL ) {
         CERR << "error: unrecognised tag name: '" << tagName << "'\n";
         dcmDataDict.unlock();
@@ -105,11 +104,11 @@ static OFBool addPrintTagName(const char* tagName)
         /* note for later */
         printTagKeys[printTagCount] = new DcmTagKey(dicent->getKey());
     }
-    dcmDataDict.unlock();
+        dcmDataDict.unlock();
     } else {
-    /* tag name has format xxxx,xxxx */
-    /* do not lookup in dictionary, tag could be private */
-    printTagKeys[printTagCount] = NULL;
+        /* tag name has format xxxx,xxxx */
+        /* do not lookup in dictionary, tag could be private */
+        printTagKeys[printTagCount] = NULL;
     }
 
     printTagNames[printTagCount] = strcpy((char*)malloc(strlen(tagName)+1),tagName);
@@ -125,6 +124,7 @@ int main(int argc, char *argv[])
     int opt_debugMode = 0;
     OFBool loadIntoMemory = OFTrue;
     OFBool showFullData = OFFalse;
+    OFBool printFilename = OFFalse;
     OFBool isDataset = OFFalse;
     OFBool writePixelData = OFFalse;
     E_TransferSyntax xfer = EXS_Unknown;
@@ -173,6 +173,7 @@ int main(int argc, char *argv[])
         cmd.addOption("--load-short",         "-M",        "do not load very long values (e.g. pixel data)");
         cmd.addOption("--print-all",          "+L",        "print long tag values completely");
         cmd.addOption("--print-short",        "-L",        "print long tag values shortened (default)");
+        cmd.addOption("--print-filename",     "+F",        "print header with filename for each input file");
 
       cmd.addSubGroup("error handling:");
         cmd.addOption("--stop-on-error",      "-E",        "do not print if file is damaged (default)");
@@ -236,6 +237,9 @@ int main(int argc, char *argv[])
       if (cmd.findOption("--print-short")) showFullData = OFFalse;
       cmd.endOptionBlock();
 
+      if (cmd.findOption("--print-filename"))
+        printFilename = OFTrue;
+
       cmd.beginOptionBlock();
       if (cmd.findOption("--stop-on-error")) stopOnErrors = OFTrue;
       if (cmd.findOption("--ignore-errors")) stopOnErrors = OFFalse;
@@ -298,6 +302,14 @@ int main(int argc, char *argv[])
     for (int i=1; i<=count; i++)
     {
       cmd.getParam(i, current);
+      if (printFilename)
+      {
+        /* a newline separates two consecutive "dumps" */
+        if (i > 1)
+            COUT << endl;
+        /* print header with filename */
+        COUT << "# " << OFFIS_CONSOLE_APPLICATION << " (" << i << "/" << count << "): " << current << endl;
+      }
       errorCount += dumpFile(COUT, current, isDataset, xfer, showFullData, loadIntoMemory, stopOnErrors,
         writePixelData, pixelDirectory);
     }
@@ -309,7 +321,7 @@ static void printResult(ostream& out, DcmStack& stack, OFBool showFullData)
 {
     unsigned long n = stack.card();
     if (n == 0) {
-    return;
+        return;
     }
 
     if (prependSequenceHierarchy) {
@@ -431,7 +443,10 @@ static int dumpFile(ostream & out,
 /*
  * CVS/RCS Log:
  * $Log: dcmdump.cc,v $
- * Revision 1.34  2001-09-28 14:18:45  joergr
+ * Revision 1.35  2002-01-11 14:34:20  joergr
+ * Added new option to dcmdump tool which prints a header with the filename.
+ *
+ * Revision 1.34  2001/09/28 14:18:45  joergr
  * Changed formatting.
  *
  * Revision 1.33  2001/09/25 17:20:59  meichel
