@@ -7,13 +7,16 @@ dnl
 dnl Authors: Andreas Barth, Marco Eichelberg
 dnl
 dnl Last Update:  $Author: meichel $
-dnl Revision:     $Revision: 1.19 $
+dnl Revision:     $Revision: 1.20 $
 dnl Status:       $State: Exp $
 dnl
-dnl $Id: aclocal.m4,v 1.19 2002-05-15 14:13:11 meichel Exp $
+dnl $Id: aclocal.m4,v 1.20 2002-12-11 13:08:28 meichel Exp $
 dnl
 dnl $Log: aclocal.m4,v $
-dnl Revision 1.19  2002-05-15 14:13:11  meichel
+dnl Revision 1.20  2002-12-11 13:08:28  meichel
+dnl Added configure test for type of 5th parameter of getsockopt()
+dnl
+dnl Revision 1.19  2002/05/15 14:13:11  meichel
 dnl Added configure test for readdir_r conforming to Posix 1.c draft 6
 dnl
 dnl Revision 1.18  2002/04/16 14:06:18  joergr
@@ -1097,6 +1100,79 @@ else
 ])dnl
 fi
 unset ac_cv_result
+])
+
+
+dnl AC_CHECK_INTP_GETSOCKOPT checks if the prototype for getsockopt()
+dnl   specifies arguments 5 to be int* instead of size_t *.
+
+dnl Note:
+dnl   Since GNU autoheader does not support this macro, you must create
+dnl   an entry in your acconfig.h.
+dnl Examples:
+dnl   in configure.in: 
+dnl     AC_CHECK_INTP_GETSOCKOPT(sys/types.h sys/socket.h)
+dnl   in acconfig.h:
+dnl     #undef AC_CHECK_INTP_GETSOCKOPT
+
+dnl AC_CHECK_INTP_GETSOCKOPT(HEADER-FILE..., ACTION-IF-FOUND [, ACTION-IF-NOT-FOUND])
+AC_DEFUN(AC_CHECK_INTP_GETSOCKOPT,
+[AC_MSG_CHECKING([ifelse([$1], , [if getsockopt() needs int* parameters], 
+[if getsockopt() needs int* parameters (in $1)])])
+ifelse([$1], , [ac_includes=""
+],
+[ac_includes=""
+for ac_header in $1
+do
+  ac_includes="$ac_includes
+#include<$ac_header>"
+done])
+AC_CACHE_VAL(ac_cv_prototype_intp_getsockopt,
+[AC_TRY_COMPILE(
+ifelse(AC_LANG, CPLUSPLUS, [#ifdef __cplusplus
+extern "C" {
+#endif
+])
+[$ac_includes
+]
+ifelse(AC_LANG, CPLUSPLUS, [#ifdef __cplusplus
+}
+#endif
+]),
+[
+  int i;
+  size_t optlen;
+  i = getsockopt(0, 0, 0, 0, &optlen);
+],
+eval "ac_cv_prototype_intp_getsockopt=no", 
+[AC_TRY_COMPILE(
+ifelse(AC_LANG, CPLUSPLUS, [#ifdef __cplusplus
+extern "C" {
+#endif
+])
+[$ac_includes
+]
+ifelse(AC_LANG, CPLUSPLUS, [#ifdef __cplusplus
+}
+#endif
+]),
+[
+  int i;
+  int optlen;
+  i = getsockopt(0, 0, 0, 0, &optlen);
+],
+eval "ac_cv_prototype_intp_getsockopt=yes", eval "ac_cv_prototype_intp_getsockopt=no")])])
+if eval "test \"`echo $ac_cv_prototype_intp_getsockopt`\" = yes"; then
+  AC_MSG_RESULT(yes)
+changequote(, )dnl
+  ac_tr_prototype=HAVE_INTP_GETSOCKOPT
+changequote([, ])dnl
+  AC_DEFINE_UNQUOTED($ac_tr_prototype)
+  ifelse([$2], , :, [$2])
+else
+  AC_MSG_RESULT(no)
+  ifelse([$3], , , [$3])
+fi
 ])
 
 

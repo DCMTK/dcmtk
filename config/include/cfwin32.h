@@ -497,8 +497,12 @@
 #undef HAVE_INTP_SELECT
 
 /* Define if your system declares argument 3 of accept() 
-   as int * instead of size_t * or struct socklen_t * */
+   as int * instead of size_t * or socklen_t * */
 #define HAVE_INTP_ACCEPT 1
+
+/* Define if your system declares argument 5 of getsockopt()
+   as int * instead of size_t * or socklen_t * */
+#define HAVE_INTP_GETSOCKOPT 1
 
 /* Define if your system supports readdir_r with the obsolete
    Posix 1.c draft 6 declaration (2 arguments) instead of the
