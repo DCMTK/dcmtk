@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DSRWaveformChannelList
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2003-10-14 10:23:33 $
- *  CVS/RCS Revision: $Revision: 1.19 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2003-12-02 19:36:47 $
+ *  CVS/RCS Revision: $Revision: 1.20 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -210,7 +210,10 @@ OFCondition DSRWaveformChannelList::putString(const char *stringValue)
 /*
  *  CVS/RCS Log:
  *  $Log: dsrwavch.cc,v $
- *  Revision 1.19  2003-10-14 10:23:33  meichel
+ *  Revision 1.20  2003-12-02 19:36:47  joergr
+ *  Replaced wrong newline character sequence.
+ *
+ *  Revision 1.19  2003/10/14 10:23:33  meichel
  *  Explicitly spelled out constructor parameters in const instance declaration.
  *    Avoids incompatibility between gcc 3.2 and Borland C++.
  *
