@@ -21,18 +21,18 @@
 #  Purpose: 
 #  This is the global DICOM data dictionary for the dcmtk class library.
 #
-#  Last Update:      $Author: meichel $
-#  Update Date:      $Date: 2002-12-23 15:20:16 $
+#  Last Update:      $Author: wilkens $
+#  Update Date:      $Date: 2003-01-23 09:46:26 $
 #  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/Attic/dicom.dic,v $
-#  CVS/RCS Revision: $Revision: 1.45 $
+#  CVS/RCS Revision: $Revision: 1.46 $
 #  Status:           $State: Exp $
 #
 #  This dictionary contains
 #   - the complete dictionary from the 2001 DICOM publication
 #     which includes supplements 1-25 (except 16 and 21 which are cancelled),
 #     27-41 (34 is cancelled), 48, 50-53, 57, 59 and CP packages 1-13;
-#   - all modifications for CP package 14-16
-#   - supplements 49, 61, 62, 68 (final text) and 55 (letter ballot)
+#   - all modifications for CP package 14-17
+#   - supplements 49, 55, 61, 62, 68 (final text)
 #
 # Each line represents an entry in the data dictionary.  Each line
 # has 5 fields (Tag, VR, Name, VM, Version).  Entries need not be
@@ -2045,17 +2045,14 @@
 #
 # Supplement 55 "Enhanced MR Image Storage SOP Class", letter ballot text
 #
-(0400,0500)	SQ	EncryptedAttributesSequence	1	sup55_lb
-(0400,0510)	UI	EncryptedContentTransferSyntaxUID	1	sup55_lb
-(0400,0520)	OB	EncryptedContent	1	sup55_lb
-(0400,0550)	SQ	ModifiedAttributesSequence	1	sup55_lb
+(0400,0500)	SQ	EncryptedAttributesSequence	1	sup55_ft
+(0400,0510)	UI	EncryptedContentTransferSyntaxUID	1	sup55_ft
+(0400,0520)	OB	EncryptedContent	1	sup55_ft
+(0400,0550)	SQ	ModifiedAttributesSequence	1	sup55_ft
 #
 #---------------------------------------------------------------------------
 #
 # Supplement 49 "Enhanced MR Image Storage SOP Class", final text
-#
-# ATTENTION: VR "OF" not yet supported, marked attributes as "OB"!
-#
 #
 # Name was ReceivingCoil, renamed in Supplement 49
 (0018,1250)	SH	ReceiveCoilName	1	sup49_ft
