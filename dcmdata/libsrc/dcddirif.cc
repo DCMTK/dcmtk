@@ -22,8 +22,8 @@
  *  Purpose: Interface class for simplified creation of a DICOMDIR
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2004-04-06 18:04:30 $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  Update Date:      $Date: 2004-04-14 11:52:57 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -335,7 +335,7 @@ static OFString &constructDifferentNumbersText(const unsigned long number1,
 static OFBool compareAttributes(DcmElement *elem1,
                                 DcmElement *elem2,
                                 DcmSequenceOfItems *fromSequence,
-                                int itemNumber,
+                                unsigned long itemNumber,
                                 OFString &reason)
 {
     reason.clear();
@@ -3824,11 +3824,11 @@ const char *DicomDirInterface::getProfileName(const E_ApplicationProfile profile
         case AP_HemodynamicWaveform:
             result = "STD-WVFM-HD-FD";
             break;
-        case AP_GeneralPurpose:
-            result = "STD-GEN-CD/DVD-RAM";
-            break;
         case AP_None:
             result = "NONE";
+            break;
+        default:
+            result = "STD-GEN-CD/DVD-RAM";
             break;
     }
     return result;
@@ -3950,7 +3950,7 @@ OFBool DicomDirInterface::checkFilesetID(const OFString &filesetID)
             result = OFFalse;
         }
         /* ensure that fileset ID is not too large */
-        if (isComponentTooLarge(filesetID, DcmVR(EVR_CS).getMaxValueLength(), MapFilenamesMode))
+        if (isComponentTooLarge(filesetID, OFstatic_cast(size_t, DcmVR(EVR_CS).getMaxValueLength()), MapFilenamesMode))
         {
             printErrorMessage("fileset ID too large: ", filesetID.c_str());
             result = OFFalse;
@@ -4296,7 +4296,11 @@ void DicomDirInterface::setDefaultValue(DcmDirectoryRecord *record,
 /*
  *  CVS/RCS Log:
  *  $Log: dcddirif.cc,v $
- *  Revision 1.7  2004-04-06 18:04:30  joergr
+ *  Revision 1.8  2004-04-14 11:52:57  joergr
+ *  Changed type of integer variable, added explicit type cast and introduced
+ *  default case to switch statement to keep Sun CC 2.0.1 quiet.
+ *
+ *  Revision 1.7  2004/04/06 18:04:30  joergr
  *  Added missing suffix "TransferSyntax" to some transfer syntax constants.
  *
  *  Revision 1.6  2004/02/13 17:36:54  joergr
