@@ -73,9 +73,9 @@
  *
  *  Purpose: Class for various helper functions
  *
- *  Last Update:      $Author: wilkens $
- *  Update Date:      $Date: 2002-07-02 15:18:24 $
- *  CVS/RCS Revision: $Revision: 1.8 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2002-07-18 12:14:19 $
+ *  CVS/RCS Revision: $Revision: 1.9 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -389,7 +389,7 @@ const OFString &OFStandard::convertToMarkupString(const OFString &sourceString,
                 str++;
             if (xmlMode)
             {
-                /* "<br>" and "&param;" not defined in XML - requires DTD definition */
+                /* "<br>" and "&para;" not defined in XML - requires DTD definition */
                 markupString += "&#182;";
             } else {
                 if (newlineAllowed)
@@ -806,7 +806,10 @@ OFBool OFStandard::stringMatchesCharacterSet( const char *str, const char *chars
 
 /*
  *  $Log: ofstd.cc,v $
- *  Revision 1.8  2002-07-02 15:18:24  wilkens
+ *  Revision 1.9  2002-07-18 12:14:19  joergr
+ *  Corrected typos.
+ *
+ *  Revision 1.8  2002/07/02 15:18:24  wilkens
  *  Added function OFStandard::stringMatchesCharacterSet(...).
  *
  *  Revision 1.7  2002/06/20 12:06:47  meichel

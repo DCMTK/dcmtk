@@ -22,9 +22,9 @@
  *  Purpose: Class for time functions (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Time:      $Time: $
+ *  Update Date:      $Date: 2002-07-18 12:14:20 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/libsrc/oftime.cc,v $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -52,7 +52,7 @@ BEGIN_EXTERN_C
 END_EXTERN_C
 
 #ifdef HAVE_WINDOWS_H
-# include <windows.h>      /* for windows time functions */ 
+# include <windows.h>      /* for Windows time functions */
 #endif
 
 #include "oftime.h"
@@ -562,7 +562,10 @@ ostream& operator<<(ostream& stream, const OFTime &timeVal)
  *
  * CVS/RCS Log:
  * $Log: oftime.cc,v $
- * Revision 1.4  2002-05-24 09:44:27  joergr
+ * Revision 1.5  2002-07-18 12:14:20  joergr
+ * Corrected typos.
+ *
+ * Revision 1.4  2002/05/24 09:44:27  joergr
  * Renamed some parameters/variables to avoid ambiguities.
  *
  * Revision 1.3  2002/04/19 10:42:55  joergr
