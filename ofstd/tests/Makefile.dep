@@ -19,6 +19,10 @@ tstatof.o: tstatof.cc ../../config/include/osconfig.h \
  ../../config/include/cfunix.h ../include/ofstd.h \
  ../include/ofstring.h ../include/ofstdinc.h ../include/ofstream.h \
  ../include/oftypes.h ../include/ofconsol.h ../include/ofthread.h
+tstftoa.o: tstftoa.cc ../../config/include/osconfig.h \
+ ../../config/include/cfunix.h ../include/ofstd.h \
+ ../include/ofstring.h ../include/ofstdinc.h ../include/ofstream.h \
+ ../include/oftypes.h ../include/ofconsol.h ../include/ofthread.h
 tstlist.o: tstlist.cc ../../config/include/osconfig.h \
  ../../config/include/cfunix.h ../include/ofstream.h \
  ../include/ofalgo.h ../include/oftypes.h ../include/oflist.h \

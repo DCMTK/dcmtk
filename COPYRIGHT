@@ -179,3 +179,80 @@ toolkit which has the following copyright:
  * implied warranty.
  */
 
+ 
+The code for the OFStandard::strlcpy and OFStandard::strlcat helper 
+functions in ofstd/libsrc/ofstd.cc has been derived from the BSD 
+implementation of strlcpy() and strlcat() and which carries the 
+following copyright notice:
+
+/* 
+ *  Copyright (c) 1998 Todd C. Miller <Todd.Miller@courtesan.com>
+ *  All rights reserved.
+ *
+ *  Redistribution and use in source and binary forms, with or without
+ *  modification, are permitted provided that the following conditions
+ *  are met:
+ *  1. Redistributions of source code must retain the above copyright
+ *     notice, this list of conditions and the following disclaimer.
+ *  2. Redistributions in binary form must reproduce the above copyright
+ *     notice, this list of conditions and the following disclaimer in the
+ *     documentation and/or other materials provided with the distribution.
+ *  3. The name of the author may not be used to endorse or promote products
+ *     derived from this software without specific prior written permission.
+ *
+ *  THIS SOFTWARE IS PROVIDED ``AS IS'' AND ANY EXPRESS OR IMPLIED WARRANTIES,
+ *  INCLUDING, BUT NOT LIMITED TO, THE IMPLIED WARRANTIES OF MERCHANTABILITY
+ *  AND FITNESS FOR A PARTICULAR PURPOSE ARE DISCLAIMED.  IN NO EVENT SHALL
+ *  THE AUTHOR BE LIABLE FOR ANY DIRECT, INDIRECT, INCIDENTAL, SPECIAL,
+ *  EXEMPLARY, OR CONSEQUENTIAL DAMAGES (INCLUDING, BUT NOT LIMITED TO,
+ *  PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES; LOSS OF USE, DATA, OR PROFITS;
+ *  OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND ON ANY THEORY OF LIABILITY,
+ *  WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT (INCLUDING NEGLIGENCE OR
+ *  OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF THIS SOFTWARE, EVEN IF
+ *  ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+ */
+
+
+The code for the OFStandard::atof helper function in 
+ofstd/libsrc/ofstd.cc has been derived from an implementation which 
+carries the following copyright notice:
+
+/*
+ *  Copyright 1988 Regents of the University of California
+ *  Permission to use, copy, modify, and distribute this software and
+ *  its documentation for any purpose and without fee is hereby granted,
+ *  provided that the above copyright notice appear in all copies.  The
+ *  University of California makes no representations about the
+ *  suitability of this software for any purpose.  It is provided "as
+ *  is" without express or implied warranty.
+ *
+ *
+ *  The code for OFStandard::ftoa has been derived
+ *  from an implementation which carries the following copyright notice:
+ *
+ *  Copyright (c) 1988 Regents of the University of California.
+ *  All rights reserved.
+ *
+ *  Redistribution and use in source and binary forms are permitted
+ *  provided that the above copyright notice and this paragraph are
+ *  duplicated in all such forms and that any documentation,
+ *  advertising materials, and other materials related to such
+ *  distribution and use acknowledge that the software was developed
+ *  by the University of California, Berkeley.  The name of the
+ *  University may not be used to endorse or promote products derived
+ *  from this software without specific prior written permission.
+ *  THIS SOFTWARE IS PROVIDED ``AS IS'' AND WITHOUT ANY EXPRESS OR
+ *  IMPLIED WARRANTIES, INCLUDING, WITHOUT LIMITATION, THE IMPLIED
+ *  WARRANTIES OF MERCHANTIBILITY AND FITNESS FOR A PARTICULAR PURPOSE.
+ */
+
+The "Base64" encoder/decoder in ofstd/libsrc/ofstd.cc has been derived 
+from an implementation which carries the following copyright notice:
+
+/*
+ *  Copyright (c) 1999, Bob Withers - bwit@pobox.com
+ *
+ *  This code may be freely used for any purpose, either personal or commercial,
+ *  provided the authors copyright notice remains intact.
+ */
+

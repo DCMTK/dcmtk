@@ -58,6 +58,25 @@
  *  is" without express or implied warranty.
  *
  *
+ *  The code for OFStandard::ftoa has been derived
+ *  from an implementation which carries the following copyright notice:
+ *
+ *  Copyright (c) 1988 Regents of the University of California.
+ *  All rights reserved.
+ *
+ *  Redistribution and use in source and binary forms are permitted
+ *  provided that the above copyright notice and this paragraph are
+ *  duplicated in all such forms and that any documentation,
+ *  advertising materials, and other materials related to such
+ *  distribution and use acknowledge that the software was developed
+ *  by the University of California, Berkeley.  The name of the
+ *  University may not be used to endorse or promote products derived
+ *  from this software without specific prior written permission.
+ *  THIS SOFTWARE IS PROVIDED ``AS IS'' AND WITHOUT ANY EXPRESS OR
+ *  IMPLIED WARRANTIES, INCLUDING, WITHOUT LIMITATION, THE IMPLIED
+ *  WARRANTIES OF MERCHANTIBILITY AND FITNESS FOR A PARTICULAR PURPOSE.
+ *
+ *
  *  Furthermore, the "Base64" encoder/decoder has been derived from an
  *  implementation with the following copyright notice:
  *
@@ -74,8 +93,8 @@
  *  Purpose: Class for various helper functions
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-11-27 11:23:11 $
- *  CVS/RCS Revision: $Revision: 1.10 $
+ *  Update Date:      $Date: 2002-12-04 09:13:03 $
+ *  CVS/RCS Revision: $Revision: 1.11 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -86,6 +105,8 @@
 #include "osconfig.h"    /* make sure OS specific configuration is included first */
 #include "ofstd.h"
 
+#define INCLUDE_CMATH
+#define INCLUDE_CSTRING
 #define INCLUDE_CSTDIO
 #define INCLUDE_CCTYPE
 #include "ofstdinc.h"
@@ -778,6 +799,547 @@ double OFStandard::atof(const char *s, OFBool *success)
 #endif /* DISABLE_OFSTD_ATOF */
 
 
+/* 11-bit exponent (VAX G floating point) is 308 decimal digits */
+#define FTOA_MAXEXP          308
+/* 128 bit fraction takes up 39 decimal digits; max reasonable precision */
+#define FTOA_MAXFRACT        39
+/* default precision */
+#define FTOA_DEFPREC         6
+/* internal buffer size for ftoa code */
+#define FTOA_BUFSIZE         (FTOA_MAXEXP+FTOA_MAXFRACT+1)
+
+#define FTOA_TODIGIT(c)      ((c) - '0')
+#define FTOA_TOCHAR(n)       ((n) + '0')
+
+#define FTOA_FORMAT_MASK 0x03 /* and mask for format flags */
+#define FTOA_FORMAT_E         OFStandard::ftoa_format_e
+#define FTOA_FORMAT_F         OFStandard::ftoa_format_f
+#define FTOA_FORMAT_UPPERCASE OFStandard::ftoa_uppercase
+#define FTOA_ALTERNATE_FORM   OFStandard::ftoa_alternate
+#define FTOA_LEFT_ADJUSTMENT  OFStandard::ftoa_leftadj
+#define FTOA_ZEROPAD          OFStandard::ftoa_zeropad
+
+#ifdef DISABLE_OFSTD_FTOA
+
+void OFStandard::ftoa(
+  char *dst,
+  size_t siz,
+  double val,
+  unsigned int flags,
+  int width,
+  int prec)
+{
+  // this version of the function uses sprintf to format the output string.
+  // Since we have to assemble the sprintf format string, this version might
+  // even be slower than the alternative implementation.
+
+  char buf[FTOA_BUFSIZE];
+  OFString s("%"); // this will become the format string
+  unsigned char fmtch = 'G';
+
+  // determine format character
+  if (flags & FTOA_FORMAT_UPPERCASE)
+  {
+    if ((flags & FTOA_FORMAT_MASK) == FTOA_FORMAT_E) fmtch = 'E';
+    else if ((flags & FTOA_FORMAT_MASK) == FTOA_FORMAT_F) fmtch = 'f'; // there is no uppercase for 'f'
+    else fmtch = 'G';
+  }
+  else
+  {
+    if ((flags & FTOA_FORMAT_MASK) == FTOA_FORMAT_E) fmtch = 'e';
+    else if ((flags & FTOA_FORMAT_MASK) == FTOA_FORMAT_F) fmtch = 'f';
+    else fmtch = 'g';
+  }
+
+  if (flags & FTOA_ALTERNATE_FORM) s += "#";
+  if (flags & FTOA_LEFT_ADJUSTMENT) s += "-";
+  if (flags & FTOA_ZEROPAD) s += "0";
+  if (width > 0)
+  {
+    sprintf(buf, "%d", width);
+    s += buf;
+  }
+  if (prec >= 0)
+  {
+    sprintf(buf, ".%d", prec);
+    s += buf;
+  }
+  s += fmtch;
+
+  sprintf(buf, s.c_str(), val);
+  OFStandard::strlcpy(dst, buf, siz);
+}
+
+#else
+
+/** internal helper class that maintains a string buffer
+ *  to which characters can be written. If the string buffer
+ *  gets full, additional characters are discarded.
+ *  The string buffer does not guarantee zero termination.
+ */
+class FTOAStringBuffer
+{
+public:
+  /** constructor
+   *  @param theSize desired size of string buffer, in bytes
+   */
+  FTOAStringBuffer(unsigned long theSize)
+  : buf_(NULL)
+  , offset_(0)
+  , size_(theSize)
+  {
+  	if (size_ > 0) buf_ = new char[size_];  	
+  }
+
+  /// destructor  
+  ~FTOAStringBuffer()
+  {
+    delete[] buf_;
+  }
+
+  /** add one character to string buffer. Never overwrites
+   *  buffer boundary.
+   *  @param c character to add
+   */
+  inline void put(unsigned char c)
+  {
+    if (buf_ && (offset_ < size_)) buf_[offset_++] = c;
+  }
+
+  // return pointer to string buffer
+  const char *getBuffer() const
+  {
+    return buf_;
+  }
+
+private:
+  /// pointer to string buffer
+  char *buf_;
+
+  /// current offset within buffer
+  unsigned long offset_;
+
+  /// size of buffer
+  unsigned long size_;
+};
+
+
+/** writes the given format character and exponent to output string p.
+ *  @param p pointer to target string
+ *  @param exp exponent to print
+ *  @param fmtch format character
+ *  @return pointer to next unused character in output string
+ */
+static char *ftoa_exponent(char *p, int exp, char fmtch)
+{
+  char expbuf[FTOA_MAXEXP];
+
+  *p++ = fmtch;
+  if (exp < 0)
+  {
+    exp = -exp;
+    *p++ = '-';
+  }
+  else *p++ = '+';
+  register char *t = expbuf + FTOA_MAXEXP;
+  if (exp > 9)
+  {
+    do
+    {
+      *--t = FTOA_TOCHAR(exp % 10);
+    } 
+    while ((exp /= 10) > 9);
+    *--t = FTOA_TOCHAR(exp);
+    for (; t < expbuf + FTOA_MAXEXP; *p++ = *t++) /* nothing */;
+  }
+  else 
+  {
+    *p++ = '0';
+    *p++ = FTOA_TOCHAR(exp);
+  }
+
+  return p;
+}
+
+/** round given fraction and adjust text string if round up.
+ *  @param fract  fraction to round
+ *  @param exp    pointer to exponent, may be NULL
+ *  @param start  pointer to start of string to round
+ *  @param end    pointer to one char after end of string
+ *  @param ch     if fract is zero, this character is interpreted as fraction*10 instead
+ *  @param signp  pointer to sign character, '-' or 0.
+ *  @return adjusted pointer to start of rounded string, may be start or start-1.
+ */
+static char *ftoa_round(double fract, int *exp, char *start, char *end, char ch, char *signp)
+{
+  double tmp;
+
+  if (fract) (void) modf(fract * 10, &tmp);
+  else tmp = FTOA_TODIGIT(ch);
+
+  if (tmp > 4)
+  {
+    for (;; --end)
+    {
+      if (*end == '.') --end;
+      if (++*end <= '9') break;
+      *end = '0';
+      if (end == start)
+      {
+        if (exp) /* e/E; increment exponent */
+        {      
+          *end = '1';
+          ++*exp;
+        }
+        else /* f; add extra digit */
+        {          
+          *--end = '1';
+          --start;
+        }
+        break;
+      }
+    }
+  }
+  /* ``"%.3f", (double)-0.0004'' gives you a negative 0. */
+  else if (*signp == '-')
+  {
+    for (;; --end)
+    {
+      if (*end == '.') --end;
+      if (*end != '0') break;
+      if (end == start) *signp = 0; // suppress negative 0
+    }
+  }
+
+  return start;
+}
+
+/** convert double value to string, without padding
+ *  @param val double value to be formatted
+ *  @param prec    precision, adjusted for FTOA_MAXFRACT
+ *  @param flags   formatting flags
+ *  @param signp   pointer to sign character, '-' or 0.
+ *  @param fmtch   format character
+ *  @param startp  pointer to start of target buffer
+ *  @param endp    pointer to one char after end of target buffer
+ *  @return 
+ */
+static int ftoa_convert(double val, int prec, int flags, char *signp, char fmtch, char *startp, char *endp)
+{
+  register char *p;
+  register double fract;
+  int dotrim = 0;
+  int expcnt = 0;
+  int gformat = 0;
+  double integer, tmp;
+
+  fract = modf(val, &integer);
+
+  /* get an extra slot for rounding. */
+  register char *t = ++startp;
+
+  /*
+   * get integer portion of val; put into the end of the buffer; the
+   * .01 is added for modf(356.0 / 10, &integer) returning .59999999...
+   */
+  for (p = endp - 1; integer; ++expcnt)
+  {
+    tmp = modf(integer / 10, &integer);
+    *p-- = FTOA_TOCHAR((int)((tmp + .01) * 10));
+  }
+
+  switch(fmtch)
+  {
+    case 'f':
+      /* reverse integer into beginning of buffer */
+      if (expcnt)
+      {
+        for (; ++p < endp; *t++ = *p);
+      }
+      else *t++ = '0';
+
+      /*
+       * if precision required or alternate flag set, add in a
+       * decimal point.
+       */
+      if (prec || flags & FTOA_ALTERNATE_FORM) *t++ = '.';
+
+      /* if requires more precision and some fraction left */
+      if (fract)
+      {
+        if (prec) do
+        {
+          fract = modf(fract * 10, &tmp);
+          *t++ = FTOA_TOCHAR((int)tmp);
+        } while (--prec && fract);
+        if (fract)
+        {
+          startp = ftoa_round(fract, (int *)NULL, startp, t - 1, (char)0, signp);
+        }
+      }
+      for (; prec--; *t++ = '0');
+      break;
+
+    case 'e':
+    case 'E':
+eformat:        
+      if (expcnt)
+      {
+        *t++ = *++p;
+        if (prec || flags&FTOA_ALTERNATE_FORM)
+                *t++ = '.';
+        /* if requires more precision and some integer left */
+        for (; prec && ++p < endp; --prec)
+                *t++ = *p;
+        /*
+         * if done precision and more of the integer component,
+         * round using it; adjust fract so we don't re-round
+         * later.
+         */
+        if (!prec && ++p < endp)
+        {
+          fract = 0;
+          startp = ftoa_round((double)0, &expcnt, startp, t - 1, *p, signp);
+        }
+        /* adjust expcnt for digit in front of decimal */
+        --expcnt;
+      }
+      /* until first fractional digit, decrement exponent */
+      else if (fract)
+      {
+        /* adjust expcnt for digit in front of decimal */
+        for (expcnt = -1;; --expcnt) {
+                fract = modf(fract * 10, &tmp);
+                if (tmp)
+                        break;
+        }
+        *t++ = FTOA_TOCHAR((int)tmp);
+        if (prec || flags&FTOA_ALTERNATE_FORM) *t++ = '.';
+      }
+      else
+      {
+        *t++ = '0';
+        if (prec || flags&FTOA_ALTERNATE_FORM) *t++ = '.';
+      }
+
+      /* if requires more precision and some fraction left */
+      if (fract)
+      {
+        if (prec) do 
+        {
+          fract = modf(fract * 10, &tmp);
+          *t++ = FTOA_TOCHAR((int)tmp);
+        } while (--prec && fract);
+        if (fract)
+        {
+          startp = ftoa_round(fract, &expcnt, startp, t - 1, (char)0, signp);
+        }
+      }
+
+      /* if requires more precision */
+      for (; prec--; *t++ = '0');
+
+      /* unless alternate flag, trim any g/G format trailing 0's */
+      if (gformat && !(flags&FTOA_ALTERNATE_FORM))
+      {
+        while (t > startp && *--t == '0') /* nothing */;
+        if (*t == '.') --t;
+        ++t;
+      }
+      t = ftoa_exponent(t, expcnt, fmtch);
+      break;
+
+    case 'g':
+    case 'G':
+      /* a precision of 0 is treated as a precision of 1. */
+      if (!prec) ++prec;
+      /*
+       * ``The style used depends on the value converted; style e
+       * will be used only if the exponent resulting from the
+       * conversion is less than -4 or greater than the precision.''
+       *      -- ANSI X3J11
+       */
+      if (expcnt > prec || !expcnt && fract && fract < .0001)
+      {
+        /*
+         * g/G format counts "significant digits, not digits of
+         * precision; for the e/E format, this just causes an
+         * off-by-one problem, i.e. g/G considers the digit
+         * before the decimal point significant and e/E doesn't
+         * count it as precision.
+         */
+        --prec;
+        fmtch -= 2;             /* G->E, g->e */
+        gformat = 1;
+        goto eformat;
+      }
+
+      /*
+       * reverse integer into beginning of buffer,
+       * note, decrement precision
+       */
+      if (expcnt)
+      {
+        for (; ++p < endp; *t++ = *p, --prec);
+      }
+      else *t++ = '0';
+      /*
+       * if precision required or alternate flag set, add in a
+       * decimal point.  If no digits yet, add in leading 0.
+       */
+      if (prec || flags&FTOA_ALTERNATE_FORM)
+      {
+        dotrim = 1;
+        *t++ = '.';
+      }
+      else dotrim = 0;
+
+      /* if requires more precision and some fraction left */
+      if (fract)
+      {
+        if (prec)
+        {
+          do
+          {
+            fract = modf(fract * 10, &tmp);
+            *t++ = FTOA_TOCHAR((int)tmp);
+          } while(!tmp);
+          while (--prec && fract)
+          {
+            fract = modf(fract * 10, &tmp);
+            *t++ = FTOA_TOCHAR((int)tmp);
+          }
+        }
+        if (fract)
+        {
+          startp = ftoa_round(fract, (int *)NULL, startp, t - 1, (char)0, signp);
+        }
+      }
+      /* alternate format, adds 0's for precision, else trim 0's */
+      if (flags&FTOA_ALTERNATE_FORM) for (; prec--; *t++ = '0') /* nothing */;
+      else if (dotrim)
+      {
+        while (t > startp && *--t == '0') /* nothing */;
+        if (*t != '.') ++t;
+      }
+  } /* end switch */
+
+  return (t - startp);
+}
+
+void OFStandard::ftoa(
+  char *dst,
+  size_t siz,
+  double val,
+  unsigned int flags,
+  int width,
+  int prec)
+{
+  // if target string is NULL or zero bytes long, bail out.
+  if (!dst || !siz) return;
+
+  int fpprec = 0;     /* `extra' floating precision in [eEfgG] */
+  char softsign = 0;  /* temporary negative sign for floats */
+  char buf[FTOA_BUFSIZE];      /* space for %c, %[diouxX], %[eEfgG] */
+  char sign = '\0';   /* sign prefix (' ', '+', '-', or \0) */
+  register int n;
+  unsigned char fmtch = 'G';
+  FTOAStringBuffer sb(FTOA_BUFSIZE+1);
+
+  // determine format character
+  if (flags & FTOA_FORMAT_UPPERCASE)
+  {
+    if ((flags & FTOA_FORMAT_MASK) == FTOA_FORMAT_E) fmtch = 'E';
+    else if ((flags & FTOA_FORMAT_MASK) == FTOA_FORMAT_F) fmtch = 'f'; // there is no uppercase for 'f'
+    else fmtch = 'G';
+  }
+  else
+  {
+    if ((flags & FTOA_FORMAT_MASK) == FTOA_FORMAT_E) fmtch = 'e';
+    else if ((flags & FTOA_FORMAT_MASK) == FTOA_FORMAT_F) fmtch = 'f';
+    else fmtch = 'g';
+  }
+
+  // don't do unrealistic precision; just pad it with zeroes later, 
+  // so buffer size stays rational.
+  if (prec > FTOA_MAXFRACT)
+  {
+    if (fmtch != 'g' && fmtch != 'G' || (flags&FTOA_ALTERNATE_FORM)) fpprec = prec - FTOA_MAXFRACT;
+    prec = FTOA_MAXFRACT;
+  }
+  else if (prec == -1) prec = FTOA_DEFPREC;
+
+  /*
+   * softsign avoids negative 0 if val is < 0 and
+   * no significant digits will be shown
+   */
+  if (val < 0)
+  {
+    softsign = '-';
+    val = -val;
+  }
+  else softsign = 0;
+
+  /*
+   * ftoa_convert may have to round up past the "start" of the
+   * buffer, i.e. ``intf("%.2f", (double)9.999);'';
+   * if the first char isn't \0, it did.
+   */
+  *buf = 0;
+  int size = ftoa_convert(val, prec, flags, &softsign, fmtch, buf, buf + sizeof(buf));
+  if (softsign) sign = '-';
+  register char *t = *buf ? buf : buf + 1;
+
+  /* At this point, `t' points to a string which (if not flags&FTOA_LEFT_ADJUSTMENT) 
+   * should be padded out to `width' places.  If flags&FTOA_ZEROPAD, it should 
+   * first be prefixed by any sign or other prefix; otherwise, it should be 
+   * blank padded before the prefix is emitted.  After any left-hand 
+   * padding, print the string proper, then emit zeroes required by any 
+   * leftover floating precision; finally, if FTOA_LEFT_ADJUSTMENT, pad with blanks.
+   *
+   * compute actual size, so we know how much to pad
+   */
+  int fieldsz = size + fpprec;
+  if (sign) fieldsz++;
+
+  /* right-adjusting blank padding */
+  if ((flags & (FTOA_LEFT_ADJUSTMENT|FTOA_ZEROPAD)) == 0 && width)
+  {
+    for (n = fieldsz; n < width; n++) sb.put(' ');
+  }
+
+  /* prefix */
+  if (sign) sb.put(sign);
+
+  /* right-adjusting zero padding */
+  if ((flags & (FTOA_LEFT_ADJUSTMENT|FTOA_ZEROPAD)) == FTOA_ZEROPAD)
+          for (n = fieldsz; n < width; n++)
+                  sb.put('0');
+
+  /* the string or number proper */
+  n = size;
+  while (--n >= 0) sb.put(*t++);
+
+  /* trailing f.p. zeroes */
+  while (--fpprec >= 0) sb.put('0');
+
+  /* left-adjusting padding (always blank) */
+  if (flags & FTOA_LEFT_ADJUSTMENT)
+          for (n = fieldsz; n < width; n++)
+                  sb.put(' ');
+
+  /* zero-terminate string */
+  sb.put(0);
+
+  /* copy result from char buffer to output array */
+  const char *c = sb.getBuffer();
+  if (c) OFStandard::strlcpy(dst, c, siz); else *dst = 0;
+}
+
+#endif /* DISABLE_OFSTD_FTOA */
+
+
+
 OFBool OFStandard::stringMatchesCharacterSet( const char *str, const char *charset )
 {
   if( charset == NULL || str == NULL )
@@ -805,7 +1367,12 @@ OFBool OFStandard::stringMatchesCharacterSet( const char *str, const char *chars
 
 /*
  *  $Log: ofstd.cc,v $
- *  Revision 1.10  2002-11-27 11:23:11  meichel
+ *  Revision 1.11  2002-12-04 09:13:03  meichel
+ *  Implemented a locale independent function OFStandard::ftoa() that
+ *    converts double to string and offers all the flexibility of the
+ *    sprintf family of functions.
+ *
+ *  Revision 1.10  2002/11/27 11:23:11  meichel
  *  Adapted module ofstd to use of new header file ofstdinc.h
  *
  *  Revision 1.9  2002/07/18 12:14:19  joergr

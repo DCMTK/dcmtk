@@ -65,6 +65,16 @@ DISABLE_OFSTD_ATOF
     used with locales such as German since DICOM decimal strings always
     use the Posix locale.
 
+DISABLE_OFSTD_FTOA
+  Affected: all modules
+  Type of modification: Disables feature
+  Explanation: by default, DCMTK uses it's own implementation to 
+    convert double numbers to strings to in a locale-independent manner. 
+    This flag forces DCMTK to use the standard sprintf() function 
+    instead, which is locale dependent, i.e. cannot be used with locales 
+    such as German since DICOM decimal strings always use the Posix 
+    locale.
+
 DONT_DISABLE_NAGLE_ALGORITHM
   Affected: dcmnet
   Type of modification: Disables feature

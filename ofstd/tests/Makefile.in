@@ -17,9 +17,9 @@ LOCALINCLUDES= -I$(top_srcdir)/include -I$(includedir)/ofstd
 LIBDIRS = -L$(top_srcdir)/libsrc -L$(libdir)
 LOCALLIBS = -lofstd
 
-objs= tststack.o tstlist.o tlist.o tstring.o tstthred.o tofstd.o tofdatim.o tstatof.o
+objs= tststack.o tstlist.o tlist.o tstring.o tstthred.o tofstd.o tofdatim.o tstatof.o tstftoa.o
 
-progs= tststack tstlist tlist tstring tstthred tofstd tofdatim tstatof
+progs= tststack tstlist tlist tstring tstthred tofstd tofdatim tstatof tstftoa
 
 LOCALTRASH= *.out
 
@@ -49,6 +49,8 @@ tofdatim: tofdatim.o
 tstatof: tstatof.o
 	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ $@.o $(LOCALLIBS) $(MATHLIBS) $(LIBS)
 
+tstftoa: tstftoa.o
+	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ $@.o $(LOCALLIBS) $(MATHLIBS) $(LIBS)
 
 tests: all test-list test-stack test-string
 

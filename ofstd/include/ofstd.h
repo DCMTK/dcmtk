@@ -22,9 +22,9 @@
  *  Purpose: Class for various helper functions
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-11-27 11:23:06 $
+ *  Update Date:      $Date: 2002-12-04 09:13:00 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/include/Attic/ofstd.h,v $
- *  CVS/RCS Revision: $Revision: 1.9 $
+ *  CVS/RCS Revision: $Revision: 1.10 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -258,7 +258,7 @@ class OFStandard
      *  the macro DISABLE_OFSTD_ATOF at compile time; in this case,
      *  the locale dependent Posix implementation of sscanf is used and
      *  the application is responsible for making sure that the Posix locale
-     *  is activate at all times.
+     *  is activated at all times.
      *
      *  @param s
      *    A decimal ASCII floating-point number, optionally preceded by white
@@ -278,6 +278,58 @@ class OFStandard
      *    digits, then zero is returned.
      */
      static double atof(const char *s, OFBool *success=NULL);
+
+     /** formats a floating-point number into an ASCII string.
+      *  This function works similar to sprintf(), except that this
+      *  implementation is not affected by a locale setting. 
+      *  The radix character is always '.'.
+      *
+      *  This implementation guarantees that the given string size
+      *  is always respected by using strlcpy to copy the formatted
+      *  string into the target buffer.
+      *
+      *  The use of this implementation can be disabled by defining
+      *  the macro DISABLE_OFSTD_FTOA at compile time; in this case,
+      *  the locale dependent Posix implementation of sprintf is used and
+      *  the application is responsible for making sure that the Posix locale
+      *  is activated at all times.
+      *
+      *  @param target pointer to target string buffer
+      *  @param siz size of target string buffer
+      *  @param val double value to be formatted
+      *  @param flags processing flags. Any of the flags defined below
+      *    can be combined by bit-wise or. 
+      *  @param width width from format (%8d), or 0
+      *  @param precision precision from format (%.3d), or -1
+      */
+     static void ftoa(
+       char *target,
+       size_t targetSize,
+       double value,
+       unsigned int flags = 0,
+       int width = 0,
+       int precision = -1);
+
+     /// Use %e or %E conversion format instead of %g or %G
+     static const unsigned int ftoa_format_e = 0x01;
+
+     /// Use %f or %F conversion format instead of %g or %G
+     static const unsigned int ftoa_format_f = 0x02;
+
+     /// Use %E, %F or %G conversion format instead of %e, %f or %g
+     static const unsigned int ftoa_uppercase = 0x04;
+
+     /** convert value to alternate form. The result will always contain 
+      *  a decimal point, even if no digits follow the point. For g and G 
+      *  conversions, trailing zeroes will not be removed from the result.
+      */
+     static const unsigned int ftoa_alternate = 0x08;
+
+     /// left-justify number be within the field
+     static const unsigned int ftoa_leftadj = 0x10;
+
+     /// pad with zeroes instead of blanks
+     static const unsigned int ftoa_zeropad = 0x20;
 
     /** Checks if a given string consists only of characters which are specified in a
      *  given charset. Note that in case one of the parameters equals NULL, OFTrue will
@@ -321,7 +373,12 @@ class OFStandard
  *
  * CVS/RCS Log:
  * $Log: ofstd.h,v $
- * Revision 1.9  2002-11-27 11:23:06  meichel
+ * Revision 1.10  2002-12-04 09:13:00  meichel
+ * Implemented a locale independent function OFStandard::ftoa() that
+ *   converts double to string and offers all the flexibility of the
+ *   sprintf family of functions.
+ *
+ * Revision 1.9  2002/11/27 11:23:06  meichel
  * Adapted module ofstd to use of new header file ofstdinc.h
  *
  * Revision 1.8  2002/07/02 15:17:57  wilkens
