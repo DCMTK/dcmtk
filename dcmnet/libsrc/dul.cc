@@ -54,9 +54,9 @@
 ** Author, Date:	Stephen M. Moore, 14-Apr-93
 ** Intent:		This module contains the public entry points for the
 **			DICOM Upper Layer (DUL) protocol package.
-** Last Update:		$Author: wilkens $, $Date: 2001-11-27 09:54:58 $
+** Last Update:		$Author: meichel $, $Date: 2001-12-19 16:37:01 $
 ** Source File:		$RCSfile: dul.cc,v $
-** Revision:		$Revision: 1.42 $
+** Revision:		$Revision: 1.43 $
 ** Status:		$State: Exp $
 */
 
@@ -101,6 +101,15 @@ BEGIN_EXTERN_C
 #endif
 #ifdef HAVE_NETINET_TCP_H
 #include <netinet/tcp.h>        /* for TCP_NODELAY */
+#endif
+END_EXTERN_C
+
+BEGIN_EXTERN_C
+/* declare extern "C" typedef for signal handler function pointer */
+#ifdef SIGNAL_HANDLER_WITH_ELLIPSE
+typedef void (*mySIG_TYP)(...);
+#else
+typedef void (*mySIG_TYP)(int);
 #endif
 END_EXTERN_C
 
@@ -255,11 +264,7 @@ DUL_InitializeNetwork(const char *mode,
         * key;                  /* Our local copy of the key which is created */
 
 #ifdef SIGPIPE
-#ifdef SIGNAL_HANDLER_WITH_ELLIPSE
-    (void) signal(SIGPIPE, (void (*)(...))SIG_IGN);
-#else
-    (void) signal(SIGPIPE, (void (*)(int))SIG_IGN);
-#endif
+    (void) signal(SIGPIPE, (mySIG_TYP)SIG_IGN);
 #endif
     (void) DUL_InitializeFSM();
 
@@ -2311,7 +2316,10 @@ void DUL_DumpConnectionParameters(DUL_ASSOCIATIONKEY *association, ostream& outs
 /*
 ** CVS Log
 ** $Log: dul.cc,v $
-** Revision 1.42  2001-11-27 09:54:58  wilkens
+** Revision 1.43  2001-12-19 16:37:01  meichel
+** Introduced function pointer typedef to avoid warning on Sun Workshop 6.
+**
+** Revision 1.42  2001/11/27 09:54:58  wilkens
 ** Updated storescp. 6 new options (--output-directory, --sort-conc-studies,
 ** --exec-on-reception, --exec-on-eostudy, --rename-on-eostudy, and
 ** --eostudy-timeout) implemented (requirements from GO-Kard).
