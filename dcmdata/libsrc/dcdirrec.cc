@@ -9,9 +9,9 @@
 **
 **
 ** Last Update:         $Author: meichel $
-** Update Date:         $Date: 1999-03-22 09:58:59 $
+** Update Date:         $Date: 1999-03-22 14:10:58 $
 ** Source File:         $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcdirrec.cc,v $
-** CVS/RCS Revision:    $Revision: 1.24 $
+** CVS/RCS Revision:    $Revision: 1.25 $
 ** Status:              $State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -74,10 +74,11 @@ static const char* DRTypeNames[] =
     "STUDY COMPONENT",
     "TOPIC",
     "VISIT",
-    "VOI LUT"
+    "VOI LUT",
+    "STRUCT REPORT"
 };
 
-static short DIM_OF_DRTypeNames = 20;
+static short DIM_OF_DRTypeNames = (sizeof(DRTypeNames) / sizeof(DRTypeNames[0]));
 
 
 // ********************************
@@ -374,6 +375,7 @@ E_Condition DcmDirectoryRecord::checkHierarchy(const E_DirRecType upperRecord,
                 case ERT_Overlay:
                 case ERT_Private:
                 case ERT_VoiLut:
+                case ERT_StructReport:
                     l_error = EC_Normal;
                     break;
                 default:

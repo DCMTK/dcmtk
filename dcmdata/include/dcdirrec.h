@@ -9,10 +9,10 @@
 ** Interface of class DcmDirectoryRecord
 **
 **
-** Last Update:         $Author: joergr $
-** Update Date:         $Date: 1998-07-15 15:48:46 $
+** Last Update:         $Author: meichel $
+** Update Date:         $Date: 1999-03-22 14:10:57 $
 ** Source File:         $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcdirrec.h,v $
-** CVS/RCS Revision:    $Revision: 1.10 $
+** CVS/RCS Revision:    $Revision: 1.11 $
 ** Status:              $State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -52,7 +52,8 @@ typedef enum {
     ERT_StudyComponent = 16,
     ERT_Topic = 17,
     ERT_Visit = 18,
-    ERT_VoiLut = 19
+    ERT_VoiLut = 19,
+    ERT_StructReport = 20
 } E_DirRecType;
 
 
@@ -173,7 +174,11 @@ public:
 /*
 ** CVS/RCS Log:
 ** $Log: dcdirrec.h,v $
-** Revision 1.10  1998-07-15 15:48:46  joergr
+** Revision 1.11  1999-03-22 14:10:57  meichel
+** Added support for Structured Reports to dcmgpdir.
+**   Added preliminary support for including sequences into a DICOMDIR.
+**
+** Revision 1.10  1998/07/15 15:48:46  joergr
 ** Removed several compiler warnings reported by gcc 2.8.1 with
 ** additional options, e.g. missing copy constructors and assignment
 ** operators, initialization of member variables in the body of a

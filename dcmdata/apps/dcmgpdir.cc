@@ -11,9 +11,9 @@
 **
 **
 ** Last Update:		$Author: meichel $
-** Update Date:		$Date: 1999-03-22 09:58:48 $
+** Update Date:		$Date: 1999-03-22 14:10:55 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/apps/dcmgpdir.cc,v $
-** CVS/RCS Revision:	$Revision: 1.26 $
+** CVS/RCS Revision:	$Revision: 1.27 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -843,6 +843,8 @@ recordTypeToName(E_DirRecType t)
 	s = "Visit"; break;
     case ERT_VoiLut:
 	s = "VOILUT"; break;
+    case ERT_StructReport:
+        s = "StructReport"; break;
     default:
 	s = "(unknown-directory-record-type)";
 	break;
@@ -910,6 +912,11 @@ checkImage(const OFString& fname, DcmFileFormat *ff)
     found = found || cmp(mediaSOPClassUID, UID_StandaloneModalityLUTStorage);
     found = found || cmp(mediaSOPClassUID, UID_StandaloneVOILUTStorage);
     found = found || cmp(mediaSOPClassUID, UID_PETCurveStorage);
+    /* is it one of the Structured reporing SOP Classes? */
+    found = found || cmp(mediaSOPClassUID, UID_SRTextStorage);
+    found = found || cmp(mediaSOPClassUID, UID_SRAudioStorage);
+    found = found || cmp(mediaSOPClassUID, UID_SRDetailStorage);
+    found = found || cmp(mediaSOPClassUID, UID_SRComprehensiveStorage);
 
     /* a detached patient mgmt sop class is also ok */
     found = found || cmp(mediaSOPClassUID, UID_DetachedPatientManagementSOPClass);
@@ -963,7 +970,7 @@ checkImage(const OFString& fname, DcmFileFormat *ff)
     ** We can create an empty attribute in the directory
     ** if (!checkExists(d, DCM_StudyDescription, fname)) ok = OFFalse;
     */
-    /* StudyInstanceIOD is type 1 in DICOMDIR and images */
+    /* StudyInstanceUID is type 1 in DICOMDIR and images */
     if (!checkExistsWithValue(d, DCM_StudyInstanceUID, fname)) ok = OFFalse;
     /* StudyID is type 1 in DICOMDIR and type 2 in images */
     if (!inventAttributes) {
@@ -1005,6 +1012,22 @@ checkImage(const OFString& fname, DcmFileFormat *ff)
 	/* a curve */
 	if (!inventAttributes) {
 	    if (!checkExistsWithValue(d, DCM_CurveNumber, fname)) 
+		ok = OFFalse;
+	}
+
+    } else if (cmp(mediaSOPClassUID, UID_SRTextStorage) ||
+	       cmp(mediaSOPClassUID, UID_SRAudioStorage) ||
+	       cmp(mediaSOPClassUID, UID_SRDetailStorage) ||
+	       cmp(mediaSOPClassUID, UID_SRComprehensiveStorage)) {
+	/* a structured report */
+	if (!checkExistsWithValue(d, DCM_ReportStatusID, fname)) 
+	    ok = OFFalse; /* ReportStatusIS is type 1 in a Structured Report */
+	if (!inventAttributes) {
+            /* 
+             * NOTE: SR uses the name "Instance Number" for (0020,0013) but we know it
+             * as "Image Number".  CP 99 wants to change the name of this attribute.
+             */
+	    if (!checkExistsWithValue(d, DCM_ImageNumber, fname)) 
 		ok = OFFalse;
 	}
     } else {
@@ -1252,6 +1275,38 @@ buildCurveRecord(
     return rec;
 }
 
+DcmDirectoryRecord* 
+buildStructReportRecord(
+    const OFString& referencedFileName, 
+    DcmItem* d,
+    const OFString& sourceFileName)
+{
+    DcmDirectoryRecord* rec = new DcmDirectoryRecord(
+	ERT_StructReport, referencedFileName.c_str(), sourceFileName.c_str());
+    if (rec == NULL) {
+	cerr << "error: out of memory (creating curve record)" << endl;
+	return NULL;
+    }
+    if (rec->error() != EC_Normal) {
+	cerr << "error: cannot create " 
+	     << recordTypeToName(rec->getRecordType()) << " directory record: "
+	     << dcmErrorConditionToString(rec->error()) << endl;
+	delete rec;
+	return NULL;
+    }
+    
+    dcmCopyOptString(rec, DCM_SpecificCharacterSet, d);
+    dcmCopyString(rec, DCM_ReportStatusID, d);
+    /* 
+     * NOTE: SR uses the name "Instance Number" for (0020,0013) but we know it
+     * as "Image Number".  CP 99 wants to change the name of this attribute.
+     */
+    dcmCopyString(rec, DCM_ImageNumber, d);
+    dcmCopyOptString(rec, DCM_InterpretationRecordedDate, d);
+
+    return rec;
+}
+
 static OFString
 locateDicomFile(const OFString& fname)
 {
@@ -1330,6 +1385,7 @@ recordMatchesDataset(DcmDirectoryRecord *rec, DcmItem* dataset)
     case ERT_Curve:
     case ERT_ModalityLut:
     case ERT_VoiLut:
+    case ERT_StructReport:
 	/*
 	** The attribute ReferencedSOPInstanceUID is automatically
 	** put into a Directory Record when a filename is present.
@@ -1397,6 +1453,9 @@ buildRecord(E_DirRecType dirtype, const OFString& referencedFileName,
     case ERT_VoiLut:
 	rec = buildVoiLutRecord(referencedFileName, dataset, sourceFileName);
 	break;
+    case ERT_StructReport:
+	rec = buildStructReportRecord(referencedFileName, dataset, sourceFileName);
+	break;
     default:
 	cerr << "error: record type not yet implemented" << endl;
 	return OFFalse;
@@ -1433,6 +1492,7 @@ printRecordUniqueKey(ostream& out, DcmDirectoryRecord *rec)
     case ERT_Curve:
     case ERT_ModalityLut:
     case ERT_VoiLut:
+    case ERT_StructReport:
 	out << "ReferencedSOPInstanceUIDInFile " 
 	    << DCM_ReferencedSOPInstanceUIDInFile << "=\""
 	    << dcmFindString(rec, DCM_ReferencedSOPInstanceUIDInFile) << "\"";
@@ -1470,6 +1530,352 @@ compareStringAttributes(DcmTagKey& tag, DcmDirectoryRecord *rec,
     return equals;
 }
 
+
+static OFBool
+areTagsEqual(DcmObject* obj1, DcmObject* obj2)
+{
+    if (obj1 == NULL || obj2 == NULL) {
+        return OFFalse;
+    }
+    
+    return obj1->getTag().getXTag() == obj2->getTag().getXTag();
+}
+
+static OFString
+constructTagName(DcmObject *obj)
+{
+    if (obj == NULL) {
+        return "(NULL)";
+    }
+    DcmTag tag = obj->getTag();
+
+    if (tag.getDictRef() != NULL) {
+        return tag.getTagName();
+    }
+    char buf[32];
+    sprintf(buf, "(0x%04x,0x%04x)", tag.getGTag(), tag.getETag());
+    return buf;
+}
+
+static OFString
+intToOFString(int i)
+{
+    char buf[64];
+    sprintf(buf, "%d", i);
+    return buf;
+}
+
+static OFString
+constructTagNameWithSQ(DcmObject *obj, DcmSequenceOfItems* fromSequence, int itemNumber)
+{
+    if (obj == NULL) {
+        return "(NULL)";
+    }
+    OFString s;
+    if (fromSequence != NULL) {
+        s += constructTagName(fromSequence) + "[" + intToOFString(itemNumber) + "].";
+    }
+    s += constructTagName(obj);
+    return s;
+}
+
+static OFBool
+compareBinaryValues(DcmElement* elem1, DcmElement* elem2, OFString& reason)
+{
+    Uint8* value1 = NULL;
+    Uint8* value2 = NULL;
+    Uint16* u16 = NULL;
+    Sint16* s16 = NULL;
+    Uint32* u32 = NULL;
+    Sint32* s32 = NULL;
+    Float32* f32 = NULL;
+    Float64* f64 = NULL;
+
+
+    E_Condition ec1 = EC_Normal;
+    E_Condition ec2 = EC_Normal;
+
+    switch (elem1->getVR()) {
+    case EVR_OB:
+        ec1 = elem1->getUint8Array(value1);
+        ec2 = elem2->getUint8Array(value2);
+        break;    
+    case EVR_AT:
+    case EVR_US:
+    case EVR_OW:
+        ec1 = elem1->getUint16Array(u16);
+        value1 = (Uint8*)u16; 
+        ec2 = elem2->getUint16Array(u16);
+        value2 = (Uint8*)u16; 
+        break;
+    case EVR_SS:
+        ec1 = elem1->getSint16Array(s16);
+        value1 = (Uint8*)s16;
+        ec2 = elem2->getSint16Array(s16);
+        value2 = (Uint8*)s16;
+        break;
+    case EVR_UL:
+        ec1 = elem1->getUint32Array(u32);
+        value1 = (Uint8*)u32;
+        ec2 = elem2->getUint32Array(u32);
+        value2 = (Uint8*)u32;
+        break;
+    case EVR_SL:
+        ec1 = elem1->getSint32Array(s32);
+        value1 = (Uint8*)s32;
+        ec2 = elem2->getSint32Array(s32);
+        value2 = (Uint8*)s32;
+        break;
+    case EVR_FL:
+        ec1 = elem1->getFloat32Array(f32);
+        value1 = (Uint8*)f32;
+        ec2 = elem2->getFloat32Array(f32);
+        value2 = (Uint8*)f32;
+        break;    
+    case EVR_FD:
+        ec1 = elem1->getFloat64Array(f64);
+        value1 = (Uint8*)f64;
+        ec2 = elem2->getFloat64Array(f64);
+        value2 = (Uint8*)f64;
+        break;    
+    /* currently cannot handle any other VR types */
+    default:
+        DcmVR vr1(elem1->getVR());
+        reason = "INTERNAL ERROR: Unexpected VR encountered: ";
+        reason += vr1.getVRName();
+        reason += "(" + constructTagName(elem1) + ")"; 
+        return OFFalse;
+    }
+
+    if (ec1 != EC_Normal || ec2 != EC_Normal) {
+	DcmTag tag();
+	cerr << "dcmFindSequence: error while getting value of " << elem1->getTag().getTagName() 
+	     << " " << elem1->getTag().getXTag() << ": "
+             << dcmErrorConditionToString((ec1 != EC_Normal)?(ec1):(ec2)) << endl;
+        reason = "cannot access binary value";
+        return OFFalse;
+    }
+
+    Uint32 len = elem1->getLength();
+
+    for (Uint32 i=0; i<len; i++) {
+        if (value1[i] != value2[i]) {
+            return OFFalse;
+        }
+    }
+    return OFTrue;
+}
+
+
+static OFBool
+compareSQAttributes(DcmSequenceOfItems* sq1, DcmSequenceOfItems* sq2, OFString& reason);
+
+static OFBool
+compareAttributes(DcmElement* elem1, DcmElement* elem2, DcmSequenceOfItems* fromSequence, int itemNumber, OFString& reason)
+{
+    if (elem1 == NULL && elem2 == NULL) {
+        return OFTrue; /* nothing to compare */
+    }
+    if (elem1 == NULL) {
+        reason = "missing attribute: " +  constructTagNameWithSQ(elem2, fromSequence, itemNumber);
+        return OFFalse;
+    }
+    if (elem2 == NULL) {
+        reason = "missing attribute: " +  constructTagNameWithSQ(elem1, fromSequence, itemNumber);
+        return OFFalse;
+    }
+
+    /* do we have the same attributes? */
+    if (!areTagsEqual(elem1, elem2)) {
+        reason = "INTERNAL ERROR: different attributes: " + 
+            constructTagNameWithSQ(elem1, fromSequence, itemNumber) + " != " + 
+            constructTagNameWithSQ(elem2, fromSequence, itemNumber);
+        return OFFalse;
+    }
+
+    /* are the VRs the same? */
+    DcmVR vr1(elem1->getVR());
+    DcmVR vr2(elem2->getVR());
+    if (vr1.getEVR() != vr2.getEVR()) {
+        reason = "different VRs: ";
+        reason += vr1.getVRName() + OFString("!=") + vr2.getVRName();
+        reason += "(" + constructTagNameWithSQ(elem1, fromSequence, itemNumber) + ")";
+        return OFFalse;
+    }
+
+    /* are the lengths the same? */
+    if (elem1->getLength() != elem2->getLength()) {
+        reason = "different value lengths: " + 
+            intToOFString(elem1->getLength()) + "!=" + intToOFString(elem2->getLength()) +
+            " (" + constructTagNameWithSQ(elem1, fromSequence, itemNumber) + ")"; 
+        return OFFalse;
+    }
+
+    /* are the contents the same? */
+    if (elem1->getLength() == 0) {
+        return OFTrue;  /* no value */
+    }
+
+    if (elem1->isaString()) {
+        OFString value1;
+        OFString value2;
+
+        elem1->getOFStringArray(value1);
+        elem2->getOFStringArray(value2);
+        if (value1 != value2) {
+            reason = "different values: \"" + value1 + "\"!=\"" + value2 + "\" (" + 
+                constructTagNameWithSQ(elem1, fromSequence, itemNumber) + ")"; 
+            return OFFalse;
+        }
+
+    } else if (vr1.getEVR() == EVR_SQ) {
+        /* compare embedded sequences recursively */
+        if (!compareSQAttributes((DcmSequenceOfItems*)elem1, (DcmSequenceOfItems*)elem2, reason)) {
+            return OFFalse;
+        }
+    } else {
+        /* compare binary values */
+        if (!compareBinaryValues(elem1, elem2, reason)) {
+            return OFFalse;
+        }
+    }
+
+    /* the 2 attributes must be identical if we get this far */ 
+    return OFTrue;
+}
+
+static OFBool
+compareItems(DcmItem* item1, DcmItem* item2, DcmSequenceOfItems* fromSequence, int itemNumber, OFString& reason)
+{
+    if (item1 == NULL && item2 == NULL) {
+        return OFTrue; /* nothing to compare */
+    }
+    if (item1 == NULL || item2 == NULL) {
+        reason = "missing item: " +  constructTagName(fromSequence) + 
+            "[" + intToOFString(itemNumber) + "]";
+        return OFFalse;
+    }
+
+
+    int n1 = item1->card();
+    int n2 = item2->card();
+
+    if (n1 != n2) {
+        reason = "different number attributes in items: " + constructTagName(fromSequence) + 
+            "[" + intToOFString(itemNumber) + "]";
+        return OFFalse;
+    }
+
+    for (int i=0; i<n1; i++) {
+        DcmElement* elem1 = item1->getElement(i);
+        DcmElement* elem2 = item2->getElement(i);
+
+        OFBool attributesAreEqual = compareAttributes(elem1, elem2, fromSequence, itemNumber, reason);
+        if (!attributesAreEqual) {
+            return OFFalse;
+        }
+    }
+
+    /* the 2 items must be identical if we get this far */ 
+    return OFTrue;
+}
+
+
+static OFBool
+compareSQAttributes(DcmSequenceOfItems* sq1, DcmSequenceOfItems* sq2, OFString& reason) 
+{
+    if (sq1 == NULL && sq2 == NULL) {
+        return OFTrue; /* nothing to compare */
+    }
+    if (sq1 == NULL) {
+        reason = "missing sequence: " +  constructTagName(sq2);
+        return OFFalse;
+    }
+    if (sq2 == NULL) {
+        reason = "missing sequence: " +  constructTagName(sq1);
+        return OFFalse;
+    }
+
+    if (!areTagsEqual(sq1, sq2)) {
+        reason = "INTERNAL ERROR: different sequences: " + 
+            constructTagName(sq1) + " != " + constructTagName(sq2);
+        return OFFalse;
+    }
+
+    int n1 = sq1->card();
+    int n2 = sq2->card();
+
+    if (n1 != n2) {
+        reason = "different number of items in sequence: " + constructTagName(sq1);
+        return OFFalse;
+    }
+    
+    for (int i=0; i<n1; i++) {
+        DcmItem *item1 = sq1->getItem(i);
+        DcmItem *item2 = sq2->getItem(i);
+
+        OFBool itemsAreEqual = compareItems(item1, item2, sq1, i, reason);
+        if (!itemsAreEqual) {
+            return OFFalse;
+        }
+    }
+    /* the 2 sequences must be identical if we get this far */ 
+    return OFTrue;
+}
+
+static DcmSequenceOfItems*
+dcmFindSequence(DcmItem* d, const DcmTagKey& key, 
+	        OFBool searchIntoSub = OFFalse)
+{
+    DcmSequenceOfItems* sq = NULL;
+    DcmElement *elem = NULL;
+    DcmStack stack;
+    E_Condition ec = EC_Normal;
+    
+    ec = d->search(key, stack, ESM_fromHere, searchIntoSub);
+    elem = (DcmElement*) stack.top();
+
+    if (ec != EC_Normal && ec != EC_TagNotFound) {
+	DcmTag tag(key);
+	cerr << "dcmFindSequence: error while finding " << tag.getTagName() 
+	     << " " << key << ": "
+	     << dcmErrorConditionToString(ec) << endl;
+    }
+
+    if (elem && elem->ident() == EVR_SQ) {
+        sq = (DcmSequenceOfItems*)elem;
+    }
+    return sq;
+}
+
+static OFBool
+compareSequenceAttributes(DcmTagKey& tag, DcmDirectoryRecord *rec, 
+			  DcmItem* dataset, const OFString& sourceFileName)
+{
+    DcmSequenceOfItems* sq1 = dcmFindSequence(rec, tag);
+    DcmSequenceOfItems* sq2 = dcmFindSequence(dataset, tag);
+
+    OFString reason;
+    OFBool equals = compareSQAttributes(sq1, sq2, reason);
+
+    if (!equals) {
+	cerr << "Warning: file inconsistant with existing DICOMDIR record"
+	     << endl;
+	cerr << "  " << recordTypeToName(rec->getRecordType()) 
+	     << " Record [Key: ";
+	printRecordUniqueKey(cerr, rec);
+	cerr << "]" << endl;
+        cerr << "    Reason: " << reason << endl;;
+        cerr << "    Existing Record (origin: " << rec->getRecordsOriginFile()
+	     << ") defines: " << endl;
+	sq1->print(cerr, OFTrue, 2); 
+	cerr << "    File (" << sourceFileName << ") defines:" << endl;
+	sq2->print(cerr, OFTrue, 2); 
+    }
+
+    return equals;
+}
+
 static void
 warnAboutInconsistantAttributes(DcmDirectoryRecord *rec, 
 				DcmItem* dataset, 
@@ -1487,13 +1893,17 @@ warnAboutInconsistantAttributes(DcmDirectoryRecord *rec,
 	    DcmTagKey tag = re->getTag().getXTag();
 	    if (dcmTagExistsWithValue(dataset, tag)) {
 		/*
-		** We currently only handle strings.
+		** We currently only handle strings and sequences.
 		** This is not a huge problem since all the DICOMDIR
-		** attributes we generate are strings.
+		** attributes we generate are strings or sequences.
 		*/
 		if (re->isaString()) {
 		    compareStringAttributes(tag, rec, dataset, sourceFileName);
-		}
+                } else if (re->getTag().getEVR() == EVR_SQ) {
+                    compareSequenceAttributes(tag, rec, dataset, sourceFileName);
+                } else {
+                    cerr << "INTERNAL ERROR: cannot compare: " << tag << endl;
+                }
 	    }
 	}
     }
@@ -1564,6 +1974,14 @@ insertSortedUnder(DcmDirectoryRecord *parent, DcmDirectoryRecord *child)
     case ERT_VoiLut:
 	/* try to insert based on LUTNumber */
 	cond = insertWithISCriterion(parent, child, DCM_LookupTableNumber);
+	break;
+    case ERT_StructReport:
+	/* try to insert based on InstanceNumber */
+        /* 
+         * NOTE: SR uses the name "Instance Number" for (0020,0013) but we know it
+         * as "Image Number".  CP 99 wants to change the name of this attribute.
+         */
+	cond = insertWithISCriterion(parent, child, DCM_ImageNumber);
 	break;
     case ERT_Series:
 	/* try to insert based on SeriesNumber */
@@ -1727,6 +2145,15 @@ addToDir(DcmDirectoryRecord* rootRec, const OFString& ifname)
 	       cmp(sopClass, UID_PETCurveStorage)) {
 	/* Add a curve record */
 	rec = includeRecord(seriesRec, ERT_Curve, dataset, fname, ifname);
+	if (rec == NULL) {
+	    return OFFalse;
+	}
+    } else if (cmp(sopClass, UID_SRTextStorage) ||
+	       cmp(sopClass, UID_SRAudioStorage) ||
+	       cmp(sopClass, UID_SRDetailStorage) ||
+	       cmp(sopClass, UID_SRComprehensiveStorage)) {
+	/* Add a structured report */
+	rec = includeRecord(seriesRec, ERT_StructReport, dataset, fname, ifname);
 	if (rec == NULL) {
 	    return OFFalse;
 	}
@@ -1910,10 +2337,11 @@ checkFileCanBeUsed(const OFString& fname)
 static void
 inventMissingImageLevelAttributes(DcmDirectoryRecord *parent)
 {
-    int imageNumber = 0;
-    int overlayNumber = 0;
-    int lutNumber = 0;
-    int curveNumber = 0;
+    int imageNumber = 1;
+    int overlayNumber = 1;
+    int lutNumber = 1;
+    int curveNumber = 1;
+    int structReportInstanceNumber = 1;
 
     int count = (int)(parent->cardSub());
     for (int i=0; i<count; i++) {
@@ -1959,6 +2387,20 @@ inventMissingImageLevelAttributes(DcmDirectoryRecord *parent)
 		     << ") inventing CurveNumber: "
 		     << defNum << endl;
 		dcmInsertString(rec, DCM_CurveNumber, defNum);
+	    }
+	    break;
+	case ERT_StructReport:
+            /* 
+             * NOTE: SR uses the name "Instance Number" for (0020,0013) but we know it
+             * as "Image Number".  CP 99 wants to change the name of this attribute.
+             */
+	    if (!dcmTagExistsWithValue(rec, DCM_ImageNumber)) {
+		OFString defNum = defaultNumber(structReportInstanceNumber++);
+		cerr << "Warning: " <<  recordTypeToName(rec->getRecordType())
+		     << "Record (origin: " << rec->getRecordsOriginFile() 
+		     << ") inventing InstanceNumber/ImageNumber: "
+		     << defNum << endl;
+		dcmInsertString(rec, DCM_ImageNumber, defNum);
 	    }
 	    break;
 	default:
@@ -2284,7 +2726,11 @@ expandFileNames(OFList<OFString>& fileNames, OFList<OFString>& expandedNames)
 /*
 ** CVS/RCS Log:
 ** $Log: dcmgpdir.cc,v $
-** Revision 1.26  1999-03-22 09:58:48  meichel
+** Revision 1.27  1999-03-22 14:10:55  meichel
+** Added support for Structured Reports to dcmgpdir.
+**   Added preliminary support for including sequences into a DICOMDIR.
+**
+** Revision 1.26  1999/03/22 09:58:48  meichel
 ** Reworked data dictionary based on the 1998 DICOM edition and the latest
 **   supplement versions. Corrected dcmtk applications for minor changes
 **   in attribute name constants.
