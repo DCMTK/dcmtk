@@ -93,8 +93,8 @@
  *  Purpose: Class for various helper functions
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2003-06-06 09:44:01 $
- *  CVS/RCS Revision: $Revision: 1.18 $
+ *  Update Date:      $Date: 2003-07-03 14:23:51 $
+ *  CVS/RCS Revision: $Revision: 1.19 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1388,7 +1388,7 @@ OFBool OFStandard::stringMatchesCharacterSet( const char *str, const char *chars
 
 unsigned int OFStandard::my_sleep(unsigned int seconds)
 {
-#ifdef _WIN32
+#ifdef HAVE_WINDOWS_H
   // on Win32 we use the Sleep() system call which expects milliseconds
   Sleep(1000*seconds);
   return 0;
@@ -1407,7 +1407,10 @@ unsigned int OFStandard::my_sleep(unsigned int seconds)
 
 /*
  *  $Log: ofstd.cc,v $
- *  Revision 1.18  2003-06-06 09:44:01  meichel
+ *  Revision 1.19  2003-07-03 14:23:51  meichel
+ *  Minor changes to make OFStandard::sleep compile on MinGW
+ *
+ *  Revision 1.18  2003/06/06 09:44:01  meichel
  *  Added static sleep function in class OFStandard. This replaces the various
  *    calls to sleep(), Sleep() and usleep() throughout the toolkit.
  *
