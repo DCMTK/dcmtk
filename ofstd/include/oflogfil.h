@@ -21,10 +21,10 @@
  *
  *  Purpose: Define general purpose facility for log file output
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-06-05 16:16:23 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2000-06-21 15:47:54 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/include/Attic/oflogfil.h,v $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -41,6 +41,16 @@
 #include <iostream.h>
 #include <fstream.h>
 
+#ifdef HAVE_STDLIB_H
+#ifndef  _BCB4
+/* workaround for bug in Borland C++ Builder 4 */
+BEGIN_EXTERN_C
+#endif
+#include <stdlib.h> /* for NULL */
+#ifndef  _BCB4
+END_EXTERN_C
+#endif
+#endif
 
 /** Class that provides a general purpose facility for writing log files.
  *  Protection for simultaneous access from different threads is implemented
@@ -196,7 +206,10 @@ class OFLogFile
  *
  * CVS/RCS Log:
  * $Log: oflogfil.h,v $
- * Revision 1.1  2000-06-05 16:16:23  joergr
+ * Revision 1.2  2000-06-21 15:47:54  meichel
+ * Including stdlib.h, required for Sun CC 4.2
+ *
+ * Revision 1.1  2000/06/05 16:16:23  joergr
  * Added new class for writing standardized status messages to a log file.
  *
  *

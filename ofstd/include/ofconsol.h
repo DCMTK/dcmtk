@@ -53,9 +53,9 @@
  *  in multithread applications. Use ofConsole instead.
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-04-14 15:41:40 $
+ *  Update Date:      $Date: 2000-06-21 15:47:54 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/include/Attic/ofconsol.h,v $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -69,6 +69,17 @@
 #include "osconfig.h"
 #include <iostream.h>
 #include "ofthread.h"
+
+#ifdef HAVE_STDLIB_H
+#ifndef  _BCB4
+/* workaround for bug in Borland C++ Builder 4 */
+BEGIN_EXTERN_C
+#endif
+#include <stdlib.h> /* for NULL */
+#ifndef  _BCB4
+END_EXTERN_C
+#endif
+#endif
 
 /** provides access to the standard console output and error streams
  *  in a way that allows multiple threads to concurrently create output
@@ -283,7 +294,10 @@ extern OFConsole ofConsole;
  *
  * CVS/RCS Log:
  * $Log: ofconsol.h,v $
- * Revision 1.3  2000-04-14 15:41:40  meichel
+ * Revision 1.4  2000-06-21 15:47:54  meichel
+ * Including stdlib.h, required for Sun CC 4.2
+ *
+ * Revision 1.3  2000/04/14 15:41:40  meichel
  * Added unprotected get methods, required for the cmdata debug facility.
  *
  * Revision 1.2  2000/04/14 15:16:08  meichel
