@@ -23,8 +23,8 @@
  *    classes: DVPresentationState
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-03-03 13:26:06 $
- *  CVS/RCS Revision: $Revision: 1.12 $
+ *  Update Date:      $Date: 1999-03-22 09:05:35 $
+ *  CVS/RCS Revision: $Revision: 1.13 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -97,7 +97,7 @@ public:
    *  @return new SOP Instance UID if successfully set, NULL otherwise.
    */
   const char *createInstanceUID();
-   	
+    
   /** adds a reference to an image to this presentation state.
    *  This method checks if the given SOP class and Study UID match
    *  for this presentation state and returns an error code otherwise.
@@ -1021,6 +1021,7 @@ public:
    *  @param top upon success the vertical position of the overlay relative to the image 
    *   is returned.
    *  @param isROI returns OFTrue if the overlay is ROI, OFFalse if the overlay is Graphic.
+   *  @param transp returns index of transparent (background) color
    *  @param frame frame number of the image. Since overlays can differ for different image frames,
    *   the image frame also selects the overlays. Default: first frame.
    *  @return EC_Normal upon success, an error code otherwise.
@@ -1034,6 +1035,7 @@ public:
      unsigned int &left,
      unsigned int &top,
      OFBool &isROI,
+     Uint8 &transp,
      unsigned long frame=0);
 
   /** gets the number of overlays which are embedded in the
@@ -1254,7 +1256,7 @@ public:
   /** detaches and frees the image attached to the presentation state.
    */
   void detachImage();
-  	
+    
   /** inverts image by changing presentation state LUT or presentation state LUT shape.
    *  Pixel data has to be re-get after this transformation.
    *  @return EC_Normal upon success, an error code otherwise.
@@ -1707,7 +1709,11 @@ private:
 
 /*
  *  $Log: dvpstat.h,v $
- *  Revision 1.12  1999-03-03 13:26:06  joergr
+ *  Revision 1.13  1999-03-22 09:05:35  joergr
+ *  Added parameter to get value of (transparent) background color for method
+ *  getOverlayData.
+ *
+ *  Revision 1.12  1999/03/03 13:26:06  joergr
  *  Added method to invert an image by changing the presentation state LUT or
  *  shape.
  *  Moved method 'isBartenTransformPossible()' from presentation state class to

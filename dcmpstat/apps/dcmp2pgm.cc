@@ -22,9 +22,9 @@
  *  Purpose: test ...
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-02-25 18:37:15 $
+ *  Update Date:      $Date: 1999-03-22 09:04:57 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmpstat/apps/dcmp2pgm.cc,v $
- *  CVS/RCS Revision: $Revision: 1.9 $
+ *  CVS/RCS Revision: $Revision: 1.10 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -343,6 +343,7 @@ void dumpPresentationState(DVInterface& dvi)
     const void *overlayData=NULL;
     unsigned int overlayWidth=0, overlayHeight=0, overlayLeft=0, overlayTop=0;
     OFBool overlayROI=OFFalse;
+    Uint8 overlayTransp=0;
     char overlayfile[100];
     FILE *ofile=NULL;
     
@@ -363,7 +364,7 @@ void dumpPresentationState(DVInterface& dvi)
       
       /* get overlay data */
       if (EC_Normal == ps.getOverlayData(layer, ovlidx, overlayData, overlayWidth, overlayHeight,
-          overlayLeft, overlayTop, overlayROI))
+          overlayLeft, overlayTop, overlayROI, overlayTransp))
       {
       	cout << "        columns=" << overlayWidth << " rows=" << overlayHeight << " left="
       	<< overlayLeft << " top=" << overlayTop << endl;
@@ -603,7 +604,11 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmp2pgm.cc,v $
- * Revision 1.9  1999-02-25 18:37:15  joergr
+ * Revision 1.10  1999-03-22 09:04:57  joergr
+ * Added parameter to get value of (transparent) background color for method
+ * getOverlayData.
+ *
+ * Revision 1.9  1999/02/25 18:37:15  joergr
  * Changed formatting of some comments.
  *
  * Revision 1.8  1999/02/23 11:42:08  joergr

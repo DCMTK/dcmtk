@@ -23,8 +23,8 @@
  *    classes: DVPresentationState
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-03-03 17:58:07 $
- *  CVS/RCS Revision: $Revision: 1.16 $
+ *  Update Date:      $Date: 1999-03-22 09:06:48 $
+ *  CVS/RCS Revision: $Revision: 1.17 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -245,7 +245,7 @@ void DVPresentationState::detachImage()
 
   return;
 }
-  	
+    
 
 void DVPresentationState::clear()
 {
@@ -821,18 +821,18 @@ E_Condition DVPresentationState::read(DcmItem &dset)
         cerr << "Error: presentationLUTShape present but VM != 1 in presentation state" << endl;
 #endif
       } else {
-      	// check presentation LUT shape
-      	aString.clear();
-      	presentationLUTShape.getOFString(aString,0);
-      	if (aString=="IDENTITY") presentationLUT = DVPSP_identity;
-      	else if (aString=="INVERSE") presentationLUT = DVPSP_inverse;
-      	else
-      	{
-      	  result=EC_IllegalCall;
+        // check presentation LUT shape
+        aString.clear();
+        presentationLUTShape.getOFString(aString,0);
+        if (aString=="IDENTITY") presentationLUT = DVPSP_identity;
+        else if (aString=="INVERSE") presentationLUT = DVPSP_inverse;
+        else
+        {
+          result=EC_IllegalCall;
 #ifdef DEBUG
         cerr << "Error: unknown presentationLUTShape keyword: " << aString << endl;
 #endif
-      	}
+        }
       }
     }
 
@@ -1950,8 +1950,8 @@ E_Condition DVPresentationState::addImageReference(DcmItem &dset)
   {
     for (i=0; i<ofnumberOfFrames; i++)
     {
-    	if (aString.length() > 0) sprintf(buf, "\\%ld", i+1); else sprintf(buf, "%ld", i+1);
-    	aString += buf;
+        if (aString.length() > 0) sprintf(buf, "\\%ld", i+1); else sprintf(buf, "%ld", i+1);
+        aString += buf;
     }
     result = referencedSeriesList.addImageReference(
       ofseriesUID.c_str(), ofsopclassUID.c_str(), ofimageUID.c_str(), aString.c_str());
@@ -2380,7 +2380,7 @@ E_Condition DVPresentationState::addPolyShutterVertex(Sint32 x, Sint32 y)
           useShutterPolygonal = OFTrue;
           if (useShutterBitmap) currentImageOverlaysValid = 1; // invalid but nothing added
           useShutterBitmap = OFFalse;
-        }   	
+        }       
       }
     }
   }
@@ -2540,7 +2540,7 @@ E_Condition DVPresentationState::removeGraphicLayer(size_t idx)
   if (name==NULL) return EC_IllegalCall;
   activationLayerList.removeLayer(name);
   currentImageOverlaysValid = 1; // invalid but nothing added
-  graphicAnnotationList.removeLayer(name);	
+  graphicAnnotationList.removeLayer(name);  
   return graphicLayerList.removeGraphicLayer(idx);
 }
 
@@ -2792,14 +2792,14 @@ const char *DVPresentationState::getDescriptionOfVOILUTsInImage(size_t idx)
 {
   DVPSVOILUT *lut = currentImageVOILUTList.getVOILUT(idx);
   if (lut==NULL) return NULL;
-  return lut->getExplanation();	
+  return lut->getExplanation(); 
 }
 
 const char *DVPresentationState::getDescriptionOfVOIWindowsInImage(size_t idx)
 {
   DVPSVOIWindow *window = currentImageVOIWindowList.getVOIWindow(idx);
   if (window==NULL) return NULL;
-  return window->getExplanation();	
+  return window->getExplanation();  
 }
    
 E_Condition DVPresentationState::setVOILUTFromImage(size_t idx)
@@ -2951,7 +2951,7 @@ Uint16 DVPresentationState::getOverlayInImageGroup(size_t idx)
       if (idx==0) return group; else idx--;
     }
   } while (group != 0);
-  return 0;	
+  return 0; 
 }
  
 
@@ -3246,14 +3246,14 @@ void DVPresentationState::renderPixelData()
        
        if (EC_Normal != windowCenter.getFloat64(wCenter, 0))
        {
-       	 useWindow = OFFalse;
+         useWindow = OFFalse;
 #ifdef DEBUG
          cerr << "warning: unable to evaluate Window Center, ignoring." << endl;
 #endif
        }
        if (EC_Normal != windowWidth.getFloat64(wWidth, 0))
        {
-       	 useWindow = OFFalse;
+         useWindow = OFFalse;
 #ifdef DEBUG
          cerr << "warning: unable to evaluate Window Width, ignoring." << endl;
 #endif
@@ -3319,7 +3319,7 @@ void DVPresentationState::renderPixelData()
       if ((remgroup != bitmapShutterGroup)&&((! overlayList.haveOverlayGroup(remgroup))||
           (NULL == activationLayerList.getActivationLayer(remgroup))))
       {
-      	 currentImage->removeOverlay(remgroup); // ignore return value.
+         currentImage->removeOverlay(remgroup); // ignore return value.
       }
     }
     currentImageOverlaysValid = 2; // valid
@@ -3479,6 +3479,7 @@ E_Condition DVPresentationState::getOverlayData(
      unsigned int &left,
      unsigned int &top,
      OFBool &isROI,
+     Uint8 &transp,
      unsigned long frame)
 {
    EM_Overlay mode = EMO_Default;
@@ -3487,11 +3488,14 @@ E_Condition DVPresentationState::getOverlayData(
      renderPixelData();
      Uint16 group = activationLayerList.getActivationGroup(graphicLayerList.getGraphicLayerName(layer),idx,OFFalse);
      if (group==0) return EC_IllegalCall;
-     Uint16 value = 255;
+     transp = 0;
+     Uint16 fore = 255;
      Uint16 pvalue = 65535;
      if (graphicLayerList.getGraphicLayerRecommendedDisplayValueGray(layer, pvalue) == EC_Normal)
-         currentImage->convertPValueToDDL(pvalue, value, 8);
-     const Uint8 *data = currentImage->getOverlayData((unsigned int)group, left, top, width, height, mode, frame, 2, (Uint8)value);
+         currentImage->convertPValueToDDL(pvalue, fore, 8);
+     if (fore == 0)
+         transp = 255;
+     const Uint8 *data = currentImage->getOverlayData((unsigned int)group, left, top, width, height, mode, frame, (Uint8)fore, transp);
      if (EMO_RegionOfInterest == mode) isROI=OFTrue; else isROI=OFFalse;
      if (data) overlayData = (void*)data; 
      else 
@@ -3612,7 +3616,11 @@ void DVPresentationState::changeDisplayFunction(DiDisplayFunction *dispFunction)
 
 /*
  *  $Log: dvpstat.cc,v $
- *  Revision 1.16  1999-03-03 17:58:07  joergr
+ *  Revision 1.17  1999-03-22 09:06:48  joergr
+ *  Added parameter to get value of (transparent) background color for method
+ *  getOverlayData.
+ *
+ *  Revision 1.16  1999/03/03 17:58:07  joergr
  *  Changed implementation of invertImage(): set modify flag for all plut types.
  *
  *  Revision 1.15  1999/03/03 14:02:03  joergr
