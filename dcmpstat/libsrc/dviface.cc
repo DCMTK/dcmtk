@@ -22,8 +22,8 @@
  *  Purpose: DVPresentationState
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-02-23 14:57:55 $
- *  CVS/RCS Revision: $Revision: 1.129 $
+ *  Update Date:      $Date: 2001-05-07 16:04:47 $
+ *  CVS/RCS Revision: $Revision: 1.130 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -585,7 +585,7 @@ E_Condition DVInterface::loadStructuredReport(const char * /*filename*/)
             DcmDataset *dataset = fileformat->getDataset();
             if (dataset)
             {
-                if ((status = newReport->read(*dataset, OFTrue /* keep signatures */)) == EC_Normal)
+                if ((status = newReport->read(*dataset, DSRTypes::RF_readDigitalSignatures)) == EC_Normal)
                 {
                     delete pReport;
                     pReport = newReport;
@@ -4261,7 +4261,7 @@ E_Condition DVInterface::verifyAndSignStructuredReport(const char *userID, const
             DSRDocument *newReport = new DSRDocument();
             if (newReport != NULL)
             {
-              if (newReport->read(dataset, OFTrue /* keep signatures */) == EC_Normal)
+              if (newReport->read(dataset, DSRTypes::RF_readDigitalSignatures) == EC_Normal)
               {
                 /* replace report in memory */
                 delete pReport;
@@ -4332,7 +4332,11 @@ void DVInterface::disableImageAndPState()
 /*
  *  CVS/RCS Log:
  *  $Log: dviface.cc,v $
- *  Revision 1.129  2001-02-23 14:57:55  joergr
+ *  Revision 1.130  2001-05-07 16:04:47  joergr
+ *  Adapted read SR method call to new parameter scheme (integer flag instead of
+ *  boolean mode).
+ *
+ *  Revision 1.129  2001/02/23 14:57:55  joergr
  *  Update signature status when signing a structured report (not only when
  *  saving/storing the report).
  *
