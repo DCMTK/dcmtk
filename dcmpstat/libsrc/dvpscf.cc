@@ -21,9 +21,9 @@
  *
  *  Purpose: DVConfiguration
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-06-07 13:17:27 $
- *  CVS/RCS Revision: $Revision: 1.28 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2000-06-07 14:26:04 $
+ *  CVS/RCS Revision: $Revision: 1.29 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -68,6 +68,7 @@
 #define L0_IMPLICITONLY                 "IMPLICITONLY"
 #define L0_LOGDIRECTORY                 "LOGDIRECTORY"
 #define L0_LOGFILE                      "LOGFILE"
+#define L0_LOGLEVEL                     "LOGLEVEL"
 #define L0_MAGNIFICATIONTYPE            "MAGNIFICATIONTYPE"
 #define L0_MAXASSOCIATIONS              "MAXASSOCIATIONS"
 #define L0_MAXCOLUMNS                   "MAXCOLUMNS"
@@ -181,6 +182,16 @@ static void copyValue(const char *str, Uint32 idx, OFString& target)
   }
   return;
 }
+
+static int strCompare(const char *str1, const char *str2, size_t len)
+{
+#ifdef HAVE_WINDOW_H
+  return _strnicmp(str1, str2, len);
+#else
+  return strncasecmp(str1, str2, len);
+#endif    
+}
+
 
 DVConfiguration::DVConfiguration(const char *config_file)
 : logstream(&ofConsole)
@@ -387,6 +398,24 @@ const char *DVConfiguration::getLogFolder()
 const char *DVConfiguration::getLogFile()
 {
   return getConfigEntry(L2_GENERAL, L1_APPLICATION, L0_LOGFILE);
+}
+
+DVPSLogMessageLevel DVConfiguration::getLogLevel()
+{
+  DVPSLogMessageLevel result = DVPSM_none;
+  const char *c = getConfigEntry(L2_GENERAL, L1_APPLICATION, L0_LOGLEVEL);
+  if (c != NULL)
+  {
+    if (strCompare(c, "ERROR", 5) == 0)
+      result = DVPSM_error;
+    else if (strCompare(c, "WARN", 4) == 0)
+      result = DVPSM_warning;
+    else if (strCompare(c, "INFO", 4) == 0)
+      result = DVPSM_informational;
+    else if (strCompare(c, "DEBUG", 5) == 0)
+      result = DVPSM_debug;
+  }
+  return result;
 }
 
 const char *DVConfiguration::getNetworkAETitle()
@@ -1129,7 +1158,10 @@ void DVConfiguration::setLog(OFConsole *stream, OFBool verbMode, OFBool dbgMode)
 /*
  *  CVS/RCS Log:
  *  $Log: dvpscf.cc,v $
- *  Revision 1.28  2000-06-07 13:17:27  meichel
+ *  Revision 1.29  2000-06-07 14:26:04  joergr
+ *  Added configuration file entry "LogLevel" to filter log messages.
+ *
+ *  Revision 1.28  2000/06/07 13:17:27  meichel
  *  added binary and textual log facilities to Print SCP.
  *
  *  Revision 1.27  2000/06/06 09:43:26  joergr
