@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-99, OFFIS
+ *  Copyright (C) 1999, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -17,14 +17,14 @@
  *
  *  Module:  dcmpstat
  *
- *  Authors: Joerg Riesmeier
+ *  Authors: Marco Eichelberg
  *
- *  Purpose: test ...
+ *  Purpose: List the contents of database index file
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-02-17 10:05:04 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 1999-02-19 09:50:06 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmpstat/apps/Attic/listdb.cc,v $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -86,6 +86,7 @@ int main(int argc, char *argv[])
     OFCommandLine cmd;
     OFString str;
 
+    OFCmdUnsignedInt opt_debugMode      = 0;           /* default: no debug */
     const char *opt_cfgName = NULL;                    /* pstate file name */
     
     SetDebugLevel(( 0 ));
@@ -121,7 +122,7 @@ int main(int argc, char *argv[])
             }
     }
 
-    SetDebugLevel((0));
+    SetDebugLevel(((int)opt_debugMode));
 
     FILE *cfgfile = fopen(opt_cfgName, "rb");
     if (cfgfile) fclose(cfgfile); else
@@ -173,8 +174,7 @@ int main(int argc, char *argv[])
          }
          numSeries = dvi.getNumberOfSeries();
          cout << "  Number of series in Study " << ns+1 << ": " << numSeries << endl;
-         
-    for (Uint32 nss=0; nss < numSeries; nss++)
+         for (Uint32 nss=0; nss < numSeries; nss++)
          {
            cout << "  Series #" << nss+1 << ":";
            if (EC_Normal != dvi.selectSeries(nss))
@@ -218,6 +218,7 @@ int main(int argc, char *argv[])
                  cout << endl
                  << "      instance uid=" << guard(dvi.getInstanceUID()) << endl
                  << "      instance no=" << guard(dvi.getImageNumber()) << endl
+                 << "      instance filename=" << guard(dvi.getFilename()) << endl
                  << "      instance is Presentation State =";
                  if (dvi.isPresentationState()) cout << "yes" << endl; else cout << "no" << endl;
                  cout << "      instance status=";
@@ -239,26 +240,29 @@ int main(int argc, char *argv[])
          }
        }
     }
-dvi.releaseDatabase();
+    dvi.releaseDatabase();
+#ifdef DEBUG
+    dcmDataDict.clear();  /* useful for debugging with dmalloc */
+#endif
     return 0;
 }
 
 
 /*
-** CVS/RCS Log:
-** $Log: listdb.cc,v $
-** Revision 1.4  1999-02-17 10:05:04  meichel
-** Removed dcmdata debug level from sample apps
-**
-** Revision 1.3  1999/02/08 12:52:18  meichel
-** Removed dummy parameter from DVInterface constructor.
-**
-** Revision 1.2  1999/02/05 11:26:16  vorwerk
-** listdb for dviface updated
-**
-** Revision 1.1  1999/01/29 16:01:37  meichel
-** Implemented small sample application that lists the
-**   contents of the database using DVInterface methods.
-**
-**
-*/
+ * CVS/RCS Log:
+ * $Log: listdb.cc,v $
+ * Revision 1.5  1999-02-19 09:50:06  joergr
+ * Changed some comments, corrected typos and formatting.
+ * Added method getFilename() to get filename of currently selected instance.
+ *
+ * Revision 1.3  1999/02/08 12:52:18  meichel
+ * Removed dummy parameter from DVInterface constructor.
+ *
+ * Revision 1.2  1999/02/05 11:26:16  vorwerk
+ * listdb for dviface updated
+ *
+ * Revision 1.1  1999/01/29 16:01:37  meichel
+ * Implemented small sample application that lists the
+ *   contents of the database using DVInterface methods.
+ *
+ */
