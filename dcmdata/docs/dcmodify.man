@@ -16,11 +16,14 @@ dcmodify [options] [dcmfile-in...]
 
 \b dcmodify is a tool that allows to modify, insert and delete tags in DICOM
 files.  Sequences and tags with a value multiplicity > 1 are also supported.
-Currently \dcmodify is not able to remove or insert single items.
+Currently \b dcmodify is not able to remove or insert single items.
 Metaheader information and a tags VR can't be modified directly through
 \b dcmodify, too.
+In addition to tag modifications, \b dcmodify makes available some input
+options - forcing \b dcmodify to handle its input files as the user specifies -
+and output options to control the output format of the resulting files.
 
-In case multiple modifications are to be performed, \b dcmodify does the
+In case multiple modifications have to be performed, \b dcmodify does the
 modifications in the same order as they appear on the command line.  Please
 note that \b dcmodify does not check whether a given value matches its
 value representation (VR).  Usually, an error message is printed but generally
@@ -76,49 +79,165 @@ dcmfile-in  DICOM input filename(s) to be modified
          continue with file, if modify error occurs
 \endverbatim
 
-\subsection insert_mode_options insert-mode options
+\subsection input_options input options
 \verbatim
+input file format:
+
+  +f   --read-file
+         read file format or data set (default)
+
+  -f   --read-dataset
+         read data set without file meta information
+
+input transfer syntax (only with --read-dataset):
+
+  -t=  --read-xfer-auto
+         use TS recognition (default)
+
+  -te  --read-xfer-little
+         read with explicit VR little endian TS
+
+  -tb  --read-xfer-big
+         read with explicit VR big endian TS
+
+  -ti  --read-xfer-implicit
+         read with implicit VR little endian TS
+
+parsing of odd-length attributes:
+
+  +ao  --accept-odd-length
+         accept odd length attributes (default)
+
+  +ae  --assume-even-length
+         assume real length is one byte larger
+
+automatic data correction:
+
+  +dc  --enable-correction
+         enable automatic data correction (default)
+
+  -dc  --disable-correction
+         disable automatic data correction
+
+bitstream format of deflated input:
+
+  +bd  --bitstream-deflated
+          expect deflated bitstream (default)
+
+  +bz  --bitstream-zlib
+         expect deflated zlib bitstream
+\endverbatim
+
+
+\subsection processing_options processing opitons
+\verbatim
+insert mode options:
+
   -i   --insert-tag  "tag-path=value"
-         insert (or overwrite) tag
-\endverbatim
+         insert (or overwrite) tag at position t
+         with value v
 
-\subsection modify_mode_options modify-mode options
-\verbatim
-  -m   --modify-tag  "tag-path=value"
-         modify tag
+modify mode options:
 
-  -ma  --modify-all-tags  "tag=value"
-         modify ALL matching tags in file
-\endverbatim
+  -m   --modify-tag  "[t]ag-path=[v]alue"
+                     modify tag at position t to value v
 
-\subsection erase_mode_options erase-mode options
-\verbatim
-  -e   --erase-tag  "tag-path"
-         erase tag
+  -ma  --modify-all-tags  "[t]ag=[v]value"
+         modify ALL matching tags t in file to value v
 
-  -ea  --erase-all-tags  "tag"
-         erase ALL matching tags in file
-\endverbatim
+erase mode options:
 
-\subsection uid_options uid options
-\verbatim
-  -gst  --generate-study-uid
+  -e   --erase-tag  "[t]ag-path"
+         erase tag at position t
+
+  -ea  --erase-all-tags  "[t]ag"
+         erase ALL matching tags t in file
+
+uid options:
+
+  -gst  --gen-stud-uid
           generate new Study Instance UID
 
-  -gse  --generate-series-uid
+  -gse  --gen-ser-uid
           generate new Series Instance UID
 
-  -gin  --generate-instance-uid
+  -gin  --gen-inst-uid
           generate new SOP Instance UID
 
-  -dum  --dont-update-metaheader-uids
+  -nmu  --no-meta-uid
           don't update metaheader UIDs
+          UIDs in the metaheader won't be changed,
+          if related UIDs in dataset are modified
+          via options -m, -i or -ma
+\endverbatim
 
+\subsection output_options output options
+\verbatim
+output file format:
+
+  +F   --write-file
+         write file format (default)
+
+  -F   --write-dataset
+         write data set without file meta information
+
+output transfer syntax:
+
+  +t=  --write-xfer-same
+         write with same TS as input (default)
+
+  +te  --write-xfer-little
+         write with explicit VR little endian TS
+
+  +tb  --write-xfer-big
+         write with explicit VR big endian TS
+
+  +ti  --write-xfer-implicit
+         write with implicit VR little endian TS
+
+post-1993 value representations:
+
+  +u   --enable-new-vr
+         enable support for new VRs (UN/UT) (default)
+
+  -u   --disable-new-vr
+         disable support for new VRs, convert to OB
+
+group length encoding:
+
+  +g=  --group-length-recalc
+         recalculate group lengths if present (default)
+
+  +g   --group-length-create
+         always write with group length elements
+
+  -g   --group-length-remove
+         always write without group length elements
+
+length encoding in sequences and items:
+
+  +le  --length-explicit
+         write with explicit lengths (default)
+
+  -le  --length-undefined
+         write with undefined lengths
+
+data set trailing padding (not with --write-dataset):
+
+  -p=  --padding-retain
+         do not change padding (default if not --write-dataset)
+
+  -p   --padding-off
+         no padding (implicit if --write-dataset)
+
+  +p   --padding-create  [f]ile-pad [i]tem-pad: integer
+         align file on multiple of f bytes and items on
+         multiple of i bytes
 \endverbatim
 
 \section private_tags PRIVATE TAGS
 
-There are some points you've got to know when working with private tags.
+There are some points you've got to consider when working with private tags.
 The insertion or modification of a reservation tag (gggg,00xx) should always
 work.
 
@@ -127,19 +246,21 @@ work.
 If you wish to insert a private tag (not a reservation with gggg,00xx), be sure,
 that you've listed it in your dictionary (see dcmdata/docs/datadict.txt for
 details). If it's not listed, \b dcmodify will insert it with VR=UN and empty
-value.
+value. Please note, that the usage of option '-u' will change the VR from UN
+to OB when saving.
 
 If you've got your private tag in the dictionary, \b dcmodify acts as follows:
 When it finds a reservation in the tags enclosing dataset, whose private
 creator matches, insertion is done with the VR found in dictionary and the
 value, you entered at commandline. But if the private creator doesn't match
-the one in dictionary, \b dcmodify inserts the tag with VR Unknown (UN)
+the one found in dictionary, \b dcmodify inserts the tag with VR Unknown (UN)
 and an empty value.
 
 \subsection modifications_subsection modifications
 
 If you modify a private tags value, \b dcmodify won't check its VR against the
-dictionary. So please be careful to enter values that match the existing VR.
+dictionary. So please be careful to enter only values, that match the
+tags VR.
 
 If you wish to change a private tags value \e and VR, because you just added
 this tag to your dictionary e.g., you can delete it with \b dcmodify and
@@ -150,33 +271,31 @@ VR (also see subsection insertions).
 
 When you use \b dcmodify to delete a private reservation tag, please note, that
 \b dcmodify won't touch the private tags that are under this reservation. The
-user is forced to handle the consistence between reservations and their private
-tags.
+user is forced to handle the consistence between reservations and their
+pending private tags.
 
 For deletion of private non-reservation tags there are no special issues.
-
 
 \section changing_uids CHANGING UIDs
 
 \b dcmodify will automatically correct 'Media Storage SOP Class UID' and
-'Media Storage SOP Instance UID' in the metaheader if you make changes to the
-related tags in the dataset ('SOP Class UID' and 'SOP Instance UID'). You can
-disable this behaviour by using the '-dum' option.
+'Media Storage SOP Instance UID' in the metaheader, if you make changes to the
+related tags in the dataset ('SOP Class UID' and 'SOP Instance UID') via
+insert or modify mode options. You can disable this behaviour by using the
+'-nmu option.
 
 If you generate new UID's with '-gst', '-gse' or '-gin', this will only affect
-the UID you choose to generate. So if you use '-gst' to generate a new
+the UID you choosed to generate. So if you use '-gst' to generate a new
 'Study Instance UID', then 'Series Instance UID' and 'SOP Instance UID'
 will not be affected! This gives you the possibility to generate each value
-seperately. Normally you would also modify the 'underlying' UIDs. The price for
-this flexibility must be paid by the user, who has to assure, that when creating
-'new' dicom files with new UID's with \b dcmodify, these 'new' files have to
-stay consistent with other files and other UID's are updated as necessary.
+seperately. Normally you would also modify the 'underlying' UIDs. As a
+disadvantage of this flexibility, the user has to assure, that when creating
+'new' dicom files with new UIDs with \b dcmodify, other UIDs have to be updated
+by the user as necessary.
 
-When choosing '-gin' the related metaheader tag ('Media Storage SOP Instance
-UID') is updated automatically. This behaviour can not be disabled, because it
-would cause an invalid dicom file, because metaheader and dataset would not be
-consistent.
-
+When choosing the '-gin' option, the related metaheader tag
+('Media Storage SOP Instance UID') is updated automatically. This behaviour
+can not be disabled.
 
 \section examples EXAMPLES
 
@@ -221,6 +340,30 @@ consistent.
 -ea --erase-all-tags:
       dcmodify -ea "(0010,0010)" *.dcm
       Same as -e, but also searches in sequences and items.
+
+-gst --gen-stud-uid:
+     dcmodify -gst file.dcm
+     This generates a new value for the StudyInstanceUID
+     (0020,000d). Other UIDs are not modified!
+
+-gse --gen-ser-uid:
+     dcmodify -gse file.dcm
+     This generates a new value for the SeriesInstanceUID
+     (0020,000e). Other UIDs are not modified!
+
+-gin --gen-inst-uid:
+     dcmodify -gin file.dcm
+     This command generates a new value for the SOPInstanceUID
+     (0008,0018). The corresponding MediaStorageSOPInstanceUID
+     (0002,0003) is adjustet to the new value automatically.
+     Please note, that it's not possible to avoid this
+     metaheader update via the -nmu option.
+
+-nmu --no-meta-uid:
+     dcmodify -m "SOPInstanceUID=[UID]" -nmu *.dcm
+     This will modify the SOPInstanceUID to the given [UID],
+     but -nmu avoids, that \b dcmodify adjusts the
+     MediaStorageSOPInstanceUID in the metaheader, too.
 \endverbatim
 
 \section command_line COMMAND LINE
