@@ -10,7 +10,7 @@
 **
 **
 ** Last Update:   $Author: andreas $
-** Revision:      $Revision: 1.15 $
+** Revision:      $Revision: 1.16 $
 ** Status:	  $State: Exp $
 **
 */
@@ -39,7 +39,7 @@ BOOL dcmEnableAutomaticInputDataCorrection = TRUE;
 
 DcmObject::DcmObject(const DcmTag &tag, const Uint32 len)
 {
-  Tag = new DcmTag( tag );    // copy-operator in DcmTag
+  Tag = tag;    
   Length = len;
   errorFlag = EC_Normal;
   fTransferState = ERW_init;
@@ -56,7 +56,7 @@ DcmObject::DcmObject(const DcmTag &tag, const Uint32 len)
 
 DcmObject::DcmObject( const DcmObject& obj )
 {
-  Tag = new DcmTag( *obj.Tag );    // copy-operator in DcmTag
+  Tag = obj.Tag;
   Length = obj.Length;
   errorFlag = obj.errorFlag;
   fTransferState = obj.fTransferState;
@@ -73,9 +73,6 @@ DcmObject::DcmObject( const DcmObject& obj )
 
 DcmObject::~DcmObject()
 {
-  if (Tag != (DcmTag*)NULL)
-    delete Tag;
-
 #ifdef DEBUG
   if ( testConstructDestruct == 1 )                   // for debugging
     testConstructDestruct = 2; // for debugging
@@ -89,57 +86,6 @@ DcmObject::~DcmObject()
       testConstructDestruct++;
     }
 #endif
-}
-
-
-// ********************************
-
-
-Uint16 DcmObject::getGTag()
-{
-  Uint16 grpTag = Tag->getGTag();
-  errorFlag = Tag->error();
-  return grpTag;
-}
-
-
-// ********************************
-
-
-Uint16 DcmObject::getETag()
-{
-  Uint16 elemTag = Tag->getETag();
-  errorFlag = Tag->error();
-  return elemTag;
-}
-
-
-// ********************************
-
-
-const DcmTag & DcmObject::getTag(void) const
-{
-  return *Tag;
-}
-
-
-// ********************************
-
-
-DcmEVR DcmObject::getVR(void) 
-{
-  DcmEVR vr = Tag->getEVR();
-  errorFlag = Tag->error();
-  return vr;
-}
-
-
-// ********************************
-
-
-E_Condition DcmObject::setVR( DcmEVR /*vr*/ )
-{
-  return EC_Normal;
 }
 
 
@@ -179,27 +125,12 @@ E_Condition DcmObject::nextObject(DcmStack & /*stack*/,
 
 // ********************************
 
-E_Condition DcmObject::search( const DcmTag &/*tag*/,
+E_Condition DcmObject::search( const DcmTagKey &/*tag*/,
 			       DcmStack &/*resultStack*/,
 			       E_SearchMode /*mode*/,
 			       BOOL /*searchIntoSub*/ )
 {
-  E_Condition l_error = EC_TagNotFound;
-  return l_error;
-}
-
-
-// ********************************
-
-
-E_Condition DcmObject::search( const DcmTagKey& xtag,
-			       DcmStack &resultStack,
-			       E_SearchMode mode,
-			       BOOL searchIntoSub )
-{
-  DcmTag tag( xtag );
-  E_Condition l_error = search( tag, resultStack, mode, searchIntoSub );
-  return l_error;
+  return EC_TagNotFound;
 }
 
 
@@ -223,7 +154,7 @@ E_Condition DcmObject::searchErrors( DcmStack &resultStack )
 void DcmObject::printInfoLine(ostream & out, const BOOL showFullData,
 			      const int level, char *info )
 {
-  printInfoLine(out, showFullData, level, *Tag, Length, info );
+  printInfoLine(out, showFullData, level, Tag, Length, info );
 }
 
 
@@ -235,7 +166,7 @@ void DcmObject::printInfoLine(ostream & out, const BOOL showFullData,
 			      const Uint32 length,
 			      char *info)
 {
-    DcmVR vr( tag.getVR() );
+    DcmVR vr(tag.getVR());
 
     char output[100];
     for ( int i=1; i<level; i++)
@@ -257,23 +188,6 @@ void DcmObject::printInfoLine(ostream & out, const BOOL showFullData,
 	sprintf(output, " #%6lu,%3lu", (unsigned long)length, getVM());
     }
     out << output << "  " << tag.getTagName() << endl;
-}
-
-
-// ********************************
-
-void DcmObject::swapIfNecessary(const E_ByteOrder newByteOrder, 
-				const E_ByteOrder oldByteOrder,
-				void * value, const Uint32 byteLength,
-				const size_t valWidth)
-{
-    if(oldByteOrder != EBO_unknown && newByteOrder != EBO_unknown)
-    {
-	if (oldByteOrder != newByteOrder)
-	    swapBytes(value, byteLength, valWidth);
-    }
-    else
-	errorFlag = EC_IllegalCall;
 }
 
 
@@ -310,7 +224,7 @@ E_Condition DcmObject::writeTagAndLength(DcmStream & outStream,
     writtenBytes = 0;
   else
     {
-      l_error = this -> writeTag(outStream, *Tag, oxfer);
+      l_error = this -> writeTag(outStream, Tag, oxfer);
       writtenBytes = 4;
 
       DcmXfer oxferSyn(oxfer);
@@ -334,16 +248,14 @@ E_Condition DcmObject::writeTagAndLength(DcmStream & outStream,
 	      Uint16 reserved = 0;
 	      outStream.WriteBytes(&reserved, 2); // 2 Byte Laenge
 	      Uint32 valueLength = Length;
-	      this -> swapIfNecessary(oByteOrder, gLocalByteOrder, 
-				      &valueLength, 4, 4);
+	      swapIfNecessary(oByteOrder, gLocalByteOrder, &valueLength, 4, 4);
 	      outStream.WriteBytes(&valueLength, 4); // 4 Byte Laenge
 	      writtenBytes += 6;
 	    }
 	  else
 	    {
 	      Uint16 valueLength = (Uint16)Length;
-	      this -> swapIfNecessary(oByteOrder, gLocalByteOrder, 
-				      &valueLength, 2, 2);
+	      swapIfNecessary(oByteOrder, gLocalByteOrder, &valueLength, 2, 2);
 	      outStream.WriteBytes(&valueLength, 2); // 2 Byte Laenge
 	      writtenBytes += 2;
 	    }
@@ -352,8 +264,7 @@ E_Condition DcmObject::writeTagAndLength(DcmStream & outStream,
       else
 	{
 	  Uint32 valueLength = Length;
-	  this -> swapIfNecessary(oByteOrder, gLocalByteOrder,
-				  &valueLength, 4, 4);
+	  swapIfNecessary(oByteOrder, gLocalByteOrder, &valueLength, 4, 4);
 	  outStream.WriteBytes(&valueLength, 4); // 4 Byte Laenge
 	  writtenBytes += 4;
 	}
