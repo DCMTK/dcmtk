@@ -21,10 +21,10 @@
  *
  *  Purpose: class DcmVR: Value Representation
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-06-01 15:49:13 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2001-09-28 14:21:40 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcvr.cc,v $
- *  CVS/RCS Revision: $Revision: 1.22 $
+ *  CVS/RCS Revision: $Revision: 1.23 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -164,7 +164,7 @@ DcmVRDict_checker::DcmVRDict_checker()
             error_found = OFTrue;
             // we can't use ofConsole here because this piece of code
             // might be called before ofConsole is initialized.
-            cerr << "DcmVRDict:: Internal ERROR: inconsistent indexing: " << DcmVRDict[i].vrName << endl;
+            CERR << "DcmVRDict:: Internal ERROR: inconsistent indexing: " << DcmVRDict[i].vrName << endl;
             abort();
         }
     }
@@ -363,7 +363,10 @@ int DcmVR::isEquivalent(const DcmVR& avr) const
 /*
  * CVS/RCS Log:
  * $Log: dcvr.cc,v $
- * Revision 1.22  2001-06-01 15:49:13  meichel
+ * Revision 1.23  2001-09-28 14:21:40  joergr
+ * Replaced "cerr" by "CERR".
+ *
+ * Revision 1.22  2001/06/01 15:49:13  meichel
  * Updated copyright header
  *
  * Revision 1.21  2000/04/14 15:42:58  meichel
