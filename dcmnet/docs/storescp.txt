@@ -9,11 +9,11 @@ SYNOPSIS
 
 SUMMARY
 
-The storescp application implements a Service Class Provider (SCP) for the 
-Storage Service Class.  It listens on a specific TCP/IP port for incoming 
-association requests from a Storage SCU and can receive images according to 
-the Storage Service Class. Received images will normally be stored in files 
-(within the current working directory).  The storescp application also 
+The storescp application implements a Service Class Provider (SCP) for the
+Storage Service Class.  It listens on a specific TCP/IP port for incoming
+association requests from a Storage SCU and can receive images according to
+the Storage Service Class. Received images will normally be stored in files
+(within the current working directory).  The storescp application also
 supports the Verification Service Class as an SCP.
 
 USAGE
@@ -126,6 +126,12 @@ as an SCP:
     HardcopyGrayscaleImageStorage                       "1.2.840.10008.5.1.1.29"
     HardcopyColorImageStorage                           "1.2.840.10008.5.1.1.30"
     ComputedRadiographyImageStorage                     "1.2.840.10008.5.1.4.1.1.1"
+    DigitalXRayImageStorageForPresentation              "1.2.840.10008.5.1.4.1.1.1.1"
+    DigitalXRayImageStorageForProcessing                "1.2.840.10008.5.1.4.1.1.1.1.1"
+    DigitalMammographyXRayImageStorageForPresentation   "1.2.840.10008.5.1.4.1.1.1.2"
+    DigitalMammographyXRayImageStorageForProcessing     "1.2.840.10008.5.1.4.1.1.1.2.1"
+    DigitalIntraOralXRayImageStorageForPresentation     "1.2.840.10008.5.1.4.1.1.1.3"
+    DigitalIntraOralXRayImageStorageForProcessing       "1.2.840.10008.5.1.4.1.1.1.3.1"
     CTImageStorage                                      "1.2.840.10008.5.1.4.1.1.2"
     RETIRED_UltrasoundMultiframeImageStorage            "1.2.840.10008.5.1.4.1.1.3"
     UltrasoundMultiframeImageStorage                    "1.2.840.10008.5.1.4.1.1.3.1"
@@ -136,58 +142,53 @@ as an SCP:
     SecondaryCaptureImageStorage                        "1.2.840.10008.5.1.4.1.1.7"
     StandaloneOverlayStorage                            "1.2.840.10008.5.1.4.1.1.8"
     StandaloneCurveStorage                              "1.2.840.10008.5.1.4.1.1.9"
+    TwelveLeadECGWaveformStorage                        "1.2.840.10008.5.1.4.1.1.9.1.1"
+    GeneralECGWaveformStorage                           "1.2.840.10008.5.1.4.1.1.9.1.2"
+    AmbulatoryECGWaveformStorage                        "1.2.840.10008.5.1.4.1.1.9.1.3"
+    HemodynamicWaveformStorage                          "1.2.840.10008.5.1.4.1.1.9.2.1"
+    CardiacElectrophysiologyWaveformStorage             "1.2.840.10008.5.1.4.1.1.9.3.1"
+    BasicVoiceAudioWaveformStorage                      "1.2.840.10008.5.1.4.1.1.9.4.1"
     StandaloneModalityLUTStorage                        "1.2.840.10008.5.1.4.1.1.10"
     StandaloneVOILUTStorage                             "1.2.840.10008.5.1.4.1.1.11"
+    GrayscaleSoftcopyPresentationStateStorage           "1.2.840.10008.5.1.4.1.1.11.1"
     XRayAngiographicImageStorage                        "1.2.840.10008.5.1.4.1.1.12.1"
     XRayFluoroscopyImageStorage                         "1.2.840.10008.5.1.4.1.1.12.2"
-    XRayAngiographicBiPlaneImageStorage                 "1.2.840.10008.5.1.4.1.1.12.3"
+    RETIRED_XRayAngiographicBiPlaneImageStorage         "1.2.840.10008.5.1.4.1.1.12.3"
     NuclearMedicineImageStorage                         "1.2.840.10008.5.1.4.1.1.20"
+    RETIRED_VLImageStorage                              "1.2.840.10008.5.1.4.1.1.77.1"
+    VLEndoscopicImageStorage                            "1.2.840.10008.5.1.4.1.1.77.1.1"
+    VLMicroscopicImageStorage                           "1.2.840.10008.5.1.4.1.1.77.1.2"
+    VLSlideCoordinatesMicroscopicImageStorage           "1.2.840.10008.5.1.4.1.1.77.1.3"
+    VLPhotographicImageStorage                          "1.2.840.10008.5.1.4.1.1.77.1.4"
+    RETIRED_VLMultiFrameImageStorage                    "1.2.840.10008.5.1.4.1.1.77.2"
+    BasicTextSR                                         "1.2.840.10008.5.1.4.1.1.88.11"
+    EnhancedSR                                          "1.2.840.10008.5.1.4.1.1.88.22"
+    ComprehensiveSR                                     "1.2.840.10008.5.1.4.1.1.88.33"
     PETImageStorage                                     "1.2.840.10008.5.1.4.1.1.128"
     PETCurveStorage                                     "1.2.840.10008.5.1.4.1.1.129"
     RTImageStorage                                      "1.2.840.10008.5.1.4.1.1.481.1"
     RTDoseStorage                                       "1.2.840.10008.5.1.4.1.1.481.2"
     RTStructureSetStorage                               "1.2.840.10008.5.1.4.1.1.481.3"
+    RTBeamsTreatmentRecordStorage                       "1.2.840.10008.5.1.4.1.1.481.4"
     RTPlanStorage                                       "1.2.840.10008.5.1.4.1.1.481.5"
-    DigitalXRayImageStorageForPresentation              "1.2.840.10008.5.1.4.1.1.1.1"
-    DigitalXRayImageStorageForProcessing                "1.2.840.10008.5.1.4.1.1.1.1.1"
-    DigitalMammographyXRayImageStorageForPresentation   "1.2.840.10008.5.1.4.1.1.1.2"
-    DigitalMammographyXRayImageStorageForProcessing     "1.2.840.10008.5.1.4.1.1.1.2.1"
-    DigitalIntraOralXRayImageStorageForPresentation     "1.2.840.10008.5.1.4.1.1.1.3"
-    DigitalIntraOralXRayImageStorageForProcessing       "1.2.840.10008.5.1.4.1.1.1.3.1"
+    RTBrachyTreatmentRecordStorage                      "1.2.840.10008.5.1.4.1.1.481.6"
+    RTTreatmentSummaryRecordStorage                     "1.2.840.10008.5.1.4.1.1.481.7"
 
 Experimental support for the following draft SOP classes is also provided as SCP:
 
-    DRAFT_VLImageStorage                                "1.2.840.10008.5.1.4.1.1.77.1" 
-    DRAFT_VLMultiFrameImageStorage                      "1.2.840.10008.5.1.4.1.1.77.2"
-    VLEndoscopicImageStorage                            "1.2.840.10008.5.1.4.1.1.77.1.1"
-    VLMicroscopicImageStorage                           "1.2.840.10008.5.1.4.1.1.77.1.2"
-    VLSlideCoordinatesMicroscopicImageStorage           "1.2.840.10008.5.1.4.1.1.77.1.3"
-    VLPhotographicImageStorage                          "1.2.840.10008.5.1.4.1.1.77.1.4"
-    SRTextStorage                                       "1.2.840.10008.5.1.4.1.1.88.1"
-    SRAudioStorage                                      "1.2.840.10008.5.1.4.1.1.88.2" 
-    SRDetailStorage                                     "1.2.840.10008.5.1.4.1.1.88.3" 
-    SRComprehensiveStorage                              "1.2.840.10008.5.1.4.1.1.88.4"
-    RTBeamsTreatmentRecordStorage                       "1.2.840.10008.5.1.4.1.1.481.4"
-    RTBrachyTreatmentRecordStorage                      "1.2.840.10008.5.1.4.1.1.481.6"
-    RTTreatmentSummaryRecordStorage                     "1.2.840.10008.5.1.4.1.1.481.7"
     DRAFT_WaveformStorage                               "1.2.840.10008.5.1.4.1.1.9.1"
-    WaveformStorage                                     "1.2.840.10008.5.1.4.1.1.9.0"
-    TwelveLeadECGWaveformStorage                        "1.2.840.10008.5.1.4.1.1.9.1.1"
-    GeneralECGWaveformStorage                           "1.2.840.10008.5.1.4.1.1.9.1.2"
-    CardiacElectrophysiologyWaveformStorage             "1.2.840.10008.5.1.4.1.1.9.1.3"
-    HemodynamicWaveformStorage                          "1.2.840.10008.5.1.4.1.1.9.1.4"
-    BasicAudioWaveformStorage                           "1.2.840.10008.5.1.4.1.1.9.2.1"
-    HighResolutionAudioWaveformStorage                  "1.2.840.10008.5.1.4.1.1.9.2.2"
-    GrayscaleSoftcopyPresentationStateStorage           "1.2.840.10008.5.1.4.1.1.11.1"
+    DRAFT_SRTextStorage                                 "1.2.840.10008.5.1.4.1.1.88.1"
+    DRAFT_SRAudioStorage                                "1.2.840.10008.5.1.4.1.1.88.2"
+    DRAFT_SRDetailStorage                               "1.2.840.10008.5.1.4.1.1.88.3"
+    DRAFT_SRComprehensiveStorage                        "1.2.840.10008.5.1.4.1.1.88.4"
 
-    
 The storescp application will accept presentation contexts for
 all of the abovementioned supported SOP Classes using any
 of the transfer syntaxes:
 
-    LittleEndianImplicitTransferSyntax        "1.2.840.10008.1.2"
-    LittleEndianExplicitTransferSyntax        "1.2.840.10008.1.2.1"
-    BigEndianExplicitTransferSyntax           "1.2.840.10008.1.2.2"
+    LittleEndianImplicitTransferSyntax                  "1.2.840.10008.1.2"
+    LittleEndianExplicitTransferSyntax                  "1.2.840.10008.1.2.1"
+    BigEndianExplicitTransferSyntax                     "1.2.840.10008.1.2.2"
 
 The default behaviour of the storescp application is to prefer transfer
 syntaxes having an explicit encoding over the default implicit transfer syntax.
@@ -200,14 +201,14 @@ The storescp application does not support extended negotiation.
 
 ENVIRONMENT
 
-The storescp application will attempt to load DICOM data dictionaries 
-specified in the DCMDICTPATH environment variable.  By default, if the 
-DCMDICTPATH environment variable is not set, the file 
-/usr/local/dicom/lib/dicom.dic will be loaded.  The default behaviour 
-should be preferred and the DCMDICTPATH environment variable only used when 
-alternative data dictionaries are required.  The DCMDICTPATH environment 
-variable has the same format as the shell PATH variable in that a colon 
-(":") separates entries.  The data dictionary code will attempt to load 
-each file specified in the DCMDICTPATH environment variable.  It is an 
+The storescp application will attempt to load DICOM data dictionaries
+specified in the DCMDICTPATH environment variable.  By default, if the
+DCMDICTPATH environment variable is not set, the file
+/usr/local/dicom/lib/dicom.dic will be loaded.  The default behaviour
+should be preferred and the DCMDICTPATH environment variable only used when
+alternative data dictionaries are required.  The DCMDICTPATH environment
+variable has the same format as the shell PATH variable in that a colon
+(":") separates entries.  The data dictionary code will attempt to load
+each file specified in the DCMDICTPATH environment variable.  It is an
 error if no data dictionary can be loaded.
 

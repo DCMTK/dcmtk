@@ -8,15 +8,15 @@ SYNOPSIS
 
 SUMMARY
 
-The movescu application implements both an SCU for the Query/Retrieve 
-Service Class and an SCP for the Storage Service Class.  Movescu supports 
-retrieve functionality using the C-MOVE message.  It sends query keys to an 
-SCP and awaits responses.  It will accept associations for the purpose of 
-receiving images sent as a result of the C-MOVE request. The application 
-can be used to test SCPs of the Query/Retrieve Service Class.  The movescu 
-application can initiate the transfer of images to a third party or can 
-retrieve images to itself.  Note that the use of the term "move" is a 
-misnomer.  The C-MOVE operation actually performs an image copy (no images 
+The movescu application implements both an SCU for the Query/Retrieve
+Service Class and an SCP for the Storage Service Class.  Movescu supports
+retrieve functionality using the C-MOVE message.  It sends query keys to an
+SCP and awaits responses.  It will accept associations for the purpose of
+receiving images sent as a result of the C-MOVE request. The application
+can be used to test SCPs of the Query/Retrieve Service Class.  The movescu
+application can initiate the transfer of images to a third party or can
+retrieve images to itself.  Note that the use of the term "move" is a
+misnomer.  The C-MOVE operation actually performs an image copy (no images
 will be deleted from the SCP).
 
 USAGE
@@ -42,12 +42,12 @@ network options:
     -S   --study                use study root information model
     -O   --psonly               use patient/study only information model
   application entity titles:
-    -aet  --aetitle              aetitle: string
-                                 set my calling AE title (default: MOVESCU)
-    -aec  --call                 aetitle: string
-                                 set called AE title of peer (default: ANY-SCP)
-    -aem  --move                 aetitle: string
-                                 set move destinat. AE title (default: MOVESCU)
+    -aet  --aetitle             aetitle: string
+                                set my calling AE title (default: MOVESCU)
+    -aec  --call                aetitle: string
+                                set called AE title of peer (default: ANY-SCP)
+    -aem  --move                aetitle: string
+                                set move destinat. AE title (default: MOVESCU)
   preferred network transfer syntaxes (incoming associations):
     +x=  --prefer-uncompr       prefer explicit VR local byte order (default)
     +xe  --prefer-little        prefer explicit VR little endian TS
@@ -66,16 +66,16 @@ network options:
                                 big endian first
     -xi  --propose-implicit     propose implicit VR little endian TS only
   other network options:
-    +P    --port                 [n]umber: integer (default: 104)
-                                 port number for incoming associations
-    -pdu  --max-pdu              [n]umber of bytes: integer [4096..131072]
-                                 set max receive pdu to n bytes (default: 16384)
-          --repeat               [n]umber: integer
-                                 repeat n times
-          --abort                abort association instead of releasing it
-          --ignore               ignore store data, receive but do not store
-          --cancel               [n]umber: integer
-                                 cancel after n responses (default: never)
+    +P    --port                [n]umber: integer (default: 104)
+                                port number for incoming associations
+    -pdu  --max-pdu             [n]umber of bytes: integer [4096..131072]
+                                set max receive pdu to n bytes (default: 16384)
+          --repeat              [n]umber: integer
+                                repeat n times
+          --abort               abort association instead of releasing it
+          --ignore              ignore store data, receive but do not store
+          --cancel              [n]umber: integer
+                                cancel after n responses (default: never)
 output options:
   bit preserving mode:
     -B   --normal               allow implicit format conversions (default)
@@ -105,7 +105,7 @@ output options:
                                 and items on multiple of i bytes
 
 
-Each file supplied on the command line will be sent to the SCP as part of a 
+Each file supplied on the command line will be sent to the SCP as part of a
 C-MOVE request.  The query file must be a valid DICOM data set containing
 the dataset part of a C-MOVE-RQ message. The query file could, for instance,
 be created with the dump2dcm utility from a script like the following example:
@@ -114,17 +114,17 @@ be created with the dump2dcm utility from a script like the following example:
 (0008,0052) CS [PATIENT]     # QueryRetrieveLevel
 (0010,0020) LO [PAT001]      # PatientID
 
-Individual attributes of each file sent can be modified or supplemented 
+Individual attributes of each file sent can be modified or supplemented
 using the "-k key" option.  For example the command:
 
     movescu -k '0010,0020=PAT002' caesar 5678 patqry.dcm
 
-will, when sent to the SCP caesar at TCP/IP port 5678, cause any 
-PatientID attribute in patqry.dcm to have the value 'PAT002'. If such 
-an attribute is present it will be replaced, if absent it will be inserted.  
-The -k option can be present more than once.  The value part (after the =) 
-may be absent causing the attribute to be sent with zero length.  It is not 
-possible to replace or insert attributes within sequences using the -k 
+will, when sent to the SCP caesar at TCP/IP port 5678, cause any
+PatientID attribute in patqry.dcm to have the value 'PAT002'. If such
+an attribute is present it will be replaced, if absent it will be inserted.
+The -k option can be present more than once.  The value part (after the =)
+may be absent causing the attribute to be sent with zero length.  It is not
+possible to replace or insert attributes within sequences using the -k
 option.
 
 If no file is specified on the command line, the query must be specified
@@ -132,30 +132,30 @@ completely with one or more "-k key" options.
 
 For all uses of movescu, the SCP must be configured to "know" about
 the AE title where the images are to be transmitted.  This is required
-since the C-MOVE request only contains the AE Title of the target and 
-the SCP must be able to convert this AE Title into TCP/IP address and 
-port number in order to actually send the images over a separate 
+since the C-MOVE request only contains the AE Title of the target and
+the SCP must be able to convert this AE Title into TCP/IP address and
+port number in order to actually send the images over a separate
 association.
 
-The C-MOVE operation of the Query/Retrieve Service Class is able 
+The C-MOVE operation of the Query/Retrieve Service Class is able
 retrieve images or to initiate a copy of images to a third party.
 
 EXAMPLE
 
    movescu --patient --port 9876 --move TEST_AE --call ARCHIVE caesar 104 q.dcm
-   
-sends the attributes contained in the dicom file q.dcm as part of a C-MOVE 
-request to application entity ARCHIVE on the host caesar at port 104 using 
-the Patient Root query model. movescu itself uses the default AE title 
-MOVESCU. The C-MOVE request will specifiy that images should be transferred 
-to the destination AE title TEST_AE (via the --move option).  How the SCP 
-interprets this request depends on its configuration.  movescu will listen 
-on part 9876 for incoming associations in order to receive the requested 
-images from the SCP. 
-Images can be copied to a third party by using a different destination AE 
-title (e.g. --move ANOTHER_AE).  Of course the SCP must "know" this AE 
-title and the destination must be acting as an SCP of the Storage Service 
-Class (the storescp application can be used for this purpose).  
+
+sends the attributes contained in the dicom file q.dcm as part of a C-MOVE
+request to application entity ARCHIVE on the host caesar at port 104 using
+the Patient Root query model. movescu itself uses the default AE title
+MOVESCU. The C-MOVE request will specifiy that images should be transferred
+to the destination AE title TEST_AE (via the --move option).  How the SCP
+interprets this request depends on its configuration.  movescu will listen
+on part 9876 for incoming associations in order to receive the requested
+images from the SCP.
+Images can be copied to a third party by using a different destination AE
+title (e.g. --move ANOTHER_AE).  Of course the SCP must "know" this AE
+title and the destination must be acting as an SCP of the Storage Service
+Class (the storescp application can be used for this purpose).
 
 KNOWN PROBLEMS
 
@@ -163,20 +163,20 @@ movescu is intended to be used as a testing tool for DICOM software
 developers.  The query keys file must be created by hand based upon
 the contents of the SCP.
 
-Even when using a third-party move it may be necessary to set the TCP/IP 
-port number to a reasonable value (via the --port option).  Per default, 
-port number 104 is used which is a restricted port on many systems.  
-movescu always tries to listen for incoming associations 
+Even when using a third-party move it may be necessary to set the TCP/IP
+port number to a reasonable value (via the --port option).  Per default,
+port number 104 is used which is a restricted port on many systems.
+movescu always tries to listen for incoming associations
 
-The movescu application makes no attempt to prevent incorrect queries.  
-In particular, the query keys of a C-MOVE request should only contain 
-the QueryRetrieveLevel attribute and one or more of the so-called 
-"unique key attributes" (PatientID, StudyInstanceUID, SeriesInstanceUID 
+The movescu application makes no attempt to prevent incorrect queries.
+In particular, the query keys of a C-MOVE request should only contain
+the QueryRetrieveLevel attribute and one or more of the so-called
+"unique key attributes" (PatientID, StudyInstanceUID, SeriesInstanceUID
 and SOPInstanceUID).
 
 DICOM CONFORMANCE
 
-The movescu application supports the following SOP Classes 
+The movescu application supports the following SOP Classes
 as an SCU:
 
     MOVEPatientRootQueryRetrieveInformationModel        "1.2.840.10008.5.1.4.1.2.1.2"
@@ -188,9 +188,9 @@ one of the abovementioned supported SOP Classes depending
 on command line options (-P, -S, or -O).  Each proposed
 presentation context will propose the transfer syntaxes:
 
-    LittleEndianImplicitTransferSyntax	"1.2.840.10008.1.2"
-    LittleEndianExplicitTransferSyntax	"1.2.840.10008.1.2.1"
-    BigEndianExplicitTransferSyntax	"1.2.840.10008.1.2.2"
+    LittleEndianImplicitTransferSyntax	                "1.2.840.10008.1.2"
+    LittleEndianExplicitTransferSyntax	                "1.2.840.10008.1.2.1"
+    BigEndianExplicitTransferSyntax	                    "1.2.840.10008.1.2.2"
 
 This behaviour can be changed with the --propose options.
 
@@ -203,6 +203,12 @@ as an SCP:
     HardcopyGrayscaleImageStorage                       "1.2.840.10008.5.1.1.29"
     HardcopyColorImageStorage                           "1.2.840.10008.5.1.1.30"
     ComputedRadiographyImageStorage                     "1.2.840.10008.5.1.4.1.1.1"
+    DigitalXRayImageStorageForPresentation              "1.2.840.10008.5.1.4.1.1.1.1"
+    DigitalXRayImageStorageForProcessing                "1.2.840.10008.5.1.4.1.1.1.1.1"
+    DigitalMammographyXRayImageStorageForPresentation   "1.2.840.10008.5.1.4.1.1.1.2"
+    DigitalMammographyXRayImageStorageForProcessing     "1.2.840.10008.5.1.4.1.1.1.2.1"
+    DigitalIntraOralXRayImageStorageForPresentation     "1.2.840.10008.5.1.4.1.1.1.3"
+    DigitalIntraOralXRayImageStorageForProcessing       "1.2.840.10008.5.1.4.1.1.1.3.1"
     CTImageStorage                                      "1.2.840.10008.5.1.4.1.1.2"
     RETIRED_UltrasoundMultiframeImageStorage            "1.2.840.10008.5.1.4.1.1.3"
     UltrasoundMultiframeImageStorage                    "1.2.840.10008.5.1.4.1.1.3.1"
@@ -213,77 +219,73 @@ as an SCP:
     SecondaryCaptureImageStorage                        "1.2.840.10008.5.1.4.1.1.7"
     StandaloneOverlayStorage                            "1.2.840.10008.5.1.4.1.1.8"
     StandaloneCurveStorage                              "1.2.840.10008.5.1.4.1.1.9"
+    TwelveLeadECGWaveformStorage                        "1.2.840.10008.5.1.4.1.1.9.1.1"
+    GeneralECGWaveformStorage                           "1.2.840.10008.5.1.4.1.1.9.1.2"
+    AmbulatoryECGWaveformStorage                        "1.2.840.10008.5.1.4.1.1.9.1.3"
+    HemodynamicWaveformStorage                          "1.2.840.10008.5.1.4.1.1.9.2.1"
+    CardiacElectrophysiologyWaveformStorage             "1.2.840.10008.5.1.4.1.1.9.3.1"
+    BasicVoiceAudioWaveformStorage                      "1.2.840.10008.5.1.4.1.1.9.4.1"
     StandaloneModalityLUTStorage                        "1.2.840.10008.5.1.4.1.1.10"
     StandaloneVOILUTStorage                             "1.2.840.10008.5.1.4.1.1.11"
+    GrayscaleSoftcopyPresentationStateStorage           "1.2.840.10008.5.1.4.1.1.11.1"
     XRayAngiographicImageStorage                        "1.2.840.10008.5.1.4.1.1.12.1"
     XRayFluoroscopyImageStorage                         "1.2.840.10008.5.1.4.1.1.12.2"
-    XRayAngiographicBiPlaneImageStorage                 "1.2.840.10008.5.1.4.1.1.12.3"
+    RETIRED_XRayAngiographicBiPlaneImageStorage         "1.2.840.10008.5.1.4.1.1.12.3"
     NuclearMedicineImageStorage                         "1.2.840.10008.5.1.4.1.1.20"
+    RETIRED_VLImageStorage                              "1.2.840.10008.5.1.4.1.1.77.1"
+    VLEndoscopicImageStorage                            "1.2.840.10008.5.1.4.1.1.77.1.1"
+    VLMicroscopicImageStorage                           "1.2.840.10008.5.1.4.1.1.77.1.2"
+    VLSlideCoordinatesMicroscopicImageStorage           "1.2.840.10008.5.1.4.1.1.77.1.3"
+    VLPhotographicImageStorage                          "1.2.840.10008.5.1.4.1.1.77.1.4"
+    RETIRED_VLMultiFrameImageStorage                    "1.2.840.10008.5.1.4.1.1.77.2"
+    BasicTextSR                                         "1.2.840.10008.5.1.4.1.1.88.11"
+    EnhancedSR                                          "1.2.840.10008.5.1.4.1.1.88.22"
+    ComprehensiveSR                                     "1.2.840.10008.5.1.4.1.1.88.33"
     PETImageStorage                                     "1.2.840.10008.5.1.4.1.1.128"
     PETCurveStorage                                     "1.2.840.10008.5.1.4.1.1.129"
     RTImageStorage                                      "1.2.840.10008.5.1.4.1.1.481.1"
     RTDoseStorage                                       "1.2.840.10008.5.1.4.1.1.481.2"
     RTStructureSetStorage                               "1.2.840.10008.5.1.4.1.1.481.3"
+    RTBeamsTreatmentRecordStorage                       "1.2.840.10008.5.1.4.1.1.481.4"
     RTPlanStorage                                       "1.2.840.10008.5.1.4.1.1.481.5"
-    DigitalXRayImageStorageForPresentation              "1.2.840.10008.5.1.4.1.1.1.1"
-    DigitalXRayImageStorageForProcessing                "1.2.840.10008.5.1.4.1.1.1.1.1"
-    DigitalMammographyXRayImageStorageForPresentation   "1.2.840.10008.5.1.4.1.1.1.2"
-    DigitalMammographyXRayImageStorageForProcessing     "1.2.840.10008.5.1.4.1.1.1.2.1"
-    DigitalIntraOralXRayImageStorageForPresentation     "1.2.840.10008.5.1.4.1.1.1.3"
-    DigitalIntraOralXRayImageStorageForProcessing       "1.2.840.10008.5.1.4.1.1.1.3.1"
+    RTBrachyTreatmentRecordStorage                      "1.2.840.10008.5.1.4.1.1.481.6"
+    RTTreatmentSummaryRecordStorage                     "1.2.840.10008.5.1.4.1.1.481.7"
 
 Experimental support for the following draft SOP classes is also provided as SCP:
 
-    DRAFT_VLImageStorage                                "1.2.840.10008.5.1.4.1.1.77.1" 
-    DRAFT_VLMultiFrameImageStorage                      "1.2.840.10008.5.1.4.1.1.77.2"
-    VLEndoscopicImageStorage                            "1.2.840.10008.5.1.4.1.1.77.1.1"
-    VLMicroscopicImageStorage                           "1.2.840.10008.5.1.4.1.1.77.1.2"
-    VLSlideCoordinatesMicroscopicImageStorage           "1.2.840.10008.5.1.4.1.1.77.1.3"
-    VLPhotographicImageStorage                          "1.2.840.10008.5.1.4.1.1.77.1.4"
-    SRTextStorage                                       "1.2.840.10008.5.1.4.1.1.88.1"
-    SRAudioStorage                                      "1.2.840.10008.5.1.4.1.1.88.2" 
-    SRDetailStorage                                     "1.2.840.10008.5.1.4.1.1.88.3" 
-    SRComprehensiveStorage                              "1.2.840.10008.5.1.4.1.1.88.4"
-    RTBeamsTreatmentRecordStorage                       "1.2.840.10008.5.1.4.1.1.481.4"
-    RTBrachyTreatmentRecordStorage                      "1.2.840.10008.5.1.4.1.1.481.6"
-    RTTreatmentSummaryRecordStorage                     "1.2.840.10008.5.1.4.1.1.481.7"
     DRAFT_WaveformStorage                               "1.2.840.10008.5.1.4.1.1.9.1"
-    WaveformStorage                                     "1.2.840.10008.5.1.4.1.1.9.0"
-    TwelveLeadECGWaveformStorage                        "1.2.840.10008.5.1.4.1.1.9.1.1"
-    GeneralECGWaveformStorage                           "1.2.840.10008.5.1.4.1.1.9.1.2"
-    CardiacElectrophysiologyWaveformStorage             "1.2.840.10008.5.1.4.1.1.9.1.3"
-    HemodynamicWaveformStorage                          "1.2.840.10008.5.1.4.1.1.9.1.4"
-    BasicAudioWaveformStorage                           "1.2.840.10008.5.1.4.1.1.9.2.1"
-    HighResolutionAudioWaveformStorage                  "1.2.840.10008.5.1.4.1.1.9.2.2"
-    GrayscaleSoftcopyPresentationStateStorage           "1.2.840.10008.5.1.4.1.1.11.1"
+    DRAFT_SRTextStorage                                 "1.2.840.10008.5.1.4.1.1.88.1"
+    DRAFT_SRAudioStorage                                "1.2.840.10008.5.1.4.1.1.88.2"
+    DRAFT_SRDetailStorage                               "1.2.840.10008.5.1.4.1.1.88.3"
+    DRAFT_SRComprehensiveStorage                        "1.2.840.10008.5.1.4.1.1.88.4"
 
 The movescu application will accept presentation contexts for
 all of the abovementioned supported SOP Classes using any
 of the transfer syntaxes:
 
-    LittleEndianImplicitTransferSyntax	"1.2.840.10008.1.2"
-    LittleEndianExplicitTransferSyntax	"1.2.840.10008.1.2.1"
-    BigEndianExplicitTransferSyntax	"1.2.840.10008.1.2.2"
+    LittleEndianImplicitTransferSyntax	                "1.2.840.10008.1.2"
+    LittleEndianExplicitTransferSyntax	                "1.2.840.10008.1.2.1"
+    BigEndianExplicitTransferSyntax	                    "1.2.840.10008.1.2.2"
 
-When acting as an SCP, the movescu application will prefer transfer 
-syntaxes having an explicit encoding over the default implicit transfer 
-syntax. If movescu is running on big-endian hardware it will prefer 
-BigEndianExplicitTransferSyntax to LittleEndianExplicitTransferSyntax (and 
-vice versa). This behaviour can be changed with the --prefer options (see 
+When acting as an SCP, the movescu application will prefer transfer
+syntaxes having an explicit encoding over the default implicit transfer
+syntax. If movescu is running on big-endian hardware it will prefer
+BigEndianExplicitTransferSyntax to LittleEndianExplicitTransferSyntax (and
+vice versa). This behaviour can be changed with the --prefer options (see
 above).
 
 The movescu application does not support extended negotiation.
 
 ENVIRONMENT
 
-The movescu application will attempt to load DICOM data dictionaries 
-specified in the DCMDICTPATH environment variable.  By default, if the 
-DCMDICTPATH environment variable is not set, the file 
-/usr/local/dicom/lib/dicom.dic will be loaded.  The default behaviour 
-should be preferred and the DCMDICTPATH environment variable only used when 
-alternative data dictionaries are required.  The DCMDICTPATH environment 
-variable has the same format as the shell PATH variable in that a colon 
-(":") separates entries.  The data dictionary code will attempt to load 
-each file specified in the DCMDICTPATH environment variable.  It is an 
+The movescu application will attempt to load DICOM data dictionaries
+specified in the DCMDICTPATH environment variable.  By default, if the
+DCMDICTPATH environment variable is not set, the file
+/usr/local/dicom/lib/dicom.dic will be loaded.  The default behaviour
+should be preferred and the DCMDICTPATH environment variable only used when
+alternative data dictionaries are required.  The DCMDICTPATH environment
+variable has the same format as the shell PATH variable in that a colon
+(":") separates entries.  The data dictionary code will attempt to load
+each file specified in the DCMDICTPATH environment variable.  It is an
 error if no data dictionary can be loaded.
 
