@@ -9,10 +9,10 @@
 ** Implementation of the class DcmItem
 **
 **
-** Last Update:		$Author: hewett $
-** Update Date:		$Date: 1997-09-22 14:50:53 $
+** Last Update:		$Author: meichel $
+** Update Date:		$Date: 1997-11-07 08:52:18 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcitem.cc,v $
-** CVS/RCS Revision:	$Revision: 1.36 $
+** CVS/RCS Revision:	$Revision: 1.37 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -1569,8 +1569,12 @@ E_Condition newDicomElement(DcmElement * & newElement,
 	    newElement = new DcmPixelData(tag, length);
 	else if (tag == DCM_OverlayData)
 	    newElement = new DcmOverlayData(tag, length);
-	// In gerneral we cannot handle EVR_ox here because we do not 
-	// know the transfer syntax
+        else
+            /* we don't know this element's real transfer syntax, so we just
+             * use the defaults of class DcmOtherByteOtherWord and let the
+             * application handle it.
+             */
+            newElement = new DcmOtherByteOtherWord(tag, length);
 	break;
 
     case EVR_OB :
@@ -1852,7 +1856,14 @@ DcmItem::findRealNumber(
 /*
 ** CVS/RCS Log:
 ** $Log: dcitem.cc,v $
-** Revision 1.36  1997-09-22 14:50:53  hewett
+** Revision 1.37  1997-11-07 08:52:18  meichel
+** Corrected bug in the dcmdata read routines which caused incorrect reading
+**   of datasets containing attributes with value representation "ox" (= OB or OW)
+**   in the dicom dictionary other than PixelData and OverlayData.
+**   (thanks to Gilles Mevel <Gilles.Mevel@etiam.com> for the bug report and
+**   sample data set).
+**
+** Revision 1.36  1997/09/22 14:50:53  hewett
 ** - Added 2 simple methods to test for the existance of an attribute
 **   to DcmItem class (tagExists and tagExistsWithValue).  This code
 **   was part of dcmgpdir.cc but is more generally useful.
