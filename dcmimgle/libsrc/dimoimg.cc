@@ -22,8 +22,8 @@
  *  Purpose: DicomMonochromeImage (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-12-08 17:35:34 $
- *  CVS/RCS Revision: $Revision: 1.55 $
+ *  Update Date:      $Date: 2003-12-09 17:53:50 $
+ *  CVS/RCS Revision: $Revision: 1.56 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -658,7 +658,7 @@ void DiMonoImage::Init(DiMonoModality *modality)
                 InitUint8(modality);
                 break;
             case EPR_Sint8:
-                InitUint8(modality);
+                InitSint8(modality);
                 break;
             case EPR_Uint16:
                 InitUint16(modality);
@@ -2110,7 +2110,11 @@ int DiMonoImage::writeBMP(FILE *stream,
  *
  * CVS/RCS Log:
  * $Log: dimoimg.cc,v $
- * Revision 1.55  2003-12-08 17:35:34  joergr
+ * Revision 1.56  2003-12-09 17:53:50  joergr
+ * Fixed tiny bug that was buried in the source code since version 3.4.1 and
+ * which affected the output of signed 8 bit pixel data with modality LUT.
+ *
+ * Revision 1.55  2003/12/08 17:35:34  joergr
  * Adapted type casts to new-style typecast operators defined in ofcast.h.
  *
  * Revision 1.54  2003/05/20 09:25:42  joergr
