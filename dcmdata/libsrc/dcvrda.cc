@@ -22,9 +22,9 @@
  *  Purpose: class DcmDate
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-10-04 10:16:58 $
+ *  Update Date:      $Date: 2001-10-10 15:20:41 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcvrda.cc,v $
- *  CVS/RCS Revision: $Revision: 1.10 $
+ *  CVS/RCS Revision: $Revision: 1.11 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -109,7 +109,7 @@ DcmDate::setCurrentDate()
 {
     OFString dicomDate;
     OFCondition l_error = getCurrentDate(dicomDate);
-    if (l_error == EC_Normal)
+    if (l_error.good())
         l_error = putString(dicomDate.c_str());
     return l_error;
 }
@@ -121,12 +121,13 @@ DcmDate::setCurrentDate()
 OFCondition
 DcmDate::getISOFormattedDate(
     OFString &formattedDate,
-    const unsigned long pos)
+    const unsigned long pos,
+    const OFBool supportOldFormat)
 {
     OFString dicomDate;
     OFCondition l_error = getOFString(dicomDate, pos);
-    if (l_error == EC_Normal)
-        l_error = getISOFormattedDateFromString(dicomDate, formattedDate);
+    if (l_error.good())
+        l_error = getISOFormattedDateFromString(dicomDate, formattedDate, supportOldFormat);
     else
         formattedDate.clear();
     return l_error;
@@ -136,12 +137,13 @@ DcmDate::getISOFormattedDate(
 OFCondition
 DcmDate::getISOFormattedDateFromString(
     const OFString &dicomDate,
-    OFString &formattedDate)
+    OFString &formattedDate,
+    const OFBool supportOldFormat)
 {
-    OFCondition l_error = EC_IllegalCall;
+    OFCondition l_error = EC_IllegalParameter;
     const size_t length = dicomDate.length();
     /* fixed length (8 or 10 bytes) required by DICOM part 5 */
-    if (length == 8)
+    if ((length == 8) && (dicomDate.find('.') == OFString_npos))
     {
         /* year: YYYY */
         formattedDate = dicomDate.substr(0, 4);
@@ -154,7 +156,7 @@ DcmDate::getISOFormattedDateFromString(
         l_error = EC_Normal;
     }
     /* old prior V3.0 version of VR=DA: YYYY.MM.DD */
-    else if ((length == 10) && (dicomDate[4] == '.') && (dicomDate[7] == '.'))
+    else if (supportOldFormat && (length == 10) && (dicomDate[4] == '.') && (dicomDate[7] == '.'))
     {
         /* year: YYYY */
         formattedDate = dicomDate.substr(0, 4);
@@ -166,7 +168,7 @@ DcmDate::getISOFormattedDateFromString(
         formattedDate += dicomDate.substr(8, 2);
         l_error = EC_Normal;
     } else
-        formattedDate = dicomDate;
+        formattedDate.clear();
     return l_error;
 }
 
@@ -174,7 +176,11 @@ DcmDate::getISOFormattedDateFromString(
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrda.cc,v $
-** Revision 1.10  2001-10-04 10:16:58  joergr
+** Revision 1.11  2001-10-10 15:20:41  joergr
+** Added new flag to date/time routines allowing to choose whether the old
+** prior V3.0 format for the corresponding DICOM VRs is supported or not.
+**
+** Revision 1.10  2001/10/04 10:16:58  joergr
 ** Adapted new time/date routines to Windows systems.
 **
 ** Revision 1.9  2001/10/01 15:04:43  joergr

@@ -22,9 +22,9 @@
  *  Purpose: Interface of class DcmTime
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-10-01 15:01:40 $
+ *  Update Date:      $Date: 2001-10-10 15:18:17 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcvrtm.h,v $
- *  CVS/RCS Revision: $Revision: 1.11 $
+ *  CVS/RCS Revision: $Revision: 1.12 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -40,7 +40,8 @@
 #include "dcbytstr.h"
 
 
-
+/** a class representing the DICOM value representation 'Time' (TM)
+ */
 class DcmTime : public DcmByteString
 {
   public:
@@ -76,10 +77,11 @@ class DcmTime : public DcmByteString
         const OFBool fraction = OFFalse);
 
 	/** get the current element value in ISO time format.
-	 *  The ISO time format supported by this function is "HH:MM[:SS[.FFFFFF]]" where
-	 *  the brackets enclose optional parts. Please note that the element value is
-	 *  expected to be in valid DICOM TM format ("[HH[MM[SS[.FFFFFF]]]]"). If this function
-	 *  fails the result variable 'formattedTime' is cleared automatically.
+	 *  The ISO time format supported by this function is "HH:MM[:SS[.FFFFFF]]"
+	 *  where the brackets enclose optional parts. Please note that the element value
+	 *  is expected to be in valid DICOM TM format ("[HH[MM[SS[.FFFFFF]]]]", 
+	 *  "[HH[:MM[:SS[.FFFFFF]]]]" is also supported for reasons of backward compatibility).
+	 *  If this function fails the result variable 'formattedTime' is cleared automatically.
 	 *  @param formattedTime reference to string variable where the result is stored
 	 *  @param pos index of the element component in case of value multiplicity (0..vm-1)
 	 *  @param seconds add optional seconds (":SS") if OFTrue
@@ -87,6 +89,7 @@ class DcmTime : public DcmByteString
 	 *   (requires parameter 'seconds' to be also OFTrue)
 	 *  @param createMissingPart if OFTrue create optional parts (seconds and/or fractional
 	 *   part of a seconds) if absent in the element value
+	 *  @param supportOldFormat if OFTrue support old (prior V3.0) time format (see above)
 	 *  @return EC_Normal upon success, an error code otherwise
 	 */
     OFCondition getISOFormattedTime(
@@ -94,7 +97,8 @@ class DcmTime : public DcmByteString
         const unsigned long pos = 0,
         const OFBool seconds = OFTrue,
         const OFBool fraction = OFFalse,
-        const OFBool createMissingPart = OFFalse);
+        const OFBool createMissingPart = OFFalse,
+        const OFBool supportOldFormat = OFTrue);
 
     /* --- static helper functions --- */
 
@@ -115,10 +119,11 @@ class DcmTime : public DcmByteString
         const OFBool fraction = OFFalse);
 
 	/** get the specified DICOM time value in ISO format.
-	 *  The ISO time format supported by this function is "HH:MM[:SS[.FFFFFF]]" where
-	 *  the brackets enclose optional parts. Please note that the specified value is
-	 *  expected to be in valid DICOM TM format ("[HH[MM[SS[.FFFFFF]]]]"). If this function
-	 *  fails the result variable 'formattedTime' is cleared automatically.
+	 *  The ISO time format supported by this function is "HH:MM[:SS[.FFFFFF]]"
+	 *  where the brackets enclose optional parts. Please note that the specified value
+	 *  is expected to be in valid DICOM TM format ("[HH[MM[SS[.FFFFFF]]]]",
+	 *  "[HH[:MM[:SS[.FFFFFF]]]]" is also supported for reasons of backward compatibility).
+	 *  If this function fails the result variable 'formattedTime' is cleared automatically.
 	 *  @param dicomTime string value in DICOM TM format to be converted to ISO format
 	 *  @param formattedTime reference to string variable where the result is stored
 	 *  @param seconds add optional seconds (":SS") if OFTrue
@@ -126,6 +131,7 @@ class DcmTime : public DcmByteString
 	 *   (requires parameter 'seconds' to be also OFTrue)
 	 *  @param createMissingPart if OFTrue create optional parts (seconds and/or fractional
 	 *   part of a seconds) if absent in the DICOM TM value
+	 *  @param supportOldFormat if OFTrue support old (prior V3.0) time format (see above)
 	 *  @return EC_Normal upon success, an error code otherwise
 	 */
     static OFCondition getISOFormattedTimeFromString(
@@ -133,7 +139,8 @@ class DcmTime : public DcmByteString
         OFString &formattedTime,
         const OFBool seconds = OFTrue,
         const OFBool fraction = OFFalse,
-        const OFBool createMissingPart = OFFalse);
+        const OFBool createMissingPart = OFFalse,
+        const OFBool supportOldFormat = OFTrue);
 };
 
 
@@ -142,7 +149,11 @@ class DcmTime : public DcmByteString
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrtm.h,v $
-** Revision 1.11  2001-10-01 15:01:40  joergr
+** Revision 1.12  2001-10-10 15:18:17  joergr
+** Added new flag to date/time routines allowing to choose whether the old
+** prior V3.0 format for the corresponding DICOM VRs is supported or not.
+**
+** Revision 1.11  2001/10/01 15:01:40  joergr
 ** Introduced new general purpose functions to get/set person names, date, time
 ** and date/time.
 **

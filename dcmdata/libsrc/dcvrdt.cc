@@ -22,9 +22,9 @@
  *  Purpose: class DcmDateTime
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-10-04 10:16:58 $
+ *  Update Date:      $Date: 2001-10-10 15:21:33 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcvrdt.cc,v $
- *  CVS/RCS Revision: $Revision: 1.13 $
+ *  CVS/RCS Revision: $Revision: 1.14 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -83,6 +83,7 @@ DcmDateTime::~DcmDateTime()
 
 // ********************************
 
+
 OFCondition
 DcmDateTime::getOFString(
     OFString & str,
@@ -90,12 +91,14 @@ DcmDateTime::getOFString(
     OFBool normalize)
 {
     OFCondition l_error = DcmByteString::getOFString(str, pos, normalize);
-    if (l_error == EC_Normal && normalize)
-    normalizeString(str, !MULTIPART, !DELETE_LEADING, DELETE_TRAILING);
+    if (l_error.good() && normalize)
+        normalizeString(str, !MULTIPART, !DELETE_LEADING, DELETE_TRAILING);
     return l_error;
 }
 
+
 // ********************************
+
 
 OFCondition
 DcmDateTime::getOFStringArray(
@@ -103,8 +106,8 @@ DcmDateTime::getOFStringArray(
     OFBool normalize)
 {
     OFCondition l_error = DcmByteString::getOFStringArray(str, normalize);
-    if (l_error == EC_Normal && normalize)
-    normalizeString(str, MULTIPART, !DELETE_LEADING, DELETE_TRAILING);
+    if (l_error.good() && normalize)
+        normalizeString(str, MULTIPART, !DELETE_LEADING, DELETE_TRAILING);
     return l_error;
 }
 
@@ -143,7 +146,7 @@ DcmDateTime::getCurrentDateTime(
             if (fraction)
             {
 #ifdef HAVE_WINDOWS_H
-                /* Windows: no microseconds available, using milliseconds instead */
+                /* Windows: no microseconds available, use milliseconds instead */
                 SYSTEMTIME timebuf;
                 GetSystemTime(&timebuf);
                 /* format: .FFF000 */
@@ -161,7 +164,6 @@ DcmDateTime::getCurrentDateTime(
         }
         if (timeZone)
         {
-
             tt = time(NULL);
 #if defined(_REENTRANT) && !defined(_WIN32) && !defined(__CYGWIN__)
             // use gmtime_r instead of gmtime
@@ -225,7 +227,7 @@ DcmDateTime::setCurrentDateTime(
 {
     OFString dicomDateTime;
     OFCondition l_error = getCurrentDateTime(dicomDateTime, seconds, fraction, timeZone);
-    if (l_error == EC_Normal)
+    if (l_error.good())
         l_error = putString(dicomDateTime.c_str());
     return l_error;
 }
@@ -245,7 +247,7 @@ DcmDateTime::getISOFormattedDateTime(
 {
     OFString dicomDateTime;
     OFCondition l_error = getOFString(dicomDateTime, pos);
-    if (l_error == EC_Normal)
+    if (l_error.good())
         l_error = getISOFormattedDateTimeFromString(dicomDateTime, formattedDateTime, seconds, fraction, timeZone, createMissingPart);
     else
         formattedDateTime.clear();
@@ -262,39 +264,44 @@ DcmDateTime::getISOFormattedDateTimeFromString(
     const OFBool timeZone,
     const OFBool createMissingPart)
 {
-    OFCondition l_error = EC_IllegalCall;
+    OFCondition l_error = EC_IllegalParameter;
     const size_t length = dicomDateTime.length();
-    formattedDateTime.clear();
     /* minimum DT format: YYYYMMDD */
     if (length >= 8)
     {
         OFString timeString;
-        /* get formatted date: YYYY-MM-DD, ignore return value (status) */
-        DcmDate::getISOFormattedDateFromString(dicomDateTime.substr(0, 8), formattedDateTime);
-        /* get formatted time: HH:MM[:SS[.FFFFFF]], ignore return value (status) */
-        const size_t posSign = dicomDateTime.find_first_of("+-", 8);
-        OFString dicomTime = (posSign != OFString_npos) ? dicomDateTime.substr(8, posSign - 8) : dicomDateTime.substr(8);
-        DcmTime::getISOFormattedTimeFromString(dicomTime, timeString, seconds, fraction, createMissingPart);
-        /* add time string with separator */
-        formattedDateTime += " ";
-        formattedDateTime += timeString;
-        /* add optional time zone: [+/-HH:MM] */
-        if (timeZone)
+        /* get formatted date: YYYY-MM-DD */
+        l_error = DcmDate::getISOFormattedDateFromString(dicomDateTime.substr(0, 8), formattedDateTime, OFFalse /*supportOldFormat*/);
+        if (l_error.good())
         {
-            /* check whether optional time zone is present: &ZZZZ */
-            if ((posSign != OFString_npos) && (length >= posSign + 5))
+            /* get formatted time: HH:MM[:SS[.FFFFFF]] */
+            const size_t posSign = dicomDateTime.find_first_of("+-", 8);
+            OFString dicomTime = (posSign != OFString_npos) ? dicomDateTime.substr(8, posSign - 8) : dicomDateTime.substr(8);
+            l_error = DcmTime::getISOFormattedTimeFromString(dicomTime, timeString, seconds, fraction, createMissingPart, OFFalse /*supportOldFormat*/);
+            if (l_error.good())
             {
+                /* add time string with separator */
                 formattedDateTime += " ";
-                formattedDateTime += dicomDateTime[posSign];
-                formattedDateTime += dicomDateTime.substr(posSign + 1, 2);
-                formattedDateTime += ":";
-                formattedDateTime += dicomDateTime.substr(posSign + 3, 2);
-            } else if (createMissingPart)
-                formattedDateTime += " +00:00";
+                formattedDateTime += timeString;
+                /* add optional time zone: [+/-HH:MM] */
+                if (timeZone)
+                {
+                    /* check whether optional time zone is present: &ZZZZ */
+                    if ((posSign != OFString_npos) && (length >= posSign + 5))
+                    {
+                        formattedDateTime += " ";
+                        formattedDateTime += dicomDateTime[posSign];
+                        formattedDateTime += dicomDateTime.substr(posSign + 1, 2);
+                        formattedDateTime += ":";
+                        formattedDateTime += dicomDateTime.substr(posSign + 3, 2);
+                    } else if (createMissingPart)
+                        formattedDateTime += " +00:00";
+                }
+            }
         }
-        l_error = EC_Normal;
-    } else
-        formattedDateTime = dicomDateTime;
+    }
+    if (l_error.bad())
+        formattedDateTime.clear();
     return l_error;
 }
 
@@ -302,7 +309,11 @@ DcmDateTime::getISOFormattedDateTimeFromString(
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrdt.cc,v $
-** Revision 1.13  2001-10-04 10:16:58  joergr
+** Revision 1.14  2001-10-10 15:21:33  joergr
+** Added new flag to date/time routines allowing to choose whether the old
+** prior V3.0 format for the corresponding DICOM VRs is supported or not.
+**
+** Revision 1.13  2001/10/04 10:16:58  joergr
 ** Adapted new time/date routines to Windows systems.
 **
 ** Revision 1.12  2001/10/01 15:04:44  joergr
