@@ -23,8 +23,8 @@
  *    classes: DSRImageReferenceValue
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-10-23 15:01:05 $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  Update Date:      $Date: 2000-10-24 15:04:11 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -198,7 +198,7 @@ E_Condition DSRImageReferenceValue::renderHTML(ostream &docStream,
                                                OFConsole * /* logStream */) const
 {
     /* image reference */
-    docStream << "<a href=\"dicom://localhost/image/" << SOPClassUID << "/" << SOPInstanceUID << "\">";
+    docStream << "<a href=\"file://dicom/image/" << SOPClassUID << "/" << SOPInstanceUID << "\">";
     const char *string = dcmSOPClassUIDToModality(SOPClassUID.c_str());
     if (string != NULL)
         docStream << string;
@@ -209,7 +209,7 @@ E_Condition DSRImageReferenceValue::renderHTML(ostream &docStream,
     if (PresentationState.isValid())
     {
         docStream << " with ";
-        docStream << "<a href=\"dicom://localhost/pstate/";
+        docStream << "<a href=\"file://dicom/pstate/";
         docStream << PresentationState.getSOPClassUID() << "/";
         docStream << PresentationState.getSOPInstanceUID() << "\">";
         docStream << " GSPS</a>" << endl;
@@ -298,7 +298,11 @@ OFBool DSRImageReferenceValue::checkPresentationState(const DSRCompositeReferenc
 /*
  *  CVS/RCS Log:
  *  $Log: dsrimgvl.cc,v $
- *  Revision 1.6  2000-10-23 15:01:05  joergr
+ *  Revision 1.7  2000-10-24 15:04:11  joergr
+ *  Changed HTML hyperlinks to referenced objects from "dicom://" to "file://"
+ *  to facilitate access from Java.
+ *
+ *  Revision 1.6  2000/10/23 15:01:05  joergr
  *  Added SOP class UID to hyperlink in method renderHTML().
  *
  *  Revision 1.5  2000/10/20 10:14:58  joergr

@@ -23,8 +23,8 @@
  *    classes: DSRDocument
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-10-18 17:15:43 $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  Update Date:      $Date: 2000-10-24 15:04:11 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -129,7 +129,7 @@ void DSRDocument::clear()
 OFBool DSRDocument::isValid()
 {
     /* document is valid if document tree is valid and ... */
-    return DocumentTree.isValid() && (SOPInstanceUID.getLength() > 0) && (SOPClassUID.getLength() > 0);
+    return DocumentTree.isValid() && (SOPClassUID.getLength() > 0) && (SOPInstanceUID.getLength() > 0);
 }
 
 
@@ -1251,7 +1251,11 @@ void DSRDocument::updateAttributes()
 /*
  *  CVS/RCS Log:
  *  $Log: dsrdoc.cc,v $
- *  Revision 1.5  2000-10-18 17:15:43  joergr
+ *  Revision 1.6  2000-10-24 15:04:11  joergr
+ *  Changed HTML hyperlinks to referenced objects from "dicom://" to "file://"
+ *  to facilitate access from Java.
+ *
+ *  Revision 1.5  2000/10/18 17:15:43  joergr
  *  Added check for read methods (VM and type).
  *
  *  Revision 1.4  2000/10/17 12:37:14  joergr

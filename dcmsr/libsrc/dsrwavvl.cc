@@ -23,8 +23,8 @@
  *    classes: DSRWaveformReferenceValue
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-10-23 15:01:05 $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  Update Date:      $Date: 2000-10-24 15:04:12 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -145,7 +145,7 @@ E_Condition DSRWaveformReferenceValue::renderHTML(ostream &docStream,
                                                   OFConsole *logStream) const
 {
     /* render reference */
-    docStream << "<a href=\"dicom://localhost/waveform/" << SOPClassUID << "/" << SOPInstanceUID << "\">";
+    docStream << "<a href=\"file://dicom/waveform/" << SOPClassUID << "/" << SOPInstanceUID << "\">";
     const char *string = dcmFindNameOfUID(SOPClassUID.c_str());
     if (string != NULL)
         docStream << string;
@@ -224,7 +224,11 @@ OFBool DSRWaveformReferenceValue::checkSOPClassUID(const OFString &sopClassUID) 
 /*
  *  CVS/RCS Log:
  *  $Log: dsrwavvl.cc,v $
- *  Revision 1.6  2000-10-23 15:01:05  joergr
+ *  Revision 1.7  2000-10-24 15:04:12  joergr
+ *  Changed HTML hyperlinks to referenced objects from "dicom://" to "file://"
+ *  to facilitate access from Java.
+ *
+ *  Revision 1.6  2000/10/23 15:01:05  joergr
  *  Added SOP class UID to hyperlink in method renderHTML().
  *
  *  Revision 1.5  2000/10/20 10:14:59  joergr
