@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DSRXMLCursor
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2003-09-03 16:00:11 $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2003-09-04 10:14:30 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -40,8 +40,6 @@
 #include "oftypes.h"    /* for definition of OFBool */
 
 #define INCLUDE_CSTDLIB
-#include "ofstdinc.h"
-
 #define INCLUDE_CSTDDEF
 #include "ofstdinc.h"
 
@@ -151,7 +149,10 @@ class DSRXMLCursor
 /*
  *  CVS/RCS Log:
  *  $Log: dsrxmlc.h,v $
- *  Revision 1.3  2003-09-03 16:00:11  meichel
+ *  Revision 1.4  2003-09-04 10:14:30  joergr
+ *  Combined two #include "ofstdinc.h" statements.
+ *
+ *  Revision 1.3  2003/09/03 16:00:11  meichel
  *  Added standard includes needed on Win32
  *
  *  Revision 1.2  2003/08/29 12:52:02  joergr
