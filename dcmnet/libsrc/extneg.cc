@@ -8,9 +8,9 @@
 **   Extended Negotiation for A-ASSOCIATE
 **
 ** Last Update:         $Author: joergr $
-** Update Date:         $Date: 2003-06-12 18:25:20 $
+** Update Date:         $Date: 2004-02-04 15:33:48 $
 ** Source File:         $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/libsrc/extneg.cc,v $
-** CVS/RCS Revision:    $Revision: 1.3 $
+** CVS/RCS Revision:    $Revision: 1.4 $
 ** Status:              $State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -45,9 +45,11 @@ void deleteListMembers(SOPClassExtendedNegotiationSubItemList& lst)
 /*
 ** CVS/RCS Log:
 ** $Log: extneg.cc,v $
-** Revision 1.3  2003-06-12 18:25:20  joergr
+** Revision 1.4  2004-02-04 15:33:48  joergr
+** Removed acknowledgements with e-mail addresses from CVS log.
+**
+** Revision 1.3  2003/06/12 18:25:20  joergr
 ** Modified code to use const_iterators where appropriate (required for STL).
-** Thanks to Henning Meyer <Henning-Meyer@web.de> for the report.
 **
 ** Revision 1.2  2003/06/02 16:44:11  meichel
 ** Renamed local variables to avoid name clashes with STL

@@ -40,24 +40,24 @@
 **              Washington University School of Medicine
 **
 ** Module Name(s):
-**			DUL_InitializeNetwork
-**			DUL_DropNetwork
-**			DUL_RequestAssociation
-**			DUL_ReceiveAssociationRQ
-**			DUL_AcknowledgeAssociateRQ
-**			DUL_RejectAssociateRQ
-**			DUL_ReleaseAssociation
-**			DUL_AbortAssociation
-**			DUL_DropAssociation
-**			DUL_WritePDVs
-**			DUL_ReadPDVs
-** Author, Date:	Stephen M. Moore, 14-Apr-93
-** Intent:		This module contains the public entry points for the
-**			DICOM Upper Layer (DUL) protocol package.
-** Last Update:		$Author: meichel $, $Date: 2003-12-09 10:55:27 $
-** Source File:		$RCSfile: dul.cc,v $
-** Revision:		$Revision: 1.59 $
-** Status:		$State: Exp $
+**                      DUL_InitializeNetwork
+**                      DUL_DropNetwork
+**                      DUL_RequestAssociation
+**                      DUL_ReceiveAssociationRQ
+**                      DUL_AcknowledgeAssociateRQ
+**                      DUL_RejectAssociateRQ
+**                      DUL_ReleaseAssociation
+**                      DUL_AbortAssociation
+**                      DUL_DropAssociation
+**                      DUL_WritePDVs
+**                      DUL_ReadPDVs
+** Author, Date:        Stephen M. Moore, 14-Apr-93
+** Intent:              This module contains the public entry points for the
+**                      DICOM Upper Layer (DUL) protocol package.
+** Last Update:         $Author: joergr $, $Date: 2004-02-04 15:34:29 $
+** Source File:         $RCSfile: dul.cc,v $
+** Revision:            $Revision: 1.60 $
+** Status:              $State: Exp $
 */
 
 
@@ -239,7 +239,7 @@ unsigned long DUL_getPeerCertificateLength(DUL_ASSOCIATIONKEY *dulassoc)
 **
 ** Purpose:
 **  Identify and initialize a network to request or accept Associations.
-**  The caller identifies 
+**  The caller identifies
 **  whether the application wishes to be an Acceptor (AE_ACCEPTOR) or a
 **  Requestor (AE_REQUESTOR) or both (AE_BOTH).  Upon successful
 **  initialization of the network, the function returns a key to be used
@@ -287,7 +287,7 @@ DUL_InitializeNetwork(const char *mode,
     }
 
     // create PRIVATE_NETWORKKEY structure
-    PRIVATE_NETWORKKEY *key = NULL; 
+    PRIVATE_NETWORKKEY *key = NULL;
     OFCondition cond = createNetworkKey(mode, timeout, opt, &key);
 
     // initialize network
@@ -296,7 +296,7 @@ DUL_InitializeNetwork(const char *mode,
     if (cond.good())
     {
       // everything worked well, return network key
-      *networkKey = (DUL_NETWORKKEY *) key;      
+      *networkKey = (DUL_NETWORKKEY *) key;
     }
     else
     {
@@ -512,10 +512,10 @@ DUL_RequestAssociation(
 OFCondition
 DUL_ReceiveAssociationRQ(
   DUL_NETWORKKEY ** callerNetworkKey,
-  DUL_BLOCKOPTIONS block, 
+  DUL_BLOCKOPTIONS block,
   int timeout,
   DUL_ASSOCIATESERVICEPARAMETERS * params,
-  DUL_ASSOCIATIONKEY ** callerAssociation, 
+  DUL_ASSOCIATIONKEY ** callerAssociation,
   int activatePDUStorage)
 {
     PRIVATE_NETWORKKEY
@@ -631,7 +631,7 @@ DUL_ReceiveAssociationRQ(
 OFCondition
 DUL_AcknowledgeAssociationRQ(
   DUL_ASSOCIATIONKEY ** callerAssociation,
-  DUL_ASSOCIATESERVICEPARAMETERS * params, 
+  DUL_ASSOCIATESERVICEPARAMETERS * params,
   int activatePDUStorage)
 {
     PRIVATE_ASSOCIATIONKEY
@@ -677,7 +677,7 @@ DUL_AcknowledgeAssociationRQ(
 OFCondition
 DUL_RejectAssociationRQ(
   DUL_ASSOCIATIONKEY ** callerAssociation,
-  DUL_ABORTITEMS * params, 
+  DUL_ABORTITEMS * params,
   int activatePDUStorage)
 {
     PRIVATE_ASSOCIATIONKEY
@@ -914,7 +914,7 @@ DUL_AbortAssociation(DUL_ASSOCIATIONKEY ** callerAssociation)
 
     OFBool done = OFFalse;
     while (!done)
-    {        
+    {
         cond = PRV_NextPDUType(association, DUL_NOBLOCK, PRV_DEFAULTTIMEOUT, &pduType); // should return DUL_NETWORKCLOSED.
 
         if (cond == DUL_NETWORKCLOSED) event = TRANS_CONN_CLOSED;
@@ -1207,7 +1207,7 @@ DUL_NextPDV(DUL_ASSOCIATIONKEY ** callerAssociation, DUL_PDV * pdv)
      /* in this special case we want to avoid a message on the
         condition stack because this is no real error, but normal
         behaviour - A callback function registered in the condition stack
-        would (unnecessarily) be called once for each PDV. 
+        would (unnecessarily) be called once for each PDV.
         the #ifdef allows to mimick the old behaviour.
       */
     return DUL_NOPDVS;
@@ -1447,7 +1447,7 @@ receiveTransportConnectionTCP(PRIVATE_NETWORKKEY ** network,
     int len;
 #else
     size_t len;
-#endif        
+#endif
     int nfound,
         connected;
     struct sockaddr from;
@@ -1460,7 +1460,7 @@ receiveTransportConnectionTCP(PRIVATE_NETWORKKEY ** network,
     {
       // use the socket file descriptor provided to us externally
       // instead of calling accept().
-      connected = 1;        
+      connected = 1;
 
       len = sizeof(from);
       if (getsockname(sock, &from, &len))
@@ -1497,7 +1497,7 @@ receiveTransportConnectionTCP(PRIVATE_NETWORKKEY ** network,
                     connected++;
             }
             if (!connected) return DUL_NOASSOCIATIONREQUEST;
-        } 
+        }
         else
         {
             connected = 0;
@@ -1566,7 +1566,7 @@ receiveTransportConnectionTCP(PRIVATE_NETWORKKEY ** network,
      * Disable the Nagle algorithm.
      * This provides a 2-4 times performance improvement (WinNT4/SP4, 100Mbit/s Ethernet).
      * Effects on other environments are unknown.
-     * The code below allows the Nagle algorithm to be enabled by setting the TCP_NODELAY environment 
+     * The code below allows the Nagle algorithm to be enabled by setting the TCP_NODELAY environment
      * variable to have value 0.
      */
     int tcpNoDelay = 1; // disable
@@ -1599,11 +1599,11 @@ receiveTransportConnectionTCP(PRIVATE_NETWORKKEY ** network,
     if (remote == NULL)
     {
         // reverse DNS lookup disabled or host not found, use numerical address
-        OFStandard::strlcpy(params->callingPresentationAddress, client_ip_address, 
+        OFStandard::strlcpy(params->callingPresentationAddress, client_ip_address,
           sizeof(params->callingPresentationAddress));
         OFStandard::strlcpy((*association)->remoteNode, client_ip_address, sizeof((*association)->remoteNode));
-    } 
-    else 
+    }
+    else
     {
         client_dns_name = remote->h_name;
 
@@ -1627,17 +1627,17 @@ receiveTransportConnectionTCP(PRIVATE_NETWORKKEY ** network,
 
         // if reverse DNS lookup is disabled, use default value
         if (client_dns_name.size() == 0) client_dns_name = STRING_UNKNOWN;
-        
+
         struct request_info request;
         request_init(&request, RQ_CLIENT_NAME, client_dns_name.c_str(), 0);
         request_set(&request, RQ_CLIENT_ADDR, client_ip_address, 0);
         request_set(&request, RQ_USER, STRING_UNKNOWN, 0);
         request_set(&request, RQ_DAEMON, daemon, 0);
-        
+
         if (! hosts_access(&request))
         {
 #ifdef HAVE_WINSOCK_H
-          (void) shutdown(sock,  1 /* SD_SEND */); 
+          (void) shutdown(sock,  1 /* SD_SEND */);
           (void) closesocket(sock);
 #else
           (void) close(sock);
@@ -1650,7 +1650,7 @@ receiveTransportConnectionTCP(PRIVATE_NETWORKKEY ** network,
 #endif
 
     if ((*association)->connection) delete (*association)->connection;
-    
+
     if ((*network)->networkSpecific.TCP.tLayer)
     {
       (*association)->connection = ((*network)->networkSpecific.TCP.tLayer)->createConnection(sock, params->useSecureLayer);
@@ -1660,7 +1660,7 @@ receiveTransportConnectionTCP(PRIVATE_NETWORKKEY ** network,
     if ((*association)->connection == NULL)
     {
 #ifdef HAVE_WINSOCK_H
-      (void) shutdown(sock,  1 /* SD_SEND */); 
+      (void) shutdown(sock,  1 /* SD_SEND */);
       (void) closesocket(sock);
 #else
       (void) close(sock);
@@ -1779,7 +1779,7 @@ initializeNetworkTCP(PRIVATE_NETWORKKEY ** key, void *parameter)
     int length;
 #else
     size_t length;
-#endif        
+#endif
 
     struct sockaddr_in server;
 
@@ -2220,7 +2220,7 @@ dump_uid(const char *UID, const char *indent)
 {
     const char* uidName;
     char buf[4096];
-    
+
     if ((UID==NULL)||(UID[0] == '\0'))
     {
         sprintf(buf, indent, " ");
@@ -2374,7 +2374,7 @@ OFCondition DUL_setTransportLayer(DUL_NETWORKKEY *callerNetworkKey, DcmTransport
     key->networkSpecific.TCP.tLayer = newLayer;
     key->networkSpecific.TCP.tLayerOwned = takeoverOwnership;
     return EC_Normal;
-  } 
+  }
   return DUL_NULLKEY;
 }
 
@@ -2390,7 +2390,10 @@ void DUL_DumpConnectionParameters(DUL_ASSOCIATIONKEY *association, ostream& outs
 /*
 ** CVS Log
 ** $Log: dul.cc,v $
-** Revision 1.59  2003-12-09 10:55:27  meichel
+** Revision 1.60  2004-02-04 15:34:29  joergr
+** Removed acknowledgements with e-mail addresses from CVS log.
+**
+** Revision 1.59  2003/12/09 10:55:27  meichel
 ** Removed unused debug output
 **
 ** Revision 1.58  2003/07/09 14:00:27  meichel
@@ -2447,8 +2450,6 @@ void DUL_DumpConnectionParameters(DUL_ASSOCIATIONKEY *association, ostream& outs
 **
 ** Revision 1.44  2002/04/16 13:57:32  joergr
 ** Added configurable support for C++ ANSI standard includes (e.g. streams).
-** Thanks to Andreas Barth <Andreas.Barth@bruker-biospin.de> for his
-** contribution.
 **
 ** Revision 1.43  2001/12/19 16:37:01  meichel
 ** Introduced function pointer typedef to avoid warning on Sun Workshop 6.

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2002, OFFIS
+ *  Copyright (C) 1994-2004, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,10 +21,10 @@
  *
  *  Purpose: network conditions and helper class
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-12-10 11:00:59 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2004-02-04 15:35:17 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/libsrc/cond.cc,v $
- *  CVS/RCS Revision: $Revision: 1.12 $
+ *  CVS/RCS Revision: $Revision: 1.13 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -100,7 +100,7 @@ const OFConditionConst DULE_REQUESTASSOCIATIONFAILED( OFM_dcmnet, DULC_REQUESTAS
 const OFConditionConst DULE_UNEXPECTEDPDU(            OFM_dcmnet, DULC_UNEXPECTEDPDU           , OF_error, "Received unexpected PDU");
 const OFConditionConst DULE_UNSUPPORTEDPEERPROTOCOL(  OFM_dcmnet, DULC_UNSUPPORTEDPEERPROTOCOL , OF_error, "DUL Unsupported peer protocol");
 const OFConditionConst DULE_WRONGDATATYPE(            OFM_dcmnet, DULC_WRONGDATATYPE           , OF_error, "DUL Wrong Data Type Specified for Request");
-                                                                     
+
 const OFCondition DUL_ASSOCIATIONREJECTED(      DULE_ASSOCIATIONREJECTED);
 const OFCondition DUL_ILLEGALACCEPT(            DULE_ILLEGALACCEPT);
 const OFCondition DUL_ILLEGALKEY(               DULE_ILLEGALKEY);
@@ -127,7 +127,7 @@ const OFCondition DUL_WRONGDATATYPE(            DULE_WRONGDATATYPE);
 void DimseCondition::dump(OFCondition cond, OFConsole& console)
 {
   char buf[16];
-  sprintf(buf,"%04x:%04x ", cond.module(), cond.code()); 
+  sprintf(buf,"%04x:%04x ", cond.module(), cond.code());
   console.lockCerr() << buf << cond.text() << endl;
   console.unlockCerr();
 }
@@ -162,7 +162,10 @@ OFCondition DimseCondition::push(
 /*
  * CVS Log
  * $Log: cond.cc,v $
- * Revision 1.12  2002-12-10 11:00:59  meichel
+ * Revision 1.13  2004-02-04 15:35:17  joergr
+ * Removed acknowledgements with e-mail addresses from CVS log.
+ *
+ * Revision 1.12  2002/12/10 11:00:59  meichel
  * Removed error code DUL_NETWORKINITIALIZED which is not used anymore
  *
  * Revision 1.11  2002/11/27 13:04:37  meichel
@@ -171,13 +174,9 @@ OFCondition DimseCondition::push(
  * Revision 1.10  2002/05/02 14:07:37  joergr
  * Added support for standard and non-standard string streams (which one is
  * supported is detected automatically via the configure mechanism).
- * Thanks again to Andreas Barth <Andreas.Barth@bruker-biospin.de> for his
- * contribution.
  *
  * Revision 1.9  2002/04/16 13:57:31  joergr
  * Added configurable support for C++ ANSI standard includes (e.g. streams).
- * Thanks to Andreas Barth <Andreas.Barth@bruker-biospin.de> for his
- * contribution.
  *
  * Revision 1.8  2001/10/12 10:18:30  meichel
  * Replaced the CONDITION types, constants and functions in the dcmnet module

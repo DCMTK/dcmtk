@@ -45,9 +45,9 @@
 ** Intent:              This file contains functions for parsing Dicom
 **                      Upper Layer (DUL) Protocol Data Units (PDUs)
 **                      into logical in-memory structures.
-** Last Update:         $Author: joergr $, $Date: 2002-12-09 13:20:29 $
+** Last Update:         $Author: joergr $, $Date: 2004-02-04 15:33:48 $
 ** Source File:         $RCSfile: dulparse.cc,v $
-** Revision:            $Revision: 1.22 $
+** Revision:            $Revision: 1.23 $
 ** Status:              $State: Exp $
 */
 
@@ -767,7 +767,10 @@ trim_trailing_spaces(char *s)
 /*
 ** CVS Log
 ** $Log: dulparse.cc,v $
-** Revision 1.22  2002-12-09 13:20:29  joergr
+** Revision 1.23  2004-02-04 15:33:48  joergr
+** Removed acknowledgements with e-mail addresses from CVS log.
+**
+** Revision 1.22  2002/12/09 13:20:29  joergr
 ** Renamed local variable to avoid name clash with function parameter "buf".
 **
 ** Revision 1.21  2002/11/29 12:15:25  wilkens
@@ -780,8 +783,6 @@ trim_trailing_spaces(char *s)
 **
 ** Revision 1.19  2002/04/16 13:57:34  joergr
 ** Added configurable support for C++ ANSI standard includes (e.g. streams).
-** Thanks to Andreas Barth <Andreas.Barth@bruker-biospin.de> for his
-** contribution.
 **
 ** Revision 1.18  2001/11/09 15:58:55  joergr
 ** Added '#include <iostream.h>' to avoid compiler errors reported by Sun CC

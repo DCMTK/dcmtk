@@ -56,10 +56,10 @@
 **
 **      Module Prefix: DIMSE_
 **
-** Last Update:         $Author: meichel $
-** Update Date:         $Date: 2003-10-22 16:48:47 $
+** Last Update:         $Author: joergr $
+** Update Date:         $Date: 2004-02-04 15:35:17 $
 ** Source File:         $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/libsrc/dimse.cc,v $
-** CVS/RCS Revision:    $Revision: 1.37 $
+** CVS/RCS Revision:    $Revision: 1.38 $
 ** Status:              $State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -1761,7 +1761,10 @@ void DIMSE_warning(T_ASC_Association *assoc,
 /*
 ** CVS Log
 ** $Log: dimse.cc,v $
-** Revision 1.37  2003-10-22 16:48:47  meichel
+** Revision 1.38  2004-02-04 15:35:17  joergr
+** Removed acknowledgements with e-mail addresses from CVS log.
+**
+** Revision 1.37  2003/10/22 16:48:47  meichel
 ** Fixed double deletion of command set if parsing of command set fails.
 **
 ** Revision 1.36  2003/06/04 14:27:46  meichel
@@ -1847,7 +1850,6 @@ void DIMSE_warning(T_ASC_Association *assoc,
 ** Fixed bug in DIMSE_sendMessage() that could result in an undefined
 **   error condition passed back to the caller when an attempt was made
 **   to send a DIMSE message without appropriate presentation context.
-**   Thanks to Gilles Mevel <Gilles.Mevel@etiam.com> for the report.
 **
 ** Revision 1.14  1998/01/28 17:38:13  meichel
 ** Removed minor bug from DICOM Upper Layer / DIMSE modules.
@@ -1919,4 +1921,3 @@ void DIMSE_warning(T_ASC_Association *assoc,
 **
 **
 */
-
