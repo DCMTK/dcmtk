@@ -23,8 +23,8 @@
  *    classes: DSRTreeNode, DSRTree
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-10-18 17:09:29 $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  Update Date:      $Date: 2000-11-01 16:22:11 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -48,7 +48,7 @@
 /** Class for tree nodes
  */
 class DSRTreeNode
-  : public DSRTypes
+  : protected DSRTypes
 {
     // allow direct access to member variables
     friend class DSRTreeNodeCursor;
@@ -103,7 +103,7 @@ class DSRTreeNode
  *  This is in fact a directed acyclic graph (DAG).
  */
 class DSRTree
-  : public DSRTypes,
+  : protected DSRTypes,
     public DSRTreeNodeCursor
 {
 
@@ -203,7 +203,10 @@ class DSRTree
 /*
  *  CVS/RCS Log:
  *  $Log: dsrtree.h,v $
- *  Revision 1.3  2000-10-18 17:09:29  joergr
+ *  Revision 1.4  2000-11-01 16:22:11  joergr
+ *  Now derive "protected" from base class DSRTypes instead of "public".
+ *
+ *  Revision 1.3  2000/10/18 17:09:29  joergr
  *  Made some functions inline.
  *
  *  Revision 1.2  2000/10/16 11:56:10  joergr
