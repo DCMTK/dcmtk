@@ -1,3 +1,10 @@
+**** Changes from 1998.11.30 (riesmeier)
+
+- Added module dcmpstat to CVS depot.
+  Affects: modules/modules.
+  
+- Added CVS/RCS log at end of file.
+  Affects: dcmpstat/include/dviface.h
 
 **** Initial Release 1998.11.18 (eichelberg)
 
