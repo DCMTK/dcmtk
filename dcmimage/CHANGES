@@ -1,3 +1,13 @@
+**** Changes from 1999.02.28 (riesmeier)
+
+- Corrected bug: the output bits for bitmaps shutters were inverted (this was
+  done due to an error in the used test images).
+  Affects: dcmimgle/include/dimoopxt.h
+
+- Corrected bug: the bit position for bitmap shutters was 1 instead of 0 (i.e.
+  the first bit was always been skipped and the all following bits were wrong).
+  Affects: dcmimgle/libsrc/diovpln.cc
+
 **** Changes from 1999.02.25 (riesmeier)
 
 - Initialize local variables to avoid compiler warnings (reported by gcc
