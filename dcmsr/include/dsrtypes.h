@@ -23,8 +23,8 @@
  *    classes: DSRTypes
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-12-08 13:45:17 $
- *  CVS/RCS Revision: $Revision: 1.11 $
+ *  Update Date:      $Date: 2001-01-18 15:52:11 $
+ *  CVS/RCS Revision: $Revision: 1.12 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -643,6 +643,19 @@ class DSRTypes
     static const OFString &dicomToReadablePersonName(const OFString &dicomPersonName,
                                                      OFString &readablePersonName);
 
+    /** convert DICOM person name to XML format.
+     *  The tags <prefix>, <first>, <middle>, <last> and <suffix> are used for the XML format
+     *  of a person name.  The string is automatically converted to the markup notation (see
+     *  convertToMarkupString()).  Two tags are separated by a newline.
+     ** @param  dicomPersonName  person name in DICOM PN format (ln^fn^mn^p^s)
+     *  @param  xmlPersonName    reference to variable where the resulting string is stored
+     *  @param  writeEmptyValue  optional flag indicating whether an empty value should be written
+     ** @return reference to resulting string (might be empty)
+     */
+    static const OFString &dicomToXMLPersonName(const OFString &dicomPersonName,
+                                                OFString &xmlPersonName,
+                                                const OFBool writeEmptyValue = OFFalse);
+
     /** convert unsigned integer number to character string
      ** @param  number  unsigned integer number to be converted
      *  @param  string  character string used to store the result
@@ -912,6 +925,7 @@ class DSRTypes
 
     /** write string value from DICOM element to XML output stream.
      *  The output looks like this: "<" tagName ">" stringValue "</" tagName ">"
+     *  For elements with DICOM VR=PN the function dicomToXMLPersonName() is used internally.
      ** @param  stream           output stream to which the XML document is written
      *  @param  delem            reference to DICOM element from which the value is retrieved
      *  @param  tagName          name of the XML tag used to surround the string value
@@ -971,7 +985,10 @@ class DSRTypes
 /*
  *  CVS/RCS Log:
  *  $Log: dsrtypes.h,v $
- *  Revision 1.11  2000-12-08 13:45:17  joergr
+ *  Revision 1.12  2001-01-18 15:52:11  joergr
+ *  Encode PN components in separate XML tags.
+ *
+ *  Revision 1.11  2000/12/08 13:45:17  joergr
  *  Removed optional fractional second part from time value.
  *
  *  Revision 1.10  2000/11/09 20:32:08  joergr

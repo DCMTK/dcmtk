@@ -23,8 +23,8 @@
  *    classes: DSRPNameTreeNode
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-11-09 20:34:01 $
- *  CVS/RCS Revision: $Revision: 1.8 $
+ *  Update Date:      $Date: 2001-01-18 15:56:18 $
+ *  CVS/RCS Revision: $Revision: 1.9 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -94,7 +94,11 @@ E_Condition DSRPNameTreeNode::writeXML(ostream &stream,
         stream << " id=\"" << getNodeID() << "\"";
     stream << ">" << endl;
     result = DSRDocumentTreeNode::writeXML(stream, flags, logStream);
-    writeStringValueToXML(stream, getValue(), "value", flags & XF_writeEmptyTags);
+    if ((getValue().length() > 0) || (flags & XF_writeEmptyTags))
+    {
+        OFString string;
+        stream << "<value>" << endl << dicomToXMLPersonName(getValue(), string) << "</value>" << endl;
+    }
     stream << "</pname>" << endl;
     return result;
 }
@@ -158,7 +162,10 @@ OFBool DSRPNameTreeNode::canAddNode(const E_DocumentType documentType,
 /*
  *  CVS/RCS Log:
  *  $Log: dsrpnmtn.cc,v $
- *  Revision 1.8  2000-11-09 20:34:01  joergr
+ *  Revision 1.9  2001-01-18 15:56:18  joergr
+ *  Encode PN components in separate XML tags.
+ *
+ *  Revision 1.8  2000/11/09 20:34:01  joergr
  *  Added support for non-ASCII characters in HTML 3.2 (use numeric value).
  *
  *  Revision 1.7  2000/11/07 18:31:13  joergr

@@ -23,8 +23,8 @@
  *    classes: DSRTypes
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-12-12 17:21:21 $
- *  CVS/RCS Revision: $Revision: 1.12 $
+ *  Update Date:      $Date: 2001-01-18 15:56:46 $
+ *  CVS/RCS Revision: $Revision: 1.13 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -998,6 +998,78 @@ const OFString &DSRTypes::dicomToReadablePersonName(const OFString &dicomPersonN
 }
 
 
+const OFString &DSRTypes::dicomToXMLPersonName(const OFString &dicomPersonName,
+                                               OFString &xmlPersonName,
+                                               const OFBool writeEmptyValue)
+{
+    xmlPersonName.clear();
+    const size_t pos1 = dicomPersonName.find('^');
+    if (pos1 != OFString_npos)
+    {
+        const size_t pos2 = dicomPersonName.find('^', pos1 + 1);
+        OFString str1 = dicomPersonName.substr(0, pos1);
+        OFString str2, str3, str4, str5;
+        if (pos2 != OFString_npos)
+        {
+            const size_t pos3 = dicomPersonName.find('^', pos2 + 1);
+            str2 = dicomPersonName.substr(pos1 + 1, pos2 - pos1 - 1);
+            if (pos3 != OFString_npos)
+            {
+                const size_t pos4 = dicomPersonName.find('^', pos3 + 1);
+                str3 = dicomPersonName.substr(pos2 + 1, pos3 - pos2 - 1);
+                if (pos4 != OFString_npos)
+                {
+                    str4 = dicomPersonName.substr(pos3 + 1, pos4 - pos3 - 1);
+                    str5 = dicomPersonName.substr(pos4 + 1);
+                } else
+                    str4 = dicomPersonName.substr(pos3 + 1);
+            } else
+                str3 = dicomPersonName.substr(pos2 + 1);
+        } else
+            str2 = dicomPersonName.substr(pos1 + 1);
+
+        OFString xmlString;
+        /* prefix */
+        if (writeEmptyValue || (str4.length() > 0))
+        {
+            xmlPersonName += "<prefix>";
+            xmlPersonName += convertToMarkupString(str4, xmlString);
+            xmlPersonName += "</prefix>\n";
+        }
+        /* first name */
+        if (writeEmptyValue || (str2.length() > 0))
+        {
+            xmlPersonName += "<first>";
+            xmlPersonName += convertToMarkupString(str2, xmlString);
+            xmlPersonName += "</first>\n";
+        }
+        /* middle name */
+        if (writeEmptyValue || (str3.length() > 0))
+        {
+            xmlPersonName += "<middle>";
+            xmlPersonName += convertToMarkupString(str3, xmlString);
+            xmlPersonName += "</middle>\n";
+        }
+        /* last name */
+        if (writeEmptyValue || (str1.length() > 0))
+        {
+            xmlPersonName += "<last>";
+            xmlPersonName += convertToMarkupString(str1, xmlString);
+            xmlPersonName += "</last>\n";
+        }
+        /* suffix */
+        if (writeEmptyValue || (str5.length() > 0))
+        {
+            xmlPersonName += "<suffix>";
+            xmlPersonName += convertToMarkupString(str5, xmlString);
+            xmlPersonName += "</suffix>";
+        }
+    } else
+        xmlPersonName = dicomPersonName;
+    return xmlPersonName;
+}
+
+
 const char *DSRTypes::numberToString(const size_t number,
                                      char *string)
 {
@@ -1078,7 +1150,7 @@ const OFString &DSRTypes::convertToMarkupString(const OFString &sourceString,
             markupString += "&amp;";
         /* quotation mark */
         else if (*str == '"')
-            markupString += "&quot;";            
+            markupString += "&quot;";
         /* newline: LF, CR, LF CR, CR LF */
         else if ((*str == '\012') || (*str == '\015'))
         {
@@ -1309,7 +1381,14 @@ OFBool DSRTypes::writeStringFromElementToXML(ostream &stream,
     if ((delem.getLength() > 0) || writeEmptyValue)
     {
         OFString string;
-        stream << "<" << tagName << ">" << getMarkupStringFromElement(delem, string) << "</" << tagName << ">" << endl;
+        stream << "<" << tagName << ">";
+        if (delem.getVR() == EVR_PN)        // special formatting for person names
+        {
+            OFString xmlString;
+            stream << endl << dicomToXMLPersonName(getStringValueFromElement(delem, string), xmlString, writeEmptyValue) << endl;
+        } else
+            stream << getMarkupStringFromElement(delem, string);
+        stream << "</" << tagName << ">" << endl;
         result = OFTrue;
     }
     return result;
@@ -1379,7 +1458,10 @@ E_Condition DSRTypes::appendStream(ostream &mainStream,
 /*
  *  CVS/RCS Log:
  *  $Log: dsrtypes.cc,v $
- *  Revision 1.12  2000-12-12 17:21:21  joergr
+ *  Revision 1.13  2001-01-18 15:56:46  joergr
+ *  Encode PN components in separate XML tags.
+ *
+ *  Revision 1.12  2000/12/12 17:21:21  joergr
  *  Added explicit typecast to keep gcc 2.7 quiet.
  *
  *  Revision 1.11  2000/12/08 13:46:00  joergr
