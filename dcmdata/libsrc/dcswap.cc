@@ -10,7 +10,7 @@
 **
 **
 ** Last Update:   $Author: andreas $
-** Revision:      $Revision: 1.6 $
+** Revision:      $Revision: 1.7 $
 ** Status:	  $State: Exp $
 **
 */
@@ -56,7 +56,7 @@ void swapBytes(void * value, const Uint32 byteLength,
     {
 	register Uint8 * first = &((Uint8*)value)[0];
 	register Uint8 * second = &((Uint8*)value)[1];
-	register Uint32 times = valWidth/2;
+	register Uint32 times = byteLength/2;
 	while(times--)
 	{
 	    save = *first;
