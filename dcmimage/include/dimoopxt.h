@@ -4,7 +4,7 @@
 **
 **  author   : Joerg Riesmeier
 **  created  : 19.12.96
-**  modified : 05.03.98
+**  modified : 09.03.98
 **
 *********************************************************************/
 
@@ -258,7 +258,7 @@ class DiMonoOutputPixelTemplate : public DiMonoOutputPixel, public DiPixelRepres
 							break;
 						}
 						default: /* e.g. EMO_Default */
-							cerr << "WARNING: unhandled overlay mode (" << plane->getMode() << ") !" << endl;
+							cerr << "WARNING: unhandled overlay mode (" << (int)plane->getMode() << ") !" << endl;
 					}
 				} 
 			}

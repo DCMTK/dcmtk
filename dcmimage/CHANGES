@@ -1,5 +1,10 @@
 **** Changes from 1998.03.09 (riesmeier)
 
+- Add type cast to avoid warnings with MSVC.
+  Affects: dcmimage/include/dimoopxt.h
+
+**** Changes from 1998.03.09 (riesmeier)
+
 - Made 'return' last statement in some non-void functions.
   Affects: dcmimage/apps/dcm2pnm.cc
            dcmimage/include/dimopxt.h
