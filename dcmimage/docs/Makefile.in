@@ -1,0 +1,17 @@
+#
+#	Makefile for dcmimage/docs
+#
+
+@SET_MAKE@
+
+all:
+	echo Nothing to do for all
+
+install:
+	echo Nothing to do for install
+
+clean:
+	rm -f *~
+
+distclean:
+	rm -f Makefile *~
