@@ -1,6 +1,11 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2000.02.02 (riesmeier)
+
+- Removed space characters before preprocessor directives.
+  Affects: dcmimage/apps/dcm2pnm.cc
+
 **** Changes from 2000.02.01 (eichelberg)
 
 - Avoiding to include <stdlib.h> as extern "C" on Borland C++ Builder 4,
