@@ -1,24 +1,45 @@
 /*
+ *
+ *  Copyright (C) 1997-99, OFFIS
+ *
+ *  This software and supporting documentation were developed by
+ *
+ *    Kuratorium OFFIS e.V.
+ *    Healthcare Information and Communication Systems
+ *    Escherweg 2
+ *    D-26121 Oldenburg, Germany
+ *
+ *  THIS SOFTWARE IS MADE AVAILABLE,  AS IS,  AND OFFIS MAKES NO  WARRANTY
+ *  REGARDING  THE  SOFTWARE,  ITS  PERFORMANCE,  ITS  MERCHANTABILITY  OR
+ *  FITNESS FOR ANY PARTICULAR USE, FREEDOM FROM ANY COMPUTER DISEASES  OR
+ *  ITS CONFORMITY TO ANY SPECIFICATION. THE ENTIRE RISK AS TO QUALITY AND
+ *  PERFORMANCE OF THE SOFTWARE IS WITH THE USER.
+ *
+ *  Module:  ofstd
+ *
+ *  Author:  Andrew Hewett
+ *
+ *  Purpose: A simple string class
+ * 
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 1998-11-27 12:43:54 $
+ *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/libsrc/ofstring.cc,v $
+ *  CVS/RCS Revision: $Revision: 1.8 $
+ *  Status:           $State: Exp $
+ *
+ *  CVS/RCS Log at end of file
+ *
+ */
+
+
+/*
 ** A simple string class
 ** - for OFFIS projects when an ANSI string class is not always available
 ** - based on the ANSI-C++ specifications
 ** - this impementation is intended to be slow but reliable
 ** - it is known to be slow but is it reliable
-**
-** Created: June, 1997
-**
-** Author: Andrew Hewett, Kuratorium OFFIS e.V., Oldenburg, Germany
-**
-** 
-** Last Update:		$Author: meichel $
-** Update Date:		$Date: 1998-06-29 12:09:26 $
-** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/libsrc/ofstring.cc,v $
-** CVS/RCS Revision:	$Revision: 1.7 $
-** Status:		$State: Exp $
-**
-** CVS/RCS Log at end of file
-**
 */
+
 
 #include "osconfig.h"     /* include OS specific configuration first */
 
@@ -987,7 +1008,10 @@ OFBool operator>= (const OFString& lhs, char rhs)
 /*
 ** CVS/RCS Log:
 ** $Log: ofstring.cc,v $
-** Revision 1.7  1998-06-29 12:09:26  meichel
+** Revision 1.8  1998-11-27 12:43:54  joergr
+** Added copyright message to source files and changed CVS header.
+**
+** Revision 1.7  1998/06/29 12:09:26  meichel
 ** Removed some name clashes (e.g. local variable with same
 **   name as class member) to improve maintainability.
 **   Applied some code purifications proposed by the gcc 2.8.1 -Weffc++ option.

@@ -1,3 +1,20 @@
+/*
+ *
+ *  Module:  ofstd
+ *
+ *  Purpose: test programm for C++ string class
+ *
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 1998-11-27 12:42:10 $
+ *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/tests/tstring.cc,v $
+ *  CVS/RCS Revision: $Revision: 1.2 $
+ *  Status:           $State: Exp $
+ *
+ *  CVS/RCS Log at end of file
+ *
+ */
+
+
 // Tests for the -*- C++ -*- string classes.
 // Copyright (C) 1994 Free Software Foundation
 
@@ -14,6 +31,7 @@
 // You should have received a copy of the GNU General Public License
 // along with this library; see the file COPYING.  If not, write to the Free
 // Software Foundation, 59 Temple Place - Suite 330, Boston, MA  02111-1307, USA.
+
 
 #ifdef ORIGINAL_GNU_INCLUDES 
 #include <std/string.h>
@@ -196,3 +214,15 @@ int main()
   cout << "\nEnd of test\n";
   return 0;
 }
+
+
+/*
+**
+** CVS/RCS Log:
+** $Log: tstring.cc,v $
+** Revision 1.2  1998-11-27 12:42:10  joergr
+** Added copyright message to source files and changed CVS header.
+**
+**
+**
+*/

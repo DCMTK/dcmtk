@@ -1,28 +1,47 @@
 /*
+ *
+ *  Copyright (C) 1997-99, OFFIS
+ *
+ *  This software and supporting documentation were developed by
+ *
+ *    Kuratorium OFFIS e.V.
+ *    Healthcare Information and Communication Systems
+ *    Escherweg 2
+ *    D-26121 Oldenburg, Germany
+ *
+ *  THIS SOFTWARE IS MADE AVAILABLE,  AS IS,  AND OFFIS MAKES NO  WARRANTY
+ *  REGARDING  THE  SOFTWARE,  ITS  PERFORMANCE,  ITS  MERCHANTABILITY  OR
+ *  FITNESS FOR ANY PARTICULAR USE, FREEDOM FROM ANY COMPUTER DISEASES  OR
+ *  ITS CONFORMITY TO ANY SPECIFICATION. THE ENTIRE RISK AS TO QUALITY AND
+ *  PERFORMANCE OF THE SOFTWARE IS WITH THE USER.
+ *
+ *  Module:  ofstd
+ *
+ *  Author:  Andrew Hewett
+ *				
+ *  Purpose: A simple string class
+ * 
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 1998-11-27 12:42:52 $
+ *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/include/Attic/ofstring.h,v $
+ *  CVS/RCS Revision: $Revision: 1.5 $
+ *  Status:           $State: Exp $
+ *
+ *  CVS/RCS Log at end of file
+ *
+ */
+
+#ifndef OFSTRING_H
+#define OFSTRING_H
+
+/*
 ** A simple string class
 ** - for OFFIS projects when an ANSI string class is not always available
 ** - based on the ANSI-C++ specifications (????)
 ** - does not implement iterators or traits
 ** - this impementation is intended to be slow but reliable
 ** - it is known to be slow but is it reliable?
-**
-** Created: June, 1997
-**
-** Author: Andrew Hewett, Kuratorium OFFIS e.V., Oldenburg, Germany
-**
-** 
-** Last Update:		$Author: hewett $
-** Update Date:		$Date: 1997-09-01 10:00:12 $
-** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/include/Attic/ofstring.h,v $
-** CVS/RCS Revision:	$Revision: 1.4 $
-** Status:		$State: Exp $
-**
-** CVS/RCS Log at end of file
-**
 */
-
-#ifndef OFSTRING_H
-#define OFSTRING_H
 
 #include "osconfig.h"     /* include OS specific configuration first */
 
@@ -568,7 +587,10 @@ OFBool operator>= (const OFString& lhs, char rhs);
 /*
 ** CVS/RCS Log:
 ** $Log: ofstring.h,v $
-** Revision 1.4  1997-09-01 10:00:12  hewett
+** Revision 1.5  1998-11-27 12:42:52  joergr
+** Added copyright message to source files and changed CVS header.
+**
+** Revision 1.4  1997/09/01 10:00:12  hewett
 ** Added absent $ terminator to RCS/CVS Revision keyword in header.
 **
 ** Revision 1.3  1997/07/14 13:37:31  meichel

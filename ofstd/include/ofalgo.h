@@ -1,23 +1,37 @@
 /*
-** Author: Andreas Barth	Created: 30.06.97
-**				
-** Kuratorium OFFIS e.V.
-**
-** Module: ofalgo.h
-**
-** Purpose:
-**	Defines template algorithms for contaimer  classes with 
-**      interfaces similar to the C++ Standard
-**
-** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1997-07-02 11:51:13 $
-** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/include/Attic/ofalgo.h,v $
-** CVS/RCS Revision:	$Revision: 1.1 $
-** Status:		$State: Exp $
-**
-** CVS/RCS Log at end of file
-**
-*/
+ *
+ *  Copyright (C) 1997-99, OFFIS
+ *
+ *  This software and supporting documentation were developed by
+ *
+ *    Kuratorium OFFIS e.V.
+ *    Healthcare Information and Communication Systems
+ *    Escherweg 2
+ *    D-26121 Oldenburg, Germany
+ *
+ *  THIS SOFTWARE IS MADE AVAILABLE,  AS IS,  AND OFFIS MAKES NO  WARRANTY
+ *  REGARDING  THE  SOFTWARE,  ITS  PERFORMANCE,  ITS  MERCHANTABILITY  OR
+ *  FITNESS FOR ANY PARTICULAR USE, FREEDOM FROM ANY COMPUTER DISEASES  OR
+ *  ITS CONFORMITY TO ANY SPECIFICATION. THE ENTIRE RISK AS TO QUALITY AND
+ *  PERFORMANCE OF THE SOFTWARE IS WITH THE USER.
+ *
+ *  Module:  ofstd
+ *
+ *  Author:  Andreas Barth
+ *				
+ *  Purpose:
+ *      Defines template algorithms for contaimer  classes with 
+ *      interfaces similar to the C++ Standard
+ *
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 1998-11-27 12:42:50 $
+ *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/include/Attic/ofalgo.h,v $
+ *  CVS/RCS Revision: $Revision: 1.2 $
+ *  Status:           $State: Exp $
+ *
+ *  CVS/RCS Log at end of file
+ *
+ */
 
 #ifndef OFITER_H
 #define OFITER_H

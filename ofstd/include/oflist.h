@@ -1,23 +1,36 @@
 /*
-** Author: Andreas Barth	Created: 19.06.97
-**				
-** Kuratorium OFFIS e.V.
-**
-** Module: oflist.h
-**
-** Purpose:
-**	Defines a template list class with interfaces similar to the
-**      C++ Standard
-**
-** Last Update:		$Author: meichel $
-** Update Date:		$Date: 1998-07-02 07:47:02 $
-** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/include/Attic/oflist.h,v $
-** CVS/RCS Revision:	$Revision: 1.8 $
-** Status:		$State: Exp $
-**
-** CVS/RCS Log at end of file
-**
-*/
+ *
+ *  Copyright (C) 1997-99, OFFIS
+ *
+ *  This software and supporting documentation were developed by
+ *
+ *    Kuratorium OFFIS e.V.
+ *    Healthcare Information and Communication Systems
+ *    Escherweg 2
+ *    D-26121 Oldenburg, Germany
+ *
+ *  THIS SOFTWARE IS MADE AVAILABLE,  AS IS,  AND OFFIS MAKES NO  WARRANTY
+ *  REGARDING  THE  SOFTWARE,  ITS  PERFORMANCE,  ITS  MERCHANTABILITY  OR
+ *  FITNESS FOR ANY PARTICULAR USE, FREEDOM FROM ANY COMPUTER DISEASES  OR
+ *  ITS CONFORMITY TO ANY SPECIFICATION. THE ENTIRE RISK AS TO QUALITY AND
+ *  PERFORMANCE OF THE SOFTWARE IS WITH THE USER.
+ *
+ *  Module:  ofstd
+ *
+ *  Author:  Andreas Barth
+ *
+ *  Purpose:
+ *	    Defines a template list class with interfaces similar to the C++ Standard
+ *
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 1998-11-27 12:42:51 $
+ *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/include/Attic/oflist.h,v $
+ *  CVS/RCS Revision: $Revision: 1.9 $
+ *  Status:           $State: Exp $
+ *
+ *  CVS/RCS Log at end of file
+ *
+ */
 
 #ifndef OFLIST_H
 #define OFLIST_H
@@ -412,7 +425,10 @@ void OF_ListRemoveIf(OFList<T> & c, Predicate pred)
 /*
 ** CVS/RCS Log:
 ** $Log: oflist.h,v $
-** Revision 1.8  1998-07-02 07:47:02  meichel
+** Revision 1.9  1998-11-27 12:42:51  joergr
+** Added copyright message to source files and changed CVS header.
+**
+** Revision 1.8  1998/07/02 07:47:02  meichel
 ** Some code purifications to avoid gcc 2.8.1 -Weffc++ warnings.
 **
 ** Revision 1.7  1998/06/29 12:09:23  meichel

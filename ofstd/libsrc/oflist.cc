@@ -1,22 +1,36 @@
 /*
-** Author: Andreas Barth	Created: 19.06.97
-**				
-** Kuratorium OFFIS e.V.
-**
-** Module: oflist.cc
-**
-** Purpose:
-**	Implementation of supplementary methods for a template list class 
-**
-** Last Update:		$Author: meichel $
-** Update Date:		$Date: 1998-07-02 07:47:05 $
-** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/libsrc/oflist.cc,v $
-** CVS/RCS Revision:	$Revision: 1.4 $
-** Status:		$State: Exp $
-**
-** CVS/RCS Log at end of file
-**
-*/
+ *
+ *  Copyright (C) 1997-99, OFFIS
+ *
+ *  This software and supporting documentation were developed by
+ *
+ *    Kuratorium OFFIS e.V.
+ *    Healthcare Information and Communication Systems
+ *    Escherweg 2
+ *    D-26121 Oldenburg, Germany
+ *
+ *  THIS SOFTWARE IS MADE AVAILABLE,  AS IS,  AND OFFIS MAKES NO  WARRANTY
+ *  REGARDING  THE  SOFTWARE,  ITS  PERFORMANCE,  ITS  MERCHANTABILITY  OR
+ *  FITNESS FOR ANY PARTICULAR USE, FREEDOM FROM ANY COMPUTER DISEASES  OR
+ *  ITS CONFORMITY TO ANY SPECIFICATION. THE ENTIRE RISK AS TO QUALITY AND
+ *  PERFORMANCE OF THE SOFTWARE IS WITH THE USER.
+ *
+ *  Module:  ofstd
+ *
+ *  Author:  Andreas Barth
+ *
+ *  Purpose:
+ *	    Implementation of supplementary methods for a template list class 
+ *
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 1998-11-27 12:43:53 $
+ *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/libsrc/oflist.cc,v $
+ *  CVS/RCS Revision: $Revision: 1.5 $
+ *  Status:           $State: Exp $
+ *
+ *  CVS/RCS Log at end of file
+ *
+ */
 
 #include "osconfig.h"    /* make sure OS specific configuration is included first */
 
@@ -115,7 +129,10 @@ void OFListBase::base_recalcListSize()
 /*
 ** CVS/RCS Log:
 ** $Log: oflist.cc,v $
-** Revision 1.4  1998-07-02 07:47:05  meichel
+** Revision 1.5  1998-11-27 12:43:53  joergr
+** Added copyright message to source files and changed CVS header.
+**
+** Revision 1.4  1998/07/02 07:47:05  meichel
 ** Some code purifications to avoid gcc 2.8.1 -Weffc++ warnings.
 **
 ** Revision 1.3  1998/02/06 15:07:41  meichel
