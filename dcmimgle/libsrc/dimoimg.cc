@@ -22,9 +22,9 @@
  *  Purpose: DicomMonochromeImage (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1998-11-27 16:12:48 $
+ *  Update Date:      $Date: 1998-12-14 17:37:15 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/libsrc/dimoimg.cc,v $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -67,12 +67,13 @@ DiMonoImage::DiMonoImage(const DiDocument *docu,
     VoiLutCount(0),
     ValidWindow(0),
     PresLutShape(ESP_Identity),
-    Overlays(NULL),
     VoiLutData(NULL),
     PresLutData(NULL),
     InterData(NULL),
     OutputData(NULL)
 {
+    Overlays[0] = NULL;
+    Overlays[1] = NULL;
     if ((Document != NULL) && (InputData != NULL) && (ImageStatus == EIS_Normal))
     {
         DiMonoModality *modality = new DiMonoModality(Document, InputData);
@@ -92,12 +93,13 @@ DiMonoImage::DiMonoImage(const DiDocument *docu,
     VoiLutCount(0),
     ValidWindow(0),
     PresLutShape(ESP_Identity),
-    Overlays(NULL),
     VoiLutData(NULL),
     PresLutData(NULL),
     InterData(NULL),
     OutputData(NULL)
 {
+    Overlays[0] = NULL;
+    Overlays[1] = NULL;
     if ((Document != NULL) && (InputData != NULL) && (ImageStatus == EIS_Normal))
     {
         DiMonoModality *modality = new DiMonoModality(Document, InputData, slope, intercept);
@@ -117,12 +119,13 @@ DiMonoImage::DiMonoImage(const DiDocument *docu,
     VoiLutCount(0),
     ValidWindow(0),
     PresLutShape(ESP_Identity),
-    Overlays(NULL),
     VoiLutData(NULL),
     PresLutData(NULL),
     InterData(NULL),
     OutputData(NULL)
 {
+    Overlays[0] = NULL;
+    Overlays[1] = NULL;
     if ((Document != NULL) && (InputData != NULL) && (ImageStatus == EIS_Normal))
     {
         DiMonoModality *modality = new DiMonoModality(Document, InputData, data, descriptor);
@@ -137,7 +140,7 @@ DiMonoImage::DiMonoImage(const DiDocument *docu,
 
 DiMonoImage::DiMonoImage(const DiDocument *docu,
                          const EI_Status status,
-                         const char dummy)
+                         const char /*dummy*/)
   : DiImage(docu, status/*, dummy*/),
     WindowCenter(0),
     WindowWidth(0),
@@ -145,12 +148,13 @@ DiMonoImage::DiMonoImage(const DiDocument *docu,
     VoiLutCount(0),
     ValidWindow(0),
     PresLutShape(ESP_Identity),
-    Overlays(NULL),
     VoiLutData(NULL),
     PresLutData(NULL),
     InterData(NULL),
     OutputData(NULL)
 {
+    Overlays[0] = NULL;
+    Overlays[1] = NULL;
 }
 
 
@@ -168,12 +172,13 @@ DiMonoImage::DiMonoImage(const DiMonoImage *image,
     VoiLutCount(image->VoiLutCount),
     ValidWindow(image->ValidWindow),
     PresLutShape(image->PresLutShape),
-    Overlays(image->Overlays),
     VoiLutData(image->VoiLutData),
     PresLutData(image->PresLutData),
     InterData(NULL),
     OutputData(NULL)
 {
+    Overlays[0] = image->Overlays[0];
+    Overlays[1] = image->Overlays[1];
     if (image->InterData != NULL)
     {
         const unsigned long fsize = (unsigned long)Columns * (unsigned long)Rows;
@@ -200,8 +205,11 @@ DiMonoImage::DiMonoImage(const DiMonoImage *image,
         }
     }
     checkInterData();
-    if (Overlays != NULL)
-        Overlays->addReference();
+    for (int i = 0; i < 2; i++)
+    {
+        if (Overlays[i] != NULL)
+            Overlays[i]->addReference();
+    }
     if (VoiLutData != NULL)
         VoiLutData->addReference();
     if (PresLutData != NULL)
@@ -224,12 +232,13 @@ DiMonoImage::DiMonoImage(const DiColorImage *image,
     VoiLutCount(0),
     ValidWindow(0),
     PresLutShape(ESP_Identity),
-    Overlays(NULL),
     VoiLutData(NULL),
     PresLutData(NULL),
     InterData(NULL),
     OutputData(NULL)
 {
+    Overlays[0] = NULL;
+    Overlays[1] = NULL;
     if (DiRegisterBase::Pointer != NULL)
         InterData = DiRegisterBase::Pointer->createMonoImageData(image, red, green, blue);
     if ((InterData == NULL) || (InterData->getData() == NULL))
@@ -257,12 +266,13 @@ DiMonoImage::DiMonoImage(const DiMonoImage *image,
     VoiLutCount(image->VoiLutCount),
     ValidWindow(image->ValidWindow),
     PresLutShape(image->PresLutShape),
-    Overlays(NULL),
     VoiLutData(image->VoiLutData),
     PresLutData(image->PresLutData),
     InterData(NULL),
     OutputData(NULL)
 {
+    Overlays[0] = NULL;
+    Overlays[1] = NULL;
     if (image->InterData != NULL)
     {
         switch (image->InterData->getRepresentation())
@@ -295,8 +305,11 @@ DiMonoImage::DiMonoImage(const DiMonoImage *image,
     }
     if (checkInterData(0))
     {
-        if ((image->Overlays != NULL) && (image->Overlays->getCount() > 0))
-            Overlays = new DiOverlay(image->Overlays, left, top, (double)dest_cols / (double)src_cols, (double)dest_rows / (double)src_rows);
+        for (int i = 0; i < 2; i++)
+        {
+            if ((image->Overlays[i] != NULL) && (image->Overlays[i]->getCount() > 0))
+                Overlays[i] = new DiOverlay(image->Overlays[i], left, top, (double)dest_cols / (double)src_cols, (double)dest_rows / (double)src_rows);
+        }
     }
     if (VoiLutData != NULL)
         VoiLutData->addReference();
@@ -319,12 +332,13 @@ DiMonoImage::DiMonoImage(const DiMonoImage *image,
     VoiLutCount(image->VoiLutCount),
     ValidWindow(image->ValidWindow),
     PresLutShape(image->PresLutShape),
-    Overlays(NULL),
     VoiLutData(image->VoiLutData),
     PresLutData(image->PresLutData),
     InterData(NULL),
     OutputData(NULL)
 {
+    Overlays[0] = NULL;
+    Overlays[1] = NULL;
     if (image->InterData != NULL)
     {
         switch (image->InterData->getRepresentation())
@@ -351,8 +365,11 @@ DiMonoImage::DiMonoImage(const DiMonoImage *image,
     }
     if (checkInterData(0))
     {
-        if ((image->Overlays != NULL) && (image->Overlays->getCount() > 0))
-            Overlays = new DiOverlay(image->Overlays, horz, vert);
+        for (int i = 0; i < 2; i++)
+        {
+            if ((image->Overlays[i] != NULL) && (image->Overlays[i]->getCount() > 0))
+                Overlays[i] = new DiOverlay(image->Overlays[i], horz, vert);
+        }
     }
     if (VoiLutData != NULL)
         VoiLutData->addReference();
@@ -374,12 +391,13 @@ DiMonoImage::DiMonoImage(const DiMonoImage *image,
     VoiLutCount(image->VoiLutCount),
     ValidWindow(image->ValidWindow),
     PresLutShape(image->PresLutShape),
-    Overlays(NULL),
     VoiLutData(image->VoiLutData),
     PresLutData(image->PresLutData),
     InterData(NULL),
     OutputData(NULL)
 {
+    Overlays[0] = NULL;
+    Overlays[1] = NULL;
     if (image->InterData != NULL)
     {
         switch (image->InterData->getRepresentation())
@@ -412,8 +430,11 @@ DiMonoImage::DiMonoImage(const DiMonoImage *image,
     }
     if (checkInterData(0))
     {
-        if ((image->Overlays != NULL) && (image->Overlays->getCount() > 0))
-            Overlays = new DiOverlay(image->Overlays, degree);
+        for (int i = 0; i < 2; i++)
+        {
+            if ((image->Overlays[i] != NULL) && (image->Overlays[i]->getCount() > 0))
+                Overlays[i] = new DiOverlay(image->Overlays[i], degree);
+        }
     }
     if (VoiLutData != NULL)
         VoiLutData->addReference();
@@ -434,7 +455,6 @@ DiMonoImage::DiMonoImage(const DiMonoImage &)
     VoiLutCount(0),
     ValidWindow(0),
     PresLutShape(ESP_Identity),
-    Overlays(NULL),
     VoiLutData(NULL),
     PresLutData(NULL),
     InterData(NULL),
@@ -458,8 +478,11 @@ DiMonoImage::~DiMonoImage()
         VoiLutData->removeReference();          // only delete if object is no longer referenced
     if (PresLutData != NULL)
         PresLutData->removeReference();
-    if (Overlays != NULL)
-        Overlays->removeReference();
+    for (int i = 0; i < 2; i++)
+    {
+        if (Overlays[i] != NULL)
+            Overlays[i]->removeReference();
+    }
 }
 
 
@@ -470,35 +493,33 @@ void DiMonoImage::Init(DiMonoModality *modality)
 {
     if (modality != NULL)
     {
-        if (!(Document->getFlags() & CIF_UsePresentationState))
-        {
-            Overlays = new DiOverlay(Document, BitsAllocated);
-            showAllOverlays();                                  // default: show all overlays with stored modes
-            if ((Overlays == NULL) || (Overlays->getCount() == 0) || (!Overlays->hasEmbeddedData()))
-                detachPixelData();                              // no longer needed, save memory
-        }
+        Overlays[0] = new DiOverlay(Document, BitsAllocated);
+        if ((Overlays[0] != NULL) && !(Document->getFlags() & CIF_UsePresentationState))
+            Overlays[0]->showAllPlanes();                       // default: show all overlays with stored modes
+        if ((Overlays[0] == NULL) || (Overlays[0]->getCount() == 0) || (!Overlays[0]->hasEmbeddedData()))
+            detachPixelData();                                  // no longer needed, save memory
         switch (InputData->getRepresentation())
         {
             case EPR_Uint8:
                 switch (modality->getRepresentation())
                 {
                     case EPR_Uint8:
-                        InterData = new DiMonoInputPixelTemplate<Uint8, Uint8>(InputData, modality);
+                        InterData = new DiMonoInputPixelTemplate<Uint8, Uint32, Uint8>(InputData, modality);
                         break;
                     case EPR_Sint8:
-                        InterData = new DiMonoInputPixelTemplate<Uint8, Sint8>(InputData, modality);
+                        InterData = new DiMonoInputPixelTemplate<Uint8, Uint32, Sint8>(InputData, modality);
                         break;
                     case EPR_Uint16:
-                        InterData = new DiMonoInputPixelTemplate<Uint8, Uint16>(InputData, modality);
+                        InterData = new DiMonoInputPixelTemplate<Uint8, Uint32, Uint16>(InputData, modality);
                         break;
                     case EPR_Sint16:
-                        InterData = new DiMonoInputPixelTemplate<Uint8, Sint16>(InputData, modality);
+                        InterData = new DiMonoInputPixelTemplate<Uint8, Uint32, Sint16>(InputData, modality);
                         break;
                     case EPR_Uint32:
-                        InterData = new DiMonoInputPixelTemplate<Uint8, Uint32>(InputData, modality);
+                        InterData = new DiMonoInputPixelTemplate<Uint8, Uint32, Uint32>(InputData, modality);
                         break;
                     case EPR_Sint32:
-                        InterData = new DiMonoInputPixelTemplate<Uint8, Sint32>(InputData, modality);
+                        InterData = new DiMonoInputPixelTemplate<Uint8, Uint32, Sint32>(InputData, modality);
                         break;
                 }
                 break;
@@ -506,22 +527,22 @@ void DiMonoImage::Init(DiMonoModality *modality)
                 switch (modality->getRepresentation())
                 {
                     case EPR_Uint8:
-                        InterData = new DiMonoInputPixelTemplate<Sint8, Uint8>(InputData, modality);
+                        InterData = new DiMonoInputPixelTemplate<Sint8, Sint32, Uint8>(InputData, modality);
                         break;
                     case EPR_Sint8:
-                        InterData = new DiMonoInputPixelTemplate<Sint8, Sint8>(InputData, modality);
+                        InterData = new DiMonoInputPixelTemplate<Sint8, Sint32, Sint8>(InputData, modality);
                         break;
                     case EPR_Uint16:
-                        InterData = new DiMonoInputPixelTemplate<Sint8, Uint16>(InputData, modality);
+                        InterData = new DiMonoInputPixelTemplate<Sint8, Sint32, Uint16>(InputData, modality);
                         break;
                     case EPR_Sint16:
-                        InterData = new DiMonoInputPixelTemplate<Sint8, Sint16>(InputData, modality);
+                        InterData = new DiMonoInputPixelTemplate<Sint8, Sint32, Sint16>(InputData, modality);
                         break;
                     case EPR_Uint32:
-                        InterData = new DiMonoInputPixelTemplate<Sint8, Uint32>(InputData, modality);
+                        InterData = new DiMonoInputPixelTemplate<Sint8, Sint32, Uint32>(InputData, modality);
                         break;
                     case EPR_Sint32:
-                        InterData = new DiMonoInputPixelTemplate<Sint8, Sint32>(InputData, modality);
+                        InterData = new DiMonoInputPixelTemplate<Sint8, Sint32, Sint32>(InputData, modality);
                         break;
                 }
                 break;
@@ -529,22 +550,22 @@ void DiMonoImage::Init(DiMonoModality *modality)
                 switch (modality->getRepresentation())
                 {
                     case EPR_Uint8:
-                        InterData = new DiMonoInputPixelTemplate<Uint16, Uint8>(InputData, modality);
+                        InterData = new DiMonoInputPixelTemplate<Uint16, Uint32, Uint8>(InputData, modality);
                         break;
                     case EPR_Sint8:
-                        InterData = new DiMonoInputPixelTemplate<Uint16, Sint8>(InputData, modality);
+                        InterData = new DiMonoInputPixelTemplate<Uint16, Uint32, Sint8>(InputData, modality);
                         break;
                     case EPR_Uint16:
-                        InterData = new DiMonoInputPixelTemplate<Uint16, Uint16>(InputData, modality);
+                        InterData = new DiMonoInputPixelTemplate<Uint16, Uint32, Uint16>(InputData, modality);
                         break;
                     case EPR_Sint16:
-                        InterData = new DiMonoInputPixelTemplate<Uint16, Sint16>(InputData, modality);
+                        InterData = new DiMonoInputPixelTemplate<Uint16, Uint32, Sint16>(InputData, modality);
                         break;
                     case EPR_Uint32:
-                        InterData = new DiMonoInputPixelTemplate<Uint16, Uint32>(InputData, modality);
+                        InterData = new DiMonoInputPixelTemplate<Uint16, Uint32, Uint32>(InputData, modality);
                         break;
                     case EPR_Sint32:
-                        InterData = new DiMonoInputPixelTemplate<Uint16, Sint32>(InputData, modality);
+                        InterData = new DiMonoInputPixelTemplate<Uint16, Uint32, Sint32>(InputData, modality);
                         break;
                 }
                 break;
@@ -552,22 +573,22 @@ void DiMonoImage::Init(DiMonoModality *modality)
                 switch (modality->getRepresentation())
                 {
                     case EPR_Uint8:
-                        InterData = new DiMonoInputPixelTemplate<Sint16, Uint8>(InputData, modality);
+                        InterData = new DiMonoInputPixelTemplate<Sint16, Sint32, Uint8>(InputData, modality);
                         break;
                     case EPR_Sint8:
-                        InterData = new DiMonoInputPixelTemplate<Sint16, Sint8>(InputData, modality);
+                        InterData = new DiMonoInputPixelTemplate<Sint16, Sint32, Sint8>(InputData, modality);
                         break;
                     case EPR_Uint16:
-                        InterData = new DiMonoInputPixelTemplate<Sint16, Uint16>(InputData, modality);
+                        InterData = new DiMonoInputPixelTemplate<Sint16, Sint32, Uint16>(InputData, modality);
                         break;
                     case EPR_Sint16:
-                        InterData = new DiMonoInputPixelTemplate<Sint16, Sint16>(InputData, modality);
+                        InterData = new DiMonoInputPixelTemplate<Sint16, Sint32, Sint16>(InputData, modality);
                         break;
                     case EPR_Uint32:
-                        InterData = new DiMonoInputPixelTemplate<Sint16, Uint32>(InputData, modality);
+                        InterData = new DiMonoInputPixelTemplate<Sint16, Sint32, Uint32>(InputData, modality);
                         break;
                     case EPR_Sint32:
-                        InterData = new DiMonoInputPixelTemplate<Sint16, Sint32>(InputData, modality);
+                        InterData = new DiMonoInputPixelTemplate<Sint16, Sint32, Sint32>(InputData, modality);
                         break;
                 }
                 break;
@@ -575,22 +596,22 @@ void DiMonoImage::Init(DiMonoModality *modality)
                 switch (modality->getRepresentation())
                 {
                     case EPR_Uint8:
-                        InterData = new DiMonoInputPixelTemplate<Uint32, Uint8>(InputData, modality);
+                        InterData = new DiMonoInputPixelTemplate<Uint32, Uint32, Uint8>(InputData, modality);
                         break;
                     case EPR_Sint8:
-                        InterData = new DiMonoInputPixelTemplate<Uint32, Sint8>(InputData, modality);
+                        InterData = new DiMonoInputPixelTemplate<Uint32, Uint32, Sint8>(InputData, modality);
                         break;
                     case EPR_Uint16:
-                        InterData = new DiMonoInputPixelTemplate<Uint32, Uint16>(InputData, modality);
+                        InterData = new DiMonoInputPixelTemplate<Uint32, Uint32, Uint16>(InputData, modality);
                         break;
                     case EPR_Sint16:
-                        InterData = new DiMonoInputPixelTemplate<Uint32, Sint16>(InputData, modality);
+                        InterData = new DiMonoInputPixelTemplate<Uint32, Uint32, Sint16>(InputData, modality);
                         break;
                     case EPR_Uint32:
-                        InterData = new DiMonoInputPixelTemplate<Uint32, Uint32>(InputData, modality);
+                        InterData = new DiMonoInputPixelTemplate<Uint32, Uint32, Uint32>(InputData, modality);
                         break;
                     case EPR_Sint32:
-                        InterData = new DiMonoInputPixelTemplate<Uint32, Sint32>(InputData, modality);
+                        InterData = new DiMonoInputPixelTemplate<Uint32, Uint32, Sint32>(InputData, modality);
                         break;
                 }
                 break;
@@ -598,27 +619,29 @@ void DiMonoImage::Init(DiMonoModality *modality)
                 switch (modality->getRepresentation())
                 {
                     case EPR_Uint8:
-                        InterData = new DiMonoInputPixelTemplate<Sint32, Uint8>(InputData, modality);
+                        InterData = new DiMonoInputPixelTemplate<Sint32, Sint32, Uint8>(InputData, modality);
                         break;
                     case EPR_Sint8:
-                        InterData = new DiMonoInputPixelTemplate<Sint32, Sint8>(InputData, modality);
+                        InterData = new DiMonoInputPixelTemplate<Sint32, Sint32, Sint8>(InputData, modality);
                         break;
                     case EPR_Uint16:
-                        InterData = new DiMonoInputPixelTemplate<Sint32, Uint16>(InputData, modality);
+                        InterData = new DiMonoInputPixelTemplate<Sint32, Sint32, Uint16>(InputData, modality);
                         break;
                     case EPR_Sint16:
-                        InterData = new DiMonoInputPixelTemplate<Sint32, Sint16>(InputData, modality);
+                        InterData = new DiMonoInputPixelTemplate<Sint32, Sint32, Sint16>(InputData, modality);
                         break;
                     case EPR_Uint32:
-                        InterData = new DiMonoInputPixelTemplate<Sint32, Uint32>(InputData, modality);
+                        InterData = new DiMonoInputPixelTemplate<Sint32, Sint32, Uint32>(InputData, modality);
                         break;
                     case EPR_Sint32:
-                        InterData = new DiMonoInputPixelTemplate<Sint32, Sint32>(InputData, modality);
+                        InterData = new DiMonoInputPixelTemplate<Sint32, Sint32, Sint32>(InputData, modality);
                         break;
                 }
                 break;
         }
         deleteInputData();                                  // no longer needed, save memory
+        if ((modality->hasLookupTable()) && (modality->getTableData() != NULL))
+            BitsPerSample = modality->getTableData()->getBits();
         if (checkInterData() && !(Document->getFlags() & CIF_UsePresentationState))
         {
             WindowCount = Document->getVM(DCM_WindowCenter);
@@ -627,7 +650,7 @@ void DiMonoImage::Init(DiMonoModality *modality)
                 WindowCount = count;
             DcmSequenceOfItems *seq = NULL;
             VoiLutCount = Document->getSequence(DCM_VOILUTSequence, seq);
-        }
+        }        
     } else
         detachPixelData();
 }
@@ -740,7 +763,7 @@ int DiMonoImage::setWindow(const double center, const double width)
 {
     delete VoiLutData;
     VoiLutData = NULL;
-    if (width < 0)
+    if (width <= 0)                                             // according to Cor Loef (author of suppl. 33)
         return ValidWindow = 0;
     else if (!ValidWindow || (center != WindowCenter) || (width != WindowWidth))
     {
@@ -805,9 +828,35 @@ int DiMonoImage::setPresentationLut(const DcmUnsignedShort &data,
                                     const DcmUnsignedShort &descriptor)
 {
     delete PresLutData;
-    PresLutData = new DiLookupTable(data, descriptor);
+    PresLutData = new DiLookupTable(data, descriptor, 0);
     if (PresLutData != NULL)
         return PresLutData->isValid();
+    return 0;
+}
+
+
+int DiMonoImage::addOverlay(const unsigned int group,
+                            const unsigned long rows,
+                            const unsigned long columns,
+                            const EM_Overlay mode,
+                            const signed int left,
+                            const signed int top,
+                            const DcmOverlayData &data,
+                            const DcmLongString &label,
+                            const DcmLongString &description)
+{
+    if (Overlays[1] == NULL)
+        Overlays[1] = new DiOverlay();
+    if (Overlays[1] != NULL)
+        return Overlays[1]->addPlane(group, rows, columns, mode, left, top, data, label, description);
+    return 0;
+}
+
+
+int DiMonoImage::removeOverlay(const unsigned int group)
+{
+    if (Overlays[1] != NULL)
+        return Overlays[1]->removePlane(group);
     return 0;
 }
 
@@ -835,11 +884,14 @@ int DiMonoImage::flip(const int horz, const int vert)
             DiFlipTemplate<Sint32>(InterData, Columns, Rows, NumberOfFrames, horz, vert);
             break;
     }
-    if ((Overlays != NULL) && (Overlays->getCount() > 0))
+    for (int i = 0; i < 2; i++)
     {
-        DiOverlay *old = Overlays;
-        Overlays = new DiOverlay(old, horz, vert);
-        old->removeReference();
+        if ((Overlays[i] != NULL) && (Overlays[i]->getCount() > 0))
+        {
+            DiOverlay *old = Overlays[i];
+            Overlays[i] = new DiOverlay(old, horz, vert);
+            old->removeReference();
+        }
     }
     return 1;
 }
@@ -874,11 +926,14 @@ int DiMonoImage::rotate(const int degree)
                 break;
         }
     }
-    if ((Overlays != NULL) && (Overlays->getCount() > 0))
+    for (int i = 0; i < 2; i++)
     {
-        DiOverlay *old = Overlays;
-        Overlays = new DiOverlay(old, degree);
-        old->removeReference();
+        if ((Overlays[i] != NULL) && (Overlays[i]->getCount() > 0))
+        {
+            DiOverlay *old = Overlays[i];
+            Overlays[i] = new DiOverlay(old, degree);
+            old->removeReference();
+        }
     }
     return 1;
 }
@@ -888,83 +943,95 @@ int DiMonoImage::rotate(const int degree)
 
 
 /*
- *   create output data of 'frame' with depth of 'bits' and min/max values of 'low' and 'high' (support mono1/2)
+ *   create output data of 'frame' with depth of 'bits' and min/max values depending on 'negative' (support mono1/2)
  */
 
-void *DiMonoImage::getData(const unsigned long frame, const int bits, const Uint32 low, const Uint32 high)
+void *DiMonoImage::getData(const unsigned long frame,
+                           const int bits,
+                           const int negative)
 {
     if ((InterData != NULL) && (ImageStatus == EIS_Normal) && (frame < NumberOfFrames) && (bits > 0) && (bits <= MAX_BITS))
     {
         deleteOutputData();                             // delete old image data
         if (!ValidWindow)
             WindowWidth = -1;                           // negative width means no window, saves additional parameter ;)
+        Uint32 low;
+        Uint32 high;
+        if ((negative && (PresLutShape == ESP_Identity)) || (!negative && (PresLutShape == ESP_Inverse)))
+        {
+            low = maxval(bits);                         // inverse/negative: white to black
+            high = 0;
+        } else {                                        // normal/positive: black to white
+            low = 0;
+            high = maxval(bits);
+        }
         switch (InterData->getRepresentation())
         {
             case EPR_Uint8:
                 if (bits <= 8)
-                    OutputData = new DiMonoOutputPixelTemplate<Uint8, Uint8>(InterData, Overlays, VoiLutData,
-                        WindowCenter, WindowWidth, BitsPerSample, low, high, Columns, Rows, frame, NumberOfFrames);
+                    OutputData = new DiMonoOutputPixelTemplate<Uint8, Uint32, Uint8>(InterData, Overlays, VoiLutData,
+                       PresLutData, WindowCenter, WindowWidth, BitsPerSample, low, high, Columns, Rows, frame, NumberOfFrames);
                 else if (bits <= 16)
-                    OutputData = new DiMonoOutputPixelTemplate<Uint8, Uint16>(InterData, Overlays, VoiLutData,
-                        WindowCenter, WindowWidth, BitsPerSample, low, high, Columns, Rows, frame, NumberOfFrames);
+                    OutputData = new DiMonoOutputPixelTemplate<Uint8, Uint32, Uint16>(InterData, Overlays, VoiLutData,
+                        PresLutData, WindowCenter, WindowWidth, BitsPerSample, low, high, Columns, Rows, frame, NumberOfFrames);
                 else
-                    OutputData = new DiMonoOutputPixelTemplate<Uint8, Uint32>(InterData, Overlays, VoiLutData,
-                        WindowCenter, WindowWidth, BitsPerSample, low, high, Columns, Rows, frame, NumberOfFrames);
+                    OutputData = new DiMonoOutputPixelTemplate<Uint8, Uint32, Uint32>(InterData, Overlays, VoiLutData,
+                        PresLutData, WindowCenter, WindowWidth, BitsPerSample, low, high, Columns, Rows, frame, NumberOfFrames);
                 break;
             case EPR_Sint8:
                 if (bits <= 8)
-                    OutputData = new DiMonoOutputPixelTemplate<Sint8, Uint8>(InterData, Overlays, VoiLutData,
-                        WindowCenter, WindowWidth, BitsPerSample, low, high, Columns, Rows, frame, NumberOfFrames);
+                    OutputData = new DiMonoOutputPixelTemplate<Sint8, Sint32, Uint8>(InterData, Overlays, VoiLutData,
+                        PresLutData, WindowCenter, WindowWidth, BitsPerSample, low, high, Columns, Rows, frame, NumberOfFrames);
                 else if (bits <= 16)
-                    OutputData = new DiMonoOutputPixelTemplate<Sint8, Uint16>(InterData, Overlays, VoiLutData,
-                        WindowCenter, WindowWidth, BitsPerSample, low, high, Columns, Rows, frame, NumberOfFrames);
+                    OutputData = new DiMonoOutputPixelTemplate<Sint8, Sint32, Uint16>(InterData, Overlays, VoiLutData,
+                        PresLutData, WindowCenter, WindowWidth, BitsPerSample, low, high, Columns, Rows, frame, NumberOfFrames);
                 else
-                    OutputData = new DiMonoOutputPixelTemplate<Sint8, Uint32>(InterData, Overlays, VoiLutData,
-                        WindowCenter, WindowWidth, BitsPerSample, low, high, Columns, Rows, frame, NumberOfFrames);
+                    OutputData = new DiMonoOutputPixelTemplate<Sint8, Sint32, Uint32>(InterData, Overlays, VoiLutData,
+                        PresLutData, WindowCenter, WindowWidth, BitsPerSample, low, high, Columns, Rows, frame, NumberOfFrames);
                 break;
             case EPR_Uint16:
                 if (bits <= 8)
-                    OutputData = new DiMonoOutputPixelTemplate<Uint16, Uint8>(InterData, Overlays, VoiLutData,
-                        WindowCenter, WindowWidth, BitsPerSample, low, high, Columns, Rows, frame, NumberOfFrames);
+                    OutputData = new DiMonoOutputPixelTemplate<Uint16, Uint32, Uint8>(InterData, Overlays, VoiLutData,
+                        PresLutData, WindowCenter, WindowWidth, BitsPerSample, low, high, Columns, Rows, frame, NumberOfFrames);
                 else if (bits <= 16)
-                    OutputData = new DiMonoOutputPixelTemplate<Uint16, Uint16>(InterData, Overlays, VoiLutData,
-                        WindowCenter, WindowWidth, BitsPerSample, low, high, Columns, Rows, frame, NumberOfFrames);
+                    OutputData = new DiMonoOutputPixelTemplate<Uint16, Uint32, Uint16>(InterData, Overlays, VoiLutData,
+                        PresLutData, WindowCenter, WindowWidth, BitsPerSample, low, high, Columns, Rows, frame, NumberOfFrames);
                 else
-                    OutputData = new DiMonoOutputPixelTemplate<Uint16, Uint32>(InterData, Overlays, VoiLutData,
-                        WindowCenter, WindowWidth, BitsPerSample, low, high, Columns, Rows, frame, NumberOfFrames);
+                    OutputData = new DiMonoOutputPixelTemplate<Uint16, Uint32, Uint32>(InterData, Overlays, VoiLutData,
+                        PresLutData, WindowCenter, WindowWidth, BitsPerSample, low, high, Columns, Rows, frame, NumberOfFrames);
                 break;
             case EPR_Sint16:
                 if (bits <= 8)
-                    OutputData = new DiMonoOutputPixelTemplate<Sint16, Uint8>(InterData, Overlays, VoiLutData,
-                        WindowCenter, WindowWidth, BitsPerSample, low, high, Columns, Rows, frame, NumberOfFrames);
+                    OutputData = new DiMonoOutputPixelTemplate<Sint16, Sint32, Uint8>(InterData, Overlays, VoiLutData,
+                        PresLutData, WindowCenter, WindowWidth, BitsPerSample, low, high, Columns, Rows, frame, NumberOfFrames);
                 else if (bits <= 16)
-                    OutputData = new DiMonoOutputPixelTemplate<Sint16, Uint16>(InterData, Overlays, VoiLutData,
-                        WindowCenter, WindowWidth, BitsPerSample, low, high, Columns, Rows, frame, NumberOfFrames);
+                    OutputData = new DiMonoOutputPixelTemplate<Sint16, Sint32, Uint16>(InterData, Overlays, VoiLutData,
+                        PresLutData, WindowCenter, WindowWidth, BitsPerSample, low, high, Columns, Rows, frame, NumberOfFrames);
                 else
-                    OutputData = new DiMonoOutputPixelTemplate<Sint16, Uint32>(InterData, Overlays, VoiLutData,
-                        WindowCenter, WindowWidth, BitsPerSample, low, high, Columns, Rows, frame, NumberOfFrames);
+                    OutputData = new DiMonoOutputPixelTemplate<Sint16, Sint32, Uint32>(InterData, Overlays, VoiLutData,
+                        PresLutData, WindowCenter, WindowWidth, BitsPerSample, low, high, Columns, Rows, frame, NumberOfFrames);
                 break;
             case EPR_Uint32:
                 if (bits <= 8)
-                    OutputData = new DiMonoOutputPixelTemplate<Uint32, Uint8>(InterData, Overlays, VoiLutData,
-                        WindowCenter, WindowWidth, BitsPerSample, low, high, Columns, Rows, frame, NumberOfFrames);
+                    OutputData = new DiMonoOutputPixelTemplate<Uint32, Uint32, Uint8>(InterData, Overlays, VoiLutData,
+                        PresLutData, WindowCenter, WindowWidth, BitsPerSample, low, high, Columns, Rows, frame, NumberOfFrames);
                 else if (bits <= 16)
-                    OutputData = new DiMonoOutputPixelTemplate<Uint32, Uint16>(InterData, Overlays, VoiLutData,
-                        WindowCenter, WindowWidth, BitsPerSample, low, high, Columns, Rows, frame, NumberOfFrames);
+                    OutputData = new DiMonoOutputPixelTemplate<Uint32, Uint32, Uint16>(InterData, Overlays, VoiLutData,
+                        PresLutData, WindowCenter, WindowWidth, BitsPerSample, low, high, Columns, Rows, frame, NumberOfFrames);
                 else
-                    OutputData = new DiMonoOutputPixelTemplate<Uint32, Uint32>(InterData, Overlays, VoiLutData,
-                        WindowCenter, WindowWidth, BitsPerSample, low, high, Columns, Rows, frame, NumberOfFrames);
+                    OutputData = new DiMonoOutputPixelTemplate<Uint32, Uint32, Uint32>(InterData, Overlays, VoiLutData,
+                        PresLutData, WindowCenter, WindowWidth, BitsPerSample, low, high, Columns, Rows, frame, NumberOfFrames);
                 break;
             case EPR_Sint32:
                 if (bits <= 8)
-                    OutputData = new DiMonoOutputPixelTemplate<Sint32, Uint8>(InterData, Overlays, VoiLutData,
-                        WindowCenter, WindowWidth, BitsPerSample, low, high, Columns, Rows, frame, NumberOfFrames);
+                    OutputData = new DiMonoOutputPixelTemplate<Sint32, Sint32, Uint8>(InterData, Overlays, VoiLutData,
+                        PresLutData, WindowCenter, WindowWidth, BitsPerSample, low, high, Columns, Rows, frame, NumberOfFrames);
                 else if (bits <= 16)
-                    OutputData = new DiMonoOutputPixelTemplate<Sint32, Uint16>(InterData, Overlays, VoiLutData,
-                        WindowCenter, WindowWidth, BitsPerSample, low, high, Columns, Rows, frame, NumberOfFrames);
+                    OutputData = new DiMonoOutputPixelTemplate<Sint32, Sint32, Uint16>(InterData, Overlays, VoiLutData,
+                        PresLutData, WindowCenter, WindowWidth, BitsPerSample, low, high, Columns, Rows, frame, NumberOfFrames);
                 else
-                    OutputData = new DiMonoOutputPixelTemplate<Sint32, Uint32>(InterData, Overlays, VoiLutData,
-                        WindowCenter, WindowWidth, BitsPerSample, low, high, Columns, Rows, frame, NumberOfFrames);
+                    OutputData = new DiMonoOutputPixelTemplate<Sint32, Sint32, Uint32>(InterData, Overlays, VoiLutData,
+                        PresLutData, WindowCenter, WindowWidth, BitsPerSample, low, high, Columns, Rows, frame, NumberOfFrames);
                 break;
         }
         if (OutputData == NULL)
@@ -1135,7 +1202,11 @@ int DiMonoImage::writeRawPPM(FILE *stream, const unsigned long frame, const int 
 **
 ** CVS/RCS Log:
 ** $Log: dimoimg.cc,v $
-** Revision 1.1  1998-11-27 16:12:48  joergr
+** Revision 1.2  1998-12-14 17:37:15  joergr
+** Added methods to add and remove additional overlay planes (still untested).
+** Added support for presentation shapes.
+**
+** Revision 1.1  1998/11/27 16:12:48  joergr
 ** Added copyright message.
 ** Added methods and constructors for flipping and rotating, changed for
 ** scaling and clipping.
