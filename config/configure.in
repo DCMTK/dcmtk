@@ -539,6 +539,7 @@ fi
 AC_CHECK_PROTOTYPE(gettimeofday, sys/time.h unistd.h)
 AC_CHECK_PROTOTYPE(listen, sys/types.h sys/socket.h)
 AC_CHECK_PROTOTYPE(mktemp, libc.h unistd.h stdlib.h)
+AC_CHECK_PROTOTYPE(mkstemp, libc.h unistd.h stdlib.h)
 AC_CHECK_PROTOTYPE(select, sys/select.h sys/types.h sys/socket.h sys/time.h)
 if test $ac_cv_prototype_select = yes ; then
 AC_CHECK_INTP_SELECT(sys/select.h sys/types.h sys/socket.h sys/time.h)

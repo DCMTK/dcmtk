@@ -371,6 +371,10 @@
    sys/socket.h */
 #define HAVE_PROTOTYPE_LISTEN 1
 
+/* Define if your system has a prototype for mkstemp in libc.h unistd.h
+   stdlib.h */
+/* #undef HAVE_PROTOTYPE_MKSTEMP */
+
 /* Define if your system has a prototype for mktemp in libc.h unistd.h
    stdlib.h */
 /* #undef  HAVE_PROTOTYPE_MKTEMP */
