@@ -10,9 +10,9 @@
 ** Implementation of class DcmElement
 **
 ** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1997-07-03 15:09:57 $
+** Update Date:		$Date: 1997-07-07 07:46:19 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcelem.cc,v $
-** CVS/RCS Revision:	$Revision: 1.15 $
+** CVS/RCS Revision:	$Revision: 1.16 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -27,6 +27,7 @@
 #include "dcelem.h"
 #include "dcobject.h"
 #include "dcdefine.h"
+#include "dcswap.h"
 #include "dcdebug.h"
 
 
@@ -106,11 +107,7 @@ DcmElement::DcmElement(const DcmElement & elem)
     {
 	unsigned short pad = 0;
 
-	// Here it is not possible to use elem.getVR() because elem is
-	// constant and getVR changes the errorFlag
-	// So we use the following:
-	DcmTag tag(elem.getTag());
-	switch(tag.getEVR())
+	switch(elem.getVR())
 	{
 	case EVR_AE:
 	case EVR_AS:
@@ -328,8 +325,8 @@ void * DcmElement::getValue(const E_ByteOrder newByteOrder)
 	    {
 		if (newByteOrder != fByteOrder)
 		{
-		    this -> swapIfNecessary(newByteOrder, fByteOrder, fValue, 
-					    Length, Tag->getVR().getValueWidth());
+		    swapIfNecessary(newByteOrder, fByteOrder, fValue, 
+				    Length, Tag.getVR().getValueWidth());
 		    fByteOrder = newByteOrder;
 		}
 
@@ -465,8 +462,8 @@ E_Condition DcmElement::changeValue(const void * value,
 	    if (errorFlag == EC_Normal)
 	    {
 		// swap to local byte order 
-		this -> swapIfNecessary(gLocalByteOrder, fByteOrder, fValue, 
-					Length, Tag->getVR().getValueWidth());
+		swapIfNecessary(gLocalByteOrder, fByteOrder, fValue, 
+				Length, Tag.getVR().getValueWidth());
 		fByteOrder = gLocalByteOrder;
 		// copy old value in the beginning of new value
 		memcpy(newValue, fValue, Length);
@@ -484,8 +481,8 @@ E_Condition DcmElement::changeValue(const void * value,
     if (!done && errorFlag == EC_Normal)
     {
 	// swap to local byte order
-	this -> swapIfNecessary(gLocalByteOrder, fByteOrder, fValue, 
-				Length, Tag->getVR().getValueWidth());
+	swapIfNecessary(gLocalByteOrder, fByteOrder, fValue, 
+			Length, Tag.getVR().getValueWidth());
 	memcpy(&fValue[position], (const Uint8 *)value, num);
 	fByteOrder = gLocalByteOrder;
     }
@@ -768,7 +765,13 @@ E_Condition DcmElement::write(DcmStream & outStream,
 /*
 ** CVS/RCS Log:
 ** $Log: dcelem.cc,v $
-** Revision 1.15  1997-07-03 15:09:57  andreas
+** Revision 1.16  1997-07-07 07:46:19  andreas
+** - Changed parameter type DcmTag & to DcmTagKey & in all search functions
+**   in DcmItem, DcmSequenceOfItems, DcmDirectoryRecord and DcmObject
+** - Enhanced (faster) byte swapping routine. swapIfNecessary moved from
+**   a method in DcmObject to a general function.
+**
+** Revision 1.15  1997/07/03 15:09:57  andreas
 ** - removed debugging functions Bdebug() and Edebug() since
 **   they write a static array and are not very useful at all.
 **   Cdebug and Vdebug are merged since they have the same semantics.

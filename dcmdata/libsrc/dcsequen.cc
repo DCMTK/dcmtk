@@ -11,9 +11,9 @@
 **
 **
 ** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1997-07-03 15:10:04 $
+** Update Date:		$Date: 1997-07-07 07:46:20 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcsequen.cc,v $
-** CVS/RCS Revision:	$Revision: 1.19 $
+** CVS/RCS Revision:	$Revision: 1.20 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -32,6 +32,7 @@
 #include "dcdirrec.h"
 #include "dcvr.h"
 #include "dcpxitem.h"
+#include "dcswap.h"
 #include "dcdebug.h"
 
 #include "dcdeftag.h"
@@ -298,15 +299,15 @@ E_Condition DcmSequenceOfItems::readTagAndLength(DcmStream & inStream,
 	inStream.SetPutbackMark();
 	inStream.ReadBytes(&groupTag, 2);
 	inStream.ReadBytes(&elementTag, 2);
-	this -> swapIfNecessary(gLocalByteOrder, iByteOrder, &groupTag, 2, 2);
-	this -> swapIfNecessary(gLocalByteOrder, iByteOrder, &elementTag, 2, 2);
+	swapIfNecessary(gLocalByteOrder, iByteOrder, &groupTag, 2, 2);
+	swapIfNecessary(gLocalByteOrder, iByteOrder, &elementTag, 2, 2);
 	// Tag ist gelesen
 
 	DcmTag newTag(groupTag, elementTag);
 
 	Uint32 valueLength = 0;
 	inStream.ReadBytes(&valueLength, 4);
-	this->swapIfNecessary(gLocalByteOrder, iByteOrder, &valueLength, 4, 4);
+	swapIfNecessary(gLocalByteOrder, iByteOrder, &valueLength, 4, 4);
 	length = valueLength;
 
 	tag = newTag;                  // Rueckgabewert: assignment-operator
@@ -797,9 +798,9 @@ E_Condition DcmSequenceOfItems::verify(const BOOL autocorrect)
     //		     starte dann Sub-Suche
 
 
-E_Condition DcmSequenceOfItems::searchSubFromHere(const DcmTag &tag,
-						   DcmStack &resultStack,
-						   const BOOL searchIntoSub)
+E_Condition DcmSequenceOfItems::searchSubFromHere(const DcmTagKey &tag,
+						  DcmStack &resultStack,
+						  const BOOL searchIntoSub)
 {
     DcmObject *dO;
     E_Condition l_error = EC_TagNotFound;
@@ -838,7 +839,7 @@ E_Condition DcmSequenceOfItems::searchSubFromHere(const DcmTag &tag,
 // ********************************
 
 
-E_Condition DcmSequenceOfItems::search( const DcmTag &tag,
+E_Condition DcmSequenceOfItems::search( const DcmTagKey &tag,
 					DcmStack &resultStack,
 					E_SearchMode mode,
 					BOOL searchIntoSub )
@@ -962,20 +963,6 @@ E_Condition DcmSequenceOfItems::search( const DcmTag &tag,
 // ********************************
 
 
-E_Condition DcmSequenceOfItems::search( const DcmTagKey &xtag,
-					DcmStack &resultStack,
-					E_SearchMode mode,
-					BOOL searchIntoSub )
-{
-    DcmTag tag( xtag );
-    E_Condition l_error = search( tag, resultStack, mode, searchIntoSub );
-    return l_error;
-}
-
-
-// ********************************
-
-
 E_Condition DcmSequenceOfItems::searchErrors( DcmStack &resultStack )
 {
     E_Condition l_error = errorFlag;
@@ -1024,7 +1011,13 @@ E_Condition DcmSequenceOfItems::loadAllDataIntoMemory()
 /*
 ** CVS/RCS Log:
 ** $Log: dcsequen.cc,v $
-** Revision 1.19  1997-07-03 15:10:04  andreas
+** Revision 1.20  1997-07-07 07:46:20  andreas
+** - Changed parameter type DcmTag & to DcmTagKey & in all search functions
+**   in DcmItem, DcmSequenceOfItems, DcmDirectoryRecord and DcmObject
+** - Enhanced (faster) byte swapping routine. swapIfNecessary moved from
+**   a method in DcmObject to a general function.
+**
+** Revision 1.19  1997/07/03 15:10:04  andreas
 ** - removed debugging functions Bdebug() and Edebug() since
 **   they write a static array and are not very useful at all.
 **   Cdebug and Vdebug are merged since they have the same semantics.
