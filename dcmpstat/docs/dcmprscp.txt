@@ -9,7 +9,17 @@ SYNOPSIS
 
 SUMMARY
 
-...
+The dcmprscp utility implements the DICOM Basic Grayscale Print Management 
+Service Class as SCP. It also supports the optional Presentation LUT SOP 
+Class. The utility is intended for use within the DICOMscope viewer.
+
+The dcmprscp utility accepts print jobs from a remote Print SCU. It does not 
+create real hardcopies but stores print jobs in the local DICOMscope 
+database as a set of Stored Print objects (one per page) and Hardcopy 
+Grayscale images (one per film box N-SET). The DICOMscope application allows 
+to load a Stored Print object created by dcmprscp and to render a screen 
+preview of the hardcopy. The dcmprscp utility reads the characteristics of 
+the printer to be emulated from the configuration file. 
 
 USAGE
 

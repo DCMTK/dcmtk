@@ -42,11 +42,13 @@ parameters:
   filename_in         stored print file(s) to be spooled
 
 general options:
-  -h  --help          print this help text and exit
-  -v  --verbose       verbose mode, print actions
-  -d  --debug         debug mode, print debug information
-  +d  --dump          dump all DIMSE messages to stdout
-      --noprint       do not create print-out (no n-action-rq)
+  -h  --help           print this help text and exit
+  -v  --verbose        verbose mode, print actions
+  -d  --debug          debug mode, print debug information
+  +d  --dump           dump all DIMSE messages to stdout
+      --noprint        do not create print-out (no n-action-rq)
+      --session-print  send film session n-action rq (instead of film box)
+      --monochrome1    transmit basic grayscale images in MONOCHROME1
 mode options:
   +p  --print         printer mode, print file(s) and terminate (default)
   +s  --spool         [n]ame: string
@@ -72,6 +74,7 @@ basic film session options (not with --spool):
                       set print priority to [v]
       --owner         [v]alue: string
                       set film session owner ID to [v]
+
 
 ENVIRONMENT
 

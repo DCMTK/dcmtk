@@ -75,6 +75,41 @@ network options:
     +IP   --invent-patient    [n]umber: integer (implies --invent-instance)
                               invent a new patient ID and name after n studies
                               have been sent (default: 25)
+transport layer security (TLS) options:
+  transport protocol stack options:
+    -tls  --disable-tls       use normal TCP/IP connection (default)
+    +tls  --enable-tls        [p]rivate key file, [c]ertificate file: string
+                              use authenticated secure TLS connection
+    +tla  --anonymous-tls     use secure TLS connection without certificate
+  private key password options (only with --enable-tls):
+    +ps   --std-passwd        prompt user to type password on stdin (default)
+    +pw   --use-passwd        [p]assword: string
+                              use specified password
+    -pw   --null-passwd       use empty string as password
+  key and certificate file format options:
+    -pem  --pem-keys          read keys and certificates as PEM file (default)
+    -der  --der-keys          read keys and certificates as DER file
+  certification authority options:
+    +cf   --add-cert-file     [c]ertificate filename: string
+                              add certificate file to list of certificates
+    +cd   --add-cert-dir      [c]ertificate directory: string
+                              add certificates in [d] to list of certificates
+  ciphersuite options:
+    +cs   --cipher            [c]iphersuite name: string
+                              add ciphersuite to list of negotiated suites
+    +dp   --dhparam           [f]ilename: string
+                              read DH parameters for DH/DSS ciphersuites
+  pseudo random generator options:
+    +rs   --seed              [f]ilename: string
+                              seed random generator with contents of [f]
+    +ws   --write-seed        write back modified seed (only with --seed)
+    +wf   --write-seed-file   [f]ilename: string (only with --seed)
+                              write modified seed to file [f]
+  peer authentication options:
+    -rc   --require-peer-cert  verify peer certificate, fail if absent (default)
+    -vc   --verify-peer-cert   verify peer certificate if present
+    -ic   --ignore-peer-cert   don't verify peer certificate
+
 
 DICOM CONFORMANCE
 
