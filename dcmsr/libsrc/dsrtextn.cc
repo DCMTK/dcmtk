@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DSRTextTreeNode
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2003-06-04 14:26:54 $
- *  CVS/RCS Revision: $Revision: 1.15 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2003-08-07 14:09:19 $
+ *  CVS/RCS Revision: $Revision: 1.16 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -73,7 +73,7 @@ OFBool DSRTextTreeNode::isValid() const
 }
 
 
-OFBool DSRTextTreeNode::isShort(const size_t /* flags */) const
+OFBool DSRTextTreeNode::isShort(const size_t /*flags*/) const
 {
     return (getValue().length() <= 40);
 }
@@ -102,7 +102,7 @@ OFCondition DSRTextTreeNode::writeXML(ostream &stream,
     OFCondition result = EC_Normal;
     writeXMLItemStart(stream, flags);
     result = DSRDocumentTreeNode::writeXML(stream, flags, logStream);
-    writeStringValueToXML(stream, getValue(), "value", ((flags & XF_writeEmptyTags) ? OFTrue : OFFalse));
+    writeStringValueToXML(stream, getValue(), "value", flags & XF_writeEmptyTags > 0);
     writeXMLItemEnd(stream, flags);
     return result;
 }
@@ -124,10 +124,18 @@ OFCondition DSRTextTreeNode::writeContentItem(DcmItem &dataset,
 }
 
 
+OFCondition DSRTextTreeNode::readXMLContentItem(const DSRXMLDocument &doc,
+                                                DSRXMLCursor cursor)
+{
+    /* retrieve value from XML element "value" */
+    return DSRStringValue::readXML(doc, doc.getNamedNode(cursor.gotoChild(), "value"), OFTrue /*encoding*/);
+}
+
+
 OFCondition DSRTextTreeNode::renderHTMLContentItem(ostream &docStream,
-                                                   ostream & /*annexStream */,
-                                                   const size_t /* nestingLevel */,
-                                                   size_t & /* annexNumber */,
+                                                   ostream & /*annexStream*/,
+                                                   const size_t /*nestingLevel*/,
+                                                   size_t & /*annexNumber*/,
                                                    const size_t flags,
                                                    OFConsole *logStream) const
 {
@@ -136,9 +144,9 @@ OFCondition DSRTextTreeNode::renderHTMLContentItem(ostream &docStream,
     OFCondition result = renderHTMLConceptName(docStream, flags, logStream);
     /* render TextValue */
     if (flags & HF_renderItemInline)
-        docStream << "\"" << convertToMarkupString(getValue(), htmlString, ((flags & HF_convertNonASCIICharacters) ? OFTrue : OFFalse)) << "\"" << endl;
+        docStream << "\"" << convertToMarkupString(getValue(), htmlString, flags & HF_convertNonASCIICharacters > 0) << "\"" << endl;
     else
-        docStream << convertToMarkupString(getValue(), htmlString, ((flags & HF_convertNonASCIICharacters) ? OFTrue : OFFalse), OFTrue /* newlineAllowed */) << endl;
+        docStream << convertToMarkupString(getValue(), htmlString, flags & HF_convertNonASCIICharacters > 0, OFTrue /*newlineAllowed*/) << endl;
     return result;
 }
 
@@ -156,7 +164,7 @@ OFBool DSRTextTreeNode::canAddNode(const E_DocumentType documentType,
             case RT_hasObsContext:
                 switch (valueType)
                 {
-                    case VT_Text:                
+                    case VT_Text:
                     case VT_Code:
                     case VT_Num:
                     case VT_DateTime:
@@ -212,7 +220,12 @@ OFBool DSRTextTreeNode::canAddNode(const E_DocumentType documentType,
 /*
  *  CVS/RCS Log:
  *  $Log: dsrtextn.cc,v $
- *  Revision 1.15  2003-06-04 14:26:54  meichel
+ *  Revision 1.16  2003-08-07 14:09:19  joergr
+ *  Added readXML functionality.
+ *  Distinguish more strictly between OFBool and int (required when HAVE_CXX_BOOL
+ *  is defined).
+ *
+ *  Revision 1.15  2003/06/04 14:26:54  meichel
  *  Simplified include structure to avoid preprocessor limitation
  *    (max 32 #if levels) on MSVC5 with STL.
  *
