@@ -66,8 +66,7 @@ DiRegister::~DiRegister()
 }
 
 
-/*--------------*
- *--------------*/
+/*--------------*/
 
 DiImage *DiRegister::createImage(const DiDocument *docu,
                                  const EI_Status status,
@@ -115,26 +114,30 @@ DiMonoPixel *DiRegister::createMonoImageData(const DiColorImage *image,
     DiMonoPixel *inter = NULL;
     if (image != NULL)
     {
-        switch (image->getInterData()->getRepresentation())
+        const DiColorPixel *color = image->getInterData();
+        if (color != NULL)
         {
-            case EPR_Uint8:
-                inter = new DiColorMonoTemplate<Uint8>(image->getInterData(), red, green, blue);
-                break;
-            case EPR_Sint8:
-                inter = new DiColorMonoTemplate<Sint8>(image->getInterData(), red, green, blue);
-                break;
-            case EPR_Uint16:
-                inter = new DiColorMonoTemplate<Uint16>(image->getInterData(), red, green, blue);
-                break;
-            case EPR_Sint16:
-                inter = new DiColorMonoTemplate<Sint16>(image->getInterData(), red, green, blue);
-                break;
-            case EPR_Uint32:
-                inter = new DiColorMonoTemplate<Uint32>(image->getInterData(), red, green, blue);
-                break;
-            case EPR_Sint32:
-                inter = new DiColorMonoTemplate<Sint32>(image->getInterData(), red, green, blue);
-                break;
+            switch (color->getRepresentation())
+            {
+                case EPR_Uint8:
+                    inter = new DiColorMonoTemplate<Uint8>(color, red, green, blue);
+                    break;
+                case EPR_Sint8:
+                    inter = new DiColorMonoTemplate<Sint8>(color, red, green, blue);
+                    break;
+                case EPR_Uint16:
+                    inter = new DiColorMonoTemplate<Uint16>(color, red, green, blue);
+                    break;
+                case EPR_Sint16:
+                    inter = new DiColorMonoTemplate<Sint16>(color, red, green, blue);
+                    break;
+                case EPR_Uint32:
+                    inter = new DiColorMonoTemplate<Uint32>(color, red, green, blue);
+                    break;
+                case EPR_Sint32:
+                    inter = new DiColorMonoTemplate<Sint32>(color, red, green, blue);
+                    break;
+            }
         }
     }
     return inter;
@@ -142,16 +145,18 @@ DiMonoPixel *DiRegister::createMonoImageData(const DiColorImage *image,
 
 
 /*
-**
-** CVS/RCS Log:
-** $Log: diregist.cc,v $
-** Revision 1.2  1999-03-24 17:12:38  joergr
-** Added/Modified comments and formatting.
-**
-** Revision 1.1  1998/11/27 13:05:59  joergr
-** Added registration class to allow easy combination of both modules.
-** Added copyright message to all source files.
-**
-**
-**
-*/
+ *
+ * CVS/RCS Log:
+ * $Log: diregist.cc,v $
+ * Revision 1.3  1999-04-28 13:43:47  joergr
+ * Added some checks to avoid dereferencing null pointers.
+ *
+ * Revision 1.2  1999/03/24 17:12:38  joergr
+ * Added/Modified comments and formatting.
+ *
+ * Revision 1.1  1998/11/27 13:05:59  joergr
+ * Added registration class to allow easy combination of both modules.
+ * Added copyright message to all source files.
+ *
+ *
+ */
