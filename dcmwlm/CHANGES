@@ -1,6 +1,19 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2002.11.28 (riesmeier)
+
+- Removed explicit dependency from config.h.
+  Affects: dcmwlm/apps/Makefile.in
+           dcmwlm/libsrc/Makefile.in
+
+- Introduced variable extensions for binary files to support platforms like
+  Cygwin (filename extension ".exe").
+  Affects: dcmwlm/apps/Makefile.in
+
+- Renamed config.h to cfunix.h to avoid name clashes with other packages.
+  Affects: dcmwlm/apps/Makefile.dep
+
 **** Changes from 2002.11.26 (eichelberg)
 
 - Replaced all includes for "zlib.h" with <zlib.h>
