@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DcmSignature
  *
- *  Last Update:      $Author: wilkens $
- *  Update Date:      $Date: 2002-12-20 14:53:35 $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2003-07-09 13:59:50 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -438,8 +438,6 @@ OFCondition DcmSignature::createSignature(
       // Signature
       if (result.good())
       {
-      	OFString aString;
-      	currentDateTime(aString);
         DcmOtherByteOtherWord *elemSig = new DcmOtherByteOtherWord(DCM_Signature);
         if (elemSig)
         {
@@ -829,7 +827,10 @@ int dcmsign_cc_dummy_to_keep_linker_from_moaning = 0;
 
 /*
  *  $Log: dcsignat.cc,v $
- *  Revision 1.1  2002-12-20 14:53:35  wilkens
+ *  Revision 1.2  2003-07-09 13:59:50  meichel
+ *  Removed unused variable
+ *
+ *  Revision 1.1  2002/12/20 14:53:35  wilkens
  *  Modified name clash resulting in a compiler error on Solaris 2.5.1 using
  *  compiler SC 2.0.1.
  *
