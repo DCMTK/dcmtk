@@ -6393,7 +6393,7 @@ else
 fi
 done
 
-for ac_func in getpid mktemp tempnam tmpnam getenv
+for ac_func in getpid mktemp tempnam tmpnam getenv mkstemp
 do
 echo $ac_n "checking for $ac_func""... $ac_c" 1>&6
 echo "configure:6400: checking for $ac_func" >&5

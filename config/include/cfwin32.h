@@ -187,6 +187,9 @@
 /* Define if you have the memset function.  */
 #define HAVE_MEMSET 1
 
+/* Define if you have the mkstemp function.  */
+/* #undef HAVE_MKSTEMP */
+
 /* Define if you have the mktemp function.  */
 #define HAVE_MKTEMP 1
 
