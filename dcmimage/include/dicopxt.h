@@ -1,21 +1,35 @@
 /*
-**
-** Author:  Joerg Riesmeier
-** Created: 20.12.96
-**
-** Module:  dicopxt.h
-**
-** Purpose: DicomColorPixelTemplate (Header)
-**
-** Last Update:      $Author: joergr $
-** Update Date:      $Date: 1998-05-11 14:53:13 $
-** Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/include/Attic/dicopxt.h,v $
-** CVS/RCS Revision: $Revision: 1.5 $
-** Status:           $State: Exp $
-**
-** CVS/RCS Log at end of file
-**
-*/
+ *
+ *  Copyright (C) 1996-99, OFFIS
+ *
+ *  This software and supporting documentation were developed by
+ *
+ *    Kuratorium OFFIS e.V.
+ *    Healthcare Information and Communication Systems
+ *    Escherweg 2
+ *    D-26121 Oldenburg, Germany
+ *
+ *  THIS SOFTWARE IS MADE AVAILABLE,  AS IS,  AND OFFIS MAKES NO  WARRANTY
+ *  REGARDING  THE  SOFTWARE,  ITS  PERFORMANCE,  ITS  MERCHANTABILITY  OR
+ *  FITNESS FOR ANY PARTICULAR USE, FREEDOM FROM ANY COMPUTER DISEASES  OR
+ *  ITS CONFORMITY TO ANY SPECIFICATION. THE ENTIRE RISK AS TO QUALITY AND
+ *  PERFORMANCE OF THE SOFTWARE IS WITH THE USER.
+ *
+ *  Module:  dcmimage
+ *
+ *  Author:  Joerg Riesmeier
+ *
+ *  Purpose: DicomColorPixelTemplate (Header)
+ *
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 1998-11-27 13:50:20 $
+ *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/include/Attic/dicopxt.h,v $
+ *  CVS/RCS Revision: $Revision: 1.6 $
+ *  Status:           $State: Exp $
+ *
+ *  CVS/RCS Log at end of file
+ *
+ */
 
 
 #ifndef __DICOPXT_H
@@ -86,9 +100,9 @@ class DiColorPixelTemplate : public DiColorPixel, public DiPixelRepresentationTe
 
     virtual ~DiColorPixelTemplate()
     {
-        delete Data[0];
-        delete Data[1];
-        delete Data[2];
+        delete[] Data[0];
+        delete[] Data[1];
+        delete[] Data[2];
     }
 
     inline EP_Representation getRepresentation() const
@@ -97,6 +111,11 @@ class DiColorPixelTemplate : public DiColorPixel, public DiPixelRepresentationTe
     }
 
     inline void *getData() const
+    {
+        return (void *)Data;
+    }
+    
+    inline void *getDataPtr()
     {
         return (void *)Data;
     }
@@ -162,6 +181,51 @@ class DiColorPixelTemplate : public DiColorPixel, public DiPixelRepresentationTe
         return NULL;
     }
 
+    inline void *createAWTBitmap(const Uint16 width, const Uint16 height, const unsigned long frame, Sint16 shift) const
+    {
+        if ((Data[0] != NULL) && (Data[1] != NULL) && (Data[2] != NULL))
+        {
+            Uint32 *data = new Uint32[(unsigned long)width * (unsigned long)height];
+            if (data != NULL)
+            {
+                const unsigned long start = (unsigned long)width * (unsigned long)height * frame;
+                register const T *r = Data[0] + start;
+                register const T *g = Data[1] + start;
+                register const T *b = Data[2] + start;
+                register Uint32 *q = data;
+                register Uint16 x;
+                register Uint16 y;
+                if (shift == 0)
+                {
+                    for (y = 0; y < height; y++)
+                    {
+                        for (x = 0; x < width; x++)
+                            *(q++) = (((Uint32)(*(r++))) << 24) | (((Uint32)(*(g++))) << 16) | (((Uint32)(*(b++))) << 8);
+                    }
+                }
+                else if (shift < 0)
+                {
+                    shift = -shift;
+                    for (y = 0; y < height; y++)
+                    {
+                        for (x = 0; x < width; x++)
+                            *(q++) = (((Uint32)(*(r++) << shift)) << 24) | (((Uint32)(*(g++) << shift)) << 16) | (((Uint32)(*(b++) << shift)) << 8);
+                    }
+                }
+                else
+                {
+                    for (y = 0; y < height; y++)
+                    {
+                        for (x = 0; x < width; x++)
+                            *(q++) = (((Uint32)(*(r++) >> shift)) << 24) | (((Uint32)(*(g++) >> shift)) << 16) | (((Uint32)(*(b++) >> shift)) << 8);
+                    }
+                }
+                return (void *)data;
+            }
+        }
+        return NULL;
+    }
+
  protected: 
     DiColorPixelTemplate(const DiMonoPixel *pixel)
       : DiColorPixel(pixel)
@@ -203,7 +267,11 @@ class DiColorPixelTemplate : public DiColorPixel, public DiPixelRepresentationTe
 **
 ** CVS/RCS Log:
 ** $Log: dicopxt.h,v $
-** Revision 1.5  1998-05-11 14:53:13  joergr
+** Revision 1.6  1998-11-27 13:50:20  joergr
+** Added copyright message. Replaced delete by delete[] for array types.
+** Added method to give direct (non const) access to internal data buffer.
+**
+** Revision 1.5  1998/05/11 14:53:13  joergr
 ** Added CVS/RCS header to each file.
 **
 **
