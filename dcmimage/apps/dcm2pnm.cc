@@ -22,9 +22,9 @@
  *  Purpose: Convert DICOM Images to PPM or PGM using the dcmimage library.
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-03-06 18:26:15 $
+ *  Update Date:      $Date: 2000-03-07 15:29:39 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/apps/dcm2pnm.cc,v $
- *  CVS/RCS Revision: $Revision: 1.38 $
+ *  CVS/RCS Revision: $Revision: 1.39 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -956,7 +956,7 @@ int main(int argc, char *argv[])
             di->writePPM(ofile, 16, opt_Frame - 1);
             break;
         case 4:
-            di->writePPM(ofile, opt_fileBits, opt_Frame - 1);
+            di->writePPM(ofile, (int)opt_fileBits, opt_Frame - 1);
             break;
 #ifdef PASTEL_COLOR_OUTPUT
         case 5:
@@ -985,7 +985,10 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcm2pnm.cc,v $
- * Revision 1.38  2000-03-06 18:26:15  joergr
+ * Revision 1.39  2000-03-07 15:29:39  joergr
+ * Added type cast to make Sun CC 2.0.1 happy.
+ *
+ * Revision 1.38  2000/03/06 18:26:15  joergr
  * Replaced #ifdef statements (reported an error by Cygwin).
  *
  * Revision 1.37  2000/03/03 14:07:49  meichel
