@@ -22,9 +22,9 @@
  *  Purpose: Presentation State Viewer - Print Spooler
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-10-13 14:11:53 $
+ *  Update Date:      $Date: 1999-10-19 14:44:27 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmpstat/apps/Attic/dcmprtsv.cc,v $
- *  CVS/RCS Revision: $Revision: 1.8 $
+ *  CVS/RCS Revision: $Revision: 1.9 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -122,6 +122,8 @@ static OFBool         targetRequiresMatchingLUT   = OFTrue;
 static OFBool         targetPreferSCPLUTRendering = OFFalse;
 static OFBool         deletePrintJobs       = OFFalse;
 static OFBool         deleteTerminateJobs   = OFFalse;
+static OFBool         haveRenderedPrintJobs = OFFalse;
+static OFBool         deleteUnusedLogs      = OFTrue;
 
 /* helper class printJob */
 
@@ -192,6 +194,8 @@ printJob::printJob(const printJob& copy)
 
 static E_Condition spoolStoredPrintFile(const char *filename, DVInterface &dvi)
 {
+  haveRenderedPrintJobs = OFTrue; // do not delete log when terminating
+
   DcmFileFormat *ffile = NULL;
   DcmDataset *dset = NULL;
 
@@ -287,6 +291,20 @@ static E_Condition spoolStoredPrintFile(const char *filename, DVInterface &dvi)
           }
         } else result = EC_IllegalCall;
       }
+      
+      size_t numberOfAnnotations = stprint.getNumberOfAnnotations();
+      for (size_t currentAnnotation=0; currentAnnotation<numberOfAnnotations; currentAnnotation++)
+      {
+        // N-SET basic annotation box
+        if (EC_Normal == result)
+        {
+          if (EC_Normal != (result = stprint.printSCUsetBasicAnnotationBox(printHandler, currentAnnotation)))
+          {
+            *logstream << "spooler: printer communication failed, unable to transmit basic annotation box." << endl;
+          }
+        }
+      }
+                  
       if (! opt_noPrint)
       {
         if (EC_Normal==result) if (EC_Normal != (result = stprint.printSCUprintBasicFilmBox(printHandler)))
@@ -410,9 +428,11 @@ static E_Condition readJobFile(
   if (inf==NULL) return EC_IllegalCall;
   OFString key, value;
   OFBool eofFound = OFFalse;
+  OFBool thisIsTerminate = OFFalse;
   E_Condition result = EC_Normal;
   while (!eofFound)
   {
+  	thisIsTerminate = OFFalse;
     eofFound = readValuePair(inf, key, value);
     if ((key.size()==0)||(key[0] == '#')) { /* ignore comments and empty lines */ }
     else if (key == "copies")
@@ -449,7 +469,11 @@ static E_Condition readJobFile(
     else if (key == "study") job.studyUID = value;
     else if (key == "series") job.seriesUID = value;
     else if (key == "instance") job.instanceUID = value;
-    else if (key == "terminate") terminateFlag=OFTrue;
+    else if (key == "terminate") 
+    {
+      terminateFlag=OFTrue;
+      thisIsTerminate = OFTrue;
+    }
     else
     {
       *logstream << "spooler: unknown keyword '" << key.c_str() << "' in job file '" << infile << "'" << endl;
@@ -458,7 +482,7 @@ static E_Condition readJobFile(
   }
   fclose(inf);
 
-  if (deletePrintJobs || (deleteTerminateJobs && terminateFlag))
+  if (deletePrintJobs || (deleteTerminateJobs && thisIsTerminate))
   {
     if (0 != unlink(infile))
     {
@@ -739,20 +763,29 @@ int main(int argc, char *argv[])
       }
     }
 
+    OFString logfilename;
+    
     if (opt_spoolMode)
     {
       time_t now = time(NULL);
-      OFString fname = dvi.getLogFolder();
-      fname += PATH_SEPARATOR;
-      fname += opt_spoolPrefix;
-      fname += "_";
-      fname += opt_printer;
-      fname += ".log";
-      ofstream *newstream = new ofstream(fname.c_str());
-      if (newstream && (newstream->good())) logstream=newstream; else delete newstream;
+      logfilename = dvi.getLogFolder();
+      logfilename += PATH_SEPARATOR;
+      logfilename += opt_spoolPrefix;
+      logfilename += "_";
+      logfilename += opt_printer;
+      logfilename += ".log";
+      ofstream *newstream = new ofstream(logfilename.c_str());
+      if (newstream && (newstream->good())) logstream=newstream; 
+      else
+      {
+      	delete newstream;
+      	logfilename.clear();
+      }
       *logstream << rcsid << endl << asctime(localtime(&now)) << "started" << endl;
     }
 
+    dvi.setLog(logstream);
+    
     /* make sure data dictionary is loaded */
     if (!dcmDataDict.isDictionaryLoaded())
         *logstream << "Warning: no data dictionary loaded, check environment variable: " << DCM_DICT_ENVIRONMENT_VARIABLE << endl;
@@ -912,13 +945,24 @@ int main(int argc, char *argv[])
     dcmDataDict.clear();  /* useful for debugging with dmalloc */
 #endif
     closeLog();
+    
+    if (deleteUnusedLogs && (! haveRenderedPrintJobs))
+    {
+      // log unused, attempt to delete file
+      unlink(logfilename.c_str());      
+    }
+        
     return 0;
 }
 
 /*
  * CVS/RCS Log:
  * $Log: dcmprtsv.cc,v $
- * Revision 1.8  1999-10-13 14:11:53  meichel
+ * Revision 1.9  1999-10-19 14:44:27  meichel
+ * dcmprtsv now correctly writes DIMSE dump to log file
+ *   and deletes log file upon termination if no print job was processed.
+ *
+ * Revision 1.8  1999/10/13 14:11:53  meichel
  * Added config file entries and access methods
  *   for user-defined VOI presets, log directory, verbatim logging
  *   and an explicit list of image display formats for each printer.
