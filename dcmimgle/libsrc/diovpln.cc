@@ -22,9 +22,9 @@
  *  Purpose: DicomOverlayPlane (Source) - Multiframe Overlays UNTESTED !
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1998-12-16 16:20:10 $
+ *  Update Date:      $Date: 1998-12-22 13:51:04 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/libsrc/diovpln.cc,v $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -161,7 +161,7 @@ DiOverlayPlane::DiOverlayPlane(const unsigned int group,
     Foreground(1),
     Threshold(1),
     Mode(mode),
-    DefaultMode(EMO_Replace),
+    DefaultMode(mode),
     Label(),
     Description(),
     GroupNumber(group),
@@ -179,7 +179,7 @@ DiOverlayPlane::DiOverlayPlane(const unsigned int group,
     const char *str;
     if ((Valid = DiDocument::getElemValue((const DcmElement *)&label, str)))
         Label = str;
-    if ((Valid &= DiDocument::getElemValue((const DcmElement *)&Description, str)))
+    if ((Valid &= DiDocument::getElemValue((const DcmElement *)&description, str)))
         Description = str;
     Valid &= DiDocument::getElemValue((const DcmElement *)&data, Data);
     Top--;                                                      // overlay origin is numbered from 1
@@ -356,14 +356,14 @@ void DiOverlayPlane::setRotation(const int degree,
         if (degree == 90)                       // rotate right
         {
             Sint16 ss = Left;
-            Uint16 us = StartLeft;
+            us = StartLeft;
             Left = (Sint16)((signed long)columns - Width - Top);
             StartLeft = (Uint16)((signed long)Columns - Width - StartTop);
             Top = ss;
             StartTop = us;
         } else {                                // rotate left
             Sint16 ss = Left;
-            Uint16 us = StartLeft;
+            us = StartLeft;
             Left = Top;
             StartLeft = StartTop;
             Top = (Sint16)((signed long)rows - Height - ss);
@@ -377,7 +377,11 @@ void DiOverlayPlane::setRotation(const int degree,
 **
 ** CVS/RCS Log:
 ** $Log: diovpln.cc,v $
-** Revision 1.3  1998-12-16 16:20:10  joergr
+** Revision 1.4  1998-12-22 13:51:04  joergr
+** Removed variable declaration to avoid compiler warnings (reported by
+** MSVC5). Changed initialization of member variable 'DefaultMode'.
+**
+** Revision 1.3  1998/12/16 16:20:10  joergr
 ** Added method to export overlay planes (create 8-bit bitmap).
 ** Implemented flipping and rotation of overlay planes.
 **
