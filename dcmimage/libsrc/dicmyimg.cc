@@ -22,9 +22,9 @@
  *  Purpose: DicomCMYKImage (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1998-11-27 14:26:13 $
+ *  Update Date:      $Date: 1999-04-28 13:18:55 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/libsrc/dicmyimg.cc,v $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -44,7 +44,8 @@
  *  constructors  *
  *----------------*/
 
-DiCMYKImage::DiCMYKImage(const DiDocument *docu, const EI_Status status)
+DiCMYKImage::DiCMYKImage(const DiDocument *docu,
+                         const EI_Status status)
   : DiColorImage(docu, status, 4)
 {
     if ((Document != NULL) && (InputData != NULL) && (ImageStatus == EIS_Normal))
@@ -86,16 +87,19 @@ DiCMYKImage::~DiCMYKImage()
 
 
 /*
-**
-** CVS/RCS Log:
-** $Log: dicmyimg.cc,v $
-** Revision 1.4  1998-11-27 14:26:13  joergr
-** Added copyright message.
-** Renamed variable 'Status' to 'ImageStatus' because of possible conflicts
-** with X windows systems.
-**
-** Revision 1.3  1998/05/11 14:52:25  joergr
-** Added CVS/RCS header to each file.
-**
-**
-*/
+ *
+ * CVS/RCS Log:
+ * $Log: dicmyimg.cc,v $
+ * Revision 1.5  1999-04-28 13:18:55  joergr
+ * Corrected some typos, comments and formatting.
+ *
+ * Revision 1.4  1998/11/27 14:26:13  joergr
+ * Added copyright message.
+ * Renamed variable 'Status' to 'ImageStatus' because of possible conflicts
+ * with X windows systems.
+ *
+ * Revision 1.3  1998/05/11 14:52:25  joergr
+ * Added CVS/RCS header to each file.
+ *
+ *
+ */
