@@ -21,10 +21,10 @@
  *
  *  Purpose: DicomMonochromeModality (Source)
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-06-01 15:49:58 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2001-09-28 13:17:24 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/libsrc/dimomod.cc,v $
- *  CVS/RCS Revision: $Revision: 1.14 $
+ *  CVS/RCS Revision: $Revision: 1.15 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -172,8 +172,8 @@ int DiMonoModality::Init(const DiDocument *docu,
     if ((docu != NULL) && (pixel != NULL))
     {
         pixel->determineMinMax();
-        MinValue = pixel->getMinValue();
-        MaxValue = pixel->getMaxValue();
+        MinValue = pixel->getMinValue(1 /* selected range of pixels only */);
+        MaxValue = pixel->getMaxValue(1 /* selected range of pixels only */);
         Bits = pixel->getBits();
         AbsMinimum = pixel->getAbsMinimum();
         AbsMaximum = pixel->getAbsMaximum();
@@ -258,7 +258,10 @@ void DiMonoModality::checkRescaling(const DiInputPixel *pixel)
  *
  * CVS/RCS Log:
  * $Log: dimomod.cc,v $
- * Revision 1.14  2001-06-01 15:49:58  meichel
+ * Revision 1.15  2001-09-28 13:17:24  joergr
+ * Enhanced algorithm to determine the min and max value.
+ *
+ * Revision 1.14  2001/06/01 15:49:58  meichel
  * Updated copyright header
  *
  * Revision 1.13  2000/12/14 13:46:45  joergr
