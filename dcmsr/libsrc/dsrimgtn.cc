@@ -23,8 +23,8 @@
  *    classes: DSRImageTreeNode
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-10-26 14:30:37 $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  Update Date:      $Date: 2000-11-01 16:36:59 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -81,6 +81,19 @@ E_Condition DSRImageTreeNode::print(ostream &stream,
 }
 
 
+E_Condition DSRImageTreeNode::writeXML(ostream &stream,
+                                       const size_t flags,
+                                       OFConsole *logStream) const
+{
+    E_Condition result = EC_Normal;
+    stream << "<image>" << endl;
+    result = DSRDocumentTreeNode::writeXML(stream, flags, logStream);
+    DSRImageReferenceValue::writeXML(stream, flags, logStream);
+    stream << "</image>" << endl;
+    return result;
+}
+
+
 E_Condition DSRImageTreeNode::readContentItem(DcmItem &dataset,
                                               OFConsole *logStream)
 {
@@ -108,7 +121,10 @@ E_Condition DSRImageTreeNode::renderHTMLContentItem(ostream &docStream,
     E_Condition result = renderHTMLConceptName(docStream, flags, logStream);
     /* render Reference */
     if (result == EC_Normal)
+    {
         result = DSRImageReferenceValue::renderHTML(docStream, annexStream, annexNumber, flags, logStream);
+        docStream << endl;
+    }
     return result;
 }
 
@@ -157,7 +173,10 @@ OFBool DSRImageTreeNode::canAddNode(const E_DocumentType documentType,
 /*
  *  CVS/RCS Log:
  *  $Log: dsrimgtn.cc,v $
- *  Revision 1.5  2000-10-26 14:30:37  joergr
+ *  Revision 1.6  2000-11-01 16:36:59  joergr
+ *  Added support for conversion to XML. Optimized HTML rendering.
+ *
+ *  Revision 1.5  2000/10/26 14:30:37  joergr
  *  Added support for "Comprehensive SR".
  *
  *  Revision 1.4  2000/10/20 10:14:58  joergr

@@ -23,8 +23,8 @@
  *    classes: DSRTCoordTreeNode
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-10-26 14:40:28 $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  Update Date:      $Date: 2000-11-01 16:37:04 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -81,6 +81,19 @@ E_Condition DSRTCoordTreeNode::print(ostream &stream,
 }
 
 
+E_Condition DSRTCoordTreeNode::writeXML(ostream &stream,
+                                        const size_t flags,
+                                        OFConsole *logStream) const
+{
+    E_Condition result = EC_Normal;
+    stream << "<tcoord type=\"" << temporalRangeTypeToEnumeratedValue(getTemporalRangeType()) << "\">" << endl;
+    result = DSRDocumentTreeNode::writeXML(stream, flags, logStream);
+    DSRTemporalCoordinatesValue::writeXML(stream, flags, logStream);
+    stream << "</tcoord>" << endl;
+    return result;
+}
+
+
 E_Condition DSRTCoordTreeNode::readContentItem(DcmItem &dataset,
                                                OFConsole *logStream)
 {
@@ -108,7 +121,10 @@ E_Condition DSRTCoordTreeNode::renderHTMLContentItem(ostream &docStream,
     E_Condition result = renderHTMLConceptName(docStream, flags, logStream);
     /* render TemporalCoordinates */
     if (result == EC_Normal)
+    {
         result = DSRTemporalCoordinatesValue::renderHTML(docStream, annexStream, annexNumber, flags, logStream);
+        docStream << endl;
+    }
     return result;
 }
 
@@ -144,7 +160,10 @@ OFBool DSRTCoordTreeNode::canAddNode(const E_DocumentType documentType,
 /*
  *  CVS/RCS Log:
  *  $Log: dsrtcotn.cc,v $
- *  Revision 1.1  2000-10-26 14:40:28  joergr
+ *  Revision 1.2  2000-11-01 16:37:04  joergr
+ *  Added support for conversion to XML. Optimized HTML rendering.
+ *
+ *  Revision 1.1  2000/10/26 14:40:28  joergr
  *  Added support for TCOORD content item.
  *
  *

@@ -23,8 +23,8 @@
  *    classes: DSRSpatialCoordinatesValue
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-10-26 14:34:39 $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  Update Date:      $Date: 2000-11-01 16:37:03 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -106,6 +106,21 @@ E_Condition DSRSpatialCoordinatesValue::print(ostream &stream,
 }
 
 
+E_Condition DSRSpatialCoordinatesValue::writeXML(ostream &stream,
+                                                 const size_t flags,
+                                                 OFConsole * /* logStream */) const
+{
+    /* GraphicType is written in TreeNode class */
+    if ((flags & DSRTypes::XF_writeEmptyTags) || !GraphicDataList.isEmpty())
+    {
+        stream << "<data>" << endl;
+        GraphicDataList.print(stream);        
+        stream << "</data>" << endl;        
+    }
+    return EC_Normal;
+}
+
+
 E_Condition DSRSpatialCoordinatesValue::read(DcmItem &dataset,
                                              OFConsole *logStream)
 {
@@ -148,17 +163,17 @@ E_Condition DSRSpatialCoordinatesValue::renderHTML(ostream &docStream,
                                                    OFConsole * /* logStream */) const
 {
     /* render GraphicType */
-    docStream << DSRTypes::graphicTypeToReadableName(GraphicType) << endl;
+    docStream << DSRTypes::graphicTypeToReadableName(GraphicType);
     /* render GraphicData */
     if (!isShort(flags))
     {
         if (flags & DSRTypes::HF_currentlyInsideAnnex)
         {
-            docStream << "<p>" << endl;
+            docStream << endl << "<p>" << endl;
             /* render graphic data list (= print)*/
             docStream << "<b>Graphic Data:</b><br>";
             GraphicDataList.print(docStream);
-            docStream << "</p>" << endl;
+            docStream << "</p>";
         } else {
             DSRTypes::createHTMLAnnexEntry(docStream, annexStream, "for more details see", annexNumber);
             annexStream << "<p>" << endl;
@@ -266,7 +281,10 @@ OFBool DSRSpatialCoordinatesValue::checkData(const DSRTypes::E_GraphicType graph
 /*
  *  CVS/RCS Log:
  *  $Log: dsrscovl.cc,v $
- *  Revision 1.5  2000-10-26 14:34:39  joergr
+ *  Revision 1.6  2000-11-01 16:37:03  joergr
+ *  Added support for conversion to XML. Optimized HTML rendering.
+ *
+ *  Revision 1.5  2000/10/26 14:34:39  joergr
  *  Use method isShort() to decide whether a content item can be rendered
  *  "inline" or not.
  *

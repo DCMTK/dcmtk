@@ -23,8 +23,8 @@
  *    classes: DSRWaveformReferenceValue
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-10-26 14:38:02 $
- *  CVS/RCS Revision: $Revision: 1.8 $
+ *  Update Date:      $Date: 2000-11-01 16:37:08 $
+ *  CVS/RCS Revision: $Revision: 1.9 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -111,6 +111,21 @@ E_Condition DSRWaveformReferenceValue::print(ostream &stream,
 }
 
 
+E_Condition DSRWaveformReferenceValue::writeXML(ostream &stream,
+                                                const size_t flags,
+                                                OFConsole *logStream) const
+{
+    E_Condition result = DSRCompositeReferenceValue::writeXML(stream, flags, logStream);
+    if ((flags & DSRTypes::XF_writeEmptyTags) || !ChannelList.isEmpty())
+    {
+        stream << "<channels>" << endl;
+        ChannelList.print(stream);        
+        stream << "</channels>" << endl;        
+    }
+    return result;
+}
+
+
 E_Condition DSRWaveformReferenceValue::readItem(DcmItem &dataset,
                                                 OFConsole *logStream)
 {
@@ -151,17 +166,17 @@ E_Condition DSRWaveformReferenceValue::renderHTML(ostream &docStream,
         docStream << string;
     else
         docStream << "unknown waveform";
-    docStream << "</a>" << endl;
+    docStream << "</a>";
     /* render (optional) channel list */
     if (!isShort(flags))
     {
         if (flags & DSRTypes::HF_currentlyInsideAnnex)
         {
-            docStream << "<p>" << endl;
+            docStream  << endl << "<p>" << endl;
             /* render channel list (= print)*/
             docStream << "<b>Referenced Waveform Channels:</b><br>";
             ChannelList.print(docStream);
-            docStream << "</p>" << endl;
+            docStream << "</p>";
         } else {
             DSRTypes::createHTMLAnnexEntry(docStream, annexStream, "for more details see", annexNumber);
             annexStream << "<p>" << endl;
@@ -224,7 +239,10 @@ OFBool DSRWaveformReferenceValue::checkSOPClassUID(const OFString &sopClassUID) 
 /*
  *  CVS/RCS Log:
  *  $Log: dsrwavvl.cc,v $
- *  Revision 1.8  2000-10-26 14:38:02  joergr
+ *  Revision 1.9  2000-11-01 16:37:08  joergr
+ *  Added support for conversion to XML. Optimized HTML rendering.
+ *
+ *  Revision 1.8  2000/10/26 14:38:02  joergr
  *  Use method isShort() to decide whether a content item can be rendered
  *  "inline" or not.
  *

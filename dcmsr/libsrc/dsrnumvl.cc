@@ -23,8 +23,8 @@
  *    classes: DSRNumericMeasurementValue
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-10-19 16:05:09 $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  Update Date:      $Date: 2000-11-01 16:37:01 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -104,9 +104,22 @@ E_Condition DSRNumericMeasurementValue::print(ostream &stream,
         /* empty value */
         stream << "empty";
     } else {
-        stream << "\"" << NumericValue << "\" ";
+        OFString printString;
+        stream << "\"" << DSRTypes::convertToPrintString(NumericValue, printString) << "\" ";
         MeasurementUnit.print(stream, OFTrue /* printCodeValue */, OFTrue /* printInvalid */);
     }
+    return EC_Normal;
+}
+
+
+E_Condition DSRNumericMeasurementValue::writeXML(ostream &stream,
+                                                 const size_t flags,
+                                                 OFConsole *logStream) const
+{
+    DSRTypes::writeStringValueToXML(stream, NumericValue, "value", flags & DSRTypes::XF_writeEmptyTags);
+    stream << "<unit>" << endl;
+    MeasurementUnit.writeXML(stream, flags, logStream);
+    stream << "</unit>" << endl;
     return EC_Normal;
 }
 
@@ -199,15 +212,24 @@ E_Condition DSRNumericMeasurementValue::writeSequence(DcmItem &dataset,
 E_Condition DSRNumericMeasurementValue::renderHTML(ostream &docStream,
                                                    ostream & /* annexStream */,
                                                    size_t & /* annexNumber */,
-                                                   OFConsole * /* logStream */) const
+                                                   const size_t flags,
+                                                   OFConsole *logStream) const
 {
     if (isEmpty())
     {
         /* empty value */
         docStream << "<i>empty</i>";
     } else {
-        /* CodeValue contains the name of the measurement unit */
-        docStream << NumericValue << " " << MeasurementUnit.getCodeValue() << endl;
+        OFString htmlString;
+        const OFBool fullCode = (flags & DSRTypes::HF_renderNumericUnitCodes) &&
+            ((flags & DSRTypes::HF_renderInlineCodes) || (flags & DSRTypes::HF_renderItemsSeparately));
+        if (!fullCode)
+            docStream << "<u>";
+        docStream << DSRTypes::convertToMarkupString(NumericValue, htmlString) << " ";
+        /* render full code of the measurement unit (value first) or code value only */
+        MeasurementUnit.renderHTML(docStream, logStream, fullCode, OFTrue /* valueFirst */);
+        if (!fullCode)
+            docStream << "</u>";
     }
     return EC_Normal;
 }
@@ -287,7 +309,10 @@ OFBool DSRNumericMeasurementValue::checkMeasurementUnit(const DSRCodedEntryValue
 /*
  *  CVS/RCS Log:
  *  $Log: dsrnumvl.cc,v $
- *  Revision 1.4  2000-10-19 16:05:09  joergr
+ *  Revision 1.5  2000-11-01 16:37:01  joergr
+ *  Added support for conversion to XML. Optimized HTML rendering.
+ *
+ *  Revision 1.4  2000/10/19 16:05:09  joergr
  *  Added optional module name to read method to provide more detailed warning
  *  messages.
  *

@@ -23,8 +23,8 @@
  *    classes: DSRTextTreeNode
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-10-26 14:35:09 $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  Update Date:      $Date: 2000-11-01 16:37:05 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -86,10 +86,23 @@ E_Condition DSRTextTreeNode::print(ostream &stream,
     {
         stream << "=";
         if (flags & PF_shortenLongItemValues)
-            DSRStringValue::print(stream, 40);     // text output is limited to 40 characters
+            DSRStringValue::print(stream, 30);     // text output is limited to 30 characters
         else
             DSRStringValue::print(stream);
     }
+    return result;
+}
+
+
+E_Condition DSRTextTreeNode::writeXML(ostream &stream,
+                                      const size_t flags,
+                                      OFConsole *logStream) const
+{
+    E_Condition result = EC_Normal;
+    stream << "<text>" << endl;
+    result = DSRDocumentTreeNode::writeXML(stream, flags, logStream);
+    writeStringValueToXML(stream, getValue(), "value", flags & XF_writeEmptyTags);
+    stream << "</text>" << endl;
     return result;
 }
 
@@ -117,13 +130,14 @@ E_Condition DSRTextTreeNode::renderHTMLContentItem(ostream &docStream,
                                                    const size_t flags,
                                                    OFConsole *logStream) const
 {
+    OFString htmlString;
     /* render ConceptName */
     E_Condition result = renderHTMLConceptName(docStream, flags, logStream);
     /* render TextValue */
     if (flags & HF_renderItemInline)
-        docStream << "\"" << getValue() << "\"" << endl;
+        docStream << "\"" << convertToMarkupString(getValue(), htmlString) << "\"" << endl;
     else
-        docStream << getValue() << endl;
+        docStream << convertToMarkupString(getValue(), htmlString, OFTrue /* newlineAllowed */) << endl;
     return result;
 }
 
@@ -178,7 +192,10 @@ OFBool DSRTextTreeNode::canAddNode(const E_DocumentType documentType,
 /*
  *  CVS/RCS Log:
  *  $Log: dsrtextn.cc,v $
- *  Revision 1.5  2000-10-26 14:35:09  joergr
+ *  Revision 1.6  2000-11-01 16:37:05  joergr
+ *  Added support for conversion to XML. Optimized HTML rendering.
+ *
+ *  Revision 1.5  2000/10/26 14:35:09  joergr
  *  Added support for "Comprehensive SR".
  *
  *  Revision 1.4  2000/10/23 15:04:46  joergr

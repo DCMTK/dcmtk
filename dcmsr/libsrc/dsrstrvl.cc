@@ -23,8 +23,8 @@
  *    classes: DSRStringValue
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-10-23 15:04:13 $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  Update Date:      $Date: 2000-11-01 16:37:04 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -86,10 +86,11 @@ OFBool DSRStringValue::isValid() const
 void DSRStringValue::print(ostream &stream,
                            const size_t maxLength) const
 {
+    OFString printString;
     if ((maxLength > 3) && (Value.length() > maxLength))
-        stream << "\"" << Value.substr(0, maxLength - 3) << "...\"";
+        stream << "\"" << DSRTypes::convertToPrintString(Value.substr(0, maxLength - 3), printString) << "...\"";
     else
-        stream << "\"" << Value << "\"";
+        stream << "\"" << DSRTypes::convertToPrintString(Value, printString) << "\"";
 }
 
 
@@ -108,6 +109,20 @@ E_Condition DSRStringValue::write(DcmItem &dataset,
 {
     /* write Value */
     return DSRTypes::putStringValueToDataset(dataset, tagKey, Value);
+}
+
+
+E_Condition DSRStringValue::renderHTML(ostream &docStream,
+                                       const size_t flags,
+                                       OFConsole * /* logStream */) const
+{
+    OFString htmlString;
+    if (!(flags & DSRTypes::HF_renderItemsSeparately))
+        docStream << "<u>";
+    docStream << DSRTypes::convertToMarkupString(Value, htmlString);
+    if (!(flags & DSRTypes::HF_renderItemsSeparately))
+        docStream << "</u>";
+    return EC_Normal;
 }
 
 
@@ -132,7 +147,10 @@ OFBool DSRStringValue::checkValue(const OFString &stringValue) const
 /*
  *  CVS/RCS Log:
  *  $Log: dsrstrvl.cc,v $
- *  Revision 1.4  2000-10-23 15:04:13  joergr
+ *  Revision 1.5  2000-11-01 16:37:04  joergr
+ *  Added support for conversion to XML. Optimized HTML rendering.
+ *
+ *  Revision 1.4  2000/10/23 15:04:13  joergr
  *  Enhanced implementation of method isValid().
  *
  *  Revision 1.3  2000/10/19 16:07:14  joergr

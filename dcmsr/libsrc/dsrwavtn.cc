@@ -23,8 +23,8 @@
  *    classes: DSRWaveformTreeNode
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-10-26 14:37:48 $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  Update Date:      $Date: 2000-11-01 16:37:07 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -81,6 +81,19 @@ E_Condition DSRWaveformTreeNode::print(ostream &stream,
 }
 
 
+E_Condition DSRWaveformTreeNode::writeXML(ostream &stream,
+                                          const size_t flags,
+                                          OFConsole *logStream) const
+{
+    E_Condition result = EC_Normal;
+    stream << "<waveform>" << endl;
+    result = DSRDocumentTreeNode::writeXML(stream, flags, logStream);
+    DSRWaveformReferenceValue::writeXML(stream, flags, logStream);
+    stream << "</waveform>" << endl;
+    return result;
+}
+
+
 E_Condition DSRWaveformTreeNode::readContentItem(DcmItem &dataset,
                                                  OFConsole *logStream)
 {
@@ -108,7 +121,10 @@ E_Condition DSRWaveformTreeNode::renderHTMLContentItem(ostream &docStream,
     E_Condition result = renderHTMLConceptName(docStream, flags, logStream);
     /* render Reference */
     if (result == EC_Normal)
+    {
         result = DSRWaveformReferenceValue::renderHTML(docStream, annexStream, annexNumber, flags, logStream);
+        docStream << endl;
+    }
     return result;
 }
 
@@ -157,7 +173,10 @@ OFBool DSRWaveformTreeNode::canAddNode(const E_DocumentType documentType,
 /*
  *  CVS/RCS Log:
  *  $Log: dsrwavtn.cc,v $
- *  Revision 1.5  2000-10-26 14:37:48  joergr
+ *  Revision 1.6  2000-11-01 16:37:07  joergr
+ *  Added support for conversion to XML. Optimized HTML rendering.
+ *
+ *  Revision 1.5  2000/10/26 14:37:48  joergr
  *  Added support for "Comprehensive SR".
  *
  *  Revision 1.4  2000/10/20 10:14:59  joergr

@@ -23,8 +23,8 @@
  *    classes: DSRByReferenceTreeNode
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-10-26 14:39:58 $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  Update Date:      $Date: 2000-11-01 16:37:02 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -76,6 +76,15 @@ E_Condition DSRByReferenceTreeNode::print(ostream &stream,
                                           const size_t /* flags */) const
 {
     stream << relationshipTypeToReadableName(getRelationshipType()) << " " << getValue();
+    return EC_Normal;
+}
+
+
+E_Condition DSRByReferenceTreeNode::writeXML(ostream & /* stream */,
+                                             const size_t /* flags */,
+                                             OFConsole * /* logStream */) const
+{
+    /* tbd */
     return EC_Normal;
 }
 
@@ -146,7 +155,7 @@ E_Condition DSRByReferenceTreeNode::renderHTMLContentItem(ostream &docStream,
                                                           OFConsole * /* logStream */) const
 {
     /* render reference string */
-    docStream << getValue() << endl;
+    docStream << "by-reference (" << getValue() << ")" << endl;
     return EC_Normal;
 }
 
@@ -184,7 +193,10 @@ OFBool DSRByReferenceTreeNode::checkValue(const OFString &stringValue) const
 /*
  *  CVS/RCS Log:
  *  $Log: dsrreftn.cc,v $
- *  Revision 1.1  2000-10-26 14:39:58  joergr
+ *  Revision 1.2  2000-11-01 16:37:02  joergr
+ *  Added support for conversion to XML. Optimized HTML rendering.
+ *
+ *  Revision 1.1  2000/10/26 14:39:58  joergr
  *  Added support for "Comprehensive SR".
  *
  *

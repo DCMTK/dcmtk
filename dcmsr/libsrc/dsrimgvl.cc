@@ -23,8 +23,8 @@
  *    classes: DSRImageReferenceValue
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-10-26 14:31:44 $
- *  CVS/RCS Revision: $Revision: 1.8 $
+ *  Update Date:      $Date: 2000-11-01 16:37:00 $
+ *  CVS/RCS Revision: $Revision: 1.9 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -155,6 +155,27 @@ E_Condition DSRImageReferenceValue::print(ostream &stream,
 }
 
 
+E_Condition DSRImageReferenceValue::writeXML(ostream &stream,
+                                             const size_t flags,
+                                             OFConsole *logStream) const
+{
+    E_Condition result = DSRCompositeReferenceValue::writeXML(stream, flags, logStream);
+    if ((flags & DSRTypes::XF_writeEmptyTags) || !FrameList.isEmpty())
+    {
+        stream << "<frames>" << endl;
+        FrameList.print(stream);        
+        stream << "</frames>" << endl;        
+    }
+    if ((flags & DSRTypes::XF_writeEmptyTags) || PresentationState.isValid())
+    {
+        stream << "<pstate>" << endl;
+        PresentationState.writeXML(stream, flags, logStream);
+        stream << "</pstate>" << endl;
+    }
+    return result;
+}
+
+
 E_Condition DSRImageReferenceValue::readItem(DcmItem &dataset,
                                              OFConsole *logStream)
 {
@@ -204,7 +225,7 @@ E_Condition DSRImageReferenceValue::renderHTML(ostream &docStream,
         docStream << string;
     else
         docStream << "unknown";
-    docStream << " image</a>" << endl;
+    docStream << " image</a>";
     /* presentation state */
     if (PresentationState.isValid())
     {
@@ -212,17 +233,17 @@ E_Condition DSRImageReferenceValue::renderHTML(ostream &docStream,
         docStream << "<a href=\"file://dicom/pstate/";
         docStream << PresentationState.getSOPClassUID() << "/";
         docStream << PresentationState.getSOPInstanceUID() << "\">";
-        docStream << " GSPS</a>" << endl;
+        docStream << " GSPS</a>";
     }
     if (!isShort(flags))
     {
         if (flags & DSRTypes::HF_currentlyInsideAnnex)
         {
-            docStream << "<p>" << endl;
+            docStream << endl << "<p>" << endl;
             /* render frame list (= print)*/
             docStream << "<b>Referenced Frame Number:</b><br>";
             FrameList.print(docStream);
-            docStream << "</p>" << endl;
+            docStream << "</p>";
         } else {
             DSRTypes::createHTMLAnnexEntry(docStream, annexStream, "for more details see", annexNumber);
             annexStream << "<p>" << endl;
@@ -298,7 +319,10 @@ OFBool DSRImageReferenceValue::checkPresentationState(const DSRCompositeReferenc
 /*
  *  CVS/RCS Log:
  *  $Log: dsrimgvl.cc,v $
- *  Revision 1.8  2000-10-26 14:31:44  joergr
+ *  Revision 1.9  2000-11-01 16:37:00  joergr
+ *  Added support for conversion to XML. Optimized HTML rendering.
+ *
+ *  Revision 1.8  2000/10/26 14:31:44  joergr
  *  Use method isShort() to decide whether a content item can be rendered
  *  "inline" or not.
  *

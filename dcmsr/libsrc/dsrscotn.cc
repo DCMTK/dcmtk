@@ -23,8 +23,8 @@
  *    classes: DSRSCoordTreeNode
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-10-26 14:33:53 $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  Update Date:      $Date: 2000-11-01 16:37:03 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -81,6 +81,19 @@ E_Condition DSRSCoordTreeNode::print(ostream &stream,
 }
 
 
+E_Condition DSRSCoordTreeNode::writeXML(ostream &stream,
+                                        const size_t flags,
+                                        OFConsole *logStream) const
+{
+    E_Condition result = EC_Normal;
+    stream << "<scoord type=\"" << graphicTypeToEnumeratedValue(getGraphicType()) << "\">" << endl;
+    result = DSRDocumentTreeNode::writeXML(stream, flags, logStream);
+    DSRSpatialCoordinatesValue::writeXML(stream, flags, logStream);
+    stream << "</scoord>" << endl;
+    return result;
+}
+
+
 E_Condition DSRSCoordTreeNode::readContentItem(DcmItem &dataset,
                                                OFConsole *logStream)
 {
@@ -108,7 +121,10 @@ E_Condition DSRSCoordTreeNode::renderHTMLContentItem(ostream &docStream,
     E_Condition result = renderHTMLConceptName(docStream, flags, logStream);
     /* render SpatialCoordinates */
     if (result == EC_Normal)
+    {
         result = DSRSpatialCoordinatesValue::renderHTML(docStream, annexStream, annexNumber, flags, logStream);
+        docStream << endl;
+    }
     return result;
 }
 
@@ -137,7 +153,10 @@ OFBool DSRSCoordTreeNode::canAddNode(const E_DocumentType documentType,
 /*
  *  CVS/RCS Log:
  *  $Log: dsrscotn.cc,v $
- *  Revision 1.3  2000-10-26 14:33:53  joergr
+ *  Revision 1.4  2000-11-01 16:37:03  joergr
+ *  Added support for conversion to XML. Optimized HTML rendering.
+ *
+ *  Revision 1.3  2000/10/26 14:33:53  joergr
  *  Added support for "Comprehensive SR".
  *
  *  Revision 1.2  2000/10/16 12:07:29  joergr

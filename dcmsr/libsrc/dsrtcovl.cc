@@ -23,8 +23,8 @@
  *    classes: DSRTemporalCoordinatesValue
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-10-26 14:40:29 $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  Update Date:      $Date: 2000-11-01 16:37:05 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -121,6 +121,34 @@ E_Condition DSRTemporalCoordinatesValue::print(ostream &stream,
 }
 
 
+E_Condition DSRTemporalCoordinatesValue::writeXML(ostream &stream,
+                                                  const size_t flags,
+                                                  OFConsole * /* logStream */) const
+{
+    /* TemporalRangeType is written in TreeNode class */
+    if ((flags & DSRTypes::XF_writeEmptyTags) || !SamplePositionList.isEmpty() ||
+         !TimeOffsetList.isEmpty() || !DatetimeList.isEmpty())
+    {
+        stream << "<data type =\"";
+        /* print only one list */
+        if (!SamplePositionList.isEmpty())
+        {
+            stream << "SAMPLE POSITION\">" << endl;
+            SamplePositionList.print(stream);
+        } else if (!TimeOffsetList.isEmpty())
+        {
+            stream << "TIME OFFSET\">" << endl;
+            TimeOffsetList.print(stream);
+        } else {
+            stream << "DATETIME\">" << endl;
+            DatetimeList.print(stream);
+        }
+        stream << "</data>" << endl;        
+    }
+    return EC_Normal;
+}
+
+
 E_Condition DSRTemporalCoordinatesValue::read(DcmItem &dataset,
                                               OFConsole *logStream)
 {
@@ -169,13 +197,13 @@ E_Condition DSRTemporalCoordinatesValue::renderHTML(ostream &docStream,
                                                     OFConsole * /* logStream */) const
 {
     /* render TemporalRangeType */
-    docStream << DSRTypes::temporalRangeTypeToReadableName(TemporalRangeType) << endl;
+    docStream << DSRTypes::temporalRangeTypeToReadableName(TemporalRangeType);
     /* render data */
     if (!isShort(flags))
     {
         if (flags & DSRTypes::HF_currentlyInsideAnnex)
         {
-            docStream << "<p>" << endl;
+            docStream << endl << "<p>" << endl;
             /* render data list (= print)*/
             if (!SamplePositionList.isEmpty())
             {
@@ -190,7 +218,7 @@ E_Condition DSRTemporalCoordinatesValue::renderHTML(ostream &docStream,
                 docStream << "<b>Referenced Datetime:</b><br>";
                 DatetimeList.print(docStream);
             }
-            docStream << "</p>" << endl;
+            docStream << "</p>";
         } else {
             DSRTypes::createHTMLAnnexEntry(docStream, annexStream, "for more details see", annexNumber);
             annexStream << "<p>" << endl;
@@ -283,7 +311,10 @@ OFBool DSRTemporalCoordinatesValue::checkData(const DSRTypes::E_TemporalRangeTyp
 /*
  *  CVS/RCS Log:
  *  $Log: dsrtcovl.cc,v $
- *  Revision 1.1  2000-10-26 14:40:29  joergr
+ *  Revision 1.2  2000-11-01 16:37:05  joergr
+ *  Added support for conversion to XML. Optimized HTML rendering.
+ *
+ *  Revision 1.1  2000/10/26 14:40:29  joergr
  *  Added support for TCOORD content item.
  *
  *
