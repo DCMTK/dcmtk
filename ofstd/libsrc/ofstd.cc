@@ -92,9 +92,9 @@
  *
  *  Purpose: Class for various helper functions
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2004-08-03 11:45:48 $
- *  CVS/RCS Revision: $Revision: 1.32 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2004-08-04 12:11:52 $
+ *  CVS/RCS Revision: $Revision: 1.33 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1624,7 +1624,10 @@ unsigned int OFStandard::my_sleep(unsigned int seconds)
 
 /*
  *  $Log: ofstd.cc,v $
- *  Revision 1.32  2004-08-03 11:45:48  meichel
+ *  Revision 1.33  2004-08-04 12:11:52  joergr
+ *  Replaced non-Unix newline characters.
+ *
+ *  Revision 1.32  2004/08/03 11:45:48  meichel
  *  Headers libc.h and unistd.h are now included via ofstdinc.h
  *
  *  Revision 1.31  2004/05/26 10:14:47  meichel
