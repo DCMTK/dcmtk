@@ -57,10 +57,10 @@
 ** Module Prefix: DU_
 **
 **
-** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1997-04-18 08:40:32 $
+** Last Update:		$Author: hewett $
+** Update Date:		$Date: 1997-05-13 14:38:02 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/libsrc/diutil.cc,v $
-** CVS/RCS Revision:	$Revision: 1.4 $
+** CVS/RCS Revision:	$Revision: 1.5 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -142,13 +142,24 @@ static DU_Modality modalities[] = {
     { UID_StandaloneOverlayStorage,     		"OV", 512 * 512 },
     { UID_StandaloneCurveStorage,      			"CV", 4096 },
     { UID_StandaloneModalityLUTStorage,           	"ML", 4096*2 },
-    { UID_StandaloneVOILUTStorage,                	"VL", 4096*2 },
+    { UID_StandaloneVOILUTStorage,                	"VO", 4096*2 },
     /* I've no idea how large the RadioTherapy objects typically are */
     { UID_RTImageStorage,				"RI", 4096 },
     { UID_RTDoseStorage,				"RD", 4096 },
     { UID_RTStructureSetStorage,			"RS", 4096 },
-    { UID_RTTreatmentRecordStorage,			"RT", 4096 },
-    { UID_RTPlanStorage,				"RP", 4096 }
+    { UID_RTPlanStorage,				"RP", 4096 },
+    /* I've no idea how large PET objects typically are */
+    { UID_PETImageStorage, 				"PI", 512*512*2 },
+    { UID_PETCurveStorage, 				"PC", 4096 },
+    /* I've no idea how large Visible Light objects typically are */
+    { UID_VLImageStorage, 				"VL", 512*512*2 },
+    { UID_VLMultiFrameImageStorage, 			"VM", 512*512*2*5 },
+    /* How big can Print Storage Objects be? */
+    { UID_BasicGrayscalePrintStorageSOPClass, 		"PBG", 4096 },
+    { UID_BasicColorPrintStorageSOPClass,		"PBC", 4096 },
+    { UID_ReferencedGrayscalePrintStorageSOPClass, 	"PRG", 4096 },
+    { UID_ReferencedColorPrintStorageSOPClass, 		"PRC", 4096 }
+
 };
 
 static char staticBuf[256];
@@ -545,7 +556,12 @@ DU_cgetStatusString(Uint16 statusCode)
 /*
 ** CVS Log
 ** $Log: diutil.cc,v $
-** Revision 1.4  1997-04-18 08:40:32  andreas
+** Revision 1.5  1997-05-13 14:38:02  hewett
+** Added UIDs for the draft supplements 12 (PET), 13 (Queue Management),
+** 15 (Visible Light), 17 (Modality Performed Procedure Step), 22 (User
+** Preference LUT) and 24 (Print Storage).
+**
+** Revision 1.4  1997/04/18 08:40:32  andreas
 ** - The put/get-methods for all VRs did not conform to the C++-Standard
 **   draft. Some Compilers (e.g. SUN-C++ Compiler, Metroworks
 **   CodeWarrier, etc.) create many warnings concerning the hiding of
