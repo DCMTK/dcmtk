@@ -127,10 +127,6 @@ SOURCE=.\libsrc\dvpscf.cxx
 # End Source File
 # Begin Source File
 
-SOURCE=.\libsrc\dvpsconf.cxx
-# End Source File
-# Begin Source File
-
 SOURCE=.\libsrc\dvpscu.cxx
 # End Source File
 # Begin Source File
