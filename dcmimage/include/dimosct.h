@@ -4,7 +4,7 @@
 **
 **  author   : Joerg Riesmeier
 **  created  : 31.12.96
-**  modified : 25.04.97
+**  modified : 02.03.98 
 **
 *********************************************************************/
 
@@ -50,7 +50,7 @@ class DiMonoScaleTemplate : public DiMonoPixelTemplate<T>, protected DiScaleTemp
 		{
 			Data = new T[getCount()];
 			if (Data != NULL)
-				DiScaleTemplate<T>::scale(&pixel, &Data, interpolate);
+				DiScaleTemplate<T>::scaleData(&pixel, &Data, interpolate);
 		}
 	}
 

@@ -4,7 +4,7 @@
 **
 **  author   : Joerg Riesmeier
 **  created  : 03.01.97
-**  modified : 25.04.97
+**  modified : 02.03.98 
 **
 *********************************************************************/
 
@@ -36,7 +36,7 @@ class DiClipTemplate : public DiTransTemplate<T>
 	{
 	}
 
-	inline void clip(const T *src[], T *dest[])
+	inline void clipData(const T *src[], T *dest[])
 	{
 		if ((src != NULL) && (dest != NULL))
 		{

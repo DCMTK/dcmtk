@@ -4,7 +4,7 @@
 **
 **  author   : Joerg Riesmeier
 **  created  : 12.12.96
-**  modified : 13.02.97
+**  modified : 02.03.98 
 **
 *********************************************************************/
 
@@ -93,7 +93,7 @@ class DiMonoImage : public DiImage {
     DiMonoImage(const DiMonoImage *, const Uint16, const Uint16, const int);
     DiMonoImage(const DiMonoImage *, const Uint16, const Uint16, const Uint16, const Uint16);
 
-	void *getOutputData(const unsigned long, const int, const Uint32, const Uint32);
+	void *getData(const unsigned long, const int, const Uint32, const Uint32);
 
 	double WindowCenter;							// center of current VOI-window
 	double WindowWidth;								// width of current VOI-window

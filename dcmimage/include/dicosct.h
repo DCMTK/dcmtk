@@ -4,7 +4,7 @@
 **
 **  author   : Joerg Riesmeier
 **  created  : 01.01.97
-**  modified : 25.04.97
+**  modified : 02.03.98 
 **
 *********************************************************************/
 
@@ -44,7 +44,7 @@ class DiColorScaleTemplate : public DiColorPixelTemplate<T>, protected DiScaleTe
 	inline void scale(const T *pixel[3], const int interpolate)
 	{
 		if (Init(pixel))
-			DiScaleTemplate<T>::scale(pixel, Data, interpolate);
+			DiScaleTemplate<T>::scaleData(pixel, Data, interpolate);
 	}
 };
 

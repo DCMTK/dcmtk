@@ -4,7 +4,7 @@
 **
 **  author   : Joerg Riesmeier
 **  created  : 01.01.97
-**  modified : 25.04.97
+**  modified : 02.03.98 
 **
 *********************************************************************/
 
@@ -50,7 +50,7 @@ class DiMonoClipTemplate : public DiMonoPixelTemplate<T>, protected DiClipTempla
 		{
 			Data = new T[getCount()];
 			if (Data != NULL)
-				DiClipTemplate<T>::clip(&pixel, &Data);
+				DiClipTemplate<T>::clipData(&pixel, &Data);
 		}
 	}
 };

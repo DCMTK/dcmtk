@@ -4,7 +4,7 @@
 **
 **  author   : Joerg Riesmeier
 **  created  : 31.12.96
-**  modified : 25.04.97
+**  modified : 02.03.98 
 **
 *********************************************************************/
 
@@ -77,7 +77,7 @@ class DiScaleTemplate : public DiTransTemplate<T>
 	{
 	}
 	
-	inline void scale(const T *src[], T *dest[], const int interpolate)
+	inline void scaleData(const T *src[], T *dest[], const int interpolate)
 	{
 		if ((src != NULL) && (dest != NULL))
 		{

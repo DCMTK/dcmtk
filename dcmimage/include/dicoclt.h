@@ -4,7 +4,7 @@
 **
 **  author   : Joerg Riesmeier
 **  created  : 01.01.97
-**  modified : 25.04.97
+**  modified : 02.03.98 
 **
 *********************************************************************/
 
@@ -44,7 +44,7 @@ class DiColorClipTemplate : public DiColorPixelTemplate<T>, protected DiClipTemp
 	inline void clip(const T *pixel[3])
 	{
 		if (Init(pixel))
-			DiClipTemplate<T>::clip(pixel, Data);
+			DiClipTemplate<T>::clipData(pixel, Data);
 	}
 
 };
