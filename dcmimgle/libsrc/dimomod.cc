@@ -22,9 +22,9 @@
  *  Purpose: DicomMonochromeModality (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-04-28 12:33:46 $
+ *  Update Date:      $Date: 2000-08-31 15:51:39 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/libsrc/dimomod.cc,v $
- *  CVS/RCS Revision: $Revision: 1.11 $
+ *  CVS/RCS Revision: $Revision: 1.12 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -221,9 +221,11 @@ void DiMonoModality::checkRescaling(const DiInputPixel *pixel)
             }
             else
             {
-                if (RescaleSlope < 0) {                                     // negative slope value
+                if (RescaleSlope < 0)                                       // negative slope value
+                {
+                    const double temp = MinValue;
                     MinValue = MaxValue * RescaleSlope + RescaleIntercept;
-                    MaxValue = MinValue * RescaleSlope + RescaleIntercept;
+                    MaxValue = temp * RescaleSlope + RescaleIntercept;
                     AbsMinimum = pixel->getAbsMaximum() * RescaleSlope + RescaleIntercept;
                     AbsMaximum = pixel->getAbsMinimum() * RescaleSlope + RescaleIntercept;
                 } else {                                                    // positive slope value
@@ -243,7 +245,11 @@ void DiMonoModality::checkRescaling(const DiInputPixel *pixel)
  *
  * CVS/RCS Log:
  * $Log: dimomod.cc,v $
- * Revision 1.11  2000-04-28 12:33:46  joergr
+ * Revision 1.12  2000-08-31 15:51:39  joergr
+ * Corrected bug: min and max value were reversed for images with negative
+ * rescale slope.
+ *
+ * Revision 1.11  2000/04/28 12:33:46  joergr
  * DebugLevel - global for the module - now derived from OFGlobal (MF-safe).
  *
  * Revision 1.10  2000/04/27 13:10:30  joergr
