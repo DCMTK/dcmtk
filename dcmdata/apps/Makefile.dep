@@ -310,20 +310,4 @@ xml2dcm.o: xml2dcm.cc ../../config/include/osconfig.h \
   ../include/dcvrss.h ../include/dcvrus.h ../include/dcvrsl.h \
   ../include/dcvrfl.h ../include/dcvrfd.h ../include/dcvrof.h \
   ../include/cmdlnarg.h ../include/dcpxitem.h ../../ofstd/include/ofstd.h \
-  ../../ofstd/include/ofconapp.h ../../ofstd/include/ofcmdln.h \
-  /usr/local/apps/libxml2-2.5.8/include/libxml2/libxml/parser.h \
-  /usr/local/apps/libxml2-2.5.8/include/libxml2/libxml/tree.h \
-  /usr/local/apps/libxml2-2.5.8/include/libxml2/libxml/xmlversion.h \
-  /usr/local/apps/libxml2-2.5.8/include/libxml2/libxml/xmlregexp.h \
-  /usr/local/apps/libxml2-2.5.8/include/libxml2/libxml/valid.h \
-  /usr/local/apps/libxml2-2.5.8/include/libxml2/libxml/list.h \
-  /usr/local/apps/libxml2-2.5.8/include/libxml2/libxml/xmlautomata.h \
-  /usr/local/apps/libxml2-2.5.8/include/libxml2/libxml/entities.h \
-  /usr/local/apps/libxml2-2.5.8/include/libxml2/libxml/encoding.h \
-  /usr/local/apps/libxml2-2.5.8/include/libxml2/libxml/xmlIO.h \
-  /usr/local/apps/libxml2-2.5.8/include/libxml2/libxml/globals.h \
-  /usr/local/apps/libxml2-2.5.8/include/libxml2/libxml/xmlerror.h \
-  /usr/local/apps/libxml2-2.5.8/include/libxml2/libxml/SAX.h \
-  /usr/local/apps/libxml2-2.5.8/include/libxml2/libxml/xlink.h \
-  /usr/local/apps/libxml2-2.5.8/include/libxml2/libxml/xmlmemory.h \
-  /usr/local/apps/libxml2-2.5.8/include/libxml2/libxml/threads.h
+  ../../ofstd/include/ofconapp.h ../../ofstd/include/ofcmdln.h
