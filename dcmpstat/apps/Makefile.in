@@ -14,17 +14,17 @@ include $(configdir)/@common_makefile@
 
 ofstddir=$(top_srcdir)/../ofstd
 ofstdinc=-I$(ofstddir)/include -I$(includedir)/ofstd
-ofstdlibdir=-L$(ofstddir)/libsrc 
+ofstdlibdir=-L$(ofstddir)/libsrc
 ofstdlib=-lofstd
 
 dcmdatadir=$(top_srcdir)/../dcmdata
 dcmdatainc=-I$(dcmdatadir)/include -I$(includedir)/dcmdata
-dcmdatalibdir=-L$(dcmdatadir)/libsrc 
+dcmdatalibdir=-L$(dcmdatadir)/libsrc
 dcmdatalib=-ldcmdata
 
 dcmnetdir=$(top_srcdir)/../dcmnet
-dcmnetinc=-I$(dcmnetdir)/include -I$(includedir)/dcmnet 
-dcmnetlibdir=-L$(dcmnetdir)/libsrc 
+dcmnetinc=-I$(dcmnetdir)/include -I$(includedir)/dcmnet
+dcmnetlibdir=-L$(dcmnetdir)/libsrc
 dcmnetlib=-ldcmnet
 
 dcmimgledir=$(top_srcdir)/../dcmimgle
@@ -73,52 +73,49 @@ progs= dcmpsmk dcmp2pgm dcmmklut dcmmkcrv dcmpssnd dcmpsrcv dcmpsprt dcmprscu dc
 all: $(progs)
 
 dcmpsmk: dcmpsmk.o
-	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ dcmpsmk.o $(LOCALLIBS) $(MATHLIBS) $(LIBS)  
+	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ dcmpsmk.o $(LOCALLIBS) $(MATHLIBS) $(LIBS)
 
 dcmp2pgm: dcmp2pgm.o
-	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ dcmp2pgm.o  $(LOCALLIBS) $(MATHLIBS) $(LIBS)  
+	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ dcmp2pgm.o  $(LOCALLIBS) $(MATHLIBS) $(LIBS)
 
 dcmmklut: dcmmklut.o
-	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ dcmmklut.o $(LOCALLIBS) $(MATHLIBS) $(LIBS)  
+	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ dcmmklut.o $(LOCALLIBS) $(MATHLIBS) $(LIBS)
 
 dcmmkcrv: dcmmkcrv.o
-	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ dcmmkcrv.o $(LOCALLIBS) $(MATHLIBS) $(LIBS)  
+	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ dcmmkcrv.o $(LOCALLIBS) $(MATHLIBS) $(LIBS)
 
 dcmpssnd: dcmpssnd.o
-	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ dcmpssnd.o  $(dcmtlslib) $(LOCALLIBS) $(MATHLIBS) $(LIBS)  
+	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ dcmpssnd.o  $(dcmtlslib) $(LOCALLIBS) $(MATHLIBS) $(LIBS)
 
 dcmpsrcv: dcmpsrcv.o
-	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ dcmpsrcv.o  $(dcmtlslib) $(LOCALLIBS) $(MATHLIBS) $(LIBS)  
+	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ dcmpsrcv.o  $(dcmtlslib) $(LOCALLIBS) $(MATHLIBS) $(LIBS)
 
 dcmpsprt: dcmpsprt.o
-	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ dcmpsprt.o $(LOCALLIBS) $(MATHLIBS) $(LIBS)  
+	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ dcmpsprt.o $(LOCALLIBS) $(MATHLIBS) $(LIBS)
 
 dcmprscu: dcmprscu.o
-	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ dcmprscu.o $(LOCALLIBS) $(MATHLIBS) $(LIBS)  
+	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ dcmprscu.o $(LOCALLIBS) $(MATHLIBS) $(LIBS)
 
 dcmprscp: dcmprscp.o
-	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ dcmprscp.o $(LOCALLIBS) $(MATHLIBS) $(LIBS)  
+	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ dcmprscp.o $(LOCALLIBS) $(MATHLIBS) $(LIBS)
 
 dcmpschk: dcmpschk.o vrscan.o
-	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ dcmpschk.o vrscan.o $(LOCALLIBS) $(MATHLIBS) $(LIBS)  
+	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ dcmpschk.o vrscan.o $(LOCALLIBS) $(MATHLIBS) $(LIBS)
 
 install: all
 	$(configdir)/mkinstalldirs $(bindir)
 	for prog in $(progs); do \
-		$(INSTALL_PROGRAM) $$prog $(bindir); strip $(bindir)/$$prog ;\
+		$(INSTALL_PROGRAM) $$prog$(BINEXT) $(bindir); strip $(bindir)/$$prog$(BINEXT) ;\
 	done
 
 clean:
 	rm -f $(objs) $(progs) $(TRASH)
 
-distclean: 
+distclean:
 	rm -f $(objs) $(progs) $(DISTTRASH)
 
 
 dependencies:
 	$(CXX) -MM $(defines) $(includes) $(CPPFLAGS) $(CXXFLAGS) *.cc  > $(DEP)
-
-$(objs): config.h
-
 
 include $(DEP)
