@@ -22,9 +22,9 @@
 #  This is the private tag DICOM data dictionary for the dcmtk class library.
 #
 #  Last Update:      $Author: meichel $
-#  Update Date:      $Date: 2002-07-23 14:21:36 $
+#  Update Date:      $Date: 2002-11-27 12:09:14 $
 #  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/Attic/private.dic,v $
-#  CVS/RCS Revision: $Revision: 1.1 $
+#  CVS/RCS Revision: $Revision: 1.2 $
 #  Status:           $State: Exp $
 #
 #
@@ -34,6 +34,7 @@
 #  reference documents:
 #   - David Clunie's dicom3tools package, 2002-04-20 snapshot
 #   - Siemens Somatom syngo VA40B conformance statement
+#   - private tags for DCMTK anonymizer tool
 #
 # Each line represents an entry in the data dictionary.  Each line
 # has 5 fields (Tag, VR, Name, VM, Version).  Entries need not be
@@ -133,6 +134,13 @@
 (0029,"CARDIO-D.R. 1.0",01)	US	ConvolutionKernelSize	2
 (0029,"CARDIO-D.R. 1.0",02)	DS	ConvolutionKernelCoefficients	1-n
 (0029,"CARDIO-D.R. 1.0",03)	DS	EdgeEnhancementGain	1
+
+(0009,"DCMTK_ANONYMIZER",00)	SQ	AnonymizerUIDMap	1
+(0009,"DCMTK_ANONYMIZER",10)	UI	AnonymizerUIDKey	1
+(0009,"DCMTK_ANONYMIZER",20)	UI	AnonymizerUIDValue	1
+(0009,"DCMTK_ANONYMIZER",30)	SQ	AnonymizerPatientIDMap	1
+(0009,"DCMTK_ANONYMIZER",40)	LO	AnonymizerPatientIDKey	1
+(0009,"DCMTK_ANONYMIZER",50)	LO	AnonymizerPatientIDValue	1
 
 (0029,"DIGISCAN IMAGE",31)	US	Unknown	1-n
 (0029,"DIGISCAN IMAGE",32)	US	Unknown	1-n
