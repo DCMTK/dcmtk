@@ -10,7 +10,7 @@
 
 # variables to REPLACE
 # 
-#  /I "../../config\include" /I "../../dcmnet\include" /I "../../ofstd\include" /I "../../dcmdata\include" /I "../../../zlib-1.1.4\include" == include path
+#  /I "../../config\include" /I "../../dcmnet\include" /I "../../ofstd\include" /I "../../dcmdata\include" /I "../../../zlib-1.2.1\include" == include path
 #   -D_REENTRANT -DWITH_LIBPNG -DWITH_LIBTIFF -DWITH_ZLIB == compiler defines
 #  == override in output directory
 # dcmnet  == name of output library
@@ -55,11 +55,11 @@ RSC=rc.exe
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /D "WIN32" /D "NDEBUG" /D "_MBCS" /D "_LIB"  /FD /c
 # ADD CPP /nologo /D "NDEBUG" /D "WIN32" /D "_MBCS" /D "_LIB"  /FD /c
-# ADD CPP  /I "../../config\include" /I "../../dcmnet\include" /I "../../ofstd\include" /I "../../dcmdata\include" /I "../../../zlib-1.1.4\include"   -D_REENTRANT -DWITH_LIBPNG -DWITH_LIBTIFF -DWITH_ZLIB /D "dcmnet_EXPORTS"
-# ADD CPP  
+# ADD CPP  /I "../../config\include" /I "../../dcmnet\include" /I "../../ofstd\include" /I "../../dcmdata\include" /I "../../../zlib-1.2.1\include"   -D_REENTRANT -DWITH_LIBPNG -DWITH_LIBTIFF -DWITH_ZLIB /D "dcmnet_EXPORTS"
+# ADD CPP  /D "_MBCS"
 # ADD CPP /nologo /MT /W3 /GX /O2 /GR- /YX -DCMAKE_INTDIR=\"Release\" 
 # ADD BASE RSC /l 0x409 /d "NDEBUG"
-# ADD RSC  /I "../../config\include" /I "../../dcmnet\include" /I "../../ofstd\include" /I "../../dcmdata\include" /I "../../../zlib-1.1.4\include" /l 0x409 /d "NDEBUG"
+# ADD RSC  /I "../../config\include" /I "../../dcmnet\include" /I "../../ofstd\include" /I "../../dcmdata\include" /I "../../../zlib-1.2.1\include" /l 0x409 /d "NDEBUG"
 BSC32=bscmake.exe
 # ADD BASE BSC32 /nologo
 # ADD BSC32 /nologo
@@ -83,11 +83,11 @@ LIB32=link.exe -lib
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /D "WIN32" /D "_DEBUG" /D "_MBCS" /D "_LIB"  /FD /c
 # ADD CPP /nologo /D "_DEBUG" /D "WIN32" /D "_MBCS" /D "_LIB"  /FD /GZ /c
-# ADD CPP  /I "../../config\include" /I "../../dcmnet\include" /I "../../ofstd\include" /I "../../dcmdata\include" /I "../../../zlib-1.1.4\include"   -D_REENTRANT -DWITH_LIBPNG -DWITH_LIBTIFF -DWITH_ZLIB /D "dcmnet_EXPORTS"
-# ADD CPP  
+# ADD CPP  /I "../../config\include" /I "../../dcmnet\include" /I "../../ofstd\include" /I "../../dcmdata\include" /I "../../../zlib-1.2.1\include"   -D_REENTRANT -DWITH_LIBPNG -DWITH_LIBTIFF -DWITH_ZLIB /D "dcmnet_EXPORTS"
+# ADD CPP  /D "_MBCS"
 # ADD CPP /nologo /MTd /W3 /GX /Z7 /Od /GR- /YX -DCMAKE_INTDIR=\"Debug\" 
 # ADD BASE RSC /l 0x409 /d "_DEBUG"
-# ADD RSC  /I "../../config\include" /I "../../dcmnet\include" /I "../../ofstd\include" /I "../../dcmdata\include" /I "../../../zlib-1.1.4\include" /l 0x409 /d "_DEBUG"
+# ADD RSC  /I "../../config\include" /I "../../dcmnet\include" /I "../../ofstd\include" /I "../../dcmdata\include" /I "../../../zlib-1.2.1\include" /l 0x409 /d "_DEBUG"
 BSC32=bscmake.exe
 # ADD BASE BSC32 /nologo
 # ADD BSC32 /nologo
@@ -111,11 +111,11 @@ LIB32=link.exe -lib
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "_ATL_DLL" /FD /c
 # ADD CPP /nologo /D "NDEBUG" /D "_MBCS" /D "_ATL_DLL"  /D "WIN32" /D "_WINDOWS" /D "_USRDLL" /FD /c
-# ADD CPP  /I "../../config\include" /I "../../dcmnet\include" /I "../../ofstd\include" /I "../../dcmdata\include" /I "../../../zlib-1.1.4\include"   -D_REENTRANT -DWITH_LIBPNG -DWITH_LIBTIFF -DWITH_ZLIB /D "dcmnet_EXPORTS"
-# ADD CPP  
+# ADD CPP  /I "../../config\include" /I "../../dcmnet\include" /I "../../ofstd\include" /I "../../dcmdata\include" /I "../../../zlib-1.2.1\include"   -D_REENTRANT -DWITH_LIBPNG -DWITH_LIBTIFF -DWITH_ZLIB /D "dcmnet_EXPORTS"
+# ADD CPP  /D "_MBCS"
 # ADD CPP /MD /O1 -DCMAKE_INTDIR=\"MinSizeRel\" 
 # ADD BASE RSC /l 0x409 /d "NDEBUG"
-# ADD RSC  /I "../../config\include" /I "../../dcmnet\include" /I "../../ofstd\include" /I "../../dcmdata\include" /I "../../../zlib-1.1.4\include" /l 0x409 /d "NDEBUG"
+# ADD RSC  /I "../../config\include" /I "../../dcmnet\include" /I "../../ofstd\include" /I "../../dcmdata\include" /I "../../../zlib-1.2.1\include" /l 0x409 /d "NDEBUG"
 BSC32=bscmake.exe
 # ADD BASE BSC32 /nologo
 # ADD BSC32 /nologo
@@ -139,11 +139,11 @@ LIB32=link.exe -lib
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /D "WIN32" /D "NDEBUG" /D "_MBCS" /D "_LIB"  /FD /c
 # ADD CPP /nologo /D "NDEBUG" /D "WIN32" /D "_MBCS" /D "_LIB"  /FD /c
-# ADD CPP  /I "../../config\include" /I "../../dcmnet\include" /I "../../ofstd\include" /I "../../dcmdata\include" /I "../../../zlib-1.1.4\include"   -D_REENTRANT -DWITH_LIBPNG -DWITH_LIBTIFF -DWITH_ZLIB /D "dcmnet_EXPORTS"
-# ADD CPP  
+# ADD CPP  /I "../../config\include" /I "../../dcmnet\include" /I "../../ofstd\include" /I "../../dcmdata\include" /I "../../../zlib-1.2.1\include"   -D_REENTRANT -DWITH_LIBPNG -DWITH_LIBTIFF -DWITH_ZLIB /D "dcmnet_EXPORTS"
+# ADD CPP  /D "_MBCS"
 # ADD CPP /MD /Zi /O2 -DCMAKE_INTDIR=\"RelWithDebInfo\" 
 # ADD BASE RSC /l 0x409 /d "NDEBUG"
-# ADD RSC  /I "../../config\include" /I "../../dcmnet\include" /I "../../ofstd\include" /I "../../dcmdata\include" /I "../../../zlib-1.1.4\include" /l 0x409 /d "NDEBUG"
+# ADD RSC  /I "../../config\include" /I "../../dcmnet\include" /I "../../ofstd\include" /I "../../dcmdata\include" /I "../../../zlib-1.2.1\include" /l 0x409 /d "NDEBUG"
 BSC32=bscmake.exe
 # ADD BASE BSC32 /nologo
 # ADD BSC32 /nologo
@@ -168,155 +168,713 @@ LIB32=link.exe -lib
 
 SOURCE=../../dcmnet\libsrc\assoc.cxx
 
+!IF  "$(CFG)" == "dcmnet - Win32 Release"
+
+# ADD CPP  /TP 
+
+!ELSEIF  "$(CFG)" == "dcmnet - Win32 Debug"
+
+# ADD CPP  /TP 
+
+!ELSEIF  "$(CFG)" == "dcmnet - Win32 MinSizeRel"
+
+# ADD CPP  /TP 
+
+!ELSEIF  "$(CFG)" == "dcmnet - Win32 RelWithDebInfo"
+
+# ADD CPP  /TP 
+
+!ENDIF
+
 # End Source File
 # Begin Source File
 
 SOURCE=../../dcmnet\libsrc\cond.cxx
+
+!IF  "$(CFG)" == "dcmnet - Win32 Release"
+
+# ADD CPP  /TP 
+
+!ELSEIF  "$(CFG)" == "dcmnet - Win32 Debug"
+
+# ADD CPP  /TP 
+
+!ELSEIF  "$(CFG)" == "dcmnet - Win32 MinSizeRel"
+
+# ADD CPP  /TP 
+
+!ELSEIF  "$(CFG)" == "dcmnet - Win32 RelWithDebInfo"
+
+# ADD CPP  /TP 
+
+!ENDIF
 
 # End Source File
 # Begin Source File
 
 SOURCE=../../dcmnet\libsrc\dcasccff.cxx
 
+!IF  "$(CFG)" == "dcmnet - Win32 Release"
+
+# ADD CPP  /TP 
+
+!ELSEIF  "$(CFG)" == "dcmnet - Win32 Debug"
+
+# ADD CPP  /TP 
+
+!ELSEIF  "$(CFG)" == "dcmnet - Win32 MinSizeRel"
+
+# ADD CPP  /TP 
+
+!ELSEIF  "$(CFG)" == "dcmnet - Win32 RelWithDebInfo"
+
+# ADD CPP  /TP 
+
+!ENDIF
+
 # End Source File
 # Begin Source File
 
 SOURCE=../../dcmnet\libsrc\dcasccfg.cxx
+
+!IF  "$(CFG)" == "dcmnet - Win32 Release"
+
+# ADD CPP  /TP 
+
+!ELSEIF  "$(CFG)" == "dcmnet - Win32 Debug"
+
+# ADD CPP  /TP 
+
+!ELSEIF  "$(CFG)" == "dcmnet - Win32 MinSizeRel"
+
+# ADD CPP  /TP 
+
+!ELSEIF  "$(CFG)" == "dcmnet - Win32 RelWithDebInfo"
+
+# ADD CPP  /TP 
+
+!ENDIF
 
 # End Source File
 # Begin Source File
 
 SOURCE=../../dcmnet\libsrc\dccfenmp.cxx
 
+!IF  "$(CFG)" == "dcmnet - Win32 Release"
+
+# ADD CPP  /TP 
+
+!ELSEIF  "$(CFG)" == "dcmnet - Win32 Debug"
+
+# ADD CPP  /TP 
+
+!ELSEIF  "$(CFG)" == "dcmnet - Win32 MinSizeRel"
+
+# ADD CPP  /TP 
+
+!ELSEIF  "$(CFG)" == "dcmnet - Win32 RelWithDebInfo"
+
+# ADD CPP  /TP 
+
+!ENDIF
+
 # End Source File
 # Begin Source File
 
 SOURCE=../../dcmnet\libsrc\dccfpcmp.cxx
+
+!IF  "$(CFG)" == "dcmnet - Win32 Release"
+
+# ADD CPP  /TP 
+
+!ELSEIF  "$(CFG)" == "dcmnet - Win32 Debug"
+
+# ADD CPP  /TP 
+
+!ELSEIF  "$(CFG)" == "dcmnet - Win32 MinSizeRel"
+
+# ADD CPP  /TP 
+
+!ELSEIF  "$(CFG)" == "dcmnet - Win32 RelWithDebInfo"
+
+# ADD CPP  /TP 
+
+!ENDIF
 
 # End Source File
 # Begin Source File
 
 SOURCE=../../dcmnet\libsrc\dccfprmp.cxx
 
+!IF  "$(CFG)" == "dcmnet - Win32 Release"
+
+# ADD CPP  /TP 
+
+!ELSEIF  "$(CFG)" == "dcmnet - Win32 Debug"
+
+# ADD CPP  /TP 
+
+!ELSEIF  "$(CFG)" == "dcmnet - Win32 MinSizeRel"
+
+# ADD CPP  /TP 
+
+!ELSEIF  "$(CFG)" == "dcmnet - Win32 RelWithDebInfo"
+
+# ADD CPP  /TP 
+
+!ENDIF
+
 # End Source File
 # Begin Source File
 
 SOURCE=../../dcmnet\libsrc\dccfrsmp.cxx
+
+!IF  "$(CFG)" == "dcmnet - Win32 Release"
+
+# ADD CPP  /TP 
+
+!ELSEIF  "$(CFG)" == "dcmnet - Win32 Debug"
+
+# ADD CPP  /TP 
+
+!ELSEIF  "$(CFG)" == "dcmnet - Win32 MinSizeRel"
+
+# ADD CPP  /TP 
+
+!ELSEIF  "$(CFG)" == "dcmnet - Win32 RelWithDebInfo"
+
+# ADD CPP  /TP 
+
+!ENDIF
 
 # End Source File
 # Begin Source File
 
 SOURCE=../../dcmnet\libsrc\dccftsmp.cxx
 
+!IF  "$(CFG)" == "dcmnet - Win32 Release"
+
+# ADD CPP  /TP 
+
+!ELSEIF  "$(CFG)" == "dcmnet - Win32 Debug"
+
+# ADD CPP  /TP 
+
+!ELSEIF  "$(CFG)" == "dcmnet - Win32 MinSizeRel"
+
+# ADD CPP  /TP 
+
+!ELSEIF  "$(CFG)" == "dcmnet - Win32 RelWithDebInfo"
+
+# ADD CPP  /TP 
+
+!ENDIF
+
 # End Source File
 # Begin Source File
 
 SOURCE=../../dcmnet\libsrc\dccfuidh.cxx
+
+!IF  "$(CFG)" == "dcmnet - Win32 Release"
+
+# ADD CPP  /TP 
+
+!ELSEIF  "$(CFG)" == "dcmnet - Win32 Debug"
+
+# ADD CPP  /TP 
+
+!ELSEIF  "$(CFG)" == "dcmnet - Win32 MinSizeRel"
+
+# ADD CPP  /TP 
+
+!ELSEIF  "$(CFG)" == "dcmnet - Win32 RelWithDebInfo"
+
+# ADD CPP  /TP 
+
+!ENDIF
 
 # End Source File
 # Begin Source File
 
 SOURCE=../../dcmnet\libsrc\dcmlayer.cxx
 
+!IF  "$(CFG)" == "dcmnet - Win32 Release"
+
+# ADD CPP  /TP 
+
+!ELSEIF  "$(CFG)" == "dcmnet - Win32 Debug"
+
+# ADD CPP  /TP 
+
+!ELSEIF  "$(CFG)" == "dcmnet - Win32 MinSizeRel"
+
+# ADD CPP  /TP 
+
+!ELSEIF  "$(CFG)" == "dcmnet - Win32 RelWithDebInfo"
+
+# ADD CPP  /TP 
+
+!ENDIF
+
 # End Source File
 # Begin Source File
 
 SOURCE=../../dcmnet\libsrc\dcmtrans.cxx
+
+!IF  "$(CFG)" == "dcmnet - Win32 Release"
+
+# ADD CPP  /TP 
+
+!ELSEIF  "$(CFG)" == "dcmnet - Win32 Debug"
+
+# ADD CPP  /TP 
+
+!ELSEIF  "$(CFG)" == "dcmnet - Win32 MinSizeRel"
+
+# ADD CPP  /TP 
+
+!ELSEIF  "$(CFG)" == "dcmnet - Win32 RelWithDebInfo"
+
+# ADD CPP  /TP 
+
+!ENDIF
 
 # End Source File
 # Begin Source File
 
 SOURCE=../../dcmnet\libsrc\dcompat.cxx
 
+!IF  "$(CFG)" == "dcmnet - Win32 Release"
+
+# ADD CPP  /TP 
+
+!ELSEIF  "$(CFG)" == "dcmnet - Win32 Debug"
+
+# ADD CPP  /TP 
+
+!ELSEIF  "$(CFG)" == "dcmnet - Win32 MinSizeRel"
+
+# ADD CPP  /TP 
+
+!ELSEIF  "$(CFG)" == "dcmnet - Win32 RelWithDebInfo"
+
+# ADD CPP  /TP 
+
+!ENDIF
+
 # End Source File
 # Begin Source File
 
 SOURCE=../../dcmnet\libsrc\dimcancl.cxx
+
+!IF  "$(CFG)" == "dcmnet - Win32 Release"
+
+# ADD CPP  /TP 
+
+!ELSEIF  "$(CFG)" == "dcmnet - Win32 Debug"
+
+# ADD CPP  /TP 
+
+!ELSEIF  "$(CFG)" == "dcmnet - Win32 MinSizeRel"
+
+# ADD CPP  /TP 
+
+!ELSEIF  "$(CFG)" == "dcmnet - Win32 RelWithDebInfo"
+
+# ADD CPP  /TP 
+
+!ENDIF
 
 # End Source File
 # Begin Source File
 
 SOURCE=../../dcmnet\libsrc\dimcmd.cxx
 
+!IF  "$(CFG)" == "dcmnet - Win32 Release"
+
+# ADD CPP  /TP 
+
+!ELSEIF  "$(CFG)" == "dcmnet - Win32 Debug"
+
+# ADD CPP  /TP 
+
+!ELSEIF  "$(CFG)" == "dcmnet - Win32 MinSizeRel"
+
+# ADD CPP  /TP 
+
+!ELSEIF  "$(CFG)" == "dcmnet - Win32 RelWithDebInfo"
+
+# ADD CPP  /TP 
+
+!ENDIF
+
 # End Source File
 # Begin Source File
 
 SOURCE=../../dcmnet\libsrc\dimdump.cxx
+
+!IF  "$(CFG)" == "dcmnet - Win32 Release"
+
+# ADD CPP  /TP 
+
+!ELSEIF  "$(CFG)" == "dcmnet - Win32 Debug"
+
+# ADD CPP  /TP 
+
+!ELSEIF  "$(CFG)" == "dcmnet - Win32 MinSizeRel"
+
+# ADD CPP  /TP 
+
+!ELSEIF  "$(CFG)" == "dcmnet - Win32 RelWithDebInfo"
+
+# ADD CPP  /TP 
+
+!ENDIF
 
 # End Source File
 # Begin Source File
 
 SOURCE=../../dcmnet\libsrc\dimecho.cxx
 
+!IF  "$(CFG)" == "dcmnet - Win32 Release"
+
+# ADD CPP  /TP 
+
+!ELSEIF  "$(CFG)" == "dcmnet - Win32 Debug"
+
+# ADD CPP  /TP 
+
+!ELSEIF  "$(CFG)" == "dcmnet - Win32 MinSizeRel"
+
+# ADD CPP  /TP 
+
+!ELSEIF  "$(CFG)" == "dcmnet - Win32 RelWithDebInfo"
+
+# ADD CPP  /TP 
+
+!ENDIF
+
 # End Source File
 # Begin Source File
 
 SOURCE=../../dcmnet\libsrc\dimfind.cxx
+
+!IF  "$(CFG)" == "dcmnet - Win32 Release"
+
+# ADD CPP  /TP 
+
+!ELSEIF  "$(CFG)" == "dcmnet - Win32 Debug"
+
+# ADD CPP  /TP 
+
+!ELSEIF  "$(CFG)" == "dcmnet - Win32 MinSizeRel"
+
+# ADD CPP  /TP 
+
+!ELSEIF  "$(CFG)" == "dcmnet - Win32 RelWithDebInfo"
+
+# ADD CPP  /TP 
+
+!ENDIF
 
 # End Source File
 # Begin Source File
 
 SOURCE=../../dcmnet\libsrc\dimget.cxx
 
+!IF  "$(CFG)" == "dcmnet - Win32 Release"
+
+# ADD CPP  /TP 
+
+!ELSEIF  "$(CFG)" == "dcmnet - Win32 Debug"
+
+# ADD CPP  /TP 
+
+!ELSEIF  "$(CFG)" == "dcmnet - Win32 MinSizeRel"
+
+# ADD CPP  /TP 
+
+!ELSEIF  "$(CFG)" == "dcmnet - Win32 RelWithDebInfo"
+
+# ADD CPP  /TP 
+
+!ENDIF
+
 # End Source File
 # Begin Source File
 
 SOURCE=../../dcmnet\libsrc\dimmove.cxx
+
+!IF  "$(CFG)" == "dcmnet - Win32 Release"
+
+# ADD CPP  /TP 
+
+!ELSEIF  "$(CFG)" == "dcmnet - Win32 Debug"
+
+# ADD CPP  /TP 
+
+!ELSEIF  "$(CFG)" == "dcmnet - Win32 MinSizeRel"
+
+# ADD CPP  /TP 
+
+!ELSEIF  "$(CFG)" == "dcmnet - Win32 RelWithDebInfo"
+
+# ADD CPP  /TP 
+
+!ENDIF
 
 # End Source File
 # Begin Source File
 
 SOURCE=../../dcmnet\libsrc\dimse.cxx
 
+!IF  "$(CFG)" == "dcmnet - Win32 Release"
+
+# ADD CPP  /TP 
+
+!ELSEIF  "$(CFG)" == "dcmnet - Win32 Debug"
+
+# ADD CPP  /TP 
+
+!ELSEIF  "$(CFG)" == "dcmnet - Win32 MinSizeRel"
+
+# ADD CPP  /TP 
+
+!ELSEIF  "$(CFG)" == "dcmnet - Win32 RelWithDebInfo"
+
+# ADD CPP  /TP 
+
+!ENDIF
+
 # End Source File
 # Begin Source File
 
 SOURCE=../../dcmnet\libsrc\dimstore.cxx
+
+!IF  "$(CFG)" == "dcmnet - Win32 Release"
+
+# ADD CPP  /TP 
+
+!ELSEIF  "$(CFG)" == "dcmnet - Win32 Debug"
+
+# ADD CPP  /TP 
+
+!ELSEIF  "$(CFG)" == "dcmnet - Win32 MinSizeRel"
+
+# ADD CPP  /TP 
+
+!ELSEIF  "$(CFG)" == "dcmnet - Win32 RelWithDebInfo"
+
+# ADD CPP  /TP 
+
+!ENDIF
 
 # End Source File
 # Begin Source File
 
 SOURCE=../../dcmnet\libsrc\diutil.cxx
 
+!IF  "$(CFG)" == "dcmnet - Win32 Release"
+
+# ADD CPP  /TP 
+
+!ELSEIF  "$(CFG)" == "dcmnet - Win32 Debug"
+
+# ADD CPP  /TP 
+
+!ELSEIF  "$(CFG)" == "dcmnet - Win32 MinSizeRel"
+
+# ADD CPP  /TP 
+
+!ELSEIF  "$(CFG)" == "dcmnet - Win32 RelWithDebInfo"
+
+# ADD CPP  /TP 
+
+!ENDIF
+
 # End Source File
 # Begin Source File
 
 SOURCE=../../dcmnet\libsrc\dul.cxx
+
+!IF  "$(CFG)" == "dcmnet - Win32 Release"
+
+# ADD CPP  /TP 
+
+!ELSEIF  "$(CFG)" == "dcmnet - Win32 Debug"
+
+# ADD CPP  /TP 
+
+!ELSEIF  "$(CFG)" == "dcmnet - Win32 MinSizeRel"
+
+# ADD CPP  /TP 
+
+!ELSEIF  "$(CFG)" == "dcmnet - Win32 RelWithDebInfo"
+
+# ADD CPP  /TP 
+
+!ENDIF
 
 # End Source File
 # Begin Source File
 
 SOURCE=../../dcmnet\libsrc\dulconst.cxx
 
+!IF  "$(CFG)" == "dcmnet - Win32 Release"
+
+# ADD CPP  /TP 
+
+!ELSEIF  "$(CFG)" == "dcmnet - Win32 Debug"
+
+# ADD CPP  /TP 
+
+!ELSEIF  "$(CFG)" == "dcmnet - Win32 MinSizeRel"
+
+# ADD CPP  /TP 
+
+!ELSEIF  "$(CFG)" == "dcmnet - Win32 RelWithDebInfo"
+
+# ADD CPP  /TP 
+
+!ENDIF
+
 # End Source File
 # Begin Source File
 
 SOURCE=../../dcmnet\libsrc\dulextra.cxx
+
+!IF  "$(CFG)" == "dcmnet - Win32 Release"
+
+# ADD CPP  /TP 
+
+!ELSEIF  "$(CFG)" == "dcmnet - Win32 Debug"
+
+# ADD CPP  /TP 
+
+!ELSEIF  "$(CFG)" == "dcmnet - Win32 MinSizeRel"
+
+# ADD CPP  /TP 
+
+!ELSEIF  "$(CFG)" == "dcmnet - Win32 RelWithDebInfo"
+
+# ADD CPP  /TP 
+
+!ENDIF
 
 # End Source File
 # Begin Source File
 
 SOURCE=../../dcmnet\libsrc\dulfsm.cxx
 
+!IF  "$(CFG)" == "dcmnet - Win32 Release"
+
+# ADD CPP  /TP 
+
+!ELSEIF  "$(CFG)" == "dcmnet - Win32 Debug"
+
+# ADD CPP  /TP 
+
+!ELSEIF  "$(CFG)" == "dcmnet - Win32 MinSizeRel"
+
+# ADD CPP  /TP 
+
+!ELSEIF  "$(CFG)" == "dcmnet - Win32 RelWithDebInfo"
+
+# ADD CPP  /TP 
+
+!ENDIF
+
 # End Source File
 # Begin Source File
 
 SOURCE=../../dcmnet\libsrc\dulparse.cxx
+
+!IF  "$(CFG)" == "dcmnet - Win32 Release"
+
+# ADD CPP  /TP 
+
+!ELSEIF  "$(CFG)" == "dcmnet - Win32 Debug"
+
+# ADD CPP  /TP 
+
+!ELSEIF  "$(CFG)" == "dcmnet - Win32 MinSizeRel"
+
+# ADD CPP  /TP 
+
+!ELSEIF  "$(CFG)" == "dcmnet - Win32 RelWithDebInfo"
+
+# ADD CPP  /TP 
+
+!ENDIF
 
 # End Source File
 # Begin Source File
 
 SOURCE=../../dcmnet\libsrc\dulpres.cxx
 
+!IF  "$(CFG)" == "dcmnet - Win32 Release"
+
+# ADD CPP  /TP 
+
+!ELSEIF  "$(CFG)" == "dcmnet - Win32 Debug"
+
+# ADD CPP  /TP 
+
+!ELSEIF  "$(CFG)" == "dcmnet - Win32 MinSizeRel"
+
+# ADD CPP  /TP 
+
+!ELSEIF  "$(CFG)" == "dcmnet - Win32 RelWithDebInfo"
+
+# ADD CPP  /TP 
+
+!ENDIF
+
 # End Source File
 # Begin Source File
 
 SOURCE=../../dcmnet\libsrc\extneg.cxx
 
+!IF  "$(CFG)" == "dcmnet - Win32 Release"
+
+# ADD CPP  /TP 
+
+!ELSEIF  "$(CFG)" == "dcmnet - Win32 Debug"
+
+# ADD CPP  /TP 
+
+!ELSEIF  "$(CFG)" == "dcmnet - Win32 MinSizeRel"
+
+# ADD CPP  /TP 
+
+!ELSEIF  "$(CFG)" == "dcmnet - Win32 RelWithDebInfo"
+
+# ADD CPP  /TP 
+
+!ENDIF
+
 # End Source File
 # Begin Source File
 
 SOURCE=../../dcmnet\libsrc\lst.cxx
+
+!IF  "$(CFG)" == "dcmnet - Win32 Release"
+
+# ADD CPP  /TP 
+
+!ELSEIF  "$(CFG)" == "dcmnet - Win32 Debug"
+
+# ADD CPP  /TP 
+
+!ELSEIF  "$(CFG)" == "dcmnet - Win32 MinSizeRel"
+
+# ADD CPP  /TP 
+
+!ELSEIF  "$(CFG)" == "dcmnet - Win32 RelWithDebInfo"
+
+# ADD CPP  /TP 
+
+!ENDIF
 
 # End Source File
 # End Group

@@ -10,7 +10,7 @@
 
 # variables to REPLACE
 # 
-#  /I "../../config\include" /I "../../dcmjpeg\include" /I "../../ofstd\include" /I "../../dcmdata\include" /I "../../dcmimgle\include" /I "../../dcmimage\include" /I "../../dcmjpeg\libijg8" /I "../../dcmjpeg\libijg12" /I "../../dcmjpeg\libijg16" /I "../../../zlib-1.1.4\include" == include path
+#  /I "../../config\include" /I "../../dcmjpeg\include" /I "../../ofstd\include" /I "../../dcmdata\include" /I "../../dcmimgle\include" /I "../../dcmimage\include" /I "../../dcmjpeg\libijg8" /I "../../dcmjpeg\libijg12" /I "../../dcmjpeg\libijg16" /I "../../../zlib-1.2.1\include" == include path
 #   -D_REENTRANT -DWITH_LIBPNG -DWITH_LIBTIFF -DWITH_ZLIB == compiler defines
 #  == override in output directory
 # dcmjpeg  == name of output library
@@ -55,11 +55,11 @@ RSC=rc.exe
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /D "WIN32" /D "NDEBUG" /D "_MBCS" /D "_LIB"  /FD /c
 # ADD CPP /nologo /D "NDEBUG" /D "WIN32" /D "_MBCS" /D "_LIB"  /FD /c
-# ADD CPP  /I "../../config\include" /I "../../dcmjpeg\include" /I "../../ofstd\include" /I "../../dcmdata\include" /I "../../dcmimgle\include" /I "../../dcmimage\include" /I "../../dcmjpeg\libijg8" /I "../../dcmjpeg\libijg12" /I "../../dcmjpeg\libijg16" /I "../../../zlib-1.1.4\include"   -D_REENTRANT -DWITH_LIBPNG -DWITH_LIBTIFF -DWITH_ZLIB /D "dcmjpeg_EXPORTS"
-# ADD CPP  
+# ADD CPP  /I "../../config\include" /I "../../dcmjpeg\include" /I "../../ofstd\include" /I "../../dcmdata\include" /I "../../dcmimgle\include" /I "../../dcmimage\include" /I "../../dcmjpeg\libijg8" /I "../../dcmjpeg\libijg12" /I "../../dcmjpeg\libijg16" /I "../../../zlib-1.2.1\include"   -D_REENTRANT -DWITH_LIBPNG -DWITH_LIBTIFF -DWITH_ZLIB /D "dcmjpeg_EXPORTS"
+# ADD CPP  /D "_MBCS"
 # ADD CPP /nologo /MT /W3 /GX /O2 /GR- /YX -DCMAKE_INTDIR=\"Release\" 
 # ADD BASE RSC /l 0x409 /d "NDEBUG"
-# ADD RSC  /I "../../config\include" /I "../../dcmjpeg\include" /I "../../ofstd\include" /I "../../dcmdata\include" /I "../../dcmimgle\include" /I "../../dcmimage\include" /I "../../dcmjpeg\libijg8" /I "../../dcmjpeg\libijg12" /I "../../dcmjpeg\libijg16" /I "../../../zlib-1.1.4\include" /l 0x409 /d "NDEBUG"
+# ADD RSC  /I "../../config\include" /I "../../dcmjpeg\include" /I "../../ofstd\include" /I "../../dcmdata\include" /I "../../dcmimgle\include" /I "../../dcmimage\include" /I "../../dcmjpeg\libijg8" /I "../../dcmjpeg\libijg12" /I "../../dcmjpeg\libijg16" /I "../../../zlib-1.2.1\include" /l 0x409 /d "NDEBUG"
 BSC32=bscmake.exe
 # ADD BASE BSC32 /nologo
 # ADD BSC32 /nologo
@@ -83,11 +83,11 @@ LIB32=link.exe -lib
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /D "WIN32" /D "_DEBUG" /D "_MBCS" /D "_LIB"  /FD /c
 # ADD CPP /nologo /D "_DEBUG" /D "WIN32" /D "_MBCS" /D "_LIB"  /FD /GZ /c
-# ADD CPP  /I "../../config\include" /I "../../dcmjpeg\include" /I "../../ofstd\include" /I "../../dcmdata\include" /I "../../dcmimgle\include" /I "../../dcmimage\include" /I "../../dcmjpeg\libijg8" /I "../../dcmjpeg\libijg12" /I "../../dcmjpeg\libijg16" /I "../../../zlib-1.1.4\include"   -D_REENTRANT -DWITH_LIBPNG -DWITH_LIBTIFF -DWITH_ZLIB /D "dcmjpeg_EXPORTS"
-# ADD CPP  
+# ADD CPP  /I "../../config\include" /I "../../dcmjpeg\include" /I "../../ofstd\include" /I "../../dcmdata\include" /I "../../dcmimgle\include" /I "../../dcmimage\include" /I "../../dcmjpeg\libijg8" /I "../../dcmjpeg\libijg12" /I "../../dcmjpeg\libijg16" /I "../../../zlib-1.2.1\include"   -D_REENTRANT -DWITH_LIBPNG -DWITH_LIBTIFF -DWITH_ZLIB /D "dcmjpeg_EXPORTS"
+# ADD CPP  /D "_MBCS"
 # ADD CPP /nologo /MTd /W3 /GX /Z7 /Od /GR- /YX -DCMAKE_INTDIR=\"Debug\" 
 # ADD BASE RSC /l 0x409 /d "_DEBUG"
-# ADD RSC  /I "../../config\include" /I "../../dcmjpeg\include" /I "../../ofstd\include" /I "../../dcmdata\include" /I "../../dcmimgle\include" /I "../../dcmimage\include" /I "../../dcmjpeg\libijg8" /I "../../dcmjpeg\libijg12" /I "../../dcmjpeg\libijg16" /I "../../../zlib-1.1.4\include" /l 0x409 /d "_DEBUG"
+# ADD RSC  /I "../../config\include" /I "../../dcmjpeg\include" /I "../../ofstd\include" /I "../../dcmdata\include" /I "../../dcmimgle\include" /I "../../dcmimage\include" /I "../../dcmjpeg\libijg8" /I "../../dcmjpeg\libijg12" /I "../../dcmjpeg\libijg16" /I "../../../zlib-1.2.1\include" /l 0x409 /d "_DEBUG"
 BSC32=bscmake.exe
 # ADD BASE BSC32 /nologo
 # ADD BSC32 /nologo
@@ -111,11 +111,11 @@ LIB32=link.exe -lib
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "_ATL_DLL" /FD /c
 # ADD CPP /nologo /D "NDEBUG" /D "_MBCS" /D "_ATL_DLL"  /D "WIN32" /D "_WINDOWS" /D "_USRDLL" /FD /c
-# ADD CPP  /I "../../config\include" /I "../../dcmjpeg\include" /I "../../ofstd\include" /I "../../dcmdata\include" /I "../../dcmimgle\include" /I "../../dcmimage\include" /I "../../dcmjpeg\libijg8" /I "../../dcmjpeg\libijg12" /I "../../dcmjpeg\libijg16" /I "../../../zlib-1.1.4\include"   -D_REENTRANT -DWITH_LIBPNG -DWITH_LIBTIFF -DWITH_ZLIB /D "dcmjpeg_EXPORTS"
-# ADD CPP  
+# ADD CPP  /I "../../config\include" /I "../../dcmjpeg\include" /I "../../ofstd\include" /I "../../dcmdata\include" /I "../../dcmimgle\include" /I "../../dcmimage\include" /I "../../dcmjpeg\libijg8" /I "../../dcmjpeg\libijg12" /I "../../dcmjpeg\libijg16" /I "../../../zlib-1.2.1\include"   -D_REENTRANT -DWITH_LIBPNG -DWITH_LIBTIFF -DWITH_ZLIB /D "dcmjpeg_EXPORTS"
+# ADD CPP  /D "_MBCS"
 # ADD CPP /MD /O1 -DCMAKE_INTDIR=\"MinSizeRel\" 
 # ADD BASE RSC /l 0x409 /d "NDEBUG"
-# ADD RSC  /I "../../config\include" /I "../../dcmjpeg\include" /I "../../ofstd\include" /I "../../dcmdata\include" /I "../../dcmimgle\include" /I "../../dcmimage\include" /I "../../dcmjpeg\libijg8" /I "../../dcmjpeg\libijg12" /I "../../dcmjpeg\libijg16" /I "../../../zlib-1.1.4\include" /l 0x409 /d "NDEBUG"
+# ADD RSC  /I "../../config\include" /I "../../dcmjpeg\include" /I "../../ofstd\include" /I "../../dcmdata\include" /I "../../dcmimgle\include" /I "../../dcmimage\include" /I "../../dcmjpeg\libijg8" /I "../../dcmjpeg\libijg12" /I "../../dcmjpeg\libijg16" /I "../../../zlib-1.2.1\include" /l 0x409 /d "NDEBUG"
 BSC32=bscmake.exe
 # ADD BASE BSC32 /nologo
 # ADD BSC32 /nologo
@@ -139,11 +139,11 @@ LIB32=link.exe -lib
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /D "WIN32" /D "NDEBUG" /D "_MBCS" /D "_LIB"  /FD /c
 # ADD CPP /nologo /D "NDEBUG" /D "WIN32" /D "_MBCS" /D "_LIB"  /FD /c
-# ADD CPP  /I "../../config\include" /I "../../dcmjpeg\include" /I "../../ofstd\include" /I "../../dcmdata\include" /I "../../dcmimgle\include" /I "../../dcmimage\include" /I "../../dcmjpeg\libijg8" /I "../../dcmjpeg\libijg12" /I "../../dcmjpeg\libijg16" /I "../../../zlib-1.1.4\include"   -D_REENTRANT -DWITH_LIBPNG -DWITH_LIBTIFF -DWITH_ZLIB /D "dcmjpeg_EXPORTS"
-# ADD CPP  
+# ADD CPP  /I "../../config\include" /I "../../dcmjpeg\include" /I "../../ofstd\include" /I "../../dcmdata\include" /I "../../dcmimgle\include" /I "../../dcmimage\include" /I "../../dcmjpeg\libijg8" /I "../../dcmjpeg\libijg12" /I "../../dcmjpeg\libijg16" /I "../../../zlib-1.2.1\include"   -D_REENTRANT -DWITH_LIBPNG -DWITH_LIBTIFF -DWITH_ZLIB /D "dcmjpeg_EXPORTS"
+# ADD CPP  /D "_MBCS"
 # ADD CPP /MD /Zi /O2 -DCMAKE_INTDIR=\"RelWithDebInfo\" 
 # ADD BASE RSC /l 0x409 /d "NDEBUG"
-# ADD RSC  /I "../../config\include" /I "../../dcmjpeg\include" /I "../../ofstd\include" /I "../../dcmdata\include" /I "../../dcmimgle\include" /I "../../dcmimage\include" /I "../../dcmjpeg\libijg8" /I "../../dcmjpeg\libijg12" /I "../../dcmjpeg\libijg16" /I "../../../zlib-1.1.4\include" /l 0x409 /d "NDEBUG"
+# ADD RSC  /I "../../config\include" /I "../../dcmjpeg\include" /I "../../ofstd\include" /I "../../dcmdata\include" /I "../../dcmimgle\include" /I "../../dcmimage\include" /I "../../dcmjpeg\libijg8" /I "../../dcmjpeg\libijg12" /I "../../dcmjpeg\libijg16" /I "../../../zlib-1.2.1\include" /l 0x409 /d "NDEBUG"
 BSC32=bscmake.exe
 # ADD BASE BSC32 /nologo
 # ADD BSC32 /nologo
@@ -168,140 +168,644 @@ LIB32=link.exe -lib
 
 SOURCE=../../dcmjpeg\libsrc\ddpiimpl.cxx
 
+!IF  "$(CFG)" == "dcmjpeg - Win32 Release"
+
+# ADD CPP  /TP 
+
+!ELSEIF  "$(CFG)" == "dcmjpeg - Win32 Debug"
+
+# ADD CPP  /TP 
+
+!ELSEIF  "$(CFG)" == "dcmjpeg - Win32 MinSizeRel"
+
+# ADD CPP  /TP 
+
+!ELSEIF  "$(CFG)" == "dcmjpeg - Win32 RelWithDebInfo"
+
+# ADD CPP  /TP 
+
+!ENDIF
+
 # End Source File
 # Begin Source File
 
 SOURCE=../../dcmjpeg\libsrc\dipijpeg.cxx
+
+!IF  "$(CFG)" == "dcmjpeg - Win32 Release"
+
+# ADD CPP  /TP 
+
+!ELSEIF  "$(CFG)" == "dcmjpeg - Win32 Debug"
+
+# ADD CPP  /TP 
+
+!ELSEIF  "$(CFG)" == "dcmjpeg - Win32 MinSizeRel"
+
+# ADD CPP  /TP 
+
+!ELSEIF  "$(CFG)" == "dcmjpeg - Win32 RelWithDebInfo"
+
+# ADD CPP  /TP 
+
+!ENDIF
 
 # End Source File
 # Begin Source File
 
 SOURCE=../../dcmjpeg\libsrc\djcodecd.cxx
 
+!IF  "$(CFG)" == "dcmjpeg - Win32 Release"
+
+# ADD CPP  /TP 
+
+!ELSEIF  "$(CFG)" == "dcmjpeg - Win32 Debug"
+
+# ADD CPP  /TP 
+
+!ELSEIF  "$(CFG)" == "dcmjpeg - Win32 MinSizeRel"
+
+# ADD CPP  /TP 
+
+!ELSEIF  "$(CFG)" == "dcmjpeg - Win32 RelWithDebInfo"
+
+# ADD CPP  /TP 
+
+!ENDIF
+
 # End Source File
 # Begin Source File
 
 SOURCE=../../dcmjpeg\libsrc\djcodece.cxx
+
+!IF  "$(CFG)" == "dcmjpeg - Win32 Release"
+
+# ADD CPP  /TP 
+
+!ELSEIF  "$(CFG)" == "dcmjpeg - Win32 Debug"
+
+# ADD CPP  /TP 
+
+!ELSEIF  "$(CFG)" == "dcmjpeg - Win32 MinSizeRel"
+
+# ADD CPP  /TP 
+
+!ELSEIF  "$(CFG)" == "dcmjpeg - Win32 RelWithDebInfo"
+
+# ADD CPP  /TP 
+
+!ENDIF
 
 # End Source File
 # Begin Source File
 
 SOURCE=../../dcmjpeg\libsrc\djcparam.cxx
 
+!IF  "$(CFG)" == "dcmjpeg - Win32 Release"
+
+# ADD CPP  /TP 
+
+!ELSEIF  "$(CFG)" == "dcmjpeg - Win32 Debug"
+
+# ADD CPP  /TP 
+
+!ELSEIF  "$(CFG)" == "dcmjpeg - Win32 MinSizeRel"
+
+# ADD CPP  /TP 
+
+!ELSEIF  "$(CFG)" == "dcmjpeg - Win32 RelWithDebInfo"
+
+# ADD CPP  /TP 
+
+!ENDIF
+
 # End Source File
 # Begin Source File
 
 SOURCE=../../dcmjpeg\libsrc\djdecbas.cxx
+
+!IF  "$(CFG)" == "dcmjpeg - Win32 Release"
+
+# ADD CPP  /TP 
+
+!ELSEIF  "$(CFG)" == "dcmjpeg - Win32 Debug"
+
+# ADD CPP  /TP 
+
+!ELSEIF  "$(CFG)" == "dcmjpeg - Win32 MinSizeRel"
+
+# ADD CPP  /TP 
+
+!ELSEIF  "$(CFG)" == "dcmjpeg - Win32 RelWithDebInfo"
+
+# ADD CPP  /TP 
+
+!ENDIF
 
 # End Source File
 # Begin Source File
 
 SOURCE=../../dcmjpeg\libsrc\djdecext.cxx
 
+!IF  "$(CFG)" == "dcmjpeg - Win32 Release"
+
+# ADD CPP  /TP 
+
+!ELSEIF  "$(CFG)" == "dcmjpeg - Win32 Debug"
+
+# ADD CPP  /TP 
+
+!ELSEIF  "$(CFG)" == "dcmjpeg - Win32 MinSizeRel"
+
+# ADD CPP  /TP 
+
+!ELSEIF  "$(CFG)" == "dcmjpeg - Win32 RelWithDebInfo"
+
+# ADD CPP  /TP 
+
+!ENDIF
+
 # End Source File
 # Begin Source File
 
 SOURCE=../../dcmjpeg\libsrc\djdeclol.cxx
+
+!IF  "$(CFG)" == "dcmjpeg - Win32 Release"
+
+# ADD CPP  /TP 
+
+!ELSEIF  "$(CFG)" == "dcmjpeg - Win32 Debug"
+
+# ADD CPP  /TP 
+
+!ELSEIF  "$(CFG)" == "dcmjpeg - Win32 MinSizeRel"
+
+# ADD CPP  /TP 
+
+!ELSEIF  "$(CFG)" == "dcmjpeg - Win32 RelWithDebInfo"
+
+# ADD CPP  /TP 
+
+!ENDIF
 
 # End Source File
 # Begin Source File
 
 SOURCE=../../dcmjpeg\libsrc\djdecode.cxx
 
+!IF  "$(CFG)" == "dcmjpeg - Win32 Release"
+
+# ADD CPP  /TP 
+
+!ELSEIF  "$(CFG)" == "dcmjpeg - Win32 Debug"
+
+# ADD CPP  /TP 
+
+!ELSEIF  "$(CFG)" == "dcmjpeg - Win32 MinSizeRel"
+
+# ADD CPP  /TP 
+
+!ELSEIF  "$(CFG)" == "dcmjpeg - Win32 RelWithDebInfo"
+
+# ADD CPP  /TP 
+
+!ENDIF
+
 # End Source File
 # Begin Source File
 
 SOURCE=../../dcmjpeg\libsrc\djdecpro.cxx
+
+!IF  "$(CFG)" == "dcmjpeg - Win32 Release"
+
+# ADD CPP  /TP 
+
+!ELSEIF  "$(CFG)" == "dcmjpeg - Win32 Debug"
+
+# ADD CPP  /TP 
+
+!ELSEIF  "$(CFG)" == "dcmjpeg - Win32 MinSizeRel"
+
+# ADD CPP  /TP 
+
+!ELSEIF  "$(CFG)" == "dcmjpeg - Win32 RelWithDebInfo"
+
+# ADD CPP  /TP 
+
+!ENDIF
 
 # End Source File
 # Begin Source File
 
 SOURCE=../../dcmjpeg\libsrc\djdecsps.cxx
 
+!IF  "$(CFG)" == "dcmjpeg - Win32 Release"
+
+# ADD CPP  /TP 
+
+!ELSEIF  "$(CFG)" == "dcmjpeg - Win32 Debug"
+
+# ADD CPP  /TP 
+
+!ELSEIF  "$(CFG)" == "dcmjpeg - Win32 MinSizeRel"
+
+# ADD CPP  /TP 
+
+!ELSEIF  "$(CFG)" == "dcmjpeg - Win32 RelWithDebInfo"
+
+# ADD CPP  /TP 
+
+!ENDIF
+
 # End Source File
 # Begin Source File
 
 SOURCE=../../dcmjpeg\libsrc\djdecsv1.cxx
+
+!IF  "$(CFG)" == "dcmjpeg - Win32 Release"
+
+# ADD CPP  /TP 
+
+!ELSEIF  "$(CFG)" == "dcmjpeg - Win32 Debug"
+
+# ADD CPP  /TP 
+
+!ELSEIF  "$(CFG)" == "dcmjpeg - Win32 MinSizeRel"
+
+# ADD CPP  /TP 
+
+!ELSEIF  "$(CFG)" == "dcmjpeg - Win32 RelWithDebInfo"
+
+# ADD CPP  /TP 
+
+!ENDIF
 
 # End Source File
 # Begin Source File
 
 SOURCE=../../dcmjpeg\libsrc\djdijg12.cxx
 
-# End Source File
-# Begin Source File
+!IF  "$(CFG)" == "dcmjpeg - Win32 Release"
 
-SOURCE=../../dcmjpeg\libsrc\djdijg16.cxx
+# ADD CPP  /TP 
+
+!ELSEIF  "$(CFG)" == "dcmjpeg - Win32 Debug"
+
+# ADD CPP  /TP 
+
+!ELSEIF  "$(CFG)" == "dcmjpeg - Win32 MinSizeRel"
+
+# ADD CPP  /TP 
+
+!ELSEIF  "$(CFG)" == "dcmjpeg - Win32 RelWithDebInfo"
+
+# ADD CPP  /TP 
+
+!ENDIF
 
 # End Source File
 # Begin Source File
 
 SOURCE=../../dcmjpeg\libsrc\djdijg8.cxx
 
+!IF  "$(CFG)" == "dcmjpeg - Win32 Release"
+
+# ADD CPP  /TP 
+
+!ELSEIF  "$(CFG)" == "dcmjpeg - Win32 Debug"
+
+# ADD CPP  /TP 
+
+!ELSEIF  "$(CFG)" == "dcmjpeg - Win32 MinSizeRel"
+
+# ADD CPP  /TP 
+
+!ELSEIF  "$(CFG)" == "dcmjpeg - Win32 RelWithDebInfo"
+
+# ADD CPP  /TP 
+
+!ENDIF
+
+# End Source File
+# Begin Source File
+
+SOURCE=../../dcmjpeg\libsrc\djdijg16.cxx
+
+!IF  "$(CFG)" == "dcmjpeg - Win32 Release"
+
+# ADD CPP  /TP 
+
+!ELSEIF  "$(CFG)" == "dcmjpeg - Win32 Debug"
+
+# ADD CPP  /TP 
+
+!ELSEIF  "$(CFG)" == "dcmjpeg - Win32 MinSizeRel"
+
+# ADD CPP  /TP 
+
+!ELSEIF  "$(CFG)" == "dcmjpeg - Win32 RelWithDebInfo"
+
+# ADD CPP  /TP 
+
+!ENDIF
+
 # End Source File
 # Begin Source File
 
 SOURCE=../../dcmjpeg\libsrc\djeijg12.cxx
 
-# End Source File
-# Begin Source File
+!IF  "$(CFG)" == "dcmjpeg - Win32 Release"
 
-SOURCE=../../dcmjpeg\libsrc\djeijg16.cxx
+# ADD CPP  /TP 
+
+!ELSEIF  "$(CFG)" == "dcmjpeg - Win32 Debug"
+
+# ADD CPP  /TP 
+
+!ELSEIF  "$(CFG)" == "dcmjpeg - Win32 MinSizeRel"
+
+# ADD CPP  /TP 
+
+!ELSEIF  "$(CFG)" == "dcmjpeg - Win32 RelWithDebInfo"
+
+# ADD CPP  /TP 
+
+!ENDIF
 
 # End Source File
 # Begin Source File
 
 SOURCE=../../dcmjpeg\libsrc\djeijg8.cxx
 
+!IF  "$(CFG)" == "dcmjpeg - Win32 Release"
+
+# ADD CPP  /TP 
+
+!ELSEIF  "$(CFG)" == "dcmjpeg - Win32 Debug"
+
+# ADD CPP  /TP 
+
+!ELSEIF  "$(CFG)" == "dcmjpeg - Win32 MinSizeRel"
+
+# ADD CPP  /TP 
+
+!ELSEIF  "$(CFG)" == "dcmjpeg - Win32 RelWithDebInfo"
+
+# ADD CPP  /TP 
+
+!ENDIF
+
+# End Source File
+# Begin Source File
+
+SOURCE=../../dcmjpeg\libsrc\djeijg16.cxx
+
+!IF  "$(CFG)" == "dcmjpeg - Win32 Release"
+
+# ADD CPP  /TP 
+
+!ELSEIF  "$(CFG)" == "dcmjpeg - Win32 Debug"
+
+# ADD CPP  /TP 
+
+!ELSEIF  "$(CFG)" == "dcmjpeg - Win32 MinSizeRel"
+
+# ADD CPP  /TP 
+
+!ELSEIF  "$(CFG)" == "dcmjpeg - Win32 RelWithDebInfo"
+
+# ADD CPP  /TP 
+
+!ENDIF
+
 # End Source File
 # Begin Source File
 
 SOURCE=../../dcmjpeg\libsrc\djencbas.cxx
+
+!IF  "$(CFG)" == "dcmjpeg - Win32 Release"
+
+# ADD CPP  /TP 
+
+!ELSEIF  "$(CFG)" == "dcmjpeg - Win32 Debug"
+
+# ADD CPP  /TP 
+
+!ELSEIF  "$(CFG)" == "dcmjpeg - Win32 MinSizeRel"
+
+# ADD CPP  /TP 
+
+!ELSEIF  "$(CFG)" == "dcmjpeg - Win32 RelWithDebInfo"
+
+# ADD CPP  /TP 
+
+!ENDIF
 
 # End Source File
 # Begin Source File
 
 SOURCE=../../dcmjpeg\libsrc\djencext.cxx
 
+!IF  "$(CFG)" == "dcmjpeg - Win32 Release"
+
+# ADD CPP  /TP 
+
+!ELSEIF  "$(CFG)" == "dcmjpeg - Win32 Debug"
+
+# ADD CPP  /TP 
+
+!ELSEIF  "$(CFG)" == "dcmjpeg - Win32 MinSizeRel"
+
+# ADD CPP  /TP 
+
+!ELSEIF  "$(CFG)" == "dcmjpeg - Win32 RelWithDebInfo"
+
+# ADD CPP  /TP 
+
+!ENDIF
+
 # End Source File
 # Begin Source File
 
 SOURCE=../../dcmjpeg\libsrc\djenclol.cxx
+
+!IF  "$(CFG)" == "dcmjpeg - Win32 Release"
+
+# ADD CPP  /TP 
+
+!ELSEIF  "$(CFG)" == "dcmjpeg - Win32 Debug"
+
+# ADD CPP  /TP 
+
+!ELSEIF  "$(CFG)" == "dcmjpeg - Win32 MinSizeRel"
+
+# ADD CPP  /TP 
+
+!ELSEIF  "$(CFG)" == "dcmjpeg - Win32 RelWithDebInfo"
+
+# ADD CPP  /TP 
+
+!ENDIF
 
 # End Source File
 # Begin Source File
 
 SOURCE=../../dcmjpeg\libsrc\djencode.cxx
 
+!IF  "$(CFG)" == "dcmjpeg - Win32 Release"
+
+# ADD CPP  /TP 
+
+!ELSEIF  "$(CFG)" == "dcmjpeg - Win32 Debug"
+
+# ADD CPP  /TP 
+
+!ELSEIF  "$(CFG)" == "dcmjpeg - Win32 MinSizeRel"
+
+# ADD CPP  /TP 
+
+!ELSEIF  "$(CFG)" == "dcmjpeg - Win32 RelWithDebInfo"
+
+# ADD CPP  /TP 
+
+!ENDIF
+
 # End Source File
 # Begin Source File
 
 SOURCE=../../dcmjpeg\libsrc\djencpro.cxx
+
+!IF  "$(CFG)" == "dcmjpeg - Win32 Release"
+
+# ADD CPP  /TP 
+
+!ELSEIF  "$(CFG)" == "dcmjpeg - Win32 Debug"
+
+# ADD CPP  /TP 
+
+!ELSEIF  "$(CFG)" == "dcmjpeg - Win32 MinSizeRel"
+
+# ADD CPP  /TP 
+
+!ELSEIF  "$(CFG)" == "dcmjpeg - Win32 RelWithDebInfo"
+
+# ADD CPP  /TP 
+
+!ENDIF
 
 # End Source File
 # Begin Source File
 
 SOURCE=../../dcmjpeg\libsrc\djencsps.cxx
 
+!IF  "$(CFG)" == "dcmjpeg - Win32 Release"
+
+# ADD CPP  /TP 
+
+!ELSEIF  "$(CFG)" == "dcmjpeg - Win32 Debug"
+
+# ADD CPP  /TP 
+
+!ELSEIF  "$(CFG)" == "dcmjpeg - Win32 MinSizeRel"
+
+# ADD CPP  /TP 
+
+!ELSEIF  "$(CFG)" == "dcmjpeg - Win32 RelWithDebInfo"
+
+# ADD CPP  /TP 
+
+!ENDIF
+
 # End Source File
 # Begin Source File
 
 SOURCE=../../dcmjpeg\libsrc\djencsv1.cxx
+
+!IF  "$(CFG)" == "dcmjpeg - Win32 Release"
+
+# ADD CPP  /TP 
+
+!ELSEIF  "$(CFG)" == "dcmjpeg - Win32 Debug"
+
+# ADD CPP  /TP 
+
+!ELSEIF  "$(CFG)" == "dcmjpeg - Win32 MinSizeRel"
+
+# ADD CPP  /TP 
+
+!ELSEIF  "$(CFG)" == "dcmjpeg - Win32 RelWithDebInfo"
+
+# ADD CPP  /TP 
+
+!ENDIF
 
 # End Source File
 # Begin Source File
 
 SOURCE=../../dcmjpeg\libsrc\djrplol.cxx
 
+!IF  "$(CFG)" == "dcmjpeg - Win32 Release"
+
+# ADD CPP  /TP 
+
+!ELSEIF  "$(CFG)" == "dcmjpeg - Win32 Debug"
+
+# ADD CPP  /TP 
+
+!ELSEIF  "$(CFG)" == "dcmjpeg - Win32 MinSizeRel"
+
+# ADD CPP  /TP 
+
+!ELSEIF  "$(CFG)" == "dcmjpeg - Win32 RelWithDebInfo"
+
+# ADD CPP  /TP 
+
+!ENDIF
+
 # End Source File
 # Begin Source File
 
 SOURCE=../../dcmjpeg\libsrc\djrploss.cxx
 
+!IF  "$(CFG)" == "dcmjpeg - Win32 Release"
+
+# ADD CPP  /TP 
+
+!ELSEIF  "$(CFG)" == "dcmjpeg - Win32 Debug"
+
+# ADD CPP  /TP 
+
+!ELSEIF  "$(CFG)" == "dcmjpeg - Win32 MinSizeRel"
+
+# ADD CPP  /TP 
+
+!ELSEIF  "$(CFG)" == "dcmjpeg - Win32 RelWithDebInfo"
+
+# ADD CPP  /TP 
+
+!ENDIF
+
 # End Source File
 # Begin Source File
 
 SOURCE=../../dcmjpeg\libsrc\djutils.cxx
+
+!IF  "$(CFG)" == "dcmjpeg - Win32 Release"
+
+# ADD CPP  /TP 
+
+!ELSEIF  "$(CFG)" == "dcmjpeg - Win32 Debug"
+
+# ADD CPP  /TP 
+
+!ELSEIF  "$(CFG)" == "dcmjpeg - Win32 MinSizeRel"
+
+# ADD CPP  /TP 
+
+!ELSEIF  "$(CFG)" == "dcmjpeg - Win32 RelWithDebInfo"
+
+# ADD CPP  /TP 
+
+!ENDIF
 
 # End Source File
 # End Group

@@ -10,11 +10,11 @@
 
 # variables to REPLACE
 # 
-#  /I "../../config\include" /I "../../dcmwlm\include" /I "../../ofstd\include" /I "../../dcmdata\include" /I "../../dcmnet\include" /I "../../../zlib-1.1.4\include" /I "../../dcmtls\include" == include path
+#  /I "../../config\include" /I "../../dcmwlm\include" /I "../../ofstd\include" /I "../../dcmdata\include" /I "../../dcmnet\include" /I "../../../zlib-1.2.1\include" /I "../../dcmtls\include" == include path
 #  == override in output directory
 #   -D_REENTRANT -DWITH_LIBPNG -DWITH_LIBTIFF -DWITH_ZLIB == compiler defines
 # wlmscpfs  == name of output library
-#  /LIBPATH:../../dcmwlm\$(INTDIR)  /LIBPATH:../../dcmwlm\  /LIBPATH:../../ofstd\$(INTDIR)  /LIBPATH:../../ofstd\  /LIBPATH:../../dcmdata\$(INTDIR)  /LIBPATH:../../dcmdata\  /LIBPATH:../../dcmtls\$(INTDIR)  /LIBPATH:../../dcmtls\  /LIBPATH:../../dcmnet\$(INTDIR)  /LIBPATH:../../dcmnet\  /LIBPATH:../../../zlib-1.1.4\lib\$(INTDIR)  /LIBPATH:../../../zlib-1.1.4\lib\  /LIBPATH:../../ofstd\libsrc\$(INTDIR)  /LIBPATH:../../ofstd\libsrc\  /LIBPATH:../../dcmdata\libsrc\$(INTDIR)  /LIBPATH:../../dcmdata\libsrc\  /LIBPATH:../../dcmtls\libsrc\$(INTDIR)  /LIBPATH:../../dcmtls\libsrc\  /LIBPATH:../../dcmnet\libsrc\$(INTDIR)  /LIBPATH:../../dcmnet\libsrc\  /LIBPATH:../../dcmwlm\libsrc\$(INTDIR)  /LIBPATH:../../dcmwlm\libsrc\  netapi32.lib wsock32.lib ofstd.lib dcmdata.lib dcmtls.lib dcmnet.lib dcmwlm.lib /INCREMENTAL:NO  == libraries linked in 
+#  /LIBPATH:../../dcmwlm\$(INTDIR)  /LIBPATH:../../dcmwlm\  /LIBPATH:../../ofstd\$(INTDIR)  /LIBPATH:../../ofstd\  /LIBPATH:../../dcmdata\$(INTDIR)  /LIBPATH:../../dcmdata\  /LIBPATH:../../dcmtls\$(INTDIR)  /LIBPATH:../../dcmtls\  /LIBPATH:../../dcmnet\$(INTDIR)  /LIBPATH:../../dcmnet\  /LIBPATH:../../../zlib-1.2.1\lib\$(INTDIR)  /LIBPATH:../../../zlib-1.2.1\lib\  /LIBPATH:../../ofstd\libsrc\$(INTDIR)  /LIBPATH:../../ofstd\libsrc\  /LIBPATH:../../dcmdata\libsrc\$(INTDIR)  /LIBPATH:../../dcmdata\libsrc\  /LIBPATH:../../dcmtls\libsrc\$(INTDIR)  /LIBPATH:../../dcmtls\libsrc\  /LIBPATH:../../dcmnet\libsrc\$(INTDIR)  /LIBPATH:../../dcmnet\libsrc\  /LIBPATH:../../dcmwlm\libsrc\$(INTDIR)  /LIBPATH:../../dcmwlm\libsrc\  netapi32.lib wsock32.lib ofstd.lib dcmdata.lib dcmtls.lib dcmnet.lib dcmwlm.lib /INCREMENTAL:NO  == libraries linked in 
 # TARGTYPE "Win32 (x86) Application" 0x0103
 
 CFG=wlmscpfs - Win32 Debug
@@ -58,11 +58,11 @@ RSC=rc.exe
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo  /D "WIN32" /D "NDEBUG" /D "_CONSOLE" /D "_MBCS"  /FD /c
 # ADD CPP /nologo  /D "WIN32"  /D "NDEBUG" /D "_CONSOLE" /D "_MBCS"  /FD /c
-# ADD CPP  /I "../../config\include" /I "../../dcmwlm\include" /I "../../ofstd\include" /I "../../dcmdata\include" /I "../../dcmnet\include" /I "../../../zlib-1.1.4\include" /I "../../dcmtls\include"   -D_REENTRANT -DWITH_LIBPNG -DWITH_LIBTIFF -DWITH_ZLIB /D "wlmscpfs_EXPORTS"
-# ADD CPP  
+# ADD CPP  /I "../../config\include" /I "../../dcmwlm\include" /I "../../ofstd\include" /I "../../dcmdata\include" /I "../../dcmnet\include" /I "../../../zlib-1.2.1\include" /I "../../dcmtls\include"   -D_REENTRANT -DWITH_LIBPNG -DWITH_LIBTIFF -DWITH_ZLIB /D "wlmscpfs_EXPORTS"
+# ADD CPP  /D "_MBCS"
 # ADD CPP /nologo /MT /W3 /GX /O2 /GR- /YX -DCMAKE_INTDIR=\"Release\" 
 # ADD BASE RSC /l 0x409 /d "NDEBUG"
-# ADD RSC  /I "../../config\include" /I "../../dcmwlm\include" /I "../../ofstd\include" /I "../../dcmdata\include" /I "../../dcmnet\include" /I "../../../zlib-1.1.4\include" /I "../../dcmtls\include" /l 0x409 /d "NDEBUG"
+# ADD RSC  /I "../../config\include" /I "../../dcmwlm\include" /I "../../ofstd\include" /I "../../dcmdata\include" /I "../../dcmnet\include" /I "../../../zlib-1.2.1\include" /I "../../dcmtls\include" /l 0x409 /d "NDEBUG"
 BSC32=bscmake.exe
 # ADD BASE BSC32 /nologo
 # ADD BSC32 /nologo
@@ -76,7 +76,7 @@ LINK32=link.exe
 # ADD LINK32 /LIBPATH:../../dcmdata\$(INTDIR)  /LIBPATH:../../dcmdata\ 
 # ADD LINK32 /LIBPATH:../../dcmtls\$(INTDIR)  /LIBPATH:../../dcmtls\ 
 # ADD LINK32 /LIBPATH:../../dcmnet\$(INTDIR)  /LIBPATH:../../dcmnet\ 
-# ADD LINK32 /LIBPATH:../../../zlib-1.1.4\lib\$(INTDIR)  /LIBPATH:../../../zlib-1.1.4\lib\ 
+# ADD LINK32 /LIBPATH:../../../zlib-1.2.1\lib\$(INTDIR)  /LIBPATH:../../../zlib-1.2.1\lib\ 
 # ADD LINK32 /LIBPATH:../../ofstd\libsrc\$(INTDIR)  /LIBPATH:../../ofstd\libsrc\ 
 # ADD LINK32 /LIBPATH:../../dcmdata\libsrc\$(INTDIR)  /LIBPATH:../../dcmdata\libsrc\ 
 # ADD LINK32 /LIBPATH:../../dcmtls\libsrc\$(INTDIR)  /LIBPATH:../../dcmtls\libsrc\ 
@@ -108,13 +108,13 @@ LINK32=link.exe
 # PROP Target_Dir ""
 # ADD BASE CPP   /D "WIN32" /D "_DEBUG" /D "_CONSOLE" /D "_MBCS"  /FD /GZ /c
 # ADD CPP /nologo  /D "WIN32"  /D "_DEBUG" /D "_CONSOLE" /D "_MBCS"  /FD /GZ /c
-# ADD CPP  /I "../../config\include" /I "../../dcmwlm\include" /I "../../ofstd\include" /I "../../dcmdata\include" /I "../../dcmnet\include" /I "../../../zlib-1.1.4\include" /I "../../dcmtls\include"   -D_REENTRANT -DWITH_LIBPNG -DWITH_LIBTIFF -DWITH_ZLIB /D "wlmscpfs_EXPORTS"
-# ADD CPP  
+# ADD CPP  /I "../../config\include" /I "../../dcmwlm\include" /I "../../ofstd\include" /I "../../dcmdata\include" /I "../../dcmnet\include" /I "../../../zlib-1.2.1\include" /I "../../dcmtls\include"   -D_REENTRANT -DWITH_LIBPNG -DWITH_LIBTIFF -DWITH_ZLIB /D "wlmscpfs_EXPORTS"
+# ADD CPP  /D "_MBCS"
 # ADD CPP /nologo /MTd /W3 /GX /Z7 /Od /GR- /YX -DCMAKE_INTDIR=\"Debug\" 
 # ADD BASE MTL /nologo /D "_DEBUG" /mktyplib203 /win32
 # ADD MTL /nologo /D "_DEBUG" /mktyplib203 /win32
 # ADD BASE RSC /l 0x409 /d "_DEBUG"
-# ADD RSC  /I "../../config\include" /I "../../dcmwlm\include" /I "../../ofstd\include" /I "../../dcmdata\include" /I "../../dcmnet\include" /I "../../../zlib-1.1.4\include" /I "../../dcmtls\include" /l 0x409 /d "_DEBUG"
+# ADD RSC  /I "../../config\include" /I "../../dcmwlm\include" /I "../../ofstd\include" /I "../../dcmdata\include" /I "../../dcmnet\include" /I "../../../zlib-1.2.1\include" /I "../../dcmtls\include" /l 0x409 /d "_DEBUG"
 BSC32=bscmake.exe
 # ADD BASE BSC32 /nologo
 # ADD BSC32 /nologo
@@ -128,7 +128,7 @@ LINK32=link.exe
 # ADD LINK32 /LIBPATH:../../dcmdata\$(INTDIR)  /LIBPATH:../../dcmdata\ 
 # ADD LINK32 /LIBPATH:../../dcmtls\$(INTDIR)  /LIBPATH:../../dcmtls\ 
 # ADD LINK32 /LIBPATH:../../dcmnet\$(INTDIR)  /LIBPATH:../../dcmnet\ 
-# ADD LINK32 /LIBPATH:../../../zlib-1.1.4\lib\$(INTDIR)  /LIBPATH:../../../zlib-1.1.4\lib\ 
+# ADD LINK32 /LIBPATH:../../../zlib-1.2.1\lib\$(INTDIR)  /LIBPATH:../../../zlib-1.2.1\lib\ 
 # ADD LINK32 /LIBPATH:../../ofstd\libsrc\$(INTDIR)  /LIBPATH:../../ofstd\libsrc\ 
 # ADD LINK32 /LIBPATH:../../dcmdata\libsrc\$(INTDIR)  /LIBPATH:../../dcmdata\libsrc\ 
 # ADD LINK32 /LIBPATH:../../dcmtls\libsrc\$(INTDIR)  /LIBPATH:../../dcmtls\libsrc\ 
@@ -158,12 +158,12 @@ LINK32=link.exe
 # PROP Intermediate_Dir "MinSizeRel"
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo  /D "WIN32" /D "NDEBUG" /D "_CONSOLE" /D "_MBCS"  /FD /c
-# ADD CPP /nologo  /D "WIN32"  /I "../../config\include" /I "../../dcmwlm\include" /I "../../ofstd\include" /I "../../dcmdata\include" /I "../../dcmnet\include" /I "../../../zlib-1.1.4\include" /I "../../dcmtls\include"   -D_REENTRANT -DWITH_LIBPNG -DWITH_LIBTIFF -DWITH_ZLIB /D "NDEBUG" /D "_CONSOLE" /D "_MBCS"  /FD /c
-# ADD CPP  /I "../../config\include" /I "../../dcmwlm\include" /I "../../ofstd\include" /I "../../dcmdata\include" /I "../../dcmnet\include" /I "../../../zlib-1.1.4\include" /I "../../dcmtls\include"   -D_REENTRANT -DWITH_LIBPNG -DWITH_LIBTIFF -DWITH_ZLIB /D "wlmscpfs_EXPORTS"
-# ADD CPP  
+# ADD CPP /nologo  /D "WIN32"  /I "../../config\include" /I "../../dcmwlm\include" /I "../../ofstd\include" /I "../../dcmdata\include" /I "../../dcmnet\include" /I "../../../zlib-1.2.1\include" /I "../../dcmtls\include"   -D_REENTRANT -DWITH_LIBPNG -DWITH_LIBTIFF -DWITH_ZLIB /D "NDEBUG" /D "_CONSOLE" /D "_MBCS"  /FD /c
+# ADD CPP  /I "../../config\include" /I "../../dcmwlm\include" /I "../../ofstd\include" /I "../../dcmdata\include" /I "../../dcmnet\include" /I "../../../zlib-1.2.1\include" /I "../../dcmtls\include"   -D_REENTRANT -DWITH_LIBPNG -DWITH_LIBTIFF -DWITH_ZLIB /D "wlmscpfs_EXPORTS"
+# ADD CPP  /D "_MBCS"
 # ADD CPP /MD /O1 -DCMAKE_INTDIR=\"MinSizeRel\" 
 # ADD BASE RSC /l 0x409 /d "NDEBUG"
-# ADD RSC  /I "../../config\include" /I "../../dcmwlm\include" /I "../../ofstd\include" /I "../../dcmdata\include" /I "../../dcmnet\include" /I "../../../zlib-1.1.4\include" /I "../../dcmtls\include" /l 0x409 /d "NDEBUG"
+# ADD RSC  /I "../../config\include" /I "../../dcmwlm\include" /I "../../ofstd\include" /I "../../dcmdata\include" /I "../../dcmnet\include" /I "../../../zlib-1.2.1\include" /I "../../dcmtls\include" /l 0x409 /d "NDEBUG"
 BSC32=bscmake.exe
 # ADD BASE BSC32 /nologo
 # ADD BSC32 /nologo
@@ -177,7 +177,7 @@ LINK32=link.exe
 # ADD LINK32 /LIBPATH:../../dcmdata\$(INTDIR)  /LIBPATH:../../dcmdata\ 
 # ADD LINK32 /LIBPATH:../../dcmtls\$(INTDIR)  /LIBPATH:../../dcmtls\ 
 # ADD LINK32 /LIBPATH:../../dcmnet\$(INTDIR)  /LIBPATH:../../dcmnet\ 
-# ADD LINK32 /LIBPATH:../../../zlib-1.1.4\lib\$(INTDIR)  /LIBPATH:../../../zlib-1.1.4\lib\ 
+# ADD LINK32 /LIBPATH:../../../zlib-1.2.1\lib\$(INTDIR)  /LIBPATH:../../../zlib-1.2.1\lib\ 
 # ADD LINK32 /LIBPATH:../../ofstd\libsrc\$(INTDIR)  /LIBPATH:../../ofstd\libsrc\ 
 # ADD LINK32 /LIBPATH:../../dcmdata\libsrc\$(INTDIR)  /LIBPATH:../../dcmdata\libsrc\ 
 # ADD LINK32 /LIBPATH:../../dcmtls\libsrc\$(INTDIR)  /LIBPATH:../../dcmtls\libsrc\ 
@@ -209,11 +209,11 @@ LINK32=link.exe
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo  /D "WIN32" /D "NDEBUG" /D "_CONSOLE" /D "_MBCS"  /FD /c
 # ADD CPP /nologo  /D "WIN32"  /D "NDEBUG" /D "_CONSOLE" /D "_MBCS"  /FD /c
-# ADD CPP  /I "../../config\include" /I "../../dcmwlm\include" /I "../../ofstd\include" /I "../../dcmdata\include" /I "../../dcmnet\include" /I "../../../zlib-1.1.4\include" /I "../../dcmtls\include"   -D_REENTRANT -DWITH_LIBPNG -DWITH_LIBTIFF -DWITH_ZLIB /D "wlmscpfs_EXPORTS"
-# ADD CPP  
+# ADD CPP  /I "../../config\include" /I "../../dcmwlm\include" /I "../../ofstd\include" /I "../../dcmdata\include" /I "../../dcmnet\include" /I "../../../zlib-1.2.1\include" /I "../../dcmtls\include"   -D_REENTRANT -DWITH_LIBPNG -DWITH_LIBTIFF -DWITH_ZLIB /D "wlmscpfs_EXPORTS"
+# ADD CPP  /D "_MBCS"
 # ADD CPP /MD /Zi /O2 -DCMAKE_INTDIR=\"RelWithDebInfo\" 
 # ADD BASE RSC /l 0x409 /d "NDEBUG"
-# ADD RSC  /I "../../config\include" /I "../../dcmwlm\include" /I "../../ofstd\include" /I "../../dcmdata\include" /I "../../dcmnet\include" /I "../../../zlib-1.1.4\include" /I "../../dcmtls\include" /l 0x409 /d "NDEBUG"
+# ADD RSC  /I "../../config\include" /I "../../dcmwlm\include" /I "../../ofstd\include" /I "../../dcmdata\include" /I "../../dcmnet\include" /I "../../../zlib-1.2.1\include" /I "../../dcmtls\include" /l 0x409 /d "NDEBUG"
 BSC32=bscmake.exe
 # ADD BASE BSC32 /nologo
 # ADD BSC32 /nologo
@@ -227,7 +227,7 @@ LINK32=link.exe
 # ADD LINK32 /LIBPATH:../../dcmdata\$(INTDIR)  /LIBPATH:../../dcmdata\ 
 # ADD LINK32 /LIBPATH:../../dcmtls\$(INTDIR)  /LIBPATH:../../dcmtls\ 
 # ADD LINK32 /LIBPATH:../../dcmnet\$(INTDIR)  /LIBPATH:../../dcmnet\ 
-# ADD LINK32 /LIBPATH:../../../zlib-1.1.4\lib\$(INTDIR)  /LIBPATH:../../../zlib-1.1.4\lib\ 
+# ADD LINK32 /LIBPATH:../../../zlib-1.2.1\lib\$(INTDIR)  /LIBPATH:../../../zlib-1.2.1\lib\ 
 # ADD LINK32 /LIBPATH:../../ofstd\libsrc\$(INTDIR)  /LIBPATH:../../ofstd\libsrc\ 
 # ADD LINK32 /LIBPATH:../../dcmdata\libsrc\$(INTDIR)  /LIBPATH:../../dcmdata\libsrc\ 
 # ADD LINK32 /LIBPATH:../../dcmtls\libsrc\$(INTDIR)  /LIBPATH:../../dcmtls\libsrc\ 
@@ -257,12 +257,48 @@ LINK32=link.exe
 # PROP Default_Filter ""
 # Begin Source File
 
-SOURCE=../../dcmwlm\apps\wlcefs.cxx
+SOURCE=../../dcmwlm\apps\wlmscpfs.cxx
+
+!IF  "$(CFG)" == "wlmscpfs - Win32 Release"
+
+# ADD CPP  /TP 
+
+!ELSEIF  "$(CFG)" == "wlmscpfs - Win32 Debug"
+
+# ADD CPP  /TP 
+
+!ELSEIF  "$(CFG)" == "wlmscpfs - Win32 MinSizeRel"
+
+# ADD CPP  /TP 
+
+!ELSEIF  "$(CFG)" == "wlmscpfs - Win32 RelWithDebInfo"
+
+# ADD CPP  /TP 
+
+!ENDIF
 
 # End Source File
 # Begin Source File
 
-SOURCE=../../dcmwlm\apps\wlmscpfs.cxx
+SOURCE=../../dcmwlm\apps\wlcefs.cxx
+
+!IF  "$(CFG)" == "wlmscpfs - Win32 Release"
+
+# ADD CPP  /TP 
+
+!ELSEIF  "$(CFG)" == "wlmscpfs - Win32 Debug"
+
+# ADD CPP  /TP 
+
+!ELSEIF  "$(CFG)" == "wlmscpfs - Win32 MinSizeRel"
+
+# ADD CPP  /TP 
+
+!ELSEIF  "$(CFG)" == "wlmscpfs - Win32 RelWithDebInfo"
+
+# ADD CPP  /TP 
+
+!ENDIF
 
 # End Source File
 # End Group

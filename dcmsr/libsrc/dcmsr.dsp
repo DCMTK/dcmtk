@@ -10,7 +10,7 @@
 
 # variables to REPLACE
 # 
-#  /I "../../config\include" /I "../../dcmsr\include" /I "../../ofstd\include" /I "../../dcmdata\include" /I "../../../zlib-1.1.4\include" == include path
+#  /I "../../config\include" /I "../../dcmsr\include" /I "../../ofstd\include" /I "../../dcmdata\include" /I "../../../zlib-1.2.1\include" == include path
 #   -D_REENTRANT -DWITH_LIBPNG -DWITH_LIBTIFF -DWITH_ZLIB == compiler defines
 #  == override in output directory
 # dcmsr  == name of output library
@@ -55,11 +55,11 @@ RSC=rc.exe
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /D "WIN32" /D "NDEBUG" /D "_MBCS" /D "_LIB"  /FD /c
 # ADD CPP /nologo /D "NDEBUG" /D "WIN32" /D "_MBCS" /D "_LIB"  /FD /c
-# ADD CPP  /I "../../config\include" /I "../../dcmsr\include" /I "../../ofstd\include" /I "../../dcmdata\include" /I "../../../zlib-1.1.4\include"   -D_REENTRANT -DWITH_LIBPNG -DWITH_LIBTIFF -DWITH_ZLIB /D "dcmsr_EXPORTS"
-# ADD CPP  
+# ADD CPP  /I "../../config\include" /I "../../dcmsr\include" /I "../../ofstd\include" /I "../../dcmdata\include" /I "../../../zlib-1.2.1\include"   -D_REENTRANT -DWITH_LIBPNG -DWITH_LIBTIFF -DWITH_ZLIB /D "dcmsr_EXPORTS"
+# ADD CPP  /D "_MBCS"
 # ADD CPP /nologo /MT /W3 /GX /O2 /GR- /YX -DCMAKE_INTDIR=\"Release\" 
 # ADD BASE RSC /l 0x409 /d "NDEBUG"
-# ADD RSC  /I "../../config\include" /I "../../dcmsr\include" /I "../../ofstd\include" /I "../../dcmdata\include" /I "../../../zlib-1.1.4\include" /l 0x409 /d "NDEBUG"
+# ADD RSC  /I "../../config\include" /I "../../dcmsr\include" /I "../../ofstd\include" /I "../../dcmdata\include" /I "../../../zlib-1.2.1\include" /l 0x409 /d "NDEBUG"
 BSC32=bscmake.exe
 # ADD BASE BSC32 /nologo
 # ADD BSC32 /nologo
@@ -83,11 +83,11 @@ LIB32=link.exe -lib
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /D "WIN32" /D "_DEBUG" /D "_MBCS" /D "_LIB"  /FD /c
 # ADD CPP /nologo /D "_DEBUG" /D "WIN32" /D "_MBCS" /D "_LIB"  /FD /GZ /c
-# ADD CPP  /I "../../config\include" /I "../../dcmsr\include" /I "../../ofstd\include" /I "../../dcmdata\include" /I "../../../zlib-1.1.4\include"   -D_REENTRANT -DWITH_LIBPNG -DWITH_LIBTIFF -DWITH_ZLIB /D "dcmsr_EXPORTS"
-# ADD CPP  
+# ADD CPP  /I "../../config\include" /I "../../dcmsr\include" /I "../../ofstd\include" /I "../../dcmdata\include" /I "../../../zlib-1.2.1\include"   -D_REENTRANT -DWITH_LIBPNG -DWITH_LIBTIFF -DWITH_ZLIB /D "dcmsr_EXPORTS"
+# ADD CPP  /D "_MBCS"
 # ADD CPP /nologo /MTd /W3 /GX /Z7 /Od /GR- /YX -DCMAKE_INTDIR=\"Debug\" 
 # ADD BASE RSC /l 0x409 /d "_DEBUG"
-# ADD RSC  /I "../../config\include" /I "../../dcmsr\include" /I "../../ofstd\include" /I "../../dcmdata\include" /I "../../../zlib-1.1.4\include" /l 0x409 /d "_DEBUG"
+# ADD RSC  /I "../../config\include" /I "../../dcmsr\include" /I "../../ofstd\include" /I "../../dcmdata\include" /I "../../../zlib-1.2.1\include" /l 0x409 /d "_DEBUG"
 BSC32=bscmake.exe
 # ADD BASE BSC32 /nologo
 # ADD BSC32 /nologo
@@ -111,11 +111,11 @@ LIB32=link.exe -lib
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "_ATL_DLL" /FD /c
 # ADD CPP /nologo /D "NDEBUG" /D "_MBCS" /D "_ATL_DLL"  /D "WIN32" /D "_WINDOWS" /D "_USRDLL" /FD /c
-# ADD CPP  /I "../../config\include" /I "../../dcmsr\include" /I "../../ofstd\include" /I "../../dcmdata\include" /I "../../../zlib-1.1.4\include"   -D_REENTRANT -DWITH_LIBPNG -DWITH_LIBTIFF -DWITH_ZLIB /D "dcmsr_EXPORTS"
-# ADD CPP  
+# ADD CPP  /I "../../config\include" /I "../../dcmsr\include" /I "../../ofstd\include" /I "../../dcmdata\include" /I "../../../zlib-1.2.1\include"   -D_REENTRANT -DWITH_LIBPNG -DWITH_LIBTIFF -DWITH_ZLIB /D "dcmsr_EXPORTS"
+# ADD CPP  /D "_MBCS"
 # ADD CPP /MD /O1 -DCMAKE_INTDIR=\"MinSizeRel\" 
 # ADD BASE RSC /l 0x409 /d "NDEBUG"
-# ADD RSC  /I "../../config\include" /I "../../dcmsr\include" /I "../../ofstd\include" /I "../../dcmdata\include" /I "../../../zlib-1.1.4\include" /l 0x409 /d "NDEBUG"
+# ADD RSC  /I "../../config\include" /I "../../dcmsr\include" /I "../../ofstd\include" /I "../../dcmdata\include" /I "../../../zlib-1.2.1\include" /l 0x409 /d "NDEBUG"
 BSC32=bscmake.exe
 # ADD BASE BSC32 /nologo
 # ADD BSC32 /nologo
@@ -139,11 +139,11 @@ LIB32=link.exe -lib
 # PROP Target_Dir ""
 # ADD BASE CPP /nologo /D "WIN32" /D "NDEBUG" /D "_MBCS" /D "_LIB"  /FD /c
 # ADD CPP /nologo /D "NDEBUG" /D "WIN32" /D "_MBCS" /D "_LIB"  /FD /c
-# ADD CPP  /I "../../config\include" /I "../../dcmsr\include" /I "../../ofstd\include" /I "../../dcmdata\include" /I "../../../zlib-1.1.4\include"   -D_REENTRANT -DWITH_LIBPNG -DWITH_LIBTIFF -DWITH_ZLIB /D "dcmsr_EXPORTS"
-# ADD CPP  
+# ADD CPP  /I "../../config\include" /I "../../dcmsr\include" /I "../../ofstd\include" /I "../../dcmdata\include" /I "../../../zlib-1.2.1\include"   -D_REENTRANT -DWITH_LIBPNG -DWITH_LIBTIFF -DWITH_ZLIB /D "dcmsr_EXPORTS"
+# ADD CPP  /D "_MBCS"
 # ADD CPP /MD /Zi /O2 -DCMAKE_INTDIR=\"RelWithDebInfo\" 
 # ADD BASE RSC /l 0x409 /d "NDEBUG"
-# ADD RSC  /I "../../config\include" /I "../../dcmsr\include" /I "../../ofstd\include" /I "../../dcmdata\include" /I "../../../zlib-1.1.4\include" /l 0x409 /d "NDEBUG"
+# ADD RSC  /I "../../config\include" /I "../../dcmsr\include" /I "../../ofstd\include" /I "../../dcmdata\include" /I "../../../zlib-1.2.1\include" /l 0x409 /d "NDEBUG"
 BSC32=bscmake.exe
 # ADD BASE BSC32 /nologo
 # ADD BSC32 /nologo
@@ -166,242 +166,1106 @@ LIB32=link.exe -lib
 # PROP Default_Filter ""
 # Begin Source File
 
-SOURCE=../../dcmsr\libsrc\dsrbascc.cxx
-
-# End Source File
-# Begin Source File
-
-SOURCE=../../dcmsr\libsrc\dsrchecc.cxx
-
-# End Source File
-# Begin Source File
-
 SOURCE=../../dcmsr\libsrc\dsrcitem.cxx
+
+!IF  "$(CFG)" == "dcmsr - Win32 Release"
+
+# ADD CPP  /TP 
+
+!ELSEIF  "$(CFG)" == "dcmsr - Win32 Debug"
+
+# ADD CPP  /TP 
+
+!ELSEIF  "$(CFG)" == "dcmsr - Win32 MinSizeRel"
+
+# ADD CPP  /TP 
+
+!ELSEIF  "$(CFG)" == "dcmsr - Win32 RelWithDebInfo"
+
+# ADD CPP  /TP 
+
+!ENDIF
 
 # End Source File
 # Begin Source File
 
 SOURCE=../../dcmsr\libsrc\dsrcodtn.cxx
 
+!IF  "$(CFG)" == "dcmsr - Win32 Release"
+
+# ADD CPP  /TP 
+
+!ELSEIF  "$(CFG)" == "dcmsr - Win32 Debug"
+
+# ADD CPP  /TP 
+
+!ELSEIF  "$(CFG)" == "dcmsr - Win32 MinSizeRel"
+
+# ADD CPP  /TP 
+
+!ELSEIF  "$(CFG)" == "dcmsr - Win32 RelWithDebInfo"
+
+# ADD CPP  /TP 
+
+!ENDIF
+
 # End Source File
 # Begin Source File
 
 SOURCE=../../dcmsr\libsrc\dsrcodvl.cxx
 
-# End Source File
-# Begin Source File
+!IF  "$(CFG)" == "dcmsr - Win32 Release"
 
-SOURCE=../../dcmsr\libsrc\dsrcomcc.cxx
+# ADD CPP  /TP 
+
+!ELSEIF  "$(CFG)" == "dcmsr - Win32 Debug"
+
+# ADD CPP  /TP 
+
+!ELSEIF  "$(CFG)" == "dcmsr - Win32 MinSizeRel"
+
+# ADD CPP  /TP 
+
+!ELSEIF  "$(CFG)" == "dcmsr - Win32 RelWithDebInfo"
+
+# ADD CPP  /TP 
+
+!ENDIF
 
 # End Source File
 # Begin Source File
 
 SOURCE=../../dcmsr\libsrc\dsrcomtn.cxx
 
+!IF  "$(CFG)" == "dcmsr - Win32 Release"
+
+# ADD CPP  /TP 
+
+!ELSEIF  "$(CFG)" == "dcmsr - Win32 Debug"
+
+# ADD CPP  /TP 
+
+!ELSEIF  "$(CFG)" == "dcmsr - Win32 MinSizeRel"
+
+# ADD CPP  /TP 
+
+!ELSEIF  "$(CFG)" == "dcmsr - Win32 RelWithDebInfo"
+
+# ADD CPP  /TP 
+
+!ENDIF
+
 # End Source File
 # Begin Source File
 
 SOURCE=../../dcmsr\libsrc\dsrcomvl.cxx
+
+!IF  "$(CFG)" == "dcmsr - Win32 Release"
+
+# ADD CPP  /TP 
+
+!ELSEIF  "$(CFG)" == "dcmsr - Win32 Debug"
+
+# ADD CPP  /TP 
+
+!ELSEIF  "$(CFG)" == "dcmsr - Win32 MinSizeRel"
+
+# ADD CPP  /TP 
+
+!ELSEIF  "$(CFG)" == "dcmsr - Win32 RelWithDebInfo"
+
+# ADD CPP  /TP 
+
+!ENDIF
 
 # End Source File
 # Begin Source File
 
 SOURCE=../../dcmsr\libsrc\dsrcontn.cxx
 
+!IF  "$(CFG)" == "dcmsr - Win32 Release"
+
+# ADD CPP  /TP 
+
+!ELSEIF  "$(CFG)" == "dcmsr - Win32 Debug"
+
+# ADD CPP  /TP 
+
+!ELSEIF  "$(CFG)" == "dcmsr - Win32 MinSizeRel"
+
+# ADD CPP  /TP 
+
+!ELSEIF  "$(CFG)" == "dcmsr - Win32 RelWithDebInfo"
+
+# ADD CPP  /TP 
+
+!ENDIF
+
 # End Source File
 # Begin Source File
 
 SOURCE=../../dcmsr\libsrc\dsrcsidl.cxx
+
+!IF  "$(CFG)" == "dcmsr - Win32 Release"
+
+# ADD CPP  /TP 
+
+!ELSEIF  "$(CFG)" == "dcmsr - Win32 Debug"
+
+# ADD CPP  /TP 
+
+!ELSEIF  "$(CFG)" == "dcmsr - Win32 MinSizeRel"
+
+# ADD CPP  /TP 
+
+!ELSEIF  "$(CFG)" == "dcmsr - Win32 RelWithDebInfo"
+
+# ADD CPP  /TP 
+
+!ENDIF
 
 # End Source File
 # Begin Source File
 
 SOURCE=../../dcmsr\libsrc\dsrdattn.cxx
 
+!IF  "$(CFG)" == "dcmsr - Win32 Release"
+
+# ADD CPP  /TP 
+
+!ELSEIF  "$(CFG)" == "dcmsr - Win32 Debug"
+
+# ADD CPP  /TP 
+
+!ELSEIF  "$(CFG)" == "dcmsr - Win32 MinSizeRel"
+
+# ADD CPP  /TP 
+
+!ELSEIF  "$(CFG)" == "dcmsr - Win32 RelWithDebInfo"
+
+# ADD CPP  /TP 
+
+!ENDIF
+
 # End Source File
 # Begin Source File
 
 SOURCE=../../dcmsr\libsrc\dsrdoc.cxx
+
+!IF  "$(CFG)" == "dcmsr - Win32 Release"
+
+# ADD CPP  /TP 
+
+!ELSEIF  "$(CFG)" == "dcmsr - Win32 Debug"
+
+# ADD CPP  /TP 
+
+!ELSEIF  "$(CFG)" == "dcmsr - Win32 MinSizeRel"
+
+# ADD CPP  /TP 
+
+!ELSEIF  "$(CFG)" == "dcmsr - Win32 RelWithDebInfo"
+
+# ADD CPP  /TP 
+
+!ENDIF
 
 # End Source File
 # Begin Source File
 
 SOURCE=../../dcmsr\libsrc\dsrdoctn.cxx
 
+!IF  "$(CFG)" == "dcmsr - Win32 Release"
+
+# ADD CPP  /TP 
+
+!ELSEIF  "$(CFG)" == "dcmsr - Win32 Debug"
+
+# ADD CPP  /TP 
+
+!ELSEIF  "$(CFG)" == "dcmsr - Win32 MinSizeRel"
+
+# ADD CPP  /TP 
+
+!ELSEIF  "$(CFG)" == "dcmsr - Win32 RelWithDebInfo"
+
+# ADD CPP  /TP 
+
+!ENDIF
+
 # End Source File
 # Begin Source File
 
 SOURCE=../../dcmsr\libsrc\dsrdoctr.cxx
+
+!IF  "$(CFG)" == "dcmsr - Win32 Release"
+
+# ADD CPP  /TP 
+
+!ELSEIF  "$(CFG)" == "dcmsr - Win32 Debug"
+
+# ADD CPP  /TP 
+
+!ELSEIF  "$(CFG)" == "dcmsr - Win32 MinSizeRel"
+
+# ADD CPP  /TP 
+
+!ELSEIF  "$(CFG)" == "dcmsr - Win32 RelWithDebInfo"
+
+# ADD CPP  /TP 
+
+!ENDIF
 
 # End Source File
 # Begin Source File
 
 SOURCE=../../dcmsr\libsrc\dsrdtitn.cxx
 
-# End Source File
-# Begin Source File
+!IF  "$(CFG)" == "dcmsr - Win32 Release"
 
-SOURCE=../../dcmsr\libsrc\dsrenhcc.cxx
+# ADD CPP  /TP 
+
+!ELSEIF  "$(CFG)" == "dcmsr - Win32 Debug"
+
+# ADD CPP  /TP 
+
+!ELSEIF  "$(CFG)" == "dcmsr - Win32 MinSizeRel"
+
+# ADD CPP  /TP 
+
+!ELSEIF  "$(CFG)" == "dcmsr - Win32 RelWithDebInfo"
+
+# ADD CPP  /TP 
+
+!ENDIF
 
 # End Source File
 # Begin Source File
 
 SOURCE=../../dcmsr\libsrc\dsrimgfr.cxx
 
+!IF  "$(CFG)" == "dcmsr - Win32 Release"
+
+# ADD CPP  /TP 
+
+!ELSEIF  "$(CFG)" == "dcmsr - Win32 Debug"
+
+# ADD CPP  /TP 
+
+!ELSEIF  "$(CFG)" == "dcmsr - Win32 MinSizeRel"
+
+# ADD CPP  /TP 
+
+!ELSEIF  "$(CFG)" == "dcmsr - Win32 RelWithDebInfo"
+
+# ADD CPP  /TP 
+
+!ENDIF
+
 # End Source File
 # Begin Source File
 
 SOURCE=../../dcmsr\libsrc\dsrimgtn.cxx
+
+!IF  "$(CFG)" == "dcmsr - Win32 Release"
+
+# ADD CPP  /TP 
+
+!ELSEIF  "$(CFG)" == "dcmsr - Win32 Debug"
+
+# ADD CPP  /TP 
+
+!ELSEIF  "$(CFG)" == "dcmsr - Win32 MinSizeRel"
+
+# ADD CPP  /TP 
+
+!ELSEIF  "$(CFG)" == "dcmsr - Win32 RelWithDebInfo"
+
+# ADD CPP  /TP 
+
+!ENDIF
 
 # End Source File
 # Begin Source File
 
 SOURCE=../../dcmsr\libsrc\dsrimgvl.cxx
 
-# End Source File
-# Begin Source File
+!IF  "$(CFG)" == "dcmsr - Win32 Release"
 
-SOURCE=../../dcmsr\libsrc\dsriodcc.cxx
+# ADD CPP  /TP 
 
-# End Source File
-# Begin Source File
+!ELSEIF  "$(CFG)" == "dcmsr - Win32 Debug"
 
-SOURCE=../../dcmsr\libsrc\dsrkeycc.cxx
+# ADD CPP  /TP 
 
-# End Source File
-# Begin Source File
+!ELSEIF  "$(CFG)" == "dcmsr - Win32 MinSizeRel"
 
-SOURCE=../../dcmsr\libsrc\dsrmamcc.cxx
+# ADD CPP  /TP 
+
+!ELSEIF  "$(CFG)" == "dcmsr - Win32 RelWithDebInfo"
+
+# ADD CPP  /TP 
+
+!ENDIF
 
 # End Source File
 # Begin Source File
 
 SOURCE=../../dcmsr\libsrc\dsrnumtn.cxx
 
+!IF  "$(CFG)" == "dcmsr - Win32 Release"
+
+# ADD CPP  /TP 
+
+!ELSEIF  "$(CFG)" == "dcmsr - Win32 Debug"
+
+# ADD CPP  /TP 
+
+!ELSEIF  "$(CFG)" == "dcmsr - Win32 MinSizeRel"
+
+# ADD CPP  /TP 
+
+!ELSEIF  "$(CFG)" == "dcmsr - Win32 RelWithDebInfo"
+
+# ADD CPP  /TP 
+
+!ENDIF
+
 # End Source File
 # Begin Source File
 
 SOURCE=../../dcmsr\libsrc\dsrnumvl.cxx
+
+!IF  "$(CFG)" == "dcmsr - Win32 Release"
+
+# ADD CPP  /TP 
+
+!ELSEIF  "$(CFG)" == "dcmsr - Win32 Debug"
+
+# ADD CPP  /TP 
+
+!ELSEIF  "$(CFG)" == "dcmsr - Win32 MinSizeRel"
+
+# ADD CPP  /TP 
+
+!ELSEIF  "$(CFG)" == "dcmsr - Win32 RelWithDebInfo"
+
+# ADD CPP  /TP 
+
+!ENDIF
 
 # End Source File
 # Begin Source File
 
 SOURCE=../../dcmsr\libsrc\dsrpnmtn.cxx
 
-# End Source File
-# Begin Source File
+!IF  "$(CFG)" == "dcmsr - Win32 Release"
 
-SOURCE=../../dcmsr\libsrc\dsrprocc.cxx
+# ADD CPP  /TP 
+
+!ELSEIF  "$(CFG)" == "dcmsr - Win32 Debug"
+
+# ADD CPP  /TP 
+
+!ELSEIF  "$(CFG)" == "dcmsr - Win32 MinSizeRel"
+
+# ADD CPP  /TP 
+
+!ELSEIF  "$(CFG)" == "dcmsr - Win32 RelWithDebInfo"
+
+# ADD CPP  /TP 
+
+!ENDIF
 
 # End Source File
 # Begin Source File
 
 SOURCE=../../dcmsr\libsrc\dsrreftn.cxx
 
+!IF  "$(CFG)" == "dcmsr - Win32 Release"
+
+# ADD CPP  /TP 
+
+!ELSEIF  "$(CFG)" == "dcmsr - Win32 Debug"
+
+# ADD CPP  /TP 
+
+!ELSEIF  "$(CFG)" == "dcmsr - Win32 MinSizeRel"
+
+# ADD CPP  /TP 
+
+!ELSEIF  "$(CFG)" == "dcmsr - Win32 RelWithDebInfo"
+
+# ADD CPP  /TP 
+
+!ENDIF
+
 # End Source File
 # Begin Source File
 
 SOURCE=../../dcmsr\libsrc\dsrscogr.cxx
+
+!IF  "$(CFG)" == "dcmsr - Win32 Release"
+
+# ADD CPP  /TP 
+
+!ELSEIF  "$(CFG)" == "dcmsr - Win32 Debug"
+
+# ADD CPP  /TP 
+
+!ELSEIF  "$(CFG)" == "dcmsr - Win32 MinSizeRel"
+
+# ADD CPP  /TP 
+
+!ELSEIF  "$(CFG)" == "dcmsr - Win32 RelWithDebInfo"
+
+# ADD CPP  /TP 
+
+!ENDIF
 
 # End Source File
 # Begin Source File
 
 SOURCE=../../dcmsr\libsrc\dsrscotn.cxx
 
+!IF  "$(CFG)" == "dcmsr - Win32 Release"
+
+# ADD CPP  /TP 
+
+!ELSEIF  "$(CFG)" == "dcmsr - Win32 Debug"
+
+# ADD CPP  /TP 
+
+!ELSEIF  "$(CFG)" == "dcmsr - Win32 MinSizeRel"
+
+# ADD CPP  /TP 
+
+!ELSEIF  "$(CFG)" == "dcmsr - Win32 RelWithDebInfo"
+
+# ADD CPP  /TP 
+
+!ENDIF
+
 # End Source File
 # Begin Source File
 
 SOURCE=../../dcmsr\libsrc\dsrscovl.cxx
+
+!IF  "$(CFG)" == "dcmsr - Win32 Release"
+
+# ADD CPP  /TP 
+
+!ELSEIF  "$(CFG)" == "dcmsr - Win32 Debug"
+
+# ADD CPP  /TP 
+
+!ELSEIF  "$(CFG)" == "dcmsr - Win32 MinSizeRel"
+
+# ADD CPP  /TP 
+
+!ELSEIF  "$(CFG)" == "dcmsr - Win32 RelWithDebInfo"
+
+# ADD CPP  /TP 
+
+!ENDIF
 
 # End Source File
 # Begin Source File
 
 SOURCE=../../dcmsr\libsrc\dsrsoprf.cxx
 
+!IF  "$(CFG)" == "dcmsr - Win32 Release"
+
+# ADD CPP  /TP 
+
+!ELSEIF  "$(CFG)" == "dcmsr - Win32 Debug"
+
+# ADD CPP  /TP 
+
+!ELSEIF  "$(CFG)" == "dcmsr - Win32 MinSizeRel"
+
+# ADD CPP  /TP 
+
+!ELSEIF  "$(CFG)" == "dcmsr - Win32 RelWithDebInfo"
+
+# ADD CPP  /TP 
+
+!ENDIF
+
 # End Source File
 # Begin Source File
 
 SOURCE=../../dcmsr\libsrc\dsrstrvl.cxx
+
+!IF  "$(CFG)" == "dcmsr - Win32 Release"
+
+# ADD CPP  /TP 
+
+!ELSEIF  "$(CFG)" == "dcmsr - Win32 Debug"
+
+# ADD CPP  /TP 
+
+!ELSEIF  "$(CFG)" == "dcmsr - Win32 MinSizeRel"
+
+# ADD CPP  /TP 
+
+!ELSEIF  "$(CFG)" == "dcmsr - Win32 RelWithDebInfo"
+
+# ADD CPP  /TP 
+
+!ENDIF
 
 # End Source File
 # Begin Source File
 
 SOURCE=../../dcmsr\libsrc\dsrtcodt.cxx
 
+!IF  "$(CFG)" == "dcmsr - Win32 Release"
+
+# ADD CPP  /TP 
+
+!ELSEIF  "$(CFG)" == "dcmsr - Win32 Debug"
+
+# ADD CPP  /TP 
+
+!ELSEIF  "$(CFG)" == "dcmsr - Win32 MinSizeRel"
+
+# ADD CPP  /TP 
+
+!ELSEIF  "$(CFG)" == "dcmsr - Win32 RelWithDebInfo"
+
+# ADD CPP  /TP 
+
+!ENDIF
+
 # End Source File
 # Begin Source File
 
 SOURCE=../../dcmsr\libsrc\dsrtcosp.cxx
+
+!IF  "$(CFG)" == "dcmsr - Win32 Release"
+
+# ADD CPP  /TP 
+
+!ELSEIF  "$(CFG)" == "dcmsr - Win32 Debug"
+
+# ADD CPP  /TP 
+
+!ELSEIF  "$(CFG)" == "dcmsr - Win32 MinSizeRel"
+
+# ADD CPP  /TP 
+
+!ELSEIF  "$(CFG)" == "dcmsr - Win32 RelWithDebInfo"
+
+# ADD CPP  /TP 
+
+!ENDIF
 
 # End Source File
 # Begin Source File
 
 SOURCE=../../dcmsr\libsrc\dsrtcotn.cxx
 
+!IF  "$(CFG)" == "dcmsr - Win32 Release"
+
+# ADD CPP  /TP 
+
+!ELSEIF  "$(CFG)" == "dcmsr - Win32 Debug"
+
+# ADD CPP  /TP 
+
+!ELSEIF  "$(CFG)" == "dcmsr - Win32 MinSizeRel"
+
+# ADD CPP  /TP 
+
+!ELSEIF  "$(CFG)" == "dcmsr - Win32 RelWithDebInfo"
+
+# ADD CPP  /TP 
+
+!ENDIF
+
 # End Source File
 # Begin Source File
 
 SOURCE=../../dcmsr\libsrc\dsrtcoto.cxx
+
+!IF  "$(CFG)" == "dcmsr - Win32 Release"
+
+# ADD CPP  /TP 
+
+!ELSEIF  "$(CFG)" == "dcmsr - Win32 Debug"
+
+# ADD CPP  /TP 
+
+!ELSEIF  "$(CFG)" == "dcmsr - Win32 MinSizeRel"
+
+# ADD CPP  /TP 
+
+!ELSEIF  "$(CFG)" == "dcmsr - Win32 RelWithDebInfo"
+
+# ADD CPP  /TP 
+
+!ENDIF
 
 # End Source File
 # Begin Source File
 
 SOURCE=../../dcmsr\libsrc\dsrtcovl.cxx
 
+!IF  "$(CFG)" == "dcmsr - Win32 Release"
+
+# ADD CPP  /TP 
+
+!ELSEIF  "$(CFG)" == "dcmsr - Win32 Debug"
+
+# ADD CPP  /TP 
+
+!ELSEIF  "$(CFG)" == "dcmsr - Win32 MinSizeRel"
+
+# ADD CPP  /TP 
+
+!ELSEIF  "$(CFG)" == "dcmsr - Win32 RelWithDebInfo"
+
+# ADD CPP  /TP 
+
+!ENDIF
+
 # End Source File
 # Begin Source File
 
 SOURCE=../../dcmsr\libsrc\dsrtextn.cxx
+
+!IF  "$(CFG)" == "dcmsr - Win32 Release"
+
+# ADD CPP  /TP 
+
+!ELSEIF  "$(CFG)" == "dcmsr - Win32 Debug"
+
+# ADD CPP  /TP 
+
+!ELSEIF  "$(CFG)" == "dcmsr - Win32 MinSizeRel"
+
+# ADD CPP  /TP 
+
+!ELSEIF  "$(CFG)" == "dcmsr - Win32 RelWithDebInfo"
+
+# ADD CPP  /TP 
+
+!ENDIF
 
 # End Source File
 # Begin Source File
 
 SOURCE=../../dcmsr\libsrc\dsrtimtn.cxx
 
+!IF  "$(CFG)" == "dcmsr - Win32 Release"
+
+# ADD CPP  /TP 
+
+!ELSEIF  "$(CFG)" == "dcmsr - Win32 Debug"
+
+# ADD CPP  /TP 
+
+!ELSEIF  "$(CFG)" == "dcmsr - Win32 MinSizeRel"
+
+# ADD CPP  /TP 
+
+!ELSEIF  "$(CFG)" == "dcmsr - Win32 RelWithDebInfo"
+
+# ADD CPP  /TP 
+
+!ENDIF
+
 # End Source File
 # Begin Source File
 
 SOURCE=../../dcmsr\libsrc\dsrtncsr.cxx
+
+!IF  "$(CFG)" == "dcmsr - Win32 Release"
+
+# ADD CPP  /TP 
+
+!ELSEIF  "$(CFG)" == "dcmsr - Win32 Debug"
+
+# ADD CPP  /TP 
+
+!ELSEIF  "$(CFG)" == "dcmsr - Win32 MinSizeRel"
+
+# ADD CPP  /TP 
+
+!ELSEIF  "$(CFG)" == "dcmsr - Win32 RelWithDebInfo"
+
+# ADD CPP  /TP 
+
+!ENDIF
 
 # End Source File
 # Begin Source File
 
 SOURCE=../../dcmsr\libsrc\dsrtree.cxx
 
+!IF  "$(CFG)" == "dcmsr - Win32 Release"
+
+# ADD CPP  /TP 
+
+!ELSEIF  "$(CFG)" == "dcmsr - Win32 Debug"
+
+# ADD CPP  /TP 
+
+!ELSEIF  "$(CFG)" == "dcmsr - Win32 MinSizeRel"
+
+# ADD CPP  /TP 
+
+!ELSEIF  "$(CFG)" == "dcmsr - Win32 RelWithDebInfo"
+
+# ADD CPP  /TP 
+
+!ENDIF
+
 # End Source File
 # Begin Source File
 
 SOURCE=../../dcmsr\libsrc\dsrtypes.cxx
+
+!IF  "$(CFG)" == "dcmsr - Win32 Release"
+
+# ADD CPP  /TP 
+
+!ELSEIF  "$(CFG)" == "dcmsr - Win32 Debug"
+
+# ADD CPP  /TP 
+
+!ELSEIF  "$(CFG)" == "dcmsr - Win32 MinSizeRel"
+
+# ADD CPP  /TP 
+
+!ELSEIF  "$(CFG)" == "dcmsr - Win32 RelWithDebInfo"
+
+# ADD CPP  /TP 
+
+!ENDIF
 
 # End Source File
 # Begin Source File
 
 SOURCE=../../dcmsr\libsrc\dsruidtn.cxx
 
+!IF  "$(CFG)" == "dcmsr - Win32 Release"
+
+# ADD CPP  /TP 
+
+!ELSEIF  "$(CFG)" == "dcmsr - Win32 Debug"
+
+# ADD CPP  /TP 
+
+!ELSEIF  "$(CFG)" == "dcmsr - Win32 MinSizeRel"
+
+# ADD CPP  /TP 
+
+!ELSEIF  "$(CFG)" == "dcmsr - Win32 RelWithDebInfo"
+
+# ADD CPP  /TP 
+
+!ENDIF
+
 # End Source File
 # Begin Source File
 
 SOURCE=../../dcmsr\libsrc\dsrwavch.cxx
+
+!IF  "$(CFG)" == "dcmsr - Win32 Release"
+
+# ADD CPP  /TP 
+
+!ELSEIF  "$(CFG)" == "dcmsr - Win32 Debug"
+
+# ADD CPP  /TP 
+
+!ELSEIF  "$(CFG)" == "dcmsr - Win32 MinSizeRel"
+
+# ADD CPP  /TP 
+
+!ELSEIF  "$(CFG)" == "dcmsr - Win32 RelWithDebInfo"
+
+# ADD CPP  /TP 
+
+!ENDIF
 
 # End Source File
 # Begin Source File
 
 SOURCE=../../dcmsr\libsrc\dsrwavtn.cxx
 
+!IF  "$(CFG)" == "dcmsr - Win32 Release"
+
+# ADD CPP  /TP 
+
+!ELSEIF  "$(CFG)" == "dcmsr - Win32 Debug"
+
+# ADD CPP  /TP 
+
+!ELSEIF  "$(CFG)" == "dcmsr - Win32 MinSizeRel"
+
+# ADD CPP  /TP 
+
+!ELSEIF  "$(CFG)" == "dcmsr - Win32 RelWithDebInfo"
+
+# ADD CPP  /TP 
+
+!ENDIF
+
 # End Source File
 # Begin Source File
 
 SOURCE=../../dcmsr\libsrc\dsrwavvl.cxx
+
+!IF  "$(CFG)" == "dcmsr - Win32 Release"
+
+# ADD CPP  /TP 
+
+!ELSEIF  "$(CFG)" == "dcmsr - Win32 Debug"
+
+# ADD CPP  /TP 
+
+!ELSEIF  "$(CFG)" == "dcmsr - Win32 MinSizeRel"
+
+# ADD CPP  /TP 
+
+!ELSEIF  "$(CFG)" == "dcmsr - Win32 RelWithDebInfo"
+
+# ADD CPP  /TP 
+
+!ENDIF
 
 # End Source File
 # Begin Source File
 
 SOURCE=../../dcmsr\libsrc\dsrxmlc.cxx
 
+!IF  "$(CFG)" == "dcmsr - Win32 Release"
+
+# ADD CPP  /TP 
+
+!ELSEIF  "$(CFG)" == "dcmsr - Win32 Debug"
+
+# ADD CPP  /TP 
+
+!ELSEIF  "$(CFG)" == "dcmsr - Win32 MinSizeRel"
+
+# ADD CPP  /TP 
+
+!ELSEIF  "$(CFG)" == "dcmsr - Win32 RelWithDebInfo"
+
+# ADD CPP  /TP 
+
+!ENDIF
+
 # End Source File
 # Begin Source File
 
 SOURCE=../../dcmsr\libsrc\dsrxmld.cxx
+
+!IF  "$(CFG)" == "dcmsr - Win32 Release"
+
+# ADD CPP  /TP 
+
+!ELSEIF  "$(CFG)" == "dcmsr - Win32 Debug"
+
+# ADD CPP  /TP 
+
+!ELSEIF  "$(CFG)" == "dcmsr - Win32 MinSizeRel"
+
+# ADD CPP  /TP 
+
+!ELSEIF  "$(CFG)" == "dcmsr - Win32 RelWithDebInfo"
+
+# ADD CPP  /TP 
+
+!ENDIF
+
+# End Source File
+# Begin Source File
+
+SOURCE=../../dcmsr\libsrc\dsriodcc.cxx
+
+!IF  "$(CFG)" == "dcmsr - Win32 Release"
+
+# ADD CPP  /TP 
+
+!ELSEIF  "$(CFG)" == "dcmsr - Win32 Debug"
+
+# ADD CPP  /TP 
+
+!ELSEIF  "$(CFG)" == "dcmsr - Win32 MinSizeRel"
+
+# ADD CPP  /TP 
+
+!ELSEIF  "$(CFG)" == "dcmsr - Win32 RelWithDebInfo"
+
+# ADD CPP  /TP 
+
+!ENDIF
+
+# End Source File
+# Begin Source File
+
+SOURCE=../../dcmsr\libsrc\dsrbascc.cxx
+
+!IF  "$(CFG)" == "dcmsr - Win32 Release"
+
+# ADD CPP  /TP 
+
+!ELSEIF  "$(CFG)" == "dcmsr - Win32 Debug"
+
+# ADD CPP  /TP 
+
+!ELSEIF  "$(CFG)" == "dcmsr - Win32 MinSizeRel"
+
+# ADD CPP  /TP 
+
+!ELSEIF  "$(CFG)" == "dcmsr - Win32 RelWithDebInfo"
+
+# ADD CPP  /TP 
+
+!ENDIF
+
+# End Source File
+# Begin Source File
+
+SOURCE=../../dcmsr\libsrc\dsrenhcc.cxx
+
+!IF  "$(CFG)" == "dcmsr - Win32 Release"
+
+# ADD CPP  /TP 
+
+!ELSEIF  "$(CFG)" == "dcmsr - Win32 Debug"
+
+# ADD CPP  /TP 
+
+!ELSEIF  "$(CFG)" == "dcmsr - Win32 MinSizeRel"
+
+# ADD CPP  /TP 
+
+!ELSEIF  "$(CFG)" == "dcmsr - Win32 RelWithDebInfo"
+
+# ADD CPP  /TP 
+
+!ENDIF
+
+# End Source File
+# Begin Source File
+
+SOURCE=../../dcmsr\libsrc\dsrcomcc.cxx
+
+!IF  "$(CFG)" == "dcmsr - Win32 Release"
+
+# ADD CPP  /TP 
+
+!ELSEIF  "$(CFG)" == "dcmsr - Win32 Debug"
+
+# ADD CPP  /TP 
+
+!ELSEIF  "$(CFG)" == "dcmsr - Win32 MinSizeRel"
+
+# ADD CPP  /TP 
+
+!ELSEIF  "$(CFG)" == "dcmsr - Win32 RelWithDebInfo"
+
+# ADD CPP  /TP 
+
+!ENDIF
+
+# End Source File
+# Begin Source File
+
+SOURCE=../../dcmsr\libsrc\dsrkeycc.cxx
+
+!IF  "$(CFG)" == "dcmsr - Win32 Release"
+
+# ADD CPP  /TP 
+
+!ELSEIF  "$(CFG)" == "dcmsr - Win32 Debug"
+
+# ADD CPP  /TP 
+
+!ELSEIF  "$(CFG)" == "dcmsr - Win32 MinSizeRel"
+
+# ADD CPP  /TP 
+
+!ELSEIF  "$(CFG)" == "dcmsr - Win32 RelWithDebInfo"
+
+# ADD CPP  /TP 
+
+!ENDIF
+
+# End Source File
+# Begin Source File
+
+SOURCE=../../dcmsr\libsrc\dsrmamcc.cxx
+
+!IF  "$(CFG)" == "dcmsr - Win32 Release"
+
+# ADD CPP  /TP 
+
+!ELSEIF  "$(CFG)" == "dcmsr - Win32 Debug"
+
+# ADD CPP  /TP 
+
+!ELSEIF  "$(CFG)" == "dcmsr - Win32 MinSizeRel"
+
+# ADD CPP  /TP 
+
+!ELSEIF  "$(CFG)" == "dcmsr - Win32 RelWithDebInfo"
+
+# ADD CPP  /TP 
+
+!ENDIF
+
+# End Source File
+# Begin Source File
+
+SOURCE=../../dcmsr\libsrc\dsrchecc.cxx
+
+!IF  "$(CFG)" == "dcmsr - Win32 Release"
+
+# ADD CPP  /TP 
+
+!ELSEIF  "$(CFG)" == "dcmsr - Win32 Debug"
+
+# ADD CPP  /TP 
+
+!ELSEIF  "$(CFG)" == "dcmsr - Win32 MinSizeRel"
+
+# ADD CPP  /TP 
+
+!ELSEIF  "$(CFG)" == "dcmsr - Win32 RelWithDebInfo"
+
+# ADD CPP  /TP 
+
+!ENDIF
+
+# End Source File
+# Begin Source File
+
+SOURCE=../../dcmsr\libsrc\dsrprocc.cxx
+
+!IF  "$(CFG)" == "dcmsr - Win32 Release"
+
+# ADD CPP  /TP 
+
+!ELSEIF  "$(CFG)" == "dcmsr - Win32 Debug"
+
+# ADD CPP  /TP 
+
+!ELSEIF  "$(CFG)" == "dcmsr - Win32 MinSizeRel"
+
+# ADD CPP  /TP 
+
+!ELSEIF  "$(CFG)" == "dcmsr - Win32 RelWithDebInfo"
+
+# ADD CPP  /TP 
+
+!ENDIF
 
 # End Source File
 # End Group

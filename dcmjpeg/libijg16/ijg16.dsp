@@ -56,7 +56,7 @@ RSC=rc.exe
 # ADD BASE CPP /nologo /D "WIN32" /D "NDEBUG" /D "_MBCS" /D "_LIB"  /FD /c
 # ADD CPP /nologo /D "NDEBUG" /D "WIN32" /D "_MBCS" /D "_LIB"  /FD /c
 # ADD CPP  /I "../../config\include"   -D_REENTRANT -DWITH_LIBPNG -DWITH_LIBTIFF -DWITH_ZLIB /D "ijg16_EXPORTS"
-# ADD CPP 
+# ADD CPP  /D "_MBCS"
 # ADD CPP  /nologo /MT /W3 /GX /O2 /GR- /YX -DCMAKE_INTDIR=\"Release\"
 # ADD BASE RSC /l 0x409 /d "NDEBUG"
 # ADD RSC  /I "../../config\include" /l 0x409 /d "NDEBUG"
@@ -84,7 +84,7 @@ LIB32=link.exe -lib
 # ADD BASE CPP /nologo /D "WIN32" /D "_DEBUG" /D "_MBCS" /D "_LIB"  /FD /c
 # ADD CPP /nologo /D "_DEBUG" /D "WIN32" /D "_MBCS" /D "_LIB"  /FD /GZ /c
 # ADD CPP  /I "../../config\include"   -D_REENTRANT -DWITH_LIBPNG -DWITH_LIBTIFF -DWITH_ZLIB /D "ijg16_EXPORTS"
-# ADD CPP 
+# ADD CPP  /D "_MBCS"
 # ADD CPP  /nologo /MTd /W3 /GX /Z7 /Od /GR- /YX -DCMAKE_INTDIR=\"Debug\"
 # ADD BASE RSC /l 0x409 /d "_DEBUG"
 # ADD RSC  /I "../../config\include" /l 0x409 /d "_DEBUG"
@@ -112,7 +112,7 @@ LIB32=link.exe -lib
 # ADD BASE CPP /nologo /D "WIN32" /D "NDEBUG" /D "_WINDOWS" /D "_MBCS" /D "_USRDLL" /D "_ATL_DLL" /FD /c
 # ADD CPP /nologo /D "NDEBUG" /D "_MBCS" /D "_ATL_DLL"  /D "WIN32" /D "_WINDOWS" /D "_USRDLL" /FD /c
 # ADD CPP  /I "../../config\include"   -D_REENTRANT -DWITH_LIBPNG -DWITH_LIBTIFF -DWITH_ZLIB /D "ijg16_EXPORTS"
-# ADD CPP 
+# ADD CPP  /D "_MBCS"
 # ADD CPP  /MD /O1 -DCMAKE_INTDIR=\"MinSizeRel\"
 # ADD BASE RSC /l 0x409 /d "NDEBUG"
 # ADD RSC  /I "../../config\include" /l 0x409 /d "NDEBUG"
@@ -140,7 +140,7 @@ LIB32=link.exe -lib
 # ADD BASE CPP /nologo /D "WIN32" /D "NDEBUG" /D "_MBCS" /D "_LIB"  /FD /c
 # ADD CPP /nologo /D "NDEBUG" /D "WIN32" /D "_MBCS" /D "_LIB"  /FD /c
 # ADD CPP  /I "../../config\include"   -D_REENTRANT -DWITH_LIBPNG -DWITH_LIBTIFF -DWITH_ZLIB /D "ijg16_EXPORTS"
-# ADD CPP 
+# ADD CPP  /D "_MBCS"
 # ADD CPP  /MD /Zi /O2 -DCMAKE_INTDIR=\"RelWithDebInfo\"
 # ADD BASE RSC /l 0x409 /d "NDEBUG"
 # ADD RSC  /I "../../config\include" /l 0x409 /d "NDEBUG"
