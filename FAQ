@@ -1,6 +1,19 @@
 DCMTK FAQ - Frequently Asked Questions
 
 ----
+1997.08.26
+
+Q: Does DCMTK compile on Microsoft Windows NT/95 ?
+
+A: Yes.  We have added support for Win32 environments.
+   Look at the README file and the Microsoft Visual C++ makefile
+   in the dcmtk/config/systems/win32 directory for instructions on
+   how to compile under Windows NT/95.
+
+   Please note, there are no normal Windows applications in DCMTK.  The
+   apps programs only run in a Windows console.
+
+----
 1997.05.30
 
 Q: I'm using a Nextstep system.  I run the configure script but it claims
@@ -15,6 +28,7 @@ A: Your compiler seems to be producing code which cannot always be executed.
    the pipe to the c++filt program.  /bin/ld++ then just contains a call to 
    the linker (i.e. ld $*).  
 
+----
 1997.05.22
 
 Q: I'm using a unix system.  I run the configure script and then make but
@@ -33,29 +47,6 @@ A: This means that the configure script has failed to create the
    and that environment variables must be set before the compiler can be
    used (e.g. the LD_LIBRARY_PATH environment variable).  
 
-----
-1996.09.27
-
-Q: Does DCMTK compile on Microsoft Windows NT/95 ?
-
-A: Yes.  We have added preliminary support for Win32 environments.
-   We have compiled the dcmdata and dcmnet library and apps (as console 
-   programs) using the Microsoft Visual C++ 2.0 compiler on Windows NT 4.0.  
-   The dcmnet apps need to link against the WINSOCK library.  The current
-   version of DCMTK (3.1.2) compiles using Microsoft Visual C++ 4.2
-
-   No real testing has yet been done.
-
-   To compile, you need to rename every file with a .cc suffix to
-   have a .cxx suffix.  
-
-   You need to set appropriate include paths (e.g. dcmtk/dcmnet/include, 
-   dcmtk/dcmdata/include, dcmtk/config/include)
-
-   If you need an example project file, please ask.
-
-   Please note, there are no normal Windows applications in DCMTK.  The
-   apps programs only run in a Windows console.
 
 ----
 1996.09.24
@@ -81,7 +72,7 @@ A: Yes.  Parts (dcmdata and dcmnet) compile using the Metrowerks
    have to use a simulated Unix command line interface (via the
    CodeWarrior SIOUX library).
 
----
+----
 1996.09.24
 
 Q: Where is rest of the documentation?
@@ -95,7 +86,7 @@ A: All of the available DCMTK documentation is distributed in
    written in the future and financial contributions would certainly 
    reduce the waiting considerably.
 
----
+----
 1996.09.24
 
 Q: None of the programs do anything, they all crash as soon
@@ -118,4 +109,4 @@ A: We have received reports of configuration problems relating
    after install Step 2 (running the configure script) and remove 
    any reference to -liostream.a
 
----
+----
