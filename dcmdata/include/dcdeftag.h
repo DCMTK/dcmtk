@@ -4,7 +4,7 @@
 **
 **   User: meichel
 **   Host: sulla
-**   Date: Mon Oct 26 15:33:58 1998
+**   Date: Thu Nov 12 18:05:19 1998
 **   Prog: /home/meichel/dicom/dcmtk/dcmdata/libsrc/mkdeftag
 **
 ** From: /home/meichel/dicom/dcmtk/dcmdata/libsrc/dicom.dic
@@ -16,7 +16,7 @@
 
 #include "dctagkey.h"
 
-#define DCM_DICT_DEFTAG_BUILD_DATE "Mon Oct 26 15:33:58 1998"
+#define DCM_DICT_DEFTAG_BUILD_DATE "Thu Nov 12 18:05:19 1998"
 
 
 /*
@@ -1090,7 +1090,7 @@
 #define DCM_HistogramExplanation                 DcmTagKey(0x0060, 0x3010)
 #define DCM_HistogramData                        DcmTagKey(0x0060, 0x3020)
 #define DCM_GraphicAnnotationSequence            DcmTagKey(0x0070, 0x0001)
-#define DCM_GraphicAnnotationLayer               DcmTagKey(0x0070, 0x0002)
+#define DCM_GraphicLayerReference                DcmTagKey(0x0070, 0x0002)
 #define DCM_BoundingBoxAnnotationUnits           DcmTagKey(0x0070, 0x0003)
 #define DCM_AnchorPointAnnotationUnits           DcmTagKey(0x0070, 0x0004)
 #define DCM_GraphicAnnotationUnits               DcmTagKey(0x0070, 0x0005)
@@ -1111,7 +1111,7 @@
 #define DCM_DisplayedAreaTLHC                    DcmTagKey(0x0070, 0x0050)
 #define DCM_DisplayedAreaBRHC                    DcmTagKey(0x0070, 0x0051)
 #define DCM_GraphicLayerSequence                 DcmTagKey(0x0070, 0x0060)
-#define DCM_GraphicLayer                         DcmTagKey(0x0070, 0x0061)
+#define DCM_GraphicLayerIdentifier               DcmTagKey(0x0070, 0x0061)
 #define DCM_GraphicLayerOrder                    DcmTagKey(0x0070, 0x0062)
 #define DCM_GraphicLayerRecommendedDisplayValue  DcmTagKey(0x0070, 0x0066)
 #define DCM_GraphicLayerDescription              DcmTagKey(0x0070, 0x0068)

@@ -4,7 +4,7 @@
 **
 **   User: meichel
 **   Host: sulla
-**   Date: Mon Oct 26 15:34:09 1998
+**   Date: Thu Nov 12 18:05:34 1998
 **   Prog: /home/meichel/dicom/dcmtk/dcmdata/libsrc/mkdictbi
 **
 ** From: /home/meichel/dicom/dcmtk/dcmdata/libsrc/dicom.dic
@@ -13,7 +13,7 @@
 
 #include "dcdict.h"
 
-char* dcmBuiltinDictBuildDate = "Mon Oct 26 15:34:09 1998";
+char* dcmBuiltinDictBuildDate = "Thu Nov 12 18:05:34 1998";
 
 struct DBI_SimpleEntry {
     Uint16 group;
@@ -3229,7 +3229,7 @@ static DBI_SimpleEntry simpleBuiltinDict[] = {
       EVR_SQ, "GraphicAnnotationSequence", 1, 1, "DICOM3",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified },
     { 0x0070, 0x0002, 0x0070, 0x0002,
-      EVR_CS, "GraphicAnnotationLayer", 1, 1, "DICOM3",
+      EVR_CS, "GraphicLayerReference", 1, 1, "DICOM3",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified },
     { 0x0070, 0x0003, 0x0070, 0x0003,
       EVR_CS, "BoundingBoxAnnotationUnits", 1, 1, "DICOM3",
@@ -3292,7 +3292,7 @@ static DBI_SimpleEntry simpleBuiltinDict[] = {
       EVR_SQ, "GraphicLayerSequence", 1, 1, "DICOM3",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified },
     { 0x0070, 0x0061, 0x0070, 0x0061,
-      EVR_CS, "GraphicLayer", 1, 1, "DICOM3",
+      EVR_CS, "GraphicLayerIdentifier", 1, 1, "DICOM3",
       DcmDictRange_Unspecified, DcmDictRange_Unspecified },
     { 0x0070, 0x0062, 0x0070, 0x0062,
       EVR_IS, "GraphicLayerOrder", 1, 1, "DICOM3",
