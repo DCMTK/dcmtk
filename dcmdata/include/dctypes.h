@@ -9,8 +9,8 @@
  * This file contains global type definitions
  *
  *
- * Last Update:   $Author: andreas $
- * Revision:      $Revision: 1.3 $
+ * Last Update:   $Author: hewett $
+ * Revision:      $Revision: 1.4 $
  * Status:	  $State: Exp $
  *
  */
@@ -78,6 +78,10 @@ typedef enum {
     ERW_inWork = 2,
     ERW_notInitialized = 3
 } E_TransferState;
+
+
+// Undefined Length Identifier
+const Uint32 DCM_UndefinedLength = 0xffffffff;
 
 
 #endif /* !DCTYPES_H */
