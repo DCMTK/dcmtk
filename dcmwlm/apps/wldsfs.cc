@@ -22,9 +22,9 @@
  *  Purpose: Class for connecting to a file-based data source.
  *
  *  Last Update:      $Author: wilkens $
- *  Update Date:      $Date: 2002-05-08 13:20:38 $
+ *  Update Date:      $Date: 2002-06-05 10:29:27 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmwlm/apps/Attic/wldsfs.cc,v $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -47,6 +47,9 @@ BEGIN_EXTERN_C
 #endif
 #ifdef HAVE_DIRENT_H
 #include <dirent.h>    // for struct DIR, opendir()
+#endif
+#ifdef HAVE_LIMITS_H
+#include <limits.h>    // for _POSIX_PATH_MAX
 #endif
 END_EXTERN_C
 #include "dicom.h"     // for DIC_NODENAME etc. used in "wltypdef.h"
@@ -550,13 +553,23 @@ WlmDataSourceStatusType WlmDataSourceFileSystem::StartFindRequest( DcmDataset &f
 #else
   // Determine if the given directory path actually refers to a directory.
   DIR *dirp = opendir( path.c_str() );
+  struct dirent *dp = NULL;
   if( dirp != NULL )
   {
     // If does refer to a directory, we want to read all directory entries in this directory.
 
     // Start a loop; in each iteration another directory entry is determined.
-    struct dirent *dp;
+#if defined(_REENTRANT) && !defined(_WIN32) && !defined(__CYGWIN__)
+    /* readdir_r requires a buffer large enough for a dirent plus a path name! */
+    unsigned char entryBuffer[sizeof(struct dirent) + _POSIX_PATH_MAX + 1];
+#ifdef HAVE_OLD_READDIR_R
+    for( dp = readdir_r( dirp, (struct dirent *)entryBuffer ) ; dp != NULL ; dp = readdir_r( dirp, (struct dirent *)entryBuffer ) )
+#else
+    for( int readResult = readdir_r( dirp, (struct dirent *)entryBuffer, &dp ) ; readResult == 0 && dp ; readResult = readdir_r( dirp, (struct dirent *)entryBuffer, &dp ) )
+#endif
+#else  /* not _REENTRANT */
     for( dp = readdir( dirp ) ; dp != NULL ; dp = readdir( dirp ) )
+#endif
     {
       // If the current entry refers to a worklist file, do something.
       if( IsWorklistFile( dp->d_name ) )
@@ -2431,7 +2444,10 @@ OFBool WlmDataSourceFileSystem::IsSupportedReturnKeyAttribute( const DcmTagKey &
 /*
 ** CVS Log
 ** $Log: wldsfs.cc,v $
-** Revision 1.4  2002-05-08 13:20:38  wilkens
+** Revision 1.5  2002-06-05 10:29:27  wilkens
+** Changed call to readdir() so that readdir_r() is called instead.
+**
+** Revision 1.4  2002/05/08 13:20:38  wilkens
 ** Added new command line option -nse to wlmscpki and wlmscpdb.
 **
 ** Revision 1.2  2002/04/18 14:19:52  wilkens
