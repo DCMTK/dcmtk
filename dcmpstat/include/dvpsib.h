@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DVPSImageBoxContent
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-07-30 13:34:47 $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  Last Update:      $Author: thiel $
+ *  Update Date:      $Date: 1999-08-26 09:30:59 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -45,7 +45,7 @@
 class DVPSImageBoxContent
 {
 public:
-  /// default constructor
+ /// default constructor
   DVPSImageBoxContent();
   
   /// copy constructor
@@ -91,7 +91,15 @@ public:
    *  @return referencedSOPClassUID string
    */
   const char *getSOPClassUID();
-  
+
+  /** adds the image to the Box with retrieve AETitle and Boxnumber set
+   *  @image the printable image 
+   *  @AETitle the title where we can get the image
+   *  @number imageBoxPosition to be assigned
+   *  @return EC_Normal if successful, an error code otherwise.
+   */
+  E_Condition addImage(DcmItem &image,char *AETitle, unsigned long number);
+ 
 private:
   /// private undefined assignment operator
   DVPSImageBoxContent& operator=(const DVPSImageBoxContent&);
@@ -140,7 +148,10 @@ private:
 
 /*
  *  $Log: dvpsib.h,v $
- *  Revision 1.1  1999-07-30 13:34:47  meichel
+ *  Revision 1.2  1999-08-26 09:30:59  thiel
+ *  Add extensions for the usage of the StoredPrint
+ *
+ *  Revision 1.1  1999/07/30 13:34:47  meichel
  *  Added new classes managing Stored Print objects
  *
  *

@@ -22,14 +22,15 @@
  *  Purpose:
  *    classes: DVPSStoredPrint
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-07-30 13:34:50 $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  Last Update:      $Author: thiel $
+ *  Update Date:      $Date: 1999-08-26 09:31:00 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
  *
  */
+
 
 #ifndef __DVPSSP_H__
 #define __DVPSSP_H__
@@ -40,14 +41,15 @@
 #include "dvpstyp.h"     /* for enum types */
 #include "dvpspl.h"      /* for class DVPSPresentationLUT */
 #include "dvpsibl.h"     /* for class DVPSImageBoxContent_PList */
-
+#include "dvpstat.h"		 /* for class DVPresentationState */
+#include "dvpspr.h"			 /* for class DVPrintMessageHandler */
 
 /** the representation of a Stored Print object
  */  
 
 class DVPSStoredPrint
 {
-public:
+ public:
   /// default constructor
   DVPSStoredPrint();
   
@@ -91,7 +93,69 @@ public:
    */
   E_Condition write(DcmItem &dset, OFBool limitImages);
   
-private:
+  
+  /** creates a Stored Print object from a DICOM dataset.
+   *  The DICOM elements are copied
+   *  from the dataset to this object.
+   *  The dataset should be a printable Image or a PresentationStateStorage Object
+   *  If this method returns an error code, the object is in undefined state afterwards.
+   *  @param dset the dataset from which the data is to be read
+   *  @return EC_Normal if successful, an error code otherwise.
+   */
+  E_Condition createFromItem(DcmItem &dset);
+  
+  /** create a ImageBox with this image and append it to the ImageBoxList
+   *  @image the printable image 
+   *  @aETitle the title where we can get the image
+   *  @return EC_Normal if successful, an error code otherwise.
+   */
+  E_Condition addImage(DcmItem &image,char *aETitle);
+  
+  
+  /** create a ImageBox with this image and presentation state and append it to the ImageBoxList
+   *  The image have to be stored 
+   *  @pstate the presentation state corresponding to the image
+   *  @image the printable image 
+   *  @aETitle the title where we can get the image
+   *  @return EC_Normal if successful, an error code otherwise.
+   
+  */
+  
+  
+  E_Condition addPresentationState(DVPresentationState &pstate,DcmItem &image,char *aETitle);
+  
+  /** starts an PrintJob
+   *  @printJob a already connected DICOM association to a remote printer
+   *  @return EC_Normal if successful, an error code otherwise.
+   */
+  E_Condition	startPrint(DVPSPrintMessageHandler &printJob);
+  
+  /** gets the next needed image reference, used in combination with setImage
+   *  @aETitle  AETitle where the image can be found
+   *  @patID Patient ID of the image
+   *  @studyUID Study UID of the image
+   *  @seriesUID series UID of the image 
+   *  @instanceUID instance UID of the image
+   *  @return EC_Normal if successful, an error code otherwise.
+   */
+  E_Condition getNextImageReference(char *aETitle,char *patID,char *studyUID,char *seriesUID,char *instanceUID);
+  
+  /** transfer the preformatted image to the printJob
+   *  @image the preformatted image, used in combination with getNextImageReference
+   *  @return EC_Normal if successful, an error code otherwise.
+   */
+  E_Condition setImage(DcmItem &image);
+  
+  /** test if the print job is done
+   *
+   *  @return true if the job is still printing and needs images
+   */
+  
+  OFBool printPending();
+  
+  
+
+ private:
 
   /// private undefined assignment operator
   DVPSStoredPrint& operator=(const DVPSStoredPrint&);
@@ -113,7 +177,7 @@ private:
    *  @return EC_Normal if successful, an error code otherwise.
    */
   E_Condition addReferencedPLUTSQ(DcmItem &dset);
-
+  
   /** invalidates the cached number of columns and rows
    */
   void invalidateCache();
@@ -240,7 +304,10 @@ private:
 
 /*
  *  $Log: dvpssp.h,v $
- *  Revision 1.1  1999-07-30 13:34:50  meichel
+ *  Revision 1.2  1999-08-26 09:31:00  thiel
+ *  Add extensions for the usage of the StoredPrint
+ *
+ *  Revision 1.1  1999/07/30 13:34:50  meichel
  *  Added new classes managing Stored Print objects
  *
  *
