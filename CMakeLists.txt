@@ -18,14 +18,26 @@ FIND_PATH(WITH_OPENSSLINC "include/openssl/ssl.h" ${dcmtk_SOURCE_DIR}/../openssl
 OPTION(WITH_ZLIB "Turn support for zlib on/off" ON)
 FIND_PATH(WITH_ZLIBINC "include/zlib.h" ${dcmtk_SOURCE_DIR}/../zlib-1.2.1)
 
-# set certain project wide flags
-SET(CMAKE_C_FLAGS "" CACHE STRING "Flags for C compiler." FORCE)
-SET(CMAKE_C_FLAGS_DEBUG "/nologo /MTd /W3 /GX /Z7 /Od /GR- /YX" CACHE STRING "Win32 Debug Options C Code" FORCE)
-SET(CMAKE_C_FLAGS_RELEASE "/nologo /MT /W3 /GX /O2 /GR- /YX" CACHE STRING "Win32 Release Options C Code" FORCE)
-SET(CMAKE_CXX_FLAGS "" CACHE STRING "Flags used by the compiler during all build types." FORCE)
-SET(CMAKE_CXX_FLAGS_DEBUG "/nologo /MTd /W3 /GX /Z7 /Od /GR- /YX" CACHE STRING "Win32 Debug Options C++ Code" FORCE)
-SET(CMAKE_CXX_FLAGS_RELEASE "/nologo /MT /W3 /GX /O2 /GR- /YX" CACHE STRING "Win32 Release Options C++ Code" FORCE)
-SET(CMAKE_EXE_LINKER_FLAGS "/INCREMENTAL:NO" CACHE STRING "Win32 Linker Flags" FORCE)
+# set project wide flags for compiler and linker
+IF(CMAKE_CXX_COMPILER MATCHES bcc32)
+  # settings for Borland C++
+  SET(CMAKE_C_FLAGS "" CACHE STRING "Flags for C compiler." FORCE)
+  SET(CMAKE_C_FLAGS_DEBUG "" CACHE STRING "Win32 Debug Options C Code" FORCE)
+  SET(CMAKE_C_FLAGS_RELEASE "-O2" CACHE STRING "Win32 Release Options C Code" FORCE)
+  SET(CMAKE_CXX_FLAGS "" CACHE STRING "Flags used by the compiler during all build types." FORCE)
+  SET(CMAKE_CXX_FLAGS_DEBUG "" CACHE STRING "Win32 Debug Options C++ Code" FORCE)
+  SET(CMAKE_CXX_FLAGS_RELEASE "-O2" CACHE STRING "Win32 Release Options C++ Code" FORCE)
+  SET(CMAKE_STANDARD_LIBRARIES "import32.lib cw32mt.lib" CACHE STRING "Borland C++ Runtime Libraries" FORCE)
+ELSE(CMAKE_CXX_COMPILER MATCHES bcc32)
+  # settings for Visual C++
+  SET(CMAKE_C_FLAGS "/nologo /W3 /GX /GY /GR- /YX" CACHE STRING "Flags for C compiler." FORCE)
+  SET(CMAKE_C_FLAGS_DEBUG "/MTd /Z7 /Od" CACHE STRING "Win32 Debug Options C Code" FORCE)
+  SET(CMAKE_C_FLAGS_RELEASE "/MT /O2" CACHE STRING "Win32 Release Options C Code" FORCE)
+  SET(CMAKE_CXX_FLAGS "/nologo /W3 /GX /GY /GR- /YX" CACHE STRING "Flags used by the compiler during all build types." FORCE)
+  SET(CMAKE_CXX_FLAGS_DEBUG "/MTd /Z7 /Od" CACHE STRING "Win32 Debug Options C++ Code" FORCE)
+  SET(CMAKE_CXX_FLAGS_RELEASE "/MT /O2" CACHE STRING "Win32 Release Options C++ Code" FORCE)
+  SET(CMAKE_EXE_LINKER_FLAGS "/INCREMENTAL:NO" CACHE STRING "Win32 Linker Flags" FORCE)
+ENDIF(CMAKE_CXX_COMPILER MATCHES bcc32)
 
 # set _REENTRANT flag
 ADD_DEFINITIONS(-D_REENTRANT)
