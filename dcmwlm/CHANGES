@@ -1,6 +1,12 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2002.04.19 (wilkens)
+
+- Added folder htmldocs and file Makefile.in within this folder.
+  Added: dcmwlm/htmldocs/
+         dcmwlm/htmldocs/Makefile.in
+
 **** Changes from 2002.04.18 (wilkens)
 
 - Modified Makefiles. Updated latest changes again. These are the latest
