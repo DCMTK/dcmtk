@@ -130,6 +130,112 @@ behaviour can be changed with the --prefer options (see above).
 
 The wlmscpfs application does not support extended negotiation.
 
+Currently, the wlmscpfs application supports the following attributes as
+matching keys:
+
+(0008,0050) AccessionNumber                                   
+(0008,0090) ReferringPhysiciansName                           
+(0010,0010) PatientsName                                      
+(0010,0020) PatientID                                         
+(0010,0040) PatientsSex                                       
+(0032,1032) RequestingPhysician                               
+(0038,0010) AdmissionID                                       
+(0040,0100) ScheduledProcedureStepSequence                    
+  (0008,0060) > Modality                                       
+  (0040,0001) > ScheduledStationAETitle                        
+  (0040,0002) > ScheduledProcedureStepStartDate                
+  (0040,0003) > ScheduledProcedureStepStartTime                
+  (0040,0006) > ScheduledPerformingPhysiciansName              
+(0040,1001) RequestedProcedureID                              
+(0040,1003) RequestedProcedurePriority                        
+
+As return keys the following attributes are currently supported by wlmscpfs:
+
+(0008,0005) SpecificCharacterSet                              
+(0008,0050) AccessionNumber                                   
+(0008,0080) InstitutionName                                   
+(0008,0081) InstitutionAddress                                
+(0008,0090) ReferringPhysiciansName                           
+(0008,1080) AdmittingDiagnosesDescription                     
+(0008,1110) ReferencedStudySequence                           
+  (0008,1150) > ReferencedSOPClassUID                          
+  (0008,1155) > ReferencedSOPInstanceUID                       
+(0008,1120) ReferencedPatientSequence                         
+  (0008,1150) > ReferencedSOPClassUID                          
+  (0008,1155) > ReferencedSOPInstanceUID                       
+(0010,0010) PatientsName                                      
+(0010,0020) PatientID                                         
+(0010,0030) PatientsBirthDate                                 
+(0010,0040) PatientsSex                                       
+(0010,1000) OtherPatientIDs                                   
+(0010,1001) OtherPatientNames                                 
+(0010,1020) PatientsSize                                      
+(0010,1030) PatientsWeight                                    
+(0010,1040) PatientsAddress                                   
+(0010,1080) MilitaryRank                                      
+(0010,2000) MedicalAlerts                                     
+(0010,2110) ContrastAllergies                                 
+(0010,2160) EthnicGroup                                       
+(0010,21a0) SmokingStatus                                     
+(0010,21b0) AdditionalPatientHistory                          
+(0010,21c0) PregnancyStatus                                   
+(0010,21d0) LastMenstrualDate                                 
+(0010,4000) PatientComments                                   
+(0020,000d) StudyInstanceUID                                  
+(0032,1032) RequestingPhysician                               
+(0032,1033) RequestingService                                 
+(0032,1060) RequestedProcedureDescription                     
+(0032,1064) RequestedProcedureCodeSequence                    
+  (0008,0100) > CodeValue                                      
+  (0008,0102) > CodingSchemeDesignator                         
+  (0008,0103) > CodingSchemeVersion                            
+  (0008,0104) > CodeMeaning                                    
+(0038,0010) AdmissionID                                       
+(0038,0011) IssuerOfAdmissionID                               
+(0038,0050) SpecialNeeds                                      
+(0038,0300) CurrentPatientLocation                            
+(0038,0500) PatientState                                      
+(0040,0100) ScheduledProcedureStepSequence                    
+  (0008,0060) > Modality                                       
+  (0032,1070) > RequestedContrastAgent                         
+  (0040,0001) > ScheduledStationAETitle                        
+  (0040,0002) > ScheduledProcedureStepStartDate                
+  (0040,0003) > ScheduledProcedureStepStartTime                
+  (0040,0004) > ScheduledProcedureStepEndDate                  
+  (0040,0005) > ScheduledProcedureStepEndTime                  
+  (0040,0006) > ScheduledPerformingPhysiciansName              
+  (0040,0007) > ScheduledProcedureStepDescription              
+  (0040,0008) > ScheduledProtocolCodeSequence                  
+    (0008,0100) >  > CodeValue                                   
+    (0008,0102) >  > CodingSchemeDesignator                      
+    (0008,0103) >  > CodingSchemeVersion                         
+    (0008,0104) >  > CodeMeaning                                 
+  (0040,0009) > ScheduledProcedureStepID                       
+  (0040,0010) > ScheduledStationName                           
+  (0040,0011) > ScheduledProcedureStepLocation                 
+  (0040,0012) > PreMedication                                  
+  (0040,0020) > ScheduledProcedureStepStatus                   
+  (0040,0400) > CommentsOnTheScheduledProcedureStep            
+(0040,1001) RequestedProcedureID                              
+(0040,1002) ReasonForTheRequestedProcedure                    
+(0040,1003) RequestedProcedurePriority                        
+(0040,1004) PatientTransportArrangements                      
+(0040,1005) RequestedProcedureLocation                        
+(0040,1008) ConfidentialityCode                               
+(0040,1009) ReportingPriority                                 
+(0040,1010) NamesOfIntendedRecipientsOfResults                
+(0040,1400) RequestedProcedureComments                        
+(0040,2001) ReasonForTheImagingServiceRequest                 
+(0040,2004) IssueDateOfImagingServiceRequest                  
+(0040,2005) IssueTimeOfImagingServiceRequest                  
+(0040,2008) OrderEnteredBy                                    
+(0040,2009) OrderEnterersLocation                             
+(0040,2010) OrderCallbackPhoneNumber                          
+(0040,2016) PlacerOrderNumberImagingServiceRequest            
+(0040,2017) FillerOrderNumberImagingServiceRequest            
+(0040,2400) ImagingServiceRequestComments                     
+(0040,3001) ConfidentialityConstraintOnPatientDataDescription 
+
 
 ACCESS CONTROL
 
