@@ -19,11 +19,11 @@ dcmdatadir=$(top_srcdir)/../dcmdata
 LOCALINCLUDES=-I$(ofstddir)/include -I$(dcmdatadir)/include -I$(includedir)/ofstd
 
 LIBDIRS = -L$(top_srcdir)/libsrc -L$(ofstddir)/libsrc -L$(dcmdatadir)/libsrc -L$(libdir)
-LOCALLIBS = -ldcmsr -ldcmdata -lofstd $(ZLIBLIBS)
+LOCALLIBS = -ldcmsr -ldcmdata -lofstd $(XMLLIBS) $(ZLIBLIBS)
 
-objs= dsrdump.o dsr2html.o dsr2xml.o
+objs= dsrdump.o dsr2html.o dsr2xml.o xml2dsr.o
 
-progs= dsrdump dsr2html dsr2xml
+progs= dsrdump dsr2html dsr2xml xml2dsr
 
 all: $(progs)
 
@@ -34,6 +34,9 @@ dsr2html: dsr2html.o
 	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ $@.o $(LOCALLIBS) $(MATHLIBS) $(LIBS)
 
 dsr2xml: dsr2xml.o
+	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ $@.o $(LOCALLIBS) $(MATHLIBS) $(LIBS)
+
+xml2dsr: xml2dsr.o
 	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ $@.o $(LOCALLIBS) $(MATHLIBS) $(LIBS)
 
 install: all
