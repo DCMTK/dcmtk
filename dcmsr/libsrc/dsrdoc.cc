@@ -23,8 +23,8 @@
  *    classes: DSRDocument
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-11-10 17:45:32 $
- *  CVS/RCS Revision: $Revision: 1.11 $
+ *  Update Date:      $Date: 2000-11-10 18:10:26 $
+ *  CVS/RCS Revision: $Revision: 1.12 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1506,9 +1506,6 @@ void DSRDocument::createNewSOPInstance()
     InstanceCreationDate.putString(currentDate(string).c_str());
     /* set instance creation time to current time */
     InstanceCreationTime.putString(currentTime(string).c_str());
-    /* clear list of verifying observers and set flag to UNVERIFIED */
-    VerifyingObserver.clear();
-    VerificationFlagEnum = VF_Unverified;
     /* update other DICOM attributes */
     updateAttributes();
 }
@@ -1578,11 +1575,15 @@ E_Condition DSRDocument::createRevisedVersion()
                 /* everything went OK */
                 if (result == EC_Normal)
                 {
-                    /* set completion flag to PARTIAL */
+                    /* set completion flag to PARTIAL, delete description */
                     CompletionFlagEnum = CF_Partial;
+                    CompletionFlagDescription.clear();
                     /* clear content date/time, will be set automatically in updateAttributes() */
                     ContentDate.clear();
                     ContentTime.clear();
+                    /* clear list of verifying observers and set flag to UNVERIFIED */
+                    VerifyingObserver.clear();
+                    VerificationFlagEnum = VF_Unverified;
                     /* insert item into sequence (replace old ones) */
                     PredecessorDocuments.clear();
                     PredecessorDocuments.insert(ditem);
@@ -1721,7 +1722,10 @@ void DSRDocument::updateAttributes()
 /*
  *  CVS/RCS Log:
  *  $Log: dsrdoc.cc,v $
- *  Revision 1.11  2000-11-10 17:45:32  joergr
+ *  Revision 1.12  2000-11-10 18:10:26  joergr
+ *  Corrected behaviour of createNewSOPInstance() and createRevisedDocument().
+ *
+ *  Revision 1.11  2000/11/10 17:45:32  joergr
  *  Added new methods to set the completion flag description, create new study/
  *  series UIDs. Added missing type 2 sequence to dataset. Corrected wrong format
  *  of predecessor documents sequence. Changed behaviour of completion/verification

@@ -23,8 +23,8 @@
  *    classes: DSRDocument
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-11-10 17:44:49 $
- *  CVS/RCS Revision: $Revision: 1.10 $
+ *  Update Date:      $Date: 2000-11-10 18:10:20 $
+ *  CVS/RCS Revision: $Revision: 1.11 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -678,8 +678,7 @@ class DSRDocument
     E_Condition createNewSeries(const OFString &studyUID);
 
     /** create a new SOP instance.
-     *  Generate a new SOP instance UID, set the instance creation date/time, clear the
-     *  list of verifying observers and set the verification flag to UNVERIFIED.
+     *  Generate a new SOP instance UID, set the instance creation date/time.
      *  This method is used internally for createNewDocument(), createRevisedVersion()
      *  and during object initialization.
      *  It could also be used explicitly from the calling application if a new UID should
@@ -712,7 +711,8 @@ class DSRDocument
      *  possible to track back the full chain of previous versions.
      *  A new SOP instance is created and the content date/time are set automatically.
      *  Furthermore the verifying observer sequence is deleted, the verifcation flag is set
-     *  to UNVERIFIED and the completion flag is set to PARTIAL (i.e. not complete).
+     *  to UNVERIFIED, the completion flag is set to PARTIAL (i.e. not complete) and the
+     *  completion flag description is deleted.
      ** @return status, EC_Normal if successful, an error code otherwise
      */
     E_Condition createRevisedVersion();
@@ -911,7 +911,10 @@ class DSRDocument
 /*
  *  CVS/RCS Log:
  *  $Log: dsrdoc.h,v $
- *  Revision 1.10  2000-11-10 17:44:49  joergr
+ *  Revision 1.11  2000-11-10 18:10:20  joergr
+ *  Corrected behaviour of createNewSOPInstance() and createRevisedDocument().
+ *
+ *  Revision 1.10  2000/11/10 17:44:49  joergr
  *  Added new methods to set the completion flag description, create new study/
  *  series UIDs. Added missing type 2 sequence to dataset. Corrected wrong format
  *  of predecessor documents sequence. Changed behaviour of completion/verification
