@@ -3,14 +3,14 @@
  * Author: Gerd Ehlers		Created:  11-06-94
  *                              Modified: 02-15-95
  *
- * Module: dcmutils.cc
+ * Module: dcutils.cc
  *
  * Purpose:
  * Implementation of some routines for accessing DICOM datasets
  *
  *
  * Last Update:   $Author: andreas $
- * Revision:	  $Revision: 1.3 $
+ * Revision:	  $Revision: 1.1 $
  * Status:	  $State: Exp $
  *
  */
@@ -20,9 +20,8 @@
 
 #include <stdlib.h>
 #include <ctype.h>
-#include "dcmutils.h"
-#include "dcvr.h"
-#include "dcdebug.h"
+#include "dcutils.h"
+#include "dctk.h"
 
 
 // **********************************************
@@ -57,11 +56,11 @@ char* skipWS( char *str )
 // **********************************************
 
 
-BOOL getSingleValueUS( DcmObject *obj,
-		       DcmTagKey searchtag,
-		       Uint16 &returnVal)
+BOOL getSingleValue( DcmObject *obj,
+		     DcmTagKey searchtag,
+		     Uint16 &returnVal)
 {
-Bdebug((3, "dcmutils:getSingleValueUS(DcmObject*=%p,searchtag=(%x,%x),returnVal)",
+Bdebug((3, "dcutils:getSingleValue(DcmObject*=%p,searchtag=(%x,%x),returnVal)",
            obj, searchtag.getGroup(), searchtag.getElement() ));
 
 //    returnVal = 0;
@@ -75,10 +74,11 @@ Bdebug((3, "dcmutils:getSingleValueUS(DcmObject*=%p,searchtag=(%x,%x),returnVal)
 	if ( searchedObj->getLength() > 0 )
 	{
 	    if ( searchedObj->ident() == EVR_US )
-                returnVal = ((DcmUnsignedShort*)searchedObj)->get((const unsigned long)0);
+                ((DcmUnsignedShort*)searchedObj)->getUint16(returnVal);
 	    else if ( searchedObj->ident() == EVR_IS )
 	    {
-		const char *istr = ((DcmIntegerString*)searchedObj)->get();
+		char *istr = NULL;
+		((DcmIntegerString*)searchedObj)->getString(istr);
 		returnVal = (Uint16)atoi( istr );
 	    }
             else
@@ -104,11 +104,11 @@ Edebug(());
 // **********************************************
 
 
-BOOL getSingleValueSS( DcmObject *obj,
-		       DcmTagKey searchtag,
-		       Sint16 &returnVal)
+BOOL getSingleValue( DcmObject *obj,
+		     DcmTagKey searchtag,
+		     Sint16 &returnVal)
 {
-Bdebug((3, "dcmutils:getSingleValueSS(DcmObject*=%p,searchtag=(%x,%x),returnVal)",
+Bdebug((3, "dcutils:getSingleValue(DcmObject*=%p,searchtag=(%x,%x),returnVal)",
            obj, searchtag.getGroup(), searchtag.getElement() ));
 
 //    returnVal = 0;
@@ -122,11 +122,12 @@ Bdebug((3, "dcmutils:getSingleValueSS(DcmObject*=%p,searchtag=(%x,%x),returnVal)
 	if ( searchedObj->getLength() > 0 )
 	{
 	    if ( searchedObj->ident() == EVR_SS )
-                returnVal = ((DcmSignedShort*)searchedObj)->get((const unsigned long)0);
+                ((DcmSignedShort*)searchedObj)->getSint16(returnVal);
 	    else if ( searchedObj->ident() == EVR_IS )
 	    {
-		const char *istr = ((DcmIntegerString*)searchedObj)->get();
-		returnVal = (Sint16)atoi( istr );
+	      char *istr = NULL;
+	      ((DcmIntegerString*)searchedObj)->getString(istr);
+	      returnVal = (Sint16)atoi( istr );
 	    }
             else
                 l_error = TRUE;
@@ -151,11 +152,11 @@ Edebug(());
 // **********************************************
 
 
-BOOL getSingleValueUL( DcmObject *obj,
-		       DcmTagKey searchtag,
-		       Uint32 &returnVal)
+BOOL getSingleValue( DcmObject *obj,
+		     DcmTagKey searchtag,
+		     Uint32 &returnVal)
 {
-Bdebug((3, "dcmutils:getSingleValueUL(DcmObject*=%p,searchtag=(%x,%x),returnVal)",
+Bdebug((3, "dcutils:getSingleValue(DcmObject*=%p,searchtag=(%x,%x),returnVal)",
            obj, searchtag.getGroup(), searchtag.getElement() ));
 
 //    returnVal = 0;
@@ -169,10 +170,11 @@ Bdebug((3, "dcmutils:getSingleValueUL(DcmObject*=%p,searchtag=(%x,%x),returnVal)
 	if ( searchedObj->getLength() > 0 )
 	{
 	    if ( searchedObj->ident() == EVR_UL )
-                returnVal = ((DcmUnsignedLong*)searchedObj)->get((const unsigned long)0);
+                ((DcmUnsignedLong*)searchedObj)->getUint32(returnVal);
 	    else if ( searchedObj->ident() == EVR_IS )
 	    {
-		const char *istr = ((DcmIntegerString*)searchedObj)->get();
+		char *istr = NULL;
+		((DcmIntegerString*)searchedObj)->getString(istr);
 		returnVal = (Uint32)atol( istr );
 	    }
             else
@@ -198,9 +200,9 @@ Edebug(());
 // **********************************************
 
 
-BOOL getSingleValueSL( DcmObject *obj,
-		       DcmTagKey searchtag,
-		       Sint32 &returnVal)
+BOOL getSingleValue( DcmObject *obj,
+		     DcmTagKey searchtag,
+		     Sint32 &returnVal)
 {
 Bdebug((3, "dcmutils:getSingleValueSL(DcmObject*=%p,searchtag=(%x,%x),returnVal)",
            obj, searchtag.getGroup(), searchtag.getElement() ));
@@ -216,10 +218,11 @@ Bdebug((3, "dcmutils:getSingleValueSL(DcmObject*=%p,searchtag=(%x,%x),returnVal)
 	if ( searchedObj->getLength() > 0 )
 	{
 	    if ( searchedObj->ident() == EVR_SL )
-                returnVal = ((DcmSignedLong*)searchedObj)->get((const unsigned long)0);
+                ((DcmSignedLong*)searchedObj)->getSint32(returnVal);
 	    else if ( searchedObj->ident() == EVR_IS )
 	    {
-		const char *istr = ((DcmIntegerString*)searchedObj)->get();
+		char *istr = NULL;
+		((DcmIntegerString*)searchedObj)->getString(istr);
 		returnVal = (Sint32)atol( istr );
 	    }
             else
@@ -245,11 +248,11 @@ Edebug(());
 // **********************************************
 
 
-BOOL getSingleValueByteString( DcmObject *obj,
-			       DcmTagKey searchtag,
-			       char * & returnVal)
+BOOL getSingleValue( DcmObject *obj,
+		     DcmTagKey searchtag,
+		     char * & returnVal)
 {
-Bdebug((3, "dcmutils:getSingleValueByteString(DcmObject*=%p,searchtag=(%x,%x),"
+Bdebug((3, "dcutils:getSingleValue(DcmObject*=%p,searchtag=(%x,%x),"
            "returnVal)", obj, searchtag.getGroup(), searchtag.getElement() ));
 
 //    returnVal = "";
@@ -273,7 +276,7 @@ Bdebug((3, "dcmutils:getSingleValueByteString(DcmObject*=%p,searchtag=(%x,%x),"
 	       )
 	    && searchedObj->getLength() > 0
 	   )
-	    returnVal = ((DcmByteString*)searchedObj)->get();
+	    ((DcmByteString*)searchedObj)->getString(returnVal);
 	else if (   (	searchedObj->ident() == EVR_LO
 		     || searchedObj->ident() == EVR_LT
 		     || searchedObj->ident() == EVR_PN
@@ -282,7 +285,7 @@ Bdebug((3, "dcmutils:getSingleValueByteString(DcmObject*=%p,searchtag=(%x,%x),"
 		    )
 		 && searchedObj->getLength() > 0
 		)
-		 returnVal = ((DcmCharString*)searchedObj)->get();
+		 ((DcmCharString*)searchedObj)->getString(returnVal);
 	else
 	    l_error = TRUE;
 debug(( 3, "returnVal=[%s]", returnVal ));
@@ -291,51 +294,6 @@ debug(( 3, "returnVal=[%s]", returnVal ));
     else
     {
 debug(( 3, "no element with vr=\"Byte/CharString\" found" ));
-
-	l_error = TRUE;
-    }
-Edebug(());
-
-    return l_error;
-}
-
-
-// **********************************************
-
-
-BOOL getSingleValueCharString( DcmObject *obj,
-			       DcmTagKey searchtag,
-			       const char *&returnVal)
-{
-Bdebug((3, "dcmutils:getSingleValueCharString(DcmObject*=%p,searchtag=(%x,%x),"
-           "returnVal)", obj, searchtag.getGroup(), searchtag.getElement() ));
-
-//    returnVal = "";
-    BOOL l_error = FALSE;
-    DcmStack stack;
-
-    if ( obj->search( searchtag, stack, ESM_fromHere, FALSE )
-	 == EC_Normal )
-    {
-	DcmObject *searchedObj = stack.top();
-        searchedObj->verify( TRUE );                   // erzwinge dealigning
-	if (   (   searchedObj->ident() == EVR_LO
-		|| searchedObj->ident() == EVR_LT
-		|| searchedObj->ident() == EVR_PN
-		|| searchedObj->ident() == EVR_SH
-		|| searchedObj->ident() == EVR_ST
-	       )
-	    && searchedObj->getLength() > 0
-	   )
-	    returnVal = ((DcmCharString*)searchedObj)->get();
-	else
-	    l_error = TRUE;
-debug(( 3, "returnVal=[%s]", returnVal ));
-
-    }
-    else
-    {
-debug(( 3, "no element with vr=\"CharString\" found" ));
 
 	l_error = TRUE;
     }
@@ -363,7 +321,7 @@ Bdebug((3, "dcmutils:putSingleValue(DcmItem*=%p,tag=(%x,%x),USvalue=%hu)",
 	if ( localTag.getEVR() == EVR_US )
 	{
 	    elem = new DcmUnsignedShort( localTag );
-            ((DcmUnsignedShort*)elem)->put( value );
+            ((DcmUnsignedShort*)elem)->putUint16( value );
 	}
 	else if ( localTag.getEVR() == EVR_IS )
 	{
@@ -371,7 +329,7 @@ Bdebug((3, "dcmutils:putSingleValue(DcmItem*=%p,tag=(%x,%x),USvalue=%hu)",
 	    int intValue = value;
             char *StringValue = itoa( intValue, buffer, 10 );
 	    elem = new DcmIntegerString( localTag );
-	    ((DcmIntegerString*)elem)->put( StringValue );
+	    ((DcmIntegerString*)elem)->putString( StringValue );
 	}
 	else
 	{
@@ -411,7 +369,7 @@ Bdebug((3, "dcmutils:putSingleValue(DcmItem*=%p,tag=(%x,%x),SSvalue=%hd)",
 	if ( localTag.getEVR() == EVR_SS )
 	{
 	    elem = new DcmSignedShort( localTag );
-            ((DcmSignedShort*)elem)->put( value );
+            ((DcmSignedShort*)elem)->putSint16( value );
 	}
 	else if ( localTag.getEVR() == EVR_IS )
 	{
@@ -419,7 +377,7 @@ Bdebug((3, "dcmutils:putSingleValue(DcmItem*=%p,tag=(%x,%x),SSvalue=%hd)",
 	    int intValue = value;
 	    char *StringValue = itoa( intValue, buffer, 10 );
 	    elem = new DcmIntegerString( localTag );
-	    ((DcmIntegerString*)elem)->put( StringValue );
+	    ((DcmIntegerString*)elem)->putString( StringValue );
 	}
 	else
 	{
@@ -459,7 +417,7 @@ Bdebug((3, "dcmutils:putSingleValue(DcmItem*=%p,tag=(%x,%x),ULvalue=%lu)",
 	if ( localTag.getEVR() == EVR_UL )
 	{
 	    elem = new DcmUnsignedLong( localTag );
-            ((DcmUnsignedLong*)elem)->put( value );
+            ((DcmUnsignedLong*)elem)->putUint32( value );
 	}
 	else if ( localTag.getEVR() == EVR_IS )
 	{
@@ -467,7 +425,7 @@ Bdebug((3, "dcmutils:putSingleValue(DcmItem*=%p,tag=(%x,%x),ULvalue=%lu)",
 	    int intValue = (int)value;
 	    char *StringValue = itoa( intValue, buffer, 10 );
 	    elem = new DcmIntegerString( localTag );
-	    ((DcmIntegerString*)elem)->put( StringValue );
+	    ((DcmIntegerString*)elem)->putString( StringValue );
 	}
 	else
 	{
@@ -507,7 +465,7 @@ Bdebug((3, "dcmutils:putSingleValue(DcmItem*=%p,tag=(%x,%x),SLvalue=%ld)",
 	if ( localTag.getEVR() == EVR_SL )
 	{
 	    elem = new DcmSignedLong( localTag );
-            ((DcmSignedLong*)elem)->put( value );
+            ((DcmSignedLong*)elem)->putSint32( value );
 	}
 	else if ( localTag.getEVR() == EVR_IS )
 	{
@@ -515,7 +473,7 @@ Bdebug((3, "dcmutils:putSingleValue(DcmItem*=%p,tag=(%x,%x),SLvalue=%ld)",
 	    int intValue = (int)value;
 	    char *StringValue = itoa( intValue, buffer, 10 );
 	    elem = new DcmIntegerString( localTag );
-	    ((DcmIntegerString*)elem)->put( StringValue );
+	    ((DcmIntegerString*)elem)->putString( StringValue );
 	}
 	else
 	{
@@ -552,72 +510,72 @@ BOOL putSingleValue( DcmItem *item,
 	if ( localTag.getEVR() == EVR_AE )	      // DcmByteString()
 	{
 	    elem = new DcmApplicationEntity( localTag );
-	    ((DcmApplicationEntity*)elem)->put( value );
+	    ((DcmApplicationEntity*)elem)->putString( value );
 	}
 	else if ( localTag.getEVR() == EVR_AS )
 	{
 	    elem = new DcmAgeString( localTag );
-	    ((DcmAgeString*)elem)->put( value );
+	    ((DcmAgeString*)elem)->putString( value );
 	}
 	else if ( localTag.getEVR() == EVR_CS )
 	{
 	    elem = new DcmCodeString( localTag );
-	    ((DcmCodeString*)elem)->put( value );
+	    ((DcmCodeString*)elem)->putString( value );
 	}
 	else if ( localTag.getEVR() == EVR_DA )
 	{
 	    elem = new DcmDate( localTag );
-	    ((DcmDate*)elem)->put( value );
+	    ((DcmDate*)elem)->putString( value );
 	}
 	else if ( localTag.getEVR() == EVR_DS )
 	{
 	    elem = new DcmDecimalString( localTag );
-	    ((DcmDecimalString*)elem)->put( value );
+	    ((DcmDecimalString*)elem)->putString( value );
 	}
 	else if ( localTag.getEVR() == EVR_DT )
 	{
 	    elem = new DcmDateTime( localTag );
-	    ((DcmDateTime*)elem)->put( value );
+	    ((DcmDateTime*)elem)->putString( value );
 	}
 	else if ( localTag.getEVR() == EVR_IS )
 	{
 	    elem = new DcmIntegerString( localTag );
-	    ((DcmIntegerString*)elem)->put( value );
+	    ((DcmIntegerString*)elem)->putString( value );
 	}
 	else if ( localTag.getEVR() == EVR_TM )
 	{
 	    elem = new DcmTime( localTag );
-	    ((DcmTime*)elem)->put( value );
+	    ((DcmTime*)elem)->putString( value );
 	}
 	else if ( localTag.getEVR() == EVR_UI )
 	{
 	    elem = new DcmUniqueIdentifier( localTag );
-	    ((DcmUniqueIdentifier*)elem)->put( value );
+	    ((DcmUniqueIdentifier*)elem)->putString( value );
 	}
 	else if ( localTag.getEVR() == EVR_LO )	      // DcmCharString()
 	{
 	    elem = new DcmLongString( localTag );
-	    ((DcmLongString*)elem)->put( value );
+	    ((DcmLongString*)elem)->putString( value );
 	}
 	else if ( localTag.getEVR() == EVR_LT )
 	{
 	    elem = new DcmLongText( localTag );
-	    ((DcmLongText*)elem)->put( value );
+	    ((DcmLongText*)elem)->putString( value );
 	}
 	else if ( localTag.getEVR() == EVR_PN )
 	{
 	    elem = new DcmPersonName( localTag );
-	    ((DcmPersonName*)elem)->put( value );
+	    ((DcmPersonName*)elem)->putString( value );
 	}
 	else if ( localTag.getEVR() == EVR_SH )
 	{
 	    elem = new DcmShortString( localTag );
-	    ((DcmShortString*)elem)->put( value );
+	    ((DcmShortString*)elem)->putString( value );
 	}
 	else if ( localTag.getEVR() == EVR_ST )
 	{
 	    elem = new DcmShortText( localTag );
-	    ((DcmShortText*)elem)->put( value );
+	    ((DcmShortText*)elem)->putString( value );
 	}
 	else
 	    l_error = TRUE;

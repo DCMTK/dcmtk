@@ -9,8 +9,8 @@
  * Implementation of a DICOM-Image to ppm file format converter
  *
  *
- * Last Update:   $Author: hewett $
- * Revision:	  $Revision: 1.5 $
+ * Last Update:   $Author: andreas $
+ * Revision:	  $Revision: 1.6 $
  * Status:	  $State: Exp $
  *
  */
@@ -27,7 +27,7 @@
 
 #include "dctk.h"
 #include "dcdebug.h"
-#include "dcmutils.h"
+#include "dcutils.h"
 #include "dcimapix.h"
 #include "cmdlnarg.h"
 

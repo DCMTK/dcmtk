@@ -9,8 +9,8 @@
  * Implementation of a ppm to DICOM-Image file format converter
  *
  *
- * Last Update:   $Author: hewett $
- * Revision:	  $Revision: 1.6 $
+ * Last Update:   $Author: andreas $
+ * Revision:	  $Revision: 1.7 $
  * Status:	  $State: Exp $
  *
  */
@@ -48,7 +48,7 @@ char * mktemp(char *);
 
 #include "dctk.h"
 #include "dcdebug.h"
-#include "dcmutils.h"
+#include "dcutils.h"
 #include "dcimapix.h"
 
 #include "cmdlnarg.h"
