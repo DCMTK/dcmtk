@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DSRWaveformChannelList
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2003-09-03 16:00:12 $
- *  CVS/RCS Revision: $Revision: 1.16 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2003-10-09 14:43:02 $
+ *  CVS/RCS Revision: $Revision: 1.17 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -204,7 +204,10 @@ OFCondition DSRWaveformChannelList::putString(const char *stringValue)
 /*
  *  CVS/RCS Log:
  *  $Log: dsrwavch.cc,v $
- *  Revision 1.16  2003-09-03 16:00:12  meichel
+ *  Revision 1.17  2003-10-09 14:43:02  joergr
+ *  Replaced wrong newline character sequence.
+ *
+ *  Revision 1.16  2003/09/03 16:00:12  meichel
  *  Added standard includes needed on Win32
  *
  *  Revision 1.15  2003/08/07 17:29:13  joergr
