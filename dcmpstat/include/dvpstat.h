@@ -23,8 +23,8 @@
  *    classes: DVPresentationState
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-09-07 09:04:37 $
- *  CVS/RCS Revision: $Revision: 1.21 $
+ *  Update Date:      $Date: 1999-09-10 09:02:32 $
+ *  CVS/RCS Revision: $Revision: 1.22 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -68,11 +68,12 @@ class DVPresentationState
 {
 public:
   /** default constructor
-   *  @param displayFunctionFname filename of the monitor
-   *    characteristic file used to implement the standard display function.
-   *    If absent, no Barten transform is performed.
+   *  @param displayFunction list of object describing the display
+   *    characteristic of the monitor. Used to implement the standard display function.
+   *    The parameter should be an array with DVPSD_max entries (see DVInterface).
+   *    If absent, no display transform is performed.
    **/
-  DVPresentationState(DiDisplayFunction *dispFunction=NULL);
+  DVPresentationState(DiDisplayFunction **dispFunction=NULL);
   
   /// destructor
   virtual ~DVPresentationState();
@@ -1384,7 +1385,7 @@ public:
    *  required pixel data which contains all grayscale transformations but none
    *  of the none-grayscale transformations of the presentation state "burned in"
    *  into the pixel data. The pixel data returned is already corrected by a
-   *  Barten transform for the current display device and can be mapped directly
+   *  display transform for the current display device and can be mapped directly
    *  to digital driving levels of the graphics board. The pointer to the pixel
    *  data remains valid until the next call to this function, or until the
    *  image is detached or the presentation state is deleted.
@@ -1516,7 +1517,7 @@ public:
    /** gets smallest and biggest possible pixel value in the attached image.
     *  These values are defined as the smallest and biggest number that
     *  could possibly be contained in the image after application of the Modality transform,
-    *  but before any VOI, Presentation or Barten transform.
+    *  but before any VOI, Presentation or display transform.
     *  This method may only be called when an image is attached to the
     *  presentation state. 
     *  @param minValue upon success, the smallest value is returned in this parameter.
@@ -1528,7 +1529,7 @@ public:
    /** gets smallest and biggest occuring pixel value in the attached image.
     *  These values are defined as the smallest and biggest number that
     *  are actually contained in the image after application of the Modality transform,
-    *  but before any VOI, Presentation or Barten transform.
+    *  but before any VOI, Presentation or display transform.
     *  This method may only be called when an image is attached to the
     *  presentation state. 
     *  @param minValue upon success, the smallest value is returned in this parameter.
@@ -1554,30 +1555,51 @@ public:
     */   
    E_Condition selectImageFrameNumber(unsigned long frame);
    
-   /* Barten transform */
+   /* Display transform */
    
+   /** gets the currently selected display transform.
+    *  Display transform will only be performed if switched on _and_
+    *  a valid monitor characteristics description exists.
+    *  Default after creation of a presentation state is "on".
+    *  @return current display transform if on, DVPSD_none if off.
+    */
+   DVPSDisplayTransform getDisplayTransform() { return displayTransform; }
+   
+   /** activates or deactivates display correction.
+    *  Display transform will only be performed if switched on
+    *  _and_ a valid display function object exists.
+    *  @param transform display transform to be set, DVPSD_none to switch off.
+    */
+   void setDisplayTransform(DVPSDisplayTransform transform) { displayTransform = transform; }
+
+// --- <BEGIN> ONLY FOR COMPATIBILITY REASONS <BEGIN> ---
+
    /** checks whether Barten correction is switched on or off.
     *  Barten transform will only be performed if switched on _and_
     *  a valid monitor characteristics description exists.
     *  Default after creation of a presentation state is "on".
     *  @return OFTrue if Barten transform is on, OFFalse if off.
     */
-   OFBool getBartenTransform() { return useBartenTransform; }
+   OFBool getBartenTransform() { return displayTransform == DVPSD_GSDF; }
    
    /** activates or deactivates Barten correction.
     *  Barten transform will only be performed if switched on 
     *  _and_ a valid display function object exists.
     *  @param flag OFTrue to switch on, OFFalse to switch off.
     */
-   void setBartenTransform(OFBool flag) { useBartenTransform=flag; }
+   void setBartenTransform(OFBool flag) { displayTransform = (flag) ? DVPSD_GSDF : DVPSD_none; }
    
    /** changes the display function.
     *  If NULL is passed, Barten transform is disabled.
     */
+/*
    void changeDisplayFunction(DiDisplayFunction *dispFunction=NULL);
+*/
+
+// --- <END> ONLY FOR COMPATIBILITY REASONS <END> ---
 
    /** converts a 16-bit P-Value to an 8-bit DDL value for on-sceen display.
-    *  If a display function is set and enabled (see setBartenTransform()),
+    *  If a display function is set and enabled (see setDisplayTransform()),
     *  the DDL is corrected for the nonlinearity of the display, otherwise
     *  a simple linear mapping is performed.
     *  @param pvalue P-Value 0..0xFFFF
@@ -1933,18 +1955,18 @@ private:
    */
   DVPSVOIWindow_PList currentImageVOIWindowList;  
   
-  /** flag indicating whether Barten transform
-   *  is switched on or off
+  /** flag indicating the currently selected display transform
+   *  DVPSD_none if switched off
    */
-  OFBool useBartenTransform;
+  DVPSDisplayTransform displayTransform;
 
   /** a flag describing whether current image is inverse
    */
   OFBool imageInverse;
 
-  /** display function object if exists
+  /** reference to list of display functions if existing
    */
-  DiDisplayFunction *displayFunction;
+  DiDisplayFunction **displayFunction;
   
   /** minimum width of print bitmap (used for implicit scaling)
    */
@@ -1967,7 +1989,11 @@ private:
 
 /*
  *  $Log: dvpstat.h,v $
- *  Revision 1.21  1999-09-07 09:04:37  joergr
+ *  Revision 1.22  1999-09-10 09:02:32  joergr
+ *  Added support for CIELAB display function. New methods to handle display
+ *  functions. Old methods are marked as retired and should be removed asap.
+ *
+ *  Revision 1.21  1999/09/07 09:04:37  joergr
  *  Completed support for getting a print bitmap out of a pstate object.
  *
  *  Revision 1.20  1999/09/01 16:14:42  meichel

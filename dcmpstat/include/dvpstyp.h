@@ -24,9 +24,9 @@
  *           DVPSPresentationLUTType, DVPSRotationType, 
  *           DVPSShutterType
  *
- *  Last Update:      $Author: thiel $
- *  Update Date:      $Date: 1999-09-10 07:36:39 $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 1999-09-10 09:02:33 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -391,11 +391,37 @@ enum DVPSDecimateCropBehaviour
   DVPSI_default
 };
 
+/** describes the type of display function
+ */
+enum DVPSDisplayTransform
+{
+  /** first entry
+   */
+  DVPSD_first=0,
+  /** Grayscale Standard Display Function (defined in DICOM part 14)
+   */
+  DVPSD_GSDF=DVPSD_first,
+  /** CIE Lab
+   */
+  DVPSD_CIELAB=1,
+  /** no display transform
+   */
+  DVPSD_none=2,
+  /** number of display transforms
+   */
+  DVPSD_max=DVPSD_none
+};
+
+
 #endif
 
 /*
  *  $Log: dvpstyp.h,v $
- *  Revision 1.6  1999-09-10 07:36:39  thiel
+ *  Revision 1.7  1999-09-10 09:02:33  joergr
+ *  Added support for CIELAB display function. New methods to handle display
+ *  functions. Old methods are marked as retired and should be removed asap.
+ *
+ *  Revision 1.6  1999/09/10 07:36:39  thiel
  *  Added Presentation LUT Shape LIN OD
  *
  *  Revision 1.5  1999/08/31 14:09:13  meichel

@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DVInterface
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-09-09 12:20:45 $
- *  CVS/RCS Revision: $Revision: 1.44 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 1999-09-10 09:02:30 $
+ *  CVS/RCS Revision: $Revision: 1.45 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -399,6 +399,8 @@ class DVInterface: public DVConfiguration
      */
     DVPSInstanceType getInstanceType();
 
+// --- <BEGIN> ONLY FOR COMPATIBILITY REASONS <BEGIN> ---
+
     /** checks if the current series consists (only) of Presentation States.
      *  Since DICOM series always contain a single modality only, a series is
      *  either completely a presentation state series or completely different.
@@ -414,6 +416,8 @@ class DVInterface: public DVConfiguration
      *  @return OFTrue if current instance is presentation state, OFFalse otherwise
      */
     OFBool isPresentationState();
+
+// --- <END> ONLY FOR COMPATIBILITY REASONS <END> ---
 
     /** returns the Series Number of the currently selected series.
      *  May be called only if a valid series selection exists - see selectSeries().
@@ -872,6 +876,17 @@ class DVInterface: public DVConfiguration
      */
     const char *getPStateLabel(Uint32 idx);
 
+    /** checks whether display correction is possible (in principle),
+     *  i.e. a valid monitor characteristics description exists
+     *  and current system is a low-cost system (without built-in
+     *  calibration).
+     *  @param transform display transform to be checked (default: GSDF)
+     *  @return OFTrue if display transform is possible, OFFalse otherwise
+     */
+    OFBool isDisplayTransformPossible(DVPSDisplayTransform transform = DVPSD_GSDF);
+
+// --- <BEGIN> ONLY FOR COMPATIBILITY REASONS <BEGIN> ---
+
     /** checks whether Barten correction is possible (in principle),
      *  i.e. a valid monitor characteristics description exists
      *  and current system is a low-cost system (without built-in
@@ -880,13 +895,15 @@ class DVInterface: public DVConfiguration
      */
     OFBool isBartenTransformPossible();
 
-    /** sets ambient light value for the Barten transformation.
+// --- <END> ONLY FOR COMPATIBILITY REASONS <END> ---
+
+    /** sets ambient light value for the display transformation.
      *  @param value ambient light value to be set
      *  @return EC_Normal upon success, an error code otherwise.
      */
     E_Condition setAmbientLightValue(double value);
     
-    /** returns ambient light value for the Barten transformation.
+    /** returns ambient light value for the display transformation.
      *  @param value returned ambient light value 
      *  @return EC_Normal upon success, an error code otherwise.
      */
@@ -969,52 +986,8 @@ class DVInterface: public DVConfiguration
       *  @return EC_Normal if successful, an error code otherwise.
      */
     E_Condition spoolPrintJob(OFBool deletePrintedImages=OFTrue);    
-
-    /** UNIMPLEMENTED - starts the print spooler process.
-     *  The print spooler will wait for print jobs created with spoolPrintJob()
-     *  and communicate them to the printer using the DICOM Print Management Service Class.
-     *  Attention: Successful return of this method is no guarantee
-     *  that the spooler has successfully started, because certain errors
-     *  (i.e. incorrect settings in the config file) will only be noted in the spooler
-     *  process when running. On Unix platform, successful return of this method
-     *  means that the fork() used to start the spooler was successful.
-     *  On Win32 platforms, it means that the CreateProcess() call was successful.
-     *  @return EC_Normal if the spooler process could be started, an error code otherwise.
-     */      
-    E_Condition startPrintSpooler();
-  
-    /** UNIMPLEMENTED - terminates the print spooler process. This method creates a "dummy"
-     *  print job that request the print spooler to shutdown as soon as all other pending
-     *  print jobs are finished.
-     *  @return EC_Normal if the spooler process dummy print job could be written, 
-     *    an error code otherwise.
-     */
-    E_Condition terminatePrintSpooler();
-
-    /** UNIMPLEMENTED - adds an existing Grayscale Hardcopy image that is already present
-     *  in the image database to the current print image queue without rendering it again.
-     *  The "requested image size" option is not used - the bitmap is treated as if the
-     *  presentation mode was "SCALE TO FIT". The image must be a Grayscale Hardcopy image
-     *  (modality HC), otherwise the behaviour of the print job when printing the image is undefined.
-     *  @param studyUID study instance UID of the image, as reported by getStudyUID()
-     *  @param seriesUID series instance UID of the image, as reported by getSeriesUID()
-     *  @param instanceUID SOP instance UID of the image, as reported by getInstanceUID()
-     *  @return EC_Normal upon success, an error code otherwise.
-     */
-    E_Condition addToPrintHardcopyFromDB(const char *studyUID, const char *seriesUID, const char *instanceUID);
-
-    /** UNIMPLEMENTED - requests the spooler process to print an old print job that is stored
-     *  in the database as a "stored print" object again. The Stored Print that is printed again
-     *  does not contain all parameters of a print job. The following parameters are taken from the
-     *  current settings in this object: Target printer, medium type, presentation LUT, 
-     *  illumination and reflected ambient light.
-     *  @param studyUID study instance UID of the Stored Print, as reported by getStudyUID()
-     *  @param seriesUID series instance UID of the Stored Print, as reported by getSeriesUID()
-     *  @param instanceUID SOP instance UID of the Stored Print, as reported by getInstanceUID()
-     *  @return EC_Normal upon success, an error code otherwise.
-     */
-    E_Condition spoolStoredPrintFromDB(const char *studyUID, const char *seriesUID, const char *instanceUID);
     
+
 private:
 
     /** private undefined copy constructor
@@ -1106,9 +1079,9 @@ private:
      */
     unsigned long referenceTime;
     
-    /** display function object
+    /** list of display function object
      */
-    DiDisplayFunction *displayFunction;
+    DiDisplayFunction *displayFunction[DVPSD_max];
 
     /** handle to access database/index file
      */
@@ -1209,8 +1182,9 @@ private:
 /*
  *  CVS/RCS Log:
  *  $Log: dviface.h,v $
- *  Revision 1.44  1999-09-09 12:20:45  meichel
- *  Added print API method declarations and implementations (empty for now).
+ *  Revision 1.45  1999-09-10 09:02:30  joergr
+ *  Added support for CIELAB display function. New methods to handle display
+ *  functions. Old methods are marked as retired and should be removed asap.
  *
  *  Revision 1.43  1999/09/08 17:03:01  joergr
  *  Added support for new instance types in database (grayscale hardcopy and
