@@ -21,10 +21,10 @@
 *
 *  Purpose: Class for managing database interaction.
 *
-*  Last Update:      $Author: joergr $
-*  Update Date:      $Date: 2002-01-08 19:14:52 $
+*  Last Update:      $Author: wilkens $
+*  Update Date:      $Date: 2002-04-18 10:15:48 $
 *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmwlm/libsrc/Attic/wldbim.cc,v $
-*  CVS/RCS Revision: $Revision: 1.5 $
+*  CVS/RCS Revision: $Revision: 1.6 $
 *  Status:           $State: Exp $
 *
 *  CVS/RCS Log at end of file
@@ -38,270 +38,29 @@
 #include "dicom.h"
 #include "wltypdef.h"
 #include "dctk.h"
-
-
 #include <stdio.h>
-#include <io.h>
-
-
 #define OTL_ORA7 // Compile OTL 3.1/OCI7
 #include <otlv32.h> // include the OTL 3.2 header file
 
 #include "wldbim.h"
 
-static const db_timeout = 5000;
-
-typedef struct pa {
-  long value;
-  struct pa *next;
-} pa;
-
-typedef struct myDcmTag {
-  char tag[90];
-  char selectStmt[1000];
-  struct myDcmTag *next;
-} myDcmTag;
-
-myDcmTag *myDcmTagAnker;
-otl_connect db; // db-connect object
-char paStmt[1500], connectStr[200];
-
-// Extracts from theSource the range, where theSource is in DICOM-Notation with "-"
-// the range will be given back in targetMin and targetMax
-// the other parameters define default values:
-// noValueMin = minvalue to be copied in targetMin when theSource is empty
-// noValueMax = maxvalue to be copied in targetMax when theSource is empty
-// rangeValueMin = minvalue to be copied in targetMin when theSource has no lower bound
-// rangeValueMax = maxvalue to be copied in targetMax when theSource has no upper bound
-static void extractRange(const char *theSource,
-                  const char *noValueMin, const char *noValueMax,
-                  const char *rangeValueMin, const char *rangeValueMax,
-                  char *targetMin, char *targetMax) {
-    if ((theSource != NULL) && (theSource[0] != 0)) {
-        char *rangeChar;
-        if (rangeChar = strstr(theSource, "-")) {   // if source has range
-            if (theSource[0] == '-') {  // if source has no lower bound
-                strcpy(targetMin, rangeValueMin);
-                strcpy(targetMax, rangeChar + 1);
-            } else {    // if source has no upper bound
-                if (theSource[strlen(theSource) - 1] == '-') {
-                    strcpy(targetMin, theSource);
-                    targetMin[strlen(theSource) - 1] = 0;
-                    strcpy(targetMax, rangeValueMax);
-                } else {    // if source has lower and upper bound
-                    strcpy(targetMax, rangeChar + 1);
-                    strcpy(targetMin, theSource);
-                    rangeChar = strstr(targetMin, "-");
-                    rangeChar[0] = 0;
-                }
-            }
-        } else {    // if source has no range
-            strcpy(targetMin, theSource);
-            strcpy(targetMax, theSource);
-        }
-    } else {    // if source is empty use default values in noValueMin and noValueMax
-        strcpy(targetMin, noValueMin);
-        strcpy(targetMax, noValueMax);
-    }
-}
-
-// Replaces in theStr all occurences of oldStr with newStr.
-// The replacement is done directly on theStr: NO COPY WILL BE MADE!!!!
-static void doReplace(char *theStr, const char *oldStr, const char *newStr) {
-int oldLen, newLen;
-char *p, *q;
-    oldLen = strlen(oldStr);
-    newLen = strlen(newStr);
-    while (NULL != (p = strstr(theStr, oldStr))) {  // as long as we have something to replace...
-        memmove(q = p+newLen, p+oldLen, strlen(p+oldLen)+1);
-        memcpy(p, newStr, newLen);
-    }
-}
-
-/*
-*  Reads a list of DCMTags and select-statements from the file iniFile
-*/
-static void readDCMTags (char *iniFile, const OFBool verbose, OFConsole *stream) {
-FILE *theDat;
-myDcmTag *hdt;
-char hStr[1500];
-int mode;   // mode: Detrmine if stmt oder Tag is read
-int len;
-    myDcmTagAnker = 0;
-    mode = 0;
-    if (theDat = fopen(iniFile, "r")) {
-        while (fgets(hStr, 1500, theDat)) {
-            if (hStr[0] && hStr[0] != '#') {
-                if (mode) {
-                    strcpy(hdt->selectStmt, hStr);
-                    len = strlen(hdt->selectStmt);
-                    if (hdt->selectStmt[len-1] == 10) len--;
-                    if (hdt->selectStmt[len-1] == 13) len--;
-                    hdt->selectStmt[len] = 0;  // eliminate trailing carriage-return
-                    mode = 0;
-                } else {
-                    if (myDcmTagAnker == 0) {
-                        myDcmTagAnker = (myDcmTag *) malloc(sizeof(myDcmTag));
-                        hdt = myDcmTagAnker;
-                        hdt->next = 0;
-                    } else {
-                        hdt->next = (myDcmTag *) malloc(sizeof(myDcmTag));
-                        hdt = hdt->next;
-                        hdt->next = 0;
-                    }
-                    strcpy(hdt->tag, hStr);
-                    len = strlen(hdt->tag);
-                    if (hdt->tag[len-1] == 10) len--;
-                    if (hdt->tag[len-1] == 13) len--;
-                    hdt->tag[len] = 0;  // eliminate trailing carriage-return
-                    mode = 1;
-                }
-            }
-        }
-        fclose(theDat);
-    }
-
-    if (verbose && (stream != NULL)) {
-        if (myDcmTagAnker) {
-            hdt = myDcmTagAnker;
-            while (hdt) {
-                stream->lockCout() << endl << "DCMT: " << hdt->tag << endl << "Stmt: " << hdt->selectStmt << endl;
-                stream->unlockCout();
-                hdt = hdt->next;
-            }
-        }
-    }
-}
-
-/*
-*  Reads a list of DCMTags and select-statements from the file iniFile
-*/
-static void readSearchStmt (char *iniFile, const OFBool verbose, OFConsole *stream) {
-FILE *theDat;
-char hStr[1500];
-int goon, len;
-    goon = 1;
-    paStmt[0] = 0;
-    if (theDat = fopen(iniFile, "r")) {
-        while (goon && fgets(hStr, 1500, theDat)) {
-            if (hStr[0] && hStr[0] != '#') {
-                strcpy(paStmt, hStr);
-                len = strlen(paStmt);
-                if (paStmt[len-1] == 10) len--;
-                if (paStmt[len-1] == 13) len--;
-                paStmt[len] = 0;  // eliminate trailing carriage-return
-                goon = 0;
-            }
-        }
-        fclose(theDat);
-    }
-
-    if (verbose && (stream != NULL)) {
-        stream->lockCout() << endl << "PA-Statement: " << paStmt << endl;
-        stream->unlockCout();
-    }
-}
-
-// try to logon to database,
-// if do_wait == 1: on failure wait wait_time sec. and try again
-static int my_do_logon (short do_wait, long wait_time, const char *connectStr, const OFBool verbose, OFConsole *stream) {
-    if (connectStr[0] != 0) {   // if connect-information is available
-
-        if (verbose && (stream != NULL))
-        {
-            stream->lockCout() << "Trying to connect to database...";
-            stream->unlockCout();
-        }
-
-        short try_to_connect;
-        long trials;
-        long cummulative_wait_time;
-        trials = 0;
-        try_to_connect = 1;
-
-        while (try_to_connect) {
-            try {
-                db.rlogon(connectStr); // connect to Oracle
-                if (verbose && (stream != NULL))
-                {
-                    stream->lockCout() << " connected..." << endl;
-                    stream->unlockCout();
-                }
-                try_to_connect = 0;
-                return 0;   // successfull, return 0
-            }
-            catch(otl_exception& p){ // intercept OTL exceptions
-                trials++;
-                cummulative_wait_time = trials * wait_time; // calculate wait_time (cummulative), we'll give the DB everytime we loop through a bit more time to recover
-                if (cummulative_wait_time > 300000) cummulative_wait_time = 300000; // up to a maximum of 5 Minutes (= 5 x 60 x 1000 = 300000 msec.)
-                if (verbose && (stream != NULL))
-                {
-                    stream->lockCout() << " error... will try again in " << cummulative_wait_time << " msec." << endl;
-                    stream->unlockCout();
-                }
-                cerr<<p.msg<<endl; // print out error message
-                cerr<<p.stm_text<<endl; // print out SQL that caused the error
-                cerr<<p.var_info<<endl; // print out the variable that caused the error
-                if (do_wait)    // if not successfull, wait wait_time sec.
-                    WaitForSingleObject(GetCurrentProcess(), cummulative_wait_time);
-                else {          // otherwise exit with status -1
-                    try_to_connect = 0;
-                    return -1;
-                }
-            }
-        }
-    }
-    return -1;  // not successfull, return -1
-}
-
 // ----------------------------------------------------------------------------
 
-WlmDatabaseInteractionManager::WlmDatabaseInteractionManager( OFConsole *logStreamv,
-            const OFBool verbosev, char *dbDsnv, char *dbUserNamev, char *dbUserPasswordv, const int serialNumberv)
+WlmDatabaseInteractionManager::WlmDatabaseInteractionManager()
 // Date         : December 18, 2001
 // Author       : Thomas Wilkens
 // Task         : Constructor.
-// Parameters   : logStreamv      - [in] Stream that can be used to dump a message to.
-//                verbosev        - [in] Verbose mode
-//                dbDsnv          - [in] The data source name of the database that shall be used.
-//                dbUserNamev     - [in] The database user name that shall be used for querying information.
-//                dbUserPasswordv - [in] The password that belongs to the database user name.
+// Parameters   : none.
 // Return Value : none.
-  : logStream( logStreamv ), verboseMode( verbosev ), objectStatus( WLM_STATUS_OK ), opt_serialNumber ( serialNumberv )
+  : logStream( NULL ), verboseMode( OFFalse ), myDcmTagAnker( NULL )
 {
-    useDBConnect = OFTrue;
-    myDcmTagAnker = 0;
-    /* add serial number to OFFIS GO-Kard UID root */
-    sprintf(uidPrefix, "1.2.276.0.7230010.8.%d", serialNumberv);
-    if (strcmp( dbDsnv, "text" ) != 0) {
-        if (dbDsnv[0])
-            sprintf(connectStr, "%s/%s@%s", dbUserNamev, dbUserPasswordv, dbDsnv);
-        else
-            sprintf(connectStr, "%s/%s", dbUserNamev, dbUserPasswordv);
-
-        otl_connect::otl_initialize(); // initialize OCI environment
-        if (my_do_logon (0, 10000, connectStr, verboseMode, logStream) == -1) {
-            objectStatus = WLM_STATUS_INIT_FAILED;  // No db-connection available, exit with error
-            if (logStream != NULL) {
-                logStream->lockCerr() << "Unable to connect to database..." << endl;
-                logStream->unlockCerr();
-            }
-        } else {
-            readSearchStmt ("searchStmt.txt", verboseMode, logStream);
-            readDCMTags ("dcmTagsStmt.txt", verboseMode, logStream);
-        }
-    } else {
-        if (dbUserNamev != NULL) {
-            strcpy(connectStr, dbUserNamev);
-            useDBConnect = OFFalse;
-        } else {
-            objectStatus = WLM_STATUS_INIT_FAILED;  // No filename given, exit with error
-            if (logStream != NULL) {
-                logStream->lockCerr() << "Unable to open PKI-inifile, set username to valid filename..." << endl;
-                logStream->unlockCerr();
-            }
-        }
-    }
+  strcpy( uidPrefix, "" );
+  strcpy( paStmt, "" );
+  strcpy( wlmCountStmt, "" );
+  strcpy( wlmIDStmt, "" );
+  strcpy( wlmIDInsertStmt, "" );
+  strcpy( wlmIDUpdateStmt, "" );
+  strcpy( connectStr, "" );
 }
 
 // ----------------------------------------------------------------------------
@@ -313,24 +72,483 @@ WlmDatabaseInteractionManager::~WlmDatabaseInteractionManager()
 // Parameters   : none.
 // Return Value : none.
 {
-/*
-  // terminate database connection if there is one
-*/
-    myDcmTag *hdt;
-    hdt = myDcmTagAnker;
-    myDcmTag *hdt2;
-    while (hdt) {
-        hdt2 = hdt;
-        hdt = hdt->next;
-        free(hdt2);
+}
+
+// ----------------------------------------------------------------------------
+
+void WlmDatabaseInteractionManager::SetLogStream( OFConsole *value )
+// Date         : March 15, 2002
+// Author       : Thomas Wilkens
+// Task         : Set value in member variable.
+// Parameters   : value - [in] The value to set.
+// Return Value : none.
+{
+  logStream = value;
+}
+
+// ----------------------------------------------------------------------------
+
+void WlmDatabaseInteractionManager::SetVerbose( OFBool value )
+// Date         : March 15, 2002
+// Author       : Thomas Wilkens
+// Task         : Set value in member variable.
+// Parameters   : value - [in] The value to set.
+// Return Value : none.
+{
+  verboseMode = value;
+}
+
+// ----------------------------------------------------------------------------
+
+OFCondition WlmDatabaseInteractionManager::ConnectToDatabase( char *dbDsn, char *dbUserName, char *dbUserPassword, int serialNumber, char *cfgFileMatchRecords, char *cfgFileSelectValues, WlmDatabaseType databaseType )
+// Date         : March 15, 2002
+// Author       : Thomas Wilkens
+// Task         : Connects to the database.
+// Parameters   : dbDsn               - [in] Data Source Name
+//                dbUserName          - [in] Database user name
+//                dbUserPassword      - [in] Database user password
+//                serialNumber        - [in] Serial number
+//                cfgFileMatchRecords - [in] Name of configuration file for determination of matching records.
+//                cfgFileSelectValues - [in] Name of configuration file for selection of attribute values.
+//                databaseType        - [in] Type of database.
+// Return Value : Indicates if the connection could be established or not.
+{
+  // check parameters
+  if( dbUserName == NULL || dbUserPassword == NULL || serialNumber == NULL || cfgFileMatchRecords == NULL || cfgFileSelectValues == NULL || databaseType == DATABASE_TYPE_UNKNOWN )
+  {
+    DumpMessage("Invalid parameters, cannot connect to database...");
+    return( WLM_EC_CannotConnectToDataSource );
+  }
+
+  // add serial number to OFFIS GO-Kard UID root
+  sprintf( uidPrefix, "1.2.276.0.7230010.8.%d", serialNumber );
+
+  // check if database statement configuration files are existent
+  if( !IsFileExistent( cfgFileMatchRecords ) || !IsFileExistent( cfgFileSelectValues ) )
+    return( WLM_EC_DatabaseStatementConfigFilesNotExistent );
+
+  // create connect string
+  if( databaseType == DATABASE_ORACLE )
+  {
+    if( dbDsn[0] )
+      sprintf( connectStr, "%s/%s@%s", dbUserName, dbUserPassword, dbDsn );
+    else
+      sprintf( connectStr, "%s/%s", dbUserName, dbUserPassword );
+  }
+
+  // initialize OCI environment
+  otl_connect::otl_initialize();
+
+  // logon to database
+  int error = LogonToDatabase( 0, 10000 );
+  if( error == -1 )
+    return( WLM_EC_CannotConnectToDataSource );
+
+  // read statements in configuration files
+  ReadSearchStmt( cfgFileMatchRecords );
+  ReadDcmTags( cfgFileSelectValues );
+
+  // return success
+  return( EC_Normal );
+}
+
+// ----------------------------------------------------------------------------
+
+OFCondition WlmDatabaseInteractionManager::DisconnectFromDatabase()
+// Date         : March 15, 2002
+// Author       : Thomas Wilkens
+// Task         : Disconnects from the database.
+// Parameters   : none.
+// Return Value : Indicates if the connection was disconnected successfully.
+{
+  // free list of tags and select statements for supported attributes
+  myDcmTag *hdt;
+  hdt = myDcmTagAnker;
+  myDcmTag *hdt2;
+  while( hdt )
+  {
+    hdt2 = hdt;
+    hdt = hdt->next;
+    free( hdt2 );
+  }
+
+  // disconnect from Oracle
+  db.logoff();
+
+  // return success
+  return( EC_Normal );
+}
+
+// ----------------------------------------------------------------------------
+
+void WlmDatabaseInteractionManager::ExtractRange( const char *theSource, const char *noValueMin, const char *noValueMax, const char *rangeValueMin, const char *rangeValueMax, char *targetMin, char *targetMax )
+// Date         : December 20, 2001
+// Author       : Marcel Claus
+// Task         : This function extracts the range from theSource , where theSource is in DICOM-Notation with "-".
+//                The range will be given back in targetMin and targetMax
+// Parameters   : theSource     - [in] The original string from which the range will be extracted.
+//                noValueMin    - [in] minvalue to be copied in targetMin when theSource is empty
+//                noValueMax    - [in] maxvalue to be copied in targetMax when theSource is empty
+//                rangeValueMin - [in] minvalue to be copied in targetMin when theSource has no lower bound
+//                rangeValueMax - [in] maxvalue to be copied in targetMax when theSource has no upper bound
+//                targetMin     - [in] minvalue of range
+//                targetMax     - [in] maxvalue of range
+// Return Value : none.
+{
+  if( theSource != NULL && theSource[0] != 0 )
+  {
+    char *rangeChar;
+    if( rangeChar = strstr( theSource, "-" ) )
+    {
+      // if source has no lower bound
+      if( theSource[0] == '-' )
+      {
+        strcpy( targetMin, rangeValueMin );
+        strcpy( targetMax, rangeChar + 1 );
+      }
+      else
+      {
+        // if source has no upper bound
+        if( theSource[ strlen(theSource) - 1 ] == '-' )
+        {
+          strcpy( targetMin, theSource );
+          targetMin[ strlen(theSource) - 1 ] = 0;
+          strcpy( targetMax, rangeValueMax );
+        }
+        // if source has lower and upper bound
+        else
+        {
+          strcpy( targetMax, rangeChar + 1 );
+          strcpy( targetMin, theSource );
+          rangeChar = strstr( targetMin, "-" );
+          rangeChar[0] = 0;
+        }
+      }
     }
-    db.logoff();
+    // if source has no range
+    else
+    {
+      strcpy( targetMin, theSource );
+      strcpy( targetMax, theSource );
+    }
+  }
+  // if source is empty use default values in noValueMin and noValueMax
+  else
+  {
+    strcpy( targetMin, noValueMin );
+    strcpy( targetMax, noValueMax );
+  }
+}
+
+// ----------------------------------------------------------------------------
+
+void WlmDatabaseInteractionManager::DoReplace( char *theStr, const char *oldStr, const char *newStr )
+// Date         : December 20, 2001
+// Author       : Marcel Claus
+// Task         : This function replaces in theStr all occurences of oldStr with newStr.
+//                The replacement is done directly on theStr: NO COPY WILL BE MADE!!!!
+// Parameters   : theStr - [in] The original string which will be modified.
+//                oldStr - [in] String which shall be replaced
+//                newStr - [in] String which shall be the replacement
+// Return Value : none.
+{
+  int oldLen, newLen;
+  char *p, *q;
+  oldLen = strlen(oldStr);
+  newLen = strlen(newStr);
+
+  // as long as we have something to replace...
+  while( NULL != ( p = strstr( theStr, oldStr ) ) )
+  {
+    memmove( q = p + newLen, p + oldLen, strlen( p + oldLen ) + 1 );
+    memcpy( p, newStr, newLen );
+  }
+}
+
+// ----------------------------------------------------------------------------
+
+void WlmDatabaseInteractionManager::ReadDcmTags( char *iniFile )
+// Date         : December 20, 2001
+// Author       : Marcel Claus
+// Task         : This function reads a list of DCMTags and select-statements from the file iniFile and
+//                stores all tags and statements in a list to which myDcmTagAnker is in the end an anchor.
+// Parameters   : iniFile - [in] Name of the file the tags and statements will be read from
+// Return Value : none.
+{
+  FILE *theDat;
+  myDcmTag *hdt;
+  char hStr[1500];
+  int mode;           // indicates if stmt oder Tag is read
+  int len;
+  myDcmTagAnker = 0;  // this variable is used as an anchor to the list of tags and statements of supported attributes
+  mode = 0;           // start reading attribute tags
+
+  // open file
+  if( theDat = fopen( iniFile, "r" ) )
+  {
+    // as long as we can still read one line from the file, do so
+    while( fgets( hStr, 1500, theDat ) )
+    {
+      // if the line which was read is neither empty nor a comment (which starts with a '#')
+      if( hStr[0] && hStr[0] != '#' )
+      {
+        // if we currently deal with reading select statements (mode == 1)
+        if( mode )
+        {
+          // copy the read line into the current list element, get rid of CR/LF and append a '\0'
+          strcpy( hdt->selectStmt, hStr );
+          len = strlen( hdt->selectStmt );
+          if( hdt->selectStmt[len-1] == 10 ) len--;
+          if( hdt->selectStmt[len-1] == 13 ) len--;
+          hdt->selectStmt[len] = 0;
+
+          // next we want to read an attribute tag again.
+          mode = 0;
+        }
+        // if we currently deal with reading attribute tags (mode == 0)
+        else
+        {
+          // initialize the list's head at the beginning
+          if( myDcmTagAnker == 0 )
+          {
+            myDcmTagAnker = (myDcmTag *) malloc( sizeof( myDcmTag ) );
+            hdt = myDcmTagAnker;
+            hdt->next = 0;
+          }
+          // if there is a head, initialize a new list element
+          else
+          {
+            hdt->next = (myDcmTag *) malloc( sizeof( myDcmTag ) );
+            hdt = hdt->next;
+            hdt->next = 0;
+          }
+          // copy the read line into the current list element, get rid of CR/LF and append a '\0'
+          strcpy( hdt->tag, hStr );
+          len = strlen( hdt->tag );
+          if( hdt->tag[len-1] == 10 ) len--;
+          if( hdt->tag[len-1] == 13 ) len--;
+          hdt->tag[len] = 0;
+
+          // next we want to read a select statement again.
+          mode = 1;
+        }
+      }
+    }
+
+    // close file
+    fclose(theDat);
+  }
+
+  // dump information if required
+  if( verboseMode && logStream != NULL )
+  {
+    // we can only dump information if there is some
+    if( myDcmTagAnker )
+    {
+      hdt = myDcmTagAnker;
+      while( hdt )
+      {
+        logStream->lockCout() << endl << "DCMT: " << hdt->tag << endl << "Stmt: " << hdt->selectStmt << endl;
+        logStream->unlockCout();
+        hdt = hdt->next;
+      }
+    }
+  }
+}
+
+// ----------------------------------------------------------------------------
+
+void WlmDatabaseInteractionManager::ReadOneStatement( const char *readLine, char *theStmt )
+// Date         : December 20, 2001
+// Author       : Marcel Claus
+// Task         : This function transforms a line which was read from a file into a string. In detail,
+//                carriage return and line feed characters (if there are any) are cut off at the end
+//                of the later returned string, and a '\0' character is appended at the end.
+// Parameters   : readLine - [in] The string as it was read from the file.
+//                theStmt  - [inout] The string without CR/LF and with \0.
+// Return Value : none.
+{
+  int len;
+	strcpy( theStmt, readLine );
+	len = strlen( theStmt );
+	if( theStmt[len-1] == 10 ) len--;
+	if( theStmt[len-1] == 13 ) len--;
+	theStmt[len] = 0;
+}
+
+// ----------------------------------------------------------------------------
+
+void WlmDatabaseInteractionManager::ReadSearchStmt( char *iniFile )
+// Date         : December 20, 2001
+// Author       : Marcel Claus
+// Task         : This function reads a list of SQL statements from the file iniFile.
+// Parameters   : iniFile - [in] Name of the file the SQL statements will be read from
+// Return Value : none.
+{
+  FILE *theDat;
+  char hStr[1500];
+  int goon, stmtNr;
+
+  //initialize variables
+  goon = 1;
+  paStmt[0] = 0;
+  wlmCountStmt[0] = 0;
+  wlmIDStmt[0] = 0;
+  wlmIDInsertStmt[0] = 0;
+  wlmIDUpdateStmt[0] = 0;
+
+  // open file
+  if( theDat = fopen(iniFile, "r") )
+  {
+		stmtNr = 0;
+
+    // as long as we want to go on and still another line can be read from the file
+    while( goon && fgets( hStr, 1500, theDat ) )
+    {
+      // if line is not empty or not a comment (which begins with '#')
+      if( hStr[0] && hStr[0] != '#' )
+      {
+        // one after the other we want to read (each in a new line) an SQL statement for
+        //   case 0 - selecting IDs of record of which attributes shall be requested during worklist management requests
+        //   case 1 - counting the number of actual database records for a certain recordID
+        //   case 2 - ###
+        //   case 3 - ###
+        //   case 4 - ###
+				switch( stmtNr )
+        {
+					case 0: ReadOneStatement( hStr, paStmt );
+						stmtNr = 1;
+						break;
+					case 1: ReadOneStatement( hStr, wlmCountStmt );
+						stmtNr = 2;
+						break;
+					case 2: ReadOneStatement( hStr, wlmIDStmt );
+						stmtNr = 3;
+						break;
+					case 3: ReadOneStatement( hStr, wlmIDInsertStmt );
+						stmtNr = 4;
+						break;
+					case 4: ReadOneStatement( hStr, wlmIDUpdateStmt );
+						goon = 0;
+						break;
+				}
+      }
+    }
+
+    // close file
+    fclose( theDat );
+  }
+
+  // dump information which was read
+  if( verboseMode && logStream != NULL )
+  {
+    logStream->lockCout() << endl << "PA-Statement: " << paStmt << endl;
+    logStream->lockCout() << endl << "Count-Statement: " << wlmCountStmt << endl;
+    logStream->lockCout() << endl << "ID-Statement: " << wlmIDStmt << endl;
+    logStream->lockCout() << endl << "Insert-Statement: " << wlmIDInsertStmt << endl;
+    logStream->lockCout() << endl << "Update-Statement: " << wlmIDUpdateStmt << endl;
+    logStream->unlockCout();
+  }
+}
+
+// ----------------------------------------------------------------------------
+
+int WlmDatabaseInteractionManager::LogonToDatabase( short doWait, long waitTime )
+// Date         : December 20, 2001
+// Author       : Marcel Claus
+// Task         : This function tries to logon to the database.
+// Parameters   : doWait    - [in] if doWait == 1 then (after a failure) try again to connect after waitTime seconds
+//                waitTime  - [in] time (in seconds) the application is supposed to wait before a connect is tried again
+// Return Value : none.
+{
+  char msg[200];
+
+  // initialize return value with error indicator
+  int returnValue = -1;
+
+  // if connect-information is available
+  if( connectStr[0] != 0 )
+  {
+    // dump some information if required
+    if( verboseMode )
+      DumpMessage("Trying to connect to database.");
+
+    short tryToConnect = 1;           // indicates if we want to try to connect to the database (1) or not (0)
+    long trials = 0;                   // counts how many times a database connection could not be established
+    long cummulativeWaitTime;
+
+    // try to connect to Oracle as long as tryToConnect is valid
+    while( tryToConnect )
+    {
+      try
+      {
+        // connect to Oracle; if this was not successful, an exception will be thrown
+        db.rlogon( connectStr );
+
+        // if we get to here the connection was successfully established
+        // dump some information if required
+        if( verboseMode )
+          DumpMessage("Database connection established.");
+
+        // indicate that we dont need to try to connect any more
+        tryToConnect = 0;
+
+        // return success
+        returnValue = 0;
+      }
+      catch( otl_exception& p )
+      {
+        // in case we caught an OTL exception
+
+        // increase counter
+        trials++;
+
+        // calculate waitTime (cummulative), we'll give the DB a litte more time to recover in each iteration
+        cummulativeWaitTime = trials * waitTime;
+
+        // up to a maximum of 5 Minutes (= 5 x 60 x 1000 = 300000 msec.)
+        if( cummulativeWaitTime > 300000 ) cummulativeWaitTime = 300000;
+
+        // dump some information about the error on stderr
+        cerr << p.msg << endl;      // print out error message
+        cerr << p.stm_text << endl; // print out SQL that caused the error
+        cerr << p.var_info << endl; // print out the variable that caused the error
+
+        // if doWait is valid wait waitTime sec.
+        if( doWait )
+        {
+          // dump some information if required
+          if( verboseMode )
+          {
+            sprintf( msg, "Could not connect to database. Will retry in %d milliseconds.", cummulativeWaitTime );
+            DumpMessage( msg );
+          }
+
+          // wait a certain number of seconds
+          WaitForSingleObject( GetCurrentProcess(), cummulativeWaitTime );
+        }
+          // otherwise exit with error
+        else
+        {
+          // dump some information if required
+          if( verboseMode )
+            DumpMessage("Could not connect to database. Will not retry.");
+
+          // exit function with error
+          tryToConnect = 0;
+        }
+      }
+    }
+  }
+
+  // return result
+  return( returnValue );
 }
 
 // ----------------------------------------------------------------------------
 
 void WlmDatabaseInteractionManager::DumpMessage( const char *message )
-// Date         : 1936
+// Date         : December 20, 2001
 // Author       : Jörg Riesmeier
 // Task         : This function dumps the given information on a stream.
 //                Used for dumping information in normal, debug and verbose mode.
@@ -347,58 +565,58 @@ void WlmDatabaseInteractionManager::DumpMessage( const char *message )
 
 // ----------------------------------------------------------------------------
 
-OFBool WlmDatabaseInteractionManager::IsObjectStatusOk()
-// Date         : December 19, 2005
-// Author       : Thomas Wilkens
-// Task         : Returns OFTrue if the object status is okay.
-// Parameters   : none.
-// Return Value : OFTrue - The object status is ok.
-//                OFFalse - The object status is not ok.
-{
-  if( objectStatus == WLM_STATUS_OK )
-    return OFTrue;
-  else
-    return OFFalse;
-}
-
-// ----------------------------------------------------------------------------
-
-OFBool WlmDatabaseInteractionManager::IsCalledApplicationEntityTitleSupported
-    ( char *calledApplicationEntityTitle )
+OFBool WlmDatabaseInteractionManager::IsCalledApplicationEntityTitleSupported( char *calledApplicationEntityTitle )
 // Date         : December 19, 2001
-// Author       : Thomas Wühlkens
+// Author       : Thomas Wilkens
 // Task         : Checks if the given called application entity title is supported. If this is the case,
 //                OFTrue will be returned, else OFFalse.
 // Parameters   : calledApplicationEntityTitle - [in] The application entity title which shall be checked
-//                for support. Valid pointer expected.
+//                                               for support. Valid pointer expected.
 // Return Value : OFTrue  - The called application entity title is supported.
 //                OFFalse - The called application entity title is not supported or it is not given.
 {
   // Check if calledApplicationEntityTitle is supported
   // At the moment we support everything: make sure SQL-Statements are configured the correct way!
-    return OFTrue;
+  return( OFTrue );
 }
 
 // ----------------------------------------------------------------------------
 
-// copies source into target and replaces all wildcards in DICOM-notation with
-// wildcards in SQL-notation:
-// * -> %
-// ? -> _
-void replaceWildcards (char *target, const char *source) {
-    if (source != NULL)
-    {
-        strcpy(target, source);
-        doReplace(target, "*", "%");
-        doReplace(target, "?", "_");
-    } else {
-        strcpy(target, "");
-    }
+void WlmDatabaseInteractionManager::ReplaceWildcards( char *target, const char *source )
+// Date         : December 19, 2001
+// Author       : Marcel Claus
+// Task         : This function copies source into target and replaces all wildcards in DICOM-notation with
+//                wildcards in SQL-notation: '*' -> '%' and '?' -> '_'
+// Parameters   : target - [inout] The result string.
+//                source - [in] The source string.
+// Return Value : none.
+{
+  if( source != NULL )
+  {
+    strcpy( target, source );
+    DoReplace( target, "*", "%" );
+    DoReplace( target, "?", "_" );
+  }
+  else
+  {
+    strcpy( target, "" );
+  }
 }
 
-void WlmDatabaseInteractionManager::GetMatchingRecordIDs( char **matchingKeyAttrValues,
-            unsigned long numOfMatchingKeyAttrValues, long *&matchingRecordIDs,
-            unsigned long &numOfMatchingRecordIDs )
+// ----------------------------------------------------------------------------
+
+// Date         : December 19, 1001
+// Author       : Marcel Claus
+// Task         : Datatype which is used in below function. List of long values.
+typedef struct pa
+{
+  long value;
+  struct pa *next;
+} pa;
+
+// ----------------------------------------------------------------------------
+
+void WlmDatabaseInteractionManager::GetMatchingRecordIDs( const char **matchingKeyAttrValues, unsigned long numOfMatchingKeyAttrValues, long *&matchingRecordIDs, unsigned long &numOfMatchingRecordIDs )
 // Date         : December 19, 1001
 // Author       : Marcel Claus
 // Task         : This function determines the ids of the database records that match the values which
@@ -419,267 +637,223 @@ void WlmDatabaseInteractionManager::GetMatchingRecordIDs( char **matchingKeyAttr
 //                numOfMatchingRecordIDs     - [out] Number of array fields in the above array matchingRecordIDs.
 // Return Value : none.
 {
+  char theStmt[2000], hStr[200];
+  char tmpMin[200], tmpMax[200];
+  long *ergArray;
+  long i;
 
-    char theStmt[2000], hStr[200];
-    char tmpMin[200], tmpMax[200];
-    long *ergArray;
-    long i;
+  ergArray = 0;
+  i = 0;
 
-    ergArray = 0;
-    i = 0;
+  // the first part here will prepare the statement which will be used to select the records ids
+  strcpy( theStmt, paStmt );
 
-    if (useDBConnect) {
-        strcpy(theStmt, paStmt);        // prepare statement
+  ReplaceWildcards( hStr, matchingKeyAttrValues[3] );
+  DoReplace( theStmt, ":MODALITY", hStr );
+  ReplaceWildcards( hStr, matchingKeyAttrValues[0] );
+  DoReplace( theStmt, ":AETITLE", hStr );
+  ReplaceWildcards( hStr, matchingKeyAttrValues[4] );
+  DoReplace( theStmt, ":PHYSICIAN", hStr );
 
-        replaceWildcards(hStr, matchingKeyAttrValues[3]);
-        doReplace(theStmt, ":MODALITY", hStr);
-        replaceWildcards(hStr, matchingKeyAttrValues[0]);
-        doReplace(theStmt, ":AETITLE", hStr);
-        replaceWildcards(hStr, matchingKeyAttrValues[4]);
-        doReplace(theStmt, ":PHYSICIAN", hStr);
+  // extract date values
+  ExtractRange( matchingKeyAttrValues[1], "to_char(sysdate, 'YYYYMMDD')", "to_char(sysdate, 'YYYYMMDD')", "19000101", "39991231", tmpMin, tmpMax );
+  DoReplace( theStmt, ":STARTDATE", tmpMin );
+  DoReplace( theStmt, ":STOPDATE", tmpMax );
 
-        extractRange(matchingKeyAttrValues[1],          // extract date values
-                     "to_char(sysdate, 'YYYYMMDD')", "to_char(sysdate, 'YYYYMMDD')",
-                     "19000101", "39991231",
-                     tmpMin, tmpMax);
-        doReplace(theStmt, ":STARTDATE", tmpMin);
-        doReplace(theStmt, ":STOPDATE", tmpMax);
+  // extract time values
+  ExtractRange( matchingKeyAttrValues[2], "to_char(sysdate, 'HH24MISS')", "to_char(sysdate, 'HH24MISS')", "000000", "235959", tmpMin, tmpMax );
+  DoReplace( theStmt, ":STARTTIME", tmpMin );
+  DoReplace( theStmt, ":STOPTIME", tmpMax );
 
-        extractRange(matchingKeyAttrValues[2],          // extract time values
-                     "to_char(sysdate, 'HH24MISS')", "to_char(sysdate, 'HH24MISS')",
-                     "000000", "235959",
-                     tmpMin, tmpMax);
-        doReplace(theStmt, ":STARTTIME", tmpMin);
-        doReplace(theStmt, ":STOPTIME", tmpMax);
+  // extract patgient name values
+  ExtractRange( matchingKeyAttrValues[5], " ", "}", " ", "}", tmpMin, tmpMax );
+  DoReplace( theStmt, ":PATIENT_MIN", tmpMin );
+  DoReplace( theStmt, ":PATIENT_MAX", tmpMax );
 
-        extractRange(matchingKeyAttrValues[5],          // extract patgient name values
-                     " ", "}",
-                     " ", "}",
-                     tmpMin, tmpMax);
-        doReplace(theStmt, ":PATIENT_MIN", tmpMin);
-        doReplace(theStmt, ":PATIENT_MAX", tmpMax);
+  // extract patgient name values
+  ExtractRange( matchingKeyAttrValues[6], "0", "999999999999", "0", "999999999999", tmpMin, tmpMax );
+  DoReplace( theStmt, ":PATIENTID_MIN", tmpMin );
+  DoReplace( theStmt, ":PATIENTID_MAX", tmpMax );
 
-        extractRange(matchingKeyAttrValues[6],          // extract patgient name values
-                     "0", "999999999999",
-                     "0", "999999999999",
-                     tmpMin, tmpMax);
-        doReplace(theStmt, ":PATIENTID_MIN", tmpMin);
-        doReplace(theStmt, ":PATIENTID_MAX", tmpMax);
+  // dump some information if required
+  if( verboseMode && logStream != NULL )
+  {
+    logStream->lockCout() << "getPAs " << theStmt << endl;
+    logStream->unlockCout();
+  }
 
-        if (verboseMode && (logStream != NULL))
-        {
-            logStream->lockCout() << "getPAs " << theStmt << endl;
-            logStream->unlockCout();
-        }
-        otl_stream oStream(2100, // buffer size
-                           theStmt, // SELECT statement
-                           db // connect object
-                          );
+  // now the preparation of the select statement is completed
 
-        // execute select and store values in datastructure pa
-        long thePA;
-        pa *paAnker;
-        pa *hpa;
-        paAnker = 0;
-        while (!oStream.eof()) {
-            oStream>>thePA;         // fetch next row
-            i++;
-            if (paAnker == 0) {
-                paAnker = (pa *) malloc(sizeof(pa));
-                hpa = paAnker;
-            } else {
-                hpa->next = (pa *) malloc(sizeof(pa));
-                hpa = hpa->next;
-            }
-            hpa->next = 0;
-            hpa->value = thePA;
-        }
+  // specify statement which shall be used to select records ids
+  otl_stream oStream( /* buffer size */ 2100, /* SELECT statement */ theStmt, /* connect object */ db );
 
-        // Thomas will unbedingt ein array of long, also müssen wir unsere schöne verkettete Liste darin umwandeln
-        if (paAnker && i > 0) { // if data found
-            hpa = paAnker;
-            pa *hpa2;
-            long j = 0;
-            ergArray = (long *) malloc(i*sizeof(long));
-            while (hpa && j < i) {
-                ergArray[j] = hpa->value;
-                if (verboseMode && (logStream != NULL))
-                {
-                    logStream->lockCout() << j << ". PA " << ergArray[j] << endl;
-                    logStream->unlockCout();
-                }
-                j++;
-                hpa2 = hpa;
-                hpa = hpa->next;
-                free(hpa2);
-            }
-            matchingRecordIDs = ergArray;
-        }
-        numOfMatchingRecordIDs = i;
-
-    } else {    // if PKI-inifile should be used
-
-        numOfMatchingRecordIDs = 1;
-        matchingRecordIDs = (long *) malloc(sizeof(long));
-        matchingRecordIDs[0] = -1;
-        if (verboseMode && (logStream != NULL)) {
-            logStream->lockCout() << "using PKI-file, only one PA " << matchingRecordIDs[0] << endl;
-            logStream->unlockCout();
-        }
-
+  // execute select and store values in datastructure pa
+  long thePA;
+  pa *paAnker;
+  pa *hpa;
+  paAnker = 0;
+  while( !oStream.eof() )
+  {
+    oStream >> thePA;         // fetch next row
+    i++;
+    if( paAnker == 0 )
+    {
+      paAnker = (pa *) malloc(sizeof(pa));
+      hpa = paAnker;
     }
+    else
+    {
+      hpa->next = (pa *) malloc(sizeof(pa));
+      hpa = hpa->next;
+    }
+    hpa->next = 0;
+    hpa->value = thePA;
+  }
+
+  // convert list into array of long (result value)
+  if( paAnker && i > 0 )
+  {
+    hpa = paAnker;
+    pa *hpa2;
+    long j = 0;
+    ergArray = (long *) malloc(i*sizeof(long));
+    while( hpa && j < i )
+    {
+      ergArray[j] = hpa->value;
+      if( verboseMode && logStream != NULL )
+      {
+        logStream->lockCout() << j << ". PA " << ergArray[j] << endl;
+        logStream->unlockCout();
+      }
+      j++;
+      hpa2 = hpa;
+      hpa = hpa->next;
+      free(hpa2);
+    }
+    matchingRecordIDs = ergArray;
+  }
+  numOfMatchingRecordIDs = i;
 }
 
 // ----------------------------------------------------------------------------
 
-// get the value of one DCMTag depending on  PA
-// target: if a value is found it will be copied in target
-// thePA: value of PA
-// tagName: name of the DCMTag
-static void get1Value (char *target, long numPA, const char *tagName) {
-    myDcmTag *hdt;
-    char thePA[20];
+void WlmDatabaseInteractionManager::GetDbValue( char *target, long numPA, const char *tagName )
+// Date         : December 20, 2001
+// Author       : Marcel Claus
+// Task         : This function gets the value of an attibute for a given PA (recordID).
+// Parameters   : target  - [out] If a value is found it will be copied into target.
+//                thePA   - [in] PA (recordID) of the record for which a certain value shall be selected.
+//                tagName - [in] Identifies the attribute for which a value shall be selected.
+// Return Value : none.
+{
+  myDcmTag *hdt;
+  char thePA[20];
 
-    sprintf(thePA, "%d", numPA);
-    target[0] = 0;
-    if (tagName[0] && thePA[0]) {
-        if (myDcmTagAnker) {
-            int found = 0;
-            hdt = myDcmTagAnker;
-            while (hdt && found == 0) {
-                if ( strcmp( hdt->tag, tagName ) == 0 ) // if tag found...
-                    found = 1;
-                else
-                    hdt = hdt->next;
-            }
-            if (found) {
-                char theStmt[1600];
-                strcpy(theStmt, hdt->selectStmt);
-                doReplace(theStmt, ":PA", thePA);
-                otl_stream oStream(2000, // buffer size
-                                   theStmt, // SELECT statement
-                                   db // connect object
-                                  );
-                oStream>>target;
-            }
-        }
+  // copy record ID into string
+  sprintf( thePA, "%d", numPA );
+
+  // initialize return value
+  target[0] = 0;
+
+  // if attribute and record ID are given
+  if( tagName[0] && thePA[0] )
+  {
+    // and if the list of select statements for supported attributes is given
+    if( myDcmTagAnker )
+    {
+      // try to find current attribute in list of tags and select statements for supported attributes
+      int found = 0;
+      hdt = myDcmTagAnker;
+      while( hdt && found == 0 )
+      {
+        if( strcmp( hdt->tag, tagName ) == 0 ) // if tag found...
+          found = 1;
+        else
+          hdt = hdt->next;
+      }
+
+      // if the given attribute was found, we can use the corresponding select statement to
+      // select a value from the database
+      if( found )
+      {
+        char theStmt[1600];
+        strcpy( theStmt, hdt->selectStmt );
+        DoReplace( theStmt, ":PA", thePA );
+        otl_stream oStream( /* buffer size */ 2000, /* SELECT statement */ theStmt, /* connect object */ db );
+        oStream >> target;
+      }
     }
+  }
 }
 
-void extractPKIvalues (char *name, char *value, const char *source) {
-    int i, status, nameIndex, valueIndex;
-    status = 0;
-    i = 0;
-    name[0] = 0;
-    nameIndex = 0;
-    value[0] = 0;
-    valueIndex = 0;
-    while (source[i]) {
-        if ( (source[i] == '<') && ((status == 1) || (status == 0)) ) {
-            status = 2;
-        } else {
-            if ((source[i] == ' ') && (status == 0)) {
-                status = 1;
-            } else {
-                if ((source[i] == '>') && (status == 2)) {
-                    status = 3;
-                } else {
+// ----------------------------------------------------------------------------
 
-                    switch (status) {
-                        case 0: name[nameIndex] = source[i]; nameIndex++; break;
-                        case 2: value[valueIndex] = source[i]; valueIndex++; break;
-                    }
+void WlmDatabaseInteractionManager::CheckForExistingStudyInstanceUid( char *dcmStudyInstanceUID, long recordID )
+// Date         : December 20, 2001
+// Author       : Marcel Claus
+// Task         : This function looks for an existing StudyInstanceUID in the database.
+//                If one exists for the dataset with the PA recordID, it will be returned in dcmStudyInstanceUID
+//                otherwise dcmStudyInstanceUID[0] will be 0 (empty string).
+// Parameters   : dcmStudyInstanceUID - [out] Result study instance UID.
+//                recordID            - [in] The id of the record which shall be taken into account.
+// Return Value : none.
+{
+  char thePA[20];
 
-                }
-            }
-        }
-        i++;
-    }
-    value[valueIndex] = 0;
-    name[nameIndex] = 0;
+  sprintf( thePA, "%d", recordID );
+  dcmStudyInstanceUID[0] = 0;
+
+  if( thePA[0] )
+  {
+    char theStmt[1600];
+    strcpy( theStmt, wlmIDStmt );
+    DoReplace( theStmt, ":PA", thePA );
+    otl_stream oStream( /* buffer size */ 2000, /* SELECT statement */ theStmt, /* connect object */ db );
+    oStream >> dcmStudyInstanceUID;
+    cout << "found DCM-WLM-ID: " << dcmStudyInstanceUID << " for PA: " << recordID << endl;
+  }
 }
 
-void getFileValue (char *target, const char *pkiUpperName, const char *pkiLowerName, const char *fileName) {
-FILE *theDat;
-char hStr[500], pkiTagName[100], pkiTagValue[100];
-short goon;
-    if (theDat = fopen(fileName, "r")) {
-        goon = 1;
-        while (fgets(hStr, 500, theDat) && goon) {
-            if (hStr[0] && hStr[0] != '#') {
-                extractPKIvalues(pkiTagName, pkiTagValue, hStr);
-                if ((strcmp(pkiTagName, pkiUpperName) == 0) || (strcmp(pkiTagName, pkiLowerName) == 0)) {
-                    strcpy(target, pkiTagValue);
-                    goon = 0;
-                }
-            }
-        }
-        fclose(theDat);
+// ----------------------------------------------------------------------------
+
+void WlmDatabaseInteractionManager::StoreStudyInstanceUid( const char *theStudyInstanceUID, long recordID )
+// Date         : December 20, 2001
+// Author       : Marcel Claus
+// Task         : This function stores theStudyInstanceUID for a certain dataset with PA recordID in the database.
+// Parameters   : theStudyInstanceUID - [in] The study instance uid which shall be stored.
+//                recordID            - [in] The record id of the record for which the study instance uid shall be stored.
+// Return Value : none.
+{
+  char thePA[20];
+  long anz;
+
+  sprintf( thePA, "%d", recordID );
+  if( thePA[0] )
+  {
+    char theStmt[1600];
+    strcpy(theStmt, wlmCountStmt);
+    DoReplace(theStmt, ":PA", thePA);
+    otl_stream oStream( /* buffer size */ 2000, /* SELECT statement */ theStmt, /* connect object */ db );
+    oStream >> anz;
+    if( anz > 0 )
+    {
+      //cout << "already found row for DCM-WLM-ID: updating " << endl;
+      strcpy( theStmt, wlmIDUpdateStmt );
     }
+    else
+    {
+      //cout << "no row found for DCM-WLM-ID: inserting " << endl;
+      strcpy( theStmt, wlmIDInsertStmt );
+    }
+    DoReplace( theStmt, ":PA", thePA );
+    DoReplace( theStmt, ":DCMWLMID", theStudyInstanceUID );
+    //cout << "Executing " << theStmt << endl;
+    otl_cursor::direct_exec( db, theStmt );
+    otl_cursor::direct_exec( db, "commit" );
+  }
 }
 
-
-/* read corresponding value from pki-inifile "fileName" for dcmTag with name
- * "tagName" and return it in "target". If nothing is found target[0] will be 0
- * (empty string).
- */
-void getPkiValue(char *target, const char *dcmName, const char *fileName) {
-    char valueStr1[200], valueStr2[200];
-    target[0] = 0;
-    if (strcmp(dcmName, "PatientID") == 0) {
-        getFileValue (target, "PATIENT_ID", "patient_id", fileName);
-        return;
-    }
-    if (strcmp(dcmName, "PatientsName") == 0) {
-        getFileValue (valueStr1, "PATIENT_LAST_NAME", "patient_last_name", fileName);
-        getFileValue (valueStr2, "PATIENT_FORE_NAME", "patient_fore_name", fileName);
-        /* sprintf(target, "%s^%s", valueStr1, valueStr2); */ // this ist standard conform and will be supported sometime by the new software from philips
-        sprintf(target, "%s, %s", valueStr1, valueStr2);
-        return;
-    }
-    if (strcmp(dcmName, "AccessionNumber") == 0) {
-        // if AccessionNumber is requested the value in PATIENT_UID is returned
-        // this is a bug in the format of the PKI-file!
-        getFileValue (target, "PATIENT_UID", "patient_uid", fileName);
-        //getFileValue (target, "ACCESSION_NUMBER", "accession_number", fileName);
-        return;
-    }
-    if (strcmp(dcmName, "ScheduledProcedureStepID") == 0) {
-        getFileValue (target, "ACCESSION_NUMBER", "accession_number", fileName);
-        return;
-    }
-    if (strcmp(dcmName, "RequestedProcedureID") == 0) {
-        getFileValue (target, "PATIENT_UID", "patient_uid", fileName);
-        return;
-    }
-    if (strcmp(dcmName, "PatientsBirthDate") == 0) {
-        getFileValue (target, "PATIENT_BIRTHDAY", "patient_birthday", fileName);
-        return;
-    }
-    if (strcmp(dcmName, "ScheduledProcedureStepStartTime") == 0) {
-        getFileValue (target, "EXAM_TIME", "exam_time", fileName);
-        return;
-    }
-    if (strcmp(dcmName, "PatientsSex") == 0) {
-        getFileValue (valueStr1, "PATIENT_GENDER", "patient_gender", fileName);
-        if ((valueStr1[0] == 'F') || (valueStr1[0] == 'f') || (valueStr1[0] == 'W') || (valueStr1[0] == 'w')) {
-            target[0] = 'F';
-        } else {
-            target[0] = 'M';
-        }
-        target[1] = 0;
-        return;
-    }
-    if (strcmp(dcmName, "ScheduledProcedureStepStartDate") == 0) {
-        getFileValue (target, "EXAM_DATE", "exam_date", fileName);
-        return;
-    }
-    if (strcmp(dcmName, "ScheduledPerformingPhysiciansName") == 0) {
-        getFileValue (target, "PHYSICIAN_CODE", "physician_code", fileName);
-        return;
-    }
-}
-
+// ----------------------------------------------------------------------------
 
 void WlmDatabaseInteractionManager::GetAttributeValueForMatchingRecord( DcmTagKey tag, long recordID, char *&value )
 // Date         : December 20, 2001
@@ -691,25 +865,66 @@ void WlmDatabaseInteractionManager::GetAttributeValueForMatchingRecord( DcmTagKe
 //                value    - [out] Pointer to a newly created string that contains the requested value.
 // Return Value : none.
 {
+  char tmpStr[2000];
 
-    char tmpStr[2000];
-    if (verboseMode && (logStream != NULL)) {
-        logStream->lockCout() << "get1Value PA: " << recordID << ", TagName: " << DcmTag(tag).getTagName() << endl;
-        logStream->unlockCout();
-    }
+  // dump some information in verbose mode
+  if( verboseMode && logStream != NULL )
+  {
+    logStream->lockCout() << "GetDbValue PA: " << recordID << ", TagName: " << DcmTag(tag).getTagName() << endl;
+    logStream->unlockCout();
+  }
 
-    if (tag == DCM_StudyInstanceUID) {
-        dcmGenerateUniqueIdentifier(tmpStr, uidPrefix);
-    } else {
-        if (useDBConnect) {
-            get1Value (tmpStr, recordID, DcmTag(tag).getTagName());
-        } else {
-            getPkiValue (tmpStr, DcmTag(tag).getTagName(), connectStr);
-        }
-    }
-    value = new char[strlen(tmpStr) + 1];
-    strcpy(value, tmpStr);
+  // if we are to select a value for the Study Instance UID attribute
+  if( tag == DCM_StudyInstanceUID )
+  {
+    // Check if this dataset has been sent before,
+    // if so the previously sent StudyInstanceUID will be return in tmpStr
+		CheckForExistingStudyInstanceUid( tmpStr, recordID );
 
+    // if no StudyInstanceUID has been generated
+		if( tmpStr[0] == 0 )
+    {
+      // generate a new Study Instance UID
+      dcmGenerateUniqueIdentifier( tmpStr, uidPrefix );
+
+      // and store it in the database for this dataset
+			StoreStudyInstanceUid( tmpStr,  recordID );
+		}
+  }
+  // if we are dealing with some other attribute
+  else
+  {
+    // select a value from the database
+    GetDbValue( tmpStr, recordID, DcmTag(tag).getTagName() );
+  }
+
+  // copy generated/selected value into out parameter
+  value = new char[ strlen(tmpStr) + 1 ];
+  strcpy( value, tmpStr );
+}
+
+// ----------------------------------------------------------------------------
+
+OFBool WlmDatabaseInteractionManager::IsFileExistent( char *fileName )
+// Date         : March 19, 2002
+// Author       : Thomas Wilkens
+// Task         : Checks if a file is existent.
+// Parameters   : fileName - [in] Name of the file which shall be checked for existent.
+// Return Value : OFTrue  - File is existent.
+//                OFFalse - File is not existent.
+{
+  if( fileName == NULL )
+    return( OFFalse );
+
+  OFBool isFileExistent = OFFalse;
+  FILE* fp = fopen( fileName, "r" );
+  if( fp != NULL )
+  {
+    isFileExistent = OFTrue;
+    fclose(fp);
+  }
+
+  return( isFileExistent );
 }
 
 // ----------------------------------------------------------------------------
@@ -717,10 +932,9 @@ void WlmDatabaseInteractionManager::GetAttributeValueForMatchingRecord( DcmTagKe
 /*
 ** CVS Log
 ** $Log: wldbim.cc,v $
-** Revision 1.5  2002-01-08 19:14:52  joergr
-** Minor adaptations to keep the gcc compiler on Linux and Solaris happy.
-** Currently only the "file version" of the worklist SCP is supported on
-** Unix systems.
+** Revision 1.6  2002-04-18 10:15:48  wilkens
+** Corrected recognition of non-standard characters, added new supported return
+** key attributes, updated checking the search mask.
 **
 ** Revision 1.4  2002/01/08 17:46:02  joergr
 ** Reformatted source files (replaced Windows newlines by Unix ones, replaced

@@ -21,10 +21,10 @@
  *
  *  Purpose: Class for connecting to a file-based data source.
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-04-11 13:07:28 $
+ *  Last Update:      $Author: wilkens $
+ *  Update Date:      $Date: 2002-04-18 10:15:49 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmwlm/libsrc/wldsfs.cc,v $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -68,63 +68,319 @@ END_EXTERN_C
 
 // ----------------------------------------------------------------------------
 
-WlmDataSourceFiles::WlmDataSourceFiles( OFConsole *logStreamv, const OFBool verbosev, char *dfPathv )
+WlmDataSourceFileSystem::WlmDataSourceFileSystem()
 // Date         : December 10, 2001
 // Author       : Thomas Wilkens
 // Task         : Constructor.
-// Parameters   : logStreamv - [in] Stream that can be used to dump information.
-//                verbosev   - [in] Verbose mode.
-//                dfPathv    - [in] Path to sub-directories that contain file-based data sources.
+// Parameters   : none.
 // Return Value : none.
-  : WlmDataSource( logStreamv, verbosev ), dfPath( NULL ), handleToReadLockFile( 0 )
+  : WlmDataSource(), handleToReadLockFile( 0 ), dfPath( NULL )
 {
-  // Check parameter
-  if( dfPathv == NULL )
-  {
-    // Indicate that the initialization could not be performed properly
-    objectStatus = WLM_STATUS_INIT_FAILED;
-  }
-  else
-  {
-    // Copy parameter into member variable
-    dfPath = new char[ strlen(dfPathv) + 1 ];
-    strcpy( dfPath, dfPathv );
-  }
 }
 
 // ----------------------------------------------------------------------------
 
-WlmDataSourceFiles::~WlmDataSourceFiles()
+WlmDataSourceFileSystem::~WlmDataSourceFileSystem()
 // Date         : December 10, 2001
 // Author       : Thomas Wilkens
 // Task         : Destructor.
 // Parameters   : none.
 // Return Value : none.
 {
-  // free memory
-  if( dfPath != NULL ) delete dfPath;
-
   // release read lock on data source if it is set
   if( readLockSetOnDataSource ) ReleaseReadlock();
+
+  //free memory
+  if( dfPath != NULL ) delete dfPath;
 }
 
 // ----------------------------------------------------------------------------
 
-OFBool WlmDataSourceFiles::IsDataSourceAvailable()
-// Date         : December 10, 2001
+OFCondition WlmDataSourceFileSystem::ConnectToDataSource()
+// Date         : March 14, 2002
 // Author       : Thomas Wilkens
-// Task         : Checks if the file-based data source is available.
+// Task         : Connects to the data source.
 // Parameters   : none.
-// Return Value : OFTrue  - The file-based data source is available.
-//                OFFalse - The file-based data source is not available.
+// Return Value : Indicates if the connection was established succesfully.
 {
   // check if the specified path is existent and accessible for reading
-  return OFStandard::isReadable(dfPath);
+  if( OFStandard::isReadable(dfPath) )
+    return( WLM_EC_CannotConnectToDataSource );
+  else
+    return( EC_Normal );
 }
 
 // ----------------------------------------------------------------------------
 
-OFBool WlmDataSourceFiles::IsCalledApplicationEntityTitleSupported()
+OFCondition WlmDataSourceFileSystem::DisconnectFromDataSource()
+// Date         : March 14, 2002
+// Author       : Thomas Wilkens
+// Task         : Disconnects from the data source.
+// Parameters   : none.
+// Return Value : Indicates if the disconnection was completed succesfully.
+{
+  return( EC_Normal );
+}
+
+// ----------------------------------------------------------------------------
+
+void WlmDataSourceFileSystem::SetDfPath( const char *value )
+// Date         : March 14, 2002
+// Author       : Thomas Wilkens
+// Task         : Set member variable.
+// Parameters   : value - Value for member variable.
+// Return Value : none.
+{
+  if( value != NULL )
+  {
+    if( dfPath != NULL ) delete dfPath;
+    dfPath = new char[ strlen(value) + 1 ];
+    strcpy( dfPath, value );
+  }
+}
+
+// ----------------------------------------------------------------------------
+
+OFBool WlmDataSourceFileSystem::CheckIdentifiers( DcmDataset *idents )
+// Date         : 1995
+// Author       : Andrew Hewett
+// Task         : This function checks if all elements in the search mask are supported matching key
+//                attributes. It returns OFTrue if this is the case, OFFalse if this is not the case.
+//                (Thomas Wilkens: This function is different from WlmDataSourceDatabase::CheckSearchMask
+//                This file here contains the original source code, the code in WlmDataSourceDatabase::
+//                CheckSearchMask is the later (and more correct) version.)
+// Parameters   : idents - [in] Contains the search mask.
+// Return Value : OFTrue  - No invalid matching key attribute was found in the search mask.
+//                OFFalse - At least one invalid matching key attribute was found in the search mask.
+{
+  char msg[200];
+
+  // Initialize counter that counts invalid elements in the search mask. This
+  // variable will later be used to determine the return value for this function.
+  int invalidMatchingKeyCount = 0;
+
+  // remember the number of data elements in the search mask
+  unsigned long cids = idents->card();
+
+  // dump some information if required
+  if( verbose )
+    DumpMessage( "Checking the search mask." );
+
+  // this member variable indicates if we encountered an unsupported
+  // optional key attribute in the search mask; initialize it with false.
+  foundUnsupportedOptionalKey = OFFalse;
+
+  // start a loop; go through all data elements in the search mask, for each element, do some checking
+  for( unsigned long i=0; i<cids ; i++ )
+  {
+    // determine current element
+    DcmElement *element = idents->getElement(i);
+
+    // determine current element's length
+    Uint32 length = element->getLength();
+
+    // determine current element's tag
+    DcmTag tag( element->getTag() );
+
+    // if the current element is NOT a sequence
+    if( element->ident() != EVR_SQ )
+    {
+      // figure out if the current element refers to an attribute which
+      // is a supported matching key attribute. Use level 0 for this check.
+      if( IsSupportedMatchingKeyAttribute( tag.getXTag(), 0 ) )
+      {
+        // if the current element is a supported matching key attribute, do nothing (everything is ok)
+      }
+      // if current element refers to an attribute which is not a supported
+      // matching key attribute, figure out if the current element refers to an
+      // attribute which is a supported return key attribute. Use level 0 for this check.
+      else if( IsSupportedReturnKeyAttribute( tag.getXTag(), 0 ) )
+      {
+        // if the current element refers to a supported return key attribute
+        // everything is okay as long as this attribute does not contain a
+        // value. In general, according to the DICOM standard it does not make
+        // sense that a return key attribute which is NOT a matching key attribute
+        // contains a value. Hence, we specify that in such a case (i.e. if the
+        // current element's length does not equal 0) we've found an unsupported
+        // optional key attribute. Note that we do not want to remember this attribute
+        // in the list of error elements.
+        if (length != 0)
+        {
+          foundUnsupportedOptionalKey = OFTrue;
+        }
+      }
+      // if current element does neither refer to a supported matching
+      // key attribute nor does it refer to a supported return key attribute,
+      // we've found an unsupported optional key attribute; we want to remember
+      // this attribute in the list of error elements.
+      else
+      {
+        foundUnsupportedOptionalKey = OFTrue;
+        PutErrorElements( tag );
+      }
+
+      // check if the current element meets certain conditions (at the moment
+      // we only check if the element's data type and value go together)
+      // ### Also das hier macht keinen Sinn. Man muß doch nur diejenigen Elemente auf
+      // ### Validität ihrer Attribute checken, die tatsächlich zum Matchen benutzt werden.
+      // ### Wenn in den return key attributen ein Wert drinsteht, dann muß eine Warnmeldung
+      // ### ausgegeben werden!!
+      if( !CheckMatchingKey( element ) )
+      {
+        // if there is a problem with the current element, increase the corresponding counter
+        invalidMatchingKeyCount++;
+      }
+    }
+    // or if the current element IS a sequence
+    else
+    {
+      // figure out if the current sequence element refers to an attribute which
+      // is a supported matching key attribute. Use level 0 for this check.
+      if( IsSupportedMatchingKeyAttribute( tag.getXTag(), 0 ) )
+      {
+        // if the current element is a supported matching key attribute, check its length
+        if( length != 0 )
+        {
+          // if length does not equal 0, check inside the sequence
+
+          // remember that elements is a sequence of items
+          DcmSequenceOfItems *sequits = (DcmSequenceOfItems*)element;
+
+          // check the cardinality of the sequence; note that we may
+          // not have more than 1 item in a sequence item whithin the search mask
+          if( sequits->card() > 1 )
+          {
+            PutOffendingElements(tag);
+            errorComment->putString("More than 1 item in sequence.");
+            sprintf( msg, "WlmDataSource::CheckIdentifiers : Error: More than one item in sequence %s (search mask) encountered.", tag.getTagName() );
+            DumpMessage( msg );
+            invalidMatchingKeyCount++;
+          }
+
+          // get the first item
+          DcmItem *item = sequits->getItem(0);
+
+          // determine the cardinality of this item
+          unsigned long cit = item->card();
+
+          // go through all elements of this item
+          for( unsigned long k=0 ; k<cit ; k++ )
+          {
+            // determine the current element
+            DcmElement *elementseq = item->getElement(k);
+
+            // determine the length of the current element
+            Uint32 length1 = elementseq->getLength();
+
+            // determine the current element's tag
+            DcmTag tagseq( elementseq->getTag() );
+
+            // figure out if the current element refers to an attribute which
+            // is a supported matching key attribute. Use level 1 for this check.
+            if( IsSupportedMatchingKeyAttribute( tagseq.getXTag(), 1 ) )
+            {
+              // if the current element is a supported matching key attribute, do nothing (everything is ok)
+            }
+            // if current element refers to an attribute which is not a supported
+            // matching key attribute, figure out if the current element refers to an
+            // attribute which is a supported return key attribute. Use level 1 for this check.
+            else if( IsSupportedReturnKeyAttribute( tagseq.getXTag(), 1 ) )
+            {
+              // if the current element refers to a supported return key attribute
+              // everything is okay as long as this attribute does not contain a
+              // value. In general, according to the DICOM standard it does not make
+              // sense that a return key attribute which is NOT a matching key attribute
+              // contains a value. Hence, we specify that in such a case (i.e. if the
+              // current element's length does not equal 0) we've found an unsupported
+              // optional key attribute. Note that we do not want to remember this attribute
+              // in the list of error elements.
+              if( length1 != 0 )
+              {
+                foundUnsupportedOptionalKey = OFTrue;
+              }
+            }
+            // if current element does neither refer to a supported matching
+            // key attribute nor does it refer to a supported return key attribute,
+            // we've found an unsupported optional key attribute; we want to remember
+            // this attribute in the list of error elements.
+            else
+            {
+              foundUnsupportedOptionalKey = OFTrue;
+              PutErrorElements(tagseq);
+            }
+
+            // check if the current element meets certain conditions (at the moment
+            // we only check if the element's data type and value go together)
+            // ### Genau wie oben: Das hier macht keinen Sinn. Man muß doch nur diejenigen Elemente auf
+            // ### Validität ihrer Attribute checken, die tatsächlich zum Matchen benutzt werden.
+            // ### Wenn in den return key attributen ein Wert drinsteht, dann muß eine Warnmeldung
+            // ### ausgegeben werden!!
+            if( !CheckMatchingKey( elementseq ) )
+            {
+              // if there is a problem with the current element, increase the corresponding counter
+              invalidMatchingKeyCount++;
+            }
+          }
+
+#ifdef DELETE_UNEXPECTED_ELEMENTS_FROM_IDENTIFIER
+          // remove unexpected (error) elements from this item
+          unsigned long d = errorElements->getVM();
+          for( unsigned long e=0 ; e<d ; e++ )
+          {
+            DcmTag errortag;
+            errortag = errorElements->get(e);
+            delete item->remove(errortag);
+          }
+#endif
+        }
+      }
+
+      // if current sequence element refers to an attribute which is not a supported
+      // matching key attribute, figure out if the current sequence element refers to an
+      // attribute which is a supported return key attribute. Use level 0 for this check.
+      else if( IsSupportedReturnKeyAttribute( tag.getXTag(), 0 ) )
+      {
+        // if this is the case and the current element's length does
+        // not equal 0, we've found an unsupported optional key attribute
+        if( length != 0 )
+        {
+          foundUnsupportedOptionalKey = OFTrue;
+        }
+      }
+      // if current element does neither refer to a supported matching key
+      // attribute nor does it refer to a supported return key attribute,
+      // we've found an unsupported optional key attribute; we want to remember
+      // this attribute in the list of error elements.
+      else
+      {
+        foundUnsupportedOptionalKey = OFTrue;
+        PutErrorElements( tag );
+      }
+    }
+  }
+
+#ifdef DELETE_UNEXPECTED_ELEMENTS_FROM_IDENTIFIER
+  // remove unexpected (error) elements from this item
+  unsigned long d = errorElements->getVM();
+  for( unsigned long h=0 ; h<d ; h++ )
+  {
+    DcmTag errortag;
+    errortag = errorElements->get(h);
+    delete idents->remove(errortag);
+  }
+#endif
+
+  // if there was more than 1 error, override the error comment
+  if( invalidMatchingKeyCount > 1 )
+    errorComment->putString("Syntax error in 1 or more matching keys");
+
+  // return OFTrue or OFFalse depending on the number of invalid matching attributes
+  return( invalidMatchingKeyCount == 0 );
+}
+
+// ----------------------------------------------------------------------------
+
+OFBool WlmDataSourceFileSystem::IsCalledApplicationEntityTitleSupported()
 // Date         : December 10, 2001
 // Author       : Thomas Wilkens
 // Task         : Checks if the called application entity title is supported. This function expects
@@ -152,7 +408,7 @@ OFBool WlmDataSourceFiles::IsCalledApplicationEntityTitleSupported()
 
 // ----------------------------------------------------------------------------
 
-OFBool WlmDataSourceFiles::IsDirectory( const char* path )
+OFBool WlmDataSourceFileSystem::IsDirectory( const char* path )
 // Date         : 1995
 // Author       : Andrew Hewett
 // Task         : This function checks if the specified path refers to an existing directory.
@@ -165,7 +421,7 @@ OFBool WlmDataSourceFiles::IsDirectory( const char* path )
 
 // ----------------------------------------------------------------------------
 
-WlmDataSourceStatusType WlmDataSourceFiles::StartFindRequest( DcmDataset &findRequestIdentifiers )
+WlmDataSourceStatusType WlmDataSourceFileSystem::StartFindRequest( DcmDataset &findRequestIdentifiers )
 // Date         : 1995
 // Author       : Andrew Hewett
 // Task         : This function mainly goes through all worklist files and determines those records
@@ -307,7 +563,7 @@ WlmDataSourceStatusType WlmDataSourceFiles::StartFindRequest( DcmDataset &findRe
         // Check if stream could be opened.
         if( i1Stream.Fail() )
         {
-          CERR << "WlmDataSourceFiles::StartFindRequest : Cannot open worklist file " << file1 << endl;
+          CERR << "WlmDataSourceFileSystem::StartFindRequest : Cannot open worklist file " << file1 << endl;
           status = WLM_REFUSED_OUT_OF_RESOURCES;
           break;
         }
@@ -324,7 +580,7 @@ WlmDataSourceStatusType WlmDataSourceFiles::StartFindRequest( DcmDataset &findRe
         // Figure out if an error occured while the file was read.
         if( fileform->error() != EC_Normal )
         {
-          CERR << "WlmDataSourceFiles::StartFindRequest : Error: " << fileform->error().text() << ": while reading worklist file " << file1 << endl;
+          CERR << "WlmDataSourceFileSystem::StartFindRequest : Error: " << fileform->error().text() << ": while reading worklist file " << file1 << endl;
           errorComment->putString("Error in SCP Worklist Database");
           status = WLM_FAILED_UNABLE_TO_PROCESS;
           delete fileform;
@@ -335,7 +591,7 @@ WlmDataSourceStatusType WlmDataSourceFiles::StartFindRequest( DcmDataset &findRe
         DcmDataset *dsetfile = fileform->getDataset();
         if( dsetfile == NULL )
         {
-          CERR << "WlmDataSourceFiles::StartFindRequest : Error: empty worklist file " << file1 << endl;
+          CERR << "WlmDataSourceFileSystem::StartFindRequest : Error: empty worklist file " << file1 << endl;
           errorComment->putString("Error in SCP Worklist Database");
           status = WLM_FAILED_UNABLE_TO_PROCESS;
           delete fileform;
@@ -467,7 +723,7 @@ WlmDataSourceStatusType WlmDataSourceFiles::StartFindRequest( DcmDataset &findRe
             // ### Suchmaske darf laut Standard niemals 0 sein, da eine Sequenz in der Suchmaske immer
             // ### genau ein Item beinhalten soll (das seinerseits jedoch leer sein kann
             // ### (siehe 2001er Standard, Teil 4, Abschnitt C.2.2.2.6). In solchen Fällen wollen
-            // ### wir bestimmt eine Warnmeldung ausgeben. (siehe auch WlmDataSource::CheckIdentifiers().)
+            // ### wir bestimmt eine Warnmeldung ausgeben. (siehe auch CheckIdentifiers().)
             // ### Wenn wir diese Funktion dann so implementieren, daß match am Anfang auf true steht
             // ### und nur dann auf false gesetzt wird, wenn etwas explizit nicht matched, können wir
             // ### außer der Ausgabe der Warnemldung auch einfach nichts weiter machen als zum nächsten
@@ -487,7 +743,7 @@ WlmDataSourceStatusType WlmDataSourceFiles::StartFindRequest( DcmDataset &findRe
               // ### wilkens: Sollte man hier eventuell noch mal prüfen, ob wir eventuell mehr
               // ### als ein Item in einer Sequenz in der Suchmaske haben? In einen solchen
               // ### unerlaubten Fall sollte sicherlich auch eine Warnmeldung ausgegeben werden.
-              // ### Das wird schon in WlmDataSource::CheckIdentifiers geprüft, aber für den Fall,
+              // ### Das wird schon in CheckIdentifiers geprüft, aber für den Fall,
               // ### das eine ungültige Suchmaske trotzdem bearbeitet wird, sollte man das sicherlich
               // ### auch hier noch mal machen.
 
@@ -802,7 +1058,7 @@ WlmDataSourceStatusType WlmDataSourceFiles::StartFindRequest( DcmDataset &findRe
 
 // ----------------------------------------------------------------------------
 
-DcmDataset *WlmDataSourceFiles::NextFindResponse( WlmDataSourceStatusType &rStatus )
+DcmDataset *WlmDataSourceFileSystem::NextFindResponse( WlmDataSourceStatusType &rStatus )
 // Date         : 1995
 // Author       : Andrew Hewett
 // Task         : This function assumes that function StartFindRequest(...) was called earlier and that that
@@ -943,7 +1199,7 @@ DcmDataset *WlmDataSourceFiles::NextFindResponse( WlmDataSourceStatusType &rStat
         // ### Standard niemals 0 sein, da eine Sequenz in der Suchmaske immer
         // ### genau ein Item beinhalten soll (das seinerseits jedoch leer sein kann
         // ### (siehe 2001er Standard, Teil 4, Abschnitt C.2.2.2.6). In solchen Fällen wollen
-        // ### wir bestimmt eine Warnmeldung ausgeben. (siehe auch WlmDataSource::CheckIdentifiers().)
+        // ### wir bestimmt eine Warnmeldung ausgeben. (siehe auch CheckIdentifiers().)
         OFBool emptyIdentifiersItem = OFFalse;
         if( sequits->card() == 0 )
           emptyIdentifiersItem = OFTrue;
@@ -1001,7 +1257,7 @@ DcmDataset *WlmDataSourceFiles::NextFindResponse( WlmDataSourceStatusType &rStat
           // ### wilkens: Hier gehen wir wieder implizit davon aus, daß in einer Sequenz in der
           // ### Suchmaske genau ein Item vorhanden ist. Das ist ja laut Standard auch so vorgesehen
           // ### aber wollen wir nicht noch lieber einmal genau prüfen, ob es auch wirklich so ist?
-          // ### Auch wenn wir das in WlmDataSource::CheckIdentifiers schon mal gemacht haben, sollten
+          // ### Auch wenn wir das in CheckIdentifiers schon mal gemacht haben, sollten
           // ### wir diesen Fall nochmal abfangen und eine entsprechende Warnmeldung ausgeben.
 
           // Get its cardinality.
@@ -1070,7 +1326,7 @@ DcmDataset *WlmDataSourceFiles::NextFindResponse( WlmDataSourceStatusType &rStat
 
 // ----------------------------------------------------------------------------
 
-int WlmDataSourceFiles::SetReadlock()
+int WlmDataSourceFileSystem::SetReadlock()
 // Date         : 1995
 // Author       : Andrew Hewett
 // Task         : This function sets a read lock on the LOCKFILE in the directory
@@ -1087,14 +1343,14 @@ int WlmDataSourceFiles::SetReadlock()
   // if no path or no calledApplicationEntityTitle is specified, return
   if( dfPath == NULL || calledApplicationEntityTitle == NULL )
   {
-    CERR << "WlmDataSourceFiles::SetReadlock : Path to data source files not specified." << endl;
+    CERR << "WlmDataSourceFileSystem::SetReadlock : Path to data source files not specified." << endl;
     return 1;
   }
 
   // if a read lock has already been set, return
   if( readLockSetOnDataSource )
   {
-    CERR << "WlmDataSourceFiles::SetReadlock : Nested read locks not allowed!" << endl;
+    CERR << "WlmDataSourceFileSystem::SetReadlock : Nested read locks not allowed!" << endl;
     return 1;
   }
 
@@ -1116,7 +1372,7 @@ int WlmDataSourceFiles::SetReadlock()
   if( handleToReadLockFile == -1 )
   {
     handleToReadLockFile = 0;
-    CERR << "WlmDataSourceFiles::SetReadlock : Cannot open file " << lockname.c_str() << endl << "return code: " << strerror(errno) << endl;
+    CERR << "WlmDataSourceFileSystem::SetReadlock : Cannot open file " << lockname.c_str() << endl << "return code: " << strerror(errno) << endl;
     return 1;
   }
 
@@ -1142,7 +1398,7 @@ int WlmDataSourceFiles::SetReadlock()
 #endif
   if( result == -1 )
   {
-    CERR << "WlmDataSourceFiles::SetReadlock : Cannot set read lock on file " << lockname.c_str() << endl;
+    CERR << "WlmDataSourceFileSystem::SetReadlock : Cannot set read lock on file " << lockname.c_str() << endl;
     dcmtk_plockerr("return code");
     close( handleToReadLockFile );
     handleToReadLockFile = 0;
@@ -1158,7 +1414,7 @@ int WlmDataSourceFiles::SetReadlock()
 
 // ----------------------------------------------------------------------------
 
-int WlmDataSourceFiles::ReleaseReadlock()
+int WlmDataSourceFileSystem::ReleaseReadlock()
 // Date         : 1995
 // Author       : Andrew Hewett
 // Task         : This function releases a read lock on the LOCKFILE in the given directory.
@@ -1174,7 +1430,7 @@ int WlmDataSourceFiles::ReleaseReadlock()
   // if no read lock is set, return
   if( !readLockSetOnDataSource )
   {
-    CERR << "WlmDataSourceFiles::ReleaseReadlock : No readlock to release" << endl;
+    CERR << "WlmDataSourceFileSystem::ReleaseReadlock : No readlock to release" << endl;
     return 1;
   }
 
@@ -1196,7 +1452,7 @@ int WlmDataSourceFiles::ReleaseReadlock()
 #endif
   if( result == -1 )
   {
-    CERR << "WlmDataSourceFiles::ReleaseReadlock : Cannot release read lock" << endl;
+    CERR << "WlmDataSourceFileSystem::ReleaseReadlock : Cannot release read lock" << endl;
     dcmtk_plockerr("return code");
     return 1;
   }
@@ -1214,7 +1470,7 @@ int WlmDataSourceFiles::ReleaseReadlock()
 
 // ----------------------------------------------------------------------------
 
-OFBool WlmDataSourceFiles::IsWorklistFile( const char *fname )
+OFBool WlmDataSourceFileSystem::IsWorklistFile( const char *fname )
 // Date         : 1995
 // Author       : Andrew Hewett
 // Task         : This function returns OFTrue if the given filename refers to a worklist file,
@@ -1244,7 +1500,7 @@ OFBool WlmDataSourceFiles::IsWorklistFile( const char *fname )
 
 // ----------------------------------------------------------------------------
 
-OFBool WlmDataSourceFiles::IsValidWorklistFile( DcmDataset *dsetfile, const char *fname )
+OFBool WlmDataSourceFileSystem::IsValidWorklistFile( DcmDataset *dsetfile, const char *fname )
 // Date         : 1995
 // Author       : Andrew Hewett
 // Task         : This function checks all elements in the data set information which is contained
@@ -1283,7 +1539,7 @@ OFBool WlmDataSourceFiles::IsValidWorklistFile( DcmDataset *dsetfile, const char
   if( obj == NULL )
   {
     ok = OFFalse;
-    CERR << "WlmDataSourceFiles::IsValidWorklistFile : Missing ScheduledProcedureStepSequence in worklist database file: " << fname << endl;
+    CERR << "WlmDataSourceFileSystem::IsValidWorklistFile : Missing ScheduledProcedureStepSequence in worklist database file: " << fname << endl;
   }
   else
   {
@@ -1311,7 +1567,7 @@ OFBool WlmDataSourceFiles::IsValidWorklistFile( DcmDataset *dsetfile, const char
       if( !IsSupportedReturnKeyAttribute( tag.getXTag(), 0 ) )
       {
         ok = OFFalse;
-        CERR << "WlmDataSourceFiles::IsValidWorklistFile : Unsupported attribute: " << tag << " " << tag.getTagName() << " in worklist database file " << fname << endl;
+        CERR << "WlmDataSourceFileSystem::IsValidWorklistFile : Unsupported attribute: " << tag << " " << tag.getTagName() << " in worklist database file " << fname << endl;
         break;
       }
 
@@ -1343,7 +1599,7 @@ OFBool WlmDataSourceFiles::IsValidWorklistFile( DcmDataset *dsetfile, const char
           if( !IsSupportedReturnKeyAttribute( tagseq.getXTag(), 1 ) )
           {
             ok = OFFalse;
-            CERR << "WlmDataSourceFiles::IsValidWorklistFile : Unsupported attribute: " << tagseq << " " << tagseq.getTagName() << " in worklist database file: " << fname << endl;
+            CERR << "WlmDataSourceFileSystem::IsValidWorklistFile : Unsupported attribute: " << tagseq << " " << tagseq.getTagName() << " in worklist database file: " << fname << endl;
             break;
           }
         } //for
@@ -1363,7 +1619,7 @@ OFBool WlmDataSourceFiles::IsValidWorklistFile( DcmDataset *dsetfile, const char
 
 // ----------------------------------------------------------------------------
 
-char *WlmDataSourceFiles::FindStringValue( DcmItem *dset, const DcmTagKey &tag )
+char *WlmDataSourceFileSystem::FindStringValue( DcmItem *dset, const DcmTagKey &tag )
 // Date         : 1995
 // Author       : Andrew Hewett
 // Task         : This function looks for a DICOM string element with tag 'tag' in the data set which
@@ -1386,7 +1642,7 @@ char *WlmDataSourceFiles::FindStringValue( DcmItem *dset, const DcmTagKey &tag )
 
 // ----------------------------------------------------------------------------
 
-OFBool WlmDataSourceFiles::ValueMatchesPattern( const char *value, const char *pattern )
+OFBool WlmDataSourceFileSystem::ValueMatchesPattern( const char *value, const char *pattern )
 // Date         : 1995
 // Author       : Andrew Hewett
 // Task         : This function determines if the value which was passed matches the pattern which was
@@ -1443,7 +1699,7 @@ OFBool WlmDataSourceFiles::ValueMatchesPattern( const char *value, const char *p
 
 // ----------------------------------------------------------------------------
 
-OFBool WlmDataSourceFiles::WildcardMatch( const char *value, const char *pattern )
+OFBool WlmDataSourceFileSystem::WildcardMatch( const char *value, const char *pattern )
 // Date         : 1995
 // Author       : Andrew Hewett
 // Task         : This function determines if the string value which was passed as argument 1 matches
@@ -1490,7 +1746,7 @@ OFBool WlmDataSourceFiles::WildcardMatch( const char *value, const char *pattern
 
 // ----------------------------------------------------------------------------
 
-OFBool WlmDataSourceFiles::MatchStarSymbol( const char *value, const char *pattern )
+OFBool WlmDataSourceFileSystem::MatchStarSymbol( const char *value, const char *pattern )
 // Date         : 1995
 // Author       : Andrew Hewett
 // Task         : This function is called, if the search pattern contains a star symbol. It determines
@@ -1536,7 +1792,7 @@ OFBool WlmDataSourceFiles::MatchStarSymbol( const char *value, const char *patte
 
 // ----------------------------------------------------------------------------
 
-OFBool WlmDataSourceFiles::MatchTime( const char *value, const char *pattern )
+OFBool WlmDataSourceFileSystem::MatchTime( const char *value, const char *pattern )
 // Date         : 1995
 // Author       : Andrew Hewett
 // Task         : This function determines if the time value which was passed as a first argument matches
@@ -1617,7 +1873,7 @@ OFBool WlmDataSourceFiles::MatchTime( const char *value, const char *pattern )
 
 // ----------------------------------------------------------------------------
 
-OFBool WlmDataSourceFiles::MatchDate( const char *value, const char *pattern )
+OFBool WlmDataSourceFileSystem::MatchDate( const char *value, const char *pattern )
 // Date         : 1995
 // Author       : Andrew Hewett
 // Task         : This function determines if the (date) value which was passed as a first argument matches
@@ -1698,7 +1954,7 @@ OFBool WlmDataSourceFiles::MatchDate( const char *value, const char *pattern )
 
 // ----------------------------------------------------------------------------
 
-OFBool WlmDataSourceFiles::RangematchTime( const char *timeValue, const char *timeRange )
+OFBool WlmDataSourceFileSystem::RangematchTime( const char *timeValue, const char *timeRange )
 // Date         : 1995
 // Author       : Andrew Hewett
 // Task         : This function returns OFTrue if the time value which was passed as a first argument
@@ -1797,7 +2053,7 @@ OFBool WlmDataSourceFiles::RangematchTime( const char *timeValue, const char *ti
 
 // ----------------------------------------------------------------------------
 
-OFBool WlmDataSourceFiles::RangematchDate( const char *dateValue, const char *dateRange )
+OFBool WlmDataSourceFileSystem::RangematchDate( const char *dateValue, const char *dateRange )
 // Date         : 1995
 // Author       : Andrew Hewett
 // Task         : This function returns OFTrue if the date value which was passed as a first argument
@@ -1896,7 +2152,7 @@ OFBool WlmDataSourceFiles::RangematchDate( const char *dateValue, const char *da
 
 // ----------------------------------------------------------------------------
 
-char *WlmDataSourceFiles::StandardizeTime( const char *timeString )
+char *WlmDataSourceFileSystem::StandardizeTime( const char *timeString )
 // Date         : 1995
 // Author       : Andrew Hewett
 // Task         : This function creates a standard string which represents a certain time value
@@ -1982,7 +2238,7 @@ char *WlmDataSourceFiles::StandardizeTime( const char *timeString )
 
 // ----------------------------------------------------------------------------
 
-char *WlmDataSourceFiles::StandardizeDate( const char *dateString )
+char *WlmDataSourceFileSystem::StandardizeDate( const char *dateString )
 // Date         : 1995
 // Author       : Andrew Hewett
 // Task         : This function creates a standard string which represents a certain date value
@@ -2038,7 +2294,7 @@ char *WlmDataSourceFiles::StandardizeDate( const char *dateString )
 
 // ----------------------------------------------------------------------------
 
-OFBool WlmDataSourceFiles::IsSupportedMatchingKeyAttribute( const DcmTagKey &key, int level )
+OFBool WlmDataSourceFileSystem::IsSupportedMatchingKeyAttribute( const DcmTagKey &key, int level )
 // Date         : 1995
 // Author       : Andrew Hewett
 // Task         : This function checks if the given tag refers to an attribute which is a supported
@@ -2084,7 +2340,7 @@ OFBool WlmDataSourceFiles::IsSupportedMatchingKeyAttribute( const DcmTagKey &key
 
 // ----------------------------------------------------------------------------
 
-OFBool WlmDataSourceFiles::IsSupportedReturnKeyAttribute( const DcmTagKey &key, int level )
+OFBool WlmDataSourceFileSystem::IsSupportedReturnKeyAttribute( const DcmTagKey &key, int level )
 // Date         : 1995
 // Author       : Andrew Hewett
 // Task         : This function checks if the given tag refers to an attribute which is a supported
@@ -2163,7 +2419,11 @@ OFBool WlmDataSourceFiles::IsSupportedReturnKeyAttribute( const DcmTagKey &key, 
 /*
 ** CVS Log
 ** $Log: wldsfs.cc,v $
-** Revision 1.5  2002-04-11 13:07:28  joergr
+** Revision 1.6  2002-04-18 10:15:49  wilkens
+** Corrected recognition of non-standard characters, added new supported return
+** key attributes, updated checking the search mask.
+**
+** Revision 1.5  2002/04/11 13:07:28  joergr
 ** Use the new standard file system routines like fileExists() etc.
 ** Added support for MT-safe system routines (cuserid, getlogin, readdir, ...).
 **
