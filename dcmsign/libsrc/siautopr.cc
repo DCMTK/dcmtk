@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: SiAuthorizationProfile
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-11-07 16:49:03 $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2000-11-07 18:07:08 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -80,7 +80,7 @@ OFBool SiAuthorizationProfile::attributeRequired(const DcmTagKey& key) const
   if (key == DCM_SeriesInstanceUID) return OFTrue;
   
   /* Any overlay data present */
-  if ((key.getGroup() >= 0x6000) && (key.getGroup() < 0x6020) && (key.getGroup() & 0x0001 == 0)) return OFTrue;
+  if ((key.getGroup() >= 0x6000) && (key.getGroup() < 0x6020) && ((key.getGroup() & 0x0001) == 0)) return OFTrue;
   
   /* Any image data present - we assume this means the Image Pixel Module and not just PixelData */
   if (key.getGroup() == 0x0028) 
@@ -134,7 +134,10 @@ const int siautopr_cc_dummy_to_keep_linker_from_moaning = 0;
 
 /*
  *  $Log: siautopr.cc,v $
- *  Revision 1.1  2000-11-07 16:49:03  meichel
+ *  Revision 1.2  2000-11-07 18:07:08  joergr
+ *  Minor code purifications to keep Sun CC 2.0.1 quiet.
+ *
+ *  Revision 1.1  2000/11/07 16:49:03  meichel
  *  Initial release of dcmsign module for DICOM Digital Signatures
  *
  *

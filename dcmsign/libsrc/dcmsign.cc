@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DcmSignature
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-11-07 16:49:02 $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2000-11-07 18:07:07 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -275,7 +275,7 @@ SI_E_Condition DcmSignature::allocateMACID(Uint16& newID)
   {
     if (!isAllocated[i])
     {
-      newID = i;
+      newID = (Uint16)i;
       i = 65536;
       result = SI_EC_Normal;
     } else ++i;
@@ -846,7 +846,10 @@ const int dcmsign_cc_dummy_to_keep_linker_from_moaning = 0;
 
 /*
  *  $Log: dcmsign.cc,v $
- *  Revision 1.1  2000-11-07 16:49:02  meichel
+ *  Revision 1.2  2000-11-07 18:07:07  joergr
+ *  Minor code purifications to keep Sun CC 2.0.1 quiet.
+ *
+ *  Revision 1.1  2000/11/07 16:49:02  meichel
  *  Initial release of dcmsign module for DICOM Digital Signatures
  *
  *

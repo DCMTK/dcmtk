@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: SiRSA
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-11-07 16:49:07 $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2000-11-07 18:07:09 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -79,7 +79,7 @@ SI_E_Condition SiRSA::sign(
     }
     unsigned int sigLen = 0;
     // we have to cast away const on inputHash yet because of OpenSSL limitations
-    int error = RSA_sign(openSSLmac, (unsigned char *)inputHash, inputHashSize, outputSignature, &sigLen, rsa);
+    int error = RSA_sign(openSSLmac, (unsigned char *)inputHash, (unsigned int)inputHashSize, outputSignature, &sigLen, rsa);
     outputSignatureSize = sigLen;    
     if (error < 0) return SI_EC_OpenSSLFailure;
     return SI_EC_Normal;    
@@ -112,7 +112,7 @@ SI_E_Condition SiRSA::verify(
     }
     // we have to cast away const on inputHash yet because of OpenSSL limitations
     // we have to cast away const on inputSignature yet because of OpenSSL limitations
-    int error = RSA_verify(openSSLmac, (unsigned char *)inputHash, inputHashSize, (unsigned char *)inputSignature, inputSignatureSize, rsa);
+    int error = RSA_verify(openSSLmac, (unsigned char *)inputHash, (unsigned int)inputHashSize, (unsigned char *)inputSignature, (unsigned int)inputSignatureSize, rsa);
     if (error < 0) return SI_EC_OpenSSLFailure; else if (error > 0) verified = OFTrue;
     return SI_EC_Normal;
 }
@@ -137,7 +137,10 @@ const int sirsa_cc_dummy_to_keep_linker_from_moaning = 0;
 
 /*
  *  $Log: sirsa.cc,v $
- *  Revision 1.1  2000-11-07 16:49:07  meichel
+ *  Revision 1.2  2000-11-07 18:07:09  joergr
+ *  Minor code purifications to keep Sun CC 2.0.1 quiet.
+ *
+ *  Revision 1.1  2000/11/07 16:49:07  meichel
  *  Initial release of dcmsign module for DICOM Digital Signatures
  *
  *

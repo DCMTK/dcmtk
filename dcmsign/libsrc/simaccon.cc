@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: SiMACConstructor
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-11-07 16:49:05 $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2000-11-07 18:07:08 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -69,7 +69,7 @@ SI_E_Condition SiMACConstructor::flushBuffer(SiMAC& mac)
   stream.GetBuffer(bufptr, bufLen);
   if (bufLen > 0) 
   {
-    if (dumpFile) fwrite(bufptr, 1, bufLen, dumpFile);
+    if (dumpFile) fwrite(bufptr, 1, (size_t)bufLen, dumpFile);
     result = mac.digest((unsigned char *)bufptr, bufLen);
   }
   return result;
@@ -156,7 +156,10 @@ const int simaccon_cc_dummy_to_keep_linker_from_moaning = 0;
 
 /*
  *  $Log: simaccon.cc,v $
- *  Revision 1.1  2000-11-07 16:49:05  meichel
+ *  Revision 1.2  2000-11-07 18:07:08  joergr
+ *  Minor code purifications to keep Sun CC 2.0.1 quiet.
+ *
+ *  Revision 1.1  2000/11/07 16:49:05  meichel
  *  Initial release of dcmsign module for DICOM Digital Signatures
  *
  *

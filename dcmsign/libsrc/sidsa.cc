@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: SiDSA
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-11-07 16:49:04 $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2000-11-07 18:07:08 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -79,7 +79,7 @@ SI_E_Condition SiDSA::sign(
         break;
     }
     unsigned int sigLen = 0;
-    int error = DSA_sign(openSSLmac, inputHash, inputHashSize, outputSignature, &sigLen, dsa);
+    int error = DSA_sign(openSSLmac, inputHash, (unsigned int)inputHashSize, outputSignature, &sigLen, dsa);
     outputSignatureSize = sigLen;    
     if (error < 0) return SI_EC_OpenSSLFailure;
     return SI_EC_Normal;    
@@ -111,7 +111,7 @@ SI_E_Condition SiDSA::verify(
     }
 
     // we have to cast away const on inputSignature yet because of OpenSSL limitations
-    int error = DSA_verify(openSSLmac, inputHash, inputHashSize, (unsigned char *)inputSignature, inputSignatureSize, dsa);
+    int error = DSA_verify(openSSLmac, inputHash, (unsigned int)inputHashSize, (unsigned char *)inputSignature, (unsigned int)inputSignatureSize, dsa);
     if (error < 0) return SI_EC_OpenSSLFailure; else if (error > 0) verified = OFTrue;
     return SI_EC_Normal;
 }
@@ -137,7 +137,10 @@ const int sidsa_cc_dummy_to_keep_linker_from_moaning = 0;
 
 /*
  *  $Log: sidsa.cc,v $
- *  Revision 1.1  2000-11-07 16:49:04  meichel
+ *  Revision 1.2  2000-11-07 18:07:08  joergr
+ *  Minor code purifications to keep Sun CC 2.0.1 quiet.
+ *
+ *  Revision 1.1  2000/11/07 16:49:04  meichel
  *  Initial release of dcmsign module for DICOM Digital Signatures
  *
  *
