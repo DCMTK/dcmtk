@@ -22,9 +22,9 @@
  *  Purpose: encapsulation of old style vs. ISO C++ standard includes
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2003-10-13 13:38:44 $
+ *  Update Date:      $Date: 2003-12-11 13:40:22 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/include/Attic/ofstdinc.h,v $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -65,7 +65,16 @@ using namespace std;
 #include "oflist.h"
 #endif
 
-// we don't yet support <locale>, <map>, <memory>, <new>, <numeric>, <queue>, <set>
+// we don't yet support <locale>, <map>, <memory>, <numeric>, <queue>, <set>
+
+// define INCLUDE_NEW to include <new> or <new.h> if available
+#ifdef INCLUDE_NEW
+#ifdef USE_STD_CXX_INCLUDES
+#include <new>
+#elif defined(HAVE_NEW_H)
+#include <new.h>
+#endif
+#endif
 
 // define INCLUDE_STACK to include "ofstack.h"
 #ifdef INCLUDE_STACK
@@ -303,7 +312,10 @@ END_EXTERN_C
 /*
  * CVS/RCS Log:
  * $Log: ofstdinc.h,v $
- * Revision 1.7  2003-10-13 13:38:44  meichel
+ * Revision 1.8  2003-12-11 13:40:22  meichel
+ * Added support for including <new> or <new.h>
+ *
+ * Revision 1.7  2003/10/13 13:38:44  meichel
  * Activated Borland stdlib workaround for compiler versions other than 4.
  *
  * Revision 1.6  2002/12/16 16:20:45  meichel
