@@ -78,8 +78,8 @@ install: all
 clean:
 	rm -f $(objs) $(progs) $(LOCALTRASH) $(TRASH)
 
-distclean: clean
-	rm -f $(DISTTRASH)
+distclean:
+	rm -f $(objs) $(progs) $(LOCALTRASH) $(DISTTRASH)
 
 
 dependencies:

@@ -2,7 +2,6 @@
 #	Makefile for dcmtls/libsrc
 #
 
-
 @SET_MAKE@
 
 SHELL = /bin/sh
@@ -42,9 +41,8 @@ $(library): $(objs)
 clean:
 	rm -f $(objs) $(library) $(TRASH)
 
-distclean: clean
+distclean:
 	rm -f $(objs) $(library) $(DISTTRASH)
-
 
 
 dependencies:

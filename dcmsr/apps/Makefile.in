@@ -2,7 +2,6 @@
 #	Makefile for dcmsr/apps
 #
 
-
 @SET_MAKE@
 
 SHELL = /bin/sh
