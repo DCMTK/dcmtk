@@ -1,0 +1,57 @@
+#
+#	Makefile for dcmsign/libsrc
+#
+
+
+@SET_MAKE@
+
+SHELL = /bin/sh
+VPATH=@srcdir@:@top_srcdir@/include:@top_srcdir@/@configdir@/include
+srcdir=@srcdir@
+top_srcdir=@top_srcdir@
+configdir=@top_srcdir@/@configdir@
+
+ofstddir=$(top_srcdir)/../ofstd
+dcmdatadir=$(top_srcdir)/../dcmdata
+
+LOCALINCLUDES=-I$(ofstddir)/include -I$(dcmdatadir)/include \
+              -I$(includedir)/ofstd -I$(includedir)/dcmdata
+
+LOCALDEFS= 
+
+include $(configdir)/@common_makefile@
+
+objs= 	dcmsign.o sicert.o sidsa.o simd5.o siprivat.o sirsa.o sisprof.o \
+	siautopr.o sicreapr.o simaccon.o sinullpr.o siripemd.o sisha1.o sitypes.o
+
+all: libdcmsign.$(LIBEXT)
+
+install: all
+	$(configdir)/mkinstalldirs $(libdir)
+	$(INSTALL_DATA) libdcmsign.$(LIBEXT) $(libdir)/libdcmsign.$(LIBEXT)
+
+
+clean:
+	rm -f $(objs) 
+	rm -f libdcmsign.$(LIBEXT) 
+	rm -f $(TRASH)
+
+distclean: clean
+	rm -f $(DISTTRASH) 
+
+
+libdcmsign.$(LIBEXT): $(objs)
+	$(AR) $(ARFLAGS) $@ $(objs)
+	$(RANLIB) $@
+
+
+# Dependencies
+
+dependencies:
+	$(CXX) -MM $(defines) $(includes) $(CPPFLAGS) $(CXXFLAGS) *.cc > $(DEP)
+
+$(objs): config.h
+
+
+include $(DEP)
+

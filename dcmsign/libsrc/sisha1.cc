@@ -1,0 +1,106 @@
+/*
+ *
+ *  Copyright (C) 1998-2000, OFFIS
+ *
+ *  This software and supporting documentation were developed by
+ *
+ *    Kuratorium OFFIS e.V.
+ *    Healthcare Information and Communication Systems
+ *    Escherweg 2
+ *    D-26121 Oldenburg, Germany
+ *
+ *  THIS SOFTWARE IS MADE AVAILABLE,  AS IS,  AND OFFIS MAKES NO  WARRANTY
+ *  REGARDING  THE  SOFTWARE,  ITS  PERFORMANCE,  ITS  MERCHANTABILITY  OR
+ *  FITNESS FOR ANY PARTICULAR USE, FREEDOM FROM ANY COMPUTER DISEASES  OR
+ *  ITS CONFORMITY TO ANY SPECIFICATION. THE ENTIRE RISK AS TO QUALITY AND
+ *  PERFORMANCE OF THE SOFTWARE IS WITH THE USER.
+ *
+ *  Module: dcmsign
+ *
+ *  Author: Norbert Loxen, Marco Eichelberg
+ *
+ *  Purpose:
+ *    classes: SiSHA1
+ *
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2000-11-07 16:49:08 $
+ *  CVS/RCS Revision: $Revision: 1.1 $
+ *  Status:           $State: Exp $
+ *
+ *  CVS/RCS Log at end of file
+ *
+ */
+
+#include "osconfig.h"
+
+#ifdef WITH_OPENSSL
+
+#include "sisha1.h"
+
+BEGIN_EXTERN_C
+#include <stdlib.h> /* for NULL */
+#include <openssl/sha.h>
+END_EXTERN_C
+
+ 
+SiSHA1::SiSHA1()
+: ctx(new SHA_CTX())
+{
+  initialize();
+}
+
+SiSHA1::~SiSHA1()
+{
+  delete ctx;
+}
+
+unsigned long SiSHA1::getSize() const
+{
+  return SHA_DIGEST_LENGTH;
+}
+
+SI_E_Condition SiSHA1::initialize()
+{
+  SHA1_Init(ctx);
+  return SI_EC_Normal;
+}
+
+SI_E_Condition SiSHA1::digest(const unsigned char *data, unsigned long length)
+{
+  if (length == 0) return SI_EC_Normal;
+  if ((data == NULL)||(ctx == NULL)) return SI_EC_IllegalCall;
+  SHA1_Update(ctx, data, length);
+  return SI_EC_Normal;
+}
+
+SI_E_Condition SiSHA1::finalize(unsigned char *result)
+{
+  if ((result == NULL)||(ctx == NULL)) return SI_EC_IllegalCall;
+  SHA1_Final(result, ctx);
+  return SI_EC_Normal;  
+}
+
+E_MACType SiSHA1::macType() const
+{
+  return EMT_SHA1;
+}
+
+const char *SiSHA1::getDefinedTerm() const
+{
+  return SI_DEFTERMS_SHA1;
+}
+
+#else /* WITH_OPENSSL */
+
+const int sisha1_cc_dummy_to_keep_linker_from_moaning = 0;
+
+#endif
+
+/*
+ *  $Log: sisha1.cc,v $
+ *  Revision 1.1  2000-11-07 16:49:08  meichel
+ *  Initial release of dcmsign module for DICOM Digital Signatures
+ *
+ *
+ */
+

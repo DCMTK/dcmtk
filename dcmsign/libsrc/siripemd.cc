@@ -1,0 +1,105 @@
+/*
+ *
+ *  Copyright (C) 1998-2000, OFFIS
+ *
+ *  This software and supporting documentation were developed by
+ *
+ *    Kuratorium OFFIS e.V.
+ *    Healthcare Information and Communication Systems
+ *    Escherweg 2
+ *    D-26121 Oldenburg, Germany
+ *
+ *  THIS SOFTWARE IS MADE AVAILABLE,  AS IS,  AND OFFIS MAKES NO  WARRANTY
+ *  REGARDING  THE  SOFTWARE,  ITS  PERFORMANCE,  ITS  MERCHANTABILITY  OR
+ *  FITNESS FOR ANY PARTICULAR USE, FREEDOM FROM ANY COMPUTER DISEASES  OR
+ *  ITS CONFORMITY TO ANY SPECIFICATION. THE ENTIRE RISK AS TO QUALITY AND
+ *  PERFORMANCE OF THE SOFTWARE IS WITH THE USER.
+ *
+ *  Module: dcmsign
+ *
+ *  Author: Norbert Loxen, Marco Eichelberg
+ *
+ *  Purpose:
+ *    classes: SiRIPEMD160
+ *
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2000-11-07 16:49:07 $
+ *  CVS/RCS Revision: $Revision: 1.1 $
+ *  Status:           $State: Exp $
+ *
+ *  CVS/RCS Log at end of file
+ *
+ */
+
+#include "osconfig.h"
+
+#ifdef WITH_OPENSSL
+
+#include "siripemd.h"
+
+BEGIN_EXTERN_C
+#include <stdlib.h> /* for NULL */
+#include <openssl/ripemd.h>
+END_EXTERN_C
+
+SiRIPEMD160::SiRIPEMD160()
+: ctx(new RIPEMD160_CTX())
+{
+  initialize();
+}
+
+SiRIPEMD160::~SiRIPEMD160()
+{
+  delete ctx;
+}
+
+unsigned long SiRIPEMD160::getSize() const
+{
+  return RIPEMD160_DIGEST_LENGTH;
+}
+
+SI_E_Condition SiRIPEMD160::initialize()
+{
+  RIPEMD160_Init(ctx);
+  return SI_EC_Normal;
+}
+
+SI_E_Condition SiRIPEMD160::digest(const unsigned char *data, unsigned long length)
+{
+  if (length == 0) return SI_EC_Normal;
+  if ((data == NULL)||(ctx == NULL)) return SI_EC_IllegalCall;
+  RIPEMD160_Update(ctx, data, length);
+  return SI_EC_Normal;
+}
+
+SI_E_Condition SiRIPEMD160::finalize(unsigned char *result)
+{
+  if ((result == NULL)||(ctx == NULL)) return SI_EC_IllegalCall;
+  RIPEMD160_Final(result, ctx);
+  return SI_EC_Normal;  
+}
+
+E_MACType SiRIPEMD160::macType() const
+{
+  return EMT_RIPEMD160;
+}
+
+const char *SiRIPEMD160::getDefinedTerm() const
+{
+  return SI_DEFTERMS_RIPEMD160;
+}
+
+#else /* WITH_OPENSSL */
+
+const int siripemd_cc_dummy_to_keep_linker_from_moaning = 0;
+
+#endif
+
+/*
+ *  $Log: siripemd.cc,v $
+ *  Revision 1.1  2000-11-07 16:49:07  meichel
+ *  Initial release of dcmsign module for DICOM Digital Signatures
+ *
+ *
+ */
+

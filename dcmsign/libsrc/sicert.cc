@@ -1,0 +1,338 @@
+/*
+ *
+ *  Copyright (C) 1998-2000, OFFIS
+ *
+ *  This software and supporting documentation were developed by
+ *
+ *    Kuratorium OFFIS e.V.
+ *    Healthcare Information and Communication Systems
+ *    Escherweg 2
+ *    D-26121 Oldenburg, Germany
+ *
+ *  THIS SOFTWARE IS MADE AVAILABLE,  AS IS,  AND OFFIS MAKES NO  WARRANTY
+ *  REGARDING  THE  SOFTWARE,  ITS  PERFORMANCE,  ITS  MERCHANTABILITY  OR
+ *  FITNESS FOR ANY PARTICULAR USE, FREEDOM FROM ANY COMPUTER DISEASES  OR
+ *  ITS CONFORMITY TO ANY SPECIFICATION. THE ENTIRE RISK AS TO QUALITY AND
+ *  PERFORMANCE OF THE SOFTWARE IS WITH THE USER.
+ *
+ *  Module: dcmsign
+ *
+ *  Author: Norbert Loxen
+ *
+ *  Purpose:
+ *    classes: SiCertificate
+ *
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2000-11-07 16:49:03 $
+ *  CVS/RCS Revision: $Revision: 1.1 $
+ *  Status:           $State: Exp $
+ *
+ *  CVS/RCS Log at end of file
+ *
+ */
+
+#include "osconfig.h"
+
+#ifdef WITH_OPENSSL
+
+#include "sicert.h"
+#include "sirsa.h"   /* for class SiRSA */
+#include "sidsa.h"   /* for class SiDSA */
+#include "dcstack.h"
+#include "dcitem.h"
+#include "dcvrcs.h"
+#include "dcvrobow.h"
+#include "dcdeftag.h"
+
+BEGIN_EXTERN_C
+#include <openssl/evp.h>
+#include <openssl/x509.h>
+#include <openssl/pem.h>
+END_EXTERN_C
+
+SiCertificate::SiCertificate()
+: x509(NULL)
+{
+}
+
+SiCertificate::~SiCertificate()
+{
+  if (x509) X509_free(x509);	
+}
+
+E_KeyType SiCertificate::getKeyType()
+{
+  E_KeyType result = EKT_none;
+  if (x509)
+  {
+    EVP_PKEY *pkey = X509_extract_key(x509);
+    if (pkey)
+    {
+      switch(pkey->type)
+      {
+        case EVP_PKEY_RSA:
+          result = EKT_RSA;
+          break;
+        case EVP_PKEY_DSA:
+          result = EKT_DSA;
+          break;
+        case EVP_PKEY_DH:
+          result = EKT_DH;
+          break;
+        default:
+          /* nothing */
+          break;
+      }
+      EVP_PKEY_free(pkey);
+    }    
+  }
+  return result;
+}
+
+SiAlgorithm *SiCertificate::createAlgorithmForPublicKey()
+{
+  if (x509)
+  {
+    EVP_PKEY *pkey = X509_extract_key(x509);
+    if (pkey)
+    {
+      switch(pkey->type)
+      {
+        case EVP_PKEY_RSA:
+          return new SiRSA(EVP_PKEY_get1_RSA(pkey));
+          /* break; */
+        case EVP_PKEY_DSA:
+          return new SiDSA(EVP_PKEY_get1_DSA(pkey));
+          /* break; */
+        case EVP_PKEY_DH:
+        default:
+          /* nothing */
+          break;
+      }
+      EVP_PKEY_free(pkey);
+    }    
+  }
+  return NULL;
+}
+
+SI_E_Condition SiCertificate::loadCertificate(const char *filename, int filetype)
+{
+  SI_E_Condition result = SI_EC_CannotRead;  
+  if (x509) X509_free(x509);	
+  x509 = NULL;
+  if (filename)
+  {
+    BIO *in = BIO_new(BIO_s_file_internal());
+    if (in)
+    {
+      if (BIO_read_filename(in, filename) > 0)
+      {
+        if (filetype == X509_FILETYPE_ASN1)
+        {
+          x509 = d2i_X509_bio(in, NULL);
+          if (x509) result = SI_EC_Normal;
+        } else {
+          x509 = PEM_read_bio_X509(in, NULL, NULL, NULL);
+          if (x509) result = SI_EC_Normal;
+        }
+      }
+      BIO_free(in);
+    }
+  }
+  return result;
+}
+
+
+E_Condition SiCertificate::read(DcmItem& item)
+{
+  E_Condition result = EC_Normal;
+  OFString aString;
+  DcmStack stack;
+  if (EC_Normal == (result = item.search(DCM_CertificateType, stack, ESM_fromHere, OFFalse)))
+  {
+    if (EC_Normal == (result = ((DcmElement *)(stack.top()))->getOFString(aString, 0)))
+    {
+      if (aString == SI_DEFTERMS_X509CERT)
+      {
+      	stack.clear();
+        if (EC_Normal == (result = item.search(DCM_CertificateOfSigner, stack, ESM_fromHere, OFFalse)))
+        {
+          DcmElement *cert = (DcmElement *)stack.top();
+          Uint8 *data = NULL;
+          if (EC_Normal == (result = cert->getUint8Array(data)))
+          {
+            if (data)
+            {
+              x509 = d2i_X509(NULL, &data, cert->getLength());
+              if (x509 == NULL) result = EC_IllegalCall;              
+            } else result = EC_IllegalCall;            
+          }      
+        } 
+      } else result = EC_IllegalCall;
+    }
+  }
+  return result;
+}
+
+E_Condition SiCertificate::write(DcmItem& item)
+{
+  if (x509 == NULL) return EC_IllegalCall;
+
+  E_Condition result = EC_Normal;
+  DcmElement *elem = new DcmCodeString(DCM_CertificateType);
+  if (elem)
+  {
+    result = elem->putString(SI_DEFTERMS_X509CERT);
+    if (EC_Normal==result) item.insert(elem, OFTrue); else delete elem;
+  } else result = EC_MemoryExhausted;
+  if (EC_Normal == result)
+  {
+    elem = new DcmOtherByteOtherWord(DCM_CertificateOfSigner);
+    if (elem)
+    {
+      int certLength = i2d_X509(x509, NULL);
+      unsigned char *data = new unsigned char[certLength];
+      if (data)
+      {
+        unsigned char *data2 = data;
+        i2d_X509(x509, &data2); // data2 now points to the last element of the byte array
+        result = elem->putUint8Array((Uint8 *)data, certLength);
+        delete[] data;
+        if (EC_Normal==result) item.insert(elem, OFTrue); else delete elem;
+      } else {
+        delete elem;
+        result = EC_MemoryExhausted;
+      }
+    } else result = EC_MemoryExhausted;
+  }
+  return result;
+}
+
+X509 *SiCertificate::getRawCertificate()
+{
+  return x509;
+}
+
+long SiCertificate::getX509Version()
+{
+  if (x509 == NULL) return 0;
+  return X509_get_version(x509)+1;
+}
+
+void SiCertificate::getCertSubjectName(OFString& str)
+{
+  if (x509)
+  {
+    char certSubjectName[2048];  /* certificate subject name (DN) */
+    certSubjectName[0]= '\0';
+    X509_NAME_oneline(X509_get_subject_name(x509), certSubjectName, 2048);
+    str = certSubjectName;
+  } else str.clear();
+}
+
+void SiCertificate::getCertIssuerName(OFString& str)
+{
+  if (x509)
+  {
+    char certIssuerName[2048];  /* certificate issuer name (DN) */
+    certIssuerName[0]= '\0';
+    X509_NAME_oneline(X509_get_issuer_name(x509), certIssuerName, 2048);
+    str = certIssuerName;
+  } else str.clear();
+}
+
+long SiCertificate::getCertSerialNo()
+{
+  if (x509 == NULL) return -1;
+  return ASN1_INTEGER_get(X509_get_serialNumber(x509));
+}
+
+void SiCertificate::getCertValidityNotBefore(OFString& str)
+{
+  str.clear();
+  if (x509)
+  {
+    char *bufptr = NULL;
+    BIO *certValidNotBeforeBIO = BIO_new(BIO_s_mem());
+    if (certValidNotBeforeBIO)
+    {
+      ASN1_UTCTIME_print(certValidNotBeforeBIO, X509_get_notBefore(x509));
+      BIO_get_mem_data(certValidNotBeforeBIO, (char *)(&bufptr));
+      if (bufptr) str = bufptr;
+      BIO_free(certValidNotBeforeBIO);
+    }
+  }
+}
+
+void SiCertificate::getCertValidityNotAfter(OFString& str)
+{
+  str.clear();
+  if (x509)
+  {
+    char *bufptr = NULL;
+    BIO *certValidNotAfterBIO = BIO_new(BIO_s_mem());
+    if (certValidNotAfterBIO)
+    {
+      ASN1_UTCTIME_print(certValidNotAfterBIO, X509_get_notAfter(x509));
+      BIO_get_mem_data(certValidNotAfterBIO, (char *)(&bufptr));
+      if (bufptr) str = bufptr;
+      BIO_free(certValidNotAfterBIO);
+    }
+  }
+}
+
+long SiCertificate::getCertKeyBits()
+{
+  long certPubKeyBits = 0;                   /* certificate number of bits in public key */
+  if (x509)
+  {
+    EVP_PKEY *pubkey = X509_get_pubkey(x509); // creates copy of public key
+    if (pubkey)
+    {
+      certPubKeyBits = EVP_PKEY_bits(pubkey);
+      EVP_PKEY_free(pubkey);
+    }
+  }
+  return certPubKeyBits;
+}
+
+/* UNIMPLEMENTED
+ * At some point in the future we might want to check
+ * - whether a certificate used for a signature can be verified (traced back to a trusted CA)
+ * - whether a certificate used for a signature is contained in a Certificate Revocation List
+ * 
+SI_E_Condition SiCertificate::verify()
+{
+    X509_STORE_CTX csc;
+    FILE *fp = fopen ("certificate_revocation_list.pem", "rb"); 
+    X509_CRL *crl = PEM_read_X509_CRL(fp,NULL,NULL, NULL);
+    X509_STORE *ctx = X509_STORE_new();
+    X509_STORE_set_default_paths(ctx);
+    X509_STORE_load_locations(ctx, NULL, "certs_directory");
+    X509_STORE_add_crl(ctx, crl);
+    X509_STORE_CTX_init(&csc, ctx, x509, NULL);
+    int i=X509_verify_cert(&csc);
+    cout << X509_STORE_CTX_get_error(&csc) << endl;
+    X509_STORE_CTX_cleanup(&csc);
+    ERR_print_errors_fp (stderr);
+    if (i) cout << "ok" << endl;
+    else cout << "not ok" << endl;
+    fclose(fp);
+    return SI_EC_Normal;
+}
+*/
+
+#else /* WITH_OPENSSL */
+
+const int sicert_cc_dummy_to_keep_linker_from_moaning = 0;
+
+#endif
+
+/*
+ *  $Log: sicert.cc,v $
+ *  Revision 1.1  2000-11-07 16:49:03  meichel
+ *  Initial release of dcmsign module for DICOM Digital Signatures
+ *
+ *
+ */
+

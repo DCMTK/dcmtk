@@ -1,0 +1,109 @@
+dcmsign.o: dcmsign.cc ../../config/include/osconfig.h \
+ ../include/dcmsign.h ../../dcmdata/include/dcxfer.h \
+ ../../dcmdata/include/dctypes.h ../../ofstd/include/oftypes.h \
+ ../../dcmdata/include/dcvr.h ../../ofstd/include/ofglobal.h \
+ ../../ofstd/include/ofthread.h ../include/sitypes.h \
+ ../../dcmdata/include/dcstack.h ../../dcmdata/include/dcitem.h \
+ ../../ofstd/include/ofconsol.h ../../dcmdata/include/dcobject.h \
+ ../../dcmdata/include/dcerror.h ../../dcmdata/include/dcstream.h \
+ ../../dcmdata/include/dctag.h ../../dcmdata/include/dctagkey.h \
+ ../../ofstd/include/ofstring.h ../../dcmdata/include/dcdicent.h \
+ ../../dcmdata/include/dclist.h ../../dcmdata/include/dcvrui.h \
+ ../../dcmdata/include/dcbytstr.h ../../dcmdata/include/dcelem.h \
+ ../../dcmdata/include/dcvrat.h ../../dcmdata/include/dcvrcs.h \
+ ../../dcmdata/include/dcvrdt.h ../../dcmdata/include/dcvrobow.h \
+ ../../dcmdata/include/dcvrus.h ../../dcmdata/include/dcuid.h \
+ ../../dcmdata/include/dcsequen.h ../../dcmdata/include/dcdeftag.h \
+ ../include/sialgo.h ../include/sicert.h ../include/simac.h \
+ ../include/simaccon.h ../include/simd5.h ../include/siprivat.h \
+ ../include/siripemd.h ../include/sisha1.h ../include/sisprof.h \
+ ../include/sitstamp.h
+siautopr.o: siautopr.cc ../../config/include/osconfig.h \
+ ../include/siautopr.h ../include/sisprof.h \
+ ../../ofstd/include/oftypes.h ../../dcmdata/include/dcxfer.h \
+ ../../dcmdata/include/dctypes.h ../../dcmdata/include/dcvr.h \
+ ../../ofstd/include/ofglobal.h ../../ofstd/include/ofthread.h \
+ ../include/sitypes.h ../../dcmdata/include/dcdeftag.h \
+ ../../dcmdata/include/dctagkey.h ../../ofstd/include/ofstring.h
+sicert.o: sicert.cc ../../config/include/osconfig.h \
+ ../include/sicert.h ../include/sitypes.h \
+ ../../ofstd/include/oftypes.h ../../dcmdata/include/dctypes.h \
+ ../../dcmdata/include/dcerror.h ../include/sirsa.h \
+ ../include/sialgo.h ../include/sidsa.h \
+ ../../dcmdata/include/dcstack.h ../../dcmdata/include/dcitem.h \
+ ../../ofstd/include/ofconsol.h ../../ofstd/include/ofthread.h \
+ ../../dcmdata/include/dcobject.h ../../ofstd/include/ofglobal.h \
+ ../../dcmdata/include/dcxfer.h ../../dcmdata/include/dcvr.h \
+ ../../dcmdata/include/dcstream.h ../../dcmdata/include/dctag.h \
+ ../../dcmdata/include/dctagkey.h ../../ofstd/include/ofstring.h \
+ ../../dcmdata/include/dcdicent.h ../../dcmdata/include/dclist.h \
+ ../../dcmdata/include/dcvrui.h ../../dcmdata/include/dcbytstr.h \
+ ../../dcmdata/include/dcelem.h ../../dcmdata/include/dcvrcs.h \
+ ../../dcmdata/include/dcvrobow.h ../../dcmdata/include/dcdeftag.h
+sicreapr.o: sicreapr.cc ../../config/include/osconfig.h \
+ ../include/sicreapr.h ../include/sisprof.h \
+ ../../ofstd/include/oftypes.h ../../dcmdata/include/dcxfer.h \
+ ../../dcmdata/include/dctypes.h ../../dcmdata/include/dcvr.h \
+ ../../ofstd/include/ofglobal.h ../../ofstd/include/ofthread.h \
+ ../include/sitypes.h ../../dcmdata/include/dcdeftag.h \
+ ../../dcmdata/include/dctagkey.h ../../ofstd/include/ofstring.h
+sidsa.o: sidsa.cc ../../config/include/osconfig.h ../include/sidsa.h \
+ ../../ofstd/include/oftypes.h ../include/sialgo.h \
+ ../include/sitypes.h ../../dcmdata/include/dctypes.h \
+ ../include/sicert.h ../../dcmdata/include/dcerror.h \
+ ../include/siprivat.h ../../ofstd/include/ofstring.h
+simaccon.o: simaccon.cc ../../config/include/osconfig.h \
+ ../include/simaccon.h ../../dcmdata/include/dcstream.h \
+ ../../dcmdata/include/dcerror.h ../../dcmdata/include/dctypes.h \
+ ../../ofstd/include/oftypes.h ../../dcmdata/include/dcxfer.h \
+ ../../dcmdata/include/dcvr.h ../../ofstd/include/ofglobal.h \
+ ../../ofstd/include/ofthread.h ../include/sitypes.h \
+ ../include/simac.h ../../dcmdata/include/dcitem.h \
+ ../../ofstd/include/ofconsol.h ../../dcmdata/include/dcobject.h \
+ ../../dcmdata/include/dctag.h ../../dcmdata/include/dctagkey.h \
+ ../../ofstd/include/ofstring.h ../../dcmdata/include/dcdicent.h \
+ ../../dcmdata/include/dclist.h ../../dcmdata/include/dcstack.h \
+ ../../dcmdata/include/dcvrui.h ../../dcmdata/include/dcbytstr.h \
+ ../../dcmdata/include/dcelem.h ../../dcmdata/include/dcvrat.h
+simd5.o: simd5.cc ../../config/include/osconfig.h ../include/simd5.h \
+ ../include/simac.h ../include/sitypes.h ../../ofstd/include/oftypes.h \
+ ../../dcmdata/include/dctypes.h
+sinullpr.o: sinullpr.cc ../../config/include/osconfig.h \
+ ../include/sinullpr.h ../include/sisprof.h \
+ ../../ofstd/include/oftypes.h ../../dcmdata/include/dcxfer.h \
+ ../../dcmdata/include/dctypes.h ../../dcmdata/include/dcvr.h \
+ ../../ofstd/include/ofglobal.h ../../ofstd/include/ofthread.h \
+ ../include/sitypes.h
+siprivat.o: siprivat.cc ../../config/include/osconfig.h \
+ ../include/siprivat.h ../../ofstd/include/ofstring.h \
+ ../../ofstd/include/oftypes.h ../include/sitypes.h \
+ ../../dcmdata/include/dctypes.h ../include/sirsa.h \
+ ../include/sialgo.h ../include/sidsa.h ../include/sicert.h \
+ ../../dcmdata/include/dcerror.h
+siripemd.o: siripemd.cc ../../config/include/osconfig.h \
+ ../include/siripemd.h ../include/simac.h ../include/sitypes.h \
+ ../../ofstd/include/oftypes.h ../../dcmdata/include/dctypes.h
+sirsa.o: sirsa.cc ../../config/include/osconfig.h ../include/sirsa.h \
+ ../../ofstd/include/oftypes.h ../include/sialgo.h \
+ ../include/sitypes.h ../../dcmdata/include/dctypes.h \
+ ../include/sicert.h ../../dcmdata/include/dcerror.h \
+ ../include/siprivat.h ../../ofstd/include/ofstring.h
+sisha1.o: sisha1.cc ../../config/include/osconfig.h \
+ ../include/sisha1.h ../include/simac.h ../include/sitypes.h \
+ ../../ofstd/include/oftypes.h ../../dcmdata/include/dctypes.h
+sisprof.o: sisprof.cc ../../config/include/osconfig.h \
+ ../include/sisprof.h ../../ofstd/include/oftypes.h \
+ ../../dcmdata/include/dcxfer.h ../../dcmdata/include/dctypes.h \
+ ../../dcmdata/include/dcvr.h ../../ofstd/include/ofglobal.h \
+ ../../ofstd/include/ofthread.h ../include/sitypes.h \
+ ../../dcmdata/include/dcitem.h ../../ofstd/include/ofconsol.h \
+ ../../dcmdata/include/dcobject.h ../../dcmdata/include/dcerror.h \
+ ../../dcmdata/include/dcstream.h ../../dcmdata/include/dctag.h \
+ ../../dcmdata/include/dctagkey.h ../../ofstd/include/ofstring.h \
+ ../../dcmdata/include/dcdicent.h ../../dcmdata/include/dclist.h \
+ ../../dcmdata/include/dcstack.h ../../dcmdata/include/dcvrui.h \
+ ../../dcmdata/include/dcbytstr.h ../../dcmdata/include/dcelem.h \
+ ../../dcmdata/include/dcvrat.h ../include/simac.h ../include/sialgo.h
+sitypes.o: sitypes.cc ../../config/include/osconfig.h \
+ ../include/sitypes.h ../../ofstd/include/oftypes.h \
+ ../../dcmdata/include/dctypes.h
