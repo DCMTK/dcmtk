@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1997-2002, OFFIS
+ *  Copyright (C) 2002, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,10 +22,10 @@
  *  Purpose: Template class for administrating a set of elements of an
  *           arbitrary type.
  *
- *  Last Update:      $Author: wilkens $
- *  Update Date:      $Date: 2002-07-09 18:29:46 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2002-12-09 13:07:03 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/include/Attic/ofset.h,v $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -62,9 +62,8 @@ template <class T> class OFSet
        *  @param src Source object of which this will be a copy.
        */
     OFSet( const OFSet<T> &src )
+        : items( NULL ), num ( src.num ), size ( src.size )
       {
-        num = src.num;
-        size = src.size;
         items = new T*[size];
         for( unsigned int i=0 ; i<size ; i++ )
         {
@@ -212,9 +211,9 @@ template <class T> class OFSet
 
 
       /** Removes one item from the set.
-       *  @param index Index of the item which shall be removed from the set.
+       *  @param idx Index of the item which shall be removed from the set.
        */
-    virtual void RemoveByIndex( unsigned int index ) = 0;
+    virtual void RemoveByIndex( unsigned int idx ) = 0;
 
 
       /** Tries to find a given object in the set. In case the specified object could
@@ -238,7 +237,11 @@ template <class T> class OFSet
 /*
 ** CVS/RCS Log:
 ** $Log: ofset.h,v $
-** Revision 1.3  2002-07-09 18:29:46  wilkens
+** Revision 1.4  2002-12-09 13:07:03  joergr
+** Renamed parameter to avoid name clash with global function index().
+** Initialize member variables in the member initialization list.
+**
+** Revision 1.3  2002/07/09 18:29:46  wilkens
 ** Added some more functionality.
 **
 **
