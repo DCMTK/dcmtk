@@ -59,6 +59,9 @@ input options:
                                  and remove trailing period)
     -r    --no-recurse           do not recurse within directories (default)
     +r    --recurse              recurse within filesystem directories
+  profiles:
+    -Prc  --no-resolution-check  do not reject images with non-standard spatial
+                                 resolution (just warn)
   external icon images (only with -Pbc or -Pxa):
     -Xi   --icon-file-prefix     [p]refix: string
                                  use PGM image 'prefix'+'dcmfile-in' as icon
