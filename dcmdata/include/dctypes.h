@@ -22,9 +22,9 @@
  *  Purpose: global type and constant definitions
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-06-06 14:51:13 $
+ *  Update Date:      $Date: 2002-07-10 11:45:40 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dctypes.h,v $
- *  CVS/RCS Revision: $Revision: 1.14 $
+ *  CVS/RCS Revision: $Revision: 1.15 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -48,29 +48,8 @@ END_EXTERN_C
 #endif
 #endif
 
-#ifdef __CHAR_UNSIGNED__
-typedef signed char 	Sint8;
-#else 
-typedef char            Sint8;
-#endif
-
-typedef unsigned char 	Uint8;
 typedef Uint8		    BYTE;
 typedef Sint8		    SBYTE;
-
-#if SIZEOF_LONG == 8
-typedef signed int	    Sint32;
-typedef unsigned int	Uint32;
-#else
-typedef signed long	    Sint32;
-typedef unsigned long	Uint32;
-#endif
-
-typedef signed short	Sint16;
-typedef unsigned short	Uint16;
-
-typedef float		    Float32;	/* 32 Bit Floating Point Single */
-typedef double		    Float64;	/* 64 Bit Floating Point Double */
 
 
 /*
@@ -145,7 +124,11 @@ const Uint32 DCM_UndefinedLength = 0xffffffff;
 /*
  * CVS/RCS Log:
  * $Log: dctypes.h,v $
- * Revision 1.14  2002-06-06 14:51:13  meichel
+ * Revision 1.15  2002-07-10 11:45:40  meichel
+ * Moved definitions for Uint8, Sint8 ... Float64 from dcmdata to ofstd
+ *   since these types are not DICOM specific
+ *
+ * Revision 1.14  2002/06/06 14:51:13  meichel
  * Corrected code for inclusion of stdlib.h
  *
  * Revision 1.13  2002/05/14 08:20:29  joergr

@@ -24,9 +24,9 @@
  *      supported by all C++ Compilers
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-06-01 15:51:36 $
+ *  Update Date:      $Date: 2002-07-10 11:45:26 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/include/Attic/oftypes.h,v $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -37,6 +37,30 @@
 #define OFTYPES_H
 
 #include "osconfig.h"    /* make sure OS specific configuration is included first */
+
+
+#ifdef __CHAR_UNSIGNED__
+typedef signed char     Sint8;
+#else 
+typedef char            Sint8;
+#endif
+
+typedef unsigned char   Uint8;
+
+#if SIZEOF_LONG == 8
+typedef signed int      Sint32;
+typedef unsigned int    Uint32;
+#else
+typedef signed long     Sint32;
+typedef unsigned long   Uint32;
+#endif
+
+typedef signed short    Sint16;
+typedef unsigned short  Uint16;
+
+typedef float           Float32;    /* 32 Bit Floating Point Single */
+typedef double          Float64;    /* 64 Bit Floating Point Double */
+
 
 // Definition of type OFBool
 
@@ -68,7 +92,11 @@ typedef int OFBool;
 /*
  * CVS/RCS Log:
  * $Log: oftypes.h,v $
- * Revision 1.5  2001-06-01 15:51:36  meichel
+ * Revision 1.6  2002-07-10 11:45:26  meichel
+ * Moved definitions for Uint8, Sint8 ... Float64 from dcmdata to ofstd
+ *   since these types are not DICOM specific
+ *
+ * Revision 1.5  2001/06/01 15:51:36  meichel
  * Updated copyright header
  *
  * Revision 1.4  2000/10/10 12:01:22  meichel
