@@ -22,9 +22,9 @@
  *  Purpose: Provides main interface to the "dicom image toolkit"
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-02-03 16:59:54 $
+ *  Update Date:      $Date: 1999-02-05 16:42:22 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/dcmimage.h,v $
- *  CVS/RCS Revision: $Revision: 1.8 $
+ *  CVS/RCS Revision: $Revision: 1.9 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -378,16 +378,18 @@ class DicomImage
 
     /** convert P-value to DDL
      *
-     ** @param  pvalue  P-value to be converted
+     ** @param  pvalue  P-value to be converted (0..65535)
      *  @param  ddl     reference to resulting DDL
+     *  @param  bits    number of bits for output
      *
      ** @return true if successful, false otherwise
      */
     inline int convertPValueToDDL(const Uint16 pvalue,
-                                  Uint16 &ddl)
+                                  Uint16 &ddl,
+                                  const int bits = 8)
     {
         if ((Image != NULL) && (Image->getMonoImagePtr() != NULL))
-            return Image->getMonoImagePtr()->convertPValueToDDL(pvalue, ddl);
+            return Image->getMonoImagePtr()->convertPValueToDDL(pvalue, ddl, bits);
         return 0;
     }
 
@@ -1181,7 +1183,11 @@ class DicomImage
  *
  * CVS/RCS Log:
  * $Log: dcmimage.h,v $
- * Revision 1.8  1999-02-03 16:59:54  joergr
+ * Revision 1.9  1999-02-05 16:42:22  joergr
+ * Added optional parameter to method convertPValueToDDL to specify width
+ * of output data (number of bits).
+ *
+ * Revision 1.8  1999/02/03 16:59:54  joergr
  * Added support for calibration according to Barten transformation (incl.
  * a DISPLAY file describing the monitor characteristic).
  *

@@ -22,9 +22,9 @@
  *  Purpose: DicomMonochromeImage (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-02-03 17:27:58 $
+ *  Update Date:      $Date: 1999-02-05 16:43:13 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/dimoimg.h,v $
- *  CVS/RCS Revision: $Revision: 1.10 $
+ *  CVS/RCS Revision: $Revision: 1.11 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -98,7 +98,8 @@ class DiMonoImage
     }
 
     int convertPValueToDDL(const Uint16 pvalue,
-                           Uint16 &ddl);
+                           Uint16 &ddl,
+                           const int bits);
 
     int setMinMaxWindow(const int idx = 1);
 
@@ -293,7 +294,11 @@ class DiMonoImage
  *
  * CVS/RCS Log:
  * $Log: dimoimg.h,v $
- * Revision 1.10  1999-02-03 17:27:58  joergr
+ * Revision 1.11  1999-02-05 16:43:13  joergr
+ * Added optional parameter to method convertPValueToDDL to specify width
+ * of output data (number of bits).
+ *
+ * Revision 1.10  1999/02/03 17:27:58  joergr
  * Added support for calibration according to Barten transformation (incl.
  * a DISPLAY file describing the monitor characteristic).
  *

@@ -22,9 +22,9 @@
  *  Purpose: DicomMonochromeImage (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-02-03 17:41:01 $
+ *  Update Date:      $Date: 1999-02-05 16:46:15 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/libsrc/dimoimg.cc,v $
- *  CVS/RCS Revision: $Revision: 1.10 $
+ *  CVS/RCS Revision: $Revision: 1.11 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -778,17 +778,24 @@ int DiMonoImage::setNoDisplayFunction()
 }
 
 
-int DiMonoImage::convertPValueToDDL(const Uint16 pvalue,
-                                    Uint16 &ddl)
+int DiMonoImage::convertPValueToDDL(const Uint16 pvalue,                // UNTESTED !!
+                                    Uint16 &ddl,
+                                    const int bits)
 {
-    if ((DisplayFunction != NULL) && (DisplayFunction->isValid()))
+    const unsigned long maxvalue = DicomImageClass::maxval(bits);
+    if ((DisplayFunction != NULL) && (DisplayFunction->isValid()) && (DisplayFunction->getValueCount() == maxvalue + 1))
     {
-        const DiBartenLUT *blut = DisplayFunction->getBartenLUT(bitsof(pvalue));
+        const DiBartenLUT *blut = DisplayFunction->getBartenLUT(WIDTH_OF_PVALUES);
         if ((blut != NULL) && (blut->isValid()))
         {
-            ddl = blut->getValue(pvalue);
+            ddl = blut->getValue(pvalue);                               // perform Barten transformation
             return 1;
         }
+    }
+    if ((bits >= 1) && (bits <= WIDTH_OF_PVALUES))                      // no display function: perform linear scaling
+    {
+        ddl = (Uint16)((double)maxvalue * (double)pvalue / (double)DicomImageClass::maxval(WIDTH_OF_PVALUES));
+        return 2;
     }
     return 0;
 }
@@ -1402,7 +1409,11 @@ int DiMonoImage::writeRawPPM(FILE *stream, const unsigned long frame, const int 
  *
  * CVS/RCS Log:
  * $Log: dimoimg.cc,v $
- * Revision 1.10  1999-02-03 17:41:01  joergr
+ * Revision 1.11  1999-02-05 16:46:15  joergr
+ * Added optional parameter to method convertPValueToDDL to specify width
+ * of output data (number of bits).
+ *
+ * Revision 1.10  1999/02/03 17:41:01  joergr
  * Added support for calibration according to Barten transformation (incl.
  * a DISPLAY file describing the monitor characteristic).
  * Moved global functions maxval() and determineRepresentation() to class

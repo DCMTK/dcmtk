@@ -22,9 +22,9 @@
  *  Purpose: DicomDisplayFunction (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-02-03 17:46:37 $
+ *  Update Date:      $Date: 1999-02-05 16:43:12 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/didispfn.h,v $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  * 
  *  CVS/RCS Log at end of file
@@ -45,7 +45,8 @@
  *  macro definitions  *
  *---------------------*/
 
-#define MAX_NUMBER_OF_TABLES 9
+#define MAX_NUMBER_OF_TABLES  9
+#define WIDTH_OF_PVALUES     16
 
 
 /*---------------------*
@@ -143,7 +144,11 @@ class DiDisplayFunction
  *
  * CVS/RCS Log:
  * $Log: didispfn.h,v $
- * Revision 1.1  1999-02-03 17:46:37  joergr
+ * Revision 1.2  1999-02-05 16:43:12  joergr
+ * Added optional parameter to method convertPValueToDDL to specify width
+ * of output data (number of bits).
+ *
+ * Revision 1.1  1999/02/03 17:46:37  joergr
  * Added support for calibration according to Barten transformation (incl.
  * a DISPLAY file describing the monitor characteristic).
  *
