@@ -8,10 +8,10 @@
 ** Purpose:
 ** Definition of the class DcmTag
 **
-** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1996-04-19 08:37:21 $
+** Last Update:		$Author: hewett $
+** Update Date:		$Date: 1997-03-26 17:18:01 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dctag.h,v $
-** CVS/RCS Revision:	$Revision: 1.6 $
+** CVS/RCS Revision:	$Revision: 1.7 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -79,6 +79,7 @@ public:
 
     E_Condition error() const { return errorFlag; }
 
+    const DcmDictEntry* getDictRef() const { return dictRef; }
 };
 
 
@@ -94,7 +95,10 @@ public:
 /*
 ** CVS/RCS Log:
 ** $Log: dctag.h,v $
-** Revision 1.6  1996-04-19 08:37:21  andreas
+** Revision 1.7  1997-03-26 17:18:01  hewett
+** Added member function to obtain a DcmTag's data dictionary reference.
+**
+** Revision 1.6  1996/04/19 08:37:21  andreas
 ** correct bug with DEBUG and not DEBUG parts. It was not possible to compile
 ** the dcmdata library with DEBUG and programs using dcmdata without DEBUG
 ** (and vice versa)
