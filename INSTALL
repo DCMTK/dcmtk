@@ -23,16 +23,22 @@ the software.
 SUPPORTED SYSTEMS
 =================
 
-Windows 95/98/2000/NT
----------------------
+Windows 9x/Me/NT/2000/XP
+------------------------
 
-The DCMTK software can be compiled under a native Windows95/NT environment
-(see section "BUILDING (Win32)" below for more information).
+The DCMTK software can be compiled under a native Windows 9x/Me/NT/2000/XP
+environment (see section "BUILDING (Win32)" below for more information).
 
-    Windows NT 4.0 / Intel x86 / Microsoft Visual C++ 5.0
+    Windows 9x     / Intel x86 / Microsoft Visual C++ 6.0
+    Windows 9x     / Intel x86 / Microsoft Visual C++ .NET
+    Windows Me     / Intel x86 / Microsoft Visual C++ 6.0
+    Windows Me     / Intel x86 / Microsoft Visual C++ .NET
     Windows NT 4.0 / Intel x86 / Microsoft Visual C++ 6.0
+    Windows NT 4.0 / Intel x86 / Microsoft Visual C++ .NET
     Windows 2000   / Intel x86 / Microsoft Visual C++ 6.0
     Windows 2000   / Intel x86 / Microsoft Visual C++ .NET
+    Windows XP     / Intel x86 / Microsoft Visual C++ 6.0
+    Windows XP     / Intel x86 / Microsoft Visual C++ .NET
 
 The imagectn and wlistctn (now: wlmscpfs) have been ported to Windows, but do
 not support multi-processing (i.e. multiple clients concurrently) under
@@ -127,19 +133,17 @@ This release of DCMTK is known to compile with all 0.9.6x OpenSSL releases.
 Due to security considerations we recommend that DCMTK should be compiled with
 OpenSSL 0.9.6g or 0.9.6h.  DCMTK has not yet been tested with OpenSSL 0.9.7.
 
-If support for the security enhancements is desired, a compiled version of
-the OpenSSL libraries and include files must be available during compilation
-of DCMTK, and the OpenSSL support must be switched on explicitly.  By
-default, DCMTK compiles without OpenSSL support and disables all security
+On Unix platforms, if support for security enhancements is desired, a compiled
+version of the OpenSSL libraries and include files must be available during
+compilation of DCMTK, and the OpenSSL support must be switched on explicitly.
+By default, DCMTK compiles without OpenSSL support and disables all security
 enhancements.
 
-To enable OpenSSL support when compiling for Windows, select the target
-"Win32 Release OpenSSL" in the Visual C++ workspace.  You may have to
-adapt the include paths, which expect OpenSSL in a directory named
-openssl-0.9.6g on the same directory level as the DCMTK root directory.
-To enable OpenSSL support when compiling for Unix, see description for
-Step 2 below.  We recommend that you also read the documentation in
-dcmtk/dcmtls/docs about using TLS with DCMTK.
+On Windows platforms, if support for security enhancements is desired, a
+compiled version of the OpenSSL libraries and include files must be available
+during compilation of DCMTK, and the OpenSSL support must be switched on
+explicitly (using CMake, see below).  By default, DCMTK compiles without
+OpenSSL support and disables all security enhancements.
 
 
 ZLIB SUPPORT
@@ -154,19 +158,20 @@ recommend that DCMTK should only be used with ZLIB 1.1.4 or newer.
 On Unix platforms, if support for zlib compression is desired, a
 compiled version of the zlib library and include files must be available
 during compilation of DCMTK, and the ZLIB support must be switched on
-explicitly. DCMTK compiles without ZLIB support and disables ZLIB
+explicitly.  DCMTK compiles without ZLIB support and disables ZLIB
 compression by default.
 
-On Windows, the Visual C++ project files provided as part of the toolkit
-expect a directory named "zlib-1.1.4" to be present in the same
-directory where the DCMTK root directory (dcmtk) also resides. Include
-files are expected in zlib-1.1.4/include. A debug version of the library
-is expected in zlib-1.1.4/debug/zlib.lib, a release version in
-zlib-1.1.4/release/zlib.lib. The debug version must be compiled for the
-multithread debug version of the runtime (/MTd), the release version
-must be compiled for the non-debug multithread runtime (/MT). A
-precompiled version of the library can be downloaded from
-http://dicom.offis.de/dcmtk/
+On Windows platforms, the Visual C++ project files which are provided as part
+of the toolkit expect a directory named "zlib-1.1.4" to be present in the same
+directory where the DCMTK root directory (dcmtk) also resides.  Include files
+are expected in zlib-1.1.4/include.  A debug version of the library is expected
+in zlib-1.1.4/lib/zlib_d.lib, a release version in zlib-1.1.4/lib/zlib_o.lib.
+The debug version must be compiled for the multithread debug version of the
+runtime (/MTd), the release version must be compiled for the non-debug
+multithread runtime (/MT).  A precompiled version of the library can be
+downloaded from http://dicom.offis.de/dcmtk/.  zlib support can be turned on or
+off manually using the CMake utility (see below), which will generate new
+".dsp" and ".dsw" files for Microsoft Visual C++.
 
 
 LIBTIFF SUPPORT
@@ -182,16 +187,17 @@ version of the libtiff libraries and include files must be available
 during compilation of DCMTK, and the libtiff support must be switched on
 explicitly.  By default, DCMTK compiles without libtiff support.
 
-On Windows, the Visual C++ project files provided as part of the toolkit
-expect a directory named "tiff-3.5.7" to be present in the same
-directory where the DCMTK root directory (dcmtk) also resides. Include
-files are expected in tiff-3.5.7/include. A debug version of the library
-is expected in tiff-3.5.7/debug/libtiff.lib, a release version in
-tiff-3.5.7/release/libtiff.lib.  The debug version must be compiled for
-the multithread debug version of the runtime (/MTd), the release
-version must be compiled for the non-debug multithread runtime (/MT).
-A precompiled version of the library can be downloaded from
-http://dicom.offis.de/dcmtk/
+On Windows platforms, the Visual C++ project files which are provided as part
+of the toolkit expect a directory named "tiff-3.5.7" to be present in the same
+directory where the DCMTK root directory (dcmtk) also resides.  Include files
+are expected in tiff-3.5.7/include.  A debug version of the library is expected
+in tiff-3.5.7/lib/libtiff_d.lib, a release version in
+tiff-3.5.7/lib/libtiff_o.lib.  The debug version must be compiled for the
+multithread debug version of the runtime (/MTd), the release version must be
+compiled for the non-debug multithread runtime (/MT).  A precompiled version of
+the library can be downloaded from http://dicom.offis.de/dcmtk/.  libtiff
+support can be turned on or off manually using the CMake utility (see below),
+which will generate new ".dsp" and ".dsw" files for Microsoft Visual C++.
 
 
 LIBPNG SUPPORT
@@ -210,16 +216,17 @@ It should be noted that libpng requires zlib. The configure script
 will disable libpng support even though --with-libpng is specified if
 --with-zlib is not specified as well.
 
-On Windows, the Visual C++ project files provided as part of the toolkit
-expect a directory named "libpng-1.2.5" to be present in the same
-directory where the DCMTK root directory (dcmtk) also resides. Include
-files are expected in libpng-1.2.5/include. A debug version of the library
-is expected in libpng-1.2.5/debug/libpng.lib, a release version in
-libpng-1.2.5/release/libpng.lib.  The debug version must be compiled for
-the multithread debug version of the runtime (/MTd), the release
-version must be compiled for the non-debug multithread runtime (/MT).
-A precompiled version of the library can be downloaded from
-http://dicom.offis.de/dcmtk/
+On Windows platforms, the Visual C++ project files which are provided as part of
+the toolkit expect a directory named "libpng-1.2.5" to be present in the same
+directory where the DCMTK root directory (dcmtk) also resides.  Include files
+are expected in libpng-1.2.5/include.  A debug version of the library is
+expected in libpng-1.2.5/lib/libpng_d.lib, a release version in
+libpng-1.2.5/lib/libpng_o.lib.  The debug version must be compiled for the
+multithread debug version of the runtime (/MTd), the release version must be
+compiled for the non-debug multithread runtime (/MT).  A precompiled version of
+the library can be downloaded from http://dicom.offis.de/dcmtk/.  libpng support
+can be turned on or off manually using the CMake utility (see below), which will
+generate new ".dsp" and ".dsw" files for Microsoft Visual C++.
 
 
 LIBXML SUPPORT
@@ -230,23 +237,16 @@ to DICOM files.  DCMTK relies on the libxml toolkit (www.xmlsoft.org) for
 this purpose.  This release of DCMTK is known to compile with the current
 libxml release 2.5.7, although older releases may work as well.
 
-On Unix platforms, if support for XML import is desired, a compiled version
-of the libxml (and possibly iconv) libraries and include files must be
-available during compilation of DCMTK, and the libxml support must be
-switched on explicitly.  By default, DCMTK compiles without libxml support.
+On Unix platforms, if support for XML import is desired, a compiled version of
+the libxml (and possibly iconv) libraries and include files must be available
+during compilation of DCMTK, and the libxml support must be switched on
+explicitly.  By default, DCMTK compiles without libxml support.
 
-On Windows, the Visual C++ project files provided as part of the toolkit
-expect a directory named "libxml2-2.5.7" to be present in the same directory
-where the DCMTK root directory (dcmtk) also resides.  Include files are
-expected in libxml2-2.5.7/include.  A debug version of the library is expected
-in libxml2-2.5.7/debug/libxml2.lib, a release version in libxml2-2.5.7/release/
-libxml2.lib.  Since the support for character set encodings in libxml relies on
-iconv (www.gnu.org/software/libiconv) both debug and release versions of
-iconv.lib (version 1.8) are also expected to be present in these directories.
-The debug version must be compiled for the multithread debug version of the
-runtime (/MTd), the release version must be compiled for the non-debug
-multithread runtime (/MT).  A precompiled version of the library can be
-downloaded from http://dicom.offis.de/dcmtk/. ### after 3.5.3 release ###
+On Windows platforms, if support for XML import is desired, a compiled version
+of the libxml (and possibly iconv) libraries and include files must be
+available during compilation of DCMTK, and the libxml support must be switched on
+explicitly (using CMake, see below).  By default, DCMTK compiles without libxml
+support by default.
 
 
 TCP WRAPPER (LIBWRAP) SUPPORT
@@ -267,7 +267,7 @@ version of the libwrap library and include file (tcpd.h) must be available
 during compilation of DCMTK, and the libwrap support must be switched on
 explicitly.  By default, DCMTK compiles without libwrap support.
 
-On Windows, TCP wrappers are currently not supported.
+On Windows platforms, TCP wrappers are currently not supported.
 
 
 BUILDING (Unix)
@@ -387,26 +387,23 @@ See also the FAQ for more hints.
 BUILDING (Win32)
 ================
 
-The toolkit also contains makefiles / project files for Windows NT and
-Windows 95/98/Me/2000/XP. Currently, only one configuration is supported:
+The toolkit also contains makefiles / project files for Windows 9x/Me/2000/XP.
+Currently, only one configuration is supported:
 
-- Windows NT/9x/Me/2000/XP with WINSOCK using the Microsoft Visual C++ Compiler
-  Version 5.0 (project files can also be imported into Version 6.0 and .NET).
+- Windows 9x/Me/NT/2000/XP with WINSOCK using the Microsoft Visual C++ Compiler
+  Version 6.0 (project files can also be imported into .NET).
 
 Compile instructions:
 
-1. Rename the extensions of all .cc files into .cxx if not already done (e.g.
+1. Rename the extensions of all .cc files to .cxx if not already done (e.g.
    "ren *.cc *.cxx" with the COMMAND shell or if you have a UNIX workstation
    available use "config/changext cxx").  You must rename files in the libsrc,
    apps and tests directories of all modules.
 2. Start the Microsoft Developer Studio (IDE).
 3. Open Workspace.. and select "dcmtk.dsw".
-4. Select the appropriate target in the IDE: Release, Debug or Release OpenSSL.
-   "Release OpenSSL" requires a pre-compiled version of the OpenSSL libary
-   to be appropriately installed - see section on OpenSSL support above.
+4. Select the appropriate target in the IDE, i.e. Release or Debug.
 5. Choose one of the subprojects and build it. If you want to build all
-   applications, mark all subprojects and select "build selection" from the
-   context menu.
+   libraries and applications, mark the "ALL_BUILD" subproject and build it.
 
 Known problems:
 
@@ -425,16 +422,132 @@ Known problems:
    i.e. application errors that are hard to find.  The old, now deprecated
    implementation uses the traditional cfront header files <iostream.h> etc.
    The new implementation uses <iostream> etc. as defined in ANSI/ISO C++.
-   DCMTK can be configured to use either of the two interfaces.  Currently, the
-   old interface is used for Visual C++ 5.0 and the new interface is used for
-   Visual C++ 6.0 and .NET.  This behaviour can be changed in config/include/
-   cfwin32.h where the symbol USE_STD_CXX_INCLUDES is declared depending on the
-   compiler version.
+   DCMTK can be configured to use either of the two interfaces.  This behaviour
+   can be changed in config/include/cfwin32.h where the symbol
+   USE_STD_CXX_INCLUDES is declared.
 
    NOTE: Previous releases of DCMTK (3.5.1 and older) used the old interface
          when compiled with Visual C++ 6.0.  When updating software that uses
          DCMTK as a library, make sure that the use of the iostream library is
          consistent throughout the complete application!
+
+Use of CMake on Windows platforms for configuring the support of external libs:
+
+On Windows platforms (and only on Windows platforms!), the CMake utility can be
+used to turn the support for the above mentioned external libs (OPENSSL, ZLIB,
+LIBTIFF, LIBPNG and LIBXML) on or off manually.  (Note that LIBWRAP is currently
+not supported on Windows platforms.)  CMake is a cross-platform, open-source
+make system which can be used to control the software compilation process using
+simple configuration files.  CMake can be obtained free of charge from
+http://www.cmake.org.  For configuring the support of external libs in dcmtk on
+Windows platforms, the toolkit contains corresponding "CMakeLists.txt" files in
+all necessary directories.  In detail, these "CMakeLists.txt" files will serve
+as an input to CMake which will generate new ".dsp" and ".dsw" files for all of
+dcmtk's projects from these files, depending on a configuration which can be
+adjusted manually by the user.
+
+In order to be able to use CMake for configuration purposes in dcmtk, perform
+the following steps to install CMake on your machine:
+
+1. Go to http://www.cmake.org/HTML/Download.html to download the latest release
+   version of CMake for Windows.  With regard to a certain CMake version, note
+   that CMake 1.6.7 (download file "CMSetup167.exe") or later can be used in
+   conjunction with dcmtk.
+2. Execute the file which was downloaded to install CMake on your machine.
+   Follow all install instructions appropriately.
+
+In order to manually configure the support for the above mentioned external libs
+(OPENSSL, ZLIB, LIBTIFF, LIBPNG and LIBXML) through CMake, perform the following
+steps:
+
+1. Go Start -> Programs -> CMake -> CMakeSetup to start the CMake utility
+   through which the configuration can be done.
+2. In the entry field "Where is the source code:" enter the directory in which
+   dcmtk is installed, e.g. "C:\dcmtk".
+3. In the entry field "Where to build the binaries:" enter the directory in
+   which dcmtk is installed, e.g. "C:\dcmtk".
+4. Go "Configure".  (CMake will look for a corresponding compiler and read in
+   all of dcmtk's "CMakeLists.txt" files.  The variables in the "Cache Values"
+   area will be displayed in red. These variables can now be set in order to
+   turn the support for any of the external librares on or off.)
+5. Make the corresponding configurations in CMake's user interface.  For
+   example, in order to turn on libxml support, set the value of variable
+   "WITH_LIBXML" to "ON" and set the value of variable "WITH_LIBXMLINC" to the
+   path where the include files and libraries of libxml can be found, e.g.
+   "C:\libxml2-2.5.7".  The support of all other external libraries can be
+   turned on in a similar way:
+
+     libpng support:
+       set "WITH_LIBPNG" to "ON" and
+       set "WITH_LIBPNGINC" e.g. to "C:\libpng-1.2.5"
+
+     libtiff support:
+       set "WITH_LIBTIFF" to "ON" and
+       set "WITH_LIBTIFFINC" e.g. to "C:\tiff-3.5.7"
+
+     openssl support:
+       set "WITH_OPENSSL" to "ON" and
+       set "WITH_OPENSSLINC" e.g. to "C:\openssl-0.9.6i"
+
+     zlib support:
+       set "WITH_ZLIB" to "ON" and
+       set "WITH_ZLIBINC" e.g. to "C:\zlib-1.1.4"
+
+   In order to turn the support of a certain external library off, set the
+   value of the corresponding variable ("WITH_LIBXML", "WITH_LIBPNG",
+   "WITH_LIBTIFF", "WITH_OPENSSL", or "WITH_ZLIB") to "OFF".
+
+   (Please note that the include files of all external libraries are always
+   expected in a directory named "include" below the directory which is
+   specified in "WITH_LIBXMLINC", "WITH_LIBPNGINC", "WITH_LIBTIFFINC",
+   "WITH_OPENSSLINC", or "WITH_ZLIBINC".)
+
+   (Please note also that the library files of all external libraries are
+   always expected in directory named "lib" below the directory which is
+   specified in "WITH_LIBXMLINC", "WITH_LIBPNGINC", "WITH_LIBTIFFINC",
+   "WITH_OPENSSLINC", or "WITH_ZLIBINC". Moreover note that the following
+   filenames must be used for the corresponding lib files:
+
+     libxml:
+       "iconv_d.lib"    - debug version
+       "iconv_o.lib"    - release version (optimized)
+       "libxml2_d.lib"  - debug version
+       "libxml2_o.lib"  - release version (optimized)
+
+     libpng:
+       "libpng_d.lib"   - debug version
+       "libpng_o.lib"   - release version (optimized)
+
+     libtiff:
+       "libtiff_d.lib"  - debug version
+       "libtiff_o.lib"  - release version (optimized)
+
+     openssl:
+       "libeay32_d.lib" - debug version
+       "libeay32_o.lib" - release version (optimized)
+       "ssleay32_d.lib" - debug version
+       "ssleay32_o.lib" - release version (optimized)
+
+     zlib:
+       "zlib_d.lib"     - debug version
+       "zlib_o.lib"     - release version (optimized)
+
+   The debug versions of all libraries must be compiled for the multithread
+   debug version of the runtime (/MTd), the release version must be compiled
+   for the non-debug multithread runtime (/MT).  Precompiled versions of all
+   libraries can be downloaded from http://dicom.offis.de/dcmtk/.)
+6. Go "Configure" a second time.  (CMake will adjust the configuration according
+   to the displayed specifications.  The variables in the "Cache Values" area
+   will be displayed in grey.)
+7. Go "OK".  (CMake will generate new ".dsp" and ".dsw" files in the
+   corresponding directories.  These files will be adjusted according to the
+   displayed specifications, i.e. support for the external libraries will be
+   turned on or off.)
+
+Having performed these steps, the Microsoft Developer Studio (IDE) can be
+started, the "dcmtk.dsw" Workspace file can be opened, and one or more of
+dcmtk's subprojects can be built. In case you want to build all libraries and
+applications, mark the "ALL_BUILD" subproject and build it.
 
 
 HTML DOCUMENTATION
@@ -470,4 +583,4 @@ Have fun.
 Marco Eichelberg, Joerg Riesmeier, Thomas Wilkens
 Kuratorium OFFIS e.V., Oldenburg, Germany.
 
-Last revised: 2003-07-02 (Riesmeier).
+Last revised: 2003-09-04 (Wilkens).
