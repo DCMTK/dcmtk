@@ -23,8 +23,8 @@
  *    classes: DSRContentItem
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-10-20 10:15:42 $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  Update Date:      $Date: 2000-10-23 15:06:37 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -257,31 +257,41 @@ class DSRContentItem
     E_Condition setWaveformReference(const DSRWaveformReferenceValue &referenceValue);
 
     /** get continuity of content flag.
+     *  This flag specifies whether or not its contained content items (child nodes) are
+     *  logically linked in a continuous textual flow, or are sparate items.
      *  Applicable to: CONTAINER
      ** @return continuity of content flag if successful, COC_invalid otherwise
      */
     E_ContinuityOfContent getContinuityOfContent() const;
 
     /** set continuity of content flag.
+     *  This flag specifies whether or not its contained content items (child nodes) are
+     *  logically linked in a continuous textual flow, or are sparate items.
      *  Applicable to: CONTAINER
-     ** @param  continuityOfContent  value to be set
+     ** @param  continuityOfContent  value to be set (should be different from COC_onvalid)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
     E_Condition setContinuityOfContent(const E_ContinuityOfContent continuityOfContent);
 
     /** get pointer to concept name.
+     *  Code describing the concept represented by this content item.  Also conveys the value
+     *  of document title and section headings in documents.
      *  Applicable to all content items.
      ** @return pointer to comcept name value of current content item if valid, NULL otherwise
      */
     DSRCodedEntryValue *getConceptNamePtr();
 
     /** get concept name.
+     *  Code describing the concept represented by this content item.  Also conveys the value
+     *  of document title and section headings in documents.
      *  Applicable to all content items.
      ** @return concept name value of current content item if valid, EmptyCodedEntry otherwise
      */
     const DSRCodedEntryValue &getConceptName() const;
 
     /** get copy of concept name.
+     *  Code describing the concept represented by this content item.  Also conveys the value
+     *  of document title and section headings in documents.
      *  Applicable to all content items.
      ** @param  codeValue  variable where the copy should be stored (cleared if an error occurs)
      ** @return status, EC_Normal if successful, an error code otherwise
@@ -289,6 +299,8 @@ class DSRContentItem
     E_Condition getConceptName(DSRCodedEntryValue &conceptName) const;
 
     /** set concept name.
+     *  Code describing the concept represented by this content item.  Also conveys the value
+     *  of document title and section headings in documents.
      *  Applicable to all content items (optional/conditional for some value types).
      ** @param  conceptName  value to be set
      ** @return status, EC_Normal if successful, an error code otherwise
@@ -296,12 +308,17 @@ class DSRContentItem
     E_Condition setConceptName(const DSRCodedEntryValue &conceptName);
 
     /** get observation date time.
+     *  This is the date and time on which this content item was completed.  Might be empty
+     *  if the date and time do not differ from the content date and time, see DSRDocument.
      *  Applicable to all content items (optional attribute).
      ** @return observation date and time of current content item if valid, EmptyString otherwise
      */
     const OFString &getObservationDateTime() const;
 
-    /** set observation date time.  Please use the correct DICOM format (YYYYMMDDHHMMSS).
+    /** set observation date time.
+     *  This is the date and time on which this content item was completed.  Might be empty
+     *  if the date and time do not differ from the content date and time, see DSRDocument.
+     *  Please use the correct DICOM format (YYYYMMDDHHMMSS).
      *  Applicable to all content items.
      ** @param  observationDateTime  value to be set (might be an empty string)
      ** @return status, EC_Normal if successful, an error code otherwise
@@ -358,7 +375,10 @@ class DSRContentItem
 /*
  *  CVS/RCS Log:
  *  $Log: dsrcitem.h,v $
- *  Revision 1.6  2000-10-20 10:15:42  joergr
+ *  Revision 1.7  2000-10-23 15:06:37  joergr
+ *  Added/updated doc++ comments.
+ *
+ *  Revision 1.6  2000/10/20 10:15:42  joergr
  *  Renamed class DSRReferenceValue to DSRCompositeReferenceValue.
  *
  *  Revision 1.5  2000/10/18 16:58:27  joergr

@@ -23,8 +23,8 @@
  *    classes: DSRDocumentTreeNode
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-10-18 17:02:27 $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  Update Date:      $Date: 2000-10-23 15:10:29 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -57,27 +57,89 @@ class DSRDocumentTreeNode
 
   public:
 
+    /** constructor.
+     *  The 'relationshipType' and 'valueType' can never be changed after the tree node
+     *  has been created (therefore, the corresponding memeber variables are declared
+     *  as "const").
+     ** @param  relationshipType  type of relationship to the parent tree node.
+     *                            Should not be RT_invalid and RT_isRoot only for the
+     *                            root node.
+     *  @param  valueType         value type of the associated content item.
+     *                            Should not be VT_invalid.
+     */
     DSRDocumentTreeNode(const E_RelationshipType relationshipType,
                         const E_ValueType valueType);
 
+    /** destructor
+     */
     virtual ~DSRDocumentTreeNode();
 
+    /** clear all member variables.
+     *  This does not apply to the relationship and value type since they are never changed.
+     */
     virtual void clear();
 
+    /** check whether the content item is valid.
+     *  The content item is valid if the relationship type and the value type are both not
+     *  invalid.
+     ** @return OFTrue if tree node is valid, OFFalse otherwise
+     */
     virtual OFBool isValid() const;
-    
+
+    /** check whether the content is short.
+     *  This method is used to check whether the rendered output of this content item can be
+     *  expanded inline or not (used for renderHTML()).  This base class always returns OFTrue.
+     ** @param  flags  flag used to customize the output (see DSRTypes::HF_xxx)
+     ** @return OFTrue if the content is short, OFFalse otherwise
+     */
     virtual OFBool isShort(const size_t flags) const;
 
+    /** print content item.
+     *  The output of a content item depends on its value type.  This general method prints only
+     *  those parts which all derived classes (= value types) do have in common, i.e. the type of
+     *  relationship, the value type and the (optional) concept name.
+     *  A typical output looks like this: has concept mod CODE: (,,"Concept")
+     ** @param  stream  output stream to which the content item should be printed
+     *  @param  flags   flag used to customize the output (see DSRTypes::PF_xxx)
+     ** @return status, EC_Normal if successful, an error code otherwise
+     */
     virtual E_Condition print(ostream &stream,
                               const size_t flags) const;
 
+    /** read content item from dataset.
+     *  A number of read...() methods are called (see "protected" part) in order to retrieve all
+     *  possibly nested content items from the dataset.
+     ** @param  dataset       DICOM dataset from which the content item should be read
+     *  @param  documentType  type of the document to be read (used for checking purposes)
+     *  @param  logStream     pointer to error/warning output stream (output disabled if NULL)
+     ** @return status, EC_Normal if successful, an error code otherwise
+     */
     virtual E_Condition read(DcmItem &dataset,
                              const E_DocumentType documentType,
                              OFConsole *logStream = NULL);
 
+    /** write content item to dataset.
+     *  A number of write...() methods are called (see "protected" part) in order to write all
+     *  possibly nested content items to the dataset.
+     ** @param  dataset       DICOM dataset to which the content item should be written
+     *  @param  logStream     pointer to error/warning output stream (output disabled if NULL)
+     ** @return status, EC_Normal if successful, an error code otherwise
+     */
     virtual E_Condition write(DcmItem &dataset,
                               OFConsole *logStream = NULL) const;
 
+    /** render content item in HTML format.
+     *  After rendering the current content item all child nodes (if any) are also rendered (see
+     *  renderHTMLChildNodes() for details).
+     ** @param  docStream     output stream to which the main HTML document is written
+     *  @param  annexStream   output stream to which the HTML document annex is written
+     *  @param  nestingLevel  current nesting level.  Used to render section headings.
+     *  @param  annexNumber   reference to the variable where the current annex number is stored.
+     *                        Value is increased automatically by 1 after a new entry has been added.
+     *  @param  flags         flag used to customize the output (see DSRTypes::HF_xxx)
+     *  @param  logStream     pointer to error/warning output stream (output disabled if NULL)
+     ** @return status, EC_Normal if successful, an error code otherwise
+     */
     virtual E_Condition renderHTML(ostream &docStream,
                                    ostream &annexStream,
                                    const size_t nestingLevel,
@@ -85,42 +147,96 @@ class DSRDocumentTreeNode
                                    const size_t flags,
                                    OFConsole *logStream = NULL) const;
 
+    /** check whether the current content item has any children
+     ** @return OFTrue if there are any child nodes, OFFalse otherwise
+     */
     inline OFBool hasChildNodes() const
     {
         return (Down != NULL);
     }
 
+    /** get ID of the current tree node
+     ** @return ID of the current tree node (should never be 0)
+     */
     inline size_t getNodeID() const
     {
         return Ident;
     }
 
+    /** get relationship type of the current content item
+     ** @return relationship type of the current content item (might be RT_invalid)
+     */
     inline E_RelationshipType getRelationshipType() const
     {
         return RelationshipType;
     }
 
+    /** get value type of the current content item
+     ** @return value type of the current content item (might be VT_invalid)
+     */
     inline E_ValueType getValueType() const
     {
         return ValueType;
     }
 
+    /** get reference to the concept name
+     ** @return reference to the concept name (code, might be empty/invalid)
+     */
     inline const DSRCodedEntryValue &getConceptName() const
     {
         return ConceptName;
     }
 
+    /** get copy of the concept name.
+     *  Code describing the concept represented by this content item.  Also conveys the value
+     *  of document title and section headings in documents.
+     ** @param  conceptName  reference to a variable where the code should be stored
+     ** @return status, EC_Normal if successful, an error code otherwise
+     */
     E_Condition getConceptName(DSRCodedEntryValue &conceptName) const;
 
+    /** set the concept name.
+     *  Code describing the concept represented by this content item.  Also conveys the value
+     *  of document title and section headings in documents.
+     *  If the new code is invalid the current one is not replaced.  An empty code can
+     *  be used to clear the current concept name.
+     ** @param  conceptName  code to be set as the new concept name (checked before set)
+     ** @return status, EC_Normal if successful, an error code otherwise
+     */
     E_Condition setConceptName(const DSRCodedEntryValue &conceptName);
 
+    /** get observation date time.
+     *  This is the date and time on which this content item was completed.  Might be empty
+     *  if the date and time do not differ from the content date and time, see DSRDocument.
+     ** @return observation date and time of current content item (might be empty/invalid)
+     */
     inline const OFString &getObservationDateTime() const
     {
         return ObservationDateTime;
     }
 
+    /** set observation date time.
+     *  This is the date and time on which this content item was completed.  Might be empty
+     *  if the date and time do not differ from the content date and time, see DSRDocument.
+     *  Please use the correct DICOM format (YYYYMMDDHHMMSS) or an empty string to clear
+     *  the current value.  Currently no check is performed on the parameter value.
+     ** @param  observationDateTime  value to be set (might be an empty string)
+     ** @return status, EC_Normal if successful, an error code otherwise
+     */
     E_Condition setObservationDateTime(const OFString &observationDateTime);
 
+    /** check whether a node could be added as a child node.
+     *  This method checks whether a content item as specified could be added as a child
+     *  node to the current one (without really adding the node).  For this base class the
+     *  return value is always OFTrue, derived classes typically overwrite this method.
+     ** @param  documentType      type of document to which the content item belongs.
+     *                            The document type has an impact on the relationship
+     *                            contraints. 
+     *  @param  relationshipType  relationship type of the new node with regard to the
+     *                            current one
+     *  @param  valueType         value type of node to be checked/added
+     ** @return OFTrue if specified node can be added, OFFalse otherwise
+     */
     virtual OFBool canAddNode(const E_DocumentType documentType,
                               const E_RelationshipType relationshipType,
                               const E_ValueType valueType) const;
@@ -128,22 +244,62 @@ class DSRDocumentTreeNode
 
   protected:
 
+    /** get pointer to the concept name
+     ** @return pointer to the concept name (never NULL)
+     */
     inline DSRCodedEntryValue *getConceptNamePtr()
     {
         return &ConceptName;
     }
 
+    /** create a new node and append it to the current one
+     ** @param  previousNode      reference to the pointer to the previous node (sibling).
+     *                            Used to decide whether the new node is a child (value=NULL)
+     *                            or a sibling (!=NULL).  NB: The value might be modified 
+     *                            inside this method (to store a reference to the previous node).
+     *  @param  documentType      type of document to which this and the new content item belong
+     *  @param  relationshipType  relationship type of the new node with regard to the
+     *                            current one
+     *  @param  valueType         value type of node to be added
+     ** @return status, EC_Normal if successful, an error code otherwise
+     */
     E_Condition createAndAppendNewNode(DSRDocumentTreeNode *&previousNode,
                                        const E_DocumentType documentType,
                                        const E_RelationshipType relationshipType,
                                        const E_ValueType valueType);
 
+    /** read content item (value) from dataset.
+     *  This method does nothing for this base class, but derived classes overwrite it to read
+     *  the contents according to their value type.
+     ** @param  dataset    DICOM dataset from which the content item should be read
+     *  @param  logStream  pointer to error/warning output stream (output disabled if NULL)
+     ** @return status, EC_Normal if successful, an error code otherwise
+     */
     virtual E_Condition readContentItem(DcmItem &dataset,
                                         OFConsole *logStream);
 
+    /** write content item (value) to dataset.
+     *  This method does nothing for this base class, but derived classes overwrite it to write
+     *  the contents according to their value type.
+     ** @param  dataset    DICOM dataset to which the content item should be written
+     *  @param  logStream  pointer to error/warning output stream (output disabled if NULL)
+     ** @return status, EC_Normal if successful, an error code otherwise
+     */
     virtual E_Condition writeContentItem(DcmItem &dataset,
                                          OFConsole *logStream) const;
 
+    /** render content item (value) in HTML format.
+     *  This method does nothing for this base class, but derived classes overwrite it to render
+     *  the contents according to their value type.
+     ** @param  docStream     output stream to which the main HTML document is written
+     *  @param  annexStream   output stream to which the HTML document annex is written
+     *  @param  nestingLevel  current nesting level.  Used to render section headings.
+     *  @param  annexNumber   reference to the variable where the current annex number is stored.
+     *                        Value is increased automatically by 1 after a new entry has been added.
+     *  @param  flags         flag used to customize the output (see DSRTypes::HF_xxx)
+     *  @param  logStream     pointer to error/warning output stream (output disabled if NULL)
+     ** @return status, EC_Normal if successful, an error code otherwise
+     */
     virtual E_Condition renderHTMLContentItem(ostream &docStream,
                                               ostream &annexStream,
                                               const size_t nestingLevel,
@@ -151,37 +307,97 @@ class DSRDocumentTreeNode
                                               const size_t flags,
                                               OFConsole *logStream) const;
 
+    /** read SR document content module
+     ** @param  dataset       DICOM dataset from which the data should be read
+     *  @param  documentType  type of the document to be read (used for checking purposes)
+     *  @param  logStream     pointer to error/warning output stream (output disabled if NULL)
+     ** @return status, EC_Normal if successful, an error code otherwise
+     */
     E_Condition readSRDocumentContentModule(DcmItem &dataset,
                                             const E_DocumentType documentType,
                                             OFConsole *logStream);
 
+    /** write SR document content module
+     ** @param  dataset    DICOM dataset to which the data should be written
+     *  @param  logStream  pointer to error/warning output stream (output disabled if NULL)
+     ** @return status, EC_Normal if successful, an error code otherwise
+     */
     E_Condition writeSRDocumentContentModule(DcmItem &dataset,
                                              OFConsole *logStream) const;
 
+    /** read document relationship macro
+     ** @param  dataset       DICOM dataset from which the data should be read
+     *  @param  documentType  type of the document to be read (used for checking purposes)
+     *  @param  logStream     pointer to error/warning output stream (output disabled if NULL)
+     ** @return status, EC_Normal if successful, an error code otherwise
+     */
     E_Condition readDocumentRelationshipMacro(DcmItem &dataset,
                                               const E_DocumentType documentType,
                                               OFConsole *logStream);
 
+    /** write document relationship macro
+     ** @param  dataset    DICOM dataset to which the data should be written
+     *  @param  logStream  pointer to error/warning output stream (output disabled if NULL)
+     ** @return status, EC_Normal if successful, an error code otherwise
+     */
     E_Condition writeDocumentRelationshipMacro(DcmItem &dataset,
                                                OFConsole *logStream) const;
 
+    /** read document content macro
+     ** @param  dataset    DICOM dataset from which the data should be read
+     *  @param  logStream  pointer to error/warning output stream (output disabled if NULL)
+     ** @return status, EC_Normal if successful, an error code otherwise
+     */
     E_Condition readDocumentContentMacro(DcmItem &dataset,
                                          OFConsole *logStream);
 
+    /** write document content macro
+     ** @param  dataset    DICOM dataset to which the data should be written
+     *  @param  logStream  pointer to error/warning output stream (output disabled if NULL)
+     ** @return status, EC_Normal if successful, an error code otherwise
+     */
     E_Condition writeDocumentContentMacro(DcmItem &dataset,
                                           OFConsole *logStream) const;
 
+    /** read content sequence
+     ** @param  dataset       DICOM dataset from which the data should be read
+     *  @param  documentType  type of the document to be read (used for checking purposes)
+     *  @param  logStream     pointer to error/warning output stream (output disabled if NULL)
+     ** @return status, EC_Normal if successful, an error code otherwise
+     */
     E_Condition readContentSequence(DcmItem &dataset,
                                     const E_DocumentType documentType,
                                     OFConsole *logStream);
 
+    /** write content sequence
+     ** @param  dataset       DICOM dataset to which the data should be written
+     *  @param  documentType  type of the document to be read (used for checking purposes)
+     *  @param  logStream     pointer to error/warning output stream (output disabled if NULL)
+     ** @return status, EC_Normal if successful, an error code otherwise
+     */
     E_Condition writeContentSequence(DcmItem &dataset,
                                      OFConsole *logStream) const;
 
+    /** render concept name in HTML format
+     ** @param  docStream    output stream to which the main HTML document is written
+     *  @param  flags        flag used to customize the output (see DSRTypes::HF_xxx)
+     *  @param  logStream    pointer to error/warning output stream (output disabled if NULL)
+     ** @return status, EC_Normal if successful, an error code otherwise
+     */
     E_Condition renderHTMLConceptName(ostream &docStream,
                                       const size_t flags,
                                       OFConsole *logStream) const;
 
+    /** render child nodes in HTML format
+     ** @param  docStream     output stream to which the main HTML document is written
+     *  @param  annexStream   output stream to which the HTML document annex is written
+     *  @param  nestingLevel  current nesting level.  Used to render section headings.
+     *  @param  annexNumber   reference to the variable where the current annex number is stored.
+     *                        Value is increased automatically by 1 after a new entry has been added.
+     *  @param  flags         flag used to customize the output (see DSRTypes::HF_xxx)
+     *  @param  logStream     pointer to error/warning output stream (output disabled if NULL)
+     ** @return status, EC_Normal if successful, an error code otherwise
+     */
     E_Condition renderHTMLChildNodes(ostream &docStream,
                                      ostream &annexStream,
                                      const size_t nestingLevel,
@@ -189,18 +405,30 @@ class DSRDocumentTreeNode
                                      const size_t flags,
                                      OFConsole *logStream) const;
 
+    /** convert relationship type into a text used for HTML rendering
+     ** @param  relationshipType  type of relationship to be converted
+     *  @param  relationshipText  reference to string variable where the resulting text should be
+     *                            stored.  Value is cleared if 'relationshipType' is invalid or not
+     *                            supported.
+     *  @param  flags             flag used to customize the output (see DSRTypes::HF_xxx)
+     ** @return reference to the 'relationshipText' string
+     */
     const OFString &getRelationshipText(const E_RelationshipType relationshipType,
                                         OFString &relationshipText,
                                         const size_t flags) const;
-  
-  
+
+
   private:
 
+    /// relationship type (VR=CS, mandatory)
     const E_RelationshipType RelationshipType;
+    /// value type (VR=CS, mandatory)
     const E_ValueType        ValueType;
 
-    DSRCodedEntryValue ConceptName;
-    OFString           ObservationDateTime;
+    /// concept name (VR=SQ, conditional)
+    DSRCodedEntryValue       ConceptName;
+    /// observation date and time (VR=DT, conditional)
+    OFString                 ObservationDateTime;
 
 
  // --- declaration of default/copy constructor and assignment operator
@@ -217,7 +445,10 @@ class DSRDocumentTreeNode
 /*
  *  CVS/RCS Log:
  *  $Log: dsrdoctn.h,v $
- *  Revision 1.2  2000-10-18 17:02:27  joergr
+ *  Revision 1.3  2000-10-23 15:10:29  joergr
+ *  Added/updated doc++ comments.
+ *
+ *  Revision 1.2  2000/10/18 17:02:27  joergr
  *  Added methods allowing direct access to certain content item values.
  *  Made some functions inline.
  *

@@ -23,8 +23,8 @@
  *    classes: DSRWaveformReferenceValue
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-10-20 10:15:43 $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  Update Date:      $Date: 2000-10-23 15:13:42 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -99,8 +99,8 @@ class DSRWaveformReferenceValue
     virtual OFBool isShort(const size_t flags) const;
 
     /** print image reference.
-     *  The output of a typical waveform reference value looks like this:
-     *  (HemodynamicWaveformStorage,"1.2.3")
+     *  The output of a typical waveform reference value looks like this: (HemodynamicWaveform
+     *  Storage,"1.2.3")
      *  If the SOP class UID is unknown the UID is printed instead of the related name.
      ** @param  stream  output stream to which the image reference value should be printed
      *  @param  flags   flag used to customize the output (see DSRTypes::PF_xxx)
@@ -211,7 +211,10 @@ class DSRWaveformReferenceValue
 /*
  *  CVS/RCS Log:
  *  $Log: dsrwavvl.h,v $
- *  Revision 1.4  2000-10-20 10:15:43  joergr
+ *  Revision 1.5  2000-10-23 15:13:42  joergr
+ *  Added/updated doc++ comments.
+ *
+ *  Revision 1.4  2000/10/20 10:15:43  joergr
  *  Renamed class DSRReferenceValue to DSRCompositeReferenceValue.
  *
  *  Revision 1.3  2000/10/18 17:11:33  joergr

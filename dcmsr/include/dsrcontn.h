@@ -23,8 +23,8 @@
  *    classes: DSRContainerTreeNode
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-10-18 17:01:17 $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  Update Date:      $Date: 2000-10-23 15:09:27 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -52,20 +52,59 @@ class DSRContainerTreeNode
 
   public:
 
+    /** constructor.
+     ** @param  relationshipType  type of relationship to the parent tree node.
+     *                            Should not be RT_invalid or RT_isRoot.
+     */
     DSRContainerTreeNode(const E_RelationshipType relationshipType,
                          const E_ContinuityOfContent continuityOfContent = COC_Separate);
 
+    /** destructor
+     */
     virtual ~DSRContainerTreeNode();
 
+    /** clear all member variables.
+     *  Please note that the content item might become invalid afterwards.
+     */
     virtual void clear();
 
+    /** check whether the content item is valid.
+     *  The content item is valid if the base class is valid, the continuity of content
+     *  flag is valid, and the concept name is valid or the content item is not the root item.
+     ** @return OFTrue if tree node is valid, OFFalse otherwise
+     */
     virtual OFBool isValid() const;
 
+    /** check whether the content is short.
+     *  A container content item is defined to be never short (return always OFFalse).
+     ** @param  flags  flag used to customize the output (see DSRTypes::HF_xxx)
+     ** @return OFTrue if the content is short, OFFalse otherwise
+     */
     virtual OFBool isShort(const size_t flags) const;
 
+    /** print content item.
+     *  A typical output looks like this: CONTAINER:(,,"Diagnosis")=SEPARATE for the root node
+     *  and contains CONTAINER:=CONTINUOUS for a "normal" content item.
+     ** @param  stream  output stream to which the content item should be printed
+     *  @param  flags   flag used to customize the output (see DSRTypes::PF_xxx)
+     ** @return status, EC_Normal if successful, an error code otherwise
+     */
     virtual E_Condition print(ostream &stream,
                               const size_t flags) const;
 
+    /** render content item in HTML format.
+     *  After rendering the current content item all child nodes (if any) are also rendered (see
+     *  renderHTMLChildNodes() for details).  This method overwrites the one specified in base class
+     *  DSRDocumentTree since the rendering of the child nodes depends on the value of the flag
+     *  'ContinuityOfContent'.
+     ** @param  docStream    output stream to which the main HTML document is written
+     *  @param  annexStream  output stream to which the HTML document annex is written
+     *  @param  annexNumber  reference to the variable where the current annex number is stored.
+     *                       Value is increased automatically by 1 after a new entry has been added.
+     *  @param  flags        flag used to customize the output (see DSRTypes::HF_xxx)
+     *  @param  logStream    pointer to error/warning output stream (output disabled if NULL)
+     ** @return status, EC_Normal if successful, an error code otherwise
+     */
     virtual E_Condition renderHTML(ostream &docStream,
                                    ostream &annexStream,
                                    const size_t nestingLevel,
@@ -73,26 +112,68 @@ class DSRContainerTreeNode
                                    const size_t flags,
                                    OFConsole *logStream) const;
 
+    /** check whether a node could be added as a child node.
+     *  This method checks whether a content item as specified could be added as a child
+     *  node to the current one (without really adding the node).
+     ** @param  documentType      type of document to which the content item belongs.
+     *                            The document type has an impact on the relationship
+     *                            contraints. 
+     *  @param  relationshipType  relationship type of the new node with regard to the
+     *                            current one
+     *  @param  valueType         value type of node to be checked/added
+     ** @return OFTrue if specified node can be added, OFFalse otherwise
+     */
     virtual OFBool canAddNode(const E_DocumentType documentType,
                               const E_RelationshipType relationshipType,
                               const E_ValueType valueType) const;
 
+    /** get continuity of content flag.
+     *  This flag specifies whether or not its contained content items (child nodes) are
+     *  logically linked in a continuous textual flow, or are sparate items.
+     ** @return continuity of content flag if successful, COC_invalid otherwise
+     */
     inline E_ContinuityOfContent getContinuityOfContent() const
     {
         return ContinuityOfContent;
     }
 
+    /** set continuity of content flag.
+     *  This flag specifies whether or not its contained content items (child nodes) are
+     *  logically linked in a continuous textual flow, or are sparate items.
+     ** @param  continuityOfContent  value to be set (should be different from COC_onvalid)
+     ** @return status, EC_Normal if successful, an error code otherwise
+     */
     E_Condition setContinuityOfContent(const E_ContinuityOfContent continuityOfContent);
 
 
   protected:
   
+    /** read content item (value) from dataset
+     ** @param  dataset    DICOM dataset from which the content item should be read
+     *  @param  logStream  pointer to error/warning output stream (output disabled if NULL)
+     ** @return status, EC_Normal if successful, an error code otherwise
+     */
     virtual E_Condition readContentItem(DcmItem &dataset,
                                         OFConsole *logStream);
 
+    /** write content item (value) to dataset
+     ** @param  dataset    DICOM dataset to which the content item should be written
+     *  @param  logStream  pointer to error/warning output stream (output disabled if NULL)
+     ** @return status, EC_Normal if successful, an error code otherwise
+     */
     virtual E_Condition writeContentItem(DcmItem &dataset,
                                          OFConsole *logStream) const;
 
+    /** render content item (value) in HTML format
+     ** @param  docStream     output stream to which the main HTML document is written
+     *  @param  annexStream   output stream to which the HTML document annex is written
+     *  @param  nestingLevel  current nesting level.  Used to render section headings.
+     *  @param  annexNumber   reference to the variable where the current annex number is stored.
+     *                        Value is increased automatically by 1 after a new entry has been added.
+     *  @param  flags         flag used to customize the output (see DSRTypes::HF_xxx)
+     *  @param  logStream     pointer to error/warning output stream (output disabled if NULL)
+     ** @return status, EC_Normal if successful, an error code otherwise
+     */
     virtual E_Condition renderHTMLContentItem(ostream &docStream,
                                               ostream &annexStream,
                                               const size_t nestingLevel,
@@ -103,6 +184,7 @@ class DSRContainerTreeNode
   
   private:
 
+    /// continuity of content flag (VR=CS, mandatory)
     E_ContinuityOfContent ContinuityOfContent;
 
 
@@ -120,7 +202,10 @@ class DSRContainerTreeNode
 /*
  *  CVS/RCS Log:
  *  $Log: dsrcontn.h,v $
- *  Revision 1.2  2000-10-18 17:01:17  joergr
+ *  Revision 1.3  2000-10-23 15:09:27  joergr
+ *  Added/updated doc++ comments.
+ *
+ *  Revision 1.2  2000/10/18 17:01:17  joergr
  *  Made some functions inline.
  *
  *  Revision 1.1  2000/10/13 07:49:24  joergr

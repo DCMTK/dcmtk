@@ -23,8 +23,8 @@
  *    classes: DSRCodedEntryValue
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-10-19 16:02:13 $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  Update Date:      $Date: 2000-10-23 15:08:33 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -60,7 +60,7 @@ class DSRCodedEntryValue
     DSRCodedEntryValue();
 
     /** constructor.
-     *  The code triple is only set if it passed the validity check (see setValue()).
+     *  The code triple is only set if it passed the validity check (see setCode()).
      ** @param  codeValue               computer readable and computer searchable identifier
      *                                  of the code to be set. (VR=SH, mandatory)
      *  @param  codingSchemeDesignator  textual identifier of the table where the 'codeValue'
@@ -74,7 +74,7 @@ class DSRCodedEntryValue
                        const OFString &codeMeaning);
 
     /** constructor.
-     *  The code 4-tuple is only set if it passed the validity check (see setValue()).
+     *  The code 4-tuple is only set if it passed the validity check (see setCode()).
      ** @param  codeValue               computer readable and computer searchable identifier
      *                                  of the code to be set. (VR=SH, mandatory)
      *  @param  codingSchemeDesignator  textual identifier of the table where the 'codeValue'
@@ -348,7 +348,10 @@ class DSRCodedEntryValue
 /*
  *  CVS/RCS Log:
  *  $Log: dsrcodvl.h,v $
- *  Revision 1.3  2000-10-19 16:02:13  joergr
+ *  Revision 1.4  2000-10-23 15:08:33  joergr
+ *  Added/updated doc++ comments.
+ *
+ *  Revision 1.3  2000/10/19 16:02:13  joergr
  *  Renamed some set methods.
  *  Added optional module name to read method to provide more detailed warning
  *  messages.
