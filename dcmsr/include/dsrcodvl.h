@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2001, OFFIS
+ *  Copyright (C) 2000-2003, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DSRCodedEntryValue
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-09-26 13:04:04 $
- *  CVS/RCS Revision: $Revision: 1.9 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2003-08-07 12:20:48 $
+ *  CVS/RCS Revision: $Revision: 1.10 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -38,6 +38,7 @@
 #include "osconfig.h"   /* make sure OS specific configuration is included first */
 
 #include "dsrtypes.h"
+#include "dsrxmld.h"
 
 #include "ofstring.h"
 
@@ -92,7 +93,7 @@ class DSRCodedEntryValue
                        const OFString &codingSchemeVersion,
                        const OFString &codeMeaning);
 
-    /** copy constructor.
+    /** copy constructor
      ** @param  codedEntryValue  code to be copied (not checked !)
      */
     DSRCodedEntryValue(const DSRCodedEntryValue &codedEntryValue);
@@ -177,6 +178,14 @@ class DSRCodedEntryValue
     OFCondition writeSequence(DcmItem &dataset,
                               const DcmTagKey &tagKey,
                               OFConsole *logStream) const;
+
+    /** read code from XML document
+     ** @param  doc     document containing the XML file content
+     *  @param  cursor  cursor pointing to the starting node
+     ** @return status, EC_Normal if successful, an error code otherwise
+     */
+    OFCondition readXML(const DSRXMLDocument &doc,
+                        DSRXMLCursor cursor);
 
     /** write code in XML format
      ** @param  stream     output stream to which the XML document is written
@@ -356,6 +365,7 @@ class DSRCodedEntryValue
     /// code meaning (VR=LO, mandatory)
     OFString CodeMeaning;
     /// private coding scheme creator UID.  Used to identify private coding schemes.
+    //  Replaced by CodingSchemeIdentificationSequence in CP 324 (final text 01/2003)!
     OFString PrivateCodingSchemeCreatorUID;
 };
 
@@ -366,7 +376,10 @@ class DSRCodedEntryValue
 /*
  *  CVS/RCS Log:
  *  $Log: dsrcodvl.h,v $
- *  Revision 1.9  2001-09-26 13:04:04  meichel
+ *  Revision 1.10  2003-08-07 12:20:48  joergr
+ *  Added readXML functionality.
+ *
+ *  Revision 1.9  2001/09/26 13:04:04  meichel
  *  Adapted dcmsr to class OFCondition
  *
  *  Revision 1.8  2001/06/01 15:50:59  meichel

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2001, OFFIS
+ *  Copyright (C) 2000-2003, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DSRCompositeReferenceValue
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-09-26 13:04:05 $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2003-08-07 12:22:37 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -38,6 +38,7 @@
 #include "osconfig.h"   /* make sure OS specific configuration is included first */
 
 #include "dsrtypes.h"
+#include "dsrxmlc.h"
 
 #include "ofstring.h"
 
@@ -111,6 +112,14 @@ class DSRCompositeReferenceValue
      */
     virtual OFCondition print(ostream &stream,
                               const size_t flags) const;
+
+    /** read reference value from XML document
+     ** @param  doc     document containing the XML file content
+     *  @param  cursor  cursor pointing to the starting node
+     ** @return status, EC_Normal if successful, an error code otherwise
+     */
+    virtual OFCondition readXML(const DSRXMLDocument &doc,
+                                DSRXMLCursor cursor);
 
     /** write reference value in XML format
      ** @param  stream     output stream to which the XML document is written
@@ -191,7 +200,7 @@ class DSRCompositeReferenceValue
     OFCondition getValue(DSRCompositeReferenceValue &referenceValue) const;
 
     /** set composite reference value.
-     *  Before setting the reference it is checked (see check...()).  If the value is
+     *  Before setting the reference it is checked (see checkXXX()).  If the value is
      *  invalid the current value is not replaced and remains unchanged.
      ** @param  referenceValue  value to be set
      ** @return status, EC_Normal if successful, an error code otherwise
@@ -199,7 +208,7 @@ class DSRCompositeReferenceValue
     OFCondition setValue(const DSRCompositeReferenceValue &referenceValue);
 
     /** set SOP class UID and SOP instance UID value.
-     *  Before setting the values they are checked (see check...()).  If the value pair is
+     *  Before setting the values they are checked (see checkXXX()).  If the value pair is
      *  invalid the current value pair is not replaced and remains unchanged.
      ** @param  sopClassUID     referenced SOP class UID to be set
      *  @param  sopInstanceUID  referenced SOP instance UID to be set
@@ -281,7 +290,10 @@ class DSRCompositeReferenceValue
 /*
  *  CVS/RCS Log:
  *  $Log: dsrcomvl.h,v $
- *  Revision 1.4  2001-09-26 13:04:05  meichel
+ *  Revision 1.5  2003-08-07 12:22:37  joergr
+ *  Added readXML functionality.
+ *
+ *  Revision 1.4  2001/09/26 13:04:05  meichel
  *  Adapted dcmsr to class OFCondition
  *
  *  Revision 1.3  2001/06/01 15:50:59  meichel
