@@ -76,7 +76,7 @@ pixel data fragmentation options:
          encode each frame as one fragment (default)
 
   +fs  --fragment-size  [s]ize: integer
-         limit fragment size to s kbytes
+         limit fragment size to s kbytes (non-standard)
 
 basic offset table encoding options:
 
