@@ -22,9 +22,9 @@
  *  Purpose: Convert DICOM Images to PPM or PGM using the dcmimage library.
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-04-28 12:35:59 $
+ *  Update Date:      $Date: 2000-06-07 14:46:08 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/apps/dcm2pnm.cc,v $
- *  CVS/RCS Revision: $Revision: 1.43 $
+ *  CVS/RCS Revision: $Revision: 1.44 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -105,10 +105,11 @@ int main(int argc, char *argv[])
 
     unsigned long       opt_compatibilityMode = CIF_MayDetachPixelData;
                                                           /* default: pixel data may detached if no longer needed */
-    OFCmdUnsignedInt    opt_Frame = 1;                    /* default: first frame */
-    OFCmdUnsignedInt    opt_FrameCount = 1;               /* default: one frame */
-    int                 opt_MultiFrame = 0;               /* default: no multiframes */
-    int                 opt_ConvertToGrayscale = 0;       /* default: color or grayscale */
+    OFCmdUnsignedInt    opt_frame = 1;                    /* default: first frame */
+    OFCmdUnsignedInt    opt_frameCount = 1;               /* default: one frame */
+    int                 opt_multiFrame = 0;               /* default: no multiframes */
+    int                 opt_convertToGrayscale = 0;       /* default: color or grayscale */
+    int                 opt_changePolarity = 0;           /* default: normal polarity */
     int                 opt_useAspectRatio = 1;           /* default: use aspect ratio for scaling */
     OFCmdUnsignedInt    opt_useInterpolation = 1;         /* default: use interpolation method '1' for scaling */
     int                 opt_useClip = 0;                  /* default: don't clip */
@@ -257,6 +258,7 @@ int main(int argc, char *argv[])
 
      cmd.addSubGroup("other transformations:");
       cmd.addOption("--grayscale",          "+G",      "convert to grayscale if necessary");
+      cmd.addOption("--change-polarity",    "+P",      "change polarity (invert pixel output)");
       cmd.addOption("--clip-region",        "+C",   4, "[l]eft [t]op [w]idth [h]eight : integer",
                                                        "clip image region (l, t, w, h)");
 
@@ -320,22 +322,24 @@ int main(int argc, char *argv[])
 
             cmd.beginOptionBlock();
             if (cmd.findOption("--frame"))
-                app.checkValue(cmd.getValue(opt_Frame, 1));
+                app.checkValue(cmd.getValue(opt_frame, 1));
             if (cmd.findOption("--frame-range"))
             {
-                app.checkValue(cmd.getValue(opt_Frame, 1));
-                app.checkValue(cmd.getValue(opt_FrameCount, 1));
-                opt_MultiFrame = 1;
+                app.checkValue(cmd.getValue(opt_frame, 1));
+                app.checkValue(cmd.getValue(opt_frameCount, 1));
+                opt_multiFrame = 1;
             }
             if (cmd.findOption("--all-frames"))
             {
-                opt_FrameCount = 0;
-                opt_MultiFrame = 1;
+                opt_frameCount = 0;
+                opt_multiFrame = 1;
             }
             cmd.endOptionBlock();
 
             if (cmd.findOption("--grayscale"))
-                opt_ConvertToGrayscale = 1;
+                opt_convertToGrayscale = 1;
+            if (cmd.findOption("--change-polarity"))
+                opt_changePolarity = 1;
 
             if (cmd.findOption("--clip-region"))
             {
@@ -573,7 +577,7 @@ int main(int argc, char *argv[])
         xfer = ((DcmFileFormat *)dfile)->getDataset()->getOriginalXfer();
 
     /* warning: dfile is Dataset or Fileformat! */
-    DicomImage *di = new DicomImage(dfile, xfer, opt_compatibilityMode, opt_Frame - 1, opt_FrameCount);
+    DicomImage *di = new DicomImage(dfile, xfer, opt_compatibilityMode, opt_frame - 1, opt_frameCount);
     if (di == NULL)
         app.printError("Out of memory");
 
@@ -657,14 +661,14 @@ int main(int argc, char *argv[])
 
     /* select frame */
 /*
-    if (opt_Frame > di->getFrameCount())
+    if (opt_frame > di->getFrameCount())
     {
-        oss << "cannot select frame no. " << opt_Frame << ", only " << di->getFrameCount() << " frame(s) in file." << ends;
+        oss << "cannot select frame no. " << opt_frame << ", only " << di->getFrameCount() << " frame(s) in file." << ends;
         app.printError(oss.str());
     }
 */
     /* convert to grayscale if necessary */
-    if ((opt_ConvertToGrayscale)  &&  (!di->isMonochrome()))
+    if ((opt_convertToGrayscale)  &&  (!di->isMonochrome()))
     {
          if (opt_verboseMode > 1)
              OUTPUT << "converting image to grayscale." << endl;
@@ -815,6 +819,14 @@ int main(int argc, char *argv[])
         di->setPresentationLutShape(opt_presShape);
     }
 
+    /* change polarity */
+    if (opt_changePolarity)
+    {
+        if (opt_verboseMode > 1)
+            OUTPUT << "setting polarity to REVERSE" << endl;
+        di->setPolarity(EPP_Reverse);
+    }
+
     /* perform clipping */
     if (opt_useClip && (opt_scaleType == 0))
     {
@@ -953,22 +965,22 @@ int main(int argc, char *argv[])
     switch (opt_fileType)
     {
         case 2:
-            di->writePPM(ofile, 8 /*, opt_Frame - 1*/);
+            di->writePPM(ofile, 8 /*, opt_frame - 1*/);
             break;
         case 3:
-            di->writePPM(ofile, 16 /*, opt_Frame - 1*/);
+            di->writePPM(ofile, 16 /*, opt_frame - 1*/);
             break;
         case 4:
-            di->writePPM(ofile, (int)opt_fileBits /*, opt_Frame - 1*/);
+            di->writePPM(ofile, (int)opt_fileBits /*, opt_frame - 1*/);
             break;
 #ifdef PASTEL_COLOR_OUTPUT
         case 5:
-            di->writePPM(ofile, MI_PastelColor /*, opt_Frame - 1*/);
+            di->writePPM(ofile, MI_PastelColor /*, opt_frame - 1*/);
             break;
 #endif
         case 1:
         default:
-            di->writeRawPPM(ofile, 8 /*, opt_Frame - 1*/);
+            di->writeRawPPM(ofile, 8 /*, opt_frame - 1*/);
             break;
     }
 
@@ -988,7 +1000,10 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcm2pnm.cc,v $
- * Revision 1.43  2000-04-28 12:35:59  joergr
+ * Revision 1.44  2000-06-07 14:46:08  joergr
+ * Added new command line option to change the polarity.
+ *
+ * Revision 1.43  2000/04/28 12:35:59  joergr
  * DebugLevel - global for the module - now derived from OFGlobal (MF-safe).
  *
  * Revision 1.42  2000/04/27 13:18:48  joergr
