@@ -1,0 +1,28 @@
+Release 3.1.0 (Public Release - 1996.09.01)
+
+dcmdata package:
+
+- Corrected bug whereby the search stack would be invalid if nothing
+  was found.  Added capability to print the contents of a dataset to
+  any stream (was previously only stderr).  The dcmdump now accepts
+  additional parameters to test the new print capabilities.
+  Affects: dcmdata/...
+
+dcmnet package:
+
+- Added automatic tests in the DIMSE level network code to check
+  that a data dictionary is loaded.  Calls to DIMSE routines will
+  now fail if no data dictionary is loaded.  Previously, the lack of
+  a loaded data dictionary would cause obscure errors.
+  Affects: dcmnet/libsrc/dimse.cc
+
+- When requesting an association, added check that presentation
+  contexts have been defined.
+  Affects: dcmnet/libsrc/assoc.h
+
+wlistctn package:
+
+- Added example worklist database (directory wlistdb)
+
+- Optimized perl script to only call sub-programs if necessary.
+  Affects: wlistctn/perl/worklist.pl

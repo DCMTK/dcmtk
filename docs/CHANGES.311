@@ -1,0 +1,140 @@
+Release 3.1.1 (Public Release - 1996.09.27)
+
+- Added preliminary support for the Win32 environment (WINSOCK library).
+  Replaced the mscw31.h config include with cfwin32.h.  The dcmnet library
+  now uses appropriate WINSOCK socket calls (send instead of write, recv
+  instead of read, closesocket instead of close).
+  Added:   config/include/cfwin32.h
+  Removed: config/include/mscw31.h
+  Affects: config/include/osconfig.h
+           dcmnet/libsrc/dul.cc
+           dcmnet/libsrc/dulfsm.cc
+           dcmnet/include/dcompat.h
+           dcmnet/apps/*.cc
+
+- Preliminary support for IBM AIX systems using the IBM C Set++ compiler.
+  It is necessary to indicate that some system include files
+  have C linkage.  Moved the BEGIN_EXTERN_C and END_EXTERN_C defines
+  from dcmnet/include/dcmnet.h to config/include/osconfig.h so that they
+  are always available.  Some of the most affected files have been modified
+  to use BEGIN_EXTERN_C/END_EXTERN_C but many more need changing.
+  Affects: config/configure.in
+           config/include/osconfig.h
+           dcmnet/include/dcompat.h
+           imagectn/libsrc/dbindex.cc
+           imagectn/libsrc/dbstore.cc
+           imagectn/libsrc/dbutils.cc
+           imagectn/apps/imagectn.cc
+           imagectn/apps/scemove.cc
+           imagectn/apps/scestore.cc
+           imagectn/apps/ti.cc
+           imagectn/apps/tinet.cc
+           imagectn/apps/tiui.cc
+           dcmnet/apps/findscu.cc
+           dcmnet/apps/storescu.cc
+
+- Preliminary support for IBM AIX systems using the IBM C Set++ compiler.
+  Corrected various small syntax errors and warnings not noticed by other
+  compilers (e.g. mismatch between method definition in .h and .cc files,
+  used before set warnings, const to non-const assignment).  Changed flock_t
+  to struct flock.  Renamed the support program wlistctn/wwwapps/preplock.c
+  to preplock.cc to
+  avoid a compiler crash.
+  Affects: dcmdata/libsrc/dcdicdir.cc
+           dcmdata/libsrc/dcdirrec.cc
+           dcmnet/libsrc/assoc.cc
+           dcmnet/libsrc/dcompat.cc
+           wlistctn/libsrc/wrklstdb.cc
+  Removed: wlistctn/wwwapps/preplock.c
+  Added:   wlistctn/wwwapps/preplock.cc
+
+- Added a pre-generated version of a builtin data dictionary.  This file
+  can be included in a library instead of dcdictbi.cc and was generated
+  via the mkdictbi program (in dcmdata/libsrc).  Currently a builtin
+  data dictionary is not used per default.  It has been found useful
+  for systems which do not support environment variables making it
+  more difficult to find a data dictionary to load (e.g. Macintosh).
+  Added:   dcmdata/libsrc/dcdictzz.cc
+
+- Removed the versions of cmdlnarg.cc and cmdlnarg.h found in dcmdata/apps
+  and dcmnet/apps and added one single version to dcmdata/include and
+  dcmdata/libsrc (now part of the dcmdata library).
+  Removed: dcmdata/apps/cmdlnarg.h
+           dcmdata/apps/cmdlnarg.cc
+           dcmnet/apps/cmdlnarg.h
+           dcmnet/apps/cmdlnarg.cc
+  Added:   dcmdata/include/cmdlnarg.h
+           dcmdata/libsrc/cmdlnarg.cc
+  Affects: dcmdata/apps/Makefile.in
+           dcmnet/apps/Makefile.in
+           dcmdata/libsrc/Makefile.in
+
+- Added preliminary support for the Macintosh environment (GUSI library).
+  Affects: dcmdata/libsrc/mkdeftag.cc
+           dcmdata/libsrc/mkdictbi.cc
+           dcmdata/apps/*.cc
+           dcmnet/include/dcompat.h
+           dcmnet/libsrc/dul.cc
+           dcmnet/libsrc/dulfsm.cc
+           dcmnet/apps/*.cc
+           config/include/cfmwerks.h
+           config/configure.in
+
+- Added a separate table of Storage SOP Class UIDs (useful during
+  association negotiation).
+  Affects: dcmdata/libsrc/dcuid.cc
+           dcmdata/include/dcuid.h
+           dcmnet/apps/storescu.cc
+           dcmnet/apps/storescp.cc
+           imagectn/apps/imagectn.cc
+           imagectn/apps/imagectn.h
+           imagectn/apps/scemove.cc
+
+- Added SOP Class UIDs for Radiotherapy Objects.
+  Affects: dcmdata/libsrc/dcuid.cc
+           dcmdata/include/dcuid.h
+           dcmnet/libsrc/diutil.cc
+
+- Added data dictionary tags for Radiotherapy Objects.
+  Affects: dcmdata/libsrc/dicom.dic
+           dcmdata/include/dcdeftag.h
+
+- Corrected erroneous setting of an error flag when inserting an
+  attribute into an Item (via Item::insert(...)) and the attribute
+  was already present.  Now the error flag is only set if replaceOld
+  is FALSE and an attribute already exists.
+  Affects: dcmdata/libsrc/dcitem.cc
+
+- Eliminated lingering reference to a G++ lib_error_handler.  The dcmdata
+  library should now be independent of libg++.
+  Affects: dcmdata/libsrc/dcentset.cc
+
+- Added optional code to the dcmdump program to restrict its
+  output to specified named tags.  Based on a suggestion from
+  Larry V. Streepy, Jr.  (mailto:streepy@healthcare.com).
+  Affects: dcmdata/apps/dcmdump.cc
+           dcmdata/docs/dcmdump.txt
+
+- Added capability to search data dictionary by tag name.  The
+  source code for these changes was contributed by Larry V. Streepy,
+  Jr., Chief Technical Officer,  Healthcare Communications, Inc.,
+  (mailto:streepy@healthcare.com).
+  Affects: dcmdata/include/dcdicent.h
+           dcmdata/include/dcdict.h
+           dcmdata/include/dcentbst.h
+           dcmdata/include/dcentdef.h
+           dcmdata/libsrc/dcdict.cc
+           dcmdata/libsrc/dcentbst.cc
+
+- Removed code which generated an error if DcmFileStream::Tell(void)
+  was called when the stream was in write mode.  This behaviour was
+  causing DcmDicomDir::write(...) to always fail.  In particular, this
+  error was causing the program mknldir to write a DICOMDIR file
+  containing only a meta-header.
+  Affects: dcmdata/libsrc/dcstream.cc
+
+- Corrected missing () when calling function stack.card() used
+  in nextObject(...).  GNU C++ did not detect this error, it was
+  discovered when compiling under MetroWerks C++ on a Power Mac.
+  Affects: dcmdata/libsrc/dcitem.cc
+           dcmdata/libsrc/dcsequen.cc

@@ -1,0 +1,48 @@
+Release 3.0.1
+
+wlistctn package:
+
+- Corrected processing of sequences in query identifiers.  Any and
+  every sequence was being treated (and matched) as if it were a
+  ScheduledProcedureStepSequence.  e.g. trying to retreive the (unsupported)
+  RequestedProcedureCodeSequence was returning attributes of the
+  ScheduledProcedureStepSequence.
+  Affects: dcmtk/wlistctn/libsrc/wrklstdb.cc
+
+- wlistctn now checks that the called AE Title corresponds to a Worklist
+  database directory.  If no such directory exists then the association
+  is rejected due to an unknown AE Title.
+  Affects: dcmtk/wlistctn/apps/wlistctn.cc
+
+- Added various utility programs used by the Worklist WWW Server.
+  New: dcmtk/wlistctn/wwwapps/*
+       dcmtk/wlistctn/perl/*
+
+imagectn package:
+
+- Added command line argument (-DD) to imagectn to explicitly disable
+  communication with ctndisp and override the configuration file.
+  Affects: dcmtk/imagectn/libsrc/imagectn.cc
+
+- Added command line argument (-DD) to ti to explicitly disable
+  communication with ctndisp and override the configuration file.
+  Affects: dcmtk/imagectn/libsrc/ti.cc
+
+- Modified the definition of a static array of structs which was causing
+  problems for some C++ compilers.
+  Affects: dcmtk/imagectn/libsrc/dbpriv.h
+           dcmtk/imagectn/libsrc/dbutils.cc
+
+ctndisp package:
+
+- The library routines for communicating with the ctndisp program
+  now automatically disable communication if ctndisp cannot be detected.
+  Affects: dcmtk/ctndisp/libsrc/dispuser.cc
+
+dcmdata package:
+
+- Updated ImplementationVersionName string constant for release 3.0.1
+  Affects: dcmtk/dcmdata/include/dcuid.h
+
+- Only trailing padding characters are now stripped from string-like
+  value representations.

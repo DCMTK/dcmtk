@@ -1,0 +1,117 @@
+Release 3.1.2 (Public Release - 1997.02.06)
+
+- Updated Implementation Version Name and Implementation Class UID to
+  reflect the new version 3.1.2
+  Affects: dcmdata/include/dcuid.h
+
+- Added code in imagectn to print the time when an association request
+  is received.
+  Affects: imagectn/apps/imagectn.cc
+
+- Added capability for a DcmDirectoryRecord to record its position in
+  the DICOMDIR file when being read.  Previously this information was
+  only computed when a DICOMDIR was being written.
+  Affects: dcmdata/libsrc/dcdirrec.cc
+
+- Updated preliminary Apple Macintosh support for the Metrowerks CodeWarrior
+  version 11 compiler and environment.  Either the GUSI library or a WinSock
+  library are needed (both are on the CodeWarrior CD but GUSI comes with
+  source code and seems more stable).  Corrected for incompatibilities
+  in the timeval structure between unix.h and winsock.h
+  Problems remain with the network interactions when used when other
+  TCP/IP applications are active (this may be a MacOS/OpenTransport problem).
+  Affects: config/include/cfmwerks.h
+            dcmdata/apps/dcmdump.cc
+            dcmdata/libsrc/dcdicdir.cc
+            dcmdata/libsrc/dcdirrec.cc
+            dcmnet/include/dcompat.h
+            dcmnet/include/dicom.h
+            dcmnet/libsrc/dcompat.cc
+            dcmnet/libsrc/dimcond.cc
+            dcmnet/libsrc/dimse.cc
+            dcmnet/libsrc/diutil.cc
+
+- Fixed bug when creating unique identifers.  No check was made to ensure
+  that negative numbers never appeared in a UID.  Also added an
+  implementation of a simple gethostid() function for systems which
+  lack this function (e.g. Mac & Windows).  The implementation requires
+  TCP/IP to be available.
+  Affects: dcmdata/libsrc/dcuid.cc
+
+- Fixed crashing bug in the worklist database search routines.  A badly
+  formed date or time matching key was not being caught.  Also added
+  some preliminary error checking of maching keys prior to database
+  search.  Malformed keys will be noted as offending elements and the
+  database search routines will return an error.
+  Affects: wlistctn/libsrc/wkrlstdb.cc
+           wlistctn/libsrc/wkrlstdb.h
+
+- Corrected usage message for the worklist database test program wltest.
+  Affects: wlistctn/tests/wltest.cc
+
+- Corrected some entries in the example worklist database which used
+  an incorrect character as value multiplicity deliminator.
+  Affects: wlistctn/wlistdb/OFFIS/wklist1.dump
+           wlistctn/wlistdb/OFFIS/wklist3.dump
+           wlistctn/wlistdb/OFFIS/wklist5.dump
+           wlistctn/wlistdb/OFFIS/wklist6.dump
+           wlistctn/wlistdb/OFFIS/wklist8.dump
+
+- Added some simple documentation for the movescu utility program.
+  Added:   dcmnet/docs/movescu.txt
+
+- Modifed the incoming association negotiation behaviour of movescu
+  so that the Storage SCP code now will accept any presentation context
+  for a Storage SOP Class based on the table of Storage SOP Classes
+  exported in dcuid.h
+  Affects: dcmnet/apps/movescu.cc
+
+- Added a set of example modality worklist queries.
+  Added:   wlistctn/wlistqry
+           wlistctn/wlistqry/README
+           wlistctn/wlistqry/wlistqry0.dump
+           wlistctn/wlistqry/wlistqry1.dump
+           wlistctn/wlistqry/wlistqry2.dump
+           wlistctn/wlistqry/wlistqry3.dump
+           wlistctn/wlistqry/wlistqry4.dump
+           wlistctn/wlistqry/wlistqry5.dump
+           wlistctn/wlistqry/wlistqry6.dump
+           wlistctn/wlistqry/wlistqry7.dump
+           wlistctn/wlistqry/wlistqry8.dump
+           wlistctn/wlistqry/wlistqry9.dump
+           wlistctn/wlistqry/wlistqry10.dump
+           wlistctn/wlistqry/wlistqry11.dump
+           wlistctn/wlistqry/wlistqry12.dump
+
+- Added bugfix for WINSOCK support.  The required WINSOCK version
+  number was being incorrectly set to version 0.1.  The fixed
+  WINSOCK initialisation now uses the MAKEWORD macro to correctly
+  set the required version number. This bugfix was contributed
+  by Dr. Yongjian Bao of Innomed GmbH, Germany.
+  Affects: dcmnet/apps/echoscu.cc
+           dcmnet/apps/findscu.cc
+           dcmnet/apps/movescu.cc
+           dcmnet/apps/storescu.cc
+           dcmnet/apps/storescp.cc
+
+- Added support for SGI IRIX systems using GCC 2.7.x
+  Irix declares bzero() in bstring.h which is included from libc.h
+  Configure now also looks for a bzero() prototype in libc.h if
+  available.
+  Affects: config/configure
+           config/configure.in
+
+- Added support for HP-UX 9.05 systems using GCC 2.7.2.1
+  HP-UX 9.05 declares the select() system call unusually:
+  Declaration is in <sys/time.h> and args 2-4 are int* instead
+  of struct fd_set *.
+  This requires an extra check in the config modules.
+  Affects: config/acconfig.h
+           config/aclocal.m4
+           config/configure
+           config/configure.in
+           config/include/config.h.in
+           dcmnet/libsrc/assoc.cc
+           dcmnet/libsrc/dul.cc
+           dcmnet/libsrc/dulextra.cc
+           dcmnet/libsrc/dulfsm.cc

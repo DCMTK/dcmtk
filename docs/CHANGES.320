@@ -1,0 +1,734 @@
+Release 3.2 (Public Release - 1997.06.02)
+
+- Updated Version Number and Implementation Version Name to reflect the
+  current public release (3.2)
+  Affects: dcmdata/include/dcuid.h
+
+**** Changes from 97.05.30 (eichelberg)
+
+- added space characters around comments and simplified
+  some inlining code (needed for SunCC 2.0.1).
+  Affects: dcmnet/apps/findscu.cc
+           dcmnet/apps/movescu.cc
+           imagectn/apps/tinet.cc
+           imagectn/apps/tiui.cc
+           imagectn/apps/tiquery.cc
+           wlistctn/apps/scefind.cc
+           wlistctn/wwwapps/writwlst.cc
+
+**** Changes from 97.05.30 (barth)
+
+- include version number in every usage string
+  Affects: ctndisp/apps/ctndisp.cc
+
+- ctndsupp.cc now includes <unistd.h> if available. This prevents
+  a warning about no prototype for fork.
+  Affects: ctndisp/apps/ctndsupp.cc
+
+- fixed scanf format problem leading to warnings on 64 bit machines.
+  Affects: dcmdata/apps/dcmconv.cc
+           dcmdata/apps/dump2dcm.cc
+           dcmdata/libsrc/dcvris.cc
+
+- fixed problem of inconsistent interfaces and implementation that the
+  syntax check of GNU C++ does not find.
+  Affects: dcmdata/include/dcitem.h
+           dcmdata/libsrc/dcsequen.cc
+
+- corrected warning for unused variable if compiled without DEBUG
+  Affects: imagectn/tests/dbregimg.cc
+
+**** Changes from 97.05.29 (eichelberg)
+
+- dcmftest.cc now includes <unistd.h> if available. Needed for SunOS.
+  Affects: dcmdata/apps/dcmftest.cc
+
+- fixed printf format problem leading to a warning on 64bit machines.
+  Affects: dcmnet/tests/assctest.cc
+
+- added constant for dcmtk release date in dcuid.h.
+  All dcmtk applications now contain a version string
+  which is displayed with the command line options ("usage" message)
+  and which can be queried in the binary with the "ident" command.
+  Affects: dcmdata/include/dcuid.h
+           dcmdata/apps/dcmconv.cc
+           dcmdata/apps/dcmdump.cc
+           dcmdata/apps/dcmftest.cc
+           dcmdata/apps/dcmgpdir.cc
+           dcmdata/apps/dump2dcm.cc
+           dcmnet/apps/echoscu.cc
+           dcmnet/apps/findscu.cc
+           dcmnet/apps/movescu.cc
+           dcmnet/apps/storescp.cc
+           dcmnet/apps/storescu.cc
+           dcmnet/tests/assctest.cc
+           ctndisp/apps/ctndisp.cc
+           ctndisp/apps/killassc.cc
+           ctndisp/apps/sendimg.cc
+           imagectn/apps/imagectn.cc
+           imagectn/apps/ti.cc
+           imagectn/tests/dbregimg.cc
+           wlistctn/apps/wlistctn.cc
+           wlistctn/tests/wltest.cc
+           wlistctn/wwwapps/readoviw.cc
+           wlistctn/wwwapps/readwlst.cc
+           wlistctn/wwwapps/writwlst.cc
+
+**** Changes from 97.05.29 (hewett)
+
+- added explicit unsigned->int casts to avoid some CC compiler warnings
+  under Nextstep.
+  Affects: dcmdata/libsrc/dcvr.cc
+           imagectn/libsrc/dbfind.cc
+
+- added explicit cast of third argument for fcntl().  Avoids a GCC compiler
+  warning under Nextstep.
+  Affects: wlistctn/libsrc/wrklstdb.cc
+
+- added declaration of getcwd() and getwd() prototypes if functions are
+  available without prototypes.  Avoids a GCC compiler warning under Nextstep.
+  Affects: ctndisp/apps/sendimg.cc
+
+- added configuration checks for prototypes of getcwd() and getwd().
+  Affects: config/configure.in
+           config/acconfig.h
+           config/configure
+           config/include/config.h.in
+
+**** Changes from 97.05.28 (barth)
+
+- deleted unused variable lastDirIndex
+  Affects: dcmdata/libsrc/dcdicdir.cc
+
+**** Changes from 97.05.28 (eichelberg)
+
+- DIMSE_sendMessage() now checks whether the dataset to be sent
+  can be converted to the requested transfer syntax prior to
+  transmitting the message and dataset. If the test fails,
+  DIMSE_SENDFAILED is returned.
+  Affects: dcmnet/libsrc/dimse.cc
+
+**** Changes from 97.05.27 (eichelberg)
+
+- Corrected typos in storescp and storescu help messages
+  Affects: dcmnet/apps/storescp.cc
+           dcmnet/apps/storescu.cc
+           dcmnet/docs/storescp.cc
+
+**** Changes from 97.05.27 (barth)
+
+- Corrected usage string in dcmdump
+  Affects: dcmdata/apps/dcmdump.cc
+
+- Add method canWriteXfer to class DcmObject and all derived classes.
+  This method checks whether it is possible to convert the original
+  transfer syntax to an new transfer syntax. The check is used in the
+  dcmconv utility to prohibit the change of a compressed transfer
+  syntax to a uncompressed.
+  Affects: dcmdata/apps/dcmconv.cc
+           dcmdata/include/dcdatset.h
+           dcmdata/include/dcelem.h
+           dcmdata/include/dcfilefo.h
+           dcmdata/include/dcitem.h
+           dcmdata/include/dcobject.h
+           dcmdata/include/dcpixseq.h
+           dcmdata/include/dcsequen.h
+           dcmdata/include/dcvrobow.h
+           dcmdata/libsrc/Makefile.dep
+           dcmdata/libsrc/dcdatset.cc
+           dcmdata/libsrc/dcelem.cc
+           dcmdata/libsrc/dcfilefo.cc
+           dcmdata/libsrc/dcitem.cc
+           dcmdata/libsrc/dcpixseq.cc
+           dcmdata/libsrc/dcsequen.cc
+           dcmdata/libsrc/dcvrobow.cc
+
+**** Changes from 97.05.26 (barth)
+
+- Corrected typos in ::write method
+  Affects: dcmdata/dcpixseq.cc
+
+- Change testing of different compiler environments to support
+  configure if it exists in non-Unix environments.
+  Affects: config/include/osconfig.h
+
+**** Changes from 97.05.23 (eichelberg)
+
+- Fixed a bug in storescu application: -u option did not work correctly.
+  Affects: dcmnet/apps/storescu.cc
+
+- Major rewrite of storescp application. New features:
+  - network transfer syntax negotiation behaviour can be controlled
+  - files can be written with or without Metaheader
+  - file encoding (transfer syntax, group lengths etc.) can be controlled
+  - bypass mode implemented which writes data directly to file as a "snapshot"
+    of the network data stream. This prevents dcmdata from changing the dataset
+    i.e. by recomputing group lengths.
+  Changes required to interfaces of some DIMSE functions.
+  Affects: dcmdata/include/dcuid.h
+           dcmnet/docs/storescp.txt
+           dcmnet/libsrc/dimse.cc
+           dcmnet/libsrc/dimstore.cc
+           dcmnet/libsrc/Makefile.dep
+           dcmnet/include/dimse.h
+           dcmnet/apps/movescu.cc
+           dcmnet/apps/storescp.cc
+           dcmnet/apps/Makefile.dep
+           imagectn/apps/scestore.cc
+
+**** Changes from 97.05.22 (barth)
+
+- Changed default options and documentation for dcmdump.
+  Affects: dcmdata/apps/dcmdump.cc
+           dcmdata/docs/dcmdump.txt
+
+- Corrected wrong output length in print routine
+  Affects: dcmdata/libsrc/dcvrobow.h
+
+- Added new error code EC_NotImplemented
+  Affects: dcmdata/include/dcerror.h
+           dcmdata/libsrc/dcerror.h
+
+- Corrected errors for writing of pixel sequences for encapsulated
+  transfer syntaxes.
+  Affects: dcmdata/include/dcobject.h
+           dcmdata/include/dcpixseq.h
+           dcmdata/include/dcpxitem.h
+           dcmdata/libsrc/dcpixseq.cc
+           dcmdata/libsrc/dcpxitem.cc
+           dcmdata/libsrc/dcvr.cc
+
+**** Changes from 97.05.22 (hewett)
+
+- Added FAQ entry about LD_LIBRARY_PATH problem.
+  Affects: FAQ
+
+- Modified the test for presence of a data dictionary to use the
+  method DcmDataDictionary::isDictionaryLoaded().
+  Affects: dcmdata/apps/dcmconv.cc
+           dcmdata/apps/dcmdump.cc
+           dcmdata/apps/dcmgpdir.cc
+           dcmdata/apps/dump2dcm.cc
+           dcmnet/apps/echoscu.cc
+           dcmnet/apps/findscu.cc
+           dcmnet/apps/movescu.cc
+           dcmnet/apps/storescp.cc
+           dcmnet/apps/storescu.cc
+           dcmnet/libsrc/dimse.cc
+           dcmnet/tests/assctest.cc
+           imagectn/apps/imagectn.cc
+           imagectn/apps/ti.cc
+           imagectn/tests/dbregimg.cc
+           wlistctn/apps/wlistctn.cc
+           wlistctn/libsrc/wrklstdb.cc
+           wlistctn/tests/wltest.cc
+           wlistctn/wwwapps/readoviw.cc
+           wlistctn/wwwapps/readwlst.cc
+           wlistctn/wwwapps/writwlst.cc
+           ctndisp/apps/ctnddico.cc
+           ctndisp/apps/ctndisp.cc
+
+- Added method DcmDataDictionary::isDictionaryLoaded() to ask if a full
+  data dictionary has been loaded.  This method should be used in tests
+  rather that querying the number of entries (a sekelton dictionary is
+  now always present).
+  Affects: dcmdata/include/dcdict.h
+           dcmdata/libsrc/dcdict.cc
+
+**** Changes from 97.05.20 (eichelberg)
+
+- Fixed bug in storescu which caused a segmentation fault
+  when transmission of a non-image IOD (i.e. visit IOD) was attempted.
+  Affects: dcmnet/apps/storescu.cc
+
+**** Changes from 97.05.20 (barth)
+
+- Removed obsolete applications file2ds and ds2file. The functionality of these
+  applications is now peformed by dcmconv. Unified calling parameters
+  are implemented in dump2dcm, dcmdump and dcmconv.
+  Affects: dcmdata/apps/dcmconv.cc
+           dcmdata/apps/dcmdump.cc
+           dcmdata/apps/dump2dcm.cc
+           dcmdata/apps/Makefile.in
+           dcmdata/apps/Makefile.dep
+           dcmdata/docs/dcmconv.txt
+           dcmdata/docs/dcmdump.txt
+           dcmdata/docs/dump2dcm.txt
+  Removed: dcmdata/apps/file2ds.cc
+           dcmdata/apps/ds2file.cc
+           dcmdata/docs/file2ds.txt
+           dcmdata/docs/ds2file.txt
+
+**** Changes from 97.05.16 (barth)
+
+- Removed unusable test programms and directory dcmdata/tests/data
+  Deleted: dcmdata/tests/*
+  Affects: dcmdata/Makefile.in
+
+- Reactivate addUL in dimcmd.cc to add group length attribute explicit
+  to command dataset.
+  Affects: dcmnet/libsrc/dimcmd.cc
+
+- Revised handling of GroupLength elements and support of
+  DataSetTrailingPadding elements. The enumeratio E_GrpLenEncoding
+  got additional enumeration values (for a description see dctypes.h).
+  addGroupLength and removeGroupLength methods are replaced by
+  computeGroupLengthAndPadding. To support Padding, the parameters of
+  element and sequence write functions changed.
+  Affects: ctndisp/apps/ctnddico.cc
+           dcmdata/apps/dcmconv.cc
+           dcmdata/apps/dcmdump.cc
+           dcmdata/apps/dcmgpdir.cc
+           dcmdata/apps/ds2file.cc
+           dcmdata/apps/dump2dcm.cc
+           dcmdata/apps/file2ds.cc
+           dcmdata/docs/dcmconv.txt
+           dcmdata/docs/ds2file.txt
+           dcmdata/docs/dump2dcm.txt
+           dcmdata/docs/file2ds.txt
+           dcmdata/include/dcbytstr.h
+           dcmdata/include/dcdatset.h
+           dcmdata/include/dcdicdir.h
+           dcmdata/include/dcdirrec.h
+           dcmdata/include/dcelem.h
+           dcmdata/include/dcfilefo.h
+           dcmdata/include/dcitem.h
+           dcmdata/include/dcmetinf.h
+           dcmdata/include/dcobject.h
+           dcmdata/include/dcsequen.h
+           dcmdata/include/dctypes.h
+           dcmdata/include/dcvrobow.h
+           dcmdata/libsrc/dcbytstr.cc
+           dcmdata/libsrc/dcdatset.cc
+           dcmdata/libsrc/dcdicdir.cc
+           dcmdata/libsrc/dcdirrec.cc
+           dcmdata/libsrc/dcelem.cc
+           dcmdata/libsrc/dcfilefo.cc
+           dcmdata/libsrc/dcitem.cc
+           dcmdata/libsrc/dcmetinf.cc
+           dcmdata/libsrc/dcsequen.cc
+           dcmdata/libsrc/dcvrobow.cc
+           dcmnet/apps/movescu.cc
+           dcmnet/apps/storescp.cc
+           dcmnet/libsrc/dimse.cc
+           dcmnet/libsrc/diutil.cc
+           imagectn/apps/scestore.cc
+           wlistctn/libsrc/wrklstdb.cc
+           wlistctn/wwwapps/readoviw.cc
+           wlistctn/wwwapps/readwlst.cc
+
+- Added a new method calcElementLength to calculate the length of an
+  element, item or sequence. For elements it returns the length of
+  tag, length field, vr field, and value length, for item and
+  sequences it returns the length of the whole item. sequence including
+  the Delimitation tag (if appropriate).  It can never return
+  UndefinedLength.
+  Affects: dcmdata/include/dcdatset.h
+           dcmdata/include/dcelem.h
+           dcmdata/include/dcfilefo.h
+           dcmdata/include/dcitem.h
+           dcmdata/include/dcmetinf.h
+           dcmdata/include/dcobject.h
+           dcmdata/include/dcsequen.h
+           dcmdata/libsrc/dcdatset.cc
+           dcmdata/libsrc/dcelem.cc
+           dcmdata/libsrc/dcfilefo.cc
+           dcmdata/libsrc/dcitem.cc
+           dcmdata/libsrc/dcmetinf.cc
+           dcmdata/libsrc/dcsequen.cc
+
+- Deleted obsolete method DcmItem::calcHeaderLength because the
+  samce functionality is performed by DcmXfer::sizeofTagHeader
+  Affects: dcmdata/include/dcitem.h
+           dcmdata/libsrc/dcdirrec.cc
+           dcmdata/libsrc/dcitem.cc
+
+**** Changes from 97.05.15 (barth)
+
+- Bug fix for changing binary element values. If a binary existing element
+  value changed, byte order was somtimes wrong.
+  Affects: dcmdata/libsrc/dcelem.cc
+
+**** Changes from 97.05.13 (hewett)
+
+- Updated data dictionary for Final Text versions
+  of Supplements 4 (X-Ray Angio), 6 (X-Ray Radiofluoroscopy)
+  and 11 (Radiotherapy).  Added UIDs and data dictionary attributes
+  for the draft supplements 12 (PET), 13 (Queue Management),
+  15 (Visible Light), 17 (Modality Performed Procedure Step), 22 (User
+  Preference LUT) and 24 (Print Storage).  Updated UID tables so that
+  recompiled Storage SCP/SCU's will handle the new SOPs.
+  Affects: dcmdata/include/dcdeftag.h
+           dcmdata/libsrc/dicom.dic
+           dcmdata/libsrc/dcdictzz.cc
+           dcmdata/include/dcuid.h
+           dcmdata/libsrc/dcuid.cc
+           dcmnet/libsrc/diutil.cc
+           dcmnet/tests/assctest.cc
+
+- Modified the data dictionary parse code so that it can handle VM
+  descriptions of the form "2-2n" (as used in some supplements).
+  Currently, a VM of "2-2n" will be represented internally as "2-n".
+  Also added preload of a few essential attribute descriptions into
+  the data dictionary (e.g. Item and ItemDelimitation tags).
+  Affects: dcmdata/libsrc/dcdict.cc
+           dcmdata/include/dcdict.h
+
+**** Changes from 97.05.12 (Barth)
+
+- new get-Methods for DcmDecimalString: getFloat64 and
+  DcmIntegerString: getSint32
+  Affects: dcmdata/include/dcvris.h
+           dcmdata/include/dcvrds.h
+           dcmdata/libsrc/dcvris.cc
+           dcmdata/libsrc/dcvrds.cc
+
+**** Changes from 97.05.09 (hewett)
+
+- Added improved error/warning messages and backup of existing DICOMDIR
+  file (the backup file has the suffix .BAK and is removed if the new
+  DICOMDIR file is sucessfully created).
+  Affects: dcmdata/apps/dcmgpdir.cc
+
+- Fixed bug related to renaming of temporary files accross file system
+  boundaries (the rename() system call fails).  The temporary file used
+  diring creation of a DICOMDIR is now created in the same file system
+  directory as the DICOMDIR.
+  Affects: dcmdata/libsrc/dcdicdir.cc
+
+- Added a member variable and associated get/set methods to DcmDirectoryRecord
+  to allow the origin of a directory record to be noted.
+  Affects: dcmdata/include/dcdirrec.h
+           dcmdata/libsrc/dcdirrec.cc
+
+**** Changes from 97.05.07 (barth)
+
+- Corrected error reading ItemDelimitationItem using explicit
+  transfer syntaxes
+  Affects: dcmdata/libsrc/dcitem.cc
+
+**** Changes from 97.05.05 (hewett)
+
+- Added program (dcmftest) to test if a file uses the DICOM Part 10
+  Format.  The program terminates with exit code 0 if file looks
+  Part 10 conform.  This program is useful in Unix shell scripts.
+  Added: dcmdata/apps/dcmftest.cc
+
+- Added several new capabilities to the dcmgpdir program:
+  1. the +r option now enables resursion of a directory tree searching for
+     image files to add to the directory.
+  2. the +m option allows lowercase filenames and filenames with trailing
+     point ('.') to used.  References within the DICOMDIR will be converted
+     to uppercase and the trailing point removed.  This allows images to be
+     read directly from ISO9660 file-systems under Solaris (and probably other
+     OS's which automatically convert filenames on ISO9660 file-systems).
+  3. the +I option allows values for missing attributes to be invented.  Some
+     type 1 attributes in the DICOMDIR are only type 2 in images.  See the
+     documentation for more details.
+  4. Series, Image, Curve, Overlay, ModalityLUT and VOILUT records are now
+     inserted into the DICOMDIR based on the ordering defined by the *Number
+     (e.g. ImageNumber) attributes (if present).
+
+- Deleted (unreleased) trivial image checking program dcmchk.  Its capabilities
+  have been merged with the comprehensive image validation package dcmcheck.
+  The dcmcheck package is not distributed as part of the public release.  It
+  must be obtained separately.
+  Deleted: dcmdata/apps/dcmchk.cc
+
+- Deleted the programs which attempted convertion from DICOM images to PPM
+  images and vice versa.  These programs were very restricted in their
+  capabilities.  Equivalent, greatly extended, versions of these programs
+  are now part of a separate DICOM image handling package (dcmimage).  The
+  dcmimage package can handle any type of DICOM image.  The dcmimage package
+  is not distributed as part of the public release.  It must be obtained
+  separately.
+  Deleted: dcmdata/apps/ppm2dcm.cc
+           dcmdata/apps/dcm2ppm.cc
+           dcmdata/apps/dcimapix.h
+           dcmdata/apps/dcimapix.cc
+
+- Deleted the obsolete program mknldir which created an empty DICOMDIR.  This
+  program has been superceeded by dcmgpdir which can generate a general
+  purpose DICOMDIR.
+  Deleted: dcmdata/apps/mknldir.cc
+
+- When trying to locate referenced files in a DICOMDIR a possible trailing
+  point ('.') is now taken into account if the referenced file cannot be
+  found.  The DICOMDIR does not allow a trailing point in filenames but
+  some ISO9660 file-system drivers automatically append a '.'.
+  Affects: dcmdata/libsrc/dcdirrec.cc
+
+- Temporary DICOMDIR files are now located in the tmp directory using
+  the tmpnam() function (if available).  Previously, temporary files
+  were being created in the current working directory.
+  Affects: dcmdata/libsrc/dcdicdir.cc
+
+- The DcmTag::getVMMax() method now returns a maximum value if the attribute
+  is unknown.  This makes the default VM=1-n (before it was VM=1).
+  Affects: dcmdata/include/dctag.h
+
+- The maximum length of the internal VR's for PixelSequences and PixelItems
+  has been set to undefined (previously it was zero).
+  Affects: dcmdata/libsrc/dcvr.cc
+
+- Added a "before" flag to the insertion of items into Directory Records
+  and Pixel Sequences for compatibility with insertion in normal Sequences.
+  Affects: dcmdata/include/dcdirrec.h
+           dcmdata/include/dcpixseq.h
+
+**** Changes before 97.05.05 (hewett/eichelberg/barth)
+
+- Removed unused constant DICOM_MAXPRESENTATIONCONTEXTS.
+  Affects: dcmnet/include/assoc.h
+
+- Fixed several bugs in the DICOM Upper Layer state machine,
+  following a bug report from B. Gorissen (Philips Medical Systems).
+  1. A-ASSOCIATE PDUs were rejected when they were larger than the upper limit
+     for P-DATA PDUs.
+  2. Buffer overruns in PDU decoding were never checked/detected.
+     This could cause applications to fail when very large non-P-DATA PDUs were
+     received.
+  3. A-ASSOCIATE PDUs were always read into an 8 KByte buffer, although no such
+     limitation is defined in DICOM Part 8. Now the buffer is allocated
+     dynamically.
+  4. A temporary buffer used for assembling the A-ASSOCIATE PDU was too small.
+     Buffer overruns (causing a core dump) could happen for large A-ASSOCIATE
+     PDUs.
+  A test application tests/assctest.cc has been added. This is a modified
+  echoscu which allows to propose a selectable number of SOP classes and
+  transfer syntax during association negotiation. It can be used to track
+  down limitations in the association negotiation code.
+  The number of transfer syntaxes supported during association negotiation
+  has been increased from 5 to 25.
+  Affects: dcmnet/libsrc/dulfsm.cc
+           dcmnet/include/assoc.h
+           dcmnet/tests/Makefile.in
+           dcmnet/tests/Makefile.dep
+  Added:   dcmnet/tests/assctest.cc
+
+- Corrected Bug for reading of encapsulated pixel sequences
+  Affects: dcmdata/libsrc/dcitem.cc
+
+- Added extended error checking when parsing images prior to
+  creating a DICOMDIR.  Checks on allowed characters and
+  lengths of file names.
+  Affects: dcmdata/apps/dcmgpdir.cc
+
+- Fixed DICOMDIR generation bug affecting inclusion of Group Length
+  attributes (file offsets were not being computed correctly).
+  Affects: dcmdata/include/dcdicdir.h
+           dcmdata/libsrc/dcdicdir.cc
+
+- Fixed DICOMDIR generation bug affecting ordering of
+  patient/study/series/image records (item insertion into a sequence
+  did produce the expected ordering).
+  Affects: dcmdata/include/dcsequen.h
+           dcmdata/libsrc/dcdicdir.cc
+           dcmdata/libsrc/dclist.cc
+           cmdata/libsrc/dcsequen.cc
+
+- Fixed DICOMDIR generation bug affecting the use of Unknown VR
+  attributes (the file offsets were not being computed correctly).
+  Affects: dcmdata/include/dcxfer.h
+           dcmdata/libsrc/dcdicdir.cc
+           dcmdata/libsrc/dcitem.cc
+           dcmdata/libsrc/dcxfer.cc
+
+- Fixed attempt to print null pointer in debugging output.
+  Affects: dcmdata/libsrc/dcdirrec.cc
+
+- Removed multiple occurrence of dcmutil.cc / dcmutil.h and add it
+  named as dcutils.h dcutils.cc to the dcmdata library. Changed
+  get function names.  Adapted code using dcutils.
+  Removed: dcmdata/apps/dcmutils.cc
+           dcmdata/apps/dcmutils.h
+           ctndisp/apps/dcmutils.cc
+           ctndisp/apps/dcmutils.h
+  Added:   dcmdata/include/dcutils.h
+           dcmdata/libsrc/dcutuils.h
+  Affects: dcmdata/apps/Makefile.in
+           dcmdata/apps/dcimapix.cc
+           dcmdata/apps/dcm2ppm.cc
+           dcmdata/apps/ppm2dcm.cc
+           dcmdata/libsrc/Makefile.in
+           ctndisp/apps/Makefile.in
+           ctndisp/apps/ctnddico.cc
+
+- The put/get-methods for all VRs did not conform to the C++-Standard
+  draft. Some Compilers (e.g. SUN-C++ Compiler, Metroworks
+  CodeWarrier, etc.) create many warnings concerning the hiding of
+  overloaded get methods in all derived classes of DcmElement.
+  So the interface of all value representation classes in the
+  library are changed rapidly, e.g.
+  E_Condition get(Uint16 & value, const unsigned long pos);
+  becomes
+  E_Condition getUint16(Uint16 & value, const unsigned long pos);
+  All (retired) "returntype get(...)" methods are deleted.
+  For more information see dcmdata/include/dcelem.h
+  Affects: dcmdata/apps/dcimapix.cc
+           dcmdata/apps/dcmchk.cc
+           dcmdata/apps/dcmgpdir.cc
+           dcmdata/apps/dump2dcm.cc
+           dcmdata/include/dcbytstr.h
+           dcmdata/include/dcelem.h
+           dcmdata/include/dcvrat.h
+           dcmdata/include/dcvrfd.h
+           dcmdata/include/dcvrfl.h
+           dcmdata/include/dcvrobow.h
+           dcmdata/include/dcvrsl.h
+           dcmdata/include/dcvrss.h
+           dcmdata/include/dcvrui.h
+           dcmdata/include/dcvrul.h
+           dcmdata/include/dcvrus.h
+           dcmdata/libsrc/dcbytstr.cc
+           dcmdata/libsrc/dcdicdir.cc
+           dcmdata/libsrc/dcdirrec.cc
+           dcmdata/libsrc/dcelem.cc
+           dcmdata/libsrc/dcfilefo.cc
+           dcmdata/libsrc/dcitem.cc
+           dcmdata/libsrc/dcmetinf.cc
+           dcmdata/libsrc/dcvrat.cc
+           dcmdata/libsrc/dcvrfd.cc
+           dcmdata/libsrc/dcvrfl.cc
+           dcmdata/libsrc/dcvrobow.cc
+           dcmdata/libsrc/dcvrsl.cc
+           dcmdata/libsrc/dcvrss.cc
+           dcmdata/libsrc/dcvrui.cc
+           dcmdata/libsrc/dcvrul.cc
+           dcmdata/libsrc/dcvrulup.cc
+           dcmdata/libsrc/dcvrus.cc
+           dcmdata/tests/bsplist.cc
+           ctndisp/apps/ctnddico.cc
+           dcmnet/apps/findscu.cc
+           dcmnet/apps/movescu.cc
+           dcmnet/libsrc/dimcmd.cc
+           dcmnet/libsrc/diutil.cc
+           imagectn/libsrc/dbfind.cc
+           imagectn/libsrc/dbmove.cc
+           wlistctn/include/wrklstdb.h
+           wlistctn/libsrc/wrklstdb.cc
+           wlistctn/tests/wltest.cc
+           wlistctn/wwwapps/readoviw.cc
+           wlistctn/wwwapps/readwlst.cc
+           wlistctn/wwwapps/writwlst.cc
+
+- Removed double include of sys/select
+  Affects: dcmnet/include/dcompat.h
+
+- Make the Declaration of DcmBuffer local to the DcmStream classes
+  Affects: dcmdata/include/dcstream.h
+       dcmdata/include/dctk.h
+       dcmdata/libsrc/dcstream.cc
+
+- Corrected debugging code
+  Affects: dcmdata/libsrc/dcitem.cc
+           dcmdata/libsrc/dcobject.cc
+           dcmdata/libsrc/dcsequen.cc
+           dcmdata/libsrc/dcvrfd.cc
+           dcmdata/libsrc/dcvrfl.cc
+           dcmdata/libsrc/dcvrsl.cc
+           dcmdata/libsrc/dcvrss.cc
+           dcmdata/libsrc/dcvrus.cc
+
+- Minor corrections: correct some warnings of the SUN-C++ Compiler
+  concerning the assignments of wrong types and inline compiler
+  errors
+  Affects: dcmdata/apps/dcmchk.cc
+           dcmdata/apps/dcmdump.cc
+           dcmdata/apps/dcmgpdir.cc
+           dcmdata/apps/dump2dcm.cc
+           dcmdata/include/dcdicent.h
+
+- Corrected data dictionary code bug whereby the even/odd range restrictions
+  were not being taken into consideration when searching the dictionary.
+  Affects: dcmdata/include/dcdicent.h
+
+- Corrected bug in data dictionary for PrivateCreator elements where
+  the range of the element numbers was implicity restricted to be even.
+  The range is now explicity unrestricted.
+  Affects: dcmdata/libsrc/dicom.dic
+           dcmdata/libsrc/dcdictzz.cc
+
+- The network function ASC_destroyAssociation now only destroys the
+  association parameters if they are non-NULL.
+  Affects: dcmnet/libsrc/assoc.cc
+
+- The include file cond.h now properly includes the required header
+  file dicom.h.
+  Affects: dcmnet/include/cond.h
+
+- Modified code which printed a message on stderr when creating a new DICOM
+  to use the debug routines instead.
+  Affects: dcmdata/libsrc/dcdicdir.cc
+
+- Updated Implementation Version Name and Implementation Class UID to
+  reflect the new version 3.1.3
+  Affects: dcmdata/include/dcuid.h
+
+- Added command line switches to several consersion programs to allow
+  generation of UN to be disabled (it is enabled by default).
+  Affects: dcmdata/apps/dcmconv.cc
+           dcmdata/apps/ds2file.cc
+           dcmdata/apps/file2ds.cc
+           dcmdata/apps/dcmgpdir.cc
+           dcmnet/apps/storescu.cc
+           dcmnet/apps/storescp.cc
+           dcmnet/apps/findscu.cc
+           dcmnet/apps/movescu.cc
+           imagectn/apps/imagectn.cc
+           imagectn/apps/ti.cc
+           wlistctn/apps/wlistctn.cc
+
+- Added preliminary support for Unknown VR (UN) described in
+  Supplement 14.  Added a global switch dcmEnableUnknownVRGeneration
+  which can be used to disable/enable the production of UN as a valid VR.
+  Affects: dcmdata/include/dcvr.h
+           dcmdata/libsrc/dcvr.cc
+           dcmdata/libsrc/dcitem.cc
+           dcmdata/libsrc/dcobject.cc
+           dcmdata/libsrc/dcvrobow.cc
+
+- Fixed problem with config/install-sh script not being located from
+  makefile in other parts of the source tree.
+  Affects: config/configure.in
+           config/configure
+
+- Added a program which builds a DICOMDIR file from a set of image files.
+  The program is intended to correspond to the requirements of Supplement
+  19 General Purpose CD-R Image Interchange Profile.
+  Added: dcmdata/apps/dcmgpdir.cc
+
+- Added very simple check program for dicom data.  This program is missing
+  tests for allowed characters and formats for VR.
+  Added: dcmdata/apps/dcmchk.cc
+
+- Changed DCMTK's implementation version name to be consitent with VR=CS.
+  Affects: dcmdata/include/dcuid.h
+
+- Added member function to obtain a DcmTag's data dictionary reference.
+  Affects: dcmdata/include/dctag.h
+
+- Added global flag for disabling the automatic correction of small errors.
+  Such behaviour is undesirable when performing data validation.
+  Affects: dcmdata/include/dcobject.h
+           dcmdata/libsrc/dcobject.cc
+           dcmdata/libsrc/dcbytstr.cc
+           dcmdata/libsrc/dcvrui.cc
+
+- Removed the DcmDirectoryRecord member function fillTypeElements since it
+  did nothing useful.
+  Affects: dcmdata/include/dcdirrec.h
+           dcmdata/libsrc/dcdirrec.cc
+  Deleted: dcmdata/libsrc/dcdirrcf.cc
+
+- Smoothed out some poor indentation
+  Affects: dcmdata/include/dcdirrec.h
+           dcmdata/libsrc/dcdirrec.cc
+           dcmdata/libsrc/dcdicdir.cc
+
+- Added data dictionary changes from approved Correction Proposals (upto CP82)
+  as of 97.03.26.  Note that some CP's < 82 have not yet been approved (or
+  are cancelled).
+  Affects: dcmdata/libsrc/dicom.dic
+           dcmdata/libsrc/dcdictzz.cc
+           dcmdata/include/dcdeftag.h

@@ -1,0 +1,968 @@
+Release 3.3 (Public Release - 1997.10.07)
+
+- Updated Version Number and Implementation Version Name to reflect the
+  current public release (3.3)
+  Affects: dcmdata/include/dcuid.h
+
+**** Changes from 97.10.07 (eichelberg)
+
+- Corrected table column name inconsistency in Worklist CTN.
+  Based on a suggestion from Heinz Blendinger
+  (mailto:Heinz.Blendinger@med.siemens.de).
+  Affects: wlistctn/perl/worklist.pl
+
+- Corrected passing of pointer instead of reference.
+  Affects: dcmdata/apps/dcmgpdir.cc
+
+- Updated VisualC++ 4.0 Makefile.
+  Affects: config/systems/win32/msvc4.mak
+
+**** Changes from 97.10.01 (hewett)
+
+- Minor correction to imagectn's index file code to use the changed
+  attribute names from dcdeftag.h
+  Affects: imagectn/libsrc/dbindex.cc
+           imagectn/libsrc/dbutils.cc
+
+- Corrections to mistyped attribute names in data dictionary (dicom.dic).
+  Regenerated the tag definitions include file and the builtin data
+  dictionary code.
+  Affects: dcmdata/libsrc/dicom.dic
+           dcmdata/include/dcdeftag.h
+           dcmdata/libsrc/dcdictzz.cc
+
+- Fixed OFString::operator<< handling of leading whitespace.  Leading
+  whitespace is now skipped.
+  Affects: ofstd/libsrc/ofstring.cc
+
+- Fixed segmentation fault for OFString's find_... methods when current
+  string is empty.
+  Affects: ofstd/libsrc/ofstring.h
+           ofstd/libsrc/ofstring.cc
+
+**** Changes from 97.10.01 (eichelberg)
+
+- Added FAQ entry for compiling dcmtk on Solaris with
+  the Sun Workshop 4.x compilers.
+  Affects: FAQ
+
+- Prototype for wait3() now also searched in <libc.h> during
+  configure process. Needed for NeXTStep.
+  Affects: config/configure.in
+           config/configure
+
+- Including <unistd.h> if available in dcmdata/libsrc/dcerror.cc
+  Needed on SunOS.
+  Affects: dcmdata/libsrc/dcerror.cc
+
+**** Changes from 97.09.22 (hewett)
+
+- Modified dcmgpdir.cc to use the new attribute existance tests
+  from DcmItem and the global list dcmImageSOPClassUIDs of SOP
+  Classes which can be referenced from a DICOMDIR IMAGE record.
+  Affects: dcmdata/apps/dcmgpdir.cc
+
+- Added a global list of Image SOP Classes UIDs (dcmImageSOPClassUIDs)
+  which is used by dcmgpdir to identify SOP Classes which can be
+  referenced from a DICOMDIR IMAGE record.
+  Affects: dcmdata/include/dcuid.h
+           dcmdata/libsrc/dcuid.cc
+
+- Added 2 simple methods to test for the existance of an attribute
+  to DcmItem class (tagExists and tagExistsWithValue).  This code
+  was part of dcmgpdir.cc but is more generally useful.
+  Affects: dcmdata/include/dcitem.h
+           dcmdata/libsrc/dcitem.cc
+
+- Added 2 methods to find an attribute and retrieve numeric values
+  to DcmItem class (findIntegerNumber and findRealNumber).  The old
+  method findLong is now marked as obsolete and reimplemented using
+  findIntegerNumber.
+  Affects: dcmdata/include/dcitem.h
+           dcmdata/libsrc/dcitem.cc
+
+- Added a method to retrieve the original transfer syntax of a read
+  meta-header (getOriginalXfer).  This functionality is needed by
+  the DCMCHECK package.
+  Affects: dcmdata/include/dcmetinf.h
+
+**** Changes from 97.09.18 (eichelberg)
+
+- Missing operator= added to class DcmDictEntryListIterator
+  Affects: dcmdata/include/dchashdi.h
+
+- Name clash for "changeVR" attribute/local variable removed.
+  Affects: dcmdata/libsrc/dcvrpobw.cc
+
+- Overloading ambiguity removed. Affects systems on which NULL is defined
+  as a (typeless) 0. OFString comparisons with a non-casted NULL will
+  cause compile errors on such systems because 0 is a valid pointer and a
+  valid char at the same time.
+  Affects: dcmdata/apps/dcmgpdir.cc
+
+- Now also trying include file <netdb.h> when looking for gethostid().
+  function prototype. Required for OSF/1.
+  Affects: config/configure.in
+           config/configure
+
+- Many minor type conflicts (e.g. long passed as int) solved.
+  Affects: dcmdata/libsrc/dchashdi.cc
+           dcmdata/libsrc/dcpixel.cc
+           dcmnet/libsrc/assoc.cc
+           dcmnet/libsrc/dimcmd.cc
+           dcmnet/libsrc/dimmove.cc
+           dcmnet/libsrc/dimse.cc
+           dcmnet/libsrc/dulfsm.cc
+           imagectn/apps/imagectn.cc
+           imagectn/libsrc/dbfind.cc
+           imagectn/libsrc/dbmove.cc
+           imagectn/libsrc/dbstore.cc
+           imagectn/libsrc/dbutils.cc
+           wlistctn/apps/wlistctn.cc
+           wlistctn/libsrc/wrklstdb.cc
+           wlistctn/tests/wltest.cc
+
+- Removed unused (and undocumented) option -XF from wlistctn.
+  Affects: wlistctn/apps/wlistctn.cc
+
+- Corrected forward and friend declarations (needed for DEC cxx)
+  Affects: dcmdata/include/dchashdi.h
+
+- Some systems, e.g. NeXTStep, need the third argument
+  for fcntl calls to be casted to int. Other systems,
+  e.g. OSF1/Alpha, won't accept this because int and struct flock *
+  have different sizes. The workaround used here is to use a typecast to int
+  if sizeof(void *) == sizeof(int) and leave it away otherwise.
+  Affects: config/configure
+           config/configure.in
+           config/include/config.h.in
+           dcmnet/libsrc/dcompat.cc
+           wlistctn/libsrc/wrklstdb.cc
+
+**** Changes from 97.09.12 (eichelberg)
+
+- Corrected bug in wlistctn perl scripts leading to incorrect accession
+  numbers when application entity titles longer than 12 characters were
+  used. Updated documentation to recommend AEtitles to be unique
+  (significant) within the first eight letters. Based on a suggestion from
+  Heinz Blendinger (mailto:Heinz.Blendinger@med.siemens.de).
+  Affects: wlistctn/docs/wwwapp.doc
+           wlistctn/docs/wwwapp.txt
+           wlistctn/perl/workedit.pl
+           wlistctn/perl/write.ph
+  Removed: wlistctn/docs/wwwapp.ps
+
+- Command line option '-h' in storescp now works correctly.
+  Affects: dcmnet/apps/storescp.cc
+
+- The algorithm introduced on 97.08.28 to detect incorrect odd-length
+  value fields falsely reported undefined length sequences and items
+  to be wrong. Corrected.
+  Affects: dcmdata/libsrc/dcitem.cc
+           dcmdata/libsrc/dcsequence.cc
+
+**** Changes from 97.09.12 (hewett)
+
+- Added FAQ entries and more detailed documentation about using built-in
+  data dictionaries.  Several people have complained that even small apps
+  take too long to start.  They don't have to and the dcmdata/docs/datadict.txt
+  now explains have to avoid the start-up overhead of loading a data
+  dictionary from a text file.
+  Affects: FAQ
+           dcmdata/docs/datadict.txt
+
+- Updated INSTALL instructions for Windows95/NT and current supported
+  systems collection.
+  Affects: INSTALL
+
+- Modified the dcmgpdir program to use the OFString and OFList classes.
+  Deleted program specific String and StringList classes.
+  Affects: dcmdata/apps/dcmgpdir.cc
+
+**** Changes from 97.09.11 (hewett)
+
+- Fixed OFString bug associated with the assign method
+  when n == OFString_npos.  Since OFString_npos is represented
+  by -1 the assign method  was reserving zero space for the string.
+  This case is now explicitly handled.
+  Affects: ofstd/libsrc/ofstring.cc
+
+- Corrected erroneous setting of the source filename when
+  constructing a DcmDirrectoryRecord.  This corrects a bug
+  introduced by the changes from 97.07.21.
+  Affects: dcmdata/libsrc/dcdirrec.cc
+
+- Added a putOFStringArray method
+  Affects: dcmdata/include/dcbytstr.h
+           dcmdata/libsrc/dcbytstr.cc
+           dcmdata/include/dcelem.h
+           dcmdata/libsrc/dcelem.cc
+
+- Modified getOFString method arguments by removing a default value
+  for the pos argument.  By requiring the pos argument to be provided
+  ensures that callers realise getOFString only gets one component of
+  a multi-valued string.
+  Affects: dcmdata/include/dcelem.h
+           dcmdata/include/dcbytstr.h
+           dcmdata/include/dcvrae.h
+           dcmdata/include/dcvrcs.h
+           dcmdata/include/dcvrds.h
+           dcmdata/include/dcvrdt.h
+           dcmdata/include/dcvris.h
+           dcmdata/include/dcvrlo.h
+           dcmdata/include/dcvrlt.h
+           dcmdata/include/dcvrpn.h
+           dcmdata/include/dcvrsh.h
+           dcmdata/include/dcvrst.h
+           dcmdata/include/dcvrtm.h
+           dcmdata/include/dcitem.h
+
+- Changed DcmDicomDir constructor to take const char* arguments.
+  Affects: dcmdata/include/dcdicdir.h
+           dcmdata/libsrc/dcdirdir.cc
+
+- Enhanced the configure macro AC_CHECK_PROTOTYPE to check the
+  include files passed as aruments before searching for a
+  prototype.  This makes the configure.in file considerably
+  simpler.  The include files passed as arguments to the
+  AC_CHECK_PROTOTYPE macro must have already been tested for
+  using the AC_CHECK_HEADERS macro.  If not, the include files
+  are assumed not to exist.
+  Affects: config/configure.in
+           config/aclocal.m4
+           config/configure
+
+- Minor changes to eliminate warnings when compiled under the
+  Cygnus GNU-Win32 development envionment.  Changed order of initialisers
+  for OFListLink and OFStackLink.  Make ~OFLisBase and ~OFStackBase
+  virtual destructors.
+  Affects: ofstd/include/oflist.h
+           ofstd/include/ofstack.h
+
+- DUL code now only tries to set the send/receive TCP buffer length
+  socket options if the SO_SNDBUF and SO_RCVBUF preprocessor macros
+  are defined.  Attempts to set these socket options will generate an
+  error message on stderr if unavailable.  This modification was
+  needed to compiled the dcmnet code under the Cygnus GNU-Win32
+  development environment.
+  Affects: dcmnet/libsrc/dul.cc
+           dcmnet/libsrc/dulfsm.cc
+
+- Conditionally included more standard header files into the
+  the dcmnet compatibility header file to allow appropriate
+  declarations to be picked up.  For the Cygnus GNU-Win32
+  development environment.
+  Affects: dcmnet/include/dcompat.h
+
+**** Changes from 97.08.29 (barth)
+
+- Adapted Win95 Makefile to support new data dictionary
+  Affects: config/systems/win32/msvc4.mak
+
+- Corrected Bug in getOFStringArray Implementation
+  Affects: dcmdata/include/dcbytstr.h
+           dcmdata/libsrc/dcvrae.cc
+           dcmdata/libsrc/dcvrcs.cc
+           dcmdata/libsrc/dcvrds.cc
+           dcmdata/libsrc/dcvrdt.cc
+           dcmdata/libsrc/dcvris.cc
+           dcmdata/libsrc/dcvrlo.cc
+           dcmdata/libsrc/dcvrlt.cc
+           dcmdata/libsrc/dcvrpn.cc
+           dcmdata/libsrc/dcvrsh.cc
+           dcmdata/libsrc/dcvrst.cc
+           dcmdata/libsrc/dcvrtm.cc
+
+- Corrected copy constructor for DcmHashDictIterator
+  Affects: dcmdata/include/dchashdi.h
+
+**** Changes from 97.08.28 (barth)
+
+- Added methods getOFString and getOFStringArray for all
+  string VRs. These methods are able to normalise the value, i. e.
+  to remove leading and trailing spaces. This will be done only if
+  it is described in the standard that these spaces are not relevant.
+  These methods do not test the strings for conformance, this means
+  especially that they do not delete spaces where they are not allowed!
+  getOFStringArray returns the string with all its parts separated by \
+  and getOFString returns only one value of the string.
+  CAUTION: Currently getString returns a string with trailing
+  spaces removed (if dcmEnableAutomaticInputDataCorrection == OFTrue) and
+  truncates the original string (since it is not copied!). If you rely on this
+  behaviour please change your application now.
+  Future changes will ensure that getString returns the original
+  string from the DICOM object (NULL terminated) inclusive padding.
+  Currently, if you call getOF... before calling getString without
+  normalisation, you can get the original string read from the DICOM object.
+  Affects: dcmdata/include/dcbytstr.h
+           dcmdata/include/dcelem.h
+           dcmdata/include/dcitem.h
+           dcmdata/include/dcvrae.h
+           dcmdata/include/dcvrcs.h
+           dcmdata/include/dcvrds.h
+           dcmdata/include/dcvrdt.h
+           dcmdata/include/dcvris.h
+           dcmdata/include/dcvrlo.h
+           dcmdata/include/dcvrlt.h
+           dcmdata/include/dcvrpn.h
+           dcmdata/include/dcvrsh.h
+           dcmdata/include/dcvrst.h
+           dcmdata/include/dcvrtm.h
+           dcmdata/libsrc/Makefile.dep
+           dcmdata/libsrc/dcbytstr.cc
+           dcmdata/libsrc/dcelem.cc
+           dcmdata/libsrc/dcitem.cc
+           dcmdata/libsrc/dcutils.cc
+           dcmdata/libsrc/dcvrae.cc
+           dcmdata/libsrc/dcvrcs.cc
+           dcmdata/libsrc/dcvrds.cc
+           dcmdata/libsrc/dcvrdt.cc
+           dcmdata/libsrc/dcvris.cc
+           dcmdata/libsrc/dcvrlo.cc
+           dcmdata/libsrc/dcvrlt.cc
+           dcmdata/libsrc/dcvrpn.cc
+           dcmdata/libsrc/dcvrsh.cc
+           dcmdata/libsrc/dcvrst.cc
+           dcmdata/libsrc/dcvrtm.cc
+
+- New error messages if length of an element is odd. Previously, no
+  error was reported. But the length is corrected by the method
+  newValueField and so it was impossible for a checking utility to find
+  such an error in DICOM objects.
+  Affects: dcmdata/libsrc/dcitem.cc
+           dcmdata/libsrc/dcsequen.cc
+
+**** Changes from 97.08.26 (hewett)
+
+- Added +B command line option to imagectn application.  Use of this option
+  causes imagectn to bypass the dcmdata encode/decode routines when receiving
+  images and write image data to disk exactly as received in a C-STORE
+  command over the network.  Inclusion of this option was suggested by
+  David Clunie (david.clunie@med.ge.com) as being useful for testing.
+  NOTE: This option does _not_ affect sending images.
+  Affects: imagectn/apps/imagectn.cc
+           imagectn/apps/imagectn.h
+           imagectn/apps/scestore.cc
+
+- Fix incorrect computation of lengths (both Sequence/Item length and
+  group lengths) for unknown attributes when writing using an explicit-vr
+  transfer syntax.  The method DcmXfer::sizeofTagHeader was not properly
+  handling the (internal) EVR_UNKNOWN value representation which is
+  converted to either EVR_UN or EVR_OB when writing out data.
+  Affects: dcmdata/libsrc/dcxfer.cc
+
+- New data structures for data-dictionary.  The main part of the
+  data-dictionary is now stored in an hash table using an optimized
+  hash function.  This new data structure reduces data-dictionary
+  load times by a factor of 4!  The data-dictionary specific linked-list
+  has been replaced by a linked list derived from OFList class
+  (see ofstd/include/oflist.h).
+  The only interface modifications are related to iterating over the entire
+  data dictionary which should not be needed by "normal" applications.
+  Affects: dcmdata/include/dcdict.h
+           dcmdata/libsrc/dcdict.cc
+           dcmdata/include/dcdicent.h
+           dcmdata/libsrc/dcdicent.cc
+           dcmdata/include/dctagkey.h
+           dcmdata/include/dctk.h
+           dcmdata/libsrc/mkdeftag.cc
+           dcmdata/libsrc/mkdictbi.cc
+           dcmdata/libsrc/Makefile.in
+           */*/Makefile.dep
+  Added:   dcmdata/include/dchashdi.h
+           dcmdata/libsrc/dchashdi.cc
+  Removed: dcmdata/include/dcentlst.h
+           dcmdata/libsrc/dcentlst.cc
+           dcmdata/include/pix.h
+           dcmdata/include/dcentdef.h
+           dcmdata/include/dcentset.h
+           dcmdata/libsrc/dcentset.cc
+           dcmdata/include/dcentbst.h
+           dcmdata/libsrc/dcentbst.cc
+
+**** Changes from 97.08.21 (barth)
+
+- Change configuration to support SUN CC 4.2
+  Affects: config/configure.in
+           config/configure
+
+**** Changes from 97.08.06 (barth)
+
+- Updated Windows NT system dependent files to reflect the tested
+  imagectn.
+  Affects: config/systems/win32/README
+           config/systems/win32/msvc4.mak
+
+- Using Windows NT with Visual C++ 4.x the standard open mode for files
+  is TEXT with conversions. For binary files (image files, imagectn database
+  index) this must be changed (e.g. fopen(filename, "...b"); or
+  open(filename, ..... |O_BINARY);)
+  Affects: dcmdata/apps/dcmftest.cc
+           dcmdata/apps/dcmgpdir.cc
+           dcmdata/libsrc/dcdirrec.cc
+           dcmnet/libsrc/dimse.cc
+           dcmnet/libsrc/dulfsm.cc
+           imagectn/apps/scemove.cc
+           imagectn/apps/scestore.cc
+           imagectn/apps/tinet.cc
+           imagectn/libsrc/dbstore.cc
+           imagectn/libsrc/dbutils.cc
+
+- Undefine tempnam in Windows NT/95 configuration since the
+  tempnam function of MS Visual C++ has a different semantics as the
+  UNIX version.
+  Affects: config/include/cfwin32.h
+
+**** Changes from 97.08.05 (barth)
+
+- Adopted Makefile and README for WINDOWS NT/95
+  Affects: config/systems/win32/README
+           config/systems/win32/msvc4.mak
+
+- Corrected error in DUL finite state machine
+  SCPs shall close sockets after the SCU have closed the socket in
+  a normal association release. Therfore, an ARTIM timer is described
+  in DICOM part 8 that is not implemented correctly in the
+  DUL. Since the whole DUL finite state machine is affected, we
+  decided to solve the proble outside the fsm. Now it is necessary to call the
+  ASC_DropSCPAssociation() after the calling ASC_acknowledgeRelease().
+  Affects: dcmnet/apps/movescu.cc
+           dcmnet/apps/storescp.cc
+           dcmnet/include/assoc.h
+           dcmnet/libsrc/assoc.cc
+           dcmnet/libsrc/dul.cc
+           imagectn/apps/sce.cc
+           wlistctn/apps/sce.cc
+
+- Corrected error in DUL: The A-Release-RQ PDU was not read
+  completely. The bytes 7-10 were left on the socket. This created no
+  problems since it was the last read operation on the socket but no
+  error checking was possible for this messages.
+  Affects: dcmnet/libsrc/dulfsm.cc
+
+- Change definition of path to database index now using consistently
+  the defines PATH_SEPARATOR and DBINDEXFILE
+  Affects: dcmnet/libsrc/dcompat.cc
+           imagectn/apps/tiquery.cc
+           imagectn/include/imagedb.h
+           imagectn/libsrc/dbutils.cc
+
+- Change needed version number of WINSOCK to 1.1
+  to support WINDOWS 95
+  Affects: dcmnet/apps/echoscu.cc
+           dcmnet/apps/findscu.cc
+           dcmnet/apps/movescu.cc
+           dcmnet/apps/storescp.cc
+           dcmnet/apps/storescu.cc
+           dcmnet/tests/assctest.cc
+           imagectn/apps/imagectn.cc
+           imagectn/apps/ti.cc
+
+- Corrected Error handling of SQ in dump2dcm
+  Affects: dcmdata/apps/dump2dcm.cc
+
+**** Changes from 97.07.31 (barth)
+
+- Added initialization of error code in
+  DcmPixelData::removeOriginalRepresentation()
+  Affects: dcmdata/libsrc/dcpixel.cc
+
+- Error correction and additonal functionality for
+  DcmPolymorphOBOW to support getting and putting of Uint8 and
+  Uint16 data independent of the VR.
+  Affects: dcmdata/include/dcvrpobw.h
+           dcmdata/libsrc/dcvrpobw.cc
+
+- new protected method swapValueField for DcmElement
+  Affects: dcmdata/include/dcelem.h
+           dcmdata/libsrc/dcelem.cc
+
+**** Changes from 97.07.31 (eichelberg)
+
+- New routine stripWhitespace() in dcdict.cc, much faster.
+  Affects: dcmdata/libsrc/dcdict.cc
+
+- Created copy constructor for class DcmDictEntry,
+  required by dcmcheck.
+  Affects: dcmdata/include/dcdicent.h
+           dcmdata/libsrc/dcdicent.cc
+
+**** Changes from 97.07.29 (barth)
+
+- Adaption of ctndisp to change representations if necessary
+  Affects: ctndisp/apps/ctnddico.cc
+
+**** Changes from 97.07.24 (barth)
+
+- Adaption of Windows NT/95 project files to reflect the use
+  of the OFFIS Standard Library
+  Affects: config/include/cfwin32.h
+           config/systems/win32/msvc4.mak
+
+- Adaption of ctndisp to use DcmPixelData
+  Affects: ctndisp/apps/ctnddico.cc
+
+- Make DcmCodec:canChangeCoding abstract
+  Affects: dcmdata/include/dccodec.h
+
+- Removed const for method DcmRepresentationParameter::copy
+  Affects: dcmdata/include/dcpixel.h
+           dcmdata/libsrc/dcpixel.cc
+
+- Removed Warnings from SUN CC 2.0.1
+  Affects: ctndisp/apps/ctnddico.cc
+           ctndisp/apps/ctndisp.cc
+           ctndisp/apps/ctndsupp.cc
+           ctndisp/libsrc/dispuser.cc
+           dcmdata/include/dcbuf.h
+           dcmdata/libsrc/dcbuf.h
+           dcmdata/libsrc/dcbytstr.cc
+           dcmdata/libsrc/dcelem.cc
+           dcmdata/libsrc/dcitem.cc
+           dcmdata/libsrc/dcstream.cc
+           dcmnet/apps/storescp.cc
+           dcmnet/libsrc/assoc.cc
+           dcmnet/libsrc/cond.cc
+           dcmnet/libsrc/dul.cc
+           dcmnet/libsrc/dulfsm.cc
+           ofstd/include/oflist.h
+
+**** Changes from 97.07.21 (barth)
+
+- New copy constructor for class OFStack
+  Affects: ofstd/include/ofstack.h
+           ofstd/tests/tststack.cc
+
+- Corrected error in length computation of DcmItem for strings in
+  items.
+  Affects: dcmdata/libsrc/dcbytstr.cc
+
+- New method DcmElement::detachValueField to give control over the
+  value field to the calling part (see dcelem.h)
+  Affects: dcmdata/include/dcelem.h
+           dcmdata/libsrc/dcelem.cc
+
+- Deleted support for DcmPixelItems and DcmPixelSequences in dump2dcm
+  ToDo: New support should be added in the future compatible to
+  the new DcmPixel class.
+  Affects: dcmdata/apps/dump2dcm.cc
+
+- Corrected error in DcmDirectoryRecord::write since this routine can
+  change the length of the record after this is calculated in the
+  sequence.
+  Affects: dcmdata/include/dcdirrec.h
+           dcmdata/libsrc/dcdirrec.cc
+
+- DcmDirectoryRecord can be build with a referenced Name and a source
+  filename. These name now can differ (lower case - upper case
+  characters).
+  Affects: dcmdata/apps/dcmgpdir.cc
+           dcmdata/include/dcdirrec.h
+           dcmdata/libsrc/dcdicdir.cc
+           dcmdata/libsrc/dcdirrec.cc
+
+- With flag DEBUG dcmdump now tries to print the DICOM file even if
+  an error in reading the file was detected.
+  Affects: dcmdata/apps/dcmdump.cc
+
+- Support for CP 14. PixelData and OverlayData can have VR OW or OB
+  (depending on the transfer syntax). New internal value
+  representation (only for ident()) for OverlayData.
+  Added:   dcmdata/include/dcovlay.h
+           dcmdata/include/dcvrpobw.h
+           dcmdata/libsrc/dcvrpobw.cc
+  Affects: dcmdata/apps/Makefile.dep
+           dcmdata/include/dctk.h
+           dcmdata/include/dcvr.h
+           dcmdata/libsrc/Makefile.dep
+           dcmdata/libsrc/Makefile.in
+           dcmdata/libsrc/dcitem.cc
+           dcmdata/libsrc/dcvrobow.cc
+
+- New environment for encapsulated pixel representations. DcmPixelData
+  can contain different representations and uses codecs to convert
+  between them. Codecs are derived from the DcmCodec class. New error
+  codes are introduced for handling of representations. New internal
+  value representation (only for ident()) for PixelData
+  Added:   dcmdata/include/dccodec.h
+           dcmdata/include/dcpixel.h
+           dcmdata/libsrc/dccodec.cc
+           dcmdata/libsrc/dcpixel.cc
+  Affects: dcmdata/apps/Makefile.dep
+           dcmdata/apps/dcmconv.cc
+           dcmdata/include/dcdatset.h
+           dcmdata/include/dcerror.h
+           dcmdata/include/dcfilefo.h
+           dcmdata/include/dctk.h
+           dcmdata/include/dcvr.h
+           dcmdata/libsrc/Makefile.dep
+           dcmdata/libsrc/Makefile.in
+           dcmdata/libsrc/dcdatset.cc
+           dcmdata/libsrc/dcerror.cc
+           dcmdata/libsrc/dcitem.cc
+           dcmdata/libsrc/dcobject.cc
+           dcmdata/libsrc/dcpixseq.cc
+           dcmdata/libsrc/dcvrobow.cc
+
+- new copy constructor for DcmStack
+  Affects: dcmdata/libsrc/dcdatset.cc
+           dcmdata/libsrc/dcstack.cc
+
+- Replace all boolean types (BOOLEAN, CTNBOOLEAN, DICOM_BOOL, BOOL)
+  with one unique boolean type OFBool.
+  Affects: ctndisp/apps/Makefile.dep
+           ctndisp/apps/Makefile.in
+           ctndisp/apps/ctnddico.cc
+           dcmdata/apps/Makefile.dep
+           dcmdata/apps/Makefile.in
+           dcmdata/apps/dcmconv.cc
+           dcmdata/apps/dcmdump.cc
+           dcmdata/apps/dcmftest.cc
+           dcmdata/apps/dcmgpdir.cc
+           dcmdata/apps/dump2dcm.cc
+           dcmdata/include/dcbuf.h      dcmdata/libsrc/dcbuf.cc
+           dcmdata/include/dcbytstr.h   dcmdata/libsrc/dcbytstr.cc
+           dcmdata/include/dcdatset.h   dcmdata/libsrc/dcdatset.cc
+           dcmdata/include/dcdebug.h
+           dcmdata/include/dcdicdir.h   dcmdata/libsrc/dcdicdir.cc
+           dcmdata/include/dcdicent.h   dcmdata/libsrc/dcdicent.cc
+           dcmdata/include/dcdict.h     dcmdata/libsrc/dcdict.cc
+           dcmdata/include/dcdirrec.h   dcmdata/libsrc/dcdirrec.cc
+           dcmdata/include/dcelem.h     dcmdata/libsrc/dcelem.cc
+           dcmdata/include/dcfilefo.h   dcmdata/libsrc/dcfilefo.cc
+           dcmdata/include/dcitem.h     dcmdata/libsrc/dcitem.cc
+           dcmdata/include/dclist.h
+           dcmdata/include/dcmetinf.h   dcmdata/libsrc/dcmetinf.cc
+           dcmdata/include/dcobject.h   dcmdata/libsrc/dcobject.cc
+           dcmdata/include/dcpixseq.h   dcmdata/libsrc/dcpixseq.cc
+           dcmdata/include/dcsequen.h   dcmdata/libsrc/dcsequen.cc
+           dcmdata/include/dcstack.h    dcmdata/libsrc/dcstack.cc
+           dcmdata/include/dcstream.h   dcmdata/libsrc/dcstream.cc
+           dcmdata/include/dctypes.h
+           dcmdata/include/dcutils.h    dcmdata/libsrc/dcutils.cc
+           dcmdata/include/dcvr*.h      dcmdata/libsrc/dcvr*.cc
+           dcmdata/libsrc/Makefile.dep
+           dcmdata/libsrc/Makefile.in
+           dcmdata/libsrc/dcdictzz.cc
+           dcmdata/libsrc/dcentlst.cc
+           dcmdata/libsrc/mkdictbi.cc
+           dcmnet/apps/Makefile.*
+           dcmnet/apps/*.cc
+           dcmnet/include/assoc.h
+           dcmnet/include/cond.h
+           dcmnet/include/di*.h
+           dcmnet/include/dul.h
+           dcmnet/libsrc/Makefile.*
+           dcmnet/libsrc/assoc.cc
+           dcmnet/libsrc/cond.cc
+           dcmnet/libsrc/dimcmd.*
+           dcmnet/libsrc/dimfind.cc
+           dcmnet/libsrc/dimmove.cc
+           dcmnet/libsrc/dimse.cc
+           dcmnet/libsrc/diutil.cc
+           dcmnet/libsrc/dul.cc
+           dcmnet/libsrc/dulconst.cc
+           dcmnet/libsrc/dulextra.cc
+           dcmnet/libsrc/dulfsm.cc
+           dcmnet/libsrc/dulparse.cc
+           dcmnet/libsrc/dulpriv.h
+           dcmnet/tests/Makefile.dep
+           dcmnet/tests/Makefile.in
+           dcmnet/tests/assctest.cc
+           imagectn/apps/Makefile.*
+           imagectn/apps/imagectn.*
+           imagectn/apps/sce.cc
+           imagectn/apps/scefind.cc
+           imagectn/apps/scemove.cc
+           imagectn/apps/scestore.cc
+           imagectn/apps/ti.*
+           imagectn/apps/tinet.*
+           imagectn/apps/tiquery.*
+           imagectn/apps/tiui.cc
+           imagectn/include/imagedb.h
+           imagectn/libsrc/Makefile.*
+           imagectn/libsrc/dbfind.cc
+           imagectn/libsrc/dbindex.cc
+           imagectn/libsrc/dbmove.cc
+           imagectn/libsrc/dbpriv.h
+           imagectn/libsrc/dbstore.cc
+           imagectn/libsrc/dbutils.cc
+           imagectn/tests/Makefile.*
+           imagectn/tests/dbregimg.cc
+           wlistctn/apps/Makefile.*
+           wlistctn/apps/sce.cc
+           wlistctn/apps/scefind.cc
+           wlistctn/apps/wlistctn.*
+           wlistctn/include/wrklstdb.h
+           wlistctn/libsrc/Makefile.*
+           wlistctn/libsrc/wrklstdb.cc
+           wlistctn/tests/Makefile.*
+           wlistctn/tests/wltest.cc
+           wlistctn/wwwapps/Makefile.*
+           wlistctn/wwwapps/readoviw.cc
+           wlistctn/wwwapps/readwlst.cc
+           wlistctn/wwwapps/writwlst.cc
+
+**** Changes from 97.07.17 (barth)
+
+- Corrected error in swapping routine
+  Affects: dcmdata/libsrc/dcswap.cc
+
+**** Changes from 97.07.16 (eichelberg)
+
+- Added test for presence of <alloca.h> to configure.
+  Needed for dcmcheck.
+  Affects: config/configure.in
+           config/configure
+           config/include/config.h.in
+
+**** Changes from 97.07.07 (eichelberg)
+
+- Simplified OFString code to allow compilation with Sun CC 2.0.1
+  Affects: ofstd/include/ofstring.h
+
+**** Changes from 97.07.07 (hewett)
+
+- Added string class OFString to ofstd library.
+  This class implements a subset of the ANSI C++ "string" class.
+  Added:   ofstd/include/ofstring.h
+           ofstd/libsrc/ofstring.cc
+           ofstd/tests/tstring.cc
+  Affects: config/configure
+           config/configure.in
+           config/include/config.h.in
+           ofstd/libsrc/Makefile.in
+           ofstd/tests/Makefile.in
+
+**** Changes from 97.07.07 (barth)
+
+- Changed macros EXTRACT_LONG_BIG and EXTRACT_SHORT_BIG to avoid
+  compiler warnings on SUN-CC and Windows NT/95
+  Affects: dcmnet/libsrc/dulstruc.h
+
+- Corrected destructor for OFListBase, now the dummy element is
+  deleted.
+  Affects: ofstd/include/oflist.h
+           ofstd/libsrc/oflist.cc
+
+- Changed type for Tag attribute in DcmObject from prointer to value
+  Affects: dcmdata/include/dcobject.h
+           dcmdata/libsrc/dcitem.cc
+           dcmdata/libsrc/dcobject.cc
+           dcmdata/libsrc/dcpixseq.cc
+           dcmdata/libsrc/dcpxitem.cc
+           dcmdata/libsrc/dcvrobow.cc
+
+- Changed parameter type DcmTag & to DcmTagKey & in all search functions
+  in DcmItem, DcmSequenceOfItems, DcmDirectoryRecord and DcmObject
+  Affects: dcmdata/include/dcitem.h
+           dcmdata/include/dcdirrec.h
+           dcmdata/include/dcsequen.h
+           dcmdata/libsrc/dcdirrec.cc
+           dcmdata/libsrc/dcelem.cc
+           dcmdata/libsrc/dcitem.cc
+           dcmdata/libsrc/dcobject.cc
+           dcmdata/libsrc/dcsequen.cc
+           wlistctn/libsrc/wrklstdb.cc
+
+- Enhanced (faster) byte swapping routine. swapIfNecessary moved from
+  a method in DcmObject to a general function.
+  Affects: dcmdata/include/dcobject.h
+           dcmdata/include/dcswap.h
+           dcmdata/libsrc/Makefile.dep
+           dcmdata/libsrc/dcelem.cc
+           dcmdata/libsrc/dcitem.cc
+           dcmdata/libsrc/dcobject.cc
+           dcmdata/libsrc/dcpxitem.cc
+           dcmdata/libsrc/dcsequen.cc
+           dcmdata/libsrc/dcswap.cc
+
+- Corrected include for stdlib
+  Affects: dcmdata/libsrc/dcstack.cc
+
+**** Changes from 97.07.04 (eichelberg)
+
+- configure now also tests <sys/select.h> if available
+  when searching for a select() prototype.
+  Updated files using select() to include <sys/select.h> and
+  <sys/types.h> if available (needed for AIX).
+  Affects: config/configure
+           config/configure.in
+           dcmnet/libsrc/assoc.cc
+           dcmnet/libsrc/dul.cc
+           dcmnet/libsrc/dulextra.cc
+           dcmnet/libsrc/dulfsm.cc
+
+- Simplified some sizeof() constructs to avoid compiler warnings
+  on the IBM xlC compiler (AIX 3.x).
+  Affects: dcmnet/libsrc/dulconst.cc
+           dcmnet/libsrc/dulfsm.cc
+           dcmnet/libsrc/dulparse.cc
+           dcmnet/libsrc/dulpres.cc
+           imagectn/apps/imagectn.cc
+           wlistctn/apps/wlistctn.cc
+
+- Now including <stream.h> in dcstream.cc, required for systems
+  without <unistd.h>.
+  Affects: dcmdata/libsrc/dcstream.cc
+
+**** Changes from 97.07.03 (barth)
+
+- removed debugging functions Bdebug() and Edebug() since
+  they write a static array and are not very useful at all.
+  Cdebug and Vdebug are merged since they have the same semantics.
+  The debugging functions in dcmdata changed their interfaces
+  (see dcmdata/include/dcdebug.h)
+  Affects: dcmdata/apps/dcmconv.cc
+           dcmdata/apps/dcmdump.cc
+           dcmdata/apps/dcmgpdir.cc
+           dcmdata/apps/dump2dcm.cc
+           dcmdata/include/dcdebug.h
+           dcmdata/libsrc/dcbytstr.cc
+           dcmdata/libsrc/dcdatset.cc
+           dcmdata/libsrc/dcdebug.cc
+           dcmdata/libsrc/dcdicdir.cc
+           dcmdata/libsrc/dcdirrec.cc
+           dcmdata/libsrc/dcelem.cc
+           dcmdata/libsrc/dcfilefo.cc
+           dcmdata/libsrc/dcitem.cc
+           dcmdata/libsrc/dclist.cc
+           dcmdata/libsrc/dcmetinf.cc
+           dcmdata/libsrc/dcobject.cc
+           dcmdata/libsrc/dcpixseq.cc
+           dcmdata/libsrc/dcpxitem.cc
+           dcmdata/libsrc/dcsequen.cc
+           dcmdata/libsrc/dcstack.cc
+           dcmdata/libsrc/dcswap.cc
+           dcmdata/libsrc/dcutils.cc
+           dcmdata/libsrc/dcvr??.cc
+           dcmdata/libsrc/dcvrobow.cc
+           dcmdata/libsrc/dcxfer.cc
+
+
+- corrected Bug in DcmDecimalString::getFloat64 (Thanks to
+  Phil Liao <phil@eggroll.eeg.com>)
+  Affects: dcmdata/libsrc/dcvrds.cc
+
+- Adapt the WINDOWS NT/95 project files to the preliminary
+  release of the OFFIS Standard Library
+  Affects: config/systems/win32/msvc4.mak
+           config/include/cfwin32.h
+
+**** Changes from 97.07.03 (eichelberg)
+
+- Corrected typo in configure messages.
+  Affects: */configure
+           config/templates/configure.mod
+
+- Corrected bug in configure module - all tests trying to link or run
+  a test program could fail (and, therefore, report an incorrect result)
+  if libg++.a was not found in the default link path.
+  Affects: config/aclocal.m4
+           config/configure
+
+- New shell script config/changext changes the file name extension
+  for all C++ files from .cc to a different extension. This is useful
+  for C++ compilers which do note recognise ".cc" as a valid extension
+  for C++ code.
+  Added: config/changext.sh
+
+**** Changes from 97.07.02 (barth)
+
+- Preliminary release of the OFFIS Standard Library.
+  In the future this library shall contain a subset of the
+  ANSI C++ Library (Version 3) that works on a lot of different
+  compilers. Additionally this library shall include classes and
+  functions that are often used. All classes and functions begin
+  with OF... This library is independent of the DICOM development and
+  shall contain no DICOM specific stuff.
+  Added:   ofstd   directory with Makefiles, etc.
+           ofstd/include/ofstack.h
+           ofstd/include/oflist.h
+           ofstd/include/oftypes.h
+           ofstd/libsrc/oflist.cc
+           ofstd/tests/tststack.cc
+           ofstd/tests/tstlist.cc
+           ofstd/tests/tstlist.out (output of tstlist program)
+           ofstd/tests/tlist.cc
+           ofstd/tests/tlist.out
+  Affects: config/acconfig.h
+           config/aclocal.m4
+           config/configure
+           config/configure.in
+           config/include/config.h.in
+           config/modules
+           config/include/cfwin32.h
+
+**** Changes from 97.07.01 (eichelberg)
+
+- Fixed bug in DICOM Upper Layer module - software interrupts
+  (e.g. SIGUSR1) caused the upper layer to return error codes
+  when a blocked read() or write() operation to a socket was interrupted.
+  Affects: dcmnet/libsrc/dulfsm.cc
+
+**** Changes from 97.06.26 (eichelberg)
+
+- Fixed bug in DIMSE module - the mandatory tag (0000,0000)
+  (command group length) was created only for DIMSE-RQ messages
+  but not for DIMSE-RSP messages.
+  Affects: dcmnet/libsrc/dimcmd.cc
+
+**** Changes from 97.06.26 (barth)
+
+- Added systems directory for support of systems that do not support
+  the "configure" mechanism
+  Added:   config/systems
+  Affects: config/docs/config.txt
+
+- Added configuration for Windows 95/NT Visual C++ 4.0
+  Added:   config/systems/win32
+           config/systems/win32/README
+           config/systems/win32/msvc4.mak
+
+- Added tests for header files io.h and _findfirst function (needed for
+  Windows 95/NT)
+  Affects: config/configure.in
+           config/configure
+           config/include/cfmwerks.h
+           config/include/cfwin32.h
+           config/include/config.h.in
+
+- Added function version expandFileNames for Windows NT/95
+  Affects: dcmdata/apps/dcmgpdir.cc
+
+- Changed names for enumeration values in DB_KEY_TYPE since the value
+  OPTIONAL was predefined for Windows 95/NT
+  Affects: imagectn/libsrc/dbfind.cc
+           imagectn/libsrc/dbmove.cc
+           imagectn/libsrc/dbpriv.h
+           imagectn/libsrc/dbutils.cc
+
+- Include Additional headers (winsock.h, io.h) for Windows NT/95
+  Affects: dcmdata/libsrc/mkdeftag.cc
+           dcmdata/libsrc/mkdictbi.cc
+           dcmdata/apps/dcmgpdir.cc
+           imagectn/apps/imagectn.cc
+           imagectn/apps/scemove.cc
+           imagectn/apps/scestore.cc
+           imagectn/apps/tinet.cc
+           imagectn/libsrc/dbpriv.h
+
+- Include tests for changing of user IDs and the using of fork
+  in code since Windows NT/95 do not support this
+  Affects: dcmnet/apps/movescu.cc
+       imagectn/apps/imagectn.cc
+
+- Calling of signal function only for existing signals (Windows NT/95
+  do not have the same set of signals as UNIX).
+  Affects: imagectn/apps/ti.cc
+
+
+- Corrected error interchanged parameters in a call
+  Affects: dcmnet/apps/movescu.cc
+
+**** Changes from 97.06.13 (barth)
+
+- Corrected printing of OW values. The length of the output array was
+  computed incorrectly.
+  Affects: dcmdata/libsrc/dcvrobow.cc

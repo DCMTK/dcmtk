@@ -1,0 +1,27 @@
+Release 3.2.1 (Public Release - 1997.06.09)
+
+- Updated Version Number and Implementation Version Name to reflect the
+  current public release (3.2.1)
+  Affects: dcmdata/include/dcuid.h
+
+**** Changes from 97.06.09 (barth)
+
+- Correct detection of Windows 95/NT
+  Affects: config/include/osconfig.h
+
+**** Changes from 97.06.06 (barth)
+
+- corrected error: canWriteXfer returns false if the old transfer
+  syntax was unknown, which causes several applications to prohibit the
+  writing of a dataset.
+  Affects: dcmdata/libsrc/dcitem.cc
+           dcmdata/libsrc/dcsequen.cc
+           dcmdata/libsrc/dcpixseq.cc
+           dcmdata/libsrc/dcdatset.cc
+
+**** Changes from 97.06.05 (hewett)
+
+- Added Papyrus 3.1 data dictionary attributes.
+  Affects: dcmdata/libsrc/dicom.dic
+           dcmdata/include/dcdeftag.h
+           dcmdata/libsrc/dcdictzz.cc

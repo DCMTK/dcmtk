@@ -1,0 +1,52 @@
+Release 3.0.2
+
+imagectn package:
+
+- Corrected error producing core dump with incorrect configrc file.
+  imagectn tried to unlock an unsuccessfully allocated lockfile.
+  Affects: dcmtk/imagectn/libsrc/dbutils.cc
+
+wlistctn package:
+
+- Worklist WWW-Server perl script performance enhancements.  Simplified
+  configuration.  Added support for public area (without password).
+  Added support for new modalities RF, XA (Supplement 4) and
+  XC, EM, GM, SM (Supplement 15).
+  Affects: dcmtk/wlistctn/perl/*
+  Affects: dcmtk/wlistctn/wwwapps/*
+
+ctndisp package:
+
+- Corrected typos in error statements.
+  Affects: dcmtk/ctndisp/libsrc/snq.cc
+
+config package:
+
+- The configure script will now only use the GNU-C compiler -pedantic
+  flag if running on a Solaris-2 system.  The -pedantic flag cannot
+  be used on systems whose system include files incorrectly declare function
+  prototypes without arguments (e.g. SunOS 4.1.3).
+  Removed check for correct inline functions (needed for SUN CC 2.0.1).
+  Affects: dcmtk/config/configure.in
+           dcmtk/config/configure
+
+dcmdata package:
+
+- Corrected problem with parsing sequences when data provided in
+  blocks (e.g. via network) and the sequences was larger than a block.
+  Affects: dcmtk/dcmdata/libsrc/dcsequen.cc
+
+dcmnet package:
+
+- Added the program movescu which implements an SCU for the C-MOVE
+  operation of the Query/Reqtrieve Service Class.
+  Affects: dcmtk/dcmnet/apps/Makefile.in
+  New:     dcmtk/dcmnet/apps/movescu.cc
+
+- Corrected compilation problem when including <sys/socket.h> on
+  DEC Alpha OSF/1.
+  Affects: dcmtk/dcmnet/include/dcompat.h
+
+- Removed inclusion of system header already included by dcompat.h
+  and made sure that dcompat.h is always included (via dicom.h).
+  Affects: dcmtk/dcmnet/libsrc/*.cc

@@ -1,0 +1,2932 @@
+Release 3.4.0 (Public Release - 1999-05-06)
+
+- Updated Version Number and Implementation Version Name to reflect the
+  current public release (3.4.0)
+  Affects: dcmdata/include/dcuid.h
+
+- Updated documentation to reflect changes in 3.4.0
+  Affects: ANNOUNCE
+           HISTORY
+           INSTALL
+           config/docs/dirstruc.txt
+
+**** Changes from 1999.05.05 (riesmeier)
+
+- Modified parameter of CreateProcess call to avoid creation of new command
+  line window under Windows.
+  Affects: dcmpstat/apps/dcmpsrcv.cc
+           dcmpstat/libsrc/dviface.cc
+
+- Added optional parameter to method loadPState (from database) to change
+  instance reviewed flag for pstate and image.
+  Affects: dcmpstat/include/dviface.h
+           dcmpstat/libsrc/dviface.cc
+
+**** Changes from 1999.05.04 (riesmeier)
+
+- Added DOC++ comments to header file.
+  Affects: ofstd/include/ofcmdln.h
+
+- Minor changes to support Cygwin B20.1 (check __CYGWIN__ to distinguish from
+  MSVC which also defines _WIN32).
+  Affects: dcmdata/libsrc/cmdlnarg.cc
+           dcmnet/include/dcompat.h
+           dcmnet/libsrc/dcompat.cc
+
+- Added releaseDatabase to savePState to avoid deadlocks.
+  Affects: dcmpstat/libsrc/dviface.cc
+
+- Change status of variable imageInDatabase in savePState to avoid unnecessary
+  saving of (probabaly large) image files.
+  Affects: dcmpstat/libsrc/dviface.cc
+
+**** Changes from 1999.05.04 (eichelberg)
+
+- Updated installation instructions
+  Affects: INSTALL
+
+- Updated Windows 95/NT makefiles and make instructions.
+  Affects: config/systems/win32/README
+  Added:   config/systems/win32/msvc5.zip
+  Removed: config/systems/win32/msvc4.mak
+
+- Linking -lm to dcmimgle/apps, required on OSF1.
+  Affects: dcmimgle/apps/Makefile.in
+
+- Minor code purifications to keep IBM xlC quiet
+  Affects: dcmimgle/include/diinpxt.h
+
+- Added test for struct utimbuf declaration,
+  absent on some platforms like NeXTStep 3.3
+  Affects: config/acconfig.h
+           config/configure
+           config/configure.in
+           config/include/cfwin32.h
+           config/include/config.h.in
+           dcmpstat/libsrc/dviface.cc
+
+- Removed carriage returns
+  Affects: dcmpstat/include/dvpstat.h
+
+- Including ofstring.h in ctndisp.cc to avoid prototype conflicts
+  on HP-UX 9 with gcc.
+  Affects: ctndisp/apps/ctndisp.cc
+
+- Minor code purifications to keep gcc on OSF1 quiet.
+  Affects: dcmpstat/apps/dcmmklut.cc
+           dcmpstat/libsrc/dvpsgl.cc
+           dcmpstat/libsrc/dvpstat.cc
+
+- Corrected dcmpstat Makefile.in for make install.
+  Affects: dcmpstat/Makefile.in
+
+**** Changes from 1999.05.03 (riesmeier)
+
+- Minor code purifications to keep Sun CC 2.0.1 quiet.
+  Affects: ctndisp/libsrc/dispuser.cc
+           dcmdata/apps/dump2dcm.cc
+           dcmimgle/include/dcmimage.h
+           dcmimgle/include/dibaslut.h
+           dcmimgle/include/diflipt.h
+           dcmimgle/include/diluptab.h
+           dcmimgle/include/dimoipxt.h
+           dcmimgle/include/dimoopxt.h
+           dcmimgle/include/diovlay.h
+           dcmimgle/include/diovpln.h
+           dcmimgle/include/displint.h
+           dcmimgle/include/ditranst.h
+           dcmimgle/libsrc/dibarlut.cc
+           dcmimgle/libsrc/didispfn.cc
+           dcmimgle/libsrc/diluptab.cc
+           dcmimgle/libsrc/dimoimg.cc
+           dcmnet/apps/echoscu.cc
+           dcmnet/libsrc/dul.cc
+           dcmnet/libsrc/dulparse.cc
+           dcmpstat/apps/dcmmkcrv.cc
+           dcmpstat/apps/dcmmklut.cc
+           dcmpstat/apps/dcmp2pgm.cc
+           dcmpstat/apps/dcmpsrcv.cc
+           dcmpstat/include/dvcache.h
+           dcmpstat/libsrc/dviface.cc
+           dcmpstat/libsrc/dvpsov.cc
+           dcmpstat/libsrc/dvpstat.cc
+           ofstd/libsrc/ofconapp.cc
+           wlistctn/apps/scefind.cc
+           wlistctn/libsrc/wlistctn.cc
+
+- Enhanced check in savePState() method whether image file is already stored
+  in database.
+  Affects: dcmpstat/libsrc/dviface.cc
+
+- Replaced method applyOptimizationLUT by its contents (method body) to avoid
+  warnings (and possible errors) on Sun CC 2.0.1 :-/
+  Affects: dcmimgle/include/dimoipxt.h
+           dcmimgle/include/dimoopxt.h
+
+**** Changes from 1999.04.30 (eichelberg)
+
+- Minor code purifications to keep IBM xlC quiet
+  Affects: dcmimgle/include/diinpxt.h
+           dcmimgle/include/dimoopxt.h
+           dcmimgle/include/dimopxt.h
+
+- Minor code purifications to keep Sun CC 2.0.1 quiet
+  Affects: dcmdata/apps/dcmgpdir.cc
+           dcmnet/apps/findscu.cc
+           dcmnet/apps/movescu.cc
+           dcmnet/apps/storescu.cc
+           dcmpstat/apps/dcmp2pgm.cc
+           dcmpstat/include/dvpsconf.h
+           dcmpstat/libsrc/dvpsconf.cc
+           dcmpstat/libsrc/dvpsgal.cc
+           dcmpstat/libsrc/dvpsgll.cc
+           dcmpstat/libsrc/dvpsvwl.cc
+           ofstd/libsrc/ofconapp.cc
+
+- Renamed all flock calls to dcmtk_flock to avoid name clash
+  between flock() emulation based on fcntl() and a constructor
+  for struct flock.
+  Affects: dcmnet/include/dcompat.h
+           dcmnet/libsrc/dcompat.cc
+           dcmpstat/apps/dcmpsrcv.cc
+           dcmpstat/apps/dcmpssnd.cc
+           imagectn/apps/scemove.cc
+           imagectn/apps/scestore.cc
+           imagectn/apps/tinet.cc
+           imagectn/libsrc/dbstore.cc
+           imagectn/libsrc/dbutils.cc
+           wlistctn/libsrc/wrklstdb.cc
+
+- Added provision for systems which have bzero() but no prototype, e.g. SunOS
+  Affects: ofstd/include/ofbmanip.h
+
+- Now including stdio.h in diutils.h, required on SunOS
+  Affects: dcmimgle/include/diutils.h
+
+**** Changes from 1999.04.29 (eichelberg)
+
+- Minor code purifications to keep DEC cxx 6 quiet.
+  Affects: dcmimgle/include/dimoipxt.h
+           dcmimgle/include/dimoopxt.h
+           dcmimgle/include/diovlay.h
+           dcmimgle/include/diovpln.h
+
+- Changed first parameter in bzero() call to char *, required on OSF1.
+  Affects: ofstd/include/ofbmanip.h
+
+- Linking all tools that use dcmimgle with -lm, required on OSF1.
+  Affects: dcmpstat/apps/Makefile.in
+
+**** Changes from 1999.04.29 (riesmeier)
+
+- Removed color related image files from public toolkit part.
+  Affects: dcmimgle/include/dimoopxt.h
+           dcmimgle/libsrc/Makefile.dep
+           dcmimgle/libsrc/Makefile.in
+  Removed: dcmimgle/include/dicoopx.h
+           dcmimgle/include/dicoopxt.h
+           dcmimgle/include/dicopx.h
+           dcmimgle/libsrc/dicoopx.cc
+
+- Added DOC++ comments.
+  Affects: ofstd/include/ofcmdln.h
+           ofstd/include/oftimer.h
+
+- Added checks whether an option which should be added already exists.
+  Affects: ofstd/libsrc/ofcmdln.cc
+
+- Renamed class CubicSpline to DiCubicSpline.
+  Affects: dcmimgle/include/displint.h
+           dcmimgle/libsrc/dibarlut.cc
+           dcmimgle/libsrc/didispfn.cc
+
+- Removed debug code.
+  Affects: ofstd/include/ofcmdln.h
+
+- Added PresentationLabel to index file.
+  Affects: dcmpstat/include/dvicache.h
+           dcmpstat/include/dviface.h
+           dcmpstat/libsrc/dviface.cc
+           imagectn/include/dbpriv.h
+           imagectn/libsrc/dbindex.cc
+
+- Rebuild Makefile dependencies.
+  Affects: dcmnet/apps/Makefile.dep
+
+**** Changes from 1999.04.28 (riesmeier)
+
+- Added item PresentationDescription to index record.
+  Affects: imagectn/include/dbpriv.h
+           imagectn/libsrc/dbindex.cc
+
+- Rebuild Makefile dependencies.
+  Affects: dcmimage/libsrc/Makefile.dep
+           imagectn/apps/Makefile.dep
+           imagectn/libsrc/Makefile.dep
+           imagectn/tests/Makefile.dep
+
+- Merged change log for module dcmimgle into main change log (there is
+  still a separate change file for module dcmimage).
+  Affects: CHANGES
+
+- Removed some '#ifdef DEBUG' statements from header files to avoid
+  problems with inconsistent compilations.
+  Affects: ofstd/include/ofcmdln.h
+           ofstd/libsrc/ofcmdln.cc
+
+- Removed warning when adding optional parameter direct after another
+  optional parameter.
+  Affects: ofstd/libsrc/ofcmdln.cc
+
+- Changed comments/formatting.
+  Affects: dcmimgle/apps/dcmgsdf.cc
+           dcmimgle/include/dimocpt.h
+
+- Added newline to error output.
+  Affects: dcmimgle/apps/dconvlum.cc
+
+- Added experimental support to use pastel colors (currently not public!).
+  Affects: dcmimgle/include/dcmimage.h
+           dcmimgle/include/diimage.h
+           dcmimgle/include/dimoimg.h
+           dcmimgle/include/dimoopxt.h
+           dcmimgle/include/diutils.h
+           dcmimgle/libsrc/dimoimg1.cc
+           dcmimgle/libsrc/dimoimg2.cc
+           dcmimgle/libsrc/dimoimg.cc
+
+- Removed debug code.
+  Affects: dcmimgle/include/diflipt.h
+
+- Introduced new scheme for the debug level variable: now each level can be
+  set separately (there is no "include" relationship).
+  Affects: dcmimgle/include/diinpxt.h
+           dcmimgle/include/dimoipxt.h
+           dcmimgle/include/dimoopxt.h
+           dcmimgle/include/dimopxt.h
+           dcmimgle/include/discalet.h
+           dcmimgle/libsrc/dcmimage.cc
+           dcmimgle/libsrc/dibarlut.cc
+           dcmimgle/libsrc/didispfn.cc
+           dcmimgle/libsrc/didocu.cc
+           dcmimgle/libsrc/diimage.cc
+           dcmimgle/libsrc/diluptab.cc
+           dcmimgle/libsrc/dimoimg.cc
+           dcmimgle/libsrc/dimomod.cc
+           dcmimgle/libsrc/diovlay.cc
+           dcmimgle/libsrc/diovlimg.cc
+           dcmimgle/libsrc/diovpln.cc
+           dcmimgle/libsrc/diutils.cc
+
+- Added "template<>" to specialized template functions/methods to avoid
+  compiler warnings reported by gcc version egcs-2.91.66 (conforms with new
+  C++ standard).
+  Affects: dcmimgle/include/dipxrept.h
+
+- Moved files from dcmimage module to dcmimgle to support new pastel color
+  output format.
+  Affects: dcmimgle/libsrc/Makefile.in
+  Added:   dcmimgle/include/dicoopx.h
+           dcmimgle/include/dicoopxt.h
+           dcmimgle/include/dicopx.h
+           dcmimgle/libsrc/dicoopx.cc
+
+- Added modules dcmimgle and dcmpstat to the readme file.
+  Affects: README
+
+- Added documentation for console applications.
+  Added:   dcmimgle/docs
+           dcmimgle/docs/dconclum.txt
+           dcmimgle/docs/dcmgsdf.txt
+           dcmimgle/docs/Makefile.in
+
+- Removed additional declaration of local variable (hides first declaration)
+  to avoid compiler warnings reported by gcc 2.7.2.1 (Linux).
+  Affects: dcmpstat/libsrc/dviface.cc
+
+- Added type casts to NULL pointers returned as 'const char *' to avoid
+  compiler warnings reported by gcc 2.7.2.1 (Linux).
+  Affects: dcmimgle/include/dimoimg.h
+           dcmimgle/include/dimomod.h
+           dcmimgle/include/dimopx.h
+
+- Added test whether the compiler supports the new explicit template
+  specialization syntax (see below).
+  Affects: dcmimgle/include/dipxrept.h
+
+**** Changes from 1999.04.28 (eichelberg)
+
+- Added test whether the compiler supports the new explicit template
+  specialization syntax, e.g. template<> int a_class<int>::a_method()
+  Affects: config/acconfig.h
+           config/aclocal.m4
+           config/configure
+           config/configure.in
+           config/include/cfwin32.h
+           config/include/config.h.in
+
+- Modules dcmpstat and dcmimgle now configured and compiled by default.
+  Affects: config/modules
+
+- Merged change log for module dcmpstat into main change log.
+  Affects: CHANGES
+  Removed: dcmpstat/CHANGES
+
+- When creating a presentation state for an image, modality rescale/slope
+  without rescale type is handled now in a more lenient way.
+  Affects: dcmpstat/libsrc/dvpstat.cc
+
+- Cleaned up module dcmpstat apps, adapted to new command line class
+  and added short documentation.
+  Affects: dcmpstat/apps/Makefile.dep
+           dcmpstat/apps/Makefile.in
+           dcmpstat/apps/dcmmkcrv.cc
+           dcmpstat/apps/dcmmklut.cc
+           dcmpstat/apps/dcmp2pgm.cc
+           dcmpstat/apps/dcmpsmk.cc
+           dcmpstat/apps/dcmpsrcv.cc
+           dcmpstat/apps/dcmpssnd.cc
+  Added:   dcmpstat/docs/dcmmkcrv.txt
+           dcmpstat/docs/dcmmklut.txt
+           dcmpstat/docs/dcmp2pgm.txt
+           dcmpstat/docs/dcmpsmk.txt
+           dcmpstat/docs/dcmpsrcv.txt
+           dcmpstat/docs/dcmpssnd.txt
+  Removed: dcmpstat/apps/dcmpsrw.cc
+           dcmpstat/apps/dcmpstst.cc
+           dcmpstat/apps/listdb.cc
+           dcmpstat/apps/runsend.cc
+
+**** Changes from 1999.04.27 (riesmeier)
+
+- Added some useful debugging checks.
+  Affects: ofstd/include/ofcmdln.h
+           ofstd/libsrc/ofcmdln.cc
+
+- Introduced list of valid parameters used for syntax output and error
+  checking.
+  Affects: ofstd/include/ofcmdln.h
+           ofstd/include/ofconapp.h
+           ofstd/libsrc/ofcmdln.cc
+           ofstd/libsrc/ofconapp.cc
+
+- Added method to check for conflicts between two options (incl. error
+  output).
+  Affects: ofstd/include/ofconapp.h
+           ofstd/libsrc/ofconapp.cc
+
+- Added some comments (DOC++ style).
+  Affects: ofstd/include/ofcmdln.h
+
+- Corrected bug: option '--help' could not be used when mandatory parameters
+  were missing.
+  Affects: ofstd/libsrc/ofcmdln.cc
+           ofstd/libsrc/ofconapp.cc
+
+- Changed output of usage text (moved some newlines to support output when
+  parameters and/or options are absent).
+  Affects: ofstd/libsrc/ofconapp.cc
+
+- Adapted console applications to new OFCommandLine and OFConsoleApplication
+  functionality.
+  Affects: dcmdata/apps/dcmconv.cc
+           dcmdata/apps/dcmdump.cc
+           dcmdata/apps/dcmftest.cc
+           dcmdata/apps/dcmgpdir.cc
+           dcmdata/apps/dump2dcm.cc
+
+**** Changes from 1999.04.27 (eichelberg)
+
+- Adapted storescu to new command line option scheme.
+  Added support for transmission of compressed images and on-the-fly
+  creation of new UIDs for test scenarios.
+  Contribution from Andy Hewett <hewett@medigration.de>
+  Affects: dcmnet/apps/storescu.cc
+
+- Adapted storescp to new command line option scheme.
+  Added support for transmission of compressed images.
+  Contribution from Andy Hewett <hewett@medigration.de>
+  Affects: dcmnet/apps/storescp.cc
+
+- Prevented dcmdata applications from opening a file with empty filename,
+  leads to application crash on Win32.
+  Affects: dcmdata/apps/dcmconv.cc
+           dcmdata/apps/dcmftest.cc
+           dcmdata/apps/dcmgpdir.cc
+           dcmdata/apps/dump2dcm.cc
+
+- Updated echoscu copyright header
+  Affects: dcmnet/apps/echoscu.cc
+
+- Updated storescu and storescp for minor changes is command line class.
+  Affects: dcmnet/apps/storescu.cc
+           dcmnet/apps/echoscu.cc
+
+**** Changes from 1999.04.26 (riesmeier)
+
+- Changed comments.
+  Affects: ofstd/include/ofbmanip.h
+
+- Added support to define minimum width of short and long option columns.
+  Affects: ofstd/include/ofcmdln.h
+           ofstd/libsrc/ofcmdln.cc
+
+- Removed bug: empty parameters have always been interpreted as options.
+  Affects: dcmdata/apps/dcmdump.cc
+           ofstd/include/ofcmdln.h
+           ofstd/libsrc/ofcmdln.cc
+
+- Enhanced support of wildcard expansion under Windows (now very similar
+  to Unix shells).
+  Affects: ofstd/include/ofcmdln.h
+           ofstd/libsrc/ofcmdln.cc
+
+- Added support to check dependences between different options and report
+  error messages if necessary.
+  Affects: dcmdata/apps/dcmdump.cc
+           ofstd/include/ofconapp.h
+           ofstd/libsrc/ofconapp.cc
+
+**** Changes from 1999.04.26 (eichelberg)
+
+- Added new "transfer syntax aware" variant of the dcmnet function
+  ASC_findAcceptedPresentationContextID. This variant tries to find an
+  accepted presentation context that matches both abstract and transfer syntax.
+  Affects: dcmnet/include/assoc.h
+           dcmnet/libsrc/assoc.cc
+
+- Updated dcmdata docs for new command line options.
+  Affects: dcmdata/docs/dcmconv.txt
+           dcmdata/docs/dcmdump.txt
+           dcmdata/docs/dcmgpdir.txt
+           dcmdata/docs/dump2dcm.txt
+  Added:   dcmdata/docs/dcmftest.txt
+
+- Ported Worklist CTN to Win32 environment.
+  Contribution from Andy Hewett <hewett@medigration.de>
+  Affects: wlistctn/apps/sce.cc
+           wlistctn/apps/sceecho.cc
+           wlistctn/apps/scefind.cc
+           wlistctn/apps/wlistctn.cc
+           wlistctn/apps/wlistctn.h
+           wlistctn/include/wrklstdb.h
+           wlistctn/libsrc/wrklstdb.cc
+           wlistctn/libsrc/Makefile.in
+           wlistctn/tests/Makefile.in
+
+- Updated copyright headers in module wlistctn
+  and makefile dependencies.
+  Affects: wlistctn/apps/Makefile.dep
+           wlistctn/apps/sce.h
+           wlistctn/apps/sceecho.h
+           wlistctn/apps/scefind.h
+           wlistctn/libsrc/Makefile.dep
+           wlistctn/tests/Makefile.dep
+           wlistctn/tests/wltest.cc
+           wlistctn/wwwapps/Makefile.dep
+           wlistctn/wwwapps/preplock.cc
+           wlistctn/wwwapps/readoviw.cc
+           wlistctn/wwwapps/readwlst.cc
+           wlistctn/wwwapps/writwlst.cc
+
+**** Changes from 1999.04.22 (eichelberg)
+
+- Corrected bug (buffer overflow) in DICOM upper layer module causing
+  application crash when large A-ASSOCIATE-RSP PDUs were assembled.
+  Affects: dcmnet/libsrc/dulfsm.cc
+
+- Corrected Win32 API version of expandFileNames routine in dcmgpdir
+  Affects: dcmdata/apps/dcmgpdir.cc
+
+- Corrected Win32 API version of flock emulation
+  Affects: dcmnet/libsrc/dcompat.cc
+
+**** Changes from 1999.04.21 (eichelberg)
+
+- Added method OFConsoleApplication::checkParam()
+  Affects: ofstd/include/ofconapp.h
+           ofstd/libsrc/ofconapp.cc
+
+- Now always including <windows.h> instead of <winsock.h> on Win32 platforms.
+  This makes sure that <winsock2.h> is used if available.
+  Affects: ofstd/include/oftimer.h
+           dcmdata/libsrc/cmdlnarg.cc
+           dcmdata/libsrc/dcuid.cc
+           dcmdata/libsrc/mkdeftag.cc
+           dcmdata/libsrc/mkdictbi.cc
+           dcmnet/include/dcompat.h
+           dcmnet/libsrc/dcompat.cc
+
+- Increased max. number of transfer syntaxes that
+  can be managed in an A-ASSOCIATE packet from 25 to 50.
+  Affects: dcmnet/include/assoc.h
+
+- Updated copyright file
+  Affects: COPYRIGHT
+
+- Corrected a few typos in ctndisp
+  Affects: ctndisp/libsrc/dispuser.cc
+
+- Fixed bug in DcmPixelData::findConformingEncapsulatedRepresentation
+  leading to an assertion failure when working with compressed data.
+  Bug reported by Andy Hewett <hewett@medigration.de>
+  Affects: dcmdata/libsrc/dcpixel.cc
+
+- Fixed use of OFBitmanipTemplate<>::zeroMem in sendAssociationRQTCP()
+  Affects: dcmnet/libsrc/dulfsm.cc
+
+- Adapted echoscu command line options to new scheme.
+  Merged assctest functionality into echoscu (--propose-ts and --propose-pc).
+  Affects: dcmnet/apps/echoscu.cc
+           dcmnet/Makefile.in
+  Removed: dcmnet/tests/assctest.cc
+           dcmnet/tests/Makefile.dep
+           dcmnet/tests/Makefile.in
+
+**** Changes from 1999.04.19 (eichelberg)
+
+- Added new option to findscu which allows to extract all
+  C-FIND-RSP messages to file as received over network.
+  Contribution from Andy Hewett <hewett@medigration.de>
+  Affects: dcmnet/apps/findscu.cc
+
+- Implemented locking for Win95/98 and Win32s using
+  LockFile() instead of LockFileEx() which is only supported on NT.
+  Affects: dcmnet/libsrc/dcompat.cc
+
+- Added constants for access() on Win32.
+  Contribution from Andy Hewett <hewett@medigration.de>
+  Affects: dcmnet/include/dcompat.h
+
+- Added experimental support for extended SOP class negotiation.
+  Contribution from Andy Hewett <hewett@medigration.de>
+  Affects: dcmnet/apps/Makefile.dep
+           dcmnet/include/assoc.h
+           dcmnet/include/dul.h
+           dcmnet/libsrc/Makefile.dep
+           dcmnet/libsrc/Makefile.in
+           dcmnet/libsrc/assoc.cc
+           dcmnet/libsrc/dul.cc
+           dcmnet/libsrc/dulconst.cc
+           dcmnet/libsrc/dulfsm.cc
+           dcmnet/libsrc/dulparse.cc
+           dcmnet/libsrc/dulstruc.h
+           dcmnet/tests/Makefile.dep
+  Added:   dcmnet/include/extneg.h
+           dcmnet/libsrc/extneg.cc
+
+- Added experimental support for C-GET.
+  Contribution from Andy Hewett <hewett@medigration.de>
+  Affects: dcmnet/include/dimse.h
+  Added:   dcmnet/libsrc/dimget.cc
+
+- Added support for C-FIND-CANCEL/C-MOVE-CANCEL in DIMSE_storeUser().
+  Contribution from Andy Hewett <hewett@medigration.de>
+  Affects: dcmnet/include/dimse.h
+           dcmnet/libsrc/dimstore.cc
+
+- Added basic support for sending/receiving in encapsulated transfer syntaxes.
+  Based on a contribution from Andy Hewett <hewett@medigration.de>
+  Affects: dcmnet/libsrc/dimse.cc
+
+- Fixed bug in getAndDeleteAttributeList() that caused
+  problems when an N-GET-RQ with an empty attribute list was sent.
+  Contribution from Andy Hewett <hewett@medigration.de>
+  Affects: dcmnet/libsrc/dimcmd.cc
+
+**** Changes from 1999.04.13 (eichelberg)
+
+- Fixed bug in DcmUnsignedLongOffset::print that caused an application crash
+  when very large DICOMDIRs were printed (i.e. with dcmdump).
+  Thanks to Andy Hewett <hewett@medigration.de> for the bug report and fix.
+  Affects: dcmdata/libsrc/dcvrulup.cc
+
+**** Changes from 1999.03.31 (eichelberg)
+
+- Updated copyright header in module dcmdata
+  and makefile dependencies.
+  Affects: dcmdata/*/*
+
+**** Changes from 1999.03.29 (eichelberg)
+
+- Adapted command line options of dcmdata applications to new scheme.
+  Affects: dcmdata/apps/dcmconv.cc
+           dcmdata/apps/dcmdump.cc
+           dcmdata/apps/dcmftest.cc
+           dcmdata/apps/dcmgpdir.cc
+           dcmdata/apps/dump2dcm.cc
+           dcmdata/apps/.cc
+
+- Corrected list of image SOP classes
+  Affects: dcmdata/libsrc/dcuid.cc
+
+- Updated list of SOP class name prefixes and estimated sizes
+  Affects: dcmnet/libsrc/diutil.cc
+
+- Cleaned up dcmnet code for char* to const char* assignments.
+  Affects: dcmnet/apps/echoscu.cc
+           dcmnet/apps/findscu.cc
+           dcmnet/apps/movescu.cc
+           dcmnet/apps/storescp.cc
+           dcmnet/apps/storescu.cc
+           dcmnet/include/dul.h
+           dcmnet/include/lst.h
+           dcmnet/libsrc/asccond.cc
+           dcmnet/libsrc/asccond.h
+           dcmnet/libsrc/assoc.cc
+           dcmnet/libsrc/dimecho.cc
+           dcmnet/libsrc/dul.cc
+           dcmnet/libsrc/dulfsm.cc
+           dcmnet/libsrc/dulfsm.h
+           dcmnet/libsrc/dulparse.cc
+           dcmnet/libsrc/dulpres.cc
+           dcmnet/libsrc/lstcond.cc
+           dcmnet/tests/assctest.cc
+
+**** Changes from 1999.03.27 (riesmeier)
+
+- Rebuild Makefile dependencies.
+  Affects: dcmpstat/apps/Makefile.dep
+           dcmpstat/libsrc/Makefile.dep
+
+- Added new entry to index file: Presentation Description.
+  Affects: dcmpstat/apps/listdb.cc
+           dcmpstat/include/dviface.h
+           dcmpstat/libsrc/dviface.cc
+
+- Add remaining member variables to member initialization list to avoid
+  compiler warnings.
+  Affects: dcmpstat/include/dvcache.h
+
+- Enhanced savePState() method: now image file is also added to index file
+  and stored in image directory (if not already there).
+  Affects: dcmpstat/include/dviface.h
+           dcmpstat/libsrc/dviface.cc
+
+- Added method to check whether current image is inverse or not.
+  Affects: dcmpstat/include/dvpstat.h
+           dcmpstat/libsrc/dvpstat.cc
+
+**** Changes from 1999.03.24 (riesmeier)
+
+- Added optional parameters to define minimum width of columns for short and
+  long options in syntax output.
+  Affects: ofstd/include/ofcmdln.h
+           ofstd/libsrc/ofcmdln.cc
+
+- Changed optional integer parameter in method findOption to enum type.
+  Affects: ofstd/include/ofcmdln.h
+           ofstd/libsrc/ofcmdln.cc
+
+- Modified output of usage string: "[options]" are only printed if valid
+  options exist.
+  Affects: ofstd/include/ofcmdln.h
+           ofstd/libsrc/ofconapp.cc
+
+- Removed debug code.
+  Affects: dcmimgle/include/dirotat.h
+
+- Added/Modified comments and formatting.
+  Affects: dcmimgle/include/dcmimage.h
+           dcmimgle/include/dibarlut.h
+           dcmimgle/include/dibaslut.h
+           dcmimgle/include/didispfn.h
+           dcmimgle/include/didocu.h
+           dcmimgle/include/diflipt.h
+           dcmimgle/include/diimage.h
+           dcmimgle/include/diinpx.h
+           dcmimgle/include/diinpxt.h
+           dcmimgle/include/diluptab.h
+           dcmimgle/include/dimo1img.h
+           dcmimgle/include/dimo2img.h
+           dcmimgle/include/dimocpt.h
+           dcmimgle/include/dimoflt.h
+           dcmimgle/include/dimoimg.h
+           dcmimgle/include/dimoipxt.h
+           dcmimgle/include/dimomod.h
+           dcmimgle/include/dimoopx.h
+           dcmimgle/include/dimoopxt.h
+           dcmimgle/include/dimopx.h
+           dcmimgle/include/dimopxt.h
+           dcmimgle/include/dimorot.h
+           dcmimgle/include/dimosct.h
+           dcmimgle/include/diobjcou.h
+           dcmimgle/include/diovlay.h
+           dcmimgle/include/diovlimg.h
+           dcmimgle/include/diovpln.h
+           dcmimgle/include/dipixel.h
+           dcmimgle/include/dipxrept.h
+           dcmimgle/include/diregbas.h
+           dcmimgle/include/dirotat.h
+           dcmimgle/include/discalet.h
+           dcmimgle/include/displint.h
+           dcmimgle/include/ditranst.h
+           dcmimgle/include/diutils.h
+           dcmimgle/libsrc/dimoimg.cc
+
+- Added support for Barten transformation from 2 to 7 bits input (now: 2-16).
+  Affects: dcmimgle/include/didispfn.h
+           dcmimgle/libsrc/didispfn.cc
+
+- Removed bug in routines rotating and flipping overlay planes in clipped
+  images.
+  Affects: dcmimgle/libsrc/diovlay.cc
+           dcmimgle/libsrc/diovpln.cc
+
+- Removed bug when scaling and clipping images where the clipping area exceeds
+  the original images.
+  Affects: dcmimgle/libsrc/dcmimage.cc
+
+**** Changes from 1999.03.22 (eichelberg)
+
+- Reworked data dictionary based on the 1998 DICOM edition and the latest
+  supplement versions. Corrected dcmtk applications for minor changes
+  in attribute name constants.
+  Affects: ctndisp/apps/ctnddico.cc
+           dcmdata/apps/dcmgpdir.cc
+           dcmdata/include/dcdeftag.h
+           dcmdata/libsrc/dcdicdir.cc
+           dcmdata/libsrc/dcdictzz.cc
+           dcmdata/libsrc/dcdirrec.cc
+           dcmdata/libsrc/dicom.dic
+           dcmdata/libsrc/dcdicdir.cc
+           dcmimgle/libsrc/diovpln.cc
+           dcmpstat/libsrc/dviface.cc
+           dcmpstat/libsrc/dvpstat.cc
+           imagectn/apps/tiquery.cc
+           imagectn/libsrc/dbindex.cc
+           imagectn/libsrc/dbutils.cc
+           wlistctn/libsrc/wrklstdb.cc
+           wlistctn/wwwapps/readoviw.cc
+           wlistctn/wwwapps/readwlst.cc
+           wlistctn/wwwapps/writwlst.cc
+
+- Reworked UID list based on the 1998 DICOM edition and the latest
+  supplement versions.
+  Affects: dcmdata/include/dcuid.h
+           dcmdata/libsrc/dcuid.cc
+
+- Fixed bug in data dictionary causing a segmentation fault
+  if dictionary was cleared and a smaller version reloaded.
+  Affects: dcmdata/libsrc/dchashdi.cc
+
+- Added support for Structured Reports to dcmgpdir.
+  Added preliminary support for including sequences into a DICOMDIR.
+  Contribution from Andy Hewett <hewett@medigration.de>
+  Affects: dcmdata/apps/dcmgpdir.cc
+           dcmdata/include/dcdirrec.h
+           dcmdata/libsrc/dcdirrec.cc
+
+- Implemented getUserName() on Win32 using the NetWkstaUserGetInfo()
+  API function. Contribution from Andy Hewett <hewett@medigration.de>
+  Affects: dcmdata/libsrc/mkdeftag.cc
+           dcmdata/libsrc/mkdictbi.cc
+
+- Now printing explicit error message when DICOM file is too short.
+  Contribution from Andy Hewett <hewett@medigration.de>
+  Affects: dcmdata/libsrc/dcelem.cc
+
+- Added -d <debuglevel> flag to dcmdump.
+  Contribution from Andy Hewett <hewett@medigration.de>
+  Affects: dcmdata/apps/dcmdump.cc
+
+- dump2dcm now allows to include the contents of binary files
+  as OB/OW values while converting a dump to a DICOM file.
+  Contribution from Andy Hewett <hewett@medigration.de>
+  Affects: dcmdata/apps/dump2dcm.cc
+           dcmdata/docs/dump2dcm.txt
+
+- New handling of unknown (unsupported) VRs encountered when reading explicit
+  VR data. If the VR string consists of uppercase letters, we assume a
+  "future DICOM VR" and decode it expecting an extended length field
+  (4 bytes). Otherwise, we assume an illegal VR string created by some old
+  equipment (i.e.) "??" and decode without extended length (2 bytes).
+  Affects: dcmdata/include/dcvr.h
+           dcmdata/libsrc/dcitem.cc
+           dcmdata/libsrc/dcvr.cc
+
+**** Changes from 1999.03.22 (riesmeier)
+
+- Added parameter to get value of (transparent) background color for method
+  getOverlayData.
+  Affects: dcmpstat/apps/dcmp2pgm.cc
+           dcmpstat/include/dvpstat.h
+           dcmpstat/libsrc/dvpstat.cc
+
+- Rebuild Makefile dependencies.
+  Affects: dcmimgle/libsrc/Makefile.dep
+           dcmpstat/apps/Makefile.dep
+           dcmpstat/libsrc/Makefile.dep
+
+- Added/Changed comments.
+  Affects: ofstd/include/ofconapp.h
+           ofstd/include/offname.h
+           dcmimgle/include/dcmimage.h
+           dcmimgle/include/displint.h
+           dcmimgle/libsrc/didispfn.cc
+
+- Added parameter to specify (transparent) background color for method
+  getOverlayData().
+  Affects: dcmimgle/include/dcmimage.h
+           dcmimgle/include/dimoimg.h
+           dcmimgle/include/diovlay.h
+           dcmimgle/include/diovpln.h
+           dcmimgle/libsrc/dimoimg.cc
+           dcmimgle/libsrc/diovlay.cc
+           dcmimgle/libsrc/diovpln.cc
+
+- Removed bug concerning the rotation and flipping of additional overlay
+  planes (NumberOfFrames has not always been determined correctly).
+  Affects: dcmimgle/libsrc/diovlay.cc
+
+**** Changes from 1999.03.17 (eichelberg)
+
+- Updated Win32 config header: access() and getpid() exists.
+  Contribution from Andy Hewett <hewett@medigration.de>
+  Affects: config/include/cfwin32.h
+
+- Added UIDs for Supplement 32 (DX)
+  Contribution from Andy Hewett <hewett@medigration.de>
+  Affects: dcmdata/include/dcuid.h
+
+- Added method DcmTagKey::toString()
+  Contribution from Andy Hewett <hewett@medigration.de>
+  Affects: dcmdata/include/dctagkey.h
+           dcmdata/libsrc/dctagkey.cc
+
+- Added code to prepareCmdLineArgs() to redirect stderr, cout,
+  cerr to stdout on Windows and make output unbuffered.
+  This allows to redirect the output of DCMTK tools to file on Windows.
+  Contribution from Andy Hewett <hewett@medigration.de>
+  Affects: dcmdata/libsrc/cmdlnarg.cc
+
+**** Changes from 1999.03.05 (eichelberg)
+
+- Added tests for <strstream.h> and <strstrea.h> to configure.
+  Affects: config/configure
+           config/configure.in
+           config/include/cfwin32.h
+           config/include/config.h.in
+
+**** Changes from 1999.03.04 (riesmeier)
+
+- Barten LUT is now be re-created when ambient light value has changed.
+  Affects: dcmimgle/include/dibarlut.h
+           dcmimgle/libsrc/dibarlut.cc
+           dcmimgle/libsrc/didispfn.cc
+
+- Removed const specifier (for pointer variable) to avoid warnings on SunCC.
+  Affects: dcmimgle/libsrc/didispfn.cc
+
+**** Changes from 1999.03.03 (eichelberg)
+
+- Implemented new class for automatically creating filenames.
+  Added:   ofstd/include/offname.h
+           ofstd/libsrc/offname.cc
+  Affects: ofstd/libsrc/Makefile.in
+           ofstd/libsrc/Makefile.dep
+
+- Changed imagectn database to use new code to create
+  filenames instead of tempnam() which seems to be
+  unreliable on Windows.
+  Affects: imagectn/libsrc/dbutils.cc
+           imagectn/libsrc/Makefile.dep
+
+**** Changes from 1999.03.03 (riesmeier)
+
+- Added support to specify ambient light value (re: Barten transformation).
+  Affects: dcmimgle/apps/dconvlum.cc
+           dcmimgle/include/dibarlut.h
+           dcmimgle/include/didispfn.h
+           dcmimgle/libsrc/dibarlut.cc
+           dcmimgle/libsrc/didispfn.cc
+
+- Changed comments.
+  Affects: dcmimgle/include/dcmimage.h
+           dcmimgle/libsrc/dimoimg.cc
+
+- Added method to invert lookup table data (used for presentation state LUTs).
+  Affects: dcmimgle/include/dibaslut.h
+           dcmimgle/libsrc/dibaslut.cc
+
+**** Changes from 1999.03.02 (riesmeier)
+
+- Added methods to get and set ambient light value (re: Barten transformation).
+  Affects: dcmpstat/include/dviface.h
+           dcmpstat/libsrc/dviface.cc
+
+- Moved method 'isBartenTransformPossible()' from presentation state class to
+  interface class.
+  Affects: dcmpstat/include/dviface.h
+           dcmpstat/include/dvpstat.h
+           dcmpstat/libsrc/dviface.cc
+
+- Added method to invert an image by changing the presentation state LUT or
+  shape.
+  Affects: dcmpstat/include/dvpstat.h
+           dcmpstat/libsrc/dvpstat.cc
+
+- Changed implementation of method 'getOverlayData()': now conversion from
+  P-value to DDL is implictly performed and the correct P-value for the related
+  layer is used.
+  Affects: dcmpstat/libsrc/dvpstat.cc
+
+- Added parameter to selectPState() specifying whether to change the review
+  status of the loaded presentation state.
+  Affects: dcmpstat/include/dviface.h
+           dcmpstat/libsrc/dviface.cc
+
+- Added method to presentation state class that checks whether Barten
+  transformation is possible or not.
+  Affects:dcmpstat/include/dvpstat.h
+
+- Corrected bug: when determine minimum and maximum pixel value (external)
+  modality LUTs were ignored.
+  Affects: dcmimgle/include/dimoipxt.h
+
+- Corrected bug in output routine of monochrome pixel data (wrong scaling when
+  Barten transformation and windowing are active).
+  Affects: dcmimgle/include/dimoopxt.h
+
+**** Changes from 1999.02.28 (riesmeier)
+
+- Corrected bug: the output bits for bitmaps shutters were inverted (this was
+  done due to an error in the used test images).
+  Affects: dcmimgle/include/dimoopxt.h
+
+- Corrected bug: the bit position for bitmap shutters was 1 instead of 0 (i.e.
+  the first bit was always been skipped and the all following bits were wrong).
+  Affects: dcmimgle/libsrc/diovpln.cc
+
+**** Changes from 1999.02.27 (riesmeier)
+
+- Changed implementation of deleteImageFile (imagectn method doesn't function
+  under Window NT).
+  Affects: dcmpstat/libsrc/dviface.cc
+
+- Removed bug in createPStateCache (cache was reported invalid on second call).
+  Affects: dcmpstat/libsrc/dviface.cc
+
+- Modified method selectPState (image file is now implicitly loaded if
+  necessary).
+  Affects: dcmpstat/libsrc/dviface.cc
+
+**** Changes from 1999.02.25 (riesmeier)
+
+- Added debug code (explicitly delete data dictionary).
+  Affects: dcmpstat/apps/dcmpssnd.cc
+           dcmpstat/apps/dcmpsrcv.cc
+
+- Added setting of debug level in DicomImageClass (avoids compiler warnings).
+  Affects: dcmpstat/apps/listdb.cc
+
+- Changed formatting of some comments.
+  Affects: dcmpstat/apps/dcmp2pgm.cc
+
+- Added some comments.
+  Affects: dcmpstat/include/dviface.h
+
+- Renamed methods enable/disablePState().
+  Affects: dcmpstat/include/dviface.h
+           dcmpstat/libsrc/dviface.cc
+
+- Added method to fill pixel data into an externally handled storage area.
+  Affects: dcmpstat/include/dvpstat.h
+           dcmpstat/libsrc/dvpstat.cc
+
+- Added initialization of local variable to avoid compiler warnings (reported
+  by gcc 2.7.2.1 on Linux).
+  Affects: dcmpstat/libsrc/dvpstat.cc
+
+- Performed some modifications in the implementation of enable/disablePState()
+  to avoid dmalloc warnings (not yet finished).
+  Affects: dcmpstat/libsrc/dviface.cc
+
+- Rebuild Makefile dependencies.
+  Affects: dcmpstat/apps/Makefile.dep
+           dcmnet/libsrc/Makefile.dep
+
+- Initialize local variables to avoid compiler warnings (reported by gcc
+  2.7.2.1 on Linux).
+  Affects: dcmimgle/include/displint.h
+
+**** Changes from 1999.02.24 (riesmeier)
+
+- Added support for presentation state caching (e.g. pstate description).
+  Removed unused methods.
+  Affects: dcmpstat/include/dvcache.h
+
+- Added methods to get a list of presentation states referencing the
+  currently selected image.
+  Added support for exchanging current presentation state (load from file)
+  without deleting the current image.
+  Affects: dcmpstat/include/dviface.h
+           dcmpstat/libsrc/dviface.cc
+
+- Report an error when loading a presentation state and the referenced image
+  file is absent.
+  Affects: dcmpstat/libsrc/dviface.cc
+
+- Removed bug concerning newInstancesReceived (Windows NT behaves different to
+  Unix when closing/unlocking a file).
+  Affects: dcmpstat/libsrc/dviface.cc
+
+**** Changes from 1999.02.23 (riesmeier)
+
+- Added debug code (explicitly delete data dictionary).
+  Affects: dcmpstat/apps/dcmp2pgm.cc
+
+- Added layer number to filename when extracting overlay planes.
+  Affects: dcmpstat/apps/dcmp2pgm.cc
+
+- Added check whether new instances have been received before resetting
+  database reference time (affects delete and instance reviewed methods).
+  Affects: dcmpstat/libsrc/dviface.cc
+
+- Corrected bug: shutters were not saved correctly (sometimes even ignored).
+  Affects: dcmpstat/libsrc/dvpstat.cc
+
+- Added tool to export display curves to a text file.
+  Added:   dcmimgle/apps/dcmgsdf.cc
+  Affects: dcmimgle/apps/Makefile.in
+           dcmimgle/include/dibarlut.h
+           dcmimgle/include/didispfn.h
+           dcmimgle/libsrc/dibarlut.cc
+           dcmimgle/libsrc/didispfn.cc
+
+- Rebuilt Makefile dependencies.
+  Affects: dcmimgle/apps/Makefile.dep
+
+- Corrected some typos and formatting.
+  Affects: dcmimgle/apps/dconvlum.cc
+
+**** Changes from 1999.02.22 (riesmeier)
+
+- Added deletion of image files (depending on directory where the file is
+  stored).
+  Affects: dcmpstat/include/dviface.h
+           dcmpstat/libsrc/dviface.cc
+
+- Modified comments for getGUIConfig... methods to indicate that the
+  specified key must be upper case.
+  Affects: dcmpstat/include/dviface.h
+
+- Reset reference time for file modification checking after the index file
+  has been changed internally (delete and change status methods).
+  Affects: dcmpstat/include/dviface.h
+           dcmpstat/libsrc/dviface.cc
+
+- Removed debug messages when creating and clearing index cache.
+  Affects: dcmpstat/libsrc/dviface.cc
+
+**** Changes from 1999.02.19 (riesmeier)
+
+- Added comments to new database routines and related member variables.
+  Affects: dcmpstat/include/dviface.h
+
+- Changed some comments, corrected typos and formatting.
+  Affects: dcmpstat/apps/listdb.cc
+           dcmpstat/include/dvcache.h
+
+- Added method getFilename() to get filename of currently selected instance.
+  Affects: dcmpstat/apps/listdb.cc
+           dcmpstat/include/dviface.h
+           dcmpstat/libsrc/dviface.cc
+
+- Modified implementation of instanceReviewed.
+  Affects: dcmpstat/libsrc/dviface.cc
+
+- Added new methods to interate through Caches (getFirst/getNext) - needed
+  for delete routines in Interface class.
+  Affects: dcmpstat/include/dvcache.h
+
+- Added methods to disable and (re-)enable PresentationStates.
+  Affects: dcmpstat/include/dviface.h
+           dcmpstat/libsrc/dviface.cc
+
+- Added (private) helper methods to reduce redundant lines of code.
+  Affects: dcmpstat/include/dviface.h
+           dcmpstat/libsrc/dviface.cc
+
+- Removed bug concerning method newInstancesReceived (databaseFilename was
+  never set).
+  Affects: dcmpstat/libsrc/dviface.cc
+
+- Implemented main part of delete methods (image files are not yet deleted).
+  Affects: dcmpstat/libsrc/dviface.cc
+
+- Removed implicit application of a shared lock to the database file when
+  unlock an exclusive lock.
+  Affects: dcmpstat/libsrc/dviface.cc
+
+**** Changes from 1999.02.18 (riesmeier)
+
+- Re-implemented methods to access index file (delete methods are still
+  missing).
+  Affects: dcmpstat/include/dviface.h
+           dcmpstat/libsrc/dviface.cc
+  Added:   dcmpstat/include/dvcache.h
+
+- Removed parameter 'deletefile' from delete methods. This parameter is
+  not necessary because the decision whether a images file is deleted only
+  depends on the directory where the file is stored (see comments).
+  Affects: dcmpstat/include/dviface.h
+           dcmpstat/libsrc/dviface.cc
+
+- Rebuilt Makefile dependencies.
+  Affects: dcmpstat/apps/Makefile.dep
+           dcmpstat/libsrc/Makefile.dep
+
+**** Changes from 1999.02.18 (eichelberg)
+
+- Added new parameter explicitVR to interface methods savePState, saveDICOMImage.
+  Allows to choose between explicit VR and implicit VR little endian format.
+  Added new method saveCurrentImage that allows to save the current image to file.
+  Affects: dcmpstat/include/dviface.h
+           dcmpstat/libsrc/dviface.cc
+
+- Added new method convertPValueToDDL() to DVPresentationState
+  that maps P-Values to DDLs.
+  Affects: dcmpstat/include/dvpstat.h
+           dcmpstat/libsrc/dvpstat.cc
+
+**** Changes from 1999.02.17 (vorwerk)
+
+- removed bug in strippidxarray() that occurs in certain entries in database
+  Affects: dcmpstat/libsrc/dviface.cc
+
+**** Changes from 1999.02.17 (eichelberg)
+
+- Removed dcmdata debug level from sample apps
+  Affects: dcmpstat/apps/dcmpsmk.cc
+           dcmpstat/apps/dcmpstst.cc
+           dcmpstat/apps/listdb.cc
+
+- Moved creation of Display Function object
+  from DVPresentationState to DVInterface
+  to avoid unnecessary re-reads.
+  Affects: dcmpstat/include/dviface.h
+           dcmpstat/include/dvpstat.h
+           dcmpstat/libsrc/dviface.cc
+           dcmpstat/libsrc/dvpstat.cc
+
+**** Changes from 1999.02.16 (eichelberg)
+
+- Added tests for <utime.h> and <sys/utime.h> to configure script.
+  Affects: config/acconfig.h
+           config/configure
+           config/configure.in
+           config/include/cfwin32.h
+           config/include/config.h.in
+
+- Added method newInstancesReceived() to DVInterface class.
+  Affects: dcmpstat/include/dviface.h
+           dcmpstat/libsrc/dviface.cc
+
+**** Changes from 1999.02.12 (riesmeier)
+
+- Rebuilt Makefile dependencies.
+  Affects: dcmpstat/apps/Makefile.dep
+           dcmpstat/libsrc/Makefile.dep
+
+**** Changes from 1999.02.12 (vorwerk)
+
+- Added Cache
+  Affects: dcmpstat/include/dviface.h
+           dcmpstat/libsrc/dviface.cc
+
+**** Changes from 1999.02.11 (riesmeier)
+
+- Rebuilt Makefile dependencies.
+  Affects: dcmimgle/libsrc/Makefile.dep
+
+- Added routine to check whether particular grayscale values are unused in
+  the output data.
+  Affects: dcmimgle/include/dcmimage.h
+           dcmimgle/include/dimoimg.h
+           dcmimgle/include/dimoopx.h
+           dcmimgle/include/dimoopxt.h
+           dcmimgle/libsrc/dimoopx.cc
+
+- Removed unused parameter / member variable.
+  Affects: dcmimgle/include/dibarlut.h
+           dcmimgle/include/didispfn.h
+           dcmimgle/libsrc/dibarlut.cc
+           dcmimgle/libsrc/didispfn.cc
+           dcmimgle/libsrc/dimoopx.cc
+
+- Removed unnecessary include statement.
+  Affects: dcmimgle/include/dibaslut.h
+
+- Removed inline declarations from several methods.
+  Affects: dcmimgle/include/diinpxt.h
+           dcmimgle/include/dimoipxt.h
+           dcmimgle/include/discalet.h
+
+- Corrected some typos and formatting.
+  Affects: dcmimgle/include/dimocpt.h
+           dcmimgle/include/dimoflt.h
+           dcmimgle/include/dimorot.h
+           dcmimgle/include/dimosct.h
+           dcmimgle/include/dipxrept.h
+           dcmimgle/include/ditranst.h
+
+- Renamed file to indicate the use of templates. Moved global functions for
+  cubic spline interpolation to static methods of a separate template class.
+  Removed: dcmimgle/include/displine.h
+  Added:   dcmimgle/include/displint.h
+  Affects: dcmimgle/libsrc/dibarlut.cc
+           dcmimgle/libsrc/didispfn.cc
+
+- Removed two small memory leaks reported by dmalloc library.
+  Affects: dcmimgle/include/dimoopxt.h
+           dcmimgle/libsrc/didispfn.cc
+
+- Added mode ios::nocreate when opening file streams for reading to avoid
+  implicit creation of non-existing files.
+  Affects: dcmimgle/apps/dconvlum.cc
+           dcmimgle/libsrc/didispfn.cc
+
+- Changed method to check suitability of display function for a certain
+  image.
+  Affects: dcmimgle/libsrc/dimoimg.cc
+
+**** Changes from 1999.02.10 (eichelberg)
+
+- Added subdirectory dcmpstat/jni containing a makefile
+  for the shared object required by the ECR '99 viewer
+  when used on Unix platforms.
+  Added:   dcmpstat/jni/Makefile.dep
+           dcmpstat/jni/Makefile.in
+           dcmpstat/jni/make_stub.sh
+
+- Fixed memory leak in dviface.cc - Config file contents
+  were never deleted.
+  Affects: dcmpstat/libsrc/dviface.cc
+
+**** Changes from 1999.02.09 (eichelberg)
+
+- Changed some bool consts from true to OFTrue.
+  Affects: dcmpstat/apps/dcmpsrcv.cc
+
+- Implemented methods that save images and presentation states
+  in the database.
+  Affects: dcmpstat/include/dviface.h
+           dcmpstat/libsrc/dviface.cc
+
+- Implemented bitmap shutter activation and method for
+  exchanging graphic layers.
+  Affects: dcmpstat/include/dvpsgll.h
+           dcmpstat/include/dvpsov.h
+           dcmpstat/include/dvpstat.h
+           dcmpstat/libsrc/dvpsgll.cc
+           dcmpstat/libsrc/dvpsov.cc
+           dcmpstat/libsrc/dvpstat.cc
+
+- Made signal handler function parameters compile flag dependent.
+  Now passing (int) unless SIGNAL_HANDLER_WITH_ELLIPSE defined,
+  in which case (...) is passed. Required to avoid conflict between
+  Sun CC 4.2 on Solaris and SGI C++ 4.0 on IRIX.
+  Affects: imagectn/apps/ti.cc
+
+- Corrected const signatures of some ctor declarations
+  Affects: dcmimgle/include/dcmimage.h
+           dcmimgle/libsrc/dimoimg.cc
+
+- Removed default parameters from template functions,
+  required for Sun CC 4.2
+  Affects: dcmimgle/include/displine.h
+
+- Removed explicit template parameters from template function calls,
+  required for Sun CC 4.2
+  Affects: dcmimgle/libsrc/dibarlut.cc
+           dcmimgle/libsrc/didispfn.cc
+
+**** Changes from 1999.02.08 (riesmeier)
+
+- Removed '#include <iostream.h>' from ofcmdln.h.
+  Affects: ofstd/include/ofcmdln.h
+
+- Rebuilt Makefile dependencies.
+  Affects: ofstd/libsrc/Makefile.dep
+
+- Removed name of parameter 'flags' in method parseLine() depending on
+  compilation platform (parameter is currently only used on Windows
+  systems - where windows.h exist) to avoid compiler warnings.
+  Affects: ofstd/libsrc/ofcmdln.cc
+
+- Added class to handle console applications (with or w/o command line
+  arguments).
+  Affects: ofstd/libsrc/Makefile.in
+  Added:   ofstd/include/ofconapp.h
+           ofstd/libsrc/ofconapp.cc
+
+- Corrected some typos and formatting.
+  Affects: dcmimgle/apps/dconvlum.cc
+           dcmimgle/include/diovlay.h
+           dcmimgle/libsrc/dibarlut.cc
+           dcmimgle/libsrc/diovlay.cc
+
+- Changed implementation of removeAllOverlays().
+  Affects: dcmimgle/include/dcmimage.h
+           dcmimgle/include/dimoimg.h
+           dcmimgle/libsrc/dimoimg.cc
+
+- Added parameter 'idx' to some overlay methods to distinguish between
+  built-in and additional overlay planes.
+  Affects: dcmimgle/include/dcmimage.h
+           dcmimgle/include/diimage.h
+
+- Added (debug) warning message when using invalid DISPLAY file names.
+  Affects: dcmimgle/libsrc/didispfn.cc
+
+**** Changes from 1999.02.08 (eichelberg)
+
+- Updated documentation of dviface.h in Doc++ style.
+  Removed dummy parameter from constructor.
+  Affects: dcmpstat/include/dviface.h
+           dcmpstat/libsrc/dviface.cc
+           dcmpstat/apps/dcmp2pgm.cc
+           dcmpstat/apps/dcmpsrcv.cc
+           dcmpstat/apps/dcmpssnd.cc
+           dcmpstat/apps/listdb.cc
+           dcmpstat/apps/runsend.cc
+
+**** Changes from 1999.02.05 (eichelberg)
+
+- Added a call to shutdown() immediately before closesocket() on Win32.
+  This causes any pending data to be sent before the socket is destroyed.
+  Fixes a problem causing A-RELEASE-RSP messages to get lost under certain
+  circumstances when the SCP runs on Win32.
+  Thanks to Yongjian Bao <yb@innomed.de> for the proposal.
+  Affects: dcmnet/libsrc/dul.cc
+           dcmnet/libsrc/dulfsm.cc
+
+- Added config file entry for monitor characteristics file.
+  Monitor characteristics are passed to dcmimage if present
+  to activate Barten transform.
+  Affects: dcmpstat/include/dviface.h
+           dcmpstat/include/dvpstat.h
+           dcmpstat/libsrc/dviface.cc
+           dcmpstat/libsrc/dvpstat.cc
+           dcmpstat/tests/test.cfg
+
+- Added sample monitor characteristic file.
+  Added:   dcmpstat/tests/sample.lut
+
+**** Changes from 1999.02.05 (riesmeier)
+
+- Corrected bug in wildcard expansion for Windows compilers.
+  Affects: ofstd/libsrc/ofcmdln.cc
+
+- Added automatic wildcard expansion for Windows compilers.
+  Affects: ofstd/include/ofcmdln.h
+           ofstd/libsrc/ofcmdln.cc
+
+- Introduced new preprocessor definition HAVE_WINDOWS_H.
+  Affects: config/include/cfwin32.h
+           ofstd/include/oftimer.h
+           ofstd/libsrc/ofcmdln.cc
+
+- Added conversion P-Value to DDL when display function is absent.
+  Corrected calculation of DDL value for bitmaps shutters (overlays).
+  Affects: dcmimgle/include/dimoopxt.h
+
+- Added console application to convert VeriLUM LUT files to dcmtk DISPLAY
+  file used for Barten transformation.
+  Affects: dcmimgle/Makefile.in
+  Added:   dcmimgle/apps/Makefile.dep
+           dcmimgle/apps/Makefile.in
+           dcmimgle/apps/dconvlum.cc
+
+- Added optional parameter to method convertPValueToDDL to specify width
+  of output data (number of bits).
+  Affects: dcmimgle/include/dcmimage.h
+           dcmimgle/include/didispfn.h
+           dcmimgle/include/dimoimg.h
+           dcmimgle/libsrc/dimoimg.cc
+
+**** Changes from 1999.02.05 (vorwerk)
+
+- assigned listdb to dviface methods.
+  Affects: dcmpstat/apps/tests/listdb.cc
+
+- corrected bugs in getNumberOf and select methods
+  Affects: dcmpstat/include/dviface.h
+           dcmpstat/libsrc/dviface.cc
+
+**** Changes from 1999.02.03 (riesmeier)
+
+- Rebuilt Makefile dependencies.
+  Affects: dcmimgle/libsrc/Makefile.dep
+
+- Moved global functions maxval() and determineRepresentation() to class
+  DicomImageClass (as static methods).
+  Affects: dcmimgle/include/diinpxt.h
+           dcmimgle/include/discalet.h
+           dcmimgle/include/diutils.h
+           dcmimgle/libsrc/diluptab.cc
+           dcmimgle/libsrc/dimoimg.cc
+           dcmimgle/libsrc/dimomod.cc
+           dcmimgle/libsrc/diutils.cc
+
+- Added BEGIN_EXTERN_C and END_EXTERN_C to some C includes.
+  Affects: dcmimgle/include/didocu.h
+           dcmimgle/include/diimage.h
+           dcmimgle/include/dimoopx.h
+           dcmimgle/include/diovpln.h
+           dcmimgle/include/diutils.h
+           dcmimgle/libsrc/dcmimage.cc
+
+- Added support for calibration according to Barten transformation (incl.
+  a DISPLAY file describing the monitor characteristic).
+  Affects: dcmimgle/include/dcmimage.h
+           dcmimgle/include/dimoimg.h
+           dcmimgle/include/dimoopxt.h
+           dcmimgle/include/diovlay.h
+           dcmimgle/include/diovpln.h
+           dcmimgle/libsrc/Makefile.in
+           dcmimgle/libsrc/dimoimg.cc
+           dcmimgle/libsrc/diovlay.cc
+           dcmimgle/libsrc/diovpln.cc
+  Added:   dcmimgle/include/dibarlut.h
+           dcmimgle/include/didispfn.h
+           dcmimgle/include/displine.h
+           dcmimgle/libsrc/dibarlut.cc
+           dcmimgle/libsrc/didispfn.cc
+
+- Removed some debug code.
+  Affects: dcmimgle/include/diflipt.h
+
+- Added member variable and related methods to store number of bits used for
+  pixel data.
+  Affects: dcmimgle/include/diinpx.h
+           dcmimgle/include/dimomod.h
+           dcmimgle/include/dimopx.h
+           dcmimgle/include/diinpx.cc
+           dcmimgle/libsrc/dimomod.cc
+
+- Added base class for look-up tables (moved main functionality of class
+  DiLookupTable to DiBaseLUT).
+  Affects: dcmimgle/include/diluptab.h
+           dcmimgle/libsrc/Makefile.in
+           dcmimgle/libsrc/diluptab.cc
+  Added:   dcmimgle/include/dibaslut.h
+           dcmimgle/libsrc/dibaslut.cc
+
+- Added optimization LUT to transform pixel data.
+  Affects: dcmimgle/include/dimoipxt.h
+           dcmimgle/include/dimoopxt.h
+
+- Corrected some typos and formatting.
+  Affects: dcmimgle/libsrc/diovlimg.cc
+
+**** Changes from 1999.01.29 (eichelberg)
+
+- Reworked index file handle acquisition and locking code.
+  Affects: dcmpstat/include/dviface.h
+           dcmpstat/libsrc/dviface.cc
+
+- Implemented small sample application that lists the
+  contents of the database using DVInterface methods.
+  Added:   dcmpstat/apps/listdb.cc
+  Affects: dcmpstat/apps/Makefile.in
+           dcmpstat/apps/Makefile.dep
+
+- Simplified some index file related code in imagectn
+  to ease maintenance.
+  Affects: imagectn/libsrc/dbindex.cc
+           imagectn/include/dbpriv.h
+
+**** Changes from 1999.01.28 (vorwerk)
+
+- Initialisation for all record members implemented.
+  Affects: imagectn/libsrc/dbindex.cc
+
+- added shared or exclusive locking mechanism to all browser
+  methods.
+  Affects: dcmpstat/include/dviface.h
+           dcmpstat/libsrc/dviface.cc
+
+**** Changes from 1999.01.27 (vorwerk)
+
+- implemented error handling for index files of length zero.
+  Fixed bug in record deletion of an index file (see also dbstore)
+  selectSeries, selectInstance, getAnInstance, getNumberOfStudies bugs fixed.
+  error handling added.
+  Affects: dcmpstat/include/dviface.h
+           dcmpstat/libsrc/dviface.cc
+
+- Changes made in DB_MatchStudyUIDinStudyDesc to enable a search
+  over the whole index file.
+  Affects: imagectn/libsrc/dbstore.cc
+
+**** Changes from 1999.01.27 (eichelberg)
+
+- Implemented DICOM network receive application "dcmpsrcv"
+  which receives images and presentation states and stores
+  them in the local database. Presentation states are checked
+  before they are accepted.
+  Added:   dcmpstat/apps/dcmpsrcv.cc
+  Affects: dcmpstat/apps/runsend.cc
+           dcmpstat/apps/Makefile.dep
+           dcmpstat/apps/Makefile.in
+           dcmpstat/include/dviface.h
+           dcmpstat/libsrc/dviface.cc
+
+- Corrected locking behaviour of dcmpsrcv on Win32 platforms.
+  Affects: dcmpstat/apps/dcmpsrcv.cc
+
+**** Changes from 1999.01.25 (eichelberg)
+
+- Defined private SOP class UID for network receiver
+  shutdown function. Cleanup up some code.
+  Affects: dcmpstat/include/dviface.h
+           dcmpstat/libsrc/dviface.cc
+
+- Implemented DVInterface::startReceiver()
+  and several config file related methods.
+  Affects: dcmpstat/apps/dcmpssnd.cc
+           dcmpstat/include/dviface.h
+           dcmpstat/libsrc/dviface.cc
+           dcmpstat/tests/test.cfg
+
+**** Changes from 1999.01.20 (eichelberg)
+
+- Implemented access methods for network communication
+  related config file entries.
+  Affects: dcmpstat/include/dviface.h
+           dcmpstat/libsrc/dviface.cc
+           dcmpstat/apps/dcmp2pgm.cc
+
+- Implemented sendIOD method which creates a separate
+  process for transmitting images from the local database
+  to a remote communication peer.
+  Affects: dcmpstat/include/dviface.h
+           dcmpstat/libsrc/dviface.cc
+           dcmpstat/libsrc/Makefile.dep
+
+- Implemented DICOM network send application "dcmpssnd"
+  which sends studies/series/images contained in the
+  local database to a remote DICOM communication peer.
+  Added:   dcmpstat/apps/dcmpssnd.cc
+  Affects: dcmpstat/apps/runsend.cc
+           dcmpstat/apps/Makefile.dep
+           dcmpstat/apps/Makefile.in
+           dcmpstat/tests/test.cfg
+
+- Removed unneccessary unlock from DB_destroyHandle
+  if compiling on Windows. Avoids unneccesary error message.
+  Affects: imagectn/libsrc/dbutils.cc
+
+- Illegal/unsupported VRs are now decoded with
+  2 byte length fields instead of 4 byte length fields.
+  Seems to improve connectivity to some buggy DICOM devices
+  from a vendor to remain unmentioned here...
+  Thanks to Gilles Mevel <Gilles.Mevel@etiam.com> for the proposal.
+  Affects: dcmdata/libsrc/dcvr.cc
+
+- Some code purifications in Win32 variant of flock() emulation.
+  Affects: dcmnet/libsrc/dcompat.cc
+
+**** Changes from 1999.01.20 (riesmeier)
+
+- Added class for measurement of time.
+  Added: ofstd/include/oftimer.h
+
+- Minor changes to avoid compiler warnings (gcc 2.8.1 with additional
+  options).
+  Affects: ofstd/include/oftimer.h
+
+- Rebuilt Makefile dependencies.
+  Affects: dcmimgle/libsrc/Makefile.dep
+
+- Added debug code to measure time of some routines.
+  Affects: dcmimgle/include/diflipt.h
+           dcmimgle/include/dirotat.h
+
+- Changed default value for compatibility flag.
+  Affects: dcmimgle/libsrc/dcmimage.cc
+
+- Replaced invocation of getCount() by member variable Count where possible.
+  Affects: dcmimgle/include/diinpxt.h
+           dcmimgle/include/dimoipxt.h
+           dcmimgle/include/dimoopx.h
+           dcmimgle/include/dimoopxt.h
+           dcmimgle/include/dimopxt.h
+           dcmimgle/include/dipixel.h
+           dcmimgle/libsrc/dimoopx.cc
+           dcmimgle/libsrc/dimopx.cc
+
+- Added new output method to fill external memory buffer with rendered pixel
+  data.
+  Affects: dcmimgle/include/dcmimage.h
+           dcmimgle/include/diimage.h
+           dcmimgle/include/dimo1img.h
+           dcmimgle/include/dimo2img.h
+           dcmimgle/include/dimoimg.h
+           dcmimgle/include/dimoopxt.h
+           dcmimgle/libsrc/dimo1img.cc
+           dcmimgle/libsrc/dimo2img.cc
+           dcmimgle/libsrc/dimoimg.cc
+
+- Added new overlay plane mode for bitmap shutters.
+  Affects: dcmimgle/libsrc/diovpln.cc
+           dcmimgle/include/dimoopxt.h
+           dcmimgle/include/diutils.h
+
+- Added routine to calculate absolute range of pixel data.
+  Affects: dcmimgle/include/diinpx.h
+
+- Added optimization to modality and VOI transformation (using additional
+  LUTs).
+  Affects: dcmimgle/include/dimoipxt.h
+           dcmimgle/include/dimoopxt.h
+
+**** Changes from 1999.01.19 (vorwerk)
+
+- additional methods for attributes in the index file added.
+  method getFilename implemented.
+  Affects: dcmpstat/include/dviface.h
+       dcmpstat/libsrc/dviface.cc
+
+**** Changes from 1999.01.18 (eichelberg)
+
+- minor syntax purifications to keep VC++ happy
+  Affects: dcmpstat/libsrc/dviface.cc
+
+- Now preventing VOI Windows with a width <= 0.0.
+  Presentation label and creator's name are now
+  correctly set.
+  Affects: dcmpstat/libsrc/dvpstat.cc
+
+**** Changes from 1999.01.15 (eichelberg)
+
+- added methods to DVPresentationState allowing to
+  access the image references in the presentation state.
+  Also added methods allowing to get the width and height
+  of the attached image
+  Affects: dcmpstat/include/dvpsri.h
+           dcmpstat/include/dvpsril.h
+           dcmpstat/include/dvpsrs.h
+           dcmpstat/include/dvpsrsl.h
+           dcmpstat/include/dvpstat.h
+           dcmpstat/libsrc/dvpsri.cc
+           dcmpstat/libsrc/dvpsril.cc
+           dcmpstat/libsrc/dvpsrs.cc
+           dcmpstat/libsrc/dvpsrsl.cc
+           dcmpstat/libsrc/dvpstat.cc
+
+- added DVInterface method resetPresentationState() which
+  allows to reset a presentation state to the initial state
+  (after loading).
+  Affects: dcmpstat/include/dviface.h
+           dcmpstat/libsrc/dviface.cc
+
+- added configuration file facility (derived from dcmprint)
+  and a sample config file.
+  Added:   dcmpstat/include/dvpsconf.h
+           dcmpstat/libsrc/dvpsconf.cc
+           dcmpstat/tests/test.cfg
+  Affects: dcmpstat/include/dviface.h
+           dcmpstat/libsrc/dviface.cc
+           dcmpstat/libsrc/Makefile.dep
+           dcmpstat/apps/dcmpstst.cc
+           dcmpstat/apps/dcmp2pgm.cc
+
+**** Changes from 1999.01.14 (eichelberg)
+
+- added new method saveDICOMImage() to class DVInterface.
+  Allows to store a bitmap as a DICOM image.
+  Affects: dcmpstat/libsrc/dviface.cc
+           dcmpstat/include/dviface.h
+
+- added new command line option --dicom to test application
+  dcmp2pgm. This demonstrates DVInterface::saveDICOMImage().
+  Affects: dcmpstat/apps/dcmp2pgm.cc
+
+**** Changes from 1999.01.11 (eichelberg)
+
+- added new methods getImageAspectRatio, getImageMinMaxPixelRange and
+  getImageMinMaxPixelValue to class DVPresentationState.
+  Affects: dcmpstat/libsrc/dvpstat.cc
+           dcmpstat/include/dvpstat.h
+
+**** Changes from 1999.01.11 (vorwerk)
+
+- added some explicit type conversions to avoid compiler warnings with VC++.
+  Affects: dcmpstat/libsrc/dvpstx.cc
+
+- add error handling in getNumberOfStudies() and selectStudy()
+  getSeriesDescription() implemented, isPresentationStateSeries() rewritten
+  Affects: dcmpstat/libsrc/dviface.cc
+
+- Shared and exclusive locking mechanism for Windows with MS Visual C++ added.
+  Affects: dcmnet/libsrc/dcompat.cc
+
+**** Changes from 1999.01.11 (riesmeier)
+
+- Added parameter to method 'getMinMaxValues()' to return absolute minimum
+  and maximum values ('possible') in addition to actually 'used' pixel
+  values.
+  Affects: dcmimgle/include/dcmimage.h
+           dcmimgle/include/dimoimg.h
+           dcmimgle/libsrc/dimoimg.cc
+
+- Removed method 'getMinMaxValues()' in class 'DicomImage'.
+  Affects: dcmimgle/include/diimage.h
+
+- Corrected bug in determing 'AbsMaximum' (removed '+ 1').
+  Affects: dcmimgle/include/diinpxt.h
+
+- Corrected some typos and formatting.
+  Affects: dcmimgle/include/dimopx.h
+           dcmimgle/include/dimopxt.h
+
+**** Changes from 1999.01.07 (eichelberg)
+
+- Changed sequence of include files in some dcmnet modules
+  to keep the Unixware compiler happy.
+  Based on a contribution by Wolfgang Rapp <w1.rapp@von.ulm.de>.
+  Affects: dcmnet/libsrc/assoc.cc
+           dcmnet/libsrc/dul.cc
+           dcmnet/libsrc/dulextra.cc
+           dcmnet/libsrc/dulfsm.cc
+
+- Corrected bug in dump2dcm that prevented the correct processing of
+  dumps created with dcmdump if they contained the "internal" VR markers
+  "xs" (US or SS) or "ox" (OB or OW).
+  Based on a report from Heinz Blendinger <Heinz.Blendinger@med.siemens.de>.
+  Affects: dcmdata/apps/dump2dcm.cc
+
+- Changed declaration order of some member variables
+  in class DcmObject to workaround memory layout problems
+  with the Borland C++ compiler.
+  Based on a report by Markus Mertens <Markus.Mertens@uni-muenster.de>.
+  Affects: dcmdata/include/dcobject.h
+           dcmdata/libsrc/dcobject.cc
+
+**** Changes from 1999.01.06 (vorwerk)
+
+- Exclusive lock mechanism for windows added.
+  Affects: dcmnet/libsrc/dcompat.cc
+
+**** Changes from 1999.01.04 (vorwerk)
+
+- getSeriesPerformingPhysicainsName() changed in
+  getSeriesPerformingPhysiciansName()
+  Affects: dcmpstat/include/dviface.h
+       dcmpstat/libsrc/dviface.cc
+
+**** Changes from 1998.12.23 (eichelberg)
+
+- Added tests for strcasecmp() and _stricmp() to configure.
+  Affects: config/configure
+           config/configure.in
+           config/include/cfwin32.h
+           config/include/config.h.in
+
+- Modified imagectn so that comparison of hostnames
+  (i.e. hostnames reported by DNS and the hostnames in the imagectn config file)
+  are case insensitive. Since DNS is case insensitive, this seems appropriate.
+  Affects: imagectn/libsrc/cnf.cc
+           imagectn/libsrc/cnfexnt.cc
+
+- Updated data dictionary for two Structured Reporting tags
+  Affects: dcmdata/include/dcdeftag.h
+           dcmdata/libsrc/dicom.dic
+           dcmdata/libsrc/dcdictzz.cc
+
+**** Changes from 1998.12.23 (riesmeier)
+
+- Changed order of doc++ parameters used for 'make html'.
+  Affects: ofstd/Makefile.in
+
+- Changed order of parameters for addOverlay() and getOverlayData().
+  Affects: dcmimgle/include/dcmimage.h
+           dcmimgle/include/dimoimg.h
+           dcmimgle/include/diovlay.h
+           dcmimgle/include/diovpln.h
+           dcmimgle/libsrc/dimoimg.cc
+           dcmimgle/libsrc/diovlay.cc
+           dcmimgle/libsrc/diovpln.cc
+
+- Modified (added/removed) comments. Corrected bug concerning additional
+  overlay planes.
+  Affects: dcmimgle/include/diovlay.h
+           dcmimgle/libsrc/diovlay.cc
+
+- Introduced new overlay mode item EMO_Graphic (= EMO_Replace).
+  Affects: dcmimgle/include/diutils.h
+           dcmimgle/libsrc/diovpln.cc
+
+- Corrected bug concerning flipping and rotating overlay planes (same
+  image object).
+  Affects: dcmimgle/libsrc/diovpln.cc
+
+- Corrected some typos and formatting.
+  Affects: dcmimgle/include/diimage.h
+           dcmimgle/include/dimoimg.h
+
+- Changed behaviour of getLabel/Description/Explanation() methods: return
+  NULL if string empty, no empty string "".
+  Affects: dcmimgle/include/diluptab.h
+           dcmimgle/include/diovpln.h
+
+- Removed unused parameter (BitsPerSample).
+  Affects: dcmimgle/include/dimoopxt.h
+           dcmimgle/libsrc/dimoimg.cc
+
+- Changed parameter type (long to int) to avoid warning reported by MSVC5.
+  Affects: dcmimgle/include/
+
+**** Changes from 1998.12.22 (eichelberg)
+
+- Updated for changed interfaces in dcmimage overlays.
+  Fixed bug affecting overlay origin delivered to dcmimage.
+  Affects: dcmpstat/libsrc/dvpsov.cc
+           dcmpstat/libsrc/dcmpstat.cc
+
+- Implemented Presentation State interface for overlays,
+  VOI LUTs, VOI windows, curves. Added test program that
+  allows to add curve data to DICOM images.
+  Added:   dcmpstat/apps/dcmmkcrv.cc
+           dcmpstat/include/dvpscu.h
+           dcmpstat/include/dvpscul.h
+           dcmpstat/include/dvpsvl.h
+           dcmpstat/include/dvpsvll.h
+           dcmpstat/include/dvpsvw.h
+           dcmpstat/include/dvpsvwl.h
+           dcmpstat/libsrc/dvpscu.cc
+           dcmpstat/libsrc/dvpscul.cc
+           dcmpstat/libsrc/dvpsvl.cc
+           dcmpstat/libsrc/dvpsvll.cc
+           dcmpstat/libsrc/dvpsvw.cc
+           dcmpstat/libsrc/dvpsvwl.cc
+  Affects: dcmpstat/apps/Makefile.dep
+           dcmpstat/apps/Makefile.in
+           dcmpstat/apps/dcmp2pgm.cc
+           dcmpstat/include/dviface.h
+           dcmpstat/include/dvpsall.h
+           dcmpstat/include/dvpsov.h
+           dcmpstat/include/dvpsovl.h
+           dcmpstat/include/dvpstat.h
+           dcmpstat/include/dvpstyp.h
+           dcmpstat/libsrc/Makefile.dep
+           dcmpstat/libsrc/Makefile.in
+           dcmpstat/libsrc/dviface.cc
+           dcmpstat/libsrc/dvpsall.cc
+           dcmpstat/libsrc/dvpsgr.cc
+           dcmpstat/libsrc/dvpsov.cc
+           dcmpstat/libsrc/dvpsovl.cc
+           dcmpstat/libsrc/dvpstat.cc
+           dcmpstat/libsrc/dvpstx.cc
+
+**** Changes from 1998.12.22 (vorwerk)
+
+- constructor with parameter for directory of index.dat
+  Changed const methods in non-const-methods
+  Added methods for attributes of DICOM-documents
+  Added private method for operations on index.dat
+  Affects: dcmpstat/include/dviface.h
+
+- Browser methods implemented
+  Affects: dcmpstat/libsrc/dviface.cc
+
+- New test program which shows contents of an imagectn index file
+  using the dviface interface methods
+  Added: dcmpstat/tests/show.cc
+
+- New test program which marks, selects and deletes Instances
+  in the imagectn database using the dviface methods
+  Added: dcmpstat/tests/didb.cc
+
+- Added output of DVIhierarchyStatus in DB_PrintIndexFile
+  Affects: imagectn/libsrc/dbindex.cc
+
+- Added initialization of DVIhierarchyStatus in DB_storeRequest
+  Affects: imagectn/libsrc/dbstore.cc
+
+- removed from libsrc and added in include.
+  Added additional elements in IdxRecord
+  Affects: imagectn/include/dbpriv.h
+
+- enum from dcmpstat/include/dviface.h removed and added here
+  Affects: imagectn/include/imagedb.h
+
+- added for access of functions from imagectn/libsrc/dbstore.cc
+  Affects: imagectn/include/dbstore.h
+
+- moved libsrc/dbcond.h to include/dbcond.h
+  Affects: imagectn/include/dbcond.h
+
+**** Changes from 1998.12.22 (riesmeier)
+
+- Corrected some typos and formatting.
+  Affects: dcmimgle/libsrc/dcmimage.cc
+           dcmimgle/libsrc/dimopx.cc
+           dcmimgle/include/dimopxt.h
+
+- Changed parameter type.
+  Affects: dcmimgle/include/diluptab.h
+           dcmimgle/libsrc/diluptab.cc
+
+- Added method getAbsMaxRange.
+  Affects: dcmimgle/include/diluptab.h
+
+- Check descriptor value 'first input value mapped' for presentation LUTs
+  (shall always be 0).
+  Affects: dcmimgle/libsrc/dimoimg.cc
+
+- Added support for 'potentially' signed input ranges for different kinds
+  of grayscale transformations (according to supplement 33 from Cor Loef).
+  Affects: dcmimgle/libsrc/dimoimg.cc
+
+- Changed behaviour of getOverlayData() method (new parameter to choose
+  overlay plane group: dataset, additional, overlap).
+  Affects: dcmimgle/libsrc/dimoimg.cc
+
+- Changed calculation of AbsMinimum/Maximum.
+  Removed member variable and method for isPotentiallySigned.
+  Affects: dcmimgle/include/dimomod.h
+           dcmimgle/libsrc/dimomod.cc
+
+- Added method to check whether plane is visible, to get plane mode and to
+  remove all planes. Set 'value' used for getOverlay/PlaneData().
+  Changed meaning of return values (differentiate between different value
+  for 'true').
+  Affects: dcmimgle/include/dcmimage.h
+           dcmimgle/include/diovlay.h
+           dcmimgle/include/diovpln.h
+           dcmimgle/libsrc/diovlay.cc
+
+- Removed variable declaration to avoid compiler warnings (reported by
+  MSVC5). Changed initialization of member variable 'DefaultMode'.
+  Affects: dcmimgle/libsrc/diovpln.cc
+
+- Added index parameter to overlay methods (choose dataset or additional
+  planes).
+  Affects: dcmimgle/include/dcmimage.h
+
+- Changed parameter declaration to avoid compiler warnings (hide parameter
+  name).
+  Affects: dcmimgle/include/diimage.h
+
+- Added implementation of methods to return member variables AbsMinimum/
+  Maximum.
+  Affects: dcmimgle/include/diinpx.h
+           dcmimgle/include/dimopx.h
+
+- Added calculation of member variables AbsMinimum/AbsMaximum.
+  Replaced method copyMem by for-loop copying each item.
+  Removed some '#ifdef DEBUG'.
+  Affects: dcmimgle/include/diinpxt.h
+
+- Added new parameters to method getOverlayData().
+  Affects: dcmimgle/include/dimoimg.h
+
+- Replaced method copyMem by for-loop copying each item.
+  Renamed some variables
+  Affects: dcmimgle/include/dimoipxt.h
+
+- Improved implementation of presentation LUT application (and other gray
+  scale transformations). Tested with ECR test images from David Clunie.
+  Affects: dcmimgle/include/dimoopxt.h
+
+**** Changes from 1998.12.16 (riesmeier)
+
+- Corrected bug in setMem routine (expected 'value' parameter for system
+  function 'memset' is implicitely casted to 'unsigned char').
+  Affects: ofstd/include/ofbmanip.h
+
+- Rebuilt Makefile dependencies.
+  Affects: dcmimgle/libsrc/Makefile.dep
+
+- Added explanation string to LUT class (retrieved from dataset).
+  Affects: dcmimgle/include/dcmimage.h
+           dcmimgle/include/diluptab.h
+           dcmimgle/include/dimo2img.h
+           dcmimgle/include/dimoimg.h
+           dcmimgle/include/dimomod.h
+           dcmimgle/include/dimopx.h
+           dcmimgle/libsrc/diluptab.cc
+           dcmimgle/libsrc/dimo2img.cc
+           dcmimgle/libsrc/dimoimg.cc
+           dcmimgle/libsrc/dimomod.cc
+
+- Added explanation string for VOI transformations.
+  Affects: dcmimgle/include/dcmimage.h
+           dcmimgle/include/dimoimg.h
+           dcmimgle/libsrc/dimoimg.cc
+
+- Added method to export overlay planes (create 8-bit bitmap).
+  Affects: dcmimgle/include/dcmimage.h
+           dcmimgle/include/dimoimg.h
+           dcmimgle/include/diovlay.h
+           dcmimgle/include/diovpln.h
+           dcmimgle/libsrc/dimoimg.cc
+           dcmimgle/libsrc/diovlay.cc
+           dcmimgle/libsrc/diovpln.cc
+
+- Implemented combined clipping and scaling for pixel replication and
+  suppression.
+  Affects: dcmimgle/include/discalet.h
+           dcmimgle/libsrc/dcmimage.cc
+
+- Added methods to use getOFString from class DcmElement (incl. multi value
+  fields).
+  Affects: dcmimgle/include/didocu.h
+           dcmimgle/libsrc/didocu.cc
+
+- Renamed 'setNoVoiLutTransformation' method ('Voi' instead of 'VOI').
+  Affects: dcmimgle/include/dcmimage.h
+           dcmimgle/include/dimoimg.h
+           dcmimgle/libsrc/dimoimg.cc
+
+- Implemented flipping and rotation of overlay planes.
+  Affects: dcmimgle/include/diovlay.h
+           dcmimgle/include/diovpln.h
+           dcmimgle/libsrc/diovlay.cc
+           dcmimgle/libsrc/diovpln.cc
+
+- Removed several methods used for monochrome images only in base class
+  'DiImage'. Introduced mechanism to use the methods directly.
+  Affects: dcmimgle/include/dcmimage.h
+           dcmimgle/include/diimage.h
+           dcmimgle/include/dimoimg.h
+
+- Added additional case to copy pixels.
+  Affects: dcmimgle/include/diflipt.h
+           dcmimgle/include/dirotat.h
+
+- Added methods to determine absolute minimum and maximum value for given
+  value representation.
+  Affects: dcmimgle/include/diinpx.h
+           dcmimgle/include/diinpxt.h
+           dcmimgle/include/dipxrept.h
+
+- Removed methods getMinimum/Maximum().
+  Affects: dcmimgle/include/dipxrept.h
+
+- Added some preparation to enhance interpolated scaling (clipping and
+  scaling) in the future.
+  Affects: dcmimgle/include/discalet.h
+
+- Removed const declaration (as long as interpolated scaling isn't completed).
+  Affects: dcmimgle/include/ditranst.h
+
+**** Changes from 1998.12.14 (eichelberg)
+
+- Implemented Presentation State interface for graphic layers,
+  text and graphic annotations, presentation LUTs.
+  Affects: dcmpstat/apps/Makefile.dep
+           dcmpstat/apps/Makefile.in
+           dcmpstat/apps/dcmp2pgm.cc
+           dcmpstat/apps/dcmpstst.cc
+           dcmpstat/include/dvpsall.h
+           dcmpstat/include/dvpsga.h
+           dcmpstat/include/dvpsgal.h
+           dcmpstat/include/dvpsgl.h
+           dcmpstat/include/dvpsgll.h
+           dcmpstat/include/dvpsgr.h
+           dcmpstat/include/dvpsgrl.h
+           dcmpstat/include/dvpsov.h
+           dcmpstat/include/dvpsovl.h
+           dcmpstat/include/dvpsri.h
+           dcmpstat/include/dvpsril.h
+           dcmpstat/include/dvpsrs.h
+           dcmpstat/include/dvpsrsl.h
+           dcmpstat/include/dvpstat.h
+           dcmpstat/include/dvpstx.h
+           dcmpstat/include/dvpstxl.h
+           dcmpstat/include/dvpstyp.h
+           dcmpstat/libsrc/Makefile.dep
+           dcmpstat/libsrc/dvpsall.cc
+           dcmpstat/libsrc/dvpsga.cc
+           dcmpstat/libsrc/dvpsgal.cc
+           dcmpstat/libsrc/dvpsgl.cc
+           dcmpstat/libsrc/dvpsgll.cc
+           dcmpstat/libsrc/dvpsgr.cc
+           dcmpstat/libsrc/dvpsgrl.cc
+           dcmpstat/libsrc/dvpsov.cc
+           dcmpstat/libsrc/dvpsovl.cc
+           dcmpstat/libsrc/dvpsri.cc
+           dcmpstat/libsrc/dvpsril.cc
+           dcmpstat/libsrc/dvpsrs.cc
+           dcmpstat/libsrc/dvpsrsl.cc
+           dcmpstat/libsrc/dvpstat.cc
+           dcmpstat/libsrc/dvpstx.cc
+           dcmpstat/libsrc/dvpstxl.cc
+
+- Added sample application that creates Modality and VOI LUTs
+  with gamma curve characteristics.
+  Added:   dcmpstat/apps/dcmmklut.cc
+
+**** Changes from 1998.12.14 (riesmeier)
+
+- Rebuilt Makefile dependencies.
+  Affects: dcmimgle/libsrc/Makefile.dep
+
+- Added support for presentation shapes.
+  Affects: dcmimgle/libsrc/dimo1img.cc
+           dcmimgle/libsrc/dimo2img.cc
+           dcmimgle/libsrc/dimoimg.cc
+
+- Added support for signed values as second entry in look-up tables
+  (= first value mapped).
+  Affects: dcmimgle/include/diluptab.h
+           dcmimgle/include/dimoipxt.h
+           dcmimgle/include/dimoopxt.h
+           dcmimgle/libsrc/diluptab.cc
+
+- Added methods to add and remove additional overlay planes (still untested).
+  Affects: dcmimgle/include/dcmimage.h
+           dcmimgle/include/diimage.h
+           dcmimgle/include/dimoimg.h
+           dcmimgle/include/dimoopxt.h
+           dcmimgle/include/diovlay.h
+           dcmimgle/libsrc/dimoimg.cc
+           dcmimgle/libsrc/diovlay.cc
+           dcmimgle/libsrc/diovlimg.cc
+           dcmimgle/libsrc/diovpln.cc
+
+- Added methods to support overlay labels and descriptions.
+  Affects: dcmimgle/include/dcmimage.h
+           dcmimgle/include/diovlay.h
+           dcmimgle/include/diovpln.h
+           dcmimgle/libsrc/diovpln.cc
+
+- Added (simplified) methods to return values of a given DcmElement object.
+  Affects: dcmimgle/include/didocu.h
+           dcmimgle/libsrc/didocu.cc
+
+- Added support for correct scaling of input/output values for grayscale
+  transformations.
+  Affects: dcmimgle/include/dimomod.h
+           dcmimgle/include/dimoopxt.h
+           dcmimgle/libsrc/dimomod.cc
+
+- Added (missing) implementation of methods to rotate images/frames without
+  creating a new DicomImage.
+  Affects: dcmimgle/include/dirotat.h
+
+- Added first implementation of method to export overlay plane bitmaps.
+  Affects: dcmimgle/include/dcmimage.h
+           dcmimgle/libsrc/dcmimage.cc
+
+**** Changes from 1998.12.02 (riesmeier)
+
+- Corrected bug in setMem routine (parameter 'value' was ignored).
+  Affects: ofstd/include/ofbmanip.h
+
+- Added methods to convert parameters to signed/unsigned integers and
+  floats. Changed return value of existing getParam() methods.
+  Affects: ofstd/include/ofcmdln.h
+           ofstd/libsrc/ofcmdln.cc
+
+- Introduced new enum type used to indicate the status when converting
+  parameter values (similar to option values). Changed return value of
+  getParam() methods to this type. Added corresponding getStatusString()
+  method to convert status code to strings.
+  Affects: ofstd/include/ofcmdln.h
+           ofstd/libsrc/ofcmdln.cc
+
+- Introduced test whether added options are correct (starting with defined
+  option character followed by a character which is no number). Changed
+  parse routine to distinguish between options (normally starting mit - or
+  +) and signed numbers which can be valid parameters.
+  Affects: ofstd/include/ofcmdln.h
+           ofstd/libsrc/ofcmdln.cc
+
+**** Changes from 1998.11.30 (riesmeier)
+
+- Introduced additional type definition to avoid errors with MSVC5 when
+  using ListIterators of ListIterators (syntax problems?).
+  Affects: ofstd/include/ofcmdln.h
+           ofstd/libsrc/ofcmdln.cc
+
+- Use lists of pointers (!) to internal data structures to avoid errors with
+  MSVC5 (operator '==' was not defined to compare structures).
+  Affects: ofstd/include/ofcmdln.h
+           ofstd/libsrc/ofcmdln.cc
+
+- Added module dcmpstat to CVS depot.
+  Affects: modules/modules.
+
+- Added CVS/RCS log at end of file.
+  Affects: dcmpstat/include/dviface.h
+
+- Added const type qualifier to some parameters to avoid errors with MSVC5
+  (couldn't create instance of abstract class).
+  Affects: dcmimgle/include/diimage.h
+
+- Removed wrong 'inline' from method declaration (reported by MSVC5).
+  Affects: dcmimgle/include/diovlay.h
+
+**** Changes from 1998.11.27 (riesmeier)
+
+- Added class for platform independant memory operations (copy/set/zeroMem).
+  Added:   ofstd/include/ofbmanip.h
+
+- Added class to handle command line arguments.
+  Added:   ofstd/include/ofcmdln.h
+           ofstd/libsrc/ofcmdln.cc
+           ofstd/tests/tstcmdln.cc
+  Affects: ofstd/libsrc/Makefile.in
+           ofstd/libsrc/Makefile.dep
+           ofstd/tests/Makefile.in
+           ofstd/tests/Makefile.dep
+
+- Added copyright message to source files and changed CVS header.
+  Affects: ofstd/include/ofalgo.h
+           ofstd/include/oflist.h
+           ofstd/include/ofstack.h
+           ofstd/include/ofstring.h
+           ofstd/include/oftypes.h
+           ofstd/libsrc/oflist.cc
+           ofstd/libsrc/ofstring.cc
+           ofstd/tests/tlist.cc
+           ofstd/tests/tstlist.cc
+           ofstd/tests/tstring.cc
+           ofstd/tests/tststack.cc
+
+- Added 'make html' to automatically create a HTML documentation using Doc++.
+  Affects: ofstd/Makefile.in
+
+- Splitted module into two parts: dcmimgle (light edition) for monochrome
+  images and dcmimage (including dcm2pnm) for color images.
+  Added registration class to allow easy combination of both modules.
+  Affects: modules/modules
+  Added:   dcmimgle/include/dcmimage.h
+           dcmimgle/include/didocu.h
+           dcmimgle/include/diimage.h
+           dcmimgle/include/diinpx.h
+           dcmimgle/include/diluptab.h
+           dcmimgle/include/dimo1img.h
+           dcmimgle/include/dimo2img.h
+           dcmimgle/include/dimoimg.h
+           dcmimgle/include/dimoipxt.h
+           dcmimgle/include/dimomod.h
+           dcmimgle/include/dimoopx.h
+           dcmimgle/include/dimoopxt.h
+           dcmimgle/include/dimopx.h
+           dcmimgle/include/dimopxt.h
+           dcmimgle/include/dimosct.h
+           dcmimgle/include/diobjcou.h
+           dcmimgle/include/diovlay.h
+           dcmimgle/include/diovlimg.h
+           dcmimgle/include/diovpln.h
+           dcmimgle/include/dipxrept.h
+           dcmimgle/include/discalet.h
+           dcmimgle/include/ditranst.h
+           dcmimgle/include/diutils.h
+           dcmimgle/include/diregbas.h
+           dcmimgle/include/Makefile.in
+           dcmimgle/libsrc/Makefile.in
+           dcmimgle/libsrc/Makefile.dep
+           dcmimgle/libsrc/dcmimage.cc
+           dcmimgle/libsrc/didocu.cc
+           dcmimgle/libsrc/diimage.cc
+           dcmimgle/libsrc/diinpx.cc
+           dcmimgle/libsrc/diluptab.cc
+           dcmimgle/libsrc/dimo1img.cc
+           dcmimgle/libsrc/dimo2img.cc
+           dcmimgle/libsrc/dimoimg.cc
+           dcmimgle/libsrc/dimomod.cc
+           dcmimgle/libsrc/dimoopx.cc
+           dcmimgle/libsrc/dimopx.cc
+           dcmimgle/libsrc/diovlay.cc
+           dcmimgle/libsrc/diovlimg.cc
+           dcmimgle/libsrc/diovpln.cc
+           dcmimgle/libsrc/diutils.cc
+           dcmimgle/Makefile.in
+
+- Added module dcmimgle to CVS depot.
+  Affects: modules/modules
+
+- Added copyright message to all source files. Started with documentation
+  in Doc++ notation.
+  Affects: dcmimgle/include/*.h
+           dcmimgle/libsrc/*.cc
+
+- Added 'make html' to automatically create a HTML documentation using Doc++.
+  Affects: dcmimgle/Makefile.in
+
+- Added methods and constructors for flipping and rotating, changed for
+  scaling and clipping.
+  Affects: dcmimgle/include/dcmimage.h
+           dcmimgle/include/diflipt.h
+           dcmimgle/include/diimage.h
+           dcmimgle/include/dimoflt.h
+           dcmimgle/include/dimo1img.h
+           dcmimgle/include/dimo2img.h
+           dcmimgle/include/dimoimg.h
+           dcmimgle/include/dimorot.h
+           dcmimgle/include/diovlay.h
+           dcmimgle/include/diovpln.h
+           dcmimgle/include/dirotat.h
+           dcmimgle/libsrc/dcmimage.cc
+           dcmimgle/libsrc/diimage.cc
+           dcmimgle/libsrc/dimo1img.cc
+           dcmimgle/libsrc/dimo2img.cc
+           dcmimgle/libsrc/dimoimg.cc
+           dcmimgle/libsrc/diovlay.cc
+           dcmimgle/libsrc/diovpln.cc
+
+- Replaced delete by delete[] for array types.
+  Affects: dcmimgle/include/dimoopxt.h
+           dcmimgle/include/dimopxt.h
+           dcmimgle/include/diovlay.h
+           dcmimgle/libsrc/diovlay.cc
+
+- Added method to directly create java AWT bitmaps.
+  Affects: dcmimgle/include/dcmimage.h
+           dcmimgle/include/diimage.h
+           dcmimgle/include/dimoimg.h
+           dcmimgle/libsrc/dcmimage.cc
+           dcmimgle/libsrc/diimage.cc
+           dcmimgle/libsrc/dimoimg.cc
+
+- Added method to give direct (non-const) access to internal data buffer.
+  Affects: dcmimgle/include/dimopxt.h
+
+- Introduced global debug level for dcmimage module to control error output.
+  Affects: dcmimgle/include/diinpxt.h
+           dcmimgle/include/dimoopxt.h
+           dcmimgle/include/diutils.h
+           dcmimgle/libsrc/dcmimage.cc
+           dcmimgle/libsrc/diimage.cc
+           dcmimgle/libsrc/dimoimg.cc
+           dcmimgle/libsrc/dimomod.cc
+           dcmimgle/libsrc/diovlay.cc
+           dcmimgle/libsrc/diovlimg.cc
+           dcmimgle/libsrc/diovpln.cc
+           dcmimgle/libsrc/diutils.cc
+
+- Renamed variable 'Status' to 'ImageStatus' because of possible conflicts
+  with X windows systems.
+  Affects: dcmimgle/include/diimage.h
+           dcmimgle/libsrc/diimage.cc
+           dcmimgle/libsrc/dimoimg.cc
+           dcmimgle/libsrc/diovlimg.cc
+
+- Added method to detach pixel data if it is no longer needed.
+  Affects: dcmimgle/include/diimage.h
+           dcmimgle/include/diovlay.h
+           dcmimgle/include/diovpln.h
+           dcmimgle/libsrc/diimage.cc
+           dcmimgle/libsrc/diovlay.cc
+
+- Moved type definitions to diutils.h.
+  Affects: dcmimgle/include/dcmimage.h
+           dcmimgle/include/diutils.h
+
+- Added constructors to use external modality transformations.
+  Affects: dcmimgle/include/dcmimage.h
+           dcmimgle/include/diluptab.h
+           dcmimgle/include/dimoimg.h
+           dcmimgle/include/dimomod.h
+           dcmimgle/libsrc/dcmimage.cc
+           dcmimgle/libsrc/diluptab.cc
+           dcmimgle/libsrc/dimoimg.cc
+           dcmimgle/libsrc/dimomod.cc
+
+- Added methods to support presentation LUTs and shapes.
+  Affects: dcmimgle/include/dcmimage.h
+           dcmimgle/include/diimage.h
+           dcmimgle/include/diluptab.h
+           dcmimgle/include/dimoimg.h
+           dcmimgle/include/diutils.h
+           dcmimgle/libsrc/dcmimage.cc
+           dcmimgle/libsrc/diluptab.cc
+           dcmimgle/libsrc/dimoimg.cc
+
+- Added methods to convert module defined enum types to strings.
+  Affects: dcmimgle/include/dcmimage.h
+           dcmimgle/libsrc/dcmimage.cc
+
+- Added static methods to return the value of a given element.
+  Affects: dcmimgle/include/didocu.h
+           dcmimgle/libsrc/didocu.cc
+
+- Added support of frame start and count for future use (will be explained
+  later if it is fully implemented).
+  Affects: dcmimgle/include/dcmimage.h
+           dcmimgle/include/didocu.h
+           dcmimgle/libsrc/dcmimage.cc
+           dcmimgle/libsrc/didocu.cc
+
+- Added support for new bit manipulation class.
+  Affects: dcmimgle/include/diinpxt.h
+           dcmimgle/include/dimoipxt.h
+           dcmimgle/include/dimopxt.h
+           dcmimgle/include/ditranst.h
+
+- Added support of object counter class.
+  Affects: dcmimgle/include/diluptab.h
+
+- Introduced new method and corresponding classes to create a copy of a
+  dcmimage object (optional parameters: frame start and count).
+  Affects: dcmimgle/include/dcmimage.h
+           dcmimgle/libsrc/dcmimage.cc
+  Added:   dcmimgle/include/dimocpt.h
+
+- Corrected bug in modality LUT transformation method.
+  Affects: dcmimgle/include/dimoipxt.h
+
+- Added new cases to optimize rescaling.
+  Affects: dcmimgle/include/dimoipxt.h
+
+- Changed behaviour: now window width of 0 is valid and negative width
+  is invalid.
+  Affects: dcmimgle/include/dcmimage.h
+           dcmimgle/include/dimoopxt.h
+           dcmimgle/libsrc/dimoimg.cc
+
+- Corrected bug in VOI LUT transformation method.
+  Affects: dcmimgle/include/dimoopxt.h
+
+- Introduced new pixel base class.
+  Affects: dcmimgle/include/dimopx.h
+           dcmimgle/libsrc/dimopx.cc
+  Added:   dcmimgle/include/dipixel.h
+
+- Combined clipping and scaling methods.
+  Affects: dcmimgle/include/dimosct.h
+           dcmimgle/include/discalet.h
+           dcmimgle/libsrc/dcmimage.cc
+
+- Introduced configuration flags to adjust behaviour in different cases.
+  Affects: dcmimgle/include/dcmimage.h
+           dcmimgle/include/diutils.h
+           dcmimgle/libsrc/diutils.cc
+
+**** Changes from 1998.11.18 (eichelberg)
+
+- Updated data dictionary for version 18 of supplement 33.
+  Affects: dcmdata/include/dcdeftag.h
+           dcmdata/libsrc/dcdictzz.cc
+           dcmdata/libsrc/dicom.dic
+
+- Initial Release of new module dcmpstat (Supplement 33 support)
+  Added:   dcmpstat/apps/Makefile.in
+           dcmpstat/apps/Makefile.dep
+           dcmpstat/apps/dcmp2pgm.cc
+           dcmpstat/apps/dcmpstst.cc
+           dcmpstat/apps/dcmpsrw.cc
+           dcmpstat/apps/dcmpsmk.cc
+           dcmpstat/docs/Makefile.in
+           dcmpstat/include/Makefile.in
+           dcmpstat/include/dvpstat.h
+           dcmpstat/include/dvpsrsl.h
+           dcmpstat/include/dviface.h
+           dcmpstat/include/dvpstyp.h
+           dcmpstat/include/dvpsov.h
+           dcmpstat/include/dvpsovl.h
+           dcmpstat/include/dvpsgl.h
+           dcmpstat/include/dvpsgll.h
+           dcmpstat/include/dvpsri.h
+           dcmpstat/include/dvpsrs.h
+           dcmpstat/include/dvpsril.h
+           dcmpstat/include/dvpsal.h
+           dcmpstat/include/dvpstx.h
+           dcmpstat/include/dvpsgr.h
+           dcmpstat/include/dvpsga.h
+           dcmpstat/include/dvpstxl.h
+           dcmpstat/include/dvpsgrl.h
+           dcmpstat/include/dvpsall.h
+           dcmpstat/include/dvpsgal.h
+           dcmpstat/libsrc/Makefile.in
+           dcmpstat/libsrc/Makefile.dep
+           dcmpstat/libsrc/dvpstat.cc
+           dcmpstat/libsrc/dviface.cc
+           dcmpstat/libsrc/dvpsal.cc
+           dcmpstat/libsrc/dvpsall.cc
+           dcmpstat/libsrc/dvpsga.cc
+           dcmpstat/libsrc/dvpsgal.cc
+           dcmpstat/libsrc/dvpsgl.cc
+           dcmpstat/libsrc/dvpsgr.cc
+           dcmpstat/libsrc/dvpsgrl.cc
+           dcmpstat/libsrc/dvpsgll.cc
+           dcmpstat/libsrc/dvpsov.cc
+           dcmpstat/libsrc/dvpsovl.cc
+           dcmpstat/libsrc/dvpstx.cc
+           dcmpstat/libsrc/dvpstxl.cc
+           dcmpstat/libsrc/dvpsril.cc
+           dcmpstat/libsrc/dvpsrsl.cc
+           dcmpstat/libsrc/dvpsrs.cc
+           dcmpstat/libsrc/dvpsri.cc
+           dcmpstat/Makefile.in
+           dcmpstat/configure
+           dcmpstat/CHANGES
+
+**** Changes from 1998.11.11 (eichelberg)
+
+- Updated data dictionary for ECR demo after DICOM WG XI meeting.
+  Affects: dcmdata/include/dcdeftag.h
+           dcmdata/libsrc/dcdictzz.cc
+           dcmdata/libsrc/dcvrpobw.cc
+           dcmdata/libsrc/dicom.dic
+
+- Introduced new method DcmObject::setGTag that allows to change
+  the group tag for an existing DcmObject. Useful for handling
+  repeating group elements.
+  Affects: dcmdata/include/dcobject.h
+
+- Implemented operator= for all classes derived from DcmObject.
+  Affects: dcmdata/include/dcbytstr.h
+           dcmdata/include/dcchrstr.h
+           dcmdata/include/dcelem.h
+           dcmdata/include/dcfilefo.h
+           dcmdata/include/dclist.h
+           dcmdata/include/dcobject.h
+           dcmdata/include/dcovlay.h
+           dcmdata/include/dcpixel.h
+           dcmdata/include/dcpixseq.h
+           dcmdata/include/dcpxitem.h
+           dcmdata/include/dcsequen.h
+           dcmdata/include/dcvrae.h
+           dcmdata/include/dcvras.h
+           dcmdata/include/dcvrat.h
+           dcmdata/include/dcvrcs.h
+           dcmdata/include/dcvrda.h
+           dcmdata/include/dcvrds.h
+           dcmdata/include/dcvrdt.h
+           dcmdata/include/dcvrfd.h
+           dcmdata/include/dcvrfl.h
+           dcmdata/include/dcvris.h
+           dcmdata/include/dcvrlo.h
+           dcmdata/include/dcvrlt.h
+           dcmdata/include/dcvrobow.h
+           dcmdata/include/dcvrpn.h
+           dcmdata/include/dcvrpobw.h
+           dcmdata/include/dcvrsh.h
+           dcmdata/include/dcvrsl.h
+           dcmdata/include/dcvrss.h
+           dcmdata/include/dcvrst.h
+           dcmdata/include/dcvrtm.h
+           dcmdata/include/dcvrui.h
+           dcmdata/include/dcvrul.h
+           dcmdata/include/dcvrus.h
+           dcmdata/include/dcvrut.h
+           dcmdata/include/dcvrvs.h
+           dcmdata/libsrc/dcbytstr.cc
+           dcmdata/libsrc/dcchrstr.cc
+           dcmdata/libsrc/dcelem.cc
+           dcmdata/libsrc/dclist.cc
+           dcmdata/libsrc/dcobject.cc
+           dcmdata/libsrc/dcpixel.cc
+           dcmdata/libsrc/dcpixseq.cc
+           dcmdata/libsrc/dcpxitem.cc
+           dcmdata/libsrc/dcsequen.cc
+           dcmdata/libsrc/dcvrae.cc
+           dcmdata/libsrc/dcvras.cc
+           dcmdata/libsrc/dcvrcs.cc
+           dcmdata/libsrc/dcvrda.cc
+           dcmdata/libsrc/dcvrds.cc
+           dcmdata/libsrc/dcvrdt.cc
+           dcmdata/libsrc/dcvris.cc
+           dcmdata/libsrc/dcvrlo.cc
+           dcmdata/libsrc/dcvrlt.cc
+           dcmdata/libsrc/dcvrpn.cc
+           dcmdata/libsrc/dcvrpobw.cc
+           dcmdata/libsrc/dcvrsh.cc
+           dcmdata/libsrc/dcvrst.cc
+           dcmdata/libsrc/dcvrtm.cc
+           dcmdata/libsrc/dcvrui.cc
+           dcmdata/libsrc/dcvrut.cc
+           dcmdata/libsrc/dcvrvs.cc
+
+- fixed incorrect return value in DcmPolymorphOBOW::operator=().
+  Affects: dcmdata/libsrc/dcvrpobw.cc
+
+**** Changes from 1998.10.26 (eichelberg)
+
+- Updated data dictionary and UIDs for Grayscale Softcopy Presentation
+  State (Supplement 33 frozen draft).
+  Affects: dcmdata/include/dcdeftag.h
+           dcmdata/include/dcuid.h
+           dcmdata/libsrc/dcdictzz.cc
+           dcmdata/libsrc/dcuid.cc
+           dcmdata/libsrc/dicom.dic
+
+- Added Grayscale Softcopy Presentation State to DIMSE
+  helper functions.
+  Affects: dcmnet/libsrc/diutil.cc
+
+- "ti" now negotiates for all known storage SOP classes.
+  Affects: imagectn/apps/tinet.cc
+
+**** Changes from 1998.10.20 (eichelberg)
+
+- Added FAQ entry about DCMTK on Unixware.
+  Based on a contribution by Wolfgang Rapp <w1.rapp@von.ulm.de>.
+  Affects: FAQ
+
+- Closed some memory leaks in dcmdata and dcmnet libraries.
+  Affects: dcmdata/libsrc/dcstream.cc
+           dcmnet/libsrc/dimse.cc
+           dcmnet/libsrc/dulfsm.cc
+           dcmnet/apps/storescu.cc
+
+**** Changes from 1998.09.03 (eichelberg)
+
+- The Worklist SCP now supports all Type 1 and 2 attributes
+  defined in the Modality Worklist Service Class as return keys.
+  Contributed by Heinz Blendinger <Heinz.Blendinger@med.siemens.de>.
+  Affects: wlistctn/libsrc/wrklstdb.cc
+
+- Introduced two new command line options in writwlst:
+    +o    overwrite dcmfile-out if existing (default)
+    -o    update dcmfile-out if existing
+  With "-o", writwlst attempts to read an existing worklist file
+  and only replaces the changed attributes and leaves all others unchanged.
+  Contributed by Heinz Blendinger <Heinz.Blendinger@med.siemens.de>.
+  Affects: wlistctn/wwwapps/writwlst.cc
+
+**** Changes from 1998.08.10 (eichelberg)
+
+- renamed member variable in DIMSE structures from "Status" to
+  "DimseStatus". This is required if dcmnet is used together with
+  <X11/Xlib.h> where Status is #define'd as int.
+  Affects: dcmnet/apps/findscu.cc
+           dcmnet/apps/movescu.cc
+           dcmnet/apps/storescp.cc
+           dcmnet/include/dimse.h
+           dcmnet/libsrc/
+           dcmnet/libsrc/dimcmd.cc
+           dcmnet/libsrc/dimdump.cc
+           dcmnet/libsrc/dimecho.cc
+           dcmnet/libsrc/dimfind.cc
+           dcmnet/libsrc/dimmove.cc
+           dcmnet/libsrc/dimstore.cc
+           imagectn/apps/scefind.cc
+           imagectn/apps/scemove.cc
+           imagectn/apps/scestore.cc
+           imagectn/apps/tinet.cc
+           imagectn/libsrc/dbindex.cc
+           imagectn/libsrc/dbutils.cc
+           wlistctn/apps/scefind.cc
+
+
+**** Changes from 1998.07.28 (eichelberg)
+
+- Modified two retired (ACR-NEMA) entries in the data dictionary,
+  according to a posting in comp.protocol.dicom.
+  Thanks to David Clunie <david.clunie@gemed.med.ge.com>
+  and Sacha Helbig <helbig@scn.de> for the information.
+  Affects: dcmdata/libsrc/dcdictzz.cc
+           dcmdata/libsrc/dicom.dic
+           dcmdata/include/dcdeftag.h
+
+**** Changes from 1998.07.28 (eichelberg)
+
+- Reworked the DICOM dictionary. The first part now reflects the 1996 DICOM
+  publication. Updated all Supplements to reflect July 1998 state.
+  Affects: dcmdata/libsrc/dcdictzz.cc
+           dcmdata/libsrc/dicom.dic
+           dcmdata/include/dcdeftag.h
+
+- Introduced new compilation flag PRINT_REPLACED_DICTIONARY_ENTRIES
+  which causes the dictionary to display all duplicate entries.
+  Affects: dcmdata/libsrc/dcdict.cc
+           dcmdata/libsrc/dchashdi.cc
+
+- Corrected typo in mkdeftag.
+  Affects: dcmdata/libsrc/mkdeftag.cc
+
+**** Changes from 1998.07.24 (eichelberg)
+
+- Added FAQ entry about imagectn storing all incoming
+  images in /tmp instead of the directory specified in configrc.
+  Affects: FAQ
+
+- Intoduced a Makefile variable $(LIBEXT) which defines
+  the file name extension used for libraries ("a" or "so").
+  This allows to build DCMTK with shared libraries without
+  changing all Makefiles.
+  Added FAQ entry describing how to build shared objects with gcc.
+  Affects: FAQ
+           config/Makefile.def.in
+           config/configure
+           config/configure.in
+           config/templates/Makefile.lib
+           ctndisp/libsrc/Makefile.in
+           dcmdata/libsrc/Makefile.in
+           dcmnet/libsrc/Makefile.in
+           imagectn/libsrc/Makefile.in
+           ofstd/libsrc/Makefile.in
+           wlistctn/libsrc/Makefile.in
+
+- Minor changes to avoid compiler warnings (gcc 2.8.1 with additional
+  options), e.g. add copy constructors.
+  Affects: wlistctn/apps/wlistctn.cc
+           wlistctn/apps/wlistctn.h
+           wlistctn/wwwapps/writwlst.cc
+
+- changed WorklistDB::nextFindResponse() parameters
+  in order to avoid the use of an implicit assignment
+  operator for class DcmDataset.
+  Required for some IRIX and Unixware compilers.
+  Affects: wlistctn/apps/scefind.cc
+           wlistctn/include/wrklstdb.h
+           wlistctn/libsrc/wrklstdb.cc
+           wlistctn/tests/wltest.cc
+
+- changed ti's signal handler parameters from (int) to (...)
+  to avoid a warning on IRIX 5.3 using SGI C++ 4.0.
+  Affects: imagectn/apps/ti.cc
+
+**** Changes from 1998.07.15 (riesmeier)
+
+- Updated data dictionary: replaced 'ReportDetailSequence' by
+  'RequestDetailSequence'.
+  Affects: dcmdata/libsrc/dicom.dic
+  Rebuilt: dcmdata/include/dcdeftag.h
+           dcmdata/libsrc/dcdictzz.cc
+
+- Including of <libc.h> to support getlogin() on NeXTSTEP.
+  Replaced tabs by spaces. Added const to char pointer to avoid
+  warnings (gcc 2.8.1 with additional options).
+  Affects: dcmdata/libsrc/mkdeftag.cc
+
+- Including of <libc.h> to support getlogin() on NeXTSTEP.
+  Replaced tabs by spaces.
+  Affects: dcmdata/libsrc/mkdictbi.cc
+
+- Removed several compiler warnings reported by gcc 2.8.1 with
+  additional options, e.g. missing copy constructors and assignment
+  operators, initialization of member variables in the body of a
+  constructor instead of the member initialization list, hiding of
+  methods by use of identical names, uninitialized member variables,
+  missing const declaration of char pointers. Replaced tabs by spaces.
+  Affects: dcmdata/include/dcbuf.h
+           dcmdata/include/dccodec.h
+           dcmdata/include/dcdicdir.h
+           dcmdata/include/dcdicent.h
+           dcmdata/include/dcdict.h
+           dcmdata/include/dcdirrec.h
+           dcmdata/include/dcelem.h
+           dcmdata/include/dchashdi.h
+           dcmdata/include/dcitem.h
+           dcmdata/include/dclist.h
+           dcmdata/include/dcobject.h
+           dcmdata/include/dcpixel.h
+           dcmdata/include/dcpixseq.h
+           dcmdata/include/dcsequen.h
+           dcmdata/include/dcstack.h
+           dcmdata/include/dcstream.h
+           dcmdata/include/dctag.h
+           dcmdata/include/dctagkey.h
+           dcmdata/include/dcvr.h
+           dcmdata/include/dcvrulup.h
+           dcmdata/include/dcxfer.h
+           dcmdata/libsrc/dcbuf.cc
+           dcmdata/libsrc/dcbytstr.cc
+           dcmdata/libsrc/dcdatset.cc
+           dcmdata/libsrc/dcdicdir.cc
+           dcmdata/libsrc/dcdicent.cc
+           dcmdata/libsrc/dcdict.cc
+           dcmdata/libsrc/dcdirrec.cc
+           dcmdata/libsrc/dcelem.cc
+           dcmdata/libsrc/dcfilefo.cc
+           dcmdata/libsrc/dchashdi.cc
+           dcmdata/libsrc/dcitem.cc
+           dcmdata/libsrc/dclist.cc
+           dcmdata/libsrc/dcmetinf.cc
+           dcmdata/libsrc/dcobject.cc
+           dcmdata/libsrc/dcpixel.cc
+           dcmdata/libsrc/dcpixseq.cc
+           dcmdata/libsrc/dcsequen.cc
+           dcmdata/libsrc/dcstack.cc
+           dcmdata/libsrc/dcstream.cc
+           dcmdata/libsrc/dctag.cc
+           dcmdata/libsrc/dcvr.cc
+           dcmdata/libsrc/dcvrpobw.cc
+           dcmdata/libsrc/dcvrulup.cc
+           dcmdata/libsrc/dcxfer.cc
+
+- Removed compiler warnings reported by gcc 2.8.1 with additional
+  options, e.g. missing const declaration of char pointers. Replaced
+  tabs by spaces.
+  Affects: dcmdata/apps/dcmgpdir.cc
+
+**** Changes from 1998.07.15 (eichelberg)
+
+- Fixed bug in DIMSE_sendMessage() that could result in an undefined
+  error condition passed back to the caller when an attempt was made
+  to send a DIMSE message without appropriate presentation context.
+  Thanks to Gilles Mevel <Gilles.Mevel@etiam.com> for the report.
+  Affects: dcmnet/libsrc/dimse.cc
+
+**** Changes from 1998.07.02 (riesmeier)
+
+- Minor changes to avoid compiler warnings (gcc 2.8.1 with additional
+  options), e.g. add copy constructors.
+  Affects: ofstd/include/ofstack.h
+
+**** Changes from 1998.06.29 (eichelberg)
+
+- Some code purifications to avoid gcc 2.8.1 -Weffc++ warnings.
+  Affects: ofstd/include/oflist.h
+           ofstd/libsrc/oflist.cc
+
+**** Changes from 1998.06.29 (eichelberg)
+
+- Updated FAQ with information about how to compile DCMTK on HP-UX 10
+  with the HP C++ compiler.
+  Affects: FAQ
+
+- Updated status of Supplement 15 (Visible Light)
+  to reflect version 1.1a (Draft Standard for Trial Use).
+  Thanks to Andrew Hewett <hewett@medigration.de> for submitting the update.
+  Affects: dcmdata/include/dcdeftag.h
+           dcmdata/libsrc/dcdictzz.cc
+           dcmdata/libsrc/dicom.dic
+
+- Removed some name clashes (e.g. local variable with same
+  name as class member) to improve maintainability.
+  Applied some code purifications proposed by the gcc 2.8.1 -Weffc++ option.
+  Affects: ofstd/include/oflist.h
+           ofstd/libsrc/ofstring.cc
+           dcmnet/include/cond.h
+           dcmnet/include/dimse.h
+           dcmnet/include/dul.h
+           dcmnet/libsrc/asccond.cc
+           dcmnet/libsrc/assoc.cc
+           dcmnet/libsrc/cond.cc
+           dcmnet/libsrc/dimcond.cc
+           dcmnet/libsrc/dimcond.h
+           dcmnet/libsrc/dul.cc
+           dcmnet/libsrc/dulcond.cc
+           dcmnet/libsrc/dulfsm.cc
+           dcmnet/libsrc/lstcond.cc
+           dcmdata/libsrc/dcdicdir.cc
+           dcmdata/libsrc/dcdirrec.cc
+           dcmdata/libsrc/dchashdi.cc
+
+- Rebuilt Makefile dependencies.
+  Affects: ctndisp/apps/Makefile.dep
+           dcmdata/apps/Makefile.dep
+           dcmdata/libsrc/Makefile.dep
+           dcmnet/libsrc/Makefile.dep
+           wlistctn/apps/Makefile.dep
+           wlistctn/libsrc/Makefile.dep
+           wlistctn/tests/Makefile.dep
+           wlistctn/wwwapps/Makefile.dep
+
+**** Changes from 1998.05.22 (eichelberg)
+
+- Corrected two memory leaks in the ti application.
+  Thanks to Alexander Sahler <sahler@informatik.uni-kl.de> for the report.
+  Affects: imagectn/apps/tiquery.cc
+
+**** Changes from 1998.05.14 (eichelberg)
+
+- Updated ofstd Makefile. "make install" without
+  prior "make all" now works for the complete dcmtk.
+  Affects: ofstd/Makefile.in
+
+**** Changes from 1998.04.02 (riesmeier)
+
+- Corrected bug in command line parser of storescu.
+  Affects: dcmnet/apps/storescu.cc
+
+**** Changes from 1998.03.25 (eichelberg)
+
+- Corrected bug in DcmFileStream::UnsetPutbackMark. This bug caused
+  dcmdata to choke on files with metaheader where the value of
+  (0002,0010) TransferSyntaxUID was none of the supported UIDs,
+  because interpretation of the dataset started in the wrong file position.
+  Affects: dcmdata/libsrc/dcstream.cc
+
+**** Changes from 1998.02.27 (hewett)
+
+- Added missing attribute to data dictionary (DistanceSourceToEntrance
+  from Supplement 17 Modality Performed Procedure Step).
+  Affects: dcmdata/libsrc/dicom.dic
+  Rebuilt: dcmdata/include/dcdeftag.h
+           dcmdata/libsrc/dcdictzz.cc
+
+**** Changes from 1998.02.25 (hewett)
+
+- Updated documentation to reflect the new SOP Class UIDs and SOP Class Names
+  defined by Supplement 24 (Stored Print Related SOP Classes).
+  Affects: dcmnet/docs/storescu.txt
+           dcmnet/docs/storescp.txt
+           imagectn/docs/imagectn.txt
+
+- Updated status of supplements 17 & 22 to reflect their Final Text status
+  Affects: dcmdata/libsrc/dicom.dic
+           dcmdata/include/dcuid.h
+
+- Updated data dictionary and UID information to reflect changes in
+  Supplement 24 (Stored Print Related SOP Classes).  Some data dictionary
+  attibutes and UIDs have changed between the Letter Ballot version and
+  the Final Text version.
+  Affects: dcmdata/libsrc/dicom.dic
+           dcmdata/include/dcuid.h
+           dcmdata/libsrc/dcuid.cc
+           dcmnet/libsrc/diutil.cc
+  Rebuilt: dcmdata/include/dcdeftag.h
+           dcmdata/libsrc/dcdictzz.cc

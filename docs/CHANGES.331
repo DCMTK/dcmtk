@@ -1,0 +1,285 @@
+Release 3.3.1 (Public Release - 1998.02.17)
+
+- Updated Version Number and Implementation Version Name to reflect the
+  current public release (3.3.1)
+  Affects: dcmdata/include/dcuid.h
+
+- Updated documentation to reflect changes in 3.3.1
+  Affects: ANNOUNCE
+           COPYRIGHT
+           INSTALL
+
+**** Changes from 1998.02.17 (eichelberg)
+
+- Linking dcmftest with -ldcmdata and -lofstd again (warning on IRIX,
+  but required by OSF/1..)
+  Affects: dcmdata/apps/Makefile.in
+
+**** Changes from 1998.02.11 (eichelberg)
+
+- Synchronized Win32 configuration file cfwin32.h with
+  the current Unix config.h.in. Updated Win32 Makefile.
+  Affects: config/include/cfwin32.h
+           config/systems/win32/msvc4.mak
+
+- Removed superfluous libraries in linker calls for some applications.
+  Affects: ctndisp/apps/Makefile.in
+           dcmdata/apps/Makefile.in
+           wlistctn/tests/Makefile.in
+           wlistctn/wwwapps/Makefile.in
+
+**** Changes from 1998.02.07 (eichelberg)
+
+- Updated test procedure for memcpy/bcopy etc., required for NeXT.
+  Affects: config/configure
+           config/configure.in
+           config/include/config.h.in
+           dcmdata/include/dcdefine.h
+
+**** Changes from 1998.02.06 (eichelberg)
+
+- Removed many minor problems (name clashes, unreached code)
+  reported by Sun CC4 with "+w" or Sun CC2.
+  Affects: ctndisp/apps/ctndsupp.cc
+           dcmdata/apps/dcmgpdir.cc
+           dcmdata/libsrc/dcdict.cc
+           dcmdata/libsrc/dcdirrec.cc
+           dcmnet/apps/movescu.cc
+           dcmnet/apps/storescp.cc
+           imagectn/apps/imagectn.cc
+           imagectn/apps/ti.cc
+           ofstd/include/oflist.h
+           ofstd/include/ofstack.h
+           ofstd/libsrc/oflist.cc
+           wlistctn/apps/wlistctn.cc
+           wlistctn/libsrc/wrklstdb.cc
+
+**** Changes from 1998.02.06 (hewett)
+
+- Updated support for Supplements 15 (Visible Light),
+  16 (Postscript Print Management), 17 (Modality Performed Procedure Step),
+  22 (Presentation Look Up Table (LUT)), 23 (Structured Reporting),
+  24 (Stored Print), 30 (Waveform Interchange).
+  Affects: dcmdata/libsrc/dicom.dic
+           dcmdata/include/dcuid.h
+           dcmdata/libsrc/dcuid.cc
+           dcmnet/libsrc/diutil.cc
+           dcmnet/docs/storescu.txt
+           dcmnet/docs/storescp.txt
+           dcmnet/docs/movescu.txt
+           imagectn/docs/imagectn.txt
+           imagectn/docs/ti.txt
+  Rebuilt: dcmdata/include/dcdeftag.h
+           dcmdata/libsrc/dcdictzz.cc
+
+**** Changes from 1998.02.05 (eichelberg)
+
+- Corrected ofstd Makefile. "make install" does not install
+  libraries and headers any more, but "make install-lib" does.
+  Affects: ofstd/Makefile.in
+
+- Introduced new #define in config.h: DCMTK_PREFIX
+  contains the dcmtk default path (e.g. the --prefix argument
+  used during configure or "/usr/local/dicom".)
+  Affects: config/acconfig.h
+           config/configure
+           config/configure.in
+           config/include/config.h.in
+
+- Synchronized Win32 configuration file cfwin32.h with
+  the current Unix config.h.in.
+  Affects: config/include/cfwin32.h
+
+- Removed meaningless const qualifiers from functions
+  returning integers or enums by value (many warnings on IRIX).
+  Thanks to Andreas Barth <anba@bruker.de> for the report.
+  Affects: dcmdata/include/dcstack.h
+           dcmdata/include/dcswap.h
+           dcmdata/include/dcvr.h
+           dcmdata/include/dcxfer.h
+           dcmdata/libsrc/dcstack.cc
+           dcmdata/libsrc/dcswap.cc
+           dcmdata/libsrc/dcvr.cc
+
+**** Changes from 1998.02.05 (hewett)
+
+- Added code to explicitly handle IP addresses in the DUL code.
+  It seems that under Windows95 (but not WindowsNT) the
+  gethostbyname() function will not accept a string representation
+  of an IP address.  Thanks to <rayred@worldnet.fr> for the bug report.
+  Affects: dcmnet/libsrc/dulfsm.cc
+
+- Added check for <arpa/inet.h> to configure system.
+  Affects: config/configure.in
+  Rebuilt: config/configure
+           config/include/config.h.in
+
+**** Changes from 1998.01.28 (eichelberg)
+
+- Removed minor bug from DICOM Upper Layer / DIMSE modules.
+  For each PDV received, an error condition was pushed on the error stack
+  and then again pulled from it. If a callback function was registered
+  with the condition stack, it was flooded with error messages.
+  The old behaviour can be restored by compiling with the symbol
+  PUT_DUL_NOPDVS_ON_CONDITION_STACK defined.
+  Thanks to Gilles Mevel <Gilles.Mevel@etiam.com> for the bug report.
+  Affects: dcmnet/libsrc/dul.cc
+           dcmnet/libsrc/dimse.cc
+
+**** Changes from 1998.01.27 (eichelberg)
+
+- Added FAQ entries related to IRIX 6.x and a shell script
+  allowing to build DCMTK on IRIX 6 machines with an IRIX 5.x gcc.
+  Added:   config/mvldflags
+  Affects: FAQ
+
+- Minor bug corrections (string too short, incorrect return value).
+  Thanks to Andreas Barth <anba@bruker.de> for the report.
+           dcmdata/apps/dcmgpdir.cc
+           dcmdata/libsrc/dcsequen.cc
+           imagectn/libsrc/dbutils.cc
+           wlistctn/wwwapps/writwlst.cc
+
+- Removed some unused variables, meaningless const modifiers
+  and unreached statements.
+  Affects: ctndisp/apps/ctndsupp.cc
+           dcmdata/apps/dcmconv.cc
+           dcmdata/apps/dump2dcm.cc
+           dcmdata/libsrc/dcdicdir.cc
+           dcmdata/libsrc/dcdict.cc
+           dcmdata/libsrc/dcdirrec.cc
+           dcmnet/libsrc/dimfind.cc
+           dcmnet/libsrc/dimmove.cc
+           dcmnet/libsrc/dimse.cc
+           imagectn/apps/tiui.cc
+           wlistctn/apps/sce.cc
+
+**** Changes from 1998.01.14 (hewett)
+
+- Added command line option (-ti) to restrict association negotiation
+  to only propose the default Little Endian Implicit VR Transfer Syntax.
+  Affects: dcmdata/dcmnet/storescu.cc
+
+- Modified existing -u command line option to also disable generation
+  of UT and VS (previously just disabled generation of UN).
+  Affects: dcmdata/apps/dcmconv.cc
+           dcmdata/docs/dcmconv.txt
+           dcmdata/apps/dcmgpdir.cc
+           dcmdata/docs/dcmgpdir.txt
+           dcmdata/apps/dump2dcm.cc
+           dcmdata/docs/dump2dcm.txt
+           dcmnet/apps/findscu.cc
+           dcmnet/docs/findscu.txt
+           dcmnet/apps/movescu.cc
+           dcmnet/docs/movescu.txt
+           dcmnet/apps/storescu.cc
+           dcmnet/docs/storescu.txt
+           dcmnet/apps/storescp.cc
+           dcmnet/docs/storescp.txt
+           imagectn/apps/imagectn.cc
+           imagectn/docs/imagectn.txt
+           imagectn/apps/ti.cc
+           imagectn/docs/ti.txt
+           wlistctn/apps/wlistctn.cc
+           wlistctn/docs/wlistctn.txt
+
+- Added basic support for the Structured Reporting (SR) SOP Classes.
+  Affects: dcmdata/include/dcuid.h
+           dcmdata/include/dcdeftag.h
+           dcmdata/libsrc/dcuid.cc
+           dcmdata/libsrc/dicom.dic
+           dcmdata/libsrc/dcdictzz.cc
+           dcmnet/include/diutil.h
+           dcmnet/libsrc/diutil.cc
+           imagectn/apps/scestore.cc
+           imagectn/doc/imagectn.txt
+
+- Added support for the VRs UT (Unlimited Text) and VS (Virtual String).
+  Support can be disabled by setting the global flags
+  dcmEnableUnlimitedTextVRGeneration and dcmEnableVirtualStringVRGeneration
+  to OFFalse.  Extreme caution should be excercised when using these VRs
+  since at the time of writing they have _not_ been formally adopted and
+  may dissapear at any time.  The VRs should be used for experimental
+  purposes only.
+  Affects: dcmdata/include/dcvr.h
+           dcmdata/libsrc/dcvr.cc
+           dcmdata/include/dctk.h
+           dcmdata/libsrc/dcitem.cc
+           dcmdata/libsrc/dcobject.cc
+           dcmdata/libsrc/dcxfer.cc
+           dcmdata/libsrc/Makefile.in
+           wlistctn/apps/wrklstdb.cc
+  Added:   dcmdata/include/dcvrut.h
+           dcmdata/include/dcvrvs.h
+           dcmdata/libsrc/dcvrut.cc
+           dcmdata/libsrc/dcvrvs.cc
+
+- Added enquiry method to determine if VR is a String (isaString) or if
+  it requires an extended length encoded.
+  Replaced some switch constructs to use to isaString method.
+  Affects: dcmdata/include/dcobject.h
+           dcmdata/include/dcvr.h
+           dcmdata/libsrc/dcvr.cc
+           dcmdata/libsrc/dcelem.cc
+           dcmdata/apps/dcmgpdir.cc
+           wlistctn/wwwapps/readoviw.cc
+           wlistctn/wwwapps/readwlst.cc
+
+**** Changes from 1998.01.14 (eichelberg)
+
+- Improved algorithm for auto-detection of transfer syntax
+  used when opening a DICOM file without metaheader.
+  Big endian datasets are now detected much more reliably.
+  Affects: dcmdata/libsrc/dcitem.cc
+
+- Corrected bug: Overlay Data elements in the groups
+  6002-601f were handled by DcmOtherByteOtherWord
+  instead of the "polymorphous" DcmOverlayData class.
+  Affects: dcmdata/libsrc/dcitem.cc
+
+**** Changes from 1997.11.10 (eichelberg)
+
+- Corrected bug possibly causing a memory leak in OFList.
+  Added virtual destructors to classes OFListLinkBase and OFListLink.
+  Affects: ofstd/include/oflist.h
+
+**** Changes from 1997.11.10 (hewett)
+
+- Corrected bug preventing parsing of data encoded using the RLELossless
+  transfer syntax.  Simple added appropriate transfer syntax table entries.
+  Affects: dcmdata/include/dcxfer.h
+           dcmdata/libsrc/dcxfer.cc
+
+**** Changes from 1997.11.07 (eichelberg)
+
+- Corrected bug in the dcmdata read routines which caused incorrect reading
+  of datasets containing attributes with value representation "ox" (= OB or OW)
+  in the dicom dictionary other than PixelData and OverlayData.
+  (thanks to Gilles Mevel <Gilles.Mevel@etiam.com> for the bug report and
+  sample data set).
+  Affects: dcmdata/libsrc/dcitem.cc
+
+**** Changes from 1997.10.13 (eichelberg)
+
+- Corrected check for presence of shared memory system calls in ctndisp.
+  Needed for AIX 3.2 (IBM xlC 1.0) where shmctl and shmdt are present, but
+  shmat is not.
+  Affects: ctndisp/apps/ctndisp.cc
+
+**** Changes from 1997.10.13 (hewett)
+
+- Fixed bug in DcmByteString::getOFString due to inverse logic causing
+  a string to be retrieved for all illegal values of pos while the errorFlag
+  was set to EC_IllegalCall for all legal values of pos (thanks to Phil Liao
+  <phil@eeg.com> for suggesting the bugfix).
+  Affects: dcmdata/include/dcbytstr.cc
+
+- Changed ENVIRONMENT_PATH_SEPARATOR from ':' to ';' for Windows (thanks
+  to Phil Liao <phil@eeg.com> for suggesting the bugfix).
+  Affects: config/include/cfwin32.h
+
+**** Changes from 1997.10.09 (hewett)
+
+- Fixed dcmgpdir bug related to unlinking a DICOMDIR backup file (thanks
+  to Lars Larsson <larsl@radfys.gu.se> for reporting this).
+  Affects: dcmdata7apps/dcmgpdir.cc
