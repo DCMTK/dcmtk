@@ -22,9 +22,9 @@
 *  Purpose: Class for managing file system interaction.
 *
 *  Last Update:      $Author: wilkens $
-*  Update Date:      $Date: 2002-08-12 10:56:17 $
+*  Update Date:      $Date: 2002-08-22 09:14:04 $
 *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmwlm/libsrc/wlfsim.cc,v $
-*  CVS/RCS Revision: $Revision: 1.2 $
+*  CVS/RCS Revision: $Revision: 1.3 $
 *  Status:           $State: Exp $
 *
 *  CVS/RCS Log at end of file
@@ -240,86 +240,67 @@ unsigned long WlmFileSystemInteractionManager::DetermineMatchingRecords( DcmData
   // go through all worklist files
   for( unsigned long i=0 ; i<worklistFiles.NumberOfElements() ; i++ )
   {
-    // associate file with a stream, open in read mode.
-    DcmFileStream i1Stream( worklistFiles[i].c_str(), DCM_ReadMode );
-    if( i1Stream.Fail() )
+    // read information from worklist file
+    DcmFileFormat fileform;
+    if (fileform.loadFile(worklistFiles[i].c_str()).bad())
     {
       if( verboseMode )
       {
-        sprintf( msg, "  - Could not open worklist file %s. File will be ignored.", worklistFiles[i].c_str() );
+        sprintf( msg, "  - Could not read worklist file %s properly. File will be ignored.", worklistFiles[i].c_str() );
         DumpMessage( msg );
       }
     }
     else
     {
-      // read information from worklist file
-      DcmFileFormat *fileform = new DcmFileFormat();
-      fileform->transferInit();
-      fileform->read( i1Stream, EXS_Unknown, EGL_withoutGL );
-      fileform->transferEnd();
-      if( fileform->error() != EC_Normal )
+      // determine the data set which is contained in the worklist file
+      DcmDataset *dataset = fileform.getDataset();
+      if( dataset == NULL )
       {
         if( verboseMode )
         {
-          sprintf( msg, "  - Could not read worklist file %s properly. File will be ignored.", worklistFiles[i].c_str() );
+          sprintf( msg, "  - Worklist file %s is empty. File will be ignored.", worklistFiles[i].c_str() );
           DumpMessage( msg );
         }
       }
       else
       {
-        // determine the data set which is contained in the worklist file
-        DcmDataset *dataset = fileform->getDataset();
-        if( dataset == NULL )
+        // check if the current dataset matches the matching key attribute values
+        if( !DatasetMatchesSearchMask( dataset, searchMask ) )
         {
           if( verboseMode )
           {
-            sprintf( msg, "  - Worklist file %s is empty. File will be ignored.", worklistFiles[i].c_str() );
+            sprintf( msg, "Information from worklist file %s does not match query.", worklistFiles[i].c_str() );
             DumpMessage( msg );
           }
         }
         else
         {
-          // check if the current dataset matches the matching key attribute values
-          if( !DatasetMatchesSearchMask( dataset, searchMask ) )
+          if( verboseMode )
           {
-            if( verboseMode )
-            {
-              sprintf( msg, "Information from worklist file %s does not match query.", worklistFiles[i].c_str() );
-              DumpMessage( msg );
-            }
+            sprintf( msg, "Information from worklist file %s matches query.", worklistFiles[i].c_str() );
+            DumpMessage( msg );
+          }
+
+          // since the dataset matches the matching key attribute values
+          // we need to insert it into the matchingRecords array
+          if( numOfMatchingRecords == 0 )
+          {
+            matchingRecords = new DcmDataset*[1];
+            matchingRecords[0] = new DcmDataset( *dataset );
           }
           else
           {
-            if( verboseMode )
-            {
-              sprintf( msg, "Information from worklist file %s matches query.", worklistFiles[i].c_str() );
-              DumpMessage( msg );
-            }
-
-            // since the dataset matches the matching key attribute values
-            // we need to insert it into the matchingRecords array
-            if( numOfMatchingRecords == 0 )
-            {
-              matchingRecords = new DcmDataset*[1];
-              matchingRecords[0] = new DcmDataset( *dataset );
-            }
-            else
-            {
-              DcmDataset **tmp = new DcmDataset*[numOfMatchingRecords + 1];
-              for( unsigned long j=0 ; j<numOfMatchingRecords ; j++ )
-                tmp[j] = matchingRecords[j];
-              tmp[numOfMatchingRecords] = new DcmDataset( *dataset );
-              delete matchingRecords;
-              matchingRecords = tmp;
-            }
-
-            numOfMatchingRecords++;
+            DcmDataset **tmp = new DcmDataset*[numOfMatchingRecords + 1];
+            for( unsigned long j=0 ; j<numOfMatchingRecords ; j++ )
+              tmp[j] = matchingRecords[j];
+            tmp[numOfMatchingRecords] = new DcmDataset( *dataset );
+            delete matchingRecords;
+            matchingRecords = tmp;
           }
+
+          numOfMatchingRecords++;
         }
       }
-
-      // free memory
-      delete fileform;
     }
   }
 
@@ -1477,7 +1458,11 @@ void WlmFileSystemInteractionManager::ExtractValuesFromRange( const char *range,
 /*
 ** CVS Log
 ** $Log: wlfsim.cc,v $
-** Revision 1.2  2002-08-12 10:56:17  wilkens
+** Revision 1.3  2002-08-22 09:14:04  wilkens
+** Adapted code to new loadFile and saveFile methods, thus removing direct
+** use of the DICOM stream classes.
+**
+** Revision 1.2  2002/08/12 10:56:17  wilkens
 ** Made some modifications in in order to be able to create a new application
 ** which contains both wlmscpdb and ppsscpdb and another application which
 ** contains both wlmscpfs and ppsscpfs.
