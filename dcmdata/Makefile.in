@@ -34,9 +34,6 @@ libsrc-all: include-all
 apps-all: libsrc-all
 	(cd apps; $(MAKE) ARCH="$(ARCH)" all)
 
-tests-all: libsrc-all
-	(cd tests; $(MAKE) ARCH="$(ARCH)" all)
-
 docs-all:
 	(cd docs; $(MAKE) all)
 
@@ -60,7 +57,6 @@ clean:
 	(cd libsrc; $(MAKE) clean)
 	(cd apps; $(MAKE) clean)
 	(cd docs; $(MAKE) clean)
-	(cd tests; $(MAKE) clean)
 	rm -f $(TRASH)
 
 distclean:
@@ -68,13 +64,11 @@ distclean:
 	(cd libsrc; $(MAKE) distclean)
 	(cd apps; $(MAKE) distclean)
 	(cd docs; $(MAKE) distclean)
-	(cd tests; $(MAKE) distclean)
 	rm -f $(DISTTRASH)
 
 dependencies:
 	(cd libsrc; touch $(DEP); $(MAKE) dependencies)
 	(cd apps; touch $(DEP); $(MAKE) dependencies)
-	(cd tests; touch $(DEP); $(MAKE) dependencies)
 
 
 
