@@ -18,7 +18,7 @@ all: include-all libsrc-all apps-all wwwapps-all tests-all
 
 install: install-bin install-doc install-support
 
-install-bin: apps-install wwwapps-install
+install-bin: apps-install
 
 install-doc: docs-install
 
