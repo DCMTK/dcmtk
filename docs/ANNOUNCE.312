@@ -1,0 +1,28 @@
+ANNOUNCEMENT
+
+The DICOM server software used during the June CAR'96 DICOM Demonstration
+is now publically available from:
+
+ftp://ftp.offis.uni-oldenburg.de/pub/dicom/offis/software/ 
+
+The CAR'96 DICOM demonstration featured Modality Worklist Management
+and Image Storage/Query/Retrieval.  The available software includes
+source code and documentation for the worklist management and image 
+storage/query/retrieve server applications, a number of test 
+applications, and the necessary libraries.
+
+This software package has been renamed DCMTK (DiCoM ToolKit).  It contains
+a number of improvements over the software previously available from
+OFFIS/Oldenburg University, the most important being:
+
+- configuration using GNU-Configure
+- a modality worklist SCP and SCU
+- a new C++ encoding/decoding library
+- support for offline media
+- support for explicit VR transfer syntaxes
+- a user-extensible data dictionary
+- support for all balloted image SOP classes
+- numerous bug fixes
+
+The software is now being maintained by OFFIS, a non-profit R&D institute.
+

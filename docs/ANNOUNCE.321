@@ -1,0 +1,37 @@
+ANNOUNCEMENT
+
+Version 3.2 of the OFFIS DCMTK (DICOM ToolKit) software is now available
+for public release.  This release includes the following main changes 
+over the previous release (Version 3.1.2):
+
+- dcmgpdir - an application to build a DICOMDIR according to the
+  specifications of Supplement 19: General Purpose CD-R Image Interchange
+  Profile.
+
+- Support for additional Storage SOP Classes (e.g. PET, Visible Light, 
+  Print Storage).
+
+- Basic toolkit support (data dictionary and UID tables) for Queue 
+  Management, Performed Procedure Step, User Preference LUT.
+
+- Support for Supplement 14: Unknown VR.
+
+- More than 80 bug fixes and improvements (see CHANGES file for details).
+
+The Image CTN and Worklist CTN servers from DCMTK Version 3.2 (imagectn 
+and wlistctn) will be used during the DICOM Network Interoperability 
+Demonstration as part of the Industrial Exhibition at CAR'97 in Berlin, 
+Germany (June 26-27).
+
+DCMTK Version 3.2 was also used to assist production of the CAR'97 DICOM
+Demonstration CD.  In particular, the dcmgpdir application was used to
+build the DICOMDIR (Medical Directory) found on the CD.
+
+The DCMTK software can be downloaded via:
+
+	http://www.offis.uni-oldenburg.de/projekte/dicom/dicom_software_e.html
+
+
+---
+Andrew Hewett, Marco Eichelberg, Andreas Barth, Sandra von Gehlen
+Oldenburg, 30 May, 1997

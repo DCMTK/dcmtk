@@ -1,0 +1,78 @@
+
+ANNOUNCEMENT
+
+Version 3.4.0 of the OFFIS DCMTK (DICOM ToolKit) software is now available
+for public release.  This release includes the following main changes 
+over the previous version (Version 3.3.1):
+
+- The DICOM data dictionary has been completely re-worked based
+  on the 1998 edition of the DICOM standard and the latest supplements.
+
+- The new module dcmimgle ("dcmimage light edition") contains routines to 
+  efficiently render DICOM grayscale images. The library supports all DICOM 
+  grayscale transformations including the various look-up tables. It also 
+  supports rotating, scaling, and processing of overlay bitmaps. This module 
+  has been added to DCMTK to support the Grayscale Softcopy Presentation 
+  State demonstrator (DICOMscope) which has been shown at the European 
+  Congress of Radiology 1999.
+  
+- The new module dcmpstat contains routines to read, manage and write DICOM 
+  Grayscale Softcopy Presentation State objects according to Supplement 33 
+  (revised frozen draft for demonstration, Version 18). This module has also 
+  been added to DCMTK to support the Grayscale Softcopy Presentation State 
+  demonstrator (DICOMscope) which has been shown at the European Congress of 
+  Radiology 1999.
+
+- All applications in the dcmdata and dcmnet modules have been updated to 
+  use a new command line option scheme which makes calls more self-explaining 
+  as the tools get more and more options.
+
+- Experimental support for the network transmission of DICOM images
+  in encapsulated transfer syntax (compressed) has been added to the
+  dcmnet library and the storescu, storescp and movescu applications.
+
+- Experimental support for C-GET and extended SOP class negotiation
+  has been added to the dcmnet library.  
+
+- The Worklist CTN now supports all type 1 and 2 attributes as return
+  keys and has also been ported to Windows.
+
+- New FAQ entries: Building DCMTK on HP-UX 10 or Unixware, Building the 
+  DCMTK libraries as shared objects on Unix platforms, Images received in 
+  /tmp when running imagectn as root.
+
+- Improved handling of unknown (or unsupported) VRs when reading or 
+  receiving explicit VR data. Allows to communicate with certain modalities 
+  using private VR names like "??" without extended length field.
+
+- Many bug fixes and minor improvements - See the dcmtk/CHANGES file for 
+  more details.
+
+
+Attention: The file format of the imagectn index file has changed with the 
+new release. You need to rebuild index files when updating imagectn to 
+DCMTK 3.4.0.
+
+Many people have contributed to this new release of DCMTK, appearing here 
+in alphabetical order. Thank you very much for your support!
+  Yongjian Bao <yb@innomed.de>
+  Heinz Blendinger <Heinz.Blendinger@med.siemens.de>
+  David Clunie <dclunie@idt.net> 
+  Sacha Helbig <helbig@scn.de>
+  Andy Hewett <hewett@medigration.de>
+  Markus Mertens <Markus.Mertens@uni-muenster.de>
+  Gilles Mevel <Gilles.Mevel@etiam.com>
+  Wolfgang Rapp <w1.rapp@von.ulm.de>
+  Alexander Sahler <sahler@informatik.uni-kl.de>
+  Andreas Schroeter <schroeter@microtherapy.de>
+  Lutz Vorwerk <vorwerk@ti.fhg.de>
+  
+OFFIS staff who have worked on this release are:
+  Marco Eichelberg <Eichelberg@OFFIS.Uni-Oldenburg.DE>
+  Joerg Riesmeier <Riesmeier@OFFIS.Uni-Oldenburg.DE>
+  
+The DCMTK software can be downloaded via:
+  http://www.offis.uni-oldenburg.de/projekte/dicom/
+
+
+Kuratorium OFFIS eV, Oldenburg, Germany, 1999-05-03

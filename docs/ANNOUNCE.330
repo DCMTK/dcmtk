@@ -1,0 +1,39 @@
+ANNOUNCEMENT
+
+Version 3.3 of the OFFIS DCMTK (DICOM ToolKit) software is now available
+for public release.  This release includes the following main changes 
+over the previous version (Version 3.2.1):
+
+- Improved support for Windows95/NT with project makefiles for
+  Microsoft Visual C++ 4.0
+
+- Fixes several problems related to opening files and networking
+  under Windows95/NT.  
+
+- Fixes several problems related to incorrect encoding of group length 
+  attributes, sequences and item lengths.  
+
+- Improved data dictionary support.  The data dictionary is now
+  implemented as a hash table with an optimised hash function.  Loading 
+  a data dictionary is now 4 times faster.
+
+- Provides a new framework for pixel data codecs (e.g. the JPEG processes).
+  This includes the new classes DcmPixelData, DcmCodec and supporters
+  but does not yet include any specific compression codec code.
+
+- Provides an emulation of ANSI-C++ string, list and stack classes.
+
+- Various bug-fixes detected during and after the CAR'97 DICOM Demonstration.
+
+See the dcmtk/CHANGES file for more details.
+
+The DCMTK software can be downloaded via:
+
+	http://www.offis.uni-oldenburg.de/projekte/dicom/dicom_software_e.html
+
+
+---
+Andrew Hewett, Marco Eichelberg, Andreas Barth, Sandra von Gehlen
+7 October 1997,
+Oldenburg, Germany
+

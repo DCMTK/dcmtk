@@ -1,0 +1,66 @@
+
+ANNOUNCEMENT
+
+Version 3.4.1 of the OFFIS DCMTK (DICOM ToolKit) software is now available
+for public release.  This release includes the following main changes 
+over the previous version (Version 3.4.0):
+
+- The DICOM data dictionary has been re-worked based on the 1999 edition of 
+  the DICOM standard, the latest supplements and correction proposals (CP 
+  package 6).
+
+- The speed of network transmission has increased significantly, in 
+  particular for small transfers like C-FIND. By default a 32K socket 
+  buffer is now used and the Nagle algorithm is switched off.
+
+- The grayscale calibration routines in the dcmimgle module have been
+  extended to support both the DICOM Grayscale Standard Display Function
+  and the CIE LAB display function.
+
+- The dcmpstat module has been reworked to implement the final version of
+  the Grayscale Softcopy Presentation State Supplement.
+
+- An implementation of a DICOM Basic Grayscale Print Management SCU 
+  supporting the Presentation LUT SOP Class has been added to the dcmpstat 
+  module.
+
+- The imagectn and ctndisp applications have been adapted to the common   
+  command line scheme introduced in version 3.4.0.
+
+- Experimental library support for redirecting error messages into a memory 
+  stream instead of printing them to stdout/stderr has been implemented 
+  (for GUI applications).
+
+- Experimental support for the Patient/Study Only Query/Retrieve model has 
+  been added to the imagectn application.
+
+- Many bug fixes and minor improvements - See the dcmtk/CHANGES file for 
+  more details.
+
+
+This version of the OFFIS DCMTK contains the C++ source code that is 
+required to compile the DICOMscope 2.0 software (as exhibited at RSNA 
+InfoRAD 1999) from source. However, the Java2 source code, which is also 
+required by DICOMscope 2.0, is distributed separately.
+
+
+Many people have contributed to this new release of DCMTK, appearing here 
+in alphabetical order. Thank you very much for your support!
+  Andreas Barth <Andreas.Barth@medical.bruker.de>
+  Andy Hewett <hewett@medigration.de>
+  David Lappen <dlappen@iname.com>
+  Markus Mertens <markus@bifurc.uni-muenster.de>
+  Gilles Mevel <Gilles.Mevel@etiam.com>
+  Sebastian Meyer <meyer@mevis.de>
+
+OFFIS staff who have worked on this release are:
+  Marco Eichelberg <Eichelberg@OFFIS.Uni-Oldenburg.DE>
+  Joerg Riesmeier <Riesmeier@OFFIS.Uni-Oldenburg.DE>
+  Andreas Thiel <Andreas.Thiel@Informatik.Uni-Oldenburg.DE>
+  
+The DCMTK software can be downloaded via:
+  http://www.offis.uni-oldenburg.de/projekte/dicom/
+
+
+Kuratorium OFFIS eV, Oldenburg, Germany, 2000-03-10
+

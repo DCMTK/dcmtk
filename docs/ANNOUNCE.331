@@ -1,0 +1,45 @@
+ANNOUNCEMENT
+
+Version 3.3.1 of the OFFIS DCMTK (DICOM ToolKit) software is now available
+for public release.  This release includes the following main changes 
+over the previous version (Version 3.3.0):
+
+- Added support for experimental use of the proposed new 
+  DICOM Value Representations UT (Unlimited Text) and VS (Virtual String).
+
+- Added basic support for the Structured Reporting (SR) SOP Classes.
+
+- Updated support for Supplements 15 (Visible Light), 
+  16 (Postscript Print Management), 17 (Modality Performed Procedure Step), 
+  22 (Presentation Look Up Table (LUT)), 23 (Structured Reporting), 
+  24 (Stored Print), 30 (Waveform Interchange).  
+
+- Improved auto-detection of transfer syntax 
+  (used when opening a DICOM file without metaheader).
+
+- Added IRIX related information to FAQ.
+
+- Fixed problem on Windows 95 (not NT) preventing the use
+  of explicit IP addresses instead of DNS/hostnames in configuration files
+  and command line switches.
+  
+- Fixed problem related to incorrect decoding of data containing
+  Curve Data repeating groups.
+
+- Fixed problem related to incorrect parsing of data 
+  encoded using the RLELossless transfer syntax.
+  
+- Various bug-fixes detected after the release of version 3.3.0.
+
+See the dcmtk/CHANGES file for more details.
+
+The DCMTK software can be downloaded via:
+
+	http://www.offis.uni-oldenburg.de/projekte/dicom/dicom_software_e.html
+
+
+---
+Andrew Hewett, Marco Eichelberg, Andreas Barth, Sandra von Gehlen
+17 February 1998,
+Oldenburg, Germany
+
