@@ -21,10 +21,10 @@
  *
  *  Purpose: class DcmVR: Value Representation
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-03-31 09:25:45 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2000-02-03 16:35:12 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcvr.cc,v $
- *  CVS/RCS Revision: $Revision: 1.16 $
+ *  CVS/RCS Revision: $Revision: 1.17 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -119,8 +119,9 @@ static DcmVREntry DcmVRDict[] = {
             
     { EVR_pixelSQ, "ps_EVR_pixelSQ", sizeof(Uint8), 
       DCMVR_PROP_NONSTANDARD | DCMVR_PROP_INTERNAL, 0, DCM_UndefinedLength },
-    { EVR_pixelItem, "pi_EVR_pixelItem", sizeof(Uint8), 
-      DCMVR_PROP_NONSTANDARD | DCMVR_PROP_INTERNAL, 0, DCM_UndefinedLength },
+    /* Moved from internal use to non standard only: necessary to distinguish from "normal" OB */
+    { EVR_pixelItem, "pi", sizeof(Uint8), 
+      DCMVR_PROP_NONSTANDARD, 0, DCM_UndefinedLength },
 
     { EVR_UNKNOWN, "??", sizeof(Uint8), /* EVR_UNKNOWN (i.e. "future" VRs) should be mapped to UN or OB */
       DCMVR_PROP_NONSTANDARD | DCMVR_PROP_INTERNAL | DCMVR_PROP_EXTENDEDLENGTHENCODING, 0, DCM_UndefinedLength },
@@ -370,7 +371,14 @@ int DcmVR::isEquivalent(const DcmVR& avr) const
 /*
  * CVS/RCS Log:
  * $Log: dcvr.cc,v $
- * Revision 1.16  1999-03-31 09:25:45  meichel
+ * Revision 1.17  2000-02-03 16:35:12  joergr
+ * Fixed bug: encapsulated data (pixel items) have never been loaded using
+ * method 'loadAllDataIntoMemory'. Therefore, encapsulated pixel data was
+ * never printed with 'dcmdump'.
+ * Corrected bug that caused wrong calculation of group length for sequence
+ * of items (e.g. encapsulated pixel data).
+ *
+ * Revision 1.16  1999/03/31 09:25:45  meichel
  * Updated copyright header in module dcmdata
  *
  *

@@ -21,10 +21,10 @@
  *
  *  Purpose: class DcmPixelItem
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-02-01 10:12:09 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2000-02-03 16:31:26 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcpxitem.cc,v $
- *  CVS/RCS Revision: $Revision: 1.9 $
+ *  CVS/RCS Revision: $Revision: 1.10 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -58,7 +58,7 @@ END_EXTERN_C
 DcmPixelItem::DcmPixelItem(const DcmTag &tag, const Uint32 len)
 : DcmOtherByteOtherWord(tag, len)
 {
-    Tag.setVR(EVR_OB);
+    Tag.setVR(EVR_pixelItem);
 }
 
 
@@ -116,7 +116,14 @@ E_Condition DcmPixelItem::writeTagAndLength(DcmStream & outStream,
 /*
 ** CVS/RCS Log:
 ** $Log: dcpxitem.cc,v $
-** Revision 1.9  2000-02-01 10:12:09  meichel
+** Revision 1.10  2000-02-03 16:31:26  joergr
+** Fixed bug: encapsulated data (pixel items) have never been loaded using
+** method 'loadAllDataIntoMemory'. Therefore, encapsulated pixel data was
+** never printed with 'dcmdump'.
+** Corrected bug that caused wrong calculation of group length for sequence
+** of items (e.g. encapsulated pixel data).
+**
+** Revision 1.9  2000/02/01 10:12:09  meichel
 ** Avoiding to include <stdlib.h> as extern "C" on Borland C++ Builder 4,
 **   workaround for bug in compiler header files.
 **
