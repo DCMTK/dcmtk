@@ -1,6 +1,11 @@
 
 Changes between releases are documented here.
 
+**** Changes from 2000.06.09 (riesmeier)
+
+- Updated dcm2pnm documentation.
+  Affects: dcmimage/docs/dcm2pnm.txt
+
 **** Changes from 2000.06.07 (riesmeier)
 
 - Added new command line option to change the polarity.
