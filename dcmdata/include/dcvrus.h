@@ -22,9 +22,9 @@
  *  Purpose: Interface of class DcmUnsignedShort
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-03-08 16:26:27 $
+ *  Update Date:      $Date: 2000-04-14 15:31:36 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcvrus.h,v $
- *  CVS/RCS Revision: $Revision: 1.12 $
+ *  CVS/RCS Revision: $Revision: 1.13 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -52,7 +52,7 @@ public:
 
     DcmUnsignedShort &operator=(const DcmUnsignedShort &obj) { DcmElement::operator=(obj); return *this; }
     virtual DcmEVR ident(void) const { return EVR_US; }
-    virtual void print(ostream & out = COUT, const OFBool showFullData = OFTrue,
+    virtual void print(ostream & out, const OFBool showFullData = OFTrue,
 		       const int level = 0, const char *pixelFileName = NULL,
 		       size_t *pixelCounter = NULL);
     virtual unsigned long getVM(void);
@@ -77,7 +77,11 @@ public:
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrus.h,v $
-** Revision 1.12  2000-03-08 16:26:27  meichel
+** Revision 1.13  2000-04-14 15:31:36  meichel
+** Removed default value from output stream passed to print() method.
+**   Required for use in multi-thread environments.
+**
+** Revision 1.12  2000/03/08 16:26:27  meichel
 ** Updated copyright header.
 **
 ** Revision 1.11  2000/03/03 14:05:29  meichel

@@ -22,9 +22,9 @@
  *  Purpose: Interface of class DcmMetaInfo
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-03-08 16:26:16 $
+ *  Update Date:      $Date: 2000-04-14 15:31:32 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcmetinf.h,v $
- *  CVS/RCS Revision: $Revision: 1.12 $
+ *  CVS/RCS Revision: $Revision: 1.13 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -75,7 +75,7 @@ public:
     virtual ~DcmMetaInfo();
 
     virtual DcmEVR ident(void) const { return EVR_metainfo; }
-    virtual void print(ostream & out = COUT, const OFBool showFullData = OFTrue,
+    virtual void print(ostream & out, const OFBool showFullData = OFTrue,
 		       const int level = 0, const char *pixelFileName = NULL,
 		       size_t *pixelCounter = NULL);
     virtual	void transferInit(void);
@@ -103,7 +103,11 @@ public:
 /*
 ** CVS/RCS Log:
 ** $Log: dcmetinf.h,v $
-** Revision 1.12  2000-03-08 16:26:16  meichel
+** Revision 1.13  2000-04-14 15:31:32  meichel
+** Removed default value from output stream passed to print() method.
+**   Required for use in multi-thread environments.
+**
+** Revision 1.12  2000/03/08 16:26:16  meichel
 ** Updated copyright header.
 **
 ** Revision 1.11  2000/03/03 14:05:24  meichel

@@ -22,9 +22,9 @@
  *  Purpose: Interface of class DcmItem
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-03-08 16:26:15 $
+ *  Update Date:      $Date: 2000-04-14 15:31:32 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcitem.h,v $
- *  CVS/RCS Revision: $Revision: 1.23 $
+ *  CVS/RCS Revision: $Revision: 1.24 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -88,7 +88,7 @@ public:
 
     virtual DcmEVR ident(void) const;
     virtual OFBool isLeaf(void) const { return OFFalse; }
-    virtual void print(ostream & out = COUT, const OFBool showFullData = OFTrue,
+    virtual void print(ostream & out, const OFBool showFullData = OFTrue,
                        const int level = 0, const char *pixelFileName = NULL,
                        size_t *pixelCounter = NULL);
     virtual unsigned long getVM();
@@ -190,18 +190,6 @@ public:
         double& aDouble, const unsigned long which,
         OFBool searchIntoSub = OFFalse);
 
-
-    /**
-     * This method is obsolete and is replaced by findIntegerNumber 
-     */
-    E_Condition findLong(
-        const DcmTagKey& xtag,
-        long& aLong, OFBool searchIntoSub = OFFalse) {
-        CERR << "WARNING: DcmItem::findLong(): obsolete method called." << endl
-             << "    Change code to use DcmItem::findIntegerNumber()" << endl;
-        return findIntegerNumber(xtag, aLong, 0, searchIntoSub);
-    }
-
 };
 
 //
@@ -251,7 +239,11 @@ E_Condition nextUp(DcmStack & stack);
 /*
 ** CVS/RCS Log:
 ** $Log: dcitem.h,v $
-** Revision 1.23  2000-03-08 16:26:15  meichel
+** Revision 1.24  2000-04-14 15:31:32  meichel
+** Removed default value from output stream passed to print() method.
+**   Required for use in multi-thread environments.
+**
+** Revision 1.23  2000/03/08 16:26:15  meichel
 ** Updated copyright header.
 **
 ** Revision 1.22  2000/03/03 14:05:24  meichel

@@ -22,9 +22,9 @@
  *  Purpose: Interface of class DcmUnsignedLongOffset
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-03-08 16:26:27 $
+ *  Update Date:      $Date: 2000-04-14 15:31:36 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcvrulup.h,v $
- *  CVS/RCS Revision: $Revision: 1.10 $
+ *  CVS/RCS Revision: $Revision: 1.11 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -58,7 +58,7 @@ class DcmUnsignedLongOffset : public DcmUnsignedLong
     virtual ~DcmUnsignedLongOffset(void);
 
     virtual DcmEVR ident(void) const;
-    virtual void print(ostream & out = COUT, const OFBool showFullData = OFTrue,
+    virtual void print(ostream & out, const OFBool showFullData = OFTrue,
                        const int level = 0, const char *pixelFileName = NULL,
 		               size_t *pixelCounter = NULL);
     virtual DcmObject*  setNextRecord(DcmObject* record);
@@ -73,7 +73,11 @@ class DcmUnsignedLongOffset : public DcmUnsignedLong
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrulup.h,v $
-** Revision 1.10  2000-03-08 16:26:27  meichel
+** Revision 1.11  2000-04-14 15:31:36  meichel
+** Removed default value from output stream passed to print() method.
+**   Required for use in multi-thread environments.
+**
+** Revision 1.10  2000/03/08 16:26:27  meichel
 ** Updated copyright header.
 **
 ** Revision 1.9  2000/03/03 14:05:28  meichel

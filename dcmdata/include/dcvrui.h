@@ -22,9 +22,9 @@
  *  Purpose: Interface of class DcmUniqueIdentifier
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-03-08 16:26:27 $
+ *  Update Date:      $Date: 2000-04-14 15:31:35 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcvrui.h,v $
- *  CVS/RCS Revision: $Revision: 1.13 $
+ *  CVS/RCS Revision: $Revision: 1.14 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -55,7 +55,7 @@ public:
     DcmUniqueIdentifier &operator=(const DcmUniqueIdentifier &obj) { DcmByteString::operator=(obj); return *this; }
  
     virtual DcmEVR ident(void) const { return EVR_UI; }
-    virtual void print(ostream & out = COUT, const OFBool showFullData = OFTrue,
+    virtual void print(ostream & out, const OFBool showFullData = OFTrue,
 		       const int level = 0, const char *pixelFileName = NULL,
 		       size_t *pixelCounter = NULL);
 
@@ -68,7 +68,11 @@ public:
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrui.h,v $
-** Revision 1.13  2000-03-08 16:26:27  meichel
+** Revision 1.14  2000-04-14 15:31:35  meichel
+** Removed default value from output stream passed to print() method.
+**   Required for use in multi-thread environments.
+**
+** Revision 1.13  2000/03/08 16:26:27  meichel
 ** Updated copyright header.
 **
 ** Revision 1.12  2000/03/03 14:05:28  meichel
