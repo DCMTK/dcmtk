@@ -7,9 +7,11 @@
            dcmimage/include/didocu.h
            dcmimage/include/diimage.h
            dcmimage/include/diinpxt.h
+           dcmimage/libsrc/Makefile.dep
            dcmimage/libsrc/dcmimage.cc
            dcmimage/libsrc/didocu.cc
            dcmimage/libsrc/diimage.cc
+	   
 
 - Additional search routine using a DcmStack
   Affects: dcmimage/include/didocu.h
