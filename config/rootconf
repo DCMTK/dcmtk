@@ -33,7 +33,7 @@ if test $module != config ; then
 	makelibsrcall="$makelibsrcall ${module}-libsrc-all"
 fi
 	makeinstall="$makeinstall ${module}-install"
-	makeinstallbin="$makeinstalletc ${module}-install-bin"
+	makeinstallbin="$makeinstallbin ${module}-install-bin"
 	makeinstalldoc="$makeinstalldoc ${module}-install-doc"
 	makeinstalletc="$makeinstalletc ${module}-install-etc"
 	makeinstalllib="$makeinstalllib ${module}-install-lib"
@@ -47,6 +47,8 @@ all: $makeall
 libsrc-all: $makelibsrcall
 
 install: $makeinstall dcmtk-install-doc install-man
+
+install-all: install install-lib install-html
 
 install-bin: $makeinstallbin
 

@@ -13,7 +13,9 @@ libsrc-all:  ofstd-libsrc-all dcmdata-libsrc-all dcmtls-libsrc-all dcmnet-libsrc
 
 install:  config-install ofstd-install dcmdata-install dcmtls-install dcmnet-install imagectn-install dcmwlm-install dcmimgle-install dcmsr-install dcmsign-install dcmpstat-install dcmimage-install dcmjpeg-install dcmtk-install-doc install-man
 
-install-bin:  config-install-etc ofstd-install-etc dcmdata-install-etc dcmtls-install-etc dcmnet-install-etc imagectn-install-etc dcmwlm-install-etc dcmimgle-install-etc dcmsr-install-etc dcmsign-install-etc dcmpstat-install-etc dcmimage-install-etc dcmjpeg-install-bin
+install-all: install install-lib install-html
+
+install-bin:  config-install-bin ofstd-install-bin dcmdata-install-bin dcmtls-install-bin dcmnet-install-bin imagectn-install-bin dcmwlm-install-bin dcmimgle-install-bin dcmsr-install-bin dcmsign-install-bin dcmpstat-install-bin dcmimage-install-bin dcmjpeg-install-bin
 
 install-doc:  config-install-doc ofstd-install-doc dcmdata-install-doc dcmtls-install-doc dcmnet-install-doc imagectn-install-doc dcmwlm-install-doc dcmimgle-install-doc dcmsr-install-doc dcmsign-install-doc dcmpstat-install-doc dcmimage-install-doc dcmjpeg-install-doc
 
