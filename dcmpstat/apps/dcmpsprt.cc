@@ -26,9 +26,9 @@
  *    Non-grayscale transformations in the presentation state are ignored.
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-11-27 15:47:54 $
+ *  Update Date:      $Date: 2003-12-01 16:54:44 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmpstat/apps/dcmpsprt.cc,v $
- *  CVS/RCS Revision: $Revision: 1.32 $
+ *  CVS/RCS Revision: $Revision: 1.33 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -567,10 +567,21 @@ int main(int argc, char *argv[])
           if (EC_Normal != dvi.selectDisplayPresentationLUT(opt_plutname))
           CERR << "warning: cannot set requested presentation LUT '" << opt_plutname << "', ignoring." << endl;
         } else {
-          if ((opt_LUTshape == 1)&&(EC_Normal != dvi.getCurrentPState().setCurrentPresentationLUT(DVPSP_identity)))
-            CERR << "warning: cannot set IDENTITY presentation LUT shape, ignoring." << endl;
-          else if ((opt_LUTshape == 2)&&(EC_Normal != dvi.getCurrentPState().setCurrentPresentationLUT(DVPSP_lin_od)))
-            CERR << "warning: cannot set LIN OD presentation LUT shape, ignoring." << endl;
+          // in the case of a Presentation LUT Shape, we set the shape inside
+          // the GSPS object to default (corresponding to IDENTITY for MONOCHROME2
+          // and INVERSE for MONOCHROME1). This will leave our image data unaltered.
+          // The LIN OD shape is only activated in the print handler, not the GSPS.
+          if ((opt_LUTshape == 1) || (opt_LUTshape == 2))
+          {
+            if (dvi.getCurrentPState().setDefaultPresentationLUTShape().bad())
+               CERR << "warning: cannot set presentation LUT shape, ignoring." << endl;
+
+            if (opt_LUTshape == 2)
+            {
+              if (dvi.getPrintHandler().setPresentationLUTShape(DVPSP_lin_od).bad())
+              CERR << "warning: cannot set LIN OD presentation LUT shape, ignoring." << endl;
+            }
+          }
         }
 
         // save grayscale hardcopy image.
@@ -694,7 +705,10 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmpsprt.cc,v $
- * Revision 1.32  2002-11-27 15:47:54  meichel
+ * Revision 1.33  2003-12-01 16:54:44  meichel
+ * Fixed handling of LIN OD LUT Shape
+ *
+ * Revision 1.32  2002/11/27 15:47:54  meichel
  * Adapted module dcmpstat to use of new header file ofstdinc.h
  *
  * Revision 1.31  2002/11/26 08:44:28  meichel
