@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DSRWaveformChannelList
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-10-09 14:43:02 $
- *  CVS/RCS Revision: $Revision: 1.17 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2003-10-13 13:28:56 $
+ *  CVS/RCS Revision: $Revision: 1.18 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -40,8 +40,14 @@
 #define INCLUDE_CSTDIO
 #include "ofstdinc.h"
 
+#ifdef HAVE_EXPLICIT_TEMPLATE_SPECIALIZATION
+#define EXPLICIT_SPECIALIZATION template<>
+#else
+#define EXPLICIT_SPECIALIZATION
+#endif
+
 /* declared in class DSRListOfItems<T> */
-const DSRWaveformChannelItem DSRListOfItems<DSRWaveformChannelItem>::EmptyItem;
+EXPLICIT_SPECIALIZATION const DSRWaveformChannelItem DSRListOfItems<DSRWaveformChannelItem>::EmptyItem;
 
 
 DSRWaveformChannelList::DSRWaveformChannelList()
@@ -204,7 +210,10 @@ OFCondition DSRWaveformChannelList::putString(const char *stringValue)
 /*
  *  CVS/RCS Log:
  *  $Log: dsrwavch.cc,v $
- *  Revision 1.17  2003-10-09 14:43:02  joergr
+ *  Revision 1.18  2003-10-13 13:28:56  meichel
+ *  Added code for explicit template specialization, needed for Borland C++
+ *
+ *  Revision 1.17  2003/10/09 14:43:02  joergr
  *  Replaced wrong newline character sequence.
  *
  *  Revision 1.16  2003/09/03 16:00:12  meichel

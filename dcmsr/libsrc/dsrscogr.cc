@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DSRGraphicDataList
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-08-07 13:43:18 $
- *  CVS/RCS Revision: $Revision: 1.13 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2003-10-13 13:28:56 $
+ *  CVS/RCS Revision: $Revision: 1.14 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -33,13 +33,16 @@
 
 
 #include "osconfig.h"    /* make sure OS specific configuration is included first */
-
 #include "dsrscogr.h"
 #include "ofstd.h"
 
+#ifdef HAVE_EXPLICIT_TEMPLATE_SPECIALIZATION
+#define EXPLICIT_SPECIALIZATION template<>
+#else
+#define EXPLICIT_SPECIALIZATION
+#endif
 
-/* declared in class DSRListOfItems<T> */
-const DSRGraphicDataItem DSRListOfItems<DSRGraphicDataItem>::EmptyItem;
+EXPLICIT_SPECIALIZATION const DSRGraphicDataItem DSRListOfItems<DSRGraphicDataItem>::EmptyItem;
 
 
 DSRGraphicDataList::DSRGraphicDataList()
@@ -221,7 +224,10 @@ OFCondition DSRGraphicDataList::putString(const char *stringValue)
 /*
  *  CVS/RCS Log:
  *  $Log: dsrscogr.cc,v $
- *  Revision 1.13  2003-08-07 13:43:18  joergr
+ *  Revision 1.14  2003-10-13 13:28:56  meichel
+ *  Added code for explicit template specialization, needed for Borland C++
+ *
+ *  Revision 1.13  2003/08/07 13:43:18  joergr
  *  Added new putString() method.
  *  Adapted for use of OFListConstIterator, needed for compiling with HAVE_STL.
  *
