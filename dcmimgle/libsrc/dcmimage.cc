@@ -21,10 +21,10 @@
  *
  *  Purpose: DicomImage-Interface (Source)
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-12-09 13:34:50 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2003-06-03 09:30:41 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/libsrc/dcmimage.cc,v $
- *  CVS/RCS Revision: $Revision: 1.21 $
+ *  CVS/RCS Revision: $Revision: 1.22 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -46,6 +46,7 @@
 #include "didocu.h"
 #include "diregbas.h"
 #include "diplugin.h"
+#include "dcdirent.h"  /* needed by MSVC5 */
 
 #define INCLUDE_CCTYPE
 #include "ofstdinc.h"
@@ -819,7 +820,10 @@ int DicomImage::writePluginFormat(const DiPluginFormat *plugin,
  *
  * CVS/RCS Log:
  * $Log: dcmimage.cc,v $
- * Revision 1.21  2002-12-09 13:34:50  joergr
+ * Revision 1.22  2003-06-03 09:30:41  meichel
+ * Added include for dcdirent.h, needed by MSVC5 with STL
+ *
+ * Revision 1.21  2002/12/09 13:34:50  joergr
  * Renamed parameter/local variable to avoid name clashes with global
  * declaration left and/or right (used for as iostream manipulators).
  *
