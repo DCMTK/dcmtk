@@ -22,9 +22,9 @@
  *  Purpose: Class for modifying DICOM-Files and Datasets
  *
  *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2004-04-19 14:45:07 $
+ *  Update Date:      $Date: 2004-05-14 12:08:36 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/apps/mdfdsman.h,v $
- *  CVS/RCS Revision: $Revision: 1.9 $
+ *  CVS/RCS Revision: $Revision: 1.10 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -94,7 +94,8 @@ public:
     OFCondition deleteTag(OFString tag_path,
                           const OFBool &all_tags);
 
-    /** Saves current Dataset back to a file
+    /** Saves current Dataset back to a file. Caution: After saving
+     *  MdfDatasetManager keeps working on old filename.
      *  @param file filename to save to
      *  @return returns EC_normal if everything is ok, else an error
      */
@@ -106,12 +107,21 @@ public:
     OFCondition saveFile();
 
     /** Returns the Dataset, that this MdfDatasetManager handles.
-     *  You should use the returned Dataset readonly to avoid
-     *  sideeffects with other class-methods, that modify this Dataset.
+     *  You should use the returned object with care to avoid
+     *  sideeffects with other class-methods, that modify this object, too.
      *  @return returns the Dataset, this MdfDatasetManager manages and NULL, if
      *          no Dataset is loaded
      */
     DcmDataset* getDataset();
+
+
+    /** Returns the DcmFileFormat, that this MdfDatasetManager handles.
+     *  You should use the returned object with care to avoid
+     *  sideeffects with other class-methods, that modify this object, too.
+     *  @return returns the DcmFileFormat, this MdfDatasetManager manages and
+     *          NULL, if no file is loaded
+     */
+    DcmFileFormat* getFileFormat();
 
     /** Returns filename of the file, that's loaded actually.
      *  @return returns filename and "" if no file is loaded.
@@ -172,7 +182,10 @@ private:
 /*
 ** CVS/RCS Log:
 ** $Log: mdfdsman.h,v $
-** Revision 1.9  2004-04-19 14:45:07  onken
+** Revision 1.10  2004-05-14 12:08:36  onken
+** Additional documentation added.
+**
+** Revision 1.9  2004/04/19 14:45:07  onken
 ** Restructured code to avoid default parameter values for "complex types" like
 ** OFString. Required for Sun CC 2.0.1.
 **

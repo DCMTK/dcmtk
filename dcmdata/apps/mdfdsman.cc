@@ -22,8 +22,8 @@
  *  Purpose: Class for modifying DICOM-Files and Datasets
  *
  *  Last Update:      $Author: onken $
- *  Update Date:      $Date: 2004-04-19 14:45:07 $
- *  CVS/RCS Revision: $Revision: 1.12 $
+ *  Update Date:      $Date: 2004-05-14 12:08:36 $
+ *  CVS/RCS Revision: $Revision: 1.13 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -479,7 +479,8 @@ OFCondition MdfDatasetManager::deleteTag(OFString tag_path,
 OFCondition MdfDatasetManager::saveFile(const char *file)
 // Date         : May, 13th, 2003
 // Author       : Michael Onken
-// Task         : Saves current Dataset back to a file
+// Task         : Saves current Dataset to a file. Caution: After saving
+//                MdfDatasetManager keeps working on old filename.
 // Parameters   : file - [in] filename to save to
 // Return Value : returns EC_normal if everything is ok, else an error
 {
@@ -564,6 +565,18 @@ DcmDataset* MdfDatasetManager::getDataset()
     return dset;
 }
 
+DcmFileFormat* MdfDatasetManager::getFileFormat()
+// Date         : October, 1st, 2003
+// Author       : Michael Onken
+// Task         : Returns the Dataset, that this MdfDatasetManager handles.
+//                You should use the returned Dataset readonly to avoid
+//                sideeffects with other class-methods, that modify
+//                this Dataset.
+// Return Value : returns the Dataset, this MdfDatasetManager manages and NULL,
+//                if no Dataset is loaded
+{
+    return dfile;
+}
 
 // Date         : December, 17st, 2003
 // Author       : Michael Onken
@@ -609,7 +622,10 @@ MdfDatasetManager::~MdfDatasetManager()
 /*
 ** CVS/RCS Log:
 ** $Log: mdfdsman.cc,v $
-** Revision 1.12  2004-04-19 14:45:07  onken
+** Revision 1.13  2004-05-14 12:08:36  onken
+** Additional documentation added.
+**
+** Revision 1.12  2004/04/19 14:45:07  onken
 ** Restructured code to avoid default parameter values for "complex types" like
 ** OFString. Required for Sun CC 2.0.1.
 **
