@@ -347,8 +347,8 @@ Step 4:
 Step 4 will install the executables and some support files (data dictionary,
 configuration and documentation files).  If you also wish to install the
 libraries and include files then use the "make install-lib".  For the HTML
-documentation (see below) use "make install-html", for man pages of all command
-line tools use "make install-man" (requires Doxygen to be installed).
+documentation (see below) use "make install-html" (requires Doxygen to be
+installed).
 
 Step 5:
     make distclean
@@ -548,8 +548,8 @@ dcmtk's subprojects can be built.  In case you want to build all libraries
 and applications, mark the "ALL_BUILD" subproject and build it.
 
 
-HTML DOCUMENTATION
-==================
+HTML DOCUMENTATION AND MAN PAGES
+================================
 
 Most DCMTK modules have been documented with Doxygen (http://www.doxygen.org/),
 a free source code documentation system similar to Javadoc.  Users who have
@@ -565,6 +565,11 @@ partially documented.  See FAQ entry: "Where is rest of the documentation?"
 
 DOC++ (see http://docpp.sourceforge.net/), another source code documentation
 system, is not actively supported any more.  However, it may still work.
+
+On Unix platforms, man pages for all command line tools are installed during
+the "make install" step.  In order to use them, just add the directory (e.g.
+/usr/local/dicom/man) to the MANPATH environment variable.  Try "man dcmdump"
+to check whether it works.
 
 
 COMPILE TIME FLAGS AND ENVIRONMENT VARIABLES
