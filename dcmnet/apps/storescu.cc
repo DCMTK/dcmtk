@@ -35,10 +35,10 @@
 **		Kuratorium OFFIS e.V., Oldenburg, Germany
 **
 **
-** Last Update:		$Author: hewett $
-** Update Date:		$Date: 1998-01-14 14:35:17 $
+** Last Update:		$Author: joergr $
+** Update Date:		$Date: 1998-04-02 14:46:46 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/apps/storescu.cc,v $
-** CVS/RCS Revision:	$Revision: 1.18 $
+** CVS/RCS Revision:	$Revision: 1.19 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -245,8 +245,7 @@ main(int argc, char *argv[])
 	    if (argv[i][2] == 'i') {
 		opt_networkTransferSyntax = EXS_LittleEndianImplicit;
 	    } else if ((argv[i][2] == '\0') && (argc >= (i+1))) {
-		ourTitle = argv[i];
-		i++;
+		ourTitle = argv[++i];
 	    } else {
 		usage();
 	    }
@@ -600,7 +599,10 @@ cstore(T_ASC_Association * assoc, const char *fname)
 /*
 ** CVS Log
 ** $Log: storescu.cc,v $
-** Revision 1.18  1998-01-14 14:35:17  hewett
+** Revision 1.19  1998-04-02 14:46:46  joergr
+** Corrected bug in command line parser of storescu.
+**
+** Revision 1.18  1998/01/14 14:35:17  hewett
 ** Added command line option (-ti) to restrict association negotiation
 ** to only propose the default Little Endian Implicit VR Transfer Syntax.
 ** Modified existing -u command line option to also disable generation
