@@ -21,10 +21,10 @@
  *
  *  Purpose: Class for connecting to a file-based data source.
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-12-09 13:40:49 $
+ *  Last Update:      $Author: wilkens $
+ *  Update Date:      $Date: 2002-12-16 11:08:34 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmwlm/include/Attic/wldsfs.h,v $
- *  CVS/RCS Revision: $Revision: 1.8 $
+ *  CVS/RCS Revision: $Revision: 1.9 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -34,6 +34,7 @@
 #ifndef WlmDataSourceFileSystem_h
 #define WlmDataSourceFileSystem_h
 
+#include "osconfig.h"
 #include "wlds.h"
 
 class WlmFileSystemInteractionManager;
@@ -136,7 +137,10 @@ class WlmDataSourceFileSystem : public WlmDataSource
 /*
 ** CVS Log
 ** $Log: wldsfs.h,v $
-** Revision 1.8  2002-12-09 13:40:49  joergr
+** Revision 1.9  2002-12-16 11:08:34  wilkens
+** Added missing #include "osconfig.h" to certain files.
+**
+** Revision 1.8  2002/12/09 13:40:49  joergr
 ** Renamed parameter to avoid name clash with global function index().
 **
 ** Revision 1.7  2002/08/12 10:56:08  wilkens

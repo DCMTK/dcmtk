@@ -22,9 +22,9 @@
  *  Purpose: Type definitions and macros for dcmwlm project.
  *
  *  Last Update:      $Author: wilkens $
- *  Update Date:      $Date: 2002-08-12 10:56:09 $
+ *  Update Date:      $Date: 2002-12-16 11:08:36 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmwlm/include/Attic/wltypdef.h,v $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -33,6 +33,8 @@
 
 #ifndef WlmTypeDefinitions_h
 #define WlmTypeDefinitions_h
+
+#include "osconfig.h"
 
   /** Data source status types
    */
@@ -138,7 +140,10 @@ const OFCondition WLM_EC_CannotConnectToDataSource                 ( WLM_ECC_Can
 /*
 ** CVS Log
 ** $Log: wltypdef.h,v $
-** Revision 1.5  2002-08-12 10:56:09  wilkens
+** Revision 1.6  2002-12-16 11:08:36  wilkens
+** Added missing #include "osconfig.h" to certain files.
+**
+** Revision 1.5  2002/08/12 10:56:09  wilkens
 ** Made some modifications in in order to be able to create a new application
 ** which contains both wlmscpdb and ppsscpdb and another application which
 ** contains both wlmscpfs and ppsscpfs.

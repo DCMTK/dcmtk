@@ -23,9 +23,9 @@
  *           management service class providers based on the file system.
  *
  *  Last Update:      $Author: wilkens $
- *  Update Date:      $Date: 2002-08-12 10:55:48 $
+ *  Update Date:      $Date: 2002-12-16 11:08:28 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmwlm/apps/wlcefs.h,v $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -34,6 +34,8 @@
 
 #ifndef WlmConsoleEngineFileSystem_h
 #define WlmConsoleEngineFileSystem_h
+
+#include "osconfig.h"
 
 class WlmDataSource;
 class OFConsoleApplication;

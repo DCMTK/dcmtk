@@ -23,9 +23,9 @@
  *           class provider engines.
  *
  *  Last Update:      $Author: wilkens $
- *  Update Date:      $Date: 2002-12-12 16:48:35 $
+ *  Update Date:      $Date: 2002-12-16 11:08:36 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmwlm/include/Attic/wlmactmg.h,v $
- *  CVS/RCS Revision: $Revision: 1.9 $
+ *  CVS/RCS Revision: $Revision: 1.10 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -34,6 +34,8 @@
 
 #ifndef WlmActivityManager_h
 #define WlmActivityManager_h
+
+#include "osconfig.h"
 
 class WlmDataSource;
 class OFCondition;
@@ -124,7 +126,10 @@ class WlmActivityManager
 /*
 ** CVS Log
 ** $Log: wlmactmg.h,v $
-** Revision 1.9  2002-12-12 16:48:35  wilkens
+** Revision 1.10  2002-12-16 11:08:36  wilkens
+** Added missing #include "osconfig.h" to certain files.
+**
+** Revision 1.9  2002/12/12 16:48:35  wilkens
 ** Added some code to avoid compiler warning (unreachable code) on Sun CC 2.0.1.
 **
 ** Revision 1.8  2002/08/05 09:09:59  wilkens

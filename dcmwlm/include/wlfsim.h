@@ -21,10 +21,10 @@
 *
 *  Purpose: Class for managing file system interaction.
 *
-*  Last Update:      $Author: joergr $
-*  Update Date:      $Date: 2002-12-09 13:41:43 $
+*  Last Update:      $Author: wilkens $
+*  Update Date:      $Date: 2002-12-16 11:08:35 $
 *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmwlm/include/Attic/wlfsim.h,v $
-*  CVS/RCS Revision: $Revision: 1.3 $
+*  CVS/RCS Revision: $Revision: 1.4 $
 *  Status:           $State: Exp $
 *
 *  CVS/RCS Log at end of file
@@ -33,6 +33,8 @@
 
 #ifndef WlmFileSystemInteractionManager_h
 #define WlmFileSystemInteractionManager_h
+
+#include "osconfig.h"
 
 template <class T> class OFOrderedSet;
 class DcmTagKey;
@@ -154,7 +156,10 @@ class WlmFileSystemInteractionManager
 /*
 ** CVS Log
 ** $Log: wlfsim.h,v $
-** Revision 1.3  2002-12-09 13:41:43  joergr
+** Revision 1.4  2002-12-16 11:08:35  wilkens
+** Added missing #include "osconfig.h" to certain files.
+**
+** Revision 1.3  2002/12/09 13:41:43  joergr
 ** Renamed parameter to avoid name clash with global function index().
 ** Added private undefined copy constructor and/or assignment operator.
 **
