@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2002, OFFIS
+ *  Copyright (C) 2002-2003, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose: Class for time functions
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-05-24 09:43:05 $
+ *  Update Date:      $Date: 2003-09-15 12:12:56 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/include/Attic/oftime.h,v $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -32,8 +32,8 @@
  */
 
 
-#ifndef __OFTIME_H
-#define __OFTIME_H
+#ifndef OFTIME_H
+#define OFTIME_H
 
 #include "osconfig.h"
 
@@ -60,7 +60,8 @@ class OFTime
 
  public:
 
-    /** constructor
+    /** default constructor. 
+     *  Initializes Hour, Minute, Second and TimeZone to 0.
      */
     OFTime();
 
@@ -96,7 +97,7 @@ class OFTime
      *  @param timeVal time value compared with the current value
      *  @return OFTrue if given time is equal, OFFalse otherwise
      */
-    virtual OFBool operator==(const OFTime &timeVal);
+    virtual OFBool operator==(const OFTime &timeVal) const;
 
     /** comparison operator (unequal)
      *  Please note that the time values are first transformed to the Coordinated Universal
@@ -104,7 +105,7 @@ class OFTime
      *  @param timeVal time value compared with the current value
      *  @return OFTrue if given time is unequal, OFFalse otherwise
      */
-    virtual OFBool operator!=(const OFTime &timeVal);
+    virtual OFBool operator!=(const OFTime &timeVal) const;
 
     /** comparison operator (less than)
      *  Please note that the time values are first transformed to the Coordinated Universal
@@ -112,9 +113,9 @@ class OFTime
      *  values with different time zones are compared and the UTC transformation causes a
      *  time overflow (> 23:59:59...) for one time value only.
      *  @param timeVal time value compared with the current value
-     *  @return OFTrue if given time is earlier than the current value, OFFalse otherwise
+     *  @return OFTrue if current time is earlier than the given value, OFFalse otherwise
      */
-    virtual OFBool operator<(const OFTime &timeVal);
+    virtual OFBool operator<(const OFTime &timeVal) const;
 
     /** comparison operator (less than or equal)
      *  Please note that the time values are first transformed to the Coordinated Universal
@@ -122,9 +123,10 @@ class OFTime
      *  values with different time zones are compared and the UTC transformation causes a
      *  time overflow (> 23:59:59...) for one time value only.
      *  @param timeVal time value compared with the current value
-     *  @return OFTrue if given time is earlier or on the same day, OFFalse otherwise
+     *  @return OFTrue if current time is earlier than or identical to the given value,
+     *    OFFalse otherwise
      */
-    virtual OFBool operator<=(const OFTime &timeVal);
+    virtual OFBool operator<=(const OFTime &timeVal) const;
 
     /** comparison operator (greater than or equal)
      *  Please note that the time values are first transformed to the Coordinated Universal
@@ -132,9 +134,10 @@ class OFTime
      *  values with different time zones are compared and the UTC transformation causes a
      *  time overflow (> 23:59:59...) for one time value only.
      *  @param timeVal time value compared with the current value
-     *  @return OFTrue if given time is later or on the same day, OFFalse otherwise
+     *  @return OFTrue if current time is later than or identical to the given value,
+     *    OFFalse otherwise
      */
-    virtual OFBool operator>=(const OFTime &timeVal);
+    virtual OFBool operator>=(const OFTime &timeVal) const;
 
     /** comparison operator (greater than)
      *  Please note that the time values are first transformed to the Coordinated Universal
@@ -142,9 +145,9 @@ class OFTime
      *  values with different time zones are compared and the UTC transformation causes a
      *  time overflow (> 23:59:59...) for one time value only.
      *  @param timeVal time value compared with the current value
-     *  @return OFTrue if given time is later than the current value, OFFalse otherwise
+     *  @return OFTrue if current time is later than the given value, OFFalse otherwise
      */
-    virtual OFBool operator>(const OFTime &timeVal);
+    virtual OFBool operator>(const OFTime &timeVal) const;
 
     /** reset the time value.
      *  Sets the hour, minute, second and time zone to "0".
@@ -429,7 +432,11 @@ ostream& operator<<(ostream& stream, const OFTime &timeVal);
  *
  * CVS/RCS Log:
  * $Log: oftime.h,v $
- * Revision 1.4  2002-05-24 09:43:05  joergr
+ * Revision 1.5  2003-09-15 12:12:56  joergr
+ * Fixed incorrect/improper comments of the comparision operators. Enhanced
+ * comment of the default constructor. Made comparison operators const.
+ *
+ * Revision 1.4  2002/05/24 09:43:05  joergr
  * Renamed some parameters/variables to avoid ambiguities.
  *
  * Revision 1.3  2002/04/19 10:42:51  joergr

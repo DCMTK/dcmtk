@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2002, OFFIS
+ *  Copyright (C) 2002-2003, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose: Combined class for date and time functions
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-05-24 09:43:04 $
+ *  Update Date:      $Date: 2003-09-15 12:12:56 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/include/Attic/ofdatime.h,v $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -32,8 +32,8 @@
  */
 
 
-#ifndef __OFDATIME_H
-#define __OFDATIME_H
+#ifndef OFDATIME_H
+#define OFDATIME_H
 
 #include "osconfig.h"
 
@@ -53,7 +53,8 @@ class OFDateTime
 
  public:
 
-    /** constructor
+    /** default constructor.
+     *  Initializes Date and Time to 0.
      */
     OFDateTime();
     
@@ -85,7 +86,7 @@ class OFDateTime
      *  @param dateTime date and time value compared with the current value
      *  @return OFTrue if given date and time is equal, OFFalse otherwise
      */
-    virtual OFBool operator==(const OFDateTime &dateTime);
+    virtual OFBool operator==(const OFDateTime &dateTime) const;
 
     /** comparison operator (unequal)
      *  Please note that the time values are first transformed to the Coordinated Universal
@@ -93,7 +94,7 @@ class OFDateTime
      *  @param dateTime date and time value compared with the current value
      *  @return OFTrue if given date or time is unequal, OFFalse otherwise
      */
-    virtual OFBool operator!=(const OFDateTime &dateTime);
+    virtual OFBool operator!=(const OFDateTime &dateTime) const;
 
     /** reset the date/time value.
      *  Sets all date and all time components to '0'. NB: Date becomes invalid.
@@ -211,7 +212,11 @@ ostream& operator<<(ostream& stream, const OFDateTime &dateTime);
  *
  * CVS/RCS Log:
  * $Log: ofdatime.h,v $
- * Revision 1.2  2002-05-24 09:43:04  joergr
+ * Revision 1.3  2003-09-15 12:12:56  joergr
+ * Fixed incorrect/improper comments of the comparision operators. Enhanced
+ * comment of the default constructor. Made comparison operators const.
+ *
+ * Revision 1.2  2002/05/24 09:43:04  joergr
  * Renamed some parameters/variables to avoid ambiguities.
  *
  * Revision 1.1  2002/04/11 12:12:23  joergr

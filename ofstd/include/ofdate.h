@@ -21,10 +21,10 @@
  *
  *  Purpose: Class for date functions
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2003-07-04 13:30:37 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2003-09-15 12:12:56 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/include/Attic/ofdate.h,v $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -32,8 +32,8 @@
  */
 
 
-#ifndef __OFDATE_H
-#define __OFDATE_H
+#ifndef OFDATE_H
+#define OFDATE_H
 
 #include "osconfig.h"
 
@@ -45,6 +45,7 @@ END_EXTERN_C
 
 #include "ofstring.h"      /* for class OFString */
 #include "ofstream.h"      /* for ostream */
+
 
 /*---------------------*
  *  class declaration  *
@@ -60,7 +61,8 @@ class OFDate
 
  public:
 
-    /** constructor
+    /** default constructor.
+     *  Initializes Year, Month and Day to 0.
      */
     OFDate();
 
@@ -92,37 +94,41 @@ class OFDate
      *  @param dateVal date value compared with the current value
      *  @return OFTrue if given date is equal, OFFalse otherwise
      */
-    virtual OFBool operator==(const OFDate &dateVal);
+    virtual OFBool operator==(const OFDate &dateVal) const;
 
     /** comparison operator (unequal)
      *  @param dateVal date value compared with the current value
      *  @return OFTrue if given date is unequal, OFFalse otherwise
      */
-    virtual OFBool operator!=(const OFDate &dateVal);
+    virtual OFBool operator!=(const OFDate &dateVal) const;
 
     /** comparison operator (less than)
      *  @param dateVal date value compared with the current value
-     *  @return OFTrue if given date is earlier than the current value, OFFalse otherwise
+     *  @return OFTrue if current date is earlier than the given value,
+     *    OFFalse otherwise
      */
-    virtual OFBool operator<(const OFDate &dateVal);
+    virtual OFBool operator<(const OFDate &dateVal) const;
 
     /** comparison operator (less than or equal)
      *  @param dateVal date value compared with the current value
-     *  @return OFTrue if given date is earlier or on the same day, OFFalse otherwise
+     *  @return OFTrue if current date is earlier than or identical to the given value,
+     *    OFFalse otherwise
      */
-    virtual OFBool operator<=(const OFDate &dateVal);
+    virtual OFBool operator<=(const OFDate &dateVal) const;
 
     /** comparison operator (greater than or equal)
      *  @param dateVal date value compared with the current value
-     *  @return OFTrue if given date is later or on the same day, OFFalse otherwise
+     *  @return OFTrue if current date is later than or identical to the given value,
+     *    OFFalse otherwise
      */
-    virtual OFBool operator>=(const OFDate &dateVal);
+    virtual OFBool operator>=(const OFDate &dateVal) const;
 
     /** comparison operator (greater than)
      *  @param dateVal date value compared with the current value
-     *  @return OFTrue if given date is later than the current value, OFFalse otherwise
+     *  @return OFTrue if current date is later than the given value,
+     *    OFFalse otherwise
      */
-    virtual OFBool operator>(const OFDate &dateVal);
+    virtual OFBool operator>(const OFDate &dateVal) const;
 
     /** reset the date value.
      *  Sets the year, month and day to "0". NB: Date becomes invalid.
@@ -264,7 +270,11 @@ ostream& operator<<(ostream& stream, const OFDate &dateVal);
  *
  * CVS/RCS Log:
  * $Log: ofdate.h,v $
- * Revision 1.4  2003-07-04 13:30:37  meichel
+ * Revision 1.5  2003-09-15 12:12:56  joergr
+ * Fixed incorrect/improper comments of the comparision operators. Enhanced
+ * comment of the default constructor. Made comparison operators const.
+ *
+ * Revision 1.4  2003/07/04 13:30:37  meichel
  * Added include for ofstream.h, to make sure ofstream is correctly defined
  *
  * Revision 1.3  2002/05/24 09:43:04  joergr
