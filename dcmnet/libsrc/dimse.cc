@@ -57,9 +57,9 @@
 **      Module Prefix: DIMSE_
 **
 ** Last Update:         $Author: meichel $
-** Update Date:         $Date: 2003-06-04 14:27:46 $
+** Update Date:         $Date: 2003-10-22 16:48:47 $
 ** Source File:         $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/libsrc/dimse.cc,v $
-** CVS/RCS Revision:    $Revision: 1.36 $
+** CVS/RCS Revision:    $Revision: 1.37 $
 ** Status:              $State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -1270,9 +1270,6 @@ DIMSE_receiveCommand(T_ASC_Association * assoc,
     /* parse the information in cmdSet and create a corresponding T_DIMSE_Message */
     /* structure which represents the the DIMSE message which was received */
     cond = DIMSE_parseCmdObject(msg, cmdSet);
-    if (cond != EC_Normal) {
-        delete cmdSet;    
-    }
     
     /* if the T_DIMSE_Message structure was created successfully, validate the message, i.e. */
     /* check if the information which is contained in msg meets certain conditions */
@@ -1764,7 +1761,10 @@ void DIMSE_warning(T_ASC_Association *assoc,
 /*
 ** CVS Log
 ** $Log: dimse.cc,v $
-** Revision 1.36  2003-06-04 14:27:46  meichel
+** Revision 1.37  2003-10-22 16:48:47  meichel
+** Fixed double deletion of command set if parsing of command set fails.
+**
+** Revision 1.36  2003/06/04 14:27:46  meichel
 ** Cleaned up usage of boolean constants
 **
 ** Revision 1.35  2003/06/02 16:44:11  meichel
