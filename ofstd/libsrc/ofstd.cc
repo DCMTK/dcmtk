@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1997-2002, OFFIS
+ *  Copyright (C) 2001-2003, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -92,9 +92,9 @@
  *
  *  Purpose: Class for various helper functions
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-12-13 13:45:35 $
- *  CVS/RCS Revision: $Revision: 1.14 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2003-03-12 14:57:51 $
+ *  CVS/RCS Revision: $Revision: 1.15 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -397,6 +397,7 @@ const OFString &OFStandard::convertToMarkupString(const OFString &sourceString,
     markupString.clear();
     /* avoid to resize the string too often */
     markupString.resize(strlen(str));
+    /* replace HTML/XML reserved characters */
     while (*str != 0)
     {
         /* less than */
@@ -411,6 +412,9 @@ const OFString &OFStandard::convertToMarkupString(const OFString &sourceString,
         /* quotation mark */
         else if (*str == '"')
             markupString += "&quot;";
+        /* apostrophe */
+        else if (*str == '\'')
+            markupString += "&apos;";
         /* newline: LF, CR, LF CR, CR LF */
         else if ((*str == '\012') || (*str == '\015'))
         {
@@ -422,13 +426,13 @@ const OFString &OFStandard::convertToMarkupString(const OFString &sourceString,
                 /* "<br>" and "&para;" not defined in XML - requires DTD definition */
                 markupString += "&#182;";
             } else {
+                /* HTML mode */
                 if (newlineAllowed)
                     markupString += "<br>\n";
                 else
                     markupString += "&para;";
             }
-        }
-        else {
+        } else {
             /* other character: ... */
             const size_t charValue = (size_t)(*(const unsigned char *)str);
             if (convertNonASCII && (charValue > 127))
@@ -1383,7 +1387,11 @@ OFBool OFStandard::stringMatchesCharacterSet( const char *str, const char *chars
 
 /*
  *  $Log: ofstd.cc,v $
- *  Revision 1.14  2002-12-13 13:45:35  meichel
+ *  Revision 1.15  2003-03-12 14:57:51  joergr
+ *  Added apostrophe (') to the list of characters to be replaced by the
+ *  corresponding HTML/XML mnenonic.
+ *
+ *  Revision 1.14  2002/12/13 13:45:35  meichel
  *  Removed const from decodeBase64() return code, needed on MIPSpro
  *
  *  Revision 1.13  2002/12/09 13:10:46  joergr

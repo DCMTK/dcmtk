@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2002, OFFIS
+ *  Copyright (C) 2000-2003, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,10 +21,10 @@
  *
  *  Purpose: Class for various helper functions
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-12-13 13:45:33 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2003-03-12 14:57:47 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/include/Attic/ofstd.h,v $
- *  CVS/RCS Revision: $Revision: 1.12 $
+ *  CVS/RCS Revision: $Revision: 1.13 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -187,7 +187,7 @@ class OFStandard
     // --- other functions ---
 
     /** convert character string to HTML/XML mnenonic string.
-     *  Characters with special meaning for HTML/XML (e.g. '<' and '&') are replace by the
+     *  Characters with special meaning for HTML/XML (e.g. '<' and '&') are replaced by the
      *  corresponding mnenonics (e.g. "&lt;" and "&amp;").  If flag 'convertNonASCII' is OFTrue
      *  all characters > #127 are also converted (useful if only HTML 3.2 is supported which does
      *  not allow to specify the character set).
@@ -380,7 +380,11 @@ class OFStandard
  *
  * CVS/RCS Log:
  * $Log: ofstd.h,v $
- * Revision 1.12  2002-12-13 13:45:33  meichel
+ * Revision 1.13  2003-03-12 14:57:47  joergr
+ * Added apostrophe (') to the list of characters to be replaced by the
+ * corresponding HTML/XML mnenonic.
+ *
+ * Revision 1.12  2002/12/13 13:45:33  meichel
  * Removed const from decodeBase64() return code, needed on MIPSpro
  *
  * Revision 1.11  2002/12/05 13:49:36  joergr
