@@ -22,10 +22,10 @@
  *  Purpose: Template class for administrating an ordered set of elements
  *           of an arbitrary type.
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-12-09 13:03:55 $
+ *  Last Update:      $Author: wilkens $
+ *  Update Date:      $Date: 2002-12-13 12:26:50 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/include/Attic/ofoset.h,v $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -84,15 +84,7 @@ template <class T> class OFOrderedSet : public OFSet<T>
        *  @param src Source object whose values will be assigned to this.
        *  @return Reference to this.
        */
-    const OFOrderedSet<T> &operator=( const OFOrderedSet<T> &src )
-      {
-        if( this == &src )
-          return( *this );
-
-        OFSet<T>::operator=( src );
-
-        return( *this );
-      }
+    const OFOrderedSet<T> &operator=( const OFOrderedSet<T> &src );
 
 
       /** Determines if two sets are identical. Note that for ordered sets
@@ -498,12 +490,27 @@ template <class T> class OFOrderedSet : public OFSet<T>
       }
 };
 
+
+template <class T> const OFOrderedSet<T> &OFOrderedSet<T>::operator=( const OFOrderedSet<T> &src )
+{
+  if( this == &src )
+    return( *this );
+
+  OFSet<T>::operator=( src );
+
+  return( *this );
+}
+
+
 #endif
 
 /*
 ** CVS/RCS Log:
 ** $Log: ofoset.h,v $
-** Revision 1.5  2002-12-09 13:03:55  joergr
+** Revision 1.6  2002-12-13 12:26:50  wilkens
+** Modified code to keep Sun CC 2.0.1 happy on Solaris 2.5.1 (template errors).
+**
+** Revision 1.5  2002/12/09 13:03:55  joergr
 ** Renamed parameter to avoid name clash with global function index().
 **
 ** Revision 1.4  2002/07/09 18:29:45  wilkens

@@ -22,10 +22,10 @@
  *  Purpose: Template class for administrating a set of elements of an
  *           arbitrary type.
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-12-09 13:07:03 $
+ *  Last Update:      $Author: wilkens $
+ *  Update Date:      $Date: 2002-12-13 12:26:51 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/include/Attic/ofset.h,v $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -50,29 +50,13 @@ template <class T> class OFSet
   public:
       /** Default constructor.
        */
-    OFSet()
-        : items( new T*[ STARTING_SIZE ] ), num( 0 ), size( STARTING_SIZE )
-      {
-        for( unsigned i=0 ; i<size ; i++ )
-          items[i] = NULL;
-      }
+    OFSet();
 
 
       /** Copy constructor.
        *  @param src Source object of which this will be a copy.
        */
-    OFSet( const OFSet<T> &src )
-        : items( NULL ), num ( src.num ), size ( src.size )
-      {
-        items = new T*[size];
-        for( unsigned int i=0 ; i<size ; i++ )
-        {
-          if( i<num )
-            items[i] = new T( *src.items[i] );
-          else
-            items[i] = NULL;
-        }
-      }
+    OFSet( const OFSet<T> &src );
 
 
       /** Destructor.
@@ -90,29 +74,30 @@ template <class T> class OFSet
        *  @return Reference to this.
        */
     const OFSet<T> &operator=( const OFSet<T> &src )
-      {
-        if( this == &src )
-          return( *this );
+	    {
+			  if( this == &src )
+			    return( *this );
+			
+			  unsigned int i;
+			
+			  for( i=0 ; i<num ; i++ )
+			    delete items[i];
+			  delete items;
+			
+			  num = src.num;
+			  size = src.size;
+			  items = new T*[size];
+			  for( i=0 ; i<size ; i++ )
+			  {
+			    if( i<num )
+			      items[i] = new T( *src.items[i] );
+			    else
+			      items[i] = NULL;
+			  }
+			
+			  return( *this );
+			}
 
-        unsigned int i;
-
-        for( i=0 ; i<num ; i++ )
-          delete items[i];
-        delete items;
-
-        num = src.num;
-        size = src.size;
-        items = new T*[size];
-        for( i=0 ; i<size ; i++ )
-        {
-          if( i<num )
-            items[i] = new T( *src.items[i] );
-          else
-            items[i] = NULL;
-        }
-
-        return( *this );
-      }
 
 
       /** Returns a certain element which is contained in the set. Note that the
@@ -232,12 +217,38 @@ template <class T> class OFSet
     virtual OFBool Contains( const T &item ) const = 0;
 };
 
+
+template <class T> OFSet<T>::OFSet()
+  : items( new T*[ STARTING_SIZE ] ), num( 0 ), size( STARTING_SIZE )
+{
+  for( unsigned i=0 ; i<size ; i++ )
+    items[i] = NULL;
+}
+
+
+template <class T> OFSet<T>::OFSet( const OFSet<T> &src )
+  : items( NULL ), num ( src.num ), size ( src.size )
+{
+  items = new T*[size];
+  for( unsigned int i=0 ; i<size ; i++ )
+  {
+    if( i<num )
+      items[i] = new T( *src.items[i] );
+    else
+      items[i] = NULL;
+  }
+}
+
+
 #endif
 
 /*
 ** CVS/RCS Log:
 ** $Log: ofset.h,v $
-** Revision 1.4  2002-12-09 13:07:03  joergr
+** Revision 1.5  2002-12-13 12:26:51  wilkens
+** Modified code to keep Sun CC 2.0.1 happy on Solaris 2.5.1 (template errors).
+**
+** Revision 1.4  2002/12/09 13:07:03  joergr
 ** Renamed parameter to avoid name clash with global function index().
 ** Initialize member variables in the member initialization list.
 **
