@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2003, OFFIS
+ *  Copyright (C) 2000-2004, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,9 +23,9 @@
  *           HTML format
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-10-06 09:56:10 $
+ *  Update Date:      $Date: 2004-01-05 14:34:59 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmsr/apps/dsr2html.cc,v $
- *  CVS/RCS Revision: $Revision: 1.19 $
+ *  CVS/RCS Revision: $Revision: 1.20 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -360,7 +360,10 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dsr2html.cc,v $
- * Revision 1.19  2003-10-06 09:56:10  joergr
+ * Revision 1.20  2004-01-05 14:34:59  joergr
+ * Removed acknowledgements with e-mail addresses from CVS log.
+ *
+ * Revision 1.19  2003/10/06 09:56:10  joergr
  * Added new flag which allows to ignore content item errors when reading an SR
  * document (e.g. missing value type specific attributes).
  *
@@ -382,8 +385,6 @@ int main(int argc, char *argv[])
  *
  * Revision 1.14  2002/04/16 13:49:52  joergr
  * Added configurable support for C++ ANSI standard includes (e.g. streams).
- * Thanks to Andreas Barth <Andreas.Barth@bruker-biospin.de> for his
- * contribution.
  *
  * Revision 1.13  2002/04/11 13:05:02  joergr
  * Use the new loadFile() and saveFile() routines from the dcmdata library.

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2003, OFFIS
+ *  Copyright (C) 2000-2004, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,9 +23,9 @@
  *           XML format
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-10-31 13:31:04 $
+ *  Update Date:      $Date: 2004-01-05 14:34:59 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmsr/apps/dsr2xml.cc,v $
- *  CVS/RCS Revision: $Revision: 1.18 $
+ *  CVS/RCS Revision: $Revision: 1.19 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -287,7 +287,10 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dsr2xml.cc,v $
- * Revision 1.18  2003-10-31 13:31:04  joergr
+ * Revision 1.19  2004-01-05 14:34:59  joergr
+ * Removed acknowledgements with e-mail addresses from CVS log.
+ *
+ * Revision 1.18  2003/10/31 13:31:04  joergr
  * Added command line option +Ea (--attr-all), a shortcut for +Ec, +Er and +Er.
  *
  * Revision 1.17  2003/10/30 17:43:54  joergr
@@ -314,8 +317,6 @@ int main(int argc, char *argv[])
  *
  * Revision 1.11  2002/04/16 13:49:52  joergr
  * Added configurable support for C++ ANSI standard includes (e.g. streams).
- * Thanks to Andreas Barth <Andreas.Barth@bruker-biospin.de> for his
- * contribution.
  *
  * Revision 1.10  2002/04/11 13:05:02  joergr
  * Use the new loadFile() and saveFile() routines from the dcmdata library.

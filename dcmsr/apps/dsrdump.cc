@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2003, OFFIS
+ *  Copyright (C) 2000-2004, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose: List the contents of a dicom structured reporting file
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-10-30 17:44:19 $
+ *  Update Date:      $Date: 2004-01-05 14:34:59 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmsr/apps/dsrdump.cc,v $
- *  CVS/RCS Revision: $Revision: 1.20 $
+ *  CVS/RCS Revision: $Revision: 1.21 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -301,7 +301,10 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dsrdump.cc,v $
- * Revision 1.20  2003-10-30 17:44:19  joergr
+ * Revision 1.21  2004-01-05 14:34:59  joergr
+ * Removed acknowledgements with e-mail addresses from CVS log.
+ *
+ * Revision 1.20  2003/10/30 17:44:19  joergr
  * Added new command line option which allows to print the template
  * identification of a content item.
  *
@@ -328,8 +331,6 @@ int main(int argc, char *argv[])
  *
  * Revision 1.14  2002/04/16 13:49:53  joergr
  * Added configurable support for C++ ANSI standard includes (e.g. streams).
- * Thanks to Andreas Barth <Andreas.Barth@bruker-biospin.de> for his
- * contribution.
  *
  * Revision 1.13  2002/04/11 13:05:02  joergr
  * Use the new loadFile() and saveFile() routines from the dcmdata library.

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2003, OFFIS
+ *  Copyright (C) 2000-2004, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,8 +23,8 @@
  *    classes: DSRTextTreeNode
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-09-15 14:13:42 $
- *  CVS/RCS Revision: $Revision: 1.19 $
+ *  Update Date:      $Date: 2004-01-05 14:37:23 $
+ *  CVS/RCS Revision: $Revision: 1.20 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -155,7 +155,10 @@ OFCondition DSRTextTreeNode::renderHTMLContentItem(ostream &docStream,
 /*
  *  CVS/RCS Log:
  *  $Log: dsrtextn.cc,v $
- *  Revision 1.19  2003-09-15 14:13:42  joergr
+ *  Revision 1.20  2004-01-05 14:37:23  joergr
+ *  Removed acknowledgements with e-mail addresses from CVS log.
+ *
+ *  Revision 1.19  2003/09/15 14:13:42  joergr
  *  Introduced new class to facilitate checking of SR IOD relationship content
  *  constraints. Replaced old implementation distributed over numerous classes.
  *
@@ -182,8 +185,7 @@ OFCondition DSRTextTreeNode::renderHTMLContentItem(ostream &docStream,
  *  Additonal adjustments for new OFCondition class.
  *
  *  Revision 1.12  2001/09/28 14:13:24  joergr
- *  Added missing relationship/target content item to text tree node. Thanks to
- *  Gilles Mevel <Gilles.Mevel@etiam.com> and his co-workers for the bug report.
+ *  Added missing relationship/target content item to text tree node.
  *
  *  Revision 1.11  2001/09/26 13:04:26  meichel
  *  Adapted dcmsr to class OFCondition

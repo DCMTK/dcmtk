@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2003, OFFIS
+ *  Copyright (C) 2000-2004, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,8 +23,8 @@
  *    classes: DSRTypes
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-12-08 13:05:48 $
- *  CVS/RCS Revision: $Revision: 1.39 $
+ *  Update Date:      $Date: 2004-01-05 14:37:23 $
+ *  CVS/RCS Revision: $Revision: 1.40 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1456,7 +1456,10 @@ OFCondition DSRTypes::appendStream(ostream &mainStream,
 /*
  *  CVS/RCS Log:
  *  $Log: dsrtypes.cc,v $
- *  Revision 1.39  2003-12-08 13:05:48  joergr
+ *  Revision 1.40  2004-01-05 14:37:23  joergr
+ *  Removed acknowledgements with e-mail addresses from CVS log.
+ *
+ *  Revision 1.39  2003/12/08 13:05:48  joergr
  *  Return more appropriate error codes in getAndCheckXXX() routines.
  *
  *  Revision 1.38  2003/12/01 15:47:28  joergr
@@ -1512,8 +1515,6 @@ OFCondition DSRTypes::appendStream(ostream &mainStream,
  *  Revision 1.25  2002/05/02 14:08:36  joergr
  *  Added support for standard and non-standard string streams (which one is
  *  supported is detected automatically via the configure mechanism).
- *  Thanks again to Andreas Barth <Andreas.Barth@bruker-biospin.de> for his
- *  contribution.
  *
  *  Revision 1.24  2002/04/25 09:15:39  joergr
  *  Moved helper function which converts a conventional character string to an

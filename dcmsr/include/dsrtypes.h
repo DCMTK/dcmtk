@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2003, OFFIS
+ *  Copyright (C) 2000-2004, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,8 +23,8 @@
  *    classes: DSRTypes
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-12-01 15:46:18 $
- *  CVS/RCS Revision: $Revision: 1.39 $
+ *  Update Date:      $Date: 2004-01-05 14:36:02 $
+ *  CVS/RCS Revision: $Revision: 1.40 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1194,7 +1194,10 @@ class DSRTypes
 /*
  *  CVS/RCS Log:
  *  $Log: dsrtypes.h,v $
- *  Revision 1.39  2003-12-01 15:46:18  joergr
+ *  Revision 1.40  2004-01-05 14:36:02  joergr
+ *  Removed acknowledgements with e-mail addresses from CVS log.
+ *
+ *  Revision 1.39  2003/12/01 15:46:18  joergr
  *  Changed XML encoding of by-reference relationships if flag
  *  XF_valueTypeAsAttribute is set.
  *
@@ -1248,13 +1251,9 @@ class DSRTypes
  *  Revision 1.25  2002/05/02 14:08:23  joergr
  *  Added support for standard and non-standard string streams (which one is
  *  supported is detected automatically via the configure mechanism).
- *  Thanks again to Andreas Barth <Andreas.Barth@bruker-biospin.de> for his
- *  contribution.
  *
  *  Revision 1.24  2002/04/16 13:50:52  joergr
  *  Added configurable support for C++ ANSI standard includes (e.g. streams).
- *  Thanks to Andreas Barth <Andreas.Barth@bruker-biospin.de> for his
- *  contribution.
  *
  *  Revision 1.23  2002/04/11 13:02:35  joergr
  *  Corrected typo and/or enhanced documentation.

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2003, OFFIS
+ *  Copyright (C) 2000-2004, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,8 +23,8 @@
  *    classes: DSRDocumentTreeNode
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-12-05 14:02:36 $
- *  CVS/RCS Revision: $Revision: 1.35 $
+ *  Update Date:      $Date: 2004-01-05 14:37:23 $
+ *  CVS/RCS Revision: $Revision: 1.36 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1036,7 +1036,10 @@ const OFString &DSRDocumentTreeNode::getRelationshipText(const E_RelationshipTyp
 /*
  *  CVS/RCS Log:
  *  $Log: dsrdoctn.cc,v $
- *  Revision 1.35  2003-12-05 14:02:36  joergr
+ *  Revision 1.36  2004-01-05 14:37:23  joergr
+ *  Removed acknowledgements with e-mail addresses from CVS log.
+ *
+ *  Revision 1.35  2003/12/05 14:02:36  joergr
  *  Only report warning on incorrect template identifier when actually expecting
  *  one (i.e. only for particular SOP classes).
  *
@@ -1098,8 +1101,6 @@ const OFString &DSRDocumentTreeNode::getRelationshipText(const E_RelationshipTyp
  *  Revision 1.20  2002/05/02 14:08:35  joergr
  *  Added support for standard and non-standard string streams (which one is
  *  supported is detected automatically via the configure mechanism).
- *  Thanks again to Andreas Barth <Andreas.Barth@bruker-biospin.de> for his
- *  contribution.
  *
  *  Revision 1.19  2001/11/09 16:15:19  joergr
  *  Added new command line option allowing to encode codes as XML attributes

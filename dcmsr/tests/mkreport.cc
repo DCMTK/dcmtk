@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2003, OFFIS
+ *  Copyright (C) 2000-2004, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,8 +22,8 @@
  *  Purpose: Create sample structured reports using the dcmsr API
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-10-09 17:48:35 $
- *  CVS/RCS Revision: $Revision: 1.23 $
+ *  Update Date:      $Date: 2004-01-05 14:38:05 $
+ *  CVS/RCS Revision: $Revision: 1.24 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -40,12 +40,12 @@
 
 
 // forward declarations
-static void generate_ki(DSRDocument *doc, OFString &);
-static void generate_si(DSRDocument *doc, OFString &);
+static void generate_ki(DSRDocument *doc, OFString &studyUID_ki);
+static void generate_si(DSRDocument *doc, OFString &studyUID_ki);
 static void generate_fk(DSRDocument *doc);
 static void generate_lp(DSRDocument *doc);
-static void generate_01(DSRDocument *doc, OFString &);
-static void generate_02(DSRDocument *doc, OFString &);
+static void generate_01(DSRDocument *doc, OFString &studyUID_01);
+static void generate_02(DSRDocument *doc, OFString &studyUID_01);
 static void generate_03(DSRDocument *doc);
 static void generate_04(DSRDocument *doc);
 static void generate_05(DSRDocument *doc);
@@ -210,7 +210,7 @@ int main(int argc, char *argv[])
 
 
 static void generate_ki(DSRDocument *doc,
-                        OFString & studyUID_ki)
+                        OFString &studyUID_ki)
 {
     doc->createNewDocument(DSRTypes::DT_BasicTextSR);
     doc->getStudyInstanceUID(studyUID_ki);
@@ -250,7 +250,7 @@ static void generate_ki(DSRDocument *doc,
 
 
 static void generate_si(DSRDocument *doc,
-                        OFString & studyUID_ki)
+                        OFString &studyUID_ki)
 {
     doc->createNewDocument(DSRTypes::DT_BasicTextSR);
     if (!studyUID_ki.empty())
@@ -1273,7 +1273,10 @@ static void generate_19(DSRDocument *doc)
 /*
  *  CVS/RCS Log:
  *  $Log: mkreport.cc,v $
- *  Revision 1.23  2003-10-09 17:48:35  joergr
+ *  Revision 1.24  2004-01-05 14:38:05  joergr
+ *  Removed acknowledgements with e-mail addresses from CVS log.
+ *
+ *  Revision 1.23  2003/10/09 17:48:35  joergr
  *  Added identification information on UCUM coding scheme (see CP 372).
  *
  *  Revision 1.22  2003/09/10 13:19:05  joergr
@@ -1292,15 +1295,12 @@ static void generate_19(DSRDocument *doc)
  *
  *  Revision 1.18  2002/04/16 13:51:59  joergr
  *  Added configurable support for C++ ANSI standard includes (e.g. streams).
- *  Thanks to Andreas Barth <Andreas.Barth@bruker-biospin.de> for his
- *  contribution.
  *
  *  Revision 1.17  2002/04/11 13:06:08  joergr
  *  Use the new loadFile() and saveFile() routines from the dcmdata library.
  *
  *  Revision 1.16  2001/12/14 10:37:53  joergr
  *  Re-structured test program to "co-operate" with gcc on Irix 5.
- *  Thanks to Andreas Barth <andreas.barth@medical.bruker.de> for his support.
  *
  *  Revision 1.15  2001/10/10 15:31:46  joergr
  *  Additonal adjustments for new OFCondition class.
@@ -1322,8 +1322,6 @@ static void generate_19(DSRDocument *doc)
  *
  *  Revision 1.9  2001/06/13 10:09:55  joergr
  *  Added SpecificCharacterSet attribute to report "05".
- *  Thanks to Merlijn van Minderhout <Merlijn.van.Minderhout@philips.com>
- *  for the validation report of our SR sample documents.
  *
  *  Revision 1.8  2001/03/28 09:05:44  joergr
  *  Added new sample report (valid structured report with cycle/loop).

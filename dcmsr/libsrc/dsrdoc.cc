@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2003, OFFIS
+ *  Copyright (C) 2000-2004, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,8 +23,8 @@
  *    classes: DSRDocument
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-11-28 16:51:44 $
- *  CVS/RCS Revision: $Revision: 1.49 $
+ *  Update Date:      $Date: 2004-01-05 14:37:23 $
+ *  CVS/RCS Revision: $Revision: 1.50 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -2222,7 +2222,10 @@ void DSRDocument::updateAttributes(const OFBool updateAll)
 /*
  *  CVS/RCS Log:
  *  $Log: dsrdoc.cc,v $
- *  Revision 1.49  2003-11-28 16:51:44  joergr
+ *  Revision 1.50  2004-01-05 14:37:23  joergr
+ *  Removed acknowledgements with e-mail addresses from CVS log.
+ *
+ *  Revision 1.49  2003/11/28 16:51:44  joergr
  *  Changed output format of CodingSchemeVersion in print() and renderHTML().
  *  Now using square brackets instead of comma to separate from CodingScheme.
  *
@@ -2290,13 +2293,9 @@ void DSRDocument::updateAttributes(const OFBool updateAll)
  *  Revision 1.34  2002/05/02 14:08:35  joergr
  *  Added support for standard and non-standard tmpString streams (which one is
  *  supported is detected automatically via the configure mechanism).
- *  Thanks again to Andreas Barth <Andreas.Barth@bruker-biospin.de> for his
- *  contribution.
  *
  *  Revision 1.33  2002/04/16 13:51:37  joergr
  *  Added configurable support for C++ ANSI standard includes (e.g. streams).
- *  Thanks to Andreas Barth <Andreas.Barth@bruker-biospin.de> for his
- *  contribution.
  *
  *  Revision 1.32  2002/01/08 10:26:49  joergr
  *  Corrected spelling of function dcmGenerateUniqueIdentifier().

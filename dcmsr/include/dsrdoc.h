@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2003, OFFIS
+ *  Copyright (C) 2000-2004, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,8 +23,8 @@
  *    classes: DSRDocument
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-10-30 17:53:23 $
- *  CVS/RCS Revision: $Revision: 1.32 $
+ *  Update Date:      $Date: 2004-01-05 14:36:02 $
+ *  CVS/RCS Revision: $Revision: 1.33 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1157,7 +1157,10 @@ class DSRDocument
 /*
  *  CVS/RCS Log:
  *  $Log: dsrdoc.h,v $
- *  Revision 1.32  2003-10-30 17:53:23  joergr
+ *  Revision 1.33  2004-01-05 14:36:02  joergr
+ *  Removed acknowledgements with e-mail addresses from CVS log.
+ *
+ *  Revision 1.32  2003/10/30 17:53:23  joergr
  *  Added full support for the ContentTemplateSequence (read/write, get/set
  *  template identification). Template constraints are not checked yet.
  *
@@ -1192,8 +1195,6 @@ class DSRDocument
  *
  *  Revision 1.25  2002/04/16 13:50:52  joergr
  *  Added configurable support for C++ ANSI standard includes (e.g. streams).
- *  Thanks to Andreas Barth <Andreas.Barth@bruker-biospin.de> for his
- *  contribution.
  *
  *  Revision 1.24  2001/11/09 16:10:48  joergr
  *  Added preliminary support for Mammography CAD SR.
