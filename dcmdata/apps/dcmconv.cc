@@ -22,9 +22,9 @@
  *  Purpose: Convert dicom file encoding
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-09-23 17:52:01 $
+ *  Update Date:      $Date: 2002-11-25 10:15:07 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/apps/dcmconv.cc,v $
- *  CVS/RCS Revision: $Revision: 1.38 $
+ *  CVS/RCS Revision: $Revision: 1.39 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -98,7 +98,9 @@ int main(int argc, char *argv[])
   E_PaddingEncoding opt_opadenc = EPD_noChange;
   OFCmdUnsignedInt opt_filepad = 0;
   OFCmdUnsignedInt opt_itempad = 0;
+#ifdef WITH_ZLIB
   OFCmdUnsignedInt opt_compressionLevel = 0;
+#endif
 
   OFConsoleApplication app(OFFIS_CONSOLE_APPLICATION , "Convert DICOM file encoding", rcsid);
   OFCommandLine cmd;
@@ -205,22 +207,22 @@ int main(int argc, char *argv[])
       cmd.beginOptionBlock();
       if (cmd.findOption("--read-xfer-auto"))
       {
-          if (! opt_iDataset) app.printError("--read-xfer-auto only allowed with --read-dataset");
+          app.checkDependence("--read-xfer-auto", "--read-dataset", opt_iDataset);
           opt_ixfer = EXS_Unknown;
       }
       if (cmd.findOption("--read-xfer-little"))
       {
-          if (! opt_iDataset) app.printError("--read-xfer-little only allowed with --read-dataset");
+          app.checkDependence("--read-xfer-little", "--read-dataset", opt_iDataset);
           opt_ixfer = EXS_LittleEndianExplicit;
       }
       if (cmd.findOption("--read-xfer-big"))
       {
-          if (! opt_iDataset) app.printError("--read-xfer-big only allowed with --read-dataset");
+          app.checkDependence("--read-xfer-big", "--read-dataset", opt_iDataset);
           opt_ixfer = EXS_BigEndianExplicit;
       }
       if (cmd.findOption("--read-xfer-implicit"))
       {
-          if (! opt_iDataset) app.printError("--read-xfer-implicit only allowed with --read-dataset");
+          app.checkDependence("--read-xfer-implicit", "--read-dataset", opt_iDataset);
           opt_ixfer = EXS_LittleEndianImplicit;
       }
       cmd.endOptionBlock();
@@ -302,13 +304,13 @@ int main(int argc, char *argv[])
       cmd.beginOptionBlock();
       if (cmd.findOption("--padding-retain"))
       {
-          if (opt_oDataset) app.printError("--padding-retain not allowed with --write-dataset");
+          app.checkConflict("--padding-retain", "--write-dataset", opt_oDataset);
           opt_opadenc = EPD_noChange;
       }
       if (cmd.findOption("--padding-off")) opt_opadenc = EPD_withoutPadding;
       if (cmd.findOption("--padding-create"))
       {
-          if (opt_oDataset) app.printError("--padding-create not allowed with --write-dataset");
+          app.checkConflict("--padding-create", "--write-dataset", opt_oDataset);
           app.checkValue(cmd.getValueAndCheckMin(opt_filepad, 0));
           app.checkValue(cmd.getValueAndCheckMin(opt_itempad, 0));
           opt_opadenc = EPD_withPadding;
@@ -319,9 +321,7 @@ int main(int argc, char *argv[])
       cmd.beginOptionBlock();
       if (cmd.findOption("--compression-level"))
       {
-
-          if (opt_oxfer != EXS_DeflatedLittleEndianExplicit)
-            app.printError("--compression-level only allowed with --write-xfer-deflated");
+          app.checkDependence("--compression-level", "--write-xfer-deflated", opt_oxfer == EXS_DeflatedLittleEndianExplicit);
           app.checkValue(cmd.getValueAndCheckMinMax(opt_compressionLevel, 0, 9));
           dcmZlibCompressionLevel.set((int) opt_compressionLevel);
       }
@@ -417,7 +417,13 @@ int main(int argc, char *argv[])
 /*
 ** CVS/RCS Log:
 ** $Log: dcmconv.cc,v $
-** Revision 1.38  2002-09-23 17:52:01  joergr
+** Revision 1.39  2002-11-25 10:15:07  joergr
+** Used OFConsoleApplication::checkDependence() and checkConflict() routine
+** wherever possible.
+** Made declaration of compression level variable dependent on WITH_ZLIB define.
+** Avoids warning about unused variable reported by gcc 2.95.3 on Cygwin.
+**
+** Revision 1.38  2002/09/23 17:52:01  joergr
 ** Prepared code for future support of 'config.guess' host identifiers.
 **
 ** Revision 1.37  2002/09/23 13:50:39  joergr
