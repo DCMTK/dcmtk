@@ -9,8 +9,8 @@
 ** This file contains the interface to routines which provide
 ** DICOM object encoding/decoding, search and lookup facilities.
 **
-** Last Update:   $Author: hewett $
-** Revision:      $Revision: 1.5 $
+** Last Update:   $Author: andreas $
+** Revision:      $Revision: 1.6 $
 ** Status:	  $State: Exp $
 **
 */
@@ -40,9 +40,7 @@ const Uint32 DCM_TagInfoLength = 12;
 class DcmObject 
 {
 protected:
-#ifdef DEBUG
     int testConstructDestruct;   // for debugging
-#endif
 
     DcmTag *Tag;
     Uint32 Length;

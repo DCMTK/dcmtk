@@ -8,10 +8,10 @@
 ** Purpose:
 ** Definition of the class DcmTag
 **
-** Last Update:		$Author: hewett $
-** Update Date:		$Date: 1996-03-13 14:48:32 $
+** Last Update:		$Author: andreas $
+** Update Date:		$Date: 1996-04-19 08:37:21 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dctag.h,v $
-** CVS/RCS Revision:	$Revision: 1.5 $
+** CVS/RCS Revision:	$Revision: 1.6 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -41,9 +41,7 @@ private:
     const DcmDictEntry* dictRef;	/* reference to global data dictionary */
 	
     E_Condition errorFlag;		/* the current error code */
-#ifdef DEBUG
     int testConstructDestruct;		/* for debugging */
-#endif
 
 public:
     DcmTag();
@@ -96,7 +94,12 @@ public:
 /*
 ** CVS/RCS Log:
 ** $Log: dctag.h,v $
-** Revision 1.5  1996-03-13 14:48:32  hewett
+** Revision 1.6  1996-04-19 08:37:21  andreas
+** correct bug with DEBUG and not DEBUG parts. It was not possible to compile
+** the dcmdata library with DEBUG and programs using dcmdata without DEBUG
+** (and vice versa)
+**
+** Revision 1.5  1996/03/13 14:48:32  hewett
 ** Added useful VR access methods.
 **
 ** Revision 1.4  1996/03/12 15:32:49  hewett
