@@ -22,9 +22,9 @@
  *  Purpose: DicomImage (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-08-02 15:03:20 $
+ *  Update Date:      $Date: 2002-11-26 14:48:32 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/diimage.h,v $
- *  CVS/RCS Revision: $Revision: 1.26 $
+ *  CVS/RCS Revision: $Revision: 1.27 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -560,7 +560,8 @@ class DiImage
                           const int spp);
 
     /** update Image Pixel Module attributes in the given dataset.
-     *  Updates pixel aspect ratio and imager/pixel spacing.
+     *  Removes smallest/largest pixel value and updates pixel aspect ratio as well
+     *  as imager/pixel spacing.
      *  Used in writeXXXToDataset() routines.
      *
      ** @param  dataset  reference to DICOM image dataset
@@ -634,7 +635,11 @@ class DiImage
  *
  * CVS/RCS Log:
  * $Log: diimage.h,v $
- * Revision 1.26  2002-08-02 15:03:20  joergr
+ * Revision 1.27  2002-11-26 14:48:32  joergr
+ * Added Smallest/LargestImagePixelValue to the list of attributes to be
+ * removed from a newly created dataset.
+ *
+ * Revision 1.26  2002/08/02 15:03:20  joergr
  * Enhanced writeFrameToDataset() routine (remove out-data DICOM attributes
  * from the dataset).
  * Added function to write the current image (not only a selected frame) to a
