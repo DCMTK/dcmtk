@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DVPSConfig
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-11-27 15:48:08 $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2002-12-09 13:27:11 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -48,10 +48,10 @@ private:
   long linenumber;
 
   DVPSConfigNode();
-  DVPSConfigNode(const DVPSConfigNode& arg);  
+  DVPSConfigNode(const DVPSConfigNode& arg);
   ~DVPSConfigNode();
   DVPSConfigNode &operator=(const DVPSConfigNode& arg);
-  
+
 friend class DVPSConfig;
 };
 
@@ -103,7 +103,7 @@ OFBool DVPSConfig::get_bool_value(OFBool defaultvalue)
 {
   OFBool result = defaultvalue;
   const char *val = get_value();
-  if (val==NULL) return result;  
+  if (val==NULL) return result;
   OFString pstring(val);
   OFString ostring;
   size_t len = pstring.length();
@@ -116,7 +116,7 @@ OFBool DVPSConfig::get_bool_value(OFBool defaultvalue)
     else if ((c>='0') && (c <= '9')) ostring += c;
     else if (c=='_')  ostring += c;
   }
-  
+
   if (ostring=="YES")  result=OFTrue; else
   if (ostring=="1")    result=OFTrue; else
   if (ostring=="TRUE") result=OFTrue; else
@@ -124,7 +124,7 @@ OFBool DVPSConfig::get_bool_value(OFBool defaultvalue)
   if (ostring=="NO")   result=OFFalse; else
   if (ostring=="0")    result=OFFalse; else
   if (ostring=="FALSE")result=OFFalse; else
-  if (ostring=="OFF")  result=OFFalse; 
+  if (ostring=="OFF")  result=OFFalse;
   return result;
 }
 
@@ -193,7 +193,7 @@ void DVPSConfig::save_cursor()
 void DVPSConfig::restore_cursor()
 {
   OFBool empty = stack.empty();
-  if (!empty) 
+  if (!empty)
   {
     cursor = stack.top();
     stack.pop();
@@ -226,7 +226,7 @@ void DVPSConfig::store_char(char c)
      buffer = new char[bufsize];
      if (buffer)
      {
-       if (oldbuf) 
+       if (oldbuf)
        {
          strncpy(buffer, oldbuf, bufptr);
          delete[] oldbuf;
@@ -296,7 +296,7 @@ char DVPSConfig::read_keywordchar(FILE *infile)
   {
     c = read_char(infile);
     if ((c != ' ')&&(c != 9)&&(c != 10)) done=1;
-  }   
+  }
   if ((c>96)&&(c<123)) c -= 32;
   return c;
 }
@@ -314,12 +314,12 @@ void DVPSConfig::read_entry(FILE *infile)
     if (c=='[')
     {  // this is a higher level keyword
       level++;
-      while (!done) 
+      while (!done)
       {
         c = read_keywordchar(infile);
         valid = (!feof(infile))&&(!ferror(infile));
         if ((valid)&&(c=='[')) level++; else done=1;
-      } 
+      }
       if (valid)
       {  // Now we will read the keyword name
         ungetc(c, infile);
@@ -330,7 +330,7 @@ void DVPSConfig::read_entry(FILE *infile)
           valid = (!feof(infile))&&(!ferror(infile));
           if (valid)
           {
-            if (((c>='A')&&(c<='Z'))||((c>='0')&&(c<='9'))||(c=='-')||(c=='_')) 
+            if (((c>='A')&&(c<='Z'))||((c>='0')&&(c<='9'))||(c=='-')||(c=='_'))
             store_char(c);
             else if (c==']') done=1;
           } else done=1;
@@ -392,7 +392,7 @@ void DVPSConfig::read_entry(FILE *infile)
           {
             cursor.ptr[level+1]->son = newnode;
             cursor.ptr[level] = newnode;
-          } 
+          }
         }
       }
       if (level>0) for (int j=level-1; j>=0; j--) cursor.ptr[j]=NULL;
@@ -401,7 +401,7 @@ void DVPSConfig::read_entry(FILE *infile)
     // Read value field for level 0 keywords.
     if (level==0)
     {
-      int skipws = 1;
+      int skipwhite = 1;
       int justnewline =0;
       done = 0;
       while (!done)
@@ -409,16 +409,16 @@ void DVPSConfig::read_entry(FILE *infile)
         c = read_char(infile);
         if ((!feof(infile))&&(!ferror(infile)))
         {
-          if (c==10) 
+          if (c==10)
           {
-            if (!skipws) store_char(c);
-            skipws=1;
+            if (!skipwhite) store_char(c);
+            skipwhite=1;
             justnewline=1;
           }
-          else if ((c==' ')||(c==9)) 
+          else if ((c==' ')||(c==9))
           {
             justnewline=0;
-            if (!skipws) store_char(c); 
+            if (!skipwhite) store_char(c);
           }
           else
           {
@@ -428,17 +428,17 @@ void DVPSConfig::read_entry(FILE *infile)
               ungetc(c, infile);
             } else {
               store_char(c);
-              skipws=0;
+              skipwhite=0;
             }
           }
         } else done=1;
       }
       store_char(0);
     }
-    if ((bufptr>0)&&(newnode)) 
+    if ((bufptr>0)&&(newnode))
     {
       // remove trailing linefeeds
-      while ((bufptr>0)&&((buffer[bufptr-1]==10)||(buffer[bufptr-1]==0))) 
+      while ((bufptr>0)&&((buffer[bufptr-1]==10)||(buffer[bufptr-1]==0)))
         buffer[--bufptr]=0;
       newnode->value = buffer;
     }
@@ -468,7 +468,10 @@ DVPSConfig::~DVPSConfig()
 
 /*
  *  $Log: dvpsconf.cc,v $
- *  Revision 1.6  2002-11-27 15:48:08  meichel
+ *  Revision 1.7  2002-12-09 13:27:11  joergr
+ *  Renamed local variable to avoid name clash with global declaration "skipws".
+ *
+ *  Revision 1.6  2002/11/27 15:48:08  meichel
  *  Adapted module dcmpstat to use of new header file ofstdinc.h
  *
  *  Revision 1.5  2001/06/01 15:50:28  meichel
