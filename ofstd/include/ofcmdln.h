@@ -22,9 +22,9 @@
  *  Purpose: Handle command line arguments (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1998-11-27 12:34:47 $
+ *  Update Date:      $Date: 1998-11-30 12:27:02 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/include/Attic/ofcmdln.h,v $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -67,6 +67,8 @@ typedef OFString OFCmdString;
 
 //@}
 
+
+typedef OFListIterator(OFString) OFListIterator_OFString;       // necessary for MSVC5
 
 
 /*----------------------*
@@ -127,7 +129,7 @@ struct OFCmdParam
      *  @param  optCount  number of options in front of the parameter
      */
     OFCmdParam(const OFListIterator(OFString) &parIter,
-               const OFListIterator(OFListIterator(OFString)) &optIter,
+               const OFListIterator(OFListIterator_OFString) &optIter,
                const int optCount)
       : ParamIter(parIter),
         OptionIter(optIter),
@@ -138,7 +140,7 @@ struct OFCmdParam
     /// iterator pointing to a specific parameter
     const OFListIterator(OFString) ParamIter;
     /// iterator pointing to first option iterator in front of the parameter
-    const OFListIterator(OFListIterator(OFString)) OptionIter;
+    const OFListIterator(OFListIterator_OFString) OptionIter;
     /// number of options in front of the parameter
     const int OptionCount;
 };
@@ -377,22 +379,22 @@ class OFCommandLine
  protected:
  
     OFBool findParam(int pos,
-                     OFListIterator(OFCmdParam) &pos_iter);
+                     OFListIterator(OFCmdParam *) &pos_iter);
 
     const OFCmdOption *findCmdOption(const char *option) const;
     
 
  private:
 
-    OFList<OFCmdOption> ValidOptionList;
+    OFList<OFCmdOption *> ValidOptionList;
 
     OFList<OFString> ArgumentList;
     OFListIterator(OFString) ArgumentIterator;
     
-    OFList<OFCmdParam> ParamPosList;
-    OFList<OFListIterator(OFString)> OptionPosList;
-    OFListIterator(OFListIterator(OFString)) OptionPosIterator;
-    OFListIterator(OFListIterator(OFString)) OptionBlockIterator;
+    OFList<OFCmdParam *> ParamPosList;
+    OFList<OFListIterator_OFString> OptionPosList;
+    OFListIterator(OFListIterator_OFString) OptionPosIterator;
+    OFListIterator(OFListIterator_OFString) OptionBlockIterator;
 
     OFBool OptionBlockMode;
     OFString OptionChars;
@@ -403,12 +405,15 @@ class OFCommandLine
 
 
 /*
-**
-** CVS/RCS Log:
-** $Log: ofcmdln.h,v $
-** Revision 1.1  1998-11-27 12:34:47  joergr
-** Added class to handle command line arguments.
-**
-**
-**
-*/
+ *
+ * CVS/RCS Log:
+ * $Log: ofcmdln.h,v $
+ * Revision 1.2  1998-11-30 12:27:02  joergr
+ * Introduced additional type definition to avoid errors with MSVC5 when
+ * using ListIterators of ListIterators (syntax problems?).
+ *
+ * Revision 1.1  1998/11/27 12:34:47  joergr
+ * Added class to handle command line arguments.
+ *
+ *
+ */

@@ -22,9 +22,9 @@
  *  Purpose: Template class for command line arguments (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1998-11-27 12:34:23 $
+ *  Update Date:      $Date: 1998-11-30 12:27:21 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/libsrc/ofcmdln.cc,v $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -52,6 +52,20 @@ OFCommandLine::OFCommandLine()
 
 OFCommandLine::~OFCommandLine()
 {
+  OFListIterator(OFCmdOption *) first_o = ValidOptionList.begin();
+  OFListIterator(OFCmdOption *) last_o = ValidOptionList.end();
+  while (first_o != last_o)
+  {     
+    delete (*first_o);
+    first_o = ValidOptionList.erase(first_o);
+  }
+  OFListIterator(OFCmdParam *) first_p = ParamPosList.begin();
+  OFListIterator(OFCmdParam *) last_p = ParamPosList.end();
+  while (first_p != last_p)
+  {     
+    delete (*first_p);
+    first_p = ParamPosList.erase(first_p);
+  }
 }
 
 
@@ -67,7 +81,9 @@ void OFCommandLine::addOption(const char *longOpt,
                               const char *valueDescr,
                               const char *optDescr)
 {
-    ValidOptionList.push_back(OFCmdOption(longOpt, shortOpt, valueCount, valueDescr, optDescr));
+    OFCmdOption *opt = new OFCmdOption(longOpt, shortOpt, valueCount, valueDescr, optDescr);
+    if (opt != NULL)
+        ValidOptionList.push_back(opt);
 }
 
 
@@ -144,21 +160,21 @@ OFBool OFCommandLine::getLastArg(OFCmdString &arg)
 
 OFBool OFCommandLine::findParam(const int pos)
 {
-    OFListIterator(OFCmdParam) iter;
+    OFListIterator(OFCmdParam *) iter;
     return findParam(pos, iter);
 }
 
 
 OFBool OFCommandLine::findParam(int pos,
-                                OFListIterator(OFCmdParam) &pos_iter)
+                                OFListIterator(OFCmdParam *) &pos_iter)
 {
     if ((pos > 0) && (pos <= getParamCount()))
     {
         pos_iter = ParamPosList.begin();
-        OFListIterator(OFCmdParam) pos_last = ParamPosList.end();
+        OFListIterator(OFCmdParam *) pos_last = ParamPosList.end();
         while (pos_iter != pos_last)
         {
-            ArgumentIterator = (*pos_iter).ParamIter;
+            ArgumentIterator = (*pos_iter)->ParamIter;
             if (--pos == 0)
                 return OFTrue;
             pos_iter++;
@@ -196,14 +212,14 @@ OFBool OFCommandLine::findOption(const char *longOpt,
                                  const int pos,
                                  const int next)
 {
-    OFListIterator(OFListIterator(OFString)) pos_iter = (next > 1) ? OptionPosIterator : OptionPosList.end();
-    OFListIterator(OFListIterator(OFString)) pos_first = OptionPosList.begin();
-    OFListIterator(OFCmdParam) param_iter;
+    OFListIterator(OFListIterator_OFString) pos_iter = (next > 1) ? OptionPosIterator : OptionPosList.end();
+    OFListIterator(OFListIterator_OFString) pos_first = OptionPosList.begin();
+    OFListIterator(OFCmdParam *) param_iter;
     if (findParam(pos, param_iter))
     {
-        if ((*param_iter).OptionCount == 0)                            // no options in front of specified parameter
+        if ((*param_iter)->OptionCount == 0)                           // no options in front of specified parameter
             return OFFalse;
-        pos_iter = (*param_iter).OptionIter;                           // first option in front of parameter
+        pos_iter = (*param_iter)->OptionIter;                          // first option in front of parameter
     }
     while (pos_iter != pos_first)
     {
@@ -407,12 +423,12 @@ OFCommandLine::E_ValueStatus OFCommandLine::getValue(OFCmdString &value)
 
 const OFCmdOption *OFCommandLine::findCmdOption(const char *option) const
 {
-    OFListIterator(OFCmdOption) iter = ValidOptionList.begin();
-    OFListIterator(OFCmdOption) last = ValidOptionList.end();
+    OFListIterator(OFCmdOption *) iter = ValidOptionList.begin();
+    OFListIterator(OFCmdOption *) last = ValidOptionList.end();
     while (iter != last)
     {
-        if (((*iter).LongOption == option) || ((*iter).ShortOption == option))
-            return &(*iter);
+        if (((*iter)->LongOption == option) || ((*iter)->ShortOption == option))
+            return *iter;
         iter++;
     }
     return NULL;
@@ -433,7 +449,9 @@ OFCommandLine::E_ParseStatus OFCommandLine::parseLine(int argCount,
             if (OptionChars.find(argValue[i][0]) == OFString_npos)       // arg = parameter
             {
                 ArgumentList.push_back((OFString)argValue[i]);           // store parameter
-                ParamPosList.push_back(OFCmdParam(--ArgumentList.end(), OptionPosList.end(), OptionPosList.size()));
+                OFCmdParam *parm = new OFCmdParam(--ArgumentList.end(), OptionPosList.end(), OptionPosList.size());
+                if (parm != NULL)
+                    ParamPosList.push_back(parm);
             } else {                                                     // arg = option
                 const OFCmdOption *opt = findCmdOption(argValue[i]);
                 if (opt != NULL)
@@ -462,8 +480,8 @@ void OFCommandLine::getOptionString(OFString &string) const
     string = "";
     if (!ValidOptionList.empty())
     {
-        OFListIterator(OFCmdOption) iter = ValidOptionList.begin();
-        OFListIterator(OFCmdOption) last = ValidOptionList.end();
+        OFListIterator(OFCmdOption *) iter = ValidOptionList.begin();
+        OFListIterator(OFCmdOption *) last = ValidOptionList.end();
         OFString str;
         unsigned int shortSize = 0;
         unsigned int longSize = 0;
@@ -475,27 +493,27 @@ void OFCommandLine::getOptionString(OFString &string) const
         {
             if ((shortSize == 0) && (longSize == 0))
             {
-                OFListIterator(OFCmdOption) i = iter;
-                while ((i != last) && ((*i).LongOption.length() > 0))
+                OFListIterator(OFCmdOption *) i = iter;
+                while ((i != last) && ((*i)->LongOption.length() > 0))
                 {
-                    if ((*i).ShortOption.length() > shortSize)
-                        shortSize = (*i).ShortOption.length();
-                    if ((*i).LongOption.length() > longSize)
-                        longSize = (*i).LongOption.length();
+                    if ((*i)->ShortOption.length() > shortSize)
+                        shortSize = (*i)->ShortOption.length();
+                    if ((*i)->LongOption.length() > longSize)
+                        longSize = (*i)->LongOption.length();
                     i++;
                 }
             }
-            if ((*iter).LongOption.length() <= 0)
+            if ((*iter)->LongOption.length() <= 0)
             {
                 shortSize = 0;
                 longSize = 0;
-                if ((*iter).OptionDescription.length() > 0)                  // new group
+                if ((*iter)->OptionDescription.length() > 0)                  // new group
                 {
-                    string += (*iter).OptionDescription;
+                    string += (*iter)->OptionDescription;
                     lineIndent = groupIndent;
                 } else {                                                     // new sub group
                     string.append(groupIndent, ' ');
-                    string += (*iter).ValueDescription;
+                    string += (*iter)->ValueDescription;
                     lineIndent = subGrpIndent;
                 }
                 string += "\n";
@@ -503,24 +521,24 @@ void OFCommandLine::getOptionString(OFString &string) const
                 string.append(lineIndent, ' ');
                 if (shortSize > 0)
                 {
-                    str = (*iter).ShortOption;
+                    str = (*iter)->ShortOption;
                     str.resize(shortSize, ' ');
                     string += str;
                     string.append(columnSpace, ' ');
                 }                    
-                str = (*iter).LongOption;
+                str = (*iter)->LongOption;
                 str.resize(longSize, ' ');
                 string += str;
                 string.append(columnSpace, ' ');
-                if ((*iter).ValueDescription.length() > 0)
+                if ((*iter)->ValueDescription.length() > 0)
                 {
-                    string += (*iter).ValueDescription;
+                    string += (*iter)->ValueDescription;
                     string += "\n";
                     string.append(lineIndent + shortSize + longSize + 2, ' ');
                     if (shortSize > 0)
                         string.append(columnSpace, ' ');
                 }
-                str = (*iter).OptionDescription;
+                str = (*iter)->OptionDescription;
                 size_t pos = 0;
                 while (((pos = (str.find('\n', pos))) != OFString_npos) && (pos < str.length()))
                     str.insert(++pos, OFString(lineIndent + shortSize + longSize + 4, ' '));
@@ -618,12 +636,15 @@ void OFCommandLine::getStatusString(const E_ValueStatus status,
 
 
 /*
-**
-** CVS/RCS Log:
-** $Log: ofcmdln.cc,v $
-** Revision 1.1  1998-11-27 12:34:23  joergr
-** Added class to handle command line arguments.
-**
-**
-**
-*/
+ *
+ * CVS/RCS Log:
+ * $Log: ofcmdln.cc,v $
+ * Revision 1.2  1998-11-30 12:27:21  joergr
+ * Introduced additional type definition to avoid errors with MSVC5 when
+ * using ListIterators of ListIterators (syntax problems?).
+ *
+ * Revision 1.1  1998/11/27 12:34:23  joergr
+ * Added class to handle command line arguments.
+ *
+ *
+ */
