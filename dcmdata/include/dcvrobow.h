@@ -21,10 +21,10 @@
  *
  *  Purpose: Interface of class DcmOtherByteOtherWord for data VR OB or OW
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-03-31 09:25:03 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2000-02-10 10:50:55 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcvrobow.h,v $
- *  CVS/RCS Revision: $Revision: 1.11 $
+ *  CVS/RCS Revision: $Revision: 1.12 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -45,6 +45,9 @@ class DcmOtherByteOtherWord : public DcmElement
 protected:
     virtual void postLoadValue(void);
     E_Condition alignValue();
+    void printPixel(ostream & out, const OFBool showFullData,
+                    const int level, const char *pixelFileName,
+		            size_t *pixelCounter);
 
 public:
     DcmOtherByteOtherWord( const DcmTag &tag, const Uint32 len = 0);
@@ -56,7 +59,8 @@ public:
     virtual E_Condition setVR(DcmEVR vr);
     virtual DcmEVR ident() const;
     virtual void print(ostream & out = cout, const OFBool showFullData = OFTrue,
-		       const int level = 0);
+		       const int level = 0, const char *pixelFileName = NULL,
+		       size_t *pixelCounter = NULL);
     virtual unsigned long getVM(void) { return 1L; }
 
     virtual OFBool canWriteXfer(const E_TransferSyntax newXfer,
@@ -90,7 +94,11 @@ public:
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrobow.h,v $
-** Revision 1.11  1999-03-31 09:25:03  meichel
+** Revision 1.12  2000-02-10 10:50:55  joergr
+** Added new feature to dcmdump (enhanced print method of dcmdata): write
+** pixel data/item value fields to raw files.
+**
+** Revision 1.11  1999/03/31 09:25:03  meichel
 ** Updated copyright header in module dcmdata
 **
 ** Revision 1.10  1998/11/12 16:47:51  meichel

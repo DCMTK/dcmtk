@@ -21,10 +21,10 @@
  *
  *  Purpose: class DcmDataset
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-03-31 09:25:19 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2000-02-10 10:52:16 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcdatset.cc,v $
- *  CVS/RCS Revision: $Revision: 1.14 $
+ *  CVS/RCS Revision: $Revision: 1.15 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -108,7 +108,8 @@ OFBool DcmDataset::canWriteXfer(const E_TransferSyntax newXfer,
 
 
 void DcmDataset::print(ostream & out, const OFBool showFullData,
-                       const int level)
+                       const int level, const char *pixelFileName,
+                       size_t *pixelCounter)
 {
     int i;
     out << endl;
@@ -126,7 +127,7 @@ void DcmDataset::print(ostream & out, const OFBool showFullData,
         do 
         {
             dO = elementList->get();
-            dO->print(out, showFullData, level + 1 );
+            dO->print(out, showFullData, level + 1, pixelFileName, pixelCounter);
         } while ( elementList->seek( ELP_next ) );
     }
 }
@@ -343,7 +344,11 @@ DcmDataset::removeAllButOriginalRepresentations()
 /*
 ** CVS/RCS Log:
 ** $Log: dcdatset.cc,v $
-** Revision 1.14  1999-03-31 09:25:19  meichel
+** Revision 1.15  2000-02-10 10:52:16  joergr
+** Added new feature to dcmdump (enhanced print method of dcmdata): write
+** pixel data/item value fields to raw files.
+**
+** Revision 1.14  1999/03/31 09:25:19  meichel
 ** Updated copyright header in module dcmdata
 **
 ** Revision 1.13  1998/07/15 15:51:47  joergr

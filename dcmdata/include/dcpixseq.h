@@ -21,10 +21,10 @@
  *
  *  Purpose: Interface of class DcmPixelSequence
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-03-31 09:24:44 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2000-02-10 10:50:53 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcpixseq.h,v $
- *  CVS/RCS Revision: $Revision: 1.13 $
+ *  CVS/RCS Revision: $Revision: 1.14 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -83,7 +83,8 @@ public:
 
     virtual DcmEVR ident(void) const { return EVR_pixelSQ; }
     virtual void print(ostream & out = cout, const OFBool showFullData = OFTrue,
-                       const int level = 0);
+                       const int level = 0, const char *pixelFileName = NULL,
+		               size_t *pixelCounter = NULL);
 
     virtual E_Condition insert(DcmPixelItem* item,
                                unsigned long where = DCM_EndOfListIndex);
@@ -115,7 +116,11 @@ public:
 /*
 ** CVS/RCS Log:
 ** $Log: dcpixseq.h,v $
-** Revision 1.13  1999-03-31 09:24:44  meichel
+** Revision 1.14  2000-02-10 10:50:53  joergr
+** Added new feature to dcmdump (enhanced print method of dcmdata): write
+** pixel data/item value fields to raw files.
+**
+** Revision 1.13  1999/03/31 09:24:44  meichel
 ** Updated copyright header in module dcmdata
 **
 ** Revision 1.12  1998/11/12 16:47:42  meichel

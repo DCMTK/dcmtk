@@ -22,9 +22,9 @@
  *  Purpose: class DcmByteString
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-02-02 14:32:47 $
+ *  Update Date:      $Date: 2000-02-10 10:52:16 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcbytstr.cc,v $
- *  CVS/RCS Revision: $Revision: 1.23 $
+ *  CVS/RCS Revision: $Revision: 1.24 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -104,7 +104,8 @@ DcmByteString& DcmByteString::operator=(const DcmByteString& obj)
 
 
 void DcmByteString::print(ostream & out, const OFBool showFullData,
-                          const int level)
+                          const int level, const char * /*pixelFileName*/,
+                          size_t * /*pixelCounter*/)
 {
     if (this -> valueLoaded())
     {
@@ -525,7 +526,11 @@ normalizeString(
 /*
 ** CVS/RCS Log:
 ** $Log: dcbytstr.cc,v $
-** Revision 1.23  2000-02-02 14:32:47  joergr
+** Revision 1.24  2000-02-10 10:52:16  joergr
+** Added new feature to dcmdump (enhanced print method of dcmdata): write
+** pixel data/item value fields to raw files.
+**
+** Revision 1.23  2000/02/02 14:32:47  joergr
 ** Replaced 'delete' statements by 'delete[]' for objects created with 'new[]'.
 **
 ** Revision 1.22  2000/02/01 10:12:04  meichel

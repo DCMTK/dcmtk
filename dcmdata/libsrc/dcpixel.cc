@@ -22,9 +22,9 @@
  *  Purpose: class DcmPixelData
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-02-03 16:30:19 $
+ *  Update Date:      $Date: 2000-02-10 10:52:21 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcpixel.cc,v $
- *  CVS/RCS Revision: $Revision: 1.9 $
+ *  CVS/RCS Revision: $Revision: 1.10 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -646,12 +646,15 @@ void
 DcmPixelData::print(
     ostream & out, 
     const OFBool showFullData, 
-    const int level)
+    const int level,
+    const char *pixelFileName,
+    size_t *pixelCounter)
 {
     if (current == repListEnd)
-        DcmPolymorphOBOW::print(out, showFullData, level);
-    else
-        (*current)->pixSeq->print(out, showFullData, level);
+    {
+        printPixel(out, showFullData, level, pixelFileName, pixelCounter);
+    } else
+        (*current)->pixSeq->print(out, showFullData, level, pixelFileName, pixelCounter);
 }
 
 E_Condition
@@ -965,7 +968,11 @@ E_Condition DcmPixelData::loadAllDataIntoMemory(void)
 /*
 ** CVS/RCS Log:
 ** $Log: dcpixel.cc,v $
-** Revision 1.9  2000-02-03 16:30:19  joergr
+** Revision 1.10  2000-02-10 10:52:21  joergr
+** Added new feature to dcmdump (enhanced print method of dcmdata): write
+** pixel data/item value fields to raw files.
+**
+** Revision 1.9  2000/02/03 16:30:19  joergr
 ** Fixed bug: encapsulated data (pixel items) have never been loaded using
 ** method 'loadAllDataIntoMemory'. Therefore, encapsulated pixel data was
 ** never printed with 'dcmdump'.

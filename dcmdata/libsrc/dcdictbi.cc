@@ -22,9 +22,9 @@
  *  Purpose: 
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-02-02 14:32:49 $
+ *  Update Date:      $Date: 2000-02-10 10:52:18 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcdictbi.cc,v $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -52,8 +52,9 @@ DcmDataDictionary::loadBuiltinDictionary()
 /*
  * CVS/RCS Log:
  * $Log: dcdictbi.cc,v $
- * Revision 1.3  2000-02-02 14:32:49  joergr
- * Replaced 'delete' statements by 'delete[]' for objects created with 'new[]'.
+ * Revision 1.4  2000-02-10 10:52:18  joergr
+ * Added new feature to dcmdump (enhanced print method of dcmdata): write
+ * pixel data/item value fields to raw files.
  *
  * Revision 1.2  1999/03/31 09:25:24  meichel
  * Updated copyright header in module dcmdata

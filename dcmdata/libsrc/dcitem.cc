@@ -22,9 +22,9 @@
  *  Purpose: class DcmItem
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-02-02 14:32:52 $
+ *  Update Date:      $Date: 2000-02-10 10:52:19 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcitem.cc,v $
- *  CVS/RCS Revision: $Revision: 1.45 $
+ *  CVS/RCS Revision: $Revision: 1.46 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -364,7 +364,8 @@ DcmEVR DcmItem::ident() const
 
 
 void DcmItem::print(ostream & out, const OFBool showFullData,
-                    const int level)
+                    const int level, const char *pixelFileName,
+                    size_t *pixelCounter)
 {
     char *info = new char[200];
     const char *title = (char*)NULL;
@@ -381,7 +382,7 @@ void DcmItem::print(ostream & out, const OFBool showFullData,
         elementList->seek( ELP_first );
         do {
             dO = elementList->get();
-            dO->print(out, showFullData, level + 1 );
+            dO->print(out, showFullData, level + 1, pixelFileName, pixelCounter);
         } while ( elementList->seek( ELP_next ) );
     }
 
@@ -1909,7 +1910,11 @@ DcmItem::findRealNumber(
 /*
 ** CVS/RCS Log:
 ** $Log: dcitem.cc,v $
-** Revision 1.45  2000-02-02 14:32:52  joergr
+** Revision 1.46  2000-02-10 10:52:19  joergr
+** Added new feature to dcmdump (enhanced print method of dcmdata): write
+** pixel data/item value fields to raw files.
+**
+** Revision 1.45  2000/02/02 14:32:52  joergr
 ** Replaced 'delete' statements by 'delete[]' for objects created with 'new[]'.
 **
 ** Revision 1.44  2000/02/01 10:12:07  meichel

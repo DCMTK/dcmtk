@@ -21,10 +21,10 @@
  *
  *  Purpose: List the contents of a dicom file
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-02-01 10:11:57 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2000-02-10 10:47:16 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/apps/dcmdump.cc,v $
- *  CVS/RCS Revision: $Revision: 1.23 $
+ *  CVS/RCS Revision: $Revision: 1.24 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -64,11 +64,14 @@ static char rcsid[] = "$dcmtk: " OFFIS_CONSOLE_APPLICATION " v"
 #endif
 
 static int dumpFile(ostream & out,
-		    const char* ifname, const OFBool isDataset, 
+		    const char *ifname,
+		    const OFBool isDataset, 
 		    const E_TransferSyntax xfer,
 		    const OFBool showFullData,
 		    const OFBool loadIntoMemory,
-		    const OFBool stopOnErrors);
+		    const OFBool stopOnErrors,
+		    const OFBool writePixelData,
+		    const char *pixelDirectory);
 
 // ********************************************
 
@@ -118,9 +121,11 @@ int main(int argc, char *argv[])
     OFBool loadIntoMemory = OFTrue;
     OFBool showFullData = OFFalse;
     OFBool isDataset = OFFalse;
+    OFBool writePixelData = OFFalse;
     E_TransferSyntax xfer = EXS_Unknown;
     OFBool stopOnErrors = OFTrue;
     const char *current = NULL;
+    const char *pixelDirectory = NULL;
     
 #ifdef HAVE_GUSI_H
     /* needed for Macintosh */
@@ -177,6 +182,10 @@ int main(int argc, char *argv[])
  
       cmd.addOption("--prepend",                "+p",        "prepend sequence hierarchy to printed tag,\ndenoted by: (xxxx,xxxx).(xxxx,xxxx).*\n(only with --search-all or --search-first)");
       cmd.addOption("--no-prepend",             "-p",        "do not prepend hierarchy to tag (default)");
+
+    cmd.addSubGroup("writing:");
+      cmd.addOption("--write-pixel",            "+W",    1,  "[d]irectory : string",
+                                                             "write pixel data to a .raw file stored in d");
 
     /* evaluate command line */                           
     prepareCmdLineArgs(argc, argv, OFFIS_CONSOLE_APPLICATION);
@@ -262,6 +271,11 @@ int main(int argc, char *argv[])
       }
       cmd.endOptionBlock();
 
+      if (cmd.findOption("--write-pixel"))
+      {
+        app.checkValue(cmd.getValue(pixelDirectory));
+        writePixelData = OFTrue;
+      }
     }
 
     /* make sure data dictionary is loaded */
@@ -277,7 +291,8 @@ int main(int argc, char *argv[])
     for (int i=1; i<=count; i++) 
     {
       cmd.getParam(i, current);
-      errorCount += dumpFile(cout, current, isDataset, xfer, showFullData, loadIntoMemory, stopOnErrors);
+      errorCount += dumpFile(cout, current, isDataset, xfer, showFullData, loadIntoMemory, stopOnErrors,
+        writePixelData, pixelDirectory);
     }
         
     return errorCount;
@@ -313,23 +328,26 @@ static void printResult(ostream& out, DcmStack& stack, OFBool showFullData)
 }
 
 static int dumpFile(ostream & out,
-		    const char* ifname, const OFBool isDataset, 
+		    const char *ifname,
+		    const OFBool isDataset, 
 		    const E_TransferSyntax xfer,
 		    const OFBool showFullData,
 		    const OFBool loadIntoMemory,
-		    const OFBool stopOnErrors)
+		    const OFBool stopOnErrors,
+		    const OFBool writePixelData,
+		    const char *pixelDirectory)
 {
     int result = 0;
     
     if ((ifname == NULL) || (strlen(ifname) == 0))
     {
-        cerr << "dcmdump: invalid filename: <empty string>" << endl;
+        cerr << OFFIS_CONSOLE_APPLICATION << ": invalid filename: <empty string>" << endl;
         return 1;
     }
 
     DcmFileStream myin(ifname, DCM_ReadMode);
     if ( myin.GetError() != EC_Normal ) {
-        cerr << "dcmdump: cannot open file: " << ifname << endl;
+        cerr << OFFIS_CONSOLE_APPLICATION << ": cannot open file: " << ifname << endl;
         return 1;
     }
 
@@ -342,46 +360,59 @@ static int dumpFile(ostream & out,
 
     if (dfile->error() != EC_Normal)
     {
-	cerr << "dcmdump: error: " << dcmErrorConditionToString(dfile->error()) 
-	     << ": reading file: "<< ifname << endl;
+    	cerr << OFFIS_CONSOLE_APPLICATION << ": error: " << dcmErrorConditionToString(dfile->error()) 
+	         << ": reading file: "<< ifname << endl;
 	
-	result = 1;
-	if (stopOnErrors) return result;
+	    result = 1;
+	    if (stopOnErrors) return result;
     }
 
     if (loadIntoMemory) dfile->loadAllDataIntoMemory();
 
-    if (printTagCount == 0) dfile->print(out, showFullData);
-    else {
-	/* only print specified tags */
-	for (int i=0; i<printTagCount; i++)
-	{
-	    int group = 0xffff;
-	    int elem = 0xffff;
-	    DcmTagKey searchKey;
-	    const char* tagName = printTagNames[i];
-	    const DcmDictEntry* dictEntry = printTagDictEntries[i];
+    if (printTagCount == 0)
+    {
+        if (writePixelData)
+        {
+            OFString str = ifname;
+            size_t pos = str.find_last_of(PATH_SEPARATOR);
+            if (pos == OFString_npos)
+                pos = 0;
+            OFString rname = pixelDirectory;
+            rname += str.substr(pos);
+            size_t counter = 0;
+            dfile->print(out, showFullData, 0 /*level*/, rname.c_str(), &counter);
+        } else
+            dfile->print(out, showFullData);
+    } else {
+    	/* only print specified tags */
+    	for (int i=0; i<printTagCount; i++)
+    	{
+	        int group = 0xffff;
+    	    int elem = 0xffff;
+    	    DcmTagKey searchKey;
+    	    const char* tagName = printTagNames[i];
+    	    const DcmDictEntry* dictEntry = printTagDictEntries[i];
 
-	    if (dictEntry != NULL) searchKey = dictEntry->getKey();
-	    else if (sscanf( tagName, "%x,%x", &group, &elem ) == 2 ) searchKey.set(group, elem);
+    	    if (dictEntry != NULL) searchKey = dictEntry->getKey();
+	        else if (sscanf( tagName, "%x,%x", &group, &elem ) == 2 ) searchKey.set(group, elem);
             else {
-		cerr << "Internal ERROR in File " << __FILE__ << ", Line "
-		     << __LINE__ << endl 
-		     << "-- Named tag inconsistency\n";
-		abort();
-	    }
+        		cerr << "Internal ERROR in File " << __FILE__ << ", Line "
+        		     << __LINE__ << endl 
+		            << "-- Named tag inconsistency\n";
+		        abort();
+	        }
 
-	    DcmStack stack;
-	    if (dfile->search(searchKey, stack, ESM_fromHere, OFTrue) == EC_Normal)
-	    {
-		printResult(out, stack, showFullData);
-		if (printAllInstances)
-		{
-		    while (dfile->search(searchKey, stack, ESM_afterStackTop, OFTrue)  == EC_Normal) 
-		      printResult(out, stack, showFullData);
-		}
+	        DcmStack stack;
+	        if (dfile->search(searchKey, stack, ESM_fromHere, OFTrue) == EC_Normal)
+	        {
+    		    printResult(out, stack, showFullData);
+	    	    if (printAllInstances)
+		        {
+        		    while (dfile->search(searchKey, stack, ESM_afterStackTop, OFTrue)  == EC_Normal) 
+	        	      printResult(out, stack, showFullData);
+		        }
+	        }
 	    }
-	}
     }
 
     delete dfile;
@@ -392,7 +423,11 @@ static int dumpFile(ostream & out,
 /*
  * CVS/RCS Log:
  * $Log: dcmdump.cc,v $
- * Revision 1.23  2000-02-01 10:11:57  meichel
+ * Revision 1.24  2000-02-10 10:47:16  joergr
+ * Added new feature to dcmdump (enhanced print method of dcmdata): write
+ * pixel data/item value fields to raw files.
+ *
+ * Revision 1.23  2000/02/01 10:11:57  meichel
  * Avoiding to include <stdlib.h> as extern "C" on Borland C++ Builder 4,
  *   workaround for bug in compiler header files.
  *

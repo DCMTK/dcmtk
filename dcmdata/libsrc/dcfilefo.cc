@@ -21,10 +21,10 @@
  *
  *  Purpose: class DcmFileFormat
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-02-01 10:12:07 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2000-02-10 10:52:18 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcfilefo.cc,v $
- *  CVS/RCS Revision: $Revision: 1.15 $
+ *  CVS/RCS Revision: $Revision: 1.16 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -121,8 +121,9 @@ DcmFileFormat::~DcmFileFormat()
 // ********************************
 
 
-void DcmFileFormat::print(ostream & out, const OFBool showFullData, 
-                          const int level)
+void DcmFileFormat::print(ostream & out, const OFBool showFullData,
+                          const int level, const char *pixelFileName,
+                          size_t *pixelCounter)
 {
     int i;
     out << endl;
@@ -136,7 +137,7 @@ void DcmFileFormat::print(ostream & out, const OFBool showFullData,
         do 
         {
             dO = itemList->get();
-            dO->print(out, showFullData, level);
+            dO->print(out, showFullData, level, pixelFileName, pixelCounter);
         } while ( itemList->seek( ELP_next ) );
     }
     else
@@ -702,7 +703,11 @@ DcmDataset* DcmFileFormat::getAndRemoveDataset()
 /*
 ** CVS/RCS Log:
 ** $Log: dcfilefo.cc,v $
-** Revision 1.15  2000-02-01 10:12:07  meichel
+** Revision 1.16  2000-02-10 10:52:18  joergr
+** Added new feature to dcmdump (enhanced print method of dcmdata): write
+** pixel data/item value fields to raw files.
+**
+** Revision 1.15  2000/02/01 10:12:07  meichel
 ** Avoiding to include <stdlib.h> as extern "C" on Borland C++ Builder 4,
 **   workaround for bug in compiler header files.
 **

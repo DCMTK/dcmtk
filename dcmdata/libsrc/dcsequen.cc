@@ -22,9 +22,9 @@
  *  Purpose: class DcmSequenceOfItems
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-02-03 16:29:40 $
+ *  Update Date:      $Date: 2000-02-10 10:52:22 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcsequen.cc,v $
- *  CVS/RCS Revision: $Revision: 1.29 $
+ *  CVS/RCS Revision: $Revision: 1.30 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -205,7 +205,8 @@ DcmSequenceOfItems &DcmSequenceOfItems::operator=(const DcmSequenceOfItems &obj)
 // ********************************
 
 void DcmSequenceOfItems::print(ostream & out, const OFBool showFullData,
-                               const int level)
+                               const int level, const char *pixelFileName,
+                               size_t *pixelCounter)
 {
     char info[200]; 
     const char *title = (char*)NULL;
@@ -223,7 +224,7 @@ void DcmSequenceOfItems::print(ostream & out, const OFBool showFullData,
         itemList->seek( ELP_first );
         do {
             dO = itemList->get();
-            dO->print(out, showFullData, level + 1 );
+            dO->print(out, showFullData, level + 1, pixelFileName, pixelCounter);
         } while ( itemList->seek( ELP_next ) );
     }
     DcmTag delimItemTag( DCM_SequenceDelimitationItem );
@@ -235,7 +236,6 @@ void DcmSequenceOfItems::print(ostream & out, const OFBool showFullData,
         printInfoLine(out, showFullData, level, delimItemTag,
                                   0, "(SequenceDelimitationItem for re-enc.)" );
 }
-
 
 
 // ********************************
@@ -1093,7 +1093,11 @@ E_Condition DcmSequenceOfItems::loadAllDataIntoMemory()
 /*
 ** CVS/RCS Log:
 ** $Log: dcsequen.cc,v $
-** Revision 1.29  2000-02-03 16:29:40  joergr
+** Revision 1.30  2000-02-10 10:52:22  joergr
+** Added new feature to dcmdump (enhanced print method of dcmdata): write
+** pixel data/item value fields to raw files.
+**
+** Revision 1.29  2000/02/03 16:29:40  joergr
 ** Corrected bug that caused wrong calculation of group length for sequence
 ** of items (e.g. encapsulated pixel data).
 **

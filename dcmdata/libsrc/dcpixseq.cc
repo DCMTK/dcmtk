@@ -22,9 +22,9 @@
  *  Purpose: class DcmPixelSequence
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-02-02 14:32:53 $
+ *  Update Date:      $Date: 2000-02-10 10:52:21 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcpixseq.cc,v $
- *  CVS/RCS Revision: $Revision: 1.17 $
+ *  CVS/RCS Revision: $Revision: 1.18 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -100,7 +100,8 @@ DcmPixelSequence &DcmPixelSequence::operator=(const DcmPixelSequence &obj)
 
 
 void DcmPixelSequence::print(ostream & out, const OFBool showFullData,
-                             const int level )
+                             const int level, const char *pixelFileName,
+                             size_t *pixelCounter)
 {
     char *info = new char[200];
     const char *title = (char*)NULL;
@@ -119,7 +120,7 @@ void DcmPixelSequence::print(ostream & out, const OFBool showFullData,
         itemList->seek( ELP_first );
         do {
             dO = itemList->get();
-            dO->print(out, showFullData, level + 1);
+            dO->print(out, showFullData, level + 1, pixelFileName, pixelCounter);
         } while ( itemList->seek( ELP_next ) );
     }
     DcmTag delimItemTag( DCM_SequenceDelimitationItem );
@@ -299,7 +300,11 @@ E_Condition DcmPixelSequence::write(DcmStream & outStream,
 /*
 ** CVS/RCS Log:
 ** $Log: dcpixseq.cc,v $
-** Revision 1.17  2000-02-02 14:32:53  joergr
+** Revision 1.18  2000-02-10 10:52:21  joergr
+** Added new feature to dcmdump (enhanced print method of dcmdata): write
+** pixel data/item value fields to raw files.
+**
+** Revision 1.17  2000/02/02 14:32:53  joergr
 ** Replaced 'delete' statements by 'delete[]' for objects created with 'new[]'.
 **
 ** Revision 1.16  2000/02/01 10:12:09  meichel

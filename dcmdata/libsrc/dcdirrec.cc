@@ -21,10 +21,10 @@
  *
  *  Purpose: class DcmDirectoryRecord
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-02-03 11:49:07 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2000-02-10 10:52:18 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcdirrec.cc,v $
- *  CVS/RCS Revision: $Revision: 1.29 $
+ *  CVS/RCS Revision: $Revision: 1.30 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1075,7 +1075,8 @@ DcmEVR DcmDirectoryRecord::ident() const
 
 
 void DcmDirectoryRecord::print(ostream & out, const OFBool showFullData,
-                               const int level )
+                               const int level, const char *pixelFileName,
+		                       size_t *pixelCounter)
 {
     int i;
     const char *type = DRTypeNames[ DirRecordType ];
@@ -1103,7 +1104,7 @@ void DcmDirectoryRecord::print(ostream & out, const OFBool showFullData,
         elementList->seek( ELP_first );
         do {
             dO = elementList->get();
-            dO->print(out, showFullData, level + 1);
+            dO->print(out, showFullData, level + 1, pixelFileName, pixelCounter);
         } while ( elementList->seek( ELP_next ) );
     }
     if ( lowerLevelList->card() > 0 )
@@ -1454,7 +1455,11 @@ DcmDirectoryRecord::getRecordsOriginFile()
 /*
  * CVS/RCS Log:
  * $Log: dcdirrec.cc,v $
- * Revision 1.29  2000-02-03 11:49:07  meichel
+ * Revision 1.30  2000-02-10 10:52:18  joergr
+ * Added new feature to dcmdump (enhanced print method of dcmdata): write
+ * pixel data/item value fields to raw files.
+ *
+ * Revision 1.29  2000/02/03 11:49:07  meichel
  * Updated dcmgpdir to new directory record structure in letter ballot text
  *   of Structured Report.
  *

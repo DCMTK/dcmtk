@@ -22,9 +22,9 @@
  *  Purpose: class DcmOtherByteOtherWord for data VR OB or OW
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-02-03 16:55:20 $
+ *  Update Date:      $Date: 2000-02-10 10:52:24 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcvrobow.cc,v $
- *  CVS/RCS Revision: $Revision: 1.22 $
+ *  CVS/RCS Revision: $Revision: 1.23 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -61,7 +61,7 @@ END_EXTERN_C
 
 
 DcmOtherByteOtherWord::DcmOtherByteOtherWord(const DcmTag &tag,
-					     const Uint32 len)
+                         const Uint32 len)
     : DcmElement(tag, len)
 {
 }
@@ -74,11 +74,11 @@ DcmOtherByteOtherWord::DcmOtherByteOtherWord( const DcmOtherByteOtherWord& old )
     : DcmElement( old )
 {
     if (old.ident() != EVR_OW && old.ident() != EVR_OB && 
-	old.ident() != EVR_ox && old.ident() != EVR_UNKNOWN && 
-	old.ident() != EVR_UN && old.ident() != EVR_PixelData &&
-	old.ident() != EVR_OverlayData)
+    old.ident() != EVR_ox && old.ident() != EVR_UNKNOWN && 
+    old.ident() != EVR_UN && old.ident() != EVR_PixelData &&
+    old.ident() != EVR_OverlayData)
     {
-	errorFlag = EC_IllegalCall;
+    errorFlag = EC_IllegalCall;
         cerr << "Warning: DcmOtherByteOtherWord: wrong use of Copy-Constructor"
              << endl;
     }
@@ -117,79 +117,130 @@ DcmEVR DcmOtherByteOtherWord::ident(void) const
 
 
 void DcmOtherByteOtherWord::print(ostream & out, const OFBool showFullData,
-				  const int level )
+              const int level, const char * /*pixelFileName*/,
+              size_t * /*pixelCounter*/)
 {
     if (this -> valueLoaded())
     {
-	const DcmEVR evr = Tag.getEVR();
-	Uint16 * wordValues = NULL;
-	Uint8 * byteValues = NULL;
+        const DcmEVR evr = Tag.getEVR();
+        Uint16 * wordValues = NULL;
+        Uint8 * byteValues = NULL;
+    
+        if (evr == EVR_OW)
+            this -> getUint16Array(wordValues);
+        else
+            this -> getUint8Array(byteValues);
+    
+        errorFlag = EC_Normal;
+        if (wordValues || byteValues)
+        {
+            char *ch_words = NULL;;
+            char *tmp = NULL;
+            Uint32 maxCount = 0; 
+            Uint32 vrLength = 0;
+            if (evr == EVR_OW)
+            {
+            vrLength = Length/sizeof(Uint16);
+            maxCount = 
+                !showFullData && DCM_OptPrintLineLength/5 < vrLength ? 
+                DCM_OptPrintLineLength/5 : vrLength;
+            tmp = ch_words = new char[maxCount*5+6];
+            }
+            else
+            {
+            vrLength = Length;
+            maxCount = 
+                !showFullData && DCM_OptPrintLineLength/3 < Length ? 
+                DCM_OptPrintLineLength/3 : Length;
+            tmp = ch_words = new char[maxCount*3+6];
+            }
+            
+            if (tmp)
+            {
+            for (unsigned int i=0; i<maxCount; i++)
+            {
+                if (evr == EVR_OW)
+                {
+                sprintf(tmp, "%4.4hx\\", *wordValues);
+                tmp += 5;
+                wordValues++;
+                }
+                else
+                {
+                sprintf(tmp, "%2.2x\\", *byteValues);
+                tmp += 3;
+                byteValues++;
+                }
+            }
+    
+            if (maxCount > 0 )
+                tmp--;
+            *tmp = '\0';
+            if (maxCount < vrLength)
+                strcat(tmp, "...");
+                
+            printInfoLine(out, showFullData, level, ch_words );
+            delete[] ch_words;
+            }
+            else
+            errorFlag = EC_MemoryExhausted;
+        }
+        else
+            printInfoLine(out, showFullData, level, "(no value available)" );
+    } else
+        printInfoLine(out, showFullData, level, "(not loaded)" );
+}
 
-	if (evr == EVR_OW)
-	    this -> getUint16Array(wordValues);
-	else
-	    this -> getUint8Array(byteValues);
 
-	errorFlag = EC_Normal;
-	if (wordValues || byteValues)
-	{
-	    char *ch_words = NULL;;
-	    char *tmp = NULL;
-	    Uint32 maxCount = 0; 
-	    Uint32 vrLength = 0;
-	    if (evr == EVR_OW)
-	    {
-		vrLength = Length/sizeof(Uint16);
-		maxCount = 
-		    !showFullData && DCM_OptPrintLineLength/5 < vrLength ? 
-		    DCM_OptPrintLineLength/5 : vrLength;
-		tmp = ch_words = new char[maxCount*5+6];
-	    }
-	    else
-	    {
-		vrLength = Length;
-		maxCount = 
-		    !showFullData && DCM_OptPrintLineLength/3 < Length ? 
-		    DCM_OptPrintLineLength/3 : Length;
-		tmp = ch_words = new char[maxCount*3+6];
-	    }
-		
-	    if (tmp)
-	    {
-		for (unsigned int i=0; i<maxCount; i++)
-		{
-		    if (evr == EVR_OW)
-		    {
-			sprintf(tmp, "%4.4hx\\", *wordValues);
-			tmp += 5;
-			wordValues++;
-		    }
-		    else
-		    {
-			sprintf(tmp, "%2.2x\\", *byteValues);
-			tmp += 3;
-			byteValues++;
-		    }
-		}
-
-		if (maxCount > 0 )
-		    tmp--;
-		*tmp = '\0';
-		if (maxCount < vrLength)
-		    strcat(tmp, "...");
-		    
-		printInfoLine(out, showFullData, level, ch_words );
-		delete[] ch_words;
-	    }
-	    else
-		errorFlag = EC_MemoryExhausted;
-	}
-	else
-	    printInfoLine(out, showFullData, 
-				     level, "(no value available)" );
-    }
-    else
-	printInfoLine(out, showFullData, level, "(not loaded)" );
+void DcmOtherByteOtherWord::printPixel(ostream & out, const OFBool showFullData, 
+              const int level, const char *pixelFileName,
+              size_t *pixelCounter)
+{
+    if (pixelFileName != NULL)
+    {
+        OFString fname = pixelFileName;
+        fname += ".";
+        if (pixelCounter != NULL)
+        {
+            char num[20];
+            sprintf(num, "%d", (*pixelCounter)++);
+            fname += num;
+        }
+        fname += ".raw";
+        OFString str = "=";
+        str += fname;
+        printInfoLine(out, showFullData, level, str.c_str());
+        FILE *file =fopen(fname.c_str(), "r");
+        if (file == NULL)
+        {
+            file = fopen(fname.c_str(), "wb");
+            if (file != NULL)
+            {
+                if (Tag.getEVR() == EVR_OW)
+                {
+                    Uint16 *data = NULL;
+                    getUint16Array(data);
+                    if (data != NULL)
+                    {
+                        swapIfNecessary(EBO_LittleEndian, fByteOrder, data, Length, sizeof(Uint16));
+                        fwrite(data, 1, Length, file);
+                        swapIfNecessary(fByteOrder, EBO_LittleEndian, data, Length, sizeof(Uint16));
+                    }
+                } else {
+                    Uint8 *data = NULL;    
+                    getUint8Array(data);
+                    if (data != NULL)
+                        fwrite(data, 1, Length, file);
+                }
+                fclose(file);   
+            } else
+                cerr << "Warning: can't open output file for pixel data: " << fname << endl;
+        } else {
+            fclose(file);
+            cerr << "Warning: output file for pixel data already exists: " << fname << endl;
+        }
+    } else
+        DcmOtherByteOtherWord::print(out, showFullData, level, pixelFileName, pixelCounter);
 }
 
 
@@ -201,13 +252,13 @@ E_Condition DcmOtherByteOtherWord::alignValue(void)
     errorFlag = EC_Normal;
     if ( Tag.getEVR() != EVR_OW && Length != 0L)
     {
-	Uint8 * bytes = NULL;
-	bytes = (Uint8 *)getValue(fByteOrder);
-	if (bytes && (Length & 1) != 0)
-	{
-	    bytes[Length] = 0;
-	    Length++;
-	}
+    Uint8 * bytes = NULL;
+    bytes = (Uint8 *)getValue(fByteOrder);
+    if (bytes && (Length & 1) != 0)
+    {
+        bytes[Length] = 0;
+        Length++;
+    }
     }
     return errorFlag;
 }
@@ -223,21 +274,21 @@ void DcmOtherByteOtherWord::postLoadValue(void)
 // ********************************
 
 E_Condition DcmOtherByteOtherWord::putUint8Array(const Uint8 * byteValue,
-						 const unsigned long numBytes)
+                         const unsigned long numBytes)
 {
     errorFlag = EC_Normal;
     if (numBytes)
     {
-	if (byteValue && Tag.getEVR() != EVR_OW)
-	{
-	    errorFlag = putValue(byteValue, sizeof(Uint8)*Uint32(numBytes));
-	    this -> alignValue();
-	}
-	else
-	    errorFlag = EC_CorruptedData;
+    if (byteValue && Tag.getEVR() != EVR_OW)
+    {
+        errorFlag = putValue(byteValue, sizeof(Uint8)*Uint32(numBytes));
+        this -> alignValue();
     }
     else
-	this -> putValue(NULL, 0);
+        errorFlag = EC_CorruptedData;
+    }
+    else
+    this -> putValue(NULL, 0);
 
     return errorFlag;
 }
@@ -247,18 +298,18 @@ E_Condition DcmOtherByteOtherWord::putUint8Array(const Uint8 * byteValue,
 
 
 E_Condition DcmOtherByteOtherWord::putUint16Array(const Uint16 * wordValue,
-						  const unsigned long numWords)      
+                          const unsigned long numWords)      
 {
     errorFlag = EC_Normal;
     if (numWords)
     {
-	if (wordValue && Tag.getEVR() == EVR_OW)
-	    errorFlag = putValue(wordValue, sizeof(Uint16)*Uint32(numWords));
-	else
-	    errorFlag = EC_CorruptedData;
+    if (wordValue && Tag.getEVR() == EVR_OW)
+        errorFlag = putValue(wordValue, sizeof(Uint16)*Uint32(numWords));
+    else
+        errorFlag = EC_CorruptedData;
     }
     else
-	errorFlag = this -> putValue(NULL, 0);
+    errorFlag = this -> putValue(NULL, 0);
 
     return errorFlag;
 }
@@ -272,57 +323,57 @@ E_Condition DcmOtherByteOtherWord::putString(const char * val)
     errorFlag = EC_Normal;
     if (val && val[0] != 0)
     {
-	unsigned long vm = getVMFromString(val);
-	if (vm)
-	{
-	    const DcmEVR evr = Tag.getEVR();
-	    Uint16 * wordField = NULL;
-	    Uint8 * byteField = NULL;
+    unsigned long vm = getVMFromString(val);
+    if (vm)
+    {
+        const DcmEVR evr = Tag.getEVR();
+        Uint16 * wordField = NULL;
+        Uint8 * byteField = NULL;
 
-	    if (evr == EVR_OW)
-		wordField = new Uint16[vm];
-	    else
-		byteField = new Uint8[vm];
+        if (evr == EVR_OW)
+        wordField = new Uint16[vm];
+        else
+        byteField = new Uint8[vm];
 
-	    const char * s = val;
-	    Uint16 intVal = 0;
-	    
-	    for(unsigned long i = 0; i < vm && errorFlag == EC_Normal; i++)
-	    {
-		char * value = getFirstValueFromString(s);
-		if (value) 
-		{
-		    if (sscanf(value, "%hx", &intVal) != 1)
-			errorFlag = EC_CorruptedData;
-		    else if (evr != EVR_OW)
-			byteField[i] = Uint8(intVal);
-		    else
-			wordField[i] = Uint16(intVal);
-		    delete[] value;
-		}
-		else 
-		    errorFlag = EC_CorruptedData;
-	    }
+        const char * s = val;
+        Uint16 intVal = 0;
+        
+        for(unsigned long i = 0; i < vm && errorFlag == EC_Normal; i++)
+        {
+        char * value = getFirstValueFromString(s);
+        if (value) 
+        {
+            if (sscanf(value, "%hx", &intVal) != 1)
+            errorFlag = EC_CorruptedData;
+            else if (evr != EVR_OW)
+            byteField[i] = Uint8(intVal);
+            else
+            wordField[i] = Uint16(intVal);
+            delete[] value;
+        }
+        else 
+            errorFlag = EC_CorruptedData;
+        }
 
 
-	    if (errorFlag == EC_Normal)
-	    {
-		if (evr != EVR_OW)
-		    errorFlag = this -> putUint8Array(byteField, vm);
-		else
-		    errorFlag = this -> putUint16Array(wordField, vm);
-	    }
+        if (errorFlag == EC_Normal)
+        {
+        if (evr != EVR_OW)
+            errorFlag = this -> putUint8Array(byteField, vm);
+        else
+            errorFlag = this -> putUint16Array(wordField, vm);
+        }
 
-	    if (evr != EVR_OW)
-		delete[] byteField;
-	    else
-		delete[] wordField;
-	}
-	else
-	    this -> putValue(NULL, 0);
+        if (evr != EVR_OW)
+        delete[] byteField;
+        else
+        delete[] wordField;
     }
     else
-	this -> putValue(NULL, 0);
+        this -> putValue(NULL, 0);
+    }
+    else
+    this -> putValue(NULL, 0);
     return errorFlag;
 }
 
@@ -360,7 +411,7 @@ E_Condition DcmOtherByteOtherWord::verify(const OFBool autocorrect)
 {
     errorFlag = EC_Normal;
     if (autocorrect)
-	errorFlag = alignValue();
+    errorFlag = alignValue();
     return errorFlag;
 }
 
@@ -368,7 +419,7 @@ E_Condition DcmOtherByteOtherWord::verify(const OFBool autocorrect)
 // ********************************
 
 OFBool DcmOtherByteOtherWord::canWriteXfer(const E_TransferSyntax newXfer,
-					 const E_TransferSyntax /*oldXfer*/)
+                     const E_TransferSyntax /*oldXfer*/)
 {
     DcmXfer newXferSyn(newXfer);
     return Tag != DCM_PixelData || !newXferSyn.isEncapsulated();
@@ -378,17 +429,17 @@ OFBool DcmOtherByteOtherWord::canWriteXfer(const E_TransferSyntax newXfer,
 // ********************************
 
 E_Condition DcmOtherByteOtherWord::write(DcmStream & outStream,
-					 const E_TransferSyntax oxfer,
-					 const E_EncodingType enctype)
+                     const E_TransferSyntax oxfer,
+                     const E_EncodingType enctype)
 {
 
     if (fTransferState == ERW_notInitialized)
-	errorFlag = EC_IllegalCall;
+    errorFlag = EC_IllegalCall;
     else
     {
-	if (fTransferState == ERW_init)
-	    this -> alignValue();
-	errorFlag = DcmElement::write(outStream, oxfer, enctype);
+    if (fTransferState == ERW_init)
+        this -> alignValue();
+    errorFlag = DcmElement::write(outStream, oxfer, enctype);
     }
     return errorFlag;
 }
@@ -398,7 +449,11 @@ E_Condition DcmOtherByteOtherWord::write(DcmStream & outStream,
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrobow.cc,v $
-** Revision 1.22  2000-02-03 16:55:20  joergr
+** Revision 1.23  2000-02-10 10:52:24  joergr
+** Added new feature to dcmdump (enhanced print method of dcmdata): write
+** pixel data/item value fields to raw files.
+**
+** Revision 1.22  2000/02/03 16:55:20  joergr
 ** Avoid EVR_pixelItem in comparisons (compare with != EVR_OW instead).
 **
 ** Revision 1.21  2000/02/03 16:35:58  joergr

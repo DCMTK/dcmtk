@@ -23,10 +23,10 @@
  *  This file contains the interface to routines which provide
  *  DICOM object encoding/decoding, search and lookup facilities.
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-02-01 10:12:09 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2000-02-10 10:52:20 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcobject.cc,v $
- *  CVS/RCS Revision: $Revision: 1.23 $
+ *  CVS/RCS Revision: $Revision: 1.24 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -148,7 +148,6 @@ E_Condition DcmObject::searchErrors( DcmStack &resultStack )
     resultStack.push( this );
   return errorFlag;
 }
-
 
 
 // ***********************************************************
@@ -280,7 +279,11 @@ E_Condition DcmObject::writeTagAndLength(DcmStream & outStream,
 /*
  * CVS/RCS Log:
  * $Log: dcobject.cc,v $
- * Revision 1.23  2000-02-01 10:12:09  meichel
+ * Revision 1.24  2000-02-10 10:52:20  joergr
+ * Added new feature to dcmdump (enhanced print method of dcmdata): write
+ * pixel data/item value fields to raw files.
+ *
+ * Revision 1.23  2000/02/01 10:12:09  meichel
  * Avoiding to include <stdlib.h> as extern "C" on Borland C++ Builder 4,
  *   workaround for bug in compiler header files.
  *

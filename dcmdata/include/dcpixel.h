@@ -22,9 +22,9 @@
  *  Purpose: Interface of class DcmPixelData
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-02-03 16:28:10 $
+ *  Update Date:      $Date: 2000-02-10 10:50:52 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcpixel.h,v $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -166,7 +166,8 @@ public:
     virtual DcmEVR ident() const { return EVR_PixelData; }
 
     virtual void print(ostream & out = cout, const OFBool showFullData = OFTrue,
-                       const int level = 0);
+                       const int level = 0, const char *pixelFileName = NULL,
+		               size_t *pixelCounter = NULL);
 
     // tests if it is possible to write a specific representation
     // Only existing representations are considered, since this
@@ -303,7 +304,11 @@ public:
 /*
 ** CVS/RCS Log:
 ** $Log: dcpixel.h,v $
-** Revision 1.6  2000-02-03 16:28:10  joergr
+** Revision 1.7  2000-02-10 10:50:52  joergr
+** Added new feature to dcmdump (enhanced print method of dcmdata): write
+** pixel data/item value fields to raw files.
+**
+** Revision 1.6  2000/02/03 16:28:10  joergr
 ** Fixed bug: encapsulated data (pixel items) have never been loaded using
 ** method 'loadAllDataIntoMemory'. Therefore, encapsulated pixel data was
 ** never printed with 'dcmdump'.

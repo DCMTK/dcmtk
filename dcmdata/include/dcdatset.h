@@ -21,10 +21,10 @@
  *
  *  Purpose: Interface of the class DcmDataset
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-03-31 09:24:32 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2000-02-10 10:50:50 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcdatset.h,v $
- *  CVS/RCS Revision: $Revision: 1.9 $
+ *  CVS/RCS Revision: $Revision: 1.10 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -58,7 +58,8 @@ public:
 
     virtual DcmEVR ident() const { return EVR_dataset; }
     virtual void print(ostream & out = cout, const OFBool showFullData = OFTrue,
-		       const int level = 0);
+		       const int level = 0, const char *pixelFileName = NULL,
+		       size_t *pixelCounter = NULL);
 
     Uint32 calcElementLength(const E_TransferSyntax xfer,
 			     const E_EncodingType enctype);
@@ -119,7 +120,11 @@ public:
 /*
 ** CVS/RCS Log:
 ** $Log: dcdatset.h,v $
-** Revision 1.9  1999-03-31 09:24:32  meichel
+** Revision 1.10  2000-02-10 10:50:50  joergr
+** Added new feature to dcmdump (enhanced print method of dcmdata): write
+** pixel data/item value fields to raw files.
+**
+** Revision 1.9  1999/03/31 09:24:32  meichel
 ** Updated copyright header in module dcmdata
 **
 ** Revision 1.8  1997/07/21 08:14:38  andreas

@@ -22,9 +22,9 @@
  *  Purpose: class DcmDicomDir
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-02-02 14:32:48 $
+ *  Update Date:      $Date: 2000-02-10 10:52:17 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcdicdir.cc,v $
- *  CVS/RCS Revision: $Revision: 1.25 $
+ *  CVS/RCS Revision: $Revision: 1.26 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -830,7 +830,8 @@ E_Condition DcmDicomDir::insertMediaSOPUID( DcmMetaInfo &metaInfo )  // inout
 
 
 void DcmDicomDir::print(ostream & out, const OFBool showFullData,
-                        const int level)
+                        const int level, const char *pixelFileName,
+                        size_t *pixelCounter)
 {
     int i;
     for ( i=0; i<level; i++)
@@ -840,19 +841,19 @@ void DcmDicomDir::print(ostream & out, const OFBool showFullData,
     for ( i=0; i<level; i++)
         out << "    ";
     out << "# Meta-Info and General Directory Information" << endl;
-    this->getDirFileFormat().print(out, showFullData);
+    this->getDirFileFormat().print(out, showFullData, 0, pixelFileName, pixelCounter);
 
     out << endl;
     for ( i=0; i<level; i++)
         out << "    ";
     out << "# Item Hierarchy (root Record not shown)" << endl;
-    this->getRootRecord().lowerLevelList->print(out, showFullData, 1);  // friend class
+    this->getRootRecord().lowerLevelList->print(out, showFullData, 1, pixelFileName, pixelCounter);  // friend class
 
     out << endl;
     for ( i=0; i<level; i++)
         out << "    ";
     out << "# used Multi Referenced Directory Records" << endl;
-    this->getMRDRSequence().print(out, showFullData, 1 );
+    this->getMRDRSequence().print(out, showFullData, 1, pixelFileName, pixelCounter);
 }
 
 
@@ -1329,7 +1330,11 @@ Cdebug(1, refCounter[k].fileOffset==refMRDR->numberOfReferences,
 /*
 ** CVS/RCS Log:
 ** $Log: dcdicdir.cc,v $
-** Revision 1.25  2000-02-02 14:32:48  joergr
+** Revision 1.26  2000-02-10 10:52:17  joergr
+** Added new feature to dcmdump (enhanced print method of dcmdata): write
+** pixel data/item value fields to raw files.
+**
+** Revision 1.25  2000/02/02 14:32:48  joergr
 ** Replaced 'delete' statements by 'delete[]' for objects created with 'new[]'.
 **
 ** Revision 1.24  2000/02/01 10:12:04  meichel

@@ -23,10 +23,10 @@
  *  This file contains the interface to routines which provide
  *  DICOM object encoding/decoding, search and lookup facilities.
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-02-01 10:12:02 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2000-02-10 10:50:52 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcobject.h,v $
- *  CVS/RCS Revision: $Revision: 1.20 $
+ *  CVS/RCS Revision: $Revision: 1.21 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -115,7 +115,8 @@ public:
     virtual OFBool isLeaf(void) const = 0;
     virtual DcmObject * nextInContainer(const DcmObject * obj);
     virtual void print(ostream & out = cout, const OFBool showFullData = OFTrue,
-                       const int level = 0) = 0;
+                       const int level = 0, const char *pixelFileName = NULL,
+                       size_t *pixelCounter = NULL) = 0;
     inline E_Condition error(void) const { return errorFlag; }
 
     inline E_TransferState transferState(void) const { return fTransferState; }
@@ -173,7 +174,11 @@ public:
 /*
  * CVS/RCS Log:
  * $Log: dcobject.h,v $
- * Revision 1.20  2000-02-01 10:12:02  meichel
+ * Revision 1.21  2000-02-10 10:50:52  joergr
+ * Added new feature to dcmdump (enhanced print method of dcmdata): write
+ * pixel data/item value fields to raw files.
+ *
+ * Revision 1.20  2000/02/01 10:12:02  meichel
  * Avoiding to include <stdlib.h> as extern "C" on Borland C++ Builder 4,
  *   workaround for bug in compiler header files.
  *

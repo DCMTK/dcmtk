@@ -22,9 +22,9 @@
  *  Purpose: class DcmFloatingPointSingle
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-02-02 14:32:57 $
+ *  Update Date:      $Date: 2000-02-10 10:52:24 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcvrfl.cc,v $
- *  CVS/RCS Revision: $Revision: 1.14 $
+ *  CVS/RCS Revision: $Revision: 1.15 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -81,7 +81,8 @@ DcmFloatingPointSingle::~DcmFloatingPointSingle()
 
 
 void DcmFloatingPointSingle::print(ostream & out, const OFBool showFullData,
-				   const int level)
+			  const int level, const char * /*pixelFileName*/,
+		      size_t * /*pixelCounter*/)
 {
     if (this -> valueLoaded())
     {
@@ -253,7 +254,11 @@ E_Condition DcmFloatingPointSingle::verify(const OFBool autocorrect)
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrfl.cc,v $
-** Revision 1.14  2000-02-02 14:32:57  joergr
+** Revision 1.15  2000-02-10 10:52:24  joergr
+** Added new feature to dcmdump (enhanced print method of dcmdata): write
+** pixel data/item value fields to raw files.
+**
+** Revision 1.14  2000/02/02 14:32:57  joergr
 ** Replaced 'delete' statements by 'delete[]' for objects created with 'new[]'.
 **
 ** Revision 1.13  1999/03/31 09:25:52  meichel

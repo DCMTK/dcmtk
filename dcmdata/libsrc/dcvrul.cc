@@ -22,9 +22,9 @@
  *  Purpose: class DcmUnsignedLong
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-02-02 14:33:01 $
+ *  Update Date:      $Date: 2000-02-10 10:52:26 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcvrul.cc,v $
- *  CVS/RCS Revision: $Revision: 1.13 $
+ *  CVS/RCS Revision: $Revision: 1.14 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -76,7 +76,8 @@ DcmUnsignedLong::~DcmUnsignedLong(void)
 
 
 void DcmUnsignedLong::print(ostream & out, const OFBool showFullData, 
-			    const int level)
+			  const int level, const char * /*pixelFileName*/,
+		      size_t * /*pixelCounter*/)
 {
     if (this -> valueLoaded())
     {
@@ -260,7 +261,11 @@ E_Condition DcmUnsignedLong::verify(const OFBool autocorrect )
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrul.cc,v $
-** Revision 1.13  2000-02-02 14:33:01  joergr
+** Revision 1.14  2000-02-10 10:52:26  joergr
+** Added new feature to dcmdump (enhanced print method of dcmdata): write
+** pixel data/item value fields to raw files.
+**
+** Revision 1.13  2000/02/02 14:33:01  joergr
 ** Replaced 'delete' statements by 'delete[]' for objects created with 'new[]'.
 **
 ** Revision 1.12  1999/03/31 09:26:01  meichel

@@ -21,10 +21,10 @@
  *
  *  Purpose: Interface of class DcmSequenceOfItems
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-03-31 09:24:46 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2000-02-10 10:50:53 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcsequen.h,v $
- *  CVS/RCS Revision: $Revision: 1.16 $
+ *  CVS/RCS Revision: $Revision: 1.17 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -89,10 +89,11 @@ public:
     virtual DcmEVR ident() const { return EVR_SQ; }
     virtual OFBool isLeaf(void) const { return OFFalse; }
     virtual void print(ostream & out = cout, const OFBool showFullData = OFTrue,
-                       const int level = 0);
+                       const int level = 0, const char *pixelFileName = NULL,
+		               size_t *pixelCounter = NULL);
     virtual unsigned long getVM() { return 1L; }
 
-   virtual E_Condition computeGroupLengthAndPadding
+    virtual E_Condition computeGroupLengthAndPadding
                             (const E_GrpLenEncoding glenc,
                              const E_PaddingEncoding padenc = EPD_noChange,
                              const E_TransferSyntax xfer = EXS_Unknown,
@@ -156,7 +157,11 @@ public:
 /*
 ** CVS/RCS Log:
 ** $Log: dcsequen.h,v $
-** Revision 1.16  1999-03-31 09:24:46  meichel
+** Revision 1.17  2000-02-10 10:50:53  joergr
+** Added new feature to dcmdump (enhanced print method of dcmdata): write
+** pixel data/item value fields to raw files.
+**
+** Revision 1.16  1999/03/31 09:24:46  meichel
 ** Updated copyright header in module dcmdata
 **
 ** Revision 1.15  1998/11/12 16:47:44  meichel

@@ -22,9 +22,9 @@
  *  Purpose: class DcmUniqueIdentifier
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-02-02 14:33:00 $
+ *  Update Date:      $Date: 2000-02-10 10:52:25 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcvrui.cc,v $
- *  CVS/RCS Revision: $Revision: 1.14 $
+ *  CVS/RCS Revision: $Revision: 1.15 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -73,41 +73,42 @@ DcmUniqueIdentifier::~DcmUniqueIdentifier()
 
 
 void DcmUniqueIdentifier::print(ostream & out, const OFBool showFullData,
-				const int level)
+              const int level, const char * /*pixelFileName*/,
+              size_t * /*pixelCounter*/)
 {
     if (this -> valueLoaded())
     {
-	char * uid = NULL;
-	this -> getString(uid);
-	if (uid)
-	{
-	    const char* symbol = dcmFindNameOfUID(uid);
-	    char *tmp = NULL;
+    char * uid = NULL;
+    this -> getString(uid);
+    if (uid)
+    {
+        const char* symbol = dcmFindNameOfUID(uid);
+        char *tmp = NULL;
 
-	    if ( symbol && *symbol != '\0' )
-	    {
-		tmp = new char[ strlen(symbol) + 3 ];
-		tmp[0] = '=';
-		strcpy( tmp+1, symbol );
-	    }
-	    else
-	    {
-		tmp = new char[ Length + 4 ];
-		tmp[0] = '[';
-		strncpy( tmp+1, uid, (int)Length );
-		tmp[ Length + 1 ] = '\0';
-		size_t t_len = strlen( tmp+1 );
-		tmp[ t_len + 1 ] = ']';
-		tmp[ t_len + 2 ] = '\0';
-	    }
-	    printInfoLine(out, showFullData, level, tmp );
-	    delete[] tmp;
-	}
-	else
-	    printInfoLine(out, showFullData, level, "(no value available)" );
+        if ( symbol && *symbol != '\0' )
+        {
+        tmp = new char[ strlen(symbol) + 3 ];
+        tmp[0] = '=';
+        strcpy( tmp+1, symbol );
+        }
+        else
+        {
+        tmp = new char[ Length + 4 ];
+        tmp[0] = '[';
+        strncpy( tmp+1, uid, (int)Length );
+        tmp[ Length + 1 ] = '\0';
+        size_t t_len = strlen( tmp+1 );
+        tmp[ t_len + 1 ] = ']';
+        tmp[ t_len + 2 ] = '\0';
+        }
+        printInfoLine(out, showFullData, level, tmp );
+        delete[] tmp;
     }
     else
-	printInfoLine(out, showFullData, level, "(not loaded)" );
+        printInfoLine(out, showFullData, level, "(no value available)" );
+    }
+    else
+        printInfoLine(out, showFullData, level, "(not loaded)" );
 }
 
 
@@ -117,7 +118,7 @@ E_Condition DcmUniqueIdentifier::putString(const char * value)
 {
     const char * uid = value;
     if (value && value[0] == '=')
-	uid = dcmFindUIDFromName(&value[1]);
+    uid = dcmFindUIDFromName(&value[1]);
 
     return DcmByteString::putString(uid);
 }
@@ -128,22 +129,22 @@ E_Condition DcmUniqueIdentifier::makeMachineByteString(void)
 {
     char * value = (char *)this -> getValue();
     if (value && dcmEnableAutomaticInputDataCorrection) {
-    	int len = strlen(value);
-	/*
-	** Remove any leading, embedded, or trailing white space.
-	** This manipulation attempts to correct problems with 
-	** incorrectly encoded UIDs which have been observed in
-	** some images.
-	*/
-	int k = 0;
-	int i = 0;
-	for (i=0; i<len; i++) {
-	    if (!isspace(value[i])) {
-		value[k] = value[i];
-		k++;
-	    }
-	}
-	value[k] = '\0';
+        int len = strlen(value);
+    /*
+    ** Remove any leading, embedded, or trailing white space.
+    ** This manipulation attempts to correct problems with 
+    ** incorrectly encoded UIDs which have been observed in
+    ** some images.
+    */
+    int k = 0;
+    int i = 0;
+    for (i=0; i<len; i++) {
+        if (!isspace(value[i])) {
+        value[k] = value[i];
+        k++;
+        }
+    }
+    value[k] = '\0';
     }
 
     return DcmByteString::makeMachineByteString();
@@ -154,7 +155,11 @@ E_Condition DcmUniqueIdentifier::makeMachineByteString(void)
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrui.cc,v $
-** Revision 1.14  2000-02-02 14:33:00  joergr
+** Revision 1.15  2000-02-10 10:52:25  joergr
+** Added new feature to dcmdump (enhanced print method of dcmdata): write
+** pixel data/item value fields to raw files.
+**
+** Revision 1.14  2000/02/02 14:33:00  joergr
 ** Replaced 'delete' statements by 'delete[]' for objects created with 'new[]'.
 **
 ** Revision 1.13  1999/03/31 09:26:01  meichel

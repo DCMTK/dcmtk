@@ -22,9 +22,9 @@
  *  Purpose: class DcmPixelItem
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-02-03 16:31:26 $
+ *  Update Date:      $Date: 2000-02-10 10:52:22 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcpxitem.cc,v $
- *  CVS/RCS Revision: $Revision: 1.10 $
+ *  CVS/RCS Revision: $Revision: 1.11 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -51,6 +51,8 @@ END_EXTERN_C
 #include "dcpxitem.h"
 #include "dcswap.h"
 #include "dcdebug.h"
+#include "ofstring.h"
+
 
 // ********************************
 
@@ -113,10 +115,26 @@ E_Condition DcmPixelItem::writeTagAndLength(DcmStream & outStream,
     return l_error;
 }
 
+void
+DcmPixelItem::print(
+    ostream & out, 
+    const OFBool showFullData, 
+    const int level,
+    const char *pixelFileName,
+    size_t *pixelCounter)
+{
+    printPixel(out, showFullData, level, pixelFileName, pixelCounter);
+}
+
+
 /*
 ** CVS/RCS Log:
 ** $Log: dcpxitem.cc,v $
-** Revision 1.10  2000-02-03 16:31:26  joergr
+** Revision 1.11  2000-02-10 10:52:22  joergr
+** Added new feature to dcmdump (enhanced print method of dcmdata): write
+** pixel data/item value fields to raw files.
+**
+** Revision 1.10  2000/02/03 16:31:26  joergr
 ** Fixed bug: encapsulated data (pixel items) have never been loaded using
 ** method 'loadAllDataIntoMemory'. Therefore, encapsulated pixel data was
 ** never printed with 'dcmdump'.

@@ -21,10 +21,10 @@
  *
  *  Purpose: Interface of class DcmDirectoryRecord
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-03-31 09:24:36 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2000-02-10 10:50:50 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcdirrec.h,v $
- *  CVS/RCS Revision: $Revision: 1.12 $
+ *  CVS/RCS Revision: $Revision: 1.13 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -140,7 +140,8 @@ public:
 
     virtual DcmEVR ident() const;
     virtual void print(ostream & out = cout, const OFBool showFullData = OFTrue,
-                       const int level = 0);
+                       const int level = 0, const char *pixelFileName = NULL,
+                       size_t *pixelCounter = NULL);
 
     virtual E_Condition read(DcmStream & inStream,
                              const E_TransferSyntax xfer,
@@ -186,7 +187,11 @@ public:
 /*
 ** CVS/RCS Log:
 ** $Log: dcdirrec.h,v $
-** Revision 1.12  1999-03-31 09:24:36  meichel
+** Revision 1.13  2000-02-10 10:50:50  joergr
+** Added new feature to dcmdump (enhanced print method of dcmdata): write
+** pixel data/item value fields to raw files.
+**
+** Revision 1.12  1999/03/31 09:24:36  meichel
 ** Updated copyright header in module dcmdata
 **
 ** Revision 1.11  1999/03/22 14:10:57  meichel

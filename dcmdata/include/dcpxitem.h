@@ -21,10 +21,10 @@
  *
  *  Purpose: Interface of class DcmPixelItem
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-03-31 09:24:45 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2000-02-10 10:50:53 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcpxitem.h,v $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -64,6 +64,9 @@ class DcmPixelItem : public DcmOtherByteOtherWord
 
     virtual DcmEVR ident(void) const { return EVR_pixelItem; }
 
+    virtual void print(ostream & out = cout, const OFBool showFullData = OFTrue,
+                       const int level = 0, const char *pixelFileName = NULL,
+		               size_t *pixelCounter = NULL);
 };
 
 
@@ -72,7 +75,11 @@ class DcmPixelItem : public DcmOtherByteOtherWord
 /*
 ** CVS/RCS Log:
 ** $Log: dcpxitem.h,v $
-** Revision 1.7  1999-03-31 09:24:45  meichel
+** Revision 1.8  2000-02-10 10:50:53  joergr
+** Added new feature to dcmdump (enhanced print method of dcmdata): write
+** pixel data/item value fields to raw files.
+**
+** Revision 1.7  1999/03/31 09:24:45  meichel
 ** Updated copyright header in module dcmdata
 **
 ** Revision 1.6  1998/11/12 16:47:43  meichel
