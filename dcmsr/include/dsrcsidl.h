@@ -23,8 +23,8 @@
  *    classes: DSRCodingSchemeIdentificationList
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-09-10 13:16:13 $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  Update Date:      $Date: 2003-12-16 16:18:35 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -41,7 +41,6 @@
 
 #include "oflist.h"
 #include "ofconsol.h"
-
 
 
 /*---------------------*
@@ -153,7 +152,9 @@ class DSRCodingSchemeIdentificationList
      *  Internally, the item is inserted into the list of coding scheme designators if
      *  not already contained in the list.  In any case the specified item is selected as
      *  the current one.  See definition of 'ItemStruct' above for VR, VM and Type.
-     ** @param  codingSchemeDesignator  coding scheme designator of the item to be added
+     ** @param  codingSchemeDesignator  coding scheme designator of the item to be added.
+     *                                  Designators beginning with "99" and the designator
+     *                                  "L" are defined to be private or local coding schemes.
      ** @return status, EC_Normal if successful, an error code otherwise
      */
     OFCondition addItem(const OFString &codingSchemeDesignator);
@@ -189,7 +190,9 @@ class DSRCodingSchemeIdentificationList
      */
     OFCondition gotoNextItem();
 
-    /** get the coding scheme designator of the currently selected item
+    /** get the coding scheme designator of the currently selected item.
+     *  Designators beginning with "99" and the designator "L" are defined to be private
+     *  or local coding schemes.
      ** @param  stringValue  reference to string variable in which the result is stored
      ** @return reference to the resulting string (might be empty)
      */
@@ -312,10 +315,12 @@ class DSRCodingSchemeIdentificationList
 /*
  *  CVS/RCS Log:
  *  $Log: dsrcsidl.h,v $
- *  Revision 1.1  2003-09-10 13:16:13  joergr
+ *  Revision 1.2  2003-12-16 16:18:35  joergr
+ *  Added note on coding scheme identfication and private coding schemes.
+ *
+ *  Revision 1.1  2003/09/10 13:16:13  joergr
  *  Replaced PrivateCodingSchemeUID by new CodingSchemeIdenticationSequence as
  *  required by CP 324.
- *
  *
  *
  */
