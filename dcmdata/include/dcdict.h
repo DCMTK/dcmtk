@@ -10,9 +10,9 @@
 ** 
 **
 ** Last Update:		$Author: hewett $
-** Update Date:		$Date: 1996-03-22 13:09:12 $
+** Update Date:		$Date: 1996-09-18 16:37:10 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcdict.h,v $
-** CVS/RCS Revision:	$Revision: 1.6 $
+** CVS/RCS Revision:	$Revision: 1.7 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -95,6 +95,7 @@ public:
      * then the repeating tag dictionary is searched.
      */
     const DcmDictEntry* findEntry(const DcmTagKey& key);
+    const DcmDictEntry* findEntry( const char *name ); /* by name also */
 
     void clear(); /* delete all entries */
 
@@ -154,7 +155,13 @@ extern DcmDataDictionary dcmDataDict;
 /*
 ** CVS/RCS Log:
 ** $Log: dcdict.h,v $
-** Revision 1.6  1996-03-22 13:09:12  hewett
+** Revision 1.7  1996-09-18 16:37:10  hewett
+** Added capability to search data dictionary by tag name.  The
+** source code for these changes was contributed by Larry V. Streepy,
+** Jr., Chief Technical Officer,  Healthcare Communications, Inc.,
+** (mailto:streepy@healthcare.com).
+**
+** Revision 1.6  1996/03/22 13:09:12  hewett
 ** Moved the definition of DCM_DICT_DEFAULT_PATH to the system
 ** dependent configuration files included via "osconfig.h".
 **

@@ -108,6 +108,29 @@ Pix DcmDictEntryPtrBSTSet::seek(DcmDictEntryPtr  key)
 }
 
 
+// Unfortunately, the tree is organized around the element tag, so to search
+// by name we have to scan the entire tree.  Sigh!
+
+Pix DcmDictEntryPtrBSTSet::seek(const char *name,
+                              DcmDictEntryPtrBSTNode *t )
+{
+    if( t == 0 )
+      return 0;
+
+    // Check this node
+    int comp = DcmDictEntryPtrCMPName(name, t->item);
+    if( comp == 0 )
+      return Pix(t);
+
+    Pix subpix;
+
+    if( (subpix = seek( name, t->lt )) != 0 ) // Check left sub-tree
+      return subpix;
+
+    return seek( name, t->rt );               // Check right sub-tree
+}
+  
+
 Pix DcmDictEntryPtrBSTSet::add(DcmDictEntryPtr  item, int deleteExisting)
 {
   if (root == 0)

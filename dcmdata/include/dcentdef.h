@@ -35,10 +35,11 @@ typedef DcmDictEntry* DcmDictEntryPtr;
 
 // comparison : less-than -> < 0; equal -> 0; greater-than -> > 0
 #ifndef DcmDictEntryPtrCMP
-/***
-#define DcmDictEntryPtrCMP(a, b) ( ((a) <= (b))? (((a) == (b))? 0 : -1) : 1 )
-***/
 #define DcmDictEntryPtrCMP(a, b) ( ((*a) == (*b))? 0 : (((*a) < (*b))? -1 : 1) )
+#endif
+
+#ifndef DcmDictEntryPtrCMPName
+#define DcmDictEntryPtrCMPName(n, t) ( strcmp((n),((t)->getTagName())) )
 #endif
 
 // hash function

@@ -63,6 +63,8 @@ protected:
   void            _kill(DcmDictEntryPtrBSTNode* t);
   DcmDictEntryPtrBSTNode*     _copy(DcmDictEntryPtrBSTNode* t);
 
+  Pix             seek(const char *name, DcmDictEntryPtrBSTNode *node);
+
 public:
                    DcmDictEntryPtrBSTSet();
                    DcmDictEntryPtrBSTSet(DcmDictEntryPtrBSTSet& a);
@@ -78,6 +80,7 @@ public:
   void            next(Pix& i);
   DcmDictEntryPtr&            operator () (Pix i);
   Pix             seek(DcmDictEntryPtr  item);
+  Pix             seek(const char *name);
 
   Pix             last();
   void            prev(Pix& i);
@@ -89,6 +92,11 @@ public:
   void            balance();
   int             OK();
 };
+
+inline Pix DcmDictEntryPtrBSTSet::seek( const char *name )
+{
+    return seek( name, root );
+}
 
 inline DcmDictEntryPtrBSTSet::~DcmDictEntryPtrBSTSet()
 {

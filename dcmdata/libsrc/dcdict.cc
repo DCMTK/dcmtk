@@ -10,9 +10,9 @@
 ** 
 **
 ** Last Update:		$Author: hewett $
-** Update Date:		$Date: 1996-04-18 09:51:00 $
+** Update Date:		$Date: 1996-09-18 16:37:26 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcdict.cc,v $
-** CVS/RCS Revision:	$Revision: 1.6 $
+** CVS/RCS Revision:	$Revision: 1.7 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -620,10 +620,42 @@ DcmDataDictionary::findEntry(const DcmTagKey& key)
     return e;
 }
 
+const DcmDictEntry* 
+DcmDataDictionary::findEntry(const char *name)
+{
+    const DcmDictEntry* e = NULL;
+    Pix p = NULL;
+
+    /* search first in the normal tags dictionary, then
+     * in the repeating element dictionary and then in
+     * the repeating group dictionary.
+     */
+    p = dict.seek(name);
+    if (p != NULL) {
+        e = dict(p);
+    } else {
+      /* search in the repeating tags dictionary */
+      BOOL found = FALSE;
+      for (p = repDict.first(); !found && p!=NULL; repDict.next(p)) {
+          if (repDict.contents(p)->contains(name)) {
+              found = TRUE;
+              e = repDict.contents(p);
+          }
+      }
+    }
+    return e;
+}
+
 /*
 ** CVS/RCS Log:
 ** $Log: dcdict.cc,v $
-** Revision 1.6  1996-04-18 09:51:00  hewett
+** Revision 1.7  1996-09-18 16:37:26  hewett
+** Added capability to search data dictionary by tag name.  The
+** source code for these changes was contributed by Larry V. Streepy,
+** Jr., Chief Technical Officer,  Healthcare Communications, Inc.,
+** (mailto:streepy@healthcare.com).
+**
+** Revision 1.6  1996/04/18 09:51:00  hewett
 ** White space is now being stripped from data dictionary fields.  Previously
 ** a tag name could retain trailing whitespace which caused silly results
 ** when generating dcdeftag.h (e.g. tag names wil trailing underscores).

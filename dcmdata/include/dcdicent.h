@@ -10,9 +10,9 @@
 ** 
 **
 ** Last Update:		$Author: hewett $
-** Update Date:		$Date: 1996-03-20 16:43:49 $
+** Update Date:		$Date: 1996-09-18 16:37:09 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcdicent.h,v $
-** CVS/RCS Revision:	$Revision: 1.3 $
+** CVS/RCS Revision:	$Revision: 1.4 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -91,8 +91,8 @@ public:
     Uint16 getUpperGroup() const;
     Uint16 getUpperElement() const;
 
-    DcmTagKey getKey();
-    DcmTagKey getUpperKey();
+    DcmTagKey getKey() const;
+    DcmTagKey getUpperKey() const;
     
     int isRepeatingGroup() const;
     int isRepeatingElement() const;
@@ -105,6 +105,7 @@ public:
 
     /* containment */
     int contains(const DcmTagKey& key) const; /* this contains key */
+    int contains(const char *name) const; /* this contains named key */
 
     /* set relations */
     int subset(const DcmDictEntry& e) const; /* this is a subset of key */
@@ -206,13 +207,13 @@ DcmDictEntry::getUpperElement() const
 }
 
 inline DcmTagKey 
-DcmDictEntry::getKey()
+DcmDictEntry::getKey() const
 {
     return *(DcmTagKey*)(this);
 }
 
 inline DcmTagKey 
-DcmDictEntry::getUpperKey()
+DcmDictEntry::getUpperKey() const
 {
     return upperKey;
 }
@@ -281,6 +282,12 @@ DcmDictEntry::contains(const DcmTagKey& key) const
 	DCM_INRANGE(key.getElement(), getElement(), getUpperElement());
 }
 
+inline int 
+DcmDictEntry::contains(const char *name) const
+{
+    return !strcmp( tagName, name );
+}
+
 /* set relations */
 inline int 
 DcmDictEntry::subset(const DcmDictEntry& e) const
@@ -310,7 +317,13 @@ DcmDictEntry::setEQ(const DcmDictEntry& e) const
 /*
 ** CVS/RCS Log:
 ** $Log: dcdicent.h,v $
-** Revision 1.3  1996-03-20 16:43:49  hewett
+** Revision 1.4  1996-09-18 16:37:09  hewett
+** Added capability to search data dictionary by tag name.  The
+** source code for these changes was contributed by Larry V. Streepy,
+** Jr., Chief Technical Officer,  Healthcare Communications, Inc.,
+** (mailto:streepy@healthcare.com).
+**
+** Revision 1.3  1996/03/20 16:43:49  hewett
 ** Updated for revised data dictionary.  Repeating tags are now handled better.
 ** A linear list of repeating tags has been introduced with a subset ordering
 ** mechanism to ensure that dictionary searches locate the most precise
