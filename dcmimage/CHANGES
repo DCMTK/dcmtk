@@ -1,3 +1,30 @@
+**** Changes from 1999.02.08 (riesmeier)
+
+- Corrected some typos and formatting.
+  Affects: dcmimgle/apps/dconvlum.cc
+           dcmimgle/include/diovlay.h
+           dcmimgle/libsrc/dibarlut.cc
+           dcmimgle/libsrc/diovlay.cc
+  
+- Changed implementation of removeAllOverlays().
+  Affects: dcmimgle/include/dcmimage.h
+           dcmimgle/include/dimoimg.h
+           dcmimgle/libsrc/dimoimg.cc
+  
+- Added parameter 'idx' to some overlay methods to distinguish between
+  built-in and additional overlay planes.
+  Affects: dcmimgle/include/dcmimage.h
+           dcmimgle/include/diimage.h
+           
+- Added (debug) warning message when using invalid DISPLAY file names.
+  Affects: dcmimgle/libsrc/didispfn.cc
+
+- Rebuilt Makefile dependencies.
+  Affects: dcmimage/apps/Makefile.dep
+  
+- Moved output/checking functionality to new OFConsoleApplication class.
+  Affects: dcmimage/apps/dcm2pnm.cc 
+
 **** Changes from 1999.02.05 (riesmeier)
 
 - Added conversion P-Value to DDL when display function is absent.
