@@ -1,0 +1,37 @@
+
+NAME
+
+    dcod2lum
+
+
+SYNOPSIS
+
+    dcod2lum in-file out-file
+
+
+SUMMARY
+
+Command line program converts a hardcopy characteristic curve file to softcopy
+format.  In other words, the measured optical density (OD) values from the
+input file are transformed to the luminance space according to the formula:
+
+    L = La + L0 * 10^(-D)
+
+where 'L' is the resulting luminance, 'La' is the reflected ambient light and
+'L0' the illumination (both measured in cd/m^2), 'D' the optical density (OD).
+Please note that if no illumination value is specified in the input file
+(keyword "lum") all optical density values are mapped to a constant luminance.
+
+The format of both input and ouput file is described the documentation of the
+"dcmdspfn" command line tool.  In addition, the "tests" folder contains a
+sample characteristics file for both printers and scanners.
+
+
+USAGE
+
+dcod2lum: Convert hardcopy characteristic curve file to softcopy format
+usage: dcod2lum in-file out-file
+
+parameters:
+  in-file   hardcopy characteristic curve file to be converted
+  out-file  softcopy characteristic curve file to be written
