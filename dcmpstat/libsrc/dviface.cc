@@ -21,9 +21,9 @@
  *
  *  Purpose: DVPresentationState
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-03-22 09:52:40 $
- *  CVS/RCS Revision: $Revision: 1.48 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 1999-04-27 11:25:31 $
+ *  CVS/RCS Revision: $Revision: 1.49 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -38,6 +38,7 @@
 #include "ofbmanip.h"    /* for OFBitmanipTemplate */
 #include "oflist.h"      /* for class OFList */
 #include "didispfn.h"    /* for DiDisplayFunction */
+#include "diutil.h"        /* for DU_findSOPClassAndInstanceInDataSet */
 #include <stdio.h>
 
 BEGIN_EXTERN_C
@@ -114,6 +115,7 @@ DVInterface::DVInterface(const char *config_file)
 , idxCache()
 , idxRec()
 , idxRecPos(-1)
+, imageInDatabase(OFFalse)
 {
     clearIndexRecord(idxRec, idxRecPos);
     if (config_file)
@@ -177,7 +179,12 @@ E_Condition DVInterface::loadImage(const char *studyUID,
         {
             const char *filename = getFilename(studyUID, seriesUID, instanceUID);
             if (filename)
-                return loadImage(filename);
+            {
+                E_Condition status = loadImage(filename);
+                if (status == EC_Normal)
+                    imageInDatabase = OFTrue;
+                return status;
+            }
         }
     }
     return EC_IllegalCall;
@@ -201,7 +208,11 @@ E_Condition DVInterface::loadImage(const char *imgName)
               {
                 status = newState->attachImage(image, OFFalse);
               }
-              if (EC_Normal == status) exchangeImageAndPState(newState, image);
+              if (EC_Normal == status)
+              {
+                exchangeImageAndPState(newState, image);
+                imageInDatabase = OFFalse;
+              }
             } else status = EC_CorruptedData;
         } else status = EC_IllegalCall;
     }
@@ -257,7 +268,11 @@ E_Condition DVInterface::loadPState(const char *studyUID,
                     if (dataset)
                     {
                         status = newState->attachImage(fimage, OFFalse);
-                        if (EC_Normal == status) exchangeImageAndPState(newState, fimage, pstate);
+                        if (EC_Normal == status)
+                        {
+                          exchangeImageAndPState(newState, fimage, pstate);
+                          imageInDatabase = OFTrue;
+                        }
                     } else status = EC_CorruptedData;
                 }
                 if (status!=EC_Normal)
@@ -292,7 +307,11 @@ E_Condition DVInterface::loadPState(const char *pstName,
             {
               if (EC_Normal == (status = newState->read(*dataset))) 
                 status = newState->attachImage(image, OFFalse);
-              if (EC_Normal == status) exchangeImageAndPState(newState, image, pstate);
+              if (EC_Normal == status)
+              {
+                exchangeImageAndPState(newState, image, pstate);
+                imageInDatabase = OFFalse;
+              }
             } else status = EC_CorruptedData;
         } else status = EC_IllegalCall;
     }
@@ -338,6 +357,28 @@ E_Condition DVInterface::savePState()
                 cerr << "unable to register presentation state '" << imageFileName << "' in database." << endl;
                 COND_DumpConditions();
 #endif         
+            }
+        }
+    }
+    if ((pDicomImage !=NULL) && (!imageInDatabase))
+    {
+        DIC_UI sopClass = "";
+        DIC_UI sopInstance = "";
+        DU_findSOPClassAndInstanceInDataSet(pDicomImage->getDataset(), sopClass, sopInstance);
+        if (DB_NORMAL == DB_makeNewStoreFileName(handle, sopClass, sopInstance, imageFileName))
+        {
+            // now store presentation state as filename
+            result = saveCurrentImage(imageFileName);
+            if (EC_Normal==result)
+            {
+                if (DB_NORMAL != DB_storeRequest(handle, sopClass, sopInstance, imageFileName, &dbStatus))
+                {
+                    result = EC_IllegalCall;
+#ifdef DEBUG
+                    cerr << "unable to register image '" << imageFileName << "' in database." << endl;
+                    COND_DumpConditions();
+#endif         
+                }
             }
         }
     }
@@ -1198,6 +1239,12 @@ const char *DVInterface::getFilename()
 }
 
 
+const char *DVInterface::getPresentationDescription()
+{ 
+    return idxRec.PresentationDescription;
+}
+
+
 OFBool DVInterface::isPresentationState()
 {
     const char *str = getModality();
@@ -1499,9 +1546,9 @@ E_Condition DVInterface::sendIOD(const char * targetID,
   sinfo.cb = sizeof(sinfo);
   char commandline[4096];
   if (seriesUID && instanceUID) sprintf(commandline, "%s %s %s %s %s %s", sender_application, configPath.c_str(),
-	  targetID, studyUID, seriesUID, instanceUID);
+      targetID, studyUID, seriesUID, instanceUID);
   else if (seriesUID) sprintf(commandline, "%s %s %s %s %s", sender_application, configPath.c_str(), targetID, 
-	  studyUID, seriesUID);
+      studyUID, seriesUID);
   else sprintf(commandline, "%s %s %s %s", sender_application, configPath.c_str(), targetID, studyUID);
   
   if (CreateProcess(NULL, commandline, NULL, NULL, 0, 0, NULL, NULL, &sinfo, &procinfo))
@@ -2069,14 +2116,14 @@ void DVInterface::cleanChildren()
     while (child > 0)
     {
 #ifdef HAVE_WAITPID
-	child = (int)(waitpid(-1, &stat_loc, options));
+    child = (int)(waitpid(-1, &stat_loc, options));
 #elif defined(HAVE_WAIT3)
-	child = wait3(&status, options, &rusage);
+    child = wait3(&status, options, &rusage);
 #endif
         if (child < 0)
-	{
-	   if (errno != ECHILD) cerr << "wait for child failed: " << strerror(errno) << endl;
-	}
+    {
+       if (errno != ECHILD) cerr << "wait for child failed: " << strerror(errno) << endl;
+    }
     }
 #endif
 }
@@ -2085,7 +2132,12 @@ void DVInterface::cleanChildren()
 /*
  *  CVS/RCS Log:
  *  $Log: dviface.cc,v $
- *  Revision 1.48  1999-03-22 09:52:40  meichel
+ *  Revision 1.49  1999-04-27 11:25:31  joergr
+ *  Added new entry to index file: Presentation Description.
+ *  Enhanced savePState() method: now image file is also added to index file
+ *  and stored in image directory (if not already there).
+ *
+ *  Revision 1.48  1999/03/22 09:52:40  meichel
  *  Reworked data dictionary based on the 1998 DICOM edition and the latest
  *    supplement versions. Corrected dcmtk applications for minor changes
  *    in attribute name constants.
