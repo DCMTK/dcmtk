@@ -23,8 +23,8 @@
  *    classes: DSRTypes
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-10-10 15:29:18 $
- *  CVS/RCS Revision: $Revision: 1.22 $
+ *  Update Date:      $Date: 2001-11-09 16:20:18 $
+ *  CVS/RCS Revision: $Revision: 1.23 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -92,8 +92,9 @@ const size_t DSRTypes::HF_internalUseOnly                = DSRTypes::HF_renderIt
 
 /* writeXML flags */
 const size_t DSRTypes::XF_writeEmptyTags                 = 1;
-const size_t DSRTypes::XF_valueTypeAsAttribute           = 2;
+const size_t DSRTypes::XF_codeComponentsAsAttribute      = 2;
 const size_t DSRTypes::XF_relationshipTypeAsAttribute    = 4;
+const size_t DSRTypes::XF_valueTypeAsAttribute           = 8;
 
 /* print flags */
 const size_t DSRTypes::PF_printItemPosition              = 1;
@@ -209,11 +210,12 @@ const OFCondition SR_EC_InvalidByReferenceRelationship    (ECC_InvalidByReferenc
 
 static const S_DocumentTypeNameMap DocumentTypeNameMap[] =
 {
-    {DSRTypes::DT_invalid,         "",                             "",   "invalid document type"},
-    {DSRTypes::DT_BasicTextSR,     UID_BasicTextSR,                "SR", "Basic Text SR"},
-    {DSRTypes::DT_EnhancedSR,      UID_EnhancedSR,                 "SR", "Enhanced SR"},
-    {DSRTypes::DT_ComprehensiveSR, UID_ComprehensiveSR,            "SR", "Comprehensive SR"},
-    {DSRTypes::DT_KeyObjectDoc,    UID_KeyObjectSelectionDocument, "KO", "Key Object Selection Document"}
+    {DSRTypes::DT_invalid,          "",                              "",   "invalid document type"},
+    {DSRTypes::DT_BasicTextSR,      UID_BasicTextSR,                 "SR", "Basic Text SR"},
+    {DSRTypes::DT_EnhancedSR,       UID_EnhancedSR,                  "SR", "Enhanced SR"},
+    {DSRTypes::DT_ComprehensiveSR,  UID_ComprehensiveSR,             "SR", "Comprehensive SR"},
+    {DSRTypes::DT_KeyObjectDoc,     UID_KeyObjectSelectionDocument,  "KO", "Key Object Selection Document"},
+    {DSRTypes::DT_MammographyCadSR, UID_MammographyCADSR,            "SR", "Mammography CAD SR"}
 };
 
 
@@ -351,7 +353,7 @@ const char *DSRTypes::documentTypeToDocumentTitle(const E_DocumentType documentT
                                                   OFString &documentTitle)
 {
     documentTitle = documentTypeToReadableName(documentType);
-    if ((documentTitle.length() > 0) && (documentType != DT_KeyObjectDoc))
+    if ((documentTitle.length() > 0) && (documentType != DT_KeyObjectDoc))  // avoid doubling of term "Document"
         documentTitle += " Document";
     return documentTitle.c_str();
 }
@@ -602,18 +604,13 @@ DSRTypes::E_CharacterSet DSRTypes::definedTermToCharacterSet(const OFString &def
 
 OFBool DSRTypes::isDocumentTypeSupported(const E_DocumentType documentType)
 {
-    return (documentType == DT_BasicTextSR) ||
-           (documentType == DT_EnhancedSR) ||
-           (documentType == DT_ComprehensiveSR) ||
-           (documentType == DT_KeyObjectDoc);
+    return (documentType != DT_invalid);
 }
 
 
 OFBool DSRTypes::isConstraintCheckingSupported(const E_DocumentType documentType)
 {
-    return (documentType == DT_BasicTextSR) ||
-           (documentType == DT_EnhancedSR) ||
-           (documentType == DT_ComprehensiveSR);
+    return (documentType != DT_invalid) && (documentType != DT_MammographyCadSR);
 }
 
 
@@ -732,7 +729,7 @@ OFBool DSRTypes::checkElementValue(DcmElement &delem,
                                    const OFString &vm,
                                    const OFString &type,
                                    OFConsole *stream,
-                                   const OFCondition searchCond,
+                                   const OFCondition &searchCond,
                                    const char *moduleName)
 {
     OFBool result = OFTrue;
@@ -1250,7 +1247,7 @@ void DSRTypes::printInvalidContentItemMessage(OFConsole *stream,
 
 void DSRTypes::printContentItemErrorMessage(OFConsole *stream,
                                             const char *action,
-                                            const OFCondition result,
+                                            const OFCondition &result,
                                             const DSRDocumentTreeNode *node)
 {
     if ((stream != NULL) && (result.bad()))
@@ -1384,7 +1381,12 @@ OFCondition DSRTypes::appendStream(ostream &mainStream,
 /*
  *  CVS/RCS Log:
  *  $Log: dsrtypes.cc,v $
- *  Revision 1.22  2001-10-10 15:29:18  joergr
+ *  Revision 1.23  2001-11-09 16:20:18  joergr
+ *  Added new command line option allowing to encode codes as XML attributes
+ *  (instead of tags).
+ *  Added preliminary support for Mammography CAD SR.
+ *
+ *  Revision 1.22  2001/10/10 15:29:18  joergr
  *  Changed parameter DcmTagKey to DcmTag in DcmItem::putAndInsert... methods
  *  to support elements which are not in the data dictionary (e.g. private
  *  extensions).
