@@ -12,7 +12,7 @@ configdir = @top_srcdir@/@configdir@
 
 include $(configdir)/@common_makefile@
 
-files = printers.cfg test.cfg
+files = dcmpstat.cfg printers.cfg
 
 
 all:

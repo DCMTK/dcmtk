@@ -269,7 +269,7 @@ environment variable.  It is an error if no data dictionary can be loaded.
 
 \section files FILES
 
-<em>etc/test.cfg</em>, <em>etc/printers.cfg</em> - sample configuration file
+<em>etc/dcmpstat.cfg</em>, <em>etc/printers.cfg</em> - sample configuration files
 
 \section see_also SEE ALSO
 
