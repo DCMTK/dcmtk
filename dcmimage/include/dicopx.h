@@ -21,10 +21,10 @@
  *
  *  Purpose: DicomColorPixel (Header)
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-06-01 15:49:29 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2001-11-09 16:44:01 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/include/Attic/dicopx.h,v $
- *  CVS/RCS Revision: $Revision: 1.9 $
+ *  CVS/RCS Revision: $Revision: 1.10 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -64,37 +64,87 @@ class DiColorPixel
 
  public:
 
+    /** constructor
+     *
+     ** @param  docu         pointer to the DICOM document
+     *  @param  pixel        pointer to input pixel data
+     *  @param  samples      number of expected samples per pixel (for checking purposes)
+     *  @param  status       status of the image object (reference variable)
+     *  @param  sample_rate  dummy parameter (used for derived classes only)
+     */
     DiColorPixel(const DiDocument *docu,
                  const DiInputPixel *pixel,
                  const Uint16 samples,
                  EI_Status &status,
-                 const Uint16 sample_rate= 0);
+                 const Uint16 sample_rate = 0);
 
+    /** destructor
+     */
     virtual ~DiColorPixel();
-    
-    int getPlanes() const
+
+    /** get number of planes
+     *
+     ** @return number of planes (here 3, color)
+     */
+    inline int getPlanes() const
     {
         return 3;
     }
 
-    virtual void *createDIB(const Uint16,
-                            const Uint16,
-                            const unsigned long,
-                            Sint16) const = 0;
+    /** create true color (24/32 bit) bitmap for MS Windows.
+     *
+     ** @param  data        untyped pointer memory buffer (set to NULL if not allocated externally)
+     *  @param  size        size of the memory buffer in bytes (if 0 'data' is set to NULL)
+     *  @param  width       number of columns of the image
+     *  @param  height      number of rows of the image
+     *  @param  frame       index of frame to be converted (starting from 0)
+     *  @param  fromBits    number of bits per sample used for internal representation of the image
+     *  @param  toBits      number of bits per sample used for the output bitmap (<= 8)
+     *  @param  mode        color output mode (24 or 32 bits, see dcmimgle/dcmimage.h for details)
+     *  @param  upsideDown  specifies the order of lines in the images (0 = top-down, bottom-up otherwise)
+     *
+     ** @return number of bytes allocated by the bitmap, or 0 if an error occured
+     */
+    virtual unsigned long createDIB(void *&data,
+                                    const unsigned long size,
+                                    const Uint16 width,
+                                    const Uint16 height,
+                                    const unsigned long frame,
+                                    const int fromBits,
+                                    const int toBits,
+                                    const int mode,
+                                    const int upsideDown) const = 0;
 
-    virtual void *createAWTBitmap(const Uint16,
-                                  const Uint16,
-                                  const unsigned long,
-                                  Sint16) const = 0;
-    
+    /** create true color (32 bit) bitmap for Java (AWT default format).
+     *
+     ** @param  data      resulting pointer to bitmap data (set to NULL if an error occurred)
+     *  @param  width     number of columns of the image
+     *  @param  height    number of rows of the image
+     *  @param  frame     index of frame to be converted (starting from 0)
+     *  @param  fromBits  number of bits per sample used for internal representation of the image
+     *  @param  toBits    number of bits per sample used for the output bitmap (<= 8)
+     *
+     ** @return number of bytes allocated by the bitmap, or 0 if an error occured
+     */
+    virtual unsigned long createAWTBitmap(void *&data,
+                                          const Uint16 width,
+                                          const Uint16 height,
+                                          const unsigned long frame,
+                                          const int fromBits,
+                                          const int toBits) const = 0;
+
 
  protected:
 
-    DiColorPixel(const DiMonoPixel *);
+    /** constructor
+     *
+     ** @param  pixel  pointer to intermediate color pixel data
+     *  @param  count  number of pixels
+     */
+    DiColorPixel(const DiColorPixel *pixel,
+                 const unsigned long count);
 
-    DiColorPixel(const DiColorPixel *,
-                 const unsigned long);
-
+    /// planar configuration of the pixel data (0 = color-by-pixel, 1 = color-by-plane)
     int PlanarConfiguration;
 };
 
@@ -106,7 +156,11 @@ class DiColorPixel
  *
  * CVS/RCS Log:
  * $Log: dicopx.h,v $
- * Revision 1.9  2001-06-01 15:49:29  meichel
+ * Revision 1.10  2001-11-09 16:44:01  joergr
+ * Enhanced and renamed createTrueColorDIB() method.
+ * Updated/Enhanced comments.
+ *
+ * Revision 1.9  2001/06/01 15:49:29  meichel
  * Updated copyright header
  *
  * Revision 1.8  2000/03/08 16:21:51  meichel
