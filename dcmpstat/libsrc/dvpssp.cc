@@ -23,8 +23,8 @@
  *    classes: DVPSStoredPrint
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-08-31 14:09:28 $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  Update Date:      $Date: 1999-08-31 16:54:47 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -796,7 +796,7 @@ E_Condition DVPSStoredPrint::write(DcmItem &dset, OFBool limitImages)
       dseq = new DcmSequenceOfItems(DCM_PresentationLUTContentSequence);
       if (dseq)
       {
-        ADD_TO_DATASET(DcmUniqueIdentifier, presentationLUTInstanceUID)
+        ADD_TO_DATASET2(DcmUniqueIdentifier, presentationLUTInstanceUID)
         if (EC_Normal == result) result = presentationLUT.write(*ditem);
         if (result==EC_Normal)
         {
@@ -1165,7 +1165,10 @@ const char *DVPSStoredPrint::getCurrentPresentationLUTExplanation()
 
 /*
  *  $Log: dvpssp.cc,v $
- *  Revision 1.5  1999-08-31 14:09:28  meichel
+ *  Revision 1.6  1999-08-31 16:54:47  meichel
+ *  Added new sample application that allows to create simple print jobs.
+ *
+ *  Revision 1.5  1999/08/31 14:09:28  meichel
  *  Added get/set methods for stored print attributes
  *
  *  Revision 1.4  1999/08/27 15:57:50  meichel

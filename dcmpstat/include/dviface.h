@@ -23,8 +23,8 @@
  *    classes: DVInterface
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-08-31 14:02:05 $
- *  CVS/RCS Revision: $Revision: 1.39 $
+ *  Update Date:      $Date: 1999-08-31 16:54:44 $
+ *  CVS/RCS Revision: $Revision: 1.40 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -162,8 +162,20 @@ class DVInterface
      *  (using loadPState or loadImage) or when resetPresentationState() is called.
      *  @return reference to the current presentation state
      */ 
-    DVPresentationState& getCurrentPState();
-    
+    DVPresentationState& getCurrentPState()
+    {
+      return *pState;
+    }
+
+    /** returns a reference to the print handler.
+     *  This reference remains valid as long as the DVInterface object exists.
+     *  @return reference to the current print handler
+     */ 
+    DVPSStoredPrint& getPrintHandler()
+    {
+      return *pPrint;
+    }
+
     /** resets the presentation state object to the status
      *  it had immediately after the last successful operation of "loadImage" or "loadPState".
      *  Attention: The last reference returned by getCurrentPState() becomes invalid
@@ -1403,7 +1415,10 @@ private:
 /*
  *  CVS/RCS Log:
  *  $Log: dviface.h,v $
- *  Revision 1.39  1999-08-31 14:02:05  meichel
+ *  Revision 1.40  1999-08-31 16:54:44  meichel
+ *  Added new sample application that allows to create simple print jobs.
+ *
+ *  Revision 1.39  1999/08/31 14:02:05  meichel
  *  Added print related config file methods
  *
  *  Revision 1.38  1999/08/27 15:57:55  meichel

@@ -22,8 +22,8 @@
  *  Purpose: DVPresentationState
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-08-31 14:02:08 $
- *  CVS/RCS Revision: $Revision: 1.60 $
+ *  Update Date:      $Date: 1999-08-31 16:54:46 $
+ *  CVS/RCS Revision: $Revision: 1.61 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -555,13 +555,6 @@ E_Condition DVInterface::saveCurrentImage(const char *filename, OFBool explicitV
     if (pDicomImage==NULL) return EC_IllegalCall;
     return saveFileFormat(filename, pDicomImage, explicitVR);
 }
-
-
-DVPresentationState &DVInterface::getCurrentPState()
-{
-    return *pState;
-}
-
 
 E_Condition DVInterface::exchangeImageAndPState(DVPresentationState *newState, DcmFileFormat *image, DcmFileFormat *state)
 {
@@ -2533,8 +2526,7 @@ E_Condition DVInterface::saveGrayscaleHardcopyImage(
   E_Condition result=EC_Normal;
   if (DB_NORMAL == DB_makeNewStoreFileName(handle, UID_HardcopyGrayscaleImageStorage, uid, imageFileName))
   {
-     // now store presentation state as filename
-     result = saveDICOMImage(imageFileName, pixelData, width, height, aspectRatio, OFTrue, uid);
+     result = saveGrayscaleHardcopyImage(imageFileName, pixelData, width, height, aspectRatio, OFTrue, uid);
      if (EC_Normal==result)
      {
        if (DB_NORMAL != DB_storeRequest(handle, UID_HardcopyGrayscaleImageStorage, uid, imageFileName, &dbStatus))
@@ -2668,7 +2660,10 @@ void DVInterface::cleanChildren()
 /*
  *  CVS/RCS Log:
  *  $Log: dviface.cc,v $
- *  Revision 1.60  1999-08-31 14:02:08  meichel
+ *  Revision 1.61  1999-08-31 16:54:46  meichel
+ *  Added new sample application that allows to create simple print jobs.
+ *
+ *  Revision 1.60  1999/08/31 14:02:08  meichel
  *  Added print related config file methods
  *
  *  Revision 1.59  1999/08/27 15:57:48  meichel
