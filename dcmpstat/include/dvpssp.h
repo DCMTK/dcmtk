@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DVPSStoredPrint
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-09-09 12:20:47 $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  Last Update:      $Author: thiel $
+ *  Update Date:      $Date: 1999-09-09 14:57:33 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -451,7 +451,7 @@ class DVPSStoredPrint
    *  @param printJob a already connected DICOM association to a remote printer
    *  @return EC_Normal if successful, an error code otherwise.
    */
-  E_Condition startPrint(DVPSPrintMessageHandler &printJob);
+  E_Condition startPrint(DVPSPrintMessageHandler *printJob);
   
   /** gets the next needed image reference, used in combination with setImage
    *  @param aETitle  AETitle where the image can be found
@@ -461,13 +461,13 @@ class DVPSStoredPrint
    *  @param instanceUID instance UID of the image
    *  @return EC_Normal if successful, an error code otherwise.
    */
-  E_Condition getNextImageReference(char *aETitle,char *patID,char *studyUID,char *seriesUID,char *instanceUID);
+  E_Condition getNextImageReference(char *&aETitle,char *&patID,char *&studyUID,char *&seriesUID,char *&instanceUID);
   
   /** transfer the preformatted image to the print job
    *  @param image the preformatted image, used in combination with getNextImageReference
    *  @return EC_Normal if successful, an error code otherwise.
    */
-  E_Condition setImage(DcmItem &image);
+  E_Condition setImage(DcmItem *image);
   
   /** test if the print job is done
    *
@@ -500,6 +500,7 @@ class DVPSStoredPrint
    *  @return EC_Normal if successful, an error code otherwise.
    */
   E_Condition addReferencedPLUTSQ(DcmItem &dset);
+
   
   /** invalidates the cached number of columns and rows
    */
@@ -624,13 +625,37 @@ class DVPSStoredPrint
   
   /// requested decimate/crop behaviour used in all image boxes
   DVPSDecimateCropBehaviour decimateCropBehaviour;
+
+  /// connection to a printer
+//  DVPSPrintMessageHandler printHandler;
+    
+  DVPSPrintMessageHandler *currentPrintHandler;
+
+	  
+  /// the current filmsessioninstance
+  OFString filmSessionInstanceUID;
+			
+  /// the current filmboxinstance
+  OFString		filmBoxInstanceUID;
+
+  /// the list of imagebox instances
+  char 		**imageBoxInstanceUID;
+
+  OFListIterator(DVPSImageBoxContent *) currentImageBox ;
+
+  /// next wanted image
+  int  nextImage;
+
 };
 
 #endif
 
 /*
  *  $Log: dvpssp.h,v $
- *  Revision 1.7  1999-09-09 12:20:47  meichel
+ *  Revision 1.8  1999-09-09 14:57:33  thiel
+ *  Added methods for print spooler
+ *
+ *  Revision 1.7  1999/09/09 12:20:47  meichel
  *  Added print API method declarations and implementations (empty for now).
  *
  *  Revision 1.6  1999/09/08 16:46:44  meichel

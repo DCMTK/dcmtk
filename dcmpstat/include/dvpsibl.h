@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DVPSImageBoxContent_PList
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-09-01 16:14:40 $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  Last Update:      $Author: thiel $
+ *  Update Date:      $Date: 1999-09-09 14:57:33 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -46,7 +46,7 @@ class DVPSImageBoxContent;
  *  Image Box Content Sequence in a Stored Print object.
  */
 
-class DVPSImageBoxContent_PList: private OFList<DVPSImageBoxContent *>
+class DVPSImageBoxContent_PList: public OFList<DVPSImageBoxContent *>
 {
 public:
 	E_Condition addImageBox(DVPSImageBoxContent *box);
@@ -186,7 +186,10 @@ public:
 
 /*
  *  $Log: dvpsibl.h,v $
- *  Revision 1.5  1999-09-01 16:14:40  meichel
+ *  Revision 1.6  1999-09-09 14:57:33  thiel
+ *  Added methods for print spooler
+ *
+ *  Revision 1.5  1999/09/01 16:14:40  meichel
  *  Added support for requested image size to print routines
  *
  *  Revision 1.4  1999/08/31 14:09:11  meichel

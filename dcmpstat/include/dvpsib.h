@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DVPSImageBoxContent
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-09-01 16:14:40 $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  Last Update:      $Author: thiel $
+ *  Update Date:      $Date: 1999-09-09 14:57:32 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -142,6 +142,20 @@ public:
    *  @return requested decimate/crop behaviour
    */
   DVPSDecimateCropBehaviour getRequestedDecimateCropBehaviour();
+
+  /** gets the next needed image reference, used in combination with setImage
+   *  @param aETitle  AETitle where the image can be found
+   *  @param patID Patient ID of the image
+   *  @param studyUID Study UID of the image
+   *  @param seriesUID series UID of the image 
+   *  @param instanceUID instance UID of the image
+   *  @return EC_Normal if successful, an error code otherwise.
+   */
+  E_Condition getImageReference(char *&aETitle,char *&patID,char *&studyUID,char *&seriesUID,char *&instanceUID);
+  
+ 
+
+
  
 private:
   /// private undefined assignment operator
@@ -191,7 +205,10 @@ private:
 
 /*
  *  $Log: dvpsib.h,v $
- *  Revision 1.5  1999-09-01 16:14:40  meichel
+ *  Revision 1.6  1999-09-09 14:57:32  thiel
+ *  Added methods for print spooler
+ *
+ *  Revision 1.5  1999/09/01 16:14:40  meichel
  *  Added support for requested image size to print routines
  *
  *  Revision 1.4  1999/08/31 14:09:10  meichel

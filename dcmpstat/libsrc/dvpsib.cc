@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DVPSImageBoxContent
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-09-08 16:46:14 $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  Last Update:      $Author: thiel $
+ *  Update Date:      $Date: 1999-09-09 14:57:50 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -166,10 +166,15 @@ E_Condition DVPSImageBoxContent::read(DcmItem &dset)
   READ_FROM_DATASET(DcmUnsignedShort, imageBoxPosition)
   READ_FROM_DATASET(DcmCodeString, polarity)
   READ_FROM_DATASET(DcmCodeString, magnificationType)
+	if (result==EC_TagNotFound) result = EC_Normal;
   READ_FROM_DATASET(DcmShortText, configurationInformation)
+		if (result==EC_TagNotFound) result = EC_Normal;
   READ_FROM_DATASET(DcmCodeString, smoothingType)
+		if (result==EC_TagNotFound) result = EC_Normal;
   READ_FROM_DATASET(DcmDecimalString, requestedImageSize)
+		if (result==EC_TagNotFound) result = EC_Normal;
   READ_FROM_DATASET(DcmCodeString, requestedDecimateCropBehavior)
+		if (result==EC_TagNotFound) result = EC_Normal;
 
   if (result==EC_Normal)
   {
@@ -188,6 +193,7 @@ E_Condition DVPSImageBoxContent::read(DcmItem &dset)
          READ_FROM_DATASET2(DcmUniqueIdentifier, studyInstanceUID)
          READ_FROM_DATASET2(DcmUniqueIdentifier, seriesInstanceUID)
          READ_FROM_DATASET2(DcmIntegerString, referencedFrameNumber)
+				 if (result==EC_TagNotFound) result = EC_Normal;
          READ_FROM_DATASET2(DcmLongString, patientID)
       } else {
         result=EC_TagNotFound;
@@ -482,6 +488,20 @@ E_Condition DVPSImageBoxContent::setRequestedDecimateCropBehaviour(DVPSDecimateC
   return EC_Normal;
 }
 
+E_Condition DVPSImageBoxContent::getImageReference(char * &aETitle,char *&patID,
+																									char *&studyUID,char *&seriesUID,
+																									char *&instanceUID)  
+{
+  E_Condition result=EC_Normal;
+	retrieveAETitle.getString(aETitle);
+	patientID.getString(patID);
+	studyInstanceUID.getString(studyUID);
+	seriesInstanceUID.getString(seriesUID);
+	referencedSOPInstanceUID.getString(instanceUID);
+	return result;
+}
+
+
 DVPSDecimateCropBehaviour DVPSImageBoxContent::getRequestedDecimateCropBehaviour()
 {
   DVPSDecimateCropBehaviour result = DVPSI_default;
@@ -498,7 +518,10 @@ DVPSDecimateCropBehaviour DVPSImageBoxContent::getRequestedDecimateCropBehaviour
 
 /*
  *  $Log: dvpsib.cc,v $
- *  Revision 1.6  1999-09-08 16:46:14  meichel
+ *  Revision 1.7  1999-09-09 14:57:50  thiel
+ *  Added methods for print spooler
+ *
+ *  Revision 1.6  1999/09/08 16:46:14  meichel
  *  Fixed sequence tag used for writing image box references in Stored Print objects.
  *
  *  Revision 1.5  1999/09/01 16:15:08  meichel
