@@ -10,9 +10,9 @@
 ** Implementation of class DcmElement
 **
 ** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1996-07-31 13:26:01 $
+** Update Date:		$Date: 1996-07-31 13:41:23 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcelem.cc,v $
-** CVS/RCS Revision:	$Revision: 1.9 $
+** CVS/RCS Revision:	$Revision: 1.10 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -312,28 +312,30 @@ E_Condition DcmElement::get(Float64 * &/*val*/)
 
 void * DcmElement::getValue(const E_ByteOrder newByteOrder)
 {
-    if (newByteOrder == EBO_unknown)
-	return EC_IllegalCall;
-
-    errorFlag =  EC_Normal;
     Uint8 * value = NULL;
-
-    if (Length != 0)
+    if (newByteOrder == EBO_unknown)
+	errorFlag = EC_IllegalCall;
+    else
     {
-	if (!fValue)
-	    errorFlag = this -> loadValue();
+	errorFlag =  EC_Normal;
 
-	if (errorFlag == EC_Normal)
+	if (Length != 0)
 	{
-	    if (newByteOrder != fByteOrder)
-	    {
-		this -> swapIfNecessary(newByteOrder, fByteOrder, fValue, 
-					Length, Tag->getVR().getValueWidth());
-		fByteOrder = newByteOrder;
-	    }
+	    if (!fValue)
+		errorFlag = this -> loadValue();
 
 	    if (errorFlag == EC_Normal)
-		value = fValue;
+	    {
+		if (newByteOrder != fByteOrder)
+		{
+		    this -> swapIfNecessary(newByteOrder, fByteOrder, fValue, 
+					    Length, Tag->getVR().getValueWidth());
+		    fByteOrder = newByteOrder;
+		}
+
+		if (errorFlag == EC_Normal)
+		    value = fValue;
+	    }
 	}
     }
     return value;
@@ -787,7 +789,10 @@ E_Condition DcmElement::write(DcmStream & outStream,
 /*
 ** CVS/RCS Log:
 ** $Log: dcelem.cc,v $
-** Revision 1.9  1996-07-31 13:26:01  andreas
+** Revision 1.10  1996-07-31 13:41:23  andreas
+** *** empty log message ***
+**
+** Revision 1.9  1996/07/31 13:26:01  andreas
 ** -  Minor corrections: error code for swapping to or from byteorder unknown
 **                       correct read of dataset in fileformat
 **
