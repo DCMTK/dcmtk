@@ -23,9 +23,9 @@
  *           of an arbitrary type.
  *
  *  Last Update:      $Author: wilkens $
- *  Update Date:      $Date: 2002-12-16 10:40:24 $
+ *  Update Date:      $Date: 2002-12-17 17:01:33 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/include/Attic/ofoset.h,v $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -86,7 +86,22 @@ template <class T> class OFOrderedSet : public OFSet<T>
        *  @param src Source object whose values will be assigned to this.
        *  @return Reference to this.
        */
-    const OFOrderedSet<T> &operator=( const OFOrderedSet<T> &src );
+    const OFOrderedSet<T> &operator=( const OFOrderedSet<T> &src )
+      {
+        return( assign( src ) );
+      }
+
+
+      /** This function is a workaround for avoiding a compiler warning on
+       *  Solaris 2.5.1 using compiler SC 2.0.1.
+       */
+    const OFOrderedSet<T> &assign( const OFOrderedSet<T> &src )
+      {
+        if( this != &src )
+          OFSet<T>::operator=( src );
+
+        return( *this );
+      }
 
 
       /** Determines if two sets are identical. Note that for ordered sets
@@ -493,23 +508,16 @@ template <class T> class OFOrderedSet : public OFSet<T>
 };
 
 
-template <class T> const OFOrderedSet<T> &OFOrderedSet<T>::operator=( const OFOrderedSet<T> &src )
-{
-  if( this == &src )
-    return( *this );
-
-  OFSet<T>::operator=( src );
-
-  return( *this );
-}
-
-
 #endif
 
 /*
 ** CVS/RCS Log:
 ** $Log: ofoset.h,v $
-** Revision 1.7  2002-12-16 10:40:24  wilkens
+** Revision 1.8  2002-12-17 17:01:33  wilkens
+** Modified code again to keep Sun CC 2.0.1 happy on Solaris 2.5.1 (template
+** errors).
+**
+** Revision 1.7  2002/12/16 10:40:24  wilkens
 ** Removed superfluous implementation files and modified header and make files.
 **
 ** Revision 1.6  2002/12/13 12:26:50  wilkens
