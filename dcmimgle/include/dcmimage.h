@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2003, OFFIS
+ *  Copyright (C) 1996-2004, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,8 +22,8 @@
  *  Purpose: Provides main interface to the "DICOM image toolkit"
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-12-17 16:17:29 $
- *  CVS/RCS Revision: $Revision: 1.51 $
+ *  Update Date:      $Date: 2004-07-20 18:12:16 $
+ *  CVS/RCS Revision: $Revision: 1.52 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -53,6 +53,7 @@ class DcmOverlayData;
 class DcmLongString;
 class DcmUnsignedShort;
 
+class DiPixel;
 class DiDocument;
 class DiPluginFormat;
 
@@ -61,7 +62,8 @@ class DiPluginFormat;
  *  class declaration  *
  *---------------------*/
 
-/** Interface class for dcmimgle/dcmimage module
+/** Interface class for dcmimgle/dcmimage module.
+ *  The main purpose of these modules is image display.
  */
 class DicomImage
 {
@@ -331,7 +333,7 @@ class DicomImage
             Image->getMonoImagePtr()->isValueUnused(value) : 0;
     }
 
- // --- output: return pointer to output data if successful
+  // --- output: return pointer to output data if successful
 
     /** get number of bytes required for the rendered output of a single frame.
      *  This function determines the size of a rendered frame as created by getOutputData().
@@ -455,6 +457,21 @@ class DicomImage
      ** @return true if image has given SOP class UID, false otherwise
      */
     int hasSOPclassUID(const char *uid) const;
+
+    /** get intermediate pixel data representation (read-only).
+     *  This function allows to access the pixel data after they have been extracted
+     *  from the DICOM data element and the modality transformation has been applied
+     *  (if present and not disabled).  Please note that for monochrome images the
+     *  internal representation might be signed whereas color images are automatically
+     *  converted to unsigned RGB format.  Pixels are aligned to 8, 16 or 32 bits.
+     *
+     ** @return pointer to intermediate pixel data representation
+     */
+    inline const DiPixel *getInterData() const
+    {
+        return (Image != NULL) ?
+            Image->getInterData() : NULL;
+    }
 
  // --- display function for output device characteristic (calibration):
  //     only applicable to grayscale images
@@ -1803,7 +1820,11 @@ class DicomImage
  *
  * CVS/RCS Log:
  * $Log: dcmimage.h,v $
- * Revision 1.51  2003-12-17 16:17:29  joergr
+ * Revision 1.52  2004-07-20 18:12:16  joergr
+ * Added API method to "officially" access the internal intermediate pixel data
+ * representation (e.g. to get Hounsfield Units for CT images).
+ *
+ * Revision 1.51  2003/12/17 16:17:29  joergr
  * Added new compatibility flag that allows to ignore the third value of LUT
  * descriptors and to determine the bits per table entry automatically.
  *

@@ -22,8 +22,8 @@
  *  Purpose: DicomColorImage (Header)
  *
  *  Last Update:         $Author: joergr $
- *  Update Date:         $Date: 2004-02-06 11:18:18 $
- *  CVS/RCS Revision:    $Revision: 1.20 $
+ *  Update Date:         $Date: 2004-07-20 18:13:16 $
+ *  CVS/RCS Revision:    $Revision: 1.21 $
  *  Status:              $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -38,6 +38,7 @@
 #include "dctypes.h"
 
 #include "diimage.h"
+#include "dicopx.h"
 #include "diutils.h"
 
 
@@ -45,7 +46,6 @@
  *  forward declarations  *
  *------------------------*/
 
-class DiColorPixel;
 class DiColorOutputPixel;
 
 
@@ -78,7 +78,8 @@ class DiColorImage
     virtual ~DiColorImage();
 
     /** get color model of internal pixel representation.
-     *  @return returns EPI_RGB or EPI_YBR_Full depending on the 'rgb' flag in the constructor
+     *
+     ** @return returns EPI_RGB or EPI_YBR_Full depending on the 'rgb' flag in the constructor
      */
     virtual EP_Interpretation getInternalColorModel() const
     {
@@ -237,7 +238,16 @@ class DiColorImage
      *
      ** @return pointer to intermediate pixel data
      */
-    const DiColorPixel *getInterData() const
+    const DiPixel *getInterData() const
+    {
+        return InterData;
+    }
+
+    /** get pointer to intermediate pixel data representation
+     *
+     ** @return pointer to intermediate pixel data
+     */
+    const DiColorPixel *getColorInterData() const
     {
         return InterData;
     }
@@ -445,7 +455,11 @@ class DiColorImage
  *
  * CVS/RCS Log:
  * $Log: dicoimg.h,v $
- * Revision 1.20  2004-02-06 11:18:18  joergr
+ * Revision 1.21  2004-07-20 18:13:16  joergr
+ * Added API method to "officially" access the internal intermediate pixel data
+ * representation (e.g. to get Hounsfield Units for CT images).
+ *
+ * Revision 1.20  2004/02/06 11:18:18  joergr
  * Distinguish more clearly between const and non-const access to pixel data.
  *
  * Revision 1.19  2003/12/17 18:10:56  joergr

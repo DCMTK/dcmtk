@@ -22,8 +22,8 @@
  *  Purpose: DicomImage (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2004-02-06 11:07:50 $
- *  CVS/RCS Revision: $Revision: 1.34 $
+ *  Update Date:      $Date: 2004-07-20 18:12:16 $
+ *  CVS/RCS Revision: $Revision: 1.35 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -62,6 +62,7 @@ class DcmUnsignedShort;
  class DiDocument;
 #endif
 
+class DiPixel;
 class DiMonoImage;
 class DiInputPixel;
 
@@ -217,12 +218,6 @@ class DiImage
      */
     int setPolarity(const EP_Polarity polarity);
 
-    /** get color model of internal pixel representation.
-     *  Possible values are: EPI_Monochrome1, EPI_Monochrome2, EPI_RGB and EPI_YBR_Full
-     *  @return color model of internal pixel representation
-     */
-    virtual EP_Interpretation getInternalColorModel() const = 0;
-
     /** get number of bits per sample.
      *  If the optional parameter is specified the value will be checked and in any case
      *  a valid value will be returned.
@@ -237,6 +232,19 @@ class DiImage
     {
         return ((bits < 1) || (bits > MAX_BITS)) ? BitsPerSample : bits;
     }
+
+    /** get color model of internal pixel representation.
+     *  Possible values are: EPI_Monochrome1, EPI_Monochrome2, EPI_RGB and EPI_YBR_Full
+     *
+     ** @return color model of internal pixel representation
+     */
+    virtual EP_Interpretation getInternalColorModel() const = 0;
+
+    /** get access to intermediate pixel data representation (abstract)
+     *
+     ** @return pointer to intermediate pixel data
+     */
+    virtual const DiPixel *getInterData() const = 0;
 
     /** get number of bytes required for the rendered output of a single frame
      *
@@ -640,7 +648,11 @@ class DiImage
  *
  * CVS/RCS Log:
  * $Log: diimage.h,v $
- * Revision 1.34  2004-02-06 11:07:50  joergr
+ * Revision 1.35  2004-07-20 18:12:16  joergr
+ * Added API method to "officially" access the internal intermediate pixel data
+ * representation (e.g. to get Hounsfield Units for CT images).
+ *
+ * Revision 1.34  2004/02/06 11:07:50  joergr
  * Distinguish more clearly between const and non-const access to pixel data.
  *
  * Revision 1.33  2004/01/05 14:52:20  joergr

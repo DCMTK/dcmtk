@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2003, OFFIS
+ *  Copyright (C) 1996-2004, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,8 +22,8 @@
  *  Purpose: DicomRegister (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-12-23 10:54:28 $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  Update Date:      $Date: 2004-07-20 18:13:50 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -113,7 +113,7 @@ DiMonoPixel *DiRegister::createMonoImageData(const DiColorImage *image,
     DiMonoPixel *inter = NULL;
     if (image != NULL)
     {
-        const DiColorPixel *color = image->getInterData();
+        const DiColorPixel *color = image->getColorInterData();
         if (color != NULL)
         {
             DiMonoModality *modality = new DiMonoModality(image->getBits());
@@ -151,7 +151,11 @@ DiMonoPixel *DiRegister::createMonoImageData(const DiColorImage *image,
  *
  * CVS/RCS Log:
  * $Log: diregist.cc,v $
- * Revision 1.7  2003-12-23 10:54:28  joergr
+ * Revision 1.8  2004-07-20 18:13:50  joergr
+ * Added API method to "officially" access the internal intermediate pixel data
+ * representation (e.g. to get Hounsfield Units for CT images).
+ *
+ * Revision 1.7  2003/12/23 10:54:28  joergr
  * Updated copyright header.
  *
  * Revision 1.6  2001/06/01 15:49:36  meichel

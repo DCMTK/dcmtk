@@ -22,8 +22,8 @@
  *  Purpose: DicomMonochromeImage (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2004-02-06 11:07:50 $
- *  CVS/RCS Revision: $Revision: 1.43 $
+ *  Update Date:      $Date: 2004-07-20 18:12:16 $
+ *  CVS/RCS Revision: $Revision: 1.44 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -650,7 +650,16 @@ class DiMonoImage
      *
      ** @return pointer to intermediate pixel data
      */
-    const DiMonoPixel *getInterData() const
+    const DiPixel *getInterData() const
+    {
+        return InterData;
+    }
+
+    /** get pointer to intermediate pixel data representation
+     *
+     ** @return pointer to intermediate pixel data
+     */
+    const DiMonoPixel *getMonoInterData() const
     {
         return InterData;
     }
@@ -1130,7 +1139,11 @@ class DiMonoImage
  *
  * CVS/RCS Log:
  * $Log: dimoimg.h,v $
- * Revision 1.43  2004-02-06 11:07:50  joergr
+ * Revision 1.44  2004-07-20 18:12:16  joergr
+ * Added API method to "officially" access the internal intermediate pixel data
+ * representation (e.g. to get Hounsfield Units for CT images).
+ *
+ * Revision 1.43  2004/02/06 11:07:50  joergr
  * Distinguish more clearly between const and non-const access to pixel data.
  *
  * Revision 1.42  2003/12/23 10:51:52  joergr
