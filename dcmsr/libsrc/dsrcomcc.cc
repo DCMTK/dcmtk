@@ -23,8 +23,8 @@
  *    classes: DSRComprehensiveSRConstraintChecker
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-09-15 14:16:50 $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  Update Date:      $Date: 2003-09-17 09:21:08 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -105,7 +105,7 @@ OFBool DSRComprehensiveSRConstraintChecker::checkContentRelationship(const E_Val
                  (targetValueType == VT_UIDRef)   || (targetValueType == VT_PName) || (targetValueType == VT_Container);
     }
     /* row 4 of the table */
-    else if (relationshipType == RT_hasConceptMod)
+    else if ((relationshipType == RT_hasConceptMod) && !byReference /* only by-value, see CP 359 */)
     {
         result = (targetValueType == VT_Text) || (targetValueType == VT_Code);
     }
@@ -136,7 +136,10 @@ OFBool DSRComprehensiveSRConstraintChecker::checkContentRelationship(const E_Val
 /*
  *  CVS/RCS Log:
  *  $Log: dsrcomcc.cc,v $
- *  Revision 1.1  2003-09-15 14:16:50  joergr
+ *  Revision 1.2  2003-09-17 09:21:08  joergr
+ *  Implemented CP 359, i.e. forbid HAS CONCEPT MOD relationship by-reference.
+ *
+ *  Revision 1.1  2003/09/15 14:16:50  joergr
  *  Introduced new class to facilitate checking of SR IOD relationship content
  *  constraints. Replaced old implementation distributed over numerous classes.
  *
