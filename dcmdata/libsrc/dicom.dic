@@ -1,5 +1,5 @@
 #
-#  Copyright (C) 1994-2001, OFFIS
+#  Copyright (C) 1994-2002, OFFIS
 #
 #  This software and supporting documentation were developed by
 #
@@ -21,10 +21,10 @@
 #  Purpose: 
 #  This is the global DICOM data dictionary for the dcmtk class library.
 #
-#  Last Update:      $Author: wilkens $
-#  Update Date:      $Date: 2002-12-10 08:31:54 $
+#  Last Update:      $Author: meichel $
+#  Update Date:      $Date: 2002-12-23 15:20:16 $
 #  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/Attic/dicom.dic,v $
-#  CVS/RCS Revision: $Revision: 1.44 $
+#  CVS/RCS Revision: $Revision: 1.45 $
 #  Status:           $State: Exp $
 #
 #  This dictionary contains
