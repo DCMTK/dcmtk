@@ -22,9 +22,9 @@
  *  Purpose: Class for connecting to a file-based data source.
  *
  *  Last Update:      $Author: wilkens $
- *  Update Date:      $Date: 2002-04-18 14:19:52 $
+ *  Update Date:      $Date: 2002-04-19 13:24:57 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmwlm/apps/Attic/wldsfs.cc,v $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -39,9 +39,6 @@ BEGIN_EXTERN_C
 #ifdef HAVE_FCNTL_H
 #include <fcntl.h>     // for O_RDWR
 #endif
-#ifdef HAVE_IO_H
-#include <io.h>        // for access() on Win32
-#endif
 #ifdef HAVE_SYS_TYPES_H
 #include <sys/types.h>
 #endif
@@ -52,7 +49,6 @@ BEGIN_EXTERN_C
 #include <dirent.h>    // for struct DIR, opendir()
 #endif
 END_EXTERN_C
-
 #include "dicom.h"     // for DIC_NODENAME etc. used in "wltypdef.h"
 #include "wltypdef.h"  // for type definitions
 #include "oftypes.h"   // for OFBool
@@ -65,6 +61,7 @@ END_EXTERN_C
 #include "diutil.h"    // for DU_stripTrailingSpaces()
 #include "dcvm.h"      // for getVMFromString()
 #include "wlds.h"
+#include "ofstd.h"
 
 #include "wldsfs.h"
 
@@ -106,7 +103,7 @@ OFCondition WlmDataSourceFileSystem::ConnectToDataSource()
 // Return Value : Indicates if the connection was established succesfully.
 {
   // check if the specified path is existent and accessible for reading
-  if( access( dfPath, R_OK ) < 0 )
+  if( !OFStandard::dirExists( OFString( dfPath ) ) || !OFStandard::isReadable( OFString( dfPath ) ) )
     return( WLM_EC_CannotConnectToDataSource );
   else
     return( EC_Normal );
@@ -2434,7 +2431,10 @@ OFBool WlmDataSourceFileSystem::IsSupportedReturnKeyAttribute( const DcmTagKey &
 /*
 ** CVS Log
 ** $Log: wldsfs.cc,v $
-** Revision 1.2  2002-04-18 14:19:52  wilkens
+** Revision 1.3  2002-04-19 13:24:57  wilkens
+** Added support for new functions in OFStandard.
+**
+** Revision 1.2  2002/04/18 14:19:52  wilkens
 ** Modified Makefiles. Updated latest changes again. These are the latest
 ** sources. Added configure file.
 **
