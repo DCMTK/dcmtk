@@ -23,8 +23,8 @@
  *    classes: DSRListOfItems
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-10-18 17:08:44 $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  Update Date:      $Date: 2000-10-26 14:19:38 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -214,11 +214,9 @@ class DSRListOfItems
         if (idx > 0)
         {
             const OFListIterator(T) endPos = OFList<T>::end();
-            while ((idx > 0) && (iterator != endPos))
-            {
-                idx--;
+            while ((--idx > 0) && (iterator != endPos))
                 iterator++;
-            }
+            /* index found? */
             result = (idx == 0);
         }
         return result;
@@ -233,7 +231,7 @@ class DSRListOfItems
                     OFListIterator(T) &iterator) const
     {
         const OFListIterator(T) endPos = OFList<T>::end();
-        /* operator== is used to reduce requirement for class T */
+        /* operator== is used to reduce requirements for class T */
         while ((iterator != endPos) && (!(*iterator == item)))
             iterator++;
         return (iterator != endPos);
@@ -247,7 +245,10 @@ class DSRListOfItems
 /*
  *  CVS/RCS Log:
  *  $Log: dsrtlist.h,v $
- *  Revision 1.2  2000-10-18 17:08:44  joergr
+ *  Revision 1.3  2000-10-26 14:19:38  joergr
+ *  Fixed bug: index in search routine was starting from 0 not 1.
+ *
+ *  Revision 1.2  2000/10/18 17:08:44  joergr
  *  Added doc++ comments.
  *
  *  Revision 1.1  2000/10/13 07:49:34  joergr
