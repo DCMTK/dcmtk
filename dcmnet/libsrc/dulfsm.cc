@@ -46,9 +46,9 @@
 ** Author, Date:	Stephen M. Moore, 15-Apr-93
 ** Intent:		Define tables and provide functions that implement
 **			the DICOM Upper Layer (DUL) finite state machine.
-** Last Update:		$Author: hewett $, $Date: 1996-09-24 16:22:46 $
+** Last Update:		$Author: hewett $, $Date: 1996-09-27 08:38:41 $
 ** Source File:		$RCSfile: dulfsm.cc,v $
-** Revision:		$Revision: 1.6 $
+** Revision:		$Revision: 1.7 $
 ** Status:		$State: Exp $
 */
 
@@ -2340,7 +2340,11 @@ requestAssociationTCP(PRIVATE_NETWORKKEY ** /*network*/,
     server.sin_port = (u_short) htons(port);
 
     if (connect(s, (struct sockaddr *) & server, sizeof(server)) < 0) {
+#ifdef HAVE_WINSOCK_H
+	(void) closesocket(s);
+#else
 	(void) close(s);
+#endif
 	(*association)->networkState = NETWORK_DISCONNECTED;
 	(*association)->networkSpecific.TCP.socket = -1;
 	return COND_PushCondition(DUL_TCPINITERROR,
@@ -2438,8 +2442,13 @@ sendAssociationRQTCP(PRIVATE_NETWORKKEY ** /*network*/,
     }
 #endif
 
+#ifdef HAVE_WINSOCK_H
+    nbytes = send((*association)->networkSpecific.TCP.socket, (char*)b,
+		   associateRequest.length + 6, 0);
+#else
     nbytes = write((*association)->networkSpecific.TCP.socket, (char*)b,
 		   associateRequest.length + 6);
+#endif
     if ((unsigned long) nbytes != associateRequest.length + 6) {
 	return COND_PushCondition(DUL_TCPIOERROR, DUL_Message(DUL_TCPIOERROR),
 				  strerror(errno), "requestAssociationTCP");
@@ -2529,8 +2538,13 @@ sendAssociationACTCP(PRIVATE_NETWORKKEY ** /*network*/,
     }
 #endif
 
+#ifdef HAVE_WINSOCK_H
+    nbytes = send((*association)->networkSpecific.TCP.socket, (char*)b,
+		   associateReply.length + 6, 0);
+#else
     nbytes = write((*association)->networkSpecific.TCP.socket, (char*)b,
 		   associateReply.length + 6);
+#endif
     if ((unsigned long) nbytes != associateReply.length + 6) {
 	return COND_PushCondition(DUL_TCPIOERROR, DUL_Message(DUL_TCPIOERROR),
 				  strerror(errno), "ReplyAssociationTCP");
@@ -2598,8 +2612,13 @@ sendAssociationRJTCP(PRIVATE_NETWORKKEY ** /*network*/,
     cond = streamRejectReleaseAbortPDU(&pdu, b, pdu.length + 6, &length);
 
     if (cond == DUL_NORMAL) {
-	nbytes = write((*association)->networkSpecific.TCP.socket, (char*)b,
+#ifdef HAVE_WINSOCK_H
+ 	nbytes = send((*association)->networkSpecific.TCP.socket, (char*)b,
+		       pdu.length + 6, 0);
+#else
+ 	nbytes = write((*association)->networkSpecific.TCP.socket, (char*)b,
 		       pdu.length + 6);
+#endif
 	if ((unsigned long) nbytes != pdu.length + 6) {
 	    cond = COND_PushCondition(DUL_TCPIOERROR, strerror(errno),
 				      "sendAssociationRJTCP");
@@ -2664,8 +2683,13 @@ sendAbortTCP(DUL_ABORTITEMS * abortItems,
     }
     cond = streamRejectReleaseAbortPDU(&pdu, b, pdu.length + 6, &length);
     if (cond == DUL_NORMAL) {
+#ifdef HAVE_WINSOCK_H
+	nbytes = send((*association)->networkSpecific.TCP.socket, (char*)b,
+		       pdu.length + 6, 0);
+#else
 	nbytes = write((*association)->networkSpecific.TCP.socket, (char*)b,
 		       pdu.length + 6);
+#endif
 	if ((unsigned long) nbytes != pdu.length + 6) {
 	    cond = COND_PushCondition(DUL_TCPIOERROR, strerror(errno),
 				      "sendAbortTCP");
@@ -2730,8 +2754,13 @@ sendReleaseRQTCP(PRIVATE_ASSOCIATIONKEY ** association)
     }
     cond = streamRejectReleaseAbortPDU(&pdu, b, pdu.length + 6, &length);
     if (cond == DUL_NORMAL) {
+#ifdef HAVE_WINSOCK_H
+	nbytes = send((*association)->networkSpecific.TCP.socket, (char*)b,
+		       pdu.length + 6, 0);
+#else
 	nbytes = write((*association)->networkSpecific.TCP.socket, (char*)b,
 		       pdu.length + 6);
+#endif
 	if ((unsigned long) nbytes != pdu.length + 6) {
 	    cond = COND_PushCondition(DUL_TCPIOERROR, strerror(errno),
 				      "sendReleaseRQTCP");
@@ -2796,8 +2825,13 @@ sendReleaseRPTCP(PRIVATE_ASSOCIATIONKEY ** association)
     }
     cond = streamRejectReleaseAbortPDU(&pdu, b, pdu.length + 6, &length);
     if (cond == DUL_NORMAL) {
+#ifdef HAVE_WINSOCK_H
+	nbytes = send((*association)->networkSpecific.TCP.socket, (char*)b,
+		       pdu.length + 6, 0);
+#else
 	nbytes = write((*association)->networkSpecific.TCP.socket, (char*)b,
 		       pdu.length + 6);
+#endif
 	if ((unsigned long) nbytes != pdu.length + 6) {
 	    cond = COND_PushCondition(DUL_TCPIOERROR, strerror(errno),
 				      "sendReleaseRPTCP");
@@ -2924,15 +2958,26 @@ writeDataPDU(PRIVATE_ASSOCIATIONKEY ** association,
 			   pdu->presentationDataValue.length - 2);
 	}
 #endif
+#ifdef HAVE_WINSOCK_H
+	nbytes = send((*association)->networkSpecific.TCP.socket, 
+		       (char*)head, length, 0);
+#else
 	nbytes = write((*association)->networkSpecific.TCP.socket, 
 		       (char*)head, length);
+#endif
 	if ((unsigned long) nbytes != length)
 	    return COND_PushCondition(DUL_TCPIOERROR,
 			       DUL_Message(DUL_TCPIOERROR), strerror(errno),
 				      "writeDataPDU");
+#ifdef HAVE_WINSOCK_H
+	nbytes = send((*association)->networkSpecific.TCP.socket,
+		       (char*)pdu->presentationDataValue.data,
+		       pdu->presentationDataValue.length - 2, 0);
+#else
 	nbytes = write((*association)->networkSpecific.TCP.socket,
 		       (char*)pdu->presentationDataValue.data,
 		       pdu->presentationDataValue.length - 2);
+#endif
 	if ((unsigned long) nbytes != pdu->presentationDataValue.length - 2)
 	    return COND_PushCondition(DUL_TCPIOERROR,
 			       DUL_Message(DUL_TCPIOERROR), strerror(errno),
@@ -2988,7 +3033,11 @@ static void
 closeTransportTCP(PRIVATE_ASSOCIATIONKEY ** association)
 {
     if ((*association)->networkSpecific.TCP.socket != 0)
+#ifdef HAVE_WINSOCK_H
+	(void) closesocket((*association)->networkSpecific.TCP.socket);
+#else
 	(void) close((*association)->networkSpecific.TCP.socket);
+#endif
 }
 
 
@@ -3473,7 +3522,11 @@ defragmentTCP(int sock, DUL_BLOCKOPTIONS block, time_t timerStart,
 	    return DUL_READTIMEOUT;
     }
     while (l > 0) {
+#ifdef HAVE_WINSOCK_H
+	bytesRead = recv(sock, (char*)b, l, 0);
+#else
 	bytesRead = read(sock, (char*)b, l);
+#endif
 	if (bytesRead > 0) {
 	    b += bytesRead;
 	    l -= (unsigned long) bytesRead;
@@ -3957,7 +4010,11 @@ DULPRV_translateAssocReq(unsigned char *buffer,
 /*
 ** CVS Log
 ** $Log: dulfsm.cc,v $
-** Revision 1.6  1996-09-24 16:22:46  hewett
+** Revision 1.7  1996-09-27 08:38:41  hewett
+** Support for WINSOCK socket library.  Use send instead of write, recv
+** instead of read, closesocket instead of close.
+**
+** Revision 1.6  1996/09/24 16:22:46  hewett
 ** Added preliminary support for the Macintosh environment (GUSI library).
 **
 ** Revision 1.5  1996/06/20 07:35:51  hewett

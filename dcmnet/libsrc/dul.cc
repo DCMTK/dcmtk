@@ -54,9 +54,9 @@
 ** Author, Date:	Stephen M. Moore, 14-Apr-93
 ** Intent:		This module contains the public entry points for the
 **			DICOM Upper Layer (DUL) protocol package.
-** Last Update:		$Author: hewett $, $Date: 1996-09-24 16:22:45 $
+** Last Update:		$Author: hewett $, $Date: 1996-09-27 08:38:40 $
 ** Source File:		$RCSfile: dul.cc,v $
-** Revision:		$Revision: 1.5 $
+** Revision:		$Revision: 1.6 $
 ** Status:		$State: Exp $
 */
 
@@ -257,7 +257,11 @@ DUL_DropNetwork(DUL_NETWORKKEY ** callerNetworkKey)
 
     if ((*networkKey)->applicationFunction & PRV_APPLICATION_ACCEPTOR) {
 	if (strcmp((*networkKey)->networkType, DUL_NETWORK_TCP) == 0) {
+#ifdef HAVE_WINSOCK_H
+	    (void) closesocket((*networkKey)->networkSpecific.TCP.listenSocket);
+#else
 	    (void) close((*networkKey)->networkSpecific.TCP.listenSocket);
+#endif
 	}
     }
     networkInitialized = 0;
@@ -736,7 +740,11 @@ DUL_DropAssociation(DUL_ASSOCIATIONKEY ** callerAssociation)
 #endif
 
     if (strcmp((*association)->networkType, DUL_NETWORK_TCP) == 0) {
+#ifdef HAVE_WINSOCK_H
+	(void) closesocket((*association)->networkSpecific.TCP.socket);
+#else
 	(void) close((*association)->networkSpecific.TCP.socket);
+#endif
 	destroyAssociationKey(association);
     }
     return DUL_NORMAL;
@@ -2216,7 +2224,11 @@ clearPresentationContext(LST_HEAD ** l)
 /*
 ** CVS Log
 ** $Log: dul.cc,v $
-** Revision 1.5  1996-09-24 16:22:45  hewett
+** Revision 1.6  1996-09-27 08:38:40  hewett
+** Support for WINSOCK socket library.  Use send instead of write, recv
+** instead of read, closesocket instead of close.
+**
+** Revision 1.5  1996/09/24 16:22:45  hewett
 ** Added preliminary support for the Macintosh environment (GUSI library).
 **
 ** Revision 1.4  1996/06/20 07:35:48  hewett
