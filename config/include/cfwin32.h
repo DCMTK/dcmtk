@@ -84,7 +84,7 @@
 #define HAVE_ACCEPT 1
 
 /* Define if you have the access function.  */
-#define HAVE_ACCESS 1
+#undef HAVE_ACCESS
 
 /* Define if you have the bind function.  */
 #define HAVE_BIND 1
@@ -100,6 +100,9 @@
 
 /* Define if you have the flock function.  */
 #undef HAVE_FLOCK
+
+/* Define if you have the fork function.  */
+#define HAVE_FORK 1
 
 /* Define if you have the getcwd function.  */
 #define HAVE_GETCWD 1
@@ -220,6 +223,9 @@
 
 /* Define if you have the uname function.  */
 #define HAVE_UNAME 1
+
+/* Define if you have the sleep function.  */
+#undef HAVE_SLEEP
 
 /* Define if you have the usleep function.  */
 #undef HAVE_USLEEP

@@ -106,6 +106,9 @@
 /* Define if you have the flock function.  */
 #define HAVE_FLOCK 1
 
+/* Define if you have the fork function.  */
+#define HAVE_FORK 1
+
 /* Define if you have the getcwd function.  */
 #define HAVE_GETCWD 1
 
@@ -225,6 +228,9 @@
 
 /* Define if you have the uname function.  */
 #define HAVE_UNAME 1
+
+/* Define if you have the sleep function.  */
+#undef HAVE_SLEEP
 
 /* Define if you have the usleep function.  */
 #define HAVE_USLEEP 1

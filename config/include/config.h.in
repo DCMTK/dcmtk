@@ -85,6 +85,9 @@
 /* Define if you have the flock function.  */
 #undef HAVE_FLOCK
 
+/* Define if you have the fork function.  */
+#undef HAVE_FORK
+
 /* Define if you have the getcwd function.  */
 #undef HAVE_GETCWD
 
@@ -174,6 +177,9 @@
 
 /* Define if you have the shmget function.  */
 #undef HAVE_SHMGET
+
+/* Define if you have the sleep function.  */
+#undef HAVE_SLEEP
 
 /* Define if you have the socket function.  */
 #undef HAVE_SOCKET
