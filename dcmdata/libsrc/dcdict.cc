@@ -22,9 +22,9 @@
  *  Purpose: loadable DICOM data dictionary
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-06-01 15:49:01 $
+ *  Update Date:      $Date: 2002-02-27 14:21:35 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcdict.cc,v $
- *  CVS/RCS Revision: $Revision: 1.24 $
+ *  CVS/RCS Revision: $Revision: 1.25 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -723,7 +723,9 @@ DcmDataDictionary::findEntry(const char *name) const
 
 GlobalDcmDataDictionary::GlobalDcmDataDictionary(OFBool loadBuiltin, OFBool loadExternal)
 : dataDict(loadBuiltin, loadExternal)
+#ifdef _REENTRANT
 , dataDictLock()
+#endif
 {
 }
 
@@ -771,7 +773,10 @@ void GlobalDcmDataDictionary::clear()
 /*
 ** CVS/RCS Log:
 ** $Log: dcdict.cc,v $
-** Revision 1.24  2001-06-01 15:49:01  meichel
+** Revision 1.25  2002-02-27 14:21:35  meichel
+** Declare dcmdata read/write locks only when compiled in multi-thread mode
+**
+** Revision 1.24  2001/06/01 15:49:01  meichel
 ** Updated copyright header
 **
 ** Revision 1.23  2000/05/03 14:19:09  meichel

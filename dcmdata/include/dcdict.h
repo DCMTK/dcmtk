@@ -22,9 +22,9 @@
  *  Purpose: Interface for loadable DICOM data dictionary
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-06-01 15:48:38 $
+ *  Update Date:      $Date: 2002-02-27 14:21:20 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcdict.h,v $
- *  CVS/RCS Revision: $Revision: 1.16 $
+ *  CVS/RCS Revision: $Revision: 1.17 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -220,9 +220,11 @@ private:
    */
   DcmDataDictionary dataDict;
 
+#ifdef _REENTRANT
   /** the read/write lock used to protect access from multiple threads
    */
   OFReadWriteLock dataDictLock;
+#endif
 };
 
 
@@ -245,7 +247,10 @@ extern GlobalDcmDataDictionary dcmDataDict;
 /*
 ** CVS/RCS Log:
 ** $Log: dcdict.h,v $
-** Revision 1.16  2001-06-01 15:48:38  meichel
+** Revision 1.17  2002-02-27 14:21:20  meichel
+** Declare dcmdata read/write locks only when compiled in multi-thread mode
+**
+** Revision 1.16  2001/06/01 15:48:38  meichel
 ** Updated copyright header
 **
 ** Revision 1.15  2000/05/03 14:19:08  meichel
