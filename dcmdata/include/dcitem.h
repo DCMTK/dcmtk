@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2003, OFFIS
+ *  Copyright (C) 1994-2004, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,8 @@
  *  Purpose: Interface of class DcmItem
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-10-08 10:24:40 $
- *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcitem.h,v $
- *  CVS/RCS Revision: $Revision: 1.48 $
+ *  Update Date:      $Date: 2004-02-04 16:02:08 $
+ *  CVS/RCS Revision: $Revision: 1.49 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -263,14 +262,15 @@ class DcmItem
                                   DcmElement *&element,
                                   const OFBool searchIntoSub = OFFalse);
 
-    /** find all elements matching a tag and returns them as reference in a stack
+    /** find all elements matching a particular tag and return references to them on a stack.
+     *  This functions always performs a deep search (i.e. searches into sequence of items).
      *  @param tagKey DICOM tag specifying the attribute to be searched for
-     *  @param result_stack variable, where references to the elements get stored.
-     * 		   If no element is found, then the stack doesn't get touched by this function
-     *  @return EC_Normal, if at least one matching tag is found
+     *  @param resultStack stack where references to the elements are stored (added to).
+     * 	  If no element is found, the stack is not modified (e.g. cleared).
+     *  @return EC_Normal if at least one matching tag is found, an error code otherwise.
      */
     OFCondition findAndGetElements(const DcmTagKey &tagKey,
-                                  DcmStack *&result_stack);
+                                   DcmStack &resultStack);
 
     /** find element and get value as a reference to a C string.
      *  Applicable to the following VRs: AE, AS, CS, DA, DS, DT, IS, LO, LT, PN, SH, ST, TM, UI, UT
@@ -901,7 +901,11 @@ OFCondition nextUp(DcmStack &st);
 /*
 ** CVS/RCS Log:
 ** $Log: dcitem.h,v $
-** Revision 1.48  2003-10-08 10:24:40  joergr
+** Revision 1.49  2004-02-04 16:02:08  joergr
+** Removed pointer declaration from parameter "resultStack" in method
+** findAndGetElements().
+**
+** Revision 1.48  2003/10/08 10:24:40  joergr
 ** Added support for AT, OB, OF, OW, SL, SS, UL, US to putAndInsertString().
 **
 ** Revision 1.47  2003/07/16 14:34:05  joergr

@@ -22,8 +22,8 @@
  *  Purpose: Class for modifying DICOM-Files and Datasets
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2004-01-16 10:53:53 $
- *  CVS/RCS Revision: $Revision: 1.9 $
+ *  Update Date:      $Date: 2004-02-04 16:03:38 $
+ *  CVS/RCS Revision: $Revision: 1.10 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -403,7 +403,7 @@ OFCondition MdfDatasetManager::modifyAllTags(OFString tag_path,
         return result;
 
     //this stack will hold result of element-search
-    DcmStack *result_stack=new DcmStack();
+    DcmStack result_stack;
     DcmObject *elem;
     //get references to all matching tags in Dataset and store them in stack
     if (debug_option)
@@ -412,14 +412,14 @@ OFCondition MdfDatasetManager::modifyAllTags(OFString tag_path,
     //as long there are matching elements left on the stack
     if (debug_option)
     {
-        ofConsole.lockCerr() << "Found " << result_stack->card()
+        ofConsole.lockCerr() << "Found " << result_stack.card()
                              << " occurences" << endl;
         ofConsole.unlockCerr();
     }
-    while(result_stack->card()>0 && result.good())
+    while(result_stack.card()>0 && result.good())
     {
         //get the top-one
-        elem=result_stack->pop();
+        elem=result_stack.pop();
         //if user gives e.g. a sequence-delimiter,don't try to change it!
         if (elem->isLeaf())
         {
@@ -432,7 +432,6 @@ OFCondition MdfDatasetManager::modifyAllTags(OFString tag_path,
         //if user gave "unchangeable" tag:
         else result=makeOFCondition(0,0,OF_error,"Unable to modify tag!");
     }
-    delete result_stack;
     return result;
 }
 
@@ -611,7 +610,11 @@ MdfDatasetManager::~MdfDatasetManager()
 /*
 ** CVS/RCS Log:
 ** $Log: mdfdsman.cc,v $
-** Revision 1.9  2004-01-16 10:53:53  joergr
+** Revision 1.10  2004-02-04 16:03:38  joergr
+** Removed pointer declaration from parameter "resultStack" in method
+** findAndGetElements().
+**
+** Revision 1.9  2004/01/16 10:53:53  joergr
 ** Adapted type casts to new-style typecast operators defined in ofcast.h.
 **
 ** Revision 1.8  2003/12/17 17:07:22  onken
