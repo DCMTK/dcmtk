@@ -21,10 +21,10 @@
  *
  *  Purpose: DicomMonochromeInputPixelTemplate (Header)
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-04-28 14:50:35 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 1999-04-29 16:46:45 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/dimoipxt.h,v $
- *  CVS/RCS Revision: $Revision: 1.9 $
+ *  CVS/RCS Revision: $Revision: 1.10 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -123,7 +123,7 @@ class DiMonoInputPixelTemplate
                 {
                     if (DicomImageClass::DebugLevel & DicomImageClass::DL_Informationals)
                         cerr << "INFO: using modality routine 'modlut()'" << endl;
-                    register T2 value;
+                    register T2 value = 0;
                     const T2 firstentry = mlut->getFirstEntry(value);                     // choose signed/unsigned method
                     const T2 lastentry = mlut->getLastEntry(value);
                     const T3 firstvalue = (T3)mlut->getFirstValue();
@@ -243,7 +243,10 @@ class DiMonoInputPixelTemplate
  *
  * CVS/RCS Log:
  * $Log: dimoipxt.h,v $
- * Revision 1.9  1999-04-28 14:50:35  joergr
+ * Revision 1.10  1999-04-29 16:46:45  meichel
+ * Minor code purifications to keep DEC cxx 6 quiet.
+ *
+ * Revision 1.9  1999/04/28 14:50:35  joergr
  * Introduced new scheme for the debug level variable: now each level can be
  * set separately (there is no "include" relationship).
  *

@@ -21,10 +21,10 @@
  *
  *  Purpose: DicomMonoOutputPixelTemplate (Header)
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-04-29 09:38:34 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 1999-04-29 16:46:46 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/dimoopxt.h,v $
- *  CVS/RCS Revision: $Revision: 1.16 $
+ *  CVS/RCS Revision: $Revision: 1.17 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -308,7 +308,7 @@ class DiMonoOutputPixelTemplate
                     }
                     OFBitmanipTemplate<T3>::setMem(Data, value, Count);                 // set output pixels to LUT value
                 } else {
-                    register T2 value;
+                    register T2 value = 0;
                     const T2 absmin = (T2)inter->getAbsMinimum();
                     const T2 firstentry = vlut->getFirstEntry(value);                   // choose signed/unsigned method
                     const T2 lastentry = vlut->getLastEntry(value);
@@ -976,7 +976,10 @@ class DiMonoOutputPixelTemplate
  *
  * CVS/RCS Log:
  * $Log: dimoopxt.h,v $
- * Revision 1.16  1999-04-29 09:38:34  joergr
+ * Revision 1.17  1999-04-29 16:46:46  meichel
+ * Minor code purifications to keep DEC cxx 6 quiet.
+ *
+ * Revision 1.16  1999/04/29 09:38:34  joergr
  * Changed position of "#ifdef" to avoid compiler warnings.
  *
  * Revision 1.15  1999/04/29 09:20:01  joergr

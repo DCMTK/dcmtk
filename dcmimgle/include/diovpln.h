@@ -21,10 +21,10 @@
  *
  *  Purpose: DicomOverlayPlane (Header) - Multiframe Overlays UNTESTED !
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-03-24 17:20:21 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 1999-04-29 16:46:47 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/diovpln.h,v $
- *  CVS/RCS Revision: $Revision: 1.9 $
+ *  CVS/RCS Revision: $Revision: 1.10 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -214,7 +214,7 @@ class DiOverlayPlane
         return NULL;
     }
 
-    const Uint16 getGroupNumber() const
+    Uint16 getGroupNumber() const
     {
         return GroupNumber;
     }
@@ -336,7 +336,10 @@ inline void DiOverlayPlane::setStart(const Uint16 x,
  *
  * CVS/RCS Log:
  * $Log: diovpln.h,v $
- * Revision 1.9  1999-03-24 17:20:21  joergr
+ * Revision 1.10  1999-04-29 16:46:47  meichel
+ * Minor code purifications to keep DEC cxx 6 quiet.
+ *
+ * Revision 1.9  1999/03/24 17:20:21  joergr
  * Added/Modified comments and formatting.
  *
  * Revision 1.8  1999/03/22 08:52:18  joergr

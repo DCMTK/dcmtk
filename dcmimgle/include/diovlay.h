@@ -21,10 +21,10 @@
  *
  *  Purpose: DicomOverlay (Header)
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-03-24 17:20:19 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 1999-04-29 16:46:46 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/diovlay.h,v $
- *  CVS/RCS Revision: $Revision: 1.11 $
+ *  CVS/RCS Revision: $Revision: 1.12 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -213,7 +213,7 @@ class DiOverlay
     int convertToPlaneNumber(unsigned int &plane,
                              const int mode) const;
     
-    const unsigned int convertToGroupNumber(const unsigned int plane) const
+    unsigned int convertToGroupNumber(const unsigned int plane) const
     {
         return FirstOverlayGroup + 2 * plane;
     }
@@ -250,7 +250,10 @@ class DiOverlay
  *
  * CVS/RCS Log:
  * $Log: diovlay.h,v $
- * Revision 1.11  1999-03-24 17:20:19  joergr
+ * Revision 1.12  1999-04-29 16:46:46  meichel
+ * Minor code purifications to keep DEC cxx 6 quiet.
+ *
+ * Revision 1.11  1999/03/24 17:20:19  joergr
  * Added/Modified comments and formatting.
  *
  * Revision 1.10  1999/03/22 08:52:17  joergr
