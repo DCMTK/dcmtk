@@ -22,9 +22,9 @@
  *  Purpose: DicomColorImage (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-09-19 08:33:45 $
+ *  Update Date:      $Date: 2002-11-26 14:51:13 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/libsrc/dicoimg.cc,v $
- *  CVS/RCS Revision: $Revision: 1.26 $
+ *  CVS/RCS Revision: $Revision: 1.27 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -502,6 +502,7 @@ void DiColorImage::updateImagePixelModuleAttributes(DcmItem &dataset)
 {
     DiImage::updateImagePixelModuleAttributes(dataset);
     /* remove color palette LUTs (if any) */
+    delete dataset.remove(DCM_PaletteColorLookupTableUID);
     delete dataset.remove(DCM_RedPaletteColorLookupTableDescriptor);
     delete dataset.remove(DCM_GreenPaletteColorLookupTableDescriptor);
     delete dataset.remove(DCM_BluePaletteColorLookupTableDescriptor);
@@ -693,7 +694,11 @@ int DiColorImage::writeBMP(FILE *stream,
  *
  * CVS/RCS Log:
  * $Log: dicoimg.cc,v $
- * Revision 1.26  2002-09-19 08:33:45  joergr
+ * Revision 1.27  2002-11-26 14:51:13  joergr
+ * Added PaletteColorLookupTableUID to the list of attributes to be removed
+ * from a newly created dataset.
+ *
+ * Revision 1.26  2002/09/19 08:33:45  joergr
  * Added explicit type casts to keep Sun CC 2.0.1 quiet.
  *
  * Revision 1.25  2002/09/12 14:11:52  joergr
