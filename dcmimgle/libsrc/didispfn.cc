@@ -22,9 +22,9 @@
  *  Purpose: DicomDisplayFunction (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-02-11 10:02:31 $
+ *  Update Date:      $Date: 2003-02-11 16:32:15 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/libsrc/didispfn.cc,v $
- *  CVS/RCS Revision: $Revision: 1.36 $
+ *  CVS/RCS Revision: $Revision: 1.37 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -213,6 +213,39 @@ DiDisplayFunction::~DiDisplayFunction()
 
 
 /********************************************************************/
+
+
+double DiDisplayFunction::getValueforDDL(const Uint16 ddl) const
+{
+    if ((LODValue != NULL) && (ddl < ValueCount))
+        return LODValue[ddl];
+    return -1;
+}
+
+
+Uint16 DiDisplayFunction::getDDLforValue(const double value) const
+{
+    if ((LODValue != NULL) && (ValueCount > 0))
+    {
+        register unsigned long j = 0;
+        /* search for closest index, assuming monotony */
+        if ((DeviceType == EDT_Printer) || (DeviceType == EDT_Scanner))
+        {
+            /* hardcopy device: descending values */
+            while ((j + 1 < ValueCount) && (LODValue[j] > value))  
+                j++;
+        } else {
+            /* softcopy device: ascending values */
+            while ((j + 1 < ValueCount) && (LODValue[j] < value))  
+                j++;
+        }
+        /* check which value is closer, the upper or the lower */
+        if ((j > 0) && (fabs(LODValue[j - 1] - value) < fabs(LODValue[j] - value)))
+            j--;
+        return (Uint16)j;
+    }
+    return 0;
+}
 
 
 const DiDisplayLUT *DiDisplayFunction::getLookupTable(const int bits,
@@ -696,7 +729,11 @@ double DiDisplayFunction::convertODtoLum(const double value,
  *
  * CVS/RCS Log:
  * $Log: didispfn.cc,v $
- * Revision 1.36  2003-02-11 10:02:31  joergr
+ * Revision 1.37  2003-02-11 16:32:15  joergr
+ * Added two new functions to determine the luminance/OD value of a particular
+ * DDL according to the device's characteristic curve and vice versa.
+ *
+ * Revision 1.36  2003/02/11 10:02:31  joergr
  * Added support for Dmin/max to calibration routines (required for printers).
  *
  * Revision 1.35  2002/11/27 14:08:11  meichel

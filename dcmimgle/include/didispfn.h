@@ -22,9 +22,9 @@
  *  Purpose: DicomDisplayFunction (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-02-11 10:01:14 $
+ *  Update Date:      $Date: 2003-02-11 16:32:02 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/didispfn.h,v $
- *  CVS/RCS Revision: $Revision: 1.18 $
+ *  CVS/RCS Revision: $Revision: 1.19 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -76,7 +76,7 @@ class DiDisplayFunction
     };
 
     /** constructor, read device characteristics file.
-     *  Keywords: "max" for maximum DDL (Device Driving Level, required at first position)
+     *  Keywords: "max" for maximum DDL (device driving level, required at first position)
      *            "amb" for ambient light and "lum" for illumination (both optional)
      *            "ord" for the order of the polynomial curve fitting algorithm used to interpolate
      *                  the given base points (0 or absent = use cubic spline interpolation)
@@ -164,7 +164,8 @@ class DiDisplayFunction
         return DeviceType;
     }
 
-    /** get maximum DDL value
+    /** get maximum DDL value.
+     *  The minimum DDL value is always 0.
      *
      ** @return maximum DDL value
      */
@@ -172,6 +173,29 @@ class DiDisplayFunction
     {
         return MaxDDLValue;
     }
+
+    /** get the luminance/OD value for a given DDL.
+     *  Looks up a luminance/OD value in the device's characteristic curve.
+     *  Please note that neither ambient light/illumination nor min/max
+     *  densitity are used.
+     *  
+     ** @param  ddl  DDL (device driving level) to be looked up
+     *
+     ** @return luminance/OD value if successful, -1 otherwise
+     */
+    double getValueforDDL(const Uint16 ddl) const;   
+
+    /** get the DDL for a given luminance/OD value.
+     *  Determines the DDL from the device's characteristic curve which is
+     *  mapped to the closest possible luminance/OD value.
+     *  Please note that neither ambient light/illumination nor min/max
+     *  densitity are used.
+     *  
+     ** @param  value  luminance/OD value to be looked up
+     *
+     ** @return DDL (device driving level) if successful, 0 otherwise
+     */
+    Uint16 getDDLforValue(const double value) const;   
 
     /** create look-up table with specified number of entries
      *
@@ -428,7 +452,11 @@ class DiDisplayFunction
  *
  * CVS/RCS Log:
  * $Log: didispfn.h,v $
- * Revision 1.18  2003-02-11 10:01:14  joergr
+ * Revision 1.19  2003-02-11 16:32:02  joergr
+ * Added two new functions to determine the luminance/OD value of a particular
+ * DDL according to the device's characteristic curve and vice versa.
+ *
+ * Revision 1.18  2003/02/11 10:01:14  joergr
  * Added support for Dmin/max to calibration routines (required for printers).
  *
  * Revision 1.17  2002/07/19 08:24:21  joergr
