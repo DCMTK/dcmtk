@@ -23,8 +23,8 @@
  *    classes: DSRTemporalCoordinatesValue
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-11-09 16:19:03 $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  Update Date:      $Date: 2002-07-22 14:22:10 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -107,7 +107,6 @@ OFCondition DSRTemporalCoordinatesValue::print(ostream &stream,
     /* TemporalRangeType */
     stream << "(" << DSRTypes::temporalRangeTypeToEnumeratedValue(TemporalRangeType);
     /* print data */
-    OFString string;
     stream << ",";
     /* print only one list */
     if (!SamplePositionList.isEmpty())
@@ -143,7 +142,7 @@ OFCondition DSRTemporalCoordinatesValue::writeXML(ostream &stream,
             stream << "DATETIME\">";
             DatetimeList.print(stream);
         }
-        stream << "</data>" << endl;        
+        stream << "</data>" << endl;
     }
     return EC_Normal;
 }
@@ -311,7 +310,10 @@ OFBool DSRTemporalCoordinatesValue::checkData(const DSRTypes::E_TemporalRangeTyp
 /*
  *  CVS/RCS Log:
  *  $Log: dsrtcovl.cc,v $
- *  Revision 1.6  2001-11-09 16:19:03  joergr
+ *  Revision 1.7  2002-07-22 14:22:10  joergr
+ *  Removed unused variable.
+ *
+ *  Revision 1.6  2001/11/09 16:19:03  joergr
  *  Adjusted formatting in XML output.
  *
  *  Revision 1.5  2001/10/10 15:30:04  joergr
