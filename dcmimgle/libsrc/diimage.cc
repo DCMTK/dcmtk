@@ -21,10 +21,10 @@
  *
  *  Purpose: DicomImage (Source)
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-06-01 15:49:55 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2001-09-28 13:14:22 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/libsrc/diimage.cc,v $
- *  CVS/RCS Revision: $Revision: 1.13 $
+ *  CVS/RCS Revision: $Revision: 1.14 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -89,10 +89,6 @@ DiImage::DiImage(const DiDocument *docu,
         }
         else
             NumberOfFrames = 1;
-        FirstFrame = (docu->getFrameStart() < NumberOfFrames) ? docu->getFrameStart() : NumberOfFrames - 1;
-        NumberOfFrames -= FirstFrame;
-        if ((docu->getFrameCount() > 0) && (NumberOfFrames > docu->getFrameCount()))
-            NumberOfFrames = docu->getFrameCount();
         Uint16 us = 0;
         if (Document->getValue(DCM_RepresentativeFrameNumber, us))
         {
@@ -100,7 +96,7 @@ DiImage::DiImage(const DiDocument *docu,
             {
                 if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Warnings))
                 {
-                    ofConsole.lockCerr() << "WARNING: invalid value for 'RepresentativeFrameNumber' (" << sl << ")" << endl
+                    ofConsole.lockCerr() << "WARNING: invalid value for 'RepresentativeFrameNumber' (" << us << ")" << endl
                                          << "         ... assuming first frame !" << endl;
                     ofConsole.unlockCerr();
                 }
@@ -110,7 +106,7 @@ DiImage::DiImage(const DiDocument *docu,
             {
                 if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Warnings))
                 {
-                    ofConsole.lockCerr() << "WARNING: invalid value for 'RepresentativeFrameNumber' (" << sl << ")" << endl
+                    ofConsole.lockCerr() << "WARNING: invalid value for 'RepresentativeFrameNumber' (" << us << ")" << endl
                                          << "         ... assuming last frame !" << endl;
                     ofConsole.unlockCerr();
                 }
@@ -119,6 +115,13 @@ DiImage::DiImage(const DiDocument *docu,
             else
                 RepresentativeFrame = us - 1;
         }              
+        FirstFrame = (docu->getFrameStart() < NumberOfFrames) ? docu->getFrameStart() : NumberOfFrames - 1;
+        /* restrict to actually processed/loaded number of frames */
+        NumberOfFrames -= FirstFrame;
+        if ((docu->getFrameCount() > 0) && (NumberOfFrames > docu->getFrameCount()))
+            NumberOfFrames = docu->getFrameCount();
+        /* start from first processed frame (might still exceed number of loaded frames) */
+        RepresentativeFrame -= FirstFrame;
         int ok = (Document->getValue(DCM_Rows, Rows) > 0);
         ok &= (Document->getValue(DCM_Columns, Columns) > 0);
         if (!ok || ((Rows > 0) && (Columns > 0)))
@@ -582,7 +585,11 @@ int DiImage::setRowColumnRatio(const double ratio)
  *
  * CVS/RCS Log:
  * $Log: diimage.cc,v $
- * Revision 1.13  2001-06-01 15:49:55  meichel
+ * Revision 1.14  2001-09-28 13:14:22  joergr
+ * Corrected wrong warning message regarding the optional RepresentativeFrame
+ * Number.
+ *
+ * Revision 1.13  2001/06/01 15:49:55  meichel
  * Updated copyright header
  *
  * Revision 1.12  2000/05/25 10:35:02  joergr
