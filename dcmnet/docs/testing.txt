@@ -27,7 +27,7 @@ application.
 e.g.
 	host1> storescp -v 5678
 
-will start storescp in verbose mode listening on port 3456 for
+will start storescp in verbose mode listening on port 5678 for
 incoming associations.  storescp will never exit, it will continue
 to wait for new associations until terminated.  See storescp.txt for 
 more information on the storescp application.

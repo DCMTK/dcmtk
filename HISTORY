@@ -19,10 +19,12 @@ and used as part of DICOM demonstrations at EuroPACS'94 in Geneva,
 ECR'95 in Vienna and CAR'95 in Berlin where even more vendors of 
 imaging equipment were able to demonstrate interoperability.
 
-During 1996 the software has been partly rewritten to use a new C++
-based DICOM encoding/decoding library.  It has also been supplemented
-with a Modality Worklist CTN to be demonstrated for the first time
-at CAR'96 in Paris.
+During 1996 the software has been rewritten to use a new C++
+based DICOM encoding/decoding library (dcmdata).  Software configuration 
+is now done using the GNU Configure system.  
 
-This software package has been renamed DCMTK (DICOM ToolKit).
+It has also been supplemented with a Modality Worklist CTN, demonstrated 
+for the first time at CAR'96 in Paris, France.
+
+This software package has been renamed DCMTK (DiCoM ToolKit).
 
