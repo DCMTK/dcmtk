@@ -423,7 +423,7 @@ http://www.cmake.org/.  For configuring the support of external libraries in
 DCMTK on Windows platforms, the toolkit contains corresponding "CMakeLists.txt"
 files in all necessary directories.  In detail, these "CMakeLists.txt" files
 will serve as an input to CMake which will generate new ".dsp" and ".dsw" files
-(or .sln for Visual C++ .NET) for all of DCMTK's projects from these files,
+(or ".sln" for Visual C++ .NET) for all of DCMTK's projects from these files,
 depending on a configuration which can be adjusted manually by the user.
 
 In order to be able to use CMake for configuration purposes in DCMTK, perform
@@ -447,7 +447,7 @@ the following steps:
 3. In the entry field "Where to build the binaries:" enter the directory in
    which DCMTK is installed, e.g. "C:\dcmtk-3.5.3".
 4. In the combobox "Build for:" select the corresponding development
-   environment which shall be used to compile dcmtk.
+   environment which shall be used to compile DCMTK.
 5. Go "Configure".  (CMake will look for a corresponding compiler and read in
    all of DCMTK's "CMakeLists.txt" files.  The variables in the "Cache Values"
    area will be displayed in red. These variables can now be set in order to
@@ -527,7 +527,7 @@ the following steps:
    turned on or off).
 
 Having performed these steps, the Microsoft Developer Studio (IDE) can be
-started, dcmtk's workspace file can be opened, and one or more of DCMTK's
+started, DCMTK's workspace file can be opened, and one or more of DCMTK's
 subprojects can be built.  In case you want to build all libraries and
 applications, mark the "ALL_BUILD" subproject and build it.
 
