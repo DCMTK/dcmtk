@@ -21,10 +21,10 @@
  *
  *  Purpose: Provides main interface to the "DICOM image toolkit"
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-08-21 09:51:43 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2002-10-21 10:09:58 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/dcmimage.h,v $
- *  CVS/RCS Revision: $Revision: 1.44 $
+ *  CVS/RCS Revision: $Revision: 1.45 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -334,7 +334,8 @@ class DicomImage
      *  Supported output color models: Monochrome 2, RGB (and YCbCr_Full if flag
      *  CIF_KeepYCbCrColorModel set).
      *
-     ** @param  bits    number of bits per sample (image depth, 1..MAX_BITS)
+     ** @param  bits    number of bits per sample used to render the pixel data
+     *                  (image depth, 1..MAX_BITS, 0 means 'bits stored' in the image)
      *                  (MI_PastelColor = -1 for true color pastel mode, EXPERIMENTAL)
      *  @param  frame   number of frame to be rendered (0..n-1)
      *  @param  planar  0 = color-by-pixel (R1G1B1...R2G2B2...R3G2B2...)
@@ -360,7 +361,8 @@ class DicomImage
      *
      ** @param  buffer  pointer to memory buffer (must already be allocated)
      *  @param  size    size of memory buffer (will be checked whether it is sufficient)
-     *  @param  bits    number of bits per sample (image depth, 1..MAX_BITS)
+     *  @param  bits    number of bits per sample used to render the pixel data
+     *                  (image depth, 1..MAX_BITS, 0 means 'bits stored' in the image)
      *                  (MI_PastelColor = -1 for true color pastel mode, EXPERIMENTAL)
      *  @param  frame   number of frame to be rendered (0..n-1)
      *  @param  planar  0 = color-by-pixel (R1G1B1...R2G2B2...R3G2B2...)
@@ -1766,7 +1768,10 @@ class DicomImage
  *
  * CVS/RCS Log:
  * $Log: dcmimage.h,v $
- * Revision 1.44  2002-08-21 09:51:43  meichel
+ * Revision 1.45  2002-10-21 10:09:58  joergr
+ * Slightly enhanced comments for getOutputData().
+ *
+ * Revision 1.44  2002/08/21 09:51:43  meichel
  * Removed DicomImage and DiDocument constructors that take a DcmStream
  *   parameter
  *
