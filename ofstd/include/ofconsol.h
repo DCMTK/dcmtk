@@ -52,9 +52,9 @@
  *  in multithread applications. Use ofConsole instead.
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-05-16 08:16:44 $
+ *  Update Date:      $Date: 2002-05-16 15:56:33 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/include/Attic/ofconsol.h,v $
- *  CVS/RCS Revision: $Revision: 1.11 $
+ *  CVS/RCS Revision: $Revision: 1.12 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -80,25 +80,17 @@ END_EXTERN_C
 #endif
 #endif
 
-/** provides thread-safe access to the standard console output and error streams.
- *  Allows multiple threads to concurrently create output
- *  even if that output is redirected to file or memory.
+/** Singleton class which provides thread-safe access to the standard console
+ *  output and error streams. Allows multiple threads to concurrently create 
+ *  output even if that output is redirected to file or memory.
  *  Protection is implemented if the module is compiled with -D_REENTRANT
  *  and is based on Mutexes.
+ *  Use of the singleton prior to start of main (i.e. from global constructors)
+ *  is allowed, but any use after the end of main is undefined.
  */
-
 class OFConsole
 {
 public:
-
-  /** default constructor. After construction, the cout methods refer to the
-   *  standard output stream and the cerr methods refer to the standard
-   *  error stream. If compiled with -DDCMTK_GUI, string streams named
-   *  COUT and CERR are used instead.
-   *  @param dummy used to "convince" linker of gcc 2.5.8 on NeXTSTEP to
-   *         allocate memory for the global variable 'ofConsole'
-   */
-  OFConsole(int dummy = 0);
 
   /** destructor.
    */
@@ -224,7 +216,20 @@ public:
    */
   OFBool isJoined();
 
+  /** returns the singleton instance of this class.
+   *  May be called before main() but not after end of main
+   */
+  static OFConsole& instance();
+
 private:
+
+  /** default constructor. After construction, the cout methods refer to the
+   *  standard output stream and the cerr methods refer to the standard
+   *  error stream. If compiled with -DDCMTK_GUI, string streams named
+   *  COUT and CERR are used instead.
+   */
+  OFConsole();
+
   /** private undefined copy constructor */
   OFConsole(const OFConsole &arg);
 
@@ -247,15 +252,16 @@ private:
   /** mutex protecting access to cerr */
   OFMutex cerrMutex;
 #endif
+
+  // dummy declaration to keep gcc quiet
+  friend class OFConsoleDummyFriend;
 };
 
 
-/**
- *  the global console object.
- *  Can safely be used by multiple threads concurrently.
+/** macro for accessing the glocal console object.
+ *  This used to be an external global variable in earlier DCMTK releases
  */
-extern OFConsole ofConsole;
-
+#define ofConsole (OFConsole::instance())
 
 /*
  * definitions for COUT, CERR, CLOG.
@@ -282,7 +288,11 @@ extern OFOStringStream CERR;
  *
  * CVS/RCS Log:
  * $Log: ofconsol.h,v $
- * Revision 1.11  2002-05-16 08:16:44  meichel
+ * Revision 1.12  2002-05-16 15:56:33  meichel
+ * Changed ofConsole into singleton implementation that can safely
+ *   be used prior to start of main, i.e. from global constructors
+ *
+ * Revision 1.11  2002/05/16 08:16:44  meichel
  * changed return type of OFConsole::setCout() and OFConsole::setCerr()
  *   to pointer instead of reference.
  *

@@ -22,9 +22,9 @@
  *  Purpose: Define alias for cout, cerr and clog
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-05-16 08:16:46 $
+ *  Update Date:      $Date: 2002-05-16 15:56:35 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/libsrc/ofconsol.cc,v $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -42,12 +42,7 @@
   OFOStringStream CERR;
 #endif
 
-/* global console object
-  (dummy parameter 0 to "convince" linker of gcc 2.5.8 on NeXTSTEP) */
-OFConsole ofConsole(0);
-
-
-OFConsole::OFConsole(int /*dummy*/)
+OFConsole::OFConsole()
 #ifdef DCMTK_GUI
 : currentCout(&COUT)
 , currentCerr(&CERR)
@@ -128,11 +123,38 @@ OFBool OFConsole::isJoined()
   if (result) return OFTrue; else return OFFalse;
 }
 
+OFConsole& OFConsole::instance()
+{
+  static OFConsole instance_;
+  return instance_;
+}
+
+
+class OFConsoleInitializer
+{
+public:
+  OFConsoleInitializer()
+  {
+  	OFConsole::instance();
+  }  
+};
+
+/* the constructor of this global object makes sure
+ * that ofConsole is initialized before main starts.
+ * Required to make ofConsole thread-safe.
+ */
+OFConsoleInitializer ofConsoleInitializer;
+
+
 /*
  *
  * CVS/RCS Log:
  * $Log: ofconsol.cc,v $
- * Revision 1.7  2002-05-16 08:16:46  meichel
+ * Revision 1.8  2002-05-16 15:56:35  meichel
+ * Changed ofConsole into singleton implementation that can safely
+ *   be used prior to start of main, i.e. from global constructors
+ *
+ * Revision 1.7  2002/05/16 08:16:46  meichel
  * changed return type of OFConsole::setCout() and OFConsole::setCerr()
  *   to pointer instead of reference.
  *
