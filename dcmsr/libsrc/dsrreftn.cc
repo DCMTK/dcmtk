@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DSRByReferenceTreeNode
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2003-06-04 14:26:54 $
- *  CVS/RCS Revision: $Revision: 1.8 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2003-08-07 13:42:22 $
+ *  CVS/RCS Revision: $Revision: 1.9 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -79,7 +79,7 @@ OFBool DSRByReferenceTreeNode::isValid() const
 
 
 OFCondition DSRByReferenceTreeNode::print(ostream &stream,
-                                          const size_t /* flags */) const
+                                          const size_t /*flags*/) const
 {
     stream << relationshipTypeToReadableName(getRelationshipType()) << " " << ReferencedContentItem;
     return EC_Normal;
@@ -91,7 +91,10 @@ OFCondition DSRByReferenceTreeNode::writeXML(ostream &stream,
                                              OFConsole *logStream) const
 {
     OFCondition result = EC_Normal;
-    stream << "<reference ref_id=\"" << ReferencedNodeID << "\">" << endl;
+    stream << "<reference";
+    if (flags & XF_relationshipTypeAsAttribute)
+        stream << " relType=\"" << relationshipTypeToDefinedTerm(getRelationshipType()) << "\"";
+    stream << " ref_id=\"" << ReferencedNodeID << "\">" << endl;
     result = DSRDocumentTreeNode::writeXML(stream, flags, logStream);
     stream << "</reference>" << endl;
     return result;
@@ -102,7 +105,7 @@ OFCondition DSRByReferenceTreeNode::readContentItem(DcmItem &dataset,
                                                     OFConsole *logStream)
 {
     DcmUnsignedLong delem(DCM_ReferencedContentItemIdentifier);
-    /* clear before reaidng */
+    /* clear before reading */
     ReferencedContentItem.clear();
     ReferencedNodeID = 0;
     /* read ReferencedContentItemIdentifier */
@@ -118,7 +121,7 @@ OFCondition DSRByReferenceTreeNode::readContentItem(DcmItem &dataset,
             if (i > 0)
                 ReferencedContentItem += '.';
             if (delem.getUint32(value, i).good())
-                ReferencedContentItem += DSRTypes::numberToString((size_t)value, buffer);
+                ReferencedContentItem += numberToString(OFstatic_cast(size_t, value), buffer);
         }
     }
     return result;
@@ -126,7 +129,7 @@ OFCondition DSRByReferenceTreeNode::readContentItem(DcmItem &dataset,
 
 
 OFCondition DSRByReferenceTreeNode::writeContentItem(DcmItem &dataset,
-                                                     OFConsole * /* logStream */) const
+                                                     OFConsole * /*logStream*/) const
 {
     OFCondition result = SR_EC_InvalidValue;
     /* only write references with valid format */
@@ -157,12 +160,32 @@ OFCondition DSRByReferenceTreeNode::writeContentItem(DcmItem &dataset,
 }
 
 
+OFCondition DSRByReferenceTreeNode::readXMLContentItem(const DSRXMLDocument &doc,
+                                                       DSRXMLCursor cursor)
+{
+    OFCondition result = SR_EC_CorruptedXMLStructure;
+    if (cursor.valid())
+    {
+        OFString refID;
+        /* get "ref_id" attribute */
+        if (!doc.getStringFromAttribute(cursor, refID, "ref_id").empty())
+        {
+            ReferencedNodeID = stringToNumber(refID.c_str());
+            /* this does not mean that the reference is really correct, this will be checked later */
+            result = EC_Normal;
+        } else
+            result = SR_EC_InvalidValue;
+    }
+    return result;
+}
+
+
 OFCondition DSRByReferenceTreeNode::renderHTMLContentItem(ostream &docStream,
-                                                          ostream & /* annexStream */,
-                                                          const size_t /* nestingLevel */,
-                                                          size_t & /* annexNumber */,
-                                                          const size_t /* flags */,
-                                                          OFConsole * /* logStream */) const
+                                                          ostream & /*annexStream*/,
+                                                          const size_t /*nestingLevel*/,
+                                                          size_t & /*annexNumber*/,
+                                                          const size_t /*flags*/,
+                                                          OFConsole * /*logStream*/) const
 {
     /* render reference string */
     docStream << "Content Item <a href=\"#content_item_" << ReferencedNodeID << "\">by-reference</a>" << endl;
@@ -170,24 +193,24 @@ OFCondition DSRByReferenceTreeNode::renderHTMLContentItem(ostream &docStream,
 }
 
 
-OFCondition DSRByReferenceTreeNode::setConceptName(const DSRCodedEntryValue & /* conceptName */)
+OFCondition DSRByReferenceTreeNode::setConceptName(const DSRCodedEntryValue & /*conceptName*/)
 {
     /* invalid: no concept name allowed */
     return EC_IllegalCall;
 }
 
 
-OFCondition DSRByReferenceTreeNode::setObservationDateTime(const OFString & /* observationDateTime */)
+OFCondition DSRByReferenceTreeNode::setObservationDateTime(const OFString & /*observationDateTime*/)
 {
     /* invalid: no observation date and time allowed */
     return EC_IllegalCall;
 }
 
 
-OFBool DSRByReferenceTreeNode::canAddNode(const E_DocumentType /* documentType */,
-                                          const E_RelationshipType /* relationshipType */,
-                                          const E_ValueType /* valueType */,
-                                          const OFBool /* byReference */) const
+OFBool DSRByReferenceTreeNode::canAddNode(const E_DocumentType /*documentType*/,
+                                          const E_RelationshipType /*relationshipType*/,
+                                          const E_ValueType /*valueType */,
+                                          const OFBool /*byReference*/) const
 {
     /* invalid: no child nodes allowed */
     return OFFalse;
@@ -197,7 +220,10 @@ OFBool DSRByReferenceTreeNode::canAddNode(const E_DocumentType /* documentType *
 /*
  *  CVS/RCS Log:
  *  $Log: dsrreftn.cc,v $
- *  Revision 1.8  2003-06-04 14:26:54  meichel
+ *  Revision 1.9  2003-08-07 13:42:22  joergr
+ *  Added readXML functionality.
+ *
+ *  Revision 1.8  2003/06/04 14:26:54  meichel
  *  Simplified include structure to avoid preprocessor limitation
  *    (max 32 #if levels) on MSVC5 with STL.
  *

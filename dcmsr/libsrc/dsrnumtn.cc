@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DSRNumTreeNode
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2003-06-04 14:26:54 $
- *  CVS/RCS Revision: $Revision: 1.13 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2003-08-07 13:39:00 $
+ *  CVS/RCS Revision: $Revision: 1.14 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -92,7 +92,7 @@ OFCondition DSRNumTreeNode::writeXML(ostream &stream,
 
 OFCondition DSRNumTreeNode::readContentItem(DcmItem &dataset,
                                             OFConsole *logStream)
-{    
+{
     return DSRNumericMeasurementValue::readSequence(dataset, logStream);
 }
 
@@ -104,9 +104,16 @@ OFCondition DSRNumTreeNode::writeContentItem(DcmItem &dataset,
 }
 
 
+OFCondition DSRNumTreeNode::readXMLContentItem(const DSRXMLDocument &doc,
+                                               DSRXMLCursor cursor)
+{
+    return DSRNumericMeasurementValue::readXML(doc, cursor);
+}
+
+
 OFCondition DSRNumTreeNode::renderHTMLContentItem(ostream &docStream,
                                                   ostream &annexStream,
-                                                  const size_t /* nestingLevel */,
+                                                  const size_t /*nestingLevel*/,
                                                   size_t &annexNumber,
                                                   const size_t flags,
                                                   OFConsole *logStream) const
@@ -136,7 +143,7 @@ OFBool DSRNumTreeNode::canAddNode(const E_DocumentType documentType,
             case RT_hasObsContext:
                 switch (valueType)
                 {
-                    case VT_Text:                
+                    case VT_Text:
                     case VT_Code:
                     case VT_Num:
                     case VT_DateTime:
@@ -190,7 +197,10 @@ OFBool DSRNumTreeNode::canAddNode(const E_DocumentType documentType,
 /*
  *  CVS/RCS Log:
  *  $Log: dsrnumtn.cc,v $
- *  Revision 1.13  2003-06-04 14:26:54  meichel
+ *  Revision 1.14  2003-08-07 13:39:00  joergr
+ *  Added readXML functionality.
+ *
+ *  Revision 1.13  2003/06/04 14:26:54  meichel
  *  Simplified include structure to avoid preprocessor limitation
  *    (max 32 #if levels) on MSVC5 with STL.
  *

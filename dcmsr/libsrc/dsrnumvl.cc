@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2002, OFFIS
+ *  Copyright (C) 2000-2003, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,8 +23,8 @@
  *    classes: DSRNumericMeasurementValue
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-12-10 13:20:37 $
- *  CVS/RCS Revision: $Revision: 1.14 $
+ *  Update Date:      $Date: 2003-08-07 13:40:01 $
+ *  CVS/RCS Revision: $Revision: 1.15 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -111,12 +111,12 @@ OFBool DSRNumericMeasurementValue::isValid() const
 
 OFBool DSRNumericMeasurementValue::isEmpty() const
 {
-    return (NumericValue.length() == 0) && MeasurementUnit.isEmpty();
+    return NumericValue.empty() && MeasurementUnit.isEmpty();
 }
 
 
 OFCondition DSRNumericMeasurementValue::print(ostream &stream,
-                                              const size_t /* flags */) const
+                                              const size_t /*flags*/) const
 {
     if (isEmpty())
     {
@@ -125,9 +125,32 @@ OFCondition DSRNumericMeasurementValue::print(ostream &stream,
     } else {
         OFString printString;
         stream << "\"" << DSRTypes::convertToPrintString(NumericValue, printString) << "\" ";
-        MeasurementUnit.print(stream, OFTrue /* printCodeValue */, OFTrue /* printInvalid */);
+        MeasurementUnit.print(stream, OFTrue /*printCodeValue*/, OFTrue /*printInvalid*/);
     }
     return EC_Normal;
+}
+
+
+OFCondition DSRNumericMeasurementValue::readXML(const DSRXMLDocument &doc,
+                                                DSRXMLCursor cursor)
+{
+    OFCondition result = SR_EC_CorruptedXMLStructure;
+    if (cursor.valid())
+    {
+        cursor.gotoChild();
+        /* get "value" element */
+        doc.getStringFromNodeContent(doc.getNamedNode(cursor, "value"), NumericValue);
+        /* get "unit" element */
+        result = MeasurementUnit.readXML(doc, doc.getNamedNode(cursor, "unit"));
+        if (result.good())
+        {
+            /* get "qualifier" element (optional, do not report if absent or erroneous) */
+            ValueQualifier.readXML(doc, doc.getNamedNode(cursor, "qualifier", OFFalse /*required*/));
+            if (!isValid())
+                result = SR_EC_InvalidValue;
+        }
+    }
+    return result;
 }
 
 
@@ -135,7 +158,7 @@ OFCondition DSRNumericMeasurementValue::writeXML(ostream &stream,
                                                  const size_t flags,
                                                  OFConsole *logStream) const
 {
-    DSRTypes::writeStringValueToXML(stream, NumericValue, "value", flags & DSRTypes::XF_writeEmptyTags);
+    DSRTypes::writeStringValueToXML(stream, NumericValue, "value", flags & DSRTypes::XF_writeEmptyTags > 0);
     /* write measurement unit */
     if (flags & DSRTypes::XF_codeComponentsAsAttribute)
         stream << "<unit";     // bracket ">" is closed in the next writeXML() routine
@@ -165,7 +188,7 @@ OFCondition DSRNumericMeasurementValue::readItem(DcmItem &dataset,
     if (result.good())
     {
         /* read MeasurementUnitsCodeSequence */
-        result = MeasurementUnit.readSequence(dataset, DCM_MeasurementUnitsCodeSequence, "1" /* type */, logStream);
+        result = MeasurementUnit.readSequence(dataset, DCM_MeasurementUnitsCodeSequence, "1" /*type*/, logStream);
     }
     return result;
 }
@@ -206,7 +229,7 @@ OFCondition DSRNumericMeasurementValue::readSequence(DcmItem &dataset,
     if (result.good())
     {
         /* read NumericValueQualifierCodeSequence (optional) */
-        ValueQualifier.readSequence(dataset, DCM_NumericValueQualifierCodeSequence, "3" /* type */, logStream);
+        ValueQualifier.readSequence(dataset, DCM_NumericValueQualifierCodeSequence, "3" /*type*/, logStream);
     }
     return result;
 }
@@ -239,7 +262,7 @@ OFCondition DSRNumericMeasurementValue::writeSequence(DcmItem &dataset,
         }
         /* write sequence (might be empty) */
         if (result.good())
-            result = dataset.insert(dseq, OFTrue /* replaceOld */);
+            result = dataset.insert(dseq, OFTrue /*replaceOld*/);
         if (result.bad())
             delete dseq;
     }
@@ -254,8 +277,8 @@ OFCondition DSRNumericMeasurementValue::writeSequence(DcmItem &dataset,
 
 
 OFCondition DSRNumericMeasurementValue::renderHTML(ostream &docStream,
-                                                   ostream & /* annexStream */,
-                                                   size_t & /* annexNumber */,
+                                                   ostream & /*annexStream*/,
+                                                   size_t & /*annexNumber*/,
                                                    const size_t flags,
                                                    OFConsole *logStream) const
 {
@@ -269,9 +292,9 @@ OFCondition DSRNumericMeasurementValue::renderHTML(ostream &docStream,
             ((flags & DSRTypes::HF_renderInlineCodes) || (flags & DSRTypes::HF_renderItemsSeparately));
         if (!fullCode)
             docStream << "<u>";
-        docStream << DSRTypes::convertToMarkupString(NumericValue, htmlString, flags & DSRTypes::HF_convertNonASCIICharacters) << " ";
+        docStream << DSRTypes::convertToMarkupString(NumericValue, htmlString, flags & DSRTypes::HF_convertNonASCIICharacters > 0) << " ";
         /* render full code of the measurement unit (value first?) or code value only */
-        MeasurementUnit.renderHTML(docStream, flags, logStream, fullCode, !(flags & DSRTypes::HF_useCodeMeaningAsUnit) /* valueFirst */);
+        MeasurementUnit.renderHTML(docStream, flags, logStream, fullCode, flags & DSRTypes::HF_useCodeMeaningAsUnit == 0 /*valueFirst*/);
         if (!fullCode)
             docStream << "</u>";
     }
@@ -279,7 +302,7 @@ OFCondition DSRNumericMeasurementValue::renderHTML(ostream &docStream,
     {
         /* render optional numeric value qualifier */
         docStream << " [";
-        ValueQualifier.renderHTML(docStream, flags, logStream, flags & DSRTypes::HF_renderInlineCodes /*fullCode*/);
+        ValueQualifier.renderHTML(docStream, flags, logStream, flags & DSRTypes::HF_renderInlineCodes > 0 /*fullCode*/);
         docStream << "]";
     }
     return EC_Normal;
@@ -377,7 +400,7 @@ OFCondition DSRNumericMeasurementValue::setNumericValueQualifier(const DSRCodedE
 
 OFBool DSRNumericMeasurementValue::checkNumericValue(const OFString &numericValue) const
 {
-    return (numericValue.length() > 0);
+    return !numericValue.empty();
 }
 
 
@@ -396,7 +419,10 @@ OFBool DSRNumericMeasurementValue::checkNumericValueQualifier(const DSRCodedEntr
 /*
  *  CVS/RCS Log:
  *  $Log: dsrnumvl.cc,v $
- *  Revision 1.14  2002-12-10 13:20:37  joergr
+ *  Revision 1.15  2003-08-07 13:40:01  joergr
+ *  Added readXML functionality.
+ *
+ *  Revision 1.14  2002/12/10 13:20:37  joergr
  *  Added support for the Numeric Value Qualifier Code Sequence (introduced with
  *  CP 260).
  *

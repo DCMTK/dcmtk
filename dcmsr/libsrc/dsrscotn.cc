@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DSRSCoordTreeNode
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2003-06-04 14:26:54 $
- *  CVS/RCS Revision: $Revision: 1.11 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2003-08-07 13:43:48 $
+ *  CVS/RCS Revision: $Revision: 1.12 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -87,7 +87,7 @@ OFCondition DSRSCoordTreeNode::writeXML(ostream &stream,
                                         OFConsole *logStream) const
 {
     OFCondition result = EC_Normal;
-    writeXMLItemStart(stream, flags, OFFalse /* closingBracket */);
+    writeXMLItemStart(stream, flags, OFFalse /*closingBracket*/);
     stream << " type=\"" << graphicTypeToEnumeratedValue(getGraphicType()) << "\"";
     stream << ">" << endl;
     result = DSRDocumentTreeNode::writeXML(stream, flags, logStream);
@@ -113,9 +113,29 @@ OFCondition DSRSCoordTreeNode::writeContentItem(DcmItem &dataset,
 }
 
 
+OFCondition DSRSCoordTreeNode::readXMLContentItem(const DSRXMLDocument &doc,
+                                                  DSRXMLCursor cursor)
+{
+    OFCondition result = SR_EC_CorruptedXMLStructure;
+    if (cursor.valid())
+    {
+        OFString tmpString;
+        /* read 'type' and check validity */
+        result = setGraphicType(enumeratedValueToGraphicType(doc.getStringFromAttribute(cursor, tmpString, "type")));
+        if (result.good())
+        {
+            /* proceed reading the spatial coordinates */
+            result = DSRSpatialCoordinatesValue::readXML(doc, cursor);
+        } else
+            printUnknownValueWarningMessage(doc.getLogStream(), "SCOORD type", tmpString.c_str());
+    }
+    return result;
+}
+
+
 OFCondition DSRSCoordTreeNode::renderHTMLContentItem(ostream &docStream,
                                                      ostream &annexStream,
-                                                      const size_t /* nestingLevel */,
+                                                      const size_t /*nestingLevel*/,
                                                       size_t &annexNumber,
                                                       const size_t flags,
                                                       OFConsole *logStream) const
@@ -160,7 +180,10 @@ OFBool DSRSCoordTreeNode::canAddNode(const E_DocumentType documentType,
 /*
  *  CVS/RCS Log:
  *  $Log: dsrscotn.cc,v $
- *  Revision 1.11  2003-06-04 14:26:54  meichel
+ *  Revision 1.12  2003-08-07 13:43:48  joergr
+ *  Added readXML functionality.
+ *
+ *  Revision 1.11  2003/06/04 14:26:54  meichel
  *  Simplified include structure to avoid preprocessor limitation
  *    (max 32 #if levels) on MSVC5 with STL.
  *
