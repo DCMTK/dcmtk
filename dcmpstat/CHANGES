@@ -28,6 +28,9 @@
 - Performed some modifications in the implementation of enable/disablePState()
   to avoid dmalloc warnings (not yet finished).
   Affects: dcmpstat/libsrc/dviface.cc
+  
+- Rebuild Makefile dependencies.
+  Affects: dcmpstat/apps/Makefile.dep
 
 **** Changes from 1999.02.24 (riesmeier)
 
