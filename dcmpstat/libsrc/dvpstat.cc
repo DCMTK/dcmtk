@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DVPresentationState
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-07-30 13:35:01 $
- *  CVS/RCS Revision: $Revision: 1.26 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 1999-08-25 16:51:17 $
+ *  CVS/RCS Revision: $Revision: 1.27 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -204,6 +204,16 @@ DVPresentationState::DVPresentationState(DiDisplayFunction *dispFunction)
 , useBartenTransform(OFTrue)
 , imageInverse(OFFalse)
 , displayFunction(dispFunction)
+
+// -+-+- <NEW> -+-+-
+
+, minimumPrintBitmapWidth(0)
+, minimumPrintBitmapHeight(0)
+, maximumPrintBitmapWidth(0)
+, maximumPrintBitmapHeight(0)
+
+// -+-+- <WEN> -+-+-
+
 {
 }
 
@@ -1445,6 +1455,233 @@ E_Condition DVPresentationState::write(DcmItem &dset)
 
   return result;
 }
+
+
+// -+-+- <NEW> -+-+-
+
+unsigned long DVPresentationState::getPrintBitmapSize()
+{
+  unsigned long result = 0;
+  unsigned long width;
+  unsigned long height;
+  if (getPrintBitmapWidthHeight(width, height) == EC_Normal)
+    result = width * height * 2;       // print bitmap: 12 bit stored, 16 bit allocated (2 bytes per pixel)
+  return result;
+}
+
+
+E_Condition DVPresentationState::setMinimumPrintBitmapWidthHeight(unsigned long width,
+                                                                  unsigned long height)
+{
+  E_Condition result = EC_IllegalCall;
+  const unsigned long max = (width > height) ? width : height;
+  if (((maximumPrintBitmapWidth == 0) || (maximumPrintBitmapWidth >= 2 * max)) &&
+      ((maximumPrintBitmapHeight == 0) || (maximumPrintBitmapHeight >= 2 * max)))
+  {
+    minimumPrintBitmapWidth = width;
+    minimumPrintBitmapHeight = height;
+    result = EC_Normal;
+  }
+  return result;
+}
+
+
+E_Condition DVPresentationState::setMaximumPrintBitmapWidthHeight(unsigned long width,
+                                                                  unsigned long height)
+{
+  E_Condition result = EC_IllegalCall;
+  const unsigned long min = (width < height) ? width : height;
+  if (((minimumPrintBitmapWidth == 0) || (min >= 2 * minimumPrintBitmapWidth)) &&
+      ((minimumPrintBitmapHeight == 0) || (min >= 2 * minimumPrintBitmapHeight)))
+  {
+    maximumPrintBitmapWidth = width;
+    maximumPrintBitmapHeight = height;
+    result = EC_Normal;
+  }
+  return result;
+}
+
+
+E_Condition DVPresentationState::getPrintBitmapWidthHeight(unsigned long &width,
+                                                           unsigned long &height)
+{
+  E_Condition result = EC_Normal;
+  if (currentImage)
+  {
+    renderPixelData(OFFalse);                                 // switch off display function
+    width = currentImageWidth;
+    height = currentImageHeight;
+    if ((width > 0) && (height > 0))
+    {
+      DVPSDisplayedArea *area = getDisplayedAreaSelection();
+      if (area != NULL)
+      {                                  // use displayed area
+        Sint32 tlhcX;
+        Sint32 tlhcY;
+        Sint32 brhcX;
+        Sint32 brhcY;
+        area->getDisplayedArea(tlhcX, tlhcY, brhcX, brhcY);
+        switch (area->getPresentationSizeMode())
+        {
+          case DVPSD_scaleToFit:
+            width = (unsigned long)(brhcX - tlhcX + 1);       // abs() needed?, depends on rotation?
+            height = (unsigned long)(brhcY - tlhcY + 1);
+            break;
+          case DVPSD_trueSize:
+            /* ... */
+            break;
+          case DVPSD_magnify:
+            /* ... */
+            break;
+        }
+      }
+  
+        // use pixel aspect ratio(s) ?
+  
+      if ((minimumPrintBitmapWidth > 0) && (width < minimumPrintBitmapWidth))
+      {
+        if ((minimumPrintBitmapHeight > 0) && (height < minimumPrintBitmapHeight))
+        {
+          const unsigned long xfactor = (unsigned long)((double)(minimumPrintBitmapWidth - 1) / (double)width) + 1;
+          const unsigned long yfactor = (unsigned long)((double)(minimumPrintBitmapHeight - 1) / (double)height) + 1;
+          if (xfactor > yfactor)
+          {
+            width *= xfactor;
+            height *= xfactor;
+          } else {
+            width *= yfactor;
+            height *= yfactor;
+          }
+        } else {
+          const unsigned long factor = (unsigned long)((double)(minimumPrintBitmapWidth - 1) / (double)width) + 1;
+          width *= factor;
+          height *= factor;
+        }
+      }
+      else if ((minimumPrintBitmapHeight > 0) && (height < minimumPrintBitmapHeight))
+      {
+        const unsigned long factor = (unsigned long)((double)(minimumPrintBitmapHeight - 1) / (double)height) + 1;
+        width *= factor;
+        height *= factor;
+      }
+      
+      if ((maximumPrintBitmapWidth > 0) && (width > maximumPrintBitmapWidth))
+      {
+        if ((maximumPrintBitmapHeight > 0) && (height > maximumPrintBitmapHeight))
+        {
+          const unsigned long xdivisor = (unsigned long)((double)(width - 1) / (double)maximumPrintBitmapWidth) + 1;
+          const unsigned long ydivisor = (unsigned long)((double)(height - 1) / (double)maximumPrintBitmapHeight) + 1;
+          if (xdivisor > ydivisor)
+          {
+            width /= xdivisor;
+            height /= xdivisor;
+          } else {
+            width /= ydivisor;
+            height /= ydivisor;
+          }
+        } else {
+          const unsigned long divisor = (unsigned long)((double)(width - 1) / (double)maximumPrintBitmapWidth) + 1;
+          width /= divisor;
+          height /= divisor;
+        }
+      }
+      else if ((maximumPrintBitmapHeight > 0) && (height > maximumPrintBitmapHeight))
+      {
+        const unsigned long divisor = (unsigned long)((double)(height - 1) / (double)maximumPrintBitmapHeight) + 1;
+        width /= divisor;
+        height /= divisor;
+      }
+    }    
+  } else {
+    width = 0;
+    height = 0;
+    result = EC_IllegalCall;
+  }
+  return result;
+}
+
+
+E_Condition DVPresentationState::getPrintBitmapWidth(unsigned long &width)
+{
+  unsigned long dummy;
+  return getPrintBitmapWidthHeight(width, dummy);
+}
+
+
+E_Condition DVPresentationState::getPrintBitmapHeight(unsigned long &height)
+{
+  unsigned long dummy;
+  return getPrintBitmapWidthHeight(dummy, height);
+}
+
+
+E_Condition DVPresentationState::getPrintBitmap(void *bitmap,
+                                                unsigned long size)
+{
+  E_Condition result = EC_IllegalCall;
+  if ((bitmap != NULL) && (size == getPrintBitmapSize()))       // check given buffer
+  {
+    if (currentImage)
+    {
+      renderPixelData(OFFalse);                                 // don't use current display function
+      unsigned long width;
+      unsigned long height;
+      if ((getPrintBitmapWidthHeight(width, height) == EC_Normal) &&
+        ((width != currentImageWidth) || (height != currentImageHeight)))
+      {
+
+        // use displayed area -> clipping !!
+
+        unsigned long c_left = 0;                               // clipping area
+        unsigned long c_top = 0;
+        unsigned long c_width = currentImageWidth;
+        unsigned long c_height = currentImageHeight;
+        DVPSDisplayedArea *area = getDisplayedAreaSelection();
+        if (area != NULL)
+        {                                                       // use displayed area
+          Sint32 tlhcX;
+          Sint32 tlhcY;
+          Sint32 brhcX;
+          Sint32 brhcY;
+          area->getDisplayedArea(tlhcX, tlhcY, brhcX, brhcY);
+          switch (area->getPresentationSizeMode())
+          {
+            case DVPSD_scaleToFit:
+              c_left = tlhcX - 1;                               // negative values?
+              c_top = tlhcX - 1;
+              c_width = (unsigned long)(brhcX - tlhcX + 1);     // abs() needed ?
+              c_height = (unsigned long)(brhcY - tlhcY + 1);
+              break;
+            case DVPSD_trueSize:
+              /* ... */
+              break;
+            case DVPSD_magnify:
+              /* ... */
+              break;
+          }
+        }
+        
+        // use pixel aspect ratio(s) ?
+
+cout << c_left << "/" << c_top << "/" << c_width << "/" << c_height << endl;
+        DicomImage *image = currentImage->createScaledImage(c_left, c_top, c_width, c_height, width, height, 2 /*interpolate*/, 0 /*aspect ratio*/);
+        if (image != NULL)
+        {
+          if (image->getOutputData(bitmap, size, 12, 0 /*frame*/))
+            result = EC_Normal;
+        }
+        delete image;
+      } else {
+        if (currentImage->getOutputData(bitmap, size, 12, 0 /*frame*/))
+          result = EC_Normal;
+      }
+    }
+  }    
+  return result;
+}
+
+// -+-+- <WEN> -+-+-
+
 
 
 E_Condition DVPresentationState::attachImage(DcmDataset *dataset, OFBool transferOwnership)
@@ -2830,13 +3067,13 @@ Uint8 DVPresentationState::convertPValueToDDL(Uint16 pvalue)
   return (Uint8)(pvalue >> 8);
 }
 
-void DVPresentationState::renderPixelData()
+void DVPresentationState::renderPixelData(OFBool display)
 {
   if (currentImage == NULL) return;
   int result=0;
 
   /* activate Barten transform */
-  if (displayFunction && useBartenTransform) currentImage->setDisplayFunction(displayFunction);
+  if (display && displayFunction && useBartenTransform) currentImage->setDisplayFunction(displayFunction);
   else currentImage->setNoDisplayFunction();
   
   if (! currentImageVOIValid)
@@ -3265,7 +3502,10 @@ DVPSSoftcopyVOI *DVPresentationState::getCurrentSoftcopyVOI()
 
 /*
  *  $Log: dvpstat.cc,v $
- *  Revision 1.26  1999-07-30 13:35:01  meichel
+ *  Revision 1.27  1999-08-25 16:51:17  joergr
+ *  Added minimal support to get a print bitmap out of a pstate object.
+ *
+ *  Revision 1.26  1999/07/30 13:35:01  meichel
  *  Added new classes managing Stored Print objects
  *
  *  Revision 1.25  1999/07/28 07:57:26  meichel

@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DVPresentationState
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-07-30 13:34:51 $
- *  CVS/RCS Revision: $Revision: 1.17 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 1999-08-25 16:48:01 $
+ *  CVS/RCS Revision: $Revision: 1.18 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1428,6 +1428,74 @@ public:
     */   
    E_Condition getImageHeight(unsigned long &height);
    
+// -+-+- <NEW> -+-+-
+
+    /** gets number of bytes used for the print bitmap.
+     *  (depends on width, height and depth)
+     *  @return number of bytes used for the print bitmap
+     */
+    unsigned long getPrintBitmapSize();
+    
+    /** sets the minimum print bitmap width and height.
+     *  Smaller images are scaled up by an appropriate integer factor. Both maximum
+     *  values need to be twice greater than the maximum of the minimum values.
+     *  @param width minimum width of print bitmap (in pixels)
+     *  @param height minimum height of print bitmap (in pixels)
+     *  @return EC_Normal upon success, an error code otherwise
+     */
+    E_Condition setMinimumPrintBitmapWidthHeight(unsigned long width,
+                                                 unsigned long height);
+
+    /** sets the maximum print bitmap width and height.
+     *  Larger images are scaled down by an appropriate integer factor. Both maximum
+     *  values need to be twice greater than the maximum of the minimum values.
+     *  @param width maximum width of print bitmap (in pixels)
+     *  @param height maximum height of print bitmap (in pixels)
+     *  @return EC_Normal upon success, an error code otherwise
+     */
+    E_Condition setMaximumPrintBitmapWidthHeight(unsigned long width,
+                                                 unsigned long height);
+
+    /** gets width and height of print bitmap.
+     *  Bitmap size depends on implicit scaling, a heuristic is used for very small images
+     *  The return values depend on the current minimum/maximum print bitmaps width/height values!
+     *  @param width upon success, the image width (in pixels) is returned in this parameter
+     *  @param height upon success, the image height (in pixels) is returned in this parameter
+     *  @return EC_Normal upon success, an error code otherwise
+     */
+    E_Condition getPrintBitmapWidthHeight(unsigned long &width,
+                                          unsigned long &height);
+                                          
+    /** gets width of print bitmap.
+     *  Bitmap size depends on implicit scaling, a heuristic is used for very small images.
+     *  The return value depends on the current minimum/maximum print bitmaps width/height values!
+     *  @param width upon success, the image width (in pixels) is returned in this parameter
+     *  @return EC_Normal upon success, an error code otherwise
+     */
+    E_Condition getPrintBitmapWidth(unsigned long &width);
+
+    /** gets height of print bitmap.
+     *  bitmap size depends on implicit scaling, a heuristic is used for very small images
+     *  The return value depends on the current minimum/maximum print bitmaps width/height values!
+     *  @param height upon success, the image height (in pixels) is returned in this parameter
+     *  @return EC_Normal upon success, an error code otherwise
+     */
+    E_Condition getPrintBitmapHeight(unsigned long &height);
+
+    /** writes the bitmap data into the given buffer.
+     *  The bitmap has the format: 12 bits stored and 16 bits allocated. This method is used
+     *  to create the preformatted bitmap where the annotations are later burned in.
+     *  Implicit scaling is performed if the bitmap is too small (see minimum bitmap size).
+     *  The storage area must be allocated and deleted from the calling method.
+     *  @param bitmap pointer to storage area where the pixel data is copied to.
+     *  @param size specifies size of the storage area in bytes
+     *  @return EC_Normal upon success, an error code otherwise
+     */
+    E_Condition getPrintBitmap(void *bitmap,
+                               unsigned long size);
+
+// -+-+- <WEN> -+-+-
+
    /** gets smallest and biggest possible pixel value in the attached image.
     *  These values are defined as the smallest and biggest number that
     *  could possibly be contained in the image after application of the Modality transform,
@@ -1540,8 +1608,9 @@ private:
    *  of the presentation state are reflected in the dcmimage-based
    *  image processing routines: VOI transformation, Presentation LUT,
    *  rotation, flip, overlay activation. 
+   *  @param display use current display function if OFTrue, don't use otherwise
    */
-  void renderPixelData();
+  void renderPixelData(OFBool display = OFTrue);
   
   /** creates a default displayed area selection for the given dataset.
    *  Used in createFromImage().
@@ -1829,13 +1898,36 @@ private:
    */
   DiDisplayFunction *displayFunction;
   
+// -+-+- <NEW> -+-+-
+
+  /** minimum width of print bitmap (used for implicit scaling)
+   */
+  unsigned long minimumPrintBitmapWidth;
+
+  /** minimum height of print bitmap (used for implicit scaling)
+   */
+  unsigned long minimumPrintBitmapHeight;
+
+  /** maximum width of print bitmap (used for implicit scaling)
+   */
+  unsigned long maximumPrintBitmapWidth;
+
+  /** maximum height of print bitmap (used for implicit scaling)
+   */
+  unsigned long maximumPrintBitmapHeight;
+
+// -+-+- <WEN> -+-+-
+
 };
 
 #endif
 
 /*
  *  $Log: dvpstat.h,v $
- *  Revision 1.17  1999-07-30 13:34:51  meichel
+ *  Revision 1.18  1999-08-25 16:48:01  joergr
+ *  Added minimal support to get a print bitmap out of a pstate object.
+ *
+ *  Revision 1.17  1999/07/30 13:34:51  meichel
  *  Added new classes managing Stored Print objects
  *
  *  Revision 1.16  1999/07/22 16:39:13  meichel
