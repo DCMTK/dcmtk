@@ -22,9 +22,9 @@
  *  Purpose: DicomOverlay (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1998-12-14 17:39:45 $
+ *  Update Date:      $Date: 1998-12-16 16:18:36 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/libsrc/diovlay.cc,v $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -38,6 +38,7 @@
 #include "diovlay.h"
 #include "discalet.h"
 #include "diflipt.h"
+#include "dirotat.h"
 #include "didocu.h"
 
 
@@ -58,12 +59,13 @@ DiOverlayData::DiOverlayData(unsigned int entries,
   : Count(count),
     ArrayEntries(entries),
     Planes(NULL),
-    Data(NULL)
+    DataBuffer(NULL)
 {
     if ((entries > 0) && (entries <= DiOverlay::MaxOverlayCount))
     {
         Planes = new DiOverlayPlane *[entries];
-        OFBitmanipTemplate<DiOverlayPlane *>::zeroMem(Planes, entries);
+        if (Planes != NULL)
+            OFBitmanipTemplate<DiOverlayPlane *>::zeroMem(Planes, entries);
     }
 }
 
@@ -77,7 +79,7 @@ DiOverlayData::~DiOverlayData()
             delete Planes[i];
     }
     delete[] Planes;
-    delete[] Data;
+    delete[] DataBuffer;
 }
 
 
@@ -131,36 +133,20 @@ DiOverlay::DiOverlay(const DiOverlay *overlay,
     AdditionalPlanes(overlay->AdditionalPlanes),
     Data(NULL)
 {
-    Uint16 *temp = Init(overlay, xfactor, yfactor);
+    Uint16 *temp = Init(overlay);
     if (temp != NULL)
     {
+        register unsigned int i; 
+        for (i = 0; i < Data->ArrayEntries; i++)
+        {
+            if (Data->Planes[i] != NULL)
+                Data->Planes[i]->setScaling(xfactor, yfactor);
+        }
         DiScaleTemplate<Uint16> scale(1, overlay->Width, overlay->Height, Width, Height, Frames);
-        scale.scaleData((const Uint16 **)&temp, &(Data->Data), 0);
-        if (temp != overlay->Data->Data)
+        scale.scaleData((const Uint16 **)&temp, &(Data->DataBuffer), 0);
+        if (temp != overlay->Data->DataBuffer)
             delete[] temp;
     }
-/*
-    Data = new DiOverlayData(overlay->Data->Count);
-    const unsigned long count = (unsigned long)overlay->Width * (unsigned long)overlay->Height * overlay->Frames;
-    if ((Data != NULL) && (Data->Count > 0) && (count > 0))
-    {
-        Data->Planes = new DiOverlayPlane *[Data->Count];
-        Data->Data = new Uint16[(unsigned long)Width * (unsigned long)Height * Frames];
-        Uint16 *temp = new Uint16[count];
-        if ((Data->Planes != NULL) && (Data->Data != NULL) && (temp != NULL))
-        {
-            register unsigned int i;
-            for (i = 0; i < Data->Count; i++)
-                Data->Planes[i] = new DiOverlayPlane(overlay->Data->Planes[i], i, Data->Data, temp, overlay->Width,
-                    overlay->Height, Width, Height, xfactor, yfactor);
-            DiScaleTemplate<Uint16> scale(1, overlay->Width, overlay->Height, Width, Height, Frames);
-            scale.scaleData((const Uint16 **)&temp, &(Data->Data), 0);
-        }
-        else
-            Data->Count = 0;
-        delete[] temp;
-    }
-*/
 }
 
 
@@ -168,7 +154,9 @@ DiOverlay::DiOverlay(const DiOverlay *overlay,
 
 DiOverlay::DiOverlay(const DiOverlay *overlay,
                      const int horz,
-                     const int vert)
+                     const int vert,
+                     const Uint16 columns,
+                     const Uint16 rows)
   : Left(overlay->Left),
     Top(overlay->Top),
     Width(overlay->Width),
@@ -177,37 +165,59 @@ DiOverlay::DiOverlay(const DiOverlay *overlay,
     AdditionalPlanes(overlay->AdditionalPlanes),
     Data(NULL)
 {
-/*
     Uint16 *temp = Init(overlay);
     if (temp != NULL)
     {
-        for (unsigned int i = 0; i < Data->Count; i++)
-            Data->Planes[i]->flipOrigin(horz, vert);
         DiFlipTemplate<Uint16> flip(1, Width, Height, Frames);
-        flip.flipData((const Uint16 **)&temp, &(Data->Data), horz, vert);
-        if (temp != overlay->Data->Data)
+        flip.flipData((const Uint16 **)&temp, &(Data->DataBuffer), horz, vert);
+        if (temp != overlay->Data->DataBuffer)
             delete[] temp;
+        register unsigned int i; 
+        for (i = 0; i < Data->ArrayEntries; i++)
+        {
+            if (Data->Planes[i] != NULL)
+                Data->Planes[i]->setFlipping(horz, vert, columns, rows);
+        }
     }
-*/
+/*
     if (DicomImageClass::DebugLevel >= DicomImageClass::DL_Warnings)
         cerr << "WARNING: flipping of overlays not implemented !" << endl;
+*/
 }
 
 
 // --- rotate overlay
 
 DiOverlay::DiOverlay(const DiOverlay *overlay,
-                     const int degree)
+                     const int degree,
+                     const Uint16 columns,
+                     const Uint16 rows)
   : Left(overlay->Left),
     Top(overlay->Top),
-    Width(overlay->Width),
-    Height(overlay->Height),
+    Width(((degree == 90) ||(degree == 270)) ? overlay->Height : overlay->Width),
+    Height(((degree == 90) ||(degree == 270)) ? overlay->Width : overlay->Height),
     Frames(overlay->Frames),
     AdditionalPlanes(overlay->AdditionalPlanes),
     Data(NULL)
 {
+    Uint16 *temp = Init(overlay);
+    if (temp != NULL)
+    {
+        register unsigned int i; 
+        for (i = 0; i < Data->ArrayEntries; i++)
+        {
+            if (Data->Planes[i] != NULL)
+                Data->Planes[i]->setRotation(degree, columns, rows);
+        }
+        DiRotateTemplate<Uint16> rotate(1, overlay->Width, overlay->Height, Width, Height, Frames);
+        rotate.rotateData((const Uint16 **)&temp, &(Data->DataBuffer), degree);
+        if (temp != overlay->Data->DataBuffer)
+            delete[] temp;
+    }
+/*
     if (DicomImageClass::DebugLevel >= DicomImageClass::DL_Warnings)
         cerr << "WARNING: rotation of overlays not implemented !" << endl;
+*/
 }
 
 
@@ -225,9 +235,7 @@ DiOverlay::~DiOverlay()
 /********************************************************************/
 
 
-Uint16 *DiOverlay::Init(const DiOverlay *overlay,
-                        const double xfactor,
-                        const double yfactor)
+Uint16 *DiOverlay::Init(const DiOverlay *overlay)
 {
     if ((overlay != NULL) && (overlay->Data != NULL) && (overlay->Data->Count > 0))
     {
@@ -239,18 +247,22 @@ Uint16 *DiOverlay::Init(const DiOverlay *overlay,
         if ((Data != NULL) && (Data->Planes != NULL) && (count > 0))
         {
             register unsigned int i;
-            Data->Data = new Uint16[(unsigned long)Width * (unsigned long)Height * Frames];
-            if (Data->Data != NULL)
+            Data->DataBuffer = new Uint16[(unsigned long)Width * (unsigned long)Height * Frames];
+            if (Data->DataBuffer != NULL)
             {
                 Uint16 *temp = NULL;
-                if (overlay->Data->Data == NULL)                    // no data buffer
+                if (overlay->Data->DataBuffer == NULL)              // no data buffer
+                {
                     temp = new Uint16[count];                       // create temporary buffer
+                    if (temp != NULL)
+                        OFBitmanipTemplate<Uint16>::zeroMem(temp, count);
+                }
                 for (i = 0; i < Data->ArrayEntries; i++)
                 {
-                    if ((overlay->Data->Planes[i] != NULL) && (overlay->Data->Planes[i]->isValid()))
+                    if ((overlay->Data->Planes[i] != NULL) /*&& (overlay->Data->Planes[i]->isValid())*/)
                     {
-                        Data->Planes[i] = new DiOverlayPlane(overlay->Data->Planes[i], convertToGroupNumber(i), Data->Data, temp, overlay->Width,
-                            overlay->Height, Width, Height, xfactor, yfactor);
+                        Data->Planes[i] = new DiOverlayPlane(overlay->Data->Planes[i], convertToGroupNumber(i), Data->DataBuffer, temp,
+                            overlay->Width, overlay->Height, Width, Height);
                         (Data->Count)++;
                     }
                 }
@@ -259,8 +271,8 @@ Uint16 *DiOverlay::Init(const DiOverlay *overlay,
                     if (DicomImageClass::DebugLevel >= DicomImageClass::DL_Warnings)
                         cerr << "WARNING: different number of overlay planes for scaled and unscaled image !" << endl;
                 }
-                if (overlay->Data->Data != NULL)                    // existing data buffer
-                    temp = overlay->Data->Data;                     // point to input buffer
+                if (overlay->Data->DataBuffer != NULL)              // existing data buffer
+                    temp = overlay->Data->DataBuffer;               // point to input buffer
                 return temp;
             }
         }
@@ -279,7 +291,8 @@ int DiOverlay::convertToPlaneNumber(unsigned int &plane,
             if (AdditionalPlanes)
             {
                 plane = (plane - FirstOverlayGroup) >> 1;                               // plane = (group - 0x6000) / 2
-                return 2;
+                if (Data->Planes[plane] != NULL)
+                    return 2;
             } else {
                 register unsigned int i; 
                 for (i = 0; i < Data->Count; i++)
@@ -497,11 +510,43 @@ int DiOverlay::removePlane(const unsigned int group)
 }
 
 
+Uint8 *DiOverlay::getPlaneData(const unsigned long frame,
+                               unsigned int plane,
+                               unsigned int &width,
+                               unsigned int &height,
+                               unsigned int &left,
+                               unsigned int &top,
+                               const Uint16 columns,
+                               const Uint16 rows)
+{
+    if (convertToPlaneNumber(plane, AdditionalPlanes))                        // plane does exist
+    {
+        DiOverlayPlane *op = Data->Planes[plane];
+        if (op != NULL)
+        {
+            const Uint16 xmin = (op->getLeft(Left) > 0) ? op->getLeft(Left) : 0;
+            const Uint16 ymin = (op->getTop(Top) > 0) ? op->getTop(Top) : 0;
+            const Uint16 xmax = (op->getRight(Left) < columns) ? op->getRight(Left) : columns;
+            const Uint16 ymax = (op->getBottom(Top) < rows) ? op->getBottom(Top) : rows;
+            left = xmin;
+            top = ymin;
+            width = xmax - xmin;
+            height = ymax - ymin;
+            return op->getData(frame, xmin, ymin, xmax, ymax);
+        }
+    }
+    return NULL;
+}
+
 /*
 **
 ** CVS/RCS Log:
 ** $Log: diovlay.cc,v $
-** Revision 1.2  1998-12-14 17:39:45  joergr
+** Revision 1.3  1998-12-16 16:18:36  joergr
+** Added method to export overlay planes (create 8-bit bitmap).
+** Implemented flipping and rotation of overlay planes.
+**
+** Revision 1.2  1998/12/14 17:39:45  joergr
 ** Added methods to add and remove additional overlay planes (still untested).
 **
 ** Revision 1.1  1998/11/27 16:19:25  joergr

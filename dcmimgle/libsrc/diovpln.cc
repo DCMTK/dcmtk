@@ -22,9 +22,9 @@
  *  Purpose: DicomOverlayPlane (Source) - Multiframe Overlays UNTESTED !
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1998-12-14 17:41:56 $
+ *  Update Date:      $Date: 1998-12-16 16:20:10 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/libsrc/diovpln.cc,v $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -36,6 +36,7 @@
 #include "dctypes.h"
 #include "dcdeftag.h"
 #include "dctagkey.h"
+#include "ofbmanip.h"
 
 #include "diovpln.h"
 #include "didocu.h"
@@ -71,6 +72,8 @@ DiOverlayPlane::DiOverlayPlane(const DiDocument *docu,
     Visible(0),
     BitPos(0),
     StartBitPos(0),
+    StartLeft(0),
+    StartTop(0),
     EmbeddedData(0),
     Ptr(NULL),
     StartPtr(NULL),
@@ -79,14 +82,12 @@ DiOverlayPlane::DiOverlayPlane(const DiDocument *docu,
     if (docu != NULL)
     {
         DcmTagKey tag(group, DCM_OverlayRows.getElement());
-        const char *str;
         tag.setElement(DCM_OverlayLabel.getElement());
-        if (docu->getValue(tag, str) > 0)
-            Label = str;
+        docu->getValue(tag, Label);
         tag.setElement(DCM_OverlayDescription.getElement());
-        if (docu->getValue(tag, str) > 0)
-            Description = str;
+        docu->getValue(tag, Description);
         tag.setElement(DCM_OverlayType.getElement());
+        const char *str;
         if ((docu->getValue(tag, str) > 0) && (strcmp(str, "R") == 0))
             DefaultMode = Mode = EMO_RegionOfInterest;
         Sint32 sl = 0;
@@ -168,6 +169,8 @@ DiOverlayPlane::DiOverlayPlane(const unsigned int group,
     Visible(1),
     BitPos(0),
     StartBitPos(0),
+    StartLeft(0),
+    StartTop(0),
     EmbeddedData(0),
     Ptr(NULL),
     StartPtr(NULL),
@@ -193,15 +196,13 @@ DiOverlayPlane::DiOverlayPlane(DiOverlayPlane *plane,
                                const Uint16 width,
                                const Uint16 height,
                                const Uint16 columns,
-                               const Uint16 rows,
-                               const double xfactor,
-                               const double yfactor)
+                               const Uint16 rows)
   : NumberOfFrames(plane->NumberOfFrames),
     ImageFrameOrigin(plane->ImageFrameOrigin),
-    Top((Sint16)(yfactor * plane->Top)),
-    Left((Sint16)(xfactor * plane->Left)),
-    Height((Uint16)(yfactor * plane->Height)),
-    Width((Uint16)(xfactor * plane->Width)),
+    Top(plane->Top),
+    Left(plane->Left),
+    Height(plane->Height),
+    Width(plane->Width),
     Rows(rows),
     Columns(columns),
     BitsAllocated(16),
@@ -217,6 +218,8 @@ DiOverlayPlane::DiOverlayPlane(DiOverlayPlane *plane,
     Visible(plane->Visible),
     BitPos(0),
     StartBitPos(0),
+    StartLeft(0),
+    StartTop(0),
     EmbeddedData(0),
     Ptr(NULL),
     StartPtr(NULL),
@@ -265,6 +268,38 @@ DiOverlayPlane::~DiOverlayPlane()
 /********************************************************************/
 
 
+Uint8 *DiOverlayPlane::getData(const unsigned long frame,
+                               const Uint16 xmin,
+                               const Uint16 ymin,
+                               const Uint16 xmax,
+                               const Uint16 ymax,
+                               const Uint8 value)
+{
+    const unsigned long count = (unsigned long)(xmax - xmin) * (unsigned long)(ymax - ymin);
+    Uint8 *data = new Uint8[count];
+    if (data != NULL)
+    {
+        OFBitmanipTemplate<Uint8>::zeroMem(data, count);
+        register Uint16 x;
+        register Uint16 y;
+        register Uint8 *q = data;
+        if (reset(frame + ImageFrameOrigin))
+        {
+            for (y = ymin; y < ymax; y++)
+            {
+                setStart(xmin, y);
+                for (x = xmin; x < xmax; x++, q++)
+                {
+                    if (getNextBit())
+                        *q = value;                         // set pixel value (default: 0xff)
+                }
+            }
+        }
+    }
+    return data;
+}
+
+
 void DiOverlayPlane::show(const double fore,
                           const double thresh,
                           const EM_Overlay mode)
@@ -276,13 +311,65 @@ void DiOverlayPlane::show(const double fore,
 }
 
 
-void DiOverlayPlane::flipOrigin(const int horz,
-                                const int vert)
+void DiOverlayPlane::setScaling(const double xfactor,
+                                const double yfactor)
+{
+    Left = (Sint16)(xfactor * Left);
+    Top = (Sint16)(yfactor * Top);
+    Width = (Uint16)(xfactor * Width);
+    Height = (Uint16)(yfactor * Height);
+}
+
+
+void DiOverlayPlane::setFlipping(const int horz,
+                                 const int vert,
+                                 const Uint16 columns,
+                                 const Uint16 rows)
 {
     if (horz)
-        Left = Columns - Left;
+    {
+        Left = (Sint16)((signed long)columns - Width - Left);
+        StartLeft = (Uint16)((signed long)Columns - Width - StartLeft);
+    }
     if (vert)
-        Top = Rows - Top;
+    {
+        Top = (Sint16)((signed long)rows - Height - Top);
+        StartTop = (Uint16)((signed long)Rows - Height - StartTop);
+    }
+}
+
+
+void DiOverlayPlane::setRotation(const int degree,
+                                 const Uint16 columns,
+                                 const Uint16 rows)
+{
+    if (degree == 180)
+        setFlipping(1, 1, columns, rows);
+    else if ((degree == 90) || (degree == 270))
+    {
+        Uint16 us = Height;                     // swap visible width/height
+        Height = Width;
+        Width = us;
+        us = Rows;                              // swap stored width/height
+        Rows = Columns;
+        Columns = us;
+        if (degree == 90)                       // rotate right
+        {
+            Sint16 ss = Left;
+            Uint16 us = StartLeft;
+            Left = (Sint16)((signed long)columns - Width - Top);
+            StartLeft = (Uint16)((signed long)Columns - Width - StartTop);
+            Top = ss;
+            StartTop = us;
+        } else {                                // rotate left
+            Sint16 ss = Left;
+            Uint16 us = StartLeft;
+            Left = Top;
+            StartLeft = StartTop;
+            Top = (Sint16)((signed long)rows - Height - ss);
+            StartTop = (Uint16)((signed long)Rows - Height - us);
+        }
+    }
 }
 
 
@@ -290,7 +377,11 @@ void DiOverlayPlane::flipOrigin(const int horz,
 **
 ** CVS/RCS Log:
 ** $Log: diovpln.cc,v $
-** Revision 1.2  1998-12-14 17:41:56  joergr
+** Revision 1.3  1998-12-16 16:20:10  joergr
+** Added method to export overlay planes (create 8-bit bitmap).
+** Implemented flipping and rotation of overlay planes.
+**
+** Revision 1.2  1998/12/14 17:41:56  joergr
 ** Added methods to add and remove additional overlay planes (still untested).
 ** Added methods to support overlay labels and descriptions.
 **
