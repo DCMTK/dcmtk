@@ -6,6 +6,8 @@
 # has 5 fields (Tag, VR, Name, VM, Version).  Entries need not be
 # in assending tag order.
 #
+# Entries may override existing entries.
+#
 # Each field must be separated by a single tab.  The tag values (gggg,eeee) 
 # must be in hexedecimal and must be surrounded by parentheses.  Repeating 
 # groups are represented by indicating the range (gggg-gggg,eeee).  By default
@@ -820,7 +822,7 @@
 (FFFE,E00D)	na	ItemDelimitationItem	1	DICOM3
 (FFFE,E0DD)	na	SequenceDelimitationItem	1	DICOM3
 #
-#----------------------------------------------------------------------------
+#---------------------------------------------------------------------------
 #
 # Private Creator Data Elements
 #
@@ -830,9 +832,249 @@
 (0001-o-0007,0000)	UL	IllegalGroupLength	1	ILLEGAL
 (0001-o-0007,0001)	UL	IllegalGroupLengthToEnd	1	ILLEGAL
 #
-#----------------------------------------------------------------------------
+#---------------------------------------------------------------------------
 #
 # A "catch all" for group length elements.
 #
 (0000-u-ffff,0000)	UL	GenericGroupLength	1	GENERIC
 (0000-u-ffff,0001)	UL	GenericGroupLengthToEnd	1	GENERIC
+#
+#
+#---------------------------------------------------------------------------
+#
+#
+# Data Dictionary for new Ultrasound Image Object
+# Source document:
+#    DICOM Supplement 5, 
+#    Ultrasound Application Profile, IOD and Transfer Syntax Extensions,
+#    Final Text, October 27, 1995
+#
+(0018,6056)	UL	NumberOfTableEntries	1	DICOM3
+(0018,6058)	UL	TableOfPixelValues	1-n	DICOM3
+(0018,605A)	FL	TableOfParameterValues	1-n	DICOM3
+(0028,0014)	US	UltrasoundColorDataPresent	1	DICOM3
+(0018,1244)	US	PreferredPlaybackSequencing	1	DICOM3
+(0028,1199)	UI	PaletteColorLookupTableUID	1	DICOM3
+# The retired Ultrasound object uses (0028,1201) with VR = US or SS
+(0028,1201)	OW	RedPaletteColorLookupTableData	1	DICOM3
+# The retired Ultrasound object uses (0028,1202) with VR = US or SS
+(0028,1202)	OW	GreenPaletteColorLookupTableData	1	DICOM3
+# The retired Ultrasound object uses (0028,1203) with VR = US or SS
+(0028,1203)	OW	BluePaletteColorLookupTableData	1	DICOM3
+(0028,1221)	OW	SegmentedRedPaletteColorLookupTableData	1	DICOM3
+(0028,1222)	OW	SegmentedGreenPaletteColorLookupTableData	1	DICOM3
+(0028,1223)	OW	SegmentedBluePaletteColorLookupTableData	1	DICOM3
+(6000-60ff,0045)	LO	OverlaySubtype	1	DICOM3
+(0008,2218)	SQ	AnatomicRegionSequence	1	DICOM3
+(0008,2220)	SQ	AnatomicRegionModifierSequence	1	DICOM3
+(0008,2228)	SQ	PrimaryAnatomicStructureSequence	1	DICOM3
+(0008,2230)	SQ	PrimaryAnatomicStructureModifierSequence	1	DICOM3
+(0008,2240)	SQ	TransducerPositionSequence	1	DICOM3
+(0008,2242)	SQ	TransducerPositionModifierSequence	1	DICOM3
+(0008,2244)	SQ	TransducerOrientationSequence	1	DICOM3
+(0008,2246)	SQ	TransducerOrientationModifierSequence	1	DICOM3
+#
+#---------------------------------------------------------------------------
+#
+#
+# Data Dictionary for new Nuclear Medicine Image Object
+# Source Document:
+#     DICOM Supplement 7, Nuclear Medicine Image Object
+#     Final Text, October 27, 1995
+#
+(0018,0026)	SQ	InterventionDrugInformationSequence	1	DICOM3
+(0018,0027)	TM	InterventionDrugStopTime	1	DICOM3
+(0018,0028)	DS	InterventionDrugDose	1	DICOM3
+(0018,0029)	SQ	InterventionDrugCodeSequence	1	DICOM3
+(0054,0000)	UL	GroupLength	1	DICOM3
+(0054,0010)	US	EnergyWindowVector	1-n	DICOM3
+(0054,0011)	US	NumberOfEnergyWindows	1	DICOM3
+(0054,0012)	SQ	EnergyWindowInformationSequence	1	DICOM3
+(0054,0013)	SQ	EnergyWindowRangeSequence	1	DICOM3
+(0054,0014)	DS	EnergyWindowLowerLimit	1	DICOM3
+(0054,0015)	DS	EnergyWindowUpperLimit	1	DICOM3
+(0054,0016)	SQ	RadiopharmaceuticalInformationSequence	1	DICOM3
+(0054,0017)	IS	ResidualSyringeCounts	1	DICOM3
+(0054,0018)	SH	EnergyWindowName	1	DICOM3
+(0054,0020)	US	DetectorVector	1-n	DICOM3
+(0054,0021)	US	NumberOfDetectors	1	DICOM3
+(0054,0022)	SQ	DetectorInformationSequence	1	DICOM3
+(0054,0030)	US	PhaseVector	1-n	DICOM3
+(0054,0031)	US	NumberOfPhases	1	DICOM3
+(0054,0032)	SQ	PhaseInformationSequence	1	DICOM3
+(0054,0033)	US	NumberOfFramesInPhase	1	DICOM3
+(0054,0036)	IS	PhaseDelay	1	DICOM3
+(0054,0038)	IS	PauseBetweenFrames	1	DICOM3
+(0054,0050)	US	RotationVector	1-n	DICOM3
+(0054,0051)	US	NumberOfRotations	1	DICOM3
+(0054,0052)	SQ	RotationInformationSequence	1	DICOM3
+(0054,0053)	US	NumberOfFramesInRotation	1	DICOM3
+(0054,0060)	US	RRIntervalVector	1-n	DICOM3
+(0054,0061)	US	NumberOfRRIntervals	1	DICOM3
+(0054,0062)	SQ	GatedInformationSequence	1	DICOM3
+(0054,0063)	SQ	DataInformationSequence	1	DICOM3
+(0054,0070)	US	TimeSlotVector	1-n	DICOM3
+(0054,0071)	US	NumberOfTimeSlots	1	DICOM3
+(0054,0072)	SQ	TimeSlotInformationSequence	1	DICOM3
+(0054,0073)	DS	TimeSlotTime	1	DICOM3
+(0054,0080)	US	SliceVector	1-n	DICOM3
+(0054,0081)	US	NumberOfSlices	1	DICOM3
+(0054,0090)	US	AngularViewVector	1-n	DICOM3
+(0054,0100)	US	TimeSliceVector	1-n	DICOM3
+(0054,0200)	DS	StartAngle	1	DICOM3
+(0054,0202)	CS	TypeOfDetectorMotion	1	DICOM3
+(0054,0210)	IS	TriggerVector	1-n	DICOM3
+(0054,0211)	US	NumberOfTriggersInPhase	1	DICOM3
+(0054,0220)	SQ	ViewCodeSequence	1	DICOM3
+(0054,0222)	SQ	ViewAngulationModifierCodeSequence	1	DICOM3
+(0054,0300)	SQ	RadionuclideCodeSequence	1	DICOM3
+(0054,0302)	SQ	AdministrationRouteCodeSequence	1	DICOM3
+(0054,0304)	SQ	RadiopharmaceuticalCodeSequence	1	DICOM3
+(0054,0306)	SQ	CalibrationDataSequence	1	DICOM3
+(0054,0308)	US	EnergyWindowNumber	1	DICOM3
+(0054,0400)	SH	ImageID	1	DICOM3
+(0054,0410)	SQ	PatientOrientationCodeSequence	1	DICOM3
+(0054,0412)	SQ	PatientOrientationModifierCodeSequence	1	DICOM3
+(0054,0414)	SQ	PatientGantryRelationshipCodeSequence	1	DICOM3
+(5000-50ff,2500)	LO	CurveLabel	1	DICOM3
+(5000-50ff,2600)	SQ	CurveReferencedOverlaySequence	1	DICOM3
+(5000-50ff,2610)	US	CurveReferencedOverlayGroup	1	DICOM3
+(6000-60ff,0022)	LO	OverlayDescription	1	DICOM3
+(6000-60ff,1500)	LO	OverlayLabel	1	DICOM3
+#
+# The following attributes revise the definitions in 
+# the retired Nuclear Medicine Image Object
+#
+(0018,0031)	LO	Radiopharmaceutical	1	DICOM3
+(0018,1045)	IS	SyringeCounts	1	DICOM3
+(0018,1070)	LO	RadiopharmaceuticalRoute	1	DICOM3
+(0018,1071)	DS	RadiopharmaceuticalVolume	1	DICOM3
+(0018,1072)	TM	RadiopharmaceuticalStartTime	1	DICOM3
+(0018,1073)	TM	RadiopharmaceuticalStopTime	1	DICOM3
+(0018,1074)	DS	RadionuclideTotalDose	1	DICOM3
+(0018,1182)	IS	FocalDistance	1-2	DICOM3
+(0018,1183)	DS	XFocusCenter	1-2	DICOM3
+(0018,1184)	DS	YFocusCenter	1-2	DICOM3
+(0018,1300)	DS	ScanVelocity	1	DICOM3
+(0018,5020)	LO	ProcessingFunction	1	DICOM3
+(0028,0009)	AT	FrameIncrementPointer	1-n	DICOM3
+(0028,0051)	CS	CorrectedImage	1-n	DICOM3
+#
+#---------------------------------------------------------------------------
+#
+# Data Dictionary for X-Ray Angiography Image Object
+# Source Document:
+#    DICOM Supplement 4, 
+#    X-Ray Angiographic Image Objects and Media Storage
+#    Text for Letter Ballot, August 18, 1995
+#
+(0008,1048)	PN	PhysiciansOfRecord	1-n	DICOM3
+(0008,2218)	SQ	AnatomicRegionSequence	1	DICOM3
+(0008,2220)	SQ	AnatomicRegionModifierSequence	1	DICOM3
+(0008,2228)	SQ	PrimaryAnatomicStructureSequence	1	DICOM3
+(0008,2230)	SQ	PrimaryAnatomicStructureModifierSequence	1	DICOM3
+(0018,0012)	SQ	ContrastBolusAgentSequence	1	DICOM3
+(0018,002A)	SQ	AdditionalDrugSequence	1	DICOM3
+(0018,0029)	SQ	InterventionalDrugSequence	1	DICOM3
+(0018,0014)	SQ	ContrastBolusAdministrationRouteSequence	1	DICOM3
+(0018,0036)	SQ	InterventionalTherapySequence	1	DICOM3
+(0018,0037)	CS	TherapyType	1	DICOM3
+(0018,0038)	CS	InterventionalStatus	1	DICOM3
+(0018,0039)	CS	TherapyDescription	1	DICOM3
+(0018,1046)	DS	ContrastFlowRates	1-n	DICOM3
+(0018,1047)	DS	ContrastFlowDuration(s)	1-n	DICOM3
+(0018,1048)	CS	ContrastBolusIngredient	1	DICOM3
+(0018,1049)	DS	ContrastBolusIngredientConcentration	1	DICOM3
+(0018,1114)	DS	EstimatedRadiographicMagnificationFactor	1	DICOM3
+(0018,1134)	CS	TableMotion	1	DICOM3
+(0018,1135)	DS	TableVerticalIncrement	1-n	DICOM3
+(0018,1136)	DS	TableLateralIncrement	1-n	DICOM3
+(0018,1137)	DS	TableLongitudinalIncrement	1-n	DICOM3
+(0018,1138)	DS	TableAngle	1	DICOM3
+(0018,1154)	DS	AveragePulseWidth	1	DICOM3
+(0018,1155)	CS	RadiationSetting	1	DICOM3
+(0018,115A)	CS	RadiationMode	1	DICOM3
+(0018,115E)	DS	ImageAreaDoseProduct	1	DICOM3
+(0018,1161)	LO	TypeOfFilters	1-n	DICOM3
+(0018,1162)	DS	IntensifierSize	1	DICOM3
+(0018,1164)	DS	ImagerPixelSpacing	2	DICOM3
+(0018,1166)	CS	Grid	1	DICOM3
+(0018,1600)	CS	ShutterShape	1	DICOM3
+(0018,1500)	CS	PositionerMotion	1	DICOM3
+(0018,1510)	DS	PositionerPrimaryAngle	1	DICOM3
+(0018,1511)	DS	PositionerSecondaryAngle	1	DICOM3
+(0018,1520)	DS	PositionerPrimaryAngleIncrement	1-n	DICOM3
+(0018,1521)	DS	PositionerSecondaryAngleIncrement	1-n	DICOM3
+(0018,1530)	DS	DetectorPrimaryAngle	1	DICOM3
+(0018,1531)	DS	DetectorSecondaryAngle	1	DICOM3
+(0018,1600)	CS	ShutterShape	1-3	DICOM3
+(0018,1602)	IS	ShutterLeftVerticalEdge	1	DICOM3
+(0018,1604)	IS	ShutterRightVerticalEdge	1	DICOM3
+(0018,1606)	IS	ShutterUpperHorizontalEdge	1	DICOM3
+(0018,1608)	IS	ShutterLowerHorizontalEdge	1	DICOM3
+(0018,1610)	IS	CenterOfCircularShutter	2	DICOM3
+(0018,1612)	IS	RadiusOfCircularShutter	1	DICOM3
+# VerticesOfThePolygonalShutter has VM=2-2n which we cannot represent.
+# Use VM=2-n instead.
+(0018,1620)	IS	VerticesOfThePolygonalShutter	2-n	DICOM3
+(0018,1700)	CS	CollimatorShape	1-3	DICOM3
+(0018,1702)	IS	CollimatorLeftVerticalEdge	1	DICOM3
+(0018,1704)	IS	CollimatorRightVerticalEdge	1	DICOM3
+(0018,1706)	IS	CollimatorUpperHorizontalEdge	1	DICOM3
+(0018,1708)	IS	CollimatorLowerHorizontalEdge	1	DICOM3
+(0018,1710)	IS	CenterOfCircularCollimator	2	DICOM3
+(0018,1712)	IS	RadiusOfCircularCollimator	1	DICOM3
+# VerticesOfThePolygonalCollimator has VM=2-2n which we cannot represent.
+# Use VM=2-n instead.
+(0018,1720)	IS	VerticesOfThePolygonalCollimator	2-n	DICOM3
+(0028,0012)	US	Planes	1	DICOM3
+(0028,0110)	xs	SmallestImagePixelValueInPlane	1	DICOM3
+(0028,0111)	xs	LargestImagePixelValueInPlane	1	DICOM3
+(0028,1040)	CS	PixelIntensityRelationship	1	DICOM3
+(0028,1090)	CS	RecommendedViewingMode	1	DICOM3
+(0028,2110)	CS	LossyImageCompression	1	DICOM3
+(0028,5000)	SQ	BiPlaneAcquisitionSequence	1	DICOM3
+(0028,6010)	US	RepresentativeFrameNumber	1	DICOM3
+(0028,6020)	US	FrameNumbersOfInterestFOI	1-n	DICOM3
+(0028,6022)	LO	FrameOfInterestDescription	1-n	DICOM3
+(0028,6030)	US	MaskPointers	1-n	DICOM3
+(0028,6040)	US	RWavePointer	1-n	DICOM3
+(0028,6100)	SQ	MaskSubtractionSequence	1	DICOM3
+(0028,6101)	CS	MaskOperation	1	DICOM3
+# ApplicableFrameRange has VM=2-2n which we cannot represent.
+# Use VM=2-n instead.
+(0028,6102)	US	ApplicableFrameRange	2-n	DICOM3
+(0028,6110)	US	MaskFrameNumbers	1-n	DICOM3
+(0028,6112)	US	ContrastFrameAveraging	1	DICOM3
+(0028,6114)	FL	MaskSubPixelShift	2	DICOM3
+(0028,6120)	SS	TIDOffset	1	DICOM3
+(0028,6190)	ST	MaskOperationExplanation	1	DICOM3
+(0050,0004)	CS	CalibrationObject	1	DICOM3
+(0050,0010)	SQ	DeviceSequence	1	DICOM3
+(0050,0014)	DS	DeviceLength	1	DICOM3
+(0050,0016)	DS	DeviceDiameter	1	DICOM3
+(0050,0017)	CS	DeviceDiameterUnits	1	DICOM3
+(0050,0018)	DS	DeviceVolume	1	DICOM3
+(0050,0019)	DS	InterMarkerDistance	1	DICOM3
+(0050,0020)	LO	DeviceDescription	1	DICOM3
+(6000-60ff,0012)	US	OverlayPlanes	1	DICOM3
+(6000-60ff,0051)	US	ImageFrameOrigin	1	DICOM3
+(6000-60ff,0052)	US	OverlayPlaneOrigin	1	DICOM3
+#
+#---------------------------------------------------------------------------
+#
+#
+# Data Dictionary for X-Ray RadioFluoroscopy Image Object
+# Source Document:
+#    DICOM Supplement 6, 
+#    X-Ray RadioFluoroscopy Image Object
+#    Text for Letter Ballot, October 21, 1994
+#
+(0018,1450)	CS	ColumnAngulation	1	DICOM3
+(0018,1460)	DS	TomoLayerHeight	1	DICOM3
+(0018,1470)	DS	TomoAngle	1	DICOM3
+(0018,1480)	DS	TomoTime	1	DICOM3
+#
+#---------------------------------------------------------------------------
+#
+
