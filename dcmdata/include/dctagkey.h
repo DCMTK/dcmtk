@@ -10,9 +10,9 @@
 ** 
 **
 ** Last Update:		$Author: hewett $
-** Update Date:		$Date: 1995-11-23 16:38:04 $
+** Update Date:		$Date: 1997-08-26 13:45:54 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dctagkey.h,v $
-** CVS/RCS Revision:	$Revision: 1.1 $
+** CVS/RCS Revision:	$Revision: 1.2 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -64,6 +64,8 @@ public:
     void setElement(Uint16 e);
     Uint16 getGroup() const;
     Uint16 getElement() const;
+
+    Uint32 hash() const; // generate simple hash code
 
     DcmTagKey& operator = (const DcmTagKey& key);
     int operator == (const DcmTagKey& key) const;
@@ -151,6 +153,15 @@ DcmTagKey::operator=(const DcmTagKey& key)
     return *this;
 }
 
+/* Simple Hash Function */
+
+inline Uint32 
+DcmTagKey::hash() const
+{
+    // generate simple hash code
+    return (((getGroup() << 16) & 0xffff0000) | (getElement() & 0xffff));
+}
+
 /* Comparisons */
 
 inline int 
@@ -231,7 +242,10 @@ DcmTagKey::operator >= (const DcmTagKey& key) const
 /*
 ** CVS/RCS Log:
 ** $Log: dctagkey.h,v $
-** Revision 1.1  1995-11-23 16:38:04  hewett
+** Revision 1.2  1997-08-26 13:45:54  hewett
+** Added simple hash function method.
+**
+** Revision 1.1  1995/11/23 16:38:04  hewett
 ** Updated for loadable data dictionary + some cleanup (more to do).
 **
 **
