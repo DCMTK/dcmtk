@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2002, OFFIS
+ *  Copyright (C) 1996-2003, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,8 @@
  *  Purpose: DicomImage (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-12-13 09:28:22 $
- *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/libsrc/diimage.cc,v $
- *  CVS/RCS Revision: $Revision: 1.24 $
+ *  Update Date:      $Date: 2003-12-08 17:17:04 $
+ *  CVS/RCS Revision: $Revision: 1.25 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -90,7 +89,7 @@ DiImage::DiImage(const DiDocument *docu,
                 NumberOfFrames = 1;
             }
             else
-                NumberOfFrames = (Uint32)sl;
+                NumberOfFrames = OFstatic_cast(Uint32, sl);
         }
         else
             NumberOfFrames = 1;
@@ -201,7 +200,7 @@ DiImage::DiImage(const DiDocument *docu,
             // get pixel data (if present)
             if (ok && Document->search(DCM_PixelData, pstack))
             {
-                DcmPixelData *pixel = (DcmPixelData *)pstack.top();
+                DcmPixelData *pixel = OFstatic_cast(DcmPixelData *, pstack.top());
                 // check whether pixel data exists unencapsulated (decompression already done in DiDocument)
                 if ((pixel != NULL) && (DcmXfer(Document->getTransferSyntax()).isNotEncapsulated()))
                     convertPixelData(pixel, spp);
@@ -320,8 +319,8 @@ DiImage::DiImage(const DiImage *image,
     isOriginal(0),
     InputData(NULL)
 {
-    const double xfactor = (double)Columns / (double)image->Columns;
-    const double yfactor = (double)Rows / (double)image->Rows;
+    const double xfactor = OFstatic_cast(double, Columns) / OFstatic_cast(double, image->Columns);
+    const double yfactor = OFstatic_cast(double, Rows) / OFstatic_cast(double, image->Rows);
     /* re-compute pixel width and height */
     if (image->hasPixelSpacing)
     {
@@ -493,10 +492,12 @@ void DiImage::convertPixelData(/*const*/ DcmPixelData *pixel,
 {
     if ((pixel->getVR() == EVR_OW) || ((pixel->getVR() == EVR_OB) && (BitsAllocated <= 8)))
     {
-        const unsigned long start = FirstFrame * (unsigned long)Rows * (unsigned long)Columns * (unsigned long)spp;
-        const unsigned long count = NumberOfFrames * (unsigned long)Rows * (unsigned long)Columns * (unsigned long)spp;
+        const unsigned long start = FirstFrame * OFstatic_cast(unsigned long, Rows) *
+            OFstatic_cast(unsigned long, Columns) * OFstatic_cast(unsigned long, spp);
+        const unsigned long count = NumberOfFrames * OFstatic_cast(unsigned long, Rows) *
+            OFstatic_cast(unsigned long, Columns) * OFstatic_cast(unsigned long, spp);
         if ((BitsAllocated < 1) || (BitsStored < 1) || (BitsAllocated < BitsStored) ||
-            (BitsStored > (Uint16)(HighBit + 1)))
+            (BitsStored > OFstatic_cast(Uint16, HighBit + 1)))
         {
             ImageStatus = EIS_InvalidValue;
             if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Errors))
@@ -584,7 +585,7 @@ int DiImage::detachPixelData()
     if ((Document != NULL) && (Document->getFlags() & CIF_MayDetachPixelData))
     {
         /* get DICOM dataset */
-        DcmDataset *dataset = (DcmDataset *)(Document->getDicomObject());
+        DcmDataset *dataset = OFstatic_cast(DcmDataset *, Document->getDicomObject());
         if (dataset != NULL)
         {
             /* insert new, empty PixelData element */
@@ -692,12 +693,12 @@ int DiImage::writeFrameToDataset(DcmItem &dataset,
         if ((getInternalColorModel() == EPI_Monochrome1) || (getInternalColorModel() == EPI_Monochrome2))
         {
             /* monochrome image */
-            count = (unsigned long)Columns * (unsigned long)Rows;
+            count = OFstatic_cast(unsigned long, Columns) * OFstatic_cast(unsigned long, Rows);
             dataset.putAndInsertString(DCM_PhotometricInterpretation, "MONOCHROME2");
             dataset.putAndInsertUint16(DCM_SamplesPerPixel, 1);
         } else {
             /* color image */
-            count = (unsigned long)Columns * (unsigned long)Rows * 3 /*samples per pixel*/;
+            count = OFstatic_cast(unsigned long, Columns) * OFstatic_cast(unsigned long, Rows) * 3 /*samples per pixel*/;
             if (getInternalColorModel() == EPI_YBR_Full)
                 dataset.putAndInsertString(DCM_PhotometricInterpretation, "YBR_FULL");
             else
@@ -732,9 +733,9 @@ int DiImage::writeFrameToDataset(DcmItem &dataset,
         delete dataset.remove(DCM_WindowCenterWidthExplanation);
         /* write pixel data (OB or OW) */
         if (bitsStored <= 8)
-            dataset.putAndInsertUint8Array(DCM_PixelData, (Uint8 *)pixel, count);
+            dataset.putAndInsertUint8Array(DCM_PixelData, OFstatic_cast(Uint8 *, OFconst_cast(void *, pixel)), count);
         else
-            dataset.putAndInsertUint16Array(DCM_PixelData, (Uint16 *)pixel, count);
+            dataset.putAndInsertUint16Array(DCM_PixelData, OFstatic_cast(Uint16 *, OFconst_cast(void *, pixel)), count);
         /* update other DICOM attributes */
         updateImagePixelModuleAttributes(dataset);
         result = 1;
@@ -758,7 +759,7 @@ int DiImage::writeBMP(FILE *stream,
             /* number of bytes */
             SB_BitmapFileHeader fileHeader;
             SB_BitmapInfoHeader infoHeader;
-            Uint32 *palette = (bits == 8) ? new Uint32[256] : (Uint32 *)NULL;
+            Uint32 *palette = (bits == 8) ? new Uint32[256] : OFstatic_cast(Uint32 *, NULL);
             /* fill bitmap file header with data */
             fileHeader.bfType[0] = 'B';
             fileHeader.bfType[1] = 'M';
@@ -792,15 +793,15 @@ int DiImage::writeBMP(FILE *stream,
             if (gLocalByteOrder != EBO_LittleEndian)
             {
                 /* other data elements are always '0' and, therefore, can remain as they are */
-                swap4Bytes((Uint8 *)&fileHeader.bfSize);
-                swap4Bytes((Uint8 *)&fileHeader.bfOffBits);
-                swap4Bytes((Uint8 *)&infoHeader.biSize);
-                swap4Bytes((Uint8 *)&infoHeader.biWidth);
-                swap4Bytes((Uint8 *)&infoHeader.biHeight);
-                swap2Bytes((Uint8 *)&infoHeader.biPlanes);
-                swap2Bytes((Uint8 *)&infoHeader.biBitCount);
+                swap4Bytes(OFreinterpret_cast(Uint8 *, &fileHeader.bfSize));
+                swap4Bytes(OFreinterpret_cast(Uint8 *, &fileHeader.bfOffBits));
+                swap4Bytes(OFreinterpret_cast(Uint8 *, &infoHeader.biSize));
+                swap4Bytes(OFreinterpret_cast(Uint8 *, &infoHeader.biWidth));
+                swap4Bytes(OFreinterpret_cast(Uint8 *, &infoHeader.biHeight));
+                swap2Bytes(OFreinterpret_cast(Uint8 *, &infoHeader.biPlanes));
+                swap2Bytes(OFreinterpret_cast(Uint8 *, &infoHeader.biBitCount));
                 if (palette != NULL)
-                    swapBytes((Uint8 *)palette, 256 * 4 /*byteLength*/, 4 /*valWidth*/);
+                    swapBytes(OFreinterpret_cast(Uint8 *, palette), 256 * 4 /*byteLength*/, 4 /*valWidth*/);
             }
             /* write bitmap file header: do not write the struct because of 32-bit alignment */
             fwrite(&fileHeader.bfType, sizeof(fileHeader.bfType), 1, stream);
@@ -824,13 +825,13 @@ int DiImage::writeBMP(FILE *stream,
             if (palette != NULL)
                 fwrite(palette, 4, 256, stream);
             /* write pixel data */
-            fwrite(data, 1, (size_t)bytes, stream);
+            fwrite(data, 1, OFstatic_cast(size_t, bytes), stream);
             /* delete color palette */
             delete[] palette;
             result = 1;
         }
         /* delete pixel data */
-        delete (char *)data;                 // type cast necessary to avoid compiler warnings using gcc >2.95
+        delete OFstatic_cast(char *, data);     // type cast necessary to avoid compiler warnings using gcc >2.95
     }
     return result;
 }
@@ -840,7 +841,10 @@ int DiImage::writeBMP(FILE *stream,
  *
  * CVS/RCS Log:
  * $Log: diimage.cc,v $
- * Revision 1.24  2002-12-13 09:28:22  joergr
+ * Revision 1.25  2003-12-08 17:17:04  joergr
+ * Adapted type casts to new-style typecast operators defined in ofcast.h.
+ *
+ * Revision 1.24  2002/12/13 09:28:22  joergr
  * Added explicit type cast to pointer initialization to avoid warning reported
  * by gcc 2.7.2.1.
  *
