@@ -42,8 +42,8 @@
 /* Define if your system has a prototype for gethostname */
 #undef HAVE_PROTOTYPE_GETHOSTNAME
 
-/* Define if your system has a prototype for getsockopt */
-#undef HAVE_PROTOTYPE_GETSOCKOPT
+/* Define if your system has a prototype for flock */
+#undef HAVE_PROTOTYPE_FLOCK
 
 /* Define if your system has a prototype for listen */
 #undef HAVE_PROTOTYPE_LISTEN
@@ -54,11 +54,23 @@
 /* Define if your system has a prototype for connect */
 #undef HAVE_PROTOTYPE_CONNECT
 
+/* Define if your system has a prototype for select */
+#undef HAVE_PROTOTYPE_SELECT
+
 /* Define if your system has a prototype for setsockopt */
 #undef HAVE_PROTOTYPE_SETSOCKOPT
 
+/* Define if your system has a prototype for getsockopt */
+#undef HAVE_PROTOTYPE_GETSOCKOPT
+
+/* Define if your system has a prototype for getsockname */
+#undef HAVE_PROTOTYPE_GETSOCKNAME
+
 /* Define if your system has a prototype for wait3 */
 #undef HAVE_PROTOTYPE_WAIT3
+
+/* Define if your system has a prototype for waitpid */
+#undef HAVE_PROTOTYPE_WAITPID
 
 /* Define if your system has a prototype for usleep in libc.h */
 #undef HAVE_PROTOTYPE_USLEEP
@@ -94,4 +106,3 @@
 #undef HAVE_DECLARATION_STRUCT_SEMBUF
 
 #endif
-

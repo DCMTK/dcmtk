@@ -15,7 +15,7 @@ all:
 
 install: 
 	mkinstalldirs $(includedir)
-	$(INSTALL_DATA) include/config.h $(includedir)
+	$(INSTALL_DATA) include/osconfig.h include/config.h $(includedir)
 
 clean:
 	(cd include; rm -f $(TRASH))

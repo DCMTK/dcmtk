@@ -64,20 +64,35 @@
 /* The number of bytes in a short.  */
 #undef SIZEOF_SHORT
 
+/* Define if you have the accept function.  */
+#undef HAVE_ACCEPT
+
 /* Define if you have the access function.  */
 #undef HAVE_ACCESS
+
+/* Define if you have the bind function.  */
+#undef HAVE_BIND
 
 /* Define if you have the bzero function.  */
 #undef HAVE_BZERO
 
+/* Define if you have the connect function.  */
+#undef HAVE_CONNECT
+
 /* Define if you have the cuserid function.  */
 #undef HAVE_CUSERID
+
+/* Define if you have the flock function.  */
+#undef HAVE_FLOCK
 
 /* Define if you have the getcwd function.  */
 #undef HAVE_GETCWD
 
 /* Define if you have the getenv function.  */
 #undef HAVE_GETENV
+
+/* Define if you have the gethostbyname function.  */
+#undef HAVE_GETHOSTBYNAME
 
 /* Define if you have the gethostid function.  */
 #undef HAVE_GETHOSTID
@@ -91,6 +106,12 @@
 /* Define if you have the getpid function.  */
 #undef HAVE_GETPID
 
+/* Define if you have the getsockname function.  */
+#undef HAVE_GETSOCKNAME
+
+/* Define if you have the getsockopt function.  */
+#undef HAVE_GETSOCKOPT
+
 /* Define if you have the getwd function.  */
 #undef HAVE_GETWD
 
@@ -99,6 +120,12 @@
 
 /* Define if you have the itoa function.  */
 #undef HAVE_ITOA
+
+/* Define if you have the listen function.  */
+#undef HAVE_LISTEN
+
+/* Define if you have the lockf function.  */
+#undef HAVE_LOCKF
 
 /* Define if you have the malloc_debug function.  */
 #undef HAVE_MALLOC_DEBUG
@@ -112,6 +139,9 @@
 /* Define if you have the rindex function.  */
 #undef HAVE_RINDEX
 
+/* Define if you have the select function.  */
+#undef HAVE_SELECT
+
 /* Define if you have the semctl function.  */
 #undef HAVE_SEMCTL
 
@@ -120,6 +150,9 @@
 
 /* Define if you have the semop function.  */
 #undef HAVE_SEMOP
+
+/* Define if you have the setsockopt function.  */
+#undef HAVE_SETSOCKOPT
 
 /* Define if you have the shmat function.  */
 #undef HAVE_SHMAT
@@ -166,6 +199,9 @@
 /* Define if you have the usleep function.  */
 #undef HAVE_USLEEP
 
+/* Define if you have the waitpid function.  */
+#undef HAVE_WAITPID
+
 /* Define if you have the <fcntl.h> header file.  */
 #undef HAVE_FCNTL_H
 
@@ -204,6 +240,9 @@
 
 /* Define if you have the <sys/param.h> header file.  */
 #undef HAVE_SYS_PARAM_H
+
+/* Define if you have the <sys/resource.h> header file.  */
+#undef HAVE_SYS_RESOURCE_H
 
 /* Define if you have the <sys/select.h> header file.  */
 #undef HAVE_SYS_SELECT_H
@@ -281,8 +320,8 @@
 /* Define if your system has a prototype for gethostname */
 #undef HAVE_PROTOTYPE_GETHOSTNAME
 
-/* Define if your system has a prototype for getsockopt */
-#undef HAVE_PROTOTYPE_GETSOCKOPT
+/* Define if your system has a prototype for flock */
+#undef HAVE_PROTOTYPE_FLOCK
 
 /* Define if your system has a prototype for listen */
 #undef HAVE_PROTOTYPE_LISTEN
@@ -293,11 +332,23 @@
 /* Define if your system has a prototype for connect */
 #undef HAVE_PROTOTYPE_CONNECT
 
+/* Define if your system has a prototype for select */
+#undef HAVE_PROTOTYPE_SELECT
+
 /* Define if your system has a prototype for setsockopt */
 #undef HAVE_PROTOTYPE_SETSOCKOPT
 
+/* Define if your system has a prototype for getsockopt */
+#undef HAVE_PROTOTYPE_GETSOCKOPT
+
+/* Define if your system has a prototype for getsockname */
+#undef HAVE_PROTOTYPE_GETSOCKNAME
+
 /* Define if your system has a prototype for wait3 */
 #undef HAVE_PROTOTYPE_WAIT3
+
+/* Define if your system has a prototype for waitpid */
+#undef HAVE_PROTOTYPE_WAITPID
 
 /* Define if your system has a prototype for usleep in libc.h */
 #undef HAVE_PROTOTYPE_USLEEP
