@@ -21,10 +21,10 @@
  *
  *  Purpose: Presentation State Viewer - Network Receive Component (Store SCP)
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-09-23 18:26:06 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2002-11-26 08:44:26 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmpstat/apps/dcmprscp.cc,v $
- *  CVS/RCS Revision: $Revision: 1.11 $
+ *  CVS/RCS Revision: $Revision: 1.12 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -56,7 +56,7 @@ END_EXTERN_C
 #include "dvpshlp.h"
 
 #ifdef WITH_ZLIB
-#include "zlib.h"        /* for zlibVersion() */
+#include <zlib.h>        /* for zlibVersion() */
 #endif
 
 #define OFFIS_CONSOLE_APPLICATION "dcmprscp"
@@ -405,7 +405,11 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmprscp.cc,v $
- * Revision 1.11  2002-09-23 18:26:06  joergr
+ * Revision 1.12  2002-11-26 08:44:26  meichel
+ * Replaced all includes for "zlib.h" with <zlib.h>
+ *   to avoid inclusion of zlib.h in the makefile dependencies.
+ *
+ * Revision 1.11  2002/09/23 18:26:06  joergr
  * Added new command line option "--version" which prints the name and version
  * number of external libraries used (incl. preparation for future support of
  * 'config.guess' host identifiers).

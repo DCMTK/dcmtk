@@ -22,9 +22,9 @@
  *  Purpose: Storage Service Class User (C-STORE operation)
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-11-25 18:00:20 $
+ *  Update Date:      $Date: 2002-11-26 08:43:22 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/apps/storescu.cc,v $
- *  CVS/RCS Revision: $Revision: 1.49 $
+ *  CVS/RCS Revision: $Revision: 1.50 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -82,7 +82,7 @@ END_EXTERN_C
 #endif
 
 #ifdef WITH_ZLIB
-#include "zlib.h"          /* for zlibVersion() */
+#include <zlib.h>          /* for zlibVersion() */
 #endif
 
 #define OFFIS_CONSOLE_APPLICATION "storescu"
@@ -1361,7 +1361,11 @@ cstore(T_ASC_Association * assoc, const OFString& fname)
 /*
 ** CVS Log
 ** $Log: storescu.cc,v $
-** Revision 1.49  2002-11-25 18:00:20  meichel
+** Revision 1.50  2002-11-26 08:43:22  meichel
+** Replaced all includes for "zlib.h" with <zlib.h>
+**   to avoid inclusion of zlib.h in the makefile dependencies.
+**
+** Revision 1.49  2002/11/25 18:00:20  meichel
 ** Converted compile time option to leniently handle space padded UIDs
 **   in the Storage Service Class into command line / config file option.
 **

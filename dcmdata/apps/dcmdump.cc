@@ -21,10 +21,10 @@
  *
  *  Purpose: List the contents of a dicom file
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-09-23 17:52:02 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2002-11-26 08:43:00 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/apps/dcmdump.cc,v $
- *  CVS/RCS Revision: $Revision: 1.42 $
+ *  CVS/RCS Revision: $Revision: 1.43 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -54,7 +54,7 @@ END_EXTERN_C
 #include "dcistrmz.h"    /* for dcmZlibExpectRFC1950Encoding */
 
 #ifdef WITH_ZLIB
-#include "zlib.h"        /* for zlibVersion() */
+#include <zlib.h>        /* for zlibVersion() */
 #endif
 
 #define OFFIS_CONSOLE_APPLICATION "dcmdump"
@@ -513,7 +513,11 @@ static int dumpFile(ostream & out,
 /*
  * CVS/RCS Log:
  * $Log: dcmdump.cc,v $
- * Revision 1.42  2002-09-23 17:52:02  joergr
+ * Revision 1.43  2002-11-26 08:43:00  meichel
+ * Replaced all includes for "zlib.h" with <zlib.h>
+ *   to avoid inclusion of zlib.h in the makefile dependencies.
+ *
+ * Revision 1.42  2002/09/23 17:52:02  joergr
  * Prepared code for future support of 'config.guess' host identifiers.
  *
  * Revision 1.41  2002/09/23 13:50:41  joergr

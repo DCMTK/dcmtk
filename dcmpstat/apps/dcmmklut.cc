@@ -24,10 +24,10 @@
  *    The LUT has a gamma curve shape or can be imported from an external
  *    file.
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-09-23 18:26:05 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2002-11-26 08:44:25 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmpstat/apps/dcmmklut.cc,v $
- *  CVS/RCS Revision: $Revision: 1.31 $
+ *  CVS/RCS Revision: $Revision: 1.32 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -66,7 +66,7 @@ END_EXTERN_C
 #include "ofstream.h"
 
 #ifdef WITH_ZLIB
-#include "zlib.h"        /* for zlibVersion() */
+#include <zlib.h>        /* for zlibVersion() */
 #endif
 
 #define OFFIS_CONSOLE_APPLICATION "dcmmklut"
@@ -1095,7 +1095,11 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmmklut.cc,v $
- * Revision 1.31  2002-09-23 18:26:05  joergr
+ * Revision 1.32  2002-11-26 08:44:25  meichel
+ * Replaced all includes for "zlib.h" with <zlib.h>
+ *   to avoid inclusion of zlib.h in the makefile dependencies.
+ *
+ * Revision 1.31  2002/09/23 18:26:05  joergr
  * Added new command line option "--version" which prints the name and version
  * number of external libraries used (incl. preparation for future support of
  * 'config.guess' host identifiers).

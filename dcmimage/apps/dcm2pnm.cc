@@ -21,10 +21,10 @@
  *
  *  Purpose: Convert DICOM Images to PPM or PGM using the dcmimage library.
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-09-23 18:01:18 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2002-11-26 08:44:55 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/apps/dcm2pnm.cc,v $
- *  CVS/RCS Revision: $Revision: 1.66 $
+ *  CVS/RCS Revision: $Revision: 1.67 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -69,7 +69,7 @@ END_EXTERN_C
 #endif
 
 #ifdef WITH_ZLIB
-# include "zlib.h"         /* for zlibVersion() */
+#include <zlib.h>         /* for zlibVersion() */
 #endif
 
 #include "ofstream.h"
@@ -1374,7 +1374,11 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcm2pnm.cc,v $
- * Revision 1.66  2002-09-23 18:01:18  joergr
+ * Revision 1.67  2002-11-26 08:44:55  meichel
+ * Replaced all includes for "zlib.h" with <zlib.h>
+ *   to avoid inclusion of zlib.h in the makefile dependencies.
+ *
+ * Revision 1.66  2002/09/23 18:01:18  joergr
  * Added new command line option "--version" which prints the name and version
  * number of external libraries used (incl. preparation for future support of
  * 'config.guess' host identifiers).

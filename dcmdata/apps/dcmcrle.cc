@@ -21,10 +21,10 @@
  *
  *  Purpose: Compress DICOM file with RLE Transfer Syntax
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-09-23 17:52:02 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2002-11-26 08:42:59 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/apps/dcmcrle.cc,v $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -59,7 +59,7 @@ END_EXTERN_C
 #include "dcrleerg.h"  /* for DcmRLEEncoderRegistration */
 
 #ifdef WITH_ZLIB
-#include "zlib.h"      /* for zlibVersion() */
+#include <zlib.h>      /* for zlibVersion() */
 #endif
 
 #define OFFIS_CONSOLE_APPLICATION "dcmcrle"
@@ -381,7 +381,11 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmcrle.cc,v $
- * Revision 1.4  2002-09-23 17:52:02  joergr
+ * Revision 1.5  2002-11-26 08:42:59  meichel
+ * Replaced all includes for "zlib.h" with <zlib.h>
+ *   to avoid inclusion of zlib.h in the makefile dependencies.
+ *
+ * Revision 1.4  2002/09/23 17:52:02  joergr
  * Prepared code for future support of 'config.guess' host identifiers.
  *
  * Revision 1.3  2002/09/23 13:50:40  joergr

@@ -40,10 +40,10 @@
  *  There should be no need to set this compiler flag manually, just compile
  *  dcmjpeg/apps/dcmmkdir.cc.
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-11-04 16:39:18 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2002-11-26 08:43:00 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/apps/dcmgpdir.cc,v $
- *  CVS/RCS Revision: $Revision: 1.68 $
+ *  CVS/RCS Revision: $Revision: 1.69 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -130,7 +130,7 @@ END_EXTERN_C
 #endif
 
 #ifdef WITH_ZLIB
-# include "zlib.h"         /* for zlibVersion() */
+#include <zlib.h>         /* for zlibVersion() */
 #endif
 
 #ifdef BUILD_DCMGPDIR_AS_DCMMKDIR
@@ -4429,7 +4429,11 @@ expandFileNames(OFList<OFString>& fileNames, OFList<OFString>& expandedNames)
 /*
  * CVS/RCS Log:
  * $Log: dcmgpdir.cc,v $
- * Revision 1.68  2002-11-04 16:39:18  joergr
+ * Revision 1.69  2002-11-26 08:43:00  meichel
+ * Replaced all includes for "zlib.h" with <zlib.h>
+ *   to avoid inclusion of zlib.h in the makefile dependencies.
+ *
+ * Revision 1.68  2002/11/04 16:39:18  joergr
  * Added new command line option preventing the creation of a backup of an
  * existing DICOMDIR.
  *

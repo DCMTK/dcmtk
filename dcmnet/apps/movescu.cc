@@ -22,9 +22,9 @@
  *  Purpose: Query/Retrieve Service Class User (C-MOVE operation)
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-11-25 18:00:18 $
+ *  Update Date:      $Date: 2002-11-26 08:43:21 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/apps/movescu.cc,v $
- *  CVS/RCS Revision: $Revision: 1.44 $
+ *  CVS/RCS Revision: $Revision: 1.45 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -69,7 +69,7 @@ END_EXTERN_C
 #include "dcuid.h"    /* for dcmtk version name */
 
 #ifdef WITH_ZLIB
-#include "zlib.h"     /* for zlibVersion() */
+#include <zlib.h>     /* for zlibVersion() */
 #endif
 
 #define OFFIS_CONSOLE_APPLICATION "movescu"
@@ -1329,7 +1329,11 @@ cmove(T_ASC_Association * assoc, const char *fname)
 ** CVS Log
 **
 ** $Log: movescu.cc,v $
-** Revision 1.44  2002-11-25 18:00:18  meichel
+** Revision 1.45  2002-11-26 08:43:21  meichel
+** Replaced all includes for "zlib.h" with <zlib.h>
+**   to avoid inclusion of zlib.h in the makefile dependencies.
+**
+** Revision 1.44  2002/11/25 18:00:18  meichel
 ** Converted compile time option to leniently handle space padded UIDs
 **   in the Storage Service Class into command line / config file option.
 **

@@ -21,10 +21,10 @@
  *
  *  Purpose: Compress DICOM file
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-09-23 18:14:06 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2002-11-26 08:44:41 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmjpeg/apps/dcmcjpeg.cc,v $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -64,7 +64,7 @@ END_EXTERN_C
 #include "diregist.h"  /* include to support color images */
 
 #ifdef WITH_ZLIB
-#include "zlib.h"      /* for zlibVersion() */
+#include <zlib.h>      /* for zlibVersion() */
 #endif
 
 #define OFFIS_CONSOLE_APPLICATION "dcmcjpeg"
@@ -676,7 +676,11 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmcjpeg.cc,v $
- * Revision 1.6  2002-09-23 18:14:06  joergr
+ * Revision 1.7  2002-11-26 08:44:41  meichel
+ * Replaced all includes for "zlib.h" with <zlib.h>
+ *   to avoid inclusion of zlib.h in the makefile dependencies.
+ *
+ * Revision 1.6  2002/09/23 18:14:06  joergr
  * Added new command line option "--version" which prints the name and version
  * number of external libraries used (incl. preparation for future support of
  * 'config.guess' host identifiers).

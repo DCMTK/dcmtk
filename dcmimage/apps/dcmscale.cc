@@ -21,10 +21,10 @@
  *
  *  Purpose: Scale DICOM images
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-09-23 18:01:19 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2002-11-26 08:44:57 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/apps/dcmscale.cc,v $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -61,7 +61,7 @@ END_EXTERN_C
 #endif
 
 #ifdef WITH_ZLIB
-#include "zlib.h"          /* for zlibVersion() */
+#include <zlib.h>          /* for zlibVersion() */
 #endif
 
 #define OFFIS_CONSOLE_DESCRIPTION "Scale DICOM images"
@@ -567,7 +567,11 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmscale.cc,v $
- * Revision 1.4  2002-09-23 18:01:19  joergr
+ * Revision 1.5  2002-11-26 08:44:57  meichel
+ * Replaced all includes for "zlib.h" with <zlib.h>
+ *   to avoid inclusion of zlib.h in the makefile dependencies.
+ *
+ * Revision 1.4  2002/09/23 18:01:19  joergr
  * Added new command line option "--version" which prints the name and version
  * number of external libraries used (incl. preparation for future support of
  * 'config.guess' host identifiers).

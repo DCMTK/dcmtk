@@ -21,10 +21,10 @@
  *
  *  Purpose: Convert dicom file encoding
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-11-25 10:15:07 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2002-11-26 08:42:59 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/apps/dcmconv.cc,v $
- *  CVS/RCS Revision: $Revision: 1.39 $
+ *  CVS/RCS Revision: $Revision: 1.40 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -60,7 +60,7 @@ END_EXTERN_C
 #include "dcistrmz.h"    /* for dcmZlibExpectRFC1950Encoding */
 
 #ifdef WITH_ZLIB
-#include "zlib.h"        /* for zlibVersion() */
+#include <zlib.h>        /* for zlibVersion() */
 #endif
 
 #define OFFIS_CONSOLE_APPLICATION "dcmconv"
@@ -417,7 +417,11 @@ int main(int argc, char *argv[])
 /*
 ** CVS/RCS Log:
 ** $Log: dcmconv.cc,v $
-** Revision 1.39  2002-11-25 10:15:07  joergr
+** Revision 1.40  2002-11-26 08:42:59  meichel
+** Replaced all includes for "zlib.h" with <zlib.h>
+**   to avoid inclusion of zlib.h in the makefile dependencies.
+**
+** Revision 1.39  2002/11/25 10:15:07  joergr
 ** Used OFConsoleApplication::checkDependence() and checkConflict() routine
 ** wherever possible.
 ** Made declaration of compression level variable dependent on WITH_ZLIB define.

@@ -21,9 +21,9 @@
  *
  *  Purpose: Create and Verify DICOM Digital Signatures
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-09-23 19:06:10 $
- *  CVS/RCS Revision: $Revision: 1.13 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2002-11-26 08:45:20 $
+ *  CVS/RCS Revision: $Revision: 1.14 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -58,7 +58,7 @@ END_EXTERN_C
 #include "dcuid.h"         /* for dcmtk version name */
 
 #ifdef WITH_ZLIB
-# include "zlib.h"         /* for zlibVersion() */
+#include <zlib.h>         /* for zlibVersion() */
 #endif
 
 #define OFFIS_CONSOLE_APPLICATION "dcmsign"
@@ -1133,7 +1133,11 @@ int main(int, char *[])
 
 /*
  *  $Log: dcmsign.cc,v $
- *  Revision 1.13  2002-09-23 19:06:10  joergr
+ *  Revision 1.14  2002-11-26 08:45:20  meichel
+ *  Replaced all includes for "zlib.h" with <zlib.h>
+ *    to avoid inclusion of zlib.h in the makefile dependencies.
+ *
+ *  Revision 1.13  2002/09/23 19:06:10  joergr
  *  Fixed typo in pre-processor directive.
  *
  *  Revision 1.12  2002/09/23 18:18:25  joergr
