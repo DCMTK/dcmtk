@@ -23,8 +23,8 @@
  *    classes: DSRDocumentTreeNode
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-09-10 13:18:43 $
- *  CVS/RCS Revision: $Revision: 1.27 $
+ *  Update Date:      $Date: 2003-09-15 14:13:42 $
+ *  CVS/RCS Revision: $Revision: 1.28 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -36,6 +36,7 @@
 
 #include "dsrdoctn.h"
 #include "dsrxmld.h"
+#include "dsriodcc.h"
 
 #include "ofstring.h"
 #include "ofstream.h"
@@ -97,11 +98,11 @@ OFCondition DSRDocumentTreeNode::print(ostream &stream,
 
 
 OFCondition DSRDocumentTreeNode::read(DcmItem &dataset,
-                                      const E_DocumentType documentType,
+                                      const DSRIODConstraintChecker *constraintChecker,
                                       const size_t flags,
                                       OFConsole *logStream)
 {
-    return readSRDocumentContentModule(dataset, documentType, flags, logStream);
+    return readSRDocumentContentModule(dataset, constraintChecker, flags, logStream);
 }
 
 
@@ -157,11 +158,11 @@ OFCondition DSRDocumentTreeNode::readXML(const DSRXMLDocument &doc,
                 E_RelationshipType relationshipType = doc.getRelationshipTypeFromNode(cursor);
                 if (valueType != VT_invalid)
                 {
-                    /* create new node (by-value) */
-                    result = createAndAppendNewNode(node, documentType, relationshipType, valueType, OFFalse /*checkConstraints*/);
+                    /* create new node (by-value), do not check constraints */
+                    result = createAndAppendNewNode(node, relationshipType, valueType);
                 } else {
-                    /* create new node (by-reference) */
-                    result = createAndAppendNewNode(node, documentType, relationshipType, VT_byReference);
+                    /* create new node (by-reference), constraints are checked later */
+                    result = createAndAppendNewNode(node, relationshipType, VT_byReference);
                 }
                 if (result.good())
                 {
@@ -330,16 +331,6 @@ void DSRDocumentTreeNode::removeSignatures()
 }
 
 
-OFBool DSRDocumentTreeNode::canAddNode(const E_DocumentType /*documentType*/,
-                                       const E_RelationshipType /*relationshipType*/,
-                                       const E_ValueType /*valueType*/,
-                                       const OFBool /*byReference*/) const
-{
-    /* no restrictions */
-    return OFTrue;
-}
-
-
 OFCondition DSRDocumentTreeNode::readContentItem(DcmItem & /*dataset*/,
                                                  OFConsole * /*logStream*/)
 {
@@ -369,13 +360,13 @@ OFCondition DSRDocumentTreeNode::renderHTMLContentItem(ostream & /*docStream*/,
 
 
 OFCondition DSRDocumentTreeNode::readSRDocumentContentModule(DcmItem &dataset,
-                                                             const E_DocumentType documentType,
+                                                             const DSRIODConstraintChecker *constraintChecker,
                                                              const size_t flags,
                                                              OFConsole *logStream)
 {
     OFCondition result = EC_Normal;
     /* read DocumentRelationshipMacro */
-    result = readDocumentRelationshipMacro(dataset, documentType, "1" /*posString*/, flags, logStream);
+    result = readDocumentRelationshipMacro(dataset, constraintChecker, "1" /*posString*/, flags, logStream);
     /* read DocumentContentMacro */
     if (result.good())
         result= readDocumentContentMacro(dataset, "1" /*posString*/, logStream);
@@ -398,7 +389,7 @@ OFCondition DSRDocumentTreeNode::writeSRDocumentContentModule(DcmItem &dataset,
 
 
 OFCondition DSRDocumentTreeNode::readDocumentRelationshipMacro(DcmItem &dataset,
-                                                               const E_DocumentType documentType,
+                                                               const DSRIODConstraintChecker *constraintChecker,
                                                                const OFString &posString,
                                                                const size_t flags,
                                                                OFConsole *logStream)
@@ -417,7 +408,7 @@ OFCondition DSRDocumentTreeNode::readDocumentRelationshipMacro(DcmItem &dataset,
         printWarningMessage(logStream, "ContentTemplateSequence detected - template identification not yet supported");
     /* read ContentSequence */
     if (result.good())
-        result = readContentSequence(dataset, documentType, posString, flags, logStream);
+        result = readContentSequence(dataset, constraintChecker, posString, flags, logStream);
     return result;
 }
 
@@ -496,16 +487,14 @@ OFCondition DSRDocumentTreeNode::writeDocumentContentMacro(DcmItem &dataset,
 
 
 OFCondition DSRDocumentTreeNode::createAndAppendNewNode(DSRDocumentTreeNode *&previousNode,
-                                                        const E_DocumentType documentType,
                                                         const E_RelationshipType relationshipType,
                                                         const E_ValueType valueType,
-                                                        const OFBool checkConstraints)
+                                                        const DSRIODConstraintChecker *constraintChecker)
 {
     OFCondition result = EC_Normal;
     /* do not check by-reference relationships here, will be done later (after complete reading) */
-    if (((valueType == VT_byReference) && (relationshipType != RT_unknown)) ||
-        !checkConstraints || !isConstraintCheckingSupported(documentType) ||
-        canAddNode(documentType, relationshipType, valueType))
+    if (((valueType == VT_byReference) && (relationshipType != RT_unknown)) || (constraintChecker == NULL) ||
+        constraintChecker->checkContentRelationship(ValueType, relationshipType, valueType))
     {
         DSRDocumentTreeNode *node = createDocumentTreeNode(relationshipType, valueType);
         if (node != NULL)
@@ -541,14 +530,14 @@ OFCondition DSRDocumentTreeNode::createAndAppendNewNode(DSRDocumentTreeNode *&pr
 
 
 OFCondition DSRDocumentTreeNode::readContentSequence(DcmItem &dataset,
-                                                     const E_DocumentType documentType,
+                                                     const DSRIODConstraintChecker *constraintChecker,
                                                      const OFString &posString,
                                                      const size_t flags,
                                                      OFConsole *logStream)
 {
     OFCondition result = EC_Normal;
     DcmStack stack;
-    /* read ContentSequence (might be absent or empty */
+    /* read ContentSequence (might be absent or empty) */
     if (dataset.search(DCM_ContentSequence, stack, ESM_fromHere, OFFalse).good())
     {
         DcmSequenceOfItems *dseq = OFstatic_cast(DcmSequenceOfItems *, stack.top());
@@ -592,7 +581,7 @@ OFCondition DSRDocumentTreeNode::readContentSequence(DcmItem &dataset,
                         if (getAndCheckElementFromDataset(*ditem, referencedContentItemIdentifier, "1-n", "1C", logStream).good())
                         {
                             /* create new node (by-reference) */
-                            result = createAndAppendNewNode(node, documentType, relationshipType, VT_byReference);
+                            result = createAndAppendNewNode(node, relationshipType, VT_byReference, constraintChecker);
                             /* read ReferencedContentItemIdentifier (again) */
                             if (result.good())
                                 result = node->readContentItem(*ditem, logStream);
@@ -607,10 +596,10 @@ OFCondition DSRDocumentTreeNode::readContentSequence(DcmItem &dataset,
                                 if (valueType == VT_unknown)
                                     printUnknownValueWarningMessage(logStream, "ValueType", tmpString.c_str());
                                 /* create new node (by-value) */
-                                result = createAndAppendNewNode(node, documentType, relationshipType, valueType, (flags & RF_ignoreRelationshipConstraints) == 0);
+                                result = createAndAppendNewNode(node, relationshipType, valueType, (flags & RF_ignoreRelationshipConstraints) ? NULL : constraintChecker);
                                 /* read RelationshipMacro */
                                 if (result.good())
-                                    result = node->readDocumentRelationshipMacro(*ditem, documentType, location, flags, logStream);
+                                    result = node->readDocumentRelationshipMacro(*ditem, constraintChecker, location, flags, logStream);
                                 else
                                 {
                                     /* create new node failed */
@@ -621,6 +610,8 @@ OFCondition DSRDocumentTreeNode::readContentSequence(DcmItem &dataset,
                                     message += "\" to ";
                                     message += valueTypeToDefinedTerm(ValueType /*source item*/);
                                     message += " in ";
+                                    /* determine document type */
+                                    const E_DocumentType documentType = (constraintChecker != NULL) ? constraintChecker->getDocumentType() : DT_invalid;
                                     message += documentTypeToReadableName(documentType);
                                     printErrorMessage(logStream, message.c_str());
                                 }
@@ -922,7 +913,11 @@ const OFString &DSRDocumentTreeNode::getRelationshipText(const E_RelationshipTyp
 /*
  *  CVS/RCS Log:
  *  $Log: dsrdoctn.cc,v $
- *  Revision 1.27  2003-09-10 13:18:43  joergr
+ *  Revision 1.28  2003-09-15 14:13:42  joergr
+ *  Introduced new class to facilitate checking of SR IOD relationship content
+ *  constraints. Replaced old implementation distributed over numerous classes.
+ *
+ *  Revision 1.27  2003/09/10 13:18:43  joergr
  *  Replaced PrivateCodingSchemeUID by new CodingSchemeIdenticationSequence as
  *  required by CP 324.
  *

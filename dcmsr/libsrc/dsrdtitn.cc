@@ -23,8 +23,8 @@
  *    classes: DSRDateTimeTreeNode
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-08-07 17:29:13 $
- *  CVS/RCS Revision: $Revision: 1.17 $
+ *  Update Date:      $Date: 2003-09-15 14:13:42 $
+ *  CVS/RCS Revision: $Revision: 1.18 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -147,25 +147,14 @@ OFCondition DSRDateTimeTreeNode::renderHTMLContentItem(ostream &docStream,
 }
 
 
-OFBool DSRDateTimeTreeNode::canAddNode(const E_DocumentType documentType,
-                                       const E_RelationshipType relationshipType,
-                                       const E_ValueType valueType,
-                                       const OFBool byReference) const
-{
-    OFBool result = OFFalse;
-    if ((!byReference && (documentType != DT_KeyObjectDoc)) || (documentType == DT_ComprehensiveSR))
-    {
-        if (relationshipType == RT_hasConceptMod)
-            result = (valueType == VT_Text) || (valueType == VT_Code);
-    }
-    return result;
-}
-
-
 /*
  *  CVS/RCS Log:
  *  $Log: dsrdtitn.cc,v $
- *  Revision 1.17  2003-08-07 17:29:13  joergr
+ *  Revision 1.18  2003-09-15 14:13:42  joergr
+ *  Introduced new class to facilitate checking of SR IOD relationship content
+ *  constraints. Replaced old implementation distributed over numerous classes.
+ *
+ *  Revision 1.17  2003/08/07 17:29:13  joergr
  *  Removed libxml dependency from header files. Simplifies linking (MSVC).
  *
  *  Revision 1.16  2003/08/07 15:23:55  joergr

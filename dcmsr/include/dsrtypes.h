@@ -23,8 +23,8 @@
  *    classes: DSRTypes
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-09-10 13:16:13 $
- *  CVS/RCS Revision: $Revision: 1.34 $
+ *  Update Date:      $Date: 2003-09-15 14:18:54 $
+ *  CVS/RCS Revision: $Revision: 1.35 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -68,13 +68,14 @@
 #define XML_SCHEMA_INSTANCE_URI "http://www.w3.org/2001/XMLSchema-instance"
 
 
-/*-----------------------*
- *  forward declaration  *
- *-----------------------*/
+/*------------------------*
+ *  forward declarations  *
+ *------------------------*/
 
 class DSRXMLCursor;
 class DSRXMLDocument;
 class DSRDocumentTreeNode;
+class DSRIODConstraintChecker;
 
 
 /*-----------------------*
@@ -727,20 +728,6 @@ class DSRTypes
      */
     static OFBool isDocumentTypeSupported(const E_DocumentType documentType);
 
-    /** check whether contraint checking is supported for the specified SR document type.
-     *  Currently all three general SOP classes and the Key Object Selection Document as
-     *  defined in the DICOM 2003 standard are supported (Mammography and Chest CAD SR are not).
-     ** @param  documentType  SR document type to be checked
-     ** @return status, OFTrue if constraint checking is supported, OFFalse otherwise
-     */
-    static OFBool isConstraintCheckingSupported(const E_DocumentType documentType);
-
-    /** check whether by-reference relationships are allowed for the specified document type
-     ** @param  documentType  SR document type to be checked
-     ** @return status, OFTrue if by-reference relationships are allowed, OFFalse otherwise
-     */
-    static OFBool isByReferenceAllowed(const E_DocumentType documentType);
-
     /** get current date in DICOM 'DA' format. (YYYYMMDD)
      ** @param  dateString  string used to store the current date.
      *                      ('19000101' if current date could not be retrieved)
@@ -878,6 +865,13 @@ class DSRTypes
      ** @result OFTrue if 'string' conforms to UID format, OFFalse otherwise
      */
     static OFBool checkForValidUIDFormat(const OFString &stringValue);
+
+    /** create specified SR IOD content relationship contraint checker object.
+     *  Please note that the created object has to be deleted by the caller.
+     ** @param  documentType  associated SR document type for which the checker object is created
+     ** @return pointer to new IOD checker object if successful, NULL if document type is not supported
+     */
+    static DSRIODConstraintChecker *createIODConstraintChecker(const E_DocumentType documentType);
 
     /** create specified document tree node.
      *  This is a shortcut and the only location where document tree nodes are created.
@@ -1189,7 +1183,11 @@ class DSRTypes
 /*
  *  CVS/RCS Log:
  *  $Log: dsrtypes.h,v $
- *  Revision 1.34  2003-09-10 13:16:13  joergr
+ *  Revision 1.35  2003-09-15 14:18:54  joergr
+ *  Introduced new class to facilitate checking of SR IOD relationship content
+ *  constraints. Replaced old implementation distributed over numerous classes.
+ *
+ *  Revision 1.34  2003/09/10 13:16:13  joergr
  *  Replaced PrivateCodingSchemeUID by new CodingSchemeIdenticationSequence as
  *  required by CP 324.
  *

@@ -23,8 +23,8 @@
  *    classes: DSRDocumentTree
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-08-07 17:29:13 $
- *  CVS/RCS Revision: $Revision: 1.19 $
+ *  Update Date:      $Date: 2003-09-15 14:13:42 $
+ *  CVS/RCS Revision: $Revision: 1.20 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -38,19 +38,24 @@
 #include "dsrcontn.h"
 #include "dsrreftn.h"
 #include "dsrxmld.h"
+#include "dsriodcc.h"
 
 
 DSRDocumentTree::DSRDocumentTree(const E_DocumentType documentType)
   : DSRTree(),
-    DocumentType(documentType),
+    DocumentType(DT_invalid),
     LogStream(NULL),
-    CurrentContentItem()
+    CurrentContentItem(),
+    ConstraintChecker(NULL)
 {
+    /* check & set document type, create constraint checker object */
+    changeDocumentType(documentType);
 }
 
 
 DSRDocumentTree::~DSRDocumentTree()
 {
+    delete ConstraintChecker;
 }
 
 
@@ -125,16 +130,14 @@ OFCondition DSRDocumentTree::read(DcmItem &dataset,
                                   const E_DocumentType documentType,
                                   const size_t flags)
 {
-    OFCondition result = EC_Normal;
-    /* clear current document tree */
-    clear();
-    /* set document type */
-    DocumentType = documentType;
-    /* check document type */
-    if (isDocumentTypeSupported(DocumentType))
+    /* clear current document tree, check & change document type */
+    OFCondition result = changeDocumentType(documentType);
+    if (result.good())
     {
-        if (!isConstraintCheckingSupported(DocumentType))
+        if (ConstraintChecker == NULL)
             printWarningMessage(LogStream, "Check for relationship content constraints not yet supported");
+        else if (ConstraintChecker->isTemplateSupportRequired())
+            printWarningMessage(LogStream, "Check for template constraints not yet supported");
         if ((LogStream != NULL) && (flags & RF_showCurrentlyProcessedItem))
         {
             LogStream->lockCerr() << "Processing content item 1" << endl;
@@ -155,7 +158,7 @@ OFCondition DSRDocumentTree::read(DcmItem &dataset,
                     if (addNode(node))
                     {
                         /* ... and let the node read the rest of the document */
-                        result = node->read(dataset, DocumentType, flags, LogStream);
+                        result = node->read(dataset, ConstraintChecker, flags, LogStream);
                         /* check and update by-reference relationships (if applicable) */
                         checkByReferenceRelationships(OFFalse /*updateString*/, OFTrue /*updateNodeID*/);
                     } else
@@ -170,8 +173,7 @@ OFCondition DSRDocumentTree::read(DcmItem &dataset,
             printErrorMessage(LogStream, "ValueType attribute for root content item is missing");
             result = SR_EC_MandatoryAttributeMissing;
         }
-    } else
-        result = SR_EC_UnsupportedValue;
+    }
     return result;
 }
 
@@ -181,8 +183,10 @@ OFCondition DSRDocumentTree::readXML(const DSRXMLDocument &doc,
                                      const size_t flags)
 {
     OFCondition result = SR_EC_CorruptedXMLStructure;
-    if (!isConstraintCheckingSupported(DocumentType))
+    if (ConstraintChecker == NULL)
         printWarningMessage(LogStream, "Check for relationship content constraints not yet supported");
+    else if (ConstraintChecker->isTemplateSupportRequired())
+        printWarningMessage(LogStream, "Check for template constraints not yet supported");
     /* we assume that 'cursor' points to the "content" element */
     if (cursor.valid())
     {
@@ -284,12 +288,16 @@ OFCondition DSRDocumentTree::renderHTML(ostream &docStream,
 OFCondition DSRDocumentTree::changeDocumentType(const E_DocumentType documentType)
 {
     OFCondition result = SR_EC_UnsupportedValue;
+    /* first, check whether new document type is supported at all */
     if (isDocumentTypeSupported(documentType))
     {
         /* clear object */
         clear();
         /* store new document type */
         DocumentType = documentType;
+        /* create appropriate IOD constraint checker */
+        delete ConstraintChecker;
+        ConstraintChecker = createIODConstraintChecker(documentType);
         result = EC_Normal;
     }
     return result;
@@ -304,18 +312,18 @@ OFBool DSRDocumentTree::canAddContentItem(const E_RelationshipType relationshipT
     const DSRDocumentTreeNode *node = OFstatic_cast(const DSRDocumentTreeNode *, getNode());
     if (node != NULL)
     {
-        if (isConstraintCheckingSupported(DocumentType))
+        if (ConstraintChecker != NULL)
         {
             if ((addMode == AM_beforeCurrent) || (addMode == AM_afterCurrent))
             {
                 /* check parent node */
                 node = OFstatic_cast(const DSRDocumentTreeNode *, getParentNode());
                 if (node != NULL)
-                    result = node->canAddNode(DocumentType, relationshipType, valueType);
+                    result = ConstraintChecker->checkContentRelationship(node->getValueType(), relationshipType, valueType);
             } else
-                result = node->canAddNode(DocumentType, relationshipType, valueType);
+                result = ConstraintChecker->checkContentRelationship(node->getValueType(), relationshipType, valueType);
         } else
-            result = OFTrue;
+            result = OFTrue;    /* cannot check, therefore, allow everything */
     } else {
         /* root node has to be a Container */
         result = (relationshipType == RT_isRoot) && (valueType == VT_Container);
@@ -325,14 +333,14 @@ OFBool DSRDocumentTree::canAddContentItem(const E_RelationshipType relationshipT
 
 
 OFBool DSRDocumentTree::canAddByReferenceRelationship(const E_RelationshipType relationshipType,
-                                                      const E_ValueType valueType)
+                                                      const E_ValueType targetValueType)
 {
     OFBool result = OFFalse;
-    if (isConstraintCheckingSupported(DocumentType))
+    if (ConstraintChecker != NULL)
     {
         const DSRDocumentTreeNode *node = OFstatic_cast(const DSRDocumentTreeNode *, getNode());
         if (node != NULL)
-            result = node->canAddNode(DocumentType, relationshipType, valueType, OFTrue /*byReference*/);
+            result = ConstraintChecker->checkContentRelationship(node->getValueType(), relationshipType, targetValueType, OFTrue /*byReference*/);
     } else
         result = OFTrue;    /* cannot check, therefore, allow everything */
     return result;
@@ -477,8 +485,8 @@ OFCondition DSRDocumentTree::checkByReferenceRelationships(const OFBool updateSt
     if (!(updateString && updateNodeID))
     {
         result = EC_Normal;
-        /* by-reference relationships are only allowed for particular SOP classes */
-        if (isByReferenceAllowed(DocumentType))
+        /* by-reference relationships are only allowed for particular IODs */
+        if ((ConstraintChecker != NULL) && ConstraintChecker->isByReferenceAllowed())
         {
             DSRTreeNodeCursor cursor(getRoot());
             if (cursor.isValid())
@@ -537,8 +545,8 @@ OFCondition DSRDocumentTree::checkByReferenceRelationships(const OFBool updateSt
                                             /* tbd: need to reset flag to OFFalse!? */
                                             targetNode->setReferenceTarget();
                                             /* check whether relationship is valid */
-                                            if (!parentNode->canAddNode(DocumentType, refNode->getRelationshipType(),
-                                                targetNode->getValueType(), OFTrue /*byReference*/))
+                                            if ((ConstraintChecker != NULL) && !ConstraintChecker->checkContentRelationship(parentNode->getValueType(),
+                                                refNode->getRelationshipType(), targetNode->getValueType(), OFTrue /*byReference*/))
                                             {
                                                 printWarningMessage(LogStream, "Invalid by-reference relationship between two content items");
                                             }
@@ -564,7 +572,11 @@ OFCondition DSRDocumentTree::checkByReferenceRelationships(const OFBool updateSt
 /*
  *  CVS/RCS Log:
  *  $Log: dsrdoctr.cc,v $
- *  Revision 1.19  2003-08-07 17:29:13  joergr
+ *  Revision 1.20  2003-09-15 14:13:42  joergr
+ *  Introduced new class to facilitate checking of SR IOD relationship content
+ *  constraints. Replaced old implementation distributed over numerous classes.
+ *
+ *  Revision 1.19  2003/08/07 17:29:13  joergr
  *  Removed libxml dependency from header files. Simplifies linking (MSVC).
  *
  *  Revision 1.18  2003/08/07 13:31:40  joergr

@@ -23,8 +23,8 @@
  *    classes: DSRCompositeTreeNode
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-08-07 17:29:13 $
- *  CVS/RCS Revision: $Revision: 1.15 $
+ *  Update Date:      $Date: 2003-09-15 14:13:42 $
+ *  CVS/RCS Revision: $Revision: 1.16 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -137,53 +137,14 @@ OFCondition DSRCompositeTreeNode::renderHTMLContentItem(ostream &docStream,
 }
 
 
-OFBool DSRCompositeTreeNode::canAddNode(const E_DocumentType documentType,
-                                        const E_RelationshipType relationshipType,
-                                        const E_ValueType valueType,
-                                        const OFBool byReference) const
-{
-    OFBool result = OFFalse;
-    if ((!byReference && (documentType != DT_KeyObjectDoc)) || (documentType == DT_ComprehensiveSR))
-    {
-        switch (relationshipType)
-        {
-            case RT_hasAcqContext:
-                switch (valueType)
-                {
-                    case VT_Text:
-                    case VT_Code:
-                    case VT_DateTime:
-                    case VT_Date:
-                    case VT_Time:
-                    case VT_UIDRef:
-                    case VT_PName:
-                        result = OFTrue;
-                        break;
-                    case VT_Num:
-                        result = (documentType == DT_EnhancedSR) || (documentType == DT_ComprehensiveSR);
-                        break;
-                    case VT_Container:
-                        result = byReference;       /* documentType is already checked */
-                        break;
-                    default:
-                        break;
-                }
-                break;
-            case RT_hasConceptMod:
-                result = (valueType == VT_Text) || (valueType == VT_Code);
-                break;
-            default:
-                break;
-        }
-    }
-    return result;
-}
-
-
 /*
  *  CVS/RCS Log:
  *  $Log: dsrcomtn.cc,v $
- *  Revision 1.15  2003-08-07 17:29:13  joergr
+ *  Revision 1.16  2003-09-15 14:13:42  joergr
+ *  Introduced new class to facilitate checking of SR IOD relationship content
+ *  constraints. Replaced old implementation distributed over numerous classes.
+ *
+ *  Revision 1.15  2003/08/07 17:29:13  joergr
  *  Removed libxml dependency from header files. Simplifies linking (MSVC).
  *
  *  Revision 1.14  2003/08/07 13:13:39  joergr

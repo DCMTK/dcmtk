@@ -23,8 +23,8 @@
  *    classes: DSRByReferenceTreeNode
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-08-07 12:45:14 $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  Update Date:      $Date: 2003-09-15 14:18:54 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -117,18 +117,6 @@ class DSRByReferenceTreeNode
      */
     virtual OFCondition setObservationDateTime(const OFString &observationDateTime);
 
-    /** check whether a node could be added as a child node
-     ** @param  documentType      dummy parameter
-     *  @param  relationshipType  dummy parameter
-     *  @param  valueType         dummy parameter
-     *  @param  byReference       dummy parameter
-     ** @return always OFFalse
-     */
-    virtual OFBool canAddNode(const E_DocumentType documentType,
-                              const E_RelationshipType relationshipType,
-                              const E_ValueType valueType,
-                              const OFBool byReference = OFFalse) const;
-
     /** get ID of the referenced node
      ** @return ID of the referenced node if valid, 0 otherwise
      */
@@ -206,7 +194,11 @@ class DSRByReferenceTreeNode
 /*
  *  CVS/RCS Log:
  *  $Log: dsrreftn.h,v $
- *  Revision 1.7  2003-08-07 12:45:14  joergr
+ *  Revision 1.8  2003-09-15 14:18:54  joergr
+ *  Introduced new class to facilitate checking of SR IOD relationship content
+ *  constraints. Replaced old implementation distributed over numerous classes.
+ *
+ *  Revision 1.7  2003/08/07 12:45:14  joergr
  *  Added readXML functionality.
  *
  *  Revision 1.6  2001/09/28 14:07:02  joergr

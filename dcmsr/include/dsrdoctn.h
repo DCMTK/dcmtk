@@ -23,8 +23,8 @@
  *    classes: DSRDocumentTreeNode
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-08-07 17:31:00 $
- *  CVS/RCS Revision: $Revision: 1.15 $
+ *  Update Date:      $Date: 2003-09-15 14:18:54 $
+ *  CVS/RCS Revision: $Revision: 1.16 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -40,6 +40,13 @@
 #include "dsrtree.h"
 #include "dsrcodvl.h"
 #include "dcitem.h"
+
+
+/*-----------------------*
+ *  forward declaration  *
+ *-----------------------*/
+
+class DSRIODConstraintChecker;
 
 
 /*---------------------*
@@ -94,9 +101,9 @@ class DSRDocumentTreeNode
     virtual OFBool isShort(const size_t flags) const;
 
     /** print content item.
-     *  The output of a content item depends on its value type.  This general method prints only
-     *  those parts which all derived classes (= value types) do have in common, i.e. the type of
-     *  relationship, the value type and the (optional) concept name.
+     *  The output of a content item depends on its value type.  This general method prints
+     *  only those parts which all derived classes (= value types) do have in common, i.e. the
+     *  type of relationship, the value type and the (optional) concept name.
      *  A typical output looks like this: has concept mod CODE: (,,"Concept")
      ** @param  stream  output stream to which the content item should be printed
      *  @param  flags   flag used to customize the output (see DSRTypes::PF_xxx)
@@ -108,14 +115,14 @@ class DSRDocumentTreeNode
     /** read content item from dataset.
      *  A number of readXXX() methods are called (see "protected" part) in order to retrieve all
      *  possibly nested content items from the dataset.
-     ** @param  dataset       DICOM dataset from which the content item should be read
-     *  @param  documentType  type of the document to be read (used for checking purposes)
-     *  @param  flags         flag used to customize the reading process (see DSRTypes::RF_xxx)
-     *  @param  logStream     pointer to error/warning output stream (output disabled if NULL)
+     ** @param  dataset            DICOM dataset from which the content item should be read
+     *  @param  constraintChecker  checks relationship content constraints of the associated IOD
+     *  @param  flags              flag used to customize the reading process (see DSRTypes::RF_xxx)
+     *  @param  logStream          pointer to error/warning output stream (output disabled if NULL)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
     virtual OFCondition read(DcmItem &dataset,
-                             const E_DocumentType documentType,
+                             const DSRIODConstraintChecker *constraintChecker,
                              const size_t flags,
                              OFConsole *logStream = NULL);
 
@@ -136,7 +143,7 @@ class DSRDocumentTreeNode
     /** read general XML document tree node data
      ** @param  doc           document containing the XML file content
      *  @param  cursor        cursor pointing to the starting node
-     *  @param  documentType  type of the document to be read (used for checking purposes)
+     *  @param  documentType  type of the document to be read (used for debug output only)
      *  @param  flags         optional flag used to customize the reading process
      *                        (see DSRTypes::XF_xxx)
      ** @return status, EC_Normal if successful, an error code otherwise
@@ -300,26 +307,6 @@ class DSRDocumentTreeNode
      */
     virtual OFCondition setObservationDateTime(const OFString &observationDateTime);
 
-    /** check whether a node could be added as a child node.
-     *  This method checks whether a content item as specified could be added as a child
-     *  node to the current one (without really adding the node).  For this base class the
-     *  return value is always OFTrue, derived classes typically overwrite this method.
-     ** @param  documentType      type of document to which the content item belongs.
-     *                            The document type has an impact on the relationship
-     *                            constraints.
-     *  @param  relationshipType  relationship type of the new node with regard to the
-     *                            current one
-     *  @param  valueType         value type of node to be checked/added
-     *  @param  byReference       optional flag indicating whether the node/relationship
-     *                            should be added by-value (default) or by-reference.
-     *                            (only for Comprehensive SR, Mammography and Chest CAD SR)
-     ** @return OFTrue if specified node can be added, OFFalse otherwise
-     */
-    virtual OFBool canAddNode(const E_DocumentType documentType,
-                              const E_RelationshipType relationshipType,
-                              const E_ValueType valueType,
-                              const OFBool byReference = OFFalse) const;
-
     /** remove digital signatures from content item.
      *  This method clears the MACParametersSequence and the DigitalSignaturesSequence for
      *  the current content item which have been filled during reading.
@@ -338,23 +325,20 @@ class DSRDocumentTreeNode
     }
 
     /** create a new node and append it to the current one
-     ** @param  previousNode      reference to the pointer to the previous node (sibling).
-     *                            Used to decide whether the new node is a child (value=NULL)
-     *                            or a sibling (!=NULL).  NB: The value might be modified
-     *                            inside this method (to store a reference to the previous node).
-     *  @param  documentType      type of document to which this and the new content item belong
-     *  @param  relationshipType  relationship type of the new node with regard to the
-     *                            current one
-     *  @param  valueType         value type of node to be added
-     *  @param  checkConstraints  optional flag indicating whether to check the relationship
-     *                            constraints (as specified for the current document class/type)
+     ** @param  previousNode       reference to the pointer to the previous node (sibling).
+     *                             Used to decide whether the new node is a child (value=NULL)
+     *                             or a sibling (!=NULL).  NB: The value might be modified
+     *                             inside this method (to store a reference to the previous node).
+     *  @param  relationshipType   relationship type of the new node with regard to the
+     *                             current one
+     *  @param  valueType          value type of node to be added
+     *  @param  constraintChecker  checks relationship content constraints of the associated IOD
      ** @return status, EC_Normal if successful, an error code otherwise
      */
     OFCondition createAndAppendNewNode(DSRDocumentTreeNode *&previousNode,
-                                       const E_DocumentType documentType,
                                        const E_RelationshipType relationshipType,
                                        const E_ValueType valueType,
-                                       const OFBool checkConstraints = OFTrue);
+                                       const DSRIODConstraintChecker *constraintChecker = NULL);
 
     /** read content item (value) from dataset.
      *  This method does nothing for this base class, but derived classes overwrite it to read
@@ -423,14 +407,14 @@ class DSRDocumentTreeNode
                          const size_t flags) const;
 
     /** read SR document content module
-     ** @param  dataset       DICOM dataset from which the data should be read
-     *  @param  documentType  type of the document to be read (used for checking purposes)
-     *  @param  flags         flag used to customize the reading process (see DSRTypes::RF_xxx)
-     *  @param  logStream     pointer to error/warning output stream (output disabled if NULL)
+     ** @param  dataset            DICOM dataset from which the data should be read
+     *  @param  constraintChecker  checks relationship content constraints of the associated IOD
+     *  @param  flags              flag used to customize the reading process (see DSRTypes::RF_xxx)
+     *  @param  logStream          pointer to error/warning output stream (output disabled if NULL)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
     OFCondition readSRDocumentContentModule(DcmItem &dataset,
-                                            const E_DocumentType documentType,
+                                            const DSRIODConstraintChecker *constraintChecker,
                                             const size_t flags,
                                             OFConsole *logStream);
 
@@ -446,15 +430,15 @@ class DSRDocumentTreeNode
                                              OFConsole *logStream);
 
     /** read document relationship macro
-     ** @param  dataset       DICOM dataset from which the data should be read
-     *  @param  documentType  type of the document to be read (used for checking purposes)
-     *  @param  posString     location of the current content item (e.g. "1.2.3")
-     *  @param  flags         flag used to customize the reading process (see DSRTypes::RF_xxx)
-     *  @param  logStream     pointer to error/warning output stream (output disabled if NULL)
+     ** @param  dataset            DICOM dataset from which the data should be read
+     *  @param  constraintChecker  checks relationship content constraints of the associated IOD
+     *  @param  posString          location of the current content item (e.g. "1.2.3")
+     *  @param  flags              flag used to customize the reading process (see DSRTypes::RF_xxx)
+     *  @param  logStream          pointer to error/warning output stream (output disabled if NULL)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
     OFCondition readDocumentRelationshipMacro(DcmItem &dataset,
-                                              const E_DocumentType documentType,
+                                              const DSRIODConstraintChecker *constraintChecker,
                                               const OFString &posString,
                                               const size_t flags,
                                               OFConsole *logStream);
@@ -489,15 +473,15 @@ class DSRDocumentTreeNode
                                           OFConsole *logStream) const;
 
     /** read content sequence
-     ** @param  dataset       DICOM dataset from which the data should be read
-     *  @param  documentType  type of the document to be read (used for checking purposes)
-     *  @param  posString     location of the current content item (e.g. "1.2.3")
-     *  @param  flags         flag used to customize the reading process (see DSRTypes::RF_xxx)
-     *  @param  logStream     pointer to error/warning output stream (output disabled if NULL)
+     ** @param  dataset            DICOM dataset from which the data should be read
+     *  @param  constraintChecker  checks relationship content constraints of the associated IOD
+     *  @param  posString          location of the current content item (e.g. "1.2.3")
+     *  @param  flags              flag used to customize the reading process (see DSRTypes::RF_xxx)
+     *  @param  logStream          pointer to error/warning output stream (output disabled if NULL)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
     OFCondition readContentSequence(DcmItem &dataset,
-                                    const E_DocumentType documentType,
+                                    const DSRIODConstraintChecker *constraintChecker,
                                     const OFString &posString,
                                     const size_t flags,
                                     OFConsole *logStream);
@@ -593,7 +577,11 @@ class DSRDocumentTreeNode
 /*
  *  CVS/RCS Log:
  *  $Log: dsrdoctn.h,v $
- *  Revision 1.15  2003-08-07 17:31:00  joergr
+ *  Revision 1.16  2003-09-15 14:18:54  joergr
+ *  Introduced new class to facilitate checking of SR IOD relationship content
+ *  constraints. Replaced old implementation distributed over numerous classes.
+ *
+ *  Revision 1.15  2003/08/07 17:31:00  joergr
  *  Removed libxml dependency from header files. Simplifies linking (MSVC).
  *
  *  Revision 1.14  2003/08/07 12:34:06  joergr

@@ -23,8 +23,8 @@
  *    classes: DSRByReferenceTreeNode
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-08-07 17:29:13 $
- *  CVS/RCS Revision: $Revision: 1.10 $
+ *  Update Date:      $Date: 2003-09-15 14:13:42 $
+ *  CVS/RCS Revision: $Revision: 1.11 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -208,20 +208,14 @@ OFCondition DSRByReferenceTreeNode::setObservationDateTime(const OFString & /*ob
 }
 
 
-OFBool DSRByReferenceTreeNode::canAddNode(const E_DocumentType /*documentType*/,
-                                          const E_RelationshipType /*relationshipType*/,
-                                          const E_ValueType /*valueType */,
-                                          const OFBool /*byReference*/) const
-{
-    /* invalid: no child nodes allowed */
-    return OFFalse;
-}
-
-
 /*
  *  CVS/RCS Log:
  *  $Log: dsrreftn.cc,v $
- *  Revision 1.10  2003-08-07 17:29:13  joergr
+ *  Revision 1.11  2003-09-15 14:13:42  joergr
+ *  Introduced new class to facilitate checking of SR IOD relationship content
+ *  constraints. Replaced old implementation distributed over numerous classes.
+ *
+ *  Revision 1.10  2003/08/07 17:29:13  joergr
  *  Removed libxml dependency from header files. Simplifies linking (MSVC).
  *
  *  Revision 1.9  2003/08/07 13:42:22  joergr

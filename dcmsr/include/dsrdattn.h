@@ -23,8 +23,8 @@
  *    classes: DSRDateTreeNode
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-08-07 12:23:44 $
- *  CVS/RCS Revision: $Revision: 1.8 $
+ *  Update Date:      $Date: 2003-09-15 14:18:54 $
+ *  CVS/RCS Revision: $Revision: 1.9 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -102,25 +102,6 @@ class DSRDateTreeNode
                                  const size_t flags,
                                  OFConsole *logStream) const;
 
-    /** check whether a node could be added as a child node.
-     *  This method checks whether a content item as specified could be added as a child
-     *  node to the current one (without really adding the node).
-     ** @param  documentType      type of document to which the content item belongs.
-     *                            The document type has an impact on the relationship
-     *                            contraints.
-     *  @param  relationshipType  relationship type of the new node with regard to the
-     *                            current one
-     *  @param  valueType         value type of node to be checked/added
-     *  @param  byReference       optional flag indicating whether the node/relationship
-     *                            should be added by-value (default) or by-reference.
-     *                            (only for Comprehensive SR, Mammography and Chest CAD SR)
-     ** @return OFTrue if specified node can be added, OFFalse otherwise
-     */
-    virtual OFBool canAddNode(const E_DocumentType documentType,
-                              const E_RelationshipType relationshipType,
-                              const E_ValueType valueType,
-                              const OFBool byReference = OFFalse) const;
-
 
   protected:
 
@@ -182,7 +163,11 @@ class DSRDateTreeNode
 /*
  *  CVS/RCS Log:
  *  $Log: dsrdattn.h,v $
- *  Revision 1.8  2003-08-07 12:23:44  joergr
+ *  Revision 1.9  2003-09-15 14:18:54  joergr
+ *  Introduced new class to facilitate checking of SR IOD relationship content
+ *  constraints. Replaced old implementation distributed over numerous classes.
+ *
+ *  Revision 1.8  2003/08/07 12:23:44  joergr
  *  Added readXML functionality.
  *
  *  Revision 1.7  2001/11/09 16:10:47  joergr

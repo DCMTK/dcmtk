@@ -23,8 +23,8 @@
  *    classes: DSRDocumentTree
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-08-07 12:35:27 $
- *  CVS/RCS Revision: $Revision: 1.12 $
+ *  Update Date:      $Date: 2003-09-15 14:18:54 $
+ *  CVS/RCS Revision: $Revision: 1.13 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -42,6 +42,13 @@
 #include "dsrcitem.h"
 
 #include "dcitem.h"
+
+
+/*-----------------------*
+ *  forward declaration  *
+ *-----------------------*/
+
+class DSRIODConstraintChecker;
 
 
 /*---------------------*
@@ -154,7 +161,7 @@ class DSRDocumentTree
 
     /** change document type.
      *  Please note that the document tree is deleted if the specified 'documentType'
-     *  is supported.
+     *  is supported.  Otherwise the current document remains in force.
      ** @param  documentType  new document type to be set (should be != DT_invalid)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
@@ -162,8 +169,9 @@ class DSRDocumentTree
 
     /** check whether specified content item can be added to the current one.
      *  If the tree is currently empty only a CONTAINER with the internal relationship
-     *  type RT_isRoot is allowed (as the new root node).  This method can be used
-     *  to decide which type of content items can be added prior to really do so.
+     *  type RT_isRoot is allowed (as the new root node).  Always returns true if no
+     *  constraint checker is available.  This method can be used to decide which type
+     *  of content items can be added prior to really do so.
      ** @param  relationshipType  relationship type of node to be checked with regard
      *                            to the current one
      *  @param  valueType         value type of node to be checked
@@ -177,14 +185,13 @@ class DSRDocumentTree
                              const E_AddMode addMode = AM_afterCurrent);
 
     /** check whether specified by-reference relationship can be added to the current
-     *  content item.  This method is only applicable to Comprehensive SR, Mammography
-     *  and Chest CAD SR documents.
+     *  content item.  Always returns true if no constraint checker is available.
      ** @param  relationshipType  type of relationship between current and target node
-     *  @param  valueType         value type of the referenced target node
+     *  @param  targetValueType   value type of the referenced target node
      ** @return OFTrue if specified by-reference relationship can be added, OFFalse otherwise
      */
     OFBool canAddByReferenceRelationship(const E_RelationshipType relationshipType,
-                                         const E_ValueType valueType);
+                                         const E_ValueType targetValueType);
 
     /** add specified content item to the current one.
      *  If possible this method creates a new node as specified and adds it to the current
@@ -202,7 +209,7 @@ class DSRDocumentTree
 
     /** add specified by-reference relationship to the current content item.
      *  If possible this method creates a new pseudo-node (relationship) and adds it to the
-     *  current one.  The method canByReferenceRelationship() is called internally to check
+     *  current one.  The method canAddByReferenceRelationship() is called internally to check
      *  parameters first.  The internal cursor is automatically re-set to the current node.
      ** @param  relationshipType  relationship type between current and referenced node
      *  @param  referencedNodeID  node ID of the referenced content item
@@ -216,7 +223,7 @@ class DSRDocumentTree
      *  removed from the tree and then deleted.  The internal cursor is set automatically
      *  to a new valid position.
      ** @return ID of the node which became the current one after deletion, 0 if an error
-     *          occured or the tree is now empty.
+     *    occured or the tree is now empty.
      */
     size_t removeCurrentContentItem();
 
@@ -235,8 +242,8 @@ class DSRDocumentTree
     void unmarkAllContentItems();
 
     /** remove digital signatures from the document tree.
-     *  This method clears the MACParametersSequence and the DigitalSignaturesSequence for all
-     *  content items which have been filled during reading.
+     *  This method clears the MACParametersSequence and the DigitalSignaturesSequence for
+     *  all content items which have been filled during reading.
      */
     void removeSignatures();
 
@@ -260,7 +267,7 @@ class DSRDocumentTree
      *  removed from the tree and deleted afterwards.  The cursor is set automatically to
      *  a new valid position.
      ** @return ID of the node which became the current one after deletion, 0 if an error
-     *          occured or the tree is now empty.
+     *    occured or the tree is now empty.
      */
     virtual size_t removeNode();
 
@@ -300,6 +307,8 @@ class DSRDocumentTree
     OFConsole     *LogStream;
     /// current content item.  Introduced to avoid the external use of pointers.
     DSRContentItem CurrentContentItem;
+    /// check relationship content constraints of the associated IOD
+    DSRIODConstraintChecker *ConstraintChecker;
 
 
  // --- declaration of default/copy constructor and assignment operator
@@ -316,7 +325,11 @@ class DSRDocumentTree
 /*
  *  CVS/RCS Log:
  *  $Log: dsrdoctr.h,v $
- *  Revision 1.12  2003-08-07 12:35:27  joergr
+ *  Revision 1.13  2003-09-15 14:18:54  joergr
+ *  Introduced new class to facilitate checking of SR IOD relationship content
+ *  constraints. Replaced old implementation distributed over numerous classes.
+ *
+ *  Revision 1.12  2003/08/07 12:35:27  joergr
  *  Added readXML functionality.
  *  Updated documentation to get rid of doxygen warnings.
  *

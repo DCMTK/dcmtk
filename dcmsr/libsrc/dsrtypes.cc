@@ -23,8 +23,8 @@
  *    classes: DSRTypes
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-09-10 13:18:43 $
- *  CVS/RCS Revision: $Revision: 1.33 $
+ *  Update Date:      $Date: 2003-09-15 14:13:42 $
+ *  CVS/RCS Revision: $Revision: 1.34 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -50,6 +50,12 @@
 #include "dsrwavtn.h"
 #include "dsrcontn.h"
 #include "dsrreftn.h"
+#include "dsrbascc.h"
+#include "dsrenhcc.h"
+#include "dsrcomcc.h"
+#include "dsrkeycc.h"
+#include "dsrmamcc.h"
+#include "dsrchecc.h"
 
 #include "ofstd.h"
 
@@ -646,22 +652,6 @@ OFBool DSRTypes::isDocumentTypeSupported(const E_DocumentType documentType)
 }
 
 
-OFBool DSRTypes::isConstraintCheckingSupported(const E_DocumentType documentType)
-{
-    return (documentType != DT_invalid) &&
-           (documentType != DT_MammographyCadSR) &&
-           (documentType != DT_ChestCadSR);
-}
-
-
-OFBool DSRTypes::isByReferenceAllowed(const E_DocumentType documentType)
-{
-    return (documentType == DT_ComprehensiveSR) ||
-           (documentType == DT_MammographyCadSR) ||
-           (documentType == DT_ChestCadSR);
-}
-
-
 OFCondition DSRTypes::addElementToDataset(OFCondition &result,
                                           DcmItem &dataset,
                                           DcmElement *delem)
@@ -1140,6 +1130,36 @@ OFBool DSRTypes::checkForValidUIDFormat(const OFString &stringValue)
 }
 
 
+DSRIODConstraintChecker *DSRTypes::createIODConstraintChecker(const E_DocumentType documentType)
+{
+    DSRIODConstraintChecker *checker = NULL;
+    switch (documentType)
+    {
+        case DT_BasicTextSR:
+            checker = new DSRBasicTextSRConstraintChecker();
+            break;
+        case DT_EnhancedSR:
+            checker = new DSREnhancedSRConstraintChecker();
+            break;
+        case DT_ComprehensiveSR:
+            checker = new DSRComprehensiveSRConstraintChecker();
+            break;
+        case DT_KeyObjectDoc:
+            checker = new DSRKeyObjectDocConstraintChecker();
+            break;
+        case DT_MammographyCadSR:
+            checker = new DSRMammographyCadSRConstraintChecker();
+            break;
+        case DT_ChestCadSR:
+            checker = new DSRChestCadSRConstraintChecker();
+            break;
+        default:
+            break;
+    }
+    return checker;
+}
+
+
 DSRDocumentTreeNode *DSRTypes::createDocumentTreeNode(const E_RelationshipType relationshipType,
                                                       const E_ValueType valueType)
 {
@@ -1423,7 +1443,11 @@ OFCondition DSRTypes::appendStream(ostream &mainStream,
 /*
  *  CVS/RCS Log:
  *  $Log: dsrtypes.cc,v $
- *  Revision 1.33  2003-09-10 13:18:43  joergr
+ *  Revision 1.34  2003-09-15 14:13:42  joergr
+ *  Introduced new class to facilitate checking of SR IOD relationship content
+ *  constraints. Replaced old implementation distributed over numerous classes.
+ *
+ *  Revision 1.33  2003/09/10 13:18:43  joergr
  *  Replaced PrivateCodingSchemeUID by new CodingSchemeIdenticationSequence as
  *  required by CP 324.
  *
