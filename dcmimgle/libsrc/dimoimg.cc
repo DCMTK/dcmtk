@@ -22,9 +22,9 @@
  *  Purpose: DicomMonochromeImage (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-11-19 12:57:42 $
+ *  Update Date:      $Date: 2001-11-29 16:59:54 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/libsrc/dimoimg.cc,v $
- *  CVS/RCS Revision: $Revision: 1.44 $
+ *  CVS/RCS Revision: $Revision: 1.45 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -910,7 +910,7 @@ int DiMonoImage::checkInterData(const int mode)
     }
     else if (InterData->getData() == NULL)
         ImageStatus = EIS_InvalidImage;
-    else if (mode)
+    else if (mode && (ImageStatus == EIS_Normal))
     {
         const unsigned long count = (unsigned long)Columns * (unsigned long)Rows * NumberOfFrames;
         if ((InterData->getCount() != count) && ((InterData->getCount() >> 1) != ((count + 1) >> 1)))
@@ -1977,7 +1977,12 @@ int DiMonoImage::writeBMP(FILE *stream,
  *
  * CVS/RCS Log:
  * $Log: dimoimg.cc,v $
- * Revision 1.44  2001-11-19 12:57:42  joergr
+ * Revision 1.45  2001-11-29 16:59:54  joergr
+ * Fixed bug in dcmimgle that caused incorrect decoding of some JPEG compressed
+ * images (certain DICOM attributes, e.g. photometric interpretation, might
+ * change during decompression process).
+ *
+ * Revision 1.44  2001/11/19 12:57:42  joergr
  * Added parameter 'frame' to setRoiWindow().
  *
  * Revision 1.43  2001/11/09 16:29:37  joergr

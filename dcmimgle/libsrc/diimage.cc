@@ -22,9 +22,9 @@
  *  Purpose: DicomImage (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-11-27 18:21:38 $
+ *  Update Date:      $Date: 2001-11-29 16:59:53 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/libsrc/diimage.cc,v $
- *  CVS/RCS Revision: $Revision: 1.18 $
+ *  CVS/RCS Revision: $Revision: 1.19 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -194,24 +194,15 @@ DiImage::DiImage(const DiDocument *docu,
                 checkPixelExtension();
             }
             DcmStack pstack;
+            // get pixel data (if present)
             if (ok && Document->search(DCM_PixelData, pstack))
             {
                 DcmPixelData *pixel = (DcmPixelData *)pstack.top();
-                pstack.clear();
-                // push reference to DICOM dataset on the stack (required for decompression process)
-                pstack.push(Document->getDicomObject());
-                pstack.push(pixel);                         // dummy stack entry
-                if ((pixel != NULL) && (pixel->chooseRepresentation(EXS_LittleEndianExplicit, NULL, pstack) == EC_Normal))
+                // check whether pixel data exists unencapsulated (decompression already done in DiDocument)
+                if ((pixel != NULL) && (DcmXfer(Document->getTransferSyntax()).isNotEncapsulated()))
                     convertPixelData(pixel, spp);
                 else
-                {
-                    ImageStatus = EIS_NotSupportedValue;
-                    if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Errors))
-                    {
-                        ofConsole.lockCerr() << "ERROR: cannot change to unencapsulated representation for pixel data !" << endl;
-                        ofConsole.unlockCerr();
-                    }
-                }
+                    ImageStatus = EIS_InvalidValue;
             }
             else
             {
@@ -683,7 +674,12 @@ int DiImage::writeBMP(FILE *stream,
  *
  * CVS/RCS Log:
  * $Log: diimage.cc,v $
- * Revision 1.18  2001-11-27 18:21:38  joergr
+ * Revision 1.19  2001-11-29 16:59:53  joergr
+ * Fixed bug in dcmimgle that caused incorrect decoding of some JPEG compressed
+ * images (certain DICOM attributes, e.g. photometric interpretation, might
+ * change during decompression process).
+ *
+ * Revision 1.18  2001/11/27 18:21:38  joergr
  * Added support for plugable output formats in class DicomImage. First
  * implementation is JPEG.
  *

@@ -22,9 +22,9 @@
  *  Purpose: DicomDocument (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-11-19 12:55:29 $
+ *  Update Date:      $Date: 2001-11-29 16:56:51 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/didocu.h,v $
- *  CVS/RCS Revision: $Revision: 1.11 $
+ *  CVS/RCS Revision: $Revision: 1.12 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -157,6 +157,15 @@ class DiDocument
     inline unsigned long getFlags() const
     {
         return Flags;
+    }
+    
+    /** get transfer syntax of the DICOM dataset
+     *
+     ** @return transfer syntax
+     */
+    inline E_TransferSyntax getTransferSyntax() const
+    {
+        return Xfer;
     }
 
     /** search for given tag
@@ -346,6 +355,10 @@ class DiDocument
      */
     void Init(DcmStream &stream);
 
+    /** convert pixel data to uncompressed representation (if required)
+     */
+    void convertPixelData();
+
 
  private:
 
@@ -378,7 +391,12 @@ class DiDocument
  *
  * CVS/RCS Log:
  * $Log: didocu.h,v $
- * Revision 1.11  2001-11-19 12:55:29  joergr
+ * Revision 1.12  2001-11-29 16:56:51  joergr
+ * Fixed bug in dcmimgle that caused incorrect decoding of some JPEG compressed
+ * images (certain DICOM attributes, e.g. photometric interpretation, might
+ * change during decompression process).
+ *
+ * Revision 1.11  2001/11/19 12:55:29  joergr
  * Adapted code to support new dcmjpeg module and JPEG compressed images.
  *
  * Revision 1.10  2001/06/01 15:49:41  meichel

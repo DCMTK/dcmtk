@@ -22,9 +22,9 @@
  *  Purpose: DicomDocument (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-11-19 12:57:04 $
+ *  Update Date:      $Date: 2001-11-29 16:59:52 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/libsrc/didocu.cc,v $
- *  CVS/RCS Revision: $Revision: 1.11 $
+ *  CVS/RCS Revision: $Revision: 1.12 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -109,8 +109,12 @@ DiDocument::DiDocument(DcmObject *object,
             Object = ((DcmFileFormat *)object)->getDataset();
         else
             Object = object;
-        if ((Object != NULL) && (Xfer == EXS_Unknown))
-            Xfer = ((DcmDataset *)Object)->getOriginalXfer();
+        if (Object != NULL)
+        {
+            if (Xfer == EXS_Unknown)
+                Xfer = ((DcmDataset *)Object)->getOriginalXfer();
+            convertPixelData();
+        }
     }
 }
 
@@ -134,7 +138,43 @@ void DiDocument::Init(DcmStream &stream)
             FileFormat->transferEnd();
             Object = FileFormat->getDataset();
             if (Object != NULL)
+            {
                 Xfer = ((DcmDataset *)Object)->getOriginalXfer();
+                convertPixelData();
+            }
+        }
+    }
+}
+
+
+void DiDocument::convertPixelData()
+{
+    DcmStack pstack;
+    // convert pixel data to uncompressed format if required
+    if (search(DCM_PixelData, pstack))
+    {
+        DcmPixelData *pixel = (DcmPixelData *)pstack.top();
+        pstack.clear();
+        // push reference to DICOM dataset on the stack (required for decompression process)
+        pstack.push(Object);
+        pstack.push(pixel);                         // dummy stack entry
+        if ((pixel != NULL) && pixel->chooseRepresentation(EXS_LittleEndianExplicit, NULL, pstack).good())
+        {
+            // set transfer syntax to unencapsulated/uncompressed
+            if (DcmXfer(Xfer).isEncapsulated())
+                Xfer = EXS_LittleEndianExplicit;
+        } else {
+            if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Errors))
+            {
+                ofConsole.lockCerr() << "ERROR: cannot change to unencapsulated representation for pixel data !" << endl;
+                ofConsole.unlockCerr();
+            }
+        }
+    } else {
+        if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Errors))
+        {
+            ofConsole.lockCerr() << "ERROR: no pixel data found in DICOM dataset !" << endl;
+            ofConsole.unlockCerr();
         }
     }
 }
@@ -360,7 +400,12 @@ unsigned long DiDocument::getElemValue(const DcmElement *elem,
  *
  * CVS/RCS Log:
  * $Log: didocu.cc,v $
- * Revision 1.11  2001-11-19 12:57:04  joergr
+ * Revision 1.12  2001-11-29 16:59:52  joergr
+ * Fixed bug in dcmimgle that caused incorrect decoding of some JPEG compressed
+ * images (certain DICOM attributes, e.g. photometric interpretation, might
+ * change during decompression process).
+ *
+ * Revision 1.11  2001/11/19 12:57:04  joergr
  * Adapted code to support new dcmjpeg module and JPEG compressed images.
  *
  * Revision 1.10  2001/06/01 15:49:54  meichel
