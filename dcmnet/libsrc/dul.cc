@@ -54,9 +54,9 @@
 ** Author, Date:	Stephen M. Moore, 14-Apr-93
 ** Intent:		This module contains the public entry points for the
 **			DICOM Upper Layer (DUL) protocol package.
-** Last Update:		$Author: meichel $, $Date: 2000-03-08 16:32:03 $
+** Last Update:		$Author: meichel $, $Date: 2000-03-10 11:54:21 $
 ** Source File:		$RCSfile: dul.cc,v $
-** Revision:		$Revision: 1.26 $
+** Revision:		$Revision: 1.27 $
 ** Status:		$State: Exp $
 */
 
@@ -215,8 +215,13 @@ DUL_InitializeNetwork(const char *networkType, const char *mode,
 	    DEBUG_DEVICE << "DUL_InitializeNetwork, Type: " << networkType
             << ", Mode: " << mode << endl;
 #endif
+
 #ifdef SIGPIPE
+#ifdef SIGNAL_HANDLER_WITH_ELLIPSE
+    (void) signal(SIGPIPE, (void (*)(...))SIG_IGN);
+#else
     (void) signal(SIGPIPE, (void (*)(int))SIG_IGN);
+#endif
 #endif
     (void) DUL_InitializeFSM();
 
@@ -2336,7 +2341,11 @@ clearPresentationContext(LST_HEAD ** l)
 /*
 ** CVS Log
 ** $Log: dul.cc,v $
-** Revision 1.26  2000-03-08 16:32:03  meichel
+** Revision 1.27  2000-03-10 11:54:21  meichel
+** Call to signal() now depending on SIGNAL_HANDLER_WITH_ELLIPSE
+** compile time flag, required for Irix5.
+**
+** Revision 1.26  2000/03/08 16:32:03  meichel
 ** Now including netinet/in_systm.h and netinet/in.h wherever netinet/tcp.h
 **   is used. Required for NeXTStep 3.3.
 **
