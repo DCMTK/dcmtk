@@ -22,9 +22,9 @@
  *  Purpose: DicomMonochromeImage (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1998-12-14 17:20:03 $
+ *  Update Date:      $Date: 1998-12-16 16:34:06 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/dimoimg.h,v $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -41,6 +41,7 @@
 #include "diimage.h"
 #include "dimopx.h"
 #include "diovlay.h"
+#include "diluptab.h"
 
 
 /*------------------------*
@@ -48,7 +49,6 @@
  *------------------------*/
 
 class DiColorImage;
-class DiLookupTable;
 class DiMonoOutputPixel;
 
 
@@ -76,16 +76,18 @@ class DiMonoImage
     DiMonoImage(const DiDocument *docu,
                 const EI_Status status,
                 const DcmUnsignedShort &data,
-                const DcmUnsignedShort &descriptor);
+                const DcmUnsignedShort &descriptor,
+                const DcmLongString *explanation);
 
     virtual ~DiMonoImage();
 
-    inline int getMinMaxValues(double &min, double &max) const
+    inline int getMinMaxValues(double &min,
+                               double &max) const
     {
         return (InterData != NULL) ? InterData->getMinMaxValues(min, max) : 0; 
     }
 
-    int setNoVOITransformation();
+    int setNoVoiTransformation();
 
     int setMinMaxWindow(const int idx = 1);
 
@@ -94,7 +96,8 @@ class DiMonoImage
     int setWindow(const unsigned long pos = 0);
 
     int setWindow(const double width,
-                  const double height);
+                  const double height,
+                  const char *explanation = NULL);
 
     int getWindow(double &width,
                   double &height);
@@ -105,7 +108,8 @@ class DiMonoImage
     }
 
     int setVoiLut(const DcmUnsignedShort &data,
-                  const DcmUnsignedShort &descriptor);
+                  const DcmUnsignedShort &descriptor,
+                  const DcmLongString *explanation);
     
     int setVoiLut(const unsigned long pos);
 
@@ -114,11 +118,27 @@ class DiMonoImage
         return VoiLutCount;
     }
 
+    inline const char *getVoiTransformationExplanation() const
+    {
+        return VoiExplanation.c_str();
+    }
+
+    inline const char *getModalityLutExplanation() const
+    {
+        return (InterData != NULL) ? InterData->getModalityLutExplanation() : NULL;
+    }
+
     int setPresentationLutShape(const ES_PresentationLut shape);
 
     int setPresentationLut(const DcmUnsignedShort &data,
-                           const DcmUnsignedShort &descriptor);
-    
+                           const DcmUnsignedShort &descriptor,
+                           const DcmLongString *explanation = NULL);
+
+    inline const char *getPresentationLutExplanation() const
+    {
+        return (PresLutData != NULL) ? PresLutData->getExplanation() : NULL;
+    }
+
     int addOverlay(const unsigned int group,
                    const unsigned long rows,
                    const unsigned long columns,
@@ -133,9 +153,12 @@ class DiMonoImage
 
     inline DiOverlay *getOverlayPtr(const unsigned int idx = 0)
     {
-        if (idx < 2)
-            return Overlays[idx];
-        return NULL;
+        return (idx < 2) ? Overlays[idx] : NULL;
+    }
+
+    inline DiMonoImage *getMonoImagePtr()
+    {
+        return this;
     }
 
     int flip(const int, const int);
@@ -144,6 +167,15 @@ class DiMonoImage
     virtual void *getOutputData(const unsigned long, const int, const int = 0) = 0;
     void *getOutputPlane(const int) const;
     void deleteOutputData();
+
+    const Uint8 *getOverlayData(const unsigned long frame,
+                                const unsigned int plane,
+                                unsigned int &width,
+                                unsigned int &height,
+                                unsigned int &left,
+                                unsigned int &top);
+
+    void deleteOverlayData();
 
     const DiMonoPixel *getInterData() const
     {
@@ -204,6 +236,8 @@ class DiMonoImage
     
     int ValidWindow;                                // true, if current VOI-window is valid
     
+    OFString VoiExplanation;                        // free text explanation of current VOI transformation
+    
     ES_PresentationLut PresLutShape;                // presentation LUT shape (identity or inverse)
 
     DiOverlay *Overlays[2];                         // points to associated overlay-objects ([0] = built-in, [1] = additional)
@@ -211,8 +245,11 @@ class DiMonoImage
     DiLookupTable *PresLutData;                     // points to associated presentation-LUT-object
     DiMonoPixel *InterData;                         // points to intermediate pixel data representation (object)
 
+
  private:
+
     DiMonoOutputPixel *OutputData;                  // points to current output data (object)
+    Uint8 *OverlayData;                             // points to current overlay plane data (pixel array)
 
  // --- declarations to avoid compiler warnings
  
@@ -228,7 +265,14 @@ class DiMonoImage
 **
 ** CVS/RCS Log:
 ** $Log: dimoimg.h,v $
-** Revision 1.2  1998-12-14 17:20:03  joergr
+** Revision 1.3  1998-12-16 16:34:06  joergr
+** Added explanation string to LUT class (retrieved from dataset).
+** Added explanation string for VOI transformations.
+** Renamed 'setNoVoiLutTransformation' method ('Voi' instead of 'VOI').
+** Removed several methods used for monochrome images only in base class
+** 'DiImage'. Introduced mechanism to use the methods directly.
+**
+** Revision 1.2  1998/12/14 17:20:03  joergr
 ** Added methods to add and remove additional overlay planes (still untested).
 **
 ** Revision 1.1  1998/11/27 15:20:57  joergr
