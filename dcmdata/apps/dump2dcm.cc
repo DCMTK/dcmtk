@@ -21,10 +21,10 @@
  *
  *  Purpose: create a Dicom FileFormat or DataSet from an ASCII-dump
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-11-27 12:07:18 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2002-12-05 13:59:29 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/apps/dump2dcm.cc,v $
- *  CVS/RCS Revision: $Revision: 1.44 $
+ *  CVS/RCS Revision: $Revision: 1.45 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -207,7 +207,7 @@ getLine(char* line, int maxLineLen, FILE* f, const unsigned long lineNumber)
         int c = fgetc(f);
         while(c != '\n' && c != EOF)
             c = fgetc(f);
-        CERR << "line " << lineNumber << " to long." << endl;
+        CERR << "line " << lineNumber << " too long." << endl;
     }
 
 
@@ -941,7 +941,10 @@ int main(int argc, char *argv[])
 /*
 ** CVS/RCS Log:
 ** $Log: dump2dcm.cc,v $
-** Revision 1.44  2002-11-27 12:07:18  meichel
+** Revision 1.45  2002-12-05 13:59:29  joergr
+** Fixed typo.
+**
+** Revision 1.44  2002/11/27 12:07:18  meichel
 ** Adapted module dcmdata to use of new header file ofstdinc.h
 **
 ** Revision 1.43  2002/11/26 08:43:02  meichel
