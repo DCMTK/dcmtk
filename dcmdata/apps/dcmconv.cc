@@ -22,8 +22,8 @@
  *  Purpose: Convert dicom file encoding
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2004-01-16 10:53:53 $
- *  CVS/RCS Revision: $Revision: 1.43 $
+ *  Update Date:      $Date: 2004-04-07 12:20:27 $
+ *  CVS/RCS Revision: $Revision: 1.44 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -313,7 +313,7 @@ int main(int argc, char *argv[])
       {
           app.checkDependence("--compression-level", "--write-xfer-deflated", opt_oxfer == EXS_DeflatedLittleEndianExplicit);
           app.checkValue(cmd.getValueAndCheckMinMax(opt_compressionLevel, 0, 9));
-          dcmZlibCompressionLevel.set((int) opt_compressionLevel);
+          dcmZlibCompressionLevel.set(OFstatic_cast(int, opt_compressionLevel));
       }
       cmd.endOptionBlock();
 #endif
@@ -407,7 +407,10 @@ int main(int argc, char *argv[])
 /*
 ** CVS/RCS Log:
 ** $Log: dcmconv.cc,v $
-** Revision 1.43  2004-01-16 10:53:53  joergr
+** Revision 1.44  2004-04-07 12:20:27  joergr
+** Additional modifications for new-style type casts.
+**
+** Revision 1.43  2004/01/16 10:53:53  joergr
 ** Adapted type casts to new-style typecast operators defined in ofcast.h.
 **
 ** Revision 1.42  2003/01/08 10:34:23  joergr
