@@ -35,6 +35,9 @@
   Affects: dcmimgle/include/dimoopxt.h
            dcmimgle/libsrc/dimoimg.cc
 
+- Changed parameter type (long to int) to avoid warning reported by MSVC5.
+  Affects: dcmimgle/include/
+
 **** Changes from 1998.12.22 (riesmeier)
 
 - Corrected spelling of option used for scaling without interpolation.
