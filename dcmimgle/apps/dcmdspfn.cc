@@ -22,9 +22,9 @@
  *  Purpose: export display curves to a text file
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-07-05 10:35:57 $
+ *  Update Date:      $Date: 2002-07-18 12:23:11 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/apps/dcmdspfn.cc,v $
- *  CVS/RCS Revision: $Revision: 1.11 $
+ *  CVS/RCS Revision: $Revision: 1.12 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -72,6 +72,7 @@ int main(int argc, char *argv[])
     int opt_debugMode = 0;
     int opt_outputMode = 0;
     OFCmdUnsignedInt opt_ddlCount = 256;
+    OFCmdSignedInt opt_polyOrder = -1;
     OFCmdFloat opt_ambLight = -1;
     OFCmdFloat opt_illum = -1;
     OFCmdFloat opt_minVal = 0;
@@ -90,8 +91,12 @@ int main(int argc, char *argv[])
     cmd.addGroup("input options: (mutually exclusive)");
      cmd.addOption("--monitor-file",  "+Im", 1, "[f]ilename : string",
                                                 "text file describing the monitor characteristics");
+     cmd.addOption("--camera-file",   "+Ic", 1, "[f]ilename : string",
+                                                "text file describing the camera characteristics");
      cmd.addOption("--printer-file",  "+Ip", 1, "[f]ilename : string",
                                                 "text file describing the printer characteristics");
+     cmd.addOption("--scanner-file",  "+Is", 1, "[f]ilename : string",
+                                                "text file describing the scanner characteristics");
      cmd.addOption("--lum-range",     "+Il", 2, "[m]in max : float",
                                                 "minimum and maximum luminance (cd/m^2)");
      cmd.addOption("--od-range",      "+Io", 2, "[m]in max : float",
@@ -104,6 +109,8 @@ int main(int argc, char *argv[])
                                                 "illumination value (cd/m^2, default: file f)");
      cmd.addOption("--ddl-count",     "+Cd", 1, "[n]umber of DDLs : integer",
                                                 "number of Device Driving Levels\n(default: 256, only with --lum/od-range)");
+     cmd.addOption("--curve-fitting", "+Cf", 1, "[n]umber : integer",
+                                                "use polynomial curve fitting algorithm with order n\n(0..99, default: file setting or cubic spline)");
 
     cmd.addGroup("output options:");
      cmd.addOption("--gsdf",          "+Og", 1, "[f]ilename : string",
@@ -139,6 +146,8 @@ int main(int argc, char *argv[])
             } else
                 app.checkValue(cmd.getValueAndCheckMinMax(opt_ddlCount, 2, 65536));
         }
+        if (cmd.findOption("--curve-fitting"))
+            app.checkValue(cmd.getValueAndCheckMinMax(opt_polyOrder, 0, 99));
 
         cmd.beginOptionBlock();
         if (cmd.findOption("--monitor-file"))
@@ -146,10 +155,20 @@ int main(int argc, char *argv[])
             app.checkValue(cmd.getValue(opt_ifname));
             deviceType = DiDisplayFunction::EDT_Monitor;
         }
+        if (cmd.findOption("--camera-file"))
+        {
+            app.checkValue(cmd.getValue(opt_ifname));
+            deviceType = DiDisplayFunction::EDT_Camera;
+        }
         if (cmd.findOption("--printer-file"))
         {
             app.checkValue(cmd.getValue(opt_ifname));
             deviceType = DiDisplayFunction::EDT_Printer;
+        }
+        if (cmd.findOption("--scanner-file"))
+        {
+            app.checkValue(cmd.getValue(opt_ifname));
+            deviceType = DiDisplayFunction::EDT_Scanner;
         }
         if (cmd.findOption("--lum-range"))
         {
@@ -208,9 +227,10 @@ int main(int argc, char *argv[])
             app.checkValue(cmd.getValue(opt_ofname));
             DiGSDFunction *disp = NULL;
             if (opt_ifname != NULL)
-                disp = new DiGSDFunction(opt_ifname, deviceType);
+                disp = new DiGSDFunction(opt_ifname, deviceType, (signed int)opt_polyOrder);
             else
-                disp = new DiGSDFunction(opt_minVal, opt_maxVal, opt_ddlCount);
+                disp = new DiGSDFunction(opt_minVal, opt_maxVal, opt_ddlCount, DiDisplayFunction::EDT_Monitor,
+                                        (signed int)opt_polyOrder);
             if ((disp != NULL) && disp->isValid())
             {
                 if (opt_ambLight >= 0)
@@ -242,9 +262,10 @@ int main(int argc, char *argv[])
             app.checkValue(cmd.getValue(opt_ofname));
             DiCIELABFunction *disp = NULL;
             if (opt_ifname != NULL)
-                disp = new DiCIELABFunction(opt_ifname, deviceType);
+                disp = new DiCIELABFunction(opt_ifname, deviceType, (signed int)opt_polyOrder);
             else
-                disp = new DiCIELABFunction(opt_minVal, opt_maxVal, opt_ddlCount);
+                disp = new DiCIELABFunction(opt_minVal, opt_maxVal, opt_ddlCount, DiDisplayFunction::EDT_Monitor,
+                                           (signed int)opt_polyOrder);
             if ((disp != NULL) && disp->isValid())
             {
                 if (opt_ambLight >= 0)
@@ -264,7 +285,6 @@ int main(int argc, char *argv[])
         if (opt_verboseMode > 0)
             OUTPUT << "nothing to do, no output file specified" << endl;
     }
-
     return 0;
 }
 
@@ -273,7 +293,10 @@ int main(int argc, char *argv[])
  *
  * CVS/RCS Log:
  * $Log: dcmdspfn.cc,v $
- * Revision 1.11  2002-07-05 10:35:57  joergr
+ * Revision 1.12  2002-07-18 12:23:11  joergr
+ * Added support for hardcopy and softcopy input devices (camera and scanner).
+ *
+ * Revision 1.11  2002/07/05 10:35:57  joergr
  * Modified description of command line options.
  *
  * Revision 1.10  2002/07/03 13:49:54  joergr
