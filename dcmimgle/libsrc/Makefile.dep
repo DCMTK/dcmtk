@@ -169,7 +169,8 @@ dimopx.o: dimopx.cc ../../config/include/osconfig.h \
  ../../ofstd/include/oftypes.h ../include/dipixel.h \
  ../include/diutils.h ../include/dimomod.h ../include/diluptab.h \
  ../../dcmdata/include/dctagkey.h ../../ofstd/include/ofstring.h \
- ../include/dibaslut.h ../include/diobjcou.h ../include/diinpx.h
+ ../include/dibaslut.h ../include/diobjcou.h ../include/diinpx.h \
+ ../include/dimoopx.h
 diovdat.o: diovdat.cc ../../config/include/osconfig.h \
  ../../dcmdata/include/dctypes.h ../../ofstd/include/oftypes.h \
  ../include/diovlay.h ../include/diobjcou.h ../include/diovdat.h \
