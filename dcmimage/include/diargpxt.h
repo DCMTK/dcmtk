@@ -22,8 +22,8 @@
  *  Purpose: DicomARGBPixelTemplate (Header) - UNTESTED !!!
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-12-23 11:15:07 $
- *  CVS/RCS Revision: $Revision: 1.16 $
+ *  Update Date:      $Date: 2003-12-23 12:38:51 $
+ *  CVS/RCS Revision: $Revision: 1.17 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -110,12 +110,12 @@ class DiARGBPixelTemplate
                 rgb[0] = a + InputCount;                                        // points to red plane
                 rgb[1] = rgb[0] + InputCount;                                   // points to green plane
                 rgb[2] = rgb[1] + InputCount;                                   // points to blue plane
-                for (i = 0; i < count; i++)
+                for (i = 0; i < count; ++i)
                 {
                     value = OFstatic_cast(T2, *(a++));                          // get alpha value
                     if (value > 0)
                     {
-                        for (int j = 0; j < 3; j++)                             // set palette color
+                        for (int j = 0; j < 3; ++j)                             // set palette color
                         {
                             if (value <= palette[j]->getFirstEntry(value))
                                 Data[j][i] = OFstatic_cast(T3, palette[j]->getFirstValue());
@@ -128,7 +128,7 @@ class DiARGBPixelTemplate
                     }
                     else
                     {
-                        for (j = 0; j < 3; j++)                                 // copy RGB values
+                        for (j = 0; j < 3; ++j)                                 // copy RGB values
                             Data[j][i] = OFstatic_cast(T3, removeSign(*(rgb[j]++), offset));
                     }
                 }
@@ -143,12 +143,12 @@ class DiARGBPixelTemplate
                 while (i < count)
                 {
                     /* convert a single frame */
-                    for (l = planeSize; (l != 0) && (i < count); l--, i++)
+                    for (l = planeSize; (l != 0) && (i < count); --l, ++i)
                     {
                         value = OFstatic_cast(T2, *(a++));                          // get alpha value
                         if (value > 0)
                         {
-                            for (int j = 0; j < 3; j++)                             // set palette color
+                            for (int j = 0; j < 3; ++j)                             // set palette color
                             {
                                 if (value <= palette[j]->getFirstEntry(value))
                                     Data[j][i] = OFstatic_cast(T3, palette[j]->getFirstValue());
@@ -161,24 +161,24 @@ class DiARGBPixelTemplate
                         }
                         else
                         {
-                            for (int j = 0; j < 3; j++)                             // copy RGB values
+                            for (int j = 0; j < 3; ++j)                             // copy RGB values
                                 Data[j][i] = OFstatic_cast(T3, removeSign(*(rgb[j]++), offset));
                         }
                     }
                     /* jump to next frame start (skip 2 planes) */
                     a += 2 * planeSize;
-                    for (int j = 0; j < 3; j++)
+                    for (int j = 0; j < 3; ++j)
                        rgb[j] += 2 * planeSize;
                 }
             } else {
                 register unsigned long i;
                 register const T1 *p = pixel;
-                for (i = 0; i < count; i++)
+                for (i = 0; i < count; ++i)
                 {
                     value = OFstatic_cast(T2, *(p++));                          // get alpha value
                     if (value > 0)
                     {
-                        for (int j = 0; j < 3; j++)                             // set palette color
+                        for (int j = 0; j < 3; ++j)                             // set palette color
                         {
                             if (value <= palette[j]->getFirstEntry(value))
                                 Data[j][i] = OFstatic_cast(T3, palette[j]->getFirstValue());
@@ -191,7 +191,7 @@ class DiARGBPixelTemplate
                     }
                     else
                     {
-                        for (int j = 0; j < 3; j++)                             // copy RGB values
+                        for (int j = 0; j < 3; ++j)                             // copy RGB values
                             Data[j][i] = OFstatic_cast(T3, removeSign(*(p++), offset));
                     }
                 }
@@ -208,7 +208,11 @@ class DiARGBPixelTemplate
  *
  * CVS/RCS Log:
  * $Log: diargpxt.h,v $
- * Revision 1.16  2003-12-23 11:15:07  joergr
+ * Revision 1.17  2003-12-23 12:38:51  joergr
+ * Replaced post-increment/decrement operators by pre-increment/decrement
+ * operators where appropriate (e.g. 'i++' by '++i').
+ *
+ * Revision 1.16  2003/12/23 11:15:07  joergr
  * Adapted type casts to new-style typecast operators defined in ofcast.h.
  * Removed leading underscore characters from preprocessor symbols (reserved
  * symbols). Updated copyright header.

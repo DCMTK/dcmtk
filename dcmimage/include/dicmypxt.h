@@ -22,8 +22,8 @@
  *  Purpose: DicomCMYKPixelTemplate (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-12-23 11:17:23 $
- *  CVS/RCS Revision: $Revision: 1.15 $
+ *  Update Date:      $Date: 2003-12-23 12:38:51 $
+ *  CVS/RCS Revision: $Revision: 1.16 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -103,11 +103,11 @@ class DiCMYKPixelTemplate
 /*
                 register const T1 *k;
                 register T2 *q;
-                for (int j = 0; j < 3; j++)
+                for (int j = 0; j < 3; ++j)
                 {
                     q = Data[j];
                     k = pixel + 3 * InputCount;                     // beginning of 'black' plane
-                    for (i = count; i != 0; i--)
+                    for (i = count; i != 0; --i)
                         *(q++) = maxvalue - removeSign(*(p++), offset) - removeSign(*(k++), offset);
                 }
 */
@@ -122,13 +122,13 @@ class DiCMYKPixelTemplate
                     /* beginning of 'black' plane */
                     const T1 *kStart = p + 3 * planeSize;
                     /* for all planes ... */
-                    for (int j = 0; j < 3; j++)
+                    for (int j = 0; j < 3; ++j)
                     {
                         q = Data[j] + iStart;
                         /* reset to beginning of 'black' plane */
                         k = kStart;
                         /* convert a single plane */
-                        for (l = planeSize, i = iStart; (l != 0) && (i < count); l--, i++)
+                        for (l = planeSize, i = iStart; (l != 0) && (i < count); --l, ++i)
                             *(q++) = maxvalue - removeSign(*(p++), offset) - removeSign(*(k++), offset);
                     }
                     /* skip black plane */
@@ -140,10 +140,10 @@ class DiCMYKPixelTemplate
                 register T1 k;
                 register int j;
                 register unsigned long i;
-                for (i = 0; i < count; i++)
+                for (i = 0; i < count; ++i)
                 {
                     k = *(p + 3);
-                    for (j = 0; j < 3; j++)
+                    for (j = 0; j < 3; ++j)
                         Data[j][i] = maxvalue - removeSign(*(p++), offset) - removeSign(k, offset);
                     p++;                                            // skip 'black'
                 }
@@ -160,7 +160,11 @@ class DiCMYKPixelTemplate
  *
  * CVS/RCS Log:
  * $Log: dicmypxt.h,v $
- * Revision 1.15  2003-12-23 11:17:23  joergr
+ * Revision 1.16  2003-12-23 12:38:51  joergr
+ * Replaced post-increment/decrement operators by pre-increment/decrement
+ * operators where appropriate (e.g. 'i++' by '++i').
+ *
+ * Revision 1.15  2003/12/23 11:17:23  joergr
  * Adapted type casts to new-style typecast operators defined in ofcast.h.
  * Removed leading underscore characters from preprocessor symbols (reserved
  * symbols). Updated copyright header.
