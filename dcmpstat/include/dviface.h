@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2000, OFFIS
+ *  Copyright (C) 1998-2001, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DVInterface
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-01-29 14:55:41 $
- *  CVS/RCS Revision: $Revision: 1.83 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2001-01-29 17:32:30 $
+ *  CVS/RCS Revision: $Revision: 1.84 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1466,6 +1466,31 @@ class DVInterface: public DVConfiguration
      */
     OFBool verifyUserPassword(const char *userID, const char *passwd);
 
+    /** verifies and digitally signs the current structured report.
+     *  If the user ID is known (i.e. specified in the configuration file) the current
+     *  structured report is verified (a verifying observer is added). If the 'mode'
+     *  parameter is set accordingly and the password is correct (see verifyUserPassword)
+     *  the report is also digitally signed.
+     *  Please note that a document can be verified/signed more than once, but only completed
+     *  documents can be verified. After signing the report no modifications should be performed
+     *  before the object is stored in the database or a file. Otherwise the digital signature
+     *  would be corrupted. Therefore, the SOP instance UID should be generated before calling
+     *  this method.
+     *  To digitally sign the report it is required that DCMTK is configured and compiled
+     *  with the WITH_OPENSSL flag, otherwise only verification is available (returns an
+     *  error code if mode differs from DVPSY_verify).
+     *  @param userID symbolic user ID for given user, as returned by
+     *    DVConfiguration::getUserID()
+     *  @param password for user as entered in some GUI control
+     *  @param mode flag specifying whether to verify only, verify and sign or verify and
+     *    sign and finalize the document. The difference between the second and the third mode
+     *    is that "finalize" signs the entire document whereas the other mode leave out certain
+     *    attributes (e.g. the SOP instance UID and the verifying observer sequence).
+     *  @return status, EC_Normal if successful, an error code otherwise.
+     */
+    E_Condition verifyAndSignStructuredReport(const char *userID, const char *passwd, DVPSVerifyAndSignMode mode);
+
+
     /* log file interface */
 
     /** sets a new log stream
@@ -1864,7 +1889,10 @@ private:
 /*
  *  CVS/RCS Log:
  *  $Log: dviface.h,v $
- *  Revision 1.83  2001-01-29 14:55:41  meichel
+ *  Revision 1.84  2001-01-29 17:32:30  joergr
+ *  Added method to verify and digitally sign structured reports.
+ *
+ *  Revision 1.83  2001/01/29 14:55:41  meichel
  *  Added new methods for creating signatures and checking the signature
  *    status in module dcmpstat.
  *

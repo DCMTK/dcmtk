@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2000, OFFIS
+ *  Copyright (C) 1998-2001, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,9 +21,9 @@
  *
  *  Purpose: DVPresentationState
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-01-29 14:55:46 $
- *  CVS/RCS Revision: $Revision: 1.126 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2001-01-29 17:34:41 $
+ *  CVS/RCS Revision: $Revision: 1.127 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -65,6 +65,7 @@ END_EXTERN_C
 
 #ifdef WITH_DCMSR
 #include "dsrdoc.h"      /* for class DSRDocument */
+#include "dsrcodvl.h"
 #else
 class DSRDocument {};    /* dummy class */
 #endif
@@ -584,13 +585,22 @@ E_Condition DVInterface::loadStructuredReport(const char * /*filename*/)
             DcmDataset *dataset = fileformat->getDataset();
             if (dataset)
             {
-                if ((status = newReport->read(*dataset)) == EC_Normal)
+                if ((status = newReport->read(*dataset, OFTrue /* keep signatures */)) == EC_Normal)
                 {
                     delete pReport;
                     pReport = newReport;
                     if (pSignatureHandler)
                     {
-                       pSignatureHandler->updateDigitalSignatureInformation(*dataset, DVPSS_structuredReport, OFTrue);
+                        pSignatureHandler->updateDigitalSignatureInformation(*dataset, DVPSS_structuredReport, OFTrue);
+                        /* check whether loaded report is 'finalized' (certain attributes are digitally signed) */
+                        DcmAttributeTag tagList(DcmTag(0, 0) /* irrelevant value */);
+                        tagList.putTagVal(DCM_SOPInstanceUID, 0);
+                        tagList.putTagVal(DCM_VerifyingObserverSequence, 1);
+                        tagList.putTagVal(DCM_InstanceCreationDate, 2);
+                        tagList.putTagVal(DCM_InstanceCreationTime, 3);
+                        tagList.putTagVal(DCM_InstanceCreatorUID, 4);
+                        if (pSignatureHandler->attributesSigned(*dataset, tagList))
+                            pReport->finalizeDocument();
                     }
                 }
             } else
@@ -4166,11 +4176,11 @@ OFBool DVInterface::verifyUserPassword(const char * /*userID*/, const char * /*p
   OFString filename;
   OFString privateKeyPasswd;
   if (passwd) privateKeyPasswd = passwd;
-  OFBool isPEMFormat = getTLSPEMFormat();  
+  OFBool isPEMFormat = getTLSPEMFormat();
   const char *userKey = getUserPrivateKey(userID);
-  if (userKey == NULL) writeLogMessage(DVPSM_error, "DCMPSTAT", "Cannot verify user password: Unknown user or undefined private key file.");   
+  if (userKey == NULL) writeLogMessage(DVPSM_error, "DCMPSTAT", "Cannot verify user password: Unknown user or undefined private key file.");
   else
-  {  
+  {
     const char *userDir = getUserCertificateFolder();
     if (userDir)
     {
@@ -4178,7 +4188,7 @@ OFBool DVInterface::verifyUserPassword(const char * /*userID*/, const char * /*p
       filename += PATH_SEPARATOR;
     }
     filename += userKey;
-    
+
     /* attempt to load the private key with the given password*/
     EVP_PKEY *pkey = NULL;
     BIO *in = BIO_new(BIO_s_file_internal());
@@ -4206,6 +4216,70 @@ OFBool DVInterface::verifyUserPassword(const char * /*userID*/, const char * /*p
   return result;
 }
 
+E_Condition DVInterface::verifyAndSignStructuredReport(const char *userID, const char *passwd, DVPSVerifyAndSignMode mode)
+{
+  E_Condition result = EC_IllegalCall;
+#ifdef WITH_DCMSR
+  if ((pReport != NULL) && (userID != NULL))
+  {
+    OFString userName(getUserDICOMName(userID));
+    OFString userOrg(getUserOrganization(userID));
+    OFString userCV, userCSD, userCSV, userCM;
+    DSRCodedEntryValue userCode(getUserCodeValue(userID, userCV), getUserCodingSchemeDesignator(userID, userCSD),
+                                getUserCodingSchemeVersion(userID, userCSV), getUserCodeMeaning(userID, userCM));
+    /* verify document */
+    if (pReport->verifyDocument(userName, userCode, userOrg) == EC_Normal)
+    {
+      if ((mode == DVPSY_verifyAndSign) || (mode == DVPSY_verifyAndSign_finalize))
+      {
+#ifdef WITH_OPENSSL
+        DcmStack stack;
+        DcmItem dataset;
+        if (pReport->write(dataset, &stack) == EC_Normal)
+        {
+          /* do not sign particular attributes */
+          DcmAttributeTag tagList(DcmTag(0, 0) /* irrelevant value */);
+          if (mode == DVPSY_verifyAndSign)
+          {
+            tagList.putTagVal(DCM_SOPInstanceUID, 0);
+            tagList.putTagVal(DCM_VerifyingObserverSequence, 1);
+            tagList.putTagVal(DCM_InstanceCreationDate, 2);
+            tagList.putTagVal(DCM_InstanceCreationTime, 3);
+            tagList.putTagVal(DCM_InstanceCreatorUID, 4);
+          }
+          /* if no item is marked, sign entire dataset */
+          if (stack.empty())
+            stack.push(&dataset);
+          /* digitally sign document */
+          if (pSignatureHandler->createSignature(dataset, stack, tagList, userID, passwd) == EC_Normal)
+          {
+            DSRDocument *newReport = new DSRDocument();
+            if (newReport != NULL)
+            {
+              if (newReport->read(dataset, OFTrue /* keep signatures */) == EC_Normal)
+              {
+                /* replace report in memory */
+                delete pReport;
+                pReport = newReport;
+                if (mode == DVPSY_verifyAndSign_finalize)
+                  result = pReport->finalizeDocument();
+                else
+                  result = EC_Normal;
+              }
+            } else
+              result = EC_MemoryExhausted;
+          }
+        }
+#else
+        writeLogMessage(DVPSM_error, "DCMPSTAT", "Cannot sign structured report: Not compiled with OpenSSL support.");
+#endif
+      } else
+        result= EC_Normal;
+    }
+  }
+#endif
+  return result;
+}
 
 const char *DVInterface::getCurrentSignatureValidationHTML(DVPSObjectType objtype) const
 {
@@ -4251,7 +4325,10 @@ void DVInterface::disableImageAndPState()
 /*
  *  CVS/RCS Log:
  *  $Log: dviface.cc,v $
- *  Revision 1.126  2001-01-29 14:55:46  meichel
+ *  Revision 1.127  2001-01-29 17:34:41  joergr
+ *  Added method to verify and digitally sign structured reports.
+ *
+ *  Revision 1.126  2001/01/29 14:55:46  meichel
  *  Added new methods for creating signatures and checking the signature
  *    status in module dcmpstat.
  *

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2000, OFFIS
+ *  Copyright (C) 1998-2001, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -24,9 +24,9 @@
  *           DVPSPresentationLUTType, DVPSRotationType, 
  *           DVPSShutterType
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-01-26 10:43:11 $
- *  CVS/RCS Revision: $Revision: 1.15 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2001-01-29 17:32:31 $
+ *  CVS/RCS Revision: $Revision: 1.16 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -532,11 +532,33 @@ enum DVPSSignatureStatus
   DVPSW_signed_corrupt
 };
 
+
+/** describes the mode to verify and sign structured reports
+ */
+enum DVPSVerifyAndSignMode
+{
+  /** verify the document only
+   */
+  DVPSY_verify,
+
+  /** verify and digitally sign the document (apart from VerifyingObserver and SOPInstanceUID)
+   */
+  DVPSY_verifyAndSign,
+
+  /** verify and digitally sign the entire document (finalize it)
+   */
+  DVPSY_verifyAndSign_finalize
+};
+
+
 #endif
 
 /*
  *  $Log: dvpstyp.h,v $
- *  Revision 1.15  2001-01-26 10:43:11  meichel
+ *  Revision 1.16  2001-01-29 17:32:31  joergr
+ *  Added method to verify and digitally sign structured reports.
+ *
+ *  Revision 1.15  2001/01/26 10:43:11  meichel
  *  Introduced additional (fourth) status flag for signature validation
  *    describing signatures that are valid but untrustworthy (unknown CA).
  *
