@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DVPresentationState
  *
- *  Last Update:      $Author: thiel $
- *  Update Date:      $Date: 1999-09-10 07:32:44 $
- *  CVS/RCS Revision: $Revision: 1.32 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 1999-09-10 09:16:44 $
+ *  CVS/RCS Revision: $Revision: 1.33 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -125,7 +125,7 @@ static void currentTime(OFString &str)
 
 /* --------------- class DVPresentationState --------------- */
 
-DVPresentationState::DVPresentationState(DiDisplayFunction *dispFunction)
+DVPresentationState::DVPresentationState(DiDisplayFunction **dispFunction)
 : patientName(DCM_PatientsName)
 , patientID(DCM_PatientID)
 , patientBirthDate(DCM_PatientsBirthDate)
@@ -207,7 +207,7 @@ DVPresentationState::DVPresentationState(DiDisplayFunction *dispFunction)
 , currentImageCurveList()
 , currentImageVOILUTList()
 , currentImageVOIWindowList()
-, useBartenTransform(OFTrue)
+, displayTransform(DVPSD_GSDF)
 , imageInverse(OFFalse)
 , displayFunction(dispFunction)
 , minimumPrintBitmapWidth(0)
@@ -318,7 +318,7 @@ void DVPresentationState::clear()
   softcopyVOIList.clear();
   detachImage(); // clears all currentImageXX attributes
   // we do not change the display function
-  useBartenTransform = OFTrue;
+  displayTransform = DVPSD_GSDF;
   imageInverse = OFFalse;
   return;
 }
@@ -3095,9 +3095,11 @@ Uint8 DVPresentationState::convertPValueToDDL(Uint16 pvalue)
 {
   if (currentImage)
   {
-    /* activate Barten transform */
-    if (displayFunction && useBartenTransform) currentImage->setDisplayFunction(displayFunction);
-    else currentImage->setNoDisplayFunction();
+    /* activate display transform */
+    if (displayFunction && (displayTransform != DVPSD_none))
+      currentImage->setDisplayFunction(displayFunction[displayTransform]);
+    else
+      currentImage->setNoDisplayFunction();
     Uint16 result=0;
     if (currentImage->convertPValueToDDL(pvalue, result)) return (Uint8)result;
   }
@@ -3110,8 +3112,10 @@ void DVPresentationState::renderPixelData(OFBool display)
   int result=0;
 
   /* activate Barten transform */
-  if (displayFunction && useBartenTransform && display) currentImage->setDisplayFunction(displayFunction);
-  else currentImage->setNoDisplayFunction();
+  if (displayFunction && (displayTransform != DVPSD_none) && display)
+    currentImage->setDisplayFunction(displayFunction[displayTransform]);
+  else
+    currentImage->setNoDisplayFunction();
   
   if (! currentImageVOIValid)
   {
@@ -3504,10 +3508,12 @@ E_Condition DVPresentationState::selectImageFrameNumber(unsigned long frame)
   return EC_IllegalCall;
 }
 
+/*
 void DVPresentationState::changeDisplayFunction(DiDisplayFunction *dispFunction)
 {
   displayFunction = dispFunction;
 }
+*/
 
 DVPSDisplayedArea *DVPresentationState::getDisplayedAreaSelection()
 {
@@ -3623,7 +3629,11 @@ E_Condition DVPresentationState::getPrintBitmapRequestedImageSize(OFString& requ
 
 /*
  *  $Log: dvpstat.cc,v $
- *  Revision 1.32  1999-09-10 07:32:44  thiel
+ *  Revision 1.33  1999-09-10 09:16:44  joergr
+ *  Added support for CIELAB display function. New methods to handle display
+ *  functions. Old methods are marked as retired and should be removed asap.
+ *
+ *  Revision 1.32  1999/09/10 07:32:44  thiel
  *  Added Presentation LUT Shape LIN OD
  *
  *  Revision 1.31  1999/09/07 09:05:13  joergr
