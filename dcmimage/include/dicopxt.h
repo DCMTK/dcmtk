@@ -22,9 +22,9 @@
  *  Purpose: DicomColorPixelTemplate (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-04-28 12:51:58 $
+ *  Update Date:      $Date: 1999-07-23 13:22:29 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/include/Attic/dicopxt.h,v $
- *  CVS/RCS Revision: $Revision: 1.8 $
+ *  CVS/RCS Revision: $Revision: 1.9 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -74,10 +74,28 @@ inline Uint16 removeSign(const Sint16 value, const Sint16 offset)
     return (Uint16)((Sint32)value + (Sint32)offset + 1);
 }
 
-
+/*
 inline Uint32 removeSign(const Sint32 value, const Sint32 offset)
 {
     return (value < 0) ? (Uint32)(value + offset + 1) : (Uint32)value + (Uint32)offset + 1;
+}
+
+
+inline Uint8 removeSign(const Sint8 value, const Uint8 mask)
+{
+    return (Uint8)value ^ mask;
+}
+
+
+inline Uint16 removeSign(const Sint16 value, const Uint16 mask)
+{
+    return (Uint16)value ^ mask;
+}
+*/
+
+inline Uint32 removeSign(const Sint32 value, const Uint32 mask)
+{
+    return (Uint32)value ^ mask;
 }
 
 
@@ -285,7 +303,10 @@ class DiColorPixelTemplate
  *
  * CVS/RCS Log:
  * $Log: dicopxt.h,v $
- * Revision 1.8  1999-04-28 12:51:58  joergr
+ * Revision 1.9  1999-07-23 13:22:29  joergr
+ * emoved inline method 'removeSign'which is no longer needed.
+ *
+ * Revision 1.8  1999/04/28 12:51:58  joergr
  * Corrected some typos, comments and formatting.
  *
  * Revision 1.7  1999/01/20 14:44:49  joergr
