@@ -22,9 +22,9 @@
  *  Purpose: DicomGSDFunction (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-07-18 12:30:01 $
+ *  Update Date:      $Date: 2002-07-19 08:24:21 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/digsdfn.h,v $
- *  CVS/RCS Revision: $Revision: 1.10 $
+ *  CVS/RCS Revision: $Revision: 1.11 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -77,7 +77,7 @@ class DiGSDFunction
      *  @param  max         maximum DDL (device driving level)
      *  @param  deviceType  type of the output device (default: monitor)
      *  @param  ord         order of the polynomial curve fitting algorithm used to interpolate
-     *                      the given base points (0 = use cubic spline interpolation)
+     *                      the given base points (0 or negative = use cubic spline interpolation)
      */
     DiGSDFunction(const double *val_tab,
                   const unsigned long count,
@@ -91,11 +91,11 @@ class DiGSDFunction
      *
      ** @param  ddl_tab     pointer to array with DDL values (must be with the interval 0..max)
      *  @param  val_tab     pointer to array with luminance/OD values
-     *  @param  count       number of array elements
+     *  @param  count       number of array elements (2..65536)
      *  @param  max         maximum DDL (device driving level)
      *  @param  deviceType  type of the output device (default: monitor)
      *  @param  ord         order of the polynomial curve fitting algorithm used to interpolate
-     *                      the given base points (0 = use cubic spline interpolation)
+     *                      the given base points (0 or negative = use cubic spline interpolation)
      */
     DiGSDFunction(const Uint16 *ddl_tab,
                   const double *val_tab,
@@ -108,10 +108,10 @@ class DiGSDFunction
      *
      ** @param  val_min     minimum luminance/OD value
      *  @param  val_max     maximum luminance/OD value
-     *  @param  count       number of DDLs (device driving level)
+     *  @param  count       number of DDLs (device driving level, 1..65536))
      *  @param  deviceType  type of the output device (default: monitor)
      *  @param  ord         order of the polynomial curve fitting algorithm used to interpolate
-     *                      the given base points (0 or absent = use cubic spline interpolation)
+     *                      the given base points (0 or negative = use cubic spline interpolation)
      */
     DiGSDFunction(const double val_min,
                   const double val_max,
@@ -221,7 +221,10 @@ class DiGSDFunction
  *
  * CVS/RCS Log:
  * $Log: digsdfn.h,v $
- * Revision 1.10  2002-07-18 12:30:01  joergr
+ * Revision 1.11  2002-07-19 08:24:21  joergr
+ * Enhanced/corrected comments.
+ *
+ * Revision 1.10  2002/07/18 12:30:01  joergr
  * Added support for hardcopy and softcopy input devices (camera and scanner).
  * Added polygonal curve fitting algorithm as an alternate interpolation
  * method.

@@ -22,9 +22,9 @@
  *  Purpose: DicomDisplayFunction (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-07-18 12:29:08 $
+ *  Update Date:      $Date: 2002-07-19 08:24:21 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/didispfn.h,v $
- *  CVS/RCS Revision: $Revision: 1.16 $
+ *  CVS/RCS Revision: $Revision: 1.17 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -99,7 +99,7 @@ class DiDisplayFunction
      *  @param  max         maximum DDL (device driving level)
      *  @param  deviceType  type of the output device (default: monitor)
      *  @param  ord         order of the polynomial curve fitting algorithm used to interpolate
-     *                      the given base points (0 or absent = use cubic spline interpolation)
+     *                      the given base points (0 or negative = use cubic spline interpolation)
      */
     DiDisplayFunction(const double *val_tab,
                       const unsigned long count,
@@ -117,7 +117,7 @@ class DiDisplayFunction
      *  @param  max         maximum DDL (device driving level)
      *  @param  deviceType  type of the output device (default: monitor)
      *  @param  ord         order of the polynomial curve fitting algorithm used to interpolate
-     *                      the given base points (0 or absent = use cubic spline interpolation)
+     *                      the given base points (0 or negative = use cubic spline interpolation)
      */
     DiDisplayFunction(const Uint16 *ddl_tab,
                       const double *val_tab,
@@ -134,7 +134,7 @@ class DiDisplayFunction
      *  @param  count       number of DDLs (device driving level, 1..65536)
      *  @param  deviceType  type of the output device (default: monitor)
      *  @param  ord         order of the polynomial curve fitting algorithm used to interpolate
-     *                      the given base points (0 or absent = use cubic spline interpolation)
+     *                      the given base points (0 or negative = use cubic spline interpolation)
      */
     DiDisplayFunction(const double val_min,
                       const double val_max,
@@ -383,7 +383,10 @@ class DiDisplayFunction
  *
  * CVS/RCS Log:
  * $Log: didispfn.h,v $
- * Revision 1.16  2002-07-18 12:29:08  joergr
+ * Revision 1.17  2002-07-19 08:24:21  joergr
+ * Enhanced/corrected comments.
+ *
+ * Revision 1.16  2002/07/18 12:29:08  joergr
  * Added support for hardcopy and softcopy input devices (camera and scanner).
  * Added polygonal curve fitting algorithm as an alternate interpolation
  * method.

@@ -22,9 +22,9 @@
  *  Purpose: Provides main interface to the "DICOM image toolkit"
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-07-05 10:37:47 $
+ *  Update Date:      $Date: 2002-07-19 08:24:20 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/dcmimage.h,v $
- *  CVS/RCS Revision: $Revision: 1.41 $
+ *  CVS/RCS Revision: $Revision: 1.42 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -591,7 +591,7 @@ class DicomImage
      *  possibly active VOI LUT is implicitly disabled.
      *  NB: This function does nothing if the flag CIF_UsePresentationState is set.
      *
-     ** @param  window  index to window width/center sequence
+     ** @param  window  index to window width/center sequence (0..n-1)
      *
      ** @return true if successful, false otherwise (none monochrome or invalid index)
      */
@@ -666,7 +666,7 @@ class DicomImage
      *  possibly active window/center is implicitly disabled.
      *  NB: This function does nothing if the flag CIF_UsePresentationState is set.
      *
-     ** @param  table  index to VOI LUT sequence
+     ** @param  table  index to VOI LUT sequence (0..n-1)
      *
      ** @return true if successful, false otherwise (none monochrome or invalid index)
      */
@@ -1748,7 +1748,10 @@ class DicomImage
  *
  * CVS/RCS Log:
  * $Log: dcmimage.h,v $
- * Revision 1.41  2002-07-05 10:37:47  joergr
+ * Revision 1.42  2002-07-19 08:24:20  joergr
+ * Enhanced/corrected comments.
+ *
+ * Revision 1.41  2002/07/05 10:37:47  joergr
  * Added comments.
  *
  * Revision 1.40  2002/06/26 16:00:25  joergr
