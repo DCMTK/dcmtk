@@ -22,10 +22,10 @@
  *  Purpose: Test code of ascii/double conversion methods in class OFStandard
  *
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-06-20 12:04:00 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2002-07-18 12:13:25 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/tests/tstatof.cc,v $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -76,7 +76,7 @@ const ValuePair vp[] =
   {"1.175494351E-38F", 1.175494351E-38F, OFTrue},
 
   // overflow is reported as infinity
-  {"1.7976931348623157E+1000", 1.0E999 /* infinity */, OFTrue},
+  {"1.7976931348623157E+1000", 1.0E300 * 1.0E300 * 1.0E300 * 1.0E100 /* infinity */, OFTrue},
 
   // underflow is reported as zero
   {"2.2250738585072014E-1000", 0.0, OFTrue},
@@ -109,11 +109,11 @@ int main()
       	// fail if precision is less then 9 decimal digits
         if (delta * 1.0E9 > fabs(d1))
         {
-          passed = OFFalse;      	
-          CERR << "test #" << i << " failed: conversion error, atof=" << d2 << ", ref=" 
+          passed = OFFalse;
+          CERR << "test #" << i << " failed: conversion error, atof=" << d2 << ", ref="
                << d1 << ", delta=" << delta << endl;
         }
-      }      
+      }
     }
     else
     {
@@ -122,12 +122,12 @@ int main()
         passed = OFFalse;
         if (r)
           CERR << "test #" << i << " failed: conversion did not flag error as expected, atof=" << d2 << endl;
-        else 
+        else
           CERR << "test #" << i << " failed: conversion did not succeed as expected" << endl;
       }
     }
 
-    if (passed) 
+    if (passed)
     {
       CERR << "test #" << i << " passed" << endl;
       numPassed++;
@@ -151,7 +151,11 @@ int main()
  *
  * CVS/RCS Log:
  * $Log: tstatof.cc,v $
- * Revision 1.1  2002-06-20 12:04:00  meichel
+ * Revision 1.2  2002-07-18 12:13:25  joergr
+ * Changed value of double constant to avoid compilation error (out of range)
+ * reported by Sun CC 2.0.1.
+ *
+ * Revision 1.1  2002/06/20 12:04:00  meichel
  * Created test application for OFStandard::atof()
  *
  *
