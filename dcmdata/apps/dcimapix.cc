@@ -10,7 +10,7 @@
  *
  *
  * Last Update:   $Author: andreas $
- * Revision:	  $Revision: 1.4 $
+ * Revision:	  $Revision: 1.5 $
  * Status:	  $State: Exp $
  *
  */
@@ -28,7 +28,7 @@
 
 #include "dcdebug.h"
 
-#include "dcmutils.h"
+#include "dcutils.h"
 #include "dcimapix.h"
 
 
@@ -128,36 +128,36 @@ E_Condition DcmImagePixelModule::readImageFromDataset( DcmDataset &dset )
     BOOL failed = FALSE;
     BOOL fatal	= FALSE;
 
-    getSingleValueUL( &dset, DCM_NumberOfFrames, NumberOfFrames );
+    getSingleValue( &dset, DCM_NumberOfFrames, NumberOfFrames );
     cerr << "NumberOfFrames=" << NumberOfFrames << endl;
 
-    failed |= getSingleValueUS( &dset, DCM_SamplesPerPixel, SamplesPerPixel );
+    failed |= getSingleValue( &dset, DCM_SamplesPerPixel, SamplesPerPixel );
     cerr << "SamplesPerPixel=" << SamplesPerPixel << endl;
 
     char *PhotometricString = "";
-    failed |= getSingleValueByteString(&dset, DCM_PhotometricInterpretation,
-									   PhotometricString );
+    failed |= getSingleValue(&dset, DCM_PhotometricInterpretation,
+			     PhotometricString );
     PhotometricInterpretation = interpNameToEnum( PhotometricString );
     if ( PhotometricInterpretation == EPI_unknown )
 		failed |= TRUE;
     cerr << "PhotometricInterpretation=[" << PhotometricString << "]" << endl;
 
-    fatal  |= getSingleValueUS( &dset, DCM_Columns, Columns );
+    fatal  |= getSingleValue( &dset, DCM_Columns, Columns );
     cerr << "Columns=" << Columns << endl;
 
-    fatal  |= getSingleValueUS( &dset, DCM_Rows, Rows );
+    fatal  |= getSingleValue( &dset, DCM_Rows, Rows );
     cerr << "Rows=" << Rows << endl;
 
-    failed |= getSingleValueUS( &dset, DCM_BitsAllocated, BitsAllocated );
+    failed |= getSingleValue( &dset, DCM_BitsAllocated, BitsAllocated );
     cerr << "BitsAllocated=" << BitsAllocated << endl;
 
-    failed |= getSingleValueUS( &dset, DCM_BitsStored, BitsStored );
+    failed |= getSingleValue( &dset, DCM_BitsStored, BitsStored );
     cerr << "BitsStored=" << BitsStored << endl;
 
-    failed |= getSingleValueUS( &dset, DCM_HighBit, HighBit );
+    failed |= getSingleValue( &dset, DCM_HighBit, HighBit );
     cerr << "HighBit=" << HighBit << endl;
 
-    failed |= getSingleValueUS( &dset, DCM_PixelRepresentation,
+    failed |= getSingleValue( &dset, DCM_PixelRepresentation,
 							   PixelRepresentation );
     cerr << "PixelRepresentation=" << PixelRepresentation << endl;
 
@@ -251,41 +251,40 @@ BOOL readPGM(FILE * inFile, Uint16 &sizex, Uint16 &sizey, Uint16 &maxcol,
 
 E_Condition DcmImagePixelModule::readImageFromPGM(FILE * inFile )
 {
-	Bdebug((3, "dcimapix:DcmImagePixelModule::readImageFromPGM(FILE*)" ));
+  Bdebug((3, "dcimapix:DcmImagePixelModule::readImageFromPGM(FILE*)" ));
 
-    E_Condition l_error = EC_Normal;
-    BYTE *pixel = (BYTE*)NULL;
-    Uint16 maxcol;
+  E_Condition l_error = EC_Normal;
+  BYTE *pixel = (BYTE*)NULL;
+  Uint16 maxcol;
 
-    if ( readPGM(inFile, Columns, Rows, maxcol, pixel ) == TRUE )
+  if ( readPGM(inFile, Columns, Rows, maxcol, pixel ) == TRUE )
     {
-		NumberOfFrames = 1;
-		SamplesPerPixel = 1;
-		PhotometricInterpretation = EPI_Monochrome2;
-		HighBit = 7;
-		BitsStored = 8;
-		BitsAllocated = 8;
-		PixelRepresentation = 0;
+      NumberOfFrames = 1;
+      SamplesPerPixel = 1;
+      PhotometricInterpretation = EPI_Monochrome2;
+      HighBit = 7;
+      BitsStored = 8;
+      BitsAllocated = 8;
+      PixelRepresentation = 0;
 
-        if (    PixelData != (DcmOtherByteOtherWord*)NULL
-			&& pixelDataIsPartOfDatset == FALSE
-			)
-            delete PixelData;
-        DcmTag pixtag( DCM_PixelData );
-        PixelData = new DcmOtherByteOtherWord( pixtag );
-        pixelDataIsPartOfDatset = FALSE;
+      if (PixelData != (DcmOtherByteOtherWord*)NULL
+	  && pixelDataIsPartOfDatset == FALSE)
+	delete PixelData;
+      DcmTag pixtag( DCM_PixelData );
+      PixelData = new DcmOtherByteOtherWord( pixtag );
+      pixelDataIsPartOfDatset = FALSE;
 
-        PixelData->setVR( EVR_OW );
-		PixelData->put( pixel, Columns * Rows );
-        delete pixel;                    // wurde in readPGM() alloziiert
+      PixelData->setVR( EVR_OW );
+      PixelData->putUint8Array( pixel, Columns * Rows );
+      delete pixel;                    // wurde in readPGM() alloziiert
 
-		allDataValid = TRUE;
+      allDataValid = TRUE;
     }
-    else
-		l_error = EC_CorruptedData;
-	Edebug(());
+  else
+    l_error = EC_CorruptedData;
+  Edebug(());
 
-    return l_error;
+  return l_error;
 }
 
 
@@ -395,8 +394,9 @@ E_Condition DcmImagePixelModule::writeImageAsPGM(FILE * outFile )
 		{
 		    Uint32 maxval = ( 1 << BitsStored ) - 1;
 		    fprintf(outFile, "P5\n%u %u\n%lu\n", Columns, Rows, (unsigned long)maxval);
-		    fwrite(PixelData->getBytes(), 
-			   (size_t)PixelData->getLength(), 1, outFile);
+		    Uint8 * pixel = NULL;
+		    l_error = PixelData->getUint8Array(pixel);
+		    fwrite(pixel, (size_t)PixelData->getLength(), 1, outFile);
 		}
 	    }
 	    else
