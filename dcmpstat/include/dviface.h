@@ -23,8 +23,8 @@
  *    classes: DVInterface
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-01-25 18:18:23 $
- *  CVS/RCS Revision: $Revision: 1.13 $
+ *  Update Date:      $Date: 1999-01-27 14:59:28 $
+ *  CVS/RCS Revision: $Revision: 1.14 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -41,11 +41,12 @@
 #include "dvpstat.h"    /* for class DVPresentationState */
 #include "dbpriv.h"     /* for struct IdxRecord */
 #include "ofstring.h"   /* for class OFString */
+#include "imagedb.h"    /* for DB_UpperMaxBytesPerStudy */
 
 /* max study count for DB handle creation */
 #define PSTAT_MAXSTUDYCOUNT 200
 /* study size for DB handle creation */
-#define PSTAT_STUDYSIZE 1000000
+#define PSTAT_STUDYSIZE DB_UpperMaxBytesPerStudy
 /* default AETitle for the Presentation State viewer */
 #define PSTAT_AETITLE "DCMPSTAT"
 /* default path for database folder */
@@ -275,7 +276,7 @@ class DVInterface
      */      
     E_Condition startReceiver();
   
-    /** UNIMPLEMENTED - terminates the network receiver process (Storage Service Class SCP).
+    /** terminates the network receiver process (Storage Service Class SCP).
      *  This method attempts to terminate the network receiver process by
      *  requesting a DICOM association with it and delivering a special "shutdown" command.
      *  If for some reason the network receiver cannot be found (i.e. because it has
@@ -646,7 +647,11 @@ Uint32 stripidxarray(int *elemarray);
 
 /*
  *  $Log: dviface.h,v $
- *  Revision 1.13  1999-01-25 18:18:23  meichel
+ *  Revision 1.14  1999-01-27 14:59:28  meichel
+ *  Implemented DICOM network receive application "dcmpsrcv" which receives
+ *    images and presentation states and stores them in the local database.
+ *
+ *  Revision 1.13  1999/01/25 18:18:23  meichel
  *  Defined private SOP class UID for network receiver
  *    shutdown function. Cleanup up some code.
  *

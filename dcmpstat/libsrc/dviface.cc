@@ -22,8 +22,8 @@
  *  Purpose: DVPresentationState
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-01-25 18:18:22 $
- *  CVS/RCS Revision: $Revision: 1.19 $
+ *  Update Date:      $Date: 1999-01-27 14:59:26 $
+ *  CVS/RCS Revision: $Revision: 1.20 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -62,6 +62,8 @@ END_EXTERN_C
 #include <windows.h>
 #include <winbase.h>     /* for CreateProcess */
 #endif
+
+#define DEFAULT_MAXPDU 16384
 
 DVInterface::DVInterface(int /* dummy */, const char *config_file)
 : pState(NULL)
@@ -1092,6 +1094,59 @@ E_Condition DVInterface::startReceiver()
   return EC_IllegalCall; 
 }
 
+E_Condition DVInterface::terminateReceiver()
+{
+#ifdef HAVE_GUSI_H
+  GUSISetup(GUSIwithSIOUXSockets);
+  GUSISetup(GUSIwithInternetSockets);
+#endif
+
+#ifdef HAVE_WINSOCK_H
+  WSAData winSockData;
+  /* we need at least version 1.1 */
+  WORD winSockVersionNeeded = MAKEWORD( 1, 1 );
+  WSAStartup(winSockVersionNeeded, &winSockData);
+#endif
+
+  E_Condition result = EC_Normal;
+  T_ASC_Network *net=NULL;
+  T_ASC_Parameters *params=NULL;
+  DIC_NODENAME localHost;
+  DIC_NODENAME peerHost;
+  T_ASC_Association *assoc=NULL;
+
+  CONDITION cond = ASC_initializeNetwork(NET_REQUESTOR, 0, 1000, &net);
+  if (SUCCESS(cond))
+  {
+    cond = ASC_createAssociationParameters(&params, DEFAULT_MAXPDU);
+    if (SUCCESS(cond))
+    {
+      ASC_setAPTitles(params, getNetworkAETitle(), getNetworkAETitle(), NULL);
+      gethostname(localHost, sizeof(localHost) - 1);
+      sprintf(peerHost, "localhost:%d", (int)getNetworkPort());
+      ASC_setPresentationAddresses(params, localHost, peerHost);
+
+      const char* transferSyntaxes[] = { UID_LittleEndianImplicitTransferSyntax };
+      cond = ASC_addPresentationContext(params, 1, PSTAT_PRIVATESOPCLASSUID,transferSyntaxes, 1);
+      if (SUCCESS(cond))
+      {
+    
+        cond = ASC_requestAssociation(net, params, &assoc); 
+        if (cond==ASC_NORMAL) ASC_abortAssociation(assoc); // tear down association if necessary
+        ASC_dropAssociation(assoc);
+        ASC_destroyAssociation(&assoc);
+      }
+    } else result = EC_IllegalCall;
+    ASC_dropNetwork(&net);
+  } else result = EC_IllegalCall;
+  COND_PopCondition(OFTrue); // clear condition stack
+
+#ifdef HAVE_WINSOCK_H
+  WSACleanup();
+#endif
+  
+  return result;
+}
 
 /* keyword for configuration file */
 
@@ -1522,7 +1577,11 @@ void DVInterface::cleanChildren()
 /*
  *  CVS/RCS Log:
  *  $Log: dviface.cc,v $
- *  Revision 1.19  1999-01-25 18:18:22  meichel
+ *  Revision 1.20  1999-01-27 14:59:26  meichel
+ *  Implemented DICOM network receive application "dcmpsrcv" which receives
+ *    images and presentation states and stores them in the local database.
+ *
+ *  Revision 1.19  1999/01/25 18:18:22  meichel
  *  Defined private SOP class UID for network receiver
  *    shutdown function. Cleanup up some code.
  *

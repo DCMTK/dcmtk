@@ -22,9 +22,9 @@
  *  Purpose: Presentation State Viewer - Network Send Component (Store SCU)
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-01-20 19:26:17 $
+ *  Update Date:      $Date: 1999-01-27 14:59:25 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmpstat/apps/Attic/runsend.cc,v $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -104,6 +104,8 @@ int main(int argc, char *argv[])
       
     cmd.addGroup("options:");
      cmd.addOption("--help",        "-h",    "print this help screen");
+     cmd.addOption("--receiver",    "-r",    "start network receiver");
+     cmd.addOption("--terminate",   "-t",    "terminate network receiver");
      
     switch (cmd.parseLine(argc, argv))    
     {
@@ -155,6 +157,16 @@ int main(int argc, char *argv[])
     
     DVInterface dvi(0, opt_cfgName);
 
+    if (cmd.findOption("--receiver"))
+    {
+      if (EC_Normal != dvi.startReceiver()) cerr << "error: unable to start network receiver" << endl;
+    }
+
+    if (cmd.findOption("--terminate"))
+    {
+      if (EC_Normal != dvi.terminateReceiver()) cerr << "error: unable to terminate network receiver" << endl;
+    }
+    
     E_Condition result = dvi.sendIOD(opt_target, opt_studyUID, opt_seriesUID, opt_instanceUID);
 
     if (result != EC_Normal) cerr << "error: unable to create send process" << endl;
@@ -165,7 +177,11 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: runsend.cc,v $
- * Revision 1.1  1999-01-20 19:26:17  meichel
+ * Revision 1.2  1999-01-27 14:59:25  meichel
+ * Implemented DICOM network receive application "dcmpsrcv" which receives
+ *   images and presentation states and stores them in the local database.
+ *
+ * Revision 1.1  1999/01/20 19:26:17  meichel
  * Implemented DICOM network send application "dcmpssnd" which sends studies/
  *   series/images contained in the local database to a remote DICOM
  *   communication peer.

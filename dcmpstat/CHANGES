@@ -1,4 +1,17 @@
 
+**** Changes from 1999.01.27 (eichelberg)
+
+- Implemented DICOM network receive application "dcmpsrcv"
+  which receives images and presentation states and stores
+  them in the local database. Presentation states are checked
+  before they are accepted.
+  Added:   dcmpstat/apps/dcmpssnd.cc
+  Affects: dcmpstat/apps/runsend.cc
+           dcmpstat/apps/Makefile.dep
+           dcmpstat/apps/Makefile.in
+           dcmpstat/include/dviface.h
+           dcmpstat/libsrc/dviface.cc
+
 **** Changes from 1999.01.25 (eichelberg)
 
 - Defined private SOP class UID for network receiver
