@@ -22,9 +22,9 @@
  *  Purpose: List the contents of a dicom structured reporting file
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-11-01 16:09:06 $
+ *  Update Date:      $Date: 2000-11-07 18:36:05 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmsr/apps/dsrdump.cc,v $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -258,6 +258,9 @@ int main(int argc, char *argv[])
             errorCount++;
     }
 
+#ifdef DEBUG
+    dcmDataDict.clear();  /* useful for debugging with dmalloc */
+#endif    
     return errorCount;
 }
 
@@ -265,7 +268,10 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dsrdump.cc,v $
- * Revision 1.4  2000-11-01 16:09:06  joergr
+ * Revision 1.5  2000-11-07 18:36:05  joergr
+ * Added useful code for debugging with dmalloc.
+ *
+ * Revision 1.4  2000/11/01 16:09:06  joergr
  * Updated comments/formatting.
  *
  * Revision 1.3  2000/10/18 16:56:33  joergr
