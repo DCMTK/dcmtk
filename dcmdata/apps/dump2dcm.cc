@@ -51,9 +51,9 @@
 **
 **
 ** Last Update:		$Author: hewett $
-** Update Date:		$Date: 1996-05-02 15:55:11 $
+** Update Date:		$Date: 1996-05-02 17:00:23 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/apps/dump2dcm.cc,v $
-** CVS/RCS Revision:	$Revision: 1.5 $
+** CVS/RCS Revision:	$Revision: 1.6 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -92,7 +92,7 @@ usage()
 {
     cerr <<
 	   "dump2dcm: convert dicom dumpfile into dicom-fileformat or -dataset\n"
-	   "usage: dcmconv [options] dumpfile-in dcmfile-out\n"
+	   "usage: dump2dcm [options] dumpfile-in dcmfile-out\n"
 	   "options are:\n"
            "  read options: \n"
            "    +ln   maximum line length n (default 4096)\n"
@@ -843,7 +843,10 @@ int main(int argc, char *argv[])
 /*
 ** CVS/RCS Log:
 ** $Log: dump2dcm.cc,v $
-** Revision 1.5  1996-05-02 15:55:11  hewett
+** Revision 1.6  1996-05-02 17:00:23  hewett
+** Corrected program name in usage description.
+**
+** Revision 1.5  1996/05/02 15:55:11  hewett
 ** Stopped whitespace being stripped from inside value strings when
 ** no [] delimiter present.  Now only leading and trailing whitespace
 ** is stripped.
