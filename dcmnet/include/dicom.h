@@ -68,9 +68,9 @@
 **
 **
 ** Last Update:		$Author: hewett $
-** Update Date:		$Date: 1996-09-27 08:29:42 $
+** Update Date:		$Date: 1997-02-06 12:15:41 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/include/Attic/dicom.h,v $
-** CVS/RCS Revision:	$Revision: 1.2 $
+** CVS/RCS Revision:	$Revision: 1.3 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -150,7 +150,7 @@ typedef unsigned long CONDITION;
 typedef Uint16	U_SHORT;	/* normal unsigned short*/
 typedef Uint32	U_LONG;		/* normal unsigned long */
 typedef Uint32	MASK_32;	/* For bit masks	*/
-#ifndef HAVE_WINSOCK_H
+#ifndef windows
 /* The Windows include files define their own version of BOOLEAN */
 typedef BOOL	BOOLEAN;	/* for boolean ops	*/
 #endif
@@ -219,7 +219,11 @@ typedef char	DIC_NODENAME[DIC_NODENAME_LEN + 1];
 /*
 ** CVS Log
 ** $Log: dicom.h,v $
-** Revision 1.2  1996-09-27 08:29:42  hewett
+** Revision 1.3  1997-02-06 12:15:41  hewett
+** Updated preliminary Apple Macintosh support for the Metrowerks CodeWarrior
+** version 11 compiler and environment.
+**
+** Revision 1.2  1996/09/27 08:29:42  hewett
 ** Support for Win32.  Now does not define a type BOOLEAN if <WINSOCK.H>
 ** is included.  Renames the ERROR(A) macro to be CONDERROR(A) macro due
 ** to a clash with Windows include files.

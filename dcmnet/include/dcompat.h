@@ -62,9 +62,9 @@
 ** 
 **
 ** Last Update:		$Author: hewett $
-** Update Date:		$Date: 1996-09-27 14:03:03 $
+** Update Date:		$Date: 1997-02-06 12:14:42 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/include/Attic/dcompat.h,v $
-** CVS/RCS Revision:	$Revision: 1.7 $
+** CVS/RCS Revision:	$Revision: 1.8 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -82,12 +82,23 @@
 #endif
 
 #ifdef HAVE_WINSOCK_H
-/* Use the WinSock sockets library on Windows */
+/* Use the WinSock sockets library on Windows or Macintosh */
 #include <WINSOCK.H>
+#ifdef macintosh
+/*
+** The WinSock header on Macintosh does not declare the WORD type nor the MAKEWORD
+** macro need to initialize the WinSock library.
+*/
+typedef u_short WORD;
+#define MAKEWORD(a,b) ((WORD) (((a)&0xff)<<8) | ((b)&0xff) )
+#endif
 #endif
 
 BEGIN_EXTERN_C
 
+#ifdef HAVE_TIME_H
+#include <time.h>
+#endif
 #ifdef HAVE_SYS_TIME_H
 #include <sys/time.h>
 #endif
@@ -128,8 +139,16 @@ BEGIN_EXTERN_C
 #ifdef HAVE_SYS_FILE_H
 #include <sys/file.h>
 #endif
+#include <errno.h>
 
 END_EXTERN_C
+
+#ifndef EINTR
+/* The WinSock header on Macintosh does not define an EINTR error code */
+#ifdef HAVE_WINSOCK_H
+#define EINTR WSAEINTR
+#endif
+#endif
 
 #ifndef HAVE_SLEEP
 
@@ -364,7 +383,11 @@ char *tempnam(char *dir, char *pfx);
 /*
 ** CVS Log
 ** $Log: dcompat.h,v $
-** Revision 1.7  1996-09-27 14:03:03  hewett
+** Revision 1.8  1997-02-06 12:14:42  hewett
+** Updated preliminary Apple Macintosh support for the Metrowerks CodeWarrior
+** version 11 compiler and environment.
+**
+** Revision 1.7  1996/09/27 14:03:03  hewett
 ** Added emulation of sleep() for Win32.
 **
 ** Revision 1.6  1996/09/27 08:27:59  hewett
