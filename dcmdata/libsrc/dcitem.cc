@@ -22,9 +22,9 @@
  *  Purpose: class DcmItem
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-07-16 14:33:43 $
+ *  Update Date:      $Date: 2003-10-08 10:25:00 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcitem.cc,v $
- *  CVS/RCS Revision: $Revision: 1.85 $
+ *  CVS/RCS Revision: $Revision: 1.86 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -2779,6 +2779,9 @@ OFCondition DcmItem::putAndInsertString(const DcmTag& tag,
         case EVR_AS:
             elem = new DcmAgeString(tag);
             break;
+        case EVR_AT:
+            elem = new DcmAttributeTag(tag);
+            break;
         case EVR_CS:
             elem = new DcmCodeString(tag);
             break;
@@ -2800,29 +2803,48 @@ OFCondition DcmItem::putAndInsertString(const DcmTag& tag,
         case EVR_IS:
             elem = new DcmIntegerString(tag);
             break;
-        case EVR_TM:
-            elem = new DcmTime(tag);
-            break;
-        case EVR_UI:
-            elem = new DcmUniqueIdentifier(tag);
-            break;
         case EVR_LO:
             elem = new DcmLongString(tag);
             break;
         case EVR_LT:
             elem = new DcmLongText(tag);
             break;
-        case EVR_UT:
-            elem = new DcmUnlimitedText(tag);
-            break;
         case EVR_PN:
             elem = new DcmPersonName(tag);
+            break;
+        case EVR_OB:
+        case EVR_OW:
+            elem = new DcmOtherByteOtherWord(tag);
+            break;
+        case EVR_OF:
+            elem = new DcmOtherFloat(tag);
             break;
         case EVR_SH:
             elem = new DcmShortString(tag);
             break;
+        case EVR_SL:
+            elem = new DcmSignedLong(tag);
+            break;
+        case EVR_SS:
+            elem = new DcmSignedShort(tag);
+            break;
         case EVR_ST:
             elem = new DcmShortText(tag);
+            break;
+        case EVR_TM:
+            elem = new DcmTime(tag);
+            break;
+        case EVR_UI:
+            elem = new DcmUniqueIdentifier(tag);
+            break;
+        case EVR_UL:
+            elem = new DcmUnsignedLong(tag);
+            break;
+        case EVR_US:
+            elem = new DcmUnsignedShort(tag);
+            break;
+        case EVR_UT:
+            elem = new DcmUnlimitedText(tag);
             break;
         default:
             status = EC_IllegalCall;
@@ -2874,20 +2896,11 @@ OFCondition DcmItem::putAndInsertOFStringArray(const DcmTag& tag,
         case EVR_IS:
             elem = new DcmIntegerString(tag);
             break;
-        case EVR_TM:
-            elem = new DcmTime(tag);
-            break;
-        case EVR_UI:
-            elem = new DcmUniqueIdentifier(tag);
-            break;
         case EVR_LO:
             elem = new DcmLongString(tag);
             break;
         case EVR_LT:
             elem = new DcmLongText(tag);
-            break;
-        case EVR_UT:
-            elem = new DcmUnlimitedText(tag);
             break;
         case EVR_PN:
             elem = new DcmPersonName(tag);
@@ -2898,12 +2911,14 @@ OFCondition DcmItem::putAndInsertOFStringArray(const DcmTag& tag,
         case EVR_ST:
             elem = new DcmShortText(tag);
             break;
-        case EVR_OF:
-            elem = new DcmOtherFloat(tag);
+        case EVR_TM:
+            elem = new DcmTime(tag);
             break;
-        case EVR_OB:
-        case EVR_OW:
-            elem = new DcmOtherByteOtherWord(tag);
+        case EVR_UI:
+            elem = new DcmUniqueIdentifier(tag);
+            break;
+        case EVR_UT:
+            elem = new DcmUnlimitedText(tag);
             break;
         default:
             status = EC_IllegalCall;
@@ -2921,33 +2936,6 @@ OFCondition DcmItem::putAndInsertOFStringArray(const DcmTag& tag,
             delete elem;
     } else if (status.good())
         status = EC_MemoryExhausted;
-    return status;
-}
-
-
-OFCondition DcmItem::putAndInsertUint16(const DcmTag& tag,
-                                        const Uint16 value,
-                                        const unsigned long pos,
-                                        const OFBool replaceOld)
-{
-    OFCondition status = EC_IllegalCall;
-    /* create new element */
-    if (tag.getEVR() == EVR_US)
-    {
-        DcmElement *elem = new DcmUnsignedShort(tag);
-        if (elem != NULL)
-        {
-            /* put value */
-            status = elem->putUint16(value, pos);
-            /* insert into dataset/item */
-            if (status.good())
-                status = insert(elem, replaceOld);
-            /* could not be inserted, therefore, delete it immediately */
-            if (status.bad())
-                delete elem;
-        } else
-            status = EC_MemoryExhausted;
-    }
     return status;
 }
 
@@ -2991,6 +2979,33 @@ OFCondition DcmItem::putAndInsertUint8Array(const DcmTag& tag,
             delete elem;
     } else if (status.good())
         status = EC_MemoryExhausted;
+    return status;
+}
+
+
+OFCondition DcmItem::putAndInsertUint16(const DcmTag& tag,
+                                        const Uint16 value,
+                                        const unsigned long pos,
+                                        const OFBool replaceOld)
+{
+    OFCondition status = EC_IllegalCall;
+    /* create new element */
+    if (tag.getEVR() == EVR_US)
+    {
+        DcmElement *elem = new DcmUnsignedShort(tag);
+        if (elem != NULL)
+        {
+            /* put value */
+            status = elem->putUint16(value, pos);
+            /* insert into dataset/item */
+            if (status.good())
+                status = insert(elem, replaceOld);
+            /* could not be inserted, therefore, delete it immediately */
+            if (status.bad())
+                delete elem;
+        } else
+            status = EC_MemoryExhausted;
+    }
     return status;
 }
 
@@ -3318,7 +3333,10 @@ OFBool DcmItem::containsUnknownVR() const
 /*
 ** CVS/RCS Log:
 ** $Log: dcitem.cc,v $
-** Revision 1.85  2003-07-16 14:33:43  joergr
+** Revision 1.86  2003-10-08 10:25:00  joergr
+** Added support for AT, OB, OF, OW, SL, SS, UL, US to putAndInsertString().
+**
+** Revision 1.85  2003/07/16 14:33:43  joergr
 ** Added new function findAndGetSequence().
 ** Adapted type casts to new-style typecast operators defined in ofcast.h.
 **

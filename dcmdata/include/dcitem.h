@@ -22,9 +22,9 @@
  *  Purpose: Interface of class DcmItem
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-07-16 14:34:05 $
+ *  Update Date:      $Date: 2003-10-08 10:24:40 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcitem.h,v $
- *  CVS/RCS Revision: $Revision: 1.47 $
+ *  CVS/RCS Revision: $Revision: 1.48 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -611,8 +611,8 @@ class DcmItem
     /* --- putAndInsert functions: put value and insert new element --- */
 
     /** create a new element, put specified value to it and insert the element into the dataset/item.
-     *  Applicable to the following VRs: AE, AS, CS, DA, DS, DT, FL, FD, IS, LO, LT, OB, OF, OW, PN,
-     *  SH, ST, TM, UI, UT
+     *  Applicable to the following VRs: AE, AS, AT, CS, DA, DS, DT, FL, FD, IS, LO, LT, OB, OF, OW,
+     *  PN, SH, SL, SS, ST, TM, UI, UL, US, UT
      *  @param tag DICOM tag specifying the attribute to be created
      *  @param value value to be set for the new element (might be empty or NULL)
      *  @param replaceOld flag indicating whether to replace an existing element or not
@@ -901,7 +901,10 @@ OFCondition nextUp(DcmStack &st);
 /*
 ** CVS/RCS Log:
 ** $Log: dcitem.h,v $
-** Revision 1.47  2003-07-16 14:34:05  joergr
+** Revision 1.48  2003-10-08 10:24:40  joergr
+** Added support for AT, OB, OF, OW, SL, SS, UL, US to putAndInsertString().
+**
+** Revision 1.47  2003/07/16 14:34:05  joergr
 ** Added new function findAndGetSequence().
 **
 ** Revision 1.46  2003/06/26 09:17:25  onken
