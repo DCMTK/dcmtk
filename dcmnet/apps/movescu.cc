@@ -36,9 +36,9 @@
 ** Created:	03/96
 **
 ** Last Update:		$Author: hewett $
-** Update Date:		$Date: 1996-09-27 14:05:04 $
+** Update Date:		$Date: 1996-12-16 15:14:00 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/apps/movescu.cc,v $
-** CVS/RCS Revision:	$Revision: 1.5 $
+** CVS/RCS Revision:	$Revision: 1.6 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -253,7 +253,8 @@ main(int argc, char *argv[])
 
 #ifdef HAVE_WINSOCK_H
     WSAData winSockData;
-    WORD winSockVersionNeeded = 1;
+    /* we need at least version 1.0 */
+    WORD winSockVersionNeeded = MAKEWORD( 1, 0 );
     WSAStartup(winSockVersionNeeded, &winSockData);
 #endif
 
@@ -1056,4 +1057,18 @@ cmove(T_ASC_Association * assoc, const char *fname)
     }
     return cond;
 }
+
+/*
+** CVS Log
+**
+** $Log: movescu.cc,v $
+** Revision 1.6  1996-12-16 15:14:00  hewett
+** Added bugfix for WINSOCK support.  The required WINSOCK version
+** number was being incorrectly set to version 0.1.  The fixed
+** WINSOCK initialisation now uses the MAKEWORD macro to correctly
+** set the required version number. This bugfix was contributed
+** by Dr. Yongjian Bao of Innomed GmbH, Germany.
+**
+**
+*/
 

@@ -36,9 +36,9 @@
 ** Created:	03/96
 **
 ** Last Update:		$Author: hewett $
-** Update Date:		$Date: 1996-09-27 14:05:03 $
+** Update Date:		$Date: 1996-12-16 15:13:59 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/apps/findscu.cc,v $
-** CVS/RCS Revision:	$Revision: 1.7 $
+** CVS/RCS Revision:	$Revision: 1.8 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -222,7 +222,8 @@ main(int argc, char *argv[])
 
 #ifdef HAVE_WINSOCK_H
     WSAData winSockData;
-    WORD winSockVersionNeeded = 1;
+    /* we need at least version 1.0 */
+    WORD winSockVersionNeeded = MAKEWORD( 1, 0 );
     WSAStartup(winSockVersionNeeded, &winSockData);
 #endif
 
@@ -669,7 +670,14 @@ cfind(T_ASC_Association * assoc, const char *fname)
 /*
 ** CVS Log
 ** $Log: findscu.cc,v $
-** Revision 1.7  1996-09-27 14:05:03  hewett
+** Revision 1.8  1996-12-16 15:13:59  hewett
+** Added bugfix for WINSOCK support.  The required WINSOCK version
+** number was being incorrectly set to version 0.1.  The fixed
+** WINSOCK initialisation now uses the MAKEWORD macro to correctly
+** set the required version number. This bugfix was contributed
+** by Dr. Yongjian Bao of Innomed GmbH, Germany.
+**
+** Revision 1.7  1996/09/27 14:05:03  hewett
 ** Added calls to initialise WINSOCK library for Win32 environment.  Only
 ** compiled in if HAVE_WINSOCK_H
 **
