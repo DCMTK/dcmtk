@@ -224,6 +224,23 @@ A precompiled version of the library can be downloaded from
 http://dicom.offis.de/dcmtk/
 
 
+LIBXML SUPPORT
+==============
+
+Starting with release 3.5.3, DCMTK supports the conversion of XML documents
+to DICOM files.  DCMTK relies on the libxml toolkit (www.xmlsoft.org) for
+this purpose.  This release of DCMTK is known to compile with the current
+libxml release 2.5.5, although older releases may work as well.
+
+On Unix platforms, if support for XML export is desired, a compiled version
+of the libxml libraries and include files must be available during compilation
+of DCMTK, and the libxml support must be switched on explicitly.  By default,
+DCMTK compiles without libxml support.
+
+On Windows, the Visual C++ project files provided as part of the toolkit 
+expect a directory named ...
+
+
 BUILDING (Unix)
 ===============
 
@@ -272,9 +289,11 @@ Configure will assume that the OpenSSL include files are installed in
 /usr/local/apps/openssl-0.9.6h/lib. Appropriate options will be passed 
 to the compiler and the linker.
 
-Support for libtiff can be enabled in a similar way:
+Support for libtiff, libpng and libxml can be enabled in a similar way:
 
     ./configure --with-libtiff --with-libtiffinc=/usr/local/apps/libtiff-3.5.7
+                --with-libpng --with-libpnginc=/usr/local/apps/libpng-1.2.5
+                --with-libxml --with-libxmlinc=/usr/local/apps/libxml-2.5.5
 
 Different configure options can be combined in any order. configure --help
 will print a list of all existing configure options.  Useful configure

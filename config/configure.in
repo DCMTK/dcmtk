@@ -642,7 +642,7 @@ TIFFLIBS=""
 AC_MSG_CHECKING(whether to include libtiff support)
 AC_ARG_WITH(libtiff,
 [  --with-libtiff          include libtiff support
-  --without-libtiff       don't include libtiff support  (default)
+  --without-libtiff       don't include libtiff support (default)
   --with-libtiffinc=DIR   location of libtiff includes and libraries],
 [ case "$withval" in
   yes)
@@ -684,7 +684,7 @@ ZLIBLIBS=""
 AC_MSG_CHECKING(whether to include zlib support)
 AC_ARG_WITH(zlib,
 [  --with-zlib             include zlib support
-  --without-zlib          don't include zlib support  (default)
+  --without-zlib          don't include zlib support (default)
   --with-zlibinc=DIR      location of zlib includes and libraries],
 [ case "$withval" in
   yes)
@@ -726,7 +726,7 @@ PNGLIBS=""
 AC_MSG_CHECKING(whether to include libpng support)
 AC_ARG_WITH(libpng,
 [  --with-libpng           include libpng support
-  --without-libpng        don't include libpng support  (default)
+  --without-libpng        don't include libpng support (default)
   --with-libpnginc=DIR    location of libpng includes and libraries],
 [ case "$withval" in
   yes)
@@ -764,6 +764,48 @@ AC_ARG_WITH(libpng,
 )
 
 dnl -------------------------------------------------------
+dnl Check for libxml support
+dnl -------------------------------------------------------
+
+XMLLIBS=""
+AC_MSG_CHECKING(whether to include libxml support)
+AC_ARG_WITH(libxml,
+[  --with-libxml           include libxml support
+  --without-libxml        don't include libxml support (default)
+  --with-libxmlinc=DIR    location of libxml includes and libraries],
+[ case "$withval" in
+  yes)
+    AC_MSG_RESULT(yes)
+    AC_DEFINE(WITH_LIBXML)
+    XMLLIBS="-lxml2"
+
+    if test "${with_libxmlinc+set}" = set; then
+
+        case "$with_libxmlinc" in
+        yes|no)
+          echo "configure: warning: --with-libxmlinc called without argument - will use default" 1>&2
+        ;;
+        * )
+          if test ! -d ${with_libxmlinc}; then
+            echo "configure: warning: called with --with-libxmlinc, but libxml base directory ${withval} does not exist or is not a directory." 1>&2
+            exit 1
+          fi
+          CFLAGS="-I${with_libxmlinc}/include/libxml2 $CFLAGS"
+          CXXFLAGS="-I${with_libxmlinc}/include/libxml2 $CXXFLAGS"
+          LDFLAGS="-L${with_libxmlinc}/lib $LDFLAGS"
+        ;;
+        esac
+
+    fi
+    ;;
+  *)
+    AC_MSG_RESULT(no)
+    ;;
+  esac ],
+  AC_MSG_RESULT(no)
+)
+
+dnl -------------------------------------------------------
 dnl Set optimizer and debug compiler flags
 dnl -------------------------------------------------------
 CFLAGS="$DEBUGCFLAGS $CFLAGS"
@@ -778,6 +820,7 @@ AC_SUBST(TIFFLIBS)
 AC_SUBST(PNGLIBS)
 AC_SUBST(MATHLIBS)
 AC_SUBST(ZLIBLIBS)
+AC_SUBST(XMLLIBS)
 AC_SUBST(DEBUG)
 AC_SUBST(INSTALL_PRIVATE_DICTIONARY)
 

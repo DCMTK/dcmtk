@@ -624,6 +624,9 @@
 /* Define if we are compiling with zlib support */
 #define WITH_ZLIB
 
+/* Define if we are compiling with libxml support */
+/* #undef WITH_LIBXML /
+
 /* Define if we are compiling with any type of Multi-thread support */
 #define WITH_THREADS
 
