@@ -34,10 +34,10 @@ tlist: tlist.o
 	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ $@.o $(LOCALLIBS) $(LIBS)
 
 tstring: tstring.o
-        $(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ $@.o $(LOCALLIBS) $(LIBS)
+	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ $@.o $(LOCALLIBS) $(LIBS)
 
 install: 
-
+	echo "Nothing to install (ofstd/tests)"
 
 clean:
 	rm -f $(objs) $(progs) $(TRASH)
