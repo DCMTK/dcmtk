@@ -10,9 +10,9 @@
 ** Interface of class DcmByteString
 **
 ** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1997-08-29 08:32:37 $
+** Update Date:		$Date: 1997-08-29 13:11:38 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcbytstr.h,v $
-** CVS/RCS Revision:	$Revision: 1.11 $
+** CVS/RCS Revision:	$Revision: 1.12 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -84,7 +84,7 @@ public:
     virtual E_Condition getOFString(
 	OFString & str,
 	const unsigned long pos = 0,
-	OFBool normalize);
+	OFBool normalize = OFTrue);
  
     virtual E_Condition getString(char * & byteStringValue);
 
@@ -121,7 +121,10 @@ void normalizeString(
 /*
 ** CVS/RCS Log:
 ** $Log: dcbytstr.h,v $
-** Revision 1.11  1997-08-29 08:32:37  andreas
+** Revision 1.12  1997-08-29 13:11:38  andreas
+** Corrected Bug in getOFStringArray Implementation
+**
+** Revision 1.11  1997/08/29 08:32:37  andreas
 ** - Added methods getOFString and getOFStringArray for all
 **   string VRs. These methods are able to normalise the value, i. e.
 **   to remove leading and trailing spaces. This will be done only if

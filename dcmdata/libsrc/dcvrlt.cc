@@ -10,9 +10,9 @@
 ** Implementation of class DcmLongText
 **
 ** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1997-08-29 08:32:59 $
+** Update Date:		$Date: 1997-08-29 13:11:47 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcvrlt.cc,v $
-** CVS/RCS Revision:	$Revision: 1.5 $
+** CVS/RCS Revision:	$Revision: 1.6 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -75,7 +75,7 @@ DcmLongText::getOFStringArray(
     OFString & str,
     OFBool normalize)
 {
-    E_Condition l_error = DcmCharString::getOFString(str, normalize);
+    E_Condition l_error = DcmCharString::getOFStringArray(str, normalize);
     if (l_error == EC_Normal && normalize)
 	normalizeString(str, !MULTIPART, !DELETE_LEADING, DELETE_TRAILING);
     return l_error;
@@ -88,7 +88,10 @@ DcmLongText::getOFStringArray(
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrlt.cc,v $
-** Revision 1.5  1997-08-29 08:32:59  andreas
+** Revision 1.6  1997-08-29 13:11:47  andreas
+** Corrected Bug in getOFStringArray Implementation
+**
+** Revision 1.5  1997/08/29 08:32:59  andreas
 ** - Added methods getOFString and getOFStringArray for all
 **   string VRs. These methods are able to normalise the value, i. e.
 **   to remove leading and trailing spaces. This will be done only if

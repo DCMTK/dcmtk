@@ -10,9 +10,9 @@
 ** Implementation of class DcmDecimalString
 **
 ** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1997-08-29 08:32:57 $
+** Update Date:		$Date: 1997-08-29 13:11:45 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcvrds.cc,v $
-** CVS/RCS Revision:	$Revision: 1.7 $
+** CVS/RCS Revision:	$Revision: 1.8 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -91,7 +91,7 @@ DcmDecimalString::getOFStringArray(
     OFString & str,
     OFBool normalize)
 {
-    E_Condition l_error = DcmByteString::getOFString(str, normalize);
+    E_Condition l_error = DcmByteString::getOFStringArray(str, normalize);
     if (l_error == EC_Normal && normalize)
 	normalizeString(str, MULTIPART, DELETE_LEADING, DELETE_TRAILING);
     return l_error;
@@ -103,7 +103,10 @@ DcmDecimalString::getOFStringArray(
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrds.cc,v $
-** Revision 1.7  1997-08-29 08:32:57  andreas
+** Revision 1.8  1997-08-29 13:11:45  andreas
+** Corrected Bug in getOFStringArray Implementation
+**
+** Revision 1.7  1997/08/29 08:32:57  andreas
 ** - Added methods getOFString and getOFStringArray for all
 **   string VRs. These methods are able to normalise the value, i. e.
 **   to remove leading and trailing spaces. This will be done only if

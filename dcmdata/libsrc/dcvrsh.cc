@@ -11,9 +11,9 @@
 **
 **
 ** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1997-08-29 08:33:00 $
+** Update Date:		$Date: 1997-08-29 13:11:48 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcvrsh.cc,v $
-** CVS/RCS Revision:	$Revision: 1.5 $
+** CVS/RCS Revision:	$Revision: 1.6 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -73,7 +73,7 @@ DcmShortString::getOFStringArray(
     OFString & str,
     OFBool normalize)
 {
-    E_Condition l_error = DcmCharString::getOFString(str, normalize);
+    E_Condition l_error = DcmCharString::getOFStringArray(str, normalize);
     if (l_error == EC_Normal && normalize)
 	normalizeString(str, MULTIPART, DELETE_LEADING, DELETE_TRAILING);
     return l_error;
@@ -87,7 +87,10 @@ DcmShortString::getOFStringArray(
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrsh.cc,v $
-** Revision 1.5  1997-08-29 08:33:00  andreas
+** Revision 1.6  1997-08-29 13:11:48  andreas
+** Corrected Bug in getOFStringArray Implementation
+**
+** Revision 1.5  1997/08/29 08:33:00  andreas
 ** - Added methods getOFString and getOFStringArray for all
 **   string VRs. These methods are able to normalise the value, i. e.
 **   to remove leading and trailing spaces. This will be done only if
