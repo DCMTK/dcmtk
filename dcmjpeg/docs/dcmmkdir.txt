@@ -16,9 +16,10 @@ Currently the following profiles are supported (others might be added later):
 - General Purpose CD-R Interchange (STD-GEN-CD)
 - Basic Cardiac X-Ray Angiographic Studies on CD-R Media (STD-XABC-CD)
 - 1024 X-Ray Angiographic Studies on CD-R Media (STD-XA1K-CD)
-This tool replaces dcmgpdir (formerly located in dcmdata/apps) which could
-only create General Purpose DICOMDIR files.  The default behaviour of dcmmkdir
-is equivalent to that of dcmgpdir.
+
+This tool extends dcmgpdir (located in dcmdata/apps) which can only create 
+General Purpose DICOMDIR files.  The default behaviour of dcmmkdir (with
+--general-purpose) is equivalent to that of dcmgpdir.
 
 
 USAGE
@@ -27,14 +28,14 @@ dcmmkdir: Create a DICOMDIR file
 usage: dcmmkdir [options] dcmfile-in...
 
 parameters:
-  dcmfile-in                     referenced DICOM file(s)
+  dcmfile-in                     referenced DICOM file
 
 general options:
   -h      --help                 print this help text and exit
   -v      --verbose              verbose mode, print processing details
   -d      --debug                debug mode, print debug information
 input options:
-  dicomdir identifiers:
+  DICOMDIR identifiers:
     +D    --output-file          [f]ilename: string
                                  generate specific DICOMDIR file
                                  (default: DICOMDIR in current directory)
@@ -60,8 +61,11 @@ input options:
     +r    --recurse              recurse within filesystem directories
   external icon images (only with -Pbc or -Pxa):
     -Xi   --icon-file-prefix     [p]refix: string
-                                 use pgm image 'prefix'+'dcmfile-in' as icon
+                                 use PGM image 'prefix'+'dcmfile-in' as icon
                                  (default: create icon from DICOM image)
+    -Xd   --default-icon         [f]ilename: string
+                                 use specified PGM image if icon cannot be
+                                 created automatically (default: black image)
 output options:
   profiles:
     -Pgp  --general-purpose      General Purpose CD-R Interchange
@@ -71,9 +75,9 @@ output options:
     -Pxa  --xray-angiographic    1024 X-Ray Angiographic Studies on CD-R Media
                                  (STD-XA1K-CD)
   writing:
-    -A    --replace              replace existing dicomdir (default)
-    +A    --append               append to existing dicomdir
-    -w    --discard              do not write out dicomdir
+    -A    --replace              replace existing DICOMDIR (default)
+    +A    --append               append to existing DICOMDIR
+    -w    --discard              do not write out DICOMDIR
   post-1993 value representations:
     +u    --enable-new-vr        enable support for new VRs (UN/UT) (default)
     -u    --disable-new-vr       disable support for new VRs, convert to OB
@@ -87,13 +91,13 @@ output options:
 
 BEHAVIOUR
 
-All files specified on the command line (or discovered by recursivly examining
-the contents of directories with the +r option) are first evaluated for their
-compatibility with the specified Media Storage Application Profile (Part 11).
-Only appropriate files encoded using one of the allowed Transfer Syntaxes will
-be accepted.  Files having invalid filenames will be rejected (the rules can
-be relaxed via the +m option).  Files missing required attributes will be
-rejected (the +I option can relax this behaviour).
+All files specified on the command line (or discovered by recursivly examining 
+the contents of directories with the +r option) are first evaluated for their 
+compatibility with the specified Media Storage Application Profile (Part 11). 
+Only appropriate files encoded using one of the allowed Transfer Syntaxes will 
+be accepted.  Files having invalid filenames will be rejected (the rules can be 
+relaxed via the +m option).  Files missing required attributes will be rejected 
+(the +I option can relax this behaviour).
 
 A DICOMDIR file will only be constructed if all files have passed initial
 tests.
@@ -101,12 +105,12 @@ tests.
 
 ENVIRONMENT
 
-The dcmmkdir utility will attempt to load DICOM data dictionaries specified in
-the DCMDICTPATH environment variable.  By default, if the DCMDICTPATH
-environment variable is not set, the file /usr/local/dicom/lib/dicom.dic will
-be loaded.  The default behaviour should be preferred and the DCMDICTPATH
-environment variable only used when alternative data dictionaries are
-required.  The DCMDICTPATH environment variable has the same format as the
-shell PATH variable in that a colon (":") separates entries.  The data
-dictionary code will attempt to load each file specified in the DCMDICTPATH
-environment variable.  It is an error if no data dictionary can be loaded.
+The dcmmkdir utility will attempt to load DICOM data dictionaries specified in 
+the DCMDICTPATH environment variable.  By default, if the DCMDICTPATH 
+environment variable is not set, the file /usr/local/dicom/lib/dicom.dic will 
+be loaded.  The default behaviour should be preferred and the DCMDICTPATH 
+environment variable only used when alternative data dictionaries are required.  
+The DCMDICTPATH environment variable has the same format as the shell PATH 
+variable in that a colon (":") separates entries.  The data dictionary code 
+will attempt to load each file specified in the DCMDICTPATH environment 
+variable.  It is an error if no data dictionary can be loaded.

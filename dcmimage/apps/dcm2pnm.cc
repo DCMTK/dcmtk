@@ -22,9 +22,9 @@
  *  Purpose: Convert DICOM Images to PPM or PGM using the dcmimage library.
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-11-09 16:35:20 $
+ *  Update Date:      $Date: 2001-11-19 13:04:54 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/apps/dcm2pnm.cc,v $
- *  CVS/RCS Revision: $Revision: 1.50 $
+ *  CVS/RCS Revision: $Revision: 1.51 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -40,7 +40,7 @@ BEGIN_EXTERN_C
 END_EXTERN_C
 
 #ifdef HAVE_GUSI_H
-#include <GUSI.h>
+# include <GUSI.h>
 #endif
 
 #include "dctk.h"          /* for various dcmdata headers */
@@ -58,14 +58,22 @@ END_EXTERN_C
 
 #include "diregist.h"      /* include to support color images */
 
-#ifdef HAVE_STRSTREA_H
-#include <strstrea.h>      /* for ostrstream */
-#endif
-#ifdef HAVE_STRSTREAM_H
-#include <strstream.h>     /* for ostrstream */
+#ifdef BUILD_DCM2PNM_AS_DCMJ2PNM
+# include "djdecode.h"     /* for dcmjpeg decoders */
 #endif
 
-#define OFFIS_CONSOLE_APPLICATION "dcm2pnm"
+#ifdef HAVE_STRSTREA_H
+# include <strstrea.h>     /* for ostrstream */
+#endif
+#ifdef HAVE_STRSTREAM_H
+# include <strstream.h>    /* for ostrstream */
+#endif
+
+#ifdef BUILD_DCM2PNM_AS_DCMJ2PNM
+# define OFFIS_CONSOLE_APPLICATION "dcmj2pnm"
+#else
+# define OFFIS_CONSOLE_APPLICATION "dcm2pnm"
+#endif
 
 static char rcsid[] = "$dcmtk: " OFFIS_CONSOLE_APPLICATION " v"
   OFFIS_DCMTK_VERSION " " OFFIS_DCMTK_RELEASEDATE " $";
@@ -116,6 +124,11 @@ int main(int argc, char *argv[])
     ES_PresentationLut  opt_presShape = ESP_Default;
     OFString            opt_displayFile;
     int                 opt_displayFunction = 0;          /* default: GSDF */
+
+#ifdef BUILD_DCM2PNM_AS_DCMJ2PNM
+    // JPEG parameters
+    E_DecompressionColorSpaceConversion opt_decompCSconversion = EDC_photometricInterpretation;
+#endif
 
     int                 opt_Overlay[16];
     int                 opt_O_used = 0;                   /* flag for +O parameter */
@@ -202,6 +215,13 @@ int main(int argc, char *argv[])
                                                        "scale x axis to n pixels, auto-compute y axis");
       cmd.addOption("--scale-y-size",       "+Syv", 1, "[n]umber : integer",
                                                        "scale y axis to n pixels, auto-compute x axis");
+#ifdef BUILD_DCM2PNM_AS_DCMJ2PNM
+     cmd.addSubGroup("color space conversion options (compressed images only):");
+      cmd.addOption("--conv-photometric",   "+cp",     "convert if YCbCr photom. interpr. (default)");
+      cmd.addOption("--conv-lossy",         "+cl",     "convert YCbCr to RGB if lossy JPEG");
+      cmd.addOption("--conv-always",        "+ca",     "always convert YCbCr to RGB");
+      cmd.addOption("--conv-never",         "+cn",     "never convert color space");
+#endif
 
      cmd.addSubGroup("VOI windowing options:");
       cmd.addOption("--no-windowing",       "-W",      "no VOI windowing (default)");
@@ -397,6 +417,19 @@ int main(int argc, char *argv[])
         }
         cmd.endOptionBlock();
 
+#ifdef BUILD_DCM2PNM_AS_DCMJ2PNM
+        cmd.beginOptionBlock();
+        if (cmd.findOption("--conv-photometric"))
+            opt_decompCSconversion = EDC_photometricInterpretation;
+        if (cmd.findOption("--conv-lossy"))
+            opt_decompCSconversion = EDC_lossyOnly;
+        if (cmd.findOption("--conv-always"))
+            opt_decompCSconversion = EDC_always;
+        if (cmd.findOption("--conv-never"))
+            opt_decompCSconversion = EDC_never;
+        cmd.endOptionBlock();
+#endif
+
         cmd.beginOptionBlock();
         if (cmd.findOption("--no-windowing"))
             opt_windowType = 0;
@@ -524,7 +557,6 @@ int main(int argc, char *argv[])
         cmd.endOptionBlock();
     }
 
-
     /* make sure data dictionary is loaded */
     if (!dcmDataDict.isDictionaryLoaded())
     {
@@ -542,6 +574,11 @@ int main(int argc, char *argv[])
         DicomImageClass::setDebugLevel(DicomImageClass::getDebugLevel() | DicomImageClass::DL_Informationals);
         OUTPUT << "reading DICOM file: " << opt_ifname << endl;
     }
+
+#ifdef BUILD_DCM2PNM_AS_DCMJ2PNM
+    // register global decompression codecs
+    DJDecoderRegistration::registerCodecs(opt_decompCSconversion);
+#endif
 
     DcmFileStream myin(opt_ifname, DCM_ReadMode);
     if (myin.GetError() != EC_Normal)
@@ -656,379 +693,380 @@ int main(int argc, char *argv[])
         }
     }
 
-    if (opt_suppressOutput) return 0;
-
-    /* try to select frame */
-    if (opt_frame != di->getFirstFrame() + 1)
+    if (!opt_suppressOutput)
     {
-        oss << "cannot select frame no. " << opt_frame << ", invalid frame no." << ends;
-        app.printError(oss.str());
-    }
-
-    /* convert to grayscale if necessary */
-    if ((opt_convertToGrayscale)  &&  (!di->isMonochrome()))
-    {
-         if (opt_verboseMode > 1)
-             OUTPUT << "converting image to grayscale." << endl;
-
-         DicomImage *newimage = di->createMonochromeImage();
-         if (newimage == NULL)
-             app.printError("Out of memory.\n");
-         else if (newimage->getStatus() != EIS_Normal)
-             app.printError(DicomImage::getString(newimage->getStatus()));
-         else
-         {
-             delete di;
-             di = newimage;
-         }
-    }
-
-    /* process overlay parameters */
-    EM_Overlay overlayMode;
-    switch (opt_OverlayMode)
-    {
-        case 2:
-            overlayMode = EMO_ThresholdReplace;
-            break;
-        case 3:
-            overlayMode = EMO_Complement;
-            break;
-        case 4:
-            overlayMode = EMO_RegionOfInterest;
-            break;
-        case 1:
-        default:
-            overlayMode = EMO_Replace;
-            break;
-
-    }
-    di->hideAllOverlays();
-    for (unsigned int k = 0; k < 16; k++)
-    {
-        if (opt_Overlay[k])
+        /* try to select frame */
+        if (opt_frame != di->getFirstFrame() + 1)
         {
-            if ((opt_Overlay[k] == 1) || (k < di->getOverlayCount()))
+            oss << "cannot select frame no. " << opt_frame << ", invalid frame no." << ends;
+            app.printError(oss.str());
+        }
+
+        /* convert to grayscale if necessary */
+        if ((opt_convertToGrayscale)  &&  (!di->isMonochrome()))
+        {
+             if (opt_verboseMode > 1)
+                 OUTPUT << "converting image to grayscale." << endl;
+
+             DicomImage *newimage = di->createMonochromeImage();
+             if (newimage == NULL)
+                 app.printError("Out of memory.\n");
+             else if (newimage->getStatus() != EIS_Normal)
+                 app.printError(DicomImage::getString(newimage->getStatus()));
+             else
+             {
+                 delete di;
+                 di = newimage;
+             }
+        }
+
+        /* process overlay parameters */
+        EM_Overlay overlayMode;
+        switch (opt_OverlayMode)
+        {
+            case 2:
+                overlayMode = EMO_ThresholdReplace;
+                break;
+            case 3:
+                overlayMode = EMO_Complement;
+                break;
+            case 4:
+                overlayMode = EMO_RegionOfInterest;
+                break;
+            case 1:
+            default:
+                overlayMode = EMO_Replace;
+                break;
+
+        }
+        di->hideAllOverlays();
+        for (unsigned int k = 0; k < 16; k++)
+        {
+            if (opt_Overlay[k])
             {
-                if (opt_verboseMode > 1)
-                    OUTPUT << "activating overlay plane " << k + 1 << endl;
-                if (opt_OverlayMode)
+                if ((opt_Overlay[k] == 1) || (k < di->getOverlayCount()))
                 {
-                    if (!di->showOverlay(k, overlayMode, opt_foregroundDensity, opt_thresholdDensity))
+                    if (opt_verboseMode > 1)
+                        OUTPUT << "activating overlay plane " << k + 1 << endl;
+                    if (opt_OverlayMode)
                     {
-                        oss << "cannot display overlay plane " << k + 1 << ends;
-                        app.printWarning(oss.str());
-                    }
-                } else {
-                    if (!di->showOverlay(k)) /* use default values */
-                    {
-                        oss << "cannot display overlay plane " << k + 1 << ends;
-                        app.printWarning(oss.str());
+                        if (!di->showOverlay(k, overlayMode, opt_foregroundDensity, opt_thresholdDensity))
+                        {
+                            oss << "cannot display overlay plane " << k + 1 << ends;
+                            app.printWarning(oss.str());
+                        }
+                    } else {
+                        if (!di->showOverlay(k)) /* use default values */
+                        {
+                            oss << "cannot display overlay plane " << k + 1 << ends;
+                            app.printWarning(oss.str());
+                        }
                     }
                 }
             }
         }
-    }
 
-    /* process VOI parameters */
-    switch (opt_windowType)
-    {
-        case 1: /* use the n-th VOI window from the image file */
-            if ((opt_windowParameter < 1) || (opt_windowParameter > di->getWindowCount()))
-            {
-                oss << "cannot select VOI window no. " << opt_windowParameter << ", only " << di->getWindowCount() <<
-                    " window(s) in file." << ends;
-                app.printError(oss.str());
-            }
-            if (opt_verboseMode > 1)
-                OUTPUT << "activating VOI window " << opt_windowParameter << endl;
-            if (!di->setWindow(opt_windowParameter - 1))
-            {
-                oss << "cannot select VOI window no. " << opt_windowParameter << ends;
-                app.printWarning(oss.str());
-            }
-            break;
-        case 2: /* use the n-th VOI look up table from the image file */
-            if ((opt_windowParameter < 1) || (opt_windowParameter > di->getVoiLutCount()))
-            {
-                oss << "cannot select VOI LUT no. " << opt_windowParameter << ", only " << di->getVoiLutCount() <<
-                    " LUT(s) in file." << ends;
-                app.printError(oss.str());
-            }
-            if (opt_verboseMode > 1)
-                OUTPUT << "activating VOI LUT " << opt_windowParameter << endl;
-            if (!di->setVoiLut(opt_windowParameter - 1))
-            {
-                oss << "cannot select VOI LUT no. " << opt_windowParameter << ends;
-                app.printWarning(oss.str());
-            }
-            break;
-        case 3: /* Compute VOI window using min-max algorithm */
-            if (opt_verboseMode > 1)
-                OUTPUT << "activating VOI window min-max algorithm" << endl;
-            if (!di->setMinMaxWindow(0))
-                app.printWarning("cannot compute min/max VOI window");
-            break;
-        case 4: /* Compute VOI window using Histogram algorithm, ignoring n percent */
-            if (opt_verboseMode > 1)
-                OUTPUT << "activating VOI window histogram algorithm, ignoring " << opt_windowParameter << "%" << endl;
-            if (!di->setHistogramWindow(((double)opt_windowParameter)/100.0))
-                app.printWarning("cannot compute histogram VOI window");
-            break;
-        case 5: /* Compute VOI window using center r and width s */
-            if (opt_verboseMode > 1)
-                OUTPUT << "activating VOI window center=" << opt_windowCenter << ", width=" << opt_windowWidth << endl;
-            if (!di->setWindow(opt_windowCenter, opt_windowWidth))
-            {
-                oss << "cannot set VOI window center=" << opt_windowCenter << " width=" << opt_windowWidth << ends;
-                app.printWarning(oss.str());
-            }
-            break;
-        case 6: /* Compute VOI window using min-max algorithm ignoring extremes */
-            if (opt_verboseMode > 1)
-                OUTPUT << "activating VOI window min-max algorithm, ignoring extreme values" << endl;
-            if (!di->setMinMaxWindow(1))
-                app.printWarning("cannot compute min/max VOI window");
-            break;
-        case 7: /* Compute region of interest VOI window */
-            if (opt_verboseMode > 1)
-                OUTPUT << "activating region of interest VOI window" << endl;
-            if (!di->setRoiWindow(opt_roiLeft, opt_roiTop, opt_roiWidth, opt_roiHeight))
-                app.printWarning("cannot compute region of interest VOI window");
-            break;
-        default: /* no VOI windowing */
-            if (di->isMonochrome())
-            {
-                if (opt_verboseMode > 1)
-                    OUTPUT << "disabling VOI window computation" << endl;
-                if (! di->setNoVoiTransformation())
-                    app.printWarning("cannot ignore VOI window");
-            }
-            break;
-    }
-
-    /* process presentation LUT parameters */
-    if (opt_presShape != ESP_Default)
-    {
-        if (opt_verboseMode > 1)
+        /* process VOI parameters */
+        switch (opt_windowType)
         {
-            if (opt_presShape == ESP_Identity)
-                OUTPUT << "setting presentation LUT shape to IDENTITY" << endl;
-            else if (opt_presShape == ESP_Inverse)
-                OUTPUT << "setting presentation LUT shape to INVERSE" << endl;
-            else if (opt_presShape == ESP_LinOD)
-                OUTPUT << "setting presentation LUT shape to LIN OD" << endl;
-        }
-        di->setPresentationLutShape(opt_presShape);
-    }
-
-    /* change polarity */
-    if (opt_changePolarity)
-    {
-        if (opt_verboseMode > 1)
-            OUTPUT << "setting polarity to REVERSE" << endl;
-        di->setPolarity(EPP_Reverse);
-    }
-
-    /* perform clipping */
-    if (opt_useClip && (opt_scaleType == 0))
-    {
-         if (opt_verboseMode > 1)
-             OUTPUT << "clipping image to (" << opt_left << "," << opt_top << "," << opt_width << "," << opt_height << ")." << endl;
-         DicomImage *newimage = di->createClippedImage(opt_left, opt_top, opt_width, opt_height);
-         if (newimage==NULL)
-         {
-             oss << "clipping to (" << opt_left << "," << opt_top << "," << opt_width << "," << opt_height << ") failed." << ends;
-             app.printError(oss.str());
-         } else if (newimage->getStatus() != EIS_Normal)
-             app.printError(DicomImage::getString(newimage->getStatus()));
-         else
-         {
-             delete di;
-             di = newimage;
-         }
-    }
-
-    /* perform rotation */
-    if (opt_rotateDegree > 0)
-    {
-        if (opt_verboseMode > 1)
-            OUTPUT << "rotating image by " << opt_rotateDegree << " degrees." << endl;
-        di->rotateImage(opt_rotateDegree);
-    }
-
-    /* perform flipping */
-    if (opt_flipType > 0)
-    {
-        if (opt_verboseMode > 1)
-            OUTPUT << "flipping image";
-        switch (opt_flipType)
-        {
-            case 1:
+            case 1: /* use the n-th VOI window from the image file */
+                if ((opt_windowParameter < 1) || (opt_windowParameter > di->getWindowCount()))
+                {
+                    oss << "cannot select VOI window no. " << opt_windowParameter << ", only " << di->getWindowCount() <<
+                        " window(s) in file." << ends;
+                    app.printError(oss.str());
+                }
                 if (opt_verboseMode > 1)
-                    OUTPUT << " horizontally." << endl;
-                di->flipImage(1, 0);
+                    OUTPUT << "activating VOI window " << opt_windowParameter << endl;
+                if (!di->setWindow(opt_windowParameter - 1))
+                {
+                    oss << "cannot select VOI window no. " << opt_windowParameter << ends;
+                    app.printWarning(oss.str());
+                }
                 break;
-            case 2:
+            case 2: /* use the n-th VOI look up table from the image file */
+                if ((opt_windowParameter < 1) || (opt_windowParameter > di->getVoiLutCount()))
+                {
+                    oss << "cannot select VOI LUT no. " << opt_windowParameter << ", only " << di->getVoiLutCount() <<
+                        " LUT(s) in file." << ends;
+                    app.printError(oss.str());
+                }
                 if (opt_verboseMode > 1)
-                    OUTPUT << " vertically." << endl;
-                di->flipImage(0, 1);
+                    OUTPUT << "activating VOI LUT " << opt_windowParameter << endl;
+                if (!di->setVoiLut(opt_windowParameter - 1))
+                {
+                    oss << "cannot select VOI LUT no. " << opt_windowParameter << ends;
+                    app.printWarning(oss.str());
+                }
                 break;
-            case 3:
+            case 3: /* Compute VOI window using min-max algorithm */
                 if (opt_verboseMode > 1)
-                    OUTPUT << " horizontally and vertically." << endl;
-                di->flipImage(1, 1);
+                    OUTPUT << "activating VOI window min-max algorithm" << endl;
+                if (!di->setMinMaxWindow(0))
+                    app.printWarning("cannot compute min/max VOI window");
                 break;
-            default:
+            case 4: /* Compute VOI window using Histogram algorithm, ignoring n percent */
                 if (opt_verboseMode > 1)
-                    OUTPUT << endl;
-        }
-    }
-
-    /* perform scaling */
-    if (opt_scaleType > 0)
-    {
-        DicomImage *newimage;
-        if ((opt_verboseMode > 1) && opt_useClip)
-            OUTPUT << "clipping image to (" << opt_left << "," << opt_top << "," << opt_width << "," << opt_height << ")." << endl;
-        switch (opt_scaleType)
-        {
-            case 1:
-                if (opt_verboseMode > 1)
-                    OUTPUT << "scaling image, X factor=" << opt_scale_factor << ", Interpolation=" << (int)opt_useInterpolation <<
-                        ", Aspect Ratio=" << (opt_useAspectRatio ? "yes" : "no") << endl;
-                if (opt_useClip)
-                    newimage = di->createScaledImage(opt_left, opt_top, opt_width, opt_height, opt_scale_factor, 0.0,
-                        (int)opt_useInterpolation, opt_useAspectRatio);
-                else
-                    newimage = di->createScaledImage(opt_scale_factor, 0.0, (int)opt_useInterpolation, opt_useAspectRatio);
+                    OUTPUT << "activating VOI window histogram algorithm, ignoring " << opt_windowParameter << "%" << endl;
+                if (!di->setHistogramWindow(((double)opt_windowParameter)/100.0))
+                    app.printWarning("cannot compute histogram VOI window");
                 break;
-            case 2:
+            case 5: /* Compute VOI window using center r and width s */
                 if (opt_verboseMode > 1)
-                    OUTPUT << "scaling image, Y factor=" << opt_scale_factor << ", Interpolation=" << (int)opt_useInterpolation <<
-                        ", Aspect Ratio=" << (opt_useAspectRatio ? "yes" : "no") << endl;
-                if (opt_useClip)
-                    newimage = di->createScaledImage(opt_left, opt_top, opt_width, opt_height, 0.0, opt_scale_factor,
-                        (int)opt_useInterpolation, opt_useAspectRatio);
-                else
-                    newimage = di->createScaledImage(0.0, opt_scale_factor, (int)opt_useInterpolation, opt_useAspectRatio);
+                    OUTPUT << "activating VOI window center=" << opt_windowCenter << ", width=" << opt_windowWidth << endl;
+                if (!di->setWindow(opt_windowCenter, opt_windowWidth))
+                {
+                    oss << "cannot set VOI window center=" << opt_windowCenter << " width=" << opt_windowWidth << ends;
+                    app.printWarning(oss.str());
+                }
                 break;
-            case 3:
+            case 6: /* Compute VOI window using min-max algorithm ignoring extremes */
                 if (opt_verboseMode > 1)
-                    OUTPUT << "scaling image, X size=" << opt_scale_size << ", Interpolation=" << (int)opt_useInterpolation <<
-                        ", Aspect Ratio=" << (opt_useAspectRatio ? "yes" : "no") << endl;
-                if (opt_useClip)
-                    newimage = di->createScaledImage(opt_left, opt_top, opt_width, opt_height, opt_scale_size, 0,
-                        (int)opt_useInterpolation, opt_useAspectRatio);
-                else
-                    newimage = di->createScaledImage(opt_scale_size, 0, (int)opt_useInterpolation, opt_useAspectRatio);
+                    OUTPUT << "activating VOI window min-max algorithm, ignoring extreme values" << endl;
+                if (!di->setMinMaxWindow(1))
+                    app.printWarning("cannot compute min/max VOI window");
                 break;
-            case 4:
+            case 7: /* Compute region of interest VOI window */
                 if (opt_verboseMode > 1)
-                    OUTPUT << "scaling image, Y size=" << opt_scale_size << ", Interpolation=" << (int)opt_useInterpolation <<
-                        ", Aspect Ratio=" << (opt_useAspectRatio ? "yes" : "no") << endl;
-                if (opt_useClip)
-                    newimage = di->createScaledImage(opt_left, opt_top, opt_width, opt_height, 0, opt_scale_size,
-                        (int)opt_useInterpolation, opt_useAspectRatio);
-                else
-                    newimage = di->createScaledImage(0, opt_scale_size, (int)opt_useInterpolation, opt_useAspectRatio);
+                    OUTPUT << "activating region of interest VOI window" << endl;
+                if (!di->setRoiWindow(opt_roiLeft, opt_roiTop, opt_roiWidth, opt_roiHeight))
+                    app.printWarning("cannot compute region of interest VOI window");
                 break;
-            default:
-                if (opt_verboseMode > 1)
-                    OUTPUT << "internal error: unknown scaling type" << endl;
-                newimage = NULL;
+            default: /* no VOI windowing */
+                if (di->isMonochrome())
+                {
+                    if (opt_verboseMode > 1)
+                        OUTPUT << "disabling VOI window computation" << endl;
+                    if (! di->setNoVoiTransformation())
+                        app.printWarning("cannot ignore VOI window");
+                }
                 break;
         }
-        if (newimage==NULL)
-            app.printError("Out of memory.\n");
-        else if (newimage->getStatus() != EIS_Normal)
-            app.printError(DicomImage::getString(newimage->getStatus()));
-        else
+
+        /* process presentation LUT parameters */
+        if (opt_presShape != ESP_Default)
         {
-            delete di;
-            di = newimage;
+            if (opt_verboseMode > 1)
+            {
+                if (opt_presShape == ESP_Identity)
+                    OUTPUT << "setting presentation LUT shape to IDENTITY" << endl;
+                else if (opt_presShape == ESP_Inverse)
+                    OUTPUT << "setting presentation LUT shape to INVERSE" << endl;
+                else if (opt_presShape == ESP_LinOD)
+                    OUTPUT << "setting presentation LUT shape to LIN OD" << endl;
+            }
+            di->setPresentationLutShape(opt_presShape);
         }
-    }
 
-    /* write selected frame(s) to file */
-    
-    int status = 0;    
-    FILE *ofile = NULL;
-    char ofname[255];
-    unsigned int fcount = (unsigned int)(((opt_frameCount > 0) && (opt_frameCount <= di->getFrameCount())) ? opt_frameCount : di->getFrameCount());
-    const char *ofext = (opt_fileType >= 5) && (opt_fileType <= 7) ? "bmp" : (di->isMonochrome() ? "pgm" : "ppm");
-    
-    if (fcount < opt_frameCount)
-    {
-        oss << "cannot select " << opt_frameCount << " frames, limiting to " << fcount << " frames" << ends;
-        app.printWarning(oss.str());
-    }
-
-    for (unsigned int frame = 0; frame < fcount; frame++)
-    {
-        if (opt_ofname)
+        /* change polarity */
+        if (opt_changePolarity)
         {
-            /* output to file */
-            if (opt_multiFrame)
-                sprintf(ofname, "%s.%d.%s", opt_ofname, frame, ofext);
+            if (opt_verboseMode > 1)
+                OUTPUT << "setting polarity to REVERSE" << endl;
+            di->setPolarity(EPP_Reverse);
+        }
+
+        /* perform clipping */
+        if (opt_useClip && (opt_scaleType == 0))
+        {
+             if (opt_verboseMode > 1)
+                 OUTPUT << "clipping image to (" << opt_left << "," << opt_top << "," << opt_width << "," << opt_height << ")." << endl;
+             DicomImage *newimage = di->createClippedImage(opt_left, opt_top, opt_width, opt_height);
+             if (newimage==NULL)
+             {
+                 oss << "clipping to (" << opt_left << "," << opt_top << "," << opt_width << "," << opt_height << ") failed." << ends;
+                 app.printError(oss.str());
+             } else if (newimage->getStatus() != EIS_Normal)
+                 app.printError(DicomImage::getString(newimage->getStatus()));
+             else
+             {
+                 delete di;
+                 di = newimage;
+             }
+        }
+
+        /* perform rotation */
+        if (opt_rotateDegree > 0)
+        {
+            if (opt_verboseMode > 1)
+                OUTPUT << "rotating image by " << opt_rotateDegree << " degrees." << endl;
+            di->rotateImage(opt_rotateDegree);
+        }
+
+        /* perform flipping */
+        if (opt_flipType > 0)
+        {
+            if (opt_verboseMode > 1)
+                OUTPUT << "flipping image";
+            switch (opt_flipType)
+            {
+                case 1:
+                    if (opt_verboseMode > 1)
+                        OUTPUT << " horizontally." << endl;
+                    di->flipImage(1, 0);
+                    break;
+                case 2:
+                    if (opt_verboseMode > 1)
+                        OUTPUT << " vertically." << endl;
+                    di->flipImage(0, 1);
+                    break;
+                case 3:
+                    if (opt_verboseMode > 1)
+                        OUTPUT << " horizontally and vertically." << endl;
+                    di->flipImage(1, 1);
+                    break;
+                default:
+                    if (opt_verboseMode > 1)
+                        OUTPUT << endl;
+            }
+        }
+
+        /* perform scaling */
+        if (opt_scaleType > 0)
+        {
+            DicomImage *newimage;
+            if ((opt_verboseMode > 1) && opt_useClip)
+                OUTPUT << "clipping image to (" << opt_left << "," << opt_top << "," << opt_width << "," << opt_height << ")." << endl;
+            switch (opt_scaleType)
+            {
+                case 1:
+                    if (opt_verboseMode > 1)
+                        OUTPUT << "scaling image, X factor=" << opt_scale_factor << ", Interpolation=" << (int)opt_useInterpolation <<
+                            ", Aspect Ratio=" << (opt_useAspectRatio ? "yes" : "no") << endl;
+                    if (opt_useClip)
+                        newimage = di->createScaledImage(opt_left, opt_top, opt_width, opt_height, opt_scale_factor, 0.0,
+                            (int)opt_useInterpolation, opt_useAspectRatio);
+                    else
+                        newimage = di->createScaledImage(opt_scale_factor, 0.0, (int)opt_useInterpolation, opt_useAspectRatio);
+                    break;
+                case 2:
+                    if (opt_verboseMode > 1)
+                        OUTPUT << "scaling image, Y factor=" << opt_scale_factor << ", Interpolation=" << (int)opt_useInterpolation <<
+                            ", Aspect Ratio=" << (opt_useAspectRatio ? "yes" : "no") << endl;
+                    if (opt_useClip)
+                        newimage = di->createScaledImage(opt_left, opt_top, opt_width, opt_height, 0.0, opt_scale_factor,
+                            (int)opt_useInterpolation, opt_useAspectRatio);
+                    else
+                        newimage = di->createScaledImage(0.0, opt_scale_factor, (int)opt_useInterpolation, opt_useAspectRatio);
+                    break;
+                case 3:
+                    if (opt_verboseMode > 1)
+                        OUTPUT << "scaling image, X size=" << opt_scale_size << ", Interpolation=" << (int)opt_useInterpolation <<
+                            ", Aspect Ratio=" << (opt_useAspectRatio ? "yes" : "no") << endl;
+                    if (opt_useClip)
+                        newimage = di->createScaledImage(opt_left, opt_top, opt_width, opt_height, opt_scale_size, 0,
+                            (int)opt_useInterpolation, opt_useAspectRatio);
+                    else
+                        newimage = di->createScaledImage(opt_scale_size, 0, (int)opt_useInterpolation, opt_useAspectRatio);
+                    break;
+                case 4:
+                    if (opt_verboseMode > 1)
+                        OUTPUT << "scaling image, Y size=" << opt_scale_size << ", Interpolation=" << (int)opt_useInterpolation <<
+                            ", Aspect Ratio=" << (opt_useAspectRatio ? "yes" : "no") << endl;
+                    if (opt_useClip)
+                        newimage = di->createScaledImage(opt_left, opt_top, opt_width, opt_height, 0, opt_scale_size,
+                            (int)opt_useInterpolation, opt_useAspectRatio);
+                    else
+                        newimage = di->createScaledImage(0, opt_scale_size, (int)opt_useInterpolation, opt_useAspectRatio);
+                    break;
+                default:
+                    if (opt_verboseMode > 1)
+                        OUTPUT << "internal error: unknown scaling type" << endl;
+                    newimage = NULL;
+                    break;
+            }
+            if (newimage==NULL)
+                app.printError("Out of memory.\n");
+            else if (newimage->getStatus() != EIS_Normal)
+                app.printError(DicomImage::getString(newimage->getStatus()));
             else
-                strcpy(ofname, opt_ofname);
-            if (opt_verboseMode > 1)
-                 OUTPUT << "writing frame " << (opt_frame + frame) << " to " << ofname << endl;
-            ofile = fopen(ofname, "wb");
-            if (ofile == NULL)
             {
-                oss << "cannot create file " << ofname << ends;
-                app.printError(oss.str());
+                delete di;
+                di = newimage;
             }
-        } else {
-            /* output to stdout */
-            ofile = stdout;
-            if (opt_verboseMode > 1)
-                 OUTPUT << "writing frame " << (opt_frame + frame) << " to stdout" << endl;
         }
 
-        /* finally create PPM/PGM or BMP file */
+        /* write selected frame(s) to file */
 
-        switch (opt_fileType)
+        int status = 0;
+        FILE *ofile = NULL;
+        char ofname[255];
+        unsigned int fcount = (unsigned int)(((opt_frameCount > 0) && (opt_frameCount <= di->getFrameCount())) ? opt_frameCount : di->getFrameCount());
+        const char *ofext = (opt_fileType >= 5) && (opt_fileType <= 7) ? "bmp" : (di->isMonochrome() ? "pgm" : "ppm");
+
+        if (fcount < opt_frameCount)
         {
-            case 1:
-                status = di->writeRawPPM(ofile, 8, frame);
-            case 2:
-                status = di->writePPM(ofile, 8, frame);
-                break;
-            case 3:
-                status = di->writePPM(ofile, 16, frame);
-                break;
-            case 4:
-                status = di->writePPM(ofile, (int)opt_fileBits, frame);
-                break;
-            case 5:
-                status = di->writeBMP(ofile, 0, frame);
-                break;
-            case 6:
-                status = di->writeBMP(ofile, 8, frame);
-                break;
-            case 7:
-                status = di->writeBMP(ofile, 24, frame);
-                break;
-    #ifdef PASTEL_COLOR_OUTPUT
-            case 8:
-                status = di->writePPM(ofile, MI_PastelColor, frame);
-                break;
-    #endif
-            default:
-                if (opt_ofname)
-                    status = di->writeRawPPM(ofile, 8, frame);
-                else /* stdout */
-                    status = di->writePPM(ofile, 8, frame);
-                break;
+            oss << "cannot select " << opt_frameCount << " frames, limiting to " << fcount << " frames" << ends;
+            app.printWarning(oss.str());
         }
 
-        if (opt_ofname)
-            fclose(ofile);
-            
-        if (!status)
-            app.printError("cannot write frame");
+        for (unsigned int frame = 0; frame < fcount; frame++)
+        {
+            if (opt_ofname)
+            {
+                /* output to file */
+                if (opt_multiFrame)
+                    sprintf(ofname, "%s.%d.%s", opt_ofname, frame, ofext);
+                else
+                    strcpy(ofname, opt_ofname);
+                if (opt_verboseMode > 1)
+                     OUTPUT << "writing frame " << (opt_frame + frame) << " to " << ofname << endl;
+                ofile = fopen(ofname, "wb");
+                if (ofile == NULL)
+                {
+                    oss << "cannot create file " << ofname << ends;
+                    app.printError(oss.str());
+                }
+            } else {
+                /* output to stdout */
+                ofile = stdout;
+                if (opt_verboseMode > 1)
+                     OUTPUT << "writing frame " << (opt_frame + frame) << " to stdout" << endl;
+            }
+
+            /* finally create PPM/PGM or BMP file */
+
+            switch (opt_fileType)
+            {
+                case 1:
+                    status = di->writeRawPPM(ofile, 8, frame);
+                case 2:
+                    status = di->writePPM(ofile, 8, frame);
+                    break;
+                case 3:
+                    status = di->writePPM(ofile, 16, frame);
+                    break;
+                case 4:
+                    status = di->writePPM(ofile, (int)opt_fileBits, frame);
+                    break;
+                case 5:
+                    status = di->writeBMP(ofile, 0, frame);
+                    break;
+                case 6:
+                    status = di->writeBMP(ofile, 8, frame);
+                    break;
+                case 7:
+                    status = di->writeBMP(ofile, 24, frame);
+                    break;
+        #ifdef PASTEL_COLOR_OUTPUT
+                case 8:
+                    status = di->writePPM(ofile, MI_PastelColor, frame);
+                    break;
+        #endif
+                default:
+                    if (opt_ofname)
+                        status = di->writeRawPPM(ofile, 8, frame);
+                    else /* stdout */
+                        status = di->writePPM(ofile, 8, frame);
+                    break;
+            }
+
+            if (opt_ofname)
+                fclose(ofile);
+
+            if (!status)
+                app.printError("cannot write frame");
+        }
     }
 
     /* done, now cleanup. */
@@ -1037,6 +1075,11 @@ int main(int argc, char *argv[])
     delete di;
     delete disp;
 
+#ifdef BUILD_DCM2PNM_AS_DCMJ2PNM
+    // deregister global decompression codecs
+    DJDecoderRegistration::cleanup();
+#endif
+
     return 0;
 }
 
@@ -1044,7 +1087,10 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcm2pnm.cc,v $
- * Revision 1.50  2001-11-09 16:35:20  joergr
+ * Revision 1.51  2001-11-19 13:04:54  joergr
+ * Moved dcmmkdir tool to dcmjpeg module.
+ *
+ * Revision 1.50  2001/11/09 16:35:20  joergr
  * Renamed some of the getValue/getParam methods to avoid ambiguities reported
  * by certain compilers.
  * Added support for Windows BMP file format.
