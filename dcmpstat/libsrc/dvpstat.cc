@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DVPresentationState
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-03-22 09:52:42 $
- *  CVS/RCS Revision: $Revision: 1.18 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 1999-04-27 11:26:01 $
+ *  CVS/RCS Revision: $Revision: 1.19 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -209,6 +209,7 @@ DVPresentationState::DVPresentationState(DiDisplayFunction *dispFunction)
 , currentImageVOILUTList()
 , currentImageVOIWindowList()
 , useBartenTransform(OFTrue)
+, imageInverse(OFFalse)
 , displayFunction(dispFunction)
 {
 }
@@ -317,6 +318,7 @@ void DVPresentationState::clear()
   detachImage(); // clears all currentImageXX attributes
   // we do not change the display function
   useBartenTransform = OFTrue;
+  imageInverse = OFFalse;
   return;
 }
 
@@ -835,6 +837,7 @@ E_Condition DVPresentationState::read(DcmItem &dset)
         }
       }
     }
+    checkInverse();
 
     /* if imageRotation or imageHorizontalFlip are present, then both must be present. */
     if ((imageRotation.getLength() > 0)&&(imageHorizontalFlip.getLength() == 0))
@@ -1352,6 +1355,7 @@ E_Condition DVPresentationState::createFromImage(
       if (aString == "IDENTITY") presentationLUT=DVPSP_identity;
       if (aString == "INVERSE") presentationLUT=DVPSP_inverse;     
     }
+    checkInverse();
   }
    
   if (result==EC_Normal)
@@ -3514,6 +3518,32 @@ E_Condition DVPresentationState::getOverlayData(
    return EC_Normal;
 }
 
+OFBool DVPresentationState::isInverse()
+{
+    return imageInverse;
+}
+
+void DVPresentationState::checkInverse()
+{
+  switch (presentationLUT)
+  {
+    case DVPSP_identity:
+      imageInverse = OFFalse;
+      break;
+    case DVPSP_inverse:
+      imageInverse = OFTrue;
+      break;
+    case DVPSP_table:
+      if (havePresentationLookupTable())
+      {
+        DiLookupTable *lut = new DiLookupTable(presentationLUTData, presentationLUTDescriptor);
+        if (lut != NULL)
+          imageInverse = (lut->getFirstValue() > lut->getLastValue());
+        delete lut;
+      }
+      break;
+  }
+}
 
 E_Condition DVPresentationState::invertImage()
 {
@@ -3541,7 +3571,10 @@ E_Condition DVPresentationState::invertImage()
             break;
     }
     if (status == EC_Normal)
+    {
         currentImagePLUTValid = OFFalse; // PLUT has changed
+        imageInverse = (imageInverse ? OFFalse : OFTrue);
+    }
     return status;
 }
 
@@ -3616,7 +3649,10 @@ void DVPresentationState::changeDisplayFunction(DiDisplayFunction *dispFunction)
 
 /*
  *  $Log: dvpstat.cc,v $
- *  Revision 1.18  1999-03-22 09:52:42  meichel
+ *  Revision 1.19  1999-04-27 11:26:01  joergr
+ *  Added method to check whether current image is inverse or not.
+ *
+ *  Revision 1.18  1999/03/22 09:52:42  meichel
  *  Reworked data dictionary based on the 1998 DICOM edition and the latest
  *    supplement versions. Corrected dcmtk applications for minor changes
  *    in attribute name constants.

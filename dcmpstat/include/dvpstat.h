@@ -23,8 +23,8 @@
  *    classes: DVPresentationState
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-03-22 09:05:35 $
- *  CVS/RCS Revision: $Revision: 1.13 $
+ *  Update Date:      $Date: 1999-04-27 11:23:57 $
+ *  CVS/RCS Revision: $Revision: 1.14 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1257,6 +1257,11 @@ public:
    */
   void detachImage();
     
+  /** checks whether image is inverse (shape, plut or mono1).
+   *  @return OFTrue if image is inverse, OFFalse otherwise.
+   */
+  OFBool isInverse();
+ 
   /** inverts image by changing presentation state LUT or presentation state LUT shape.
    *  Pixel data has to be re-get after this transformation.
    *  @return EC_Normal upon success, an error code otherwise.
@@ -1425,6 +1430,12 @@ private:
    */
   void renderPixelData();
 
+  /** checks whether current pstate status is inverse (shape, plut or mono1).
+   *  This method sets the member variable currentImageInverse which is used
+   *  for method isInverse().
+   */
+  void checkInverse();
+  
   /* Module: Patient (M)
    */
   /// Module=Patient, VR=PN, VM=1, Type 1 
@@ -1699,6 +1710,10 @@ private:
    */
   OFBool useBartenTransform;
 
+  /** a flag describing whether current image is inverse
+   */
+  OFBool imageInverse;
+
   /** display function object if exists
    */
   DiDisplayFunction *displayFunction;
@@ -1709,7 +1724,10 @@ private:
 
 /*
  *  $Log: dvpstat.h,v $
- *  Revision 1.13  1999-03-22 09:05:35  joergr
+ *  Revision 1.14  1999-04-27 11:23:57  joergr
+ *  Added method to check whether current image is inverse or not.
+ *
+ *  Revision 1.13  1999/03/22 09:05:35  joergr
  *  Added parameter to get value of (transparent) background color for method
  *  getOverlayData.
  *
