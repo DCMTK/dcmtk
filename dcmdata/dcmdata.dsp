@@ -195,6 +195,30 @@ SOURCE=.\libsrc\dcpxitem.cxx
 # End Source File
 # Begin Source File
 
+SOURCE=.\libsrc\dcrleccd.cxx
+# End Source File
+# Begin Source File
+
+SOURCE=.\libsrc\dcrlecce.cxx
+# End Source File
+# Begin Source File
+
+SOURCE=.\libsrc\dcrlecp.cxx
+# End Source File
+# Begin Source File
+
+SOURCE=.\libsrc\dcrledrg.cxx
+# End Source File
+# Begin Source File
+
+SOURCE=.\libsrc\dcrleerg.cxx
+# End Source File
+# Begin Source File
+
+SOURCE=.\libsrc\dcrlerp.cxx
+# End Source File
+# Begin Source File
+
 SOURCE=.\libsrc\dcsequen.cxx
 # End Source File
 # Begin Source File
