@@ -21,10 +21,10 @@
  *
  *  Purpose: class DcmPixelData
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-04-21 15:48:15 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2000-02-03 16:30:19 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcpixel.cc,v $
- *  CVS/RCS Revision: $Revision: 1.8 $
+ *  CVS/RCS Revision: $Revision: 1.9 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -954,10 +954,23 @@ DcmPixelData::write(
     return errorFlag;
 }
 
+E_Condition DcmPixelData::loadAllDataIntoMemory(void)
+{
+    if (current == repListEnd)
+        return DcmElement::loadAllDataIntoMemory();
+    else
+        return (*current)->pixSeq->loadAllDataIntoMemory();
+}
+
 /*
 ** CVS/RCS Log:
 ** $Log: dcpixel.cc,v $
-** Revision 1.8  1999-04-21 15:48:15  meichel
+** Revision 1.9  2000-02-03 16:30:19  joergr
+** Fixed bug: encapsulated data (pixel items) have never been loaded using
+** method 'loadAllDataIntoMemory'. Therefore, encapsulated pixel data was
+** never printed with 'dcmdump'.
+**
+** Revision 1.8  1999/04/21 15:48:15  meichel
 ** Fixed bug in DcmPixelData::findConformingEncapsulatedRepresentation
 **   leading to an assertion failure when working with compressed data.
 **

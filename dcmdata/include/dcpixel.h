@@ -21,10 +21,10 @@
  *
  *  Purpose: Interface of class DcmPixelData
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-03-31 09:24:44 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2000-02-03 16:28:10 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcpixel.h,v $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -209,6 +209,8 @@ public:
         const E_TransferSyntax oxfer,
         const E_EncodingType enctype = EET_UndefinedLength);
 
+    virtual E_Condition loadAllDataIntoMemory(void);
+
     // Finalize a streaming operation (read, write)
     virtual void transferEnd();
 
@@ -301,7 +303,12 @@ public:
 /*
 ** CVS/RCS Log:
 ** $Log: dcpixel.h,v $
-** Revision 1.5  1999-03-31 09:24:44  meichel
+** Revision 1.6  2000-02-03 16:28:10  joergr
+** Fixed bug: encapsulated data (pixel items) have never been loaded using
+** method 'loadAllDataIntoMemory'. Therefore, encapsulated pixel data was
+** never printed with 'dcmdump'.
+**
+** Revision 1.5  1999/03/31 09:24:44  meichel
 ** Updated copyright header in module dcmdata
 **
 ** Revision 1.4  1998/11/12 16:47:42  meichel
