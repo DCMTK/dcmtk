@@ -22,9 +22,9 @@
  *  Purpose: List the contents of a dicom structured reporting file
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-10-18 16:56:33 $
+ *  Update Date:      $Date: 2000-11-01 16:09:06 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmsr/apps/dsrdump.cc,v $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -149,28 +149,28 @@ int main(int argc, char *argv[])
     cmd.addParam("dsrfile-in", "DICOM SR input filename to be dumped", OFCmdParam::PM_MultiMandatory);
 
     cmd.addGroup("general options:", LONGCOL, SHORTCOL + 2);
-      cmd.addOption("--help",                  "-h",        "print this help text and exit");
-      cmd.addOption("--debug",                 "-d",        "debug mode, print debug information");
+      cmd.addOption("--help",                  "-h",  "print this help text and exit");
+      cmd.addOption("--debug",                 "-d",  "debug mode, print debug information");
 
     cmd.addGroup("input options:");
       cmd.addSubGroup("input file format:");
-        cmd.addOption("--read-file",           "+f",        "read file format or data set (default)");
-        cmd.addOption("--read-dataset",        "-f",        "read data set without file meta information");
+        cmd.addOption("--read-file",           "+f",  "read file format or data set (default)");
+        cmd.addOption("--read-dataset",        "-f",  "read data set without file meta information");
       cmd.addSubGroup("input transfer syntax (only with --read-dataset):");
-        cmd.addOption("--read-xfer-auto",      "-t=",       "use TS recognition (default)");
-        cmd.addOption("--read-xfer-little",    "-te",       "read with explicit VR little endian TS");
-        cmd.addOption("--read-xfer-big",       "-tb",       "read with explicit VR big endian TS");
-        cmd.addOption("--read-xfer-implicit",  "-ti",       "read with implicit VR little endian TS");
+        cmd.addOption("--read-xfer-auto",      "-t=", "use TS recognition (default)");
+        cmd.addOption("--read-xfer-little",    "-te", "read with explicit VR little endian TS");
+        cmd.addOption("--read-xfer-big",       "-tb", "read with explicit VR big endian TS");
+        cmd.addOption("--read-xfer-implicit",  "-ti", "read with implicit VR little endian TS");
 
     cmd.addGroup("output options:");
       cmd.addSubGroup("printing:");
-        cmd.addOption("--print-file-name",     "+Pf",       "print header with file name for each document");
-        cmd.addOption("--number-nested-items", "+Pn",       "print position string in front of each line");
-        cmd.addOption("--indent-nested-items", "-Pn",       "indent nested items by spaces (default)");
-        cmd.addOption("--print-long-values",   "+Pl",       "print long item values completely");
-        cmd.addOption("--shorten-long-values", "-Pl",       "print long item values shortened (default)");
-        cmd.addOption("--print-instance-uid",  "+Pu",       "print SOP instance UID of referenced objects");
-        cmd.addOption("--print-all-codes",     "+Pc",       "print all codes (incl. concept name codes)");
+        cmd.addOption("--print-file-name",     "+Pf", "print header with file name for each document");
+        cmd.addOption("--number-nested-items", "+Pn", "print position string in front of each line");
+        cmd.addOption("--indent-nested-items", "-Pn", "indent nested items by spaces (default)");
+        cmd.addOption("--print-long-values",   "+Pl", "print long item values completely");
+        cmd.addOption("--shorten-long-values", "-Pl", "print long item values shortened (default)");
+        cmd.addOption("--print-instance-uid",  "+Pu", "print SOP instance UID of referenced objects");
+        cmd.addOption("--print-all-codes",     "+Pc", "print all codes (incl. concept name codes)");
 
     /* evaluate command line */
     prepareCmdLineArgs(argc, argv, OFFIS_CONSOLE_APPLICATION);
@@ -265,7 +265,10 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dsrdump.cc,v $
- * Revision 1.3  2000-10-18 16:56:33  joergr
+ * Revision 1.4  2000-11-01 16:09:06  joergr
+ * Updated comments/formatting.
+ *
+ * Revision 1.3  2000/10/18 16:56:33  joergr
  * Added new command line option --print-file-name.
  *
  * Revision 1.2  2000/10/16 11:50:31  joergr
