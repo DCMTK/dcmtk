@@ -23,8 +23,8 @@
  *    classes: DSRDocument
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-11-09 20:32:07 $
- *  CVS/RCS Revision: $Revision: 1.9 $
+ *  Update Date:      $Date: 2000-11-10 17:44:49 $
+ *  CVS/RCS Revision: $Revision: 1.10 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -172,10 +172,17 @@ class DSRDocument
     const char *getCompletionFlagDescription() const;
 
     /** get document completion flag description
-     ** @param  string  reference to character string in which the value should be stored
+     ** @param  description  reference to character string in which the value should be stored
      ** @return character string (might empty)
      */
-    const OFString &getCompletionFlagDescription(OFString &string) const;
+    const OFString &getCompletionFlagDescription(OFString &description) const;
+
+    /** set document completion flag description.
+     *  The description can be removed from the DICOM dataset (type 3) by setting an empty string.
+     ** @param  description  explanation of the value set for completion flag (optional, VR=LO)
+     ** @return status, EC_Normal if successful, an error code otherwise
+     */
+    E_Condition setCompletionFlagDescription(const OFString &description);
 
     /** get document verification flag
      ** @return verification flag (might be VF_invalid if read from dataset)
@@ -250,6 +257,27 @@ class DSRDocument
      ** @return status, EC_Normal if successful, an error code otherwise
      */
     E_Condition getPredecessorDocument(const size_t idx,
+                                       OFString &sopClassUID,
+                                       OFString &sopInstanceUID);
+
+    /** get information about a predecessor document.
+     *  All reference variables are cleared before the information is retrieved, i.e. if an error
+     *  occurs (return value != EC_Normal) non-empty variables do contain correct data.
+     ** @param  idx                index of the predecessor document to be retrieved (starting with 1).
+     *                             Use getNumberOfPredecessorDocuments() to get the maximum value.
+     *  @param  studyInstanceUID   reference to variable where the study instance UID of the predecessor
+     *                             document should be stored (required)
+     *  @param  seriesInstanceUID  reference to variable where the series instance UID of the predecessor
+     *                             document should be stored (required)
+     *  @param  sopClassUID        reference to variable where the SOP class UID of the predecessor
+     *                             document should be stored (required)
+     *  @param  sopInstanceUID     reference to variable where the SOP instance UID of the predecessor
+     *                             document should be stored (required)
+     ** @return status, EC_Normal if successful, an error code otherwise
+     */
+    E_Condition getPredecessorDocument(const size_t idx,
+                                       OFString &studyInstanceUID,
+                                       OFString &seriesInstanceUID,
                                        OFString &sopClassUID,
                                        OFString &sopInstanceUID);
 
@@ -632,44 +660,65 @@ class DSRDocument
 
   // --- document management functions ---
 
+    /** create new study and series instance UIDs.
+     *  Please note that the SOP instance UID is not changed.
+     */
+    void createNewStudyAndSeries();
+
+    /** create a new series instance UID.
+     *  Please note that the study and SOP instance UIDs are not changed.
+     */
+    void createNewSeries();
+
+    /** create a new series instance UID.
+     *  Please note that the SOP instance UIDs is not changed.
+     ** @param  studyUID  study instance UID to be set (should be a valid UID)
+     ** @return status, EC_Normal if successful, an error code otherwise
+     */
+    E_Condition createNewSeries(const OFString &studyUID);
+
     /** create a new SOP instance.
-     *  Generate a new SOP instance UID and set the instance creation date/time.
+     *  Generate a new SOP instance UID, set the instance creation date/time, clear the
+     *  list of verifying observers and set the verification flag to UNVERIFIED.
      *  This method is used internally for createNewDocument(), createRevisedVersion()
      *  and during object initialization.
      *  It could also be used explicitly from the calling application if a new UID should
      *  be created (see DICOM standard for details).
      *  This method also updates the other DICOM header attributes (calling updateAttributes()).
      */
-    void createNewSOPInstance();
+    void createNewSOPInstance();    
 
     /** create a new document.
-     *  Please note that the current document is deleted.  A new SOP instance is created
-     *  if the current document type was valid/supported.
+     *  A new SOP instance is only created if the current document type was valid/supported.
+     *  Please note that the current document is deleted.
      ** @return status, EC_Normal if successful, an error code otherwise
      */
     E_Condition createNewDocument();
 
     /** create a new document of the specified type.
-     *  Please note that the current document is deleted.  A new SOP instance is created
-     *  if the 'documentType' is valid/supported.
+     *  A new SOP instance is only created if the current document type was valid/supported.
+     *  Please note that the current document is deleted.
      ** @param  documentType  type of the SR document (BasicText, Enhanced, Comprehensive)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
     E_Condition createNewDocument(const E_DocumentType documentType);
 
     /** create a revised version of the current document.
-     *  A revised version can only be created if the current document if not yet completed
+     *  A revised version can only be created if the current document is not yet completed
      *  (see completion flag).  If so a reference to the current document is included in the
      *  predecessor documents sequence (possible existing references are automatically
      *  replaced, i.e. there is never more than one reference in this sequence).  If all 
-     *  revised versions of a SR document are stored (written to datasets/files) it is possible
-     *  to track back the full chain of previous versions.
+     *  revised versions of a SR document are stored (written to datasets/files) it is
+     *  possible to track back the full chain of previous versions.
+     *  A new SOP instance is created and the content date/time are set automatically.
+     *  Furthermore the verifying observer sequence is deleted, the verifcation flag is set
+     *  to UNVERIFIED and the completion flag is set to PARTIAL (i.e. not complete).
      ** @return status, EC_Normal if successful, an error code otherwise
      */
     E_Condition createRevisedVersion();
 
     /** complete the current document.
-     *  Sets the completion flag to COMPLETED if not already done (fails otherwise).
+     *  Sets the completion flag to COMPLETE if not already done (fails otherwise).
      *  The completion flag description is set to an empty string (i.e. absent in DICOM
      *  dataset).
      ** @return status, EC_Normal if successful, an error code otherwise
@@ -677,8 +726,11 @@ class DSRDocument
     E_Condition completeDocument();
 
     /** complete the current document and set completion description.
-     *  Sets the completion flag to COMPLETED if not already done (fails otherwise).
-     ** @param  description  completion description to be set (optional, see previous method)
+     *  Sets the completion flag to COMPLETE if not already done (fails otherwise).
+     *  The completion flag description can be modified independently from the flag by means
+     *  of the method setCompletionFlagDescription() - see above.
+     ** @param  description  explanation of the value set for completion flag (optional, see
+     *                       previous method, VR=LO)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
     E_Condition completeDocument(const OFString &description);
@@ -687,8 +739,9 @@ class DSRDocument
      *  A document can be verified more than once.  The observer information is added to a
      *  sequence stored in the dataset.  The verification flag is automatically set to
      *  VERIFIED (if not already done).
-     ** @param  observerName  name of the person who has verified this document (no empty string)
-     *  @param  organization  name of the organization to which the observer belongs (no empty string)
+     *  Please note that only completed documents (see completion flag) can be verified.
+     ** @param  observerName  name of the person who has verified this document (required, VR=PN)
+     *  @param  organization  name of the organization to which the observer belongs (required, VR=LO)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
     E_Condition verifyDocument(const OFString &observerName,
@@ -698,9 +751,10 @@ class DSRDocument
      *  A document can be verified more than once.  The observer information is added to a
      *  sequence stored in the dataset.  The verification flag is automatically set to
      *  VERIFIED (if not already done).
-     ** @param  observerName  name of the person who has verified this document (no empty string)
+     *  Please note that only completed documents (see completion flag) can be verified.
+     ** @param  observerName  name of the person who has verified this document (required, VR=PN)
      *  @param  observerCode  code identifying the verifying observer (optional, see previous method)
-     *  @param  organization  name of the organization to which the observer belongs (no empty string)
+     *  @param  organization  name of the organization to which the observer belongs (required, VR=LO)
      ** @return status, EC_Normal if successful, an error code otherwise
      */
     E_Condition verifyDocument(const OFString &observerName,
@@ -837,6 +891,7 @@ class DSRDocument
     //  Referenced Request Sequence: (SQ, 1, 1C)
 
     //  Performed Procedure Code Sequence: (SQ, 1, 2)
+    DcmSequenceOfItems  PerformedProcedureCode;
 
     //  Current Requested Procedure Evidence Sequence: (SQ, 1, 1C)
 
@@ -856,7 +911,13 @@ class DSRDocument
 /*
  *  CVS/RCS Log:
  *  $Log: dsrdoc.h,v $
- *  Revision 1.9  2000-11-09 20:32:07  joergr
+ *  Revision 1.10  2000-11-10 17:44:49  joergr
+ *  Added new methods to set the completion flag description, create new study/
+ *  series UIDs. Added missing type 2 sequence to dataset. Corrected wrong format
+ *  of predecessor documents sequence. Changed behaviour of completion/verification
+ *  flags. Improved HTML and print/dump output.
+ *
+ *  Revision 1.9  2000/11/09 20:32:07  joergr
  *  Added support for non-ASCII characters in HTML 3.2 (use numeric value).
  *
  *  Revision 1.8  2000/11/07 18:12:25  joergr

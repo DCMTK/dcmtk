@@ -23,8 +23,8 @@
  *    classes: DSRDocument
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-11-09 20:34:00 $
- *  CVS/RCS Revision: $Revision: 1.10 $
+ *  Update Date:      $Date: 2000-11-10 17:45:32 $
+ *  CVS/RCS Revision: $Revision: 1.11 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -75,7 +75,8 @@ DSRDocument::DSRDocument(const E_DocumentType documentType)
     ContentDate(DCM_ContentDate),
     ContentTime(DCM_ContentTime),
     VerifyingObserver(DCM_VerifyingObserverSequence),
-    PredecessorDocuments(DCM_PredecessorDocumentsSequence)
+    PredecessorDocuments(DCM_PredecessorDocumentsSequence),
+    PerformedProcedureCode(DCM_PerformedProcedureCodeSequence)
 {
     /* set initial values for a new SOP instance */
     createNewSOPInstance();
@@ -127,6 +128,7 @@ void DSRDocument::clear()
     ContentTime.clear();
     VerifyingObserver.clear();
     PredecessorDocuments.clear();
+    PerformedProcedureCode.clear();
 }
 
 
@@ -187,7 +189,7 @@ E_Condition DSRDocument::print(ostream &stream,
             stream << "                     " << getPrintStringFromElement(CompletionFlagDescription, string) << endl;
         /* predecessor documents */
         if (getNumberOfPredecessorDocuments() > 0)
-            stream << "Predecessor Doc's  : " << getNumberOfPredecessorDocuments() << endl;
+            stream << "Predecessor Docs   : " << getNumberOfPredecessorDocuments() << endl;
         /* verification flag */
         stream << "Verification Flag  : " << verificationFlagToEnumeratedValue(VerificationFlagEnum) << endl;
         /* verifying observer */
@@ -267,6 +269,8 @@ E_Condition DSRDocument::read(DcmItem &dataset)
     /* dataset is OK */
     if (result == EC_Normal)
     {
+        E_Condition searchCond;
+
         /* type 3 element and attributes which have already been checked are not checked */
 
         // --- SOP Common Module ---
@@ -303,7 +307,7 @@ E_Condition DSRDocument::read(DcmItem &dataset)
         getAndCheckElementFromDataset(dataset, SeriesInstanceUID, "1", "1", LogStream);
         getAndCheckElementFromDataset(dataset, SeriesNumber, "1", "1", LogStream);
         /* need to check sequence in two steps (avoids additional getAndCheck... method) */
-        E_Condition searchCond = getSequenceFromDataset(dataset, ReferencedStudyComponent);
+        searchCond = getSequenceFromDataset(dataset, ReferencedStudyComponent);
         checkElementValue(ReferencedStudyComponent, "1", "2", LogStream, searchCond);
 
         // --- SR Document General Module (M) ---
@@ -315,6 +319,9 @@ E_Condition DSRDocument::read(DcmItem &dataset)
         getAndCheckElementFromDataset(dataset, ContentTime, "1", "1", LogStream);
         getSequenceFromDataset(dataset, VerifyingObserver);
         getSequenceFromDataset(dataset, PredecessorDocuments);
+        /* need to check sequence in two steps (avoids additional getAndCheck... method) */
+        searchCond = getSequenceFromDataset(dataset, PerformedProcedureCode);
+        checkElementValue(PerformedProcedureCode, "1", "2", LogStream, searchCond);
 
         /* update internal enumerated values */
         OFString string;
@@ -397,6 +404,7 @@ E_Condition DSRDocument::write(DcmItem &dataset)
             addElementToDataset(result, dataset, new DcmSequenceOfItems(VerifyingObserver));
         if (PredecessorDocuments.card() > 0)
             addElementToDataset(result, dataset, new DcmSequenceOfItems(PredecessorDocuments));
+        addElementToDataset(result, dataset, new DcmSequenceOfItems(PerformedProcedureCode));
 
         /* write SR document tree */
         if (result == EC_Normal)
@@ -617,7 +625,7 @@ E_Condition DSRDocument::renderHTML(ostream &stream,
                 else
                     stream << "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.0//EN\">" << endl;
             }
-        }            
+        }
         stream << "<html>" << endl;
         stream << "<head>" << endl;
         /* document title */
@@ -676,6 +684,8 @@ E_Condition DSRDocument::renderHTML(ostream &stream,
 
         if (!(newFlags & HF_renderNoDocumentHeader))
         {
+            /* for loop count */
+            size_t i = 0;
             /* create a table for this purpose */
             stream << "<table>" << endl;
             /* patient related information */
@@ -721,12 +731,30 @@ E_Condition DSRDocument::renderHTML(ostream &stream,
                 stream << "</tr>" << endl;
             }
             /* predecessor documents */
-            if (getNumberOfPredecessorDocuments() > 0)
+            const size_t preDocCount = getNumberOfPredecessorDocuments();
+            if (preDocCount > 0)
             {
                 stream << "<tr>" << endl;
-                stream << "<td><b>Predecessor Doc's:</b></td>" << endl;
-                stream << "<td>" << getNumberOfPredecessorDocuments() << "</td>" << endl;
-                stream << "</tr>" << endl;
+                stream << "<td><b>Predecessor Docs:</b></td>" << endl;
+                for (i = 1; i <= preDocCount; i++)
+                {
+                    if (i > 1)
+                    {
+                        stream << "<tr>" << endl;
+                        stream << "<td></td>" << endl;
+                    }
+                    /* hyperlink to composite object */
+                    OFString sopClass, sopInstance;
+                    if (getPredecessorDocument(i, sopClass, sopInstance) == EC_Normal)
+                    {
+                        stream << "<td><a href=\"" << HTML_HYPERLINK_PREFIX_FOR_CGI;
+                        stream << "?composite=" << sopClass << "+" << sopInstance << "\">";
+                        stream << documentTypeToReadableName(sopClassUIDToDocumentType(sopClass)) << " Document";
+                        stream << "</a></td>" << endl;
+                    } else
+                        stream << "<td><i>invalid document reference</i></td>" << endl;
+                    stream << "</tr>" << endl;
+                }
             }
             /* verification flag */
             stream << "<tr>" << endl;
@@ -735,7 +763,7 @@ E_Condition DSRDocument::renderHTML(ostream &stream,
             stream << "</tr>" << endl;
             /* verifying observer */
             const size_t obsCount = getNumberOfVerifyingObservers();
-            for (size_t i = 1; i <= obsCount; i++)
+            for (i = 1; i <= obsCount; i++)
             {
                 OFString dateTime, obsName, organization;
                 DSRCodedEntryValue obsCode;
@@ -839,9 +867,20 @@ const char *DSRDocument::getCompletionFlagDescription() const
 }
 
 
-const OFString &DSRDocument::getCompletionFlagDescription(OFString &string) const
+const OFString &DSRDocument::getCompletionFlagDescription(OFString &description) const
 {
-    return getStringValueFromElement(CompletionFlagDescription, string);
+    return getStringValueFromElement(CompletionFlagDescription, description);
+}
+
+
+E_Condition DSRDocument::setCompletionFlagDescription(const OFString &description)
+{
+    E_Condition result = EC_Normal;
+    if (description.length() > 0)
+        result = CompletionFlagDescription.putString(description.c_str());
+    else
+        CompletionFlagDescription.clear();
+    return result;
 }
 
 
@@ -907,7 +946,36 @@ E_Condition DSRDocument::getVerifyingObserver(const size_t idx,
 
 size_t DSRDocument::getNumberOfPredecessorDocuments()
 {
-    return (size_t)PredecessorDocuments.card();
+    size_t count = 0;
+    const size_t studyCount = PredecessorDocuments.card();
+    /* for all studies */
+    for (size_t study = 0; study < studyCount; study++)
+    {
+        DcmItem *studyItem = PredecessorDocuments.getItem(study);
+        if (studyItem != NULL)
+        {
+            DcmSequenceOfItems seriesSeq(DCM_ReferencedSeriesSequence);
+            if (getSequenceFromDataset(*studyItem, seriesSeq) == EC_Normal)
+            {
+                const size_t seriesCount = seriesSeq.card();
+                /* for all series in the study */
+                for (size_t series = 0; series < seriesCount; series++)
+                {
+                    DcmItem *seriesItem = seriesSeq.getItem(series);
+                    if (seriesItem != NULL)
+                    {
+                        DcmSequenceOfItems sopSeq(DCM_ReferencedSOPSequence);
+                        if (getSequenceFromDataset(*seriesItem, sopSeq) == EC_Normal)
+                        {
+                            /* add number of referenced instances */
+                            count += sopSeq.card();
+                        }
+                    }
+                }
+            }
+        }
+    }
+    return count;
 }
 
 
@@ -915,23 +983,83 @@ E_Condition DSRDocument::getPredecessorDocument(const size_t idx,
                                                 OFString &sopClassUID,
                                                 OFString &sopInstanceUID)
 {
+    OFString studyDummy, seriesDummy;
+    return getPredecessorDocument(idx, studyDummy, seriesDummy, sopClassUID, sopInstanceUID);
+}
+
+
+E_Condition DSRDocument::getPredecessorDocument(const size_t idx,
+                                                OFString &studyInstanceUID,
+                                                OFString &seriesInstanceUID,
+                                                OFString &sopClassUID,
+                                                OFString &sopInstanceUID)
+{
     E_Condition result = EC_IllegalCall;
     /* clear all reference variables */
+    studyInstanceUID.clear();
+    seriesInstanceUID.clear();
     sopClassUID.clear();
     sopInstanceUID.clear();
-    /* get specified entry */
     if ((idx > 0) && (idx <= getNumberOfPredecessorDocuments()))
     {
-        DcmItem *ditem = PredecessorDocuments.getItem((unsigned long)(idx - 1));
-        if (ditem != NULL)
+        size_t sopIdx = idx;
+        size_t study = 0;
+        const size_t studyCount = PredecessorDocuments.card();
+        while ((study < studyCount) && (result == EC_IllegalCall))
         {
-            result = getStringValueFromDataset(*ditem, DCM_SOPClassUID, sopClassUID);
-            if (result == EC_Normal)
-                result = getStringValueFromDataset(*ditem, DCM_SOPInstanceUID, sopInstanceUID);
-            if (result == EC_Normal)
+
+            DcmItem *studyItem = PredecessorDocuments.getItem(study);
+            if (studyItem != NULL)
             {
-                if ((sopClassUID.length() == 0) || (sopInstanceUID.length() == 0))
+                DcmSequenceOfItems seriesSeq(DCM_ReferencedSeriesSequence);
+                if (getSequenceFromDataset(*studyItem, seriesSeq) == EC_Normal)
+                {
+                    size_t series = 0;
+                    const size_t seriesCount = seriesSeq.card();
+                    /* for all series in the study */
+                    while ((series < seriesCount) && (result == EC_IllegalCall))
+                    {
+                        DcmItem *seriesItem = seriesSeq.getItem(series);
+                        if (seriesItem != NULL)
+                        {
+                            DcmSequenceOfItems sopSeq(DCM_ReferencedSOPSequence);
+                            if (getSequenceFromDataset(*seriesItem, sopSeq) == EC_Normal)
+                            {
+                                const size_t sopCount = sopSeq.card();
+                                /* specified entry found */
+                                if (sopIdx <= sopCount)
+                                {
+                                    DcmItem *sopItem = sopSeq.getItem(sopIdx - 1);
+                                    if (sopItem != NULL)
+                                    {
+                                        /* retrieve UIDs */
+                                        getStringValueFromDataset(*studyItem, DCM_StudyInstanceUID, studyInstanceUID);
+                                        getStringValueFromDataset(*seriesItem, DCM_SeriesInstanceUID, seriesInstanceUID);
+                                        getStringValueFromDataset(*sopItem, DCM_ReferencedSOPClassUID, sopClassUID);
+                                        getStringValueFromDataset(*sopItem, DCM_ReferencedSOPInstanceUID, sopInstanceUID);
+                                        result = EC_Normal;
+                                    } else
+                                        result = EC_CorruptedData;
+                                } else
+                                    sopIdx -= sopCount;
+                            } else
+                                result = EC_CorruptedData;
+                        } else
+                            result = EC_CorruptedData;
+                        series++;
+                    }
+                } else
                     result = EC_CorruptedData;
+            } else
+                result = EC_CorruptedData;
+            study++;
+        }
+        if (result == EC_Normal)
+        {
+            if ((studyInstanceUID.length() == 0) || (seriesInstanceUID.length() == 0) ||
+                (sopClassUID.length() == 0) || (sopInstanceUID.length() == 0))
+            {
+                result = EC_CorruptedData;
             }
         }
     }
@@ -1339,6 +1467,35 @@ E_Condition DSRDocument::setAccessionNumber(const OFString &string)
 
 // --- document management functions
 
+void DSRDocument::createNewStudyAndSeries()
+{
+    char uid[100];
+    StudyInstanceUID.putString(dcmGenerateUniqueIdentifer(uid));
+    SeriesInstanceUID.putString(dcmGenerateUniqueIdentifer(uid));
+}
+
+
+void DSRDocument::createNewSeries()
+{
+    char uid[100];
+    SeriesInstanceUID.putString(dcmGenerateUniqueIdentifer(uid));
+}
+
+
+E_Condition DSRDocument::createNewSeries(const OFString &studyUID)
+{
+    E_Condition result = EC_IllegalCall;
+    if (studyUID.length() > 0)
+    {
+        char uid[100];
+        StudyInstanceUID.putString(studyUID.c_str());
+        SeriesInstanceUID.putString(dcmGenerateUniqueIdentifer(uid));
+        result = EC_Normal;
+    }
+    return result;
+}
+
+
 void DSRDocument::createNewSOPInstance()
 {
     char uid[100];
@@ -1349,6 +1506,9 @@ void DSRDocument::createNewSOPInstance()
     InstanceCreationDate.putString(currentDate(string).c_str());
     /* set instance creation time to current time */
     InstanceCreationTime.putString(currentTime(string).c_str());
+    /* clear list of verifying observers and set flag to UNVERIFIED */
+    VerifyingObserver.clear();
+    VerificationFlagEnum = VF_Unverified;
     /* update other DICOM attributes */
     updateAttributes();
 }
@@ -1379,20 +1539,60 @@ E_Condition DSRDocument::createNewDocument(const E_DocumentType documentType)
 E_Condition DSRDocument::createRevisedVersion()
 {
     E_Condition result= EC_Normal;
-    /* check whether document is not yet completed */
+    /* check whether document is not yet completed (i.e. PARTIAL) */
     if (CompletionFlagEnum != CF_Complete)
     {
         DcmItem *ditem = new DcmItem();
         if (ditem != NULL)
         {
             /* write current document UIDs */
-            ditem->insert(new DcmUniqueIdentifier(SOPClassUID));
-            ditem->insert(new DcmUniqueIdentifier(SOPInstanceUID));
-            /* insert item into sequence (replace old ones) */
-            PredecessorDocuments.clear();
-            PredecessorDocuments.insert(ditem);
-            /* create new instance UID and update creation date/time */
-            createNewSOPInstance();
+            ditem->insert(new DcmUniqueIdentifier(StudyInstanceUID));
+            /* Referenced Series Sequence */
+            DcmSequenceOfItems *dseq = new DcmSequenceOfItems(DCM_ReferencedSeriesSequence);
+            if (dseq != NULL)
+            {
+                DcmItem *ditem2 = new DcmItem();
+                if (ditem2 != NULL)
+                {
+                    ditem2->insert(new DcmUniqueIdentifier(SeriesInstanceUID));
+                    /* Referenced SOP Sequence */
+                    DcmSequenceOfItems *dseq2 = new DcmSequenceOfItems(DCM_ReferencedSOPSequence);
+                    if (dseq2 != NULL)
+                    {
+                        DcmItem *ditem3 = new DcmItem();
+                        if (ditem3 != NULL)
+                        {
+                            /* Referenced SOP Class and Instance UID */
+                            putStringValueToDataset(*ditem3, DCM_ReferencedSOPClassUID, getStringValueFromElement(SOPClassUID));
+                            putStringValueToDataset(*ditem3, DCM_ReferencedSOPInstanceUID, getStringValueFromElement(SOPInstanceUID));
+                            dseq2->insert(ditem3);
+                        } else
+                            result = EC_MemoryExhausted;
+                        ditem2->insert(dseq2);
+                    } else
+                        result = EC_MemoryExhausted;
+                    dseq->insert(ditem2);
+                } else
+                    result = EC_MemoryExhausted;
+                ditem->insert(dseq);
+                /* everything went OK */
+                if (result == EC_Normal)
+                {
+                    /* set completion flag to PARTIAL */
+                    CompletionFlagEnum = CF_Partial;
+                    /* clear content date/time, will be set automatically in updateAttributes() */
+                    ContentDate.clear();
+                    ContentTime.clear();
+                    /* insert item into sequence (replace old ones) */
+                    PredecessorDocuments.clear();
+                    PredecessorDocuments.insert(ditem);
+                    /* create new instance UID, update creation date/time and remove verifying observer */
+                    createNewSOPInstance();
+                }
+            } else {
+                delete ditem;
+                result = EC_MemoryExhausted;
+            }
         } else
             result = EC_MemoryExhausted;
     } else
@@ -1417,10 +1617,7 @@ E_Condition DSRDocument::completeDocument(const OFString &description)
         /* completed for now and ever */
         CompletionFlagEnum = CF_Complete;
         /* completion flag description */
-        if (description.length() > 0)
-            CompletionFlagDescription.putString(description.c_str());
-        else
-            CompletionFlagDescription.clear();
+        setCompletionFlagDescription(description);
         result = EC_Normal;
     }
     return result;
@@ -1440,29 +1637,33 @@ E_Condition DSRDocument::verifyDocument(const OFString &observerName,
                                         const OFString &organization)
 {
     E_Condition result = EC_IllegalCall;
-    /* empty strings are not allowed (type 1 attributes) */
-    if ((observerName.length() > 0) && (organization.length() > 0))
+    /* verify completed documents only */
+    if (CompletionFlagEnum == CF_Complete)
     {
-        DcmItem *ditem = new DcmItem();
-        if (ditem != NULL)
+        /* empty strings are not allowed (type 1 attributes) */
+        if ((observerName.length() > 0) && (organization.length() > 0))
         {
-            /* write VerifyingObserverName */
-            putStringValueToDataset(*ditem, DCM_VerifyingObserverName, observerName);
-            /* write VerifyingObserverIdentificationCodeSequence (might be empty, type 2) */
-            observerCode.writeSequence(*ditem, DCM_VerifyingObserverIdentificationCodeSequence, LogStream);
-            /* write VerifyingOrganization */
-            putStringValueToDataset(*ditem, DCM_VerifyingOrganization, organization);
-            /* write VerificationDateTime */
-            OFString string;
-            currentDateTime(string);
-            putStringValueToDataset(*ditem, DCM_VerificationDateTime, string);
-            /* insert items into sequence */
-            VerifyingObserver.insert(ditem);
-            /* set VerificationFlag to VERIFIED */
-            VerificationFlagEnum = VF_Verified;
-        } else
-            result = EC_MemoryExhausted;
-        result = EC_Normal;
+            DcmItem *ditem = new DcmItem();
+            if (ditem != NULL)
+            {
+                /* write VerifyingObserverName */
+                putStringValueToDataset(*ditem, DCM_VerifyingObserverName, observerName);
+                /* write VerifyingObserverIdentificationCodeSequence (might be empty, type 2) */
+                observerCode.writeSequence(*ditem, DCM_VerifyingObserverIdentificationCodeSequence, LogStream);
+                /* write VerifyingOrganization */
+                putStringValueToDataset(*ditem, DCM_VerifyingOrganization, organization);
+                /* write VerificationDateTime */
+                OFString string;
+                currentDateTime(string);
+                putStringValueToDataset(*ditem, DCM_VerificationDateTime, string);
+                /* insert items into sequence */
+                VerifyingObserver.insert(ditem);
+                /* set VerificationFlag to VERIFIED */
+                VerificationFlagEnum = VF_Verified;
+            } else
+                result = EC_MemoryExhausted;
+            result = EC_Normal;
+        }
     }
     return result;
 }
@@ -1484,10 +1685,10 @@ void DSRDocument::updateAttributes()
     /* put static modality string */
     Modality.putString("SR");
 
-    /* create new instance number if required */
+    /* create new instance number if required (type 1) */
     if (InstanceNumber.getLength() == 0)
         InstanceNumber.putString("1");
-    /* create new series number if required */
+    /* create new series number if required (type 1) */
     if (SeriesNumber.getLength() == 0)
         SeriesNumber.putString("1");
 
@@ -1495,7 +1696,7 @@ void DSRDocument::updateAttributes()
     /* create new study instance UID if required */
     if (StudyInstanceUID.getLength() == 0)
         StudyInstanceUID.putString(dcmGenerateUniqueIdentifer(uid));
-    /* create new study instance UID if required */
+    /* create new series instance UID if required */
     if (SeriesInstanceUID.getLength() == 0)
         SeriesInstanceUID.putString(dcmGenerateUniqueIdentifer(uid));
 
@@ -1520,7 +1721,13 @@ void DSRDocument::updateAttributes()
 /*
  *  CVS/RCS Log:
  *  $Log: dsrdoc.cc,v $
- *  Revision 1.10  2000-11-09 20:34:00  joergr
+ *  Revision 1.11  2000-11-10 17:45:32  joergr
+ *  Added new methods to set the completion flag description, create new study/
+ *  series UIDs. Added missing type 2 sequence to dataset. Corrected wrong format
+ *  of predecessor documents sequence. Changed behaviour of completion/verification
+ *  flags. Improved HTML and print/dump output.
+ *
+ *  Revision 1.10  2000/11/09 20:34:00  joergr
  *  Added support for non-ASCII characters in HTML 3.2 (use numeric value).
  *
  *  Revision 1.9  2000/11/07 18:27:46  joergr
