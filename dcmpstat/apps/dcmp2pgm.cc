@@ -25,10 +25,10 @@
  *    of the presentation state. Non-grayscale transformations are
  *    ignored. If no presentation state is loaded, a default is created.
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-06-01 15:50:07 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2001-06-07 14:29:54 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmpstat/apps/dcmp2pgm.cc,v $
- *  CVS/RCS Revision: $Revision: 1.24 $
+ *  CVS/RCS Revision: $Revision: 1.25 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -64,7 +64,6 @@ void dumpPresentationState(DVInterface& dvi);
 
 int main(int argc, char *argv[])
 {
-    OFString str;
     int    opt_debugMode       = 0;                       /* default: no debug */
     OFBool opt_dump_pstate     = OFFalse;                 /* default: do not dump presentation state */
     OFBool opt_dicom_mode      = OFFalse;                 /* default: create PGM, not DICOM SC */
@@ -576,7 +575,10 @@ void dumpPresentationState(DVInterface& dvi)
 /*
  * CVS/RCS Log:
  * $Log: dcmp2pgm.cc,v $
- * Revision 1.24  2001-06-01 15:50:07  meichel
+ * Revision 1.25  2001-06-07 14:29:54  joergr
+ * Removed unused variable (reported by gcc 2.5.8 on NeXTSTEP).
+ *
+ * Revision 1.24  2001/06/01 15:50:07  meichel
  * Updated copyright header
  *
  * Revision 1.23  2000/11/13 15:50:39  meichel

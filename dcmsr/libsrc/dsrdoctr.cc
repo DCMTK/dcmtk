@@ -23,8 +23,8 @@
  *    classes: DSRDocumentTree
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-04-03 08:25:19 $
- *  CVS/RCS Revision: $Revision: 1.10 $
+ *  Update Date:      $Date: 2001-06-07 14:35:01 $
+ *  CVS/RCS Revision: $Revision: 1.11 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -409,7 +409,6 @@ E_Condition DSRDocumentTree::checkByReferenceRelationships(const OFBool updateSt
             DSRTreeNodeCursor cursor(getRoot());
             if (cursor.isValid())
             {
-                OFString string;
                 const DSRDocumentTreeNode *node = NULL;
                 do {    /* for all content items */
                     node = (DSRDocumentTreeNode *)cursor.getNode();
@@ -491,7 +490,10 @@ E_Condition DSRDocumentTree::checkByReferenceRelationships(const OFBool updateSt
 /*
  *  CVS/RCS Log:
  *  $Log: dsrdoctr.cc,v $
- *  Revision 1.10  2001-04-03 08:25:19  joergr
+ *  Revision 1.11  2001-06-07 14:35:01  joergr
+ *  Removed unused variable (reported by gcc 2.5.8 on NeXTSTEP).
+ *
+ *  Revision 1.10  2001/04/03 08:25:19  joergr
  *  Added new command line option: ignore relationship content constraints
  *  specified for each SR document class.
  *

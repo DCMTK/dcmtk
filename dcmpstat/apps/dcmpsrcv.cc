@@ -21,10 +21,10 @@
  *
  *  Purpose: Presentation State Viewer - Network Receive Component (Store SCP)
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-06-01 15:50:09 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2001-06-07 14:29:55 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmpstat/apps/dcmpsrcv.cc,v $
- *  CVS/RCS Revision: $Revision: 1.29 $
+ *  CVS/RCS Revision: $Revision: 1.30 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -904,7 +904,7 @@ int main(int argc, char *argv[])
     WSAStartup(winSockVersionNeeded, &winSockData);
 #endif
         
-    OFString str;
+//    OFString str;
     int         opt_debugMode   = 0;                   /* default: no debug */
     int         opt_verbose     = 0;                   /* default: not verbose */
     int         opt_terminate   = 0;                   /* default: no terminate mode */
@@ -1475,7 +1475,10 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmpsrcv.cc,v $
- * Revision 1.29  2001-06-01 15:50:09  meichel
+ * Revision 1.30  2001-06-07 14:29:55  joergr
+ * Removed unused variable (reported by gcc 2.5.8 on NeXTSTEP).
+ *
+ * Revision 1.29  2001/06/01 15:50:09  meichel
  * Updated copyright header
  *
  * Revision 1.28  2001/06/01 11:02:06  meichel

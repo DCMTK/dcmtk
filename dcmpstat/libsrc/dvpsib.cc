@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DVPSImageBoxContent
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-06-01 15:50:32 $
- *  CVS/RCS Revision: $Revision: 1.25 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2001-06-07 14:31:34 $
+ *  CVS/RCS Revision: $Revision: 1.26 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -510,7 +510,6 @@ E_Condition DVPSImageBoxContent::createDefaultValues(OFBool renumber, unsigned l
 {
   E_Condition result = EC_Normal;
   char uid[100];
-  OFString aString;
   OFBool isEmpty = OFFalse;
   
   SET_UID(sOPInstanceUID)
@@ -1551,7 +1550,10 @@ void DVPSImageBoxContent::setLog(OFConsole *stream, OFBool verbMode, OFBool dbgM
 
 /*
  *  $Log: dvpsib.cc,v $
- *  Revision 1.25  2001-06-01 15:50:32  meichel
+ *  Revision 1.26  2001-06-07 14:31:34  joergr
+ *  Removed unused variable (reported by gcc 2.5.8 on NeXTSTEP).
+ *
+ *  Revision 1.25  2001/06/01 15:50:32  meichel
  *  Updated copyright header
  *
  *  Revision 1.24  2001/05/25 10:07:57  meichel

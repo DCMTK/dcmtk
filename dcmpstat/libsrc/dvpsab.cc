@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DVPSAnnotationContent
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-06-01 15:50:26 $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2001-06-07 14:31:34 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -91,7 +91,6 @@ E_Condition DVPSAnnotationContent::read(DcmItem &dset)
 {
   E_Condition result = EC_Normal;
   DcmStack stack;
-  OFString aString;
   
   READ_FROM_DATASET(DcmUniqueIdentifier, sOPInstanceUID)
   READ_FROM_DATASET(DcmUnsignedShort, annotationPosition)
@@ -209,7 +208,10 @@ void DVPSAnnotationContent::setLog(OFConsole *stream, OFBool verbMode, OFBool db
 
 /*
  *  $Log: dvpsab.cc,v $
- *  Revision 1.6  2001-06-01 15:50:26  meichel
+ *  Revision 1.7  2001-06-07 14:31:34  joergr
+ *  Removed unused variable (reported by gcc 2.5.8 on NeXTSTEP).
+ *
+ *  Revision 1.6  2001/06/01 15:50:26  meichel
  *  Updated copyright header
  *
  *  Revision 1.5  2000/06/02 16:00:56  meichel

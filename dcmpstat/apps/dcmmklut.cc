@@ -24,10 +24,10 @@
  *    The LUT has a gamma curve shape or can be imported from an external
  *    file.
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-06-01 15:50:06 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2001-06-07 14:29:54 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmpstat/apps/dcmmklut.cc,v $
- *  CVS/RCS Revision: $Revision: 1.21 $
+ *  CVS/RCS Revision: $Revision: 1.22 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -701,7 +701,7 @@ E_Condition createLUT(const unsigned int numberOfBits,
 
 int main(int argc, char *argv[])
 {
-    OFString str;
+//    OFString str;
     int opt_debugMode = 0;
     const char *opt_inName = NULL;                     /* in file name */
     const char *opt_outName = NULL;                    /* out file name */
@@ -1090,7 +1090,10 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmmklut.cc,v $
- * Revision 1.21  2001-06-01 15:50:06  meichel
+ * Revision 1.22  2001-06-07 14:29:54  joergr
+ * Removed unused variable (reported by gcc 2.5.8 on NeXTSTEP).
+ *
+ * Revision 1.21  2001/06/01 15:50:06  meichel
  * Updated copyright header
  *
  * Revision 1.20  2000/12/12 16:45:35  meichel

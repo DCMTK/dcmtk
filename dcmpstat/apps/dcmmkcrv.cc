@@ -21,10 +21,10 @@
  *
  *  Purpose: This application reads a DICOM image, adds a Curve and writes it back.
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-06-01 15:50:06 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2001-06-07 14:29:54 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmpstat/apps/dcmmkcrv.cc,v $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -60,7 +60,7 @@ OFBool opt_verbose = OFFalse;
 
 int main(int argc, char *argv[])
 {
-    OFString str;   
+//    OFString str;   
     int opt_debugMode = 0;
     const char *opt_inName = NULL;                     /* in file name */
     const char *opt_outName = NULL;                    /* out file name */
@@ -417,7 +417,10 @@ int main(int argc, char *argv[])
 /*
 ** CVS/RCS Log:
 ** $Log: dcmmkcrv.cc,v $
-** Revision 1.7  2001-06-01 15:50:06  meichel
+** Revision 1.8  2001-06-07 14:29:54  joergr
+** Removed unused variable (reported by gcc 2.5.8 on NeXTSTEP).
+**
+** Revision 1.7  2001/06/01 15:50:06  meichel
 ** Updated copyright header
 **
 ** Revision 1.6  2000/03/08 16:28:40  meichel
