@@ -202,10 +202,13 @@ overlay:
           (default for Graphic overlays)
 
   +Omt  --ovl-threshold
-          use overlay mode "Threshold-Replace"
+          use overlay mode "Threshold Replace"
 
   +Omc  --ovl-complement
           use overlay mode "Complement"
+
+  +Omv  --ovl-invert
+          use overlay mode "Invert Bitmap"
 
   +Omi  --ovl-roi
           use overlay mode "Region of Interest"
@@ -410,7 +413,7 @@ environment variable.  It is an error if no data dictionary can be loaded.
 
 \section copyright COPYRIGHT
 
-Copyright (C) 1998-2004 by Kuratorium OFFIS e.V., Escherweg 2, 26121 Oldenburg,
+Copyright (C) 1998-2005 by Kuratorium OFFIS e.V., Escherweg 2, 26121 Oldenburg,
 Germany.
 
 */

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2004, OFFIS
+ *  Copyright (C) 1996-2005, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,8 +22,8 @@
  *  Purpose: Convert DICOM Images to PPM or PGM using the dcmimage library.
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2004-01-05 14:46:53 $
- *  CVS/RCS Revision: $Revision: 1.80 $
+ *  Update Date:      $Date: 2005-03-09 17:44:23 $
+ *  CVS/RCS Revision: $Revision: 1.81 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -194,8 +194,7 @@ int main(int argc, char *argv[])
 
     int                 opt_Overlay[16];
     int                 opt_O_used = 0;                   /* flag for +O parameter */
-    int                 opt_OverlayMode = 0;              /* default: Replace or ROI */
-                        /* 1=replace, 2=threshold-replace, 3=complement, 4=ROI */
+    EM_Overlay          opt_OverlayMode = EMO_Default;    /* default: Replace or ROI */
 
     OFCmdFloat          opt_foregroundDensity = 1.0;
     OFCmdFloat          opt_thresholdDensity  = 0.5;
@@ -314,8 +313,9 @@ int main(int argc, char *argv[])
       cmd.addOption("--display-overlay",    "+O" ,  1, "[n]umber : integer",
                                                        "display overlay n (0..16, 0=all, default: +O 0)");
       cmd.addOption("--ovl-replace",        "+Omr",    "use overlay mode \"Replace\"\n(default for Graphic overlays)");
-      cmd.addOption("--ovl-threshold",      "+Omt",    "use overlay mode \"Threshold-Replace\"");
+      cmd.addOption("--ovl-threshold",      "+Omt",    "use overlay mode \"Threshold Replace\"");
       cmd.addOption("--ovl-complement",     "+Omc",    "use overlay mode \"Complement\"");
+      cmd.addOption("--ovl-invert",         "+Omv",    "use overlay mode \"Invert Bitmap\"");
       cmd.addOption("--ovl-roi",            "+Omi",    "use overlay mode \"Region of Interest\"\n(default for ROI overlays)");
       cmd.addOption("--set-foreground",     "+Osf", 1, "[d]ensity : float",
                                                        "set overlay foreground density (0..1, def: 1)");
@@ -739,13 +739,15 @@ int main(int argc, char *argv[])
 
         cmd.beginOptionBlock();
         if (cmd.findOption("--ovl-replace"))
-            opt_OverlayMode = 1;
+            opt_OverlayMode = EMO_Replace;
         if (cmd.findOption("--ovl-threshold"))
-            opt_OverlayMode = 2;
+            opt_OverlayMode = EMO_ThresholdReplace;
         if (cmd.findOption("--ovl-complement"))
-            opt_OverlayMode = 3;
+            opt_OverlayMode = EMO_Complement;
+        if (cmd.findOption("--ovl-invert"))
+            opt_OverlayMode = EMO_InvertBitmap;
         if (cmd.findOption("--ovl-roi"))
-            opt_OverlayMode = 4;
+            opt_OverlayMode = EMO_RegionOfInterest;
         cmd.endOptionBlock();
 
         if (cmd.findOption("--set-foreground"))
@@ -1050,24 +1052,6 @@ int main(int argc, char *argv[])
         }
 
         /* process overlay parameters */
-        EM_Overlay overlayMode;
-        switch (opt_OverlayMode)
-        {
-            case 2:
-                overlayMode = EMO_ThresholdReplace;
-                break;
-            case 3:
-                overlayMode = EMO_Complement;
-                break;
-            case 4:
-                overlayMode = EMO_RegionOfInterest;
-                break;
-            case 1:
-            default:
-                overlayMode = EMO_Replace;
-                break;
-
-        }
         di->hideAllOverlays();
         for (unsigned int k = 0; k < 16; k++)
         {
@@ -1077,9 +1061,9 @@ int main(int argc, char *argv[])
                 {
                     if (opt_verboseMode > 1)
                         OUTPUT << "activating overlay plane " << k + 1 << endl;
-                    if (opt_OverlayMode)
+                    if (opt_OverlayMode != EMO_Default)
                     {
-                        if (!di->showOverlay(k, overlayMode, opt_foregroundDensity, opt_thresholdDensity))
+                        if (!di->showOverlay(k, opt_OverlayMode, opt_foregroundDensity, opt_thresholdDensity))
                         {
                             OFOStringStream oss;
                             oss << "cannot display overlay plane " << k + 1 << OFStringStream_ends;
@@ -1515,7 +1499,10 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcm2pnm.cc,v $
- * Revision 1.80  2004-01-05 14:46:53  joergr
+ * Revision 1.81  2005-03-09 17:44:23  joergr
+ * Added support for new overlay mode "invert bitmap".
+ *
+ * Revision 1.80  2004/01/05 14:46:53  joergr
  * Adapted type casts to new-style typecast operators defined in ofcast.h.
  * Removed acknowledgements with e-mail addresses from CVS log.
  *
