@@ -9,10 +9,10 @@
 ** Purpose:
 ** Interface of class DcmUniqueIdentifier
 **
-** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1996-01-29 13:38:18 $
+** Last Update:		$Author: hewett $
+** Update Date:		$Date: 1996-05-30 17:19:22 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcvrui.h,v $
-** CVS/RCS Revision:	$Revision: 1.4 $
+** CVS/RCS Revision:	$Revision: 1.5 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -31,7 +31,10 @@
 
 class DcmUniqueIdentifier : public DcmByteString 
 {
-  public:
+protected:
+    E_Condition makeMachineByteString(void);
+
+public:
     DcmUniqueIdentifier(const DcmTag &tag, const Uint32 len = 0);
     DcmUniqueIdentifier(const DcmUniqueIdentifier &old);
     virtual ~DcmUniqueIdentifier(void);
@@ -48,7 +51,11 @@ class DcmUniqueIdentifier : public DcmByteString
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrui.h,v $
-** Revision 1.4  1996-01-29 13:38:18  andreas
+** Revision 1.5  1996-05-30 17:19:22  hewett
+** Added a makeMachineByteString() method to strip and trailing whitespace
+** from a UID.
+**
+** Revision 1.4  1996/01/29 13:38:18  andreas
 ** - new put method for every VR to put value as a string
 ** - better and unique print methods
 **

@@ -9,10 +9,10 @@
 ** Purpose:
 ** Implementation of class DcmUniqueIdentifier
 **
-** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1996-01-29 13:38:34 $
+** Last Update:		$Author: hewett $
+** Update Date:		$Date: 1996-05-30 17:19:33 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcvrui.cc,v $
-** CVS/RCS Revision:	$Revision: 1.4 $
+** CVS/RCS Revision:	$Revision: 1.5 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -20,6 +20,7 @@
 */
 
 #include <string.h>
+#include <ctype.h>
 #include "dcvrui.h"
 #include "dcuid.h"
 #include "dcdebug.h"
@@ -120,13 +121,36 @@ E_Condition DcmUniqueIdentifier::put(const char * value)
     return DcmByteString::put(uid);
 }
 
+// ********************************
+
+E_Condition DcmUniqueIdentifier::makeMachineByteString(void)
+{
+    char * value = (char *)this -> getValue();
+    int len = 0;
+    if (value) {
+    	len = strlen(value);
+
+	/* strip any trailing white space characters */
+	size_t i = 0;
+	for(i = len;
+	    i > 0 && isspace(value[i-1]);
+	    i--)
+	    value[i-1] = '\0';
+    }
+
+    return DcmByteString::makeMachineByteString();
+}
 
 // ********************************
 
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrui.cc,v $
-** Revision 1.4  1996-01-29 13:38:34  andreas
+** Revision 1.5  1996-05-30 17:19:33  hewett
+** Added a makeMachineByteString() method to strip and trailing whitespace
+** from a UID.
+**
+** Revision 1.4  1996/01/29 13:38:34  andreas
 ** - new put method for every VR to put value as a string
 ** - better and unique print methods
 **
