@@ -22,9 +22,9 @@
  *  Purpose: Interface of class DcmItem
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-10-10 15:14:04 $
+ *  Update Date:      $Date: 2001-11-09 15:51:59 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcitem.h,v $
- *  CVS/RCS Revision: $Revision: 1.30 $
+ *  CVS/RCS Revision: $Revision: 1.31 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -346,9 +346,40 @@ public:
                                   const unsigned long pos = 0,
                                   const OFBool searchIntoSub = OFFalse);
 
+    /** looks up and returns a given sequence item, if it exists. Otherwise sets 'item'
+     *  to NULL and returns EC_TagNotFound (specified sequence does not exist) or 
+     *  EC_IllegalParameter (specified item does not exist). Only the top-most level of
+     *  the dataset/item is examined (i.e. no deep-search is performed).
+     *  @param seqTagKey DICOM tag specifying the sequence attribute to be searched for
+     *  @param item variable in which the reference to the sequence item is stored
+     *  @param itemNum number of the item to be searched for (0..n-1, -1 for last)
+     *  @return EC_Normal upon success, an error otherwise.
+     */
+    OFCondition findAndGetSequenceItem(const DcmTagKey &seqTagKey,
+                                       DcmItem *&item,
+                                       const signed long itemNum = 0);
+ 
+ 
+    /* --- findOrCreate functions: find an element or create a new one --- */
 
+    /** looks up the given sequence in the current dataset and returns the given item.
+     *  If either the sequence or the item do not exist, they are created. If necessary,
+     *  multiple empty items are inserted. Only the top-most level of the dataset/item
+     *  is examined (i.e. no deep-search is performed).
+     *  @param seqTag DICOM tag specifying the sequence attribute to be searched for or
+     *    to be create respectively
+     *  @param item variable in which the reference to the sequence item is stored
+     *  @param itemNum number of the item to be searched for (0..n-1, -1 for last,
+     *    -2 for append new)
+     *  @return EC_Normal upon success, an error otherwise.
+     */
+    OFCondition findOrCreateSequenceItem(const DcmTag& seqTag,
+                                         DcmItem *&item,
+                                         const signed long itemNum = 0);
+ 
+ 
     /* --- putAndInsert functions: put value and insert new element --- */
-
+ 
     /** create new element, put specified value to it and insert the element into the dataset/item.
      *  Applicable to the following VRs: AE, AS, CS, DA, DS, DT, FL, FD, IS, LO, LT, PN, SH, ST, TM, UI, UT
      *  @param tag DICOM tag specifying the attribute to be created
@@ -524,7 +555,10 @@ OFCondition nextUp(DcmStack & stack);
 /*
 ** CVS/RCS Log:
 ** $Log: dcitem.h,v $
-** Revision 1.30  2001-10-10 15:14:04  joergr
+** Revision 1.31  2001-11-09 15:51:59  joergr
+** Added new helper routines for managing sequences and items.
+**
+** Revision 1.30  2001/10/10 15:14:04  joergr
 ** Changed parameter DcmTagKey to DcmTag in DcmItem::putAndInsert... methods
 ** to support elements which are not in the data dictionary (e.g. private
 ** extensions).

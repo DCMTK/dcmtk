@@ -21,10 +21,10 @@
  *
  *  Purpose: class DcmItem
  *
- *  Last Update:      $Author: wilkens $
- *  Update Date:      $Date: 2001-11-01 14:55:39 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2001-11-09 15:53:53 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcitem.cc,v $
- *  CVS/RCS Revision: $Revision: 1.61 $
+ *  CVS/RCS Revision: $Revision: 1.62 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -319,7 +319,7 @@ DcmObject* DcmItem::copyDcmObject( DcmObject *oldObj )
         newObj = new DcmUniqueIdentifier( *(DcmUniqueIdentifier*)oldObj );
         break;
 
-        // Charakter-Strings:
+        // character strings:
     case EVR_LO :
         newObj = new DcmLongString( *(DcmLongString*)oldObj );
         break;
@@ -1912,7 +1912,7 @@ OFCondition newDicomElement(DcmElement * & newElement,
         newElement = new DcmUniqueIdentifier( tag, length);
         break;
 
-    // character-strings:
+    // character strings:
     case EVR_LO :
         newElement = new DcmLongString( tag, length);
         break;
@@ -2409,6 +2409,123 @@ DcmItem::findAndGetFloat64(const DcmTagKey& tagKey,
 }
 
 
+OFCondition
+DcmItem::findAndGetSequenceItem(const DcmTagKey &seqTagKey,
+                                DcmItem *&item,
+                                const signed long itemNum)
+{
+    DcmStack stack;
+    /* find sequence */
+    OFCondition status = search(seqTagKey, stack, ESM_fromHere, OFFalse /*searchIntoSub*/);
+    if (status.good())
+    {
+        DcmSequenceOfItems *seq = (DcmSequenceOfItems *)stack.top();
+        /* get item */
+        if (seq != NULL)
+        {
+            const unsigned long count = seq->card();
+            /* empty sequence? */
+            if (count > 0)
+            {
+                /* get last item */
+                if (itemNum == -1)
+                    item = seq->getItem(count - 1);
+                /* get specified item */
+                else if ((itemNum >= 0) && ((unsigned long)itemNum < count))
+                    item = seq->getItem((unsigned long)itemNum);
+                /* invalid item number */
+                else
+                    status = EC_IllegalParameter;
+            } else
+                status = EC_IllegalParameter;
+        } else
+            status = EC_IllegalCall;
+    }
+    /* reset item value */
+    if (status.bad())
+        item = NULL;
+    else if (item == NULL)
+        status = EC_IllegalCall;
+    return status;
+}
+
+
+// ********************************
+
+/* --- findOrCreate functions: find an element or create a new one --- */
+
+OFCondition
+DcmItem::findOrCreateSequenceItem(const DcmTag& seqTag,
+                                  DcmItem *&item,
+                                  const signed long itemNum)
+{
+    DcmStack stack;
+    /* find sequence */
+    OFCondition status = search(seqTag, stack, ESM_fromHere, OFFalse /*searchIntoSub*/);
+    DcmSequenceOfItems *seq = NULL;
+    /* sequence found? */
+    if (status.good())
+        seq = (DcmSequenceOfItems *)stack.top();
+    else
+    {
+        /* create new sequence element */
+        seq = new DcmSequenceOfItems(seqTag);
+        if (seq != NULL)
+        {
+            /* insert into item/dataset */
+            status = insert(seq, OFTrue /*replaceOld*/);
+            if (status.bad())
+                delete seq;
+        } else
+            status = EC_MemoryExhausted;
+    }
+    if (status.good())
+    {
+        if (seq != NULL)
+        {
+            const unsigned long count = seq->card();
+            /* existing item? */
+            if ((count > 0) && (itemNum >= -1) && (itemNum < (signed long)count))
+            {
+                if (itemNum == -1)
+                {
+                    /* get last item */
+                    item = seq->getItem(count - 1);
+                } else {
+                    /* get specified item */
+                    item = seq->getItem((unsigned long)itemNum);
+                }
+            /* create new item(s) */
+            } else {
+                unsigned long i = 0;
+                /* create empty trailing items if required */
+                const unsigned long itemCount = (itemNum > (signed long)count) ? (itemNum - count + 1) : 1;
+                while ((i < itemCount) && (status.good()))
+                {
+                    item = new DcmItem();
+                    if (item != NULL)
+                    {
+                        /* append new item to end of sequence */
+                        status = seq->append(item);
+                        if (status.bad())
+                            delete item;
+                    } else
+                        status = EC_MemoryExhausted;
+                    i++;
+                }
+            }
+        } else
+            status = EC_IllegalCall;
+    }
+    /* reset item value */
+    if (status.bad())
+        item = NULL;
+    else if (item == NULL)
+        status = EC_IllegalCall;
+    return status;
+}
+
+
 // ********************************
 
 /* --- putAndInsert functions: put value and insert new element --- */
@@ -2831,7 +2948,10 @@ DcmItem::putAndInsertFloat64(const DcmTag& tag,
 /*
 ** CVS/RCS Log:
 ** $Log: dcitem.cc,v $
-** Revision 1.61  2001-11-01 14:55:39  wilkens
+** Revision 1.62  2001-11-09 15:53:53  joergr
+** Added new helper routines for managing sequences and items.
+**
+** Revision 1.61  2001/11/01 14:55:39  wilkens
 ** Added lots of comments.
 **
 ** Revision 1.60  2001/10/10 15:19:51  joergr
