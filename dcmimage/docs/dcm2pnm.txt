@@ -10,16 +10,17 @@ SUMMARY
 
 The dcm2pnm utility reads a DICOM image, converts the pixel data according to
 the selected image processing options and writes back an image in the well-
-known PPM/PGM file format (portable pix map / portable gray map).
+known PPM/PGM file format (portable pix map / portable gray map) or Windows
+BMP format.
 
 USAGE
 
-dcm2pnm: Convert DICOM images to PGM or PNM
+dcm2pnm: Convert DICOM images to PGM, PNM or BMP
 usage: dcm2pnm [options] dcmfile-in [pnmfile-out]
 
 parameters:
   dcmfile-in   DICOM input filename to be converted
-  pnmfile-out  PGM/PNM output file name to be written
+  pnmfile-out  PGM/PNM/BMP output file name to be written (default: stdout)
 
 general options:
   -h      --help                print this help text and exit
@@ -119,11 +120,14 @@ image processing options:
                                 clip image region (l, t, w, h)
 output options:
   -o      --no-output           do not create any output (useful with -im)
-  +ob     --write-raw-pnm       write 8-bit binary PGM/PPM (default)
-  +oa     --write-8-bit-pnm     write 8-bit ASCII PGM/PPM
-  +oA     --write-16-bit-pnm    write 16-bit ASCII PGM/PPM
-  +oN     --write-n-bit-pnm     [n]umber : integer
+  +op     --write-raw-pnm       write 8-bit binary PGM/PPM (default for files)
+  +opb    --write-8-bit-pnm     write 8-bit ASCII PGM/PPM (default for stdout)
+  +opw    --write-16-bit-pnm    write 16-bit ASCII PGM/PPM
+  +opn    --write-n-bit-pnm     [n]umber : integer
                                 write n-bit ASCII PGM/PPM (1..32)
+  +ob     --write-bmp           write 8-bit (monochrome) or 24-bit (color) BMP
+  +obp    --write-8-bit-bmp     write 8-bit palette BMP (monochrome only)
+  +obt    --write-24-bit-bmp    write 24-bit truecolor BMP
 
 
 ENVIRONMENT
