@@ -1,0 +1,95 @@
+/*!
+
+\addtogroup dcmsr dcmsr
+
+This module contains classes to read, write, create, modify, access, print and
+render DICOM Structured Reporting documents.
+
+The main interface classes are:
+\li \b DSRDocument
+\li \b DSRDocumentTree
+\li \b DSRContentItem
+\li \b DSRCodedEntryValue
+
+\section Tools
+
+This module contains the following command line tools:
+\li \b dsr2html: \ref dsr2html
+\li \b dsr2xml:  \ref dsr2xml
+\li \b dsrdump:  \ref dsrdump
+\li \b xml2dsr:  \ref xml2dsr
+
+\section Examples
+
+The following example shows how to load a DICOM Structured Report and render
+its content in HTML format:
+
+\code
+DcmFileFormat fileformat;
+OFCondition status = fileformat.loadFile("test.dcm");
+if (status.good())
+{
+  DSRDocument document;
+  status = document.read(*fileformat.getDataset());
+  if (status.good())
+  {
+    status = document.renderHTML(cout);
+    if (status.bad())
+      cerr << "Error: cannot render SR document (" << status.text() << ")" << endl;
+  } else
+    cerr << "Error: cannot parse SR document (" << status.text() << ")" << endl;
+} else
+  cerr << "Error: cannot read DICOM file (" << status.text() << ")" << endl;
+\endcode
+
+The following example shows how to create a DICOM Structured Report and save
+it to a file (see \ref mkreport for details):
+
+\code
+DSRDocument document;
+document.setPatientsName("Doe^John");
+/* ... */
+document.getTree().addContentItem(DSRTypes::RT_isRoot, DSRTypes::VT_Container);
+document.getTree().getCurrentContentItem().setConceptName(DSRCodedEntryValue(/* some code */));
+document.getTree().addContentItem(DSRTypes::RT_hasObsContext, DSRTypes::VT_Code, DSRTypes::AM_belowCurrent);
+/* ... */
+DcmFileFormat fileformat;
+OFCondition status = document.write(*fileformat.getDataset())
+if (status.good())
+{
+  status = fileformat.saveFile("test.dcm", EXS_LittleEndianExplicit);
+  if (status.bad())
+    cerr << "Error: cannot write DICOM file (" << status.text() << ")" << endl;
+} else
+  cerr << "Error: cannot write SR document (" << status.text() << ")" << endl;
+\endcode
+
+Alternatively, many properties of the document tree can be accessed and
+modified directly as the following example shows:
+
+\code
+DSRDocument document(DSRTypes::DT_KeyObjectDoc);
+/* ... */
+document.getTree().addContentItem(DSRTypes::RT_isRoot, DSRTypes::VT_Container);
+DSRCodedEntryValue *codePtr = document.getTree().getCurrentContentItem().getConceptNamePtr();
+if (codePtr != NULL)
+  codePtr->setCode("113000", "DCM", "Of Interest");
+/* ... */
+document.getTree().addContentItem(DSRTypes::RT_contains, DSRTypes::VT_Image);
+DSRImageReferenceValue *imagePtr = document.getTree().getCurrentContentItem().getImageReferencePtr();
+if (imagePtr != NULL)
+{
+  imagePtr->setValue(DSRImageReferenceValue(UID_UltrasoundMultiframeImageStorage, /* image UID */));
+  imagePtr->setPresentationState(DSRImageReferenceValue(UID_GrayscaleSoftcopyPresentationStateStorage, /* GSPS UID */));
+  imagePtr->getFrameList().addItem(2);
+  imagePtr->getFrameList().addItem(5);
+}
+/* ... */
+\endcode
+
+*/
+
+/*!
+    \page mkreport mkreport source code
+    \include mkreport.cc
+*/

@@ -1,0 +1,45 @@
+/*!
+
+\addtogroup dcmimgle dcmimgle
+
+This module contains classes to access and render DICOM monochrome images.
+Support for color images is provided by the module \ref dcmimage.
+Support for JPEG compressed images is provide by the module \ref dcmjpeg.
+
+The main interface class is:
+\li \b DicomImage
+
+\section Tools
+
+This module contains the following command line tools:
+\li \b dcmdspfn: \ref dcmdspfn
+\li \b dcod2lum: \ref dcod2lum
+\li \b dconvlum: \ref dconvlum
+
+\section Examples
+
+The following example shows how to load a DICOM single-frame monochrome image and render its pixel data:
+
+\code
+DicomImage *image = new DicomImage("test.dcm");
+if (image != NULL)
+{
+  if (image->getStatus() == EIS_Normal)
+  {
+    if (image->isMonochrome())
+    {
+      image->setMinMaxWindow();
+      Uint8 *pixelData = (Uint8 *)(image->getOutputData(8 /* bits */));
+      if (pixelData != NULL)
+      {
+        /* do something useful with the pixel data */
+      }
+    }
+  } else
+    cerr << "Error: cannot load DICOM image (" << DicomImage::getString(image->getStatus()) << ")" << endl;
+}
+delete image;
+\endcode
+
+
+*/
