@@ -1,6 +1,38 @@
 DCMTK FAQ - Frequently Asked Questions
 
 ----
+2004-05-04
+
+Q: I am trying to compile DCMTK, but get linker errors for the tools
+   dcm2pnm and dcmj2pnm. The following symbols cannot be located:
+     jpeg_abort
+     jpeg_std_error
+     jpeg_CreateCompress
+     jpeg_CreateDecompress
+     jpeg_set_defaults
+     jpeg_set_colorspace
+     jpeg_set_quality
+     jpeg_suppress_tables
+     jpeg_start_compress
+     jpeg_write_scanlines
+     jpeg_write_raw_data
+     jpeg_finish_compress
+     jpeg_write_tables
+     jpeg_read_header
+     jpeg_start_decompress
+     jpeg_read_scanlines
+     jpeg_read_raw_data
+     jpeg_finish_decompress
+     jpeg_destroy
+     jpeg_resync_to_restart
+
+A: On your system, libtiff has been compiled with JPEG support enabled.
+   After running configure for DCMTK, you need to manually update
+   config/Makefile.def.  Locate the TIFFLIBS entry and add "-ljpeg":
+   TIFFLIBS = -ltiff -ljpeg
+   DCMTK should correctly compile and link now.
+
+----
 2003-07-09
 
 Q: Why do the C++ source files use a ".cc" extension in the Unix version 
