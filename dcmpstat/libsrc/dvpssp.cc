@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DVPSStoredPrint
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-03-08 16:29:10 $
- *  CVS/RCS Revision: $Revision: 1.24 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2000-05-30 13:57:51 $
+ *  CVS/RCS Revision: $Revision: 1.25 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -100,6 +100,7 @@ DVPSStoredPrint::DVPSStoredPrint(Uint16 illumin, Uint16 reflection)
 , seriesInstanceUID(DCM_SeriesInstanceUID)
 , seriesNumber(DCM_SeriesNumber)
 , manufacturer(DCM_Manufacturer)
+, printerName(DCM_PrinterName)
 , instanceNumber(DCM_InstanceNumber) 
 , imageDisplayFormat(DCM_ImageDisplayFormat)
 , annotationDisplayFormatID(DCM_AnnotationDisplayFormatID)
@@ -155,6 +156,7 @@ DVPSStoredPrint::DVPSStoredPrint(const DVPSStoredPrint& copy)
 , seriesInstanceUID(copy.seriesInstanceUID)
 , seriesNumber(copy.seriesNumber)
 , manufacturer(copy.manufacturer)
+, printerName(copy.printerName)
 , instanceNumber(copy.instanceNumber) 
 , imageDisplayFormat(copy.imageDisplayFormat)
 , annotationDisplayFormatID(copy.annotationDisplayFormatID)
@@ -213,6 +215,7 @@ void DVPSStoredPrint::clear()
   seriesInstanceUID.clear();
   seriesNumber.clear();
   manufacturer.clear();
+  printerName.clear();
   instanceNumber.clear(); 
   imageDisplayFormat.clear();
   annotationDisplayFormatID.clear();
@@ -553,8 +556,32 @@ E_Condition DVPSStoredPrint::read(DcmItem &dset)
 #ifdef DEBUG
       *logstream << "Error: PrintManagementCapabilitiesSequence not found" << endl;
 #endif
-    } 
+    }
   }
+
+  /* read PrinterName from PrinterCharacteristicsSequence if available */
+  if (result == EC_Normal)  
+  {
+    printerName.clear();
+    stack.clear();
+    if (EC_Normal == dset.search(DCM_PrinterCharacteristicsSequence, stack, ESM_fromHere, OFFalse))
+    {
+      seq = (DcmSequenceOfItems *)stack.top();
+      if (seq->card() > 0)
+      {
+         item = seq->getItem(0);
+         stack.clear();
+         READ_FROM_DATASET2(DcmLongString, printerName)
+      }
+    }
+#ifdef DEBUG
+    if (printerName.getLength() == 0)
+    {
+      *logstream << "Warning: PrinterName missing or incorrect in Stored Print" << endl;
+    }
+#endif
+  }
+
   return result;
 }
 
@@ -723,9 +750,34 @@ E_Condition DVPSStoredPrint::write(DcmItem &dset, OFBool writeRequestedImageSize
     if (result==EC_Normal) dset.insert(dseq); else delete dseq;
   } else result = EC_MemoryExhausted;
 
+  // write PrinterCharacteristicsSequence
+  if (printerName.getLength() > 0)
+  {
+    if (EC_Normal == result)
+    {
+      dseq = new DcmSequenceOfItems(DCM_PrinterCharacteristicsSequence);
+      if (dseq)
+      {
+        delem = new DcmLongString(printerName);
+        if (delem)
+        {
+          DcmItem *ditem = new DcmItem();
+          if (ditem)
+          {
+            ditem->insert(delem);
+            result = dseq->insert(ditem);
+          } else {
+        	delete delem;
+        	result = EC_MemoryExhausted;
+          }
+        } else result = EC_MemoryExhausted;
+        if (result == EC_Normal) dset.insert(dseq); else delete dseq;
+      } else result = EC_MemoryExhausted;      
+    } 
+  }
+
   return result;
 }
-
 
 E_Condition DVPSStoredPrint::writeHardcopyImageAttributes(DcmItem &dset)
 {
@@ -790,6 +842,14 @@ E_Condition DVPSStoredPrint::addImageBox(
 
   return addImageBox(retrieveaetitle, refstudyuid, refseriesuid, UID_HardcopyGrayscaleImageStorage,
      refsopinstanceuid, requestedimagesize, patientid, presentationlut, inversePLUT);
+}
+
+E_Condition DVPSStoredPrint::setPrinterName(const char *name)
+{
+  if ((name == NULL) || (strlen(name) == 0))
+    return printerName.clear();
+  else
+    return printerName.putString(name);
 }
 
 E_Condition DVPSStoredPrint::setInstanceUID(const char *uid)
@@ -905,7 +965,7 @@ E_Condition DVPSStoredPrint::setRequestedDecimateCropBehaviour(DVPSDecimateCropB
 }
   
   
-E_Condition DVPSStoredPrint::newPrinter()
+E_Condition DVPSStoredPrint::newPrinter(const char *name)
 {
   filmSizeID.clear();
   magnificationType.clear();
@@ -917,10 +977,18 @@ E_Condition DVPSStoredPrint::newPrinter()
   emptyImageDensity.clear();
   minDensity.clear();
   maxDensity.clear();
+  
+  setPrinterName(name);
 
   E_Condition result = setRequestedDecimateCropBehaviour(DVPSI_default);
   if (EC_Normal == result) result = imageBoxContentList.setAllImagesToDefault();
   return result;
+}
+
+const char *DVPSStoredPrint::getPrinterName()
+{
+  char *c = NULL;
+  if (EC_Normal ==printerName.getString(c)) return c; else return NULL;
 }
 
 unsigned long DVPSStoredPrint::getImageDisplayFormatColumns()
@@ -1727,7 +1795,11 @@ void DVPSStoredPrint::deleteAnnotations()
 
 /*
  *  $Log: dvpssp.cc,v $
- *  Revision 1.24  2000-03-08 16:29:10  meichel
+ *  Revision 1.25  2000-05-30 13:57:51  joergr
+ *  Added methods to set, get and store the printer name in the stored print
+ *  object (PrinterCharacteristicsSequence).
+ *
+ *  Revision 1.24  2000/03/08 16:29:10  meichel
  *  Updated copyright header.
  *
  *  Revision 1.23  2000/03/07 16:24:01  joergr
