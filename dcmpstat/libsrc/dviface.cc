@@ -22,8 +22,8 @@
  *  Purpose: DVPresentationState
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-04-27 11:25:31 $
- *  CVS/RCS Revision: $Revision: 1.49 $
+ *  Update Date:      $Date: 1999-04-28 17:00:17 $
+ *  CVS/RCS Revision: $Revision: 1.50 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -862,7 +862,7 @@ OFBool DVInterface::createPStateCache()
                             do { /* for all series */
                                 if (study->List.getPState())
                                 {
-                                    DVSeriesCache::ItemStruct *series = study->List.getItem();
+                                    series = study->List.getItem();
                                     if (series != NULL)
                                     {
                                         if (series->List.gotoFirst())
@@ -2132,7 +2132,11 @@ void DVInterface::cleanChildren()
 /*
  *  CVS/RCS Log:
  *  $Log: dviface.cc,v $
- *  Revision 1.49  1999-04-27 11:25:31  joergr
+ *  Revision 1.50  1999-04-28 17:00:17  joergr
+ *  Removed additional declaration of local variable (hides first declaration)
+ *  to avoid compiler warnings reported by gcc 2.7.2.1 (Linux).
+ *
+ *  Revision 1.49  1999/04/27 11:25:31  joergr
  *  Added new entry to index file: Presentation Description.
  *  Enhanced savePState() method: now image file is also added to index file
  *  and stored in image directory (if not already there).
