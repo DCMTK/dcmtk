@@ -23,9 +23,9 @@
  *           class providers.
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-01-08 16:32:49 $
+ *  Update Date:      $Date: 2002-01-08 16:57:07 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmwlm/libsrc/wlmactmg.cc,v $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -182,9 +182,9 @@ WlmActivityManager::WlmActivityManager( WlmDataSourceType dataSourceTypev, const
   // Initialize object that makes the data source available
   dataSource = NULL;
   if( dataSourceType == DATA_SOURCE_IS_DATABASE )
-    dataSource = new WlmDataSourceDatabase( logStream, opt_dbDsn, opt_dbUserName, opt_dbUserPassword, opt_dbSchema );
+    dataSource = new WlmDataSourceDatabase( logStream, opt_verbose, opt_dbDsn, opt_dbUserName, opt_dbUserPassword, opt_dbSchema );
   else if( dataSourceType == DATA_SOURCE_IS_DATA_FILES )
-    dataSource = new WlmDataSourceFiles( logStream, opt_dfPath );
+    dataSource = new WlmDataSourceFiles( logStream, opt_verbose, opt_dfPath );
 }
 
 // ----------------------------------------------------------------------------
@@ -1338,7 +1338,10 @@ static void FindCallback( void *callbackData, OFBool cancelled, T_DIMSE_C_FindRQ
 /*
 ** CVS Log
 ** $Log: wlmactmg.cc,v $
-** Revision 1.1  2002-01-08 16:32:49  joergr
+** Revision 1.2  2002-01-08 16:57:07  joergr
+** *** empty log message ***
+**
+** Revision 1.1  2002/01/08 16:32:49  joergr
 ** Added new module "dcmwlm" developed by Thomas Wilkens (initial release for
 ** Windows, dated 2001-12-20).
 **
