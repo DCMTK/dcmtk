@@ -22,9 +22,9 @@
  *  Purpose: (Partially) abstract class for connecting to an arbitrary data source.
  *
  *  Last Update:      $Author: wilkens $
- *  Update Date:      $Date: 2004-01-07 08:32:28 $
+ *  Update Date:      $Date: 2004-01-07 09:52:18 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmwlm/include/Attic/wlds.h,v $
- *  CVS/RCS Revision: $Revision: 1.17 $
+ *  CVS/RCS Revision: $Revision: 1.18 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -179,8 +179,8 @@ class WlmDataSource
        *     > DCM_ScheduledProtocolCodeSequence                  (0040,0008)  SQ  O  1C
        *     >  > DCM_CodeValue                                   (0008,0100)  SH  O  1C
        *     >  > DCM_CodingSchemeVersion                         (0008,0103)  SH  O  3
-       *     >  > DCM_CodingSchemeDesignator                      (0080,0102)  SH  O  1C
-       *     >  > DCM_CodeMeaning                                 (0080,0104)  LO  O  3
+       *     >  > DCM_CodingSchemeDesignator                      (0008,0102)  SH  O  1C
+       *     >  > DCM_CodeMeaning                                 (0008,0104)  LO  O  3
        *    DCM_RequestedProcedureID                              (0040,1001)  SH  O  1
        *    DCM_RequestedProcedureDescription                     (0032,1060)  LO  O  1
        *    DCM_StudyInstanceUID                                  (0020,000d)  UI  O  1
@@ -241,8 +241,8 @@ class WlmDataSource
        *    DCM_RequestedProcedureCodeSequence                    (0032,1064)  SQ  O  3  (from the Requested Procedure Module)
        *     > DCM_CodeValue                                      (0008,0100)  SH  O  1C
        *     > DCM_CodingSchemeVersion                            (0008,0103)  SH  O  3
-       *     > DCM_CodingSchemeDesignator                         (0080,0102)  SH  O  1C
-       *     > DCM_CodeMeaning                                    (0080,0104)  LO  O  3
+       *     > DCM_CodingSchemeDesignator                         (0008,0102)  SH  O  1C
+       *     > DCM_CodeMeaning                                    (0008,0104)  LO  O  3
        *  @param element            Pointer to the element which shall be checked.
        *  @param supSequenceElement Pointer to the superordinate sequence element of which
        *                            the currently processed element is an attribute, or NULL if
@@ -537,7 +537,10 @@ class WlmDataSource
 /*
 ** CVS Log
 ** $Log: wlds.h,v $
-** Revision 1.17  2004-01-07 08:32:28  wilkens
+** Revision 1.18  2004-01-07 09:52:18  wilkens
+** Fixed typo in comment.
+**
+** Revision 1.17  2004/01/07 08:32:28  wilkens
 ** Added new sequence type return key attributes to wlmscpfs. Fixed bug that for
 ** equally named attributes in sequences always the same value will be returned.
 ** Added functionality that also more than one item will be returned in sequence
