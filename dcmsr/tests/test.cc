@@ -9,6 +9,7 @@
 
 
 #define WRITE
+#define USE_PTR
 
 
 E_Condition loadFileFormat(const char *filename,
@@ -125,19 +126,40 @@ int main()
 
         doc->getTree().addContentItem(DSRTypes::RT_hasProperties, DSRTypes::VT_SCoord);
         doc->getTree().getCurrentContentItem().setConceptName(DSRCodedEntryValue("1234", OFFIS_CODING_SCHEME_DESIGNATOR, "SCoord Code"));
+#ifdef USE_PTR
+        DSRSpatialCoordinatesValue *scoordPtr = doc->getTree().getCurrentContentItem().getSpatialCoordinatesPtr();
+        if (scoordPtr != NULL)
+        {
+            scoordPtr->setGraphicType(DSRTypes::GT_Circle);
+            scoordPtr->getGraphicDataList().addItem(0, 0);
+            scoordPtr->getGraphicDataList().addItem(255, 255);
+        }
+#else
         DSRSpatialCoordinatesValue spatialCoord(DSRTypes::GT_Circle);
         spatialCoord.getGraphicDataList().addItem(0, 0);
         spatialCoord.getGraphicDataList().addItem(255, 255);
         doc->getTree().getCurrentContentItem().setSpatialCoordinates(spatialCoord);
+#endif
 
         doc->getTree().goUp();
 
         doc->getTree().addContentItem(DSRTypes::RT_contains, DSRTypes::VT_Image);
+#ifdef USE_PTR
+        DSRImageReferenceValue *imagePtr = doc->getTree().getCurrentContentItem().getImageReferencePtr();
+        if (imagePtr != NULL)
+        {
+            imagePtr->setValue(DSRImageReferenceValue(UID_CTImageStorage, "1.2.3.4.5.0", UID_GrayscaleSoftcopyPresentationStateStorage, "1.2.3.5.6.7"));
+            imagePtr->getFrameList().addItem(5);
+            imagePtr->getFrameList().addItem(2);
+            imagePtr->getFrameList().addOnlyNewItem(5);
+        }
+#else
         DSRImageReferenceValue imageRef(UID_CTImageStorage, "1.2.3.4.5.0", UID_GrayscaleSoftcopyPresentationStateStorage, "1.2.3.5.6.7");
         imageRef.getFrameList().addItem(5);
         imageRef.getFrameList().addItem(2);
         imageRef.getFrameList().addOnlyNewItem(5);
         doc->getTree().getCurrentContentItem().setImageReference(imageRef);
+#endif
 
         doc->getTree().addContentItem(DSRTypes::RT_hasConceptMod, DSRTypes::VT_Code, DSRTypes::AM_belowCurrent);
         doc->getTree().getCurrentContentItem().setConceptName(DSRCodedEntryValue("1234", OFFIS_CODING_SCHEME_DESIGNATOR, "Code"));
@@ -161,10 +183,20 @@ int main()
         doc->getTree().getCurrentContentItem().setImageReference(DSRImageReferenceValue(UID_MRImageStorage, "1.2.3.4.0.1"));
 
         doc->getTree().addContentItem(DSRTypes::RT_hasProperties, DSRTypes::VT_Waveform);
-        DSRWaveformReferenceValue waveformRef(DSRWaveformReferenceValue(UID_HemodynamicWaveformStorage, "1.2.3.4.5"));
+#ifdef USE_PTR
+        DSRWaveformReferenceValue *wavePtr = doc->getTree().getCurrentContentItem().getWaveformReferencePtr();
+        if (wavePtr != NULL)
+        {
+            wavePtr->setValue(DSRWaveformReferenceValue(UID_HemodynamicWaveformStorage, "1.2.3.4.5"));
+            wavePtr->getChannelList().addItem(5, 3);
+            wavePtr->getChannelList().addItem(2, 0);
+        }
+#else
+        DSRWaveformReferenceValue waveformRef();
         waveformRef.getChannelList().addItem(5, 3);
         waveformRef.getChannelList().addItem(2, 0);
         doc->getTree().getCurrentContentItem().setWaveformReference(waveformRef);
+#endif
 
 //        doc->getTree().gotoNode(5);
 //        doc->getTree().removeCurrentContentItem();
