@@ -22,9 +22,9 @@
  *  Purpose: DicomColorImage (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-08-02 15:07:21 $
+ *  Update Date:      $Date: 2002-08-29 12:58:34 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/libsrc/dicoimg.cc,v $
- *  CVS/RCS Revision: $Revision: 1.23 $
+ *  CVS/RCS Revision: $Revision: 1.24 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -520,7 +520,8 @@ int DiColorImage::writeImageToDataset(DcmItem &dataset)
     int result = 0;
     if (InterData != NULL)
     {
-        void *pixel = InterData->getData();
+        /* create pixel data in DICOM format (color by plane) */
+        void *pixel = InterData->createPixelData(/*tbi: planar?*/);
         const unsigned long count = InterData->getCount() * 3 /*planes*/;
         if ((BitsPerSample > 0) && (pixel != NULL) && (count > 0))
         {
@@ -575,6 +576,7 @@ int DiColorImage::writeImageToDataset(DcmItem &dataset)
             updateImagePixelModuleAttributes(dataset);
             result = 1;
         }
+        delete[] (Uint8 *)pixel;
     }
     return result;
 }
@@ -658,7 +660,11 @@ int DiColorImage::writeBMP(FILE *stream,
  *
  * CVS/RCS Log:
  * $Log: dicoimg.cc,v $
- * Revision 1.23  2002-08-02 15:07:21  joergr
+ * Revision 1.24  2002-08-29 12:58:34  joergr
+ * Fixed bug in writeImageToDataset(): color images were encoded incorrectly in
+ * some cases.
+ *
+ * Revision 1.23  2002/08/02 15:07:21  joergr
  * Added function to write the current image (not only a selected frame) to a
  * DICOM dataset.
  *
