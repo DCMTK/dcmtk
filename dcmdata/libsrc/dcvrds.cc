@@ -10,9 +10,9 @@
 ** Implementation of class DcmDecimalString
 **
 ** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1997-05-12 07:38:26 $
+** Update Date:		$Date: 1997-07-03 10:22:45 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcvrds.cc,v $
-** CVS/RCS Revision:	$Revision: 1.4 $
+** CVS/RCS Revision:	$Revision: 1.5 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -76,7 +76,7 @@ E_Condition DcmDecimalString::getFloat64(Float64 & val,
   E_Condition l_error = getString(str);
   if (l_error == EC_Normal)
     {
-      while (((p = strchr(str, '\\')) != NULL) && (pos > 0))
+      while (((p = strchr(str, '\\')) != NULL) && (counter > 0))
 	{
 	  str = p + 1;
 	  counter--;
@@ -103,7 +103,11 @@ E_Condition DcmDecimalString::getFloat64(Float64 & val,
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrds.cc,v $
-** Revision 1.4  1997-05-12 07:38:26  andreas
+** Revision 1.5  1997-07-03 10:22:45  andreas
+** - corrected Bug in DcmDecimalString::getFloat64 (Thanks to
+**   Phil Liao <phil@eggroll.eeg.com>)
+**
+** Revision 1.4  1997/05/12 07:38:26  andreas
 ** - new get-Methods for DcmDecimalString: getFloat64 and
 **   DcmIntegerString: getSint32
 **
