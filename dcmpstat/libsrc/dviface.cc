@@ -22,8 +22,8 @@
  *  Purpose: DVPresentationState
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-02-05 17:45:37 $
- *  CVS/RCS Revision: $Revision: 1.27 $
+ *  Update Date:      $Date: 1999-02-08 10:52:35 $
+ *  CVS/RCS Revision: $Revision: 1.28 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -86,7 +86,7 @@ END_EXTERN_C
 #define L0_CHARACTERISTICS   "CHARACTERISTICS"
 
 
-DVInterface::DVInterface(int /* dummy */, const char *config_file)
+DVInterface::DVInterface(const char *config_file)
 : pState(NULL)
 , pDicomImage(NULL)
 , pDicomPState(NULL)
@@ -1661,7 +1661,11 @@ void DVInterface::cleanChildren()
 /*
  *  CVS/RCS Log:
  *  $Log: dviface.cc,v $
- *  Revision 1.27  1999-02-05 17:45:37  meichel
+ *  Revision 1.28  1999-02-08 10:52:35  meichel
+ *  Updated documentation of dviface.h in Doc++ style.
+ *    Removed dummy parameter from constructor.
+ *
+ *  Revision 1.27  1999/02/05 17:45:37  meichel
  *  Added config file entry for monitor characteristics file.  Monitor charac-
  *    teristics are passed to dcmimage if present to activate Barten transform.
  *

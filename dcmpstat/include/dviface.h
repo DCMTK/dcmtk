@@ -23,8 +23,8 @@
  *    classes: DVInterface
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-02-05 17:45:35 $
- *  CVS/RCS Revision: $Revision: 1.19 $
+ *  Update Date:      $Date: 1999-02-08 10:52:33 $
+ *  CVS/RCS Revision: $Revision: 1.20 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -56,22 +56,24 @@
 
 class DVPSConfig;
 
+
+/** Interface class for the Softcopy Presentation State viewer.
+ *  This class manages the database facilities, allows to start and stop
+ *  network transactions and gives access to images and presentation states.
+ */
 class DVInterface
 {
  
  public:
  
    /** constructor.
-    *  @param dummy a dummy parameter, will be removed in the next release.
-    *     Since the parameters for the constructor have changed, this is only meant
-    *     to make sure that all calls are really updated. Sorry for the inconvenience!
     *  @param config_file filename (path) of the config file to be used
     *     by the interface object. The caller should make sure that the config file
     *     really exists because the constructor cannot return an error status.
     *     If a non-existing filename (or NULL) is passed, an empty configuration file
     *     is assumed.
     */
-    DVInterface(int dummy, const char *config_file=NULL);
+    DVInterface(const char *config_file=NULL);
 
     /** destructor.
      */
@@ -79,25 +81,69 @@ class DVInterface
     
     /* load images and presentation states */
     
-    /* this method loads an image, creates a default presentation state for the image.
-       The options defining how a default pstate is created can be modified with separate methods
-       before executing loadImage().
+    /** loads an image which is contained in the database 
+     *  and creates a default presentation state for the image.
+     *  This method acquires a database lock which must be explicitly freed by the user.
+     *  @param studyUID study instance UID of the image
+     *  @param seriesUID series instance UID of the image
+     *  @param instanceUID SOP instance UID of the image
+     *  @return EC_Normal upon success, an error code otherwise.
      */
     E_Condition loadImage(const char *studyUID, const char *seriesUID, const char *instanceUID);
+    
+    /** loads an image (which need not be contained in the database)
+     *  and creates a default presentation state for the image.
+     *  This method does not acquire a database lock.
+     *  @param filename path and filename of the image to be loaded
+     *  @return EC_Normal upon success, an error code otherwise.
+     */
     E_Condition loadImage(const char *filename);
     
-    /* this method loads a presentation state and the first image referenced by the presentation
-       state.
+    /** loads a presentation state which is contained in the database.
+     *  The first image referenced in presentation state is also looked up in the
+     *  database, loaded, and attached to the presentation state.
+     *  This method acquires a database lock which must be explicitly freed by the user.
+     *  @param studyUID study instance UID of the presentation state
+     *  @param seriesUID series instance UID of the presentation state
+     *  @param instanceUID SOP instance UID of the presentation state
+     *  @return EC_Normal upon success, an error code otherwise.
      */
     E_Condition loadPState(const char *studyUID, const char *seriesUID, const char *instanceUID);
-    E_Condition loadPState(const char *pstName, const char *imgName = NULL);
+
+    /** loads a presentation state and an image (which need not be contained in the database)
+     *  and attaches the image to the presentation state.
+     *  This method does not acquire a database lock.
+     *  @param pstName path and filename of the presentation state to be loaded
+     *  @param imgName path and filename of the image to be loaded
+     *  @return EC_Normal upon success, an error code otherwise.
+     */
+    E_Condition loadPState(const char *pstName, const char *imgName);
     
-    /* UNIMPLEMENTED - this method saves the current presentation state as a new presentation state instance. */
+    /** UNIMPLEMENTED - saves the current presentation state in the same directory
+     *  in which the database index file resides. The filename is generated automatically.
+     *  A new SOP Instance UID is assigned whenever a presentation state is saved.
+     *  After successfully storing the presentation state, the database index is updated
+     *  to include the new object.
+     *  This method acquires a database lock which must be explicitly freed by the user.
+     *  @return EC_Normal upon success, an error code otherwise.
+     */
     E_Condition savePState();
+    
+    /** saves the current presentation state in a file with the given path and filename.
+     *  A new SOP Instance UID is assigned whenever a presentation state is saved.
+     *  This method does not acquire a database lock and does not register
+     *  the saved presentation state in the database.
+     *  @param filename path and filename under which the presentation state is to be saved
+     *  @return EC_Normal upon success, an error code otherwise.
+     */
     E_Condition savePState(const char *filename);
     
-    
-    /* returns a reference to the current presentation state. */
+    /** returns a reference to the current presentation state.
+     *  This reference will become invalid when the DVInterface object is deleted,
+     *  a different image or presentation state is loaded
+     *  (using loadPState or loadImage) or when resetPresentationState() is called.
+     *  @return reference to the current presentation state
+     */ 
     DVPresentationState& getCurrentPState();
     
     /** resets the presentation state object to the status
@@ -107,159 +153,367 @@ class DVInterface
      *  @return EC_Normal upon success, an error code otherwise.
      */
     E_Condition resetPresentationState();
-    
-    /* here follow the Browser interface methods */
-    
-  /** removes the exclusive database lock. */
-  
+      
     /** removes any shared or exclusive lock on the database.
      *  This method should be called when a database transaction
      *  (i.e. reading all studies, series, instances etc.) is finished.
      *  As long as a lock exists on the database, no other application
      *  (i.e. the network receiver) can add new images to the database.
+     *  @return EC_Normal upon success, an error code otherwise.
      */
     E_Condition releaseDatabase();
     
-    
-  /** searches in the database for a DICOM instance with the given
-   *  study, series and instance UIDs and returns its pathname if found.
-   *  If the given instance is not found in the database, NULL is returned.
-   *  This method creates a database lock if none exists yet.
-   *  @param studyUID the DICOM study instance UID
-   *  @param seriesUID the DICOM series instance UID
-   *  @param instanceUID the DICOM SOP instance UID
-   *  @returns filename (path) if found, NULL otherwise
-   */
-  const char *getFilename(const char *studyUID, const char *seriesUID, const char *instanceUID);
+    /** searches in the database for a DICOM instance with the given
+     *  study, series and instance UIDs and returns its pathname if found.
+     *  If the given instance is not found in the database, NULL is returned.
+     *  This method acquires a database lock which must be explicitly freed by the user.
+     *  @param studyUID the DICOM study instance UID
+     *  @param seriesUID the DICOM series instance UID
+     *  @param instanceUID the DICOM SOP instance UID
+     *  @return filename (path) if found, NULL otherwise
+     */
+    const char *getFilename(const char *studyUID, const char *seriesUID, const char *instanceUID);
   
-    
-  /** returns the number of studies in the database. */  
+    /** returns the number of studies currently contained in the database.
+     *  This method acquires a database lock which must be explicitly freed by the user.
+     *  The number reported (returned) by this method remains valid as long
+     *  as the database lock remains active and no function modifying the database is called.
+     *  Functions that modify the database are: Storing new presentation states,
+     *  deleting data, modifying the 'reviewed' status flag of IODs.
+     *  @return number of studies in the database.
+     */     
     Uint32 getNumberOfStudies();
-  /** select a study from the range given by the method getNumberOfStudies() */
-    E_Condition selectStudy(Uint32 idx);
-  /** returns the study UID of a study which is selected by the method 
-       selectStudy */
-    const char *getStudyUID();
-  /** returns the study description of a study which is selected by the method 
-       selectStudy */
-    const char *getStudyDescription();
-  /** returns the DVIFhierarchyStatus of a study which is selected by the 
-       method  selectStudy */
-    DVIFhierarchyStatus getStudyStatus() ;
     
-    /* attributes, which can be examined */
-  /** returns the study date of a study which is selected by the method 
-       selectStudy */
+    /** selects the study with the given index in the database.
+     *  This method acquires a database lock which must be explicitly freed by the user.
+     *  The selection remains valid until the database lock is removed or the database
+     *  is modified (see comments for getNumberOfStudies).
+     *  @param idx index to be selected, must be < getNumberOfStudies()
+     *  @return EC_Normal upon success, an error code otherwise.
+     */     
+    E_Condition selectStudy(Uint32 idx);
+    
+    /** returns the review status of the currently selected study.
+     *  May be called only if a valid study selection exists - see selectStudy().
+     *  This method acquires a database lock which must be explicitly freed by the user.
+     *  @return study review status
+     */
+    DVIFhierarchyStatus getStudyStatus() ;
+
+    /** returns the Study Instance UID of the currently selected study.
+     *  May be called only if a valid study selection exists - see selectStudy().
+     *  This method acquires a database lock which must be explicitly freed by the user.
+     *  @return Study Instance UID or NULL if absent or not selected.
+     */
+    const char *getStudyUID();
+    
+    /** returns the Study Description of the currently selected study.
+     *  May be called only if a valid study selection exists - see selectStudy().
+     *  This method acquires a database lock which must be explicitly freed by the user.
+     *  @return Study Description or NULL if absent or not selected.
+     */
+    const char *getStudyDescription();
+    
+    /** returns the Study Date of the currently selected study.
+     *  May be called only if a valid study selection exists - see selectStudy().
+     *  This method acquires a database lock which must be explicitly freed by the user.
+     *  @return Study Date or NULL if absent or not selected.
+     */
     const char *getStudyDate();
-  /** returns the study time of a study which is selected by the method 
-       selectStudy */
+    
+    /** returns the Study Time of the currently selected study.
+     *  May be called only if a valid study selection exists - see selectStudy().
+     *  This method acquires a database lock which must be explicitly freed by the user.
+     *  @return Study Time or NULL if absent or not selected.
+     */
     const char *getStudyTime();
-  /** returns the referring physicians name of a study which is selected 
-       by the method  selectStudy */
+    
+    /** returns the Referring Physicians Name of the currently selected study.
+     *  May be called only if a valid study selection exists - see selectStudy().
+     *  This method acquires a database lock which must be explicitly freed by the user.
+     *  @return Referring Physicians Name or NULL if absent or not selected.
+     */
     const char *getReferringPhysiciansName();
-  /** returns the accession number of a study which is selected by 
-       the method  selectStudy */
+    
+    /** returns the Accession Number of the currently selected study.
+     *  May be called only if a valid study selection exists - see selectStudy().
+     *  This method acquires a database lock which must be explicitly freed by the user.
+     *  @return Accession Number or NULL if absent or not selected.
+     */
     const char *getAccessionNumber();
-  /** returns the  NameOfPhysiciansReadingStudy of a study which is 
-    selected by the method  selectStudy */
+    
+    /** returns the Name Of Physicians Reading Study of the currently selected study.
+     *  May be called only if a valid study selection exists - see selectStudy().
+     *  This method acquires a database lock which must be explicitly freed by the user.
+     *  @return Name Of Physicians Reading Study or NULL if absent or not selected.
+     */
     const char *getNameOfPhysiciansReadingStudy();
- /** returns the Patient's Name of a study which is selected by 
-       the method  selectStudy */
+    
+    /** returns the Patient Name of the currently selected study.
+     *  May be called only if a valid study selection exists - see selectStudy().
+     *  Note: Since the database uses the Study Root model, patient data appears
+     *  on the study level.
+     *  This method acquires a database lock which must be explicitly freed by the user.
+     *  @return Patient Name or NULL if absent or not selected.
+     */
     const char *getPatientName();
-/** returns the PatientID of a study which is selected by 
-       the method  selectStudy */
+    
+    /** returns the Patient ID of the currently selected study.
+     *  May be called only if a valid study selection exists - see selectStudy().
+     *  Note: Since the database uses the Study Root model, patient data appears
+     *  on the study level.
+     *  This method acquires a database lock which must be explicitly freed by the user.
+     *  @return Patient ID or NULL if absent or not selected.
+     */
     const char *getPatientID();
-/** returns the PatientBirthDate  of a study which is selected by 
-       the method  selectStudy */
+    
+    /** returns the Patient Birth Date of the currently selected study.
+     *  May be called only if a valid study selection exists - see selectStudy().
+     *  Note: Since the database uses the Study Root model, patient data appears
+     *  on the study level.
+     *  This method acquires a database lock which must be explicitly freed by the user.
+     *  @return Patient Birth Date or NULL if absent or not selected.
+     */
     const char *getPatientBirthDate();
-/** returns the PatientSex of a study which is selected by 
-       the method  selectStudy */
+    
+    /** returns the Patient Sex of the currently selected study.
+     *  May be called only if a valid study selection exists - see selectStudy().
+     *  Note: Since the database uses the Study Root model, patient data appears
+     *  on the study level.
+     *  This method acquires a database lock which must be explicitly freed by the user.
+     *  @return Patient Sex or NULL if absent or not selected.
+     */
     const char *getPatientSex();
-/** returns the PatientBirthTime of a study which is selected by 
-       the method  selectStudy */
+    
+    /** returns the Patient Birth Time of the currently selected study.
+     *  May be called only if a valid study selection exists - see selectStudy().
+     *  Note: Since the database uses the Study Root model, patient data appears
+     *  on the study level.
+     *  This method acquires a database lock which must be explicitly freed by the user.
+     *  @return Patient Birth Time or NULL if absent or not selected.
+     */
     const char *getPatientBirthTime();
- /** returns the Other Patient Names of a study which is selected by 
-       the method  selectStudy */
+    
+    /** returns the Other Patient Names of the currently selected study.
+     *  May be called only if a valid study selection exists - see selectStudy().
+     *  Note: Since the database uses the Study Root model, patient data appears
+     *  on the study level.
+     *  This method acquires a database lock which must be explicitly freed by the user.
+     *  @return Other Patient Names or NULL if absent or not selected.
+     */
     const char *getOtherPatientNames();
-/** returns the OtherPatientID of a study which is selected by 
-       the method  selectStudy */
+    
+    /** returns the Other Patient ID of the currently selected study.
+     *  May be called only if a valid study selection exists - see selectStudy().
+     *  Note: Since the database uses the Study Root model, patient data appears
+     *  on the study level.
+     *  This method acquires a database lock which must be explicitly freed by the user.
+     *  @return Other Patient ID or NULL if absent or not selected.
+     */
     const char *getOtherPatientID();
 
-/** returns the PatientEthnicGroup of a study which is selected by 
-       the method  selectStudy */
+    /** returns the Patient Ethnic Group of the currently selected study.
+     *  May be called only if a valid study selection exists - see selectStudy().
+     *  Note: Since the database uses the Study Root model, patient data appears
+     *  on the study level.
+     *  This method acquires a database lock which must be explicitly freed by the user.
+     *  @return Patient Ethnic Group or NULL if absent or not selected.
+     */
     const char *getEthnicGroup();
 
-    /* number of series within the current study */
+    /** returns the number of series within the currently selected study.
+     *  May be called only if a valid study selection exists - see selectStudy().
+     *  This method acquires a database lock which must be explicitly freed by the user.
+     *  See the comments for getNumberOfStudies() about the validity period
+     *  of the returned number.
+     *  @return number of series in the current study.
+     */     
     Uint32 getNumberOfSeries();
+    
+    /** selects the series with the given index within the currently selected study.
+     *  This method acquires a database lock which must be explicitly freed by the user.
+     *  The selection remains valid until the database lock is removed or the database
+     *  is modified (see comments for getNumberOfStudies).
+     *  @param idx index to be selected, must be < getNumberOfSeries()
+     *  @return EC_Normal upon success, an error code otherwise.
+     */     
     E_Condition selectSeries(Uint32 idx);
+    
+    /** returns the Series Instance UID of the currently selected series.
+     *  May be called only if a valid series selection exists - see selectSeries().
+     *  This method acquires a database lock which must be explicitly freed by the user.
+     *  @return Series Instance UID or NULL if absent or not selected.
+     */
     const char *getSeriesUID();
+    
+    /** returns the review status of the currently selected series.
+     *  May be called only if a valid series selection exists - see selectSeries().
+     *  This method acquires a database lock which must be explicitly freed by the user.
+     *  @return series review status
+     */
     DVIFhierarchyStatus getSeriesStatus();
 
-
-    /* returns OFTrue if this series contains presentation stated, OFFalse otherwise.
-       A series can never contain both images and presentation states.
+    /** checks if the current series consists (only) of Presentation States.
+     *  Since DICOM series always contain a single modality only, a series is
+     *  either completely a presentation state series or completely different.
+     *  May be called only if a valid series selection exists - see selectSeries().
+     *  This method acquires a database lock which must be explicitly freed by the user.
+     *  @return OFTrue if series contains presentation states, OFFalse otherwise.
      */
     OFBool isPresentationStateSeries();
     
-
-  /** returns the series number of a series which is selected by 
-       the methods  selectStudy and selectSeries */
+    /** returns the Series Number of the currently selected series.
+     *  May be called only if a valid series selection exists - see selectSeries().
+     *  This method acquires a database lock which must be explicitly freed by the user.
+     *  @return Series Number or NULL if absent or not selected.
+     */
     const char *getSeriesNumber();
-  /** returns the series date of a series which is selected by the methods  
-       selectStudy and selectSeries */
+    
+    /** returns the Series Date of the currently selected series.
+     *  May be called only if a valid series selection exists - see selectSeries().
+     *  This method acquires a database lock which must be explicitly freed by the user.
+     *  @return Series Date or NULL if absent or not selected.
+     */
     const char *getSeriesDate();
-  /** returns the series date of a series which is selected by the methods 
-       selectStudy and selectSeries */
+    
+    /** returns the Series Time of the currently selected series.
+     *  May be called only if a valid series selection exists - see selectSeries().
+     *  This method acquires a database lock which must be explicitly freed by the user.
+     *  @return Series Time or NULL if absent or not selected.
+     */
     const char *getSeriesTime();
-  /** returns the series description of a series which is selected by the 
-    methods  selectStudy and selectSeries */
+    
+    /** returns the Series Description of the currently selected series.
+     *  May be called only if a valid series selection exists - see selectSeries().
+     *  This method acquires a database lock which must be explicitly freed by the user.
+     *  @return Series Description or NULL if absent or not selected.
+     */
     const char *getSeriesDescription();
-  /** returns the series performing physicians name of a series which is 
-    selected by the methods  selectStudy and selectSeries */
+    
+    /** returns the Series Performing Physicians Name of the currently selected series.
+     *  May be called only if a valid series selection exists - see selectSeries().
+     *  This method acquires a database lock which must be explicitly freed by the user.
+     *  @return Series Performing Physicians Name or NULL if absent or not selected.
+     */
     const char *getSeriesPerformingPhysiciansName();
-  /** returns the series protocol name of a series which is selected by the 
-    methods  selectStudy and selectSeries */
+    
+    /** returns the Series Protocol Name of the currently selected series.
+     *  May be called only if a valid series selection exists - see selectSeries().
+     *  This method acquires a database lock which must be explicitly freed by the user.
+     *  @return Series Protocol Name or NULL if absent or not selected.
+     */
     const char *getSeriesProtocolName();
-  /** returns series operators name of a series which is selected by the 
-    methods selectSeries and selectStudy */
+    
+    /** returns the Series Operators Name of the currently selected series.
+     *  May be called only if a valid series selection exists - see selectSeries().
+     *  This method acquires a database lock which must be explicitly freed by the user.
+     *  @return Series Operators Name or NULL if absent or not selected.
+     */
     const char *getSeriesOperatorsName();
- /** returns the modality of an instance which is selected by the methods
-        selectStudy, selectSeries and selectInstance */
-  
+    
+    /** returns the Modality of the currently selected series.
+     *  May be called only if a valid series selection exists - see selectSeries().
+     *  This method acquires a database lock which must be explicitly freed by the user.
+     *  @return Modality or NULL if absent or not selected.
+     */
     const char *getModality();
  
-    /* number of instances (images or presentation states) within the current study */
-
-  /** returns the number of studies in the database. */  
+    /** returns the number of instances (IODs) within the currently selected series.
+     *  May be called only if a valid series selection exists - see selectSeries().
+     *  This method acquires a database lock which must be explicitly freed by the user.
+     *  See the comments for getNumberOfStudies() about the validity period
+     *  of the returned number.
+     *  @return number of instances in the current series.
+     */     
     Uint32 getNumberOfInstances();
 
-  /** select a study from the range given by the method getNumberOfStudies() */
+    /** selects the instance with the given index within the currently selected series.
+     *  This method acquires a database lock which must be explicitly freed by the user.
+     *  The selection remains valid until the database lock is removed or the database
+     *  is modified (see comments for getNumberOfStudies).
+     *  @param idx index to be selected, must be < getNumberOfInstances()
+     *  @return EC_Normal upon success, an error code otherwise.
+     */     
     E_Condition selectInstance(Uint32 idx);
-  /** returns the instance UID of an instance which is selected by the methods
-        selectStudy, selectSeries and selectInstance */
     
+    /** returns the SOP Instance UID of the currently selected instance.
+     *  May be called only if a valid instance selection exists - see selectInstance().
+     *  This method acquires a database lock which must be explicitly freed by the user.
+     *  @return SOP Instance UID or NULL if absent or not selected.
+     */
     const char *getInstanceUID();
 
-  /** returns the image number of an instance which is selected by the methods
-        selectStudy, selectSeries and selectInstance */
-    
+    /** returns the Image Number of the currently selected instance.
+     *  May be called only if a valid instance selection exists - see selectInstance().
+     *  This method acquires a database lock which must be explicitly freed by the user.
+     *  @return Image Number or NULL if absent or not selected.
+     */
     const char *getImageNumber();
 
-  /** returns the DVIFhierarchyStatus of an instance which is selected by 
-       the methods selectStudy, selectSeries and selectInstance */
-
+    /** returns the review status of the currently selected instance.
+     *  May be called only if a valid instance selection exists - see selectInstance().
+     *  This method acquires a database lock which must be explicitly freed by the user.
+     *  @return instance review status
+     */
     DVIFhierarchyStatus getInstanceStatus() ;
     
-  /** returns OFTrue if the instance is a presentation state, OFFalse otherwise. */
+    /** checks if the currently selected instance is a presentation state.
+     *  May be called only if a valid instance selection exists - see selectInstance().
+     *  This method acquires a database lock which must be explicitly freed by the user.
+     *  @return OFTrue if current instance is presentation state, OFFalse otherwise
+     */
     OFBool isPresentationState();
     
-  /** instance has been reviewed, change status in DB from isNew to isNotNew if necessary */
+    /* methods modifying the database */
+    
+    /** modifies the review flag for one instance in the database, which is set to
+     *  'reviewed' state (DVIF_objectIsNotNew). The status of the corresponding series
+     *  and study is updated automatically. 
+     *  This method acquires a database lock which must be explicitly freed by the user.
+     *  The database is modified - any study, series or instance selection
+     *  and the number of studies, series and instances reported will become invalid since
+     *  other processes may modify the database before the exclusive lock is granted to this method.
+     *  @param studyUID study instance UID of the reviewed instance
+     *  @param seriesUID series instance UID of the reviewed instance
+     *  @param instanceUID SOP instance UID of the reviewed instance
+     *  @return EC_Normal upon success, an error code otherwise.
+     */
     E_Condition instanceReviewed(const char *studyUID, const char *seriesUID, const char *instanceUID);
-  /** delete instance indentified by studyUID, seriesUID and instanceUID */
+
+    /** deletes the given instance from the database. If the corresponding DICOM file
+     *  resides in the same directory as the index file, it is also removed.
+     *  This method acquires a database lock which must be explicitly freed by the user.
+     *  The database is modified - any study, series or instance selection
+     *  and the number of studies, series and instances reported will become invalid since
+     *  other processes may modify the database before the exclusive lock is granted to this method.
+     *  @param studyUID study instance UID of the instance to be deleted
+     *  @param seriesUID series instance UID of the instance to be deleted
+     *  @param instanceUID SOP instance UID of the instance to be deleted
+     *  @return EC_Normal upon success, an error code otherwise.
+     */
     E_Condition deleteInstance(const char *studyUID, const char *seriesUID, const char *instanceUID);
-  /** delete series indentified by studyUID and seriesUID */  
+
+    /** deletes the given series from the database. Any of the corresponding DICOM files
+     *  residing in the same directory as the index file are also removed.
+     *  This method acquires a database lock which must be explicitly freed by the user.
+     *  The database is modified - any study, series or instance selection
+     *  and the number of studies, series and instances reported will become invalid since
+     *  other processes may modify the database before the exclusive lock is granted to this method.
+     *  @param studyUID study instance UID of the series to be deleted
+     *  @param seriesUID series instance UID of the series to be deleted
+     *  @return EC_Normal upon success, an error code otherwise.
+     */
     E_Condition deleteSeries(const char *studyUID, const char *seriesUID);
-  /** delete study indentified by studyUID*/
+
+    /** deletes the given study from the database. Any of the corresponding DICOM files
+     *  residing in the same directory as the index file are also removed.
+     *  This method acquires a database lock which must be explicitly freed by the user.
+     *  The database is modified - any study, series or instance selection
+     *  and the number of studies, series and instances reported will become invalid since
+     *  other processes may modify the database before the exclusive lock is granted to this method.
+     *  @param studyUID study instance UID of the study to be deleted
+     *  @return EC_Normal upon success, an error code otherwise.
+     */
     E_Condition deleteStudy(const char *studyUID);
     
     /* here follow the Network interface methods */
@@ -345,20 +599,26 @@ class DVInterface
      */
     E_Condition sendIOD(const char *targetID, const char *studyUID, const char *seriesUID, const char *instanceUID);
  
-    
     /* here follow the Config interface methods */
-    
-    /* returns the number of communication partners (send targets).
-       This information is read from the config file. */
+
+    /** returns the number of communication partners (send targets)
+     *  in the configuration file. 
+     *  @return number of communication partners
+     */
     Uint32 getNumberOfTargets();
-    
-    /* returns the target identifier of a communication partner.
-       The target identifier is unique within the configuration file 
-       idx must be < getNumberOfTargets(). */
+
+    /** returns the target identifier of the communication partner
+     *  with the given index. The target identifier is unique within the configuration file 
+     *  @param idx index, must be < getNumberOfTargets()
+     *  @return target identifier if found, NULL otherwise.
+     */
     const char *getTargetID(Uint32 idx);
     
-    /* returns the target description of a communication partner.
-       idx must be < getNumberOfTargets(). */
+    /** returns the DESCRIPTION entry for the communication partner with the given
+     *  index from the configuration file. 
+     *  @param idx index, must be < getNumberOfTargets()
+     *  @return entry if present in the config file, NULL otherwise.
+     */
     const char *getTargetDescription(Uint32 idx);
     
     /** returns the DESCRIPTION entry for the communication partner with the given
@@ -519,6 +779,26 @@ class DVInterface
       unsigned long height,
       double aspectRatio=1.0);
 
+    /** UNIMPLEMENTED - saves a monochrome bitmap as a DICOM Secondary Capture image
+     *  in the same directory
+     *  in which the database index file resides. The filename is generated automatically.
+     *  After successfully storing the image, the database index is updated
+     *  to include the new object.
+     *  This method acquires a database lock which must be explicitly freed by the user.
+     *  @param pixelData a pointer to the image data. Must contain at least
+     *    width*height bytes of data.
+     *  @param width the width of the image, must be <= 0xFFFF
+     *  @param height the height of the image, must be <= 0xFFFF
+     *  @aspectRatio the pixel aspect ratio as width/height. If omitted, a pixel
+     *    aspect ratio of 1/1 is assumed.
+     *  @return EC_Normal upon success, an error code otherwise.
+     */
+    E_Condition saveDICOMImage(
+      const void *pixelData,
+      unsigned long width,
+      unsigned long height,
+      double aspectRatio=1.0);
+
     /** helper function that inserts a new element into a DICOM dataset.
      *  A new DICOM element of the type determined by the tag is created.
      *  The string value (if any) is assigned and the element is inserted
@@ -540,15 +820,8 @@ class DVInterface
      */
     static E_Condition putUint16Value(DcmItem *item, DcmTagKey tag, Uint16 value);
 
-protected:
-
-    E_Condition loadFileFormat(const char *filename,
-                               DcmFileFormat *&fileformat);
-
-    E_Condition saveFileFormat(const char *filename,
-                               DcmFileFormat *fileformat);
-
 private:
+
     /** private undefined copy constructor
      */
     DVInterface(const DVInterface&);
@@ -556,6 +829,23 @@ private:
     /** private undefined assignment operator
      */
     DVInterface& operator=(const DVInterface&);
+
+    /** helper function which loads a DICOM file and returns a
+     *  pointer to a DcmFileFormat object if loading succeeds.
+     *  @param filename name of DICOM file to be loaded
+     *  @param fileformat pointer to DcmFileFormat object passed back here
+     *  @return EC_Normal upon success, an error code otherwise.
+     */
+    E_Condition loadFileFormat(const char *filename,
+                               DcmFileFormat *&fileformat);
+
+    /** helper function which saves a DICOM object to file.
+     *  @param filename name of DICOM file to be created
+     *  @param fileformat DICOM object to be saved
+     *  @return EC_Normal upon success, an error code otherwise.
+     */
+    E_Condition saveFileFormat(const char *filename,
+                               DcmFileFormat *fileformat);
 
     /** helper function that exchanges the current presentation state and image
      *  by the pointers passed and frees the old ones.
@@ -664,13 +954,12 @@ private:
       Uint32 *idxCounter=NULL,
       const char *InstanceUID=NULL);
 
-  
-
-// frees inputarray from duplicate entries and returns the number 
-// of arrayelements that remain
-Uint32 stripidxarray(int *elemarray, OFBool si);
-// Test, if Indexfile is empty
-OFBool idxfiletest();
+    // frees inputarray from duplicate entries and returns the number 
+    // of arrayelements that remain
+    Uint32 stripidxarray(int *elemarray, OFBool si);
+    
+    // Test if Indexfile is empty
+    OFBool idxfiletest();
 
 };
 #endif
@@ -678,7 +967,11 @@ OFBool idxfiletest();
 
 /*
  *  $Log: dviface.h,v $
- *  Revision 1.19  1999-02-05 17:45:35  meichel
+ *  Revision 1.20  1999-02-08 10:52:33  meichel
+ *  Updated documentation of dviface.h in Doc++ style.
+ *    Removed dummy parameter from constructor.
+ *
+ *  Revision 1.19  1999/02/05 17:45:35  meichel
  *  Added config file entry for monitor characteristics file.  Monitor charac-
  *    teristics are passed to dcmimage if present to activate Barten transform.
  *

@@ -1,4 +1,11 @@
 
+**** Changes from 1999.02.08 (eichelberg)
+
+- Updated documentation of dviface.h in Doc++ style.
+  Removed dummy parameter from constructor.
+  Affects: dcmpstat/include/dviface.h
+           dcmpstat/libsrc/dviface.cc
+
 **** Changes from 1999.02.05 (eichelberg)
 
 - Added config file entry for monitor characteristics file.
