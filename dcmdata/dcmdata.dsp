@@ -219,6 +219,10 @@ SOURCE=.\libsrc\dctagkey.cxx
 # End Source File
 # Begin Source File
 
+SOURCE=.\libsrc\dctypes.cxx
+# End Source File
+# Begin Source File
+
 SOURCE=.\libsrc\dcuid.cxx
 # End Source File
 # Begin Source File
