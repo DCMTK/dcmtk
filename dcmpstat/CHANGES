@@ -1,3 +1,22 @@
+**** Changes from 1999.02.22 (riesmeier)
+
+- Added deletion of image files (depending on directory where the file is
+  stored).
+  Affects: dcmpstat/include/dviface.h
+           dcmpstat/libsrc/dviface.cc
+
+- Modified comments for getGUIConfig... methods to indicate that the
+  specified key must be upper case.
+  Affects: dcmpstat/include/dviface.h
+  
+- Reset reference time for file modification checking after the index file
+  has been changed internally (delete and change status methods).
+  Affects: dcmpstat/include/dviface.h
+           dcmpstat/libsrc/dviface.cc
+           
+- Removed debug messages when creating and clearing index cache.
+  Affects: dcmpstat/libsrc/dviface.cc
+
 **** Changes from 1999.02.19 (riesmeier)
 
 - Added comments to new database routines and related member variables.
