@@ -24,10 +24,10 @@
  *    The LUT has a gamma curve shape or can be imported from an external
  *    file.
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-03-08 16:28:41 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2000-05-30 14:02:43 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmpstat/apps/dcmmklut.cc,v $
- *  CVS/RCS Revision: $Revision: 1.14 $
+ *  CVS/RCS Revision: $Revision: 1.15 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -420,7 +420,7 @@ void gammaLUT(const unsigned int numberOfBits,
             CERR << "computing gamma function ..." << endl;
         char buf[1024];
         ostrstream oss(buf, 1024);
-        if (explanation !=NULL)
+        if (explanation != NULL)
         {
             if (strlen(explanation) == 0)
             {
@@ -939,7 +939,10 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmmklut.cc,v $
- * Revision 1.14  2000-03-08 16:28:41  meichel
+ * Revision 1.15  2000-05-30 14:02:43  joergr
+ * Corrected typo/formatting.
+ *
+ * Revision 1.14  2000/03/08 16:28:41  meichel
  * Updated copyright header.
  *
  * Revision 1.13  2000/03/07 16:17:11  joergr
