@@ -1,6 +1,16 @@
 
 Changes between releases are documented here.
 
+**** Changes from 1999.09.13 (riesmeier)
+
+- Changed (almost) all output commands from C to C++ style (using string
+  streams). Advantage: C++ output routines are type safe and using the
+  same output streams (in this case 'cerr').
+  Introduced (more or less) consistent format for output messages.
+  Enhanced quiet mode (also warning and error messages are suppressed).
+  Corrected some typos in usage output / changed names of some options.
+  Affects: dcmimage/apps/dcm2pnm.cc
+
 **** Changes from 1999.09.10 (riesmeier)
 
 - Added support for CIELAB display function.
