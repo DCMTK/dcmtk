@@ -23,8 +23,8 @@
  *    classes: DcmPresentationState
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2003-09-05 14:30:08 $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  Update Date:      $Date: 2003-12-18 16:37:49 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1207,6 +1207,20 @@ OFCondition DcmPresentationState::createFromImage(
       if (rescaleType.getVM() != 1) rescaleType.putString("US");
     } else useModalityRescale = OFFalse;
 
+    // these three SOP classes use the X-Ray Image Module in which the meaning
+    // of the Modality LUT transformation is "inversersed" and, therefore,
+    // must not be copied into the presentation state 
+    if ((ofsopclassUID == UID_XRayAngiographicImageStorage) ||
+        (ofsopclassUID == UID_XRayFluoroscopyImageStorage) ||
+        (ofsopclassUID == UID_RETIRED_XRayAngiographicBiPlaneImageStorage))
+    {
+      modalityLUTData.clear();
+      modalityLUTDescriptor.clear();
+      modalityLUTExplanation.clear();
+      modalityLUTType.clear();
+      useModalityLUT = OFFalse;
+    }
+
     if ((modalityLUTDescriptor.getVM() == 3) && (modalityLUTData.getLength() > 0))
     {
       useModalityLUT = OFTrue;
@@ -2155,7 +2169,11 @@ void DcmPresentationState::setLog(OFConsole *stream, OFBool verbMode, OFBool dbg
 
 /*
  *  $Log: dcmpstat.cc,v $
- *  Revision 1.3  2003-09-05 14:30:08  meichel
+ *  Revision 1.4  2003-12-18 16:37:49  meichel
+ *  During creation of default presentation state from image the Modality LUT
+ *    is now ignored for XA, RF and XA Biplane SOP instances
+ *
+ *  Revision 1.3  2003/09/05 14:30:08  meichel
  *  Introduced new API methods that allow Displayed Areas to be queried
  *    and set either relative to the image (ignoring rotation and flip) or
  *    in absolute values as defined in the standard.  Rotate and flip methods
