@@ -22,9 +22,9 @@
  *  Purpose: DicomImage-Interface (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1998-12-14 17:32:59 $
+ *  Update Date:      $Date: 1998-12-16 16:08:36 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/libsrc/dcmimage.cc,v $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -154,6 +154,7 @@ DicomImage::DicomImage(DcmObject *object,
                        E_TransferSyntax xfer,
                        const DcmUnsignedShort &data,
                        const DcmUnsignedShort &descriptor,
+                       const DcmLongString *explanation,
                        const unsigned long flags,
                        const unsigned long fstart,
                        const unsigned long fcount)
@@ -168,7 +169,7 @@ DicomImage::DicomImage(DcmObject *object,
         if ((Document != NULL) && (Document->good()))
         {
             PhotometricInterpretation = EPI_Monochrome2;            // default for presentation states
-            Image = new DiMono2Image(Document, ImageStatus, data, descriptor);
+            Image = new DiMono2Image(Document, ImageStatus, data, descriptor, explanation);
         }
     }
 }
@@ -368,30 +369,6 @@ int DicomImage::hasSOPclassUID(const char *uid) const
 }
 
 
-// ---
-
-const Uint8 *DicomImage::getOverlayData(const unsigned int plane,
-                                        const unsigned int &width,
-                                        const unsigned int &height,
-                                        const unsigned int &left,
-                                        const unsigned int &top) const
-{
-/*
-    if (Image != NULL)
-    {
-        for (int i = 1; i >= 0; i--)
-        {
-            if ((Image->getOverlayPtr(i) != NULL) && (Image->getOverlayPtr(i)->hasPlane(plane, 1)))
-            {
-                return ;
-            }
-        }
-    }
-*/
-    return NULL;
-}
-
-
 // --- create new 'DicomImage' with 'fcount' frames starting with frame 'fstart'
 
 DicomImage *DicomImage::createDicomImage(unsigned long fstart,
@@ -478,15 +455,6 @@ DicomImage *DicomImage::createScaledImage(const unsigned long left,
             scale_height = maxvalue;                                  // same for 'height'
         if ((scale_width > 0) && (scale_height > 0))
         {
-            if (!(((clip_width == gw) && (clip_height == gh)) || ((scale_width == gw) && (scale_height == gh))))
-            {
-                if (DicomImageClass::DebugLevel >= DicomImageClass::DL_Errors)
-                {
-                    cerr << "ERROR: clipping and scaling at the same time not implemented !" << endl;
-                    abort();
-                }
-                return NULL;
-            }
             DiImage *image = Image->createScale(left, top, clip_width, clip_height, scale_width, scale_height, interpolate, aspect);
             if (image != NULL)
             {
@@ -749,7 +717,11 @@ int DicomImage::writeRawPPM(FILE *stream,
 **
 ** CVS/RCS Log:
 ** $Log: dcmimage.cc,v $
-** Revision 1.2  1998-12-14 17:32:59  joergr
+** Revision 1.3  1998-12-16 16:08:36  joergr
+** Implemented combined clipping and scaling for pixel replication and
+** suppression.
+**
+** Revision 1.2  1998/12/14 17:32:59  joergr
 ** Added first implementation of method to export overlay plane bitmaps.
 **
 ** Revision 1.1  1998/11/27 15:58:13  joergr
