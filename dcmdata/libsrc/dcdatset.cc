@@ -10,25 +10,26 @@
  *
  *
  * Last Update:   $Author: hewett $
- * Revision:      $Revision: 1.1 $
+ * Revision:      $Revision: 1.2 $
  * Status:	  $State: Exp $
  *
  */
 
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
-#endif
+#include "osconfig.h"    /* make sure OS specific configuration is included first */
 
+#include <stdio.h>
 #include <stdlib.h>
-#include <memory.h>
 #include <iostream.h>
+#include <string.h>
 
 #include "dcdatset.h"
 #include "dcitem.h"
 #include "dcxfer.h"
 #include "dcvrus.h"
 #include "dcdebug.h"
+
+#include "dcdeftag.h"
 
 
 // Die folgende Zeile ist zu aktivieren, falls das Bestimmen der VR von
@@ -42,16 +43,10 @@
 
 
 DcmDataset::DcmDataset()
-    : DcmItem( InternalUseTag )
+    : DcmItem( ItemTag )
 {
 Bdebug((5, "dcdatset:DcmDataset::DcmDataset()" ));
 debug(( 8, "Object pointer this=0x%p", this ));
-
-#ifdef DCMCODE_OLD_EX_COMPATIBILITY
-      cerr << "Info: Compiled for dcmcode_old_compatibility"
-            "  (Explicit Length 32 bit)"
-         << endl;
-#endif
 
 Edebug(());
 
@@ -62,17 +57,11 @@ Edebug(());
 
 
 DcmDataset::DcmDataset( iDicomStream *iDStream )
-    : DcmItem( InternalUseTag, UNDEF_LEN, iDStream )
+    : DcmItem( ItemTag, UNDEF_LEN, iDStream )
 {
 Bdebug((5, "dcdatset:DcmDataset::DcmDataset(*iDS)" ));
 debug(( 8, "Object pointer this=0x%p", this ));
 
-#ifdef DCMCODE_OLD_EX_COMPATIBILITY
-    cerr << "Info: Compiled for dcmcode_old_compatibility"
-            "  (Explicit Length 32 bit)"
-         << endl;
-#endif
-
 Edebug(());
 
 }
@@ -81,86 +70,13 @@ Edebug(());
 // ********************************
 
 
-DcmDataset::DcmDataset( const DcmObject &oldObj )
-    : DcmItem( InternalUseTag )
-{
-Bdebug((5, "dcdatset:DcmDataset::DcmDataset(DcmObject&)" ));
-debug(( 8, "Object pointer this=0x%p", this ));
-debug(( 5, "ident()=%d", oldObj.ident() ));
-
-    if ( oldObj.ident() == EVR_dataset )
-    {
-	DcmDataset const *old = (DcmDataset const *)&oldObj;
-	*Tag = *old->Tag;
-	iDS = old->iDS;
-	offsetInFile  = old->offsetInFile;
-	valueInMemory = old->valueInMemory;
-	valueModified = old->valueModified;
-	Length = old->Length;
-	Xfer = old->Xfer;
-	if ( !old->elementList->empty() )
-	{
-	    DcmObject *oldDO;
-	    DcmObject *newDO;
-	    elementList->seek( ELP_first );
-	    old->elementList->seek( ELP_first );
-	    do {
-		oldDO = old->elementList->get();
-		newDO = DcmItem::copyDcmObject( oldDO );
-
-		elementList->insert( newDO, ELP_next );
-	    } while ( old->elementList->seek( ELP_next ) );
-	}
-    }
-    else
-    {
-        cerr << "Warning: DcmDataset: wrong use of Copy-Constructor"
-             << endl;
-    }
-Edebug(());
-
-}
-
-
-// ********************************
-
-
-DcmDataset::DcmDataset( const DcmDataset &oldDset )
-    : DcmItem( InternalUseTag )
+DcmDataset::DcmDataset( const DcmDataset &old )
+    : DcmItem( old )
 {
 Bdebug((5, "dcdatset:DcmDataset::DcmDataset(DcmDataset&)" ));
 debug(( 8, "Object pointer this=0x%p", this ));
-debug(( 5, "ident()=%d", oldDset.ident() ));
+debug(( 5, "ident()=%d", old.ident() ));
 
-    if ( oldDset.ident() == EVR_dataset )
-    {
-	DcmDataset const *old = &oldDset;
-	*Tag = *old->Tag;
-	iDS = old->iDS;
-	offsetInFile  = old->offsetInFile;
-	valueInMemory = old->valueInMemory;
-	valueModified = old->valueModified;
-	Length = old->Length;
-	Xfer = old->Xfer;
-	if ( !old->elementList->empty() )
-	{
-	    DcmObject *oldDO;
-	    DcmObject *newDO;
-	    elementList->seek( ELP_first );
-	    old->elementList->seek( ELP_first );
-	    do {
-		oldDO = old->elementList->get();
-		newDO = DcmItem::copyDcmObject( oldDO );
-
-		elementList->insert( newDO, ELP_next );
-	    } while ( old->elementList->seek( ELP_next ) );
-	}
-    }
-    else
-    {
-        cerr << "Warning: DcmDataset: wrong use of Copy-Constructor"
-             << endl;
-    }
 Edebug(());
 
 }
@@ -181,7 +97,7 @@ Edebug(());
 // ********************************
 
 
-EVR DcmDataset::ident() const
+DcmEVR DcmDataset::ident() const
 {
     return EVR_dataset;
 }
@@ -222,7 +138,7 @@ T_VR_UL DcmDataset::resolveAmbigous()
     DcmStack stack;
     int count = 0;
 
-    while ( (l_error=this->search( ET_PixelData, stack, ESM_afterStackTop, TRUE ))
+    while ( (l_error=this->search( DCM_PixelData, stack, ESM_afterStackTop, TRUE ))
 	    == EC_Normal )
     {
 	count++;
@@ -231,7 +147,7 @@ T_VR_UL DcmDataset::resolveAmbigous()
 	DcmObject *pixelObj = stack.top();
 
 #ifdef RESOLVE_AMBIGOUS_VR_OF_PIXELDATA
-	if ( this->search( ET_BitsAllocated0028,
+	if ( this->search( DCM_BitsAllocated,
 			   localStack,
 			   ESM_fromStackTop,
 			   FALSE )

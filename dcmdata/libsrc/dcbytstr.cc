@@ -10,14 +10,12 @@
  *
  *
  * Last Update:   $Author: hewett $
- * Revision:      $Revision: 1.1 $
+ * Revision:      $Revision: 1.2 $
  * Status:	  $State: Exp $
  *
  */
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
-#endif
+#include "osconfig.h"    /* make sure OS specific configuration is included first */
 
 #include <string.h>
 #include <stdio.h>
@@ -31,29 +29,10 @@
 
 
 
-
 // ********************************
 
 
-DcmByteString::DcmByteString( DcmTag &tag )
-    : DcmElement( tag )
-{
-Bdebug((6, "dcbytstr:DcmByteString::DcmByteString(DcmTag&)" ));
-debug(( 8, "Object pointer this=0x%p", this ));
-
-    ByteStringValue = (char*)NULL;
-    paddingChar = ' ';
-    maxLength = UNDEF_LEN;
-    realLength = 0;
-Edebug(());
-
-}
-
-
-// ********************************
-
-
-DcmByteString::DcmByteString( DcmTag &tag,
+DcmByteString::DcmByteString( const DcmTag &tag,
 			      T_VR_UL len,
 			      iDicomStream *iDStream )
     : DcmElement( tag, len, iDStream )
@@ -74,8 +53,8 @@ Edebug(());
 // ********************************
 
 
-DcmByteString::DcmByteString( const DcmObject &oldObj, EVR oldIdent )
-    : DcmElement( InternalUseTag )
+DcmByteString::DcmByteString( const DcmByteString& old, DcmEVR oldIdent )
+    : DcmElement( old )
 {
 Bdebug((6, "dcbytstr:DcmByteString::DcmByteString(DcmObject&,oldIdent=%d)",
 	   oldIdent ));
@@ -83,18 +62,11 @@ debug(( 8, "Object pointer this=0x%p", this ));
 
     paddingChar = ' ';
     maxLength = UNDEF_LEN;
-    if ( oldObj.ident() == oldIdent )
+    realLength = 0;
+    if ( old.ident() == oldIdent )
     {
-	DcmByteString const *old = (DcmByteString const *)&oldObj;
-	*Tag = *old->Tag;
-	iDS = old->iDS;
-	offsetInFile  = old->offsetInFile;
-	valueInMemory = old->valueInMemory;
-	valueModified = old->valueModified;
-	Length = old->Length;
-	realLength = old->realLength;
-	Xfer = old->Xfer;
-	if ( old->ByteStringValue == (char*)NULL )
+	realLength = old.realLength;
+	if ( old.ByteStringValue == (char*)NULL )
 	{
 	    if ( valueInMemory )
 		Length = 0;
@@ -111,7 +83,7 @@ debug(( 8, "Object pointer this=0x%p", this ));
 	{
 	    ByteStringValue = new char[ Length + 1 ];
 	    memcpy( ByteStringValue,
-		    old->ByteStringValue,
+		    old.ByteStringValue,
 		    (int)Length + 1 );
 	}
     }
@@ -182,7 +154,7 @@ T_VR_UL DcmByteString::getVM()
     {
 	vm = 1;
 	char c;
-	while ((c = *s++))
+	while ((c = *s++) != 0)
 	    if ( c == '\\' )
 		vm++;
     }
@@ -519,7 +491,8 @@ Edebug(());
 // ********************************
 
 
-E_Condition DcmByteString::put( char *bytestringvalue )
+E_Condition 
+DcmByteString::put( const char *bytestringvalue )
 {
     errorFlag = EC_Normal;
     if ( ByteStringValue != (char*)NULL )
@@ -547,7 +520,8 @@ E_Condition DcmByteString::put( char *bytestringvalue )
 // ********************************
 
 
-char* DcmByteString::get()
+const char* 
+DcmByteString::get()
 {
     errorFlag = EC_Normal;
     if ( valueInMemory == FALSE )
@@ -606,7 +580,7 @@ debug(( 3, "Tag=(0x%4.4x,0x%4.4x) \"%s\" \"%s\"",
 	    while ( field < num )
 	    {
 		T_VR_UL fieldlen = 0;
-		while ( (c = ByteStringValue[pos++]) && c != '\\' )
+		while ( ((c = ByteStringValue[pos++]) != 0) && (c != '\\') )
 		{
 		    if ( fieldlen < maxLength )
 			tempstr[temppos++] = c;
@@ -634,7 +608,7 @@ debug(( 3, "Tag=(0x%4.4x,0x%4.4x) \"%s\" \"%s\"",
 	    while ( field < num )
 	    {
 		T_VR_UL fieldlen = 0;
-		while ( (c = ByteStringValue[pos++]) && c != '\\' )
+		while ( ((c = ByteStringValue[pos++]) != 0) && (c != '\\') )
 		{
 		    fieldlen++;
 		}
@@ -654,77 +628,6 @@ Edebug(());
 
     return errorFlag;
 }
-
-
-// ********************************
-
-
-/*
-// Version mit String():
-
-E_Condition DcmByteString::verify( BOOL autocorrect )
-{
-Bdebug((3, "dcbytstr:DcmByteString::verify(autocorrect=%d)", autocorrect ));
-debug(( 3, "Tag=(0x%4.4x,0x%4.4x) \"%s\" \"%s\"",
-	   getGTag(), getETag(),
-           DcmVR(getVR()).getVRName(), getTag().getTagName() ));
-
-    errorFlag = EC_Normal;
-    if ( Length == 0 )
-    {
-Edebug(());
-	return errorFlag;
-    }
-
-    int i;
-    String SV( ByteStringValue );
-    T_VR_UL vm = SV.index( '\\' );
-    vm = ( vm == -1 && !SV.empty()
-	   ? 1
-	   : vm + 1
-	 );
-    String arraySV[vm+1];
-cerr.form( "Info: Tag=(0x%4.4x,0x%4.4x) VM=%d &arraySV=%p",
-	   getGTag(), getETag(), vm, &arraySV );
-cerr << endl;
-    T_VR_UL newvm = split( SV, arraySV, vm, String('\\') );
-    for ( i=0; i<newvm; i++ )
-    {
-	char *s = arraySV[i];
-cerr.form( "arraySV[%d]=\"%s\" len=%d", i, s, arraySV[i].length() );
-cerr << endl;
-	if ( arraySV[i].length() > maxLength )
-	    errorFlag = EC_CorruptedData;
-    }
-
-    if ( autocorrect == TRUE && errorFlag == EC_CorruptedData )
-    {
-	for ( i=0; i<newvm; i++ )
-	{
-	    char *s = arraySV[i];
-cerr.form( "arraySV[%d]=\"%s\" len=%d", i, s, arraySV[i].length() );
-cerr << endl;
-	    if ( arraySV[i].length() > maxLength )
-	    {
-		arraySV[i].del( maxLength, arraySV[i].length() - maxLength );
-	    }
-	}
-	char *newValue = join( arraySV, newvm, String('\\') );
-	delete ByteStringValue;
-	ByteStringValue = newValue;
-        valueModified = TRUE;
-        deAlignValue();                  // einziger Aufruf von deAlignValue
-    }
-
-debug(( 3, "Info: vm=%d, newvm=%d, VM=%d", vm, newvm, getVM() ));
-Vdebug((3, errorFlag!=EC_Normal,
-	   "Illegal values in Tag=(0x%4.4x,0x%4.4x) VM=%d",
-	   getGTag(), getETag(), getVM() ));
-Edebug(());
-
-    return errorFlag;
-}
-*/
 
 
 // ********************************

@@ -10,15 +10,13 @@
  *
  * 
  * Last Update:	  $Author: hewett $
- * Revision:      $Revision: 1.1 $
+ * Revision:      $Revision: 1.2 $
  * Status:        $State: Exp $
  *
  */
 
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
-#endif
+#include "osconfig.h"    /* make sure OS specific configuration is included first */
 
 #include <stdio.h>
 #include <stdlib.h>
@@ -65,7 +63,7 @@ int debugLevel = DEBUGLEVEL;
 // ********************************
 
 
-void printtab( int lev )
+static void printtab( int lev )
 {
 #ifdef DEBUG_SHOW_LEVEL
     if ( debugLevel >= 9 )                 // for debugging the debug-routines

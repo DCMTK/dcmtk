@@ -12,38 +12,38 @@ top_srcdir=@top_srcdir@
 configdir=@top_srcdir@/@configdir@
 
 # Special defines for the Library, define them in LOCALDEFS
-#	DICOMDIR_WITHOUT_BACKUP	no Backup for DICOMDIR files. default: not defined
+#   DICOMDIR_WITHOUT_BACKUP
+#	no Backup for DICOMDIR files. default: not defined
 #   RESOLVE_AMBIGOUS_VR_OF_PIXELDATA
-#							resolves VR and converts the data to the new VR
-#							(not DICOM standard compatible) default: not defined
-#   DCMCODE_OLD_EX_COMPATIBILITY
-#							reads old DCMCODE written DICOM files with explicit
-#							length transfer syntax, these files do not conform 
-#							with the standard. default: not defined
+#	resolves VR and converts the data to the new VR
+#	(not DICOM standard compatible) default: not defined
 
 LOCALDEFS= 
 
+DICTFILE=dicom.dic
+
 include $(configdir)/@common_makefile@
 
-dicomdir= $(srcdir)/dicomdir
+support_progs= mkdeftag mkdictbi
 
-dicomdir_objs= $(dicomdir)/dcdirrec.o $(dicomdir)/dcdirrcf.o \
-	$(dicomdir)/dcdicdir.o 
+support_objs= mkdeftag.o mkdictbi.o
 
-objs= 	dcmodtbl.o dcpixseq.o dcpxitem.o \
-	dcstack.o dclist.o dcswap.o dcstream.o dctag.o dcvr.o dcxfer.o \
+dictobjs=	dctagkey.o dcdicent.o dcdict.o dcdictbi.o \
+		dcentset.o dcentbst.o dcvr.o
+
+objs= 	dcpixseq.o dcpxitem.o dcuid.o dcerror.o \
+	dcstack.o dclist.o dcswap.o dcstream.o dctag.o dcxfer.o \
 	dcdebug.o dcobject.o dcelem.o dcitem.o dcmetinf.o dcdatset.o \
 	dcsequen.o dcfilefo.o dcbytstr.o dcvrae.o dcvras.o dcvrcs.o \
 	dcvrda.o dcvrds.o dcvrdt.o dcvris.o dcvrtm.o dcvrui.o \
 	dcchrstr.o dcvrlo.o dcvrlt.o dcvrpn.o dcvrsh.o dcvrst.o dcvrobow.o \
 	dcvrat.o dcvrss.o dcvrus.o dcvrsl.o dcvrul.o dcvrulup.o dcvrfl.o \
-	dcvrfd.o 
+	dcvrfd.o dcdirrec.o dcdirrcf.o dcdicdir.o \
+	$(dictobjs)
+
 
 all: libdcmdata.a
 
-
-$(dicomdir_objs):
-	(cd $(dicomdir); $(MAKE) LOCALDEFS="$(LOCALDEFS)" LOCALDEBUG="$(LOCALDEBUG)" all)
 
 install: all
 	$(configdir)/mkinstalldirs $(libdir)
@@ -51,22 +51,46 @@ install: all
 
 
 clean:
-	(cd $(dicomdir); $(MAKE) clean)
-	rm -f $(objs) libdcmdata.a $(TRASH)
+	rm -f $(support_progs) $(support_objs) 
+	rm -f $(objs) 
+	rm -f libdcmdata.a 
+	rm -f $(TRASH)
 
-distclean: 
-	(cd $(dicomdir); $(MAKE) distclean) 
-	rm -f $(objs) libdcmdata.a $(DISTTRASH)
+distclean: nobuiltindict clean
+	rm -f $(DISTTRASH) 
 
 
-libdcmdata.a: $(objs) $(dicomdir_objs)
-	$(AR) $(ARFLAGS) $@ $(objs) $(dicomdir_objs)
+libdcmdata.a: $(objs)
+	$(AR) $(ARFLAGS) $@ $(objs)
 	$(RANLIB) $@
 
 
+mkdeftag:	mkdeftag.o $(dictobjs)
+	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ $^ $(LOCALLIBS) $(LIBS)
+
+mkdictbi:	mkdictbi.o $(dictobjs)
+	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ $^ $(LOCALLIBS) $(LIBS)
+
+
+# Generate a new include file of defined tags
+
+gendeftag:	mkdeftag $(DICTFILE)
+	`pwd`/mkdeftag `pwd`/$(DICTFILE) > $(top_srcdir)/include/dcdeftag.h
+
+# Generate a builtin data dictionary from $(DICTFILE)
+
+builtindict:	nobuiltindict mkdictbi $(DICTFILE)
+	`pwd`/mkdictbi `pwd`/$(DICTFILE) > dcdictbi.cc
+
+# Generate an empty builtin data dictionary
+ 
+nobuiltindict:
+	cp dcdictbi.nul dcdictbi.cc
+
+# Dependencies
+
 dependencies:
-	$(CXX) -MM $(includes) *.cc  > $(DEP)
-	(cd $(dicomdir); touch $(DEP); $(MAKE) dependencies)
+	$(CXX) -MM $(defines) $(includes) $(CPPFLAGS) $(CXXFLAGS) *.cc  > $(DEP)
 
 $(objs): config.h
 

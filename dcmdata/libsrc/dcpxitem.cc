@@ -10,16 +10,14 @@
  *
  *
  * Last Update:   $Author: hewett $
- * Revision:      $Revision: 1.1 $
+ * Revision:      $Revision: 1.2 $
  * Status:	  $State: Exp $
  *
  */
 
 
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
-#endif
+#include "osconfig.h"    /* make sure OS specific configuration is included first */
 
 #include <string.h>
 #include <stdlib.h>
@@ -41,7 +39,7 @@ DcmPixelItem::DcmPixelItem()
 Bdebug((5, "dcpxitem:DcmPixelItem::DcmPixelItem()" ));
 debug(( 8, "Object pointer this=0x%p", this ));
 
-    PixelValue = (U_CHAR*)NULL;
+    PixelValue = (BYTE*)NULL;
 Edebug(());
 
 }
@@ -50,22 +48,7 @@ Edebug(());
 // ********************************
 
 
-DcmPixelItem::DcmPixelItem( DcmTag &tag )
-    : DcmItem( tag )
-{
-Bdebug((5, "dcpxitem:DcmPixelItem::DcmPixelItem(DcmTag&)" ));
-debug(( 8, "Object pointer this=0x%p", this ));
-
-    PixelValue = (U_CHAR*)NULL;
-Edebug(());
-
-}
-
-
-// ********************************
-
-
-DcmPixelItem::DcmPixelItem( DcmTag &tag,
+DcmPixelItem::DcmPixelItem( const DcmTag &tag,
                             T_VR_UL len,
                             iDicomStream *iDStream )
     : DcmItem( tag, len, iDStream )
@@ -74,7 +57,7 @@ Bdebug((5, "dcpxitem:DcmPixelItem::DcmPixelItem(DcmTag&,len=%ld,*iDS)",
 	   len ));
 debug(( 8, "Object pointer this=0x%p", this ));
 
-    PixelValue = (U_CHAR*)NULL;
+    PixelValue = (BYTE*)NULL;
 Edebug(());
 
 }
@@ -83,86 +66,24 @@ Edebug(());
 // ********************************
 
 
-DcmPixelItem::DcmPixelItem( const DcmObject &newObj )
-    : DcmItem( InternalUseTag )
-{
-Bdebug((5, "dcpxitem:DcmPixelItem::DcmPixelItem(DcmObject&)"));
-debug(( 8, "Object pointer this=0x%p", this ));
-
-    if ( newObj.ident() == EVR_pixelItem )
-    {
-        DcmPixelItem const *old = (DcmPixelItem const *)&newObj;
-	*Tag = *old->Tag;
-	iDS = old->iDS;
-	offsetInFile  = old->offsetInFile;
-	valueInMemory = old->valueInMemory;
-	valueModified = old->valueModified;
-	Length = old->Length;
-	Xfer = old->Xfer;
-	if (	Length == 0
-             || old->PixelValue == (U_CHAR*)NULL )
-	{
-	    if ( valueInMemory )
-		Length = 0;
-            PixelValue = (U_CHAR*)NULL;
-	}
-	else
-	{
-            PixelValue = new U_CHAR[ Length ];
-            memcpy( PixelValue,
-                    old->PixelValue,
-		    (int)Length );
-	}
-    }
-    else
-    {
-        PixelValue = (U_CHAR*)NULL;
-	errorFlag = EC_IllegalCall;
-        cerr << "Warning: DcmPixelItem: wrong use of Copy-Constructor"
-             << endl;
-    }
-Edebug(());
-
-}
-
-
-// ********************************
-
-
-DcmPixelItem::DcmPixelItem( const DcmPixelItem &newPixIt )
-    : DcmItem( InternalUseTag )
+DcmPixelItem::DcmPixelItem( const DcmPixelItem &old )
+    : DcmItem( old )
 {
 Bdebug((5, "dcpxitem:DcmPixelItem::DcmPixelItem(DcmPixelItem&)"));
 debug(( 8, "Object pointer this=0x%p", this ));
 
-    if ( newPixIt.ident() == EVR_pixelItem )
+    if ( old.ident() == EVR_pixelItem )
     {
-        DcmPixelItem const *old = &newPixIt;
-	*Tag = *old->Tag;
-	iDS = old->iDS;
-	offsetInFile  = old->offsetInFile;
-	valueInMemory = old->valueInMemory;
-	valueModified = old->valueModified;
-	Length = old->Length;
-	Xfer = old->Xfer;
-	if (	Length == 0
-             || old->PixelValue == (U_CHAR*)NULL )
-	{
+	if (Length == 0 || old.PixelValue == (BYTE*)NULL ) {
 	    if ( valueInMemory )
 		Length = 0;
-            PixelValue = (U_CHAR*)NULL;
+            PixelValue = (BYTE*)NULL;
+	} else {
+            PixelValue = new BYTE[ Length ];
+            memcpy( PixelValue, old.PixelValue, (int)Length );
 	}
-	else
-	{
-            PixelValue = new U_CHAR[ Length ];
-            memcpy( PixelValue,
-                    old->PixelValue,
-		    (int)Length );
-	}
-    }
-    else
-    {
-        PixelValue = (U_CHAR*)NULL;
+    } else {
+        PixelValue = (BYTE*)NULL;
 	errorFlag = EC_IllegalCall;
         cerr << "Warning: DcmPixelItem: wrong use of Copy-Constructor"
              << endl;
@@ -180,7 +101,7 @@ DcmPixelItem::~DcmPixelItem()
 Bdebug((5, "dcpxitem:DcmPixelItem::~DcmPixelItem()"));
 debug(( 8, "Object pointer this=0x%p", this ));
 
-    if ( PixelValue != (U_CHAR*)NULL )
+    if ( PixelValue != (BYTE*)NULL )
         delete PixelValue;
 Edebug(());
 
@@ -190,7 +111,7 @@ Edebug(());
 // ********************************
 
 
-EVR DcmPixelItem::ident() const
+DcmEVR DcmPixelItem::ident() const
 {
     return EVR_pixelItem;
 }
@@ -201,15 +122,15 @@ EVR DcmPixelItem::ident() const
 
 void DcmPixelItem::print( int level )
 {
-    if ( PixelValue != (U_CHAR*)NULL )
+    if ( PixelValue != (BYTE*)NULL )
     {
 	T_VR_UL mlen = (100 < Length) ? 100 : Length;
 	char *ch_words;
 	char *tmp = ch_words = new char[ mlen*5 + 6 ];
 	unsigned int i;
 
-        U_CHAR *tchar = PixelValue;
-        for ( i=0; i<mlen/sizeof(U_CHAR); i++)
+        BYTE *tchar = PixelValue;
+        for ( i=0; i<mlen/sizeof(BYTE); i++)
         {
             sprintf( tmp, "%2.2x\\", *tchar);
             tmp += 3;
@@ -252,12 +173,12 @@ E_Condition DcmPixelItem::alignValue()
 	//	    z.B. in read() und put()
 
     E_Condition l_error = EC_Normal;
-    if ( Length != 0L && PixelValue != (U_CHAR*)NULL )
+    if ( Length != 0L && PixelValue != (BYTE*)NULL )
     {
 	T_VR_UL Length_al = ((Length+1) & 0xfffffffe);
 	if ( Length < Length_al )
 	{
-            U_CHAR *str = PixelValue;
+            BYTE *str = PixelValue;
 	    str[Length] = '\0';
 	    Length = Length_al;
 	}
@@ -281,9 +202,9 @@ Vdebug((1, !iDS->good(), "Warning: before read: iDS->rdstate()=(0x%x)",
     if ( iDS->good() && iDS->fromFile() )
     {
         iDS->setDataByteOrder( xfer );
-        if ( PixelValue != (U_CHAR*)NULL )
+        if ( PixelValue != (BYTE*)NULL )
             delete PixelValue;
-        PixelValue = new U_CHAR[ Length + 1 ];
+        PixelValue = new BYTE[ Length + 1 ];
 	actpos = iDS->tellg();
 	iDS->seekg( offsetInFile );
         iDS->read( PixelValue, (int)Length );        // Warnung: evtl. int=16bit
@@ -335,9 +256,9 @@ Bdebug((3, "dcpxitem:DcmPixelItem::read(xfer=%d,gltype=%d)",
 	else
 	{
             iDS->setDataByteOrder( xfer );
-            if ( PixelValue != (U_CHAR*)NULL )
+            if ( PixelValue != (BYTE*)NULL )
                 delete PixelValue;
-            PixelValue = new U_CHAR[ Length + 1 ];
+            PixelValue = new BYTE[ Length + 1 ];
             iDS->read( PixelValue, (int)Length ); // Wrn.: evtl. int=16bit
 	    if ( Length != 0 )
                 Length = iDS->gcount();           // falls Datenblock zuende
@@ -376,9 +297,9 @@ Bdebug((3, "dcpxitem:DcmPixelItem::readBlock(xfer=%d,gltype=%d)",
 	if ( readState() == ERW_init )
 	{
             iDS->setDataByteOrder( xfer );
-            if ( PixelValue != (U_CHAR*)NULL )
+            if ( PixelValue != (BYTE*)NULL )
                 delete PixelValue;
-            PixelValue = new U_CHAR[ Length + 1 ];
+            PixelValue = new BYTE[ Length + 1 ];
 	    rdStat = ERW_inWork;
 	}
 	T_VR_UL len = (Length - bytesRead) <= iDS->buffered()
@@ -428,7 +349,7 @@ Bdebug((3, "dcpxitem:DcmPixelItem::write((&oDS,oxfer=%d,enctype=%d,gltype=%d)",
 	{					// Hier Daten aus iDS nachladen
 	    errorFlag = readValueField( Xfer ); // Xfer gilt nur fuer iDS
 	}
-        if ( PixelValue == (U_CHAR*)NULL )
+        if ( PixelValue == (BYTE*)NULL )
 	    Length = 0; 		  // Daten konnten nicht gelesen werden
 
 	T_VR_UL written_bytes;
@@ -436,7 +357,7 @@ Bdebug((3, "dcpxitem:DcmPixelItem::write((&oDS,oxfer=%d,enctype=%d,gltype=%d)",
 debug(( 3, "Header_Bytes_written              =[0x%8.8x]", written_bytes ));
 Vdebug((3, errorFlag, "Warning: error on writing header=(%d)", errorFlag ));
 
-        if ( PixelValue != (U_CHAR*)NULL && errorFlag == EC_Normal )
+        if ( PixelValue != (BYTE*)NULL && errorFlag == EC_Normal )
 	{
             oDS.write( PixelValue, (int)Length );
                                             // Warnung: evtl. int=16bit
@@ -480,7 +401,7 @@ Bdebug((3, "dcpxitem:DcmPixelItem::write(&oDS,oxfer=%d,enctype=%d,gltype=%d)",
 		    {			      // Hier Daten aus iDS nachladen
 			errorFlag = readValueField( Xfer );
 		    }			      // Xfer gilt nur fuer iDS
-                    if ( PixelValue == (U_CHAR*)NULL )
+                    if ( PixelValue == (BYTE*)NULL )
 			Length = 0;	   // Daten konnten nicht gelesen werden
 
 		    T_VR_UL written_bytes = 0;
@@ -493,7 +414,7 @@ Bdebug((3, "dcpxitem:DcmPixelItem::write(&oDS,oxfer=%d,enctype=%d,gltype=%d)",
 		else
 		    errorFlag = EC_InvalidStream;
 	    }
-            if (    PixelValue != (U_CHAR*)NULL
+            if (    PixelValue != (BYTE*)NULL
 		 && errorFlag == EC_Normal
 		 && writeState() != ERW_init )
 	    {
@@ -525,21 +446,21 @@ Edebug(());
 // ********************************
 
 
-E_Condition DcmPixelItem::put( U_CHAR *bytevalue,
+E_Condition DcmPixelItem::put( BYTE *bytevalue,
                                T_VR_UL length )      // number of byte
 {
     errorFlag = EC_Normal;
-    if ( PixelValue != (U_CHAR*)NULL )
+    if ( PixelValue != (BYTE*)NULL )
         delete PixelValue;
     Length = ((length+1) & 0xfffffffe);
-    if ( bytevalue != (U_CHAR*)NULL )
+    if ( bytevalue != (BYTE*)NULL )
     {
-        PixelValue = new U_CHAR[ Length ];
+        PixelValue = new BYTE[ Length ];
         memcpy( PixelValue, bytevalue, (int)length );
     }
     else
     {
-        PixelValue = (U_CHAR*)NULL;
+        PixelValue = (BYTE*)NULL;
 	Length = 0;
 	errorFlag = EC_CorruptedData;
     }
@@ -553,14 +474,14 @@ E_Condition DcmPixelItem::put( U_CHAR *bytevalue,
 // ********************************
 
 
-U_CHAR* DcmPixelItem::getBytes()
+BYTE* DcmPixelItem::getBytes()
 {
     errorFlag = EC_Normal;
     if ( valueInMemory == FALSE )
     {					    // Hier Daten aus iDS nachladen
 	errorFlag = readValueField( Xfer ); // Xfer gilt nur fuer iDS
     }
-    if ( PixelValue == (U_CHAR*)NULL )
+    if ( PixelValue == (BYTE*)NULL )
 	Length = 0;			   // Daten konnten nicht gelesen werden
     return PixelValue;
 }
@@ -574,9 +495,9 @@ E_Condition DcmPixelItem::clear()
 Bdebug((2, "dcpxitem:DcmPixelItem::clear()"));
 
     errorFlag = EC_Normal;
-    if ( PixelValue != (U_CHAR*)NULL )
+    if ( PixelValue != (BYTE*)NULL )
         delete PixelValue;
-    PixelValue = (U_CHAR*)NULL;
+    PixelValue = (BYTE*)NULL;
     Length = 0;
 Edebug(());
 

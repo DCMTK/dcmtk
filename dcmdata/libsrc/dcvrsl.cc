@@ -10,7 +10,7 @@
  *
  *
  * Last Update:   $Author: hewett $
- * Revision:      $Revision: 1.1 $
+ * Revision:      $Revision: 1.2 $
  * Status:	  $State: Exp $
  *
  */
@@ -25,26 +25,10 @@
 #include "dcdebug.h"
 
 
-
 // ********************************
 
 
-DcmSignedLong::DcmSignedLong( DcmTag &tag )
-    : DcmElement( tag )
-{
-Bdebug((5, "dcvrsl:DcmSignedLong::DcmSignedLong(DcmTag&)" ));
-debug(( 8, "Object pointer this=0x%p", this ));
-
-    SigLongValue = (T_VR_SL*)NULL;
-Edebug(());
-
-}
-
-
-// ********************************
-
-
-DcmSignedLong::DcmSignedLong( DcmTag &tag,
+DcmSignedLong::DcmSignedLong( const DcmTag &tag,
 			      T_VR_UL len,
 			      iDicomStream *iDStream )
     : DcmElement( tag, len, iDStream )
@@ -62,92 +46,29 @@ Edebug(());
 // ********************************
 
 
-DcmSignedLong::DcmSignedLong( const DcmObject &oldObj )
-    : DcmElement( InternalUseTag )
-{
-Bdebug((5, "dcvrsl:DcmSignedLong::DcmSignedLong(DcmObject&)" ));
-debug(( 8, "Object pointer this=0x%p", this ));
-
-    if ( oldObj.ident() == EVR_SL )
-    {
-        DcmSignedLong const *old = (DcmSignedLong const *)&oldObj;
-        *Tag = *old->Tag;
-        iDS = old->iDS;
-        offsetInFile  = old->offsetInFile;
-        valueInMemory = old->valueInMemory;
-        valueModified = old->valueModified;
-        Length = old->Length;
-        Xfer = old->Xfer;
-        if (    Length == 0
-             || old->SigLongValue == (T_VR_SL*)NULL )
-        {
-            if ( valueInMemory )
-                Length = 0;
-            SigLongValue = (T_VR_SL*)NULL;
-        }
-        else
-        {
-            SigLongValue = new T_VR_SL[ Length / sizeof(T_VR_SL) ];
-            memcpy( SigLongValue,
-                    old->SigLongValue,
-                    (int)Length );
-        }
-    }
-    else
-    {
-        SigLongValue = (T_VR_SL*)NULL;
-        errorFlag = EC_IllegalCall;
-        cerr << "Warning: DcmSignedLong: wrong use of Copy-Constructor"
-             << endl;
-    }
-Edebug(());
-
-}
-
-
-// ********************************
-
-
-DcmSignedLong::DcmSignedLong( const DcmSignedLong &newSL )
-    : DcmElement( InternalUseTag )
+DcmSignedLong::DcmSignedLong( const DcmSignedLong& old )
+    : DcmElement( old )
 {
 Bdebug((5, "dcvrsl:DcmSignedLong::DcmSignedLong(DcmSignedLong&)" ));
 debug(( 8, "Object pointer this=0x%p", this ));
 
-    if ( newSL.ident() == EVR_SL )
+    if ( old.ident() == EVR_SL )
     {
-        DcmSignedLong const *old = &newSL;
-        *Tag = *old->Tag;
-        iDS = old->iDS;
-        offsetInFile  = old->offsetInFile;
-        valueInMemory = old->valueInMemory;
-        valueModified = old->valueModified;
-        Length = old->Length;
-        Xfer = old->Xfer;
-        if (    Length == 0
-             || old->SigLongValue == (T_VR_SL*)NULL )
-        {
+        if ( Length == 0 || old.SigLongValue == (T_VR_SL*)NULL ) {
             if ( valueInMemory )
                 Length = 0;
             SigLongValue = (T_VR_SL*)NULL;
-        }
-        else
-        {
+        } else {
             SigLongValue = new T_VR_SL[ Length / sizeof(T_VR_SL) ];
-            memcpy( SigLongValue,
-                    old->SigLongValue,
-                    (int)Length );
+            memcpy( SigLongValue, old.SigLongValue, (int)Length );
         }
-    }
-    else
-    {
+    } else {
         SigLongValue = (T_VR_SL*)NULL;
         errorFlag = EC_IllegalCall;
         cerr << "Warning: DcmSignedLong: wrong use of Copy-Constructor"
              << endl;
     }
 Edebug(());
-
 }
 
 
@@ -169,7 +90,7 @@ Edebug(());
 // ********************************
 
 
-EVR DcmSignedLong::ident() const
+DcmEVR DcmSignedLong::ident() const
 {
     return EVR_SL;
 }
@@ -189,7 +110,7 @@ void DcmSignedLong::print( int level )
 
 	for ( i=0; i<( Length/sizeof(T_VR_SL) ); i++ )
 	{
-	    sprintf( tmp, "%ld\\", *tattr );
+	    sprintf( tmp, "%ld\\", (long)*tattr );
 	    tmp += strlen(tmp);
 	    tattr++;
 	}

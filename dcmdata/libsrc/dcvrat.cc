@@ -10,15 +10,13 @@
  *
  *
  * Last Update:   $Author: hewett $
- * Revision:      $Revision: 1.1 $
+ * Revision:      $Revision: 1.2 $
  * Status:	  $State: Exp $
  *
  */
 
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
-#endif
+#include "osconfig.h"    /* make sure OS specific configuration is included first */
 
 #include <stdio.h>
 #include <string.h>
@@ -32,22 +30,7 @@
 // ********************************
 
 
-DcmAttributeTag::DcmAttributeTag( DcmTag &tag )
-    : DcmElement( tag )
-{
-Bdebug((5, "dcvrat:DcmAttributeTag::DcmAttributeTag(DcmTag&)" ));
-debug(( 8, "Object pointer this=0x%p", this ));
-
-    AttrValue = (T_VR_US*)NULL;
-Edebug(());
-
-}
-
-
-// ********************************
-
-
-DcmAttributeTag::DcmAttributeTag( DcmTag &tag,
+DcmAttributeTag::DcmAttributeTag( const DcmTag &tag,
 				  T_VR_UL len,
 				  iDicomStream *iDStream )
     : DcmElement( tag, len, iDStream )
@@ -65,70 +48,15 @@ Edebug(());
 // ********************************
 
 
-DcmAttributeTag::DcmAttributeTag( const DcmObject &oldObj )
-    : DcmElement( InternalUseTag )
-{
-Bdebug((5, "dcvrat:DcmAttributeTag::DcmAttributeTag(DcmObject&)" ));
-debug(( 8, "Object pointer this=0x%p", this ));
-
-    if ( oldObj.ident() == EVR_AT )
-    {
-        DcmAttributeTag const *old = (DcmAttributeTag const *)&oldObj;
-        *Tag = *old->Tag;
-        iDS = old->iDS;
-        offsetInFile  = old->offsetInFile;
-        valueInMemory = old->valueInMemory;
-        valueModified = old->valueModified;
-        Length = old->Length;
-        Xfer = old->Xfer;
-        if (    Length == 0
-             || old->AttrValue == (T_VR_US*)NULL )
-        {
-            if ( valueInMemory )
-                Length = 0;
-            AttrValue = (T_VR_US*)NULL;
-        }
-        else
-        {
-            AttrValue = new T_VR_US[ Length / sizeof(T_VR_US) ];
-            memcpy( AttrValue,
-                    old->AttrValue,
-                    (int)Length );
-        }
-    }
-    else
-    {
-        AttrValue = (T_VR_US*)NULL;
-        errorFlag = EC_IllegalCall;
-        cerr << "Warning: DcmAttributeTag: wrong use of Copy-Constructor"
-             << endl;
-    }
-Edebug(());
-
-}
-
-
-// ********************************
-
-
-DcmAttributeTag::DcmAttributeTag( const DcmAttributeTag &newAT )
-    : DcmElement( InternalUseTag )
+DcmAttributeTag::DcmAttributeTag( const DcmAttributeTag& old )
+    : DcmElement( old )
 {
 Bdebug((5, "dcvrat:DcmAttributeTag::DcmAttributeTag(DcmAttributeTag&)" ));
 debug(( 8, "Object pointer this=0x%p", this ));
 
-    if ( newAT.ident() == EVR_AT )
+    if ( old.ident() == EVR_AT )
     {
-        DcmAttributeTag const *old = &newAT;
-        *Tag = *old->Tag;
-        iDS = old->iDS;
-        offsetInFile  = old->offsetInFile;
-        valueInMemory = old->valueInMemory;
-        valueModified = old->valueModified;
-        Length = old->Length;
-        Xfer = old->Xfer;
-        if (    Length == 0
-             || old->AttrValue == (T_VR_US*)NULL )
+        if ( Length == 0 || old.AttrValue == (T_VR_US*)NULL )
         {
             if ( valueInMemory )
                 Length = 0;
@@ -138,7 +66,7 @@ debug(( 8, "Object pointer this=0x%p", this ));
         {
             AttrValue = new T_VR_US[ Length / sizeof(T_VR_US) ];
             memcpy( AttrValue,
-                    old->AttrValue,
+                    old.AttrValue,
                     (int)Length );
         }
     }
@@ -172,7 +100,7 @@ Edebug(());
 // ********************************
 
 
-EVR DcmAttributeTag::ident() const
+DcmEVR DcmAttributeTag::ident() const
 {
     return EVR_AT;
 }
@@ -612,7 +540,7 @@ DcmTag DcmAttributeTag::get( T_VR_UL num )
     {
         if ( errorFlag == EC_Normal )
             errorFlag = EC_IllegalCall;
-        DcmTag returnTag( ET_UNKNOWN );
+        DcmTag returnTag;
         return returnTag;
     }
 }

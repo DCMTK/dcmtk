@@ -1,25 +1,27 @@
 /*
- *
- * Author: Gerd Ehlers      Created:  05-05-94
- *                          Modified: 02-07-95
- *
- * Module: dcvrobow.cc
- *
- * Purpose:
- * Implementation of class DcmOtherByteOtherWord
- *
- *
- * Last Update:   $Author: hewett $
- * Revision:      $Revision: 1.1 $
- * Status:	  $State: Exp $
- *
- */
+**
+** Author: Gerd Ehlers      Created:  05-05-94
+**                          Modified: 02-07-95
+**
+** Module: dcvrobow.cc
+**
+** Purpose:
+** Implementation of class DcmOtherByteOtherWord
+**
+**
+** Last Update:		$Author: hewett $
+** Update Date:		$Date: 1995-11-23 17:03:07 $
+** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcvrobow.cc,v $
+** CVS/RCS Revision:	$Revision: 1.2 $
+** Status:		$State: Exp $
+**
+** CVS/RCS Log at end of file
+**
+*/
 
 
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
-#endif
+#include "osconfig.h"    /* make sure OS specific configuration is included first */
 
 #include <string.h>
 #include <stdlib.h>
@@ -36,24 +38,7 @@
 // ********************************
 
 
-DcmOtherByteOtherWord::DcmOtherByteOtherWord( DcmTag &tag )
-    : DcmElement( tag )
-{
-Bdebug((5, "dcvrobow:DcmOtherByteOtherWord::DcmOtherByteOtherWord(DcmTag&)" ));
-debug(( 8, "Object pointer this=0x%p", this ));
-
-    OtherValue = NULL;
-    mustSwap = FALSE;
-    swappedToWord = FALSE;
-Edebug(());
-
-}
-
-
-// ********************************
-
-
-DcmOtherByteOtherWord::DcmOtherByteOtherWord( DcmTag &tag,
+DcmOtherByteOtherWord::DcmOtherByteOtherWord( const DcmTag &tag,
 					      T_VR_UL len,
 					      iDicomStream *iDStream )
     : DcmElement( tag, len, iDStream )
@@ -73,109 +58,35 @@ Edebug(());
 // ********************************
 
 
-DcmOtherByteOtherWord::DcmOtherByteOtherWord( const DcmObject &oldObj )
-    : DcmElement( InternalUseTag )
-{
-Bdebug((5, "dcvrobow:DcmOtherByteOtherWord::DcmOtherByteOtherWord(DcmObject&)"));
-debug(( 8, "Object pointer this=0x%p", this ));
-
-    if (    oldObj.ident() == EVR_op
-	 || oldObj.ident() == EVR_OB
-	 || oldObj.ident() == EVR_OW
-	 || oldObj.ident() == EVR_oa
-	 || oldObj.ident() == EVR_oc
-	 || oldObj.ident() == EVR_RET
-	 || oldObj.ident() == EVR_UNKNOWN
-       )
-    {
-	DcmOtherByteOtherWord const *old
-				     = (DcmOtherByteOtherWord const *)&oldObj;
-	*Tag = *old->Tag;
-	iDS = old->iDS;
-	offsetInFile  = old->offsetInFile;
-	valueInMemory = old->valueInMemory;
-	valueModified = old->valueModified;
-	mustSwap      = old->mustSwap;
-	swappedToWord = old->swappedToWord;
-	Length = old->Length;
-	Xfer = old->Xfer;
-	if (	Length == 0
-	     || old->OtherValue == NULL )
-	{
-	    if ( valueInMemory )
-		Length = 0;
-	    OtherValue = NULL;
-	}
-	else
-	{
-	    OtherValue = new U_CHAR[ Length ];
-	    memcpy( OtherValue,
-		    old->OtherValue,
-		    (int)Length );
-	}
-    }
-    else
-    {
-	OtherValue = NULL;
-	errorFlag = EC_IllegalCall;
-        cerr << "Warning: DcmOtherByteOtherWord: wrong use of Copy-Constructor"
-             << endl;
-    }
-Edebug(());
-
-}
-
-
-// ********************************
-
-
-DcmOtherByteOtherWord::DcmOtherByteOtherWord( const DcmOtherByteOtherWord &newObow )
-    : DcmElement( InternalUseTag )
+DcmOtherByteOtherWord::DcmOtherByteOtherWord( const DcmOtherByteOtherWord& old )
+    : DcmElement( old )
 {
 Bdebug((5, "dcvrobow:DcmOtherByteOtherWord::DcmOtherByteOtherWord("
            "DcmOtherByteOtherWord&)"));
 debug(( 8, "Object pointer this=0x%p", this ));
 
-    if (    newObow.ident() == EVR_op
-         || newObow.ident() == EVR_OB
-         || newObow.ident() == EVR_OW
-         || newObow.ident() == EVR_oa
-         || newObow.ident() == EVR_oc
-         || newObow.ident() == EVR_RET
-         || newObow.ident() == EVR_UNKNOWN
-       )
-    {
-        DcmOtherByteOtherWord const *old = &newObow;
-	*Tag = *old->Tag;
-	iDS = old->iDS;
-	offsetInFile  = old->offsetInFile;
-	valueInMemory = old->valueInMemory;
-	valueModified = old->valueModified;
-	mustSwap      = old->mustSwap;
-	swappedToWord = old->swappedToWord;
-	Length = old->Length;
-	Xfer = old->Xfer;
-	if (	Length == 0
-	     || old->OtherValue == NULL )
-	{
+    switch ( old.ident() ) {
+    case EVR_OB:
+    case EVR_OW:
+    case EVR_ox:
+    case EVR_UNKNOWN:
+	mustSwap      = old.mustSwap;
+	swappedToWord = old.swappedToWord;
+	if ( Length == 0 || old.OtherValue == NULL ) {
 	    if ( valueInMemory )
 		Length = 0;
 	    OtherValue = NULL;
+	} else {
+	    OtherValue = new BYTE[ Length ];
+	    memcpy( OtherValue, old.OtherValue, (int)Length );
 	}
-	else
-	{
-	    OtherValue = new U_CHAR[ Length ];
-	    memcpy( OtherValue,
-		    old->OtherValue,
-		    (int)Length );
-	}
-    }
-    else
-    {
+        break;
+    default:
 	OtherValue = NULL;
 	errorFlag = EC_IllegalCall;
         cerr << "Warning: DcmOtherByteOtherWord: wrong use of Copy-Constructor"
              << endl;
+        break;
     }
 Edebug(());
 
@@ -200,13 +111,13 @@ Edebug(());
 // ********************************
 
 
-E_Condition DcmOtherByteOtherWord::setVR( EVR vr )
+E_Condition DcmOtherByteOtherWord::setVR( DcmEVR vr )
 {
     errorFlag = EC_Normal;
-    EVR oldVR = Tag->getVR();
+    DcmEVR oldVR = Tag->getEVR();
     switch ( vr )
     {
-	case EVR_op:
+	case EVR_ox:
 	case EVR_OB:
 	    Tag->setVR( vr );
 	    break;
@@ -221,7 +132,7 @@ E_Condition DcmOtherByteOtherWord::setVR( EVR vr )
 	    errorFlag = EC_InvalidVR;
 	    break;
     }
-    if ( oldVR != Tag->getVR() )
+    if ( oldVR != Tag->getEVR() )
 	valueModified = TRUE;
     return errorFlag;
 }
@@ -231,9 +142,9 @@ E_Condition DcmOtherByteOtherWord::setVR( EVR vr )
 // ********************************
 
 
-EVR DcmOtherByteOtherWord::ident() const
+DcmEVR DcmOtherByteOtherWord::ident() const
 {
-    return Tag->getVR();
+    return Tag->getEVR();
 }
 
 
@@ -248,7 +159,7 @@ void DcmOtherByteOtherWord::print( int level )
 	char *ch_words;
 	char *tmp = ch_words = new char[ mlen*5 + 6 ];
 	unsigned int i;
-	if ( Tag->getVR() == EVR_OW )
+	if ( Tag->getEVR() == EVR_OW )
 	{
 	    swapValueToWord( TRUE );
 	    T_VR_US *tword = (T_VR_US*)OtherValue;
@@ -262,8 +173,8 @@ void DcmOtherByteOtherWord::print( int level )
 	else
 	{
 	    swapValueToWord( FALSE );
-	    U_CHAR *tchar = (U_CHAR*)OtherValue;
-	    for ( i=0; i<mlen/sizeof(U_CHAR); i++)
+	    BYTE *tchar = (BYTE*)OtherValue;
+	    for ( i=0; i<mlen/sizeof(BYTE); i++)
 	    {
 		sprintf( tmp, "%2.2x\\", *tchar);
 		tmp += 3;
@@ -332,12 +243,12 @@ E_Condition DcmOtherByteOtherWord::alignValue()
 	//	    z.B. in read() und put()
 
     E_Condition l_error = EC_Normal;
-    if ( Tag->getVR() != EVR_OW && Length != 0L && OtherValue != NULL )
+    if ( Tag->getEVR() != EVR_OW && Length != 0L && OtherValue != NULL )
     {
 	T_VR_UL Length_al = ((Length+1) & 0xfffffffe);
 	if ( Length < Length_al )
 	{
-	    U_CHAR *str = (U_CHAR*)OtherValue;
+	    BYTE *str = (BYTE*)OtherValue;
 	    str[Length] = '\0';
 	    Length = Length_al;
 	}
@@ -363,10 +274,10 @@ Vdebug((1, !iDS->good(), "Warning: before read: iDS->rdstate()=(0x%x)",
 	// hier kein!! iDS->setDataByteOrder() , weil swapping spaeter
 	if ( OtherValue != NULL )
 	    delete OtherValue;
-	OtherValue = new U_CHAR[ Length + 1 ];
+	OtherValue = new BYTE[ Length + 1 ];
 	actpos = iDS->tellg();
 	iDS->seekg( offsetInFile );
-	iDS->read( (U_CHAR*)OtherValue, (int)Length ); // Warnung: evtl. int=16bit
+	iDS->read( (BYTE*)OtherValue, (int)Length ); // Warnung: evtl. int=16bit
 
 Vdebug((1, !iDS->good(), "Warning: iDS->rdstate()=(0x%x)", iDS->rdstate() ));
 
@@ -425,8 +336,8 @@ Bdebug((3, "dcvrobow:DcmOtherByteOtherWord::read()" ));
 	    // hier kein!! iDS->setDataByteOrder() , weil swapping spaeter
 	    if ( OtherValue != NULL )
 		delete OtherValue;
-	    OtherValue = new U_CHAR[ Length + 1 ];
-	    iDS->read( (U_CHAR*)OtherValue, (int)Length ); // Wrn.: evtl. int=16bit
+	    OtherValue = new BYTE[ Length + 1 ];
+	    iDS->read( (BYTE*)OtherValue, (int)Length ); // Wrn.: evtl. int=16bit
 
             if ( ( Length != 0 ) && ( Length != iDS->gcount() ) )
             {
@@ -473,13 +384,13 @@ Bdebug((3, "dcvrobow:DcmOtherByteOtherWord::readBlock()" ));
 	    // hier kein!! iDS->setDataByteOrder() , weil swapping spaeter
 	    if ( OtherValue != NULL )
 		delete OtherValue;
-	    OtherValue = new U_CHAR[ Length + 1 ];
+	    OtherValue = new BYTE[ Length + 1 ];
 	    rdStat = ERW_inWork;
 	}
 	T_VR_UL len = (Length - bytesRead) <= iDS->buffered()
 		      ? (Length - bytesRead)
 		      : iDS->buffered();
-	iDS->read( &((U_CHAR*)OtherValue)[ bytesRead ], (int)len );
+	iDS->read( &((BYTE*)OtherValue)[ bytesRead ], (int)len );
 					     // Warnung: evtl. int=16bit
 	bytesRead += len;
 	if ( bytesRead == Length )
@@ -533,7 +444,7 @@ Vdebug((3, errorFlag, "Warning: error on writing header=(%d)", errorFlag ));
 
 	if ( OtherValue != NULL && errorFlag == EC_Normal )
 	{
-	    if ( Tag->getVR() == EVR_OW )
+	    if ( Tag->getEVR() == EVR_OW )
 	    {					// speichere als OtherWord
 		swapValueToWord( TRUE );
                 oDS.write( (T_VR_US*)OtherValue, (int)Length/sizeof(T_VR_US) );
@@ -543,7 +454,7 @@ debug(( 3, "Bytes_written  as words           =[0x%8.8x]", written_bytes ));
 	    else
 	    {					// speichere als OtherByte
 		swapValueToWord( FALSE );
-                oDS.write( (U_CHAR*)OtherValue, (int)Length );
+                oDS.write( (BYTE*)OtherValue, (int)Length );
 						// Warnung: evtl. int=16bit
 debug(( 3, "Bytes_written  as bytes           =[0x%8.8x]", written_bytes ));
 	    }
@@ -606,7 +517,7 @@ Bdebug((3, "dcvrobow:DcmOtherByteOtherWord::writeBlock(&oDS,oxfer,enctype,gltype
 		 && errorFlag == EC_Normal
 		 && writeState() != ERW_init )
 	    {
-		if ( Tag->getVR() == EVR_OW )
+		if ( Tag->getEVR() == EVR_OW )
 		{				     // speichere als OtherWord
                     oDS.setDataByteOrder( oxfer );
 		    swapValueToWord( TRUE );
@@ -614,7 +525,7 @@ Bdebug((3, "dcvrobow:DcmOtherByteOtherWord::writeBlock(&oDS,oxfer,enctype,gltype
 				  ? (Length - bytesWritten)
                                   : oDS.avail();
 		    len -= len % sizeof(T_VR_US);    // schreibe nur ganze Werte
-                    oDS.write( &((T_VR_US*)OtherValue)[ bytesWritten ],
+                    oDS.write( &((T_VR_US*)OtherValue)[ bytesWritten/sizeof(T_VR_US) ],
 				(int)len / sizeof(T_VR_US) );
 						     // Warnung: evtl. int=16bit
 		    bytesWritten += len;
@@ -627,7 +538,7 @@ debug(( 3, "Bytes_written  as words           =[0x%8.8x]", bytesWritten ));
                     T_VR_UL len = (Length - bytesWritten) <= oDS.avail()
 				  ? (Length - bytesWritten)
                                   : oDS.avail();
-                    oDS.write( &((U_CHAR*)OtherValue)[ bytesWritten ],
+                    oDS.write( &((BYTE*)OtherValue)[ bytesWritten ],
 				(int)len );
 						     // Warnung: evtl. int=16bit
 		    bytesWritten += len;
@@ -653,16 +564,16 @@ Edebug(());
 // ********************************
 
 
-E_Condition DcmOtherByteOtherWord::put( U_CHAR *bytevalue,
+E_Condition DcmOtherByteOtherWord::put( BYTE *bytevalue,
 					T_VR_UL length )      // number of byte
 {
     errorFlag = EC_Normal;
     if ( OtherValue != NULL )
 	delete OtherValue;
     Length = ((length+1) & 0xfffffffe);
-    if ( bytevalue != (U_CHAR*)NULL )
+    if ( bytevalue != (BYTE*)NULL )
     {
-	OtherValue = new U_CHAR[ Length ];
+	OtherValue = new BYTE[ Length ];
         memcpy( OtherValue, bytevalue, (int)length );
     }
     else
@@ -690,7 +601,7 @@ E_Condition DcmOtherByteOtherWord::put( T_VR_US *wordvalue,
     Length = length * sizeof(T_VR_US);
     if ( wordvalue != (T_VR_US*)NULL )
     {
-	OtherValue = new U_CHAR[ Length ];
+	OtherValue = new BYTE[ Length ];
 	T_VR_US *words = (T_VR_US*)OtherValue;
 	memcpy( words, wordvalue, (int)Length );
     }
@@ -709,7 +620,7 @@ E_Condition DcmOtherByteOtherWord::put( T_VR_US *wordvalue,
 // ********************************
 
 
-U_CHAR* DcmOtherByteOtherWord::getBytes()
+BYTE* DcmOtherByteOtherWord::getBytes()
 {
     errorFlag = EC_Normal;
     if ( valueInMemory == FALSE )
@@ -718,9 +629,9 @@ U_CHAR* DcmOtherByteOtherWord::getBytes()
     }
     if ( OtherValue == NULL )
 	Length = 0;			   // Daten konnten nicht gelesen werden
-    if ( Tag->getVR() != EVR_OW )
+    if ( Tag->getEVR() != EVR_OW )
 	swapValueToWord( FALSE );
-    return (U_CHAR*)OtherValue;
+    return (BYTE*)OtherValue;
 }
 
 
@@ -736,7 +647,7 @@ T_VR_US* DcmOtherByteOtherWord::getWords()
     }
     if ( OtherValue == NULL )
 	Length = 0;			   // Daten konnten nicht gelesen werden
-    if ( Tag->getVR() == EVR_OW )
+    if ( Tag->getEVR() == EVR_OW )
 	swapValueToWord( TRUE );
     return (T_VR_US*)OtherValue;
 }
@@ -786,7 +697,7 @@ E_Condition DcmOtherByteOtherWord::loadAllDataIntoMemory()
                                             // werden, Laenge korrigieren,
                                             // errorFlag enthaelt bereits
                                             // Fehlercode
-        if ( Tag->getVR() != EVR_OW )
+        if ( Tag->getEVR() != EVR_OW )
             swapValueToWord( FALSE );
         l_error = errorFlag;                // errorFlag nur bei Fehler aendern
     }
@@ -797,3 +708,11 @@ E_Condition DcmOtherByteOtherWord::loadAllDataIntoMemory()
 // ********************************
 
 
+/*
+** CVS/RCS Log:
+** $Log: dcvrobow.cc,v $
+** Revision 1.2  1995-11-23 17:03:07  hewett
+** Updated for loadable data dictionary.  Some cleanup (more to do).
+**
+**
+*/

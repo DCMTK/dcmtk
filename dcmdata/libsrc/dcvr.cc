@@ -1,296 +1,194 @@
-/*
- * 
- * Author: Gerd Ehlers      Created:  04-24-94
- *                          Modified: 02-07-95
- *
- * Module: dcvr.cc
- *
- * Purpose:
- * Implementation of the class DcmVR
- * 
- * 
- * Last Update:	  $Author: hewett $
- * Revision:      $Revision: 1.1 $
- * Status:        $State: Exp $
- *
- */
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
-#endif
+#include "osconfig.h"    /* make sure OS specific configuration is included first */
 
 #include <string.h>
 
 #include "dcvr.h"
-#include "dcdebug.h"
 
-extern char *VRTypesName[];
-extern short VRTypesName_MaxLen;
-extern short DIM_OF_VRTypes;
+#define DCMVR_PROP_NONSTANDARD	0x01
+#define DCMVR_PROP_INTERNAL		0x02
+
+struct DcmVREntry {
+    DcmEVR vr;
+    const char* vrName;
+    int propertyFlags;
+};
 
 
 
-// ********************************
+static DcmVREntry DcmVRDict[] = {
+
+    { EVR_AE, "AE", 0 },
+    { EVR_AS, "AS", 0 },
+    { EVR_AT, "AT", 0 },
+    { EVR_CS, "CS", 0 },
+    { EVR_DA, "DA", 0 },
+    { EVR_DS, "DS", 0 },
+    { EVR_DT, "DT", 0 },
+    { EVR_FL, "FL", 0 },
+    { EVR_FD, "FD", 0 },
+    { EVR_IS, "IS", 0 },
+    { EVR_LO, "LO", 0 },
+    { EVR_LT, "LT", 0 },
+    { EVR_OB, "OB", 0 },
+    { EVR_OW, "OW", 0 },
+    { EVR_PN, "PN", 0 },
+    { EVR_SH, "SH", 0 },
+    { EVR_SL, "SL", 0 },
+    { EVR_SQ, "SQ", 0 },
+    { EVR_SS, "SS", 0 },
+    { EVR_ST, "ST", 0 },
+    { EVR_TM, "TM", 0 },
+    { EVR_UI, "UI", 0 },
+    { EVR_UL, "UL", 0 },
+    { EVR_US, "US", 0 },
+
+    { EVR_ox, "ox", DCMVR_PROP_NONSTANDARD },
+    { EVR_xs, "xs", DCMVR_PROP_NONSTANDARD },
+    { EVR_na, "na", DCMVR_PROP_NONSTANDARD },
+    { EVR_up, "up", DCMVR_PROP_NONSTANDARD },
+
+    /* unique prefixes have been "invented" for the following internal VRs */
+    { EVR_item, "it_EVR_item", 
+      DCMVR_PROP_NONSTANDARD | DCMVR_PROP_INTERNAL },
+    { EVR_metainfo, "mi_EVR_metainfo", 
+      DCMVR_PROP_NONSTANDARD | DCMVR_PROP_INTERNAL },
+    { EVR_dataset, "ds_EVR_dataset", 
+      DCMVR_PROP_NONSTANDARD | DCMVR_PROP_INTERNAL },
+    { EVR_fileFormat, "ff_EVR_fileFormat", 
+      DCMVR_PROP_NONSTANDARD | DCMVR_PROP_INTERNAL },
+    { EVR_dicomDir, "dd_EVR_dicomDir", 
+      DCMVR_PROP_NONSTANDARD | DCMVR_PROP_INTERNAL },
+    { EVR_dirRecord, "dr_EVR_dirRecord", 
+      DCMVR_PROP_NONSTANDARD | DCMVR_PROP_INTERNAL },
+	    
+    { EVR_pixelSQ, "ps_EVR_pixelSQ", 
+      DCMVR_PROP_NONSTANDARD | DCMVR_PROP_INTERNAL },
+    { EVR_pixelItem, "pi_EVR_pixelItem", 
+      DCMVR_PROP_NONSTANDARD | DCMVR_PROP_INTERNAL }
+};
+
+static int DcmVRDict_DIM = sizeof(DcmVRDict) / sizeof(DcmVREntry);
 
 
-DcmVR::DcmVR( EVR vr )
+/*
+** Check the consistency of the DcmVRDict
+*/
+
+#ifdef DEBUG
+
+#include <iostream.h>
+
+class DcmVRDict_checker {
+private:
+	int error_found;
+public:
+	DcmVRDict_checker();
+};
+
+DcmVRDict_checker::DcmVRDict_checker() 
 {
-Bdebug((7, "dcvr:DcmVR::DcmVR(vr=%d)", vr ));
-debug(( 8, "Object pointer this=0x%p", this ));
-
-    if ( vr >= 0 && vr < (EVR)DIM_OF_VRTypes )
-    {
-        vrType  = vr;
-        errorFlag = EC_Normal;
-    }
-    else
-    {
-        vrType  = EVR_UNKNOWN;
-        errorFlag = EC_InvalidVR;
-    }
-Edebug(());
-
+	error_found = FALSE;
+	for (int i=0; i<DcmVRDict_DIM; i++) {
+		if (DcmVRDict[i].vr != i) {
+			error_found = TRUE;
+			cerr << "DcmVRDict:: Internal ERROR: inconsistent indexing: "
+				<< DcmVRDict[i].vrName << endl;
+		}
+	}
 }
 
 
-// ********************************
+DcmVRDict_checker DcmVRDict_startup_check;
 
+#endif
 
-DcmVR::DcmVR( char *vrname )
+/*
+** DcmVR member functions
+*/
+
+void
+DcmVR::setVR(DcmEVR evr) 
 {
-Bdebug((7, "dcvr:DcmVR::DcmVR(char*)" ));
-debug(( 8, "Object pointer this=0x%p", this ));
-
-    if ( vrname == (char*)NULL )
-    {
-        vrType = EVR_UNKNOWN;
-        errorFlag = EC_InvalidTag;
-    }
-    else
-    {
-        int i = 0;
-        while ((i < DIM_OF_VRTypes) && (memcmp(VRTypesName[i], vrname, 2) != 0))
-            i++;
-debug(( 7, "found index i=[%d]", i));
-
-        if ((i < DIM_OF_VRTypes) && (memcmp(VRTypesName[i], vrname, 2) == 0))
-        {
-            vrType = (EVR)i;
-            errorFlag = EC_Normal;
-        }
-        else
-        {
-            vrType = EVR_UNKNOWN;
-            errorFlag = EC_InvalidTag;
-        }
-    }
-Edebug(());
-
-}
-
-
-// ********************************
-
-
-DcmVR::DcmVR( const DcmVR &newvr )
-{
-Bdebug((7, "dcvr:DcmVR::DcmVR(DcmVR&)" ));
-debug(( 8, "Object pointer this=0x%p", this ));
-
-    vrType    = newvr.vrType;
-    errorFlag = newvr.errorFlag;
-Edebug(());
-
-}
-
-
-// ********************************
-
-
-DcmVR::~DcmVR()
-{
-Bdebug((7, "dcvr:DcmVR::~DcmVR()" ));
-debug(( 8, "Object pointer this=0x%p", this ));
-Edebug(());
-
-}
-
-
-// ********************************
-
-
-DcmVR & DcmVR::operator = ( const EVR &newvr )
-{
-Bdebug((6, "dcvr:DcmVR::= (newvr=%d)", newvr ));
-
-    if ( newvr >= 0 && newvr < (EVR)DIM_OF_VRTypes )
-    {
-        vrType  = newvr;
-        errorFlag = EC_Normal;
-    }
-    else
-    {
-        vrType  = EVR_UNKNOWN;
-        errorFlag = EC_InvalidVR;
-    }
-Edebug(());
-
-    return *this;
-}
-
-
-// ********************************
-
-
-DcmVR & DcmVR::operator = ( const char *vrname )
-{
-Bdebug((6, "dcvr:DcmVR::= (char*)" ));
-
-    if ( vrname == (char*)NULL )
-    {
-        vrType = EVR_UNKNOWN;
-        errorFlag = EC_InvalidTag;
-    }
-    else
-    {
-        int i = 0;
-        while ((i < DIM_OF_VRTypes) && (memcmp(VRTypesName[i], vrname, 2) != 0))
-            i++;
-debug(( 7, "found index i=[%d]", i));
-
-        if ((i < DIM_OF_VRTypes) && (memcmp(VRTypesName[i], vrname, 2) == 0))
-        {
-            vrType = (EVR)i;
-            errorFlag = EC_Normal;
-        }
-        else
-        {
-            vrType = EVR_UNKNOWN;
-            errorFlag = EC_InvalidTag;
-        }
-    }
-Edebug(());
-
-    return *this;
-}
-
-
-// ********************************
-
-
-DcmVR & DcmVR::operator = ( const DcmVR &newvr )
-{
-Bdebug((6, "dcvr:DcmVR::= (DcmVR&)" ));
-
-    if ( this != &newvr )
-    {
-        vrType    = newvr.vrType;
-        errorFlag = newvr.errorFlag;
-    }
-    else
-    {
-debug(( 1, "dcvr:DcmVR::DcmVR(DcmVR&)  Warning: self-assignment" ));
-
-    }
-Edebug(());
-
-    return *this;
-}
-
-
-// ********************************
-
-
-EVR DcmVR::getVR()
-{
-    errorFlag = (vrType == EVR_UNKNOWN) ? EC_InvalidTag : EC_Normal;
-    return vrType;
-}
-
-
-// ********************************
-
-
-EVR DcmVR::getValidVR()
-{
-    EVR vr;
-    errorFlag = EC_Normal;
-    switch ( vrType )
-    {
-        case EVR_AE :
-        case EVR_AS :
-        case EVR_AT :
-        case EVR_CS :
-        case EVR_DA :
-        case EVR_DS :
-        case EVR_DT :
-        case EVR_FL :
-        case EVR_FD :
-        case EVR_IS :
-        case EVR_LO :
-        case EVR_LT :
-        case EVR_OB :
-        case EVR_OW :
-        case EVR_PN :
-        case EVR_SH :
-        case EVR_SL :
-            vr = vrType;
-            break;
-        case EVR_squ:
-        case EVR_SQ :
-            vr = EVR_SQ;
-            break;
-        case EVR_SS :
-        case EVR_ST :
-        case EVR_TM :
-        case EVR_UI :
-            vr = vrType;
-            break;
-        case EVR_up :
-        case EVR_UL :
-            vr = EVR_UL;
-            break;
-        case EVR_xs :
-        case EVR_ux :
-        case EVR_US :
-            vr = EVR_US;
-            break;
-        default :
-            vr = EVR_OB;    // behandle unbekannte Typen genauso wie OtherByte
-            errorFlag = EC_InvalidTag;
-            break;
-    }
-    return vr;
-}
-
-
-// ********************************
-
-
-char* DcmVR::getVRName()
-{
-    if ( vrType >= 0 && vrType < (EVR)DIM_OF_VRTypes )
-    {
-        errorFlag = EC_Normal;
-        return VRTypesName[vrType];
-    }
-    else
-    {
-        errorFlag = EC_InvalidVR;
-        return ERROR_VRName;
+    if ( (evr >= 0) && (evr < DcmVRDict_DIM)) {
+	vr = evr;
+    } else {
+	vr = EVR_UNKNOWN;
     }
 }
 
-
-// ********************************
-
-
-char* DcmVR::getValidVRName()
+void
+DcmVR::setVR(const char* vrName)
 {
-    return VRTypesName[getValidVR()];
+	vr = EVR_UNKNOWN;	/* default */
+	if ( vrName != NULL) {
+		int found = FALSE;
+		int i = 0;
+		for (i=0;  (!found && (i < DcmVRDict_DIM)); i++) {
+			if (strncmp(vrName, DcmVRDict[i].vrName, 2) == 0) {
+				found = TRUE;
+				vr = DcmVRDict[i].vr;
+			}
+		}
+	}
 }
 
+DcmEVR 
+DcmVR::getValidEVR() const
+{
+	DcmEVR evr = EVR_UNKNOWN;
+	
+	if (isStandard()) {
+		evr = vr;
+	} else {
+		switch (vr) {
+		case EVR_up:
+			evr = EVR_UL;
+			break;
+		case EVR_xs:
+			evr = EVR_US;
+			break;
+		default:
+			evr = EVR_OB;	/* handle as if OB */
+			break;
+		}
+	}
+	return evr;
+}
 
-// ********************************
+const char*
+DcmVR::getVRName() const
+{
+	if (vr == EVR_UNKNOWN) {
+		return DcmVR_ERROR_VRName;
+	} else {
+		return DcmVRDict[vr].vrName;
+	}
+}
 
+const char*
+DcmVR::getValidVRName() const
+{
+	DcmVR avr(getValidEVR());
+	return avr.getVRName();
+}
+	
+int 
+DcmVR::isStandard() const
+{
+	if (vr == EVR_UNKNOWN) {
+		return FALSE;
+	} else {
+		return !(DcmVRDict[vr].propertyFlags & DCMVR_PROP_NONSTANDARD);
+	}
+}
 
+int 
+DcmVR::isForInternalUseOnly() const
+{
+	if (vr == EVR_UNKNOWN) {
+		return TRUE;
+	} else {
+		return (DcmVRDict[vr].propertyFlags & DCMVR_PROP_INTERNAL);
+	}
+}

@@ -10,16 +10,13 @@
  *
  *
  * Last Update:   $Author: hewett $
- * Revision:      $Revision: 1.1 $
+ * Revision:      $Revision: 1.2 $
  * Status:	  $State: Exp $
  *
  */
 
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
-#endif
-
+#include "osconfig.h"    /* make sure OS specific configuration is included first */
 #ifdef HAVE_UNISTD_H
 #include <unistd.h>
 #endif
@@ -362,9 +359,20 @@ iDicomStream& iDicomStream::putback( char ch )
 {
     if ( fromFile() )
     {
+	/* Many implemenations of ungetc() can only unget 1 char.
+	** Calling unget() seems to be ok for current use within dcmdata (needs more tests)
+	** NOTE: ungetc() will not work if putback(char ch) is used to
+	** put back characters in a different order than they were read !!!
+	** This whole stream/buffer code and its use needs to reevaluated.
+	** The unget()/putback() mechanism for buffers are highly suspect.
+	*/
+#ifdef REALLY_DO_USE_UNGETC_IN_DCSTREAM_PUTBACK
 	fileOperationOK = ungetc((int)ch, inFile) != EOF;
 	if (!fileOperationOK)
 	    fileOperationErrno = errno;
+#else
+	unget();	/* HACK: use unget() instead */
+#endif
     }
     else if ( avail() > 0 )
     {

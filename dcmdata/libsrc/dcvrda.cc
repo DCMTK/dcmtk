@@ -10,58 +10,27 @@
  * 
  * 
  * Last Update:	  $Author: hewett $
- * Revision:      $Revision: 1.1 $
+ * Revision:      $Revision: 1.2 $
  * Status:        $State: Exp $
  *
  */
 
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
-#endif
+#include "osconfig.h"    /* make sure OS specific configuration is included first */
 
 #include "dcvrda.h"
 #include "dcdebug.h"
 
 
-
 // ********************************
 
 
-DcmDate::DcmDate( DcmTag &tag )
-    : DcmByteString( tag )
-{
-Bdebug((5, "dcvrda:DcmDate::DcmDate(DcmTag&)" ));
-
-    maxLength = 10;
-Edebug(());
-
-}
-
-
-// ********************************
-
-
-DcmDate::DcmDate( DcmTag &tag,
+DcmDate::DcmDate( const DcmTag &tag,
                   T_VR_UL len,
                   iDicomStream *iDStream )
     : DcmByteString( tag, len, iDStream )
 {
 Bdebug((5, "dcvrda:DcmDate::DcmDate(DcmTag&,len=%ld,*iDS)", len ));
-
-    maxLength = 10;
-Edebug(());
-
-}
-
-
-// ********************************
-
-
-DcmDate::DcmDate( const DcmObject &oldObj )
-    : DcmByteString( oldObj, EVR_DA )
-{
-Bdebug((5, "dcvrda:DcmDate::DcmDate(DcmObject&)" ));
 
     maxLength = 10;
 Edebug(());
@@ -97,7 +66,7 @@ Edebug(());
 // ********************************
 
 
-EVR DcmDate::ident() const
+DcmEVR DcmDate::ident() const
 {
     return EVR_DA;
 }

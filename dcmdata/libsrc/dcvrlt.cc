@@ -10,39 +10,22 @@
  * 
  * 
  * Last Update:	  $Author: hewett $
- * Revision:      $Revision: 1.1 $
+ * Revision:      $Revision: 1.2 $
  * Status:        $State: Exp $
  *
  */
 
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
-#endif
+#include "osconfig.h"    /* make sure OS specific configuration is included first */
 
 #include "dcvrlt.h"
 #include "dcdebug.h"
 
 
-
 // ********************************
 
 
-DcmLongText::DcmLongText( DcmTag &tag )
-    : DcmCharString( tag )
-{
-Bdebug((5, "dcvrlt:DcmLongText::DcmLongText(DcmTag&)" ));
-
-    maxLength = 10240;
-Edebug(());
-
-}
-
-
-// ********************************
-
-
-DcmLongText::DcmLongText( DcmTag &tag,
+DcmLongText::DcmLongText( const DcmTag &tag,
                           T_VR_UL len,
                           iDicomStream *iDStream )
     : DcmCharString( tag, len, iDStream )
@@ -58,22 +41,8 @@ Edebug(());
 // ********************************
 
 
-DcmLongText::DcmLongText( const DcmObject &oldObj )
-    : DcmCharString( oldObj, EVR_LT )
-{
-Bdebug((5, "dcvrlt:DcmLongText::DcmLongText(DcmObject&)" ));
-
-    maxLength = 10240;
-Edebug(());
-
-}
-
-
-// ********************************
-
-
-DcmLongText::DcmLongText( const DcmLongText &newLT )
-    : DcmCharString( newLT, EVR_LT )
+DcmLongText::DcmLongText( const DcmLongText& old )
+    : DcmCharString( old, EVR_LT )
 {
 Bdebug((5, "dcvrlt:DcmLongText::DcmLongText(DcmLongText&)" ));
 
@@ -97,7 +66,7 @@ Edebug(());
 // ********************************
 
 
-EVR DcmLongText::ident() const
+DcmEVR DcmLongText::ident() const
 {
     return EVR_LT;
 }

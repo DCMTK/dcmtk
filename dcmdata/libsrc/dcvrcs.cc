@@ -10,15 +10,13 @@
  * 
  * 
  * Last Update:	  $Author: hewett $
- * Revision:      $Revision: 1.1 $
+ * Revision:      $Revision: 1.2 $
  * Status:        $State: Exp $
  *
  */
 
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
-#endif
+#include "osconfig.h"    /* make sure OS specific configuration is included first */
 
 #include "dcvrcs.h"
 #include "dcdebug.h"
@@ -28,40 +26,12 @@
 // ********************************
 
 
-DcmCodeString::DcmCodeString( DcmTag &tag )
-    : DcmByteString( tag )
-{
-Bdebug((5, "dcvrcs:DcmCodeString::DcmCodeString(DcmTag&)" ));
-
-    maxLength = 16;
-Edebug(());
-
-}
-
-
-// ********************************
-
-
-DcmCodeString::DcmCodeString( DcmTag &tag,
+DcmCodeString::DcmCodeString( const DcmTag &tag,
                               T_VR_UL len,
                               iDicomStream *iDStream )
     : DcmByteString( tag, len, iDStream )
 {
 Bdebug((5, "dcvrcs:DcmCodeString::DcmCodeString(DcmTag&,len=%ld,*iDS)", len ));
-
-    maxLength = 16;
-Edebug(());
-
-}
-
-
-// ********************************
-
-
-DcmCodeString::DcmCodeString( const DcmObject &oldObj )
-    : DcmByteString( oldObj, EVR_CS )
-{
-Bdebug((5, "dcvrcs:DcmCodeString::DcmCodeString(DcmObject&)" ));
 
     maxLength = 16;
 Edebug(());
@@ -97,7 +67,7 @@ Edebug(());
 // ********************************
 
 
-EVR DcmCodeString::ident() const
+DcmEVR DcmCodeString::ident() const
 {
     return EVR_CS;
 }

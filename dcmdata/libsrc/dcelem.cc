@@ -10,15 +10,13 @@
  *
  *
  * Last Update:   $Author: hewett $
- * Revision:      $Revision: 1.1 $
+ * Revision:      $Revision: 1.2 $
  * Status:	  $State: Exp $
  *
  */
 
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
-#endif
+#include "osconfig.h"    /* make sure OS specific configuration is included first */
 
 #include <string.h>
 #include <stdlib.h>
@@ -29,36 +27,35 @@
 
 
 
-
 // ********************************
 
 
-DcmElement::DcmElement( DcmTag &tag )
-    : DcmObject( tag )
+DcmElement::DcmElement( const DcmTag &tag,
+			T_VR_UL len,
+			iDicomStream *iDStream )
+    : DcmObject( tag, len, iDStream )
 {
-Bdebug((6, "dcelem:DcmElement::DcmElement(DcmTag&)"));
-debug(( 8, "Object pointer this=0x%p", this ));
+    Bdebug((6, "dcelem:DcmElement::DcmElement(DcmTag&,len=%ld,*iDS)", len ));
+    debug(( 8, "Object pointer this=0x%p", this ));
 
-    ElementValue = (char*)NULL;
-Edebug(());
+    elementValue = NULL;
 
+    Edebug(());
 }
 
 
 // ********************************
 
 
-DcmElement::DcmElement( DcmTag &tag,
-			T_VR_UL len,
-			iDicomStream *iDStream )
-    : DcmObject( tag, len, iDStream )
+DcmElement::DcmElement( const DcmElement& elem )
+    : DcmObject( elem )
 {
-Bdebug((6, "dcelem:DcmElement::DcmElement(DcmTag&,len=%ld,*iDS)", len ));
-debug(( 8, "Object pointer this=0x%p", this ));
+    Bdebug((6, "dcelem:DcmElement::DcmElement(const DcmObject&)" ));
+    debug(( 8, "Object pointer this=0x%p", this ));
 
-    ElementValue = (char*)NULL;
-Edebug(());
+    elementValue = NULL;
 
+    Edebug(());
 }
 
 
@@ -67,13 +64,14 @@ Edebug(());
 
 DcmElement::~DcmElement()
 {
-Bdebug((6, "dcelem:DcmElement::~DcmElement()"));
-debug(( 8, "Object pointer this=0x%p", this ));
+    Bdebug((6, "dcelem:DcmElement::~DcmElement()"));
+    debug(( 8, "Object pointer this=0x%p", this ));
 
-    if ( ElementValue != (char*)NULL )
-	delete ElementValue;
-Edebug(());
+    if (elementValue != NULL) {
+	delete elementValue;
+    }
 
+    Edebug(());
 }
 
 

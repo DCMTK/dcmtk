@@ -10,15 +10,13 @@
  *
  *
  * Last Update:   $Author: hewett $
- * Revision:      $Revision: 1.1 $
+ * Revision:      $Revision: 1.2 $
  * Status:	  $State: Exp $
  *
  */
 
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
-#endif
+#include "osconfig.h"    /* make sure OS specific configuration is included first */
 
 #include <stdlib.h>
 #include <stdio.h>
@@ -30,27 +28,13 @@
 #include "dcvr.h"
 #include "dcdebug.h"
 
+#include "dcdeftag.h"
 
 
 // ********************************
 
 
-DcmPixelSequence::DcmPixelSequence( DcmTag &tag )
-    : DcmSequenceOfItems( tag )
-{
-Bdebug((5, "dcpixseq:DcmPixelSequence::DcmPixelSequence(DcmTag&)" ));
-debug(( 8, "Object pointer this=0x%p", this ));
-
-    Tag->setVR( EVR_OB );
-Edebug(());
-
-}
-
-
-// ********************************
-
-
-DcmPixelSequence::DcmPixelSequence( DcmTag &tag,
+DcmPixelSequence::DcmPixelSequence( const DcmTag &tag,
                                     T_VR_UL len,
                                     iDicomStream *iDStream )
     : DcmSequenceOfItems( tag, len, iDStream )
@@ -68,110 +52,15 @@ Edebug(());
 // ********************************
 
 
-DcmPixelSequence::DcmPixelSequence( const DcmObject &oldObj )
-    : DcmSequenceOfItems( InternalUseTag )
-{
-Bdebug((5, "dcpixseq:DcmPixelSequence::DcmPixelSequence(DcmObject&)" ));
-debug(( 8, "Object pointer this=0x%p", this ));
-
-    lastItemComplete = TRUE;
-    itemList = new DcmList;
-debug(( 5, "ident()=%d", oldObj.ident() ));
-
-    if ( oldObj.ident() == EVR_pixelSQ )
-    {
-        DcmPixelSequence const *old = (DcmPixelSequence const *)&oldObj;
-	*Tag = *old->Tag;
-	iDS = old->iDS;
-	offsetInFile  = old->offsetInFile;
-	valueInMemory = old->valueInMemory;
-	valueModified = old->valueModified;
-	Length = old->Length;
-	Xfer = old->Xfer;
-        if ( !old->itemList->empty() )
-	{
-	    DcmObject *oldDO;
-	    DcmObject *newDO;
-	    itemList->seek( ELP_first );
-            old->itemList->seek( ELP_first );
-	    do {
-                oldDO = old->itemList->get();
-                if ( oldDO->ident() == EVR_pixelItem )
-                    newDO = new DcmPixelItem( *oldDO );
-		else
-		{
-                    newDO = new DcmPixelItem( oldDO->getTag() );
-                    cerr << "DcmPixelSequence(): Element("
-                         << hex << oldDO->getGTag() << "," << oldDO->getETag()
-                         << dec << ") found, which was not a PixelItem"
-                         << endl;
-		}
-
-		itemList->insert( newDO, ELP_next );
-            } while ( old->itemList->seek( ELP_next ) );
-	}
-    }
-    else
-    {
-        cerr << "Warning: DcmPixelSequence: wrong use of Copy-Constructor"
-             << endl;
-    }
-Edebug(());
-
-}
-
-
-// ********************************
-
-
-DcmPixelSequence::DcmPixelSequence( const DcmPixelSequence &oldForm )
-    : DcmSequenceOfItems( InternalUseTag )
+DcmPixelSequence::DcmPixelSequence( const DcmPixelSequence &old )
+    : DcmSequenceOfItems( old )
 {
 Bdebug((5, "dcpixseq:DcmPixelSequence::DcmPixelSequence(DcmPixelSequence&)" ));
 debug(( 8, "Object pointer this=0x%p", this ));
 
-    lastItemComplete = TRUE;
-    itemList = new DcmList;
-debug(( 5, "ident()=%d", oldForm.ident() ));
+debug(( 5, "ident()=%d", old.ident() ));
 
-    if ( oldForm.ident() == EVR_pixelSQ )
-    {
-        DcmPixelSequence const *old = &oldForm;
-	*Tag = *old->Tag;
-	iDS = old->iDS;
-	offsetInFile  = old->offsetInFile;
-	valueInMemory = old->valueInMemory;
-	valueModified = old->valueModified;
-	Length = old->Length;
-	Xfer = old->Xfer;
-        if ( !old->itemList->empty() )
-	{
-	    DcmObject *oldDO;
-	    DcmObject *newDO;
-	    itemList->seek( ELP_first );
-            old->itemList->seek( ELP_first );
-	    do {
-                oldDO = old->itemList->get();
-                if ( oldDO->ident() == EVR_pixelItem )
-                    newDO = new DcmPixelItem( *oldDO );
-		else
-		{
-                    newDO = new DcmPixelItem( oldDO->getTag() );
-                    cerr << "DcmPixelSequence(): Element("
-                         << hex << oldDO->getGTag() << "," << oldDO->getETag()
-                         << dec << ") found, which was not a PixelItem"
-                         << endl;
-		}
-
-		itemList->insert( newDO, ELP_next );
-            } while ( old->itemList->seek( ELP_next ) );
-	}
-    }
-    else
-    {
-        cerr << "Warning: DcmPixelSequence: wrong use of Copy-Constructor"
-             << endl;
-    }
+    /* everything gets handled in DcmSequenceOfItems constructor */
 Edebug(());
 
 }
@@ -192,7 +81,7 @@ Edebug(());
 // ********************************
 
 
-EVR DcmPixelSequence::ident() const
+DcmEVR DcmPixelSequence::ident() const
 {
     return EVR_pixelSQ;
 }
@@ -211,7 +100,7 @@ void DcmPixelSequence::print( int level )
     else
         title = "\"PixelSequence with explicit Length\"";
 
-    sprintf( info, "%s #=%ld ", title, card() );
+    sprintf( info, "%s #=%ld ", title, (long)card() );
     DcmObject::printInfoLine( level, info );
     delete info;
 
@@ -224,7 +113,7 @@ void DcmPixelSequence::print( int level )
 	    dO->print( level + 1 );
 	} while ( itemList->seek( ELP_next ) );
     }
-    DcmTag delimItemTag( ET_SequenceDelimitationItem );
+    DcmTag delimItemTag( DCM_SequenceDelimitationItem );
 
     if ( Length == UNDEF_LEN )
         DcmObject::printInfoLine( level, delimItemTag,
@@ -238,7 +127,7 @@ void DcmPixelSequence::print( int level )
 // ********************************
 
 
-E_Condition DcmPixelSequence::readSubItem( DcmTag &newTag,             // in
+E_Condition DcmPixelSequence::readSubItem( const DcmTag &newTag,       // in
                                            T_VR_UL newLength,          // in
                                            E_TransferSyntax xfer,      // in
                                            E_GrpLenEncoding gltype )   // in
@@ -249,14 +138,14 @@ Bdebug((4, "dcpixseq:DcmPixelSequence::readSubItem(&newTag,newLength=%d,"
     E_Condition l_error = EC_Normal;
     DcmItem *subItem = (DcmItem*)NULL;
 
-    switch ( newTag.getVR() )
+    switch ( newTag.getEVR() )
     {
 	case EVR_na :
-            if ( newTag.getXTag() == ET_Item )
+            if ( newTag.getXTag() == DCM_Item )
                 subItem = new DcmPixelItem( newTag, newLength, iDS );
-            else if ( newTag.getXTag() == ET_SequenceDelimitationItem )
+            else if ( newTag.getXTag() == DCM_SequenceDelimitationItem )
                 l_error = EC_SequEnd;
-            else if ( newTag.getXTag() == ET_ItemDelimitationItem )
+            else if ( newTag.getXTag() == DCM_ItemDelimitationItem )
                 l_error = EC_InvalidTag;
 	    else
                 l_error = EC_InvalidTag;

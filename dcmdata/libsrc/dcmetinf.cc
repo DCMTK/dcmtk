@@ -10,19 +10,17 @@
  *
  *
  * Last Update:   $Author: hewett $
- * Revision:      $Revision: 1.1 $
+ * Revision:      $Revision: 1.2 $
  * Status:	  $State: Exp $
  *
  */
 
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
-#endif
+#include "osconfig.h"    /* make sure OS specific configuration is included first */
 
 #include <stdlib.h>
-#include <memory.h>
 #include <iostream.h>
+#include <string.h>
 
 #include "dcmetinf.h"
 #include "dcitem.h"
@@ -30,16 +28,15 @@
 #include "dcvrul.h"
 #include "dcdebug.h"
 
+#include "dcdeftag.h"
 
-extern char *VRTypesName[];
-extern short DIM_OF_VRTypes;
 
 
 // ********************************
 
 
 DcmMetaInfo::DcmMetaInfo()
-    : DcmItem( InternalUseTag )
+    : DcmItem( ItemTag )
 {
 Bdebug((5, "dcmetinf:DcmMetaInfo::DcmMetaInfo()" ));
 debug(( 8, "Object pointer this=0x%p", this ));
@@ -54,7 +51,7 @@ Edebug(());
 
 
 DcmMetaInfo::DcmMetaInfo( iDicomStream *iDStream )
-    : DcmItem( InternalUseTag, UNDEF_LEN, iDStream )
+    : DcmItem( ItemTag, UNDEF_LEN, iDStream )
 {
 Bdebug((5, "dcmetinf:DcmMetaInfo::DcmMetaInfo(*iDS)" ));
 debug(( 8, "Object pointer this=0x%p", this ));
@@ -68,92 +65,17 @@ Edebug(());
 // ********************************
 
 
-DcmMetaInfo::DcmMetaInfo( const DcmObject &oldObj )
-    : DcmItem( InternalUseTag )
-{
-Bdebug((5, "dcmetinf:DcmMetaInfo::DcmMetaInfo(DcmObject&)" ));
-debug(( 8, "Object pointer this=0x%p", this ));
-debug(( 5, "ident()=%d", oldObj.ident() ));
-
-    if ( oldObj.ident() == EVR_metainfo )
-    {
-	DcmMetaInfo const *old = (DcmMetaInfo const *)&oldObj;
-	preambleUsed = ((DcmMetaInfo const *)old)->preambleUsed;
-	memcpy( filePreamble,
-		((DcmMetaInfo const *)old)->filePreamble,
-		128 );
-	*Tag = *old->Tag;
-	iDS = old->iDS;
-	offsetInFile  = old->offsetInFile;
-	valueInMemory = old->valueInMemory;
-	valueModified = old->valueModified;
-	Length = old->Length;
-	Xfer = old->Xfer;
-	if ( !old->elementList->empty() )
-	{
-	    DcmObject *oldDO;
-	    DcmObject *newDO;
-	    elementList->seek( ELP_first );
-	    old->elementList->seek( ELP_first );
-	    do {
-		oldDO = old->elementList->get();
-		newDO = DcmItem::copyDcmObject( oldDO );
-
-		elementList->insert( newDO, ELP_next );
-	    } while ( old->elementList->seek( ELP_next ) );
-	}
-    }
-    else
-    {
-        cerr << "Warning: DcmMetaInfo: wrong use of Copy-Constructor"
-             << endl;
-	setPreamble();
-    }
-Edebug(());
-
-}
-
-
-// ********************************
-
-
-DcmMetaInfo::DcmMetaInfo( const DcmMetaInfo &oldMeta )
-    : DcmItem( InternalUseTag )
+DcmMetaInfo::DcmMetaInfo( const DcmMetaInfo &old )
+    : DcmItem( old )
 {
 Bdebug((5, "dcmetinf:DcmMetaInfo::DcmMetaInfo(DcmMetaInfo&)" ));
 debug(( 8, "Object pointer this=0x%p", this ));
-debug(( 5, "ident()=%d", oldMeta.ident() ));
+debug(( 5, "ident()=%d", old.ident() ));
 
-    if ( oldMeta.ident() == EVR_metainfo )
-    {
-	DcmMetaInfo const *old = &oldMeta;
-	preambleUsed = ((DcmMetaInfo const *)old)->preambleUsed;
-	memcpy( filePreamble,
-		((DcmMetaInfo const *)old)->filePreamble,
-		128 );
-	*Tag = *old->Tag;
-	iDS = old->iDS;
-	offsetInFile  = old->offsetInFile;
-	valueInMemory = old->valueInMemory;
-	valueModified = old->valueModified;
-	Length = old->Length;
-	Xfer = old->Xfer;
-	if ( !old->elementList->empty() )
-	{
-	    DcmObject *oldDO;
-	    DcmObject *newDO;
-	    elementList->seek( ELP_first );
-	    old->elementList->seek( ELP_first );
-	    do {
-		oldDO = old->elementList->get();
-		newDO = DcmItem::copyDcmObject( oldDO );
-
-		elementList->insert( newDO, ELP_next );
-	    } while ( old->elementList->seek( ELP_next ) );
-	}
-    }
-    else
-    {
+    if ( old.ident() == EVR_metainfo ) {
+	preambleUsed = old.preambleUsed;
+	memcpy( filePreamble, old.filePreamble, 128 );
+    } else {
         cerr << "Warning: DcmMetaInfo: wrong use of Copy-Constructor"
              << endl;
 	setPreamble();
@@ -178,7 +100,7 @@ Edebug(());
 // ********************************
 
 
-EVR DcmMetaInfo::ident() const
+DcmEVR DcmMetaInfo::ident() const
 {
     return EVR_metainfo;
 }
@@ -231,7 +153,7 @@ Bdebug((4, "dcmetinf:DcmMetaInfo::checkAndReadPreamble()" ));
     int preambleLen = DICOM_PREAMBLE_LEN + DICOM_MAGIC_LEN;
     iDS->read( filePreamble, preambleLen );
 
-    if ( iDS->gcount() != preambleLen )
+    if ( long(iDS->gcount()) != preambleLen )
     {					     // Datei zu kurz => keine Preamble
 	preambleLen = (int)iDS->gcount();
 	iDS->clear();
@@ -320,7 +242,7 @@ BOOL DcmMetaInfo::nextTagIsMeta()
 
 
 E_Condition DcmMetaInfo::readGroupLength( E_TransferSyntax xfer,
-					  ETag xtag,
+					  const DcmTagKey &xtag,
                                           E_GrpLenEncoding gltype,
 					  T_VR_UL *headerLen,
 					  T_VR_UL *bytes_read )
@@ -335,7 +257,7 @@ Bdebug((4, "dcmetinf:DcmMetaInfo::readGroupLength(xfer=%d,...)",
 
     if ( DcmMetaInfo::nextTagIsMeta() )
     {
-	DcmTag newTag( ET_UNKNOWN );
+	DcmTag newTag;
 	T_VR_UL newValueLength = 0;
 	T_VR_UL bytes_tagAndLen = 0;
 	l_error = DcmItem::readTagAndLength( newxfer,
@@ -422,7 +344,7 @@ Vdebug((1, iDS->tellg() != 0 && iDS->tellg() != 132,
 	BOOL headerLengthFound = FALSE;
 					// werte Laenge aus Tag(0002,0000) aus
 	errorFlag = readGroupLength( newxfer,
-				     ET_GroupLength0002,
+				     DCM_MetaElementGroupLength,
                                      gltype,
 				     &headerLength,
 				     &bytes_read );
@@ -451,7 +373,7 @@ Vdebug((1, iDS->tellg() != 0 && iDS->tellg() != 132,
 		       )
 		  )
 	    {
-		DcmTag newTag( ET_UNKNOWN );
+		DcmTag newTag;
 		T_VR_UL newValueLength = 0;
 		T_VR_UL bytes_tagAndLen = 0;
 		errorFlag = DcmItem::readTagAndLength( newxfer,
@@ -542,7 +464,7 @@ Vdebug((3, iDS->tellg() != 0, "found %d bytes preamble", iDS->tellg() ));
 	{
 	    T_VR_UL headerLength = 0;
 	    errorFlag = readGroupLength( newxfer,
-					 ET_GroupLength0002,
+					 DCM_MetaElementGroupLength,
                                          gltype,
 					 &headerLength,
 					 &bytesRead );
@@ -566,7 +488,7 @@ Vdebug((3, iDS->tellg() != 0, "found %d bytes preamble", iDS->tellg() ));
 		       )
 		  )
 	    {
-		DcmTag newTag( ET_UNKNOWN );
+		DcmTag newTag;
 		T_VR_UL newValueLength = 0;
 		T_VR_UL bytes_tagAndLen = 0;
 		if ( lastElementComplete )

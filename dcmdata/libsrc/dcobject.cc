@@ -10,15 +10,13 @@
  *
  *
  * Last Update:   $Author: hewett $
- * Revision:      $Revision: 1.1 $
+ * Revision:      $Revision: 1.2 $
  * Status:	  $State: Exp $
  *
  */
 
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
-#endif
+#include "osconfig.h"    /* make sure OS specific configuration is included first */
 
 #include <iostream.h>
 
@@ -32,34 +30,7 @@
 // ****** public methods **********************************
 
 
-
-DcmObject::DcmObject( DcmTag &tag )
-{
-Bdebug((6, "dcobject:DcmObject::DcmObject(DcmTag&)" ));
-debug(( 8, "Object pointer this=0x%p", this ));
-
-    Tag = new DcmTag( tag );    // copy-operator in DcmTag
-    Length = 0L;
-    iDS = (iDicomStream*)NULL;
-    Xfer = EXS_UNKNOWN;
-    offsetInFile = 0;
-    valueInMemory = TRUE;
-    valueModified = FALSE;
-    errorFlag = EC_Normal;
-    rdStat = wrStat = ERW_init;
-    bytesRead = bytesWritten = 0;
-
-    testConstructDestruct = 1; // for debugging
-
-Edebug(());
-
-}
-
-
-// ********************************
-
-
-DcmObject::DcmObject( DcmTag &tag, T_VR_UL len, iDicomStream *iDStream )
+DcmObject::DcmObject( const DcmTag &tag, T_VR_UL len, iDicomStream *iDStream )
 {
 Bdebug((6, "dcobject:DcmObject::DcmObject(DcmTag&,len=%ld,*iDs)", len ));
 debug(( 8, "Object pointer this=0x%p", this ));
@@ -78,7 +49,33 @@ debug(( 8, "Object pointer this=0x%p", this ));
     testConstructDestruct = 1; // for debugging
 
 Edebug(());
+}
 
+
+// ********************************
+
+
+DcmObject::DcmObject( const DcmObject& obj )
+{
+Bdebug((6, "dcobject:DcmObject::DcmObject(const DcmObject& obj=0x%p)", &obj ));
+debug(( 8, "Object pointer this=0x%p", this ));
+
+    Tag = new DcmTag( *obj.Tag );    // copy-operator in DcmTag
+    Length = obj.Length;
+    iDS = obj.iDS;
+    Xfer = obj.Xfer;
+    offsetInFile = obj.offsetInFile;
+    valueInMemory = obj.valueInMemory;
+    valueModified = obj.valueModified;
+    errorFlag = obj.errorFlag;
+    rdStat = obj.rdStat;
+    wrStat = obj.wrStat;
+    bytesRead = obj.bytesRead;
+    bytesWritten = obj.bytesWritten;
+
+    testConstructDestruct = 1; // for debugging
+
+Edebug(());
 }
 
 
@@ -153,9 +150,9 @@ DcmTag& DcmObject::getTag()
 // ********************************
 
 
-EVR DcmObject::getVR()
+DcmEVR DcmObject::getVR()
 {
-    EVR vr = Tag->getVR();
+    DcmEVR vr = Tag->getEVR();
     errorFlag = Tag->error();
     return vr;
 }
@@ -164,7 +161,7 @@ EVR DcmObject::getVR()
 // ********************************
 
 
-E_Condition DcmObject::setVR( EVR /*vr*/ )
+E_Condition DcmObject::setVR( DcmEVR /*vr*/ )
 {
     return EC_Normal;
 }
@@ -231,7 +228,7 @@ E_Condition DcmObject::writeBlockInit()
 // ********************************
 
 
-E_Condition DcmObject::search( DcmTag &tag,
+E_Condition DcmObject::search( const DcmTag &tag,
 			       DcmStack &resultStack,
 			       E_SearchMode mode,
 			       BOOL searchIntoSub )
@@ -243,15 +240,7 @@ debug(( 5, "local Info: Tag=(%4.4x,%4.4x) \"%s\" p=%p",
            getGTag(), getETag(), DcmVR(getVR()).getVRName(), this ));
 
     E_Condition l_error = EC_TagNotFound;
-/*
-    if ( tag == *Tag )
-    {
-        resultStack.push( this );
-        l_error = EC_Normal;
-debug(( 4, "Element found with Tag=(%4.4x,%4.4x) \"%s\"",
-	   getGTag(), getETag(), DcmVR(getVR()).getVRName() ));
-    }
-*/
+
 Edebug(());
 
     return l_error;
@@ -261,15 +250,15 @@ Edebug(());
 // ********************************
 
 
-E_Condition DcmObject::search( ETag etag,
+E_Condition DcmObject::search( const DcmTagKey& xtag,
 			       DcmStack &resultStack,
 			       E_SearchMode mode,
 			       BOOL searchIntoSub )
 {
-Bdebug((5, "dcobject:DcmObject::search(etag=%d,Stack&,mode=%d,sub=%d)",
-	   etag, mode, searchIntoSub ));
+Bdebug((5, "dcobject:DcmObject::search(xtag=(%x,%x),Stack&,mode=%d,sub=%d)",
+	   xtag.getGroup(), xtag.getElement(), mode, searchIntoSub ));
 
-    DcmTag tag( etag );
+    DcmTag tag( xtag );
     E_Condition l_error = search( tag, resultStack, mode, searchIntoSub );
 Edebug(());
 
@@ -298,7 +287,7 @@ Edebug(());
 // ***********************************************************
 
 
-void DcmObject::printInfoLine( int level, char *info )
+void DcmObject::printInfoLine( int level, const char *info )
 {
     printInfoLine( level, *Tag, Length, info );
 }
@@ -307,23 +296,16 @@ void DcmObject::printInfoLine( int level, char *info )
 // ********************************
 
 
-void DcmObject::printInfoLine( int level, DcmTag &tag, T_VR_UL length,
-			       char *info )
+void DcmObject::printInfoLine( int level, const DcmTag &tag, T_VR_UL length,
+			       const char *info )
 {
     DcmVR vr( tag.getVR() );
 
     for ( int i=1; i<level; i++)
 	printf("    ");
-    printf( "%4.4x %4.4x %-5.5s %-38.1500s#%6ld,%3ld,%3d  %s\n",
-               tag.getGTag(),
-               tag.getETag(),
-	       vr.getVRName(),
-	       info,
-	       length,
-	       getVM(),
-               tag.getMaxVM(),
-               tag.getTagName()
-             );
+    printf( "%4.4x %4.4x %-5.5s %-38.1500s#%6ld,%3d  %s\n",
+	    tag.getGTag(), tag.getETag(), vr.getVRName(), info,
+	    (long)length, (int)getVM(), tag.getTagName() );
 }
 
 
@@ -358,18 +340,13 @@ debug(( 4, "Tag (0x%4.4x,0x%4.4x) \"%s\" [0x%8.8x] \"%s\"",
         DcmXfer oxferSyn( oxfer );
         if ( oxferSyn.isExplicitVR() )
 	{
-	    EVR vr = DcmVR( Tag->getVR() ).getValidVR();
+	    DcmEVR vr = Tag->getVR().getValidEVR();
 					// Umwandlung in gueltige VR
-	    char *vrname = DcmVR( Tag->getVR() ).getValidVRName();
+	    const char *vrname = Tag->getVR().getValidVRName();
 					// Umwandlung in gueltige Strings
             oDS.write( vrname, 2 );    // 2 Byte Laenge:VR als string
 	    *written_bytes += 2;
 
-#if defined(DCMCODE_OLD_EX_COMPATIBILITY)
-            oDS << Length;             // 4 Byte Laenge; Transfer Syntax !!
-	    *written_bytes += 4;
-	    if ( vr == EVR_OB ) ;	// no compiler warning
-#else
 	    if ( vr == EVR_OB || vr == EVR_OW || vr == EVR_SQ )
 	    {
 		T_VR_US reserved = 0;
@@ -383,7 +360,7 @@ debug(( 4, "Tag (0x%4.4x,0x%4.4x) \"%s\" [0x%8.8x] \"%s\"",
                 oDS << len_s;          // 2 Byte Laenge; Transfer Syntax !!
 		*written_bytes += 2;
 	    }
-#endif
+
         } // if ( oxferSyn.isExplicitVR() )
 	else
 	{

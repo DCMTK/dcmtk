@@ -10,16 +10,14 @@
  *
  *
  * Last Update:   $Author: hewett $
- * Revision:      $Revision: 1.1 $
+ * Revision:      $Revision: 1.2 $
  * Status:	  $State: Exp $
  *
  */
 
 
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
-#endif
+#include "osconfig.h"    /* make sure OS specific configuration is included first */
 
 #include <stdio.h>
 #include <string.h>
@@ -29,26 +27,10 @@
 #include "dcdebug.h"
 
 
-
 // ********************************
 
 
-DcmFloatingPointSingle::DcmFloatingPointSingle( DcmTag &tag )
-    : DcmElement( tag )
-{
-Bdebug((5, "dcvrfl:DcmFloatingPointSingle::DcmFloatingPointSingle(DcmTag&)" ));
-debug(( 8, "Object pointer this=0x%p", this ));
-
-    FloatValue = (T_VR_FL*)NULL;
-Edebug(());
-
-}
-
-
-// ********************************
-
-
-DcmFloatingPointSingle::DcmFloatingPointSingle( DcmTag &tag,
+DcmFloatingPointSingle::DcmFloatingPointSingle( const DcmTag &tag,
                                                 T_VR_UL len,
                                                 iDicomStream *iDStream )
     : DcmElement( tag, len, iDStream )
@@ -63,96 +45,34 @@ Edebug(());
 }
 
 
-// ********************************
-
-
-DcmFloatingPointSingle::DcmFloatingPointSingle( const DcmObject &oldObj )
-    : DcmElement( InternalUseTag )
-{
-Bdebug((5, "dcvrfl:DcmFloatingPointSingle::DcmFloatingPointSingle(DcmObject&)" ));
-debug(( 8, "Object pointer this=0x%p", this ));
-
-    if ( oldObj.ident() == EVR_FL )
-    {
-        DcmFloatingPointSingle const *old
-                                      = (DcmFloatingPointSingle const *)&oldObj;
-        *Tag = *old->Tag;
-        iDS = old->iDS;
-        offsetInFile  = old->offsetInFile;
-        valueInMemory = old->valueInMemory;
-        valueModified = old->valueModified;
-        Length = old->Length;
-        Xfer = old->Xfer;
-        if (    Length == 0
-             || old->FloatValue == (T_VR_FL*)NULL )
-        {
-            if ( valueInMemory )
-                Length = 0;
-            FloatValue = (T_VR_FL*)NULL;
-        }
-        else
-        {
-            FloatValue = new T_VR_FL[ Length / sizeof(T_VR_FL) ];
-            memcpy( FloatValue,
-                    old->FloatValue,
-                    (int)Length );
-        }
-    }
-    else
-    {
-        FloatValue = (T_VR_FL*)NULL;
-        errorFlag = EC_IllegalCall;
-        cerr << "Warning: DcmFloatingPointSingle: wrong use of Copy-Constructor"
-             << endl;
-    }
-Edebug(());
-
-}
 
 
 // ********************************
 
 
-DcmFloatingPointSingle::DcmFloatingPointSingle( const DcmFloatingPointSingle &newFL )
-    : DcmElement( InternalUseTag )
+DcmFloatingPointSingle::DcmFloatingPointSingle( const DcmFloatingPointSingle& old )
+    : DcmElement( old )
 {
 Bdebug((5, "dcvrfl:DcmFloatingPointSingle::DcmFloatingPointSingle(DcmFloatingPointSingle&)" ));
 debug(( 8, "Object pointer this=0x%p", this ));
 
-    if ( newFL.ident() == EVR_FL )
+    if ( old.ident() == EVR_FL )
     {
-        DcmFloatingPointSingle const *old = &newFL;
-        *Tag = *old->Tag;
-        iDS = old->iDS;
-        offsetInFile  = old->offsetInFile;
-        valueInMemory = old->valueInMemory;
-        valueModified = old->valueModified;
-        Length = old->Length;
-        Xfer = old->Xfer;
-        if (    Length == 0
-             || old->FloatValue == (T_VR_FL*)NULL )
-        {
+        if ( Length == 0 || old.FloatValue == (T_VR_FL*)NULL ) {
             if ( valueInMemory )
                 Length = 0;
             FloatValue = (T_VR_FL*)NULL;
-        }
-        else
-        {
+        } else {
             FloatValue = new T_VR_FL[ Length / sizeof(T_VR_FL) ];
-            memcpy( FloatValue,
-                    old->FloatValue,
-                    (int)Length );
+            memcpy( FloatValue, old.FloatValue, (int)Length );
         }
-    }
-    else
-    {
+    } else {
         FloatValue = (T_VR_FL*)NULL;
         errorFlag = EC_IllegalCall;
         cerr << "Warning: DcmFloatingPointSingle: wrong use of Copy-Constructor"
              << endl;
     }
 Edebug(());
-
 }
 
 
@@ -174,7 +94,7 @@ Edebug(());
 // ********************************
 
 
-EVR DcmFloatingPointSingle::ident() const
+DcmEVR DcmFloatingPointSingle::ident() const
 {
     return EVR_FL;
 }

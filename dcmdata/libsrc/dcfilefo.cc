@@ -10,15 +10,13 @@
  *
  *
  * Last Update:   $Author: hewett $
- * Revision:      $Revision: 1.1 $
+ * Revision:      $Revision: 1.2 $
  * Status:	  $State: Exp $
  *
  */
 
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
-#endif
+#include "osconfig.h"    /* make sure OS specific configuration is included first */
 
 #include <stdlib.h>
 #include <stdio.h>
@@ -27,17 +25,13 @@
 #include <iostream.h>
 
 
-//#ifdef SOLARIS2
-//#include <sys/types.h>
 #ifdef HAVE_UNISTD_H
 #include <unistd.h>
 #endif
-//#endif
 
 #include "dcfilefo.h"
 #include "dcitem.h"
 #include "dcxfer.h"
-#include "dcmodtbl.h"
 #include "dcvrobow.h"
 #include "dcvrui.h"
 #include "dcvrul.h"
@@ -46,50 +40,9 @@
 #include "dcvrsh.h"
 #include "dcdebug.h"
 
+#include "dcdeftag.h"
+#include "dcuid.h"
 
-extern char *VRTypesName[];
-extern short DIM_OF_VRTypes;
-
-
-#ifndef HAVE_GETHOSTID
-#ifdef HAVE_SYSINFO
-
-#include <sys/systeminfo.h>
-static long gethostid(void)
-{
-    char buf[128];
-    if (sysinfo(SI_HW_SERIAL, buf, 128) == -1) {
-       perror("sysinfo");
-       exit(1);
-    }
-#ifdef HAVE_STRTOUL
-    return(strtoul(buf, NULL, 0));
-#else
-	long result;
-	sscanf(buf, "%ld", &result);
-	return result;
-#endif
-}
-
-#else // !HAVE_SYSINFO
-
-static long gethostid(void) { return 4711; }   // workaround for MSDOS
-
-#endif // !HAVE_SYSINFO
-
-#else // HAVE_GETHOSTID
-
-#ifndef HAVE_UNISTD_H
-extern "C" {
-int gethostid();
-int getpid();
-}
-#endif
-
-#endif // HAVE_GETHOSTID
-
-
-static long counterOfCurrentUID = 0;
 
 
 // ********************************
@@ -123,12 +76,9 @@ debug(( 8, "Object pointer this=0x%p", this ));
     DcmSequenceOfItems::itemList->insert( MetaInfo );
     DcmDataset *newDataset;
 
-    if ( dataset == (DcmDataset*)NULL )
-    {
+    if ( dataset == (DcmDataset*)NULL ) {
 	newDataset = new DcmDataset();
-    }
-    else
-    {
+    } else {
 	newDataset = new DcmDataset( *dataset );
     }
     DcmSequenceOfItems::itemList->insert( newDataset );
@@ -158,114 +108,14 @@ Edebug(());
 // ********************************
 
 
-DcmFileFormat::DcmFileFormat( const DcmObject &oldObj )
-    : DcmSequenceOfItems( InternalUseTag )
-{
-Bdebug((5, "dcfilefo:DcmFileFormat::DcmFileFormat(DcmObject&)" ));
-debug(( 8, "Object pointer this=0x%p", this ));
-
-    lastItemComplete = TRUE;
-    itemList = new DcmList;
-debug(( 5, "ident()=%d", oldObj.ident() ));
-
-    if ( oldObj.ident() == EVR_fileFormat )
-    {
-        DcmFileFormat const *old = (DcmFileFormat const *)&oldObj;
-	*Tag = *old->Tag;
-	iDS = old->iDS;
-	offsetInFile  = old->offsetInFile;
-	valueInMemory = old->valueInMemory;
-	valueModified = old->valueModified;
-	Length = old->Length;
-	Xfer = old->Xfer;
-        if ( !old->itemList->empty() )
-	{
-	    DcmObject *oldDO;
-	    DcmObject *newDO;
-	    itemList->seek( ELP_first );
-            old->itemList->seek( ELP_first );
-	    do {
-                oldDO = old->itemList->get();
-		if ( oldDO->ident() == EVR_metainfo )
-		    newDO = new DcmMetaInfo( *oldDO );
-		else if ( oldDO->ident() == EVR_dataset )
-		    newDO = new DcmDataset( *oldDO );
-		else
-		{
-		    newDO = new DcmItem( oldDO->getTag() );
-                    cerr << "Error: DcmFileFormat(): Element("
-                         << hex << oldDO->getGTag() << "," << oldDO->getETag()
-                         << dec
-                         << ") found, which was not a MetaInfo or Dataset"
-                         << endl;
-		}
-		itemList->insert( newDO, ELP_next );
-            } while ( old->itemList->seek( ELP_next ) );
-	}
-    }
-    else
-    {
-        cerr << "Warning: DcmFileFormat: wrong use of Copy-Constructor"
-             << endl;
-    }
-Edebug(());
-
-}
-
-
-// ********************************
-
-
-DcmFileFormat::DcmFileFormat( const DcmFileFormat &oldForm )
-    : DcmSequenceOfItems( InternalUseTag )
+DcmFileFormat::DcmFileFormat( const DcmFileFormat &old )
+    : DcmSequenceOfItems( old )
 {
 Bdebug((5, "dcfilefo:DcmFileFormat::DcmFileFormat(DcmFileFormat&)" ));
 debug(( 8, "Object pointer this=0x%p", this ));
 
-    lastItemComplete = TRUE;
-    itemList = new DcmList;
-debug(( 5, "ident()=%d", oldForm.ident() ));
+debug(( 5, "ident()=%d", old.ident() ));
 
-    if ( oldForm.ident() == EVR_fileFormat )
-    {
-        DcmFileFormat const *old = &oldForm;
-	*Tag = *old->Tag;
-	iDS = old->iDS;
-	offsetInFile  = old->offsetInFile;
-	valueInMemory = old->valueInMemory;
-	valueModified = old->valueModified;
-	Length = old->Length;
-	Xfer = old->Xfer;
-        if ( !old->itemList->empty() )
-	{
-	    DcmObject *oldDO;
-	    DcmObject *newDO;
-	    itemList->seek( ELP_first );
-            old->itemList->seek( ELP_first );
-	    do {
-                oldDO = old->itemList->get();
-		if ( oldDO->ident() == EVR_metainfo )
-		    newDO = new DcmMetaInfo( *oldDO );
-		else if ( oldDO->ident() == EVR_dataset )
-		    newDO = new DcmDataset( *oldDO );
-		else
-		{
-		    newDO = new DcmItem( oldDO->getTag() );
-                    cerr << "Error: DcmFileFormat(): Element("
-                         << hex << oldDO->getGTag() << "," << oldDO->getETag()
-                         << dec
-                         << ") found, which was not a MetaInfo or Dataset"
-                         << endl;
-		}
-		itemList->insert( newDO, ELP_next );
-            } while ( old->itemList->seek( ELP_next ) );
-	}
-    }
-    else
-    {
-        cerr << "Warning: DcmFileFormat: wrong use of Copy-Constructor"
-             << endl;
-    }
 Edebug(());
 
 }
@@ -286,7 +136,7 @@ Edebug(());
 // ********************************
 
 
-EVR DcmFileFormat::ident() const
+DcmEVR DcmFileFormat::ident() const
 {
     return EVR_fileFormat;
 }
@@ -326,102 +176,80 @@ void DcmFileFormat::print( int level )
 
 E_Condition DcmFileFormat::checkValue( DcmMetaInfo *metainfo,
 				       DcmDataset *dataset,
-				       ETag xtag,
+				       const DcmTagKey &atagkey,
 				       DcmObject* obj,
 				       E_TransferSyntax oxfer )
 {
-Bdebug((2, "dcfilefo:DcmFileFormat::checkValue(*metainfo,*dataset,xtag=%d,*obj,oxfer=%d)",
-	   xtag, oxfer ));
+Bdebug((2, "dcfilefo:DcmFileFormat::checkValue(*metainfo,*dataset,xtag=(%x,%x),*obj,oxfer=%d)",
+	   atagkey.getGroup(), atagkey.getElement(), oxfer ));
 
     E_Condition l_error = EC_Normal;
     if ( metainfo != (DcmMetaInfo*)NULL && dataset != (DcmDataset*)NULL )
     {
 	DcmStack stack;
-        DcmTag tag( xtag );
+        DcmTag tag( atagkey );
 	if ( obj != (DcmObject*)NULL )
             tag = obj->getTag();
 
-        ETag xtag = tag.getXTag();
+        DcmTagKey xtag = tag.getXTag();
 	DcmElement *elem = (DcmElement*)obj;
-	switch ( xtag )
-	{
-            case ET_GroupLength0002:              // (0002,0000)
-		{
-                    if ( elem == (DcmElement*)NULL )
-                    {
-                        elem = new DcmUnsignedLong( tag );
-                        metainfo->insert( elem, TRUE );
-                    }
-                    T_VR_UL temp = 0;
-                    if ( elem->getLength() == 0 && elem->ident() == EVR_UL )
-                        ((DcmUnsignedLong*)elem)->put( &temp, 1 );
-                    // Laengenberechnung erfolgt in validateMetaInfo()
-		}
-		break;
 
-            case ET_FileMetaInformationVersion:   // (0002,0001)
-		{
-                    if ( elem == (DcmElement*)NULL )
-                    {
-                        elem = new DcmOtherByteOtherWord( tag );
-                        metainfo->insert( elem, TRUE );
-                    }
-                    U_CHAR version[2] = {0,1};
-                    if ( elem->getLength() == 0 && elem->ident() == EVR_OB )
-                        ((DcmOtherByteOtherWord*)elem)->put( version, 2 );
+	if ( xtag == DCM_MetaElementGroupLength ) {	// (0002,0000)
+            if ( elem == (DcmElement*)NULL )
+            {
+                elem = new DcmUnsignedLong( tag );
+                metainfo->insert( elem, TRUE );
+            }
+            T_VR_UL temp = 0;
+            if ( elem->getLength() == 0 && elem->ident() == EVR_UL )
+                ((DcmUnsignedLong*)elem)->put( &temp, 1 );
+            // Laengenberechnung erfolgt in validateMetaInfo()
+	} else if ( xtag == DCM_FileMetaInformationVersion ) {	// (0002,0001)
+            if ( elem == (DcmElement*)NULL )
+            {
+                elem = new DcmOtherByteOtherWord( tag );
+                metainfo->insert( elem, TRUE );
+            }
+            BYTE version[2] = {0,1};
+            if ( elem->getLength() == 0 && elem->ident() == EVR_OB )
+                ((DcmOtherByteOtherWord*)elem)->put( version, 2 );
 
-                    // ueberpruefe Version des MetaHeaders
-                    U_CHAR *currVers
-                                 = ((DcmOtherByteOtherWord*)elem)->getBytes();
-                    if (    ((currVers[0] & version[0] & 0xff) == version[0])
-                         && ((currVers[1] & version[1] & 0xff) == version[1])
-                       )
-                    {
+            // ueberpruefe Version des MetaHeaders
+            BYTE *currVers = ((DcmOtherByteOtherWord*)elem)->getBytes();
+            if (    ((currVers[0] & version[0] & 0xff) == version[0])
+                 && ((currVers[1] & version[1] & 0xff) == version[1]) ) {
 debug(( 2, "Version of MetaHeader is ok: 0x%2.2x%2.2x",
-           currVers[1], currVers[0] ));
+   currVers[1], currVers[0] ));
 
-                    }
-                    else
-                    {
-                        currVers[0] = currVers[0] | version[0]; // direkte Daten-
-                        currVers[1] = currVers[1] | version[1]; // Manipulation
-                        fprintf(stderr, "Warning: dcfilefo:"
-                                " unknown Version of MetaHeader detected:");
-                        fprintf(stderr,
-                                 " 0x%2.2x%2.2x supported: 0x%2.2x%2.2x",
-                                   currVers[1], currVers[0],
-                                    version[1],  version[0] );
-                        fprintf(stderr, "\n");
-                    }
-                }
-                break;
-
-            case ET_MediaStoredSOPClassUID:       // (0002,0002)
-		if ( elem == (DcmElement*)NULL )
-                {
-                    elem = new DcmUniqueIdentifier( tag );
-                    metainfo->insert( elem, TRUE );
-                }
-                if ( elem->getLength() == 0 && elem->ident() == EVR_UI )
-		{
-		    if ( dataset->search( ET_SOPClassUID, stack )
-			 == EC_Normal )
-		    {
-			char *uid = ((DcmUniqueIdentifier*)stack.top())->get();
-			((DcmUniqueIdentifier*)elem)->put( uid );
+            } else {
+                currVers[0] = currVers[0] | version[0]; // direkte Daten-
+                currVers[1] = currVers[1] | version[1]; // Manipulation
+                fprintf(stderr, "Warning: dcfilefo:"
+                        " unknown Version of MetaHeader detected:");
+                fprintf(stderr,
+                         " 0x%2.2x%2.2x supported: 0x%2.2x%2.2x",
+                           currVers[1], currVers[0],
+                            version[1],  version[0] );
+                fprintf(stderr, "\n");
+            }
+	} else if ( xtag == DCM_MediaStorageSOPClassUID ) {	// (0002,0002)
+	    if ( elem == (DcmElement*)NULL ) {
+                elem = new DcmUniqueIdentifier( tag );
+                metainfo->insert( elem, TRUE );
+            }
+            if ( elem->getLength() == 0 && elem->ident() == EVR_UI ) {
+	        if ( dataset->search( DCM_SOPClassUID, stack ) == EC_Normal ) {
+		    const char *uid = ((DcmUniqueIdentifier*)stack.top())->get();
+		    ((DcmUniqueIdentifier*)elem)->put( uid );
 debug(( 2, "use SOPClassUID [%s]", uid ));
 
-		    }
-                    else
-		    {
-                        cerr << "Warning: dcfilefo: I can't find"
-                                " ET_SOPClassUID in Dataset!" << endl;
-                        l_error = EC_CorruptedData;
-		    }
-		}
-		break;
-
-            case ET_MediaStoredSOPInstanceUID:    // (0002,0003)
+	        } else {
+                    cerr << "Warning: dcfilefo: I can't find"
+                        " DCM_SOPClassUID in Dataset!" << endl;
+                    l_error = EC_CorruptedData;
+	        }
+	    }
+	} else if ( xtag == DCM_MediaStorageSOPInstanceUID ) {	// (0002,0003)
 		if ( elem == (DcmElement*)NULL )
                 {
                     elem = new DcmUniqueIdentifier( tag );
@@ -429,36 +257,26 @@ debug(( 2, "use SOPClassUID [%s]", uid ));
                 }
                 if ( elem->getLength() == 0 && elem->ident() == EVR_UI )
 		{
-                    char *uid = (char*)NULL;
-		    if ( dataset->search( ET_SOPInstanceUID, stack )
+		    if ( dataset->search( DCM_SOPInstanceUID, stack )
 			 == EC_Normal )
 		    {
-                        uid = ((DcmUniqueIdentifier*)stack.top())->get();
+                        const char* uid = ((DcmUniqueIdentifier*)stack.top())->get();
                         ((DcmUniqueIdentifier*)elem)->put( uid );
 debug(( 2, "use SOPInstanceUID [%s] from Dataset", uid ));
 
 		    }
                     else
 		    {
-                        uid = new char[1024];
-                        // time() get the seconds
-                        //        since 00:00:00 GMT, Jan.  1,  1970
-                        sprintf( uid, "%s.%s.%ld.%ld.%ld.%ld",
-                                     DIC_EURO_UIDROOT,
-                                     DIC_EURO_UIDROOT_INFIX,
-                                     gethostid(),
-                                     (long)getpid(),
-                                     time(NULL),
-                                     counterOfCurrentUID++ );
+                        char uid[128];
+
+                        dcmGenerateUniqueIdentifer(uid);	// from dcuid.h 
+
                         ((DcmUniqueIdentifier*)elem)->put( uid );
 debug(( 2, "use new generated SOPInstanceUID [%s]", uid ));
 
-                        delete uid;
 		    }
 		}
-		break;
-
-            case ET_TransferSyntaxUID:            // (0002,0010)
+	} else if ( xtag == DCM_TransferSyntaxUID ) {	// (0002,0010)
 		if ( elem == (DcmElement*)NULL )
                 {
                     elem = new DcmUniqueIdentifier( tag );
@@ -471,15 +289,13 @@ Vdebug((2, ((DcmUniqueIdentifier*)elem)->get() != (char*)NULL,
            ((DcmUniqueIdentifier*)elem)->get() ));
 
 		    DcmXfer dcXfer( oxfer );
-		    char *uid = dcXfer.getXferID();
+		    const char *uid = dcXfer.getXferID();
 		    ((DcmUniqueIdentifier*)elem)->put( uid );
 debug(( 2, "use new transfer-syntax [%s] on writing following Dataset",
            dcXfer.getXferName() ));
 
 		}
-		break;
-
-            case ET_ImplementationClassUID:       // (0002,0012)
+	} else if ( xtag == DCM_ImplementationClassUID ) {	// (0002,0012)
 		if ( elem == (DcmElement*)NULL )
                 {
                     elem = new DcmUniqueIdentifier( tag );
@@ -488,12 +304,11 @@ debug(( 2, "use new transfer-syntax [%s] on writing following Dataset",
                 //old: if ( elem->getLength() == 0 && elem->ident() == EVR_UI )
                 if ( elem->ident() == EVR_UI )
 		{
-		    char *uid = DIC_EURO_IMPLEMENTATIONCLASSUID;
+		    const char *uid = OFFIS_IMPLEMENTATION_CLASS_UID;
 		    ((DcmUniqueIdentifier*)elem)->put( uid );
 		}
-		break;
 
-            case ET_ImplementationVersionName:    // (0002,0013)
+	} else if ( xtag == DCM_ImplementationVersionName ) {	// (0002,0013)
 		if ( elem == (DcmElement*)NULL )
                 {
                     elem = new DcmShortString( tag );
@@ -502,49 +317,47 @@ debug(( 2, "use new transfer-syntax [%s] on writing following Dataset",
                 //old: if ( elem->getLength() == 0 && elem->ident() == EVR_SH )
                 if ( elem->ident() == EVR_SH )
 		{
-		    char *uid = DIC_EURO_DTK_IMPLEMENTATIONVERSIONNAME;
+		    char *uid = OFFIS_DTK_IMPLEMENTATION_VERSION_NAME;
 		    ((DcmShortString*)elem)->put( uid );
 		}
-		break;
 
-            case ET_SourceApplicationEntityTitle: // (0002,0016)
+	} else if ( xtag == DCM_SourceApplicationEntityTitle ) {	// (0002,0016)
 		if ( elem == (DcmElement*)NULL )
                 {
                     elem = new DcmApplicationEntity( tag );
                     metainfo->insert( elem, TRUE );
                 }
                 cerr << "Error: dcfilefo: I don't know how to handle"
-                        " ET_SourceApplicationEntityTitle!" << endl;
-		break;
+                        " DCM_SourceApplicationEntityTitle!" << endl;
 
-            case ET_PrivateInformationCreatorUID: // (0002,0100)
+	} else if ( xtag == DCM_PrivateInformationCreatorUID ) {	// (0002,0100)
 		if ( elem == (DcmElement*)NULL )
                 {
                     elem = new DcmUniqueIdentifier( tag );
                     metainfo->insert( elem, TRUE );
                 }
                 cerr << "Error: dcfilefo: I don't know how to handle"
-                        " ET_PrivateInformationCreatorUID!" << endl;
-		break;
+                        " DCM_PrivateInformationCreatorUID!" << endl;
 
-            case ET_PrivateInformation:           // (0002,0102)
+	} else if ( xtag == DCM_PrivateInformation ) {	// (0002,0102)
 		if ( elem == (DcmElement*)NULL )
                 {
                     elem = new DcmOtherByteOtherWord( tag );
                     metainfo->insert( elem, TRUE );
                 }
                 cerr << "Warning: dcfilefo: I don't know how to handle"
-                        " ET_PrivateInformation!" << endl;
-		break;
+                        " DCM_PrivateInformation!" << endl;
 
-	    default:
-		break;
+	} else {
+                cerr << "Warning: dcfilefo: I don't know how to handle "
+                     << tag.getTagName() << endl;
+
 	}
         if ( elem == (DcmElement*)NULL )
             l_error = EC_InvalidVR;
-    }
-    else
+    } else {
         l_error = EC_IllegalCall;
+    }
 Edebug(());
 
     return l_error;
@@ -554,6 +367,7 @@ Edebug(());
 // ********************************
 
 
+
 E_Condition DcmFileFormat::validateMetaInfo( E_TransferSyntax oxfer )
 {
 Bdebug((2, "dcfilefo:DcmFileFormat::validateMetaInfo(oxfer=%d)", oxfer ));
@@ -561,82 +375,57 @@ Bdebug((2, "dcfilefo:DcmFileFormat::validateMetaInfo(oxfer=%d)", oxfer ));
     E_Condition l_error = EC_Normal;
     DcmMetaInfo *metinf = getMetaInfo();
     DcmDataset *datset = getDataset();
-    DcmModuleTable modtable( "DICOMFileMetaInformationHeader" );
 
-    modtable.setModuleTable(0);
-    if (    modtable.setModuleAttributeGroup(0) == EC_Normal
-	 && metinf != (DcmMetaInfo*)NULL
-	 && datset != (DcmDataset*)NULL
-       )
-    {
+    if (metinf != (DcmMetaInfo*)NULL && datset != (DcmDataset*)NULL) {
 	DcmStack stack;
-	short maxentries = modtable.getModuleAttributeMaxNum();
-	for ( short i = 0; i < maxentries; i++ )
-	{
-debug(( 2, "testing table entry %d of %d", i+1, maxentries ));
 
-	    ETag tab_xtag = modtable.getModuleAttribute_TagType( i )->XTag;
-debug(( 2, "getModuleAttribute_TagType(%d)->XTag=%d", i, tab_xtag ));
+	/* DCM_MetaElementGroupLength */
+	metinf->search(DCM_MetaElementGroupLength, stack, ESM_fromHere, FALSE );
+	checkValue( metinf, datset, DCM_MetaElementGroupLength, stack.top(), oxfer );
 
-	    switch ( modtable.getModuleAttribute_TagType( i )->Type )
-	    {
-		case EType_1:
-		    if ( metinf->search( tab_xtag, stack, ESM_fromHere, FALSE )
-			 != EC_Normal )
-			;			// do nothing
-		    checkValue( metinf, datset, tab_xtag, stack.top(), oxfer );
-		    break;
+	/* DCM_FileMetaInformationVersion */
+	metinf->search(DCM_FileMetaInformationVersion, stack, ESM_fromHere, FALSE );
+	checkValue( metinf, datset, DCM_FileMetaInformationVersion, stack.top(), oxfer );
 
-		case EType_1C:
-		    {
-		    ETag tmp_x = modtable.getModuleAttribute_TagType(i-1)->XTag;
-                    if ( metinf->search( tmp_x, stack, ESM_fromHere, FALSE )
-                         == EC_Normal )
-		    {
-			if ( metinf->search( tab_xtag, stack, ESM_fromHere, FALSE )
-			    != EC_Normal )
-			;			// do nothing
-			checkValue( metinf, datset, tab_xtag, stack.top(), oxfer );
-		    }
-		    }
-		    break;
+	/* DCM_MediaStorageSOPClassUID */
+	metinf->search(DCM_MediaStorageSOPClassUID, stack, ESM_fromHere, FALSE );
+	checkValue( metinf, datset, DCM_MediaStorageSOPClassUID, stack.top(), oxfer );
 
-		case EType_3:
-		    if ( tab_xtag == ET_ImplementationVersionName )
-		    {
-			if ( metinf->search( tab_xtag, stack, ESM_fromHere, FALSE )
-			     != EC_Normal )
-			    ;			// do nothing
-			checkValue( metinf, datset, tab_xtag, stack.top(), oxfer );
-		    }
-		    break;
+	/* DCM_MediaStorageSOPInstanceUID */
+	metinf->search(DCM_MediaStorageSOPInstanceUID, stack, ESM_fromHere, FALSE );
+	checkValue( metinf, datset, DCM_MediaStorageSOPInstanceUID, stack.top(), oxfer );
 
-		default:
-debug(( 2, "ETypeAttr of element(%d) was not EType_1, EType_1C or EType_3.",
-	   i ));
+	/* DCM_TransferSyntaxUID */
+	metinf->search(DCM_TransferSyntaxUID, stack, ESM_fromHere, FALSE );
+	checkValue( metinf, datset, DCM_TransferSyntaxUID, stack.top(), oxfer );
 
-		    break;
-	    }
-	}
+	/* DCM_ImplementationClassUID */
+	metinf->search(DCM_ImplementationClassUID, stack, ESM_fromHere, FALSE );
+	checkValue( metinf, datset, DCM_ImplementationClassUID, stack.top(), oxfer );
+
+	/* DCM_ImplementationVersionName */
+	metinf->search(DCM_ImplementationVersionName, stack, ESM_fromHere, FALSE );
+	checkValue( metinf, datset, DCM_ImplementationVersionName, stack.top(), oxfer );
+
 debug(( 2, "DcmFileFormat:found %ld Elements in DcmMetaInfo metinf.",
            metinf->card() ));
 
 	// berechne neue GroupLength
         if ( metinf->addGroupLengthElements( META_HEADER_DEFAULT_TRANSFERSYNTAX,
-                                             EET_UndefinedLength ) != EC_Normal
-           )
-        {
+                                             EET_UndefinedLength ) != EC_Normal ) {
             cerr << "Error: DcmFileFormat::validateMetaInfo(): group length"
                     " of Meta Information Header not adapted."
                  << endl;
         }
     }
-    else
+    else {
         l_error = EC_CorruptedData;
+    }
 Edebug(());
 
     return l_error;
 }
+
 
 
 // ********************************
@@ -649,13 +438,13 @@ Bdebug((4, "dcfilefo:DcmFileFormat::lookForXfer(metainfo*)" ));
     E_TransferSyntax newxfer = EXS_UNKNOWN;
     DcmStack stack;
     if (    metainfo != (DcmMetaInfo*)NULL
-	 && metainfo->search( ET_TransferSyntaxUID, stack ) == EC_Normal
+	 && metainfo->search( DCM_TransferSyntaxUID, stack ) == EC_Normal
        )
     {
 	DcmUniqueIdentifier *xferUI = (DcmUniqueIdentifier*)(stack.top());
-        if ( xferUI->getTag().getXTag() == ET_TransferSyntaxUID )
+        if ( xferUI->getTag().getXTag() == DCM_TransferSyntaxUID )
 	{
-            char *xferid = xferUI->get();     // auslesen der ID
+            const char *xferid = xferUI->get();     // auslesen der ID
             DcmXfer localXfer( xferid );      // dekodieren in E_TransferSyntax
             newxfer = localXfer.getXfer();
 debug(( 4, "detected xfer=%d=[%s] in MetaInfo",

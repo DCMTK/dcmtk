@@ -10,7 +10,7 @@
  * 
  * 
  * Last Update:	  $Author: hewett $
- * Revision:      $Revision: 1.1 $
+ * Revision:      $Revision: 1.2 $
  * Status:        $State: Exp $
  *
  */
@@ -20,25 +20,10 @@
 #include "dcdebug.h"
 
 
-
 // ********************************
 
 
-DcmTime::DcmTime( DcmTag &tag )
-    : DcmByteString( tag )
-{
-Bdebug((5, "dcvrtm:DcmTime::DcmTime(DcmTag&)" ));
-
-    maxLength = 16;
-Edebug(());
-
-}
-
-
-// ********************************
-
-
-DcmTime::DcmTime( DcmTag &tag,
+DcmTime::DcmTime( const DcmTag &tag,
                   T_VR_UL len,
                   iDicomStream *iDStream )
     : DcmByteString( tag, len, iDStream )
@@ -54,22 +39,8 @@ Edebug(());
 // ********************************
 
 
-DcmTime::DcmTime( const DcmObject &oldObj )
-    : DcmByteString( oldObj, EVR_TM )
-{
-Bdebug((5, "dcvrtm:DcmTime::DcmTime(DcmObject&)" ));
-
-    maxLength = 16;
-Edebug(());
-
-}
-
-
-// ********************************
-
-
-DcmTime::DcmTime( const DcmTime &newTM )
-    : DcmByteString( newTM, EVR_TM )
+DcmTime::DcmTime( const DcmTime& old )
+    : DcmByteString( old, EVR_TM )
 {
 Bdebug((5, "dcvrtm:DcmTime::DcmTime(DcmTime&)" ));
 
@@ -93,7 +64,7 @@ Edebug(());
 // ********************************
 
 
-EVR DcmTime::ident() const
+DcmEVR DcmTime::ident() const
 {
     return EVR_TM;
 }

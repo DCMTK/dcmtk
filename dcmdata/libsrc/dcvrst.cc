@@ -10,7 +10,7 @@
  * 
  * 
  * Last Update:	  $Author: hewett $
- * Revision:      $Revision: 1.1 $
+ * Revision:      $Revision: 1.2 $
  * Status:        $State: Exp $
  *
  */
@@ -20,25 +20,10 @@
 #include "dcdebug.h"
 
 
-
 // ********************************
 
 
-DcmShortText::DcmShortText( DcmTag &tag )
-    : DcmCharString( tag )
-{
-Bdebug((5, "dcvrst:DcmShortText::DcmShortText(DcmTag&)" ));
-
-    maxLength = 1024;
-Edebug(());
-
-}
-
-
-// ********************************
-
-
-DcmShortText::DcmShortText( DcmTag &tag,
+DcmShortText::DcmShortText( const DcmTag &tag,
                             T_VR_UL len,
                             iDicomStream *iDStream )
     : DcmCharString( tag, len, iDStream )
@@ -54,22 +39,8 @@ Edebug(());
 // ********************************
 
 
-DcmShortText::DcmShortText( const DcmObject &oldObj )
-    : DcmCharString( oldObj, EVR_ST )
-{
-Bdebug((5, "dcvrst:DcmShortText::DcmShortText(DcmObject&)" ));
-
-    maxLength = 1024;
-Edebug(());
-
-}
-
-
-// ********************************
-
-
-DcmShortText::DcmShortText( const DcmShortText &newST )
-    : DcmCharString( newST, EVR_ST )
+DcmShortText::DcmShortText( const DcmShortText& old )
+    : DcmCharString( old, EVR_ST )
 {
 Bdebug((5, "dcvrst:DcmShortText::DcmShortText(DcmShortText&)" ));
 
@@ -93,7 +64,7 @@ Edebug(());
 // ********************************
 
 
-EVR DcmShortText::ident() const
+DcmEVR DcmShortText::ident() const
 {
     return EVR_ST;
 }

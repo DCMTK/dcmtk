@@ -10,19 +10,19 @@
  *
  *
  * Last Update:   $Author: hewett $
- * Revision:      $Revision: 1.1 $
+ * Revision:      $Revision: 1.2 $
  * Status:	  $State: Exp $
  *
  */
 
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
-#endif
+#include "osconfig.h"    /* make sure OS specific configuration is included first */
 
 #include <stdlib.h>
 #include <stdio.h>
 #include <iostream.h>
+#include <string.h>
+#include <ctype.h>
 
 #include "dctk.h"
 #include "dcitem.h"
@@ -30,10 +30,6 @@
 #include "dcvr.h"
 #include "dcxfer.h"
 #include "dcdebug.h"
-
-
-extern char *VRTypesName[];
-extern short DIM_OF_VRTypes;
 
 
 
@@ -56,23 +52,7 @@ Edebug(());
 // ********************************
 
 
-DcmItem::DcmItem( DcmTag &tag )
-    : DcmObject( tag )
-{
-Bdebug((5, "dcitem:DcmItem::DcmItem(DcmTag&)" ));
-debug(( 8, "Object pointer this=0x%p", this ));
-
-    elementList = new DcmList;
-    lastElementComplete = TRUE;
-Edebug(());
-
-}
-
-
-// ********************************
-
-
-DcmItem::DcmItem( DcmTag &tag, T_VR_UL len, iDicomStream *iDStream )
+DcmItem::DcmItem( const DcmTag &tag, T_VR_UL len, iDicomStream *iDStream )
     : DcmObject( tag, len, iDStream )
 {
 Bdebug((5, "dcitem:DcmItem::DcmItem(DcmTag&,len=%ld,*iDS)", len ));
@@ -88,93 +68,37 @@ Edebug(());
 // ********************************
 
 
-DcmItem::DcmItem( const DcmObject &oldObj )
-    : DcmObject( ItemTag )
-{
-Bdebug((5, "dcitem:DcmItem::DcmItem(DcmObject&)"));
-debug(( 8, "Object pointer this=0x%p", this ));
-
-    lastElementComplete = TRUE;
-    elementList = new DcmList;
-debug(( 3, "ident()=%d", oldObj.ident() ));
-
-    if (    oldObj.ident() == EVR_item
-	 || oldObj.ident() == EVR_dirRecord	  // noetig fuer Konversion
-       )
-    {
-	DcmItem const *old = (DcmItem const *)&oldObj;
-	*Tag = *old->Tag;
-	iDS = old->iDS;
-	offsetInFile  = old->offsetInFile;
-	valueInMemory = old->valueInMemory;
-	valueModified = old->valueModified;
-	Length = old->Length;
-	Xfer = old->Xfer;
-	if ( !old->elementList->empty() )
-	{
-	    DcmObject *oldDO;
-	    DcmObject *newDO;
-	    elementList->seek( ELP_first );
-	    old->elementList->seek( ELP_first );
-	    do {
-		oldDO = old->elementList->get();
-		newDO = copyDcmObject( oldDO );
-
-		elementList->insert( newDO, ELP_next );
-	    } while ( old->elementList->seek( ELP_next ) );
-	}
-    }
-    else
-    {
-        cerr << "Warning: DcmItem: wrong use of Copy-Constructor" << endl;
-    }
-Edebug(());
-
-}
-
-
-// ********************************
-
-
-DcmItem::DcmItem( const DcmItem &oldItem )
-    : DcmObject( ItemTag )
+DcmItem::DcmItem( const DcmItem& old )
+    : DcmObject( old )
 {
 Bdebug((5, "dcitem:DcmItem::DcmItem(DcmItem&)"));
 debug(( 8, "Object pointer this=0x%p", this ));
 
     lastElementComplete = TRUE;
     elementList = new DcmList;
-debug(( 5, "ident()=%d", oldItem.ident() ));
+debug(( 5, "ident()=%d", old.ident() ));
 
-    if (    oldItem.ident() == EVR_item
-	 || oldItem.ident() == EVR_dirRecord	   // noetig fuer Konversion
-       )
-    {
-	DcmItem const *old = &oldItem;
-	*Tag = *old->Tag;
-	iDS = old->iDS;
-	offsetInFile  = old->offsetInFile;
-	valueInMemory = old->valueInMemory;
-	valueModified = old->valueModified;
-	Length = old->Length;
-	Xfer = old->Xfer;
-	if ( !old->elementList->empty() )
-	{
+    switch ( old.ident() ) {
+    case EVR_item:
+    case EVR_dirRecord:
+    case EVR_dataset:
+    case EVR_metainfo:
+	if ( !old.elementList->empty() ) {
 	    DcmObject *oldDO;
 	    DcmObject *newDO;
 	    elementList->seek( ELP_first );
-	    old->elementList->seek( ELP_first );
+	    old.elementList->seek( ELP_first );
 	    do {
-		oldDO = old->elementList->get();
+		oldDO = old.elementList->get();
 		newDO = copyDcmObject( oldDO );
 
 		elementList->insert( newDO, ELP_next );
-	    } while ( old->elementList->seek( ELP_next ) );
+	    } while ( old.elementList->seek( ELP_next ) );
 	}
-    }
-    else
-    {
+	break;
+    default:
         cerr << "Warning: DcmItem: wrong use of Copy-Constructor" << endl;
+	break;
     }
 Edebug(());
 
@@ -191,8 +115,7 @@ debug(( 8, "Object pointer this=0x%p", this ));
 
     DcmObject *dO;
     elementList->seek( ELP_first );
-    while ( !elementList->empty() )
-    {
+    while ( !elementList->empty() ) {
 	dO = elementList->remove();
 	if ( dO != (DcmObject*)NULL )
 	    delete dO;
@@ -208,16 +131,24 @@ Edebug(());
 
 BOOL DcmItem::foundVR( char* atposition )
 {
-    int i = 0;
-    while ( (i < DIM_OF_VRTypes)
-       && (memcmp(VRTypesName[i], atposition, 2) != 0) )
-	i++;
-
-    if ( (i < DIM_OF_VRTypes)
-       && (memcmp(VRTypesName[i], atposition, 2) == 0) )
-	return TRUE;
-    else
-	return FALSE;
+    char c1 =  atposition[0];
+    char c2 = atposition[1];
+    BOOL valid = FALSE;
+        
+    if (isalpha(c1) && isalpha(c2)) {
+        char vrName[3];
+        vrName[0] = c1;
+        vrName[1] = c2;
+        vrName[2] = '\0';
+    
+    	/* is this VR name a standard VR descriptor */
+    	DcmVR vr(vrName);
+    	valid = vr.isStandard();
+    } else {
+        /* cannot be a valid VR name since non-characters */
+        valid = FALSE;
+    }
+    return valid;    
 }
 
 
@@ -290,109 +221,107 @@ Bdebug((4, "dcitem:DcmItem::copyDcmObject(DcmObject*)"));
     {
 	// Byte-Strings:
 	case EVR_AE :
-	    newObj = new DcmApplicationEntity( *oldObj );
+	    newObj = new DcmApplicationEntity( *(DcmApplicationEntity*)(oldObj) );
 	    break;
 	case EVR_AS :
-	    newObj = new DcmAgeString( *oldObj );
+	    newObj = new DcmAgeString( *(DcmAgeString*)oldObj );
 	    break;
 	case EVR_CS :
-	    newObj = new DcmCodeString( *oldObj );
+	    newObj = new DcmCodeString( *(DcmCodeString*)oldObj );
 	    break;
 	case EVR_DA :
-	    newObj = new DcmDate( *oldObj );
+	    newObj = new DcmDate( *(DcmDate*)oldObj );
 	    break;
 	case EVR_DS :
-	    newObj = new DcmDecimalString( *oldObj );
+	    newObj = new DcmDecimalString( *(DcmDecimalString*)oldObj );
 	    break;
 	case EVR_DT :
-	    newObj = new DcmDateTime( *oldObj );
+	    newObj = new DcmDateTime( *(DcmDateTime*)oldObj );
 	    break;
 	case EVR_IS :
-	    newObj = new DcmIntegerString( *oldObj );
+	    newObj = new DcmIntegerString( *(DcmIntegerString*)oldObj );
 	    break;
 	case EVR_TM :
-	    newObj = new DcmTime( *oldObj );
+	    newObj = new DcmTime( *(DcmTime*)oldObj );
 	    break;
 	case EVR_UI :
-	    newObj = new DcmUniqueIdentifier( *oldObj );
+	    newObj = new DcmUniqueIdentifier( *(DcmUniqueIdentifier*)oldObj );
 	    break;
 
 	// Charakter-Strings:
 	case EVR_LO :
-	    newObj = new DcmLongString( *oldObj );
+	    newObj = new DcmLongString( *(DcmLongString*)oldObj );
 	    break;
 	case EVR_LT :
-	    newObj = new DcmLongText( *oldObj );
+	    newObj = new DcmLongText( *(DcmLongText*)oldObj );
 	    break;
 	case EVR_PN :
-	    newObj = new DcmPersonName( *oldObj );
+	    newObj = new DcmPersonName( *(DcmPersonName*)oldObj );
 	    break;
 	case EVR_SH :
-	    newObj = new DcmShortString( *oldObj );
+	    newObj = new DcmShortString( *(DcmShortString*)oldObj );
 	    break;
 	case EVR_ST :
-	    newObj = new DcmShortText( *oldObj );
+	    newObj = new DcmShortText( *(DcmShortText*)oldObj );
 	    break;
 
 	// abhaengig von ByteOrder:
 	case EVR_AT :
-	    newObj = new DcmAttributeTag( *oldObj );
+	    newObj = new DcmAttributeTag( *(DcmAttributeTag*)oldObj );
 	    break;
 	case EVR_SS :
-	    newObj = new DcmSignedShort( *oldObj );
+	    newObj = new DcmSignedShort( *(DcmSignedShort*)oldObj );
 	    break;
 	case EVR_xs : // laut Dicom-Standard V3.0
-	case EVR_ux : // laut Dicom-Standard V3.0
 	case EVR_US :
-	    newObj = new DcmUnsignedShort( *oldObj );
+	    newObj = new DcmUnsignedShort( *(DcmUnsignedShort*)oldObj );
 	    break;
 	case EVR_SL :
-	    newObj = new DcmSignedLong( *oldObj );
+	    newObj = new DcmSignedLong( *(DcmSignedLong*)oldObj );
 	    break;
 	case EVR_up : // fuer (0004,eeee) laut Dicom-Standard V3.0
-	    newObj = new DcmUnsignedLongOffset( *oldObj );
+	    newObj = new DcmUnsignedLongOffset( *(DcmUnsignedLongOffset*)oldObj );
 	    break;
 	case EVR_UL :
-	    newObj = new DcmUnsignedLong( *oldObj );
+	    newObj = new DcmUnsignedLong( *(DcmUnsignedLong*)oldObj );
 	    break;
 	case EVR_FL :
-	    newObj = new DcmFloatingPointSingle( *oldObj );
+	    newObj = new DcmFloatingPointSingle( *(DcmFloatingPointSingle*)oldObj );
 	    break;
 	case EVR_FD :
-	    newObj = new DcmFloatingPointDouble( *oldObj );
+	    newObj = new DcmFloatingPointDouble( *(DcmFloatingPointDouble*)oldObj );
 	    break;
 
 	// Sequenzen
 	case EVR_SQ :
-	    newObj = new DcmSequenceOfItems( *oldObj );
+	    newObj = new DcmSequenceOfItems( *(DcmSequenceOfItems*)oldObj );
 	    break;
 
 	// nicht-eindeutig 8- oder 16-Bit:
-	case EVR_oa : // laut Dicom-Standard V3.0
-	case EVR_oc : // laut Dicom-Standard V3.0
 	case EVR_OB :
 	case EVR_OW :
-	case EVR_op :
-	    newObj = new DcmOtherByteOtherWord( *oldObj );
+	case EVR_ox :
+	    newObj = new DcmOtherByteOtherWord( *(DcmOtherByteOtherWord*)oldObj );
 	    break;
+
 
 	// Gekapselte Pixeldaten als spezielle Sequenz:
 	case EVR_pixelSQ :
-	    newObj = new DcmPixelSequence( *oldObj );
+	    newObj = new DcmPixelSequence( *(DcmPixelSequence*)oldObj );
 	    break;
 
-	// Retired Elements und unbekannte Typen als Byte-String behandeln:
-	case EVR_RET :
+	// Treat unknown elements as Byte-String:
 	case EVR_UNKNOWN :
-	    newObj = new DcmOtherByteOtherWord( *oldObj );
+	    newObj = new DcmOtherByteOtherWord( *(DcmOtherByteOtherWord*)oldObj );
 	    break;
 
 	case EVR_na :
 	default :
             cerr << "Warning: DcmItem::copyDcmObject(): unsupported Element("
-                 << hex << oldObj->getGTag() << "," << oldObj->getETag()
-                 << dec << ") with ident()=" << oldObj->ident() << " found."
-                 << endl;
+		 << hex << oldObj->getGTag() << "," << oldObj->getETag()
+		 << dec << ") with ident()=" 
+		 << DcmVR(oldObj->ident()).getVRName() << " found."
+		 << endl;
 	    break;
     }
 Edebug(());
@@ -404,7 +333,7 @@ Edebug(());
 // ********************************
 
 
-EVR DcmItem::ident() const
+DcmEVR DcmItem::ident() const
 {
     return EVR_item;
 }
@@ -422,7 +351,7 @@ void DcmItem::print( int level )
     else
 	title = "\"Item with explicit Length\"";
 
-    sprintf( info, "%s offset=$%ld #=%ld ", title, offsetInFile, card() );
+    sprintf( info, "%s offset=$%ld #=%ld ", title, offsetInFile, (long)card() );
     DcmObject::printInfoLine( level, info );
     if ( !elementList->empty() )
     {
@@ -434,7 +363,7 @@ void DcmItem::print( int level )
 	} while ( elementList->seek( ELP_next ) );
     }
 
-    DcmTag delimItemTag( ET_ItemDelimitationItem );
+    DcmTag delimItemTag( DCM_ItemDelimitationItem );
     if ( Length == UNDEF_LEN )
 	DcmObject::printInfoLine( level, delimItemTag,
 				  0, "\"ItemDelimitationItem\"" );
@@ -460,20 +389,15 @@ T_VR_UL DcmItem::getVM()
    siehe auch DcmDicomDir::lengthUntilSQ()
 */
 
-T_VR_UL DcmItem::calcHeaderLength( EVR vr, E_TransferSyntax xfer )
+T_VR_UL DcmItem::calcHeaderLength( DcmEVR vr, E_TransferSyntax xfer )
 {
     T_VR_UL templen = 0;
     DcmXfer xferSyn( xfer );
     if ( xferSyn.isExplicitVR() )
     {
-#if defined(DCMCODE_OLD_EX_COMPATIBILITY)
-	templen = 10;	       // fuer Tag, 32-Bit-Length und VR
-#else
 	switch ( vr )
 	{
-	    case EVR_oa :
-	    case EVR_oc :
-	    case EVR_op :
+	    case EVR_ox :
 	    case EVR_OB :
 	    case EVR_OW :
 	    case EVR_SQ :
@@ -483,7 +407,6 @@ T_VR_UL DcmItem::calcHeaderLength( EVR vr, E_TransferSyntax xfer )
 		templen = 8;   // fuer Tag, Length und VR
 		break;
 	}
-#endif
     }
     else
 	templen = 8;	       // fuer Tag und Length
@@ -698,9 +621,9 @@ Bdebug((4, "dcitem:DcmItem::readTagAndLength(newxfer=%d,&tag,*length,"
     T_VR_US reserved = 0;
     T_VR_US len_s = 0;
     T_VR_UL len_l = 0;
-    EVR nxtobj = EVR_UNKNOWN;
-    T_VR_US t1 = UNKNOWN_TAG;
-    T_VR_US t2 = UNKNOWN_TAG;
+    DcmEVR nxtobj = EVR_UNKNOWN;
+    T_VR_US t1 = 0xffff;
+    T_VR_US t2 = 0xffff;
 
     if ( !iDS->fromFile() && iDS->buffered() < 4 )
     {
@@ -714,7 +637,7 @@ Edebug(());
 				    // Tag ist gelesen
     *item_bytes = 4;
     DcmTag newTag( t1, t2 );
-    nxtobj = newTag.getVR();	    // VR aus Tag bestimmen
+    nxtobj = newTag.getEVR();	    // VR aus Tag bestimmen
 
     if (    !iDS->fromFile()
 	 && (iDS->buffered()+*item_bytes) < calcHeaderLength( nxtobj, xfer ) )
@@ -738,18 +661,14 @@ debug(( 4, "Implicit xfer=%d", xfer ));
     }
     else if ( xferSyn.isExplicitVR() )
     {
-	char vrstr[2];
+	char vrstr[3];
+	vrstr[2] = '\0';
 	iDS->read(vrstr, 2);	    // 2 Byte Laenge:VR als string
 	DcmVR vr( vrstr );	    // class DcmVR
-	nxtobj = vr.getVR();
+	nxtobj = vr.getEVR();
 	newTag.setVR( nxtobj );     // VR in newTag anpassen
 	*item_bytes += 2;
 
-#if defined(DCMCODE_OLD_EX_COMPATIBILITY)
-	*iDS >> len_l;
-	*item_bytes += 4;
-	len_s = reserved = 0; // no Compiler Warning
-#else
 	if ( nxtobj == EVR_OB || nxtobj == EVR_OW || nxtobj == EVR_SQ )
 	{
 	    *iDS >> reserved;	    // 2 Byte Laenge; Transfer Syntax !!
@@ -762,7 +681,6 @@ debug(( 4, "Implicit xfer=%d", xfer ));
 	    *item_bytes += 2;
 	    len_l = len_s;
 	}
-#endif
 
 debug(( 4, "Explicit xfer=%d", xfer ));
 
@@ -773,7 +691,7 @@ debug(( 4, "Explicit xfer=%d", xfer ));
     }
 debug(( 3, "TagAndLength read of: (0x%4.4x,0x%4.4x) \"%s\" [0x%8.8x] \"%s\"",
 	   newTag.getGTag(), newTag.getETag(),
-	   DcmVR(newTag.getVR()).getVRName(), len_l, newTag.getTagName() ));
+	   newTag.getVRName(), len_l, newTag.getTagName() ));
 
     *length = len_l;		    // Rueckgabewert
     tag = newTag;                   // Rueckgabewert
@@ -799,7 +717,7 @@ Bdebug((4, "dcitem:DcmItem::readSubElement(&newTag,newLength=%ld,xfer=%d,gltype=
     E_Condition l_error = EC_Normal;
     DcmElement *subElem = (DcmElement*)NULL;
 
-    switch ( newTag.getVR() )
+    switch ( newTag.getEVR() )
     {
 	// Byte-Strings:
 	case EVR_AE :
@@ -855,7 +773,6 @@ Bdebug((4, "dcitem:DcmItem::readSubElement(&newTag,newLength=%ld,xfer=%d,gltype=
 	    subElem = new DcmSignedShort( newTag, newLength, iDS );
 	    break;
 	case EVR_xs : // laut Dicom-Standard V3.0
-	case EVR_ux : // laut Dicom-Standard V3.0
 	case EVR_US :
 	    subElem = new DcmUnsignedShort( newTag, newLength, iDS );
 	    break;
@@ -866,8 +783,8 @@ Bdebug((4, "dcitem:DcmItem::readSubElement(&newTag,newLength=%ld,xfer=%d,gltype=
 	case EVR_UL :
 	    {
                       // generiere Tag mit VR aus Dictionary!
-                DcmTag ulupTag( newTag.getGTag(), newTag.getETag() );
-                if ( ulupTag.getVR() == EVR_up )
+                DcmTag ulupTag( newTag.getXTag() );
+                if ( ulupTag.getEVR() == EVR_up )
 		    subElem = new DcmUnsignedLongOffset( ulupTag,
 							 newLength,
 							 iDS );
@@ -889,25 +806,23 @@ Bdebug((4, "dcitem:DcmItem::readSubElement(&newTag,newLength=%ld,xfer=%d,gltype=
 	    subElem = new DcmSequenceOfItems( newTag, newLength, iDS );
 	    break;
 	case EVR_na :
-            if ( newTag.getXTag() == ET_Item )
+            if ( newTag.getXTag() == DCM_Item )
 		l_error = EC_InvalidTag;
-            else if ( newTag.getXTag() == ET_SequenceDelimitationItem )
+            else if ( newTag.getXTag() == DCM_SequenceDelimitationItem )
 		l_error = EC_InvalidTag;
-            else if ( newTag.getXTag() == ET_ItemDelimitationItem )
+            else if ( newTag.getXTag() == DCM_ItemDelimitationItem )
 		l_error = EC_SequEnd;
 	    else
 		l_error = EC_InvalidTag;
 		break;
 
 	// nicht-eindeutig 8- oder 16-Bit:
-	case EVR_oa : // laut Dicom-Standard V3.0
-	case EVR_oc : // laut Dicom-Standard V3.0
+	case EVR_ox :
 	case EVR_OB :
 	case EVR_OW :
-	case EVR_op :
 	    {
                 DcmXfer xferSyn( xfer );
-                if ( newTag.getXTag() == ET_PixelData )
+                if ( newTag.getXTag() == DCM_PixelData )
 		{
 		    if ( xferSyn.isEncapsulated() )
 			subElem = new DcmPixelSequence( newTag, newLength, iDS );
@@ -932,11 +847,6 @@ Bdebug((4, "dcitem:DcmItem::readSubElement(&newTag,newLength=%ld,xfer=%d,gltype=
 	// Falls das Parsing nicht so ganz funktionieren sollte:
 	case EVR_pixelItem :
 	    l_error = EC_InvalidTag;
-	    break;
-
-        // Retired Elements als Byte-String lesen:
-	case EVR_RET :
-	    subElem = new DcmOtherByteOtherWord( newTag, newLength, iDS );
 	    break;
 
         // Unbekannte Typen als Byte-String lesen:
@@ -1012,7 +922,7 @@ Bdebug((3, "dcitem:DcmItem::read(xfer=%d,gltype=%d)", xfer, gltype ));
 	offsetInFile = iDS->tellg() - 8;  // Position von Item-Start
 	iDS->setDataByteOrder( newxfer );
 
-        DcmTag newTag( ET_UNKNOWN );
+        DcmTag newTag;
 	while ( iDS->good() && bytes_read < Length )
 	{
 	    T_VR_UL newValueLength = 0;
@@ -1076,7 +986,7 @@ Bdebug((3, "dcitem:DcmItem::readBlock(xfer=%d,gltype=%d)", xfer, gltype ));
 	    offsetInFile = iDS->tellg() - 8;  // Position von Item-Start
 	iDS->setDataByteOrder( newxfer );
 
-        DcmTag newTag( ET_UNKNOWN );
+        DcmTag newTag;
 	while (    iDS->good()
 		&& ( bytesRead < Length || !lastElementComplete ) )
 	{
@@ -1171,7 +1081,7 @@ Bdebug((3, "dcitem:DcmItem::write(&oDS,oxfer=%d,enctype=%d,gltype=%d)",
 
 	if ( Length == UNDEF_LEN )	// schreibe ItemDelimitationItem
 	{
-            DcmTag delim( ET_ItemDelimitationItem );
+            DcmTag delim( DCM_ItemDelimitationItem );
             oDS << delim.getGTag();   // 2 Byte Laenge; Transfer Syntax !!
             oDS << delim.getETag();   // 2 Byte Laenge; Transfer Syntax !!
 	    T_VR_UL delimLen = 0L;
@@ -1239,7 +1149,7 @@ Bdebug((3, "dcitem:DcmItem::writeBlock(&oDS,oxfer=%d,enctype=%d,gltype=%d)",
                 if ( Length == UNDEF_LEN && oDS.avail() >= 8 )
 					     // schreibe ItemDelimitationItem
 		{
-                    DcmTag delim( ET_ItemDelimitationItem );
+                    DcmTag delim( DCM_ItemDelimitationItem );
                     oDS << delim.getGTag(); // 2 Byte Laenge; Transfer Syntax !
                     oDS << delim.getETag(); // 2 Byte Laenge; Transfer Syntax !
 		    T_VR_UL delimLen = 0L;
@@ -1479,7 +1389,7 @@ Edebug(());
 // ********************************
 
 
-DcmElement* DcmItem::remove( DcmTag& tag )
+DcmElement* DcmItem::remove( const DcmTag& tag )
 {
 Bdebug((3, "dcitem:DcmItem::remove(tag=(%4.4x,%4.4x))",
            tag.getGTag(), tag.getETag() ));
@@ -1491,7 +1401,7 @@ Bdebug((3, "dcitem:DcmItem::remove(tag=(%4.4x,%4.4x))",
 	elementList->seek( ELP_first );
 	do {
 	    dO = elementList->get();
-            if ( tag == dO->getTag() )
+            if ( dO->getTag() == tag )
 	    {
 debug(( 3, "element p=%p removed, but not deleted", dO ));
 
@@ -1574,7 +1484,7 @@ Edebug(());
     //		     starte dann Sub-Suche
 
 
-E_Condition DcmItem::searchSubFromHere( DcmTag &tag,
+E_Condition DcmItem::searchSubFromHere( const DcmTag &tag,
 					DcmStack &resultStack,
 					BOOL searchIntoSub )
 {
@@ -1592,7 +1502,7 @@ Bdebug((5, "dcitem:DcmItem::searchSubFromHere(tag=(%4.4x,%4.4x),Stack&(%ld),"
             if ( searchIntoSub )
             {
                 resultStack.push( dO );
-                if ( tag == dO->getTag() )
+                if ( dO->getTag() == tag )
                     l_error = EC_Normal;
                 else
                     l_error = dO->search( tag,
@@ -1604,16 +1514,16 @@ Bdebug((5, "dcitem:DcmItem::searchSubFromHere(tag=(%4.4x,%4.4x),Stack&(%ld),"
             }
             else
             {
-                if ( tag == dO->getTag() )
+                if ( dO->getTag() == tag )
                 {
                     resultStack.push( dO );
                     l_error = EC_Normal;
                 }
             }
         } while ( l_error != EC_Normal && elementList->seek( ELP_next ) );
-Vdebug((4, l_error==EC_Normal && tag==dO->getTag(), "Search-Tag=(%4.4x,%4.4x)"
+Vdebug((4, l_error==EC_Normal && dO->getTag()==tag, "Search-Tag=(%4.4x,%4.4x)"
            " \"%s\" found!", tag.getGTag(), tag.getETag(),
-           DcmVR(tag.getVR()).getVRName() ));
+           tag.getVR().getVRName() ));
 
     }
 Edebug(());
@@ -1625,7 +1535,7 @@ Edebug(());
 // ********************************
 
 
-E_Condition DcmItem::search( DcmTag &tag,
+E_Condition DcmItem::search( const DcmTag &tag,
 			     DcmStack &resultStack,
 			     E_SearchMode mode,
 			     BOOL searchIntoSub )
@@ -1725,7 +1635,7 @@ Vdebug((5, !searchNode && submode!=ESM_afterStackTop,
 			    if ( submode == ESM_fromStackTop )
 				resultStack.push( dO ); // Stack aktualisieren
                             if (    submode == ESM_fromStackTop
-                                 && tag == dO->getTag()
+                                 && dO->getTag() == tag
                                )
                                 l_error = EC_Normal;
                             else
@@ -1757,15 +1667,15 @@ Edebug(());
 // ********************************
 
 
-E_Condition DcmItem::search( ETag etag,
+E_Condition DcmItem::search( const DcmTagKey &xtag,
 			     DcmStack &resultStack,
 			     E_SearchMode mode,
 			     BOOL searchIntoSub )
 {
-Bdebug((5, "dcitem:DcmItem::search(etag=%d,Stack&,mode=%d,sub=%d)",
-	   etag, mode, searchIntoSub ));
+Bdebug((5, "dcitem:DcmItem::search(xtag=(%x,%x),Stack&,mode=%d,sub=%d)",
+	   xtag.getGroup(), xtag.getElement(), mode, searchIntoSub ));
 
-    DcmTag tag( etag );
+    DcmTag tag( xtag );
     E_Condition l_error = search( tag, resultStack, mode, searchIntoSub );
 Edebug(());
 

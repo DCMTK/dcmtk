@@ -10,15 +10,13 @@
  *
  *
  * Last Update:   $Author: hewett $
- * Revision:      $Revision: 1.1 $
+ * Revision:      $Revision: 1.2 $
  * Status:	  $State: Exp $
  *
  */
 
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
-#endif
+#include "osconfig.h"    /* make sure OS specific configuration is included first */
 
 #include <stdlib.h>
 #include <stdio.h>
@@ -26,35 +24,18 @@
 
 #include "dcsequen.h"
 #include "dcitem.h"
-#include "dicomdir/dcdirrec.h"
+#include "dcdirrec.h"
 #include "dcvr.h"
+#include "dcpxitem.h"
 #include "dcdebug.h"
 
-
-extern char *VRTypesName[];
-
+#include "dcdeftag.h"
 
 
 // ********************************
 
 
-DcmSequenceOfItems::DcmSequenceOfItems( DcmTag &tag )
-    : DcmElement( tag )
-{
-Bdebug((5, "dcsequen:DcmSequenceOfItems::DcmSequenceOfItems(DcmTag&)" ));
-debug(( 8, "Object pointer this=0x%p", this ));
-
-    itemList = new DcmList;
-    lastItemComplete = TRUE;
-Edebug(());
-
-}
-
-
-// ********************************
-
-
-DcmSequenceOfItems::DcmSequenceOfItems( DcmTag &tag,
+DcmSequenceOfItems::DcmSequenceOfItems( const DcmTag &tag,
 					T_VR_UL len,
 					iDicomStream *iDStream )
     : DcmElement( tag, len, iDStream )
@@ -73,107 +54,56 @@ Edebug(());
 // ********************************
 
 
-DcmSequenceOfItems::DcmSequenceOfItems( const DcmObject &oldObj )
-    : DcmElement( InternalUseTag )
-{
-Bdebug((5, "dcsequen:DcmSequenceOfItems::DcmSequenceOfItems(DcmObject&)" ));
-debug(( 8, "Object pointer this=0x%p", this ));
-
-    lastItemComplete = TRUE;
-    itemList = new DcmList;
-debug(( 3, "ident()=%d", oldObj.ident() ));
-
-    if ( oldObj.ident() == EVR_SQ )
-    {
-        DcmSequenceOfItems const *old = (DcmSequenceOfItems const *)&oldObj;
-	*Tag = *old->Tag;
-	iDS = old->iDS;
-	offsetInFile  = old->offsetInFile;
-	valueInMemory = old->valueInMemory;
-	valueModified = old->valueModified;
-	Length = old->Length;
-	Xfer = old->Xfer;
-        if ( !old->itemList->empty() )
-	{
-	    DcmObject *oldDO;
-	    DcmObject *newDO;
-	    itemList->seek( ELP_first );
-            old->itemList->seek( ELP_first );
-	    do {
-                oldDO = old->itemList->get();
-		if ( oldDO->ident() == EVR_item )
-		    newDO = new DcmItem( *oldDO );
-		else
-		{
-		    newDO = new DcmItem( oldDO->getTag() );
-                    cerr << "Error: DcmSequenceOfItems(): Element("
-                         << hex << oldDO->getGTag() << "," << oldDO->getETag()
-                         << dec << ") found, which was not an Item" << endl;
-		}
-
-		itemList->insert( newDO, ELP_next );
-            } while ( old->itemList->seek( ELP_next ) );
-	}
-    }
-    else
-    {
-        cerr << "Warning: DcmSequenceOfItems: wrong use of Copy-Constructor"
-             << endl;
-    }
-Edebug(());
-
-}
-
-
-// ********************************
-
-
-DcmSequenceOfItems::DcmSequenceOfItems( const DcmSequenceOfItems &oldSeq )
-    : DcmElement( InternalUseTag )
+DcmSequenceOfItems::DcmSequenceOfItems( const DcmSequenceOfItems& old )
+    : DcmElement( old )
 {
 Bdebug((5, "dcsequen:DcmSequenceOfItems::DcmSequenceOfItems(DcmSequenceOfItems&)" ));
 debug(( 8, "Object pointer this=0x%p", this ));
 
     lastItemComplete = TRUE;
     itemList = new DcmList;
-debug(( 3, "ident()=%d", oldSeq.ident() ));
+debug(( 3, "ident()=%d", old.ident() ));
 
-    if ( oldSeq.ident() == EVR_SQ )
-    {
-        DcmSequenceOfItems const *old = &oldSeq;
-	*Tag = *old->Tag;
-	iDS = old->iDS;
-	offsetInFile  = old->offsetInFile;
-	valueInMemory = old->valueInMemory;
-	valueModified = old->valueModified;
-	Length = old->Length;
-	Xfer = old->Xfer;
-        if ( !old->itemList->empty() )
-	{
+    switch ( old.ident() ) {
+    case EVR_SQ:
+    case EVR_pixelSQ:
+    case EVR_fileFormat:
+        if ( !old.itemList->empty() ) {
 	    DcmObject *oldDO;
 	    DcmObject *newDO;
 	    itemList->seek( ELP_first );
-            old->itemList->seek( ELP_first );
+            old.itemList->seek( ELP_first );
 	    do {
-                oldDO = old->itemList->get();
-		if ( oldDO->ident() == EVR_item )
-		    newDO = new DcmItem( *oldDO );
-		else
-		{
+                oldDO = old.itemList->get();
+		switch ( oldDO->ident() ) {
+		case EVR_item:
+		    newDO = new DcmItem( *(DcmItem*)oldDO );
+		    break;
+		case EVR_pixelItem:
+		    newDO = new DcmPixelItem( *(DcmPixelItem*)oldDO );
+		    break;
+		case EVR_metainfo:
+		    newDO = new DcmMetaInfo( *(DcmMetaInfo*)oldDO );
+		    break;
+		case EVR_dataset:
+		    newDO = new DcmDataset( *(DcmDataset*)oldDO );
+		    break;
+		default:
 		    newDO = new DcmItem( oldDO->getTag() );
                     cerr << "Error: DcmSequenceOfItems(): Element("
                          << hex << oldDO->getGTag() << "," << oldDO->getETag()
                          << dec << ") found, which was not an Item" << endl;
+		    break;
 		}
 
 		itemList->insert( newDO, ELP_next );
-            } while ( old->itemList->seek( ELP_next ) );
+            } while ( old.itemList->seek( ELP_next ) );
 	}
-    }
-    else
-    {
+	break;
+    default:
         cerr << "Warning: DcmSequenceOfItems: wrong use of Copy-Constructor"
              << endl;
+	break;
     }
 Edebug(());
 
@@ -205,7 +135,7 @@ Edebug(());
 // ********************************
 
 
-EVR DcmSequenceOfItems::ident() const
+DcmEVR DcmSequenceOfItems::ident() const
 {
     return EVR_SQ;
 }
@@ -223,7 +153,7 @@ void DcmSequenceOfItems::print( int level )
     else
         title = "\"Sequence with explicit Length\"";
 
-    sprintf( info, "%s #=%ld ", title, card() );
+    sprintf( info, "%s #=%ld ", title, (long)card() );
     DcmObject::printInfoLine( level, info );
     delete info;
 
@@ -236,7 +166,7 @@ void DcmSequenceOfItems::print( int level )
 	    dO->print( level + 1 );
 	} while ( itemList->seek( ELP_next ) );
     }
-    DcmTag delimItemTag( ET_SequenceDelimitationItem );
+    DcmTag delimItemTag( DCM_SequenceDelimitationItem );
 
     if ( Length == UNDEF_LEN )
         DcmObject::printInfoLine( level, delimItemTag,
@@ -355,8 +285,8 @@ Bdebug((4, "dcsequen:DcmSequenceOfItems::readTagAndLength(xfer=%d,&tag,"
            "*length)", xfer ));
 
     E_Condition l_error = EC_Normal;
-    T_VR_US t1 = UNKNOWN_TAG;
-    T_VR_US t2 = UNKNOWN_TAG;
+    T_VR_US t1 = 0xffff;
+    T_VR_US t2 = 0xffff;
 
     if ( !iDS->fromFile() && iDS->buffered() < 8 )
     {
@@ -392,7 +322,7 @@ Edebug(());
 // ********************************
 
 
-E_Condition DcmSequenceOfItems::readSubItem( DcmTag &newTag,
+E_Condition DcmSequenceOfItems::readSubItem( const DcmTag &newTag,
                                              T_VR_UL newLength,
                                              E_TransferSyntax xfer,
                                              E_GrpLenEncoding gltype )
@@ -403,19 +333,19 @@ Bdebug((4, "dcsequen:DcmSequenceOfItems::readSubItem(&newTag,newLength=%d,"
     E_Condition l_error = EC_Normal;
     DcmItem *subItem = (DcmItem*)NULL;
 
-    switch ( newTag.getVR() )
+    switch ( newTag.getEVR() )
     {
 	case EVR_na :
-            if ( newTag.getXTag() == ET_Item )
+            if ( newTag.getXTag() == DCM_Item )
             {
-                if ( this->getTag().getXTag() == ET_DirectoryRecordSequence )
+                if ( this->getTag().getXTag() == DCM_DirectoryRecordSequence )
                     subItem = new DcmDirectoryRecord( newTag, newLength, iDS );
                 else
                     subItem = new DcmItem( newTag, newLength, iDS );
             }
-            else if ( newTag.getXTag() == ET_SequenceDelimitationItem )
+            else if ( newTag.getXTag() == DCM_SequenceDelimitationItem )
                 l_error = EC_SequEnd;
-            else if ( newTag.getXTag() == ET_ItemDelimitationItem )
+            else if ( newTag.getXTag() == DCM_ItemDelimitationItem )
                 l_error = EC_InvalidTag;
 	    else
                 l_error = EC_InvalidTag;
@@ -489,7 +419,7 @@ Bdebug((3, "dcsrquen:DcmSequenceOfItems::read(xfer=%d,gltype=%d)",
 	itemList->seek( ELP_last ); // Die neuen Daten werden ans Ende gehaengt
 	while ( iDS->good() && bytes_read < Length )
 	{
-	    DcmTag newTag( ET_UNKNOWN );
+	    DcmTag newTag;
 	    T_VR_UL newValueLength = 0;
 
             errorFlag = readTagAndLength( xfer, newTag, &newValueLength );
@@ -545,7 +475,7 @@ Bdebug((3, "dcsequen:DcmSequenceOfItems::readBlock(xfer=%d,gltype=%d)",
 	while (    iDS->good()
 		&& ( bytesRead < Length || !lastItemComplete ) )
 	{
-	    DcmTag newTag( ET_UNKNOWN );
+	    DcmTag newTag;
 	    T_VR_UL newValueLength = 0;
 
 	    if ( lastItemComplete )
@@ -632,7 +562,7 @@ debug(( 3, "Header_Bytes_written              =[0x%8.8x]", written_bytes ));
 
 	if ( Length == UNDEF_LEN )	// schreibe ItemDelimitationItem
 	{
-	    DcmTag delim( ET_SequenceDelimitationItem );
+	    DcmTag delim( DCM_SequenceDelimitationItem );
             oDS << delim.getGTag();    // 2 Byte Laenge; Transfer Syntax !!
             oDS << delim.getETag();    // 2 Byte Laenge; Transfer Syntax !!
 	    T_VR_UL delimLen = 0L;
@@ -706,7 +636,7 @@ Bdebug((3, "dcsequen:DcmSequenceOfItems::writeBlock(&oDS,oxfer=%d,enctype=%d)",
                 if ( Length == UNDEF_LEN && oDS.avail() >= 8 )
 					     // schreibe SquenceDelimitationItem
 		{
-		    DcmTag delim( ET_SequenceDelimitationItem );
+		    DcmTag delim( DCM_SequenceDelimitationItem );
                     oDS << delim.getGTag(); // 2 Byte Laenge; Transfer Syntax !
                     oDS << delim.getETag(); // 2 Byte Laenge; Transfer Syntax !
 		    T_VR_UL delimLen = 0L;
@@ -937,7 +867,7 @@ Edebug(());
     //		     starte dann Sub-Suche
 
 
-E_Condition DcmSequenceOfItems::searchSubFromHere( DcmTag &tag,
+E_Condition DcmSequenceOfItems::searchSubFromHere( const DcmTag &tag,
 						   DcmStack &resultStack,
 						   BOOL searchIntoSub )
 {
@@ -988,7 +918,7 @@ Edebug(());
 // ********************************
 
 
-E_Condition DcmSequenceOfItems::search( DcmTag &tag,
+E_Condition DcmSequenceOfItems::search( const DcmTag &tag,
 					DcmStack &resultStack,
 					E_SearchMode mode,
 					BOOL searchIntoSub )
@@ -1120,15 +1050,15 @@ Edebug(());
 // ********************************
 
 
-E_Condition DcmSequenceOfItems::search( ETag etag,
+E_Condition DcmSequenceOfItems::search( const DcmTagKey &xtag,
 					DcmStack &resultStack,
 					E_SearchMode mode,
 					BOOL searchIntoSub )
 {
-Bdebug((5, "dcsequen:DcmSequenceOfItems::search(etag=%d,Stack&,mode=%d,sub=%d)",
-	   etag, mode, searchIntoSub ));
+Bdebug((5, "dcsequen:DcmSequenceOfItems::search(xtag=(%x,%x),Stack&,mode=%d,sub=%d)",
+	   xtag.getGroup(), xtag.getElement(), mode, searchIntoSub ));
 
-    DcmTag tag( etag );
+    DcmTag tag( xtag );
     E_Condition l_error = search( tag, resultStack, mode, searchIntoSub );
 Edebug(());
 

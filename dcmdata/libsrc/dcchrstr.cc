@@ -10,15 +10,13 @@
  *
  *
  * Last Update:   $Author: hewett $
- * Revision:      $Revision: 1.1 $
+ * Revision:      $Revision: 1.2 $
  * Status:	  $State: Exp $
  *
  */
 
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
-#endif
+#include "osconfig.h"    /* make sure OS specific configuration is included first */
 
 #include <string.h>
 #include <stdio.h>
@@ -30,29 +28,10 @@
 #include "dcdebug.h"
 
 
-
 // ********************************
 
 
-DcmCharString::DcmCharString( DcmTag &tag )
-    : DcmElement( tag )
-{
-Bdebug((6, "dcchrstr:DcmCharString::DcmCharString(DcmTag&)" ));
-debug(( 8, "Object pointer this=0x%p", this ));
-
-    CharStringValue = (ALT_CHAR*)NULL;
-    paddingChar = (ALT_CHAR)' ';
-    maxLength = UNDEF_LEN;
-    realLength = 0;
-Edebug(());
-
-}
-
-
-// ********************************
-
-
-DcmCharString::DcmCharString( DcmTag &tag,
+DcmCharString::DcmCharString( const DcmTag &tag,
 			      T_VR_UL len,
 			      iDicomStream *iDStream )
     : DcmElement( tag, len, iDStream )
@@ -73,8 +52,8 @@ Edebug(());
 // ********************************
 
 
-DcmCharString::DcmCharString( const DcmObject &oldObj, EVR oldIdent )
-    : DcmElement( InternalUseTag )
+DcmCharString::DcmCharString( const DcmCharString& old, DcmEVR oldIdent )
+    : DcmElement( old )
 {
 Bdebug((6, "dcchrstr:DcmCharString::DcmCharString(DcmObject&,oldIdent=%d)",
 	   oldIdent ));
@@ -82,18 +61,11 @@ debug(( 8, "Object pointer this=0x%p", this ));
 
     paddingChar = (ALT_CHAR)' ';
     maxLength = UNDEF_LEN;
-    if ( oldObj.ident() == oldIdent )
+    realLength = 0;
+    if ( old.ident() == oldIdent )
     {
-	DcmCharString const *old = (DcmCharString const *)&oldObj;
-	*Tag = *old->Tag;
-	iDS = old->iDS;
-	offsetInFile  = old->offsetInFile;
-	valueInMemory = old->valueInMemory;
-	valueModified = old->valueModified;
-	Length = old->Length;
-	realLength = old->realLength;
-	Xfer = old->Xfer;
-	if ( old->CharStringValue == (ALT_CHAR*)NULL )
+	realLength = old.realLength;
+	if ( old.CharStringValue == (ALT_CHAR*)NULL )
 	{
 	    if ( valueInMemory )
 		Length = 0;
@@ -110,7 +82,7 @@ debug(( 8, "Object pointer this=0x%p", this ));
 	{
 	    CharStringValue = new ALT_CHAR[ Length / sizeof(ALT_CHAR) + 2 ];
 	    memcpy( CharStringValue,
-		    old->CharStringValue,
+		    old.CharStringValue,
 		    (int)Length + 2 );
 	}
     }
@@ -182,7 +154,7 @@ T_VR_UL DcmCharString::getVM()
     {
 	vm = 1;
 	ALT_CHAR c;
-	while ((c = *s++))
+	while ((c = *s++) != 0)
 	    if ( c == '\\' )
 		vm++;
     }
@@ -256,7 +228,7 @@ E_Condition DcmCharString::readValueField( E_TransferSyntax /*xfer*/ )
 Bdebug((4, "dcchrstr:DcmCharString::readValueField(xfer)" ));
 
     E_Condition l_error = EC_Normal;
-    streampos actpos;
+    long actpos;
     iDS->clear();
     if ( iDS->good() && iDS->fromFile() )
     {
@@ -527,7 +499,7 @@ Edebug(());
 // ********************************
 
 
-E_Condition DcmCharString::put( ALT_CHAR *charstringvalue )
+E_Condition DcmCharString::put( const ALT_CHAR *charstringvalue )
 {
     errorFlag = EC_Normal;
     if ( CharStringValue != (ALT_CHAR*)NULL )
@@ -615,7 +587,7 @@ debug(( 3, "Tag=(0x%4.4x,0x%4.4x) \"%s\" \"%s\"",
 	    while ( field < num )
 	    {
 		T_VR_UL fieldlen = 0;
-		while ( (c = CharStringValue[pos++]) && c != '\\' )
+		while ( ((c = CharStringValue[pos++]) != 0) && (c != '\\') )
 		{
 		    if ( fieldlen < maxLength )
 			tempstr[temppos++] = c;
@@ -643,7 +615,7 @@ debug(( 3, "Tag=(0x%4.4x,0x%4.4x) \"%s\" \"%s\"",
 	    while ( field < num )
 	    {
 		T_VR_UL fieldlen = 0;
-		while ( (c = CharStringValue[pos++]) && c != '\\' )
+		while ( ((c = CharStringValue[pos++]) != 0) && (c != '\\') )
 		{
 		    fieldlen++;
 		}
@@ -663,60 +635,6 @@ Edebug(());
 
     return errorFlag;
 }
-
-
-// ********************************
-
-
-/*
-// Version mit String():
-
-E_Condition DcmCharString::verify( BOOL autocorrect )
-{
-Bdebug((3, "dcchrstr:DcmCharString::verify(autocorrect=%d)", autocorrect ));
-debug(( 3, "Tag=(0x%4.4x,0x%4.4x) \"%s\" \"%s\"",
-	   getGTag(), getETag(),
-           DcmVR(getVR()).getVRName(), getTag().getTagName() ));
-
-    errorFlag = EC_Normal;
-    int i;
-    String SV( (ALT_CHAR)CharStringValue );
-    T_VR_UL vm = SV.index( '\\' );
-    vm = ( vm == -1 && !SV.empty()
-	   ? 1
-	   : vm + 1
-	 );
-    String arraySV[vm];
-    T_VR_UL newvm = split( SV, arraySV, vm, String('\\') );
-    for ( i=0; i<newvm; i++ )
-	if ( arraySV[i].length() > maxLength )
-	    errorFlag = EC_CorruptedData;
-
-    if ( autocorrect == TRUE && errorFlag == EC_CorruptedData )
-    {
-	for ( i=0; i<newvm; i++ )
-	{
-	    if ( arraySV[i].length() > maxLength )
-	    {
-		arraySV[i].del( maxLength, arraySV[i].length() - maxLength );
-	    }
-	}
-	ALT_CHAR *newValue = (ALT_CHAR*)join( arraySV, newvm, String('\\') );
-	delete CharStringValue;
-	CharStringValue = newValue;
-        valueModified = TRUE;
-        deAlignValue();                  // einziger Aufruf von deAlignValue
-    }
-
-Vdebug((3, TRUE, "Warning: vm=%d != newvm=%d, VM=%d", vm, newvm, getVM() ));
-Vdebug((3, errorFlag!=EC_Normal,
-	   "Illegal values in Tag=(0x%4.4x,0x%4.4x) VM=%d",
-	   getGTag(), getETag(), getVM() ));
-Edebug(());
-
-    return errorFlag;
-}
-*/
 
 
 // ********************************

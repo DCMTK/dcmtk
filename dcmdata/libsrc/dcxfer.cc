@@ -10,7 +10,7 @@
  *
  * 
  * Last Update:	  $Author: hewett $
- * Revision:      $Revision: 1.1 $
+ * Revision:      $Revision: 1.2 $
  * Status:        $State: Exp $
  *
  */
@@ -19,8 +19,8 @@
 #include <string.h>
 
 #include "dcxfer.h"
+#include "dcuid.h"
 #include "dcdebug.h"
-
 
 typedef struct {
     char               *xferID;
@@ -39,28 +39,28 @@ typedef struct {
 
 S_XferNames XferNames[] =
 {
-    { DICOM_TRANSFERLITTLEENDIAN,                     // definiert in dctypes.h
+    { UID_LittleEndianImplicitTransferSyntax,                    
             "LittleEndianImplicit",
             EXS_LittleEndianImplicit,
             EBO_LittleEndian,
             EVT_Implicit,
             EJE_NotEncapsulated,
             0L, 0L},
-    { "",                                             // illegaler Typ
+    { "",  // illegaler Typ
             "VirtualBigEndianImplicit",
             EXS_BigEndianImplicit,
             EBO_BigEndian,
             EVT_Implicit,
             EJE_NotEncapsulated,
             0L, 0L},
-    { DICOM_TRANSFERLITTLEENDIANEXPLICIT,             // definiert in dctypes.h
+    { UID_LittleEndianExplicitTransferSyntax,         
             "LittleEndianExplicit",
             EXS_LittleEndianExplicit,
             EBO_LittleEndian,
             EVT_Explicit,
             EJE_NotEncapsulated,
             0L, 0L},
-    { DICOM_TRANSFERBIGENDIANEXPLICIT,                // definiert in dctypes.h
+    { UID_BigEndianExplicitTransferSyntax,                // definiert in dctypes.h
             "BigEndianExplicit",
             EXS_BigEndianExplicit,
             EBO_BigEndian,
@@ -68,126 +68,126 @@ S_XferNames XferNames[] =
             EJE_NotEncapsulated,
             0L, 0L},
 
-    { DICOM_JPEGProcess1TransferSyntax,
+    { UID_JPEGProcess1TransferSyntax,
             "JPEG Baseline",
             EXS_JPEGProcess1TransferSyntax,
             EBO_LittleEndian,
             EVT_Explicit,
             EJE_Encapsulated,
             1L, 1L},
-    { DICOM_JPEGProcess2_4TransferSyntax,
+    { UID_JPEGProcess2_4TransferSyntax,
             "JPEG Extended",
             EXS_JPEGProcess2_4TransferSyntax,
             EBO_LittleEndian,
             EVT_Explicit,
             EJE_Encapsulated,
             2L ,4L },
-    { DICOM_JPEGProcess3_5TransferSyntax,
+    { UID_JPEGProcess3_5TransferSyntax,
             "JPEG Extended",
             EXS_JPEGProcess3_5TransferSyntax,
             EBO_LittleEndian,
             EVT_Explicit,
             EJE_Encapsulated,
             3L ,5L },
-    { DICOM_JPEGProcess6_8TransferSyntax,
+    { UID_JPEGProcess6_8TransferSyntax,
             "JPEG Spectral Selection, Non-hierarchical",
             EXS_JPEGProcess6_8TransferSyntax,
             EBO_LittleEndian,
             EVT_Explicit,
             EJE_Encapsulated,
             6L ,8L },
-    { DICOM_JPEGProcess7_9TransferSyntax,
+    { UID_JPEGProcess7_9TransferSyntax,
             "JPEG Spectral Selection, Non-hierarchical",
             EXS_JPEGProcess7_9TransferSyntax,
             EBO_LittleEndian,
             EVT_Explicit,
             EJE_Encapsulated,
             7L ,9L },
-    { DICOM_JPEGProcess10_12TransferSyntax,
+    { UID_JPEGProcess10_12TransferSyntax,
             "JPEG Full Progression, Non-hierarchical",
             EXS_JPEGProcess10_12TransferSyntax,
             EBO_LittleEndian,
             EVT_Explicit,
             EJE_Encapsulated,
             10L ,12L },
-    { DICOM_JPEGProcess11_13TransferSyntax,
+    { UID_JPEGProcess11_13TransferSyntax,
             "JPEG Full Progression, Non-hierarchical",
             EXS_JPEGProcess11_13TransferSyntax,
             EBO_LittleEndian,
             EVT_Explicit,
             EJE_Encapsulated,
             11L ,13L },
-    { DICOM_JPEGProcess14TransferSyntax,
+    { UID_JPEGProcess14TransferSyntax,
             "JPEG Lossless, Non-hierarchical",
             EXS_JPEGProcess14TransferSyntax,
             EBO_LittleEndian,
             EVT_Explicit,
             EJE_Encapsulated,
             14L ,14L },
-    { DICOM_JPEGProcess15TransferSyntax,
+    { UID_JPEGProcess15TransferSyntax,
             "JPEG Lossless, Non-hierarchical",
             EXS_JPEGProcess15TransferSyntax,
             EBO_LittleEndian,
             EVT_Explicit,
             EJE_Encapsulated,
             15L ,15L },
-    { DICOM_JPEGProcess16_18TransferSyntax,
+    { UID_JPEGProcess16_18TransferSyntax,
             "JPEG Extended, Hierarchical",
             EXS_JPEGProcess16_18TransferSyntax,
             EBO_LittleEndian,
             EVT_Explicit,
             EJE_Encapsulated,
             16L ,18L },
-    { DICOM_JPEGProcess17_19TransferSyntax,
+    { UID_JPEGProcess17_19TransferSyntax,
             "JPEG Extended, Hierarchical",
             EXS_JPEGProcess17_19TransferSyntax,
             EBO_LittleEndian,
             EVT_Explicit,
             EJE_Encapsulated,
             17L ,19L },
-    { DICOM_JPEGProcess20_22TransferSyntax,
+    { UID_JPEGProcess20_22TransferSyntax,
             "JPEG Spectral Selection, Hierarchical",
             EXS_JPEGProcess20_22TransferSyntax,
             EBO_LittleEndian,
             EVT_Explicit,
             EJE_Encapsulated,
             20L ,22L },
-    { DICOM_JPEGProcess21_23TransferSyntax,
+    { UID_JPEGProcess21_23TransferSyntax,
             "JPEG Spectral Selection, Hierarchical",
             EXS_JPEGProcess21_23TransferSyntax,
             EBO_LittleEndian,
             EVT_Explicit,
             EJE_Encapsulated,
             21L ,23L },
-    { DICOM_JPEGProcess24_26TransferSyntax,
+    { UID_JPEGProcess24_26TransferSyntax,
             "JPEG Full Progression, Hierarchical",
             EXS_JPEGProcess24_26TransferSyntax,
             EBO_LittleEndian,
             EVT_Explicit,
             EJE_Encapsulated,
             24L ,26L },
-    { DICOM_JPEGProcess25_27TransferSyntax,
+    { UID_JPEGProcess25_27TransferSyntax,
             "JPEG Full Progression, Hierarchical",
             EXS_JPEGProcess25_27TransferSyntax,
             EBO_LittleEndian,
             EVT_Explicit,
             EJE_Encapsulated,
             25L ,27L },
-    { DICOM_JPEGProcess28TransferSyntax,
+    { UID_JPEGProcess28TransferSyntax,
             "JPEG Lossless, Hierarchical",
             EXS_JPEGProcess28TransferSyntax,
             EBO_LittleEndian,
             EVT_Explicit,
             EJE_Encapsulated,
             28L ,28L },
-    { DICOM_JPEGProcess29TransferSyntax,
+    { UID_JPEGProcess29TransferSyntax,
             "JPEG Lossless, Hierarchical",
             EXS_JPEGProcess29TransferSyntax,
             EBO_LittleEndian,
             EVT_Explicit,
             EJE_Encapsulated,
             29L ,29L },
-    { DICOM_JPEGProcess14SV1TransferSyntax,
+    { UID_JPEGProcess14SV1TransferSyntax,
             "JPEG Lossless, Hierarchical, 1st Order Prediction",
             EXS_JPEGProcess14SV1TransferSyntax,
             EBO_LittleEndian,
@@ -248,11 +248,11 @@ Edebug(());
 // ********************************
 
 
-DcmXfer::DcmXfer( char *xferName_xferID )
+DcmXfer::DcmXfer( const char* xferName_xferID )
 {
 Bdebug((7, "dcxfer:DcmXfer::DcmXfer(char*)" ));
 
-    char *xname = xferName_xferID;
+    const char* xname = xferName_xferID;
     if ( xname == (char*)NULL )
     {
         xferSyn       = EXS_UNKNOWN;
@@ -441,7 +441,7 @@ E_TransferSyntax DcmXfer::getXfer()
 // ********************************
 
 
-char* DcmXfer::getXferName()
+const char* DcmXfer::getXferName()
 {
     return xferName;
 }
@@ -450,7 +450,7 @@ char* DcmXfer::getXferName()
 // ********************************
 
 
-char *DcmXfer::getXferID()
+const char *DcmXfer::getXferID()
 {
     return xferID;
 }

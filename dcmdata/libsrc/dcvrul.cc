@@ -10,7 +10,7 @@
  *
  *
  * Last Update:   $Author: hewett $
- * Revision:      $Revision: 1.1 $
+ * Revision:      $Revision: 1.2 $
  * Status:	  $State: Exp $
  *
  */
@@ -25,26 +25,10 @@
 #include "dcdebug.h"
 
 
-
 // ********************************
 
 
-DcmUnsignedLong::DcmUnsignedLong( DcmTag &tag )
-    : DcmElement( tag )
-{
-Bdebug((5, "dcvrul:DcmUnsignedLong::DcmUnsignedLong(DcmTag&)" ));
-debug(( 8, "Object pointer this=0x%p", this ));
-
-    UnsigLongValue = (T_VR_UL*)NULL;
-Edebug(());
-
-}
-
-
-// ********************************
-
-
-DcmUnsignedLong::DcmUnsignedLong( DcmTag &tag,
+DcmUnsignedLong::DcmUnsignedLong( const DcmTag &tag,
 				  T_VR_UL len,
 				  iDicomStream *iDStream )
     : DcmElement( tag, len, iDStream )
@@ -62,89 +46,22 @@ Edebug(());
 // ********************************
 
 
-DcmUnsignedLong::DcmUnsignedLong( const DcmObject &oldObj )
-    : DcmElement( InternalUseTag )
-{
-Bdebug((5, "dcvrul:DcmUnsignedLong::DcmUnsignedLong(DcmObject&)" ));
-debug(( 8, "Object pointer this=0x%p", this ));
-
-    if (    oldObj.ident() == EVR_UL
-	 || oldObj.ident() == EVR_up
-       )
-    {
-	DcmUnsignedLong const *old = (DcmUnsignedLong const *)&oldObj;
-        *Tag = *old->Tag;      // Zuweisungsoperator von DcmTag
-        iDS = old->iDS;        // Kopieren eines Zeigers auf iDS!!
-	offsetInFile  = old->offsetInFile;
-	valueInMemory = old->valueInMemory;
-	valueModified = old->valueModified;
-	Length = old->Length;
-	Xfer = old->Xfer;
-	if (	Length == 0
-	     || old->UnsigLongValue == (T_VR_UL*)NULL )
-	{
-	    if ( valueInMemory )
-		Length = 0;
-	    UnsigLongValue = (T_VR_UL*)NULL;
-	}
-	else
-	{
-	    UnsigLongValue = new T_VR_UL[ Length / sizeof(T_VR_UL) ];
-	    memcpy( UnsigLongValue,
-		    old->UnsigLongValue,
-		    (int)Length );
-	}
-    }
-    else
-    {
-	UnsigLongValue = (T_VR_UL*)NULL;
-	errorFlag = EC_IllegalCall;
-        cerr << "Warning: DcmUnsignedLong: wrong use of Copy-Constructor"
-             << endl;
-    }
-Edebug(());
-
-}
-
-
-// ********************************
-
-
-DcmUnsignedLong::DcmUnsignedLong( const DcmUnsignedLong &newUL )
-    : DcmElement( InternalUseTag )
+DcmUnsignedLong::DcmUnsignedLong( const DcmUnsignedLong& old )
+    : DcmElement( old )
 {
 Bdebug((5, "dcvrul:DcmUnsignedLong::DcmUnsignedLong(DcmUnsignedLong&)" ));
 debug(( 8, "Object pointer this=0x%p", this ));
 
-    if (    newUL.ident() == EVR_UL
-         || newUL.ident() == EVR_up
-       )
-    {
-        DcmUnsignedLong const *old = &newUL;
-        *Tag = *old->Tag;      // Zuweisungsoperator von DcmTag
-        iDS = old->iDS;        // Kopieren eines Zeigers auf iDS!!
-	offsetInFile  = old->offsetInFile;
-	valueInMemory = old->valueInMemory;
-	valueModified = old->valueModified;
-	Length = old->Length;
-	Xfer = old->Xfer;
-	if (	Length == 0
-	     || old->UnsigLongValue == (T_VR_UL*)NULL )
-	{
+    if ( old.ident() == EVR_UL || old.ident() == EVR_up ) {
+	if (Length == 0 || old.UnsigLongValue == (T_VR_UL*)NULL ) {
 	    if ( valueInMemory )
 		Length = 0;
 	    UnsigLongValue = (T_VR_UL*)NULL;
-	}
-	else
-	{
+	} else {
 	    UnsigLongValue = new T_VR_UL[ Length / sizeof(T_VR_UL) ];
-	    memcpy( UnsigLongValue,
-		    old->UnsigLongValue,
-		    (int)Length );
+	    memcpy( UnsigLongValue, old.UnsigLongValue, (int)Length );
 	}
-    }
-    else
-    {
+    } else {
 	UnsigLongValue = (T_VR_UL*)NULL;
 	errorFlag = EC_IllegalCall;
         cerr << "Warning: DcmUnsignedLong: wrong use of Copy-Constructor"
@@ -173,7 +90,7 @@ Edebug(());
 // ********************************
 
 
-EVR DcmUnsignedLong::ident() const
+DcmEVR DcmUnsignedLong::ident() const
 {
     return EVR_UL;
 }
@@ -193,7 +110,7 @@ void DcmUnsignedLong::print( int level )
 
 	for ( i=0; i<( Length/sizeof(T_VR_UL) ); i++ )
 	{
-	    sprintf( tmp, "%lu\\", *tattr );
+	    sprintf( tmp, "%lu\\", (unsigned long)*tattr );
 	    tmp += strlen(tmp);
 	    tattr++;
 	}

@@ -10,7 +10,7 @@
  * 
  * 
  * Last Update:	  $Author: hewett $
- * Revision:      $Revision: 1.1 $
+ * Revision:      $Revision: 1.2 $
  * Status:        $State: Exp $
  *
  */
@@ -20,25 +20,10 @@
 #include "dcdebug.h"
 
 
-
 // ********************************
 
 
-DcmPersonName::DcmPersonName( DcmTag &tag )
-    : DcmCharString( tag )
-{
-Bdebug((5, "dcvrpn:DcmPersonName::DcmPersonName(DcmTag&)" ));
-
-    maxLength = 64;
-Edebug(());
-
-}
-
-
-// ********************************
-
-
-DcmPersonName::DcmPersonName( DcmTag &tag,
+DcmPersonName::DcmPersonName( const DcmTag &tag,
                               T_VR_UL len,
                               iDicomStream *iDStream )
     : DcmCharString( tag, len, iDStream )
@@ -54,22 +39,8 @@ Edebug(());
 // ********************************
 
 
-DcmPersonName::DcmPersonName( const DcmObject &oldObj )
-    : DcmCharString( oldObj, EVR_PN )
-{
-Bdebug((5, "dcvrpn:DcmPersonName::DcmPersonName(DcmObject&)" ));
-
-    maxLength = 64;
-Edebug(());
-
-}
-
-
-// ********************************
-
-
-DcmPersonName::DcmPersonName( const DcmPersonName &newPN )
-    : DcmCharString( newPN, EVR_PN )
+DcmPersonName::DcmPersonName( const DcmPersonName& old )
+    : DcmCharString( old, EVR_PN )
 {
 Bdebug((5, "dcvrpn:DcmPersonName::DcmPersonName(DcmPersonName&)" ));
 
@@ -93,7 +64,7 @@ Edebug(());
 // ********************************
 
 
-EVR DcmPersonName::ident() const
+DcmEVR DcmPersonName::ident() const
 {
     return EVR_PN;
 }

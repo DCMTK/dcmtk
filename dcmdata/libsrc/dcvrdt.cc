@@ -10,15 +10,13 @@
  * 
  * 
  * Last Update:	  $Author: hewett $
- * Revision:      $Revision: 1.1 $
+ * Revision:      $Revision: 1.2 $
  * Status:        $State: Exp $
  *
  */
 
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
-#endif
+#include "osconfig.h"    /* make sure OS specific configuration is included first */
 
 #include "dcvrdt.h"
 #include "dcdebug.h"
@@ -28,40 +26,12 @@
 // ********************************
 
 
-DcmDateTime::DcmDateTime( DcmTag &tag )
-    : DcmByteString( tag )
-{
-Bdebug((5, "dcvrdt:DcmDateTime::DcmDateTime(DcmTag&)" ));
-
-    maxLength = 26;
-Edebug(());
-
-}
-
-
-// ********************************
-
-
-DcmDateTime::DcmDateTime( DcmTag &tag,
+DcmDateTime::DcmDateTime( const DcmTag &tag,
                           T_VR_UL len,
                           iDicomStream *iDStream )
     : DcmByteString( tag, len, iDStream )
 {
 Bdebug((5, "dcvrdt:DcmDateTime::DcmDateTime(DcmTag&,len=%ld,*iDS)", len ));
-
-    maxLength = 26;
-Edebug(());
-
-}
-
-
-// ********************************
-
-
-DcmDateTime::DcmDateTime( const DcmObject &oldObj )
-    : DcmByteString( oldObj, EVR_DT )
-{
-Bdebug((5, "dcvrdt:DcmDateTime::DcmDateTime(DcmObject&)" ));
 
     maxLength = 26;
 Edebug(());
@@ -97,7 +67,7 @@ Edebug(());
 // ********************************
 
 
-EVR DcmDateTime::ident() const
+DcmEVR DcmDateTime::ident() const
 {
     return EVR_DT;
 }

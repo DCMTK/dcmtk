@@ -10,7 +10,7 @@
  *
  *
  * Last Update:   $Author: hewett $
- * Revision:      $Revision: 1.1 $
+ * Revision:      $Revision: 1.2 $
  * Status:	  $State: Exp $
  *
  */
@@ -25,26 +25,10 @@
 #include "dcdebug.h"
 
 
-
 // ********************************
 
 
-DcmUnsignedShort::DcmUnsignedShort( DcmTag &tag )
-	     : DcmElement( tag )
-{
-Bdebug((5, "dcvrus:DcmUnsignedShort::DcmUnsignedShort(DcmTag&)" ));
-debug(( 8, "Object pointer this=0x%p", this ));
-
-    UnsigShortValue = (T_VR_US*)NULL;
-Edebug(());
-
-}
-
-
-// ********************************
-
-
-DcmUnsignedShort::DcmUnsignedShort( DcmTag &tag,
+DcmUnsignedShort::DcmUnsignedShort( const DcmTag &tag,
 				    T_VR_UL len,
 				    iDicomStream *iDStream )
 	     : DcmElement( tag, len, iDStream )
@@ -62,85 +46,23 @@ Edebug(());
 // ********************************
 
 
-DcmUnsignedShort::DcmUnsignedShort( const DcmObject &oldObj )
-    : DcmElement( InternalUseTag )
-{
-Bdebug((5, "dcvrus:DcmUnsignedShort::DcmUnsignedShort(DcmObject&)" ));
-debug(( 8, "Object pointer this=0x%p", this ));
-
-    if ( oldObj.ident() == EVR_US )
-    {
-        DcmUnsignedShort const *old = (DcmUnsignedShort const *)&oldObj;
-        *Tag = *old->Tag;
-        iDS = old->iDS;
-	offsetInFile  = old->offsetInFile;
-	valueInMemory = old->valueInMemory;
-	valueModified = old->valueModified;
-	Length = old->Length;
-	Xfer = old->Xfer;
-	if (	Length == 0
-             || old->UnsigShortValue == (T_VR_US*)NULL )
-	{
-            if ( valueInMemory )
-                Length = 0;
-	    UnsigShortValue = (T_VR_US*)NULL;
-	}
-	else
-	{
-	    UnsigShortValue = new T_VR_US[ Length / sizeof(T_VR_US) ];
-	    memcpy( UnsigShortValue,
-                    old->UnsigShortValue,
-		    (int)Length );
-	}
-    }
-    else
-    {
-	UnsigShortValue = (T_VR_US*)NULL;
-	errorFlag = EC_IllegalCall;
-        cerr << "Warning: DcmUnsignedShort: wrong use of Copy-Constructor"
-             << endl;
-    }
-Edebug(());
-
-}
-
-
-// ********************************
-
-
-DcmUnsignedShort::DcmUnsignedShort( const DcmUnsignedShort &newUS )
-    : DcmElement( InternalUseTag )
+DcmUnsignedShort::DcmUnsignedShort( const DcmUnsignedShort& old )
+    : DcmElement( old )
 {
 Bdebug((5, "dcvrus:DcmUnsignedShort::DcmUnsignedShort(DcmUnsignedShort&)" ));
 debug(( 8, "Object pointer this=0x%p", this ));
 
-    if ( newUS.ident() == EVR_US )
+    if ( old.ident() == EVR_US )
     {
-        DcmUnsignedShort const *old = &newUS;
-        *Tag = *old->Tag;
-        iDS = old->iDS;
-	offsetInFile  = old->offsetInFile;
-	valueInMemory = old->valueInMemory;
-	valueModified = old->valueModified;
-	Length = old->Length;
-	Xfer = old->Xfer;
-	if (	Length == 0
-             || old->UnsigShortValue == (T_VR_US*)NULL )
-	{
+	if (Length == 0 || old.UnsigShortValue == (T_VR_US*)NULL ) {
             if ( valueInMemory )
                 Length = 0;
 	    UnsigShortValue = (T_VR_US*)NULL;
-	}
-	else
-	{
+	} else {
 	    UnsigShortValue = new T_VR_US[ Length / sizeof(T_VR_US) ];
-	    memcpy( UnsigShortValue,
-                    old->UnsigShortValue,
-		    (int)Length );
+	    memcpy( UnsigShortValue, old.UnsigShortValue, (int)Length );
 	}
-    }
-    else
-    {
+    } else {
 	UnsigShortValue = (T_VR_US*)NULL;
 	errorFlag = EC_IllegalCall;
         cerr << "Warning: DcmUnsignedShort: wrong use of Copy-Constructor"
@@ -169,7 +91,7 @@ Edebug(());
 // ********************************
 
 
-EVR DcmUnsignedShort::ident() const
+DcmEVR DcmUnsignedShort::ident() const
 {
     return EVR_US;
 }

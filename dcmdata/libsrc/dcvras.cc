@@ -10,15 +10,13 @@
  * 
  * 
  * Last Update:	  $Author: hewett $
- * Revision:      $Revision: 1.1 $
+ * Revision:      $Revision: 1.2 $
  * Status:        $State: Exp $
  *
  */
 
 
-#ifdef HAVE_CONFIG_H
-#include <config.h>
-#endif
+#include "osconfig.h"    /* make sure OS specific configuration is included first */
 
 #include "dcvras.h"
 #include "dcdebug.h"
@@ -28,40 +26,12 @@
 // ********************************
 
 
-DcmAgeString::DcmAgeString( DcmTag &tag )
-    : DcmByteString( tag )
-{
-Bdebug((5, "dcvras:DcmAgeString::DcmAgeString(DcmTag&)" ));
-
-    maxLength = 4;
-Edebug(());
-
-}
-
-
-// ********************************
-
-
-DcmAgeString::DcmAgeString( DcmTag &tag,
+DcmAgeString::DcmAgeString( const DcmTag &tag,
                             T_VR_UL len,
                             iDicomStream *iDStream )
     : DcmByteString( tag, len, iDStream )
 {
 Bdebug((5, "dcvras:DcmAgeString::DcmAgeString(DcmTag&,len=%ld,*iDS)", len ));
-
-    maxLength = 4;
-Edebug(());
-
-}
-
-
-// ********************************
-
-
-DcmAgeString::DcmAgeString( const DcmObject &oldObj )
-    : DcmByteString( oldObj, EVR_AS )
-{
-Bdebug((5, "dcvras:DcmAgeString::DcmAgeString(DcmObject&)" ));
 
     maxLength = 4;
 Edebug(());
@@ -97,7 +67,7 @@ Edebug(());
 // ********************************
 
 
-EVR DcmAgeString::ident() const
+DcmEVR DcmAgeString::ident() const
 {
     return EVR_AS;
 }

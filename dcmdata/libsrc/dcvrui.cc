@@ -10,7 +10,7 @@
  * 
  * 
  * Last Update:	  $Author: hewett $
- * Revision:      $Revision: 1.1 $
+ * Revision:      $Revision: 1.2 $
  * Status:        $State: Exp $
  *
  */
@@ -18,30 +18,14 @@
 
 #include <string.h>
 #include "dcvrui.h"
-#include "dcmodtbl.h"
+#include "dcuid.h"
 #include "dcdebug.h"
 
 
-
 // ********************************
 
 
-DcmUniqueIdentifier::DcmUniqueIdentifier( DcmTag &tag )
-    : DcmByteString( tag )
-{
-Bdebug((5, "dcvrui:DcmUniqueIdentifier::DcmUniqueIdentifier(DcmTag&)" ));
-
-    paddingChar = '\0';
-    maxLength = 64;
-Edebug(());
-
-}
-
-
-// ********************************
-
-
-DcmUniqueIdentifier::DcmUniqueIdentifier( DcmTag &tag,
+DcmUniqueIdentifier::DcmUniqueIdentifier( const DcmTag &tag,
                                           T_VR_UL len,
                                           iDicomStream *iDStream )
     : DcmByteString( tag, len, iDStream )
@@ -59,23 +43,8 @@ Edebug(());
 // ********************************
 
 
-DcmUniqueIdentifier::DcmUniqueIdentifier( const DcmObject &oldObj )
-    : DcmByteString( oldObj, EVR_UI )
-{
-Bdebug((5, "dcvrui:DcmUniqueIdentifier::DcmUniqueIdentifier(DcmObject&)" ));
-
-    paddingChar = '\0';
-    maxLength = 64;
-Edebug(());
-
-}
-
-
-// ********************************
-
-
-DcmUniqueIdentifier::DcmUniqueIdentifier( const DcmUniqueIdentifier &newUI )
-    : DcmByteString( newUI, EVR_UI )
+DcmUniqueIdentifier::DcmUniqueIdentifier( const DcmUniqueIdentifier& old )
+    : DcmByteString( old, EVR_UI )
 {
 Bdebug((5, "dcvrui:DcmUniqueIdentifier::DcmUniqueIdentifier"
            "(DcmUniqueIdentifier&)" ));
@@ -101,7 +70,7 @@ Edebug(());
 // ********************************
 
 
-EVR DcmUniqueIdentifier::ident() const
+DcmEVR DcmUniqueIdentifier::ident() const
 {
     return EVR_UI;
 }
@@ -114,8 +83,8 @@ void DcmUniqueIdentifier::print( int level )
 {
     if ( ByteStringValue != (char*)NULL )
     {
-        DcmModuleTable nametable( ByteStringValue );
-        char* symbol = nametable.getNameTableSymbol();
+        const char* symbol = dcmFindNameOfUID(ByteStringValue);
+
         char *tmp = (char*)NULL;
 
         if ( symbol != (char*)NULL && *symbol != '\0' )

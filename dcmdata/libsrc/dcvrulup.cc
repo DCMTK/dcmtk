@@ -10,7 +10,7 @@
  *
  *
  * Last Update:   $Author: hewett $
- * Revision:      $Revision: 1.1 $
+ * Revision:      $Revision: 1.2 $
  * Status:	  $State: Exp $
  *
  */
@@ -26,26 +26,10 @@
 #include "dcdebug.h"
 
 
-
 // ********************************
 
 
-DcmUnsignedLongOffset::DcmUnsignedLongOffset( DcmTag &tag )
-    : DcmUnsignedLong( tag )
-{
-Bdebug((5, "dcvrulup:DcmUnsignedLongOffset::DcmUnsignedLongOffset(DcmTag&)" ));
-debug(( 8, "Object pointer this=0x%p", this ));
-
-    nextRecord = (DcmObject*)NULL;
-Edebug(());
-
-}
-
-
-// ********************************
-
-
-DcmUnsignedLongOffset::DcmUnsignedLongOffset( DcmTag &tag,
+DcmUnsignedLongOffset::DcmUnsignedLongOffset( const DcmTag &tag,
 				  T_VR_UL len,
 				  iDicomStream *iDStream )
     : DcmUnsignedLong( tag, len, iDStream )
@@ -63,47 +47,16 @@ Edebug(());
 // ********************************
 
 
-DcmUnsignedLongOffset::DcmUnsignedLongOffset( const DcmObject &oldObj )
-    : DcmUnsignedLong( oldObj )
-{
-Bdebug((5, "dcvrulup:DcmUnsignedLongOffset::DcmUnsignedLongOffset(DcmObject&)" ));
-debug(( 8, "Object pointer this=0x%p", this ));
-
-    if ( oldObj.ident() == EVR_up )
-    {
-	DcmUnsignedLongOffset const *old
-				     = (DcmUnsignedLongOffset const *)&oldObj;
-	nextRecord = old->nextRecord;
-    }
-    else
-    {
-	nextRecord = (DcmObject*)NULL;
-	errorFlag = EC_IllegalCall;
-        cerr << "Warning: DcmUnsignedLongOffset: wrong use of Copy-Constructor"
-             << endl;
-    }
-Edebug(());
-
-}
-
-
-// ********************************
-
-
-DcmUnsignedLongOffset::DcmUnsignedLongOffset( const DcmUnsignedLongOffset &newULup )
-    : DcmUnsignedLong( newULup )
+DcmUnsignedLongOffset::DcmUnsignedLongOffset( const DcmUnsignedLongOffset& old )
+    : DcmUnsignedLong( old )
 {
 Bdebug((5, "dcvrulup:DcmUnsignedLongOffset::DcmUnsignedLongOffset("
            "DcmUnsignedLongOffset&)" ));
 debug(( 8, "Object pointer this=0x%p", this ));
 
-    if ( newULup.ident() == EVR_up )
-    {
-        DcmUnsignedLongOffset const *old = &newULup;
-	nextRecord = old->nextRecord;
-    }
-    else
-    {
+    if ( old.ident() == EVR_up ) {
+	nextRecord = old.nextRecord;
+    } else {
 	nextRecord = (DcmObject*)NULL;
 	errorFlag = EC_IllegalCall;
         cerr << "Warning: DcmUnsignedLongOffset: wrong use of Copy-Constructor"
@@ -129,7 +82,7 @@ Edebug(());
 // ********************************
 
 
-EVR DcmUnsignedLongOffset::ident() const
+DcmEVR DcmUnsignedLongOffset::ident() const
 {
     return EVR_up;
 }
@@ -149,7 +102,7 @@ void DcmUnsignedLongOffset::print( int level )
 
 	for ( i=0; i<( Length/sizeof(T_VR_UL) ); i++ )
 	{
-	    sprintf( tmp, "$%lu\\", *tattr );
+	    sprintf( tmp, "$%lu\\", (unsigned long)*tattr );
 	    tmp += strlen(tmp);
 	    tattr++;
 	}
