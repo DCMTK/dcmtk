@@ -46,9 +46,9 @@
 ** Author, Date:	Stephen M. Moore, 15-Apr-93
 ** Intent:		Define tables and provide functions that implement
 **			the DICOM Upper Layer (DUL) finite state machine.
-** Last Update:		$Author: joergr $, $Date: 2002-04-16 13:57:32 $
+** Last Update:		$Author: meichel $, $Date: 2002-09-10 16:00:58 $
 ** Source File:		$RCSfile: dulfsm.cc,v $
-** Revision:		$Revision: 1.43 $
+** Revision:		$Revision: 1.44 $
 ** Status:		$State: Exp $
 */
 
@@ -3261,7 +3261,7 @@ readPDUHeadTCP(PRIVATE_ASSOCIATIONKEY ** association,
         DEBUG_DEVICE.width(2); DEBUG_DEVICE.fill('0');
         for (idx = 0; idx < 6; idx++)
         {
-            DEBUG_DEVICE << hex << " " <<  buffer[idx];
+            DEBUG_DEVICE << hex << " " <<  (unsigned short)(buffer[idx]);
         }
         DEBUG_DEVICE << dec << endl;
     }
@@ -3296,7 +3296,7 @@ readPDUHeadTCP(PRIVATE_ASSOCIATIONKEY ** association,
 #ifdef DEBUG
     /* dump some information if required */
     if (debug) {
-            DEBUG_DEVICE << "Read PDU HEAD TCP: type: " << hex << (*type)
+            DEBUG_DEVICE << "Read PDU HEAD TCP: type: " << hex << (unsigned short)(*type)
             << ", length: " << dec << (*pduLength)
             << " (" << hex << (unsigned int)*pduLength << ")" << dec << endl;
         }
@@ -3776,7 +3776,10 @@ destroyUserInformationLists(DUL_USERINFO * userInfo)
 /*
 ** CVS Log
 ** $Log: dulfsm.cc,v $
-** Revision 1.43  2002-04-16 13:57:32  joergr
+** Revision 1.44  2002-09-10 16:00:58  meichel
+** Fixed a few incorrect debug messages
+**
+** Revision 1.43  2002/04/16 13:57:32  joergr
 ** Added configurable support for C++ ANSI standard includes (e.g. streams).
 ** Thanks to Andreas Barth <Andreas.Barth@bruker-biospin.de> for his
 ** contribution.
