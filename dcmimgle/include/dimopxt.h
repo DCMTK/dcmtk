@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2001, OFFIS
+ *  Copyright (C) 1996-2002, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose: DicomMonochromePixelTemplate (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-11-19 12:56:27 $
+ *  Update Date:      $Date: 2002-06-26 16:05:43 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/dimopxt.h,v $
- *  CVS/RCS Revision: $Revision: 1.18 $
+ *  CVS/RCS Revision: $Revision: 1.19 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -74,9 +74,8 @@ class DiMonoPixelTemplate
         MinValue[1] = 0;
         MaxValue[0] = 0;
         MaxValue[1] = 0;
+        // allocate buffer of given size
         Data = new T[Count];
-        if (Data != NULL)
-            OFBitmanipTemplate<T>::zeroMem(Data, Count);
     }
 
     /** constructor
@@ -428,7 +427,10 @@ class DiMonoPixelTemplate
  *
  * CVS/RCS Log:
  * $Log: dimopxt.h,v $
- * Revision 1.18  2001-11-19 12:56:27  joergr
+ * Revision 1.19  2002-06-26 16:05:43  joergr
+ * Enhanced handling of corrupted pixel data and/or length.
+ *
+ * Revision 1.18  2001/11/19 12:56:27  joergr
  * Added parameter 'frame' to setRoiWindow().
  *
  * Revision 1.17  2001/09/28 13:09:30  joergr

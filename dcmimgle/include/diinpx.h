@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2001, OFFIS
+ *  Copyright (C) 1996-2002, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose: DicomInputPixel (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-09-28 13:04:58 $
+ *  Update Date:      $Date: 2002-06-26 16:02:31 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/diinpx.h,v $
- *  CVS/RCS Revision: $Revision: 1.13 $
+ *  CVS/RCS Revision: $Revision: 1.14 $
  *  Status:           $State: Exp $
  *
  *   CVS/RCS Log at end of file
@@ -145,9 +145,9 @@ class DiInputPixel
         return AbsMaximum - AbsMinimum + 1;
     }
 
-    /** get number of pixels
+    /** get number of pixels stored
      *
-     ** @return number of pixels
+     ** @return number of pixels stored
      */
     inline unsigned long getCount() const
     {
@@ -163,7 +163,6 @@ class DiInputPixel
         return PixelStart;
     }
 
-
     /** get number of pixels to be processed
      *
      ** @return number of pixels to be processed
@@ -173,10 +172,19 @@ class DiInputPixel
         return PixelCount;
     }
 
+    /** get number of pixels computed from the image resolution
+     *
+     ** @return number of pixels computed
+     */
+    inline unsigned long getComputedCount() const
+    {
+        return ComputedCount;
+    }
+
 
  protected:
 
-    /// number of pixels
+    /// number of pixels stored
     unsigned long Count;
     /// bits per pixel/sample
     unsigned int Bits;
@@ -185,6 +193,9 @@ class DiInputPixel
     unsigned long PixelStart;
     /// number of pixels to be processed
     unsigned long PixelCount;
+
+    /// number of pixels computed from the image resolution
+    unsigned long ComputedCount;
 
     /// absolute minimum (possible) pixel value
     double AbsMinimum;
@@ -200,7 +211,10 @@ class DiInputPixel
  *
  * CVS/RCS Log:
  * $Log: diinpx.h,v $
- * Revision 1.13  2001-09-28 13:04:58  joergr
+ * Revision 1.14  2002-06-26 16:02:31  joergr
+ * Enhanced handling of corrupted pixel data and/or length.
+ *
+ * Revision 1.13  2001/09/28 13:04:58  joergr
  * Enhanced algorithm to determine the min and max value.
  *
  * Revision 1.12  2001/06/01 15:49:42  meichel

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2001, OFFIS
+ *  Copyright (C) 1996-2002, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,10 +21,10 @@
  *
  *  Purpose: DicomPixel (Header)
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-06-01 15:49:50 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2002-06-26 16:06:08 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/dipixel.h,v $
- *  CVS/RCS Revision: $Revision: 1.6 $ 
+ *  CVS/RCS Revision: $Revision: 1.7 $ 
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -54,10 +54,13 @@ class DiPixel
 
     /** constructor
      *
-     ** @param  count  number of pixels
+     ** @param  count       number of pixels stored in the buffer
+     *  @param  inputCount  number of pixels read from 'PixelData' attribute
      */
-    DiPixel(const unsigned long count)
-      : Count(count)
+    DiPixel(const unsigned long count,
+            const unsigned long inputCount = 0)
+      : Count(count),
+        InputCount(inputCount)
     {
     }
 
@@ -100,11 +103,23 @@ class DiPixel
         return Count;
     }    
 
+    /** get number of pixels stored in the 'PixelData' element
+     *
+     ** @return number pixels read from the input buffer
+     */
+    inline unsigned long getInputCount() const
+    {
+        return InputCount;
+    }
+
 
  protected:
 
     /// number of pixels
     /*const*/ unsigned long Count;
+
+    /// number of pixels in the input buffer
+    unsigned long InputCount;
 };
 
 
@@ -115,7 +130,10 @@ class DiPixel
  *
  * CVS/RCS Log:
  * $Log: dipixel.h,v $
- * Revision 1.6  2001-06-01 15:49:50  meichel
+ * Revision 1.7  2002-06-26 16:06:08  joergr
+ * Enhanced handling of corrupted pixel data and/or length.
+ *
+ * Revision 1.6  2001/06/01 15:49:50  meichel
  * Updated copyright header
  *
  * Revision 1.5  2000/03/08 16:24:23  meichel
