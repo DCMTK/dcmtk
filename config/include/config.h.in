@@ -43,8 +43,8 @@
 /* Define if your <sys/time.h> declares struct tm.  */
 #undef TM_IN_SYS_TIME
 
-/* Define the default data dictionary path for the dcmdata library package */
-#undef DCM_DICT_DEFAULT_PATH
+/* Define if the X Window System is missing or not being used.  */
+#undef X_DISPLAY_MISSING
 
 /* The number of bytes in a char.  */
 #undef SIZEOF_CHAR
@@ -207,6 +207,9 @@
 
 /* Define if you have the tempnam function.  */
 #undef HAVE_TEMPNAM
+
+/* Define if you have the tmpnam function.  */
+#undef HAVE_TMPNAM
 
 /* Define if you have the uname function.  */
 #undef HAVE_UNAME
