@@ -24,9 +24,9 @@
  *  routines for finding and creating UIDs.
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2004-03-16 13:43:26 $
+ *  Update Date:      $Date: 2004-04-06 18:02:25 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcuid.h,v $
- *  CVS/RCS Revision: $Revision: 1.61 $
+ *  CVS/RCS Revision: $Revision: 1.62 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -246,17 +246,19 @@ unsigned long dcmGuessModalityBytes(const char *sopClassUID);
    [Selection Value 1]): Default Transfer Syntax for Lossless JPEG Image Compression */
 #define UID_JPEGProcess14SV1TransferSyntax      "1.2.840.10008.1.2.4.70"
 /* JPEG-LS Lossless Image Compression */
-#define UID_JPEGLSLossless                      "1.2.840.10008.1.2.4.80"
+#define UID_JPEGLSLosslessTransferSyntax        "1.2.840.10008.1.2.4.80"
 /* JPEG-LS Lossy (Near-Lossless) Image Compression */
-#define UID_JPEGLSLossy                         "1.2.840.10008.1.2.4.81"
+#define UID_JPEGLSLossyTransferSyntax           "1.2.840.10008.1.2.4.81"
 /* RLE Lossless */
-#define UID_RLELossless                         "1.2.840.10008.1.2.5"
+#define UID_RLELosslessTransferSyntax           "1.2.840.10008.1.2.5"
 /* Deflated Explicit VR Little Endian */
 #define UID_DeflatedExplicitVRLittleEndianTransferSyntax "1.2.840.10008.1.2.1.99"
 /* JPEG 2000 Image Compression (Lossless Only) */
 #define UID_JPEG2000LosslessOnlyTransferSyntax  "1.2.840.10008.1.2.4.90"
 /* JPEG 2000 Image Compression (Lossless or Lossy) */
 #define UID_JPEG2000TransferSyntax              "1.2.840.10008.1.2.4.91"
+/* MPEG2 Main Profile @ Main Level */
+#define UID_MPEG2MainProfileAtMainLevelTransferSyntax "1.2.840.10008.1.2.4.100"
 
 
 /*
@@ -418,6 +420,11 @@ unsigned long dcmGuessModalityBytes(const char *sopClassUID);
 // UID for DICOM Controlled Terminology, defined in CP 324
 #define UID_DICOMControlledTerminologyCodingScheme                 "1.2.840.10008.2.16.4"
 
+// Supplement 47 (final text)
+#define UID_VideoEndoscopicImageStorage                            "1.2.840.10008.5.1.4.1.1.77.1.1.1"
+#define UID_MicroscopicImageStorage                                "1.2.840.10008.5.1.4.1.1.77.1.2.1"
+#define UID_VideoPhotographicImageStorage                          "1.2.840.10008.5.1.4.1.1.77.1.4.1"
+
 // Supplement 66 (final text)
 #define UID_ProceduralEventLoggingSOPClass                         "1.2.840.10008.1.40"
 #define UID_ProceduralEventLoggingSOPInstance                      "1.2.840.10008.1.40.1"
@@ -474,7 +481,12 @@ unsigned long dcmGuessModalityBytes(const char *sopClassUID);
 /*
 ** CVS/RCS Log:
 ** $Log: dcuid.h,v $
-** Revision 1.61  2004-03-16 13:43:26  joergr
+** Revision 1.62  2004-04-06 18:02:25  joergr
+** Updated data dictionary, UIDs and transfer syntaxes for the latest Final Text
+** Supplements (42 and 47) and Correction Proposals (CP 25).
+** Added missing suffix "TransferSyntax" to some transfer syntax constants.
+**
+** Revision 1.61  2004/03/16 13:43:26  joergr
 ** Renamed UID_BasicDirectoryStorageSOPClass to UID_MediaStorageDirectoryStorage.
 **
 ** Revision 1.60  2004/02/13 14:10:30  joergr
