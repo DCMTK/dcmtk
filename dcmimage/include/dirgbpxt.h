@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2002, OFFIS
+ *  Copyright (C) 1996-2003, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,8 @@
  *  Purpose: DicomRGBPixelTemplate (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-06-26 16:19:46 $
- *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/include/Attic/dirgbpxt.h,v $
- *  CVS/RCS Revision: $Revision: 1.14 $
+ *  Update Date:      $Date: 2003-12-23 12:24:23 $
+ *  CVS/RCS Revision: $Revision: 1.15 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -32,8 +31,8 @@
  */
 
 
-#ifndef __DIRGBPXT_H
-#define __DIRGBPXT_H
+#ifndef DIRGBPXT_H
+#define DIRGBPXT_H
 
 #include "osconfig.h"
 
@@ -69,7 +68,7 @@ class DiRGBPixelTemplate
       : DiColorPixelTemplate<T2>(docu, pixel, 3, status)
     {
         if ((pixel != NULL) && (Count > 0) && (status == EIS_Normal))
-            convert((const T1 *)pixel->getData() + pixel->getPixelStart(), planeSize, bits);
+            convert(OFstatic_cast(const T1 *, pixel->getData()) + pixel->getPixelStart(), planeSize, bits);
     }
 
     /** destructor
@@ -96,7 +95,7 @@ class DiRGBPixelTemplate
             // use the number of input pixels derived from the length of the 'PixelData'
             // attribute), but not more than the size of the intermediate buffer
             const unsigned long count = (InputCount < Count) ? InputCount : Count;
-            const T1 offset = (T1)DicomImageClass::maxval(bits - 1);
+            const T1 offset = OFstatic_cast(T1, DicomImageClass::maxval(bits - 1));
             register const T1 *p = pixel;
             if (PlanarConfiguration)
             {
@@ -105,10 +104,10 @@ class DiRGBPixelTemplate
                 // number of pixels to be skipped (only applicable if 'PixelData' contains more
                 // pixels than expected)
                 const unsigned long skip = (InputCount > Count) ? (InputCount - Count) : 0;
-                for (int j = 0; j < 3; j++)
+                for (int j = 0; j < 3; ++j)
                 {
                     q = Data[j];
-                    for (i = count; i != 0; i--)
+                    for (i = count; i != 0; --i)
                         *(q++) = removeSign(*(p++), offset);
                     // skip to beginning of next plane
                     p += skip;
@@ -121,10 +120,10 @@ class DiRGBPixelTemplate
                     /* store current pixel index */
                     const unsigned long iStart = i;
                     /* for all planes ... */
-                    for (int j = 0; j < 3; j++)
+                    for (int j = 0; j < 3; ++j)
                     {
                         /* convert a single plane */
-                        for (l = planeSize, i = iStart; (l != 0) && (i < count); l--, i++)
+                        for (l = planeSize, i = iStart; (l != 0) && (i < count); --l, ++i)
                             Data[j][i] = removeSign(*(p++), offset);
                     }
                 }
@@ -133,8 +132,8 @@ class DiRGBPixelTemplate
             {
                 register int j;
                 register unsigned long i;
-                for (i = 0; i < count; i++)                         /* for all pixel ... */
-                    for (j = 0; j < 3; j++)
+                for (i = 0; i < count; ++i)                         /* for all pixel ... */
+                    for (j = 0; j < 3; ++j)
                         Data[j][i] = removeSign(*(p++), offset);    /* ... copy planes */
             }
         }
@@ -149,7 +148,14 @@ class DiRGBPixelTemplate
  *
  * CVS/RCS Log:
  * $Log: dirgbpxt.h,v $
- * Revision 1.14  2002-06-26 16:19:46  joergr
+ * Revision 1.15  2003-12-23 12:24:23  joergr
+ * Adapted type casts to new-style typecast operators defined in ofcast.h.
+ * Removed leading underscore characters from preprocessor symbols (reserved
+ * symbols). Updated copyright header.
+ * Replaced post-increment/decrement operators by pre-increment/decrement
+ * operators where appropriate (e.g. 'i++' by '++i').
+ *
+ * Revision 1.14  2002/06/26 16:19:46  joergr
  * Enhanced handling of corrupted pixel data and/or length.
  * Corrected decoding of multi-frame, planar images.
  *
