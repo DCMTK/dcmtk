@@ -57,9 +57,9 @@
 **	Module Prefix: DIMSE_
 **
 ** Last Update:		$Author: hewett $
-** Update Date:		$Date: 1996-04-27 12:57:58 $
+** Update Date:		$Date: 1996-09-03 11:40:25 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/libsrc/dimse.cc,v $
-** CVS/RCS Revision:	$Revision: 1.3 $
+** CVS/RCS Revision:	$Revision: 1.4 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -96,6 +96,7 @@
 #include "dimcmd.h"
 
 #include "dcfilefo.h"
+#include "dcdict.h"
 
 /*
  * Type definitions
@@ -120,6 +121,13 @@ static int debug = 0;
 ** Private Functions Bodies
 */
 
+
+static BOOLEAN
+isDataDictPresent()
+{
+    /* is a data dictionary present */
+    return (dcmDataDict.numberOfEntries() != 0);
+}
 
 /*
  * PDV Reading
@@ -651,6 +659,13 @@ DIMSE_sendMessage(T_ASC_Association *assoc,
     E_TransferSyntax xferSyntax;
     DcmDataset *cmdObj = NULL;
 
+    if (!isDataDictPresent()) {
+	/* we must have a data dictionary */
+	return COND_PushCondition(
+	    DIMSE_BUILDFAILED,
+	        "DIMSE_sendMessage: missing data dictionary");
+    }
+
     cond = validateMessage(assoc, msg);
     if (cond != DIMSE_NORMAL)
 	return cond;
@@ -784,6 +799,13 @@ DIMSE_receiveCommand(T_ASC_Association * assoc,
 
     if (debug) {
 	printf("DIMSE receiveCommand\n");
+    }
+
+    if (!isDataDictPresent()) {
+	/* we must have a data dictionary */
+	return COND_PushCondition(
+	    DIMSE_PARSEFAILED,
+	        "DIMSE_receiveCommand: missing data dictionary");
     }
 
     pdvCount = 0;
@@ -1040,6 +1062,13 @@ DIMSE_receiveDataSetInMemory(T_ASC_Association * assoc,
 	        "DIMSE_receiveDataSetInMemory: dataObject==NULL");
     }
 
+    if (!isDataDictPresent()) {
+	/* we must have a data dictionary */
+	return COND_PushCondition(
+	    DIMSE_PARSEFAILED,
+	        "DIMSE_receiveDataSetInMemory: missing data dictionary");
+    }
+
     if (*dataObject == NULL) {
 	dset = new DcmDataset();
     } else {
@@ -1167,7 +1196,13 @@ void DIMSE_warning(T_ASC_Association *assoc,
 /*
 ** CVS Log
 ** $Log: dimse.cc,v $
-** Revision 1.3  1996-04-27 12:57:58  hewett
+** Revision 1.4  1996-09-03 11:40:25  hewett
+** Added automatic tests in the DIMSE level network code to check
+** that a data dictionary is loaded.  Calls to DIMSE routines will
+** now fail if no data dictionary is loaded.  Previously, the lack of
+** a loaded data dictionary would cause obscure errors.
+**
+** Revision 1.3  1996/04/27 12:57:58  hewett
 ** Corrected cause of warnings when compiling under "c++ -O -g -Wall"
 ** under Solaris 2.4.  Mostly due to unintialized variables.
 **
