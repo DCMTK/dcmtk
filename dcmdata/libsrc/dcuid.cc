@@ -10,9 +10,9 @@
 ** routines for finding and created UIDs.
 **
 ** Last Update:		$Author: hewett $
-** Update Date:		$Date: 1997-10-13 11:34:49 $
+** Update Date:		$Date: 1998-01-14 15:15:02 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcuid.cc,v $
-** CVS/RCS Revision:	$Revision: 1.11 $
+** CVS/RCS Revision:	$Revision: 1.12 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -186,6 +186,11 @@ static UIDNameMap uidNameMap[] = {
 
     { UID_UserPreferenceLUTSOPClass, "UserPreferenceLUTSOPClass" },
 
+    { UID_SRTextStorageSOPClass, "SRTextStorageSOPClass" },
+    { UID_SRAudioStorageSOPClass, "SRAudioStorageSOPClass" },
+    { UID_SRDetailStorageSOPClass, "SRDetailStorageSOPClass" },
+    { UID_SRComprehensiveStorageSOPClass, "SRComprehensiveStorageSOPClass" },
+
     { UID_BasicGrayscalePrintStorageSOPClass, "BasicGrayscalePrintStorageSOPClass" },
     { UID_BasicColorPrintStorageSOPClass, "BasicColorPrintStorageSOPClass" },
     { UID_ReferencedGrayscalePrintStorageSOPClass, "ReferencedGrayscalePrintStorageSOPClass" },
@@ -236,6 +241,11 @@ const char* dcmStorageSOPClassUIDs[] = {
     UID_VLImageStorage,
     UID_VLMultiFrameImageStorage,
 
+    UID_SRTextStorageSOPClass, 
+    UID_SRAudioStorageSOPClass, 
+    UID_SRDetailStorageSOPClass, 
+    UID_SRComprehensiveStorageSOPClass, 
+
     UID_BasicGrayscalePrintStorageSOPClass, 
     UID_BasicColorPrintStorageSOPClass, 
     UID_ReferencedGrayscalePrintStorageSOPClass, 
@@ -251,7 +261,14 @@ const int numberOfDcmStorageSOPClassUIDs =
 /*
 ** The global variable dcmImageSOPClassUIDs is an array of 
 ** string pointers containing the UIDs of all known Image SOP
-** Classes.  The global variable numberOfDcmImageSOPClassUIDs
+** Classes.  The instances of SOP Classes in this list can be
+** referenced from DICOMDIR IMAGE records.
+**
+** The dcmgpdir program uses this list to determine what kind of
+** objects can be referenced from IMAGE records.
+** Be _very_ careful when adding SOP Classes to this list!! 
+**
+** The global variable numberOfDcmImageSOPClassUIDs
 ** defines the size of the array.
 ** NOTE: this list represets a subset of the dcmStorageSOPClassUIDs list
 */
@@ -346,6 +363,24 @@ dcmFindUIDFromName(const char * name)
 }
 
 
+/*
+** dcmIsaStorageSOPClassUID(const char* uid)
+** Returns true if the uid is one of the Storage SOP Classes.
+** Performs a table lookup in the dcmStorageSOPClassUIDs table.
+*/
+OFBool
+dcmIsaStorageSOPClassUID(const char* uid)
+{
+    int i = 0;
+    if (uid == NULL) return OFFalse;
+    for (i=0; i<numberOfDcmStorageSOPClassUIDs; i++) {
+        if (dcmStorageSOPClassUIDs[i] != NULL 
+	    && strcmp(uid, dcmStorageSOPClassUIDs[i]) == 0) {
+            return OFTrue;
+        }
+    }
+    return OFFalse;
+}
 
 // ********************************
 
@@ -512,7 +547,10 @@ char* dcmGenerateUniqueIdentifer(char* uid, const char* prefix)
 /*
 ** CVS/RCS Log:
 ** $Log: dcuid.cc,v $
-** Revision 1.11  1997-10-13 11:34:49  hewett
+** Revision 1.12  1998-01-14 15:15:02  hewett
+** Added basic support for the Structured Reporting (SR) SOP Classes.
+**
+** Revision 1.11  1997/10/13 11:34:49  hewett
 ** Fixed unimportant spelling error in comment (StopClass -> SOPClass).
 **
 ** Revision 1.10  1997/09/22 14:56:56  hewett

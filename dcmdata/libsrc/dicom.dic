@@ -1451,47 +1451,51 @@
 #
 #---------------------------------------------------------------------------
 #
-# DICOM Visible Light Image for Endoscopy, Microscopy and 
-# Photography (Supplement 15) 
-# Source: AAO - ACR - ADA - ASGE - CAP - NEMA 45
-# Draft for Public Review (version 0.35) - March 10, 1997
+# SUPPLEMENT 15
+# Visible Light Image for Endoscopy, Microscopy, and Photography
+# DRAFT STANDARD FOR TRIAL USE
+# Sponsors: 
+#     American Academy of Ophthalmology
+#     American College of Radiology
+#     American Society for Gastrointestinal Endoscopy
+#     College of American Pathologists
+#     American Dental Association
+#     National Electrical Manufacturers Association
+# Version: 1.0
+# Filename: sup15_fz.doc
+# Date: May 1, 1997
 #
-# WARNING: These data dictionary attributes come from a DRAFT 
-# document and are likely to change.  Included for experimental
-# purposes only.
-#
-(0008,0105)	CS	MappingResource	1	DICOM3
-(0008,0106)	DA	MappingResourceVersion	1	DICOM3
-(0008,010F)	CS	ContextIdentifier	1	DICOM3
-(0040,050A)	LO	SpecimenAccessionNumber	1	DICOM3
-(0040,0550)	SQ	SpecimenSequence	1	DICOM3
-(0040,0551)	LO	SpecimenIdentifier	1	DICOM3
-(0040,0552)	SQ	SpecimenDescriptionSequence	1	DICOM3
-(0040,0553)	ST	SpecimenDescription	1	DICOM3
-(0040,0555)	SQ	AcquisitionContextSequence	1	DICOM3
-(0040,0556)	ST	AcquisitionContextDescription	1	DICOM3
-(0040,059A)	SQ	SpecimenTypeCodeSequence	1	DICOM3
-(0040,06FA)	LO	SlideIdentifier	1	DICOM3
-(0040,071A)	SQ	ImageCenterPointCoordinatesSequence	1	DICOM3
-(0040,072A)	DS	XOffsetInSlideCoordinateSystem	1	DICOM3
-(0040,073A)	DS	YOffsetInSlideCoordinateSystem	1	DICOM3
-(0040,074A)	DS	ZOffsetInSlideCoordinateSystem	1	DICOM3
-(0040,08D8)	SQ	PixelSpacingSequence	1	DICOM3
-(0040,08DA)	SQ	CoordinateSystemAxisCodeSequence	1	DICOM3
-(0040,08EA)	SQ	MeasurementUnitsCodeSequence	1	DICOM3
-(0040,09F8)	SQ	VitalStainCodeSequence	1	DICOM3
-(0040,A043)	SQ	ConceptNameCodeSequence	1	DICOM3
-(0040,A121)	DA	Date	1	DICOM3
-(0040,A122)	TM	Time	1	DICOM3
-(0040,A123)	PN	PersonName	1	DICOM3
-(0040,A168)	SQ	ConceptCodeSequence	1	DICOM3
-(0040,A16A)	ST	BibliographicCitation	1	DICOM3
-(0040,A195)	SQ	ConceptNameCodeSequenceModifier	1	DICOM3
-(0040,A30A)	DS	NumericValueSet	1-n	DICOM3
-(0040,A30B)	DS	NumericValueOrderedSet	1-n	DICOM3
-(0040,A353)	ST	Address	1	DICOM3
-(0040,A354)	LO	TelephoneNumber	1	DICOM3
-(0040,A992)	ST	UniversalResourceLocator	1	DICOM3
+(0008,0105)	CS	MappingResource	1
+(0008,0106)	DA	MappingResourceVersion	1
+(0008,010F)	CS	ContextIdentifier	1
+(0040,050A)	LO	SpecimenAccessionNumber	1
+(0040,0550)	SQ	SpecimenSequence	1
+(0040,0551)	LO	SpecimenIdentifier	1
+(0040,0552)	SQ	SpecimenDescriptionSequence	1
+(0040,0553)	ST	SpecimenDescription	1
+(0040,0555)	SQ	AcquisitionContextSequence	1
+(0040,0556)	ST	AcquisitionContextDescription	1
+(0040,059A)	SQ	SpecimenTypeCodeSequence	1
+(0040,06FA)	LO	SlideIdentifier	1
+(0040,071A)	SQ	ImageCenterPointCoordinatesSequence	1
+(0040,072A)	DS	XOffsetInSlideCoordinateSystem	1
+(0040,073A)	DS	YOffsetInSlideCoordinateSystem	1
+(0040,074A)	DS	ZOffsetInSlideCoordinateSystem	1
+(0040,08D8)	SQ	PixelSpacingSequence	1
+(0040,08DA)	SQ	CoordinateSystemAxisCodeSequence	1
+(0040,08EA)	SQ	MeasurementUnitsCodeSequence	1
+(0040,09F8)	SQ	VitalStainCodeSequence	1
+(0040,A043)	SQ	ConceptNameCodeSequence	1
+(0040,A121)	DA	Date	1
+(0040,A122)	TM	Time	1
+(0040,A123)	PN	PersonName	1
+(0040,A168)	SQ	ConceptCodeSequence	1
+(0040,A16A)	ST	BibliographicCitation	1
+(0040,A195)	SQ	ConceptNameCodeSequenceModifier	1
+(0040,A30A)	DS	NumericValue	1-n
+(0040,A353)	ST	Address	1
+(0040,A354)	LO	TelephoneNumber	1
+(0040,A992)	ST	UniformResourceLocator	1
 #
 #---------------------------------------------------------------------------
 #
@@ -1546,6 +1550,114 @@
 (2050,0010)	SQ	UserPreferenceLUTSequence	1	DICOM3
 (2050,0020)	CS	UserPreferenceLUTShape	1	DICOM3
 (2050,0500)	SQ	ReferencedUserPreferenceLUTSequence	1	DICOM3
+#
+#---------------------------------------------------------------------------
+#
+# SUPPLEMENT 23:
+# STRUCTURED REPORTING
+# (Frozen Draft*)
+# Supplement to NEMA PS 3.3, PS 3.4, and PS 3.6, providing Structured Report
+# (SR) Information Object Definitions for Interpretation Data Interchange.
+#
+# * This is a Frozen Draft specification. It has undergone extensive 
+# public review and is a  mature draft. However, it is possible that 
+# changes may be approved prior to letter ballot.  Please note that the 
+# SOPC UIDs may change if substantial change occurs in the content 
+# of the document. A formal revision-control process has been instituted.
+# Proposed changes must be submitted as written change-requests to the 
+# Structured Reporting Working Group of the DICOM Standards 
+# Committee. After a formal review procedure, if changes are approved 
+# by the Committee, they will be documented in a revisions log and will 
+# be published on the NEMA WWW Server. Any and all approved and 
+# documented changes to this Draft Standard for Trial Use will be 
+# incorporated in the final text for letter ballot.
+#
+# Negotiation of this SOP Class does not imply the ability to display the 
+# contents of referenced objects.  Draft Supplement 36: Codes and 
+# Controlled Terminology specifies the 'Code Sequence Macro' 
+# contained in the Code Sequence Data Elements of this Supplement.
+#
+# Refer to: Version: 0.97
+# Status: Frozen Draft
+# Filename: sup23_fz.doc
+# Date: November 20, 1997
+#
+(0040,A007)	CS	FindingsFlag	1
+(0040,A020)	SQ	FindingsSequence	1
+(0040,A021)	UI	FindingsGroupUID	1
+(0040,A022)	UI	ReferencedFindingsGroupUID	1
+(0040,A023)	DA	FindingsGroupRecordingDate	1
+(0040,A024)	TM	FindingsGroupRecordingTime	1
+(0040,A026)	SQ	FindingsSourceCategoryCodeSequence	1
+(0040,A027)	LO	DocumentingOrganization	1
+(0040,A028)	SQ	DocumentingOrganizationIdentifierCodeSequence	1
+(0040,A032)	LO	HistoryReliabilityQualifierDescription	1
+(0040,A043)	SQ	ConceptNameCodeSequence	1
+(0040,A047)	LO	MeasurementPrecisionDescription	1
+(0040,A057)	CS	UrgencyOrPriorityAlerts	1-n
+(0040,A060)	LO	SequencingIndicator	1
+(0040,A066)	SQ	DocumentIdentifierCodeSequence	1
+(0040,A067)	PN	DocumentAuthor	1
+(0040,A068)	SQ	DocumentAuthorIdentifierCodeSequence	1
+(0040,A070)	SQ	IdentifierCodeSequence	1
+(0040,A073)	LO	ObjectStringIdentifier	1-n
+(0040,A074)	OB	ObjectBinaryIdentifier	1
+(0040,A075)	PN	DocumentingObserver	1
+(0040,A076)	SQ	DocumentingObserverIdentifierCodeSequence	1
+(0040,A078)	SQ	ObservationSubjectIdentifierCodeSequence	1
+(0040,A080)	SQ	PersonIdentifierCodeSequence	1
+(0040,A085)	SQ	ProcedureIdentifierCodeSequence	1
+(0040,A088)	LO	ObjectDirectoryStringIdentifier	1
+(0040,A089)	OB	ObjectDirectoryBinaryIdentifier	1
+(0040,A090)	CS	HistoryReliabilityQualifier	1
+(0040,A110)	DA	DateOfDocumentOrVerbalTransaction	1
+(0040,A112)	TM	TimeOfDocumentCreationOrVerbalTransaction	1
+(0040,A121)	DA	Date	1
+(0040,A122)	TM	Time	1
+(0040,A123)	PN	PersonName	1
+(0040,A124)	SQ	ReferencedPersonSequence	1
+(0040,A125)	CS	ReportStatusID	2
+(0040,A136)	US	ReferencedFrameNumbers	1-n
+(0040,A160)	UT	TextValue	1
+(0040,A167)	SQ	ObservationCategoryCodeSequence	1
+(0040,A168)	SQ	ConceptCodeSequence	1
+(0040,A16A)	ST	BibliographicCitation	1
+(0040,A170)	CS	ObservationClass	1
+(0040,A171)	UI	ObservationUID	1
+(0040,A172)	UI	ReferencedObservationUID	1
+(0040,A173)	CS	ReferencedObservationClass	1
+(0040,A174)	CS	ReferencedObjectObservationClass	1
+(0040,A192)	DA	ObservationDate	1
+(0040,A193)	TM	ObservationTime	1
+(0040,A194)	CS	MeasurementAutomation	1
+(0040,A195)	SQ	ConceptNameCodeSequenceModifier	1
+(0040,A224)	ST	IdentificationDescription	1
+(0040,A290)	CS	CoordinatesSetGeometricType	1
+(0040,A296)	SQ	AlgorithmCodeSequence	1
+(0040,A297)	ST	AlgorithmDescription	1
+(0040,A29A)	SL	PixelCoordinatesSet	2-2n
+(0040,A300)	SQ	MeasuredValueSequence	1
+(0040,A307)	PN	CurrentObserver	1
+(0040,A30A)	DS	NumericValue	1-n
+(0040,A313)	SQ	ReferencedAccessionSequence	1
+(0040,A33A)	ST	ReportStatusComment	1
+(0040,A340)	SQ	ProcedureContextSequence	1
+(0040,A352)	PN	VerbalSource	1
+(0040,A358)	SQ	VerbalSourceIdentifierCodeSequence	1
+(0040,A380)	SQ	ReportDetailSequence	1
+(0040,A402)	UI	ObservationSubjectUID	1
+(0040,A403)	CS	ObservationSubjectClass	1
+(0040,A404)	SQ	ObservationSubjectTypeCodeSequence	1
+(0040,A600)	CS	ObservationSubjectContextFlag	1
+(0040,A601)	CS	ObserverContextFlag	1
+(0040,A603)	CS	ProcedureContextFlag	1
+(0040,A730)	SQ	ObservationsSequence	1
+(0040,A731)	SQ	RelationshipSequence	1
+(0040,A732)	SQ	RelationshipTypeCodeSequence	1
+(0040,A744)	SQ	LanguageCodeSequence	1
+(0040,A992)	ST	UniformResourceLocator	1
+(0040,DB73)	SQ	RelationshipTypeCodeSequenceModifier	1
+(4008,00FF)	CS	ReportProductionStatus	1
 #
 #---------------------------------------------------------------------------
 #
@@ -1636,3 +1748,32 @@
 #
 (0020,1209)	IS	NumberOfSeriesRelatedImages	1	DICOM3
 #
+#---------------------------------------------------------------------------
+#
+# Correction Proposal 101
+# Status: Public Comment
+# 
+# Date of Last Update Sep 29th, 1997
+# Submission date January 16th, 1997
+# Correction Number CP-101
+# Log Summary: Standard Text VR too short for Information Systems
+#
+(0008,0051)	LO	AccessionNumberLong	1
+(0008,0095)	LO	ReferringPhysiciansTelephoneNumbersLong	1-n
+(0010,1041)	ST	PatientsAddressLong	1
+(0010,2001)	VS	MedicalAlertsLong	1-n
+(0010,2111)	VS	ContrastAllergiesLong	1-n
+(0010,2155)	LO	PatientsTelephoneNumbersLong	1-n
+(0010,2161)	LO	EthnicGroupLong	1
+(0010,2181)	LO	OccupationLong	1
+(0040,1013)	UT	ReasonForTheRequestedProcedureLong	1
+(0040,2002)	UT	ReasonForTheImagingServiceRequestLong	1
+(0032,1031)	UT	ReasonForStudyLong	1
+(4008,010D)	UT	InterpretationTextLong	1
+(4008,0116)	UT	InterpretationDiagnosisDescriptionLong	1
+(4008,011B)	ST	DistributionAddressLong	1
+(4008,0301)	UT	ImpressionsLong	1
+#
+#---------------------------------------------------------------------------
+#
+

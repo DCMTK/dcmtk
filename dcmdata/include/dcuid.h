@@ -9,10 +9,10 @@
 ** Definitions of "well known" DICOM Unique Indentifiers,
 ** routines for finding and creating UIDs.
 **
-** Last Update:		$Author: meichel $
-** Update Date:		$Date: 1997-10-07 07:44:20 $
+** Last Update:		$Author: hewett $
+** Update Date:		$Date: 1998-01-14 15:14:45 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcuid.h,v $
-** CVS/RCS Revision:	$Revision: 1.21 $
+** CVS/RCS Revision:	$Revision: 1.22 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -30,6 +30,8 @@
 #ifdef HAVE_UNISTD_H
 #include <unistd.h> /* for NULL */
 #endif
+
+#include "dctypes.h"
 
 /*
 ** dcmFindNameOfUID(const char* uid)
@@ -59,6 +61,13 @@ const char * dcmFindUIDFromName(const char * name);
 
 extern const char* dcmStorageSOPClassUIDs[];
 extern const int numberOfDcmStorageSOPClassUIDs;
+
+/*
+** dcmIsaStorageSOPClassUID(const char* uid)
+** Returns true if the uid is one of the Storage SOP Classes.
+** Performs a table lookup in the dcmStorageSOPClassUIDs table.
+*/
+OFBool dcmIsaStorageSOPClassUID(const char* uid);
 
 /*
 ** The global variable dcmImageSOPClassUIDs is an array of 
@@ -280,8 +289,11 @@ char* dcmGenerateUniqueIdentifer(char* uid, const char* prefix=NULL);
 /* DRAFT Supplement 22 (User Preference LUT) */
 #define UID_UserPreferenceLUTSOPClass	"1.2.840.10008.5.1.1.23"
 
-/* DRAFT Supplement 23 (Structured Reporting) */
-/* as of 97.04.10 no UIDs assigned */
+/* DRAFT Supplement 23 (Structured Reporting) - frozen draft - version 0.79 */
+#define UID_SRTextStorageSOPClass "1.2.840.10008.5.1.4.1.1.88.1"
+#define UID_SRAudioStorageSOPClass "1.2.840.10008.5.1.4.1.1.88.2" 
+#define UID_SRDetailStorageSOPClass "1.2.840.10008.5.1.4.1.1.88.3" 
+#define UID_SRComprehensiveStorageSOPClass "1.2.840.10008.5.1.4.1.1.88.4"
 
 /* DRAFT Supplement 24 (Print Storage) */
 #define UID_BasicGrayscalePrintStorageSOPClass	"1.2.840.10008.5.1.4.1.1.27"
@@ -294,7 +306,10 @@ char* dcmGenerateUniqueIdentifer(char* uid, const char* prefix=NULL);
 /*
 ** CVS/RCS Log:
 ** $Log: dcuid.h,v $
-** Revision 1.21  1997-10-07 07:44:20  meichel
+** Revision 1.22  1998-01-14 15:14:45  hewett
+** Added basic support for the Structured Reporting (SR) SOP Classes.
+**
+** Revision 1.21  1997/10/07 07:44:20  meichel
 ** Updated Version Number and Implementation Version Name to reflect the
 **   current public release (3.3)
 **
