@@ -24,9 +24,9 @@
  *
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-06-05 10:32:21 $
+ *  Update Date:      $Date: 2001-09-28 12:42:39 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/tests/tstthred.cc,v $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -142,7 +142,7 @@ void mutex_test()
   if ((!mtx_cond2) || (!mtx_cond3)) bailout("mutex lock/unlock test failed", __LINE__);
 
   delete mutex;
-  cerr << "mutex test passed." << endl;
+  CERR << "mutex test passed." << endl;
 }
 
 
@@ -230,7 +230,7 @@ void semaphore_test()
 
   delete mutex;
   delete semaphore;  
-  cerr << "semaphore test passed." << endl;
+  CERR << "semaphore test passed." << endl;
 }
 
 static OFReadWriteLock *rwlock=NULL;
@@ -343,7 +343,7 @@ void rwlock_test()
   delete mutex;
   delete mutex2;
   delete rwlock;  
-  cerr << "read/write lock test passed." << endl;
+  CERR << "read/write lock test passed." << endl;
 }
 
 static OFThreadSpecificData *tsdata=NULL;
@@ -459,7 +459,7 @@ void tsdata_test()
   delete mutex;
   delete mutex2;
   delete tsdata;  
-  cerr << "thread specific data test passed." << endl;
+  CERR << "thread specific data test passed." << endl;
 }
 
 int main()
@@ -468,7 +468,7 @@ int main()
   semaphore_test(); // may assume that mutexes work correctly
   rwlock_test();    // may assume that mutexes and semaphores work correctly
   tsdata_test();
-  cerr << "all tests passed." << endl;
+  CERR << "all tests passed." << endl;
   return 0;
 }
 
@@ -476,7 +476,10 @@ int main()
  *
  * CVS/RCS Log:
  * $Log: tstthred.cc,v $
- * Revision 1.3  2001-06-05 10:32:21  joergr
+ * Revision 1.4  2001-09-28 12:42:39  joergr
+ * Replaced "cerr" by "CERR".
+ *
+ * Revision 1.3  2001/06/05 10:32:21  joergr
  * Replaced some #ifdef _WIN32 statements by #ifdef HAVE_WINDOWS_H or #ifdef
  * __CYGWIN__ respectively to reflect the fact that the latest Cygwin/gcc
  * version does not define _WIN32 any more.
