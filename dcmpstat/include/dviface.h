@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DVInterface
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-11-13 15:50:42 $
- *  CVS/RCS Revision: $Revision: 1.80 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2000-11-14 16:35:16 $
+ *  CVS/RCS Revision: $Revision: 1.81 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -157,7 +157,9 @@ class DVInterface: public DVConfiguration
      *  should facilitate the creation of new reports since one does not have to start
      *  with a completely empty report.
      *  Please note that the current structured report is replaced by the specified
-     *  "template".  This method does not acquire a database lock.
+     *  "template".  New study/series/instance UIDs are generated automatically for the
+     *  new report.
+     *  This method does not acquire a database lock.
      *  @param reportID report identifier, as returned by getReportID().
      *  @return EC_Normal upon success, an error code otherwise.
      */
@@ -1807,7 +1809,11 @@ private:
 /*
  *  CVS/RCS Log:
  *  $Log: dviface.h,v $
- *  Revision 1.80  2000-11-13 15:50:42  meichel
+ *  Revision 1.81  2000-11-14 16:35:16  joergr
+ *  Added creation of new UIDs and setting of content date/time when starting
+ *  a new SR document from a "template".
+ *
+ *  Revision 1.80  2000/11/13 15:50:42  meichel
  *  Added dcmpstat support methods for creating image references
  *    in SR documents.
  *

@@ -21,9 +21,9 @@
  *
  *  Purpose: DVPresentationState
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-11-14 13:25:59 $
- *  CVS/RCS Revision: $Revision: 1.118 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2000-11-14 16:35:21 $
+ *  CVS/RCS Revision: $Revision: 1.119 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -599,7 +599,17 @@ E_Condition DVInterface::loadSRTemplate(const char *reportID)
        filename += PATH_SEPARATOR;
        filename += srfile;
        result = loadStructuredReport(filename.c_str());
-       if (result != EC_Normal)
+       if (result == EC_Normal)
+       {
+         if (pReport != NULL)
+         {
+           /* date/time is filled automatically if empty */
+           pReport->setContentDate("");
+           pReport->setContentTime("");
+           /* generate new study/series/instance UID and fill date/time */
+           pReport->createNewStudy();
+         }
+       } else
          writeLogMessage(DVPSM_error, "DCMPSTAT", "Load structured reporting 'template' from file failed");
      }
   }
@@ -4128,7 +4138,11 @@ OFBool DVInterface::verifyUserPassword(const char *userID, const char *passwd)
 /*
  *  CVS/RCS Log:
  *  $Log: dviface.cc,v $
- *  Revision 1.118  2000-11-14 13:25:59  meichel
+ *  Revision 1.119  2000-11-14 16:35:21  joergr
+ *  Added creation of new UIDs and setting of content date/time when starting
+ *  a new SR document from a "template".
+ *
+ *  Revision 1.118  2000/11/14 13:25:59  meichel
  *  Imagectn was always invoked in debug mode from class DVInterface
  *    on Unix platforms. Fixed.
  *
