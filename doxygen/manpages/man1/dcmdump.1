@@ -1,0 +1,137 @@
+.TH "dcmdump" 1 "10 Feb 2004" "OFFIS DCMTK" \" -*- nroff -*-
+.nh
+.SH NAME
+dcmdump \- Dump DICOM file and data set
+.SH "SYNOPSIS"
+.PP
+.PP
+.nf
+
+dcmdump [options] dcmfile-in...
+.PP
+.SH "DESCRIPTION"
+.PP
+The \fBdcmdump\fP utility dumps the contents of a DICOM file (file format or raw data set) to stdout in textual form. Attributes with very large value fields (e.g. pixel data) can be described as '(not loaded)'. String value fields will be delimited with square breackets ([]). Known UIDs will be displayed by their names prefixed by an equals sign (e.g. '=MRImageStorage'). Empty value fields are described as '(no value available)'.
+.PP
+If \fBdcmdump\fP reads a raw data set (DICOM data without a file format meta- header) it will attempt to guess the transfer syntax by examining the first few bytes of the file. It is not always possible to correctly guess the transfer syntax and it is better to convert a data set to a file format whenever possible (using the \fBdcmconv\fP utility). It is also possible to use the \fI-f\fP and \fI-t[ieb]\fP options to force \fBdcmdump\fP to read a dataset with a particular transfer syntax.
+.SH "PARAMETERS"
+.PP
+.PP
+.nf
+
+dcmfile-in  DICOM input filename to be dumped
+.PP
+.SH "OPTIONS"
+.PP
+.SS "general options"
+.PP
+.nf
+
+  -h   --help
+         print this help text and exit
+
+       --version
+         print version information and exit
+
+  -d   --debug
+         debug mode, print debug information
+.PP
+.SS "input options"
+.PP
+.nf
+
+input file format:
+
+  +f   --read-file
+         read file format or data set (default)
+
+  -f   --read-dataset
+         read data set without file meta information
+
+input transfer syntax (only with --read-dataset):
+
+  -t=  --read-xfer-auto
+         use TS recognition (default)
+
+  -te  --read-xfer-little
+         read with explicit VR little endian TS
+
+  -tb  --read-xfer-big
+         read with explicit VR big endian TS
+
+  -ti  --read-xfer-implicit
+         read with implicit VR little endian TS
+.PP
+.SS "output options"
+.PP
+.nf
+
+printing:
+
+  +M   --load-all
+         load very long tag values (default)
+
+  -M   --load-short
+         do not load very long values (e.g. pixel data)
+
+  +L   --print-all
+         print long tag values completely
+
+  -L   --print-short
+         print long tag values shortened (default)
+
+  +F   --print-filename
+         print header with filename for each input file
+
+error handling:
+
+  -E   --stop-on-error
+         do not print if file is damaged (default)
+
+  +E   --ignore-errors
+         attempt to print even if file is damaged
+
+searching:
+
+  +P   --search  [t]ag: "xxxx,xxxx" or a data dictionary name
+         print the value of tag t this option can be specified
+         multiple times (default: the complete file is printed)
+
+  +s   --search-all
+         print all instances of searched tags (default)
+
+  -s   --search-first
+         only print first instance of searched tags
+
+  +p   --prepend
+         prepend sequence hierarchy to printed tag,
+         denoted by: (xxxx,xxxx).(xxxx,xxxx).*
+         (only with --search-all or --search-first)
+
+  -p   --no-prepend
+         do not prepend hierarchy to tag (default)
+
+writing:
+
+  +W   --write-pixel  [d]irectory : string
+         write pixel data to a .raw file stored in d
+         (little endian, filename created automatically)
+.PP
+.SH "COMMAND LINE"
+.PP
+All command line tools use the following notation for parameters: square brackets enclose optional values (0-1), three trailing dots indicate that multiple values are allowed (1-n), a combination of both means 0 to n values.
+.PP
+Command line options are distinguished from parameters by a leading '+' or '-' sign, respectively. Usually, order and position of command line options are arbitrary (i.e. they can appear anywhere). However, if options are mutually exclusive the rightmost appearance is used. This behaviour conforms to the standard evaluation rules of common Unix shells.
+.PP
+In addition, one or more command files can be specified using an '@' sign as a prefix to the filename (e.g. \fI@command.txt\fP). Such a command argument is replaced by the content of the corresponding text file (multiple whitespaces are treated as a single separator) prior to any further evaluation. Please note that a command file cannot contain another command file. This simple but effective approach allows to summarize common combinations of options/parameters and avoids longish and confusing command lines (an example is provided in file \fIdata/dumppat.txt\fP).
+.SH "ENVIRONMENT"
+.PP
+The \fBdcmdump\fP utility will attempt to load DICOM data dictionaries specified in the \fIDCMDICTPATH\fP environment variable. By default, i.e. if the \fIDCMDICTPATH\fP environment variable is not set, the file \fI<PREFIX>/lib/dicom.dic\fP will be loaded unless the dictionary is built into the application (default for Windows).
+.PP
+The default behaviour should be preferred and the \fIDCMDICTPATH\fP environment variable only used when alternative data dictionaries are required. The \fIDCMDICTPATH\fP environment variable has the same format as the Unix shell \fIPATH\fP variable in that a colon (':') separates entries. The data dictionary code will attempt to load each file specified in the \fIDCMDICTPATH\fP environment variable. It is an error if no data dictionary can be loaded.
+.SH "SEE ALSO"
+.PP
+\fBdump2dcm\fP(1), \fBdcmconv\fP(1)
+.SH "COPYRIGHT"
+.PP
+Copyright (C) 1994-2004 by Kuratorium OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany. 

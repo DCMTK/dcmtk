@@ -1,0 +1,144 @@
+.TH "dcmodify" 1 "10 Feb 2004" "OFFIS DCMTK" \" -*- nroff -*-
+.nh
+.SH NAME
+dcmodify \- Modify DICOM files
+.SH "SYNOPSIS"
+.PP
+.PP
+.nf
+
+dcmodify [options] [dcmfile-in...]
+.PP
+.SH "DESCRIPTION"
+.PP
+\fBdcmodify\fP is a tool that allows to modify, insert and delete tags in DICOM files. The special cases sequences, items and tags with a value multiplicity > 1 are also supported.
+.PP
+In case multiple modifications are to be performed, \fBdcmodify\fP does the modifications in the same order as they appear on commandline. Please note that \fBdcmodify\fP does not check whether given values are of the right value representation (VR). Usually, an error message is printed but generally the user should take care of the right VR usage.
+.PP
+\fBdcmodify\fP is able to work on so called tag paths to describe tags in sequences. The syntax is
+.PP
+.PP
+.nf
+
+  {sequence[item-no].}*element
+.PP
+.PP
+where 'sequence' is a sequence tag like (0008,1111) or a dictionary name for a tag. 'item-no' describes the item number to access (counting from zero). 'element' defines the target tag to work on. You also can specify either the tag directly as (0010,0010) or through the dictionary name PatientsName. The denotes, that you can repeat sequence statements to access deeper levels in dicom files. For examples take a look at the EXAMPLES section.
+.SH "PARAMETERS"
+.PP
+.PP
+.nf
+
+dcmfile-in  DICOM input filename(s) to be modified
+.PP
+.SH "OPTIONS"
+.PP
+.SS "general options"
+.PP
+.nf
+
+  -h   --help
+         print this help text and exit
+
+       --version
+         print version information and exit
+
+  -d   --debug
+         debug mode, print debug information
+
+  -v   --verbose
+         verbose mode, print verbose output
+
+  -ie  --ignore-errors
+         continue with file, if modify error occurs
+
+.PP
+.SS "insert-mode options"
+.PP
+.nf
+
+  -i   --insert-tag  "tag-path=value"
+         insert (or overwrite) tag
+.PP
+.SS "modify-mode options"
+.PP
+.nf
+
+  -m   --modify-tag  "tag-path=value"
+         modify tag
+
+  -ma  --modify-all-tags  "tag=value"
+         modify ALL matching tags in file
+.PP
+.SS "erase-mode options"
+.PP
+.nf
+
+  -e   --erase-tag  "tag-path"
+         erase tag
+
+  -ea  --erase-all-tags  "tag"
+         erase ALL matching tags in file
+.PP
+.SH "EXAMPLES"
+.PP
+.PP
+.nf
+
+-i  --insert-tag:
+
+      dcmodify -i "(0010,0010)=A Name" file.dcm
+      Inserts the PatientsName tag into file.dcm at 1. level.
+      If tag already exists, -i will overwrite it!
+      If you want to insert an element with value multiplicity > 1
+      (e.g. 4) you can do this with: dcmodify -i "0018,1310=1\\2\\3\\4"
+
+      dcmodify -i "(0008,1111)[0].PatientsName=Another Name" *.dcm
+      Inserts PatientsName tag into the first item of sequence
+      (0008,1111). Note that the use of wildcards for files is
+      possible. You can specify longer tag paths, too.
+      (e.g. (0008,1111)[0].(0008,1111)[1].(0010,0010)=A Third One")
+
+-m  --modify-tag:
+      dcmodify -m "(0010,0010)=A Name" file.dcm
+      Changes tag 0010,0010 on 1. level to "A Name".
+
+      This option also allows longer tag paths as demonstrated above
+      for -i.
+
+-ma --modify-all-tags:
+      dcmodify -ma "(0010,0010)=New Name" file.dcm
+      Does the same as -m but works on all matching tags found in
+      file.dcm. Therefore it searches the whole dataset including
+      sequences for tag (0010,0010) and changes them to "New Name"
+
+-e  --erase-tag:
+      dcmodify -e "(0010,0010)" *.dcm
+      Erases tag (0010,0010) in all *.dcm files at 1. level.
+      Note: You also can erase whole sequences by using this
+      option with a sequence tag, but in this version it's not
+      possible to delete a single item in a sequence.
+
+      This option also allows longer tag paths as demonstrated
+      above for -i.
+
+-ea --erase-all-tags:
+      dcmodify -ea "(0010,0010)" *.dcm
+      Same as -e, but also searches in sequences and items, so
+      with this commando you could "anonymize" your files e.g.
+.PP
+.SH "COMMAND LINE"
+.PP
+All command line tools use the following notation for parameters: square brackets enclose optional values (0-1), three trailing dots indicate that multiple values are allowed (1-n), a combination of both means 0 to n values.
+.PP
+Command line options are distinguished from parameters by a leading '+' or '-' sign, respectively. Usually, order and position of command line options are arbitrary (i.e. they can appear anywhere). However, if options are mutually exclusive the rightmost appearance is used. This behaviour conforms to the standard evaluation rules of common Unix shells.
+.PP
+In addition, one or more command files can be specified using an '@' sign as a prefix to the filename (e.g. \fI@command.txt\fP). Such a command argument is replaced by the content of the corresponding text file (multiple whitespaces are treated as a single separator) prior to any further evaluation. Please note that a command file cannot contain another command file. This simple but effective approach allows to summarize common combinations of options/parameters and avoids longish and confusing command lines (an example is provided in file \fIdata/dumppat.txt\fP).
+.SH "ENVIRONMENT"
+.PP
+The \fBdcmodify\fP utility will attempt to load DICOM data dictionaries specified in the \fIDCMDICTPATH\fP environment variable. By default, i.e. if the \fIDCMDICTPATH\fP environment variable is not set, the file \fI<PREFIX>/lib/dicom.dic\fP will be loaded unless the dictionary is built into the application (default for Windows).
+.PP
+The default behaviour should be preferred and the \fIDCMDICTPATH\fP environment variable only used when alternative data dictionaries are required. The \fIDCMDICTPATH\fP environment variable has the same format as the Unix shell \fIPATH\fP variable in that a colon (':') separates entries. The data dictionary code will attempt to load each file specified in the \fIDCMDICTPATH\fP environment variable. It is an error if no data dictionary can be loaded.
+.SH "COPYRIGHT"
+.PP
+Copyright (C) 2003-2004 by Kuratorium OFFIS e.V., Escherweg 2, 26121 Oldenburg, Germany. 
