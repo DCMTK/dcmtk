@@ -7,13 +7,18 @@ dnl
 dnl Authors: Andreas Barth, Marco Eichelberg
 dnl
 dnl Last Update:  $Author: meichel $
-dnl Revision:     $Revision: 1.8 $
+dnl Revision:     $Revision: 1.9 $
 dnl Status:       $State: Exp $
 dnl
-dnl $Id: aclocal.m4,v 1.8 1999-04-28 16:49:47 meichel Exp $
+dnl $Id: aclocal.m4,v 1.9 2000-02-24 13:51:52 meichel Exp $
 dnl
 dnl $Log: aclocal.m4,v $
-dnl Revision 1.8  1999-04-28 16:49:47  meichel
+dnl Revision 1.9  2000-02-24 13:51:52  meichel
+dnl Added new check that distinguishes NeXT's libtool from GNU libtool (which
+dnl   has a totally different purpose). Required because the old configure scheme
+dnl   failed if GNU libtool was found in the search path.
+dnl
+dnl Revision 1.8  1999/04/28 16:49:47  meichel
 dnl Added test whether the compiler supports the new explicit template
 dnl   specialization syntax, e.g. template<> int a_class<int>::a_method()
 dnl
@@ -499,5 +504,31 @@ changequote([, ])dnl
 else
   AC_MSG_RESULT(no)
 fi
+])
+
+
+dnl AC_CHECK_GNU_LIBTOOL checks whether libtool is GNU libtool.
+dnl   This macro requires that 'libtool' exists in the current path,
+dnl   i.e. AC_CHECK_PROGS(LIBTOOL, libtool, :) should be executed and evaluated
+dnl   before performing this test.
+dnl   If libtool is identified as GNU libtool, the environment variable $ac_cv_check_gnu_libtool
+dnl   is set to the value "yes", otherwise to "no".
+dnl
+dnl AC_CHECK_GNU_LIBTOOL
+AC_DEFUN(AC_CHECK_GNU_LIBTOOL,
+[AC_MSG_CHECKING([whether libtool is GNU libtool])
+AC_CACHE_VAL(ac_cv_check_gnu_libtool,
+[ ac_cv_check_gnu_libtool=`libtool --version 2>/dev/null | grep "GNU libtool" | sed -e "s/.*\(GNU libtool\).*/\1/" `
+  if test "${ac_cv_check_gnu_libtool}set" = "GNU libtoolset" ; then
+    ac_cv_check_gnu_libtool=yes
+  else
+    ac_cv_check_gnu_libtool=no
+  fi
+])
+  if test $ac_cv_check_gnu_libtool = yes ; then
+    AC_MSG_RESULT(yes)
+  else
+    AC_MSG_RESULT(no)
+  fi
 ])
 

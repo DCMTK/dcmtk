@@ -128,6 +128,9 @@
 /* Define if your system has a prototype for struct utimbuf */
 #undef HAVE_DECLARATION_STRUCT_UTIMBUF
 
+/* Define if your system has a prototype for socklen_t */
+#undef HAVE_DECLARATION_SOCKLEN_T
+
 /* Define if your C++ compiler can work with class templates */
 #undef HAVE_CLASS_TEMPLATE
 

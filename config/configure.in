@@ -48,7 +48,21 @@ dnl The next test is equivalent to AC_PROG_RANLIB
 dnl Do not use AC_PROG_RANLIB because this produces
 dnl an error on LINUX-systems in the configure script 
 AC_CHECK_PROGS(RANLIB, ranlib, :)
-AC_CHECK_PROGS(AR, libtool ar)
+
+dnl Check for "ar" and "libtool". On certain systems, e.g. NeXTStep, we must
+dnl prefer "libtool" over "ar" if both are present. However, we don't use
+dnl GNU libtool at the moment which is something completely different
+dnl (not an "ar" replacement).
+AC_CHECK_PROGS(AR, ar, :)
+AC_CHECK_PROGS(LIBTOOL, libtool, :)
+if test "${LIBTOOL}set" = libtoolset ; then
+  AC_CHECK_GNU_LIBTOOL
+  if test $ac_cv_check_gnu_libtool = yes ; then
+    :
+  else
+    AR=$LIBTOOL
+  fi
+fi
 
 case "$AR" in
 libtool) ARFLAGS=-o ;;
@@ -208,6 +222,7 @@ AC_CHECK_PROTOTYPE(waitpid, sys/wait.h sys/time.h sys/resource.h)
 AC_CHECK_DECLARATION(union semun, sys/types.h sys/ipc.h sys/sem.h)
 AC_CHECK_DECLARATION(struct sembuf, sys/types.h sys/ipc.h sys/sem.h)
 AC_CHECK_DECLARATION(struct utimbuf, sys/types.h utime.h)                          
+AC_CHECK_DECLARATION(socklen_t, sys/types.h sys/socket.h)                          
 
 AC_CHECK_CLASS_TEMPLATE
 AC_CHECK_STATIC_TEMPLATE_METHOD
