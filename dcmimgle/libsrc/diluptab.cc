@@ -22,9 +22,9 @@
  *  Purpose: DicomLookupTable (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-09-17 13:16:56 $
+ *  Update Date:      $Date: 1999-09-17 17:27:43 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/libsrc/diluptab.cc,v $
- *  CVS/RCS Revision: $Revision: 1.11 $
+ *  CVS/RCS Revision: $Revision: 1.12 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -110,9 +110,14 @@ DiLookupTable::DiLookupTable(const DcmUnsignedShort &data,
         checkTable(count, us, status);
      } else {
         if (status != NULL)
+        {
             *status = EIS_MissingAttribute;
-        if (DicomImageClass::DebugLevel & DicomImageClass::DL_Errors)
-            cerr << "ERROR: lookup table descriptor is incomplete (VM < 3) !" << endl;
+            if (DicomImageClass::DebugLevel & DicomImageClass::DL_Errors)
+                cerr << "ERROR: incomplete or missing 'LookupTableDescriptor' !" << endl;
+        } else {
+            if (DicomImageClass::DebugLevel & DicomImageClass::DL_Warnings)
+                cerr << "WARNING: incomplete or missing  'LookupTableDescriptor' ... ignoring LUT !" << endl;
+        }
      }
 }
 
@@ -157,9 +162,14 @@ void DiLookupTable::Init(const DiDocument *docu,
         checkTable(count, us, status);
     } else {
         if (status != NULL)
+        {
             *status = EIS_MissingAttribute;
-        if (DicomImageClass::DebugLevel & DicomImageClass::DL_Errors)
-            cerr << "ERROR: lookup table descriptor is incomplete (VM < 3) !" << endl;
+            if (DicomImageClass::DebugLevel & DicomImageClass::DL_Errors)
+                cerr << "ERROR: incomplete or missing 'LookupTableDescriptor' !" << endl;
+        } else {
+            if (DicomImageClass::DebugLevel & DicomImageClass::DL_Warnings)
+                cerr << "WARNING: incomplete or missing  'LookupTableDescriptor' ... ignoring LUT !" << endl;
+        }
     }
 }
     
@@ -171,7 +181,7 @@ void DiLookupTable::checkTable(unsigned long count,
 {
     if (count > 0)                                                            // valid LUT
     {
-        register Uint16 i;
+        register unsigned long i;
         if (count > MAX_TABLE_ENTRY_COUNT)                                    // cut LUT length to maximum
             count = MAX_TABLE_ENTRY_COUNT;
         if (count != Count)                                                   // length of LUT differs from number of LUT entries
@@ -260,9 +270,14 @@ void DiLookupTable::checkTable(unsigned long count,
         Valid = (Data != NULL);                                               // lookup table is valid
     } else {
         if (status != NULL)
+        {
             *status = EIS_InvalidValue;
-        if (DicomImageClass::DebugLevel & DicomImageClass::DL_Errors)
-            cerr << "ERROR: empty 'LUT Data' attribute  !" << endl;
+            if (DicomImageClass::DebugLevel & DicomImageClass::DL_Errors)
+                cerr << "ERROR: empty 'LookupTableData' attribute !" << endl;
+        } else {
+            if (DicomImageClass::DebugLevel & DicomImageClass::DL_Warnings)
+                cerr << "WARNING: empty 'LookupTableData' attribute ... ignoring LUT !" << endl;
+        }
     }       
 }
 
@@ -367,7 +382,12 @@ DiLookupTable *DiLookupTable::createInverseLUT() const
  *
  * CVS/RCS Log:
  * $Log: diluptab.cc,v $
- * Revision 1.11  1999-09-17 13:16:56  joergr
+ * Revision 1.12  1999-09-17 17:27:43  joergr
+ * Modified error/warning messages for corrupt lookup table attributes.
+ * Changed integer type for loop variable to avoid compiler warnings reported
+ * by MSVC.
+ *
+ * Revision 1.11  1999/09/17 13:16:56  joergr
  * Removed bug: check pointer variable before dereferencing it.
  * Enhanced efficiency of some "for" loops.
  *
