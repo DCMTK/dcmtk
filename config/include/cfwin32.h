@@ -439,9 +439,15 @@
 /* Define if your system has a prototype for struct sembuf */
 #undef HAVE_DECLARATION_STRUCT_SEMBUF
 
-//
-//
-//
+/* Define if your C++ compiler can work with class templates */
+#define HAVE_CLASS_TEMPLATE 1
+ 
+/* Define if your C++ compiler can work with function templates */
+#define HAVE_FUNCTION_TEMPLATE 1
+ 
+/* Define if your C++ compiler can work with static methods in class templates *
+/
+#define HAVE_STATIC_TEMPLATE_METHOD 1
 
 
 #endif /* _WIN32 */
