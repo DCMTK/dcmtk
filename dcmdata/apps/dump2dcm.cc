@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2002, OFFIS
+ *  Copyright (C) 1994-2003, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,10 +21,10 @@
  *
  *  Purpose: create a Dicom FileFormat or DataSet from an ASCII-dump
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-12-05 13:59:29 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2003-11-05 16:15:27 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/apps/dump2dcm.cc,v $
- *  CVS/RCS Revision: $Revision: 1.45 $
+ *  CVS/RCS Revision: $Revision: 1.46 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -763,8 +763,7 @@ int main(int argc, char *argv[])
         cmd.addOption("--write-file",             "+F",        "write file format (default)");
         cmd.addOption("--write-dataset",          "-F",        "write data set without file meta information");
       cmd.addSubGroup("output transfer syntax:");
-        cmd.addOption("--write-xfer-same",        "+t=",       "write with same TS as input (default)");
-        cmd.addOption("--write-xfer-little",      "+te",       "write with explicit VR little endian TS");
+        cmd.addOption("--write-xfer-little",      "+te",       "write with explicit VR little endian (default)");
         cmd.addOption("--write-xfer-big",         "+tb",       "write with explicit VR big endian TS");
         cmd.addOption("--write-xfer-implicit",    "+ti",       "write with implicit VR little endian TS");
       cmd.addSubGroup("post-1993 value representations:");
@@ -836,7 +835,6 @@ int main(int argc, char *argv[])
       cmd.endOptionBlock();
 
       cmd.beginOptionBlock();
-      if (cmd.findOption("--write-xfer-same")) oxfer = EXS_Unknown;
       if (cmd.findOption("--write-xfer-little")) oxfer = EXS_LittleEndianExplicit;
       if (cmd.findOption("--write-xfer-big")) oxfer = EXS_BigEndianExplicit;
       if (cmd.findOption("--write-xfer-implicit")) oxfer = EXS_LittleEndianImplicit;
@@ -941,7 +939,10 @@ int main(int argc, char *argv[])
 /*
 ** CVS/RCS Log:
 ** $Log: dump2dcm.cc,v $
-** Revision 1.45  2002-12-05 13:59:29  joergr
+** Revision 1.46  2003-11-05 16:15:27  meichel
+** Removed useless "--write-xfer-same" command line option
+**
+** Revision 1.45  2002/12/05 13:59:29  joergr
 ** Fixed typo.
 **
 ** Revision 1.44  2002/11/27 12:07:18  meichel
