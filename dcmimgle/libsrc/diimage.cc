@@ -22,9 +22,9 @@
  *  Purpose: DicomImage (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-07-23 14:21:31 $
+ *  Update Date:      $Date: 1999-09-17 13:15:20 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/libsrc/diimage.cc,v $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -403,7 +403,8 @@ void DiImage::checkPixelExtension()
 }
 
 
-void DiImage::convertPixelData(/*const*/ DcmPixelData *pixel, const int spp)
+void DiImage::convertPixelData(/*const*/ DcmPixelData *pixel,
+                               const int spp)
 {
     if ((pixel->getVR() == EVR_OW) || ((pixel->getVR() == EVR_OB) && (BitsAllocated <= 8)))
     {
@@ -516,7 +517,10 @@ int DiImage::setRowColumnRatio(const double ratio)
  *
  * CVS/RCS Log:
  * $Log: diimage.cc,v $
- * Revision 1.4  1999-07-23 14:21:31  joergr
+ * Revision 1.5  1999-09-17 13:15:20  joergr
+ * Corrected typos and formatting.
+ *
+ * Revision 1.4  1999/07/23 14:21:31  joergr
  * Corrected bug in method 'detachPixelData' (data has never really been
  * removed from memory).
  *
