@@ -24,9 +24,9 @@
  *  DICOM object encoding/decoding, search and lookup facilities.
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-07-08 14:45:20 $
+ *  Update Date:      $Date: 2002-08-20 12:18:35 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcobject.h,v $
- *  CVS/RCS Revision: $Revision: 1.31 $
+ *  CVS/RCS Revision: $Revision: 1.32 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -173,39 +173,6 @@ public:
     virtual OFCondition writeXML(ostream &out,
                                  const size_t flags = 0);
 
-    /** load a DICOM object from file.
-     *  The only classes having a "real" implementation of this method are DcmDataset and
-     *  DcmFileFormat.
-     *  @param fileName not used
-     *  @param readXfer not used
-     *  @param groupLength not used
-     *  @return status, always returns EC_IllegalCall
-     */
-    virtual OFCondition loadFile(const char *fileName,
-                                 const E_TransferSyntax readXfer = EXS_Unknown,
-                                 const E_GrpLenEncoding groupLength = EGL_noChange,
-                                 const Uint32 maxReadLength = DCM_MaxReadLength);
-    
-    /** save a DICOM object to file.
-     *  The only classes having a "real" implementation of this method are DcmDataset and
-     *  DcmFileFormat.
-     *  @param fileName not used
-     *  @param writeXfer not used
-     *  @param encodingType not used
-     *  @param groupLength not used
-     *  @param padEncoding not used
-     *  @param padLength not used
-     *  @param subPadLength not used
-     *  @return status, always returns EC_IllegalCall
-     */
-    virtual OFCondition saveFile(const char *fileName,
-                                 const E_TransferSyntax writeXfer = EXS_Unknown,
-                                 const E_EncodingType encodingType = EET_UndefinedLength,
-                                 const E_GrpLenEncoding groupLength = EGL_recalcGL,
-			                     const E_PaddingEncoding padEncoding = EPD_noChange,
-			                     const Uint32 padLength = 0,
-			                     const Uint32 subPadLength = 0);
-
     /** special write method for creation of digital signatures
      */
     virtual OFCondition writeSignatureFormat(DcmStream & outStream,
@@ -244,7 +211,11 @@ public:
 /*
  * CVS/RCS Log:
  * $Log: dcobject.h,v $
- * Revision 1.31  2002-07-08 14:45:20  meichel
+ * Revision 1.32  2002-08-20 12:18:35  meichel
+ * Changed parameter list of loadFile and saveFile methods in class
+ *   DcmFileFormat. Removed loadFile and saveFile from class DcmObject.
+ *
+ * Revision 1.31  2002/07/08 14:45:20  meichel
  * Improved dcmdata behaviour when reading odd tag length. Depending on the
  *   global boolean flag dcmAcceptOddAttributeLength, the parser now either accepts
  *   odd length attributes or implements the old behaviour, i.e. assumes a real

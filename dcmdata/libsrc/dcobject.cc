@@ -24,9 +24,9 @@
  *  DICOM object encoding/decoding, search and lookup facilities.
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-07-08 14:44:40 $
+ *  Update Date:      $Date: 2002-08-20 12:18:48 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcobject.cc,v $
- *  CVS/RCS Revision: $Revision: 1.35 $
+ *  CVS/RCS Revision: $Revision: 1.36 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -165,29 +165,6 @@ OFCondition DcmObject::writeXML(ostream & /*out*/,
 {
     return EC_IllegalCall;
 }
-
-// ********************************
-
-OFCondition DcmObject::loadFile(const char * /*fileName*/,
-                                const E_TransferSyntax /*readXfer*/,
-                                const E_GrpLenEncoding /*groupLength*/,
-                                const Uint32 /*maxReadLength*/)
-{
-    return EC_IllegalCall;
-}
-    
-
-OFCondition DcmObject::saveFile(const char * /*fileName*/,
-                                const E_TransferSyntax /*writeXfer*/,
-                                const E_EncodingType /*encodingType*/,
-                                const E_GrpLenEncoding /*groupLength*/,
-			                    const E_PaddingEncoding /*padEncoding*/,
-			                    const Uint32 /*padLength*/,
-			                    const Uint32 /*subPadLength*/)
-{
-    return EC_IllegalCall;
-}
-
 
 // ***********************************************************
 // ****** protected methods **********************************
@@ -402,7 +379,11 @@ OFBool DcmObject::containsUnknownVR() const
 /*
  * CVS/RCS Log:
  * $Log: dcobject.cc,v $
- * Revision 1.35  2002-07-08 14:44:40  meichel
+ * Revision 1.36  2002-08-20 12:18:48  meichel
+ * Changed parameter list of loadFile and saveFile methods in class
+ *   DcmFileFormat. Removed loadFile and saveFile from class DcmObject.
+ *
+ * Revision 1.35  2002/07/08 14:44:40  meichel
  * Improved dcmdata behaviour when reading odd tag length. Depending on the
  *   global boolean flag dcmAcceptOddAttributeLength, the parser now either accepts
  *   odd length attributes or implements the old behaviour, i.e. assumes a real

@@ -21,10 +21,10 @@
  *
  *  Purpose: Interface of class DcmFileFormat
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-04-25 09:39:47 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2002-08-20 12:18:35 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcfilefo.h,v $
- *  CVS/RCS Revision: $Revision: 1.19 $
+ *  CVS/RCS Revision: $Revision: 1.20 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -109,27 +109,25 @@ public:
                                  const size_t flags = 0);
 
     /** load a DICOM object from file.
-     *  This method supports DICOM objects stored as a file (with meta header) and as a
-     *  dataset (without meta header). Whether the meta header is present or not is detected
-     *  automatically. To force the reading as a dataset use DcmDataset::loadFile(), i.e. call
-     *  "this->getDataset()->loadFile(..)".
+     *  This method supports DICOM objects stored as a file (with meta header) or as a
+     *  dataset (without meta header). Presence of a meta header is detected automatically.
      *  @param fileName name of the file to load
      *  @param readXfer transfer syntax used to read the data (auto detection if EXS_Unknown)
      *  @param groupLength flag, specifying how to handle the group length tags
      *  @param maxReadLength maximum number of bytes to be read for an element value.
      *    Element values with a larger size are not loaded until their value is retrieved
      *    (with getXXX()) or loadAllDataElements() is called.
+     *  @param isDataset if true, meta header detection is disabled and loading of a
+     *    dataset without meta header is forced.
      *  @return status, EC_Normal if successful, an error code otherwise
      */
     virtual OFCondition loadFile(const char *fileName,
                                  const E_TransferSyntax readXfer = EXS_Unknown,
                                  const E_GrpLenEncoding groupLength = EGL_noChange,
-                                 const Uint32 maxReadLength = DCM_MaxReadLength);
+                                 const Uint32 maxReadLength = DCM_MaxReadLength,
+                                 OFBool isDataset=OFFalse);
     
     /** save a DICOM object to file.
-     *  This method only supports DICOM objects stored as a file, i.e. with meta header.
-     *  Use DcmDataset::saveFile() to save files without meta header, i.e. call
-     *  "this->getDataset()->saveFile(..)".
      *  @param fileName name of the file to save
      *  @param writeXfer transfer syntax used to write the data (EXS_Unknown means use current)
      *  @param encodingType flag, specifying the encoding with undefined or explicit length
@@ -137,15 +135,17 @@ public:
      *  @param padEncoding flag, specifying how to handle the padding tags
      *  @param padLength number of bytes used for the dataset padding (has to be an even number)
      *  @param subPadLength number of bytes used for the item padding (has to be an even number)
+     *  @param isDataset if true, file is stored without meta header, i.e. as pure dataset
      *  @return status, EC_Normal if successful, an error code otherwise
      */
     virtual OFCondition saveFile(const char *fileName,
                                  const E_TransferSyntax writeXfer = EXS_Unknown,
                                  const E_EncodingType encodingType = EET_UndefinedLength,
                                  const E_GrpLenEncoding groupLength = EGL_recalcGL,
-			                     const E_PaddingEncoding padEncoding = EPD_noChange,
-			                     const Uint32 padLength = 0,
-			                     const Uint32 subPadLength = 0);
+                                 const E_PaddingEncoding padEncoding = EPD_noChange,
+                                 const Uint32 padLength = 0,
+                                 const Uint32 subPadLength = 0,
+                                 OFBool isDataset=OFFalse);
 
     DcmMetaInfo* getMetaInfo();
     DcmDataset*  getDataset();
@@ -207,7 +207,11 @@ public:
 /*
 ** CVS/RCS Log:
 ** $Log: dcfilefo.h,v $
-** Revision 1.19  2002-04-25 09:39:47  joergr
+** Revision 1.20  2002-08-20 12:18:35  meichel
+** Changed parameter list of loadFile and saveFile methods in class
+**   DcmFileFormat. Removed loadFile and saveFile from class DcmObject.
+**
+** Revision 1.19  2002/04/25 09:39:47  joergr
 ** Added support for XML output of DICOM objects.
 **
 ** Revision 1.18  2002/04/11 12:22:51  joergr

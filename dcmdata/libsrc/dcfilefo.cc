@@ -21,10 +21,10 @@
  *
  *  Purpose: class DcmFileFormat
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-05-14 08:21:14 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2002-08-20 12:18:48 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcfilefo.cc,v $
- *  CVS/RCS Revision: $Revision: 1.29 $
+ *  CVS/RCS Revision: $Revision: 1.30 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -699,8 +699,12 @@ OFCondition DcmFileFormat::write(DcmStream & outStream,
 OFCondition DcmFileFormat::loadFile(const char *fileName,
                                     const E_TransferSyntax readXfer,
                                     const E_GrpLenEncoding groupLength,
-                                    const Uint32 maxReadLength)
+                                    const Uint32 maxReadLength,
+                                    OFBool isDataset)
 {
+    if (isDataset)
+      return getDataset()->loadFile(fileName, readXfer, groupLength, maxReadLength);
+
     OFCondition l_error = EC_IllegalParameter;
     /* check parameters first */
     if ((fileName != NULL) && (strlen(fileName) > 0))
@@ -708,7 +712,7 @@ OFCondition DcmFileFormat::loadFile(const char *fileName,
         /* open file for input */
         DcmFileStream fileStream(fileName, DCM_ReadMode);
         /* check stream status */
-        l_error = fileStream.GetError();
+        if (! fileStream.Fail()) l_error = EC_Normal; else l_error = EC_InvalidStream;
         if (l_error.good())
         {
             /* read data from file */
@@ -726,18 +730,26 @@ OFCondition DcmFileFormat::saveFile(const char *fileName,
                                     const E_TransferSyntax writeXfer,
                                     const E_EncodingType encodingType,
                                     const E_GrpLenEncoding groupLength,
-			                        const E_PaddingEncoding padEncoding,
-			                        const Uint32 padLength,
-			                        const Uint32 subPadLength)
+                                    const E_PaddingEncoding padEncoding,
+                                    const Uint32 padLength,
+                                    const Uint32 subPadLength,
+                                    OFBool isDataset)
 {
+    if (isDataset)
+    {
+      return getDataset()->saveFile(fileName, writeXfer, encodingType, groupLength,
+          padEncoding, padLength, subPadLength);
+    }
+
     OFCondition l_error = EC_IllegalParameter;
     /* check parameters first */
     if ((fileName != NULL) && (strlen(fileName) > 0))
     {
         /* open file for output */
         DcmFileStream fileStream(fileName, DCM_WriteMode);
+
         /* check stream status */
-        l_error = fileStream.GetError();
+        if (! fileStream.Fail()) l_error = EC_Normal; else l_error = EC_InvalidStream;
         if (l_error.good())
         {
             /* write data to file */
@@ -856,7 +868,11 @@ DcmDataset* DcmFileFormat::getAndRemoveDataset()
 /*
 ** CVS/RCS Log:
 ** $Log: dcfilefo.cc,v $
-** Revision 1.29  2002-05-14 08:21:14  joergr
+** Revision 1.30  2002-08-20 12:18:48  meichel
+** Changed parameter list of loadFile and saveFile methods in class
+**   DcmFileFormat. Removed loadFile and saveFile from class DcmObject.
+**
+** Revision 1.29  2002/05/14 08:21:14  joergr
 ** Renamed some element names.
 **
 ** Revision 1.28  2002/04/25 10:15:35  joergr
