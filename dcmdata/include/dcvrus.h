@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2001, OFFIS
+ *  Copyright (C) 1994-2002, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,10 +21,10 @@
  *
  *  Purpose: Interface of class DcmUnsignedShort
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-09-25 17:19:36 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2002-04-25 10:02:20 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcvrus.h,v $
- *  CVS/RCS Revision: $Revision: 1.15 $
+ *  CVS/RCS Revision: $Revision: 1.16 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -68,6 +68,16 @@ public:
     virtual OFCondition getUint16Array(Uint16 * & uintVals);
     virtual OFCondition getUint16(Uint16 & uintVal, const unsigned long pos = 0);
 
+    /** get specified value as a character string
+     *  @param value variable in which the result value is stored
+     *  @param pos index of the value in case of multi-valued elements (0..vm-1)
+     *  @param normalize not used
+     *  @return status, EC_Normal if successful, an error code otherwise
+     */
+    virtual OFCondition getOFString(OFString &value,
+                                    const unsigned long pos,
+                                    OFBool normalize = OFTrue);
+
     virtual OFCondition verify(const OFBool autocorrect = OFFalse);
 };
 
@@ -77,7 +87,10 @@ public:
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrus.h,v $
-** Revision 1.15  2001-09-25 17:19:36  meichel
+** Revision 1.16  2002-04-25 10:02:20  joergr
+** Added getOFString() implementation.
+**
+** Revision 1.15  2001/09/25 17:19:36  meichel
 ** Adapted dcmdata to class OFCondition
 **
 ** Revision 1.14  2001/06/01 15:48:54  meichel
