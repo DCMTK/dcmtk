@@ -22,9 +22,9 @@
  *  Purpose: Convert DICOM Images to PPM or PGM using the dcmimage library.
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-02-08 13:12:57 $
+ *  Update Date:      $Date: 1999-02-11 15:33:10 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/apps/dcm2pnm.cc,v $
- *  CVS/RCS Revision: $Revision: 1.23 $
+ *  CVS/RCS Revision: $Revision: 1.24 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -57,7 +57,7 @@ END_EXTERN_C
  #include "oftimer.h"
 #endif
 
-//#include "diregist.h"   /* include to use color images */
+//#include "diregist.h"   /* include to support color images */
 
 #undef  USE_LICENSE
 #define LICENSE_TYPE       ""
@@ -228,7 +228,7 @@ int main(int argc, char *argv[])
      cmd.addOption("--write-8-bit-pnm",  "+fa",   "write 8-bit ASCII PGM/PPM");
      cmd.addOption("--write-16-bit-pnm", "+fA",   "write 16-bit ASCII PGM/PPM");
 
-    if (app.parseCommandLine(cmd, argc, argv, "dcm-in [ppm-out]", 1, 2))
+    if (app.parseCommandLine(cmd, argc, argv, "dcmfile-in [pnmfile-out]", 1, 2))
     {
         if ((cmd.getParamCount() == 1) && (!cmd.findOption("--no-output")))
             app.printError("Missing output file");
@@ -921,6 +921,13 @@ int main(int argc, char *argv[])
     {
         fprintf(ofile, "P5\n%ld %ld 255\n", width, height);
         fwrite(buffer, width, height, ofile);
+        i = 0;
+        while (di->isOutputValueUnused(i) < 2)
+        {        
+            if (di->isOutputValueUnused(i))
+                cerr << i << " unused" << endl;
+            i++;
+        }
     }
 */
     switch (opt_fileType)
@@ -940,6 +947,7 @@ int main(int argc, char *argv[])
  fprintf(stderr, "time for writing file (incl. rendering): %fs\n", timer.getDiff());
 #endif
 
+
     if (opt_ofname) fclose(ofile);
 
     /* done, now cleanup. */
@@ -954,7 +962,10 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcm2pnm.cc,v $
- * Revision 1.23  1999-02-08 13:12:57  joergr
+ * Revision 1.24  1999-02-11 15:33:10  joergr
+ * Added testing routine for new isOutputValueUnused() method.
+ *
+ * Revision 1.23  1999/02/08 13:12:57  joergr
  * Moved output/checking functionality to new OFConsoleApplication class.
  *
  * Revision 1.22  1999/02/03 16:46:48  joergr
