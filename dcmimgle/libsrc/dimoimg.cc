@@ -22,9 +22,9 @@
  *  Purpose: DicomMonochromeImage (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1998-12-16 16:15:55 $
+ *  Update Date:      $Date: 1998-12-22 13:36:08 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/libsrc/dimoimg.cc,v $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -874,7 +874,7 @@ int DiMonoImage::setPresentationLut(const DcmUnsignedShort &data,
                                     const DcmLongString *explanation)
 {
     delete PresLutData;
-    PresLutData = new DiLookupTable(data, descriptor, explanation);
+    PresLutData = new DiLookupTable(data, descriptor, explanation, 0);
     if (PresLutData != NULL)
         return PresLutData->isValid();
     return 0;
@@ -1014,15 +1014,28 @@ void *DiMonoImage::getData(const unsigned long frame,
         switch (InterData->getRepresentation())
         {
             case EPR_Uint8:
-                if (bits <= 8)
-                    OutputData = new DiMonoOutputPixelTemplate<Uint8, Uint32, Uint8>(InterData, Overlays, VoiLutData,
-                       PresLutData, WindowCenter, WindowWidth, BitsPerSample, low, high, Columns, Rows, frame, NumberOfFrames);
-                else if (bits <= 16)
-                    OutputData = new DiMonoOutputPixelTemplate<Uint8, Uint32, Uint16>(InterData, Overlays, VoiLutData,
-                        PresLutData, WindowCenter, WindowWidth, BitsPerSample, low, high, Columns, Rows, frame, NumberOfFrames);
-                else
-                    OutputData = new DiMonoOutputPixelTemplate<Uint8, Uint32, Uint32>(InterData, Overlays, VoiLutData,
-                        PresLutData, WindowCenter, WindowWidth, BitsPerSample, low, high, Columns, Rows, frame, NumberOfFrames);
+                if (InterData->isPotentiallySigned())
+                {
+                    if (bits <= 8)
+                        OutputData = new DiMonoOutputPixelTemplate<Uint8, Sint32, Uint8>(InterData, Overlays, VoiLutData,
+                           PresLutData, WindowCenter, WindowWidth, BitsPerSample, low, high, Columns, Rows, frame, NumberOfFrames);
+                    else if (bits <= 16)
+                        OutputData = new DiMonoOutputPixelTemplate<Uint8, Sint32, Uint16>(InterData, Overlays, VoiLutData,
+                            PresLutData, WindowCenter, WindowWidth, BitsPerSample, low, high, Columns, Rows, frame, NumberOfFrames);
+                    else
+                        OutputData = new DiMonoOutputPixelTemplate<Uint8, Sint32, Uint32>(InterData, Overlays, VoiLutData,
+                            PresLutData, WindowCenter, WindowWidth, BitsPerSample, low, high, Columns, Rows, frame, NumberOfFrames);
+                } else {
+                    if (bits <= 8)
+                        OutputData = new DiMonoOutputPixelTemplate<Uint8, Uint32, Uint8>(InterData, Overlays, VoiLutData,
+                           PresLutData, WindowCenter, WindowWidth, BitsPerSample, low, high, Columns, Rows, frame, NumberOfFrames);
+                    else if (bits <= 16)
+                        OutputData = new DiMonoOutputPixelTemplate<Uint8, Uint32, Uint16>(InterData, Overlays, VoiLutData,
+                            PresLutData, WindowCenter, WindowWidth, BitsPerSample, low, high, Columns, Rows, frame, NumberOfFrames);
+                    else
+                        OutputData = new DiMonoOutputPixelTemplate<Uint8, Uint32, Uint32>(InterData, Overlays, VoiLutData,
+                            PresLutData, WindowCenter, WindowWidth, BitsPerSample, low, high, Columns, Rows, frame, NumberOfFrames);
+                }
                 break;
             case EPR_Sint8:
                 if (bits <= 8)
@@ -1036,15 +1049,28 @@ void *DiMonoImage::getData(const unsigned long frame,
                         PresLutData, WindowCenter, WindowWidth, BitsPerSample, low, high, Columns, Rows, frame, NumberOfFrames);
                 break;
             case EPR_Uint16:
-                if (bits <= 8)
-                    OutputData = new DiMonoOutputPixelTemplate<Uint16, Uint32, Uint8>(InterData, Overlays, VoiLutData,
-                        PresLutData, WindowCenter, WindowWidth, BitsPerSample, low, high, Columns, Rows, frame, NumberOfFrames);
-                else if (bits <= 16)
-                    OutputData = new DiMonoOutputPixelTemplate<Uint16, Uint32, Uint16>(InterData, Overlays, VoiLutData,
-                        PresLutData, WindowCenter, WindowWidth, BitsPerSample, low, high, Columns, Rows, frame, NumberOfFrames);
-                else
-                    OutputData = new DiMonoOutputPixelTemplate<Uint16, Uint32, Uint32>(InterData, Overlays, VoiLutData,
-                        PresLutData, WindowCenter, WindowWidth, BitsPerSample, low, high, Columns, Rows, frame, NumberOfFrames);
+                if (InterData->isPotentiallySigned())
+                {
+                    if (bits <= 8)
+                        OutputData = new DiMonoOutputPixelTemplate<Uint16, Sint32, Uint8>(InterData, Overlays, VoiLutData,
+                            PresLutData, WindowCenter, WindowWidth, BitsPerSample, low, high, Columns, Rows, frame, NumberOfFrames);
+                    else if (bits <= 16)
+                        OutputData = new DiMonoOutputPixelTemplate<Uint16, Sint32, Uint16>(InterData, Overlays, VoiLutData,
+                            PresLutData, WindowCenter, WindowWidth, BitsPerSample, low, high, Columns, Rows, frame, NumberOfFrames);
+                    else
+                        OutputData = new DiMonoOutputPixelTemplate<Uint16, Sint32, Uint32>(InterData, Overlays, VoiLutData,
+                            PresLutData, WindowCenter, WindowWidth, BitsPerSample, low, high, Columns, Rows, frame, NumberOfFrames);
+                } else {
+                    if (bits <= 8)
+                        OutputData = new DiMonoOutputPixelTemplate<Uint16, Uint32, Uint8>(InterData, Overlays, VoiLutData,
+                            PresLutData, WindowCenter, WindowWidth, BitsPerSample, low, high, Columns, Rows, frame, NumberOfFrames);
+                    else if (bits <= 16)
+                        OutputData = new DiMonoOutputPixelTemplate<Uint16, Uint32, Uint16>(InterData, Overlays, VoiLutData,
+                            PresLutData, WindowCenter, WindowWidth, BitsPerSample, low, high, Columns, Rows, frame, NumberOfFrames);
+                    else
+                        OutputData = new DiMonoOutputPixelTemplate<Uint16, Uint32, Uint32>(InterData, Overlays, VoiLutData,
+                            PresLutData, WindowCenter, WindowWidth, BitsPerSample, low, high, Columns, Rows, frame, NumberOfFrames);
+                }
                 break;
             case EPR_Sint16:
                 if (bits <= 8)
@@ -1058,15 +1084,28 @@ void *DiMonoImage::getData(const unsigned long frame,
                         PresLutData, WindowCenter, WindowWidth, BitsPerSample, low, high, Columns, Rows, frame, NumberOfFrames);
                 break;
             case EPR_Uint32:
-                if (bits <= 8)
-                    OutputData = new DiMonoOutputPixelTemplate<Uint32, Uint32, Uint8>(InterData, Overlays, VoiLutData,
-                        PresLutData, WindowCenter, WindowWidth, BitsPerSample, low, high, Columns, Rows, frame, NumberOfFrames);
-                else if (bits <= 16)
-                    OutputData = new DiMonoOutputPixelTemplate<Uint32, Uint32, Uint16>(InterData, Overlays, VoiLutData,
-                        PresLutData, WindowCenter, WindowWidth, BitsPerSample, low, high, Columns, Rows, frame, NumberOfFrames);
-                else
-                    OutputData = new DiMonoOutputPixelTemplate<Uint32, Uint32, Uint32>(InterData, Overlays, VoiLutData,
-                        PresLutData, WindowCenter, WindowWidth, BitsPerSample, low, high, Columns, Rows, frame, NumberOfFrames);
+                if (InterData->isPotentiallySigned())
+                {
+                    if (bits <= 8)
+                        OutputData = new DiMonoOutputPixelTemplate<Uint32, Sint32, Uint8>(InterData, Overlays, VoiLutData,
+                            PresLutData, WindowCenter, WindowWidth, BitsPerSample, low, high, Columns, Rows, frame, NumberOfFrames);
+                    else if (bits <= 16)
+                        OutputData = new DiMonoOutputPixelTemplate<Uint32, Sint32, Uint16>(InterData, Overlays, VoiLutData,
+                            PresLutData, WindowCenter, WindowWidth, BitsPerSample, low, high, Columns, Rows, frame, NumberOfFrames);
+                    else
+                        OutputData = new DiMonoOutputPixelTemplate<Uint32, Sint32, Uint32>(InterData, Overlays, VoiLutData,
+                            PresLutData, WindowCenter, WindowWidth, BitsPerSample, low, high, Columns, Rows, frame, NumberOfFrames);
+                } else {
+                    if (bits <= 8)
+                        OutputData = new DiMonoOutputPixelTemplate<Uint32, Uint32, Uint8>(InterData, Overlays, VoiLutData,
+                            PresLutData, WindowCenter, WindowWidth, BitsPerSample, low, high, Columns, Rows, frame, NumberOfFrames);
+                    else if (bits <= 16)
+                        OutputData = new DiMonoOutputPixelTemplate<Uint32, Uint32, Uint16>(InterData, Overlays, VoiLutData,
+                            PresLutData, WindowCenter, WindowWidth, BitsPerSample, low, high, Columns, Rows, frame, NumberOfFrames);
+                    else
+                        OutputData = new DiMonoOutputPixelTemplate<Uint32, Uint32, Uint32>(InterData, Overlays, VoiLutData,
+                            PresLutData, WindowCenter, WindowWidth, BitsPerSample, low, high, Columns, Rows, frame, NumberOfFrames);
+                }
                 break;
             case EPR_Sint32:
                 if (bits <= 8)
@@ -1102,16 +1141,23 @@ const Uint8 *DiMonoImage::getOverlayData(const unsigned long frame,
                                          unsigned int &width,
                                          unsigned int &height,
                                          unsigned int &left,
-                                         unsigned int &top)
+                                         unsigned int &top,
+                                         EM_Overlay &mode,
+                                         const unsigned int idx,
+                                         const Uint8 value)
 {
     if (ImageStatus == EIS_Normal)
     {
-        for (int i = 1; i >= 0; i--)                            // start searching with additional overlay planes
+        int start = 1;                                              // default: additional overlay planes hide dataset planes
+        int end = 0;
+        if (idx < 2)                                                // specified index of overlay group
+            start = end = idx;
+        for (int i = start; i >= end; i--)                          // start searching with additional overlay planes
         {
             if ((Overlays[i] != NULL) && (Overlays[i]->hasPlane(plane, 1)))
             {
                 deleteOverlayData();
-                OverlayData = Overlays[i]->getPlaneData(frame, plane, width, height, left, top, Columns, Rows);
+                OverlayData = Overlays[i]->getPlaneData(frame, plane, width, height, left, top, mode, Columns, Rows, value);
                 return (const Uint8 *)OverlayData;
             }
         }
@@ -1275,7 +1321,15 @@ int DiMonoImage::writeRawPPM(FILE *stream, const unsigned long frame, const int 
 **
 ** CVS/RCS Log:
 ** $Log: dimoimg.cc,v $
-** Revision 1.3  1998-12-16 16:15:55  joergr
+** Revision 1.4  1998-12-22 13:36:08  joergr
+** Check descriptor value 'first input value mapped' for presentation LUTs
+** (shall always be 0).
+** Added support for 'potentially' signed input ranges for different kinds
+** of grayscale transformations (according to supplement 33 from Cor Loef).
+** Changed behaviour of getOverlayData() method (new parameter to choose
+** overlay plane group: dataset, additional, overlap).
+**
+** Revision 1.3  1998/12/16 16:15:55  joergr
 ** Added explanation string for VOI transformations.
 ** Added method to export overlay planes (create 8-bit bitmap).
 ** Renamed 'setNoVoiLutTransformation' method ('Voi' instead of 'VOI').
