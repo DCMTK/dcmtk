@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2001, OFFIS
+ *  Copyright (C) 2000-2003, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DSRContentItem
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-09-26 13:04:17 $
- *  CVS/RCS Revision: $Revision: 1.11 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2003-08-07 13:11:03 $
+ *  CVS/RCS Revision: $Revision: 1.12 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -52,6 +52,7 @@
 #include "dsrreftn.h"
 
 
+// definition of empty default objects
 const OFString DSRContentItem::EmptyString;
 const DSRCodedEntryValue DSRContentItem::EmptyCodedEntry;
 const DSRNumericMeasurementValue DSRContentItem::EmptyNumericMeasurement;
@@ -122,7 +123,7 @@ size_t DSRContentItem::getReferencedNodeID() const
     if (TreeNode != NULL)
     {
         if (TreeNode->getValueType() == VT_byReference)
-            nodeID = ((DSRByReferenceTreeNode *)TreeNode)->getReferencedNodeID();
+            nodeID = OFstatic_cast(DSRByReferenceTreeNode *, TreeNode)->getReferencedNodeID();
     }
     return nodeID;
 }
@@ -135,17 +136,17 @@ const OFString &DSRContentItem::getStringValue() const
         switch (TreeNode->getValueType())
         {
             case VT_Text:
-                return ((DSRTextTreeNode *)TreeNode)->getValue();
+                return OFstatic_cast(DSRTextTreeNode *, TreeNode)->getValue();
             case VT_DateTime:
-                return ((DSRDateTimeTreeNode *)TreeNode)->getValue();
+                return OFstatic_cast(DSRDateTimeTreeNode *, TreeNode)->getValue();
             case VT_Date:
-                return ((DSRDateTreeNode *)TreeNode)->getValue();
+                return OFstatic_cast(DSRDateTreeNode *, TreeNode)->getValue();
             case VT_Time:
-                return ((DSRTimeTreeNode *)TreeNode)->getValue();
+                return OFstatic_cast(DSRTimeTreeNode *, TreeNode)->getValue();
             case VT_UIDRef:
-                return ((DSRUIDRefTreeNode *)TreeNode)->getValue();
+                return OFstatic_cast(DSRUIDRefTreeNode *, TreeNode)->getValue();
             case VT_PName:
-                return ((DSRPNameTreeNode *)TreeNode)->getValue();
+                return OFstatic_cast(DSRPNameTreeNode *, TreeNode)->getValue();
             default:
                 break;
         }
@@ -162,22 +163,22 @@ OFCondition DSRContentItem::setStringValue(const OFString &stringValue)
         switch (TreeNode->getValueType())
         {
             case VT_Text:
-                result = ((DSRTextTreeNode *)TreeNode)->setValue(stringValue);
+                result = OFstatic_cast(DSRTextTreeNode *, TreeNode)->setValue(stringValue);
                 break;
             case VT_DateTime:
-                result = ((DSRDateTimeTreeNode *)TreeNode)->setValue(stringValue);
+                result = OFstatic_cast(DSRDateTimeTreeNode *, TreeNode)->setValue(stringValue);
                 break;
             case VT_Date:
-                result = ((DSRDateTreeNode *)TreeNode)->setValue(stringValue);
+                result = OFstatic_cast(DSRDateTreeNode *, TreeNode)->setValue(stringValue);
                 break;
             case VT_Time:
-                result = ((DSRTimeTreeNode *)TreeNode)->setValue(stringValue);
+                result = OFstatic_cast(DSRTimeTreeNode *, TreeNode)->setValue(stringValue);
                 break;
             case VT_UIDRef:
-                result = ((DSRUIDRefTreeNode *)TreeNode)->setValue(stringValue);
+                result = OFstatic_cast(DSRUIDRefTreeNode *, TreeNode)->setValue(stringValue);
                 break;
             case VT_PName:
-                result = ((DSRPNameTreeNode *)TreeNode)->setValue(stringValue);
+                result = OFstatic_cast(DSRPNameTreeNode *, TreeNode)->setValue(stringValue);
                 break;
             default:
                 break;
@@ -193,7 +194,7 @@ DSRCodedEntryValue *DSRContentItem::getCodeValuePtr()
     if (TreeNode != NULL)
     {
         if (TreeNode->getValueType() == VT_Code)
-            pointer = ((DSRCodeTreeNode *)TreeNode)->getValuePtr();
+            pointer = OFstatic_cast(DSRCodeTreeNode *, TreeNode)->getValuePtr();
     }
     return pointer;
 }
@@ -204,7 +205,7 @@ const DSRCodedEntryValue &DSRContentItem::getCodeValue() const
     if (TreeNode != NULL)
     {
         if (TreeNode->getValueType() == VT_Code)
-            return ((DSRCodeTreeNode *)TreeNode)->getValue();
+            return OFstatic_cast(DSRCodeTreeNode *, TreeNode)->getValue();
     }
     return EmptyCodedEntry;
 }
@@ -216,7 +217,7 @@ OFCondition DSRContentItem::getCodeValue(DSRCodedEntryValue &codeValue) const
     if (TreeNode != NULL)
     {
         if (TreeNode->getValueType() == VT_Code)
-            result= ((DSRCodeTreeNode *)TreeNode)->getValue(codeValue);
+            result= OFstatic_cast(DSRCodeTreeNode *, TreeNode)->getValue(codeValue);
         else
             codeValue.clear();
     } else
@@ -231,7 +232,7 @@ OFCondition DSRContentItem::setCodeValue(const DSRCodedEntryValue &codeValue)
     if (TreeNode != NULL)
     {
         if (TreeNode->getValueType() == VT_Code)
-            result = ((DSRCodeTreeNode *)TreeNode)->setValue(codeValue);
+            result = OFstatic_cast(DSRCodeTreeNode *, TreeNode)->setValue(codeValue);
     }
     return result;
 }
@@ -243,7 +244,7 @@ DSRNumericMeasurementValue *DSRContentItem::getNumericValuePtr()
     if (TreeNode != NULL)
     {
         if (TreeNode->getValueType() == VT_Num)
-            pointer = ((DSRNumTreeNode *)TreeNode)->getValuePtr();
+            pointer = OFstatic_cast(DSRNumTreeNode *, TreeNode)->getValuePtr();
     }
     return pointer;
 }
@@ -254,7 +255,7 @@ const DSRNumericMeasurementValue &DSRContentItem::getNumericValue() const
     if (TreeNode != NULL)
     {
         if (TreeNode->getValueType() == VT_Num)
-            return ((DSRNumTreeNode *)TreeNode)->getValue();
+            return OFstatic_cast(DSRNumTreeNode *, TreeNode)->getValue();
     }
     return EmptyNumericMeasurement;
 }
@@ -266,7 +267,7 @@ OFCondition DSRContentItem::getNumericValue(DSRNumericMeasurementValue &numericV
     if (TreeNode != NULL)
     {
         if (TreeNode->getValueType() == VT_Num)
-            result= ((DSRNumTreeNode *)TreeNode)->getValue(numericValue);
+            result= OFstatic_cast(DSRNumTreeNode *, TreeNode)->getValue(numericValue);
         else
             numericValue.clear();
     } else
@@ -281,7 +282,7 @@ OFCondition DSRContentItem::setNumericValue(const DSRNumericMeasurementValue &nu
     if (TreeNode != NULL)
     {
         if (TreeNode->getValueType() == VT_Num)
-            result = ((DSRNumTreeNode *)TreeNode)->setValue(numericValue);
+            result = OFstatic_cast(DSRNumTreeNode *, TreeNode)->setValue(numericValue);
     }
     return result;
 }
@@ -293,7 +294,7 @@ DSRSpatialCoordinatesValue *DSRContentItem::getSpatialCoordinatesPtr()
     if (TreeNode != NULL)
     {
         if (TreeNode->getValueType() == VT_SCoord)
-            pointer = ((DSRSCoordTreeNode *)TreeNode)->getValuePtr();
+            pointer = OFstatic_cast(DSRSCoordTreeNode *, TreeNode)->getValuePtr();
     }
     return pointer;
 }
@@ -304,7 +305,7 @@ const DSRSpatialCoordinatesValue &DSRContentItem::getSpatialCoordinates() const
     if (TreeNode != NULL)
     {
         if (TreeNode->getValueType() == VT_SCoord)
-            return ((DSRSCoordTreeNode *)TreeNode)->getValue();
+            return OFstatic_cast(DSRSCoordTreeNode *, TreeNode)->getValue();
     }
     return EmptySpatialCoordinates;
 }
@@ -316,7 +317,7 @@ OFCondition DSRContentItem::getSpatialCoordinates(DSRSpatialCoordinatesValue &co
     if (TreeNode != NULL)
     {
         if (TreeNode->getValueType() == VT_SCoord)
-            result= ((DSRSCoordTreeNode *)TreeNode)->getValue(coordinatesValue);
+            result= OFstatic_cast(DSRSCoordTreeNode *, TreeNode)->getValue(coordinatesValue);
         else
             coordinatesValue.clear();
     } else
@@ -331,7 +332,7 @@ OFCondition DSRContentItem::setSpatialCoordinates(const DSRSpatialCoordinatesVal
     if (TreeNode != NULL)
     {
         if (TreeNode->getValueType() == VT_SCoord)
-            result = ((DSRSCoordTreeNode *)TreeNode)->setValue(coordinatesValue);
+            result = OFstatic_cast(DSRSCoordTreeNode *, TreeNode)->setValue(coordinatesValue);
     }
     return result;
 }
@@ -343,7 +344,7 @@ DSRTemporalCoordinatesValue *DSRContentItem::getTemporalCoordinatesPtr()
     if (TreeNode != NULL)
     {
         if (TreeNode->getValueType() == VT_TCoord)
-            pointer = ((DSRTCoordTreeNode *)TreeNode)->getValuePtr();
+            pointer = OFstatic_cast(DSRTCoordTreeNode *, TreeNode)->getValuePtr();
     }
     return pointer;
 }
@@ -354,7 +355,7 @@ const DSRTemporalCoordinatesValue &DSRContentItem::getTemporalCoordinates() cons
     if (TreeNode != NULL)
     {
         if (TreeNode->getValueType() == VT_TCoord)
-            return ((DSRTCoordTreeNode *)TreeNode)->getValue();
+            return OFstatic_cast(DSRTCoordTreeNode *, TreeNode)->getValue();
     }
     return EmptyTemporalCoordinates;
 }
@@ -366,7 +367,7 @@ OFCondition DSRContentItem::getTemporalCoordinates(DSRTemporalCoordinatesValue &
     if (TreeNode != NULL)
     {
         if (TreeNode->getValueType() == VT_TCoord)
-            result= ((DSRTCoordTreeNode *)TreeNode)->getValue(coordinatesValue);
+            result= OFstatic_cast(DSRTCoordTreeNode *, TreeNode)->getValue(coordinatesValue);
         else
             coordinatesValue.clear();
     } else
@@ -381,7 +382,7 @@ OFCondition DSRContentItem::setTemporalCoordinates(const DSRTemporalCoordinatesV
     if (TreeNode != NULL)
     {
         if (TreeNode->getValueType() == VT_TCoord)
-            result = ((DSRTCoordTreeNode *)TreeNode)->setValue(coordinatesValue);
+            result = OFstatic_cast(DSRTCoordTreeNode *, TreeNode)->setValue(coordinatesValue);
     }
     return result;
 }
@@ -393,7 +394,7 @@ DSRCompositeReferenceValue *DSRContentItem::getCompositeReferencePtr()
     if (TreeNode != NULL)
     {
         if (TreeNode->getValueType() == VT_Composite)
-            pointer = ((DSRCompositeTreeNode *)TreeNode)->getValuePtr();
+            pointer = OFstatic_cast(DSRCompositeTreeNode *, TreeNode)->getValuePtr();
     }
     return pointer;
 }
@@ -404,7 +405,7 @@ const DSRCompositeReferenceValue &DSRContentItem::getCompositeReference() const
     if (TreeNode != NULL)
     {
         if (TreeNode->getValueType() == VT_Composite)
-            return ((DSRCompositeTreeNode *)TreeNode)->getValue();
+            return OFstatic_cast(DSRCompositeTreeNode *, TreeNode)->getValue();
     }
     return EmptyCompositeReference;
 }
@@ -416,7 +417,7 @@ OFCondition DSRContentItem::getCompositeReference(DSRCompositeReferenceValue &re
     if (TreeNode != NULL)
     {
         if (TreeNode->getValueType() == VT_Composite)
-            result = ((DSRCompositeTreeNode *)TreeNode)->getValue(referenceValue);
+            result = OFstatic_cast(DSRCompositeTreeNode *, TreeNode)->getValue(referenceValue);
         else
             referenceValue.clear();
     } else
@@ -432,7 +433,7 @@ OFCondition DSRContentItem::setCompositeReference(const DSRCompositeReferenceVal
     {
         if (TreeNode->getValueType() == VT_Composite)
         {
-            ((DSRCompositeTreeNode *)TreeNode)->setValue(referenceValue);
+            OFstatic_cast(DSRCompositeTreeNode *, TreeNode)->setValue(referenceValue);
             result = EC_Normal;
         }
     }
@@ -446,7 +447,7 @@ DSRImageReferenceValue *DSRContentItem::getImageReferencePtr()
     if (TreeNode != NULL)
     {
         if (TreeNode->getValueType() == VT_Image)
-            pointer = ((DSRImageTreeNode *)TreeNode)->getValuePtr();
+            pointer = OFstatic_cast(DSRImageTreeNode *, TreeNode)->getValuePtr();
     }
     return pointer;
 }
@@ -457,7 +458,7 @@ const DSRImageReferenceValue &DSRContentItem::getImageReference() const
     if (TreeNode != NULL)
     {
         if (TreeNode->getValueType() == VT_Image)
-            return ((DSRImageTreeNode *)TreeNode)->getValue();
+            return OFstatic_cast(DSRImageTreeNode *, TreeNode)->getValue();
     }
     return EmptyImageReference;
 }
@@ -469,7 +470,7 @@ OFCondition DSRContentItem::getImageReference(DSRImageReferenceValue &referenceV
     if (TreeNode != NULL)
     {
         if (TreeNode->getValueType() == VT_Image)
-            result = ((DSRImageTreeNode *)TreeNode)->getValue(referenceValue);
+            result = OFstatic_cast(DSRImageTreeNode *, TreeNode)->getValue(referenceValue);
         else
             referenceValue.clear();
     } else
@@ -485,7 +486,7 @@ OFCondition DSRContentItem::setImageReference(const DSRImageReferenceValue &refe
     {
         if (TreeNode->getValueType() == VT_Image)
         {
-            ((DSRImageTreeNode *)TreeNode)->setValue(referenceValue);
+            OFstatic_cast(DSRImageTreeNode *, TreeNode)->setValue(referenceValue);
             result = EC_Normal;
         }
     }
@@ -499,7 +500,7 @@ DSRWaveformReferenceValue *DSRContentItem::getWaveformReferencePtr()
     if (TreeNode != NULL)
     {
         if (TreeNode->getValueType() == VT_Waveform)
-            pointer = ((DSRWaveformTreeNode *)TreeNode)->getValuePtr();
+            pointer = OFstatic_cast(DSRWaveformTreeNode *, TreeNode)->getValuePtr();
     }
     return pointer;
 }
@@ -510,7 +511,7 @@ const DSRWaveformReferenceValue &DSRContentItem::getWaveformReference() const
     if (TreeNode != NULL)
     {
         if (TreeNode->getValueType() == VT_Waveform)
-            return ((DSRWaveformTreeNode *)TreeNode)->getValue();
+            return OFstatic_cast(DSRWaveformTreeNode *, TreeNode)->getValue();
     }
     return EmptyWaveformReference;
 }
@@ -522,7 +523,7 @@ OFCondition DSRContentItem::getWaveformReference(DSRWaveformReferenceValue &refe
     if (TreeNode != NULL)
     {
         if (TreeNode->getValueType() == VT_Waveform)
-            result = ((DSRWaveformTreeNode *)TreeNode)->getValue(referenceValue);
+            result = OFstatic_cast(DSRWaveformTreeNode *, TreeNode)->getValue(referenceValue);
         else
             referenceValue.clear();
     } else
@@ -538,7 +539,7 @@ OFCondition DSRContentItem::setWaveformReference(const DSRWaveformReferenceValue
     {
         if (TreeNode->getValueType() == VT_Waveform)
         {
-            ((DSRWaveformTreeNode *)TreeNode)->setValue(referenceValue);
+            OFstatic_cast(DSRWaveformTreeNode *, TreeNode)->setValue(referenceValue);
             result = EC_Normal;
         }
     }
@@ -552,7 +553,7 @@ DSRTypes::E_ContinuityOfContent DSRContentItem::getContinuityOfContent() const
     if (TreeNode != NULL)
     {
         if (TreeNode->getValueType() == VT_Container)
-            result = ((DSRContainerTreeNode *)TreeNode)->getContinuityOfContent();
+            result = OFstatic_cast(DSRContainerTreeNode *, TreeNode)->getContinuityOfContent();
     }
     return result;
 }
@@ -564,7 +565,7 @@ OFCondition DSRContentItem::setContinuityOfContent(const E_ContinuityOfContent c
     if (TreeNode != NULL)
     {
         if (TreeNode->getValueType() == VT_Container)
-            result = ((DSRContainerTreeNode *)TreeNode)->setContinuityOfContent(continuityOfContent);
+            result = OFstatic_cast(DSRContainerTreeNode *, TreeNode)->setContinuityOfContent(continuityOfContent);
     }
     return result;
 }
@@ -627,7 +628,10 @@ OFCondition DSRContentItem::setObservationDateTime(const OFString &observationDa
 /*
  *  CVS/RCS Log:
  *  $Log: dsrcitem.cc,v $
- *  Revision 1.11  2001-09-26 13:04:17  meichel
+ *  Revision 1.12  2003-08-07 13:11:03  joergr
+ *  Adapted type casts to new-style typecast operators defined in ofcast.h.
+ *
+ *  Revision 1.11  2001/09/26 13:04:17  meichel
  *  Adapted dcmsr to class OFCondition
  *
  *  Revision 1.10  2001/05/07 16:14:21  joergr
