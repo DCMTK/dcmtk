@@ -21,10 +21,10 @@
  *
  *  Purpose: DicomPaletteImage (Source)
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-03-08 16:21:57 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2000-04-27 13:15:58 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/libsrc/dipalimg.cc,v $
- *  CVS/RCS Revision: $Revision: 1.11 $
+ *  CVS/RCS Revision: $Revision: 1.12 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -110,7 +110,10 @@ DiPaletteImage::DiPaletteImage(const DiDocument *docu,
                         break;
                     default:
                         if (DicomImageClass::DebugLevel & DicomImageClass::DL_Warnings)
-                            CERR << "WARNING: invalid value for inter-representation !" << endl;
+                        {
+                            ofConsole.lockCerr() << "WARNING: invalid value for inter-representation !" << endl;
+                            ofConsole.unlockCerr();
+                        }
                 }
                 deleteInputData();
                 checkInterData();
@@ -124,8 +127,10 @@ DiPaletteImage::DiPaletteImage(const DiDocument *docu,
             ImageStatus = EIS_InvalidValue;
             if (DicomImageClass::DebugLevel & DicomImageClass::DL_Errors)
             {
-                CERR << "ERROR: invalid value for 'BitsStored' (" << BitsStored << ") ";
-                CERR << "... exceeds maximum palette entry size of " << MAX_TABLE_ENTRY_SIZE << " bits !" << endl;
+                ofConsole.lockCerr() << "ERROR: invalid value for 'BitsStored' (" << BitsStored << ") "
+                                     << "... exceeds maximum palette entry size of " << MAX_TABLE_ENTRY_SIZE
+                                     << " bits !" << endl;
+                ofConsole.unlockCerr();
             }
         }
     }
@@ -145,7 +150,10 @@ DiPaletteImage::~DiPaletteImage()
  *
  * CVS/RCS Log:
  * $Log: dipalimg.cc,v $
- * Revision 1.11  2000-03-08 16:21:57  meichel
+ * Revision 1.12  2000-04-27 13:15:58  joergr
+ * Dcmimage library code now consistently uses ofConsole for error output.
+ *
+ * Revision 1.11  2000/03/08 16:21:57  meichel
  * Updated copyright header.
  *
  * Revision 1.10  2000/03/03 14:07:55  meichel

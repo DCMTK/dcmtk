@@ -21,10 +21,10 @@
  *
  *  Purpose: DicomHSVPixelTemplate (Header)
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-03-08 16:21:52 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2000-04-27 13:15:13 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/include/Attic/dihsvpxt.h,v $
- *  CVS/RCS Revision: $Revision: 1.11 $
+ *  CVS/RCS Revision: $Revision: 1.12 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -61,7 +61,7 @@ class DiHSVPixelTemplate
       : DiColorPixelTemplate<T2>(docu, pixel, 3, status)
     {
         if ((pixel != NULL) && (Count > 0) && (status == EIS_Normal))
-            convert((const T1 *)pixel->getData(), bits);
+            convert((const T1 *)pixel->getData() + pixel->getPixelStart() * 3, bits);
     }
 
     virtual ~DiHSVPixelTemplate()
@@ -170,7 +170,10 @@ class DiHSVPixelTemplate
                     break;
                 default:
                     if (DicomImageClass::DebugLevel & DicomImageClass::DL_Warnings)
-                        CERR << "WARNING: invalid value for 'hi' while converting HSV to RGB !" << endl;
+                    {
+                        ofConsole.lockCerr() << "WARNING: invalid value for 'hi' while converting HSV to RGB !" << endl;
+                        ofConsole.unlockCerr();
+                    }
             }
         }
     }
@@ -184,7 +187,10 @@ class DiHSVPixelTemplate
  *
  * CVS/RCS Log:
  * $Log: dihsvpxt.h,v $
- * Revision 1.11  2000-03-08 16:21:52  meichel
+ * Revision 1.12  2000-04-27 13:15:13  joergr
+ * Dcmimage library code now consistently uses ofConsole for error output.
+ *
+ * Revision 1.11  2000/03/08 16:21:52  meichel
  * Updated copyright header.
  *
  * Revision 1.10  2000/03/03 14:07:52  meichel

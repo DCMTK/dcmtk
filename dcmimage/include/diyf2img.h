@@ -21,10 +21,10 @@
  *
  *  Purpose: DicomYBR422Image (Header)
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-03-08 16:21:54 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2000-04-27 13:15:15 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/include/Attic/diyf2img.h,v $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -37,7 +37,6 @@
 
 #include "osconfig.h"
 
-#include "ofconsol.h"    /* for CERR, COUT */
 #include "dicoimg.h"
 
 
@@ -67,7 +66,10 @@ class DiYBR422Image
  *
  * CVS/RCS Log:
  * $Log: diyf2img.h,v $
- * Revision 1.6  2000-03-08 16:21:54  meichel
+ * Revision 1.7  2000-04-27 13:15:15  joergr
+ * Dcmimage library code now consistently uses ofConsole for error output.
+ *
+ * Revision 1.6  2000/03/08 16:21:54  meichel
  * Updated copyright header.
  *
  * Revision 1.5  2000/03/03 14:07:52  meichel

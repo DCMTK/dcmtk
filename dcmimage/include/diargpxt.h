@@ -21,10 +21,10 @@
  *
  *  Purpose: DicomARGBPixelTemplate (Header) - UNTESTED !!!
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-03-08 16:21:48 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2000-04-27 13:15:12 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/include/Attic/diargpxt.h,v $
- *  CVS/RCS Revision: $Revision: 1.11 $
+ *  CVS/RCS Revision: $Revision: 1.12 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -62,7 +62,7 @@ class DiARGBPixelTemplate
       : DiColorPixelTemplate<T3>(docu, pixel, 4, status)
     {
         if ((pixel != NULL) && (Count > 0) && (status == EIS_Normal))
-            convert((const T1 *)pixel->getData(), palette, bits);
+            convert((const T1 *)pixel->getData() + pixel->getPixelStart() * 4, palette, bits);
     }
     
     virtual ~DiARGBPixelTemplate()
@@ -150,7 +150,10 @@ class DiARGBPixelTemplate
  *
  * CVS/RCS Log:
  * $Log: diargpxt.h,v $
- * Revision 1.11  2000-03-08 16:21:48  meichel
+ * Revision 1.12  2000-04-27 13:15:12  joergr
+ * Dcmimage library code now consistently uses ofConsole for error output.
+ *
+ * Revision 1.11  2000/03/08 16:21:48  meichel
  * Updated copyright header.
  *
  * Revision 1.10  1999/04/28 12:51:54  joergr

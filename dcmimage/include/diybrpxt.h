@@ -21,10 +21,10 @@
  *
  *  Purpose: DicomYBRPixelTemplate (Header)
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-03-08 16:21:54 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2000-04-27 13:15:15 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/include/Attic/diybrpxt.h,v $
- *  CVS/RCS Revision: $Revision: 1.8 $
+ *  CVS/RCS Revision: $Revision: 1.9 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -61,7 +61,7 @@ class DiYBRPixelTemplate
       : DiColorPixelTemplate<T2>(docu, pixel, 3, status)
     {
         if ((pixel != NULL) && (Count > 0) && (status == EIS_Normal))
-            convert((const T1 *)pixel->getData(), bits);
+            convert((const T1 *)pixel->getData() + pixel->getPixelStart() * 3, bits);
     }
 
     virtual ~DiYBRPixelTemplate()
@@ -186,7 +186,10 @@ class DiYBRPixelTemplate
  *
  * CVS/RCS Log:
  * $Log: diybrpxt.h,v $
- * Revision 1.8  2000-03-08 16:21:54  meichel
+ * Revision 1.9  2000-04-27 13:15:15  joergr
+ * Dcmimage library code now consistently uses ofConsole for error output.
+ *
+ * Revision 1.8  2000/03/08 16:21:54  meichel
  * Updated copyright header.
  *
  * Revision 1.7  1999/09/17 14:03:46  joergr

@@ -21,10 +21,10 @@
  *
  *  Purpose: DicomPalettePixelTemplate (Header)
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-03-08 16:21:53 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2000-04-27 13:15:14 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/include/Attic/dipalpxt.h,v $
- *  CVS/RCS Revision: $Revision: 1.11 $
+ *  CVS/RCS Revision: $Revision: 1.12 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -61,7 +61,7 @@ class DiPalettePixelTemplate
       : DiColorPixelTemplate<T3>(docu, pixel, 1, status)
     {
         if ((pixel != NULL) && (Count > 0) && (status == EIS_Normal))
-            convert((const T1 *)pixel->getData(), pal);
+            convert((const T1 *)pixel->getData() + pixel->getPixelStart(), pal);
     }
     
     virtual ~DiPalettePixelTemplate()
@@ -134,7 +134,10 @@ class DiPalettePixelTemplate
  *
  * CVS/RCS Log:
  * $Log: dipalpxt.h,v $
- * Revision 1.11  2000-03-08 16:21:53  meichel
+ * Revision 1.12  2000-04-27 13:15:14  joergr
+ * Dcmimage library code now consistently uses ofConsole for error output.
+ *
+ * Revision 1.11  2000/03/08 16:21:53  meichel
  * Updated copyright header.
  *
  * Revision 1.10  1999/09/17 14:03:45  joergr

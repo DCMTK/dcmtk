@@ -21,10 +21,10 @@
  *
  *  Purpose: DicomColorPixel (Source)
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-03-08 16:21:56 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2000-04-27 13:15:57 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/libsrc/dicopx.cc,v $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -50,7 +50,7 @@ DiColorPixel::DiColorPixel(const DiDocument *docu,
                            const DiInputPixel *pixel,
                            const Uint16 samples,
                            EI_Status &status,
-                           const Uint16 sample_rate)
+                           const Uint16 /*sample_rate*/)
   : DiPixel(0),
     PlanarConfiguration(0)
 {
@@ -63,8 +63,9 @@ DiColorPixel::DiColorPixel(const DiDocument *docu,
             {
                 if (DicomImageClass::DebugLevel & DicomImageClass::DL_Warnings)
                 {
-                    CERR << "WARNING: invalid value for 'SamplesPerPixel' (" << us;
-                    CERR << ") ... assuming " << samples << " !" << endl;
+                    ofConsole.lockCerr() << "WARNING: invalid value for 'SamplesPerPixel' (" << us
+                                         << ") ... assuming " << samples << " !" << endl;
+                    ofConsole.unlockCerr();
                 }
             }
             if (docu->getValue(DCM_PlanarConfiguration, us))
@@ -74,8 +75,9 @@ DiColorPixel::DiColorPixel(const DiDocument *docu,
                 {
                     if (DicomImageClass::DebugLevel & DicomImageClass::DL_Warnings)
                     {
-                        CERR << "WARNING: invalid value for 'PlanarConfiguration' (" << us;
-                        CERR << ") ... assuming 'color-by-pixel' (0) !" << endl;
+                        ofConsole.lockCerr() << "WARNING: invalid value for 'PlanarConfiguration' (" << us
+                                             << ") ... assuming 'color-by-pixel' (0) !" << endl;
+                        ofConsole.unlockCerr();
                     }
                 }
             }
@@ -83,17 +85,24 @@ DiColorPixel::DiColorPixel(const DiDocument *docu,
             {
                 status = EIS_MissingAttribute;
                 if (DicomImageClass::DebugLevel & DicomImageClass::DL_Errors)
-                    CERR << "ERROR: mandatory attribute 'PlanarConfiguration' is missing !" << endl;
+                {
+                    ofConsole.lockCerr() << "ERROR: mandatory attribute 'PlanarConfiguration' is missing !" << endl;
+                    ofConsole.unlockCerr();
+                }
                 return;
             }
             if (pixel != NULL)
-                Count = pixel->getCount() / ((sample_rate == 0) ? samples : sample_rate);
+//                Count = pixel->getCount() / ((sample_rate == 0) ? samples : sample_rate);
+                Count = pixel->getPixelCount();
         }
         else
         {
             status = EIS_MissingAttribute;
             if (DicomImageClass::DebugLevel & DicomImageClass::DL_Errors)
-                CERR << "ERROR: mandatory attribute 'SamplesPerPixel' is missing !" << endl;
+            {
+                ofConsole.lockCerr() << "ERROR: mandatory attribute 'SamplesPerPixel' is missing !" << endl;
+                ofConsole.unlockCerr();
+            }
         }
     }
 }
@@ -127,7 +136,10 @@ DiColorPixel::~DiColorPixel()
  *
  * CVS/RCS Log:
  * $Log: dicopx.cc,v $
- * Revision 1.7  2000-03-08 16:21:56  meichel
+ * Revision 1.8  2000-04-27 13:15:57  joergr
+ * Dcmimage library code now consistently uses ofConsole for error output.
+ *
+ * Revision 1.7  2000/03/08 16:21:56  meichel
  * Updated copyright header.
  *
  * Revision 1.6  2000/03/03 14:07:55  meichel

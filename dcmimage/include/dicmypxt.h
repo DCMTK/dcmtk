@@ -21,10 +21,10 @@
  *
  *  Purpose: DicomCMYKPixelTemplate (Header)
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-03-08 16:21:49 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2000-04-27 13:15:13 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/include/Attic/dicmypxt.h,v $
- *  CVS/RCS Revision: $Revision: 1.10 $
+ *  CVS/RCS Revision: $Revision: 1.11 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -60,7 +60,7 @@ class DiCMYKPixelTemplate
       : DiColorPixelTemplate<T2>(docu, pixel, 4, status)
     {
         if ((pixel != NULL) && (Count > 0) && (status == EIS_Normal))
-            convert((const T1 *)pixel->getData(), bits);
+            convert((const T1 *)pixel->getData() + pixel->getPixelStart() * 4, bits);
     }
     
     virtual ~DiCMYKPixelTemplate()
@@ -115,7 +115,10 @@ class DiCMYKPixelTemplate
  *
  * CVS/RCS Log:
  * $Log: dicmypxt.h,v $
- * Revision 1.10  2000-03-08 16:21:49  meichel
+ * Revision 1.11  2000-04-27 13:15:13  joergr
+ * Dcmimage library code now consistently uses ofConsole for error output.
+ *
+ * Revision 1.10  2000/03/08 16:21:49  meichel
  * Updated copyright header.
  *
  * Revision 1.9  1999/09/17 14:03:42  joergr
