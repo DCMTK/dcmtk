@@ -22,8 +22,8 @@
  *  Purpose: DVPresentationState
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-02-27 16:59:20 $
- *  CVS/RCS Revision: $Revision: 1.44 $
+ *  Update Date:      $Date: 1999-03-02 13:02:20 $
+ *  CVS/RCS Revision: $Revision: 1.45 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -78,6 +78,7 @@ END_EXTERN_C
 #define DEFAULT_MAXPDU 16384
 
 /* keywords for configuration file */
+#define L2_HIGHENDSYSTEM     "HIGHENDSYSTEM"
 #define L2_COMMUNICATION     "COMMUNICATION"
 #define L2_GENERAL           "GENERAL"
 #define L1_NETWORK           "NETWORK"
@@ -126,18 +127,21 @@ DVInterface::DVInterface(const char *config_file)
     }
     if (config_file) configPath = config_file;
 
-      /* initialize Barten transform */
-    const char * displayFunctionFile = getMonitorCharacteristicsFile();
-    if (displayFunctionFile && (strlen(displayFunctionFile) > 0))
+      /* initialize Barten transform (only on low-cost systems) */
+    if (!getGUIConfigEntryBool(L2_HIGHENDSYSTEM, OFFalse))
     {
-        DiDisplayFunction *df = new DiDisplayFunction(displayFunctionFile);
-        if (df && (df->isValid())) displayFunction = df;
-        else
+        const char * displayFunctionFile = getMonitorCharacteristicsFile();
+        if (displayFunctionFile && (strlen(displayFunctionFile) > 0))
         {
-            if (df) delete df;
+            DiDisplayFunction *df = new DiDisplayFunction(displayFunctionFile);
+            if (df && (df->isValid())) displayFunction = df;
+            else
+            {
+                if (df) delete df;
 #ifdef DEBUG
-            cerr << "warning: unable to load monitor characterics file '" << displayFunctionFile << "', ignoring." << endl;
+                cerr << "warning: unable to load monitor characterics file '" << displayFunctionFile << "', ignoring." << endl;
 #endif
+            }
         }        
     }
 
@@ -459,7 +463,7 @@ Uint32 DVInterface::getNumberOfPStates()
 }
 
 
-E_Condition DVInterface::selectPState(Uint32 idx)
+E_Condition DVInterface::selectPState(Uint32 idx, OFBool changeStatus)
 {
     if (createPStateCache())
     {
@@ -475,10 +479,14 @@ E_Condition DVInterface::selectPState(Uint32 idx)
                     DVInstanceCache::ItemStruct *pstate = (*iter);
                     if (pstate != NULL)
                     {
+                        E_Condition status = EC_IllegalCall;
                         if (pDicomImage == NULL)
-                            return loadPState(pstate->Filename.c_str(), instance->Filename.c_str());
+                            status = loadPState(pstate->Filename.c_str(), instance->Filename.c_str());
                         else
-                            return loadPState(pstate->Filename.c_str());
+                            status = loadPState(pstate->Filename.c_str());
+                        if ((status == E_Normal) && changeStatus)
+                            instanceReviewed(pstate->Pos);
+                        return status;
                     }
                 }
                 idx--;
@@ -1197,33 +1205,38 @@ OFBool DVInterface::isPresentationState()
 }
 
 
+E_Condition DVInterface::instanceReviewed(int pos)
+{
+    IdxRecord record;
+    int recpos;
+    clearIndexRecord(record, recpos);
+    if (readIndexRecord(pos, record, &recpos))
+    {
+        OFBool wasNew = OFTrue;
+        if (lockExclusive() == EC_Normal)
+        {
+            wasNew = newInstancesReceived();
+            record.hstat = DVIF_objectIsNotNew;
+            lseek(pHandle->pidx, (long)(SIZEOF_STUDYDESC + recpos * SIZEOF_IDXRECORD), SEEK_SET);
+            write(pHandle->pidx, (char *)&record, SIZEOF_IDXRECORD);
+            lseek(pHandle->pidx, 0L, SEEK_SET);
+        }
+        unlockExclusive();
+        if (!wasNew)
+            resetDatabaseReferenceTime();
+        return EC_Normal;
+    }
+    return EC_IllegalCall;
+}
+
+
 E_Condition DVInterface::instanceReviewed(const char *studyUID,
                                           const char *seriesUID,
                                           const char *instanceUID)
 {
     DVSeriesCache::ItemStruct *series = getSeriesStruct(studyUID, seriesUID, instanceUID);
     if (series != NULL)
-    {
-        IdxRecord record;
-        int recpos;
-        clearIndexRecord(record, recpos);
-        if (readIndexRecord(series->List.getPos(), record, &recpos))
-        {
-            OFBool wasNew = OFTrue;
-            if (lockExclusive() == EC_Normal)
-            {
-                wasNew = newInstancesReceived();
-                record.hstat = DVIF_objectIsNotNew;
-                lseek(pHandle->pidx, (long)(SIZEOF_STUDYDESC + recpos * SIZEOF_IDXRECORD), SEEK_SET);
-                write(pHandle->pidx, (char *)&record, SIZEOF_IDXRECORD);
-                lseek(pHandle->pidx, 0L, SEEK_SET);
-            }
-            unlockExclusive();
-            if (!wasNew)
-                resetDatabaseReferenceTime();
-            return EC_Normal;
-        }
-    }
+        return instanceReviewed(series->List.getPos());
     return EC_IllegalCall;
 }
 
@@ -2044,7 +2057,11 @@ void DVInterface::cleanChildren()
 /*
  *  CVS/RCS Log:
  *  $Log: dviface.cc,v $
- *  Revision 1.44  1999-02-27 16:59:20  joergr
+ *  Revision 1.45  1999-03-02 13:02:20  joergr
+ *  Added parameter to selectPState() specifying whether to change the review
+ *  status of the loaded presentation state.
+ *
+ *  Revision 1.44  1999/02/27 16:59:20  joergr
  *  Changed implementation of deleteImageFile (imagectn method doesn't function
  *  under Window NT).
  *  Removed bug in createPStateCache (cache was reported invalid on second call).
