@@ -21,9 +21,9 @@
  *
  *  Purpose: Interface of class DcmPixelData
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2004-01-16 14:06:20 $
- *  CVS/RCS Revision: $Revision: 1.24 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2004-04-07 13:55:56 $
+ *  CVS/RCS Revision: $Revision: 1.25 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -166,6 +166,11 @@ private:
     /// shows if an unecapsulated representation is stored
     OFBool existUnencapsulated;
 
+    /** true if unencapsulated (defined length) pixel data was read
+     *  in an encapsulated transfer syntax.
+     */
+    OFBool isIconImage;
+    
     /// value representation of unencapsulated data
     DcmEVR unencapsulatedVR;
 
@@ -436,7 +441,11 @@ public:
 /*
 ** CVS/RCS Log:
 ** $Log: dcpixel.h,v $
-** Revision 1.24  2004-01-16 14:06:20  joergr
+** Revision 1.25  2004-04-07 13:55:56  meichel
+** Compressed image datasets containing uncompressed icon images
+**   are now correctly handled by the parser.
+**
+** Revision 1.24  2004/01/16 14:06:20  joergr
 ** Removed acknowledgements with e-mail addresses from CVS log.
 **
 ** Revision 1.23  2003/06/12 18:21:24  joergr

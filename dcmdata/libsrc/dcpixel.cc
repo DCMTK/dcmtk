@@ -21,9 +21,9 @@
  *
  *  Purpose: class DcmPixelData
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2004-01-16 13:49:53 $
- *  CVS/RCS Revision: $Revision: 1.33 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2004-04-07 13:56:08 $
+ *  CVS/RCS Revision: $Revision: 1.34 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -91,6 +91,7 @@ DcmPixelData::DcmPixelData(
     original(),
     current(),
     existUnencapsulated(OFFalse),
+    isIconImage(OFFalse),
     unencapsulatedVR(EVR_UNKNOWN),
     pixelSeqForWrite(NULL)
 {
@@ -189,7 +190,7 @@ DcmPixelData::calcElementLength(
     errorFlag = EC_Normal;
     Uint32 elementLength = 0;
 
-    if (xferSyn.isEncapsulated())
+    if (xferSyn.isEncapsulated() && (! isIconImage))
     {
         DcmRepresentationListIterator found;
         errorFlag =
@@ -217,6 +218,7 @@ DcmPixelData::canChooseRepresentation(
     const DcmRepresentationEntry findEntry(repType, repParam, NULL);
     DcmRepresentationListIterator resultIt(repListEnd);
     if ((!toType.isEncapsulated() && existUnencapsulated) ||
+        (toType.isEncapsulated() && isIconImage && existUnencapsulated) ||
         (toType.isEncapsulated() && findRepresentationEntry(findEntry, resultIt) == EC_Normal))
     {
         // representation found
@@ -256,12 +258,10 @@ DcmPixelData::canWriteXfer(
 {
     DcmXfer newXferSyn(newXfer);
     DcmRepresentationListIterator found;
-    OFBool result = !newXferSyn.isEncapsulated() && existUnencapsulated;
+    OFBool result = existUnencapsulated && (!newXferSyn.isEncapsulated() || isIconImage);
 
     if (!result && newXferSyn.isEncapsulated())
-        result =
-            findConformingEncapsulatedRepresentation(newXferSyn, NULL, found)
-            == EC_Normal;
+        result = (findConformingEncapsulatedRepresentation(newXferSyn, NULL, found) == EC_Normal);
     return result;
 }
 
@@ -277,8 +277,8 @@ DcmPixelData::chooseRepresentation(
     const DcmRepresentationEntry findEntry(repType, repParam, NULL);
     DcmRepresentationListIterator result(repListEnd);
     if ((!toType.isEncapsulated() && existUnencapsulated) ||
-        (toType.isEncapsulated() &&
-         findRepresentationEntry(findEntry, result) == EC_Normal))
+        (toType.isEncapsulated() && existUnencapsulated && isIconImage) ||
+        (toType.isEncapsulated() && findRepresentationEntry(findEntry, result) == EC_Normal))
     {
         // representation found
         current = result;
@@ -514,7 +514,7 @@ DcmPixelData::getLength(const E_TransferSyntax xfer,
     errorFlag = EC_Normal;
     Uint32 valueLength = 0;
 
-    if (xferSyn.isEncapsulated())
+    if (xferSyn.isEncapsulated() && !isIconImage)
     {
         DcmRepresentationListIterator foundEntry;
         errorFlag = findConformingEncapsulatedRepresentation(
@@ -750,6 +750,7 @@ DcmPixelData::read(
                    * although we're decoding an encapsulated transfer syntax.
                    * This is probably an icon image.
                    */
+                  isIconImage = OFTrue;
                 }
             }
 
@@ -931,7 +932,7 @@ OFCondition DcmPixelData::write(
   else
   {
     DcmXfer xferSyn(oxfer);
-    if (xferSyn.isEncapsulated())
+    if (xferSyn.isEncapsulated() && (! isIconImage))
     {
       if (fTransferState == ERW_init)
       {
@@ -986,7 +987,7 @@ OFCondition DcmPixelData::writeSignatureFormat(
   else if (Tag.isSignable())
   {
     DcmXfer xferSyn(oxfer);
-    if (xferSyn.isEncapsulated())
+    if (xferSyn.isEncapsulated() && (! isIconImage))
     {
       if (fTransferState == ERW_init)
       {
@@ -1028,7 +1029,11 @@ OFCondition DcmPixelData::loadAllDataIntoMemory(void)
 /*
 ** CVS/RCS Log:
 ** $Log: dcpixel.cc,v $
-** Revision 1.33  2004-01-16 13:49:53  joergr
+** Revision 1.34  2004-04-07 13:56:08  meichel
+** Compressed image datasets containing uncompressed icon images
+**   are now correctly handled by the parser.
+**
+** Revision 1.33  2004/01/16 13:49:53  joergr
 ** Removed acknowledgements with e-mail addresses from CVS log.
 **
 ** Revision 1.32  2003/06/12 18:22:23  joergr
