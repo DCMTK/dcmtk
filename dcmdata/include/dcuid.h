@@ -9,10 +9,10 @@
 ** Definitions of "well known" DICOM Unique Indentifiers,
 ** routines for finding and creating UIDs.
 **
-** Last Update:		$Author: meichel $
-** Update Date:		$Date: 1997-05-29 15:52:54 $
+** Last Update:		$Author: hewett $
+** Update Date:		$Date: 1997-06-02 08:27:48 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcuid.h,v $
-** CVS/RCS Revision:	$Revision: 1.16 $
+** CVS/RCS Revision:	$Revision: 1.17 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -95,12 +95,12 @@ char* dcmGenerateUniqueIdentifer(char* uid, const char* prefix=NULL);
  *   The second name is used to identify files written without dcmdata
  *   (i.e. using the "bypass" switch in storescp)
  */
-#define OFFIS_DTK_IMPLEMENTATION_VERSION_NAME	"OFFIS_DCMTK_313B"
-#define OFFIS_DTK_IMPLEMENTATION_VERSION_NAME2  "OFFIS_DCMTK_313b"
-#define OFFIS_DCMTK_RELEASEDATE        "1997/05/29"
+#define OFFIS_DTK_IMPLEMENTATION_VERSION_NAME	"OFFIS_DCMTK_32"
+#define OFFIS_DTK_IMPLEMENTATION_VERSION_NAME2  "OFFIS_DCMBP_32"
+#define OFFIS_DCMTK_RELEASEDATE        "1997/06/02"
 
 #define OFFIS_UID_ROOT		       "1.2.276.0.7230010.3"
-#define OFFIS_DCMTK_VERSION	       "3.1.3.2"
+#define OFFIS_DCMTK_VERSION	       "3.2"
 #define OFFIS_IMPLEMENTATION_CLASS_UID OFFIS_UID_ROOT ".0." OFFIS_DCMTK_VERSION
 
 /* 
@@ -282,7 +282,11 @@ char* dcmGenerateUniqueIdentifer(char* uid, const char* prefix=NULL);
 /*
 ** CVS/RCS Log:
 ** $Log: dcuid.h,v $
-** Revision 1.16  1997-05-29 15:52:54  meichel
+** Revision 1.17  1997-06-02 08:27:48  hewett
+** Updated Version Number and Implementation Version Name to reflect the
+** current public release (3.2).
+**
+** Revision 1.16  1997/05/29 15:52:54  meichel
 ** Added constant for dcmtk release date in dcuid.h.
 ** All dcmtk applications now contain a version string
 ** which is displayed with the command line options ("usage" message)
