@@ -30,6 +30,11 @@
 /* #undef _ALL_SOURCE */
 #endif
 
+/* Define if type char is unsigned and you are not using gcc.  */
+#ifndef __CHAR_UNSIGNED__
+/* #undef __CHAR_UNSIGNED__ */
+#endif
+
 /* Define if you don't have vprintf but do have _doprnt.  */
 #undef HAVE_DOPRNT
 
@@ -300,6 +305,12 @@
 /* Define if you have the <netinet/in.h> header file.  */
 #undef HAVE_NETINET_IN_H
 
+/* Define if you have the <netinet/tcp.h> header file.  */
+#undef HAVE_NETINET_TCP_H
+
+/* Define if you have the <sstream.h> header file.  */
+#undef HAVE_SSTREAM_H
+
 /* Define if you have the <stat.h> header file.  */
 #undef HAVE_STAT_H 
 
@@ -515,6 +526,9 @@
 
 /* Define if your system has a prototype for struct utimbuf */
 #define HAVE_DECLARATION_STRUCT_UTIMBUF 1
+
+/* Define if your system has a prototype for socklen_t */
+#undef HAVE_DECLARATION_SOCKLEN_T
 
 /* Define if your C++ compiler can work with class templates */
 #define HAVE_CLASS_TEMPLATE 1
