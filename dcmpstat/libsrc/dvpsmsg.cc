@@ -23,8 +23,8 @@
  *    classes: DVPSIPCMessage
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-10-16 11:43:38 $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  Update Date:      $Date: 2000-10-23 12:19:52 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -405,7 +405,10 @@ void DVPSIPCClient::notifySentDICOMObject()
 
 /*
  *  $Log: dvpsmsg.cc,v $
- *  Revision 1.3  2000-10-16 11:43:38  joergr
+ *  Revision 1.4  2000-10-23 12:19:52  joergr
+ *  Replaced non-Unix style newline in preprocessor statement.
+ *
+ *  Revision 1.3  2000/10/16 11:43:38  joergr
  *  Added explicit typecast to avoid compiler warnings (Sun CC 2.0.1).
  *
  *  Revision 1.2  2000/10/11 16:16:25  meichel
