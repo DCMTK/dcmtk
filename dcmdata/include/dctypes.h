@@ -21,10 +21,10 @@
  *
  *  Purpose: global type and constant definitions
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-05-14 08:20:29 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2002-06-06 14:51:13 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dctypes.h,v $
- *  CVS/RCS Revision: $Revision: 1.13 $
+ *  CVS/RCS Revision: $Revision: 1.14 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -35,9 +35,18 @@
 #define DCTYPES_H 1
 
 #include "osconfig.h"    /* make sure OS specific configuration is included first */
-
 #include "oftypes.h"
-#include "stdlib.h"      /* for size_t */
+
+#ifdef HAVE_STDLIB_H
+#ifndef  _BCB4
+/* workaround for bug in Borland C++ Builder 4 */
+BEGIN_EXTERN_C
+#endif
+#include <stdlib.h>
+#ifndef  _BCB4
+END_EXTERN_C
+#endif
+#endif
 
 #ifdef __CHAR_UNSIGNED__
 typedef signed char 	Sint8;
@@ -136,7 +145,10 @@ const Uint32 DCM_UndefinedLength = 0xffffffff;
 /*
  * CVS/RCS Log:
  * $Log: dctypes.h,v $
- * Revision 1.13  2002-05-14 08:20:29  joergr
+ * Revision 1.14  2002-06-06 14:51:13  meichel
+ * Corrected code for inclusion of stdlib.h
+ *
+ * Revision 1.13  2002/05/14 08:20:29  joergr
  * Added support for Base64 (MIME) encoded binary data.
  *
  * Revision 1.12  2002/04/25 10:07:13  joergr
