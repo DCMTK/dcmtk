@@ -22,9 +22,9 @@
  *  Purpose: Provides main interface to the "dicom image toolkit"
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-01-20 14:58:26 $
+ *  Update Date:      $Date: 1999-02-03 16:59:54 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/dcmimage.h,v $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -41,6 +41,7 @@
 #define OFFIS_DCMIMAGE_RELEASEDATE "1998/02/17"
 
 #include "dimoimg.h"
+#include "didispfn.h"
 #include "diutils.h"
 
 
@@ -336,6 +337,60 @@ class DicomImage
      */
     int hasSOPclassUID(const char *uid) const;
 
+ // --- display function for output device characteristic (calibration)
+ 
+    /** set display function
+     *
+     ** @param  display  object describing the output device characteristic (only referenced!)
+     *
+     ** @return true if successful, false otherwise
+     */
+    inline int setDisplayFunction(DiDisplayFunction *display)
+    {
+        if ((Image != NULL) && (Image->getMonoImagePtr() != NULL))
+            return Image->getMonoImagePtr()->setDisplayFunction(display);
+        return 0;
+    }
+
+    /** set no display function
+     *
+     ** @return true if successful, false otherwise
+     */
+    inline int setNoDisplayFunction()
+    {
+        if ((Image != NULL) && (Image->getMonoImagePtr() != NULL))
+            return Image->getMonoImagePtr()->setNoDisplayFunction();
+        return 0;
+    }
+
+    /** delete Barten LUT
+     *
+     ** @param  bits  parameter of LUT to be deleted (0 = all)
+     *
+     ** @return true if successful, false otherwise
+     */
+    inline int deleteBartenLUT(const int bits = 0)
+    {
+        if ((Image != NULL) && (Image->getMonoImagePtr() != NULL))
+            return Image->getMonoImagePtr()->deleteBartenLUT(bits);
+        return 0;
+    }
+
+    /** convert P-value to DDL
+     *
+     ** @param  pvalue  P-value to be converted
+     *  @param  ddl     reference to resulting DDL
+     *
+     ** @return true if successful, false otherwise
+     */
+    inline int convertPValueToDDL(const Uint16 pvalue,
+                                  Uint16 &ddl)
+    {
+        if ((Image != NULL) && (Image->getMonoImagePtr() != NULL))
+            return Image->getMonoImagePtr()->convertPValueToDDL(pvalue, ddl);
+        return 0;
+    }
+
  // --- windowing (voi): return true if successful (see also 'dimoimg.cc')
     
     /** unset all VOI transformations (windows and LUTs).
@@ -542,12 +597,12 @@ class DicomImage
      ** @param  group        group number (0x60nn) of overlay plane
      *  @param  width        .
      *  @param  height       .
-     *  @param  mode         .
      *  @param  left         .
      *  @param  top          .
      *  @param  data         .
      *  @param  label        .
      *  @param  description  .
+     *  @param  mode         .
      *
      ** @return false (0) if an error occurred, true otherwise (1 = added new plane,
      *                                                          2 = replaced existing plane)
@@ -644,7 +699,22 @@ class DicomImage
             return Image->getOverlayPtr()->showPlane(plane, fore, thresh, mode);
         return 0;
     }
-        
+
+    /** activate specified overlay plane and change 'pvalue' (only for bitmap shutters)
+     *
+     ** @param  plane   number (0..15) or group number (0x60nn) of overlay plane
+     *  @param  pvalue  P-value
+     *
+     ** @return false (0) if an error occurred, true otherwise
+     */
+    inline int showOverlay(const unsigned int plane,
+                           const Uint16 pvalue)
+    {
+        if ((Image != NULL) && (Image->getOverlayPtr(1) != NULL))
+            return Image->getOverlayPtr()->showPlane(plane, pvalue);
+        return 0;
+    }
+
     /** activate all overlay planes (make them visible)
      *
      ** @param  idx  index of overlay group (0 = dataset, 1 = additional), default: 0
@@ -1111,7 +1181,11 @@ class DicomImage
  *
  * CVS/RCS Log:
  * $Log: dcmimage.h,v $
- * Revision 1.7  1999-01-20 14:58:26  joergr
+ * Revision 1.8  1999-02-03 16:59:54  joergr
+ * Added support for calibration according to Barten transformation (incl.
+ * a DISPLAY file describing the monitor characteristic).
+ *
+ * Revision 1.7  1999/01/20 14:58:26  joergr
  * Added new output method to fill external memory buffer with rendered pixel
  * data.
  *
