@@ -19,10 +19,13 @@ OPTION(WITH_ZLIB "Turn support for zlib on/off" ON)
 FIND_PATH(WITH_ZLIBINC "include/zlib.h" ${dcmtk_SOURCE_DIR}/../zlib-1.1.4)
 
 # set certain project wide flags
-SET(CMAKE_C_FLAGS_DEBUG "/nologo /MTd /W3 /GX /Z7 /Od /GR-" CACHE STRING "Win32 Debug Options C Code" FORCE)
-SET(CMAKE_C_FLAGS_RELEASE "/nologo /MT /W3 /GX /O2 /GR-" CACHE STRING "Win32 Release Options C Code" FORCE)
-SET(CMAKE_CXX_FLAGS_DEBUG "/nologo /MTd /W3 /GX /Z7 /Od /GR-" CACHE STRING "Win32 Debug Options C++ Code" FORCE)
-SET(CMAKE_CXX_FLAGS_RELEASE "/nologo /MT /W3 /GX /O2 /GR-" CACHE STRING "Win32 Release Options C++ Code" FORCE)
+SET(CMAKE_C_FLAGS_DEBUG "/nologo /MTd /W3 /GX /Z7 /Od /GR- /YX" CACHE STRING "Win32 Debug Options C Code" FORCE)
+SET(CMAKE_C_FLAGS_RELEASE "/nologo /MT /W3 /GX /O2 /GR- /YX" CACHE STRING "Win32 Release Options C Code" FORCE)
+SET(CMAKE_CXX_FLAGS_DEBUG "/nologo /MTd /W3 /GX /Z7 /Od /GR- /YX" CACHE STRING "Win32 Debug Options C++ Code" FORCE)
+SET(CMAKE_CXX_FLAGS_RELEASE "/nologo /MT /W3 /GX /O2 /GR- /YX" CACHE STRING "Win32 Release Options C++ Code" FORCE)
+
+# set _REENTRANT flag
+ADD_DEFINITIONS(-D_REENTRANT)
 
 # set precompiler switches according to settings
 # libxml support
