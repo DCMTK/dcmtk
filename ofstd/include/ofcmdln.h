@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2002, OFFIS
+ *  Copyright (C) 1998-2003, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose: Handle command line arguments (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-12-09 13:04:41 $
+ *  Update Date:      $Date: 2003-05-20 08:42:39 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/include/Attic/ofcmdln.h,v $
- *  CVS/RCS Revision: $Revision: 1.32 $
+ *  CVS/RCS Revision: $Revision: 1.33 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -888,48 +888,48 @@ class OFCommandLine
     /** returns command line syntax as a C++ string (single text line).
      *  Text consists of "[options]" (if defined by addOption) and all parameters defined by addParam.
      *
-     ** @param  string  reference to C++ string where the text should be stored
+     ** @param  syntaxStr  reference to C++ string where the text should be stored
      */
-    void getSyntaxString(OFString &string) const;
+    void getSyntaxString(OFString &syntaxStr) const;
 
     /** returns description of all options as a C++ string (multiple text lines).
      *  Text consists of group headings, short and long option names, option descriptions and additional
      *  option values.
      *
-     ** @param  string  reference to C++ string where the text should be stored
+     ** @param  optionStr  reference to C++ string where the text should be stored
      */
-    void getOptionString(OFString &string) const;
+    void getOptionString(OFString &optionStr) const;
 
     /** returns description of all parameters as a C++ string (multiple text lines).
      *  Text consists of heading "parameters:" and parameter names and descriptions.
      *
-     ** @param  string  reference to C++ string where the text should be stored
+     ** @param  paramStr  reference to C++ string where the text should be stored
      */
-    void getParamString(OFString &string) const;
+    void getParamString(OFString &paramStr) const;
 
     /** returns status of parseLine as a C++ string
      *
-     ** @param  status  value returned by method parseLine
-     *  @param  string  reference to C++string where the text should be stored
+     ** @param  status     value returned by method parseLine
+     *  @param  statusStr  reference to C++string where the text should be stored
      */
     void getStatusString(const E_ParseStatus status,
-                         OFString &string);
+                         OFString &statusStr);
 
     /** returns status of getParam as a C++ string
      *
-     ** @param  status  value returned by method getParam
-     *  @param  string  reference to C++string where the text should be stored
+     ** @param  status     value returned by method getParam
+     *  @param  statusStr  reference to C++string where the text should be stored
      */
     void getStatusString(const E_ParamValueStatus status,
-                         OFString &string);
+                         OFString &statusStr);
 
     /** returns status of getValue as a C++ string
      *
-     ** @param  status  value returned by method getValue
-     *  @param  string  reference to C++string where the text should be stored
+     ** @param  status     value returned by method getValue
+     *  @param  statusStr  reference to C++string where the text should be stored
      */
     void getStatusString(const E_ValueStatus status,
-                         OFString &string);
+                         OFString &statusStr);
 
 
  // --- flags (used for method parseLine)
@@ -942,7 +942,7 @@ class OFCommandLine
 
     /** checks whether given option is valid (starting with an option char and not followed by a number)
      */
-    OFBool checkOption(const char *string,
+    OFBool checkOption(const char *option,
                        const OFBool mode = OFTrue) const;
 
     /** finds specified parameter and sets given iterator to this position
@@ -984,7 +984,7 @@ class OFCommandLine
 
     /** returns name of parameter which is missed in the parsed command line (used for error output)
      */
-    OFBool getMissingParam(OFString &arg);
+    OFBool getMissingParam(OFString &param);
 
 
  private:
@@ -1046,7 +1046,10 @@ class OFCommandLine
  *
  * CVS/RCS Log:
  * $Log: ofcmdln.h,v $
- * Revision 1.32  2002-12-09 13:04:41  joergr
+ * Revision 1.33  2003-05-20 08:42:39  joergr
+ * Renamed parameters/variables "string" to avoid name clash with STL class.
+ *
+ * Revision 1.32  2002/12/09 13:04:41  joergr
  * Replaced tab characters by spaces.
  *
  * Revision 1.31  2002/12/05 13:48:21  joergr
