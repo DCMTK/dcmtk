@@ -23,9 +23,9 @@
  *    VR and IOD checker for Presentation States
  *
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2003-03-12 17:34:20 $
- *  CVS/RCS Revision: $Revision: 1.13 $
+ *  Last Update:      $Author: wilkens $
+ *  Update Date:      $Date: 2003-09-01 12:58:58 $
+ *  CVS/RCS Revision: $Revision: 1.14 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -36,6 +36,10 @@
 
 #define INCLUDE_CSTDLIB
 #include "ofstdinc.h"
+
+#ifdef HAVE_WINDOWS_H
+#include <windows.h>     /* this includes either winsock.h or winsock2.h */
+#endif
 
 #ifdef HAVE_GUSI_H
     /* needed for Macintosh */
@@ -1084,7 +1088,10 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmpschk.cc,v $
- * Revision 1.13  2003-03-12 17:34:20  meichel
+ * Revision 1.14  2003-09-01 12:58:58  wilkens
+ * Added #include to file to be able to compile again under Win32.
+ *
+ * Revision 1.13  2003/03/12 17:34:20  meichel
  * Updated DcmObject::print() flags
  *
  * Revision 1.12  2002/11/27 15:47:52  meichel
