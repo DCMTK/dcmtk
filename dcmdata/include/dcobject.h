@@ -10,7 +10,7 @@
 ** DICOM object encoding/decoding, search and lookup facilities.
 **
 ** Last Update:   $Author: andreas $
-** Revision:      $Revision: 1.10 $
+** Revision:      $Revision: 1.11 $
 ** Status:	  $State: Exp $
 **
 */
@@ -72,9 +72,9 @@ protected:
     E_Condition writeTag(DcmStream & outStream,	const DcmTag & tag,
 			 const E_TransferSyntax oxfer); // in
 
-    E_Condition writeTagAndLength(DcmStream & outStream,  
-				  const E_TransferSyntax oxfer,	// in
-				  Uint32 & writtenBytes ); // out
+    virtual E_Condition writeTagAndLength(DcmStream & outStream,  
+					  const E_TransferSyntax oxfer,	// in
+					  Uint32 & writtenBytes ); // out
 
     void swapIfNecessary(const E_ByteOrder newByteOrder, 
 			 const E_ByteOrder oldByteOrder,

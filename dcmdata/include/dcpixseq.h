@@ -10,10 +10,10 @@
 ** Interface of class DcmPixelSequence
 **
 **
-** Last Update:		$Author: hewett $
-** Update Date:		$Date: 1997-05-06 09:22:37 $
+** Last Update:		$Author: andreas $
+** Update Date:		$Date: 1997-05-22 16:57:10 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcpixseq.h,v $
-** CVS/RCS Revision:	$Revision: 1.7 $
+** CVS/RCS Revision:	$Revision: 1.8 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -51,7 +51,10 @@ public:
     virtual E_Condition getItem(DcmPixelItem * & item, const unsigned long num);
     virtual E_Condition remove(DcmPixelItem * & item, const unsigned long num);
     virtual E_Condition remove(DcmPixelItem* item);
-    
+
+    virtual E_Condition write(DcmStream & outStream,
+			      const E_TransferSyntax oxfer,
+			      const E_EncodingType /*enctype*/);
 
 
 // This methods are not sensible for a pix-sequence
@@ -73,7 +76,11 @@ public:
 /*
 ** CVS/RCS Log:
 ** $Log: dcpixseq.h,v $
-** Revision 1.7  1997-05-06 09:22:37  hewett
+** Revision 1.8  1997-05-22 16:57:10  andreas
+** - Corrected errors for writing of pixel sequences for encapsulated
+**   transfer syntaxes.
+**
+** Revision 1.7  1997/05/06 09:22:37  hewett
 ** Added a "before" flag to the insertion of items for compatibility with
 ** insertion in normal Sequences.
 **

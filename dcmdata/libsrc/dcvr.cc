@@ -9,8 +9,8 @@
 ** Implementation of the DcmVR class for Value Representation
 **
 **
-** Last Update:   $Author: hewett $
-** Revision:      $Revision: 1.7 $
+** Last Update:   $Author: andreas $
+** Revision:      $Revision: 1.8 $
 ** Status:	  $State: Exp $
 **
 */
@@ -186,6 +186,7 @@ DcmVR::getValidEVR() const
 			evr = EVR_US;
 			break;
 		case EVR_ox:
+		case EVR_pixelSQ:
 		        evr = EVR_OB;
 			break;
 		default:

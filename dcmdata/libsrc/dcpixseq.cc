@@ -11,9 +11,9 @@
 **
 **
 ** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1996-08-05 08:46:15 $
+** Update Date:		$Date: 1997-05-22 16:57:15 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcpixseq.cc,v $
-** CVS/RCS Revision:	$Revision: 1.5 $
+** CVS/RCS Revision:	$Revision: 1.6 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -246,10 +246,26 @@ E_Condition DcmPixelSequence::remove(DcmPixelItem* item)
 
 // ********************************
 
+E_Condition DcmPixelSequence::write(DcmStream & outStream,
+				      const E_TransferSyntax oxfer,
+				      const E_EncodingType /*enctype*/)
+{
+    DcmXfer oxferSyn(oxfer);
+    if (!oxferSyn.isEncapsulated)
+	return EC_NotImplemented;
+    else
+	return DcmSequenceOfItems::write(outStream, oxfer, EET_UndefinedLength);
+}
+
+
 /*
 ** CVS/RCS Log:
 ** $Log: dcpixseq.cc,v $
-** Revision 1.5  1996-08-05 08:46:15  andreas
+** Revision 1.6  1997-05-22 16:57:15  andreas
+** - Corrected errors for writing of pixel sequences for encapsulated
+**   transfer syntaxes.
+**
+** Revision 1.5  1996/08/05 08:46:15  andreas
 ** new print routine with additional parameters:
 **         - print into files
 **         - fix output length for elements

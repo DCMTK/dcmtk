@@ -10,9 +10,9 @@
 ** Interface of class DcmPixelItem
 **
 ** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1996-01-29 13:38:13 $
+** Update Date:		$Date: 1997-05-22 16:57:10 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcpxitem.h,v $
-** CVS/RCS Revision:	$Revision: 1.4 $
+** CVS/RCS Revision:	$Revision: 1.5 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -39,12 +39,17 @@
 class DcmPixelItem : public DcmOtherByteOtherWord
 
 {
+  protected:
+    virtual E_Condition writeTagAndLength(DcmStream & outStream, 
+					  const E_TransferSyntax oxfer,	
+					  Uint32 & writtenBytes);
   public:
     DcmPixelItem(const DcmTag &tag, const Uint32 len = 0);
     DcmPixelItem(const DcmPixelItem &old);
     virtual ~DcmPixelItem();
 
     virtual DcmEVR ident(void) const { return EVR_pixelItem; }
+
 };
 
 
@@ -53,7 +58,11 @@ class DcmPixelItem : public DcmOtherByteOtherWord
 /*
 ** CVS/RCS Log:
 ** $Log: dcpxitem.h,v $
-** Revision 1.4  1996-01-29 13:38:13  andreas
+** Revision 1.5  1997-05-22 16:57:10  andreas
+** - Corrected errors for writing of pixel sequences for encapsulated
+**   transfer syntaxes.
+**
+** Revision 1.4  1996/01/29 13:38:13  andreas
 ** - new put method for every VR to put value as a string
 ** - better and unique print methods
 **
