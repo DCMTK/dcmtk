@@ -23,8 +23,8 @@
  *    classes: DSRDocument
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2004-01-05 14:36:02 $
- *  CVS/RCS Revision: $Revision: 1.33 $
+ *  Update Date:      $Date: 2004-04-16 13:24:07 $
+ *  CVS/RCS Revision: $Revision: 1.34 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -866,13 +866,24 @@ class DSRDocument
      *  Not applicable to Key Object Selection Documents.
      ** @param  observerName  name of the person who has verified this document (required, VR=PN)
      *  @param  organization  name of the organization to which the observer belongs (required, VR=LO)
+     ** @return status, EC_Normal if successful, an error code otherwise
+     */
+    OFCondition verifyDocument(const OFString &observerName,
+                               const OFString &organization);
+
+    /** verify the current document by a specific observer.
+     *  Same as above but allows to specify the verification date time value.
+     *  Only required since Sun CC 2.0.1 compiler does not support default parameter values for
+     *  "complex types" like OFString.  Reports the error message: "Sorry not implemented" :-/
+     ** @param  observerName  name of the person who has verified this document (required, VR=PN)
+     *  @param  organization  name of the organization to which the observer belongs (required, VR=LO)
      *  @param  dateTime      verification date time (optional). If empty/absent the current date and
      *                        time are used.
      ** @return status, EC_Normal if successful, an error code otherwise
      */
     OFCondition verifyDocument(const OFString &observerName,
                                const OFString &organization,
-                               const OFString &dateTime = "");
+                               const OFString &dateTime /*= ""*/);
 
     /** verify the current document by a specific observer.
      *  A document can be verified more than once.  The observer information is added to a
@@ -885,6 +896,19 @@ class DSRDocument
      ** @param  observerName  name of the person who has verified this document (required, VR=PN)
      *  @param  observerCode  code identifying the verifying observer (optional, see previous method)
      *  @param  organization  name of the organization to which the observer belongs (required, VR=LO)
+     ** @return status, EC_Normal if successful, an error code otherwise
+     */
+    OFCondition verifyDocument(const OFString &observerName,
+                               const DSRCodedEntryValue &observerCode,
+                               const OFString &organization);
+
+    /** verify the current document by a specific observer.
+     *  Same as above but allows to specify the verification date time value.
+     *  Only required since Sun CC 2.0.1 compiler does not support default parameter values for
+     *  "complex types" like OFString.  Reports the error message: "Sorry not implemented" :-/
+     ** @param  observerName  name of the person who has verified this document (required, VR=PN)
+     *  @param  observerCode  code identifying the verifying observer (optional, see previous method)
+     *  @param  organization  name of the organization to which the observer belongs (required, VR=LO)
      *  @param  dateTime      verification date time (optional). If empty/absent the current date and
      *                        time are used.
      ** @return status, EC_Normal if successful, an error code otherwise
@@ -892,7 +916,7 @@ class DSRDocument
     OFCondition verifyDocument(const OFString &observerName,
                                const DSRCodedEntryValue &observerCode,
                                const OFString &organization,
-                               const OFString &dateTime = "");
+                               const OFString &dateTime /*= ""*/);
 
     /** remove verification information.
      *  The list of verifying observers is cleared, the verification flag is set to UNVERIFIED and
@@ -1157,7 +1181,11 @@ class DSRDocument
 /*
  *  CVS/RCS Log:
  *  $Log: dsrdoc.h,v $
- *  Revision 1.33  2004-01-05 14:36:02  joergr
+ *  Revision 1.34  2004-04-16 13:24:07  joergr
+ *  Restructured code to avoid default parameter values for "complex types" like
+ *  OFString. Required for Sun CC 2.0.1.
+ *
+ *  Revision 1.33  2004/01/05 14:36:02  joergr
  *  Removed acknowledgements with e-mail addresses from CVS log.
  *
  *  Revision 1.32  2003/10/30 17:53:23  joergr

@@ -23,8 +23,8 @@
  *    classes: DSRDocument
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2004-01-16 10:05:01 $
- *  CVS/RCS Revision: $Revision: 1.51 $
+ *  Update Date:      $Date: 2004-04-16 13:24:22 $
+ *  CVS/RCS Revision: $Revision: 1.52 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -2113,11 +2113,28 @@ OFCondition DSRDocument::completeDocument(const OFString &description)
 
 
 OFCondition DSRDocument::verifyDocument(const OFString &observerName,
+                                        const OFString &organization)
+{
+    /* empty CodedEntryValue and VerificationDateTime */
+    return verifyDocument(observerName, DSRCodedEntryValue() /*dummy*/, organization, "" /*dateTime*/);
+}
+
+
+OFCondition DSRDocument::verifyDocument(const OFString &observerName,
                                         const OFString &organization,
                                         const OFString &dateTime)
 {
     /* empty CodedEntryValue */
     return verifyDocument(observerName, DSRCodedEntryValue() /*dummy*/, organization, dateTime);
+}
+
+
+OFCondition DSRDocument::verifyDocument(const OFString &observerName,
+                                        const DSRCodedEntryValue &observerCode,
+                                        const OFString &organization)
+{
+    /* empty VerificationDateTime */
+    return verifyDocument(observerName, observerCode, organization, "" /*dateTime*/);
 }
 
 
@@ -2259,7 +2276,11 @@ void DSRDocument::updateAttributes(const OFBool updateAll)
 /*
  *  CVS/RCS Log:
  *  $Log: dsrdoc.cc,v $
- *  Revision 1.51  2004-01-16 10:05:01  joergr
+ *  Revision 1.52  2004-04-16 13:24:22  joergr
+ *  Restructured code to avoid default parameter values for "complex types" like
+ *  OFString. Required for Sun CC 2.0.1.
+ *
+ *  Revision 1.51  2004/01/16 10:05:01  joergr
  *  Adapted XML output format of Date, Time and Datetime to XML Schema (ISO)
  *  requirements. Made readXML() more robust with regard to expected XML structure.
  *
