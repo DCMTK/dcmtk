@@ -2,6 +2,7 @@
 #	Makefile for ofstd/tests
 #
 
+
 @SET_MAKE@
 
 SHELL = /bin/sh
@@ -12,8 +13,8 @@ configdir = @top_srcdir@/@configdir@
 
 include $(configdir)/@common_makefile@
 
-LOCALINCLUDES = -I$(top_srcdir)/include -I$(includedir)/ofstd
-LIBDIRS = -L$(top_srcdir)/libsrc -L$(libdir)
+LOCALINCLUDES = -I$(top_srcdir)/include
+LIBDIRS = -L$(top_srcdir)/libsrc
 LOCALLIBS = -lofstd
 LOCALTRASH = *.out
 

@@ -2,6 +2,7 @@
 #	Makefile for dcmimage/libsrc
 #
 
+
 @SET_MAKE@
 
 SHELL = /bin/sh
@@ -12,12 +13,16 @@ configdir = @top_srcdir@/@configdir@
 
 include $(configdir)/@common_makefile@
 
+ofstddir = $(top_srcdir)/../ofstd
+dcmdatadir = $(top_srcdir)/../dcmdata
+dcmimgledir = $(top_srcdir)/../dcmimgle
+
 # Special defines for the Library, define them in LOCALDEFS
 #   REVERSE_OVERLAY_ORIGIN_ORDER
-#	swap order of overlay origin coordinates
+#   swap order of overlay origin coordinates
 # LOCALDEFS = -DREVERSE_OVERLAY_ORIGIN_ORDER
 
-LOCALINCLUDES = -I@top_srcdir@/../ofstd/include -I@top_srcdir@/../dcmdata/include -I@top_srcdir@/../dcmimgle/include
+LOCALINCLUDES = -I$(ofstddir)/include -I$(dcmdatadir)/include -I$(dcmimgledir)/include
 
 objs = dicoimg.o dicopx.o dicoopx.o diregist.o \
 	diargimg.o dicmyimg.o dihsvimg.o dipalimg.o dirgbimg.o \

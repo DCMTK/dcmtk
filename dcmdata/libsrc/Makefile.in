@@ -13,8 +13,10 @@ configdir = @top_srcdir@/@configdir@
 
 include $(configdir)/@common_makefile@
 
-LOCALINCLUDES = -I$(top_srcdir)/../ofstd/include -I$(includedir)/ofstd
-LIBDIRS = -L$(top_srcdir)/../ofstd/libsrc -L$(libdir)
+ofstddir = $(top_srcdir)/../ofstd
+
+LOCALINCLUDES = -I$(ofstddir)/include
+LIBDIRS = -L$(ofstddir)/libsrc
 LOCALLIBS = -lofstd
 LOCALDEFS =
 

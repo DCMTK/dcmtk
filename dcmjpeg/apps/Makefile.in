@@ -14,38 +14,38 @@ include $(configdir)/@common_makefile@
 
 
 ofstddir =$(top_srcdir)/../ofstd
-ofstdinc = -I$(ofstddir)/include -I$(includedir)/ofstd
+ofstdinc = -I$(ofstddir)/include
 ofstdlibdir = -L$(ofstddir)/libsrc
 ofstdlib = -lofstd
 
 dcmdatadir = $(top_srcdir)/../dcmdata
-dcmdatainc = -I$(dcmdatadir)/include -I$(includedir)/dcmdata
+dcmdatainc = -I$(dcmdatadir)/include
 dcmdatalibdir = -L$(dcmdatadir)/libsrc
 dcmdatalib = -ldcmdata
 
 dcmimgledir = $(top_srcdir)/../dcmimgle
-dcmimgleinc = -I$(dcmimgledir)/include -I$(includedir)/dcmimgle
+dcmimgleinc = -I$(dcmimgledir)/include
 dcmimglelibdir = -L$(dcmimgledir)/libsrc
 dcmimglelib = -ldcmimgle
 
 dcmimagedir = $(top_srcdir)/../dcmimage
-dcmimageinc = -I$(dcmimagedir)/include -I$(includedir)/dcmimage
+dcmimageinc = -I$(dcmimagedir)/include
 dcmimagelibdir = -L$(dcmimagedir)/libsrc
 dcmimagelib = -ldcmimage
 
 dcmjpegdir = $(top_srcdir)/../dcmjpeg
-dcmjpeginc = -I$(dcmjpegdir)/include -I$(includedir)/dcmjpeg
-dcmjpeglibdir = -L$(dcmjpegdir)/libsrc -L$(dcmjpegdir)/libijg8 -L$(dcmjpegdir)/libijg12 -L$(dcmjpegdir)/libijg16
+dcmjpeginc = -I$(dcmjpegdir)/include
+dcmjpeglibdir = -L$(dcmjpegdir)/libsrc -L$(dcmjpegdir)/libijg8 -L$(dcmjpegdir)/libijg12 \
+	-L$(dcmjpegdir)/libijg16
 dcmjpeglib = -ldcmjpeg -lijg8 -lijg12 -lijg16
 
 LOCALINCLUDES = $(dcmjpeginc) $(ofstdinc) $(dcmdatainc) $(dcmimageinc) $(dcmimgleinc)
 LIBDIRS = -L$(top_srcdir)/libsrc $(dcmjpeglibdir) $(dcmimagelibdir) $(dcmimglelibdir) \
-	$(dcmdatalibdir) $(ofstdlibdir) -L$(libdir)
+	$(dcmdatalibdir) $(ofstdlibdir)
 LOCALLIBS = $(dcmjpeglib) $(dcmimagelib) $(dcmimglelib) $(dcmdatalib) $(ofstdlib) \
 	$(TIFFLIBS) $(PNGLIBS) $(ZLIBLIBS)
 
 objs = dcmdjpeg.o dcmcjpeg.o dcmj2pnm.o dcmmkdir.o
-
 progs = dcmdjpeg dcmcjpeg dcmj2pnm dcmmkdir
 
 

@@ -2,6 +2,7 @@
 #	Makefile for dcmjpeg/libijg12
 #
 
+
 @SET_MAKE@
 
 SHELL = /bin/sh
@@ -14,7 +15,7 @@ include $(configdir)/@common_makefile@
 
 ofstddir = $(top_srcdir)/../ofstd
 
-LOCALINCLUDES = -I$(ofstddir)/include -I$(includedir)/ofstd
+LOCALINCLUDES = -I$(ofstddir)/include
 LOCALDEFS = -DWITH_ARITHMETIC_PATCH
 
 objs = jcomapi.o  jcodec.o  jutils.o  jerror.o  jmemmgr.o  \

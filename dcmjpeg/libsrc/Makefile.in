@@ -18,10 +18,7 @@ dcmdatadir = $(top_srcdir)/../dcmdata
 dcmimgledir = $(top_srcdir)/../dcmimgle
 dcmjpegdir = $(top_srcdir)/../dcmjpeg
 
-LOCALINCLUDES = \
-  -I$(ofstddir)/include    -I$(includedir)/ofstd \
-  -I$(dcmdatadir)/include  -I$(includedir)/dcmdata \
-  -I$(dcmimgledir)/include -I$(includedir)/dcmimgle \
+LOCALINCLUDES = -I$(ofstddir)/include -I$(dcmdatadir)/include -I$(dcmimgledir)/include \
   -I$(dcmjpegdir)/libijg8 -I$(dcmjpegdir)/libijg12 -I$(dcmjpegdir)/libijg16
 LOCALDEFS =
 

@@ -2,6 +2,7 @@
 #	Makefile for dcmimage/apps
 #
 
+
 @SET_MAKE@
 
 SHELL = /bin/sh
@@ -12,10 +13,13 @@ configdir = @top_srcdir@/@configdir@
 
 include $(configdir)/@common_makefile@
 
-LOCALINCLUDES = -I@top_srcdir@/../dcmimgle/include -I@top_srcdir@/../ofstd/include \
-	-I@top_srcdir@/../dcmdata/include
-LIBDIRS = -L@top_srcdir@/libsrc -L@top_srcdir@/../dcmimgle/libsrc \
-	-L@top_srcdir@/../dcmdata/libsrc -L@top_srcdir@/../ofstd/libsrc -L$(libdir)
+ofstddir = $(top_srcdir)/../ofstd
+dcmdatadir = $(top_srcdir)/../dcmdata
+dcmimgledir = $(top_srcdir)/../dcmimgle
+
+LOCALINCLUDES = -I$(ofstddir)/include -I$(dcmdatadir)/include -I$(dcmimgledir)/include
+LIBDIRS = -L$(top_srcdir)/libsrc -L$(ofstddir)/libsrc -L$(dcmdatadir)/libsrc \
+	-L$(dcmimgledir)/libsrc
 LOCALLIBS = -ldcmimage -ldcmimgle -ldcmdata -lofstd $(TIFFLIBS) $(PNGLIBS) $(ZLIBLIBS)
 
 objs = dcm2pnm.o dcmquant.o dcmscale.o
