@@ -23,8 +23,8 @@
  *    classes: DSRContainerTreeNode
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-10-16 12:01:56 $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  Update Date:      $Date: 2000-10-18 17:14:30 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -52,7 +52,7 @@ DSRContainerTreeNode::~DSRContainerTreeNode()
 
 void DSRContainerTreeNode::clear()
 {
-   ContinuityOfContent = COC_invalid;       // is this really useful?
+   ContinuityOfContent = COC_Separate;      // this is more useful that COC_invalid
 }
 
 
@@ -80,11 +80,11 @@ E_Condition DSRContainerTreeNode::print(ostream &stream,
 
 
 E_Condition DSRContainerTreeNode::readContentItem(DcmItem &dataset,
-                                                  OFConsole * /* logStream */)
+                                                  OFConsole *logStream)
 {
     OFString string;
     /* read ContinuityOfContent */
-    E_Condition result = getStringValueFromDataset(dataset, DCM_ContinuityOfContent, string);
+    E_Condition result = getAndCheckStringValueFromDataset(dataset, DCM_ContinuityOfContent, string, "1", "1", logStream);
     if (result == EC_Normal)
         result = setContinuityOfContent(enumeratedValueToContinuityOfContent(string));
     return result;
@@ -263,7 +263,10 @@ E_Condition DSRContainerTreeNode::setContinuityOfContent(const E_ContinuityOfCon
 /*
  *  CVS/RCS Log:
  *  $Log: dsrcontn.cc,v $
- *  Revision 1.2  2000-10-16 12:01:56  joergr
+ *  Revision 1.3  2000-10-18 17:14:30  joergr
+ *  Added check for read methods (VM and type).
+ *
+ *  Revision 1.2  2000/10/16 12:01:56  joergr
  *  Reformatted print output.
  *
  *  Revision 1.1  2000/10/13 07:52:18  joergr

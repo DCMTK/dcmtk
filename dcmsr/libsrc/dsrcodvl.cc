@@ -23,8 +23,8 @@
  *    classes: DSRCodedEntryValue
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-10-13 07:52:17 $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  Update Date:      $Date: 2000-10-18 17:13:36 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -122,10 +122,16 @@ void DSRCodedEntryValue::clear()
 }
 
 
-
 OFBool DSRCodedEntryValue::isValid() const
 {
     return checkCode(CodeValue, CodingSchemeDesignator, CodeMeaning);
+}
+
+
+OFBool DSRCodedEntryValue::isEmpty() const
+{
+    return (CodeValue.length() == 0) && (CodingSchemeDesignator.length() == 0) &&
+           (CodingSchemeVersion.length() == 0) && (CodeMeaning.length() == 0);
 }
 
 
@@ -158,19 +164,22 @@ void DSRCodedEntryValue::print(ostream &stream,
 
 
 E_Condition DSRCodedEntryValue::readItem(DcmItem &dataset,
-                                         OFConsole * /* logStream */)
+                                         OFConsole *logStream)
 {
     /* read BasicCodedEntryAttributes only */
-    E_Condition result = DSRTypes::getStringValueFromDataset(dataset, DCM_CodeValue, CodeValue);
+    E_Condition result = DSRTypes::getAndCheckStringValueFromDataset(dataset, DCM_CodeValue, CodeValue, "1", "1", logStream);
     if (result == EC_Normal)
-        result = DSRTypes::getStringValueFromDataset(dataset, DCM_CodingSchemeDesignator, CodingSchemeDesignator);
+        result = DSRTypes::getAndCheckStringValueFromDataset(dataset, DCM_CodingSchemeDesignator, CodingSchemeDesignator, "1", "1", logStream);
     if (result == EC_Normal)                                             /* conditional (type 1C) */
-        DSRTypes::getStringValueFromDataset(dataset, DCM_CodingSchemeVersion, CodingSchemeVersion);
+        DSRTypes::getAndCheckStringValueFromDataset(dataset, DCM_CodingSchemeVersion, CodingSchemeVersion, "1", "1C", logStream);
     if (result == EC_Normal)
-        result = DSRTypes::getStringValueFromDataset(dataset, DCM_CodeMeaning, CodeMeaning);
-    if (result == EC_Normal)                                             /* optional (type 3) */
-        DSRTypes::getStringValueFromDataset(dataset, DCM_PrivateCodingSchemeCreatorUID, PrivateCodingSchemeCreatorUID);
+    {
+        result = DSRTypes::getAndCheckStringValueFromDataset(dataset, DCM_CodeMeaning, CodeMeaning, "1", "1", logStream);
+        /* optional (type 3) */
+        DSRTypes::getAndCheckStringValueFromDataset(dataset, DCM_PrivateCodingSchemeCreatorUID, PrivateCodingSchemeCreatorUID, "1", "3", logStream);
+    }
     /* tbd: might add check for correct code */
+        
     return result;
 }
 
@@ -194,28 +203,20 @@ E_Condition DSRCodedEntryValue::writeItem(DcmItem &dataset,
 
 E_Condition DSRCodedEntryValue::readSequence(DcmItem &dataset,
                                              const DcmTagKey &tagKey,
+                                             const OFString &type,
                                              OFConsole *logStream)
 {
-    DcmStack stack;
     /* read CodeSequence */
-    E_Condition result = dataset.search(tagKey, stack, ESM_fromHere, OFFalse);
+    DcmSequenceOfItems dseq(tagKey);
+    E_Condition result = DSRTypes::getSequenceFromDataset(dataset, dseq);
+    DSRTypes::checkElementValue(dseq, "1", type, logStream, result);
     if (result == EC_Normal)
     {
-        DcmSequenceOfItems *dseq = (DcmSequenceOfItems *)stack.top();
-        if (dseq != NULL)
+        DcmItem *ditem = dseq.getItem(0);
+        if (ditem != NULL)
         {
-            /* check for more or less than 1 item */
-            if (dseq->card() < 1)
-                DSRTypes::printWarningMessage(logStream, "CodeSequence is empty");
-            else if (dseq->card() > 1)
-                DSRTypes::printWarningMessage(logStream, "CodeSequence contains more than 1 item");
-            DcmItem *ditem = dseq->getItem(0);
-            if (ditem != NULL)
-            {
-                /* read Code */
-                result = readItem(*ditem, logStream);
-            } else
-                result = EC_CorruptedData;
+            /* read Code */
+            result = readItem(*ditem, logStream);
         } else
             result = EC_CorruptedData;
     }
@@ -232,18 +233,24 @@ E_Condition DSRCodedEntryValue::writeSequence(DcmItem &dataset,
     DcmSequenceOfItems *dseq = new DcmSequenceOfItems(tagKey);
     if (dseq != NULL)
     {
-        DcmItem *ditem = new DcmItem();
-        if (ditem != NULL)
+        /* check for empty value */
+        if (isEmpty())
+            result = EC_Normal;
+        else
         {
-            /* write Code */
-            if (isValid())
-                result = writeItem(*ditem, logStream);
-            if (result == EC_Normal)
-                dseq->insert(ditem);
-            else
-                delete ditem;
-        } else
-            result = EC_MemoryExhausted;
+            DcmItem *ditem = new DcmItem();
+            if (ditem != NULL)
+            {
+                /* write Code */
+                if (isValid())
+                    result = writeItem(*ditem, logStream);
+                if (result == EC_Normal)
+                    dseq->insert(ditem);
+                else
+                    delete ditem;
+            } else
+                result = EC_MemoryExhausted;
+        }
         if (result == EC_Normal)
             dataset.insert(dseq);
         else
@@ -261,15 +268,6 @@ E_Condition DSRCodedEntryValue::renderHTML(ostream &stream,
         stream << CodingSchemeVersion << ", ";
     stream << CodeValue << ")";
     return EC_Normal;
-}
-
-
-OFBool DSRCodedEntryValue::checkCode(const OFString &codeValue,
-                                     const OFString &codingSchemeDesignator,
-                                     const OFString &codeMeaning) const
-{
-    /* need to check correctness of the code (code dictionary?) */
-    return (codeValue.length() > 0) && (codingSchemeDesignator.length() > 0) && (codeMeaning.length() > 0);
 }
 
 
@@ -318,10 +316,22 @@ E_Condition DSRCodedEntryValue::setValue(const OFString &codeValue,
 }
 
 
+OFBool DSRCodedEntryValue::checkCode(const OFString &codeValue,
+                                     const OFString &codingSchemeDesignator,
+                                     const OFString &codeMeaning) const
+{
+    /* need to check correctness of the code (code dictionary?) */
+    return (codeValue.length() > 0) && (codingSchemeDesignator.length() > 0) && (codeMeaning.length() > 0);
+}
+
+
 /*
  *  CVS/RCS Log:
  *  $Log: dsrcodvl.cc,v $
- *  Revision 1.1  2000-10-13 07:52:17  joergr
+ *  Revision 1.2  2000-10-18 17:13:36  joergr
+ *  Added check for read methods (VM and type).
+ *
+ *  Revision 1.1  2000/10/13 07:52:17  joergr
  *  Added new module 'dcmsr' providing access to DICOM structured reporting
  *  documents (supplement 23).  Doc++ documentation not yet completed.
  *

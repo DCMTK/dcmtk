@@ -23,8 +23,8 @@
  *    classes: DSRCodeTreeNode
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-10-16 12:01:55 $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  Update Date:      $Date: 2000-10-18 17:12:53 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -73,7 +73,7 @@ E_Condition DSRCodeTreeNode::readContentItem(DcmItem &dataset,
                                              OFConsole *logStream)
 {    
     /* read ConceptCodeSequence */
-    return DSRCodedEntryValue::readSequence(dataset, DCM_ConceptCodeSequence, logStream);
+    return DSRCodedEntryValue::readSequence(dataset, DCM_ConceptCodeSequence, "1" /* type */, logStream);
 }
 
 
@@ -172,7 +172,10 @@ OFBool DSRCodeTreeNode::canAddNode(const E_DocumentType documentType,
 /*
  *  CVS/RCS Log:
  *  $Log: dsrcodtn.cc,v $
- *  Revision 1.2  2000-10-16 12:01:55  joergr
+ *  Revision 1.3  2000-10-18 17:12:53  joergr
+ *  Added check for read methods (VM and type).
+ *
+ *  Revision 1.2  2000/10/16 12:01:55  joergr
  *  Reformatted print output.
  *
  *  Revision 1.1  2000/10/13 07:52:16  joergr

@@ -23,8 +23,8 @@
  *    classes: DSRDocumentTree
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-10-16 16:32:56 $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  Update Date:      $Date: 2000-10-18 17:16:08 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -118,7 +118,7 @@ E_Condition DSRDocumentTree::read(DcmItem &dataset,
     {
         /* first try to read value type */
         OFString string;
-        if (getStringValueFromDataset(dataset, DCM_ValueType, string) == EC_Normal)
+        if (getAndCheckStringValueFromDataset(dataset, DCM_ValueType, string, "1", "1", LogStream) == EC_Normal)
         {
             /* root node should always be a container */
             if (definedTermToValueType(string) == VT_Container)
@@ -275,7 +275,10 @@ size_t DSRDocumentTree::removeNode()
 /*
  *  CVS/RCS Log:
  *  $Log: dsrdoctr.cc,v $
- *  Revision 1.3  2000-10-16 16:32:56  joergr
+ *  Revision 1.4  2000-10-18 17:16:08  joergr
+ *  Added check for read methods (VM and type).
+ *
+ *  Revision 1.3  2000/10/16 16:32:56  joergr
  *  Added const type specifier.
  *
  *  Revision 1.2  2000/10/16 12:04:14  joergr

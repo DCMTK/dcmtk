@@ -23,8 +23,8 @@
  *    classes: DSRImageReferenceValue
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-10-16 12:05:32 $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  Update Date:      $Date: 2000-10-18 17:19:12 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -114,6 +114,12 @@ void DSRImageReferenceValue::clear()
 }
 
 
+OFBool DSRImageReferenceValue::isValid() const
+{
+    return DSRReferenceValue::isValid() && checkPresentationState(PresentationState);
+}
+
+
 OFBool DSRImageReferenceValue::isShort(const size_t flags) const
 {
     return (FrameList.isEmpty()) || !(flags & DSRTypes::HF_renderFullData);
@@ -159,7 +165,7 @@ E_Condition DSRImageReferenceValue::readItem(DcmItem &dataset,
         FrameList.read(dataset, logStream);
     /* read ReferencedSOPSequence (Presentation State, optional) */
     if (result == EC_Normal)
-        PresentationState.readSequence(dataset, logStream);
+        PresentationState.readSequence(dataset, "3" /* type */, logStream);
     return result;
 }
 
@@ -250,13 +256,10 @@ E_Condition DSRImageReferenceValue::setValue(const DSRImageReferenceValue &refer
 E_Condition DSRImageReferenceValue::setPresentationState(const DSRReferenceValue &referenceValue)
 {
     E_Condition result = EC_IllegalCall;
-    if (referenceValue.isValid())
+    if (checkPresentationState(referenceValue))
     {
-        if (referenceValue.getSOPClassUID() == UID_GrayscaleSoftcopyPresentationStateStorage)
-        {
-            PresentationState = referenceValue;
-            result = EC_Normal;
-        }
+        PresentationState = referenceValue;
+        result = EC_Normal;
     }
     return result;
 }
@@ -283,10 +286,20 @@ OFBool DSRImageReferenceValue::checkSOPClassUID(const OFString &sopClassUID) con
 }
 
 
+OFBool DSRImageReferenceValue::checkPresentationState(const DSRReferenceValue &referenceValue) const
+{
+    return referenceValue.isEmpty() || (referenceValue.isValid() &&
+          (referenceValue.getSOPClassUID() == UID_GrayscaleSoftcopyPresentationStateStorage));
+}
+
+
 /*
  *  CVS/RCS Log:
  *  $Log: dsrimgvl.cc,v $
- *  Revision 1.2  2000-10-16 12:05:32  joergr
+ *  Revision 1.3  2000-10-18 17:19:12  joergr
+ *  Added check for read methods (VM and type).
+ *
+ *  Revision 1.2  2000/10/16 12:05:32  joergr
  *  Reformatted print output.
  *  Added new method checking whether an image content item applies to a
  *  certain frame.

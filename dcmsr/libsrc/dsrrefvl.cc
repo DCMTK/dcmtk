@@ -23,8 +23,8 @@
  *    classes: DSRReferenceValue
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-10-16 12:08:02 $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  Update Date:      $Date: 2000-10-18 17:20:45 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -89,6 +89,12 @@ OFBool DSRReferenceValue::isValid() const
 }
 
 
+OFBool DSRReferenceValue::isEmpty() const
+{
+    return (SOPClassUID.length() == 0) && (SOPInstanceUID.length() == 0);
+}
+
+
 E_Condition DSRReferenceValue::print(ostream &stream,
                                      const size_t flags) const
 {
@@ -107,13 +113,13 @@ E_Condition DSRReferenceValue::print(ostream &stream,
 
 
 E_Condition DSRReferenceValue::readItem(DcmItem &dataset,
-                                        OFConsole * /* logStream */)
+                                        OFConsole *logStream)
 {
     /* read ReferencedSOPClassUID */
-    E_Condition result = DSRTypes::getStringValueFromDataset(dataset, DCM_ReferencedSOPClassUID, SOPClassUID);
+    E_Condition result = DSRTypes::getAndCheckStringValueFromDataset(dataset, DCM_ReferencedSOPClassUID, SOPClassUID, "1", "1", logStream, "ReferencedSOPSequence");
     /* read ReferencedSOPInstanceUID */
     if (result == EC_Normal)
-        result = DSRTypes::getStringValueFromDataset(dataset, DCM_ReferencedSOPInstanceUID, SOPInstanceUID);
+        result = DSRTypes::getAndCheckStringValueFromDataset(dataset, DCM_ReferencedSOPInstanceUID, SOPInstanceUID, "1", "1", logStream, "ReferencedSOPSequence");
     return result;
 }
 
@@ -131,28 +137,20 @@ E_Condition DSRReferenceValue::writeItem(DcmItem &dataset,
 
 
 E_Condition DSRReferenceValue::readSequence(DcmItem &dataset,
+                                            const OFString &type,
                                             OFConsole *logStream)
 {
-    DcmStack stack;
     /* read ReferencedSOPSequence */
-    E_Condition result = dataset.search(DCM_ReferencedSOPSequence, stack, ESM_fromHere, OFFalse);
+    DcmSequenceOfItems dseq(DCM_ReferencedSOPSequence);
+    E_Condition result = DSRTypes::getSequenceFromDataset(dataset, dseq);
+    DSRTypes::checkElementValue(dseq, "1", type, logStream, result);
     if (result == EC_Normal)
     {
-        DcmSequenceOfItems *dseq = (DcmSequenceOfItems *)stack.top();
-        if (dseq != NULL)
-        {
-            /* check for more or less than 1 item */
-            if (dseq->card() < 1)
-                DSRTypes::printWarningMessage(logStream, "ReferencedSOPSequence is empty");
-            else if (dseq->card() > 1)
-                DSRTypes::printWarningMessage(logStream, "ReferencedSOPSequence contains more than 1 item");
-            /* read first item */
-            DcmItem *ditem = dseq->getItem(0);
-            if (ditem != NULL)
-                result = readItem(*ditem, logStream);
-            else
-                result = EC_CorruptedData;
-        } else
+        /* read first item */
+        DcmItem *ditem = dseq.getItem(0);
+        if (ditem != NULL)
+            result = readItem(*ditem, logStream);
+        else
             result = EC_CorruptedData;
     }
     return result;
@@ -205,6 +203,34 @@ E_Condition DSRReferenceValue::renderHTML(ostream &docStream,
 }
 
 
+E_Condition DSRReferenceValue::getValue(DSRReferenceValue &referenceValue) const
+{
+    referenceValue = *this;
+    return EC_Normal;
+}
+
+
+E_Condition DSRReferenceValue::setValue(const DSRReferenceValue &referenceValue)
+{    
+    return setValue(referenceValue.SOPClassUID, referenceValue.SOPInstanceUID);
+}
+
+
+E_Condition DSRReferenceValue::setValue(const OFString &sopClassUID,
+                                        const OFString &sopInstanceUID)
+{
+    E_Condition result = EC_IllegalCall;
+    /* check both values before setting them */
+    if (checkSOPClassUID(sopClassUID) && checkSOPInstanceUID(sopInstanceUID))
+    {
+        SOPClassUID = sopClassUID;
+        SOPInstanceUID = sopInstanceUID;
+        result = EC_Normal;
+    }
+    return result;
+}
+
+
 E_Condition DSRReferenceValue::setSOPClassUID(const OFString &sopClassUID)
 {
     E_Condition result = EC_IllegalCall;
@@ -217,13 +243,6 @@ E_Condition DSRReferenceValue::setSOPClassUID(const OFString &sopClassUID)
 }
 
 
-E_Condition DSRReferenceValue::getValue(DSRReferenceValue &referenceValue) const
-{
-    referenceValue = *this;
-    return EC_Normal;
-}
-
-
 E_Condition DSRReferenceValue::setSOPInstanceUID(const OFString &sopInstanceUID)
 {
     E_Condition result = EC_IllegalCall;
@@ -232,25 +251,6 @@ E_Condition DSRReferenceValue::setSOPInstanceUID(const OFString &sopInstanceUID)
         SOPInstanceUID = sopInstanceUID;
         result = EC_Normal;
     }
-    return result;
-}
-
-
-E_Condition DSRReferenceValue::setValue(const OFString &sopClassUID,
-                                        const OFString &sopInstanceUID)
-{
-    E_Condition result = setSOPClassUID(sopClassUID);
-    if (result == EC_Normal)
-        result = setSOPInstanceUID(sopInstanceUID);
-    return result;
-}
-
-
-E_Condition DSRReferenceValue::setValue(const DSRReferenceValue &referenceValue)
-{
-    E_Condition result = setSOPClassUID(referenceValue.SOPClassUID);
-    if (result == EC_Normal)
-        result = setSOPInstanceUID(referenceValue.SOPInstanceUID);
     return result;
 }
 
@@ -270,7 +270,10 @@ OFBool DSRReferenceValue::checkSOPInstanceUID(const OFString &sopInstanceUID) co
 /*
  *  CVS/RCS Log:
  *  $Log: dsrrefvl.cc,v $
- *  Revision 1.2  2000-10-16 12:08:02  joergr
+ *  Revision 1.3  2000-10-18 17:20:45  joergr
+ *  Added check for read methods (VM and type).
+ *
+ *  Revision 1.2  2000/10/16 12:08:02  joergr
  *  Reformatted print output.
  *  Added new options: number nested items instead of indenting them, print SOP
  *  instance UID of referenced composite objects.

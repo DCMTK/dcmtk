@@ -23,8 +23,8 @@
  *    classes: DSRImageTreeNode
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-10-16 12:04:35 $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  Update Date:      $Date: 2000-10-18 17:18:51 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -85,7 +85,7 @@ E_Condition DSRImageTreeNode::readContentItem(DcmItem &dataset,
                                               OFConsole *logStream)
 {
     /* read ReferencedSOPSequence */
-    return DSRImageReferenceValue::readSequence(dataset, logStream);
+    return DSRImageReferenceValue::readSequence(dataset, "1" /* type */, logStream);
 }
 
 
@@ -162,7 +162,10 @@ OFBool DSRImageTreeNode::canAddNode(const E_DocumentType documentType,
 /*
  *  CVS/RCS Log:
  *  $Log: dsrimgtn.cc,v $
- *  Revision 1.2  2000-10-16 12:04:35  joergr
+ *  Revision 1.3  2000-10-18 17:18:51  joergr
+ *  Added check for read methods (VM and type).
+ *
+ *  Revision 1.2  2000/10/16 12:04:35  joergr
  *  Reformatted print output.
  *
  *  Revision 1.1  2000/10/13 07:52:21  joergr

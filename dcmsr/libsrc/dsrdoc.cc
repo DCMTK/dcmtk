@@ -23,8 +23,8 @@
  *    classes: DSRDocument
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-10-17 12:37:14 $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  Update Date:      $Date: 2000-10-18 17:15:43 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -262,11 +262,11 @@ E_Condition DSRDocument::read(DcmItem &dataset)
 
         // --- SOP Common Module ---
         getElementFromDataset(dataset, SOPClassUID);   /* already checked */
-        getElementFromDataset(dataset, SOPInstanceUID);
-        getElementFromDataset(dataset, SpecificCharacterSet);
-        getElementFromDataset(dataset, InstanceCreationDate);
-        getElementFromDataset(dataset, InstanceCreationTime);
-        getElementFromDataset(dataset, InstanceCreatorUID);
+        getAndCheckElementFromDataset(dataset, SOPInstanceUID, "1", "1", LogStream);
+        getAndCheckElementFromDataset(dataset, SpecificCharacterSet, "1-n", "1C", LogStream);
+        getAndCheckElementFromDataset(dataset, InstanceCreationDate, "1", "3", LogStream);
+        getAndCheckElementFromDataset(dataset, InstanceCreationTime, "1", "3", LogStream);
+        getAndCheckElementFromDataset(dataset, InstanceCreatorUID, "1", "3", LogStream);
 
         // --- General Study Module ---
         getAndCheckElementFromDataset(dataset, StudyInstanceUID, "1", "1", LogStream);
@@ -275,10 +275,10 @@ E_Condition DSRDocument::read(DcmItem &dataset)
         getAndCheckElementFromDataset(dataset, ReferringPhysiciansName, "1", "2", LogStream);
         getAndCheckElementFromDataset(dataset, StudyID, "1", "2", LogStream);
         getAndCheckElementFromDataset(dataset, AccessionNumber, "1", "2", LogStream);
-        getElementFromDataset(dataset, StudyDescription);
+        getAndCheckElementFromDataset(dataset, StudyDescription, "1", "3", LogStream);
 
         // --- General series Module ---
-        getElementFromDataset(dataset, SeriesDescription);
+        getAndCheckElementFromDataset(dataset, SeriesDescription, "1", "3", LogStream);
 
         // --- Patient Module ---
         getAndCheckElementFromDataset(dataset, PatientsName, "1", "2", LogStream);
@@ -300,7 +300,7 @@ E_Condition DSRDocument::read(DcmItem &dataset)
         // --- SR Document General Module (M) ---
         getAndCheckElementFromDataset(dataset, InstanceNumber, "1", "1", LogStream);
         getAndCheckElementFromDataset(dataset, CompletionFlag, "1", "1", LogStream);
-        getElementFromDataset(dataset, CompletionFlagDescription);
+        getAndCheckElementFromDataset(dataset, CompletionFlagDescription, "1", "3", LogStream);
         getAndCheckElementFromDataset(dataset, VerificationFlag, "1", "1", LogStream);
         getAndCheckElementFromDataset(dataset, ContentDate, "1", "1", LogStream);
         getAndCheckElementFromDataset(dataset, ContentTime, "1", "1", LogStream);
@@ -622,8 +622,8 @@ E_Condition DSRDocument::getVerifyingObserver(const size_t idx,
                 result = getStringValueFromDataset(*ditem, DCM_VerifyingObserverName, observerName);
             if (result == EC_Normal)
             {
-                /* code is optional */
-                observerCode.readSequence(*ditem, DCM_VerifyingObserverIdentificationCodeSequence, LogStream);
+                /* code is optional (type 2) */
+                observerCode.readSequence(*ditem, DCM_VerifyingObserverIdentificationCodeSequence, "2" /* type */, LogStream);
                 result = getStringValueFromDataset(*ditem, DCM_VerifyingOrganization, organization);
             }
             if (result == EC_Normal)
@@ -1179,7 +1179,7 @@ E_Condition DSRDocument::verifyDocument(const OFString &observerName,
         {
             /* write VerifyingObserverName */
             putStringValueToDataset(*ditem, DCM_VerifyingObserverName, observerName);
-            /* write VerifyingObserverIdentificationCodeSequence (might be empty) */
+            /* write VerifyingObserverIdentificationCodeSequence (might be empty, type 2) */
             observerCode.writeSequence(*ditem, DCM_VerifyingObserverIdentificationCodeSequence, LogStream);
             /* write VerifyingOrganization */
             putStringValueToDataset(*ditem, DCM_VerifyingOrganization, organization);
@@ -1251,7 +1251,10 @@ void DSRDocument::updateAttributes()
 /*
  *  CVS/RCS Log:
  *  $Log: dsrdoc.cc,v $
- *  Revision 1.4  2000-10-17 12:37:14  joergr
+ *  Revision 1.5  2000-10-18 17:15:43  joergr
+ *  Added check for read methods (VM and type).
+ *
+ *  Revision 1.4  2000/10/17 12:37:14  joergr
  *  Added methods to retrieve information on predecessor documents and
  *  verifying observers.
  *  Changed behaviour of createRevisedVersion(): replace all existing sequence

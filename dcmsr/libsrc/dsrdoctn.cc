@@ -23,8 +23,8 @@
  *    classes: DSRDocumentTreeNode
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-10-16 12:03:29 $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  Update Date:      $Date: 2000-10-18 17:16:08 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -220,7 +220,7 @@ E_Condition DSRDocumentTreeNode::readDocumentRelationshipMacro(DcmItem &dataset,
 {
     E_Condition result = EC_Normal;
     /* read ObservationDateTime (conditional) */
-    getStringValueFromDataset(dataset, DCM_ObservationDateTime, ObservationDateTime);
+    getAndCheckStringValueFromDataset(dataset, DCM_ObservationDateTime, ObservationDateTime, "1", "1C", logStream);
     /* tbd: read ContentTemplateSequence */
 
     /* read ContentSequence */
@@ -254,7 +254,7 @@ E_Condition DSRDocumentTreeNode::readDocumentContentMacro(DcmItem &dataset,
     
     /* read ConceptNameCodeSequence (might be empty) */
     if (result == EC_Normal)
-        ConceptName.readSequence(dataset, DCM_ConceptNameCodeSequence, logStream);
+        ConceptName.readSequence(dataset, DCM_ConceptNameCodeSequence, "1C" /* type */, logStream);
     if (result == EC_Normal)
     {
         /* read ContentItem (depending on ValueType) */
@@ -347,7 +347,7 @@ E_Condition DSRDocumentTreeNode::readContentSequence(DcmItem &dataset,
                 if (ditem != NULL)
                 {
                     /* read RelationshipType */
-                    result = getStringValueFromDataset(*ditem, DCM_RelationshipType, string);
+                    result = getAndCheckStringValueFromDataset(*ditem, DCM_RelationshipType, string, "1", "1", logStream);
                     if (result == EC_Normal)
                     {
                         relationshipType = definedTermToRelationshipType(string);
@@ -359,7 +359,7 @@ E_Condition DSRDocumentTreeNode::readContentSequence(DcmItem &dataset,
                             printWarningMessage(logStream, message.c_str());
                         }
                         /* read ValueType (from DocumentContentMacro) - required to create new node */
-                        result = getStringValueFromDataset(*ditem, DCM_ValueType, string);
+                        result = getAndCheckStringValueFromDataset(*ditem, DCM_ValueType, string, "1", "1", logStream);
                     }
                     if (result == EC_Normal)
                     {
@@ -644,7 +644,10 @@ const OFString &DSRDocumentTreeNode::getRelationshipText(const E_RelationshipTyp
 /*
  *  CVS/RCS Log:
  *  $Log: dsrdoctn.cc,v $
- *  Revision 1.2  2000-10-16 12:03:29  joergr
+ *  Revision 1.3  2000-10-18 17:16:08  joergr
+ *  Added check for read methods (VM and type).
+ *
+ *  Revision 1.2  2000/10/16 12:03:29  joergr
  *  Reformatted print output.
  *
  *  Revision 1.1  2000/10/13 07:52:19  joergr

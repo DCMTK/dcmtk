@@ -23,8 +23,8 @@
  *    classes: DSRNumericMeasurementValue
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-10-16 12:06:58 $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  Update Date:      $Date: 2000-10-18 17:19:57 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -86,15 +86,27 @@ void DSRNumericMeasurementValue::clear()
 
 OFBool DSRNumericMeasurementValue::isValid() const
 {
-    return checkNumericValue(NumericValue) && checkMeasurementUnit(MeasurementUnit);
+    return isEmpty() || (checkNumericValue(NumericValue) && checkMeasurementUnit(MeasurementUnit));
+}
+
+
+OFBool DSRNumericMeasurementValue::isEmpty() const
+{
+    return (NumericValue.length() == 0) && MeasurementUnit.isEmpty();
 }
 
 
 E_Condition DSRNumericMeasurementValue::print(ostream &stream,
                                               const size_t /* flags */) const
 {
-    stream << "\"" << NumericValue << "\" ";
-    MeasurementUnit.print(stream, OFTrue /* printCodeValue */, OFTrue /* printInvalid */);
+    if (isEmpty())
+    {
+        /* empty value */
+        stream << "empty";
+    } else {
+        stream << "\"" << NumericValue << "\" ";
+        MeasurementUnit.print(stream, OFTrue /* printCodeValue */, OFTrue /* printInvalid */);
+    }
     return EC_Normal;
 }
 
@@ -103,14 +115,11 @@ E_Condition DSRNumericMeasurementValue::readItem(DcmItem &dataset,
                                                  OFConsole *logStream)
 {
     /* read NumericValue */
-    E_Condition result = DSRTypes::getStringValueFromDataset(dataset, DCM_NumericValue, NumericValue);
-    if (result != EC_Normal)
-        DSRTypes::printWarningMessage(logStream, "NumericValue absent in MeasuredValueSequence");
-    else {
+    E_Condition result = DSRTypes::getAndCheckStringValueFromDataset(dataset, DCM_NumericValue, NumericValue, "1", "1", logStream, "MeasuredValueSequence");
+    if (result == EC_Normal)
+    {
         /* read MeasurementUnitsCodeSequence */
-        result = MeasurementUnit.readSequence(dataset, DCM_MeasurementUnitsCodeSequence, logStream);
-        if (result != EC_Normal)
-            DSRTypes::printWarningMessage(logStream, "MeasurementUnitsCodeSequence absent in MeasuredValueSequence");
+        result = MeasurementUnit.readSequence(dataset, DCM_MeasurementUnitsCodeSequence, "1" /* type */, logStream);
     }
     return result;
 }
@@ -131,27 +140,22 @@ E_Condition DSRNumericMeasurementValue::writeItem(DcmItem &dataset,
 E_Condition DSRNumericMeasurementValue::readSequence(DcmItem &dataset,
                                                      OFConsole *logStream)
 {
-    DcmStack stack;
     /* read MeasuredValueSequence */
-    E_Condition result = dataset.search(DCM_MeasuredValueSequence, stack, ESM_fromHere, OFFalse);
+    DcmSequenceOfItems dseq(DCM_MeasuredValueSequence);
+    E_Condition result = DSRTypes::getSequenceFromDataset(dataset, dseq);
+    DSRTypes::checkElementValue(dseq, "1", "2", logStream, result);
     if (result == EC_Normal)
     {
-        DcmSequenceOfItems *dseq = (DcmSequenceOfItems *)stack.top();
-        if (dseq != NULL)
+        /* check for empty sequence (allowed!) */
+        if (dseq.card() > 0)
         {
-            /* check for more or less than 1 item */
-            if (dseq->card() < 1)
-                DSRTypes::printWarningMessage(logStream, "MeasuredValueSequence is empty");
-            else if (dseq->card() > 1)
-                DSRTypes::printWarningMessage(logStream, "MeasuredValueSequence contains more than 1 item");
             /* read first item */
-            DcmItem *ditem = dseq->getItem(0);
+            DcmItem *ditem = dseq.getItem(0);
             if (ditem != NULL)
                 result = readItem(*ditem, logStream);
             else
                 result = EC_CorruptedData;
-        } else
-            result = EC_CorruptedData;
+        }
     }
     return result;
 }
@@ -165,18 +169,24 @@ E_Condition DSRNumericMeasurementValue::writeSequence(DcmItem &dataset,
     DcmSequenceOfItems *dseq = new DcmSequenceOfItems(DCM_MeasuredValueSequence);
     if (dseq != NULL)
     {
-        DcmItem *ditem = new DcmItem();
-        if (ditem != NULL)
+        /* check for empty value */
+        if (isEmpty())
+            result = EC_Normal;
+        else 
         {
-            /* write item */
-            result = writeItem(*ditem, logStream);
-            if (result == EC_Normal)
-                dseq->insert(ditem);
-            else
-                delete ditem;
-        } else
-            result = EC_MemoryExhausted;
-        /* write sequence */
+            DcmItem *ditem = new DcmItem();
+            if (ditem != NULL)
+            {
+                /* write item */
+                result = writeItem(*ditem, logStream);
+                if (result == EC_Normal)
+                    dseq->insert(ditem);
+                else
+                    delete ditem;
+            } else
+                result = EC_MemoryExhausted;
+        }
+        /* write sequence (might be empty) */
         if (result == EC_Normal)
             dataset.insert(dseq);
         else
@@ -191,8 +201,21 @@ E_Condition DSRNumericMeasurementValue::renderHTML(ostream &docStream,
                                                    size_t & /* annexNumber */,
                                                    OFConsole * /* logStream */) const
 {
-    /* CodeValue contains the name of the measurement unit */
-    docStream << NumericValue << " " << MeasurementUnit.getCodeValue() << endl;
+    if (isEmpty())
+    {
+        /* empty value */
+        docStream << "<i>empty</i>";
+    } else {
+        /* CodeValue contains the name of the measurement unit */
+        docStream << NumericValue << " " << MeasurementUnit.getCodeValue() << endl;
+    }
+    return EC_Normal;
+}
+
+
+E_Condition DSRNumericMeasurementValue::getValue(DSRNumericMeasurementValue &numericMeasurement) const
+{
+    numericMeasurement = *this;
     return EC_Normal;
 }
 
@@ -204,10 +227,24 @@ E_Condition DSRNumericMeasurementValue::getMeasurementUnit(DSRCodedEntryValue &m
 }
 
 
-E_Condition DSRNumericMeasurementValue::getValue(DSRNumericMeasurementValue &numericMeasurement) const
+E_Condition DSRNumericMeasurementValue::setValue(const DSRNumericMeasurementValue &numericMeasurement)
 {
-    numericMeasurement = *this;
-    return EC_Normal;
+    return setValue(numericMeasurement.NumericValue, numericMeasurement.MeasurementUnit);
+}
+
+
+E_Condition DSRNumericMeasurementValue::setValue(const OFString &numericValue,
+                                                 const DSRCodedEntryValue &measurementUnit)
+{
+    E_Condition result = EC_IllegalCall;
+    /* check both values before setting them */
+    if (checkNumericValue(numericValue) && checkMeasurementUnit(measurementUnit))
+    {
+        NumericValue = numericValue;
+        MeasurementUnit = measurementUnit;
+        result = EC_Normal;
+    }
+    return result;
 }
 
 
@@ -235,22 +272,6 @@ E_Condition DSRNumericMeasurementValue::setMeasurementUnit(const DSRCodedEntryVa
 }
 
 
-E_Condition DSRNumericMeasurementValue::setValue(const DSRNumericMeasurementValue &numericMeasurement)
-{
-    return setValue(numericMeasurement.NumericValue, numericMeasurement.MeasurementUnit);
-}
-
-
-E_Condition DSRNumericMeasurementValue::setValue(const OFString &numericValue,
-                                                 const DSRCodedEntryValue &measurementUnit)
-{
-    E_Condition result = setNumericValue(numericValue);
-    if (result == EC_Normal)
-        result = setMeasurementUnit(measurementUnit);
-    return result;
-}
-
-
 OFBool DSRNumericMeasurementValue::checkNumericValue(const OFString &numericValue) const
 {
     return (numericValue.length() > 0);
@@ -266,7 +287,10 @@ OFBool DSRNumericMeasurementValue::checkMeasurementUnit(const DSRCodedEntryValue
 /*
  *  CVS/RCS Log:
  *  $Log: dsrnumvl.cc,v $
- *  Revision 1.2  2000-10-16 12:06:58  joergr
+ *  Revision 1.3  2000-10-18 17:19:57  joergr
+ *  Added check for read methods (VM and type).
+ *
+ *  Revision 1.2  2000/10/16 12:06:58  joergr
  *  Reformatted print output.
  *
  *  Revision 1.1  2000/10/13 07:52:22  joergr

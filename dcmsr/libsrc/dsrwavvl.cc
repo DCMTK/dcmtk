@@ -23,8 +23,8 @@
  *    classes: DSRWaveformReferenceValue
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-10-16 12:11:41 $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  Update Date:      $Date: 2000-10-18 17:25:34 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -85,7 +85,7 @@ void DSRWaveformReferenceValue::clear()
 
 OFBool DSRWaveformReferenceValue::isShort(const size_t flags) const
 {
-    return (ChannelList.isEmpty()) || !(flags & DSRTypes::HF_renderFullData);
+    return ChannelList.isEmpty() || !(flags & DSRTypes::HF_renderFullData);
 }
 
 
@@ -218,7 +218,10 @@ OFBool DSRWaveformReferenceValue::checkSOPClassUID(const OFString &sopClassUID) 
 /*
  *  CVS/RCS Log:
  *  $Log: dsrwavvl.cc,v $
- *  Revision 1.2  2000-10-16 12:11:41  joergr
+ *  Revision 1.3  2000-10-18 17:25:34  joergr
+ *  Added check for read methods (VM and type).
+ *
+ *  Revision 1.2  2000/10/16 12:11:41  joergr
  *  Reformatted print output.
  *  Added new method checking whether a waveform content item applies to a
  *  certain channel.
