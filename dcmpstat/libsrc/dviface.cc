@@ -21,9 +21,9 @@
  *
  *  Purpose: DVPresentationState
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-11-03 10:56:07 $
- *  CVS/RCS Revision: $Revision: 1.145 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2003-12-19 13:49:57 $
+ *  CVS/RCS Revision: $Revision: 1.146 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -108,6 +108,9 @@ END_EXTERN_C
 #endif
 
 #ifdef WITH_OPENSSL
+#include "tlstrans.h"
+#include "tlslayer.h"
+
 BEGIN_EXTERN_C
 #include <openssl/evp.h>
 #include <openssl/x509.h>
@@ -3773,26 +3776,114 @@ OFCondition DVInterface::terminatePrintServer()
   DIC_NODENAME peerHost;
   T_ASC_Association *assoc=NULL;
   const char *target = NULL;
-
+  OFBool useTLS = OFFalse;
+  
   writeLogMessage(DVPSM_informational, "DCMPSTAT", "Terminating print server process ...");
+
+#ifdef WITH_OPENSSL
+  /* TLS directory */
+  const char *current = NULL;
+  const char *tlsFolder = getTLSFolder();
+  if (tlsFolder==NULL) tlsFolder = ".";
+
+  /* key file format */
+  int keyFileFormat = SSL_FILETYPE_PEM;
+  if (! getTLSPEMFormat()) keyFileFormat = SSL_FILETYPE_ASN1;
+#endif
 
   Uint32 numberOfPrinters = getNumberOfTargets(DVPSE_printLocal);
   if (numberOfPrinters > 0) for (Uint32 i=0; i < numberOfPrinters; i++)
   {
-  	target = getTargetID(i, DVPSE_printLocal);
+    target = getTargetID(i, DVPSE_printLocal);
+    useTLS = getTargetUseTLS(target);
+
     OFCondition cond = ASC_initializeNetwork(NET_REQUESTOR, 0, 1000, &net);
     if (cond.good())
     {
       cond = ASC_createAssociationParameters(&params, DEFAULT_MAXPDU);
       if (cond.good())
       {
+        if (useTLS)
+        {
+#ifdef WITH_OPENSSL
+          /* certificate file */
+          OFString tlsCertificateFile(tlsFolder);
+          tlsCertificateFile += PATH_SEPARATOR;
+          current = getTargetCertificate(target);
+          if (current) tlsCertificateFile += current; else tlsCertificateFile += "sitecert.pem";
+          
+          /* private key file */
+          OFString tlsPrivateKeyFile(tlsFolder);
+          tlsPrivateKeyFile += PATH_SEPARATOR;
+          current = getTargetPrivateKey(target);
+          if (current) tlsPrivateKeyFile += current; else tlsPrivateKeyFile += "sitekey.pem";
+          
+          /* private key password */
+          const char *tlsPrivateKeyPassword = getTargetPrivateKeyPassword(target);
+          
+          /* DH parameter file */
+          OFString tlsDHParametersFile;
+          current = getTargetDiffieHellmanParameters(target);
+          if (current)
+          {
+            tlsDHParametersFile = tlsFolder;
+            tlsDHParametersFile += PATH_SEPARATOR;
+            tlsDHParametersFile += current;
+          }
+          
+          /* random seed file */
+          OFString tlsRandomSeedFile(tlsFolder);
+          tlsRandomSeedFile += PATH_SEPARATOR;
+          current = getTargetRandomSeed(target);
+          if (current) tlsRandomSeedFile += current; else tlsRandomSeedFile += "siteseed.bin";
+          
+          /* CA certificate directory */
+          const char *tlsCACertificateFolder = getTLSCACertificateFolder();
+          if (tlsCACertificateFolder==NULL) tlsCACertificateFolder = ".";
+          
+          /* ciphersuites */
+          OFString tlsCiphersuites(SSL3_TXT_RSA_DES_192_CBC3_SHA);
+          Uint32 tlsNumberOfCiphersuites = getTargetNumberOfCipherSuites(target);
+          if (tlsNumberOfCiphersuites > 0)
+          {
+            tlsCiphersuites.clear();
+            OFString currentSuite;
+            const char *currentOpenSSL;
+            for (Uint32 ui=0; ui<tlsNumberOfCiphersuites; ui++)
+            {
+              getTargetCipherSuite(target, ui, currentSuite);
+              if (NULL != (currentOpenSSL = DcmTLSTransportLayer::findOpenSSLCipherSuiteName(currentSuite.c_str())))
+              {
+                if (tlsCiphersuites.length() > 0) tlsCiphersuites += ":";
+                tlsCiphersuites += currentOpenSSL;
+              }
+            }
+          }
+          DcmTLSTransportLayer *tLayer = new DcmTLSTransportLayer(DICOM_APPLICATION_REQUESTOR, tlsRandomSeedFile.c_str());
+          if (tLayer)
+          {
+            if (tlsCACertificateFolder) tLayer->addTrustedCertificateDir(tlsCACertificateFolder, keyFileFormat);
+            if (tlsDHParametersFile.size() > 0) tLayer->setTempDHParameters(tlsDHParametersFile.c_str());
+            tLayer->setPrivateKeyPasswd(tlsPrivateKeyPassword); // never prompt on console
+            tLayer->setPrivateKeyFile(tlsPrivateKeyFile.c_str(), keyFileFormat);
+            tLayer->setCertificateFile(tlsCertificateFile.c_str(), keyFileFormat);
+            tLayer->setCipherSuites(tlsCiphersuites.c_str());
+            tLayer->setCertificateVerification(DCV_ignoreCertificate);
+            ASC_setTransportLayer(net, tLayer, 1);
+          }
+#else
+          // we cannot shutdown a TLS process since we're compiled without OpenSSL support
+          cond = EC_IllegalCall;
+#endif
+        }
+
         ASC_setAPTitles(params, getNetworkAETitle(), getTargetAETitle(target), NULL);
         gethostname(localHost, sizeof(localHost) - 1);
         sprintf(peerHost, "%s:%d", getTargetHostname(target), OFstatic_cast(int, getTargetPort(target)));
         ASC_setPresentationAddresses(params, localHost, peerHost);
 
         const char* transferSyntaxes[] = { UID_LittleEndianImplicitTransferSyntax };
-        cond = ASC_addPresentationContext(params, 1, UID_PrivateShutdownSOPClass, transferSyntaxes, 1);
+        if (cond.good()) cond = ASC_addPresentationContext(params, 1, UID_PrivateShutdownSOPClass, transferSyntaxes, 1);
         if (cond.good())
         {
           cond = ASC_requestAssociation(net, params, &assoc);
@@ -4321,7 +4412,11 @@ void DVInterface::disableImageAndPState()
 /*
  *  CVS/RCS Log:
  *  $Log: dviface.cc,v $
- *  Revision 1.145  2003-11-03 10:56:07  joergr
+ *  Revision 1.146  2003-12-19 13:49:57  meichel
+ *  DVInterface::terminatePrintServer now also correctly terminates
+ *    TLS-based print server processes.
+ *
+ *  Revision 1.145  2003/11/03 10:56:07  joergr
  *  Modified static type casts on DVPSLogMessageLevel variables to compile with
  *  gcc 2.95.
  *

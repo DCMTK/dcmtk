@@ -18,12 +18,14 @@ dcmsrdir=$(top_srcdir)/../dcmsr
 imagectndir=$(top_srcdir)/../imagectn
 dcmnetdir=$(top_srcdir)/../dcmnet
 dcmsigndir=$(top_srcdir)/../dcmsign
+dcmtlsdir=$(top_srcdir)/../dcmtls
 
 LOCALINCLUDES=-I$(ofstddir)/include -I$(dcmdatadir)/include -I$(dcmimgledir)/include \
   -I$(dcmsrdir)/include -I$(imagectndir)/include -I$(dcmnetdir)/include \
   -I$(dcmsigndir)/include -I$(includedir)/ofstd -I$(includedir)/dcmdata \
   -I$(includedir)/dcmimgle -I$(includedir)/dcmsr -I$(includedir)/imagectn \
-  -I$(includedir)/dcmnet -I$(includedir)/dcmsign
+  -I$(includedir)/dcmnet -I$(includedir)/dcmsign \
+  -I$(dcmtlsdir)/include -I$(includedir)/dcmtls
 
 LOCALDEFS=
 
