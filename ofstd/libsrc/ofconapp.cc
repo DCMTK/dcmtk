@@ -21,10 +21,10 @@
  *
  *  Purpose: Handle console applications (Source)
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-04-21 12:41:06 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 1999-04-26 16:36:22 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/libsrc/ofconapp.cc,v $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -152,6 +152,7 @@ void OFConsoleApplication::checkValue(const OFCommandLine::E_ValueStatus status,
     }
 }
 
+
 void OFConsoleApplication::checkParam(const OFCommandLine::E_ParamValueStatus status,
                                       OFCommandLine *cmd)
 {
@@ -167,11 +168,29 @@ void OFConsoleApplication::checkParam(const OFCommandLine::E_ParamValueStatus st
 }
 
 
+void OFConsoleApplication::checkDependence(const char *subOpt,
+                                           const char *baseOpt,
+                                           OFBool condition)
+{
+    if (!condition)
+    {
+        OFString str = subOpt;
+        str += " only allowed with ";
+        str += baseOpt;
+        printError(str.c_str());
+    }
+}
+
+
 /*
  *
  * CVS/RCS Log:
  * $Log: ofconapp.cc,v $
- * Revision 1.3  1999-04-21 12:41:06  meichel
+ * Revision 1.4  1999-04-26 16:36:22  joergr
+ * Added support to check dependences between different options and report
+ * error messages if necessary.
+ *
+ * Revision 1.3  1999/04/21 12:41:06  meichel
  * Added method OFConsoleApplication::checkParam()
  *
  * Revision 1.2  1999/03/24 17:03:57  joergr
@@ -181,7 +200,6 @@ void OFConsoleApplication::checkParam(const OFCommandLine::E_ParamValueStatus st
  * Revision 1.1  1999/02/08 12:00:14  joergr
  * Added class to handle console applications (with or w/o command line
  * arguments).
- *
  *
  *
  */

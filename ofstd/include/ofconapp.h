@@ -21,10 +21,10 @@
  *
  *  Purpose: Handle console applications (Header)
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-04-21 12:41:03 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 1999-04-26 16:34:34 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/include/Attic/ofconapp.h,v $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -54,7 +54,10 @@ class OFString;
  *  class declaration  *
  *---------------------*/
 
-/** A class to handle console application
+/** A class to handle console application.
+ *  Builds an envelope to the OFCommandLine class to provide a consistent
+ *  behaviour for all DCMTK console applications.
+ *  Performs console output operations and error checking.
  */  
 class OFConsoleApplication
 {
@@ -133,13 +136,29 @@ class OFConsoleApplication
     void checkParam(const OFCommandLine::E_ParamValueStatus status,
                     OFCommandLine *cmd = NULL);
 
+    /** check dependence between sub and base option
+     *
+     ** @param  subOpt     option to be checked
+     *  @param  baseOpt    base option required for sub option
+     *  @param  condition  if false error message is printed (i.e. base option is absent)
+     */
+    void checkDependence(const char *subOpt,
+                         const char *baseOpt,
+                         OFBool condition);
+
+
  private:
 
+    /// Name of the application (short form)
     OFString Name;
+    /// Short description of the application
     OFString Description;
+    /// Identification string (rcsid)
     OFString Identification;
 
+    /// Pointer to output stream for error messages (default: err)
     ostream  *Output;
+    /// Pointer to associated CommandLine class
     OFCommandLine *CmdLine;
 
 
@@ -157,7 +176,11 @@ class OFConsoleApplication
  *
  * CVS/RCS Log:
  * $Log: ofconapp.h,v $
- * Revision 1.3  1999-04-21 12:41:03  meichel
+ * Revision 1.4  1999-04-26 16:34:34  joergr
+ * Added support to check dependences between different options and report
+ * error messages if necessary.
+ *
+ * Revision 1.3  1999/04/21 12:41:03  meichel
  * Added method OFConsoleApplication::checkParam()
  *
  * Revision 1.2  1999/03/22 09:00:49  joergr
