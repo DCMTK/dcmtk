@@ -9,8 +9,8 @@
 ** ByteOrder functions
 **
 **
-** Last Update:   $Author: andreas $
-** Revision:      $Revision: 1.4 $
+** Last Update:   $Author: meichel $
+** Revision:      $Revision: 1.5 $
 ** Status:	  $State: Exp $
 **
 */
@@ -38,7 +38,7 @@ E_Condition swapIfNecessary(const E_ByteOrder newByteOrder,
 void swapBytes(void * value, const Uint32 byteLength, 
 			   const size_t valWidth);
 
-const Uint16 swapShort(const Uint16 toSwap);
+Uint16 swapShort(const Uint16 toSwap);
 
 inline void swap2Bytes(Uint8 * toSwap)
 {

@@ -8,8 +8,8 @@
 ** handling of transfer syntax
 **
 ** 
-** Last Update:	  $Author: hewett $
-** Revision:      $Revision: 1.6 $
+** Last Update:	  $Author: meichel $
+** Revision:      $Revision: 1.7 $
 ** Status:        $State: Exp $
 **
 */
@@ -97,27 +97,27 @@ public:
     DcmXfer & operator = ( const E_TransferSyntax xfer );
     DcmXfer & operator = ( const DcmXfer &newtag );
 
-    inline const E_TransferSyntax getXfer() const  { return xferSyn; }
-    inline const E_ByteOrder getByteOrder() const { return byteOrder; }
+    inline E_TransferSyntax getXfer() const  { return xferSyn; }
+    inline E_ByteOrder getByteOrder() const { return byteOrder; }
     inline const char* getXferName() const { return xferName; }
     inline const char* getXferID() const { return xferID; }
-    inline const OFBool isLittleEndian() const 
+    inline OFBool isLittleEndian() const 
 	{ 
 		return byteOrder == EBO_LittleEndian; 
 	}
-    inline const OFBool isBigEndian() const { return byteOrder == EBO_BigEndian; }
-    inline const OFBool isImplicitVR() const { return vrType == EVT_Implicit; }
-    inline const OFBool isExplicitVR() const { return vrType == EVT_Explicit; }
-    inline const OFBool isEncapsulated() const 
+    inline OFBool isBigEndian() const { return byteOrder == EBO_BigEndian; }
+    inline OFBool isImplicitVR() const { return vrType == EVT_Implicit; }
+    inline OFBool isExplicitVR() const { return vrType == EVT_Explicit; }
+    inline OFBool isEncapsulated() const 
 	{ 
 		return encapsulated == EJE_Encapsulated; 
 	}
-    inline const OFBool isNotEncapsulated() const
+    inline OFBool isNotEncapsulated() const
 	{ 
 		return encapsulated == EJE_NotEncapsulated; 
 	}
-    inline const Uint32 getJPEGProcess8Bit() const { return JPEGProcess8; }
-    inline const Uint32 getJPEGProcess12Bit() const { return JPEGProcess12;}
+    inline Uint32 getJPEGProcess8Bit() const { return JPEGProcess8; }
+    inline Uint32 getJPEGProcess12Bit() const { return JPEGProcess12;}
 
     /* return the number of bytes needed to describe the tag, length, VR 
     ** and any reserved fields for this transfer syntax when encoding the 

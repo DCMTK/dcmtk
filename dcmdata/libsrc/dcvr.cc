@@ -10,8 +10,8 @@
 ** Implementation of the DcmVR class for Value Representation
 **
 **
-** Last Update:   $Author: hewett $
-** Revision:      $Revision: 1.11 $
+** Last Update:   $Author: meichel $
+** Revision:      $Revision: 1.12 $
 ** Status:	  $State: Exp $
 **
 */
@@ -241,7 +241,7 @@ DcmVR::getValidEVR() const
     return evr;
 }
 
-const size_t
+size_t
 DcmVR::getValueWidth(void) const
 {
     return DcmVRDict[vr].fValWidth;

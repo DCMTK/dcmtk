@@ -9,8 +9,8 @@
  * This file contains a Stack-Definition
  * 
  * 
- * Last Update:	  $Author: andreas $
- * Revision:      $Revision: 1.4 $
+ * Last Update:	  $Author: meichel $
+ * Revision:      $Revision: 1.5 $
  * Status:        $State: Exp $
  *
  */
@@ -60,7 +60,7 @@ public:
     DcmObject* top();
     DcmObject* elem(const unsigned long number);
     OFBool empty();
-    const unsigned long card();
+    unsigned long card();
     void clear();
 };
 

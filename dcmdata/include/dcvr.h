@@ -10,8 +10,8 @@
 ** Definition of the DcmVR class for Value Representation
 **
 **
-** Last Update:   $Author: hewett $
-** Revision:      $Revision: 1.6 $
+** Last Update:   $Author: meichel $
+** Revision:      $Revision: 1.7 $
 ** Status:	  $State: Exp $
 **
 */
@@ -115,7 +115,7 @@ public:
     DcmEVR getValidEVR() const;
     const char* getVRName() const ;
     const char* getValidVRName() const;
-	const size_t getValueWidth(void) const;
+    size_t getValueWidth(void) const;
 	
     /* returns true if VR is a standard DICOM VR */
     OFBool isStandard() const;

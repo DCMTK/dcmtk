@@ -9,8 +9,8 @@
 ** ByteOrder functions
 **
 **
-** Last Update:   $Author: andreas $
-** Revision:      $Revision: 1.7 $
+** Last Update:   $Author: meichel $
+** Revision:      $Revision: 1.8 $
 ** Status:	  $State: Exp $
 **
 */
@@ -94,7 +94,7 @@ void swapBytes(void * value, const Uint32 byteLength,
 }
 
 
-const Uint16 swapShort(const Uint16 toSwap)
+Uint16 swapShort(const Uint16 toSwap)
 {
 	Uint8 * swapped = (Uint8 *)&toSwap;
 	swap2Bytes(swapped);

@@ -9,8 +9,8 @@
  * Implementation of the stack-class
  * 
  * 
- * Last Update:	  $Author: andreas $
- * Revision:      $Revision: 1.6 $
+ * Last Update:	  $Author: meichel $
+ * Revision:      $Revision: 1.7 $
  * Status:        $State: Exp $
  *
  */
@@ -187,7 +187,7 @@ DcmObject* DcmStack::top()
 // ********************************
 
 
-const unsigned long DcmStack::card()
+unsigned long DcmStack::card()
 {
     return cardinality;
 }
