@@ -22,9 +22,9 @@
  *  Purpose: DicomOverlay (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1998-11-27 15:42:39 $
+ *  Update Date:      $Date: 1998-11-30 12:24:26 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/diovlay.h,v $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -154,7 +154,7 @@ class DiOverlay : public DiObjectCounter
         return Top;
     }
         
-    inline int hasEmbeddedData() const;
+    int hasEmbeddedData() const;
         
     inline DiOverlayPlane *getPlane(const unsigned long plane) const
     {
@@ -193,7 +193,10 @@ class DiOverlay : public DiObjectCounter
 **
 ** CVS/RCS Log:
 ** $Log: diovlay.h,v $
-** Revision 1.1  1998-11-27 15:42:39  joergr
+** Revision 1.2  1998-11-30 12:24:26  joergr
+** Removed wrong 'inline' from method declaration (reported by MSVC5).
+**
+** Revision 1.1  1998/11/27 15:42:39  joergr
 ** Added copyright message.
 ** Added method to detach pixel data if it is no longer needed.
 ** Replaced delete by delete[] for array types.
