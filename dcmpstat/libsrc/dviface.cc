@@ -22,8 +22,8 @@
  *  Purpose: DVPresentationState
  *
  *  Last Update:      $Author: vorwerk $
- *  Update Date:      $Date: 1999-01-04 13:28:11 $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  Update Date:      $Date: 1999-01-06 16:23:06 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -468,10 +468,16 @@ DVIFhierarchyStatus DVInterface::getSeriesStatus()
 
 OFBool DVInterface::isPresentationStateSeries()
 {
-  if (strcmp(selectedSeries,"1.2.840.10008.5.1.4.1.1.11.1")==0)
-    return OFTrue;
-  else
-    return OFFalse; 
+  Uint32 num;
+  num=getNumberOfInstances();
+  for (Uint32 i=0; i<num; i++){
+	  if (selectInstance(i)==EC_Normal) {
+		  if ((strcmp(getSeriesUID(),selectedSeries)==0) && (strcmp(getModality(),"PR")!=0))
+			  return OFTrue;
+	  }
+	}
+  return OFFalse;
+ 
 }
 
 
@@ -681,7 +687,10 @@ E_Condition DVInterface::saveFileFormat(const char *filename,
 /*
  *  CVS/RCS Log:
  *  $Log: dviface.cc,v $
- *  Revision 1.5  1999-01-04 13:28:11  vorwerk
+ *  Revision 1.6  1999-01-06 16:23:06  vorwerk
+ *  isPresentationStateSeries() searching now for PR instances in a series.
+ *
+ *  Revision 1.5  1999/01/04 13:28:11  vorwerk
  *  line inserted
  *
  *  Revision 1.4  1999/01/04 13:10:30  vorwerk
