@@ -22,9 +22,9 @@
  *  Purpose: Interface of class DcmItem
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-10-01 15:01:14 $
+ *  Update Date:      $Date: 2001-10-02 11:46:45 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcitem.h,v $
- *  CVS/RCS Revision: $Revision: 1.28 $
+ *  CVS/RCS Revision: $Revision: 1.29 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -209,8 +209,34 @@ public:
                                         OFString &value,
                                         const OFBool searchIntoSub = OFFalse);
 
+    /** find element and get value as an unsigned 8-bit integer.
+     *  Applicable to the following VRs: OB
+     *  The result variable 'value' is automatically set to zero if an error occurs.
+     *  @param tagKey DICOM tag specifying the attribute to be searched for
+     *  @param value variable in which the element value is stored
+     *  @param pos index of the value in case of multi-valued elements (0..vm-1)
+     *  @param searchIntoSub flag indicating whether to search into sequences or not
+     *  @return EC_Normal upon success, an error code otherwise.
+     */
+    OFCondition findAndGetUint8(const DcmTagKey& tagKey,
+                                Uint8 &value,
+                                const unsigned long pos = 0,
+                                const OFBool searchIntoSub = OFFalse);
+
+    /** find element and get value as an array of unsigned 8-bit integers.
+     *  Applicable to the following VRs: OB
+     *  The result variable 'value' is automatically set to NULL if an error occurs.
+     *  @param tagKey DICOM tag specifying the attribute to be searched for
+     *  @param value variable in which the element value is stored
+     *  @param searchIntoSub flag indicating whether to search into sequences or not
+     *  @return EC_Normal upon success, an error code otherwise.
+     */
+    OFCondition findAndGetUint8Array(const DcmTagKey& tagKey,
+                                     Uint8 *&value,
+                                     const OFBool searchIntoSub = OFFalse);
+
     /** find element and get value as an unsigned 16-bit integer.
-     *  Applicable to the following VRs: US
+     *  Applicable to the following VRs: OW, US
      *  The result variable 'value' is automatically set to zero if an error occurs.
      *  @param tagKey DICOM tag specifying the attribute to be searched for
      *  @param value variable in which the element value is stored
@@ -341,6 +367,19 @@ public:
     OFCondition putAndInsertOFStringArray(const DcmTagKey& tagKey,
                                           const OFString &value,
                                           const OFBool replaceOld = OFTrue);
+
+    /** create new element, put specified value to it and insert the element into the dataset/item.
+     *  Applicable to the following VRs: OB
+     *  @param tagKey DICOM tag specifying the attribute to be created
+     *  @param value value to be set for the new element (might be NULL)
+     *  @param count number of values (= bytes in this case) to be copied from 'value'
+     *  @param replaceOld flag indicating whether to replace an existing element or not
+     *  @return EC_Normal upon success, an error code otherwise.
+     */
+    OFCondition putAndInsertUint8Array(const DcmTagKey& tagKey,
+                                       const Uint8 *value,
+                                       const unsigned long count,
+                                       const OFBool replaceOld = OFTrue);
 
     /** create new element, put specified value to it and insert the element into the dataset/item.
      *  Applicable to the following VRs: US
@@ -482,7 +521,10 @@ OFCondition nextUp(DcmStack & stack);
 /*
 ** CVS/RCS Log:
 ** $Log: dcitem.h,v $
-** Revision 1.28  2001-10-01 15:01:14  joergr
+** Revision 1.29  2001-10-02 11:46:45  joergr
+** Added functions to get/put 8 bit values/arrays from/to an item/dataset.
+**
+** Revision 1.28  2001/10/01 15:01:14  joergr
 ** Introduced new general purpose functions to get/put DICOM element values
 ** from/to an item/dataset - removed some old and rarely used functions.
 **

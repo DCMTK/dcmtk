@@ -22,9 +22,9 @@
  *  Purpose: class DcmItem
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-10-01 15:04:14 $
+ *  Update Date:      $Date: 2001-10-02 11:48:01 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcitem.cc,v $
- *  CVS/RCS Revision: $Revision: 1.58 $
+ *  CVS/RCS Revision: $Revision: 1.59 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1817,6 +1817,57 @@ DcmItem::findAndGetOFStringArray(const DcmTagKey& tagKey,
 
 
 OFCondition
+DcmItem::findAndGetUint8(const DcmTagKey& tagKey,
+                         Uint8 &value,
+                         const unsigned long pos,
+                         const OFBool searchIntoSub)
+{
+    DcmStack stack;
+    /* find element */
+    OFCondition status = search(tagKey, stack, ESM_fromHere, searchIntoSub);
+    if (status == EC_Normal)
+    {
+        status = EC_IllegalCall;
+        DcmElement *elem = (DcmElement *)stack.top();
+        /* get value */
+        /* get value */
+        if (elem != NULL)
+            status = elem->getUint8(value, pos);
+        else
+            status = EC_IllegalCall;
+    }
+    /* reset value */
+    if (status != EC_Normal)
+        value = 0;
+    return status;
+}
+
+
+OFCondition
+DcmItem::findAndGetUint8Array(const DcmTagKey& tagKey,
+                              Uint8 *&value,
+                              const OFBool searchIntoSub)
+{
+    DcmStack stack;
+    /* find element */
+    OFCondition status = search(tagKey, stack, ESM_fromHere, searchIntoSub);
+    if (status == EC_Normal)
+    {
+        DcmElement *elem = (DcmElement *)stack.top();
+        /* get value */
+        if (elem != NULL)
+            status = elem->getUint8Array(value);
+        else
+            status = EC_IllegalCall;
+    }
+    /* reset value */
+    if (status != EC_Normal)
+        value = NULL;
+    return status;
+}
+
+
+OFCondition
 DcmItem::findAndGetUint16(const DcmTagKey& tagKey,
                           Uint16 &value,
                           const unsigned long pos,
@@ -2205,6 +2256,36 @@ DcmItem::putAndInsertUint16(const DcmTagKey& tagKey,
 
 
 OFCondition
+DcmItem::putAndInsertUint8Array(const DcmTagKey& tagKey,
+                                const Uint8 *value,
+                                const unsigned long count,
+                                const OFBool replaceOld)
+{
+    OFCondition status = EC_IllegalCall;
+    DcmTag tag(tagKey);
+    /* create new element */
+    DcmElement *elem = NULL;
+    if (tag.getEVR()== EVR_OB)
+    {
+        elem = new DcmOtherByteOtherWord(tag);
+        if (elem != NULL)
+        {
+            /* put value */
+            status = elem->putUint8Array(value, count);
+            /* insert into dataset/item */
+            if (status == EC_Normal)
+                status = insert(elem, replaceOld);
+            /* could not be inserted, therefore, delete it immediately */
+            if (status != EC_Normal)
+                delete elem;
+        } else
+            status = EC_MemoryExhausted;
+    }
+    return status;
+}
+
+
+OFCondition
 DcmItem::putAndInsertUint16Array(const DcmTagKey& tagKey,
                                  const Uint16 *value,
                                  const unsigned long count,
@@ -2417,7 +2498,10 @@ DcmItem::putAndInsertFloat64(const DcmTagKey& tagKey,
 /*
 ** CVS/RCS Log:
 ** $Log: dcitem.cc,v $
-** Revision 1.58  2001-10-01 15:04:14  joergr
+** Revision 1.59  2001-10-02 11:48:01  joergr
+** Added functions to get/put 8 bit values/arrays from/to an item/dataset.
+**
+** Revision 1.58  2001/10/01 15:04:14  joergr
 ** Introduced new general purpose functions to get/put DICOM element values
 ** from/to an item/dataset - removed some old and rarely used functions.
 ** Added "#include <iomanip.h>" to keep gcc 3.0 quiet.
