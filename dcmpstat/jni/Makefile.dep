@@ -1,4 +1,4 @@
-DVInterface.o: DVInterface.cxx J2Ci_jDVInterface.h \
+DVInterface.o: DVInterface.cc J2Ci_jDVInterface.h \
  J2Ci_jDVPresentationState.h jInterface.h /usr/include/errno.h \
  ../../config/include/osconfig.h ../include/dviface.h \
  ../../dcmdata/include/dctk.h ../../dcmdata/include/dctypes.h \
@@ -11,22 +11,22 @@ DVInterface.o: DVInterface.cxx J2Ci_jDVInterface.h \
  ../../dcmdata/include/dctag.h ../../dcmdata/include/dcdicent.h \
  ../../dcmdata/include/dchashdi.h ../../ofstd/include/oflist.h \
  ../../dcmdata/include/dcdict.h ../../dcmdata/include/dcdeftag.h \
- ../../dcmdata/include/dcobject.h ../../dcmdata/include/dclist.h \
- ../../dcmdata/include/dcstack.h ../../dcmdata/include/dcelem.h \
- ../../dcmdata/include/dcitem.h ../../dcmdata/include/dcvrui.h \
- ../../dcmdata/include/dcbytstr.h ../../dcmdata/include/dcmetinf.h \
- ../../dcmdata/include/dcdatset.h ../../dcmdata/include/dcsequen.h \
- ../../dcmdata/include/dcfilefo.h ../../dcmdata/include/dcdicdir.h \
- ../../dcmdata/include/dcdirrec.h ../../dcmdata/include/dcvrulup.h \
- ../../dcmdata/include/dcvrul.h ../../dcmdata/include/dcpixseq.h \
- ../../dcmdata/include/dcvrae.h ../../dcmdata/include/dcvras.h \
- ../../dcmdata/include/dcvrcs.h ../../dcmdata/include/dcvrda.h \
- ../../dcmdata/include/dcvrds.h ../../dcmdata/include/dcvrdt.h \
- ../../dcmdata/include/dcvris.h ../../dcmdata/include/dcvrtm.h \
- ../../dcmdata/include/dcchrstr.h ../../dcmdata/include/dcvrlo.h \
- ../../dcmdata/include/dcvrlt.h ../../dcmdata/include/dcvrpn.h \
- ../../dcmdata/include/dcvrsh.h ../../dcmdata/include/dcvrst.h \
- ../../dcmdata/include/dcvrut.h ../../dcmdata/include/dcvrvs.h \
+ ../../dcmdata/include/dcobject.h ../../ofstd/include/ofconsol.h \
+ ../../dcmdata/include/dclist.h ../../dcmdata/include/dcstack.h \
+ ../../dcmdata/include/dcelem.h ../../dcmdata/include/dcitem.h \
+ ../../dcmdata/include/dcvrui.h ../../dcmdata/include/dcbytstr.h \
+ ../../dcmdata/include/dcmetinf.h ../../dcmdata/include/dcdatset.h \
+ ../../dcmdata/include/dcsequen.h ../../dcmdata/include/dcfilefo.h \
+ ../../dcmdata/include/dcdicdir.h ../../dcmdata/include/dcdirrec.h \
+ ../../dcmdata/include/dcvrulup.h ../../dcmdata/include/dcvrul.h \
+ ../../dcmdata/include/dcpixseq.h ../../dcmdata/include/dcvrae.h \
+ ../../dcmdata/include/dcvras.h ../../dcmdata/include/dcvrcs.h \
+ ../../dcmdata/include/dcvrda.h ../../dcmdata/include/dcvrds.h \
+ ../../dcmdata/include/dcvrdt.h ../../dcmdata/include/dcvris.h \
+ ../../dcmdata/include/dcvrtm.h ../../dcmdata/include/dcchrstr.h \
+ ../../dcmdata/include/dcvrlo.h ../../dcmdata/include/dcvrlt.h \
+ ../../dcmdata/include/dcvrpn.h ../../dcmdata/include/dcvrsh.h \
+ ../../dcmdata/include/dcvrst.h ../../dcmdata/include/dcvrut.h \
  ../../dcmdata/include/dcvrobow.h ../../dcmdata/include/dcpixel.h \
  ../../dcmdata/include/dcvrpobw.h ../../dcmdata/include/dcovlay.h \
  ../../dcmdata/include/dcvrat.h ../../dcmdata/include/dcvrss.h \
@@ -53,64 +53,9 @@ DVInterface.o: DVInterface.cxx J2Ci_jDVInterface.h \
  ../../dcmimgle/include/dibaslut.h ../../dcmimgle/include/dimoopx.h \
  ../../dcmimgle/include/didispfn.h ../../dcmimgle/include/didislut.h \
  ../include/dvpstx.h ../include/dvpsgr.h ../include/dvpscu.h \
- ../include/dvpssp.h ../include/dvpsibl.h ../include/dvpspr.h
-DVPresentationState.o: DVPresentationState.cxx \
- J2Ci_jDVPresentationState.h jInterface.h /usr/include/errno.h \
- ../../config/include/osconfig.h ../include/dviface.h \
- ../../dcmdata/include/dctk.h ../../dcmdata/include/dctypes.h \
- ../../ofstd/include/oftypes.h ../../dcmdata/include/dcswap.h \
- ../../dcmdata/include/dcerror.h ../../dcmdata/include/dcxfer.h \
- ../../dcmdata/include/dcvr.h ../../dcmdata/include/dcstream.h \
- ../../dcmdata/include/dcuid.h ../../dcmdata/include/dcvm.h \
- ../../dcmdata/include/dcdefine.h ../../dcmdata/include/dcdebug.h \
- ../../dcmdata/include/dctagkey.h ../../ofstd/include/ofstring.h \
- ../../dcmdata/include/dctag.h ../../dcmdata/include/dcdicent.h \
- ../../dcmdata/include/dchashdi.h ../../ofstd/include/oflist.h \
- ../../dcmdata/include/dcdict.h ../../dcmdata/include/dcdeftag.h \
- ../../dcmdata/include/dcobject.h ../../dcmdata/include/dclist.h \
- ../../dcmdata/include/dcstack.h ../../dcmdata/include/dcelem.h \
- ../../dcmdata/include/dcitem.h ../../dcmdata/include/dcvrui.h \
- ../../dcmdata/include/dcbytstr.h ../../dcmdata/include/dcmetinf.h \
- ../../dcmdata/include/dcdatset.h ../../dcmdata/include/dcsequen.h \
- ../../dcmdata/include/dcfilefo.h ../../dcmdata/include/dcdicdir.h \
- ../../dcmdata/include/dcdirrec.h ../../dcmdata/include/dcvrulup.h \
- ../../dcmdata/include/dcvrul.h ../../dcmdata/include/dcpixseq.h \
- ../../dcmdata/include/dcvrae.h ../../dcmdata/include/dcvras.h \
- ../../dcmdata/include/dcvrcs.h ../../dcmdata/include/dcvrda.h \
- ../../dcmdata/include/dcvrds.h ../../dcmdata/include/dcvrdt.h \
- ../../dcmdata/include/dcvris.h ../../dcmdata/include/dcvrtm.h \
- ../../dcmdata/include/dcchrstr.h ../../dcmdata/include/dcvrlo.h \
- ../../dcmdata/include/dcvrlt.h ../../dcmdata/include/dcvrpn.h \
- ../../dcmdata/include/dcvrsh.h ../../dcmdata/include/dcvrst.h \
- ../../dcmdata/include/dcvrut.h ../../dcmdata/include/dcvrvs.h \
- ../../dcmdata/include/dcvrobow.h ../../dcmdata/include/dcpixel.h \
- ../../dcmdata/include/dcvrpobw.h ../../dcmdata/include/dcovlay.h \
- ../../dcmdata/include/dcvrat.h ../../dcmdata/include/dcvrss.h \
- ../../dcmdata/include/dcvrus.h ../../dcmdata/include/dcvrsl.h \
- ../../dcmdata/include/dcvrfl.h ../../dcmdata/include/dcvrfd.h \
- ../../dcmdata/include/cmdlnarg.h ../include/dvpscf.h \
- ../include/dvpstyp.h ../include/dvpstat.h ../include/dvpsovl.h \
- ../include/dvpsgll.h ../include/dvpsrsl.h ../include/dvpsall.h \
- ../include/dvpsgal.h ../include/dvpscul.h ../include/dvpsvll.h \
- ../include/dvpsvwl.h ../include/dvpsdal.h ../include/dvpssvl.h \
- ../include/dvpspl.h ../../imagectn/include/dbpriv.h \
- ../../imagectn/include/imagedb.h ../../dcmnet/include/dicom.h \
- ../../dcmnet/include/dcompat.h ../../ofstd/include/ofbmanip.h \
- ../../dcmnet/include/cond.h ../../dcmnet/include/dimse.h \
- ../../dcmnet/include/lst.h ../../dcmnet/include/dul.h \
- ../../dcmnet/include/extneg.h ../../dcmnet/include/assoc.h \
- ../../imagectn/include/dbstore.h ../include/dvcache.h \
- ../../dcmimgle/include/dcmimage.h ../../dcmimgle/include/dimoimg.h \
- ../../dcmimgle/include/diimage.h ../../dcmimgle/include/diovlay.h \
- ../../dcmimgle/include/diobjcou.h ../../dcmimgle/include/diovdat.h \
- ../../dcmimgle/include/diovpln.h ../../dcmimgle/include/diutils.h \
- ../../dcmimgle/include/dimopx.h ../../dcmimgle/include/dipixel.h \
- ../../dcmimgle/include/dimomod.h ../../dcmimgle/include/diluptab.h \
- ../../dcmimgle/include/dibaslut.h ../../dcmimgle/include/dimoopx.h \
- ../../dcmimgle/include/didispfn.h ../../dcmimgle/include/didislut.h \
- ../include/dvpstx.h ../include/dvpsgr.h ../include/dvpscu.h \
- ../include/dvpssp.h ../include/dvpsibl.h ../include/dvpspr.h
-DVPSCurve.o: DVPSCurve.cxx J2Ci_jDVPSCurve.h jInterface.h \
+ ../include/dvpssp.h ../include/dvpspll.h ../include/dvpsibl.h \
+ ../include/dvpsabl.h ../include/dvpspr.h
+DVPSCurve.o: DVPSCurve.cc J2Ci_jDVPSCurve.h jInterface.h \
  /usr/include/errno.h ../../config/include/osconfig.h \
  ../include/dviface.h ../../dcmdata/include/dctk.h \
  ../../dcmdata/include/dctypes.h ../../ofstd/include/oftypes.h \
@@ -123,22 +68,22 @@ DVPSCurve.o: DVPSCurve.cxx J2Ci_jDVPSCurve.h jInterface.h \
  ../../dcmdata/include/dcdicent.h ../../dcmdata/include/dchashdi.h \
  ../../ofstd/include/oflist.h ../../dcmdata/include/dcdict.h \
  ../../dcmdata/include/dcdeftag.h ../../dcmdata/include/dcobject.h \
- ../../dcmdata/include/dclist.h ../../dcmdata/include/dcstack.h \
- ../../dcmdata/include/dcelem.h ../../dcmdata/include/dcitem.h \
- ../../dcmdata/include/dcvrui.h ../../dcmdata/include/dcbytstr.h \
- ../../dcmdata/include/dcmetinf.h ../../dcmdata/include/dcdatset.h \
- ../../dcmdata/include/dcsequen.h ../../dcmdata/include/dcfilefo.h \
- ../../dcmdata/include/dcdicdir.h ../../dcmdata/include/dcdirrec.h \
- ../../dcmdata/include/dcvrulup.h ../../dcmdata/include/dcvrul.h \
- ../../dcmdata/include/dcpixseq.h ../../dcmdata/include/dcvrae.h \
- ../../dcmdata/include/dcvras.h ../../dcmdata/include/dcvrcs.h \
- ../../dcmdata/include/dcvrda.h ../../dcmdata/include/dcvrds.h \
- ../../dcmdata/include/dcvrdt.h ../../dcmdata/include/dcvris.h \
- ../../dcmdata/include/dcvrtm.h ../../dcmdata/include/dcchrstr.h \
- ../../dcmdata/include/dcvrlo.h ../../dcmdata/include/dcvrlt.h \
- ../../dcmdata/include/dcvrpn.h ../../dcmdata/include/dcvrsh.h \
- ../../dcmdata/include/dcvrst.h ../../dcmdata/include/dcvrut.h \
- ../../dcmdata/include/dcvrvs.h ../../dcmdata/include/dcvrobow.h \
+ ../../ofstd/include/ofconsol.h ../../dcmdata/include/dclist.h \
+ ../../dcmdata/include/dcstack.h ../../dcmdata/include/dcelem.h \
+ ../../dcmdata/include/dcitem.h ../../dcmdata/include/dcvrui.h \
+ ../../dcmdata/include/dcbytstr.h ../../dcmdata/include/dcmetinf.h \
+ ../../dcmdata/include/dcdatset.h ../../dcmdata/include/dcsequen.h \
+ ../../dcmdata/include/dcfilefo.h ../../dcmdata/include/dcdicdir.h \
+ ../../dcmdata/include/dcdirrec.h ../../dcmdata/include/dcvrulup.h \
+ ../../dcmdata/include/dcvrul.h ../../dcmdata/include/dcpixseq.h \
+ ../../dcmdata/include/dcvrae.h ../../dcmdata/include/dcvras.h \
+ ../../dcmdata/include/dcvrcs.h ../../dcmdata/include/dcvrda.h \
+ ../../dcmdata/include/dcvrds.h ../../dcmdata/include/dcvrdt.h \
+ ../../dcmdata/include/dcvris.h ../../dcmdata/include/dcvrtm.h \
+ ../../dcmdata/include/dcchrstr.h ../../dcmdata/include/dcvrlo.h \
+ ../../dcmdata/include/dcvrlt.h ../../dcmdata/include/dcvrpn.h \
+ ../../dcmdata/include/dcvrsh.h ../../dcmdata/include/dcvrst.h \
+ ../../dcmdata/include/dcvrut.h ../../dcmdata/include/dcvrobow.h \
  ../../dcmdata/include/dcpixel.h ../../dcmdata/include/dcvrpobw.h \
  ../../dcmdata/include/dcovlay.h ../../dcmdata/include/dcvrat.h \
  ../../dcmdata/include/dcvrss.h ../../dcmdata/include/dcvrus.h \
@@ -165,8 +110,9 @@ DVPSCurve.o: DVPSCurve.cxx J2Ci_jDVPSCurve.h jInterface.h \
  ../../dcmimgle/include/dimoopx.h ../../dcmimgle/include/didispfn.h \
  ../../dcmimgle/include/didislut.h ../include/dvpstx.h \
  ../include/dvpsgr.h ../include/dvpscu.h ../include/dvpssp.h \
- ../include/dvpsibl.h ../include/dvpspr.h
-DVPSGraphicObject.o: DVPSGraphicObject.cxx J2Ci_jDVPSGraphicObject.h \
+ ../include/dvpspll.h ../include/dvpsibl.h ../include/dvpsabl.h \
+ ../include/dvpspr.h
+DVPSGraphicObject.o: DVPSGraphicObject.cc J2Ci_jDVPSGraphicObject.h \
  jInterface.h /usr/include/errno.h ../../config/include/osconfig.h \
  ../include/dviface.h ../../dcmdata/include/dctk.h \
  ../../dcmdata/include/dctypes.h ../../ofstd/include/oftypes.h \
@@ -179,22 +125,22 @@ DVPSGraphicObject.o: DVPSGraphicObject.cxx J2Ci_jDVPSGraphicObject.h \
  ../../dcmdata/include/dcdicent.h ../../dcmdata/include/dchashdi.h \
  ../../ofstd/include/oflist.h ../../dcmdata/include/dcdict.h \
  ../../dcmdata/include/dcdeftag.h ../../dcmdata/include/dcobject.h \
- ../../dcmdata/include/dclist.h ../../dcmdata/include/dcstack.h \
- ../../dcmdata/include/dcelem.h ../../dcmdata/include/dcitem.h \
- ../../dcmdata/include/dcvrui.h ../../dcmdata/include/dcbytstr.h \
- ../../dcmdata/include/dcmetinf.h ../../dcmdata/include/dcdatset.h \
- ../../dcmdata/include/dcsequen.h ../../dcmdata/include/dcfilefo.h \
- ../../dcmdata/include/dcdicdir.h ../../dcmdata/include/dcdirrec.h \
- ../../dcmdata/include/dcvrulup.h ../../dcmdata/include/dcvrul.h \
- ../../dcmdata/include/dcpixseq.h ../../dcmdata/include/dcvrae.h \
- ../../dcmdata/include/dcvras.h ../../dcmdata/include/dcvrcs.h \
- ../../dcmdata/include/dcvrda.h ../../dcmdata/include/dcvrds.h \
- ../../dcmdata/include/dcvrdt.h ../../dcmdata/include/dcvris.h \
- ../../dcmdata/include/dcvrtm.h ../../dcmdata/include/dcchrstr.h \
- ../../dcmdata/include/dcvrlo.h ../../dcmdata/include/dcvrlt.h \
- ../../dcmdata/include/dcvrpn.h ../../dcmdata/include/dcvrsh.h \
- ../../dcmdata/include/dcvrst.h ../../dcmdata/include/dcvrut.h \
- ../../dcmdata/include/dcvrvs.h ../../dcmdata/include/dcvrobow.h \
+ ../../ofstd/include/ofconsol.h ../../dcmdata/include/dclist.h \
+ ../../dcmdata/include/dcstack.h ../../dcmdata/include/dcelem.h \
+ ../../dcmdata/include/dcitem.h ../../dcmdata/include/dcvrui.h \
+ ../../dcmdata/include/dcbytstr.h ../../dcmdata/include/dcmetinf.h \
+ ../../dcmdata/include/dcdatset.h ../../dcmdata/include/dcsequen.h \
+ ../../dcmdata/include/dcfilefo.h ../../dcmdata/include/dcdicdir.h \
+ ../../dcmdata/include/dcdirrec.h ../../dcmdata/include/dcvrulup.h \
+ ../../dcmdata/include/dcvrul.h ../../dcmdata/include/dcpixseq.h \
+ ../../dcmdata/include/dcvrae.h ../../dcmdata/include/dcvras.h \
+ ../../dcmdata/include/dcvrcs.h ../../dcmdata/include/dcvrda.h \
+ ../../dcmdata/include/dcvrds.h ../../dcmdata/include/dcvrdt.h \
+ ../../dcmdata/include/dcvris.h ../../dcmdata/include/dcvrtm.h \
+ ../../dcmdata/include/dcchrstr.h ../../dcmdata/include/dcvrlo.h \
+ ../../dcmdata/include/dcvrlt.h ../../dcmdata/include/dcvrpn.h \
+ ../../dcmdata/include/dcvrsh.h ../../dcmdata/include/dcvrst.h \
+ ../../dcmdata/include/dcvrut.h ../../dcmdata/include/dcvrobow.h \
  ../../dcmdata/include/dcpixel.h ../../dcmdata/include/dcvrpobw.h \
  ../../dcmdata/include/dcovlay.h ../../dcmdata/include/dcvrat.h \
  ../../dcmdata/include/dcvrss.h ../../dcmdata/include/dcvrus.h \
@@ -221,8 +167,9 @@ DVPSGraphicObject.o: DVPSGraphicObject.cxx J2Ci_jDVPSGraphicObject.h \
  ../../dcmimgle/include/dimoopx.h ../../dcmimgle/include/didispfn.h \
  ../../dcmimgle/include/didislut.h ../include/dvpstx.h \
  ../include/dvpsgr.h ../include/dvpscu.h ../include/dvpssp.h \
- ../include/dvpsibl.h ../include/dvpspr.h
-DVPSStoredPrint.o: DVPSStoredPrint.cxx J2Ci_jDVPSStoredPrint.h \
+ ../include/dvpspll.h ../include/dvpsibl.h ../include/dvpsabl.h \
+ ../include/dvpspr.h
+DVPSStoredPrint.o: DVPSStoredPrint.cc J2Ci_jDVPSStoredPrint.h \
  jInterface.h /usr/include/errno.h ../../config/include/osconfig.h \
  ../include/dviface.h ../../dcmdata/include/dctk.h \
  ../../dcmdata/include/dctypes.h ../../ofstd/include/oftypes.h \
@@ -235,22 +182,22 @@ DVPSStoredPrint.o: DVPSStoredPrint.cxx J2Ci_jDVPSStoredPrint.h \
  ../../dcmdata/include/dcdicent.h ../../dcmdata/include/dchashdi.h \
  ../../ofstd/include/oflist.h ../../dcmdata/include/dcdict.h \
  ../../dcmdata/include/dcdeftag.h ../../dcmdata/include/dcobject.h \
- ../../dcmdata/include/dclist.h ../../dcmdata/include/dcstack.h \
- ../../dcmdata/include/dcelem.h ../../dcmdata/include/dcitem.h \
- ../../dcmdata/include/dcvrui.h ../../dcmdata/include/dcbytstr.h \
- ../../dcmdata/include/dcmetinf.h ../../dcmdata/include/dcdatset.h \
- ../../dcmdata/include/dcsequen.h ../../dcmdata/include/dcfilefo.h \
- ../../dcmdata/include/dcdicdir.h ../../dcmdata/include/dcdirrec.h \
- ../../dcmdata/include/dcvrulup.h ../../dcmdata/include/dcvrul.h \
- ../../dcmdata/include/dcpixseq.h ../../dcmdata/include/dcvrae.h \
- ../../dcmdata/include/dcvras.h ../../dcmdata/include/dcvrcs.h \
- ../../dcmdata/include/dcvrda.h ../../dcmdata/include/dcvrds.h \
- ../../dcmdata/include/dcvrdt.h ../../dcmdata/include/dcvris.h \
- ../../dcmdata/include/dcvrtm.h ../../dcmdata/include/dcchrstr.h \
- ../../dcmdata/include/dcvrlo.h ../../dcmdata/include/dcvrlt.h \
- ../../dcmdata/include/dcvrpn.h ../../dcmdata/include/dcvrsh.h \
- ../../dcmdata/include/dcvrst.h ../../dcmdata/include/dcvrut.h \
- ../../dcmdata/include/dcvrvs.h ../../dcmdata/include/dcvrobow.h \
+ ../../ofstd/include/ofconsol.h ../../dcmdata/include/dclist.h \
+ ../../dcmdata/include/dcstack.h ../../dcmdata/include/dcelem.h \
+ ../../dcmdata/include/dcitem.h ../../dcmdata/include/dcvrui.h \
+ ../../dcmdata/include/dcbytstr.h ../../dcmdata/include/dcmetinf.h \
+ ../../dcmdata/include/dcdatset.h ../../dcmdata/include/dcsequen.h \
+ ../../dcmdata/include/dcfilefo.h ../../dcmdata/include/dcdicdir.h \
+ ../../dcmdata/include/dcdirrec.h ../../dcmdata/include/dcvrulup.h \
+ ../../dcmdata/include/dcvrul.h ../../dcmdata/include/dcpixseq.h \
+ ../../dcmdata/include/dcvrae.h ../../dcmdata/include/dcvras.h \
+ ../../dcmdata/include/dcvrcs.h ../../dcmdata/include/dcvrda.h \
+ ../../dcmdata/include/dcvrds.h ../../dcmdata/include/dcvrdt.h \
+ ../../dcmdata/include/dcvris.h ../../dcmdata/include/dcvrtm.h \
+ ../../dcmdata/include/dcchrstr.h ../../dcmdata/include/dcvrlo.h \
+ ../../dcmdata/include/dcvrlt.h ../../dcmdata/include/dcvrpn.h \
+ ../../dcmdata/include/dcvrsh.h ../../dcmdata/include/dcvrst.h \
+ ../../dcmdata/include/dcvrut.h ../../dcmdata/include/dcvrobow.h \
  ../../dcmdata/include/dcpixel.h ../../dcmdata/include/dcvrpobw.h \
  ../../dcmdata/include/dcovlay.h ../../dcmdata/include/dcvrat.h \
  ../../dcmdata/include/dcvrss.h ../../dcmdata/include/dcvrus.h \
@@ -277,8 +224,9 @@ DVPSStoredPrint.o: DVPSStoredPrint.cxx J2Ci_jDVPSStoredPrint.h \
  ../../dcmimgle/include/dimoopx.h ../../dcmimgle/include/didispfn.h \
  ../../dcmimgle/include/didislut.h ../include/dvpstx.h \
  ../include/dvpsgr.h ../include/dvpscu.h ../include/dvpssp.h \
- ../include/dvpsibl.h ../include/dvpspr.h
-DVPSTextObject.o: DVPSTextObject.cxx J2Ci_jDVPSTextObject.h \
+ ../include/dvpspll.h ../include/dvpsibl.h ../include/dvpsabl.h \
+ ../include/dvpspr.h
+DVPSTextObject.o: DVPSTextObject.cc J2Ci_jDVPSTextObject.h \
  jInterface.h /usr/include/errno.h ../../config/include/osconfig.h \
  ../include/dviface.h ../../dcmdata/include/dctk.h \
  ../../dcmdata/include/dctypes.h ../../ofstd/include/oftypes.h \
@@ -291,22 +239,22 @@ DVPSTextObject.o: DVPSTextObject.cxx J2Ci_jDVPSTextObject.h \
  ../../dcmdata/include/dcdicent.h ../../dcmdata/include/dchashdi.h \
  ../../ofstd/include/oflist.h ../../dcmdata/include/dcdict.h \
  ../../dcmdata/include/dcdeftag.h ../../dcmdata/include/dcobject.h \
- ../../dcmdata/include/dclist.h ../../dcmdata/include/dcstack.h \
- ../../dcmdata/include/dcelem.h ../../dcmdata/include/dcitem.h \
- ../../dcmdata/include/dcvrui.h ../../dcmdata/include/dcbytstr.h \
- ../../dcmdata/include/dcmetinf.h ../../dcmdata/include/dcdatset.h \
- ../../dcmdata/include/dcsequen.h ../../dcmdata/include/dcfilefo.h \
- ../../dcmdata/include/dcdicdir.h ../../dcmdata/include/dcdirrec.h \
- ../../dcmdata/include/dcvrulup.h ../../dcmdata/include/dcvrul.h \
- ../../dcmdata/include/dcpixseq.h ../../dcmdata/include/dcvrae.h \
- ../../dcmdata/include/dcvras.h ../../dcmdata/include/dcvrcs.h \
- ../../dcmdata/include/dcvrda.h ../../dcmdata/include/dcvrds.h \
- ../../dcmdata/include/dcvrdt.h ../../dcmdata/include/dcvris.h \
- ../../dcmdata/include/dcvrtm.h ../../dcmdata/include/dcchrstr.h \
- ../../dcmdata/include/dcvrlo.h ../../dcmdata/include/dcvrlt.h \
- ../../dcmdata/include/dcvrpn.h ../../dcmdata/include/dcvrsh.h \
- ../../dcmdata/include/dcvrst.h ../../dcmdata/include/dcvrut.h \
- ../../dcmdata/include/dcvrvs.h ../../dcmdata/include/dcvrobow.h \
+ ../../ofstd/include/ofconsol.h ../../dcmdata/include/dclist.h \
+ ../../dcmdata/include/dcstack.h ../../dcmdata/include/dcelem.h \
+ ../../dcmdata/include/dcitem.h ../../dcmdata/include/dcvrui.h \
+ ../../dcmdata/include/dcbytstr.h ../../dcmdata/include/dcmetinf.h \
+ ../../dcmdata/include/dcdatset.h ../../dcmdata/include/dcsequen.h \
+ ../../dcmdata/include/dcfilefo.h ../../dcmdata/include/dcdicdir.h \
+ ../../dcmdata/include/dcdirrec.h ../../dcmdata/include/dcvrulup.h \
+ ../../dcmdata/include/dcvrul.h ../../dcmdata/include/dcpixseq.h \
+ ../../dcmdata/include/dcvrae.h ../../dcmdata/include/dcvras.h \
+ ../../dcmdata/include/dcvrcs.h ../../dcmdata/include/dcvrda.h \
+ ../../dcmdata/include/dcvrds.h ../../dcmdata/include/dcvrdt.h \
+ ../../dcmdata/include/dcvris.h ../../dcmdata/include/dcvrtm.h \
+ ../../dcmdata/include/dcchrstr.h ../../dcmdata/include/dcvrlo.h \
+ ../../dcmdata/include/dcvrlt.h ../../dcmdata/include/dcvrpn.h \
+ ../../dcmdata/include/dcvrsh.h ../../dcmdata/include/dcvrst.h \
+ ../../dcmdata/include/dcvrut.h ../../dcmdata/include/dcvrobow.h \
  ../../dcmdata/include/dcpixel.h ../../dcmdata/include/dcvrpobw.h \
  ../../dcmdata/include/dcovlay.h ../../dcmdata/include/dcvrat.h \
  ../../dcmdata/include/dcvrss.h ../../dcmdata/include/dcvrus.h \
@@ -333,4 +281,62 @@ DVPSTextObject.o: DVPSTextObject.cxx J2Ci_jDVPSTextObject.h \
  ../../dcmimgle/include/dimoopx.h ../../dcmimgle/include/didispfn.h \
  ../../dcmimgle/include/didislut.h ../include/dvpstx.h \
  ../include/dvpsgr.h ../include/dvpscu.h ../include/dvpssp.h \
- ../include/dvpsibl.h ../include/dvpspr.h
+ ../include/dvpspll.h ../include/dvpsibl.h ../include/dvpsabl.h \
+ ../include/dvpspr.h
+DVPresentationState.o: DVPresentationState.cc \
+ J2Ci_jDVPresentationState.h jInterface.h /usr/include/errno.h \
+ ../../config/include/osconfig.h ../include/dviface.h \
+ ../../dcmdata/include/dctk.h ../../dcmdata/include/dctypes.h \
+ ../../ofstd/include/oftypes.h ../../dcmdata/include/dcswap.h \
+ ../../dcmdata/include/dcerror.h ../../dcmdata/include/dcxfer.h \
+ ../../dcmdata/include/dcvr.h ../../dcmdata/include/dcstream.h \
+ ../../dcmdata/include/dcuid.h ../../dcmdata/include/dcvm.h \
+ ../../dcmdata/include/dcdefine.h ../../dcmdata/include/dcdebug.h \
+ ../../dcmdata/include/dctagkey.h ../../ofstd/include/ofstring.h \
+ ../../dcmdata/include/dctag.h ../../dcmdata/include/dcdicent.h \
+ ../../dcmdata/include/dchashdi.h ../../ofstd/include/oflist.h \
+ ../../dcmdata/include/dcdict.h ../../dcmdata/include/dcdeftag.h \
+ ../../dcmdata/include/dcobject.h ../../ofstd/include/ofconsol.h \
+ ../../dcmdata/include/dclist.h ../../dcmdata/include/dcstack.h \
+ ../../dcmdata/include/dcelem.h ../../dcmdata/include/dcitem.h \
+ ../../dcmdata/include/dcvrui.h ../../dcmdata/include/dcbytstr.h \
+ ../../dcmdata/include/dcmetinf.h ../../dcmdata/include/dcdatset.h \
+ ../../dcmdata/include/dcsequen.h ../../dcmdata/include/dcfilefo.h \
+ ../../dcmdata/include/dcdicdir.h ../../dcmdata/include/dcdirrec.h \
+ ../../dcmdata/include/dcvrulup.h ../../dcmdata/include/dcvrul.h \
+ ../../dcmdata/include/dcpixseq.h ../../dcmdata/include/dcvrae.h \
+ ../../dcmdata/include/dcvras.h ../../dcmdata/include/dcvrcs.h \
+ ../../dcmdata/include/dcvrda.h ../../dcmdata/include/dcvrds.h \
+ ../../dcmdata/include/dcvrdt.h ../../dcmdata/include/dcvris.h \
+ ../../dcmdata/include/dcvrtm.h ../../dcmdata/include/dcchrstr.h \
+ ../../dcmdata/include/dcvrlo.h ../../dcmdata/include/dcvrlt.h \
+ ../../dcmdata/include/dcvrpn.h ../../dcmdata/include/dcvrsh.h \
+ ../../dcmdata/include/dcvrst.h ../../dcmdata/include/dcvrut.h \
+ ../../dcmdata/include/dcvrobow.h ../../dcmdata/include/dcpixel.h \
+ ../../dcmdata/include/dcvrpobw.h ../../dcmdata/include/dcovlay.h \
+ ../../dcmdata/include/dcvrat.h ../../dcmdata/include/dcvrss.h \
+ ../../dcmdata/include/dcvrus.h ../../dcmdata/include/dcvrsl.h \
+ ../../dcmdata/include/dcvrfl.h ../../dcmdata/include/dcvrfd.h \
+ ../../dcmdata/include/cmdlnarg.h ../include/dvpscf.h \
+ ../include/dvpstyp.h ../include/dvpstat.h ../include/dvpsovl.h \
+ ../include/dvpsgll.h ../include/dvpsrsl.h ../include/dvpsall.h \
+ ../include/dvpsgal.h ../include/dvpscul.h ../include/dvpsvll.h \
+ ../include/dvpsvwl.h ../include/dvpsdal.h ../include/dvpssvl.h \
+ ../include/dvpspl.h ../../imagectn/include/dbpriv.h \
+ ../../imagectn/include/imagedb.h ../../dcmnet/include/dicom.h \
+ ../../dcmnet/include/dcompat.h ../../ofstd/include/ofbmanip.h \
+ ../../dcmnet/include/cond.h ../../dcmnet/include/dimse.h \
+ ../../dcmnet/include/lst.h ../../dcmnet/include/dul.h \
+ ../../dcmnet/include/extneg.h ../../dcmnet/include/assoc.h \
+ ../../imagectn/include/dbstore.h ../include/dvcache.h \
+ ../../dcmimgle/include/dcmimage.h ../../dcmimgle/include/dimoimg.h \
+ ../../dcmimgle/include/diimage.h ../../dcmimgle/include/diovlay.h \
+ ../../dcmimgle/include/diobjcou.h ../../dcmimgle/include/diovdat.h \
+ ../../dcmimgle/include/diovpln.h ../../dcmimgle/include/diutils.h \
+ ../../dcmimgle/include/dimopx.h ../../dcmimgle/include/dipixel.h \
+ ../../dcmimgle/include/dimomod.h ../../dcmimgle/include/diluptab.h \
+ ../../dcmimgle/include/dibaslut.h ../../dcmimgle/include/dimoopx.h \
+ ../../dcmimgle/include/didispfn.h ../../dcmimgle/include/didislut.h \
+ ../include/dvpstx.h ../include/dvpsgr.h ../include/dvpscu.h \
+ ../include/dvpssp.h ../include/dvpspll.h ../include/dvpsibl.h \
+ ../include/dvpsabl.h ../include/dvpspr.h
