@@ -168,7 +168,7 @@ data set trailing padding (not with --write-dataset):
   -p    --padding-off
           no padding (implicit if --write-dataset)
 
-  +p    --padding-create  [f]ile-pad [i]tem-pad: integer
+  +p    --padding-create  [f]ile-pad [i]tem-pad : integer
           align file on multiple of f bytes and items on
           multiple of i bytes
 \endverbatim
@@ -211,7 +211,7 @@ environment variable.  It is an error if no data dictionary can be loaded.
 
 \section copyright COPYRIGHT
 
-Copyright (C) 2002-2004 by Kuratorium OFFIS e.V., Escherweg 2, 26121 Oldenburg,
+Copyright (C) 2002-2005 by Kuratorium OFFIS e.V., Escherweg 2, 26121 Oldenburg,
 Germany.
 
 */
