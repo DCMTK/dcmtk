@@ -10,10 +10,10 @@
 ** Implementation of the class DcmDataset
 **
 **
-** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1996-01-09 11:06:43 $
+** Last Update:		$Author: hewett $
+** Update Date:		$Date: 1996-03-13 14:44:23 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcdatset.cc,v $
-** CVS/RCS Revision:	$Revision: 1.4 $
+** CVS/RCS Revision:	$Revision: 1.5 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -120,52 +120,11 @@ void DcmDataset::print(const int level)
 
 void DcmDataset::resolveAmbigous(void)
 {
-    E_Condition l_error = EC_Normal;
-    DcmStack stack;
-    int count = 0;
-
-    while((l_error=this->search(DCM_PixelData, stack, ESM_afterStackTop, TRUE))
-	  == EC_Normal )
-    {
-	count++;
-	DcmStack localStack;
-	localStack.push(stack.elem(1));  // Zeiger auf Ebene ueber pixelObj
-	DcmObject *pixelObj = stack.top();
-
-#ifdef RESOLVE_AMBIGOUS_VR_OF_PIXELDATA
-	if (this->search(DCM_BitsAllocated,
-			 localStack,
-			 ESM_fromStackTop,
-			 FALSE )
-	    == EC_Normal)
-	{
-	    DcmObject *allocatedObj = localStack.top();
-	    Uint16 bits = 8;		   // default 8-Bit
-	    if (allocatedObj->ident() == EVR_US &&
-		allocatedObj->getLength() > 0)
-		bits = *(((DcmUnsignedShort*)allocatedObj)->get());
-	    else
-                cerr << "Warning: Valuefield in Element(0028,0100) is empty"
-		     << endl;
-	    if (bits == 16)
-		pixelObj->setVR(EVR_OW);
-	    else
-		pixelObj->setVR(EVR_OB);
-	}
-	else
-	{	    // kein allocatedTag vorhanden
-            cerr << "Warning: no Tag(0028,0100) Bits Allocated in Dataset found"
-		 << endl;
-	}
-#else
-	DcmXfer xferSyn (Xfer);	          
-	if (xferSyn.isNotEncapsulated())  
-	    pixelObj->setVR( EVR_OW );
-	else
-	    pixelObj->setVR( EVR_OB );
-#endif
-    }
-    debug(( 1, "Found %d Elements with Pixel Data", count ));
+    /*
+    ** Nothing to do.
+    ** The handling of VR for PixelData is now done according
+    ** to Correction Proposal 14 in DcmItem::readSubElement(...)
+    */
 }
 
 
@@ -284,7 +243,16 @@ E_Condition DcmDataset::write(DcmStream & outStream,
 /*
 ** CVS/RCS Log:
 ** $Log: dcdatset.cc,v $
-** Revision 1.4  1996-01-09 11:06:43  andreas
+** Revision 1.5  1996-03-13 14:44:23  hewett
+** The DcmDataset::resolveAmbiguous() method was setting the VR of
+** PixelData to OW if a non-encapsulated transfer syntax was in use.
+** This should only be done if the transfer syntax is implicit.  Any
+** explicit transfer syntax will carry the VR with the data.
+** Solution: Delete the code in DcmDataset::resolveAmbiguous().
+** The VR of PixelData is being correctly set in
+** cmItem::readSubElement(...) according to Correction Proposal 14.
+**
+** Revision 1.4  1996/01/09 11:06:43  andreas
 ** New Support for Visual C++
 ** Correct problems with inconsistent const declarations
 ** Correct error in reading Item Delimitation Elements
