@@ -46,9 +46,9 @@
 ** Author, Date:	Stephen M. Moore, 15-Apr-93
 ** Intent:		Define tables and provide functions that implement
 **			the DICOM Upper Layer (DUL) finite state machine.
-** Last Update:		$Author: meichel $, $Date: 2003-07-03 14:21:10 $
+** Last Update:		$Author: meichel $, $Date: 2004-01-21 10:01:44 $
 ** Source File:		$RCSfile: dulfsm.cc,v $
-** Revision:		$Revision: 1.51 $
+** Revision:		$Revision: 1.52 $
 ** Status:		$State: Exp $
 */
 
@@ -1578,9 +1578,20 @@ static OFCondition
 AR_3_ConfirmRelease(PRIVATE_NETWORKKEY ** /*network*/,
          PRIVATE_ASSOCIATIONKEY ** association, int nextState, void * /*params*/)
 {
+    unsigned char
+        buffer[128],
+        pduType,
+        pduReserve;
+    unsigned long
+        pduLength;
+
+    /* Read remaining unimportant bytes of the A-RELEASE-RSP PDU */
+    OFCondition cond = readPDUBody(association, DUL_BLOCK, 0, buffer, sizeof(buffer),
+                       &pduType, &pduReserve, &pduLength);
+
     closeTransport(association);
     (*association)->protocolState = nextState;
-    return EC_Normal;
+    return cond;
 }
 
 /* AR_4_SendReleaseRP
@@ -3877,7 +3888,12 @@ destroyUserInformationLists(DUL_USERINFO * userInfo)
 /*
 ** CVS Log
 ** $Log: dulfsm.cc,v $
-** Revision 1.51  2003-07-03 14:21:10  meichel
+** Revision 1.52  2004-01-21 10:01:44  meichel
+** The DUL FSM did not read the complete A-ASSOCIATE-RELEASE-RSP PDU from the
+**   socket before closing the transport connection, possibly causing an error
+**   message at the remote SCP site. Fixed.
+**
+** Revision 1.51  2003/07/03 14:21:10  meichel
 ** Added special handling for FD_SET() on MinGW, which expects an
 **   unsigned first argument.
 **
