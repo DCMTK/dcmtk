@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2002, OFFIS
+ *  Copyright (C) 1994-2003, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,10 +21,10 @@
  *
  *  Purpose: Implementation of class DcmDirectoryRecord
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-12-06 12:55:43 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2003-03-21 13:08:04 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcdirrec.cc,v $
- *  CVS/RCS Revision: $Revision: 1.44 $
+ *  CVS/RCS Revision: $Revision: 1.45 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -563,7 +563,7 @@ static void hostToDicomFilename(char *fname)
             fname[k++] = '\\';
         } else if (isalpha(c) || isdigit(c) || (c == '_') || (c == '\\')) {
             /* filenames in DICOM must always be in uppercase */
-            fname[k++] = toupper(c);
+            fname[k++] = (char)(toupper(c));
         }
     }
     fname[k] = '\0';
@@ -1411,7 +1411,10 @@ const char* DcmDirectoryRecord::getRecordsOriginFile()
 /*
  * CVS/RCS Log:
  * $Log: dcdirrec.cc,v $
- * Revision 1.44  2002-12-06 12:55:43  joergr
+ * Revision 1.45  2003-03-21 13:08:04  meichel
+ * Minor code purifications for warnings reported by MSVC in Level 4
+ *
+ * Revision 1.44  2002/12/06 12:55:43  joergr
  * Enhanced "print()" function by re-working the implementation and replacing
  * the boolean "showFullData" parameter by a more general integer flag.
  * Made source code formatting more consistent with other modules/files.

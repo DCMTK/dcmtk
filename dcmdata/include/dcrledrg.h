@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2002, OFFIS
+ *  Copyright (C) 1994-2003, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose: singleton class that registers RLE decoder.
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-06-06 14:52:36 $
+ *  Update Date:      $Date: 2003-03-21 13:06:46 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcrledrg.h,v $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -64,6 +64,12 @@ public:
   static void cleanup();
 
 private:
+
+  /// private undefined copy constructor
+  DcmRLEDecoderRegistration(const DcmRLEDecoderRegistration&);
+  
+  /// private undefined copy assignment operator
+  DcmRLEDecoderRegistration& operator=(const DcmRLEDecoderRegistration&);
 
   /// flag indicating whether the decoder is already registered.
   static OFBool registered;

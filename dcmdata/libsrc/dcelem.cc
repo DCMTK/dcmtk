@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2002, OFFIS
+ *  Copyright (C) 1994-2003, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,10 +21,10 @@
  *
  *  Purpose: Implementation of class DcmElement
  *
- *  Last Update:      $Author: wilkens $
- *  Update Date:      $Date: 2002-12-09 09:30:50 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2003-03-21 13:08:04 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcelem.cc,v $
- *  CVS/RCS Revision: $Revision: 1.44 $
+ *  CVS/RCS Revision: $Revision: 1.45 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -72,7 +72,7 @@ DcmElement::DcmElement(const DcmElement &elem)
     if (elem.fValue)
     {
         DcmVR vr(elem.getVR());
-        const unsigned short pad = (vr.isaString()) ? 1 : 0;
+        const unsigned short pad = (vr.isaString()) ? (unsigned short)1 : (unsigned short)0;
 
         // The next lines are a special version of newValueField().
         // newValueField() cannot be used because it is virtual and it does
@@ -112,7 +112,7 @@ DcmElement &DcmElement::operator=(const DcmElement &obj)
     if (obj.fValue)
     {
         DcmVR vr(obj.getVR());
-        const unsigned short pad = (vr.isaString()) ? 1 : 0;
+        const unsigned short pad = (vr.isaString()) ? (unsigned short)1 : (unsigned short)0;
 
         // The next lines are a special version of newValueField().
         // newValueField() cannot be used because it is virtual and it does
@@ -1047,7 +1047,10 @@ OFCondition DcmElement::writeXML(ostream &out,
 /*
 ** CVS/RCS Log:
 ** $Log: dcelem.cc,v $
-** Revision 1.44  2002-12-09 09:30:50  wilkens
+** Revision 1.45  2003-03-21 13:08:04  meichel
+** Minor code purifications for warnings reported by MSVC in Level 4
+**
+** Revision 1.44  2002/12/09 09:30:50  wilkens
 ** Modified/Added doc++ documentation.
 **
 ** Revision 1.43  2002/12/06 13:15:12  joergr

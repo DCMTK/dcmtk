@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2002, OFFIS
+ *  Copyright (C) 1994-2003, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,10 +21,10 @@
  *
  *  Purpose: class DcmItem
  *
- *  Last Update:      $Author: wilkens $
- *  Update Date:      $Date: 2002-12-09 09:30:52 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2003-03-21 13:08:04 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcitem.cc,v $
- *  CVS/RCS Revision: $Revision: 1.80 $
+ *  CVS/RCS Revision: $Revision: 1.81 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -201,8 +201,8 @@ E_TransferSyntax DcmItem::checkTransferSyntax(DcmInputStream & inStream)
     char c2 = tagAndVR[1];
     char c3 = tagAndVR[2];
     char c4 = tagAndVR[3];
-    Uint16 t1 = (c1 & 0xff) + ((c2 & 0xff) << 8);  // explicit little endian
-    Uint16 t2 = (c3 & 0xff) + ((c4 & 0xff) << 8);  // conversion
+    Uint16 t1 = (unsigned short)((c1 & 0xff) + ((c2 & 0xff) << 8));  // explicit little endian
+    Uint16 t2 = (unsigned short)((c3 & 0xff) + ((c4 & 0xff) << 8));  // conversion
     DcmTag taglittle(t1, t2);
     DcmTag tagbig(swapShort(t1), swapShort(t2));
 
@@ -3099,7 +3099,10 @@ OFBool DcmItem::containsUnknownVR() const
 /*
 ** CVS/RCS Log:
 ** $Log: dcitem.cc,v $
-** Revision 1.80  2002-12-09 09:30:52  wilkens
+** Revision 1.81  2003-03-21 13:08:04  meichel
+** Minor code purifications for warnings reported by MSVC in Level 4
+**
+** Revision 1.80  2002/12/09 09:30:52  wilkens
 ** Modified/Added doc++ documentation.
 **
 ** Revision 1.79  2002/12/06 12:57:58  joergr

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2001, OFFIS
+ *  Copyright (C) 1994-2003, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,10 +21,10 @@
  *
  *  Purpose: class DcmPixelData
  *
- *  Last Update:      $Author: wilkens $
- *  Update Date:      $Date: 2002-12-09 09:30:54 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2003-03-21 13:08:04 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcpixel.cc,v $
- *  CVS/RCS Revision: $Revision: 1.27 $
+ *  CVS/RCS Revision: $Revision: 1.28 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -514,8 +514,8 @@ DcmPixelData::getEncapsulatedRepresentation(
         pixSeq = (*found)->pixSeq;
         return EC_Normal;
     }
-    else
-        return EC_RepresentationNotFound;
+
+    return EC_RepresentationNotFound;
 }
 
 
@@ -531,8 +531,8 @@ DcmPixelData::hasRepresentation(
     else if (repTypeSyn.isEncapsulated())
         return findConformingEncapsulatedRepresentation(
             repTypeSyn, repParam, found) != EC_Normal;
-    else
-        return OFFalse;
+
+    return OFFalse;
 }
 
 
@@ -1038,7 +1038,10 @@ OFCondition DcmPixelData::loadAllDataIntoMemory(void)
 /*
 ** CVS/RCS Log:
 ** $Log: dcpixel.cc,v $
-** Revision 1.27  2002-12-09 09:30:54  wilkens
+** Revision 1.28  2003-03-21 13:08:04  meichel
+** Minor code purifications for warnings reported by MSVC in Level 4
+**
+** Revision 1.27  2002/12/09 09:30:54  wilkens
 ** Modified/Added doc++ documentation.
 **
 ** Revision 1.26  2002/12/06 13:16:57  joergr

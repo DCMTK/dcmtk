@@ -92,9 +92,9 @@
  *
  *  Purpose: Class for various helper functions
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-03-12 14:57:51 $
- *  CVS/RCS Revision: $Revision: 1.15 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2003-03-21 13:10:42 $
+ *  CVS/RCS Revision: $Revision: 1.16 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -479,7 +479,7 @@ const OFString &OFStandard::encodeBase64(const unsigned char *data,
             /* insert line break (if width > 0) */
             if (++w == width)
             {
-                result[j++] = '\n';
+                result[j++] = (unsigned char)'\n';
                 w = 0;
             }
             /* encode remaining 2 bits of the first byte and 4 bits of the second byte */
@@ -490,7 +490,7 @@ const OFString &OFStandard::encodeBase64(const unsigned char *data,
             /* insert line break (if width > 0) */
             if (++w == width)
             {
-                result[j++] = '\n';
+                result[j++] = (unsigned char)'\n';
                 w = 0;
             }
             /* encode remaining 4 bits of the second byte and 2 bits of the third byte */
@@ -570,7 +570,7 @@ size_t OFStandard::decodeBase64(const OFString &data,
                     if (i < length)
                     {
                         /* decode first byte */
-                        result[count++] = (c1 << 2) | ((c2 >> 4) & 0x3);
+                        result[count++] = (unsigned char)((c1 << 2) | ((c2 >> 4) & 0x3));
                         if (++i < length)
                         {
                             /* skip invalid characters and assign third decoded char */
@@ -579,7 +579,7 @@ size_t OFStandard::decodeBase64(const OFString &data,
                             if (i < length)
                             {
                                 /* decode second byte */
-                                result[count++] = ((c2 << 4) & 0xf0) | ((c1 >> 2) & 0xf);
+                                result[count++] = (unsigned char)(((c2 << 4) & 0xf0) | ((c1 >> 2) & 0xf));
                                 if (++i < length)
                                 {
                                     /* skip invalid characters and assign fourth decoded char */
@@ -587,7 +587,7 @@ size_t OFStandard::decodeBase64(const OFString &data,
                                         i++;
                                     /* decode third byte */
                                     if (i < length)
-                                        result[count++] = ((c1 << 6) & 0xc0) | c2;
+                                        result[count++] = (unsigned char)(((c1 << 6) & 0xc0) | c2);
                                 }
                             }
                         }
@@ -966,16 +966,16 @@ static char *ftoa_exponent(char *p, int exponent, char fmtch)
   {
     do
     {
-      *--t = FTOA_TOCHAR(exponent % 10);
+      *--t = (char)(FTOA_TOCHAR(exponent % 10));
     }
     while ((exponent /= 10) > 9);
-    *--t = FTOA_TOCHAR(exponent);
+    *--t = (char)(FTOA_TOCHAR(exponent));
     for (; t < expbuf + FTOA_MAXEXP; *p++ = *t++) /* nothing */;
   }
   else
   {
     *p++ = '0';
-    *p++ = FTOA_TOCHAR(exponent);
+    *p++ = (char)(FTOA_TOCHAR(exponent));
   }
 
   return p;
@@ -1065,7 +1065,7 @@ static int ftoa_convert(double val, int prec, int flags, char *signp, char fmtch
   for (p = endp - 1; integer; ++expcnt)
   {
     tmp = modf(integer / 10, &integer);
-    *p-- = FTOA_TOCHAR((int)((tmp + .01) * 10));
+    *p-- = (char)(FTOA_TOCHAR((int)((tmp + .01) * 10)));
   }
 
   switch(fmtch)
@@ -1090,7 +1090,7 @@ static int ftoa_convert(double val, int prec, int flags, char *signp, char fmtch
         if (prec) do
         {
           fract = modf(fract * 10, &tmp);
-          *t++ = FTOA_TOCHAR((int)tmp);
+          *t++ = (char)(FTOA_TOCHAR((int)tmp));
         } while (--prec && fract);
         if (fract)
         {
@@ -1133,7 +1133,7 @@ eformat:
                 if (tmp)
                         break;
         }
-        *t++ = FTOA_TOCHAR((int)tmp);
+        *t++ = (char)(FTOA_TOCHAR((int)tmp));
         if (prec || flags&FTOA_ALTERNATE_FORM) *t++ = '.';
       }
       else
@@ -1148,7 +1148,7 @@ eformat:
         if (prec) do
         {
           fract = modf(fract * 10, &tmp);
-          *t++ = FTOA_TOCHAR((int)tmp);
+          *t++ = (char)(FTOA_TOCHAR((int)tmp));
         } while (--prec && fract);
         if (fract)
         {
@@ -1222,12 +1222,12 @@ eformat:
           do
           {
             fract = modf(fract * 10, &tmp);
-            *t++ = FTOA_TOCHAR((int)tmp);
+            *t++ = (char)(FTOA_TOCHAR((int)tmp));
           } while(!tmp);
           while (--prec && fract)
           {
             fract = modf(fract * 10, &tmp);
-            *t++ = FTOA_TOCHAR((int)tmp);
+            *t++ = (char)(FTOA_TOCHAR((int)tmp));
           }
         }
         if (fract)
@@ -1387,7 +1387,10 @@ OFBool OFStandard::stringMatchesCharacterSet( const char *str, const char *chars
 
 /*
  *  $Log: ofstd.cc,v $
- *  Revision 1.15  2003-03-12 14:57:51  joergr
+ *  Revision 1.16  2003-03-21 13:10:42  meichel
+ *  Minor code purifications for warnings reported by MSVC in Level 4
+ *
+ *  Revision 1.15  2003/03/12 14:57:51  joergr
  *  Added apostrophe (') to the list of characters to be replaced by the
  *  corresponding HTML/XML mnenonic.
  *

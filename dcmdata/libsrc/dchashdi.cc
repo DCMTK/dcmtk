@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2002, OFFIS
+ *  Copyright (C) 1994-2003, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose: Hash table interface for DICOM data dictionary
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-11-27 12:06:47 $
+ *  Update Date:      $Date: 2003-03-21 13:08:04 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dchashdi.cc,v $
- *  CVS/RCS Revision: $Revision: 1.16 $
+ *  CVS/RCS Revision: $Revision: 1.17 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -459,7 +459,7 @@ DcmHashDict::get(const DcmTagKey& k, const char *privCreator) const
     if ((entry == NULL) && privCreator)
     {
       // As a second guess, we look for a private tag with flexible element number.
-      DcmTagKey tk(k.getGroup(), k.getElement() & 0xff);
+      DcmTagKey tk(k.getGroup(), (unsigned short)(k.getElement() & 0xff));
       idx = hash(&tk);
       bucket = hashTab[idx];
       if (bucket) entry = findInList(*bucket, tk, privCreator);
@@ -536,7 +536,10 @@ DcmHashDict::loadSummary(ostream& out)
 /*
 ** CVS/RCS Log:
 ** $Log: dchashdi.cc,v $
-** Revision 1.16  2002-11-27 12:06:47  meichel
+** Revision 1.17  2003-03-21 13:08:04  meichel
+** Minor code purifications for warnings reported by MSVC in Level 4
+**
+** Revision 1.16  2002/11/27 12:06:47  meichel
 ** Adapted module dcmdata to use of new header file ofstdinc.h
 **
 ** Revision 1.15  2002/07/23 14:21:33  meichel

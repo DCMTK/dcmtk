@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2002, OFFIS
+ *  Copyright (C) 1994-2003, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose: singleton class that registers RLE encoder.
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-06-06 14:52:37 $
+ *  Update Date:      $Date: 2003-03-21 13:06:46 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcrleerg.h,v $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -74,6 +74,12 @@ public:
 
 private:
 
+  /// private undefined copy constructor
+  DcmRLEEncoderRegistration(const DcmRLEEncoderRegistration&);
+  
+  /// private undefined copy assignment operator
+  DcmRLEEncoderRegistration& operator=(const DcmRLEEncoderRegistration&);
+
   /// flag indicating whether the encoder is already registered.
   static OFBool registered;
 
@@ -90,7 +96,10 @@ private:
 /*
  * CVS/RCS Log
  * $Log: dcrleerg.h,v $
- * Revision 1.1  2002-06-06 14:52:37  meichel
+ * Revision 1.2  2003-03-21 13:06:46  meichel
+ * Minor code purifications for warnings reported by MSVC in Level 4
+ *
+ * Revision 1.1  2002/06/06 14:52:37  meichel
  * Initial release of the new RLE codec classes
  *   and the dcmcrle/dcmdrle tools in module dcmdata
  *

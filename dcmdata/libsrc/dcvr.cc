@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2002, OFFIS
+ *  Copyright (C) 1994-2003, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,10 +21,10 @@
  *
  *  Purpose: class DcmVR: Value Representation
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-12-06 13:00:31 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2003-03-21 13:08:04 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcvr.cc,v $
- *  CVS/RCS Revision: $Revision: 1.27 $
+ *  CVS/RCS Revision: $Revision: 1.28 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -327,45 +327,47 @@ Uint32 DcmVR::getMaxValueLength() const
 }
 
 /* returns true if the vr is equivalent */
-int DcmVR::isEquivalent(const DcmVR& avr) const
+OFBool DcmVR::isEquivalent(const DcmVR& avr) const
 {
     DcmEVR evr = avr.getEVR();
-    if (vr == evr) {
-        return OFTrue;
+    if (vr == evr) return OFTrue;
+
+    OFBool result = OFFalse;
+    switch (vr)
+    {
+      case EVR_ox:
+          result = (evr == EVR_OB || evr == EVR_OW);
+          break;
+      case EVR_OB:
+      case EVR_OW:
+          result = (evr == EVR_ox);
+          break;
+      case EVR_up:
+          result = (evr == EVR_UL);
+          break;
+      case EVR_UL:
+          result = (evr == EVR_up);
+          break;
+      case EVR_xs:
+          result = (evr == EVR_SS || evr == EVR_US);
+          break;
+      case EVR_SS:
+      case EVR_US:
+          result = (evr == EVR_xs);
+          break;
+      default:
+          break;
     }
-    OFBool ok = OFFalse;
-    switch (vr) {
-    case EVR_ox:
-        ok = (evr == EVR_OB || evr == EVR_OW);
-        break;
-    case EVR_OB:
-    case EVR_OW:
-        ok = (evr == EVR_ox);
-        break;
-    case EVR_up:
-        ok = (evr == EVR_UL);
-        break;
-    case EVR_UL:
-        ok = (evr == EVR_up);
-        break;
-    case EVR_xs:
-        ok = (evr == EVR_SS || evr == EVR_US);
-        break;
-    case EVR_SS:
-    case EVR_US:
-        ok = (evr == EVR_xs);
-        break;
-    default:
-        ok = OFFalse;
-        break;
-    }
-    return ok;
+    return result;
 }
 
 /*
  * CVS/RCS Log:
  * $Log: dcvr.cc,v $
- * Revision 1.27  2002-12-06 13:00:31  joergr
+ * Revision 1.28  2003-03-21 13:08:04  meichel
+ * Minor code purifications for warnings reported by MSVC in Level 4
+ *
+ * Revision 1.27  2002/12/06 13:00:31  joergr
  * Added support for new value representation Other Float String (OF).
  *
  * Revision 1.26  2002/11/27 12:06:54  meichel

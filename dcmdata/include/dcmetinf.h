@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2002, OFFIS
+ *  Copyright (C) 1994-2003, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,10 +21,10 @@
  *
  *  Purpose: Interface of class DcmMetaInfo
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-12-06 12:49:11 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2003-03-21 13:06:46 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcmetinf.h,v $
- *  CVS/RCS Revision: $Revision: 1.18 $
+ *  CVS/RCS Revision: $Revision: 1.19 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -121,6 +121,9 @@ class DcmMetaInfo
 
   private:
 
+    /// private undefined copy assignment operator
+    DcmMetaInfo& operator=(const DcmMetaInfo&);
+
     void setPreamble();
 
     OFBool checkAndReadPreamble(DcmInputStream &inStream,
@@ -136,10 +139,13 @@ class DcmMetaInfo
                                 Uint32 &bytesRead,              // out
                                 const Uint32 maxReadLength = DCM_MaxReadLength);   // in
 
+    /// buffer for 132 byte DICOM file preamble
     char filePreamble[DCM_PreambleLen + DCM_MagicLen];
+
     OFBool preambleUsed;
     E_TransferState fPreambleTransferState;
     E_TransferSyntax Xfer;
+
 };
 
 #endif // DCMETINF_H
@@ -147,7 +153,10 @@ class DcmMetaInfo
 /*
 ** CVS/RCS Log:
 ** $Log: dcmetinf.h,v $
-** Revision 1.18  2002-12-06 12:49:11  joergr
+** Revision 1.19  2003-03-21 13:06:46  meichel
+** Minor code purifications for warnings reported by MSVC in Level 4
+**
+** Revision 1.18  2002/12/06 12:49:11  joergr
 ** Enhanced "print()" function by re-working the implementation and replacing
 ** the boolean "showFullData" parameter by a more general integer flag.
 ** Added doc++ documentation.

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2002, OFFIS
+ *  Copyright (C) 1994-2003, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,10 +21,10 @@
  *
  *  Purpose: decoder codec class for RLE
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-07-18 12:15:39 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2003-03-21 13:08:04 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcrleccd.cc,v $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -103,7 +103,7 @@ OFCondition DcmRLECodecDecoder::decode(
     if (result.good()) result = ((DcmItem *)dataset)->findAndGetUint16(DCM_BitsAllocated, imageBitsAllocated);
     if (result.good())
     {
-      imageBytesAllocated = imageBitsAllocated / 8;
+      imageBytesAllocated = (Uint16)(imageBitsAllocated / 8);
       if ((imageBitsAllocated < 8)||(imageBitsAllocated % 8 != 0)) result = EC_CannotChangeRepresentation;
     }
     if (result.good() && (imageSamplesPerPixel > 1))
@@ -403,7 +403,10 @@ OFCondition DcmRLECodecDecoder::encode(
 /*
  * CVS/RCS Log
  * $Log: dcrleccd.cc,v $
- * Revision 1.2  2002-07-18 12:15:39  joergr
+ * Revision 1.3  2003-03-21 13:08:04  meichel
+ * Minor code purifications for warnings reported by MSVC in Level 4
+ *
+ * Revision 1.2  2002/07/18 12:15:39  joergr
  * Added explicit type casts to keep Sun CC 2.0.1 quiet.
  *
  * Revision 1.1  2002/06/06 14:52:40  meichel

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2002, OFFIS
+ *  Copyright (C) 1994-2003, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose: class DcmTag
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-11-27 12:06:52 $
+ *  Update Date:      $Date: 2003-03-21 13:08:04 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dctag.cc,v $
- *  CVS/RCS Revision: $Revision: 1.18 $
+ *  CVS/RCS Revision: $Revision: 1.19 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -211,7 +211,7 @@ OFCondition DcmTag::findTagFromName(const char *name,
         if (sscanf(name, "%x,%x", &grp, &elm) == 2)
         {
             /* store resulting tag value */
-            value.set(grp, elm);
+            value.set((Uint16)grp, (Uint16)elm);
         } else {
             /* it is a name: look up in the dictionary */
             const DcmDataDictionary &globalDataDict = dcmDataDict.rdlock();
@@ -265,7 +265,10 @@ void DcmTag::updatePrivateCreator(const char *c)
 /*
 ** CVS/RCS Log:
 ** $Log: dctag.cc,v $
-** Revision 1.18  2002-11-27 12:06:52  meichel
+** Revision 1.19  2003-03-21 13:08:04  meichel
+** Minor code purifications for warnings reported by MSVC in Level 4
+**
+** Revision 1.18  2002/11/27 12:06:52  meichel
 ** Adapted module dcmdata to use of new header file ofstdinc.h
 **
 ** Revision 1.17  2002/07/23 14:21:34  meichel

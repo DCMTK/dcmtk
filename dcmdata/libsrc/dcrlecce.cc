@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2002, OFFIS
+ *  Copyright (C) 1994-2003, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose: encoder codec class for RLE
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-12-04 10:41:01 $
+ *  Update Date:      $Date: 2003-03-21 13:08:04 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcrlecce.cc,v $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -160,7 +160,7 @@ OFCondition DcmRLECodecEncoder::encode(
     if (result.good())
     {
       // check if bitsAllocated is a multiple of 8 - we don't handle anything else
-      bytesAllocated = bitsAllocated / 8;
+      bytesAllocated = (Uint16)(bitsAllocated / 8);
       if ((bitsAllocated < 8)||(bitsAllocated % 8 != 0)) result = EC_CannotChangeRepresentation;
 
       // make sure that all the descriptive attributes have sensible values
@@ -419,7 +419,10 @@ OFCondition DcmRLECodecEncoder::updateDerivationDescription(
 /*
  * CVS/RCS Log
  * $Log: dcrlecce.cc,v $
- * Revision 1.6  2002-12-04 10:41:01  meichel
+ * Revision 1.7  2003-03-21 13:08:04  meichel
+ * Minor code purifications for warnings reported by MSVC in Level 4
+ *
+ * Revision 1.6  2002/12/04 10:41:01  meichel
  * Changed toolkit to use OFStandard::ftoa instead of sprintf for all
  *   double to string conversions that are supposed to be locale independent
  *

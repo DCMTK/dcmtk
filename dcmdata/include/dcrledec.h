@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2002, OFFIS
+ *  Copyright (C) 1994-2003, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose: RLE decompressor
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-06-06 14:52:36 $
+ *  Update Date:      $Date: 2003-03-21 13:06:46 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcrledec.h,v $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -113,13 +113,13 @@ public:
       else if (suspendInfo_ < 128)
       {
         // suspended literal run
-        nbytes = (suspendInfo_ & 0x7f) + 1;
+        nbytes = (unsigned char)((suspendInfo_ & 0x7f) + 1);
         suspendInfo_ = 128;
         if (compressedSize < nbytes)
         {
           // we're going to suspend again (oops?), prepare everything
-          suspendInfo_ = nbytes - compressedSize - 1;
-          nbytes = compressedSize;
+          suspendInfo_ = (unsigned char)(nbytes - compressedSize - 1);
+          nbytes = (unsigned char)compressedSize;
           result = EC_StreamNotifyClient;
         }
 
@@ -155,12 +155,12 @@ public:
         else
         {
           // literal run
-          nbytes = (ch & 0x7f) + 1;
+          nbytes = (unsigned char)((ch & 0x7f) + 1);
           if (compressedSize < nbytes)
           {
             // we're going to suspend, prepare everything
-            suspendInfo_ = nbytes - compressedSize - 1;
-            nbytes = compressedSize;
+            suspendInfo_ = (unsigned char)(nbytes - compressedSize - 1);
+            nbytes = (unsigned char)compressedSize;
             result = EC_StreamNotifyClient;
           }
 
@@ -219,7 +219,7 @@ private:
      {
        // output buffer overflow
        fail_ = 1;
-       nbytes = outputBufferSize_ - offset_;
+       nbytes = (unsigned char)(outputBufferSize_ - offset_);
      }
 
      while (nbytes--) outputBuffer_[offset_++] = ch;
@@ -236,7 +236,7 @@ private:
      {
        // output buffer overflow
        fail_ = 1;
-       nbytes = outputBufferSize_ - offset_;
+       nbytes = (unsigned char)(outputBufferSize_ - offset_);
      }
 
      while (nbytes--) outputBuffer_[offset_++] = *cp++;
@@ -278,7 +278,10 @@ private:
 /*
  * CVS/RCS Log
  * $Log: dcrledec.h,v $
- * Revision 1.1  2002-06-06 14:52:36  meichel
+ * Revision 1.2  2003-03-21 13:06:46  meichel
+ * Minor code purifications for warnings reported by MSVC in Level 4
+ *
+ * Revision 1.1  2002/06/06 14:52:36  meichel
  * Initial release of the new RLE codec classes
  *   and the dcmcrle/dcmdrle tools in module dcmdata
  *

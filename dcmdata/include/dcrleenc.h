@@ -22,9 +22,9 @@
  *  Purpose: RLE compressor
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-11-27 12:07:22 $
+ *  Update Date:      $Date: 2003-03-21 13:06:46 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcrleenc.h,v $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -119,11 +119,11 @@ public:
               break;
             case 2:
               // two bytes in repeat buffer. Convert to literal run
-              RLE_buff_[RLE_bindex_++] = RLE_prev_;
+              RLE_buff_[RLE_bindex_++] = (unsigned char)RLE_prev_;
               // no break. Fall-through into next case statement is intended.
             case 1:
               // one (or two) bytes in repeat buffer. Convert to literal run
-              RLE_buff_[RLE_bindex_++] = RLE_prev_;
+              RLE_buff_[RLE_bindex_++] = (unsigned char)RLE_prev_;
               break;
             default:
               // more than two bytes in repeat buffer. Convert to replicate run
@@ -131,11 +131,11 @@ public:
               {
                   // there is a literal run in the buffer that must be flushed
                   // before the replicate run.  Flush literal run now.
-                  RLE_buff_[0] = RLE_bindex_-2;
+                  RLE_buff_[0] = (unsigned char)(RLE_bindex_-2);
                   move(RLE_bindex_);
               }
               // this is the byte value for the repeat run
-              RLE_buff_[1] = RLE_prev_;
+              RLE_buff_[1] = (unsigned char)RLE_prev_;
               // write as many repeat runs as necessary
               for (; RLE_pcount_>0; RLE_pcount_-=128)
               {
@@ -198,7 +198,7 @@ public:
       // if there are max 1 bytes in the repeat counter, convert to literal run
       if (RLE_pcount_ < 2)
       {
-        for (; RLE_pcount_>0; --RLE_pcount_) RLE_buff_[RLE_bindex_++] = RLE_prev_;
+        for (; RLE_pcount_>0; --RLE_pcount_) RLE_buff_[RLE_bindex_++] = (unsigned char)RLE_prev_;
       }
 
       // if we have 128 or more bytes in the literal run, flush buffer
@@ -216,14 +216,14 @@ public:
       // if there is still a literal run in the buffer, flush literal run
       if (RLE_bindex_ > 1)
       {
-          RLE_buff_[0] = RLE_bindex_-2;
+          RLE_buff_[0] = (unsigned char)(RLE_bindex_-2);
           move(RLE_bindex_);
       }
 
       // if there is a remaining repeat run, flush this one as well
       if (RLE_pcount_ >= 2)
       {
-          RLE_buff_[1] = RLE_prev_;
+          RLE_buff_[1] = (unsigned char)(RLE_prev_);
           // write as many repeat runs as necessary
           for (; RLE_pcount_>0; RLE_pcount_-=128)
           {
@@ -422,7 +422,10 @@ private:
 /*
  * CVS/RCS Log
  * $Log: dcrleenc.h,v $
- * Revision 1.5  2002-11-27 12:07:22  meichel
+ * Revision 1.6  2003-03-21 13:06:46  meichel
+ * Minor code purifications for warnings reported by MSVC in Level 4
+ *
+ * Revision 1.5  2002/11/27 12:07:22  meichel
  * Adapted module dcmdata to use of new header file ofstdinc.h
  *
  * Revision 1.4  2002/07/18 12:16:52  joergr

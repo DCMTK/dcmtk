@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2002, OFFIS
+ *  Copyright (C) 1994-2003, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose: loadable DICOM data dictionary
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-11-27 12:06:44 $
+ *  Update Date:      $Date: 2003-03-21 13:08:04 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcdict.cc,v $
- *  CVS/RCS Revision: $Revision: 1.28 $
+ *  CVS/RCS Revision: $Revision: 1.29 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -379,8 +379,8 @@ parseWholeTagField(char* s, DcmTagKey& key,
       if (privCreator) strcpy(privCreator,pc);
     }
 
-    key.set(gl,el);
-    upperKey.set(gh,eh);
+    key.set((unsigned short)gl,(unsigned short)el);
+    upperKey.set((unsigned short)gh,(unsigned short)eh);
 
     return OFTrue;
 }
@@ -436,8 +436,8 @@ DcmDataDictionary::loadDictionary(const char* fileName, OFBool errorIfAbsent)
     int i;
 
     DcmTagKey key, upperKey;
-    DcmDictRangeRestriction groupRestriction;
-    DcmDictRangeRestriction elementRestriction;
+    DcmDictRangeRestriction groupRestriction = DcmDictRange_Unspecified;
+    DcmDictRangeRestriction elementRestriction = DcmDictRange_Unspecified;
     DcmVR vr;
     char* vrName;
     char* tagName;
@@ -821,7 +821,10 @@ void GlobalDcmDataDictionary::clear()
 /*
 ** CVS/RCS Log:
 ** $Log: dcdict.cc,v $
-** Revision 1.28  2002-11-27 12:06:44  meichel
+** Revision 1.29  2003-03-21 13:08:04  meichel
+** Minor code purifications for warnings reported by MSVC in Level 4
+**
+** Revision 1.28  2002/11/27 12:06:44  meichel
 ** Adapted module dcmdata to use of new header file ofstdinc.h
 **
 ** Revision 1.27  2002/07/23 14:21:30  meichel

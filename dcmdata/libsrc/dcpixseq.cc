@@ -21,10 +21,10 @@
  *
  *  Purpose: Implementation of class DcmPixelSequence
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-01-06 09:29:49 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2003-03-21 13:08:04 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcpixseq.cc,v $
- *  CVS/RCS Revision: $Revision: 1.31 $
+ *  CVS/RCS Revision: $Revision: 1.32 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -294,8 +294,8 @@ OFCondition DcmPixelSequence::read(DcmInputStream &inStream,
     OFCondition l_error = changeXfer(ixfer);
     if (l_error.good())
         return DcmSequenceOfItems::read(inStream, ixfer, glenc, maxReadLength);
-    else
-        return l_error;
+
+    return l_error;
 }
 
 
@@ -309,7 +309,8 @@ OFCondition DcmPixelSequence::write(DcmOutputStream &outStream,
     OFCondition l_error = changeXfer(oxfer);
     if (l_error.good())
         return DcmSequenceOfItems::write(outStream, oxfer, EET_UndefinedLength);
-    else return l_error;
+
+    return l_error;
 }
 
 
@@ -323,7 +324,8 @@ OFCondition DcmPixelSequence::writeSignatureFormat(DcmOutputStream &outStream,
     OFCondition l_error = changeXfer(oxfer);
     if (l_error.good())
         return DcmSequenceOfItems::writeSignatureFormat(outStream, oxfer, EET_UndefinedLength);
-    else return l_error;
+
+    return l_error;
 }
 
 
@@ -375,7 +377,10 @@ OFCondition DcmPixelSequence::storeCompressedFrame(DcmOffsetList &offsetList,
 /*
 ** CVS/RCS Log:
 ** $Log: dcpixseq.cc,v $
-** Revision 1.31  2003-01-06 09:29:49  joergr
+** Revision 1.32  2003-03-21 13:08:04  meichel
+** Minor code purifications for warnings reported by MSVC in Level 4
+**
+** Revision 1.31  2003/01/06 09:29:49  joergr
 ** Performed minor text corrections to get a more consistent print() output.
 **
 ** Revision 1.30  2002/12/06 13:16:58  joergr

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2002, OFFIS
+ *  Copyright (C) 1994-2003, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,10 +21,10 @@
  *
  *  Purpose: Definition of the DcmVR class for Value Representation
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-12-06 12:20:19 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2003-03-21 13:06:46 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcvr.h,v $
- *  CVS/RCS Revision: $Revision: 1.19 $
+ *  CVS/RCS Revision: $Revision: 1.20 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -109,48 +109,146 @@ enum DcmEVR
 };
 
 
-class DcmVR {
-private:
-    DcmEVR vr;
-protected:
+/** a class representing a DICOM Value Representation
+ */
+class DcmVR
+{
 public:
-    DcmVR() : vr(EVR_UNKNOWN)
-        { }
-    DcmVR(DcmEVR evr) : vr(EVR_UNKNOWN)
-        { setVR(evr); }
-    DcmVR(const char* vrName) : vr(EVR_UNKNOWN)
-        { setVR(vrName); }
-    DcmVR(const DcmVR& avr) : vr(avr.vr)
-        { }
 
+    /// default constructor
+    DcmVR()
+    : vr(EVR_UNKNOWN)
+    {
+    }
+
+    /** constructor 
+     *  @param evr enumerated VR value
+     */
+    DcmVR(DcmEVR evr)
+    : vr(EVR_UNKNOWN)
+    { 
+      // the set method is safeguarded against incorrect passing of integer values
+      setVR(evr);
+    }
+
+    /** constructor 
+     *  @param vrName symbolic name of value representation
+     */
+    DcmVR(const char* vrName) 
+    : vr(EVR_UNKNOWN)
+    { 
+      setVR(vrName);
+    }
+
+    /// copy constructor
+    DcmVR(const DcmVR& avr) 
+    : vr(avr.vr)
+    {
+    }
+
+    /** assign new VR value
+     *  @param evr enumerated VR value
+     */
     void setVR(DcmEVR evr);
-    void setVR(const char* vrName);
-    void setVR(const DcmVR& avr) { vr = avr.vr; }
-    DcmEVR getEVR() const { return vr; }
-    DcmEVR getValidEVR() const;
-    const char* getVRName() const ;
-    const char* getValidVRName() const;
-    size_t getValueWidth(void) const;
 
-    /* returns true if VR is a standard DICOM VR */
+    /** assign new VR value by name
+     *  @param vrName symbolic name of value representation
+     */
+    void setVR(const char* vrName);
+
+    /** assign new VR value
+     *  @param VR value
+     */
+    void setVR(const DcmVR& avr) { vr = avr.vr; }
+
+    /** copy assignment operator
+     *  @param arg vr to assign from
+     */
+    DcmVR& operator=(const DcmVR& arg)
+    {
+      vr = arg.vr;
+      return *this;
+    }
+
+    /** get enumerated VR managed by this object
+     *  @return enumerated VR
+     */
+    DcmEVR getEVR() const { return vr; }
+
+    /** get enumerated standard VR managed by this object.
+     *  If this object manages a non-standard, internal VR such as EVR_ox,
+     *  this method returns the enumerated VR to which the internal VR will
+     *  be mapped when writing the DICOM object.
+     *  @return enumerated VR
+     */
+    DcmEVR getValidEVR() const;
+
+    /** get symbolic VR name for this object
+     *  @return VR name string, never NULL
+     */
+    const char* getVRName() const ;
+
+    /** get symbolic standard VR name for this object
+     *  If this object manages a non-standard, internal VR such as EVR_ox,
+     *  this method returns the name of the VR to which the internal VR will
+     *  be mapped when writing the DICOM object.
+     *  @return VR name string, never NULL
+     */
+    const char* getValidVRName() const;
+
+    /** compute the size for non-empty values of this VR.
+     *  For fixed size VRs such as OW, US, SL, the method returns the size
+     *  of each value, in bytes.  For variable length VRs (strings), it returns 1.
+     *  For internal VRs it returns 0.
+     *  @return size of values of this VR
+     */
+    size_t getValueWidth() const;
+
+    /** returns true if VR is a standard DICOM VR 
+     *  @return true if VR is a standard DICOM VR 
+     */
     OFBool isStandard() const;
-    /* returns true if VR is for internal use only */
+
+    /** returns true if VR is for internal use only
+     *  @return true if VR is for internal use only
+     */
     OFBool isForInternalUseOnly() const;
 
-    /* returns true if VR represents a string */
+    /** returns true if VR represents a string
+     *  @return true if VR represents a string
+     */
     OFBool isaString() const;
-    /* returns true if VR uses an extended length encoding for explicit transfer syntaxes */
+
+    /** returns true if VR uses an extended length encoding for explicit transfer syntaxes
+     *  @return true if VR uses an extended length encoding for explicit transfer syntaxes
+     */
     OFBool usesExtendedLengthEncoding() const;
 
-    /* returns true if the vr is equivalent */
-    int isEquivalent(const DcmVR& avr) const;
+    /** check if VRs are equivalent
+     *  VRs are considered equivalent if equal or if one of them is an internal VR
+     *  and the other one is a possible standard VR to which the internal one maps.
+     *  @param avr VR to compare with
+     *  @return true if VRs are equivalent, false otherwise
+     */
+    OFBool isEquivalent(const DcmVR& avr) const;
 
     /* minimum and maximum length of a value with this VR
     ** (in bytes assuming single byte characters)
     */
+
+    /** return minimum length of a value with this VR (in bytes), assuming single byte characters
+     *  @return minimum length of a value
+     */
     Uint32 getMinValueLength() const;
+
+    /** return maximum length of a value with this VR (in bytes), assuming single byte characters
+     *  @return maximum length of a value
+     */
     Uint32 getMaxValueLength() const;
 
+private:
+    /// the enumerated VR value
+    DcmEVR vr;
 };
 
 
@@ -160,7 +258,10 @@ public:
 /*
  * CVS/RCS Log:
  * $Log: dcvr.h,v $
- * Revision 1.19  2002-12-06 12:20:19  joergr
+ * Revision 1.20  2003-03-21 13:06:46  meichel
+ * Minor code purifications for warnings reported by MSVC in Level 4
+ *
+ * Revision 1.19  2002/12/06 12:20:19  joergr
  * Added support for new value representation Other Float String (OF).
  *
  * Revision 1.18  2002/11/27 12:07:24  meichel

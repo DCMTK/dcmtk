@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2002, OFFIS
+ *  Copyright (C) 1994-2003, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose: decoder codec class for RLE
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-06-06 14:52:34 $
+ *  Update Date:      $Date: 2003-03-21 13:06:46 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcrleccd.h,v $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -125,6 +125,14 @@ public:
     const E_TransferSyntax oldRepType,
     const E_TransferSyntax newRepType) const;
 
+private:
+
+  /// private undefined copy constructor
+  DcmRLECodecDecoder(const DcmRLECodecDecoder&);
+  
+  /// private undefined copy assignment operator
+  DcmRLECodecDecoder& operator=(const DcmRLECodecDecoder&);
+
 };
 
 #endif
@@ -132,7 +140,10 @@ public:
 /*
  * CVS/RCS Log
  * $Log: dcrleccd.h,v $
- * Revision 1.1  2002-06-06 14:52:34  meichel
+ * Revision 1.2  2003-03-21 13:06:46  meichel
+ * Minor code purifications for warnings reported by MSVC in Level 4
+ *
+ * Revision 1.1  2002/06/06 14:52:34  meichel
  * Initial release of the new RLE codec classes
  *   and the dcmcrle/dcmdrle tools in module dcmdata
  *

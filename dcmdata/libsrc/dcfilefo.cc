@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2002, OFFIS
+ *  Copyright (C) 1994-2003, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,10 +21,10 @@
  *
  *  Purpose: class DcmFileFormat
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-12-06 13:09:26 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2003-03-21 13:08:04 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcfilefo.cc,v $
- *  CVS/RCS Revision: $Revision: 1.33 $
+ *  CVS/RCS Revision: $Revision: 1.34 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -243,8 +243,8 @@ OFCondition DcmFileFormat::checkValue(DcmMetaInfo *metainfo,
                 debug(2, ("DcmFileFormat::checkValue() Version of MetaHeader is ok: 0x%2.2x%2.2x",
                         currVers[1], currVers[0]));
             } else {
-                currVers[0] = currVers[0] | version[0]; // direct manipulation
-                currVers[1] = currVers[1] | version[1]; // of data
+                currVers[0] = (Uint8)(currVers[0] | version[0]); // direct manipulation
+                currVers[1] = (Uint8)(currVers[1] | version[1]); // of data
                 ostream& localCerr = ofConsole.lockCerr();
                 localCerr << "Warning: dcfilefo: unknown Version of MetaHeader detected: 0x";
                 localCerr << hex << setfill('0')
@@ -860,7 +860,10 @@ DcmDataset *DcmFileFormat::getAndRemoveDataset()
 /*
 ** CVS/RCS Log:
 ** $Log: dcfilefo.cc,v $
-** Revision 1.33  2002-12-06 13:09:26  joergr
+** Revision 1.34  2003-03-21 13:08:04  meichel
+** Minor code purifications for warnings reported by MSVC in Level 4
+**
+** Revision 1.33  2002/12/06 13:09:26  joergr
 ** Enhanced "print()" function by re-working the implementation and replacing
 ** the boolean "showFullData" parameter by a more general integer flag.
 ** Made source code formatting more consistent with other modules/files.

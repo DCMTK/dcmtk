@@ -21,10 +21,10 @@
  *
  *  Purpose: Interface of the class DcmDataset
  *
- *  Last Update:      $Author: wilkens $
- *  Update Date:      $Date: 2002-12-09 09:31:13 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2003-03-21 13:06:46 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcdatset.h,v $
- *  CVS/RCS Revision: $Revision: 1.21 $
+ *  CVS/RCS Revision: $Revision: 1.22 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -244,6 +244,9 @@ class DcmDataset
 
   private:
 
+    /// private undefined copy assignment operator
+    DcmDataset& operator=(const DcmDataset&);
+
     /// current transfer syntax of the dataset
     E_TransferSyntax Xfer;
 };
@@ -255,7 +258,10 @@ class DcmDataset
 /*
 ** CVS/RCS Log:
 ** $Log: dcdatset.h,v $
-** Revision 1.21  2002-12-09 09:31:13  wilkens
+** Revision 1.22  2003-03-21 13:06:46  meichel
+** Minor code purifications for warnings reported by MSVC in Level 4
+**
+** Revision 1.21  2002/12/09 09:31:13  wilkens
 ** Modified/Added doc++ documentation.
 **
 ** Revision 1.20  2002/12/06 12:49:08  joergr
