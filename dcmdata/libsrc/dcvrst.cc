@@ -19,42 +19,37 @@
  *
  *  Author:  Gerd Ehlers
  *
- *  Purpose: class DcmShortText
+ *  Purpose: Implementation of class DcmShortText
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-04-25 10:33:40 $
+ *  Update Date:      $Date: 2002-12-06 13:05:52 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcvrst.cc,v $
- *  CVS/RCS Revision: $Revision: 1.12 $
+ *  CVS/RCS Revision: $Revision: 1.13 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
  *
  */
 
+
 #include "dcvrst.h"
-#include "dcdebug.h"
 
 
 // ********************************
 
 
-DcmShortText::DcmShortText(const DcmTag &tag, const Uint32 len)
-: DcmCharString(tag, len)
+DcmShortText::DcmShortText(const DcmTag &tag,
+                           const Uint32 len)
+  : DcmCharString(tag, len)
 {
     maxLength = 1024;
 }
 
 
-// ********************************
-
-
-DcmShortText::DcmShortText( const DcmShortText& old )
-: DcmCharString(old)
+DcmShortText::DcmShortText(const DcmShortText &old)
+  : DcmCharString(old)
 {
 }
-
-
-// ********************************
 
 
 DcmShortText::~DcmShortText()
@@ -62,42 +57,65 @@ DcmShortText::~DcmShortText()
 }
 
 
-// ********************************
-
-OFCondition
-DcmShortText::getOFString(
-    OFString & str,
-    const unsigned long pos,
-    OFBool normalize)
+DcmShortText &DcmShortText::operator=(const DcmShortText &obj)
 {
-    OFCondition l_error = DcmCharString::getOFString(str, pos, normalize);
-    if (l_error == EC_Normal && normalize)
-        normalizeString(str, !MULTIPART, !DELETE_LEADING, DELETE_TRAILING);
-    return l_error;
+    DcmCharString::operator=(obj);
+    return *this;
 }
 
+
 // ********************************
 
-OFCondition 
-DcmShortText::getOFStringArray(
-    OFString & str,
-    OFBool normalize)
+
+DcmEVR DcmShortText::ident() const
+{
+    return EVR_ST;
+}
+
+
+unsigned long DcmShortText::getVM()
+{
+    /* value multiplicity is 1 for non-empty string, 0 otherwise */
+    return (getRealLength() > 0) ? 1 : 0;
+}
+
+
+// ********************************
+
+
+OFCondition DcmShortText::getOFString(OFString &stringVal,
+                                      const unsigned long /*pos*/,
+                                      OFBool normalize)
+{
+    /* treat backslash as a normal character */
+    return getOFStringArray(stringVal, normalize);
+}
+
+
+OFCondition DcmShortText::getOFStringArray(OFString &stringVal,
+                                           OFBool normalize)
 {
     /* get string value without handling the "\" as a delimiter */
-    OFCondition l_error = getStringValue(str);
-    if (l_error == EC_Normal && normalize)
-        normalizeString(str, !MULTIPART, !DELETE_LEADING, DELETE_TRAILING);
+    OFCondition l_error = getStringValue(stringVal);
+    if (l_error.good() && normalize)
+        normalizeString(stringVal, !MULTIPART, !DELETE_LEADING, DELETE_TRAILING);
     return l_error;
 }
-
-
-// ********************************
 
 
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrst.cc,v $
-** Revision 1.12  2002-04-25 10:33:40  joergr
+** Revision 1.13  2002-12-06 13:05:52  joergr
+** Fixed bug in Unlimited Text (UT) class: the backslash character was treated
+** as a component separator which is wrong according to the DICOM standard.
+** Thanks to Razvan Costea-B. <cbrazvan@laitek.com> for the bug report.
+** The same bug was found in class Long Text (LT) and Short Text (ST).  Also
+** changed the behaviour of the getVM() method; now returns 1 only in case of
+** non-empty string values.
+** Made source code formatting more consistent with other modules/files.
+**
+** Revision 1.12  2002/04/25 10:33:40  joergr
 ** Added/modified getOFStringArray() implementation.
 **
 ** Revision 1.11  2001/09/25 17:20:01  meichel
