@@ -17,6 +17,7 @@ Currently the following profiles are supported (others might be added later):
  - General Purpose Interchange on DVD-RAM Media (STD-GEN-DVD-RAM)
  - Basic Cardiac X-Ray Angiographic Studies on CD-R Media (STD-XABC-CD)
  - 1024 X-Ray Angiographic Studies on CD-R Media (STD-XA1K-CD)
+ - CT/MR Studies on xxxx Media (STD-CTMR-xxxx)
  - Ultrasound Single Frame for Image Display (STD-US-ID-SF-xxxx)
  - Ultrasound Single Frame with Spatial Calibration (STD-US-SC-SF-xxxx)
  - Ultrasound Single Frame with Combined Calibration (STD-US-CC-SF-xxxx)
@@ -68,10 +69,16 @@ input options:
                                   and remove trailing period)
     -r    --no-recurse            do not recurse within directories (default)
     +r    --recurse               recurse within filesystem directories
-  profiles:
-    -Prc  --no-resolution-check   do not reject images with non-standard
+  checking:
+    +W    --warn-inconsist-files  warn about inconsistant files (default)
+    -a    --abort-inconsist-file  abort on first inconsistant file
+    +Ipi  --invent-patient-id     invent new PatientID in case of inconsistant
+                                  PatientsName attributes
+    -Nrc  --no-resolution-check   do not reject images with non-standard
                                   spatial resolution (just warn)
-  external icon images (only with -Pbc or -Pxa):
+  icon images:
+    +X    --add-icon-image        add monochrome icon image on IMAGE level
+                                  (default for cardiac profiles)
     -Xi   --icon-file-prefix      [p]refix: string
                                   use PGM image 'prefix'+'dcmfile-in' as icon
                                   (default: create icon from DICOM image)
@@ -86,6 +93,7 @@ output options:
                                   CD-R Media (STD-XABC-CD)
     -Pxa  --xray-angiographic     1024 X-Ray Angiographic Studies on CD-R Media
                                   (STD-XA1K-CD)
+    -Pcm  --ct-and-mr             CT/MR Studies (STD-CTMR-xxxx)
     -Pus  --ultrasound-id-sf      Ultrasound Single Frame for Image Display
                                   (STD-US-ID-SF-xxxx)
           --ultrasound-sc-sf      Ultrasound Single Frame with Spatial
@@ -129,6 +137,14 @@ relaxed via the +m option).  Files missing required attributes will be rejected
 
 A DICOMDIR file will only be constructed if all files have passed initial
 tests.
+
+
+NOTE
+
+The support for icon images is currently restricted to monochrome images.  This
+will probably change in the future.  Till then color images are automatically
+converted to grayscale mode.  The icon size is 128*128 pixels for the cardiac
+profiles (as required by the DICOM standard) and 64*64 for all others.
 
 
 ENVIRONMENT
