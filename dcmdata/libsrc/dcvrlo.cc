@@ -19,45 +19,39 @@
  *
  *  Author:  Gerd Ehlers, Andreas Barth
  *
- *  Purpose: class DcmLongString
+ *  Purpose: Implementation class DcmLongString
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-04-25 10:30:35 $
+ *  Update Date:      $Date: 2002-12-06 13:20:51 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcvrlo.cc,v $
- *  CVS/RCS Revision: $Revision: 1.12 $
+ *  CVS/RCS Revision: $Revision: 1.13 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
  *
  */
 
+
 #include "osconfig.h"    /* make sure OS specific configuration is included first */
 
 #include "dcvrlo.h"
-#include "dcdebug.h"
 
 
 // ********************************
 
 
 DcmLongString::DcmLongString(const DcmTag &tag,
-			     const Uint32 len)
-: DcmCharString(tag, len)
+                             const Uint32 len)
+  : DcmCharString(tag, len)
 {
     maxLength = 64;
 }
 
 
-// ********************************
-
-
-DcmLongString::DcmLongString( const DcmLongString& old )
-: DcmCharString(old)
+DcmLongString::DcmLongString(const DcmLongString &old)
+  : DcmCharString(old)
 {
 }
-
-
-// ********************************
 
 
 DcmLongString::~DcmLongString()
@@ -65,27 +59,45 @@ DcmLongString::~DcmLongString()
 }
 
 
-// ********************************
-
-OFCondition
-DcmLongString::getOFString(
-    OFString & str,
-    const unsigned long pos,
-    OFBool normalize)
+DcmLongString &DcmLongString::operator=(const DcmLongString &obj)
 {
-    OFCondition l_error = DcmCharString::getOFString(str, pos, normalize);
-    if (l_error == EC_Normal && normalize)
-	normalizeString(str, !MULTIPART, DELETE_LEADING, DELETE_TRAILING);
-    return l_error;
+    DcmCharString::operator=(obj);
+    return *this;
 }
 
+
 // ********************************
+
+
+DcmEVR DcmLongString::ident() const
+{
+    return EVR_LO;
+}
+
+
+// ********************************
+
+
+OFCondition DcmLongString::getOFString(OFString &stringVal,
+                                       const unsigned long pos,
+                                       OFBool normalize)
+{
+    OFCondition l_error = DcmCharString::getOFString(stringVal, pos, normalize);
+    if (l_error.good() && normalize)
+        normalizeString(stringVal, !MULTIPART, DELETE_LEADING, DELETE_TRAILING);
+    return l_error;
+}
 
 
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrlo.cc,v $
-** Revision 1.12  2002-04-25 10:30:35  joergr
+** Revision 1.13  2002-12-06 13:20:51  joergr
+** Enhanced "print()" function by re-working the implementation and replacing
+** the boolean "showFullData" parameter by a more general integer flag.
+** Made source code formatting more consistent with other modules/files.
+**
+** Revision 1.12  2002/04/25 10:30:35  joergr
 ** Removed getOFStringArray() implementation.
 **
 ** Revision 1.11  2001/09/25 17:19:58  meichel

@@ -19,23 +19,23 @@
  *
  *  Author:  Gerd Ehlers, Andreas Barth
  *
- *  Purpose: class DcmUnsignedLong
+ *  Purpose: Implementation of class DcmUnsignedLong
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-11-27 12:06:59 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2002-12-06 13:12:38 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcvrul.cc,v $
- *  CVS/RCS Revision: $Revision: 1.22 $
+ *  CVS/RCS Revision: $Revision: 1.23 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
  *
  */
 
+
 #include "osconfig.h"
 #include "ofstream.h"
 #include "dcvrul.h"
 #include "dcvm.h"
-#include "dcdebug.h"
 
 #define INCLUDE_CSTDIO
 #define INCLUDE_CSTRING
@@ -45,79 +45,38 @@
 // ********************************
 
 
-DcmUnsignedLong::DcmUnsignedLong(const DcmTag &tag, const Uint32 len)
-: DcmElement(tag, len)
+DcmUnsignedLong::DcmUnsignedLong(const DcmTag &tag,
+                                 const Uint32 len)
+  : DcmElement(tag, len)
 {
+}
+
+
+DcmUnsignedLong::DcmUnsignedLong(const DcmUnsignedLong &old)
+  : DcmElement(old)
+{
+}
+
+
+DcmUnsignedLong::~DcmUnsignedLong()
+{
+}
+
+
+DcmUnsignedLong &DcmUnsignedLong::operator=(const DcmUnsignedLong &obj)
+{
+    DcmUnsignedLong::operator=(obj);
+    return *this;
 }
 
 
 // ********************************
 
 
-DcmUnsignedLong::DcmUnsignedLong(const DcmUnsignedLong& old)
-: DcmElement( old )
+DcmEVR DcmUnsignedLong::ident() const
 {
+    return EVR_UL;
 }
-
-
-// ********************************
-
-
-DcmUnsignedLong::~DcmUnsignedLong(void)
-{
-}
-
-
-// ********************************
-
-
-void DcmUnsignedLong::print(ostream & out, const OFBool showFullData, 
-			  const int level, const char * /*pixelFileName*/,
-		      size_t * /*pixelCounter*/)
-{
-    if (this -> valueLoaded())
-    {
-	Uint32 * uintVals;
-	errorFlag = this -> getUint32Array(uintVals);
-
-	if (!uintVals)
-	    printInfoLine(out, showFullData, level, "(no value available)" );
-	else
-	{
-	    const Uint32 valueLength = Length/sizeof(Uint32);
-	    const Uint32 maxCount =
-		!showFullData && DCM_OptPrintLineLength/12 < valueLength ?
-		DCM_OptPrintLineLength/12 : valueLength;
-	    char *ch_words;
-	    char *tmp = ch_words = new char[maxCount*12+8];
-
-	    for (unsigned long i=0; i<maxCount; i++ )
-	    {
-#if SIZEOF_LONG == 8
-		sprintf(tmp, "%u\\", *uintVals);
-#else
-		sprintf(tmp, "%lu\\", *uintVals);
-#endif
-		tmp += strlen(tmp);
-		uintVals++;
-	    }
-	    if (maxCount > 0 )
-		tmp--;
-	    *tmp = '\0';
-
-	    if (maxCount < valueLength)
-		strcat(tmp, "...");
-
-	    printInfoLine(out, showFullData, level, ch_words);
-	    delete[] ch_words;
-	}
-    }
-    else
-	printInfoLine(out, showFullData, level, "(not loaded)");
-}
-
-
-// ********************************
 
 
 unsigned long DcmUnsignedLong::getVM()
@@ -129,116 +88,105 @@ unsigned long DcmUnsignedLong::getVM()
 // ********************************
 
 
-OFCondition DcmUnsignedLong::putUint32Array(const Uint32 * uintVal,
-					    const unsigned long numUints)
+void DcmUnsignedLong::print(ostream &out,
+                            const size_t flags,
+                            const int level,
+                            const char * /*pixelFileName*/,
+                            size_t * /*pixelCounter*/)
 {
-    errorFlag = EC_Normal;
-    if (numUints)
+    if (valueLoaded())
     {
-	if (uintVal)
-	    errorFlag = this -> putValue(uintVal, 
-					 sizeof(Uint32)*Uint32(numUints));
-	else
-	    errorFlag = EC_CorruptedData;
-    }
-    else
-	errorFlag = this -> putValue(NULL, 0);
-
-    return errorFlag;
-}
-
-
-// ********************************
-
-
-OFCondition DcmUnsignedLong::putUint32(const Uint32 uintVal,
-				       const unsigned long position)
-{
-    Uint32 val = uintVal;
-    errorFlag = this -> changeValue(&val, sizeof(Uint32)*position,
-				    sizeof(Uint32));
-    return errorFlag;
-}
-
-
-// ********************************
-
-
-OFCondition DcmUnsignedLong::putString(const char * val)
-{
-    errorFlag = EC_Normal;
-    if (val && val[0] != '\0')
-    {
-	unsigned long vm = getVMFromString(val);
-	if (vm)
-	{
-	    Uint32 * field = new Uint32[vm];
-	    const char * s = val;
-	    
-	    for(unsigned long i = 0; i < vm && errorFlag == EC_Normal; i++)
-	    {
-		char * value = getFirstValueFromString(s);
-		if (!value || 
+        /* get unsigned integer data */
+        Uint32 *uintVals;
+        errorFlag = getUint32Array(uintVals);
+        if (uintVals != NULL)
+        {
+            const unsigned long count = getVM();
+            const unsigned long maxLength = (flags & DCMTypes::PF_shortenLongTagValues) ?
+                DCM_OptPrintLineLength : (unsigned long)-1 /*unlimited*/;
+            unsigned long printedLength = 0;
+            unsigned long newLength = 0;
+            char buffer[32];
+            /* print line start with tag and VR */
+            printInfoLineStart(out, flags, level);
+            /* print multiple values */
+            for (unsigned int i = 0; i < count; i++, uintVals++)
+            {
+                /* check whether first value is printed (omit delimiter) */
+                if (i == 0)
 #if SIZEOF_LONG == 8
-		    sscanf(value, "%u", &field[i]) != 1
+                    sprintf(buffer, "%u", *uintVals);
+                else
+                    sprintf(buffer, "\\%u", *uintVals);
 #else
-		    sscanf(value, "%lu", &field[i]) != 1
+                    sprintf(buffer, "%lu", *uintVals);
+                else
+                    sprintf(buffer, "\\%lu", *uintVals);
 #endif
-		    )
-		    errorFlag = EC_CorruptedData;
-		else if (value)
-		    delete[] value;
-	    }
-	
-	    if (errorFlag == EC_Normal)
-		errorFlag = this -> putUint32Array(field, vm);
-	    delete[] field;
-	}
-	else 
-	    errorFlag = this -> putValue(NULL, 0);
-    }
-    else
-	errorFlag = this -> putValue(NULL, 0);
-
-    return errorFlag;
+                /* check whether current value sticks to the length limit */
+                newLength = printedLength + strlen(buffer);
+                if ((newLength <= maxLength) && ((i + 1 == count) || (newLength + 3 <= maxLength)))
+                {
+                    out << buffer;
+                    printedLength = newLength;
+                } else {
+                    /* check whether output has been truncated */
+                    if (i + 1 < count)
+                    {
+                        out << "...";
+                        printedLength += 3;
+                    }
+                    break;
+                }
+            }
+            /* print line end with length, VM and tag name */
+            printInfoLineEnd(out, flags, printedLength);
+        } else
+            printInfoLine(out, flags, level, "(no value available)");
+    } else
+        printInfoLine(out, flags, level, "(not loaded)");
 }
 
 
 // ********************************
 
 
-OFCondition DcmUnsignedLong::getUint32Array(Uint32 * & uintVals)
+OFCondition DcmUnsignedLong::getUint32(Uint32 &uintVal,
+                                       const unsigned long pos)
 {
-    uintVals = (Uint32 *)this -> getValue();
-    return errorFlag;
-}
-
-// ********************************
-
-
-OFCondition DcmUnsignedLong::getUint32(Uint32 & uintVal, 
-				       const unsigned long pos)
-{
-    Uint32 * uintVals = NULL;
-    errorFlag = this -> getUint32Array(uintVals);
-
-    if (uintVals && errorFlag == EC_Normal &&
-	pos < this -> getVM())
-	uintVal = uintVals[pos];
-    else
+    /* get unsigned integer data */
+    Uint32 *uintValues = NULL;
+    errorFlag = getUint32Array(uintValues);
+    /* check data before returning */
+    if (errorFlag.good())
     {
-	errorFlag = EC_IllegalCall;
-	uintVal = 0;
+        if (uintValues == NULL)
+            errorFlag = EC_IllegalCall;
+        else if (pos >= getVM())
+            errorFlag = EC_IllegalParameter;
+        else
+            uintVal = uintValues[pos];
     }
+    /* clear value in case of error */
+    if (errorFlag.bad())
+        uintVal = 0;
+    return errorFlag;
+}
+
+
+OFCondition DcmUnsignedLong::getUint32Array(Uint32 *&uintVals)
+{
+    uintVals = (Uint32 *)getValue();
     return errorFlag;
 }
 
 
 // ********************************
 
-OFCondition DcmUnsignedLong::getOFString(OFString &value,
-                                          const unsigned long pos,
-                                          OFBool /*normalize*/)
+
+OFCondition DcmUnsignedLong::getOFString(OFString &stringVal,
+                                         const unsigned long pos,
+                                         OFBool /*normalize*/)
 {
     Uint32 uintVal;
     /* get the specified numeric value */
@@ -249,7 +197,7 @@ OFCondition DcmUnsignedLong::getOFString(OFString &value,
         char buffer[32];
         sprintf(buffer, "%lu", uintVal);
         /* assign result */
-        value = buffer;
+        stringVal = buffer;
     }
     return errorFlag;
 }
@@ -257,28 +205,107 @@ OFCondition DcmUnsignedLong::getOFString(OFString &value,
 
 // ********************************
 
-OFCondition DcmUnsignedLong::verify(const OFBool autocorrect )
+
+OFCondition DcmUnsignedLong::putUint32(const Uint32 uintVal,
+                                       const unsigned long pos)
+{
+    Uint32 val = uintVal;
+    errorFlag = changeValue(&val, sizeof(Uint32) * pos, sizeof(Uint32));
+    return errorFlag;
+}
+
+
+OFCondition DcmUnsignedLong::putUint32Array(const Uint32 *uintVals,
+                                            const unsigned long numUints)
 {
     errorFlag = EC_Normal;
-    if ( Length % (sizeof(Uint32)) != 0 )
+    if (numUints > 0)
     {
-		errorFlag = EC_CorruptedData;
-		if (autocorrect)
-		{
-					    // auf gueltige Laenge kuerzen
-			Length = Length - ( Length % (sizeof(Uint32)) );
-		}
-    }
+        /* check for valid data */
+        if (uintVals != NULL)
+            errorFlag = putValue(uintVals, sizeof(Uint32) * (Uint32)numUints);
+        else
+            errorFlag = EC_CorruptedData;
+    } else
+        errorFlag = putValue(NULL, 0);
     return errorFlag;
 }
 
 
 // ********************************
+
+
+OFCondition DcmUnsignedLong::putString(const char *stringVal)
+{
+    errorFlag = EC_Normal;
+    /* check input string */
+    if ((stringVal != NULL) && (strlen(stringVal) > 0))
+    {
+        const unsigned long vm = getVMFromString(stringVal);
+        if (vm > 0)
+        {
+            Uint32 *field = new Uint32[vm];
+            const char *s = stringVal;
+            char *value;
+            /* retrieve unsigned integer data from character string */
+            for (unsigned long i = 0; (i < vm) && errorFlag.good(); i++)
+            {
+                /* get first value stored in 's', set 's' to beginning of the next value */
+                value = getFirstValueFromString(s);
+                if ((value == NULL) ||
+#if SIZEOF_LONG == 8
+                    (sscanf(value, "%u", &field[i]) != 1)
+#else
+                    (sscanf(value, "%lu", &field[i]) != 1)
+#endif
+                    )
+                {
+                    errorFlag = EC_CorruptedData;
+                }
+                delete[] value;
+            }
+            /* set binary data as the element value */
+            if (errorFlag.good())
+                errorFlag = putUint32Array(field, vm);
+            /* delete temporary buffer */
+            delete[] field;
+        } else
+            errorFlag = putValue(NULL, 0);
+    } else
+        errorFlag = putValue(NULL, 0);
+    return errorFlag;
+}
+
+
+// ********************************
+
+
+OFCondition DcmUnsignedLong::verify(const OFBool autocorrect)
+{
+    /* check for valid value length */
+    if (Length % (sizeof(Uint32)) != 0)
+    {
+        errorFlag = EC_CorruptedData;
+        if (autocorrect)
+        {
+            /* strip to valid length */
+            Length -= (Length % (sizeof(Uint32)));
+        }
+    } else
+        errorFlag = EC_Normal;
+    return errorFlag;
+}
+
 
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrul.cc,v $
-** Revision 1.22  2002-11-27 12:06:59  meichel
+** Revision 1.23  2002-12-06 13:12:38  joergr
+** Enhanced "print()" function by re-working the implementation and replacing
+** the boolean "showFullData" parameter by a more general integer flag.
+** Made source code formatting more consistent with other modules/files.
+**
+** Revision 1.22  2002/11/27 12:06:59  meichel
 ** Adapted module dcmdata to use of new header file ofstdinc.h
 **
 ** Revision 1.21  2002/04/25 10:35:04  joergr

@@ -19,23 +19,23 @@
  *
  *  Author:  Gerd Ehlers, Andreas Barth
  *
- *  Purpose: class DcmSignedLong
+ *  Purpose: Implementation of class DcmSignedLong
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-11-27 12:06:58 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2002-12-06 13:12:39 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcvrsl.cc,v $
- *  CVS/RCS Revision: $Revision: 1.22 $
+ *  CVS/RCS Revision: $Revision: 1.23 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
  *
  */
 
+
 #include "osconfig.h"    /* make sure OS specific configuration is included first */
 #include "ofstream.h"
 #include "dcvrsl.h"
 #include "dcvm.h"
-#include "dcdebug.h"
 
 #define INCLUDE_CSTDIO
 #define INCLUDE_CSTRING
@@ -45,78 +45,38 @@
 // ********************************
 
 
-DcmSignedLong::DcmSignedLong(const DcmTag &tag, const Uint32 len)
-: DcmElement(tag, len)
+DcmSignedLong::DcmSignedLong(const DcmTag &tag,
+                             const Uint32 len)
+  : DcmElement(tag, len)
 {
+}
+
+
+DcmSignedLong::DcmSignedLong(const DcmSignedLong &old)
+  : DcmElement(old)
+{
+}
+
+
+DcmSignedLong::~DcmSignedLong()
+{
+}
+
+
+DcmSignedLong &DcmSignedLong::operator=(const DcmSignedLong &obj)
+{
+    DcmSignedLong::operator=(obj);
+    return *this;
 }
 
 
 // ********************************
 
 
-DcmSignedLong::DcmSignedLong(const DcmSignedLong& old)
-: DcmElement( old )
+DcmEVR DcmSignedLong::ident() const
 {
+    return EVR_SL;
 }
-
-
-// ********************************
-
-
-DcmSignedLong::~DcmSignedLong(void)
-{
-}
-
-
-// ********************************
-
-
-void DcmSignedLong::print(ostream & out, const OFBool showFullData,
-			  const int level, const char * /*pixelFileName*/,
-		      size_t * /*pixelCounter*/)
-{
-    if (this -> valueLoaded())
-    {
-	Sint32 * sintVals;
-	errorFlag = this -> getSint32Array(sintVals);
-
-	if (!sintVals)
-	    printInfoLine(out, showFullData, level, "(no value available)" );
-	else
-	{
-	    const Uint32 valueLength = Length/sizeof(Sint32);
-	    const Uint32 maxCount =
-		!showFullData && DCM_OptPrintLineLength/12 < valueLength ?
-		DCM_OptPrintLineLength/12 : valueLength;
-	    char *ch_words;
-	    char *tmp = ch_words = new char[maxCount*12+8];
-
-	    for (unsigned long i=0; i<maxCount; i++ )
-	    {
-#if SIZEOF_LONG == 8
-		sprintf(tmp, "%d\\", *sintVals);
-#else
-		sprintf(tmp, "%ld\\", *sintVals);
-#endif
-		tmp += strlen(tmp);
-		sintVals++;
-	    }
-	    if (maxCount > 0 )
-		tmp--;
-	    *tmp = '\0';
-
-	    if (maxCount < valueLength)
-		strcat(tmp, "...");
-	    printInfoLine(out, showFullData, level, ch_words);
-	    delete[] ch_words;
-	}
-    }
-    else
-	printInfoLine(out, showFullData, level, "(not loaded)" );
-}
-
-
-// ********************************
 
 
 unsigned long DcmSignedLong::getVM()
@@ -128,111 +88,104 @@ unsigned long DcmSignedLong::getVM()
 // ********************************
 
 
-OFCondition DcmSignedLong::putSint32Array(const Sint32 * sintVal,
-					  const unsigned long numSints)
+void DcmSignedLong::print(ostream &out,
+                          const size_t flags,
+                          const int level,
+                          const char * /*pixelFileName*/,
+                          size_t * /*pixelCounter*/)
 {
-    errorFlag = EC_Normal;
-    if (numSints)
+    if (valueLoaded())
     {
-	if (sintVal)
-	    errorFlag = this -> putValue(sintVal, 
-					 sizeof(Sint32)*Uint32(numSints));
-	else
-	    errorFlag = EC_CorruptedData;
-    }
-    else 
-	errorFlag = this -> putValue(NULL, 0);
-    return errorFlag;
-}
-
-
-// ********************************
-
-
-OFCondition DcmSignedLong::putSint32(const Sint32 sintVal,
-				     const unsigned long position)
-{
-    Sint32 val = sintVal;
-    errorFlag = this -> changeValue(&val, sizeof(Sint32)*position,
-				    sizeof(Sint32));
-    return errorFlag;
-}
-
-
-// ********************************
-
-
-OFCondition DcmSignedLong::putString(const char * val)
-{
-    errorFlag = EC_Normal;
-    if (val && val[0] != 0)
-    {
-	unsigned long vm = getVMFromString(val);
-	if (vm)
-	{
-	    Sint32 * field = new Sint32[vm];
-	    const char * s = val;
-	    
-	    for(unsigned long i = 0; i < vm && errorFlag == EC_Normal; i++)
-	    {
-		char * value = getFirstValueFromString(s);
-		if (!value || 
+        /* get signed integer data */
+        Sint32 *sintVals;
+        errorFlag = getSint32Array(sintVals);
+        if (sintVals != NULL)
+        {
+            const unsigned long count = getVM();
+            const unsigned long maxLength = (flags & DCMTypes::PF_shortenLongTagValues) ?
+                DCM_OptPrintLineLength : (unsigned long)-1 /*unlimited*/;
+            unsigned long printedLength = 0;
+            unsigned long newLength = 0;
+            char buffer[32];
+            /* print line start with tag and VR */
+            printInfoLineStart(out, flags, level);
+            /* print multiple values */
+            for (unsigned int i = 0; i < count; i++, sintVals++)
+            {
+                /* check whether first value is printed (omit delimiter) */
 #if SIZEOF_LONG == 8
-		    sscanf(value, "%d", &field[i]) != 1
+                if (i == 0)
+                    sprintf(buffer, "%d", *sintVals);
+                else
+                    sprintf(buffer, "\\%d", *sintVals);
 #else
-		    sscanf(value, "%ld", &field[i]) != 1
+                if (i == 0)
+                    sprintf(buffer, "%ld", *sintVals);
+                else
+                    sprintf(buffer, "\\%ld", *sintVals);
 #endif
-		   )
-		    errorFlag = EC_CorruptedData;
-		else if (value)
-		    delete[] value;
-	    }
-	
-	    if (errorFlag == EC_Normal)
-		errorFlag = this -> putSint32Array(field, vm);
-	    delete[] field;
-	}
-	else 
-	    this -> putValue(NULL, 0);
-    }
-    else
-	this -> putValue(NULL, 0);
-    return errorFlag;
+                /* check whether current value sticks to the length limit */
+                newLength = printedLength + strlen(buffer);
+                if ((newLength <= maxLength) && ((i + 1 == count) || (newLength + 3 <= maxLength)))
+                {
+                    out << buffer;
+                    printedLength = newLength;
+                } else {
+                    /* check whether output has been truncated */
+                    if (i + 1 < count)
+                    {
+                        out << "...";
+                        printedLength += 3;
+                    }
+                    break;
+                }
+            }
+            /* print line end with length, VM and tag name */
+            printInfoLineEnd(out, flags, printedLength);
+        } else
+            printInfoLine(out, flags, level, "(no value available)");
+    } else
+        printInfoLine(out, flags, level, "(not loaded)");
 }
 
 
 // ********************************
 
 
-OFCondition DcmSignedLong::getSint32Array(Sint32 * & sintVals)
+OFCondition DcmSignedLong::getSint32(Sint32 &sintVal,
+                                     const unsigned long pos)
 {
-	sintVals = (Sint32 *)this -> getValue();
-	return errorFlag;
-}
-
-// ********************************
-
-
-OFCondition DcmSignedLong::getSint32(Sint32 & sintVal, 
-				     const unsigned long pos)
-{
-    Sint32 * sintVals = NULL;
-    errorFlag = this -> getSint32Array(sintVals);
-
-    if (sintVals && errorFlag == EC_Normal &&
-	pos < this -> getVM())
-	sintVal = sintVals[pos];
-    else
+    /* get signed integer data */
+    Sint32 *sintValues = NULL;
+    errorFlag = getSint32Array(sintValues);
+    /* check data before returning */
+    if (errorFlag.good())
     {
-	sintVal = 0;
-	errorFlag = EC_IllegalCall;
+        if (sintValues == NULL)
+            errorFlag = EC_IllegalCall;
+        else if (pos >= getVM())
+            errorFlag = EC_IllegalParameter;
+        else
+            sintVal = sintValues[pos];
     }
+    /* clear value in case of error */
+    if (errorFlag.bad())
+        sintVal = 0;
     return errorFlag;
 }
 
+
+OFCondition DcmSignedLong::getSint32Array(Sint32 *&sintVals)
+{
+    sintVals = (Sint32 *)getValue();
+    return errorFlag;
+}
+
+
 // ********************************
 
-OFCondition DcmSignedLong::getOFString(OFString &value,
+
+OFCondition DcmSignedLong::getOFString(OFString &stringVal,
                                        const unsigned long pos,
                                        OFBool /*normalize*/)
 {
@@ -245,36 +198,115 @@ OFCondition DcmSignedLong::getOFString(OFString &value,
         char buffer[32];
         sprintf(buffer, "%li", sintVal);
         /* assign result */
-        value = buffer;
+        stringVal = buffer;
     }
     return errorFlag;
 }
 
+
 // ********************************
 
 
-OFCondition DcmSignedLong::verify(const OFBool autocorrect )
+OFCondition DcmSignedLong::putSint32(const Sint32 sintVal,
+                                     const unsigned long pos)
+{
+    Sint32 val = sintVal;
+    errorFlag = changeValue(&val, sizeof(Sint32) * pos, sizeof(Sint32));
+    return errorFlag;
+}
+
+
+OFCondition DcmSignedLong::putSint32Array(const Sint32 *sintVals,
+                                          const unsigned long numSints)
 {
     errorFlag = EC_Normal;
-    if ( Length % (sizeof(Sint32)) != 0 )
+    if (numSints > 0)
     {
-		errorFlag = EC_CorruptedData;
-		if (autocorrect)
-		{
-					    // auf gueltige Laenge kuerzen
-			Length = Length - ( Length % (sizeof(Sint32)) );
-		}
-    }
+        /* check for valid data */
+        if (sintVals != NULL)
+            errorFlag = putValue(sintVals, sizeof(Sint32) * (Uint32)numSints);
+        else
+            errorFlag = EC_CorruptedData;
+    } else
+        errorFlag = putValue(NULL, 0);
     return errorFlag;
 }
 
 
 // ********************************
+
+
+OFCondition DcmSignedLong::putString(const char *stringVal)
+{
+    errorFlag = EC_Normal;
+    /* check input string */
+    if ((stringVal != NULL) && (strlen(stringVal) > 0))
+    {
+        const unsigned long vm = getVMFromString(stringVal);
+        if (vm > 0)
+        {
+            Sint32 *field = new Sint32[vm];
+            const char *s = stringVal;
+            char *value;
+            /* retrieve signed integer data from character string */
+            for (unsigned long i = 0; (i < vm) && errorFlag.good(); i++)
+            {
+                /* get first value stored in 's', set 's' to beginning of the next value */
+                value = getFirstValueFromString(s);
+                if ((value == NULL) ||
+#if SIZEOF_LONG == 8
+                    (sscanf(value, "%d", &field[i]) != 1)
+#else
+                    (sscanf(value, "%ld", &field[i]) != 1)
+#endif
+                    )
+                {
+                    errorFlag = EC_CorruptedData;
+                }
+                delete[] value;
+            }
+            /* set binary data as the element value */
+            if (errorFlag.good())
+                errorFlag = putSint32Array(field, vm);
+            /* delete temporary buffer */
+            delete[] field;
+        } else
+            errorFlag = putValue(NULL, 0);
+    } else
+        errorFlag = putValue(NULL, 0);
+    return errorFlag;
+}
+
+
+// ********************************
+
+
+OFCondition DcmSignedLong::verify(const OFBool autocorrect)
+{
+    /* check for valid value length */
+    if (Length % (sizeof(Sint32)) != 0)
+    {
+        errorFlag = EC_CorruptedData;
+        if (autocorrect)
+        {
+            /* strip to valid length */
+            Length -= (Length % (sizeof(Sint32)));
+        }
+    } else
+        errorFlag = EC_Normal;
+    return errorFlag;
+}
+
 
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrsl.cc,v $
-** Revision 1.22  2002-11-27 12:06:58  meichel
+** Revision 1.23  2002-12-06 13:12:39  joergr
+** Enhanced "print()" function by re-working the implementation and replacing
+** the boolean "showFullData" parameter by a more general integer flag.
+** Made source code formatting more consistent with other modules/files.
+**
+** Revision 1.22  2002/11/27 12:06:58  meichel
 ** Adapted module dcmdata to use of new header file ofstdinc.h
 **
 ** Revision 1.21  2002/04/25 10:33:20  joergr

@@ -19,12 +19,12 @@
  *
  *  Author:  Gerd Ehlers, Joerg Riesmeier
  *
- *  Purpose: class DcmTime
+ *  Purpose: Implementation of class DcmTime
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-11-27 12:06:59 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2002-12-06 13:20:52 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcvrtm.cc,v $
- *  CVS/RCS Revision: $Revision: 1.24 $
+ *  CVS/RCS Revision: $Revision: 1.25 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -34,61 +34,70 @@
 #include "osconfig.h"    /* make sure OS specific configuration is included first */
 
 #include "dcvrtm.h"
-#include "dcdebug.h"
 #include "ofstd.h"
 
 #define INCLUDE_CSTDIO
 #include "ofstdinc.h"
 
+
 // ********************************
 
 
-DcmTime::DcmTime(const DcmTag &tag, const Uint32 len)
-: DcmByteString(tag, len)
+DcmTime::DcmTime(const DcmTag &tag,
+                 const Uint32 len)
+  : DcmByteString(tag, len)
 {
     maxLength = 16;
 }
 
 
-// ********************************
-
-
-DcmTime::DcmTime(const DcmTime& old)
-: DcmByteString(old)
+DcmTime::DcmTime(const DcmTime &old)
+  : DcmByteString(old)
 {
+}
+
+
+DcmTime::~DcmTime()
+{
+}
+
+
+DcmTime &DcmTime::operator=(const DcmTime &obj)
+{
+    DcmByteString::operator=(obj);
+    return *this;
 }
 
 
 // ********************************
 
 
-DcmTime::~DcmTime(void)
+DcmEVR DcmTime::ident() const
 {
+    return EVR_TM;
 }
 
 
 // ********************************
 
-OFCondition
-DcmTime::getOFString(
-    OFString & str,
-    const unsigned long pos,
-    OFBool normalize)
+
+OFCondition DcmTime::getOFString(OFString &stringVal,
+                                 const unsigned long pos,
+                                 OFBool normalize)
 {
-    OFCondition l_error = DcmByteString::getOFString(str, pos, normalize);
+    OFCondition l_error = DcmByteString::getOFString(stringVal, pos, normalize);
     if (l_error.good() && normalize)
-        normalizeString(str, !MULTIPART, !DELETE_LEADING, DELETE_TRAILING);
+        normalizeString(stringVal, !MULTIPART, !DELETE_LEADING, DELETE_TRAILING);
     return l_error;
 }
 
+
 // ********************************
 
 
-OFCondition
-DcmTime::getOFTime(
-    OFTime &timeValue,
-    const unsigned long pos,
-    const OFBool supportOldFormat)
+OFCondition DcmTime::getOFTime(OFTime &timeValue,
+                               const unsigned long pos,
+                               const OFBool supportOldFormat)
 {
     OFString dicomTime;
     /* convert the current element value to OFTime format */
@@ -101,14 +110,12 @@ DcmTime::getOFTime(
 }
 
 
-OFCondition
-DcmTime::getISOFormattedTime(
-    OFString &formattedTime,
-    const unsigned long pos,
-    const OFBool seconds,
-    const OFBool fraction,
-    const OFBool createMissingPart,
-    const OFBool supportOldFormat)
+OFCondition DcmTime::getISOFormattedTime(OFString &formattedTime,
+                                         const unsigned long pos,
+                                         const OFBool seconds,
+                                         const OFBool fraction,
+                                         const OFBool createMissingPart,
+                                         const OFBool supportOldFormat)
 {
     OFString dicomTime;
     /* get current element value and convert to ISO formatted time */
@@ -121,10 +128,8 @@ DcmTime::getISOFormattedTime(
 }
 
 
-OFCondition
-DcmTime::setCurrentTime(
-    const OFBool seconds,
-    const OFBool fraction)
+OFCondition DcmTime::setCurrentTime(const OFBool seconds,
+                                    const OFBool fraction)
 {
     OFString dicomTime;
     /* set the element value to the current system time */
@@ -135,8 +140,7 @@ DcmTime::setCurrentTime(
 }
 
 
-OFCondition
-DcmTime::setOFTime(const OFTime &timeValue)
+OFCondition DcmTime::setOFTime(const OFTime &timeValue)
 {
     OFString dicomTime;
     /* convert OFTime value to DICOM TM format and set the element value */
@@ -150,11 +154,9 @@ DcmTime::setOFTime(const OFTime &timeValue)
 // ********************************
 
 
-OFCondition
-DcmTime::getCurrentTime(
-    OFString &dicomTime,
-    const OFBool seconds,
-    const OFBool fraction)
+OFCondition DcmTime::getCurrentTime(OFString &dicomTime,
+                                    const OFBool seconds,
+                                    const OFBool fraction)
 {
     OFCondition l_error = EC_IllegalCall;
     OFTime timeValue;
@@ -188,12 +190,10 @@ DcmTime::getCurrentTime(
 }
 
 
-OFCondition
-DcmTime::getDicomTimeFromOFTime(
-    const OFTime &timeValue,
-    OFString &dicomTime,
-    const OFBool seconds,
-    const OFBool fraction)
+OFCondition DcmTime::getDicomTimeFromOFTime(const OFTime &timeValue,
+                                            OFString &dicomTime,
+                                            const OFBool seconds,
+                                            const OFBool fraction)
 {
     OFCondition l_error = EC_IllegalParameter;
     /* convert OFTime value to DICOM TM format */
@@ -203,11 +203,9 @@ DcmTime::getDicomTimeFromOFTime(
 }
 
 
-OFCondition
-DcmTime::getOFTimeFromString(
-    const OFString &dicomTime,
-    OFTime &timeValue,
-    const OFBool supportOldFormat)
+OFCondition DcmTime::getOFTimeFromString(const OFString &dicomTime,
+                                         OFTime &timeValue,
+                                         const OFBool supportOldFormat)
 {
     OFCondition l_error = EC_IllegalParameter;
     /* clear result variable */
@@ -242,14 +240,12 @@ DcmTime::getOFTimeFromString(
 }
 
 
-OFCondition
-DcmTime::getISOFormattedTimeFromString(
-    const OFString &dicomTime,
-    OFString &formattedTime,
-    const OFBool seconds,
-    const OFBool fraction,
-    const OFBool createMissingPart,
-    const OFBool supportOldFormat)
+OFCondition DcmTime::getISOFormattedTimeFromString(const OFString &dicomTime,
+                                                   OFString &formattedTime,
+                                                   const OFBool seconds,
+                                                   const OFBool fraction,
+                                                   const OFBool createMissingPart,
+                                                   const OFBool supportOldFormat)
 {
     OFCondition result = EC_IllegalParameter;
     /* minimal check for valid format */
@@ -310,10 +306,8 @@ DcmTime::getISOFormattedTimeFromString(
 }
 
 
-OFCondition
-DcmTime::getTimeZoneFromString(
-    const OFString &dicomTimeZone,
-    double &timeZone)
+OFCondition DcmTime::getTimeZoneFromString(const OFString &dicomTimeZone,
+                                           double &timeZone)
 {
     OFCondition result = EC_IllegalParameter;
     /* init return value */
@@ -337,7 +331,12 @@ DcmTime::getTimeZoneFromString(
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrtm.cc,v $
-** Revision 1.24  2002-11-27 12:06:59  meichel
+** Revision 1.25  2002-12-06 13:20:52  joergr
+** Enhanced "print()" function by re-working the implementation and replacing
+** the boolean "showFullData" parameter by a more general integer flag.
+** Made source code formatting more consistent with other modules/files.
+**
+** Revision 1.24  2002/11/27 12:06:59  meichel
 ** Adapted module dcmdata to use of new header file ofstdinc.h
 **
 ** Revision 1.23  2002/08/27 16:56:00  meichel

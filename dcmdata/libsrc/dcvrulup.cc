@@ -19,12 +19,12 @@
  *
  *  Author:  Gerd Ehlers, Andreas Barth
  *
- *  Purpose: class DcmUnsignedLongOffset
+ *  Purpose: Implementation of class DcmUnsignedLongOffset
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-11-27 12:07:00 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2002-12-06 13:19:27 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcvrulup.cc,v $
- *  CVS/RCS Revision: $Revision: 1.23 $
+ *  CVS/RCS Revision: $Revision: 1.24 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -32,9 +32,7 @@
  */
 
 #include "osconfig.h"
-#include "ofstream.h"
 #include "dcvrulup.h"
-#include "dcdebug.h"
 
 #define INCLUDE_CSTDIO
 #define INCLUDE_CSTRING
@@ -45,25 +43,18 @@
 
 
 DcmUnsignedLongOffset::DcmUnsignedLongOffset(const DcmTag &tag,
-                                                 const Uint32 len)
+                                             const Uint32 len)
   : DcmUnsignedLong(tag, len),
     nextRecord(NULL)
 {
 }
 
 
-// ********************************
-
-
-DcmUnsignedLongOffset::DcmUnsignedLongOffset(const DcmUnsignedLongOffset& old)
+DcmUnsignedLongOffset::DcmUnsignedLongOffset(const DcmUnsignedLongOffset &old)
   : DcmUnsignedLong(old),
-    nextRecord(NULL)
+    nextRecord(old.nextRecord)
 {
-  nextRecord = old.nextRecord;
 }
-
-
-// ********************************
 
 
 DcmUnsignedLongOffset::~DcmUnsignedLongOffset()
@@ -76,52 +67,18 @@ DcmUnsignedLongOffset::~DcmUnsignedLongOffset()
 
 DcmEVR DcmUnsignedLongOffset::ident() const
 {
+    /* internal type identifier */
     return EVR_up;
 }
 
 
-// ********************************
-
-
-void DcmUnsignedLongOffset::print(ostream & out, const OFBool showFullData,
-                                  const int level, const char * /*pixelFileName*/,
-                                  size_t * /*pixelCounter*/)
+OFCondition DcmUnsignedLongOffset::clear()
 {
-    if (this -> valueLoaded())
-    {
-        Uint32 * uintVals;
-        errorFlag=  this -> getUint32Array(uintVals);
-
-        if (!uintVals)
-            printInfoLine(out, showFullData, level, "(no value available)" );
-        else
-        {
-            const Uint32 valueLength = Length/sizeof(Uint32);
-            const Uint32 maxCount =
-                !showFullData && DCM_OptPrintLineLength/14 < valueLength ?
-                DCM_OptPrintLineLength/14 : valueLength;
-            char *ch_words;
-            char *tmp = ch_words = new char[maxCount*12 + 1];
-
-            for (unsigned long i=0; i<maxCount; i++ )
-            {
-                sprintf( tmp, "$%lu\\", (unsigned long)(*uintVals));
-                tmp += strlen(tmp);
-                uintVals++;
-            }
-            if (maxCount  > 0 )
-                tmp--;
-            *tmp = '\0';
-
-            if (maxCount < valueLength)
-                strcat(tmp, "...");
-
-            printInfoLine(out, showFullData, level, ch_words);
-            delete[] ch_words;
-        }
-    }
-    else
-        printInfoLine(out, showFullData, level, "(not loaded)" );
+    /* call inherited method */
+    errorFlag = DcmUnsignedLong::clear();
+    /* remove reference to object */
+    nextRecord = NULL;
+    return errorFlag;
 }
 
 
@@ -131,16 +88,15 @@ void DcmUnsignedLongOffset::print(ostream & out, const OFBool showFullData,
 DcmObject* DcmUnsignedLongOffset::getNextRecord()
 {
     errorFlag = EC_Normal;
+    /* return pointer to currently stored object reference */
     return nextRecord;
 }
 
 
-// ********************************
-
-
-DcmObject* DcmUnsignedLongOffset::setNextRecord( DcmObject* record )
+DcmObject *DcmUnsignedLongOffset::setNextRecord(DcmObject *record)
 {
     errorFlag = EC_Normal;
+    /* store new object reference */
     nextRecord = record;
     return record;
 }
@@ -149,37 +105,28 @@ DcmObject* DcmUnsignedLongOffset::setNextRecord( DcmObject* record )
 // ********************************
 
 
-OFCondition DcmUnsignedLongOffset::clear(void)
-{
-        DcmUnsignedLong::clear();
-    nextRecord = NULL;
-    return errorFlag;
-}
-
-
-// ********************************
-
-
 OFCondition DcmUnsignedLongOffset::verify(const OFBool autocorrect)
 {
+    /* call inherited method */
     errorFlag = DcmUnsignedLong::verify(autocorrect);
-    Uint32 * uintVals;
-    errorFlag = this -> getUint32Array(uintVals);
-    if (errorFlag == EC_Normal && 
-                Length != 0 && uintVals != NULL && *uintVals != 0 &&
-                nextRecord == NULL)
-                errorFlag = EC_CorruptedData;
+    /* perform additional checks on the stored value */
+    Uint32 *uintVals;
+    errorFlag = getUint32Array(uintVals);
+    if (errorFlag.good() && (Length > 0) && (uintVals != NULL) && (*uintVals != 0) && (nextRecord == NULL))
+        errorFlag = EC_CorruptedData;
     return errorFlag;
 }
-
-
-// ********************************
 
 
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrulup.cc,v $
-** Revision 1.23  2002-11-27 12:07:00  meichel
+** Revision 1.24  2002-12-06 13:19:27  joergr
+** Enhanced "print()" function by re-working the implementation and replacing
+** the boolean "showFullData" parameter by a more general integer flag.
+** Made source code formatting more consistent with other modules/files.
+**
+** Revision 1.23  2002/11/27 12:07:00  meichel
 ** Adapted module dcmdata to use of new header file ofstdinc.h
 **
 ** Revision 1.22  2002/04/16 13:43:27  joergr

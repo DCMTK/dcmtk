@@ -19,23 +19,23 @@
  *
  *  Author:  Gerd Ehlers, Andreas Barth
  *
- *  Purpose: class DcmSignedShort
+ *  Purpose: Implementation of class DcmSignedShort
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-11-27 12:06:58 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2002-12-06 13:12:38 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcvrss.cc,v $
- *  CVS/RCS Revision: $Revision: 1.22 $
+ *  CVS/RCS Revision: $Revision: 1.23 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
  *
  */
 
+
 #include "osconfig.h"    /* make sure OS specific configuration is included first */
 #include "ofstream.h"
 #include "dcvrss.h"
 #include "dcvm.h"
-#include "dcdebug.h"
 
 #define INCLUDE_CSTDIO
 #define INCLUDE_CSTRING
@@ -45,74 +45,38 @@
 // ********************************
 
 
-DcmSignedShort::DcmSignedShort(const DcmTag &tag, const Uint32 len)
-: DcmElement(tag, len)
+DcmSignedShort::DcmSignedShort(const DcmTag &tag,
+                               const Uint32 len)
+  : DcmElement(tag, len)
 {
+}
+
+
+DcmSignedShort::DcmSignedShort(const DcmSignedShort &old)
+  : DcmElement(old)
+{
+}
+
+
+DcmSignedShort::~DcmSignedShort()
+{
+}
+
+
+DcmSignedShort &DcmSignedShort::operator=(const DcmSignedShort &obj)
+{
+    DcmElement::operator=(obj);
+    return *this;
 }
 
 
 // ********************************
 
 
-DcmSignedShort::DcmSignedShort(const DcmSignedShort& old)
-: DcmElement( old )
+DcmEVR DcmSignedShort::ident() const
 {
+    return EVR_SS;
 }
-
-
-// ********************************
-
-
-DcmSignedShort::~DcmSignedShort(void)
-{
-}
-
-
-// ********************************
-
-
-void DcmSignedShort::print(ostream & out, const OFBool showFullData,
-			  const int level, const char * /*pixelFileName*/,
-		      size_t * /*pixelCounter*/)
-{
-    if (this -> valueLoaded())
-    {
-	Sint16 * sintVals;
-	errorFlag = this -> getSint16Array(sintVals);
-
-	if (!sintVals)
-	    printInfoLine(out, showFullData, level, "(no value available)" );
-	else
-	{
-	    const Uint32 valueLength = Length/sizeof(Sint16);
-	    const Uint32 maxCount =
-		!showFullData && DCM_OptPrintLineLength/8 < valueLength ?
-		DCM_OptPrintLineLength/8 : valueLength;
-	    char *ch_words;
-	    char *tmp = ch_words = new char[maxCount*8+6];
-
-	    for (unsigned long i=0; i<maxCount; i++ )
-	    {
-		sprintf( tmp, "%hd\\", *sintVals );
-		tmp += strlen(tmp);
-		sintVals++;
-	    }
-	    if (maxCount > 0 )
-		tmp--;
-	    *tmp = '\0';
-
-	    if (maxCount < valueLength)
-		strcat(tmp, "...");
-	    printInfoLine(out, showFullData, level, ch_words);
-	    delete[] ch_words;
-	}
-    }
-    else
-	printInfoLine(out, showFullData, level, "(not loaded)" );
-}
-
-
-// ********************************
 
 
 unsigned long DcmSignedShort::getVM()
@@ -124,92 +88,89 @@ unsigned long DcmSignedShort::getVM()
 // ********************************
 
 
-OFCondition DcmSignedShort::putSint16Array(const Sint16 * sintVal,
-					   const unsigned long numSints)
+void DcmSignedShort::print(ostream &out,
+                           const size_t flags,
+                           const int level,
+                           const char * /*pixelFileName*/,
+                           size_t * /*pixelCounter*/)
 {
-    errorFlag = EC_Normal;
-    if (numSints)
+    if (valueLoaded())
     {
-	if (sintVal)
-	    errorFlag = this -> putValue(sintVal, 
-					 sizeof(Sint16)*Uint32(numSints));
-	else
-	    errorFlag = EC_CorruptedData;
-    }
-    else
-	errorFlag = this -> putValue(NULL, 0);
-    return errorFlag;
+        /* get signed integer data */
+        Sint16 *sintVals;
+        errorFlag = getSint16Array(sintVals);
+        if (sintVals != NULL)
+        {
+            const unsigned long count = getVM();
+            const unsigned long maxLength = (flags & DCMTypes::PF_shortenLongTagValues) ?
+                DCM_OptPrintLineLength : (unsigned long)-1 /*unlimited*/;
+            unsigned long printedLength = 0;
+            unsigned long newLength = 0;
+            char buffer[32];
+            /* print line start with tag and VR */
+            printInfoLineStart(out, flags, level);
+            /* print multiple values */
+            for (unsigned int i = 0; i < count; i++, sintVals++)
+            {
+                /* check whether first value is printed (omit delimiter) */
+                if (i == 0)
+                    sprintf(buffer, "%hd", *sintVals);
+                else
+                    sprintf(buffer, "\\%hd", *sintVals);
+                /* check whether current value sticks to the length limit */
+                newLength = printedLength + strlen(buffer);
+                if ((newLength <= maxLength) && ((i + 1 == count) || (newLength + 3 <= maxLength)))
+                {
+                    out << buffer;
+                    printedLength = newLength;
+                } else {
+                    /* check whether output has been truncated */
+                    if (i + 1 < count)
+                    {
+                        out << "...";
+                        printedLength += 3;
+                    }
+                    break;
+                }
+            }
+            /* print line end with length, VM and tag name */
+            printInfoLineEnd(out, flags, printedLength);
+        } else
+            printInfoLine(out, flags, level, "(no value available)");
+    } else
+        printInfoLine(out, flags, level, "(not loaded)");
 }
 
 
 // ********************************
 
-OFCondition DcmSignedShort::putSint16(const Sint16 sintVal,
-				const unsigned long position)
+
+OFCondition DcmSignedShort::getSint16(Sint16 &sintVal,
+                                      const unsigned long pos)
 {
-    Sint16 val = sintVal;
-    errorFlag = this -> changeValue(&val, sizeof(Sint16)*position,
-				    sizeof(Sint16));
-    return errorFlag;
-}
-
-
-// ********************************
-
-
-OFCondition DcmSignedShort::putString(const char * val)
-{
-    errorFlag = EC_Normal;
-    if (val && val[0] != 0)
+    /* get signed integer data */
+    Sint16 *sintValues = NULL;
+    errorFlag = getSint16Array(sintValues);
+    /* check data before returning */
+    if (errorFlag.good())
     {
-	unsigned long vm = getVMFromString(val);
-
-	if (vm)
-	{
-	    Sint16 * field = new Sint16[vm];
-	    const char * s = val;
-	    
-	    for(unsigned long i = 0; i < vm && errorFlag == EC_Normal; i++)
-	    {
-		char * value = getFirstValueFromString(s);
-		if (!value || sscanf(value, "%hd", &field[i]) != 1)
-		    errorFlag = EC_CorruptedData;
-		else if (value)
-		    delete[] value;
-	    }
-	
-	    if (errorFlag == EC_Normal)
-		errorFlag = this -> putSint16Array(field, vm);
-	    delete[] field;
-	}
-	else
-	    errorFlag = this -> putValue(NULL, 0);
+        if (sintValues == NULL)
+            errorFlag = EC_IllegalCall;
+        else if (pos >= getVM())
+            errorFlag = EC_IllegalParameter;
+        else
+            sintVal = sintValues[pos];
     }
-    else
-	errorFlag = this -> putValue(NULL, 0);
-
+    /* clear value in case of error */
+    if (errorFlag.bad())
+        sintVal = 0;
     return errorFlag;
 }
 
 
-// ********************************
-
-
-OFCondition DcmSignedShort::getSint16(Sint16 & sintVal, 
-				      const unsigned long pos)
+OFCondition DcmSignedShort::getSint16Array(Sint16 *&sintVals)
 {
-    Sint16 * sintVals = NULL;
-    errorFlag = this -> getSint16Array(sintVals);
-
-    if (sintVals && errorFlag == EC_Normal &&
-	pos < this -> getVM())
-	sintVal = sintVals[pos];
-    else
-    {
-	errorFlag = EC_IllegalCall;
-	sintVal = 0;
-    }
-    
+    sintVals = (Sint16 *)getValue();
     return errorFlag;
 }
 
@@ -217,16 +178,7 @@ OFCondition DcmSignedShort::getSint16(Sint16 & sintVal,
 // ********************************
 
 
-OFCondition DcmSignedShort::getSint16Array(Sint16 * & sintVals)
-{
-    sintVals = (Sint16 *)this -> getValue();
-    return errorFlag;
-}
-
-
-// ********************************
-
-OFCondition DcmSignedShort::getOFString(OFString &value,
+OFCondition DcmSignedShort::getOFString(OFString &stringVal,
                                         const unsigned long pos,
                                         OFBool /*normalize*/)
 {
@@ -239,35 +191,107 @@ OFCondition DcmSignedShort::getOFString(OFString &value,
         char buffer[32];
         sprintf(buffer, "%i", sintVal);
         /* assign result */
-        value = buffer;
+        stringVal = buffer;
     }
     return errorFlag;
 }
 
+
 // ********************************
 
-OFCondition DcmSignedShort::verify(const OFBool autocorrect )
+
+OFCondition DcmSignedShort::putSint16(const Sint16 sintVal,
+                                      const unsigned long pos)
+{
+    Sint16 val = sintVal;
+    errorFlag = changeValue(&val, sizeof(Sint16) * pos, sizeof(Sint16));
+    return errorFlag;
+}
+
+
+OFCondition DcmSignedShort::putSint16Array(const Sint16 *sintVals,
+                                           const unsigned long numSints)
 {
     errorFlag = EC_Normal;
-    if ( Length % (sizeof(Sint16)) != 0 )
+    if (numSints > 0)
     {
-		errorFlag = EC_CorruptedData;
-		if (autocorrect)
-		{
-					    // auf gueltige Laenge kuerzen
-			Length = Length - ( Length % (sizeof(Sint16)) );
-		}
-    }
+        /* check for valid data */
+        if (sintVals != NULL)
+            errorFlag = putValue(sintVals, sizeof(Sint16) * (Uint32)numSints);
+        else
+            errorFlag = EC_CorruptedData;
+    } else
+        errorFlag = putValue(NULL, 0);
     return errorFlag;
 }
 
 
 // ********************************
+
+
+OFCondition DcmSignedShort::putString(const char *stringVal)
+{
+    errorFlag = EC_Normal;
+    /* check input string */
+    if ((stringVal != NULL) && (strlen(stringVal) > 0))
+    {
+        const unsigned long vm = getVMFromString(stringVal);
+        if (vm > 0)
+        {
+            Sint16 *field = new Sint16[vm];
+            const char *s = stringVal;
+            char *value;
+            /* retrieve signed integer data from character string */
+            for (unsigned long i = 0; (i < vm) && errorFlag.good(); i++)
+            {
+                /* get first value stored in 's', set 's' to beginning of the next value */
+                value = getFirstValueFromString(s);
+                if ((value == NULL) || (sscanf(value, "%hd", &field[i]) != 1))
+                    errorFlag = EC_CorruptedData;
+                delete[] value;
+            }
+            /* set binary data as the element value */
+            if (errorFlag.good())
+                errorFlag = putSint16Array(field, vm);
+            /* delete temporary buffer */
+            delete[] field;
+        } else
+            errorFlag = putValue(NULL, 0);
+    } else
+        errorFlag = putValue(NULL, 0);
+    return errorFlag;
+}
+
+
+// ********************************
+
+
+OFCondition DcmSignedShort::verify(const OFBool autocorrect)
+{
+    /* check for valid value length */
+    if (Length % (sizeof(Sint16)) != 0)
+    {
+        errorFlag = EC_CorruptedData;
+        if (autocorrect)
+        {
+            /* strip to valid length */
+            Length -= (Length % (sizeof(Sint16)));
+        }
+    } else
+        errorFlag = EC_Normal;
+    return errorFlag;
+}
+
 
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrss.cc,v $
-** Revision 1.22  2002-11-27 12:06:58  meichel
+** Revision 1.23  2002-12-06 13:12:38  joergr
+** Enhanced "print()" function by re-working the implementation and replacing
+** the boolean "showFullData" parameter by a more general integer flag.
+** Made source code formatting more consistent with other modules/files.
+**
+** Revision 1.22  2002/11/27 12:06:58  meichel
 ** Adapted module dcmdata to use of new header file ofstdinc.h
 **
 ** Revision 1.21  2002/04/25 10:33:20  joergr

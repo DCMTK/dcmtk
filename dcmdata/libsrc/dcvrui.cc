@@ -19,22 +19,25 @@
  *
  *  Author:  Gerd Ehlers, Andreas Barth
  *
- *  Purpose: class DcmUniqueIdentifier
+ *  Purpose: Implementation of class DcmUniqueIdentifier
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-11-27 12:06:59 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2002-12-06 13:19:26 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcvrui.cc,v $
- *  CVS/RCS Revision: $Revision: 1.20 $
+ *  CVS/RCS Revision: $Revision: 1.21 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
  *
  */
 
+
 #include "osconfig.h"
+#include "ofstream.h"
+#include "ofstring.h"
+#include "ofstd.h"
 #include "dcvrui.h"
 #include "dcuid.h"
-#include "dcdebug.h"
 
 #define INCLUDE_CSTRING
 #define INCLUDE_CCTYPE
@@ -46,25 +49,18 @@
 
 DcmUniqueIdentifier::DcmUniqueIdentifier(const DcmTag &tag,
                                          const Uint32 len)
-: DcmByteString(tag, len)
+  : DcmByteString(tag, len)
 {
+    /* padding character is NULL not a space! */
     paddingChar = '\0';
     maxLength = 64;
-    DcmVR avr(EVR_UI);
-    maxLength = avr.getMaxValueLength();
 }
 
 
-// ********************************
-
-
-DcmUniqueIdentifier::DcmUniqueIdentifier( const DcmUniqueIdentifier& old )
-: DcmByteString(old)
+DcmUniqueIdentifier::DcmUniqueIdentifier(const DcmUniqueIdentifier &old)
+  : DcmByteString(old)
 {
 }
-
-
-// ********************************
 
 
 DcmUniqueIdentifier::~DcmUniqueIdentifier()
@@ -72,96 +68,119 @@ DcmUniqueIdentifier::~DcmUniqueIdentifier()
 }
 
 
-// ********************************
-
-
-void DcmUniqueIdentifier::print(ostream & out, const OFBool showFullData,
-              const int level, const char * /*pixelFileName*/,
-              size_t * /*pixelCounter*/)
+DcmUniqueIdentifier &DcmUniqueIdentifier::operator=(const DcmUniqueIdentifier &obj)
 {
-    if (this -> valueLoaded())
-    {
-    char * uid = NULL;
-    this -> getString(uid);
-    if (uid)
-    {
-        const char* symbol = dcmFindNameOfUID(uid);
-        char *tmp = NULL;
-
-        if ( symbol && *symbol != '\0' )
-        {
-        tmp = new char[ strlen(symbol) + 3 ];
-        tmp[0] = '=';
-        strcpy( tmp+1, symbol );
-        }
-        else
-        {
-        tmp = new char[ Length + 4 ];
-        tmp[0] = '[';
-        strncpy( tmp+1, uid, (int)Length );
-        tmp[ Length + 1 ] = '\0';
-        size_t t_len = strlen( tmp+1 );
-        tmp[ t_len + 1 ] = ']';
-        tmp[ t_len + 2 ] = '\0';
-        }
-        printInfoLine(out, showFullData, level, tmp );
-        delete[] tmp;
-    }
-    else
-        printInfoLine(out, showFullData, level, "(no value available)" );
-    }
-    else
-        printInfoLine(out, showFullData, level, "(not loaded)" );
+    DcmByteString::operator=(obj);
+    return *this;
 }
 
 
 // ********************************
 
-OFCondition DcmUniqueIdentifier::putString(const char * value)
-{
-    const char * uid = value;
-    if (value && value[0] == '=')
-    uid = dcmFindUIDFromName(&value[1]);
 
+DcmEVR DcmUniqueIdentifier::ident() const
+{
+    return EVR_UI;
+}
+
+
+// ********************************
+
+
+void DcmUniqueIdentifier::print(ostream &out,
+                                const size_t flags,
+                                const int level,
+                                const char * /*pixelFileName*/,
+                                size_t * /*pixelCounter*/)
+{
+    if (valueLoaded())
+    {
+        /* get string data (possibly multi-valued) */
+        char *string = NULL;
+        getString(string);
+        if (string != NULL)
+        {
+            /* check whether UID number can be mapped to a UID name */
+            const char *symbol = dcmFindNameOfUID(string);
+            if ((symbol != NULL) && (strlen(symbol) > 0))
+            {
+                const size_t bufSize = strlen(symbol) + 1 /* for "=" */ + 1;
+                char *buffer = new char[bufSize];
+                if (buffer != NULL)
+                {
+                    /* concatenate "=" and the UID name */
+                    OFStandard::strlcpy(buffer, "=", bufSize);
+                    OFStandard::strlcat(buffer, symbol, bufSize);
+                    printInfoLine(out, flags, level, buffer);
+                    /* delete temporary character buffer */
+                    delete[] buffer;
+                } else /* could not allocate buffer */
+                    DcmByteString::print(out, flags, level);
+            } else /* no symbol (UID name) found */
+                DcmByteString::print(out, flags, level);
+        } else
+            printInfoLine(out, flags, level, "(no value available)" );
+    } else
+        printInfoLine(out, flags, level, "(not loaded)" );
+}
+
+
+// ********************************
+
+
+OFCondition DcmUniqueIdentifier::putString(const char *stringVal)
+{
+    const char *uid = stringVal;
+    /* check whether parameter contains a UID name instead of a UID number */
+    if ((stringVal != NULL) && (stringVal[0] == '='))
+        uid = dcmFindUIDFromName(stringVal + 1);
+    /* call inherited method to set the UID string */
     return DcmByteString::putString(uid);
 }
 
+
 // ********************************
 
-OFCondition DcmUniqueIdentifier::makeMachineByteString(void)
-{
-    char * value = (char *)this -> getValue();
-    if (value && dcmEnableAutomaticInputDataCorrection.get())
-    {
-        int len = strlen(value);
-      /*
-      ** Remove any leading, embedded, or trailing white space.
-      ** This manipulation attempts to correct problems with 
-      ** incorrectly encoded UIDs which have been observed in
-      ** some images.
-      */
-      int k = 0;
-      int i = 0;
-      for (i=0; i<len; i++)
-      {
-        if (!isspace(value[i]))
-        {
-          value[k] = value[i];
-          k++;
-        }
-      }
-      value[k] = '\0';
-    }
 
+OFCondition DcmUniqueIdentifier::makeMachineByteString()
+{
+    /* get string data */
+    char *value = (char *)getValue();
+    /* check whether automatic input data correction is enabled */
+    if ((value != NULL) && dcmEnableAutomaticInputDataCorrection.get())
+    {
+        const int len = strlen(value);
+        /*
+        ** Remove any leading, embedded, or trailing white space.
+        ** This manipulation attempts to correct problems with
+        ** incorrectly encoded UIDs which have been observed in
+        ** some images.
+        */
+        int k = 0;
+        for (int i = 0; i < len; i++)
+        {
+           if (!isspace(value[i]))
+           {
+              value[k] = value[i];
+              k++;
+           }
+        }
+        value[k] = '\0';
+    }
+    /* call inherited method: re-computes the string length, etc. */
     return DcmByteString::makeMachineByteString();
 }
 
-// ********************************
 
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrui.cc,v $
-** Revision 1.20  2002-11-27 12:06:59  meichel
+** Revision 1.21  2002-12-06 13:19:26  joergr
+** Enhanced "print()" function by re-working the implementation and replacing
+** the boolean "showFullData" parameter by a more general integer flag.
+** Made source code formatting more consistent with other modules/files.
+**
+** Revision 1.20  2002/11/27 12:06:59  meichel
 ** Adapted module dcmdata to use of new header file ofstdinc.h
 **
 ** Revision 1.19  2001/09/25 17:20:01  meichel

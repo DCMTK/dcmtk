@@ -19,45 +19,41 @@
  *
  *  Author:  Gerd Ehlers, Andreas Barth
  *
- *  Purpose: class DcmDecimalString
+ *  Purpose: Implementation of class DcmDecimalString
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-06-20 12:06:16 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2002-12-06 13:20:49 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcvrds.cc,v $
- *  CVS/RCS Revision: $Revision: 1.15 $
+ *  CVS/RCS Revision: $Revision: 1.16 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
  *
  */
 
+
 #include "osconfig.h"    /* make sure OS specific configuration is included first */
 
 #include "dcvrds.h"
-#include "dcdebug.h"
 #include "ofstring.h"
 #include "ofstd.h"
+
 
 // ********************************
 
 
-DcmDecimalString::DcmDecimalString(const DcmTag &tag, const Uint32 len)
-: DcmByteString(tag, len)
+DcmDecimalString::DcmDecimalString(const DcmTag &tag,
+                                   const Uint32 len)
+  : DcmByteString(tag, len)
 {
     maxLength = 16;
 }
 
 
-// ********************************
-
-
-DcmDecimalString::DcmDecimalString( const DcmDecimalString &newDS )
-: DcmByteString(newDS)
+DcmDecimalString::DcmDecimalString(const DcmDecimalString &old)
+  : DcmByteString(old)
 {
 }
-
-
-// ********************************
 
 
 DcmDecimalString::~DcmDecimalString()
@@ -65,43 +61,68 @@ DcmDecimalString::~DcmDecimalString()
 }
 
 
-// ********************************
-
-OFCondition DcmDecimalString::getFloat64(Float64 & val, 
-					 const unsigned long pos)
+DcmDecimalString &DcmDecimalString::operator=(const DcmDecimalString &obj)
 {
-  OFString str;
-  OFCondition l_error = getOFString(str, pos, OFTrue);
-  if (l_error == EC_Normal)
-  {
-      OFBool success = OFFalse;
-      val = OFStandard::atof(str.c_str(), &success);
-	  if (!success) l_error = EC_CorruptedData;
-  }
-  return l_error;
+    DcmByteString::operator=(obj);
+    return *this;
 }
 
 
 // ********************************
 
-OFCondition
-DcmDecimalString::getOFString(
-    OFString & str,
-    const unsigned long pos,
-    OFBool normalize)
+
+DcmEVR DcmDecimalString::ident() const
 {
-    OFCondition l_error = DcmByteString::getOFString(str, pos, normalize);
-    if (l_error == EC_Normal && normalize)
-	normalizeString(str, !MULTIPART, DELETE_LEADING, DELETE_TRAILING);
+    return EVR_DS;
+}
+
+
+// ********************************
+
+
+OFCondition DcmDecimalString::getFloat64(Float64 &doubleVal,
+                                         const unsigned long pos)
+{
+    /* get decimal string value */
+    OFString str;
+    OFCondition l_error = getOFString(str, pos, OFTrue /*normalize*/);
+    if (l_error.good())
+    {
+        OFBool success = OFFalse;
+        /* convert string to float value */
+        doubleVal = OFStandard::atof(str.c_str(), &success);
+        if (!success)
+            l_error = EC_CorruptedData;
+    }
     return l_error;
 }
 
+
 // ********************************
+
+
+OFCondition DcmDecimalString::getOFString(OFString &stringVal,
+                                          const unsigned long pos,
+                                          OFBool normalize)
+{
+    /* call inherited method */
+    OFCondition l_error = DcmByteString::getOFString(stringVal, pos);
+    /* normalize string if required */
+    if (l_error.good() && normalize)
+        normalizeString(stringVal, !MULTIPART, DELETE_LEADING, DELETE_TRAILING);
+    return l_error;
+}
+
 
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrds.cc,v $
-** Revision 1.15  2002-06-20 12:06:16  meichel
+** Revision 1.16  2002-12-06 13:20:49  joergr
+** Enhanced "print()" function by re-working the implementation and replacing
+** the boolean "showFullData" parameter by a more general integer flag.
+** Made source code formatting more consistent with other modules/files.
+**
+** Revision 1.15  2002/06/20 12:06:16  meichel
 ** Changed toolkit to use OFStandard::atof instead of atof, strtod or
 **   sscanf for all string to double conversions that are supposed to
 **   be locale independent

@@ -19,12 +19,12 @@
  *
  *  Author:  Gerd Ehlers, Andreas Barth, Joerg Riesmeier
  *
- *  Purpose: class DcmDate
+ *  Purpose: Implementation of class DcmDate
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-11-27 12:06:55 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2002-12-06 13:20:49 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcvrda.cc,v $
- *  CVS/RCS Revision: $Revision: 1.14 $
+ *  CVS/RCS Revision: $Revision: 1.15 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -33,7 +33,6 @@
 
 #include "osconfig.h"    /* make sure OS specific configuration is included first */
 #include "dcvrda.h"
-#include "dcdebug.h"
 
 #define INCLUDE_CSTDIO
 #include "ofstdinc.h"
@@ -42,23 +41,18 @@
 // ********************************
 
 
-DcmDate::DcmDate(const DcmTag &tag, const Uint32 len)
-: DcmByteString(tag, len)
+DcmDate::DcmDate(const DcmTag &tag,
+                 const Uint32 len)
+  : DcmByteString(tag, len)
 {
     maxLength = 10;
 }
 
 
-// ********************************
-
-
-DcmDate::DcmDate( const DcmDate &newDA )
-: DcmByteString(newDA)
+DcmDate::DcmDate(const DcmDate &old)
+  : DcmByteString(old)
 {
 }
-
-
-// ********************************
 
 
 DcmDate::~DcmDate()
@@ -66,14 +60,42 @@ DcmDate::~DcmDate()
 }
 
 
+DcmDate &DcmDate::operator=(const DcmDate &obj)
+{
+    DcmByteString::operator=(obj);
+    return *this;
+}
+
+
 // ********************************
 
 
-OFCondition
-DcmDate::getOFDate(
-    OFDate &dateValue,
-    const unsigned long pos,
-    const OFBool supportOldFormat)
+DcmEVR DcmDate::ident() const
+{
+    return EVR_DA;
+}
+
+
+// ********************************
+
+
+OFCondition DcmDate::getOFString(OFString &stringVal,
+                                 const unsigned long pos,
+                                 OFBool normalize)
+{
+    OFCondition l_error = DcmByteString::getOFString(stringVal, pos, normalize);
+    if (l_error.good() && normalize)
+        normalizeString(stringVal, !MULTIPART, !DELETE_LEADING, DELETE_TRAILING);
+    return l_error;
+}
+
+
+// ********************************
+
+
+OFCondition DcmDate::getOFDate(OFDate &dateValue,
+                               const unsigned long pos,
+                               const OFBool supportOldFormat)
 {
     OFString dicomDate;
     /* convert the current element value to OFDate format */
@@ -86,11 +108,9 @@ DcmDate::getOFDate(
 }
 
 
-OFCondition
-DcmDate::getISOFormattedDate(
-    OFString &formattedDate,
-    const unsigned long pos,
-    const OFBool supportOldFormat)
+OFCondition DcmDate::getISOFormattedDate(OFString &formattedDate,
+                                         const unsigned long pos,
+                                         const OFBool supportOldFormat)
 {
     OFString dicomDate;
     /* get current element value and convert to ISO formatted date */
@@ -103,8 +123,7 @@ DcmDate::getISOFormattedDate(
 }
 
 
-OFCondition
-DcmDate::setCurrentDate()
+OFCondition DcmDate::setCurrentDate()
 {
     OFString dicomDate;
     /* set the element value to the current system date */
@@ -115,8 +134,7 @@ DcmDate::setCurrentDate()
 }
 
 
-OFCondition
-DcmDate::setOFDate(const OFDate &dateValue)
+OFCondition DcmDate::setOFDate(const OFDate &dateValue)
 {
     OFString dicomDate;
     /* convert OFDate value to DICOM DA format and set the element value */
@@ -130,8 +148,7 @@ DcmDate::setOFDate(const OFDate &dateValue)
 // ********************************
 
 
-OFCondition
-DcmDate::getCurrentDate(OFString &dicomDate)
+OFCondition DcmDate::getCurrentDate(OFString &dicomDate)
 {
     OFCondition l_error = EC_IllegalCall;
     OFDate dateValue;
@@ -152,10 +169,8 @@ DcmDate::getCurrentDate(OFString &dicomDate)
 }
 
 
-OFCondition
-DcmDate::getDicomDateFromOFDate(
-    const OFDate &dateValue,
-	OFString &dicomDate)
+OFCondition DcmDate::getDicomDateFromOFDate(const OFDate &dateValue,
+	                                        OFString &dicomDate)
 {
     OFCondition l_error = EC_IllegalParameter;
     /* convert OFDate value to DICOM DA format */
@@ -165,11 +180,9 @@ DcmDate::getDicomDateFromOFDate(
 }
 
 
-OFCondition
-DcmDate::getOFDateFromString(
-    const OFString &dicomDate,
-    OFDate &dateValue,
-    const OFBool supportOldFormat)
+OFCondition DcmDate::getOFDateFromString(const OFString &dicomDate,
+                                         OFDate &dateValue,
+                                         const OFBool supportOldFormat)
 {
     OFCondition l_error = EC_IllegalParameter;
     /* clear result variable */
@@ -200,11 +213,9 @@ DcmDate::getOFDateFromString(
 }
 
 
-OFCondition
-DcmDate::getISOFormattedDateFromString(
-    const OFString &dicomDate,
-    OFString &formattedDate,
-    const OFBool supportOldFormat)
+OFCondition DcmDate::getISOFormattedDateFromString(const OFString &dicomDate,
+                                                   OFString &formattedDate,
+                                                   const OFBool supportOldFormat)
 {
     OFDate dateValue;
     /* convert string to OFDate */
@@ -225,7 +236,12 @@ DcmDate::getISOFormattedDateFromString(
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrda.cc,v $
-** Revision 1.14  2002-11-27 12:06:55  meichel
+** Revision 1.15  2002-12-06 13:20:49  joergr
+** Enhanced "print()" function by re-working the implementation and replacing
+** the boolean "showFullData" parameter by a more general integer flag.
+** Made source code formatting more consistent with other modules/files.
+**
+** Revision 1.14  2002/11/27 12:06:55  meichel
 ** Adapted module dcmdata to use of new header file ofstdinc.h
 **
 ** Revision 1.13  2002/08/27 16:55:58  meichel

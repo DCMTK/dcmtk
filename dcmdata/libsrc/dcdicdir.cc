@@ -21,10 +21,10 @@
  *
  *  Purpose: class DcmDicomDir
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-11-27 12:06:43 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2002-12-06 13:10:46 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcdicdir.cc,v $
- *  CVS/RCS Revision: $Revision: 1.38 $
+ *  CVS/RCS Revision: $Revision: 1.39 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -95,7 +95,7 @@ DcmDicomDir::DcmDicomDir()
     strcpy( dicomDirFileName, DEFAULT_DICOMDIR_NAME );
 
     OFCondition cond = DirFile->loadFile(dicomDirFileName);
-    if (cond.bad()) 
+    if (cond.bad())
     {
       delete DirFile; // clean up file format object
       DirFile = new DcmFileFormat();
@@ -129,7 +129,7 @@ DcmDicomDir::DcmDicomDir(const char *fileName, const char *fileSetID)
     strcpy( dicomDirFileName, fileName );
 
     OFCondition cond = DirFile->loadFile(dicomDirFileName);
-    if (cond.bad()) 
+    if (cond.bad())
     {
       delete DirFile; // clean up file format object
       DirFile = new DcmFileFormat();
@@ -299,7 +299,7 @@ Uint32 l_uint = 0;
 offElem->getUint32(l_uint);
 debug(4, ( "DcmDicomDir::lookForOffsetElem() Offset-Element(0x%4.4hx,0x%4.4hx) offs=0x%8.8lx p=%p l=%p",
            offElem->getGTag(), offElem->getETag(),
-           l_uint, offElem, 
+           l_uint, offElem,
            offElem->getNextRecord() ));
 #endif
             }
@@ -637,7 +637,7 @@ OFCondition DcmDicomDir::convertAllPointer( DcmDataset &dset,          // inout
         itOffsets[ i ].fileOffset = item_pos;
         item_pos = lengthOfRecord( rec, oxfer, enctype ) + item_pos;
     }
-    
+
     OFCondition e1 = convertGivenPointer( &dset, itOffsets, num,
                DCM_OffsetOfTheFirstDirectoryRecordOfTheRootDirectoryEntity );
     OFCondition e2 = convertGivenPointer( &dset, itOffsets, num,
@@ -820,8 +820,10 @@ OFCondition DcmDicomDir::insertMediaSOPUID( DcmMetaInfo &metaInfo )  // inout
 // ********************************
 
 
-void DcmDicomDir::print(ostream & out, const OFBool showFullData,
-                        const int level, const char *pixelFileName,
+void DcmDicomDir::print(ostream &out,
+                        const size_t flags,
+                        const int level,
+                        const char *pixelFileName,
                         size_t *pixelCounter)
 {
     int i;
@@ -832,19 +834,19 @@ void DcmDicomDir::print(ostream & out, const OFBool showFullData,
     for ( i=0; i<level; i++)
         out << "    ";
     out << "# Meta-Info and General Directory Information" << endl;
-    this->getDirFileFormat().print(out, showFullData, 0, pixelFileName, pixelCounter);
+    this->getDirFileFormat().print(out, flags, 0, pixelFileName, pixelCounter);
 
     out << endl;
     for ( i=0; i<level; i++)
         out << "    ";
     out << "# Item Hierarchy (root Record not shown)" << endl;
-    this->getRootRecord().lowerLevelList->print(out, showFullData, 1, pixelFileName, pixelCounter);  // friend class
+    this->getRootRecord().lowerLevelList->print(out, flags, 1, pixelFileName, pixelCounter);  // friend class
 
     out << endl;
     for ( i=0; i<level; i++)
         out << "    ";
     out << "# used Multi Referenced Directory Records" << endl;
-    this->getMRDRSequence().print(out, showFullData, 1, pixelFileName, pixelCounter);
+    this->getMRDRSequence().print(out, flags, 1, pixelFileName, pixelCounter);
 }
 
 
@@ -863,6 +865,15 @@ OFCondition DcmDicomDir::error()
 DcmFileFormat& DcmDicomDir::getDirFileFormat()
 {
     return *DirFile;
+}
+
+
+// ********************************
+
+
+const char* DcmDicomDir::getDirFileName()
+{
+    return dicomDirFileName;
 }
 
 
@@ -1066,7 +1077,7 @@ OFCondition DcmDicomDir::write(const E_TransferSyntax oxfer,
     insertMediaSOPUID( metainfo );
 
     this->getDirFileFormat().validateMetaInfo( outxfer );
-    
+
     { // block is intended to make sure outStream is closed a.s.a.p.
         DcmOutputFileStream outStream(newname);
         if (! outStream.good())
@@ -1074,17 +1085,17 @@ OFCondition DcmDicomDir::write(const E_TransferSyntax oxfer,
             ofConsole.lockCerr() << "ERROR: cannot create DICOMDIR temporary file: " << newname << endl;
             ofConsole.unlockCerr();
         }
-        
+
         metainfo.transferInit();
         metainfo.write(outStream, META_HEADER_DEFAULT_TRANSFERSYNTAX, enctype);
         metainfo.transferEnd();
-        
+
         Uint32 beginOfDataset = outStream.tell();
-       
+
         // convert to writable format
-        errorFlag = convertTreeToLinear(beginOfDataset, outxfer, 
+        errorFlag = convertTreeToLinear(beginOfDataset, outxfer,
                                         enctype, glenc, localUnresRecs);
-        
+
         dset.transferInit();
         // do not calculate GroupLength and Padding twice!
         dset.write(outStream, outxfer, enctype, EGL_noChange);
@@ -1149,7 +1160,7 @@ OFCondition DcmDicomDir::write(const E_TransferSyntax oxfer,
     // verschiebe Records, auf die kein Zeiger existiert, zurueck
     while ( localUnresRecs.card() > 0 )
     {
-        DcmItem *unresRecord = 
+        DcmItem *unresRecord =
             localUnresRecs.remove((unsigned long)(0));
         localDirRecSeq.insert( unresRecord );
     }
@@ -1265,7 +1276,7 @@ OFCondition DcmDicomDir::verify( OFBool autocorrect )
 {
     errorFlag = EC_Normal;
     DcmSequenceOfItems &localDirRecSeq = this->getDirRecSeq(this->getDataset());
-    unsigned long maxMRDRs = localDirRecSeq.card() + 
+    unsigned long maxMRDRs = localDirRecSeq.card() +
                 this->getMRDRSequence().card();
     ItemOffset *refCounter = new ItemOffset[ maxMRDRs ];
 
@@ -1338,7 +1349,12 @@ Cdebug(1, refCounter[k].fileOffset==refMRDR->numberOfReferences,
 /*
 ** CVS/RCS Log:
 ** $Log: dcdicdir.cc,v $
-** Revision 1.38  2002-11-27 12:06:43  meichel
+** Revision 1.39  2002-12-06 13:10:46  joergr
+** Enhanced "print()" function by re-working the implementation and replacing
+** the boolean "showFullData" parameter by a more general integer flag.
+** Made source code formatting more consistent with other modules/files.
+**
+** Revision 1.38  2002/11/27 12:06:43  meichel
 ** Adapted module dcmdata to use of new header file ofstdinc.h
 **
 ** Revision 1.37  2002/08/27 16:55:44  meichel

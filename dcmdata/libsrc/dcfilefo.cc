@@ -21,15 +21,16 @@
  *
  *  Purpose: class DcmFileFormat
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-11-27 12:06:47 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2002-12-06 13:09:26 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcfilefo.cc,v $
- *  CVS/RCS Revision: $Revision: 1.32 $
+ *  CVS/RCS Revision: $Revision: 1.33 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
  *
  */
+
 
 #include "osconfig.h"    /* make sure OS specific configuration is included first */
 
@@ -63,48 +64,38 @@
 #include "dcistrmf.h"    /* for class DcmInputFileStream */
 
 
-
 // ********************************
 
 
 DcmFileFormat::DcmFileFormat()
-    : DcmSequenceOfItems(InternalUseTag)
+  : DcmSequenceOfItems(InternalUseTag)
 {
     DcmMetaInfo *MetaInfo = new DcmMetaInfo();
-    DcmSequenceOfItems::itemList->insert( MetaInfo );
+    DcmSequenceOfItems::itemList->insert(MetaInfo);
     DcmDataset *Dataset = new DcmDataset();
-    DcmSequenceOfItems::itemList->insert( Dataset );
+    DcmSequenceOfItems::itemList->insert(Dataset);
 }
 
 
-// ********************************
-
-
-DcmFileFormat::DcmFileFormat(DcmDataset * dataset)
+DcmFileFormat::DcmFileFormat(DcmDataset *dataset)
     : DcmSequenceOfItems(InternalUseTag)
 {
     DcmMetaInfo *MetaInfo = new DcmMetaInfo();
-    DcmSequenceOfItems::itemList->insert( MetaInfo );
+    DcmSequenceOfItems::itemList->insert(MetaInfo);
     DcmDataset *newDataset;
 
-    if (dataset == (DcmDataset*)NULL) 
+    if (dataset == (DcmDataset*)NULL)
         newDataset = new DcmDataset();
     else
-        newDataset = new DcmDataset( *dataset );
-    DcmSequenceOfItems::itemList->insert( newDataset );
+        newDataset = new DcmDataset(*dataset);
+    DcmSequenceOfItems::itemList->insert(newDataset);
 }
-
-
-// ********************************
 
 
 DcmFileFormat::DcmFileFormat(const DcmFileFormat &old)
-    : DcmSequenceOfItems( old )
+  : DcmSequenceOfItems(old)
 {
 }
-
-
-// ********************************
 
 
 DcmFileFormat::~DcmFileFormat()
@@ -112,38 +103,52 @@ DcmFileFormat::~DcmFileFormat()
 }
 
 
+DcmFileFormat &DcmFileFormat::operator=(const DcmFileFormat &obj)
+{
+    DcmSequenceOfItems::operator=(obj);
+    return *this;
+}
+
+
 // ********************************
 
 
-void DcmFileFormat::print(ostream & out, const OFBool showFullData,
-                          const int level, const char *pixelFileName,
+DcmEVR DcmFileFormat::ident() const
+{
+    return EVR_fileFormat;
+}
+
+
+// ********************************
+
+
+void DcmFileFormat::print(ostream &out,
+                          const size_t flags,
+                          const int level,
+                          const char *pixelFileName,
                           size_t *pixelCounter)
 {
-    int i;
     out << endl;
-    for ( i=0; i<level; i++)
-        out << "    ";
+    printNestingLevel(out, flags, level);
     out << "# Dicom-File-Format" << endl;
-    if ( !itemList->empty() )
+    if (!itemList->empty())
     {
         DcmObject *dO;
-        itemList->seek( ELP_first );
-        do 
-        {
+        itemList->seek(ELP_first);
+        do {
             dO = itemList->get();
-            dO->print(out, showFullData, level, pixelFileName, pixelCounter);
-        } while ( itemList->seek( ELP_next ) );
-    }
-    else
-    {
-        for ( i=0; i<level; i++)
-            out << "    ";
+            dO->print(out, flags, level, pixelFileName, pixelCounter);
+        } while (itemList->seek(ELP_next));
+    } else {
+        printNestingLevel(out, flags, level);
         out << "# Dicom-File-Format has been erased";
         out << endl;
     }
 }
 
+
 // ********************************
+
 
 OFCondition DcmFileFormat::writeXML(ostream &out,
                                     const size_t flags)
@@ -156,8 +161,7 @@ OFCondition DcmFileFormat::writeXML(ostream &out,
         /* write content of all children */
         DcmObject *dO;
         itemList->seek(ELP_first);
-        do 
-        {
+        do {
             dO = itemList->get();
             dO->writeXML(out, flags);
         } while (itemList->seek(ELP_next));
@@ -168,13 +172,15 @@ OFCondition DcmFileFormat::writeXML(ostream &out,
     return result;
 }
 
+
 // ********************************
 
-OFCondition DcmFileFormat::checkValue(DcmMetaInfo * metainfo,
-                                      DcmDataset * dataset,
-                                      const DcmTagKey & atagkey,
-                                      DcmObject* obj,
-                                      const E_TransferSyntax oxfer )
+
+OFCondition DcmFileFormat::checkValue(DcmMetaInfo *metainfo,
+                                      DcmDataset *dataset,
+                                      const DcmTagKey &atagkey,
+                                      DcmObject *obj,
+                                      const E_TransferSyntax oxfer)
     /*
      * This function checks if a particular data element of the meta header information is existent
      * in metainfo. If the element is not existent, it will be inserted. Additionally, this function
@@ -193,169 +199,185 @@ OFCondition DcmFileFormat::checkValue(DcmMetaInfo * metainfo,
     OFCondition l_error = EC_Normal;
 
     /* if there is meta header information and also data set information, do something */
-    if ( metainfo != (DcmMetaInfo*)NULL && dataset != (DcmDataset*)NULL )
+    if (metainfo != (DcmMetaInfo*)NULL && dataset != (DcmDataset*)NULL)
     {
         /* intitialize variables */
         DcmStack stack;
-        DcmTag tag( atagkey );
-        if ( obj != (DcmObject*)NULL )
+        DcmTag tag(atagkey);
+        if (obj != (DcmObject*)NULL)
             tag = obj->getTag();
 
         DcmTagKey xtag = tag.getXTag();
         DcmElement *elem = (DcmElement*)obj;
 
         /* go ahaed and scrutinize one particular data element (depending on xtag) */
-        if ( xtag == DCM_MetaElementGroupLength ) {     // (0002,0000)
-            if ( elem == (DcmElement*)NULL )
+        if (xtag == DCM_MetaElementGroupLength)             // (0002,0000)
+        {
+            if (elem == (DcmElement*)NULL)
             {
-                elem = new DcmUnsignedLong( tag );
-                metainfo->insert( elem, OFTrue );
+                elem = new DcmUnsignedLong(tag);
+                metainfo->insert(elem, OFTrue);
             }
             Uint32 temp = 0;
-            if ( elem->getLength() == 0 && elem->ident() == EVR_UL )
-                ((DcmUnsignedLong*)elem)->putUint32Array( &temp, 1 );
+            if (elem->getLength() == 0 && elem->ident() == EVR_UL)
+                ((DcmUnsignedLong*)elem)->putUint32Array(&temp, 1);
             // the calculation of actual group length value is contained in validateMetaInfo()
-        } else if ( xtag == DCM_FileMetaInformationVersion ) {  // (0002,0001)
-            if ( elem == (DcmElement*)NULL )
+        }
+        else if (xtag == DCM_FileMetaInformationVersion)    // (0002,0001)
+        {
+            if (elem == (DcmElement*)NULL)
             {
-                elem = new DcmOtherByteOtherWord( tag );
-                metainfo->insert( elem, OFTrue );
+                elem = new DcmOtherByteOtherWord(tag);
+                metainfo->insert(elem, OFTrue);
             }
             Uint8 version[2] = {0,1};
-            if ( elem->getLength() == 0 && elem->ident() == EVR_OB )
-                ((DcmOtherByteOtherWord*)elem)->putUint8Array( version, 2 );
+            if (elem->getLength() == 0 && elem->ident() == EVR_OB)
+                ((DcmOtherByteOtherWord*)elem)->putUint8Array(version, 2);
 
             // check version of meta header
             Uint8 *currVers;
             l_error = ((DcmOtherByteOtherWord*)elem)->getUint8Array(currVers);
             if (((currVers[0] & version[0] & 0xff) == version[0]) &&
-                ((currVers[1] & version[1] & 0xff) == version[1]) ) {
-                debug(2, ( "DcmFileFormat::checkValue() Version of MetaHeader is ok: 0x%2.2x%2.2x",
-                        currVers[1], currVers[0] ));
-
+                ((currVers[1] & version[1] & 0xff) == version[1]))
+            {
+                debug(2, ("DcmFileFormat::checkValue() Version of MetaHeader is ok: 0x%2.2x%2.2x",
+                        currVers[1], currVers[0]));
             } else {
                 currVers[0] = currVers[0] | version[0]; // direct manipulation
                 currVers[1] = currVers[1] | version[1]; // of data
                 ostream& localCerr = ofConsole.lockCerr();
                 localCerr << "Warning: dcfilefo: unknown Version of MetaHeader detected: 0x";
-                localCerr.width(2); localCerr.fill('0'); localCerr << hex << (int)currVers[1];
-                localCerr.width(2); localCerr.fill('0'); localCerr << (int)currVers[0] << " supported: 0x";
-                localCerr.width(2); localCerr.fill('0'); localCerr << (int)version[1];
-                localCerr.width(2); localCerr.fill('0'); localCerr << (int)version[0] << dec << endl;
+                localCerr << hex << setfill('0')
+                          << setw(2) << (int)currVers[1]
+                          << setw(2) << (int)currVers[0] << " supported: 0x"
+                          << setw(2) << (int)version[1]
+                          << setw(2) << (int)version[0]
+                          << dec << setfill(' ') << endl;
                 ofConsole.unlockCerr();
             }
-        } else if ( xtag == DCM_MediaStorageSOPClassUID ) {     // (0002,0002)
-            if ( elem == (DcmElement*)NULL ) {
-                elem = new DcmUniqueIdentifier( tag );
-                metainfo->insert( elem, OFTrue );
+        }
+        else if (xtag == DCM_MediaStorageSOPClassUID)       // (0002,0002)
+        {
+            if (elem == (DcmElement*)NULL)
+            {
+                elem = new DcmUniqueIdentifier(tag);
+                metainfo->insert(elem, OFTrue);
             }
-            if ( elem->getLength() == 0 && elem->ident() == EVR_UI ) {
-                if ( dataset->search( DCM_SOPClassUID, stack ) == EC_Normal ) {
+            if (elem->getLength() == 0 && elem->ident() == EVR_UI) {
+                if (dataset->search(DCM_SOPClassUID, stack).good())
+                {
                     char *uid = NULL;
                     l_error = ((DcmUniqueIdentifier*)stack.top())->getString(uid);
-                    ((DcmUniqueIdentifier*)elem)->putString( uid );
-                    debug(2, ( "DcmFileFormat::checkValue() use SOPClassUID [%s]", uid ));
+                    ((DcmUniqueIdentifier*)elem)->putString(uid);
+                    debug(2, ("DcmFileFormat::checkValue() use SOPClassUID [%s]", uid));
 
                 } else {
-                    ((DcmUniqueIdentifier*)elem)->putString( 
-                        UID_PrivateGenericFileSOPClass );
-                    debug(2, ( "DcmFileFormat::checkValue() No SOP Class UID in Dataset, using PrivateGenericFileSOPClass" ));
+                    ((DcmUniqueIdentifier*)elem)->putString(
+                        UID_PrivateGenericFileSOPClass);
+                    debug(2, ("DcmFileFormat::checkValue() No SOP Class UID in Dataset, using PrivateGenericFileSOPClass"));
                 }
             }
-        } else if ( xtag == DCM_MediaStorageSOPInstanceUID ) {  // (0002,0003)
-            if ( elem == (DcmElement*)NULL )
+        }
+        else if (xtag == DCM_MediaStorageSOPInstanceUID)    // (0002,0003)
+        {
+            if (elem == (DcmElement*)NULL)
             {
-                elem = new DcmUniqueIdentifier( tag );
-                metainfo->insert( elem, OFTrue );
+                elem = new DcmUniqueIdentifier(tag);
+                metainfo->insert(elem, OFTrue);
             }
-            if ( elem->getLength() == 0 && elem->ident() == EVR_UI )
+            if (elem->getLength() == 0 && elem->ident() == EVR_UI)
             {
-                if ( dataset->search( DCM_SOPInstanceUID, stack )
-                     == EC_Normal )
+                if (dataset->search(DCM_SOPInstanceUID, stack).good())
                 {
                     char* uid = NULL;
                     l_error =((DcmUniqueIdentifier*)stack.top())->getString(uid);
-                    ((DcmUniqueIdentifier*)elem)->putString( uid );
-                    debug(2, ( "DcmFileFormat::checkValue() use SOPInstanceUID [%s] from Dataset", uid ));
-
-                }
-                else
-                {
+                    ((DcmUniqueIdentifier*)elem)->putString(uid);
+                    debug(2, ("DcmFileFormat::checkValue() use SOPInstanceUID [%s] from Dataset", uid));
+                } else {
                     char uid[128];
-
-                    dcmGenerateUniqueIdentifier(uid);    // from dcuid.h 
-
-                    ((DcmUniqueIdentifier*)elem)->putString( uid );
-                    debug(2, ( "DcmFileFormat::checkValue() use new generated SOPInstanceUID [%s]", uid ));
-
+                    dcmGenerateUniqueIdentifier(uid);       // from dcuid.h
+                    ((DcmUniqueIdentifier*)elem)->putString(uid);
+                    debug(2, ("DcmFileFormat::checkValue() use new generated SOPInstanceUID [%s]", uid));
                 }
             }
-        } else if ( xtag == DCM_TransferSyntaxUID ) {   // (0002,0010)
-            if ( elem == (DcmElement*)NULL )
+        }
+        else if (xtag == DCM_TransferSyntaxUID)             // (0002,0010)
+        {
+            if (elem == (DcmElement*)NULL)
             {
-                elem = new DcmUniqueIdentifier( tag );
-                metainfo->insert( elem, OFTrue );
+                elem = new DcmUniqueIdentifier(tag);
+                metainfo->insert(elem, OFTrue);
             }
-            if ( elem->ident() == EVR_UI )
+            if (elem->ident() == EVR_UI)
             {
 #ifdef DEBUG
 char * uidtmp = NULL;
 ((DcmUniqueIdentifier*)elem)->getString(uidtmp);
 Cdebug(2,  uidtmp != (char*)NULL,
-       ( "DcmFileFormat::checkValue() found old transfer-syntax: [%s]",uidtmp ));
+       ("DcmFileFormat::checkValue() found old transfer-syntax: [%s]",uidtmp));
 #endif
-                DcmXfer dcXfer( oxfer );
+                DcmXfer dcXfer(oxfer);
                 const char *uid = dcXfer.getXferID();
-                elem->putString( uid );
-                debug(2,( "DcmFileFormat::checkValue() use new transfer-syntax [%s] on writing following Dataset",
-                        dcXfer.getXferName() ));
+                elem->putString(uid);
+                debug(2,("DcmFileFormat::checkValue() use new transfer-syntax [%s] on writing following Dataset",
+                        dcXfer.getXferName()));
 
             }
-        } else if ( xtag == DCM_ImplementationClassUID ) {      // (0002,0012)
-            if ( elem == (DcmElement*)NULL )
+        }
+        else if (xtag == DCM_ImplementationClassUID)        // (0002,0012)
+        {
+            if (elem == (DcmElement*)NULL)
             {
-                elem = new DcmUniqueIdentifier( tag );
-                metainfo->insert( elem, OFTrue );
+                elem = new DcmUniqueIdentifier(tag);
+                metainfo->insert(elem, OFTrue);
             }
-            if ( elem->ident() == EVR_UI )
+            if (elem->ident() == EVR_UI)
             {
                 const char *uid = OFFIS_IMPLEMENTATION_CLASS_UID;
-                ((DcmUniqueIdentifier*)elem)->putString( uid );
+                ((DcmUniqueIdentifier*)elem)->putString(uid);
             }
 
-        } else if ( xtag == DCM_ImplementationVersionName ) {   // (0002,0013)
-            if ( elem == (DcmElement*)NULL )
+        }
+        else if (xtag == DCM_ImplementationVersionName)     // (0002,0013)
+        {
+            if (elem == (DcmElement*)NULL)
             {
-                elem = new DcmShortString( tag );
-                metainfo->insert( elem, OFTrue );
+                elem = new DcmShortString(tag);
+                metainfo->insert(elem, OFTrue);
             }
-            if ( elem->ident() == EVR_SH )
+            if (elem->ident() == EVR_SH)
             {
                 const char *uid = OFFIS_DTK_IMPLEMENTATION_VERSION_NAME;
-                ((DcmShortString*)elem)->putString( uid );
+                ((DcmShortString*)elem)->putString(uid);
             }
 
-        } else if ( xtag == DCM_SourceApplicationEntityTitle ) {        // (0002,0016)
-            if ( elem == (DcmElement*)NULL )
+        }
+        else if (xtag == DCM_SourceApplicationEntityTitle)  // (0002,0016)
+        {
+            if (elem == (DcmElement*)NULL)
             {
-                elem = new DcmApplicationEntity( tag );
-                metainfo->insert( elem, OFTrue );
+                elem = new DcmApplicationEntity(tag);
+                metainfo->insert(elem, OFTrue);
             }
             ofConsole.lockCerr() << "Error: dcfilefo: I don't know how to handle DCM_SourceApplicationEntityTitle!" << endl;
             ofConsole.unlockCerr();
-        } else if ( xtag == DCM_PrivateInformationCreatorUID ) {        // (0002,0100)
-            if ( elem == (DcmElement*)NULL )
+        }
+        else if (xtag == DCM_PrivateInformationCreatorUID)  // (0002,0100)
+        {
+            if (elem == (DcmElement*)NULL)
             {
-                elem = new DcmUniqueIdentifier( tag );
-                metainfo->insert( elem, OFTrue );
+                elem = new DcmUniqueIdentifier(tag);
+                metainfo->insert(elem, OFTrue);
             }
             ofConsole.lockCerr() << "Error: dcfilefo: I don't know how to handle DCM_PrivateInformationCreatorUID!" << endl;
             ofConsole.unlockCerr();
-        } else if ( xtag == DCM_PrivateInformation ) {  // (0002,0102)
-            if ( elem == (DcmElement*)NULL )
+        }
+        else if (xtag == DCM_PrivateInformation)            // (0002,0102)
+        {
+            if (elem == (DcmElement*)NULL)
             {
-                elem = new DcmOtherByteOtherWord( tag );
-                metainfo->insert( elem, OFTrue );
+                elem = new DcmOtherByteOtherWord(tag);
+                metainfo->insert(elem, OFTrue);
             }
             ofConsole.lockCerr() << "Warning: dcfilefo: I don't know how to handle DCM_PrivateInformation!" << endl;
             ofConsole.unlockCerr();
@@ -365,7 +387,8 @@ Cdebug(2,  uidtmp != (char*)NULL,
         }
 
         /* if at this point elem still equals NULL, something is fishy */
-        if ( elem == (DcmElement*)NULL ) l_error = EC_InvalidVR;
+        if (elem == (DcmElement*)NULL)
+            l_error = EC_InvalidVR;
     } else {
     /* (i.e. there is either no meta header information or no data set information */
         l_error = EC_IllegalCall;
@@ -377,7 +400,6 @@ Cdebug(2,  uidtmp != (char*)NULL,
 
 
 // ********************************
-
 
 
 OFCondition DcmFileFormat::validateMetaInfo(E_TransferSyntax oxfer)
@@ -395,55 +417,54 @@ OFCondition DcmFileFormat::validateMetaInfo(E_TransferSyntax oxfer)
     DcmDataset *datset = getDataset();
 
     /* if there is meta header information and data set information, do something */
-    if (metinf != (DcmMetaInfo*)NULL && datset != (DcmDataset*)NULL) {
+    if (metinf != (DcmMetaInfo*)NULL && datset != (DcmDataset*)NULL)
+    {
         DcmStack stack;
 
         /* in the following, we want to make sure all elements of the meta header */
         /* are existent in metinf and contain correct values */
 
         /* DCM_MetaElementGroupLength */
-        metinf->search(DCM_MetaElementGroupLength, stack, ESM_fromHere, OFFalse );
-        checkValue( metinf, datset, DCM_MetaElementGroupLength, stack.top(), oxfer );
+        metinf->search(DCM_MetaElementGroupLength, stack, ESM_fromHere, OFFalse);
+        checkValue(metinf, datset, DCM_MetaElementGroupLength, stack.top(), oxfer);
 
         /* DCM_FileMetaInformationVersion */
-        metinf->search(DCM_FileMetaInformationVersion, stack, ESM_fromHere, OFFalse );
-        checkValue( metinf, datset, DCM_FileMetaInformationVersion, stack.top(), oxfer );
+        metinf->search(DCM_FileMetaInformationVersion, stack, ESM_fromHere, OFFalse);
+        checkValue(metinf, datset, DCM_FileMetaInformationVersion, stack.top(), oxfer);
 
         /* DCM_MediaStorageSOPClassUID */
-        metinf->search(DCM_MediaStorageSOPClassUID, stack, ESM_fromHere, OFFalse );
-        checkValue( metinf, datset, DCM_MediaStorageSOPClassUID, stack.top(), oxfer );
+        metinf->search(DCM_MediaStorageSOPClassUID, stack, ESM_fromHere, OFFalse);
+        checkValue(metinf, datset, DCM_MediaStorageSOPClassUID, stack.top(), oxfer);
 
         /* DCM_MediaStorageSOPInstanceUID */
-        metinf->search(DCM_MediaStorageSOPInstanceUID, stack, ESM_fromHere, OFFalse );
-        checkValue( metinf, datset, DCM_MediaStorageSOPInstanceUID, stack.top(), oxfer );
+        metinf->search(DCM_MediaStorageSOPInstanceUID, stack, ESM_fromHere, OFFalse);
+        checkValue(metinf, datset, DCM_MediaStorageSOPInstanceUID, stack.top(), oxfer);
 
         /* DCM_TransferSyntaxUID */
-        metinf->search(DCM_TransferSyntaxUID, stack, ESM_fromHere, OFFalse );
-        checkValue( metinf, datset, DCM_TransferSyntaxUID, stack.top(), oxfer );
+        metinf->search(DCM_TransferSyntaxUID, stack, ESM_fromHere, OFFalse);
+        checkValue(metinf, datset, DCM_TransferSyntaxUID, stack.top(), oxfer);
 
         /* DCM_ImplementationClassUID */
-        metinf->search(DCM_ImplementationClassUID, stack, ESM_fromHere, OFFalse );
-        checkValue( metinf, datset, DCM_ImplementationClassUID, stack.top(), oxfer );
+        metinf->search(DCM_ImplementationClassUID, stack, ESM_fromHere, OFFalse);
+        checkValue(metinf, datset, DCM_ImplementationClassUID, stack.top(), oxfer);
 
         /* DCM_ImplementationVersionName */
-        metinf->search(DCM_ImplementationVersionName, stack, ESM_fromHere, OFFalse );
-        checkValue( metinf, datset, DCM_ImplementationVersionName, stack.top(), oxfer );
+        metinf->search(DCM_ImplementationVersionName, stack, ESM_fromHere, OFFalse);
+        checkValue(metinf, datset, DCM_ImplementationVersionName, stack.top(), oxfer);
 
         /* dump some information if reuqired */
-        debug(2, ( "DcmFileFormat: found %ld Elements in DcmMetaInfo metinf.",
-                metinf->card() ));
+        debug(2, ("DcmFileFormat: found %ld Elements in DcmMetaInfo metinf.",
+                metinf->card()));
 
         /* calculate new GroupLength for meta header */
-        if (metinf->computeGroupLengthAndPadding
-             (EGL_withGL, EPD_noChange, META_HEADER_DEFAULT_TRANSFERSYNTAX, 
-              EET_UndefinedLength) != EC_Normal )
+        if (metinf->computeGroupLengthAndPadding(EGL_withGL, EPD_noChange,
+            META_HEADER_DEFAULT_TRANSFERSYNTAX, EET_UndefinedLength).bad())
         {
             ofConsole.lockCerr() << "Error: DcmFileFormat::validateMetaInfo(): group length of Meta Information Header not adapted." << endl;
             ofConsole.unlockCerr();
         }
-    }
-    else {
-    /* (i.e. there is either no meta header information or no data set information, or both are missing) */
+    } else {
+        /* (i.e. there is either no meta header information or no data set information, or both are missing) */
         l_error = EC_CorruptedData;
     }
 
@@ -456,23 +477,21 @@ OFCondition DcmFileFormat::validateMetaInfo(E_TransferSyntax oxfer)
 // ********************************
 
 
-E_TransferSyntax DcmFileFormat::lookForXfer(DcmMetaInfo* metainfo)
+E_TransferSyntax DcmFileFormat::lookForXfer(DcmMetaInfo *metainfo)
 {
     E_TransferSyntax newxfer = EXS_Unknown;
     DcmStack stack;
-    if (metainfo && metainfo->search(DCM_TransferSyntaxUID, stack) == EC_Normal
-        )
+    if (metainfo && metainfo->search(DCM_TransferSyntaxUID, stack).good())
     {
         DcmUniqueIdentifier *xferUI = (DcmUniqueIdentifier*)(stack.top());
-        if ( xferUI->getTag().getXTag() == DCM_TransferSyntaxUID )
+        if (xferUI->getTag().getXTag() == DCM_TransferSyntaxUID)
         {
             char * xferid = NULL;
             xferUI->getString(xferid);     // auslesen der ID
             DcmXfer localXfer(xferid);      // dekodieren in E_TransferSyntax
             newxfer = localXfer.getXfer();
-            debug(4, ( "DcmFileFormat::lookForXfer() detected xfer=%d=[%s] in MetaInfo",
-                    newxfer,
-                    localXfer.getXferName() ));
+            debug(4, ("DcmFileFormat::lookForXfer() detected xfer=%d=[%s] in MetaInfo",
+                newxfer, localXfer.getXferName()));
         }
     }
     return newxfer;
@@ -485,29 +504,30 @@ E_TransferSyntax DcmFileFormat::lookForXfer(DcmMetaInfo* metainfo)
 Uint32 DcmFileFormat::calcElementLength(const E_TransferSyntax xfer,
                                         const E_EncodingType enctype)
 {
-    return getMetaInfo() -> calcElementLength(xfer, enctype) + 
-        getDataset() -> calcElementLength(xfer, enctype);
+    return getMetaInfo()->calcElementLength(xfer, enctype) +
+        getDataset()->calcElementLength(xfer, enctype);
 }
+
 
 // ********************************
 
 
 OFBool DcmFileFormat::canWriteXfer(const E_TransferSyntax newXfer,
-                                 const E_TransferSyntax oldXfer)
+                                   const E_TransferSyntax oldXfer)
 {
-    DcmDataset * dataset = getDataset();
+    DcmDataset *dataset = getDataset();
 
     if (dataset)
-        return dataset -> canWriteXfer(newXfer, oldXfer);
+        return dataset->canWriteXfer(newXfer, oldXfer);
     else
         return OFFalse;
 }
-           
+
 
 // ********************************
 
 
-OFCondition DcmFileFormat::read(DcmInputStream & inStream,
+OFCondition DcmFileFormat::read(DcmInputStream &inStream,
                                 const E_TransferSyntax xfer,
                                 const E_GrpLenEncoding glenc,
                                 const Uint32 maxReadLength)
@@ -520,34 +540,29 @@ OFCondition DcmFileFormat::read(DcmInputStream & inStream,
         errorFlag = inStream.status();
 
         E_TransferSyntax newxfer = xfer;
-        DcmDataset * dataset = NULL;
+        DcmDataset *dataset = NULL;
 
-        if (errorFlag == EC_Normal && inStream.eos())
+        if (errorFlag.good() && inStream.eos())
             errorFlag = EC_EndOfStream;
-        else if (errorFlag == EC_Normal && fTransferState != ERW_ready)
+        else if (errorFlag.good() && fTransferState != ERW_ready)
         {
-            // Die neuen Daten werden ans Ende gehaengt
-            itemList->seek( ELP_last );
+            // the new data is added to the end
+            itemList->seek(ELP_last);
 
-            DcmMetaInfo * metaInfo = getMetaInfo();
+            DcmMetaInfo *metaInfo = getMetaInfo();
             if (metaInfo == NULL && fTransferState == ERW_init)
             {
                 metaInfo = new DcmMetaInfo();
-                itemList->insert(metaInfo, ELP_first );
+                itemList->insert(metaInfo, ELP_first);
             }
-                        
             if (metaInfo && metaInfo->transferState() != ERW_ready)
             {
-                errorFlag = metaInfo->read(inStream, xfer, glenc,
-                                           maxReadLength );
+                errorFlag = metaInfo->read(inStream, xfer, glenc, maxReadLength);
             }
 
-            // lese aus MetaInfo() Tag(0002,0010) aus und bestimme xfer
-            newxfer = lookForXfer(metaInfo );
-
-
-            if (errorFlag == EC_Normal && 
-                (!metaInfo || metaInfo->transferState() == ERW_ready))
+            // read MetaInfo() from Tag(0002,0010) and determine xfer
+            newxfer = lookForXfer(metaInfo);
+            if (errorFlag.good() && (!metaInfo || metaInfo->transferState() == ERW_ready))
             {
                 dataset = getDataset();
                 if (dataset == NULL && fTransferState == ERW_init)
@@ -556,26 +571,26 @@ OFCondition DcmFileFormat::read(DcmInputStream & inStream,
                     itemList->seek (ELP_first);
                     itemList->insert(dataset, ELP_next);
                 }
-
                 if (dataset && dataset->transferState() != ERW_ready)
                 {
-                    errorFlag = dataset->read(inStream, newxfer, glenc,
-                                              maxReadLength);
+                    errorFlag = dataset->read(inStream, newxfer, glenc, maxReadLength);
                 }
             }
         }
         if (fTransferState == ERW_init)
             fTransferState = ERW_inWork;
-                
+
         if (dataset && dataset->transferState() == ERW_ready)
             fTransferState = ERW_ready;
-    }           
+    }
     return errorFlag;
 }  // DcmFileFormat::read()
 
+
 // ********************************
 
-OFCondition DcmFileFormat::write(DcmOutputStream & outStream,
+
+OFCondition DcmFileFormat::write(DcmOutputStream &outStream,
                                  const E_TransferSyntax oxfer,
                                  const E_EncodingType enctype)
 {
@@ -583,9 +598,7 @@ OFCondition DcmFileFormat::write(DcmOutputStream & outStream,
 }
 
 
-// ********************************
-
-OFCondition DcmFileFormat::write(DcmOutputStream & outStream,
+OFCondition DcmFileFormat::write(DcmOutputStream &outStream,
                                  const E_TransferSyntax oxfer,
                                  const E_EncodingType enctype,
                                  const E_GrpLenEncoding glenc,
@@ -622,24 +635,21 @@ OFCondition DcmFileFormat::write(DcmOutputStream & outStream,
         /* if this is not an illegal call, do something */
 
         /* assign data set and the meta information header to local variables */
-        DcmDataset * dataset = this -> getDataset();
-        DcmMetaInfo * metainfo = this -> getMetaInfo();
-
+        DcmDataset *dataset = getDataset();
+        DcmMetaInfo *metainfo = getMetaInfo();
         /* Determine the transfer syntax which shall be used. Either we use the one which was passed, */
         /* or (if it's an unknown tranfer syntax) we use the data set's original transfer syntax. */
         E_TransferSyntax outxfer = oxfer;
         if (outxfer == EXS_Unknown && dataset)
             outxfer = dataset->getOriginalXfer();
-
         /* check if the stream reported an error so far */
         errorFlag = outStream.status();
-
         /* check if we can actually write data to the stream; in certain cases we cannot. */
         if (outxfer == EXS_Unknown || outxfer == EXS_BigEndianImplicit)
             errorFlag = EC_IllegalCall;
         else if (itemList->empty())
             errorFlag = EC_CorruptedData;
-        else if (errorFlag == EC_Normal && fTransferState != ERW_ready)
+        else if (errorFlag.good() && fTransferState != ERW_ready)
         {
             /* in this case we can write data to the stream */
 
@@ -649,48 +659,41 @@ OFCondition DcmFileFormat::write(DcmOutputStream & outStream,
             if (fTransferState == ERW_init)
             {
                 validateMetaInfo(outxfer);
-                itemList->seek( ELP_first );
+                itemList->seek(ELP_first);
                 fTransferState = ERW_inWork;
             }
-
             /* if the transfer state is set to ERW_inWork, we need to write the */
             /* information which is included in this to the buffer which was passed. */
             if (fTransferState == ERW_inWork)
             {
                 /* write meta header information */
-                errorFlag = 
-                    metainfo -> write(outStream, outxfer, enctype);
-
+                errorFlag = metainfo->write(outStream, outxfer, enctype);
                 /* recalculate the instance length */
-                instanceLength += 
-                    metainfo -> calcElementLength(outxfer, enctype);
-
+                instanceLength += metainfo->calcElementLength(outxfer, enctype);
                 /* if everything is ok, write the data set */
-                if (errorFlag == EC_Normal)
-                    errorFlag = dataset -> write(outStream, outxfer, enctype, 
-                                                 glenc, padenc, padlen, 
-                                                 subPadlen, instanceLength);
-
+                if (errorFlag.good())
+                    errorFlag = dataset->write(outStream, outxfer, enctype, glenc, padenc, padlen,
+                                               subPadlen, instanceLength);
                 /* if everything is ok, set the transfer state to ERW_ready */
-                if (errorFlag == EC_Normal)
+                if (errorFlag.good())
                     fTransferState = ERW_ready;
             }
         }
-
         /* in case the transfer syntax which shall be used is indeed the */
         /* BigEndianImplicit transfer syntax dump some error information */
-        if ( outxfer == EXS_BigEndianImplicit )
+        if (outxfer == EXS_BigEndianImplicit)
         {
             ofConsole.lockCerr() << "Error: DcmFileFormat::write() illegal TransferSyntax(BI) used" << endl;
             ofConsole.unlockCerr();
         }
     }
-
     /* return result value */
     return errorFlag;
 }
 
+
 // ********************************
+
 
 OFCondition DcmFileFormat::loadFile(const char *fileName,
                                     const E_TransferSyntax readXfer,
@@ -699,7 +702,7 @@ OFCondition DcmFileFormat::loadFile(const char *fileName,
                                     OFBool isDataset)
 {
     if (isDataset)
-      return getDataset()->loadFile(fileName, readXfer, groupLength, maxReadLength);
+        return getDataset()->loadFile(fileName, readXfer, groupLength, maxReadLength);
 
     OFCondition l_error = EC_IllegalParameter;
     /* check parameters first */
@@ -718,9 +721,8 @@ OFCondition DcmFileFormat::loadFile(const char *fileName,
         }
     }
     return l_error;
-}  
+}
 
-// ********************************
 
 OFCondition DcmFileFormat::saveFile(const char *fileName,
                                     const E_TransferSyntax writeXfer,
@@ -733,10 +735,9 @@ OFCondition DcmFileFormat::saveFile(const char *fileName,
 {
     if (isDataset)
     {
-      return getDataset()->saveFile(fileName, writeXfer, encodingType, groupLength,
-          padEncoding, padLength, subPadLength);
+        return getDataset()->saveFile(fileName, writeXfer, encodingType, groupLength,
+            padEncoding, padLength, subPadLength);
     }
-
     OFCondition l_error = EC_IllegalParameter;
     /* check parameters first */
     if ((fileName != NULL) && (strlen(fileName) > 0))
@@ -757,11 +758,12 @@ OFCondition DcmFileFormat::saveFile(const char *fileName,
     return l_error;
 }
 
+
 // ********************************
 
 
-OFCondition DcmFileFormat::insertItem(DcmItem* /*item*/,
-                                      const unsigned long /*where*/ )
+OFCondition DcmFileFormat::insertItem(DcmItem * /*item*/,
+                                      const unsigned long /*where*/)
 {
     ofConsole.lockCerr() << "Warning: illegal call of DcmFileFormat::insert(DcmItem*,Uin32)" << endl;
     ofConsole.unlockCerr();
@@ -773,7 +775,7 @@ OFCondition DcmFileFormat::insertItem(DcmItem* /*item*/,
 // ********************************
 
 
-DcmItem* DcmFileFormat::remove(const unsigned long /*num*/ )
+DcmItem *DcmFileFormat::remove(const unsigned long /*num*/)
 {
     ofConsole.lockCerr() << "Warning: illegal call of DcmFileFormat::remove(Uint32)" << endl;
     ofConsole.unlockCerr();
@@ -785,7 +787,7 @@ DcmItem* DcmFileFormat::remove(const unsigned long /*num*/ )
 // ********************************
 
 
-DcmItem* DcmFileFormat::remove( DcmItem* /*item*/ )
+DcmItem *DcmFileFormat::remove(DcmItem* /*item*/)
 {
     ofConsole.lockCerr() << "Warning: illegal call of DcmFileFormat::remove(DcmItem*)" << endl;
     ofConsole.unlockCerr();
@@ -809,13 +811,12 @@ OFCondition DcmFileFormat::clear()
 // ********************************
 
 
-DcmMetaInfo* DcmFileFormat::getMetaInfo()
+DcmMetaInfo *DcmFileFormat::getMetaInfo()
 {
     errorFlag = EC_Normal;
     DcmMetaInfo *meta = (DcmMetaInfo*)NULL;
-    if (    itemList->seek_to( 0 ) != (DcmItem*)NULL
-            && itemList->get()->ident() == EVR_metainfo )
-        meta = (DcmMetaInfo*)( itemList->get() );
+    if (itemList->seek_to(0) != (DcmItem*)NULL && itemList->get()->ident() == EVR_metainfo)
+        meta = (DcmMetaInfo*)(itemList->get());
     else
         errorFlag = EC_IllegalCall;
     return meta;
@@ -825,13 +826,12 @@ DcmMetaInfo* DcmFileFormat::getMetaInfo()
 // ********************************
 
 
-DcmDataset* DcmFileFormat::getDataset()
+DcmDataset *DcmFileFormat::getDataset()
 {
     errorFlag = EC_Normal;
     DcmDataset *data = (DcmDataset*)NULL;
-    if (    itemList->seek_to( 1 ) != (DcmItem*)NULL
-            && itemList->get()->ident() == EVR_dataset )
-        data = (DcmDataset*)( itemList->get() );
+    if (itemList->seek_to(1) != (DcmItem*)NULL && itemList->get()->ident() == EVR_dataset)
+        data = (DcmDataset*)(itemList->get());
     else
         errorFlag = EC_IllegalCall;
     return data;
@@ -841,14 +841,13 @@ DcmDataset* DcmFileFormat::getDataset()
 // ********************************
 
 
-DcmDataset* DcmFileFormat::getAndRemoveDataset()
+DcmDataset *DcmFileFormat::getAndRemoveDataset()
 {
     errorFlag = EC_Normal;
     DcmDataset *data = (DcmDataset*)NULL;
-    if (    itemList->seek_to( 1 ) != (DcmItem*)NULL
-            && itemList->get()->ident() == EVR_dataset )
+    if (itemList->seek_to(1) != (DcmItem*)NULL && itemList->get()->ident() == EVR_dataset)
     {
-        data = (DcmDataset*)( itemList->remove() );
+        data = (DcmDataset*)(itemList->remove());
         DcmDataset *Dataset = new DcmDataset();
         DcmSequenceOfItems::itemList->insert(Dataset, ELP_last);
     }
@@ -858,13 +857,15 @@ DcmDataset* DcmFileFormat::getAndRemoveDataset()
 }
 
 
-// ********************************
-
-
 /*
 ** CVS/RCS Log:
 ** $Log: dcfilefo.cc,v $
-** Revision 1.32  2002-11-27 12:06:47  meichel
+** Revision 1.33  2002-12-06 13:09:26  joergr
+** Enhanced "print()" function by re-working the implementation and replacing
+** the boolean "showFullData" parameter by a more general integer flag.
+** Made source code formatting more consistent with other modules/files.
+**
+** Revision 1.32  2002/11/27 12:06:47  meichel
 ** Adapted module dcmdata to use of new header file ofstdinc.h
 **
 ** Revision 1.31  2002/08/27 16:55:47  meichel

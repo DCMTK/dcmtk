@@ -19,17 +19,18 @@
  *
  *  Author:  Gerd Ehlers, Andreas Barth
  *
- *  Purpose: class DcmDataset
+ *  Purpose: Implementation of class DcmDataset
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-11-27 12:06:43 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2002-12-06 13:09:26 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcdatset.cc,v $
- *  CVS/RCS Revision: $Revision: 1.30 $
+ *  CVS/RCS Revision: $Revision: 1.31 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
  *
  */
+
 
 #include "osconfig.h"    /* make sure OS specific configuration is included first */
 
@@ -64,10 +65,6 @@ DcmDataset::DcmDataset()
 }
 
 
-
-// ********************************
-
-
 DcmDataset::DcmDataset(const DcmDataset &old)
   : DcmItem(old),
     Xfer(old.Xfer)
@@ -75,11 +72,23 @@ DcmDataset::DcmDataset(const DcmDataset &old)
 }
 
 
+DcmDataset::~DcmDataset()
+{
+}
+
+
 // ********************************
 
 
-DcmDataset::~DcmDataset()
+DcmEVR DcmDataset::ident() const
 {
+    return EVR_dataset;
+}
+
+
+E_TransferSyntax DcmDataset::getOriginalXfer() const
+{
+    return Xfer;
 }
 
 
@@ -92,56 +101,57 @@ Uint32 DcmDataset::calcElementLength(const E_TransferSyntax xfer,
     return DcmItem::getLength(xfer, enctype);
 }
 
+
 // ********************************
 
 
 OFBool DcmDataset::canWriteXfer(const E_TransferSyntax newXfer,
-                              const E_TransferSyntax oldXfer)
+                                const E_TransferSyntax oldXfer)
 {
     register E_TransferSyntax originalXfer = Xfer;
-
     if (newXfer == EXS_Unknown)
         return OFFalse;
-
     if (Xfer == EXS_Unknown)
         originalXfer = oldXfer;
 
     /* Check stream compression for this transfer syntax */
     DcmXfer xf(newXfer);
-    if (xf.getStreamCompression() == ESC_unsupported) return OFFalse;
+    if (xf.getStreamCompression() == ESC_unsupported)
+        return OFFalse;
 
     return DcmItem::canWriteXfer(newXfer, originalXfer);
 }
 
+
 // ********************************
 
 
-void DcmDataset::print(ostream & out, const OFBool showFullData,
-                       const int level, const char *pixelFileName,
+void DcmDataset::print(ostream &out,
+                       const size_t flags,
+                       const int level,
+                       const char *pixelFileName,
                        size_t *pixelCounter)
 {
-    int i;
     out << endl;
-    for ( i=0; i<level; i++)
-        out << "    ";
+    printNestingLevel(out, flags, level);
     out << "# Dicom-Data-Set" << endl;
-    for ( i=0; i<level; i++)
-        out << "    ";
-    out << "# Used TransferSyntax: " << DcmXfer( Xfer ).getXferName();
+    printNestingLevel(out, flags, level);
+    out << "# Used TransferSyntax: " << DcmXfer(Xfer).getXferName();
     out << endl;
-    if ( !elementList->empty() )
+    if (!elementList->empty())
     {
         DcmObject *dO;
-        elementList->seek( ELP_first );
-        do 
-        {
+        elementList->seek(ELP_first);
+        do {
             dO = elementList->get();
-            dO->print(out, showFullData, level + 1, pixelFileName, pixelCounter);
-        } while ( elementList->seek( ELP_next ) );
+            dO->print(out, flags, level + 1, pixelFileName, pixelCounter);
+        } while (elementList->seek(ELP_next));
     }
 }
 
+
 // ********************************
+
 
 OFCondition DcmDataset::writeXML(ostream &out,
                                  const size_t flags)
@@ -156,8 +166,7 @@ OFCondition DcmDataset::writeXML(ostream &out,
         /* write content of all children */
         DcmObject *dO;
         elementList->seek(ELP_first);
-        do 
-        {
+        do {
             dO = elementList->get();
             dO->writeXML(out, flags);
         } while (elementList->seek(ELP_next));
@@ -168,9 +177,11 @@ OFCondition DcmDataset::writeXML(ostream &out,
     return EC_Normal;
 }
 
+
 // ********************************
 
-OFCondition DcmDataset::read(DcmInputStream & inStream,
+
+OFCondition DcmDataset::read(DcmInputStream &inStream,
                              const E_TransferSyntax xfer,
                              const E_GrpLenEncoding glenc,
                              const Uint32 maxReadLength)
@@ -188,19 +199,18 @@ OFCondition DcmDataset::read(DcmInputStream & inStream,
      *                        was used to encode the information in inStream.
      *   glenc         - [in] [optional parameter, default = EGL_noChange] Encoding type for group
      *                        length. Specifies what will be done with group length tags.
-     *   maxReadLength - [in] [optional parameter, default = DCM_MaxReadLength]. 
+     *   maxReadLength - [in] [optional parameter, default = DCM_MaxReadLength].
      */
 {
     /* check if the stream variable reported an error */
     errorFlag = inStream.status();
-
     /* if the stream did not report an error but the stream */
     /* is empty, set the error flag correspondingly */
-    if (errorFlag == EC_Normal && inStream.eos())
+    if (errorFlag.good() && inStream.eos())
         errorFlag = EC_EndOfStream;
     /* else if the stream did not report an error but the transfer */
     /* state does not equal ERW_ready, go ahead and do something */
-    else if (errorFlag.good() && fTransferState != ERW_ready )
+    else if (errorFlag.good() && fTransferState != ERW_ready)
     {
         /* if the transfer state is ERW_init, go ahead and check the transfer syntax which was passed */
         if (fTransferState == ERW_init)
@@ -209,39 +219,37 @@ OFCondition DcmDataset::read(DcmInputStream & inStream,
             /* determine the transfer syntax from the information in the stream itself. */
             /* If the transfer syntax is given, we want to use it. */
             if (xfer == EXS_Unknown)
-                Xfer = checkTransferSyntax(inStream); 
+                Xfer = checkTransferSyntax(inStream);
             else
                 Xfer = xfer;
-
             /* Check stream compression for this transfer syntax */
             DcmXfer xf(Xfer);
-
             E_StreamCompression sc = xf.getStreamCompression();
             switch (sc)
             {
-              case ESC_none:
-                // nothing to do
-                break;
-              case ESC_unsupported:
-                // stream compressed transfer syntax that we cannot create; bail out.
-                if (errorFlag.good()) errorFlag = EC_UnsupportedEncoding;
-                break;
-              default:
-                // supported stream compressed transfer syntax, install filter
-                errorFlag = inStream.installCompressionFilter(sc);
-                break;
+                case ESC_none:
+                  // nothing to do
+                  break;
+                case ESC_unsupported:
+                  // stream compressed transfer syntax that we cannot create; bail out.
+                  if (errorFlag.good())
+                      errorFlag = EC_UnsupportedEncoding;
+                  break;
+                default:
+                  // supported stream compressed transfer syntax, install filter
+                  errorFlag = inStream.installCompressionFilter(sc);
+                  break;
             }
-
         }
         /* pass processing the task to class DcmItem */
-        if (errorFlag.good()) errorFlag = DcmItem::read(inStream, Xfer, glenc, maxReadLength);
-
-    } 
+        if (errorFlag.good())
+            errorFlag = DcmItem::read(inStream, Xfer, glenc, maxReadLength);
+    }
 
     /* if the error flag shows ok or that the end of the stream was encountered, */
     /* we have read information for this particular data set or command; in this */
     /* case, we need to do something for the current dataset object */
-    if ( errorFlag.good() || errorFlag == EC_EndOfStream )
+    if (errorFlag.good() || errorFlag == EC_EndOfStream)
     {
         /* set the error flag to ok */
         errorFlag = EC_Normal;
@@ -255,24 +263,25 @@ OFCondition DcmDataset::read(DcmInputStream & inStream,
     }
 
     /* dump information if required */
-    debug(3, ( "DcmDataset::read: At End: errorFlag = %s", errorFlag.text() ));
+    debug(3, ("DcmDataset::read: At End: errorFlag = %s", errorFlag.text()));
 
     /* return result flag */
     return errorFlag;
 }
 
+
 // ********************************
 
-OFCondition DcmDataset::write(DcmOutputStream & outStream,
+
+OFCondition DcmDataset::write(DcmOutputStream &outStream,
                               const E_TransferSyntax oxfer,
                               const E_EncodingType enctype)
 {
     return write(outStream, oxfer, enctype, EGL_recalcGL);
 }
 
-// ********************************
 
-OFCondition DcmDataset::write(DcmOutputStream & outStream,
+OFCondition DcmDataset::write(DcmOutputStream &outStream,
                               const E_TransferSyntax oxfer,
                               const E_EncodingType enctype,
                               const E_GrpLenEncoding glenc,
@@ -303,18 +312,20 @@ OFCondition DcmDataset::write(DcmOutputStream & outStream,
      */
 {
   /* if the transfer state of this is not initialized, this is an illegal call */
-  if (fTransferState == ERW_notInitialized) errorFlag = EC_IllegalCall;
+  if (fTransferState == ERW_notInitialized)
+    errorFlag = EC_IllegalCall;
   else
   {
     /* check if the stream reported an error so far; if not, we can go ahead and write some data to it */
     errorFlag = outStream.status();
-    
+
     if (errorFlag.good() && fTransferState != ERW_ready)
     {
       /* Determine the transfer syntax which shall be used. Either we use the one which was passed, */
       /* or (if it's an unknown tranfer syntax) we use the one which is contained in this->Xfer. */
       E_TransferSyntax newXfer = oxfer;
-      if (newXfer == EXS_Unknown) newXfer = Xfer;
+      if (newXfer == EXS_Unknown)
+        newXfer = Xfer;
 
       /* if this function was called for the first time for the dataset object, the transferState is still */
       /* set to ERW_init. In this case, we need to take care of group length and padding elements according */
@@ -334,7 +345,8 @@ OFCondition DcmDataset::write(DcmOutputStream & outStream,
             break;
           case ESC_unsupported:
             // stream compressed transfer syntax that we cannot create; bail out.
-            if (errorFlag.good()) errorFlag = EC_UnsupportedEncoding;
+            if (errorFlag.good())
+              errorFlag = EC_UnsupportedEncoding;
             break;
           default:
             // supported stream compressed transfer syntax, install filter
@@ -344,7 +356,7 @@ OFCondition DcmDataset::write(DcmOutputStream & outStream,
 
         /* take care of group length and padding elements, according to what is specified in glenc and padenc */
         computeGroupLengthAndPadding(glenc, padenc, newXfer, enctype, padlen, subPadlen, instanceLength);
-        elementList->seek( ELP_first );
+        elementList->seek(ELP_first);
         fTransferState = ERW_inWork;
       }
 
@@ -354,21 +366,22 @@ OFCondition DcmDataset::write(DcmOutputStream & outStream,
       {
         // Remember that elementList->get() can be NULL if buffer was full after
         // writing the last item but before writing the sequence delimitation.
-        if (!elementList->empty() && (elementList->get() != NULL)) 
+        if (!elementList->empty() && (elementList->get() != NULL))
         {
           /* as long as everything is ok, go through all elements of this data */
           /* set and write the corresponding information to the buffer */
           DcmObject *dO;
-          do 
+          do
           {
             dO = elementList->get();
             errorFlag = dO->write(outStream, newXfer, enctype);
-          } while (errorFlag == EC_Normal && elementList->seek(ELP_next));
+          } while (errorFlag.good() && elementList->seek(ELP_next));
         }
 
         /* if all the information in this has been written to the */
         /* buffer set this data set's transfer state to ERW_ready */
-        if ( errorFlag == EC_Normal ) fTransferState = ERW_ready;
+        if (errorFlag.good())
+          fTransferState = ERW_ready;
       }
     }
   }
@@ -377,7 +390,54 @@ OFCondition DcmDataset::write(DcmOutputStream & outStream,
   return errorFlag;
 }
 
+
 // ********************************
+
+
+OFCondition DcmDataset::writeSignatureFormat(DcmOutputStream &outStream,
+                                             const E_TransferSyntax oxfer,
+                                             const E_EncodingType enctype)
+{
+  if (fTransferState == ERW_notInitialized)
+    errorFlag = EC_IllegalCall;
+  else
+  {
+    E_TransferSyntax newXfer = oxfer;
+    if (newXfer == EXS_Unknown)
+      newXfer = Xfer;
+
+    errorFlag = outStream.status();
+    if (errorFlag.good() && fTransferState != ERW_ready)
+    {
+      if (fTransferState == ERW_init)
+      {
+        computeGroupLengthAndPadding(EGL_recalcGL, EPD_noChange, newXfer, enctype, 0, 0, 0);
+        elementList->seek(ELP_first);
+        fTransferState = ERW_inWork;
+      }
+      if (fTransferState == ERW_inWork)
+      {
+        // elementList->get() can be NULL if buffer was full after
+        // writing the last item but before writing the sequence delimitation.
+        if (!elementList->empty() && (elementList->get() != NULL))
+        {
+          DcmObject *dO;
+          do {
+            dO = elementList->get();
+            errorFlag = dO->writeSignatureFormat(outStream, newXfer, enctype);
+          } while (errorFlag.good() && elementList->seek(ELP_next));
+        }
+        if (errorFlag.good())
+          fTransferState = ERW_ready;
+      }
+    }
+  }
+  return errorFlag;
+}
+
+
+// ********************************
+
 
 OFCondition DcmDataset::loadFile(const char *filename,
                                  const E_TransferSyntax readXfer,
@@ -403,17 +463,16 @@ OFCondition DcmDataset::loadFile(const char *filename,
         }
     }
     return l_error;
-}  
+}
 
-// ********************************
 
 OFCondition DcmDataset::saveFile(const char *fileName,
                                  const E_TransferSyntax writeXfer,
                                  const E_EncodingType encodingType,
                                  const E_GrpLenEncoding groupLength,
-			                     const E_PaddingEncoding padEncoding,
-			                     const Uint32 padLength,
-			                     const Uint32 subPadLength)
+                                 const E_PaddingEncoding padEncoding,
+                                 const Uint32 padLength,
+                                 const Uint32 subPadLength)
 {
     OFCondition l_error = EC_IllegalParameter;
     /* check parameters first */
@@ -435,63 +494,21 @@ OFCondition DcmDataset::saveFile(const char *fileName,
     return l_error;
 }
 
-// ********************************
-
-OFCondition DcmDataset::writeSignatureFormat(DcmOutputStream & outStream,
-					 const E_TransferSyntax oxfer,
-					 const E_EncodingType enctype)
-{
-  if (fTransferState == ERW_notInitialized) errorFlag = EC_IllegalCall;
-  else
-  {
-    E_TransferSyntax newXfer = oxfer;
-    if (newXfer == EXS_Unknown) newXfer = Xfer;
-
-    errorFlag = outStream.status();
-    if (errorFlag.good() && fTransferState != ERW_ready)
-    {
-      if (fTransferState == ERW_init)
-      {
-        computeGroupLengthAndPadding(EGL_recalcGL, EPD_noChange, newXfer, enctype, 0, 0, 0);
-        elementList->seek( ELP_first );
-        fTransferState = ERW_inWork;
-      }
-      if (fTransferState == ERW_inWork)
-      {
-      	// elementList->get() can be NULL if buffer was full after
-      	// writing the last item but before writing the sequence delimitation.
-        if (!elementList->empty() && (elementList->get() != NULL)) 
-        {
-          DcmObject *dO;
-          do 
-          {
-            dO = elementList->get();
-            errorFlag = dO->writeSignatureFormat(outStream, newXfer, enctype);
-          } while (errorFlag == EC_Normal && elementList->seek(ELP_next));
-        }
-        if ( errorFlag == EC_Normal ) fTransferState = ERW_ready;
-      }
-    }
-  }
-  return errorFlag;
-}
 
 // ********************************
 
-OFCondition
-DcmDataset::chooseRepresentation(
-    const E_TransferSyntax repType,
-    const DcmRepresentationParameter * repParam)
+
+OFCondition DcmDataset::chooseRepresentation(const E_TransferSyntax repType,
+                                             const DcmRepresentationParameter *repParam)
 {
     OFCondition l_error = EC_Normal;
     OFStack<DcmStack> pixelStack;
 
     DcmStack resultStack;
     resultStack.push(this);
-    while(search(DCM_PixelData, resultStack, ESM_afterStackTop, OFTrue) 
-          == EC_Normal && l_error == EC_Normal)
+    while(search(DCM_PixelData, resultStack, ESM_afterStackTop, OFTrue).good() && l_error.good())
     {
-        
+
         if (resultStack.top()->ident() == EVR_PixelData)
         {
             DcmPixelData * pixelData = (DcmPixelData *)(resultStack.top());
@@ -502,15 +519,15 @@ DcmDataset::chooseRepresentation(
         else
             l_error = EC_CannotChangeRepresentation;
     }
-    if (l_error == EC_Normal)
+    if (l_error.good())
     {
-        while(pixelStack.size() && l_error == EC_Normal)
+        while(pixelStack.size() && l_error.good())
         {
             l_error = ((DcmPixelData*)(pixelStack.top().top()))->
                 chooseRepresentation(repType, repParam, pixelStack.top());
 
 #ifdef PIXELSTACK_MEMORY_LEAK_WORKAROUND
-            // on certain platforms there seems to be a memory leak 
+            // on certain platforms there seems to be a memory leak
             // at this point since for some reason pixelStack.pop does
             // not completely destruct the DcmStack object taken from the stack.
             // The following work-around should solve this issue.
@@ -523,64 +540,66 @@ DcmDataset::chooseRepresentation(
     return l_error;
 }
 
-OFBool
-DcmDataset::hasRepresentation(
-    const E_TransferSyntax repType,
-    const DcmRepresentationParameter * repParam)
+
+OFBool DcmDataset::hasRepresentation(const E_TransferSyntax repType,
+                                     const DcmRepresentationParameter *repParam)
 {
     OFBool result = OFTrue;
     DcmStack resultStack;
 
-    while(search(DCM_PixelData, resultStack, ESM_afterStackTop, OFTrue) 
-          == EC_Normal && result)
+    while(search(DCM_PixelData, resultStack, ESM_afterStackTop, OFTrue).good() && result)
     {
         if (resultStack.top()->ident() == EVR_PixelData)
         {
-            DcmPixelData * pixelData = (DcmPixelData *)(resultStack.top());
+            DcmPixelData *pixelData = (DcmPixelData *)(resultStack.top());
             result = pixelData->hasRepresentation(repType, repParam);
         }
-        else 
+        else
             result = OFFalse;
     }
     return result;
 }
 
-void
-DcmDataset::removeAllButCurrentRepresentations()
+
+void DcmDataset::removeAllButCurrentRepresentations()
 {
     DcmStack resultStack;
 
-    while(search(DCM_PixelData, resultStack, ESM_afterStackTop, OFTrue) 
-          == EC_Normal)
+    while(search(DCM_PixelData, resultStack, ESM_afterStackTop, OFTrue).good())
     {
         if (resultStack.top()->ident() == EVR_PixelData)
         {
-            DcmPixelData * pixelData = (DcmPixelData *)(resultStack.top());
+            DcmPixelData *pixelData = (DcmPixelData *)(resultStack.top());
             pixelData->removeAllButCurrentRepresentations();
         }
     }
 }
 
-void
-DcmDataset::removeAllButOriginalRepresentations()
+
+void DcmDataset::removeAllButOriginalRepresentations()
 {
     DcmStack resultStack;
 
-    while(search(DCM_PixelData, resultStack, ESM_afterStackTop, OFTrue) 
-          == EC_Normal)
+    while(search(DCM_PixelData, resultStack, ESM_afterStackTop, OFTrue).good())
     {
         if (resultStack.top()->ident() == EVR_PixelData)
         {
-            DcmPixelData * pixelData = (DcmPixelData *)(resultStack.top());
+            DcmPixelData *pixelData = (DcmPixelData *)(resultStack.top());
             pixelData->removeAllButOriginalRepresentations();
         }
     }
 }
 
+
 /*
 ** CVS/RCS Log:
 ** $Log: dcdatset.cc,v $
-** Revision 1.30  2002-11-27 12:06:43  meichel
+** Revision 1.31  2002-12-06 13:09:26  joergr
+** Enhanced "print()" function by re-working the implementation and replacing
+** the boolean "showFullData" parameter by a more general integer flag.
+** Made source code formatting more consistent with other modules/files.
+**
+** Revision 1.30  2002/11/27 12:06:43  meichel
 ** Adapted module dcmdata to use of new header file ofstdinc.h
 **
 ** Revision 1.29  2002/08/27 16:55:44  meichel

@@ -19,25 +19,25 @@
  *
  *  Author:  Gerd Ehlers, Andreas Barth
  *
- *  Purpose: class DcmFloatingPointSingle
+ *  Purpose: Implementation of class DcmFloatingPointSingle
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-12-04 10:41:02 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2002-12-06 13:12:39 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcvrfl.cc,v $
- *  CVS/RCS Revision: $Revision: 1.26 $
+ *  CVS/RCS Revision: $Revision: 1.27 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
  *
  */
 
+
 #include "osconfig.h"    /* make sure OS specific configuration is included first */
+
 #include "ofstream.h"
 #include "ofstd.h"
 #include "dcvrfl.h"
 #include "dcvm.h"
-#include "dcdebug.h"
-#include "ofstd.h"
 
 #define INCLUDE_CSTDIO
 #define INCLUDE_CSTRING
@@ -48,22 +48,16 @@
 
 
 DcmFloatingPointSingle::DcmFloatingPointSingle(const DcmTag &tag,
-					       const Uint32 len)
-: DcmElement(tag, len)
+                                               const Uint32 len)
+  : DcmElement(tag, len)
 {
 }
 
 
-// ********************************
-
-
-DcmFloatingPointSingle::DcmFloatingPointSingle(const DcmFloatingPointSingle& old)
-: DcmElement( old )
+DcmFloatingPointSingle::DcmFloatingPointSingle(const DcmFloatingPointSingle &old)
+  : DcmElement(old)
 {
 }
-
-
-// ********************************
 
 
 DcmFloatingPointSingle::~DcmFloatingPointSingle()
@@ -71,52 +65,20 @@ DcmFloatingPointSingle::~DcmFloatingPointSingle()
 }
 
 
-// ********************************
-
-
-void DcmFloatingPointSingle::print(ostream & out, const OFBool showFullData,
-			  const int level, const char * /*pixelFileName*/,
-		      size_t * /*pixelCounter*/)
+DcmFloatingPointSingle &DcmFloatingPointSingle::operator=(const DcmFloatingPointSingle &obj)
 {
-    if (this -> valueLoaded())
-    {
-	Float32 * floatVals;
-	errorFlag =  this -> getFloat32Array(floatVals);
-
-	if (!floatVals)
-	    printInfoLine(out, showFullData, level, "(no value available)" );
-	else
-	{
-	    const Uint32 valueLength = Length/sizeof(Float32);
-	    const Uint32 maxCount =
-		!showFullData && DCM_OptPrintLineLength/26 < valueLength ?
-		DCM_OptPrintLineLength/26 : valueLength;
-	    char *ch_words;
-	    char *tmp = ch_words = new char[maxCount*26+8];
-
-	    for (unsigned long i=0; i<maxCount; i++ )
-	    {
-                OFStandard::ftoa(tmp, 25, *floatVals);
-                strcat(tmp, "\\");
-		tmp += strlen(tmp);
-		floatVals++;
-	    }
-	    if (maxCount> 0 )
-		tmp--;
-	    *tmp = '\0';
-
-	    if (maxCount < valueLength)
-		strcat(tmp, "...");
-	    printInfoLine(out, showFullData, level, ch_words);
-	    delete[] ch_words;
-	}
-    }
-    else
-	printInfoLine(out, showFullData, level, "(not loaded)" );
+    DcmElement::operator=(obj);
+    return *this;
 }
 
 
 // ********************************
+
+
+DcmEVR DcmFloatingPointSingle::ident() const
+{
+    return EVR_FL;
+}
 
 
 unsigned long DcmFloatingPointSingle::getVM()
@@ -128,110 +90,98 @@ unsigned long DcmFloatingPointSingle::getVM()
 // ********************************
 
 
-OFCondition DcmFloatingPointSingle::putFloat32Array(
-    const Float32 * floatVal,
-    const unsigned long numFloats)
+void DcmFloatingPointSingle::print(ostream &out,
+                                   const size_t flags,
+                                   const int level,
+                                   const char * /*pixelFileName*/,
+                                   size_t * /*pixelCounter*/)
 {
-    errorFlag = EC_Normal;
-    if (numFloats)
+    if (valueLoaded())
     {
-	if (floatVal)
-	    errorFlag = this -> putValue(floatVal, 
-					 sizeof(Float32)*Uint32(numFloats));
-	else
-	    errorFlag = EC_CorruptedData;
-    }
-    else
-	this -> putValue(NULL, 0);
-
-    return errorFlag;
-}
-
-
-// ********************************
-
-OFCondition DcmFloatingPointSingle::putFloat32(const Float32 floatVal,
-					       const unsigned long position)
-{
-    Float32 val = floatVal;
-    errorFlag = this -> changeValue(&val, sizeof(Float32)*position,
-				    sizeof(Float32));
-    return errorFlag;
-}
-
-
-// ********************************
-
-
-OFCondition DcmFloatingPointSingle::putString(const char * val)
-{
-    errorFlag = EC_Normal;
-    if (val && val[0] != 0)
-    {
-    unsigned long vm = getVMFromString(val);
-    if (vm)
-    {
-        Float32 * field = new Float32[vm];
-        const char * s = val;
-        OFBool success = OFFalse;
-        char * value;
-        
-        for(unsigned long i = 0; i < vm && errorFlag == EC_Normal; i++)
+        /* get float data */
+        Float32 *floatVals;
+        errorFlag = getFloat32Array(floatVals);
+        if (floatVals != NULL)
         {
-            value = getFirstValueFromString(s);
-            if (value)
+            const unsigned long count = Length / sizeof(Float32) /* do not use getVM()! */;
+            const unsigned long maxLength = (flags & DCMTypes::PF_shortenLongTagValues) ?
+                DCM_OptPrintLineLength : (unsigned long)-1;
+            unsigned long printedLength = 0;
+            unsigned long newLength = 0;
+            char buffer[64];
+            /* print line start with tag and VR */
+            printInfoLineStart(out, flags, level);
+            /* print multiple values */
+            for (unsigned int i = 0; i < count; i++, floatVals++)
             {
-              field[i] = (Float32)OFStandard::atof(value, &success);
-              if (!success) errorFlag = EC_CorruptedData;             
-              delete[] value;
-            } else errorFlag = EC_CorruptedData;
-        }
-    
-        if (errorFlag == EC_Normal)
-          errorFlag = this -> putFloat32Array(field, vm);
-        delete[] field;
-    }
-    else
-        errorFlag = this -> putValue(NULL, 0);
-    }
-    else
-    errorFlag = this -> putValue(NULL, 0);
-
-    return errorFlag;
+                /* check whether first value is printed (omit delimiter) */
+                if (i == 0)
+                    OFStandard::ftoa(buffer, sizeof(buffer), *floatVals);
+                else
+                {
+                    buffer[0] = '\\';
+                    OFStandard::ftoa(buffer + 1, sizeof(buffer) - 1, *floatVals);
+                }
+                /* check whether current value sticks to the length limit */
+                newLength = printedLength + strlen(buffer);
+                if ((newLength <= maxLength) && ((i + 1 == count) || (newLength + 3 <= maxLength)))
+                {
+                    out << buffer;
+                    printedLength = newLength;
+                } else {
+                    /* check whether output has been truncated */
+                    if (i + 1 < count)
+                    {
+                        out << "...";
+                        printedLength += 3;
+                    }
+                    break;
+                }
+            }
+            /* print line end with length, VM and tag name */
+            printInfoLineEnd(out, flags, printedLength);
+        } else
+            printInfoLine(out, flags, level, "(no value available)" );
+    } else
+        printInfoLine(out, flags, level, "(not loaded)" );
 }
 
 
 // ********************************
 
 
-OFCondition DcmFloatingPointSingle::getFloat32Array(Float32 * & singleVals)
+OFCondition DcmFloatingPointSingle::getFloat32(Float32 &floatVal,
+                                               const unsigned long pos)
 {
-	singleVals = (Float32 *)this -> getValue();
-	return errorFlag;
-}
-
-
-// ********************************
-
-
-OFCondition DcmFloatingPointSingle::getFloat32(Float32 & singleVal, 
-					       const unsigned long pos)
-{
-    Float32 * floatVals = NULL;
-    errorFlag = this -> getFloat32Array(floatVals);
-
-    if (floatVals && errorFlag == EC_Normal &&
-	pos < this -> getVM())
-	singleVal = floatVals[pos];
-    else
+    /* get float data */
+    Float32 *floatValues = NULL;
+    errorFlag = getFloat32Array(floatValues);
+    /* check data before returning */
+    if (errorFlag.good())
     {
-	errorFlag = EC_IllegalCall;
-	singleVal = (Float32)0.0;
+        if (floatValues == NULL)
+            errorFlag = EC_IllegalCall;
+        else if (pos >= Length / sizeof(Float32) /* do not use getVM()! */)
+            errorFlag = EC_IllegalParameter;
+        else
+            floatVal = floatValues[pos];
     }
+    /* clear value in case of error */
+    if (errorFlag.bad())
+        floatVal = 0;
     return errorFlag;
 }
 
+
+OFCondition DcmFloatingPointSingle::getFloat32Array(Float32 *&floatVals)
+{
+    floatVals = (Float32 *)getValue();
+    return errorFlag;
+}
+
+
 // ********************************
+
 
 OFCondition DcmFloatingPointSingle::getOFString(OFString &value,
                                                 const unsigned long pos,
@@ -243,37 +193,117 @@ OFCondition DcmFloatingPointSingle::getOFString(OFString &value,
     if (errorFlag.good())
     {
         /* ... and convert it to a character string */
-        char buffer[32];
-        OFStandard::ftoa(buffer, sizeof(buffer), floatVal, OFStandard::ftoa_format_f);
-
+        char buffer[64];
+        OFStandard::ftoa(buffer, sizeof(buffer), floatVal);
         /* assign result */
         value = buffer;
     }
     return errorFlag;
 }
 
+
 // ********************************
 
-OFCondition DcmFloatingPointSingle::verify(const OFBool autocorrect)
+
+OFCondition DcmFloatingPointSingle::putFloat32(const Float32 floatVal,
+                                               const unsigned long pos)
+{
+    Float32 val = floatVal;
+    errorFlag = changeValue(&val, sizeof(Float32) * pos, sizeof(Float32));
+    return errorFlag;
+}
+
+
+OFCondition DcmFloatingPointSingle::putFloat32Array(const Float32 *floatVals,
+                                                    const unsigned long numFloats)
 {
     errorFlag = EC_Normal;
-    if ( Length % (sizeof(Float32)) != 0 )
+    if (numFloats > 0)
     {
-		errorFlag = EC_CorruptedData;
-		if (autocorrect)
-					    // auf gueltige Laenge kuerzen
-			Length = Length - ( Length % (sizeof(Float32)) );
-    }
+        /* check for valid float data */
+        if (floatVals != NULL)
+            errorFlag = putValue(floatVals, sizeof(Float32) * (Uint32)numFloats);
+        else
+            errorFlag = EC_CorruptedData;
+    } else
+        putValue(NULL, 0);
+
     return errorFlag;
 }
 
 
 // ********************************
 
+
+OFCondition DcmFloatingPointSingle::putString(const char *stringVal)
+{
+    errorFlag = EC_Normal;
+    /* check input string */
+    if ((stringVal != NULL) && (strlen(stringVal) > 0))
+    {
+        const unsigned long vm = getVMFromString(stringVal);
+        if (vm > 0)
+        {
+            Float32 *field = new Float32[vm];
+            OFBool success = OFFalse;
+            const char *s = stringVal;
+            char *value;
+            /* retrieve float data from character string */
+            for (unsigned long i = 0; (i < vm) && errorFlag.good(); i++)
+            {
+                /* get first value stored in 's', set 's' to beginning of the next value */
+                value = getFirstValueFromString(s);
+                if (value != NULL)
+                {
+                    field[i] = (Float32)OFStandard::atof(value, &success);
+                    if (!success)
+                        errorFlag = EC_CorruptedData;
+                    delete[] value;
+                } else
+                    errorFlag = EC_CorruptedData;
+            }
+            /* set binary data as the element value */
+            if (errorFlag.good())
+                errorFlag = putFloat32Array(field, vm);
+            /* delete temporary buffer */
+            delete[] field;
+        } else
+            errorFlag = putValue(NULL, 0);
+    } else
+        errorFlag = putValue(NULL, 0);
+    return errorFlag;
+}
+
+
+// ********************************
+
+
+OFCondition DcmFloatingPointSingle::verify(const OFBool autocorrect)
+{
+    /* check for valid value length */
+    if (Length % (sizeof(Float32)) != 0)
+    {
+        errorFlag = EC_CorruptedData;
+        if (autocorrect)
+        {
+            /* strip to valid length */
+            Length -= (Length % (sizeof(Float32)));
+        }
+    } else
+        errorFlag = EC_Normal;
+    return errorFlag;
+}
+
+
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrfl.cc,v $
-** Revision 1.26  2002-12-04 10:41:02  meichel
+** Revision 1.27  2002-12-06 13:12:39  joergr
+** Enhanced "print()" function by re-working the implementation and replacing
+** the boolean "showFullData" parameter by a more general integer flag.
+** Made source code formatting more consistent with other modules/files.
+**
+** Revision 1.26  2002/12/04 10:41:02  meichel
 ** Changed toolkit to use OFStandard::ftoa instead of sprintf for all
 **   double to string conversions that are supposed to be locale independent
 **

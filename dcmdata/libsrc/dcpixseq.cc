@@ -19,17 +19,18 @@
  *
  *  Author:  Gerd Ehlers, Andreas Barth
  *
- *  Purpose: class DcmPixelSequence
+ *  Purpose: Implementation of class DcmPixelSequence
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-11-27 12:06:50 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2002-12-06 13:16:58 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcpixseq.cc,v $
- *  CVS/RCS Revision: $Revision: 1.29 $
+ *  CVS/RCS Revision: $Revision: 1.30 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
  *
  */
+
 
 #include "osconfig.h"    /* make sure OS specific configuration is included first */
 
@@ -59,9 +60,6 @@ DcmPixelSequence::DcmPixelSequence(const DcmTag &tag,
 }
 
 
-// ********************************
-
-
 DcmPixelSequence::DcmPixelSequence(const DcmPixelSequence &old)
   : DcmSequenceOfItems(old),
     Xfer(old.Xfer)
@@ -70,58 +68,72 @@ DcmPixelSequence::DcmPixelSequence(const DcmPixelSequence &old)
 }
 
 
-// ********************************
-
-
 DcmPixelSequence::~DcmPixelSequence()
 {
 }
 
-// ********************************
-
 
 DcmPixelSequence &DcmPixelSequence::operator=(const DcmPixelSequence &obj)
 {
-  DcmSequenceOfItems::operator=(obj);
-  Xfer = obj.Xfer;
-  return *this;
+    DcmSequenceOfItems::operator=(obj);
+    Xfer = obj.Xfer;
+    return *this;
 }
+
 
 // ********************************
 
 
-void DcmPixelSequence::print(ostream & out, const OFBool showFullData,
-                             const int level, const char *pixelFileName,
+void DcmPixelSequence::print(ostream &out,
+                             const size_t flags,
+                             const int level,
+                             const char *pixelFileName,
                              size_t *pixelCounter)
 {
-    char *info = new char[200];
-    const char *title = (char*)NULL;
-    if ( Length == DCM_UndefinedLength)
-        title = "PixelSequence";
-    else
-        title = "PixelSequence with explicit Length";
-
-    sprintf( info, "(%s #=%ld)", title, (long)card() );
-    printInfoLine(out, showFullData, level, info );
-    delete[] info;
-
-    if ( !itemList->empty() )
+    /* print pixel sequence start line */
+    if (flags & DCMTypes::PF_showTreeStructure)
     {
-        DcmObject *dO;
-        itemList->seek( ELP_first );
-        do {
-            dO = itemList->get();
-            dO->print(out, showFullData, level + 1, pixelFileName, pixelCounter);
-        } while ( itemList->seek( ELP_next ) );
+        /* empty text */
+        printInfoLine(out, flags, level);
+        /* print pixel sequence content */
+        if (!itemList->empty())
+        {
+            /* reset internal flags */
+            const size_t newFlags = flags & ~DCMTypes::PF_lastEntry;
+            /* print pixel items */
+            DcmObject *dO;
+            itemList->seek(ELP_first);
+            do {
+                dO = itemList->get();
+                dO->print(out, newFlags, level + 1, pixelFileName, pixelCounter);
+            } while (itemList->seek(ELP_next));
+        }
+    } else {
+        OFOStringStream oss;
+        oss << "(PixelSequence ";
+        if (Length != DCM_UndefinedLength)
+            oss << "with explicit length ";
+        oss << "#=" << card() << ")" << OFStringStream_ends;
+        OFSTRINGSTREAM_GETSTR(oss, tmpString)
+        printInfoLine(out, flags, level, tmpString);
+        OFSTRINGSTREAM_FREESTR(tmpString)
+        /* print pixel sequence content */
+        if (!itemList->empty())
+        {
+            DcmObject *dO;
+            itemList->seek(ELP_first);
+            do {
+                dO = itemList->get();
+                dO->print(out, flags, level + 1, pixelFileName, pixelCounter);
+            } while (itemList->seek(ELP_next));
+        }
+        /* print pixel sequence end line */
+        DcmTag delimItemTag(DCM_SequenceDelimitationItem);
+        if (Length == DCM_UndefinedLength)
+            printInfoLine(out, flags, level, "(SequenceDelimitationItem)", &delimItemTag);
+        else
+            printInfoLine(out, flags, level, "(SequenceDelimitationItem for re-enc.)", &delimItemTag);
     }
-    DcmTag delimItemTag( DCM_SequenceDelimitationItem );
-
-    if ( Length == DCM_UndefinedLength )
-        printInfoLine(out, showFullData, level, delimItemTag,
-                                 0, "(SequenceDelimitationItem)");
-    else
-        printInfoLine(out, showFullData, level, delimItemTag,
-                   0, "(SequenceDelimitationItem for re-enc.)" );
 }
 
 
@@ -136,57 +148,56 @@ Uint32 DcmPixelSequence::calcElementLength(const E_TransferSyntax xfer,
         seqlen += 8;     // for Sequence Delimitation Tag
     return seqlen;
 }
-    
+
 
 // ********************************
 
 
-OFCondition DcmPixelSequence::makeSubObject(DcmObject * & subObject,
-                                            const DcmTag & newTag,
+OFCondition DcmPixelSequence::makeSubObject(DcmObject *&subObject,
+                                            const DcmTag &newTag,
                                             const Uint32 newLength)
 {
     OFCondition l_error = EC_Normal;
-    DcmObject * newObject = NULL;
+    DcmObject *newObject = NULL;
 
-    switch ( newTag.getEVR() )
+    switch (newTag.getEVR())
     {
-    case EVR_na:
-        if ( newTag.getXTag() == DCM_Item )
-            newObject = new DcmPixelItem(newTag, newLength);
-        else if (newTag.getXTag() == DCM_SequenceDelimitationItem)
-            l_error = EC_SequEnd;
-        else if (newTag.getXTag() == DCM_ItemDelimitationItem)
-            l_error = EC_ItemEnd;
-        else
-            l_error = EC_InvalidTag;
-        break;
+        case EVR_na:
+            if (newTag.getXTag() == DCM_Item)
+                newObject = new DcmPixelItem(newTag, newLength);
+            else if (newTag.getXTag() == DCM_SequenceDelimitationItem)
+                l_error = EC_SequEnd;
+            else if (newTag.getXTag() == DCM_ItemDelimitationItem)
+                l_error = EC_ItemEnd;
+            else
+                l_error = EC_InvalidTag;
+            break;
 
-    default:
-        newObject = new DcmPixelItem(newTag, newLength);
-        l_error = EC_CorruptedData;
-        break;
+        default:
+            newObject = new DcmPixelItem(newTag, newLength);
+            l_error = EC_CorruptedData;
+            break;
     }
 
     subObject = newObject;
     return l_error;
 }
 
+
 // ********************************
 
 
-OFCondition DcmPixelSequence::insert(DcmPixelItem* item,
-                                       unsigned long where)
+OFCondition DcmPixelSequence::insert(DcmPixelItem *item,
+                                     unsigned long where)
 {
     errorFlag = EC_Normal;
-    if ( item != NULL )
+    if (item != NULL)
     {
-        itemList->seek_to( where );
-        itemList->insert( item );
-        Cdebug(3, where< itemList->card(), ("DcmPixelSequence::insert() item at position %d inserted", where ));
-        Cdebug(3, where>=itemList->card(), ("DcmPixelSequence::insert() item at last position inserted" ));
-
-    }
-    else
+        itemList->seek_to(where);
+        itemList->insert(item);
+        Cdebug(3, where< itemList->card(), ("DcmPixelSequence::insert() item at position %d inserted", where));
+        Cdebug(3, where>=itemList->card(), ("DcmPixelSequence::insert() item at last position inserted"));
+    } else
         errorFlag = EC_IllegalCall;
     return errorFlag;
 }
@@ -195,12 +206,12 @@ OFCondition DcmPixelSequence::insert(DcmPixelItem* item,
 // ********************************
 
 
-OFCondition DcmPixelSequence::getItem(DcmPixelItem * & item, 
-                                        const unsigned long num)
+OFCondition DcmPixelSequence::getItem(DcmPixelItem *&item,
+                                      const unsigned long num)
 {
     errorFlag = EC_Normal;
-    item = (DcmPixelItem*)( itemList->seek_to(num) );  // liest Item aus Liste
-    if ( item == NULL )
+    item = (DcmPixelItem*)(itemList->seek_to(num));  // read item from list
+    if (item == NULL)
         errorFlag = EC_IllegalCall;
     return errorFlag;
 }
@@ -209,15 +220,13 @@ OFCondition DcmPixelSequence::getItem(DcmPixelItem * & item,
 // ********************************
 
 
-OFCondition DcmPixelSequence::remove(DcmPixelItem * & item, 
+OFCondition DcmPixelSequence::remove(DcmPixelItem *&item,
                                      const unsigned long num)
 {
     errorFlag = EC_Normal;
-    item = (DcmPixelItem*)( itemList->seek_to(num) );  // liest Item aus Liste
-    if ( item != (DcmPixelItem*)NULL )
-    {
+    item = (DcmPixelItem*)(itemList->seek_to(num));  // read item from list
+    if (item != (DcmPixelItem*)NULL)
         itemList->remove();
-    }
     else
         errorFlag = EC_IllegalCall;
     return errorFlag;
@@ -227,28 +236,29 @@ OFCondition DcmPixelSequence::remove(DcmPixelItem * & item,
 // ********************************
 
 
-OFCondition DcmPixelSequence::remove(DcmPixelItem* item)
+OFCondition DcmPixelSequence::remove(DcmPixelItem *item)
 {
     errorFlag = EC_IllegalCall;
-    if ( !itemList->empty() && item != NULL )
+    if (!itemList->empty() && item != NULL)
     {
         DcmObject *dO;
-        itemList->seek( ELP_first );
+        itemList->seek(ELP_first);
         do {
             dO = itemList->get();
-            if ( dO == item )
+            if (dO == item)
             {
-                itemList->remove();         // entfernt Element aus Liste,
-                // aber loescht es nicht
+                itemList->remove();         // remove element from list, but do no delete it
                 errorFlag = EC_Normal;
                 break;
             }
-        } while ( itemList->seek( ELP_next ) );
+        } while (itemList->seek(ELP_next));
     }
     return errorFlag;
 }
 
+
 // ********************************
+
 
 OFCondition DcmPixelSequence::changeXfer(const E_TransferSyntax newXfer)
 {
@@ -256,102 +266,121 @@ OFCondition DcmPixelSequence::changeXfer(const E_TransferSyntax newXfer)
     {
         Xfer = newXfer;
         return EC_Normal;
-    }
-    else
+    } else
         return EC_IllegalCall;
 }
-        
+
 
 // ********************************
+
 
 OFBool DcmPixelSequence::canWriteXfer(const E_TransferSyntax newXfer,
                                       const E_TransferSyntax oldXfer)
 {
     DcmXfer newXferSyn(newXfer);
 
-    return newXferSyn.isEncapsulated() && 
-        newXfer == oldXfer && oldXfer == Xfer;
+    return newXferSyn.isEncapsulated() && newXfer == oldXfer && oldXfer == Xfer;
 }
+
 
 // ********************************
 
-OFCondition DcmPixelSequence::read(DcmInputStream & inStream,
+
+OFCondition DcmPixelSequence::read(DcmInputStream &inStream,
                                    const E_TransferSyntax ixfer,
                                    const E_GrpLenEncoding glenc,
                                    const Uint32 maxReadLength)
 {
     OFCondition l_error = changeXfer(ixfer);
-    if (l_error == EC_Normal)
+    if (l_error.good())
         return DcmSequenceOfItems::read(inStream, ixfer, glenc, maxReadLength);
     else
         return l_error;
 }
 
+
 // ********************************
 
-OFCondition DcmPixelSequence::write(DcmOutputStream & outStream,
+
+OFCondition DcmPixelSequence::write(DcmOutputStream &outStream,
                                       const E_TransferSyntax oxfer,
                                       const E_EncodingType /*enctype*/)
 {
     OFCondition l_error = changeXfer(oxfer);
-    if (l_error == EC_Normal) return DcmSequenceOfItems::write(outStream, oxfer, EET_UndefinedLength);
+    if (l_error.good())
+        return DcmSequenceOfItems::write(outStream, oxfer, EET_UndefinedLength);
     else return l_error;
 }
+
 
 // ********************************
 
-OFCondition DcmPixelSequence::writeSignatureFormat(DcmOutputStream & outStream,
-                                      const E_TransferSyntax oxfer,
-                                      const E_EncodingType /*enctype*/)
+
+OFCondition DcmPixelSequence::writeSignatureFormat(DcmOutputStream &outStream,
+                                                   const E_TransferSyntax oxfer,
+                                                   const E_EncodingType /*enctype*/)
 {
     OFCondition l_error = changeXfer(oxfer);
-    if (l_error == EC_Normal) return DcmSequenceOfItems::writeSignatureFormat(outStream, oxfer, EET_UndefinedLength);
+    if (l_error.good())
+        return DcmSequenceOfItems::writeSignatureFormat(outStream, oxfer, EET_UndefinedLength);
     else return l_error;
 }
 
 
-OFCondition DcmPixelSequence::storeCompressedFrame(
-        DcmOffsetList& offsetList, 
-        Uint8 *compressedData, 
-        Uint32 compressedLen,
-        Uint32 fragmentSize)
+OFCondition DcmPixelSequence::storeCompressedFrame(DcmOffsetList &offsetList,
+                                                   Uint8 *compressedData,
+                                                   Uint32 compressedLen,
+                                                   Uint32 fragmentSize)
 {
-  if (compressedData == NULL) return EC_IllegalCall;
+    if (compressedData == NULL)
+        return EC_IllegalCall;
 
-  OFCondition result = EC_Normal;
-  if (fragmentSize >= 0x400000) fragmentSize = 0; // prevent overflow
-  else fragmentSize <<= 10; // unit is kbytes
-  if (fragmentSize == 0) fragmentSize = compressedLen;
+    OFCondition result = EC_Normal;
+    if (fragmentSize >= 0x400000)
+        fragmentSize = 0;    // prevent overflow
+    else
+        fragmentSize <<= 10; // unit is kbytes
+    if (fragmentSize == 0)
+        fragmentSize = compressedLen;
 
-  Uint32 offset = 0;
-  Uint32 currentSize = 0;
-  Uint32 numFragments = 0;
-  DcmPixelItem *fragment = NULL;
+    Uint32 offset = 0;
+    Uint32 currentSize = 0;
+    Uint32 numFragments = 0;
+    DcmPixelItem *fragment = NULL;
 
-  while ((offset < compressedLen) && (result.good()))
-  {
-    fragment = new DcmPixelItem(DcmTag(DCM_Item,EVR_OB));
-    if (fragment == NULL) result = EC_MemoryExhausted;
-    else 
+    while ((offset < compressedLen) && (result.good()))
     {
-      insert(fragment);
-      numFragments++;
-      currentSize = fragmentSize;
-      if (offset + currentSize > compressedLen) currentSize = compressedLen - offset;
-      result = fragment->putUint8Array(compressedData+offset, currentSize);
-      if (result.good()) offset += currentSize;
+        fragment = new DcmPixelItem(DcmTag(DCM_Item,EVR_OB));
+        if (fragment == NULL)
+            result = EC_MemoryExhausted;
+        else
+        {
+            insert(fragment);
+            numFragments++;
+            currentSize = fragmentSize;
+            if (offset + currentSize > compressedLen)
+                currentSize = compressedLen - offset;
+            result = fragment->putUint8Array(compressedData+offset, currentSize);
+            if (result.good())
+                offset += currentSize;
+        }
     }
-  }
 
-  currentSize = offset + (numFragments << 3); // 8 bytes extra for each item header
-  offsetList.push_back(currentSize);
-  return result;
-}        
+    currentSize = offset + (numFragments << 3); // 8 bytes extra for each item header
+    offsetList.push_back(currentSize);
+    return result;
+}
+
 
 /*
 ** CVS/RCS Log:
 ** $Log: dcpixseq.cc,v $
-** Revision 1.29  2002-11-27 12:06:50  meichel
+** Revision 1.30  2002-12-06 13:16:58  joergr
+** Enhanced "print()" function by re-working the implementation and replacing
+** the boolean "showFullData" parameter by a more general integer flag.
+** Made source code formatting more consistent with other modules/files.
+**
+** Revision 1.29  2002/11/27 12:06:50  meichel
 ** Adapted module dcmdata to use of new header file ofstdinc.h
 **
 ** Revision 1.28  2002/08/27 16:55:55  meichel

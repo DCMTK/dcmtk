@@ -19,12 +19,12 @@
  *
  *  Author:  Gerd Ehlers, Andreas Barth
  *
- *  Purpose: class DcmApplicationEntity
+ *  Purpose: Implementation of class DcmApplicationEntity
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-04-25 10:26:53 $
+ *  Update Date:      $Date: 2002-12-06 13:20:48 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcvrae.cc,v $
- *  CVS/RCS Revision: $Revision: 1.12 $
+ *  CVS/RCS Revision: $Revision: 1.13 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -33,30 +33,23 @@
 
 #include "osconfig.h"    /* make sure OS specific configuration is included first */
 #include "dcvrae.h"
-#include "dcdebug.h"
-
 
 
 // ********************************
 
 
-DcmApplicationEntity::DcmApplicationEntity(const DcmTag &tag, const Uint32 len)
-: DcmByteString(tag, len)
+DcmApplicationEntity::DcmApplicationEntity(const DcmTag &tag,
+                                           const Uint32 len)
+  : DcmByteString(tag, len)
 {
     maxLength = 16;
 }
 
 
-// ********************************
-
-
-DcmApplicationEntity::DcmApplicationEntity( const DcmApplicationEntity &newAE )
-: DcmByteString(newAE)
+DcmApplicationEntity::DcmApplicationEntity(const DcmApplicationEntity &old)
+  : DcmByteString(old)
 {
 }
-
-
-// ********************************
 
 
 DcmApplicationEntity::~DcmApplicationEntity()
@@ -64,17 +57,34 @@ DcmApplicationEntity::~DcmApplicationEntity()
 }
 
 
+DcmApplicationEntity &DcmApplicationEntity::operator=(const DcmApplicationEntity &obj)
+{
+    DcmByteString::operator=(obj);
+    return *this;
+}
+
+
 // ********************************
 
-OFCondition
-DcmApplicationEntity::getOFString(
-    OFString & str,
-    const unsigned long pos,
-    OFBool normalize)
+
+DcmEVR DcmApplicationEntity::ident() const
 {
-    OFCondition l_error = DcmByteString::getOFString(str, pos, normalize);
-    if (l_error == EC_Normal && normalize)
-	normalizeString(str, !MULTIPART, DELETE_LEADING, DELETE_TRAILING);
+    return EVR_AE;
+}
+
+
+// ********************************
+
+
+OFCondition DcmApplicationEntity::getOFString(OFString &stringVal,
+                                              const unsigned long pos,
+                                              OFBool normalize)
+{
+    /* call inherited method */
+    OFCondition l_error = DcmByteString::getOFString(stringVal, pos, normalize);
+    /* normalize string if required */
+    if (l_error.good() && normalize)
+        normalizeString(stringVal, !MULTIPART, DELETE_LEADING, DELETE_TRAILING);
     return l_error;
 }
 
@@ -82,7 +92,12 @@ DcmApplicationEntity::getOFString(
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrae.cc,v $
-** Revision 1.12  2002-04-25 10:26:53  joergr
+** Revision 1.13  2002-12-06 13:20:48  joergr
+** Enhanced "print()" function by re-working the implementation and replacing
+** the boolean "showFullData" parameter by a more general integer flag.
+** Made source code formatting more consistent with other modules/files.
+**
+** Revision 1.12  2002/04/25 10:26:53  joergr
 ** Removed getOFStringArray() implementation.
 **
 ** Revision 1.11  2001/09/25 17:19:55  meichel

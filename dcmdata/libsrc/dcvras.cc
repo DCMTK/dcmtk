@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2001, OFFIS
+ *  Copyright (C) 1994-2002, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -19,57 +19,69 @@
  *
  *  Author:  Gerd Ehlers, Andreas Barth
  *
- *  Purpose: class DcmAgeString
+ *  Purpose: Implementation of class DcmAgeString
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-06-01 15:49:14 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2002-12-06 13:20:48 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcvras.cc,v $
- *  CVS/RCS Revision: $Revision: 1.8 $
+ *  CVS/RCS Revision: $Revision: 1.9 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
  *
  */
 
+
 #include "osconfig.h"    /* make sure OS specific configuration is included first */
 #include "dcvras.h"
-#include "dcdebug.h"
-
 
 
 // ********************************
 
 
-DcmAgeString::DcmAgeString(const DcmTag &tag, const Uint32 len)
-: DcmByteString(tag, len)
+DcmAgeString::DcmAgeString(const DcmTag &tag,
+                           const Uint32 len)
+  : DcmByteString(tag, len)
 {
     maxLength = 4;
 }
 
 
-// ********************************
-
-
-DcmAgeString::DcmAgeString( const DcmAgeString &newAS )
-: DcmByteString(newAS)
+DcmAgeString::DcmAgeString(const DcmAgeString &old)
+  : DcmByteString(old)
 {
 }
-
-
-// ********************************
 
 
 DcmAgeString::~DcmAgeString()
 {
 }
 
+DcmAgeString &DcmAgeString::operator=(const DcmAgeString &obj)
+{
+    DcmByteString::operator=(obj);
+    return *this;
+}
+
 
 // ********************************
+
+
+DcmEVR DcmAgeString::ident() const
+{
+    return EVR_AS;
+}
+
 
 /*
 ** CVS/RCS Log:
 ** $Log: dcvras.cc,v $
-** Revision 1.8  2001-06-01 15:49:14  meichel
+** Revision 1.9  2002-12-06 13:20:48  joergr
+** Enhanced "print()" function by re-working the implementation and replacing
+** the boolean "showFullData" parameter by a more general integer flag.
+** Made source code formatting more consistent with other modules/files.
+**
+** Revision 1.8  2001/06/01 15:49:14  meichel
 ** Updated copyright header
 **
 ** Revision 1.7  2000/03/08 16:26:45  meichel

@@ -19,12 +19,12 @@
  *
  *  Author:  Gerd Ehlers, Andreas Barth, Joerg Riesmeier
  *
- *  Purpose: class DcmDateTime
+ *  Purpose: Implementation of class DcmDateTime
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-11-27 12:06:56 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2002-12-06 13:20:50 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcvrdt.cc,v $
- *  CVS/RCS Revision: $Revision: 1.22 $
+ *  CVS/RCS Revision: $Revision: 1.23 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -35,7 +35,6 @@
 #include "dcvrdt.h"
 #include "dcvrda.h"
 #include "dcvrtm.h"
-#include "dcdebug.h"
 #include "ofstring.h"
 #include "ofstd.h"
 
@@ -46,23 +45,17 @@
 // ********************************
 
 
-DcmDateTime::DcmDateTime(const DcmTag &tag, const Uint32 len)
-: DcmByteString(tag, len)
+DcmDateTime::DcmDateTime(const DcmTag &tag,
+                         const Uint32 len)
+  : DcmByteString(tag, len)
 {
     maxLength = 26;
 }
 
-
-// ********************************
-
-
-DcmDateTime::DcmDateTime( const DcmDateTime &newDT )
-: DcmByteString(newDT)
+DcmDateTime::DcmDateTime(const DcmDateTime &old)
+  : DcmByteString(old)
 {
 }
-
-
-// ********************************
 
 
 DcmDateTime::~DcmDateTime()
@@ -70,18 +63,32 @@ DcmDateTime::~DcmDateTime()
 }
 
 
+DcmDateTime &DcmDateTime::operator=(const DcmDateTime &obj)
+{
+    DcmByteString::operator=(obj);
+    return *this;
+}
+
+
 // ********************************
 
 
-OFCondition
-DcmDateTime::getOFString(
-    OFString & str,
-    const unsigned long pos,
-    OFBool normalize)
+DcmEVR DcmDateTime::ident() const
 {
-    OFCondition l_error = DcmByteString::getOFString(str, pos, normalize);
+    return EVR_DT;
+}
+
+
+// ********************************
+
+
+OFCondition DcmDateTime::getOFString(OFString &stringVal,
+                                     const unsigned long pos,
+                                     OFBool normalize)
+{
+    OFCondition l_error = DcmByteString::getOFString(stringVal, pos, normalize);
     if (l_error.good() && normalize)
-        normalizeString(str, !MULTIPART, !DELETE_LEADING, DELETE_TRAILING);
+        normalizeString(stringVal, !MULTIPART, !DELETE_LEADING, DELETE_TRAILING);
     return l_error;
 }
 
@@ -89,10 +96,8 @@ DcmDateTime::getOFString(
 // ********************************
 
 
-OFCondition
-DcmDateTime::getOFDateTime(
-    OFDateTime &dateTimeValue,
-    const unsigned long pos)
+OFCondition DcmDateTime::getOFDateTime(OFDateTime &dateTimeValue,
+                                       const unsigned long pos)
 {
     OFString dicomDateTime;
     /* convert the current element value to OFDateTime format */
@@ -105,14 +110,12 @@ DcmDateTime::getOFDateTime(
 }
 
 
-OFCondition
-DcmDateTime::getISOFormattedDateTime(
-    OFString &formattedDateTime,
-    const unsigned long pos,
-    const OFBool seconds,
-    const OFBool fraction,
-    const OFBool timeZone,
-    const OFBool createMissingPart)
+OFCondition DcmDateTime::getISOFormattedDateTime(OFString &formattedDateTime,
+                                                 const unsigned long pos,
+                                                 const OFBool seconds,
+                                                 const OFBool fraction,
+                                                 const OFBool timeZone,
+                                                 const OFBool createMissingPart)
 {
     OFString dicomDateTime;
     OFCondition l_error = getOFString(dicomDateTime, pos);
@@ -124,11 +127,9 @@ DcmDateTime::getISOFormattedDateTime(
 }
 
 
-OFCondition
-DcmDateTime::setCurrentDateTime(
-    const OFBool seconds,
-    const OFBool fraction,
-    const OFBool timeZone)
+OFCondition DcmDateTime::setCurrentDateTime(const OFBool seconds,
+                                            const OFBool fraction,
+                                            const OFBool timeZone)
 {
     OFString dicomDateTime;
     OFCondition l_error = getCurrentDateTime(dicomDateTime, seconds, fraction, timeZone);
@@ -138,8 +139,7 @@ DcmDateTime::setCurrentDateTime(
 }
 
 
-OFCondition
-DcmDateTime::setOFDateTime(const OFDateTime &dateTimeValue)
+OFCondition DcmDateTime::setOFDateTime(const OFDateTime &dateTimeValue)
 {
     OFString dicomDateTime;
     /* convert OFDateTime value to DICOM DT format and set the element value */
@@ -153,12 +153,10 @@ DcmDateTime::setOFDateTime(const OFDateTime &dateTimeValue)
 // ********************************
 
 
-OFCondition
-DcmDateTime::getCurrentDateTime(
-    OFString &dicomDateTime,
-    const OFBool seconds,
-    const OFBool fraction,
-    const OFBool timeZone)
+OFCondition DcmDateTime::getCurrentDateTime(OFString &dicomDateTime,
+                                            const OFBool seconds,
+                                            const OFBool fraction,
+                                            const OFBool timeZone)
 {
     OFCondition l_error = EC_IllegalCall;
     OFDateTime dateTimeValue;
@@ -171,7 +169,7 @@ DcmDateTime::getCurrentDateTime(
     }
     /* set default date/time if an error occurred */
     if (l_error.bad())
-    {   
+    {
         /* format: YYYYMMDDHHMM */
         dicomDateTime = "190001010000";
         if (seconds)
@@ -194,13 +192,11 @@ DcmDateTime::getCurrentDateTime(
 }
 
 
-OFCondition
-DcmDateTime::getDicomDateTimeFromOFDateTime(
-    const OFDateTime &dateTimeValue,
-    OFString &dicomDateTime,
-    const OFBool seconds,
-    const OFBool fraction,
-    const OFBool timeZone)
+OFCondition DcmDateTime::getDicomDateTimeFromOFDateTime(const OFDateTime &dateTimeValue,
+                                                        OFString &dicomDateTime,
+                                                        const OFBool seconds,
+                                                        const OFBool fraction,
+                                                        const OFBool timeZone)
 {
     OFCondition l_error = EC_IllegalParameter;
     /* convert OFDateTime value to DICOM DT format */
@@ -210,10 +206,8 @@ DcmDateTime::getDicomDateTimeFromOFDateTime(
 }
 
 
-OFCondition
-DcmDateTime::getOFDateTimeFromString(
-    const OFString &dicomDateTime,
-    OFDateTime &dateTimeValue)
+OFCondition DcmDateTime::getOFDateTimeFromString(const OFString &dicomDateTime,
+                                                 OFDateTime &dateTimeValue)
 {
     OFCondition l_error = EC_IllegalParameter;
     /* clear result variable */
@@ -245,7 +239,6 @@ DcmDateTime::getOFDateTimeFromString(
             	string.erase(0, 12);
             	second = OFStandard::atof(string.c_str());
             }
-
             if (dateTimeValue.setDateTime(year, month, day, hour, minute, second, timeZone))
                 l_error = EC_Normal;
         }
@@ -254,14 +247,12 @@ DcmDateTime::getOFDateTimeFromString(
 }
 
 
-OFCondition
-DcmDateTime::getISOFormattedDateTimeFromString(
-    const OFString &dicomDateTime,
-    OFString &formattedDateTime,
-    const OFBool seconds,
-    const OFBool fraction,
-    const OFBool timeZone,
-    const OFBool createMissingPart)
+OFCondition DcmDateTime::getISOFormattedDateTimeFromString(const OFString &dicomDateTime,
+                                                           OFString &formattedDateTime,
+                                                           const OFBool seconds,
+                                                           const OFBool fraction,
+                                                           const OFBool timeZone,
+                                                           const OFBool createMissingPart)
 {
     OFCondition l_error = EC_IllegalParameter;
     const size_t length = dicomDateTime.length();
@@ -310,7 +301,12 @@ DcmDateTime::getISOFormattedDateTimeFromString(
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrdt.cc,v $
-** Revision 1.22  2002-11-27 12:06:56  meichel
+** Revision 1.23  2002-12-06 13:20:50  joergr
+** Enhanced "print()" function by re-working the implementation and replacing
+** the boolean "showFullData" parameter by a more general integer flag.
+** Made source code formatting more consistent with other modules/files.
+**
+** Revision 1.22  2002/11/27 12:06:56  meichel
 ** Adapted module dcmdata to use of new header file ofstdinc.h
 **
 ** Revision 1.21  2002/08/27 16:55:59  meichel

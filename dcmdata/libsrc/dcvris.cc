@@ -19,12 +19,12 @@
  *
  *  Author:  Gerd Ehlers, Andreas Barth
  *
- *  Purpose: class DcmIntegerString
+ *  Purpose: Implementation of class DcmIntegerString
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-11-27 12:06:57 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2002-12-06 13:20:50 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcvris.cc,v $
- *  CVS/RCS Revision: $Revision: 1.17 $
+ *  CVS/RCS Revision: $Revision: 1.18 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -33,7 +33,6 @@
 
 #include "osconfig.h"    /* make sure OS specific configuration is included first */
 #include "dcvris.h"
-#include "dcdebug.h"
 #include "ofstring.h"
 
 #define INCLUDE_CSTDIO
@@ -44,23 +43,17 @@
 
 
 DcmIntegerString::DcmIntegerString(const DcmTag &tag,
-				   const Uint32 len)
-: DcmByteString(tag, len)
+                                   const Uint32 len)
+  : DcmByteString(tag, len)
 {
     maxLength = 12;
 }
 
 
-// ********************************
-
-
-DcmIntegerString::DcmIntegerString( const DcmIntegerString& old )
-: DcmByteString(old)
+DcmIntegerString::DcmIntegerString(const DcmIntegerString &old)
+  : DcmByteString(old)
 {
 }
-
-
-// ********************************
 
 
 DcmIntegerString::~DcmIntegerString()
@@ -68,49 +61,70 @@ DcmIntegerString::~DcmIntegerString()
 }
 
 
+DcmIntegerString &DcmIntegerString::operator=(const DcmIntegerString &obj)
+{
+    DcmByteString::operator=(obj);
+    return *this;
+}
+
+
 // ********************************
 
-OFCondition 
-DcmIntegerString::getSint32(
-    Sint32 &val,
-    const unsigned long pos)
+
+DcmEVR DcmIntegerString::ident() const
 {
+    return EVR_IS;
+}
+
+
+// ********************************
+
+
+OFCondition DcmIntegerString::getSint32(Sint32 &sintVal,
+                                        const unsigned long pos)
+{
+    /* get integer string value */
     OFString str;
     OFCondition l_error = getOFString(str, pos, OFTrue);
-    if (l_error == EC_Normal)
+    if (l_error.good())
     {
+        /* convert string to integer value */
 #if SIZEOF_LONG == 8
-	if (sscanf(str.c_str(), "%d", &val) != 1)
+        if (sscanf(str.c_str(), "%d", &sintVal) != 1)
 #else
-	if (sscanf(str.c_str(), "%ld", &val) != 1)
+        if (sscanf(str.c_str(), "%ld", &sintVal) != 1)
 #endif
-	    l_error = EC_CorruptedData;
+            l_error = EC_CorruptedData;
     }
     return l_error;
 }
 
+
 // ********************************
 
-OFCondition
-DcmIntegerString::getOFString(
-    OFString & str,
-    const unsigned long pos,
-    OFBool normalize)
+
+OFCondition DcmIntegerString::getOFString(OFString &stringVal,
+                                          const unsigned long pos,
+                                          OFBool normalize)
 {
-    OFCondition l_error = DcmByteString::getOFString(str, pos, normalize);
-    if (l_error == EC_Normal && normalize)
-	normalizeString(str, !MULTIPART, DELETE_LEADING, DELETE_TRAILING);
+    /* call inherited method */
+    OFCondition l_error = DcmByteString::getOFString(stringVal, pos, normalize);
+    /* normalize string if required */
+    if (l_error.good() && normalize)
+        normalizeString(stringVal, !MULTIPART, DELETE_LEADING, DELETE_TRAILING);
     return l_error;
 }
-
-
-// ********************************
 
 
 /*
 ** CVS/RCS Log:
 ** $Log: dcvris.cc,v $
-** Revision 1.17  2002-11-27 12:06:57  meichel
+** Revision 1.18  2002-12-06 13:20:50  joergr
+** Enhanced "print()" function by re-working the implementation and replacing
+** the boolean "showFullData" parameter by a more general integer flag.
+** Made source code formatting more consistent with other modules/files.
+**
+** Revision 1.17  2002/11/27 12:06:57  meichel
 ** Adapted module dcmdata to use of new header file ofstdinc.h
 **
 ** Revision 1.16  2002/08/27 16:55:59  meichel

@@ -19,61 +19,70 @@
  *
  *  Author:  Gerd Ehlers, Andreas Barth
  *
- *  Purpose: class DcmPersonName
+ *  Purpose: Implementation of class DcmPersonName
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-04-25 10:32:45 $
+ *  Update Date:      $Date: 2002-12-06 13:20:51 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcvrpn.cc,v $
- *  CVS/RCS Revision: $Revision: 1.15 $
+ *  CVS/RCS Revision: $Revision: 1.16 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
  *
  */
 
+
 #include "dcvrpn.h"
-#include "dcdebug.h"
 
 
 // ********************************
 
 
-DcmPersonName::DcmPersonName(const DcmTag &tag, const Uint32 len)
-: DcmCharString(tag, len)
+DcmPersonName::DcmPersonName(const DcmTag &tag,
+                             const Uint32 len)
+  : DcmCharString(tag, len)
 {
     maxLength = 64;     // not correct: max length of PN is 3*64+2 = 194 characters (not bytes!)
 }
 
 
-// ********************************
-
-
 DcmPersonName::DcmPersonName(const DcmPersonName& old)
-: DcmCharString(old)
+  : DcmCharString(old)
 {
+}
+
+
+DcmPersonName::~DcmPersonName()
+{
+}
+
+
+DcmPersonName &DcmPersonName::operator=(const DcmPersonName &obj)
+{
+    DcmCharString::operator=(obj);
+    return *this;
 }
 
 
 // ********************************
 
 
-DcmPersonName::~DcmPersonName(void)
+DcmEVR DcmPersonName::ident() const
 {
+    return EVR_PN;
 }
 
 
 // ********************************
 
 
-OFCondition
-DcmPersonName::getOFString(
-    OFString & str,
-    const unsigned long pos,
-    OFBool normalize)
+OFCondition DcmPersonName::getOFString(OFString &stringVal,
+                                       const unsigned long pos,
+                                       OFBool normalize)
 {
-    OFCondition l_error = DcmCharString::getOFString(str, pos, normalize);
+    OFCondition l_error = DcmCharString::getOFString(stringVal, pos, normalize);
     if (l_error.good() && normalize)
-	    normalizeString(str, !MULTIPART, !DELETE_LEADING, DELETE_TRAILING);
+        normalizeString(stringVal, !MULTIPART, !DELETE_LEADING, DELETE_TRAILING);
     return l_error;
 }
 
@@ -81,15 +90,13 @@ DcmPersonName::getOFString(
 // ********************************
 
 
-OFCondition
-DcmPersonName::getNameComponents(
-    OFString &lastName,
-    OFString &firstName,
-    OFString &middleName,
-    OFString &namePrefix,
-    OFString &nameSuffix,
-    const unsigned long pos,
-    const unsigned int componentGroup)
+OFCondition DcmPersonName::getNameComponents(OFString &lastName,
+                                             OFString &firstName,
+                                             OFString &middleName,
+                                             OFString &namePrefix,
+                                             OFString &nameSuffix,
+                                             const unsigned long pos,
+                                             const unsigned int componentGroup)
 {
     OFString dicomName;
     OFCondition l_error = getOFString(dicomName, pos);
@@ -107,15 +114,13 @@ DcmPersonName::getNameComponents(
 }
 
 
-OFCondition
-DcmPersonName::getNameComponentsFromString(
-    const OFString &dicomName,
-    OFString &lastName,
-    OFString &firstName,
-    OFString &middleName,
-    OFString &namePrefix,
-    OFString &nameSuffix,
-    const unsigned int componentGroup)
+OFCondition DcmPersonName::getNameComponentsFromString(const OFString &dicomName,
+                                                       OFString &lastName,
+                                                       OFString &firstName,
+                                                       OFString &middleName,
+                                                       OFString &namePrefix,
+                                                       OFString &nameSuffix,
+                                                       const unsigned int componentGroup)
 {
     OFCondition l_error = EC_Normal;
     /* initialize all name components */
@@ -193,11 +198,9 @@ DcmPersonName::getNameComponentsFromString(
 // ********************************
 
 
-OFCondition
-DcmPersonName::getFormattedName(
-    OFString &formattedName,
-    const unsigned long pos,
-    const unsigned int componentGroup)
+OFCondition DcmPersonName::getFormattedName(OFString &formattedName,
+                                            const unsigned long pos,
+                                            const unsigned int componentGroup)
 {
     OFString dicomName;
     OFCondition l_error = getOFString(dicomName, pos);
@@ -209,11 +212,9 @@ DcmPersonName::getFormattedName(
 }
 
 
-OFCondition
-DcmPersonName::getFormattedNameFromString(
-    const OFString &dicomName,
-    OFString &formattedName,
-    const unsigned int componentGroup)
+OFCondition DcmPersonName::getFormattedNameFromString(const OFString &dicomName,
+                                                      OFString &formattedName,
+                                                      const unsigned int componentGroup)
 {
     OFString lastName, firstName, middleName, namePrefix, nameSuffix;
     OFCondition l_error = getNameComponentsFromString(dicomName, lastName, firstName, middleName, namePrefix, nameSuffix, componentGroup);
@@ -225,14 +226,12 @@ DcmPersonName::getFormattedNameFromString(
 }
 
 
-OFCondition
-DcmPersonName::getFormattedNameFromComponents(
-    const OFString &lastName,
-    const OFString &firstName,
-    const OFString &middleName,
-    const OFString &namePrefix,
-    const OFString &nameSuffix,
-    OFString &formattedName)
+OFCondition DcmPersonName::getFormattedNameFromComponents(const OFString &lastName,
+                                                          const OFString &firstName,
+                                                          const OFString &middleName,
+                                                          const OFString &namePrefix,
+                                                          const OFString &nameSuffix,
+                                                          OFString &formattedName)
 {
     formattedName.clear();
     /* concatenate name components */
@@ -269,7 +268,12 @@ DcmPersonName::getFormattedNameFromComponents(
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrpn.cc,v $
-** Revision 1.15  2002-04-25 10:32:45  joergr
+** Revision 1.16  2002-12-06 13:20:51  joergr
+** Enhanced "print()" function by re-working the implementation and replacing
+** the boolean "showFullData" parameter by a more general integer flag.
+** Made source code formatting more consistent with other modules/files.
+**
+** Revision 1.15  2002/04/25 10:32:45  joergr
 ** Removed getOFStringArray() implementation.
 **
 ** Revision 1.14  2002/04/11 12:28:56  joergr

@@ -19,22 +19,22 @@
  *
  *  Author:  Gerd Ehlers, Andreas Barth
  *
- *  Purpose: class DcmUnsignedShort
+ *  Purpose: Implementation of class DcmUnsignedShort
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-11-27 12:07:00 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2002-12-06 13:12:37 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcvrus.cc,v $
- *  CVS/RCS Revision: $Revision: 1.22 $
+ *  CVS/RCS Revision: $Revision: 1.23 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
  *
  */
 
+
 #include "osconfig.h"    /* make sure OS specific configuration is included first */
 #include "ofstream.h"
 #include "dcvrus.h"
-#include "dcdebug.h"
 #include "dcvm.h"
 
 #define INCLUDE_CSTDIO
@@ -46,73 +46,37 @@
 
 
 DcmUnsignedShort::DcmUnsignedShort(const DcmTag &tag, const Uint32 len)
-    : DcmElement(tag, len)
+  : DcmElement(tag, len)
 {
+}
+
+
+DcmUnsignedShort::DcmUnsignedShort(const DcmUnsignedShort &old)
+  : DcmElement(old)
+{
+}
+
+
+DcmUnsignedShort::~DcmUnsignedShort()
+{
+}
+
+
+DcmUnsignedShort &DcmUnsignedShort::operator=(const DcmUnsignedShort &obj)
+{
+    DcmElement::operator=(obj);
+    return *this;
 }
 
 
 // ********************************
 
 
-DcmUnsignedShort::DcmUnsignedShort(const DcmUnsignedShort& old)
-    : DcmElement( old )
+DcmEVR DcmUnsignedShort::ident() const
 {
+    return EVR_US;
 }
 
-
-// ********************************
-
-
-DcmUnsignedShort::~DcmUnsignedShort(void)
-{
-}
-
-
-// ********************************
-
-
-void DcmUnsignedShort::print(ostream & out, const OFBool showFullData,
-                             const int level, const char * /*pixelFileName*/,
-                             size_t * /*pixelCounter*/)
-{
-    if (this -> valueLoaded())
-    {
-        Uint16 * uintVals;
-        errorFlag = this -> getUint16Array(uintVals);
-
-        if (!uintVals)
-            printInfoLine(out, showFullData, level, "(no value available)" );
-        else
-        {
-            const Uint32 valueLength = Length/sizeof(Uint16);
-            const Uint32 maxCount =
-                !showFullData && DCM_OptPrintLineLength/8 < valueLength ?
-                DCM_OptPrintLineLength/8 : valueLength;
-            char *ch_words;
-            char *tmp = ch_words = new char[maxCount*8+6];
-
-            for (unsigned long i=0; i<maxCount; i++ )
-            {
-                sprintf( tmp, "%hu\\", *uintVals );
-                tmp += strlen(tmp);
-                uintVals++;
-            }
-            if (maxCount > 0)
-                tmp--;
-            *tmp = '\0';
-
-            if (maxCount < valueLength)
-                strcat(tmp, "...");
-
-            printInfoLine(out, showFullData, level, ch_words);
-            delete[] ch_words;
-        }
-    }
-    else
-        printInfoLine(out, showFullData, level, "(not loaded)" );
-}
-
-// ********************************
 
 unsigned long DcmUnsignedShort::getVM()
 {
@@ -123,109 +87,97 @@ unsigned long DcmUnsignedShort::getVM()
 // ********************************
 
 
-OFCondition DcmUnsignedShort::putUint16Array(const Uint16 * uintVal,
-                                             const unsigned long numUints)
+void DcmUnsignedShort::print(ostream &out,
+                             const size_t flags,
+                             const int level,
+                             const char * /*pixelFileName*/,
+                             size_t * /*pixelCounter*/)
 {
-    errorFlag = EC_Normal;
-    if (numUints)
+    if (valueLoaded())
     {
-        if (uintVal)
-            errorFlag = this -> putValue(uintVal, 
-                                         sizeof(Uint16)*Uint32(numUints));
-        else
-            errorFlag = EC_CorruptedData;
-    }
-    else
-        errorFlag = this -> putValue(NULL, 0);
-
-    return errorFlag;
-}
-
-
-// ********************************
-
-
-OFCondition DcmUnsignedShort::putUint16(const Uint16 uintVal,
-                                        const unsigned long position)
-{
-    Uint16 val = uintVal;
-
-    errorFlag = this -> changeValue(&val, sizeof(Uint16)*position,
-                                    sizeof(Uint16));
-    return errorFlag;
-}
-
-
-// ********************************
-
-
-OFCondition DcmUnsignedShort::putString(const char * val)
-{
-    errorFlag = EC_Normal;
-    if (val && val[0] != '\0')
-    {
-        unsigned long vm = getVMFromString(val);
-        if (vm)
+        /* get unsigned integer data */
+        Uint16 *uintVals;
+        errorFlag = getUint16Array(uintVals);
+        if (uintVals != NULL)
         {
-            Uint16 * field = new Uint16[vm];
-            const char * s = val;
-            
-            for(unsigned long i = 0; i < vm && errorFlag == EC_Normal; i++)
+            const unsigned long count = getVM();
+            const unsigned long maxLength = (flags & DCMTypes::PF_shortenLongTagValues) ?
+                DCM_OptPrintLineLength : (unsigned long)-1 /*unlimited*/;
+            unsigned long printedLength = 0;
+            unsigned long newLength = 0;
+            char buffer[32];
+            /* print line start with tag and VR */
+            printInfoLineStart(out, flags, level);
+            /* print multiple values */
+            for (unsigned int i = 0; i < count; i++, uintVals++)
             {
-                char * value = getFirstValueFromString(s);
-                if (!value || sscanf(value, "%hu", &field[i]) != 1)
-                    errorFlag = EC_CorruptedData;
-                else if (value)
-                    delete[] value;
+                /* check whether first value is printed (omit delimiter) */
+                if (i == 0)
+                    sprintf(buffer, "%hu", *uintVals);
+                else
+                    sprintf(buffer, "\\%hu", *uintVals);
+                /* check whether current value sticks to the length limit */
+                newLength = printedLength + strlen(buffer);
+                if ((newLength <= maxLength) && ((i + 1 == count) || (newLength + 3 <= maxLength)))
+                {
+                    out << buffer;
+                    printedLength = newLength;
+                } else {
+                    /* check whether output has been truncated */
+                    if (i + 1 < count)
+                    {
+                        out << "...";
+                        printedLength += 3;
+                    }
+                    break;
+                }
             }
-        
-            if (errorFlag == EC_Normal)
-                errorFlag = this -> putUint16Array(field, vm);
-            delete[] field;
-        }
-        else
-            errorFlag = this -> putValue(NULL, 0);
-    }
-    else
-        errorFlag = this -> putValue(NULL, 0);
-
-    return errorFlag;
+            /* print line end with length, VM and tag name */
+            printInfoLineEnd(out, flags, printedLength);
+        } else
+            printInfoLine(out, flags, level, "(no value available)");
+    } else
+        printInfoLine(out, flags, level, "(not loaded)");
 }
 
 
 // ********************************
 
 
-OFCondition DcmUnsignedShort::getUint16(Uint16 & uintVal, 
+OFCondition DcmUnsignedShort::getUint16(Uint16 &uintVal,
                                         const unsigned long pos)
 {
-    Uint16 * uintVals = NULL;
-    errorFlag = this -> getUint16Array(uintVals);
-
-    if (uintVals && errorFlag == EC_Normal &&
-        pos < this -> getVM())
-        uintVal = uintVals[pos];
-    else
+    /* get unsigned integer data */
+    Uint16 *uintValues = NULL;
+    errorFlag = getUint16Array(uintValues);
+    /* check data before returning */
+    if (errorFlag.good())
     {
-        errorFlag = EC_IllegalCall;
-        uintVal = 0;
+        if (uintValues == NULL)
+            errorFlag = EC_IllegalCall;
+        else if (pos >= getVM())
+            errorFlag = EC_IllegalParameter;
+        else
+            uintVal = uintValues[pos];
     }
+    /* clear value in case of error */
+    if (errorFlag.bad())
+        uintVal = 0;
     return errorFlag;
 }
 
 
-// ********************************
-
-
-OFCondition DcmUnsignedShort::getUint16Array(Uint16 * & uintVals)
+OFCondition DcmUnsignedShort::getUint16Array(Uint16 *&uintVals)
 {
-    uintVals = (Uint16 *)this -> getValue();
+    uintVals = (Uint16 *)getValue();
     return errorFlag;
 }
 
+
 // ********************************
 
-OFCondition DcmUnsignedShort::getOFString(OFString &value,
+
+OFCondition DcmUnsignedShort::getOFString(OFString &stringVal,
                                           const unsigned long pos,
                                           OFBool /*normalize*/)
 {
@@ -236,37 +188,109 @@ OFCondition DcmUnsignedShort::getOFString(OFString &value,
     {
         /* ... and convert it to a character string */
         char buffer[32];
-        sprintf(buffer, "%u", uintVal);
+        sprintf(buffer, "%hu", uintVal);
         /* assign result */
-        value = buffer;
+        stringVal = buffer;
     }
     return errorFlag;
 }
 
+
 // ********************************
 
-OFCondition DcmUnsignedShort::verify(const OFBool autocorrect )
+
+OFCondition DcmUnsignedShort::putUint16(const Uint16 uintVal,
+                                        const unsigned long pos)
+{
+    Uint16 val = uintVal;
+    errorFlag = changeValue(&val, sizeof(Uint16) * pos, sizeof(Uint16));
+    return errorFlag;
+}
+
+
+OFCondition DcmUnsignedShort::putUint16Array(const Uint16 *uintVals,
+                                             const unsigned long numUints)
 {
     errorFlag = EC_Normal;
-    if ( Length % (sizeof(Uint16)) != 0 )
+    if (numUints > 0)
+    {
+        /* check for valid data */
+        if (uintVals != NULL)
+            errorFlag = putValue(uintVals, sizeof(Uint16) * (Uint32)numUints);
+        else
+            errorFlag = EC_CorruptedData;
+    } else
+        errorFlag = putValue(NULL, 0);
+    return errorFlag;
+}
+
+
+// ********************************
+
+
+OFCondition DcmUnsignedShort::putString(const char *stringVal)
+{
+    errorFlag = EC_Normal;
+    /* check input string */
+    if ((stringVal != NULL) && (strlen(stringVal) > 0))
+    {
+        const unsigned long vm = getVMFromString(stringVal);
+        if (vm > 0)
+        {
+            Uint16 *field = new Uint16[vm];
+            const char *s = stringVal;
+            char *value;
+            /* retrieve unsigned integer data from character string */
+            for (unsigned long i = 0; (i < vm) && errorFlag.good(); i++)
+            {
+                /* get first value stored in 's', set 's' to beginning of the next value */
+                value = getFirstValueFromString(s);
+                if ((value == NULL) || (sscanf(value, "%hu", &field[i]) != 1))
+                    errorFlag = EC_CorruptedData;
+                delete[] value;
+            }
+            /* set binary data as the element value */
+            if (errorFlag.good())
+                errorFlag = putUint16Array(field, vm);
+            /* delete temporary buffer */
+            delete[] field;
+        } else
+            errorFlag = putValue(NULL, 0);
+    } else
+        errorFlag = putValue(NULL, 0);
+    return errorFlag;
+}
+
+
+// ********************************
+
+
+OFCondition DcmUnsignedShort::verify(const OFBool autocorrect)
+{
+    /* check for valid value length */
+    if (Length % (sizeof(Uint16)) != 0)
     {
         errorFlag = EC_CorruptedData;
         if (autocorrect)
         {
-            // auf gueltige Laenge kuerzen
-            Length = Length - ( Length % (sizeof(Uint16)) );
+            /* strip to valid length */
+            Length -= (Length % (sizeof(Uint16)));
         }
-    }
+    } else
+        errorFlag = EC_Normal;
     return errorFlag;
 }
 
 
-// ********************************
-
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrus.cc,v $
-** Revision 1.22  2002-11-27 12:07:00  meichel
+** Revision 1.23  2002-12-06 13:12:37  joergr
+** Enhanced "print()" function by re-working the implementation and replacing
+** the boolean "showFullData" parameter by a more general integer flag.
+** Made source code formatting more consistent with other modules/files.
+**
+** Revision 1.22  2002/11/27 12:07:00  meichel
 ** Adapted module dcmdata to use of new header file ofstdinc.h
 **
 ** Revision 1.21  2002/04/25 10:35:04  joergr
