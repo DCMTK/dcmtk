@@ -36,4 +36,5 @@ dcm2pnm.o: dcm2pnm.cc ../../config/include/osconfig.h \
  ../../dcmimgle/include/diovpln.h ../../ofstd/include/ofstring.h \
  ../../dcmimgle/include/diutils.h ../../dcmimgle/include/dimopx.h \
  ../../dcmimgle/include/dipixel.h ../../dcmimgle/include/dimomod.h \
- ../../dcmimgle/include/diluptab.h ../../ofstd/include/ofcmdln.h
+ ../../dcmimgle/include/diluptab.h ../../ofstd/include/ofcmdln.h \
+ ../../ofstd/include/oftimer.h
