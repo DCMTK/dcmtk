@@ -15,9 +15,7 @@ include $(configdir)/@common_makefile@
 
 all: include-all libsrc-all 
 
-
-install:
-	echo Nothing to do for install
+install: all
 
 install-bin: apps-install 
 
@@ -26,7 +24,6 @@ install-lib: libsrc-install install-include
 install-include: include-install
 
 install-support:
-
 
 include-all:
 	(cd include; $(MAKE) ARCH="$(ARCH)" all)
