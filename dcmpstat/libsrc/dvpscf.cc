@@ -22,8 +22,8 @@
  *  Purpose: DVConfiguration
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-06-01 15:50:28 $
- *  CVS/RCS Revision: $Revision: 1.36 $
+ *  Update Date:      $Date: 2002-06-20 12:20:27 $
+ *  CVS/RCS Revision: $Revision: 1.37 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -36,6 +36,7 @@
 #include "dvpsconf.h"    /* for class DVPSConfig */
 #include "ofconsol.h"    /* for OFConsole */
 #include "dvpsdef.h"     /* for constants */
+#include "ofstd.h"       /* for class OFStandard */
 
 BEGIN_EXTERN_C
 #include <stdio.h>
@@ -640,14 +641,38 @@ double DVConfiguration::getMonitorPixelWidth()
 
   if (resolution && screensize)
   {
-    double rX, rY, sX, sY;
-    if ((2 == sscanf(resolution, "%lf\\%lf", &rX, &rY)) && (2 == sscanf(screensize, "%lf\\%lf", &sX, &sY)))
+    double rX=0.0, rY=0.0, sX=0.0, sY=0.0;
+    OFString s(resolution);
+    OFBool success = OFFalse;
+    
+    rX = OFStandard::atof(s.c_str(), &success);
+    if (success)
     {
-      if ((rX > 0) && (rY > 0) && (sX > 0) && (sY > 0))
+      s.erase(0, s.find('\\')+1);
+      if (s.length() > 0)
       {
-      	// everything OK, return pixel width
-        return sX/rX;
+        rY = OFStandard::atof(s.c_str(), &success);      	
+      } else success = OFFalse;
+    }
+
+    if (success);
+    {
+      s = screensize;
+      sX = OFStandard::atof(s.c_str(), &success);
+      if (success)
+      {
+        s.erase(0, s.find('\\')+1);
+        if (s.length() > 0)
+        {
+          sY = OFStandard::atof(s.c_str(), &success);      	
+        } else success = OFFalse;
       }
+    }
+
+    if (success && (rX > 0) && (rY > 0) && (sX > 0) && (sY > 0))
+    {
+    	// everything OK, return pixel width
+      return sX/rX;
     }
   }
   return 0.0;
@@ -660,14 +685,38 @@ double DVConfiguration::getMonitorPixelHeight()
 
   if (resolution && screensize)
   {
-    double rX, rY, sX, sY;
-    if ((2 == sscanf(resolution, "%lf\\%lf", &rX, &rY)) && (2 == sscanf(screensize, "%lf\\%lf", &sX, &sY)))
+    double rX=0.0, rY=0.0, sX=0.0, sY=0.0;
+    OFString s(resolution);
+    OFBool success = OFFalse;
+    
+    rX = OFStandard::atof(s.c_str(), &success);
+    if (success)
     {
-      if ((rX > 0) && (rY > 0) && (sX > 0) && (sY > 0))
+      s.erase(0, s.find('\\')+1);
+      if (s.length() > 0)
       {
+        rY = OFStandard::atof(s.c_str(), &success);      	
+      } else success = OFFalse;
+    }
+
+    if (success);
+    {
+      s = screensize;
+      sX = OFStandard::atof(s.c_str(), &success);
+      if (success)
+      {
+        s.erase(0, s.find('\\')+1);
+        if (s.length() > 0)
+        {
+          sY = OFStandard::atof(s.c_str(), &success);      	
+        } else success = OFFalse;
+      }
+    }
+
+    if (success && (rX > 0) && (rY > 0) && (sX > 0) && (sY > 0))
+    {
       	// everything OK, return pixel height
         return sY/rY;
-      }
     }
   }
   return 0.0;
@@ -1140,7 +1189,7 @@ double DVConfiguration::getVOIPresetWindowCenter(const char *modality, Uint32 id
            {
            	  // found entry
            	  const char *window = pConfig->get_entry(L0_CENTER);
-           	  if (window && (1 == sscanf(window, "%lf", &result))) return result; else return 0.0;
+           	  if (window) return OFStandard::atof(window); else return 0.0;
            } else idx--;
          }
          pConfig->next_section(1);
@@ -1170,7 +1219,7 @@ double DVConfiguration::getVOIPresetWindowWidth(const char *modality, Uint32 idx
            {
            	  // found entry
            	  const char *window = pConfig->get_entry(L0_WIDTH);
-           	  if (window && (1 == sscanf(window, "%lf", &result))) return result; else return 1.0;
+           	  if (window) return OFStandard::atof(window); else return 1.0;
            } else idx--;
          }
          pConfig->next_section(1);
@@ -1431,7 +1480,12 @@ const char *DVConfiguration::getUserCodeMeaning(const char *userID, OFString& va
 /*
  *  CVS/RCS Log:
  *  $Log: dvpscf.cc,v $
- *  Revision 1.36  2001-06-01 15:50:28  meichel
+ *  Revision 1.37  2002-06-20 12:20:27  meichel
+ *  Changed toolkit to use OFStandard::atof instead of atof, strtod or
+ *    sscanf for all string to double conversions that are supposed to
+ *    be locale independent
+ *
+ *  Revision 1.36  2001/06/01 15:50:28  meichel
  *  Updated copyright header
  *
  *  Revision 1.35  2000/12/19 12:13:04  meichel
