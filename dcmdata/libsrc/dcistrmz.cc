@@ -21,10 +21,10 @@
  *
  *  Purpose: zlib compression filter for input streams
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-09-19 08:32:28 $
+ *  Last Update:      $Author: wilkens $
+ *  Update Date:      $Date: 2002-12-20 14:55:34 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcistrmz.cc,v $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -155,7 +155,7 @@ Uint32 DcmZLibInputFilter::read(void *buf, Uint32 buflen)
       if (offset + availBytes > DCMZLIBINPUTFILTER_BUFSIZE) availBytes = DCMZLIBINPUTFILTER_BUFSIZE - offset;
       if (availBytes > buflen) availBytes = buflen;
 
-      if (availBytes) memcpy(target, outputBuf_ + offset, availBytes);
+      if (availBytes) memcpy(target, outputBuf_ + offset, (size_t)availBytes);
       target += availBytes;
       result += availBytes;
       buflen -= availBytes;
@@ -436,7 +436,11 @@ void dcistrmz_dummy_function()
 /*
  * CVS/RCS Log:
  * $Log: dcistrmz.cc,v $
- * Revision 1.3  2002-09-19 08:32:28  joergr
+ * Revision 1.4  2002-12-20 14:55:34  wilkens
+ * Inserted three casts in order to get rid of compiler warning on Solaris 2.5.1
+ * using compiler SC 2.0.1.
+ *
+ * Revision 1.3  2002/09/19 08:32:28  joergr
  * Added explicit type casts to keep Sun CC 2.0.1 quiet.
  *
  * Revision 1.2  2002/08/29 15:57:49  meichel
