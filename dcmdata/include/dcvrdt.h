@@ -22,9 +22,9 @@
  *  Purpose: Interface of class DcmDateTime
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-10-01 15:01:39 $
+ *  Update Date:      $Date: 2001-10-10 15:17:37 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcvrdt.h,v $
- *  CVS/RCS Revision: $Revision: 1.11 $
+ *  CVS/RCS Revision: $Revision: 1.12 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -40,7 +40,8 @@
 #include "dcbytstr.h"
 
 
-
+/** a class representing the DICOM value representation 'DateTime' (DT)
+ */
 class DcmDateTime : public DcmByteString 
 {
   public:
@@ -154,7 +155,10 @@ class DcmDateTime : public DcmByteString
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrdt.h,v $
-** Revision 1.11  2001-10-01 15:01:39  joergr
+** Revision 1.12  2001-10-10 15:17:37  joergr
+** Updated comments.
+**
+** Revision 1.11  2001/10/01 15:01:39  joergr
 ** Introduced new general purpose functions to get/set person names, date, time
 ** and date/time.
 **

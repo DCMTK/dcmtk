@@ -22,9 +22,9 @@
  *  Purpose: class DcmPersonName
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-10-01 15:04:44 $
+ *  Update Date:      $Date: 2001-10-10 15:22:05 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcvrpn.cc,v $
- *  CVS/RCS Revision: $Revision: 1.12 $
+ *  CVS/RCS Revision: $Revision: 1.13 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -64,6 +64,7 @@ DcmPersonName::~DcmPersonName(void)
 
 // ********************************
 
+
 OFCondition
 DcmPersonName::getOFString(
     OFString & str,
@@ -71,19 +72,19 @@ DcmPersonName::getOFString(
     OFBool normalize)
 {
     OFCondition l_error = DcmCharString::getOFString(str, pos, normalize);
-    if (l_error == EC_Normal && normalize)
+    if (l_error.good() && normalize)
 	    normalizeString(str, !MULTIPART, !DELETE_LEADING, DELETE_TRAILING);
     return l_error;
 }
 
 
-OFCondition 
+OFCondition
 DcmPersonName::getOFStringArray(
     OFString & str,
     OFBool normalize)
 {
     OFCondition l_error = DcmCharString::getOFStringArray(str, normalize);
-    if (l_error == EC_Normal && normalize)
+    if (l_error.good() && normalize)
 	    normalizeString(str, MULTIPART, !DELETE_LEADING, DELETE_TRAILING);
     return l_error;
 }
@@ -104,7 +105,7 @@ DcmPersonName::getNameComponents(
 {
     OFString dicomName;
     OFCondition l_error = getOFString(dicomName, pos);
-    if (l_error == EC_Normal)
+    if (l_error.good())
         l_error = getNameComponentsFromString(dicomName, lastName, firstName, middleName, namePrefix, nameSuffix, componentGroup);
     else
     {
@@ -128,7 +129,7 @@ DcmPersonName::getNameComponentsFromString(
     OFString &nameSuffix,
     const unsigned int componentGroup)
 {
-    OFCondition l_error = EC_IllegalCall;
+    OFCondition l_error = EC_Normal;
     /* initialize all name components */
     lastName.clear();
     firstName.clear();
@@ -139,7 +140,7 @@ DcmPersonName::getNameComponentsFromString(
     {
         /* Excerpt from DICOM part 5:
            "For the purpose of writing names in ideographic characters and in
-            phonetic characters, up to 3 groups of components may be used.
+            phonetic characters, up to 3 groups of components may be used."
         */
         if (componentGroup < 3)
         {
@@ -162,7 +163,7 @@ DcmPersonName::getNameComponentsFromString(
                 } else /* componentGroup == 0 */
                     name = dicomName.substr(0, posA);
             } else if (componentGroup == 0)
-                name = dicomName;                
+                name = dicomName;
             /* check whether component group is valid (= non-empty) */
             if (name.length() > 0)
             {
@@ -194,10 +195,9 @@ DcmPersonName::getNameComponentsFromString(
                 } else
                     lastName = name;
             }
-            l_error = EC_Normal;
-        }
-    } else
-        l_error = EC_Normal;
+        } else
+            l_error = EC_IllegalParameter;
+    }
     return l_error;
 }
 
@@ -213,7 +213,7 @@ DcmPersonName::getFormattedName(
 {
     OFString dicomName;
     OFCondition l_error = getOFString(dicomName, pos);
-    if (l_error == EC_Normal)
+    if (l_error.good())
         l_error = getFormattedNameFromString(dicomName, formattedName, componentGroup);
     else
         formattedName.clear();
@@ -229,7 +229,7 @@ DcmPersonName::getFormattedNameFromString(
 {
     OFString lastName, firstName, middleName, namePrefix, nameSuffix;
     OFCondition l_error = getNameComponentsFromString(dicomName, lastName, firstName, middleName, namePrefix, nameSuffix, componentGroup);
-    if (l_error == EC_Normal)
+    if (l_error.good())
         l_error = getFormattedNameFromComponents(lastName, firstName, middleName, namePrefix, nameSuffix, formattedName);
     else
         formattedName.clear();
@@ -281,7 +281,10 @@ DcmPersonName::getFormattedNameFromComponents(
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrpn.cc,v $
-** Revision 1.12  2001-10-01 15:04:44  joergr
+** Revision 1.13  2001-10-10 15:22:05  joergr
+** Updated comments.
+**
+** Revision 1.12  2001/10/01 15:04:44  joergr
 ** Introduced new general purpose functions to get/set person names, date, time
 ** and date/time.
 **

@@ -22,9 +22,9 @@
  *  Purpose: Interface of class DcmPersonName
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-10-01 15:01:39 $
+ *  Update Date:      $Date: 2001-10-10 15:17:38 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcvrpn.h,v $
- *  CVS/RCS Revision: $Revision: 1.11 $
+ *  CVS/RCS Revision: $Revision: 1.12 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -40,6 +40,8 @@
 #include "dcchrstr.h"
 
 
+/** a class representing the DICOM value representation 'PersonName' (PN)
+ */
 class DcmPersonName : public DcmCharString
 {
   public:
@@ -68,7 +70,9 @@ class DcmPersonName : public DcmCharString
      *  Each component group may consist of up to five components separated by a "^".
      *  The format is "[lastName[^firstName[^middleName[^namePrefix[^nameSuffix]]]]";
      *  each component might be empty.
-     *  If this function fails the result variables are cleared automatically.
+     *  If this function fails the result variables are cleared automatically. If the
+     *  format is valid but does not comply with the above described scheme ("=" and "^")
+     *  the full person name is returned in the 'lastName' variable.
      *  @param lastName reference to string variable where the "last name" is stored
      *  @param firstName reference to string variable where the "first name" is stored
      *  @param middleName reference to string variable where the "middle name" is stored
@@ -76,7 +80,7 @@ class DcmPersonName : public DcmCharString
      *  @param nameSuffix reference to string variable where the "name suffix" is stored
 	 *  @param pos index of the element component in case of value multiplicity (0..vm-1)
      *  @param componentGroup index of the component group (0..2) to be used, see above
-     *  @result EC_Normal upon success, an error code otherwise
+     *  @return EC_Normal upon success, an error code otherwise
      */
     OFCondition getNameComponents(
         OFString &lastName,
@@ -95,7 +99,7 @@ class DcmPersonName : public DcmCharString
      *  @param formattedName reference to string variable where the result is stored
 	 *  @param pos index of the element component in case of value multiplicity (0..vm-1)
      *  @param componentGroup index of the component group (0..2) to be used, see above
-     *  @result EC_Normal upon success, an error code otherwise
+     *  @return EC_Normal upon success, an error code otherwise
      */
     OFCondition getFormattedName(
         OFString &formattedName,
@@ -113,7 +117,9 @@ class DcmPersonName : public DcmCharString
      *  Each component group may consist of up to five components separated by a "^".
      *  The format is "[lastName[^firstName[^middleName[^namePrefix[^nameSuffix]]]]";
      *  each component might be empty.
-     *  If this function fails the result variables are cleared automatically.
+     *  If this function fails the result variables are cleared automatically. If the
+     *  format is valid but does not comply with the above described scheme ("=" and "^")
+     *  the full person name is returned in the 'lastName' variable.
      *  @param dicomName string value in DICOM PN format to be split into components
      *  @param lastName reference to string variable where the "last name" is stored
      *  @param firstName reference to string variable where the "first name" is stored
@@ -121,7 +127,7 @@ class DcmPersonName : public DcmCharString
      *  @param namePrefix reference to string variable where the "name prefix" is stored
      *  @param nameSuffix reference to string variable where the "name suffix" is stored
      *  @param componentGroup index of the component group (0..2) to be used, see above
-     *  @result EC_Normal upon success, an error code otherwise
+     *  @return EC_Normal upon success, an error code otherwise
      */
     static OFCondition getNameComponentsFromString(
         const OFString &dicomName,
@@ -140,7 +146,7 @@ class DcmPersonName : public DcmCharString
      *  @param dicomName string value in DICOM PN format to be converted to readable format
      *  @param formattedName reference to string variable where the result is stored
      *  @param componentGroup index of the component group (0..2) to be used, see above
-     *  @result EC_Normal upon success, an error code otherwise
+     *  @return EC_Normal upon success, an error code otherwise
      */
     static OFCondition getFormattedNameFromString(
         const OFString &dicomName,
@@ -157,7 +163,7 @@ class DcmPersonName : public DcmCharString
      *  @param namePrefix reference to string variable where the "name prefix" is stored
      *  @param nameSuffix reference to string variable where the "name suffix" is stored
      *  @param formattedName reference to string variable where the result is stored
-     *  @result EC_Normal upon success, an error code otherwise
+     *  @return always returns EC_Normal
      */
     static OFCondition getFormattedNameFromComponents(
         const OFString &lastName,
@@ -174,7 +180,10 @@ class DcmPersonName : public DcmCharString
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrpn.h,v $
-** Revision 1.11  2001-10-01 15:01:39  joergr
+** Revision 1.12  2001-10-10 15:17:38  joergr
+** Updated comments.
+**
+** Revision 1.11  2001/10/01 15:01:39  joergr
 ** Introduced new general purpose functions to get/set person names, date, time
 ** and date/time.
 **
