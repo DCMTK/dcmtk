@@ -3,8 +3,8 @@
 ** This file is generated automatically by:
 **
 **   User: hewett
-**   Host: caesar
-**   Date: Wed Mar 26 17:30:44 1997
+**   Host: sulla
+**   Date: Tue Apr 15 18:27:01 1997
 **   Prog: /home/hewett/dicom/dcmtk/dcmdata/libsrc/mkdictbi
 **
 ** From: /home/hewett/dicom/dcmtk/dcmdata/libsrc/dicom.dic
@@ -13,7 +13,7 @@
 
 #include "dcdict.h"
 
-char* dcmBuiltinDictBuildDate = "Wed Mar 26 17:30:44 1997";
+char* dcmBuiltinDictBuildDate = "Tue Apr 15 18:27:01 1997";
 
 struct DBI_SimpleEntry {
     Uint16 group;
