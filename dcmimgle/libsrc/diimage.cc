@@ -22,9 +22,9 @@
  *  Purpose: DicomImage (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-09-28 13:14:22 $
+ *  Update Date:      $Date: 2001-11-09 16:29:04 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/libsrc/diimage.cc,v $
- *  CVS/RCS Revision: $Revision: 1.14 $
+ *  CVS/RCS Revision: $Revision: 1.15 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -35,6 +35,7 @@
 #include "osconfig.h"
 #include "dctypes.h"
 #include "dcdeftag.h"
+#include "dcswap.h"
 
 #include "diimage.h"
 #include "diinpxt.h"
@@ -581,11 +582,107 @@ int DiImage::setRowColumnRatio(const double ratio)
 }
 
 
+int DiImage::writeBMP(FILE *stream,
+                      const unsigned long frame,
+                      const int bits)
+{
+    int result = 0;
+    if ((stream != NULL) && ((bits == 8) || (bits == 24)))
+    {
+        /* create device independent bitmap: palette (8) or truecolor (24) */
+        void *data = NULL;
+        const unsigned long bytes = createDIB(data, 0, frame, bits, 1 /*upsideDown*/);
+        if ((data != NULL) && (bytes > 0))
+        {
+            /* number of bytes */
+            SB_BitmapFileHeader fileHeader;
+            SB_BitmapInfoHeader infoHeader;
+            Uint32 *palette = (bits == 8) ? new Uint32[256] : NULL;
+            /* fill bitmap file header with data */
+            fileHeader.bfType[0] = 'B';
+            fileHeader.bfType[1] = 'M';
+            fileHeader.bfSize = 14 /*sizeof(SB_BitmapFileHeader)*/ + 40 /*sizeof(SB_BitmapInfoHeader)*/ + bytes;
+            fileHeader.bfReserved1 = 0;
+            fileHeader.bfReserved2 = 0;
+            fileHeader.bfOffBits = 14 /*sizeof(SB_BitmapFileHeader)*/ + 40 /*sizeof(SB_BitmapInfoHeader)*/;
+            /* fill bitmap info header with data */
+            infoHeader.biSize = 40 /*sizeof(SB_BitmapInfoHeader)*/;
+            infoHeader.biWidth = Columns;
+            infoHeader.biHeight = Rows;
+            infoHeader.biPlanes = 1;
+            infoHeader.biBitCount = bits;
+            infoHeader.biCompression = 0;
+            infoHeader.biSizeImage = 0;
+            infoHeader.biXPelsPerMeter = 0;
+            infoHeader.biYPelsPerMeter = 0;
+            infoHeader.biClrUsed = 0;
+            infoHeader.biClrImportant = 0;
+            /* create and fill color palette */
+            if (palette != NULL)
+            {
+                /* add palette size */
+                fileHeader.bfSize += 256 * 4;
+                fileHeader.bfOffBits += 256 * 4;
+                /* fill palette entries with gray values, format: B-G-R-0 */
+                for (Uint32 i = 0; i < 256; i++)
+                    palette[i] = (i << 16) | (i << 8) | i;
+            }
+            /* swap bytes if necessary */
+            if (gLocalByteOrder != EBO_LittleEndian)
+            {
+                /* other data elements are always '0' and, therefore, can remain as they are */
+                swap4Bytes((Uint8 *)&fileHeader.bfSize);
+                swap4Bytes((Uint8 *)&fileHeader.bfOffBits);
+                swap4Bytes((Uint8 *)&infoHeader.biSize);
+                swap4Bytes((Uint8 *)&infoHeader.biWidth);
+                swap4Bytes((Uint8 *)&infoHeader.biHeight);
+                swap2Bytes((Uint8 *)&infoHeader.biPlanes);
+                swap2Bytes((Uint8 *)&infoHeader.biBitCount);
+                if (palette != NULL)
+                    swapBytes((Uint8 *)palette, 256 * 4 /*byteLength*/, 4 /*valWidth*/);
+            }
+            /* write bitmap file header: do not write the struct because of 32-bit alignment */
+            fwrite(&fileHeader.bfType, sizeof(fileHeader.bfType), 1, stream);
+            fwrite(&fileHeader.bfSize, sizeof(fileHeader.bfSize), 1, stream);
+            fwrite(&fileHeader.bfReserved1, sizeof(fileHeader.bfReserved1), 1, stream);
+            fwrite(&fileHeader.bfReserved2, sizeof(fileHeader.bfReserved2), 1, stream);
+            fwrite(&fileHeader.bfOffBits, sizeof(fileHeader.bfOffBits), 1, stream);
+            /* write bitmap info header: do not write the struct because of 32-bit alignment  */
+            fwrite(&infoHeader.biSize, sizeof(infoHeader.biSize), 1, stream);
+            fwrite(&infoHeader.biWidth, sizeof(infoHeader.biWidth), 1, stream);
+            fwrite(&infoHeader.biHeight, sizeof(infoHeader.biHeight), 1, stream);
+            fwrite(&infoHeader.biPlanes, sizeof(infoHeader.biPlanes), 1, stream);
+            fwrite(&infoHeader.biBitCount, sizeof(infoHeader.biBitCount), 1, stream);
+            fwrite(&infoHeader.biCompression, sizeof(infoHeader.biCompression), 1, stream);
+            fwrite(&infoHeader.biSizeImage, sizeof(infoHeader.biSizeImage), 1, stream);
+            fwrite(&infoHeader.biXPelsPerMeter, sizeof(infoHeader.biXPelsPerMeter), 1, stream);
+            fwrite(&infoHeader.biYPelsPerMeter, sizeof(infoHeader.biYPelsPerMeter), 1, stream);
+            fwrite(&infoHeader.biClrUsed, sizeof(infoHeader.biClrUsed), 1, stream);
+            fwrite(&infoHeader.biClrImportant, sizeof(infoHeader.biClrImportant), 1, stream);
+            /* write color palette (if applicable) */
+            if (palette != NULL)
+                fwrite(palette, 4, 256, stream);
+            /* write pixel data */
+            fwrite(data, 1, (size_t)bytes, stream);
+            /* delete color palette */
+            delete[] palette;
+            result = 1;
+        }
+        /* delete pixel data */
+        delete data;
+    }
+    return result;
+}
+
+
 /*
  *
  * CVS/RCS Log:
  * $Log: diimage.cc,v $
- * Revision 1.14  2001-09-28 13:14:22  joergr
+ * Revision 1.15  2001-11-09 16:29:04  joergr
+ * Added support for Windows BMP file format.
+ *
+ * Revision 1.14  2001/09/28 13:14:22  joergr
  * Corrected wrong warning message regarding the optional RepresentativeFrame
  * Number.
  *

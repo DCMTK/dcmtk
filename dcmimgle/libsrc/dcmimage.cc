@@ -21,10 +21,10 @@
  *
  *  Purpose: DicomImage-Interface (Source)
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-06-01 15:49:52 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2001-11-09 16:28:48 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/libsrc/dcmimage.cc,v $
- *  CVS/RCS Revision: $Revision: 1.16 $
+ *  CVS/RCS Revision: $Revision: 1.17 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -765,11 +765,49 @@ int DicomImage::writeRawPPM(FILE *stream,
 }
 
 
+// --- same for open C 'FILE' in BMP format
+
+int DicomImage::writeBMP(FILE *stream,
+                         const int bits,
+                         const unsigned long frame)
+{
+    if ((stream != NULL) && (Image != NULL) && ((bits == 0) || ((bits == 8) && isMonochrome()) || (bits == 24)))
+        return Image->writeBMP(stream, frame, bits);
+    return 0;
+}
+
+
+// --- write 'frame' of image data to 'filename' with 'bits' depth in BMP format
+
+int DicomImage::writeBMP(const char *filename,
+                         const int bits,
+                         const unsigned long frame)
+{
+    if ((filename != NULL) && (Image != NULL) && ((bits == 0) || ((bits == 8) && isMonochrome()) || (bits == 24)))
+    {
+        char fname[FILENAME_MAX + 1];
+        if (sprintf(fname, filename, frame) >= 0)           // replace '%d' etc. with frame number
+            filename = fname;
+        FILE *stream = fopen(filename, "wb");               // open binary file for writing
+        if (stream != NULL)
+        {
+            int ok = Image->writeBMP(stream, frame, bits);
+            fclose(stream);
+            return ok;
+        }
+    }
+    return 0;
+}
+
+
 /*
  *
  * CVS/RCS Log:
  * $Log: dcmimage.cc,v $
- * Revision 1.16  2001-06-01 15:49:52  meichel
+ * Revision 1.17  2001-11-09 16:28:48  joergr
+ * Added support for Windows BMP file format.
+ *
+ * Revision 1.16  2001/06/01 15:49:52  meichel
  * Updated copyright header
  *
  * Revision 1.15  2000/04/28 12:33:40  joergr
