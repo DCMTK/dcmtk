@@ -1,6 +1,34 @@
+**** Changes from 1998.04.01 (riesmeier)
+- Added support for new color models YBR_FULL, YBR_FULL_422 and
+  YBR_PARTIAL_422.
+  Affects: dcmimage/libsrc/Makefile.in
+           dcmimage/libsrc/Makefile.dep
+           dcmimage/include/dcmimage.h
+           dcmimage/libsrc/dcmimage.cc
+  Added:   dcmimage/include/diybrimg.h
+           dcmimage/include/diybrpxt.h
+           dcmimage/libsrc/diybrimg.cc
+           dcmimage/include/diyf2img.h
+           dcmimage/include/diyf2pxt.h
+           dcmimage/libsrc/diyf2img.cc
+           dcmimage/include/diyp2img.h
+           dcmimage/include/diyp2pxt.h
+           dcmimage/libsrc/diyp2img.cc
+           
+- Added another case called "simple mask" to decode input data.
+  Affects: dcmimage/include/diinpxt.h
+
+- Added Test: Value of 'OverlayBitsAllocated' should correspond
+  to value of 'BitsAllocated' (see Correction Prosposal 87).
+  Affects: dcmimage/libsrc/diovlay.cc  
+  
+- Replaced all tab characters by spaces to avoid .
+  Affects: dcmimage/include/*.h
+           dcmimage/libsrc/*.cc
+           
 **** Changes from 1998.03.09 (riesmeier)
 
-- Add type cast to avoid warnings with MSVC.
+- Added type cast to avoid warnings with MSVC.
   Affects: dcmimage/include/dimoopxt.h
 
 **** Changes from 1998.03.09 (riesmeier)
