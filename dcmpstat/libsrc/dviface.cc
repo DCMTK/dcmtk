@@ -22,8 +22,8 @@
  *  Purpose: DVPresentationState
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-05-30 13:56:23 $
- *  CVS/RCS Revision: $Revision: 1.86 $
+ *  Update Date:      $Date: 2000-05-30 14:22:13 $
+ *  CVS/RCS Revision: $Revision: 1.87 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1991,7 +1991,7 @@ E_Condition DVInterface::terminateQueryRetrieveServer()
 E_Condition DVInterface::createQueryRetrieveServerConfigFile(const char *filename)
 {
   ofstream output(filename);
-  if (file)
+  if (output)
   {
     output << "# ATTENTION: This file has been created automatically and will" << endl;
     output << "#            be re-created each time the query/retrieve server" << endl;
@@ -3111,7 +3111,11 @@ E_Condition DVInterface::checkIOD(const char *studyUID, const char *seriesUID, c
 /*
  *  CVS/RCS Log:
  *  $Log: dviface.cc,v $
- *  Revision 1.86  2000-05-30 13:56:23  joergr
+ *  Revision 1.87  2000-05-30 14:22:13  joergr
+ *  Renamed some variables to avoid compiler warnings (reported by gcc 2.9x with
+ *  additional compiler flags).
+ *
+ *  Revision 1.86  2000/05/30 13:56:23  joergr
  *  Renamed GrayscaleHardcopy to HardcopyGrayscale (which is the correct term
  *  according to the DICOM standard).
  *  Added support for multi-frame images and multiple references from a single

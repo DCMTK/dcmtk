@@ -23,8 +23,8 @@
  *    classes: DVPresentationState
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-05-30 13:59:16 $
- *  CVS/RCS Revision: $Revision: 1.55 $
+ *  Update Date:      $Date: 2000-05-30 14:22:14 $
+ *  CVS/RCS Revision: $Revision: 1.56 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -2406,12 +2406,12 @@ E_Condition DVPresentationState::addPolyShutterVertex(Sint32 x, Sint32 y)
 
   if (result==EC_Normal)
   {
-    Sint32 x0 = 0;
-    Sint32 y0 = 0;
-    result = getPolyShutterVertex(0, x0, y0);
+    Sint32 xp0 = 0;
+    Sint32 yp0 = 0;
+    result = getPolyShutterVertex(0, xp0, yp0);
     if (result==EC_Normal)
     {
-      if ((x0==x)&&(y0==y)) // polygon is closed now, activate.
+      if ((xp0==x)&&(yp0==y)) // polygon is closed now, activate.
       {
         if (shutterPresentationValue.getLength()==0)
            result = shutterPresentationValue.putUint16(0,0);
@@ -2933,7 +2933,7 @@ void DVPresentationState::deactivateVOI(DVPSObjectApplicability applicability)
   return;
 }
 
-E_Condition DVPresentationState::setGammaVOILUT(double gamma, DVPSObjectApplicability applicability)
+E_Condition DVPresentationState::setGammaVOILUT(double gammaValue, DVPSObjectApplicability applicability)
 {
   if (currentImage == NULL) return EC_IllegalCall;
 
@@ -2975,7 +2975,7 @@ E_Condition DVPresentationState::setGammaVOILUT(double gamma, DVPSObjectApplicab
       /* calculate gamma curve */
       const Uint16 maxValue = 0xFFFF >> (16 - numberOfBits);
       double step = (double)maxValue / ((double)numberOfEntries - 1.0);
-      double gammaExp = 1.0 / gamma;
+      double gammaExp = 1.0 / gammaValue;
       double factor = (double)maxValue / pow(maxValue, gammaExp);
       unsigned long i;
       for (i = 0; i < numberOfEntries; i++)
@@ -3031,7 +3031,7 @@ E_Condition DVPresentationState::setGammaVOILUT(double gamma, DVPSObjectApplicab
       if (status == EC_Normal)
       {
         char explanation[100];
-        sprintf(explanation, "LUT with gamma %3.1f, descriptor %u/%ld/%u", gamma,
+        sprintf(explanation, "LUT with gamma %3.1f, descriptor %u/%ld/%u", gammaValue,
                (numberOfEntries < 65536) ? (Uint16)numberOfEntries : 0, firstMapped, numberOfBits);
         lutExplanation = new DcmLongString(DCM_LUTExplanation);
         if (lutExplanation != NULL)
@@ -3990,7 +3990,11 @@ const char *DVPresentationState::getCurrentImageModality()
 
 /*
  *  $Log: dvpstat.cc,v $
- *  Revision 1.55  2000-05-30 13:59:16  joergr
+ *  Revision 1.56  2000-05-30 14:22:14  joergr
+ *  Renamed some variables to avoid compiler warnings (reported by gcc 2.9x with
+ *  additional compiler flags).
+ *
+ *  Revision 1.55  2000/05/30 13:59:16  joergr
  *  Removed methods which were already marked as "retired".
  *  Added new function allowing to set a VOILUT created from a given gamma
  *  value.

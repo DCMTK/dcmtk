@@ -23,8 +23,8 @@
  *    classes: DVPresentationState
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-05-30 13:47:03 $
- *  CVS/RCS Revision: $Revision: 1.32 $
+ *  Update Date:      $Date: 2000-05-30 14:21:24 $
+ *  CVS/RCS Revision: $Revision: 1.33 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -509,11 +509,11 @@ public:
    *  The LUT is copied to the presentation state. 
    *  If the method returns an error code, an old LUT is left unchanged.
    *  The applicability of the VOI LUT is controlled by the applicability parameter.
-   *  @param gamma gamma value used to create the VOI LUT data
+   *  @param gammaValue gamma value used to create the VOI LUT data
    *  @param applicability defines the applicability of the new VOI transform.
    *  @return EC_Normal if successful, an error code otherwise.
    */
-  E_Condition setGammaVOILUT(double gamma, DVPSObjectApplicability applicability=DVPSB_currentImage);
+  E_Condition setGammaVOILUT(double gammaValue, DVPSObjectApplicability applicability=DVPSB_currentImage);
   
   /* Displayed Area Interface */
   
@@ -2124,7 +2124,11 @@ private:
 
 /*
  *  $Log: dvpstat.h,v $
- *  Revision 1.32  2000-05-30 13:47:03  joergr
+ *  Revision 1.33  2000-05-30 14:21:24  joergr
+ *  Renamed some variables to avoid compiler warnings (reported by gcc 2.9x with
+ *  additional compiler flags).
+ *
+ *  Revision 1.32  2000/05/30 13:47:03  joergr
  *  Added support for multi-frame images and multiple references from a single
  *  presentation to a number of images.
  *  Removed methods which were already marked as "retired".
