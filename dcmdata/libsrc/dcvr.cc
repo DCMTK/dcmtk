@@ -9,8 +9,8 @@
 ** Implementation of the DcmVR class for Value Representation
 **
 **
-** Last Update:   $Author: andreas $
-** Revision:      $Revision: 1.8 $
+** Last Update:   $Author: hewett $
+** Revision:      $Revision: 1.9 $
 ** Status:	  $State: Exp $
 **
 */
@@ -147,7 +147,7 @@ DcmVRDict_checker DcmVRDict_startup_check;
 void
 DcmVR::setVR(DcmEVR evr) 
 {
-    if ( (evr >= 0) && (evr < DcmVRDict_DIM)) {
+    if ( ((int)evr >= 0) && ((int)evr < DcmVRDict_DIM)) {
 	vr = evr;
     } else {
 	vr = EVR_UNKNOWN;
