@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DVPSImageBoxContent
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-07-30 13:34:56 $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  Last Update:      $Author: thiel $
+ *  Update Date:      $Date: 1999-08-26 09:29:48 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -390,9 +390,37 @@ const char *DVPSImageBoxContent::getSOPClassUID()
   if (EC_Normal == referencedSOPClassUID.getString(c)) return c; else return NULL;
 }
 
+
+E_Condition DVPSImageBoxContent::addImage(DcmItem & dset,char * aETitle,unsigned long number)
+{
+
+	DcmStack stack;
+	E_Condition result=EC_Normal;
+
+    result=retrieveAETitle.putString(aETitle);
+	READ_FROM_DATASET(DcmUniqueIdentifier, studyInstanceUID)
+    READ_FROM_DATASET(DcmUniqueIdentifier, seriesInstanceUID)
+	//Add the reference of this Image
+	stack.clear();
+	dset.search(DCM_SOPClassUID,stack,ESM_fromHere,OFFalse);
+	referencedSOPClassUID = *((DcmUniqueIdentifier *)(stack.top()));
+	stack.clear();
+	dset.search(DCM_SOPInstanceUID,stack,ESM_fromHere,OFFalse);
+	referencedSOPInstanceUID = *((DcmUniqueIdentifier *)(stack.top()));
+
+    READ_FROM_DATASET(DcmLongString, patientID)
+    //READ_FROM_DATASET(DcmIntegerString, referencedFrameNumber)
+ 	createDefaultValues(true,number);
+
+	return result;
+}
+
 /*
  *  $Log: dvpsib.cc,v $
- *  Revision 1.1  1999-07-30 13:34:56  meichel
+ *  Revision 1.2  1999-08-26 09:29:48  thiel
+ *  Extensions for the usage of the StoredPrint
+ *
+ *  Revision 1.1  1999/07/30 13:34:56  meichel
  *  Added new classes managing Stored Print objects
  *
  *

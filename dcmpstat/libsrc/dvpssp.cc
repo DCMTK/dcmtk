@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DVPSStoredPrint
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-08-25 16:56:14 $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  Last Update:      $Author: thiel $
+ *  Update Date:      $Date: 1999-08-26 09:29:49 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -35,13 +35,13 @@
 #include "ofstring.h"
 #include "dvpssp.h"
 #include "dcuid.h"
-
+#include "dvpsib.h"
 #ifdef HAVE_TIME_H
 #include <time.h>
 #endif
 
 /* some defaults for creating Stored Print objects */
-#define DEFAULT_imageDisplayFormat        "STANDARD\1,1"
+#define DEFAULT_imageDisplayFormat        "STANDARD\\1,1"
 
 /* --------------- a few macros avoiding copy/paste --------------- */
 
@@ -50,11 +50,11 @@ if (result==EC_Normal)                                              \
 {                                                                   \
      if (a_name.getLength()==0) result = a_name.putString(dcmGenerateUniqueIdentifer(uid)); \
 }
-
+#undef ADD_TO_DATASET
 #define ADD_TO_DATASET(a_type, a_name)                              \
 if (result==EC_Normal)                                              \
 {                                                                   \
-  delem = new a_type(a_name);                                       \
+  delem = new a_type(a_name);																	      \
   if (delem) dset.insert(delem); else result=EC_MemoryExhausted;    \
 }
 
@@ -69,7 +69,7 @@ if (result==EC_Normal)                                              \
 stack.clear();                                                      \
 if (EC_Normal == dset.search((DcmTagKey &)a_name.getTag(), stack, ESM_fromHere, OFFalse)) \
 {                                                                   \
-  a_name = *((a_type *)(stack.top()));                              \
+  a_name = *((a_type *)(stack.top()));     \
 }
 
 #define READ_FROM_DATASET2(a_type, a_name)                           \
@@ -107,6 +107,36 @@ static void currentTime(OFString &str)
   } else str = "000000";
   return;
 }
+/*
+static DcmElement * getThisElement(DcmItem * in,Uint16 g, Uint16 e)
+{
+  DcmElement *elem;
+  for (unsigned int i=0;in->card()>i;i++)
+    {
+      elem=in->getElement(i);
+			if (elem->getGTag()==g && elem->getETag()==e ) 
+	
+			{
+				return elem;
+			}
+    }
+  return NULL;
+}
+
+static E_CONDITION addCopyElement(DcmItem *src,DcmItem *target,Uint16 g, Uint16 e)
+{
+   return (target->insert(getThisElement(src,g,e)));
+}
+
+static E_CONDITION addThisValue(DcmItem *in,Uint16 g, Uint16 e,const char * instring)
+{
+  DcmElement * elem;
+  newDicomElement(elem,DcmTag(g,e));
+  elem->putString(instring);
+  return (in->insert(elem));
+}
+
+*/
 
 /* --------------- class DVPSStoredPrint --------------- */
 
@@ -287,6 +317,64 @@ OFBool DVPSStoredPrint::isImageStorageSOPClass(OFString& sopclassuid)
     if (dcmImageSOPClassUIDs[i] && (sopclassuid == dcmImageSOPClassUIDs[i])) return OFTrue;
   }
   return OFFalse;
+}
+
+E_Condition DVPSStoredPrint::createFromItem(DcmItem &dset)
+{
+	
+  E_Condition result = EC_Normal;
+	DcmStack stack;
+	OFString itemSOPClass;
+	clear(); // re-initialize Stored Print object 
+    
+	DcmUniqueIdentifier sopclassuid(DCM_SOPClassUID);  
+	READ_FROM_DATASET(DcmUniqueIdentifier, sopclassuid)
+  sopclassuid.getOFString(itemSOPClass,0);
+
+  if (itemSOPClass == UID_StoredPrintStorage){
+			return read(dset);
+		}
+
+	result = createDefaultValues();
+ 
+	READ_FROM_DATASET(DcmPersonName, patientName)
+  READ_FROM_DATASET(DcmLongString, patientID)
+  READ_FROM_DATASET(DcmDate, patientBirthDate)
+  READ_FROM_DATASET(DcmCodeString, patientSex)
+  READ_FROM_DATASET(DcmUniqueIdentifier, studyInstanceUID)
+  READ_FROM_DATASET(DcmDate, studyDate)
+  READ_FROM_DATASET(DcmTime, studyTime)
+  READ_FROM_DATASET(DcmPersonName, referringPhysiciansName)
+  READ_FROM_DATASET(DcmShortString, studyID)
+  READ_FROM_DATASET(DcmShortString, accessionNumber)
+	//### who is it
+  //READ_FROM_DATASET(DcmLongString, manufacturer)
+	manufacturer.putString("");
+	READ_FROM_DATASET(DcmCodeString, specificCharacterSet)
+
+	char uid[100];
+	SET_UID(seriesInstanceUID)
+ 	seriesNumber.putString("1");
+	//### read from item 
+	
+	if (itemSOPClass == UID_GrayscaleSoftcopyPresentationStateStorage){
+			SET_UID(presentationLUTInstanceUID)
+			//### just for testing 
+			//### missing read
+			presentationLUT.setType(DVPSP_identity);
+	}
+	//###Missing Film Box 
+		imageBoxContentList.addImage(dset,"AEUnknown");
+		if (EC_Normal==result) result = imageBoxContentList.createDefaultValues(true); // renumber if limitImages is true
+	//###
+	return result;
+}
+  
+E_Condition DVPSStoredPrint::addImage(DcmItem &image,char *aETitle)
+{
+	E_Condition result;
+	result = imageBoxContentList.addImage(image,aETitle);
+	return result;
 }
 
 E_Condition DVPSStoredPrint::read(DcmItem &dset)
@@ -561,7 +649,8 @@ E_Condition DVPSStoredPrint::createDefaultValues()
   char uid[100];
   OFString aString;
 
-  SET_UID(studyInstanceUID)
+  if ((studyInstanceUID.getLength() == 0)||(studyInstanceUID.getVM() != 1))
+			SET_UID(studyInstanceUID)
   SET_UID(seriesInstanceUID)
   SET_UID(sOPInstanceUID)
 
@@ -608,6 +697,8 @@ E_Condition DVPSStoredPrint::addReferencedPLUTSQ(DcmItem &dset)
   return result;
 }
 
+
+
 E_Condition DVPSStoredPrint::write(DcmItem &dset, OFBool limitImages)
 {
   DcmElement *delem=NULL;
@@ -616,7 +707,7 @@ E_Condition DVPSStoredPrint::write(DcmItem &dset, OFBool limitImages)
 	
   E_Condition result = createDefaultValues();
   if (EC_Normal==result) result = imageBoxContentList.createDefaultValues(limitImages); // renumber if limitImages is true
-
+   
   ADD_TO_DATASET(DcmPersonName, patientName)
   ADD_TO_DATASET(DcmLongString, patientID)
   ADD_TO_DATASET(DcmDate, patientBirthDate)
@@ -632,7 +723,8 @@ E_Condition DVPSStoredPrint::write(DcmItem &dset, OFBool limitImages)
   ADD_TO_DATASET(DcmLongString, manufacturer)
   ADD_TO_DATASET(DcmIntegerString, instanceNumber) 
   ADD_TO_DATASET(DcmUniqueIdentifier, sOPInstanceUID)
-  if (specificCharacterSet.getLength() > 0) { ADD_TO_DATASET(DcmCodeString, specificCharacterSet) }
+	
+	if (specificCharacterSet.getLength() > 0) { ADD_TO_DATASET(DcmCodeString, specificCharacterSet) }
   if (instanceCreationDate.getLength() > 0) { ADD_TO_DATASET(DcmDate, instanceCreationDate) }
   if (instanceCreationTime.getLength() > 0) { ADD_TO_DATASET(DcmTime, instanceCreationTime) }
 
@@ -722,6 +814,7 @@ E_Condition DVPSStoredPrint::write(DcmItem &dset, OFBool limitImages)
   ADD_TO_DATASET(DcmUniqueIdentifier, sopclassuid)
 
   /* add Modality */  
+
   DcmCodeString modality(DCM_Modality);
   if (result==EC_Normal)
   {
@@ -752,12 +845,16 @@ E_Condition DVPSStoredPrint::write(DcmItem &dset, OFBool limitImages)
     if (result==EC_Normal) dset.insert(dseq); else delete dseq;
   } else result = EC_MemoryExhausted;
 
+
   return result;
 }
 
 /*
  *  $Log: dvpssp.cc,v $
- *  Revision 1.2  1999-08-25 16:56:14  joergr
+ *  Revision 1.3  1999-08-26 09:29:49  thiel
+ *  Extensions for the usage of the StoredPrint
+ *
+ *  Revision 1.2  1999/08/25 16:56:14  joergr
  *  Added '#include <time.h>' to make MSVC happy.
  *
  *  Revision 1.1  1999/07/30 13:34:59  meichel

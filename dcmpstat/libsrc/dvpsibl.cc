@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DVPSImageBoxContent_PList
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-07-30 13:34:57 $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  Last Update:      $Author: thiel $
+ *  Update Date:      $Date: 1999-08-26 09:29:48 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -219,9 +219,32 @@ E_Condition DVPSImageBoxContent_PList::addImageSOPClasses(DcmSequenceOfItems& se
 }
 
 
+E_Condition DVPSImageBoxContent_PList::addImage(DcmItem &image,char *aETitle)
+{
+	E_Condition result;
+	DVPSImageBoxContent *box;
+	box=new DVPSImageBoxContent();
+	result = box->addImage(image,aETitle,size()+1);
+	if (result==EC_Normal)
+		result = addImageBox(box);
+	return (result);
+
+}	
+
+E_Condition DVPSImageBoxContent_PList::addImageBox(DVPSImageBoxContent * box)
+{
+   
+   push_back(box);
+   return(EC_Normal);
+	 
+}
+
 /*
  *  $Log: dvpsibl.cc,v $
- *  Revision 1.1  1999-07-30 13:34:57  meichel
+ *  Revision 1.2  1999-08-26 09:29:48  thiel
+ *  Extensions for the usage of the StoredPrint
+ *
+ *  Revision 1.1  1999/07/30 13:34:57  meichel
  *  Added new classes managing Stored Print objects
  *
  *

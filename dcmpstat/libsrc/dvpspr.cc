@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DVPSPrintMessageHandler
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-07-30 13:34:58 $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  Last Update:      $Author: thiel $
+ *  Update Date:      $Date: 1999-08-26 09:29:49 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -151,28 +151,28 @@ CONDITION DVPSPrintMessageHandler::sendNRequest(
           }
           T_DIMSE_DataSetType responseDataset = DIMSE_DATASET_NULL;
           DIC_US responseMessageID = 0;
-          
+	  /** change request to response */     
           switch(expectedResponse)
           {
             case DIMSE_N_GET_RSP:
-              responseDataset = request.msg.NGetRSP.DataSetType;
-              responseMessageID = request.msg.NGetRSP.MessageIDBeingRespondedTo;
+              responseDataset = response.msg.NGetRSP.DataSetType;
+              responseMessageID = response.msg.NGetRSP.MessageIDBeingRespondedTo;
               break;
             case DIMSE_N_SET_RSP:
-              responseDataset = request.msg.NSetRSP.DataSetType;
-              responseMessageID = request.msg.NSetRSP.MessageIDBeingRespondedTo;
+              responseDataset = response.msg.NSetRSP.DataSetType;
+              responseMessageID = response.msg.NSetRSP.MessageIDBeingRespondedTo;
               break;
             case DIMSE_N_ACTION_RSP:
-              responseDataset = request.msg.NActionRSP.DataSetType;
-              responseMessageID = request.msg.NActionRSP.MessageIDBeingRespondedTo;
+              responseDataset = response.msg.NActionRSP.DataSetType;
+              responseMessageID = response.msg.NActionRSP.MessageIDBeingRespondedTo;
               break;
             case DIMSE_N_CREATE_RSP:
-              responseDataset = request.msg.NCreateRSP.DataSetType;
-              responseMessageID = request.msg.NCreateRSP.MessageIDBeingRespondedTo;
+              responseDataset = response.msg.NCreateRSP.DataSetType;
+              responseMessageID = response.msg.NCreateRSP.MessageIDBeingRespondedTo;
               break;
             case DIMSE_N_DELETE_RSP:
-              responseDataset = request.msg.NDeleteRSP.DataSetType;
-              responseMessageID = request.msg.NDeleteRSP.MessageIDBeingRespondedTo;
+              responseDataset = response.msg.NDeleteRSP.DataSetType;
+              responseMessageID = response.msg.NDeleteRSP.MessageIDBeingRespondedTo;
               break;
             default:
               return COND_PushCondition(DIMSE_UNEXPECTEDRESPONSE, 
@@ -475,7 +475,12 @@ CONDITION DVPSPrintMessageHandler::negotiateAssociation(
   DIC_NODENAME dnpeerHost;
 
   CONDITION cond = ASC_initializeNetwork(NET_REQUESTOR, 0, 1000, &net);
-  if (!SUCCESS(cond)) cond = ASC_createAssociationParameters(&params, peerMaxPDU);
+  if (!SUCCESS(cond)) 
+  {
+		return cond;
+		}
+		
+	cond = ASC_createAssociationParameters(&params, peerMaxPDU);
 
   ASC_setAPTitles(params, myAEtitle, peerAEtitle, NULL);
   gethostname(dnlocalHost, sizeof(dnlocalHost) - 1);
@@ -507,7 +512,7 @@ CONDITION DVPSPrintMessageHandler::negotiateAssociation(
 
   /* we always propose basic grayscale and presentation LUT */
   if (SUCCESS(cond)) cond = ASC_addPresentationContext(params, 1, UID_BasicGrayscalePrintManagementMetaSOPClass, transferSyntaxes, transferSyntaxCount);
-  if (SUCCESS(cond)) cond = ASC_addPresentationContext(params, 1, UID_PresentationLUTSOPClass, transferSyntaxes, transferSyntaxCount);
+  if (SUCCESS(cond)) cond = ASC_addPresentationContext(params, 3, UID_PresentationLUTSOPClass, transferSyntaxes, transferSyntaxCount);
 
   /* create association */
   if (verbose) cerr << "Requesting Association" << endl;
@@ -515,7 +520,7 @@ CONDITION DVPSPrintMessageHandler::negotiateAssociation(
   if (SUCCESS(cond)) 
   {
     cond = ASC_requestAssociation(net, params, &assoc);
-    params = NULL; // now kept inside assoc
+
     if (cond == ASC_ASSOCIATIONREJECTED)
     {
       T_ASC_RejectParameters rej;
@@ -525,7 +530,16 @@ CONDITION DVPSPrintMessageHandler::negotiateAssociation(
         cerr << "Association Rejected" << endl;
         ASC_printRejectParameters(stderr, &rej);
       }
-    }
+    }else{
+			if (!SUCCESS(cond)) 
+			{
+				if (params) ASC_destroyAssociationParameters(&params);
+				if (net) ASC_dropNetwork(&net);
+				assoc = NULL;
+				net = NULL;
+				return cond;
+			}
+		}
   }
 
   if ((SUCCESS(cond)) && (0 == ASC_findAcceptedPresentationContextID(assoc, UID_BasicGrayscalePrintManagementMetaSOPClass)))
@@ -556,7 +570,10 @@ OFBool DVPSPrintMessageHandler::printerSupportsPresentationLUT()
 
 /*
  *  $Log: dvpspr.cc,v $
- *  Revision 1.1  1999-07-30 13:34:58  meichel
+ *  Revision 1.2  1999-08-26 09:29:49  thiel
+ *  Extensions for the usage of the StoredPrint
+ *
+ *  Revision 1.1  1999/07/30 13:34:58  meichel
  *  Added new classes managing Stored Print objects
  *
  *
