@@ -22,8 +22,8 @@
  *  Purpose: DVPresentationState
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-02-19 09:48:27 $
- *  CVS/RCS Revision: $Revision: 1.37 $
+ *  Update Date:      $Date: 1999-02-19 19:03:04 $
+ *  CVS/RCS Revision: $Revision: 1.38 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -100,6 +100,7 @@ END_EXTERN_C
 
 DVInterface::DVInterface(const char *config_file)
 : pState(NULL)
+, pStoredPState(NULL)
 , pDicomImage(NULL)
 , pDicomPState(NULL)
 , pConfig(NULL)
@@ -153,6 +154,7 @@ DVInterface::~DVInterface()
     if (pDicomImage) delete pDicomImage;
     if (pDicomPState) delete pDicomPState;
     if (pState) delete pState;
+    if (pStoredPState) delete pStoredPState;
     if (displayFunction) delete displayFunction;
     if (pConfig) delete pConfig;
     if (pHandle) releaseDatabase();
@@ -165,11 +167,14 @@ E_Condition DVInterface::loadImage(const char *studyUID,
                                    const char *seriesUID,
                                    const char *instanceUID)
 {
-    if (lockDatabase() == EC_Normal)
+    if (studyUID && seriesUID && instanceUID)
     {
-        const char *filename = getFilename(studyUID, seriesUID, instanceUID);
-        if (filename != NULL)
-            return loadImage(filename);
+        if (lockDatabase() == EC_Normal)
+        {
+            const char *filename = getFilename(studyUID, seriesUID, instanceUID);
+            if (filename)
+                return loadImage(filename);
+        }
     }
     return EC_IllegalCall;
 }
@@ -391,9 +396,11 @@ E_Condition DVInterface::exchangeImageAndPState(DVPresentationState *newState, D
     if (newState==NULL) return EC_IllegalCall;
     if (image==NULL) return EC_IllegalCall;
     if (pState) delete pState;
+    if (pStoredPState) delete pStoredPState;
     if (pDicomImage) delete pDicomImage;
     if (pDicomPState) delete pDicomPState;
     pState = newState;
+    pStoredPState = NULL;
     pDicomImage = image;
     pDicomPState = state;
     return EC_Normal;
@@ -439,26 +446,96 @@ E_Condition DVInterface::resetPresentationState()
 }
 
 
+E_Condition DVInterface::disablePresentationState()
+{
+    E_Condition status = EC_IllegalCall;
+    if ((pState != NULL) && (pStoredPState == NULL))
+    {
+        pStoredPState = pState;
+        if (pDicomImage != NULL)
+        {
+            DcmDataset *dataset = pDicomImage->getDataset();
+            if (dataset != NULL)
+            {
+                pState = new DVPresentationState(displayFunction);
+                if (pState != NULL)
+                {
+                    if ((status = pState->createFromImage(*dataset)) == EC_Normal)
+                    {
+                        if ((status = pState->attachImage(pDicomImage, OFFalse)) == EC_Normal)
+                            return EC_Normal;
+                    }
+                    delete pState;                      // reset to old state
+                    pState = pStoredPState;
+                }
+                pStoredPState = NULL;                   // disable
+            }
+        }
+    }
+    return status;
+}
+
+
+E_Condition DVInterface::enablePresentationState()
+{
+    if ((pState != NULL) && (pStoredPState != NULL))
+    {
+        delete pState;
+        pState = pStoredPState;
+        pStoredPState = NULL;
+        return EC_Normal;
+    }
+    return EC_IllegalCall;
+}
+
+
+DVStudyCache::ItemStruct *DVInterface::getStudyStruct(const char *studyUID,
+                                                      const char *seriesUID)
+{
+    if (studyUID)
+    {
+        if (createIndexCache())
+        {
+            if (idxCache.isElem(studyUID))
+            {
+                DVStudyCache::ItemStruct *study = idxCache.getItem();
+                if ((seriesUID == NULL) || (study->List.isElem(seriesUID)))
+                    return study;
+            }
+        }
+    }
+    return NULL;
+}
+
+
+DVSeriesCache::ItemStruct *DVInterface::getSeriesStruct(const char *studyUID,
+                                                        const char *seriesUID,
+                                                        const char *instanceUID)
+{
+    if (studyUID && seriesUID)
+    {
+        DVStudyCache::ItemStruct *study = getStudyStruct(studyUID, seriesUID);
+        if (study != NULL)
+        {
+            DVSeriesCache::ItemStruct *series = study->List.getItem();
+            if (series != NULL)
+            {
+                if ((instanceUID == NULL) || (series->List.isElem(instanceUID)))
+                    return series;
+            }
+        }
+    }
+    return NULL;
+}
+
+
 const char *DVInterface::getFilename(const char *studyUID,
                                      const char *seriesUID,
                                      const char *instanceUID)
 {
-    if (createIndexCache())
-    {
-        if (idxCache.isElem(studyUID))
-        {
-            DVStudyCache::ItemStruct *study = idxCache.getItem();
-            if (study->List.isElem(seriesUID))
-            {
-                DVSeriesCache::ItemStruct *series = study->List.getItem();
-                if (series != NULL)
-                {
-                    if (series->List.isElem(instanceUID))
-                        return series->List.getFilename();
-                }
-            }
-        }
-    }
+    DVSeriesCache::ItemStruct *series = getSeriesStruct(studyUID, seriesUID, instanceUID);
+    if (series != NULL)
+        return series->List.getFilename();
     return NULL;
 }
 
@@ -473,7 +550,11 @@ E_Condition DVInterface::lockDatabase()
         pHandle = (DB_Private_Handle *) handle;
         lockingMode = OFFalse;
         if (DB_lock(pHandle, OFFalse) == DB_NORMAL)
+        {
+            if (databaseIndexFile.length() == 0)
+                databaseIndexFile = pHandle->indexFilename;                
             return EC_Normal;
+        }
     }
     return EC_IllegalCall;
 }
@@ -503,13 +584,16 @@ E_Condition DVInterface::unlockExclusive()
 {
     if (pHandle && lockingMode)
     {
-        lockingMode=OFFalse;
-        DB_unlock(pHandle);
-        clearIndexCache();
-        if (DB_lock(pHandle, OFFalse) != DB_NORMAL)
-            return EC_IllegalCall; 
+        if (DB_unlock(pHandle) == DB_NORMAL)
+        {
+            DB_destroyHandle((DB_Handle **)(&pHandle));
+            lockingMode=OFFalse;
+            pHandle=NULL;
+            clearIndexCache();
+            return EC_Normal;
+        }
     }
-    return EC_Normal;
+    return EC_IllegalCall;
 }
 
 
@@ -602,7 +686,7 @@ cerr << "IDX: creating index cache ... " << endl;
                         if (!series->List.isElem(record.SOPInstanceUID))
                         {
                             const OFBool pstate = (record.Modality != NULL) && (strcmp(record.Modality, "PR") == 0);
-                            series->List.addItem(record.SOPInstanceUID, counter, record.hstat, pstate, record.filename);
+                            series->List.addItem(record.SOPInstanceUID, counter, record.hstat, pstate, record.ImageSize, record.filename);
                             if (pstate)
                                 series->PState = OFTrue;                // series contains PState(s)
                         }
@@ -960,44 +1044,95 @@ E_Condition DVInterface::instanceReviewed(const char *studyUID,
                                           const char *seriesUID,
                                           const char *instanceUID)
 {
-    if (createIndexCache())
+    DVSeriesCache::ItemStruct *series = getSeriesStruct(studyUID, seriesUID, instanceUID);
+    if (series != NULL)
     {
-        if (idxCache.isElem(studyUID))
+        IdxRecord record;
+        int recpos;
+        clearIndexRecord(record, recpos);
+        if (readIndexRecord(series->List.getPos(), record, &recpos))
         {
-            DVStudyCache::ItemStruct *study = idxCache.getItem();
-            if (study->List.isElem(seriesUID))
+            if (lockExclusive() == EC_Normal)
             {
-                DVSeriesCache::ItemStruct *series = study->List.getItem();
-                if (series != NULL)
-                {
-                    if (series->List.isElem(instanceUID))
-                    {
-                        IdxRecord record;
-                        int recpos;
-                        clearIndexRecord(record, recpos);
-                        if (readIndexRecord(series->List.getPos(), record, &recpos))
-                        {
-                            if (lockExclusive() == EC_Normal)
-                            {
-                                record.hstat = DVIF_objectIsNotNew;
-                                lseek(pHandle->pidx, (long)(SIZEOF_STUDYDESC + recpos * SIZEOF_IDXRECORD), SEEK_SET);
-                                write(pHandle->pidx, (char *)&record, SIZEOF_IDXRECORD);
-                                lseek(pHandle->pidx, 0L, SEEK_SET);
-                            }
-                            unlockExclusive();
-                            return EC_Normal;
-                        }
-                    }
-                }
+                record.hstat = DVIF_objectIsNotNew;
+                lseek(pHandle->pidx, (long)(SIZEOF_STUDYDESC + recpos * SIZEOF_IDXRECORD), SEEK_SET);
+                write(pHandle->pidx, (char *)&record, SIZEOF_IDXRECORD);
+                lseek(pHandle->pidx, 0L, SEEK_SET);
             }
+            unlockExclusive();
+            return EC_Normal;
         }
     }
     return EC_IllegalCall;
 }
 
 
+int DVInterface::findStudyIdx(StudyDescRecord *study,
+                              const char *uid)
+{
+    if ((study != NULL) && (uid != NULL))
+    {
+        register int i = 0;
+        for (i = 0; i < PSTAT_MAXSTUDYCOUNT; i++)
+        {
+            if ((study[i].StudyInstanceUID != NULL) &&
+                (strcmp(uid, study[i].StudyInstanceUID) == 0))
+            {
+                return i;
+            }
+        }
+    }
+    return -1;
+}
+
+
 E_Condition DVInterface::deleteStudy(const char *studyUID)
 {
+    DVStudyCache::ItemStruct *study = getStudyStruct(studyUID);
+    if (study != NULL)
+    {
+        E_Condition result = EC_IllegalCall;
+        if (lockExclusive() == EC_Normal)
+        {
+            if (study->List.gotoFirst())
+            {
+                StudyDescRecord *study_desc = (StudyDescRecord *)malloc(SIZEOF_STUDYDESC);
+                if (study_desc != NULL)
+                {
+                    if (DB_GetStudyDesc(pHandle, study_desc) == DB_NORMAL)
+                    {
+                        int idx = findStudyIdx(study_desc, studyUID);
+                        if (idx >= 0)
+                        {
+                            do /* for all series */
+                            {
+                                DVSeriesCache::ItemStruct *series = study->List.getItem();
+                                if (series != NULL)                                
+                                {
+                                    if (series->List.gotoFirst())
+                                    {
+                                        do /* for all instances */
+                                        {
+                                            DB_IdxRemove(pHandle, series->List.getPos());
+    
+                                            /* deleteImageFile ? */
+
+                                        } while (series->List.gotoNext());
+                                    }
+                                }
+                            } while (study->List.gotoNext());
+                            study_desc[idx].NumberofRegistratedImages = 0;
+                            study_desc[idx].StudySize = 0;
+                            DB_StudyDescChange(pHandle, study_desc);
+                        }
+                    }
+                    free(study_desc);
+                }
+            }
+        }
+        unlockExclusive();
+        return result;
+    }
     return EC_IllegalCall;
 }
 
@@ -1005,6 +1140,44 @@ E_Condition DVInterface::deleteStudy(const char *studyUID)
 E_Condition DVInterface::deleteSeries(const char *studyUID,
                                       const char *seriesUID)
 {
+    DVSeriesCache::ItemStruct *series = getSeriesStruct(studyUID, seriesUID);
+    if (series != NULL)
+    {
+        E_Condition result = EC_IllegalCall;
+        if (lockExclusive() == EC_Normal)
+        {
+            if (series->List.gotoFirst())
+            {
+                StudyDescRecord *study_desc = (StudyDescRecord *)malloc(SIZEOF_STUDYDESC);
+                if (study_desc != NULL)
+                {
+                    if (DB_GetStudyDesc(pHandle, study_desc) == DB_NORMAL)
+                    {
+                        int idx = findStudyIdx(study_desc, studyUID);
+                        if (idx >= 0)
+                        {
+                            do /* for all images */
+                            {
+                                DB_IdxRemove(pHandle, series->List.getPos());
+                                if (study_desc[idx].NumberofRegistratedImages > 0)
+                                {
+                                    study_desc[idx].NumberofRegistratedImages--;
+                                    study_desc[idx].StudySize -= series->List.getImageSize();
+                                }    
+
+                                /* deleteImageFile ? */
+
+                            } while (series->List.gotoNext());
+                            DB_StudyDescChange(pHandle, study_desc);
+                        }
+                    }
+                    free(study_desc);
+                }
+            }
+        }
+        unlockExclusive();
+        return result;
+    }
     return EC_IllegalCall;
 }
 
@@ -1014,6 +1187,48 @@ E_Condition DVInterface::deleteInstance(const char *studyUID,
                                         const char *seriesUID,
                                         const char *instanceUID)
 {
+    DVSeriesCache::ItemStruct *series = getSeriesStruct(studyUID, seriesUID, instanceUID);
+    if (series != NULL)
+    {
+        E_Condition result = EC_IllegalCall;
+        if (lockExclusive() == EC_Normal)
+        {
+            DB_IdxRemove(pHandle, series->List.getPos());
+            StudyDescRecord *study_desc = (StudyDescRecord *)malloc(SIZEOF_STUDYDESC);
+            if (study_desc != NULL)
+            {
+                if (DB_GetStudyDesc(pHandle, study_desc) == DB_NORMAL)
+                {
+                    register int i = 0;
+                    for (i = 0; i < PSTAT_MAXSTUDYCOUNT; i++)
+                    {
+                        if ((study_desc[i].StudyInstanceUID != NULL) &&
+                            (strcmp(studyUID, study_desc[i].StudyInstanceUID) != 0))
+                        {
+                            if (study_desc[i].NumberofRegistratedImages > 0)
+                            {
+                                study_desc[i].NumberofRegistratedImages--;
+                                study_desc[i].StudySize -= series->List.getImageSize();
+                                DB_StudyDescChange(pHandle, study_desc);
+                            }
+                            break;
+                        }
+                    }
+                    free(study_desc);
+                    result = EC_Normal;
+                }
+/*
+                const char *filename = series->List.getFilename();
+                if ((filename != NULL) && (strchr(filename, (int)PATH_SEPARATOR) == 0))
+                {
+                    DB_deleteImageFile(series->List.getFilename());
+                }
+*/
+            }
+        }
+        unlockExclusive();
+        return result;
+    }
     return EC_IllegalCall;
 }
 
@@ -1648,7 +1863,16 @@ void DVInterface::cleanChildren()
 /*
  *  CVS/RCS Log:
  *  $Log: dviface.cc,v $
- *  Revision 1.37  1999-02-19 09:48:27  joergr
+ *  Revision 1.38  1999-02-19 19:03:04  joergr
+ *  Added methods to disable and (re-)enable PresentationStates.
+ *  Added (private) helper methods to reduce redundant lines of code.
+ *  Removed bug concerning method newInstancesReceived (databaseFilename was
+ *  never set).
+ *  Implemented main part of delete methods (image files are not yet deleted).
+ *  Removed implicit application of a shared lock to the database file when
+ *  unlock an exclusive lock.
+ *
+ *  Revision 1.37  1999/02/19 09:48:27  joergr
  *  Added method getFilename() to get filename of currently selected instance.
  *  Modified implementation of instanceReviewed.
  *
