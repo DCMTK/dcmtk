@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2002, OFFIS
+ *  Copyright (C) 1994-2004, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,8 @@
  *  Purpose: Implementation of class DcmSignedShort
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-12-06 13:12:38 $
- *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcvrss.cc,v $
- *  CVS/RCS Revision: $Revision: 1.23 $
+ *  Update Date:      $Date: 2004-02-04 16:07:15 $
+ *  CVS/RCS Revision: $Revision: 1.24 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -103,7 +102,7 @@ void DcmSignedShort::print(ostream &out,
         {
             const unsigned long count = getVM();
             const unsigned long maxLength = (flags & DCMTypes::PF_shortenLongTagValues) ?
-                DCM_OptPrintLineLength : (unsigned long)-1 /*unlimited*/;
+                DCM_OptPrintLineLength : OFstatic_cast(unsigned long, -1) /*unlimited*/;
             unsigned long printedLength = 0;
             unsigned long newLength = 0;
             char buffer[32];
@@ -170,7 +169,7 @@ OFCondition DcmSignedShort::getSint16(Sint16 &sintVal,
 
 OFCondition DcmSignedShort::getSint16Array(Sint16 *&sintVals)
 {
-    sintVals = (Sint16 *)getValue();
+    sintVals = OFstatic_cast(Sint16 *, getValue());
     return errorFlag;
 }
 
@@ -217,7 +216,7 @@ OFCondition DcmSignedShort::putSint16Array(const Sint16 *sintVals,
     {
         /* check for valid data */
         if (sintVals != NULL)
-            errorFlag = putValue(sintVals, sizeof(Sint16) * (Uint32)numSints);
+            errorFlag = putValue(sintVals, sizeof(Sint16) * OFstatic_cast(Uint32, numSints));
         else
             errorFlag = EC_CorruptedData;
     } else
@@ -286,7 +285,11 @@ OFCondition DcmSignedShort::verify(const OFBool autocorrect)
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrss.cc,v $
-** Revision 1.23  2002-12-06 13:12:38  joergr
+** Revision 1.24  2004-02-04 16:07:15  joergr
+** Adapted type casts to new-style typecast operators defined in ofcast.h.
+** Removed acknowledgements with e-mail addresses from CVS log.
+**
+** Revision 1.23  2002/12/06 13:12:38  joergr
 ** Enhanced "print()" function by re-working the implementation and replacing
 ** the boolean "showFullData" parameter by a more general integer flag.
 ** Made source code formatting more consistent with other modules/files.
@@ -299,8 +302,6 @@ OFCondition DcmSignedShort::verify(const OFBool autocorrect)
 **
 ** Revision 1.20  2002/04/16 13:43:26  joergr
 ** Added configurable support for C++ ANSI standard includes (e.g. streams).
-** Thanks to Andreas Barth <Andreas.Barth@bruker-biospin.de> for his
-** contribution.
 **
 ** Revision 1.19  2001/09/25 17:20:00  meichel
 ** Adapted dcmdata to class OFCondition
@@ -378,4 +379,3 @@ OFCondition DcmSignedShort::verify(const OFBool autocorrect)
 ** - more cleanups
 **
 */
-

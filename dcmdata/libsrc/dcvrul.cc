@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2002, OFFIS
+ *  Copyright (C) 1994-2004, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,10 +21,9 @@
  *
  *  Purpose: Implementation of class DcmUnsignedLong
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-12-11 16:55:04 $
- *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcvrul.cc,v $
- *  CVS/RCS Revision: $Revision: 1.25 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2004-02-04 16:05:43 $
+ *  CVS/RCS Revision: $Revision: 1.26 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -103,7 +102,7 @@ void DcmUnsignedLong::print(ostream &out,
         {
             const unsigned long count = getVM();
             const unsigned long maxLength = (flags & DCMTypes::PF_shortenLongTagValues) ?
-                DCM_OptPrintLineLength : (unsigned long)-1 /*unlimited*/;
+                DCM_OptPrintLineLength : OFstatic_cast(unsigned long, -1) /*unlimited*/;
             unsigned long printedLength = 0;
             unsigned long newLength = 0;
             char buffer[32];
@@ -176,7 +175,7 @@ OFCondition DcmUnsignedLong::getUint32(Uint32 &uintVal,
 
 OFCondition DcmUnsignedLong::getUint32Array(Uint32 *&uintVals)
 {
-    uintVals = (Uint32 *)getValue();
+    uintVals = OFstatic_cast(Uint32 *, getValue());
     return errorFlag;
 }
 
@@ -195,7 +194,7 @@ OFCondition DcmUnsignedLong::getOFString(OFString &stringVal,
     {
         /* ... and convert it to a character string */
         char buffer[32];
-        sprintf(buffer, "%lu", (unsigned long)uintVal);
+        sprintf(buffer, "%lu", OFstatic_cast(unsigned long, uintVal));
         /* assign result */
         stringVal = buffer;
     }
@@ -223,7 +222,7 @@ OFCondition DcmUnsignedLong::putUint32Array(const Uint32 *uintVals,
     {
         /* check for valid data */
         if (uintVals != NULL)
-            errorFlag = putValue(uintVals, sizeof(Uint32) * (Uint32)numUints);
+            errorFlag = putValue(uintVals, sizeof(Uint32) * OFstatic_cast(Uint32, numUints));
         else
             errorFlag = EC_CorruptedData;
     } else
@@ -300,7 +299,11 @@ OFCondition DcmUnsignedLong::verify(const OFBool autocorrect)
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrul.cc,v $
-** Revision 1.25  2002-12-11 16:55:04  meichel
+** Revision 1.26  2004-02-04 16:05:43  joergr
+** Adapted type casts to new-style typecast operators defined in ofcast.h.
+** Removed acknowledgements with e-mail addresses from CVS log.
+**
+** Revision 1.25  2002/12/11 16:55:04  meichel
 ** Added typecasts to avoid warnings on OSF/1
 **
 ** Revision 1.24  2002/12/10 20:02:09  joergr
@@ -319,8 +322,6 @@ OFCondition DcmUnsignedLong::verify(const OFBool autocorrect)
 **
 ** Revision 1.20  2002/04/16 13:43:26  joergr
 ** Added configurable support for C++ ANSI standard includes (e.g. streams).
-** Thanks to Andreas Barth <Andreas.Barth@bruker-biospin.de> for his
-** contribution.
 **
 ** Revision 1.19  2001/09/25 17:20:01  meichel
 ** Adapted dcmdata to class OFCondition
@@ -395,7 +396,6 @@ OFCondition DcmUnsignedLong::verify(const OFBool autocorrect)
 ** - changed to support new streaming facilities
 ** - unique read/write methods for file and block transfer
 ** - more cleanups
-**
 **
 **
 */

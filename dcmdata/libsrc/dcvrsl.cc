@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2002, OFFIS
+ *  Copyright (C) 1994-2004, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,10 +21,9 @@
  *
  *  Purpose: Implementation of class DcmSignedLong
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-12-11 16:55:03 $
- *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcvrsl.cc,v $
- *  CVS/RCS Revision: $Revision: 1.25 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2004-02-04 16:07:15 $
+ *  CVS/RCS Revision: $Revision: 1.26 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -103,7 +102,7 @@ void DcmSignedLong::print(ostream &out,
         {
             const unsigned long count = getVM();
             const unsigned long maxLength = (flags & DCMTypes::PF_shortenLongTagValues) ?
-                DCM_OptPrintLineLength : (unsigned long)-1 /*unlimited*/;
+                DCM_OptPrintLineLength : OFstatic_cast(unsigned long, -1) /*unlimited*/;
             unsigned long printedLength = 0;
             unsigned long newLength = 0;
             char buffer[32];
@@ -177,7 +176,7 @@ OFCondition DcmSignedLong::getSint32(Sint32 &sintVal,
 
 OFCondition DcmSignedLong::getSint32Array(Sint32 *&sintVals)
 {
-    sintVals = (Sint32 *)getValue();
+    sintVals = OFstatic_cast(Sint32 *, getValue());
     return errorFlag;
 }
 
@@ -196,7 +195,7 @@ OFCondition DcmSignedLong::getOFString(OFString &stringVal,
     {
         /* ... and convert it to a character string */
         char buffer[32];
-        sprintf(buffer, "%li", (long)sintVal);
+        sprintf(buffer, "%li", OFstatic_cast(long, sintVal));
         /* assign result */
         stringVal = buffer;
     }
@@ -224,7 +223,7 @@ OFCondition DcmSignedLong::putSint32Array(const Sint32 *sintVals,
     {
         /* check for valid data */
         if (sintVals != NULL)
-            errorFlag = putValue(sintVals, sizeof(Sint32) * (Uint32)numSints);
+            errorFlag = putValue(sintVals, sizeof(Sint32) * OFstatic_cast(Uint32, numSints));
         else
             errorFlag = EC_CorruptedData;
     } else
@@ -301,7 +300,11 @@ OFCondition DcmSignedLong::verify(const OFBool autocorrect)
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrsl.cc,v $
-** Revision 1.25  2002-12-11 16:55:03  meichel
+** Revision 1.26  2004-02-04 16:07:15  joergr
+** Adapted type casts to new-style typecast operators defined in ofcast.h.
+** Removed acknowledgements with e-mail addresses from CVS log.
+**
+** Revision 1.25  2002/12/11 16:55:03  meichel
 ** Added typecasts to avoid warnings on OSF/1
 **
 ** Revision 1.24  2002/12/10 20:02:10  joergr
@@ -320,8 +323,6 @@ OFCondition DcmSignedLong::verify(const OFBool autocorrect)
 **
 ** Revision 1.20  2002/04/16 13:43:25  joergr
 ** Added configurable support for C++ ANSI standard includes (e.g. streams).
-** Thanks to Andreas Barth <Andreas.Barth@bruker-biospin.de> for his
-** contribution.
 **
 ** Revision 1.19  2001/09/25 17:20:00  meichel
 ** Adapted dcmdata to class OFCondition
@@ -399,4 +400,3 @@ OFCondition DcmSignedLong::verify(const OFBool autocorrect)
 ** - more cleanups
 **
 */
-

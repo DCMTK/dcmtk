@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2002, OFFIS
+ *  Copyright (C) 1994-2004, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,10 +21,9 @@
  *
  *  Purpose: Implementation of class DcmByteString
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2003-12-11 13:40:46 $
- *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcbytstr.cc,v $
- *  CVS/RCS Revision: $Revision: 1.37 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2004-02-04 16:10:49 $
+ *  CVS/RCS Revision: $Revision: 1.38 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -180,8 +179,8 @@ void DcmByteString::print(ostream &out,
             {
                 char output[DCM_OptPrintLineLength - 1 /* for "[" */ + 1];
                 /* truncate value text and append "..." */
-                OFStandard::strlcpy(output, string, (size_t)DCM_OptPrintLineLength - 4 /* for "[" and "..." */ + 1);
-                OFStandard::strlcat(output, "...", (size_t)DCM_OptPrintLineLength - 1 /* for "[" */ + 1);
+                OFStandard::strlcpy(output, string, OFstatic_cast(size_t, DCM_OptPrintLineLength) - 4 /* for "[" and "..." */ + 1);
+                OFStandard::strlcat(output, "...", OFstatic_cast(size_t, DCM_OptPrintLineLength) - 1 /* for "[" */ + 1);
                 out << output;
                 printedLength = DCM_OptPrintLineLength;
             } else
@@ -246,7 +245,7 @@ OFCondition DcmByteString::getOFString(OFString &stringVal,
     else
     {
         /* get string data */
-        char *s = (char *)getValue();
+        char *s = OFstatic_cast(char *, getValue());
         /* extract specified string component */
         errorFlag = getStringPart(stringVal, s, pos);
     }
@@ -256,7 +255,7 @@ OFCondition DcmByteString::getOFString(OFString &stringVal,
 
 OFCondition DcmByteString::getStringValue(OFString &stringVal)
 {
-    const char *s = (char *)getValue();
+    const char *s = OFstatic_cast(char *, getValue());
     /* check whether string value is present */
     if (s != NULL)
         stringVal = s;
@@ -271,7 +270,7 @@ OFCondition DcmByteString::getStringValue(OFString &stringVal)
 OFCondition DcmByteString::getString(char *&stringVal)
 {
     /* get string data */
-    stringVal = (char *)getValue();
+    stringVal = OFstatic_cast(char *, getValue());
     /* convert to internal string representation (without padding) if required */
     if ((stringVal != NULL) && (fStringMode != DCM_MachineString))
         makeMachineByteString();
@@ -335,7 +334,7 @@ OFCondition DcmByteString::makeMachineByteString()
 {
     errorFlag = EC_Normal;
     /* get string data */
-    char *value = (char *)getValue();
+    char *value = OFstatic_cast(char *, getValue());
     /* determine initial string length */
     if (value != NULL)
     {
@@ -351,9 +350,9 @@ OFCondition DcmByteString::makeMachineByteString()
             if (realLength > 0)
             {
                 size_t i = 0;
-                for(i = (size_t)realLength; (i > 0) && (value[i - 1] == paddingChar); i--)
+                for(i = OFstatic_cast(size_t, realLength); (i > 0) && (value[i - 1] == paddingChar); i--)
                     value[i - 1] = '\0';
-                realLength = (Uint32)i;
+                realLength = OFstatic_cast(Uint32, i);
             }
         }
     } else
@@ -584,7 +583,11 @@ void normalizeString(OFString &string,
 /*
 ** CVS/RCS Log:
 ** $Log: dcbytstr.cc,v $
-** Revision 1.37  2003-12-11 13:40:46  meichel
+** Revision 1.38  2004-02-04 16:10:49  joergr
+** Adapted type casts to new-style typecast operators defined in ofcast.h.
+** Removed acknowledgements with e-mail addresses from CVS log.
+**
+** Revision 1.37  2003/12/11 13:40:46  meichel
 ** newValueField() now uses std::nothrow new if available
 **
 ** Revision 1.36  2002/12/06 13:07:28  joergr
@@ -610,8 +613,6 @@ void normalizeString(OFString &string,
 **
 ** Revision 1.31  2002/04/16 13:43:14  joergr
 ** Added configurable support for C++ ANSI standard includes (e.g. streams).
-** Thanks to Andreas Barth <Andreas.Barth@bruker-biospin.de> for his
-** contribution.
 **
 ** Revision 1.30  2001/09/25 17:19:46  meichel
 ** Adapted dcmdata to class OFCondition
@@ -660,8 +661,7 @@ void normalizeString(OFString &string,
 ** Revision 1.18  1997/10/13 11:33:48  hewett
 ** Fixed bug in DcmByteString::getOFString due to inverse logic causing
 ** a string to be retrieved for all illegal values of pos while the errorFlag
-** was set to EC_IllegalCall for all legal values of pos (thanks to Phil Liao
-** <phil@eeg.com> for suggesting the bugfix).
+** was set to EC_IllegalCall for all legal values of pos.
 **
 ** Revision 1.17  1997/09/11 15:18:16  hewett
 ** Added a putOFStringArray method.
