@@ -22,9 +22,9 @@
  *  Purpose: Template class for command line arguments (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-02-08 11:58:24 $
+ *  Update Date:      $Date: 1999-03-24 17:01:47 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/libsrc/ofcmdln.cc,v $
- *  CVS/RCS Revision: $Revision: 1.9 $
+ *  CVS/RCS Revision: $Revision: 1.10 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -148,15 +148,19 @@ OFBool OFCommandLine::addOption(const char *longOpt,
 }
 
 
-void OFCommandLine::addGroup(const char *name)
+void OFCommandLine::addGroup(const char *name,
+                             const int longCols,
+                             const int shortCols)
 {
-    addOption("", "", 0, "", name);
+    addOption("", "", packColumnValues(longCols, shortCols), "", name);
 }
 
 
-void OFCommandLine::addSubGroup(const char *name)
+void OFCommandLine::addSubGroup(const char *name,
+                                const int longCols,
+                                const int shortCols)
 {
-    addOption("", "", 0, name, "");
+    addOption("", "", packColumnValues(longCols, shortCols), name, "");
 }
 
 
@@ -387,9 +391,9 @@ OFCommandLine::E_ParamValueStatus OFCommandLine::getParam(const int pos,
 
 OFBool OFCommandLine::findOption(const char *longOpt,
                                  const int pos,
-                                 const int next)
+                                 const E_FindOptionMode mode)
 {
-    OFListIterator(OFListIterator_OFString) pos_iter = (next > 1) ? OptionPosIterator : OptionPosList.end();
+    OFListIterator(OFListIterator_OFString) pos_iter = (mode == FOM_Next) ? OptionPosIterator : OptionPosList.end();
     OFListIterator(OFListIterator_OFString) pos_first = OptionPosList.begin();
     OFListIterator(OFCmdParam *) param_iter;
     if (findParam(pos, param_iter))
@@ -406,7 +410,7 @@ OFBool OFCommandLine::findOption(const char *longOpt,
         else if (*ArgumentIterator == longOpt)                         // searched option
         {
             OptionPosIterator = pos_iter;                              // store option position
-            if (next == 0)
+            if (mode == FOM_Normal)
                 OptionBlockIterator = pos_iter;
             return OFTrue;
         }
@@ -621,6 +625,26 @@ void OFCommandLine::storeParameter(const char *param)
 }
 
                     
+int OFCommandLine::packColumnValues(int longCols,
+                                    int shortCols) const
+{
+    if (longCols < 0)
+        longCols = 0;
+    if (shortCols < 0)
+        shortCols = 0;
+    return ((longCols & 0xffff) << 16) | (shortCols & 0xffff);
+}
+
+
+void OFCommandLine::unpackColumnValues(const int value,
+                                       unsigned int &longCols,
+                                       unsigned int &shortCols) const
+{
+    longCols = (value >> 16) & 0xffff;
+    shortCols = (value & 0xffff);
+}
+
+
 OFCommandLine::E_ParseStatus OFCommandLine::parseLine(int argCount,
                                                       char *argValue[],
 #ifdef HAVE_WINDOWS_H
@@ -688,6 +712,7 @@ void OFCommandLine::getOptionString(OFString &string) const
         OFListIterator(OFCmdOption *) iter = ValidOptionList.begin();
         OFListIterator(OFCmdOption *) last = ValidOptionList.end();
         OFString str;
+        int newGrp = 1;
         unsigned int shortSize = 0;
         unsigned int longSize = 0;
         unsigned int lineIndent = 0;
@@ -696,7 +721,7 @@ void OFCommandLine::getOptionString(OFString &string) const
         const unsigned int columnSpace = 2;
         while (iter != last)
         {
-            if ((shortSize == 0) && (longSize == 0))
+            if (newGrp)
             {
                 OFListIterator(OFCmdOption *) i = iter;
                 while ((i != last) && ((*i)->LongOption.length() > 0))
@@ -707,12 +732,13 @@ void OFCommandLine::getOptionString(OFString &string) const
                         longSize = (*i)->LongOption.length();
                     i++;
                 }
+                newGrp = 0;
             }
             if ((*iter)->LongOption.length() <= 0)
             {
-                shortSize = 0;
-                longSize = 0;
-                if ((*iter)->OptionDescription.length() > 0)                  // new group
+                newGrp = 1;
+                unpackColumnValues((*iter)->ValueCount, longSize, shortSize);
+                if ((*iter)->OptionDescription.length() > 0)                 // new group
                 {
                     string += (*iter)->OptionDescription;
                     lineIndent = groupIndent;
@@ -884,7 +910,12 @@ void OFCommandLine::getStatusString(const E_ValueStatus status,
  *
  * CVS/RCS Log:
  * $Log: ofcmdln.cc,v $
- * Revision 1.9  1999-02-08 11:58:24  joergr
+ * Revision 1.10  1999-03-24 17:01:47  joergr
+ * Added optional parameters to define minimum width of columns for short and
+ * long options in syntax output.
+ * Changed optional integer parameter in method findOption to enum type.
+ *
+ * Revision 1.9  1999/02/08 11:58:24  joergr
  * Removed name of parameter 'flags' in method parseLine() depending on
  * compilation platform (parameter is currently only used on Windows
  * systems - where windows.h exist) to avoid compiler warnings.

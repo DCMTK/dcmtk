@@ -22,9 +22,9 @@
  *  Purpose: Handle command line arguments (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-02-08 11:51:38 $
+ *  Update Date:      $Date: 1999-03-24 16:59:38 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/include/Attic/ofcmdln.h,v $
- *  CVS/RCS Revision: $Revision: 1.8 $
+ *  CVS/RCS Revision: $Revision: 1.9 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -210,6 +210,18 @@ class OFCommandLine
         /// converted value exceeds maximum
         PVS_Overflow
     };
+    
+    /** mode for findOption method
+     */
+    enum E_FindOptionMode
+    {
+        /// normal find
+        FOM_Normal,
+        /// find first option
+        FOM_First,
+        /// find next option
+        FOM_Next 
+    };
 
 
  // --- constructor and destructor
@@ -287,17 +299,27 @@ class OFCommandLine
     OFBool addOption(const char *longOpt,
                      const char *optDescr);
                    
-    /** adds ...
+    /** adds a new group (top-level).
+     *  all following options belong to this group
      *
-     ** @param  name  name of the group
+     ** @param  name       name of the group
+     *  @param  longCols   minimum width of the long option column
+     *  @param  shortCols  minimum width of the short option column
      */
-    void addGroup(const char *name);
+    void addGroup(const char *name,
+                  const int longCols = 0,
+                  const int shortCols = 0);
 
-    /** adds ...
+    /** adds a new subgroup (beyond group-level).
+     *  all following options belong to this subgroup
      *
-     ** @param  name  name of the subgroup
+     ** @param  name       name of the subgroup
+     *  @param  longCols   minimum width of the long option column
+     *  @param  shortCols  minimum width of the short option column
      */
-    void addSubGroup(const char *name);
+    void addSubGroup(const char *name,
+                     const int longCols = 0,
+                     const int shortCols = 0);
 
 
  // --- get information
@@ -320,6 +342,11 @@ class OFCommandLine
         return ParamPosList.size();
     }
     
+    OFBool hasOptions() const
+    {
+        return !ValidOptionList.empty();
+    }
+
 
  // --- find/get parameter
 
@@ -375,7 +402,7 @@ class OFCommandLine
 
     OFBool findOption(const char *longOpt,
                       const int pos = 0,
-                      const int next = 0);
+                      const E_FindOptionMode mode = FOM_Normal);
 
     OFBool getCurrentOption(const char *&opt);
 
@@ -461,6 +488,13 @@ class OFCommandLine
     
     void storeParameter(const char *param);
 
+    int packColumnValues(int longCols,
+                         int shortCols) const;
+
+    void unpackColumnValues(const int value,
+                            unsigned int &longCols,
+                            unsigned int &shortCols) const;
+
 
  private:
 
@@ -486,7 +520,12 @@ class OFCommandLine
  *
  * CVS/RCS Log:
  * $Log: ofcmdln.h,v $
- * Revision 1.8  1999-02-08 11:51:38  joergr
+ * Revision 1.9  1999-03-24 16:59:38  joergr
+ * Added optional parameters to define minimum width of columns for short and
+ * long options in syntax output.
+ * Changed optional integer parameter in method findOption to enum type.
+ *
+ * Revision 1.8  1999/02/08 11:51:38  joergr
  * Removed '#include <iostream.h>' from ofcmdln.h.
  *
  * Revision 1.7  1999/02/05 14:07:07  joergr
