@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DVInterface
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-01-25 13:05:55 $
- *  CVS/RCS Revision: $Revision: 1.11 $
+ *  Last Update:      $Author: vorwerk $
+ *  Update Date:      $Date: 1999-01-25 16:55:17 $
+ *  CVS/RCS Revision: $Revision: 1.12 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -41,6 +41,7 @@
 #include "dvpstat.h"    /* for class DVPresentationState */
 #include "dbpriv.h"     /* for struct IdxRecord */
 #include "ofstring.h"   /* for class OFString */
+#include "oflist.h"     /* for class OFList */
 
 /* max study count for DB handle creation */
 #define PSTAT_MAXSTUDYCOUNT 200
@@ -606,7 +607,7 @@ private:
     char selectedStudy[65]; /* allow for trailing '\0' */
     char selectedSeries[65];
     char selectedInstance[65];
-
+    Uint32 studyidx;
     Uint32 SeriesNumber, StudyNumber;  
     DB_Private_Handle *phandle;  
     StudyDescRecord *pStudyDesc;
@@ -634,13 +635,21 @@ private:
       const char *InstanceUID=NULL);
 
   
+
+// frees inputarray from duplicate entries and returns the number 
+// of arrayelements that remain
+Uint32 stripidxarray(int *elemarray);
+
 };
 #endif
 
 
 /*
  *  $Log: dviface.h,v $
- *  Revision 1.11  1999-01-25 13:05:55  meichel
+ *  Revision 1.12  1999-01-25 16:55:17  vorwerk
+ *  function stripidxarray added.
+ *
+ *  Revision 1.11  1999/01/25 13:05:55  meichel
  *  Implemented DVInterface::startReceiver()
  *    and several config file related methods.
  *
