@@ -45,9 +45,9 @@
 ** Intent:		This file contains functions for parsing Dicom
 **			Upper Layer (DUL) Protocol Data Units (PDUs)
 **			into logical in-memory structures.
-** Last Update:		$Author: joergr $, $Date: 2000-03-08 11:23:40 $
+** Last Update:		$Author: joergr $, $Date: 2001-06-05 10:07:10 $
 ** Source File:		$RCSfile: dulparse.cc,v $
-** Revision:		$Revision: 1.14 $
+** Revision:		$Revision: 1.15 $
 ** Status:		$State: Exp $
 */
 
@@ -100,7 +100,9 @@ static CONDITION
 parseExtNeg(SOPClassExtendedNegotiationSubItem* extNeg, unsigned char *buf,
 	    unsigned long *length);
 
+#ifdef DEBUG
 static OFBool debug = OFFalse;
+#endif
 
 /* parseAssociate
 **
@@ -292,7 +294,6 @@ parseDebug(OFBool flag)
 void
 parseDebug(OFBool /*flag*/)
 {
-    debug = 0;                // avoid compiler warnings on Sun CC 2.0.1 & MSVC6
 }
 #endif
 
@@ -833,7 +834,10 @@ trim_trailing_spaces(char *s)
 /*
 ** CVS Log
 ** $Log: dulparse.cc,v $
-** Revision 1.14  2000-03-08 11:23:40  joergr
+** Revision 1.15  2001-06-05 10:07:10  joergr
+** Minor code purifications to keep Sun CC 2.0.1 quiet.
+**
+** Revision 1.14  2000/03/08 11:23:40  joergr
 ** Added debug version of function 'parseDebug' to avoid compiler warnings
 ** (unused variable).
 **
