@@ -59,7 +59,17 @@ dviface.o: dviface.cc ../../config/include/osconfig.h \
  ../../dcmimgle/include/dipixel.h ../../dcmimgle/include/dimomod.h \
  ../../dcmimgle/include/diluptab.h ../../dcmimgle/include/dimoopx.h \
  ../include/dvsighdl.h ../../dcmsign/include/sicertvf.h \
- ../../dcmsign/include/sitypes.h ../../dcmsign/include/dcmsign.h
+ ../../dcmsign/include/dcmsign.h ../../dcmsr/include/dsrdoc.h \
+ ../../dcmsr/include/dsrdoctr.h ../../dcmsr/include/dsrtree.h \
+ ../../dcmsr/include/dsrtypes.h ../../dcmsr/include/dsrtncsr.h \
+ ../../dcmsr/include/dsrdoctn.h ../../dcmsr/include/dsrcodvl.h \
+ ../../dcmsr/include/dsrcitem.h ../../dcmsr/include/dsrnumvl.h \
+ ../../dcmsr/include/dsrscovl.h ../../dcmsr/include/dsrscogr.h \
+ ../../dcmsr/include/dsrtlist.h ../../dcmsr/include/dsrtcovl.h \
+ ../../dcmsr/include/dsrtcodt.h ../../dcmsr/include/dsrtcosp.h \
+ ../../dcmsr/include/dsrtcoto.h ../../dcmsr/include/dsrcomvl.h \
+ ../../dcmsr/include/dsrimgvl.h ../../dcmsr/include/dsrimgfr.h \
+ ../../dcmsr/include/dsrwavvl.h ../../dcmsr/include/dsrwavch.h
 dvpsab.o: dvpsab.cc ../../config/include/osconfig.h \
  ../../ofstd/include/ofstring.h ../../ofstd/include/oftypes.h \
  ../include/dvpsab.h ../../dcmdata/include/dctk.h \
@@ -1575,16 +1585,18 @@ dvpsvwl.o: dvpsvwl.cc ../../config/include/osconfig.h \
 dvsighdl.o: dvsighdl.cc ../../config/include/osconfig.h \
  ../include/dvsighdl.h ../include/dvpstyp.h \
  ../../ofstd/include/ofstring.h ../../ofstd/include/oftypes.h \
- ../../dcmsign/include/sicertvf.h ../../dcmsign/include/sitypes.h \
- ../../dcmdata/include/dctypes.h ../../dcmdata/include/dcdeftag.h \
- ../../dcmdata/include/dctagkey.h ../../dcmsign/include/dcmsign.h \
- ../../dcmdata/include/dcxfer.h ../../dcmdata/include/dcvr.h \
- ../../ofstd/include/ofglobal.h ../../ofstd/include/ofthread.h \
+ ../../dcmsign/include/sicertvf.h ../../dcmdata/include/dcerror.h \
+ ../../dcmdata/include/dcdeftag.h ../../dcmdata/include/dctagkey.h \
+ ../../dcmdata/include/dctypes.h ../../dcmsign/include/dcmsign.h \
  ../../dcmdata/include/dcobject.h ../../ofstd/include/ofconsol.h \
- ../../dcmdata/include/dcerror.h ../../dcmdata/include/dcstream.h \
- ../../dcmdata/include/dctag.h ../../dcmdata/include/dcdicent.h \
- ../../dcmdata/include/dclist.h ../../dcmdata/include/dcstack.h \
- ../../dcmdata/include/dcsequen.h ../../dcmdata/include/dcitem.h \
- ../../dcmdata/include/dcvrui.h ../../dcmdata/include/dcbytstr.h \
- ../../dcmdata/include/dcelem.h ../../dcmdata/include/dcvrat.h \
- ../include/dvpscf.h ../../dcmsign/include/sicert.h
+ ../../ofstd/include/ofthread.h ../../ofstd/include/ofglobal.h \
+ ../../dcmdata/include/dcxfer.h ../../dcmdata/include/dcvr.h \
+ ../../dcmdata/include/dcstream.h ../../dcmdata/include/dctag.h \
+ ../../dcmdata/include/dcdicent.h ../../dcmdata/include/dclist.h \
+ ../../dcmdata/include/dcstack.h ../../dcmdata/include/dcsequen.h \
+ ../../dcmdata/include/dcitem.h ../../dcmdata/include/dcvrui.h \
+ ../../dcmdata/include/dcbytstr.h ../../dcmdata/include/dcelem.h \
+ ../../dcmdata/include/dcvrat.h ../include/dvpscf.h \
+ ../../dcmsign/include/sicert.h ../../dcmsign/include/sitypes.h \
+ ../../dcmsign/include/sinullpr.h ../../dcmsign/include/siprivat.h \
+ ../../dcmsign/include/siripemd.h
