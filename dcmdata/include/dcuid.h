@@ -10,9 +10,9 @@
 ** routines for finding and creating UIDs.
 **
 ** Last Update:		$Author: hewett $
-** Update Date:		$Date: 1996-11-27 16:12:17 $
+** Update Date:		$Date: 1997-02-06 11:25:26 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcuid.h,v $
-** CVS/RCS Revision:	$Revision: 1.9 $
+** CVS/RCS Revision:	$Revision: 1.10 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -84,29 +84,13 @@ char* dcmGenerateUniqueIdentifer(char* uid, const char* prefix=NULL);
 /* 
 ** OFFIS UID is: 1.2.276.0.7230010
 ** UID Root for dcmtk DICOM project: 1.2.276.0.7230010.3
-** 
-** Private Suffix: .0
-** Software Suffix: .1
-** Study Suffix: .2
-** Series Suffix: .3
-** Image Instance Suffix: .4
-** Frame of Reference Suffix: .5
-** Instance Creator Suffix: .6
-** Fileset Suffix: .7
-** Detached Patient Mgmt Suffix: .8
-** Detached Visit Mgmt Suffix: .9
-** Detached Study Mgmt Suffix: .10
-** Study Component Mgmt Suffix: .11
-** Detached Results Mgmt Suffix: .12
-** Detached Interpretation Mgmt Suffix: .13
-** ...
-**/
+*/
 
 /* NOTE: Implementation version name may not be longer than 16 chars */
-#define OFFIS_DTK_IMPLEMENTATION_VERSION_NAME	"OFFIS-DCMTK-311"
+#define OFFIS_DTK_IMPLEMENTATION_VERSION_NAME	"OFFIS-DCMTK-312"
 
 #define OFFIS_UID_ROOT		       "1.2.276.0.7230010.3"
-#define OFFIS_DCMTK_VERSION	       "3.1.1"
+#define OFFIS_DCMTK_VERSION	       "3.1.2"
 #define OFFIS_IMPLEMENTATION_CLASS_UID OFFIS_UID_ROOT ".0." OFFIS_DCMTK_VERSION
 
 /* 
@@ -118,8 +102,14 @@ char* dcmGenerateUniqueIdentifer(char* uid, const char* prefix=NULL);
 
 /*
 ** Useful UID prefixes. These can be whatever you want.
+**
+** These site UIDs are arbitary, non-standard, with no meaning
+** and can be changed at any time.  Do _not_ rely on these values.  
+** Do _not_ assume any semantics when using these suffixes.
+**
 */
-#define SITE_PRIVATE_UID_ROOT				SITE_UID_ROOT ".0"
+#define SITE_SOFTWARE_UID_ROOT				SITE_UID_ROOT ".0"
+#define SITE_PRIVATE_UID_ROOT				SITE_UID_ROOT ".1"
 #define SITE_STUDY_UID_ROOT				SITE_UID_ROOT ".2"
 #define SITE_SERIES_UID_ROOT				SITE_UID_ROOT ".3"
 #define SITE_INSTANCE_UID_ROOT				SITE_UID_ROOT ".4"
@@ -138,7 +128,7 @@ char* dcmGenerateUniqueIdentifer(char* uid, const char* prefix=NULL);
 ** A private SOP Class UID which can be used in a file meta-header when
 ** no real SOP Class is stored in the file. -- NON-STANDARD
 */
-#define UID_PrivateGenericFileSOPClass	SITE_PRIVATE_UID_ROOT ".1"
+#define UID_PrivateGenericFileSOPClass	SITE_PRIVATE_UID_ROOT ".0.1"
 
 
 /*
@@ -252,7 +242,11 @@ char* dcmGenerateUniqueIdentifer(char* uid, const char* prefix=NULL);
 /*
 ** CVS/RCS Log:
 ** $Log: dcuid.h,v $
-** Revision 1.9  1996-11-27 16:12:17  hewett
+** Revision 1.10  1997-02-06 11:25:26  hewett
+** Updated Implementation Version Name and Implementation Class UID to
+** reflect the new version 3.1.2
+**
+** Revision 1.9  1996/11/27 16:12:17  hewett
 ** Added recommended uid roots for Patient/Study/Results Management objects.
 **
 ** Revision 1.8  1996/09/24 16:01:28  hewett
