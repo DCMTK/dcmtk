@@ -23,8 +23,8 @@
  *    classes: DSRUIDRefTreeNode
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-11-07 18:33:32 $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  Update Date:      $Date: 2001-02-02 14:41:50 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -89,13 +89,10 @@ E_Condition DSRUIDRefTreeNode::writeXML(ostream &stream,
                                         OFConsole *logStream) const
 {
     E_Condition result = EC_Normal;
-    stream << "<uidref";
-    if (isReferenceTarget())
-        stream << " id=\"" << getNodeID() << "\"";
-    stream << ">" << endl;
+    writeXMLItemStart(stream, flags);
     result = DSRDocumentTreeNode::writeXML(stream, flags, logStream);
     writeStringValueToXML(stream, getValue(), "value", flags & XF_writeEmptyTags);
-    stream << "</uidref>" << endl;
+    writeXMLItemEnd(stream, flags);
     return result;
 }
 
@@ -153,7 +150,11 @@ OFBool DSRUIDRefTreeNode::canAddNode(const E_DocumentType documentType,
 /*
  *  CVS/RCS Log:
  *  $Log: dsruidtn.cc,v $
- *  Revision 1.7  2000-11-07 18:33:32  joergr
+ *  Revision 1.8  2001-02-02 14:41:50  joergr
+ *  Added new option to dsr2xml allowing to specify whether value and/or
+ *  relationship type are to be encoded as XML attributes or elements.
+ *
+ *  Revision 1.7  2000/11/07 18:33:32  joergr
  *  Enhanced support for by-reference relationships.
  *
  *  Revision 1.6  2000/11/01 16:37:07  joergr

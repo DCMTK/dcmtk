@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000, OFFIS
+ *  Copyright (C) 2000-2001, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,8 +23,8 @@
  *    classes: DSRTypes
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-01-25 11:47:43 $
- *  CVS/RCS Revision: $Revision: 1.13 $
+ *  Update Date:      $Date: 2001-02-02 14:37:33 $
+ *  CVS/RCS Revision: $Revision: 1.14 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -157,6 +157,13 @@ class DSRTypes
 
     /// write all tags even if their value is empty
     static const size_t XF_writeEmptyTags;
+
+    /// encode value type as attribute instead of element text
+    static const size_t XF_valueTypeAsAttribute;
+
+    /// encode relationship type as attribute instead of element text
+    static const size_t XF_relationshipTypeAsAttribute;
+
     //@}
 
 
@@ -443,6 +450,12 @@ class DSRTypes
      ** @return defined term if successful, empty string otherwise (never NULL)
      */
     static const char *valueTypeToDefinedTerm(const E_ValueType valueType);
+
+    /** convert value type to XML tag name
+     ** @param  valueType  value type to be converted
+     ** @return XML tag name if successful, empty string otherwise (never NULL)
+     */
+    static const char *valueTypeToXMLTagName(const E_ValueType valueType);
 
     /** convert value type to readable name.
      *  Such a readable name is better suited for printing/rendering.
@@ -993,7 +1006,11 @@ class DSRTypes
 /*
  *  CVS/RCS Log:
  *  $Log: dsrtypes.h,v $
- *  Revision 1.13  2001-01-25 11:47:43  joergr
+ *  Revision 1.14  2001-02-02 14:37:33  joergr
+ *  Added new option to dsr2xml allowing to specify whether value and/or
+ *  relationship type are to be encoded as XML attributes or elements.
+ *
+ *  Revision 1.13  2001/01/25 11:47:43  joergr
  *  Always remove signature sequences from certain dataset sequences (e.g.
  *  VerifyingObserver or PredecessorDocuments).
  *

@@ -23,8 +23,8 @@
  *    classes: DSRNumTreeNode
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-11-07 18:33:30 $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  Update Date:      $Date: 2001-02-02 14:41:52 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -81,13 +81,10 @@ E_Condition DSRNumTreeNode::writeXML(ostream &stream,
                                      OFConsole *logStream) const
 {
     E_Condition result = EC_Normal;
-    stream << "<num";
-    if (isReferenceTarget())
-        stream << " id=\"" << getNodeID() << "\"";
-    stream << ">" << endl;
+    writeXMLItemStart(stream, flags);
     result = DSRDocumentTreeNode::writeXML(stream, flags, logStream);
     DSRNumericMeasurementValue::writeXML(stream, flags, logStream);
-    stream << "</num>" << endl;
+    writeXMLItemEnd(stream, flags);
     return result;
 }
 
@@ -192,7 +189,11 @@ OFBool DSRNumTreeNode::canAddNode(const E_DocumentType documentType,
 /*
  *  CVS/RCS Log:
  *  $Log: dsrnumtn.cc,v $
- *  Revision 1.6  2000-11-07 18:33:30  joergr
+ *  Revision 1.7  2001-02-02 14:41:52  joergr
+ *  Added new option to dsr2xml allowing to specify whether value and/or
+ *  relationship type are to be encoded as XML attributes or elements.
+ *
+ *  Revision 1.6  2000/11/07 18:33:30  joergr
  *  Enhanced support for by-reference relationships.
  *
  *  Revision 1.5  2000/11/01 16:37:00  joergr

@@ -23,9 +23,9 @@
  *           XML format
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-11-09 11:31:21 $
+ *  Update Date:      $Date: 2001-02-02 14:36:27 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmsr/apps/dsr2xml.cc,v $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -159,6 +159,9 @@ int main(int argc, char *argv[])
         cmd.addOption("--read-xfer-big",       "-tb",       "read with explicit VR big endian TS");
         cmd.addOption("--read-xfer-implicit",  "-ti",       "read with implicit VR little endian TS");
     cmd.addGroup("output options:");
+      cmd.addSubGroup("encoding:");
+        cmd.addOption("--attr-value-type",     "+Ev",       "encode value type as XML attribute");
+        cmd.addOption("--attr-relationship",   "+Er",       "encode relationship type as XML attribute");
       cmd.addSubGroup("writing:");
         cmd.addOption("--write-empty-tags",    "+We",       "write all tags even if their value is empty");
 
@@ -198,6 +201,11 @@ int main(int argc, char *argv[])
             xfer = EXS_LittleEndianImplicit;
         }
         cmd.endOptionBlock();
+
+        if (cmd.findOption("--attr-value-type"))
+            opt_writeFlags |= DSRTypes::XF_valueTypeAsAttribute;
+        if (cmd.findOption("--attr-relationship"))
+            opt_writeFlags |= DSRTypes::XF_relationshipTypeAsAttribute;
 
         if (cmd.findOption("--write-empty-tags"))
             opt_writeFlags |= DSRTypes::XF_writeEmptyTags;
@@ -239,7 +247,11 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dsr2xml.cc,v $
- * Revision 1.2  2000-11-09 11:31:21  joergr
+ * Revision 1.3  2001-02-02 14:36:27  joergr
+ * Added new option to dsr2xml allowing to specify whether value and/or
+ * relationship type are to be encoded as XML attributes or elements.
+ *
+ * Revision 1.2  2000/11/09 11:31:21  joergr
  * Corrected typo.
  *
  * Revision 1.1  2000/11/01 16:09:57  joergr

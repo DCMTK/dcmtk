@@ -23,8 +23,8 @@
  *    classes: DSRTextTreeNode
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-11-09 20:34:02 $
- *  CVS/RCS Revision: $Revision: 1.8 $
+ *  Update Date:      $Date: 2001-02-02 14:41:51 $
+ *  CVS/RCS Revision: $Revision: 1.9 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -99,13 +99,10 @@ E_Condition DSRTextTreeNode::writeXML(ostream &stream,
                                       OFConsole *logStream) const
 {
     E_Condition result = EC_Normal;
-    stream << "<text";
-    if (isReferenceTarget())
-        stream << " id=\"" << getNodeID() << "\"";
-    stream << ">" << endl;
+    writeXMLItemStart(stream, flags);
     result = DSRDocumentTreeNode::writeXML(stream, flags, logStream);
     writeStringValueToXML(stream, getValue(), "value", flags & XF_writeEmptyTags);
-    stream << "</text>" << endl;
+    writeXMLItemEnd(stream, flags);
     return result;
 }
 
@@ -197,7 +194,11 @@ OFBool DSRTextTreeNode::canAddNode(const E_DocumentType documentType,
 /*
  *  CVS/RCS Log:
  *  $Log: dsrtextn.cc,v $
- *  Revision 1.8  2000-11-09 20:34:02  joergr
+ *  Revision 1.9  2001-02-02 14:41:51  joergr
+ *  Added new option to dsr2xml allowing to specify whether value and/or
+ *  relationship type are to be encoded as XML attributes or elements.
+ *
+ *  Revision 1.8  2000/11/09 20:34:02  joergr
  *  Added support for non-ASCII characters in HTML 3.2 (use numeric value).
  *
  *  Revision 1.7  2000/11/07 18:33:32  joergr

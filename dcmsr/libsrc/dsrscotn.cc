@@ -23,8 +23,8 @@
  *    classes: DSRSCoordTreeNode
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-11-07 18:33:31 $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  Update Date:      $Date: 2001-02-02 14:41:52 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -86,13 +86,12 @@ E_Condition DSRSCoordTreeNode::writeXML(ostream &stream,
                                         OFConsole *logStream) const
 {
     E_Condition result = EC_Normal;
-    stream << "<scoord type=\"" << graphicTypeToEnumeratedValue(getGraphicType()) << "\"";
-    if (isReferenceTarget())
-        stream << " id=\"" << getNodeID() << "\"";
+    writeXMLItemStart(stream, flags, OFFalse /* closingBracket */);
+    stream << " type=\"" << graphicTypeToEnumeratedValue(getGraphicType()) << "\"";
     stream << ">" << endl;
     result = DSRDocumentTreeNode::writeXML(stream, flags, logStream);
     DSRSpatialCoordinatesValue::writeXML(stream, flags, logStream);
-    stream << "</scoord>" << endl;
+    writeXMLItemEnd(stream, flags);
     return result;
 }
 
@@ -160,7 +159,11 @@ OFBool DSRSCoordTreeNode::canAddNode(const E_DocumentType documentType,
 /*
  *  CVS/RCS Log:
  *  $Log: dsrscotn.cc,v $
- *  Revision 1.5  2000-11-07 18:33:31  joergr
+ *  Revision 1.6  2001-02-02 14:41:52  joergr
+ *  Added new option to dsr2xml allowing to specify whether value and/or
+ *  relationship type are to be encoded as XML attributes or elements.
+ *
+ *  Revision 1.5  2000/11/07 18:33:31  joergr
  *  Enhanced support for by-reference relationships.
  *
  *  Revision 1.4  2000/11/01 16:37:03  joergr

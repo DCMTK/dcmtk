@@ -23,8 +23,8 @@
  *    classes: DSRTypes
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-01-25 11:50:10 $
- *  CVS/RCS Revision: $Revision: 1.14 $
+ *  Update Date:      $Date: 2001-02-02 14:41:51 $
+ *  CVS/RCS Revision: $Revision: 1.15 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -65,40 +65,42 @@ END_EXTERN_C
  *---------------------------------*/
 
 /* renderHTML flags */
-const size_t DSRTypes::HF_neverExpandChildrenInline = 1 <<  0;
-const size_t DSRTypes::HF_renderInlineCodes         = 1 <<  1;
-const size_t DSRTypes::HF_renderConceptNameCodes    = 1 <<  2;
-const size_t DSRTypes::HF_renderNumericUnitCodes    = 1 <<  3;
-const size_t DSRTypes::HF_useCodeMeaningAsUnit      = 1 <<  4;
-const size_t DSRTypes::HF_renderPatientTitle        = 1 <<  5;
-const size_t DSRTypes::HF_renderNoDocumentHeader    = 1 <<  6;
-const size_t DSRTypes::HF_renderDcmtkFootnote       = 1 <<  7;
-const size_t DSRTypes::HF_renderFullData            = 1 <<  8;
-const size_t DSRTypes::HF_copyStyleSheetContent     = 1 <<  9;
-const size_t DSRTypes::HF_version32Compatibility    = 1 << 10;
-const size_t DSRTypes::HF_addDocumentTypeReference  = 1 << 11;
+const size_t DSRTypes::HF_neverExpandChildrenInline   = 1 <<  0;
+const size_t DSRTypes::HF_renderInlineCodes           = 1 <<  1;
+const size_t DSRTypes::HF_renderConceptNameCodes      = 1 <<  2;
+const size_t DSRTypes::HF_renderNumericUnitCodes      = 1 <<  3;
+const size_t DSRTypes::HF_useCodeMeaningAsUnit        = 1 <<  4;
+const size_t DSRTypes::HF_renderPatientTitle          = 1 <<  5;
+const size_t DSRTypes::HF_renderNoDocumentHeader      = 1 <<  6;
+const size_t DSRTypes::HF_renderDcmtkFootnote         = 1 <<  7;
+const size_t DSRTypes::HF_renderFullData              = 1 <<  8;
+const size_t DSRTypes::HF_copyStyleSheetContent       = 1 <<  9;
+const size_t DSRTypes::HF_version32Compatibility      = 1 << 10;
+const size_t DSRTypes::HF_addDocumentTypeReference    = 1 << 11;
 /* internal */
-const size_t DSRTypes::HF_renderItemsSeparately     = 1 << 12;
-const size_t DSRTypes::HF_renderItemInline          = 1 << 13;
-const size_t DSRTypes::HF_currentlyInsideAnnex      = 1 << 14;
-const size_t DSRTypes::HF_createFootnoteReferences  = 1 << 15;
-const size_t DSRTypes::HF_convertNonASCIICharacters = 1 << 16;
+const size_t DSRTypes::HF_renderItemsSeparately       = 1 << 12;
+const size_t DSRTypes::HF_renderItemInline            = 1 << 13;
+const size_t DSRTypes::HF_currentlyInsideAnnex        = 1 << 14;
+const size_t DSRTypes::HF_createFootnoteReferences    = 1 << 15;
+const size_t DSRTypes::HF_convertNonASCIICharacters   = 1 << 16;
 /* shortcuts */
-const size_t DSRTypes::HF_renderAllCodes            = DSRTypes::HF_renderInlineCodes | DSRTypes::HF_renderConceptNameCodes |
-                                                      DSRTypes::HF_renderNumericUnitCodes;
-const size_t DSRTypes::HF_internalUseOnly           = DSRTypes::HF_renderItemsSeparately | DSRTypes::HF_renderItemInline |
-                                                      DSRTypes::HF_currentlyInsideAnnex | DSRTypes::HF_createFootnoteReferences |
-                                                      DSRTypes::HF_convertNonASCIICharacters;
+const size_t DSRTypes::HF_renderAllCodes              = DSRTypes::HF_renderInlineCodes | DSRTypes::HF_renderConceptNameCodes |
+                                                        DSRTypes::HF_renderNumericUnitCodes;
+const size_t DSRTypes::HF_internalUseOnly             = DSRTypes::HF_renderItemsSeparately | DSRTypes::HF_renderItemInline |
+                                                        DSRTypes::HF_currentlyInsideAnnex | DSRTypes::HF_createFootnoteReferences |
+                                                        DSRTypes::HF_convertNonASCIICharacters;
 
 /* writeXML flags */
-const size_t DSRTypes::XF_writeEmptyTags            = 1;
+const size_t DSRTypes::XF_writeEmptyTags              = 1;
+const size_t DSRTypes::XF_valueTypeAsAttribute        = 2;
+const size_t DSRTypes::XF_relationshipTypeAsAttribute = 4;
 
 /* print flags */
-const size_t DSRTypes::PF_printItemPosition         = 1;
-const size_t DSRTypes::PF_shortenLongItemValues     = 2;
-const size_t DSRTypes::PF_printSOPInstanceUID       = 4;
-const size_t DSRTypes::PF_printConceptNameCodes     = 8;
-const size_t DSRTypes::PF_printAllCodes             = DSRTypes::PF_printConceptNameCodes;
+const size_t DSRTypes::PF_printItemPosition           = 1;
+const size_t DSRTypes::PF_shortenLongItemValues       = 2;
+const size_t DSRTypes::PF_printSOPInstanceUID         = 4;
+const size_t DSRTypes::PF_printConceptNameCodes       = 8;
+const size_t DSRTypes::PF_printAllCodes               = DSRTypes::PF_printConceptNameCodes;
 
 
 /*---------------------*
@@ -125,6 +127,7 @@ struct S_ValueTypeNameMap
 {
     DSRTypes::E_ValueType Type;
     const char *DefinedTerm;
+    const char *XMLTagName;
     const char *ReadableName;
 };
 
@@ -204,21 +207,21 @@ static const S_RelationshipTypeNameMap RelationshipTypeNameMap[] =
 
 static const S_ValueTypeNameMap ValueTypeNameMap[] =
 {
-    {DSRTypes::VT_invalid,   "",          "invalid/unknown value type"},
-    {DSRTypes::VT_Text,      "TEXT",      "Text"},
-    {DSRTypes::VT_Code,      "CODE",      "Code"},
-    {DSRTypes::VT_Num,       "NUM",       "Number"},
-    {DSRTypes::VT_DateTime,  "DATETIME",  "Date/Time"},
-    {DSRTypes::VT_Date,      "DATE",      "Date"},
-    {DSRTypes::VT_Time,      "TIME",      "Time"},
-    {DSRTypes::VT_UIDRef,    "UIDREF",    "UID Reference"},
-    {DSRTypes::VT_PName,     "PNAME",     "Person Name"},
-    {DSRTypes::VT_SCoord,    "SCOORD",    "Spatial Coordinates"},
-    {DSRTypes::VT_TCoord,    "TCOORD",    "Temporal Coordinates"},
-    {DSRTypes::VT_Composite, "COMPOSITE", "Composite Object"},
-    {DSRTypes::VT_Image,     "IMAGE",     "Image"},
-    {DSRTypes::VT_Waveform,  "WAVEFORM",  "Waveform"},
-    {DSRTypes::VT_Container, "CONTAINER", "Container"}
+    {DSRTypes::VT_invalid,   "",          "item",      "invalid/unknown value type"},
+    {DSRTypes::VT_Text,      "TEXT",      "text",      "Text"},
+    {DSRTypes::VT_Code,      "CODE",      "code",      "Code"},
+    {DSRTypes::VT_Num,       "NUM",       "num",       "Number"},
+    {DSRTypes::VT_DateTime,  "DATETIME",  "datetime",  "Date/Time"},
+    {DSRTypes::VT_Date,      "DATE",      "date",      "Date"},
+    {DSRTypes::VT_Time,      "TIME",      "time",      "Time"},
+    {DSRTypes::VT_UIDRef,    "UIDREF",    "uidref",    "UID Reference"},
+    {DSRTypes::VT_PName,     "PNAME",     "pname",     "Person Name"},
+    {DSRTypes::VT_SCoord,    "SCOORD",    "scoord",    "Spatial Coordinates"},
+    {DSRTypes::VT_TCoord,    "TCOORD",    "tcoord",    "Temporal Coordinates"},
+    {DSRTypes::VT_Composite, "COMPOSITE", "composite", "Composite Object"},
+    {DSRTypes::VT_Image,     "IMAGE",     "image",     "Image"},
+    {DSRTypes::VT_Waveform,  "WAVEFORM",  "waveform",  "Waveform"},
+    {DSRTypes::VT_Container, "CONTAINER", "container", "Container"}
 };
 
 
@@ -333,6 +336,15 @@ const char *DSRTypes::valueTypeToDefinedTerm(const E_ValueType valueType)
     while ((iterator->Type != VT_last) && (iterator->Type != valueType))
         iterator++;
     return iterator->DefinedTerm;
+}
+
+
+const char *DSRTypes::valueTypeToXMLTagName(const E_ValueType valueType)
+{
+    const S_ValueTypeNameMap *iterator = ValueTypeNameMap;
+    while ((iterator->Type != VT_last) && (iterator->Type != valueType))
+        iterator++;
+    return iterator->XMLTagName;
 }
 
 
@@ -1051,41 +1063,67 @@ const OFString &DSRTypes::dicomToXMLPersonName(const OFString &dicomPersonName,
         } else
             str2 = dicomPersonName.substr(pos1 + 1);
 
+        OFBool newLine = OFFalse;
         OFString xmlString;
         /* prefix */
         if (writeEmptyValue || (str4.length() > 0))
         {
             xmlPersonName += "<prefix>";
             xmlPersonName += convertToMarkupString(str4, xmlString);
-            xmlPersonName += "</prefix>\n";
+            xmlPersonName += "</prefix>";
+            newLine = OFTrue;
         }
         /* first name */
         if (writeEmptyValue || (str2.length() > 0))
         {
+            if (newLine)
+            {
+                xmlPersonName += '\n';
+                newLine = OFFalse;
+            }
             xmlPersonName += "<first>";
             xmlPersonName += convertToMarkupString(str2, xmlString);
-            xmlPersonName += "</first>\n";
+            xmlPersonName += "</first>";
+            newLine = OFTrue;
         }
         /* middle name */
         if (writeEmptyValue || (str3.length() > 0))
         {
+            if (newLine)
+            {
+                xmlPersonName += '\n';
+                newLine = OFFalse;
+            }
             xmlPersonName += "<middle>";
             xmlPersonName += convertToMarkupString(str3, xmlString);
-            xmlPersonName += "</middle>\n";
+            xmlPersonName += "</middle>";
+            newLine = OFTrue;
         }
         /* last name */
         if (writeEmptyValue || (str1.length() > 0))
         {
+            if (newLine)
+            {
+                xmlPersonName += '\n';
+                newLine = OFFalse;
+            }
             xmlPersonName += "<last>";
             xmlPersonName += convertToMarkupString(str1, xmlString);
-            xmlPersonName += "</last>\n";
+            xmlPersonName += "</last>";
+            newLine = OFTrue;
         }
         /* suffix */
         if (writeEmptyValue || (str5.length() > 0))
         {
+            if (newLine)
+            {
+                xmlPersonName += '\n';
+                newLine = OFFalse;
+            }
             xmlPersonName += "<suffix>";
             xmlPersonName += convertToMarkupString(str5, xmlString);
             xmlPersonName += "</suffix>";
+            newLine = OFTrue;
         }
     } else
         xmlPersonName = dicomPersonName;
@@ -1481,7 +1519,11 @@ E_Condition DSRTypes::appendStream(ostream &mainStream,
 /*
  *  CVS/RCS Log:
  *  $Log: dsrtypes.cc,v $
- *  Revision 1.14  2001-01-25 11:50:10  joergr
+ *  Revision 1.15  2001-02-02 14:41:51  joergr
+ *  Added new option to dsr2xml allowing to specify whether value and/or
+ *  relationship type are to be encoded as XML attributes or elements.
+ *
+ *  Revision 1.14  2001/01/25 11:50:10  joergr
  *  Always remove signature sequences from certain dataset sequences (e.g.
  *  VerifyingObserver or PredecessorDocuments).
  *

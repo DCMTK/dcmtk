@@ -23,8 +23,8 @@
  *    classes: DSRContainerTreeNode
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-01-25 15:32:17 $
- *  CVS/RCS Revision: $Revision: 1.12 $
+ *  Update Date:      $Date: 2001-02-02 14:41:54 $
+ *  CVS/RCS Revision: $Revision: 1.13 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -105,12 +105,11 @@ E_Condition DSRContainerTreeNode::writeXML(ostream &stream,
                                            OFConsole *logStream) const
 {
     E_Condition result = EC_Normal;
-    stream << "<container flag=\"" << continuityOfContentToEnumeratedValue(ContinuityOfContent) << "\"";
-    if (isReferenceTarget())
-        stream << " id=\"" << getNodeID() << "\"";
+    writeXMLItemStart(stream, flags, OFFalse /* closingBracket */);
+    stream << " flag=\"" << continuityOfContentToEnumeratedValue(ContinuityOfContent) << "\"";
     stream << ">" << endl;
     result = DSRDocumentTreeNode::writeXML(stream, flags, logStream);
-    stream << "</container>" << endl;
+    writeXMLItemEnd(stream, flags);
     return result;
 }
 
@@ -271,7 +270,11 @@ E_Condition DSRContainerTreeNode::setContinuityOfContent(const E_ContinuityOfCon
 /*
  *  CVS/RCS Log:
  *  $Log: dsrcontn.cc,v $
- *  Revision 1.12  2001-01-25 15:32:17  joergr
+ *  Revision 1.13  2001-02-02 14:41:54  joergr
+ *  Added new option to dsr2xml allowing to specify whether value and/or
+ *  relationship type are to be encoded as XML attributes or elements.
+ *
+ *  Revision 1.12  2001/01/25 15:32:17  joergr
  *  Allow invalid continuity of content flag when reading SR datasets.
  *
  *  Revision 1.11  2000/11/14 11:18:59  joergr

@@ -23,8 +23,8 @@
  *    classes: DSRImageTreeNode
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-11-07 18:33:30 $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  Update Date:      $Date: 2001-02-02 14:41:53 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -86,13 +86,10 @@ E_Condition DSRImageTreeNode::writeXML(ostream &stream,
                                        OFConsole *logStream) const
 {
     E_Condition result = EC_Normal;
-    stream << "<image";
-    if (isReferenceTarget())
-        stream << " id=\"" << getNodeID() << "\"";
-    stream << ">" << endl;
+    writeXMLItemStart(stream, flags);
     result = DSRDocumentTreeNode::writeXML(stream, flags, logStream);
     DSRImageReferenceValue::writeXML(stream, flags, logStream);
-    stream << "</image>" << endl;
+    writeXMLItemEnd(stream, flags);
     return result;
 }
 
@@ -178,7 +175,11 @@ OFBool DSRImageTreeNode::canAddNode(const E_DocumentType documentType,
 /*
  *  CVS/RCS Log:
  *  $Log: dsrimgtn.cc,v $
- *  Revision 1.7  2000-11-07 18:33:30  joergr
+ *  Revision 1.8  2001-02-02 14:41:53  joergr
+ *  Added new option to dsr2xml allowing to specify whether value and/or
+ *  relationship type are to be encoded as XML attributes or elements.
+ *
+ *  Revision 1.7  2000/11/07 18:33:30  joergr
  *  Enhanced support for by-reference relationships.
  *
  *  Revision 1.6  2000/11/01 16:36:59  joergr

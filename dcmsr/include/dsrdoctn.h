@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000, OFFIS
+ *  Copyright (C) 2000-2001, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,8 +23,8 @@
  *    classes: DSRDocumentTreeNode
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-01-18 15:53:34 $
- *  CVS/RCS Revision: $Revision: 1.8 $
+ *  Update Date:      $Date: 2001-02-02 14:37:33 $
+ *  CVS/RCS Revision: $Revision: 1.9 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -382,6 +382,23 @@ class DSRDocumentTreeNode
                                               const size_t flags,
                                               OFConsole *logStream) const;
 
+    /** write common item start (XML tag)
+     ** @param  stream          output stream to which the XML document is written
+     *  @param  flags           flag used to customize the output (see DSRTypes::XF_xxx)
+     *  @param  closingBracket  write closing bracket of XML start tag if OFTrue, otherwise the
+     *                          bracket has to be closed in the calling method
+     */
+    void writeXMLItemStart(ostream &stream,
+                           const size_t flags,
+                           const OFBool closingBracket = OFTrue) const;
+
+    /** write common item start (XML tag)
+     ** @param  stream  output stream to which the XML document is written
+     *  @param  flags   flag used to customize the output (see DSRTypes::XF_xxx)
+     */
+    void writeXMLItemEnd(ostream &stream,
+                         const size_t flags) const;
+
     /** read SR document content module
      ** @param  dataset       DICOM dataset from which the data should be read
      *  @param  documentType  type of the document to be read (used for checking purposes)
@@ -552,7 +569,11 @@ class DSRDocumentTreeNode
 /*
  *  CVS/RCS Log:
  *  $Log: dsrdoctn.h,v $
- *  Revision 1.8  2001-01-18 15:53:34  joergr
+ *  Revision 1.9  2001-02-02 14:37:33  joergr
+ *  Added new option to dsr2xml allowing to specify whether value and/or
+ *  relationship type are to be encoded as XML attributes or elements.
+ *
+ *  Revision 1.8  2001/01/18 15:53:34  joergr
  *  Added support for digital signatures.
  *
  *  Revision 1.7  2000/11/13 10:26:21  joergr

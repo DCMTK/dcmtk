@@ -23,8 +23,8 @@
  *    classes: DSRDocumentTreeNode
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-01-18 15:55:20 $
- *  CVS/RCS Revision: $Revision: 1.11 $
+ *  Update Date:      $Date: 2001-02-02 14:41:53 $
+ *  CVS/RCS Revision: $Revision: 1.12 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -124,7 +124,7 @@ E_Condition DSRDocumentTreeNode::writeXML(ostream &stream,
     if (!isValid())
         printInvalidContentItemMessage(logStream, "Writing to XML", this);
     /* relationship type */
-    if (RelationshipType != RT_isRoot)
+    if ((RelationshipType != RT_isRoot) && !(flags & XF_relationshipTypeAsAttribute))
         writeStringValueToXML(stream, relationshipTypeToDefinedTerm(RelationshipType), "relationship", flags & XF_writeEmptyTags);
     /* concept name */
     if (ConceptName.isValid())
@@ -154,6 +154,33 @@ E_Condition DSRDocumentTreeNode::writeXML(ostream &stream,
         } while ((result == EC_Normal) && (cursor.gotoNext()));
     }
     return result;
+}
+
+
+void DSRDocumentTreeNode::writeXMLItemStart(ostream &stream,
+                                            const size_t flags,
+                                            const OFBool closingBracket) const
+{
+    if (flags & XF_valueTypeAsAttribute)
+        stream << "<item valType=\"" << valueTypeToDefinedTerm(ValueType) << "\"";
+    else
+        stream << "<" << valueTypeToXMLTagName(ValueType);
+    if ((RelationshipType != RT_isRoot) && (flags & XF_relationshipTypeAsAttribute))
+        stream << " relType=\"" << relationshipTypeToDefinedTerm(RelationshipType) << "\"";
+    if (ReferenceTarget)
+        stream << " id=\"" << getNodeID() << "\"";
+    if (closingBracket)
+        stream << ">" << endl;        
+}
+
+
+void DSRDocumentTreeNode::writeXMLItemEnd(ostream &stream,
+                                          const size_t flags) const
+{
+    if (flags & XF_valueTypeAsAttribute)
+        stream << "</item>" << endl;
+    else
+        stream << "</" << valueTypeToXMLTagName(ValueType) <<  ">" << endl;
 }
 
 
@@ -767,7 +794,11 @@ const OFString &DSRDocumentTreeNode::getRelationshipText(const E_RelationshipTyp
 /*
  *  CVS/RCS Log:
  *  $Log: dsrdoctn.cc,v $
- *  Revision 1.11  2001-01-18 15:55:20  joergr
+ *  Revision 1.12  2001-02-02 14:41:53  joergr
+ *  Added new option to dsr2xml allowing to specify whether value and/or
+ *  relationship type are to be encoded as XML attributes or elements.
+ *
+ *  Revision 1.11  2001/01/18 15:55:20  joergr
  *  Added support for digital signatures.
  *
  *  Revision 1.10  2000/11/13 10:27:00  joergr
