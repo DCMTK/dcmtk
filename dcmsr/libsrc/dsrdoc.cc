@@ -23,8 +23,8 @@
  *    classes: DSRDocument
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-10-16 12:02:48 $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  Update Date:      $Date: 2000-10-16 16:32:18 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -650,6 +650,12 @@ const char *DSRDocument::getStudyDescription() const
 }
 
 
+const char *DSRDocument::getSeriesDescription() const
+{
+    return getStringValueFromElement(SeriesDescription);
+}
+
+
 const char *DSRDocument::getManufacturer() const
 {
     return getStringValueFromElement(Manufacturer);
@@ -796,6 +802,12 @@ const OFString &DSRDocument::getStudyDescription(OFString &string) const
 }
 
 
+const OFString &DSRDocument::getSeriesDescription(OFString &string) const
+{
+    return getStringValueFromElement(SeriesDescription, string);
+}
+
+
 const OFString &DSRDocument::getManufacturer(OFString &string) const
 {
     return getStringValueFromElement(Manufacturer, string);
@@ -909,6 +921,13 @@ E_Condition DSRDocument::setStudyDescription(const OFString &string)
 {
     /* might add check for correct format (VR) later on */
     return StudyDescription.putString(string.c_str());
+}
+
+
+E_Condition DSRDocument::setSeriesDescription(const OFString &string)
+{
+    /* might add check for correct format (VR) later on */
+    return SeriesDescription.putString(string.c_str());
 }
 
 
@@ -1136,7 +1155,10 @@ void DSRDocument::updateAttributes()
 /*
  *  CVS/RCS Log:
  *  $Log: dsrdoc.cc,v $
- *  Revision 1.2  2000-10-16 12:02:48  joergr
+ *  Revision 1.3  2000-10-16 16:32:18  joergr
+ *  Added missing get/setSeriesDescription() methods.
+ *
+ *  Revision 1.2  2000/10/16 12:02:48  joergr
  *  Made method creating a new SOP instance public. Added check for correct SOP
  *  instance UID and SOP class UID to validity check.
  *
