@@ -151,7 +151,10 @@ AC_CHECK_PROTOTYPE(flock, sys/file.h)
 AC_CHECK_PROTOTYPE(listen, sys/types.h sys/socket.h)
 AC_CHECK_PROTOTYPE(socket, sys/types.h sys/socket.h)
 AC_CHECK_PROTOTYPE(connect, sys/types.h sys/socket.h)
-AC_CHECK_PROTOTYPE(select, sys/types.h sys/socket.h)
+AC_CHECK_PROTOTYPE(select, sys/types.h sys/socket.h sys/time.h)
+if test $ac_cv_prototype_select = yes ; then
+AC_CHECK_INTP_SELECT(sys/types.h sys/socket.h sys/time.h)
+fi
 AC_CHECK_PROTOTYPE(setsockopt, sys/types.h sys/socket.h)
 AC_CHECK_PROTOTYPE(getsockopt, sys/types.h sys/socket.h)
 AC_CHECK_PROTOTYPE(getsockname, sys/types.h sys/socket.h)

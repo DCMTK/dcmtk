@@ -369,6 +369,10 @@
 /* Define if your system has a prototype for select */
 #undef HAVE_PROTOTYPE_SELECT
 
+/* Define if your system declares argument 2-4 of select() 
+   as int * instead of struct fd_set * */
+#undef HAVE_INTP_SELECT
+
 /* Define if your system has a prototype for setsockopt */
 #undef HAVE_PROTOTYPE_SETSOCKOPT
 

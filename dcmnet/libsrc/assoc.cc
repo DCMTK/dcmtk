@@ -67,10 +67,10 @@
 **	Module Prefix: ASC_
 **
 **
-** Last Update:		$Author: hewett $
-** Update Date:		$Date: 1996-09-27 08:36:14 $
+** Last Update:		$Author: meichel $
+** Update Date:		$Date: 1996-12-03 15:29:46 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/libsrc/assoc.cc,v $
-** CVS/RCS Revision:	$Revision: 1.9 $
+** CVS/RCS Revision:	$Revision: 1.10 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -1360,7 +1360,11 @@ ASC_selectReadableAssociation(T_ASC_Association* assocs[],
 	}
     }
 
+#ifdef HAVE_INTP_SELECT
+    nfound = select(maxs + 1, (int *)(&fdset), NULL, NULL, &t);
+#else
     nfound = select(maxs + 1, &fdset, NULL, NULL, &t);
+#endif
     if (nfound<=0) return FALSE;	/* none available for reading */
 
     for (i=0; i<assocCount; i++) {
@@ -1392,7 +1396,11 @@ ASC_dataWaiting(T_ASC_Association * association, int timeout)
     FD_SET(s, &fdset);
     t.tv_sec = timeout;
     t.tv_usec = 0;
+#ifdef HAVE_INTP_SELECT
+    nfound = select(s + 1, (int *)(&fdset), NULL, NULL, &t);
+#else
     nfound = select(s + 1, &fdset, NULL, NULL, &t);
+#endif
     return nfound > 0;
 }
 
@@ -1414,7 +1422,11 @@ ASC_associationWaiting(T_ASC_Network * network, int timeout)
     FD_SET(s, &fdset);
     t.tv_sec = timeout;
     t.tv_usec = 0;
+#ifdef HAVE_INTP_SELECT
+    nfound = select(s + 1, (int *)(&fdset), NULL, NULL, &t);
+#else
     nfound = select(s + 1, &fdset, NULL, NULL, &t);
+#endif
     return nfound > 0;
 }
 
@@ -1794,7 +1806,10 @@ ASC_dropAssociation(T_ASC_Association * association)
 /*
 ** CVS Log
 ** $Log: assoc.cc,v $
-** Revision 1.9  1996-09-27 08:36:14  hewett
+** Revision 1.10  1996-12-03 15:29:46  meichel
+** Added support for HP-UX 9.05 systems using GCC 2.7.2.1
+**
+** Revision 1.9  1996/09/27 08:36:14  hewett
 ** Eliminated used before set warning (IBM AIX C Set++ Compiler).
 **
 ** Revision 1.8  1996/09/03 11:42:56  hewett

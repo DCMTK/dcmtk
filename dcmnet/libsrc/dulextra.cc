@@ -53,10 +53,10 @@
 ** Purpose: 
 **	Supplementary DUL functions.
 **
-** Last Update:		$Author: hewett $
-** Update Date:		$Date: 1996-06-20 07:35:50 $
+** Last Update:		$Author: meichel $
+** Update Date:		$Date: 1996-12-03 15:29:48 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/libsrc/dulextra.cc,v $
-** CVS/RCS Revision:	$Revision: 1.4 $
+** CVS/RCS Revision:	$Revision: 1.5 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -118,7 +118,11 @@ DUL_dataWaiting(DUL_ASSOCIATIONKEY * callerAssociation, int timeout)
 	FD_SET(s, &fdset);
 	t.tv_sec = timeout;
 	t.tv_usec = 0;
+#ifdef HAVE_INTP_SELECT
+	nfound = select(s + 1, (int *)(&fdset), NULL, NULL, &t);
+#else
 	nfound = select(s + 1, &fdset, NULL, NULL, &t);
+#endif
 	if (nfound <= 0)
 	    dataWaiting = FALSE;
 	else {
@@ -173,7 +177,11 @@ DUL_associationWaiting(DUL_NETWORKKEY * callerNet, int timeout)
 	FD_SET(s, &fdset);
 	t.tv_sec = timeout;
 	t.tv_usec = 0;
+#ifdef HAVE_INTP_SELECT
+	nfound = select(s + 1, (int *)(&fdset), NULL, NULL, &t);
+#else
 	nfound = select(s + 1, &fdset, NULL, NULL, &t);
+#endif
 	if (nfound <= 0)
 	    assocWaiting = FALSE;
 	else {
@@ -192,7 +200,10 @@ DUL_associationWaiting(DUL_NETWORKKEY * callerNet, int timeout)
 /*
 ** CVS Log
 ** $Log: dulextra.cc,v $
-** Revision 1.4  1996-06-20 07:35:50  hewett
+** Revision 1.5  1996-12-03 15:29:48  meichel
+** Added support for HP-UX 9.05 systems using GCC 2.7.2.1
+**
+** Revision 1.4  1996/06/20 07:35:50  hewett
 ** Removed inclusion of system header already included by dcompat.h
 ** and made sure that dcompat.h is always included (via dicom.h).
 **

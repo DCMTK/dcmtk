@@ -46,9 +46,9 @@
 ** Author, Date:	Stephen M. Moore, 15-Apr-93
 ** Intent:		Define tables and provide functions that implement
 **			the DICOM Upper Layer (DUL) finite state machine.
-** Last Update:		$Author: hewett $, $Date: 1996-09-27 08:38:41 $
+** Last Update:		$Author: meichel $, $Date: 1996-12-03 15:29:49 $
 ** Source File:		$RCSfile: dulfsm.cc,v $
-** Revision:		$Revision: 1.7 $
+** Revision:		$Revision: 1.8 $
 ** Status:		$State: Exp $
 */
 
@@ -3576,7 +3576,12 @@ networkDataAvailable(int s, int timeout)
     FD_SET(s, &fdset);
     t.tv_sec = timeout;
     t.tv_usec = 0;
+
+#ifdef HAVE_INTP_SELECT
+    nfound = select(s + 1, (int *)(&fdset), NULL, NULL, &t);
+#else
     nfound = select(s + 1, &fdset, NULL, NULL, &t);
+#endif
     if (nfound <= 0)
 	return FALSE;
     else {
@@ -4010,7 +4015,10 @@ DULPRV_translateAssocReq(unsigned char *buffer,
 /*
 ** CVS Log
 ** $Log: dulfsm.cc,v $
-** Revision 1.7  1996-09-27 08:38:41  hewett
+** Revision 1.8  1996-12-03 15:29:49  meichel
+** Added support for HP-UX 9.05 systems using GCC 2.7.2.1
+**
+** Revision 1.7  1996/09/27 08:38:41  hewett
 ** Support for WINSOCK socket library.  Use send instead of write, recv
 ** instead of read, closesocket instead of close.
 **

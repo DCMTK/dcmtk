@@ -54,9 +54,9 @@
 ** Author, Date:	Stephen M. Moore, 14-Apr-93
 ** Intent:		This module contains the public entry points for the
 **			DICOM Upper Layer (DUL) protocol package.
-** Last Update:		$Author: hewett $, $Date: 1996-09-27 08:38:40 $
+** Last Update:		$Author: meichel $, $Date: 1996-12-03 15:29:47 $
 ** Source File:		$RCSfile: dul.cc,v $
-** Revision:		$Revision: 1.6 $
+** Revision:		$Revision: 1.7 $
 ** Status:		$State: Exp $
 */
 
@@ -1474,8 +1474,13 @@ receiveTransportConnectionTCP(PRIVATE_NETWORKKEY ** network,
 	FD_SET((*network)->networkSpecific.TCP.listenSocket, &fdset);
 	timeout.tv_sec = 0;
 	timeout.tv_usec = 0;
+#ifdef HAVE_INTP_SELECT
+	nfound = select((*network)->networkSpecific.TCP.listenSocket + 1,
+			(int *)(&fdset), NULL, NULL, &timeout);
+#else
 	nfound = select((*network)->networkSpecific.TCP.listenSocket + 1,
 			&fdset, NULL, NULL, &timeout);
+#endif
 	if (nfound != 0) {
 	    if (FD_ISSET((*network)->networkSpecific.TCP.listenSocket, &fdset))
 		connected++;
@@ -1491,8 +1496,13 @@ receiveTransportConnectionTCP(PRIVATE_NETWORKKEY ** network,
 
 	    timeout.tv_sec = 5;
 	    timeout.tv_usec = 0;
+#ifdef HAVE_INTP_SELECT
+	    nfound = select((*network)->networkSpecific.TCP.listenSocket + 1,
+			    (int *)(&fdset), NULL, NULL, &timeout);
+#else
 	    nfound = select((*network)->networkSpecific.TCP.listenSocket + 1,
 			    &fdset, NULL, NULL, &timeout);
+#endif
 	    if (nfound != 0) {
 		if (FD_ISSET((*network)->networkSpecific.TCP.listenSocket,
 			     &fdset))
@@ -2224,7 +2234,10 @@ clearPresentationContext(LST_HEAD ** l)
 /*
 ** CVS Log
 ** $Log: dul.cc,v $
-** Revision 1.6  1996-09-27 08:38:40  hewett
+** Revision 1.7  1996-12-03 15:29:47  meichel
+** Added support for HP-UX 9.05 systems using GCC 2.7.2.1
+**
+** Revision 1.6  1996/09/27 08:38:40  hewett
 ** Support for WINSOCK socket library.  Use send instead of write, recv
 ** instead of read, closesocket instead of close.
 **

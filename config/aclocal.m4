@@ -7,13 +7,16 @@ dnl
 dnl Authors: Andreas Barth, Marco Eichelberg
 dnl
 dnl Last Update:  $Author: meichel $
-dnl Revision:     $Revision: 1.3 $
+dnl Revision:     $Revision: 1.4 $
 dnl Status:       $State: Exp $
 dnl
-dnl $Id: aclocal.m4,v 1.3 1996-03-28 11:05:22 meichel Exp $
+dnl $Id: aclocal.m4,v 1.4 1996-12-03 15:28:19 meichel Exp $
 dnl
 dnl $Log: aclocal.m4,v $
-dnl Revision 1.3  1996-03-28 11:05:22  meichel
+dnl Revision 1.4  1996-12-03 15:28:19  meichel
+dnl Added support for HP-UX 9.05 systems using GCC 2.7.2.1
+dnl
+dnl Revision 1.3  1996/03/28 11:05:22  meichel
 dnl Added macro AC_CHECK_DECLARATION which checks if a type declaration exists
 dnl in certain header files (e.g. for struct sembuf)
 dnl
@@ -167,3 +170,76 @@ fi
 unset ac_cv_declaration
 ])
 
+
+dnl AC_CHECK_INTP_SELECT checks if the prototype for select()
+dnl   specifies arguments 2-4 to be int* instead of struct fd_set *.
+dnl   This is true for HP UX 9.x and causes C++ code to break.
+
+dnl Note:
+dnl   Since GNU autoheader does not support this macro, you must create
+dnl   an entry in your acconfig.h.
+dnl Examples:
+dnl   in configure.in: 
+dnl     AC_CHECK_INTP_SELECT(sys/time.h sys/types.h)
+dnl   in acconfig.h:
+dnl     #undef HAVE_INTP_SELECT
+
+dnl AC_CHECK_INTP_SELECT(HEADER-FILE..., ACTION-IF-FOUND [, ACTION-IF-NOT-FOUND])
+AC_DEFUN(AC_CHECK_INTP_SELECT,
+[AC_MSG_CHECKING([ifelse([$1], , [if select() needs int* parameters], 
+[if select() needs int* parameters (in $1)])])
+ifelse([$1], , [ac_includes=""
+],
+[ac_includes=""
+for ac_header in $1
+do
+  ac_includes="$ac_includes
+#include<$ac_header>"
+done])
+AC_CACHE_VAL(ac_cv_prototype_intp_select,
+[AC_TRY_COMPILE(
+ifelse(AC_LANG, CPLUSPLUS, [#ifdef __cplusplus
+extern "C" {
+#endif
+])
+[$ac_includes
+]
+ifelse(AC_LANG, CPLUSPLUS, [#ifdef __cplusplus
+}
+#endif
+]),
+[
+  int i;
+  struct fd_set fds;
+  i = select(1, &fds, &fds, &fds, NULL);
+],
+eval "ac_cv_prototype_intp_select=no", 
+[AC_TRY_COMPILE(
+ifelse(AC_LANG, CPLUSPLUS, [#ifdef __cplusplus
+extern "C" {
+#endif
+])
+[$ac_includes
+]
+ifelse(AC_LANG, CPLUSPLUS, [#ifdef __cplusplus
+}
+#endif
+]),
+[
+  int i;
+  int fds;
+  i = select(1, &fds, &fds, &fds, NULL);
+],
+eval "ac_cv_prototype_intp_select=yes", eval "ac_cv_prototype_intp_select=no")])])
+if eval "test \"`echo $ac_cv_prototype_intp_select`\" = yes"; then
+  AC_MSG_RESULT(yes)
+changequote(, )dnl
+  ac_tr_prototype=HAVE_INTP_SELECT
+changequote([, ])dnl
+  AC_DEFINE_UNQUOTED($ac_tr_prototype)
+  ifelse([$2], , :, [$2])
+else
+  AC_MSG_RESULT(no)
+  ifelse([$3], , , [$3])
+fi
+])
