@@ -98,6 +98,9 @@ other network options:
         --abort
           abort association instead of releasing it
 
+        --cancel  [n]umber: integer
+          cancel after n responses (default: never)
+
   -X    --extract
           extract responses to file (rsp0001.dcm, ...)
 \endverbatim

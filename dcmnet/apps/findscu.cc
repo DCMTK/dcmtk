@@ -22,9 +22,9 @@
  *  Purpose: Query/Retrieve Service Class User (C-FIND operation)
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2004-02-26 17:17:43 $
+ *  Update Date:      $Date: 2004-02-27 12:51:51 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/apps/findscu.cc,v $
- *  CVS/RCS Revision: $Revision: 1.40 $
+ *  CVS/RCS Revision: $Revision: 1.41 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -86,8 +86,13 @@ static OFCmdUnsignedInt opt_maxReceivePDULength = ASC_DEFAULTMAXPDU;
 static OFCmdUnsignedInt opt_repeatCount = 1;
 static OFBool           opt_extractResponsesToFile = OFFalse;
 static const char *     opt_abstractSyntax = UID_FINDModalityWorklistInformationModel;
+static OFCmdSignedInt   opt_cancelAfterNResponses = -1;
+static DcmDataset *     overrideKeys = NULL;
 
-static DcmDataset *overrideKeys = NULL;
+typedef struct {
+    T_ASC_Association *assoc;
+    T_ASC_PresentationContextID presId;
+} MyCallbackInfo;
 
 static void
 errmsg(const char *msg,...)
@@ -272,6 +277,8 @@ main(int argc, char *argv[])
       cmd.addOption("--max-pdu",                "-pdu",  1,  opt4.c_str(), opt3.c_str());
       cmd.addOption("--repeat",                          1,  "[n]umber: integer", "repeat n times");
       cmd.addOption("--abort",                               "abort association instead of releasing it");
+      cmd.addOption("--cancel",                          1,  "[n]umber: integer",
+                                                             "cancel after n responses (default: never)");
       cmd.addOption("--extract",                "-X",        "extract responses to file (rsp0001.dcm, ...)");
 
 #ifdef WITH_OPENSSL
@@ -392,6 +399,7 @@ main(int argc, char *argv[])
       if (cmd.findOption("--max-pdu")) app.checkValue(cmd.getValueAndCheckMinMax(opt_maxReceivePDULength, ASC_MINIMUMPDUSIZE, ASC_MAXIMUMPDUSIZE));
       if (cmd.findOption("--repeat"))  app.checkValue(cmd.getValueAndCheckMin(opt_repeatCount, 1));
       if (cmd.findOption("--abort"))   opt_abortAssociation = OFTrue;
+      if (cmd.findOption("--cancel"))  app.checkValue(cmd.getValueAndCheckMin(opt_cancelAfterNResponses, 0));
       if (cmd.findOption("--extract")) opt_extractResponsesToFile = OFTrue;
 
       /* finally parse filenames */
@@ -882,8 +890,8 @@ static OFBool writeToFile(const char* ofname, DcmDataset *dataset)
 
 static void
 progressCallback(
-        void * /*callbackData*/ ,
-        T_DIMSE_C_FindRQ * /*request*/ ,
+        void *callbackData,
+        T_DIMSE_C_FindRQ *request,
         int responseCount,
         T_DIMSE_C_FindRSP *rsp,
         DcmDataset *responseIdentifiers
@@ -918,6 +926,24 @@ progressCallback(
         sprintf(rspIdsFileName, "rsp%04d.dcm", responseCount);
         writeToFile(rspIdsFileName, responseIdentifiers);
     }
+
+    MyCallbackInfo *myCallbackData = OFstatic_cast(MyCallbackInfo *, callbackData);
+
+    /* should we send a cancel back ?? */
+    if (opt_cancelAfterNResponses == responseCount)
+    {
+        if (opt_verbose)
+        {
+            printf("Sending Cancel RQ, MsgId: %d, PresId: %d\n", request->MessageID, myCallbackData->presId);
+        }
+        OFCondition cond = DIMSE_sendCancelRequest(myCallbackData->assoc, myCallbackData->presId, request->MessageID);
+        if (cond.bad())
+        {
+            errmsg("Cancel RQ Failed:");
+            DimseCondition::dump(cond);
+        }
+    }
+
 }
 
 static OFCondition
@@ -939,7 +965,7 @@ findSCU(T_ASC_Association * assoc, const char *fname)
     T_DIMSE_C_FindRQ req;
     T_DIMSE_C_FindRSP rsp;
     DcmDataset *statusDetail = NULL;
-
+    MyCallbackInfo callbackData;
     DcmFileFormat dcmff;
 
     /* if there is a valid filename */
@@ -977,6 +1003,10 @@ findSCU(T_ASC_Association * assoc, const char *fname)
     req.DataSetType = DIMSE_DATASET_PRESENT;
     req.Priority = DIMSE_PRIORITY_LOW;
 
+    /* prepare the callback data */
+    callbackData.assoc = assoc;
+    callbackData.presId = presId;
+
     /* if required, dump some more general information */
     if (opt_verbose) {
         printf("Find SCU RQ: MsgID %d\n", msgId);
@@ -987,7 +1017,7 @@ findSCU(T_ASC_Association * assoc, const char *fname)
 
     /* finally conduct transmission of data */
     OFCondition cond = DIMSE_findUser(assoc, presId, &req, dcmff.getDataset(),
-                          progressCallback, NULL,
+                          progressCallback, &callbackData,
                           DIMSE_BLOCKING, 0,
                           &rsp, &statusDetail);
 
@@ -1052,7 +1082,10 @@ cfind(T_ASC_Association * assoc, const char *fname)
 /*
 ** CVS Log
 ** $Log: findscu.cc,v $
-** Revision 1.40  2004-02-26 17:17:43  meichel
+** Revision 1.41  2004-02-27 12:51:51  meichel
+** Added --cancel option to findscu, similar to the option available in movescu.
+**
+** Revision 1.40  2004/02/26 17:17:43  meichel
 ** Fixed minor memory leak in findscu
 **
 ** Revision 1.39  2003/03/14 15:57:34  meichel
