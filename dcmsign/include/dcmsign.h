@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2001, OFFIS
+ *  Copyright (C) 1998-2002, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,8 +23,8 @@
  *    classes: DcmSignature
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-11-16 15:50:49 $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  Update Date:      $Date: 2002-11-27 14:53:40 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -41,9 +41,8 @@
 #include "dcxfer.h"  /* for E_TransferSyntax */
 #include "sitypes.h"
 
-BEGIN_EXTERN_C
-#include <stdio.h>
-END_EXTERN_C
+#define INCLUDE_CSTDIO
+#include "ofstdinc.h"
 
 class DcmItem;
 class DcmStack;
@@ -276,7 +275,10 @@ private:
 
 /*
  *  $Log: dcmsign.h,v $
- *  Revision 1.4  2001-11-16 15:50:49  meichel
+ *  Revision 1.5  2002-11-27 14:53:40  meichel
+ *  Adapted module dcmsign to use of new header file ofstdinc.h
+ *
+ *  Revision 1.4  2001/11/16 15:50:49  meichel
  *  Adapted digital signature code to final text of supplement 41.
  *
  *  Revision 1.3  2001/09/26 14:30:18  meichel

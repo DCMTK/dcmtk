@@ -22,8 +22,8 @@
  *  Purpose: Create and Verify DICOM Digital Signatures
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-11-26 08:45:20 $
- *  CVS/RCS Revision: $Revision: 1.14 $
+ *  Update Date:      $Date: 2002-11-27 14:53:38 $
+ *  CVS/RCS Revision: $Revision: 1.15 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -32,22 +32,11 @@
 
 #include "osconfig.h"    /* make sure OS specific configuration is included first */
 
-#ifdef HAVE_STDLIB_H
-#ifndef  _BCB4
-/* workaround for bug in Borland C++ Builder 4 */
-BEGIN_EXTERN_C
-#endif
-#include <stdlib.h>
-#ifndef  _BCB4
-END_EXTERN_C
-#endif
-#endif
-
-BEGIN_EXTERN_C
-#include <ctype.h>
-#include <stdio.h>
-#include <string.h>
-END_EXTERN_C
+#define INCLUDE_CSTDLIB
+#define INCLUDE_CSTDIO
+#define INCLUDE_CSTRING
+#define INCLUDE_CCTYPE
+#include "ofstdinc.h"
 
 #ifdef HAVE_GUSI_H
 #include <GUSI.h>
@@ -1133,7 +1122,10 @@ int main(int, char *[])
 
 /*
  *  $Log: dcmsign.cc,v $
- *  Revision 1.14  2002-11-26 08:45:20  meichel
+ *  Revision 1.15  2002-11-27 14:53:38  meichel
+ *  Adapted module dcmsign to use of new header file ofstdinc.h
+ *
+ *  Revision 1.14  2002/11/26 08:45:20  meichel
  *  Replaced all includes for "zlib.h" with <zlib.h>
  *    to avoid inclusion of zlib.h in the makefile dependencies.
  *

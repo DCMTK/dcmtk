@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2001, OFFIS
+ *  Copyright (C) 1998-2002, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,8 +23,8 @@
  *    classes: SiSHA1
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-09-26 14:30:26 $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  Update Date:      $Date: 2002-11-27 14:53:42 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -38,8 +38,10 @@
 #include "sisha1.h"
 #include "dcerror.h"
 
+#define INCLUDE_CSTDLIB
+#include "ofstdinc.h"
+
 BEGIN_EXTERN_C
-#include <stdlib.h> /* for NULL */
 #include <openssl/sha.h>
 END_EXTERN_C
 
@@ -99,7 +101,10 @@ const int sisha1_cc_dummy_to_keep_linker_from_moaning = 0;
 
 /*
  *  $Log: sisha1.cc,v $
- *  Revision 1.3  2001-09-26 14:30:26  meichel
+ *  Revision 1.4  2002-11-27 14:53:42  meichel
+ *  Adapted module dcmsign to use of new header file ofstdinc.h
+ *
+ *  Revision 1.3  2001/09/26 14:30:26  meichel
  *  Adapted dcmsign to class OFCondition
  *
  *  Revision 1.2  2001/06/01 15:50:55  meichel
