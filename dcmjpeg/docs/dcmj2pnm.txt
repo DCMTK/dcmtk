@@ -181,6 +181,11 @@ availability of the TIFF compression options depends on the libtiff
 configuration.  In particular, the patented LZW algorithm may not be
 available.
 
+The --write-png option is only available when DCMTK has been configured
+and compiled with support for the external "libpng" PNG library.  
+Interlace enables progressive image view while loading the PNG file.
+Only a few applications take care of the metainfo (TEXT) in a png file.
+
 Sample monitor and printer characteristics files are available in the folder
 dcmimgle/tests.
 
