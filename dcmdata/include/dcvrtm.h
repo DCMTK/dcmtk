@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2001, OFFIS
+ *  Copyright (C) 1994-2002, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -17,14 +17,14 @@
  *
  *  Module:  dcmdata
  *
- *  Author:  Gerd Ehlers
+ *  Author:  Gerd Ehlers, Joerg Riesmeier
  *
  *  Purpose: Interface of class DcmTime
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-10-10 15:18:17 $
+ *  Update Date:      $Date: 2002-04-11 12:25:10 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcvrtm.h,v $
- *  CVS/RCS Revision: $Revision: 1.12 $
+ *  CVS/RCS Revision: $Revision: 1.13 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -38,6 +38,7 @@
 
 #include "dctypes.h"
 #include "dcbytstr.h"
+#include "oftime.h"
 
 
 /** a class representing the DICOM value representation 'Time' (TM)
@@ -54,44 +55,70 @@ class DcmTime : public DcmByteString
     virtual DcmEVR ident(void) const { return EVR_TM; }
 
     virtual OFCondition getOFString(
-	    OFString & str,
-	    const unsigned long pos,
-	    OFBool normalize = OFTrue);
+        OFString & str,
+        const unsigned long pos,
+        OFBool normalize = OFTrue);
 
     virtual OFCondition getOFStringArray(
-	    OFString & str,
-	    OFBool normalize = OFTrue);
+        OFString & str,
+        OFBool normalize = OFTrue);
 
-	/** set the element value to the current system time.
-	 *  The DICOM TM format supported by this function is "HHMM[SS[.FFFFFF]]" where
-	 *  the brackets enclose optional parts. If the current system time or parts of it
-	 *  are unavailable the corresponding values are set to "0" and an error code is
-	 *  returned.
-	 *  @param seconds add optional seconds ("SS") if OFTrue
-	 *  @param fraction add optional fractional part of a second (".FFFFFF") if OFTrue
-	 *   (requires parameter 'seconds' to be also OFTrue)
-	 *  @return EC_Normal upon success, an error code otherwise
-	 */
+    /** set the element value to the current system time.
+     *  The DICOM TM format supported by this function is "HHMM[SS[.FFFFFF]]" where
+     *  the brackets enclose optional parts. If the current system time or parts of it
+     *  are unavailable the corresponding values are set to "0" and an error code is
+     *  returned.
+     *  @param seconds add optional seconds ("SS") if OFTrue
+     *  @param fraction add optional fractional part of a second (".FFFFFF") if OFTrue
+     *   (requires parameter 'seconds' to be also OFTrue)
+     *  @return EC_Normal upon success, an error code otherwise
+     */
     OFCondition setCurrentTime(
         const OFBool seconds = OFTrue,
         const OFBool fraction = OFFalse);
 
-	/** get the current element value in ISO time format.
-	 *  The ISO time format supported by this function is "HH:MM[:SS[.FFFFFF]]"
-	 *  where the brackets enclose optional parts. Please note that the element value
-	 *  is expected to be in valid DICOM TM format ("[HH[MM[SS[.FFFFFF]]]]", 
-	 *  "[HH[:MM[:SS[.FFFFFF]]]]" is also supported for reasons of backward compatibility).
-	 *  If this function fails the result variable 'formattedTime' is cleared automatically.
-	 *  @param formattedTime reference to string variable where the result is stored
-	 *  @param pos index of the element component in case of value multiplicity (0..vm-1)
-	 *  @param seconds add optional seconds (":SS") if OFTrue
-	 *  @param fraction add optional fractional part of a second (".FFFFFF") if OFTrue
-	 *   (requires parameter 'seconds' to be also OFTrue)
-	 *  @param createMissingPart if OFTrue create optional parts (seconds and/or fractional
-	 *   part of a seconds) if absent in the element value
-	 *  @param supportOldFormat if OFTrue support old (prior V3.0) time format (see above)
-	 *  @return EC_Normal upon success, an error code otherwise
-	 */
+    /** set the element value to the given time
+     *  @param timeValue time to be set (should be a valid time)
+     *  @return EC_Normal upon success, an error code otherwise
+     */
+    OFCondition setOFTime(const OFTime &timeValue);
+
+    /** get the current element value in OFTime format.
+     *  Please note that the element value is expected to be in valid DICOM TM format
+     *  ("[HH[MM[SS[.FFFFFF]]]]", "[HH[:MM[:SS[.FFFFFF]]]]" is also supported for reasons
+     *  of backward compatibility). Since there is no time zone for the DICOM TM format
+     *  local time is assumed (the time zone of 'timeValue' is set automatically).
+     *  If this function fails the result variable 'timeValue' is cleared automatically.
+     *  @param timeValue reference to OFTime variable where the result is stored
+     *  @param pos index of the element component in case of value multiplicity (0..vm-1)
+     *  @param supportOldFormat if OFTrue support old (prior V3.0) time format (see above)
+     *  @return EC_Normal upon success, an error code otherwise
+     */
+    OFCondition getOFTime(
+        OFTime &timeValue,
+        const unsigned long pos = 0,
+        const OFBool supportOldFormat = OFTrue);
+
+    /** get the current element value in ISO time format.
+     *  The ISO time format supported by this function is "HH:MM[:SS[.FFFFFF]]"
+     *  where the brackets enclose optional parts. Please note that the element value
+     *  is expected to be in valid DICOM TM format ("[HH[MM[SS[.FFFFFF]]]]",
+     *  "[HH[:MM[:SS[.FFFFFF]]]]" is also supported for reasons of backward compatibility).
+     *  If this function fails the result variable 'formattedTime' is cleared automatically.
+     *  Please note that if the "Timezone Offset From UTC" attribute (0008,0201) is present,
+     *  it applies to all TM attributes in the object. However, the time zone is not taken
+     *  into account for the creation of the ISO formatted time.
+     *  See also "getTimeZoneFromString()" below.
+     *  @param formattedTime reference to string variable where the result is stored
+     *  @param pos index of the element component in case of value multiplicity (0..vm-1)
+     *  @param seconds add optional seconds (":SS") if OFTrue
+     *  @param fraction add optional fractional part of a second (".FFFFFF") if OFTrue
+     *   (requires parameter 'seconds' to be also OFTrue)
+     *  @param createMissingPart if OFTrue create optional parts (seconds and/or fractional
+     *   part of a seconds) if absent in the element value
+     *  @param supportOldFormat if OFTrue support old (prior V3.0) time format (see above)
+     *  @return EC_Normal upon success, an error code otherwise
+     */
     OFCondition getISOFormattedTime(
         OFString &formattedTime,
         const unsigned long pos = 0,
@@ -102,38 +129,72 @@ class DcmTime : public DcmByteString
 
     /* --- static helper functions --- */
 
-	/** get the current system time.
-	 *  The DICOM TM format supported by this function is "HHMM[SS[.FFFFFF]]" where
-	 *  the brackets enclose optional parts. If the current system time or parts of it
-	 *  are unavailable the corresponding values are set to "0" and an error code is
-	 *  returned.
-	 *  @param dicomTime reference to string variable where the result is stored
-	 *  @param seconds add optional seconds ("SS") if OFTrue
-	 *  @param fraction add optional fractional part of a second (".FFFFFF") if OFTrue
-	 *   (requires parameter 'seconds' to be also OFTrue)
-	 *  @return EC_Normal upon success, an error code otherwise
-	 */
+    /** get the current system time.
+     *  The DICOM TM format supported by this function is "HHMM[SS[.FFFFFF]]" where
+     *  the brackets enclose optional parts. If the current system time or parts of it
+     *  are unavailable the corresponding values are set to "0" and an error code is
+     *  returned.
+     *  @param dicomTime reference to string variable where the result is stored
+     *  @param seconds add optional seconds ("SS") if OFTrue
+     *  @param fraction add optional fractional part of a second (".FFFFFF") if OFTrue
+     *   (requires parameter 'seconds' to be also OFTrue)
+     *  @return EC_Normal upon success, an error code otherwise
+     */
     static OFCondition getCurrentTime(
         OFString &dicomTime,
         const OFBool seconds = OFTrue,
         const OFBool fraction = OFFalse);
 
-	/** get the specified DICOM time value in ISO format.
-	 *  The ISO time format supported by this function is "HH:MM[:SS[.FFFFFF]]"
-	 *  where the brackets enclose optional parts. Please note that the specified value
-	 *  is expected to be in valid DICOM TM format ("[HH[MM[SS[.FFFFFF]]]]",
-	 *  "[HH[:MM[:SS[.FFFFFF]]]]" is also supported for reasons of backward compatibility).
-	 *  If this function fails the result variable 'formattedTime' is cleared automatically.
-	 *  @param dicomTime string value in DICOM TM format to be converted to ISO format
-	 *  @param formattedTime reference to string variable where the result is stored
-	 *  @param seconds add optional seconds (":SS") if OFTrue
-	 *  @param fraction add optional fractional part of a second (".FFFFFF") if OFTrue
-	 *   (requires parameter 'seconds' to be also OFTrue)
-	 *  @param createMissingPart if OFTrue create optional parts (seconds and/or fractional
-	 *   part of a seconds) if absent in the DICOM TM value
-	 *  @param supportOldFormat if OFTrue support old (prior V3.0) time format (see above)
-	 *  @return EC_Normal upon success, an error code otherwise
-	 */
+    /** get the specified OFTime value in DICOM format.
+     *  The DICOM TM format supported by this function is "HHMM[SS[.FFFFFF]]" where
+     *  the brackets enclose optional parts. If the current system time or parts of it
+     *  are unavailable the corresponding values are set to "0" and an error code is
+     *  returned.
+     *  @param timeValue time to be converted to DICOM format
+     *  @param dicomTime reference to string variable where the result is stored
+     *  @param seconds add optional seconds ("SS") if OFTrue
+     *  @param fraction add optional fractional part of a second (".FFFFFF") if OFTrue
+     *   (requires parameter 'seconds' to be also OFTrue)
+     *  @return EC_Normal upon success, an error code otherwise
+     */
+    static OFCondition getDicomTimeFromOFTime(
+        const OFTime &timeValue,
+        OFString &dicomTime,
+        const OFBool seconds = OFTrue,
+        const OFBool fraction = OFFalse);
+
+    /** get the specified DICOM time value in OFTime format.
+     *  Please note that the element value is expected to be in valid DICOM TM format
+     *  ("[HH[MM[SS[.FFFFFF]]]]", "[HH[:MM[:SS[.FFFFFF]]]]" is also supported for reasons
+     *  of backward compatibility). Since there is no time zone for the DICOM TM format
+     *  local time is assumed (the time zone of 'timeValue' is set automatically).
+     *  If this function fails the result variable 'timeValue' is cleared automatically.
+     *  @param dicomTime string value in DICOM TM format to be converted to ISO format
+     *  @param timeValue reference to OFTime variable where the result is stored
+     *  @param supportOldFormat if OFTrue support old (prior V3.0) time format (see above)
+     *  @return EC_Normal upon success, an error code otherwise
+     */
+    static OFCondition getOFTimeFromString(
+        const OFString &dicomTime,
+        OFTime &timeValue,
+        const OFBool supportOldFormat = OFTrue);
+
+    /** get the specified DICOM time value in ISO format.
+     *  The ISO time format supported by this function is "HH:MM[:SS[.FFFFFF]]"
+     *  where the brackets enclose optional parts. Please note that the specified value
+     *  is expected to be in valid DICOM TM format ("[HH[MM[SS[.FFFFFF]]]]",
+     *  "[HH[:MM[:SS[.FFFFFF]]]]" is also supported for reasons of backward compatibility).
+     *  If this function fails the result variable 'formattedTime' is cleared automatically.
+     *  @param dicomTime string value in DICOM TM format to be converted to ISO format
+     *  @param formattedTime reference to string variable where the result is stored
+     *  @param seconds add optional seconds (":SS") if OFTrue
+     *  @param fraction add optional fractional part of a second (".FFFFFF") if OFTrue
+     *   (requires parameter 'seconds' to be also OFTrue)
+     *  @param createMissingPart if OFTrue create optional parts (seconds and/or fractional
+     *   part of a seconds) if absent in the DICOM TM value
+     *  @param supportOldFormat if OFTrue support old (prior V3.0) time format (see above)
+     *  @return EC_Normal upon success, an error code otherwise
+     */
     static OFCondition getISOFormattedTimeFromString(
         const OFString &dicomTime,
         OFString &formattedTime,
@@ -141,15 +202,36 @@ class DcmTime : public DcmByteString
         const OFBool fraction = OFFalse,
         const OFBool createMissingPart = OFFalse,
         const OFBool supportOldFormat = OFTrue);
+
+    /** get the specified DICOM time zone in number of hours format
+     *  DICOM standard states that if the "Timezone Offset From UTC" attribute (0008,0201) is
+     *  present it applies to all TM attributes in the object. This functions allows to convert
+     *  the DICOM format ("&ZZZZ" where "&" is "+" or "-" and "ZZZZ" hours and minutes) to a
+     *  floating point value, e.g. "+1.0" means plus one hour and "-2.5" minus two and a half
+     *  hour, i.e. 2 hours and 30 minutes.
+     *  The resulting 'timeZone' value can be used in conjuction with a OFTime object to convert
+     *  the time to different time zones (e.g. to local time or UTC).
+     *  @param dicomTimeZone string value in DICOM format ("&ZZZZ") to be converted
+     *  @param timeZone reference to floating point variable where the resulting UTC offset is stored
+     *  @return EC_Normal upon success, an error code otherwise
+     */
+    static OFCondition getTimeZoneFromString(
+        const OFString &dicomTimeZone,
+        double &timeZone);
 };
 
 
 #endif // DCVRTM_H
 
+
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrtm.h,v $
-** Revision 1.12  2001-10-10 15:18:17  joergr
+** Revision 1.13  2002-04-11 12:25:10  joergr
+** Enhanced DICOM date, time and date/time classes. Added support for new
+** standard date and time functions.
+**
+** Revision 1.12  2001/10/10 15:18:17  joergr
 ** Added new flag to date/time routines allowing to choose whether the old
 ** prior V3.0 format for the corresponding DICOM VRs is supported or not.
 **
