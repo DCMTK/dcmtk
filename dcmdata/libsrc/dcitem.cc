@@ -11,9 +11,9 @@
 **
 **
 ** Last Update:		$Author: hewett $
-** Update Date:		$Date: 1996-03-11 14:16:00 $
+** Update Date:		$Date: 1996-03-12 15:23:27 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcitem.cc,v $
-** CVS/RCS Revision:	$Revision: 1.7 $
+** CVS/RCS Revision:	$Revision: 1.8 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -538,7 +538,7 @@ E_Condition DcmItem::addGroupLengthElements(const E_TransferSyntax xfer,
                     if ( dO->ident() != EVR_UL ) // kein Unsigned Long Element
                     {                            // ersetze durch UL
                         delete elementList->remove();
-                        DcmTag tagUL( actGrp, 0x0000 );
+                        DcmTag tagUL( actGrp, 0x0000, EVR_UL );
                         DcmUnsignedLong *dUL = new DcmUnsignedLong( tagUL );
                         elementList->insert( dUL, ELP_prev );
                         dO = dUL;
@@ -549,7 +549,7 @@ E_Condition DcmItem::addGroupLengthElements(const E_TransferSyntax xfer,
                 }
                 else
                 {                                // fuege neue Group Length ein
-                    DcmTag tagUL( actGrp, 0x0000 );
+                    DcmTag tagUL( actGrp, 0x0000, EVR_UL );
                     DcmUnsignedLong *dUL = new DcmUnsignedLong( tagUL );
                     elementList->insert( dUL, ELP_prev );
                     dO = dUL;
@@ -1686,7 +1686,12 @@ E_Condition newDicomElement(DcmElement * & newElement,
 /*
 ** CVS/RCS Log:
 ** $Log: dcitem.cc,v $
-** Revision 1.7  1996-03-11 14:16:00  hewett
+** Revision 1.8  1996-03-12 15:23:27  hewett
+** When generating group length tags, the VR of a tag is now explicity
+** set to be EVR_UL.  Group length tags not in the dictionary (e.g. for
+** private groups) were getting coded incorrectly.
+**
+** Revision 1.7  1996/03/11 14:16:00  hewett
 ** Corrected error whereby explicit encoding was being recognised as implicit.
 **
 ** Revision 1.6  1996/03/11 13:03:51  hewett
