@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2001, OFFIS
+ *  Copyright (C) 1998-2002, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose: Presentation State Viewer - Print Spooler
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-11-09 16:06:04 $
+ *  Update Date:      $Date: 2002-04-11 13:15:38 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmpstat/apps/dcmprscu.cc,v $
- *  CVS/RCS Revision: $Revision: 1.8 $
+ *  CVS/RCS Revision: $Revision: 1.9 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -73,6 +73,7 @@ END_EXTERN_C
 #include "dviface.h"    /* for DVInterface */
 #include "ofstring.h"   /* for OFString */
 #include "ofbmanip.h"   /* for OFBitmanipTemplate */
+#include "ofdatime.h"   /* for OFDateTime */
 #include "dcuid.h"      /* for dcmtk version name */
 #include "cmdlnarg.h"   /* for prepareCmdLineArgs */
 #include "ofconapp.h"   /* for OFConsoleApplication */
@@ -203,8 +204,7 @@ static OFCondition spoolStoredPrintFile(const char *filename, DVInterface &dvi)
 
   if (opt_spoolMode)
   {
-    time_t now = time(NULL);
-  	*logstream << endl << asctime(localtime(&now)) << "processing " << filename << endl;
+  	*logstream << endl << OFDateTime::getCurrentDateTime() << endl << "processing " << filename << endl;
   }
 
   if (filename==NULL) return EC_IllegalCall;
@@ -618,12 +618,11 @@ static OFCondition updateJobList(
 
 void closeLog()
 {
-  time_t now = time(NULL);
   if (logstream != &CERR)
   {
     if (logconsole != &ofConsole) delete logconsole;
     logconsole = &ofConsole;
-    *logstream << endl << asctime(localtime(&now)) << "terminating" << endl;
+    *logstream << endl << OFDateTime::getCurrentDateTime() << endl << "terminating" << endl;
     delete logstream;
     logstream = &CERR;
   }
@@ -789,7 +788,6 @@ int main(int argc, char *argv[])
     
     if (opt_spoolMode)
     {
-      time_t now = time(NULL);
       if (dvi.getLogFolder() != NULL)
           logfilename = dvi.getLogFolder();
       else
@@ -815,7 +813,7 @@ int main(int argc, char *argv[])
       	delete newstream;
       	logfilename.clear();
       }
-      *logstream << rcsid << endl << asctime(localtime(&now)) << "started" << endl;
+      *logstream << rcsid << endl << OFDateTime::getCurrentDateTime() << endl << "started" << endl;
     }
 
     dvi.setLog(logconsole, opt_verbose, opt_debugMode);
@@ -992,7 +990,11 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmprscu.cc,v $
- * Revision 1.8  2001-11-09 16:06:04  joergr
+ * Revision 1.9  2002-04-11 13:15:38  joergr
+ * Replaced direct call of system routines by new standard date and time
+ * functions.
+ *
+ * Revision 1.8  2001/11/09 16:06:04  joergr
  * Renamed some of the getValue/getParam methods to avoid ambiguities reported
  * by certain compilers.
  *

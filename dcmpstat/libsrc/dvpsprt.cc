@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2001, OFFIS
+ *  Copyright (C) 1998-2002, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,8 +23,8 @@
  *    classes: DVPSPrintSCP
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-01-08 10:38:56 $
- *  CVS/RCS Revision: $Revision: 1.13 $
+ *  Update Date:      $Date: 2002-04-11 13:13:45 $
+ *  CVS/RCS Revision: $Revision: 1.14 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -38,6 +38,7 @@
 #include "dvpsfs.h"
 #include "dvpssp.h"
 #include "dvpshlp.h"
+#include "ofdatime.h"
 
 #include <iomanip.h>
 
@@ -136,12 +137,11 @@ DVPSAssociationNegotiationResult DVPSPrintSCP::negotiateAssociation(T_ASC_Networ
   {
     if (verboseMode)
     {
-      time_t t = time(NULL);
       logstream->lockCerr() << "Association Received (" 
            << assoc->params->DULparams.callingPresentationAddress
            << ":" << assoc->params->DULparams.callingAPTitle << " -> "
            << assoc->params->DULparams.calledAPTitle
-           << ") " << ctime(&t);
+           << ") " << OFDateTime::getCurrentDateTime() << endl;
       logstream->unlockCerr();
     }
 
@@ -1237,7 +1237,11 @@ void DVPSPrintSCP::dumpNMessage(T_DIMSE_Message &msg, DcmItem *dataset, OFBool o
 
 /*
  *  $Log: dvpsprt.cc,v $
- *  Revision 1.13  2002-01-08 10:38:56  joergr
+ *  Revision 1.14  2002-04-11 13:13:45  joergr
+ *  Replaced direct call of system routines by new standard date and time
+ *  functions.
+ *
+ *  Revision 1.13  2002/01/08 10:38:56  joergr
  *  Corrected spelling of function dcmGenerateUniqueIdentifier().
  *  Changed prefix of UIDs created for series and studies (now using constants
  *  SITE_SERIES_UID_ROOT and SITE_STUDY_UID_ROOT which are supposed to be used

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2001, OFFIS
+ *  Copyright (C) 1998-2002, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,8 +22,8 @@
  *  Purpose: DVPresentationState
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-01-08 10:37:34 $
- *  CVS/RCS Revision: $Revision: 1.136 $
+ *  Update Date:      $Date: 2002-04-11 13:13:43 $
+ *  CVS/RCS Revision: $Revision: 1.137 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -47,6 +47,7 @@ END_EXTERN_C
 #include "ofstring.h"    /* for class OFString */
 #include "dvpsconf.h"    /* for class DVPSConfig */
 #include "ofbmanip.h"    /* for OFBitmanipTemplate */
+#include "ofdatime.h"    /* for OFDateTime */
 #include "oflist.h"      /* for class OFList */
 #include "oflogfil.h"    /* for class OFLogFile */
 #include "digsdfn.h"     /* for DiGSDFunction */
@@ -90,9 +91,6 @@ BEGIN_EXTERN_C
 #endif
 #ifdef HAVE_UTIME_H
 #include <utime.h>   /* for utime */
-#endif
-#ifdef HAVE_TIME_H
-#include <time.h>
 #endif
 END_EXTERN_C
 
@@ -3046,17 +3044,11 @@ OFCondition DVInterface::saveStoredPrint(
     /* set annotation if active */
     if (activateAnnotation)
     {
-          OFString text;
+      OFString text;
       OFString dummy;
       if (prependDateTime)
       {
-        time_t tt = time(NULL);
-        struct tm *ts = localtime(&tt);
-        if (ts)
-        {
-          sprintf(buf, "%04d-%02d-%02d %02d:%02d ", 1900 + ts->tm_year, ts->tm_mon + 1, ts->tm_mday, ts->tm_hour, ts->tm_min);
-          text = buf;
-        }
+        OFDateTime::getCurrentDateTime().getISOFormattedDateTime(text, OFFalse /*showSeconds*/);
       }
       if (prependPrinterName)
       {
@@ -3598,15 +3590,16 @@ OFCondition DVInterface::terminatePrintSpooler()
   if (numberOfPrinters > 0) for (Uint32 i=0; i < numberOfPrinters; i++)
   {
     prt = getTargetID(i, DVPSE_printAny);
-        if (EC_Normal != createPrintJobFilenames(prt, tempFilename, spoolFilename)) return EC_IllegalCall;
-        FILE *outf = fopen(tempFilename.c_str(),"wb");
-        if (outf)
-        {
-      time_t now = time(NULL);
-          fprintf(outf,"#\n# print job created %s", asctime(localtime(&now)));
-          fprintf(outf,"# target printer: [%s]\n#\n", (prt ? prt : "none"));
-          fprintf(outf,"terminate\n");
-          fclose(outf);
+    if (EC_Normal != createPrintJobFilenames(prt, tempFilename, spoolFilename)) return EC_IllegalCall;
+    FILE *outf = fopen(tempFilename.c_str(),"wb");
+    if (outf)
+    {
+      OFString timeString;
+      OFDateTime::getCurrentDateTime().getISOFormattedDateTime(timeString);
+      fprintf(outf,"#\n# print job created %s\n", timeString.c_str());
+      fprintf(outf,"# target printer: [%s]\n#\n", (prt ? prt : "none"));
+      fprintf(outf,"terminate\n");
+      fclose(outf);
       if (0 != rename(tempFilename.c_str(), spoolFilename.c_str()))
       {
         if (verboseMode)
@@ -3844,8 +3837,9 @@ OFCondition DVInterface::spoolStoredPrintFromDB(const char *studyUID, const char
   FILE *outf = fopen(tempFilename.c_str(),"wb");
   if (outf)
   {
-    time_t now = time(NULL);
-    fprintf(outf, "#\n# print job created %s", asctime(localtime(&now)));
+    OFString timeString;
+    OFDateTime::getCurrentDateTime().getISOFormattedDateTime(timeString);
+    fprintf(outf, "#\n# print job created %s\n", timeString.c_str());
     fprintf(outf, "# target printer: [%s]\n#\n", (prt ? prt : "none"));
     fprintf(outf, "study        %s\nseries       %s\ninstance     %s\n", studyUID, seriesUID, instanceUID);
     if (printerMediumType.size() >0)       fprintf(outf,"mediumtype   %s\n", printerMediumType.c_str());
@@ -4284,7 +4278,11 @@ void DVInterface::disableImageAndPState()
 /*
  *  CVS/RCS Log:
  *  $Log: dviface.cc,v $
- *  Revision 1.136  2002-01-08 10:37:34  joergr
+ *  Revision 1.137  2002-04-11 13:13:43  joergr
+ *  Replaced direct call of system routines by new standard date and time
+ *  functions.
+ *
+ *  Revision 1.136  2002/01/08 10:37:34  joergr
  *  Corrected spelling of function dcmGenerateUniqueIdentifier().
  *  Changed prefix of UIDs created for series and studies (now using constants
  *  SITE_SERIES_UID_ROOT and SITE_STUDY_UID_ROOT which are supposed to be used

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2001, OFFIS
+ *  Copyright (C) 1998-2002, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,10 +21,10 @@
  *
  *  Purpose: Presentation State Viewer - Network Receive Component (Store SCP)
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-10-12 13:46:48 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2002-04-11 13:15:38 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmpstat/apps/dcmprscp.cc,v $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -46,8 +46,9 @@ END_EXTERN_C
 
 #include "dvpsdef.h"     /* for constants and macros */
 #include "dviface.h"
-#include "ofbmanip.h" /* for OFBitmanipTemplate */
-#include "dcuid.h"    /* for dcmtk version name */
+#include "ofbmanip.h"    /* for OFBitmanipTemplate */
+#include "ofdatime.h"    /* for OFDateTime */
+#include "dcuid.h"       /* for dcmtk version name */
 #include "diutil.h"
 #include "cmdlnarg.h"
 #include "ofconapp.h"
@@ -89,12 +90,11 @@ static int errorCond(OFCondition cond, const char *message)
 
 void closeLog()
 {
-  time_t now = time(NULL);
   if (logstream != &CERR)
   {
     if (logconsole != &ofConsole) delete logconsole;
     logconsole = &ofConsole;
-    *logstream << endl << asctime(localtime(&now)) << "terminating" << endl;
+    *logstream << endl << OFDateTime::getCurrentDateTime() << endl << "terminating" << endl;
     delete logstream;
     logstream = &CERR;
   }
@@ -224,7 +224,6 @@ int main(int argc, char *argv[])
     unsigned long logcounter = 0;
     char logcounterbuf[20];
     
-    time_t now = time(NULL);
     if (dvi.getLogFolder() != NULL)
         logfileprefix = dvi.getLogFolder();
     else
@@ -264,7 +263,7 @@ int main(int argc, char *argv[])
       }
     }
 
-    *logstream << rcsid << endl << asctime(localtime(&now)) << "started" << endl;
+    *logstream << rcsid << endl << OFDateTime::getCurrentDateTime() << endl << "started" << endl;
 
     dvi.setLog(logconsole, opt_verbose, opt_debugMode);
     
@@ -389,7 +388,11 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmprscp.cc,v $
- * Revision 1.7  2001-10-12 13:46:48  meichel
+ * Revision 1.8  2002-04-11 13:15:38  joergr
+ * Replaced direct call of system routines by new standard date and time
+ * functions.
+ *
+ * Revision 1.7  2001/10/12 13:46:48  meichel
  * Adapted dcmpstat to OFCondition based dcmnet module (supports strict mode).
  *
  * Revision 1.6  2001/06/01 15:50:07  meichel

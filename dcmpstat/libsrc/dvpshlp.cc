@@ -22,8 +22,8 @@
  *  Purpose: DVPSHelper
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-11-28 13:56:55 $
- *  CVS/RCS Revision: $Revision: 1.10 $
+ *  Update Date:      $Date: 2002-04-11 13:13:45 $
+ *  CVS/RCS Revision: $Revision: 1.11 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -34,6 +34,8 @@
 #include "osconfig.h"    /* make sure OS specific configuration is included first */
 #include "dvpshlp.h"
 #include "dcompat.h"     /* compatability routines */
+#include "dcvrda.h"
+#include "dcvrtm.h"
 #include <stdio.h>
 #include <errno.h>
 
@@ -57,29 +59,12 @@ END_EXTERN_C
 
 void DVPSHelper::currentDate(OFString &str)
 {
-  char buf[32];
-  time_t tt = time(NULL);
-  struct tm *ts = localtime(&tt);
-  if (ts)
-  {
-    int year = 1900 + ts->tm_year;
-    sprintf(buf, "%04d%02d%02d", year, ts->tm_mon + 1, ts->tm_mday);
-    str = buf;
-  } else str = "19000101";
-  return;
+  DcmDate::getCurrentDate(str);
 }
 
 void DVPSHelper::currentTime(OFString &str)
 {
-  char buf[32];
-  time_t tt = time(NULL);
-  struct tm *ts = localtime(&tt);
-  if (ts)
-  {
-    sprintf(buf, "%02d%02d%02d", ts->tm_hour, ts->tm_min, ts->tm_sec);
-    str = buf;
-  } else str = "000000";
-  return;
+  DcmTime::getCurrentTime(str);
 }
 
 OFCondition DVPSHelper::loadFileFormat(const char *filename,
@@ -270,7 +255,11 @@ OFCondition DVPSHelper::addReferencedUIDItem(DcmSequenceOfItems& seq, const char
 /*
  *  CVS/RCS Log:
  *  $Log: dvpshlp.cc,v $
- *  Revision 1.10  2001-11-28 13:56:55  joergr
+ *  Revision 1.11  2002-04-11 13:13:45  joergr
+ *  Replaced direct call of system routines by new standard date and time
+ *  functions.
+ *
+ *  Revision 1.10  2001/11/28 13:56:55  joergr
  *  Check return value of DcmItem::insert() statements where appropriate to
  *  avoid memory leaks when insert procedure fails.
  *
