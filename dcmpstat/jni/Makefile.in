@@ -61,10 +61,10 @@ dcmpstatinc = -I$(dcmpstatdir)/include
 dcmpstatlibdir = -L$(dcmpstatdir)/libsrc
 dcmpstatlib = -ldcmpstat
 
-imagectndir = $(top_srcdir)/../imagectn
-imagectninc = -I$(imagectndir)/include
-imagectnlibdir = -L$(imagectndir)/libsrc
-imagectnlib = -limagedb
+dcmqrdbdir = $(top_srcdir)/../dcmqrdb
+dcmqrdbinc = -I$(dcmqrdbdir)/include
+dcmqrdblibdir = -L$(dcmqrdbdir)/libsrc
+dcmqrdblib = -ldcmqrdb
 
 dcmsigndir = $(top_srcdir)/../dcmsign
 dcmsigninc = -I$(dcmsigndir)/include
@@ -83,12 +83,12 @@ dcmjpeglibdir = -L$(dcmjpegdir)/libsrc -L$(dcmjpegdir)/libijg8 -L$(dcmjpegdir)/l
 dcmjpeglib = -ldcmjpeg -lijg8 -lijg12 -lijg16
 
 LOCALINCLUDES = $(dcmpstatinc) $(ofstdinc) $(dcmnetinc) $(dcmdatainc) $(dcmimgleinc) \
-	$(imagectninc) $(dcmsigninc) $(dcmsrinc) $(dcmjpeginc) $(javainc)
-LIBDIRS = -L$(top_srcdir)/libsrc $(dcmpstatlibdir) $(imagectnlibdir) $(dcmnetlibdir) \
+	$(dcmqrdbinc) $(dcmsigninc) $(dcmsrinc) $(dcmjpeginc) $(javainc)
+LIBDIRS = -L$(top_srcdir)/libsrc $(dcmpstatlibdir) $(dcmqrdblibdir) $(dcmnetlibdir) \
 	$(dcmdatalibdir) $(ofstdlibdir) $(dcmimglelibdir) $(dcmsignlibdir) $(dcmsrlibdir) \
 	$(dcmjpeglibdir)
 LOCALLIBS = $(dcmpstatlib) $(dcmsrlib) $(dcmsignlib) $(dcmjpeglib) $(dcmimglelib) \
-	$(imagectnlib) $(dcmnetlib) $(dcmdatalib) $(ofstdlib) $(OPENSSLLIBS) $(solibs)
+	$(dcmqrdblib) $(dcmnetlib) $(dcmdatalib) $(ofstdlib) $(OPENSSLLIBS) $(solibs)
 
 objs = DVInterface.o DVPSGraphicObject.o DVPresentationState.o DVPSCurve.o \
 	DVPSTextObject.o DVPSStoredPrint.o DSRCodeValue.o DSRCompositeValue.o \
