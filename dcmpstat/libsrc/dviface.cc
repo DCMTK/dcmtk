@@ -21,9 +21,9 @@
  *
  *  Purpose: DVPresentationState
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-06-06 09:43:25 $
- *  CVS/RCS Revision: $Revision: 1.93 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2000-06-07 13:17:26 $
+ *  CVS/RCS Revision: $Revision: 1.94 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -3041,7 +3041,7 @@ E_Condition DVInterface::startPrintServer()
 
       if (detailedLog)
       {
-        if (execl(application, application, "--verbose", "--dump", "--printer", printer, "--config",
+        if (execl(application, application, "--logfile", "--verbose", "--dump", "--printer", printer, "--config",
             configPath.c_str(), NULL) < 0)
         {
           if (verboseMode)
@@ -3051,7 +3051,7 @@ E_Condition DVInterface::startPrintServer()
           }
         }
       } else {
-        if (execl(application, application, "--printer", printer, "--config", configPath.c_str(), NULL) < 0)
+        if (execl(application, application, "--logfile", "--printer", printer, "--config", configPath.c_str(), NULL) < 0)
         {
           if (verboseMode)
           {
@@ -3075,9 +3075,9 @@ E_Condition DVInterface::startPrintServer()
     char commandline[4096];
     if (detailedLog)
     {
-      sprintf(commandline, "%s --verbose --dump --printer %s --config %s", application, printer, configPath.c_str());
+      sprintf(commandline, "%s --logfile --verbose --dump --printer %s --config %s", application, printer, configPath.c_str());
     } else {
-      sprintf(commandline, "%s --printer %s --config %s", application, printer, configPath.c_str());
+      sprintf(commandline, "%s --logfile --printer %s --config %s", application, printer, configPath.c_str());
     }
 #ifdef DEBUG
     if (0 == CreateProcess(NULL, commandline, NULL, NULL, 0, 0, NULL, NULL, &sinfo, &procinfo))
@@ -3412,19 +3412,32 @@ E_Condition DVInterface::dumpIOD(const char *studyUID, const char *seriesUID, co
 
 E_Condition DVInterface::checkIOD(const char *filename)
 {
+  // not yet implemented
   return EC_IllegalCall;
 }
 
 E_Condition DVInterface::checkIOD(const char *studyUID, const char *seriesUID, const char *instanceUID)
 {
-  return EC_IllegalCall;
+  E_Condition result = EC_IllegalCall;
+  if (studyUID && seriesUID && instanceUID)
+  {
+    if (EC_Normal == (result = lockDatabase()))
+    {
+      const char *filename = getFilename(studyUID, seriesUID, instanceUID);
+      if (filename) result = checkIOD(filename); else result = EC_IllegalCall;
+    }
+  }
+  return result;
 }
 
 
 /*
  *  CVS/RCS Log:
  *  $Log: dviface.cc,v $
- *  Revision 1.93  2000-06-06 09:43:25  joergr
+ *  Revision 1.94  2000-06-07 13:17:26  meichel
+ *  added binary and textual log facilities to Print SCP.
+ *
+ *  Revision 1.93  2000/06/06 09:43:25  joergr
  *  Moved configuration file entry "LogDirectory" from "[PRINT]" to new
  *  (more general) section "[APPLICATION]".
  *

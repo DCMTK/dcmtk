@@ -23,8 +23,8 @@
  *    classes: DVPSStoredPrint
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-06-02 16:00:51 $
- *  CVS/RCS Revision: $Revision: 1.23 $
+ *  Update Date:      $Date: 2000-06-07 13:17:46 $
+ *  CVS/RCS Revision: $Revision: 1.24 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -969,7 +969,12 @@ class DVPSStoredPrint
   /// the current film box instance
   OFString filmBoxInstanceUID;
 
-  /// the current presentation LUT instance
+  /** the current presentation LUT instance. If used as Print SCU, the
+   *  content of this string can differ from referencedPresentationLUTInstanceUID
+   *  which contains the UID from the Stored Print object wheras this
+   *  string contains the UID assigned by the remote Print SCP.
+   *  If used as Print SCP, these strings should always be equal.
+   */
   OFString presentationLUTInstanceUID;
 
   /// transmit images in 12 bit for the current print job
@@ -999,7 +1004,10 @@ class DVPSStoredPrint
 
 /*
  *  $Log: dvpssp.h,v $
- *  Revision 1.23  2000-06-02 16:00:51  meichel
+ *  Revision 1.24  2000-06-07 13:17:46  meichel
+ *  added binary and textual log facilities to Print SCP.
+ *
+ *  Revision 1.23  2000/06/02 16:00:51  meichel
  *  Adapted all dcmpstat classes to use OFConsole for log and error output
  *
  *  Revision 1.22  2000/05/31 12:56:39  meichel

@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DVConfiguration
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-06-06 09:42:48 $
- *  CVS/RCS Revision: $Revision: 1.20 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2000-06-07 13:17:45 $
+ *  CVS/RCS Revision: $Revision: 1.21 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -486,6 +486,13 @@ class DVConfiguration
    */
   const char *getTargetPrinterEmptyImageDensity(const char *targetID, Uint32 idx, OFString& value);
 
+  /** returns the OMITSOPCLASSUIDFROMCREATERESPONSE entry for the printer with the given
+   *  target ID from the configuration file.
+   *  @param targetID communication target ID, must be one of the target
+   *    identifiers returned by getTargetID() for peer type DVPSE_printerAny.
+   *  @return entry if present in the config file, OFFalse otherwise.
+   */
+  OFBool getTargetPrintSCPOmitSOPClassUIDFromCreateResponse(const char *targetID);
 
   /* general settings */
 
@@ -590,6 +597,12 @@ class DVConfiguration
    *  @return entry if present in the config file, OFFalse otherwise.
    */
   OFBool getDetailedLog();
+
+  /** returns the BINARYLOG entry
+   *  from the section GENERAL/PRINT in the config file.
+   *  @return entry if present in the config file, OFFalse otherwise.
+   */
+  OFBool getBinaryLog();
 
   /** returns the filename (path) of the DICOM Store SCU application used
    *  for sending images, as configured in section
@@ -863,7 +876,10 @@ private:
 /*
  *  CVS/RCS Log:
  *  $Log: dvpscf.h,v $
- *  Revision 1.20  2000-06-06 09:42:48  joergr
+ *  Revision 1.21  2000-06-07 13:17:45  meichel
+ *  added binary and textual log facilities to Print SCP.
+ *
+ *  Revision 1.20  2000/06/06 09:42:48  joergr
  *  Moved configuration file entry "LogDirectory" from "[PRINT]" to new
  *  (more general) section "[APPLICATION]".
  *

@@ -21,10 +21,10 @@
  *
  *  Purpose: Presentation State Viewer - Network Receive Component (Store SCP)
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-06-06 09:44:07 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2000-06-07 13:17:42 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmpstat/apps/dcmprscp.cc,v $
- *  CVS/RCS Revision: $Revision: 1.3 $
+ *  CVS/RCS Revision: $Revision: 1.4 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -52,6 +52,7 @@ END_EXTERN_C
 #include "cmdlnarg.h"
 #include "ofconapp.h"
 #include "dvpsprt.h"
+#include "dvpshlp.h"
 
 #define OFFIS_CONSOLE_APPLICATION "dcmprscp"
 
@@ -62,6 +63,8 @@ static char rcsid[] = "$dcmtk: " OFFIS_CONSOLE_APPLICATION " v"
 static OFBool           opt_verbose         = OFFalse;             /* default: not verbose */
 static int              opt_debugMode       = 0;
 static OFBool           opt_dumpMode        = OFFalse;
+static OFBool           opt_logFile         = OFFalse;
+static OFBool           opt_binaryLog       = OFFalse;
 static const char *     opt_cfgName         = NULL;                /* config file name */
 static const char *     opt_printer         = NULL;                /* printer name */
 static ostream *        logstream           = &CERR;
@@ -156,16 +159,17 @@ int main(int argc, char *argv[])
     cmd.setParamColumn(LONGCOL + SHORTCOL + 2);
 
     cmd.addGroup("general options:");
-     cmd.addOption("--help",        "-h",        "print this help text and exit");
-     cmd.addOption("--verbose",     "-v",        "verbose mode, print actions");
-     cmd.addOption("--debug",       "-d",        "debug mode, print debug information");
-     cmd.addOption("--dump",        "+d",        "dump all DIMSE messages to stdout");
+     cmd.addOption("--help",        "-h",    "print this help text and exit");
+     cmd.addOption("--verbose",     "-v",    "verbose mode, print actions");
+     cmd.addOption("--debug",       "-d",    "debug mode, print debug information");
 
     cmd.addGroup("processing options:");
      cmd.addOption("--config",      "-c", 1, "[f]ilename: string",
                                              "process using settings from configuration file");
      cmd.addOption("--printer",     "-p", 1, "[n]ame: string (default: 1st printer in cfg file)",
                                              "select printer with identifier [n] from cfg file");
+     cmd.addOption("--dump",        "+d",    "print all DIMSE messages");
+     cmd.addOption("--logfile",     "-l",    "print to log file instead of stdout");
 
     /* evaluate command line */
     prepareCmdLineArgs(argc, argv, OFFIS_CONSOLE_APPLICATION);
@@ -174,13 +178,12 @@ int main(int argc, char *argv[])
       if (cmd.findOption("--verbose")) opt_verbose = OFTrue;
       if (cmd.findOption("--debug"))   opt_debugMode = 3;
       if (cmd.findOption("--dump"))    opt_dumpMode = OFTrue;
-
-      if (cmd.findOption("--config"))        app.checkValue(cmd.getValue(opt_cfgName));
-      if (cmd.findOption("--printer"))       app.checkValue(cmd.getValue(opt_printer));
+      if (cmd.findOption("--logfile")) opt_logFile = OFTrue;
+      if (cmd.findOption("--config"))  app.checkValue(cmd.getValue(opt_cfgName));
+      if (cmd.findOption("--printer")) app.checkValue(cmd.getValue(opt_printer));
     }
 
     SetDebugLevel((opt_debugMode));
-//    DicomImageClass::setDebugLevel(opt_debugMode);
 
     if (opt_cfgName)
     {
@@ -213,34 +216,53 @@ int main(int argc, char *argv[])
       }
     }
 
-    OFString logfilename;    
+    opt_binaryLog = dvi.getBinaryLog();
+
+    OFString logfileprefix;
+    OFString aString;
+    unsigned long logcounter = 0;
+    char logcounterbuf[20];
+    
     time_t now = time(NULL);
     if (dvi.getLogFolder() != NULL)
-        logfilename = dvi.getLogFolder();
+        logfileprefix = dvi.getLogFolder();
     else
-        logfilename = dvi.getSpoolFolder();
-    logfilename += PATH_SEPARATOR;
-    logfilename += "PrintSCP_";
-//    logfilename += opt_spoolPrefix;
-//    logfilename += "_";
-    logfilename += opt_printer;
-    logfilename += ".log";
-    ofstream *newstream = new ofstream(logfilename.c_str());
-    if (newstream && (newstream->good()))
+        logfileprefix = dvi.getSpoolFolder();
+
+    logfileprefix += PATH_SEPARATOR;
+    logfileprefix += "PrintSCP_";
+    logfileprefix += opt_printer;
+    logfileprefix += "_";
+    DVPSHelper::currentDate(aString);
+    logfileprefix += aString;
+    logfileprefix += "_";
+    DVPSHelper::currentTime(aString);
+    logfileprefix += aString;
+    
+    OFString logfilename;
+    if (opt_logFile)
     {
-      logstream=newstream; 
-      logconsole = new OFConsole();
-      if (logconsole)
+      logfilename = logfileprefix;
+      logfilename += ".log";
+    
+      ofstream *newstream = new ofstream(logfilename.c_str());
+      if (newstream && (newstream->good()))
       {
-        logconsole->setCout(logstream);
-        logconsole->join();
-      } else logconsole = &ofConsole;
+        logstream=newstream; 
+        logconsole = new OFConsole();
+        if (logconsole)
+        {
+          logconsole->setCout(logstream);
+          logconsole->join();
+        } else logconsole = &ofConsole;
+      }
+      else
+      {
+      	delete newstream;
+      	logfilename.clear();
+      }
     }
-    else
-    {
-    	delete newstream;
-    	logfilename.clear();
-    }
+
     *logstream << rcsid << endl << asctime(localtime(&now)) << "started" << endl;
 
     dvi.setLog(logconsole, opt_verbose, opt_debugMode);
@@ -306,8 +328,20 @@ int main(int argc, char *argv[])
 
     while (!finished)
     {
-      DVPSPrintSCP printSCP(dvi, opt_printer); // use new print SCP object for each association      
-      printSCP.setLog(logconsole, opt_verbose, opt_debugMode);
+      DVPSPrintSCP printSCP(dvi, opt_printer); // use new print SCP object for each association     
+      
+      printSCP.setLog(logconsole, opt_verbose, opt_debugMode, opt_dumpMode);
+      
+      if (opt_binaryLog)
+      {
+        aString = logfileprefix;
+        aString += "_";
+        sprintf(logcounterbuf, "%04ld", ++logcounter);
+        aString += logcounterbuf;
+        aString += ".dcm";
+        printSCP.setDimseLogPath(aString.c_str());
+      }
+      
       connected = 0;
       while (!connected)
       {
@@ -345,17 +379,19 @@ int main(int argc, char *argv[])
     if (deleteUnusedLogs && (! haveHandledClients))
     {
       // log unused, attempt to delete file
-      unlink(logfilename.c_str());      
+      if (logfilename.size() > 0) unlink(logfilename.c_str());      
     }
         
     return 0;
 }
 
-
 /*
  * CVS/RCS Log:
  * $Log: dcmprscp.cc,v $
- * Revision 1.3  2000-06-06 09:44:07  joergr
+ * Revision 1.4  2000-06-07 13:17:42  meichel
+ * added binary and textual log facilities to Print SCP.
+ *
+ * Revision 1.3  2000/06/06 09:44:07  joergr
  * Moved configuration file entry "LogDirectory" from "[PRINT]" to new
  * (more general) section "[APPLICATION]".
  *

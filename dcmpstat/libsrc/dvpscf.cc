@@ -21,9 +21,9 @@
  *
  *  Purpose: DVConfiguration
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-06-06 09:43:26 $
- *  CVS/RCS Revision: $Revision: 1.27 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2000-06-07 13:17:27 $
+ *  CVS/RCS Revision: $Revision: 1.28 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -46,6 +46,7 @@
 #define L0_ANNOTATION                   "ANNOTATION"
 #define L0_ALWAYSDELETETERMINATEJOBS    "ALWAYSDELETETERMINATEJOBS"
 #define L0_AUTOCREATECONFIGFILE         "AUTOCREATECONFIGFILE"
+#define L0_BINARYLOG                    "BINARYLOG"
 #define L0_BITPRESERVINGMODE            "BITPRESERVINGMODE"
 #define L0_BORDERDENSITY                "BORDERDENSITY"
 #define L0_CENTER                       "CENTER"
@@ -78,6 +79,7 @@
 #define L0_MINDENSITY                   "MINDENSITY"
 #define L0_MINPRINTRESOLUTION           "MINPRINTRESOLUTION"
 #define L0_MODALITY                     "MODALITY"
+#define L0_OMITSOPCLASSUIDFROMCREATERESPONSE "OMITSOPCLASSUIDFROMCREATERESPONSE"
 #define L0_PORT                         "PORT"
 #define L0_PRESENTATIONLUTINFILMSESSION "PRESENTATIONLUTINFILMSESSION"
 #define L0_PRESENTATIONLUTMATCHREQUIRED "PRESENTATIONLUTMATCHREQUIRED"
@@ -496,6 +498,11 @@ OFBool DVConfiguration::getDetailedLog()
   return getConfigBoolEntry(L2_GENERAL, L1_PRINT, L0_DETAILEDLOG, OFFalse);
 }
 
+OFBool DVConfiguration::getBinaryLog()
+{
+  return getConfigBoolEntry(L2_GENERAL, L1_PRINT, L0_BINARYLOG, OFFalse);
+}
+
 unsigned long DVConfiguration::getSpoolerSleep()
 {
   const char *c = getConfigEntry(L2_GENERAL, L1_PRINT, L0_SLEEP);
@@ -656,6 +663,11 @@ OFBool DVConfiguration::getTargetPrinterPresentationLUTinFilmSession(const char 
 OFBool DVConfiguration::getTargetPrinterSupports12BitTransmission(const char *targetID)
 {
   return getConfigBoolEntry(L2_COMMUNICATION, targetID, L0_SUPPORTS12BIT, OFTrue);
+}
+
+OFBool DVConfiguration::getTargetPrintSCPOmitSOPClassUIDFromCreateResponse(const char *targetID)
+{
+  return getConfigBoolEntry(L2_COMMUNICATION, targetID, L0_OMITSOPCLASSUIDFROMCREATERESPONSE, OFFalse);
 }
 
 OFBool DVConfiguration::getTargetPrinterSupportsRequestedImageSize(const char *targetID)
@@ -1117,7 +1129,10 @@ void DVConfiguration::setLog(OFConsole *stream, OFBool verbMode, OFBool dbgMode)
 /*
  *  CVS/RCS Log:
  *  $Log: dvpscf.cc,v $
- *  Revision 1.27  2000-06-06 09:43:26  joergr
+ *  Revision 1.28  2000-06-07 13:17:27  meichel
+ *  added binary and textual log facilities to Print SCP.
+ *
+ *  Revision 1.27  2000/06/06 09:43:26  joergr
  *  Moved configuration file entry "LogDirectory" from "[PRINT]" to new
  *  (more general) section "[APPLICATION]".
  *
