@@ -25,9 +25,9 @@
  *    file.
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-07-04 16:09:22 $
+ *  Update Date:      $Date: 2000-10-16 12:26:05 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmpstat/apps/dcmmklut.cc,v $
- *  CVS/RCS Revision: $Revision: 1.17 $
+ *  CVS/RCS Revision: $Revision: 1.18 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -41,7 +41,7 @@
 #include <GUSI.h>
 #endif
 
-#include <math.h>
+#include <math.h>     /* for pow() */
 #include <stdio.h>
 #include <stdlib.h>   /* for srand/rand() */
 #include <fstream.h>
@@ -53,6 +53,7 @@
 #include "ofstring.h"
 
 #include "dicrvfit.h"
+#include "digsdfn.h"
 #include "diutils.h"
 
 BEGIN_EXTERN_C
@@ -300,7 +301,7 @@ E_Condition writeTextOutput(const char *filename,
                             const OFString &header)
 {
     E_Condition result = EC_IllegalCall;
-    if ((filename != NULL) && (strlen(filename) >0))
+    if ((filename != NULL) && (strlen(filename) > 0))
     {
         if ((outputData != NULL) && (numberOfEntries > 0))
         {
@@ -460,18 +461,65 @@ void gammaLUT(const unsigned int numberOfBits,
 }
 
 
+void applyInverseGSDF(const unsigned int numberOfBits,
+                      const unsigned long numberOfEntries,
+                      const OFBool byteAlign,
+                      const unsigned int minDensity,
+                      const unsigned int maxDensity,
+                      const unsigned int illumination,
+                      const unsigned int reflection,
+                      Uint16 *outputData,
+                      OFString &header,
+                      char *explanation)
+{
+    if (outputData != NULL)
+    {
+        if (opt_verbose)
+            CERR << "applying inverse GSDF ..." << endl;
+        char buf[1024];
+        ostrstream oss(buf, 1024);
+        if ((explanation != NULL) && (strlen(explanation) > 0))
+            strcat(explanation, ", inverse GSDF");
+        const double l0 = (double)illumination;
+        const double la = (double)reflection;
+        const double dmin = (double)minDensity / 100;
+        const double dmax = (double)maxDensity / 100;
+        const double lmin = la + l0 * pow(10, -dmax);
+        const double lmax = la + l0 * pow(10, -dmin);
+        const double jmin = DiGSDFunction::getJNDIndex(lmin);
+        const double jmax = DiGSDFunction::getJNDIndex(lmax);
+        const double factor = (double)DicomImageClass::maxval(numberOfBits) / (jmax - jmin);
+        const double density = (dmax - dmin) / (double)DicomImageClass::maxval(numberOfBits);
+        unsigned long i;
+        if (byteAlign)
+        {
+            Uint8 *data8 = (Uint8 *)outputData;
+            for (i = 0; i < numberOfEntries; i++)
+                data8[i] = (Uint8)((DiGSDFunction::getJNDIndex(la + l0 * pow(10, -(dmin + (double)data8[i] * density))) - jmin) * factor);
+        } else {
+            for (i = 0; i < numberOfEntries; i++)
+                outputData[i] = (Uint16)((DiGSDFunction::getJNDIndex(la + l0 * pow(10, -(dmin + (double)outputData[i] * density))) - jmin) * factor);
+        }
+        oss << "# applied inverse GSDF with Dmin/max = " << minDensity << "/" << maxDensity << ", L0/La = " 
+            << illumination << "/" << reflection << endl;
+        oss << ends;
+        header += oss.str();
+    }
+}
+
+
 void mixingUpLUT(const unsigned long numberOfEntries,
                  const OFBool byteAlign,
                  const unsigned long randomCount,
                  const unsigned int randomSeed,
                  Uint16 *outputData,
-                 char * explanation)
+                 char *explanation)
 {
     if (outputData != NULL)
     {
         if (opt_verbose)
             CERR << "mixing up LUT entries ..." << endl;
-        if (explanation != NULL)
+        if ((explanation != NULL) && (strlen(explanation) > 0))
             strcat(explanation, ", mixed-up entries");
         srand(randomSeed);
         unsigned long i, i1, i2;
@@ -661,7 +709,12 @@ int main(int argc, char *argv[])
     OFCmdUnsignedInt opt_randomCount = 0;
     OFCmdUnsignedInt opt_randomSeed = 0;             /* default: for reproduceable results */
     OFCmdUnsignedInt opt_order = 5;
+    OFCmdUnsignedInt opt_minDensity = 20;
+    OFCmdUnsignedInt opt_maxDensity = 300;
+    OFCmdUnsignedInt opt_illumination = 2000;
+    OFCmdUnsignedInt opt_reflection = 10;
     LUT_Type opt_lutType = LUT_VOI;
+    OFBool opt_inverseGSDF = OFFalse;
     OFBool opt_byteAlign = OFFalse;
     OFBool opt_replaceMode = OFTrue;
     DcmEVR opt_lutVR = EVR_OW;
@@ -673,7 +726,7 @@ int main(int argc, char *argv[])
     cmd.setOptionColumns(LONGCOL, SHORTCOL);
     cmd.setParamColumn(LONGCOL + SHORTCOL + 4);
 
-    cmd.addParam("dcmimg-out",                   "DICOM output filename");
+    cmd.addParam("dcmimg-out",                   "DICOM output filename" /* , OFCmdParam::PM_Optional */);
 
     cmd.addGroup("general options:", LONGCOL, SHORTCOL + 2);
      cmd.addOption("--help",           "-h",     "print this help text and exit");
@@ -694,6 +747,16 @@ int main(int argc, char *argv[])
                                                  "read input data from MAP file");
        cmd.addOption("--text-file",    "+Ct", 1, "[f]ilename : string",
                                                  "read input data from text file");
+      cmd.addSubGroup("LUT options:");
+       cmd.addOption("--inverse-gsdf", "+Og",    "apply inverse GSDF (print presentation LUT in OD)");
+       cmd.addOption("--min-density",         1, "[v]alue : integer (0..65535, default: 20)",
+                                                 "set min density to v (in hundreds of OD)");
+       cmd.addOption("--max-density",         1, "[v]alue : integer (0..65535, default: 300)",
+                                                 "set max density to v (in hundreds of OD)");
+       cmd.addOption("--illumination", "+Oi", 1, "[v]alue : integer (0..65535, default: 2000)",
+                                                 "set illumination to v (in cd/m^2)");
+       cmd.addOption("--reflection",   "+Or", 1, "[v]alue : integer (0..65535, default: 10)",
+                                                 "set reflected ambient light to v (in cd/m^2)");
       cmd.addSubGroup("LUT structure:");
        cmd.addOption("--bits",         "-b",  1, "[n]umber : integer",
                                                  "create LUT with n bit values (8..16, default: 16)");
@@ -763,6 +826,17 @@ int main(int argc, char *argv[])
         if (cmd.findOption("--text-file"))
             app.checkValue(cmd.getValue(opt_textName));
         cmd.endOptionBlock();
+
+        if (cmd.findOption("--inverse-gsdf"))
+            opt_inverseGSDF = OFTrue;
+        if (cmd.findOption("--min-density"))
+            app.checkValue(cmd.getValue(opt_minDensity));
+        if (cmd.findOption("--max-density"))
+            app.checkValue(cmd.getValue(opt_maxDensity));
+        if (cmd.findOption("--illumination"))
+            app.checkValue(cmd.getValue(opt_illumination));
+        if (cmd.findOption("--reflection"))
+            app.checkValue(cmd.getValue(opt_reflection));
 
         if (cmd.findOption("--bits"))
             app.checkValue(cmd.getValue(opt_bits, 8, 16));
@@ -879,6 +953,9 @@ int main(int argc, char *argv[])
             }
             if (result == EC_Normal)
             {
+                if (opt_inverseGSDF)
+                    applyInverseGSDF((unsigned int)opt_bits, opt_entries, opt_byteAlign, opt_minDensity, opt_maxDensity,
+                        opt_illumination, opt_reflection, outputData, headerStr, explStr);
                 if (opt_randomCount > 0)
                     mixingUpLUT(opt_entries, opt_byteAlign, opt_randomCount, opt_randomSeed, outputData, explStr);
                 result = createLUT((unsigned int)opt_bits, opt_entries, opt_firstMapped, opt_byteAlign, opt_lutVR, *ditem,
@@ -897,103 +974,106 @@ int main(int argc, char *argv[])
     } else
         result = EC_MemoryExhausted;
 
-    DcmSequenceOfItems *dseq = NULL;
-    if (EC_Normal==result)
+    if (opt_outName != NULL)
     {
-        switch (opt_lutType)
+        DcmSequenceOfItems *dseq = NULL;
+        if (EC_Normal==result)
         {
-            case LUT_Modality:
-                {
-                    DcmLongString modalityLUTType(DCM_ModalityLUTType);
-                    modalityLUTType.putString("US"); // unspecified Modality LUT
-                    DcmElement *delem = new DcmLongString(modalityLUTType);
-                    if (delem)
+            switch (opt_lutType)
+            {
+                case LUT_Modality:
                     {
-                        ditem->insert(delem);
-                        dseq = new DcmSequenceOfItems(DCM_ModalityLUTSequence);
-                        if (dseq)
+                        DcmLongString modalityLUTType(DCM_ModalityLUTType);
+                        modalityLUTType.putString("US"); // unspecified Modality LUT
+                        DcmElement *delem = new DcmLongString(modalityLUTType);
+                        if (delem)
                         {
-                            dataset->insert(dseq, OFTrue);
-                            dseq->insert(ditem);
+                            ditem->insert(delem);
+                            dseq = new DcmSequenceOfItems(DCM_ModalityLUTSequence);
+                            if (dseq)
+                            {
+                                dataset->insert(dseq, OFTrue);
+                                dseq->insert(ditem);
+                            } else
+                                result = EC_MemoryExhausted;
+                            delete dataset->remove(DCM_RescaleIntercept);
+                            delete dataset->remove(DCM_RescaleSlope);
+                            delete dataset->remove(DCM_RescaleType);
                         } else
                             result = EC_MemoryExhausted;
-                        delete dataset->remove(DCM_RescaleIntercept);
-                        delete dataset->remove(DCM_RescaleSlope);
-                        delete dataset->remove(DCM_RescaleType);
-                    } else
-                        result = EC_MemoryExhausted;
-                }
-                break;
-            case LUT_Presentation:
-                if (!opt_replaceMode)
-                {
-                    // search existing sequence
-                    DcmStack stack;
-                    if (EC_Normal == dataset->search(DCM_PresentationLUTSequence, stack, ESM_fromHere, OFFalse))
-                        dseq=(DcmSequenceOfItems *)stack.top();
-                }
-                if (dseq==NULL)
-                {
-                    dseq = new DcmSequenceOfItems(DCM_PresentationLUTSequence);
+                    }
+                    break;
+                case LUT_Presentation:
+                    if (!opt_replaceMode)
+                    {
+                        // search existing sequence
+                        DcmStack stack;
+                        if (EC_Normal == dataset->search(DCM_PresentationLUTSequence, stack, ESM_fromHere, OFFalse))
+                            dseq=(DcmSequenceOfItems *)stack.top();
+                    }
+                    if (dseq==NULL)
+                    {
+                        dseq = new DcmSequenceOfItems(DCM_PresentationLUTSequence);
+                        if (dseq)
+                            dataset->insert(dseq, OFTrue);
+                        else
+                            result = EC_MemoryExhausted;
+                    }
                     if (dseq)
-                        dataset->insert(dseq, OFTrue);
-                    else
-                        result = EC_MemoryExhausted;
-                }
-                if (dseq)
-                    dseq->insert(ditem);
-                if (opt_replaceMode)
-                    delete dataset->remove(DCM_PresentationLUTShape);
-                break;
-            case LUT_VOI:
-                if (!opt_replaceMode)
-                {
-                    // search existing sequence
-                    DcmStack stack;
-                    if (EC_Normal == dataset->search(DCM_VOILUTSequence, stack, ESM_fromHere, OFFalse))
-                        dseq=(DcmSequenceOfItems *)stack.top();
-                }
-                if (dseq==NULL)
-                {
-                    dseq = new DcmSequenceOfItems(DCM_VOILUTSequence);
+                        dseq->insert(ditem);
+                    if (opt_replaceMode)
+                        delete dataset->remove(DCM_PresentationLUTShape);
+                    break;
+                case LUT_VOI:
+                    if (!opt_replaceMode)
+                    {
+                        // search existing sequence
+                        DcmStack stack;
+                        if (EC_Normal == dataset->search(DCM_VOILUTSequence, stack, ESM_fromHere, OFFalse))
+                            dseq=(DcmSequenceOfItems *)stack.top();
+                    }
+                    if (dseq==NULL)
+                    {
+                        dseq = new DcmSequenceOfItems(DCM_VOILUTSequence);
+                        if (dseq)
+                            dataset->insert(dseq, OFTrue);
+                        else
+                            result = EC_MemoryExhausted;
+                    }
                     if (dseq)
-                        dataset->insert(dseq, OFTrue);
-                    else
-                        result = EC_MemoryExhausted;
-                }
-                if (dseq)
-                    dseq->insert(ditem);
-                if (opt_replaceMode)
-                {
-                    delete dataset->remove(DCM_WindowCenter);
-                    delete dataset->remove(DCM_WindowWidth);
-                    delete dataset->remove(DCM_WindowCenterWidthExplanation);
-                }
-                break;
+                        dseq->insert(ditem);
+                    if (opt_replaceMode)
+                    {
+                        delete dataset->remove(DCM_WindowCenter);
+                        delete dataset->remove(DCM_WindowWidth);
+                        delete dataset->remove(DCM_WindowCenterWidthExplanation);
+                    }
+                    break;
+            }
         }
-    }
-
-    if (result != EC_Normal)
-    {
-        CERR << "error while adding LUT to image dataset. Bailing out."<< endl;
-        return 1;
-    }
-
-    DcmFileStream outf(opt_outName, DCM_WriteMode);
-    if (outf.Fail())
-    {
-        CERR << "Error: cannot create file: " << opt_outName << endl;
-        return 1;
-    }
-    if (opt_verbose)
-        CERR << "writing DICOM file ..." << endl;
-    fileformat->transferInit();
-    result = fileformat->write(outf, Xfer);
-    fileformat->transferEnd();
-    if (result != EC_Normal)
-    {
-        CERR << "Error: " << dcmErrorConditionToString(result) << ": writing file: " <<  opt_outName << endl;
-        return 1;
+    
+        if (result != EC_Normal)
+        {
+            CERR << "error while adding LUT to image dataset. Bailing out."<< endl;
+            return 1;
+        }
+    
+        DcmFileStream outf(opt_outName, DCM_WriteMode);
+        if (outf.Fail())
+        {
+            CERR << "Error: cannot create file: " << opt_outName << endl;
+            return 1;
+        }
+        if (opt_verbose)
+            CERR << "writing DICOM file ..." << endl;
+        fileformat->transferInit();
+        result = fileformat->write(outf, Xfer);
+        fileformat->transferEnd();
+        if (result != EC_Normal)
+        {
+            CERR << "Error: " << dcmErrorConditionToString(result) << ": writing file: " <<  opt_outName << endl;
+            return 1;
+        }
     }
 
     return 0;
@@ -1003,7 +1083,10 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmmklut.cc,v $
- * Revision 1.17  2000-07-04 16:09:22  joergr
+ * Revision 1.18  2000-10-16 12:26:05  joergr
+ * Added new feature: create inverse GSDF (useful for printer output).
+ *
+ * Revision 1.17  2000/07/04 16:09:22  joergr
  * Added new option to command line tool allowing to specify the 'seed' value
  * for the random-number generator.
  *
