@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2001, OFFIS
+ *  Copyright (C) 1996-2002, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose: DicomPalettePixelTemplate (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-11-09 16:47:02 $
+ *  Update Date:      $Date: 2002-06-26 16:19:13 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/include/Attic/dipalpxt.h,v $
- *  CVS/RCS Revision: $Revision: 1.14 $
+ *  CVS/RCS Revision: $Revision: 1.15 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -36,6 +36,8 @@
 #define __DIPALPXT_H
 
 #include "osconfig.h"
+
+#include "ofconsol.h"    /* for ofConsole */
 
 #include "dicopxt.h"
 #include "diluptab.h"
@@ -54,16 +56,38 @@ class DiPalettePixelTemplate
 
  public:
 
+    /** constructor
+     *
+     ** @param  docu     pointer to DICOM document
+     *  @param  pixel    pointer to input pixel representation
+     *  @param  palette  pointer to RGB color palette
+     *  @param  status   reference to status variable
+     */
     DiPalettePixelTemplate(const DiDocument *docu,
                            const DiInputPixel *pixel,
-                           DiLookupTable *pal[3],
+                           DiLookupTable *palette[3],
                            EI_Status &status)
       : DiColorPixelTemplate<T3>(docu, pixel, 1, status)
     {
         if ((pixel != NULL) && (Count > 0) && (status == EIS_Normal))
-            convert((const T1 *)pixel->getData() + pixel->getPixelStart(), pal);
+        {
+            if (PlanarConfiguration)
+            {
+                status = EIS_InvalidValue;
+                if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Errors))
+                {
+                    ofConsole.lockCerr() << "ERROR: invalid value for 'PlanarConfiguration' ("
+                                         << PlanarConfiguration << ") ! " << endl;
+                    ofConsole.unlockCerr();
+                }
+            }
+            else
+                convert((const T1 *)pixel->getData() + pixel->getPixelStart(), palette);
+        }
     }
     
+    /** destructor
+     */
     virtual ~DiPalettePixelTemplate()
     {
     }
@@ -71,55 +95,34 @@ class DiPalettePixelTemplate
 
  private:
 
+    /** convert input pixel data to intermediate representation
+     *
+     ** @param  pixel    pointer to input pixel data
+     *  @param  palette  pointer to RGB color palette
+     */
     void convert(const T1 *pixel,
-                 DiLookupTable *pal[3])
+                 DiLookupTable *palette[3])
     {                                                                // can be optimized if necessary !
         if (Init(pixel))
         {
-            register const T1 *p;
+            register const T1 *p = pixel;
             register T2 value = 0;
             register unsigned long i;
-            if (PlanarConfiguration)
+            register int j;
+            // use the number of input pixels derived from the length of the 'PixelData'
+            // attribute), but not more than the size of the intermediate buffer
+            const unsigned long count = (InputCount < Count) ? InputCount : Count;
+            for (i = 0; i < count; i++)
             {
-                register T3 *q;
-                register T2 min;
-                register T2 max;
-                for (int j = 0; j < 3; j++)
+                value = (T2)(*(p++));
+                for (j = 0; j < 3; j++)
                 {
-                    p = pixel;
-                    q = Data[j];
-                    min = pal[j]->getFirstEntry(value);
-                    max = pal[j]->getLastEntry(value);
-                    const T3 minvalue = (T3)pal[j]->getFirstValue();
-                    const T3 maxvalue = (T3)pal[j]->getLastValue();
-                    for (i = Count; i != 0; i--)
-                    {
-                        value = (T2)(*(p++));
-                        if (value <= min)
-                            *(q++) = minvalue;
-                        else if (value >= max)
-                            *(q++) = maxvalue;
-                        else
-                            *(q++) = (T3)pal[j]->getValue(value);
-                    }
-                }
-            } 
-            else
-            {
-                p = pixel;
-                register int j;
-                for (i = 0; i < Count; i++)
-                {
-                    value = (T2)(*(p++));
-                    for (j = 0; j < 3; j++)
-                    {
-                        if (value <= pal[j]->getFirstEntry(value))
-                            Data[j][i] = (T3)pal[j]->getFirstValue();
-                        else if (value >= pal[j]->getLastEntry(value))
-                            Data[j][i] = (T3)pal[j]->getLastValue();
-                        else
-                            Data[j][i] = (T3)pal[j]->getValue(value);
-                    }
+                    if (value <= palette[j]->getFirstEntry(value))
+                        Data[j][i] = (T3)palette[j]->getFirstValue();
+                    else if (value >= palette[j]->getLastEntry(value))
+                        Data[j][i] = (T3)palette[j]->getLastValue();
+                    else
+                        Data[j][i] = (T3)palette[j]->getValue(value);
                 }
             }
         }
@@ -134,7 +137,11 @@ class DiPalettePixelTemplate
  *
  * CVS/RCS Log:
  * $Log: dipalpxt.h,v $
- * Revision 1.14  2001-11-09 16:47:02  joergr
+ * Revision 1.15  2002-06-26 16:19:13  joergr
+ * Enhanced handling of corrupted pixel data and/or length.
+ * Corrected decoding of multi-frame, planar images.
+ *
+ * Revision 1.14  2001/11/09 16:47:02  joergr
  * Removed 'inline' specifier from certain methods.
  *
  * Revision 1.13  2001/06/01 15:49:31  meichel

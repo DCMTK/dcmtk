@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2001, OFFIS
+ *  Copyright (C) 1996-2002, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose: DicomHSVPixelTemplate (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-11-09 16:47:01 $
+ *  Update Date:      $Date: 2002-06-26 16:18:10 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/include/Attic/dihsvpxt.h,v $
- *  CVS/RCS Revision: $Revision: 1.15 $
+ *  CVS/RCS Revision: $Revision: 1.16 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -37,7 +37,7 @@
 
 #include "osconfig.h"
 
-#include "ofconsol.h"    /* for CERR, COUT */
+#include "ofconsol.h"    /* for ofConsole */
 #include "dicopxt.h"
 
 
@@ -54,16 +54,27 @@ class DiHSVPixelTemplate
 
  public:
 
+    /** constructor
+     *
+     ** @param  docu       pointer to DICOM document
+     *  @param  pixel      pointer to input pixel representation
+     *  @param  status     reference to status variable
+     *  @param  planeSize  number of pixels in a plane
+     *  @param  bits       number of bits per sample
+     */
     DiHSVPixelTemplate(const DiDocument *docu,
                        const DiInputPixel *pixel,
                        EI_Status &status,
+                       const unsigned long planeSize,
                        const int bits)
       : DiColorPixelTemplate<T2>(docu, pixel, 3, status)
     {
         if ((pixel != NULL) && (Count > 0) && (status == EIS_Normal))
-            convert((const T1 *)pixel->getData() + pixel->getPixelStart() * 3, bits);
+            convert((const T1 *)pixel->getData() + pixel->getPixelStart(), planeSize, bits);
     }
 
+    /** destructor
+     */
     virtual ~DiHSVPixelTemplate()
     {
     }
@@ -71,7 +82,14 @@ class DiHSVPixelTemplate
 
  private:
 
+    /** convert input pixel data to intermediate representation
+     *
+     ** @param  pixel      pointer to input pixel data
+     *  @param  planeSize  number of pixels in a plane
+     *  @param  bits       number of bits per sample
+     */
     void convert(const T1 *pixel,
+                 const unsigned long planeSize,
                  const int bits)
     {
         if (Init(pixel))
@@ -79,17 +97,39 @@ class DiHSVPixelTemplate
             register T2 *r = Data[0];
             register T2 *g = Data[1];
             register T2 *b = Data[2];
-            register unsigned long i;
             const T2 maxvalue = (T2)DicomImageClass::maxval(bits);
             const T1 offset = (T1)DicomImageClass::maxval(bits - 1);
+            // use the number of input pixels derived from the length of the 'PixelData'
+            // attribute), but not more than the size of the intermediate buffer
+            const unsigned long count = (InputCount < Count) ? InputCount : Count;
             if (PlanarConfiguration)
             {
+/*
                 register const T1 *h = pixel;
-                register const T1 *s = h + Count;
-                register const T1 *v = s + Count;
-                for (i = Count; i != 0; i--)
+                register const T1 *s = h + InputCount;
+                register const T1 *v = s + InputCount;
+                for (i = count; i != 0; i--)
                     convertValue(*(r++), *(g++), *(b++), removeSign(*(h++), offset), removeSign(*(s++), offset),
                         removeSign(*(v++), offset), maxvalue);
+*/
+                register unsigned long l;
+                register unsigned long i = count;
+                register const T1 *h = pixel;
+                register const T1 *s = h + planeSize;
+                register const T1 *v = s + planeSize;
+                while (i != 0)
+                {
+                    /* convert a single frame */
+                    for (l = planeSize; (l != 0) && (i != 0); l--, i--)
+                    {
+                        convertValue(*(r++), *(g++), *(b++), removeSign(*(h++), offset), removeSign(*(s++), offset),
+                            removeSign(*(v++), offset), maxvalue);
+                    }
+                    /* jump to next frame start (skip 2 planes) */
+                    h += 2 * planeSize;
+                    s += 2 * planeSize;
+                    v += 2 * planeSize;
+                }
             } 
             else
             {
@@ -97,7 +137,8 @@ class DiHSVPixelTemplate
                 register T2 h;
                 register T2 s;
                 register T2 v;
-                for (i = Count; i != 0; i--)
+                register unsigned long i;
+                for (i = count; i != 0; i--)
                 {
                     h = removeSign(*(p++), offset); 
                     s = removeSign(*(p++), offset);
@@ -108,6 +149,8 @@ class DiHSVPixelTemplate
         }
     }
 
+    /** convert a single HSV value to RGB
+     */
     void convertValue(T2 &red,
                       T2 &green,
                       T2 &blue,
@@ -187,7 +230,11 @@ class DiHSVPixelTemplate
  *
  * CVS/RCS Log:
  * $Log: dihsvpxt.h,v $
- * Revision 1.15  2001-11-09 16:47:01  joergr
+ * Revision 1.16  2002-06-26 16:18:10  joergr
+ * Enhanced handling of corrupted pixel data and/or length.
+ * Corrected decoding of multi-frame, planar images.
+ *
+ * Revision 1.15  2001/11/09 16:47:01  joergr
  * Removed 'inline' specifier from certain methods.
  *
  * Revision 1.14  2001/06/01 15:49:30  meichel

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2001, OFFIS
+ *  Copyright (C) 1996-2002, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose: DicomCMYKPixelTemplate (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-11-09 16:40:16 $
+ *  Update Date:      $Date: 2002-06-26 16:16:38 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/include/Attic/dicmypxt.h,v $
- *  CVS/RCS Revision: $Revision: 1.13 $
+ *  CVS/RCS Revision: $Revision: 1.14 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -53,16 +53,27 @@ class DiCMYKPixelTemplate
 
  public:
 
+    /** constructor
+     *
+     ** @param  docu       pointer to DICOM document
+     *  @param  pixel      pointer to input pixel representation
+     *  @param  status     reference to status variable
+     *  @param  planeSize  number of pixels in a plane
+     *  @param  bits       number of bits per sample
+     */
     DiCMYKPixelTemplate(const DiDocument *docu,
                         const DiInputPixel *pixel,
                         EI_Status &status,
+                        const unsigned long planeSize,
                         const int bits)
       : DiColorPixelTemplate<T2>(docu, pixel, 4, status)
     {
         if ((pixel != NULL) && (Count > 0) && (status == EIS_Normal))
-            convert((const T1 *)pixel->getData() + pixel->getPixelStart() * 4, bits);
+            convert((const T1 *)pixel->getData() + pixel->getPixelStart(), planeSize, bits);
     }
     
+    /** destructor
+     */
     virtual ~DiCMYKPixelTemplate()
     {
     }
@@ -70,32 +81,67 @@ class DiCMYKPixelTemplate
 
  private:
 
+    /** convert input pixel data to intermediate representation
+     *
+     ** @param  pixel      pointer to input pixel data
+     *  @param  planeSize  number of pixels in a plane
+     *  @param  bits       number of bits per sample
+     */
     void convert(const T1 *pixel,
+                 const unsigned long planeSize,
                  const int bits)
     {
         if (Init(pixel))
         {
-            register const T1 *p = pixel;
-            register unsigned long i;
+            // use the number of input pixels derived from the length of the 'PixelData'
+            // attribute), but not more than the size of the intermediate buffer
+            const unsigned long count = (InputCount < Count) ? InputCount : Count;
             const T2 maxvalue = (T2)DicomImageClass::maxval(bits);
             const T1 offset = (T1)DicomImageClass::maxval(bits - 1);
+            register const T1 *p = pixel;
             if (PlanarConfiguration)
             {
+/*
                 register const T1 *k;
                 register T2 *q;
                 for (int j = 0; j < 3; j++)
                 {
                     q = Data[j];
-                    k = pixel + 3 * Count;                     // beginning of 'black' plane
-                    for (i = Count; i != 0; i--)
+                    k = pixel + 3 * InputCount;                     // beginning of 'black' plane
+                    for (i = count; i != 0; i--)
                         *(q++) = maxvalue - removeSign(*(p++), offset) - removeSign(*(k++), offset);
+                }
+*/
+                register const T1 *k;
+                register T2 *q;
+                register unsigned long l;
+                register unsigned long i = 0;
+                while (i < count)
+                {
+                    /* store current pixel index */
+                    const unsigned long iStart = i;
+                    /* beginning of 'black' plane */
+                    const T1 *kStart = p + 3 * planeSize;
+                    /* for all planes ... */
+                    for (int j = 0; j < 3; j++)
+                    {
+                        q = Data[j] + iStart;
+                        /* reset to beginning of 'black' plane */
+                        k = kStart;
+                        /* convert a single plane */
+                        for (l = planeSize, i = iStart; (l != 0) && (i < count); l--, i++)
+                            *(q++) = maxvalue - removeSign(*(p++), offset) - removeSign(*(k++), offset);
+                    }
+                    /* skip black plane */
+                    p += planeSize;
                 }
             } 
             else
             {
                 register T1 k;
                 register int j;
-                for (i = 0; i < Count; i++)
+                register unsigned long i;
+                for (i = 0; i < count; i++)
                 {
                     k = *(p + 3);
                     for (j = 0; j < 3; j++)
@@ -115,7 +161,11 @@ class DiCMYKPixelTemplate
  *
  * CVS/RCS Log:
  * $Log: dicmypxt.h,v $
- * Revision 1.13  2001-11-09 16:40:16  joergr
+ * Revision 1.14  2002-06-26 16:16:38  joergr
+ * Enhanced handling of corrupted pixel data and/or length.
+ * Corrected decoding of multi-frame, planar images.
+ *
+ * Revision 1.13  2001/11/09 16:40:16  joergr
  * Removed 'inline' specifier from certain methods.
  *
  * Revision 1.12  2001/06/01 15:49:27  meichel

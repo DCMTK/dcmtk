@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2001, OFFIS
+ *  Copyright (C) 1996-2002, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose: DicomARGBPixelTemplate (Header) - UNTESTED !!!
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-11-09 16:39:37 $
+ *  Update Date:      $Date: 2002-06-26 16:16:07 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/include/Attic/diargpxt.h,v $
- *  CVS/RCS Revision: $Revision: 1.14 $
+ *  CVS/RCS Revision: $Revision: 1.15 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -54,17 +54,29 @@ class DiARGBPixelTemplate
 
  public:
 
+    /** constructor
+     *
+     ** @param  docu       pointer to DICOM document
+     *  @param  pixel      pointer to input pixel representation
+     *  @param  palette    pointer to RGB color palette
+     *  @param  status     reference to status variable
+     *  @param  planeSize  number of pixels in a plane
+     *  @param  bits       number of bits per sample
+     */
     DiARGBPixelTemplate(const DiDocument *docu,
                         const DiInputPixel *pixel,
                         DiLookupTable *palette[3],
                         EI_Status &status,
+                        const unsigned long planeSize,
                         const int bits)
       : DiColorPixelTemplate<T3>(docu, pixel, 4, status)
     {
         if ((pixel != NULL) && (Count > 0) && (status == EIS_Normal))
-            convert((const T1 *)pixel->getData() + pixel->getPixelStart() * 4, palette, bits);
+            convert((const T1 *)pixel->getData() + pixel->getPixelStart(), palette, planeSize, bits);
     }
     
+    /** destructor
+     */
     virtual ~DiARGBPixelTemplate()
     {
     }
@@ -72,36 +84,46 @@ class DiARGBPixelTemplate
 
  private:
 
+    /** convert input pixel data to intermediate representation
+     *
+     ** @param  pixel      pointer to input pixel data
+     *  @param  palette    pointer to RGB color palette
+     *  @param  planeSize  number of pixels in a plane
+     *  @param  bits       number of bits per sample
+     */
     void convert(const T1 *pixel,
-                 DiLookupTable *pal[3],
+                 DiLookupTable *palette[3],
+                 const unsigned long planeSize,
                  const int bits)
-    {                                                                           // not very much optimized, but no one uses ARGB !!
+    {                                             // not very much optimized, but no one really uses ARGB !!
         if (Init(pixel))
         {
-            register unsigned long i;
             register T2 value;
-            register int j;
             const T1 offset = (T1)DicomImageClass::maxval(bits - 1);
+            // use the number of input pixels derived from the length of the 'PixelData'
+            // attribute), but not more than the size of the intermediate buffer
+            const unsigned long count = (InputCount < Count) ? InputCount : Count;
             if (PlanarConfiguration)
             {
+/*
                 register const T1 *a = pixel;                                   // points to alpha plane
                 const T1 *rgb[3];
-                rgb[0] = a + Count;                                             // points to red plane
-                rgb[1] = rgb[0] + Count;                                        // points to green plane
-                rgb[2] = rgb[1] + Count;                                        // points to blue plane
-                for (i = 0; i < Count; i++)
+                rgb[0] = a + InputCount;                                        // points to red plane
+                rgb[1] = rgb[0] + InputCount;                                   // points to green plane
+                rgb[2] = rgb[1] + InputCount;                                   // points to blue plane
+                for (i = 0; i < count; i++)
                 {
                     value = (T2)(*(a++));                                       // get alpha value
                     if (value > 0)
                     {
-                        for (j = 0; j < 3; j++)                                 // set palette color
+                        for (int j = 0; j < 3; j++)                             // set palette color
                         {
-                            if (value <= pal[j]->getFirstEntry(value))
-                                Data[j][i] = (T3)pal[j]->getFirstValue();
-                            else if (value >= pal[j]->getLastEntry(value))
-                                Data[j][i] = (T3)pal[j]->getLastValue();
+                            if (value <= palette[j]->getFirstEntry(value))
+                                Data[j][i] = (T3)palette[j]->getFirstValue();
+                            else if (value >= palette[j]->getLastEntry(value))
+                                Data[j][i] = (T3)palette[j]->getLastValue();
                             else
-                                Data[j][i] = (T3)pal[j]->getValue(value);
+                                Data[j][i] = (T3)palette[j]->getValue(value);
                             rgb[j]++;                                           // skip RGB values
                         }
                     }
@@ -111,29 +133,68 @@ class DiARGBPixelTemplate
                             Data[j][i] = (T3)removeSign(*(rgb[j]++), offset);   // copy RGB values
                     }
                 }
+*/
+                register unsigned long l;
+                register unsigned long i = 0;
+                register const T1 *a = pixel;                                   // points to alpha plane
+                const T1 *rgb[3];
+                rgb[0] = a + planeSize;                                         // points to red plane
+                rgb[1] = rgb[0] + planeSize;                                    // points to green plane
+                rgb[2] = rgb[1] + planeSize;                                    // points to blue plane
+                while (i < count)
+                {
+                    /* convert a single frame */
+                    for (l = planeSize; (l != 0) && (i < count); l--, i++)
+                    {
+                        value = (T2)(*(a++));                                       // get alpha value
+                        if (value > 0)
+                        {
+                            for (int j = 0; j < 3; j++)                             // set palette color
+                            {
+                                if (value <= palette[j]->getFirstEntry(value))
+                                    Data[j][i] = (T3)palette[j]->getFirstValue();
+                                else if (value >= palette[j]->getLastEntry(value))
+                                    Data[j][i] = (T3)palette[j]->getLastValue();
+                                else
+                                    Data[j][i] = (T3)palette[j]->getValue(value);
+                                rgb[j]++;                                           // skip RGB values
+                            }
+                        }
+                        else
+                        {
+                            for (int j = 0; j < 3; j++)
+                                Data[j][i] = (T3)removeSign(*(rgb[j]++), offset);   // copy RGB values
+                        }
+                    }
+                    /* jump to next frame start (skip 2 planes) */
+                    a += 2 * planeSize;
+                    for (int j = 0; j < 3; j++)
+                       rgb[j] += 2 * planeSize;
+                }
             } 
             else
             {
+                register unsigned long i;
                 register const T1 *p = pixel;
-                for (i = 0; i < Count; i++)
+                for (i = 0; i < count; i++)
                 {
                     value = (T2)(*(p++));                                       // get alpha value
                     if (value > 0)
                     {
-                        for (j = 0; j < 3; j++)                                 // set palette color
+                        for (int j = 0; j < 3; j++)                             // set palette color
                         {
-                            if (value <= pal[j]->getFirstEntry(value))
-                                Data[j][i] = (T3)pal[j]->getFirstValue();
-                            else if (value >= pal[j]->getLastEntry(value))
-                                Data[j][i] = (T3)pal[j]->getLastValue();
+                            if (value <= palette[j]->getFirstEntry(value))
+                                Data[j][i] = (T3)palette[j]->getFirstValue();
+                            else if (value >= palette[j]->getLastEntry(value))
+                                Data[j][i] = (T3)palette[j]->getLastValue();
                             else
-                                Data[j][i] = (T3)pal[j]->getValue(value);
+                                Data[j][i] = (T3)palette[j]->getValue(value);
                         }
                         p += 3;                                                 // skip RGB values
                     }
                     else
                     {
-                        for (j = 0; j < 3; j++)
+                        for (int j = 0; j < 3; j++)
                             Data[j][i] = (T3)removeSign(*(p++), offset);        // copy RGB values
                     }
                 }
@@ -150,7 +211,11 @@ class DiARGBPixelTemplate
  *
  * CVS/RCS Log:
  * $Log: diargpxt.h,v $
- * Revision 1.14  2001-11-09 16:39:37  joergr
+ * Revision 1.15  2002-06-26 16:16:07  joergr
+ * Enhanced handling of corrupted pixel data and/or length.
+ * Corrected decoding of multi-frame, planar images.
+ *
+ * Revision 1.14  2001/11/09 16:39:37  joergr
  * Removed 'inline' specifier from certain methods.
  *
  * Revision 1.13  2001/06/01 15:49:27  meichel

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2001, OFFIS
+ *  Copyright (C) 1996-2002, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose: DicomRGBPixelTemplate (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-11-09 16:47:02 $
+ *  Update Date:      $Date: 2002-06-26 16:19:46 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/include/Attic/dirgbpxt.h,v $
- *  CVS/RCS Revision: $Revision: 1.13 $
+ *  CVS/RCS Revision: $Revision: 1.14 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -53,16 +53,27 @@ class DiRGBPixelTemplate
 
  public:
 
+    /** constructor
+     *
+     ** @param  docu       pointer to DICOM document
+     *  @param  pixel      pointer to input pixel representation
+     *  @param  status     reference to status variable
+     *  @param  planeSize  number of pixel in a single plane
+     *  @param  bits       number of bits per sample
+     */
     DiRGBPixelTemplate(const DiDocument *docu,
                        const DiInputPixel *pixel,
                        EI_Status &status,
+                       const unsigned long planeSize,
                        const int bits)
       : DiColorPixelTemplate<T2>(docu, pixel, 3, status)
     {
         if ((pixel != NULL) && (Count > 0) && (status == EIS_Normal))
-            convert((const T1 *)pixel->getData() + pixel->getPixelStart() * 3, bits);
+            convert((const T1 *)pixel->getData() + pixel->getPixelStart(), planeSize, bits);
     }
-    
+
+    /** destructor
+     */
     virtual ~DiRGBPixelTemplate()
     {
     }
@@ -70,30 +81,61 @@ class DiRGBPixelTemplate
 
  private:
 
+    /** convert input pixel data to intermediate representation
+     *
+     ** @param  pixel      pointer to input pixel data
+     *  @param  planeSize  number of pixels in a plane
+     *  @param  bits       number of bits per sample
+     */
     void convert(const T1 *pixel,
+                 const unsigned long planeSize,
                  const int bits)
     {
         if (Init(pixel))
         {
-            register const T1 *p = pixel;
-            register unsigned long i;
+            // use the number of input pixels derived from the length of the 'PixelData'
+            // attribute), but not more than the size of the intermediate buffer
+            const unsigned long count = (InputCount < Count) ? InputCount : Count;
             const T1 offset = (T1)DicomImageClass::maxval(bits - 1);
+            register const T1 *p = pixel;
             if (PlanarConfiguration)
             {
+/*
                 register T2 *q;
-                for (int j = 0; j < 3; j++)                         /* for all planes ... */
+                // number of pixels to be skipped (only applicable if 'PixelData' contains more
+                // pixels than expected)
+                const unsigned long skip = (InputCount > Count) ? (InputCount - Count) : 0;
+                for (int j = 0; j < 3; j++)
                 {
                     q = Data[j];
-                    for (i = Count; i != 0; i--)
-                        *(q++) = removeSign(*(p++), offset);        /* ... copy pixel */
+                    for (i = count; i != 0; i--)
+                        *(q++) = removeSign(*(p++), offset);
+                    // skip to beginning of next plane
+                    p += skip;
                 }
-            } 
+*/
+                register unsigned long l;
+                register unsigned long i = 0;
+                while (i < count)
+                {
+                    /* store current pixel index */
+                    const unsigned long iStart = i;
+                    /* for all planes ... */
+                    for (int j = 0; j < 3; j++)
+                    {
+                        /* convert a single plane */
+                        for (l = planeSize, i = iStart; (l != 0) && (i < count); l--, i++)
+                            Data[j][i] = removeSign(*(p++), offset);
+                    }
+                }
+            }
             else
             {
                 register int j;
-                for (i = 0; i < Count; i++)                         /* for all pixel ... */
+                register unsigned long i;
+                for (i = 0; i < count; i++)                         /* for all pixel ... */
                     for (j = 0; j < 3; j++)
-                        Data[j][i] = removeSign(*(p++), offset);    /* ... copy planes */ 
+                        Data[j][i] = removeSign(*(p++), offset);    /* ... copy planes */
             }
         }
     }
@@ -107,7 +149,11 @@ class DiRGBPixelTemplate
  *
  * CVS/RCS Log:
  * $Log: dirgbpxt.h,v $
- * Revision 1.13  2001-11-09 16:47:02  joergr
+ * Revision 1.14  2002-06-26 16:19:46  joergr
+ * Enhanced handling of corrupted pixel data and/or length.
+ * Corrected decoding of multi-frame, planar images.
+ *
+ * Revision 1.13  2001/11/09 16:47:02  joergr
  * Removed 'inline' specifier from certain methods.
  *
  * Revision 1.12  2001/06/01 15:49:32  meichel
