@@ -50,10 +50,10 @@
 **
 **
 **
-** Last Update:		$Author: hewett $
-** Update Date:		$Date: 1996-03-12 15:11:39 $
+** Last Update:		$Author: andreas $
+** Update Date:		$Date: 1996-03-22 12:38:44 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/apps/dump2dcm.cc,v $
-** CVS/RCS Revision:	$Revision: 1.2 $
+** CVS/RCS Revision:	$Revision: 1.3 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -318,12 +318,14 @@ parseValue(char * & s, char * & value)
 	len = searchLastClose(s, DCM_DumpCloseString);
 	if (len == 0)
 	    ok = FALSE;
-	else
+	else if (len < 2)
 	{
 	    value = new char[len-1];
 	    strncpy(value, s+1, len-2);
 	    value[len-2] = '\0';
 	}
+	else 
+	    value = NULL;
 	break;
       
     case DCM_DumpOpenDescription:
@@ -841,7 +843,11 @@ int main(int argc, char *argv[])
 /*
 ** CVS/RCS Log:
 ** $Log: dump2dcm.cc,v $
-** Revision 1.2  1996-03-12 15:11:39  hewett
+** Revision 1.3  1996-03-22 12:38:44  andreas
+** Correct some mistakes: handling [] as empty string (no value field)
+**                        handling =Name correct if Name is not correct
+**
+** Revision 1.2  1996/03/12 15:11:39  hewett
 ** Added call to prepareCmdLineArgs to enable command line arguments
 ** in environments which do not provide them.
 **
