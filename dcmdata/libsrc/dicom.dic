@@ -2,7 +2,7 @@
 # This is the global DICOM data dictionary for the dcm toolkit dcmdata
 # class library.
 #
-# Last update: $Date: 1998-11-12 17:13:17 $
+# Last update: $Date: 1998-11-18 14:53:08 $
 #
 # Status: The dictionary contains
 #   - the complete dictionary from the 1996 DICOM publication
@@ -1900,12 +1900,8 @@
 #---------------------------------------------------------------------------
 #
 # Supplement 33: Grayscale Softcopy Presentation State Storage
-# Frozen Draft for Demonstration - 04 September 1998 (Version 17)
+# Frozen Draft for Demonstration - 13 November 1998 (Version 18)
 #
-
-# changes for ECR '99 demo:
-# - renamed (0070,0002) and (0070,0061) to have unique names
-# - defined VR=US and VM=1 for (0018,1623)
 
 # ReferencedFrameNumber is redefined here (VM now 1-n).
 (0008,1160)	IS	ReferencedFrameNumber	1-n	DICOM3
@@ -1915,7 +1911,7 @@
 (5000-50ff,1001)	CS	CurveActivationLayer	1	DICOM3
 (6000-60ff,1001)	CS	OverlayActivationLayer	1	DICOM3
 (0070,0001)	SQ	GraphicAnnotationSequence	1	DICOM3
-(0070,0002)	CS	GraphicLayerReference	1	DICOM3
+(0070,0002)	CS	GraphicLayer	1	DICOM3
 (0070,0003)	CS	BoundingBoxAnnotationUnits	1	DICOM3
 (0070,0004)	CS	AnchorPointAnnotationUnits	1	DICOM3
 (0070,0005)	CS	GraphicAnnotationUnits	1	DICOM3
@@ -1936,7 +1932,6 @@
 (0070,0050)	US	DisplayedAreaTLHC	2	DICOM3
 (0070,0051)	US	DisplayedAreaBRHC	2	DICOM3
 (0070,0060)	SQ	GraphicLayerSequence	1	DICOM3
-(0070,0061)	CS	GraphicLayerIdentifier	1	DICOM3
 (0070,0062)	IS	GraphicLayerOrder	1	DICOM3
 (0070,0066)	US	GraphicLayerRecommendedDisplayValue	1-3	DICOM3
 (0070,0068)	LO	GraphicLayerDescription	1	DICOM3
