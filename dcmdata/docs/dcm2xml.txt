@@ -19,7 +19,7 @@ it will attempt to guess the transfer syntax by examining the first few bytes
 of the file.  It is not always possible to correctly guess the transfer syntax
 and it is better to convert a data set to a file format whenever possible
 (using the dcmconv utility).  It is also possible to use the -f and -t[ieb]
-options to force dcm2xml to read a dataset with a particular transfer syntax.
+options to force dcm2xml to read a data set with a particular transfer syntax.
 
 
 USAGE
@@ -61,7 +61,7 @@ The basic structure of the XML output created from a DICOM image file looks
 like the following:
 
   <?xml version="1.0" encoding="ISO-8859-1"?>
-  <!DOCTYPE fileformat SYSTEM "dcm2xml.dtd">
+  <!DOCTYPE file-format SYSTEM "dcm2xml.dtd">
   <file-format>
     <meta-header xfer="1.2.840.10008.1.2.1" name="LittleEndianExplicit">
       <element tag="0002,0000" vr="UL" vm="1" len="4" name="MetaElementGroupLength">166</element>
@@ -98,7 +98,7 @@ The XML encoding is determined automatically from the DICOM attribute
   Arabic        "ISO_IR 127"  =>  "ISO-8859-6"
   Greek         "ISO_IR 126"  =>  "ISO-8859-7"
   Hebrew        "ISO_IR 138"  =>  "ISO-8859-8"
-  
+
 Multiple character sets are not supported (only the first attribute value is
 mapped in case of value multiplicity).
 

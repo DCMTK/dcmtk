@@ -22,9 +22,9 @@
  *  Purpose: Convert the contents of a DICOM file to XML format
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-05-14 08:19:22 $
+ *  Update Date:      $Date: 2002-06-10 17:35:47 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/apps/dcm2xml.cc,v $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -124,9 +124,9 @@ static OFCondition writeFile(ostream &out,
         {
             out << "<!DOCTYPE ";
             if (isDataset)
-                out << "dataset";
-            else 
-                out << "fileformat";
+                out << "data-set";
+            else
+                out << "file-format";
             out << " SYSTEM \"" << DOCUMENT_TYPE_DECLARATION_FILE << "\">" << endl;
         }
         /* write XML document content */
@@ -229,13 +229,13 @@ int main(int argc, char *argv[])
         if (cmd.findOption("--load-short"))
             loadIntoMemory = OFFalse;
         cmd.endOptionBlock();
-        
+
         if (cmd.findOption("--add-document-type"))
             opt_writeFlags |= DCMTypes::XF_addDocumentType;
         if (cmd.findOption("--write-binary-data"))
             opt_writeFlags |= DCMTypes::XF_writeBinaryData;
         if (cmd.findOption("--encode-base64"))
-            opt_writeFlags |= DCMTypes::XF_encodeBase64;            
+            opt_writeFlags |= DCMTypes::XF_encodeBase64;
     }
 
     SetDebugLevel((opt_debugMode));
@@ -276,7 +276,10 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcm2xml.cc,v $
- * Revision 1.4  2002-05-14 08:19:22  joergr
+ * Revision 1.5  2002-06-10 17:35:47  joergr
+ * Fixed inconsistency regarding spelling of the "file-format" element.
+ *
+ * Revision 1.4  2002/05/14 08:19:22  joergr
  * Added support for Base64 (MIME) encoded binary data.
  *
  * Revision 1.3  2002/05/07 12:47:41  joergr
