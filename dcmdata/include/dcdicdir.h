@@ -10,10 +10,10 @@
 ** Interface of class DcmDicomDir
 **
 **
-** Last Update:		$Author: andreas $
-** Update Date:		$Date: 1996-08-05 08:45:18 $
+** Last Update:		$Author: hewett $
+** Update Date:		$Date: 1997-04-24 12:08:28 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcdicdir.h,v $
-** CVS/RCS Revision:	$Revision: 1.3 $
+** CVS/RCS Revision:	$Revision: 1.4 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -107,9 +107,10 @@ class DcmDicomDir
 
     // komplette Reorganisation der verwalteten Directory Records (Seiteneffekt)
     E_Condition convertLinearToTree();
-    E_Condition convertTreeToLinear( Uint32 beginOfFileSet,        // in
+    E_Condition convertTreeToLinear( Uint32 beginOfFileSet,         // in
                                      E_TransferSyntax oxfer,        // in
                                      E_EncodingType enctype,        // in
+				     E_GrpLenEncoding gltype,       // in
                                      DcmSequenceOfItems &unresRecs);// inout
 
 public:
@@ -142,7 +143,11 @@ public:
 /*
 ** CVS/RCS Log:
 ** $Log: dcdicdir.h,v $
-** Revision 1.3  1996-08-05 08:45:18  andreas
+** Revision 1.4  1997-04-24 12:08:28  hewett
+** Fixed DICOMDIR generation bug affecting inclusion of Group Length
+** attributes (file offsets were not being computed correctly).
+**
+** Revision 1.3  1996/08/05 08:45:18  andreas
 ** new print routine with additional parameters:
 **         - print into files
 **         - fix output length for elements
