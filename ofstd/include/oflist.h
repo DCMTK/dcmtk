@@ -10,9 +10,9 @@
 **      C++ Standard
 **
 ** Last Update:		$Author: meichel $
-** Update Date:		$Date: 1998-02-06 15:07:38 $
+** Update Date:		$Date: 1998-06-29 12:09:23 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/ofstd/include/Attic/oflist.h,v $
-** CVS/RCS Revision:	$Revision: 1.6 $
+** CVS/RCS Revision:	$Revision: 1.7 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -75,7 +75,7 @@ struct OFListLinkBase
     OFListLinkBase * next;
     OFListLinkBase * prev;
     OFBool dummy;
-    OFListLinkBase() { next = prev = NULL; dummy = OFFalse; }
+    OFListLinkBase(): next(NULL), prev(NULL), dummy(OFFalse) { }
     virtual ~OFListLinkBase() {}
 };
 
@@ -202,13 +202,13 @@ public:
 private:
     void copy(const OFList<T> & oldList) 
     {
-	OFIterator<T> first(oldList.begin());
-	OFIterator<T> end(oldList.end());
-	OFIterator<T> pos(this->end());
-	while (first != end)
+	OFIterator<T> vfirst(oldList.begin());
+	OFIterator<T> vend(oldList.end());
+	OFIterator<T> vpos(this->end());
+	while (vfirst != vend)
 	{
-	    insert(pos, *first);
-	    ++first;
+	    insert(vpos, *vfirst);
+	    ++vfirst;
 	}
     }
 
@@ -401,7 +401,12 @@ void OF_ListRemoveIf(OFList<T> & c, Predicate pred)
 /*
 ** CVS/RCS Log:
 ** $Log: oflist.h,v $
-** Revision 1.6  1998-02-06 15:07:38  meichel
+** Revision 1.7  1998-06-29 12:09:23  meichel
+** Removed some name clashes (e.g. local variable with same
+**   name as class member) to improve maintainability.
+**   Applied some code purifications proposed by the gcc 2.8.1 -Weffc++ option.
+**
+** Revision 1.6  1998/02/06 15:07:38  meichel
 ** Removed many minor problems (name clashes, unreached code)
 **   reported by Sun CC4 with "+w" or Sun CC2.
 **
