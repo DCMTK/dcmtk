@@ -367,13 +367,13 @@ other transformations:
 \section notes NOTES
 
 The \e --write-tiff option is only available when DCMTK has been configured
-and compiled with support for the external \e libtiff TIFF library.  The
-availability of the TIFF compression options depends on the \e libtiff
+and compiled with support for the external \b libtiff TIFF library.  The
+availability of the TIFF compression options depends on the \b libtiff
 configuration.  In particular, the patented LZW algorithm may not be
 available.
 
 The \e --write-png option is only available when DCMTK has been configured
-and compiled with support for the external \e libpng  PNG library.  Interlace
+and compiled with support for the external \b libpng  PNG library.  Interlace
 enables progressive image view while loading the PNG file.  Only a few
 applications take care of the metainfo (TEXT) in a PNG file.
 

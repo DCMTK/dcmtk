@@ -1,4 +1,4 @@
-.TH "dcm2pnm" 1 "10 Feb 2004" "OFFIS DCMTK" \" -*- nroff -*-
+.TH "dcm2pnm" 1 "11 Feb 2004" "OFFIS DCMTK" \" -*- nroff -*-
 .nh
 .SH NAME
 dcm2pnm \- Convert DICOM images to PPM/PGM, PNG, TIFF or BMP
@@ -343,9 +343,9 @@ other transformations:
 .PP
 .SH "NOTES"
 .PP
-The \fI--write-tiff\fP option is only available when DCMTK has been configured and compiled with support for the external \fIlibtiff\fP TIFF library. The availability of the TIFF compression options depends on the \fIlibtiff\fP configuration. In particular, the patented LZW algorithm may not be available.
+The \fI--write-tiff\fP option is only available when DCMTK has been configured and compiled with support for the external \fBlibtiff\fP TIFF library. The availability of the TIFF compression options depends on the \fBlibtiff\fP configuration. In particular, the patented LZW algorithm may not be available.
 .PP
-The \fI--write-png\fP option is only available when DCMTK has been configured and compiled with support for the external \fIlibpng\fP PNG library. Interlace enables progressive image view while loading the PNG file. Only a few applications take care of the metainfo (TEXT) in a png file.
+The \fI--write-png\fP option is only available when DCMTK has been configured and compiled with support for the external \fBlibpng\fP PNG library. Interlace enables progressive image view while loading the PNG file. Only a few applications take care of the metainfo (TEXT) in a png file.
 .PP
 Sample monitor and printer characteristics files are available in the \fIdata\fP folder.
 .SH "COMMAND LINE"
