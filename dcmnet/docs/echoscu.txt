@@ -1,0 +1,63 @@
+NAME
+
+    echoscu
+
+SYNOPSIS
+
+    echoscu [-r n][-v][-d][-a][-b n][-t ourAETitle][-c theirAETitle] peer port
+
+SUMMARY
+
+The echoscu application implements a Service Class User (SCU) for the 
+Verification SOP Class.  It sends a DICOM C-ECHO message to a Service
+Class Provider (SCP) and waits for a response.  The application can be
+used to verify basic DICOM connectivity.  
+
+USAGE
+
+Invoking the echoscu application without any parameters will cause it to 
+display an invocation syntax summary.
+
+The echoscu application command line parameters and options:
+
+    echoscu [-r n][-v][-d][-a][-b n][-t ourAETitle][-c theirAETitle] peer port
+
+parameters:
+    peer        hostname of dicom peer
+    port        tcp/ip port number of peer
+options:
+    -r n        repeat n times
+    -v          verbose mode
+    -d          debug mode
+    -a          abort association
+    -b n        set max receive pdu to n bytes (default: 16K)
+    -t title    my calling AE title (default: ECHOSCU)
+    -c title    called AE title of peer (default: ANY-SCP)
+
+DICOM CONFORMANCE
+
+The echoscu application supports the SOP Classes as an SCU:
+
+    VerificationSOPClass	"1.2.840.10008.1.1"
+
+The echoscu application will only propose the transfer syntax
+
+    LittleEndianImplicitTransferSyntax	"1.2.840.10008.1.2"
+
+ENVIRONMENT
+
+The echoscu application will attempt to load DICOM data dictionaries
+specified in the DCMDICTPATH environment variable.  By default, if
+the DCMDICTPATH environment variable is not set, the file
+/usr/local/dicom/lib/dicom.dic will be loaded.  The default behaviour
+should be preferred and the DCMDICTPATH environment variable only used
+when alternative data dictionaries are required.  The DCMDICTPATH 
+environment variable has the same format as the shell PATH variable in
+that a colon (":") separates entries.  The data dictionary code will
+attempt to load each file specified in the DCMDICTPATH environment 
+variable.  It is an error if no data dictionary can be loaded.
+
+AUTHOR
+
+Andrew Hewett, Kuratorium OFFIS e.V., Oldenburg, Germany
+

@@ -1,0 +1,102 @@
+NAME
+
+    findscu
+
+SYNOPSIS
+
+findscu [options] peer port [queryfile ...]
+
+SUMMARY
+
+The findscu application implements an SCU for the Query/Retrieve
+Service Class and the Basic Worklist Management Service Class.  
+Findscu only supports query functionality using the C-FIND
+message.  It sends query keys to an SCP and awaits responses.
+The application can be used to test SCPs of the Query/Retrieve
+and Basic Worklist Management Service Classes.  
+
+USAGE
+
+Invoking the findscu application without any parameters will 
+cause it to display an invocation syntax summary.
+
+The findscu application accepts the following command line
+parameters and options:
+
+findscu [-k key][-r n][-v][-d][-a][-b n][-P][-S][-O][-W]
+        [-t ourAETitle][-c theirAETitle] peer port [queryfile ...]
+
+parameters:
+    peer        hostname of dicom peer
+    port        tcp/ip port number of peer
+    queryfile   matching keys (DICOM file)
+options:
+    -k key      override matching key (gggg,eeee=\"string\")
+    -r n        repeat n times
+    -v          verbose mode
+    -d          debug mode
+    -a          abort association
+    -b n        set max receive pdu to n bytes (default: 16K)
+    -P          use Patient Root Q/R Information Model
+    -S          use Study Root Q/R Information Model
+    -O          use Patient/Study Only Root Q/R Information Model
+    -W          use Modality Worklist Information Model (default)
+    -t title    my calling AE title (default: FINDSCU)
+    -c title    called AE title of peer (default: ANY-SCP)
+
+Each file supplied on the command line will be sent to the SCP
+as part of a C-FIND request.  Each set of response identifers 
+received will be printed to stdout.
+
+Individual attributes of each file sent can be modified or
+supplemented using the "-k key" option.  For example the 
+command:
+
+    findscu -k '0010,0010=HEWETT*' caesar 5678 patqry.dcm
+
+will, when sent to the SCP caesar at TCP/IP port 5678, cause any
+PatientsName attribute in patqry.dcm to have the value 'HEWETT*'. 
+If such an attribute is present it will be replaced, if absent it
+will be inserted.  The -k option can be present more than once.  
+The value part (after the =) may be absent causing the attribute to
+be sent with zero length.  It is not possible to replace or insert
+attributes within sequences using the -k option.
+
+DICOM CONFORMANCE
+
+The findscu application supports the following SOP Classes 
+as an SCU:
+
+    FINDPatientRootQueryRetrieveInformationModel "1.2.840.10008.5.1.4.1.2.1.1"
+    FINDStudyRootQueryRetrieveInformationModel	"1.2.840.10008.5.1.4.1.2.2.1"
+    FINDPatientStudyOnlyQueryRetrieveInformationModel "1.2.840.10008.5.1.4.1.2.3.1"
+    FINDModalityWorklistInformationModel	"1.2.840.10008.5.1.4.31"
+
+The findscu application will propose presentation contexts for
+one of the abovementioned supported SOP Classes depending
+on command line options (-P, -S, -O or -W).  Each proposed
+presentation context will propose the transfer syntaxes:
+
+    LittleEndianImplicitTransferSyntax	"1.2.840.10008.1.2"
+    LittleEndianExplicitTransferSyntax	"1.2.840.10008.1.2.1"
+    BigEndianExplicitTransferSyntax	"1.2.840.10008.1.2.2"
+
+The findscu application does not support extended negotiation.
+
+ENVIRONMENT
+
+The findscu application will attempt to load DICOM data dictionaries
+specified in the DCMDICTPATH environment variable.  By default, if
+the DCMDICTPATH environment variable is not set, the file
+/usr/local/dicom/lib/dicom.dic will be loaded.  The default behaviour
+should be preferred and the DCMDICTPATH environment variable only used
+when alternative data dictionaries are required.  The DCMDICTPATH 
+environment variable has the same format as the shell PATH variable in
+that a colon (":") separates entries.  The data dictionary code will
+attempt to load each file specified in the DCMDICTPATH environment 
+variable.  It is an error if no data dictionary can be loaded.
+
+AUTHOR
+
+Andrew Hewett, Kuratorium OFFIS e.V., Oldenburg, Germany
+
