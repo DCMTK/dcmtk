@@ -3,8 +3,9 @@ DCMTK FAQ - Frequently Asked Questions
 ----
 2004-05-04
 
-Q: I am trying to compile DCMTK, but get linker errors for the tools
-   dcm2pnm and dcmj2pnm. The following symbols cannot be located:
+Q: I am trying to compile DCMTK, but get linker errors for the tools dcm2pnm
+   and dcmj2pnm. The following symbols cannot be located:
+
      jpeg_abort
      jpeg_std_error
      jpeg_CreateCompress
@@ -28,75 +29,81 @@ Q: I am trying to compile DCMTK, but get linker errors for the tools
 
 A: On your system, libtiff has been compiled with JPEG support enabled.
    After running configure for DCMTK, you need to manually update
-   config/Makefile.def.  Locate the TIFFLIBS entry and add "-ljpeg":
-   TIFFLIBS = -ltiff -ljpeg
+   "config/Makefile.def".  Locate the TIFFLIBS entry and add "-ljpeg":
+
+     TIFFLIBS = -ltiff -ljpeg
+
    DCMTK should correctly compile and link now.
 
 ----
 2003-07-09
 
-Q: Why do the C++ source files use a ".cc" extension in the Unix version 
-   of DCMTK, but a ".cxx" extension in the Windows version?
+Q: Why do the C++ source files use a ".cc" extension in the Unix version of
+   DCMTK, but a ".cxx" extension in the Windows version?
 
-A: The ".cc" extension is there mostly for historical reasons - this is 
-   the naming scheme we adopted when we initialized our code maintenance 
-   system. Unfortunately, not all C++ compilers accept ".cc" as a valid 
-   extension for C++ files. Two noteworthy exceptions are the IBM AIX XL 
-   C++ Compiler which requires ".C" with an uppercase "C" as extension 
-   and Microsoft Visual C++, which expects ".cxx" or ".cpp".
+A: The ".cc" extension is there mostly for historical reasons - this is the
+   naming scheme we adopted when we initialized our code maintenance system.
+   Unfortunately, not all C++ compilers accept ".cc" as a valid extension for
+   C++ files.  Two noteworthy exceptions are the IBM AIX XL C++ Compiler which
+   requires ".C" with an uppercase "C" as extension and Microsoft Visual C++,
+   which expects ".cxx" or ".cpp".
 
-   On Unix platforms, the file name extension can easily be changed 
-   using the "changext" shell script which is located in the config 
-   directory of the DCMTK source distribution.  A call to 
-   "config/changext C cc" will rename all ".cc" files within the DCMTK 
-   tree to ".C" and will also update makefiles, dependency files etc. 
-   For Win32 users, we provide a source code distribution in which 
-   extensions have been changed to ".cxx" for convenience. 
+   On Unix platforms, the file name extension can easily be changed using the
+   "changext" shell script which is located in the config directory of the
+   DCMTK source distribution.  A call to "config/changext C cc" will rename
+   all ".cc" files within the DCMTK tree to ".C" and will also update
+   makefiles, dependency files etc.  For Win32 users, we provide a source code
+   distribution in which extensions have been changed to ".cxx" for
+   convenience.
 
-   Alternatively, the ".cc" extension can be added to Visual C++'s 
-   settings in the system registry under the following position (note 
-   that for other versions of Visual C++ than 6.0, the registry position 
-   might be different). Append ";*.cc" to the value for the Input_Spec 
-   key, which defaults to "*.c;*.cpp;*.cxx". Thanks to Norbert 
-   Lindlbauer <norbert.lindlbauer@web.de> for this useful hint.
-   
-   HKEY_CURRENT_USER 
-   + Software 
-    + Microsoft 
-     + DevStudio 
-      + 6.0 
-       + Build System 
-        + Components 
-         + Platforms 
-          + Win32 (x86) 
-           + Tools 
-            + 32-Bit C/C++-Compiler for 80x86 
+   Alternatively, the ".cc" extension can be added to Visual C++'s settings in
+   the system registry under the following position (note that for other
+   versions of Visual C++ than 6.0, the registry position might be different).
+   Append ";*.cc" to the value for the Input_Spec key, which defaults to
+   "*.c;*.cpp;*.cxx".  Thanks to Norbert Lindlbauer <norbert.lindlbauer@web.de>
+   for this useful hint.
+
+   HKEY_CURRENT_USER
+   + Software
+    + Microsoft
+     + DevStudio
+      + 6.0
+       + Build System
+        + Components
+         + Platforms
+          + Win32 (x86)
+           + Tools
+            + 32-Bit C/C++-Compiler for 80x86
              + Input_Spec
 
 ----
 2002-07-15
 
 Q: Using dcm2pnm to convert a DICOM image I get the following error message:
-   "invalid value for 'PhotometricInterpretation' (LittleEndianExplicit)".
 
-A: [This only applies to systems where the data dictionary is not built-in
-   but loaded from file (typical for Unix systems).]  Most likely the
-   environment variable DCMDICTPATH is not set-up properly.  Please note
-   that it needs to point to the data dictionary file, not to a directory
-   (see also older entries below).
+     ERROR: invalid value for 'PhotometricInterpretation' (LittleEndianExplicit)
+
+A: [This only applies to systems where the data dictionary is not built-in but
+   loaded from file (typical for Unix systems).]  Most likely the environment
+   variable DCMDICTPATH is not set-up properly.  Please note that it needs to
+   point to the data dictionary file, not to a directory (see also older
+   entries below).
 
 ----
 2002-07-15
 
 Q: Using the "DicomImage" class to handle DICOM images I get the following
-   error message when accesing the pixel data: "ERROR: cannot change to
-   unencapsulated representation for pixel data".
+   error message when accesing the pixel data:
+
+     ERROR: cannot change to unencapsulated representation for pixel data
 
 A: It seems that the image is compressed.  If it uses a JPEG compression
    scheme you need to register the JPEG decompressor code:
+
    - add '#include "djdecode.h"' to your source file
    - call 'DJDecoderRegistration::registerCodecs();' at program init
    - call 'DJDecoderRegistration::cleanup();' before program exit
+
    That should be all you need to do.  See doc++ documentation for details.
 
 ----
@@ -123,63 +130,65 @@ A: No, in general DCMTK is not thread-safe.
    everything that handles DICOM data in memory and in files is thread-safe
    as long as each object instance is only handled by one thread at a time.
    Only a few globals (in particular the DICOM data dictionary) are safe for
-   use by  multiple threads in parallel, based on read-write locks. Multi-
+   use by  multiple threads in parallel, based on read-write locks.  Multi-
    thread support requires that either the Posix, Solaris or Win32 thread
    API is available.
    Other DCMTK libraries are still unsafe for use in multi-threaded
-   applications, in particular the dcmnet library that implements the
-   DICOM network protocol is not reentrant.
+   applications, in particular the dcmnet library that implements the DICOM
+   network protocol is not reentrant.
 
 ----
 2000-12-15
 
-Q: I have successfully installed DCMTK on a Unix system, however, all
-   DICOM network communication fails with strange error messages, for example:
-   Echo [1], echoscu: Failed:
-      800a2 DIMSE: Command Build Failed: dimcmd:addUS: Cannot add Uint16:
-   Element: (0000,0100) Unknown Tag & Data
+Q: I have successfully installed DCMTK on a Unix system, however, all DICOM
+   network communication fails with strange error messages, for example:
+
+     Echo [1], echoscu: Failed:
+        800a2 DIMSE: Command Build Failed: dimcmd:addUS: Cannot add Uint16:
+     Element: (0000,0100) Unknown Tag & Data
 
 A: When the DCMTK network tools complain about unknown (0000,xxxx) tags, the
-   reason is most likely a problem with the DCMDICTPATH environment
-   variable, which probably points to an existing structure in the file
-   system (e.g. to a directory) but not to the DICOM data dictionary file
-   itself.
-   DCMDICTPATH needs to point to the data dictionary file, not to a
-   directory, e.g. use "setenv DCMDICTPATH /my_dicom_directory/lib/dicom.dic"
-   See the documentation file dcmtk/dcmdata/doc/datadict.txt for more
-   details about using DICOM data dictionaries.
+   reason is most likely a problem with the DCMDICTPATH environment variable,
+   which probably points to an existing structure in the file system (e.g. to
+   a directory) but not to the DICOM data dictionary file itself.
+   DCMDICTPATH needs to point to the data dictionary file, not to a directory,
+   e.g. use "setenv DCMDICTPATH /my_dicom_directory/lib/dicom.dic"  See the
+   documentation file "dcmtk/dcmdata/doc/datadict.txt" for more details about
+   using DICOM data dictionaries.
 
 ----
 2000-02-23
 
-Q: I am using GNU gcc (or egcs) to compile DCMTK, and receive many warnings
-   of the following type:
+Q: I am using GNU gcc (or egcs) to compile DCMTK, and receive many warnings of
+   the following type:
+
        libXXX.a(XXX.o): warning: multiple common of `XXX type_info node'
        XXX.o: warning: previous common is here
+
    Is this a bug in DCMTK? Can I avoid this warning somehow?
 
 A: This is not a bug in DCMTK but a problem with GNU's implementation of RTTI.
-   It affects at least egcs and gcc 2.9x when used with GNU ld,
-   a combination that typically found in recent Linux distributions.
-   The warning is harmless and can be ignored.
+   It affects at least egcs and gcc 2.9x when used with GNU "ld", a combination
+   that typically found in recent Linux distributions.  The warning is harmless
+   and can be ignored.
 
    If you are really annoyed by this warning, there are two ways to avoid it:
    1. You can compile DCMTK with RTTI support switched off. DCMTK does not use
-      RTTI, so this is safe and will also result in smaller binaries.
-      However, the resulting libraries cannot be linked with other C++
-      libraries that were compiled with RTTI support switched on.
-      To disable RTTI, add the flag '-fno-rtti' to the CXXFLAGS setting
-      in 'config/Makefile.def' after configuration, but before compiling.
+      RTTI, so this is safe and will also result in smaller binaries.  However,
+      the resulting libraries cannot be linked with other C++ libraries that
+      were compiled with RTTI support switched on.  To disable RTTI, add the
+      flag "-fno-rtti" to the CXXFLAGS setting in "config/Makefile.def" after
+      configuration, but before compiling.
    2. You can globally switch the warning off by changing gcc's configuration.
       This is located in <install_prefix>/lib/gcc-lib/<platform>/<release>/specs,
-      e.g. /usr/local/lib/gcc-lib/i486-linux/2.95/specs.
-      This is a text file. You just need to remove the flag '-warn-common'
-      in the section beginning with '*lib:'. Make sure you know what you're doing!
+      e.g. /usr/local/lib/gcc-lib/i486-linux/2.95/specs.  This is a text file.
+      You just need to remove the flag "-warn-common" in the section beginning
+      with "*lib:".  Make sure you know what you're doing!
 
 ----
 1998-07-25
 
-Q: I want to use DCMTK on Unixware. Is there anything I should know about?
+Q: I want to use DCMTK on Unixware.  Is there anything I should know about?
 
 A: Yes, we received many useful remarks about compiling DCMTK on Unixware from
    Wolfgang Rapp <w1.rapp@von.ulm.de>.
@@ -194,61 +203,62 @@ A: Yes, we received many useful remarks about compiling DCMTK on Unixware from
         setenv CPPFLAGS -I/usr/include -I/opt/include -I/usr/X/include -I/usr/ucbinclude
         setenv LIBS -L/opt/lib -lsocket -lnsl -L/usr/ucblib -lucb
         ./configure
-   3. Configure may be unable to find the system functions memcmp, memcpy and memset.
-      You should make sure that the file config/include/config.h, which is created
-      during the configure process, contains:
+   3. Configure may be unable to find the system functions memcmp, memcpy and
+      memset.  You should make sure that the file "config/include/config.h",
+      which is created during the configure process, contains:
         #define HAVE_MEMCMP 1
         #define HAVE_MEMCPY 1
         #define HAVE_MEMSET 1
-   4. The Makefiles generated by configure require GNU Make. This is available for Unixware
-      in pkgadd format at ftp://ftp.freebird.org/
+   4. The Makefiles generated by configure require GNU Make.  This is available
+      for Unixware in pkgadd format at ftp://ftp.freebird.org/
 
    And here some comments for more advanced users:
-   -  DCMTK on Unixware requires some BSD functions from /usr/ucblib/libucb.a
-      and some include files from /usr/ucbinclude. At least on Unixware 2.0.3
-      you should be careful because readdir() in libucb.a is known to be defective
-      and there are conflicts between the /usr/include and /usr/ucbinclude versions
-      of stdio.h, unistd.h and strings.h
-   -  All versions of libtool for Unixware (at least up to version 1.2) are unable
-      to generate shared libraries. A patch for libtool is available on request
-      from Wolfgang Rapp <w1.rapp@von.ulm.de>.
+   -  DCMTK on Unixware requires some BSD functions from "/usr/ucblib/libucb.a"
+      and some include files from /usr/ucbinclude.  At least on Unixware 2.0.3
+      you should be careful because readdir() in libucb.a is known to be
+      defective and there are conflicts between the /usr/include and
+      /usr/ucbinclude versions of stdio.h, unistd.h and strings.h
+   -  All versions of libtool for Unixware (at least up to version 1.2) are
+      unable to generate shared libraries. A patch for libtool is available on
+      request from Wolfgang Rapp <w1.rapp@von.ulm.de>.
 
 ----
 1998-07-24
 
 Q: When I run the "imagectn" application on my UNIX system, it seems to put
    image files in /tmp instead of the directory specified as the storage area
-   in my "configrc" file, although the "index.dat" file does get put there. Is
-   there anything I might be doing wrong ?
+   in my "configrc" file, although the "index.dat" file does get put there.
+   Is there anything I might be doing wrong?
 
-A: Imagectn uses the tempnam(3S) system call to create the filename
-   for an image file to be stored in the database. tempnam() will use
-   /tmp as target directory if
+A: Imagectn uses the tempnam(3S) system call to create the filename for an
+   image file to be stored in the database. tempnam() will use /tmp as target
+   directory if
    - the target directory (from configrc) does not exist
    - imagectn has no write access rights to the target directory
    - you have an environment variable TMPDIR pointing to /tmp
    - you are running imagectn as root
 
-   We generally recommend not to run imagectn as root. If you want imagectn
+   We generally recommend not to run imagectn as root.  If you want imagectn
    to listen on port 104, change the owner of the imagectn binary to "root"
-   and the access rights to 4755 (s-bit mode). This will allow imagectn to
-   open the socket with super-user rights and then switch to the "safe"
-   user ID of the calling user.
+   and the access rights to 4755 (s-bit mode).  This will allow imagectn to
+   open the socket with super-user rights and then switch to the "safe" user
+   ID of the calling user.
 
 ----
 1998-07-24 (updated: 2003-04-22)
 
-Q: How can I create the DCMTK libraries as shared objects (.so-files)
-   which are dynamically loaded when the DCMTK applications are started?
+Q: How can I create the DCMTK libraries as shared objects (.so-files) which
+   are dynamically loaded when the DCMTK applications are started?
 
-A: This depends on your C++ compiler and operating system.
-   When building shared objects containing C++ code,
-   special handling for templates and ctors/dtors
-   of global variables is required. Therefore, on most systems the
-   shared object must be created with the C++ compiler, not with "ld".
+A: This depends on your C++ compiler and operating system.  When building
+   shared objects containing C++ code, special handling for templates and
+   constructors/destructors of global variables is required.  Therefore, on
+   most systems the shared object must be created with the C++ compiler, not
+   with "ld".
 
    If you are using gcc on a platform where the "-shared" flag is supported,
-   the following steps will create a 'dynamic' DCMTK:
+   the following steps will create a "dynamic" DCMTK:
+
    1. run rootconf and configure (see the INSTALL file).
    2. edit the file 'config/Makefile.def' to include the following settings:
       CFLAGS= -fPIC -O2
@@ -266,13 +276,13 @@ A: This depends on your C++ compiler and operating system.
 1998-06-29
 
 Q: I am trying to compile DCMTK on a HP-UX 10 machine with the HP C++ compiler.
-   Compilation fails with the error message
-   "CC: sorry, not implemented: cannot expand value-returning inline ...
-   with call of non-value-returning inline ..."
+   Compilation fails with the following error message:
 
-A: You should use the compiler options "+d +a1" to prevent the
-   HP compiler from attempting to inline code.
-   Before using "configure", you might type:
+     CC: sorry, not implemented: cannot expand value-returning inline ...
+     with call of non-value-returning inline ...
+
+A: You should use the compiler options "+d +a1" to prevent the HP compiler from
+   attempting to inline code.  Before using "configure", you might type:
      setenv CXX "CC +d +a1"
 
    Reported by Shashikala Duraiswami <shash@alexis.com>.
@@ -280,196 +290,198 @@ A: You should use the compiler options "+d +a1" to prevent the
 ----
 1998-01-27
 
-Q: I am trying to compile DCMTK on a SGI IRIX 6.x machine with gcc 2.7.2.
-   The configure script terminates with the following error messsage:
+Q: I am trying to compile DCMTK on a SGI IRIX 6.x machine with gcc 2.7.2.  The
+   configure script terminates with the following error messsage:
 
      checking whether the C compiler (gcc  ) works... no
      configure: error: installation or configuration problem:
      C compiler cannot create executables.
 
-   The dcmtk/config/config.log file contains:
+   The "dcmtk/config/config.log" file contains:
 
      configure:747: gcc -o conftest    conftest.c  1>&5
      collect2: ld returned 1 exit status
      ld: Segmentation fault.  Removing output file...
 
-A: You use a gcc compiled on a SGI IRIX 5.x machine.
-   On IRIX 6.x the -old_ld must be specified on all compiler
-   calls which involve linking. The flag must be specified before
-   any -o option. We have created a shell script which
-   patches "configure" to allow the -old_ld option to work.
-   In the dcmtk directory, type:
+A: You use a gcc compiled on a SGI IRIX 5.x machine.  On IRIX 6.x the "-old_ld"
+   must be specified on all compiler calls which involve linking.  The flag
+   must be specified before any "-o" option.  We have created a shell script
+   which patches "configure" to allow the -old_ld option to work.  In the
+   dcmtk directory, type:
+
      config/mvldflags config/configure
      setenv LDFLAGS -old_ld
+
    After that, configure will create appropriate Makefiles.
 
 ----
 1998-01-27
 
-Q: I am compiling DCMTK on a SGI IRIX 6.x machine, and I receive
-   many warnings of the type
+Q: I am compiling DCMTK on a SGI IRIX 6.x machine, and I receive many warnings
+   of the type
 
      /usr/bin/ld:
      The shared object /usr/lib/libsocket.so did not resolve any symbols.
      You may want to remove it from your link line.
 
-A: On some IRIX machines, the BSD socket functions are contained both
-   in the libnsl/libsocket libraries and in libc. You can ignore the warnings
-   (they will do no harm) or remove "-lsocket -lnsl" from the "LIBS=..." line
-   in config/Makefile.def after the configure process.
+A: On some IRIX machines, the BSD socket functions are contained both in the
+   libnsl/libsocket libraries and in libc. You can ignore the warnings (they
+   will do no harm) or remove "-lsocket -lnsl" from the "LIBS=..." line in
+   "config/Makefile.def" after the configure process.
 
 ----
 1997-10-01
 
-Q: I am trying to compile DCMTK on Solaris with Sun Workshop 4.x.
-   The code compiles without problems, but when trying to link
-   applications, the linker reports unresolved externals
-   in the DCMTK libraries and fails.
+Q: I am trying to compile DCMTK on Solaris with Sun Workshop 4.x.  The code
+   compiles without problems, but when trying to link applications, the linker
+   reports unresolved externals in the DCMTK libraries and fails.
 
-A: The Sun Workshop 4.x compilers use a new method of handling
-   C++ template classes which requires that all libraries (lib*.a)
-   containing templates must be created by the C++ compiler
-   and not by "ar". Therefore, *before* executing the configure
-   script for dcmtk, you should set environment variables as follows:
+A: The Sun Workshop 4.x compilers use a new method of handling C++ template
+   classes which requires that all libraries (lib*.a) containing templates
+   must be created by the C++ compiler and not by "ar".  Therefore, *before*
+   executing the configure script for dcmtk, you should set environment
+   variables as follows:
+
      setenv CC cc
      setenv CXX CC
      setenv AR CC
      setenv ARFLAGS "-xar -o"
+
    Configure will then create the appropriate code in the Makefiles.
 
 ----
 1997-09-16
 
-Q: The INSTALL file says that DCMTK can be compiled using the Cygnus
-   GNU-Win32 development environment for Windows95/NT.  However, Step 2
-   of the install instructions does not work because the configure script
-   fails completely (it reports "permission denied" problems and generates
-   strange files in all the sub-directories).
+Q: The INSTALL file says that DCMTK can be compiled using the Cygnus GNU-Win32
+   development environment for Windows.  However, Step 1 of the install
+   instructions does not work because the configure script fails completely
+   (it reports "permission denied" problems and generates strange files in all
+   the sub-directories).
 
-A: You need to make sure that your PATH environment variable is set up
-   so that the GNU-Win32 tools directory will be searched before the
-   standard windows locations (e.g. \WINNT\..) when when executing a
-   program.  The main problem is that the DCMTK configure scripts use
-   the Unix-like "find" program whereas Windows has its own, incompatible,
-   "find" program.  Unless you arrange otherwise, the wrong "find" program
-   will be used.
+A: You need to make sure that your PATH environment variable is set up so that
+   the GNU-Win32 tools directory will be searched before the standard Windows
+   locations (e.g. \WINNT\..) when when executing a program.  The main problem
+   is that the DCMTK configure scripts use the Unix-like "find" program whereas
+   Windows has its own, incompatible, "find" program.  Unless you arrange
+   otherwise, the wrong "find" program will be used.
 
 ----
 1997-09-12
 
 Q: All of the programs print the message
-   "Warning: no data dictionary loaded, check environment variable:
-   DCMDICTPATH" then seem to produce strange results.
 
-A: The DICOM data dictionary could not be loaded.  It has probably
-   not been properly installed.  The default location for this file
-   (under Unix) is /usr/local/dicom/lib/dicom.dic but an
-   alternive location can be specified by using the DCMDICTPATH
-   environment variable.
-   See the documentation file dcmtk/dcmdata/doc/datadict.txt for more
-   details about using DICOM data dictionaries.
+     Warning: no data dictionary loaded, check environment variable: DCMDICTPATH
+
+   then seem to produce strange results.
+
+A: The DICOM data dictionary could not be loaded.  It has probably not been
+   properly installed.  The default location for this file (under Unix) is
+   "/usr/local/dicom/lib/dicom.dic" but an alternive location can be specified
+   by using the DCMDICTPATH environment variable.
+
+   See the documentation file "dcmtk/dcmdata/doc/datadict.txt" for more details
+   about using DICOM data dictionaries.
 
 ----
 1997-09-12
 
 Q: All of the programs load a data dictionary from the text file
-   /usr/local/dicom/lib/dicom.dic before they can do anything.  The
-   overhead for this flexibility is very high.  I want my programs
-   to start much faster.
+   "/usr/local/dicom/lib/dicom.dic" before they can do anything.  The overhead
+   for this flexibility is very high.  I want my programs to start much faster.
 
-A: You can use a built-in in data dictionary instead.
-   The code for this already exists (dcmtk/dcmdata/libsrc/dcdictzz.cc)
-   and can be regenerated at any time by (see the dcmdata library Makefile:
-   dcmtk/dcmdata/libsrc/Makefile.in).  You can even have the best of both
-   worlds and have the main data dictionary built-in with additions loaded
-   from text files (via the DCMDICTPATH environment variable).
+A: You can use a built-in in data dictionary instead.  The code for this
+   already exists (dcmtk/dcmdata/libsrc/dcdictzz.cc) and can be regenerated at
+   any time by (see the dcmdata Makefile: dcmtk/dcmdata/libsrc/Makefile.in).
+   You can even have the best of both worlds and have the main data dictionary
+   built-in with additions loaded from text files (via the DCMDICTPATH
+   environment variable).
 
-   See the documentation file dcmtk/dcmdata/doc/datadict.txt for more
-   details about using DICOM data dictionaries.
+   See the documentation file "dcmtk/dcmdata/doc/datadict.txt" for more details
+   about using DICOM data dictionaries.
 
-   The example Visual C++ project makefiles for the Windows95/NT
-   platform already use the built-in data dictionary code.
+   The example Visual C++ project makefiles for the Windows platform already
+   use the built-in data dictionary code.
 
 ----
-1997-08-26 (updated: 2002-04-29)
+1997-08-26 (updated: 2004-05-12)
 
-Q: Does DCMTK compile on Microsoft Windows 95/98/2000/NT ?
+Q: Does DCMTK compile on Microsoft Windows 9x/Me/NT/2000/XP ?
 
 A: Yes.  We have added support for Win32 environments.  Look at the INSTALL
-   file for instructions on how to compile under Windows 95/98/2000/NT.
+   file for instructions on how to compile under Windows 9x/Me/NT/2000/XP.
 
    Please note, there are no Windows applications with graphical user interface
-   in DCMTK.  The apps programs only run in a Windows command shell.
+   in DCMTK.  The "apps" programs only run in a Windows command shell.
 
 ----
 1997-05-30
 
-Q: I'm using a Nextstep system.  I run the configure script but it claims
-   that my compiler is a cross-compiler (produces the message: 'checking
-   whether cross-compiling... yes') and produces nonsense results.
+Q: I'm using a Nextstep system.  I run the configure script but it claims that
+   my compiler is a cross-compiler (produces the message: 'checking whether
+   cross-compiling... yes') and produces nonsense results.
 
 A: Your compiler seems to be producing code which cannot always be executed.
-   There seems to be a problem with the C++ name demangler causing the
-   linker to occasionally generate bad code.  This problem occurs most
-   frequently when the using NFS file-systems.  A workaround (at least for
-   Nextstep 3.3 Developer) is to modify the shell script /bin/ld++ and remove
-   the pipe to the c++filt program.  /bin/ld++ then just contains a call to
-   the linker (i.e. ld $*).
+   There seems to be a problem with the C++ name demangler causing the linker
+   to occasionally generate bad code.  This problem occurs most frequently
+   when the using NFS file-systems.  A workaround (at least for Nextstep 3.3
+   Developer) is to modify the shell script "/bin/ld++" and remove the pipe
+   to the "c++filt" program.  "/bin/ld++" then just contains a call to the
+   linker (i.e. "ld $*").
 
 ----
 1997-05-22
 
-Q: I'm using a unix system.  I run the configure script and then make but
-   the build stops because the file 'config/Makefile.def' could not be found.
+Q: I'm using a unix system.  I run the configure script and then make but the
+   build stops because the file "config/Makefile.def" could not be found.
 
-A: This means that the configure script has failed to create the
-   necessary makefile definitions.  There could be several reasons for this.
-   Look at the output of the configure program.  If you see a line like:
+A: This means that the configure script has failed to create the necessary
+   makefile definitions.  There could be several reasons for this.  Look at
+   the output of the configure program.  If you see a line like:
 
 	checking whether cross-compiling... yes
 
-   then your compiler seems to be producing code which cannot be executed.
-   You could be using a very old compiler or some (shared) libraries could
-   not be located.  It has been reported that some GNU C++ installations
-   install shared libraries in non-standard places (e.g. /opt/gnu/lib)
-   and that environment variables must be set before the compiler can be
-   used (e.g. the LD_LIBRARY_PATH environment variable).
+   then your compiler seems to be producing code which cannot be executed. You
+   could be using a very old compiler or some (shared) libraries could not be
+   located.  It has been reported that some GNU C++ installations install
+   shared libraries in non-standard places (e.g. "/opt/gnu/lib") and that
+   environment variables must be set before the compiler can be used (e.g. the
+   LD_LIBRARY_PATH environment variable).
 
 ----
-1996-09-24
+1996-09-24 (updated: 2004-05-12)
 
 Q: Where is rest of the documentation?
 
-A: All of the available DCMTK documentation is distributed in
-   the DCMTK package.  There is documentation about how to configure
-   and run the programs.  What is missing is documentation about
-   how to use the libraries.  Currently, the only way to learn how
-   to use the libraries is to look at the example programs and
-   do things the same way.  Hopefully, some documentation will be
-   written in the future and financial contributions would certainly
-   reduce the waiting considerably.
+A: All of the available DCMTK documentation is distributed in the DCMTK
+   package.  There is documentation about how to configure and run the
+   programs.  What is missing is documentation about how to use the
+   libraries.  Currently, the only way to learn how  to use the libraries
+   is to look at the example programs and do things the same way.
+   Hopefully, some documentation will be written in the future and financial
+   contributions would certainly reduce the waiting considerably.
+
+   Starting with release 3.5.3, a couple of simple examples of how to use the
+   libraries are provided as part of the HTML documentation.
 
 ----
 1996-09-24
 
-Q: None of the programs do anything, they all crash as soon
-   as they get started!
+Q: None of the programs do anything, they all crash as soon as they get
+   started!
 
-A: We have received reports of configuration problems relating
-   to a GNU C++ library libiostream.a.  This library was part
-   of older (pre 2.7 ??) releases and is incompatible with newer
-   versions of the GNU C++ library.  It seems that when installing
-   a newer version of the GNU C++ library the old libiostream.a
-   library does not get removed.  If our configuration scripts
-   find this library then it will be used.
+A: We have received reports of configuration problems relating to a GNU C++
+   library libiostream.a.  This library was part of older (pre 2.7 ??)
+   releases and is incompatible with newer versions of the GNU C++ library.
+   It seems that when installing a newer version of the GNU C++ library the
+   old "libiostream.a" library does not get removed.  If our configuration
+   scripts find this library then it will be used.
 
-   The problem manifests itself by causing any compiled program
-   to immediately crash as soon as it tries to do any C++ streams
-   based I/O.
+   The problem manifests itself by causing any compiled program to immediately
+   crash as soon as it tries to do any C++ streams based I/O.
 
    A workaround is to remove or rename the libiostream.a library.
-   Alternatively, you can edit the file dcmtk/config/Makefile.def
-   after install Step 2 (running the configure script) and remove
-   any reference to -liostream.a
+   Alternatively, you can edit the file "dcmtk/config/Makefile.def" after
+   install Step 1 (running the configure script) and remove any reference to
+   "libiostream.a".
 
 ----
