@@ -23,8 +23,8 @@
  *    classes: DVPSStoredPrint
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-07-04 15:58:03 $
- *  CVS/RCS Revision: $Revision: 1.30 $
+ *  Update Date:      $Date: 2000-07-05 12:33:29 $
+ *  CVS/RCS Revision: $Revision: 1.31 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -524,7 +524,7 @@ class DVPSStoredPrint
 
   /** sets the current Presentation LUT shape (overrides the image box settings).
    *  Only DVPSP_identity and DVPSP_lin_od are allowed.
-   *  @param newType the new presentation LUT type.
+   *  @param shape the new presentation LUT shape.
    *  @return EC_Normal if successful, an error code otherwise.
    */
   E_Condition setPresentationLUTShape(DVPSPresentationLUTType shape);
@@ -1129,7 +1129,10 @@ class DVPSStoredPrint
 
 /*
  *  $Log: dvpssp.h,v $
- *  Revision 1.30  2000-07-04 15:58:03  joergr
+ *  Revision 1.31  2000-07-05 12:33:29  joergr
+ *  Corrected documentation of one method.
+ *
+ *  Revision 1.30  2000/07/04 15:58:03  joergr
  *  Added support for overriding the presentation LUT settings made for the
  *  image boxes.
  *
