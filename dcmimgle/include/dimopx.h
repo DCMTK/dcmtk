@@ -21,10 +21,10 @@
  *
  *  Purpose: DicomMonochromePixel (Header)
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-06-01 15:49:47 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2001-09-28 13:07:43 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/dimopx.h,v $
- *  CVS/RCS Revision: $Revision: 1.12 $
+ *  CVS/RCS Revision: $Revision: 1.13 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -119,6 +119,28 @@ class DiMonoPixel
     virtual int getMinMaxWindow(const int idx,
                                 double &center,
                                 double &width) = 0;
+
+    /** get automatically computed Region of Interest (ROI) window (abstract)
+     *
+     ** @param  left       x-coordinate of the top left-hand corner of the ROI (starting from 0)
+     *  @param  top        y-coordinate of the top left-hand corner of the ROI (starting from 0)
+     *  @param  width      width in pixels of the rectangular ROI (minimum: 1)
+     *  @param  height     height in pixels of the rectangular ROI (minimum: 1)
+     *  @param  columns    number of columns (width) of the associated image
+     *  @param  rows       number of rows (height) of the associated image
+     *  @param  voiCenter  reference to storage area for window center value
+     *  @param  voiWidth   reference to storage area for window width value
+     *
+     ** @return status, true if successful, false otherwise
+     */
+    virtual int getRoiWindow(const unsigned long left,
+                             const unsigned long top,
+                             const unsigned long width,
+                             const unsigned long height,
+                             const unsigned long columns,
+                             const unsigned long rows,
+                             double &voiCenter,
+                             double &voiWidth) = 0;
 
     /** get automatically computed histogram window (abstract)
      *
@@ -229,7 +251,11 @@ class DiMonoPixel
  *
  * CVS/RCS Log:
  * $Log: dimopx.h,v $
- * Revision 1.12  2001-06-01 15:49:47  meichel
+ * Revision 1.13  2001-09-28 13:07:43  joergr
+ * Added method setRoiWindow() which automatically calculates a min-max VOI
+ * window for a specified rectangular region of the image.
+ *
+ * Revision 1.12  2001/06/01 15:49:47  meichel
  * Updated copyright header
  *
  * Revision 1.11  2000/03/08 16:24:20  meichel
