@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2001, OFFIS
+ *  Copyright (C) 1996-2002, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose: DicomColorOutputPixelTemplate (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-11-09 16:42:04 $
+ *  Update Date:      $Date: 2002-06-26 16:17:16 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/include/Attic/dicoopxt.h,v $
- *  CVS/RCS Revision: $Revision: 1.18 $
+ *  CVS/RCS Revision: $Revision: 1.19 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -64,7 +64,8 @@ class DiColorOutputPixelTemplate
                                const unsigned long frame,
                                const int bits1, /* input depth */
                                const int bits2, /* output depth */
-                               const int planar)
+                               const int planar,
+                               const int inverse)
       : DiColorOutputPixel(pixel, count, frame),
         Data(NULL),
         DeleteData(buffer == NULL),
@@ -73,7 +74,7 @@ class DiColorOutputPixelTemplate
         if ((pixel != NULL) && (Count > 0) && (FrameSize >= Count))
         {
             Data = (T2 *)buffer;
-            convert((const T1 **)(pixel->getData()), frame * FrameSize, bits1, bits2, planar);
+            convert((const T1 **)(pixel->getData()), frame * FrameSize, bits1, bits2, planar, inverse);
         }
     }
 
@@ -107,12 +108,12 @@ class DiColorOutputPixelTemplate
     {
         return sizeof(T2) * 3;
     }
-    
+
     inline void *getData() const
     {
         return (void *)Data;
     }
-    
+
     inline void *getPlane(const int plane) const
     {
         void *result = NULL;
@@ -128,9 +129,9 @@ class DiColorOutputPixelTemplate
                     result = (void *)(Data + ((plane == 1) ? 1 : 2));
             }
         }
-        return result; 
+        return result;
     }
-    
+
     int writePPM(ostream &stream) const
     {
         if (Data != NULL)
@@ -173,7 +174,8 @@ class DiColorOutputPixelTemplate
                  const unsigned long start,
                  const int bits1,
                  const int bits2,
-                 const int planar)
+                 const int planar,
+                 const int inverse)
     {
         if ((pixel[0] != NULL) && (pixel[1] != NULL) && (pixel[2] != NULL))
         {
@@ -183,6 +185,7 @@ class DiColorOutputPixelTemplate
             {
                 register T2 *q = Data;
                 register unsigned long i;
+                const T2 max2 = DicomImageClass::maxval(bits2);
                 if (planar)
                 {
                     register const T1 *p;
@@ -191,8 +194,15 @@ class DiColorOutputPixelTemplate
                         for (int j = 0; j < 3; j++)
                         {
                             p = pixel[j] + start;
-                            for (i = Count; i != 0; i--)
-                                *(q++) = (T2)*(p++);                            // copy
+                            /* invert output data */
+                            if (inverse)
+                            {
+                                for (i = Count; i != 0; i--)
+                                    *(q++) = max2 - (T2)*(p++);                     // copy inverted data
+                            } else {
+                                for (i = Count; i != 0; i--)
+                                    *(q++) = (T2)*(p++);                            // copy
+                            }
                             if (Count < FrameSize)
                             {
                                 OFBitmanipTemplate<T2>::zeroMem(q, FrameSize - Count);  // set remaining pixels of frame to zero
@@ -209,11 +219,25 @@ class DiColorOutputPixelTemplate
                             p = pixel[j] + start;
                             if (gradient1 == (double)gradient2)                 // integer multiplication?
                             {
-                                for (i = Count; i != 0; i--)
-                                    *(q++) = (T2)(*(p++)) * gradient2;          // expand depth
+                                /* invert output data */
+                                if (inverse)
+                                {
+                                    for (i = Count; i != 0; i--)
+                                        *(q++) = max2 - (T2)(*(p++)) * gradient2;   // expand depth & invert
+                                } else {
+                                    for (i = Count; i != 0; i--)
+                                        *(q++) = (T2)(*(p++)) * gradient2;          // expand depth
+                                }
                             } else {
-                                for (i = Count; i != 0; i--)
-                                    *(q++) = (T2)((double)(*(p++)) * gradient1);  // expand depth
+                                /* invert output data */
+                                if (inverse)
+                                {
+                                    for (i = Count; i != 0; i--)
+                                        *(q++) = max2 - (T2)((double)(*(p++)) * gradient1); // expand depth & invert
+                                } else {
+                                    for (i = Count; i != 0; i--)
+                                        *(q++) = (T2)((double)(*(p++)) * gradient1);        // expand depth
+                                }
                             }
                             if (Count < FrameSize)
                             {
@@ -228,8 +252,15 @@ class DiColorOutputPixelTemplate
                         for (int j = 0; j < 3; j++)
                         {
                             p = pixel[j] + start;
-                            for (i = Count; i != 0; i--)
-                                *(q++) = (T2)(*(p++) >> shift);                 // reduce depth
+                            /* invert output data */
+                            if (inverse)
+                            {
+                                for (i = Count; i != 0; i--)
+                                    *(q++) = max2 - (T2)(*(p++) >> shift);          // reduce depth & invert
+                            } else {
+                                for (i = Count; i != 0; i--)
+                                    *(q++) = (T2)(*(p++) >> shift);                 // reduce depth
+                            }
                             if (Count < FrameSize)
                             {
                                 OFBitmanipTemplate<T2>::zeroMem(q, FrameSize - Count);  // set remaining pixels of frame to zero
@@ -238,14 +269,22 @@ class DiColorOutputPixelTemplate
                         }
                     }
                 }
-                else
+                else /* not planar */
                 {
                     register int j;
                     if (bits1 == bits2)
                     {
-                        for (i = start; i < start + Count; i++)
-                            for (j = 0; j < 3; j++)
-                                *(q++) = (T2)pixel[j][i];                       // copy
+                        /* invert output data */
+                        if (inverse)
+                        {
+                            for (i = start; i < start + Count; i++)
+                                for (j = 0; j < 3; j++)
+                                    *(q++) = max2 - (T2)pixel[j][i];            // copy inverted data
+                        } else {
+                            for (i = start; i < start + Count; i++)
+                                for (j = 0; j < 3; j++)
+                                    *(q++) = (T2)pixel[j][i];                   // copy
+                        }
                     }
                     else if (bits1 < bits2)                                     // optimization possible using LUT
                     {
@@ -253,21 +292,45 @@ class DiColorOutputPixelTemplate
                         const T2 gradient2 = (T2)gradient1;
                         if (gradient1 == (double)gradient2)                     // integer multiplication?
                         {
-                            for (i = start; i < start + Count; i++)
-                                for (j = 0; j < 3; j++)
-                                    *(q++) = (T2)(pixel[j][i]) * gradient2;     // expand depth
+                            /* invert output data */
+                            if (inverse)
+                            {
+                                for (i = start; i < start + Count; i++)
+                                    for (j = 0; j < 3; j++)
+                                        *(q++) = max2 - (T2)(pixel[j][i]) * gradient2;  // expand depth & invert
+                            } else {
+                                for (i = start; i < start + Count; i++)
+                                    for (j = 0; j < 3; j++)
+                                        *(q++) = (T2)(pixel[j][i]) * gradient2;         // expand depth
+                            }
                         } else {
-                            for (i = start; i < start + Count; i++)
-                                for (j = 0; j < 3; j++)
-                                    *(q++) = (T2)((double)pixel[j][i] * gradient1);  // expand depth
+                            /* invert output data */
+                            if (inverse)
+                            {
+                                for (i = start; i < start + Count; i++)
+                                    for (j = 0; j < 3; j++)
+                                        *(q++) = max2 - (T2)((double)pixel[j][i] * gradient1);  // expand depth & invert
+                            } else {
+                                for (i = start; i < start + Count; i++)
+                                    for (j = 0; j < 3; j++)
+                                        *(q++) = (T2)((double)pixel[j][i] * gradient1);         // expand depth
+                            }
                         }
                     }
                     else /* bits1 > bits2 */
                     {
                         const int shift = bits1 - bits2;
-                        for (i = start; i < start + Count; i++)
-                            for (j = 0; j < 3; j++)
-                                *(q++) = (T2)(pixel[j][i] >> shift);            // reduce depth
+                        /* invert output data */
+                        if (inverse)
+                        {
+                            for (i = start; i < start + Count; i++)
+                                for (j = 0; j < 3; j++)
+                                    *(q++) = max2 - (T2)(pixel[j][i] >> shift);     // reduce depth & invert
+                        } else {
+                            for (i = start; i < start + Count; i++)
+                                for (j = 0; j < 3; j++)
+                                    *(q++) = (T2)(pixel[j][i] >> shift);            // reduce depth
+                        }
                     }
                     if (Count < FrameSize)
                         OFBitmanipTemplate<T2>::zeroMem(q, 3 * (FrameSize - Count));  // set remaining pixels of frame to zero
@@ -276,12 +339,12 @@ class DiColorOutputPixelTemplate
         } else
             Data = NULL;
     }
- 
+
     int DeleteData;
     int isPlanar;
 
  // --- declarations to avoid compiler warnings
- 
+
     DiColorOutputPixelTemplate(const DiColorOutputPixelTemplate<T1,T2> &);
     DiColorOutputPixelTemplate<T1,T2> &operator=(const DiColorOutputPixelTemplate<T1,T2> &);
 };
@@ -294,7 +357,10 @@ class DiColorOutputPixelTemplate
  *
  * CVS/RCS Log:
  * $Log: dicoopxt.h,v $
- * Revision 1.18  2001-11-09 16:42:04  joergr
+ * Revision 1.19  2002-06-26 16:17:16  joergr
+ * Added support for polarity flag to color images.
+ *
+ * Revision 1.18  2001/11/09 16:42:04  joergr
  * Removed 'inline' specifier from certain methods.
  *
  * Revision 1.17  2001/06/01 15:49:29  meichel
