@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DVPSSoftcopyVOI_PList
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-11-28 13:57:04 $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2002-10-18 08:34:52 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -97,6 +97,7 @@ OFCondition DVPSSoftcopyVOI_PList::read(DcmItem &dset)
         newImage = new DVPSSoftcopyVOI();
         if (newImage && ditem)
         {
+          newImage->setLog(logstream, verboseMode, debugMode);
           result = newImage->read(*ditem);
           push_back(newImage);
         } else result = EC_MemoryExhausted;
@@ -197,6 +198,7 @@ DVPSSoftcopyVOI *DVPSSoftcopyVOI_PList::createSoftcopyVOI(
 
   if (newArea)
   {
+    newArea->setLog(logstream, verboseMode, debugMode);
     if (applicability != DVPSB_allImages) newArea->addImageReference(sopclassUID, instanceUID, frame, applicability);
     push_back(newArea);
   }
@@ -337,9 +339,15 @@ void DVPSSoftcopyVOI_PList::setLog(OFConsole *stream, OFBool verbMode, OFBool db
   }	
 }
 
+
 /*
  *  $Log: dvpssvl.cc,v $
- *  Revision 1.7  2001-11-28 13:57:04  joergr
+ *  Revision 1.8  2002-10-18 08:34:52  meichel
+ *  Fixed minor bug in presentation state code that caused error messages
+ *    in the Softcopy VOI LUT module to be "swallowed" even if verbose mode
+ *    was enabled.
+ *
+ *  Revision 1.7  2001/11/28 13:57:04  joergr
  *  Check return value of DcmItem::insert() statements where appropriate to
  *  avoid memory leaks when insert procedure fails.
  *
