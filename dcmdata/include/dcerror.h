@@ -22,9 +22,9 @@
  *  Purpose: Error handling, codes and strings
  *
  *  Last Update:      $Author: wilkens $
- *  Update Date:      $Date: 2002-04-18 14:47:22 $
+ *  Update Date:      $Date: 2002-05-28 08:44:21 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcerror.h,v $
- *  CVS/RCS Revision: $Revision: 1.14 $
+ *  CVS/RCS Revision: $Revision: 1.15 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -57,6 +57,7 @@ const unsigned short OFM_imagectn = 12;
 const unsigned short OFM_wlistctn = 13;
 const unsigned short OFM_dcmwlm   = 14;
 const unsigned short OFM_dcmpps   = 15;
+const unsigned short OFM_dcmdbsup = 16;
 
 
 // condition constants
@@ -94,7 +95,10 @@ extern const char *dcmErrorConditionToString(OFCondition cond);
 /*
 ** CVS/RCS Log:
 ** $Log: dcerror.h,v $
-** Revision 1.14  2002-04-18 14:47:22  wilkens
+** Revision 1.15  2002-05-28 08:44:21  wilkens
+** Added module number for new module dcmdbsup.
+**
+** Revision 1.14  2002/04/18 14:47:22  wilkens
 ** Inserted a new dcmtk module number for module mpps.
 **
 ** Revision 1.13  2002/01/08 17:53:30  joergr
