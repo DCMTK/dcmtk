@@ -25,9 +25,9 @@
  *  not be used directly in applications. No identification exists.
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-11-07 16:56:25 $
+ *  Update Date:      $Date: 2001-05-10 12:52:58 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcvrpobw.cc,v $
- *  CVS/RCS Revision: $Revision: 1.9 $
+ *  CVS/RCS Revision: $Revision: 1.10 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -116,6 +116,20 @@ DcmPolymorphOBOW::getUint16Array(
         
     return errorFlag;
 }
+
+E_Condition 
+DcmPolymorphOBOW::createUint16Array(
+  const Uint32 numWords,
+  Uint16 * & words)
+{
+    currentVR = EVR_OW;
+    Tag.setVR(EVR_OW);	
+    errorFlag = createEmptyValue(sizeof(Uint16)*Uint32(numWords));
+    fByteOrder = gLocalByteOrder;
+    if (EC_Normal == errorFlag) words = (Uint16 *)this->getValue(); else words=NULL;
+    return errorFlag;
+}
+
 
 E_Condition 
 DcmPolymorphOBOW::putUint8Array(
@@ -275,7 +289,10 @@ E_Condition DcmPolymorphOBOW::writeSignatureFormat(
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrpobw.cc,v $
-** Revision 1.9  2000-11-07 16:56:25  meichel
+** Revision 1.10  2001-05-10 12:52:58  meichel
+** Added public createUint16Array() method in class DcmPolymorphOBOW.
+**
+** Revision 1.9  2000/11/07 16:56:25  meichel
 ** Initial release of dcmsign module for DICOM Digital Signatures
 **
 ** Revision 1.8  2000/03/08 16:26:49  meichel

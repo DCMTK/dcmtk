@@ -25,9 +25,9 @@
  *  not be used directly in applications. No identification exists.
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2000-11-07 16:56:11 $
+ *  Update Date:      $Date: 2001-05-10 12:52:56 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcvrpobw.h,v $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -92,18 +92,25 @@ public:
 	const Uint8 * byteValue,
 	const unsigned long length);    
 
-    // put an Unit8 array. It is converted to OB if VR == OB
+    // put an Unit16 array. It is converted to OB if VR == OB
     virtual E_Condition putUint16Array(
 	const Uint16 * wordValue,
 	const unsigned long length ); 
 
+    // create an empty Uint16 array of given number of words and return it
+    virtual E_Condition createUint16Array(
+        const Uint32 numWords,
+        Uint16 * & words);
 };
 #endif
 
 /*
 ** CVS/RCS Log:
 ** $Log: dcvrpobw.h,v $
-** Revision 1.6  2000-11-07 16:56:11  meichel
+** Revision 1.7  2001-05-10 12:52:56  meichel
+** Added public createUint16Array() method in class DcmPolymorphOBOW.
+**
+** Revision 1.6  2000/11/07 16:56:11  meichel
 ** Initial release of dcmsign module for DICOM Digital Signatures
 **
 ** Revision 1.5  2000/03/08 16:26:25  meichel
