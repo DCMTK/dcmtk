@@ -22,9 +22,8 @@
  *  Purpose: DicomCIELABFunction (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-02-12 11:37:14 $
- *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/libsrc/diciefn.cc,v $
- *  CVS/RCS Revision: $Revision: 1.18 $
+ *  Update Date:      $Date: 2003-12-08 17:40:54 $
+ *  CVS/RCS Revision: $Revision: 1.19 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -272,7 +271,10 @@ int DiCIELABFunction::writeCurveData(const char *filename,
  *
  * CVS/RCS Log:
  * $Log: diciefn.cc,v $
- * Revision 1.18  2003-02-12 11:37:14  joergr
+ * Revision 1.19  2003-12-08 17:40:54  joergr
+ * Updated CVS header.
+ *
+ * Revision 1.18  2003/02/12 11:37:14  joergr
  * Added Dmin/max support to CIELAB calibration routines.
  *
  * Revision 1.17  2002/11/27 14:08:10  meichel

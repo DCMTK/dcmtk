@@ -22,9 +22,8 @@
  *  Purpose: DicomCIELABLUT (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-12-08 14:47:03 $
- *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/libsrc/dicielut.cc,v $
- *  CVS/RCS Revision: $Revision: 1.18 $
+ *  Update Date:      $Date: 2003-12-08 17:40:54 $
+ *  CVS/RCS Revision: $Revision: 1.19 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -231,7 +230,10 @@ int DiCIELABLUT::createLUT(const Uint16 *ddl_tab,
  *
  * CVS/RCS Log:
  * $Log: dicielut.cc,v $
- * Revision 1.18  2003-12-08 14:47:03  joergr
+ * Revision 1.19  2003-12-08 17:40:54  joergr
+ * Updated CVS header.
+ *
+ * Revision 1.18  2003/12/08 14:47:03  joergr
  * Adapted type casts to new-style typecast operators defined in ofcast.h.
  *
  * Revision 1.17  2003/02/12 11:37:14  joergr

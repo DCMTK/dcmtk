@@ -22,9 +22,8 @@
  *  Purpose: DicomMonochrome2Image (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-12-08 14:52:07 $
- *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/libsrc/dimo2img.cc,v $
- *  CVS/RCS Revision: $Revision: 1.11 $
+ *  Update Date:      $Date: 2003-12-08 17:38:27 $
+ *  CVS/RCS Revision: $Revision: 1.12 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -216,7 +215,10 @@ DiImage *DiMono2Image::createMono(const double,
  *
  * CVS/RCS Log:
  * $Log: dimo2img.cc,v $
- * Revision 1.11  2003-12-08 14:52:07  joergr
+ * Revision 1.12  2003-12-08 17:38:27  joergr
+ * Updated CVS header.
+ *
+ * Revision 1.11  2003/12/08 14:52:07  joergr
  * Adapted type casts to new-style typecast operators defined in ofcast.h.
  *
  * Revision 1.10  2002/12/09 13:34:51  joergr
