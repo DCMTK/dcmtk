@@ -11,6 +11,11 @@
 /* only process if running in a Win32 environment */
 #ifdef _WIN32
 
+/* Settings for Borland C++ Builder */
+#ifdef __BORLANDC__
+#define _MSC_VER 1200  // Treat Borland C++ 5.5 as MSVC6.
+#endif /* __BORLANDC__ */
+
 /* Compiling for windows */
 #define windows 1
 
@@ -687,6 +692,18 @@
 /* Define if the compiler supports static_cast<> */
 #define HAVE_STATIC_CAST 1
 
+/* Additional settings for Borland C++ Builder */
+#ifdef __BORLANDC__
+#define _stricmp stricmp    // _stricmp in MSVC is stricmp in Borland C++
+#define _strnicmp strnicmp  // _strnicmp in MSVC is strnicmp in Borland C++
+#pragma warn -8027          // disable Warning W8027 "functions containing while are not expanded inline"
+#ifdef WITH_THREADS
+#define __MT__              // required for _beginthreadex() API in <process.h>
+#endif
+#define HAVE_PROTOTYPE_MKTEMP
+#undef HAVE_SYS_UTIME_H 1
+#define HAVE_UTIME_H
+#endif /* __BORLANDC__ */
 
 #endif /* _WIN32 */
 
