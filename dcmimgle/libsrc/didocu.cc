@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2001, OFFIS
+ *  Copyright (C) 1996-2002, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose: DicomDocument (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2001-11-29 16:59:52 $
+ *  Update Date:      $Date: 2002-06-26 16:10:15 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/libsrc/didocu.cc,v $
- *  CVS/RCS Revision: $Revision: 1.12 $
+ *  CVS/RCS Revision: $Revision: 1.13 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -106,8 +106,12 @@ DiDocument::DiDocument(DcmObject *object,
     if (object != NULL)
     {
         if (object->ident() == EVR_fileFormat)
+        {
+            /* store reference to DICOM file format to be deleted on object destruction */
+            if (Flags & CIF_TakeOverExternalDataset)
+                FileFormat = (DcmFileFormat *)object;
             Object = ((DcmFileFormat *)object)->getDataset();
-        else
+        } else
             Object = object;
         if (Object != NULL)
         {
@@ -186,7 +190,12 @@ void DiDocument::convertPixelData()
 
 DiDocument::~DiDocument()
 {
-    delete FileFormat;
+    /* DICOM image loaded from file: delete file format (and data set) */
+    if (FileFormat != NULL)
+        delete FileFormat;
+    /* DICOM image loaded from external data set: only delete if flag is set */
+    else if (Flags & CIF_TakeOverExternalDataset)
+        delete Object;
 }
 
 
@@ -316,17 +325,19 @@ unsigned long DiDocument::getValue(const DcmTagKey &tag,
 
 
 unsigned long DiDocument::getValue(const DcmTagKey &tag,
-                                   const char *&returnVal) const
+                                   const char *&returnVal,
+                                   DcmObject *item) const
 {
-    return getElemValue(search(tag), returnVal);
+    return getElemValue(search(tag, item), returnVal);
 }
 
 
 unsigned long DiDocument::getValue(const DcmTagKey &tag,
                                    OFString &returnVal,
-                                   const unsigned long pos) const
+                                   const unsigned long pos,
+                                   DcmObject *item) const
 {
-    return getElemValue(search(tag), returnVal, pos);
+    return getElemValue(search(tag, item), returnVal, pos);
 }
 
 
@@ -400,7 +411,13 @@ unsigned long DiDocument::getElemValue(const DcmElement *elem,
  *
  * CVS/RCS Log:
  * $Log: didocu.cc,v $
- * Revision 1.12  2001-11-29 16:59:52  joergr
+ * Revision 1.13  2002-06-26 16:10:15  joergr
+ * Added new methods to get the explanation string of stored VOI windows and
+ * LUTs (not only of the currently selected VOI transformation).
+ * Added configuration flag that enables the DicomImage class to take the
+ * responsibility of an external DICOM dataset (i.e. delete it on destruction).
+ *
+ * Revision 1.12  2001/11/29 16:59:52  joergr
  * Fixed bug in dcmimgle that caused incorrect decoding of some JPEG compressed
  * images (certain DICOM attributes, e.g. photometric interpretation, might
  * change during decompression process).
