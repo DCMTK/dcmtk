@@ -22,8 +22,8 @@
  *  Purpose: DicomColorOutputPixel (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-12-17 18:13:41 $
- *  CVS/RCS Revision: $Revision: 1.16 $
+ *  Update Date:      $Date: 2003-12-23 11:23:30 $
+ *  CVS/RCS Revision: $Revision: 1.17 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -61,24 +61,66 @@ class DiColorOutputPixel
 
  public:
 
+    /** constructor
+     *
+     ** @param  pixel  pointer to intermediate pixel representation
+     *  @param  size   number of pixel per frame
+     *  @param  frame  frame to be rendered
+     */
     DiColorOutputPixel(const DiPixel *pixel,
                        const unsigned long size,
                        const unsigned long frame);
 
+    /** destructor
+     */
     virtual ~DiColorOutputPixel();
 
+    /** get integer representation (abstract)
+     *
+     ** @return integer representation
+     */
     virtual EP_Representation getRepresentation() const = 0;
 
+    /** get pointer to output pixel data (abstract)
+     *
+     ** @return pointer to pixel data if sucessful, NULL otherwise
+     */
     virtual void *getData() const = 0;
 
-    virtual void *getPlane(const int) const = 0;
+    /** get pointer to given plane of output pixel data (abstract)
+     *
+     ** @param  plane  number of the plane to be retrieved (0..2)
+     *
+     ** @return pointer to beginning of plane if sucessful, NULL otherwise
+     */
+    virtual void *getPlane(const int plane) const = 0;
 
+    /** get size of one pixel / item in the pixel array (abstract)
+     *
+     ** @return item size
+     */
     virtual size_t getItemSize() const = 0;
 
-    virtual int writePPM(ostream &) const = 0;
+    /** write pixel data of selected frame to PPM/ASCII file (abstract)
+     *
+     ** @param  stream  open C++ output stream
+     *
+     ** @return status, true if successful, false otherwise
+     */
+    virtual int writePPM(ostream &stream) const = 0;
 
-    virtual int writePPM(FILE *) const = 0;
+    /** write pixel data of selected frame to PPM/ASCII file (abstract)
+     *
+     ** @param  stream  open C file stream
+     *
+     ** @return status, true if successful, false otherwise
+     */
+    virtual int writePPM(FILE *stream) const = 0;
 
+    /** get number of pixel per frame
+     *
+     ** @return number of pixel per frame
+     */
     inline unsigned long getCount() const
     {
         return FrameSize;
@@ -87,8 +129,10 @@ class DiColorOutputPixel
 
  protected:
 
-    /*const*/ unsigned long Count;          // number of pixels per frame (intermediate representation)
-    const unsigned long FrameSize;          // number of pixels per frame (memory buffer size)
+    /// number of pixels per frame (intermediate representation)
+    /*const*/ unsigned long Count;
+    /// number of pixels per frame (memory buffer size)
+    const unsigned long FrameSize;
 };
 
 
@@ -99,7 +143,10 @@ class DiColorOutputPixel
  *
  * CVS/RCS Log:
  * $Log: dicoopx.h,v $
- * Revision 1.16  2003-12-17 18:13:41  joergr
+ * Revision 1.17  2003-12-23 11:23:30  joergr
+ * Added missing API documentation.
+ *
+ * Revision 1.16  2003/12/17 18:13:41  joergr
  * Removed leading underscore characters from preprocessor symbols (reserved
  * symbols).
  *
@@ -108,8 +155,6 @@ class DiColorOutputPixel
  *
  * Revision 1.14  2002/04/16 13:54:42  joergr
  * Added configurable support for C++ ANSI standard includes (e.g. streams).
- * Thanks to Andreas Barth <Andreas.Barth@bruker-biospin.de> for his
- * contribution.
  *
  * Revision 1.13  2001/06/01 15:49:28  meichel
  * Updated copyright header
