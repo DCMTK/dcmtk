@@ -1,4 +1,23 @@
 
+**** Changes from 1998.12.22 (vorwerk)
+
+- constructor with parameter for directory of index.dat
+  Changed const methods in non-const-methods 
+  Added methods for attributes of DICOM-documents
+  Added private method for operations on index.dat  
+  Affects: dcmpstat/include/dviface.h
+
+- Browser methods implemented
+  Affects: dcmpstat/include/dviface.cc
+
+- New test program which shows contents of an imagectn index file
+  using the dviface interface methods
+  Added: dcmpstat/tests/show.cc
+
+- New test program which marks, selects and deletes Instances
+  in the imagectn database using the dviface methods
+  Added: dcmpstat/tests/didb.cc
+
 **** Changes from 1998.12.22 (eichelberg)
 
 - Implemented Presentation State interface for overlays,
@@ -145,20 +164,3 @@
            dcmpstat/configure
            dcmpstat/CHANGES
 
-**** Changes from 1998.12.22 (vorwerk)
-- constructor with parameter for directory of index.dat
-- changed const methods in non-const-methods 
-- added methods for attributes of DICOM-documents
-
-- added private method for operations on index.dat  
-Affects: dcmpstat/include/dviface.h
-
-
-- browser methods implemented
-Affects: dcmpstat/include/dviface.cc
-
-- testprogram which shows contents of indexfile from imagectn
-Affects: dcmpstat/tests/show.cc
-
-- testprogram which marks, selects and deletes Instances
-Affects: dcmpstat/tests/didb.cc
