@@ -21,10 +21,10 @@
  *
  *  Purpose: DicomColorImage (Source)
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-06-01 15:49:34 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2001-09-28 13:56:34 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/libsrc/dicoimg.cc,v $
- *  CVS/RCS Revision: $Revision: 1.18 $
+ *  CVS/RCS Revision: $Revision: 1.19 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -52,8 +52,10 @@
 
 DiColorImage::DiColorImage(const DiDocument *docu,
                            const EI_Status status,
-                           const int spp)
+                           const int spp,
+                           const OFBool rgb)
   : DiImage(docu, status, spp),
+    RGBColorModel(rgb),
     InterData(NULL),
     OutputData(NULL)
 {
@@ -65,6 +67,7 @@ DiColorImage::DiColorImage(const DiColorImage *image,
                            const unsigned long fstart,
                            const unsigned long fcount)
   : DiImage(image, fstart, fcount),
+    RGBColorModel(image->RGBColorModel),
     InterData(NULL),
     OutputData(NULL)
 {
@@ -107,6 +110,7 @@ DiColorImage::DiColorImage(const DiColorImage *image,
                            const int interpolate,
                            const int aspect)
   : DiImage(image, dest_cols, dest_rows, aspect),
+    RGBColorModel(image->RGBColorModel),
     InterData(NULL),
     OutputData(NULL)
 {
@@ -142,6 +146,7 @@ DiColorImage::DiColorImage(const DiColorImage *image,
                            const int horz,
                            const int vert)
   : DiImage(image),
+    RGBColorModel(image->RGBColorModel),
     InterData(NULL),
     OutputData(NULL)
 {
@@ -173,6 +178,7 @@ DiColorImage::DiColorImage(const DiColorImage *image,
 DiColorImage::DiColorImage(const DiColorImage *image,
                            const int degree)
   : DiImage(image, degree),
+    RGBColorModel(image->RGBColorModel),
     InterData(NULL),
     OutputData(NULL)
 {
@@ -263,7 +269,7 @@ void *DiColorImage::getOutputData(const unsigned long frame,
                                   const int bits,
                                   const int planar)
 {
-    return getData(NULL, 0, frame, bits,planar);
+    return getData(NULL, 0, frame, bits, planar);
 }
 
 
@@ -273,7 +279,7 @@ int DiColorImage::getOutputData(void *buffer,
                                 const int bits,
                                 const int planar)
 {
-    return (getData(buffer, size, frame, bits,planar) != NULL);
+    return (getData(buffer, size, frame, bits, planar) != NULL);
 }
 
 
@@ -453,14 +459,16 @@ DiImage *DiColorImage::createMono(const double red,
                                   const double green,
                                   const double blue) const
 {
-    DiImage *image = new DiMono2Image(this, red, green, blue);
+    DiImage *image = NULL;
+    if (RGBColorModel)
+        image = new DiMono2Image(this, red, green, blue);
     return image;
 }
 
 
 void *DiColorImage::createDIB(const unsigned long frame)
 {
-    if (InterData != NULL)
+    if (RGBColorModel && (InterData != NULL))
         return InterData->createDIB(Columns, Rows, frame, (Sint16)getBits() - 8);
     return NULL;
 }
@@ -469,7 +477,7 @@ void *DiColorImage::createDIB(const unsigned long frame)
 void *DiColorImage::createAWTBitmap(const unsigned long frame,
                                     const int bits)
 {
-    if ((InterData != NULL) && (bits == 32))
+    if (RGBColorModel && (InterData != NULL) && (bits == 32))
         return InterData->createAWTBitmap(Columns, Rows, frame, (Sint16)getBits() - 8);
     return NULL;
 }
@@ -479,15 +487,18 @@ int DiColorImage::writePPM(ostream &stream,
                            const unsigned long frame,
                            const int bits)
 {
-    getOutputData(frame, bits);
-    if (OutputData != NULL)
+    if (RGBColorModel)
     {
-        stream << "P3" << endl;
-        stream << Columns << " " << Rows << endl;
-        stream << DicomImageClass::maxval(bits) << endl;
-        int ok = OutputData->writePPM(stream);
-        deleteOutputData();
-        return ok;
+        getOutputData(frame, bits);
+        if (OutputData != NULL)
+        {
+            stream << "P3" << endl;
+            stream << Columns << " " << Rows << endl;
+            stream << DicomImageClass::maxval(bits) << endl;
+            int ok = OutputData->writePPM(stream);
+            deleteOutputData();
+            return ok;
+        }
     }
     return 0;
 }
@@ -497,15 +508,18 @@ int DiColorImage::writePPM(FILE *stream,
                            const unsigned long frame,
                            const int bits)
 {
-    if (stream != NULL)
+    if (RGBColorModel)
     {
-        getOutputData(frame, bits);
-        if (OutputData != NULL)
+        if (stream != NULL)
         {
-            fprintf(stream, "P3\n%u %u\n%lu\n", Columns, Rows, DicomImageClass::maxval(bits));
-            int ok = OutputData->writePPM(stream);
-            deleteOutputData();
-            return ok;
+            getOutputData(frame, bits);
+            if (OutputData != NULL)
+            {
+                fprintf(stream, "P3\n%u %u\n%lu\n", Columns, Rows, DicomImageClass::maxval(bits));
+                int ok = OutputData->writePPM(stream);
+                deleteOutputData();
+                return ok;
+            }
         }
     }
     return 0;
@@ -516,14 +530,17 @@ int DiColorImage::writeRawPPM(FILE *stream,
                               const unsigned long frame,
                               const int bits)
 {
-    if (stream != NULL)
+    if (RGBColorModel)
     {
-        getOutputData(frame, bits);
-        if ((OutputData != NULL) && (OutputData->getData() != NULL))
+        if (stream != NULL)
         {
-            fprintf(stream, "P6\n%u %u\n%lu\n", Columns, Rows, DicomImageClass::maxval(bits));
-            fwrite(OutputData->getData(), (size_t)OutputData->getCount(), OutputData->getItemSize(), stream);
-            return 1;
+            getOutputData(frame, bits);
+            if ((OutputData != NULL) && (OutputData->getData() != NULL))
+            {
+                fprintf(stream, "P6\n%u %u\n%lu\n", Columns, Rows, DicomImageClass::maxval(bits));
+                fwrite(OutputData->getData(), (size_t)OutputData->getCount(), OutputData->getItemSize(), stream);
+                return 1;
+            }
         }
     }
     return 0;
@@ -534,7 +551,11 @@ int DiColorImage::writeRawPPM(FILE *stream,
  *
  * CVS/RCS Log:
  * $Log: dicoimg.cc,v $
- * Revision 1.18  2001-06-01 15:49:34  meichel
+ * Revision 1.19  2001-09-28 13:56:34  joergr
+ * Added new flag (CIF_KeepYCbCrColorModel) which avoids conversion of YCbCr
+ * color models to RGB.
+ *
+ * Revision 1.18  2001/06/01 15:49:34  meichel
  * Updated copyright header
  *
  * Revision 1.17  2000/04/28 12:40:03  joergr

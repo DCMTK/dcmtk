@@ -21,10 +21,10 @@
  *
  *  Purpose: DicomColorImage (Header)
  *
- *  Last Update:         $Author: meichel $
- *  Update Date:         $Date: 2001-06-01 15:49:28 $
+ *  Last Update:         $Author: joergr $
+ *  Update Date:         $Date: 2001-09-28 13:55:40 $
  *  Source File:         $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/include/Attic/dicoimg.h,v $
- *  CVS/RCS Revision:    $Revision: 1.10 $
+ *  CVS/RCS Revision:    $Revision: 1.11 $
  *  Status:              $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -65,7 +65,8 @@ class DiColorImage
 
     DiColorImage(const DiDocument *docu,
                  const EI_Status status,
-                 const int spp);
+                 const int spp,
+                 const OFBool rgb = OFTrue);
 
     DiColorImage(const DiMonoImage *image);
 
@@ -177,13 +178,15 @@ class DiColorImage
                   const int bits,
                   const int planar);
 
+    const OFBool RGBColorModel;
+
     DiColorPixel *InterData;
 
 
  private:
 
     DiColorOutputPixel *OutputData;
-
+    
  // --- declarations to avoid compiler warnings
  
     DiColorImage(const DiColorImage &);
@@ -199,7 +202,11 @@ class DiColorImage
  *
  * CVS/RCS Log:
  * $Log: dicoimg.h,v $
- * Revision 1.10  2001-06-01 15:49:28  meichel
+ * Revision 1.11  2001-09-28 13:55:40  joergr
+ * Added new flag (CIF_KeepYCbCrColorModel) which avoids conversion of YCbCr
+ * color models to RGB.
+ *
+ * Revision 1.10  2001/06/01 15:49:28  meichel
  * Updated copyright header
  *
  * Revision 1.9  2000/03/08 16:21:50  meichel

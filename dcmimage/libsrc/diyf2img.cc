@@ -21,10 +21,10 @@
  *
  *  Purpose: DicomYBR422Image (Source)
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-06-01 15:49:36 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2001-09-28 13:56:35 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/libsrc/diyf2img.cc,v $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -38,6 +38,7 @@
 #include "diyf2img.h"
 #include "diyf2pxt.h"
 #include "diinpx.h"
+#include "didocu.h"
 
 
 /*----------------*
@@ -46,29 +47,29 @@
 
 DiYBR422Image::DiYBR422Image(const DiDocument *docu,
                              const EI_Status status)
-  : DiColorImage(docu, status, 2)
+  : DiColorImage(docu, status, 2, !(docu->getFlags() & CIF_KeepYCbCrColorModel) /* RGBColorModel */)
 {
     if ((Document != NULL) && (InputData != NULL) && (ImageStatus == EIS_Normal))
     {
         switch (InputData->getRepresentation())
         {
             case EPR_Uint8:
-                InterData = new DiYBR422PixelTemplate<Uint8, Uint8>(Document, InputData, ImageStatus, BitsPerSample);
+                InterData = new DiYBR422PixelTemplate<Uint8, Uint8>(Document, InputData, ImageStatus, BitsPerSample, RGBColorModel);
                 break;
             case EPR_Sint8:
-                InterData = new DiYBR422PixelTemplate<Sint8, Uint8>(Document, InputData, ImageStatus, BitsPerSample);
+                InterData = new DiYBR422PixelTemplate<Sint8, Uint8>(Document, InputData, ImageStatus, BitsPerSample, RGBColorModel);
                 break;
             case EPR_Uint16:
-                InterData = new DiYBR422PixelTemplate<Uint16, Uint16>(Document, InputData, ImageStatus, BitsPerSample);
+                InterData = new DiYBR422PixelTemplate<Uint16, Uint16>(Document, InputData, ImageStatus, BitsPerSample, RGBColorModel);
                 break;
             case EPR_Sint16:
-                InterData = new DiYBR422PixelTemplate<Sint16, Uint16>(Document, InputData, ImageStatus, BitsPerSample);
+                InterData = new DiYBR422PixelTemplate<Sint16, Uint16>(Document, InputData, ImageStatus, BitsPerSample, RGBColorModel);
                 break;
             case EPR_Uint32:
-                InterData = new DiYBR422PixelTemplate<Uint32, Uint32>(Document, InputData, ImageStatus, BitsPerSample);
+                InterData = new DiYBR422PixelTemplate<Uint32, Uint32>(Document, InputData, ImageStatus, BitsPerSample, RGBColorModel);
                 break;
             case EPR_Sint32:
-                InterData = new DiYBR422PixelTemplate<Sint32, Uint32>(Document, InputData, ImageStatus, BitsPerSample);
+                InterData = new DiYBR422PixelTemplate<Sint32, Uint32>(Document, InputData, ImageStatus, BitsPerSample, RGBColorModel);
                 break;
         }
         deleteInputData();
@@ -90,7 +91,11 @@ DiYBR422Image::~DiYBR422Image()
  *
  * CVS/RCS Log:
  * $Log: diyf2img.cc,v $
- * Revision 1.6  2001-06-01 15:49:36  meichel
+ * Revision 1.7  2001-09-28 13:56:35  joergr
+ * Added new flag (CIF_KeepYCbCrColorModel) which avoids conversion of YCbCr
+ * color models to RGB.
+ *
+ * Revision 1.6  2001/06/01 15:49:36  meichel
  * Updated copyright header
  *
  * Revision 1.5  2000/03/08 16:21:58  meichel

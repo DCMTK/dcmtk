@@ -21,10 +21,10 @@
  *
  *  Purpose: DicomYBR422PixelTemplate (Header)
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-06-01 15:49:33 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2001-09-28 13:55:41 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimage/include/Attic/diyf2pxt.h,v $
- *  CVS/RCS Revision: $Revision: 1.12 $
+ *  CVS/RCS Revision: $Revision: 1.13 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -56,7 +56,8 @@ class DiYBR422PixelTemplate
     DiYBR422PixelTemplate(const DiDocument *docu,
                           const DiInputPixel *pixel,
                           EI_Status &status,
-                          const int bits)
+                          const int bits,
+                          const OFBool rgb)
       : DiColorPixelTemplate<T2>(docu, pixel, 3, status, 2)
     {
         if ((pixel != NULL) && (Count > 0) && (status == EIS_Normal))
@@ -72,7 +73,7 @@ class DiYBR422PixelTemplate
                 }
             }
             else
-                convert((const T1 *)pixel->getData() + pixel->getPixelStart() * 2, bits);
+                convert((const T1 *)pixel->getData() + pixel->getPixelStart() * 2, bits, rgb);
         }   
     }
 
@@ -84,29 +85,47 @@ class DiYBR422PixelTemplate
  private:
 
     inline void convert(const T1 *pixel,
-                        const int bits)
+                        const int bits,
+                        const OFBool rgb)
     {
         if (Init(pixel))
         {
+            const T1 offset = (T1)DicomImageClass::maxval(bits - 1);
+            register unsigned long i;
+            register const T1 *p = pixel;
             register T2 *r = Data[0];
             register T2 *g = Data[1];
             register T2 *b = Data[2];
-            register unsigned long i;
-            const T2 maxvalue = (T2)DicomImageClass::maxval(bits);
-            const T1 offset = (T1)DicomImageClass::maxval(bits - 1);
-            register const T1 *p = pixel;
             register T2 y1;
             register T2 y2;
             register T2 cb;
             register T2 cr;
-            for (i = Count / 2; i != 0; i--)
+            if (rgb)    /* convert to RGB model */
             {
-                y1 = removeSign(*(p++), offset); 
-                y2 = removeSign(*(p++), offset);
-                cb = removeSign(*(p++), offset);
-                cr = removeSign(*(p++), offset);
-                convertValue(*(r++), *(g++), *(b++), y1, cb, cr, maxvalue);
-                convertValue(*(r++), *(g++), *(b++), y2, cb, cr, maxvalue);
+                const T2 maxvalue = (T2)DicomImageClass::maxval(bits);
+                for (i = Count / 2; i != 0; i--)
+                {
+                    y1 = removeSign(*(p++), offset); 
+                    y2 = removeSign(*(p++), offset);
+                    cb = removeSign(*(p++), offset);
+                    cr = removeSign(*(p++), offset);
+                    convertValue(*(r++), *(g++), *(b++), y1, cb, cr, maxvalue);
+                    convertValue(*(r++), *(g++), *(b++), y2, cb, cr, maxvalue);
+                }
+            } else {    /* retain YCbCr model: YCbCr_422_full -> YCbCr_full */
+                for (i = Count / 2; i != 0; i--)
+                {
+                    y1 = removeSign(*(p++), offset); 
+                    y2 = removeSign(*(p++), offset);
+                    cb = removeSign(*(p++), offset);
+                    cr = removeSign(*(p++), offset);
+                    *(r++) = y1;
+                    *(g++) = cb;
+                    *(b++) = cr;
+                    *(r++) = y2;
+                    *(g++) = cb;
+                    *(b++) = cr;
+                }
             }
         }
     }
@@ -136,7 +155,11 @@ class DiYBR422PixelTemplate
  *
  * CVS/RCS Log:
  * $Log: diyf2pxt.h,v $
- * Revision 1.12  2001-06-01 15:49:33  meichel
+ * Revision 1.13  2001-09-28 13:55:41  joergr
+ * Added new flag (CIF_KeepYCbCrColorModel) which avoids conversion of YCbCr
+ * color models to RGB.
+ *
+ * Revision 1.12  2001/06/01 15:49:33  meichel
  * Updated copyright header
  *
  * Revision 1.11  2000/04/28 12:39:33  joergr
