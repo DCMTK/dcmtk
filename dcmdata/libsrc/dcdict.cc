@@ -10,9 +10,9 @@
 ** 
 **
 ** Last Update:		$Author: hewett $
-** Update Date:		$Date: 1996-03-20 16:44:04 $
+** Update Date:		$Date: 1996-04-18 09:51:00 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcdict.cc,v $
-** CVS/RCS Revision:	$Revision: 1.5 $
+** CVS/RCS Revision:	$Revision: 1.6 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -163,6 +163,7 @@ splitFields(char* line, char* fields[], int maxFields, char splitChar)
 	fields[foundFields] = (char*)malloc(len+1);
 	strncpy(fields[foundFields], line, len);
 	fields[foundFields][len] = '\0';
+	stripWhitespace(fields[foundFields]);
 	
 	foundFields++;
 	line = p + 1;
@@ -622,7 +623,12 @@ DcmDataDictionary::findEntry(const DcmTagKey& key)
 /*
 ** CVS/RCS Log:
 ** $Log: dcdict.cc,v $
-** Revision 1.5  1996-03-20 16:44:04  hewett
+** Revision 1.6  1996-04-18 09:51:00  hewett
+** White space is now being stripped from data dictionary fields.  Previously
+** a tag name could retain trailing whitespace which caused silly results
+** when generating dcdeftag.h (e.g. tag names wil trailing underscores).
+**
+** Revision 1.5  1996/03/20 16:44:04  hewett
 ** Updated for revised data dictionary.  Repeating tags are now handled better.
 ** A linear list of repeating tags has been introduced with a subset ordering
 ** mechanism to ensure that dictionary searches locate the most precise
