@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1994-2001, OFFIS
+ *  Copyright (C) 1994-2002, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,10 +21,10 @@
  *
  *  Purpose: Interface of class DcmElement
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-09-25 17:19:25 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2002-04-25 10:06:09 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcelem.h,v $
- *  CVS/RCS Revision: $Revision: 1.22 $
+ *  CVS/RCS Revision: $Revision: 1.23 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -72,6 +72,22 @@ protected:
 
     void swapValueField(size_t valueWidth);
 
+    /** write element start tag in XML format
+     *  @param out output stream to which the XML start tag is written
+     *  @param flags flag used to customize the output (not yet used)
+     *  @param attrText extra attribute text to be added to the element tag
+     */
+    virtual void writeXMLStartTag(ostream &out,
+                                  const size_t flags,
+                                  const char *attrText = NULL);
+
+    /** write element end tag in XML format
+     *  @param out output stream to which the XML end tag is written
+     *  @param flags flag used to customize the output (not yet used)
+     */
+    virtual void writeXMLEndTag(ostream &out,
+                                const size_t flags);
+
 public:
     DcmElement(const DcmTag & tag, const Uint32 len = 0);
     DcmElement(const DcmElement & elem);
@@ -110,6 +126,14 @@ public:
                               const E_EncodingType enctype 
                               = EET_UndefinedLength);
 
+    /** write object in XML format
+     *  @param out output stream to which the XML document is written
+     *  @param flags optional flag used to customize the output (see DCMTypes::XF_xxx)
+     *  @return status, EC_Normal if successful, an error code otherwise
+     */
+    virtual OFCondition writeXML(ostream &out,
+                                 const size_t flags = 0);
+
     /** special write method for creation of digital signatures
      */
     virtual OFCondition writeSignatureFormat(DcmStream & outStream,
@@ -139,10 +163,18 @@ public:
     virtual OFCondition getOFString(OFString & str,
                                     const unsigned long pos,
                                     OFBool normalize = OFTrue);
-    // returns a copy of one string value component (perhaps normalized)
-    // for multi-valued string attributes (e.g. those using \ separators)
-    // this method extracts the pos component (zero base).
-    virtual OFCondition getOFStringArray(OFString & val, OFBool normalize = OFTrue);
+
+    /** get entire element value as a character string.
+     *  In case of VM > 1 the single values are separated by a backslash ('\').
+     *  This method implements a general approach by concatenating the results of
+     *  getOFString() for each value component. Derived class may implement more
+     *  sophiticated methods.
+     *  @param value variable in which the result value is stored
+     *  @param normalize normalize each element value prior to concatenation
+     *  @return status, EC_Normal if successful, an error code otherwise
+     */
+    virtual OFCondition getOFStringArray(OFString &value,
+                                         OFBool normalize = OFTrue);
 
     // The following get operations do not copy, 
     // they return a reference of the element value 
@@ -203,7 +235,11 @@ public:
 /*
 ** CVS/RCS Log:
 ** $Log: dcelem.h,v $
-** Revision 1.22  2001-09-25 17:19:25  meichel
+** Revision 1.23  2002-04-25 10:06:09  joergr
+** Added/modified getOFStringArray() implementation.
+** Added support for XML output of DICOM objects.
+**
+** Revision 1.22  2001/09/25 17:19:25  meichel
 ** Adapted dcmdata to class OFCondition
 **
 ** Revision 1.21  2001/06/01 15:48:39  meichel
