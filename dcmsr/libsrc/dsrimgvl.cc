@@ -23,8 +23,8 @@
  *    classes: DSRImageReferenceValue
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-10-13 07:52:21 $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  Update Date:      $Date: 2000-10-16 12:05:32 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -124,17 +124,26 @@ E_Condition DSRImageReferenceValue::print(ostream &stream,
                                           const size_t flags) const
 {
     const char *string = dcmSOPClassUIDToModality(SOPClassUID.c_str());
+    stream << "(";
     if (string != NULL)
-        stream << " = " << string << " image";
+        stream << string << " image";
     else
-        stream << " = unknown image";
-    if (PresentationState.isValid())
-        stream << " with GSPS";
+        stream << "\"" << SOPClassUID << "\"";
+    stream << ",";
+    if (flags & DSRTypes::PF_printSOPInstanceUID)
+        stream << "\"" << SOPInstanceUID << "\"";
     if (!FrameList.isEmpty())
     {
-        stream << ", \"";
+        stream << ",";
         FrameList.print(stream, flags);
-        stream << "\"";
+    }
+    stream << ")";
+    if (PresentationState.isValid())
+    {
+        stream << ",(GSPS,";
+        if (flags & DSRTypes::PF_printSOPInstanceUID)
+            stream << "\"" << PresentationState.getSOPInstanceUID() << "\"";
+        stream << ")";
     }
     return EC_Normal;
 }
@@ -253,6 +262,15 @@ E_Condition DSRImageReferenceValue::setPresentationState(const DSRReferenceValue
 }
 
 
+OFBool DSRImageReferenceValue::appliesToFrame(const Sint32 frameNumber) const
+{
+    OFBool result = OFTrue;
+    if (!FrameList.isEmpty())
+        result = FrameList.isElement(frameNumber);
+    return result;
+}
+
+
 OFBool DSRImageReferenceValue::checkSOPClassUID(const OFString &sopClassUID) const
 {
     OFBool result = OFFalse;
@@ -268,7 +286,14 @@ OFBool DSRImageReferenceValue::checkSOPClassUID(const OFString &sopClassUID) con
 /*
  *  CVS/RCS Log:
  *  $Log: dsrimgvl.cc,v $
- *  Revision 1.1  2000-10-13 07:52:21  joergr
+ *  Revision 1.2  2000-10-16 12:05:32  joergr
+ *  Reformatted print output.
+ *  Added new method checking whether an image content item applies to a
+ *  certain frame.
+ *  Added new options: number nested items instead of indenting them, print SOP
+ *  instance UID of referenced composite objects.
+ *
+ *  Revision 1.1  2000/10/13 07:52:21  joergr
  *  Added new module 'dcmsr' providing access to DICOM structured reporting
  *  documents (supplement 23).  Doc++ documentation not yet completed.
  *
