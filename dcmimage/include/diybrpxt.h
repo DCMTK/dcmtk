@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2003, OFFIS
+ *  Copyright (C) 1998-2004, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,8 +22,8 @@
  *  Purpose: DicomYBRPixelTemplate (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-12-23 12:30:34 $
- *  CVS/RCS Revision: $Revision: 1.14 $
+ *  Update Date:      $Date: 2004-02-06 11:16:35 $
+ *  CVS/RCS Revision: $Revision: 1.15 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -153,9 +153,9 @@ class DiYBRPixelTemplate
                             /* convert a single frame */
                             for (l = planeSize; (l != 0) && (i != 0); --l, --i, ++y, ++cb, ++cr)
                             {
-                             	sr = OFstatic_cast(Sint32, *y) + OFstatic_cast(Sint32, rcr_tab[*cr]);
-                            	sg = OFstatic_cast(Sint32, *y) - OFstatic_cast(Sint32, gcb_tab[*cb]) - OFstatic_cast(Sint32, gcr_tab[*cr]);
-                            	sb = OFstatic_cast(Sint32, *y) + OFstatic_cast(Sint32, bcb_tab[*cb]);
+                             	sr = OFstatic_cast(Sint32, *y) + OFstatic_cast(Sint32, rcr_tab[OFstatic_cast(Uint32, *cr)]);
+                            	sg = OFstatic_cast(Sint32, *y) - OFstatic_cast(Sint32, gcb_tab[OFstatic_cast(Uint32, *cb)]) - OFstatic_cast(Sint32, gcr_tab[OFstatic_cast(Uint32, *cr)]);
+                            	sb = OFstatic_cast(Sint32, *y) + OFstatic_cast(Sint32, bcb_tab[OFstatic_cast(Uint32, *cb)]);
                                 *(r++) = (sr < 0) ? 0 : (sr > OFstatic_cast(Sint32, maxvalue)) ? maxvalue : OFstatic_cast(T2, sr);
                                 *(g++) = (sg < 0) ? 0 : (sg > OFstatic_cast(Sint32, maxvalue)) ? maxvalue : OFstatic_cast(T2, sg);
                                 *(b++) = (sb < 0) ? 0 : (sb > OFstatic_cast(Sint32, maxvalue)) ? maxvalue : OFstatic_cast(T2, sb);
@@ -178,9 +178,9 @@ class DiYBRPixelTemplate
                             y  = *(p++);
                             cb = *(p++);
                             cr = *(p++);
-                        	sr = OFstatic_cast(Sint32, y) + OFstatic_cast(Sint32, rcr_tab[cr]);
-                        	sg = OFstatic_cast(Sint32, y) - OFstatic_cast(Sint32, gcb_tab[cb]) - OFstatic_cast(Sint32, gcr_tab[cr]);
-                        	sb = OFstatic_cast(Sint32, y) + OFstatic_cast(Sint32, bcb_tab[cb]);
+                        	sr = OFstatic_cast(Sint32, y) + OFstatic_cast(Sint32, rcr_tab[OFstatic_cast(Uint32, cr)]);
+                        	sg = OFstatic_cast(Sint32, y) - OFstatic_cast(Sint32, gcb_tab[OFstatic_cast(Uint32, cb)]) - OFstatic_cast(Sint32, gcr_tab[OFstatic_cast(Uint32, cr)]);
+                        	sb = OFstatic_cast(Sint32, y) + OFstatic_cast(Sint32, bcb_tab[OFstatic_cast(Uint32, cb)]);
                             *(r++) = (sr < 0) ? 0 : (sr > OFstatic_cast(Sint32, maxvalue)) ? maxvalue : OFstatic_cast(T2, sr);
                             *(g++) = (sg < 0) ? 0 : (sg > OFstatic_cast(Sint32, maxvalue)) ? maxvalue : OFstatic_cast(T2, sg);
                             *(b++) = (sb < 0) ? 0 : (sb > OFstatic_cast(Sint32, maxvalue)) ? maxvalue : OFstatic_cast(T2, sb);
@@ -299,7 +299,11 @@ class DiYBRPixelTemplate
  *
  * CVS/RCS Log:
  * $Log: diybrpxt.h,v $
- * Revision 1.14  2003-12-23 12:30:34  joergr
+ * Revision 1.15  2004-02-06 11:16:35  joergr
+ * Added typecast to array indexes to avoid warning messages on MacOS X 10.3
+ * with gcc 3.3.
+ *
+ * Revision 1.14  2003/12/23 12:30:34  joergr
  * Adapted type casts to new-style typecast operators defined in ofcast.h.
  * Removed leading underscore characters from preprocessor symbols (reserved
  * symbols). Updated copyright header.
