@@ -57,9 +57,9 @@
 **	Module Prefix: DIMSE_
 **
 ** Last Update:		$Author: hewett $
-** Update Date:		$Date: 1996-04-25 16:11:16 $
+** Update Date:		$Date: 1996-04-27 12:57:58 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/libsrc/dimse.cc,v $
-** CVS/RCS Revision:	$Revision: 1.2 $
+** CVS/RCS Revision:	$Revision: 1.3 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -777,7 +777,7 @@ DIMSE_receiveCommand(T_ASC_Association * assoc,
     DUL_PDV pdv;
 
     DIC_UL elemsLeft;
-    T_ASC_PresentationContextID pid;
+    T_ASC_PresentationContextID pid = 0;
     E_TransferSyntax xferSyntax;
     DcmDataset *cmdSet;
     E_Condition econd = EC_Normal;
@@ -926,7 +926,7 @@ DIMSE_receiveDataSetInFile(T_ASC_Association *assoc,
 {
     CONDITION cond = DIMSE_NORMAL;
     DUL_PDV pdv;
-    T_ASC_PresentationContextID pid;
+    T_ASC_PresentationContextID pid = 0;
     E_TransferSyntax xferSyntax; 
     FILE* f;
     BOOLEAN last = FALSE;
@@ -1029,7 +1029,7 @@ DIMSE_receiveDataSetInMemory(T_ASC_Association * assoc,
     E_Condition econd = EC_Normal;
     DcmDataset *dset = NULL;
     DUL_PDV pdv;
-    T_ASC_PresentationContextID pid;
+    T_ASC_PresentationContextID pid = 0;
     E_TransferSyntax xferSyntax;
     BOOLEAN last = FALSE;
     DIC_UL pdvCount = 0;
@@ -1167,7 +1167,11 @@ void DIMSE_warning(T_ASC_Association *assoc,
 /*
 ** CVS Log
 ** $Log: dimse.cc,v $
-** Revision 1.2  1996-04-25 16:11:16  hewett
+** Revision 1.3  1996-04-27 12:57:58  hewett
+** Corrected cause of warnings when compiling under "c++ -O -g -Wall"
+** under Solaris 2.4.  Mostly due to unintialized variables.
+**
+** Revision 1.2  1996/04/25 16:11:16  hewett
 ** Added parameter casts to char* for bzero calls.  Replaced some declarations
 ** of DIC_UL with unsigned long (reduces mismatch problems with 32 & 64 bit
 ** architectures).  Added some protection to inclusion of sys/socket.h (due

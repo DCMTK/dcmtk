@@ -46,9 +46,9 @@
 ** Author, Date:	Stephen M. Moore, 15-Apr-93
 ** Intent:		Define tables and provide functions that implement
 **			the DICOM Upper Layer (DUL) finite state machine.
-** Last Update:		$Author: hewett $, $Date: 1996-04-25 16:11:20 $
+** Last Update:		$Author: hewett $, $Date: 1996-04-27 12:57:59 $
 ** Source File:		$RCSfile: dulfsm.cc,v $
-** Revision:		$Revision: 1.2 $
+** Revision:		$Revision: 1.3 $
 ** Status:		$State: Exp $
 */
 
@@ -267,7 +267,9 @@ static CONDITION
 defragmentTCP(int socket, DUL_BLOCKOPTIONS block, time_t timerStart,
 	      int timeout, void *b, unsigned long l, unsigned long *rtnLen);
 static CTNBOOLEAN networkDataAvailable(int s, int timeout);
+#ifdef DEBUG
 static void recordOutGoing(void *buf, unsigned long length);
+#endif
 static void dump_pdu(char *type, void *buffer, unsigned long length);
 #ifdef DUMP_DATA_PDU
 static void dump_data(void *buffer, unsigned long length);
@@ -3572,6 +3574,7 @@ networkDataAvailable(int s, int timeout)
 ** Algorithm:
 **	Description of the algorithm (optional) and any other notes.
 */
+#ifdef DEBUG
 static void
 recordOutGoing(
 #ifdef VERBOSE
@@ -3595,6 +3598,7 @@ recordOutGoing(
     }
 #endif
 }
+#endif
 
 /* dump_pdu
 **
@@ -3972,7 +3976,11 @@ DULPRV_translateAssocReq(unsigned char *buffer,
 /*
 ** CVS Log
 ** $Log: dulfsm.cc,v $
-** Revision 1.2  1996-04-25 16:11:20  hewett
+** Revision 1.3  1996-04-27 12:57:59  hewett
+** Corrected cause of warnings when compiling under "c++ -O -g -Wall"
+** under Solaris 2.4.  Mostly due to unintialized variables.
+**
+** Revision 1.2  1996/04/25 16:11:20  hewett
 ** Added parameter casts to char* for bzero calls.  Replaced some declarations
 ** of DIC_UL with unsigned long (reduces mismatch problems with 32 & 64 bit
 ** architectures).  Added some protection to inclusion of sys/socket.h (due

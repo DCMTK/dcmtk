@@ -68,9 +68,9 @@
 **
 **
 ** Last Update:		$Author: hewett $
-** Update Date:		$Date: 1996-04-25 16:11:11 $
+** Update Date:		$Date: 1996-04-27 12:57:57 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmnet/libsrc/assoc.cc,v $
-** CVS/RCS Revision:	$Revision: 1.3 $
+** CVS/RCS Revision:	$Revision: 1.4 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -1550,9 +1550,9 @@ static void
 updateRequestedPCListFromAcceptedPCList(
     DUL_ASSOCIATESERVICEPARAMETERS *dulParams)
 {
-    DUL_PRESENTATIONCONTEXT *requestedPc;
-    DUL_PRESENTATIONCONTEXT *acceptedPc;
-    LST_HEAD **acceptedList;
+    DUL_PRESENTATIONCONTEXT *requestedPc = NULL;
+    DUL_PRESENTATIONCONTEXT *acceptedPc = NULL;
+    LST_HEAD **acceptedList = NULL;
 
     acceptedList = &dulParams->acceptedPresentationContext;
     if (*acceptedList != NULL) {
@@ -1789,7 +1789,11 @@ ASC_dropAssociation(T_ASC_Association * association)
 /*
 ** CVS Log
 ** $Log: assoc.cc,v $
-** Revision 1.3  1996-04-25 16:11:11  hewett
+** Revision 1.4  1996-04-27 12:57:57  hewett
+** Corrected cause of warnings when compiling under "c++ -O -g -Wall"
+** under Solaris 2.4.  Mostly due to unintialized variables.
+**
+** Revision 1.3  1996/04/25 16:11:11  hewett
 ** Added parameter casts to char* for bzero calls.  Replaced some declarations
 ** of DIC_UL with unsigned long (reduces mismatch problems with 32 & 64 bit
 ** architectures).  Added some protection to inclusion of sys/socket.h (due
