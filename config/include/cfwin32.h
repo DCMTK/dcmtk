@@ -98,6 +98,12 @@
 /* Define if you have the access function.  */
 #undef HAVE_ACCESS
 
+/* Define if you have the bcmp function.  */
+#undef HAVE_BCMP
+
+/* Define if you have the bcopy function.  */
+#undef HAVE_BCOPY
+
 /* Define if you have the bind function.  */
 #define HAVE_BIND 1
 
@@ -167,8 +173,17 @@
 /* Define if you have the malloc_debug function.  */
 #undef HAVE_MALLOC_DEBUG
 
+/* Define if you have the memcmp function.  */
+#define HAVE_MEMCMP 1
+
 /* Define if you have the memcpy function.  */
 #define HAVE_MEMCPY 1
+
+/* Define if you have the memmove function.  */
+#define HAVE_MEMMOVE 1
+
+/* Define if you have the memset function.  */
+#define HAVE_MEMSET 1
 
 /* Define if you have the mktemp function.  */
 #define HAVE_MKTEMP 1
@@ -261,7 +276,7 @@
 #define HAVE_CTYPE_H 1
 
 /* Define if you have the <dirent.h> header file.  */
-#undef HAVE_DIRENT_H 1
+#undef HAVE_DIRENT_H
 
 /* Define if you have the <fcntl.h> header file.  */
 #define HAVE_FCNTL_H 1
