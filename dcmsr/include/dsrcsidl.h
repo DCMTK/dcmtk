@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DSRCodingSchemeIdentificationList
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2004-04-07 12:02:53 $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2004-11-22 16:39:09 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -85,6 +85,12 @@ class DSRCodingSchemeIdentificationList
             CodingSchemeVersion.clear();
             ResponsibleOrganization.clear();
         }
+
+        /** check if this object contains non-ASCII characters in one of the
+         *  strings affected by SpecificCharacterSet in DICOM
+         *  @return true if node contains non-ASCII characters, false otherwise
+         */
+        OFBool containsExtendedCharacters();
 
         /// Coding Scheme Designator  (VR=SH, VM=1, Type=1)
         const OFString CodingSchemeDesignator;
@@ -294,6 +300,12 @@ class DSRCodingSchemeIdentificationList
      */
     OFCondition setResponsibleOrganization(const OFString &value);
 
+    /** check if this object contains non-ASCII characters in one of the
+     *  strings affected by SpecificCharacterSet in DICOM
+     *  @return true if node contains non-ASCII characters, false otherwise
+     */
+    OFBool containsExtendedCharacters();
+
 
   protected:
 
@@ -333,7 +345,11 @@ class DSRCodingSchemeIdentificationList
 /*
  *  CVS/RCS Log:
  *  $Log: dsrcsidl.h,v $
- *  Revision 1.4  2004-04-07 12:02:53  joergr
+ *  Revision 1.5  2004-11-22 16:39:09  meichel
+ *  Added method that checks if the SR document contains non-ASCII characters
+ *    in any of the strings affected by SpecificCharacterSet.
+ *
+ *  Revision 1.4  2004/04/07 12:02:53  joergr
  *  Added missing member variables to constructor's member initialization list
  *  to avoid warnings reported by gcc.
  *

@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DSRNumericMeasurementValue
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2004-09-03 09:07:53 $
- *  CVS/RCS Revision: $Revision: 1.18 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2004-11-22 16:39:12 $
+ *  CVS/RCS Revision: $Revision: 1.19 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -423,10 +423,20 @@ OFBool DSRNumericMeasurementValue::checkNumericValueQualifier(const DSRCodedEntr
 }
 
 
+OFBool DSRNumericMeasurementValue::valueContainsExtendedCharacters() const
+{
+  return MeasurementUnit.valueContainsExtendedCharacters() || ValueQualifier.valueContainsExtendedCharacters();
+}
+
+
 /*
  *  CVS/RCS Log:
  *  $Log: dsrnumvl.cc,v $
- *  Revision 1.18  2004-09-03 09:07:53  joergr
+ *  Revision 1.19  2004-11-22 16:39:12  meichel
+ *  Added method that checks if the SR document contains non-ASCII characters
+ *    in any of the strings affected by SpecificCharacterSet.
+ *
+ *  Revision 1.18  2004/09/03 09:07:53  joergr
  *  Fixed inconsistency in readXML() method that prevented support for empty
  *  MeasuredValueSequence.
  *  Removed output of empty measurement unit in writeXML() by default. Added

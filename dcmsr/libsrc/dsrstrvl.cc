@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2003, OFFIS
+ *  Copyright (C) 2000-2004, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DSRStringValue
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-08-07 15:21:53 $
- *  CVS/RCS Revision: $Revision: 1.11 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2004-11-22 16:39:12 $
+ *  CVS/RCS Revision: $Revision: 1.12 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -160,11 +160,19 @@ OFBool DSRStringValue::checkValue(const OFString &stringValue) const
     return !stringValue.empty();
 }
 
+OFBool DSRStringValue::valueContainsExtendedCharacters() const
+{
+  return DSRTypes::stringContainsExtendedCharacters(Value);
+}
 
 /*
  *  CVS/RCS Log:
  *  $Log: dsrstrvl.cc,v $
- *  Revision 1.11  2003-08-07 15:21:53  joergr
+ *  Revision 1.12  2004-11-22 16:39:12  meichel
+ *  Added method that checks if the SR document contains non-ASCII characters
+ *    in any of the strings affected by SpecificCharacterSet.
+ *
+ *  Revision 1.11  2003/08/07 15:21:53  joergr
  *  Added brackets around "bitwise and" operator/operands to avoid warnings
  *  reported by MSVC5.
  *

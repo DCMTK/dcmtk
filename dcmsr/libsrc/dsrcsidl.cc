@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DSRCodingSchemeIdentificationList
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2004-01-16 10:02:19 $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2004-11-22 16:39:12 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -572,10 +572,38 @@ OFCondition DSRCodingSchemeIdentificationList::setResponsibleOrganization(const 
 }
 
 
+OFBool DSRCodingSchemeIdentificationList::ItemStruct::containsExtendedCharacters()
+{
+  return DSRTypes::stringContainsExtendedCharacters(CodingSchemeDesignator) 
+    || DSRTypes::stringContainsExtendedCharacters(CodingSchemeRegistry) 
+    || DSRTypes::stringContainsExtendedCharacters(CodingSchemeExternalID) 
+    || DSRTypes::stringContainsExtendedCharacters(CodingSchemeName) 
+    || DSRTypes::stringContainsExtendedCharacters(CodingSchemeVersion) 
+    || DSRTypes::stringContainsExtendedCharacters(ResponsibleOrganization);
+}
+
+
+OFBool DSRCodingSchemeIdentificationList::containsExtendedCharacters()
+{
+    OFListIterator(ItemStruct *) iter = ItemList.begin();
+    OFListIterator(ItemStruct *) last = ItemList.end();
+    while (iter != last)
+    {
+      if (*iter && (*iter)->containsExtendedCharacters()) return OFTrue;
+      ++iter;
+    }
+    return OFFalse;
+}
+
+
 /*
  *  CVS/RCS Log:
  *  $Log: dsrcsidl.cc,v $
- *  Revision 1.5  2004-01-16 10:02:19  joergr
+ *  Revision 1.6  2004-11-22 16:39:12  meichel
+ *  Added method that checks if the SR document contains non-ASCII characters
+ *    in any of the strings affected by SpecificCharacterSet.
+ *
+ *  Revision 1.5  2004/01/16 10:02:19  joergr
  *  Report more warnings when reading from XML document.
  *
  *  Revision 1.4  2003/10/14 15:32:13  joergr

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2003, OFFIS
+ *  Copyright (C) 2000-2004, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DSRCodedEntryValue
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-11-28 16:51:44 $
- *  CVS/RCS Revision: $Revision: 1.18 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2004-11-22 16:39:12 $
+ *  CVS/RCS Revision: $Revision: 1.19 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -387,10 +387,23 @@ OFBool DSRCodedEntryValue::checkCode(const OFString &codeValue,
 }
 
 
+OFBool DSRCodedEntryValue::valueContainsExtendedCharacters() const
+{
+  return DSRTypes::stringContainsExtendedCharacters(CodeValue)
+    || DSRTypes::stringContainsExtendedCharacters(CodingSchemeDesignator)
+    || DSRTypes::stringContainsExtendedCharacters(CodingSchemeVersion)
+    || DSRTypes::stringContainsExtendedCharacters(CodeMeaning);
+}
+
+
 /*
  *  CVS/RCS Log:
  *  $Log: dsrcodvl.cc,v $
- *  Revision 1.18  2003-11-28 16:51:44  joergr
+ *  Revision 1.19  2004-11-22 16:39:12  meichel
+ *  Added method that checks if the SR document contains non-ASCII characters
+ *    in any of the strings affected by SpecificCharacterSet.
+ *
+ *  Revision 1.18  2003/11/28 16:51:44  joergr
  *  Changed output format of CodingSchemeVersion in print() and renderHTML().
  *  Now using square brackets instead of comma to separate from CodingScheme.
  *

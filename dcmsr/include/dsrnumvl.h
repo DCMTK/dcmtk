@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2003, OFFIS
+ *  Copyright (C) 2000-2004, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DSRNumericMeasurementValue
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-08-07 12:43:44 $
- *  CVS/RCS Revision: $Revision: 1.8 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2004-11-22 16:39:09 $
+ *  CVS/RCS Revision: $Revision: 1.9 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -278,6 +278,11 @@ class DSRNumericMeasurementValue
      */
     OFCondition setNumericValueQualifier(const DSRCodedEntryValue &valueQualifier);
 
+    /** check if this value contains non-ASCII characters.
+     *  @return true if value contains non-ASCII characters, false otherwise
+     */
+    OFBool valueContainsExtendedCharacters() const;
+
 
   protected:
 
@@ -347,7 +352,11 @@ class DSRNumericMeasurementValue
 /*
  *  CVS/RCS Log:
  *  $Log: dsrnumvl.h,v $
- *  Revision 1.8  2003-08-07 12:43:44  joergr
+ *  Revision 1.9  2004-11-22 16:39:09  meichel
+ *  Added method that checks if the SR document contains non-ASCII characters
+ *    in any of the strings affected by SpecificCharacterSet.
+ *
+ *  Revision 1.8  2003/08/07 12:43:44  joergr
  *  Added readXML functionality.
  *
  *  Revision 1.7  2002/12/10 13:20:07  joergr

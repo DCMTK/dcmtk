@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2002-2003, OFFIS
+ *  Copyright (C) 2002-2004, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,9 +23,9 @@
  *    classes: DSRSOPInstanceReferenceList
  *             - InstanceStruct, SeriesStruct, StudyStruct
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-08-07 18:01:42 $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2004-11-22 16:39:09 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -161,6 +161,12 @@ class DSRSOPInstanceReferenceList
          */
         OFCondition removeItem();
 
+        /** check if this object contains non-ASCII characters in one of the
+         *  strings affected by SpecificCharacterSet in DICOM
+         *  @return true if node contains non-ASCII characters, false otherwise
+         */
+        OFBool containsExtendedCharacters();
+
         /// series instance UID (VR=UI, VM=1)
         const OFString SeriesUID;
         /// optional: retrieve application entity title (VR=AE, VM=1-n)
@@ -273,6 +279,12 @@ class DSRSOPInstanceReferenceList
          *  Please note that this function modifies the value of 'Iterator'.
          */
         void removeIncompleteItems();
+
+        /** check if this object contains non-ASCII characters in one of the
+         *  strings affected by SpecificCharacterSet in DICOM
+         *  @return true if node contains non-ASCII characters, false otherwise
+         */
+        OFBool containsExtendedCharacters();
 
         /// study instance UID (VR=UI, VM=1)
         const OFString StudyUID;
@@ -489,6 +501,11 @@ class DSRSOPInstanceReferenceList
      */
     OFCondition setStorageMediaFileSetUID(const OFString &value);
 
+    /** check if this object contains non-ASCII characters in one of the
+     *  strings affected by SpecificCharacterSet in DICOM
+     *  @return true if node contains non-ASCII characters, false otherwise
+     */
+    OFBool containsExtendedCharacters();
 
   protected:
 
@@ -545,7 +562,11 @@ class DSRSOPInstanceReferenceList
 /*
  *  CVS/RCS Log:
  *  $Log: dsrsoprf.h,v $
- *  Revision 1.6  2003-08-07 18:01:42  joergr
+ *  Revision 1.7  2004-11-22 16:39:09  meichel
+ *  Added method that checks if the SR document contains non-ASCII characters
+ *    in any of the strings affected by SpecificCharacterSet.
+ *
+ *  Revision 1.6  2003/08/07 18:01:42  joergr
  *  Removed libxml dependency from header files.
  *
  *  Revision 1.5  2003/08/07 12:50:12  joergr

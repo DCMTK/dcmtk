@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DSRDocument
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2004-04-16 13:24:07 $
- *  CVS/RCS Revision: $Revision: 1.34 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2004-11-22 16:39:09 $
+ *  CVS/RCS Revision: $Revision: 1.35 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -186,6 +186,11 @@ class DSRDocument
                            const size_t flags = 0,
                            const char *styleSheet = NULL);
 
+    /** check if this document contains non-ASCII characters in one of the
+     *  strings affected by SpecificCharacterSet in DICOM
+     *  @return true if node contains non-ASCII characters, false otherwise
+     */
+    virtual OFBool containsExtendedCharacters();
 
   // --- get/set misc attributes ---
 
@@ -1181,7 +1186,11 @@ class DSRDocument
 /*
  *  CVS/RCS Log:
  *  $Log: dsrdoc.h,v $
- *  Revision 1.34  2004-04-16 13:24:07  joergr
+ *  Revision 1.35  2004-11-22 16:39:09  meichel
+ *  Added method that checks if the SR document contains non-ASCII characters
+ *    in any of the strings affected by SpecificCharacterSet.
+ *
+ *  Revision 1.34  2004/04/16 13:24:07  joergr
  *  Restructured code to avoid default parameter values for "complex types" like
  *  OFString. Required for Sun CC 2.0.1.
  *

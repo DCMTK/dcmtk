@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DSRDocumentTree
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2004-11-18 13:53:41 $
- *  CVS/RCS Revision: $Revision: 1.23 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2004-11-22 16:39:12 $
+ *  CVS/RCS Revision: $Revision: 1.24 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -606,10 +606,31 @@ OFCondition DSRDocumentTree::checkByReferenceRelationships(const OFBool updateSt
 }
 
 
+OFBool DSRDocumentTree::containsExtendedCharacters()
+{
+  DSRTreeNodeCursor cursor(getRoot());
+  if (cursor.isValid())
+  {
+      const DSRDocumentTreeNode *node = NULL;
+      /* iterate over all nodes */
+      do
+      {
+          node = OFstatic_cast(DSRDocumentTreeNode *, cursor.getNode());
+          if (node && node->containsExtendedCharacters()) return OFTrue;
+      } while (cursor.iterate());
+  }
+  return OFFalse;
+}
+
+
 /*
  *  CVS/RCS Log:
  *  $Log: dsrdoctr.cc,v $
- *  Revision 1.23  2004-11-18 13:53:41  joergr
+ *  Revision 1.24  2004-11-22 16:39:12  meichel
+ *  Added method that checks if the SR document contains non-ASCII characters
+ *    in any of the strings affected by SpecificCharacterSet.
+ *
+ *  Revision 1.23  2004/11/18 13:53:41  joergr
  *  Enhanced warning message for invalid by-reference relationships by adding the
  *  relevant item identifiers.
  *

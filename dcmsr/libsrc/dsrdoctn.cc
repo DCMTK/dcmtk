@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DSRDocumentTreeNode
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2004-09-09 14:03:19 $
- *  CVS/RCS Revision: $Revision: 1.39 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2004-11-22 16:39:12 $
+ *  CVS/RCS Revision: $Revision: 1.40 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1077,10 +1077,20 @@ const OFString &DSRDocumentTreeNode::getRelationshipText(const E_RelationshipTyp
 }
 
 
+OFBool DSRDocumentTreeNode::containsExtendedCharacters() const
+{
+  return ConceptName.valueContainsExtendedCharacters();
+}
+
+
 /*
  *  CVS/RCS Log:
  *  $Log: dsrdoctn.cc,v $
- *  Revision 1.39  2004-09-09 14:03:19  joergr
+ *  Revision 1.40  2004-11-22 16:39:12  meichel
+ *  Added method that checks if the SR document contains non-ASCII characters
+ *    in any of the strings affected by SpecificCharacterSet.
+ *
+ *  Revision 1.39  2004/09/09 14:03:19  joergr
  *  Added flags to control the way the template identification is encoded in
  *  writeXML() and expected in readXML().
  *

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2003, OFFIS
+ *  Copyright (C) 2000-2004, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DSRNumTreeNode
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-09-15 14:13:42 $
- *  CVS/RCS Revision: $Revision: 1.16 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2004-11-22 16:39:12 $
+ *  CVS/RCS Revision: $Revision: 1.17 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -131,10 +131,20 @@ OFCondition DSRNumTreeNode::renderHTMLContentItem(ostream &docStream,
 }
 
 
+OFBool DSRNumTreeNode::containsExtendedCharacters() const
+{
+  return DSRDocumentTreeNode::containsExtendedCharacters() || valueContainsExtendedCharacters();
+}
+
+
 /*
  *  CVS/RCS Log:
  *  $Log: dsrnumtn.cc,v $
- *  Revision 1.16  2003-09-15 14:13:42  joergr
+ *  Revision 1.17  2004-11-22 16:39:12  meichel
+ *  Added method that checks if the SR document contains non-ASCII characters
+ *    in any of the strings affected by SpecificCharacterSet.
+ *
+ *  Revision 1.16  2003/09/15 14:13:42  joergr
  *  Introduced new class to facilitate checking of SR IOD relationship content
  *  constraints. Replaced old implementation distributed over numerous classes.
  *

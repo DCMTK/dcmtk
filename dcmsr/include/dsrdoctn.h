@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2003, OFFIS
+ *  Copyright (C) 2000-2004, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DSRDocumentTreeNode
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-12-16 15:57:51 $
- *  CVS/RCS Revision: $Revision: 1.19 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2004-11-22 16:39:09 $
+ *  CVS/RCS Revision: $Revision: 1.20 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -346,6 +346,11 @@ class DSRDocumentTreeNode
      */
     void removeSignatures();
 
+    /** check if this tree node contains non-ASCII characters in one of the
+     *  strings affected by SpecificCharacterSet in DICOM
+     *  @return true if node contains non-ASCII characters, false otherwise
+     */
+    virtual OFBool containsExtendedCharacters() const;
 
   protected:
 
@@ -617,7 +622,11 @@ class DSRDocumentTreeNode
 /*
  *  CVS/RCS Log:
  *  $Log: dsrdoctn.h,v $
- *  Revision 1.19  2003-12-16 15:57:51  joergr
+ *  Revision 1.20  2004-11-22 16:39:09  meichel
+ *  Added method that checks if the SR document contains non-ASCII characters
+ *    in any of the strings affected by SpecificCharacterSet.
+ *
+ *  Revision 1.19  2003/12/16 15:57:51  joergr
  *  Added note that the condition for the Content Template Sequence is currently
  *  not checked.
  *

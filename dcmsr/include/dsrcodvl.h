@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2000-2003, OFFIS
+ *  Copyright (C) 2000-2004, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DSRCodedEntryValue
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-12-16 15:56:53 $
- *  CVS/RCS Revision: $Revision: 1.14 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2004-11-22 16:39:09 $
+ *  CVS/RCS Revision: $Revision: 1.15 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -315,6 +315,10 @@ class DSRCodedEntryValue
                         const OFString &codingSchemeVersion,
                         const OFString &codeMeaning);
 
+    /** check if this value contains non-ASCII characters.
+     *  @return true if value contains non-ASCII characters, false otherwise
+     */
+    OFBool valueContainsExtendedCharacters() const;
 
   protected:
 
@@ -377,7 +381,11 @@ class DSRCodedEntryValue
 /*
  *  CVS/RCS Log:
  *  $Log: dsrcodvl.h,v $
- *  Revision 1.14  2003-12-16 15:56:53  joergr
+ *  Revision 1.15  2004-11-22 16:39:09  meichel
+ *  Added method that checks if the SR document contains non-ASCII characters
+ *    in any of the strings affected by SpecificCharacterSet.
+ *
+ *  Revision 1.14  2003/12/16 15:56:53  joergr
  *  Added note on coding scheme identfication and private coding schemes.
  *
  *  Revision 1.13  2003/12/11 17:14:28  joergr

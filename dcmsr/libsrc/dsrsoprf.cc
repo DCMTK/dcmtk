@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 2002-2003, OFFIS
+ *  Copyright (C) 2002-2004, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,9 +23,9 @@
  *    classes: DSRSOPInstanceReferenceList
  *             - InstanceStruct, SeriesStruct, StudyStruct
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2004-04-16 13:33:52 $
- *  CVS/RCS Revision: $Revision: 1.6 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2004-11-22 16:39:12 $
+ *  CVS/RCS Revision: $Revision: 1.7 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -381,6 +381,12 @@ OFCondition DSRSOPInstanceReferenceList::SeriesStruct::removeItem()
         result = EC_Normal;
     }
     return result;
+}
+
+
+OFBool DSRSOPInstanceReferenceList::SeriesStruct::containsExtendedCharacters()
+{
+  return DSRTypes::stringContainsExtendedCharacters(StorageMediaFileSetID);
 }
 
 
@@ -748,6 +754,19 @@ void DSRSOPInstanceReferenceList::StudyStruct::removeIncompleteItems()
         } else
           ++Iterator;
     }
+}
+
+
+OFBool DSRSOPInstanceReferenceList::StudyStruct::containsExtendedCharacters()
+{
+    OFListIterator(SeriesStruct *) iter = SeriesList.begin();
+    OFListIterator(SeriesStruct *) last = SeriesList.end();
+    while (iter != last)
+    {
+      if (*iter && (*iter)->containsExtendedCharacters()) return OFTrue;
+      ++iter;
+    }
+    return OFFalse;
 }
 
 
@@ -1370,10 +1389,27 @@ OFCondition DSRSOPInstanceReferenceList::setStorageMediaFileSetUID(const OFStrin
 }
 
 
+OFBool DSRSOPInstanceReferenceList::containsExtendedCharacters()
+{
+    OFListIterator(StudyStruct *) iter = StudyList.begin();
+    OFListIterator(StudyStruct *) last = StudyList.end();
+    while (iter != last)
+    {
+      if (*iter && (*iter)->containsExtendedCharacters()) return OFTrue;
+      ++iter;
+    }
+    return OFFalse;
+}
+
+
 /*
  *  CVS/RCS Log:
  *  $Log: dsrsoprf.cc,v $
- *  Revision 1.6  2004-04-16 13:33:52  joergr
+ *  Revision 1.7  2004-11-22 16:39:12  meichel
+ *  Added method that checks if the SR document contains non-ASCII characters
+ *    in any of the strings affected by SpecificCharacterSet.
+ *
+ *  Revision 1.6  2004/04/16 13:33:52  joergr
  *  Added explicit typecast to result of dereferencing operator to keep Sun CC
  *  2.0.1 happy.
  *

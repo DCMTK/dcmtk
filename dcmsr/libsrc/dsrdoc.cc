@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DSRDocument
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2004-04-16 13:24:22 $
- *  CVS/RCS Revision: $Revision: 1.52 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2004-11-22 16:39:12 $
+ *  CVS/RCS Revision: $Revision: 1.53 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -2272,11 +2272,39 @@ void DSRDocument::updateAttributes(const OFBool updateAll)
     }
 }
 
+OFBool DSRDocument::containsExtendedCharacters()
+{
+    OFBool result = DocumentTree.containsExtendedCharacters();
+    result = result || CodingSchemeIdentification.containsExtendedCharacters();
+    result = result || DSRTypes::elementContainsExtendedCharacters(ReferringPhysiciansName);
+    result = result || DSRTypes::elementContainsExtendedCharacters(StudyID);
+    result = result || DSRTypes::elementContainsExtendedCharacters(AccessionNumber);
+    result = result || DSRTypes::elementContainsExtendedCharacters(StudyDescription);
+    result = result || DSRTypes::elementContainsExtendedCharacters(SeriesDescription);
+    result = result || DSRTypes::elementContainsExtendedCharacters(PatientsName);
+    result = result || DSRTypes::elementContainsExtendedCharacters(PatientID);
+    result = result || DSRTypes::elementContainsExtendedCharacters(Manufacturer);
+    result = result || DSRTypes::elementContainsExtendedCharacters(ReferencedPerformedProcedureStepSequence);    
+    result = result || DSRTypes::elementContainsExtendedCharacters(CompletionFlagDescription);
+    result = result || DSRTypes::elementContainsExtendedCharacters(PatientsName);
+    result = result || DSRTypes::elementContainsExtendedCharacters(VerifyingObserver);
+    result = result || PredecessorDocuments.containsExtendedCharacters();
+    result = result || IdenticalDocuments.containsExtendedCharacters();
+    result = result || DSRTypes::elementContainsExtendedCharacters(PerformedProcedureCode);
+    result = result || CurrentRequestedProcedureEvidence.containsExtendedCharacters();
+    result = result || PertinentOtherEvidence.containsExtendedCharacters();
+
+    return result;
+}
 
 /*
  *  CVS/RCS Log:
  *  $Log: dsrdoc.cc,v $
- *  Revision 1.52  2004-04-16 13:24:22  joergr
+ *  Revision 1.53  2004-11-22 16:39:12  meichel
+ *  Added method that checks if the SR document contains non-ASCII characters
+ *    in any of the strings affected by SpecificCharacterSet.
+ *
+ *  Revision 1.52  2004/04/16 13:24:22  joergr
  *  Restructured code to avoid default parameter values for "complex types" like
  *  OFString. Required for Sun CC 2.0.1.
  *

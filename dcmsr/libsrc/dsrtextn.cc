@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DSRTextTreeNode
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2004-01-05 14:37:23 $
- *  CVS/RCS Revision: $Revision: 1.20 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2004-11-22 16:39:12 $
+ *  CVS/RCS Revision: $Revision: 1.21 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -152,10 +152,20 @@ OFCondition DSRTextTreeNode::renderHTMLContentItem(ostream &docStream,
 }
 
 
+OFBool DSRTextTreeNode::containsExtendedCharacters() const
+{
+  return DSRDocumentTreeNode::containsExtendedCharacters() || valueContainsExtendedCharacters();
+}
+
+
 /*
  *  CVS/RCS Log:
  *  $Log: dsrtextn.cc,v $
- *  Revision 1.20  2004-01-05 14:37:23  joergr
+ *  Revision 1.21  2004-11-22 16:39:12  meichel
+ *  Added method that checks if the SR document contains non-ASCII characters
+ *    in any of the strings affected by SpecificCharacterSet.
+ *
+ *  Revision 1.20  2004/01/05 14:37:23  joergr
  *  Removed acknowledgements with e-mail addresses from CVS log.
  *
  *  Revision 1.19  2003/09/15 14:13:42  joergr
