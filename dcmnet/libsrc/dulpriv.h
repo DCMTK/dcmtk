@@ -51,9 +51,9 @@
 **  the public definitions and prototypes on purpose so that they
 **  exist in only one location.
 **
-** Last Update:		$Author: hewett $, $Date: 1996-03-26 18:38:46 $
+** Last Update:		$Author: hewett $, $Date: 1997-01-13 15:53:13 $
 ** Source File:		$RCSfile: dulpriv.h,v $
-** Revision:		$Revision: 1.1 $
+** Revision:		$Revision: 1.2 $
 ** Status:		$State: Exp $
 */
 
@@ -105,20 +105,28 @@ CONDITION
 PRV_NextPDUType(PRIVATE_ASSOCIATIONKEY ** association,
 		DUL_BLOCKOPTIONS block, int timeout, unsigned char *type);
 
+CONDITION
+DULPRV_translateAssocReq(unsigned char *buffer,
+	  unsigned long pduLength, DUL_ASSOCIATESERVICEPARAMETERS * service);
+
 void fsmDebug(CTNBOOLEAN flag);
 void constructDebug(CTNBOOLEAN flag);
 void parseDebug(CTNBOOLEAN flag);
 #ifdef SNOOP
 void snoopDebug(CTNBOOLEAN flag);
 #endif
+void fsmBlog(CTNBOOLEAN flag);
 
 #endif
 
 /*
 ** CVS Log
 ** $Log: dulpriv.h,v $
-** Revision 1.1  1996-03-26 18:38:46  hewett
-** Initial revision
+** Revision 1.2  1997-01-13 15:53:13  hewett
+** Added missing function prototypes (required for CodeWarrior 10).
+**
+** Revision 1.1.1.1  1996/03/26 18:38:46  hewett
+** Initial Release.
 **
 **
 */

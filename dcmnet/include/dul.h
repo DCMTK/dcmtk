@@ -44,9 +44,9 @@
 ** Intent:		This file defines the public structures and constants
 **			and the function prototypes for the DUL (DICOM Upper
 **			Layer) facility.
-** Last Update:		$Author: hewett $, $Date: 1996-03-26 18:38:44 $
+** Last Update:		$Author: hewett $, $Date: 1997-01-13 15:53:02 $
 ** Source File:		$RCSfile: dul.h,v $
-** Revision:		$Revision: 1.1 $
+** Revision:		$Revision: 1.2 $
 ** Status:		$State: Exp $
 */
 
@@ -359,7 +359,24 @@ CONDITION DUL_ClearServiceParameters(DUL_ASSOCIATESERVICEPARAMETERS * params);
 void DUL_DefaultServiceParameters(DUL_ASSOCIATESERVICEPARAMETERS * params);
 void DUL_Blog(CTNBOOLEAN flag);
 
+/*
+** Additional functions (from dulextra.cc) needed to support 
+** selecting amongst several concurrent associations.
+** Andrew Hewett, Institute OFFIS, Oldenburg, Germany.
+*/
 
+int
+DUL_associationSocket(DUL_ASSOCIATIONKEY * callerAssociation);
+BOOLEAN 
+DUL_dataWaiting(DUL_ASSOCIATIONKEY * callerAssociation, int timeout);
+int 
+DUL_networkSocket(DUL_NETWORKKEY * callerNet);
+BOOLEAN 
+DUL_associationWaiting(DUL_NETWORKKEY * callerNet, int timeout);
+
+/*
+** END extra functions
+*/
 
 /*  Now define the fixed values for conditions returned by this
 **  package.  Note that FAC_DUL is used to generate these
@@ -432,8 +449,11 @@ void DUL_Blog(CTNBOOLEAN flag);
 /*
 ** CVS Log
 ** $Log: dul.h,v $
-** Revision 1.1  1996-03-26 18:38:44  hewett
-** Initial revision
+** Revision 1.2  1997-01-13 15:53:02  hewett
+** Added missing function prototypes (required for CodeWarrior 10).
+**
+** Revision 1.1.1.1  1996/03/26 18:38:44  hewett
+** Initial Release.
 **
 **
 */
