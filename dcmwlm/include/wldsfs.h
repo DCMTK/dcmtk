@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2002, OFFIS
+ *  Copyright (C) 1996-2004, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,10 +21,10 @@
  *
  *  Purpose: Class for connecting to a file-based data source.
  *
- *  Last Update:      $Author: wilkens $
- *  Update Date:      $Date: 2004-01-07 08:32:28 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2004-05-26 10:36:53 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmwlm/include/Attic/wldsfs.h,v $
- *  CVS/RCS Revision: $Revision: 1.12 $
+ *  CVS/RCS Revision: $Revision: 1.13 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -57,14 +57,14 @@ class WlmDataSourceFileSystem : public WlmDataSource
 
       /** This function sets a read lock on the LOCKFILE in the directory
        *  that is specified through dfPath and calledApplicationEntityTitle.
-       *  @return 0 in case the read lock has been set successfully, 1 otherwise.
+       *  @return true in case the read lock has been set successfully, false otherwise.
        */
-    int SetReadlock();
+    OFBool SetReadlock();
 
       /** This function releases a read lock on the LOCKFILE in the given directory.
-       *  @return 0 in case the read lock has been released successfully, 1 otherwise.
+       *  @return true in case the read lock has been released successfully, false otherwise.
        */
-    int ReleaseReadlock();
+    OFBool ReleaseReadlock();
 
       /** This function takes care of handling a certain non-sequence element whithin
        *  the structure of a certain result dataset. This function assumes that all
@@ -165,7 +165,10 @@ class WlmDataSourceFileSystem : public WlmDataSource
 /*
 ** CVS Log
 ** $Log: wldsfs.h,v $
-** Revision 1.12  2004-01-07 08:32:28  wilkens
+** Revision 1.13  2004-05-26 10:36:53  meichel
+** Fixed minor bug in worklist server regarding failed read locks.
+**
+** Revision 1.12  2004/01/07 08:32:28  wilkens
 ** Added new sequence type return key attributes to wlmscpfs. Fixed bug that for
 ** equally named attributes in sequences always the same value will be returned.
 ** Added functionality that also more than one item will be returned in sequence

@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2002, OFFIS
+ *  Copyright (C) 1996-2004, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,10 +21,10 @@
  *
  *  Purpose: Class for connecting to a file-based data source.
  *
- *  Last Update:      $Author: wilkens $
- *  Update Date:      $Date: 2004-01-07 08:32:34 $
+ *  Last Update:      $Author: meichel $
+ *  Update Date:      $Date: 2004-05-26 10:36:55 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmwlm/libsrc/wldsfs.cc,v $
- *  CVS/RCS Revision: $Revision: 1.14 $
+ *  CVS/RCS Revision: $Revision: 1.15 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -233,7 +233,7 @@ WlmDataSourceStatusType WlmDataSourceFileSystem::StartFindRequest( DcmDataset &f
   }
 
   // Set a read lock on the worklist files which shall be read from.
-  SetReadlock();
+  if (! SetReadlock()) return WLM_REFUSED_OUT_OF_RESOURCES;
 
   // dump some information if required
   if( verbose )
@@ -581,14 +581,14 @@ void WlmDataSourceFileSystem::HandleSequenceElementInResultDataset( DcmElement *
 
 // ----------------------------------------------------------------------------
 
-int WlmDataSourceFileSystem::SetReadlock()
+OFBool WlmDataSourceFileSystem::SetReadlock()
 // Date         : December 10, 2001
 // Author       : Thomas Wilkens
 // Task         : This function sets a read lock on the LOCKFILE in the directory
 //                that is specified through dfPath and calledApplicationEntityTitle.
 // Parameters   : none.
-// Return Value : 0 - The read lock has been set successfully.
-//                1 - The read lock has not been set successfully.
+// Return Value : OFTrue - The read lock has been set successfully.
+//                OFFalse - The read lock has not been set successfully.
 {
   char msg[2500];
 #ifndef _WIN32
@@ -600,14 +600,14 @@ int WlmDataSourceFileSystem::SetReadlock()
   if( dfPath == NULL || calledApplicationEntityTitle == NULL )
   {
     DumpMessage("WlmDataSourceFileSystem::SetReadlock : Path to data source files not specified.");
-    return 1;
+    return OFFalse;
   }
 
   // if a read lock has already been set, return
   if( readLockSetOnDataSource )
   {
     DumpMessage("WlmDataSourceFileSystem::SetReadlock : Nested read locks not allowed!");
-    return 1;
+    return OFFalse;
   }
 
   // assign path to a local variable
@@ -630,7 +630,7 @@ int WlmDataSourceFileSystem::SetReadlock()
     handleToReadLockFile = 0;
     sprintf( msg, "WlmDataSourceFileSystem::SetReadlock : Cannot open file %s (return code: %s).", lockname.c_str(), strerror(errno) );
     DumpMessage( msg );
-    return 1;
+    return OFFalse;
   }
 
   // now set a read lock on the corresponding file
@@ -660,25 +660,25 @@ int WlmDataSourceFileSystem::SetReadlock()
     dcmtk_plockerr("return code");
     close( handleToReadLockFile );
     handleToReadLockFile = 0;
-    return 1;
+    return OFFalse;
   }
 
   // update member variable to indicate that a read lock has been set successfully
   readLockSetOnDataSource = OFTrue;
 
   // return success
-  return 0;
+  return OFTrue;
 }
 
 // ----------------------------------------------------------------------------
 
-int WlmDataSourceFileSystem::ReleaseReadlock()
+OFBool WlmDataSourceFileSystem::ReleaseReadlock()
 // Date         : December 10, 2001
 // Author       : Thomas Wilkens
 // Task         : This function releases a read lock on the LOCKFILE in the given directory.
 // Parameters   : none.
-// Return Value : 0 - The read lock has been released successfully.
-//                1 - The read lock has not been released successfully.
+// Return Value : OFTrue - The read lock has been released successfully.
+//                OFFalse - The read lock has not been released successfully.
 {
 #ifndef _WIN32
   struct flock lockdata;
@@ -689,7 +689,7 @@ int WlmDataSourceFileSystem::ReleaseReadlock()
   if( !readLockSetOnDataSource )
   {
     DumpMessage("WlmDataSourceFileSystem::ReleaseReadlock : No readlock to release.");
-    return 1;
+    return OFFalse;
   }
 
   // now release read lock on the corresponding file
@@ -712,7 +712,7 @@ int WlmDataSourceFileSystem::ReleaseReadlock()
   {
     DumpMessage("WlmDataSourceFileSystem::ReleaseReadlock : Cannot release read lock");
     dcmtk_plockerr("return code");
-    return 1;
+    return OFFalse;
   }
 
   // close read lock file
@@ -723,7 +723,7 @@ int WlmDataSourceFileSystem::ReleaseReadlock()
   readLockSetOnDataSource = OFFalse;
 
   // return success
-  return 0;
+  return OFTrue;
 }
 
 // ----------------------------------------------------------------------------
@@ -731,7 +731,10 @@ int WlmDataSourceFileSystem::ReleaseReadlock()
 /*
 ** CVS Log
 ** $Log: wldsfs.cc,v $
-** Revision 1.14  2004-01-07 08:32:34  wilkens
+** Revision 1.15  2004-05-26 10:36:55  meichel
+** Fixed minor bug in worklist server regarding failed read locks.
+**
+** Revision 1.14  2004/01/07 08:32:34  wilkens
 ** Added new sequence type return key attributes to wlmscpfs. Fixed bug that for
 ** equally named attributes in sequences always the same value will be returned.
 ** Added functionality that also more than one item will be returned in sequence
