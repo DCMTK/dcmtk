@@ -22,8 +22,8 @@
  *  Purpose: DicomLookupTable (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-12-08 18:24:15 $
- *  CVS/RCS Revision: $Revision: 1.22 $
+ *  Update Date:      $Date: 2003-12-17 16:17:29 $
+ *  CVS/RCS Revision: $Revision: 1.23 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -70,12 +70,14 @@ class DiLookupTable
      *  @param  descriptor   tag key containing the LUT descriptor
      *  @param  data         tag key containing the LUT data
      *  @param  explanation  tag key containing the LUT explanation
+     *  @param  ignoreDepth  ignore third value of LUT descriptor if OFTrue
      *  @param  status       pointer to image status variable (optional)
      */
     DiLookupTable(const DiDocument *docu,
                   const DcmTagKey &descriptor,
                   const DcmTagKey &data,
                   const DcmTagKey &explanation,
+                  const OFBool ignoreDepth = OFFalse,
                   EI_Status *status = NULL);
 
     /** constructor
@@ -85,6 +87,7 @@ class DiLookupTable
      *  @param  descriptor   tag key containing the LUT descriptor
      *  @param  data         tag key containing the LUT data
      *  @param  explanation  tag key containing the LUT explanation
+     *  @param  ignoreDepth  ignore third value of LUT descriptor if OFTrue
      *  @param  pos          position in the LUT sequence which should be used (optional)
      *  @param  card         pointer to storage area where the number of sequence entries
      *                       should be stored (optional)
@@ -94,6 +97,7 @@ class DiLookupTable
                   const DcmTagKey &descriptor,
                   const DcmTagKey &data,
                   const DcmTagKey &explanation,
+                  const OFBool ignoreDepth = OFFalse,
                   const unsigned long pos = 0,
                   unsigned long *card = NULL);
 
@@ -102,12 +106,14 @@ class DiLookupTable
      ** @param  data         element containing the LUT data
      *  @param  descriptor   element containing the LUT descriptor
      *  @param  explanation  element containing the LUT explanation (optional)
+     *  @param  ignoreDepth  ignore third value of LUT descriptor if OFTrue
      *  @param  first        expected value for "first input value mapped" (optional)
      *  @param  status       pointer to image status variable (optional)
      */
     DiLookupTable(const DcmUnsignedShort &data,
                   const DcmUnsignedShort &descriptor,
                   const DcmLongString *explanation = NULL,
+                  const OFBool ignoreDepth = OFFalse,
                   const signed long first = -1,
                   EI_Status *status = NULL);
 
@@ -200,6 +206,7 @@ class DiLookupTable
      *  @param  descriptor   tag key containing the LUT descriptor
      *  @param  data         tag key containing the LUT data
      *  @param  explanation  tag key containing the LUT explanation
+     *  @param  ignoreDepth  ignore third value of LUT descriptor if OFTrue
      *  @param  status       pointer to image status variable (optional)
      */
     void Init(const DiDocument *docu,
@@ -207,16 +214,19 @@ class DiLookupTable
               const DcmTagKey &descriptor,
               const DcmTagKey &data,
               const DcmTagKey &explanation,
+              const OFBool ignoreDepth = OFFalse,
               EI_Status *status = NULL);
 
     /** check (and possibly correct) lookup table for consistency
      *
-     ** @param  count   number of LUT entries
-     *  @param  bits    bits per LUT entry
-     *  @param  status  pointer to image status variable (optional)
+     ** @param  count        number of LUT entries
+     *  @param  bits         bits per LUT entry
+     *  @param  ignoreDepth  ignore 'bits' value, determine depth automatically
+     *  @param  status       pointer to image status variable (optional)
      */
     void checkTable(unsigned long count,
                     Uint16 bits,
+                    const OFBool ignoreDepth = OFFalse,
                     EI_Status *status = NULL);
 
     /** check (and possibly correct) value for bits per LUT entry.
@@ -224,13 +234,15 @@ class DiLookupTable
      *  therefore perform some addition (heuristical tests) to assume the
      *  most probable value.
      *
-     ** @param  bits       actual value for bits per entry
-     *  @param  rightBits  right value (8 or 16)
-     *  @param  wrongBits  wrong value (8 or 16)
+     ** @param  bits         actual value for bits per entry
+     *  @param  rightBits    right value (8 or 16)
+     *  @param  wrongBits    wrong value (8 or 16)
+     *  @param  ignoreDepth  ignore 'bits' value, determine depth automatically
      */
     void checkBits(const Uint16 bits,
                    const Uint16 rightBits,
-                   const Uint16 wrongBits = 0);
+                   const Uint16 wrongBits = 0,
+                   const OFBool ignoreDepth = OFFalse);
 
  private:
 
@@ -253,7 +265,11 @@ class DiLookupTable
  *
  * CVS/RCS Log:
  * $Log: diluptab.h,v $
- * Revision 1.22  2003-12-08 18:24:15  joergr
+ * Revision 1.23  2003-12-17 16:17:29  joergr
+ * Added new compatibility flag that allows to ignore the third value of LUT
+ * descriptors and to determine the bits per table entry automatically.
+ *
+ * Revision 1.22  2003/12/08 18:24:15  joergr
  * Removed leading underscore characters from preprocessor symbols (reserved
  * symbols). Updated CVS header.
  *

@@ -82,15 +82,15 @@ frame selection:
 
   +F    --frame  [n]umber : integer
           select specified frame (default: 1)
-          
+
   +Fr   --frame-range  [n]umber [c]ount : integer
           select c frames beginning with frame n
-          
+
   +Fa   --all-frames
           select all frames
-          
+
 rotation:
-  
+
   +Rl   --rotate-left
           rotate image left (-90 degrees)
 
@@ -101,7 +101,7 @@ rotation:
           rotate image top-down (180 degrees)
 
 flipping:
-  
+
   +Lh   --flip-horizontally
           flip image horizontally
 
@@ -253,7 +253,15 @@ compatibility options:
   +Mp   --accept-palettes
           accept incorrect palette attribute tags
           (0028,111x) and (0028,121x)
-          
+
+  +Mm   --ignore-mlut-depth
+          ignore 3rd value of the modality LUT descriptor,
+          determine bits per table entry automatically
+
+  +Mv   --ignore-vlut-depth
+          ignore 3rd value of the VOI LUT descriptor,
+          determine bits per table entry automatically
+
 TIFF options:
 
   +Tl   --compr-lzw
@@ -307,31 +315,31 @@ other transformations:
 \verbatim
   -o    --no-output
           do not create any output (useful with -im)
-  
+
   +op   --write-raw-pnm
           write 8-bit binary PGM/PPM (default for files)
-  
+
   +opb  --write-8-bit-pnm
           write 8-bit ASCII PGM/PPM (default for stdout)
-  
+
   +opw  --write-16-bit-pnm
           write 16-bit ASCII PGM/PPM
-  
+
   +opn  --write-n-bit-pnm  [n]umber : integer
           write n-bit ASCII PGM/PPM (1..32)
-  
+
   +ob   --write-bmp
           write 8-bit (monochrome) or 24-bit (color) BMP
-  
+
   +obp  --write-8-bit-bmp
           write 8-bit palette BMP (monochrome only)
-  
+
   +obt  --write-24-bit-bmp
           write 24-bit truecolor BMP
-  
+
   +ot   --write-tiff
           write 8-bit (monochrome) or 24-bit (color) TIFF
-  
+
   +on   --write-png
           write 8-bit (monochrome) or 24-bit (color) PNG
 \endverbatim

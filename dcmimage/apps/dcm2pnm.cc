@@ -22,8 +22,8 @@
  *  Purpose: Convert DICOM Images to PPM or PGM using the dcmimage library.
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-12-11 15:39:50 $
- *  CVS/RCS Revision: $Revision: 1.77 $
+ *  Update Date:      $Date: 2003-12-17 16:20:28 $
+ *  CVS/RCS Revision: $Revision: 1.78 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -135,6 +135,7 @@ int main(int argc, char *argv[])
     E_TransferSyntax    opt_transferSyntax = EXS_Unknown; /* default: xfer syntax recognition */
 
     unsigned long       opt_compatibilityMode = CIF_MayDetachPixelData | CIF_TakeOverExternalDataset;
+    OFBool              opt_ignoreVoiLutDepth = OFFalse;  /* default: do not ignore VOI LUT bit depth */
                                                           /* default: pixel data may detached if no longer needed */
     OFCmdUnsignedInt    opt_frame = 1;                    /* default: first frame */
     OFCmdUnsignedInt    opt_frameCount = 1;               /* default: one frame */
@@ -336,6 +337,8 @@ int main(int argc, char *argv[])
      cmd.addSubGroup("compatibility options:");
       cmd.addOption("--accept-acr-nema",    "+Ma",     "accept ACR-NEMA images without photometric\ninterpretation");
       cmd.addOption("--accept-palettes",    "+Mp",     "accept incorrect palette attribute tags\n(0028,111x) and (0028,121x)");
+      cmd.addOption("--ignore-mlut-depth",  "+Mm",     "ignore 3rd value of the modality LUT descriptor\ndetermine bits per table entry automatically");
+      cmd.addOption("--ignore-vlut-depth",  "+Mv",     "ignore 3rd value of the VOI LUT descriptor,\ndetermine bits per table entry automatically");
 
 #ifdef WITH_LIBTIFF
      cmd.addSubGroup("TIFF options:");
@@ -476,6 +479,10 @@ int main(int argc, char *argv[])
             opt_compatibilityMode |= CIF_AcrNemaCompatibility;
         if (cmd.findOption("--accept-palettes"))
             opt_compatibilityMode |= CIF_WrongPaletteAttributeTags;
+        if (cmd.findOption("--ignore-mlut-depth"))
+            opt_compatibilityMode |= CIF_IgnoreModalityLutBitDepth;            
+        if (cmd.findOption("--ignore-vlut-depth"))
+            opt_ignoreVoiLutDepth = OFTrue;            
 
         /* image processing options: frame selection */
 
@@ -1112,7 +1119,7 @@ int main(int argc, char *argv[])
                 }
                 if (opt_verboseMode > 1)
                     OUTPUT << "activating VOI LUT " << opt_windowParameter << endl;
-                if (!di->setVoiLut(opt_windowParameter - 1))
+                if (!di->setVoiLut(opt_windowParameter - 1, opt_ignoreVoiLutDepth))
                 {
                     OFOStringStream oss;
                     oss << "cannot select VOI LUT no. " << opt_windowParameter << OFStringStream_ends;
@@ -1490,7 +1497,11 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcm2pnm.cc,v $
- * Revision 1.77  2003-12-11 15:39:50  joergr
+ * Revision 1.78  2003-12-17 16:20:28  joergr
+ * Added new compatibility flag that allows to ignore the third value of LUT
+ * descriptors and to determine the bits per table entry automatically.
+ *
+ * Revision 1.77  2003/12/11 15:39:50  joergr
  * Made usage output consistent with other tools.
  *
  * Revision 1.76  2003/12/05 10:48:45  joergr

@@ -22,8 +22,8 @@
  *  Purpose: Utilities (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-12-08 18:49:54 $
- *  CVS/RCS Revision: $Revision: 1.23 $
+ *  Update Date:      $Date: 2003-12-17 16:17:29 $
+ *  CVS/RCS Revision: $Revision: 1.24 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -79,6 +79,9 @@ const unsigned long CIF_TakeOverExternalDataset      = 0x0000020;
 
 /// ignore modality transformation (rescale slope/intercept or LUT) stored in the dataset
 const unsigned long CIF_IgnoreModalityTransformation = 0x0000040;
+
+/// ignore third value of the modality LUT descriptor, determine bit depth automatically
+const unsigned long CIF_IgnoreModalityLutBitDepth    = 0x0000080;
 //@}
 
 
@@ -246,7 +249,7 @@ enum EM_Overlay
  */
 enum ES_PresentationLut
 {
-    /// default shape (not expicitly set)
+    /// default shape (not explicitly set)
     ESP_Default,
     /// shape IDENTITY
     ESP_Identity,
@@ -414,7 +417,11 @@ class DicomImageClass
  *
  * CVS/RCS Log:
  * $Log: diutils.h,v $
- * Revision 1.23  2003-12-08 18:49:54  joergr
+ * Revision 1.24  2003-12-17 16:17:29  joergr
+ * Added new compatibility flag that allows to ignore the third value of LUT
+ * descriptors and to determine the bits per table entry automatically.
+ *
+ * Revision 1.23  2003/12/08 18:49:54  joergr
  * Adapted type casts to new-style typecast operators defined in ofcast.h.
  * Removed leading underscore characters from preprocessor symbols (reserved
  * symbols). Updated copyright header.

@@ -22,8 +22,8 @@
  *  Purpose: DicomMonochromeModality (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-12-08 17:38:27 $
- *  CVS/RCS Revision: $Revision: 1.18 $
+ *  Update Date:      $Date: 2003-12-17 16:18:34 $
+ *  CVS/RCS Revision: $Revision: 1.19 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -68,7 +68,8 @@ DiMonoModality::DiMonoModality(const DiDocument *docu,
                ((strcmp(sopClassUID, UID_XRayAngiographicImageStorage) != 0) &&
                 (strcmp(sopClassUID, UID_XRayFluoroscopyImageStorage) != 0)))
             {
-                TableData = new DiLookupTable(docu, DCM_ModalityLUTSequence, DCM_LUTDescriptor, DCM_LUTData, DCM_LUTExplanation);
+                TableData = new DiLookupTable(docu, DCM_ModalityLUTSequence, DCM_LUTDescriptor, DCM_LUTData,
+                    DCM_LUTExplanation, (docu->getFlags() & CIF_IgnoreModalityLutBitDepth) > 0);
                 checkTable();
                 Rescaling = (docu->getValue(DCM_RescaleIntercept, RescaleIntercept) > 0);
                 Rescaling &= (docu->getValue(DCM_RescaleSlope, RescaleSlope) > 0);
@@ -136,7 +137,7 @@ DiMonoModality::DiMonoModality(const DiDocument *docu,
 {
     if (Init(docu, pixel))
     {
-        TableData = new DiLookupTable(data, descriptor, explanation);
+        TableData = new DiLookupTable(data, descriptor, explanation, (docu->getFlags() & CIF_IgnoreModalityLutBitDepth) > 0);
         checkTable();
         Representation = DicomImageClass::determineRepresentation(MinValue, MaxValue);
     }
@@ -264,7 +265,11 @@ void DiMonoModality::checkRescaling(const DiInputPixel *pixel)
  *
  * CVS/RCS Log:
  * $Log: dimomod.cc,v $
- * Revision 1.18  2003-12-08 17:38:27  joergr
+ * Revision 1.19  2003-12-17 16:18:34  joergr
+ * Added new compatibility flag that allows to ignore the third value of LUT
+ * descriptors and to determine the bits per table entry automatically.
+ *
+ * Revision 1.18  2003/12/08 17:38:27  joergr
  * Updated CVS header.
  *
  * Revision 1.17  2003/12/08 14:36:35  joergr

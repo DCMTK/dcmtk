@@ -22,8 +22,8 @@
  *  Purpose: DicomMonochromeImage (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-12-08 18:30:16 $
- *  CVS/RCS Revision: $Revision: 1.40 $
+ *  Update Date:      $Date: 2003-12-17 16:17:29 $
+ *  CVS/RCS Revision: $Revision: 1.41 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -279,21 +279,27 @@ class DiMonoImage
      ** @param  data         contains LUT data
      *  @param  descriptor   describes LUT structure
      *  @param  explanation  free form description of VOI LUT (optional)
+     *  @param  ignoreDepth  ignore third value of LUT descriptor if OFTrue.
+     *                       Determine bits per table entry automatically from max value.
      *
      ** @return true if successful, false otherwise
      */
     int setVoiLut(const DcmUnsignedShort &data,
                   const DcmUnsignedShort &descriptor,
-                  const DcmLongString *explanation);
+                  const DcmLongString *explanation,
+                  const OFBool ignoreDepth = OFFalse);
 
     /** set VOI LUT (given by index to VOI LUT sequence stored in image file).
      *  possibly active window/center is implicitly disabled.
      *
-     ** @param  pos  index to VOI LUT sequence
+     ** @param  pos          index to VOI LUT sequence
+     *  @param  ignoreDepth  ignore third value of LUT descriptor if OFTrue.
+     *                       Determine bits per table entry automatically from max value.
      *
      ** @return true if successful, false otherwise
      */
-    int setVoiLut(const unsigned long pos);
+    int setVoiLut(const unsigned long pos,
+                  const OFBool ignoreDepth = OFFalse);
 
     /** get number of VOI LUTs (stored in image file)
      *
@@ -385,24 +391,30 @@ class DiMonoImage
      ** @param  data         contains LUT data
      *  @param  descriptor   describes LUT structure
      *  @param  explanation  free form description of presentation LUT (optional)
+     *  @param  ignoreDepth  ignore third value of LUT descriptor if OFTrue.
+     *                       Determine bits per table entry automatically from max value.
      *
      ** @return true if successful, false otherwise
      */
     int setPresentationLut(const DcmUnsignedShort &data,
                            const DcmUnsignedShort &descriptor,
-                           const DcmLongString *explanation = NULL);
+                           const DcmLongString *explanation = NULL,
+                           const OFBool ignoreDepth = OFFalse);
 
     /** set inverse LUT for presentation transformation.
      *  this LUT transform is e.g. used for DICOM print (12->8, 8->12 bit)
      *  possibly active presentation LUT will not be considered !
      *
-     ** @param  data        contains LUT data
-     *  @param  descriptor  describes LUT structure
+     ** @param  data         contains LUT data
+     *  @param  descriptor   describes LUT structure
+     *  @param  ignoreDepth  ignore third value of LUT descriptor if OFTrue.
+     *                       Determine bits per table entry automatically from max value.
      *
      ** @return true if successful, false otherwise
      */
     int setInversePresentationLut(const DcmUnsignedShort &data,
-                                  const DcmUnsignedShort &descriptor);
+                                  const DcmUnsignedShort &descriptor,
+                                  const OFBool ignoreDepth = OFFalse);
 
     /** get description of active presentation LUT
      *
@@ -1120,7 +1132,11 @@ class DiMonoImage
  *
  * CVS/RCS Log:
  * $Log: dimoimg.h,v $
- * Revision 1.40  2003-12-08 18:30:16  joergr
+ * Revision 1.41  2003-12-17 16:17:29  joergr
+ * Added new compatibility flag that allows to ignore the third value of LUT
+ * descriptors and to determine the bits per table entry automatically.
+ *
+ * Revision 1.40  2003/12/08 18:30:16  joergr
  * Adapted type casts to new-style typecast operators defined in ofcast.h.
  * Removed leading underscore characters from preprocessor symbols (reserved
  * symbols). Updated CVS header.
