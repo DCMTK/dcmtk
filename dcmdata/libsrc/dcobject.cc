@@ -23,9 +23,9 @@
  *    This file contains the interface to routines which provide
  *    DICOM object encoding/decoding, search and lookup facilities.
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2004-02-04 16:35:46 $
- *  CVS/RCS Revision: $Revision: 1.40 $
+ *  Last Update:      $Author: wilkens $
+ *  Update Date:      $Date: 2004-04-27 09:21:27 $
+ *  CVS/RCS Revision: $Revision: 1.41 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -342,6 +342,25 @@ OFCondition DcmObject::writeTag(DcmOutputStream &outStream,
 }
 
 
+Uint32 DcmObject::getTagAndLengthSize(const E_TransferSyntax oxfer) const
+{
+    /* create an object which represents the transfer syntax */
+    DcmXfer oxferSyn(oxfer);
+
+    if (oxferSyn.isExplicitVR())
+    {
+       /* map "UN" to "OB" if generation of "UN" is disabled */  
+       DcmVR outvr(getTag().getVR().getValidEVR());
+
+       if (outvr.usesExtendedLengthEncoding())
+       {
+         return 12;
+       }
+    }
+    return 8;
+}
+
+
 OFCondition DcmObject::writeTagAndLength(DcmOutputStream &outStream,
                                          const E_TransferSyntax oxfer,
                                          Uint32 &writtenBytes) const
@@ -464,7 +483,15 @@ OFBool DcmObject::containsUnknownVR() const
 /*
  * CVS/RCS Log:
  * $Log: dcobject.cc,v $
- * Revision 1.40  2004-02-04 16:35:46  joergr
+ * Revision 1.41  2004-04-27 09:21:27  wilkens
+ * Fixed a bug in dcelem.cc which occurs when one is serializing a dataset
+ * (that contains an attribute whose length value is coded with 2 bytes) into
+ * a given buffer. Although the number of available bytes in the buffer was
+ * sufficient, the dataset->write(...) method would always return
+ * EC_StreamNotifyClient to indicate that there are not sufficient bytes
+ * available in the buffer. This code modification fixes the problem.
+ *
+ * Revision 1.40  2004/02/04 16:35:46  joergr
  * Adapted type casts to new-style typecast operators defined in ofcast.h.
  * Removed acknowledgements with e-mail addresses from CVS log.
  *

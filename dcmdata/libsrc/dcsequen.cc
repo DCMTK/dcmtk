@@ -21,9 +21,9 @@
  *
  *  Purpose: Implementation of class DcmSequenceOfItems
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2004-01-16 13:49:31 $
- *  CVS/RCS Revision: $Revision: 1.55 $
+ *  Last Update:      $Author: wilkens $
+ *  Update Date:      $Date: 2004-04-27 09:21:27 $
+ *  CVS/RCS Revision: $Revision: 1.56 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -612,7 +612,12 @@ OFCondition DcmSequenceOfItems::write(DcmOutputStream & outStream,
         {
             if (fTransferState == ERW_init)
             {
-                if (outStream.avail() >= DCM_TagInfoLength) // header might be smaller than this
+                /* first compare with DCM_TagInfoLength (12). If there is not enough space 
+                 * in the buffer, check if the buffer is still sufficient for the requirements
+                 * of this element, which may need only 8 instead of 12 bytes.
+                 */
+                if ((outStream.avail() >= DCM_TagInfoLength) ||
+                    (outStream.avail() >= getTagAndLengthSize(oxfer)))
                 {
                     if (enctype == EET_ExplicitLength)
                         Length = getLength(oxfer, enctype);
@@ -728,7 +733,12 @@ OFCondition DcmSequenceOfItems::writeSignatureFormat(DcmOutputStream &outStream,
         {
             if (fTransferState == ERW_init)
             {
-                if (outStream.avail() >= DCM_TagInfoLength) // header might be smaller than this
+                /* first compare with DCM_TagInfoLength (12). If there is not enough space 
+                 * in the buffer, check if the buffer is still sufficient for the requirements
+                 * of this element, which may need only 8 instead of 12 bytes.
+                 */
+                if ((outStream.avail() >= DCM_TagInfoLength) ||
+                    (outStream.avail() >= getTagAndLengthSize(oxfer)))
                 {
                     if (enctype == EET_ExplicitLength)
                         Length = getLength(oxfer, enctype);
@@ -1270,7 +1280,15 @@ OFBool DcmSequenceOfItems::containsUnknownVR() const
 /*
 ** CVS/RCS Log:
 ** $Log: dcsequen.cc,v $
-** Revision 1.55  2004-01-16 13:49:31  joergr
+** Revision 1.56  2004-04-27 09:21:27  wilkens
+** Fixed a bug in dcelem.cc which occurs when one is serializing a dataset
+** (that contains an attribute whose length value is coded with 2 bytes) into
+** a given buffer. Although the number of available bytes in the buffer was
+** sufficient, the dataset->write(...) method would always return
+** EC_StreamNotifyClient to indicate that there are not sufficient bytes
+** available in the buffer. This code modification fixes the problem.
+**
+** Revision 1.55  2004/01/16 13:49:31  joergr
 ** Removed acknowledgements with e-mail addresses from CVS log.
 **
 ** Revision 1.54  2003/10/15 16:55:43  meichel

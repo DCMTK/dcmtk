@@ -23,10 +23,10 @@
  *  This file contains the interface to routines which provide
  *  DICOM object encoding/decoding, search and lookup facilities.
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-06-12 13:33:21 $
+ *  Last Update:      $Author: wilkens $
+ *  Update Date:      $Date: 2004-04-27 09:21:01 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/include/Attic/dcobject.h,v $
- *  CVS/RCS Revision: $Revision: 1.35 $
+ *  CVS/RCS Revision: $Revision: 1.36 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -295,6 +295,14 @@ class DcmObject
                                           const E_TransferSyntax oxfer, // in
                                           Uint32 &writtenBytes) const;  // out
 
+    /** return the number of bytes needed to serialize the
+     *  tag, VR and length information of the current object using the given
+     *  transfer syntax.
+     *  @param oxfer The transfer syntax used for encoding
+     *  @return number of bytes, may be 8 or 12 depending on VR and transfer syntax.
+     */
+    virtual Uint32 getTagAndLengthSize(const E_TransferSyntax oxfer) const;
+
     /* member variables */
     DcmTag Tag;
     Uint32 Length;
@@ -311,7 +319,15 @@ class DcmObject
 /*
  * CVS/RCS Log:
  * $Log: dcobject.h,v $
- * Revision 1.35  2003-06-12 13:33:21  joergr
+ * Revision 1.36  2004-04-27 09:21:01  wilkens
+ * Fixed a bug in dcelem.cc which occurs when one is serializing a dataset
+ * (that contains an attribute whose length value is coded with 2 bytes) into
+ * a given buffer. Although the number of available bytes in the buffer was
+ * sufficient, the dataset->write(...) method would always return
+ * EC_StreamNotifyClient to indicate that there are not sufficient bytes
+ * available in the buffer. This code modification fixes the problem.
+ *
+ * Revision 1.35  2003/06/12 13:33:21  joergr
  * Fixed inconsistent API documentation reported by Doxygen.
  *
  * Revision 1.34  2002/12/06 12:49:11  joergr

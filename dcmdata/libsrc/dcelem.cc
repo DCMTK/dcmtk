@@ -21,10 +21,10 @@
  *
  *  Purpose: Implementation of class DcmElement
  *
- *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2004-02-04 16:29:00 $
+ *  Last Update:      $Author: wilkens $
+ *  Update Date:      $Date: 2004-04-27 09:21:27 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/libsrc/dcelem.cc,v $
- *  CVS/RCS Revision: $Revision: 1.48 $
+ *  CVS/RCS Revision: $Revision: 1.49 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -937,7 +937,12 @@ OFCondition DcmElement::write(DcmOutputStream &outStream,
             /* write tag and length information to it, do something */
             if (fTransferState == ERW_init)
             {
-                if (outStream.avail() >= DCM_TagInfoLength)
+                /* first compare with DCM_TagInfoLength (12). If there is not enough space 
+                 * in the buffer, check if the buffer is still sufficient for the requirements
+                 * of this element, which may need only 8 instead of 12 bytes.
+                 */
+                if ((outStream.avail() >= DCM_TagInfoLength) ||
+                    (outStream.avail() >= getTagAndLengthSize(oxfer)))
                 {
                     /* if there is no value, Length (member variable) shall be set to 0 */
                     if (!value) Length = 0;
@@ -1062,7 +1067,15 @@ OFCondition DcmElement::writeXML(ostream &out,
 /*
 ** CVS/RCS Log:
 ** $Log: dcelem.cc,v $
-** Revision 1.48  2004-02-04 16:29:00  joergr
+** Revision 1.49  2004-04-27 09:21:27  wilkens
+** Fixed a bug in dcelem.cc which occurs when one is serializing a dataset
+** (that contains an attribute whose length value is coded with 2 bytes) into
+** a given buffer. Although the number of available bytes in the buffer was
+** sufficient, the dataset->write(...) method would always return
+** EC_StreamNotifyClient to indicate that there are not sufficient bytes
+** available in the buffer. This code modification fixes the problem.
+**
+** Revision 1.48  2004/02/04 16:29:00  joergr
 ** Adapted type casts to new-style typecast operators defined in ofcast.h.
 **
 ** Revision 1.47  2003/12/11 13:40:46  meichel
