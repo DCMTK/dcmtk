@@ -22,9 +22,9 @@
  *  Purpose:
  *    classes: DSRDocument
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-06-20 12:18:53 $
- *  CVS/RCS Revision: $Revision: 1.36 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2002-07-22 14:22:33 $
+ *  CVS/RCS Revision: $Revision: 1.37 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -163,71 +163,74 @@ OFCondition DSRDocument::print(ostream &stream,
 
         // --- print some general document information ---
 
-        /* document type/title */
-        stream << documentTypeToDocumentTitle(getDocumentType(), string) << endl << endl;
-        /* patient related information */
-        if (PatientsName.getLength() > 0)
+        if (!(flags & PF_printNoDocumentHeader))
         {
-            stream << "Patient            : " << getPrintStringFromElement(PatientsName, string);
-            OFString patientStr;
-            if (PatientsSex.getLength() > 0)
-                patientStr += getPrintStringFromElement(PatientsSex, string);
-            if (PatientsBirthDate.getLength() > 0)
+            /* document type/title */
+            stream << documentTypeToDocumentTitle(getDocumentType(), string) << endl << endl;
+            /* patient related information */
+            if (PatientsName.getLength() > 0)
             {
-               if (patientStr.length() > 0)
-                   patientStr += ", ";
-               patientStr += getPrintStringFromElement(PatientsBirthDate, string);
+                stream << "Patient            : " << getPrintStringFromElement(PatientsName, string);
+                OFString patientStr;
+                if (PatientsSex.getLength() > 0)
+                    patientStr += getPrintStringFromElement(PatientsSex, string);
+                if (PatientsBirthDate.getLength() > 0)
+                {
+                   if (patientStr.length() > 0)
+                       patientStr += ", ";
+                   patientStr += getPrintStringFromElement(PatientsBirthDate, string);
+                }
+                if (PatientID.getLength() > 0)
+                {
+                   if (patientStr.length() > 0)
+                       patientStr += ", ";
+                   patientStr += '#';
+                   patientStr += getPrintStringFromElement(PatientID, string);
+                }
+                if (patientStr.length() > 0)
+                    stream << " (" << patientStr << ")";
+                stream << endl;
             }
-            if (PatientID.getLength() > 0)
+            /* referring physician */
+            if (ReferringPhysiciansName.getLength() > 0)
+                stream << "Referring Physician: " << getPrintStringFromElement(ReferringPhysiciansName, string) << endl;
+            /* manufacturer */
+            if (Manufacturer.getLength() > 0)
+                stream << "Manufacturer       : " << getPrintStringFromElement(Manufacturer, string) << endl;
+            /* completion flag */
+            stream << "Completion Flag    : " << completionFlagToEnumeratedValue(CompletionFlagEnum) << endl;
+            if (CompletionFlagDescription.getLength() > 0)
+                stream << "                     " << getPrintStringFromElement(CompletionFlagDescription, string) << endl;
+            /* predecessor documents */
+            if (getNumberOfPredecessorDocuments() > 0)
+                stream << "Predecessor Docs   : " << getNumberOfPredecessorDocuments() << endl;
+            /* verification flag */
+            stream << "Verification Flag  : " << verificationFlagToEnumeratedValue(VerificationFlagEnum) << endl;
+            /* verifying observer */
+            const size_t obsCount = getNumberOfVerifyingObservers();
+            for (size_t i = 1; i <= obsCount; i++)
             {
-               if (patientStr.length() > 0)
-                   patientStr += ", ";
-               patientStr += '#';
-               patientStr += getPrintStringFromElement(PatientID, string);
+                OFString dateTime, obsName, organization;
+                DSRCodedEntryValue obsCode;
+                if (getVerifyingObserver(i, dateTime, obsName, obsCode, organization).good())
+                {
+                    stream << "                     " << dateTime << ": " << obsName;
+                    if (obsCode.isValid())
+                    {
+                        stream << " ";
+                        obsCode.print(stream, flags & PF_printAllCodes /* printCodeValue */);
+                    }
+                    stream << ", " << organization << endl;
+                }
             }
-            if (patientStr.length() > 0)
-                stream << " (" << patientStr << ")";
+            /* content date and time */
+            if ((ContentDate.getLength() > 0) && (ContentTime.getLength() > 0))
+            {
+                stream << "Content Date/Time  : " << getPrintStringFromElement(ContentDate, string) << " ";
+                stream <<                            getPrintStringFromElement(ContentTime, string) << endl;
+            }
             stream << endl;
         }
-        /* referring physician */
-        if (ReferringPhysiciansName.getLength() > 0)
-            stream << "Referring Physician: " << getPrintStringFromElement(ReferringPhysiciansName, string) << endl;
-        /* manufacturer */
-        if (Manufacturer.getLength() > 0)
-            stream << "Manufacturer       : " << getPrintStringFromElement(Manufacturer, string) << endl;
-        /* completion flag */
-        stream << "Completion Flag    : " << completionFlagToEnumeratedValue(CompletionFlagEnum) << endl;
-        if (CompletionFlagDescription.getLength() > 0)
-            stream << "                     " << getPrintStringFromElement(CompletionFlagDescription, string) << endl;
-        /* predecessor documents */
-        if (getNumberOfPredecessorDocuments() > 0)
-            stream << "Predecessor Docs   : " << getNumberOfPredecessorDocuments() << endl;
-        /* verification flag */
-        stream << "Verification Flag  : " << verificationFlagToEnumeratedValue(VerificationFlagEnum) << endl;
-        /* verifying observer */
-        const size_t obsCount = getNumberOfVerifyingObservers();
-        for (size_t i = 1; i <= obsCount; i++)
-        {
-            OFString dateTime, obsName, organization;
-            DSRCodedEntryValue obsCode;
-            if (getVerifyingObserver(i, dateTime, obsName, obsCode, organization).good())
-            {
-                stream << "                     " << dateTime << ": " << obsName;
-                if (obsCode.isValid())
-                {
-                    stream << " ";
-                    obsCode.print(stream, flags & PF_printAllCodes /* printCodeValue */);
-                }
-                stream << ", " << organization << endl;
-            }
-        }
-        /* content date and time */
-        if ((ContentDate.getLength() > 0) && (ContentTime.getLength() > 0))
-        {
-            stream << "Content Date/Time  : " << getPrintStringFromElement(ContentDate, string) << " ";
-            stream <<                            getPrintStringFromElement(ContentTime, string) << endl;
-        }
-        stream << endl;
 
         // --- dump document tree to stream ---
         result = DocumentTree.print(stream, flags);
@@ -450,7 +453,7 @@ OFCondition DSRDocument::write(DcmItem &dataset,
             result = CurrentRequestedProcedureEvidence.write(dataset, LogStream);
         if (result.good())
             result = PertinentOtherEvidence.write(dataset, LogStream);
-        
+
         /* write SR document tree */
         if (result.good())
             result = DocumentTree.write(dataset, markedItems);
@@ -1860,7 +1863,10 @@ void DSRDocument::updateAttributes(const OFBool updateAll)
 /*
  *  CVS/RCS Log:
  *  $Log: dsrdoc.cc,v $
- *  Revision 1.36  2002-06-20 12:18:53  meichel
+ *  Revision 1.37  2002-07-22 14:22:33  joergr
+ *  Added new print flag to suppress the output of general document information.
+ *
+ *  Revision 1.36  2002/06/20 12:18:53  meichel
  *  Adapted toolkit to name changes in latest data dictionary
  *
  *  Revision 1.35  2002/05/07 12:52:48  joergr

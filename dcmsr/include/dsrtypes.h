@@ -23,8 +23,8 @@
  *    classes: DSRTypes
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-05-14 08:14:51 $
- *  CVS/RCS Revision: $Revision: 1.27 $
+ *  Update Date:      $Date: 2002-07-22 14:21:20 $
+ *  CVS/RCS Revision: $Revision: 1.28 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -140,7 +140,7 @@ class DSRTypes
 
     /// do not abort when detecting an invalid content item, skip invalid sub-tree instead
     static const size_t RF_skipInvalidContentItems;
-    
+
     /// print more detailed debug messages (verbose mode)
     static const size_t RF_verboseDebugMode;
     //@}
@@ -250,6 +250,9 @@ class DSRTypes
 
     /// print coding scheme designator/version and code value of concept names
     static const size_t PF_printConceptNameCodes;
+
+    /// print no general document information (header)
+    static const size_t PF_printNoDocumentHeader;
 
     /// shortcut: print all codes
     static const size_t PF_printAllCodes;
@@ -1108,7 +1111,10 @@ class DSRTypes
 /*
  *  CVS/RCS Log:
  *  $Log: dsrtypes.h,v $
- *  Revision 1.27  2002-05-14 08:14:51  joergr
+ *  Revision 1.28  2002-07-22 14:21:20  joergr
+ *  Added new print flag to suppress the output of general document information.
+ *
+ *  Revision 1.27  2002/05/14 08:14:51  joergr
  *  Updated comments.
  *
  *  Revision 1.26  2002/05/07 12:49:32  joergr

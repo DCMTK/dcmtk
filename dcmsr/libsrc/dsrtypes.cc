@@ -23,8 +23,8 @@
  *    classes: DSRTypes
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-05-07 12:54:28 $
- *  CVS/RCS Revision: $Revision: 1.26 $
+ *  Update Date:      $Date: 2002-07-22 14:22:34 $
+ *  CVS/RCS Revision: $Revision: 1.27 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -86,23 +86,27 @@ const size_t DSRTypes::HF_currentlyInsideAnnex           = 1 << 14;
 const size_t DSRTypes::HF_createFootnoteReferences       = 1 << 15;
 const size_t DSRTypes::HF_convertNonASCIICharacters      = 1 << 16;
 /* shortcuts */
-const size_t DSRTypes::HF_renderAllCodes                 = DSRTypes::HF_renderInlineCodes | DSRTypes::HF_renderConceptNameCodes |
+const size_t DSRTypes::HF_renderAllCodes                 = DSRTypes::HF_renderInlineCodes |
+                                                           DSRTypes::HF_renderConceptNameCodes |
                                                            DSRTypes::HF_renderNumericUnitCodes;
-const size_t DSRTypes::HF_internalUseOnly                = DSRTypes::HF_renderItemsSeparately | DSRTypes::HF_renderItemInline |
-                                                           DSRTypes::HF_currentlyInsideAnnex | DSRTypes::HF_createFootnoteReferences |
+const size_t DSRTypes::HF_internalUseOnly                = DSRTypes::HF_renderItemsSeparately |
+                                                           DSRTypes::HF_renderItemInline |
+                                                           DSRTypes::HF_currentlyInsideAnnex |
+                                                           DSRTypes::HF_createFootnoteReferences |
                                                            DSRTypes::HF_convertNonASCIICharacters;
 
 /* writeXML flags */
-const size_t DSRTypes::XF_writeEmptyTags                 = 1;
-const size_t DSRTypes::XF_codeComponentsAsAttribute      = 2;
-const size_t DSRTypes::XF_relationshipTypeAsAttribute    = 4;
-const size_t DSRTypes::XF_valueTypeAsAttribute           = 8;
+const size_t DSRTypes::XF_writeEmptyTags                 = 1 << 0;
+const size_t DSRTypes::XF_codeComponentsAsAttribute      = 1 << 1;
+const size_t DSRTypes::XF_relationshipTypeAsAttribute    = 1 << 2;
+const size_t DSRTypes::XF_valueTypeAsAttribute           = 1 << 3;
 
 /* print flags */
-const size_t DSRTypes::PF_printItemPosition              = 1;
-const size_t DSRTypes::PF_shortenLongItemValues          = 2;
-const size_t DSRTypes::PF_printSOPInstanceUID            = 4;
-const size_t DSRTypes::PF_printConceptNameCodes          = 8;
+const size_t DSRTypes::PF_printItemPosition              = 1 << 0;
+const size_t DSRTypes::PF_shortenLongItemValues          = 1 << 1;
+const size_t DSRTypes::PF_printSOPInstanceUID            = 1 << 2;
+const size_t DSRTypes::PF_printConceptNameCodes          = 1 << 3;
+const size_t DSRTypes::PF_printNoDocumentHeader          = 1 << 4;
 const size_t DSRTypes::PF_printAllCodes                  = DSRTypes::PF_printConceptNameCodes;
 
 
@@ -1334,7 +1338,10 @@ OFCondition DSRTypes::appendStream(ostream &mainStream,
 /*
  *  CVS/RCS Log:
  *  $Log: dsrtypes.cc,v $
- *  Revision 1.26  2002-05-07 12:54:28  joergr
+ *  Revision 1.27  2002-07-22 14:22:34  joergr
+ *  Added new print flag to suppress the output of general document information.
+ *
+ *  Revision 1.26  2002/05/07 12:54:28  joergr
  *  Added support for the Current Requested Procedure Evidence Sequence and the
  *  Pertinent Other Evidence Sequence to the dcmsr module.
  *
