@@ -1,0 +1,56 @@
+WIN32 CONFIGURATIONS
+
+This directory contains information and makefiles / project files for
+Windows NT and Windows 95. Currently, only one configuration
+is supported:
+
+- Windows NT/95 with WINSOCK using the Visual C++ Compiler Version 4.0
+
+The file msvc4.mak contain the project information for the following
+parts of the toolkit:
+
+1. dcmdata  - library and all applications are supported
+2. dcmnet   - library and all applications (including tests) are supported
+2. imagectn - library and all applications (including tests) are supported
+
+The applications in dcmdata and dcmnet are tested (but not very intensivly) 
+while the imagectn applications are only compiled. It is planned to test them
+as well.
+
+The following parts of the toolkit are not supported and probably will 
+never be:
+
+1. ctndisp - This part needs X-Windows and Unix shared memory. It is not
+   planned to port it to Windows NT/95
+2. wlistctn - This part needs perl4 and consistent locking mechanisms 
+   between perl and C++. It should be principle possible to port it. 
+
+COMPILE INSTRUCTIONS:
+
+1. copy the file msvc4.mak to dcmtk directory
+2. rename the extensions of all .cc files into .cxx
+   (e.g. ren .cc .cxx with the COMMAND shell). You must rename
+   files in the libsrc, apps and tests directories of dcmdata, 
+   dcmnet and imagectn.
+2. Start the Microsoft Developer Studio
+3. Open Workspace.. and select msvc4.mak
+4. Choose one of the subprojects and Build it.
+
+KNOWN PROBLEMS:
+
+1. The imagectn cannot fork. Every association must be
+   handled completly before a new assosiation is possible. If somebody 
+   knows how to fork using Windows NT/95 and MS Visiual C++ please let us 
+   know.
+2. File locking is not implemented in imagectn. This is no problem if
+   only one single process exists. It is planned to use the locking facilities
+   of Windows NT/95.
+3. Most applications will only work, if the computer has configured TCP/IP, 
+   a network name and a TCP/IP address. If SLIP or PPP is used the
+   applications can only work if a connection to a provider exists (since 
+   the internet addresses and names are given dynamically).
+
+
+Have Fun
+Andreas Barth, 26.06.97
+
