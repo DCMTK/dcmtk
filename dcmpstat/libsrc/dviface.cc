@@ -22,8 +22,8 @@
  *  Purpose: DVPresentationState
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-07-14 17:10:10 $
- *  CVS/RCS Revision: $Revision: 1.107 $
+ *  Update Date:      $Date: 2000-07-17 12:05:29 $
+ *  CVS/RCS Revision: $Revision: 1.108 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -783,18 +783,6 @@ Uint32 DVInterface::getNumberOfPStates()
 }
 
 
-Uint32 DVInterface::getNumberOfPStates(const char *studyUID, const char *seriesUID, const char *instanceUID)
-{    
-    DVInstanceCache::ItemStruct *instance = getInstanceStruct(studyUID, seriesUID, instanceUID);
-    if ((instance != NULL) && (instance->Type == DVPSI_image))
-    {
-        if (createPStateCache())
-            return instance->List.size();
-    }
-    return 0;
-}
-
-
 E_Condition DVInterface::selectPState(Uint32 idx, OFBool changeStatus)
 {
     if (createPStateCache())
@@ -1345,6 +1333,34 @@ E_Condition DVInterface::selectStudy(Uint32 idx)
 }
 
 
+E_Condition DVInterface::selectStudy(const char *studyUID)
+{
+    if (studyUID)
+    {
+        if (createIndexCache())
+        {
+            if (idxCache.isElem(studyUID))
+            {
+                DVStudyCache::ItemStruct *study = idxCache.getItem();
+                if (study->List.gotoItem(0))
+                {
+                    DVSeriesCache::ItemStruct *series = study->List.getItem();
+                    if (series != NULL)
+                    {
+                        if (series->List.gotoItem(0))
+                        {
+                            if (readIndexRecord(series->List.getPos(), idxRec, &idxRecPos))
+                                return EC_Normal;
+                        }
+                    }
+                }
+            }
+        }
+    }
+    return EC_IllegalCall;
+}
+
+
 E_Condition DVInterface::selectSeries(Uint32 idx)
 {
     DVStudyCache::ItemStruct *study = getStudyStruct();
@@ -1367,6 +1383,31 @@ E_Condition DVInterface::selectSeries(Uint32 idx)
 }
 
 
+E_Condition DVInterface::selectSeries(const char *seriesUID)
+{
+    if (seriesUID)
+    {
+        DVStudyCache::ItemStruct *study = getStudyStruct();
+        if (study != NULL)
+        {
+            if (study->List.isElem(seriesUID))
+            {
+                DVSeriesCache::ItemStruct *series = study->List.getItem();
+                if (series != NULL)
+                {
+                    if (series->List.gotoItem(0))
+                    {
+                        if (readIndexRecord(series->List.getPos(), idxRec, &idxRecPos))
+                            return EC_Normal;
+                    }
+                }
+            }
+        }
+    }
+    return EC_IllegalCall;
+}
+
+
 E_Condition DVInterface::selectInstance(Uint32 idx)
 {
     DVSeriesCache::ItemStruct *series = getSeriesStruct();
@@ -1376,6 +1417,52 @@ E_Condition DVInterface::selectInstance(Uint32 idx)
         {
             if (readIndexRecord(series->List.getPos(), idxRec, &idxRecPos))
                 return EC_Normal;
+        }
+    }
+    return EC_IllegalCall;
+}
+
+
+E_Condition DVInterface::selectInstance(const char *instanceUID)
+{
+    if (instanceUID)
+    {
+        DVSeriesCache::ItemStruct *series = getSeriesStruct();
+        if (series != NULL)
+        {
+            if (series->List.isElem(instanceUID))
+            {
+                if (readIndexRecord(series->List.getPos(), idxRec, &idxRecPos))
+                    return EC_Normal;
+            }
+        }
+    }
+    return EC_IllegalCall;
+}
+
+
+E_Condition DVInterface::selectInstance(const char *studyUID, const char *seriesUID, const char *instanceUID)
+{
+    if (studyUID && seriesUID && instanceUID)
+    {
+        if (createIndexCache())
+        {
+            if (idxCache.isElem(studyUID))
+            {
+                DVStudyCache::ItemStruct *study = idxCache.getItem();
+                if (study->List.isElem(seriesUID))
+                {
+                    DVSeriesCache::ItemStruct *series = study->List.getItem();
+                    if (series != NULL)
+                    {
+                        if (series->List.isElem(instanceUID))
+                        {
+                            if (readIndexRecord(series->List.getPos(), idxRec, &idxRecPos))
+                                return EC_Normal;
+                        }
+                    }
+                }
+            }
         }
     }
     return EC_IllegalCall;
@@ -2851,25 +2938,6 @@ E_Condition DVInterface::loadPrintPreview(size_t idx, OFBool printLUT, OFBool ch
         {
           if (image->getStatus() == EIS_Normal)
           {
-            /* set display function for calibrated output */
-            if (displayFunction != NULL)
-              image->setDisplayFunction(displayFunction[DVPSD_GSDF]);
-            /* adapt polarity if necessary */
-            const char *polarity = pPrint->getImagePolarity(idx);
-            if ((polarity != NULL) && (strcmp(polarity, "REVERSE") == 0))
-              image->setPolarity(EPP_Reverse);
-            /* set (print/display) presentation LUT */
-            DVPSPresentationLUT *plut = pPrint->getPresentationLUT();   // first check whether there's a global one
-            if (plut == NULL)
-              plut = pPrint->getImagePresentationLUT(idx);              // ... then check for an image box specific
-            if (plut != NULL)
-            {
-              unsigned int min = pPrint->getMinDensityValue();
-              unsigned int max = pPrint->getMaxDensityValue();
-              image->setHardcopyParameters((min) ? min : 20, (max) ? max : 300, pPrint->getPrintReflectedAmbientLight(), pPrint->getPrintIllumination());
-              plut->activate(image, printLUT);
-            }
-
             unsigned long width = maximumPrintPreviewWidth;
             unsigned long height = maximumPrintPreviewHeight;
             /* consider aspect ratio of the image and the display */
@@ -2886,6 +2954,24 @@ E_Condition DVInterface::loadPrintPreview(size_t idx, OFBool printLUT, OFBool ch
             {
               if (pHardcopyImage->getStatus() == EIS_Normal)
               {
+                /* set display function for calibrated output */
+                if (displayFunction != NULL)
+                  pHardcopyImage->setDisplayFunction(displayFunction[DVPSD_GSDF]);
+                /* adapt polarity if necessary */
+                const char *polarity = pPrint->getImagePolarity(idx);
+                if ((polarity != NULL) && (strcmp(polarity, "REVERSE") == 0))
+                  pHardcopyImage->setPolarity(EPP_Reverse);
+                /* set (print/display) presentation LUT */
+                DVPSPresentationLUT *plut = pPrint->getPresentationLUT();   // first check whether there's a global one
+                if (plut == NULL)
+                  plut = pPrint->getImagePresentationLUT(idx);              // ... then check for an image box specific
+                if (plut != NULL)
+                {
+                  unsigned int min = pPrint->getMinDensityValue();
+                  unsigned int max = pPrint->getMaxDensityValue();
+                  pHardcopyImage->setHardcopyParameters((min) ? min : 20, (max) ? max : 300, pPrint->getPrintReflectedAmbientLight(), pPrint->getPrintIllumination());
+                  plut->activate(pHardcopyImage, printLUT);
+                }
                 status = EC_Normal;
                 if (changeStatus)
                     instanceReviewed(studyUID, seriesUID, instanceUID);
@@ -3765,7 +3851,10 @@ E_Condition DVInterface::checkIOD(const char *studyUID, const char *seriesUID, c
 /*
  *  CVS/RCS Log:
  *  $Log: dviface.cc,v $
- *  Revision 1.107  2000-07-14 17:10:10  joergr
+ *  Revision 1.108  2000-07-17 12:05:29  joergr
+ *  Added methods to select objects from the database directly.
+ *
+ *  Revision 1.107  2000/07/14 17:10:10  joergr
  *  Added changeStatus parameter to all methods loading instances from the
  *  database.
  *

@@ -23,8 +23,8 @@
  *    classes: DVInterface
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2000-07-14 17:09:47 $
- *  CVS/RCS Revision: $Revision: 1.73 $
+ *  Update Date:      $Date: 2000-07-17 12:05:09 $
+ *  CVS/RCS Revision: $Revision: 1.74 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -260,6 +260,16 @@ class DVInterface: public DVConfiguration
      */
     E_Condition selectStudy(Uint32 idx);
 
+    /** selects the study with the given UID in the database.
+     *  This method acquires a database lock which must be explicitly freed by the user.
+     *  The selection remains valid until the database lock is removed or the database
+     *  is modified (see comments for getNumberOfStudies).
+     *  Implicitly the first series and first instance within this study is selected, too.
+     *  @param studyUID the DICOM study instance UID
+     *  @return EC_Normal upon success, an error code otherwise.
+     */
+    E_Condition selectStudy(const char *studyUID);
+
     /** returns the review status of the currently selected study.
      *  May be called only if a valid study selection exists - see selectStudy().
      *  This method acquires a database lock which must be explicitly freed by the user.
@@ -407,6 +417,15 @@ class DVInterface: public DVConfiguration
      */
     E_Condition selectSeries(Uint32 idx);
 
+    /** selects the series with the given UID within the currently selected study.
+     *  This method acquires a database lock which must be explicitly freed by the user.
+     *  The selection remains valid until the database lock is removed or the database
+     *  is modified (see comments for getNumberOfStudies).
+     *  @param seriesUID series instance UID of the image
+     *  @return EC_Normal upon success, an error code otherwise.
+     */
+    E_Condition selectSeries(const char *seriesUID);
+
     /** returns the Series Instance UID of the currently selected series.
      *  May be called only if a valid series selection exists - see selectSeries().
      *  This method acquires a database lock which must be explicitly freed by the user.
@@ -510,6 +529,26 @@ class DVInterface: public DVConfiguration
      *  @return EC_Normal upon success, an error code otherwise.
      */
     E_Condition selectInstance(Uint32 idx);
+
+    /** selects the instance with the given UID within the currently selected series.
+     *  This method acquires a database lock which must be explicitly freed by the user.
+     *  The selection remains valid until the database lock is removed or the database
+     *  is modified (see comments for getNumberOfStudies).
+     *  @param instanceUID SOP instance UID of the image
+     *  @return EC_Normal upon success, an error code otherwise.
+     */
+    E_Condition selectInstance(const char *instanceUID);
+
+    /** selects the instance with the given UIDs.
+     *  This method acquires a database lock which must be explicitly freed by the user.
+     *  The selection remains valid until the database lock is removed or the database
+     *  is modified (see comments for getNumberOfStudies).
+     *  @param studyUID study instance UID of the image
+     *  @param seriesUID series instance UID of the image
+     *  @param instanceUID SOP instance UID of the image
+     *  @return EC_Normal upon success, an error code otherwise.
+     */
+    E_Condition selectInstance(const char *studyUID, const char *seriesUID, const char *instanceUID);
 
     /** returns the SOP Instance UID of the currently selected instance.
      *  May be called only if a valid instance selection exists - see selectInstance().
@@ -1025,14 +1064,6 @@ class DVInterface: public DVConfiguration
      *  @return number of presentation states, 0 if none available or an error occurred
      */
     Uint32 getNumberOfPStates();
-
-    /** returns number of presentation states referencing the specified image.
-     *  @param studyUID study instance UID of the image
-     *  @param seriesUID series instance UID of the image
-     *  @param instanceUID SOP instance UID of the image
-     *  @return number of presentation states, 0 if none available or an error occurred
-     */
-    Uint32 getNumberOfPStates(const char *studyUID, const char *seriesUID, const char *instanceUID);
 
     /** selects and loads specified presentation state referencing the currently selected
      *  image.
@@ -1683,7 +1714,10 @@ private:
 /*
  *  CVS/RCS Log:
  *  $Log: dviface.h,v $
- *  Revision 1.73  2000-07-14 17:09:47  joergr
+ *  Revision 1.74  2000-07-17 12:05:09  joergr
+ *  Added methods to select objects from the database directly.
+ *
+ *  Revision 1.73  2000/07/14 17:09:47  joergr
  *  Added changeStatus parameter to all methods loading instances from the
  *  database.
  *
