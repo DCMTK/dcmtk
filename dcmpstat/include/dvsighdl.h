@@ -23,8 +23,8 @@
  *    classes: DVSignatureHandler
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-01-25 17:37:43 $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  Update Date:      $Date: 2001-01-29 14:55:43 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -38,12 +38,16 @@
 #include "dvpstyp.h"
 #include "ofstring.h"
 #include "sicertvf.h"
+#include "dcerror.h"
 
 #include <iostream.h>
 
+class DcmAttributeTag;
 class DcmItem;
 class DcmStack;
 class DVConfiguration;
+class DcmAttributeTag;
+class DcmTagKey;
 
 /** handler for all digital signature related functions in dcmpstat
  */  
@@ -90,10 +94,63 @@ public:
    */
   DVPSSignatureStatus getCurrentSignatureStatus(DVPSObjectType objtype) const;
 
+  /** returns number of correct signatures for given object type.
+   *  @param objtype object type
+   *  @return number of digital signatures
+   */
+  unsigned long getNumberOfCorrectSignatures(DVPSObjectType objtype) const;
+
+  /** returns number of untrustworthy signatures for given object type.
+   *  @param objtype object type
+   *  @return number of digital signatures
+   */
+  unsigned long getNumberOfUntrustworthySignatures(DVPSObjectType objtype) const;
+
+  /** returns number of corrupt signatures for given object type.
+   *  @param objtype object type
+   *  @return number of digital signatures
+   */
+  unsigned long getNumberOfCorruptSignatures(DVPSObjectType objtype) const;
+  
   /** returns the combined status flag for the current image and presentation state.
    *  @return digital signature status for image and presentation state
    */
   DVPSSignatureStatus getCombinedImagePStateSignatureStatus() const;
+
+  /** disables internal settings for image and presentation state.
+   *  Called when a new SR object is loaded and the current
+   *  image/presentation state are hidden consequently.
+   */
+  void disableImageAndPState();
+
+  /** checks whether any attribute mentioned in the tag list is affected
+   *  by digital signatures.  Returns true if either any of the attributes
+   *  is signed by a digital signature on the dataset level, or if any
+   *  of the attributes is a sequence that contains one or more signatures
+   *  in its items.  Otherwise returns false.
+   *  @param item item or dataset to be tested
+   *  @param tagList list of attributes (tags) to be looked up inside the dataset
+   *  @return true if any of the given attributes is affected by a digital signature,
+   *    false otherwise.
+   */
+  OFBool attributesSigned(DcmItem& item, DcmAttributeTag& tagList) const;
+
+  /** adds one or more new digital signatures to the given dataset.
+   *  @param mainDataset reference to main dataset in which signature(s) are to be added
+   *  @param itemStack stack of items within the main dataset that are to be signed
+   *    separately.  If main dataset is to be signed, it must be included in this stack.
+   *  @param attributesNotToSignInMainDataset list of attribute tags that should be
+   *    omitted from the signature on the main dataset level
+   *  @param usedID user ID in configuration file, must not be NULL
+   *  @param passwd passwd password for private key, may be NULL
+   *  @return EC_Normal if successful, an error code otherwise.
+   */
+  E_Condition createSignature(
+    DcmItem& mainDataset,
+    const DcmStack& itemStack,
+    DcmAttributeTag& attributesNotToSignInMainDataset,
+    const char *userID,
+    const char *passwd);
     
 private:
 
@@ -162,13 +219,21 @@ private:
   
   /// the certificate verifier
   SiCertificateVerifier certVerifier;  
+
+  /// reference to object maintaining the system configuration
+  DVConfiguration& config;
+
 };
 
 #endif
 
 /*
  *  $Log: dvsighdl.h,v $
- *  Revision 1.2  2001-01-25 17:37:43  meichel
+ *  Revision 1.3  2001-01-29 14:55:43  meichel
+ *  Added new methods for creating signatures and checking the signature
+ *    status in module dcmpstat.
+ *
+ *  Revision 1.2  2001/01/25 17:37:43  meichel
  *  Fixed problem with undefined copy constructor
  *
  *  Revision 1.1  2001/01/25 15:18:05  meichel

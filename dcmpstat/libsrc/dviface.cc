@@ -22,8 +22,8 @@
  *  Purpose: DVPresentationState
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-01-25 15:18:09 $
- *  CVS/RCS Revision: $Revision: 1.125 $
+ *  Update Date:      $Date: 2001-01-29 14:55:46 $
+ *  CVS/RCS Revision: $Revision: 1.126 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -4227,10 +4227,35 @@ DVPSSignatureStatus DVInterface::getCombinedImagePStateSignatureStatus() const
   return pSignatureHandler->getCombinedImagePStateSignatureStatus();
 }
 
+unsigned long DVInterface::getNumberOfCorrectSignatures(DVPSObjectType objtype) const
+{
+  return pSignatureHandler->getNumberOfCorrectSignatures(objtype);
+}
+
+unsigned long DVInterface::getNumberOfUntrustworthySignatures(DVPSObjectType objtype) const
+{
+  return pSignatureHandler->getNumberOfUntrustworthySignatures(objtype);
+}
+
+unsigned long DVInterface::getNumberOfCorruptSignatures(DVPSObjectType objtype) const
+{
+  return pSignatureHandler->getNumberOfCorruptSignatures(objtype);
+}
+
+void DVInterface::disableImageAndPState()
+{
+  pSignatureHandler->disableImageAndPState();
+}
+
+
 /*
  *  CVS/RCS Log:
  *  $Log: dviface.cc,v $
- *  Revision 1.125  2001-01-25 15:18:09  meichel
+ *  Revision 1.126  2001-01-29 14:55:46  meichel
+ *  Added new methods for creating signatures and checking the signature
+ *    status in module dcmpstat.
+ *
+ *  Revision 1.125  2001/01/25 15:18:09  meichel
  *  Added initial support for verification of digital signatures
  *    in presentation states, images and structured reports to module dcmpstat.
  *

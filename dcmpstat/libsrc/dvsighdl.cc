@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1998-2000, OFFIS
+ *  Copyright (C) 1998-2001, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -23,8 +23,8 @@
  *    classes: DVSignatureHandler
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-01-26 10:43:14 $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  Update Date:      $Date: 2001-01-29 14:55:47 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -41,6 +41,9 @@
 #include "dvpscf.h"
 #include "sicert.h"
 #include "sitypes.h"
+#include "sinullpr.h"
+#include "siprivat.h"
+#include "siripemd.h"
 
 #ifdef HAVE_STRSTREAM_H
 #include <strstream.h>
@@ -55,11 +58,61 @@ BEGIN_EXTERN_C
 #include <openssl/x509.h>
 END_EXTERN_C
 #endif
+ 
+class DVSignatureHandlerSignatureProfile: public SiNullProfile
+{
+public:
+
+  /// default constructor
+  DVSignatureHandlerSignatureProfile(DcmAttributeTag& at)
+  : SiNullProfile()
+  , notToSign(at)
+  , vmNotToSign(notToSign.getVM())
+  { 
+  }
+
+  /// destructor
+  virtual ~DVSignatureHandlerSignatureProfile() { }
+
+  /** checks whether the given tag is in the list of tags not to sign
+   *  @param tag tag to check
+   *  @return true if in list, false otherwise
+   */
+  OFBool tagInList(const DcmTagKey& tag) const
+  {  
+    DcmAttributeTag tempList(notToSign); // required because getTagVal() is not const
+    DcmTagKey tagkey;
+    for (unsigned long n=0; n<vmNotToSign; n++)
+    {
+      if ((EC_Normal == tempList.getTagVal(tagkey, n)) && (tag == tagkey)) return OFTrue;
+    }
+    return OFFalse;  
+  }
+
+  /** checks whether an attribute with the given tag must not be signed
+   *  for the current security profile.
+   *  @param key tag key to be checked
+   *  @return true if attribute must not be signed, false otherwise.
+   */
+  virtual OFBool attributeForbidden(const DcmTagKey& key) const
+  {
+    return tagInList(key);
+  }
+
+private:
+
+  /// list of attributes not to sign  
+  DcmAttributeTag& notToSign;
+
+  /// number of entries in notToSign
+  unsigned long vmNotToSign;
+};
+
 
 DVSignatureHandler::DVSignatureHandler(DVConfiguration& cfg)
-: htmlSR("<html><head><title>Structured Report</title></head><body>No structured report has been loaded/created yet.</body></html>\n")
-, htmlImage("<html><head><title>Image</title></head><body>No image has been loaded yet.</body></html>\n")
-, htmlPState("<html><head><title>Presentation State</title></head><body>No presentation state has been loaded/created yet.</body></html>\n")
+: htmlSR("<html><head><title>Structured Report</title></head><body>No structured report is currently active.</body></html>\n")
+, htmlImage("<html><head><title>Image</title></head><body>No image is currently active.</body></html>\n")
+, htmlPState("<html><head><title>Presentation State</title></head><body>No presentation state is currently active.</body></html>\n")
 , htmlOverview()
 , correctSignaturesSR(0)
 , corruptSignaturesSR(0)
@@ -71,9 +124,10 @@ DVSignatureHandler::DVSignatureHandler(DVConfiguration& cfg)
 , corruptSignaturesPState(0)
 , untrustSignaturesPState(0)
 , certVerifier()
+, config(cfg)
 {
-  int fileFormat = cfg.getTLSPEMFormat() ? X509_FILETYPE_PEM : X509_FILETYPE_ASN1;
-  const char *tlsCACertificateFolder = cfg.getTLSCACertificateFolder();
+  int fileFormat = config.getTLSPEMFormat() ? X509_FILETYPE_PEM : X509_FILETYPE_ASN1;
+  const char *tlsCACertificateFolder = config.getTLSCACertificateFolder();
   if (tlsCACertificateFolder) certVerifier.addTrustedCertificateDir(tlsCACertificateFolder, fileFormat);
   updateSignatureValidationOverview();
 }
@@ -175,7 +229,7 @@ void DVSignatureHandler::updateDigitalSignatureInformation(DcmItem& dataset, DVP
   const char *htmlHead     = NULL;
   const char *htmlFoot     = "</body></html>\n\n";
   const char *htmlEndl     = "</td></tr>\n";
-  const char *htmlTitle    = "<tr><td colspan=\"4\">";
+  // const char *htmlTitle    = "<tr><td colspan=\"4\">";
   const char *htmlVfyOK    = "<tr><td colspan=\"4\" bgcolor=\"#50ff50\">";
   const char *htmlVfyCA    = "<tr><td colspan=\"4\" bgcolor=\"yellow\">";  
   const char *htmlVfyErr   = "<tr><td colspan=\"4\" bgcolor=\"#FF5050\">";  
@@ -184,10 +238,10 @@ void DVSignatureHandler::updateDigitalSignatureInformation(DcmItem& dataset, DVP
   const char *htmlLine3    = "<tr><td colspan=\"2\" nowrap>&nbsp;</td><td nowrap>";
   const char *htmlLine4    = "<tr><td width=\"20\" nowrap>&nbsp;</td><td width=\"20\" nowrap>&nbsp;</td><td>";
   const char *htmlNext     = "</td><td>";
-  const char *htmlTableOK  = "<p><table cellspacing=\"0\" bgcolor=\"#D0FFD0\">\n";
-  const char *htmlTableCA  = "<p><table cellspacing=\"0\" bgcolor=\"#FFF8DC\">\n";
-  const char *htmlTableErr = "<p><table cellspacing=\"0\" bgcolor=\"#FFD0D0\">\n";
-  const char *htmlTableE   = "</table></p>\n\n";
+  const char *htmlTableOK  = "<table cellspacing=\"0\" bgcolor=\"#D0FFD0\">\n";
+  const char *htmlTableCA  = "<table cellspacing=\"0\" bgcolor=\"#FFF8DC\">\n";
+  const char *htmlTableErr = "<table cellspacing=\"0\" bgcolor=\"#FFD0D0\">\n";
+  const char *htmlTableE   = "</table><p>\n\n";
 
   switch (objtype)
   {
@@ -219,11 +273,14 @@ void DVSignatureHandler::updateDigitalSignatureInformation(DcmItem& dataset, DVP
           sicond = certVerifier.verifyCertificate(*cert);
         }
         
-        if (sicond == SI_EC_Normal) os << htmlTableOK; 
-        else if (sicond == SI_EC_VerificationFailed_NoTrust) os << htmlTableCA; 
-        else os << htmlTableErr;
+        if (sicond == SI_EC_Normal)
+          os << htmlTableOK  << htmlVfyOK; 
+        else if (sicond == SI_EC_VerificationFailed_NoTrust) 
+          os << htmlTableCA  << htmlVfyCA; 
+        else
+          os << htmlTableErr << htmlVfyErr;
 
-        os << htmlTitle <<   "<b>Signature #" << counter << " UID=";
+        os << "<b>Signature #" << counter << " UID=";
         if (SI_EC_Normal == signer.getCurrentSignatureUID(aString)) os << aString.c_str(); else os << "(unknown)";
         os << "</b>" << htmlEndl;
 
@@ -300,17 +357,17 @@ void DVSignatureHandler::updateDigitalSignatureInformation(DcmItem& dataset, DVP
         switch (sicond)
         {
           case SI_EC_Normal:
-            os << htmlVfyOK << "Verification: OK" << htmlEndl;
+            os << htmlVfyOK << "<b>Verification: OK</b>" << htmlEndl;
             break;
           case SI_EC_VerificationFailed_NoTrust:
             untrustworthy_counter++;
-            os << htmlVfyCA << "Verification: Signature is valid but certificate could not be verified: " 
-               << certVerifier.lastError() << htmlEndl;
+            os << htmlVfyCA << "<b>Verification: Signature is valid but certificate could not be verified: " 
+               << certVerifier.lastError() << "</b>" << htmlEndl ;
             break;
           default: 
             corrupt_counter++;
-            os << htmlVfyErr << "Verification: ";
-            os << siErrorConditionToString(sicond) << htmlEndl;
+            os << htmlVfyErr << "<b>Verification: ";
+            os << siErrorConditionToString(sicond) << "</b>" << htmlEndl;
             break;
         }
         os << htmlTableE;
@@ -341,7 +398,7 @@ void DVSignatureHandler::updateDigitalSignatureInformation(DcmItem& dataset, DVP
       correctSignaturesPState = counter - corrupt_counter - untrustworthy_counter;
       break;  
   }
-  os << htmlFoot;
+  os << htmlFoot << ends;
   char *newText = os.str();
   replaceString(objtype, newText); // copies newText into OFString
   delete[] newText;
@@ -356,15 +413,38 @@ void DVSignatureHandler::disableDigitalSignatureInformation(DVPSObjectType objty
   {
     case DVPSS_structuredReport:
       htmlSR = "<html><head><title>Structured Report</title></head><body>The current structured report does not contain any digital signature.</body></html>\n";
+      corruptSignaturesSR = 0;
+      untrustSignaturesSR = 0;  
+      correctSignaturesSR = 0;
       break;
     case DVPSS_image:
+      corruptSignaturesImage = 0;
+      untrustSignaturesImage = 0;  
+      correctSignaturesImage = 0;
       htmlImage = "<html><head><title>Image</title></head><body>The current image does not contain any digital signature.</body></html>\n";
       break;
     case DVPSS_presentationState:
+      corruptSignaturesPState = 0;
+      untrustSignaturesPState = 0;  
+      correctSignaturesPState = 0;
       htmlPState = "<html><head><title>Presentation State</title></head><body>The current presentation state does not contain any digital signature.</body></html>\n";
       break;  
   }
   updateSignatureValidationOverview();
+}
+
+void DVSignatureHandler::disableImageAndPState()
+{
+  corruptSignaturesImage = 0;
+  untrustSignaturesImage = 0;  
+  correctSignaturesImage = 0;
+  htmlImage = "<html><head><title>Image</title></head><body>No image is currently active.</body></html>\n";
+  corruptSignaturesPState = 0;
+  untrustSignaturesPState = 0;  
+  correctSignaturesPState = 0;
+  htmlPState = "<html><head><title>Presentation State</title></head><body>No presentation state is currently active.</body></html>\n";
+  updateSignatureValidationOverview();
+  return;
 }
 
 
@@ -554,7 +634,7 @@ void DVSignatureHandler::updateSignatureValidationOverview()
       break;
   }
   os << htmlTableE;
-  os << htmlFoot;
+  os << htmlFoot << ends;
 
   char *newText = os.str();
   htmlOverview = newText;
@@ -567,9 +647,200 @@ const char *DVSignatureHandler::getCurrentSignatureValidationOverview() const
   return htmlOverview.c_str();
 }
 
+unsigned long DVSignatureHandler::getNumberOfCorrectSignatures(DVPSObjectType objtype) const
+{
+  unsigned long result = 0;
+  switch (objtype)
+  {
+    case DVPSS_structuredReport:
+      result = correctSignaturesSR;
+      break;
+    case DVPSS_image:
+      result = correctSignaturesImage;
+      break;
+    case DVPSS_presentationState:
+      result = correctSignaturesPState;
+      break;
+  }
+  return result;
+}
+
+
+unsigned long DVSignatureHandler::getNumberOfUntrustworthySignatures(DVPSObjectType objtype) const
+{
+  unsigned long result = 0;
+  switch (objtype)
+  {
+    case DVPSS_structuredReport:
+      result = untrustSignaturesSR;
+      break;
+    case DVPSS_image:
+      result = untrustSignaturesImage;
+      break;
+    case DVPSS_presentationState:
+      result = untrustSignaturesPState;
+      break;
+  }
+  return result;
+}
+
+
+unsigned long DVSignatureHandler::getNumberOfCorruptSignatures(DVPSObjectType objtype) const
+{
+  unsigned long result = 0;
+  switch (objtype)
+  {
+    case DVPSS_structuredReport:
+      result = corruptSignaturesSR;
+      break;
+    case DVPSS_image:
+      result = corruptSignaturesImage;
+      break;
+    case DVPSS_presentationState:
+      result = corruptSignaturesPState;
+      break;
+  }
+  return result;
+}
+
+
+OFBool DVSignatureHandler::attributesSigned(DcmItem& item, DcmAttributeTag& tagList) const
+{
+  DcmStack stack;
+  DcmAttributeTag at(DCM_DataElementsSigned);  
+  DcmTagKey tagkey;
+  DcmSignature signer;
+  unsigned long numSignatures;
+  unsigned long l;
+  DVSignatureHandlerSignatureProfile sigProfile(tagList);
+  DcmItem *sigItem = DcmSignature::findFirstSignatureItem(item, stack);
+  while (sigItem)
+  {
+    if (sigItem == &item) 
+    {
+      // signatures on main level - check attributes signed
+      signer.attach(sigItem);
+      numSignatures = signer.numberOfSignatures();
+      for (l=0; l<numSignatures; l++)
+      {
+        if (SI_EC_Normal == signer.selectSignature(l))
+        {
+          // printSignatureItemPosition(stack, os);        
+          if (SI_EC_Normal == signer.getCurrentDataElementsSigned(at))
+          {
+            unsigned long atVM = at.getVM();
+            for (unsigned long n=0; n<atVM; n++)
+            {
+              if (EC_Normal == at.getTagVal(tagkey, n))
+              {
+                if (sigProfile.tagInList(tagkey)) return OFTrue; // one of the elements in tagList is signed
+              }
+            }
+          } else return OFTrue; // all elements are signed
+        }
+      }
+      signer.detach();
+    }
+    else
+    {
+      // signatures on lower level - check whether attribute on main level is in list
+      unsigned long scard = stack.card();
+      if (scard > 1) // should always be true
+      {
+        DcmObject *obj = stack.elem(scard-2);
+        if (obj) // should always be true
+        {
+          if (sigProfile.tagInList(obj->getTag())) return OFTrue; // one of the elements in tagList contains a signature
+        }
+      }
+    }
+    sigItem = DcmSignature::findNextSignatureItem(item, stack);
+  }
+  return OFFalse;  
+}
+
+E_Condition DVSignatureHandler::createSignature(
+    DcmItem& mainDataset,
+    const DcmStack& itemStack,
+    DcmAttributeTag& attributesNotToSignInMainDataset,
+    const char *userID,
+    const char *passwd)
+{
+  if (userID == NULL) return EC_IllegalCall;
+
+  // get user settings
+  int fileformat = config.getTLSPEMFormat() ? X509_FILETYPE_PEM : X509_FILETYPE_ASN1;
+  const char *userDir  = config.getUserCertificateFolder();
+  const char *userKey  = config.getUserPrivateKey(userID);
+  if (userKey == NULL) return EC_IllegalCall;
+  const char *userCert = config.getUserCertificate(userID);
+  if (userCert == NULL) return EC_IllegalCall;
+  
+  // load private key
+  SiPrivateKey key;
+  OFString filename;
+  if (userDir)
+  {
+    filename = userDir;
+    filename += PATH_SEPARATOR;
+  }
+  filename += userKey;
+  if (passwd) key.setPrivateKeyPasswd(passwd);
+  SI_E_Condition sicond = key.loadPrivateKey(filename.c_str(), fileformat);
+  if (sicond != SI_EC_Normal) return EC_IllegalCall; // unable to load private key
+
+  // load certificate
+  SiCertificate cert;
+  filename.clear();
+  if (userDir)
+  {
+    filename = userDir;
+    filename += PATH_SEPARATOR;
+  }
+  filename += userCert;
+  sicond = cert.loadCertificate(filename.c_str(), fileformat);
+  if (sicond != SI_EC_Normal) return EC_IllegalCall; // unable to load certificate
+  if (! key.matchesCertificate(cert)) return EC_IllegalCall; // private key does not match certificate
+
+  DcmSignature signer;
+  SiRIPEMD160 mac;
+  SiNullProfile nullProfile;
+  DVSignatureHandlerSignatureProfile mainProfile(attributesNotToSignInMainDataset);
+  
+  DcmObject *current;
+  DcmItem *currentItem;
+  DcmStack workStack(itemStack);
+  while (! workStack.empty())
+  {
+    current = workStack.pop();
+    if ((current->ident() != EVR_dataset) && (current->ident() != EVR_item)) return EC_IllegalCall; // wrong type on stack
+    currentItem = (DcmItem *)current;
+    signer.attach(currentItem);
+    if (currentItem == &mainDataset)
+    {
+      // we're creating a signature in the main dataset
+      sicond = signer.createSignature(key, cert, mac, mainProfile, EXS_LittleEndianExplicit, OFTrue);
+      if (sicond != SI_EC_Normal) return EC_IllegalCall; // error while creating signature
+    }
+    else     
+    {
+      // we're creating a signature in a sequence item
+      sicond = signer.createSignature(key, cert, mac, nullProfile, EXS_LittleEndianExplicit, OFTrue);
+      if (sicond != SI_EC_Normal) return EC_IllegalCall; // error while creating signature
+    }
+    signer.detach();
+  }
+  return EC_Normal;  
+}
+
+
 /*
  *  $Log: dvsighdl.cc,v $
- *  Revision 1.2  2001-01-26 10:43:14  meichel
+ *  Revision 1.3  2001-01-29 14:55:47  meichel
+ *  Added new methods for creating signatures and checking the signature
+ *    status in module dcmpstat.
+ *
+ *  Revision 1.2  2001/01/26 10:43:14  meichel
  *  Introduced additional (fourth) status flag for signature validation
  *    describing signatures that are valid but untrustworthy (unknown CA).
  *

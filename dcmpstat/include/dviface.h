@@ -23,8 +23,8 @@
  *    classes: DVInterface
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2001-01-25 15:18:04 $
- *  CVS/RCS Revision: $Revision: 1.82 $
+ *  Update Date:      $Date: 2001-01-29 14:55:41 $
+ *  CVS/RCS Revision: $Revision: 1.83 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -1524,6 +1524,29 @@ class DVInterface: public DVConfiguration
      */
     DVPSSignatureStatus getCombinedImagePStateSignatureStatus() const;
 
+    /** returns number of correct signatures for given object type.
+     *  @param objtype object type
+     *  @return number of digital signatures
+     */
+    unsigned long getNumberOfCorrectSignatures(DVPSObjectType objtype) const;
+  
+    /** returns number of untrustworthy signatures for given object type.
+     *  @param objtype object type
+     *  @return number of digital signatures
+     */
+    unsigned long getNumberOfUntrustworthySignatures(DVPSObjectType objtype) const;
+  
+    /** returns number of corrupt signatures for given object type.
+     *  @param objtype object type
+     *  @return number of digital signatures
+     */
+    unsigned long getNumberOfCorruptSignatures(DVPSObjectType objtype) const;
+  
+    /** disables internal settings for image and presentation state.
+     *  Called when a new SR object is loaded and the current
+     *  image/presentation state are hidden consequently.
+     */
+    void disableImageAndPState();
 
 private:
 
@@ -1841,7 +1864,11 @@ private:
 /*
  *  CVS/RCS Log:
  *  $Log: dviface.h,v $
- *  Revision 1.82  2001-01-25 15:18:04  meichel
+ *  Revision 1.83  2001-01-29 14:55:41  meichel
+ *  Added new methods for creating signatures and checking the signature
+ *    status in module dcmpstat.
+ *
+ *  Revision 1.82  2001/01/25 15:18:04  meichel
  *  Added initial support for verification of digital signatures
  *    in presentation states, images and structured reports to module dcmpstat.
  *
