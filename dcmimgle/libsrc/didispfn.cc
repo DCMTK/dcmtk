@@ -22,9 +22,9 @@
  *  Purpose: DicomDisplayFunction (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-02-23 16:56:06 $
+ *  Update Date:      $Date: 1999-03-03 12:06:24 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/libsrc/didispfn.cc,v $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -70,6 +70,7 @@ DiDisplayFunction::DiDisplayFunction(const char *filename)
     MaxDDLValue(0),
     JNDMin(0),
     JNDMax(0),
+    AmbientLight(0),
     DDLValue(NULL),
     LumValue(NULL),
     GSDFValue(NULL),
@@ -92,6 +93,7 @@ DiDisplayFunction::DiDisplayFunction(const double *lum_tab,             // UNTES
     MaxDDLValue(max),
     JNDMin(0),
     JNDMax(0),
+    AmbientLight(0),
     DDLValue(NULL),
     LumValue(NULL),
     GSDFValue(NULL),
@@ -125,6 +127,7 @@ DiDisplayFunction::DiDisplayFunction(const Uint16 *ddl_tab,             // UNTES
     MaxDDLValue(max),
     JNDMin(0),
     JNDMax(0),
+    AmbientLight(0),
     DDLValue(NULL),
     LumValue(NULL),
     GSDFValue(NULL),
@@ -175,7 +178,7 @@ const DiBartenLUT *DiDisplayFunction::getBartenLUT(const int bits,
             if (count <= MAX_TABLE_ENTRY_COUNT)
             {
                 BartenLUT[idx] = new DiBartenLUT(count, MaxDDLValue, DDLValue, LumValue, ValueCount,
-                    GSDFValue, GSDFSpline, GSDFCount, JNDMin, JNDMax);
+                    GSDFValue, GSDFSpline, GSDFCount, JNDMin, JNDMax, AmbientLight);
             }
         }
         return BartenLUT[idx];
@@ -220,14 +223,27 @@ int DiDisplayFunction::writeCurveData(const char *filename)
         {
             file << "# Number of DDLs : " << ValueCount << endl;
             file << "# Luminance range: " << LumValue[0] << " - " << LumValue[ValueCount - 1] << endl;
+            file << "# Ambient light  : " << AmbientLight << endl;
             file << "# JND index range: " << JNDMin << " - " << JNDMax << endl << endl;
             file << "DDL\tCC\tGSDF\tPSC" << endl;
             const DiBartenLUT *blut = new DiBartenLUT(ValueCount, MaxDDLValue, DDLValue, LumValue, ValueCount,
-                GSDFValue, GSDFSpline, GSDFCount, JNDMin, JNDMax, &file);               // write curve data to file
+                GSDFValue, GSDFSpline, GSDFCount, JNDMin, JNDMax, AmbientLight, &file);       // write curve data to file
             int status = (blut !=NULL);
             delete blut;
             return status;
         }
+    }
+    return 0;
+}
+
+
+int DiDisplayFunction::setAmbientLightValue(const double value)
+{
+    if (value >= 0)
+    {
+        AmbientLight = value;
+        calculateJNDBoundaries();
+        return 1;
     }
     return 0;
 }
@@ -274,6 +290,24 @@ int DiDisplayFunction::readConfigFile(const char *filename)
                         } else {
                             if (DicomImageClass::DebugLevel >= DicomImageClass::DL_Errors)
                                 cerr << "ERROR: missing keyword 'max' for maximum DDL value in DISPLAY file !" << endl;
+                            return 0;                                       // abort
+                        }
+                    } else if ((AmbientLight == 0.0) && (c == 'a'))         // read ambient light value (optional)
+                    {
+                        char str[4];
+                        file.get(str, sizeof(str));
+                        if (strcmp(str, "amb") == 0)                        // check for key word: amb
+                        {
+                            file >> AmbientLight;
+                            if (AmbientLight < 0)
+                            {
+                                if (DicomImageClass::DebugLevel >= DicomImageClass::DL_Warnings)
+                                    cerr << "WARNING: invalid value for ambient light in DISPLAY file ...ignoring !" << endl;
+                                AmbientLight = 0;
+                            }
+                        } else {
+                            if (DicomImageClass::DebugLevel >= DicomImageClass::DL_Errors)
+                                cerr << "ERROR: invalid DISPLAY file ... ignoring !" << endl;
                             return 0;                                       // abort
                         }
                     } else {
@@ -461,8 +495,8 @@ int DiDisplayFunction::calculateJNDBoundaries()
 {
     if ((LumValue != NULL) && (ValueCount > 0))
     {
-        JNDMin = getJNDIndex(LumValue[0]);
-        JNDMax = getJNDIndex(LumValue[ValueCount - 1]);
+        JNDMin = getJNDIndex(LumValue[0] + AmbientLight);
+        JNDMax = getJNDIndex(LumValue[ValueCount - 1] + AmbientLight);
         return (JNDMin >= 0) && (JNDMax >= 0);
     }
     return 0;
@@ -502,7 +536,10 @@ double DiDisplayFunction::getJNDIndex(const double lum) const
  *
  * CVS/RCS Log:
  * $Log: didispfn.cc,v $
- * Revision 1.5  1999-02-23 16:56:06  joergr
+ * Revision 1.6  1999-03-03 12:06:24  joergr
+ * Added support to specify ambient light value (re: Barten transformation).
+ *
+ * Revision 1.5  1999/02/23 16:56:06  joergr
  * Added tool to export display curves to a text file.
  *
  * Revision 1.4  1999/02/11 16:50:34  joergr
