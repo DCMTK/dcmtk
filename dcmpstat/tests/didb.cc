@@ -25,8 +25,8 @@
  *    and output instanceduid. Finally it delete a selected instance. 
  *
  *  Last Update:      $Author: vorwerk $
- *  Update Date:      $Date: 1999-01-12 17:02:22 $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  Update Date:      $Date: 1999-01-28 15:34:42 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -81,7 +81,7 @@ break;
 */
 
 
-DVInterface *db=new DVInterface("dbfolder");
+DVInterface *db=new DVInterface(0,"test.cfg");
 if (db->lockDatabase()==EC_IllegalCall) cout << "lock error1 !!" << endl;
 else
 cout << "locked !!" << endl;
@@ -177,7 +177,10 @@ delete db;
 
 /*
  *  $Log: didb.cc,v $
- *  Revision 1.2  1999-01-12 17:02:22  vorwerk
+ *  Revision 1.3  1999-01-28 15:34:42  vorwerk
+ *  reimplemented for configuration file.
+ *
+ *  Revision 1.2  1999/01/12 17:02:22  vorwerk
  *  testroutines for seriesselection and locking for windows NT added
  *
  *  Revision 1.1  1998/12/23 09:53:51  vorwerk
