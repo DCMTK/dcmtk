@@ -23,8 +23,8 @@
  *    classes: DcmSignature
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-01-08 10:28:16 $
- *  CVS/RCS Revision: $Revision: 1.8 $
+ *  Update Date:      $Date: 2002-04-11 12:58:09 $
+ *  CVS/RCS Revision: $Revision: 1.9 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -87,26 +87,7 @@ Uint16 DcmSignature::getMACIDnumber(DcmItem &item)
   
 void DcmSignature::currentDateTime(OFString &str)
 {
-  char buf[40];
-  time_t tt = time(NULL);
-  struct tm *ts = gmtime(&tt);
-  int gm_hour = ts->tm_hour;
-  int gm_min = ts->tm_min;
-
-  ts = localtime(&tt);  
-  char zoneSign = '+';
-  int zoneMin = (ts->tm_hour - gm_hour)*60 + (ts->tm_min - gm_min);
-  if (zoneMin < 0)
-  {
-    zoneMin = -zoneMin;
-    zoneSign = '-';
-  }
-  int zoneHour = zoneMin / 60;
-  zoneMin = zoneMin % 60;
-  sprintf(buf, "%04d%02d%02d%02d%02d%02d.000000%c%02d%02d", (1900 + ts->tm_year), 
-    ts->tm_mon + 1, ts->tm_mday, ts->tm_hour, ts->tm_min, ts->tm_sec, zoneSign, zoneHour, zoneMin);
-  str = buf;
-  return;
+  DcmDateTime::getCurrentDateTime(str, OFTrue /*seconds*/, OFTrue /*fraction*/, OFTrue /*timeZone*/);
 }
 
 
@@ -845,7 +826,11 @@ void dcmsign_cc_dummy_to_keep_linker_from_moaning()
 
 /*
  *  $Log: dcmsign.cc,v $
- *  Revision 1.8  2002-01-08 10:28:16  joergr
+ *  Revision 1.9  2002-04-11 12:58:09  joergr
+ *  Replaced direct call of system routines by new standard date and time
+ *  functions.
+ *
+ *  Revision 1.8  2002/01/08 10:28:16  joergr
  *  Corrected spelling of function dcmGenerateUniqueIdentifier().
  *
  *  Revision 1.7  2001/12/04 18:41:08  meichel

@@ -12,12 +12,14 @@ dcmsign.o: dcmsign.cc ../../config/include/osconfig.h \
  ../../dcmdata/include/dcvrui.h ../../dcmdata/include/dcbytstr.h \
  ../../dcmdata/include/dcelem.h ../../dcmdata/include/dcvrat.h \
  ../../dcmdata/include/dcvrcs.h ../../dcmdata/include/dcvrdt.h \
- ../../dcmdata/include/dcvrobow.h ../../dcmdata/include/dcvrus.h \
- ../../dcmdata/include/dcuid.h ../../dcmdata/include/dcsequen.h \
- ../../dcmdata/include/dcdeftag.h ../include/sialgo.h \
- ../include/sicert.h ../include/simac.h ../include/simaccon.h \
- ../include/simd5.h ../include/siprivat.h ../include/siripemd.h \
- ../include/sisha1.h ../include/sisprof.h ../include/sitstamp.h
+ ../../ofstd/include/ofdatime.h ../../ofstd/include/ofdate.h \
+ ../../ofstd/include/oftime.h ../../dcmdata/include/dcvrobow.h \
+ ../../dcmdata/include/dcvrus.h ../../dcmdata/include/dcuid.h \
+ ../../dcmdata/include/dcsequen.h ../../dcmdata/include/dcdeftag.h \
+ ../include/sialgo.h ../include/sicert.h ../include/simac.h \
+ ../include/simaccon.h ../include/simd5.h ../include/siprivat.h \
+ ../include/siripemd.h ../include/sisha1.h ../include/sisprof.h \
+ ../include/sitstamp.h
 siautopr.o: siautopr.cc ../../config/include/osconfig.h \
  ../include/siautopr.h ../include/sibrsapr.h ../include/sisprof.h \
  ../../ofstd/include/oftypes.h ../../dcmdata/include/dcxfer.h \
