@@ -20,16 +20,13 @@ LOCALINCLUDES=-I$(ofstddir)/include -I$(dcmdatadir)/include
 
 LIBDIRS = -L$(top_srcdir)/libsrc -L$(ofstddir)/libsrc -L$(dcmdatadir)/libsrc
 
-LOCALLIBS = -ldcmsr -ldcmdata -lofstd $(ZLIBLIBS)
-
+LOCALLIBS = -ldcmsr -ldcmdata -lofstd $(XMLLIBS) $(ZLIBLIBS)
 
 objs = mkreport.o
 
 progs= mkreport
 
-
 all: $(progs)
-
 
 mkreport: mkreport.o
 	$(CXX) $(CXXFLAGS) $(LDFLAGS) $(LIBDIRS) -o $@ mkreport.o $(LOCALLIBS) $(MATHLIBS) $(LIBS)
