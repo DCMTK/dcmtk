@@ -10,10 +10,10 @@
 ** CD-R Image Interchange Profile (Supplement 19).
 **
 **
-** Last Update:		$Author: meichel $
-** Update Date:		$Date: 1997-10-07 10:12:59 $
+** Last Update:		$Author: hewett $
+** Update Date:		$Date: 1997-10-09 11:26:30 $
 ** Source File:		$Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmdata/apps/dcmgpdir.cc,v $
-** CVS/RCS Revision:	$Revision: 1.20 $
+** CVS/RCS Revision:	$Revision: 1.21 $
 ** Status:		$State: Exp $
 **
 ** CVS/RCS Log at end of file
@@ -2128,11 +2128,11 @@ createDicomdirFromFiles(OFList<OFString>& fileNames)
     }
 
     OFBool backupCreated = OFFalse;
-    char* backupName = NULL;
+    OFString backupName;
 
     if (writeDicomdir && fileExists(ofname)) {
 	/* rename existing DICOMDIR */
-	OFString backupName = ofname + ".BAK";
+	backupName = ofname + ".BAK";
 	unlink(backupName.c_str());
 	if (verbosemode) {
 	    cout << "creating backup dicomdir: " << backupName << endl;
@@ -2195,7 +2195,7 @@ createDicomdirFromFiles(OFList<OFString>& fileNames)
 		if (verbosemode) {
 		    cout << "deleting backup: " << backupName << endl;
 		}
-		unlink(backupName);
+		unlink(backupName.c_str());
 	    }
 	}
     }
@@ -2300,7 +2300,10 @@ expandFileNames(OFList<OFString>& fileNames, OFList<OFString>& expandedNames)
 /*
 ** CVS/RCS Log:
 ** $Log: dcmgpdir.cc,v $
-** Revision 1.20  1997-10-07 10:12:59  meichel
+** Revision 1.21  1997-10-09 11:26:30  hewett
+** Fixed dcmgpdir bug related to unlinking a DICOMDIR backup file.
+**
+** Revision 1.20  1997/10/07 10:12:59  meichel
 ** Corrected passing of pointer instead of reference.
 **
 ** Revision 1.19  1997/09/22 16:40:10  hewett
