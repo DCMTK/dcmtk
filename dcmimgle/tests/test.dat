@@ -3,167 +3,167 @@
 
 # no.	filename		options					comment
 
-0000	cabina01.dio	-						unusual image size
-0001	cabina02.dio	-						unusual image size
-0002	cabina04.dio	-						unusual image size
-#0003	cabina07.dio	-						unusual image size
-#0004	cabina08.dio	-						unusual image size
-#0005	cabina09.dio	-						unusual image size
+0000	cabina01.dio	-						unusual	image size
+0001	cabina02.dio	-						unusual	image size
+0002	cabina04.dio	-						unusual	image size
+#0003	cabina07.dio	-						unusual	image size
+#0004	cabina08.dio	-						unusual	image size
+#0005	cabina09.dio	-						unusual	image size
 
-0010	cabinb01.dio	-						unusual bits allocated values
-0011	cabinb03.dio	-						unusual bits allocated values
-0012	cabinb07.dio	-						unusual bits allocated values
-0013	cabinb08.dio	-						unusual bits allocated values
-0014	cabinb09.dio	-						unusual bits allocated values
-0015	cabinb13.dio	-						unusual bits allocated values
-0016	cabinb16.dio	-						unusual bits allocated values
-0017	cabinb18.dio	-						unusual bits allocated values
-#0018	cabinb27.dio	-						unusual bits allocated values
-0019	cabinb28.dio	-						unusual bits allocated values
+0010	cabinb01.dio	-						unusual	bits allocated values
+0011	cabinb03.dio	-						unusual	bits allocated values
+0012	cabinb07.dio	-						unusual	bits allocated values
+0013	cabinb08.dio	-						unusual	bits allocated values
+0014	cabinb09.dio	-						unusual	bits allocated values
+0015	cabinb13.dio	-						unusual	bits allocated values
+0016	cabinb16.dio	-						unusual	bits allocated values
+0017	cabinb18.dio	-						unusual	bits allocated values
+#0018	cabinb27.dio	-						unusual	bits allocated values
+0019	cabinb28.dio	-						unusual	bits allocated values
 
-0020	cabinc01.dio	-						unusual bits stored / high bit values
-0021	cabinc03.dio	-						unusual bits stored / high bit values
-0022	cabinc05.dio	-						unusual bits stored / high bit values
-0023	cabinc07.dio	-						unusual bits stored / high bit values
-0024	cabinc09.dio	-						unusual bits stored / high bit values
-0025	cabinc12.dio	-						unusual bits stored / high bit values
-0026	cabinc13.dio	-						unusual bits stored / high bit values
-0027	cabinc16.dio	-						unusual bits stored / high bit values
-0028	cabinc17.dio	-						unusual bits stored / high bit values
-#0029	cabinc18.dio	-						unusual bits stored / high bit values
+0020	cabinc01.dio	-						unusual	bits stored	/ high bit values
+0021	cabinc03.dio	-						unusual	bits stored	/ high bit values
+0022	cabinc05.dio	-						unusual	bits stored	/ high bit values
+0023	cabinc07.dio	-						unusual	bits stored	/ high bit values
+0024	cabinc09.dio	-						unusual	bits stored	/ high bit values
+0025	cabinc12.dio	-						unusual	bits stored	/ high bit values
+0026	cabinc13.dio	-						unusual	bits stored	/ high bit values
+0027	cabinc16.dio	-						unusual	bits stored	/ high bit values
+0028	cabinc17.dio	-						unusual	bits stored	/ high bit values
+#0029	cabinc18.dio	-						unusual	bits stored	/ high bit values
 
-0030	cabind01.dio	-						sign extended pixel representation samples
-0031	cabind02.dio	-						sign extended pixel representation samples
-0032	cabind03.dio	-						sign extended pixel representation samples
-0033	cabind04.dio	-						sign extended pixel representation samples
-0034	cabind05.dio	-						sign extended pixel representation samples
-0035	cabind06.dio	-						sign extended pixel representation samples
-#0036	cabind07.dio	-						sign extended pixel representation samples
-#0037	cabind08.dio	-						sign extended pixel representation samples
+0030	cabind01.dio	-						sign extended pixel	representation samples
+0031	cabind02.dio	-						sign extended pixel	representation samples
+0032	cabind03.dio	-						sign extended pixel	representation samples
+0033	cabind04.dio	-						sign extended pixel	representation samples
+0034	cabind05.dio	-						sign extended pixel	representation samples
+0035	cabind06.dio	-						sign extended pixel	representation samples
+#0036	cabind07.dio	-						sign extended pixel	representation samples
+#0037	cabind08.dio	-						sign extended pixel	representation samples
 
-0040	cabine01.dio	+Sxf 1 +a				unusual pixel aspect ratio
-0041	cabine02.dio	+Sxf 1 +a				unusual pixel aspect ratio
-0042	cabine03.dio	+Sxf 1 +a				unusual pixel aspect ratio
-0043	cabine04.dio	+Sxf 1 +a				unusual pixel aspect ratio
-0044	cabine05.dio	+Sxf 1 +a				unusual pixel aspect ratio
+0040	cabine01.dio	+Sxf 1 +a				unusual	pixel aspect ratio
+0041	cabine02.dio	+Sxf 1 +a				unusual	pixel aspect ratio
+0042	cabine03.dio	+Sxf 1 +a				unusual	pixel aspect ratio
+0043	cabine04.dio	+Sxf 1 +a				unusual	pixel aspect ratio
+0044	cabine05.dio	+Sxf 1 +a				unusual	pixel aspect ratio
 
-0100	cabinf01.dio	-						photometric interpretation: HSV
-0101	cabinf03.dio	-						photometric interpretation: HSV
-0102	cabinf04.dio	-						photometric interpretation: HSV
-0103	cabinf05.dio	-						photometric interpretation: HSV
-0104	cabinf06.dio	-						photometric interpretation: HSV
-0105	cabinf08.dio	-						photometric interpretation: HSV
-0106	cabinf09.dio	-						photometric interpretation: HSV
-0107	cabinf10.dio	-						photometric interpretation: HSV
-0108	cabinf11.dio	-						photometric interpretation: HSV
-0109	cabinf12.dio	-						photometric interpretation: HSV
+0100	cabinf01.dio	-						photometric	interpretation:	HSV
+0101	cabinf03.dio	-						photometric	interpretation:	HSV
+0102	cabinf04.dio	-						photometric	interpretation:	HSV
+0103	cabinf05.dio	-						photometric	interpretation:	HSV
+0104	cabinf06.dio	-						photometric	interpretation:	HSV
+0105	cabinf08.dio	-						photometric	interpretation:	HSV
+0106	cabinf09.dio	-						photometric	interpretation:	HSV
+0107	cabinf10.dio	-						photometric	interpretation:	HSV
+0108	cabinf11.dio	-						photometric	interpretation:	HSV
+0109	cabinf12.dio	-						photometric	interpretation:	HSV
 
-0110	cabinf13.dio	-						photometric interpretation: RGB
-0111	cabinf15.dio	-						photometric interpretation: RGB
-0112	cabinf16.dio	-						photometric interpretation: RGB
-0113	cabinf17.dio	-						photometric interpretation: RGB
-0114	cabinf18.dio	-						photometric interpretation: RGB
-0115	cabinf20.dio	-						photometric interpretation: RGB
-0116	cabinf21.dio	-						photometric interpretation: RGB
-0117	cabinf22.dio	-						photometric interpretation: RGB
-0118	cabinf23.dio	-						photometric interpretation: RGB
-0119	cabinf24.dio	-						photometric interpretation: RGB
+0110	cabinf13.dio	-						photometric	interpretation:	RGB
+0111	cabinf15.dio	-						photometric	interpretation:	RGB
+0112	cabinf16.dio	-						photometric	interpretation:	RGB
+0113	cabinf17.dio	-						photometric	interpretation:	RGB
+0114	cabinf18.dio	-						photometric	interpretation:	RGB
+0115	cabinf20.dio	-						photometric	interpretation:	RGB
+0116	cabinf21.dio	-						photometric	interpretation:	RGB
+0117	cabinf22.dio	-						photometric	interpretation:	RGB
+0118	cabinf23.dio	-						photometric	interpretation:	RGB
+0119	cabinf24.dio	-						photometric	interpretation:	RGB
 
 # 0120 - 0129 : ARGB
 
-0130	cabinf37.dio	-						photometric interpretation: CYMK
-0131	cabinf39.dio	-						photometric interpretation: CYMK
-0132	cabinf40.dio	-						photometric interpretation: CYMK
-0133	cabinf41.dio	-						photometric interpretation: CYMK
-0134	cabinf42.dio	-						photometric interpretation: CYMK
-0135	cabinf44.dio	-						photometric interpretation: CYMK
-0136	cabinf45.dio	-						photometric interpretation: CYMK
-0137	cabinf46.dio	-						photometric interpretation: CYMK
-0138	cabinf47.dio	-						photometric interpretation: CYMK
-0139	cabinf48.dio	-						photometric interpretation: CYMK
+0130	cabinf37.dio	-						photometric	interpretation:	CYMK
+0131	cabinf39.dio	-						photometric	interpretation:	CYMK
+0132	cabinf40.dio	-						photometric	interpretation:	CYMK
+0133	cabinf41.dio	-						photometric	interpretation:	CYMK
+0134	cabinf42.dio	-						photometric	interpretation:	CYMK
+0135	cabinf44.dio	-						photometric	interpretation:	CYMK
+0136	cabinf45.dio	-						photometric	interpretation:	CYMK
+0137	cabinf46.dio	-						photometric	interpretation:	CYMK
+0138	cabinf47.dio	-						photometric	interpretation:	CYMK
+0139	cabinf48.dio	-						photometric	interpretation:	CYMK
 
 # 0140 - 0149 : PALETTE
 
-0150	cabinf56.dio	-						photometric interpretation: MONO1/2
-0151	cabinf57.dio	-						photometric interpretation: MONO1/2
-0152	cabinf58.dio	-						photometric interpretation: MONO1/2
-0153	cabinf59.dio	-						photometric interpretation: MONO1/2
-0154	cabinf60.dio	-						photometric interpretation: MONO1/2
-0155	cabinf61.dio	-						photometric interpretation: MONO1/2
-0156	cabinf63.dio	-						photometric interpretation: MONO1/2
-0157	cabinf64.dio	-						photometric interpretation: MONO1/2
-0158	cabinf65.dio	-						photometric interpretation: MONO1/2
-0159	cabinf66.dio	-						photometric interpretation: MONO1/2
+0150	cabinf56.dio	-						photometric	interpretation:	MONO1/2
+0151	cabinf57.dio	-						photometric	interpretation:	MONO1/2
+0152	cabinf58.dio	-						photometric	interpretation:	MONO1/2
+0153	cabinf59.dio	-						photometric	interpretation:	MONO1/2
+0154	cabinf60.dio	-						photometric	interpretation:	MONO1/2
+0155	cabinf61.dio	-						photometric	interpretation:	MONO1/2
+0156	cabinf63.dio	-						photometric	interpretation:	MONO1/2
+0157	cabinf64.dio	-						photometric	interpretation:	MONO1/2
+0158	cabinf65.dio	-						photometric	interpretation:	MONO1/2
+0159	cabinf66.dio	-						photometric	interpretation:	MONO1/2
 
-0160	cabinf67.dio	-						photometric interpretation: YCbCr
-0161	cabinf68.dio	-						photometric interpretation: YCbCr
-0162	cabinf70.dio	-						photometric interpretation: YCbCr
-0163	cabinf71.dio	-						photometric interpretation: YCbCr
-0164	cabinf72.dio	-						photometric interpretation: YCbCr
-0165	cabinf75.dio	-						photometric interpretation: YCbCr
-0166	cabinf76.dio	-						photometric interpretation: YCbCr
-0167	cabinf77.dio	-						photometric interpretation: YCbCr
-0168	cabinf78.dio	-						photometric interpretation: YCbCr
-0169	cabinf91.dio	-						photometric interpretation: YCbCr
+0160	cabinf67.dio	-						photometric	interpretation:	YCbCr
+0161	cabinf68.dio	-						photometric	interpretation:	YCbCr
+0162	cabinf70.dio	-						photometric	interpretation:	YCbCr
+0163	cabinf71.dio	-						photometric	interpretation:	YCbCr
+0164	cabinf72.dio	-						photometric	interpretation:	YCbCr
+0165	cabinf75.dio	-						photometric	interpretation:	YCbCr
+0166	cabinf76.dio	-						photometric	interpretation:	YCbCr
+0167	cabinf77.dio	-						photometric	interpretation:	YCbCr
+0168	cabinf78.dio	-						photometric	interpretation:	YCbCr
+0169	cabinf91.dio	-						photometric	interpretation:	YCbCr
 
-0170	cabinf80.dio	-						photometric interpretation: YCbCr 422/Partial
-0171	cabinf81.dio	-						photometric interpretation: YCbCr 422/Partial
-0172	cabinf82.dio	-						photometric interpretation: YCbCr 422/Partial
-0173	cabinf84.dio	-						photometric interpretation: YCbCr 422/Partial
-0174	cabinf85.dio	-						photometric interpretation: YCbCr 422/Partial
-0175	cabinf88.dio	-						photometric interpretation: YCbCr 422/Partial
-0176	cabinf89.dio	-						photometric interpretation: YCbCr 422/Partial
-0177	cabinf90.dio	-						photometric interpretation: YCbCr 422/Partial
-0178	cabinf92.dio	-						photometric interpretation: YCbCr 422/Partial
-0179	cabinf93.dio	-						photometric interpretation: YCbCr 422/Partial
+0170	cabinf80.dio	-						photometric	interpretation:	YCbCr 422/Partial
+0171	cabinf81.dio	-						photometric	interpretation:	YCbCr 422/Partial
+0172	cabinf82.dio	-						photometric	interpretation:	YCbCr 422/Partial
+0173	cabinf84.dio	-						photometric	interpretation:	YCbCr 422/Partial
+0174	cabinf85.dio	-						photometric	interpretation:	YCbCr 422/Partial
+0175	cabinf88.dio	-						photometric	interpretation:	YCbCr 422/Partial
+0176	cabinf89.dio	-						photometric	interpretation:	YCbCr 422/Partial
+0177	cabinf90.dio	-						photometric	interpretation:	YCbCr 422/Partial
+0178	cabinf92.dio	-						photometric	interpretation:	YCbCr 422/Partial
+0179	cabinf93.dio	-						photometric	interpretation:	YCbCr 422/Partial
 
-0200	cabing01.dio	+Wl 1					VOI LUT
-0201	cabing02.dio	+Wl 1					VOI LUT
-0202	cabing03.dio	+Wl 1					VOI LUT
-0203	cabing04.dio	+Wl 1					VOI LUT
-0204	cabing05.dio	+Wl 1					VOI LUT
-0205	cabing06.dio	+Wl 1					VOI LUT
-0206	cabing07.dio	+Wl 1					VOI LUT
-0207	cabing08.dio	+Wl 1					VOI LUT
-0208	cabing09.dio	+Wl 1					VOI LUT
-0209	cabing10.dio	+Wl 1					VOI LUT
-0210	cabing11.dio	+Wl 1					VOI LUT
-0211	cabing12.dio	+Wl 1					VOI LUT
-0212	cabing13.dio	+Wl 1					VOI LUT
-0213	cabing14.dio	+Wl 1					VOI LUT
-0214	cabing15.dio	+Wl 1					VOI LUT
-0215	cabing16.dio	+Wl 1					VOI LUT
-0216	cabing17.dio	+Wl 1					VOI LUT
-0217	cabing18.dio	+Wl 1					VOI LUT
-0218	cabing19.dio	+Wl 1					VOI LUT
-0219	cabing20.dio	+Wl 1					VOI LUT
-0220	cabing21.dio	+Wl 1					VOI LUT
-0221	cabing22.dio	+Wl 1					VOI LUT
-0222	cabing23.dio	+Wl 1					VOI LUT
-0223	cabing24.dio	+Wl 1					VOI LUT
-0224	cabing25.dio	+Wl 1					VOI LUT
-0225	cabing26.dio	+Wl 1					VOI LUT
-0226	cabing27.dio	+Wl 1					VOI LUT
-0227	cabing28.dio	+Wl 1					VOI LUT
-0228	cabing29.dio	+Wl 1					VOI LUT
-0229	cabing30.dio	+Wl 1					VOI LUT
-0230	cabing31.dio	+Wl 1					VOI LUT
-0231	cabing32.dio	+Wl 1					VOI LUT
-0232	cabing33.dio	+Wl 1					VOI LUT
-0233	cabing34.dio	+Wl 1					VOI LUT
-0234	cabing35.dio	+Wl 1					VOI LUT
-0235	cabing36.dio	+Wl 1					VOI LUT
-0236	cabing37.dio	+Wl 1					VOI LUT
-0237	cabing38.dio	+Wl 1					VOI LUT
-0238	cabing39.dio	+Wl 1					VOI LUT
-0239	cabing40.dio	+Wl 1					VOI LUT
-0240	cabing41.dio	+Wl 1					VOI LUT
-0241	cabing42.dio	+Wl 1					VOI LUT
-0242	cabing43.dio	+Wl 1					VOI LUT
-0243	cabing44.dio	+Wl 1					VOI LUT
-0244	cabing45.dio	+Wl 1					VOI LUT
-0245	cabing46.dio	+Wl 1					VOI LUT
-0246	cabing47.dio	+Wl 1					VOI LUT
+0200	cabing01.dio	+Wl	1					VOI	LUT
+0201	cabing02.dio	+Wl	1					VOI	LUT
+0202	cabing03.dio	+Wl	1					VOI	LUT
+0203	cabing04.dio	+Wl	1					VOI	LUT
+0204	cabing05.dio	+Wl	1					VOI	LUT
+0205	cabing06.dio	+Wl	1					VOI	LUT
+0206	cabing07.dio	+Wl	1					VOI	LUT
+0207	cabing08.dio	+Wl	1					VOI	LUT
+0208	cabing09.dio	+Wl	1					VOI	LUT
+0209	cabing10.dio	+Wl	1					VOI	LUT
+0210	cabing11.dio	+Wl	1					VOI	LUT
+0211	cabing12.dio	+Wl	1					VOI	LUT
+0212	cabing13.dio	+Wl	1					VOI	LUT
+0213	cabing14.dio	+Wl	1					VOI	LUT
+0214	cabing15.dio	+Wl	1					VOI	LUT
+0215	cabing16.dio	+Wl	1					VOI	LUT
+0216	cabing17.dio	+Wl	1					VOI	LUT
+0217	cabing18.dio	+Wl	1					VOI	LUT
+0218	cabing19.dio	+Wl	1					VOI	LUT
+0219	cabing20.dio	+Wl	1					VOI	LUT
+0220	cabing21.dio	+Wl	1					VOI	LUT
+0221	cabing22.dio	+Wl	1					VOI	LUT
+0222	cabing23.dio	+Wl	1					VOI	LUT
+0223	cabing24.dio	+Wl	1					VOI	LUT
+0224	cabing25.dio	+Wl	1					VOI	LUT
+0225	cabing26.dio	+Wl	1					VOI	LUT
+0226	cabing27.dio	+Wl	1					VOI	LUT
+0227	cabing28.dio	+Wl	1					VOI	LUT
+0228	cabing29.dio	+Wl	1					VOI	LUT
+0229	cabing30.dio	+Wl	1					VOI	LUT
+0230	cabing31.dio	+Wl	1					VOI	LUT
+0231	cabing32.dio	+Wl	1					VOI	LUT
+0232	cabing33.dio	+Wl	1					VOI	LUT
+0233	cabing34.dio	+Wl	1					VOI	LUT
+0234	cabing35.dio	+Wl	1					VOI	LUT
+0235	cabing36.dio	+Wl	1					VOI	LUT
+0236	cabing37.dio	+Wl	1					VOI	LUT
+0237	cabing38.dio	+Wl	1					VOI	LUT
+0238	cabing39.dio	+Wl	1					VOI	LUT
+0239	cabing40.dio	+Wl	1					VOI	LUT
+0240	cabing41.dio	+Wl	1					VOI	LUT
+0241	cabing42.dio	+Wl	1					VOI	LUT
+0242	cabing43.dio	+Wl	1					VOI	LUT
+0243	cabing44.dio	+Wl	1					VOI	LUT
+0244	cabing45.dio	+Wl	1					VOI	LUT
+0245	cabing46.dio	+Wl	1					VOI	LUT
+0246	cabing47.dio	+Wl	1					VOI	LUT
 
 0300	cabinh01.dio	-						modality LUT
 0301	cabinh02.dio	-						modality LUT
@@ -201,18 +201,18 @@
 
 # special test cases
 
-1000	cabinb08.dio	+Ww 100 150				window center and width
-1001	cabinb08.dio	+Wm						min/max window
-1002	cabinb08.dio	+Wh 5					histogram window
-1003	cabinb12.dio	+Dg +D monitor.lut		GSDF calibration
-1004	cabinb12.dio	+Dc +D monitor.lut		CIELAB calibration
+1000	cabinb08.dio	+Ww	100	150				window center and width
+1001	cabinb08.dio	+Wm						min/max	window
+1002	cabinb08.dio	+Wh	5					histogram window
+1003	cabinb12.dio	+Dg	+D monitor.lut		GSDF calibration
+1004	cabinb12.dio	+Dc	+D monitor.lut		CIELAB calibration
 1005	cabinb12.dio	+Rl						rotate left
 1006	cabinb08.dio	+Rr						rotate right
 1007	cabinb08.dio	+Rtd +Lh				rotate top-down, flip
 1008	cabind02.dio	+Sxf 1.5				scale-up 1.5
 1009	cabind04.dio	+Sxf 2.0 -a				scale-up 2.0 (no interpolation)
 1010	cabine01.dio	+Syf 1.0 +a				pixel aspect ratio 1:4
-1011	cabinf62.dio	+Piv					inverse PLUT shape
+1011	cabinf62.dio	+Piv					inverse	PLUT shape
 
 1020	ovl_both.dio	-						overlays
 1021	ovl_sep.dio		-						overlays
@@ -220,3 +220,5 @@
 1023	ovl_both.dio	+Rtd +Lh				overlays rotated/flipped
 1024	ovl_sep.dio		+Syf 1.5				overlays scaled
 1025	ovl_emb.dio		+C -10 10 800 300		overlays clipped
+1026	ovl_both_ob.dio	-						overlays with VR=OB
+1027	ovl_sep_ob.dio	-						overlays with VR=OB
