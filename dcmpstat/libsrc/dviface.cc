@@ -22,13 +22,14 @@
  *  Purpose: DVPresentationState
  *
  *  Last Update:      $Author: vorwerk $
- *  Update Date:      $Date: 1999-01-04 13:10:30 $
- *  CVS/RCS Revision: $Revision: 1.4 $
+ *  Update Date:      $Date: 1999-01-04 13:28:11 $
+ *  CVS/RCS Revision: $Revision: 1.5 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
  *
  */
+
 
 
 #include "osconfig.h"    /* make sure OS specific configuration is included first */
@@ -680,7 +681,10 @@ E_Condition DVInterface::saveFileFormat(const char *filename,
 /*
  *  CVS/RCS Log:
  *  $Log: dviface.cc,v $
- *  Revision 1.4  1999-01-04 13:10:30  vorwerk
+ *  Revision 1.5  1999-01-04 13:28:11  vorwerk
+ *  line inserted
+ *
+ *  Revision 1.4  1999/01/04 13:10:30  vorwerk
  *  getSeriesPerformingPhysicainsName() changed in getSeriesPerformingPhysiciansName()
  *
  *  Revision 1.3  1998/12/22 17:57:13  meichel

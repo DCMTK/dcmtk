@@ -1,4 +1,5 @@
 **** Changes from 1999.1.4 (vorwerk)
+
 - getSeriesPerformingPhysicainsName() changed in	
   getSeriesPerformingPhysiciansName() 
   Affects: dcmpstat/include/dviface.h

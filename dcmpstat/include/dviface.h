@@ -23,13 +23,14 @@
  *    classes: DVInterface
  *
  *  Last Update:      $Author: vorwerk $
- *  Update Date:      $Date: 1999-01-04 13:02:26 $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  Update Date:      $Date: 1999-01-04 13:27:16 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
  *
  */
+
 
  
 #ifndef DVIFACE_H
@@ -281,7 +282,10 @@ private:
 
 /*
  *  $Log: dviface.h,v $
- *  Revision 1.5  1999-01-04 13:02:26  vorwerk
+ *  Revision 1.6  1999-01-04 13:27:16  vorwerk
+ *  line inserted
+ *
+ *  Revision 1.5  1999/01/04 13:02:26  vorwerk
  *  getSeriesPerformingPhysicainsName() changed in getSeriesPerformingPhysiciansName()
  *
  *  Revision 1.4  1998/12/22 17:57:03  meichel
