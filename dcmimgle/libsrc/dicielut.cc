@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2002, OFFIS
+ *  Copyright (C) 1996-2003, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,10 +21,10 @@
  *
  *  Purpose: DicomCIELABLUT (Source)
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-11-27 14:08:11 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2003-02-12 11:37:14 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/libsrc/dicielut.cc,v $
- *  CVS/RCS Revision: $Revision: 1.16 $
+ *  CVS/RCS Revision: $Revision: 1.17 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -52,6 +52,8 @@ DiCIELABLUT::DiCIELABLUT(const unsigned long count,
                          const unsigned long ddl_cnt,
                          const double val_min,
                          const double val_max,
+                         const double lum_min,
+                         const double lum_max,
                          const double amb,
                          const OFBool inverse,
                          ostream *stream,
@@ -68,7 +70,18 @@ DiCIELABLUT::DiCIELABLUT(const unsigned long count,
             ofConsole.unlockCerr();
         }
 #endif
-        Valid = createLUT(ddl_tab, val_tab, ddl_cnt, val_min, val_max, inverse, stream, printMode);
+        if (val_min >= val_max)
+        {
+            if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Errors))
+            {
+                ofConsole.lockCerr() << "ERROR: invalid value range for CIELAB LUT creation ("
+                                     << val_min << " - " << val_max << ") !" << endl;
+                ofConsole.unlockCerr();
+            }
+        }
+        /* create the lookup table */
+        Valid = createLUT(ddl_tab, val_tab, ddl_cnt, val_min, val_max, lum_min, lum_max,
+                          inverse, stream, printMode);
     }
 }
 
@@ -90,12 +103,14 @@ int DiCIELABLUT::createLUT(const Uint16 *ddl_tab,
                            const unsigned long ddl_cnt,
                            const double val_min,
                            const double val_max,
+                           const double lum_min,
+                           const double lum_max,
                            const OFBool inverse,
                            ostream *stream,
                            const OFBool printMode)
 {
     int status = 0;
-    if ((ddl_tab != NULL) && (val_tab != NULL) && (ddl_cnt > 0) && (val_max > 0))
+    if ((ddl_tab != NULL) && (val_tab != NULL) && (ddl_cnt > 0) && (val_max > 0) && (val_min < val_max))
     {
         const unsigned long cin_ctn = (inverse) ? ddl_cnt : Count;      // number of points to be interpolated
         double *cielab = new double[cin_ctn];
@@ -105,8 +120,9 @@ int DiCIELABLUT::createLUT(const Uint16 *ddl_tab,
             register double llin = 0;
             register double cub = 0;
             const double amb = getAmbientLightValue();
-            const double min = val_min + amb;
-            const double max = val_max + amb;
+            /* check whether Lmin or Lmax is set */
+            const double min = (lum_min < 0) ? val_min + amb : lum_min /*includes 'amb'*/;
+            const double max = (lum_max < 0) ? val_max + amb : lum_max /*includes 'amb'*/;
             const double lmin = min / max;
             const double hmin = (lmin > 0.008856) ? 116.0 * pow(lmin, 1.0 / 3.0) - 16 : 903.3 * lmin;
             const double lfac = (100.0 - hmin) / ((double)(cin_ctn - 1) * 903.3);
@@ -124,6 +140,7 @@ int DiCIELABLUT::createLUT(const Uint16 *ddl_tab,
             {
                 register Uint16 *q = DataBuffer;
                 register unsigned long j = 0;
+                /* check whether to apply the inverse transformation */
                 if (inverse)
                 {
                     register double v;
@@ -139,11 +156,33 @@ int DiCIELABLUT::createLUT(const Uint16 *ddl_tab,
                         *(q++) = ddl_tab[j];
                     }
                 } else {
+                    /*initial DDL boundaries */
+                    unsigned int ddl_min = 0;
+                    unsigned int ddl_max= ddl_cnt - 1;
+                    /* check whether minimum luminance is specified */
+                    if (lum_min >= 0)
+                    {
+                        j = ddl_min;
+                        /* determine corresponding minimum DDL value */
+                        while ((j < ddl_max) && (val_tab[j] + amb < lum_min))
+                            j++;
+                        ddl_min = j;
+                    }
+                    /* check whether maximum luminance is specified */
+                    if (lum_max >= 0)
+                    {
+                        j = ddl_max;
+                        /* determine corresponding maximum DDL value */
+                        while ((j > ddl_min) && (val_tab[j] + amb > lum_max))
+                            j--;
+                        ddl_max = j;
+                    }
+                    j = ddl_min;
                     register const double *r = cielab;
                     /* convert to DDL */
                     for (i = Count; i != 0; i--, r++)
                     {
-                        while ((j + 1 < ddl_cnt) && (val_tab[j] + amb < *r))  // search for closest index, assuming monotony
+                        while ((j < ddl_max) && (val_tab[j] + amb < *r))  // search for closest index, assuming monotony
                             j++;
                         if ((j > 0) && (fabs(val_tab[j - 1] + amb - *r) < fabs(val_tab[j] + amb - *r)))
                             j--;
@@ -192,7 +231,10 @@ int DiCIELABLUT::createLUT(const Uint16 *ddl_tab,
  *
  * CVS/RCS Log:
  * $Log: dicielut.cc,v $
- * Revision 1.16  2002-11-27 14:08:11  meichel
+ * Revision 1.17  2003-02-12 11:37:14  joergr
+ * Added Dmin/max support to CIELAB calibration routines.
+ *
+ * Revision 1.16  2002/11/27 14:08:11  meichel
  * Adapted module dcmimgle to use of new header file ofstdinc.h
  *
  * Revision 1.15  2002/07/19 13:09:31  joergr

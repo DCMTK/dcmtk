@@ -22,9 +22,9 @@
  *  Purpose: DicomDisplayFunction (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-02-11 16:32:02 $
+ *  Update Date:      $Date: 2003-02-12 11:35:16 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/didispfn.h,v $
- *  CVS/RCS Revision: $Revision: 1.19 $
+ *  CVS/RCS Revision: $Revision: 1.20 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -174,6 +174,28 @@ class DiDisplayFunction
         return MaxDDLValue;
     }
 
+    /** get minimum luminance/OD value from the characteristic curve.
+     *  In case of a usually monotonous characteristic curve the value is
+     *  equivalent to the first/last entry of the array.
+     *
+     ** @return minimum luminance/OD value, 0 in case of error
+     */
+    inline double getMinValue() const
+    {
+        return MinValue;
+    }
+
+    /** get maximum luminance/OD value from the characteristic curve.
+     *  In case of a usually monotonous characteristic curve the value is
+     *  equivalent to the last/first entry of the array.
+     *
+     ** @return maximum luminance/OD value, 0 in case of error
+     */
+    inline double getMaxValue() const
+    {
+        return MaxValue;
+    }
+
     /** get the luminance/OD value for a given DDL.
      *  Looks up a luminance/OD value in the device's characteristic curve.
      *  Please note that neither ambient light/illumination nor min/max
@@ -281,9 +303,9 @@ class DiDisplayFunction
      *  measured in optical density (OD). applicable to printers only.
      *  typical value: 0.2
      *
-     ** @param  value  Dmin value to be set (or -1 to unset)
+     ** @param  value  Dmin value to be set (or < 0 to unset)
      *
-     ** @return status, true if successful, false otherwise
+     ** @return status, true if successful (1 = Dmin set, 2 = Dmin unset), false otherwise
      */
     virtual int setMinDensityValue(const double value);
     
@@ -301,11 +323,25 @@ class DiDisplayFunction
      *  measured in optical density (OD). applicable to printers only.
      *  typical value: 3.0
      *
-     ** @param  value  Dmax value to be set (or -1 to unset)
+     ** @param  value  Dmax value to be set (or < 0 to unset)
      *
-     ** @return status, true if successful, false otherwise
+     ** @return status, true if successful (1 = Dmax set, 2 = Dmax unset), false otherwise
      */
     virtual int setMaxDensityValue(const double value);
+
+    /** get minimum luminance value "Lmin".
+     *  measured in cd/m^2. value is computed from "Dmax".
+     *
+     ** @return current Lmin value or -1 if Dmax not set
+     */
+    double getMinLuminanceValue() const;
+
+    /** get maximum luminance value "Lmax".
+     *  measured in cd/m^2. value is computed from "Dmin".
+     *
+     ** @return current Lmax value or -1 if Dmin not set
+     */
+    double getMaxLuminanceValue() const;
 
     /** get order of the polynomial curve fitting algorithm.
      *  used to interpolate the given base points.
@@ -394,6 +430,13 @@ class DiDisplayFunction
      */
     int calculateMinMax();
 
+    /** check whether Dmin and Dmax are properly specified.
+     *  report a warning message if "Dmin >= Dmax".
+     *
+     ** @return status, true if successful, false otherwise
+     */
+    int checkMinMaxDensity() const;
+
     /// status flag, indicating whether display function is valid
     int Valid;
 
@@ -452,7 +495,10 @@ class DiDisplayFunction
  *
  * CVS/RCS Log:
  * $Log: didispfn.h,v $
- * Revision 1.19  2003-02-11 16:32:02  joergr
+ * Revision 1.20  2003-02-12 11:35:16  joergr
+ * Added Dmin/max support to CIELAB calibration routines.
+ *
+ * Revision 1.19  2003/02/11 16:32:02  joergr
  * Added two new functions to determine the luminance/OD value of a particular
  * DDL according to the device's characteristic curve and vice versa.
  *

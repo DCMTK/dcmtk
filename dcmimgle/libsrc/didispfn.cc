@@ -22,9 +22,9 @@
  *  Purpose: DicomDisplayFunction (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-02-11 16:32:15 $
+ *  Update Date:      $Date: 2003-02-12 11:37:14 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/libsrc/didispfn.cc,v $
- *  CVS/RCS Revision: $Revision: 1.37 $
+ *  CVS/RCS Revision: $Revision: 1.38 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -327,14 +327,14 @@ int DiDisplayFunction::setIlluminationValue(const double value)
 int DiDisplayFunction::setMinDensityValue(const double value)
 {
     MinDensity = value;
-    return 1;
+    return (value < 0) ? 2 : 1;
 }
 
 
 int DiDisplayFunction::setMaxDensityValue(const double value)
 {
     MaxDensity = value;
-    return 1;
+    return (value < 0) ? 2 : 1;
 }
 
 
@@ -680,6 +680,36 @@ int DiDisplayFunction::calculateMinMax()
 }
 
 
+int DiDisplayFunction::checkMinMaxDensity() const
+{
+    if ((MinDensity >= 0) && (MaxDensity >= 0) && (MinDensity >= MaxDensity))
+    {
+        if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Warnings))
+        {
+            ofConsole.lockCerr() << "WARNING: invalid optical density range (Dmin = " << MinDensity
+                                 << ", Dmax = " << MaxDensity << ") !" << endl;
+            ofConsole.unlockCerr();
+        }
+        return 0;
+    }
+    return 1;
+}
+
+
+double DiDisplayFunction::getMinLuminanceValue() const
+{
+    /* Dmax = -1 means unspecified */
+    return (MaxDensity < 0) ? -1 : convertODtoLum(MaxDensity);
+}
+
+
+double DiDisplayFunction::getMaxLuminanceValue() const
+{
+    /* Dmin = -1 means unspecified */
+    return (MinDensity < 0) ? -1 : convertODtoLum(MinDensity);
+}
+
+
 double *DiDisplayFunction::convertODtoLumTable(const double *od_tab,
                                                const unsigned long count,
                                                const OFBool useAmb)
@@ -687,7 +717,7 @@ double *DiDisplayFunction::convertODtoLumTable(const double *od_tab,
     double *lum_tab = NULL;
     if ((od_tab != NULL) && (count > 0))
     {
-        /* create a table for the luminance values */
+        /* create a new table for the luminance values */
         lum_tab = new double[count];
         if (lum_tab != NULL)
         {
@@ -729,7 +759,10 @@ double DiDisplayFunction::convertODtoLum(const double value,
  *
  * CVS/RCS Log:
  * $Log: didispfn.cc,v $
- * Revision 1.37  2003-02-11 16:32:15  joergr
+ * Revision 1.38  2003-02-12 11:37:14  joergr
+ * Added Dmin/max support to CIELAB calibration routines.
+ *
+ * Revision 1.37  2003/02/11 16:32:15  joergr
  * Added two new functions to determine the luminance/OD value of a particular
  * DDL according to the device's characteristic curve and vice versa.
  *

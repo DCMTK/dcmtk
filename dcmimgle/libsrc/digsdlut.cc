@@ -22,9 +22,9 @@
  *  Purpose: DicomGSDFLUT (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-02-11 10:02:31 $
+ *  Update Date:      $Date: 2003-02-12 11:37:14 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/libsrc/digsdlut.cc,v $
- *  CVS/RCS Revision: $Revision: 1.15 $
+ *  CVS/RCS Revision: $Revision: 1.16 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -79,8 +79,8 @@ DiGSDFLUT::DiGSDFLUT(const unsigned long count,
         {
             if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Errors))
             {
-                ofConsole.lockCerr() << "ERROR: invalid JND range (" << jnd_min << " - "
-                                                                     << jnd_max << ") !" << endl;
+                ofConsole.lockCerr() << "ERROR: invalid JND range for GSDF LUT creation ("
+                                     << jnd_min << " - " << jnd_max << ") !" << endl;
                 ofConsole.unlockCerr();
             }
         }
@@ -251,7 +251,10 @@ int DiGSDFLUT::createLUT(const Uint16 *ddl_tab,
  *
  * CVS/RCS Log:
  * $Log: digsdlut.cc,v $
- * Revision 1.15  2003-02-11 10:02:31  joergr
+ * Revision 1.16  2003-02-12 11:37:14  joergr
+ * Added Dmin/max support to CIELAB calibration routines.
+ *
+ * Revision 1.15  2003/02/11 10:02:31  joergr
  * Added support for Dmin/max to calibration routines (required for printers).
  *
  * Revision 1.14  2002/11/27 14:08:12  meichel

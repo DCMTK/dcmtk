@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2002, OFFIS
+ *  Copyright (C) 1996-2003, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -21,10 +21,10 @@
  *
  *  Purpose: DicomCIELABFunction (Source)
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2002-11-27 14:08:10 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2003-02-12 11:37:14 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/libsrc/diciefn.cc,v $
- *  CVS/RCS Revision: $Revision: 1.17 $
+ *  CVS/RCS Revision: $Revision: 1.18 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -139,17 +139,18 @@ DiDisplayLUT *DiCIELABFunction::getDisplayLUT(unsigned long count)
             double *tmp_tab = convertODtoLumTable(LODValue, ValueCount, OFFalse /*useAmb*/);
             if (tmp_tab != NULL)
             {
+                checkMinMaxDensity();
                 /* create new CIELAB LUT */
                 lut = new DiCIELABLUT(count, MaxDDLValue, DDLValue, tmp_tab, ValueCount,
                     convertODtoLum(MaxValue, OFFalse /*useAmb*/), convertODtoLum(MinValue, OFFalse /*useAmb*/),
-                    AmbientLight, (DeviceType == EDT_Scanner));
+                    getMinLuminanceValue(), getMaxLuminanceValue(), AmbientLight, (DeviceType == EDT_Scanner));
                 /* delete temporary table */
                 delete[] tmp_tab;
             }
         } else {
             /* softcopy: values are already in luminance */
             lut = new DiCIELABLUT(count, MaxDDLValue, DDLValue, LODValue, ValueCount,
-                MinValue, MaxValue, AmbientLight, (DeviceType == EDT_Camera));
+                MinValue, MaxValue, -1 /*Lmin*/, -1 /*Lmax*/, AmbientLight, (DeviceType == EDT_Camera));
         }
     }
     return lut;
@@ -181,9 +182,41 @@ int DiCIELABFunction::writeCurveData(const char *filename,
             file << "# Ambient light [cd/m^2] : " << AmbientLight << endl;
             if ((DeviceType == EDT_Printer) || (DeviceType == EDT_Scanner))
             {
+                const double min_lum = getMinLuminanceValue();
+                const double max_lum = getMaxLuminanceValue();
                 file << "# Luminance w/o [cd/m^2] : " << convertODtoLum(MaxValue, OFFalse /*useAmb*/) << " - "
-                                                      << convertODtoLum(MinValue, OFFalse /*useAmb*/) << endl;
-                file << "# Optical density   [OD] : " << MinValue << " - " << MaxValue << endl;
+                                                      << convertODtoLum(MinValue, OFFalse /*useAmb*/);
+                if ((min_lum >= 0) || (max_lum >= 0))
+                {
+                    file << " (Lmin = ";
+                    if (min_lum >= 0)
+                        file << min_lum;
+                    else
+                        file << "n/s";
+                    file << ", Lmax = ";
+                    if (max_lum >= 0)
+                        file << max_lum;
+                    else
+                        file << "n/s";
+                    file << ")";
+                }
+                file << endl;
+                file << "# Optical density   [OD] : " << MinValue << " - " << MaxValue;
+                if ((MinDensity >= 0) || (MaxDensity >= 0))
+                {
+                    file << " (Dmin = ";
+                    if (MinDensity >= 0)
+                        file << MinDensity;
+                    else
+                        file << "n/s";
+                    file << ", Dmax = ";
+                    if (MaxDensity >= 0)
+                        file << MaxDensity;
+                    else
+                        file << "n/s";
+                    file << ")";
+                }
+                file << endl;
             } else
                 file << "# Luminance w/o [cd/m^2] : " << MinValue << " - " << MaxValue << endl;
             file << "# Interpolation method   : ";
@@ -214,16 +247,17 @@ int DiCIELABFunction::writeCurveData(const char *filename,
                 double *tmp_tab = convertODtoLumTable(LODValue, ValueCount, OFFalse /*useAmb*/);
                 if (tmp_tab != NULL)
                 {
+                    checkMinMaxDensity();
                     lut = new DiCIELABLUT(ValueCount, MaxDDLValue, DDLValue, tmp_tab, ValueCount,
                         convertODtoLum(MaxValue, OFFalse /*useAmb*/), convertODtoLum(MinValue, OFFalse /*useAmb*/),
-                        AmbientLight, inverseLUT, &file, mode);
+                        getMinLuminanceValue(), getMaxLuminanceValue(), AmbientLight, inverseLUT, &file, mode);
                     /* delete temporary table */
                     delete[] tmp_tab;
                 }
             } else {
                 /* softcopy: values are already in luminance */
                 lut = new DiCIELABLUT(ValueCount, MaxDDLValue, DDLValue, LODValue, ValueCount,
-                    MinValue, MaxValue, AmbientLight, inverseLUT, &file, mode);             // write curve data to file
+                    MinValue, MaxValue, -1 /*Lmin*/, -1 /*Lmax*/, AmbientLight, inverseLUT, &file, mode);
             }
             int status = (lut != NULL) && (lut->isValid());
             delete lut;
@@ -238,7 +272,10 @@ int DiCIELABFunction::writeCurveData(const char *filename,
  *
  * CVS/RCS Log:
  * $Log: diciefn.cc,v $
- * Revision 1.17  2002-11-27 14:08:10  meichel
+ * Revision 1.18  2003-02-12 11:37:14  joergr
+ * Added Dmin/max support to CIELAB calibration routines.
+ *
+ * Revision 1.17  2002/11/27 14:08:10  meichel
  * Adapted module dcmimgle to use of new header file ofstdinc.h
  *
  * Revision 1.16  2002/07/19 13:08:26  joergr

@@ -22,9 +22,9 @@
  *  Purpose: export display curves to a text file
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-02-11 16:38:50 $
+ *  Update Date:      $Date: 2003-02-12 11:34:35 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/apps/dcmdspfn.cc,v $
- *  CVS/RCS Revision: $Revision: 1.15 $
+ *  CVS/RCS Revision: $Revision: 1.16 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -109,10 +109,10 @@ int main(int argc, char *argv[])
                                                 "ambient light value (cd/m^2, default: file f)");
      cmd.addOption("--illumination",  "+Ci", 1, "[i]llumination : float",
                                                 "illumination value (cd/m^2, default: file f)");
-     cmd.addOption("--min-density",   "+Dn", 1, "[m]inimum density : float",
-                                                "minimum optical density value Dmin (OD)\n(default: off, only with --gsdf and for printers)");
-     cmd.addOption("--max-density",   "+Dx", 1, "[m]aximum density : float",
-                                                "maximum optical density value Dmax (OD)\n(default: off, only with --gsdf and for printers)");
+     cmd.addOption("--min-density",   "+Dn", 1, "[m]inimum optical density : float",
+                                                "Dmin value (default: off, only with +Ip and +Io)");
+     cmd.addOption("--max-density",   "+Dx", 1, "[m]aximum optical density : float",
+                                                "Dmax value (default: off, only with +Ip and +Io)");
      cmd.addOption("--ddl-count",     "+Cd", 1, "[n]umber of DDLs : integer",
                                                 "number of Device Driving Levels\n(default: 256, only with --lum/od-range)");
      cmd.addOption("--curve-fitting", "+Cf", 1, "[n]umber : integer",
@@ -143,10 +143,6 @@ int main(int argc, char *argv[])
             app.checkValue(cmd.getValueAndCheckMin(opt_ambLight, 0));
         if (cmd.findOption("--illumination"))
             app.checkValue(cmd.getValueAndCheckMin(opt_illum, 0));
-        if (cmd.findOption("--min-density"))
-            app.checkValue(cmd.getValueAndCheckMin(opt_Dmin, 0));
-        if (cmd.findOption("--max-density"))
-            app.checkValue(cmd.getValueAndCheckMin(opt_Dmax, (opt_Dmin < 0) ? 0.0 : opt_Dmin, OFFalse /*incl*/));
         if (cmd.findOption("--ddl-count"))
         {
             if (opt_ifname != NULL)
@@ -199,6 +195,17 @@ int main(int argc, char *argv[])
             opt_maxVal = DiDisplayFunction::convertODtoLum(minVal, 0 /*ambLight*/, opt_illum);
         }
         cmd.endOptionBlock();
+
+        if (cmd.findOption("--min-density"))
+        {
+            app.checkDependence("--min-density", "--printer-file or --od-range", deviceType == DiDisplayFunction::EDT_Printer);
+            app.checkValue(cmd.getValueAndCheckMin(opt_Dmin, 0));
+        }
+        if (cmd.findOption("--max-density"))
+        {
+            app.checkDependence("--max-density", "--printer-file or --od-range", deviceType == DiDisplayFunction::EDT_Printer);
+            app.checkValue(cmd.getValueAndCheckMin(opt_Dmax, (opt_Dmin < 0) ? 0.0 : opt_Dmin, OFFalse /*incl*/));
+        }
 
         if (cmd.findOption("--gsdf"))
             opt_outputMode++;
@@ -300,6 +307,22 @@ int main(int argc, char *argv[])
                         OUTPUT << "setting ambient light value ..." << endl;
                     disp->setAmbientLightValue(opt_ambLight);
                 }
+                /* Dmin/max only suppoted for printers */
+                if (disp->getDeviceType() == DiDisplayFunction::EDT_Printer)
+                {
+                    if (opt_Dmin >= 0)
+                    {
+                        if (opt_verboseMode > 1)
+                            OUTPUT << "setting minimum optical density value ..." << endl;
+                        disp->setMinDensityValue(opt_Dmin);
+                    }
+                    if (opt_Dmax >= 0)
+                    {
+                        if (opt_verboseMode > 1)
+                            OUTPUT << "setting maximum optical density value ..." << endl;
+                        disp->setMaxDensityValue(opt_Dmax);
+                    }
+                }
                 if (opt_verboseMode > 1)
                     OUTPUT << "writing output file: " << opt_ofname << endl;
                 if (!disp->writeCurveData(opt_ofname, opt_ifname != NULL))
@@ -319,7 +342,10 @@ int main(int argc, char *argv[])
  *
  * CVS/RCS Log:
  * $Log: dcmdspfn.cc,v $
- * Revision 1.15  2003-02-11 16:38:50  joergr
+ * Revision 1.16  2003-02-12 11:34:35  joergr
+ * Added Dmin/max support to CIELAB calibration routines.
+ *
+ * Revision 1.15  2003/02/11 16:38:50  joergr
  * Removed debug/test code.
  *
  * Revision 1.14  2003/02/11 16:31:56  joergr

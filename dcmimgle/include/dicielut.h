@@ -1,6 +1,6 @@
 /*
  *
- *  Copyright (C) 1996-2002, OFFIS
+ *  Copyright (C) 1996-2003, OFFIS
  *
  *  This software and supporting documentation were developed by
  *
@@ -22,9 +22,9 @@
  *  Purpose: DicomCIELABLUT (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2002-07-18 12:27:01 $
+ *  Update Date:      $Date: 2003-02-12 11:35:16 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/dicielut.h,v $
- *  CVS/RCS Revision: $Revision: 1.7 $
+ *  CVS/RCS Revision: $Revision: 1.8 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -54,15 +54,17 @@ class DiCIELABLUT
 
     /** constructor
      *
-     ** @param  count      number of values to be stored
-     *  @param  max        maximum value to be stored
+     ** @param  count      number of values to be stored in the LUT
+     *  @param  max        maximum value to be stored in the LUT
      *  @param  ddl_tab    array of DDL values
      *  @param  val_tab    array of values
      *  @param  ddl_cnt    number of DDL values
-     *  @param  val_min    minimum value
-     *  @param  val_max    maximum value
+     *  @param  val_min    minimum value in the array
+     *  @param  val_max    maximum value in the array
+     *  @param  lum_min    minimum luminance value to be used (lower border)
+     *  @param  lum_max    maximum luminance value to be used (upper border)
      *  @param  amb        ambient light value
-     *  @param  inverse    apply inverse transformation
+     *  @param  inverse    apply inverse transformation if OFTrue
      *  @param  stream     output stream (used to write curve data to a file)
      *  @param  printMode  write CC and PSC to stream if OFTrue
      */
@@ -73,6 +75,8 @@ class DiCIELABLUT
                 const unsigned long ddl_cnt,
                 const double val_min,
                 const double val_max,
+                const double lum_min,
+                const double lum_max,
                 const double amb,
                 const OFBool inverse = OFFalse,
                 ostream *stream = NULL,
@@ -90,9 +94,11 @@ class DiCIELABLUT
      ** @param  ddl_tab    array of DDL values
      *  @param  val_tab    array of values
      *  @param  ddl_cnt    number of DDL values
-     *  @param  val_min    minimum value
-     *  @param  val_max    maximum value
-     *  @param  inverse    apply inverse transformation
+     *  @param  val_min    minimum value in the array
+     *  @param  val_max    maximum value in the array
+     *  @param  lum_min    minimum luminance value to be used (lower border)
+     *  @param  lum_max    maximum luminance value to be used (upper border)
+     *  @param  inverse    apply inverse transformation if OFTrue
      *  @param  stream     output stream (used to write curve data to a file)
      *  @param  printMode  write CC and PSC to stream if OFTrue
      *
@@ -103,6 +109,8 @@ class DiCIELABLUT
                   const unsigned long ddl_cnt,
                   const double val_min,
                   const double val_max,
+                  const double lum_min,
+                  const double lum_max,
                   const OFBool inverse = OFFalse,
                   ostream *stream = NULL,
                   const OFBool printMode = OFTrue);
@@ -116,7 +124,10 @@ class DiCIELABLUT
  *
  * CVS/RCS Log:
  * $Log: dicielut.h,v $
- * Revision 1.7  2002-07-18 12:27:01  joergr
+ * Revision 1.8  2003-02-12 11:35:16  joergr
+ * Added Dmin/max support to CIELAB calibration routines.
+ *
+ * Revision 1.7  2002/07/18 12:27:01  joergr
  * Added polygonal curve fitting algorithm as an alternate interpolation
  * method.
  *

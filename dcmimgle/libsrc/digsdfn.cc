@@ -22,9 +22,9 @@
  *  Purpose: DicomGSDFunction (Source)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-02-11 10:02:31 $
+ *  Update Date:      $Date: 2003-02-12 11:37:14 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/libsrc/digsdfn.cc,v $
- *  CVS/RCS Revision: $Revision: 1.22 $
+ *  CVS/RCS Revision: $Revision: 1.23 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -185,8 +185,9 @@ DiDisplayLUT *DiGSDFunction::getDisplayLUT(unsigned long count)
             }
         } else {
             /* softcopy: values are already in luminance */
-            lut = new DiGSDFLUT(count, MaxDDLValue, DDLValue, LODValue, ValueCount, GSDFValue, GSDFSpline,
-                GSDFCount, JNDMin, JNDMax, -1, -1, AmbientLight, Illumination, (DeviceType == EDT_Camera));
+            lut = new DiGSDFLUT(count, MaxDDLValue, DDLValue, LODValue, ValueCount,
+                GSDFValue, GSDFSpline, GSDFCount, JNDMin, JNDMax, -1 /*Lmin*/, -1 /*Lmax*/,
+                AmbientLight, Illumination, (DeviceType == EDT_Camera));
         }
     }
     return lut;
@@ -342,20 +343,6 @@ int DiGSDFunction::setMaxDensityValue(const double value)
 }
 
 
-double DiGSDFunction::getMinLuminanceValue() const
-{
-    /* Dmax = -1 means unspecified */
-    return (MaxDensity < 0) ? -1 : convertODtoLum(MaxDensity);
-}
-
-
-double DiGSDFunction::getMaxLuminanceValue() const
-{
-    /* Dmin = -1 means unspecified */
-    return (MinDensity < 0) ? -1 : convertODtoLum(MinDensity);
-}
-
-
 /********************************************************************/
 
 
@@ -426,7 +413,7 @@ int DiGSDFunction::calculateJNDBoundaries()
             /* hardcopy device (printer/scanner), values are in OD */
             if (MaxDensity < 0)
                 JNDMin = getJNDIndex(convertODtoLum(MaxValue));
-            else // max density specified
+            else // max density specified         
                 JNDMin = getJNDIndex(convertODtoLum(MaxDensity));
             if (MinDensity < 0)
                 JNDMax = getJNDIndex(convertODtoLum(MinValue));
@@ -470,27 +457,14 @@ double DiGSDFunction::getJNDIndex(const double lum)
 }
 
 
-int DiGSDFunction::checkMinMaxDensity() const
-{
-    if ((MinDensity >= 0) && (MaxDensity >= 0) && (MinDensity >= MaxDensity))
-    {
-        if (DicomImageClass::checkDebugLevel(DicomImageClass::DL_Warnings))
-        {
-            ofConsole.lockCerr() << "WARNING: invalid optical density range (Dmin = " << MinDensity
-                                 << ", Dmax = " << MaxDensity << ") !" << endl;
-            ofConsole.unlockCerr();
-        }
-        return 0;
-    }
-    return 1;
-}
-
-
 /*
  *
  * CVS/RCS Log:
  * $Log: digsdfn.cc,v $
- * Revision 1.22  2003-02-11 10:02:31  joergr
+ * Revision 1.23  2003-02-12 11:37:14  joergr
+ * Added Dmin/max support to CIELAB calibration routines.
+ *
+ * Revision 1.22  2003/02/11 10:02:31  joergr
  * Added support for Dmin/max to calibration routines (required for printers).
  *
  * Revision 1.21  2002/11/27 14:08:11  meichel

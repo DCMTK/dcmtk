@@ -22,9 +22,9 @@
  *  Purpose: DicomGSDFunction (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 2003-02-11 10:01:14 $
+ *  Update Date:      $Date: 2003-02-12 11:35:16 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/digsdfn.h,v $
- *  CVS/RCS Revision: $Revision: 1.12 $
+ *  CVS/RCS Revision: $Revision: 1.13 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -159,9 +159,9 @@ class DiGSDFunction
      *  measured in optical density (OD). applicable to printers only.
      *  typical value: 0.2
      *
-     ** @param  value  Dmin value to be set (or -1 to unset)
+     ** @param  value  Dmin value to be set (or < 0 to unset)
      *
-     ** @return status, true if successful, false otherwise
+     ** @return status, true if successful (1 = Dmax set, 2 = Dmax unset), false otherwise
      */
     int setMinDensityValue(const double value);
 
@@ -169,25 +169,11 @@ class DiGSDFunction
      *  measured in optical density (OD). applicable to printers only.
      *  typical value: 3.0
      *
-     ** @param  value  Dmax value to be set (or -1 to unset)
+     ** @param  value  Dmax value to be set (or < 0 to unset)
      *
-     ** @return status, true if successful, false otherwise
+     ** @return status, true if successful (1 = Dmax set, 2 = Dmax unset), false otherwise
      */
     int setMaxDensityValue(const double value);
-
-    /** get minimum luminance value "Lmin".
-     *  measured in cd/m^2. value is computed from "Dmax".
-     *
-     ** @return current Lmin value or -1 if Dmax not set
-     */
-    double getMinLuminanceValue() const;
-
-    /** get maximum luminance value "Lmax".
-     *  measured in cd/m^2. value is computed from "Dmin".
-     *
-     ** @return current Lmax value or -1 if Dmin not set
-     */
-    double getMaxLuminanceValue() const;
 
     /** calculate the JND index for a given luminance value
      *
@@ -226,13 +212,6 @@ class DiGSDFunction
      */
     int calculateJNDBoundaries();
 
-    /** check whether Dmin and Dmax are properly specified.
-     *  report a warning message if "Dmin >= Dmax".
-     *
-     ** @return status, true if successful, false otherwise
-     */
-    int checkMinMaxDensity() const;
-
 
  private:
 
@@ -262,7 +241,10 @@ class DiGSDFunction
  *
  * CVS/RCS Log:
  * $Log: digsdfn.h,v $
- * Revision 1.12  2003-02-11 10:01:14  joergr
+ * Revision 1.13  2003-02-12 11:35:16  joergr
+ * Added Dmin/max support to CIELAB calibration routines.
+ *
+ * Revision 1.12  2003/02/11 10:01:14  joergr
  * Added support for Dmin/max to calibration routines (required for printers).
  *
  * Revision 1.11  2002/07/19 08:24:21  joergr
