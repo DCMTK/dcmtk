@@ -151,19 +151,19 @@ The semantic impacts of the above mentioned options is clear for the majority
 of options. Some particular options, however, are so specific that they need
 detailed descriptions which will be given in this passage.
 
-The returned character set options are intended for situations in which the
-wlmscpfs application will return attribute values which are not composed of
-characters from the Dicom default character repertoire. In such cases, for
-example option \e --return-iso-ir-100 can be used to specify that a response to
-a modality's worklist management C-Find request shall always contain Dicom's
-Specific Character Set attribute (0008,0005) with a corresponding value, indi-
-cating the character repertoire from which the characters of returned attribute
-values were taken (in this example the repertoire ISO IR 100). Please note that
-the \b wlmscpfs application will not make sure that all returned values are
-actually made up of this character repertoire; the application expects this to
-be the case. Option \e --return-iso-ir-100 will only lead to the inclusion of
-the Specific Character Set attribute (0008,0005) with a corresponding value
-in a worklist management C-Find response.
+The returned character set options are intended for situations in which the 
+wlmscpfs application will return attribute values which are not composed of 
+characters from the Dicom default character repertoire. In such cases, for 
+example option \e --return-iso-ir-100 can be used to specify that a response to 
+a modality's worklist management C-Find request shall always contain Dicom's 
+Specific Character Set attribute (0008,0005) with a corresponding value, 
+indicating the character repertoire from which the characters of returned 
+attribute values were taken (in this example the repertoire ISO IR 100). Please 
+note that the \b wlmscpfs application will not make sure that all returned 
+values are actually made up of this character repertoire; the application 
+expects this to be the case. Option \e --return-iso-ir-100 will only lead to the 
+inclusion of the Specific Character Set attribute (0008,0005) with a 
+corresponding value in a worklist management C-Find response.
 
 Please note that a C-Find request which is handled by this application may
 contain Dicom's Specific Character Set attribute (0008,0005), but this

@@ -21,8 +21,8 @@ phases:
 - Phase 1 checks the Meta-header of the DICOM file. It is tested whether
   all required attributes are present, whether the SOP class and instance
   UIDs match the UIDs in the main object and whether the group length
-  attribute contains a correct value.  The Transfer Syntax of the Meta-
-  header is also checked.
+  attribute contains a correct value.  The Transfer Syntax of the Meta header 
+  is also checked.
 
 - Phase 2 performs a syntactic check of the values, value representations
   and value multiplicities for each attribute in the object. The values
