@@ -22,9 +22,9 @@
  *  Purpose: DicomMonochromeInputPixelTemplate (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1999-02-03 17:29:19 $
+ *  Update Date:      $Date: 1999-02-11 16:37:10 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/dimoipxt.h,v $
- *  CVS/RCS Revision: $Revision: 1.5 $
+ *  CVS/RCS Revision: $Revision: 1.6 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -63,7 +63,7 @@ class DiMonoInputPixelTemplate
             else if ((Modality != NULL) && Modality->hasRescaling())
                 rescale(pixel, Modality->getRescaleSlope(), Modality->getRescaleIntercept());
             else
-                rescale(pixel, 1.0, 0.0);
+                rescale(pixel);                     // copy pixel data
             determineMinMax((T3)pixel->getMinValue(), (T3)pixel->getMaxValue());
         }
     }
@@ -102,7 +102,7 @@ class DiMonoInputPixelTemplate
             *(q++) = *(lut0 + (*(p++)));
     }
 
-    inline void modlut(const DiInputPixel *input)
+    void modlut(const DiInputPixel *input)
     {
         const T1 *pixel = (const T1 *)input->getData();
         if ((pixel != NULL) && (Modality != NULL))
@@ -153,16 +153,16 @@ class DiMonoInputPixelTemplate
                             else
                                 *(q++) = (T3)mlut->getValue(value);
                         }
-                    } else
-                        delete[] lut;
+                    }
+                    delete[] lut;
                 }
             } 
         }
     }
 
-    inline void rescale(const DiInputPixel *input,
-                        const double slope,
-                        const double intercept)
+    void rescale(const DiInputPixel *input,
+                 const double slope = 1.0,
+                 const double intercept = 0.0)
     {
         const T1 *pixel = (const T1 *)input->getData();
         if (pixel != NULL)
@@ -170,8 +170,6 @@ class DiMonoInputPixelTemplate
             Data = new T3[Count];
             if (Data != NULL)
             {
-                if (DicomImageClass::DebugLevel >= DicomImageClass::DL_Informationals)
-                    cerr << "INFO: using modality routine 'rescale()'" << endl;
                 register T3 *q = Data;
                 register unsigned long i;
                 if ((slope == 1.0) && (intercept == 0.0))
@@ -180,6 +178,8 @@ class DiMonoInputPixelTemplate
                     for (i = 0; i < Count; i++)            // copy pixel data: can't use copyMem because T1 isn't always equal to T3
                         *(q++) = (T3)*(p++);
                 } else {
+                    if (DicomImageClass::DebugLevel >= DicomImageClass::DL_Informationals)
+                        cerr << "INFO: using modality routine 'rescale()'" << endl;
                     T3 *lut = NULL;
                     const unsigned long ocnt = (unsigned long)input->getAbsMaxRange();    // number of LUT entries
                     if (initOptimizationLUT(lut, ocnt))
@@ -219,8 +219,8 @@ class DiMonoInputPixelTemplate
                                     *(q++) = (T3)((double)*(p++) * slope + intercept);
                             }
                         }
-                    } else
-                        delete[] lut;
+                    }
+                    delete[] lut;
                 }
             }
         }
@@ -235,7 +235,10 @@ class DiMonoInputPixelTemplate
  *
  * CVS/RCS Log:
  * $Log: dimoipxt.h,v $
- * Revision 1.5  1999-02-03 17:29:19  joergr
+ * Revision 1.6  1999-02-11 16:37:10  joergr
+ * Removed inline declarations from several methods.
+ *
+ * Revision 1.5  1999/02/03 17:29:19  joergr
  * Added optimization LUT to transform pixel data.
  *
  * Revision 1.4  1999/01/20 15:06:24  joergr
