@@ -22,9 +22,9 @@
  *  Purpose: DicomMonochrome2Image (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1998-11-27 15:12:18 $
+ *  Update Date:      $Date: 1998-12-16 16:32:02 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/dimo2img.h,v $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -65,7 +65,8 @@ class DiMono2Image
     DiMono2Image(const DiDocument *docu,
                  const EI_Status status,
                  const DcmUnsignedShort &data,
-                 const DcmUnsignedShort &descriptor);
+                 const DcmUnsignedShort &descriptor,
+                 const DcmLongString *explanation);
 
     DiMono2Image(const DiColorImage *image,
                  const double red,
@@ -140,7 +141,10 @@ class DiMono2Image
 **
 ** CVS/RCS Log:
 ** $Log: dimo2img.h,v $
-** Revision 1.1  1998-11-27 15:12:18  joergr
+** Revision 1.2  1998-12-16 16:32:02  joergr
+** Added explanation string to LUT class (retrieved from dataset).
+**
+** Revision 1.1  1998/11/27 15:12:18  joergr
 ** Added copyright message.
 ** Added methods and constructors for flipping and rotating, changed for
 ** scaling and clipping.

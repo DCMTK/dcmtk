@@ -22,9 +22,9 @@
  *  Purpose: DicomLookupTable (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1998-12-14 17:19:19 $
+ *  Update Date:      $Date: 1998-12-16 16:31:30 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/diluptab.h,v $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  * 
  *  CVS/RCS Log at end of file
@@ -37,6 +37,8 @@
 
 #include "osconfig.h"
 #include "dctypes.h"
+#include "dctagkey.h"
+#include "ofstring.h"
 
 #include "diobjcou.h"
 #include "diutils.h"
@@ -58,8 +60,8 @@
  *------------------------*/
 
 class DcmObject;
-class DcmTagKey;
 class DcmUnsignedShort;
+class DcmLongString;
 class DiDocument;
 
 
@@ -72,22 +74,25 @@ class DiLookupTable : public DiObjectCounter
 
  public:
 
-    DiLookupTable(const DiDocument *,
-                  const DcmTagKey &,
-                  const DcmTagKey &,
-                  EI_Status * = NULL);
+    DiLookupTable(const DiDocument *docu,
+                  const DcmTagKey &descriptor,
+                  const DcmTagKey &data,
+                  const DcmTagKey &explanation = DcmTagKey(0,0),
+                  EI_Status *status = NULL);
 
-    DiLookupTable(const DiDocument *,
-                  const DcmTagKey &,
-                  const DcmTagKey &,
-                  const DcmTagKey &,
-                  const unsigned long = 0,
-                  unsigned long * = NULL);
+    DiLookupTable(const DiDocument *docu,
+                  const DcmTagKey &sequence,
+                  const DcmTagKey &decriptor,
+                  const DcmTagKey &data,
+                  const DcmTagKey &explanation = DcmTagKey(0,0),
+                  const unsigned long pos = 0,
+                  unsigned long *card = NULL);
 
     DiLookupTable(const DcmUnsignedShort &data,
                   const DcmUnsignedShort &descriptor,
+                  const DcmLongString *explanation = NULL,
                   const signed int first = -1,
-                  EI_Status * = NULL);
+                  EI_Status *status = NULL);
 
     virtual ~DiLookupTable();
 
@@ -130,6 +135,11 @@ class DiLookupTable : public DiObjectCounter
     inline int isValid() const
         { return Valid; }
 
+    inline const char *getExplanation() const
+    {
+        return Explanation.c_str();
+    }
+
 
  protected:
 
@@ -137,6 +147,7 @@ class DiLookupTable : public DiObjectCounter
               DcmObject *obj,
               const DcmTagKey &descriptor,
               const DcmTagKey &data,
+              const DcmTagKey &explanation,
               EI_Status *status = NULL);
 
     void checkTable(const int ok,
@@ -160,6 +171,8 @@ class DiLookupTable : public DiObjectCounter
 
     int Valid;
 
+    OFString Explanation;
+
     const Uint16 *Data;             // points to lookup table data
     Uint16 *DataBuffer;
 
@@ -177,7 +190,10 @@ class DiLookupTable : public DiObjectCounter
 **
 ** CVS/RCS Log:
 ** $Log: diluptab.h,v $
-** Revision 1.2  1998-12-14 17:19:19  joergr
+** Revision 1.3  1998-12-16 16:31:30  joergr
+** Added explanation string to LUT class (retrieved from dataset).
+**
+** Revision 1.2  1998/12/14 17:19:19  joergr
 ** Added support for signed values as second entry in look-up tables
 ** (= first value mapped).
 **

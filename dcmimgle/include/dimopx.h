@@ -22,9 +22,9 @@
  *  Purpose: DicomMonochromePixel (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1998-11-27 15:33:16 $
+ *  Update Date:      $Date: 1998-12-16 16:35:39 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/dimopx.h,v $
- *  CVS/RCS Revision: $Revision: 1.1 $ 
+ *  CVS/RCS Revision: $Revision: 1.2 $ 
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -39,6 +39,7 @@
 #include "dctypes.h"
 
 #include "dipixel.h"
+#include "dimomod.h"
 #include "diutils.h"
 
 
@@ -47,33 +48,51 @@
  *------------------------*/
 
 class DiInputPixel;
-class DiMonoModality;
 
 
 /*---------------------*
  *  class declaration  *
  *---------------------*/
 
-class DiMonoPixel : public DiPixel
+class DiMonoPixel
+  : public DiPixel
 {
+
  public:
+
     DiMonoPixel(const unsigned long);
     DiMonoPixel(const DiInputPixel *, DiMonoModality *);
     virtual ~DiMonoPixel();
     
     inline int getPlanes() const
-        { return 1; }
+    {
+        return 1;
+    }
 
-    virtual int getMinMaxValues(double &, double &) const = 0;
+    virtual int getMinMaxValues(double &,
+                                double &) const = 0;
 
-    virtual int getMinMaxWindow(const int, double &, double &) = 0;
-    virtual int getHistogramWindow(const double, double &, double &) = 0;
+    virtual int getMinMaxWindow(const int,
+                                double &,
+                                double &) = 0;
+
+    virtual int getHistogramWindow(const double,
+                                   double &,
+                                   double &) = 0;
+                                   
+    inline const char *getModalityLutExplanation() const
+    {
+        return (Modality != NULL) ? Modality->getExplanation() : NULL;
+    }
+
 
  protected:
+
     DiMonoPixel(const DiPixel *);
     DiMonoPixel(const DiMonoPixel *, const unsigned long);
     
     DiMonoModality *Modality;
+
 
  private:
 
@@ -91,7 +110,10 @@ class DiMonoPixel : public DiPixel
 **
 ** CVS/RCS Log:
 ** $Log: dimopx.h,v $
-** Revision 1.1  1998-11-27 15:33:16  joergr
+** Revision 1.2  1998-12-16 16:35:39  joergr
+** Added explanation string to LUT class (retrieved from dataset).
+**
+** Revision 1.1  1998/11/27 15:33:16  joergr
 ** Added copyright message.
 ** Introduced new pixel base class.
 **

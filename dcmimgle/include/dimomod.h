@@ -22,9 +22,9 @@
  *  Purpose: DicomMonochromeModality (Header)
  *
  *  Last Update:      $Author: joergr $
- *  Update Date:      $Date: 1998-12-14 17:23:52 $
+ *  Update Date:      $Date: 1998-12-16 16:34:37 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmimgle/include/Attic/dimomod.h,v $
- *  CVS/RCS Revision: $Revision: 1.2 $
+ *  CVS/RCS Revision: $Revision: 1.3 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -71,7 +71,8 @@ class DiMonoModality : public DiObjectCounter
     DiMonoModality(const DiDocument *docu,
                    DiInputPixel *pixel,
                    const DcmUnsignedShort &data,
-                   const DcmUnsignedShort &descriptor);
+                   const DcmUnsignedShort &descriptor,
+                   const DcmLongString *explanation);
 
     virtual ~DiMonoModality();
     
@@ -103,6 +104,11 @@ class DiMonoModality : public DiObjectCounter
     inline const DiLookupTable *getTableData() const
     {
         return TableData;
+    }
+    
+    inline const char *getExplanation() const
+    {
+        return (TableData != NULL) ? TableData->getExplanation() : NULL;
     }
 
     inline int hasLookupTable() const
@@ -161,7 +167,10 @@ class DiMonoModality : public DiObjectCounter
 **
 ** CVS/RCS Log:
 ** $Log: dimomod.h,v $
-** Revision 1.2  1998-12-14 17:23:52  joergr
+** Revision 1.3  1998-12-16 16:34:37  joergr
+** Added explanation string to LUT class (retrieved from dataset).
+**
+** Revision 1.2  1998/12/14 17:23:52  joergr
 ** Added support for correct scaling of input/output values for grayscale
 ** transformations.
 **
