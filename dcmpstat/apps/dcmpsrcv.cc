@@ -22,9 +22,9 @@
  *  Purpose: Presentation State Viewer - Network Receive Component (Store SCP)
  *
  *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 1999-01-27 14:59:24 $
+ *  Update Date:      $Date: 1999-01-27 15:58:57 $
  *  Source File:      $Source: /export/gitmirror/dcmtk-git/../dcmtk-cvs/dcmtk/dcmpstat/apps/dcmpsrcv.cc,v $
- *  CVS/RCS Revision: $Revision: 1.1 $
+ *  CVS/RCS Revision: $Revision: 1.2 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -130,14 +130,14 @@ static void cleanChildren()
     while (child > 0)
     {
 #ifdef HAVE_WAITPID
-	child = (int)(waitpid(-1, &stat_loc, options));
+        child = (int)(waitpid(-1, &stat_loc, options));
 #elif defined(HAVE_WAIT3)
-	child = wait3(&status, options, &rusage);
+        child = wait3(&status, options, &rusage);
 #endif
         if (child < 0)
-	{
-	   if (errno != ECHILD) cerr << "wait for child failed: " << strerror(errno) << endl;
-	}
+        {
+           if (errno != ECHILD) cerr << "wait for child failed: " << strerror(errno) << endl;
+        }
     }
 #endif
 }
@@ -164,36 +164,36 @@ refuseAssociation(T_ASC_Association *assoc, refuseReason reason)
     switch (reason)
     {
     case ref_TooManyAssociations:
-	rej.result = ASC_RESULT_REJECTEDTRANSIENT;
-	rej.source = ASC_SOURCE_SERVICEPROVIDER_PRESENTATION_RELATED;
-	rej.reason = ASC_REASON_SP_PRES_LOCALLIMITEXCEEDED;
-	break;
+        rej.result = ASC_RESULT_REJECTEDTRANSIENT;
+        rej.source = ASC_SOURCE_SERVICEPROVIDER_PRESENTATION_RELATED;
+        rej.reason = ASC_REASON_SP_PRES_LOCALLIMITEXCEEDED;
+        break;
     case ref_CannotFork:
-	rej.result = ASC_RESULT_REJECTEDPERMANENT;
-	rej.source = ASC_SOURCE_SERVICEPROVIDER_PRESENTATION_RELATED;
-	rej.reason = ASC_REASON_SP_PRES_TEMPORARYCONGESTION;
-	break;
+        rej.result = ASC_RESULT_REJECTEDPERMANENT;
+        rej.source = ASC_SOURCE_SERVICEPROVIDER_PRESENTATION_RELATED;
+        rej.reason = ASC_REASON_SP_PRES_TEMPORARYCONGESTION;
+        break;
     case ref_BadAppContext:
-	rej.result = ASC_RESULT_REJECTEDTRANSIENT;
-	rej.source = ASC_SOURCE_SERVICEUSER;
-	rej.reason = ASC_REASON_SU_APPCONTEXTNAMENOTSUPPORTED;
-	break;
+        rej.result = ASC_RESULT_REJECTEDTRANSIENT;
+        rej.source = ASC_SOURCE_SERVICEUSER;
+        rej.reason = ASC_REASON_SU_APPCONTEXTNAMENOTSUPPORTED;
+        break;
     case ref_BadAEPeer:
-	rej.result = ASC_RESULT_REJECTEDPERMANENT;
-	rej.source = ASC_SOURCE_SERVICEUSER;
-	rej.reason = ASC_REASON_SU_CALLINGAETITLENOTRECOGNIZED;
-	break;
+        rej.result = ASC_RESULT_REJECTEDPERMANENT;
+        rej.source = ASC_SOURCE_SERVICEUSER;
+        rej.reason = ASC_REASON_SU_CALLINGAETITLENOTRECOGNIZED;
+        break;
     case ref_BadAEService:
-	rej.result = ASC_RESULT_REJECTEDPERMANENT;
-	rej.source = ASC_SOURCE_SERVICEUSER;
-	rej.reason = ASC_REASON_SU_CALLEDAETITLENOTRECOGNIZED;
-	break;
+        rej.result = ASC_RESULT_REJECTEDPERMANENT;
+        rej.source = ASC_SOURCE_SERVICEUSER;
+        rej.reason = ASC_REASON_SU_CALLEDAETITLENOTRECOGNIZED;
+        break;
     case ref_NoReason:
     default:
-	rej.result = ASC_RESULT_REJECTEDPERMANENT;
-	rej.source = ASC_SOURCE_SERVICEUSER;
-	rej.reason = ASC_REASON_SU_NOREASON;
-	break;
+        rej.result = ASC_RESULT_REJECTEDPERMANENT;
+        rej.source = ASC_SOURCE_SERVICEUSER;
+        rej.reason = ASC_REASON_SU_NOREASON;
+        break;
     }
 
     cond = ASC_rejectAssociation(assoc, &rej);
@@ -225,11 +225,11 @@ static associationType negotiateAssociation(
 
       if (opt_verbose)
       {
-  	  time_t t = time(NULL);
- 	  cerr << "Association Received (" << (*assoc)->params->DULparams.callingPresentationAddress
-	     << ":" << (*assoc)->params->DULparams.callingAPTitle << " -> " 
-	     << (*assoc)->params->DULparams.calledAPTitle
-	     << ") " << ctime(&t);
+          time_t t = time(NULL);
+          cerr << "Association Received (" << (*assoc)->params->DULparams.callingPresentationAddress
+             << ":" << (*assoc)->params->DULparams.callingAPTitle << " -> " 
+             << (*assoc)->params->DULparams.calledAPTitle
+             << ") " << ctime(&t);
       }
 
       ASC_setAPTitles((*assoc)->params, NULL, NULL, aetitle);
@@ -238,9 +238,9 @@ static associationType negotiateAssociation(
       if ((cond = ASC_getApplicationContextName((*assoc)->params, buf) != ASC_NORMAL) || strcmp(buf, DICOM_STDAPPLICATIONCONTEXT) != 0)
       {
           /* reject: the application context name is not supported */
-	  if (opt_verbose) cerr << "Bad AppContextName: " << buf << endl;
-	  cond = refuseAssociation(*assoc, ref_BadAppContext);
-	  dropAssoc = OFTrue;
+          if (opt_verbose) cerr << "Bad AppContextName: " << buf << endl;
+          cond = refuseAssociation(*assoc, ref_BadAppContext);
+          dropAssoc = OFTrue;
           result = assoc_error;
       } else {
         
@@ -261,28 +261,28 @@ static associationType negotiateAssociation(
           numTransferSyntaxes = 3;
 
           if (gLocalByteOrder == EBO_LittleEndian) {
-  	    /* we are on a little endian machine */
-	    transferSyntaxes[0] = UID_LittleEndianExplicitTransferSyntax;
-	    transferSyntaxes[1] = UID_BigEndianExplicitTransferSyntax;
+            /* we are on a little endian machine */
+            transferSyntaxes[0] = UID_LittleEndianExplicitTransferSyntax;
+            transferSyntaxes[1] = UID_BigEndianExplicitTransferSyntax;
           } else {
-	    /* we are on a big endian machine */
-	    transferSyntaxes[0] = UID_BigEndianExplicitTransferSyntax;
-	    transferSyntaxes[1] = UID_LittleEndianExplicitTransferSyntax;
+            /* we are on a big endian machine */
+            transferSyntaxes[0] = UID_BigEndianExplicitTransferSyntax;
+            transferSyntaxes[1] = UID_LittleEndianExplicitTransferSyntax;
           }
         }
 
         /*  accept any of the non-storage syntaxes */
         cond = ASC_acceptContextsWithPreferredTransferSyntaxes(
-	  (*assoc)->params, 
-	  (const char**)nonStorageSyntaxes, DIM_OF(nonStorageSyntaxes),
-	  (const char**)transferSyntaxes, numTransferSyntaxes);
+          (*assoc)->params, 
+          (const char**)nonStorageSyntaxes, DIM_OF(nonStorageSyntaxes),
+          (const char**)transferSyntaxes, numTransferSyntaxes);
         errorCond(cond, "Cannot accept presentation contexts:");
 
         /*  accept any of the storage syntaxes */
         cond = ASC_acceptContextsWithPreferredTransferSyntaxes(
-	  (*assoc)->params, 
-	  dcmStorageSOPClassUIDs, numberOfDcmStorageSOPClassUIDs,
-	  (const char**)transferSyntaxes, numTransferSyntaxes);
+          (*assoc)->params, 
+          dcmStorageSOPClassUIDs, numberOfDcmStorageSOPClassUIDs,
+          (const char**)transferSyntaxes, numTransferSyntaxes);
         errorCond(cond, "Cannot accept presentation contexts:");
       }
 
@@ -290,7 +290,7 @@ static associationType negotiateAssociation(
       if (0 != ASC_findAcceptedPresentationContextID(*assoc, PSTAT_PRIVATESOPCLASSUID)) 
       {
         cond = refuseAssociation(*assoc, ref_NoReason);
-	dropAssoc = OFTrue;
+        dropAssoc = OFTrue;
         result = assoc_terminate;
       }
     } /* receiveAssociation successful */
@@ -324,7 +324,7 @@ checkRequestAgainstDataset(
     T_DIMSE_C_StoreRQ *req,     /* original store request */
     const char* fname,          /* filename of dataset */
     DcmDataset *dataSet,        /* dataset to check */
-    T_DIMSE_C_StoreRSP *rsp) 	/* final store response */
+    T_DIMSE_C_StoreRSP *rsp)    /* final store response */
 {
     DcmFileFormat ff;
 
@@ -334,9 +334,9 @@ checkRequestAgainstDataset(
       DcmFileStream istrm(fname, DCM_ReadMode);
       if (istrm.Fail())
       {
-	cerr << "Cannot open file: " << fname << endl;
-	rsp->DimseStatus = STATUS_STORE_Refused_OutOfResources;
-	return;
+        cerr << "Cannot open file: " << fname << endl;
+        rsp->DimseStatus = STATUS_STORE_Refused_OutOfResources;
+        return;
       }
       ff.read(istrm, EXS_Unknown, EGL_noChange);
       dataSet = ff.getDataset();
@@ -375,10 +375,10 @@ checkRequestAgainstDataset(
 static void 
 saveImageToDB(
     StoreContext *context,
-    T_DIMSE_C_StoreRQ *req,		/* original store request */
+    T_DIMSE_C_StoreRQ *req,             /* original store request */
     const char *imageFileName,
     /* out */
-    T_DIMSE_C_StoreRSP *rsp, 		/* final store response */
+    T_DIMSE_C_StoreRSP *rsp,            /* final store response */
     DcmDataset **statusDetail)
 {
     DB_Status dbStatus;
@@ -394,7 +394,7 @@ saveImageToDB(
       {
         cerr << "storeSCP: Database: DB_storeRequest Failed (" 
              << DU_cstoreStatusString(dbStatus.status) << ")" << endl;
-	COND_DumpConditions();
+        COND_DumpConditions();
       }
     }
     else
@@ -418,7 +418,7 @@ storeProgressCallback(
     char *imageFileName,                /* being received into */ 
     DcmDataset **imageDataSet,          /* being received into */
     /* out */
-    T_DIMSE_C_StoreRSP *rsp, 		/* final store response */
+    T_DIMSE_C_StoreRSP *rsp,            /* final store response */
     DcmDataset **statusDetail)
 {
   if (progress->state == DIMSE_StoreEnd)
@@ -443,7 +443,7 @@ storeProgressCallback(
         if (outf.Fail())
         {
           cerr << "Cannot write image file: " << context->fileName << endl;
-	  rsp->DimseStatus = STATUS_STORE_Refused_OutOfResources;
+          rsp->DimseStatus = STATUS_STORE_Refused_OutOfResources;
         } 
         else
         {
@@ -455,7 +455,7 @@ storeProgressCallback(
             cerr << "Cannot write image file: " << context->fileName << endl;
             rsp->DimseStatus = STATUS_STORE_Refused_OutOfResources;
           }
-	}
+        }
       }
       saveImageToDB(context, req, context->fileName, rsp, statusDetail);
     }
@@ -488,7 +488,6 @@ static CONDITION storeSCP(
     
     CONDITION cond = DIMSE_NORMAL;
     char imageFileName[MAXPATHLEN+1];
-    int lockfd;
     DcmFileFormat dcmff;
     DcmDataset *dset = dcmff.getDataset();
     DIC_US status = STATUS_Success;
@@ -496,10 +495,10 @@ static CONDITION storeSCP(
         
     if (!dcmIsaStorageSOPClassUID(request->AffectedSOPClassUID))
     {
-	/* callback will send back sop class not supported status */ 
-	status = STATUS_STORE_Refused_SOPClassNotSupported;
-	/* must still receive data */
-	strcpy(imageFileName, "/dev/null");
+        /* callback will send back sop class not supported status */ 
+        status = STATUS_STORE_Refused_SOPClassNotSupported;
+        /* must still receive data */
+        strcpy(imageFileName, "/dev/null");
     } 
     else
     {
@@ -507,49 +506,54 @@ static CONDITION storeSCP(
       {
         cerr << "Unable to access database '" << dbfolder << "'" << endl;
         COND_DumpConditions();
-	/* must still receive data */
-	strcpy(imageFileName, "/dev/null");	
-	/* callback will send back out of resources status */ 
-	status = STATUS_STORE_Refused_OutOfResources;
+        /* must still receive data */
+        strcpy(imageFileName, "/dev/null");     
+        /* callback will send back out of resources status */ 
+        status = STATUS_STORE_Refused_OutOfResources;
         DB_destroyHandle(&dbhandle);
         dbhandle = NULL;
       } 
       else 
       {
-	if (DB_NORMAL != DB_makeNewStoreFileName(dbhandle,
-	    request->AffectedSOPClassUID,
-	    request->AffectedSOPInstanceUID,
-	    imageFileName))
-	{
-	    cerr << "storeSCP: Database: DB_makeNewStoreFileName Failed" << endl;
-	    /* must still receive data */
-	    strcpy(imageFileName, "/dev/null");	
-	    /* callback will send back out of resources status */ 
-	    status = STATUS_STORE_Refused_OutOfResources;
-	}
+        if (DB_NORMAL != DB_makeNewStoreFileName(dbhandle,
+            request->AffectedSOPClassUID,
+            request->AffectedSOPInstanceUID,
+            imageFileName))
+        {
+            cerr << "storeSCP: Database: DB_makeNewStoreFileName Failed" << endl;
+            /* must still receive data */
+            strcpy(imageFileName, "/dev/null"); 
+            /* callback will send back out of resources status */ 
+            status = STATUS_STORE_Refused_OutOfResources;
+        }
       }
     }
 
-    /* exclusively lock image file */
+#ifdef HAVE_FORK
+    /* exclusively lock image file, but only on Unix systems -
+         * on Win32 we would prevent ourselves from writing the file!
+         */
 #ifdef O_BINARY
-    lockfd = open(imageFileName, (O_WRONLY | O_CREAT | O_TRUNC | O_BINARY), 0666);
+    int lockfd = open(imageFileName, (O_WRONLY | O_CREAT | O_TRUNC | O_BINARY), 0666);
 #else
-    lockfd = open(imageFileName, (O_WRONLY | O_CREAT | O_TRUNC), 0666);
+    int lockfd = open(imageFileName, (O_WRONLY | O_CREAT | O_TRUNC), 0666);
 #endif
+
     flock(lockfd, LOCK_EX);
+#endif
 
     /* we must still retrieve the data set even if some error has occured */
     StoreContext context(dbhandle, status, imageFileName, &dcmff);    
     
     if (opt_bitpreserving)
     {
-	cond = DIMSE_storeProvider(assoc, presId, request, imageFileName, 1,
-				   NULL, storeProgressCallback, 
-				   (void*)&context, DIMSE_BLOCKING, 0);
+        cond = DIMSE_storeProvider(assoc, presId, request, imageFileName, 1,
+                                   NULL, storeProgressCallback, 
+                                   (void*)&context, DIMSE_BLOCKING, 0);
     } else {
-	cond = DIMSE_storeProvider(assoc, presId, request, (char *)NULL, 1,
-				   &dset, storeProgressCallback, 
-				   (void*)&context, DIMSE_BLOCKING, 0);
+        cond = DIMSE_storeProvider(assoc, presId, request, (char *)NULL, 1,
+                                   &dset, storeProgressCallback, 
+                                   (void*)&context, DIMSE_BLOCKING, 0);
     }
     errorCond(cond, "Store SCP Failed:");
 
@@ -558,12 +562,14 @@ static CONDITION storeSCP(
         /* remove file */
         if (opt_verbose) cerr << "Store SCP: Deleting Image File: " << imageFileName << endl;
         unlink(imageFileName);
-	if (dbhandle) DB_pruneInvalidRecords(dbhandle);
+        if (dbhandle) DB_pruneInvalidRecords(dbhandle);
     }
 
+#ifdef HAVE_FORK
     /* unlock image file */
     flock(lockfd, LOCK_UN);
     close(lockfd);
+#endif
     
     /* free DB handle */
     if (dbhandle) DB_destroyHandle(&dbhandle);
@@ -612,7 +618,7 @@ static void handleClient(T_ASC_Association **assoc, const char *dbfolder, OFBool
           break;
         case DIMSE_PEERREQUESTEDRELEASE:
         case DIMSE_PEERABORTEDASSOCIATION:
-	default:
+        default:
          /* finish processing loop */
           break;
       }
@@ -628,8 +634,8 @@ static void handleClient(T_ASC_Association **assoc, const char *dbfolder, OFBool
     } 
     else if (cond == DIMSE_PEERABORTEDASSOCIATION)
     {
-      COND_PopCondition(OFFalse);	/* pop DIMSE abort */
-      COND_PopCondition(OFFalse);	/* pop DUL abort */
+      COND_PopCondition(OFFalse);       /* pop DIMSE abort */
+      COND_PopCondition(OFFalse);       /* pop DUL abort */
       if (opt_verbose) cerr << "Association Aborted" << endl;
     } 
     else
@@ -722,7 +728,7 @@ int main(int argc, char *argv[])
     /* make sure data dictionary is loaded */
     if (!dcmDataDict.isDictionaryLoaded())
     {
-	cerr << "Warning: no data dictionary loaded, check environment variable: " << DCM_DICT_ENVIRONMENT_VARIABLE << endl;
+        cerr << "Warning: no data dictionary loaded, check environment variable: " << DCM_DICT_ENVIRONMENT_VARIABLE << endl;
     }
     
     DVInterface dvi(0, opt_cfgName);
@@ -874,8 +880,8 @@ int main(int argc, char *argv[])
               /* parent process */
               assoc = NULL;
             } else {
-	      /* child process */
-	      handleClient(&assoc, dbfolder, opt_verbose, networkBitPreserving);
+              /* child process */
+              handleClient(&assoc, dbfolder, opt_verbose, networkBitPreserving);
               finished2=true;
               finished1=true;
             }  
@@ -892,15 +898,15 @@ int main(int argc, char *argv[])
             OFBitmanipTemplate<char>::zeroMem((char *)&sinfo, sizeof(sinfo));
             sinfo.cb = sizeof(sinfo);
             char commandline[4096];
-            sprintf(commandline, "%s %s", receiver_application, configPath.c_str());
+            sprintf(commandline, "%s %s", receiver_application, opt_cfgName);
             if (CreateProcess(NULL, commandline, NULL, NULL, 0, 0, NULL, NULL, &sinfo, &procinfo))
             {
-	      handleClient(&assoc, opt_verbose, networkBitPreserving);
+              handleClient(&assoc, dbfolder, opt_verbose, networkBitPreserving);
               finished1=true;              
             } else {
               cerr << "Cannot execute command line: " << commandline << endl;
-              refuseAssociation(*assoc, CTN_CannotFork);
-              dropAssociation(assoc);
+              refuseAssociation(assoc, ref_CannotFork);
+              dropAssociation(&assoc);
             }
 #endif
             break;
@@ -920,7 +926,10 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dcmpsrcv.cc,v $
- * Revision 1.1  1999-01-27 14:59:24  meichel
+ * Revision 1.2  1999-01-27 15:58:57  meichel
+ * Corrected locking behaviour of dcmpsrcv on Win32 platforms.
+ *
+ * Revision 1.1  1999/01/27 14:59:24  meichel
  * Implemented DICOM network receive application "dcmpsrcv" which receives
  *   images and presentation states and stores them in the local database.
  *

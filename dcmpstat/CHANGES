@@ -1,10 +1,12 @@
+
 **** Changes from 1999.01.27 (vorwerk)
-- implemented error handling for indexfiles of length zero
-- fixed bug in record deletion of an indexfile (see also dbstore)
-- selectSeries, selectInstance, getAnInstance, getNumberOfStudies bugs fixed.
-- errorhandling added
-Affects: dcmpstat/include/dviface.h
-         dcmpstat/libsrc/dviface.cc
+
+- implemented error handling for index files of length zero.
+  Fixed bug in record deletion of an index file (see also dbstore)
+  selectSeries, selectInstance, getAnInstance, getNumberOfStudies bugs fixed.
+  error handling added.
+  Affects: dcmpstat/include/dviface.h
+           dcmpstat/libsrc/dviface.cc
 
 **** Changes from 1999.01.27 (eichelberg)
 
@@ -12,13 +14,16 @@ Affects: dcmpstat/include/dviface.h
   which receives images and presentation states and stores
   them in the local database. Presentation states are checked
   before they are accepted.
-  Added:   dcmpstat/apps/dcmpssnd.cc
+  Added:   dcmpstat/apps/dcmpsrcv.cc
   Affects: dcmpstat/apps/runsend.cc
            dcmpstat/apps/Makefile.dep
            dcmpstat/apps/Makefile.in
            dcmpstat/include/dviface.h
            dcmpstat/libsrc/dviface.cc
 
+- Corrected locking behaviour of dcmpsrcv on Win32 platforms.
+  Affects: dcmpstat/apps/dcmpsrcv.cc
+  
 **** Changes from 1999.01.25 (eichelberg)
 
 - Defined private SOP class UID for network receiver
@@ -52,7 +57,7 @@ Affects: dcmpstat/include/dviface.h
   which sends studies/series/images contained in the
   local database to a remote DICOM communication peer.
   Added:   dcmpstat/apps/dcmpssnd.cc
-           dcmpstat/apps/runsend.cc
+  Affects: dcmpstat/apps/runsend.cc
            dcmpstat/apps/Makefile.dep
            dcmpstat/apps/Makefile.in
            dcmpstat/tests/test.cfg
