@@ -22,9 +22,9 @@
  *  Purpose: Convert the contents of a DICOM structured reporting file to
  *           XML format
  *
- *  Last Update:      $Author: meichel $
- *  Update Date:      $Date: 2004-11-22 17:05:19 $
- *  CVS/RCS Revision: $Revision: 1.25 $
+ *  Last Update:      $Author: joergr $
+ *  Update Date:      $Date: 2004-11-29 17:07:19 $
+ *  CVS/RCS Revision: $Revision: 1.26 $
  *  Status:           $State: Exp $
  *
  *  CVS/RCS Log at end of file
@@ -99,18 +99,17 @@ static OFCondition writeFile(ostream &out,
             {
                 // check extended character set
 
-                const char *charset = dsrdoc->getSpecificCharacterSet();                
+                const char *charset = dsrdoc->getSpecificCharacterSet();
                 if ((charset == NULL || strlen(charset) == 0) && dsrdoc->containsExtendedCharacters())
                 {
                   // we have an unspecified extended character set
                   if (defaultCharset == NULL)
                   {
                     /* the dataset contains non-ASCII characters that really should not be there */
-                    CERR << OFFIS_CONSOLE_APPLICATION << ": error: (0008,0005) Specific Character Set absent but extended characters used in file: "<< ifname << endl;
+                    CERR << OFFIS_CONSOLE_APPLICATION << ": error: (0008,0005) Specific Character Set absent "
+                         << "but extended characters used in file: " << ifname << endl;
                     result = EC_IllegalCall;
-                  }
-                  else 
-                  {
+                  } else  {
                     OFString charset(defaultCharset);
                     if (charset == "latin-1") dsrdoc->setSpecificCharacterSetType(DSRTypes::CS_Latin1);
                     else if (charset == "latin-2") dsrdoc->setSpecificCharacterSetType(DSRTypes::CS_Latin2);
@@ -124,9 +123,7 @@ static OFCondition writeFile(ostream &out,
                   }
                 }
                 if (result.good()) result = dsrdoc->writeXML(out, writeFlags);
-            }
-            else
-            {
+            } else {
                 CERR << OFFIS_CONSOLE_APPLICATION << ": error (" << result.text()
                      << ") parsing file: "<< ifname << endl;
             }
@@ -183,7 +180,7 @@ int main(int argc, char *argv[])
         cmd.addOption("--charset-require",     "+Cr",    "require declaration of ext. charset (default)");
         cmd.addOption("--charset-assume",      "+Ca", 1, "charset: string constant (latin-1 to -5,",
                                                          "greek, cyrillic, arabic, hebrew)\n"
-                                                         "assume charset if undeclared ext. charset found");     
+                                                         "assume charset if undeclared ext. charset found");
     cmd.addGroup("output options:");
       cmd.addSubGroup("encoding:");
         cmd.addOption("--attr-all",             "+Ea", "encode everything as XML attribute\n(shortcut for +Ec, +Er, +Ev and +Et)");
@@ -269,8 +266,8 @@ int main(int argc, char *argv[])
         {
           app.checkValue(cmd.getValue(opt_defaultCharset));
           OFString charset(opt_defaultCharset);
-          if (charset != "latin-1" && charset != "latin-2" && charset != "latin-3" && 
-              charset != "latin-4" && charset != "latin-5" && charset != "cyrillic" && 
+          if (charset != "latin-1" && charset != "latin-2" && charset != "latin-3" &&
+              charset != "latin-4" && charset != "latin-5" && charset != "cyrillic" &&
               charset != "arabic" && charset != "greek" && charset != "hebrew")
           {
             app.printError("unknown value for --charset-assume. known values are latin-1 to -5, cyrillic, arabic, greek, hebrew.");
@@ -355,7 +352,10 @@ int main(int argc, char *argv[])
 /*
  * CVS/RCS Log:
  * $Log: dsr2xml.cc,v $
- * Revision 1.25  2004-11-22 17:05:19  meichel
+ * Revision 1.26  2004-11-29 17:07:19  joergr
+ * Fixed minor formatting issues.
+ *
+ * Revision 1.25  2004/11/22 17:05:19  meichel
  * Removed command lin option for Thai and Katakana character sets
  *   which cannot currently be converted to XML
  *
